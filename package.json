@@ -1,0 +1,24 @@
+{
+  "name": "techbook-java-primer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nagatani/techbook-java-primer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nagatani/techbook-java-primer/issues"
+  },
+  "homepage": "https://github.com/Nagatani/techbook-java-primer#readme",
+  "devDependencies": {
+    "@vivliostyle/cli": "^9.1.1",
+    "@vivliostyle/theme-techbook": "^2.0.0"
+  }
+}
