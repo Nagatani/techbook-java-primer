@@ -1,3 +1,9 @@
+.DS_Store
+
+# vivliostyle
+output/
+
+
 # Logs
 logs
 *.log

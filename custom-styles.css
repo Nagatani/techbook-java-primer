@@ -1,0 +1,268 @@
+/* カスタムスタイル for Java入門技術書 */
+
+/* フォント設定 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;500;600&display=swap');
+
+/* 基本スタイル */
+body {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 10pt;
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* 見出しスタイル */
+h1 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 18pt;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-top: 24pt;
+  margin-bottom: 18pt;
+  padding-bottom: 6pt;
+  border-bottom: 3px solid #3498db;
+  page-break-after: avoid;
+}
+
+h2 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14pt;
+  font-weight: 600;
+  color: #34495e;
+  margin-top: 18pt;
+  margin-bottom: 12pt;
+  padding-left: 8pt;
+  border-left: 4px solid #3498db;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12pt;
+  font-weight: 500;
+  color: #34495e;
+  margin-top: 14pt;
+  margin-bottom: 10pt;
+  page-break-after: avoid;
+}
+
+h4, h5, h6 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  color: #34495e;
+  margin-top: 12pt;
+  margin-bottom: 8pt;
+  page-break-after: avoid;
+}
+
+/* 段落とテキスト */
+p {
+  margin-bottom: 8pt;
+  text-align: justify;
+  orphans: 2;
+  widows: 2;
+}
+
+/* 強調 */
+strong, b {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+em, i {
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+/* コードブロックとインラインコード */
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9pt;
+  background-color: #f8f9fa;
+  padding: 2pt 4pt;
+  border-radius: 3pt;
+  border: 1px solid #e9ecef;
+}
+
+pre {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 9pt;
+  background-color: #f8f9fa;
+  padding: 12pt;
+  border-radius: 6pt;
+  border: 1px solid #e9ecef;
+  margin: 12pt 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* リスト */
+ul, ol {
+  margin-bottom: 12pt;
+  padding-left: 20pt;
+}
+
+li {
+  margin-bottom: 4pt;
+  line-height: 1.6;
+}
+
+ul li {
+  list-style-type: disc;
+}
+
+ul ul li {
+  list-style-type: circle;
+}
+
+ul ul ul li {
+  list-style-type: square;
+}
+
+ol li {
+  list-style-type: decimal;
+}
+
+/* テーブル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12pt 0;
+  font-size: 9pt;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 6pt 8pt;
+  text-align: left;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+tr:nth-child(even) {
+  background-color: #fbfcfd;
+}
+
+/* 引用 */
+blockquote {
+  margin: 12pt 0;
+  padding: 12pt 16pt;
+  background-color: #f8f9fa;
+  border-left: 4px solid #3498db;
+  font-style: italic;
+  color: #555;
+}
+
+blockquote p {
+  margin-bottom: 0;
+}
+
+/* リンク */
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ページブレーク制御 */
+.page-break {
+  page-break-before: always;
+}
+
+.no-page-break {
+  page-break-inside: avoid;
+}
+
+/* マージン調整 */
+.section {
+  margin-bottom: 24pt;
+}
+
+/* 目次スタイル */
+.toc {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.toc li {
+  margin-bottom: 6pt;
+  padding-left: 12pt;
+}
+
+.toc a {
+  text-decoration: none;
+  color: #2c3e50;
+}
+
+.toc a:hover {
+  color: #3498db;
+}
+
+/* 印刷時の最適化 */
+@media print {
+  body {
+    font-size: 10pt;
+  }
+  
+  h1 {
+    font-size: 16pt;
+  }
+  
+  h2 {
+    font-size: 13pt;
+  }
+  
+  h3 {
+    font-size: 11pt;
+  }
+  
+  pre, code {
+    font-size: 8pt;
+  }
+  
+  table {
+    font-size: 8pt;
+  }
+}
+
+/* レスポンシブ調整 */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 16px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+}
