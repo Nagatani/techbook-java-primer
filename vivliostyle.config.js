@@ -3,7 +3,7 @@ module.exports = {
   author: 'Hidehiro Nagatani',
   language: 'ja',
   entry: [
-    'index.md',
+    'chapter00.md',
     'chapter01.md',
     'chapter02.md',
     'chapter03.md',
