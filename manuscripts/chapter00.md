@@ -36,7 +36,7 @@ Javaは以下のような特徴を持つプログラミング言語です：
 ### 統合開発環境（IDE）
 
 本書では以下のIDEを推奨します：
-- **IntelliJ IDEA**（Community Edition で十分）
+- **IntelliJ IDEA**（Community Editionで十分）
 - **Eclipse**
 - **Visual Studio Code**（拡張機能付き）
 

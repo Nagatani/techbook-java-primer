@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "npx vivliostyle build",
-    "preview": "npx vivliostyle preview"
+    "preview": "npx vivliostyle preview",
+    "lint": "textlint manuscripts/*.md",
+    "lint:fix": "textlint --fix manuscripts/*.md"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,11 @@
   "homepage": "https://github.com/Nagatani/techbook-java-primer#readme",
   "devDependencies": {
     "@vivliostyle/cli": "^9.1.1",
-    "@vivliostyle/theme-techbook": "^2.0.0"
+    "@vivliostyle/theme-techbook": "^2.0.0",
+    "textlint": "^14.8.0",
+    "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "^1.0.1",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.2",
+    "textlint-rule-preset-jtf-style": "^3.0.2",
+    "textlint-rule-spellcheck-tech-word": "^5.0.0"
   }
 }

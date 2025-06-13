@@ -27,7 +27,7 @@ public void addNumber(int num) {
 }
 ```
 
-## 7.2 List インターフェース
+## 7.2 List インタフェース
 
 ### ArrayList
 
@@ -111,7 +111,7 @@ public class LinkedListExample {
 | 末尾への挿入/削除 | O(1) | O(1) |
 | 中間への挿入/削除 | O(n) | O(n) |
 
-## 7.3 Set インターフェース
+## 7.3 Set インタフェース
 
 ### HashSet
 
@@ -169,7 +169,7 @@ public class TreeSetExample {
 }
 ```
 
-## 7.4 Map インターフェース
+## 7.4 Map インタフェース
 
 ### HashMap
 
@@ -232,7 +232,7 @@ public class TreeMapExample {
 }
 ```
 
-## 7.5 Queue インターフェース
+## 7.5 Queue インタフェース
 
 ### PriorityQueue
 
@@ -421,4 +421,4 @@ public class CollectionsUtilExample {
 
 ## まとめ
 
-この章では、Javaのコレクションフレームワークの主要なインターフェースと実装クラスを学習しました。List、Set、Map、Queueなどの特性を理解し、適切な場面で使い分けることで、効率的なプログラムを作成できるようになりました。
+この章では、Javaのコレクションフレームワークの主要なインタフェースと実装クラスを学習しました。List、Set、Map、Queueなどの特性を理解し、適切な場面で使い分けることで、効率的なプログラムを作成できるようになりました。

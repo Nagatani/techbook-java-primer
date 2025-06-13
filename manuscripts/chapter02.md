@@ -104,7 +104,7 @@ public class BookTest {
 
 ## 2.3 カプセル化
 
-カプセル化は、データと処理を一つにまとめ、外部からの不正なアクセスを防ぐ概念です。
+カプセル化は、データと処理を1つにまとめ、外部からの不正なアクセスを防ぐ概念です。
 
 ### アクセス修飾子
 
@@ -222,7 +222,7 @@ public class Person {
 }
 ```
 
-## 2.6 静的メンバ（static）
+## 2.6 静的メンバー（static）
 
 ```java
 public class MathUtil {
@@ -256,7 +256,7 @@ public class MathUtil {
 }
 ```
 
-### 静的メンバの使用
+### 静的メンバーの使用
 
 ```java
 public class MathUtilTest {
