@@ -78,28 +78,31 @@ em, i {
 
 /* コードブロックとインラインコード */
 code {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
   font-size: 9pt;
-  background-color: #f8f9fa;
+  background-color: #f8f9fa !important;
+  color: #333 !important;
   padding: 2pt 4pt;
   border-radius: 3pt;
   border: 1px solid #e9ecef;
 }
 
 pre {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
   font-size: 9pt;
-  background-color: #f8f9fa;
+  background-color: #ffffff !important;
+  color: #333 !important;
   padding: 12pt;
   border-radius: 6pt;
-  border: 1px solid #e9ecef;
+  border: 1px solid #ddd;
   margin: 12pt 0;
   overflow-x: auto;
   page-break-inside: avoid;
 }
 
 pre code {
-  background: none;
+  background: transparent !important;
+  color: inherit !important;
   padding: 0;
   border: none;
   border-radius: 0;
