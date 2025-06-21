@@ -1,6 +1,58 @@
 # 第4章 クラスとオブジェクト
 
-前章ではJavaの基本構文について学びました。この章では、Javaの最も重要な概念であるクラスとオブジェクトについて詳しく学習します。
+## はじめに：なぜオブジェクト指向プログラミングなのか
+
+前章ではJavaの基本構文について学びました。この章では、Javaというプログラミング言語の核心であり、現代のソフトウェア開発を支える重要な概念である「クラス」と「オブジェクト」について詳しく学習します。
+
+しかし、これらの概念を学ぶ前に、なぜこのような仕組みが生まれ、なぜそれが必要なのかを理解することが重要です。プログラミングの歴史を振り返ると、ソフトウェアはますます複雑化し、規模も拡大の一途を辿っています。1960年代のコンピュータプログラムは数百行程度でしたが、現代のアプリケーションは数百万行に及ぶことも珍しくありません。この規模の拡大とともに、プログラムの構造化や管理手法の重要性が高まり、その解決策として「オブジェクト指向プログラミング」という考え方が誕生しました。
+
+### プログラミングパラダイムの進化
+
+プログラミングの手法は、時代とともに進化してきました。初期のプログラミングは「非構造化プログラミング」と呼ばれ、goto文を多用したスパゲッティコードが問題となっていました。この問題を解決するため、1960年代後半に「構造化プログラミング」が提唱され、順次処理、分岐処理、反復処理という基本的な制御構造でプログラムを構成する手法が確立されました。皆さんが学んできたC言語は、この構造化プログラミングを基本とした「手続き型プログラミング」の代表例です。
+
+手続き型プログラミングでは、プログラムを「データ」と「そのデータを処理する関数」に分けて考えます。この手法は小規模なプログラムには適していましたが、プログラムが大規模化するにつれて、以下のような課題が明らかになりました：
+
+**データと処理の分離による問題**：データ構造と、それを操作する関数が別々に管理されるため、データ構造の変更時に、そのデータを使用するすべての関数を見つけ出して修正する必要があります。これは、プログラムが大きくなるほど困難になります。
+
+**グローバル変数の濫用**：複数の関数で共有されるデータは、グローバル変数として宣言されることが多く、どの関数がいつそのデータを変更するかを追跡することが困難になります。
+
+**コードの再利用性の低さ**：似たような処理を行う関数でも、データ構造が少し異なるだけで、まったく新しい関数を作成する必要があることが多く、コードの重複が発生しやすくなります。
+
+**保守性の悪化**：機能追加や修正時に、変更の影響範囲を正確に把握することが困難で、予期しないバグの原因となりやすい状況が生まれます。
+
+### オブジェクト指向の登場とその背景
+
+これらの課題を解決するため、1970年代に「オブジェクト指向プログラミング（Object-Oriented Programming、OOP）」という新しいプログラミングパラダイムが提唱されました。オブジェクト指向の根本的な考え方は、現実世界の「もの（オブジェクト）」をソフトウェアの世界で直接的にモデリングしようというものです。
+
+現実世界を見回すと、すべてのものは「状態（属性）」と「振る舞い（動作）」を持っています。例えば、自動車という「オブジェクト」は、色、速度、燃料残量といった「状態」と、加速する、ブレーキをかける、方向転換するといった「振る舞い」を持っています。オブジェクト指向プログラミングでは、この現実世界の構造をそのままプログラムに反映させることを目指します。
+
+この手法の最大の利点は、**現実世界とプログラムの構造が対応している**ことです。顧客管理システムを作る場合、現実世界の「顧客」という概念を、プログラム内でも「顧客オブジェクト」として直接表現できます。顧客は名前、住所、電話番号といった情報（状態）を持ち、注文をする、支払いをするといった行動（振る舞い）を取ります。これをそのままプログラムの構造として表現できるため、設計者、プログラマー、そして時には利用者までもが、システムの構造を直感的に理解できるのです。
+
+### オブジェクト指向の三大原則とその意義
+
+オブジェクト指向プログラミングは、三つの基本原則に基づいて構築されています：
+
+**カプセル化（Encapsulation）**：関連するデータと、そのデータを操作する機能を一つの単位（オブジェクト）にまとめ、外部からの不適切なアクセスを防ぐ仕組みです。これにより、オブジェクト内部の実装詳細を隠蔽し、外部からは必要最小限のインターフェイスのみを公開できます。
+
+**継承（Inheritance）**：既存のオブジェクトの特性を受け継いで、新しいオブジェクトを作成する仕組みです。共通の特性を持つオブジェクト群の階層構造を表現でき、コードの再利用性を大幅に向上させます。
+
+**ポリモーフィズム（Polymorphism）**：同じインターフェイスで異なる動作を実現する仕組みです。これにより、オブジェクトの種類に応じて適切な処理を自動的に選択でき、プログラムの柔軟性と拡張性が向上します。
+
+これらの原則により、オブジェクト指向プログラミングは手続き型プログラミングの課題を根本的に解決します。関連するデータと処理がカプセル化されることで保守性が向上し、継承によってコードの再利用性が高まり、ポリモーフィズムによってプログラムの柔軟性が確保されます。
+
+### 現代ソフトウェア開発におけるオブジェクト指向の重要性
+
+今日、オブジェクト指向プログラミングは、ソフトウェア開発の標準的な手法となっています。その理由は、現代のソフトウェアが抱える課題に対する効果的な解決策を提供するからです：
+
+**複雑性の管理**：現代のアプリケーションは、Web、データベース、ユーザーインターフェイス、セキュリティなど、多様な技術領域を統合する必要があります。オブジェクト指向により、これらの複雑な要素を適切に分割し、管理可能な単位に分解できます。
+
+**チーム開発の効率化**：大規模なソフトウェア開発は、多くの開発者によるチーム作業です。オブジェクト指向により、システムをクラス単位で分割できるため、開発者間での作業分担や並行開発が容易になります。
+
+**変更への対応**：ビジネス要件は常に変化し、ソフトウェアもそれに対応する必要があります。適切に設計されたオブジェクト指向システムでは、変更の影響を局所化でき、システム全体への影響を最小限に抑えながら機能追加や修正を行えます。
+
+**再利用可能なコンポーネントの構築**：オブジェクト指向により作成されたクラスは、他のプロジェクトでも再利用できる場合が多く、開発効率の向上とコスト削減に貢献します。
+
+この章では、これらのオブジェクト指向の基本概念を、Javaというプログラミング言語を通じて実践的に学習していきます。単にクラスの書き方を覚えるのではなく、なぜそのような仕組みが必要なのか、どのような利点があるのかを理解しながら進めることで、より深い理解を得ることができるでしょう。
 
 ## 4.1 手続き型からオブジェクト指向へ
 
@@ -553,3 +605,261 @@ Javaのクラスは、「C言語の構造体に関数を内包できるように
 * **クラス型の配列を作成すると、各要素の初期値は`null`になります。配列要素にアクセスする際も`null`チェックを忘れないようにしましょう。**
 
 `null`チェックは、安全で堅牢なJavaプログラムを作成するための基本的ながら非常に重要なテクニックです。
+
+## 4.7 カプセル化とアクセス制限
+
+オブジェクト指向プログラミングの重要な原則の1つである**カプセル化 (Encapsulation)** について詳しく学習しましょう。カプセル化とは、オブジェクトのデータ（フィールド）とそのデータを操作するメソッドを1つにまとめ、オブジェクトの内部構造を外部から隠蔽することです。
+
+### カプセル化の目的
+
+カプセル化により以下の利点が得られます：
+
+* **データの保護**: 外部から直接フィールドにアクセスできなくすることで、意図しない値の書き換えや、不正な状態になることを防ぎます
+* **保守性の向上**: クラスの内部実装を変更しても、外部への影響を最小限に抑えることができます。公開しているメソッドの仕様が変わらなければ、内部のロジックは自由に変更できます
+* **再利用性の向上**: 適切にカプセル化されたクラスは、他のプログラムでも利用しやすくなります
+
+### アクセス修飾子
+
+Javaでは、クラス、フィールド、メソッド、コンストラクタに対してアクセス修飾子を指定することで、外部からのアクセスレベルを制御します。
+
+| 修飾子 | 同じクラス | 同じパッケージ | サブクラス (別パッケージ) | それ以外 (別パッケージ) | 説明 |
+|---|---|---|---|---|---|
+| `public` | ○ | ○ | ○ | ○ | どこからでもアクセス可能 |
+| `protected` | ○ | ○ | ○ | × | 同じクラス、同じパッケージ、または別パッケージのサブクラスからアクセス可能 |
+| (default/package-private) | ○ | ○ | × | × | 修飾子を記述しない場合。同じパッケージ内からのみアクセス可能 |
+| `private` | ○ | × | × | × | 同じクラス内からのみアクセス可能 |
+
+一般的に、フィールドは`private`にして直接アクセスできないようにし、そのフィールドを操作するための`public`なメソッド（getter/setter）を提供します。
+
+### getter/setterパターン
+
+カプセル化の実践的な手法として、`private`フィールドに対する**getter**（取得メソッド）と**setter**（設定メソッド）を提供する方法があります。
+
+```java
+public class Employee {
+    private String name; // private: このクラス内からのみアクセス可能
+    private int age;     // private: このクラス内からのみアクセス可能
+    private String department;
+    private double salary;
+
+    public Employee(String name, int age, String department, double salary) {
+        this.name = name;
+        setAge(age); // ageの設定にはsetterメソッドを使用
+        this.department = department;
+        this.salary = salary;
+    }
+
+    // nameフィールドのgetterメソッド
+    public String getName() {
+        return name;
+    }
+
+    // nameフィールドのsetterメソッド
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name;
+        } else {
+            throw new IllegalArgumentException("名前は空にできません。");
+        }
+    }
+
+    // ageフィールドのgetterメソッド
+    public int getAge() {
+        return age;
+    }
+
+    // ageフィールドのsetterメソッド（バリデーションの例）
+    public void setAge(int age) {
+        if (age > 0 && age < 150) {
+            this.age = age;
+        } else {
+            throw new IllegalArgumentException("年齢は1～149の範囲で入力してください。");
+        }
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        if (salary >= 0) {
+            this.salary = salary;
+        } else {
+            throw new IllegalArgumentException("給与は0以上である必要があります。");
+        }
+    }
+
+    // 従業員情報を表示するメソッド
+    public void displayInfo() {
+        System.out.println("名前: " + name);
+        System.out.println("年齢: " + age);
+        System.out.println("部署: " + department);
+        System.out.println("給与: " + salary);
+    }
+
+    // 昇給メソッド（ビジネスロジックの例）
+    public void giveRaise(double percentage) {
+        if (percentage > 0 && percentage <= 50) { // 50%以下の昇給のみ許可
+            this.salary = this.salary * (1 + percentage / 100);
+            System.out.println(name + " の給与が " + percentage + "% 昇給しました。");
+        } else {
+            throw new IllegalArgumentException("昇給率は1～50%の範囲で指定してください。");
+        }
+    }
+}
+```
+
+### カプセル化の実践例
+
+以下は、適切にカプセル化されたクラスの使用例です：
+
+```java
+public class EmployeeManagement {
+    public static void main(String[] args) {
+        Employee emp1 = new Employee("山田太郎", 30, "開発部", 500000);
+
+        // フィールドに直接アクセスはできない（コンパイルエラー）
+        // emp1.name = "佐藤一郎"; // エラー: name は private
+        // emp1.age = -5;        // エラー: age は private
+
+        // setterメソッドを通じてアクセス（バリデーション付き）
+        emp1.setName("佐藤一郎"); // OK
+        System.out.println("従業員の名前: " + emp1.getName());
+
+        try {
+            emp1.setAge(35);  // OK
+            emp1.setAge(-5);  // 例外が発生
+        } catch (IllegalArgumentException e) {
+            System.err.println("エラー: " + e.getMessage());
+        }
+
+        System.out.println("従業員の年齢: " + emp1.getAge());
+
+        // ビジネスロジックの実行
+        try {
+            emp1.giveRaise(10); // 10%昇給
+            emp1.displayInfo();
+        } catch (IllegalArgumentException e) {
+            System.err.println("エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+### カプセル化のメリットの実例
+
+#### 1. データの整合性保証
+
+```java
+public class BankAccount {
+    private double balance;
+    private final String accountNumber;
+
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = Math.max(0, initialBalance); // 残高は0以上
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    // 預金メソッド
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println(amount + "円を預金しました。残高: " + balance + "円");
+        } else {
+            throw new IllegalArgumentException("預金額は正の値である必要があります。");
+        }
+    }
+
+    // 引き出しメソッド
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println(amount + "円を引き出しました。残高: " + balance + "円");
+        } else if (amount <= 0) {
+            throw new IllegalArgumentException("引き出し額は正の値である必要があります。");
+        } else {
+            throw new IllegalArgumentException("残高不足です。残高: " + balance + "円");
+        }
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+}
+```
+
+#### 2. 内部実装の変更が外部に影響しない
+
+```java
+// Version 1: シンプルな実装
+public class ProductCatalog {
+    private java.util.List<String> products;
+
+    public ProductCatalog() {
+        products = new java.util.ArrayList<>();
+    }
+
+    public void addProduct(String product) {
+        products.add(product);
+    }
+
+    public java.util.List<String> getProducts() {
+        return new java.util.ArrayList<>(products); // 防御的コピー
+    }
+}
+
+// Version 2: より効率的な実装に変更
+// 外部からの使用方法は変わらない
+public class ProductCatalog {
+    private java.util.Set<String> products; // ArrayListからSetに変更
+
+    public ProductCatalog() {
+        products = new java.util.HashSet<>();
+    }
+
+    public void addProduct(String product) {
+        products.add(product); // 重複は自動的に除去される
+    }
+
+    public java.util.List<String> getProducts() {
+        return new java.util.ArrayList<>(products); // 戻り値は同じ型
+    }
+}
+```
+
+### アクセス修飾子の選択指針
+
+適切なアクセス修飾子を選ぶための一般的な指針：
+
+1. **フィールドは基本的に`private`** - 直接アクセスを防ぎ、getter/setterを通じて制御
+2. **メソッドは必要最小限を`public`** - 外部に公開する必要のあるもののみ
+3. **パッケージ内でのみ使用するものは`default`** - 明示的にアクセス修飾子を書かない
+4. **継承で使用するものは`protected`** - サブクラスからアクセスできるように
+
+```java
+public class ExampleClass {
+    private int privateField;        // クラス内でのみアクセス可能
+    int defaultField;               // 同じパッケージ内でアクセス可能
+    protected int protectedField;   // サブクラスからもアクセス可能
+    public int publicField;         // どこからでもアクセス可能
+
+    private void privateMethod() { }        // クラス内でのみ呼び出し可能
+    void defaultMethod() { }               // 同じパッケージ内で呼び出し可能
+    protected void protectedMethod() { }   // サブクラスからも呼び出し可能
+    public void publicMethod() { }         // どこからでも呼び出し可能
+}
+```
+
+カプセル化は、オブジェクト指向プログラミングの基本原則であり、保守性と再利用性の高いコードを書くために不可欠な概念です。適切なアクセス制御により、クラスの責任を明確にし、予期しない変更やエラーを防ぐことができます。
