@@ -1,379 +1,889 @@
-# 第3章 クラスとオブジェクトの詳細
+# 第3章 Javaの基本構文とデータ型
 
-この章では、クラスとオブジェクトのより詳細な概念と実践的な使用方法を学習します。
+ここから、Javaを使ったオブジェクト指向プログラミングを学びますが、そもそもそれ以前に、Javaというプログラミング言語の基本構文について学びましょう。
 
-## 3.1 クラス設計の原則
+## 3.1 型とリテラル
 
-### 単一責任の原則
+### 型
+
+型、またはデータ型とは、プログラミング言語における「データを保持する形式」という認識で（いまのところは）良いでしょう。  
+Javaにおける基本的な型の種類は以下の表を参照してください。
+
+| 型名 | サイズ | 用途 | 想定される値 | ラッパークラス |
+|-----|-----------------|-----|------------|--------------|
+| `boolean` | -  | 真偽値 | true または false | Boolean
+| `char` | 2byte | 文字(1文字分) | \u0000 〜 \uffff | Character
+| `byte` | 1byte | 整数 | -128 〜 127 | Byte
+| `short` | 2byte | 整数 | -32768 〜 32767 | Short
+| `int` | 4byte | 整数 | -2147483648 〜 2147483647 | Integer
+| `long` | 8byte | 整数  | -9223372036854775808 〜 9223372036854775807 | Long
+| `float` | 4byte | 単精度浮動小数点  | 1.4E-45 〜 3.4028235E38 | Float
+| `double` | 8byte | 倍精度浮動小数点 | 4.9E-324 〜 1.7976931348623157E308 | Double
+
+これらの型は`プリミティブ型（または基本型）`と呼ばれ、Java言語仕様では特殊な型となります。  
+見分け方は、先頭が小文字で始まっている型はプリミティブ型、先頭が大文字で始まっている型はクラス型と呼ばれ、文字列型であるStringは後者になります。
+（クラスを自分で作成する場合には、先頭を大文字で始めるように注意しましょう。）
+
+Javaでのプリミティブ型には、すべてラッパークラスと呼ばれるクラス型にてプリミティブ型をラッピングしたクラスが存在します。表のラッパークラスはそれぞれの型に対応したクラス型で、それぞれのプリミティブ型特有の処理などが含まれています。（たとえば、文字列からそのプリミティブ型に変換する処理など）
+
+また、プリミティブ型の変数にはプログラムの実行時に、変数が指し示すメモリアドレス上に値そのままで展開・配置されます。
+値がない状態を許容しないため、その変数を実際に使用する前に必ず初期値の代入が必要です。
+
+#### 数値の型の最大値最小値を見るサンプル
+
+数値を表す型の最大値〜最小値を実際に見る場合は、以下のソースコードを使用してみると良いでしょう。
+
+ファイル名：MinMaxValues.java
 
 ```java
-// 悪い例：複数の責任を持つクラス
-public class EmployeeBad {
-    private String name;
-    private double salary;
-    
-    public void calculatePay() { /* 給与計算 */ }
-    public void saveToDatabase() { /* データベース保存 */ }
-    public void sendEmail() { /* メール送信 */ }
-}
-
-// 良い例：単一責任を持つクラス
-public class Employee {
-    private String name;
-    private double salary;
-    
-    // ゲッター・セッター
-    public String getName() { return name; }
-    public double getSalary() { return salary; }
-}
-
-public class PayrollCalculator {
-    public double calculatePay(Employee employee) {
-        // 給与計算ロジック
-        return employee.getSalary();
-    }
-}
-
-public class EmployeeRepository {
-    public void save(Employee employee) {
-        // データベース保存ロジック
+public class MinMaxValues {
+    public static void main(String[] args){
+        System.out.println("short: " + Short.MIN_VALUE + " 〜 " + Short.MAX_VALUE);
+        System.out.println("int: " + Integer.MIN_VALUE + " 〜 " + Integer.MAX_VALUE);
+        System.out.println("long: " + Long.MIN_VALUE + " 〜 " + Long.MAX_VALUE);
+        System.out.println("float: " + Float.MIN_VALUE + " 〜 " + Float.MAX_VALUE);
+        System.out.println("double: " + Double.MIN_VALUE + " 〜 " + Double.MAX_VALUE);
     }
 }
 ```
 
-## 3.2 オブジェクトの関係性
+プリミティブ型のそれぞれの変数では、その型の最大値や最小値などの型に関する情報を取得することはできません。  
+プリミティブ型には、それぞれに対応したラッパークラスがあります。このラッパークラスを使うことで、プリミティブ型の詳細な情報の取得や、他の型からの変換機能を呼びだし可能になります。
 
-### 関連（Association）
+プリミティブ型の8つの型を覚えると同時に、ラッパークラスの存在も覚えておきましょう。
 
-```java
-public class Student {
-    private String name;
-    private Course[] courses;
-    
-    public Student(String name) {
-        this.name = name;
-        this.courses = new Course[10];
-    }
-    
-    public void enrollCourse(Course course) {
-        // コース登録ロジック
-    }
-}
+### 変数の宣言と利用
 
-public class Course {
-    private String courseName;
-    private String instructor;
-    
-    public Course(String courseName, String instructor) {
-        this.courseName = courseName;
-        this.instructor = instructor;
-    }
-}
+#### 変数を宣言する
+
+変数は、プログラム中で繰り返し使用する値や、値を変化させ利用する場合にその値が入る場所（メモリアドレス）に名前を付けることをいいます。
+
+変数は「今からこれを使用します。」という宣言を行わないと使用できません。  
+宣言は、以下のように行います。
+
+```
+型名 識別子;
 ```
 
-### 集約（Aggregation）
+たとえば、整数値の番号を表す変数の場合、
 
 ```java
-public class Department {
-    private String name;
-    private List<Employee> employees;
-    
-    public Department(String name) {
-        this.name = name;
-        this.employees = new ArrayList<>();
-    }
-    
-    public void addEmployee(Employee employee) {
-        employees.add(employee);
-    }
-    
-    public void removeEmployee(Employee employee) {
-        employees.remove(employee);
-    }
-}
+int number;
 ```
 
-### 合成（Composition）
+のように宣言します。  
+このとき、名前のつけ方に注意しましょう。その変数はどんな値が入るのかを後から読んでも分かりやすい名前を付けることが望ましいです。
+
+また、以下のように、同時に複数の変数を同じ型で宣言することも可能です。
 
 ```java
-public class House {
-    private Room[] rooms;
-    
-    public House(int roomCount) {
-        this.rooms = new Room[roomCount];
-        // Houseが作成されるときにRoomも作成される
-        for (int i = 0; i < roomCount; i++) {
-            rooms[i] = new Room("Room " + (i + 1));
-        }
-    }
-    
-    private class Room {  // 内部クラス
-        private String name;
-        
-        public Room(String name) {
-            this.name = name;
-        }
-    }
-}
+double score, money, point;
 ```
 
-## 3.3 メソッドの詳細
+ただし、後述していますが、Javaでは変数の宣言と同時に初期値の代入が可能なため、1行にまとめて宣言する書き方は個人的にとても読みづらく感じます。  
+そのためこの書き方はオススメしません。
 
-### メソッドオーバーロード
+#### Javaにおける変数宣言のポイント
 
-```java
-public class Calculator {
-    // 同じ名前のメソッドを異なるパラメータで定義
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public double add(double a, double b) {
-        return a + b;
-    }
-    
-    public int add(int a, int b, int c) {
-        return a + b + c;
-    }
-    
-    public String add(String a, String b) {
-        return a + b;
-    }
-}
-```
+Javaでは、「変数宣言はプログラムの先頭にすべて書きなさい。」なんてことはありません。必要になる直前で、「今からこの型を使用します」という意味合いで使用することをオススメします。
 
-### 可変長引数
+たとえば次のプログラムをみてください。
 
 ```java
-public class MathUtils {
-    public static int sum(int... numbers) {
-        int total = 0;
-        for (int num : numbers) {
-            total += num;
-        }
-        return total;
-    }
-    
+public class Hoge {
     public static void main(String[] args) {
-        System.out.println(sum(1, 2, 3));           // 6
-        System.out.println(sum(1, 2, 3, 4, 5));    // 15
-        System.out.println(sum());                  // 0
+
+        //数値Aの計算
+        int numA;
+        numA = 10 + 20 + 30 + 40;
+        System.out.println("数値A:" + numA);
+
+        //数値Bの計算
+        int numB;
+        numB = 10 * 20 * 30 * 40 + numA;
+        System.out.println("数値B:" + numB);
     }
 }
 ```
 
-## 3.4 内部クラス
+数値Bで使用する変数は、使用する直前で宣言すると、他の人がこのプログラムのソースコードを見た時「今からnumBという変数が使用されるんだな」ということがわかりやすくなります。
 
-### 非静的内部クラス
+※これは、あくまでこうすると良いというだけの話です。  
+強制するつもりはありませんが、こちらで慣れておくことをオススメしています。
+
+#### 宣言と同時に初期化する
+
+変数を宣言して使用しない場合は、コンパイルエラーとなります。***初期化*** をしておくことで、そういったコンパイルエラーをなくせます。
 
 ```java
-public class OuterClass {
-    private String outerField = "外部クラスのフィールド";
-    
-    public class InnerClass {
-        public void display() {
-            // 外部クラスのフィールドにアクセス可能
-            System.out.println(outerField);
-        }
-    }
-    
-    public void createInner() {
-        InnerClass inner = new InnerClass();
-        inner.display();
-    }
-}
+int number;
+number = 0;
 ```
 
-### 静的内部クラス
+という書き方も初期化できますが、Javaでは以下の書き方が一般的です。
 
 ```java
-public class OuterClass {
-    private static String staticField = "静的フィールド";
-    private String instanceField = "インスタンスフィールド";
-    
-    public static class StaticInnerClass {
-        public void display() {
-            System.out.println(staticField);  // 静的フィールドのみアクセス可能
-            // System.out.println(instanceField);  // エラー！
-        }
-    }
-}
+int number = 0;
 ```
 
-### 匿名クラス
+初期化時、右辺が0ではない値でも指定は可能です。計算式の結果を初期値として代入することもできます。
+
+### リテラル
+
+リテラルとは、プログラムのソースコード中に直接値を書いた場合をいいます。  
+Javaでは、リテラルにも内部的な型が存在します。
+以下各リテラルをまとめた表です。
+
+| リテラル  | 記入例  | 内部的な型  |
+|---------|---------|---------|
+| 整数  | 30 | int
+| 大きな整数  | 30000000L | long
+| 小数点あり(精度が高い) | 30.5 または 30.5d | double
+| 小数点あり(精度が低い) | 30.5f | float
+| 真偽 |  true | boolean
+| シングルクォーテーションで囲われた文字 | 'あ' | char
+| ダブルクォーテーションで囲わられた文字列 | "あいうえお" | ***String***
+
+Stringだけ、若干特殊ですが、文字列はString型と呼ばれるクラス型として扱われる点を覚えておきましょう。
+
+#### 数値型のリテラルのポイント
+
+ソースコード中に数値リテラルを記入する際、以下のように数値の途中に「`_`」アンダースコアを入れることもできます。
 
 ```java
-public class AnonymousExample {
+long bignum = 1_000_000_000_000L;
+```
+
+コード中にリテラルで大きな数字を入力しなければならない時、たとえば金額だったら3桁ごとで区切るなどして、見やすくする工夫できると良いです。
+
+#### 特殊な数値リテラル(2進数、8進数、16進数)
+
+2進数、8進数、16進数をソースコード中に記入する事もできます。
+
+| リテラル  | 例  | 10進数の値 
+|---------|---------|---------|
+| 2進数  | 0b1001 | 9
+| 8進数  | 014 | 12
+| 16進数  | 0xFE | 254
+
+※8進数についてのみ、意図せず8進数になる場合がある点に注意が必要です。  
+先頭が0から始まる場合に、それ以降の数値は8進数として認識されてしまうため、意図しない数値が内部的に保持されます。
+
+#### 文字列リテラル
+
+文字列は、文字列を扱うためのStringクラスのオブジェクトで操作します。
+
+ファイル名： HelloWorld.java
+
+```java
+public class HelloWorld {
     public static void main(String[] args) {
-        // インターフェースの匿名実装
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("匿名クラスで実行");
-            }
-        };
-        
-        task.run();
+        String s = "Hello,";
+        String t = "World!!";
+        System.out.println(s + t); //Hello,World!!と表示される
     }
 }
 ```
 
-## 3.5 オブジェクトの比較
+#### 文字リテラルのエスケープシーケンス
 
-### equals()メソッドのオーバーライド
+文字リテラルに特殊な文字を入れたい場合は、エスケープシーケンスを使用します。
+※環境によって、「\\」は「¥」で表示される場合があります。Windows日本語環境下の場合は¥です。
+
+| エスケープシーケンス  | 文字  |
+|----|----|
+| `\t`  | タブ 
+| `\n ` | 改行
+| `\r ` | 復帰 
+| `\' ` | '(シングルクォーテーション)
+| `\"`  | "(ダブルクォーテーション)
+| `\oxxxx` | 文字の実体参照形式8進数表記 (xxxxには0〜7の数値が入ります。)
+| `\uxxxx` | 文字の実体参照形式16進数表記	(xxxxには0〜9,A〜Fの数値が入ります。)
+
+文字の実体参照形式については、Unicodeと呼ばれる文字コードの表を参照して、該当の数値を入れることでキーボードから入力時変換できないような文字（英語以外の外国語など）を出力することができたりします。
+
+## 3.2 演算子
+
+数値の計算や、文字列の連結など、さまざまな場所で演算子を使った処理を行います。  
+すべての演算子が今すぐ使うものではありません。
+いつ使うのか分からない演算子も、こういった書き方もできるということを覚えておきましょう。
+
+### 代入演算子
+
+変数へ値を代入するには、 `=` を使用します。
+
+例：変数に代入を行う場合（aという変数に5を代入する）
 
 ```java
-public class Person {
-    private String name;
-    private int age;
-    
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        
-        Person person = (Person) obj;
-        return age == person.age && 
-               Objects.equals(name, person.name);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, age);
-    }
-    
-    @Override
-    public String toString() {
-        return "Person{name='" + name + "', age=" + age + "}";
-    }
-}
+a = 5;
 ```
 
-## 3.6 不変オブジェクト（Immutable Object）
+左辺に対して、右辺を代入します。逆はできません。
+
+次は文法上可能ですが、あまり好ましくない例です。
 
 ```java
-public final class ImmutablePerson {
-    private final String name;
-    private final int age;
-    private final List<String> hobbies;
-    
-    public ImmutablePerson(String name, int age, List<String> hobbies) {
-        this.name = name;
-        this.age = age;
-        // 防御的コピーを作成
-        this.hobbies = new ArrayList<>(hobbies);
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-    
-    public List<String> getHobbies() {
-        // 防御的コピーを返す
-        return new ArrayList<>(hobbies);
-    }
+a = b = 5;
+```
+
+とすると、aには「b=5」が代入されるのですが、このとき「b=5」の処理結果は、5を返すため、a,bどちらにも5が代入されます。  
+この書き方をたまにすることがありますが、本来ならコードを見た時に認識しづらい書き方だと思われるので極力使わないようにしましょう。
+
+### 算術演算子
+
+算術演算子には、以下のものがあります。
+
+| 演算子記号 | 役割 | 算出時の優先順位
+|----------|------|----|
+| `+` | 足し算(加法演算子) | 後
+| `-` | 引き算(加法演算子) | 後
+| `*` | 掛け算(乗法演算子) | 先
+| `/` | 割り算(乗法演算子) | 先
+| `%` | 余り(乗法演算子) | 先
+
+#### 算術演算子サンプルプログラム
+
+ファイル名： ArithmeticSample.java
+```java
+class ArithmeticSample {
+  public static void main(String[] args) {
+    int num1 = 10;
+    int num2 = 5;
+
+    System.out.println("num1とnum2にいろいろな演算を行います。");
+    System.out.println("num1 + num2は" + (num1 + num2) + "です。");
+    System.out.println("num1 - num2は" + (num1 - num2) + "です。");
+    System.out.println("num1 * num2は" + (num1 * num2) + "です。");
+    System.out.println("num1 / num2は" + (num1 / num2) + "です。");
+    System.out.println("num1 % num2は" + (num1 % num2) + "です。");
+  }
 }
 ```
 
-## 3.7 デザインパターンの基礎
+実行してみて問題がなければ、num1, num2に代入する値を変えて、実行して確認しましょう。
 
-### Singletonパターン
+### 算術演算を伴う代入演算子（再帰代入演算子）
+
+左辺に対して、右辺との算術演算を行った後に、左辺に代入する処理を省略して書くことができます。
+
+| 演算子記号 | 役割 | 同じ処理で違う書き方
+|----------|------|----|
+| `+=` | 左辺に右辺を足し算した後に左辺へ代入 | `x += 5;`, `x = x + 5;`
+| `-=` | 左辺に右辺を引き算した後に左辺へ代入 | `x -= 5;`, `x = x - 5;`
+| `*=` | 左辺に右辺を掛け算した後に左辺へ代入 | `x *= 5;`, `x = x * 5;`
+| `/=` | 左辺に右辺を割り算した後に左辺へ代入 | `x /= 5;`, `x = x / 5;`
+| `%=` | 左辺に右辺の値で余りを算出した後に左辺へ代入 | `x %= 5;`, `x = x % 5;`
+
+### 比較演算子
+
+※両辺を比較する場合に使用し、演算子の結果はboolean型で戻ってきます。
+
+| 演算子 | 例 | 説明
+|----------|------|------|
+| `==` | `a == b` | aとbが等しいときtrue
+| `!=` | `a != b` | aとbが等しくないときtrue
+| `>` | `a > b` | aがbより大きいときtrue
+| `<` | `a < b` | aがbより小さいきとtrue
+| `>=` | `a >= b` | aがb以上のときtrue
+| `<=` | `a <= b` | aがb以下のときtrue
+
+### 論理演算子(ショートサーキット演算子)
+
+※両辺ともbooleanの場合に使用します。
+
+| 演算子 | 例 | 説明
+|----------|------|------|
+| `&&` | `a && b` | aとbの両方がtrueのときtrue
+| <code>&#x7C;&#x7C;</code> | <code>a &#x7C;&#x7C; b</code> | aとbのどちらかがtrueのときtrue
+| `!` | `!a` | aがfalseのときtrue。逆になる
+
+### インクリメント・デクリメント
+
+インクリメント・デクリメントの演算子は、それぞれ2種類づつあります。
+この演算子を式中で使う場合、この違いがとても大きく、間違えやすい点ですので、注意が必要です。
+
+#### インクリメント
+
+| 演算子(位置に注意) | 式中で行われるものと同義のステートメント | 式中での評価、更新順序
+|------|------|------|
+| `y++` | `y = y + 1;` | y を評価してから式を演算し、 y + 1 に更新
+| `++y` | `y = y + 1;` | y + 1 に更新してから式の評価、演算
+
+#### デクリメント
+
+| 演算子(位置に注意) | 式中で行われるものと同義のステートメント | 式中での評価、更新順序
+|------|------|------|
+| `y--` | `y = y - 1;` | y を評価してから式を演算し、 y - 1 に更新
+| `--y` | `y = y - 1;` | y - 1 に更新してから式の評価、演算
+
+### データ型による演算の制約
+
+演算時の注意点として、データ型による丸めの発生があります。
+
+- 整数型同士の除算は、小数点以下切り捨て
+    + 10 / 4 = 2
+- どちらかに浮動小数点型の数値がある場合は、小数点以下も計算されます。
+    + 10.0 / 4 = 2.5
+    + この場合、計算結果は浮動小数点型となります。
+
+### キャスト演算子
+
+整数型の変数に、浮動小数点型の数値を代入しようとするとエラーとなります。
+
+浮動小数点数を整数に***強制的に変換***し、代入をすればエラーとなりません。  
+ただし、整数型に型の強制変換を行ったタイミングで、小数点以下の値は切り捨てられてしまうので注意が必要です。
 
 ```java
-public class Logger {
-    private static Logger instance;
-    
-    private Logger() {
-        // プライベートコンストラクタ
-    }
-    
-    public static Logger getInstance() {
-        if (instance == null) {
-            instance = new Logger();
-        }
-        return instance;
-    }
-    
-    public void log(String message) {
-        System.out.println("[LOG] " + message);
-    }
-}
+float s = 1234.567f;
+int num = (int)s; // ← numには、1234 が代入される
 ```
 
-### Builderパターン
+### 文字列との連結
+
+`+` を使います。
+
+```
+"Hello, " + "World!!" → "Hello, World!!"
+```
+
+次のプログラムはどういう結果を出力するでしょう？
 
 ```java
-public class Computer {
-    private String cpu;
-    private String memory;
-    private String storage;
-    private String graphicsCard;
-    
-    private Computer(Builder builder) {
-        this.cpu = builder.cpu;
-        this.memory = builder.memory;
-        this.storage = builder.storage;
-        this.graphicsCard = builder.graphicsCard;
-    }
-    
-    public static class Builder {
-        private String cpu;
-        private String memory;
-        private String storage;
-        private String graphicsCard;
-        
-        public Builder setCpu(String cpu) {
-            this.cpu = cpu;
-            return this;
-        }
-        
-        public Builder setMemory(String memory) {
-            this.memory = memory;
-            return this;
-        }
-        
-        public Builder setStorage(String storage) {
-            this.storage = storage;
-            return this;
-        }
-        
-        public Builder setGraphicsCard(String graphicsCard) {
-            this.graphicsCard = graphicsCard;
-            return this;
-        }
-        
-        public Computer build() {
-            return new Computer(this);
-        }
-    }
-}
-
-// 使用例
-Computer computer = new Computer.Builder()
-    .setCpu("Intel i7")
-    .setMemory("16GB")
-    .setStorage("1TB SSD")
-    .setGraphicsCard("RTX 3080")
-    .build();
+int a = 3;
+int b = 5;
+System.out.println("文字列と数値を結合すると..." + a + b);
 ```
 
-## 3.8 練習問題
+出力結果：
 
-1. `BankAccount`クラスを設計し、equals()とhashCode()メソッドを適切に実装してください。
+```bash
+文字列と数値を結合すると...35
+```
 
-2. Builderパターンを使用して`Pizza`クラスを作成してください。
+基本的には、式中に文字列がある場合、その式が返す値はすべて文字列になります。（ただし、括弧などにより、数値の演算のみを優先的に行うことは可能です。）
+数値は暗黙的に文字列へ変換されてしまいます。
+表示結果をコントロールしたい場合は、この暗黙的な型変換に注意してください。
 
-3. 不変な`Date`クラスを作成し、日付の比較機能を実装してください。
+## 3.3 制御構造
 
-## まとめ
+プログラミングにおいて、もっとも重要でもっともバグを出しやすい部分です。
 
-この章では、クラスとオブジェクトのより詳細な概念を学習しました。オブジェクト間の関係性、メソッドの詳細、内部クラス、デザインパターンなど、実践的なJavaプログラミングに必要な知識を身につけることができました。
+### if文による条件分岐
+
+#### if – 基本的な書き方
+
+括弧内の条件（*boolean型*）に合致する（値が`true`）の場合に、波括弧`{ }`内のブロックの処理を行います。
+
+```java
+if ( 条件 ) {
+    ここは条件に合致した場合にのみ実行される
+}
+```
+
+波括弧のブロックは、実行する処理が1行の場合のみ省略が可能ですが、波括弧は省略しない方が良いです。
+
+もし、条件に合致した場合実行する処理が1行だけのとき、次の書き方のように改行を挟まず1行で書くようにすると分かりやすいです。
+
+```java
+if ( 条件 ) ここは条件に合致した場合にのみ実行される
+```
+
+波括弧を省略してほしくない理由は、次のようなパターンが考えられるからです。
+
+```java
+if ( 条件 )
+    最初にif文を書いた人が書いた条件内のコード
+```
+
+これは正常に動きます。  
+次に、このコードを改修する際、以下のようなコードの修正を行ってしまいやすい点が波括弧を省略した際に起こりやすいです。
+
+```java
+if ( 条件 )
+    最初にif文を書いた人が書いた条件内のコード
+    追加された条件内コードのつもりで書かれたコード
+```
+
+このとき、追加されたコードは、ifの条件にまったく関係なく処理が実行されてしまい、これが意図しない処理としてバグにつながります。
+すぐに気付けるようだったら良いのですが、追加されたコードの影響が、かなり後の方（たとえばリリース後など）で気付く状況も少なからずあります。
+そもそも波括弧を省略していなければ防げているバグを発生させないためにも、必ず波括弧を書きましょう。
+
+少し逸れますがバグの混入を防ぐ話として、インデントを揃えることも重要です。  
+インデントはタブでもスペースでも構いませんが、コードブロックが分かりやすくなるように適切な字下げをしましょう。  
+また、インデントに関していえば、IDEに搭載されているコードフォーマッタを使うのもよいです。自動的にコードの整形を行ってくれるため、先ほどの追加コードのような不具合もコードの整形によって気付きやすくなります。
+
+#### if-else – どちらかを実行
+
+ifの条件に合致しなかった場合のみ実行される処理を書ける
+
+```java
+if ( 条件 ) {
+    ここは条件に合致した場合にのみ実行される
+} else {
+    条件に合致しなかった場合にのみ実行される
+}
+```
+
+#### if-elseif-else – 複数の条件
+
+条件に合致しなかった場合、再度評価を行うこともできる
+
+```java
+if ( 条件1 ) {
+    条件1に合致した場合にのみ実行される
+} else if ( 条件2 ) {
+    条件1に合致せず、条件2に合致した場合
+} else {
+    上記すべての条件に合致しなかった場合
+}
+```
+
+#### 比較演算子と論理演算子を組み合わせた複数条件指定
+
+if文の条件は、条件1かつ条件2と言ったように、1つのif文で複数の条件を入れることが可能です。
+
+##### AND（〜かつ〜）
+
+```java
+if ( 条件１ && 条件２ ) {
+    条件１と条件２どちらにも合致した場合にのみ実行される
+}
+```
+
+##### OR（〜または〜）
+
+```java
+if ( 条件１ || 条件２ ) {
+    条件１か条件２のどちらかに合致した場合にのみ実行される
+}
+```
+
+#### 三項演算子
+
+三項演算子は、`if...else...`を式として扱えます。
+
+```java
+System.out.println(条件 ? "true" : "false");
+//条件に合致していればtrueと表示されます。合致していなければfalseと表示されます。
+
+//↑の処理と同じように書く場合↓
+if ( 条件 ) {
+    System.out.println("true");
+} else {
+    System.out.println("false");
+}
+```
+
+式の中で条件分岐を実現でき、結果を切り替えることができるため大変便利です。
+
+### switch文による条件分岐
+
+#### 一つの値に対する条件分岐
+
+1つの式（変数でも演算子を用いた式でもよい）に対して、それぞれの値と等しいかを条件分岐したい場合には、以下のようにも書けます。
+
+```java
+switch ( 式 ) {
+    case 値1:
+        式の結果が値1と等しい時に処理を実行
+        break;
+    case 値2:
+        式の結果が値2と等しい時に処理を実行
+        break;
+    default:
+        上記のどの値とも等しくない時に処理を実行
+        break;
+}
+```
+
+上記のコードは、以下のif…else if…elseと同義です。
+
+```java
+if ( 式 == 値1 ) {
+    式の結果が値1と等しい時に処理を実行
+} else if ( 式 == 値2 ) {
+    式の結果が値2と等しい時に処理を実行
+} else {
+    上記のどの値とも等しくない時に処理を実行
+}
+```
+
+#### switch文の注意点
+
+条件分岐後の処理を書いたら、break;でswitch文を抜けるようにしないといけない。
+
+以下の書き方を行った場合、`case 値1`で処理するべき以降の条件が意図したものと違ってしまいます。
+
+```java
+switch ( 式 ) {
+    case 値1:
+        式の結果が値1と等しい時に処理を実行
+    case 値2:
+        式の結果が値1と等しい時と値2と等しい時に処理を実行
+        //↑本来は、「式の結果が値2と等しい時に処理を実行」のつもりで書いたが、
+        // break;を忘れたことで意図しない条件が追加されてしまっている。
+        break;
+    default:
+        上記のどの値とも等しくない時に処理を実行
+        break;
+}
+```
+
+この特性を利用して、以下のように応用することも可能です。
+
+複数の値で式を評価する
+```java
+switch ( 式 ) {
+    case 値1:
+    case 値2:
+        式の結果が値1か値2と等しい時に処理を実行
+        break;
+    default:
+        上記のどの値とも等しくない時に処理を実行
+        break;
+}
+```
+
+### String型の内容評価について
+
+次のサンプルプログラムをよく見て、実行してみましょう。
+
+```java
+public class StringEval {
+  public static void main(String[] args) {
+
+    String a = "Hello";
+    String b = "Hello";
+
+    if (a == b) {
+      System.out.println("同じだよ！");  // こっち
+    } else {
+      System.out.println("違うよ！");
+    }
+
+    // a,b両方に処理を加えて値を変化させる
+    a += 1;
+    b += 1;
+    System.out.println("a:" + a);
+    System.out.println("b:" + b);
+
+    if (a == b) {
+      System.out.println("同じだよ！");
+    } else {
+      System.out.println("違うよ！");   // こっち
+    }
+  }
+}
+```
+
+変数`a`, `b`どちらも、値としては`"Hello"`, `"Hello1"`となっており、見た目上同じ文字列ですが、2つ目の条件分岐が意図しない結果になったと思います。
+
+Javaの言語仕様で注意してほしいのが、***String型は唯一特別扱いされるクラス型***であるということです。
+
+String型の初期化時点や、String型のリテラルは、どれも擬似的にプリミティブ型と同じような動作をします。しかし、値の変化が発生する処理を一度行われると、その変数は通常のクラス型変数と同じ動作をするように切り替わります。
+
+クラス型変数を変数に格納されている値を比べる演算子で比較したとしても、`true`になりません。
+理由は、変数の格納されているデータはクラス型のインスタンスが格納されているメモリアドレスのみを保持しているからです。
+
+もう少し詳しく書くと、次のようになります。
+
+1. クラス型の変数宣言時、変数にはnullが初期値で代入されている
+2. new構文を用いてインスタンス化が行われた際にメモリ上へオブジェクトが展開される
+3. 展開されたオブジェクトが格納されているメモリアドレスを変数が保持する
+
+#### Stringなどのクラス型の比較方法
+
+`Object#equals`メソッドを使って比較しましょう。
+
+Javaにおけるすべてのクラス型のもととなっているObject型には、値を比較するためのメソッド`equals()`が用意されています。このメソッドは、インスタンス化されたオブジェクトと、引数で渡したオブジェクトの値となるもの同士を比較し、同じであれば`true`を返します。  
+`equals()`メソッドは、インスタンス化されたオブジェクトでしか使用できません。初期化されていない（つまり変数の値がnullである状態の）時に`equals()`メソッドを呼び出すと、NullPointerExceptionと呼ばれる例外が発生します。※そのメソッドを持っているオブジェクトはインスタンス化されてないから呼び出せないよ！っていうエラーです。
+
+`equals()`メソッドを使うことで、String型の文字列が同じかどうかを比較することが可能です。
+
+次のプログラムを確認してみましょう。
+
+```java
+public class StringEquals {
+  public static void main(String[] args) {
+
+    String a = "Hello";
+    String b = "Hello";
+
+    System.out.println("a:" + System.identityHashCode(a));
+    System.out.println("b:" + System.identityHashCode(b));
+
+    if (a.equals(b)) {
+      System.out.println("同じだよ！");  // こっち
+    } else {
+      System.out.println("違うよ！");
+    }
+
+    a += 1;
+    b += 1;
+    System.out.println("a:" + System.identityHashCode(a));
+    System.out.println("b:" + System.identityHashCode(b));
+
+    if (a.equals(b)) {
+      System.out.println("同じだよ！");  // こっち
+    } else {
+      System.out.println("違うよ！");
+    }
+  }
+}
+```
+
+実行結果を確認すると、きちんと意図した結果になったと思います。
+
+このように、内部的な動作を知っておかないと現象を理解できない場合もありますが、文字列を始めとした***クラス型の比較はequals()を使う***ということを必ず覚えておきましょう。
+
+ちなみに、「同じでない」を表現するには、`!a.equals(b)`が利用できます。
+
+## 3.4 繰り返し処理
+
+同じ処理や、似たような処理を何度も繰り返したい場合には、コピペではなくwhileやforを使う工夫をしましょう。
+
+### 単純な繰り返し
+
+#### while
+
+while文の括弧内で指定された条件に、合致している間は処理を繰り返します。
+
+```java
+while ( 条件 ) {
+    条件が真値(true)の間、繰り返す処理
+}
+```
+
+##### 10回繰り返す
+
+while文では、繰り返しの条件となるものが必要となります。
+
+```java
+int count = 1;
+while ( count <= 10 ) {
+    繰り返す処理をここに書きます。
+    count += 1;
+}
+```
+
+#### do…while
+
+while文なんだけど、条件の検査が波括弧を閉じるタイミングで行われるため、波括弧内の処理は、条件にかかわらず一度は実行され繰り返し処理です。
+
+```java
+do {
+    処理を実行後、条件が真値の場合には何度も繰り返す
+} while ( 条件 ); //セミコロンを忘れずに付けましょう！
+```
+
+存在を忘れがちなので、覚えておきましょう。
+
+##### 10回繰り返す
+
+```java
+int count = 1;
+do {
+    繰り返す処理 (countの初期値が11だった場合でも処理は実行されます)
+    count += 1;
+} while ( count <= 10 );
+```
+
+#### for
+
+whileループの繰り返し条件用の数値型変数を簡略化して書けるループ処理です。
+
+初期化された変数が、波括弧内の処理を繰り返す都度、指定された変化ルールにしたがって変化します。  
+変化した値が繰り返し条件に合致しなくなった場合、繰り返しから抜けられます。
+
+```java
+for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
+    繰り返す処理
+}
+```
+
+##### 10回繰り返す
+
+```java
+for (int count = 1; count <= 10; count++) {
+    繰り返す処理
+}
+```
+
+### 繰り返し処理中に例外的な処理を行う
+
+#### 繰り返し中に別の条件でループを抜けたい - break
+
+ループ処理にかぎらず、ブロックから抜け出すことができる命令としてbreakがあります。
+
+for文を例にした場合：
+
+```java
+for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
+    繰り返す処理
+    if ( 別の条件 ) break;
+}
+```
+
+#### 一度だけ処理を飛ばして、次の繰り返しを行う - continue
+
+ループ処理中に、continueが実行されると、それ以降の処理は1回の繰り返し処理時のみ飛ばして次の繰り返し処理が実行されます。
+
+```java
+for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
+    繰り返す処理
+    if ( 別の条件 ) continue;
+    別の条件に合致する場合、実行されない処理
+}
+```
+
+## 3.5 配列
+
+### 同じ型の複数データを１つの変数にまとめる
+
+配列とは、データをまとめて管理する方法の1つです。
+変数1つに同じ型の複数の値を入れられるようにします。
+
+#### 単一次元の配列（1次元配列）
+
+##### 配列の宣言
+
+配列を宣言するには、型名か変数名の後に`[]`を付けます。
+
+```java
+int[] a;
+int a[];
+```
+
+型名に`[]`をつけても、変数名に`[]`をつけても、1つの変数宣言であればどちらでも動作は同じです。
+この資料では、型名に`[]`をつける書式を使用しています。
+
+##### 領域の確保
+
+配列を宣言しただけでは使えません。
+配列に、どれだけの要素を入れるかを指定する必要があります。
+
+```java
+int[] scores;		      // 宣言
+scores = new int[5];	// 領域を5つ確保する
+```
+
+`scores[0]〜scores[4]`までの領域が確保されます。
+
+また、Javaでは配列のインデックスは0から始まります。5つの要素数を持つ配列の場合は、インデックスは順番に0,1,2,3,4となります。
+
+`new`演算子は、インスタンス化を明示的に行う制御構文です。配列の初期化の他に、参照型変数へのインスタンス化と代入の際に使用するほか、単純にインスタンス化してメソッドを呼び出したいときなどに使用する大変重要な演算子です。
+
+##### 配列の各要素へのアクセス
+
+配列の各要素へは、`[]`中に配列のインデックス（整数値）を指定することでアクセス可能です。
+
+```java
+//各要素へ代入
+scores[0] = 74;
+scores[1] = 88;
+scores[2] = 98;
+scores[3] = 53;
+scores[4] = 25;
+
+// 指定したインデックスの要素を取り出し
+System.out.println(scores[3]); // 上から4つめの要素を表示しているので、53と表示される
+```
+
+##### まとめて初期化
+
+配列の宣言と領域の確保を同時に行う場合は以下のように書けます。
+
+```java
+int[] scores;		      // 宣言
+scores = new int[5];	// 領域を5つ確保する
+// ↓ 宣言と同時に領域確保
+int[] scores = new int[5];
+```
+
+配列の宣言と、領域の確保、値の代入をまとめて行う場合は、`{ }`を使い、リテラルをカンマ区切りで必要数分記入します。
+
+```java
+int[] scores = {74, 88, 98, 53, 25};
+```
+
+##### 配列の領域数（要素数）を取得
+
+確保された領域の数を取得するには、配列の変数の`length`を参照します。
+
+```java
+int[] scores = {74, 88, 98, 53, 25};
+System.out.println(scores.length);    // 5と表示
+```
+
+for文の条件や、配列の要素の最後にアクセスする場合などに使用できます。
+
+```java
+int[] scores = {74, 88, 98, 53, 25};
+
+// 要素の最後にアクセス
+System.out.println(scores[scores.length - 1]); //25と表示される
+
+// 各要素を順に表示
+for (int i = 0; i < scores.length; i++) {
+  System.out.print(scores[i] + ", "); // 74, 88, 98, 53, 25と表示される。
+}
+```
+
+#### 複数次元の配列(多次元配列)
+
+先ほどまでのは、1次元配列と呼ばれるものです。要素は単一のインデックス（整数値による連番:0からスタート）でアクセスできます。
+それに対して、複数の次元を持たせた配列を使うこともできます。
+
+```java
+// 教科ごとの点数(1次元)を生徒ごと(2次元)で管理したい
+int[][] scoresOfStudents = new int[3][5];
+```
+
+必要な次元の数だけ`[]`をつなげます。
+
+##### 多次元配列における各要素へのアクセス
+
+基本は1次元配列と同じです。
+
+```java
+// 一人目の点数を代入
+scoresOfStudents[0][0] = 100;
+scoresOfStudents[0][1] = 70;
+scoresOfStudents[0][2] = 50;
+scoresOfStudents[0][3] = 98;
+scoresOfStudents[0][4] = 45;
+// 二人目
+scoresOfStudents[1][0] = 70;
+scoresOfStudents[1][1] = 70;
+scoresOfStudents[1][2] = 45;
+scoresOfStudents[1][3] = 68;
+scoresOfStudents[1][4] = 70;
+
+// ...以下省略
+```
+
+##### 多次元配列もまとめて初期化可能
+
+配列内部の`{}`をカンマで区切ることで、多次元の配列を同時に宣言、初期化、代入ができます。
+
+```java
+int[][] scoresOfStudents = {
+    {70, 60, 80, 90, 50},
+    {81, 45, 32, 78, 100},
+    {32, 44, 34, 55, 70},
+};
+```
+
+##### 多次元配列の領域数を取得
+
+先ほどの多次元配列にて
+
+```java
+System.out.println(scoresOfStudents.length);    //3と表示
+```
+
+次元ごとの領域数を取得するには、
+
+```java
+System.out.println(scoresOfStudents[0].length);    //5と表示
+```
