@@ -17,6 +17,8 @@ module.exports = {
     'chapter11.md',
     'chapter12.md',
     'chapter13.md',
+    'chapter14.md',
+    'chapter15.md',
   ],
   entryContext: './manuscripts',
   output: './output/techbook-java-primer.pdf',
