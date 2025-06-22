@@ -1,6 +1,12 @@
 {
   "filters": {},
   "rules": {
+    "preset-japanese": true,
+        "prh": {
+      "rulePaths": [
+        "prh-rules.yml"
+      ]
+    },
     "preset-ja-technical-writing": {
       "sentence-length": {
         "max": 120
