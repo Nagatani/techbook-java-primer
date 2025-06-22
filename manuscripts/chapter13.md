@@ -12,7 +12,7 @@
 
 **サブルーチンの概念（1940年代〜1950年代）**：プログラムの一部を切り出して再利用可能にするサブルーチン（関数）の概念が確立されました。これにより、同じ処理を複数回記述する必要がなくなりました。
 
-**ライブラリの誕生（1950年代〜1960年代）**：よく使用される数学関数や入出力処理をまとめた「ライブラリ」が開発されました。FORTRAN の数学ライブラリ、COBOL の事務処理ライブラリなどが代表例です。
+**ライブラリの誕生（1950年代〜1960年代）**：よく使用される数学関数や入出力処理をまとめた「ライブラリ」が開発されました。FORTRANの数学ライブラリ、COBOLの事務処理ライブラリなどが代表例です。
 
 **UNIX 哲学の確立（1970年代）**：「小さなツールを組み合わせて大きな問題を解決する」というUNIX哲学により、コマンドラインツールの組み合わせによる柔軟なシステム構築が可能になりました。
 
@@ -91,7 +91,7 @@ MavenはJavaエコシステムに以下の革新をもたらしました：
 
 **推移的依存関係の自動解決**：ライブラリが依存する他のライブラリも自動的にダウンロードし、管理する仕組みにより、複雑な依存関係を透明に処理できるようになりました。
 
-**標準的なプロジェクト構造**：src/main/java、src/test/java などの標準的なディレクトリ構造により、異なるプロジェクト間での一貫性が確保されました。
+**標準的なプロジェクト構造**：src/main/java、src/test/javaなどの標準的なディレクトリ構造により、異なるプロジェクト間での一貫性が確保されました。
 
 **ライフサイクルとフェーズ**：compile、test、package、install、deployなどの標準的なビルドライフサイクルにより、一貫したビルドプロセスが実現されました。
 
@@ -139,23 +139,99 @@ Maven Central Repositoryの確立は、Javaオープンソースエコシステ�
 
 ## 13.1 ライブラリとは
 
-### C言語でのライブラリ使用
+### ライブラリ管理の進化：C言語からJavaへ
+
+**C言語での従来的なライブラリ管理：**
 
 ```c
 // C言語では手動でヘッダファイルをincludeし、リンクする
 #include <math.h>
 #include <sqlite3.h>
+#include <curl/curl.h>
 
-// コンパイル時にライブラリをリンク
-// gcc program.c -lm -lsqlite3
+int main() {
+    // 数学ライブラリ（libm）の使用
+    double result = sqrt(16.0);
+    
+    // SQLiteライブラリの使用
+    sqlite3 *db;
+    sqlite3_open("test.db", &db);
+    
+    // CURLライブラリの使用  
+    CURL *curl = curl_easy_init();
+    
+    return 0;
+}
+
+// コンパイル時に複数のライブラリを手動でリンク
+// gcc program.c -lm -lsqlite3 -lcurl
+// 
+// 問題点：
+// 1. 依存関係の手動管理が必要
+// 2. プラットフォーム依存のライブラリパス
+// 3. バージョン管理が困難
+// 4. 複雑な依存関係ツリーの解決が不可能
 ```
 
-### Javaでのライブラリ使用
+**Javaでの現代的なライブラリ管理：**
 
-Javaでは、以下の方法でライブラリを管理します：
-- **Maven**: XMLベースの依存関係管理
-- **Gradle**: Groovy/Kotlinベースのビルドツール
-- **手動**: JARファイルを直接追加
+```java
+// Maven/Gradleによる自動依存関係管理
+// pom.xmlまたはbuild.gradleで宣言するだけ
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.httpcomponents.client5.http.classic.HttpClient;
+import org.apache.httpcomponents.client5.http.impl.classic.HttpClients;
+import java.sql.DriverManager;
+import java.sql.Connection;
+
+/**
+ * ライブラリ活用の包括的デモンストレーション
+ * 現代的な依存関係管理とライブラリエコシステムの実践例
+ */
+public class LibraryDemonstration {
+    
+    public static void main(String[] args) {
+        // JSON処理（Jackson）
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // HTTP通信（Apache HttpClient）
+        HttpClient httpClient = HttpClients.createDefault();
+        
+        // データベース接続（JDBC - 標準ライブラリ）
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:h2:mem:test");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("すべてのライブラリが正常に読み込まれました");
+    }
+}
+
+// 利点：
+// 1. 依存関係の自動解決
+// 2. プラットフォーム独立
+// 3. バージョン管理の自動化
+// 4. 推移的依存関係の透明な処理
+```
+
+**Javaでのライブラリ管理手法：**
+
+1. **Maven**: XMLベースの宣言的依存関係管理
+   - 中央リポジトリからの自動ダウンロード
+   - 推移的依存関係の解決
+   - 標準的なプロジェクト構造
+
+2. **Gradle**: Groovy/Kotlinベースの柔軟なビルドツール
+   - プログラマブルなビルドスクリプト
+   - 高速なインクリメンタルビルド
+   - マルチプロジェクト対応
+
+3. **手動管理**: 直接的なJARファイル追加（非推奨）
+   - 学習用途や小規模プロジェクト
+   - 依存関係管理の複雑性
+   - 保守性の問題
 
 ## 13.2 Maven入門
 
@@ -232,6 +308,262 @@ my-java-project/
         </plugins>
     </build>
 </project>
+```
+
+### 実践的なライブラリ活用例
+
+以下は、実際のプロジェクトでよく使用される外部ライブラリを活用した実用的な例です：
+
+```java
+package com.example.libraryDemo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.httpcomponents.client5.http.classic.methods.HttpGet;
+import org.apache.httpcomponents.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.httpcomponents.client5.http.impl.classic.HttpClients;
+import org.apache.httpcomponents.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+/**
+ * 実用的なライブラリ活用デモンストレーション
+ * JSON処理、HTTP通信、文字列操作、ログ出力の統合例
+ */
+public class PracticalLibraryDemo {
+    
+    private static final Logger logger = LoggerFactory.getLogger(PracticalLibraryDemo.class);
+    private final ObjectMapper objectMapper;
+    private final CloseableHttpClient httpClient;
+    
+    public PracticalLibraryDemo() {
+        this.objectMapper = new ObjectMapper();
+        this.httpClient = HttpClients.createDefault();
+    }
+    
+    // 1. JSON処理のデモンストレーション (Jackson)
+    public static void demonstrateJsonProcessing() {
+        System.out.println("=== JSON処理デモンストレーション (Jackson) ===");
+        
+        ObjectMapper mapper = new ObjectMapper();
+        
+        try {
+            // オブジェクトからJSONへの変換
+            Person person = new Person("田中太郎", 30, "engineer");
+            String jsonString = mapper.writeValueAsString(person);
+            System.out.println("JSON文字列: " + jsonString);
+            
+            // JSONからオブジェクトへの変換
+            Person parsedPerson = mapper.readValue(jsonString, Person.class);
+            System.out.println("復元されたオブジェクト: " + parsedPerson);
+            
+            // 複雑なJSON構造の解析
+            String complexJson = """
+                {
+                    "users": [
+                        {"name": "Alice", "age": 25, "skills": ["Java", "Python"]},
+                        {"name": "Bob", "age": 30, "skills": ["JavaScript", "React"]}
+                    ],
+                    "total": 2,
+                    "timestamp": "2024-01-15T10:30:00"
+                }
+                """;
+            
+            JsonNode rootNode = mapper.readTree(complexJson);
+            JsonNode usersArray = rootNode.get("users");
+            
+            System.out.println("ユーザー一覧:");
+            for (JsonNode userNode : usersArray) {
+                String name = userNode.get("name").asText();
+                int age = userNode.get("age").asInt();
+                JsonNode skillsNode = userNode.get("skills");
+                
+                List<String> skills = new ArrayList<>();
+                for (JsonNode skillNode : skillsNode) {
+                    skills.add(skillNode.asText());
+                }
+                
+                System.out.printf("  %s (%d歳): %s%n", name, age, skills);
+            }
+            
+        } catch (IOException e) {
+            logger.error("JSON処理エラー", e);
+        }
+    }
+    
+    // 2. HTTP通信のデモンストレーション (Apache HttpClient)
+    public void demonstrateHttpClient() {
+        System.out.println("\n=== HTTP通信デモンストレーション (Apache HttpClient) ===");
+        
+        // 公開APIからデータを取得
+        String apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
+        
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(apiUrl);
+            httpGet.setHeader("Accept", "application/json");
+            httpGet.setHeader("User-Agent", "Java-Library-Demo/1.0");
+            
+            try (CloseableHttpResponse response = client.execute(httpGet)) {
+                int statusCode = response.getCode();
+                System.out.println("HTTPステータス: " + statusCode);
+                
+                if (statusCode == 200) {
+                    String responseBody = new String(
+                        response.getEntity().getContent().readAllBytes());
+                    
+                    // JSONレスポンスを解析
+                    JsonNode postNode = objectMapper.readTree(responseBody);
+                    System.out.println("投稿タイトル: " + postNode.get("title").asText());
+                    System.out.println("投稿内容: " + 
+                        StringUtils.abbreviate(postNode.get("body").asText(), 50));
+                    
+                } else {
+                    System.err.println("HTTP通信エラー: " + statusCode);
+                }
+            }
+            
+        } catch (IOException e) {
+            logger.error("HTTP通信エラー", e);
+        }
+    }
+    
+    // 3. 文字列操作のデモンストレーション (Apache Commons Lang)
+    public static void demonstrateStringUtils() {
+        System.out.println("\n=== 文字列操作デモンストレーション (Apache Commons Lang) ===");
+        
+        String input = "  Hello, World!  ";
+        
+        // 基本的な文字列操作
+        System.out.println("元の文字列: '" + input + "'");
+        System.out.println("空白削除: '" + StringUtils.trim(input) + "'");
+        System.out.println("大文字変換: '" + StringUtils.upperCase(input) + "'");
+        System.out.println("逆順: '" + StringUtils.reverse(input.trim()) + "'");
+        
+        // 文字列の省略
+        String longText = "これは非常に長いテキストです。省略表示のテストに使用します。";
+        System.out.println("省略表示: " + StringUtils.abbreviate(longText, 20));
+        
+        // 空文字・null チェック
+        String[] testStrings = {"", null, "   ", "有効な文字列"};
+        for (String str : testStrings) {
+            System.out.printf("'%s' -> 空文字判定: %s, null/空白判定: %s%n",
+                str, StringUtils.isEmpty(str), StringUtils.isBlank(str));
+        }
+        
+        // 文字列の差分計算（レーベンシュタイン距離）
+        String str1 = "kitten";
+        String str2 = "sitting";
+        int distance = StringUtils.getLevenshteinDistance(str1, str2);
+        System.out.printf("'%s' と '%s' の編集距離: %d%n", str1, str2, distance);
+    }
+    
+    // 4. ログ出力のデモンストレーション (SLF4J + Logback)
+    public static void demonstrateLogging() {
+        System.out.println("\n=== ログ出力デモンストレーション (SLF4J + Logback) ===");
+        
+        Logger logger = LoggerFactory.getLogger(PracticalLibraryDemo.class);
+        
+        // 各レベルでのログ出力
+        logger.trace("詳細デバッグ情報: メソッド実行開始");
+        logger.debug("デバッグ情報: 変数値 x={}, y={}", 10, 20);
+        logger.info("一般情報: アプリケーション開始時刻 {}", 
+                   LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        logger.warn("警告: メモリ使用量が閾値を超過しています");
+        logger.error("エラー: ファイル読み取りに失敗しました");
+        
+        // 例外情報付きログ
+        try {
+            int result = 10 / 0;
+        } catch (ArithmeticException e) {
+            logger.error("計算エラーが発生しました", e);
+        }
+        
+        // 構造化ログ（MDC使用）
+        org.slf4j.MDC.put("userId", "user123");
+        org.slf4j.MDC.put("sessionId", "session456");
+        logger.info("ユーザーログイン処理完了");
+        org.slf4j.MDC.clear();
+    }
+    
+    // 5. 日時処理のデモンストレーション (標準ライブラリ + 外部ライブラリ)
+    public static void demonstrateDateTimeProcessing() {
+        System.out.println("\n=== 日時処理デモンストレーション ===");
+        
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("現在時刻: " + now);
+        
+        // 様々なフォーマットでの出力
+        DateTimeFormatter[] formatters = {
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME,
+            DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH時mm分ss秒"),
+            DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"),
+            DateTimeFormatter.ofPattern("MM-dd HH:mm")
+        };
+        
+        for (DateTimeFormatter formatter : formatters) {
+            System.out.println("フォーマット済み: " + now.format(formatter));
+        }
+        
+        // 日時の計算
+        LocalDateTime future = now.plusDays(30).plusHours(5);
+        System.out.println("30日5時間後: " + future);
+        
+        LocalDateTime past = now.minusMonths(3).minusDays(10);
+        System.out.println("3ヶ月10日前: " + past);
+    }
+    
+    // データクラス例
+    public static class Person {
+        private String name;
+        private int age;
+        private String occupation;
+        
+        // デフォルトコンストラクタ（Jacksonに必要）
+        public Person() {}
+        
+        public Person(String name, int age, String occupation) {
+            this.name = name;
+            this.age = age;
+            this.occupation = occupation;
+        }
+        
+        // ゲッター・セッター（Jacksonに必要）
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        
+        public int getAge() { return age; }
+        public void setAge(int age) { this.age = age; }
+        
+        public String getOccupation() { return occupation; }
+        public void setOccupation(String occupation) { this.occupation = occupation; }
+        
+        @Override
+        public String toString() {
+            return String.format("Person{name='%s', age=%d, occupation='%s'}", 
+                               name, age, occupation);
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("実用的ライブラリ活用デモンストレーション開始\n");
+        
+        PracticalLibraryDemo demo = new PracticalLibraryDemo();
+        
+        demonstrateJsonProcessing();
+        demo.demonstrateHttpClient();
+        demonstrateStringUtils();
+        demonstrateLogging();
+        demonstrateDateTimeProcessing();
+        
+        System.out.println("\nデモンストレーション完了");
+    }
+}
 ```
 
 ### 基本的なMavenコマンド

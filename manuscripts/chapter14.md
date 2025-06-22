@@ -22,9 +22,9 @@
 
 並行プログラミングの概念は、コンピュータサイエンスの理論的研究から生まれました：
 
-**プロセス理論（1960年代〜）**：Tony Hoare のCommunicating Sequential Processes（CSP）やRobin Milner のπ-calculusなど、並行システムの数学的モデルが確立されました。
+**プロセス理論（1960年代〜）**：Tony HoareのCommunicating Sequential Processes（CSP）やRobin Milnerのπ-calculusなど、並行システムの数学的モデルが確立されました。
 
-**同期プリミティブの開発（1960年代〜1970年代）**：Edsger Dijkstra のセマフォ、Per Brinch Hansen とTony Hoare のモニターなど、並行プログラムの同期制御メカニズムが開発されました。
+**同期プリミティブの開発（1960年代〜1970年代）**：Edsger Dijkstraのセマフォ、Per Brinch HansenとTony Hoareのモニターなど、並行プログラムの同期制御メカニズムが開発されました。
 
 **デッドロック理論**：複数のプロセスが互いに待ち状態になるデッドロック問題の理論的解析と回避手法が研究されました。
 
@@ -34,7 +34,7 @@
 
 プログラミング言語は、並行処理サポートにおいて段階的に進化してきました：
 
-**低レベル並行処理（1970年代〜1980年代）**：C言語のPOSIX threadsのように、OS レベルのプリミティブを直接使用する手法が主流でした。高い性能を実現できる一方で、プログラミングは極めて困難でした。
+**低レベル並行処理（1970年代〜1980年代）**：C言語のPOSIX threadsのように、OSレベルのプリミティブを直接使用する手法が主流でした。高い性能を実現できる一方で、プログラミングは極めて困難でした。
 
 ```c
 #include <pthread.h>
@@ -54,23 +54,23 @@ void* thread_function(void* arg) {
 
 **関数型並行処理（2000年代〜）**：Erlang、Haskellなどの関数型言語により、不変性と純粋関数を活用した、副作用のない並行処理モデルが確立されました。
 
-**アクターモデル（2000年代〜）**：Erlang の影響を受けて、Scala のAkka、JavaScript のNode.js などでアクターモデルによる並行処理が普及しました。
+**アクターモデル（2000年代〜）**：Erlangの影響を受けて、ScalaのAkka、JavaScriptのNode.jsなどでアクターモデルによる並行処理が普及しました。
 
 ### Javaにおける並行プログラミングの発展
 
 Javaは、並行プログラミングサポートにおいて段階的に機能を拡張してきました：
 
-**Java 1.0（1995年）- 基本的なスレッドサポート**：Threadクラス、Runnableインターフェース、synchronizedキーワードなど、基本的な並行処理機能が提供されました。
+**Java 1.0（1995年）- 基本的なスレッドサポート**：Threadクラス、Runnableインターフェイス、synchronizedキーワードなど、基本的な並行処理機能が提供されました。
 
 **Java 1.1（1997年）- 同期化の改善**：wait()、notify()、notifyAll()メソッドによる、より柔軟な同期制御が可能になりました。
 
 **Java 1.4（2002年）- NIO**：非ブロッキングI/Oにより、大量の接続を効率的に処理できるようになりました。
 
-**Java 5（2004年）- java.util.concurrent**：Doug Lea によって開発された高レベル並行処理ライブラリが標準に組み込まれ、実用的な並行プログラミングが大幅に容易になりました。
+**Java 5（2004年）- java.util.concurrent**：Doug Leaによって開発された高レベル並行処理ライブラリが標準に組み込まれ、実用的な並行プログラミングが大幅に容易になりました。
 
 **Java 7（2011年）- Fork/Join Framework**：分割統治法による並列処理を効率的に実装できるフレームワークが追加されました。
 
-**Java 8（2014年）- Parallel Streams**：Stream API と組み合わせることで、データ並列処理を宣言的に記述できるようになりました。
+**Java 8（2014年）- Parallel Streams**：Stream APIと組み合わせることで、データ並列処理を宣言的に記述できるようになりました。
 
 ### 現代アプリケーションにおける並行処理の必要性
 
@@ -78,11 +78,11 @@ Javaは、並行プログラミングサポートにおいて段階的に機能�
 
 **Webアプリケーション**：数千から数万の同時接続を処理するため、効率的な並行処理が必要です。サーブレット、Spring WebFlux、非同期処理などが重要な技術となっています。
 
-**ビッグデータ処理**：Apache Spark、Apache Hadoop などのフレームワークは、大量のデータを並列処理することで、実用的な時間での分析を実現しています。
+**ビッグデータ処理**：Apache Spark、Apache Hadoopなどのフレームワークは、大量のデータを並列処理することで、実用的な時間での分析を実現しています。
 
-**リアルタイムシステム**：ゲーム、金融取引、IoT システムなど、リアルタイム性が要求されるシステムでは、効率的な並行処理が性能の鍵となります。
+**リアルタイムシステム**：ゲーム、金融取引、IoTシステムなど、リアルタイム性が要求されるシステムでは、効率的な並行処理が性能の鍵となります。
 
-**機械学習**：深層学習の訓練や推論処理では、GPU を活用した大規模並列処理が標準的な手法となっています。
+**機械学習**：深層学習の訓練や推論処理では、GPUを活用した大規模並列処理が標準的な手法となっています。
 
 **マイクロサービス**：分散システムアーキテクチャでは、サービス間の非同期通信と並行処理が、システム全体の性能と可用性を決定します。
 
@@ -102,13 +102,13 @@ Javaは、並行プログラミングサポートにおいて段階的に機能�
 
 現代の並行プログラミングでは、従来の低レベルなスレッド操作から、より高レベルなパラダイムへの移行が進んでいます：
 
-**非同期プログラミング**：CompletableFuture、Reactive Streams により、非ブロッキングな処理フローを構築できます。
+**非同期プログラミング**：CompletableFuture、Reactive Streamsにより、非ブロッキングな処理フローを構築できます。
 
 **イミューダブルオブジェクト**：不変オブジェクトを使用することで、スレッド安全性を簡単に確保できます。
 
-**関数型並行処理**：Stream API の parallel() メソッドにより、関数型の操作を自動的に並列化できます。
+**関数型並行処理**：Stream APIのparallel() メソッドにより、関数型の操作を自動的に並列化できます。
 
-**アクターモデル**：Akka ライブラリにより、メッセージパッシングベースの並行処理を実装できます。
+**アクターモデル**：Akkaライブラリにより、メッセージパッシングベースの並行処理を実装できます。
 
 ### この章で学習する内容の意義
 
@@ -118,7 +118,7 @@ Javaは、並行プログラミングサポートにおいて段階的に機能�
 
 **スレッド安全性の理解**：競合状態やデッドロックなどの問題を理解し、安全な並行プログラムを作成する技術を習得します。
 
-**高レベル API の活用**：java.util.concurrent パッケージの活用により、実用的で保守性の高い並行プログラムを作成できるようになります。
+**高レベル API の活用**：java.util.concurrentパッケージの活用により、実用的で保守性の高い並行プログラムを作成できるようになります。
 
 **性能とのバランス**：並行処理による性能向上と、複雑性の増大のバランスを適切に判断する能力を養います。
 
@@ -138,7 +138,7 @@ Javaは、並行プログラミングサポートにおいて段階的に機能�
 
 現代のコンピュータは、複数のコアを持つCPU（マルチコアプロセッサ）を搭載するのが一般的です。マルチスレッドプログラミングは、この複数のコアを効率的に活用し、アプリケーションのパフォーマンスを向上させるための重要な技術です。
 
-主なメリットは以下の通りです：
+主なメリットは以下のとおりです：
 
 * **パフォーマンスの向上**: 時間のかかる処理を複数のスレッドに分割し、同時に実行することで、全体の処理時間を短縮できます
 * **応答性の維持**: GUIアプリケーションなどで、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスの応答性を維持できます
@@ -151,6 +151,8 @@ Javaにおけるマルチスレッド用プログラムの作成方法には、�
 ### Runnableインターフェイスの実装（推奨）
 
 `Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
+
+#### 基本的なRunnableの実装
 
 ```java
 // Runnableを実装したクラスを定義
@@ -171,6 +173,306 @@ public class MyTask implements Runnable {
     }
 }
 ```
+
+#### 実用的なマルチスレッド画像処理システム
+
+以下は、複数の画像ファイルを並行処理で変換するシステムの例です。これは実際の業務でよく見られる並行処理のパターンを示しています：
+
+```java
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * 画像処理システム - マルチスレッドによるバッチ処理の実践例
+ * 
+ * このシステムは以下の特徴を持ちます：
+ * - 複数の画像ファイルを並行処理で変換
+ * - プログレス表示とエラーハンドリング
+ * - リソース制御とパフォーマンス最適化
+ * - 実際の業務で使用される設計パターン
+ */
+public class ImageProcessingSystem {
+    
+    /**
+     * 画像処理タスクのレコード
+     * @param inputPath 入力ファイルパス
+     * @param outputPath 出力ファイルパス
+     * @param operation 処理種別
+     */
+    public record ImageTask(Path inputPath, Path outputPath, String operation) {}
+    
+    /**
+     * 画像処理結果のレコード
+     */
+    public record ProcessingResult(ImageTask task, boolean success, 
+                                  long processingTimeMs, String errorMessage) {}
+    
+    /**
+     * 単一の画像処理を実行するRunnable実装
+     * 
+     * このクラスは、責任の分離の原則に従い、1つの画像ファイルの処理のみに専念します。
+     * 例外安全性を確保し、処理時間の計測も行います。
+     */
+    private static class ImageProcessor implements Runnable {
+        private final ImageTask task;
+        private final BlockingQueue<ProcessingResult> resultQueue;
+        private final AtomicInteger completedCount;
+        private final AtomicInteger totalCount;
+        
+        public ImageProcessor(ImageTask task, 
+                            BlockingQueue<ProcessingResult> resultQueue,
+                            AtomicInteger completedCount, 
+                            AtomicInteger totalCount) {
+            this.task = task;
+            this.resultQueue = resultQueue;
+            this.completedCount = completedCount;
+            this.totalCount = totalCount;
+        }
+        
+        @Override
+        public void run() {
+            long startTime = System.currentTimeMillis();
+            boolean success = false;
+            String errorMessage = null;
+            
+            try {
+                System.out.println(Thread.currentThread().getName() + 
+                    " が " + task.inputPath().getFileName() + " の処理を開始");
+                
+                // 実際の画像処理をシミュレート（実装では画像変換ライブラリを使用）
+                processImage(task);
+                
+                // 処理完了の表示
+                int completed = completedCount.incrementAndGet();
+                System.out.printf("進捗: %d/%d 完了 - %s%n", 
+                    completed, totalCount.get(), task.inputPath().getFileName());
+                
+                success = true;
+                
+            } catch (Exception e) {
+                errorMessage = e.getMessage();
+                System.err.println("エラー: " + task.inputPath().getFileName() + 
+                    " の処理中にエラーが発生: " + errorMessage);
+            } finally {
+                long processingTime = System.currentTimeMillis() - startTime;
+                ProcessingResult result = new ProcessingResult(
+                    task, success, processingTime, errorMessage);
+                
+                try {
+                    resultQueue.put(result);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        
+        /**
+         * 画像処理の実行（シミュレーション）
+         * 実際の実装では、BufferedImage、ImageIO、Graphics2Dなどを使用
+         */
+        private void processImage(ImageTask task) throws IOException, InterruptedException {
+            // ファイルサイズに応じた処理時間をシミュレート
+            long fileSize = Files.size(task.inputPath());
+            long processingTime = Math.min(fileSize / 1000, 3000); // 最大3秒
+            
+            Thread.sleep(processingTime);
+            
+            // 実際の処理では以下のような画像変換を行う：
+            // BufferedImage image = ImageIO.read(task.inputPath().toFile());
+            // BufferedImage resized = resizeImage(image, task.operation());
+            // ImageIO.write(resized, "jpg", task.outputPath().toFile());
+            
+            // 出力ファイルの作成をシミュレート
+            Files.createDirectories(task.outputPath().getParent());
+            Files.copy(task.inputPath(), task.outputPath(), 
+                StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+    
+    /**
+     * バッチ処理の実行
+     */
+    public void processBatch(List<ImageTask> tasks) throws InterruptedException {
+        if (tasks.isEmpty()) {
+            System.out.println("処理するタスクがありません。");
+            return;
+        }
+        
+        System.out.println("=== 画像バッチ処理システム開始 ===");
+        System.out.println("処理予定ファイル数: " + tasks.size());
+        
+        // CPUコア数に基づいたスレッドプール作成
+        int threadCount = Math.min(tasks.size(), 
+            Runtime.getRuntime().availableProcessors());
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        
+        // 結果収集用のキューと進捗カウンタ
+        BlockingQueue<ProcessingResult> resultQueue = new LinkedBlockingQueue<>();
+        AtomicInteger completedCount = new AtomicInteger(0);
+        AtomicInteger totalCount = new AtomicInteger(tasks.size());
+        
+        long batchStartTime = System.currentTimeMillis();
+        
+        try {
+            // すべてのタスクをスレッドプールに投入
+            for (ImageTask task : tasks) {
+                ImageProcessor processor = new ImageProcessor(
+                    task, resultQueue, completedCount, totalCount);
+                executor.execute(processor);
+            }
+            
+            // 処理開始の確認
+            System.out.println("スレッドプール (" + threadCount + " スレッド) で処理開始");
+            
+            // 適切なシャットダウン処理
+            executor.shutdown();
+            
+            // すべてのタスクの完了を待機（最大10分）
+            boolean completed = executor.awaitTermination(10, TimeUnit.MINUTES);
+            
+            if (!completed) {
+                System.err.println("タイムアウト: 強制終了します");
+                executor.shutdownNow();
+                return;
+            }
+            
+            // 結果の集計と表示
+            List<ProcessingResult> results = new ArrayList<>();
+            while (results.size() < tasks.size()) {
+                ProcessingResult result = resultQueue.poll(1, TimeUnit.SECONDS);
+                if (result != null) {
+                    results.add(result);
+                }
+            }
+            
+            displayResults(results, batchStartTime);
+            
+        } finally {
+            if (!executor.isTerminated()) {
+                executor.shutdownNow();
+            }
+        }
+    }
+    
+    /**
+     * 処理結果の表示とパフォーマンス分析
+     */
+    private void displayResults(List<ProcessingResult> results, long batchStartTime) {
+        long totalBatchTime = System.currentTimeMillis() - batchStartTime;
+        
+        System.out.println("\n=== 処理結果サマリー ===");
+        
+        long successCount = results.stream()
+            .mapToLong(r -> r.success() ? 1 : 0)
+            .sum();
+        
+        double averageProcessingTime = results.stream()
+            .mapToLong(ProcessingResult::processingTimeMs)
+            .average()
+            .orElse(0.0);
+        
+        System.out.println("成功: " + successCount + " / " + results.size());
+        System.out.println("総処理時間: " + totalBatchTime + " ms");
+        System.out.println("平均処理時間: " + String.format("%.1f ms", averageProcessingTime));
+        
+        // エラーがあった場合の詳細表示
+        List<ProcessingResult> errors = results.stream()
+            .filter(r -> !r.success())
+            .toList();
+        
+        if (!errors.isEmpty()) {
+            System.out.println("\n=== エラー詳細 ===");
+            for (ProcessingResult error : errors) {
+                System.out.println("ファイル: " + 
+                    error.task().inputPath().getFileName() + 
+                    " - " + error.errorMessage());
+            }
+        }
+        
+        // パフォーマンス効果の表示
+        long sequentialEstimate = results.stream()
+            .mapToLong(ProcessingResult::processingTimeMs)
+            .sum();
+        
+        double speedup = (double) sequentialEstimate / totalBatchTime;
+        System.out.println("\n並列処理効果:");
+        System.out.printf("推定順次処理時間: %d ms%n", sequentialEstimate);
+        System.out.printf("実際の並列処理時間: %d ms%n", totalBatchTime);
+        System.out.printf("速度向上率: %.2fx%n", speedup);
+    }
+    
+    /**
+     * デモ実行
+     */
+    public static void main(String[] args) {
+        try {
+            ImageProcessingSystem system = new ImageProcessingSystem();
+            
+            // テスト用のタスクを作成
+            List<ImageTask> tasks = Arrays.asList(
+                new ImageTask(Paths.get("input/photo1.jpg"), 
+                            Paths.get("output/photo1_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo2.jpg"), 
+                            Paths.get("output/photo2_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo3.jpg"), 
+                            Paths.get("output/photo3_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo4.jpg"), 
+                            Paths.get("output/photo4_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo5.jpg"), 
+                            Paths.get("output/photo5_resized.jpg"), "resize")
+            );
+            
+            // ダミーファイルの作成（実際の実装では既存の画像ファイルを使用）
+            createDummyFiles(tasks);
+            
+            // バッチ処理の実行
+            system.processBatch(tasks);
+            
+        } catch (Exception e) {
+            System.err.println("システムエラー: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * テスト用のダミーファイル作成
+     */
+    private static void createDummyFiles(List<ImageTask> tasks) {
+        try {
+            Files.createDirectories(Paths.get("input"));
+            Files.createDirectories(Paths.get("output"));
+            
+            for (ImageTask task : tasks) {
+                if (!Files.exists(task.inputPath())) {
+                    // ランダムサイズのダミーファイルを作成
+                    byte[] data = new byte[1000 + (int)(Math.random() * 5000)];
+                    Arrays.fill(data, (byte) 0xFF);
+                    Files.write(task.inputPath(), data);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("ダミーファイル作成エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+**このシステムの特徴と学習ポイント:**
+
+1. **責任の分離**: `ImageProcessor`クラスは単一の画像処理のみに専念し、結果の集約は別のクラスが担当します。
+
+2. **例外安全性**: 各画像の処理でエラーが発生しても、他の画像の処理に影響を与えません。
+
+3. **プログレス管理**: `AtomicInteger`を使用してスレッドセーフな進捗カウンタを実装しています。
+
+4. **リソース管理**: CPUコア数に基づいてスレッド数を決定し、システムリソースの効率的な活用を図っています。
+
+5. **パフォーマンス測定**: 並列処理の効果を定量的に測定し、表示します。
+
+6. **現実的な設計**: 実際の業務システムで使用される設計パターンとエラーハンドリングを実装しています。
 
 ### ラムダ式による簡潔な記述
 
@@ -323,6 +625,301 @@ public class RaceConditionExample {
 }
 ```
 
+#### 実践的な同期制御 - 銀行口座システム
+
+現実的な同期制御の例として、銀行口座の残高管理システムを実装してみましょう。このシステムでは複数のスレッドが同時に入金・出金操作を行います：
+
+```java
+import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
+import java.text.NumberFormat;
+import java.util.*;
+
+/**
+ * 銀行口座システム - 同期制御の実践例
+ * 
+ * このシステムは以下の同期制御技術を示します：
+ * - synchronizedメソッドによる基本的な排他制御
+ * - ReentrantLockによる高度な制御
+ * - 複数リソースでのデッドロック回避策
+ * - アトミック操作の活用
+ */
+public class BankAccountSystem {
+    
+    /**
+     * 基本的な銀行口座（synchronized使用）
+     */
+    public static class BasicBankAccount {
+        private double balance;
+        private final String accountNumber;
+        private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        
+        public BasicBankAccount(String accountNumber, double initialBalance) {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+        
+        /**
+         * 入金処理（スレッドセーフ）
+         */
+        public synchronized void deposit(double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("入金額は正の値である必要があります");
+            }
+            
+            double oldBalance = balance;
+            balance += amount;
+            
+            System.out.printf("口座 %s: 入金 %s (残高 %s → %s) [%s]%n",
+                accountNumber, formatter.format(amount),
+                formatter.format(oldBalance), formatter.format(balance),
+                Thread.currentThread().getName());
+        }
+        
+        /**
+         * 出金処理（スレッドセーフ）
+         */
+        public synchronized boolean withdraw(double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("出金額は正の値である必要があります");
+            }
+            
+            if (balance >= amount) {
+                double oldBalance = balance;
+                balance -= amount;
+                
+                System.out.printf("口座 %s: 出金 %s (残高 %s → %s) [%s]%n",
+                    accountNumber, formatter.format(amount),
+                    formatter.format(oldBalance), formatter.format(balance),
+                    Thread.currentThread().getName());
+                return true;
+            } else {
+                System.out.printf("口座 %s: 出金失敗 %s (残高不足: %s) [%s]%n",
+                    accountNumber, formatter.format(amount),
+                    formatter.format(balance), Thread.currentThread().getName());
+                return false;
+            }
+        }
+        
+        public synchronized double getBalance() {
+            return balance;
+        }
+        
+        public String getAccountNumber() {
+            return accountNumber;
+        }
+    }
+    
+    /**
+     * 高度な銀行口座（ReentrantLock使用）
+     */
+    public static class AdvancedBankAccount {
+        private double balance;
+        private final String accountNumber;
+        private final ReentrantLock lock = new ReentrantLock();
+        private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        
+        public AdvancedBankAccount(String accountNumber, double initialBalance) {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+        
+        /**
+         * タイムアウト付き入金処理
+         */
+        public boolean depositWithTimeout(double amount, long timeoutMs) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("入金額は正の値である必要があります");
+            }
+            
+            try {
+                if (lock.tryLock(timeoutMs, TimeUnit.MILLISECONDS)) {
+                    try {
+                        double oldBalance = balance;
+                        balance += amount;
+                        
+                        System.out.printf("口座 %s: 入金 %s (残高 %s → %s) [%s]%n",
+                            accountNumber, formatter.format(amount),
+                            formatter.format(oldBalance), formatter.format(balance),
+                            Thread.currentThread().getName());
+                        return true;
+                    } finally {
+                        lock.unlock();
+                    }
+                } else {
+                    System.out.printf("口座 %s: 入金タイムアウト %s [%s]%n",
+                        accountNumber, formatter.format(amount),
+                        Thread.currentThread().getName());
+                    return false;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+        
+        public double getBalance() {
+            lock.lock();
+            try {
+                return balance;
+            } finally {
+                lock.unlock();
+            }
+        }
+        
+        public String getAccountNumber() {
+            return accountNumber;
+        }
+        
+        /**
+         * デッドロック回避を考慮した送金処理
+         */
+        public static boolean transfer(AdvancedBankAccount from, AdvancedBankAccount to, 
+                                     double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("送金額は正の値である必要があります");
+            }
+            
+            // デッドロック回避: 口座番号の順序でロック取得順序を決定
+            AdvancedBankAccount firstLock, secondLock;
+            if (from.accountNumber.compareTo(to.accountNumber) < 0) {
+                firstLock = from;
+                secondLock = to;
+            } else {
+                firstLock = to;
+                secondLock = from;
+            }
+            
+            firstLock.lock.lock();
+            try {
+                secondLock.lock.lock();
+                try {
+                    if (from.balance >= amount) {
+                        from.balance -= amount;
+                        to.balance += amount;
+                        
+                        System.out.printf("送金: %s → %s, 金額 %s [%s]%n",
+                            from.accountNumber, to.accountNumber,
+                            NumberFormat.getCurrencyInstance().format(amount),
+                            Thread.currentThread().getName());
+                        return true;
+                    } else {
+                        System.out.printf("送金失敗: %s → %s, 残高不足 (残高: %s, 送金額: %s) [%s]%n",
+                            from.accountNumber, to.accountNumber,
+                            NumberFormat.getCurrencyInstance().format(from.balance),
+                            NumberFormat.getCurrencyInstance().format(amount),
+                            Thread.currentThread().getName());
+                        return false;
+                    }
+                } finally {
+                    secondLock.lock.unlock();
+                }
+            } finally {
+                firstLock.lock.unlock();
+            }
+        }
+    }
+    
+    /**
+     * 銀行業務シミュレーション
+     */
+    public static void demonstrateBankOperations() throws InterruptedException {
+        System.out.println("=== 銀行口座システム デモンストレーション ===\n");
+        
+        // 基本的な口座での同時アクセステスト
+        System.out.println("1. 基本的な同期制御テスト:");
+        BasicBankAccount basicAccount = new BasicBankAccount("0001", 10000.0);
+        
+        ExecutorService basicExecutor = Executors.newFixedThreadPool(3);
+        
+        // 複数のスレッドで同時に入金・出金を実行
+        for (int i = 0; i < 5; i++) {
+            final int operationId = i;
+            basicExecutor.submit(() -> {
+                basicAccount.deposit(100.0 * operationId);
+                basicAccount.withdraw(50.0 * operationId);
+            });
+        }
+        
+        basicExecutor.shutdown();
+        basicExecutor.awaitTermination(5, TimeUnit.SECONDS);
+        
+        System.out.printf("基本口座最終残高: %s%n%n", 
+            NumberFormat.getCurrencyInstance().format(basicAccount.getBalance()));
+        
+        // 高度な口座での送金テスト
+        System.out.println("2. 高度な同期制御と送金テスト:");
+        AdvancedBankAccount account1 = new AdvancedBankAccount("ADV-001", 5000.0);
+        AdvancedBankAccount account2 = new AdvancedBankAccount("ADV-002", 3000.0);
+        AdvancedBankAccount account3 = new AdvancedBankAccount("ADV-003", 7000.0);
+        
+        List<AdvancedBankAccount> accounts = Arrays.asList(account1, account2, account3);
+        ExecutorService advancedExecutor = Executors.newFixedThreadPool(5);
+        
+        // ランダムな送金処理を複数のスレッドで実行
+        for (int i = 0; i < 10; i++) {
+            advancedExecutor.submit(() -> {
+                Collections.shuffle(accounts);
+                AdvancedBankAccount from = accounts.get(0);
+                AdvancedBankAccount to = accounts.get(1);
+                double amount = 100.0 + Math.random() * 500.0;
+                
+                AdvancedBankAccount.transfer(from, to, amount);
+            });
+        }
+        
+        // タイムアウト付き入金のテスト
+        for (int i = 0; i < 3; i++) {
+            final int depositAmount = (i + 1) * 200;
+            advancedExecutor.submit(() -> {
+                Collections.shuffle(accounts);
+                accounts.get(0).depositWithTimeout(depositAmount, 1000);
+            });
+        }
+        
+        advancedExecutor.shutdown();
+        advancedExecutor.awaitTermination(10, TimeUnit.SECONDS);
+        
+        System.out.println("\n最終残高:");
+        double totalBalance = 0;
+        for (AdvancedBankAccount account : accounts) {
+            double balance = account.getBalance();
+            totalBalance += balance;
+            System.out.printf("口座 %s: %s%n", account.getAccountNumber(),
+                NumberFormat.getCurrencyInstance().format(balance));
+        }
+        System.out.printf("総残高: %s%n", 
+            NumberFormat.getCurrencyInstance().format(totalBalance));
+    }
+    
+    public static void main(String[] args) {
+        try {
+            demonstrateBankOperations();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("処理が中断されました");
+        } catch (Exception e) {
+            System.err.println("エラーが発生しました: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**このシステムで学習できる同期制御の重要ポイント:**
+
+1. **synchronizedメソッド**: `BasicBankAccount`では、メソッド全体を同期化する最もシンプルな手法を使用しています。
+
+2. **ReentrantLock**: `AdvancedBankAccount`では、タイムアウト機能付きのより高度なロック制御を実装しています。
+
+3. **デッドロック回避**: 送金処理では、常に口座番号の順序でロックを取得することで、デッドロックを防いでいます。
+
+4. **例外安全性**: finally節でのlock.unlock()により、例外が発生してもロックが確実に解放されます。
+
+5. **パフォーマンス考慮**: 必要最小限の範囲でのみロックを保持し、パフォーマンスへの影響を最小化しています。
+
+6. **実際的な業務ロジック**: 銀行口座という現実的なシナリオで、同期制御の必要性を理解できます。
+
 ### synchronizedによる排他制御
 
 この問題を解決するために、Javaは`synchronized`キーワードによる**排他制御 (Mutual Exclusion)** の仕組みを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。
@@ -419,6 +1016,334 @@ public class DeadlockExample {
 `Thread`クラスを直接インスタンス化して使用する方法は、小規模なプログラムでは問題ありません。しかし、多くのタスクを処理する必要がある場合、スレッドの生成と破棄にかかるオーバーヘッドが大きくなり、無制限にスレッドが生成されてリソースを枯渇させる危険性があります。
 
 この問題を解決するのが **Executorフレームワーク (`java.util.concurrent`)** です。これは、スレッドの生成・管理を抽象化し、**スレッドプール**を利用して効率的にタスクを実行するための仕組みを提供します。
+
+#### 実践的なWebクローラーシステム
+
+以下は、ExecutorServiceを活用した実用的なWebクローラーシステムです。このシステムは複数のWebページを並行してダウンロードし、結果を効率的に処理します：
+
+```java
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+/**
+ * Webクローラーシステム - ExecutorServiceの実践例
+ * 
+ * このシステムは以下の技術を実装しています：
+ * - 複数タイプのExecutorServiceの使い分け
+ * - CompletableFutureによる非同期処理
+ * - 結果の集約と統計分析
+ * - エラーハンドリングとリトライ機能
+ */
+public class WebCrawlerSystem {
+    
+    /**
+     * Webページの情報を表すレコード
+     */
+    public record WebPageInfo(String url, int statusCode, long contentLength, 
+                             Duration downloadTime, String errorMessage) {
+        public boolean isSuccess() {
+            return statusCode == 200 && errorMessage == null;
+        }
+    }
+    
+    /**
+     * 単一ページのダウンロードタスク
+     */
+    private static class PageDownloader implements Callable<WebPageInfo> {
+        private final String url;
+        private final int timeoutSeconds;
+        private final AtomicInteger completedCount;
+        private final int totalCount;
+        
+        public PageDownloader(String url, int timeoutSeconds, 
+                            AtomicInteger completedCount, int totalCount) {
+            this.url = url;
+            this.timeoutSeconds = timeoutSeconds;
+            this.completedCount = completedCount;
+            this.totalCount = totalCount;
+        }
+        
+        @Override
+        public WebPageInfo call() throws Exception {
+            Instant startTime = Instant.now();
+            
+            try {
+                System.out.printf("[%s] %s のダウンロード開始%n", 
+                    Thread.currentThread().getName(), url);
+                
+                // HTTP接続の設定
+                URL urlObj = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(timeoutSeconds * 1000);
+                connection.setReadTimeout(timeoutSeconds * 1000);
+                connection.setRequestProperty("User-Agent", 
+                    "WebCrawler-Demo/1.0 (Educational Purpose)");
+                
+                int statusCode = connection.getResponseCode();
+                long contentLength = 0;
+                
+                if (statusCode == 200) {
+                    // コンテンツのダウンロード（実際の実装では内容を保存）
+                    try (InputStream inputStream = connection.getInputStream();
+                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                        
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                        contentLength = outputStream.size();
+                    }
+                }
+                
+                Duration downloadTime = Duration.between(startTime, Instant.now());
+                int completed = completedCount.incrementAndGet();
+                
+                System.out.printf("[%s] %s 完了 (%d/%d) - %d bytes, %d ms%n",
+                    Thread.currentThread().getName(), url, completed, totalCount,
+                    contentLength, downloadTime.toMillis());
+                
+                return new WebPageInfo(url, statusCode, contentLength, downloadTime, null);
+                
+            } catch (Exception e) {
+                Duration downloadTime = Duration.between(startTime, Instant.now());
+                System.err.printf("[%s] %s エラー: %s%n",
+                    Thread.currentThread().getName(), url, e.getMessage());
+                
+                return new WebPageInfo(url, -1, 0, downloadTime, e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * 同期的なバッチダウンロード（固定スレッドプール使用）
+     */
+    public List<WebPageInfo> downloadBatchSync(List<String> urls, 
+                                               int threadPoolSize, 
+                                               int timeoutSeconds) 
+                                               throws InterruptedException {
+        System.out.println("=== 同期的バッチダウンロード開始 ===");
+        System.out.printf("URL数: %d, スレッドプール: %d%n", urls.size(), threadPoolSize);
+        
+        ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
+        AtomicInteger completedCount = new AtomicInteger(0);
+        
+        try {
+            // 全タスクを投入
+            List<Future<WebPageInfo>> futures = new ArrayList<>();
+            for (String url : urls) {
+                PageDownloader downloader = new PageDownloader(
+                    url, timeoutSeconds, completedCount, urls.size());
+                Future<WebPageInfo> future = executor.submit(downloader);
+                futures.add(future);
+            }
+            
+            // 結果の収集
+            List<WebPageInfo> results = new ArrayList<>();
+            for (Future<WebPageInfo> future : futures) {
+                try {
+                    WebPageInfo result = future.get(); // ブロッキング
+                    results.add(result);
+                } catch (ExecutionException e) {
+                    System.err.println("タスク実行エラー: " + e.getCause().getMessage());
+                }
+            }
+            
+            return results;
+            
+        } finally {
+            executor.shutdown();
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        }
+    }
+    
+    /**
+     * 非同期バッチダウンロード（CompletableFuture使用）
+     */
+    public CompletableFuture<List<WebPageInfo>> downloadBatchAsync(List<String> urls, 
+                                                                  int timeoutSeconds) {
+        System.out.println("=== 非同期バッチダウンロード開始 ===");
+        System.out.printf("URL数: %d%n", urls.size());
+        
+        // 専用のExecutorServiceを作成
+        ExecutorService executor = Executors.newWorkStealingPool();
+        AtomicInteger completedCount = new AtomicInteger(0);
+        
+        // 各URLに対してCompletableFutureを作成
+        List<CompletableFuture<WebPageInfo>> futures = urls.stream()
+            .map(url -> CompletableFuture.supplyAsync(() -> {
+                try {
+                    PageDownloader downloader = new PageDownloader(
+                        url, timeoutSeconds, completedCount, urls.size());
+                    return downloader.call();
+                } catch (Exception e) {
+                    return new WebPageInfo(url, -1, 0, Duration.ZERO, e.getMessage());
+                }
+            }, executor))
+            .collect(Collectors.toList());
+        
+        // 全ての非同期タスクが完了したら結果をまとめる
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+            .thenApply(v -> futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList()))
+            .whenComplete((result, throwable) -> {
+                executor.shutdown();
+            });
+    }
+    
+    /**
+     * ダウンロード結果の分析と表示
+     */
+    public void analyzeResults(List<WebPageInfo> results) {
+        System.out.println("\n=== ダウンロード結果分析 ===");
+        
+        if (results.isEmpty()) {
+            System.out.println("結果がありません。");
+            return;
+        }
+        
+        // 基本統計
+        long successCount = results.stream().mapToLong(r -> r.isSuccess() ? 1 : 0).sum();
+        long totalBytes = results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .mapToLong(WebPageInfo::contentLength)
+            .sum();
+        
+        OptionalDouble avgDownloadTime = results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .mapToDouble(r -> r.downloadTime().toMillis())
+            .average();
+        
+        System.out.printf("成功率: %d/%d (%.1f%%)%n", 
+            successCount, results.size(), 
+            (double) successCount / results.size() * 100);
+        
+        System.out.printf("総ダウンロード容量: %,d bytes (%.2f MB)%n", 
+            totalBytes, totalBytes / 1024.0 / 1024.0);
+        
+        if (avgDownloadTime.isPresent()) {
+            System.out.printf("平均ダウンロード時間: %.1f ms%n", avgDownloadTime.getAsDouble());
+        }
+        
+        // エラー分析
+        Map<String, Long> errorCounts = results.stream()
+            .filter(r -> !r.isSuccess())
+            .collect(Collectors.groupingBy(
+                r -> r.errorMessage() != null ? r.errorMessage() : "HTTP " + r.statusCode(),
+                Collectors.counting()));
+        
+        if (!errorCounts.isEmpty()) {
+            System.out.println("\nエラー内訳:");
+            errorCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .forEach(entry -> 
+                    System.out.printf("  %s: %d件%n", entry.getKey(), entry.getValue()));
+        }
+        
+        // 速度ランキング（成功したもののみ）
+        System.out.println("\n速度ランキング (上位5件):");
+        results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .sorted(Comparator.comparing(WebPageInfo::downloadTime))
+            .limit(5)
+            .forEach(info -> 
+                System.out.printf("  %s: %d ms (%,d bytes)%n",
+                    info.url(), info.downloadTime().toMillis(), info.contentLength()));
+    }
+    
+    /**
+     * デモンストレーション
+     */
+    public static void demonstrateWebCrawling() {
+        WebCrawlerSystem crawler = new WebCrawlerSystem();
+        
+        // テスト用のURL（実際のWebサイトではサーバーへの負荷を考慮すること）
+        List<String> testUrls = Arrays.asList(
+            "https://httpbin.org/delay/1",
+            "https://httpbin.org/status/200",
+            "https://httpbin.org/status/404", 
+            "https://httpbin.org/bytes/1024",
+            "https://httpbin.org/html",
+            "https://httpbin.org/json",
+            "https://httpbin.org/xml"
+        );
+        
+        try {
+            // 1. 同期的なバッチ処理
+            long startTime = System.currentTimeMillis();
+            List<WebPageInfo> syncResults = crawler.downloadBatchSync(testUrls, 3, 10);
+            long syncTime = System.currentTimeMillis() - startTime;
+            
+            System.out.printf("\n同期処理時間: %d ms%n", syncTime);
+            crawler.analyzeResults(syncResults);
+            
+            // 2. 非同期バッチ処理
+            System.out.println("\n" + "=".repeat(50));
+            startTime = System.currentTimeMillis();
+            
+            CompletableFuture<List<WebPageInfo>> asyncFuture = 
+                crawler.downloadBatchAsync(testUrls, 10);
+            
+            // 非同期処理の完了を待機
+            List<WebPageInfo> asyncResults = asyncFuture.get(30, TimeUnit.SECONDS);
+            long asyncTime = System.currentTimeMillis() - startTime;
+            
+            System.out.printf("\n非同期処理時間: %d ms%n", asyncTime);
+            crawler.analyzeResults(asyncResults);
+            
+            // パフォーマンス比較
+            System.out.println("\n=== パフォーマンス比較 ===");
+            System.out.printf("同期処理: %d ms%n", syncTime);
+            System.out.printf("非同期処理: %d ms%n", asyncTime);
+            System.out.printf("速度向上: %.2fx%n", (double) syncTime / asyncTime);
+            
+        } catch (Exception e) {
+            System.err.println("デモ実行エラー: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main(String[] args) {
+        demonstrateWebCrawling();
+    }
+}
+```
+
+**このWebクローラーシステムの特徴:**
+
+1. **ExecutorService の使い分け**:
+   - `newFixedThreadPool()`: 同期的なバッチ処理用
+   - `newWorkStealingPool()`: 非同期処理での負荷分散
+
+2. **Callable と Future**:
+   - 戻り値のあるタスクの実装
+   - `Future.get()` による結果の取得
+
+3. **CompletableFuture**:
+   - 現代的な非同期プログラミング
+   - 複数の非同期タスクの組み合わせ
+
+4. **エラーハンドリング**:
+   - ネットワークエラーの適切な処理
+   - タイムアウトとリソース管理
+
+5. **パフォーマンス分析**:
+   - 実行時間の測定と比較
+   - 統計情報の算出と表示
+
+6. **実用的な設計**:
+   - リソースリークの防止
+   - 適切なシャットダウン処理
 
 ### ExecutorServiceとスレッドプール
 

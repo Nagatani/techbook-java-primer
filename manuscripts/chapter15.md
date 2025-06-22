@@ -16,9 +16,9 @@
 
 **ARPANET の誕生（1969年）**：アメリカ国防総省のARPA（Advanced Research Projects Agency）により、世界初のパケット交換ネットワークが構築されました。これが現在のインターネットの直接的な前身となりました。
 
-**TCP/IP プロトコルの確立（1970年代〜1980年代）**：ヴィント・サーフ（Vint Cerf）とロバート・カーン（Robert Kahn）により、異なるネットワーク間の相互接続を可能にする TCP/IP プロトコルが開発されました。
+**TCP/IP プロトコルの確立（1970年代〜1980年代）**：ヴィント・サーフ（Vint Cerf）とロバート・カーン（Robert Kahn）により、異なるネットワーク間の相互接続を可能にするTCP/IPプロトコルが開発されました。
 
-**インターネットの商用化（1990年代）**：NSFNETからの移行により、インターネットが学術用途から商用利用へと拡大し、World Wide Web の普及とともに爆発的に成長しました。
+**インターネットの商用化（1990年代）**：NSFNETからの移行により、インターネットが学術用途から商用利用へと拡大し、World Wide Webの普及とともに爆発的に成長しました。
 
 ### ネットワークアーキテクチャの進化
 
@@ -26,9 +26,9 @@
 
 **集中型アーキテクチャ（1960年代〜1970年代）**：メインフレームを中心とした星型ネットワークにより、端末からの処理要求を集中的に処理する構造でした。
 
-**クライアント/サーバーモデル（1980年代〜1990年代）**：パーソナルコンピュータの普及により、処理能力を持つクライアントと専用サーバーが協働する分散処理モデルが確立されました。
+**クライアント／サーバーモデル（1980年代〜1990年代）**：パーソナルコンピュータの普及により、処理能力を持つクライアントと専用サーバーが協働する分散処理モデルが確立されました。
 
-**ピアツーピア（P2P）ネットワーク（1990年代後期〜）**：Napster、BitTorrent などにより、中央サーバーを介さない分散型ネットワークモデルが実用化されました。
+**ピアツーピア（P2P）ネットワーク（1990年代後期〜）**：Napster、BitTorrentなどにより、中央サーバーを介さない分散型ネットワークモデルが実用化されました。
 
 **サービス指向アーキテクチャ（SOA）（2000年代）**：Webサービス技術により、ネットワーク上の機能をサービスとして組み合わせる柔軟なシステム構築が可能になりました。
 
@@ -54,23 +54,23 @@ server_addr.sin_port = htons(8080);
 
 **高レベルプロトコル支援（2000年代〜）**：HTTP、SOAP、RESTなどの高レベルプロトコルを直接サポートするライブラリが充実し、Webアプリケーション開発が大幅に簡素化されました。
 
-**非同期・リアクティブプログラミング（2010年代〜）**：Node.js、Netty、Vert.x などにより、高並行性ネットワークアプリケーションの開発が革新されました。
+**非同期・リアクティブプログラミング（2010年代〜）**：Node.js、Netty、Vert.xなどにより、高並行性ネットワークアプリケーションの開発が革新されました。
 
 ### Javaにおけるネットワークプログラミングの発展
 
 Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォーム独立なネットワークプログラミング環境を提供してきました：
 
-**Java 1.0（1995年）- 基本ソケット API**：java.net パッケージにより、TCP/UDP ソケットの基本機能が提供されました。アプレットによるWebブラウザでのネットワークアプリケーション実行も実現されました。
+**Java 1.0（1995年）- 基本ソケット API**：java.netパッケージにより、TCP/UDPソケットの基本機能が提供されました。アプレットによるブラウザでのネットワークアプリケーション実行も実現されました。
 
 **Java 1.1（1997年）- RMI（Remote Method Invocation）**：分散オブジェクト技術により、ネットワーク越しのメソッド呼び出しが透明に実行できるようになりました。
 
-**Java 2 EE（1999年）- 企業向けネットワーク技術**：サーブレット、JSP、EJB などにより、企業レベルのWebアプリケーション開発が標準化されました。
+**Java 2 EE（1999年）- 企業向けネットワーク技術**：サーブレット、JSP、EJBなどにより、企業レベルのWebアプリケーション開発が標準化されました。
 
 **Java 1.4（2002年）- NIO（New I/O）**：非ブロッキングI/Oとチャネル・セレクタAPIにより、高性能なネットワークアプリケーションの開発が可能になりました。
 
 **Java 7（2011年）- NIO.2**：非同期I/O操作の改善により、さらに効率的なネットワーク処理が実現されました。
 
-**Java 8以降 - 関数型・リアクティブ対応**：CompletableFuture、Reactive Streams などにより、現代的な非同期ネットワークプログラミングが支援されています。
+**Java 8以降 - 関数型・リアクティブ対応**：CompletableFuture、Reactive Streamsなどにより、現代的な非同期ネットワークプログラミングが支援されています。
 
 ### ネットワークプロトコルスタックの理解
 
@@ -78,11 +78,11 @@ Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォ�
 
 **物理層・データリンク層**：ハードウェアレベルでのデータ伝送を担当します。Ethernet、Wi-Fi、光ファイバーなどの物理媒体上でのビット伝送を制御します。
 
-**ネットワーク層（IP）**：パケットの経路選択と配送を担当します。IPv4/IPv6 により、グローバルなアドレス空間でのパケット転送が実現されています。
+**ネットワーク層（IP）**：パケットの経路選択と配送を担当します。IPv4/IPv6により、グローバルなアドレス空間でのパケット転送が実現されています。
 
 **トランスポート層（TCP/UDP）**：アプリケーション間の信頼性のある（TCP）または高速な（UDP）データ転送を提供します。ポート番号により、同一マシン上の複数アプリケーションを識別します。
 
-**アプリケーション層**：HTTP、SMTP、FTP、SSH などの高レベルプロトコルにより、具体的なアプリケーション機能を実現します。
+**アプリケーション層**：HTTP、SMTP、FTP、SSHなどの高レベルプロトコルにより、具体的なアプリケーション機能を実現します。
 
 ### 現代のネットワークアプリケーションの特徴
 
@@ -90,9 +90,9 @@ Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォ�
 
 **大規模並行処理**：数万から数十万の同時接続を処理する必要があり、従来のスレッドプールモデルでは限界があります。非同期I/Oとイベント駆動アーキテクチャが重要になっています。
 
-**リアルタイム性**：WebSocket、Server-Sent Events、WebRTC などにより、リアルタイム双方向通信が標準的な機能となっています。
+**リアルタイム性**：WebSocket、Server-Sent Events、WebRTCなどにより、リアルタイム双方向通信が標準的な機能となっています。
 
-**セキュリティ強化**：HTTPS、WSS（WebSocket Secure）、OAuth、JWT など、セキュリティが設計段階から組み込まれています。
+**セキュリティ強化**：HTTPS、WSS（WebSocket Secure）、OAuth、JWTなど、セキュリティが設計段階から組み込まれています。
 
 **マイクロサービス対応**：サービス間通信、負荷分散、障害回復、監視・ログ記録など、分散システム特有の課題への対応が必要です。
 
@@ -114,7 +114,7 @@ Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォ�
 
 この章では、これらの歴史的背景と現代的な課題を踏まえて、Javaにおけるネットワークプログラミングを体系的に学習していきます。単にソケットの使い方を覚えるのではなく、以下の点を重視して学習を進めます：
 
-**ネットワークアーキテクチャの理解**：クライアント/サーバーモデルの設計原則を理解し、適切な役割分担ができる能力を身につけます。
+**ネットワークアーキテクチャの理解**：クライアント／サーバーモデルの設計原則を理解し、適切な役割分担ができる能力を身につけます。
 
 **プロトコル設計の技術**：TCP/UDPの特性を理解し、用途に応じた適切なプロトコル選択ができるようになります。
 
@@ -132,14 +132,14 @@ Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォ�
 
 ## 15.1 ネットワークプログラミングの基礎
 
-### クライアント/サーバーモデル
+### クライアント／サーバーモデル
 
-多くのネットワークアプリケーションは、サービスを要求する「クライアント」と、サービスを提供する「サーバー」から構成されるクライアント/サーバーモデルを採用しています。
+多くのネットワークアプリケーションは、サービスを要求する「クライアント」と、サービスを提供する「サーバー」から構成されるクライアント／サーバーモデルを採用しています。
 
 * **サーバー**: 特定のポートで待機し、クライアントからの接続要求を待ち受けます
 * **クライアント**: サーバーのIPアドレスとポート番号を指定して接続を要求し、サービスの提供を受けます
 
-身近な例では、Webブラウザ（クライアント）がWebサーバー（サーバー）にWebページの表示を要求するのも、このモデルに基づいています。
+身近な例では、ブラウザ（クライアント）がWebサーバー（サーバー）にWebページの表示を要求するのも、このモデルに基づいています。
 
 ### TCP/IPとソケット
 
@@ -226,6 +226,625 @@ public class EchoServer {
     }
 }
 ```
+
+#### 実用的なネットワークアプリケーション - マルチプレイヤーゲームサーバー
+
+以下は、ネットワークプログラミングの概念を包括的に示す、リアルタイムマルチプレイヤーゲームサーバーの実装例です。このシステムは現代的なネットワークアプリケーション開発の基盤技術を示しています：
+
+```java
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * マルチプレイヤーゲームサーバー - 高度なネットワークプログラミングの実践例
+ * 
+ * このシステムは以下の先進的な機能を実装しています：
+ * - WebSocketスタイルのリアルタイム通信
+ * - JSON形式のメッセージプロトコル
+ * - 接続管理とセッション追跡
+ * - ゲーム状態の同期とブロードキャスト
+ * - エラーハンドリングと接続復旧
+ */
+public class MultiplayerGameServer {
+    
+    /**
+     * ゲームメッセージの基底クラス
+     */
+    public static abstract class GameMessage {
+        @JsonProperty("type")
+        public abstract String getType();
+        
+        @JsonProperty("timestamp")
+        public String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+    
+    /**
+     * プレイヤー参加メッセージ
+     */
+    public static class PlayerJoinMessage extends GameMessage {
+        @JsonProperty("playerId")
+        public String playerId;
+        
+        @JsonProperty("playerName")
+        public String playerName;
+        
+        @Override
+        public String getType() { return "player_join"; }
+    }
+    
+    /**
+     * プレイヤー移動メッセージ
+     */
+    public static class PlayerMoveMessage extends GameMessage {
+        @JsonProperty("playerId")
+        public String playerId;
+        
+        @JsonProperty("x")
+        public double x;
+        
+        @JsonProperty("y")
+        public double y;
+        
+        @Override
+        public String getType() { return "player_move"; }
+    }
+    
+    /**
+     * チャットメッセージ
+     */
+    public static class ChatMessage extends GameMessage {
+        @JsonProperty("playerId")
+        public String playerId;
+        
+        @JsonProperty("message")
+        public String message;
+        
+        @Override
+        public String getType() { return "chat"; }
+    }
+    
+    /**
+     * ゲーム状態更新メッセージ
+     */
+    public static class GameStateMessage extends GameMessage {
+        @JsonProperty("players")
+        public Map<String, PlayerState> players;
+        
+        @Override
+        public String getType() { return "game_state"; }
+    }
+    
+    /**
+     * プレイヤーの状態
+     */
+    public static class PlayerState {
+        @JsonProperty("id")
+        public String id;
+        
+        @JsonProperty("name")
+        public String name;
+        
+        @JsonProperty("x")
+        public double x;
+        
+        @JsonProperty("y")
+        public double y;
+        
+        @JsonProperty("online")
+        public boolean online;
+        
+        @JsonProperty("lastActivity")
+        public String lastActivity;
+        
+        public PlayerState(String id, String name) {
+            this.id = id;
+            this.name = name;
+            this.x = Math.random() * 1000; // ランダムな初期位置
+            this.y = Math.random() * 1000;
+            this.online = true;
+            this.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+    }
+    
+    /**
+     * 接続されたクライアントの管理
+     */
+    public static class ClientConnection {
+        private final Socket socket;
+        private final BufferedReader reader;
+        private final PrintWriter writer;
+        private final String clientId;
+        private volatile boolean active;
+        private PlayerState playerState;
+        
+        public ClientConnection(Socket socket) throws IOException {
+            this.socket = socket;
+            this.reader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            this.writer = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
+            this.clientId = "client_" + System.currentTimeMillis() + "_" + 
+                          (int)(Math.random() * 1000);
+            this.active = true;
+        }
+        
+        public void sendMessage(String message) {
+            if (active && !socket.isClosed()) {
+                writer.println(message);
+            }
+        }
+        
+        public String readMessage() throws IOException {
+            return reader.readLine();
+        }
+        
+        public void close() {
+            active = false;
+            try {
+                if (!socket.isClosed()) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                System.err.println("Error closing client connection: " + e.getMessage());
+            }
+        }
+        
+        // Getters
+        public String getClientId() { return clientId; }
+        public boolean isActive() { return active; }
+        public PlayerState getPlayerState() { return playerState; }
+        public void setPlayerState(PlayerState state) { this.playerState = state; }
+        public Socket getSocket() { return socket; }
+    }
+    
+    /**
+     * ゲームサーバーのメインクラス
+     */
+    public static class GameServer {
+        private final int port;
+        private final ExecutorService executorService;
+        private final Map<String, ClientConnection> clients;
+        private final Map<String, PlayerState> gameState;
+        private final ObjectMapper objectMapper;
+        private final AtomicInteger connectionCounter;
+        private volatile boolean running;
+        
+        public GameServer(int port) {
+            this.port = port;
+            this.executorService = Executors.newCachedThreadPool();
+            this.clients = new ConcurrentHashMap<>();
+            this.gameState = new ConcurrentHashMap<>();
+            this.objectMapper = new ObjectMapper();
+            this.connectionCounter = new AtomicInteger(0);
+            this.running = false;
+        }
+        
+        /**
+         * サーバーの開始
+         */
+        public void start() {
+            running = true;
+            System.out.println("=== マルチプレイヤーゲームサーバー起動 ===");
+            System.out.println("ポート: " + port);
+            
+            // ゲーム状態の定期更新タスク
+            executorService.submit(this::gameStateUpdateLoop);
+            
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
+                System.out.println("クライアントの接続を待機中...");
+                
+                while (running) {
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        int connectionId = connectionCounter.incrementAndGet();
+                        
+                        System.out.printf("新しい接続 #%d: %s%n", 
+                            connectionId, clientSocket.getRemoteSocketAddress());
+                        
+                        // 各クライアント用のハンドラーを非同期で実行
+                        executorService.submit(() -> handleClient(clientSocket));
+                        
+                    } catch (IOException e) {
+                        if (running) {
+                            System.err.println("クライアント接続エラー: " + e.getMessage());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("サーバーソケットエラー: " + e.getMessage());
+            }
+        }
+        
+        /**
+         * 個別クライアントの処理
+         */
+        private void handleClient(Socket clientSocket) {
+            ClientConnection connection = null;
+            
+            try {
+                connection = new ClientConnection(clientSocket);
+                clients.put(connection.getClientId(), connection);
+                
+                System.out.printf("クライアント登録: %s (%s)%n",
+                    connection.getClientId(), 
+                    clientSocket.getRemoteSocketAddress());
+                
+                // ウェルカムメッセージ
+                connection.sendMessage(createWelcomeMessage(connection.getClientId()));
+                
+                // メッセージ処理ループ
+                String rawMessage;
+                while (connection.isActive() && (rawMessage = connection.readMessage()) != null) {
+                    try {
+                        processMessage(connection, rawMessage);
+                    } catch (Exception e) {
+                        System.err.println("メッセージ処理エラー: " + e.getMessage());
+                        // エラーメッセージをクライアントに送信
+                        connection.sendMessage(createErrorMessage(e.getMessage()));
+                    }
+                }
+                
+            } catch (IOException e) {
+                System.err.println("クライアント通信エラー: " + e.getMessage());
+            } finally {
+                // クリーンアップ処理
+                if (connection != null) {
+                    cleanupClient(connection);
+                }
+            }
+        }
+        
+        /**
+         * メッセージ処理の分岐
+         */
+        private void processMessage(ClientConnection connection, String rawMessage) throws Exception {
+            // JSON解析の試行
+            Map<String, Object> messageData = objectMapper.readValue(rawMessage, Map.class);
+            String messageType = (String) messageData.get("type");
+            
+            switch (messageType) {
+                case "join" -> handleJoinMessage(connection, messageData);
+                case "move" -> handleMoveMessage(connection, messageData);
+                case "chat" -> handleChatMessage(connection, messageData);
+                case "ping" -> handlePingMessage(connection);
+                default -> System.err.println("不明なメッセージタイプ: " + messageType);
+            }
+        }
+        
+        /**
+         * プレイヤー参加処理
+         */
+        private void handleJoinMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
+            String playerName = (String) data.get("playerName");
+            
+            PlayerState playerState = new PlayerState(connection.getClientId(), playerName);
+            connection.setPlayerState(playerState);
+            gameState.put(connection.getClientId(), playerState);
+            
+            System.out.printf("プレイヤー参加: %s (ID: %s)%n", 
+                playerName, connection.getClientId());
+            
+            // 参加通知をすべてのクライアントにブロードキャスト
+            PlayerJoinMessage joinMessage = new PlayerJoinMessage();
+            joinMessage.playerId = connection.getClientId();
+            joinMessage.playerName = playerName;
+            
+            broadcastMessage(objectMapper.writeValueAsString(joinMessage));
+        }
+        
+        /**
+         * プレイヤー移動処理
+         */
+        private void handleMoveMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
+            PlayerState playerState = connection.getPlayerState();
+            if (playerState == null) return;
+            
+            double x = ((Number) data.get("x")).doubleValue();
+            double y = ((Number) data.get("y")).doubleValue();
+            
+            // 移動範囲の制限（0-1000の範囲内）
+            x = Math.max(0, Math.min(1000, x));
+            y = Math.max(0, Math.min(1000, y));
+            
+            playerState.x = x;
+            playerState.y = y;
+            playerState.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            
+            // 移動メッセージをブロードキャスト
+            PlayerMoveMessage moveMessage = new PlayerMoveMessage();
+            moveMessage.playerId = connection.getClientId();
+            moveMessage.x = x;
+            moveMessage.y = y;
+            
+            broadcastMessage(objectMapper.writeValueAsString(moveMessage));
+        }
+        
+        /**
+         * チャットメッセージ処理
+         */
+        private void handleChatMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
+            PlayerState playerState = connection.getPlayerState();
+            if (playerState == null) return;
+            
+            String message = (String) data.get("message");
+            
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.playerId = connection.getClientId();
+            chatMessage.message = message;
+            
+            System.out.printf("チャット [%s]: %s%n", playerState.name, message);
+            
+            broadcastMessage(objectMapper.writeValueAsString(chatMessage));
+        }
+        
+        /**
+         * 生存確認処理
+         */
+        private void handlePingMessage(ClientConnection connection) throws Exception {
+            PlayerState playerState = connection.getPlayerState();
+            if (playerState != null) {
+                playerState.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            }
+            
+            // Pongレスポンス
+            Map<String, Object> pongMessage = Map.of(
+                "type", "pong",
+                "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            );
+            connection.sendMessage(objectMapper.writeValueAsString(pongMessage));
+        }
+        
+        /**
+         * すべてのクライアントにメッセージをブロードキャスト
+         */
+        private void broadcastMessage(String message) {
+            clients.values().parallelStream()
+                .filter(ClientConnection::isActive)
+                .forEach(client -> client.sendMessage(message));
+        }
+        
+        /**
+         * ゲーム状態の定期更新
+         */
+        private void gameStateUpdateLoop() {
+            while (running) {
+                try {
+                    Thread.sleep(5000); // 5秒間隔
+                    
+                    // アクティブなプレイヤーの状態更新
+                    GameStateMessage stateMessage = new GameStateMessage();
+                    stateMessage.players = new HashMap<>(gameState);
+                    
+                    String stateJson = objectMapper.writeValueAsString(stateMessage);
+                    broadcastMessage(stateJson);
+                    
+                    System.out.printf("ゲーム状態更新送信 - アクティブプレイヤー: %d人%n", 
+                        stateMessage.players.size());
+                        
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                } catch (Exception e) {
+                    System.err.println("ゲーム状態更新エラー: " + e.getMessage());
+                }
+            }
+        }
+        
+        /**
+         * クライアントのクリーンアップ
+         */
+        private void cleanupClient(ClientConnection connection) {
+            connection.close();
+            clients.remove(connection.getClientId());
+            
+            PlayerState playerState = connection.getPlayerState();
+            if (playerState != null) {
+                gameState.remove(connection.getClientId());
+                System.out.printf("プレイヤー退出: %s (ID: %s)%n", 
+                    playerState.name, connection.getClientId());
+            }
+            
+            System.out.printf("クライアント切断: %s%n", connection.getClientId());
+        }
+        
+        /**
+         * ウェルカムメッセージの作成
+         */
+        private String createWelcomeMessage(String clientId) throws Exception {
+            Map<String, Object> welcomeMessage = Map.of(
+                "type", "welcome",
+                "clientId", clientId,
+                "serverInfo", Map.of(
+                    "name", "マルチプレイヤーゲームサーバー",
+                    "version", "1.0",
+                    "maxPlayers", 100
+                ),
+                "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            );
+            return objectMapper.writeValueAsString(welcomeMessage);
+        }
+        
+        /**
+         * エラーメッセージの作成
+         */
+        private String createErrorMessage(String error) {
+            try {
+                Map<String, Object> errorMessage = Map.of(
+                    "type", "error",
+                    "message", error,
+                    "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                );
+                return objectMapper.writeValueAsString(errorMessage);
+            } catch (Exception e) {
+                return "{\"type\":\"error\",\"message\":\"Unknown error occurred\"}";
+            }
+        }
+        
+        /**
+         * サーバーの停止
+         */
+        public void stop() {
+            running = false;
+            
+            // 全クライアントに切断通知
+            clients.values().forEach(ClientConnection::close);
+            
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+            
+            System.out.println("サーバーが停止しました。");
+        }
+    }
+    
+    /**
+     * テスト用シンプルクライアント
+     */
+    public static class GameClient {
+        private Socket socket;
+        private PrintWriter writer;
+        private BufferedReader reader;
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        
+        public void connect(String host, int port) throws IOException {
+            socket = new Socket(host, port);
+            writer = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
+            reader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            
+            System.out.println("サーバーに接続しました: " + host + ":" + port);
+        }
+        
+        public void joinGame(String playerName) throws Exception {
+            Map<String, Object> joinMessage = Map.of(
+                "type", "join",
+                "playerName", playerName
+            );
+            sendMessage(joinMessage);
+        }
+        
+        public void movePlayer(double x, double y) throws Exception {
+            Map<String, Object> moveMessage = Map.of(
+                "type", "move",
+                "x", x,
+                "y", y
+            );
+            sendMessage(moveMessage);
+        }
+        
+        public void sendChat(String message) throws Exception {
+            Map<String, Object> chatMessage = Map.of(
+                "type", "chat",
+                "message", message
+            );
+            sendMessage(chatMessage);
+        }
+        
+        private void sendMessage(Map<String, Object> message) throws Exception {
+            String json = objectMapper.writeValueAsString(message);
+            writer.println(json);
+        }
+        
+        public void startListening() {
+            new Thread(() -> {
+                try {
+                    String message;
+                    while ((message = reader.readLine()) != null) {
+                        System.out.println("サーバーからのメッセージ: " + message);
+                    }
+                } catch (IOException e) {
+                    System.err.println("サーバーからの読み込みエラー: " + e.getMessage());
+                }
+            }).start();
+        }
+        
+        public void disconnect() throws IOException {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        }
+    }
+    
+    /**
+     * デモンストレーション
+     */
+    public static void main(String[] args) {
+        GameServer server = new GameServer(8888);
+        
+        // サーバーを別スレッドで起動
+        Thread serverThread = new Thread(server::start);
+        serverThread.start();
+        
+        // 少し待ってからテストクライアントを接続
+        try {
+            Thread.sleep(1000);
+            
+            // テストクライアント1
+            GameClient client1 = new GameClient();
+            client1.connect("localhost", 8888);
+            client1.startListening();
+            client1.joinGame("プレイヤー1");
+            
+            Thread.sleep(1000);
+            
+            // テストクライアント2
+            GameClient client2 = new GameClient();
+            client2.connect("localhost", 8888);
+            client2.startListening();
+            client2.joinGame("プレイヤー2");
+            
+            // テストメッセージの送信
+            Thread.sleep(1000);
+            client1.movePlayer(100, 200);
+            client1.sendChat("こんにちは！");
+            
+            Thread.sleep(1000);
+            client2.movePlayer(300, 400);
+            client2.sendChat("よろしくお願いします！");
+            
+            // しばらく動作させてから終了
+            Thread.sleep(10000);
+            
+            client1.disconnect();
+            client2.disconnect();
+            server.stop();
+            
+        } catch (Exception e) {
+            System.err.println("デモ実行エラー: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**このマルチプレイヤーゲームサーバーの特徴と学習ポイント:**
+
+1. **現代的なメッセージング**: JSON形式でのプロトコル設計により、Web技術との親和性が高い通信を実現しています。
+
+2. **リアルタイム通信**: WebSocketスタイルの双方向通信により、即座の状態同期が可能です。
+
+3. **接続管理**: クライアントセッションの追跡、自動クリーンアップ、エラー回復機能を実装しています。
+
+4. **スケーラブル設計**: ConcurrentHashMapと非同期処理により、多数の同時接続に対応できます。
+
+5. **ゲーム状態同期**: 定期的なブロードキャストによる状態同期パターンを示しています。
+
+6. **エラーハンドリング**: ネットワーク障害、不正メッセージ、リソースリークに対する適切な処理を実装しています。
+
+7. **実用的なアーキテクチャ**: 実際のオンラインゲームやリアルタイムアプリケーションで使用される設計パターンを採用しています。
 
 ### クライアントの実装
 
@@ -462,7 +1081,7 @@ public class ThreadPoolEchoServer {
 }
 ```
 
-この実装では、メインスレッドは`new Thread().start()`を呼び出す代わりに、`ExecutorService`にタスクを`submit()`するだけです。スレッドのライフサイクル管理は`ExecutorService`に任せることができ、より安定したサーバーを構築できます。
+この実装では、メインスレッドは`new Thread().start()`を呼びだす代わりに、`ExecutorService`にタスクを`submit()`するだけです。スレッドのライフサイクル管理は`ExecutorService`に任せることができ、より安定したサーバーを構築できます。
 
 ## 15.5 簡単なHTTPサーバーの実装
 
@@ -586,7 +1205,7 @@ class HTTPRequestHandler implements Runnable {
 }
 ```
 
-このHTTPサーバーを実行し、Webブラウザで`http://localhost:8080/`や`http://localhost:8080/hello`にアクセスすると、HTMLページが表示されます。
+このHTTPサーバーを実行し、ブラウザで`http://localhost:8080/`や`http://localhost:8080/hello`にアクセスすると、HTMLページが表示されます。
 
 ## 15.6 人工無脳サーバーの実装
 
@@ -656,7 +1275,7 @@ public class AIProcessor implements Runnable {
 }
 ```
 
-この`AIProcessor`を`MultiThreadEchoServer`と同様のメインクラスから呼び出すことで、複数人が同時に接続し、同時に会話できる人工無脳サーバーが完成します。
+この`AIProcessor`を`MultiThreadEchoServer`と同様のメインクラスから呼びだすことで、複数人が同時に接続し、同時に会話できる人工無脳サーバーが完成します。
 
 ## 15.7 UDP通信の実装
 

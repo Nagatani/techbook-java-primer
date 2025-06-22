@@ -20,22 +20,22 @@
       "ja-no-redundant-expression": false
     },
     "preset-jtf-style": {
-      "1.1.1.本文": false,
-      "1.1.3.箇条書き": false,
-      "1.2.1.句点(。)と読点(、)": false,
+      "1.1.1.本文": true,
+      "1.1.3.箇条書き": true,
+      "1.2.1.句点(。)と読点(、)": true,
       "2.1.2.漢数字": false,
-      "2.1.5.算用数字": false,
+      "2.1.5.算用数字": true,
       "2.1.6.ローマ数字": false,
-      "2.2.1.ひらがなと漢字の使い分け": false,
+      "2.2.1.ひらがなと漢字の使い分け": true,
       "3.1.1.全角文字と半角文字の間": {
         "space": "never"
       },
-      "3.3.かっこ類と隣接する文字の間のスペースの有無": false,
+      "3.3.かっこ類と隣接する文字の間のスペースの有無": true,
       "4.1.3.ピリオド(.)、カンマ(,)": false,
-      "4.2.7.コロン(：)": false,
-      "4.3.1.丸かっこ（）": false
+      "4.2.7.コロン(：)": true,
+      "4.3.1.丸かっこ（）": true
     },
-    "spellcheck-tech-word": true,
+    "spellcheck-tech-word": false,
     "no-mixed-zenkaku-and-hankaku-alphabet": false
   }
 }

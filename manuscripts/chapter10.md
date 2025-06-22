@@ -50,7 +50,7 @@ for (Integer item : data) {
 
 **再利用性の欠如**：似たような処理パターン（フィルタリング、マッピング、集約など）であっても、毎回一から実装する必要があり、コードの重複が発生しやすい状況でした。
 
-**エラーの多発**：ループのインデックス管理、一時変数の状態管理、null チェックなど、処理の本質とは関係ない詳細でバグが発生しやすく、保守性が低下していました。
+**エラーの多発**：ループのインデックス管理、一時変数の状態管理、nullチェックなど、処理の本質とは関係ない詳細でバグが発生しやすく、保守性が低下していました。
 
 **並行処理の困難さ**：マルチコアプロセッサの普及により並行処理の重要性が高まりましたが、従来の命令的アプローチでは、安全で効率的な並行処理の実装が極めて困難でした。
 
@@ -72,7 +72,7 @@ for (Integer item : data) {
 
 Java 8のStream APIは、他のプログラミング言語における先進的な取り組みを参考にして設計されました：
 
-**LISP（1950年代〜）**：リスト処理の分野で、map、filter、reduceなどの概念が初めて導入されました。関数型データ処理の理論的基盤を提供しました。
+**Lisp（1950年代〜）**：リスト処理の分野で、map、filter、reduceなどの概念が初めて導入されました。関数型データ処理の理論的基盤を提供しました。
 
 **Haskell（1990年〜）**：純粋関数型言語として、遅延評価と無限リストの概念を確立しました。効率的で表現力豊かなデータ処理の手法を実現しました。
 
@@ -444,6 +444,107 @@ public class SalesDataAnalysisSystem {
         System.out.printf("総売上: ¥%s%n", parallelTotalSales);
         System.out.printf("並行処理時間: %d ns, 順次処理時間: %d ns%n", 
             parallelEndTime - parallelStartTime, sequentialEndTime - sequentialStartTime);
+        
+        // パターン6: Optional活用による安全なデータ取得
+        Optional<SalesRecord> maxSaleRecord = salesData.stream()
+            .max(Comparator.comparing(record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity()))));
+        maxSaleRecord.ifPresent(record -> 
+            System.out.println("最高売上記録: " + record));
+        
+        // パターン7: 条件付き集計（partitioningBy）
+        Map<Boolean, List<SalesRecord>> partitionedSales = salesData.stream()
+            .collect(Collectors.partitioningBy(record -> 
+                record.getAmount().compareTo(new BigDecimal("10000")) >= 0));
+        System.out.println("高額売上（1万円以上）: " + partitionedSales.get(true).size() + "件");
+        System.out.println("一般売上（1万円未満）: " + partitionedSales.get(false).size() + "件");
+        
+        // パターン8: 営業担当者別の最高売上抽出
+        Map<String, Optional<SalesRecord>> topSalesByPerson = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getSalesPerson,
+                Collectors.maxBy(Comparator.comparing(record -> 
+                    record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity()))))
+            ));
+        
+        System.out.println("営業担当者別最高売上:");
+        topSalesByPerson.forEach((person, recordOpt) -> {
+            recordOpt.ifPresent(record -> {
+                BigDecimal saleAmount = record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity()));
+                System.out.printf("  %s: %s (¥%s)%n", person, record.getProductName(), saleAmount);
+            });
+        });
+    }
+    
+    // Stream APIの高度な操作例：時系列データ分析
+    public void demonstrateTimeSeriesAnalysis() {
+        System.out.println("\n=== 時系列データ分析の高度なStream操作 ===");
+        
+        // 月別売上推移の分析
+        Map<Month, BigDecimal> monthlySales = salesData.stream()
+            .collect(Collectors.groupingBy(
+                record -> record.getSaleDate().getMonth(),
+                Collectors.reducing(
+                    BigDecimal.ZERO,
+                    record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())),
+                    BigDecimal::add
+                )
+            ));
+        
+        System.out.println("月別売上推移:");
+        monthlySales.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(entry -> System.out.printf("  %s: ¥%s%n", entry.getKey(), entry.getValue()));
+        
+        // 地域別成長率計算（1月vs2月）
+        Map<String, Map<Month, BigDecimal>> regionMonthSales = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getRegion,
+                Collectors.groupingBy(
+                    record -> record.getSaleDate().getMonth(),
+                    Collectors.reducing(
+                        BigDecimal.ZERO,
+                        record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())),
+                        BigDecimal::add
+                    )
+                )
+            ));
+        
+        System.out.println("\n地域別成長率（1月→2月）:");
+        regionMonthSales.forEach((region, monthSales) -> {
+            BigDecimal jan = monthSales.getOrDefault(Month.JANUARY, BigDecimal.ZERO);
+            BigDecimal feb = monthSales.getOrDefault(Month.FEBRUARY, BigDecimal.ZERO);
+            
+            if (jan.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal growthRate = feb.subtract(jan)
+                    .divide(jan, 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+                System.out.printf("  %s: %.2f%%%n", region, growthRate);
+            }
+        });
+        
+        // 商品カテゴリ別のパフォーマンス指標
+        Map<String, Map<String, Object>> categoryMetrics = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getCategory,
+                Collectors.teeing(
+                    Collectors.summingDouble(record -> 
+                        record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())).doubleValue()),
+                    Collectors.counting(),
+                    (totalSales, count) -> Map.of(
+                        "totalSales", BigDecimal.valueOf(totalSales),
+                        "transactionCount", count,
+                        "averagePerTransaction", BigDecimal.valueOf(totalSales / count)
+                    )
+                )
+            ));
+        
+        System.out.println("\nカテゴリ別パフォーマンス指標:");
+        categoryMetrics.forEach((category, metrics) -> {
+            System.out.printf("  %s:%n", category);
+            System.out.printf("    総売上: ¥%s%n", metrics.get("totalSales"));
+            System.out.printf("    取引件数: %s件%n", metrics.get("transactionCount"));
+            System.out.printf("    平均取引額: ¥%s%n", metrics.get("averagePerTransaction"));
+        });
     }
     
     public static void main(String[] args) {
@@ -459,6 +560,9 @@ public class SalesDataAnalysisSystem {
         
         // Stream APIの様々なパターン
         system.demonstrateStreamPatterns();
+        
+        // 時系列データ分析
+        system.demonstrateTimeSeriesAnalysis();
     }
 }
 ```
@@ -475,631 +579,1994 @@ public class SalesDataAnalysisSystem {
 
 5. **エラーの削減**：ループや一時変数の管理が不要になり、インデックス外参照などのバグを避けられます。
 
+6. **遅延評価**：中間操作は終端操作が呼ばれるまで実行されず、効率的なデータ処理が実現されます。
+
+7. **複雑な集約処理**：`groupingBy`、`partitioningBy`、`teeing`などにより、従来では複雑だった分析処理を簡潔に記述できます。
+
 ## 10.2 Streamの作成
+
+### 基本的なStream生成方法：データソース別活用例
+
+Stream APIを効果的に活用するためには、様々なデータソースからStreamを生成する方法を理解することが重要です。以下で実用的な例を通じて学習します：
 
 ```java
 import java.util.*;
 import java.util.stream.*;
+import java.nio.file.*;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
-public class StreamCreation {
-    public static void main(String[] args) {
-        // コレクションから
-        List<String> list = Arrays.asList("a", "b", "c");
-        Stream<String> streamFromList = list.stream();
+/**
+ * Stream生成の包括的デモンストレーション
+ * 様々なデータソースからのStream作成方法を実証
+ */
+public class StreamCreationDemo {
+    
+    // 1. コレクションからのStream生成
+    public static void demonstrateCollectionStreams() {
+        System.out.println("=== コレクションからのStream生成 ===");
         
-        // 配列から
-        String[] array = {"x", "y", "z"};
-        Stream<String> streamFromArray = Arrays.stream(array);
+        // List からの Stream
+        List<String> fruits = Arrays.asList("apple", "banana", "cherry", "date", "elderberry");
+        fruits.stream()
+              .filter(fruit -> fruit.length() > 5)
+              .map(String::toUpperCase)
+              .forEach(System.out::println);
         
-        // 直接値から
-        Stream<String> streamOfValues = Stream.of("apple", "banana", "cherry");
+        // Set からの Stream
+        Set<Integer> numbers = Set.of(1, 2, 3, 4, 5, 2, 3); // 重複は除去される
+        numbers.stream()
+               .filter(n -> n % 2 == 0)
+               .map(n -> n * n)
+               .forEach(System.out::println);
         
-        // 空のStream
-        Stream<String> emptyStream = Stream.empty();
+        // Map からの Stream (エントリーストリーム)
+        Map<String, Integer> scores = Map.of("Alice", 85, "Bob", 92, "Charlie", 78);
+        scores.entrySet().stream()
+              .filter(entry -> entry.getValue() > 80)
+              .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+    }
+    
+    // 2. 配列からのStream生成
+    public static void demonstrateArrayStreams() {
+        System.out.println("\n=== 配列からのStream生成 ===");
         
-        // 無限Stream
-        Stream<Integer> infiniteStream = Stream.iterate(0, n -> n + 2);
-        Stream<Double> randomStream = Stream.generate(Math::random);
+        // Object配列からのStream
+        String[] languages = {"Java", "Python", "JavaScript", "C++", "Go"};
+        Arrays.stream(languages)
+              .filter(lang -> lang.contains("Java"))
+              .forEach(System.out::println);
         
-        // 範囲指定
-        IntStream range = IntStream.range(1, 10);          // 1-9
-        IntStream rangeClosed = IntStream.rangeClosed(1, 10); // 1-10
+        // プリミティブ配列からの特殊Stream
+        int[] ages = {25, 30, 35, 40, 45, 50};
+        IntStream ageStream = Arrays.stream(ages);
+        System.out.println("平均年齢: " + ageStream.average().orElse(0.0));
         
-        // ファイルから
+        double[] prices = {100.5, 200.0, 150.75, 300.25};
+        DoubleStream priceStream = Arrays.stream(prices);
+        System.out.println("総価格: " + priceStream.sum());
+    }
+    
+    // 3. Stream.of()による直接生成
+    public static void demonstrateDirectStreams() {
+        System.out.println("\n=== Stream.of()による直接生成 ===");
+        
+        // 直接値からのStream
+        Stream.of("red", "green", "blue", "yellow")
+              .map(color -> "Color: " + color)
+              .forEach(System.out::println);
+        
+        // 混合型のObject Stream
+        Stream.of(1, "hello", 3.14, true)
+              .map(Object::toString)
+              .map(String::toUpperCase)
+              .forEach(System.out::println);
+    }
+    
+    // 4. 範囲指定による数値Stream
+    public static void demonstrateRangeStreams() {
+        System.out.println("\n=== 範囲指定による数値Stream ===");
+        
+        // range: 終端値を含まない
+        System.out.print("range(1, 6): ");
+        IntStream.range(1, 6)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // rangeClosed: 終端値を含む
+        System.out.print("rangeClosed(1, 5): ");
+        IntStream.rangeClosed(1, 5)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // 数学的計算例：1から100までの合計
+        int sum = IntStream.rangeClosed(1, 100).sum();
+        System.out.println("1から100までの合計: " + sum);
+        
+        // 階乗計算例
+        int factorial = IntStream.rangeClosed(1, 5)
+                                .reduce(1, (a, b) -> a * b);
+        System.out.println("5の階乗: " + factorial);
+    }
+    
+    // 5. 無限Streamの生成と制御
+    public static void demonstrateInfiniteStreams() {
+        System.out.println("\n=== 無限Streamの生成と制御 ===");
+        
+        // Stream.iterate()による無限Stream
+        System.out.print("偶数の最初の10個: ");
+        Stream.iterate(0, n -> n + 2)
+              .limit(10)
+              .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // フィボナッチ数列の生成
+        System.out.print("フィボナッチ数列の最初の10個: ");
+        Stream.iterate(new int[]{0, 1}, fib -> new int[]{fib[1], fib[0] + fib[1]})
+              .limit(10)
+              .mapToInt(fib -> fib[0])
+              .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // Stream.generate()による無限Stream
+        System.out.print("ランダムな5つの数値: ");
+        Stream.generate(Math::random)
+              .limit(5)
+              .forEach(n -> System.out.printf("%.2f ", n));
+        System.out.println();
+        
+        // カスタム生成器
+        System.out.print("カウントダウン: ");
+        Stream.iterate(10, n -> n > 0, n -> n - 1)  // Java 9以降の条件付きiterate
+              .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+    }
+    
+    // 6. ファイルからのStream生成
+    public static void demonstrateFileStreams() {
+        System.out.println("\n=== ファイルからのStream生成 ===");
+        
         try {
-            Stream<String> lines = Files.lines(Paths.get("example.txt"));
-        } catch (Exception e) {
-            // ファイル処理
+            // 一時ファイルの作成
+            Path tempFile = Files.createTempFile("sample", ".txt");
+            Files.write(tempFile, Arrays.asList(
+                "apple,100,fruit",
+                "banana,80,fruit", 
+                "carrot,60,vegetable",
+                "date,120,fruit",
+                "eggplant,90,vegetable"
+            ));
+            
+            // ファイルの各行をStreamとして処理
+            System.out.println("ファイル内容:");
+            Files.lines(tempFile)
+                 .forEach(System.out::println);
+            
+            // CSVデータの解析
+            System.out.println("\n果物のみ抽出:");
+            Files.lines(tempFile)
+                 .map(line -> line.split(","))
+                 .filter(parts -> parts.length == 3 && "fruit".equals(parts[2]))
+                 .forEach(parts -> System.out.println(parts[0] + ": " + parts[1] + "円"));
+            
+            // ファイルの削除
+            Files.delete(tempFile);
+            
+        } catch (IOException e) {
+            System.err.println("ファイル処理エラー: " + e.getMessage());
         }
+    }
+    
+    // 7. 正規表現によるStream生成
+    public static void demonstratePatternStreams() {
+        System.out.println("\n=== 正規表現によるStream生成 ===");
         
-        // 使用例
-        infiniteStream.limit(5).forEach(System.out::println);  // 0, 2, 4, 6, 8
-        range.forEach(System.out::println);  // 1-9
+        String text = "apple,banana;cherry:date|elderberry";
+        
+        // 区切り文字で分割
+        Pattern.compile("[,;:|]")
+               .splitAsStream(text)
+               .filter(word -> word.length() > 4)
+               .map(String::toUpperCase)
+               .forEach(System.out::println);
+        
+        // HTML文字列から要素抽出
+        String html = "<div>Hello</div><span>World</span><p>Java</p>";
+        Pattern.compile("<(\\w+)>([^<]+)</\\1>")
+               .matcher(html)
+               .results()
+               .map(result -> result.group(1) + ": " + result.group(2))
+               .forEach(System.out::println);
+    }
+    
+    // 8. 空Streamと条件付きStream
+    public static void demonstrateEmptyAndConditionalStreams() {
+        System.out.println("\n=== 空Streamと条件付きStream ===");
+        
+        // 空Stream
+        Stream<String> emptyStream = Stream.empty();
+        System.out.println("空Streamの要素数: " + emptyStream.count());
+        
+        // 条件によるStream生成
+        List<String> data = Arrays.asList("a", "b", "c");
+        boolean processData = true;
+        
+        (processData ? data.stream() : Stream.<String>empty())
+            .map(String::toUpperCase)
+            .forEach(System.out::println);
+        
+        // Optional からのStream (Java 9以降)
+        Optional<String> optionalValue = Optional.of("Hello Stream");
+        optionalValue.stream()
+                    .map(String::toUpperCase)
+                    .forEach(System.out::println);
+    }
+    
+    public static void main(String[] args) {
+        demonstrateCollectionStreams();
+        demonstrateArrayStreams();
+        demonstrateDirectStreams();
+        demonstrateRangeStreams();
+        demonstrateInfiniteStreams();
+        demonstrateFileStreams();
+        demonstratePatternStreams();
+        demonstrateEmptyAndConditionalStreams();
     }
 }
 ```
+
+**Stream生成の重要なポイント：**
+
+1. **データソースの多様性**：コレクション、配列、ファイル、生成器など様々なソースからStreamを作成できます。
+
+2. **専用プリミティブStream**：`IntStream`、`LongStream`、`DoubleStream`により、ボクシング/アンボクシングのオーバーヘッドを回避できます。
+
+3. **無限Streamの制御**：`limit()`や条件付き`iterate()`により、無限シーケンスを安全に扱えます。
+
+4. **遅延評価の活用**：Streamは終端操作が呼ばれるまで実際の処理を開始しないため、効率的です。
+
+5. **リソース管理**：ファイルStreamなどは適切にクローズされるよう注意が必要です。
 
 ## 10.3 中間操作（Intermediate Operations）
 
-### filter - フィルタリング
+中間操作は、Streamパイプラインの中核を成す操作で、Streamを別のStreamに変換します。重要な特徴は**遅延評価**されることで、終端操作が呼ばれるまで実際の処理は実行されません。
+
+### 主要な中間操作の実践的活用
 
 ```java
 import java.util.*;
 import java.util.stream.*;
+import java.util.function.*;
 
-public class FilterExample {
-    public static void main(String[] args) {
-        List<String> words = Arrays.asList(
-            "apple", "banana", "cherry", "date", "elderberry"
-        );
+/**
+ * Stream中間操作の包括的デモンストレーション
+ * filter, map, flatMap, distinct, sorted, limit, skip, peek等の実用例
+ */
+public class IntermediateOperationsDemo {
+    
+    // サンプルデータクラス
+    static class Employee {
+        private String name;
+        private String department;
+        private int age;
+        private double salary;
+        private List<String> skills;
         
-        // 長さが5文字以上の単語
-        words.stream()
-             .filter(w -> w.length() >= 5)
-             .forEach(System.out::println);
-        
-        // 'a'で始まる単語
-        words.stream()
-             .filter(w -> w.startsWith("a"))
-             .forEach(System.out::println);
-        
-        // 複数条件
-        words.stream()
-             .filter(w -> w.length() > 4)
-             .filter(w -> w.contains("e"))
-             .forEach(System.out::println);
-    }
-}
-```
-
-### map - 変換
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class MapExample {
-    public static void main(String[] args) {
-        List<String> words = Arrays.asList("hello", "world", "java", "stream");
-        
-        // 大文字に変換
-        words.stream()
-             .map(String::toUpperCase)
-             .forEach(System.out::println);
-        
-        // 長さに変換
-        words.stream()
-             .map(String::length)
-             .forEach(System.out::println);
-        
-        // カスタム変換
-        words.stream()
-             .map(w -> "「" + w + "」")
-             .forEach(System.out::println);
-        
-        // 数値処理
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-        numbers.stream()
-               .map(n -> n * n)  // 平方
-               .forEach(System.out::println);
-    }
-}
-```
-
-### flatMap - フラット化
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class FlatMapExample {
-    public static void main(String[] args) {
-        List<List<String>> nestedList = Arrays.asList(
-            Arrays.asList("a", "b"),
-            Arrays.asList("c", "d", "e"),
-            Arrays.asList("f")
-        );
-        
-        // ネストしたリストをフラット化
-        nestedList.stream()
-                  .flatMap(List::stream)
-                  .forEach(System.out::println);  // a, b, c, d, e, f
-        
-        // 文字列を文字に分割
-        List<String> sentences = Arrays.asList("hello world", "java stream");
-        sentences.stream()
-                 .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
-                 .forEach(System.out::println);  // hello, world, java, stream
-        
-        // Optionalのフラット化
-        List<Optional<String>> optionals = Arrays.asList(
-            Optional.of("apple"),
-            Optional.empty(),
-            Optional.of("banana")
-        );
-        
-        optionals.stream()
-                 .flatMap(Optional::stream)
-                 .forEach(System.out::println);  // apple, banana
-    }
-}
-```
-
-### sorted - ソート
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class SortedExample {
-    static class Person {
-        String name;
-        int age;
-        
-        Person(String name, int age) {
+        public Employee(String name, String department, int age, double salary, List<String> skills) {
             this.name = name;
+            this.department = department;
             this.age = age;
+            this.salary = salary;
+            this.skills = skills;
         }
+        
+        // ゲッターメソッド
+        public String getName() { return name; }
+        public String getDepartment() { return department; }
+        public int getAge() { return age; }
+        public double getSalary() { return salary; }
+        public List<String> getSkills() { return skills; }
         
         @Override
         public String toString() {
-            return name + "(" + age + ")";
+            return String.format("%s(%s, %d歳, ¥%.0f)", name, department, age, salary);
         }
     }
     
-    public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(3, 1, 4, 1, 5, 9, 2, 6);
+    // 1. filter - 条件によるフィルタリング
+    public static void demonstrateFilter() {
+        System.out.println("=== filter() - フィルタリング操作 ===");
         
-        // 自然順序でソート
-        numbers.stream()
-               .sorted()
-               .forEach(System.out::println);
+        List<Employee> employees = createEmployees();
         
-        // 逆順でソート
-        numbers.stream()
-               .sorted(Comparator.reverseOrder())
-               .forEach(System.out::println);
+        // 基本的なフィルタリング
+        System.out.println("30歳以上の従業員:");
+        employees.stream()
+                 .filter(emp -> emp.getAge() >= 30)
+                 .forEach(System.out::println);
         
-        List<Person> people = Arrays.asList(
-            new Person("田中", 25),
-            new Person("佐藤", 30),
-            new Person("鈴木", 20)
+        // 複数条件によるフィルタリング
+        System.out.println("\nIT部門で年収500万以上:");
+        employees.stream()
+                 .filter(emp -> "IT".equals(emp.getDepartment()))
+                 .filter(emp -> emp.getSalary() >= 5000000)
+                 .forEach(System.out::println);
+        
+        // 複雑な条件（スキルベース）
+        System.out.println("\nJavaスキルを持つ従業員:");
+        employees.stream()
+                 .filter(emp -> emp.getSkills().contains("Java"))
+                 .forEach(System.out::println);
+    }
+    
+    // 2. map - 要素の変換
+    public static void demonstrateMap() {
+        System.out.println("\n=== map() - 要素変換操作 ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 基本的な変換
+        System.out.println("従業員名一覧:");
+        employees.stream()
+                 .map(Employee::getName)
+                 .forEach(System.out::println);
+        
+        // 計算を含む変換
+        System.out.println("\n月給一覧:");
+        employees.stream()
+                 .map(emp -> emp.getName() + ": ¥" + String.format("%.0f", emp.getSalary() / 12))
+                 .forEach(System.out::println);
+        
+        // 複雑なオブジェクト変換
+        System.out.println("\n従業員サマリー:");
+        employees.stream()
+                 .map(emp -> String.format("%s (%s部門) - スキル数: %d", 
+                             emp.getName(), emp.getDepartment(), emp.getSkills().size()))
+                 .forEach(System.out::println);
+    }
+    
+    // 3. flatMap - ネストしたコレクションの平坦化
+    public static void demonstrateFlatMap() {
+        System.out.println("\n=== flatMap() - 平坦化操作 ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 全従業員のスキルを平坦化
+        System.out.println("全スキル一覧:");
+        employees.stream()
+                 .flatMap(emp -> emp.getSkills().stream())
+                 .distinct()
+                 .sorted()
+                 .forEach(System.out::println);
+        
+        // 部門別スキル統計
+        System.out.println("\n部門別ユニークスキル数:");
+        employees.stream()
+                 .collect(Collectors.groupingBy(Employee::getDepartment))
+                 .forEach((dept, empList) -> {
+                     long uniqueSkills = empList.stream()
+                                               .flatMap(emp -> emp.getSkills().stream())
+                                               .distinct()
+                                               .count();
+                     System.out.println(dept + ": " + uniqueSkills + "種類");
+                 });
+        
+        // 文字列分割の例
+        List<String> sentences = Arrays.asList("Hello World", "Java Stream API", "Functional Programming");
+        System.out.println("\n全単語一覧:");
+        sentences.stream()
+                 .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+                 .map(String::toLowerCase)
+                 .distinct()
+                 .sorted()
+                 .forEach(System.out::println);
+    }
+    
+    // 4. distinct - 重複除去
+    public static void demonstrateDistinct() {
+        System.out.println("\n=== distinct() - 重複除去操作 ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 部門の重複除去
+        System.out.println("存在する部門:");
+        employees.stream()
+                 .map(Employee::getDepartment)
+                 .distinct()
+                 .forEach(System.out::println);
+        
+        // 年齢層の重複除去
+        System.out.println("\n年齢層（10歳刻み）:");
+        employees.stream()
+                 .mapToInt(emp -> (emp.getAge() / 10) * 10)
+                 .distinct()
+                 .sorted()
+                 .forEach(age -> System.out.println(age + "代"));
+    }
+    
+    // 5. sorted - ソート操作
+    public static void demonstrateSorted() {
+        System.out.println("\n=== sorted() - ソート操作 ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 基本的なソート（年齢順）
+        System.out.println("年齢順:");
+        employees.stream()
+                 .sorted(Comparator.comparingInt(Employee::getAge))
+                 .forEach(System.out::println);
+        
+        // 複合ソート（部門別→年収順）
+        System.out.println("\n部門別年収順:");
+        employees.stream()
+                 .sorted(Comparator.comparing(Employee::getDepartment)
+                                  .thenComparing(Employee::getSalary, Comparator.reverseOrder()))
+                 .forEach(System.out::println);
+        
+        // カスタムソート（スキル数順）
+        System.out.println("\nスキル数順（降順）:");
+        employees.stream()
+                 .sorted((e1, e2) -> Integer.compare(e2.getSkills().size(), e1.getSkills().size()))
+                 .forEach(emp -> System.out.println(emp.getName() + ": " + emp.getSkills().size() + "スキル"));
+    }
+    
+    // 6. limit と skip - 要素数制御
+    public static void demonstrateLimitAndSkip() {
+        System.out.println("\n=== limit() & skip() - 要素数制御 ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 上位3名の取得
+        System.out.println("年収上位3名:");
+        employees.stream()
+                 .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                 .limit(3)
+                 .forEach(System.out::println);
+        
+        // ページネーション（2番目から3件）
+        System.out.println("\n年収ランキング2-4位:");
+        employees.stream()
+                 .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                 .skip(1)
+                 .limit(3)
+                 .forEach(System.out::println);
+        
+        // 無限Streamでの活用
+        System.out.println("\n偶数の5つ目から10個:");
+        Stream.iterate(0, n -> n + 2)
+              .skip(4)
+              .limit(10)
+              .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+    }
+    
+    // 7. peek - デバッグとモニタリング
+    public static void demonstratePeek() {
+        System.out.println("\n=== peek() - デバッグ・モニタリング ===");
+        
+        List<String> words = Arrays.asList("apple", "banana", "cherry", "date");
+        
+        // 処理パイプラインのデバッグ
+        System.out.println("処理パイプラインの監視:");
+        long count = words.stream()
+                         .peek(word -> System.out.println("入力: " + word))
+                         .filter(word -> word.length() > 4)
+                         .peek(word -> System.out.println("フィルタ通過: " + word))
+                         .map(String::toUpperCase)
+                         .peek(word -> System.out.println("大文字変換: " + word))
+                         .count();
+        
+        System.out.println("最終結果件数: " + count);
+    }
+    
+    // 8. 中間操作のチェイニング例
+    public static void demonstrateChaining() {
+        System.out.println("\n=== 中間操作のチェイニング ===");
+        
+        List<Employee> employees = createEmployees();
+        
+        // 複雑な処理パイプライン
+        System.out.println("IT部門の高スキル者（3スキル以上）の年収昇順:");
+        employees.stream()
+                 .filter(emp -> "IT".equals(emp.getDepartment()))          // IT部門のみ
+                 .filter(emp -> emp.getSkills().size() >= 3)               // 3スキル以上
+                 .sorted(Comparator.comparingDouble(Employee::getSalary))   // 年収昇順
+                 .map(emp -> String.format("%s: ¥%.0f (%dスキル)", 
+                                         emp.getName(), emp.getSalary(), emp.getSkills().size()))
+                 .forEach(System.out::println);
+    }
+    
+    // サンプルデータ作成
+    private static List<Employee> createEmployees() {
+        return Arrays.asList(
+            new Employee("田中", "IT", 28, 4500000, Arrays.asList("Java", "Python", "SQL")),
+            new Employee("佐藤", "営業", 35, 5200000, Arrays.asList("営業", "プレゼン")),
+            new Employee("鈴木", "IT", 42, 7800000, Arrays.asList("Java", "AWS", "Docker", "Kubernetes")),
+            new Employee("高橋", "HR", 29, 4200000, Arrays.asList("採用", "研修")),
+            new Employee("山田", "IT", 31, 5800000, Arrays.asList("Python", "機械学習", "データ分析")),
+            new Employee("中村", "営業", 38, 6100000, Arrays.asList("営業", "マーケティング", "企画")),
+            new Employee("小林", "IT", 26, 4000000, Arrays.asList("JavaScript", "React", "Node.js"))
         );
-        
-        // 年齢でソート
-        people.stream()
-              .sorted(Comparator.comparing(p -> p.age))
-              .forEach(System.out::println);
-        
-        // 名前でソート
-        people.stream()
-              .sorted(Comparator.comparing(p -> p.name))
-              .forEach(System.out::println);
-        
-        // 複数条件でソート
-        people.stream()
-              .sorted(Comparator.comparing((Person p) -> p.age)
-                               .thenComparing(p -> p.name))
-              .forEach(System.out::println);
     }
-}
-```
-
-### distinct, limit, skip
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class StreamOperations {
+    
     public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 3, 3, 4, 5, 5);
-        
-        // 重複除去
-        numbers.stream()
-               .distinct()
-               .forEach(System.out::println);  // 1, 2, 3, 4, 5
-        
-        // 最初の3つ
-        numbers.stream()
-               .limit(3)
-               .forEach(System.out::println);  // 1, 2, 2
-        
-        // 最初の3つをスキップ
-        numbers.stream()
-               .skip(3)
-               .forEach(System.out::println);  // 3, 3, 3, 4, 5, 5
-        
-        // 組み合わせ
-        numbers.stream()
-               .distinct()      // 重複除去
-               .skip(2)         // 最初の2つをスキップ
-               .limit(2)        // 2つまで
-               .forEach(System.out::println);  // 3, 4
+        demonstrateFilter();
+        demonstrateMap();
+        demonstrateFlatMap();
+        demonstrateDistinct();
+        demonstrateSorted();
+        demonstrateLimitAndSkip();
+        demonstratePeek();
+        demonstrateChaining();
     }
 }
 ```
+
+**中間操作の重要な特徴：**
+
+1. **遅延評価**：終端操作が呼ばれるまで実際の処理は実行されません。
+2. **チェイン可能**：複数の中間操作を連続して適用できます。
+3. **不変性**：元のStreamを変更せず、新しいStreamを返します。
+4. **最適化**：JVMがパイプライン全体を最適化できます。
 
 ## 10.4 終端操作（Terminal Operations）
 
-### forEach, forEachOrdered
+終端操作は、Streamパイプラインを完了し、結果を生成する操作です。終端操作が呼ばれた時点で、遅延評価されていた中間操作が実際に実行されます。
 
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class ForEachExample {
-    public static void main(String[] args) {
-        List<String> words = Arrays.asList("apple", "banana", "cherry");
-        
-        // 各要素に処理を適用
-        words.stream().forEach(System.out::println);
-        
-        // 並列処理でも順序を保証
-        words.parallelStream().forEachOrdered(System.out::println);
-        
-        // 副作用のある処理
-        List<String> result = new ArrayList<>();
-        words.stream().forEach(result::add);
-        System.out.println(result);
-    }
-}
-```
-
-### collect - コレクション収集
+### 主要な終端操作の実践的活用
 
 ```java
 import java.util.*;
 import java.util.stream.*;
 import static java.util.stream.Collectors.*;
 
-public class CollectExample {
-    static class Person {
-        String name;
-        int age;
-        String department;
+/**
+ * Stream終端操作の包括的デモンストレーション
+ * collect, forEach, reduce, find, match, count等の実用例
+ */
+public class TerminalOperationsDemo {
+    
+    // サンプルデータクラス（再利用）
+    static class Product {
+        private String name;
+        private String category;
+        private double price;
+        private int stock;
+        private double rating;
         
-        Person(String name, int age, String department) {
+        public Product(String name, String category, double price, int stock, double rating) {
             this.name = name;
-            this.age = age;
-            this.department = department;
+            this.category = category;
+            this.price = price;
+            this.stock = stock;
+            this.rating = rating;
         }
         
-        // getters
+        // ゲッターメソッド
         public String getName() { return name; }
-        public int getAge() { return age; }
-        public String getDepartment() { return department; }
+        public String getCategory() { return category; }
+        public double getPrice() { return price; }
+        public int getStock() { return stock; }
+        public double getRating() { return rating; }
         
         @Override
         public String toString() {
-            return name + "(" + age + "," + department + ")";
+            return String.format("%s(¥%.0f, 在庫:%d, 評価:%.1f)", name, price, stock, rating);
         }
     }
     
-    public static void main(String[] args) {
-        List<Person> people = Arrays.asList(
-            new Person("田中", 25, "開発"),
-            new Person("佐藤", 30, "営業"),
-            new Person("鈴木", 35, "開発"),
-            new Person("高橋", 28, "営業")
-        );
+    // 1. forEach と forEachOrdered
+    public static void demonstrateForEach() {
+        System.out.println("=== forEach() & forEachOrdered() ===");
         
-        // リストに収集
-        List<String> names = people.stream()
-                                  .map(Person::getName)
-                                  .collect(toList());
+        List<Product> products = createProducts();
         
-        // セットに収集
-        Set<String> departments = people.stream()
-                                       .map(Person::getDepartment)
+        // 基本的なforEach
+        System.out.println("全商品一覧:");
+        products.stream()
+               .forEach(System.out::println);
+        
+        // 並列処理での順序保証
+        System.out.println("\n並列処理での順序保証:");
+        products.parallelStream()
+               .forEachOrdered(product -> 
+                   System.out.println("処理中: " + product.getName()));
+        
+        // 条件付きforEach
+        System.out.println("\n高評価商品（4.0以上）:");
+        products.stream()
+               .filter(p -> p.getRating() >= 4.0)
+               .forEach(product -> 
+                   System.out.println("おすすめ: " + product.getName()));
+    }
+    
+    // 2. collect - 最も強力な終端操作
+    public static void demonstrateCollect() {
+        System.out.println("\n=== collect() - 収集操作 ===");
+        
+        List<Product> products = createProducts();
+        
+        // 基本的なコレクション収集
+        List<String> productNames = products.stream()
+                                          .map(Product::getName)
+                                          .collect(toList());
+        System.out.println("商品名リスト: " + productNames);
+        
+        Set<String> categories = products.stream()
+                                       .map(Product::getCategory)
                                        .collect(toSet());
+        System.out.println("カテゴリ一覧: " + categories);
         
         // 文字列結合
-        String nameList = people.stream()
-                                .map(Person::getName)
+        String allNames = products.stream()
+                                .map(Product::getName)
                                 .collect(joining(", "));
+        System.out.println("全商品名: " + allNames);
         
-        // 部署でグループ化
-        Map<String, List<Person>> byDepartment = people.stream()
-                                                      .collect(groupingBy(Person::getDepartment));
+        // グループ化
+        Map<String, List<Product>> productsByCategory = products.stream()
+                                                              .collect(groupingBy(Product::getCategory));
+        System.out.println("\nカテゴリ別商品:");
+        productsByCategory.forEach((category, productList) -> {
+            System.out.println(category + ": " + productList.size() + "商品");
+        });
         
-        // 部署ごとの人数
-        Map<String, Long> countByDepartment = people.stream()
-                                                   .collect(groupingBy(Person::getDepartment, counting()));
+        // 複雑な集約
+        Map<String, Double> avgPriceByCategory = products.stream()
+                                                       .collect(groupingBy(
+                                                           Product::getCategory,
+                                                           averagingDouble(Product::getPrice)
+                                                       ));
+        System.out.println("\nカテゴリ別平均価格:");
+        avgPriceByCategory.forEach((category, avgPrice) -> 
+            System.out.printf("%s: ¥%.0f%n", category, avgPrice));
         
-        // 部署ごとの平均年齢
-        Map<String, Double> avgAgeByDepartment = people.stream()
-                                                      .collect(groupingBy(
-                                                          Person::getDepartment,
-                                                          averagingDouble(Person::getAge)
-                                                      ));
+        // 分割
+        Map<Boolean, List<Product>> expensivePartition = products.stream()
+                                                               .collect(partitioningBy(p -> p.getPrice() > 50000));
+        System.out.println("\n高額商品数: " + expensivePartition.get(true).size());
+        System.out.println("一般商品数: " + expensivePartition.get(false).size());
         
-        // 年齢で分割（30歳未満とそれ以上）
-        Map<Boolean, List<Person>> partitioned = people.stream()
-                                                      .collect(partitioningBy(p -> p.getAge() < 30));
-        
-        System.out.println("名前一覧: " + names);
-        System.out.println("部署一覧: " + departments);
-        System.out.println("名前結合: " + nameList);
-        System.out.println("部署別: " + byDepartment);
-        System.out.println("部署別人数: " + countByDepartment);
-        System.out.println("部署別平均年齢: " + avgAgeByDepartment);
-        System.out.println("年齢で分割: " + partitioned);
+        // 統計情報の収集
+        DoubleSummaryStatistics priceStats = products.stream()
+                                                    .collect(summarizingDouble(Product::getPrice));
+        System.out.printf("\n価格統計 - 平均:¥%.0f, 最高:¥%.0f, 最低:¥%.0f%n",
+                         priceStats.getAverage(), priceStats.getMax(), priceStats.getMin());
     }
-}
-```
-
-### reduce - 削減操作
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class ReduceExample {
-    public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+    
+    // 3. reduce - 削減操作
+    public static void demonstrateReduce() {
+        System.out.println("\n=== reduce() - 削減操作 ===");
         
-        // 合計
-        Optional<Integer> sum = numbers.stream().reduce((a, b) -> a + b);
-        System.out.println("合計: " + sum.orElse(0));
+        List<Product> products = createProducts();
         
-        // 初期値付きの合計
-        Integer sumWithIdentity = numbers.stream().reduce(0, (a, b) -> a + b);
-        System.out.println("合計（初期値付き）: " + sumWithIdentity);
+        // 総在庫数の計算
+        int totalStock = products.stream()
+                               .mapToInt(Product::getStock)
+                               .reduce(0, Integer::sum);
+        System.out.println("総在庫数: " + totalStock);
         
-        // 最大値
-        Optional<Integer> max = numbers.stream().reduce(Integer::max);
-        System.out.println("最大値: " + max.orElse(0));
+        // 最高価格商品の検索
+        Optional<Product> mostExpensive = products.stream()
+                                                .reduce((p1, p2) -> p1.getPrice() > p2.getPrice() ? p1 : p2);
+        mostExpensive.ifPresent(product -> 
+            System.out.println("最高価格商品: " + product.getName() + " (¥" + product.getPrice() + ")"));
         
-        // 積
-        Optional<Integer> product = numbers.stream().reduce((a, b) -> a * b);
-        System.out.println("積: " + product.orElse(0));
+        // 商品名の連結（カスタムreduce）
+        Optional<String> combinedNames = products.stream()
+                                               .map(Product::getName)
+                                               .reduce((name1, name2) -> name1 + " & " + name2);
+        combinedNames.ifPresent(names -> System.out.println("結合商品名: " + names));
         
-        // 文字列の連結
-        List<String> words = Arrays.asList("Java", "Stream", "API");
-        String joined = words.stream().reduce("", (a, b) -> a + " " + b);
-        System.out.println("連結: " + joined.trim());
-        
-        // 複雑な例：単語の長さの合計
-        Integer totalLength = words.stream()
-                                  .map(String::length)
-                                  .reduce(0, Integer::sum);
-        System.out.println("総文字数: " + totalLength);
+        // 複雑なreduce：加重平均評価の計算
+        double weightedRating = products.stream()
+                                      .mapToDouble(p -> p.getRating() * p.getStock())
+                                      .sum() / 
+                                products.stream()
+                                      .mapToInt(Product::getStock)
+                                      .sum();
+        System.out.printf("在庫加重平均評価: %.2f%n", weightedRating);
     }
-}
-```
-
-### find, match, count
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class TerminalOperations {
-    public static void main(String[] args) {
-        List<String> words = Arrays.asList("apple", "banana", "cherry", "date");
+    
+    // 4. find操作
+    public static void demonstrateFind() {
+        System.out.println("\n=== find操作 ===");
         
-        // 要素の検索
-        Optional<String> first = words.stream()
-                                     .filter(w -> w.startsWith("b"))
-                                     .findFirst();
-        System.out.println("最初のb開始: " + first.orElse("なし"));
+        List<Product> products = createProducts();
         
-        Optional<String> any = words.stream()
-                                   .filter(w -> w.length() > 5)
-                                   .findAny();
-        System.out.println("5文字超の任意: " + any.orElse("なし"));
+        // 条件に合う最初の要素
+        Optional<Product> firstElectronics = products.stream()
+                                                   .filter(p -> "電子機器".equals(p.getCategory()))
+                                                   .findFirst();
+        firstElectronics.ifPresent(product -> 
+            System.out.println("最初の電子機器: " + product.getName()));
         
-        // マッチング
-        boolean anyMatch = words.stream().anyMatch(w -> w.startsWith("a"));
-        boolean allMatch = words.stream().allMatch(w -> w.length() > 3);
-        boolean noneMatch = words.stream().noneMatch(w -> w.startsWith("z"));
+        // 任意の要素（並列処理で有効）
+        Optional<Product> anyHighRated = products.parallelStream()
+                                                .filter(p -> p.getRating() >= 4.5)
+                                                .findAny();
+        anyHighRated.ifPresent(product -> 
+            System.out.println("高評価商品の一つ: " + product.getName()));
         
-        System.out.println("a開始があるか: " + anyMatch);
-        System.out.println("全て3文字超か: " + allMatch);
-        System.out.println("z開始がないか: " + noneMatch);
-        
-        // カウント
-        long count = words.stream()
-                         .filter(w -> w.contains("a"))
-                         .count();
-        System.out.println("aを含む単語数: " + count);
-        
-        // 数値統計
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-        IntSummaryStatistics stats = numbers.stream()
-                                           .mapToInt(Integer::intValue)
-                                           .summaryStatistics();
-        
-        System.out.println("統計: " + stats);
-        System.out.println("平均: " + stats.getAverage());
-        System.out.println("最大: " + stats.getMax());
-        System.out.println("最小: " + stats.getMin());
+        // 見つからない場合の処理
+        Optional<Product> veryExpensive = products.stream()
+                                                .filter(p -> p.getPrice() > 1000000)
+                                                .findFirst();
+        System.out.println("100万円超商品: " + 
+                          veryExpensive.map(Product::getName).orElse("該当なし"));
     }
-}
-```
-
-## 10.5 並列ストリーム
-
-```java
-import java.util.*;
-import java.util.stream.*;
-
-public class ParallelStreamExample {
-    public static void main(String[] args) {
-        List<Integer> numbers = IntStream.rangeClosed(1, 1000000)
-                                        .boxed()
-                                        .collect(Collectors.toList());
+    
+    // 5. match操作
+    public static void demonstrateMatch() {
+        System.out.println("\n=== match操作 ===");
         
-        // シーケンシャル処理
-        long startTime = System.currentTimeMillis();
-        long sum1 = numbers.stream()
-                          .mapToLong(Integer::longValue)
-                          .sum();
-        long endTime = System.currentTimeMillis();
-        System.out.println("シーケンシャル: " + (endTime - startTime) + "ms");
+        List<Product> products = createProducts();
         
-        // 並列処理
-        startTime = System.currentTimeMillis();
-        long sum2 = numbers.parallelStream()
-                          .mapToLong(Integer::longValue)
-                          .sum();
-        endTime = System.currentTimeMillis();
-        System.out.println("並列: " + (endTime - startTime) + "ms");
+        // いずれかが条件を満たすか
+        boolean hasExpensive = products.stream()
+                                     .anyMatch(p -> p.getPrice() > 100000);
+        System.out.println("10万円超の商品あり: " + hasExpensive);
         
-        System.out.println("結果は同じ: " + (sum1 == sum2));
+        // すべてが条件を満たすか
+        boolean allInStock = products.stream()
+                                   .allMatch(p -> p.getStock() > 0);
+        System.out.println("全商品在庫あり: " + allInStock);
         
-        // 並列処理での注意点
-        List<Integer> results = new ArrayList<>();
+        // いずれも条件を満たさないか
+        boolean noLowRated = products.stream()
+                                   .noneMatch(p -> p.getRating() < 2.0);
+        System.out.println("低評価商品なし（評価2.0未満）: " + noLowRated);
         
-        // 危険：非同期安全でない操作
-        // numbers.parallelStream().forEach(results::add);  // データ競合の可能性
-        
-        // 安全：collect使用
-        List<Integer> safeResults = numbers.parallelStream()
-                                          .filter(n -> n % 2 == 0)
-                                          .collect(Collectors.toList());
+        // 複雑な条件でのマッチ
+        boolean hasPopularAffordable = products.stream()
+                                             .anyMatch(p -> p.getRating() >= 4.0 && p.getPrice() <= 30000);
+        System.out.println("人気かつ手頃な商品あり（評価4.0以上、3万円以下）: " + hasPopularAffordable);
     }
-}
-```
-
-## 10.6 実践的な例
-
-### ファイル処理
-
-```java
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.*;
-
-public class FileProcessingExample {
-    public static void main(String[] args) throws Exception {
-        // サンプルファイルの作成
-        List<String> lines = Arrays.asList(
-            "apple,100,fruit",
-            "banana,80,fruit",
-            "carrot,60,vegetable",
-            "date,120,fruit",
-            "eggplant,90,vegetable"
+    
+    // 6. count操作
+    public static void demonstrateCount() {
+        System.out.println("\n=== count操作 ===");
+        
+        List<Product> products = createProducts();
+        
+        // 基本的なカウント
+        long totalProducts = products.stream().count();
+        System.out.println("総商品数: " + totalProducts);
+        
+        // 条件付きカウント
+        long electronicsCount = products.stream()
+                                      .filter(p -> "電子機器".equals(p.getCategory()))
+                                      .count();
+        System.out.println("電子機器商品数: " + electronicsCount);
+        
+        long highValueCount = products.stream()
+                                    .filter(p -> p.getPrice() > 50000)
+                                    .count();
+        System.out.println("高額商品数（5万円超）: " + highValueCount);
+        
+        // カテゴリ別カウント
+        System.out.println("\nカテゴリ別商品数:");
+        products.stream()
+               .collect(groupingBy(Product::getCategory, counting()))
+               .forEach((category, count) -> 
+                   System.out.println(category + ": " + count + "商品"));
+    }
+    
+    // 7. 統計操作（数値Stream専用）
+    public static void demonstrateStatistics() {
+        System.out.println("\n=== 統計操作 ===");
+        
+        List<Product> products = createProducts();
+        
+        // 価格の統計
+        IntSummaryStatistics priceStats = products.stream()
+                                                .mapToInt(p -> (int)p.getPrice())
+                                                .summaryStatistics();
+        
+        System.out.println("価格統計:");
+        System.out.println("  件数: " + priceStats.getCount());
+        System.out.println("  合計: ¥" + priceStats.getSum());
+        System.out.println("  平均: ¥" + String.format("%.0f", priceStats.getAverage()));
+        System.out.println("  最大: ¥" + priceStats.getMax());
+        System.out.println("  最小: ¥" + priceStats.getMin());
+        
+        // 在庫の統計
+        OptionalDouble avgStock = products.stream()
+                                        .mapToInt(Product::getStock)
+                                        .average();
+        avgStock.ifPresent(avg -> System.out.printf("平均在庫数: %.1f個%n", avg));
+        
+        // 評価の最大値
+        OptionalDouble maxRating = products.stream()
+                                         .mapToDouble(Product::getRating)
+                                         .max();
+        maxRating.ifPresent(max -> System.out.printf("最高評価: %.1f%n", max));
+    }
+    
+    // サンプルデータ作成
+    private static List<Product> createProducts() {
+        return Arrays.asList(
+            new Product("ノートパソコン", "電子機器", 89800, 15, 4.2),
+            new Product("マウス", "電子機器", 2800, 50, 4.0),
+            new Product("キーボード", "電子機器", 8500, 30, 4.1),
+            new Product("デスク", "家具", 25000, 8, 3.8),
+            new Product("チェア", "家具", 45000, 12, 4.5),
+            new Product("Java入門書", "書籍", 3200, 25, 4.3),
+            new Product("プログラミング本", "書籍", 4800, 20, 4.0),
+            new Product("モニター", "電子機器", 35200, 10, 4.4),
+            new Product("スピーカー", "電子機器", 12800, 18, 3.9),
+            new Product("本棚", "家具", 18000, 6, 3.7)
         );
-        
-        Path tempFile = Files.createTempFile("sample", ".csv");
-        Files.write(tempFile, lines);
-        
-        // ファイルの読み込みと処理
-        Map<String, Double> avgPriceByCategory = Files.lines(tempFile)
-            .map(line -> line.split(","))
-            .collect(Collectors.groupingBy(
-                parts -> parts[2],  // カテゴリでグループ
-                Collectors.averagingDouble(parts -> Double.parseDouble(parts[1]))
-            ));
-        
-        System.out.println("カテゴリ別平均価格: " + avgPriceByCategory);
-        
-        // 高価な果物の検索
-        List<String> expensiveFruits = Files.lines(tempFile)
-            .map(line -> line.split(","))
-            .filter(parts -> "fruit".equals(parts[2]))
-            .filter(parts -> Double.parseDouble(parts[1]) > 90)
-            .map(parts -> parts[0])
-            .collect(Collectors.toList());
-        
-        System.out.println("高価な果物: " + expensiveFruits);
-        
-        // クリーンアップ
-        Files.delete(tempFile);
-    }
-}
-```
-
-### データ分析
-
-```java
-import java.util.*;
-import java.util.stream.*;
-import static java.util.stream.Collectors.*;
-
-public class DataAnalysisExample {
-    static class Sale {
-        String product;
-        String region;
-        int quantity;
-        double price;
-        
-        Sale(String product, String region, int quantity, double price) {
-            this.product = product;
-            this.region = region;
-            this.quantity = quantity;
-            this.price = price;
-        }
-        
-        double getRevenue() { return quantity * price; }
-        
-        // getters
-        public String getProduct() { return product; }
-        public String getRegion() { return region; }
-        public int getQuantity() { return quantity; }
-        public double getPrice() { return price; }
-        
-        @Override
-        public String toString() {
-            return String.format("%s(%s): %d×%.2f=%.2f", 
-                               product, region, quantity, price, getRevenue());
-        }
     }
     
     public static void main(String[] args) {
-        List<Sale> sales = Arrays.asList(
-            new Sale("ノートPC", "東京", 10, 80000),
-            new Sale("ノートPC", "大阪", 8, 82000),
-            new Sale("タブレット", "東京", 15, 45000),
-            new Sale("タブレット", "大阪", 12, 46000),
-            new Sale("スマートフォン", "東京", 25, 70000),
-            new Sale("スマートフォン", "大阪", 20, 72000)
-        );
-        
-        // 総売上
-        double totalRevenue = sales.stream()
-                                  .mapToDouble(Sale::getRevenue)
-                                  .sum();
-        System.out.println("総売上: " + totalRevenue);
-        
-        // 商品別売上
-        Map<String, Double> revenueByProduct = sales.stream()
-            .collect(groupingBy(Sale::getProduct, 
-                               summingDouble(Sale::getRevenue)));
-        System.out.println("商品別売上: " + revenueByProduct);
-        
-        // 地域別平均価格
-        Map<String, Double> avgPriceByRegion = sales.stream()
-            .collect(groupingBy(Sale::getRegion,
-                               averagingDouble(Sale::getPrice)));
-        System.out.println("地域別平均価格: " + avgPriceByRegion);
-        
-        // 最高売上の商品
-        Optional<Sale> topSale = sales.stream()
-            .max(Comparator.comparing(Sale::getRevenue));
-        System.out.println("最高売上: " + topSale.orElse(null));
-        
-        // 売上上位3商品
-        List<Sale> top3 = sales.stream()
-            .sorted(Comparator.comparing(Sale::getRevenue).reversed())
-            .limit(3)
-            .collect(toList());
-        System.out.println("売上上位3:");
-        top3.forEach(System.out::println);
+        demonstrateForEach();
+        demonstrateCollect();
+        demonstrateReduce();
+        demonstrateFind();
+        demonstrateMatch();
+        demonstrateCount();
+        demonstrateStatistics();
     }
 }
 ```
 
-## 10.7 練習問題
+**終端操作の重要な特徴：**
 
-1. 文字列のリストから、5文字以上の単語を抽出し、アルファベット順にソートして重複を除去するプログラムを作成してください。
+1. **即座実行**：終端操作が呼ばれた時点で、すべての遅延評価されていた操作が実行されます。
+2. **Stream消費**：終端操作後、そのStreamは使用不可になります。
+3. **結果生成**：具体的な値やコレクションを生成します。
+4. **パフォーマンス最適化**：JVMがパイプライン全体を最適化して実行します。
 
-2. 学生のテストスコアを管理するシステムを作成し、科目別平均点、学生別総合点などを計算してください。
+## 10.5 並列ストリーム（Parallel Streams）
 
-3. ログファイルを模したデータから、エラーレベル別の集計を行うプログラムを作成してください。
+並列ストリームは、マルチコアプロセッサの能力を活用して、データ処理を並列化する強力な機能です。適切に使用することで、大量のデータ処理において劇的な性能向上を実現できます。
 
-## まとめ
+### 並列ストリームの基本と注意点
 
-この章では、Stream APIを使用したデータ処理の方法を学習しました。関数型プログラミングのアプローチにより、簡潔で読みやすいコードによってコレクションの操作を行えるようになりました。中間操作と終端操作の組み合わせにより、複雑なデータ処理も効率的に実装できます。
+```java
+import java.util.*;
+import java.util.stream.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
+
+/**
+ * 並列ストリームの包括的デモンストレーション
+ * 性能比較、適切な使用場面、注意点の実証
+ */
+public class ParallelStreamDemo {
+    
+    // 1. 基本的な並列処理の比較
+    public static void demonstrateBasicParallel() {
+        System.out.println("=== 基本的な並列処理の比較 ===");
+        
+        // 大量データの生成
+        List<Integer> largeDataset = IntStream.rangeClosed(1, 10_000_000)
+                                            .boxed()
+                                            .collect(Collectors.toList());
+        
+        // CPU集約的な処理関数
+        Function<Integer, Double> heavyComputation = n -> {
+            // 重い計算のシミュレーション
+            double result = 0;
+            for (int i = 0; i < 100; i++) {
+                result += Math.sqrt(n * i);
+            }
+            return result;
+        };
+        
+        // シーケンシャル処理
+        long sequentialStart = System.currentTimeMillis();
+        double sequentialSum = largeDataset.stream()
+                                         .mapToDouble(heavyComputation::apply)
+                                         .sum();
+        long sequentialTime = System.currentTimeMillis() - sequentialStart;
+        
+        // 並列処理
+        long parallelStart = System.currentTimeMillis();
+        double parallelSum = largeDataset.parallelStream()
+                                       .mapToDouble(heavyComputation::apply)
+                                       .sum();
+        long parallelTime = System.currentTimeMillis() - parallelStart;
+        
+        System.out.printf("シーケンシャル: %.2f (時間: %dms)%n", sequentialSum, sequentialTime);
+        System.out.printf("並列処理: %.2f (時間: %dms)%n", parallelSum, parallelTime);
+        System.out.printf("性能向上: %.2f倍%n", (double)sequentialTime / parallelTime);
+        System.out.printf("使用可能プロセッサ数: %d%n", Runtime.getRuntime().availableProcessors());
+    }
+    
+    // 2. 並列処理が効果的な場面
+    public static void demonstrateEffectiveParallel() {
+        System.out.println("\n=== 並列処理が効果的な場面 ===");
+        
+        // 大量データのフィルタリングと変換
+        List<String> words = generateLargeWordList();
+        
+        long start = System.currentTimeMillis();
+        List<String> sequentialResult = words.stream()
+                                           .filter(word -> word.length() > 5)
+                                           .map(String::toUpperCase)
+                                           .filter(word -> word.contains("A"))
+                                           .collect(Collectors.toList());
+        long sequentialTime = System.currentTimeMillis() - start;
+        
+        start = System.currentTimeMillis();
+        List<String> parallelResult = words.parallelStream()
+                                         .filter(word -> word.length() > 5)
+                                         .map(String::toUpperCase)
+                                         .filter(word -> word.contains("A"))
+                                         .collect(Collectors.toList());
+        long parallelTime = System.currentTimeMillis() - start;
+        
+        System.out.printf("大量データ処理 - シーケンシャル: %dms, 並列: %dms%n", 
+                         sequentialTime, parallelTime);
+        System.out.printf("結果一致: %s%n", sequentialResult.equals(parallelResult));
+        System.out.printf("性能向上: %.2f倍%n", (double)sequentialTime / parallelTime);
+    }
+    
+    // 3. 並列処理で注意が必要な場面
+    public static void demonstrateParallelPitfalls() {
+        System.out.println("\n=== 並列処理の注意点 ===");
+        
+        // 副作用のある操作（危険な例）
+        List<Integer> numbers = IntStream.rangeClosed(1, 1000).boxed().collect(Collectors.toList());
+        List<Integer> dangerousResult = new ArrayList<>();
+        
+        // 【危険】：ArrayListは並列環境でスレッドセーフではない
+        System.out.println("危険な並列処理の例（結果が不定）:");
+        numbers.parallelStream()
+               .filter(n -> n % 2 == 0)
+               .forEach(dangerousResult::add);  // スレッドセーフでない操作
+        
+        System.out.println("危険な方法での結果数: " + dangerousResult.size() + " (正解: 500)");
+        
+        // 【安全】：Collectorsを使用
+        List<Integer> safeResult = numbers.parallelStream()
+                                        .filter(n -> n % 2 == 0)
+                                        .collect(Collectors.toList());
+        System.out.println("安全な方法での結果数: " + safeResult.size());
+        
+        // 【安全】：同期化されたコレクション
+        List<Integer> synchronizedResult = Collections.synchronizedList(new ArrayList<>());
+        numbers.parallelStream()
+               .filter(n -> n % 2 == 0)
+               .forEach(synchronizedResult::add);
+        System.out.println("同期化リストでの結果数: " + synchronizedResult.size());
+        
+        // AtomicIntegerを使った並列カウンタ
+        AtomicInteger atomicCounter = new AtomicInteger(0);
+        numbers.parallelStream()
+               .filter(n -> n % 2 == 0)
+               .forEach(n -> atomicCounter.incrementAndGet());
+        System.out.println("AtomicIntegerでのカウント: " + atomicCounter.get());
+    }
+    
+    // 4. 並列処理の性能特性
+    public static void demonstrateParallelPerformance() {
+        System.out.println("\n=== 並列処理の性能特性 ===");
+        
+        // データサイズによる性能差
+        int[] dataSizes = {1000, 10000, 100000, 1000000};
+        
+        for (int size : dataSizes) {
+            List<Integer> data = IntStream.rangeClosed(1, size).boxed().collect(Collectors.toList());
+            
+            // 軽い処理（並列化のオーバーヘッドが目立つ場合）
+            long sequentialTime = measureTime(() -> 
+                data.stream().mapToInt(n -> n * 2).sum());
+            
+            long parallelTime = measureTime(() -> 
+                data.parallelStream().mapToInt(n -> n * 2).sum());
+            
+            System.out.printf("データ数 %,7d: シーケンシャル %3dms, 並列 %3dms (%.2f倍)%n",
+                             size, sequentialTime, parallelTime, 
+                             (double)sequentialTime / parallelTime);
+        }
+        
+        // 重い処理での比較
+        System.out.println("\n重い処理での比較:");
+        List<Integer> data = IntStream.rangeClosed(1, 100000).boxed().collect(Collectors.toList());
+        
+        Function<Integer, Double> heavyProcess = n -> {
+            double result = 0;
+            for (int i = 0; i < 1000; i++) {
+                result += Math.sqrt(n * i);
+            }
+            return result;
+        };
+        
+        long heavySequential = measureTime(() -> 
+            data.stream().mapToDouble(heavyProcess::apply).sum());
+        
+        long heavyParallel = measureTime(() -> 
+            data.parallelStream().mapToDouble(heavyProcess::apply).sum());
+        
+        System.out.printf("重い処理: シーケンシャル %dms, 並列 %dms (%.2f倍)%n",
+                         heavySequential, heavyParallel, 
+                         (double)heavySequential / heavyParallel);
+    }
+    
+    // 5. カスタム並列処理の設定
+    public static void demonstrateCustomParallel() {
+        System.out.println("\n=== カスタム並列処理設定 ===");
+        
+        // デフォルトのForkJoinPoolサイズ
+        System.out.println("デフォルト並列度: " + ForkJoinPool.commonPool().getParallelism());
+        
+        // カスタムForkJoinPoolでの実行
+        int customParallelism = 2;
+        ForkJoinPool customThreadPool = new ForkJoinPool(customParallelism);
+        
+        List<Integer> data = IntStream.rangeClosed(1, 1000).boxed().collect(Collectors.toList());
+        
+        try {
+            List<Integer> result = customThreadPool.submit(() ->
+                data.parallelStream()
+                    .filter(n -> n % 2 == 0)
+                    .map(n -> n * n)
+                    .collect(Collectors.toList())
+            ).get();
+            
+            System.out.println("カスタムプール（並列度" + customParallelism + "）での処理完了");
+            System.out.println("処理結果数: " + result.size());
+            
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            customThreadPool.shutdown();
+        }
+        
+        // システムプロパティでの設定例
+        System.out.println("\nシステムプロパティ設定例:");
+        System.out.println("-Djava.util.concurrent.ForkJoinPool.common.parallelism=4");
+    }
+    
+    // 6. 並列処理での順序制御
+    public static void demonstrateParallelOrdering() {
+        System.out.println("\n=== 並列処理での順序制御 ===");
+        
+        List<Integer> numbers = IntStream.rangeClosed(1, 20).boxed().collect(Collectors.toList());
+        
+        // 順序が保証されない並列forEach
+        System.out.println("parallelStream().forEach (順序不定):");
+        numbers.parallelStream()
+               .map(n -> n * 2)
+               .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // 順序が保証されるforEachOrdered
+        System.out.println("parallelStream().forEachOrdered (順序保証):");
+        numbers.parallelStream()
+               .map(n -> n * 2)
+               .forEachOrdered(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // collect操作では順序が保たれる
+        List<Integer> collectedResult = numbers.parallelStream()
+                                             .map(n -> n * 2)
+                                             .collect(Collectors.toList());
+        System.out.println("collect結果: " + collectedResult);
+    }
+    
+    // 7. 並列ストリーム使用のガイドライン
+    public static void demonstrateUsageGuidelines() {
+        System.out.println("\n=== 並列ストリーム使用ガイドライン ===");
+        
+        System.out.println("並列処理が効果的な場面:");
+        System.out.println("1. 大量データ（数万〜数百万件以上）の処理");
+        System.out.println("2. CPU集約的な処理（計算、変換等）");
+        System.out.println("3. 副作用のない純粋な関数型操作");
+        System.out.println("4. データの独立性が保たれた処理");
+        
+        System.out.println("\n並列処理を避けるべき場面:");
+        System.out.println("1. 小さなデータセット（数千件以下）");
+        System.out.println("2. I/O待機の多い処理");
+        System.out.println("3. 共有状態を変更する処理");
+        System.out.println("4. 順序に依存する処理");
+        System.out.println("5. デバッグが困難な場面");
+        
+        // 実際の判断基準例
+        List<String> smallDataset = Arrays.asList("a", "b", "c", "d", "e");
+        List<String> largeDataset = generateLargeWordList();
+        
+        // 小さなデータでは並列化しない方が良い例
+        long smallSequential = measureTime(() -> 
+            smallDataset.stream().map(String::toUpperCase).collect(Collectors.toList()));
+        long smallParallel = measureTime(() -> 
+            smallDataset.parallelStream().map(String::toUpperCase).collect(Collectors.toList()));
+        
+        System.out.printf("\n小データ（%d件）: シーケンシャル %dms, 並列 %dms%n",
+                         smallDataset.size(), smallSequential, smallParallel);
+        
+        // 大きなデータでは並列化が効果的な例
+        long largeSequential = measureTime(() -> 
+            largeDataset.stream().filter(s -> s.length() > 5).collect(Collectors.toList()));
+        long largeParallel = measureTime(() -> 
+            largeDataset.parallelStream().filter(s -> s.length() > 5).collect(Collectors.toList()));
+        
+        System.out.printf("大データ（%,d件）: シーケンシャル %dms, 並列 %dms%n",
+                         largeDataset.size(), largeSequential, largeParallel);
+    }
+    
+    // ユーティリティメソッド
+    private static long measureTime(Runnable task) {
+        long start = System.currentTimeMillis();
+        task.run();
+        return System.currentTimeMillis() - start;
+    }
+    
+    private static List<String> generateLargeWordList() {
+        Random random = new Random(42); // 再現可能な結果のため
+        return IntStream.range(0, 1_000_000)
+                       .mapToObj(i -> generateRandomWord(random, 3 + random.nextInt(15)))
+                       .collect(Collectors.toList());
+    }
+    
+    private static String generateRandomWord(Random random, int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char)('a' + random.nextInt(26)));
+        }
+        return sb.toString();
+    }
+    
+    public static void main(String[] args) {
+        demonstrateBasicParallel();
+        demonstrateEffectiveParallel();
+        demonstrateParallelPitfalls();
+        demonstrateParallelPerformance();
+        demonstrateCustomParallel();
+        demonstrateParallelOrdering();
+        demonstrateUsageGuidelines();
+    }
+}
+```
+
+**並列ストリームの重要な考慮事項：**
+
+1. **適切なデータサイズ**：小さなデータセットでは並列化のオーバーヘッドが処理時間を上回る場合があります。
+2. **CPU集約的処理**：I/O待機が多い処理では並列化の効果は限定的です。
+3. **副作用の回避**：並列処理では副作用のある操作は避けるべきです。
+4. **スレッドセーフティ**：共有リソースへのアクセスは適切に同期化する必要があります。
+
+## 10.6 専用プリミティブストリーム
+
+Javaでは、ボクシング/アンボクシングのオーバーヘッドを避けるため、プリミティブ型専用のストリームが提供されています。
+
+### IntStream、LongStream、DoubleStreamの活用
+
+```java
+import java.util.*;
+import java.util.stream.*;
+import java.util.function.*;
+
+/**
+ * プリミティブストリームの包括的デモンストレーション
+ * 性能比較、専用メソッド、実用的な活用例
+ */
+public class PrimitiveStreamDemo {
+    
+    // 1. 基本的なプリミティブストリーム操作
+    public static void demonstrateBasicPrimitiveStreams() {
+        System.out.println("=== 基本的なプリミティブストリーム ===");
+        
+        // IntStream の基本操作
+        System.out.println("IntStream の基本操作:");
+        IntStream.rangeClosed(1, 10)
+                 .filter(n -> n % 2 == 0)
+                 .map(n -> n * n)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // LongStream の大きな数値処理
+        System.out.println("LongStream での大きな数値:");
+        long factorial = LongStream.rangeClosed(1, 20)
+                                  .reduce(1, (a, b) -> a * b);
+        System.out.println("20! = " + factorial);
+        
+        // DoubleStream の数学的計算
+        System.out.println("DoubleStream での数学計算:");
+        double average = DoubleStream.of(1.1, 2.2, 3.3, 4.4, 5.5)
+                                   .average()
+                                   .orElse(0.0);
+        System.out.printf("平均値: %.2f%n", average);
+        
+        // 統計情報の取得
+        IntSummaryStatistics stats = IntStream.rangeClosed(1, 100)
+                                            .summaryStatistics();
+        System.out.println("1-100の統計:");
+        System.out.printf("  合計: %d, 平均: %.2f, 最大: %d, 最小: %d%n",
+                         stats.getSum(), stats.getAverage(), 
+                         stats.getMax(), stats.getMin());
+    }
+    
+    // 2. 生成メソッドの活用
+    public static void demonstrateGenerationMethods() {
+        System.out.println("\n=== ストリーム生成メソッド ===");
+        
+        // range と rangeClosed
+        System.out.println("range(1, 5): ");
+        IntStream.range(1, 5).forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        System.out.println("rangeClosed(1, 5): ");
+        IntStream.rangeClosed(1, 5).forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // iterate - 無限ストリーム
+        System.out.println("フィボナッチ数列（最初の10項）:");
+        IntStream.iterate(1, n -> n <= 100, n -> n + 1)
+                 .filter(PrimitiveStreamDemo::isPrime)
+                 .limit(10)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // generate - ランダム値生成
+        System.out.println("ランダムな整数（5個）:");
+        IntStream.generate(() -> (int)(Math.random() * 100))
+                 .limit(5)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // Random クラスとの連携
+        System.out.println("正規分布に従う乱数（5個）:");
+        new Random().doubles(5, 0.0, 1.0)
+                   .forEach(d -> System.out.printf("%.3f ", d));
+        System.out.println();
+    }
+    
+    // 3. 性能比較：プリミティブ vs オブジェクト
+    public static void demonstratePerformanceComparison() {
+        System.out.println("\n=== 性能比較：プリミティブストリーム vs オブジェクトストリーム ===");
+        
+        int size = 10_000_000;
+        
+        // オブジェクトストリーム（Integer）
+        long objectStart = System.currentTimeMillis();
+        long objectSum = IntStream.rangeClosed(1, size)
+                                 .boxed()  // Integer型に変換
+                                 .mapToInt(Integer::intValue)
+                                 .asLongStream()
+                                 .sum();
+        long objectTime = System.currentTimeMillis() - objectStart;
+        
+        // プリミティブストリーム（int）
+        long primitiveStart = System.currentTimeMillis();
+        long primitiveSum = IntStream.rangeClosed(1, size)
+                                   .asLongStream()
+                                   .sum();
+        long primitiveTime = System.currentTimeMillis() - primitiveStart;
+        
+        System.out.printf("データ数: %,d%n", size);
+        System.out.printf("オブジェクトストリーム: 合計=%d, 時間=%dms%n", objectSum, objectTime);
+        System.out.printf("プリミティブストリーム: 合計=%d, 時間=%dms%n", primitiveSum, primitiveTime);
+        System.out.printf("性能向上: %.2f倍%n", (double)objectTime / primitiveTime);
+        
+        // メモリ使用量の違い
+        System.out.println("\nメモリ効率の違い:");
+        System.out.println("int[1000000] ≒ 4MB (プリミティブ配列)");
+        System.out.println("Integer[1000000] ≒ 16MB以上 (オブジェクト配列 + オーバーヘッド)");
+    }
+    
+    // 4. 実用的な数学計算例
+    public static void demonstrateMathematicalOperations() {
+        System.out.println("\n=== 実用的な数学計算例 ===");
+        
+        // 素数の生成
+        System.out.println("100以下の素数:");
+        IntStream.rangeClosed(2, 100)
+                 .filter(PrimitiveStreamDemo::isPrime)
+                 .forEach(n -> System.out.print(n + " "));
+        System.out.println();
+        
+        // 平方根の近似計算（ニュートン法）
+        System.out.println("\n平方根の近似計算（ニュートン法）:");
+        double target = 2.0;
+        double sqrt2 = DoubleStream.iterate(1.0, x -> (x + target / x) / 2)
+                                  .limit(10)
+                                  .reduce((first, second) -> second)
+                                  .orElse(0);
+        System.out.printf("√2 ≈ %.10f (実際: %.10f)%n", sqrt2, Math.sqrt(2));
+        
+        // 幾何級数の和
+        System.out.println("\n幾何級数の和 (1/2 + 1/4 + 1/8 + ...):");
+        double geometricSum = IntStream.rangeClosed(1, 20)
+                                     .mapToDouble(n -> 1.0 / Math.pow(2, n))
+                                     .sum();
+        System.out.printf("部分和: %.10f (理論値: 1.0)%n", geometricSum);
+        
+        // 円周率の近似（モンテカルロ法）
+        System.out.println("\n円周率の近似（モンテカルロ法）:");
+        Random random = new Random(42);
+        long samples = 1_000_000;
+        long insideCircle = random.doubles(samples)
+                                 .mapToLong(x -> random.doubles()
+                                                      .limit(1)
+                                                      .mapToLong(y -> (x*x + y*y <= 1.0) ? 1 : 0)
+                                                      .sum())
+                                 .sum();
+        double piApprox = 4.0 * insideCircle / samples;
+        System.out.printf("π ≈ %.6f (実際: %.6f, サンプル数: %,d)%n", 
+                         piApprox, Math.PI, samples);
+    }
+    
+    // 5. ビジネスロジックでの活用例
+    public static void demonstrateBusinessApplications() {
+        System.out.println("\n=== ビジネスロジックでの活用例 ===");
+        
+        // 売上データの分析
+        int[] dailySales = {12000, 15000, 18000, 14000, 16000, 22000, 19000,
+                           13000, 17000, 20000, 15000, 18000, 25000, 21000};
+        
+        IntSummaryStatistics salesStats = Arrays.stream(dailySales)
+                                                .summaryStatistics();
+        
+        System.out.println("売上分析結果:");
+        System.out.printf("  総売上: ¥%,d%n", salesStats.getSum());
+        System.out.printf("  平均日売上: ¥%,.0f%n", salesStats.getAverage());
+        System.out.printf("  最高日売上: ¥%,d%n", salesStats.getMax());
+        System.out.printf("  最低日売上: ¥%,d%n", salesStats.getMin());
+        
+        // 目標達成日数
+        int target = 17000;
+        long achievedDays = Arrays.stream(dailySales)
+                                 .filter(sales -> sales >= target)
+                                 .count();
+        System.out.printf("  目標達成日数: %d日 (目標: ¥%,d以上)%n", achievedDays, target);
+        
+        // 成長率の計算
+        System.out.println("\n前日比成長率:");
+        IntStream.range(1, dailySales.length)
+                 .mapToDouble(i -> ((double)(dailySales[i] - dailySales[i-1]) / dailySales[i-1]) * 100)
+                 .forEach(rate -> System.out.printf("%.1f%% ", rate));
+        System.out.println();
+        
+        // 移動平均の計算（3日間）
+        System.out.println("\n3日移動平均:");
+        IntStream.rangeClosed(2, dailySales.length - 1)
+                 .mapToDouble(i -> (dailySales[i-2] + dailySales[i-1] + dailySales[i]) / 3.0)
+                 .forEach(avg -> System.out.printf("¥%,.0f ", avg));
+        System.out.println();
+    }
+    
+    // 6. ストリーム間の変換
+    public static void demonstrateStreamConversions() {
+        System.out.println("\n=== ストリーム間の変換 ===");
+        
+        // IntStream → DoubleStream
+        System.out.println("IntStream → DoubleStream (平方根):");
+        IntStream.rangeClosed(1, 5)
+                 .asDoubleStream()
+                 .map(Math::sqrt)
+                 .forEach(d -> System.out.printf("%.2f ", d));
+        System.out.println();
+        
+        // DoubleStream → IntStream (切り捨て)
+        System.out.println("DoubleStream → IntStream (切り捨て):");
+        DoubleStream.of(1.1, 2.9, 3.7, 4.2)
+                   .mapToInt(d -> (int)d)
+                   .forEach(i -> System.out.print(i + " "));
+        System.out.println();
+        
+        // プリミティブ → オブジェクト
+        System.out.println("プリミティブ → オブジェクトストリーム:");
+        List<String> numbers = IntStream.rangeClosed(1, 5)
+                                       .boxed()
+                                       .map(n -> "Number: " + n)
+                                       .collect(Collectors.toList());
+        System.out.println(numbers);
+        
+        // オブジェクト → プリミティブ
+        String[] numberStrings = {"10", "20", "30", "40", "50"};
+        int sum = Arrays.stream(numberStrings)
+                       .mapToInt(Integer::parseInt)
+                       .sum();
+        System.out.println("文字列数値の合計: " + sum);
+    }
+    
+    // 7. 特殊な集計操作
+    public static void demonstrateSpecialAggregations() {
+        System.out.println("\n=== 特殊な集計操作 ===");
+        
+        int[] data = {5, 3, 8, 1, 9, 2, 7, 4, 6};
+        
+        // 中央値の計算
+        double median = Arrays.stream(data)
+                             .sorted()
+                             .skip(data.length / 2)
+                             .limit(data.length % 2 == 0 ? 2 : 1)
+                             .average()
+                             .orElse(0);
+        System.out.printf("中央値: %.1f%n", median);
+        
+        // 標準偏差の計算
+        double mean = Arrays.stream(data).average().orElse(0);
+        double variance = Arrays.stream(data)
+                               .mapToDouble(x -> Math.pow(x - mean, 2))
+                               .average()
+                               .orElse(0);
+        double stdDev = Math.sqrt(variance);
+        System.out.printf("標準偏差: %.2f (平均: %.2f)%n", stdDev, mean);
+        
+        // パーセンタイル
+        int[] sortedData = Arrays.stream(data).sorted().toArray();
+        int percentile90 = sortedData[(int)(sortedData.length * 0.9)];
+        System.out.printf("90パーセンタイル: %d%n", percentile90);
+        
+        // 最頻値（モード）
+        Map<Integer, Long> frequency = Arrays.stream(data)
+                                           .boxed()
+                                           .collect(Collectors.groupingBy(
+                                               Function.identity(), 
+                                               Collectors.counting()));
+        
+        Optional<Integer> mode = frequency.entrySet().stream()
+                                        .max(Map.Entry.comparingByValue())
+                                        .map(Map.Entry::getKey);
+        mode.ifPresent(m -> System.out.println("最頻値: " + m));
+    }
+    
+    // ユーティリティメソッド：素数判定
+    private static boolean isPrime(int n) {
+        if (n < 2) return false;
+        if (n == 2) return true;
+        if (n % 2 == 0) return false;
+        
+        return IntStream.rangeClosed(3, (int)Math.sqrt(n))
+                       .filter(i -> i % 2 != 0)
+                       .noneMatch(i -> n % i == 0);
+    }
+    
+    public static void main(String[] args) {
+        demonstrateBasicPrimitiveStreams();
+        demonstrateGenerationMethods();
+        demonstratePerformanceComparison();
+        demonstrateMathematicalOperations();
+        demonstrateBusinessApplications();
+        demonstrateStreamConversions();
+        demonstrateSpecialAggregations();
+    }
+}
+```
+
+**プリミティブストリームの利点：**
+
+1. **性能向上**：ボクシング/アンボクシングのオーバーヘッドがありません。
+2. **メモリ効率**：プリミティブ値を直接格納するため、メモリ使用量が削減されます。
+3. **専用メソッド**：sum()、average()、max()、min()などの数値特化メソッドが提供されます。
+4. **統計機能**：summaryStatistics()で一度に複数の統計情報を取得できます。
+
+**使用の指針：**
+
+- 数値計算が主体の処理では積極的にプリミティブストリームを使用
+- 大量のデータを扱う場合は性能上の利点が顕著
+- オブジェクトストリームとの相互変換（boxed()、mapToInt()等）を適切に活用
+
+## 10.7 実践的なStream活用パターン
+
+実際の開発現場でよく使用されるStreamの活用パターンをまとめて学習します。
+
+### 複雑なデータ変換とビジネスロジック
+
+```java
+import java.util.*;
+import java.util.stream.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import static java.util.stream.Collectors.*;
+
+/**
+ * 実践的なStream活用パターンの総合デモンストレーション
+ * 実際のビジネスシナリオに基づいた複雑なデータ処理例
+ */
+public class StreamPatternDemo {
+    
+    // ビジネスエンティティクラス
+    static class Order {
+        private String orderId;
+        private String customerId;
+        private LocalDateTime orderDate;
+        private List<OrderItem> items;
+        private String status;
+        private String region;
+        
+        public Order(String orderId, String customerId, LocalDateTime orderDate, 
+                    List<OrderItem> items, String status, String region) {
+            this.orderId = orderId;
+            this.customerId = customerId;
+            this.orderDate = orderDate;
+            this.items = items;
+            this.status = status;
+            this.region = region;
+        }
+        
+        public BigDecimal getTotalAmount() {
+            return items.stream()
+                       .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                       .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+        
+        // ゲッターメソッド
+        public String getOrderId() { return orderId; }
+        public String getCustomerId() { return customerId; }
+        public LocalDateTime getOrderDate() { return orderDate; }
+        public List<OrderItem> getItems() { return items; }
+        public String getStatus() { return status; }
+        public String getRegion() { return region; }
+    }
+    
+    static class OrderItem {
+        private String productId;
+        private String productName;
+        private String category;
+        private BigDecimal price;
+        private int quantity;
+        
+        public OrderItem(String productId, String productName, String category, 
+                        BigDecimal price, int quantity) {
+            this.productId = productId;
+            this.productName = productName;
+            this.category = category;
+            this.price = price;
+            this.quantity = quantity;
+        }
+        
+        // ゲッターメソッド
+        public String getProductId() { return productId; }
+        public String getProductName() { return productName; }
+        public String getCategory() { return category; }
+        public BigDecimal getPrice() { return price; }
+        public int getQuantity() { return quantity; }
+    }
+    
+    static class Customer {
+        private String customerId;
+        private String name;
+        private String segment;
+        private LocalDate registrationDate;
+        
+        public Customer(String customerId, String name, String segment, LocalDate registrationDate) {
+            this.customerId = customerId;
+            this.name = name;
+            this.segment = segment;
+            this.registrationDate = registrationDate;
+        }
+        
+        // ゲッターメソッド
+        public String getCustomerId() { return customerId; }
+        public String getName() { return name; }
+        public String getSegment() { return segment; }
+        public LocalDate getRegistrationDate() { return registrationDate; }
+    }
+    
+    // 1. 複雑な集計レポートの生成
+    public static void demonstrateComplexAggregation() {
+        System.out.println("=== 複雑な集計レポートの生成 ===");
+        
+        List<Order> orders = createSampleOrders();
+        List<Customer> customers = createSampleCustomers();
+        
+        // 顧客セグメント別売上分析
+        Map<String, Map<String, Object>> segmentAnalysis = orders.stream()
+            .collect(groupingBy(
+                order -> customers.stream()
+                                .filter(c -> c.getCustomerId().equals(order.getCustomerId()))
+                                .findFirst()
+                                .map(Customer::getSegment)
+                                .orElse("Unknown"),
+                collectingAndThen(
+                    toList(),
+                    orderList -> {
+                        BigDecimal totalRevenue = orderList.stream()
+                            .map(Order::getTotalAmount)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        
+                        double avgOrderValue = orderList.stream()
+                            .mapToDouble(order -> order.getTotalAmount().doubleValue())
+                            .average()
+                            .orElse(0.0);
+                        
+                        long orderCount = orderList.size();
+                        
+                        Map<String, Object> stats = new HashMap<>();
+                        stats.put("totalRevenue", totalRevenue);
+                        stats.put("avgOrderValue", avgOrderValue);
+                        stats.put("orderCount", orderCount);
+                        stats.put("revenuePerOrder", totalRevenue.divide(
+                            BigDecimal.valueOf(orderCount), 2, RoundingMode.HALF_UP));
+                        
+                        return stats;
+                    }
+                )
+            ));
+        
+        System.out.println("顧客セグメント別分析:");
+        segmentAnalysis.forEach((segment, stats) -> {
+            System.out.printf("セグメント: %s%n", segment);
+            System.out.printf("  総売上: ¥%,.0f%n", ((BigDecimal)stats.get("totalRevenue")).doubleValue());
+            System.out.printf("  平均注文額: ¥%,.0f%n", (Double)stats.get("avgOrderValue"));
+            System.out.printf("  注文件数: %d件%n", (Long)stats.get("orderCount"));
+            System.out.printf("  注文あたり売上: ¥%s%n", stats.get("revenuePerOrder"));
+            System.out.println();
+        });
+    }
+    
+    // 2. 時系列データの分析
+    public static void demonstrateTimeSeriesAnalysis() {
+        System.out.println("=== 時系列データの分析 ===");
+        
+        List<Order> orders = createSampleOrders();
+        
+        // 月別売上推移
+        Map<YearMonth, BigDecimal> monthlySales = orders.stream()
+            .collect(groupingBy(
+                order -> YearMonth.from(order.getOrderDate()),
+                mapping(Order::getTotalAmount,
+                       reducing(BigDecimal.ZERO, BigDecimal::add))
+            ));
+        
+        System.out.println("月別売上推移:");
+        monthlySales.entrySet().stream()
+                   .sorted(Map.Entry.comparingByKey())
+                   .forEach(entry -> 
+                       System.out.printf("%s: ¥%,.0f%n", 
+                                       entry.getKey(), entry.getValue().doubleValue()));
+        
+        // 週単位の注文傾向分析
+        Map<DayOfWeek, Long> weeklyPattern = orders.stream()
+            .collect(groupingBy(
+                order -> order.getOrderDate().getDayOfWeek(),
+                counting()
+            ));
+        
+        System.out.println("\n曜日別注文パターン:");
+        weeklyPattern.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .forEach(entry -> 
+                        System.out.printf("%s: %d件%n", 
+                                        entry.getKey(), entry.getValue()));
+        
+        // 成長率分析
+        List<Map.Entry<YearMonth, BigDecimal>> sortedMonthlySales = 
+            monthlySales.entrySet().stream()
+                       .sorted(Map.Entry.comparingByKey())
+                       .collect(toList());
+        
+        System.out.println("\n前月比成長率:");
+        IntStream.range(1, sortedMonthlySales.size())
+                .forEach(i -> {
+                    YearMonth currentMonth = sortedMonthlySales.get(i).getKey();
+                    BigDecimal currentSales = sortedMonthlySales.get(i).getValue();
+                    BigDecimal previousSales = sortedMonthlySales.get(i-1).getValue();
+                    
+                    if (previousSales.compareTo(BigDecimal.ZERO) > 0) {
+                        BigDecimal growthRate = currentSales.subtract(previousSales)
+                                                          .divide(previousSales, 4, RoundingMode.HALF_UP)
+                                                          .multiply(BigDecimal.valueOf(100));
+                        System.out.printf("%s: %+.1f%%%n", currentMonth, growthRate.doubleValue());
+                    }
+                });
+    }
+    
+    // 3. 高度なフィルタリングと条件分岐
+    public static void demonstrateAdvancedFiltering() {
+        System.out.println("\n=== 高度なフィルタリングと条件分岐 ===");
+        
+        List<Order> orders = createSampleOrders();
+        List<Customer> customers = createSampleCustomers();
+        
+        // 複合条件でのフィルタリング
+        List<Order> premiumHighValueOrders = orders.stream()
+            .filter(order -> {
+                // 顧客セグメントの確認
+                boolean isPremium = customers.stream()
+                    .filter(c -> c.getCustomerId().equals(order.getCustomerId()))
+                    .findFirst()
+                    .map(Customer::getSegment)
+                    .map("Premium"::equals)
+                    .orElse(false);
+                
+                // 高額注文の確認
+                boolean isHighValue = order.getTotalAmount()
+                                          .compareTo(new BigDecimal("50000")) >= 0;
+                
+                // 完了ステータスの確認
+                boolean isCompleted = "COMPLETED".equals(order.getStatus());
+                
+                return isPremium && isHighValue && isCompleted;
+            })
+            .collect(toList());
+        
+        System.out.println("プレミアム顧客の高額完了注文:");
+        premiumHighValueOrders.forEach(order -> 
+            System.out.printf("注文ID: %s, 金額: ¥%,.0f%n", 
+                            order.getOrderId(), order.getTotalAmount().doubleValue()));
+        
+        // 動的条件でのフィルタリング
+        String targetRegion = "東京";
+        LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0);
+        
+        Predicate<Order> regionFilter = order -> targetRegion.equals(order.getRegion());
+        Predicate<Order> dateFilter = order -> order.getOrderDate().isAfter(startDate);
+        Predicate<Order> statusFilter = order -> Arrays.asList("COMPLETED", "SHIPPED")
+                                                       .contains(order.getStatus());
+        
+        List<Order> filteredOrders = orders.stream()
+            .filter(regionFilter.and(dateFilter).and(statusFilter))
+            .collect(toList());
+        
+        System.out.printf("\n%s地区の2024年以降完了・出荷済み注文: %d件%n", 
+                         targetRegion, filteredOrders.size());
+    }
+    
+    // 4. データ変換とマッピングパターン
+    public static void demonstrateDataTransformation() {
+        System.out.println("\n=== データ変換とマッピングパターン ===");
+        
+        List<Order> orders = createSampleOrders();
+        List<Customer> customers = createSampleCustomers();
+        
+        // DTOへの変換例
+        List<OrderSummaryDto> orderSummaries = orders.stream()
+            .map(order -> {
+                Customer customer = customers.stream()
+                    .filter(c -> c.getCustomerId().equals(order.getCustomerId()))
+                    .findFirst()
+                    .orElse(null);
+                
+                return new OrderSummaryDto(
+                    order.getOrderId(),
+                    customer != null ? customer.getName() : "Unknown",
+                    customer != null ? customer.getSegment() : "Unknown",
+                    order.getOrderDate().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                    order.getTotalAmount(),
+                    order.getItems().size(),
+                    order.getStatus()
+                );
+            })
+            .collect(toList());
+        
+        System.out.println("注文サマリー（上位5件）:");
+        orderSummaries.stream()
+                     .limit(5)
+                     .forEach(System.out::println);
+        
+        // 階層データの平坦化
+        List<ProductSalesDto> productSales = orders.stream()
+            .flatMap(order -> order.getItems().stream()
+                .map(item -> new ProductSalesDto(
+                    item.getProductId(),
+                    item.getProductName(),
+                    item.getCategory(),
+                    item.getQuantity(),
+                    item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())),
+                    order.getOrderDate()
+                )))
+            .collect(toList());
+        
+        // カテゴリ別売上集計
+        Map<String, BigDecimal> categorySales = productSales.stream()
+            .collect(groupingBy(
+                ProductSalesDto::getCategory,
+                mapping(ProductSalesDto::getTotalAmount,
+                       reducing(BigDecimal.ZERO, BigDecimal::add))
+            ));
+        
+        System.out.println("\nカテゴリ別売上:");
+        categorySales.entrySet().stream()
+                    .sorted(Map.Entry.<String, BigDecimal>comparingByValue().reversed())
+                    .forEach(entry -> 
+                        System.out.printf("%s: ¥%,.0f%n", 
+                                        entry.getKey(), entry.getValue().doubleValue()));
+    }
+    
+    // 5. パフォーマンス最適化パターン
+    public static void demonstratePerformancePatterns() {
+        System.out.println("\n=== パフォーマンス最適化パターン ===");
+        
+        List<Order> orders = createLargeOrderDataset();
+        
+        // 遅延評価の活用
+        System.out.println("遅延評価パターン:");
+        long start = System.currentTimeMillis();
+        
+        Optional<Order> firstHighValueOrder = orders.stream()
+            .peek(order -> System.out.print("."))  // 処理されたアイテムを表示
+            .filter(order -> order.getTotalAmount().compareTo(new BigDecimal("100000")) >= 0)
+            .findFirst();  // 最初の条件満足で停止
+        
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.printf("\n遅延評価結果: %s (%dms)%n", 
+                         firstHighValueOrder.isPresent() ? "発見" : "未発見", elapsed);
+        
+        // ショートサーキット評価
+        System.out.println("\nショートサーキット評価:");
+        start = System.currentTimeMillis();
+        
+        boolean hasVipCustomer = orders.stream()
+            .anyMatch(order -> order.getTotalAmount().compareTo(new BigDecimal("200000")) >= 0);
+        
+        elapsed = System.currentTimeMillis() - start;
+        System.out.printf("VIP顧客存在確認: %s (%dms)%n", hasVipCustomer, elapsed);
+        
+        // 並列処理での最適化
+        System.out.println("\n並列処理最適化:");
+        start = System.currentTimeMillis();
+        
+        BigDecimal sequentialTotal = orders.stream()
+            .map(Order::getTotalAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        long sequentialTime = System.currentTimeMillis() - start;
+        
+        start = System.currentTimeMillis();
+        
+        BigDecimal parallelTotal = orders.parallelStream()
+            .map(Order::getTotalAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        long parallelTime = System.currentTimeMillis() - start;
+        
+        System.out.printf("シーケンシャル: ¥%,.0f (%dms)%n", 
+                         sequentialTotal.doubleValue(), sequentialTime);
+        System.out.printf("並列処理: ¥%,.0f (%dms)%n", 
+                         parallelTotal.doubleValue(), parallelTime);
+        System.out.printf("性能向上: %.2f倍%n", (double)sequentialTime / parallelTime);
+    }
+    
+    // DTO クラス
+    static class OrderSummaryDto {
+        private String orderId;
+        private String customerName;
+        private String segment;
+        private String orderDate;
+        private BigDecimal totalAmount;
+        private int itemCount;
+        private String status;
+        
+        public OrderSummaryDto(String orderId, String customerName, String segment,
+                              String orderDate, BigDecimal totalAmount, int itemCount, String status) {
+            this.orderId = orderId;
+            this.customerName = customerName;
+            this.segment = segment;
+            this.orderDate = orderDate;
+            this.totalAmount = totalAmount;
+            this.itemCount = itemCount;
+            this.status = status;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("注文[%s] %s (%s) %s ¥%,.0f (%d商品) %s",
+                               orderId, customerName, segment, orderDate, 
+                               totalAmount.doubleValue(), itemCount, status);
+        }
+    }
+    
+    static class ProductSalesDto {
+        private String productId;
+        private String productName;
+        private String category;
+        private int quantity;
+        private BigDecimal totalAmount;
+        private LocalDateTime saleDate;
+        
+        public ProductSalesDto(String productId, String productName, String category,
+                              int quantity, BigDecimal totalAmount, LocalDateTime saleDate) {
+            this.productId = productId;
+            this.productName = productName;
+            this.category = category;
+            this.quantity = quantity;
+            this.totalAmount = totalAmount;
+            this.saleDate = saleDate;
+        }
+        
+        // ゲッターメソッド
+        public String getCategory() { return category; }
+        public BigDecimal getTotalAmount() { return totalAmount; }
+    }
+    
+    // サンプルデータ生成メソッド
+    private static List<Order> createSampleOrders() {
+        return Arrays.asList(
+            new Order("ORD001", "CUST001", LocalDateTime.of(2024, 1, 15, 10, 30),
+                     Arrays.asList(
+                         new OrderItem("PROD001", "ノートPC", "電子機器", new BigDecimal("89800"), 1),
+                         new OrderItem("PROD002", "マウス", "電子機器", new BigDecimal("2800"), 2)
+                     ), "COMPLETED", "東京"),
+            
+            new Order("ORD002", "CUST002", LocalDateTime.of(2024, 2, 10, 14, 15),
+                     Arrays.asList(
+                         new OrderItem("PROD003", "デスク", "家具", new BigDecimal("25000"), 1),
+                         new OrderItem("PROD004", "チェア", "家具", new BigDecimal("45000"), 1)
+                     ), "SHIPPED", "大阪"),
+            
+            new Order("ORD003", "CUST003", LocalDateTime.of(2024, 2, 20, 16, 45),
+                     Arrays.asList(
+                         new OrderItem("PROD005", "Java本", "書籍", new BigDecimal("3200"), 3),
+                         new OrderItem("PROD006", "Python本", "書籍", new BigDecimal("4800"), 2)
+                     ), "COMPLETED", "東京")
+        );
+    }
+    
+    private static List<Customer> createSampleCustomers() {
+        return Arrays.asList(
+            new Customer("CUST001", "田中太郎", "Premium", LocalDate.of(2023, 6, 15)),
+            new Customer("CUST002", "佐藤花子", "Standard", LocalDate.of(2023, 8, 20)),
+            new Customer("CUST003", "鈴木一郎", "Premium", LocalDate.of(2023, 9, 10))
+        );
+    }
+    
+    private static List<Order> createLargeOrderDataset() {
+        Random random = new Random(42);
+        return IntStream.range(1, 100000)
+                       .mapToObj(i -> {
+                           List<OrderItem> items = Arrays.asList(
+                               new OrderItem("PROD" + i, "商品" + i, "カテゴリ" + (i % 5),
+                                           new BigDecimal(1000 + random.nextInt(50000)), 
+                                           1 + random.nextInt(5))
+                           );
+                           return new Order("ORD" + String.format("%06d", i), 
+                                          "CUST" + (i % 1000),
+                                          LocalDateTime.now().minusDays(random.nextInt(365)),
+                                          items, "COMPLETED", "東京");
+                       })
+                       .collect(toList());
+    }
+    
+    public static void main(String[] args) {
+        demonstrateComplexAggregation();
+        demonstrateTimeSeriesAnalysis();
+        demonstrateAdvancedFiltering();
+        demonstrateDataTransformation();
+        demonstratePerformancePatterns();
+    }
+}
+```
+
+## まとめ：Stream APIの実践的活用指針
+
+Stream APIを効果的に活用するための重要なポイントをまとめます：
+
+### 1. 適切な使用場面の判断
+
+**Stream APIが適している場面：**
+- コレクションに対する変換、フィルタリング、集約処理
+- 宣言的なプログラミングスタイルが求められる場面
+- 複雑なデータ処理を簡潔に表現したい場合
+- 並列処理による性能向上が期待できる大量データ処理
+
+**従来のfor文が適している場面：**
+- 単純なループ処理
+- 途中で処理を中断する必要がある場合
+- インデックスが重要な処理
+- デバッグが重要な開発初期段階
+
+### 2. 性能に関する考慮事項
+
+**効率的なStream処理のために：**
+- 適切なデータサイズでの並列処理の検討
+- プリミティブストリームの積極的活用
+- 遅延評価を活かした最適化
+- 不要な中間操作の回避
+
+### 3. 可読性とメンテナンス性
+
+**読みやすいStreamコードのために：**
+- 適切な改行とインデントの使用
+- 複雑な処理は複数のステップに分割
+- メソッド参照の積極的活用
+- 適切な変数名とコメントの記述
+
+### 4. 実践的な学習アプローチ
+
+Stream APIを習得するための効果的な学習方法：
+
+1. **基本操作の習得**：filter、map、collectなどの基本操作を確実にマスタする
+2. **実際のデータでの練習**：業務に近いデータを使用した処理の実装
+3. **性能測定の実施**：従来の方法との比較による性能特性の理解
+4. **段階的な複雑化**：簡単な処理から始めて徐々に複雑な処理に挑戦
+
+Stream APIは、現代のJavaプログラミングにおいて必須の技術です。関数型プログラミングの概念と組み合わせることで、より簡潔で表現力豊かなコードを書くことができます。この章で学習した内容を基盤として、実際のプロジェクトでの活用を通じて、さらなるスキルアップを目指しましょう。
