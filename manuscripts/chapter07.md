@@ -178,25 +178,317 @@ inferredList.add("Type Inference");
 
 `List`は順序付きのコレクションで、重複する要素を許可します。配列と似ていますが、サイズが動的に変更可能です。
 
-### ArrayList
+### ArrayListの実践例：学生成績管理システム
 
-`ArrayList`は、内部的に配列を使って実装されたリストです。ランダムアクセスが高速で、一般的に最もよく使用されます。
+`ArrayList`は、内部的に配列を使って実装されたリストです。ランダムアクセスが高速で、一般的に最もよく使用されます。以下のプログラムは、学生の成績管理システムという実用的な例を通じて、ArrayListの効果的な活用方法を学習するための材料です：
+
+ファイル名： StudentGradeManager.java
 
 ```java
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class ArrayListExample {
+// 学生データを表現するクラス
+class Student {
+    private String studentId;
+    private String name;
+    private List<Integer> grades;
+    private String department;
+    
+    public Student(String studentId, String name, String department) {
+        this.studentId = studentId;
+        this.name = name;
+        this.department = department;
+        this.grades = new ArrayList<>(); // 成績リストをArrayListで初期化
+    }
+    
+    // 成績の追加
+    public void addGrade(int grade) {
+        if (grade >= 0 && grade <= 100) {
+            grades.add(grade);
+            System.out.println(name + " に成績 " + grade + " を追加しました");
+        } else {
+            System.out.println("無効な成績です: " + grade + " (0-100の範囲で入力してください)");
+        }
+    }
+    
+    // 平均点の計算
+    public double getAverageGrade() {
+        if (grades.isEmpty()) {
+            return 0.0;
+        }
+        return grades.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+    
+    // 最高点の取得
+    public int getMaxGrade() {
+        if (grades.isEmpty()) {
+            return 0;
+        }
+        return Collections.max(grades);
+    }
+    
+    // 最低点の取得
+    public int getMinGrade() {
+        if (grades.isEmpty()) {
+            return 0;
+        }
+        return Collections.min(grades);
+    }
+    
+    // 成績の総数
+    public int getGradeCount() {
+        return grades.size();
+    }
+    
+    // 特定の成績の削除
+    public boolean removeGrade(int grade) {
+        boolean removed = grades.remove(Integer.valueOf(grade));
+        if (removed) {
+            System.out.println(name + " から成績 " + grade + " を削除しました");
+        } else {
+            System.out.println(name + " に成績 " + grade + " は見つかりませんでした");
+        }
+        return removed;
+    }
+    
+    // 全成績の表示
+    public void displayGrades() {
+        System.out.println("\n=== " + name + " の成績詳細 ===");
+        System.out.println("学籍番号: " + studentId);
+        System.out.println("学部: " + department);
+        System.out.println("成績一覧: " + grades);
+        System.out.printf("平均点: %.2f\n", getAverageGrade());
+        if (!grades.isEmpty()) {
+            System.out.println("最高点: " + getMaxGrade());
+            System.out.println("最低点: " + getMinGrade());
+        }
+        System.out.println("総受講科目数: " + getGradeCount());
+    }
+    
+    // アクセサメソッド
+    public String getStudentId() { return studentId; }
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public List<Integer> getGrades() { return new ArrayList<>(grades); } // 防御的コピー
+}
+
+public class StudentGradeManager {
+    private List<Student> students; // 学生リストをArrayListで管理
+    
+    public StudentGradeManager() {
+        this.students = new ArrayList<>();
+    }
+    
+    // 学生の登録
+    public void addStudent(Student student) {
+        students.add(student);
+        System.out.println("学生 " + student.getName() + " を登録しました");
+    }
+    
+    // 学籍番号による学生検索
+    public Student findStudentById(String studentId) {
+        for (Student student : students) {
+            if (student.getStudentId().equals(studentId)) {
+                return student;
+            }
+        }
+        return null;
+    }
+    
+    // 名前による学生検索（部分一致）
+    public List<Student> findStudentsByName(String nameQuery) {
+        List<Student> results = new ArrayList<>();
+        for (Student student : students) {
+            if (student.getName().toLowerCase().contains(nameQuery.toLowerCase())) {
+                results.add(student);
+            }
+        }
+        return results;
+    }
+    
+    // 学部による学生検索
+    public List<Student> findStudentsByDepartment(String department) {
+        return students.stream()
+                .filter(student -> student.getDepartment().equals(department))
+                .collect(Collectors.toList());
+    }
+    
+    // 全学生の統計情報表示
+    public void displayStatistics() {
+        if (students.isEmpty()) {
+            System.out.println("登録されている学生がいません");
+            return;
+        }
+        
+        System.out.println("\n=== 全学生統計情報 ===");
+        System.out.println("総学生数: " + students.size());
+        
+        // 学部別学生数の集計
+        Map<String, Long> departmentCounts = students.stream()
+                .collect(Collectors.groupingBy(Student::getDepartment, Collectors.counting()));
+        
+        System.out.println("\n学部別学生数:");
+        departmentCounts.forEach((dept, count) -> 
+            System.out.println("  " + dept + ": " + count + "人"));
+        
+        // 平均点の高い順に上位5名を表示
+        List<Student> topStudents = students.stream()
+                .filter(student -> student.getGradeCount() > 0)
+                .sorted((s1, s2) -> Double.compare(s2.getAverageGrade(), s1.getAverageGrade()))
+                .limit(5)
+                .collect(Collectors.toList());
+        
+        if (!topStudents.isEmpty()) {
+            System.out.println("\n成績上位者:");
+            for (int i = 0; i < topStudents.size(); i++) {
+                Student student = topStudents.get(i);
+                System.out.printf("  %d位: %s (%.2f点)\n", 
+                    i + 1, student.getName(), student.getAverageGrade());
+            }
+        }
+    }
+    
+    // 全学生リストの表示
+    public void displayAllStudents() {
+        System.out.println("\n=== 全学生一覧 ===");
+        if (students.isEmpty()) {
+            System.out.println("登録されている学生がいません");
+            return;
+        }
+        
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+            System.out.printf("%d. %s (%s) - %s学部 - 平均点: %.2f\n",
+                i + 1, student.getName(), student.getStudentId(), 
+                student.getDepartment(), student.getAverageGrade());
+        }
+    }
+    
+    // 成績データの一括入力
+    public void bulkAddGrades(String studentId, int[] grades) {
+        Student student = findStudentById(studentId);
+        if (student != null) {
+            System.out.println("\n" + student.getName() + " に一括で成績を追加中...");
+            for (int grade : grades) {
+                student.addGrade(grade);
+            }
+        } else {
+            System.out.println("学籍番号 " + studentId + " の学生が見つかりません");
+        }
+    }
+    
+    // ArrayListの特徴的な操作のデモンストレーション
+    public void demonstrateArrayListFeatures() {
+        System.out.println("\n=== ArrayList の特徴的操作のデモ ===");
+        
+        // サイズ動的変更のデモ
+        List<String> demo = new ArrayList<>();
+        System.out.println("初期サイズ: " + demo.size());
+        
+        // 大量データの追加
+        for (int i = 1; i <= 1000; i++) {
+            demo.add("Element " + i);
+        }
+        System.out.println("1000要素追加後のサイズ: " + demo.size());
+        
+        // ランダムアクセスの高速性
+        long startTime = System.nanoTime();
+        String element500 = demo.get(499); // 500番目の要素取得
+        long endTime = System.nanoTime();
+        System.out.println("500番目の要素取得にかかった時間: " + (endTime - startTime) + " ナノ秒");
+        System.out.println("取得した要素: " + element500);
+        
+        // 中間挿入の非効率性のデモ
+        startTime = System.nanoTime();
+        demo.add(500, "Inserted Element"); // 中間への挿入
+        endTime = System.nanoTime();
+        System.out.println("中間挿入にかかった時間: " + (endTime - startTime) + " ナノ秒");
+        
+        // 末尾追加の効率性
+        startTime = System.nanoTime();
+        demo.add("Last Element"); // 末尾への追加
+        endTime = System.nanoTime();
+        System.out.println("末尾追加にかかった時間: " + (endTime - startTime) + " ナノ秒");
+    }
+    
     public static void main(String[] args) {
-        // ArrayListの作成
-        List<String> fruits = new ArrayList<>();
+        StudentGradeManager manager = new StudentGradeManager();
         
-        // 要素の追加
-        fruits.add("りんご");
-        fruits.add("バナナ");
-        fruits.add("オレンジ");
+        System.out.println("=== 学生成績管理システム - ArrayList活用例 ===");
         
-        // 特定位置に挿入
-        fruits.add(1, "ぶどう");
+        // サンプル学生データの作成と登録
+        Student student1 = new Student("S001", "田中太郎", "情報工学");
+        Student student2 = new Student("S002", "佐藤花子", "経済学");
+        Student student3 = new Student("S003", "鈴木次郎", "情報工学");
+        Student student4 = new Student("S004", "高橋美咲", "文学");
+        
+        manager.addStudent(student1);
+        manager.addStudent(student2);
+        manager.addStudent(student3);
+        manager.addStudent(student4);
+        
+        // 成績データの一括追加
+        manager.bulkAddGrades("S001", new int[]{85, 92, 78, 88, 95});
+        manager.bulkAddGrades("S002", new int[]{90, 87, 92, 89, 91});
+        manager.bulkAddGrades("S003", new int[]{75, 80, 85, 70, 88});
+        manager.bulkAddGrades("S004", new int[]{95, 98, 92, 96, 94});
+        
+        // 各学生の詳細情報表示
+        for (String studentId : Arrays.asList("S001", "S002", "S003", "S004")) {
+            Student student = manager.findStudentById(studentId);
+            if (student != null) {
+                student.displayGrades();
+            }
+        }
+        
+        // 全学生一覧表示
+        manager.displayAllStudents();
+        
+        // 統計情報表示
+        manager.displayStatistics();
+        
+        // 検索機能のデモ
+        System.out.println("\n=== 検索機能のデモ ===");
+        List<Student> engineeringStudents = manager.findStudentsByDepartment("情報工学");
+        System.out.println("情報工学部の学生: " + 
+            engineeringStudents.stream().map(Student::getName).collect(Collectors.toList()));
+        
+        List<Student> nameSearchResults = manager.findStudentsByName("田中");
+        System.out.println("名前に'田中'を含む学生: " + 
+            nameSearchResults.stream().map(Student::getName).collect(Collectors.toList()));
+        
+        // ArrayList特徴のデモンストレーション
+        manager.demonstrateArrayListFeatures();
+    }
+}
+```
+
+**このプログラムから学ぶ重要なArrayListの概念：**
+
+1. **動的サイズ変更**：配列と異なり、要素の追加時に自動的にサイズが拡張されます。初期容量を超えても自動的に内部配列が再配置されます。
+
+2. **ランダムアクセスの高速性**：インデックスによる直接アクセス（get(index)）が O(1) の時間計算量で実行されます。
+
+3. **挿入・削除の特性**：末尾への追加は高速ですが、中間への挿入は要素のシフトが必要なため O(n) の時間がかかります。
+
+4. **型安全性**：ジェネリクスにより、コンパイル時に型の整合性がチェックされ、実行時エラーを防げます。
+
+5. **ストリームAPIとの統合**：Java 8以降のStream APIと組み合わせることで、関数型プログラミングスタイルでのデータ処理が可能です。
+
+**実用的な応用場面：**
+
+- **ユーザー管理システム**：登録ユーザーのリスト管理
+- **商品カタログ**：ECサイトの商品情報管理
+- **ログデータ処理**：時系列でのログエントリ管理
+- **キャッシュシステム**：頻繁にアクセスされるデータの一時保存
+
+**ArrayListの性能特性：**
+
+- **メモリ効率**：内部配列による連続メモリ配置で、キャッシュ効率が良い
+- **アクセス性能**：O(1) のランダムアクセス
+- **追加性能**：末尾追加は通常 O(1)、容量拡張時は O(n)
+- **挿入・削除性能**：中間操作は O(n)、末尾操作は O(1)
         
         // 要素の取得
         System.out.println("1番目の果物: " + fruits.get(1));
@@ -303,179 +595,1034 @@ public class ListSortExample {
 }
 ```
 
-## 7.3 Setインターフェース
+## 7.3 Setインターフェース：重複のない要素管理と集合演算の実現
 
-### Setの基本概念
+### Setの基本概念と数学的背景
 
-`Set`は重複を許可しないコレクションです。数学の集合の概念に対応しています。
+`Set`インターフェイスは、数学の集合論に基づいて設計されたコレクションです。「重複を許可しない要素の集まり」という集合の基本的な特性を、プログラミングの世界で実現します。Setは、重複排除、一意性の保証、集合演算（和集合、積集合、差集合）などの重要な機能を提供し、データの整合性と効率的な管理を可能にします。
 
-### HashSet
+### HashSetの実践例：オンライン学習プラットフォームの重複管理システム
 
-`HashSet`は、ハッシュテーブルを使って実装されたセットです。要素の順序は保証されませんが、高速な検索・追加・削除が可能です。
+以下の包括的な例では、オンライン学習プラットフォームにおけるユーザー管理、コース管理、学習履歴の重複排除を通じて、HashSetの実用的な活用方法と技術的特性を学習します：
 
 ```java
 import java.util.*;
+import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class HashSetExample {
+/**
+ * オンライン学習プラットフォームにおけるHashSet活用例
+ * 重複のないデータ管理と集合演算の実践的デモンストレーション
+ */
+
+// ユーザー情報を表すクラス
+class User {
+    private String userId;
+    private String username;
+    private String email;
+    private Set<String> enrolledCourses;
+    private Set<String> completedCourses;
+    private Set<String> interests;
+    
+    public User(String userId, String username, String email) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.enrolledCourses = new HashSet<>();
+        this.completedCourses = new HashSet<>();
+        this.interests = new HashSet<>();
+    }
+    
+    // HashSetの重複排除機能を活用したコース登録
+    public boolean enrollInCourse(String courseId) {
+        if (completedCourses.contains(courseId)) {
+            System.out.println("警告: " + username + " は既にコース " + courseId + " を完了しています");
+            return false;
+        }
+        boolean added = enrolledCourses.add(courseId);
+        if (!added) {
+            System.out.println("情報: " + username + " は既にコース " + courseId + " に登録済みです");
+        }
+        return added;
+    }
+    
+    public void completeCourse(String courseId) {
+        if (enrolledCourses.remove(courseId)) {
+            completedCourses.add(courseId);
+            System.out.println(username + " がコース " + courseId + " を完了しました");
+        }
+    }
+    
+    public void addInterest(String interest) {
+        interests.add(interest);
+    }
+    
+    public void addInterests(String... interests) {
+        this.interests.addAll(Arrays.asList(interests));
+    }
+    
+    // ゲッターメソッド
+    public String getUserId() { return userId; }
+    public String getUsername() { return username; }
+    public String getEmail() { return email; }
+    public Set<String> getEnrolledCourses() { return new HashSet<>(enrolledCourses); }
+    public Set<String> getCompletedCourses() { return new HashSet<>(completedCourses); }
+    public Set<String> getInterests() { return new HashSet<>(interests); }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(userId, user.userId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("User{id='%s', username='%s', enrolled=%d, completed=%d}", 
+            userId, username, enrolledCourses.size(), completedCourses.size());
+    }
+}
+
+// コース情報を表すクラス
+class Course {
+    private String courseId;
+    private String title;
+    private String category;
+    private Set<String> prerequisites;
+    private Set<String> enrolledUsers;
+    private int maxCapacity;
+    
+    public Course(String courseId, String title, String category, int maxCapacity) {
+        this.courseId = courseId;
+        this.title = title;
+        this.category = category;
+        this.maxCapacity = maxCapacity;
+        this.prerequisites = new HashSet<>();
+        this.enrolledUsers = new HashSet<>();
+    }
+    
+    public void addPrerequisite(String prerequisiteCourseId) {
+        prerequisites.add(prerequisiteCourseId);
+    }
+    
+    public boolean enrollUser(String userId) {
+        if (enrolledUsers.size() >= maxCapacity) {
+            System.out.println("エラー: コース " + courseId + " は定員に達しています");
+            return false;
+        }
+        return enrolledUsers.add(userId);
+    }
+    
+    public boolean removeUser(String userId) {
+        return enrolledUsers.remove(userId);
+    }
+    
+    public String getCourseId() { return courseId; }
+    public String getTitle() { return title; }
+    public String getCategory() { return category; }
+    public Set<String> getPrerequisites() { return new HashSet<>(prerequisites); }
+    public Set<String> getEnrolledUsers() { return new HashSet<>(enrolledUsers); }
+    public int getCurrentEnrollment() { return enrolledUsers.size(); }
+    public int getMaxCapacity() { return maxCapacity; }
+    
+    @Override
+    public String toString() {
+        return String.format("Course{id='%s', title='%s', enrolled=%d/%d}", 
+            courseId, title, enrolledUsers.size(), maxCapacity);
+    }
+}
+
+public class OnlineLearningPlatform {
+    private Set<User> users;
+    private Set<Course> courses;
+    private Set<String> availableCategories;
+    private Map<String, Set<String>> categoryToCourses;
+    
+    public OnlineLearningPlatform() {
+        this.users = new HashSet<>();
+        this.courses = new HashSet<>();
+        this.availableCategories = new HashSet<>();
+        this.categoryToCourses = new HashMap<>();
+    }
+    
+    // ユーザー管理（HashSetによる重複排除）
+    public boolean registerUser(User user) {
+        boolean added = users.add(user);
+        if (added) {
+            System.out.println("新規ユーザー登録: " + user.getUsername());
+        } else {
+            System.out.println("警告: ユーザーID " + user.getUserId() + " は既に登録済みです");
+        }
+        return added;
+    }
+    
+    // コース管理
+    public void addCourse(Course course) {
+        courses.add(course);
+        availableCategories.add(course.getCategory());
+        categoryToCourses.computeIfAbsent(course.getCategory(), k -> new HashSet<>())
+                        .add(course.getCourseId());
+        System.out.println("新規コース追加: " + course.getTitle());
+    }
+    
+    // 集合演算を活用した高度な検索・分析機能
+    public Set<String> findCommonInterests(String userId1, String userId2) {
+        User user1 = findUserById(userId1);
+        User user2 = findUserById(userId2);
+        
+        if (user1 == null || user2 == null) {
+            return new HashSet<>();
+        }
+        
+        Set<String> commonInterests = new HashSet<>(user1.getInterests());
+        commonInterests.retainAll(user2.getInterests()); // 積集合
+        return commonInterests;
+    }
+    
+    public Set<String> findUniqueInterests(String userId1, String userId2) {
+        User user1 = findUserById(userId1);
+        User user2 = findUserById(userId2);
+        
+        if (user1 == null || user2 == null) {
+            return new HashSet<>();
+        }
+        
+        Set<String> allInterests = new HashSet<>(user1.getInterests());
+        allInterests.addAll(user2.getInterests()); // 和集合
+        
+        Set<String> commonInterests = findCommonInterests(userId1, userId2);
+        allInterests.removeAll(commonInterests); // 差集合
+        return allInterests;
+    }
+    
+    public Set<String> recommendCourses(String userId) {
+        User user = findUserById(userId);
+        if (user == null) return new HashSet<>();
+        
+        Set<String> recommendations = new HashSet<>();
+        Set<String> userInterests = user.getInterests();
+        Set<String> enrolledCourses = user.getEnrolledCourses();
+        Set<String> completedCourses = user.getCompletedCourses();
+        
+        // 興味に基づくコース推薦
+        for (String interest : userInterests) {
+            Set<String> categoryCoruses = categoryToCourses.getOrDefault(interest, new HashSet<>());
+            recommendations.addAll(categoryCoruses);
+        }
+        
+        // 既に登録済み・完了済みのコースを除外
+        recommendations.removeAll(enrolledCourses);
+        recommendations.removeAll(completedCourses);
+        
+        return recommendations;
+    }
+    
+    // ユーザー検索（等価性によるHashSet検索）
+    public User findUserById(String userId) {
+        return users.stream()
+                   .filter(user -> user.getUserId().equals(userId))
+                   .findFirst()
+                   .orElse(null);
+    }
+    
+    // 統計情報生成
+    public void displayPlatformStatistics() {
+        System.out.println("\n=== プラットフォーム統計情報 ===");
+        System.out.println("総ユーザー数: " + users.size());
+        System.out.println("総コース数: " + courses.size());
+        System.out.println("利用可能カテゴリ数: " + availableCategories.size());
+        
+        // 人気カテゴリの分析
+        Map<String, Long> enrollmentByCategory = courses.stream()
+            .collect(Collectors.groupingBy(
+                Course::getCategory,
+                Collectors.summingLong(Course::getCurrentEnrollment)
+            ));
+        
+        System.out.println("\nカテゴリ別登録者数:");
+        enrollmentByCategory.entrySet().stream()
+            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+            .forEach(entry -> System.out.println("  " + entry.getKey() + ": " + entry.getValue() + "人"));
+    }
+    
+    // HashSetの性能特性デモンストレーション
+    public void demonstrateHashSetPerformance() {
+        System.out.println("\n=== HashSet性能特性デモンストレーション ===");
+        
+        Set<String> largeSet = new HashSet<>();
+        long startTime, endTime;
+        
+        // 大量データの追加性能テスト
+        startTime = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            largeSet.add("Element" + i);
+        }
+        endTime = System.nanoTime();
+        System.out.println("100,000要素の追加時間: " + (endTime - startTime) / 1_000_000 + " ミリ秒");
+        
+        // 検索性能テスト（O(1)の期待性能）
+        startTime = System.nanoTime();
+        boolean found = largeSet.contains("Element50000");
+        endTime = System.nanoTime();
+        System.out.println("要素検索時間: " + (endTime - startTime) + " ナノ秒 (見つかった: " + found + ")");
+        
+        // 重複追加の検証
+        int initialSize = largeSet.size();
+        largeSet.add("Element50000"); // 既存要素の重複追加
+        System.out.println("重複追加後のサイズ変化: " + initialSize + " → " + largeSet.size());
+        
+        // 削除性能テスト
+        startTime = System.nanoTime();
+        largeSet.remove("Element50000");
+        endTime = System.nanoTime();
+        System.out.println("要素削除時間: " + (endTime - startTime) + " ナノ秒");
+    }
+    
     public static void main(String[] args) {
-        Set<String> uniqueWords = new HashSet<>();
+        OnlineLearningPlatform platform = new OnlineLearningPlatform();
         
-        // 要素の追加
-        uniqueWords.add("Java");
-        uniqueWords.add("Python");
-        uniqueWords.add("Java"); // 重複は無視される
-        uniqueWords.add("C++");
+        System.out.println("=== オンライン学習プラットフォーム - HashSet活用例 ===");
         
-        System.out.println("ユニークな単語: " + uniqueWords);
-        System.out.println("単語数: " + uniqueWords.size()); // 3
+        // ユーザー登録
+        User user1 = new User("U001", "田中太郎", "tanaka@example.com");
+        User user2 = new User("U002", "佐藤花子", "sato@example.com");
+        User user3 = new User("U003", "鈴木次郎", "suzuki@example.com");
         
-        // 要素の存在確認
-        if (uniqueWords.contains("Java")) {
-            System.out.println("Javaが含まれています");
-        }
+        platform.registerUser(user1);
+        platform.registerUser(user2);
+        platform.registerUser(user3);
         
-        // 全要素の反復処理
-        for (String word : uniqueWords) {
-            System.out.println("言語: " + word);
-        }
+        // 興味分野の追加（重複自動排除）
+        user1.addInterests("Java", "Python", "データサイエンス", "機械学習");
+        user2.addInterests("Python", "Web開発", "データサイエンス", "UI/UX");
+        user3.addInterests("Java", "Web開発", "モバイル開発", "機械学習");
         
-        // 別のSetとの集合演算
-        Set<String> otherLanguages = new HashSet<>(Arrays.asList("JavaScript", "Java", "Go"));
+        // コース作成
+        Course javaBasics = new Course("C001", "Java基礎プログラミング", "Java", 30);
+        Course pythonData = new Course("C002", "Pythonデータ分析", "Python", 25);
+        Course webDev = new Course("C003", "Web開発入門", "Web開発", 20);
+        Course mlIntro = new Course("C004", "機械学習入門", "機械学習", 15);
         
-        // 和集合
-        Set<String> union = new HashSet<>(uniqueWords);
-        union.addAll(otherLanguages);
-        System.out.println("和集合: " + union);
+        platform.addCourse(javaBasics);
+        platform.addCourse(pythonData);
+        platform.addCourse(webDev);
+        platform.addCourse(mlIntro);
         
-        // 積集合
-        Set<String> intersection = new HashSet<>(uniqueWords);
-        intersection.retainAll(otherLanguages);
-        System.out.println("積集合: " + intersection);
+        // コース登録（重複防止の確認）
+        user1.enrollInCourse("C001");
+        user1.enrollInCourse("C002");
+        user1.enrollInCourse("C001"); // 重複登録の試行
         
-        // 差集合
-        Set<String> difference = new HashSet<>(uniqueWords);
-        difference.removeAll(otherLanguages);
-        System.out.println("差集合: " + difference);
+        user2.enrollInCourse("C002");
+        user2.enrollInCourse("C003");
+        
+        user3.enrollInCourse("C001");
+        user3.enrollInCourse("C004");
+        
+        // 集合演算による分析
+        System.out.println("\n=== 集合演算による分析 ===");
+        Set<String> commonInterests = platform.findCommonInterests("U001", "U002");
+        System.out.println("田中さんと佐藤さんの共通興味: " + commonInterests);
+        
+        Set<String> uniqueInterests = platform.findUniqueInterests("U001", "U003");
+        System.out.println("田中さんと鈴木さんの固有興味: " + uniqueInterests);
+        
+        // コース推薦システム
+        System.out.println("\n=== コース推薦システム ===");
+        Set<String> recommendations = platform.recommendCourses("U001");
+        System.out.println("田中さんへの推薦コース: " + recommendations);
+        
+        // 統計情報の表示
+        platform.displayPlatformStatistics();
+        
+        // 性能特性のデモンストレーション
+        platform.demonstrateHashSetPerformance();
     }
 }
 ```
 
-### LinkedHashSet
+**このプログラムから学ぶ重要なHashSetの概念：**
 
-`LinkedHashSet`は、要素の挿入順序を保持するセットです。
+1. **重複排除の自動化**：HashSetは要素の重複を自動的に排除し、データの一意性を保証します。ユーザーの興味分野やコース登録において、重複チェックのロジックを簡素化できます。
+
+2. **高速な検索性能**：ハッシュテーブルによる実装により、要素の検索・追加・削除が平均的にO(1)の時間計算量で実行されます。
+
+3. **集合演算の活用**：addAll()（和集合）、retainAll()（積集合）、removeAll()（差集合）により、数学的な集合演算をプログラムで直接実現できます。
+
+4. **等価性とハッシュコード**：equals()とhashCode()メソッドの適切な実装により、カスタムオブジェクトでも正確な重複判定が行われます。
+
+5. **メモリ効率と性能**：重複データの保存を防ぐことで、メモリ使用量を最適化し、システム全体の性能を向上させます。
+
+### LinkedHashSetの実践例：ログ処理システムの順序保持
+
+LinkedHashSetは、HashSetの高速性能と挿入順序の保持を両立させた実装です。以下の例では、システムログ処理における順序保持の重要性を示します：
 
 ```java
 import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class LinkedHashSetExample {
-    public static void main(String[] args) {
-        Set<String> orderedSet = new LinkedHashSet<>();
-        orderedSet.add("第1要素");
-        orderedSet.add("第2要素");
-        orderedSet.add("第3要素");
-        orderedSet.add("第1要素"); // 重複は無視されるが、順序は維持される
+/**
+ * ログ処理システムにおけるLinkedHashSet活用例
+ * 重複排除と挿入順序保持の実践的デモンストレーション
+ */
+
+class LogEntry {
+    private String level;
+    private String message;
+    private LocalDateTime timestamp;
+    private String source;
+    
+    public LogEntry(String level, String message, String source) {
+        this.level = level;
+        this.message = message;
+        this.source = source;
+        this.timestamp = LocalDateTime.now();
+    }
+    
+    public String getLevel() { return level; }
+    public String getMessage() { return message; }
+    public String getSource() { return source; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        LogEntry logEntry = (LogEntry) obj;
+        return Objects.equals(level, logEntry.level) &&
+               Objects.equals(message, logEntry.message) &&
+               Objects.equals(source, logEntry.source);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(level, message, source);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("[%s] %s - %s (%s)", 
+            level, 
+            timestamp.format(DateTimeFormatter.ofPattern("HH:mm:ss")), 
+            message, 
+            source);
+    }
+}
+
+public class OrderedLogProcessor {
+    private Set<String> uniqueErrorMessages;      // 重複排除のみ
+    private Set<String> orderedUniqueMessages;   // 順序保持 + 重複排除
+    private Set<String> processedSources;        // 処理済みソース（順序重要）
+    
+    public OrderedLogProcessor() {
+        this.uniqueErrorMessages = new HashSet<>();
+        this.orderedUniqueMessages = new LinkedHashSet<>();
+        this.processedSources = new LinkedHashSet<>();
+    }
+    
+    public void processLog(LogEntry entry) {
+        // 全てのメッセージを順序保持で記録
+        orderedUniqueMessages.add(entry.getMessage());
+        processedSources.add(entry.getSource());
         
-        System.out.println("挿入順序が保持されたSet: " + orderedSet);
-        // 結果: [第1要素, 第2要素, 第3要素]
+        // エラーレベルのメッセージのみを別途記録
+        if ("ERROR".equals(entry.getLevel())) {
+            uniqueErrorMessages.add(entry.getMessage());
+        }
+        
+        System.out.println("処理中: " + entry);
+    }
+    
+    public void displayOrderedReport() {
+        System.out.println("\n=== 処理順序を保持したユニークメッセージ ===");
+        int index = 1;
+        for (String message : orderedUniqueMessages) {
+            System.out.println(index++ + ". " + message);
+        }
+        
+        System.out.println("\n=== 処理順序を保持したソース一覧 ===");
+        index = 1;
+        for (String source : processedSources) {
+            System.out.println(index++ + ". " + source);
+        }
+        
+        System.out.println("\n=== ユニークエラーメッセージ（順序無し） ===");
+        uniqueErrorMessages.forEach(msg -> System.out.println("- " + msg));
+    }
+    
+    public void demonstrateOrderPreservation() {
+        System.out.println("\n=== LinkedHashSet vs HashSet 順序比較 ===");
+        
+        Set<String> linkedHashSet = new LinkedHashSet<>();
+        Set<String> hashSet = new HashSet<>();
+        
+        String[] testData = {"Delta", "Alpha", "Charlie", "Bravo", "Alpha", "Echo"};
+        
+        for (String item : testData) {
+            linkedHashSet.add(item);
+            hashSet.add(item);
+        }
+        
+        System.out.println("挿入順序: " + Arrays.toString(testData));
+        System.out.println("LinkedHashSet: " + linkedHashSet); // 挿入順序保持
+        System.out.println("HashSet: " + hashSet); // 順序はランダム
+    }
+    
+    public static void main(String[] args) {
+        OrderedLogProcessor processor = new OrderedLogProcessor();
+        
+        // 様々なログエントリを処理（重複あり）
+        processor.processLog(new LogEntry("INFO", "システム開始", "MainService"));
+        processor.processLog(new LogEntry("ERROR", "データベース接続失敗", "DatabaseService"));
+        processor.processLog(new LogEntry("WARN", "メモリ使用量警告", "MemoryMonitor"));
+        processor.processLog(new LogEntry("INFO", "ユーザーログイン", "AuthService"));
+        processor.processLog(new LogEntry("ERROR", "データベース接続失敗", "DatabaseService")); // 重複
+        processor.processLog(new LogEntry("INFO", "システム開始", "MainService")); // 重複
+        processor.processLog(new LogEntry("ERROR", "認証失敗", "AuthService"));
+        processor.processLog(new LogEntry("INFO", "バックアップ完了", "BackupService"));
+        
+        processor.displayOrderedReport();
+        processor.demonstrateOrderPreservation();
     }
 }
 ```
 
-### TreeSet
+### TreeSetの実践例：競技スコア管理システムの自動ソート
 
-`TreeSet`は、要素を自然順序（またはComparatorによる順序）でソートして格納するセットです。
-
-```java
-import java.util.*;
-
-public class TreeSetExample {
-    public static void main(String[] args) {
-        TreeSet<Integer> sortedNumbers = new TreeSet<>();
-        sortedNumbers.add(30);
-        sortedNumbers.add(10);
-        sortedNumbers.add(20);
-        sortedNumbers.add(10); // 重複は無視される
-        
-        System.out.println("ソート済みの数値: " + sortedNumbers); // [10, 20, 30]
-        
-        // TreeSet特有のメソッド
-        System.out.println("最小値: " + sortedNumbers.first());
-        System.out.println("最大値: " + sortedNumbers.last());
-        System.out.println("20より小さい値: " + sortedNumbers.headSet(20));
-        System.out.println("20以上の値: " + sortedNumbers.tailSet(20));
-        
-        // 範囲指定
-        TreeSet<String> words = new TreeSet<>(Arrays.asList("apple", "banana", "cherry", "date"));
-        System.out.println("b〜cの範囲: " + words.subSet("b", "d"));
-    }
-}
-```
-
-## 7.4 Mapインターフェース
-
-### Mapの基本概念
-
-`Map`は、キーと値のペアを格納するコレクションです。キーは重複できませんが、値は重複可能です。
-
-### HashMap
-
-`HashMap`は、ハッシュテーブルを使って実装されたマップです。
+TreeSetは、要素を自動的にソートして格納する高度なSet実装です。以下の例では、競技スコア管理システムを通じて、TreeSetの強力なソート機能を活用します：
 
 ```java
 import java.util.*;
 
-public class HashMapExample {
+/**
+ * 競技スコア管理システムにおけるTreeSet活用例
+ * 自動ソート機能と範囲検索の実践的デモンストレーション
+ */
+
+class CompetitorScore implements Comparable<CompetitorScore> {
+    private String name;
+    private int score;
+    private String category;
+    
+    public CompetitorScore(String name, int score, String category) {
+        this.name = name;
+        this.score = score;
+        this.category = category;
+    }
+    
+    @Override
+    public int compareTo(CompetitorScore other) {
+        // スコアの降順（高い順）でソート、同スコアなら名前で昇順
+        int scoreComparison = Integer.compare(other.score, this.score);
+        return scoreComparison != 0 ? scoreComparison : this.name.compareTo(other.name);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CompetitorScore that = (CompetitorScore) obj;
+        return score == that.score && 
+               Objects.equals(name, that.name) && 
+               Objects.equals(category, that.category);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, score, category);
+    }
+    
+    public String getName() { return name; }
+    public int getScore() { return score; }
+    public String getCategory() { return category; }
+    
+    @Override
+    public String toString() {
+        return String.format("%-12s: %3d点 (%s)", name, score, category);
+    }
+}
+
+public class CompetitionScoreManager {
+    private TreeSet<CompetitorScore> allScores;
+    private TreeSet<Integer> uniqueScores;
+    private Map<String, TreeSet<CompetitorScore>> categoryScores;
+    
+    public CompetitionScoreManager() {
+        this.allScores = new TreeSet<>();
+        this.uniqueScores = new TreeSet<>(Collections.reverseOrder());
+        this.categoryScores = new HashMap<>();
+    }
+    
+    public void addScore(CompetitorScore score) {
+        allScores.add(score);
+        uniqueScores.add(score.getScore());
+        
+        categoryScores.computeIfAbsent(score.getCategory(), k -> new TreeSet<>())
+                     .add(score);
+        
+        System.out.println("スコア追加: " + score);
+    }
+    
+    public void displayRankings() {
+        System.out.println("\n=== 総合ランキング（自動ソート済み） ===");
+        int rank = 1;
+        for (CompetitorScore score : allScores) {
+            System.out.println(String.format("%2d位: %s", rank++, score));
+        }
+    }
+    
+    public void displayCategoryRankings() {
+        System.out.println("\n=== カテゴリ別ランキング ===");
+        for (Map.Entry<String, TreeSet<CompetitorScore>> entry : categoryScores.entrySet()) {
+            System.out.println("\n【" + entry.getKey() + "】");
+            int rank = 1;
+            for (CompetitorScore score : entry.getValue()) {
+                System.out.println(String.format("  %d位: %s", rank++, score));
+            }
+        }
+    }
+    
+    public void displayScoreAnalysis() {
+        System.out.println("\n=== スコア分析 ===");
+        
+        if (!allScores.isEmpty()) {
+            CompetitorScore highest = allScores.first();  // 最高スコア
+            CompetitorScore lowest = allScores.last();    // 最低スコア
+            
+            System.out.println("最高スコア: " + highest);
+            System.out.println("最低スコア: " + lowest);
+            System.out.println("参加者数: " + allScores.size());
+            System.out.println("ユニークスコア数: " + uniqueScores.size());
+        }
+        
+        // スコア分布の表示
+        System.out.println("\nスコア分布（降順）:");
+        uniqueScores.forEach(score -> {
+            long count = allScores.stream()
+                                  .mapToInt(CompetitorScore::getScore)
+                                  .filter(s -> s == score)
+                                  .count();
+            System.out.println(String.format("  %3d点: %d人", score, count));
+        });
+    }
+    
+    public void displayScoreRangeQueries() {
+        System.out.println("\n=== スコア範囲検索 ===");
+        
+        if (uniqueScores.isEmpty()) return;
+        
+        // 上位25%のスコア範囲
+        int totalScores = uniqueScores.size();
+        int top25PercentIndex = Math.max(0, totalScores / 4);
+        Integer[] scoreArray = uniqueScores.toArray(new Integer[0]);
+        
+        if (totalScores > 0) {
+            Integer top25PercentThreshold = scoreArray[top25PercentIndex];
+            
+            System.out.println("上位25%のスコア（" + top25PercentThreshold + "点以上）:");
+            allScores.stream()
+                    .filter(score -> score.getScore() >= top25PercentThreshold)
+                    .forEach(score -> System.out.println("  " + score));
+        }
+        
+        // 中央値付近のスコア範囲
+        if (totalScores >= 3) {
+            Integer medianScore = scoreArray[totalScores / 2];
+            Integer lowerBound = scoreArray[Math.min(totalScores - 1, totalScores / 2 + 1)];
+            Integer upperBound = scoreArray[Math.max(0, totalScores / 2 - 1)];
+            
+            System.out.println("\n中央値付近のスコア（" + lowerBound + "-" + upperBound + "点）:");
+            allScores.stream()
+                    .filter(score -> score.getScore() >= lowerBound && score.getScore() <= upperBound)
+                    .forEach(score -> System.out.println("  " + score));
+        }
+    }
+    
+    public void demonstrateNavigationMethods() {
+        System.out.println("\n=== TreeSet ナビゲーションメソッド デモ ===");
+        
+        if (uniqueScores.isEmpty()) return;
+        
+        System.out.println("全スコア: " + uniqueScores);
+        System.out.println("最高スコア: " + uniqueScores.first());
+        System.out.println("最低スコア: " + uniqueScores.last());
+        
+        Integer targetScore = 85;
+        System.out.println("\n基準スコア: " + targetScore + "点");
+        System.out.println("以上の最小スコア: " + uniqueScores.ceiling(targetScore));
+        System.out.println("より大きい最小スコア: " + uniqueScores.higher(targetScore));
+        System.out.println("以下の最大スコア: " + uniqueScores.floor(targetScore));
+        System.out.println("より小さい最大スコア: " + uniqueScores.lower(targetScore));
+    }
+    
     public static void main(String[] args) {
-        Map<String, Integer> scores = new HashMap<>();
+        CompetitionScoreManager manager = new CompetitionScoreManager();
         
-        // キーと値のペアを追加
-        scores.put("Alice", 85);
-        scores.put("Bob", 92);
-        scores.put("Charlie", 78);
-        scores.put("Alice", 90); // 既存のキーの場合、値が更新される
+        System.out.println("=== 競技スコア管理システム - TreeSet活用例 ===");
         
-        System.out.println("スコア: " + scores);
+        // 競技者のスコア追加
+        manager.addScore(new CompetitorScore("田中太郎", 95, "一般"));
+        manager.addScore(new CompetitorScore("佐藤花子", 87, "学生"));
+        manager.addScore(new CompetitorScore("鈴木次郎", 92, "一般"));
+        manager.addScore(new CompetitorScore("高橋美咲", 89, "学生"));
+        manager.addScore(new CompetitorScore("山田健太", 95, "学生")); // 同スコア
+        manager.addScore(new CompetitorScore("中村由美", 78, "一般"));
+        manager.addScore(new CompetitorScore("小林拓也", 91, "学生"));
+        manager.addScore(new CompetitorScore("森田詩織", 83, "一般"));
         
-        // 値の取得
-        Integer aliceScore = scores.get("Alice");
-        System.out.println("Aliceのスコア: " + aliceScore);
-        
-        // 存在しないキーに対する安全な取得
-        Integer davidScore = scores.getOrDefault("David", 0);
-        System.out.println("Davidのスコア: " + davidScore);
-        
-        // キーの存在確認
-        if (scores.containsKey("Bob")) {
-            System.out.println("Bobのデータが存在します");
-        }
-        
-        // 値の存在確認
-        if (scores.containsValue(92)) {
-            System.out.println("92点の人がいます");
-        }
-        
-        // 全てのキーを取得
-        System.out.println("受験者一覧:");
-        for (String name : scores.keySet()) {
-            System.out.println("- " + name);
-        }
-        
-        // 全ての値を取得
-        System.out.println("スコア一覧: " + scores.values());
-        
-        // キーと値のペアを取得
-        System.out.println("全てのエントリ:");
-        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue() + "点");
-        }
-        
-        // Java 8のforEachを使用
-        System.out.println("Java 8 forEach:");
-        scores.forEach((name, score) -> 
-            System.out.println(name + "さんのスコア: " + score + "点"));
+        // 各種表示・分析機能
+        manager.displayRankings();
+        manager.displayCategoryRankings();
+        manager.displayScoreAnalysis();
+        manager.displayScoreRangeQueries();
+        manager.demonstrateNavigationMethods();
     }
 }
 ```
+
+**Set実装の特性比較：**
+
+| 実装 | 順序保持 | ソート | 検索性能 | 主な用途 |
+|------|----------|--------|----------|----------|
+| HashSet | ❌ | ❌ | O(1) | 高速な重複排除 |
+| LinkedHashSet | ✅ (挿入順) | ❌ | O(1) | 順序重要な重複排除 |
+| TreeSet | ✅ (ソート順) | ✅ | O(log n) | 自動ソート + 範囲検索 |
+
+**実用的な応用場面：**
+
+- **HashSet**: キャッシュキー管理、一意制約チェック、高速集合演算
+- **LinkedHashSet**: ログ処理順序保持、設定項目順序管理、UIコンポーネント順序
+- **TreeSet**: ランキングシステム、範囲検索、自動ソート要求
+
+## 7.4 Mapインターフェース：キー・値ペアによる高速データ管理
+
+### Mapの基本概念と実用性
+
+`Map`インターフェイスは、「辞書」や「連想配列」とも呼ばれ、一意のキーと値のペアを管理するコレクションです。現実世界では、辞書で単語（キー）から意味（値）を調べるように、プログラムではIDから顧客情報を取得したり、商品名から価格を検索したりする場面で威力を発揮します。Mapは、O(1)〜O(log n)の高速検索性能により、大規模データの効率的な管理を可能にします。
+
+### HashMapの実践例：Eコマースサイトの在庫・価格管理システム
+
+以下の包括的な例では、Eコマースサイトの商品管理システムを通じて、HashMapの実用的な活用方法と高性能な特性を学習します：
+
+```java
+import java.util.*;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * Eコマースサイトの在庫・価格管理システム
+ * HashMapの高性能検索とデータ管理の実践的デモンストレーション
+ */
+
+// 商品情報クラス
+class Product {
+    private String productId;
+    private String name;
+    private String category;
+    private BigDecimal price;
+    private int stockQuantity;
+    private LocalDateTime lastUpdated;
+    
+    public Product(String productId, String name, String category, BigDecimal price, int stockQuantity) {
+        this.productId = productId;
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.lastUpdated = LocalDateTime.now();
+    }
+    
+    // ゲッター・セッター
+    public String getProductId() { return productId; }
+    public String getName() { return name; }
+    public String getCategory() { return category; }
+    public BigDecimal getPrice() { return price; }
+    public int getStockQuantity() { return stockQuantity; }
+    public LocalDateTime getLastUpdated() { return lastUpdated; }
+    
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+        this.lastUpdated = LocalDateTime.now();
+    }
+    
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+        this.lastUpdated = LocalDateTime.now();
+    }
+    
+    public boolean isInStock() {
+        return stockQuantity > 0;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Product{id='%s', name='%s', price=%s, stock=%d}", 
+            productId, name, price, stockQuantity);
+    }
+}
+
+// 購入履歴クラス
+class PurchaseHistory {
+    private String customerId;
+    private Map<String, Integer> purchasedProducts; // productId -> quantity
+    private BigDecimal totalSpent;
+    
+    public PurchaseHistory(String customerId) {
+        this.customerId = customerId;
+        this.purchasedProducts = new HashMap<>();
+        this.totalSpent = BigDecimal.ZERO;
+    }
+    
+    public void addPurchase(String productId, int quantity, BigDecimal unitPrice) {
+        purchasedProducts.merge(productId, quantity, Integer::sum);
+        totalSpent = totalSpent.add(unitPrice.multiply(BigDecimal.valueOf(quantity)));
+    }
+    
+    public String getCustomerId() { return customerId; }
+    public Map<String, Integer> getPurchasedProducts() { return new HashMap<>(purchasedProducts); }
+    public BigDecimal getTotalSpent() { return totalSpent; }
+    
+    @Override
+    public String toString() {
+        return String.format("PurchaseHistory{customer='%s', products=%d, total=%s}", 
+            customerId, purchasedProducts.size(), totalSpent);
+    }
+}
+
+public class EcommerceInventorySystem {
+    private Map<String, Product> productCatalog;           // productId -> Product
+    private Map<String, BigDecimal> priceIndex;            // productId -> price (高速価格検索用)
+    private Map<String, Set<String>> categoryProducts;     // category -> Set<productId>
+    private Map<String, PurchaseHistory> customerHistory;  // customerId -> PurchaseHistory
+    private Map<String, Integer> searchCount;              // productId -> search count (人気度追跡)
+    
+    public EcommerceInventorySystem() {
+        this.productCatalog = new HashMap<>();
+        this.priceIndex = new HashMap<>();
+        this.categoryProducts = new HashMap<>();
+        this.customerHistory = new HashMap<>();
+        this.searchCount = new HashMap<>();
+    }
+    
+    // 商品登録（複数のMapを同期して更新）
+    public void registerProduct(Product product) {
+        String productId = product.getProductId();
+        
+        productCatalog.put(productId, product);
+        priceIndex.put(productId, product.getPrice());
+        
+        categoryProducts.computeIfAbsent(product.getCategory(), k -> new HashSet<>())
+                       .add(productId);
+        
+        searchCount.put(productId, 0);
+        
+        System.out.println("商品登録: " + product.getName() + " (ID: " + productId + ")");
+    }
+    
+    // 高速商品検索（O(1)）
+    public Product findProduct(String productId) {
+        searchCount.merge(productId, 1, Integer::sum); // 検索回数をカウント
+        return productCatalog.get(productId);
+    }
+    
+    // 価格一括更新（HashMapの高速更新特性を活用）
+    public void updatePrices(Map<String, BigDecimal> priceUpdates) {
+        System.out.println("\n=== 価格一括更新 ===");
+        
+        for (Map.Entry<String, BigDecimal> update : priceUpdates.entrySet()) {
+            String productId = update.getKey();
+            BigDecimal newPrice = update.getValue();
+            
+            Product product = productCatalog.get(productId);
+            if (product != null) {
+                BigDecimal oldPrice = product.getPrice();
+                product.setPrice(newPrice);
+                priceIndex.put(productId, newPrice);
+                
+                System.out.printf("価格更新: %s %s -> %s%n", 
+                    product.getName(), oldPrice, newPrice);
+            }
+        }
+    }
+    
+    // カテゴリ別商品検索
+    public List<Product> findProductsByCategory(String category) {
+        Set<String> productIds = categoryProducts.getOrDefault(category, new HashSet<>());
+        return productIds.stream()
+                        .map(productCatalog::get)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+    }
+    
+    // 購入処理（在庫管理とMap更新）
+    public boolean purchaseProduct(String customerId, String productId, int quantity) {
+        Product product = productCatalog.get(productId);
+        if (product == null) {
+            System.out.println("エラー: 商品が見つかりません (ID: " + productId + ")");
+            return false;
+        }
+        
+        if (product.getStockQuantity() < quantity) {
+            System.out.println("エラー: 在庫不足 " + product.getName() + 
+                             " (在庫: " + product.getStockQuantity() + ", 要求: " + quantity + ")");
+            return false;
+        }
+        
+        // 在庫更新
+        product.setStockQuantity(product.getStockQuantity() - quantity);
+        
+        // 購入履歴更新
+        customerHistory.computeIfAbsent(customerId, PurchaseHistory::new)
+                      .addPurchase(productId, quantity, product.getPrice());
+        
+        System.out.printf("購入完了: %s が %s を %d個購入 (残り在庫: %d)%n", 
+            customerId, product.getName(), quantity, product.getStockQuantity());
+        
+        return true;
+    }
+    
+    // 売上分析（複数Mapの統合分析）
+    public void displaySalesAnalysis() {
+        System.out.println("\n=== 売上分析 ===");
+        
+        // 総売上計算
+        BigDecimal totalRevenue = customerHistory.values().stream()
+            .map(PurchaseHistory::getTotalSpent)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        System.out.println("総売上: " + totalRevenue);
+        System.out.println("総顧客数: " + customerHistory.size());
+        
+        // 人気商品ランキング（検索回数 + 売上数量）
+        Map<String, Integer> salesVolume = new HashMap<>();
+        for (PurchaseHistory history : customerHistory.values()) {
+            for (Map.Entry<String, Integer> purchase : history.getPurchasedProducts().entrySet()) {
+                salesVolume.merge(purchase.getKey(), purchase.getValue(), Integer::sum);
+            }
+        }
+        
+        System.out.println("\n人気商品ランキング（販売数量 + 検索回数）:");
+        productCatalog.keySet().stream()
+            .sorted((a, b) -> {
+                int salesA = salesVolume.getOrDefault(a, 0);
+                int salesB = salesVolume.getOrDefault(b, 0);
+                int searchA = searchCount.getOrDefault(a, 0);
+                int searchB = searchCount.getOrDefault(b, 0);
+                return Integer.compare(salesB + searchB, salesA + searchA);
+            })
+            .limit(5)
+            .forEach(productId -> {
+                Product product = productCatalog.get(productId);
+                int sales = salesVolume.getOrDefault(productId, 0);
+                int searches = searchCount.getOrDefault(productId, 0);
+                System.out.printf("  %s: 販売%d個, 検索%d回%n", 
+                    product.getName(), sales, searches);
+            });
+    }
+    
+    // HashMapの性能特性デモンストレーション
+    public void demonstratePerformance() {
+        System.out.println("\n=== HashMap性能特性デモンストレーション ===");
+        
+        Map<String, String> performanceTestMap = new HashMap<>();
+        long startTime, endTime;
+        
+        // 大量データの挿入性能
+        startTime = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            performanceTestMap.put("key" + i, "value" + i);
+        }
+        endTime = System.nanoTime();
+        System.out.println("100,000件の挿入時間: " + (endTime - startTime) / 1_000_000 + " ミリ秒");
+        
+        // ランダム検索性能（O(1)の期待性能）
+        Random random = new Random();
+        startTime = System.nanoTime();
+        for (int i = 0; i < 10000; i++) {
+            String value = performanceTestMap.get("key" + random.nextInt(100000));
+        }
+        endTime = System.nanoTime();
+        System.out.println("10,000回の検索時間: " + (endTime - startTime) / 1_000_000 + " ミリ秒");
+        
+        // キー存在チェック性能
+        startTime = System.nanoTime();
+        boolean exists = performanceTestMap.containsKey("key50000");
+        endTime = System.nanoTime();
+        System.out.println("キー存在チェック時間: " + (endTime - startTime) + " ナノ秒 (存在: " + exists + ")");
+    }
+    
+    public static void main(String[] args) {
+        EcommerceInventorySystem system = new EcommerceInventorySystem();
+        
+        System.out.println("=== Eコマース在庫・価格管理システム - HashMap活用例 ===");
+        
+        // 商品登録
+        system.registerProduct(new Product("P001", "ワイヤレスイヤホン", "電子機器", 
+            new BigDecimal("12800"), 50));
+        system.registerProduct(new Product("P002", "ビジネスバッグ", "バッグ", 
+            new BigDecimal("8500"), 25));
+        system.registerProduct(new Product("P003", "プログラミング書籍", "書籍", 
+            new BigDecimal("3200"), 100));
+        system.registerProduct(new Product("P004", "ワイヤレスマウス", "電子機器", 
+            new BigDecimal("2800"), 75));
+        system.registerProduct(new Product("P005", "ノートパソコン", "電子機器", 
+            new BigDecimal("89800"), 10));
+        
+        // 商品検索デモ
+        System.out.println("\n=== 商品検索デモ ===");
+        Product laptop = system.findProduct("P005");
+        if (laptop != null) {
+            System.out.println("検索結果: " + laptop);
+        }
+        
+        // カテゴリ検索
+        System.out.println("\n=== カテゴリ別検索 ===");
+        List<Product> electronics = system.findProductsByCategory("電子機器");
+        electronics.forEach(product -> System.out.println("  " + product));
+        
+        // 購入処理デモ
+        System.out.println("\n=== 購入処理デモ ===");
+        system.purchaseProduct("CUST001", "P001", 2);
+        system.purchaseProduct("CUST002", "P003", 1);
+        system.purchaseProduct("CUST001", "P004", 1);
+        system.purchaseProduct("CUST003", "P005", 1);
+        system.purchaseProduct("CUST002", "P001", 3);
+        
+        // 価格一括更新
+        Map<String, BigDecimal> priceUpdates = new HashMap<>();
+        priceUpdates.put("P001", new BigDecimal("11800")); // 値下げ
+        priceUpdates.put("P005", new BigDecimal("92800")); // 値上げ
+        system.updatePrices(priceUpdates);
+        
+        // 売上分析
+        system.displaySalesAnalysis();
+        
+        // 性能デモンストレーション
+        system.demonstratePerformance();
+    }
+}
+```
+
+**このプログラムから学ぶ重要なHashMapの概念：**
+
+1. **O(1)の高速検索**：ハッシュテーブルによる実装により、キーによる値の検索が平均的に定数時間で実行されます。大規模なデータセットでも高速アクセスが可能です。
+
+2. **複数Mapの連携管理**：商品カタログ、価格インデックス、カテゴリ分類など、複数のMapを組み合わせることで、異なる視点からの高速データアクセスを実現できます。
+
+3. **動的なデータ更新**：put()、remove()、merge()、computeIfAbsent()などのメソッドにより、実行時にデータを効率的に更新・管理できます。
+
+4. **null値の取り扱い**：get()がnullを返す場合とgetOrDefault()による安全な値取得により、堅牢なアプリケーションを構築できます。
+
+5. **メモリ効率と拡張性**：自動的な容量拡張により、データ量の増減に柔軟に対応し、メモリ使用量を最適化します。
 
 ### LinkedHashMap
 

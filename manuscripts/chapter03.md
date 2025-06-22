@@ -636,6 +636,85 @@ if ( 条件１ || 条件２ ) {
 }
 ```
 
+#### 条件分岐の実践例
+
+論理演算子を使った複雑な条件分岐は、実際のビジネスロジックを実装する際に頻繁に使用されます。以下のプログラムは、会員システムの割引判定という実用的な例を通じて、論理演算子の効果的な使用方法を学習するための材料です：
+
+ファイル名： MembershipDiscount.java
+
+```java
+public class MembershipDiscount {
+    public static void main(String[] args) {
+        // 顧客情報の設定
+        int age = 25;
+        boolean isPremiumMember = true;
+        int purchaseAmount = 5000;
+        int membershipYears = 3;
+        
+        System.out.println("=== 顧客情報 ===");
+        System.out.println("年齢: " + age + "歳");
+        System.out.println("プレミアム会員: " + (isPremiumMember ? "はい" : "いいえ"));
+        System.out.println("購入金額: " + purchaseAmount + "円");
+        System.out.println("会員歴: " + membershipYears + "年");
+        System.out.println();
+        
+        // 複数の割引条件を論理演算子で組み合わせた判定
+        System.out.println("=== 割引判定結果 ===");
+        
+        // 条件1: シニア割引（65歳以上）
+        if (age >= 65) {
+            System.out.println("シニア割引が適用されます（20%オフ）");
+        }
+        
+        // 条件2: プレミアム会員かつ高額購入
+        if (isPremiumMember && purchaseAmount >= 3000) {
+            System.out.println("プレミアム会員高額購入割引が適用されます（15%オフ）");
+        }
+        
+        // 条件3: 若年層または長期会員
+        if (age <= 25 || membershipYears >= 5) {
+            System.out.println("若年層・長期会員割引が適用されます（10%オフ）");
+        }
+        
+        // 条件4: 複雑な組み合わせ条件
+        if ((isPremiumMember && purchaseAmount >= 5000) || 
+            (age >= 60 && membershipYears >= 3)) {
+            System.out.println("特別VIP割引が適用されます（25%オフ）");
+        }
+        
+        // 条件5: 除外条件を含む複雑な判定
+        if (purchaseAmount >= 10000 && age >= 20 && age <= 60 && !isPremiumMember) {
+            System.out.println("一般会員高額購入割引が適用されます（5%オフ）");
+        }
+    }
+}
+```
+
+**このプログラムから学ぶ重要な概念：**
+
+1. **論理AND演算子（&&）の実用性**：「プレミアム会員 かつ 高額購入」のように、複数の条件を同時に満たす場合の判定に使用します。ビジネスルールでは「すべての条件を満たす」ケースが頻繁にあります。
+
+2. **論理OR演算子（||）の柔軟性**：「若年層 または 長期会員」のように、いずれかの条件を満たせば良い場合に使用します。顧客の多様なニーズに対応するための重要な仕組みです。
+
+3. **複雑な条件の構築**：括弧を使用することで、より複雑なビジネスロジックを表現できます。例：「（プレミアム会員で高額購入）または（シニアで長期会員）」
+
+4. **論理NOT演算子（!）の活用**：`!isPremiumMember`のように、特定の条件を除外する際に使用します。「プレミアム会員ではない一般会員に対する特別オファー」などの実装に有用です。
+
+5. **短絡評価（Short-circuit evaluation）の重要性**：`&&`演算子では、左の条件がfalseの場合、右の条件は評価されません。`||`演算子では、左の条件がtrueの場合、右の条件は評価されません。これにより、効率的で安全な条件判定が可能になります。
+
+**実用的な応用場面：**
+
+- **ECサイトの価格計算システム**：顧客属性に基づく動的割引計算
+- **アクセス制御システム**：ユーザーの権限や属性に基づく機能制限
+- **ゲームの進行条件**：プレイヤーのレベル、アイテム所持状況に基づく分岐
+- **在庫管理システム**：商品の種類、在庫量、季節性を考慮した発注判定
+
+**論理演算子使用時の注意点：**
+
+1. **可読性の確保**：複雑な条件は適切に括弧でグループ化し、意図を明確にする
+2. **ド・モルガンの法則**：`!(A && B)` = `!A || !B`、`!(A || B)` = `!A && !B`の理解
+3. **null安全性**：オブジェクトの参照がnullでないことを最初に確認する習慣
+
 #### 三項演算子
 
 三項演算子は、`if...else...`を式として扱えます。
@@ -720,6 +799,139 @@ switch ( 式 ) {
         上記のどの値とも等しくない時に処理を実行
         break;
 }
+```
+
+#### switch文の実践例
+
+switch文は、特定の値に基づく分岐処理に優れており、特に列挙型のような限定された値セットを扱う場合に威力を発揮します。以下のプログラムは、成績管理システムという実用的な例を通じて、switch文の効果的な使用方法を学習するための材料です：
+
+ファイル名： GradeCalculator.java
+
+```java
+public class GradeCalculator {
+    public static void main(String[] args) {
+        // テストケースとして複数の成績を評価
+        char[] grades = {'A', 'B', 'C', 'D', 'F', 'B'};
+        int totalGradePoints = 0;
+        int courseCount = grades.length;
+        
+        System.out.println("=== 成績評価システム ===");
+        System.out.println("履修科目数: " + courseCount + "科目");
+        System.out.println();
+        
+        for (int i = 0; i < grades.length; i++) {
+            char grade = grades[i];
+            int gradePoint;
+            String evaluation;
+            
+            // switch文による成績の詳細評価
+            switch (grade) {
+                case 'A':
+                    gradePoint = 4;
+                    evaluation = "優秀（Excellent）";
+                    break;
+                case 'B':
+                    gradePoint = 3;
+                    evaluation = "良好（Good）";
+                    break;
+                case 'C':
+                    gradePoint = 2;
+                    evaluation = "普通（Average）";
+                    break;
+                case 'D':
+                    gradePoint = 1;
+                    evaluation = "要努力（Below Average）";
+                    break;
+                case 'F':
+                    gradePoint = 0;
+                    evaluation = "不合格（Fail）";
+                    break;
+                default:
+                    gradePoint = 0;
+                    evaluation = "無効な成績";
+                    System.out.println("警告: 無効な成績 '" + grade + "' が検出されました");
+                    break;
+            }
+            
+            totalGradePoints += gradePoint;
+            System.out.println("科目" + (i + 1) + ": " + grade + "(" + gradePoint + "点) - " + evaluation);
+        }
+        
+        System.out.println();
+        
+        // GPA計算と総合評価
+        double gpa = (double) totalGradePoints / courseCount;
+        System.out.println("総ポイント: " + totalGradePoints + "点");
+        System.out.printf("GPA: %.2f\n", gpa);
+        
+        // GPAに基づく総合評価（switch文の応用）
+        int gpaCategory = (int) gpa; // 小数点以下切り捨て
+        
+        System.out.print("総合評価: ");
+        switch (gpaCategory) {
+            case 4:
+                System.out.println("最優秀（Summa Cum Laude）- 学長表彰対象");
+                break;
+            case 3:
+                System.out.println("優秀（Magna Cum Laude）- 学部長表彰対象");
+                break;
+            case 2:
+                System.out.println("良好（Cum Laude）- 追加指導不要");
+                break;
+            case 1:
+                System.out.println("要注意（Academic Warning）- 学習指導が必要");
+                break;
+            case 0:
+                System.out.println("要改善（Academic Probation）- 緊急学習支援が必要");
+                break;
+            default:
+                System.out.println("計算エラー");
+                break;
+        }
+        
+        // 複数caseラベルの活用例（奨学金適用条件）
+        System.out.print("奨学金適用: ");
+        switch (gpaCategory) {
+            case 4:
+            case 3:
+                System.out.println("特待生奨学金適用対象");
+                break;
+            case 2:
+                System.out.println("一般奨学金適用対象");
+                break;
+            default:
+                System.out.println("奨学金適用対象外");
+                break;
+        }
+    }
+}
+```
+
+**このプログラムから学ぶ重要な概念：**
+
+1. **switch文の適用場面**：文字や整数などの離散的な値による分岐において、if-else文よりも読みやすく、効率的な処理が可能です。特に「成績」「曜日」「月」「状態」などの列挙可能な値に最適です。
+
+2. **break文の重要性**：各caseの最後にbreak文を配置することで、意図しないfall-through動作を防ぎます。break文を忘れると、次のcaseも実行されてしまう重大なバグの原因となります。
+
+3. **default句の活用**：予期しない値に対する安全な処理を提供します。入力検証やエラーハンドリングの重要な要素として機能します。
+
+4. **複数caseラベルの実用性**：同じ処理を複数の値で実行したい場合、case文を連続して記述することで、コードの重複を避けられます。
+
+5. **型安全性とパフォーマンス**：switch文は、コンパイル時に値のチェックが行われ、実行時は効率的なジャンプテーブルとして最適化される場合があります。
+
+**実用的な応用場面：**
+
+- **状態管理システム**：注文状態（待機中、処理中、発送済み等）の処理分岐
+- **ゲーム開発**：プレイヤーの行動（移動、攻撃、防御等）による処理分岐
+- **ユーザーインターフェイス**：メニュー選択やボタンクリックに基づく機能実行
+- **データ変換処理**：ファイル形式やデータ型による変換処理の分岐
+
+**switch文使用時のベストプラクティス：**
+
+1. **必ずdefault句を含める**：予期しない値に対する適切な処理を提供
+2. **各caseにbreak文を配置**：意図しないfall-throughを防ぐ
+3. **複雑な処理はメソッドに分割**：各caseの処理が長くなる場合は、別メソッドに委譲
+4. **列挙型（enum）との組み合わせ**：型安全性をさらに向上させるため、可能な限りenum型を使用
 ```
 
 ### String型の内容評価について

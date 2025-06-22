@@ -100,103 +100,257 @@ class SubclassName extends SuperclassName {
 
 この宣言により、`SubclassName`は`SuperclassName`の非privateなメンバーへアクセスできるようになります。
 
-### 具体的なコード例：ProductとBook
+### 継承の実践例：ECサイトの商品階層システム
 
-具体的な例を見てみましょう。ECサイトの商品を表す`Product`クラスをスーパークラスとし、その一種である`Book`クラスをサブクラスとして定義します。
+継承は、現実世界の分類体系をプログラムの構造として直接表現する強力な仕組みです。以下のプログラムは、ECサイトの商品管理システムという実用的な例を通じて、継承の利点と適切な設計方法を学習するための重要な材料です：
+
+ファイル名： Product.java、Book.java、Electronics.java、InheritanceExample.java
 
 ```java
-// スーパークラス（商品全般）
+// スーパークラス（商品全般の共通属性と振る舞いを定義）
 class Product {
-    protected String productId;  // 商品ID（サブクラスからもアクセスできるようprotected）
-    protected String name;       // 商品名
-    protected int price;         // 価格
+    protected String productId;    // 商品ID（サブクラスからもアクセスできるようprotected）
+    protected String name;         // 商品名
+    protected int price;           // 価格
+    protected String category;     // カテゴリ
+    protected boolean inStock;     // 在庫有無
 
-    // コンストラクタ
-    public Product(String productId, String name, int price) {
+    // コンストラクタ：すべてのProductに必要な基本情報を初期化
+    public Product(String productId, String name, int price, String category) {
         this.productId = productId;
         this.name = name;
         this.price = price;
+        this.category = category;
+        this.inStock = true; // デフォルトで在庫あり
+        
+        System.out.println("Product: " + this.name + " を登録しました（カテゴリ: " + this.category + "）");
     }
 
-    // 価格に消費税を加算するメソッド（共通の振る舞い）
+    // 価格に消費税を加算するメソッド（すべての商品共通の振る舞い）
     public int getPriceWithTax() {
         return (int) (this.price * 1.10); // 消費税10%として計算
     }
 
-    // 商品情報を表示するメソッド（基本的な表示）
+    // 商品情報を表示するメソッド（基本的な表示、サブクラスでオーバーライド可能）
     public void displayDetails() {
+        System.out.println("=== 商品情報 ===");
         System.out.println("商品ID: " + this.productId);
         System.out.println("商品名: " + this.name);
+        System.out.println("カテゴリ: " + this.category);
         System.out.println("価格（税抜）: " + this.price + "円");
         System.out.println("価格（税込）: " + getPriceWithTax() + "円");
+        System.out.println("在庫状況: " + (this.inStock ? "在庫あり" : "在庫なし"));
+    }
+
+    // 在庫状態を変更するメソッド
+    public void setStockStatus(boolean inStock) {
+        this.inStock = inStock;
+        System.out.println(this.name + " の在庫状況を「" + (inStock ? "在庫あり" : "在庫なし") + "」に変更しました。");
+    }
+
+    // 割引価格を計算するメソッド（サブクラスでオーバーライド可能）
+    public int getDiscountedPrice(double discountRate) {
+        if (discountRate < 0 || discountRate > 1.0) {
+            System.out.println("無効な割引率です。元の価格を返します。");
+            return this.price;
+        }
+        return (int) (this.price * (1.0 - discountRate));
     }
 
     // getter メソッド
     public String getProductId() { return productId; }
     public String getName() { return name; }
     public int getPrice() { return price; }
+    public String getCategory() { return category; }
+    public boolean isInStock() { return inStock; }
 }
 
-// サブクラス（書籍）
+// サブクラス1：書籍（Product の特殊化）
 class Book extends Product {
-    private String author;     // 著者名（Book固有）
-    private String publisher;  // 出版社（Book固有）
-    private String isbn;       // ISBN（Book固有）
+    private String author;     // 著者名（Book固有の属性）
+    private String publisher;  // 出版社（Book固有の属性）
+    private String isbn;       // ISBN（Book固有の属性）
+    private int pageCount;     // ページ数（Book固有の属性）
 
-    // コンストラクタ
-    public Book(String productId, String name, int price, String author, String publisher, String isbn) {
+    // コンストラクタ：書籍特有の情報も含めて初期化
+    public Book(String productId, String name, int price, String author, String publisher, String isbn, int pageCount) {
         // スーパークラスのコンストラクタを呼び出し、共通のフィールドを初期化
-        super(productId, name, price);
+        super(productId, name, price, "書籍");
         this.author = author;
         this.publisher = publisher;
         this.isbn = isbn;
+        this.pageCount = pageCount;
+        
+        System.out.println("Book: 書籍固有情報（著者: " + this.author + ", 出版社: " + this.publisher + "）を設定しました。");
     }
 
-    // Book固有の情報を追加して表示するように、スーパークラスのメソッドをオーバーライド
+    // スーパークラスのメソッドをオーバーライド：書籍固有の情報を追加表示
     @Override
     public void displayDetails() {
-        super.displayDetails(); // まずスーパークラスの表示処理を呼び出す
+        super.displayDetails(); // まずスーパークラスの基本表示を実行
+        System.out.println("=== 書籍詳細情報 ===");
         System.out.println("著者: " + this.author);
         System.out.println("出版社: " + this.publisher);
         System.out.println("ISBN: " + this.isbn);
+        System.out.println("ページ数: " + this.pageCount + "ページ");
+    }
+
+    // 書籍の特別割引計算（専門書は割引率を制限）
+    @Override
+    public int getDiscountedPrice(double discountRate) {
+        // 専門書の場合は最大20%まで割引
+        if (discountRate > 0.2) {
+            System.out.println("書籍の割引は最大20%までです。20%割引を適用します。");
+            discountRate = 0.2;
+        }
+        return super.getDiscountedPrice(discountRate);
     }
 
     // Book固有のメソッド
     public String getAuthor() { return this.author; }
     public String getPublisher() { return this.publisher; }
     public String getIsbn() { return this.isbn; }
+    public int getPageCount() { return this.pageCount; }
 
-    // 書籍の詳細情報を文字列として取得
+    // 書籍の詳細情報を簡潔な文字列で取得
     public String getBookInfo() {
-        return String.format("『%s』 著者: %s, 出版社: %s", name, author, publisher);
+        return String.format("『%s』 著者: %s, 出版社: %s, %dページ", name, author, publisher, pageCount);
+    }
+
+    // 1ページあたりの価格を計算（書籍特有の指標）
+    public double getPricePerPage() {
+        return (double) this.price / this.pageCount;
     }
 }
-```
 
-### 継承の実行例
+// サブクラス2：電子機器（Product の別の特殊化）
+class Electronics extends Product {
+    private String manufacturer;  // メーカー（Electronics固有）
+    private String model;         // 型番（Electronics固有）
+    private int warrantyPeriod;   // 保証期間（月単位）（Electronics固有）
+    private double powerConsumption; // 消費電力（W）（Electronics固有）
 
-```java
+    // コンストラクタ
+    public Electronics(String productId, String name, int price, String manufacturer, 
+                      String model, int warrantyPeriod, double powerConsumption) {
+        super(productId, name, price, "電子機器");
+        this.manufacturer = manufacturer;
+        this.model = model;
+        this.warrantyPeriod = warrantyPeriod;
+        this.powerConsumption = powerConsumption;
+        
+        System.out.println("Electronics: 電子機器固有情報（メーカー: " + this.manufacturer + ", 型番: " + this.model + "）を設定しました。");
+    }
+
+    // オーバーライド：電子機器固有の情報を追加表示
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("=== 電子機器詳細情報 ===");
+        System.out.println("メーカー: " + this.manufacturer);
+        System.out.println("型番: " + this.model);
+        System.out.println("保証期間: " + this.warrantyPeriod + "ヶ月");
+        System.out.println("消費電力: " + this.powerConsumption + "W");
+    }
+
+    // 電子機器の特別割引計算（高額商品は割引率を制限）
+    @Override
+    public int getDiscountedPrice(double discountRate) {
+        // 価格が10万円以上の場合は最大10%まで割引
+        if (this.price >= 100000 && discountRate > 0.1) {
+            System.out.println("高額電子機器の割引は最大10%までです。10%割引を適用します。");
+            discountRate = 0.1;
+        }
+        return super.getDiscountedPrice(discountRate);
+    }
+
+    // Electronics固有のメソッド
+    public String getManufacturer() { return this.manufacturer; }
+    public String getModel() { return this.model; }
+    public int getWarrantyPeriod() { return this.warrantyPeriod; }
+    public double getPowerConsumption() { return this.powerConsumption; }
+
+    // 年間電気代を概算計算（電子機器特有の指標）
+    public int getAnnualElectricityCost() {
+        // 1日8時間使用、電気代30円/kWhと仮定
+        double dailyCost = (this.powerConsumption / 1000.0) * 8 * 30;
+        return (int) (dailyCost * 365);
+    }
+}
+
 public class InheritanceExample {
     public static void main(String[] args) {
-        // Bookオブジェクトを作成
-        Book myBook = new Book("B001", "Javaプログラミング実践", 3200, 
-                               "佐々木一郎", "技術書典", "978-4-123456-78-9");
-
-        // スーパークラスProductから継承したメソッドを使用
-        System.out.println("商品名: " + myBook.getName());
-        System.out.println("税込価格: " + myBook.getPriceWithTax() + "円");
+        System.out.println("=== ECサイト商品管理システム - 継承の実践例 ===");
+        System.out.println();
         
-        System.out.println("--- 詳細情報 ---");
-        // オーバーライドされたdisplayDetailsメソッドを呼び出し
-        myBook.displayDetails();
+        // 書籍オブジェクトを作成
+        System.out.println("1. 書籍商品の作成:");
+        Book javaBook = new Book("B001", "Java完全マスター", 3500, 
+                                "田中太郎", "技術書出版", "978-4-123456-78-9", 580);
+        System.out.println();
         
-        System.out.println("--- 書籍固有情報 ---");
-        // サブクラスBook固有のメソッドを呼び出し
-        System.out.println(myBook.getBookInfo());
-        System.out.println("この本の著者は " + myBook.getAuthor() + " です。");
+        // 電子機器オブジェクトを作成
+        System.out.println("2. 電子機器商品の作成:");
+        Electronics laptop = new Electronics("E001", "ノートパソコン ProBook", 120000,
+                                           "TechCorp", "PB-2024", 24, 65.5);
+        System.out.println();
+        
+        // 継承されたメソッドの使用
+        System.out.println("3. 共通メソッドの使用（継承の恩恵）:");
+        System.out.println("Java本の税込価格: " + javaBook.getPriceWithTax() + "円");
+        System.out.println("ノートPCの税込価格: " + laptop.getPriceWithTax() + "円");
+        System.out.println();
+        
+        // オーバーライドされたメソッドの使用
+        System.out.println("4. 書籍の詳細情報表示:");
+        javaBook.displayDetails();
+        System.out.println();
+        
+        System.out.println("5. 電子機器の詳細情報表示:");
+        laptop.displayDetails();
+        System.out.println();
+        
+        // サブクラス固有のメソッドの使用
+        System.out.println("6. サブクラス固有メソッドの使用:");
+        System.out.println("書籍情報: " + javaBook.getBookInfo());
+        System.out.printf("1ページあたりの価格: %.2f円\n", javaBook.getPricePerPage());
+        System.out.println("ノートPCの年間電気代: " + laptop.getAnnualElectricityCost() + "円");
+        System.out.println();
+        
+        // オーバーライドされた割引計算の動作確認
+        System.out.println("7. 商品カテゴリ別の割引ルール:");
+        System.out.println("Java本の30%割引価格: " + javaBook.getDiscountedPrice(0.3) + "円");
+        System.out.println("ノートPCの30%割引価格: " + laptop.getDiscountedPrice(0.3) + "円");
+        System.out.println();
+        
+        // 在庫状態の変更
+        System.out.println("8. 在庫状態の管理:");
+        javaBook.setStockStatus(false);
+        laptop.setStockStatus(true);
     }
 }
 ```
+
+**このプログラムから学ぶ重要な継承の概念：**
+
+1. **コードの再利用性**：Product クラスの基本機能（価格計算、在庫管理等）を Book と Electronics が重複なく利用しています。
+
+2. **is-a関係の実現**：「BookはProductの一種」「ElectronicsはProductの一種」という自然な関係がコードに反映されています。
+
+3. **super キーワードの活用**：サブクラスのコンストラクタとメソッドで、スーパークラスの機能を適切に呼び出しています。
+
+4. **メソッドオーバーライドの威力**：displayDetails() メソッドは各サブクラスで拡張され、適切な情報表示を実現しています。
+
+5. **protected アクセス修飾子の意義**：スーパークラスのフィールドをサブクラスからアクセス可能にしつつ、外部からの直接アクセスは防いでいます。
+
+6. **ビジネスルールの継承**：割引計算のロジックを商品タイプごとにカスタマイズしながら、基本的な処理は共通化しています。
+
+**実用的な応用場面：**
+
+- **企業システム**：従業員（正社員、契約社員、アルバイト）の階層管理
+- **ゲーム開発**：キャラクター（プレイヤー、敵、NPC）の共通機能と特殊化
+- **ファイル管理**：ファイル（テキスト、画像、動画）の統一的な操作と特殊処理
+- **UI コンポーネント**：ボタン、入力フィールド、選択リストの共通基盤と個別機能
 
 **実行結果：**
 ```
@@ -487,10 +641,324 @@ public class OverrideExample {
 
 **ポリモーフィズム (Polymorphism)** は「多態性」とも呼ばれ、同じインターフェイス（メソッド呼び出し）で異なる振る舞いを実現する機能です。継承とメソッドのオーバーライドにより実現されます。
 
+### ポリモーフィズムの実践例：動物園管理システム
+
+ポリモーフィズムは、オブジェクト指向プログラミングの最も強力な特徴の一つです。以下のプログラムは、動物園の管理システムという実用的な例を通じて、ポリモーフィズムがどのようにコードの柔軟性と拡張性を向上させるかを学習するための重要な材料です：
+
+ファイル名： Animal.java、Zoo.java、PolymorphismExample.java
+
+```java
+// スーパークラス：すべての動物の基本的な振る舞いを定義
+abstract class Animal {
+    protected String name;
+    protected int age;
+    protected String species;
+    protected boolean isHealthy;
+
+    public Animal(String name, int age, String species) {
+        this.name = name;
+        this.age = age;
+        this.species = species;
+        this.isHealthy = true;
+        System.out.println("動物「" + name + "」(" + species + ")が動物園に登録されました。");
+    }
+
+    // 抽象メソッド：サブクラスで必ず実装される
+    public abstract void makeSound();
+    public abstract void eat();
+    public abstract void move();
+
+    // 共通のメソッド：すべての動物で同じ処理
+    public void sleep() {
+        System.out.println(name + " はぐっすり眠っています。");
+    }
+
+    public void showInfo() {
+        System.out.println("=== " + name + " の情報 ===");
+        System.out.println("種類: " + species);
+        System.out.println("年齢: " + age + "歳");
+        System.out.println("健康状態: " + (isHealthy ? "良好" : "要治療"));
+    }
+
+    // オーバーライド可能なメソッド：基本的な振る舞いを提供
+    public void performTrick() {
+        System.out.println(name + " は基本的な芸を披露しています。");
+    }
+
+    // getter メソッド
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getSpecies() { return species; }
+    public boolean isHealthy() { return isHealthy; }
+    
+    public void setHealthy(boolean healthy) { 
+        this.isHealthy = healthy;
+        System.out.println(name + " の健康状態が「" + (healthy ? "良好" : "要治療") + "」に変更されました。");
+    }
+}
+
+// サブクラス1：ライオン
+class Lion extends Animal {
+    private int maneLength; // たてがみの長さ（ライオン固有の属性）
+
+    public Lion(String name, int age, int maneLength) {
+        super(name, age, "ライオン");
+        this.maneLength = maneLength;
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " が力強く「ガオーーー！」と吠えています。");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " が肉を豪快に食べています。狩りの本能を感じます。");
+    }
+
+    @Override
+    public void move() {
+        System.out.println(name + " が威厳を持ってゆっくりと歩いています。百獣の王の風格です。");
+    }
+
+    @Override
+    public void performTrick() {
+        System.out.println(name + " が威厳のある咆哮で観客を魅了しています！");
+    }
+
+    public void hunt() {
+        System.out.println(name + " が狩りの体勢を取りました。さすが肉食動物の王です。");
+    }
+}
+
+// サブクラス2：ゾウ
+class Elephant extends Animal {
+    private double trunkLength; // 鼻の長さ（ゾウ固有の属性）
+
+    public Elephant(String name, int age, double trunkLength) {
+        super(name, age, "ゾウ");
+        this.trunkLength = trunkLength;
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " が「パオーーン！」と雄大な鳴き声を響かせています。");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " が器用に鼻を使って草や果物を食べています。");
+    }
+
+    @Override
+    public void move() {
+        System.out.println(name + " がどっしりとした足取りで歩いています。地面が揺れています。");
+    }
+
+    @Override
+    public void performTrick() {
+        System.out.println(name + " が鼻を使って器用にボールを投げています！観客から拍手喝采です！");
+    }
+
+    public void spray() {
+        System.out.println(name + " が鼻で水をかけて涼んでいます。");
+    }
+}
+
+// サブクラス3：サル
+class Monkey extends Animal {
+    private boolean canSwing; // 木にぶら下がれるか（サル固有の属性）
+
+    public Monkey(String name, int age, boolean canSwing) {
+        super(name, age, "サル");
+        this.canSwing = canSwing;
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " が「ウキキー！」と元気に鳴いています。");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " がバナナを器用に剥いて美味しそうに食べています。");
+    }
+
+    @Override
+    public void move() {
+        if (canSwing) {
+            System.out.println(name + " が木から木へと軽やかにぶら下がって移動しています。");
+        } else {
+            System.out.println(name + " が地面を跳ね回って移動しています。");
+        }
+    }
+
+    @Override
+    public void performTrick() {
+        System.out.println(name + " がアクロバティックに逆立ちをして観客を楽しませています！");
+    }
+
+    public void climbTree() {
+        System.out.println(name + " が素早く木に登っています。");
+    }
+}
+
+// 動物園管理クラス：ポリモーフィズムを活用
+class Zoo {
+    private Animal[] animals;
+    private int count;
+    private static final int MAX_ANIMALS = 50;
+
+    public Zoo() {
+        animals = new Animal[MAX_ANIMALS];
+        count = 0;
+        System.out.println("新しい動物園が開園しました！");
+    }
+
+    public void addAnimal(Animal animal) {
+        if (count < MAX_ANIMALS) {
+            animals[count] = animal;
+            count++;
+            System.out.println(animal.getName() + " が動物園に追加されました。現在の動物数: " + count);
+        } else {
+            System.out.println("動物園が満員です。これ以上動物を追加できません。");
+        }
+    }
+
+    // ポリモーフィズムの威力：すべての動物に統一的な操作
+    public void feedAllAnimals() {
+        System.out.println("\n=== 全動物の餌やり時間 ===");
+        for (int i = 0; i < count; i++) {
+            System.out.print((i + 1) + ". ");
+            animals[i].eat(); // 各動物の固有のeat()メソッドが呼び出される
+        }
+    }
+
+    public void makeAllAnimalsSound() {
+        System.out.println("\n=== 全動物の鳴き声タイム ===");
+        for (int i = 0; i < count; i++) {
+            System.out.print((i + 1) + ". ");
+            animals[i].makeSound(); // 各動物の固有のmakeSound()メソッドが呼び出される
+        }
+    }
+
+    public void showAllAnimalsInfo() {
+        System.out.println("\n=== 動物園の全動物情報 ===");
+        for (int i = 0; i < count; i++) {
+            animals[i].showInfo();
+            System.out.println();
+        }
+    }
+
+    public void performAllTricks() {
+        System.out.println("\n=== 動物ショータイム ===");
+        for (int i = 0; i < count; i++) {
+            System.out.print((i + 1) + ". ");
+            animals[i].performTrick(); // 各動物の固有のperformTrick()メソッドが呼び出される
+        }
+    }
+
+    public void moveAllAnimals() {
+        System.out.println("\n=== 動物たちの移動時間 ===");
+        for (int i = 0; i < count; i++) {
+            System.out.print((i + 1) + ". ");
+            animals[i].move(); // 各動物の固有のmove()メソッドが呼び出される
+        }
+    }
+
+    public int getAnimalCount() {
+        return count;
+    }
+
+    // 特定の種類の動物の数を数える
+    public int countSpecies(String species) {
+        int speciesCount = 0;
+        for (int i = 0; i < count; i++) {
+            if (animals[i].getSpecies().equals(species)) {
+                speciesCount++;
+            }
+        }
+        return speciesCount;
+    }
+}
+
+public class PolymorphismExample {
+    public static void main(String[] args) {
+        System.out.println("=== 動物園管理システム - ポリモーフィズムの実践 ===");
+        System.out.println();
+        
+        // 動物園を作成
+        Zoo myZoo = new Zoo();
+        System.out.println();
+        
+        // 様々な種類の動物を作成して動物園に追加
+        System.out.println("--- 動物の追加 ---");
+        Lion simba = new Lion("シンバ", 5, 20);
+        Elephant dumbo = new Elephant("ダンボ", 10, 1.5);
+        Monkey george = new Monkey("ジョージ", 3, true);
+        Lion nala = new Lion("ナラ", 4, 15);
+        Monkey chimp = new Monkey("チンプ", 2, false);
+        
+        myZoo.addAnimal(simba);
+        myZoo.addAnimal(dumbo);
+        myZoo.addAnimal(george);
+        myZoo.addAnimal(nala);
+        myZoo.addAnimal(chimp);
+        System.out.println();
+        
+        // ポリモーフィズムの実演：同じメソッド呼び出しで異なる振る舞い
+        myZoo.showAllAnimalsInfo();
+        myZoo.makeAllAnimalsSound();
+        myZoo.feedAllAnimals();
+        myZoo.moveAllAnimals();
+        myZoo.performAllTricks();
+        
+        // 統計情報の表示
+        System.out.println("\n=== 動物園統計 ===");
+        System.out.println("総動物数: " + myZoo.getAnimalCount());
+        System.out.println("ライオンの数: " + myZoo.countSpecies("ライオン"));
+        System.out.println("ゾウの数: " + myZoo.countSpecies("ゾウ"));
+        System.out.println("サルの数: " + myZoo.countSpecies("サル"));
+        
+        // アップキャストとダウンキャストの実演
+        System.out.println("\n=== キャストの実演 ===");
+        Animal animal = new Lion("レオ", 6, 25); // アップキャスト：自動的に行われる
+        
+        animal.makeSound(); // Lion の makeSound() が呼び出される（ポリモーフィズム）
+        animal.performTrick(); // Lion の performTrick() が呼び出される
+        
+        // ダウンキャスト：サブクラス固有のメソッドを使用したい場合
+        if (animal instanceof Lion) {
+            Lion lion = (Lion) animal; // ダウンキャスト
+            lion.hunt(); // Lion固有のメソッドを呼び出し
+        }
+    }
+}
+```
+
+**このプログラムから学ぶ重要なポリモーフィズムの概念：**
+
+1. **統一的なインターフェイス**：Zooクラスの各メソッド（feedAllAnimals(), makeAllAnimalsSound()等）は、Animal型の配列に対して統一的な操作を行えます。新しい動物の種類を追加しても、これらのメソッドを変更する必要がありません。
+
+2. **実行時の動的決定**：animal.makeSound() の呼び出し時に、実際にどのクラスのmakeSound()メソッドが実行されるかは、実行時に決定されます。これが「動的ディスパッチ」と呼ばれる仕組みです。
+
+3. **開放・閉鎖の原則**：新しい動物クラス（例：Tiger, Penguin等）を追加する際、既存のコード（Zooクラス）を変更することなく、システムを拡張できます。
+
+4. **型安全性の保証**：すべての動物オブジェクトはAnimal型として扱われるため、コンパイル時に型の整合性がチェックされます。
+
+5. **コードの簡潔性**：ポリモーフィズムにより、if-else文やswitch文による条件分岐を避け、よりエレガントで保守しやすいコードが実現されます。
+
+**実用的な応用場面：**
+
+- **図形描画システム**：Circle, Rectangle, Triangle等の図形を統一的に描画
+- **支払いシステム**：CreditCard, BankTransfer, DigitalWallet等の決済方法を統一的に処理
+- **メディアプレイヤー**：MP3, MP4, WAV等のファイル形式を統一的に再生
+- **データベースアクセス**：MySQL, PostgreSQL, Oracle等のDBを統一的に操作
+
 ### アップキャストとダウンキャスト
 
 ```java
-public class PolymorphismExample {
+public class CastingExample {
     public static void main(String[] args) {
         // アップキャスト：サブクラスのオブジェクトをスーパークラス型の変数で参照
         Shape shape1 = new Circle("赤", 5.0);  // CircleをShape型として扱う

@@ -138,45 +138,342 @@ Stream APIを深く理解することは、Javaプログラマーとしての表
 
 ## 10.1 Stream APIとは
 
-### 従来の方法 vs Stream API
+### 従来の方法 vs Stream API：企業売上データ分析システム
+
+以下の包括的な例では、企業の売上データ分析システムを通じて、従来の命令的アプローチとStream APIによる宣言的アプローチの違いと、Stream APIの強力な表現力を学習します：
 
 ```java
 import java.util.*;
 import java.util.stream.*;
+import java.util.function.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Month;
 
-public class StreamComparison {
-    public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+/**
+ * 企業売上データ分析システム
+ * 従来の命令的プログラミングとStream APIの宣言的プログラミングの比較
+ */
+
+// 売上レコードクラス
+class SalesRecord {
+    private String productId;
+    private String productName;
+    private String category;
+    private String region;
+    private BigDecimal amount;
+    private int quantity;
+    private LocalDate saleDate;
+    private String salesPerson;
+    
+    public SalesRecord(String productId, String productName, String category, 
+                      String region, BigDecimal amount, int quantity, 
+                      LocalDate saleDate, String salesPerson) {
+        this.productId = productId;
+        this.productName = productName;
+        this.category = category;
+        this.region = region;
+        this.amount = amount;
+        this.quantity = quantity;
+        this.saleDate = saleDate;
+        this.salesPerson = salesPerson;
+    }
+    
+    // ゲッターメソッド
+    public String getProductId() { return productId; }
+    public String getProductName() { return productName; }
+    public String getCategory() { return category; }
+    public String getRegion() { return region; }
+    public BigDecimal getAmount() { return amount; }
+    public int getQuantity() { return quantity; }
+    public LocalDate getSaleDate() { return saleDate; }
+    public String getSalesPerson() { return salesPerson; }
+    
+    @Override
+    public String toString() {
+        return String.format("%s: %s (¥%s) - %s [%s]", 
+            productId, productName, amount, region, saleDate);
+    }
+}
+
+public class SalesDataAnalysisSystem {
+    private List<SalesRecord> salesData;
+    
+    public SalesDataAnalysisSystem() {
+        initializeSalesData();
+    }
+    
+    private void initializeSalesData() {
+        salesData = Arrays.asList(
+            new SalesRecord("P001", "ノートパソコン", "電子機器", "東京", new BigDecimal("89800"), 2, LocalDate.of(2024, 1, 15), "田中"),
+            new SalesRecord("P002", "マウス", "電子機器", "大阪", new BigDecimal("2800"), 5, LocalDate.of(2024, 1, 16), "佐藤"),
+            new SalesRecord("P003", "キーボード", "電子機器", "名古屋", new BigDecimal("8500"), 3, LocalDate.of(2024, 1, 17), "鈴木"),
+            new SalesRecord("P004", "モニター", "電子機器", "東京", new BigDecimal("35200"), 1, LocalDate.of(2024, 1, 18), "田中"),
+            new SalesRecord("P005", "Java入門書", "書籍", "大阪", new BigDecimal("3200"), 10, LocalDate.of(2024, 1, 19), "高橋"),
+            new SalesRecord("P006", "データ構造本", "書籍", "東京", new BigDecimal("4800"), 7, LocalDate.of(2024, 1, 20), "田中"),
+            new SalesRecord("P001", "ノートパソコン", "電子機器", "福岡", new BigDecimal("89800"), 1, LocalDate.of(2024, 2, 5), "山田"),
+            new SalesRecord("P007", "プリンター", "電子機器", "大阪", new BigDecimal("25600"), 2, LocalDate.of(2024, 2, 6), "佐藤"),
+            new SalesRecord("P008", "スマートフォン", "電子機器", "名古屋", new BigDecimal("78900"), 4, LocalDate.of(2024, 2, 7), "鈴木"),
+            new SalesRecord("P005", "Java入門書", "書籍", "東京", new BigDecimal("3200"), 15, LocalDate.of(2024, 2, 8), "田中"),
+            new SalesRecord("P009", "タブレット", "電子機器", "福岡", new BigDecimal("45600"), 3, LocalDate.of(2024, 2, 9), "山田"),
+            new SalesRecord("P010", "ヘッドフォン", "電子機器", "大阪", new BigDecimal("12800"), 6, LocalDate.of(2024, 2, 10), "佐藤")
+        );
+    }
+    
+    // 従来の命令的アプローチ：高額商品（50,000円以上）の地域別売上集計
+    public void traditionalApproach() {
+        System.out.println("=== 従来の命令的アプローチ ===");
         
-        // 従来の方法：偶数を抽出して2倍にして合計を求める
-        List<Integer> evenNumbers = new ArrayList<>();
-        for (Integer num : numbers) {
-            if (num % 2 == 0) {
-                evenNumbers.add(num);
+        long startTime = System.nanoTime();
+        
+        // ステップ1: 高額商品をフィルタリング
+        List<SalesRecord> expensiveProducts = new ArrayList<>();
+        for (SalesRecord record : salesData) {
+            if (record.getAmount().compareTo(new BigDecimal("50000")) >= 0) {
+                expensiveProducts.add(record);
             }
         }
         
-        List<Integer> doubled = new ArrayList<>();
-        for (Integer num : evenNumbers) {
-            doubled.add(num * 2);
+        // ステップ2: 地域別にグループ化
+        Map<String, List<SalesRecord>> recordsByRegion = new HashMap<>();
+        for (SalesRecord record : expensiveProducts) {
+            String region = record.getRegion();
+            if (!recordsByRegion.containsKey(region)) {
+                recordsByRegion.put(region, new ArrayList<>());
+            }
+            recordsByRegion.get(region).add(record);
         }
         
-        int sum = 0;
-        for (Integer num : doubled) {
-            sum += num;
+        // ステップ3: 地域別売上合計を計算
+        Map<String, BigDecimal> salesByRegion = new HashMap<>();
+        for (Map.Entry<String, List<SalesRecord>> entry : recordsByRegion.entrySet()) {
+            String region = entry.getKey();
+            BigDecimal totalSales = BigDecimal.ZERO;
+            for (SalesRecord record : entry.getValue()) {
+                totalSales = totalSales.add(record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())));
+            }
+            salesByRegion.put(region, totalSales);
         }
-        System.out.println("従来の方法: " + sum);
         
-        // Stream API
-        int streamSum = numbers.stream()
-            .filter(n -> n % 2 == 0)    // 偶数をフィルタ
-            .map(n -> n * 2)            // 2倍にマップ
-            .mapToInt(Integer::intValue) // IntStreamに変換
-            .sum();                     // 合計
-        System.out.println("Stream API: " + streamSum);
+        // ステップ4: 結果の表示（売上順にソート）
+        List<Map.Entry<String, BigDecimal>> sortedSales = new ArrayList<>(salesByRegion.entrySet());
+        sortedSales.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+        
+        long endTime = System.nanoTime();
+        
+        System.out.println("高額商品の地域別売上（命令的アプローチ）:");
+        for (Map.Entry<String, BigDecimal> entry : sortedSales) {
+            System.out.printf("  %s: ¥%s%n", entry.getKey(), entry.getValue());
+        }
+        System.out.printf("処理時間: %d ナノ秒%n", endTime - startTime);
+        System.out.printf("コード行数: 約30行%n");
+    }
+    
+    // Stream APIによる宣言的アプローチ：同じ処理をより簡潔に
+    public void streamApproach() {
+        System.out.println("\n=== Stream APIによる宣言的アプローチ ===");
+        
+        long startTime = System.nanoTime();
+        
+        Map<String, BigDecimal> salesByRegion = salesData.stream()
+            .filter(record -> record.getAmount().compareTo(new BigDecimal("50000")) >= 0)  // 高額商品フィルタ
+            .collect(Collectors.groupingBy(                                                // 地域別グループ化
+                SalesRecord::getRegion,
+                Collectors.reducing(                                                       // 売上合計計算
+                    BigDecimal.ZERO,
+                    record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())),
+                    BigDecimal::add
+                )
+            ));
+        
+        long endTime = System.nanoTime();
+        
+        System.out.println("高額商品の地域別売上（Stream API）:");
+        salesByRegion.entrySet().stream()
+            .sorted(Map.Entry.<String, BigDecimal>comparingByValue().reversed())          // 売上順ソート
+            .forEach(entry -> System.out.printf("  %s: ¥%s%n", entry.getKey(), entry.getValue()));
+        
+        System.out.printf("処理時間: %d ナノ秒%n", endTime - startTime);
+        System.out.printf("コード行数: 約10行%n");
+    }
+    
+    // 複雑な分析処理：営業担当者別の月次パフォーマンス分析
+    public void complexAnalysisTraditional() {
+        System.out.println("\n=== 複雑分析（従来手法）: 営業担当者別月次パフォーマンス ===");
+        
+        // 営業担当者別、月別の売上集計
+        Map<String, Map<Month, BigDecimal>> salesByPersonAndMonth = new HashMap<>();
+        
+        for (SalesRecord record : salesData) {
+            String person = record.getSalesPerson();
+            Month month = record.getSaleDate().getMonth();
+            BigDecimal recordTotal = record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity()));
+            
+            if (!salesByPersonAndMonth.containsKey(person)) {
+                salesByPersonAndMonth.put(person, new HashMap<>());
+            }
+            
+            Map<Month, BigDecimal> monthlyData = salesByPersonAndMonth.get(person);
+            monthlyData.put(month, monthlyData.getOrDefault(month, BigDecimal.ZERO).add(recordTotal));
+        }
+        
+        // トップパフォーマー（総売上が最も高い担当者）を特定
+        String topPerformer = "";
+        BigDecimal maxTotalSales = BigDecimal.ZERO;
+        
+        for (Map.Entry<String, Map<Month, BigDecimal>> personEntry : salesByPersonAndMonth.entrySet()) {
+            BigDecimal totalSales = BigDecimal.ZERO;
+            for (BigDecimal monthlySales : personEntry.getValue().values()) {
+                totalSales = totalSales.add(monthlySales);
+            }
+            if (totalSales.compareTo(maxTotalSales) > 0) {
+                maxTotalSales = totalSales;
+                topPerformer = personEntry.getKey();
+            }
+        }
+        
+        System.out.println("営業担当者別月次実績（従来手法）:");
+        for (Map.Entry<String, Map<Month, BigDecimal>> entry : salesByPersonAndMonth.entrySet()) {
+            System.out.printf("  %s:%n", entry.getKey());
+            for (Map.Entry<Month, BigDecimal> monthData : entry.getValue().entrySet()) {
+                System.out.printf("    %s: ¥%s%n", monthData.getKey(), monthData.getValue());
+            }
+        }
+        System.out.printf("トップパフォーマー: %s (¥%s)%n", topPerformer, maxTotalSales);
+    }
+    
+    // 同じ分析をStream APIで実装
+    public void complexAnalysisStream() {
+        System.out.println("\n=== 複雑分析（Stream API）: 営業担当者別月次パフォーマンス ===");
+        
+        // 営業担当者別、月別の売上集計
+        Map<String, Map<Month, BigDecimal>> salesByPersonAndMonth = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getSalesPerson,
+                Collectors.groupingBy(
+                    record -> record.getSaleDate().getMonth(),
+                    Collectors.reducing(
+                        BigDecimal.ZERO,
+                        record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())),
+                        BigDecimal::add
+                    )
+                )
+            ));
+        
+        // トップパフォーマーを特定
+        Optional<Map.Entry<String, BigDecimal>> topPerformer = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getSalesPerson,
+                Collectors.reducing(
+                    BigDecimal.ZERO,
+                    record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())),
+                    BigDecimal::add
+                )
+            ))
+            .entrySet().stream()
+            .max(Map.Entry.comparingByValue());
+        
+        System.out.println("営業担当者別月次実績（Stream API）:");
+        salesByPersonAndMonth.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach(entry -> {
+                System.out.printf("  %s:%n", entry.getKey());
+                entry.getValue().entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .forEach(monthData -> 
+                        System.out.printf("    %s: ¥%s%n", monthData.getKey(), monthData.getValue()));
+            });
+        
+        topPerformer.ifPresent(performer -> 
+            System.out.printf("トップパフォーマー: %s (¥%s)%n", performer.getKey(), performer.getValue()));
+    }
+    
+    // Stream APIの様々な操作パターンのデモンストレーション
+    public void demonstrateStreamPatterns() {
+        System.out.println("\n=== Stream API操作パターンのデモンストレーション ===");
+        
+        // パターン1: フィルタ → マップ → 収集
+        List<String> productNames = salesData.stream()
+            .filter(record -> record.getCategory().equals("電子機器"))
+            .map(SalesRecord::getProductName)
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
+        System.out.println("電子機器製品名: " + productNames);
+        
+        // パターン2: グループ化 → 集約
+        Map<String, Double> avgSalesByCategory = salesData.stream()
+            .collect(Collectors.groupingBy(
+                SalesRecord::getCategory,
+                Collectors.averagingDouble(record -> 
+                    record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())).doubleValue())
+            ));
+        System.out.println("カテゴリ別平均売上: " + avgSalesByCategory);
+        
+        // パターン3: 複数条件での複雑なフィルタリング
+        List<SalesRecord> complexFilter = salesData.stream()
+            .filter(record -> record.getRegion().equals("東京"))
+            .filter(record -> record.getSaleDate().getMonth() == Month.JANUARY)
+            .filter(record -> record.getAmount().compareTo(new BigDecimal("5000")) > 0)
+            .sorted(Comparator.comparing(SalesRecord::getAmount).reversed())
+            .collect(Collectors.toList());
+        System.out.println("東京・1月・5000円超の売上件数: " + complexFilter.size());
+        
+        // パターン4: 統計データの計算
+        IntSummaryStatistics quantityStats = salesData.stream()
+            .mapToInt(SalesRecord::getQuantity)
+            .summaryStatistics();
+        System.out.printf("数量統計 - 合計:%d, 平均:%.2f, 最大:%d, 最小:%d%n",
+            quantityStats.getSum(), quantityStats.getAverage(), 
+            quantityStats.getMax(), quantityStats.getMin());
+        
+        // パターン5: 並行処理（パフォーマンス向上）
+        long parallelStartTime = System.nanoTime();
+        BigDecimal parallelTotalSales = salesData.parallelStream()
+            .map(record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        long parallelEndTime = System.nanoTime();
+        
+        long sequentialStartTime = System.nanoTime();
+        BigDecimal sequentialTotalSales = salesData.stream()
+            .map(record -> record.getAmount().multiply(BigDecimal.valueOf(record.getQuantity())))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        long sequentialEndTime = System.nanoTime();
+        
+        System.out.printf("総売上: ¥%s%n", parallelTotalSales);
+        System.out.printf("並行処理時間: %d ns, 順次処理時間: %d ns%n", 
+            parallelEndTime - parallelStartTime, sequentialEndTime - sequentialStartTime);
+    }
+    
+    public static void main(String[] args) {
+        SalesDataAnalysisSystem system = new SalesDataAnalysisSystem();
+        
+        // 従来手法とStream APIの比較
+        system.traditionalApproach();
+        system.streamApproach();
+        
+        // 複雑な分析の比較
+        system.complexAnalysisTraditional();
+        system.complexAnalysisStream();
+        
+        // Stream APIの様々なパターン
+        system.demonstrateStreamPatterns();
     }
 }
 ```
+
+**このプログラムから学ぶ重要なStream APIの概念：**
+
+1. **宣言的プログラミング**：「何をしたいか」に集中でき、「どのようにするか」の詳細は言語に任せられます。
+
+2. **関数の組み合わせ**：filter、map、collectなどの操作を組み合わせて複雑な処理パイプラインを構築できます。
+
+3. **可読性の向上**：処理の流れが直線的で理解しやすく、コードの意図が明確になります。
+
+4. **並行処理の簡素化**：parallelStream()により、複雑な並行処理ロジックなしにマルチコア処理を活用できます。
+
+5. **エラーの削減**：ループや一時変数の管理が不要になり、インデックス外参照などのバグを避けられます。
 
 ## 10.2 Streamの作成
 

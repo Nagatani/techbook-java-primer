@@ -108,6 +108,12 @@ int main() {
 
 Javaでは、これらをクラスとして一体化します。
 
+#### Javaによるオブジェクト指向実装の実践例
+
+以下のプログラムは、手続き型プログラミングからオブジェクト指向プログラミングへの移行を理解するための重要な学習材料です。データと操作が一体化したクラス設計の利点を実践的に学ぶことができます：
+
+ファイル名： Product.java、Shop.java
+
 ```java
 // Java: データ(フィールド)と操作(メソッド)がクラス内にまとまる
 public class Product {
@@ -125,6 +131,30 @@ public class Product {
     void displayInfo() {
         System.out.println("商品名: " + this.name + ", 価格: " + this.price + "円, 在庫: " + this.stock + "個");
     }
+
+    // 商品を購入する（在庫を減らす）メソッド
+    boolean purchase(int quantity) {
+        if (quantity <= 0) {
+            System.out.println("購入数量が無効です。");
+            return false;
+        }
+        if (this.stock >= quantity) {
+            this.stock -= quantity;
+            System.out.println(this.name + "を" + quantity + "個購入しました。");
+            return true;
+        } else {
+            System.out.println("在庫不足です。現在の在庫: " + this.stock + "個");
+            return false;
+        }
+    }
+
+    // 商品を入荷する（在庫を増やす）メソッド
+    void restock(int quantity) {
+        if (quantity > 0) {
+            this.stock += quantity;
+            System.out.println(this.name + "を" + quantity + "個入荷しました。");
+        }
+    }
 }
 
 public class Shop {
@@ -135,14 +165,66 @@ public class Shop {
         apple.price = 150;
         apple.stock = 50;
 
+        // 別の商品オブジェクトを生成
+        Product orange = new Product();
+        orange.name = "オレンジ";
+        orange.price = 200;
+        orange.stock = 30;
+
+        System.out.println("=== 商品管理システム ===");
+        
+        // 各オブジェクトの初期状態を表示
+        apple.displayInfo();
+        orange.displayInfo();
+        System.out.println();
+
         // オブジェクト自身が持つメソッドを呼び出す
+        System.out.println("=== 在庫確認 ===");
         if (apple.isInStock()) {
             System.out.println(apple.name + " は在庫があります。");
         }
+        if (orange.isInStock()) {
+            System.out.println(orange.name + " は在庫があります。");
+        }
+        System.out.println();
+
+        // 購入処理の実行
+        System.out.println("=== 購入処理 ===");
+        apple.purchase(10);  // りんごを10個購入
+        orange.purchase(35); // オレンジを35個購入（在庫不足になる）
+        System.out.println();
+
+        // 入荷処理の実行
+        System.out.println("=== 入荷処理 ===");
+        orange.restock(20);  // オレンジを20個入荷
+        System.out.println();
+
+        // 最終的な状態を表示
+        System.out.println("=== 最終在庫状況 ===");
         apple.displayInfo();
+        orange.displayInfo();
     }
 }
 ```
+
+**このプログラムから学ぶ重要なオブジェクト指向の概念：**
+
+1. **データと操作の一体化（カプセル化）**：商品の情報（name, price, stock）と、それらを操作するメソッド（isInStock, purchase, restock）が一つのクラス内にまとめられています。これにより、データの整合性を保ちながら操作が可能になります。
+
+2. **thisキーワードの重要性**：`this.stock`は「このオブジェクト自身のstockフィールド」を指します。メソッド内でオブジェクト自身のフィールドにアクセスする際の明示的な方法です。
+
+3. **オブジェクトの独立性**：appleオブジェクトとorangeオブジェクトは、それぞれ独立した状態を持ち、一方への操作が他方に影響することはありません。これがオブジェクト指向の重要な特徴です。
+
+4. **責任の明確化**：各商品オブジェクトが自分自身の在庫管理に責任を持ちます。外部から直接フィールドを変更するのではなく、適切なメソッドを通じて操作することで、ビジネスルール（例：負の在庫は許可しない）を保証できます。
+
+5. **再利用性の向上**：同じProductクラスから何個でもオブジェクトを生成でき、それぞれが独立して機能します。新しい商品を追加する際も、既存のコードを変更する必要がありません。
+
+**手続き型との比較から見える利点：**
+
+- **データの安全性**：フィールドへの直接アクセスを制限し、メソッドを通じた制御された操作が可能
+- **保守性の向上**：商品に関する処理がProductクラス内に集約されているため、修正時の影響範囲が明確
+- **拡張性**：新しい商品タイプや機能を追加する際も、既存のコードへの影響を最小限に抑制可能
+- **理解しやすさ**：現実世界の「商品」という概念がそのままコードの構造に反映されている
 
 Javaのアプローチでは、`apple`というオブジェクト自身が`isInStock()`という「在庫確認能力」を持っている、というより管理しやすい形でプログラムを表現できます。
 
@@ -301,54 +383,186 @@ public class ShopInventory {
 
 しかし、自分で1つでもコンストラクタを定義すると、このデフォルトコンストラクタは自動生成されなくなります。
 
-### コンストラクタの例 (`Product`クラス)
+### コンストラクタの実践例：堅牢なオブジェクト初期化
+
+コンストラクタは、オブジェクトの信頼性を保証するための重要な仕組みです。以下のプログラムは、適切なコンストラクタ設計により、データの整合性とビジネスルールの保証を実現する方法を学習するための重要な材料です：
+
+ファイル名： Product.java、ShopSetup.java
 
 ```java
 public class Product {
     String name;
     int price;
     int stock;
+    String category;
+    boolean isActive;
 
-    // コンストラクタ (商品名と価格を引数で受け取り初期化)
+    // コンストラクタ1: 基本的な商品情報のみで初期化
     Product(String productName, int productPrice) {
         System.out.println("Productコンストラクタ(String, int) 呼び出し中...");
-        // フィールド名と引数名が同じなので、this を使ってフィールドであることを明示
-        this.name = productName;
-        this.price = productPrice;
-        this.stock = 0; // 在庫は初期状態で0にしておく
+        
+        // 入力値の妥当性チェック
+        if (productName == null || productName.trim().isEmpty()) {
+            System.out.println("警告: 商品名が無効です。デフォルト名を設定します。");
+            this.name = "未設定商品";
+        } else {
+            this.name = productName.trim();
+        }
+        
+        if (productPrice < 0) {
+            System.out.println("警告: 価格が負の値です。0円に設定します。");
+            this.price = 0;
+        } else {
+            this.price = productPrice;
+        }
+        
+        this.stock = 0; // 在庫は初期状態で0
+        this.category = "一般商品"; // デフォルトカテゴリ
+        this.isActive = true; // 初期状態では販売可能
+        
         System.out.println("商品「" + this.name + "」を価格" + this.price + "円で登録しました。");
     }
 
-    // コンストラクタのオーバーロード (商品名、価格、初期在庫数を引数で受け取る)
+    // コンストラクタ2: 初期在庫数も指定
     Product(String productName, int productPrice, int initialStock) {
         System.out.println("Productコンストラクタ(String, int, int) 呼び出し中...");
-        this.name = productName;
-        this.price = productPrice;
-        this.stock = initialStock; // 引数で受け取った初期在庫を設定
+        
+        // 基本情報の設定（上記と同様の妥当性チェック）
+        if (productName == null || productName.trim().isEmpty()) {
+            this.name = "未設定商品";
+        } else {
+            this.name = productName.trim();
+        }
+        
+        this.price = (productPrice < 0) ? 0 : productPrice;
+        
+        // 在庫数の妥当性チェック
+        if (initialStock < 0) {
+            System.out.println("警告: 初期在庫が負の値です。0個に設定します。");
+            this.stock = 0;
+        } else {
+            this.stock = initialStock;
+        }
+        
+        this.category = "一般商品";
+        this.isActive = true;
+        
         System.out.println("商品「" + this.name + "」を価格" + this.price + "円、初期在庫" + this.stock + "個で登録しました。");
     }
 
-    // ... (他のメソッドは省略) ...
+    // コンストラクタ3: 完全な商品情報を指定
+    Product(String productName, int productPrice, int initialStock, String productCategory) {
+        System.out.println("Productコンストラクタ(String, int, int, String) 呼び出し中...");
+        
+        // 基本情報の設定
+        this.name = (productName == null || productName.trim().isEmpty()) ? "未設定商品" : productName.trim();
+        this.price = (productPrice < 0) ? 0 : productPrice;
+        this.stock = (initialStock < 0) ? 0 : initialStock;
+        
+        // カテゴリの設定
+        if (productCategory == null || productCategory.trim().isEmpty()) {
+            this.category = "一般商品";
+        } else {
+            this.category = productCategory.trim();
+        }
+        
+        this.isActive = true;
+        
+        System.out.println("商品「" + this.name + "」(" + this.category + ")を価格" + this.price + "円、初期在庫" + this.stock + "個で登録しました。");
+    }
+
+    // デフォルトコンストラクタ（カスタムコンストラクタ定義後も利用可能にする）
+    Product() {
+        System.out.println("Productデフォルトコンストラクタ呼び出し中...");
+        this.name = "サンプル商品";
+        this.price = 100;
+        this.stock = 0;
+        this.category = "一般商品";
+        this.isActive = true;
+        System.out.println("デフォルト商品を作成しました。");
+    }
+
+    // 商品情報を表示するメソッド
+    void displayInfo() {
+        String status = this.isActive ? "販売中" : "販売停止";
+        System.out.println("[" + this.category + "] " + this.name + " - 価格: " + this.price + "円, 在庫: " + this.stock + "個 (" + status + ")");
+    }
+
+    // 商品を非アクティブ化するメソッド
+    void discontinue() {
+        this.isActive = false;
+        System.out.println("商品「" + this.name + "」を販売停止にしました。");
+    }
 }
 
 public class ShopSetup {
     public static void main(String[] args) {
-        // コンストラクタを使ってオブジェクトを生成＆初期化
-        // new Product(...) の時点でコンストラクタが呼ばれる
-        Product orange = new Product("オレンジ", 120); // 1つ目のコンストラクタが呼ばれる
-        Product banana = new Product("バナナ", 100, 50); // 2つ目のコンストラクタが呼ばれる
-
-        System.out.println("--- 商品情報 ---");
+        System.out.println("=== 商品管理システム - コンストラクタ利用例 ===");
+        System.out.println();
+        
+        // 様々なコンストラクタを使用してオブジェクトを生成
+        System.out.println("1. 基本情報のみでの商品作成:");
+        Product orange = new Product("オレンジ", 120);
+        System.out.println();
+        
+        System.out.println("2. 初期在庫ありでの商品作成:");
+        Product banana = new Product("バナナ", 100, 50);
+        System.out.println();
+        
+        System.out.println("3. 完全情報での商品作成:");
+        Product apple = new Product("りんご", 150, 30, "果物");
+        System.out.println();
+        
+        System.out.println("4. デフォルトコンストラクタでの商品作成:");
+        Product sample = new Product();
+        System.out.println();
+        
+        System.out.println("5. 不正な値での商品作成テスト:");
+        Product invalid = new Product("", -50, -10);
+        System.out.println();
+        
+        // 作成された商品の情報を表示
+        System.out.println("=== 登録された商品一覧 ===");
         orange.displayInfo();
         banana.displayInfo();
-
-        // Product grape = new Product(); // これはエラー！
-        // 理由：引数ありのコンストラクタを定義したため、
-        //      引数なしのデフォルトコンストラクタは自動生成されなくなった。
-        //      もし引数なしでも生成したい場合は、引数なしのコンストラクタも自分で定義する必要がある。
+        apple.displayInfo();
+        sample.displayInfo();
+        invalid.displayInfo();
+        System.out.println();
+        
+        // 商品の状態変更
+        System.out.println("=== 商品状態の変更 ===");
+        banana.discontinue();
+        banana.displayInfo();
     }
 }
 ```
+
+**このプログラムから学ぶ重要なコンストラクタ設計原則：**
+
+1. **入力値の妥当性検証**：コンストラクタ内で引数の妥当性をチェックし、不正な値が設定されることを防ぎます。これにより、オブジェクトの整合性を保証できます。
+
+2. **オーバーロードによる利便性**：異なる初期化パターンに対応するため、複数のコンストラクタを提供します。利用者は必要な情報量に応じて適切なコンストラクタを選択できます。
+
+3. **デフォルト値の適切な設定**：引数が不正な場合や、指定されなかった場合の適切なデフォルト値を設定します。システムの堅牢性を向上させます。
+
+4. **デフォルトコンストラクタの明示的定義**：カスタムコンストラクタを定義した場合でも、デフォルトコンストラクタが必要な場合は明示的に定義します。
+
+5. **初期化の完全性**：コンストラクタ実行後、オブジェクトが即座に使用可能な状態になることを保証します。部分的に初期化されたオブジェクトが存在することを防ぎます。
+
+**実用的な応用場面：**
+
+- **データベースエンティティ**：DBから取得したデータによるオブジェクト初期化
+- **設定オブジェクト**：アプリケーション設定の多様な初期化パターン
+- **ファクトリーパターン**：異なる作成方法に対応するオブジェクト生成
+- **バリデーション**：ビジネスルールに基づく入力値検証
+
+**コンストラクタ設計のベストプラクティス：**
+
+1. **引数の検証を必ず行う**：null値や範囲外の値をチェック
+2. **例外的な値への適切な対応**：警告の出力やデフォルト値の設定
+3. **コンストラクタチェーニング**：`this()`を使用した他のコンストラクタの呼び出し
+4. **不変オブジェクトの作成**：必要に応じて、作成後に変更できないオブジェクトの設計
 
 ### 実行結果
 

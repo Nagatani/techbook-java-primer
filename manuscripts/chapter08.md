@@ -216,59 +216,337 @@ public class TypeSafetyExample {
 
 ジェネリッククラスを定義するには、クラス名の後に山括弧（`<>`）を用いて1つ以上の型パラメータを指定します。型パラメータには任意の名前を付けることができますが、慣習として`T`（Type）、`E`（Element）、`K`（Key）、`V`（Value）など、大文字の一文字がよく使われます。
 
-### シンプルなジェネリッククラスの例
+### 実践的なジェネリッククラスの例：データ分析システムの統計計算
+
+以下の包括的な例では、データ分析システムにおける統計計算クラスを通じて、ジェネリクスの実用的な活用方法と型安全性の重要性を学習します：
 
 ```java
-// シンプルなジェネリックBoxクラス
-// T はこのクラス内で使用される型を表すプレースホルダ
-public class Box<T> {
-    private T item; // itemの型はBoxインスタンス生成時に指定される
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
+
+/**
+ * データ分析システムにおけるジェネリクス活用例
+ * 型安全な統計計算と再利用可能なコンポーネントの実践的デモンストレーション
+ */
+
+// 基本的なジェネリック結果クラス
+class AnalysisResult<T> {
+    private T value;
+    private String description;
+    private boolean isValid;
+    private String errorMessage;
     
-    public void setItem(T item) {
-        this.item = item;
+    public AnalysisResult(T value, String description) {
+        this.value = value;
+        this.description = description;
+        this.isValid = true;
     }
     
-    public T getItem() {
-        return item;
+    public AnalysisResult(String errorMessage) {
+        this.errorMessage = errorMessage;
+        this.isValid = false;
     }
     
-    public boolean isEmpty() {
-        return item == null;
-    }
+    public T getValue() { return value; }
+    public String getDescription() { return description; }
+    public boolean isValid() { return isValid; }
+    public String getErrorMessage() { return errorMessage; }
     
-    public void displayInfo() {
-        if (isEmpty()) {
-            System.out.println("ボックスは空です。");
+    @Override
+    public String toString() {
+        if (isValid) {
+            return String.format("%s: %s", description, value);
         } else {
-            System.out.println("ボックスの内容: " + item + " (型: " + item.getClass().getSimpleName() + ")");
+            return String.format("Error: %s", errorMessage);
         }
     }
 }
 
-class GenericClassExample {
+// 統計データクラス（複数の型パラメータを使用）
+class StatisticalData<T extends Number, U> {
+    private List<T> numericData;
+    private U metadata;
+    private String dataSetName;
+    
+    public StatisticalData(String dataSetName, U metadata) {
+        this.dataSetName = dataSetName;
+        this.metadata = metadata;
+        this.numericData = new ArrayList<>();
+    }
+    
+    public void addData(T data) {
+        numericData.add(data);
+    }
+    
+    public void addAll(Collection<? extends T> data) {
+        numericData.addAll(data);
+    }
+    
+    public List<T> getData() { return new ArrayList<>(numericData); }
+    public U getMetadata() { return metadata; }
+    public String getDataSetName() { return dataSetName; }
+    public int getSize() { return numericData.size(); }
+    
+    public AnalysisResult<Double> calculateMean() {
+        if (numericData.isEmpty()) {
+            return new AnalysisResult<>("データセットが空です");
+        }
+        
+        double sum = numericData.stream()
+                                .mapToDouble(Number::doubleValue)
+                                .sum();
+        double mean = sum / numericData.size();
+        
+        return new AnalysisResult<>(mean, "平均値");
+    }
+    
+    public AnalysisResult<T> findMinimum() {
+        if (numericData.isEmpty()) {
+            return new AnalysisResult<>("データセットが空です");
+        }
+        
+        T min = numericData.stream()
+                          .min((a, b) -> Double.compare(a.doubleValue(), b.doubleValue()))
+                          .orElseThrow();
+        
+        return new AnalysisResult<>(min, "最小値");
+    }
+    
+    public AnalysisResult<T> findMaximum() {
+        if (numericData.isEmpty()) {
+            return new AnalysisResult<>("データセットが空です");
+        }
+        
+        T max = numericData.stream()
+                          .max((a, b) -> Double.compare(a.doubleValue(), b.doubleValue()))
+                          .orElseThrow();
+        
+        return new AnalysisResult<>(max, "最大値");
+    }
+    
+    public AnalysisResult<Double> calculateStandardDeviation() {
+        AnalysisResult<Double> meanResult = calculateMean();
+        if (!meanResult.isValid()) {
+            return meanResult;
+        }
+        
+        double mean = meanResult.getValue();
+        double variance = numericData.stream()
+                                    .mapToDouble(Number::doubleValue)
+                                    .map(x -> Math.pow(x - mean, 2))
+                                    .sum() / numericData.size();
+        
+        return new AnalysisResult<>(Math.sqrt(variance), "標準偏差");
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("StatisticalData{name='%s', size=%d, metadata=%s}", 
+            dataSetName, numericData.size(), metadata);
+    }
+}
+
+// メタデータ用のクラス
+class DataMetadata {
+    private String source;
+    private String unit;
+    private Date collectionDate;
+    
+    public DataMetadata(String source, String unit) {
+        this.source = source;
+        this.unit = unit;
+        this.collectionDate = new Date();
+    }
+    
+    public String getSource() { return source; }
+    public String getUnit() { return unit; }
+    public Date getCollectionDate() { return collectionDate; }
+    
+    @Override
+    public String toString() {
+        return String.format("{source='%s', unit='%s'}", source, unit);
+    }
+}
+
+// ジェネリック分析エンジン
+class AnalysisEngine<T extends Number> {
+    private String engineName;
+    
+    public AnalysisEngine(String engineName) {
+        this.engineName = engineName;
+    }
+    
+    // ジェネリックメソッド：複数データセットの相関分析
+    public <U, V> AnalysisResult<Double> calculateCorrelation(
+            StatisticalData<T, U> data1, 
+            StatisticalData<T, V> data2) {
+        
+        List<T> dataset1 = data1.getData();
+        List<T> dataset2 = data2.getData();
+        
+        if (dataset1.size() != dataset2.size()) {
+            return new AnalysisResult<>("データセットのサイズが一致しません");
+        }
+        
+        if (dataset1.isEmpty()) {
+            return new AnalysisResult<>("データセットが空です");
+        }
+        
+        // ピアソンの相関係数を計算
+        double mean1 = dataset1.stream().mapToDouble(Number::doubleValue).average().orElse(0.0);
+        double mean2 = dataset2.stream().mapToDouble(Number::doubleValue).average().orElse(0.0);
+        
+        double numerator = 0.0;
+        double sumSq1 = 0.0;
+        double sumSq2 = 0.0;
+        
+        for (int i = 0; i < dataset1.size(); i++) {
+            double x = dataset1.get(i).doubleValue() - mean1;
+            double y = dataset2.get(i).doubleValue() - mean2;
+            
+            numerator += x * y;
+            sumSq1 += x * x;
+            sumSq2 += y * y;
+        }
+        
+        double denominator = Math.sqrt(sumSq1 * sumSq2);
+        if (denominator == 0) {
+            return new AnalysisResult<>("相関係数を計算できません（分散が0）");
+        }
+        
+        double correlation = numerator / denominator;
+        return new AnalysisResult<>(correlation, 
+            String.format("相関係数（%s vs %s）", data1.getDataSetName(), data2.getDataSetName()));
+    }
+    
+    // ジェネリック変換メソッド
+    public <R extends Number> StatisticalData<R, String> transformData(
+            StatisticalData<T, ?> originalData,
+            Function<T, R> transformer,
+            String transformationDescription) {
+        
+        StatisticalData<R, String> transformedData = 
+            new StatisticalData<>(originalData.getDataSetName() + "_transformed", transformationDescription);
+        
+        originalData.getData().stream()
+                   .map(transformer)
+                   .forEach(transformedData::addData);
+        
+        return transformedData;
+    }
+    
+    public void generateReport(List<? extends StatisticalData<T, ?>> dataSets) {
+        System.out.println("\n=== " + engineName + " 分析レポート ===");
+        
+        for (StatisticalData<T, ?> dataSet : dataSets) {
+            System.out.println("\n【" + dataSet.getDataSetName() + "】");
+            System.out.println("  " + dataSet.calculateMean());
+            System.out.println("  " + dataSet.findMinimum());
+            System.out.println("  " + dataSet.findMaximum());
+            System.out.println("  " + dataSet.calculateStandardDeviation());
+            System.out.println("  サンプル数: " + dataSet.getSize());
+            System.out.println("  メタデータ: " + dataSet.getMetadata());
+        }
+    }
+}
+
+public class DataAnalysisSystem {
     public static void main(String[] args) {
-        // String型を扱うBoxインスタンス
-        Box<String> stringBox = new Box<>();
-        stringBox.setItem("ジェネリックな文字列");
-        String contentString = stringBox.getItem();
-        System.out.println("stringBoxの内容: " + contentString);
-        stringBox.displayInfo();
+        System.out.println("=== データ分析システム - ジェネリクス活用例 ===");
         
-        // Integer型を扱うBoxインスタンス
-        Box<Integer> integerBox = new Box<>();
-        integerBox.setItem(2024);
-        Integer contentInteger = integerBox.getItem();
-        System.out.println("integerBoxの内容: " + contentInteger);
-        integerBox.displayInfo();
+        // 売上データの分析（Integer型）
+        StatisticalData<Integer, DataMetadata> salesData = 
+            new StatisticalData<>("月次売上", new DataMetadata("販売システム", "万円"));
+        salesData.addAll(Arrays.asList(850, 920, 780, 1050, 980, 1120, 890, 960, 1080, 750, 920, 1200));
         
-        // ダイヤモンド演算子（Java 7以降）
-        // 右辺の型パラメータを省略できる
-        Box<Double> doubleBox = new Box<>();
-        doubleBox.setItem(3.14159);
-        doubleBox.displayInfo();
+        // 気温データの分析（Double型）
+        StatisticalData<Double, DataMetadata> temperatureData = 
+            new StatisticalData<>("日平均気温", new DataMetadata("気象庁", "℃"));
+        temperatureData.addAll(Arrays.asList(5.2, 8.1, 12.5, 18.3, 22.7, 26.8, 29.1, 28.5, 24.2, 17.6, 11.3, 6.9));
+        
+        // 株価データの分析（Double型）
+        StatisticalData<Double, String> stockPriceData = 
+            new StatisticalData<>("日経平均", "Tokyo Stock Exchange");
+        stockPriceData.addAll(Arrays.asList(28500.0, 29200.0, 28800.0, 30100.0, 29700.0, 
+                                          31200.0, 30800.0, 29900.0, 31500.0, 30300.0));
+        
+        // 分析エンジンの作成と分析実行
+        AnalysisEngine<Integer> integerEngine = new AnalysisEngine<>("整数データ分析エンジン");
+        AnalysisEngine<Double> doubleEngine = new AnalysisEngine<>("実数データ分析エンジン");
+        
+        // 各データセットの個別分析
+        integerEngine.generateReport(Arrays.asList(salesData));
+        doubleEngine.generateReport(Arrays.asList(temperatureData, stockPriceData));
+        
+        // 相関分析（型安全な異なるメタデータ型同士の比較）
+        System.out.println("\n=== 相関分析 ===");
+        AnalysisResult<Double> correlation = doubleEngine.calculateCorrelation(temperatureData, stockPriceData);
+        System.out.println(correlation);
+        
+        // データ変換の例（型安全な変換）
+        System.out.println("\n=== データ変換例 ===");
+        
+        // 売上データを百万円単位に変換
+        Function<Integer, Double> toMillionYen = value -> value / 100.0;
+        
+        // Note: transformDataは型の制約により直接使用できないので、別の方法で変換をデモ
+        StatisticalData<Double, String> salesInMillion = 
+            new StatisticalData<>("月次売上_百万円単位", "百万円単位変換");
+        salesData.getData().stream()
+                 .map(toMillionYen)
+                 .forEach(salesInMillion::addData);
+        
+        System.out.println("変換後の売上データ:");
+        System.out.println("  " + salesInMillion.calculateMean());
+        System.out.println("  " + salesInMillion.findMaximum());
+        
+        // 型安全性のデモンストレーション
+        demonstrateTypeSafety();
+    }
+    
+    private static void demonstrateTypeSafety() {
+        System.out.println("\n=== 型安全性のデモンストレーション ===");
+        
+        // 異なる型のStatisticalDataは互換性がない
+        StatisticalData<Integer, String> intData = new StatisticalData<>("整数データ", "テスト");
+        StatisticalData<Double, String> doubleData = new StatisticalData<>("実数データ", "テスト");
+        
+        intData.addData(100);
+        doubleData.addData(100.5);
+        
+        // 以下はコンパイルエラーとなり、型安全性が保証される
+        // intData.addData(100.5);  // Double を Integer のリストに追加しようとするとエラー
+        // doubleData.addData(100); // Integer を Double のリストに追加は自動変換で可能
+        
+        System.out.println("整数データ: " + intData.calculateMean());
+        System.out.println("実数データ: " + doubleData.calculateMean());
+        
+        // ジェネリクスなしの場合の問題点をコメントで示す
+        /*
+        // ジェネリクスなしの場合（Java 5以前）
+        List rawList = new ArrayList();
+        rawList.add(100);
+        rawList.add("文字列"); // 異なる型が混在！実行時エラーの原因
+        
+        Integer number = (Integer) rawList.get(0); // キャストが必要
+        Integer error = (Integer) rawList.get(1);  // ClassCastException！
+        */
     }
 }
 ```
+
+**このプログラムから学ぶ重要なジェネリクスの概念：**
+
+1. **型安全性の保証**：ジェネリクスにより、コンパイル時に型の整合性がチェックされ、実行時の`ClassCastException`を防げます。
+
+2. **コードの再利用性**：同じアルゴリズム（統計計算）を、異なる数値型（Integer、Double）で再利用できます。
+
+3. **複数型パラメータの活用**：`StatisticalData<T, U>`のように、データ型とメタデータ型を独立して指定できます。
+
+4. **境界付き型パラメータ**：`T extends Number`により、数値型のみを受け入れる制約を設けることができます。
+
+5. **型推論の活用**：ダイヤモンド演算子（`<>`）により、冗長な型宣言を省略できます。
 
 ### 複数の型パラメータを持つクラス
 
@@ -327,101 +605,361 @@ class MultipleTypeParametersExample {
 }
 ```
 
-## 8.3 ジェネリックメソッドの定義
+## 8.3 ジェネリックメソッドの定義：柔軟で再利用可能な汎用処理
 
-クラス全体をジェネリックにするのではなく、特定のメソッドだけをジェネリックにすることも可能です。これをジェネリックメソッドと呼びます。ジェネリックメソッドは、ジェネリックスクラス内で定義することも、非ジェネリックスクラス内で定義することもできます。
+### ジェネリックメソッドの基本概念
 
-メソッドの戻り値の型の前に型パラメータリストを宣言します。
+クラス全体をジェネリックにするのではなく、特定のメソッドだけをジェネリックにすることも可能です。これをジェネリックメソッドと呼びます。ジェネリックメソッドは、非ジェネリックなクラス内でも定義でき、メソッドレベルでの型安全性と再利用性を提供します。
+
+### 実践的なジェネリックメソッドの例：データ処理ユーティリティシステム
+
+以下の包括的な例では、様々なデータ処理において活用されるジェネリックメソッドの実用的な使用方法を学習します：
 
 ```java
 import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
-public class GenericMethodDemo {
+/**
+ * データ処理ユーティリティシステム
+ * ジェネリックメソッドの柔軟性と再利用性の実践的デモンストレーション
+ */
+
+// 処理結果を包むクラス
+class ProcessingResult<T> {
+    private T result;
+    private boolean success;
+    private String message;
+    private long processingTimeMs;
     
-    // 静的なジェネリックメソッド
-    public static <T> void printArrayContent(T[] inputArray) {
-        for (T element : inputArray) {
-            System.out.printf("%s ", element);
-        }
-        System.out.println();
+    public ProcessingResult(T result, long processingTimeMs) {
+        this.result = result;
+        this.success = true;
+        this.processingTimeMs = processingTimeMs;
+        this.message = "処理が正常に完了しました";
     }
     
-    // 配列の要素を交換
-    public static <T> void swap(T[] array, int i, int j) {
+    public ProcessingResult(String errorMessage) {
+        this.success = false;
+        this.message = errorMessage;
+        this.processingTimeMs = 0;
+    }
+    
+    public T getResult() { return result; }
+    public boolean isSuccess() { return success; }
+    public String getMessage() { return message; }
+    public long getProcessingTimeMs() { return processingTimeMs; }
+    
+    @Override
+    public String toString() {
+        if (success) {
+            return String.format("Success: %s (%dms)", result, processingTimeMs);
+        } else {
+            return String.format("Error: %s", message);
+        }
+    }
+}
+
+public class DataProcessingUtilities {
+    
+    // 基本的なジェネリックメソッド：配列の安全な要素交換
+    public static <T> void safeSwap(T[] array, int i, int j) {
+        if (array == null || i < 0 || j < 0 || i >= array.length || j >= array.length) {
+            throw new IllegalArgumentException("無効なインデックスまたは配列です");
+        }
         T temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
     
-    // 境界のある型パラメータを使用
-    public static <T extends Comparable<T>> T max(T a, T b) {
-        return a.compareTo(b) > 0 ? a : b;
-    }
-    
-    // 複数の型パラメータを持つジェネリックメソッド
-    public static <K, V> boolean comparePairs(OrderedPair<K, V> p1, OrderedPair<K, V> p2) {
-        return p1.getKey().equals(p2.getKey()) &&
-               p1.getValue().equals(p2.getValue());
-    }
-    
-    public static void main(String[] args) {
-        Integer[] intArray = {1, 2, 3, 4, 5};
-        String[] stringArray = {"A", "B", "C"};
-        Double[] doubleArray = {1.1, 2.2, 3.3};
-        
-        System.out.print("Integer 配列: ");
-        printArrayContent(intArray);
-        
-        System.out.print("String 配列: ");
-        printArrayContent(stringArray);
-        
-        System.out.print("Double 配列: ");
-        printArrayContent(doubleArray);
-        
-        // 要素の交換
-        String[] words = {"apple", "banana", "cherry"};
-        System.out.println("交換前: " + Arrays.toString(words));
-        swap(words, 0, 2);
-        System.out.println("交換後: " + Arrays.toString(words));
-        
-        // 最大値の比較
-        String maxString = max("hello", "world");
-        Integer maxNumber = max(10, 20);
-        
-        System.out.println("最大文字列: " + maxString);
-        System.out.println("最大数値: " + maxNumber);
-        
-        // ペアの比較
-        OrderedPair<String, Integer> p1 = new OrderedPair<>("Count", 10);
-        OrderedPair<String, Integer> p2 = new OrderedPair<>("Count", 10);
-        OrderedPair<String, Integer> p3 = new OrderedPair<>("Count", 20);
-        
-        System.out.println("p1とp2は同じか: " + comparePairs(p1, p2)); // true
-        System.out.println("p1とp3は同じか: " + comparePairs(p1, p3)); // false
-        
-        // リストの最初の要素を取得
-        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
-        String firstName = getFirstElement(names);
-        System.out.println("最初の名前: " + firstName);
-    }
-    
-    // リストの最初の要素を返すジェネリックメソッド
-    public static <T> T getFirstElement(List<T> list) {
-        if (list.isEmpty()) {
-            return null;
+    // 境界付き型パラメータ：比較可能なオブジェクトの最大値/最小値
+    public static <T extends Comparable<T>> T findMax(Collection<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            throw new IllegalArgumentException("コレクションが空または無効です");
         }
-        return list.get(0);
+        return collection.stream().max(T::compareTo).orElseThrow();
     }
     
-    // 参照用のクラス
-    static class OrderedPair<K, V> {
-        private K key;
-        private V value;
-        public OrderedPair(K key, V value) { this.key = key; this.value = value; }
-        public K getKey() { return key; }
-        public V getValue() { return value; }
+    public static <T extends Comparable<T>> T findMin(Collection<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            throw new IllegalArgumentException("コレクションが空または無効です");
+        }
+        return collection.stream().min(T::compareTo).orElseThrow();
+    }
+    
+    // 複数の型パラメータ：キー・値ペアのマッピング
+    public static <K, V, R> List<R> mapPairs(Map<K, V> map, BiFunction<K, V, R> mapper) {
+        return map.entrySet().stream()
+                  .map(entry -> mapper.apply(entry.getKey(), entry.getValue()))
+                  .collect(Collectors.toList());
+    }
+    
+    // 高階関数を使用したジェネリック処理：フィルタリングと変換
+    public static <T, R> ProcessingResult<List<R>> processWithFilter(
+            Collection<T> input, 
+            Predicate<T> filter, 
+            Function<T, R> transformer) {
+        
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            if (input == null) {
+                return new ProcessingResult<>("入力コレクションがnullです");
+            }
+            
+            List<R> result = input.stream()
+                                  .filter(filter)
+                                  .map(transformer)
+                                  .collect(Collectors.toList());
+            
+            long endTime = System.currentTimeMillis();
+            return new ProcessingResult<>(result, endTime - startTime);
+            
+        } catch (Exception e) {
+            return new ProcessingResult<>("処理中にエラーが発生しました: " + e.getMessage());
+        }
+    }
+    
+    // ジェネリック集約処理：任意の型の集約
+    public static <T, R> ProcessingResult<R> aggregate(
+            Collection<T> input,
+            R identity,
+            BinaryOperator<R> accumulator,
+            Function<T, R> mapper) {
+        
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            if (input == null) {
+                return new ProcessingResult<>("入力コレクションがnullです");
+            }
+            
+            R result = input.stream()
+                           .map(mapper)
+                           .reduce(identity, accumulator);
+            
+            long endTime = System.currentTimeMillis();
+            return new ProcessingResult<>(result, endTime - startTime);
+            
+        } catch (Exception e) {
+            return new ProcessingResult<>("集約処理中にエラーが発生しました: " + e.getMessage());
+        }
+    }
+    
+    // ジェネリック並列処理：複数の同種データの並列変換
+    public static <T, R> ProcessingResult<List<R>> parallelTransform(
+            List<T> input,
+            Function<T, R> transformer) {
+        
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            if (input == null) {
+                return new ProcessingResult<>("入力リストがnullです");
+            }
+            
+            List<R> result = input.parallelStream()
+                                  .map(transformer)
+                                  .collect(Collectors.toList());
+            
+            long endTime = System.currentTimeMillis();
+            return new ProcessingResult<>(result, endTime - startTime);
+            
+        } catch (Exception e) {
+            return new ProcessingResult<>("並列変換中にエラーが発生しました: " + e.getMessage());
+        }
+    }
+    
+    // 型安全なキャッシュシステム
+    private static Map<String, Object> cache = new ConcurrentHashMap<>();
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> getFromCache(String key, Class<T> type) {
+        Object value = cache.get(key);
+        if (value != null && type.isInstance(value)) {
+            return Optional.of((T) value);
+        }
+        return Optional.empty();
+    }
+    
+    public static <T> void putToCache(String key, T value) {
+        cache.put(key, value);
+    }
+    
+    // ジェネリック検証システム
+    public static <T> boolean validate(T object, Predicate<T> validator, String validationName) {
+        try {
+            boolean isValid = validator.test(object);
+            System.out.println(validationName + ": " + (isValid ? "✓ 有効" : "✗ 無効"));
+            return isValid;
+        } catch (Exception e) {
+            System.out.println(validationName + ": ✗ エラー - " + e.getMessage());
+            return false;
+        }
+    }
+    
+    // ジェネリックメソッドのデモンストレーション
+    public static void main(String[] args) {
+        System.out.println("=== データ処理ユーティリティシステム - ジェネリックメソッド活用例 ===");
+        
+        // 基本的な配列操作
+        demonstrateBasicOperations();
+        
+        // 数値データの処理
+        demonstrateNumericProcessing();
+        
+        // 文字列データの処理
+        demonstrateStringProcessing();
+        
+        // 複合データの処理
+        demonstrateComplexDataProcessing();
+        
+        // キャッシュシステムのテスト
+        demonstrateCacheSystem();
+        
+        // 検証システムのテスト
+        demonstrateValidationSystem();
+    }
+    
+    private static void demonstrateBasicOperations() {
+        System.out.println("\n=== 基本的な配列操作 ===");
+        
+        String[] fruits = {"apple", "banana", "cherry", "date"};
+        System.out.println("交換前: " + Arrays.toString(fruits));
+        safeSwap(fruits, 0, 2);
+        System.out.println("交換後: " + Arrays.toString(fruits));
+        
+        Integer[] numbers = {5, 2, 8, 1, 9};
+        System.out.println("数値配列の最大値: " + findMax(Arrays.asList(numbers)));
+        System.out.println("数値配列の最小値: " + findMin(Arrays.asList(numbers)));
+    }
+    
+    private static void demonstrateNumericProcessing() {
+        System.out.println("\n=== 数値データの処理 ===");
+        
+        List<Integer> scores = Arrays.asList(85, 92, 78, 96, 87, 89, 94, 82);
+        
+        // フィルタリングと変換：合格点以上の点数を文字列に変換
+        ProcessingResult<List<String>> passedScores = processWithFilter(
+            scores,
+            score -> score >= 85,
+            score -> score + "点(合格)"
+        );
+        System.out.println("合格スコア: " + passedScores.getResult());
+        System.out.println("処理時間: " + passedScores.getProcessingTimeMs() + "ms");
+        
+        // 集約処理：平均点の計算
+        ProcessingResult<Double> averageResult = aggregate(
+            scores,
+            0.0,
+            Double::sum,
+            Integer::doubleValue
+        );
+        if (averageResult.isSuccess()) {
+            double average = averageResult.getResult() / scores.size();
+            System.out.println("平均点: " + String.format("%.2f", average));
+        }
+    }
+    
+    private static void demonstrateStringProcessing() {
+        System.out.println("\n=== 文字列データの処理 ===");
+        
+        List<String> words = Arrays.asList("Java", "Python", "JavaScript", "Go", "Rust", "Kotlin");
+        
+        // 並列変換：文字列の長さ計算
+        ProcessingResult<List<Integer>> lengthResult = parallelTransform(
+            words,
+            String::length
+        );
+        System.out.println("文字列長: " + lengthResult.getResult());
+        System.out.println("並列処理時間: " + lengthResult.getProcessingTimeMs() + "ms");
+        
+        // フィルタリング：5文字以上の言語名
+        ProcessingResult<List<String>> longNames = processWithFilter(
+            words,
+            word -> word.length() >= 5,
+            String::toUpperCase
+        );
+        System.out.println("5文字以上の言語名(大文字): " + longNames.getResult());
+    }
+    
+    private static void demonstrateComplexDataProcessing() {
+        System.out.println("\n=== 複合データの処理 ===");
+        
+        Map<String, Integer> productPrices = Map.of(
+            "ノートパソコン", 89800,
+            "マウス", 2800,
+            "キーボード", 8500,
+            "モニター", 35200
+        );
+        
+        // キー・値ペアのマッピング：商品情報の文字列化
+        List<String> productInfo = mapPairs(
+            productPrices,
+            (product, price) -> String.format("%s: %,d円", product, price)
+        );
+        
+        System.out.println("商品情報:");
+        productInfo.forEach(info -> System.out.println("  " + info));
+    }
+    
+    private static void demonstrateCacheSystem() {
+        System.out.println("\n=== キャッシュシステムのテスト ===");
+        
+        // 異なる型のデータをキャッシュ
+        putToCache("user_count", 1500);
+        putToCache("app_version", "2.1.0");
+        putToCache("last_update", LocalDateTime.now());
+        
+        // 型安全な取得
+        Optional<Integer> userCount = getFromCache("user_count", Integer.class);
+        Optional<String> version = getFromCache("app_version", String.class);
+        Optional<LocalDateTime> lastUpdate = getFromCache("last_update", LocalDateTime.class);
+        
+        System.out.println("ユーザー数: " + userCount.orElse(0));
+        System.out.println("アプリバージョン: " + version.orElse("不明"));
+        System.out.println("最終更新: " + lastUpdate.orElse(LocalDateTime.MIN));
+        
+        // 型不一致の安全な処理
+        Optional<String> wrongType = getFromCache("user_count", String.class);
+        System.out.println("型不一致アクセス: " + wrongType.orElse("取得失敗"));
+    }
+    
+    private static void demonstrateValidationSystem() {
+        System.out.println("\n=== 検証システムのテスト ===");
+        
+        String email = "user@example.com";
+        Integer age = 25;
+        List<String> tags = Arrays.asList("java", "spring", "database");
+        
+        // 各種検証の実行
+        validate(email, e -> e.contains("@"), "メール形式チェック");
+        validate(age, a -> a >= 18, "年齢チェック");
+        validate(tags, t -> !t.isEmpty(), "タグ存在チェック");
+        validate(tags, t -> t.size() <= 5, "タグ数制限チェック");
     }
 }
+```
+
+**このプログラムから学ぶ重要なジェネリックメソッドの概念：**
+
+1. **メソッドレベルの型パラメータ**：`<T>`をメソッド宣言に追加することで、そのメソッドでのみ有効な型パラメータを定義できます。
+
+2. **境界付き型パラメータ**：`<T extends Comparable<T>>`により、特定のインターフェイスを実装した型のみを受け入れる制約を設けられます。
+
+3. **複数型パラメータの活用**：`<K, V, R>`のように複数の型を独立して処理できる柔軟なメソッドを作成できます。
+
+4. **高階関数との組み合わせ**：Function、Predicate、BinaryOperatorなどと組み合わせることで、非常に柔軟な処理システムを構築できます。
+
+5. **型安全なキャスト**：ジェネリクスにより、実行時の型チェックとキャストを安全に行えます。
+
+**実用的な応用場面：**
+
+- **データ処理フレームワーク**: 様々な型のデータを統一的に処理するパイプライン
+- **ユーティリティライブラリ**: 型に依存しない汎用的な処理機能
+- **API設計**: 型安全で柔軟なインターフェイスの提供
+- **関数型プログラミング**: Stream APIや関数型インターフェイスとの統合
 ```
 
 ### ジェネリックメソッドの型推論

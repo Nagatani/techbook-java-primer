@@ -114,78 +114,652 @@ BinaryOperator<Integer> operation = (a, b) -> a + b;
 int result = operation.apply(5, 3);
 ```
 
-### 従来の匿名クラス vs ラムダ式
+### 従来の匿名クラス vs ラムダ式：実践的なイベント処理システム
+
+以下の包括的な例では、イベント処理システムを通じて、従来の匿名クラスからラムダ式への進化と、その実用的な利点を学習します：
 
 ```java
 import java.util.*;
+import java.util.function.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
-public class LambdaComparison {
-    public static void main(String[] args) {
-        List<String> names = Arrays.asList("田中", "佐藤", "鈴木", "高橋");
+/**
+ * イベント処理システムにおけるラムダ式活用例
+ * 従来の匿名クラスと比較した、関数型プログラミングの利点を実証
+ */
+
+// イベントデータクラス
+class Event {
+    private String eventId;
+    private String eventType;
+    private String message;
+    private LocalDateTime timestamp;
+    private int severity; // 1-5 (1:情報, 5:緊急)
+    
+    public Event(String eventId, String eventType, String message, int severity) {
+        this.eventId = eventId;
+        this.eventType = eventType;
+        this.message = message;
+        this.severity = severity;
+        this.timestamp = LocalDateTime.now();
+    }
+    
+    // ゲッターメソッド
+    public String getEventId() { return eventId; }
+    public String getEventType() { return eventType; }
+    public String getMessage() { return message; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public int getSeverity() { return severity; }
+    
+    @Override
+    public String toString() {
+        return String.format("[%s] %s: %s (重要度:%d) - %s", 
+            eventType, eventId, message, severity,
+            timestamp.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+    }
+}
+
+// イベントハンドラーインターフェイス
+@FunctionalInterface
+interface EventHandler {
+    void handle(Event event);
+}
+
+// イベント処理システム
+public class EventProcessingSystem {
+    private List<Event> events = new ArrayList<>();
+    private List<EventHandler> handlers = new ArrayList<>();
+    
+    public void addEvent(Event event) {
+        events.add(event);
+        System.out.println("イベント追加: " + event);
+        notifyHandlers(event);
+    }
+    
+    public void addHandler(EventHandler handler) {
+        handlers.add(handler);
+    }
+    
+    private void notifyHandlers(Event event) {
+        handlers.forEach(handler -> handler.handle(event));
+    }
+    
+    // 従来の匿名クラスを使った処理例
+    public void demonstrateAnonymousClasses() {
+        System.out.println("\n=== 従来の匿名クラス使用例 ===");
         
-        // 従来の匿名クラス
-        Collections.sort(names, new Comparator<String>() {
+        // 重要度フィルタ（匿名クラス）
+        List<Event> criticalEvents = events.stream()
+            .filter(new Predicate<Event>() {
+                @Override
+                public boolean test(Event event) {
+                    return event.getSeverity() >= 4;
+                }
+            })
+            .collect(Collectors.toList());
+        
+        // イベント変換（匿名クラス）
+        List<String> eventSummaries = events.stream()
+            .map(new Function<Event, String>() {
+                @Override
+                public String apply(Event event) {
+                    return String.format("%s: %s", event.getEventType(), event.getMessage());
+                }
+            })
+            .collect(Collectors.toList());
+        
+        // ソート（匿名クラス）
+        List<Event> sortedEvents = new ArrayList<>(events);
+        sortedEvents.sort(new Comparator<Event>() {
             @Override
-            public int compare(String s1, String s2) {
-                return s1.compareTo(s2);
+            public int compare(Event e1, Event e2) {
+                return Integer.compare(e2.getSeverity(), e1.getSeverity());
             }
         });
         
-        // ラムダ式
-        Collections.sort(names, (s1, s2) -> s1.compareTo(s2));
+        System.out.println("重要イベント数（匿名クラス）: " + criticalEvents.size());
+        System.out.println("サマリー数（匿名クラス）: " + eventSummaries.size());
+        System.out.println("ソート済みイベント数（匿名クラス）: " + sortedEvents.size());
+    }
+    
+    // ラムダ式を使った処理例（同じ処理をより簡潔に）
+    public void demonstrateLambdaExpressions() {
+        System.out.println("\n=== ラムダ式使用例 ===");
         
-        // メソッド参照（さらに簡潔）
-        Collections.sort(names, String::compareTo);
+        // 重要度フィルタ（ラムダ式）
+        List<Event> criticalEvents = events.stream()
+            .filter(event -> event.getSeverity() >= 4)
+            .collect(Collectors.toList());
+        
+        // イベント変換（ラムダ式）
+        List<String> eventSummaries = events.stream()
+            .map(event -> String.format("%s: %s", event.getEventType(), event.getMessage()))
+            .collect(Collectors.toList());
+        
+        // ソート（ラムダ式）
+        List<Event> sortedEvents = events.stream()
+            .sorted((e1, e2) -> Integer.compare(e2.getSeverity(), e1.getSeverity()))
+            .collect(Collectors.toList());
+        
+        System.out.println("重要イベント数（ラムダ式）: " + criticalEvents.size());
+        System.out.println("サマリー数（ラムダ式）: " + eventSummaries.size());
+        System.out.println("ソート済みイベント数（ラムダ式）: " + sortedEvents.size());
+    }
+    
+    // メソッド参照を使った処理例（さらに簡潔）
+    public void demonstrateMethodReferences() {
+        System.out.println("\n=== メソッド参照使用例 ===");
+        
+        // イベントタイプ別グループ化
+        Map<String, List<Event>> eventsByType = events.stream()
+            .collect(Collectors.groupingBy(Event::getEventType));
+        
+        // 重要度別カウント
+        Map<Integer, Long> severityCounts = events.stream()
+            .collect(Collectors.groupingBy(Event::getSeverity, Collectors.counting()));
+        
+        // 全イベントの表示
+        System.out.println("全イベント一覧:");
+        events.forEach(System.out::println);
+        
+        System.out.println("\nイベントタイプ別グループ:");
+        eventsByType.forEach((type, eventList) -> 
+            System.out.println(type + ": " + eventList.size() + "件"));
+        
+        System.out.println("\n重要度別カウント:");
+        severityCounts.forEach((severity, count) -> 
+            System.out.println("重要度" + severity + ": " + count + "件"));
+    }
+    
+    // 関数型プログラミングの合成例
+    public void demonstrateFunctionalComposition() {
+        System.out.println("\n=== 関数型プログラミング合成例 ===");
+        
+        // 複数の述語の組み合わせ
+        Predicate<Event> isHighSeverity = event -> event.getSeverity() >= 4;
+        Predicate<Event> isSystemEvent = event -> event.getEventType().equals("SYSTEM");
+        Predicate<Event> isRecentEvent = event -> 
+            event.getTimestamp().isAfter(LocalDateTime.now().minusMinutes(5));
+        
+        // 述語の合成
+        Predicate<Event> criticalSystemEvent = isHighSeverity.and(isSystemEvent);
+        Predicate<Event> importantRecentEvent = isHighSeverity.and(isRecentEvent);
+        
+        // 関数の合成
+        Function<Event, String> eventToType = Event::getEventType;
+        Function<String, String> typeToCategory = type -> 
+            type.startsWith("SYS") ? "システム" : "アプリケーション";
+        Function<Event, String> eventToCategory = eventToType.andThen(typeToCategory);
+        
+        // 合成された述語と関数の使用
+        long criticalSystemCount = events.stream()
+            .filter(criticalSystemEvent)
+            .count();
+        
+        List<String> eventCategories = events.stream()
+            .map(eventToCategory)
+            .distinct()
+            .collect(Collectors.toList());
+        
+        System.out.println("重要なシステムイベント数: " + criticalSystemCount);
+        System.out.println("イベントカテゴリ: " + eventCategories);
+    }
+    
+    public static void main(String[] args) {
+        EventProcessingSystem system = new EventProcessingSystem();
+        
+        // イベントハンドラーの登録（ラムダ式使用）
+        system.addHandler(event -> {
+            if (event.getSeverity() >= 4) {
+                System.out.println("🚨 重要アラート: " + event.getMessage());
+            }
+        });
+        
+        system.addHandler(event -> {
+            if (event.getEventType().equals("SECURITY")) {
+                System.out.println("🔒 セキュリティ監査ログに記録: " + event.getEventId());
+            }
+        });
+        
+        // サンプルイベントの追加
+        system.addEvent(new Event("EVT001", "SYSTEM", "サーバー起動完了", 2));
+        system.addEvent(new Event("EVT002", "SECURITY", "不正アクセス試行検出", 5));
+        system.addEvent(new Event("EVT003", "APPLICATION", "ユーザーログイン", 1));
+        system.addEvent(new Event("EVT004", "SYSTEM", "メモリ使用量警告", 4));
+        system.addEvent(new Event("EVT005", "SECURITY", "権限昇格試行", 5));
+        system.addEvent(new Event("EVT006", "APPLICATION", "データ処理完了", 2));
+        
+        // 各種処理方法のデモンストレーション
+        system.demonstrateAnonymousClasses();
+        system.demonstrateLambdaExpressions();
+        system.demonstrateMethodReferences();
+        system.demonstrateFunctionalComposition();
     }
 }
 ```
 
-## 9.2 関数型インタフェース
+**このプログラムから学ぶ重要なラムダ式の概念：**
 
-### 標準の関数型インタフェース
+1. **簡潔性の向上**：匿名クラスと比較して、ラムダ式は大幅にコード量を削減し、可読性を向上させます。
+
+2. **関数型思考**：データの変換と処理を関数の組み合わせとして表現できます。
+
+3. **合成可能性**：述語（Predicate）や関数（Function）を組み合わせて、より複雑な処理を構築できます。
+
+4. **宣言的プログラミング**：「何をするか」に集中でき、「どのようにするか」の詳細は言語に任せられます。
+
+5. **関数をファーストクラスとして扱える**：関数を変数に代入し、引数として渡し、戻り値として返すことができます。
+
+## 9.2 関数型インタフェース：データ処理パイプラインの構築
+
+### 標準の関数型インタフェースの実践的活用：オンライン注文処理システム
+
+以下の包括的な例では、オンライン注文処理システムを通じて、各種関数型インターフェイスの実用的な活用方法と、それらを組み合わせた強力なデータ処理パイプラインを学習します：
 
 ```java
+import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
-public class FunctionalInterfaceExample {
+/**
+ * オンライン注文処理システムにおける関数型インターフェイス活用例
+ * 標準関数型インターフェイスの実践的使用と組み合わせパターンを実証
+ */
+
+// 商品データクラス
+class Product {
+    private String productId;
+    private String name;
+    private BigDecimal price;
+    private String category;
+    private int stockQuantity;
+    
+    public Product(String productId, String name, BigDecimal price, String category, int stockQuantity) {
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.stockQuantity = stockQuantity;
+    }
+    
+    // ゲッターメソッド
+    public String getProductId() { return productId; }
+    public String getName() { return name; }
+    public BigDecimal getPrice() { return price; }
+    public String getCategory() { return category; }
+    public int getStockQuantity() { return stockQuantity; }
+    
+    public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
+    
+    @Override
+    public String toString() {
+        return String.format("%s: %s (¥%s)", productId, name, price);
+    }
+}
+
+// 注文アイテムクラス
+class OrderItem {
+    private Product product;
+    private int quantity;
+    
+    public OrderItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+    
+    public Product getProduct() { return product; }
+    public int getQuantity() { return quantity; }
+    
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s x%d = ¥%s", product.getName(), quantity, getTotalPrice());
+    }
+}
+
+// 注文クラス
+class Order {
+    private String orderId;
+    private String customerId;
+    private List<OrderItem> items;
+    private LocalDateTime orderTime;
+    private String status;
+    
+    public Order(String orderId, String customerId) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.items = new ArrayList<>();
+        this.orderTime = LocalDateTime.now();
+        this.status = "PENDING";
+    }
+    
+    public void addItem(OrderItem item) { items.add(item); }
+    public String getOrderId() { return orderId; }
+    public String getCustomerId() { return customerId; }
+    public List<OrderItem> getItems() { return new ArrayList<>(items); }
+    public LocalDateTime getOrderTime() { return orderTime; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    
+    public BigDecimal getTotalAmount() {
+        return items.stream()
+                   .map(OrderItem::getTotalPrice)
+                   .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Order %s (%s): ¥%s - %s", orderId, customerId, getTotalAmount(), status);
+    }
+}
+
+public class OrderProcessingSystem {
+    private List<Product> products = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
+    
+    public OrderProcessingSystem() {
+        initializeProducts();
+    }
+    
+    private void initializeProducts() {
+        products.add(new Product("P001", "ノートパソコン", new BigDecimal("89800"), "電子機器", 10));
+        products.add(new Product("P002", "マウス", new BigDecimal("2800"), "電子機器", 50));
+        products.add(new Product("P003", "キーボード", new BigDecimal("8500"), "電子機器", 30));
+        products.add(new Product("P004", "モニター", new BigDecimal("35200"), "電子機器", 15));
+        products.add(new Product("P005", "本：Java入門", new BigDecimal("3200"), "書籍", 25));
+        products.add(new Product("P006", "本：データ構造", new BigDecimal("4800"), "書籍", 20));
+    }
+    
+    // Predicate<T>の活用例：フィルタリング処理
+    public void demonstratePredicates() {
+        System.out.println("=== Predicate<T>の活用例 ===");
+        
+        // 基本的な述語
+        Predicate<Product> isExpensive = product -> product.getPrice().compareTo(new BigDecimal("10000")) > 0;
+        Predicate<Product> isElectronics = product -> "電子機器".equals(product.getCategory());
+        Predicate<Product> isInStock = product -> product.getStockQuantity() > 0;
+        Predicate<Product> isLowStock = product -> product.getStockQuantity() < 20;
+        
+        // 述語の合成
+        Predicate<Product> expensiveElectronics = isExpensive.and(isElectronics);
+        Predicate<Product> availableOrBooks = isInStock.or(product -> "書籍".equals(product.getCategory()));
+        Predicate<Product> notExpensive = isExpensive.negate();
+        
+        // フィルタリングの実行
+        List<Product> expensiveElectronicProducts = products.stream()
+            .filter(expensiveElectronics)
+            .collect(Collectors.toList());
+        
+        List<Product> lowStockProducts = products.stream()
+            .filter(isLowStock)
+            .collect(Collectors.toList());
+        
+        System.out.println("高価な電子機器: " + expensiveElectronicProducts.size() + "件");
+        System.out.println("在庫少製品: " + lowStockProducts.size() + "件");
+        
+        // 動的な述語生成
+        Predicate<Product> createPriceFilter(BigDecimal minPrice, BigDecimal maxPrice) {
+            return product -> product.getPrice().compareTo(minPrice) >= 0 
+                           && product.getPrice().compareTo(maxPrice) <= 0;
+        }
+        
+        Predicate<Product> midRangeProducts = createPriceFilter(new BigDecimal("5000"), new BigDecimal("50000"));
+        long midRangeCount = products.stream().filter(midRangeProducts).count();
+        System.out.println("中価格帯製品: " + midRangeCount + "件");
+    }
+    
+    // Function<T, R>の活用例：データ変換処理
+    public void demonstrateFunctions() {
+        System.out.println("\n=== Function<T, R>の活用例 ===");
+        
+        // 基本的な関数
+        Function<Product, String> productToName = Product::getName;
+        Function<Product, BigDecimal> productToPrice = Product::getPrice;
+        Function<Product, String> productToDescription = product -> 
+            String.format("%s (¥%s)", product.getName(), product.getPrice());
+        
+        // 関数の合成
+        Function<Product, String> productToPriceString = productToPrice.andThen(price -> "¥" + price);
+        Function<String, String> nameToUpperCase = String::toUpperCase;
+        Function<Product, String> productToUpperName = productToName.andThen(nameToUpperCase);
+        
+        // データ変換の実行
+        List<String> productNames = products.stream()
+            .map(productToName)
+            .collect(Collectors.toList());
+        
+        List<String> productDescriptions = products.stream()
+            .map(productToDescription)
+            .collect(Collectors.toList());
+        
+        Map<String, List<String>> productsByCategory = products.stream()
+            .collect(Collectors.groupingBy(
+                Product::getCategory,
+                Collectors.mapping(productToName, Collectors.toList())
+            ));
+        
+        System.out.println("製品名一覧: " + productNames.size() + "件");
+        System.out.println("カテゴリ別製品:");
+        productsByCategory.forEach((category, names) -> 
+            System.out.println("  " + category + ": " + names));
+        
+        // 複雑な変換チェーン
+        Function<List<Product>, Map<String, BigDecimal>> calculateCategoryAverages = 
+            productList -> productList.stream()
+                .collect(Collectors.groupingBy(
+                    Product::getCategory,
+                    Collectors.averagingDouble(p -> p.getPrice().doubleValue())
+                ))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> BigDecimal.valueOf(entry.getValue()).setScale(2, RoundingMode.HALF_UP)
+                ));
+        
+        Map<String, BigDecimal> categoryAverages = calculateCategoryAverages.apply(products);
+        System.out.println("カテゴリ別平均価格: " + categoryAverages);
+    }
+    
+    // Consumer<T>の活用例：副作用のある処理
+    public void demonstrateConsumers() {
+        System.out.println("\n=== Consumer<T>の活用例 ===");
+        
+        // 基本的なコンシューマー
+        Consumer<Product> printProduct = product -> System.out.println("製品: " + product);
+        Consumer<Product> updateStock = product -> {
+            if (product.getStockQuantity() < 10) {
+                product.setStockQuantity(product.getStockQuantity() + 50);
+                System.out.println("在庫補充: " + product.getName() + " -> " + product.getStockQuantity());
+            }
+        };
+        Consumer<Order> processOrder = order -> {
+            order.setStatus("PROCESSING");
+            System.out.println("注文処理開始: " + order.getOrderId());
+        };
+        
+        // コンシューマーの合成
+        Consumer<Product> printAndUpdate = printProduct.andThen(updateStock);
+        
+        // 処理の実行
+        System.out.println("低在庫製品の補充:");
+        products.stream()
+            .filter(product -> product.getStockQuantity() < 20)
+            .forEach(printAndUpdate);
+        
+        // バッチ処理用のコンシューマー
+        Consumer<List<Order>> batchProcessOrders = orderList -> {
+            System.out.println("バッチ処理開始: " + orderList.size() + "件の注文");
+            orderList.forEach(processOrder);
+            System.out.println("バッチ処理完了");
+        };
+        
+        batchProcessOrders.accept(orders);
+    }
+    
+    // Supplier<T>の活用例：遅延評価とファクトリーパターン
+    public void demonstrateSuppliers() {
+        System.out.println("\n=== Supplier<T>の活用例 ===");
+        
+        // 基本的なサプライヤー
+        Supplier<String> orderIdGenerator = () -> "ORD" + System.currentTimeMillis();
+        Supplier<LocalDateTime> currentTime = LocalDateTime::now;
+        Supplier<BigDecimal> randomDiscount = () -> 
+            BigDecimal.valueOf(Math.random() * 0.2).setScale(2, RoundingMode.HALF_UP);
+        
+        // 設定可能なサプライヤー
+        Supplier<Product> createRandomProduct = () -> {
+            String[] categories = {"電子機器", "書籍", "衣料品"};
+            String category = categories[(int)(Math.random() * categories.length)];
+            return new Product(
+                "P" + System.currentTimeMillis(),
+                "ランダム製品" + (int)(Math.random() * 1000),
+                BigDecimal.valueOf(1000 + Math.random() * 49000).setScale(0, RoundingMode.HALF_UP),
+                category,
+                (int)(Math.random() * 100)
+            );
+        };
+        
+        // 遅延評価の活用
+        Supplier<List<Product>> expensiveProductsSupplier = () -> 
+            products.stream()
+                .filter(p -> p.getPrice().compareTo(new BigDecimal("10000")) > 0)
+                .collect(Collectors.toList());
+        
+        // 実行
+        System.out.println("新しい注文ID: " + orderIdGenerator.get());
+        System.out.println("現在時刻: " + currentTime.get());
+        System.out.println("ランダム割引: " + randomDiscount.get() + "%");
+        
+        Product randomProduct = createRandomProduct.get();
+        System.out.println("ランダム製品: " + randomProduct);
+        
+        // 必要な時まで計算を遅延
+        System.out.println("高価格製品の遅延評価:");
+        if (Math.random() > 0.5) { // 条件によって実行
+            List<Product> expensiveProducts = expensiveProductsSupplier.get();
+            System.out.println("高価格製品数: " + expensiveProducts.size());
+        }
+    }
+    
+    // BinaryOperator<T>とUnaryOperator<T>の活用例
+    public void demonstrateOperators() {
+        System.out.println("\n=== Operator系の活用例 ===");
+        
+        // BinaryOperator<T>の例
+        BinaryOperator<BigDecimal> addPrices = BigDecimal::add;
+        BinaryOperator<BigDecimal> multiplyPrices = BigDecimal::multiply;
+        BinaryOperator<String> combineNames = (s1, s2) -> s1 + " & " + s2;
+        BinaryOperator<Product> selectCheaper = (p1, p2) -> 
+            p1.getPrice().compareTo(p2.getPrice()) <= 0 ? p1 : p2;
+        
+        // UnaryOperator<T>の例
+        UnaryOperator<BigDecimal> applyTax = price -> price.multiply(new BigDecimal("1.10"));
+        UnaryOperator<BigDecimal> applyDiscount = price -> price.multiply(new BigDecimal("0.9"));
+        UnaryOperator<String> formatProductName = name -> "[商品] " + name;
+        
+        // オペレーターの合成
+        UnaryOperator<BigDecimal> applyTaxAndDiscount = applyTax.andThen(applyDiscount);
+        
+        // 実行例
+        BigDecimal price1 = new BigDecimal("10000");
+        BigDecimal price2 = new BigDecimal("15000");
+        
+        System.out.println("価格の合計: " + addPrices.apply(price1, price2));
+        System.out.println("税込価格: " + applyTax.apply(price1));
+        System.out.println("税込割引価格: " + applyTaxAndDiscount.apply(price1));
+        
+        // 注文の総額計算
+        if (!orders.isEmpty()) {
+            Optional<BigDecimal> totalOrderValue = orders.stream()
+                .map(Order::getTotalAmount)
+                .reduce(addPrices);
+            totalOrderValue.ifPresent(total -> 
+                System.out.println("全注文の総額: " + total));
+        }
+        
+        // 製品名の整形
+        List<String> formattedNames = products.stream()
+            .map(Product::getName)
+            .map(formatProductName)
+            .collect(Collectors.toList());
+        System.out.println("整形済み製品名: " + formattedNames.size() + "件");
+    }
+    
+    // 複合的な処理パイプライン例
+    public void demonstrateComplexPipeline() {
+        System.out.println("\n=== 複合的な処理パイプライン ===");
+        
+        // サンプル注文の作成
+        Order order1 = new Order("ORD001", "CUST001");
+        order1.addItem(new OrderItem(products.get(0), 1)); // ノートパソコン
+        order1.addItem(new OrderItem(products.get(1), 2)); // マウス x2
+        
+        Order order2 = new Order("ORD002", "CUST002");
+        order2.addItem(new OrderItem(products.get(4), 3)); // 本 x3
+        
+        orders.add(order1);
+        orders.add(order2);
+        
+        // 複合パイプライン：高額注文の特別処理
+        Predicate<Order> isHighValueOrder = order -> order.getTotalAmount().compareTo(new BigDecimal("50000")) > 0;
+        Function<Order, String> createVipMessage = order -> 
+            String.format("VIPお客様 %s への特別サービス適用 (注文額: %s)", 
+                         order.getCustomerId(), order.getTotalAmount());
+        Consumer<String> sendNotification = message -> System.out.println("📧 " + message);
+        
+        // パイプラインの実行
+        orders.stream()
+            .filter(isHighValueOrder)
+            .map(createVipMessage)
+            .forEach(sendNotification);
+        
+        // 複合統計処理
+        Map<String, Object> orderStatistics = orders.stream()
+            .collect(Collectors.teeing(
+                Collectors.summingDouble(order -> order.getTotalAmount().doubleValue()),
+                Collectors.averagingDouble(order -> order.getTotalAmount().doubleValue()),
+                (sum, avg) -> Map.of(
+                    "totalValue", BigDecimal.valueOf(sum),
+                    "averageValue", BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP),
+                    "orderCount", orders.size()
+                )
+            ));
+        
+        System.out.println("注文統計: " + orderStatistics);
+    }
+    
     public static void main(String[] args) {
-        // Predicate<T>: T -> boolean
-        Predicate<String> isEmpty = s -> s.isEmpty();
-        Predicate<Integer> isEven = n -> n % 2 == 0;
+        OrderProcessingSystem system = new OrderProcessingSystem();
         
-        System.out.println(isEmpty.test(""));      // true
-        System.out.println(isEven.test(4));       // true
-        
-        // Function<T, R>: T -> R
-        Function<String, Integer> stringLength = s -> s.length();
-        Function<Integer, String> intToString = n -> String.valueOf(n);
-        
-        System.out.println(stringLength.apply("Hello"));  // 5
-        System.out.println(intToString.apply(123));        // "123"
-        
-        // Consumer<T>: T -> void
-        Consumer<String> printer = s -> System.out.println(s);
-        Consumer<Integer> doubler = n -> System.out.println(n * 2);
-        
-        printer.accept("Hello World");
-        doubler.accept(5);  // 10
-        
-        // Supplier<T>: () -> T
-        Supplier<Double> randomValue = () -> Math.random();
-        Supplier<String> greeting = () -> "こんにちは";
-        
-        System.out.println(randomValue.get());
-        System.out.println(greeting.get());
-        
-        // BinaryOperator<T>: (T, T) -> T
-        BinaryOperator<Integer> add = (a, b) -> a + b;
-        BinaryOperator<String> concat = (s1, s2) -> s1 + s2;
-        
-        System.out.println(add.apply(10, 5));        // 15
-        System.out.println(concat.apply("Java", " 8")); // "Java 8"
+        system.demonstratePredicates();
+        system.demonstrateFunctions();
+        system.demonstrateConsumers();
+        system.demonstrateSuppliers();
+        system.demonstrateOperators();
+        system.demonstrateComplexPipeline();
     }
 }
 ```
+
+**このプログラムから学ぶ重要な関数型インターフェイスの概念：**
+
+1. **Predicate<T>**: 条件判定とフィルタリングの強力なツール。`and()`, `or()`, `negate()`による論理演算で複雑な条件を構築できます。
+
+2. **Function<T, R>**: データ変換の中核。`andThen()`, `compose()`によるチェーン処理で複雑な変換パイプラインを構築できます。
+
+3. **Consumer<T>**: 副作用のある処理（出力、状態変更）に特化。`andThen()`による処理の連鎖が可能です。
+
+4. **Supplier<T>**: 遅延評価とファクトリーパターンに最適。必要な時まで計算を遅延できます。
+
+5. **Operator系**: 同一型での演算に特化した特殊なFunction。数値計算や文字列処理で威力を発揮します。
 
 ### カスタム関数型インタフェース
 
