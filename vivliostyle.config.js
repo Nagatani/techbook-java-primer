@@ -3,6 +3,7 @@ module.exports = {
   author: 'Hidehiro Nagatani',
   language: 'ja',
   entry: [
+    'cover.md',
     'chapter00.md',
     'chapter01.md',
     'chapter02.md',
@@ -19,11 +20,16 @@ module.exports = {
     'chapter13.md',
     'chapter14.md',
     'chapter15.md',
+    'glossary.md',
+    'colophon.md',
   ],
   entryContext: './manuscripts',
   output: './output/techbook-java-primer.pdf',
   theme: '@vivliostyle/theme-techbook',
   workspaceDir: '.vivliostyle',
   toc: true,
-  style: './custom-styles.css',
+  style: [
+    '@vivliostyle/theme-techbook',
+    './custom-styles.css'
+  ],
 };
