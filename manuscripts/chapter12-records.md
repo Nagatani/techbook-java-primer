@@ -1,0 +1,123 @@
+# 第12章 Recordによる不変なデータクラス
+
+## 🎯総合演習プロジェクトへのステップ
+
+本章で学ぶ`Record`は、**総合演習プロジェクト「ToDoリストアプリケーション」** において、タスクのデータを表現する`Task`クラスを、より安全で簡潔に定義するために活用できます。
+
+- **`Task`クラスの簡素化**: `name`, `dueDate`, `isCompleted`といったデータを保持するだけの`Task`クラスを、従来の冗長な書き方ではなく、`Record`を使って1行で定義できます。
+  ```java
+  // 従来のクラス定義
+  public class Task {
+      private final String name;
+      // ... getter, equals, hashCode, toString ...
+  }
+
+  // Recordによる定義
+  public record Task(String name, LocalDate dueDate, boolean isCompleted) {}
+  ```
+- **不変性の保証**: `Record`で定義したクラスは、フィールドが自動的に`final`となり、一度作成すると変更できない「不変（イミュータブル）」なオブジェクトになります。これにより、意図しないデータの上書きを防ぎ、プログラムの安全性を高めます。
+
+## 12.1 Recordとは？
+
+**Record**は、Java 16で正式���導入された、**不変（immutable）なデータを保持するため**の、簡潔なクラスを定義するための機能です。
+
+これまで、データを保持するためだけのクラス（データクラス）を作るには、多くの定型的なコード（ボイラープレートコード）が必要でした。
+
+-   `private final`なフィールド
+-   全フィールドを初期化するコンストラクタ
+-   全フィールドのゲッターメソッド
+-   `equals()`, `hashCode()`, `toString()` メソッドのオーバーライド
+
+`Record`は、これらの定型コードを**コンパイラが自動的に生成**してくれます。
+
+### 基本的な構文
+
+```java
+public record Person(String name, int age) {}
+```
+
+これだけで、以下をすべて定義したのと同じ意味になります。
+
+```java
+// 上記のRecord定義とほぼ等価なクラス
+public final class Person { // finalクラスになる
+    private final String name; // private finalフィールド
+    private final int age;
+
+    public Person(String name, int age) { // コンストラクタ
+        this.name = name;
+        this.age = age;
+    }
+
+    public String name() { return this.name; } // アクセサメソッド（getXXXではない）
+    public int age() { return this.age; }
+
+    @Override
+    public boolean equals(Object o) { /* ... */ }
+
+    @Override
+    public int hashCode() { /* ... */ }
+
+    @Override
+    public String toString() { /* ... */ }
+}
+```
+
+### Recordの主な特徴
+
+1.  **簡潔さ**: ボイラープレートコードを劇的に削減できます。
+2.  **不変性**: フィールドはすべて`final`となり、一度作成したオブジェクトの状態は変更できません。これにより、プログラムの安全性が向上します。
+3.  **明確な意図**: このクラスが「データを保持するためのものである」という意図が明確になります。
+
+## 12.2 Recordの使い方
+
+`Record`の使い方は、通常のクラスとほとんど同じです。
+
+```java
+public class RecordExample {
+    public static void main(String[] args) {
+        // インスタンスの作成
+        Person alice = new Person("Alice", 30);
+        Person bob = new Person("Bob", 40);
+        Person alice2 = new Person("Alice", 30);
+
+        // アクセサメソッドで値を取得（メソッド名はフィールド名と同じ）
+        System.out.println("名前: " + alice.name());
+        System.out.println("年齢: " + alice.age());
+
+        // toString()が自動生成されている
+        System.out.println(alice); // Person[name=Alice, age=30]
+
+        // equals()が全フィールドを比較するように自動生成されている
+        System.out.println("aliceとbobは等しいか？: " + alice.equals(bob));     // false
+        System.out.println("aliceとalice2は等しいか？: " + alice.equals(alice2)); // true
+    }
+}
+```
+
+### コンパクトコンストラクタ
+
+`Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。
+
+```java
+public record PositivePoint(int x, int y) {
+    // コンパクトコンストラクタ
+    public PositivePoint {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("座標は負の値にできません");
+        }
+        // ここで this.x = x; のような代入は不要（自動的に行われる）
+    }
+}
+```
+
+## まとめ
+
+本章では、データを簡潔かつ安全に扱うための`Record`について学びました。
+
+-   **Record**は、不変なデータを保持するクラスを簡潔に定義するための機能です。
+-   コンストラクタ、アクセサメソッド、`equals`, `hashCode`, `toString`が自動的に生成されます。
+-   オブジェクトの**不変性**を保証し、プログラムの安全性を高めます。
+-   データ転送オブジェクト（DTO）や、設定値の保持など、様々な場面で活用できます。
+
+特に、次章以降で学ぶStream APIと組み合わせることで、データ処理を非常に簡潔かつ安全に記述できるようになります。
