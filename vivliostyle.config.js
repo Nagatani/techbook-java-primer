@@ -5,7 +5,6 @@ module.exports = {
   entry: [
     'cover.md',
     'foreword.md',
-    'chapter00.md',
     'chapter01.md',
     'chapter02.md',
     'chapter03.md',
@@ -16,15 +15,19 @@ module.exports = {
     'chapter08-collections.md',
     'chapter09-generics.md',
     'chapter10-advanced-collections.md',
+    'chapter11-lambda.md',
+    'chapter12-records.md',
+    'chapter13-enum.md',
+    'chapter19-exceptions.md', // chapter14 in plan
+    'chapter14-file-io.md', // chapter15 in plan
+    'chapter20-multithreading.md', // chapter16 in plan
     'chapter11-gui-construction.md',
     'chapter12-gui-event-handling.md',
     'chapter13-advanced-gui.md',
-    'chapter13-enum.md',
-    'chapter14-file-io.md',
     'chapter15-testing.md',
-    'chapter16-testing-and-di.md',
+    'chapter16-documentation.md',
     'chapter17-build-and-deploy.md',
-    'chapter18.md',
+    'appendix-javabeans.md',
     'glossary.md',
     'colophon.md',
   ],
