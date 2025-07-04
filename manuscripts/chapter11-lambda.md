@@ -46,7 +46,7 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、**関数型インターフェイス（Functional Interface）** として扱われます。
 
-**関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけか��どうかをチェックしてくれるため、付けることが推奨されます。
+**関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることが推奨されます。
 
 `ActionListener`や前章の`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
@@ -88,7 +88,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `Consumer<T>` | `void accept(T t)` | T型を受け取り、何も返さない（消費） |
 | `Supplier<T>` | `T get()` | 何も受け取らず、T型を返す（供給） |
 | `UnaryOperator<T>` | `T apply(T t)` | T型を受け取り、同じT型を返す（単項演算） |
-| `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（��項演算） |
+| `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（二項演算） |
 
 ```java
 import java.util.function.*;
@@ -120,7 +120,7 @@ public class StandardFunctionalInterfaces {
 
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
-| **静的��ソッド参照** | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
+| **静的メソッド参照** | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
 | **インスタンスメソッド参照**<br>(特定のインスタンス) | `インスタンス変数::メソッド名` | `s -> System.out.println(s)` |
 | **インスタンスメソッド参照**<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | **コンストラクタ参照** | `クラス名::new` | `() -> new ArrayList<>()` |

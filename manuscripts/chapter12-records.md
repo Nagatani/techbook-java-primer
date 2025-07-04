@@ -49,7 +49,7 @@ public final class Person { // finalクラスになる
         this.age = age;
     }
 
-    public String name() { return this.name; } // アクセサメソッド（getXXX���はない）
+    public String name() { return this.name; } // アクセサメソッド（getXXXではない）
     public int age() { return this.age; }
 
     @Override
