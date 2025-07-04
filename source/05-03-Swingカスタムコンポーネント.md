@@ -89,7 +89,7 @@ public class ConditionalColorLabel extends JLabel {
     @Override
     public void setText(String text) {
         super.setText(text); // まず親クラスのsetTextメソッドを呼び出し、テキストを実際に設定する
-        updateTextColorBasedOnContent(text); // テキストの内容に基づいて文字色を更新する
+        updateTextColorBasedOnContent(text); // テキストの内容にもとづいて文字色を更新する
     }
 
     private void updateTextColorBasedOnContent(String text) {
@@ -153,7 +153,7 @@ public class ConditionalColorLabel extends JLabel {
     }
 
     /**
-     * テキストの内容に基づいて文字色を更新します。
+     * テキストの内容にもとづいて文字色を更新します。
      * @param text 設定するテキスト
      */
     private void updateTextColorBasedOnContent(String text) {

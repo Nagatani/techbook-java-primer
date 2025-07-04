@@ -4,7 +4,7 @@ This document provides context for the Gemini Code Assistant to understand the p
 
 ## 1. Project Overview
 
-This project is for writing a Java programming primer technical book. It uses Vivliostyle to build a book from Markdown files and `textlint` for linting the manuscript.
+This project is for writing a Java programming primer technical book, based on existing lecture materials. The main goal is to refine the content from the `source/` directory into a cohesive book format in the `manuscripts/` directory, ensuring a consistent tone and style suitable for a published book. It uses Vivliostyle to build the book from Markdown files and `textlint` for linting the manuscript.
 
 ## 2. Key Technologies
 
@@ -34,8 +34,10 @@ The following commands are defined in `package.json` and are frequently used:
 1.  Write or edit the manuscript in the `manuscripts/*.md` files.
 2.  Add any supplementary source code or materials to the `source/` directory.
 3.  Run `npm run lint` to check for any writing style issues.
-4.  Run `npm run preview` to see the changes live.
-5.  Run `npm run build` to generate the final book output in the `output/` directory.
+4.  After each task or significant change, run `npm run lint:fix` to automatically format the manuscript files.
+5.  Finally, run `npm run build` to ensure the book can be built successfully without errors.
+6.  The `npm run preview` command can be used at any time to see the changes live.
+
 
 ## 6. Content Guidelines
 
