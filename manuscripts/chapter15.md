@@ -1,1567 +1,1622 @@
-# 第15章 ネットワークプログラミング
+# 第14章 マルチスレッドプログラミング
 
-## 始めに：ネットワーク技術の進化と分散システムの基盤
+## 始めに：並行計算の進化とマルチコア時代のプログラミング
 
-前章までJavaの主要な技術について学習してきました。本章では、現代のソフトウェア開発において中核的な役割を果たす「ネットワークプログラミング」について詳細に学習します。
+前章までJavaの主要な技術について学習してきました。本章では、現代のコンピューティングにおいて不可欠な「マルチスレッドプログラミング」について詳細に学習していきます。
 
-ネットワークプログラミングは単なる通信技術ではありません。インターネット時代の到来とともに、コンピュータシステムを根本的に変革し、グローバルな情報社会の基盤となった、現代文明を支える重要な技術です。
+マルチスレッドプログラミングは、単なる性能向上の手法ではありません。これは、コンピュータアーキテクチャの根本的な変化に対応し、現代の複雑なアプリケーション要件を満たすための、必須の技術パラダイムです。
 
-### コンピュータネットワークの歴史的発展
+### コンピュータアーキテクチャの歴史的変遷
 
-コンピュータネットワーク技術の発展は、現代の情報社会の基盤を形成した技術革命の歴史でもあります。この歴史を理解することは、現代のネットワークプログラミングの意義を深く理解するために重要です。
+コンピュータの処理能力向上の歴史は、並行処理技術の発展と密接に関連しています。この歴史を理解することは、現代のマルチスレッドプログラミングの意義を深く理解するために重要です。
 
-**孤立システム時代（1940年代〜1960年代）**：初期のコンピュータは完全に独立したシステムで、データの交換は物理媒体（パンチカード、磁気テープ）による手動転送のみでした。計算結果の共有には物理的な移動が必要でした。
+**単一プロセッサ時代（1940年代〜2000年代初期）**：初期のコンピュータから2000年代初期まで、性能向上の主な手段はプロセッサのクロック周波数向上でした。ムーアの法則に従い、トランジスタ密度の向上により処理速度が飛躍的に向上していました。
 
-**専用回線による接続（1960年代〜1970年代）**：大型機どうしを専用回線で接続する試みが始まりました。IBMのSNA（Systems Network Architecture）などの企業独自のネットワークアーキテクチャが開発されました。
+**物理的限界の到来（2000年代中期）**：クロック周波数の向上は、消費電力と熱の問題により物理的限界に達しました。単一コアの性能向上だけでは、さらなる計算能力の向上が困難になりました。
 
-**ARPANET の誕生（1969年）**：アメリヵ国防総省のARPA（Advanced Research Projects Agency）により、世界初のパケット交換ネットワークが構築されました。これが現在のインターネットの直接的な前身となりました。
+**マルチコア革命（2005年〜）**：Intel Core 2 Duo（2006年）、AMD Athlon 64 X2（2005年）の登場により、消費者向けマルチコアプロセッサが普及しました。現在では、スマートフォンでも8コア以上のプロセッサが一般的です。
 
-**TCP/IP プロトコルの確立（1970年代〜1980年代）**：ヴィント・サーフ（Vint Cerf）とロバート・カーン（Robert Kahn）により、異なるネットワーク間の相互接続を可能にするTCP/IPプロトコルが開発されました。
+**並列計算の民主化**：従来は大学や研究機関のスーパーコンピュータでのみ利用されていた並列計算技術が、一般的なデスクトップやモバイルデバイスでも利用できるようになりました。
 
-**インターネットの商用化（1990年代）**：NSFNETからの移行により、インターネットが学術用途から商用利用へと拡大し、World Wide Webの普及とともに爆発的に成長しました。
+### 並行プログラミングの理論的基盤
 
-### ネットワークアーキテクチャの進化
+並行プログラミングの概念は、コンピュータサイエンスの理論的研究から生まれました：
 
-ネットワークシステムの設計思想は、技術の発展とともに段階的に進化してきました：
+**プロセス理論（1960年代〜）**：Tony HoareのCommunicating Sequential Processes（CSP）やRobin Milnerのπ-calculusなど、並行システムの数学的モデルが確立されました。
 
-**集中型アーキテクチャ（1960年代〜1970年代）**：メインフレームを中心とした星型ネットワークにより、端末からの処理要求を集中的に処理する構造でした。
+**同期プリミティブの開発（1960年代〜1970年代）**：Edsger Dijkstraのセマフォ、Per Brinch HansenとTony Hoareのモニターなど、並行プログラムの同期制御メカニズムが開発されました。
 
-**クライアント／サーバモデル（1980年代〜1990年代）**：パーソナルコンピュータの普及により、処理能力を持つクライアントと専用サーバが協働する分散処理モデルが確立されました。
+**デッドロック理論**：複数のプロセスが互いに待ち状態になるデッドロック問題の理論的解析と回避手法が研究されました。
 
-**ピアツーピア（P2P）ネットワーク（1990年代後期〜）**：Napster、BitTorrentなどにより、中央サーバを介さない分散型ネットワークモデルが実用化されました。
+**並行性の分類**：データ並列性、タスク並列性、パイプライン並列性など、並行処理のさまざまな形態が分類され、それぞれに適した実装手法が開発されました。
 
-**サービス指向アーキテクチャ（SOA）（2000年代）**：Webサービス技術により、ネットワーク上の機能をサービスとして組み合わせる柔軟なシステム構築が可能になりました。
+### プログラミング言語における並行処理サポートの発展
 
-**マイクロサービスアーキテクチャ（2010年代〜）**：大規模システムを小さな独立したサービスに分割し、ネットワーク通信により連携させる現代的なアーキテクチャが確立されました。
+プログラミング言語は、並行処理サポートにおいて段階的に進化してきました：
 
-### プログラミング言語におけるネットワーク支援の発展
-
-プログラミング言語のネットワーク機能サポートは、抽象化レベルを段階的に向上させてきました：
-
-**低レベルソケットプログラミング（1980年代〜）**：Berkeley socketsに代表される、OSレベルのネットワーク機能を直接使用する手法が確立されました。
+**低レベル並行処理（1970年代〜1980年代）**：C言語のPOSIX threadsのように、OSレベルのプリミティブを直接使用する手法が主流でした。高い性能を実現できる一方で、プログラミングは極めて困難でした。
 
 ```c
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <pthread.h>
 
-int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-struct sockaddr_in server_addr;
-server_addr.sin_family = AF_INET;
-server_addr.sin_port = htons(8080);
+pthread_t thread;
+pthread_mutex_t mutex;
+
+void* thread_function(void* arg) {
+    pthread_mutex_lock(&mutex);
+    // クリティカルセクション
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
 ```
 
-**オブジェクト指向ネットワーキング（1990年代〜）**：Java、C#などの言語により、ソケット操作がオブジェクト指向的に抽象化され、より安全で使いやすいAPIが提供されました。
+**オブジェクト指向並行処理（1990年代〜）**：Java、C#などの言語により、オブジェクト指向の概念と統合された、より高レベルな並行処理支援が提供されました。
 
-**高レベルプロトコル支援（2000年代〜）**：HTTP、SOAP、RESTなどの高レベルプロトコルを直接サポートするライブラリが充実し、Webアプリケーション開発が大幅に簡素化されました。
+**関数型並行処理（2000年代〜）**：Erlang、Haskellなどの関数型言語により、不変性と純粋関数を活用した、副作用のない並行処理モデルが確立されました。
 
-**非同期・リアクティブプログラミング（2010年代〜）**：Node.js、Netty、Vert.xなどにより、高並行性ネットワークアプリケーションの開発が革新されました。
+**アクターモデル（2000年代〜）**：Erlangの影響を受けて、ScalaのAkka、JavaScriptのNode.jsなどでアクターモデルによる並行処理が普及しました。
 
-### Javaにおけるネットワークプログラミングの発展
+### Javaにおける並行プログラミングの発展
 
-Javaは、「Write Once, Run Anywhere」の思想の下で、プラットフォーム独立なネットワークプログラミング環境を提供してきました：
+Javaは、並行プログラミングサポートにおいて段階的に機能を拡張してきました：
 
-**Java 1.0（1995年）- 基本ソケット API**：java.netパッケージにより、TCP/UDPソケットの基本機能が提供されました。アプレットによるブラウザでのネットワークアプリケーション実行も実現されました。
+**Java 1.0（1995年）- 基本的なスレッドサポート**：Threadクラス、Runnableインターフェイス、synchronizedキーワードなど、基本的な並行処理機能が提供されました。
 
-**Java 1.1（1997年）- RMI（Remote Method Invocation）**：分散オブジェクト技術により、ネットワーク越しのメソッド呼び出しが透明に実行できるようになりました。
+**Java 1.1（1997年）- 同期化の改善**：wait()、notify()、notifyAll()メソッドによる、より柔軟な同期制御が可能になりました。
 
-**Java 2 EE（1999年）- 企業向けネットワーク技術**：サーブレット、JSP、EJBなどにより、企業レベルのWebアプリケーション開発が標準化されました。
+**Java 1.4（2002年）- NIO**：非ブロッキングI/Oにより、大量の接続を効率的に処理できるようになりました。
 
-**Java 1.4（2002年）- NIO（New I/O）**：非ブロッキングI/Oとチャネル・セレクタAPIにより、高性能なネットワークアプリケーションの開発が可能になりました。
+**Java 5（2004年）- java.util.concurrent**：Doug Leaによって開発された高レベル並行処理ライブラリが標準に組み込まれ、実用的な並行プログラミングが大幅に容易になりました。
 
-**Java 7（2011年）- NIO.2**：非同期I/O操作の改善により、さらに効率的なネットワーク処理が実現されました。
+**Java 7（2011年）- Fork/Join Framework**：分割統治法による並列処理を効率的に実装できるフレームワークが追加されました。
 
-**Java 8以降 - 関数型・リアクティブ対応**：CompleテーブルFuture、Reactive Streamsなどにより、現代的な非同期ネットワークプログラミングが支援されています。
+**Java 8（2014年）- Parallel Streams**：Stream APIと組み合わせることで、データ並列処理を宣言的に記述できるようになりました。
 
-### ネットワークプロトコルスタックの理解
+### 現代アプリケーションにおける並行処理の必要性
 
-現代のネットワークプログラミングを理解するためには、TCP/IPプロトコルスタックの階層構造を理解することが重要です：
+現代のソフトウェア開発では、並行処理は以下の分野で不可欠となっています：
 
-**物理層・データリンク層**：ハードウェアレベルでのデータ伝送を担当します。Ethernet、Wi-Fi、光ファイバーなどの物理媒体上でのビット伝送を制御します。
+**Webアプリケーション**：数千から数万の同時接続を処理するため、効率的な並行処理が必要です。サーブレット、Spring WebFlux、非同期処理などが重要な技術となっています。
 
-**ネットワーク層（IP）**：パケットの経路選択と配送を担当します。IPv4/IPv6により、グローバルなアドレス空間でのパケット転送が実現されています。
+**ビッグデータ処理**：Apache Spark、Apache Hadoopなどのフレームワークは、大量のデータを並列処理することで、実用的な時間での分析を実現しています。
 
-**トランスポート層（TCP/UDP）**：アプリケーション間の信頼性のある（TCP）または高速な（UDP）データ転送を提供します。ポート番号により、同一マシン上の複数アプリケーションを識別します。
+**リアルタイムシステム**：ゲーム、金融取引、IoTシステムなど、リアルタイム性が要求されるシステムでは、効率的な並行処理が性能の鍵となります。
 
-**アプリケーション層**：HTTP、SMTP、FTP、SSHなどの高レベルプロトコルにより、具体的なアプリケーション機能を実現します。
+**機械学習**：深層学習の訓練や推論処理では、GPUを活用した大規模並列処理が標準的な手法となっています。
 
-### 現代のネットワークアプリケーションの特徴
+**マイクロサービス**：分散システムアーキテクチャでは、サービス間の非同期通信と並行処理が、システム全体の性能と可用性を決定します。
 
-現代のネットワークアプリケーションは、従来とは大きく異なる要件と特徴を持っています：
+### 並行プログラミングの課題と対策
 
-**大規模並行処理**：数万から数十万の同時接続を処理する必要があり、従来のスレッドプールモデルでは限界があります。非同期I/Oとイベント駆動アーキテクチャが重要になっています。
+並行プログラミングは高い性能を実現する一方で、特有の課題があります：
 
-**リアルタイム性**：WebSocket、Server-Sent Events、WebRTCなどにより、リアルタイム双方向通信が標準的な機能となっています。
+**競合状態（Race Condition）**：複数のスレッドが同じリソースに同時にアクセスすることで、予期しない結果が生じる問題です。適切な同期化により防止できます。
 
-**セキュリティ強化**：HTTPS、WSS（WebSocket Secure）、OAuth、JWTなど、セキュリティが設計段階から組み込まれています。
+**デッドロック**：複数のスレッドが互いを待ち続ける状態です。リソースの取得順序の統一、タイムアウトの設定などで回避できます。
 
-**マイクロサービス対応**：サービス間通信、負荷分散、障害回復、監視・ログ記録など、分散システム特有の課題への対応が必要です。
+**性能のボトルネック**：過度の同期化により、並行処理の利点が失われる場合があります。適切な粒度での同期化設計が重要です。
 
-**クラウドネイティブ**：Kubernetes、Docker、サービスメッシュなど、クラウド環境での運用を前提とした設計が求められています。
+**デバッグの困難さ**：並行プログラムのバグは再現が困難で、デバッグに高度な技術が必要です。ユニットテスト、ログ記録、専用デバッガの活用が重要です。
 
-### ネットワークプログラミングの課題と対策
+### 現代的な並行プログラミングパラダイム
 
-ネットワークプログラミングには、従来のローカルプログラミングでは遭遇しない特有の課題があります：
+現代の並行プログラミングでは、従来の低レベルなスレッド操作から、より高レベルなパラダイムへの移行が進んでいます：
 
-**ネットワーク障害への対応**：接続の切断、タイムアウト、パケット損失など、予期しない障害に対する適切な処理が必要です。
+**非同期プログラミング**：CompleテーブルFuture、Reactive Streamsにより、非ブロッキングな処理フローを構築できます。
 
-**性能とスケーラビリティ**：増加するトラフィックに対して、性能を維持しながらスケールする設計が重要です。
+**イミューダブルオブジェクト**：不変オブジェクトを使用することで、スレッド安全性を簡単に確保できます。
 
-**セキュリティ脅威**：DDoS攻撃、中間者攻撃、SQLインジェクションなど、多様なセキュリティ脅威への対策が必要です。
+**関数型並行処理**：Stream APIのparallel() メソッドにより、関数型の操作を自動的に並列化できます。
 
-**分散システムの複雑性**：CAP定理、結果整合性、分散トランザクションなど、分散システム特有の理論と実装技術の理解が必要です。
+**アクターモデル**：Akkaライブラリにより、メッセージパッシングベースの並行処理を実装できます。
 
 ### 本章で学習する内容の意義
 
-本章では、これらの歴史的背景と現代的な課題を踏まえて、Javaにおけるネットワークプログラミングを体系的に学習していきます。単にソケットの使い方を覚えるのではなく、以下の点を重視して学習を進めます：
+本章では、これらの歴史的背景と現代的な課題を踏まえて、Javaにおけるマルチスレッドプログラミングを体系的に学習していきます。単にスレッドの作り方を覚えるのではなく、以下の点を重視して学習を進めます：
 
-**ネットワークアーキテクチャの理解**：クライアント／サーバモデルの設計原則を理解し、適切な役割分担ができる能力を身につけます。
+**並行処理の設計思想**：なぜ並行処理が必要なのか、どのような場面で効果的なのかを理解し、適切な並行処理設計ができる能力を身につけます。
 
-**プロトコル設計の技術**：TCP/UDPの特性を理解し、用途に応じた適切なプロトコル選択ができます。
+**スレッド安全性の理解**：競合状態やデッドロックなどの問題を理解し、安全な並行プログラムを作成する技術を習得します。
 
-**並行性とパフォーマンス**：多数のクライアント接続を効率的に処理するための技術を習得します。
+**高レベル API の活用**：java.util.concurrentパッケージの活用により、実用的で保守性の高い並行プログラムを作成できます。
 
-**エラーハンドリング**：ネットワーク特有の障害に対する適切な処理技術を身につけます。
+**性能とのバランス**：並行処理による性能向上と、複雑性の増大のバランスを適切に判断する能力を養います。
 
-**セキュリティ意識**：ネットワークアプリケーションにおけるセキュリティリスクを理解し、基本的な対策を実装できます。
+**現代技術との統合**：Reactive Programming、非同期処理、マイクロサービスなど、現代的な技術との関連性を理解します。
 
-**現代技術への橋渡し**：WebSocket、REST API、マイクロサービスなど、現代的なネットワーク技術への基礎知識を身につけます。
+マルチスレッドプログラミングを深く理解することは、現代のマルチコア時代において高性能なアプリケーションを開発する能力を身につけることにつながります。本章を通じて、単なる「複数のスレッドを動かす技術」を超えて、「並行システムの設計と実装の総合的な能力」を習得していきましょう。
 
-ネットワークプログラミングを深く理解することは、現代の分散システム開発において不可欠な能力を身につけることにつながります。本章を通じて、単なる「データの送受信技術」を超えて、「分散システムの設計と実装の基礎」を習得していきましょう。
+現代のマルチコアプロセッサを効率的に活用するために、マルチスレッドプログラミングは必須の技術です。本章では、Javaにおけるマルチスレッドの基礎から実践的な応用まで学習します。
 
-本章では、Javaを用いたTCP/IPネットワークアプリケーションの基礎から実践的な応用まで学習します。ソケット通信を理解することで、チャットアプリケーションやWebサーバなど、さまざまなネットワークアプリケーションを開発できます。
+## 14.1 マルチスレッドプログラミングの基礎
 
-## 15.1 ネットワークプログラミングの基礎
+### スレッドとは
 
-### クライアント／サーバモデル
+スレッドとは、プログラム内での処理の流れを表す実行単位です。通常、1つのプログラムは1つのスレッド（メインスレッド）で実行されますが、マルチスレッドとは、1つのプログラム内で複数のスレッドを同時に実行し、処理を並行して進める技術です。
 
-多くのネットワークアプリケーションは、サービスを要求する「クライアント」と、サービスを提供する「サーバ」から構成されるクライアント／サーバモデルを採用しています。
+### マルチスレッドのメリット
 
-* **サーバ**: 特定のポートで待機し、クライアントからの接続要求を待ち受けます
-* **クライアント**: サーバのIPアドレスとポート番号を指定して接続を要求し、サービスの提供を受けます
+現代のコンピュータは、複数のコアを持つCPU（マルチコアプロセッサ）を搭載するのが一般的です。マルチスレッドプログラミングは、この複数のコアを効率的に活用し、アプリケーションのパフォーマンスを向上させるための重要な技術です。
 
-身近な例では、ブラウザ（クライアント）がWebサーバ（サーバ）にWebページの表示を要求するのも、このモデルにもとづいています。
+主なメリットは以下のとおりです：
 
-### TCP/IPとソケット
+* **パフォーマンスの向上**: 時間のかかる処理を複数のスレッドに分割し、同時に実行することで、全体の処理時間を短縮できます
+* **応答性の維持**: GUIアプリケーションなどで、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスの応答性を維持できます
+* **リソースの有効活用**: サーバアプリケーションなどでは、複数のクライアントからのリクエストを同時に処理することで、CPUなどの計算リソースを有効に活用できます
 
-ソケットとは、プログラムがネットワークを通じて通信を行うための抽象的な出入り口です。TCP/IPプロトコル群においては、通信相手を特定するために「IPアドレス」と「ポート番号」の組み合わせを使用します。
+## 14.2 スレッドの作成と実行
 
-* **IPアドレス**: ネットワーク上のコンピュータを一意に特定するための住所のようなものです
-* **ポート番号**: コンピュータ内で動作している特定のアプリケーション（プロセス）を識別するための番号です
+Javaにおけるマルチスレッド用プログラムの作成方法には、代表的な2つの方法があります。
 
-Javaでは、`java.net`パッケージがソケット通信に必要なクラス群を提供しており、これによりOSI参照モデルにおけるセッション層以上のプロトコルを比較的容易に実装できます。
+### Runnableインターフェイスの実装（推奨）
 
-### JavaにおけるソケットAPI
+`Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
 
-JavaでTCPソケット通信を実装する際には、主に以下の2つのクラスを使用します。
-
-* `java.net.ServerSocket`: サーバ側でクライアントからの接続を待ち受けるために使用します。特定のポートにバインドし、接続要求を受け入れると、通信用の`Socket`オブジェクトを生成します
-* `java.net.Socket`: クライアントとサーバ間の実際の通信経路上に作成されるエンドポイントです。クライアント側ではサーバに接続するため、サーバ側では`ServerSocket`が接続を受け入れた結果として生成されます
-
-## 15.2 基本的なソケット通信の実装
-
-まず、基本的な「オウム返し（Echo）」サーバと、それに接続するクライアントを作成します。クライアントから送信されたメッセージを、サーバがそのまま送り返すだけの簡単なプログラムです。
-
-### オウム返しサーバ（シングルスレッド）
-
-このサーバは、一度に1つのクライアントしか処理できない単純な構造です。
+#### 基本的なRunnableの実装
 
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-
-public class EchoServer {
+// Runnableを実装したクラスを定義
+public class MyTask implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("Runnableを実装したクラスによるタスク実行: " + 
+                          Thread.currentThread().getName());
+    }
 
     public static void main(String[] args) {
-        // サーバーが待ち受けるTCPポート番号
-        int port = 12345;
-        System.out.println("Echo Server is starting on port " + port);
+        // Runnable実装クラスのインスタンスを作成
+        MyTask task = new MyTask();
+        // Threadクラスのコンストラクタに渡し、スレッドを作成
+        Thread thread = new Thread(task);
+        // start()メソッドを呼び出してスレッドを実行開始
+        thread.start();
+    }
+}
+```
 
-        // try-with-resources文でServerSocketを定義し、自動的にクローズされるようにする
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Waiting for a client connection...");
+#### 実用的なマルチスレッド画像処理システム
 
-            // accept()メソッドはクライアントからの接続があるまで処理をブロック（待機）する
-            // 接続が確立されると、通信用のSocketオブジェクトを返す
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
+以下は、複数の画像ファイルを並行処理で変換するシステムの例です。これは実際の業務でよく見られる並行処理のパターンを示しています：
 
-            // try-with-resources文で、通信用のストリームも自動クローズの対象にする
-            try (
-                // Socketから入力ストリームを取得し、文字として読み取るためのReaderを作成
-                // UTF-8エンコーディングを指定して文字化けを防ぐ
-                BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8)
-                );
-                // Socketから出力ストリームを取得し、文字を書き込むためのWriterを作成
-                // autoFlushをtrueに設定し、println()が呼ばれるたびに自動でフラッシュ（送信）する
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true, StandardCharsets.UTF_8)
-            ) {
-                String line;
-                // reader.readLine()はクライアントから1行分のデータが送られてくるまでブロックする
-                // クライアントが接続を切断するとnullを返すため、ループが終了する
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("Received from client: " + line);
+```java
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-                    // 受け取った文字列をそのままクライアントに送信する
-                    writer.println(line);
-
-                    // "exit"というメッセージを受け取ったら、能動的にループを終了する
-                    if ("exit".equalsIgnoreCase(line)) {
-                        break;
-                    }
+/**
+ * 画像処理システム - マルチスレッドによるバッチ処理の実践例
+ * 
+ * このシステムは以下の特徴を持ちます：
+ * - 複数の画像ファイルを並行処理で変換
+ * - プログレス表示とエラーハンドリング
+ * - リソース制御とパフォーマンス最適化
+ * - 実際の業務で使用される設計パターン
+ */
+public class ImageProcessingSystem {
+    
+    /**
+     * 画像処理タスクのレコード
+     * @param inputPath 入力ファイルパス
+     * @param outputPath 出力ファイルパス
+     * @param operation 処理種別
+     */
+    public record ImageTask(Path inputPath, Path outputPath, String operation) {}
+    
+    /**
+     * 画像処理結果のレコード
+     */
+    public record ProcessingResult(ImageTask task, boolean success, 
+                                  long processingTimeMs, String errorMessage) {}
+    
+    /**
+     * 単一の画像処理を実行するRunnable実装
+     * 
+     * このクラスは、責任の分離の原則に従い、1つの画像ファイルの処理のみに専念します。
+     * 例外安全性を確保し、処理時間の計測も行います。
+     */
+    private static class ImageProcessor implements Runnable {
+        private final ImageTask task;
+        private final BlockingQueue<ProcessingResult> resultQueue;
+        private final AtomicInteger completedCount;
+        private final AtomicInteger totalCount;
+        
+        public ImageProcessor(ImageTask task, 
+                            BlockingQueue<ProcessingResult> resultQueue,
+                            AtomicInteger completedCount, 
+                            AtomicInteger totalCount) {
+            this.task = task;
+            this.resultQueue = resultQueue;
+            this.completedCount = completedCount;
+            this.totalCount = totalCount;
+        }
+        
+        @Override
+        public void run() {
+            long startTime = System.currentTimeMillis();
+            boolean success = false;
+            String errorMessage = null;
+            
+            try {
+                System.out.println(Thread.currentThread().getName() + 
+                    " が " + task.inputPath().getFileName() + " の処理を開始");
+                
+                // 実際の画像処理をシミュレート（実装では画像変換ライブラリを使用）
+                processImage(task);
+                
+                // 処理完了の表示
+                int completed = completedCount.incrementAndGet();
+                System.out.printf("進捗: %d/%d 完了 - %s%n", 
+                    completed, totalCount.get(), task.inputPath().getFileName());
+                
+                success = true;
+                
+            } catch (Exception e) {
+                errorMessage = e.getMessage();
+                System.err.println("エラー: " + task.inputPath().getFileName() + 
+                    " の処理中にエラーが発生: " + errorMessage);
+            } finally {
+                long processingTime = System.currentTimeMillis() - startTime;
+                ProcessingResult result = new ProcessingResult(
+                    task, success, processingTime, errorMessage);
+                
+                try {
+                    resultQueue.put(result);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
-            System.out.println("Client disconnected.");
-
+        }
+        
+        /**
+         * 画像処理の実行（シミュレーション）
+         * 実際の実装では、BufferedImage、ImageIO、Graphics2Dなどを使用
+         */
+        private void processImage(ImageTask task) throws IOException, InterruptedException {
+            // ファイルサイズに応じた処理時間をシミュレート
+            long fileSize = Files.size(task.inputPath());
+            long processingTime = Math.min(fileSize / 1000, 3000); // 最大3秒
+            
+            Thread.sleep(processingTime);
+            
+            // 実際の処理では以下のような画像変換を行う：
+            // BufferedImage image = ImageIO.read(task.inputPath().toFile());
+            // BufferedImage resized = resizeImage(image, task.operation());
+            // ImageIO.write(resized, "jpg", task.outputPath().toFile());
+            
+            // 出力ファイルの作成をシミュレート
+            Files.createDirectories(task.outputPath().getParent());
+            Files.copy(task.inputPath(), task.outputPath(), 
+                StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+    
+    /**
+     * バッチ処理の実行
+     */
+    public void processBatch(List<ImageTask> tasks) throws InterruptedException {
+        if (tasks.isEmpty()) {
+            System.out.println("処理するタスクがありません。");
+            return;
+        }
+        
+        System.out.println("=== 画像バッチ処理システム開始 ===");
+        System.out.println("処理予定ファイル数: " + tasks.size());
+        
+        // CPUコア数に基づいたスレッドプール作成
+        int threadCount = Math.min(tasks.size(), 
+            Runtime.getRuntime().availableProcessors());
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        
+        // 結果収集用のキューと進捗カウンタ
+        BlockingQueue<ProcessingResult> resultQueue = new LinkedBlockingQueue<>();
+        AtomicInteger completedCount = new AtomicInteger(0);
+        AtomicInteger totalCount = new AtomicInteger(tasks.size());
+        
+        long batchStartTime = System.currentTimeMillis();
+        
+        try {
+            // すべてのタスクをスレッドプールに投入
+            for (ImageTask task : tasks) {
+                ImageProcessor processor = new ImageProcessor(
+                    task, resultQueue, completedCount, totalCount);
+                executor.execute(processor);
+            }
+            
+            // 処理開始の確認
+            System.out.println("スレッドプール (" + threadCount + " スレッド) で処理開始");
+            
+            // 適切なシャットダウン処理
+            executor.shutdown();
+            
+            // すべてのタスクの完了を待機（最大10分）
+            boolean completed = executor.awaitTermination(10, TimeUnit.MINUTES);
+            
+            if (!completed) {
+                System.err.println("タイムアウト: 強制終了します");
+                executor.shutdownNow();
+                return;
+            }
+            
+            // 結果の集計と表示
+            List<ProcessingResult> results = new ArrayList<>();
+            while (results.size() < tasks.size()) {
+                ProcessingResult result = resultQueue.poll(1, TimeUnit.SECONDS);
+                if (result != null) {
+                    results.add(result);
+                }
+            }
+            
+            displayResults(results, batchStartTime);
+            
+        } finally {
+            if (!executor.isTerminated()) {
+                executor.shutdownNow();
+            }
+        }
+    }
+    
+    /**
+     * 処理結果の表示とパフォーマンス分析
+     */
+    private void displayResults(List<ProcessingResult> results, long batchStartTime) {
+        long totalBatchTime = System.currentTimeMillis() - batchStartTime;
+        
+        System.out.println("\n=== 処理結果サマリー ===");
+        
+        long successCount = results.stream()
+            .mapToLong(r -> r.success() ? 1 : 0)
+            .sum();
+        
+        double averageProcessingTime = results.stream()
+            .mapToLong(ProcessingResult::processingTimeMs)
+            .average()
+            .orElse(0.0);
+        
+        System.out.println("成功: " + successCount + " / " + results.size());
+        System.out.println("総処理時間: " + totalBatchTime + " ms");
+        System.out.println("平均処理時間: " + String.format("%.1f ms", averageProcessingTime));
+        
+        // エラーがあった場合の詳細表示
+        List<ProcessingResult> errors = results.stream()
+            .filter(r -> !r.success())
+            .toList();
+        
+        if (!errors.isEmpty()) {
+            System.out.println("\n=== エラー詳細 ===");
+            for (ProcessingResult error : errors) {
+                System.out.println("ファイル: " + 
+                    error.task().inputPath().getFileName() + 
+                    " - " + error.errorMessage());
+            }
+        }
+        
+        // パフォーマンス効果の表示
+        long sequentialEstimate = results.stream()
+            .mapToLong(ProcessingResult::processingTimeMs)
+            .sum();
+        
+        double speedup = (double) sequentialEstimate / totalBatchTime;
+        System.out.println("\n並列処理効果:");
+        System.out.printf("推定順次処理時間: %d ms%n", sequentialEstimate);
+        System.out.printf("実際の並列処理時間: %d ms%n", totalBatchTime);
+        System.out.printf("速度向上率: %.2fx%n", speedup);
+    }
+    
+    /**
+     * デモ実行
+     */
+    public static void main(String[] args) {
+        try {
+            ImageProcessingSystem system = new ImageProcessingSystem();
+            
+            // テスト用のタスクを作成
+            List<ImageTask> tasks = Arrays.asList(
+                new ImageTask(Paths.get("input/photo1.jpg"), 
+                            Paths.get("output/photo1_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo2.jpg"), 
+                            Paths.get("output/photo2_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo3.jpg"), 
+                            Paths.get("output/photo3_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo4.jpg"), 
+                            Paths.get("output/photo4_resized.jpg"), "resize"),
+                new ImageTask(Paths.get("input/photo5.jpg"), 
+                            Paths.get("output/photo5_resized.jpg"), "resize")
+            );
+            
+            // ダミーファイルの作成（実際の実装では既存の画像ファイルを使用）
+            createDummyFiles(tasks);
+            
+            // バッチ処理の実行
+            system.processBatch(tasks);
+            
+        } catch (Exception e) {
+            System.err.println("システムエラー: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * テスト用のダミーファイル作成
+     */
+    private static void createDummyFiles(List<ImageTask> tasks) {
+        try {
+            Files.createDirectories(Paths.get("input"));
+            Files.createDirectories(Paths.get("output"));
+            
+            for (ImageTask task : tasks) {
+                if (!Files.exists(task.inputPath())) {
+                    // ランダムサイズのダミーファイルを作成
+                    byte[] data = new byte[1000 + (int)(Math.random() * 5000)];
+                    Arrays.fill(data, (byte) 0xFF);
+                    Files.write(task.inputPath(), data);
+                }
+            }
         } catch (IOException e) {
-            // サーバーソケットの作成や接続待機中にエラーが発生した場合
-            System.err.println("An error occurred in the server: " + e.getMessage());
+            System.err.println("ダミーファイル作成エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+**このシステムの特徴と学習ポイント:**
+
+1. **責任の分離**: `ImageProcessor`クラスは単一の画像処理のみに専念し、結果の集約は別のクラスが担当します。
+
+2. **例外安全性**: 各画像の処理でエラーが発生しても、ほかの画像の処理に影響を与えません。
+
+3. **プログレス管理**: `AtomicInteger`を使用してスレッドセーフな進捗カウンタを実装しています。
+
+4. **リソース管理**: CPUコア数にもとづいてスレッド数を決定し、システムリソースの効率的な活用を図っています。
+
+5. **パフォーマンス測定**: 並列処理の効果を定量的に測定し、表示します。
+
+6. **現実的な設計**: 実際の業務システムで使用される設計パターンとエラーハンドリングを実装しています。
+
+### ラムダ式による簡潔な記述
+
+`Runnable`は関数型インターフェイスであるため、Java 8以降ではラムダ式を使って簡潔に記述できます。
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        // ラムダを使ってRunnableを直接定義
+        Runnable task = () -> {
+            System.out.println("ラムダ式によるタスク実行: " + 
+                              Thread.currentThread().getName());
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
+
+        // さらに簡潔に書くことも可能
+        new Thread(() -> {
+            System.out.println("さらに簡潔なラムダ式によるタスク実行: " + 
+                              Thread.currentThread().getName());
+        }).start();
+    }
+}
+```
+
+### Threadクラスの継承（参考）
+
+参考として、`Thread`クラスを継承する方法も示します。
+
+```java
+// Threadクラスを継承したクラスを定義
+public class MyThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Threadクラスを継承したスレッド実行: " + this.getName());
+    }
+
+    public static void main(String[] args) {
+        MyThread thread = new MyThread();
+        thread.start();
+    }
+}
+```
+
+`Runnable`を利用する方法は、Javaがクラスの多重継承をサポートしないという制約を受けません。また、「タスク（何をするか）」と「スレッド（どう実行するか）」を分離できるため、より柔軟で疎結合な設計が可能になります。そのため、`Thread`クラスを直接継承する方法よりも推奨されます。
+
+## 14.3 スレッドの基本的な制御
+
+### Thread.sleep()
+
+現在実行中のスレッドを、指定されたミリ秒の間、一時的に休止させます。これは、CPUリソースの過度な消費を防いだり、処理のタイミングを調整したりする目的で利用されます。
+
+```java
+// 1秒ごとにメッセージを出力するタスク
+Runnable task = () -> {
+    for (int i = 0; i < 5; i++) {
+        System.out.println("スレッド実行中... " + i);
+        try {
+            Thread.sleep(1000); // 1000ミリ秒間スリープ
+        } catch (InterruptedException e) {
+            System.err.println("スレッドが中断されました。");
+            Thread.currentThread().interrupt();
+            break;
+        }
+    }
+};
+
+new Thread(task).start();
+```
+
+### thread.join()
+
+特定のスレッドの処理が完了するまで、現在のスレッドが待機します。これにより、複数のスレッドの処理結果を待ってから、次の処理に進むことができます。
+
+```java
+public class JoinExample {
+    public static void main(String[] args) throws InterruptedException {
+        Runnable timeConsumingTask = () -> {
+            System.out.println("バックグラウンド処理を開始します。");
+            try {
+                Thread.sleep(3000); // 3秒かかる処理を模倣
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("バックグラウンド処理が完了しました。");
+        };
+
+        Thread backgroundThread = new Thread(timeConsumingTask);
+        backgroundThread.start();
+
+        System.out.println("メインスレッドはバックグラウンド処理の完了を待ちます。");
+        backgroundThread.join(); // backgroundThreadが終了するまで待機
+        System.out.println("すべての処理が完了しました。");
+    }
+}
+```
+
+## 14.4 共有リソースと同期制御
+
+複数のスレッドが、同じデータ（オブジェクトや変数）に同時にアクセスすると、予期せぬ問題が発生することがあります。これを**競合状態 (Race Condition)** と呼びます。
+
+### 競合状態の例
+
+以下の`Counter`クラスは、複数のスレッドから`increment()`メソッドが呼び出されると、期待通りに動作しない可能性があります。
+
+```java
+public class RaceConditionExample {
+    
+    private static class Counter {
+        private int count = 0;
+
+        // このメソッドはスレッドセーフではありません
+        public void increment() {
+            // 1. 現在のcount値を読み込み
+            // 2. 読み込んだ値に1を加算
+            // 3. 計算結果をcountに書き戻し
+            // この3つのステップがアトミック(不可分)ではないため、競合状態が発生
+            count++;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        // 2つのスレッドを作成し、それぞれ100,000回インクリメント
+        Runnable task = () -> {
+            for (int i = 0; i < 100000; i++) {
+                counter.increment();
+            }
+        };
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+
+        // 両方のスレッドが終了するのを待つ
+        t1.join();
+        t2.join();
+
+        // 期待値は200,000ですが、それより少ない値になることが多い
+        System.out.println("最終カウント: " + counter.getCount());
+    }
+}
+```
+
+#### 実践的な同期制御 - 銀行口座システム
+
+現実的な同期制御の例として、銀行口座の残高管理システムを実装してみましょう。このシステムでは複数のスレッドが同時に入金・出金操作を行います：
+
+```java
+import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
+import java.text.NumberFormat;
+import java.util.*;
+
+/**
+ * 銀行口座システム - 同期制御の実践例
+ * 
+ * このシステムは以下の同期制御技術を示します：
+ * - synchronizedメソッドによる基本的な排他制御
+ * - ReentrantLockによる高度な制御
+ * - 複数リソースでのデッドロック回避策
+ * - アトミック操作の活用
+ */
+public class BankAccountSystem {
+    
+    /**
+     * 基本的な銀行口座（synchronized使用）
+     */
+    public static class BasicBankAccount {
+        private double balance;
+        private final String accountNumber;
+        private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        
+        public BasicBankAccount(String accountNumber, double initialBalance) {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+        
+        /**
+         * 入金処理（スレッドセーフ）
+         */
+        public synchronized void deposit(double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("入金額は正の値である必要があります");
+            }
+            
+            double oldBalance = balance;
+            balance += amount;
+            
+            System.out.printf("口座 %s: 入金 %s (残高 %s → %s) [%s]%n",
+                accountNumber, formatter.format(amount),
+                formatter.format(oldBalance), formatter.format(balance),
+                Thread.currentThread().getName());
+        }
+        
+        /**
+         * 出金処理（スレッドセーフ）
+         */
+        public synchronized boolean withdraw(double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("出金額は正の値である必要があります");
+            }
+            
+            if (balance >= amount) {
+                double oldBalance = balance;
+                balance -= amount;
+                
+                System.out.printf("口座 %s: 出金 %s (残高 %s → %s) [%s]%n",
+                    accountNumber, formatter.format(amount),
+                    formatter.format(oldBalance), formatter.format(balance),
+                    Thread.currentThread().getName());
+                return true;
+            } else {
+                System.out.printf("口座 %s: 出金失敗 %s (残高不足: %s) [%s]%n",
+                    accountNumber, formatter.format(amount),
+                    formatter.format(balance), Thread.currentThread().getName());
+                return false;
+            }
+        }
+        
+        public synchronized double getBalance() {
+            return balance;
+        }
+        
+        public String getAccountNumber() {
+            return accountNumber;
+        }
+    }
+    
+    /**
+     * 高度な銀行口座（ReentrantLock使用）
+     */
+    public static class AdvancedBankAccount {
+        private double balance;
+        private final String accountNumber;
+        private final ReentrantLock lock = new ReentrantLock();
+        private final NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        
+        public AdvancedBankAccount(String accountNumber, double initialBalance) {
+            this.accountNumber = accountNumber;
+            this.balance = initialBalance;
+        }
+        
+        /**
+         * タイムアウト付き入金処理
+         */
+        public boolean depositWithTimeout(double amount, long timeoutMs) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("入金額は正の値である必要があります");
+            }
+            
+            try {
+                if (lock.tryLock(timeoutMs, TimeUnit.MILLISECONDS)) {
+                    try {
+                        double oldBalance = balance;
+                        balance += amount;
+                        
+                        System.out.printf("口座 %s: 入金 %s (残高 %s → %s) [%s]%n",
+                            accountNumber, formatter.format(amount),
+                            formatter.format(oldBalance), formatter.format(balance),
+                            Thread.currentThread().getName());
+                        return true;
+                    } finally {
+                        lock.unlock();
+                    }
+                } else {
+                    System.out.printf("口座 %s: 入金タイムアウト %s [%s]%n",
+                        accountNumber, formatter.format(amount),
+                        Thread.currentThread().getName());
+                    return false;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
+        
+        public double getBalance() {
+            lock.lock();
+            try {
+                return balance;
+            } finally {
+                lock.unlock();
+            }
+        }
+        
+        public String getAccountNumber() {
+            return accountNumber;
+        }
+        
+        /**
+         * デッドロック回避を考慮した送金処理
+         */
+        public static boolean transfer(AdvancedBankAccount from, AdvancedBankAccount to, 
+                                     double amount) {
+            if (amount <= 0) {
+                throw new IllegalArgumentException("送金額は正の値である必要があります");
+            }
+            
+            // デッドロック回避: 口座番号の順序でロック取得順序を決定
+            AdvancedBankAccount firstLock, secondLock;
+            if (from.accountNumber.compareTo(to.accountNumber) < 0) {
+                firstLock = from;
+                secondLock = to;
+            } else {
+                firstLock = to;
+                secondLock = from;
+            }
+            
+            firstLock.lock.lock();
+            try {
+                secondLock.lock.lock();
+                try {
+                    if (from.balance >= amount) {
+                        from.balance -= amount;
+                        to.balance += amount;
+                        
+                        System.out.printf("送金: %s → %s, 金額 %s [%s]%n",
+                            from.accountNumber, to.accountNumber,
+                            NumberFormat.getCurrencyInstance().format(amount),
+                            Thread.currentThread().getName());
+                        return true;
+                    } else {
+                        System.out.printf("送金失敗: %s → %s, 残高不足 (残高: %s, 送金額: %s) [%s]%n",
+                            from.accountNumber, to.accountNumber,
+                            NumberFormat.getCurrencyInstance().format(from.balance),
+                            NumberFormat.getCurrencyInstance().format(amount),
+                            Thread.currentThread().getName());
+                        return false;
+                    }
+                } finally {
+                    secondLock.lock.unlock();
+                }
+            } finally {
+                firstLock.lock.unlock();
+            }
+        }
+    }
+    
+    /**
+     * 銀行業務シミュレーション
+     */
+    public static void demonstrateBankOperations() throws InterruptedException {
+        System.out.println("=== 銀行口座システム デモンストレーション ===\n");
+        
+        // 基本的な口座での同時アクセステスト
+        System.out.println("1. 基本的な同期制御テスト:");
+        BasicBankAccount basicAccount = new BasicBankAccount("0001", 10000.0);
+        
+        ExecutorService basicExecutor = Executors.newFixedThreadPool(3);
+        
+        // 複数のスレッドで同時に入金・出金を実行
+        for (int i = 0; i < 5; i++) {
+            final int operationId = i;
+            basicExecutor.submit(() -> {
+                basicAccount.deposit(100.0 * operationId);
+                basicAccount.withdraw(50.0 * operationId);
+            });
+        }
+        
+        basicExecutor.shutdown();
+        basicExecutor.awaitTermination(5, TimeUnit.SECONDS);
+        
+        System.out.printf("基本口座最終残高: %s%n%n", 
+            NumberFormat.getCurrencyInstance().format(basicAccount.getBalance()));
+        
+        // 高度な口座での送金テスト
+        System.out.println("2. 高度な同期制御と送金テスト:");
+        AdvancedBankAccount account1 = new AdvancedBankAccount("ADV-001", 5000.0);
+        AdvancedBankAccount account2 = new AdvancedBankAccount("ADV-002", 3000.0);
+        AdvancedBankAccount account3 = new AdvancedBankAccount("ADV-003", 7000.0);
+        
+        List<AdvancedBankAccount> accounts = Arrays.asList(account1, account2, account3);
+        ExecutorService advancedExecutor = Executors.newFixedThreadPool(5);
+        
+        // ランダムな送金処理を複数のスレッドで実行
+        for (int i = 0; i < 10; i++) {
+            advancedExecutor.submit(() -> {
+                Collections.shuffle(accounts);
+                AdvancedBankAccount from = accounts.get(0);
+                AdvancedBankAccount to = accounts.get(1);
+                double amount = 100.0 + Math.random() * 500.0;
+                
+                AdvancedBankAccount.transfer(from, to, amount);
+            });
+        }
+        
+        // タイムアウト付き入金のテスト
+        for (int i = 0; i < 3; i++) {
+            final int depositAmount = (i + 1) * 200;
+            advancedExecutor.submit(() -> {
+                Collections.shuffle(accounts);
+                accounts.get(0).depositWithTimeout(depositAmount, 1000);
+            });
+        }
+        
+        advancedExecutor.shutdown();
+        advancedExecutor.awaitTermination(10, TimeUnit.SECONDS);
+        
+        System.out.println("\n最終残高:");
+        double totalBalance = 0;
+        for (AdvancedBankAccount account : accounts) {
+            double balance = account.getBalance();
+            totalBalance += balance;
+            System.out.printf("口座 %s: %s%n", account.getAccountNumber(),
+                NumberFormat.getCurrencyInstance().format(balance));
+        }
+        System.out.printf("総残高: %s%n", 
+            NumberFormat.getCurrencyInstance().format(totalBalance));
+    }
+    
+    public static void main(String[] args) {
+        try {
+            demonstrateBankOperations();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("処理が中断されました");
+        } catch (Exception e) {
+            System.err.println("エラーが発生しました: " + e.getMessage());
             e.printStackTrace();
         }
     }
 }
 ```
 
-#### 実用的なネットワークアプリケーション - マルチプレイヤーゲームサーバ
+**このシステムで学習できる同期制御の重要ポイント:**
 
-以下は、ネットワークプログラミングの概念を包括的に示す、リアルタイムマルチプレイヤーゲームサーバの実装例です。このシステムは現代的なネットワークアプリケーション開発の基盤技術を示しています：
+1. **synchronizedメソッド**: `BasicBankAccount`では、メソッド全体を同期化する最もシンプルな手法を使用しています。
+
+2. **ReentrantLock**: `AdvancedBankAccount`では、タイムアウト機能付きのより高度なロック制御を実装しています。
+
+3. **デッドロック回避**: 送金処理では、常に口座番号の順序でロックを取得することで、デッドロックを防いでいます。
+
+4. **例外安全性**: finally節でのlock.unlock()により、例外が発生してもロックが確実に解放されます。
+
+5. **パフォーマンス考慮**: 必要最小限の範囲でのみロックを保持し、パフォーマンスへの影響を最小化しています。
+
+6. **実際的な業務ロジック**: 銀行口座という現実的なシナリオで、同期制御の必要性を理解できます。
+
+### synchronizedによる排他制御
+
+この問題を解決するために、Javaは`synchronized`キーワードによる**排他制御 (Mutual Exclusion)** のしくみを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。
+
+#### synchronizedメソッド
+
+メソッド全体を同期化するには、メソッド宣言に`synchronized`を付与します。
+
+```java
+class SynchronizedCounter {
+    private int count = 0;
+
+    // このメソッドはsynchronizedによりスレッドセーフになります
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+```
+
+#### synchronizedブロック
+
+メソッド全体ではなく、特定のコードブロックのみを同期化したい場合は、`synchronized`ブロックを使用します。これにより、ロックの範囲を最小限に抑え、パフォーマンスへの影響を軽減できます。
+
+```java
+public class SynchronizedBlockExample {
+    private final Object lock = new Object(); // ロック専用のオブジェクト
+    private int count = 0;
+
+    public void performTask() {
+        System.out.println(Thread.currentThread().getName() + 
+                          "がロックを取得しようとしています。");
+
+        // synchronizedブロック: 専用のlockオブジェクトで同期
+        synchronized (lock) {
+            // このブロック内は一度に1つのスレッドしか実行できません
+            count++;
+            System.out.println(Thread.currentThread().getName() + 
+                              "がロック内で処理を実行中。Count: " + count);
+        }
+    }
+}
+```
+
+### デッドロック
+
+**デッドロック**は、2つ以上のスレッドが互いに相手のロックを待ってしまい、処理が永遠に進まなくなる状態のことです。
+
+```java
+public class DeadlockExample {
+    private static final Object resourceA = new Object();
+    private static final Object resourceB = new Object();
+
+    public static void main(String[] args) {
+        // スレッド1: AをロックしてからBをロックしようとする
+        Thread t1 = new Thread(() -> {
+            synchronized (resourceA) {
+                System.out.println("Thread 1: Locked resource A");
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+                System.out.println("Thread 1: Waiting for resource B...");
+                synchronized (resourceB) {
+                    System.out.println("Thread 1: Locked resource B");
+                }
+            }
+        });
+
+        // スレッド2: BをロックしてからAをロックしようとする
+        Thread t2 = new Thread(() -> {
+            synchronized (resourceB) {
+                System.out.println("Thread 2: Locked resource B");
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+                System.out.println("Thread 2: Waiting for resource A...");
+                synchronized (resourceA) {
+                    System.out.println("Thread 2: Locked resource A");
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+```
+
+最も一般的な回避策は、**すべてのスレッドでロックを取得する順序を統一する**ことです。たとえば、常に`resourceA` → `resourceB`の順でロックを取得するようにすれば、デッドロックは発生しません。
+
+## 14.5 Executorフレームワークによる高度なスレッド管理
+
+`Thread`クラスを直接インスタンス化して使用する方法は、小規模なプログラムでは問題ありません。しかし、多くのタスクを処理する必要がある場合、スレッドの生成と破棄にかかるオーバーヘッドが大きくなり、無制限にスレッドが生成されてリソースを枯渇させる危険性があります。
+
+この問題を解決するのが **Executorフレームワーク (`java.util.concurrent`)** です。これは、スレッドの生成・管理を抽象化し、**スレッドプール**を利用して効率的にタスクを実行するためのしくみを提供します。
+
+#### 実践的なWebクローラシステム
+
+以下は、ExecutorServiceを活用した実用的なWebクローラシステムです。このシステムは複数のWebページを並行してダウンロードし、結果を効率的に処理します：
 
 ```java
 import java.io.*;
 import java.net.*;
+import java.nio.file.*;
+import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * マルチプレイヤーゲームサーバー - 高度なネットワークプログラミングの実践例
+ * Webクローラーシステム - ExecutorServiceの実践例
  * 
- * このシステムは以下の先進的な機能を実装しています：
- * - WebSocketスタイルのリアルタイム通信
- * - JSON形式のメッセージプロトコル
- * - 接続管理とセッション追跡
- * - ゲーム状態の同期とブロードキャスト
- * - エラーハンドリングと接続復旧
+ * このシステムは以下の技術を実装しています：
+ * - 複数タイプのExecutorServiceの使い分け
+ * - CompletableFutureによる非同期処理
+ * - 結果の集約と統計分析
+ * - エラーハンドリングとリトライ機能
  */
-public class MultiplayerGameServer {
+public class WebCrawlerSystem {
     
     /**
-     * ゲームメッセージの基底クラス
+     * Webページの情報を表すレコード
      */
-    public static abstract class GameMessage {
-        @JsonProperty("type")
-        public abstract String getType();
-        
-        @JsonProperty("timestamp")
-        public String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    }
-    
-    /**
-     * プレイヤー参加メッセージ
-     */
-    public static class PlayerJoinMessage extends GameMessage {
-        @JsonProperty("playerId")
-        public String playerId;
-        
-        @JsonProperty("playerName")
-        public String playerName;
-        
-        @Override
-        public String getType() { return "player_join"; }
-    }
-    
-    /**
-     * プレイヤー移動メッセージ
-     */
-    public static class PlayerMoveMessage extends GameMessage {
-        @JsonProperty("playerId")
-        public String playerId;
-        
-        @JsonProperty("x")
-        public double x;
-        
-        @JsonProperty("y")
-        public double y;
-        
-        @Override
-        public String getType() { return "player_move"; }
-    }
-    
-    /**
-     * チャットメッセージ
-     */
-    public static class ChatMessage extends GameMessage {
-        @JsonProperty("playerId")
-        public String playerId;
-        
-        @JsonProperty("message")
-        public String message;
-        
-        @Override
-        public String getType() { return "chat"; }
-    }
-    
-    /**
-     * ゲーム状態更新メッセージ
-     */
-    public static class GameStateMessage extends GameMessage {
-        @JsonProperty("players")
-        public Map<String, PlayerState> players;
-        
-        @Override
-        public String getType() { return "game_state"; }
-    }
-    
-    /**
-     * プレイヤーの状態
-     */
-    public static class PlayerState {
-        @JsonProperty("id")
-        public String id;
-        
-        @JsonProperty("name")
-        public String name;
-        
-        @JsonProperty("x")
-        public double x;
-        
-        @JsonProperty("y")
-        public double y;
-        
-        @JsonProperty("online")
-        public boolean online;
-        
-        @JsonProperty("lastActivity")
-        public String lastActivity;
-        
-        public PlayerState(String id, String name) {
-            this.id = id;
-            this.name = name;
-            this.x = Math.random() * 1000; // ランダムな初期位置
-            this.y = Math.random() * 1000;
-            this.online = true;
-            this.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public record WebPageInfo(String url, int statusCode, long contentLength, 
+                             Duration downloadTime, String errorMessage) {
+        public boolean isSuccess() {
+            return statusCode == 200 && errorMessage == null;
         }
     }
     
     /**
-     * 接続されたクライアントの管理
+     * 単一ページのダウンロードタスク
      */
-    public static class ClientConnection {
-        private final Socket socket;
-        private final BufferedReader reader;
-        private final PrintWriter writer;
-        private final String clientId;
-        private volatile boolean active;
-        private PlayerState playerState;
+    private static class PageDownloader implements Callable<WebPageInfo> {
+        private final String url;
+        private final int timeoutSeconds;
+        private final AtomicInteger completedCount;
+        private final int totalCount;
         
-        public ClientConnection(Socket socket) throws IOException {
-            this.socket = socket;
-            this.reader = new BufferedReader(
-                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-            this.writer = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
-            this.clientId = "client_" + System.currentTimeMillis() + "_" + 
-                          (int)(Math.random() * 1000);
-            this.active = true;
+        public PageDownloader(String url, int timeoutSeconds, 
+                            AtomicInteger completedCount, int totalCount) {
+            this.url = url;
+            this.timeoutSeconds = timeoutSeconds;
+            this.completedCount = completedCount;
+            this.totalCount = totalCount;
         }
         
-        public void sendMessage(String message) {
-            if (active && !socket.isClosed()) {
-                writer.println(message);
-            }
-        }
-        
-        public String readMessage() throws IOException {
-            return reader.readLine();
-        }
-        
-        public void close() {
-            active = false;
+        @Override
+        public WebPageInfo call() throws Exception {
+            Instant startTime = Instant.now();
+            
             try {
-                if (!socket.isClosed()) {
-                    socket.close();
-                }
-            } catch (IOException e) {
-                System.err.println("Error closing client connection: " + e.getMessage());
-            }
-        }
-        
-        // Getters
-        public String getClientId() { return clientId; }
-        public boolean isActive() { return active; }
-        public PlayerState getPlayerState() { return playerState; }
-        public void setPlayerState(PlayerState state) { this.playerState = state; }
-        public Socket getSocket() { return socket; }
-    }
-    
-    /**
-     * ゲームサーバーのメインクラス
-     */
-    public static class GameServer {
-        private final int port;
-        private final ExecutorService executorService;
-        private final Map<String, ClientConnection> clients;
-        private final Map<String, PlayerState> gameState;
-        private final ObjectMapper objectMapper;
-        private final AtomicInteger connectionCounter;
-        private volatile boolean running;
-        
-        public GameServer(int port) {
-            this.port = port;
-            this.executorService = Executors.newCachedThreadPool();
-            this.clients = new ConcurrentHashMap<>();
-            this.gameState = new ConcurrentHashMap<>();
-            this.objectMapper = new ObjectMapper();
-            this.connectionCounter = new AtomicInteger(0);
-            this.running = false;
-        }
-        
-        /**
-         * サーバーの開始
-         */
-        public void start() {
-            running = true;
-            System.out.println("=== マルチプレイヤーゲームサーバー起動 ===");
-            System.out.println("ポート: " + port);
-            
-            // ゲーム状態の定期更新タスク
-            executorService.submit(this::gameStateUpdateLoop);
-            
-            try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("クライアントの接続を待機中...");
+                System.out.printf("[%s] %s のダウンロード開始%n", 
+                    Thread.currentThread().getName(), url);
                 
-                while (running) {
-                    try {
-                        Socket clientSocket = serverSocket.accept();
-                        int connectionId = connectionCounter.incrementAndGet();
+                // HTTP接続の設定
+                URL urlObj = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(timeoutSeconds * 1000);
+                connection.setReadTimeout(timeoutSeconds * 1000);
+                connection.setRequestProperty("User-Agent", 
+                    "WebCrawler-Demo/1.0 (Educational Purpose)");
+                
+                int statusCode = connection.getResponseCode();
+                long contentLength = 0;
+                
+                if (statusCode == 200) {
+                    // コンテンツのダウンロード（実際の実装では内容を保存）
+                    try (InputStream inputStream = connection.getInputStream();
+                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                         
-                        System.out.printf("新しい接続 #%d: %s%n", 
-                            connectionId, clientSocket.getRemoteSocketAddress());
-                        
-                        // 各クライアント用のハンドラーを非同期で実行
-                        executorService.submit(() -> handleClient(clientSocket));
-                        
-                    } catch (IOException e) {
-                        if (running) {
-                            System.err.println("クライアント接続エラー: " + e.getMessage());
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
                         }
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("サーバーソケットエラー: " + e.getMessage());
-            }
-        }
-        
-        /**
-         * 個別クライアントの処理
-         */
-        private void handleClient(Socket clientSocket) {
-            ClientConnection connection = null;
-            
-            try {
-                connection = new ClientConnection(clientSocket);
-                clients.put(connection.getClientId(), connection);
-                
-                System.out.printf("クライアント登録: %s (%s)%n",
-                    connection.getClientId(), 
-                    clientSocket.getRemoteSocketAddress());
-                
-                // ウェルカムメッセージ
-                connection.sendMessage(createWelcomeMessage(connection.getClientId()));
-                
-                // メッセージ処理ループ
-                String rawMessage;
-                while (connection.isActive() && (rawMessage = connection.readMessage()) != null) {
-                    try {
-                        processMessage(connection, rawMessage);
-                    } catch (Exception e) {
-                        System.err.println("メッセージ処理エラー: " + e.getMessage());
-                        // エラーメッセージをクライアントに送信
-                        connection.sendMessage(createErrorMessage(e.getMessage()));
+                        contentLength = outputStream.size();
                     }
                 }
                 
-            } catch (IOException e) {
-                System.err.println("クライアント通信エラー: " + e.getMessage());
-            } finally {
-                // クリーンアップ処理
-                if (connection != null) {
-                    cleanupClient(connection);
-                }
-            }
-        }
-        
-        /**
-         * メッセージ処理の分岐
-         */
-        private void processMessage(ClientConnection connection, String rawMessage) throws Exception {
-            // JSON解析の試行
-            Map<String, Object> messageData = objectMapper.readValue(rawMessage, Map.class);
-            String messageType = (String) messageData.get("type");
-            
-            switch (messageType) {
-                case "join" -> handleJoinMessage(connection, messageData);
-                case "move" -> handleMoveMessage(connection, messageData);
-                case "chat" -> handleChatMessage(connection, messageData);
-                case "ping" -> handlePingMessage(connection);
-                default -> System.err.println("不明なメッセージタイプ: " + messageType);
-            }
-        }
-        
-        /**
-         * プレイヤー参加処理
-         */
-        private void handleJoinMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
-            String playerName = (String) data.get("playerName");
-            
-            PlayerState playerState = new PlayerState(connection.getClientId(), playerName);
-            connection.setPlayerState(playerState);
-            gameState.put(connection.getClientId(), playerState);
-            
-            System.out.printf("プレイヤー参加: %s (ID: %s)%n", 
-                playerName, connection.getClientId());
-            
-            // 参加通知をすべてのクライアントにブロードキャスト
-            PlayerJoinMessage joinMessage = new PlayerJoinMessage();
-            joinMessage.playerId = connection.getClientId();
-            joinMessage.playerName = playerName;
-            
-            broadcastMessage(objectMapper.writeValueAsString(joinMessage));
-        }
-        
-        /**
-         * プレイヤー移動処理
-         */
-        private void handleMoveMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
-            PlayerState playerState = connection.getPlayerState();
-            if (playerState == null) return;
-            
-            double x = ((Number) data.get("x")).doubleValue();
-            double y = ((Number) data.get("y")).doubleValue();
-            
-            // 移動範囲の制限（0-1000の範囲内）
-            x = Math.max(0, Math.min(1000, x));
-            y = Math.max(0, Math.min(1000, y));
-            
-            playerState.x = x;
-            playerState.y = y;
-            playerState.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            
-            // 移動メッセージをブロードキャスト
-            PlayerMoveMessage moveMessage = new PlayerMoveMessage();
-            moveMessage.playerId = connection.getClientId();
-            moveMessage.x = x;
-            moveMessage.y = y;
-            
-            broadcastMessage(objectMapper.writeValueAsString(moveMessage));
-        }
-        
-        /**
-         * チャットメッセージ処理
-         */
-        private void handleChatMessage(ClientConnection connection, Map<String, Object> data) throws Exception {
-            PlayerState playerState = connection.getPlayerState();
-            if (playerState == null) return;
-            
-            String message = (String) data.get("message");
-            
-            ChatMessage chatMessage = new ChatMessage();
-            chatMessage.playerId = connection.getClientId();
-            chatMessage.message = message;
-            
-            System.out.printf("チャット [%s]: %s%n", playerState.name, message);
-            
-            broadcastMessage(objectMapper.writeValueAsString(chatMessage));
-        }
-        
-        /**
-         * 生存確認処理
-         */
-        private void handlePingMessage(ClientConnection connection) throws Exception {
-            PlayerState playerState = connection.getPlayerState();
-            if (playerState != null) {
-                playerState.lastActivity = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            }
-            
-            // Pongレスポンス
-            Map<String, Object> pongMessage = Map.of(
-                "type", "pong",
-                "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            );
-            connection.sendMessage(objectMapper.writeValueAsString(pongMessage));
-        }
-        
-        /**
-         * すべてのクライアントにメッセージをブロードキャスト
-         */
-        private void broadcastMessage(String message) {
-            clients.values().parallelStream()
-                .filter(ClientConnection::isActive)
-                .forEach(client -> client.sendMessage(message));
-        }
-        
-        /**
-         * ゲーム状態の定期更新
-         */
-        private void gameStateUpdateLoop() {
-            while (running) {
-                try {
-                    Thread.sleep(5000); // 5秒間隔
-                    
-                    // アクティブなプレイヤーの状態更新
-                    GameStateMessage stateMessage = new GameStateMessage();
-                    stateMessage.players = new HashMap<>(gameState);
-                    
-                    String stateJson = objectMapper.writeValueAsString(stateMessage);
-                    broadcastMessage(stateJson);
-                    
-                    System.out.printf("ゲーム状態更新送信 - アクティブプレイヤー: %d人%n", 
-                        stateMessage.players.size());
-                        
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    System.err.println("ゲーム状態更新エラー: " + e.getMessage());
-                }
-            }
-        }
-        
-        /**
-         * クライアントのクリーンアップ
-         */
-        private void cleanupClient(ClientConnection connection) {
-            connection.close();
-            clients.remove(connection.getClientId());
-            
-            PlayerState playerState = connection.getPlayerState();
-            if (playerState != null) {
-                gameState.remove(connection.getClientId());
-                System.out.printf("プレイヤー退出: %s (ID: %s)%n", 
-                    playerState.name, connection.getClientId());
-            }
-            
-            System.out.printf("クライアント切断: %s%n", connection.getClientId());
-        }
-        
-        /**
-         * ウェルカムメッセージの作成
-         */
-        private String createWelcomeMessage(String clientId) throws Exception {
-            Map<String, Object> welcomeMessage = Map.of(
-                "type", "welcome",
-                "clientId", clientId,
-                "serverInfo", Map.of(
-                    "name", "マルチプレイヤーゲームサーバー",
-                    "version", "1.0",
-                    "maxPlayers", 100
-                ),
-                "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            );
-            return objectMapper.writeValueAsString(welcomeMessage);
-        }
-        
-        /**
-         * エラーメッセージの作成
-         */
-        private String createErrorMessage(String error) {
-            try {
-                Map<String, Object> errorMessage = Map.of(
-                    "type", "error",
-                    "message", error,
-                    "timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                );
-                return objectMapper.writeValueAsString(errorMessage);
+                Duration downloadTime = Duration.between(startTime, Instant.now());
+                int completed = completedCount.incrementAndGet();
+                
+                System.out.printf("[%s] %s 完了 (%d/%d) - %d bytes, %d ms%n",
+                    Thread.currentThread().getName(), url, completed, totalCount,
+                    contentLength, downloadTime.toMillis());
+                
+                return new WebPageInfo(url, statusCode, contentLength, downloadTime, null);
+                
             } catch (Exception e) {
-                return "{\"type\":\"error\",\"message\":\"Unknown error occurred\"}";
+                Duration downloadTime = Duration.between(startTime, Instant.now());
+                System.err.printf("[%s] %s エラー: %s%n",
+                    Thread.currentThread().getName(), url, e.getMessage());
+                
+                return new WebPageInfo(url, -1, 0, downloadTime, e.getMessage());
             }
-        }
-        
-        /**
-         * サーバーの停止
-         */
-        public void stop() {
-            running = false;
-            
-            // 全クライアントに切断通知
-            clients.values().forEach(ClientConnection::close);
-            
-            executorService.shutdown();
-            try {
-                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-                    executorService.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executorService.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-            
-            System.out.println("サーバーが停止しました。");
         }
     }
     
     /**
-     * テスト用シンプルクライアント
+     * 同期的なバッチダウンロード（固定スレッドプール使用）
      */
-    public static class GameClient {
-        private Socket socket;
-        private PrintWriter writer;
-        private BufferedReader reader;
-        private final ObjectMapper objectMapper = new ObjectMapper();
+    public List<WebPageInfo> downloadBatchSync(List<String> urls, 
+                                               int threadPoolSize, 
+                                               int timeoutSeconds) 
+                                               throws InterruptedException {
+        System.out.println("=== 同期的バッチダウンロード開始 ===");
+        System.out.printf("URL数: %d, スレッドプール: %d%n", urls.size(), threadPoolSize);
         
-        public void connect(String host, int port) throws IOException {
-            socket = new Socket(host, port);
-            writer = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
-            reader = new BufferedReader(
-                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+        ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
+        AtomicInteger completedCount = new AtomicInteger(0);
+        
+        try {
+            // 全タスクを投入
+            List<Future<WebPageInfo>> futures = new ArrayList<>();
+            for (String url : urls) {
+                PageDownloader downloader = new PageDownloader(
+                    url, timeoutSeconds, completedCount, urls.size());
+                Future<WebPageInfo> future = executor.submit(downloader);
+                futures.add(future);
+            }
             
-            System.out.println("サーバーに接続しました: " + host + ":" + port);
-        }
-        
-        public void joinGame(String playerName) throws Exception {
-            Map<String, Object> joinMessage = Map.of(
-                "type", "join",
-                "playerName", playerName
-            );
-            sendMessage(joinMessage);
-        }
-        
-        public void movePlayer(double x, double y) throws Exception {
-            Map<String, Object> moveMessage = Map.of(
-                "type", "move",
-                "x", x,
-                "y", y
-            );
-            sendMessage(moveMessage);
-        }
-        
-        public void sendChat(String message) throws Exception {
-            Map<String, Object> chatMessage = Map.of(
-                "type", "chat",
-                "message", message
-            );
-            sendMessage(chatMessage);
-        }
-        
-        private void sendMessage(Map<String, Object> message) throws Exception {
-            String json = objectMapper.writeValueAsString(message);
-            writer.println(json);
-        }
-        
-        public void startListening() {
-            new Thread(() -> {
+            // 結果の収集
+            List<WebPageInfo> results = new ArrayList<>();
+            for (Future<WebPageInfo> future : futures) {
                 try {
-                    String message;
-                    while ((message = reader.readLine()) != null) {
-                        System.out.println("サーバーからのメッセージ: " + message);
-                    }
-                } catch (IOException e) {
-                    System.err.println("サーバーからの読み込みエラー: " + e.getMessage());
+                    WebPageInfo result = future.get(); // ブロッキング
+                    results.add(result);
+                } catch (ExecutionException e) {
+                    System.err.println("タスク実行エラー: " + e.getCause().getMessage());
                 }
-            }).start();
-        }
-        
-        public void disconnect() throws IOException {
-            if (socket != null && !socket.isClosed()) {
-                socket.close();
+            }
+            
+            return results;
+            
+        } finally {
+            executor.shutdown();
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
             }
         }
+    }
+    
+    /**
+     * 非同期バッチダウンロード（CompletableFuture使用）
+     */
+    public CompletableFuture<List<WebPageInfo>> downloadBatchAsync(List<String> urls, 
+                                                                  int timeoutSeconds) {
+        System.out.println("=== 非同期バッチダウンロード開始 ===");
+        System.out.printf("URL数: %d%n", urls.size());
+        
+        // 専用のExecutorServiceを作成
+        ExecutorService executor = Executors.newWorkStealingPool();
+        AtomicInteger completedCount = new AtomicInteger(0);
+        
+        // 各URLに対してCompletableFutureを作成
+        List<CompletableFuture<WebPageInfo>> futures = urls.stream()
+            .map(url -> CompletableFuture.supplyAsync(() -> {
+                try {
+                    PageDownloader downloader = new PageDownloader(
+                        url, timeoutSeconds, completedCount, urls.size());
+                    return downloader.call();
+                } catch (Exception e) {
+                    return new WebPageInfo(url, -1, 0, Duration.ZERO, e.getMessage());
+                }
+            }, executor))
+            .collect(Collectors.toList());
+        
+        // 全ての非同期タスクが完了したら結果をまとめる
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+            .thenApply(v -> futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList()))
+            .whenComplete((result, throwable) -> {
+                executor.shutdown();
+            });
+    }
+    
+    /**
+     * ダウンロード結果の分析と表示
+     */
+    public void analyzeResults(List<WebPageInfo> results) {
+        System.out.println("\n=== ダウンロード結果分析 ===");
+        
+        if (results.isEmpty()) {
+            System.out.println("結果がありません。");
+            return;
+        }
+        
+        // 基本統計
+        long successCount = results.stream().mapToLong(r -> r.isSuccess() ? 1 : 0).sum();
+        long totalBytes = results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .mapToLong(WebPageInfo::contentLength)
+            .sum();
+        
+        OptionalDouble avgDownloadTime = results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .mapToDouble(r -> r.downloadTime().toMillis())
+            .average();
+        
+        System.out.printf("成功率: %d/%d (%.1f%%)%n", 
+            successCount, results.size(), 
+            (double) successCount / results.size() * 100);
+        
+        System.out.printf("総ダウンロード容量: %,d bytes (%.2f MB)%n", 
+            totalBytes, totalBytes / 1024.0 / 1024.0);
+        
+        if (avgDownloadTime.isPresent()) {
+            System.out.printf("平均ダウンロード時間: %.1f ms%n", avgDownloadTime.getAsDouble());
+        }
+        
+        // エラー分析
+        Map<String, Long> errorCounts = results.stream()
+            .filter(r -> !r.isSuccess())
+            .collect(Collectors.groupingBy(
+                r -> r.errorMessage() != null ? r.errorMessage() : "HTTP " + r.statusCode(),
+                Collectors.counting()));
+        
+        if (!errorCounts.isEmpty()) {
+            System.out.println("\nエラー内訳:");
+            errorCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .forEach(entry -> 
+                    System.out.printf("  %s: %d件%n", entry.getKey(), entry.getValue()));
+        }
+        
+        // 速度ランキング（成功したもののみ）
+        System.out.println("\n速度ランキング (上位5件):");
+        results.stream()
+            .filter(WebPageInfo::isSuccess)
+            .sorted(Comparator.comparing(WebPageInfo::downloadTime))
+            .limit(5)
+            .forEach(info -> 
+                System.out.printf("  %s: %d ms (%,d bytes)%n",
+                    info.url(), info.downloadTime().toMillis(), info.contentLength()));
     }
     
     /**
      * デモンストレーション
      */
-    public static void main(String[] args) {
-        GameServer server = new GameServer(8888);
+    public static void demonstrateWebCrawling() {
+        WebCrawlerSystem crawler = new WebCrawlerSystem();
         
-        // サーバーを別スレッドで起動
-        Thread serverThread = new Thread(server::start);
-        serverThread.start();
+        // テスト用のURL（実際のWebサイトではサーバーへの負荷を考慮すること）
+        List<String> testUrls = Arrays.asList(
+            "https://httpbin.org/delay/1",
+            "https://httpbin.org/status/200",
+            "https://httpbin.org/status/404", 
+            "https://httpbin.org/bytes/1024",
+            "https://httpbin.org/html",
+            "https://httpbin.org/json",
+            "https://httpbin.org/xml"
+        );
         
-        // 少し待ってからテストクライアントを接続
         try {
-            Thread.sleep(1000);
+            // 1. 同期的なバッチ処理
+            long startTime = System.currentTimeMillis();
+            List<WebPageInfo> syncResults = crawler.downloadBatchSync(testUrls, 3, 10);
+            long syncTime = System.currentTimeMillis() - startTime;
             
-            // テストクライアント1
-            GameClient client1 = new GameClient();
-            client1.connect("localhost", 8888);
-            client1.startListening();
-            client1.joinGame("プレイヤー1");
+            System.out.printf("\n同期処理時間: %d ms%n", syncTime);
+            crawler.analyzeResults(syncResults);
             
-            Thread.sleep(1000);
+            // 2. 非同期バッチ処理
+            System.out.println("\n" + "=".repeat(50));
+            startTime = System.currentTimeMillis();
             
-            // テストクライアント2
-            GameClient client2 = new GameClient();
-            client2.connect("localhost", 8888);
-            client2.startListening();
-            client2.joinGame("プレイヤー2");
+            CompletableFuture<List<WebPageInfo>> asyncFuture = 
+                crawler.downloadBatchAsync(testUrls, 10);
             
-            // テストメッセージの送信
-            Thread.sleep(1000);
-            client1.movePlayer(100, 200);
-            client1.sendChat("こんにちは！");
+            // 非同期処理の完了を待機
+            List<WebPageInfo> asyncResults = asyncFuture.get(30, TimeUnit.SECONDS);
+            long asyncTime = System.currentTimeMillis() - startTime;
             
-            Thread.sleep(1000);
-            client2.movePlayer(300, 400);
-            client2.sendChat("よろしくお願いします！");
+            System.out.printf("\n非同期処理時間: %d ms%n", asyncTime);
+            crawler.analyzeResults(asyncResults);
             
-            // しばらく動作させてから終了
-            Thread.sleep(10000);
-            
-            client1.disconnect();
-            client2.disconnect();
-            server.stop();
+            // パフォーマンス比較
+            System.out.println("\n=== パフォーマンス比較 ===");
+            System.out.printf("同期処理: %d ms%n", syncTime);
+            System.out.printf("非同期処理: %d ms%n", asyncTime);
+            System.out.printf("速度向上: %.2fx%n", (double) syncTime / asyncTime);
             
         } catch (Exception e) {
             System.err.println("デモ実行エラー: " + e.getMessage());
             e.printStackTrace();
         }
     }
-}
-```
-
-**このマルチプレイヤーゲームサーバの特徴と学習ポイント:**
-
-1. **現代的なメッセージング**: JSON形式でのプロトコル設計により、Web技術との親和性が高い通信を実現しています。
-
-2. **リアルタイム通信**: WebSocketスタイルの双方向通信により、即座の状態同期が可能です。
-
-3. **接続管理**: クライアントセッションの追跡、自動クリーンアップ、エラー回復機能を実装しています。
-
-4. **スケーラブル設計**: ConcurrentHashMapと非同期処理により、多数の同時接続に対応できます。
-
-5. **ゲーム状態同期**: 定期的なブロードキャストによる状態同期パターンを示しています。
-
-6. **エラーハンドリング**: ネットワーク障害、不正メッセージ、リソースリークに対する適切な処理を実装しています。
-
-7. **実用的なアーキテクチャ**: 実際のオンラインゲームやリアルタイムアプリケーションで使用される設計パターンを採用しています。
-
-### クライアントの実装
-
-次に、作成したサーバに接続し、メッセージを送信するためのクライアントプログラムを作成します。
-
-```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-
-public class EchoClient {
-
+    
     public static void main(String[] args) {
-        // 接続先サーバーのホスト名とポート番号
-        String hostname = "localhost"; // 自分自身を指す
-        int port = 12345;
-
-        // try-with-resources文でSocketとストリーム、Scannerを自動クローズする
-        try (
-            // サーバーに接続するためのSocketを生成する
-            Socket socket = new Socket(hostname, port);
-            // サーバーへの送信用Writer
-            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true, StandardCharsets.UTF_8);
-            // サーバーからの受信用Reader
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8)
-            );
-            // 標準入力（キーボード）からユーザーの入力を受け取るためのScanner
-            Scanner consoleScanner = new Scanner(System.in)
-        ) {
-            System.out.println("Connected to the echo server. Type 'exit' to quit.");
-            
-            String userInput;
-            // ユーザーがコンソールで入力した文字列を1行ずつ読み込む
-            while ((userInput = consoleScanner.nextLine()) != null) {
-                // 入力された文字列をサーバーに送信する
-                writer.println(userInput);
-                
-                // サーバーからの応答を受信する
-                String serverResponse = reader.readLine();
-                System.out.println("Echo from server: " + serverResponse);
-
-                // ユーザーが"exit"を入力した場合、ループを抜けてプログラムを終了する
-                if ("exit".equalsIgnoreCase(userInput)) {
-                    break;
-                }
-            }
-
-        } catch (UnknownHostException e) {
-            // 指定されたホストが見つからない場合
-            System.err.println("Host unknown: " + hostname);
-            e.printStackTrace();
-        } catch (IOException e) {
-            // サーバーへの接続失敗や、通信中にエラーが発生した場合
-            System.err.println("Couldn't get I/O for the connection to " + hostname);
-            System.err.println("Please make sure the server is running.");
-            e.printStackTrace();
-        }
+        demonstrateWebCrawling();
     }
 }
 ```
 
-### 実行と動作確認
+**このWebクローラシステムの特徴:**
 
-1. まず、`EchoServer.java`をコンパイルして実行します。サーバがクライアントの接続待機状態になります
-2. 次に、別のターミナル（コンソール）で`EchoClient.java`をコンパイルして実行します
-3. クライアントのコンソールで何か文字を入力してEnterキーを押すと、サーバがそれを受け取り、クライアントに応答を返します
+1. **ExecutorService の使い分け**:
+   - `newFixedThreadPool()`: 同期的なバッチ処理用
+   - `newWorkStealingPool()`: 非同期処理での負荷分散
 
-**クライアント側の実行例:**
+2. **Callable と Future**:
+   - 戻り値のあるタスクの実装
+   - `Future.get()` による結果の取得
 
-```
-Connected to the echo server. Type 'exit' to quit.
-hello
-Echo from server: hello
-Java Socket Programming
-Echo from server: Java Socket Programming
-exit
-Echo from server: exit
-```
+3. **CompleテーブルFuture**:
+   - 現代的な非同期プログラミング
+   - 複数の非同期タスクの組み合わせ
 
-## 15.3 複数クライアントへの対応（マルチスレッド化）
+4. **エラーハンドリング**:
+   - ネットワークエラーの適切な処理
+   - タイムアウトとリソース管理
 
-先の`EchoServer`は、1つのクライアントとの通信が終わるまで、次のクライアントの接続を受け付けられません。これは`accept()`メソッドや`readLine()`メソッドが処理をブロックするためです。
+5. **パフォーマンス分析**:
+   - 実行時間の測定と比較
+   - 統計情報の算出と表示
 
-実用的なサーバは複数のクライアントと同時に通信できる必要があります。これを実現するために、クライアントごとに新しいスレッドを生成して通信処理を任せる「マルチスレッド」モデルを導入します。
+6. **実用的な設計**:
+   - リソースリークの防止
+   - 適切なシャットダウン処理
 
-### スレッドによる並行処理の実装
+### ExecutorServiceとスレッドプール
 
-クライアントからの接続を受け付けるたびに、そのクライアントとの通信を専門に担当する新しいスレッドを作成し、処理を委譲します。これにより、メインスレッドはすぐに次のクライアントの接続待機（`accept()`）に戻ることができます。
+`ExecutorService`は、タスクの投入とスレッドプールの管理を行うためのインターフェイスです。スレッドプールは、あらかじめ作成された再利用可能なスレッドの集まりです。
 
-#### ClientHandler.java（クライアント処理クラス）
+#### ExecutorServiceの利点
 
-通信ロジックを`Runnable`インターフェイスを実装したクラスに分離します。これにより、コードの責務が明確になります。
+* **パフォーマンス向上**: スレッドの生成・破棄コストを削減できます
+* **リソース管理**: 作成されるスレッド数を制限し、システムの安定性を高めます
+* **コードの簡略化**: タスクの実行と管理が容易になります
 
-```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+#### ExecutorServiceの作成
 
-// Runnableインターフェイスを実装し、各クライアントの通信処理を担当するクラス
-public class ClientHandler implements Runnable {
+`Executors`クラスが提供するファクトリメソッドを利用して、一般的な`ExecutorService`を簡単に作成できます。
 
-    private final Socket clientSocket;
+* `Executors.newFixedThreadPool(int nThreads)`: 固定数のスレッドを持つプール
+* `Executors.newCachedThreadPool()`: 必要に応じてスレッドを新規作成・再利用するプール
+* `Executors.newSingleThreadExecutor()`: 1つのスレッドのみでタスクを順次実行するプール
 
-    // コンストラクタで、通信対象のSocketオブジェクトを受け取る
-    public ClientHandler(Socket socket) {
-        this.clientSocket = socket;
-    }
+### タスクの投入と非同期処理の結果取得
 
-    @Override
-    public void run() {
-        // try-with-resources文で、このスレッドが使用するリソースを管理する
-        try (
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8)
-            );
-            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true, StandardCharsets.UTF_8)
-        ) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.printf("Thread %d: Received from %s: %s\n",
-                    Thread.currentThread().getId(),
-                    clientSocket.getRemoteSocketAddress(),
-                    line
-                );
-                writer.println(line); // オウム返し
-                
-                if ("exit".equalsIgnoreCase(line)) {
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("I/O error with client " + clientSocket.getRemoteSocketAddress() + ": " + e.getMessage());
-        } finally {
-            // try-with-resourcesでsocketは自動クローズされないため、明示的にクローズする
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.printf("Thread %d: Connection with %s closed.\n",
-                Thread.currentThread().getId(),
-                clientSocket.getRemoteSocketAddress()
-            );
-        }
-    }
-}
-```
+#### execute(Runnable): 戻り値のないタスク
 
-#### MultiThreadEchoServer.java
-
-メインのサーバクラスは、接続を待ち受け、`ClientHandler`のインスタンスを生成して新しいスレッドで実行することに専念します。
+戻り値が不要なタスクは`execute()`メソッドで投入します。
 
 ```java
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-public class MultiThreadEchoServer {
-
-    public static void main(String[] args) {
-        int port = 12345;
-        System.out.println("Multi-threaded Echo Server is starting on port " + port);
-
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            // サーバーが停止するまで無限にクライアントの接続を待ち続ける
-            while (true) {
-                // 新しいクライアントからの接続を待つ
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("New client connected: " + clientSocket.getRemoteSocketAddress());
-                
-                // 新しいクライアントのためのハンドラーを作成
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                
-                // 新しいスレッドを作成し、ハンドラーのrun()メソッドを実行させる
-                new Thread(clientHandler).start();
-            }
-        } catch (IOException e) {
-            System.err.println("Could not listen on port: " + port);
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-このサーバを実行し、複数の`EchoClient`から同時に接続してみてください。それぞれのクライアントが独立してサーバと通信できることが確認できます。
-
-## 15.4 スレッドプールの活用（ExecutorService）
-
-クライアントごとにスレッドを生成するモデルは単純で分かりやすいですが、クライアント数が非常に多くなると、スレッドの生成・破棄のコストや、各スレッドで消費するメモリが問題になる可能性があります。
-
-このような問題を解決するため、現代的なJavaプログラミングでは`ExecutorService`（スレッドプール）を使用するのが一般的です。スレッドプールは、あらかじめ一定数のスレッドを作成しておき、タスク（この場合はクライアント処理）が発生するたびに待機中のスレッドに割り当てるしくみです。
-
-### ThreadPoolEchoServer.java
-
-```java
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ThreadPoolEchoServer {
-
+public class ExecutorExample {
     public static void main(String[] args) {
-        int port = 12345;
-        // 固定数のスレッドを持つスレッドプールを作成（ここでは10スレッド）
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        
-        System.out.println("Thread Pool Echo Server is starting on port " + port);
+        // 3つのスレッドを持つスレッドプールを作成
+        ExecutorService executor = Executors.newFixedThreadPool(3);
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                // ClientHandlerタスクを生成し、スレッドプールに投入する
-                // プール内の待機スレッドがこのタスクを実行する
-                executorService.submit(new ClientHandler(clientSocket));
-            }
-        } catch (IOException e) {
-            System.err.println("Server error: " + e.getMessage());
-        } finally {
-            // サーバーがシャットダウンする際にプールも閉じる
-            executorService.shutdown();
-        }
-    }
-}
-```
-
-この実装では、メインスレッドは`new Thread().start()`を呼びだす代わりに、`ExecutorService`にタスクを`submit()`するだけです。スレッドのライフサイクル管理は`ExecutorService`に任せることができ、より安定したサーバを構築できます。
-
-## 15.5 簡単なHTTPサーバの実装
-
-私たちが日常的に利用しているWebは、HTTP (HyperText Transfer Protocol) というプロトコルにもとづいています。HTTPはテキストベースのプロトコルであり、その基本的な動作はソケット通信で実装できます。
-
-### HTTPプロトコルの基本
-
-#### HTTP Request
-
-ブラウザ（クライアント）は、サーバに以下のようなテキストデータを送信します。
-
-```http
-GET /hello HTTP/1.1
-Host: localhost:12345
-Accept: */*
-(空行)
-```
-
-#### HTTP Response
-
-サーバは、リクエストに応じて以下のようなテキストデータを返します。
-
-```http
-HTTP/1.1 200 OK
-Content-Type: text/html; charset=utf-8
-Content-Length: 123
-
-<html>
-<body>
-<h1>Hello, World!</h1>
-</body>
-</html>
-```
-
-### 簡易HTTPサーバの実装
-
-```java
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.StringTokenizer;
-
-public class SimpleHTTPServer {
-    
-    public static void main(String[] args) {
-        int port = 8080;
-        System.out.println("Simple HTTP Server starting on port " + port);
-        
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                new Thread(new HTTPRequestHandler(clientSocket)).start();
-            }
-        } catch (IOException e) {
-            System.err.println("Server error: " + e.getMessage());
-        }
-    }
-}
-
-class HTTPRequestHandler implements Runnable {
-    private final Socket clientSocket;
-    
-    public HTTPRequestHandler(Socket socket) {
-        this.clientSocket = socket;
-    }
-    
-    @Override
-    public void run() {
-        try (
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8)
-            );
-            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true, StandardCharsets.UTF_8)
-        ) {
-            // HTTPリクエストの最初の行を読み取る
-            String requestLine = reader.readLine();
-            if (requestLine == null) return;
-            
-            System.out.println("Request: " + requestLine);
-            
-            // GET /path HTTP/1.1 の形式をパース
-            StringTokenizer tokenizer = new StringTokenizer(requestLine);
-            String method = tokenizer.nextToken();
-            String path = tokenizer.nextToken();
-            
-            // 残りのヘッダーを読み飛ばす
-            String line;
-            while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                // ヘッダーを読み飛ばす
-            }
-            
-            // レスポンスを生成
-            String responseBody;
-            if ("/".equals(path)) {
-                responseBody = "<html><body><h1>Welcome to Simple HTTP Server!</h1></body></html>";
-            } else if ("/hello".equals(path)) {
-                responseBody = "<html><body><h1>Hello, World!</h1></body></html>";
-            } else {
-                responseBody = "<html><body><h1>404 Not Found</h1></body></html>";
-            }
-            
-            // HTTPレスポンスヘッダー
-            writer.println("HTTP/1.1 200 OK");
-            writer.println("Content-Type: text/html; charset=utf-8");
-            writer.println("Content-Length: " + responseBody.getBytes(StandardCharsets.UTF_8).length);
-            writer.println(); // 空行でヘッダー終了
-            
-            // レスポンスボディ
-            writer.println(responseBody);
-            
-        } catch (IOException e) {
-            System.err.println("Error handling request: " + e.getMessage());
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-```
-
-このHTTPサーバを実行し、ブラウザで`http://localhost:8080/`や`http://localhost:8080/hello`にアクセスすると、HTMLページが表示されます。
-
-## 15.6 人工無脳サーバの実装
-
-ソケット通信を活用して、特定のキーワードに反応して会話を行う「人工無脳サーバ」を実装してみましょう。
-
-```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-
-public class AIProcessor implements Runnable {
-
-    private final Socket clientSocket;
-
-    public AIProcessor(Socket socket) {
-        this.clientSocket = socket;
-    }
-
-    @Override
-    public void run() {
-        try (
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8)
-            );
-            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true, StandardCharsets.UTF_8)
-        ) {
-            writer.println("ようこそ！何かお話しください。");
-
-            String message;
-            while ((message = reader.readLine()) != null) {
-                if ("exit".equalsIgnoreCase(message)) {
-                    writer.println("さようなら。");
-                    break;
+        // 10個のタスクを投入
+        for (int i = 0; i < 10; i++) {
+            final int taskId = i;
+            Runnable task = () -> {
+                System.out.println("Task " + taskId + " is being executed by " + 
+                                  Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
+            };
+            executor.execute(task);
+        }
 
-                String response = generateResponse(message);
-                writer.println(response);
+        executor.shutdown();
+    }
+}
+```
+
+#### submit(Callable)とFuture: 戻り値のあるタスク
+
+計算結果などの戻り値が必要なタスクや、例外をスローする可能性があるタスクには、`Callable<V>`インターフェイスを使用します。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが即座に返されます。
+
+```java
+import java.util.concurrent.*;
+
+public class FutureExample {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        // 戻り値のあるCallableタスクを定義（1から100までの合計を計算）
+        Callable<Integer> task = () -> {
+            System.out.println("Calculating sum...");
+            Thread.sleep(2000); // 時間のかかる計算を模倣
+            int sum = 0;
+            for (int i = 1; i <= 100; i++) {
+                sum += i;
             }
-        } catch (IOException e) {
-            System.err.println("An error occurred with a client: " + e.getMessage());
-        } finally {
+            return sum;
+        };
+
+        // Callableタスクを投入し、Futureオブジェクトを受け取る
+        Future<Integer> future = executor.submit(task);
+
+        System.out.println("他の処理を実行中です...");
+
+        // Future.get()を呼び出すと、タスクが完了するまでブロック(待機)し、結果を返す
+        Integer result = future.get();
+        System.out.println("計算結果: " + result);
+
+        executor.shutdown();
+    }
+}
+```
+
+### ExecutorServiceのシャットダウン
+
+`ExecutorService`を使用し終えたら、必ずシャットダウン処理を行う必要があります。そうしないと、JVMが終了しません。
+
+```java
+ExecutorService executor = Executors.newFixedThreadPool(2);
+// ...タスクの投入...
+
+try {
+    System.out.println("シャットダウンを開始します。");
+    executor.shutdown(); // 新規タスクの受付を停止
+    
+    // 1分以内にすべてのタスクが完了するのを待つ
+    if (!executor.awaitTermination(1, TimeUnit.MINUTES)) {
+        System.err.println("タスクがタイムアウトしました。強制終了します。");
+        executor.shutdownNow(); // 強制的にシャットダウンを試行
+    }
+} catch (InterruptedException e) {
+    executor.shutdownNow();
+    Thread.currentThread().interrupt();
+}
+System.out.println("シャットダウンが完了しました。");
+```
+
+## 14.6 実践例：マルチスレッド徒競走シミュレーション
+
+実際のマルチスレッドプログラムの例として、徒競走をシミュレーションするプログラムを作成してみましょう。
+
+### 選手レコード
+
+```java
+/**
+ * アスリートレコード
+ * @param name 選手名
+ * @param speed 速度[m/s]
+ */
+public record Athlete(String name, double speed) {}
+```
+
+### 走行レーンクラス（Runnableの実装）
+
+```java
+import java.text.DecimalFormat;
+
+/**
+ * 走行レーン（一人のAthleteを保持するトラックの1レーンをイメージ）
+ */
+public class Lane implements Runnable {
+    private final Athlete athlete;
+    private final int runningDistance;
+    private double time;
+
+    public Lane(Athlete athlete, int runningDistance) {
+        this.athlete = athlete;
+        this.runningDistance = runningDistance;
+    }
+
+    public Athlete getAthlete() {
+        return athlete;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    @Override
+    public void run() {
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        System.out.println(athlete.name() + ":スタート(速度: " + 
+                          df.format(athlete.speed()) + "[m/s])");
+
+        // 走る時間を計算
+        double t = runningDistance / athlete.speed();
+        long mills = Math.round(t * 1000);
+
+        try {
+            // スレッドを止めて走っている演出
+            Thread.sleep(mills);
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // タイムを設定
+        this.time = t;
+
+        System.out.println(athlete.name() + ":ゴール タイム:" + 
+                          df.format(t) + "[s]");
+    }
+}
+```
+
+### 徒競走クラス
+
+```java
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * 徒競走クラス
+ */
+public class Footrace {
+    public static final int RUNNING_DISTANCE = 30;
+
+    private final List<Athlete> athletes = new ArrayList<>();
+
+    public List<Athlete> getAthletes() {
+        return athletes;
+    }
+
+    public void start() {
+        System.out.println(RUNNING_DISTANCE + "メートル走");
+
+        // 走行レーンの設定
+        List<Lane> lanes = new ArrayList<>();
+        for (Athlete ath : athletes) {
+            lanes.add(new Lane(ath, RUNNING_DISTANCE));
+        }
+
+        // Runnableインターフェイスを実装したクラスは、Threadクラスにラッピングする必要がある
+        List<Thread> threads = new ArrayList<>();
+        lanes.forEach(l -> threads.add(new Thread(l)));
+
+        // 選手一人ずつ走る（マルチスレッドで同時スタート）
+        for (Thread t : threads) {
+            t.start();
+        }
+
+        // 各選手が走り終えるのを待つ
+        for (Thread t : threads) {
             try {
-                clientSocket.close();
-            } catch (IOException e) {
-                // ignore
+                t.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-            System.out.println("Client disconnected: " + clientSocket.getRemoteSocketAddress());
+        }
+
+        // タイムでソート
+        Collections.sort(lanes, (Lane a, Lane b) -> 
+            Double.compare(a.getTime(), b.getTime()));
+
+        System.out.println("=== 結果発表 ===");
+        int rank = 1;
+        for (Lane l : lanes) {
+            System.out.printf("第%d位\t%s\t%.2f[s]%s", 
+                             rank++, l.getAthlete().name(), l.getTime(), 
+                             System.lineSeparator());
         }
     }
-    
-    private String generateResponse(String message) {
-        if (message.contains("こんにちは")) {
-            return "こんにちは！良い一日ですね。";
-        } else if (message.contains("天気")) {
-            return "今日の天気は晴れのようです。";
-        } else if (message.contains("Java")) {
-            return "Javaは素晴らしいプログラミング言語ですね！";
-        } else if (message.endsWith("?") || message.endsWith("？")) {
-            return "それは興味深い質問ですが、私には分かりかねます。";
-        } else {
-            return "なるほど。「" + message + "」ですね。";
-        }
-    }
-}
-```
 
-この`AIProcessor`を`MultiThreadEchoServer`と同様のメインクラスから呼びだすことで、複数人が同時に接続し、同時に会話できる人工無脳サーバが完成します。
-
-## 15.7 UDP通信の実装
-
-これまではTCP通信を学習してきましたが、Javaでは信頼性よりも速度を重視するUDP（User Datagram Protocol）通信も実装できます。
-
-### UDPサーバの実装
-
-```java
-import java.io.IOException;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-
-public class UDPServer {
     public static void main(String[] args) {
-        int port = 12345;
-        
-        try (DatagramSocket socket = new DatagramSocket(port)) {
-            System.out.println("UDP Server is running on port " + port);
-            
-            byte[] buffer = new byte[1024];
-            
-            while (true) {
-                // データグラムパケットを受信
-                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-                socket.receive(receivePacket);
-                
-                String receivedMessage = new String(receivePacket.getData(), 0, 
-                                                   receivePacket.getLength(), StandardCharsets.UTF_8);
-                System.out.println("Received: " + receivedMessage + 
-                                 " from " + receivePacket.getAddress());
-                
-                // エコー応答を送信
-                String response = "Echo: " + receivedMessage;
-                byte[] responseData = response.getBytes(StandardCharsets.UTF_8);
-                
-                DatagramPacket sendPacket = new DatagramPacket(
-                    responseData, responseData.length,
-                    receivePacket.getAddress(), receivePacket.getPort()
-                );
-                
-                socket.send(sendPacket);
-            }
-        } catch (IOException e) {
-            System.err.println("UDP Server error: " + e.getMessage());
-        }
+        Footrace race = new Footrace();
+        // 選手を何人か作成（速度は2.0〜6.0[m/s]でランダム）
+        race.getAthletes().add(new Athlete("たろう", 
+            ThreadLocalRandom.current().nextDouble(2, 6)));
+        race.getAthletes().add(new Athlete("じろう", 
+            ThreadLocalRandom.current().nextDouble(2, 6)));
+        race.getAthletes().add(new Athlete("さぶろう", 
+            ThreadLocalRandom.current().nextDouble(2, 6)));
+
+        race.start();
     }
 }
 ```
 
-### UDPクライアントの実装
-
-```java
-import java.io.IOException;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-
-public class UDPClient {
-    public static void main(String[] args) {
-        String hostname = "localhost";
-        int port = 12345;
-        
-        try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress address = InetAddress.getByName(hostname);
-            Scanner scanner = new Scanner(System.in);
-            
-            System.out.println("Connected to UDP server. Type 'exit' to quit.");
-            
-            String input;
-            while (!(input = scanner.nextLine()).equals("exit")) {
-                // メッセージを送信
-                byte[] sendData = input.getBytes(StandardCharsets.UTF_8);
-                DatagramPacket sendPacket = new DatagramPacket(
-                    sendData, sendData.length, address, port
-                );
-                socket.send(sendPacket);
-                
-                // 応答を受信
-                byte[] receiveBuffer = new byte[1024];
-                DatagramPacket receivePacket = new DatagramPacket(
-                    receiveBuffer, receiveBuffer.length
-                );
-                socket.receive(receivePacket);
-                
-                String response = new String(receivePacket.getData(), 0, 
-                                           receivePacket.getLength(), StandardCharsets.UTF_8);
-                System.out.println("Server response: " + response);
-            }
-            
-        } catch (IOException e) {
-            System.err.println("UDP Client error: " + e.getMessage());
-        }
-    }
-}
-```
-
-## 🚀 上級統合プロジェクト：分散タスク管理システム
-
-第15章までの学習内容を統合して、実用的な分散アプリケーションを開発してみましょう。このプロジェクトでは、これまで学習したすべての技術要素を統合的に活用します。
-
-### プロジェクト概要
-
-**システム名**：分散タスク管理システム
-**対象技術**：第0章〜第15章で学習したすべての内容
-**開発期間目安**：3-4週間
-
-### システム要件
-
-#### 機能要件
-- プロジェクト・タスク管理
-- チームコラボレーション
-- リアルタイム通知
-- ファイル共有
-- 進捗レポート・ダッシュボード
-- カレンダー連携
-
-#### 非機能要件
-- クライアント／サーバアーキテクチャ
-- 同時接続数：100ユーザー
-- リアルタイム同期（1秒以内）
-- データベースまたはファイルベース永続化
-- REST API提供
-
-### システムアーキテクチャ
+実行すると、以下のように3人の選手がほぼ同時にスタートし、それぞれの速度に応じてゴールするマルチスレッドプログラムとなります：
 
 ```
-[クライアント（GUI）] ←→ [サーバー（API）] ←→ [データストレージ]
-                              ↓
-[WebSocket通知サーバー] ←→ [タスクプロセッサ]
+30メートル走
+たろう:スタート(速度: 4.39[m/s])
+さぶろう:スタート(速度: 3.02[m/s])
+じろう:スタート(速度: 3.85[m/s])
+たろう:ゴール タイム:6.83[s]
+じろう:ゴール タイム:7.78[s]
+さぶろう:ゴール タイム:9.93[s]
+=== 結果発表 ===
+第1位	たろう	6.83[s]
+第2位	じろう	7.78[s]
+第3位	さぶろう	9.93[s]
 ```
-
-### 詳細設計
-
-#### サーバサイド構成
-```
-com.taskmanager.server
-├── TaskManagerServer.java     - メインサーバー
-├── api/
-│   ├── TaskController.java    - タスク管理API
-│   ├── ProjectController.java - プロジェクト管理API
-│   └── UserController.java    - ユーザー管理API
-├── websocket/
-│   ├── NotificationServer.java - WebSocket通知
-│   └── MessageHandler.java     - メッセージ処理
-├── service/
-│   ├── TaskService.java       - タスクビジネスロジック
-│   ├── NotificationService.java - 通知管理
-│   └── FileService.java       - ファイル管理
-└── data/
-    ├── Repository.java        - データアクセス層
-    └── CacheManager.java      - キャッシュ管理
-```
-
-#### クライアントサイド構成
-```
-com.taskmanager.client
-├── TaskManagerClient.java     - メインGUIアプリ
-├── gui/
-│   ├── MainWindow.java        - メインウィンドウ
-│   ├── TaskPanel.java         - タスク表示・編集
-│   ├── ProjectPanel.java      - プロジェクト管理
-│   └── CalendarPanel.java     - カレンダー表示
-├── network/
-│   ├── ApiClient.java         - REST API通信
-│   └── WebSocketClient.java   - リアルタイム通信
-└── model/
-    ├── Task.java              - タスクモデル
-    ├── Project.java           - プロジェクトモデル
-    └── User.java              - ユーザーモデル
-```
-
-### 技術要素の統合
-
-#### 1. 並行処理とスレッド管理
-```java
-public class TaskManagerServer {
-    private final ExecutorService clientHandlers = 
-        Executors.newFixedThreadPool(100);
-    private final ScheduledExecutorService scheduler = 
-        Executors.newScheduledThreadPool(10);
-    
-    public void handleClient(Socket client) {
-        clientHandlers.submit(new ClientHandler(client));
-    }
-}
-```
-
-#### 2. WebSocketによるリアルタイム通信
-```java
-public class NotificationServer {
-    private final Set<Session> activeSessions = 
-        ConcurrentHashMap.newKeySet();
-    
-    public void broadcastUpdate(TaskUpdate update) {
-        String json = JsonUtil.toJson(update);
-        activeSessions.parallelStream()
-            .forEach(session -> sendMessage(session, json));
-    }
-}
-```
-
-#### 3. Stream APIによるデータ処理
-```java
-public class TaskAnalytics {
-    public Map<String, Double> getProductivityByUser() {
-        return tasks.stream()
-            .filter(task -> task.isCompleted())
-            .collect(Collectors.groupingBy(
-                Task::getAssignee,
-                Collectors.averagingDouble(Task::getEstimatedHours)
-            ));
-    }
-}
-```
-
-### 実装チェックポイント
-
-#### 技術統合
-- [ ] クライアント／サーバ間の安定した通信
-- [ ] マルチスレッドによる並行処理の適切な実装
-- [ ] GUIの応答性とユーザビリティ
-- [ ] リアルタイム通知機能の実装
-- [ ] ファイル共有機能の安全な実装
-
-#### 品質管理
-- [ ] 外部ライブラリの効果的な活用
-- [ ] エラー処理と障害回復のしくみ
-- [ ] パフォーマンスとスケーラビリティ
-- [ ] セキュリティの考慮
-
-### 学習効果の確認
-
-このプロジェクトを通じて以下の能力が習得できます：
-
-#### 全技術要素の統合力
-- オブジェクト指向設計から実装まで一貫した開発
-- 複数技術の組み合わせによるシナジー効果の実現
-- 実用的なアプリケーションアーキテクチャの設計
-
-#### 実践的な開発スキル
-- 大規模システムの設計と実装
-- チーム開発を想定した品質管理
-- 運用を考慮した堅牢性の実装
-
-#### プロフェッショナルな視点
-- 要件分析から運用まで全工程の経験
-- 性能とセキュリティの両立
-- 継続的な改善とメンテナンス性の確保
-
-### 発展課題
-
-#### 技術的拡張
-- モバイルアプリケーション連携（REST API活用）
-- 外部カレンダーサービス連携
-- 機械学習による作業時間予測
-- 分散データベース対応
-
-#### 運用的拡張
-- ログ監視とアラートシステム
-- 自動バックアップとディザスタリカバリ
-- 負荷分散とスケールアウト対応
-
----
 
 ## まとめ
 
-本章では、Javaにおけるネットワークプログラミングの基礎から実践的な応用まで学習しました。TCP/IPソケット通信の基本的なしくみから始まり、マルチスレッド対応、スレッドプール、HTTPサーバ、UDP通信まで幅広い技術を習得しました。
+本章では、Javaにおけるマルチスレッドプログラミングの基礎から実践的な応用まで学習しました。スレッドの作成方法、同期制御、Executorフレームワークの使用方法を理解することで、効率的で安全な並行プログラムを作成できるようになりました。
 
-### 総合的な学習の完了
-
-第15章の完了により、Javaプログラミングの基礎から実用的なアプリケーション開発まで、包括的なスキルを習得できました。これまで学習した内容を振り返ると：
-
-#### 技術的成長の軌跡
-1. **基礎固め**（第0-2章）：Java環境とオブジェクト指向の理解
-2. **設計力向上**（第3-5章）：継承、ポリモーフィズム、構造化設計
-3. **実用技術習得**（第6-8章）：例外処理、コレクション、型安全性
-4. **現代的手法**（第9-10章）：関数型プログラミング、宣言的データ処理
-5. **システム統合**（第11-15章）：外部連携、UI、並行処理、ネットワーク
-
-#### 次のステップ
-これらの基礎を基盤として、以下の発展的な学習に進むことができます：
-- Spring Frameworkなどのエンタープライズ開発
-- Androidアプリケーション開発
-- 分散システムとマイクロサービス
-- 機械学習とデータサイエンス
-
-Javaの学習は終着点ではなく、より高度で実用的なソフトウェア開発への出発点です。この基盤を活かして、継続的な学習と実践を通じて、優れたソフトウェアエンジニアとして成長していきましょう。
-
-これらの技術を組み合わせることで、チャットアプリケーション、Webサーバ、オンラインゲーム、IoTシステムなど、さまざまなネットワークアプリケーションを開発できます。ネットワークプログラミングは現代のソフトウェア開発において欠かせない技術です。
+マルチスレッドプログラミングは強力な技術ですが、競合状態やデッドロックなどの問題を引き起こす可能性があります。適切な設計と同期制御を心がけ、十分なテストを行うことが重要です。
