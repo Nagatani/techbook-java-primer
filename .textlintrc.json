@@ -25,6 +25,11 @@
       },
       "ja-no-redundant-expression": false
     },
+    "@textlint-ja/preset-ai-writing": {
+        "ai-tech-writing-guideline": {
+            "severity": "info"
+        }
+    },
     "preset-jtf-style": {
       "1.1.1.本文": true,
       "1.1.3.箇条書き": true,

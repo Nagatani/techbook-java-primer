@@ -36,7 +36,6 @@ The following commands are defined in `package.json` and are frequently used:
 3.  Run `npm run lint` to check for any writing style issues.
 4.  After each task or significant change, run `npm run lint:fix` to automatically format the manuscript files.
 5.  Finally, run `npm run build` to ensure the book can be built successfully without errors.
-6.  The `npm run preview` command can be used at any time to see the changes live.
 
 
 ## 6. Content Guidelines
