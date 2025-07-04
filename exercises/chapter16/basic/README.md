@@ -6,6 +6,7 @@
 - 同期処理（synchronized、Lock）の理解と実装
 - java.util.concurrentパッケージの活用
 - スレッドプールとExecutorServiceの使用
+- 非同期プログラミング（CompletableFuture）による効率的な並行処理
 
 ## 📝 課題一覧
 
