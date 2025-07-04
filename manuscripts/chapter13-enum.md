@@ -15,135 +15,152 @@
 
 ## 13.1 enumとは？
 
-`enum`（列挙型）は、**決まったいくつかの値だけを取りうる型**を定義するための機能です。例えば、「曜日（月火水木金土日）」や「信号の色（赤青黄）」のように、値の範囲が限定されているものを扱うのに最適です。
+`enum`（列挙型）は、**決まったいくつかの値だけを取りうる型**を定義するための、特殊なクラスです。たとえば、「曜日（月火水木金土日）」や��信号の色（赤青黄）」のように、値の範囲が限定されているものを扱うのに最適です。
 
 ### なぜenumが必要なのか？
 
-`enum`がない場合、このような定数は`public static final`なフィールドとして定義することが一般的でした。
+`enum`がない場合、このような定数は`public static final int`フィールドとして定義することが一般的でした。しかし、この方法には以下のような問題点があります。
+-   **型安全でない**: `int`型ですので、`setSignal(100)`のような無効な値も代入できてしまう。
+-   **意味が不明確**: `int`という型からは、それが「信号の色」を表すという情報がわからない。
+-   **デバッグしにくい**: 変数の値を表示しても`0`としか出力されず、それが「赤」を意味するのかわからない。
 
-```java
-// enumがない時代の定数定義
-public class Signal {
-    public static final int RED = 0;
-    public static final int BLUE = 1;
-    public static final int YELLOW = 2;
-}
+`enum`は、これらの問題をすべて解決します。`enum`で定義された各要素（列挙子）は、その`enum`型のユニークなインスタンスとして扱われ、型安全性を保証します。
 
-// 利用する側
-int currentColor = Signal.RED;
-```
-
-この方法には、以下のような問題点があります。
--   **型安全でない**: `int`型なので、`100`のような無効な値も代入できてしまう。
--   **意味が不明確**: `currentColor`が「信号の色」を表すという情報が、型からはわからない。
--   **デバッグしにくい**: `System.out.println(currentColor)`と表示しても、`0`としか出力されず、それが「赤」を意味するのかわからない。
-
-`enum`は、これらの問題をすべて解決します。
-
-### 基本的な構文
+### 基本的な構文と使い方
 
 ```java
 public enum DayOfWeek {
-    SUNDAY,
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY
+    SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
 }
 ```
-
-これだけで、`DayOfWeek`と��う新しい型が作られ、その型が取りうる値は定義された7つの曜日に限定されます。
+これだけで、`DayOfWeek`という新しい型が作られ、その型が取りうる値は定義された7つの曜日に限定されます。
 
 ```java
 public class EnumExample {
     public static void main(String[] args) {
         DayOfWeek today = DayOfWeek.WEDNESDAY;
 
-        System.out.println("今日は " + today + " です。"); // WEDNESDAY
+        System.out.println("今日は " + today + " です。"); // toString()がオーバーライドされており、"WEDNESDAY"と表示される
 
         // 型安全なので、不正な値はコンパイルエラーになる
         // DayOfWeek tomorrow = "Thursday"; // エラー
-        // DayOfWeek invalid = 1;           // エラー
     }
 }
 ```
 
-## 13.2 enumとswitch文
+## 13.2 enumの便利な機能
 
-`enum`は`switch`文と非常に相性が良く、安全で読みやすいコードを書くことができます。
+Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、便利なメソッドが標準で提供されています。
+
+-   `values()`: すべての列挙子を定義順に格納した配列を返します。
+-   `valueOf(String name)`: 指定された名前の列挙子を返します。
+-   `name()`: 列挙子の名前（定義した通りの文字列）を返します。
+-   `ordinal()`: 列挙子の定義順序（ゼロから始まる）を返します。
+
+```java
+// DayOfWeek.values() を使って全曜日をループ処理
+for (DayOfWeek day : DayOfWeek.values()) {
+    System.out.println(day.name() + " は " + day.ordinal() + "番目");
+}
+
+// 文字列からenumインスタンスを生成
+DayOfWeek friday = DayOfWeek.valueOf("FRIDAY");
+System.out.println(friday); // FRIDAY
+```
+
+### `switch`文との連携
+
+`enum`は`switch`文と非常に相性が良く、安全で読みやすいコードを書くことが��きます。
 
 ```java
 public class TrafficLight {
     public static void checkSignal(DayOfWeek day) {
-        switch (day) {
-            case MONDAY:
-            case TUESDAY:
-            case WEDNESDAY:
-            case THURSDAY:
-            case FRIDAY:
-                System.out.println(day + " は平日です。");
-                break;
-            case SATURDAY:
-            case SUNDAY:
-                System.out.println(day + " は週末です。");
-                break;
-            // defaultは不要な場合が多い（enumの全要素を網羅しているため）
-        }
-    }
-
-    public static void main(String[] args) {
-        checkSignal(DayOfWeek.FRIDAY);    // 平日
-        checkSignal(DayOfWeek.SUNDAY);    // 週末
+        // Java 14以降のswitch式を使うと、より簡潔に書ける
+        String typeOfDay = switch (day) {
+            case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY -> "平日";
+            case SATURDAY, SUNDAY -> "週末";
+        };
+        System.out.println(day + " は " + typeOfDay + " です。");
     }
 }
 ```
 `case`句では、`DayOfWeek.MONDAY`のように書く必要はなく、`MONDAY`とだけ書ける点に注意してください。
 
-## 13.3 メソッドやフィールドを持つenum
+## 13.3 フィールドとメソッドを持つenum
 
-`enum`は単なる定数の集まりではなく、クラスのようにフィールドやメソッドを持たせることができます。
+`enum`は単なる定数の集まりではなく、クラスのようにフィールドやコンストラクタ、メソッドを持たせることができます。これにより、定数に関連するデータや振る舞いをカプセル化できます。
 
 ```java
 public enum Planet {
+    // 各列挙子を定義する際に、コンストラクタの引数を渡す
     MERCURY (3.303e+23, 2.4397e6),
     VENUS   (4.869e+24, 6.0518e6),
-    EARTH   (5.976e+24, 6.37814e6),
-    MARS    (6.421e+23, 3.3972e6);
+    EARTH   (5.976e+24, 6.37814e6);
+    // ... 他の惑星
 
     private final double mass;   // 質量 (kg)
     private final double radius; // 半径 (m)
 
-    // コンストラクタ（privateでなければならない）
+    // コンストラクタは暗黙的にprivate
     Planet(double mass, double radius) {
         this.mass = mass;
         this.radius = radius;
     }
 
-    public double mass() { return mass; }
-    public double radius() { return radius; }
-
-    // 万有引力定数
-    public static final double G = 6.67300E-11;
-
-    // 表面重力を計算するメソッド
+    // 通常のメソッド
     public double surfaceGravity() {
+        final double G = 6.67300E-11;
         return G * mass / (radius * radius);
     }
 }
 
 public class PlanetTest {
     public static void main(String[] args) {
-        double earthWeight = 75.0; // 地球での体重
-        double mass = earthWeight / Planet.EARTH.surfaceGravity();
-        for (Planet p : Planet.values()) {
-           System.out.printf("%sでの体重は %f です%n", p, p.surfaceGravity() * mass);
-        }
+        System.out.println("地球の表面重力: " + Planet.EARTH.surfaceGravity());
     }
 }
 ```
-`Planet.values()`は、`enum`の全要素を配列として返す便利なメソッドです。
+
+## 13.4 さらに高度な使い方
+
+### 列挙子ごとのメソッド実装
+
+各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。これは**ストラテジーパターン**を簡潔に実現する方法の1つです。
+
+```java
+public enum Operation {
+    PLUS("+") {
+        public double apply(double x, double y) { return x + y; }
+    },
+    MINUS("-") {
+        public double apply(double x, double y) { return x - y; }
+    };
+
+    private final String symbol;
+    Operation(String symbol) { this.symbol = symbol; }
+    public abstract double apply(double x, double y); // 抽象メソッド
+}
+```
+`op.apply(x, y)`という同じ呼び出し方で、`PLUS`なら足し算、`MINUS`なら引き算が実行されます。
+
+### インターフェイスの実装
+
+`enum`はクラスを継承できませんが、インターフェイスを実装することは可能です。
+
+```java
+interface Loggable {
+    String getLogMessage();
+}
+
+public enum Status implements Loggable {
+    SUCCESS {
+        public String getLogMessage() { return "処理が成功しました。"; }
+    },
+    ERROR {
+        public String getLogMessage() { return "エラーが発生しました。"; }
+    };
+}
+```
 
 ## まとめ
 
@@ -153,5 +170,6 @@ public class PlanetTest {
 -   `int`定数などと比べて、**型安全**で、コードが**読みやすく**なります。
 -   `switch`文と組み合わせることで、網羅的で安全な条件分岐を記述できます。
 -   クラスのように、**フィールドやメソッドを持たせる**ことができ、より高機能な定数を定義できます。
+-   列挙子ごとにメソッドを実装したり、インターフェイスを実装したりすることで、さらに柔軟な設計が可能です。
 
-プログラムの中で「種類」や「状態」を表す値が出てきたら、まず`enum`が使えないか検討することは、高品質なコードを書くための良い習慣です。
+プログラムの中で「種類」「状態」「ステータス」などを表す値が出てきたら、まず`enum`が使えないか検討することは、高品質なコードを書くための良い習慣です。

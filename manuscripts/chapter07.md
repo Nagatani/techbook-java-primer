@@ -1,4 +1,4 @@
-# 第7章 抽象クラスとインターフェイス：契約による設計
+# 第7章 抽象クラスとインターフェイス
 
 ## 🎯総合演習プロジェクトへのステップ
 
@@ -8,196 +8,306 @@
 - **`TaskRepository`インターフェイス**: `save(List<Task> tasks)`や`load()`といった「振る舞いの契約」だけを定義した`TaskRepository`インターフェイスを作成します。
 - **具体的な実装クラス**: そして、「テキストファイルに保存する`FileTaskRepository`」や「データベースに保存する`DatabaseTaskRepository`」のように、インターフェイスを実装した具体的なクラスを、必要に応じて作成します。
 
-アプリケーションのほかの部分は、具体的な保存方法を意識することなく、常��`TaskRepository`インターフェイスを通じて処理を依頼します。これにより、将来データ保存先を変更したくなった場合でも、アプリケーションの大部分を修正することなく、新しい実装クラスに差し替えるだけで対応できます。
+アプリケーションのほかの部分��、具体的な保存方法を意識することなく、常に`TaskRepository`インターフェイスを通じて処理を依頼します。これにより、将来データ保存先を変更したくなった場合でも、アプリケーションの大部分を修正することなく、新しい実装クラスに差し替えるだけで対応できます。
 
 ## 📋 本章の学習目標
 
 ### 前提知識
-- **第5章、第6章の知識**: 継承とポリモーフィズムの基本を理解している。
+- **第5章の継承とポリモーフィズムの完全な習得**：継承、オーバーライド、ポリモーフィズムの概念の理解
+- **クラスの基本的な設計経験**：フィールド、メソッド、コンストラクタの作成経験
 
 ### 到達目標
 
 #### 知識理解目標
-- 「契約による設計」という考え方の重要性を理解する。
-- 抽象クラスとインターフェイスの役割と、それぞれの違いを明確に説明できる。
-- `abstract`キーワードと`implements`キーワードの使い方を理解する。
-- インターフェイスがJavaにおける多重継承の代替手段として機能することを理解する。
+- 抽象クラスの役割と、具象クラスとの違い
+- 抽象メソッドの概念と、実装を強制するしくみ
+- インターフェイスの役割（契約の定義）
+- インターフェイスと抽象クラスの違い、および適切な使い分け
+- `default`メソッドと`static`メソッド（インターフェイスの）の役割
 
 #### 技能習得目標
-- `abstract`メソッドを持つ抽象クラスを定義し、それを継承してサブクラスで実装できる。
-- `interface`を定義し、複数のクラスに実装させることができる。
-- 抽象クラスとインターフェイスを、それぞれの特性に応じて適切に使い分けることができる。
+- `abstract`キーワードを使い、抽象クラスと抽象メソッドを定義する
+- 抽象クラスを継承し、抽象メソッドを実装する
+- `interface`キーワードを使い、インターフェイスを定義する
+- `implements`キーワードを使い、インターフェイスを実装する
+- 複数のインターフェイスを実装する
+
+#### 到達レベルの指標
+
+| 到達レベル |
+| :--- |
+| 共通の基盤を抽象クラスとして抽出し、設計できる |
+| システムが提供すべき「契約」をインターフェイスとして定義できる |
+| 抽象クラスとインターフェイスを適切に使い分け、柔軟で拡張性の高いシステムを設計できる |
+| ポリモーフィズムと組み合わせ、インターフェイス型の変数で実装を切り替えられるプログラムを作成できる |
 
 ---
 
-## 7.1 契約による設計と抽象化
+## 7.1 抽象化の必要性
 
-前章で学んだポリモーフィズムは、スーパークラスの型でさまざまなサブクラスを統一的に扱うことで、コードの柔軟性を高める強力なしくみでした。しかし、スーパークラスの設計によっては、いくつかの課題が残ります。
+これまでの章で、継承を使うとクラスの機能を再利用できることを学びました。しかし、親クラスの段階では、具体的な処理内容を決められない場合があります。
 
-- スーパークラスのメソッドに具体的な処理が不要な場合（例：`Animal`クラスの`makeSound()`）でも、何らかの処理を書く必要がある。
-- サブクラスの開発者が、オーバーライドすべき重要なメソッドを実装し忘れる可能性がある。
+たとえば、「図形」クラスを考えてみましょう。すべての図形（円、長方形、三角形など）には「面積を計算する」という共通の機能が考えられます。しかし、親クラスである「図形」の段階で、面積の具体的な計算方法を実装することはできません。円の面積は「半径 × 半径 × π」ですが、長方形は「幅 × 高さ」であり、計算方法がまったく異なるからです。
 
-これらの課題を解決し、より安全で拡張性の高い設計を可能にするのが「**抽象クラス**」と「**インターフェイス**」です。これらは、「**契約による設計（Design by Contract）**」という思想をJavaで実現するための重要なツールです。
+このよう��、**共通の機能（概念）は存在するが、その具体的な実装は子クラスに任せたい**、という場合に利用するのが**抽象クラス**と**インターフェイス**です。これらは、プログラムの「抽象度」を上げ、より柔軟で拡張性の高い設計を実現するための重要なしくみです。
 
-「契約による設計」とは、クラスやメソッドが満たすべき「責務」や「仕様」を明確に定義し、その契約を守ることをコンパイラレベルで強制するアプローチです。
+## 7.2 抽象クラスと抽象メソッド
 
-## 7.2 抽象クラス (Abstract Class)
+**抽象クラス (Abstract Class)** とは、不完全な部分を持つ、インスタンス化できないクラスのことです。その不完全な部分が**抽象メソッド**です。
 
-**抽象クラス**とは、その名の通り「抽象的」なクラスであり、**インスタンスを直接生成できない**という特徴を持ちます。抽象クラスは、いくつかの具体的なメソッドと、**`abstract`** キーワードが付いた**抽象メソッド**を持つことができます。
+**抽象メソッド (Abstract Method)** とは、**実装（メソッドの中身の処理）を持たない**メソッドのことです。`abstract`修飾子を付け、メソッドの定義（名前、引数、戻り値の型）だけを宣言します。
 
-**抽象メソッド**とは、メソッド名、引数、戻り値の型だけが定義され、具体的な処理内容（メソッドボディ `{}`）を持たないメソッドのことです。
+### 抽象クラスのルール
 
-```java
-public abstract void makeSound(); // メソッドボディがなく、セミコロンで終わる
-```
+1.  1つでも抽象メソッドを持つクラスは、必ず**抽象クラス**として`abstract`修飾子を付けて宣言しなければならない。
+2.  抽象クラスは、**`new`を使ってインスタンスを生成できない**。
+3.  抽象クラスを継承した子クラスは、親クラスの**すべての抽象メソッドをオーバーライドして実装しなければならない**。もし1つでも実装しない抽象���ソッドがある場合、その子クラスもまた抽象クラスでなければならない。
 
-抽象クラスを継承したサブクラスは、**スーパークラスが持つすべての抽象メソッドを、必ずオーバーライドして実装しなければならない**というルールがコンパイラによって強制されます。
+### 実践例：`Shape`抽象クラス
 
-### 抽象クラスの実践例：`Animal`クラスの改良
-
-前章の`Animal`クラスを抽象クラスとして再設計してみましょう。
+「図形」の例を抽象クラスで実装してみましょう。
 
 ```java
-// Animal.java (抽象クラス)
-public abstract class Animal {
-    protected String name;
+// 抽象クラス Shape
+public abstract class Shape {
+    private String name;
 
-    public Animal(String name) {
+    public Shape(String name) {
         this.name = name;
     }
 
-    // 具象メソッド（具体的な実装を持つ）
-    public void sleep() {
-        System.out.println(this.name + " は眠っています。");
+    public String getName() {
+        return this.name;
     }
 
-    // 抽象メソッド（実装はサブクラスに強制される）
-    public abstract void makeSound();
-}
+    // 抽象メソッド：実装は子クラスに強制される
+    public abstract double getArea();
 
-// Lion.java
-public class Lion extends Animal {
-    public Lion(String name) { super(name); }
-
-    // 抽象メソッドの実装が必須
-    @Override
-    public void makeSound() {
-        System.out.println(this.name + " が「ガオー」と吠えます。");
-    }
-}
-
-// Dog.java
-public class Dog extends Animal {
-    public Dog(String name) { super(name); }
-
-    // こちらも実装が必須
-    @Override
-    public void makeSound() {
-        System.out.println(this.name + " が「ワン」と鳴きます。");
-    }
-}
-
-// Main.java
-public class Main {
-    public static void main(String[] args) {
-        // Animal animal = new Animal("謎の動物"); // コンパイルエラー！抽象クラスはインスタンス化できない
-
-        Animal lion = new Lion("レオ");
-        Animal dog = new Dog("ポチ");
-
-        lion.makeSound(); // ガオー
-        dog.makeSound();  // ワン
+    // 通常のメソッドも持てる
+    public void display() {
+        System.out.println("これは " + getName() + " です。");
+        System.out.println("面積は " + getArea() + " です。");
     }
 }
 ```
 
-抽象クラスを使うことで、「動物なら必ず鳴き声を持つべきだが、その鳴き方は動物の種類による」という、より現実に即した、安全なモデルを構築できます。
+`Shape`クラスは`getArea()`メソッドの具体的な計算方法を知らないため、このメソッドを抽象メソッドとして宣言します。
 
-## 7.3 インターフェイス (Interface)
+### 抽象クラスの継承
 
-**インターフェイス**は、クラスが持つべき**メソッドの仕様（契約）** だけを定義した、完全な「設計図」です。抽象クラスよりもさらに抽象度が高く、以下の特徴を持ちま��。
-
--   すべてのメソッドは、デフォルトで`public abstract`（実装を持たない抽象メソッド）となる。
--   フィールドを持つことはできず、定数（`public static final`な変数）のみ定義できる。
--   クラスは、`implements`キーワードを使ってインターフェイスを**実装**する。
--   クラスは、**複数のインターフェイスを同時に実装できる**（多重継承の代替）。
-
-インターフェイスは、「**〜ができる**」という能力（振る舞い）を表現するのに適しています。
-
-### インターフェイスの実践例：`Flyable`と`Swimmable`
-
-「飛べる」「泳げる」といった能力をインターフェイスとして定義してみましょう。
+子クラスである`Circle`と`Rectangle`は、`Shape`クラスを継承し、それぞれの方法で`getArea()`メソッドを実装します。
 
 ```java
-// Flyable.java (インターフェイス)
-public interface Flyable {
-    void fly(); // public abstract が自動的に付与される
-}
+// Circle.java
+public class Circle extends Shape {
+    private double radius;
 
-// Swimmable.java (インターフェイス)
-public interface Swimmable {
-    void swim();
-}
-
-// Duck.java (両方のインターフェイスを実装)
-public class Duck implements Flyable, Swimmable {
-    @Override
-    public void fly() {
-        System.out.println("アヒルが羽ばたいて飛びます。");
+    public Circle(double radius) {
+        super("円"); // 親クラスのコンストラクタを呼び出す
+        this.radius = radius;
     }
 
+    // 抽象メソッドの実装
     @Override
-    public void swim() {
-        System.out.println("アヒルが水面を���雅に泳ぎます。");
+    public double getArea() {
+        return this.radius * this.radius * Math.PI;
     }
 }
 
-// Fish.java (Swimmableのみを実装)
-public class Fish implements Swimmable {
-    @Override
-    public void swim() {
-        System.out.println("魚がヒレを使って泳ぎます。");
+// Rectangle.java
+public class Rectangle extends Shape {
+    private double width;
+    private double height;
+
+    public Rectangle(double width, double height) {
+        super("長方形");
+        this.width = width;
+        this.height = height;
     }
-}
 
-// Main.java
-public class Main {
-    public static void main(String[] args) {
-        Flyable duckAsFlyer = new Duck();
-        duckAsFlyer.fly();
-
-        Swimmable duckAsSwimmer = new Duck();
-        Swimmable fish = new Fish();
-        duckAsSwimmer.swim();
-        fish.swim();
+    // 抽象メソッドの実装
+    @Override
+    public double getArea() {
+        return this.width * this.height;
     }
 }
 ```
 
-このように、インターフェイスを使うことで、継承関係にないクラス（`Duck`と`Fish`）に対しても、「泳げる」という共通の型（`Swimmable`）を与え、統一的に扱うことが可能になります。
+### 抽象クラスの利用
+
+抽象クラスはインスタンス化できませんが、親クラスとしてポリモーフィズムを活用することはできます。
+
+```java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        // Shape shape = new Shape("図形"); // コンパイルエラー！ 抽象クラスはインスタンス化できない
+
+        Shape circle = new Circle(10.0);
+        Shape rectangle = new Rectangle(5.0, 8.0);
+
+        circle.display();    // 円のgetArea()が呼ばれる
+        rectangle.display(); // 長方形のgetArea()が呼ばれる
+    }
+}
+```
+
+抽象クラスは、**共通の性質（フィールドや実装済みのメソッド）を持ちつつ、一部の振る舞いだけを子クラスに強��したい**場合に非常に有効です。
+
+## 7.3 インターフェイス：振る舞いの契約
+
+**インターフェイス (Interface)** は、クラスがどのような**振る舞い（メソッド）を持つべきか**を定めた「**契約**」です。
+
+インターフェイスは、メソッドのシグネチャ（名前、引数、戻り値の型）と定数のみを定義でき、インスタンスフィールドを持つことはできません。実装は一切持たず、クラスが実装すべきメソッドの仕様だけを列挙します。
+
+### インターフェイスのルール
+
+1.  `interface`キーワードを使って宣言する。
+2.  定義できるメンバーは、**抽象メソッド**、**定数 (`public static final`)**、そしてJava 8から追加された**`default`メソッド**と**`static`メソッド**のみ。
+3.  インターフェイスもインスタンス化できない。
+4.  クラスは`implements`キーワードを使ってインターフェイスを**実装**する。
+5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない。
+6.  クラスは**複数のインターフェイスを同時に実装できる**（`implements InterfaceA, InterfaceB`のようにカンマで区切る）���これはクラスの単一継承とは異なる大きな特徴です。
+
+### 実践例：`Drawable`と`Serializable`インターフェイス
+
+```java
+// Drawable.java
+public interface Drawable {
+    // インターフェイス内のメソッドは自動的に public abstract になる
+    void draw();
+}
+
+// Serializable.java
+public interface Serializable {
+    void saveToFile(String filename);
+}
+```
+
+### インターフェイスの実装
+
+`implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
+
+```java
+// Character.java
+// DrawableとSerializableの両方のインターフェイスを実装する
+public class Character implements Drawable, Serializable {
+    private String name;
+
+    public Character(String name) {
+        this.name = name;
+    }
+
+    // Drawableインターフェイスのメソッドの実装
+    @Override
+    public void draw() {
+        System.out.println(this.name + "を描画します。");
+    }
+
+    // Serializableインターフェイスのメソッドの実装
+    @Override
+    public void saveToFile(String filename) {
+        System.out.println(this.name + "のデータをファイル " + filename + " に保存します。");
+    }
+}
+```
+
+インターフェイスは、**共通の機能（契約）を、継承関係に���い異なるクラス間で実現したい**場合に非常に強力です。たとえば、「描画可能(`Drawable`)」という性質は、「キャラクタ」だけでなく「地図」や「グラフ」など、まったく異なるクラスも持つことができます。
 
 ## 7.4 抽象クラス vs インターフェイス
 
-どちらも「実装の強制」と「ポリモーフィズム」を実現する手段ですが、明確な使い分けがあります。
+どちらも「実装を子クラスに強制する」という点で似ていますが、明確な使い分けがあります。
 
-| 特徴 | 抽象クラス (Abstract Class) | インターフェイス (Interface) |
+| 特徴 | 抽象クラス | インターフェイス |
 | :--- | :--- | :--- |
-| **目的** | **is-a** 関係。モノの「本質」を定義。 | **can-do** 関係。モノの「能力」を定義。 |
+| **目的** | is-a関係。共通の基盤・性質を共有する。 | can-do関係。特定の能力・振る舞いを実装する。 |
 | **継承/実装** | `extends` (単一継承のみ) | `implements` (複数実装が可能) |
-| **メンバー** | 抽象メソッド + **具象メソッド** + **フィールド** | **定数** + **抽象メソッド** (Java 8以降はdefault/staticメソッドも可) |
-| **使い分け** | 関連性の強いクラス間で、共通の実装やフィールドを共有したい場合。 | クラスの種類にかかわらず、共通の振る舞いを強制したい場合。 |
+| **メンバー** | インスタンスフィールド、コンストラクタ、実装済みメソッド、抽象メソッド | 定数、抽象メソッド、default/staticメソッド |
+| **使い分け** | **密接に関連するクラス階層**を構築したい場合。<br>共通のコードや状態を共有させたい。 | **無関係なクラスに共通の機能**を持たせたい場合。<br>APIの「契約」を定義したい。 |
 
 **経験則:**
-- まずはインターフェイスで設計できないか検討する。
-- 継承階層の中で、共通のコードや状態をサブクラス間で共有したい場合に、抽象クラスの利用を検討する。
+*   迷ったら、まずは**インターフェイス**で考える。インターフェイスの方が柔軟性が高い。
+*   子クラス間で共通のコードやフィールドをどうしても共有したい場合に、**抽象クラス**を検討する。
 
-## まとめ
+## 7.5 `default`メソッドと`static`メソッド
 
-本章では、より安全で柔軟なオブジェクト指向設計を実現するための「抽象クラス」と「インターフェイス」について学びました。
+Java 8から、インターフェイスに実装を持つメソッド（`default`メソッドと`static`メソッド）を追加できるようになり、より柔軟性が増しました。
 
--   **抽象クラス**は、一部の実装を共有しつつ、サブクラスに特定メソッドの実装を強制する「半完成の設計図」です。
--   **インターフェイス**は、クラスが実装すべきメソッドの仕様（契約）のみを定義した「完全な設計図」です。
--   これらは「**契約による設計**」を実現し、プログラムの安全性と拡張性を高めます。
--   **is-a**の関係性には**抽象クラス**、**can-do**の能力には**インターフェイス**、という使い分けが基本です。
+### `default`メソッド
 
-���れらの概念をマスタすることで、単に動くだけでなく、将来の変更に強く、再利用性の高い、プロフェッショナルなソフトウェア設計が可能になります。
+`default`メソッドは、インターフェイス内に**デフォルトの実装**を持つことができるメソッドです。
+このメソッドの主な目的は、**既存のインターフェイスに新しいメソッドを追加しつつ、すでにある実装クラスがコンパイルエラーになるのを防ぐ**ことです。
+
+```java
+public interface Loggable {
+    void log(String message);
+
+    // defaultメソッド
+    default void logError(String errorMessage) {
+        System.err.println("【ERROR】" + errorMessage);
+    }
+}
+
+public class MyLogger implements Loggable {
+    @Override
+    public void log(String message) {
+        System.out.println(message);
+    }
+    // logErrorは実装しなくても、デフォルト実装が使われる
+}
+```
+
+### `static`メソッド
+
+インターフェイスに`static`メソッドを定義することもできます。これは、そのインターフェイスに関連するユーティリティメソッドなどを提供するのに便利です。
+
+```java
+public interface Calculable {
+    int calculate(int x);
+
+    // staticメソッド
+    static int triple(int num) {
+        return num * 3;
+    }
+}
+
+// 呼び出し方
+int result = Calculable.triple(5); // 15
+```
+
+## 7.6 章末演習
+
+### 演習：データリポジトリの設計
+
+**目的:** 抽象クラスとインターフェイスを組み合わせ、柔軟なデータアクセス層を設計する。
+
+**シナリオ:**
+さまざまな種類のデータを保存・読み込みするシステムを考えます。データには必ずIDがあり、保存・読み込みの操作は共通ですが、保存形式（ファイル、データベースなど）は異なります。
+
+**手順:**
+
+1.  **`Storable`インターフェイスの作成**:
+    *   `Storable.java`というインターフェイスを作成します。
+    *   `void save()` と `void load()` という2つの抽象メソッドを定義します。
+
+2.  **`BaseRepository`抽象クラスの作成**:
+    *   `BaseRepository.java`という**抽象クラス**を作成し、`Storable`インターフェイスを**実装**します。
+    *   `protected String id;` というフィールドを持ちます。
+    *   IDを初期化するコ���ストラクタを作成します。
+    *   `displayId()`という、IDを表示する具象メソッドを実装します。
+    *   `save()`と`load()`は、この段階では実装できないので、**抽象メソッド**のままにしておきます。
+
+3.  **`FileRepository`具象クラスの作成**:
+    *   `BaseRepository`を**継承**した`FileRepository.java`を作成します。
+    *   コンストラクタで親のコンストラクタを呼び出します。
+    *   `save()`メソッドをオーバーライドし、「(id)をファイルに保存しました」と表示する処理を実装します。
+    *   `load()`メソッドをオーバーライドし、「(id)をファイルから読み込みました」と表示する処理を実装します。
+
+4.  **`DatabaseRepository`具象クラスの作成**:
+    *   同様に、`DatabaseRepository.java`を作成します。
+    *   `save()`では「データベースに保存」、`load()`では「データベースから読み込み」と表示するように実装します。
+
+5.  **`Main`実行クラスの作成**:
+    *   `main`メソッドを持つ`Main.java`を作成します。
+    *   `Storable`型の配列��作成し、`FileRepository`と`DatabaseRepository`のインスタンスを格納します。
+    *   ループ処理で、各要素の`save()`と`load()`メソッドを呼び出し、ポリモーフィズムによってそれぞれの実装が呼び出されることを確認してください。

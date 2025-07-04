@@ -1,19 +1,19 @@
-# 第10章 コレクションの応用とデータ構造
+# 第10章 コレクションの応用とラムダ式
 
 ## 🎯総合演習プロジェクトへのステップ
 
-本章で学ぶ応用的なコレクションと`Comparator`は、**総合演習プロジェクト「ToDoリストアプリケーション」** の機能をより高度で使いやすいものにするために役立ちます。
+本章で学ぶ応用的なコレクション操作、特に`Comparator`とラムダ式は、**総合演習プロジェクト「ToDoリストアプリケーション」** の機能をより高度で使いやすいものにするために不可欠です。
 
-- **タスクの並べ替え機能**: `Comparator`を使えば、ユーザーが「優先度順」「期日順」「タスク名順」など、様々な条件でタスク一覧をソートする機能を実装できます。これにより、ユーザーは自分にとって最も重要なタスクを簡単に見つけられるようになります。
+- **タスクの並べ替え機能**: `Comparator`とラムダ式を使えば、ユーザーが「優先度順」「期日順」「タスク名順」など、さまざまな条件でタスク一覧をソートする機能を、驚くほど簡潔に実装できます。
   ```java
   // 例：優先度（高→低）でソートするためのComparator
-  Comparator<Task> priorityComparator = (task1, task2) -> 
-      task2.getPriority().compareTo(task1.getPriority());
+  Comparator<Task> priorityComparator = 
+      Comparator.comparing(Task::getPriority).reversed();
   
-  // このComparatorをCollections.sort()やList.sort()に渡す
+  // このComparatorをList.sort()に渡すだけでソートが完了する
   taskList.sort(priorityComparator);
   ```
-- **データ構造の最適化**: 将来的にタスクの検索や追加・削除の性能が問題になった場合、`ArrayList`を`LinkedList`に変更したり、タグ管理に`TreeSet`を使って自動的にソートしたりと、本章の知識を活かして最適なデータ構造を選択できます。
+- **データ構造の最適化**: 将来的にタスクの検索や追加・削除の性能が問題になった場合、`ArrayList`を`LinkedList`に変更したり、タグ管理に`TreeSet`を��って自動的にソートしたりと、本章の知識を活かして最適なデータ構造を選択できます。
 
 ## 📋 本章の学習目標
 
@@ -25,110 +25,82 @@
 
 #### 知識理解目標
 - `ArrayList`と`LinkedList`の性能特性の違いを理解し、使い分けを説明できる。
-- `HashSet`, `LinkedHashSet`, `TreeSet`の特性（順序、ソート）の違いを理解し、使い分けを説明できる。
+- `HashSet`, `LinkedHashSet`, `TreeSet`の特性の違いを説明できる。
+- ラムダ式の基本的な構文と、関数型インターフェイスの役割を理解する。
 - `Comparator`を使ったカスタムソートの概念を理解する。
-- `Collections`ユーティリティクラスの便利な機能を知る。
+- Stream APIの基本的な考え方（`filter`, `map`など）を理解する。
 
 #### 技能習得目標
 - 用途に応じて、`LinkedList`や`TreeSet`などの応用的なコレクションを選択して使用できる。
-- `Comparator`を実装（またはラムダ式で記述）し、オブジェクトのリストを特定のルールでソートできる。
-- `Collections.sort()`や`Collections.reverse()`などのユーティリティメソッドを使える。
+- ラムダ式を使って`Comparator`を記述し、オブジェクトのリストを特定のルールでソートできる。
+- `Comparator.comparing`や`thenComparing`を使って、複数条件のソートを実装できる。
+- Stream APIを使って、コレクションのフィルタリング��変換を行うことができる。
 
 ---
 
-## 10.1 Listの応用：ArrayList vs LinkedList
+## 10.1 データ構造の選択
 
-第8章���は`ArrayList`を学びましたが、`List`インターフェイスにはもう1つ重要な実装クラス`LinkedList`があります。この2つは、内部的なデータの持ち方（データ構造）が異なり、それによって得意な操作と不得意な操作が生まれます。
+第8章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。状況に応じて最適なものを選択することが、パフォーマンスの良いプログラムを書く鍵となります。
 
-### データ構造の違い
+### `ArrayList` vs `LinkedList`
 
-- **`ArrayList`**: 内部的に**配列**を使用します。メモリ上で連続した領域にデータを格納します。
-- **`LinkedList`**: **リンクリスト（連結リスト）** という構造を使用します。各要素が「次の要素はどこか」という情報（ポインタ）を数珠つなぎのように持っています。
-
-| 操作 | `ArrayList` (配列) | `LinkedList` (連結リスト) |
+| 操作 | `ArrayList` (内部配列) | `LinkedList` (連結リスト) |
 | :--- | :--- | :--- |
-| **要素の取得 (get)** | **高速 (O(1))**<br>インデックスで直接アクセスできる。 | **低速 (O(n))**<br>先頭から順番にたどる必要がある。 |
-| **先頭/末尾への追加・削除** | 低速 (O(n))<br>先頭操作は全要素のシフトが必要。 | **高速 (O(1))**<br>つなぎ変えるだけで済む。 |
+| **要素の取得 (get)** | **高速 (O(1))** | 低速 (O(n)) |
+| **先頭/末尾への追加・削除** | 低速 (O(n)) / 高速 (O(1)) | **高速 (O(1))** |
+| **中間への追加・削除** | 低速 (O(n)) | **高速 (O(1))** |
 
 **使い分けの指針:**
-- **`ArrayList`**: 要素の参照（取得）が多く、リストの末尾以外での追加・削除が少ない場合に最適。**ほとんどのケースで第一��補となります。**
-- **`LinkedList`**: リストの先頭や末尾で頻繁に要素を追加・削除するような、キュー（待ち行列）やスタックのような使い方をする場合に有効です。
+- **`ArrayList`**: 要素の参照（取得）が多く、リストのサイズがあまり変化しない場合に最適。**ほとんどのケースで第一候補となります。**
+- **`LinkedList`**: リストの先頭や中間で頻繁に要素を追加・削除する場合に有効です。
+
+### `HashSet` vs `LinkedHashSet` vs `TreeSet`
+
+| 特徴 | `HashSet` | `LinkedHashSet` | `TreeSet` |
+| :--- | :--- | :--- | :--- |
+| **順序** | 保証されない | **挿入順** | **ソート順** |
+| **性能** | **最速** | `HashSet`よりわずかに遅い | `log(n)`時��（比較的低速） |
+| **null要素** | 許可 | 許可 | 不可 |
+
+**使い分けの指針:**
+- **`HashSet`**: 順序が不要で、とにかく高速に重複を除きたい場合に最適。
+- **`LinkedHashSet`**: 要素を追加した順序を保持したい場合に使う。
+- **`TreeSet`**: 要素を常にソートされた状態に保ちたい場合に使う。
+
+## 10.2 ラムダ式によるカスタムソート
+
+コレクションを独自のルールでソートしたい場合、`Comparator`インターフェイスを使います。Java 8から導入された**ラムダ式**を使うと、この`Comparator`の実装を非常に簡潔に記述できます。
+
+### 匿名クラスからラムダ式へ
+
+ラムダ式が登場する前は、`Comparator`をその場で実装するために**匿名クラス**が使われていました。
 
 ```java
-import java.util.LinkedList;
-import java.util.Queue;
-
-public class LinkedListExample {
-    public static void main(String[] args) {
-        Queue<String> queue = new LinkedList<>();
-
-        // キューの末尾に要素を追加 (offer)
-        queue.offer("タスク1");
-        queue.offer("タスク2");
-        queue.offer("タスク3");
-        System.out.println("現在のキュー: " + queue);
-
-        // キューの先頭から要素を取り出す (poll)
-        String nextTask = queue.poll();
-        System.out.println("実行するタスク: " + nextTask);
-        System.out.println("残りのキュー: " + queue);
+import java.util.Comparator;
+// ...
+// 匿名クラスを使ったComparatorの実装（古い書き方）
+Comparator<Student> scoreComparator = new Comparator<Student>() {
+    @Override
+    public int compare(Student s1, Student s2) {
+        return Integer.compare(s2.getScore(), s1.getScore()); // 点数の降順
     }
-}
+};
 ```
-
-## 10.2 Setの応用：順序とソートを使い分ける
-
-`HashSet`は順序を保証しませんが、用途によっては「追加した順」や「ソートされた順」で要素を管理したい場合があります。
-
-### `LinkedHashSet`：挿入順序を保持するSet
-
-`LinkedHashSet`は、`HashSet`の高速な検索性能を維持しつつ、**要素が追加された順序を記憶します**。
+この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。
 
 ```java
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-public class LinkedHashSetExample {
-    public static void main(String[] args) {
-        Set<String> history = new LinkedHashSet<>();
-        history.add("ページAを表示");
-        history.add("ページCを表示");
-        history.add("ページBを表示");
-        history.add("ページAを表示"); // 重複は無視される
-
-        // 追加した順序で表示される
-        System.out.println("閲覧履歴: " + history);
-        // 出力: [ページAを表示, ページCを表示, ページBを表示]
-    }
-}
+// ラムダ式を使ったComparatorの実装
+Comparator<Student> scoreComparator = (s1, s2) -> Integer.compare(s2.getScore(), s1.getScore());
 ```
+`compare`メソッドの実装だけを抜き出したような形になり、非常にシンプルになりました。`->`の左側がメソッドの引数、右側が処理本体です。
 
-### `TreeSet`：自動でソートされるSet
+### `Comparator`の便利なメソッド
 
-`TreeSet`は、要素を追加すると**自動的にソートされた状態を維持します**。数値や文字列など、自然な順序を持つ要素は自動でソートされます。
+Java 8以降、`Comparator`インターフェイスには、ラムダ式と組み合わせてソート条件をより宣言的に記述できる便利なメソッドが追加されました。
 
-```java
-import java.util.Set;
-import java.util.TreeSet;
-
-public class TreeSetExample {
-    public static void main(String[] args) {
-        Set<Integer> sortedScores = new TreeSet<>();
-        sortedScores.add(85);
-        sortedScores.add(92);
-        sortedScores.add(78);
-        sortedScores.add(92); // 重複は無視
-
-        // 自動的に昇順でソートされている
-        System.out.println("点数一覧: " + sortedScores);
-        // 出力: [78, 85, 92]
-    }
-}
-```
-
-## 10.3 コレクションのソートと`Comparator`
-
-`List`を自然な順序（数値の大小、文字列の辞書順）以外でソートしたい場合、**`Comparator`** を使って独自の比較ルールを定義します。
+- `Comparator.comparing(keyExtractor)`: 比較のキーとなる値を抽出する関数を渡す。
+- `reversed()`: 比較順序を逆にする。
+- `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する。
 
 ```java
 import java.util.ArrayList;
@@ -138,57 +110,106 @@ import java.util.List;
 class Student {
     String name;
     int score;
-    public Student(String name, int score) { this.name = name; this.score = score; }
-    @Override public String toString() { return name + "(" + score + "点)"; }
+    int height;
+    public Student(String name, int score, int height) { this.name = name; this.score = score; this.height = height; }
+    public String getName() { return name; }
+    public int getScore() { return score; }
+    public int getHeight() { return height; }
+    @Override public String toString() { return name + "(score:" + score + ", height:" + height + ")"; }
 }
 
-public class SortExample {
+public class AdvancedSortExample {
     public static void main(String[] args) {
         List<Student> students = new ArrayList<>();
-        students.add(new Student("Alice", 85));
-        students.add(new Student("Bob", 92));
-        students.add(new Student("Charlie", 78));
+        students.add(new Student("Bob", 92, 170));
+        students.add(new Student("Alice", 85, 165));
+        students.add(new Student("Charlie", 92, 180));
 
-        // ラムダ式でComparatorを記述し、点数で降順ソート
-        students.sort((s1, s2) -> Integer.compare(s2.score, s1.score));
+        // 点数が高い順、同じ点数の場合は身長が高い順にソート
+        Comparator<Student> comparator = Comparator
+            .comparingInt(Student::getScore).reversed() // 点数で比較し、逆順（降順）に
+            .thenComparingInt(Student::getHeight).reversed(); // 次に身長で比較し、逆順（降順）に
 
-        System.out.println("点数順ランキング: " + students);
+        students.sort(comparator); // List.sort()に渡す
+
+        System.out.println(students);
+        // 出力: [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
     }
 }
 ```
-`Comparator`は、実装すべきメソッドが1つだけの「関数型インターフェイス」であるため、このようにラムダ式で簡潔に記述できます。ラムダ式については次章で詳しく学びます。
+`Student::getScore`は**メソッド参照**とよい、`student -> student.getScore()`というラムダ式をさらに簡潔にした書き方です。
 
-## 10.4 `Collections`ユーティリティクラス
+## 10.3 Stream APIによる現代的なコレクション操作
 
-`Collections`クラス（`Collection`ではない点に注意）には、コレクションを操作するための便利な静的メソッドが多数用意されています。
+Java 8で導入された**Stream API**は、コレクションの要素の集まりを「データの流れ（ストリーム）」として扱い、その流れに対してさまざまな処理を連結（パイプライン化）してい���しくみです。ラムダ式と組み合わせることで、コレクション操作を非常に宣言的（「何をするか」を記述するスタイル）で、かつ簡潔に書くことができます。
+
+### Stream操作の基本パターン
+
+`コレクション.stream().中間操作1().中間操作2()...終端操作()`
+
+- **ストリームの生成**: `list.stream()`のように、コレクションからストリームを生成します。
+- **中間操作**: `filter`（フィルタリング）、`map`（変換）、`sorted`（ソート）など。処理結果として新しいストリームを返します。何度でも連結できます。
+- **終端操作**: `forEach`（繰り返し処理）、`collect`（結果をコレクションに集約）、`count`（要素数を数える）など。ストリームの処理を最終的に実行し、結果を返します。
+
+### `filter`: 条件に合う要素だけを抽出
+
+`filter`は、条件（`Predicate`）に一致する要素だけを残します。
+
+```java
+List<Student> list = ...;
+// 点数が90点以上の生徒だけを抽出
+List<Student> highScorers = list.stream()
+    .filter(s -> s.getScore() >= 90)
+    .collect(Collectors.toList());
+```
+
+### `map`: 要素を別の形に変換
+
+`map`は、各要素に関数（`Function`）を適用し、別の値に変換します。
+
+```java
+// 生徒のリストから、名前のリストを生成
+List<String> names = list.stream()
+    .map(Student::getName)
+    .collect(Collectors.toList());
+```
+
+### 組み合わせた例
 
 ```java
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CollectionsUtilExample {
+public class StreamExample {
     public static void main(String[] args) {
-        List<Integer> numbers = new ArrayList<>();
-        numbers.add(30);
-        numbers.add(10);
-        numbers.add(20);
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Bob", 92, 170));
+        students.add(new Student("Alice", 85, 165));
+        students.add(new Student("David", 75, 170));
+        students.add(new Student("Charlie", 92, 180));
 
-        Collections.sort(numbers);
-        System.out.println("ソート後: " + numbers);
+        // 点数が80点より高く、身長が170cm以上の生徒の名前を、アルファベット順で取得する
+        List<String> result = students.stream() // 1. ストリームを生成
+            .filter(s -> s.getScore() > 80)      // 2. 点数でフィルタリング
+            .filter(s -> s.getHeight() >= 170)   // 3. 身長でフィルタリング
+            .map(Student::getName)               // 4. 名前に変換
+            .sorted()                            // 5. アルファベット順にソート
+            .collect(Collectors.toList());       // 6. 結果をリス���に集約
 
-        Collections.reverse(numbers);
-        System.out.println("逆順: " + numbers);
+        System.out.println(result);
+        // 出力: [Bob, Charlie]
     }
 }
 ```
+従来の`for`ループと`if`文を組み合わせるよりも、処理の流れが明確で読みやすいコードになるのがStream APIの大きな利点です。
 
 ## まとめ
 
-本章では、コレクションフレームワークの応用的な側面を学びました。
+本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
-- **データ構造の選択**: `ArrayList`と`LinkedList`、`HashSet`と`TreeSet`など、状況に応じて最適な実装クラスを選択することが重要です。
-- **順序とソート**: `LinkedHashSet`は挿入順を、`TreeSet`はソート順を維持します。
-- **カスタムソート**: `Comparator`を使うことで、独自のルールで`List`をソートできます。
+- **データ構造の選択**: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが重要です。
+- **ラムダ式と`Comparator`**: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
+- **Stream API**: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
 
-これらの知識を身につけることで、より効率的で、要件に即したデータ管理が可能になります。
+これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。

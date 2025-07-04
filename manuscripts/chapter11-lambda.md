@@ -18,46 +18,37 @@
   ```
 - **コードの可読性向上**: ラムダ式を用いることで、「何が起きたら」「何をするか」というロジックが直接的に表現され、コードの意図が明確になります。
 
-本章をマスタすることで、モダンJavaにおけるイベント駆動プログラミ��グの標準的なスタイルを身につけることができます。
+本章をマスタすることで、モダンJavaにおけるイベント駆動プログラミングの標準的なスタイルを身につけることができます。
 
-## 11.1 ラムダ式とは？
+## 11.1 匿名クラスからラムダ式へ
 
-**ラムダ式**は、Java 8で導入された、**匿名関数（名前のない関数）** を簡潔に記述するための構文です。これまで匿名クラスを使っていた冗長なコードを、非常にシンプルに書けるようになります。
-
-### 基本的な構文
-
-ラムダ式の基本構文は以下の通りです。
-
-`(引数リスト) -> { 処理本体 }`
-
--   `->`（アロー演算子）が、引数と処理を区切ります。
--   処理が1行の場合は、`{}`と`return`文を省略できます。
--   引数の型は、多くの場合コンパイラが推論してくれるため省略可能です。
-
-### 従来の匿名クラス vs ラムダ式
-
-GUIのボタンクリック処理を例に、その違いを見てみましょう。
+Java 8でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには**匿名クラス（Anonymous Class）**が使われていました。これは名前を持たないクラスで、特にGUIのイベントリスナなどで多用されていました。
 
 ```java
-// 従来の匿名クラス
+// 匿名クラスを使ったボタンのクリック処理
 button.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("ボタンがクリックされました！");
     }
 });
+```
+このコードは、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
 
-// ラムダ式
+**ラムダ式**は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
+
+```java
+// ラムダ式を使った場合
 button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
 ```
-
-`new ActionListener()` や `actionPerformed` メソッドの宣言といった定型的なコードがなくなり、「引数 `e` を受け取って、メッセージを出力する」という本質的な処理だけが残っているのがわかります。
 
 ## 11.2 関数型インターフェイス
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、**関数型インターフェイス（Functional Interface）** として扱われます。
 
-**関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けることが推奨されます（必須ではありませんが、コンパイラがチェックしてくれます）。
+**関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけか��どうかをチェックしてくれるため、付けることが推奨されます。
+
+`ActionListener`や前章の`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
 ```java
 @FunctionalInterface
@@ -77,11 +68,18 @@ public class Main {
 }
 ```
 
-`ActionListener`や`Comparator`も、実装すべき抽象メソッドが1つだけなので、���数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
+### ラムダ式の構文バリエーション
 
-### 標準で用意されている関数型インターフェイス
+ラムダ式は、状況に応じて記述をさらに簡略化できます。
 
-Javaには、`java.util.function`パッケージに、よく使われる汎用的な関数型インターフェイスが多数用意されています。
+-   **引数の型の省略**: `(int a, int b) -> ...` は `(a, b) -> ...` と書けます。
+-   **引数が1つの場合、括弧の省略**: `(a) -> ...` は `a -> ...` と書けます。
+-   **処理が1行の場合、中括弧の省略**: `a -> { return a * 2; }` は `a -> a * 2` と書けます。
+-   **引数がない場合**: `() -> System.out.println("Hello");` のように括弧だけを書きます。
+
+### `java.util.function` パッケージ
+
+Javaには、`java.util.function`パッケージに、よく使われる汎用的な関数型インターフェイスが多数用意されています。これらを活用することで、自分でインターフェイスを定義する手間を省けます。
 
 | インターフェイス | 抽象メソッド | 説明 |
 | :--- | :--- | :--- |
@@ -89,6 +87,8 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `Function<T, R>` | `R apply(T t)` | T型を受け取り、R型を返す（変換） |
 | `Consumer<T>` | `void accept(T t)` | T型を受け取り、何も返さない（消費） |
 | `Supplier<T>` | `T get()` | 何も受け取らず、T型を返す（供給） |
+| `UnaryOperator<T>` | `T apply(T t)` | T型を受け取り、同じT型を返す（単項演算） |
+| `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（��項演算） |
 
 ```java
 import java.util.function.*;
@@ -116,13 +116,14 @@ public class StandardFunctionalInterfaces {
 
 ## 11.3 メソッド参照
 
-ラムダ式が既存のメソッドを呼び出すだけの場合、**メソッド参照**という、さらに簡潔な記法が使えます。
+ラムダ式が既存のメソッドを呼びだすだけの場合、**メソッド参照（Method Reference）**という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
 
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
-| 静的メソッド参照 | `クラス名::メソッド名` | `s -> Integer.parseInt(s)` |
-| インスタンスメソッド参照 | `インスタンス変数::メソッド名` | `s -> System.out.println(s)` |
-| コンストラクタ参照 | `クラス名::new` | `() -> new ArrayList<>()` |
+| **静的��ソッド参照** | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
+| **インスタンスメソッド参照**<br>(特定のインスタンス) | `インスタンス変数::メソッド名` | `s -> System.out.println(s)` |
+| **インスタンスメソッド参照**<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
+| **コンストラクタ参照** | `クラス名::new` | `() -> new ArrayList<>()` |
 
 ```java
 import java.util.ArrayList;
@@ -136,21 +137,47 @@ public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
 
-        // 静的メソッド参照
         // ラムダ: s -> System.out.println(s)
-        Consumer<String> printer = System.out::println;
-        words.forEach(printer);
+        // メソッド参照: System.out::println
+        words.forEach(System.out::println);
 
-        // インスタンスメソッド参照
         // ラムダ: s -> s.toUpperCase()
-        Function<String, String> toUpper = String::toUpperCase;
-        words.stream().map(toUpper).forEach(printer);
+        // メソッド参照: String::toUpperCase
+        words.stream()
+             .map(String::toUpperCase)
+             .forEach(System.out::println);
 
-        // コンストラクタ参照
         // ラムダ: () -> new ArrayList<>()
+        // メソッド参照: ArrayList::new
         Supplier<List<String>> listFactory = ArrayList::new;
         List<String> newList = listFactory.get();
         System.out.println("新しいリスト: " + newList);
+    }
+}
+```
+
+## 11.4 ラムダ式の応用例
+
+ラムダ式はコレクション操作だけでなく、Javaプログラムのさまざまな場面でコードを簡潔にします。
+
+### スレッドの生成と実行
+
+`Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
+
+```java
+public class ThreadLambdaExample {
+    public static void main(String[] args) {
+        // 匿名クラスでのRunnable
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                System.out.println("Thread t1 (Anonymous) is running...");
+            }
+        });
+        t1.start();
+
+        // ラムダ式でのRunnable
+        Thread t2 = new Thread(() -> System.out.println("Thread t2 (Lambda) is running..."));
+        t2.start();
     }
 }
 ```
@@ -159,9 +186,9 @@ public class MethodReferenceExample {
 
 本章では、モダンJavaプログラミングの基礎となるラムダ式と関数型インターフェイスについて学びました。
 
--   **ラムダ式**は、匿名関数を簡潔に記述するための構文です。
+-   **ラムダ式**は、匿名関数を簡潔に記述するための構文で、冗長な匿名クラスを置き換えます。
 -   ラムダ式は、**抽象メソッドが1つだけの関数型インターフェイス**として扱われます。
 -   `Predicate`, `Function`, `Consumer`, `Supplier`など、汎用的な関数型インターフェイスが標準で用意されています。
--   **メソッド参照**を使うと、既存のメソッドを呼び出すだけのラムダ式を��らに簡潔に書けます。
+-   **メソッド参照**を使うと、既存のメソッドを呼びだすだけのラムダ式をさらに簡潔に書けます。
 
 これらの機能を使いこなすことで、コードの可読性が向上し、より宣言的で簡潔なプログラミングが可能になります。

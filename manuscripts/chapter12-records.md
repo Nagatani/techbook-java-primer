@@ -7,7 +7,7 @@
 - **`Task`クラスの簡素化**: `name`, `dueDate`, `isCompleted`といったデータを保持するだけの`Task`クラスを、従来の冗長な書き方ではなく、`Record`を使って1行で定義できます。
   ```java
   // 従来のクラス定義
-  public class Task {
+  public final class Task { // finalにする
       private final String name;
       // ... getter, equals, hashCode, toString ...
   }
@@ -19,13 +19,13 @@
 
 ## 12.1 Recordとは？
 
-**Record**は、Java 16で正式���導入された、**不変（immutable）なデータを保持するため**の、簡潔なクラスを定義するための機能です。
+**Record**は、Java 16で正式に導入された、**不変（immuテーブル）なデータを保持するため**の、簡潔なクラスを定義するための機能です。
 
-これまで、データを保持するためだけのクラス（データクラス）を作るには、多くの定型的なコード（ボイラープレートコード）が必要でした。
+これまで、データを保持するためだけのクラス（データクラスやデータキャリアと呼ばれる）を作るには、多くの定型的なコード（ボイラープレートコード）が必要でした。
 
 -   `private final`なフィールド
 -   全フィールドを初期化するコンストラクタ
--   全フィールドのゲッターメソッド
+-   全フィールドのゲッタメソッド（アクセサ）
 -   `equals()`, `hashCode()`, `toString()` メソッドのオーバーライド
 
 `Record`は、これらの定型コードを**コンパイラが自動的に生成**してくれます。
@@ -36,7 +36,7 @@
 public record Person(String name, int age) {}
 ```
 
-これだけで、以下をすべて定義したのと同じ意味になります。
+これだけで、以下をすべて定義したのとほぼ同じ意味になります。
 
 ```java
 // 上記のRecord定義とほぼ等価なクラス
@@ -49,25 +49,30 @@ public final class Person { // finalクラスになる
         this.age = age;
     }
 
-    public String name() { return this.name; } // アクセサメソッド（getXXXではない）
+    public String name() { return this.name; } // アクセサメソッド（getXXX���はない）
     public int age() { return this.age; }
 
     @Override
-    public boolean equals(Object o) { /* ... */ }
+    public boolean equals(Object o) { /* 全フィールドを比較する実装 */ }
 
     @Override
-    public int hashCode() { /* ... */ }
+    public int hashCode() { /* 全フィールドから計算する実装 */ }
 
     @Override
-    public String toString() { /* ... */ }
+    public String toString() { /* 全フィールドを表示する実装 */ }
 }
 ```
 
-### Recordの主な特徴
+### Recordのメリット・デメリット
 
-1.  **簡潔さ**: ボイラープレートコードを劇的に削減できます。
-2.  **不変性**: フィールドはすべて`final`となり、一度作成したオブジェクトの状態は変更できません。これにより、プログラムの安全性が向上します。
-3.  **明確な意図**: このクラスが「データを保持するためのものである」という意図が明確になります。
+**メリット:**
+- **簡潔さ**: ボイラープレートコードを劇的に削減できます。
+- **不変性（Immutability）**: フィールドはすべて`final`となり、一度作成したオブジェクトの状態は変更できません。これにより、プログラムの安全性が向上し、特にマルチスレッド環境で安心して扱えます。
+- **明確な意図**: このクラスが「データを保持するためのものである」という意図が明確になります。
+
+**デメリット:**
+- **拡張性の制限**: `Record`は暗黙的に`final`であり、ほかのクラスを継承したり、ほかのクラスに継承させたりすることはできません。
+- **可変オブジェクトには不向き**: 状態を変更する必要があるオブジェクトには使えません。
 
 ## 12.2 Recordの使い方
 
@@ -97,7 +102,7 @@ public class RecordExample {
 
 ### コンパクトコンストラクタ
 
-`Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。
+`Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
 
 ```java
 public record PositivePoint(int x, int y) {
@@ -111,6 +116,58 @@ public record PositivePoint(int x, int y) {
 }
 ```
 
+## 12.3 実践例：CSVファイルの読み込み
+
+`Record`は、ファイルから読み込んだ構造化されたデータを保持するのに非常に適しています。
+
+**data.csv**
+```csv
+Alice,25,Tokyo
+Bob,30,Osaka
+Charlie,35,Nagoya
+```
+
+このCSVの各行を表現する`PersonRecord`を定義します。
+
+```java
+// PersonRecord.java
+public record PersonRecord(String name, int age, String city) {}
+```
+
+```java
+// CsvReader.java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CsvReader {
+    public static void main(String[] args) {
+        Path filePath = Path.of("data.csv");
+        try {
+            List<PersonRecord> persons = Files.lines(filePath) // ファイルを1行ずつのStreamに
+                .map(line -> line.split(",")) // 各行をカンマで分割
+                .filter(fields -> fields.length == 3) // 配列の長さが3であることを確認
+                .map(fields -> new PersonRecord(
+                    fields[0],                      // name
+                    Integer.parseInt(fields[1]),    // age
+                    fields[2]                       // city
+                ))
+                .collect(Collectors.toList()); // 結果をListに集約
+
+            persons.forEach(System.out::println);
+
+        } catch (IOException e) {
+            System.err.println("ファイルの読み込みに失敗しました: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("年齢の形式が正しくありません: " + e.getMessage());
+        }
+    }
+}
+```
+この例では、Stream APIと組み合わせることで、ファイル読み込みから`Record`への変換、リストへの格納までを非常に簡潔に記述できています。
+
 ## まとめ
 
 本章では、データを簡潔かつ安全に扱うための`Record`について学びました。
@@ -118,6 +175,6 @@ public record PositivePoint(int x, int y) {
 -   **Record**は、不変なデータを保持するクラスを簡潔に定義するための機能です。
 -   コンストラクタ、アクセサメソッド、`equals`, `hashCode`, `toString`が自動的に生成されます。
 -   オブジェクトの**不変性**を保証し、プログラムの安全性を高めます。
--   データ転送オブジェクト（DTO）や、設定値の保持など、様々な場面で活用できます。
+-   データ転送オブジェクト（DTO）や、設定値の保持、ファイルから読み��んだデータの格納など、さまざまな場面で活用できます。
 
-特に、次章以降で学ぶStream APIと組み合わせることで、データ処理を非常に簡潔かつ安全に記述できるようになります。
+特に、Stream APIと組み合わせることで、データ処理を非常に簡潔かつ安全に記述できます。
