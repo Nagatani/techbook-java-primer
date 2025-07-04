@@ -1,5 +1,20 @@
 # 第10章 コレクションの応用とデータ構造
 
+## 🎯総合演習プロジェクトへのステップ
+
+本章で学ぶ応用的なコレクションと`Comparator`は、**総合演習プロジェクト「ToDoリストアプリケーション」** の機能をより高度で使いやすいものにするために役立ちます。
+
+- **タスクの並べ替え機能**: `Comparator`を使えば、ユーザーが「優先度順」「期日順」「タスク名順」など、様々な条件でタスク一覧をソートする機能を実装できます。これにより、ユーザーは自分にとって最も重要なタスクを簡単に見つけられるようになります。
+  ```java
+  // 例：優先度（高→低）でソートするためのComparator
+  Comparator<Task> priorityComparator = (task1, task2) -> 
+      task2.getPriority().compareTo(task1.getPriority());
+  
+  // このComparatorをCollections.sort()やList.sort()に渡す
+  taskList.sort(priorityComparator);
+  ```
+- **データ構造の最適化**: 将来的にタスクの検索や追加・削除の性能が問題になった場合、`ArrayList`を`LinkedList`に変更したり、タグ管理に`TreeSet`を使って自動的にソートしたりと、本章の知識を活かして最適なデータ構造を選択できます。
+
 ## 📋 本章の学習目標
 
 ### 前提知識
