@@ -1,264 +1,229 @@
-# 第8章 コレクションの応用とデータ構造
+# 第7章 コレクションフレームワークの基礎
+
+## 🎯総合演習プロジェクトへのステップ
+
+配列の限界を超え、より柔軟なデータ管理を実現するコレクションフレームワークは、**総合演習プロジェクト「TODOリストアプリケーション」** の中核を担います。
+
+- **`ArrayList<Task>`**: この章で学ぶ`ArrayList`は、アプリケーション内で複数の`Task`オブジェクトを管理するためのリストとして使用します。タスクの追加、削除、一覧表示といった基本機能は、すべて`ArrayList`の操作に基づいています。
+- **動的なタスク管理**: ユーザーがタスクを自由に追加・削除できるのは、コレクションが持つ動的なサイズ変更機能のおかげです。
+
+この章を学ぶことで、アプリケーションのデータをメモリ上で効率的に扱うための、Javaプログラマ必須のスキルが身につきます。
 
 ## 📋 本章の学習目標
 
 ### 前提知識
-- **第7章のコレクション基礎**: `List`, `Set`, `Map`の基本概念と`ArrayList`, `HashSet`, `HashMap`の使い方。
-- **インターフェイスとポリモーフィズム**: インターフェイス型でインスタンスを扱う利点の理解。
-- **オブジェクトの比較**: `equals`と`hashCode`の役割の基本的な理解。
+- **クラスとオブジェクト**: `new`キーワードを使ったインスタンスの生成。
+- **インターフェイス**: インターフェイスの基本的な役割の理解。
+- **基本的なデータ構造**: 配列の概念と使い方。
 
 ### 到達目標
 
 #### 知識理解目標
-- `ArrayList`と`LinkedList`の性能特性の違いを理解し、使い分けを説明できる。
-- `HashSet`, `LinkedHashSet`, `TreeSet`の特性（順序、ソート）の違いを理解し、使い分けを説明できる。
-- `HashMap`, `LinkedHashMap`, `TreeMap`の特性の違いを理解し、使い分けを説明できる。
-- `Comparator`を使ったカスタムソートの概念を理解する。
-- `Collections`ユーティリティクラスの便利な機能を知る。
+- 配列の限界とコレクションフレームワークの必要性を理解する。
+- `List`, `Set`, `Map`という3つの主要なインターフェイスの特性（順序、重複）を理解する。
+- ジェネリクスを使った型安全なコレクションのプログラミング方法を理解する。
+- `ArrayList`, `HashSet`, `HashMap`の基本的な役割と用途を説明できる。
 
 #### 技能習得目標
-- 用途に応じて、`LinkedList`や`TreeSet`などの応用的なコレクションを選択して使用できる。
-- `Comparator`を実装（��たはラムダ式で記述）し、オブジェクトのリストを特定のルールでソートできる。
-- `Collections.sort()`や`Collections.reverse()`などのユーティリティメソッドを使える。
-- 配列と`List`を相互に変換できる。
+- `ArrayList`を作成し、要素の追加、取得、削除ができる。
+- `HashSet`を作成し、重複しない要素を管理できる。
+- `HashMap`を作成し、キーと値のペアを追加、取得、削除できる。
+- for-eachループを使って、コレクションの全要素を反復処理できる。
 
 ---
 
-## 8.1 Listの応用：ArrayList vs LinkedList
+## 7.1 データ管理の進化：配列からコレクションへ
 
-前章では`ArrayList`を学びましたが、`List`インターフェイスにはもう一つ重要な実装クラス`LinkedList`があります。この二つは、内部的なデータの持ち方（データ構造）が異なり、それによって得意な操作と不得意な操作が生まれます。
+Javaプログラミングの初期に学ぶ配列は、複数のデータをまとめて管理するための基本的な手段です。しかし、実用的なアプリケーションを開発するには、配列だけでは不十分な場面が多くあります。
 
-### データ構造の違い
+### 配列の限界
 
-- **`ArrayList`**: 内部的に**配列**を使用します。メモリ上で連続した領域にデータを格納します。
-- **`LinkedList`**: **リンクリスト（連結リスト）** という構造を使用します。各要素が「次の要素はどこか」という情報（ポインタ）を数珠つなぎのように持っています。
+配列には、主に2つの大きな制限があります。
 
-| 操作 | `ArrayList` (配列) | `LinkedList` (連結リスト) |
-| :--- | :--- | :--- |
-| **要素の取得 (get)** | **高速 (O(1))**<br>インデックスで直接アクセスできる。 | **低速 (O(n))**<br>先頭から順番にたどる必要がある。 |
-| **先頭/末尾への追加・削除** | 低速 (O(n))<br>先頭操作は全要素のシフトが必要。 | **高速 (O(1))**<br>つなぎ変えるだけで済む。 |
-| **中間への追加・削除** | 低速 (O(n))<br>後続要素のシフトが必要。 | 低速 (O(n))<br>目的の場所までたどる必要がある。 |
-
-**使い分けの指針:**
-- **`ArrayList`**: 要素の参照（取得）が多く、リストの末尾以外での追加・削除が少ない場合に最適。**ほとんどのケースで第一候補となります。**
-- **`LinkedList`**: リストの先頭や末尾で頻繁に要素を追加・削除するような、キュー（待ち行列）やスタックのような使い方をする場合に有効です。
+1.  **サイズが固定**: 配列は、一度作成するとそのサイズを変更できません。
+2.  **機能が限定的**: 要素の追加や削除、検索といった一般的な操作を自前で実装する必要があり、手間がかかります。
 
 ```java
-import java.util.LinkedList;
-
-public class LinkedListExample {
-    public static void main(String[] args) {
-        LinkedList<String> queue = new LinkedList<>();
-
-        // キューの末尾に要素を追加 (offer)
-        queue.offer("タスク1");
-        queue.offer("タスク2");
-        queue.offer("タスク3");
-        System.out.println("現在のキュー: " + queue);
-
-        // キューの先頭から要素を取り出す (poll)
-        String nextTask = queue.poll();
-        System.out.println("実行するタスク: " + nextTask);
-        System.out.println("残りのキュー: " + queue);
-    }
-}
+// 配列の例：要素を追加するのも一苦労
+String[] users = new String[3];
+users[0] = "Alice";
+users[1] = "Bob";
+users[2] = "Charlie";
+// これ以上ユーザーを追加するには、より大きな新しい配列を作って、
+// 全ての要素をコピーし直す必要がある。
 ```
 
-## 8.2 Setの応用：順序とソートを使い分ける
+こうした配列の不便さを解消し、より柔軟で高機能なデータ管理を実現するのが**コレクションフレームワーク**です。
 
-`HashSet`は順序を保証しませんが、用途によっては「追加した順」や「ソートされた順」で要素を管理したい場合があります。
+### コレクションフレームワークとは？
 
-### `LinkedHashSet`：挿入順序を保持するSet
+Javaのコレクションフレームワークは、データを効率的に扱うためのさまざまな「データ構造」を、再利用可能なクラスやインターフェイスとして���系的にまとめたものです。
 
-`LinkedHashSet`は、`HashSet`の高速な検索性能を維持しつつ、**要素が追加された順序を記憶します**。
+- **動的なサイズ**: 要素の数に応じて自動的にサイズが調整されます。
+- **豊富な機能**: 要素の追加、削除、検索、ソートなどの便利なメソッドが標準で提供されています。
+
+## 7.2 ジェネリクスと型安全性
+
+コレクションフレームワークを安全に使う上で欠かせないのが**ジェネリクス（Generics）** です。ジェネリクスは、コレクションが「どの型のデータ」を格納するのかを、コンパイル時に明確に指定するための仕組みです。
 
 ```java
-import java.util.LinkedHashSet;
-import java.util.Set;
+// String型の要素だけを格納できるListを宣言
+List<String> stringList = new ArrayList<>();
 
-public class LinkedHashSetExample {
-    public static void main(String[] args) {
-        Set<String> history = new LinkedHashSet<>();
-        history.add("ページAを表示");
-        history.add("ページCを表示");
-        history.add("ページBを表示");
-        history.add("ページAを表示"); // 重複は無視される
-
-        // 追加した順序で表示される
-        System.out.println("閲覧履歴: " + history);
-        // 出力: [ページAを表示, ページCを表示, ページBを表示]
-    }
-}
+stringList.add("Java");
+// stringList.add(123); // コンパイルエラー！ String型以外は追加できない
 ```
 
-### `TreeSet`：自動でソートされるSet
+これにより、意図しない型のデータが混入するのを防ぎ、プログラムの安全性を大幅に向上させます。`< >`の中に型名を記述し、Java 7以降は右辺の型名を省略できる**ダイヤモンド演算子** (`<>`)が使えます。
 
-`TreeSet`は、要素を追加すると**自動的にソートされた状態を維持します**。数値や文字列など、自然な順序を持つ要素は自動でソートされます。カスタムオブジェクトを格納する場合は、ソート順のルールを定義する必要があります（`Comparable`インターフェイスの実装）。
+## 7.3 `List`インターフェイス：順序のあるデータ列
 
-```java
-import java.util.Set;
-import java.util.TreeSet;
+`List`は、**順序付けられた**要素のコレクションで、**重複を許可します**。配列に最も近い感覚で使え、追加した順に要素が格納されます。
 
-public class TreeSetExample {
-    public static void main(String[] args) {
-        Set<Integer> sortedScores = new TreeSet<>();
-        sortedScores.add(85);
-        sortedScores.add(92);
-        sortedScores.add(78);
-        sortedScores.add(92); // 重複は無視
+### `ArrayList`：もっとも身近なリスト
 
-        // 自動的に昇順でソートされている
-        System.out.println("点数一覧: " + sortedScores);
-        // 出力: [78, 85, 92]
-    }
-}
-```
+`ArrayList`は、`List`インターフェイスのもっとも代表的な実装クラスです。内部的に配列を使っており、要素へのランダムアクセス（インデックス指定での取得）が非常に高速です。
 
-## 8.3 Mapの応用：順序とソート
-
-`Map`にも`Set`と同様に、順序やソートを扱うための実装クラスがあります。
-
-- **`LinkedHashMap`**: **キーが追加された順序**を保持します。
-- **`TreeMap`**: **キーを自動的にソート**して管理します。
-
-```java
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
-public class OrderedMapExample {
-    public static void main(String[] args) {
-        // 挿入順序を保持するLinkedHashMap
-        Map<String, Integer> linkedMap = new LinkedHashMap<>();
-        linkedMap.put("B", 2);
-        linkedMap.put("C", 3);
-        linkedMap.put("A", 1);
-        System.out.println("LinkedHashMap: " + linkedMap);
-        // 出力: {B=2, C=3, A=1}
-
-        // キーでソートするTreeMap
-        Map<String, Integer> treeMap = new TreeMap<>();
-        treeMap.put("B", 2);
-        treeMap.put("C", 3);
-        treeMap.put("A", 1);
-        System.out.println("TreeMap:       " + treeMap);
-        // 出力: {A=1, B=2, C=3}
-    }
-}
-```
-
-## 8.4 コレクションのソートと`Comparator`
-
-`List`を自然な順序（数値の大小、文字列の辞書順）以外でソートしたい場合、**`Comparator`** を使って独自の比較ルールを定義します。
-
-### `Comparator`によるカスタムソート
-
-`Student`オブジェクトのリストを、点数が高い順にソートする例を見てみましょう。
+#### `ArrayList`の基本的な使い方
 
 ```java
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-class Student {
-    String name;
-    int score;
+public class ArrayListExample {
+    public static void main(String[] args) {
+        // String型の要素を格納するArrayListを作成
+        List<String> fruits = new ArrayList<>();
 
-    public Student(String name, int score) {
-        this.name = name;
-        this.score = score;
-    }
+        // 1. 要素の追加 (add)
+        fruits.add("りんご");
+        fruits.add("バナナ");
+        fruits.add("みかん");
+        fruits.add("りんご"); // 重複も許可される
 
-    @Override
-    public String toString() {
-        return name + "(" + score + "点)";
-    }
-}
+        System.out.println("現在のリスト: " + fruits);
 
-// 点数を比較するためのComparatorクラス
-class ScoreComparator implements Comparator<Student> {
-    @Override
-    public int compare(Student s1, Student s2) {
-        // s1がs2より「大きい」場合に負の値を返すことで降順にする
-        if (s1.score > s2.score) {
-            return -1;
-        } else if (s1.score < s2.score) {
-            return 1;
-        } else {
-            return 0;
+        // 2. 要素の取得 (get)
+        // インデックスは0から始まる
+        String secondFruit = fruits.get(1);
+        System.out.println("2番目の果物: " + secondFruit);
+
+        // 3. 要素数の取得 (size)
+        System.out.println("果物の数: " + fruits.size());
+
+        // 4. 要素の削除 (remove)
+        fruits.remove("バナナ"); // 値で削除
+        System.out.println("「バナナ」を削除後: " + fruits);
+        fruits.remove(0);      // インデックスで削除
+        System.out.println("先頭を削除後: " + fruits);
+
+        // 5. 全要素の反復処理 (for-each)
+        System.out.println("残りの果物:");
+        for (String fruit : fruits) {
+            System.out.println("- " + fruit);
         }
-        // 簡潔な書き方: return Integer.compare(s2.score, s1.score);
-    }
-}
-
-public class SortExample {
-    public static void main(String[] args) {
-        List<Student> students = new ArrayList<>();
-        students.add(new Student("Alice", 85));
-        students.add(new Student("Bob", 92));
-        students.add(new Student("Charlie", 78));
-
-        // Comparatorを使ってソート
-        students.sort(new ScoreComparator());
-
-        System.out.println("点数順ランキング: " + students);
     }
 }
 ```
 
-### ラムダ式による`Comparator`の簡略化
+## 7.4 `Set`インターフェイス：重複のないユニークな集合
 
-Java 8以降では、ラムダ式を使うことで`Comparator`をより簡潔に記述できます。
+`Set`は、**重複しない**要素のコレクションです。順序は保証されません（追加した順に取り出せるとは限りません）。ユーザーIDやメールアドレスなど、一意性を保証したいデータの管理に適しています。
+
+### `HashSet`：高速な重複排除
+
+`HashSet`は、`Set`インターフェイスのもっとも代表的な実装クラスです。ハッシュという仕組みを使い、要素の追加や検索を非常に高速に行います。
+
+#### `HashSet`の基本的な使い方
 
 ```java
-// 上記の students.sort(new ScoreComparator()); と同じ意味
-students.sort((s1, s2) -> Integer.compare(s2.score, s1.score));
+import java.util.HashSet;
+import java.util.Set;
 
-// さらにComparatorの静的メソッドを使うと、より読みやすくなる
-students.sort(Comparator.comparingInt(s -> s.score).reversed());
+public class HashSetExample {
+    public static void main(String[] args) {
+        // タグを管理するHashSetを作成
+        Set<String> tags = new HashSet<>();
+
+        // 1. 要素の追加 (add)
+        tags.add("Java");
+        tags.add("プログラミング");
+        tags.add("初心者向け");
+
+        // 2. 重複する要素を追加しようとする
+        boolean added = tags.add("Java"); // すでに存在するため追加されない
+
+        System.out.println("タグ一覧: " + tags);
+        System.out.println("「Java」は追加されたか？: " + added); // false
+
+        // 3. 要素の存在確認 (contains)
+        if (tags.contains("プログラミング")) {
+            System.out.println("「プログラミング」タグは存在します。");
+        }
+
+        // 4. 要素の削除 (remove)
+        tags.remove("初心者向け");
+        System.out.println("削除後のタグ: " + tags);
+    }
+}
 ```
 
-## 8.5 `Collections`ユーティリティクラス
+## 7.5 `Map`インターフェイス：キーと値のペア
 
-`Collections`クラス（`Collection`ではない点に注意）には、コレクションを操作するための便利な静的メソッドが多数用意されています。
+`Map`は、一意の**キー（Key）** と、それに対応する**値（Value）** のペアを格納するコレクションです。キーを使って高速に値を取得できます。
+
+### `HashMap`：もっとも使われるマップ
+
+`HashMap`は、`Map`インターフェイスのもっとも代表的な実装クラスです。`HashSet`と同様にハッシュを使い、キーによる高速な値の検索を実現します。
+
+#### `HashMap`の基本的な使い方
 
 ```java
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CollectionsUtilExample {
+public class HashMapExample {
     public static void main(String[] args) {
-        List<Integer> numbers = new ArrayList<>();
-        numbers.add(30);
-        numbers.add(10);
-        numbers.add(20);
+        // 学生の点数を管理するHashMapを作成 (キー: 名前, 値: 点数)
+        Map<String, Integer> scores = new HashMap<>();
 
-        // ソート
-        Collections.sort(numbers);
-        System.out.println("ソート後: " + numbers);
+        // 1. 要素の追加 (put)
+        scores.put("Alice", 85);
+        scores.put("Bob", 92);
+        scores.put("Charlie", 78);
+        scores.put("Alice", 95); // 同じキーでputすると、値が上書きされる
 
-        // 逆順
-        Collections.reverse(numbers);
-        System.out.println("逆順: " + numbers);
+        System.out.println("全員の点数: " + scores);
 
-        // シャッフル
-        Collections.shuffle(numbers);
-        System.out.println("シャッフル後: " + numbers);
+        // 2. 要素の取得 (get)
+        int bobScore = scores.get("Bob");
+        System.out.println("Bobの点数: " + bobScore);
 
-        // 最大値・最小値
-        System.out.println("最大値: " + Collections.max(numbers));
-        System.out.println("最小値: " + Collections.min(numbers));
+        // 3. キーの存在確認 (containsKey)
+        if (scores.containsKey("David")) {
+            System.out.println("Davidのデータは存在します。");
+        } else {
+            System.out.println("Davidのデータはありません。");
+        }
+
+        // 4. 全要素の反復処理 (keySetとfor-each)
+        System.out.println("--- 点数一覧 ---");
+        for (String name : scores.keySet()) {
+            int score = scores.get(name);
+            System.out.println(name + ": " + score + "点");
+        }
     }
 }
 ```
 
 ## まとめ
 
-本章では、コレクションフレームワークの応用的な側面を学びました。
+本章では、コレクションフレームワークの3つの基本インターフェイスと、その代表的な実装クラスを学びました。
 
-- **データ構造の選択**: `ArrayList`と`LinkedList`、`HashSet`と`TreeSet`など、それぞれの長所・短所を理解し、状況に応じて最適な実装クラスを選択することが重要です。
-- **順序とソート**: `LinkedHashSet`/`LinkedHashMap`は挿入順を、`TreeSet`/`TreeMap`は自然順序または`Comparator`によるソート順を維持します。
-- **カスタムソート**: `Comparator`を使うことで、独自のルールで`List`をソートできます。
+| インターフェイス | 特徴 | 代表的な実装 | 主な用途 |
+| :--- | :--- | :--- | :--- |
+| `List` | 順序あり、重複OK | `ArrayList` | 順番にデータを並べたいとき |
+| `Set` | 順序なし、重複NG | `HashSet` | 重複をなくしたいとき |
+| `Map` | キーと値のペア | `HashMap` | IDと情報のように紐付けて管理したいとき |
 
-これらの知識を身につけることで、より効率的で、要件に即したデータ管理が可能になります。次章では、コレクションのデータをより強力かつ宣言的に扱うための「ラムダ式」と「Stream API」について学びます。
+これらのコレクションを適切に使い分けることが、効率的で読みやすいプログラムを書くための第一歩です。次章では、これらのコレクションをさらに便利に使うための応用的なテクニックを学びます。

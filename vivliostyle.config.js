@@ -21,6 +21,8 @@ module.exports = {
     'chapter14.md',
     'chapter15.md',
     'chapter16.md',
+    'chapter17.md',
+    'chapter18.md',
     'glossary.md',
     'colophon.md',
   ],
