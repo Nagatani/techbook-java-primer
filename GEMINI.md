@@ -36,3 +36,7 @@ The following commands are defined in `package.json` and are frequently used:
 3.  Run `npm run lint` to check for any writing style issues.
 4.  Run `npm run preview` to see the changes live.
 5.  Run `npm run build` to generate the final book output in the `output/` directory.
+
+## 6. Content Guidelines
+
+- **References:** Only use the official Oracle Java website as a reference. Do not use any other websites or materials as references.
