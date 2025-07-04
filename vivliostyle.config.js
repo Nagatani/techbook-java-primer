@@ -4,7 +4,6 @@ module.exports = {
   language: 'ja',
   entry: [
     'cover.md',
-    'foreword.md',
     'chapter01-introduction.md',
     'chapter02-getting-started.md',
     'chapter03-oop-basics.md',
