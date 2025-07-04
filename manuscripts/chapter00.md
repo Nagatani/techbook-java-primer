@@ -402,7 +402,6 @@ IDEの利用に関しては、IntelliJ IDEA Community Editionがお勧めです�
 
 本書で取り上げる操作説明などは、IntelliJ IDEA Community Editionを基本とします。
 
----
 # プログラムを書いてみよう
 
 Javaの開発環境構築やIDEのインストールが完了したところだと思います。  
