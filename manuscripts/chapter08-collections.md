@@ -1,13 +1,47 @@
 # 第8章 コレクションフレームワーク
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-配列の限界を超え、より柔軟なデータ管理を実現するコレクションフレームワークは、**総合演習プロジェクト「ToDoリストアプリケーション」** の中核を担います。
+本章で学んだコレクションフレームワークの概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **`ArrayList<Task>`**: 本章で学ぶ`ArrayList`は、アプリケーション内で複数の`Task`オブジェクトを管理するためのリストとして使用します。タスクの追加、削除、一覧表示といった基本機能は、すべて`ArrayList`の操作にもとづいています。
-- **動的なタスク管理**: ユーザーがタスクを自由に追加・削除できるのは、コレクションが持つ動的なサイズ変更機能のおかげです。
+### 🎯 演習の目標
+- コレクションフレームワークの基本概念と階層構造の理解
+- List、Set、Mapの特性と使い分け
+- ArrayList、LinkedList、HashSet、TreeSet、HashMap、TreeMapの実装の違い
+- 効率的なデータ構造選択の判断基準
+- Iteratorを使った安全な要素操作
+- カスタムComparatorとComparableの実装による高度なソート機能
 
-本章を学ぶことで、アプリケーションのデータをメモリ上で効率的に扱うための、Javaプログラマ必須のスキルが身につきます。
+### 📁 課題の場所
+演習課題は `exercises/chapter08/` ディレクトリに用意されています：
+
+```
+exercises/chapter08/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── Student.java # 課題1: 学生管理システム（List活用）
+│   ├── StudentManager.java
+│   ├── StudentManagerTest.java
+│   ├── WordCounter.java # 課題2: 単語カウンター（Map活用）
+│   ├── WordCounterTest.java
+│   ├── DuplicateRemover.java # 課題3: 重複除去システム（Set活用）
+│   ├── DuplicateRemoverTest.java
+│   ├── Product.java # 課題4: 在庫管理システム（複合コレクション活用）
+│   ├── InventoryManager.java
+│   └── InventoryManagerTest.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. List、Set、Mapの特性を理解して適切に使い分ける
+5. 時間計算量を意識した効率的なデータ構造選択を行う
+
+基本課題が完了したら、`advanced/`の発展課題でより複雑なデータ構造活用に挑戦してみましょう！
 
 ## 📋 本章の学習目標
 

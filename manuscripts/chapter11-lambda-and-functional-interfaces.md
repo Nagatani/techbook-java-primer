@@ -1,24 +1,47 @@
 # 第11章 ラムダ式と関数型インターフェイス
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-本章で学ぶラムダ式は、**総合演習プロジェクト「ToDoリストアプリケーション」** のGUIイベント処理を、驚くほど簡潔で読みやすく記述するために不可欠な機能です。
+本章で学んだラムダ式と関数型インターフェイスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **イベントリスナの実装**:「追加」ボタンがクリックされた時の処理を、従来の匿名クラスではなく、ラムダ式を使ってスマートに記述します。
-  ```java
-  // 匿名クラスでの記述（冗長）
-  addButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-          addNewTask();
-      }
-  });
+### 🎯 演習の目標
+- ラムダ式の基本構文と概念の理解
+- 関数型インターフェイス（Function、Predicate、Consumer等）の活用
+- メソッド参照の使い方（::演算子）
+- 従来の匿名クラスからラムダ式への移行
+- 関数型プログラミングの基本的な思考法
+- 関数合成とパイプライン処理による宣言的プログラミングの実践
 
-  // ラムダ式での記述（簡潔！）
-  addButton.addActionListener(e -> addNewTask());
-  ```
-- **コードの可読性向上**: ラムダ式を用いることで、「何が起きたら」「何をするか」というロジックが直接的に表現され、コードの意図が明確になります。
+### 📁 課題の場所
+演習課題は `exercises/chapter11/` ディレクトリに用意されています：
 
-本章をマスタすることで、モダンJavaにおけるイベント駆動プログラミングの標準的なスタイルを身につけることができます。
+```
+exercises/chapter11/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── BasicLambda.java # 課題1: 基本的なラムダ式の活用
+│   ├── BasicLambdaTest.java
+│   ├── FunctionalCalculator.java # 課題2: 関数型電卓
+│   ├── FunctionalCalculatorTest.java
+│   ├── EventProcessor.java # 課題3: イベント処理システム
+│   ├── EventProcessorTest.java
+│   ├── ValidationSystem.java # 課題4: バリデーションシステム
+│   ├── ValidationSystemTest.java
+│   ├── PipelineProcessor.java # 課題5: データパイプライン処理
+│   └── PipelineProcessorTest.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. ラムダ式と従来の匿名クラスの違いを理解する
+5. 関数型インターフェイスの使い分けを習得する
+
+基本課題が完了したら、`advanced/`の発展課題でより複雑な関数型プログラミングに挑戦してみましょう！
 
 ## 📋 本章の学習目標
 

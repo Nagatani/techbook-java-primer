@@ -1,14 +1,60 @@
-# 第7章 不変性(Immutability)とfinal
+# 第7章 抽象クラスとインターフェイス
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-本章で学ぶ「不変性」と「final」は、**総合演習プロジェクト「ToDoリストアプリケーション」** の安全性と保守性を向上させるための重要な概念です。
+本章で学んだ抽象クラスとインターフェイスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **不変のTaskオブジェクト**: 一度作成された`Task`オブジェクトの状態が意図せず変更されることを防ぐため、フィールドを`final`にして不変オブジェクトとして設計します。
-- **安全な定数定義**: アプリケーション全体で使用される設定値（例：デフォルトの保存ファイル名、最大タスク数など）を`public static final`で定義し、誤って変更されることを防ぎます。
-- **スレッドセーフなデータ**: 不変オブジェクトは本質的にスレッドセーフなので、マルチスレッド環境でも安全に使用できます。
+### 🎯 演習の目標
+- 抽象クラス（abstract class）の概念と実装
+- インターフェイス（interface）の設計と活用
+- 抽象メソッドと具象メソッドの使い分け
+- 多重継承の代替としてのインターフェイス
+- デフォルトメソッドと静的メソッドの活用
+- SOLID原則に基づく抽象化設計の理解と実践
 
-本章を通じて、バグの原因となりやすい「予期しない状態変更」を防ぎ、堅牢で保守性の高いコードを書くための技術を学びます。
+### 📁 課題の場所
+演習課題は `exercises/chapter07/` ディレクトリに用意されています：
+
+```
+exercises/chapter07/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── Shape.java  # 課題1: 図形の抽象クラス設計
+│   ├── Circle.java
+│   ├── Rectangle.java
+│   ├── ShapeTest.java
+│   ├── Flyable.java # 課題2: 動物の行動インターフェイス
+│   ├── Swimmable.java
+│   ├── Walkable.java
+│   ├── Bird.java
+│   ├── Fish.java
+│   ├── Duck.java
+│   ├── AnimalInterfaceTest.java
+│   ├── PaymentMethod.java # 課題3: 支払い方法の戦略パターン
+│   ├── CreditCard.java
+│   ├── DebitCard.java
+│   ├── Cash.java
+│   ├── PaymentProcessor.java
+│   ├── PaymentTest.java
+│   ├── Notifiable.java # 課題4: 通知システムの複合インターフェイス
+│   ├── Loggable.java
+│   ├── EmailNotifier.java
+│   ├── SMSNotifier.java
+│   ├── SystemLogger.java
+│   └── NotificationTest.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. 抽象クラスとインターフェイスの使い分けを理解する
+5. デフォルトメソッドと多重実装を活用する
+
+基本課題が完了したら、`advanced/`の発展課題でより複雑な抽象化設計に挑戦してみましょう！
 
 ## 📋 本章の学習目標
 

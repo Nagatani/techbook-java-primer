@@ -1,21 +1,43 @@
 # 第12章 レコード(Records)
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-本章で学ぶ`Record`は、**総合演習プロジェクト「ToDoリストアプリケーション」** において、タスクのデータを表現する`Task`クラスを、より安全で簡潔に定義するために活用できます。
+本章で学んだRecord クラスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **`Task`クラスの簡素化**: `name`, `dueDate`, `isCompleted`といったデータを保持するだけの`Task`クラスを、従来の冗長な書き方ではなく、`Record`を使って1行で定義できます。
-  ```java
-  // 従来のクラス定義
-  public final class Task { // finalにする
-      private final String name;
-      // ... getter, equals, hashCode, toString ...
-  }
+### 🎯 演習の目標
+- Record クラスの基本概念と利点の理解
+- 不変データ構造としての Record の活用
+- 従来のクラスと Record の使い分け
+- Record の制限事項と適用場面の理解
+- Record を使ったデータ中心設計の実践
+- データ転送オブジェクト（DTO）としてのRecordの効果的な活用
 
-  // Recordによる定義
-  public record Task(String name, LocalDate dueDate, boolean isCompleted) {}
-  ```
-- **不変性の保証**: `Record`で定義したクラスは、フィールドが自動的に`final`となり、一度作成すると変更できない「不変（イミュータブル）」なオブジェクトになります。これにより、意図しないデータの上書きを防ぎ、プログラムの安全性を高めます。
+### 📁 課題の場所
+演習課題は `exercises/chapter12/` ディレクトリに用意されています：
+
+```
+exercises/chapter12/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── PersonRecord.java # 課題1: 基本的なRecord定義と活用
+│   ├── PersonRecordTest.java
+│   ├── ImmutableData.java # 課題2: 不変データ構造
+│   ├── ImmutableDataTest.java
+│   ├── DTOExample.java # 課題3: データ転送オブジェクト
+│   └── DTOExampleTest.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. Record と従来のクラスの違いを理解する
+5. 不変性の利点と活用場面を習得する
+
+基本課題が完了したら、`advanced/`の発展課題でより複雑なデータ構造設計に挑戦してみましょう！
 
 ## 📋 本章の学習目標
 

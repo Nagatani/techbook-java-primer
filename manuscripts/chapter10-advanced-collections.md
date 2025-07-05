@@ -1,19 +1,48 @@
-# 第10章 コレクションの応用とラムダ式
+# 第10章 Stream APIと高度なコレクション操作
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-本章で学ぶ応用的なコレクション操作、特に`Comparator`とラムダ式は、**総合演習プロジェクト「ToDoリストアプリケーション」** の機能をより高度で使いやすいものにするために不可欠です。
+本章で学んだStream APIと高度なコレクション操作の概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **タスクの並べ替え機能**: `Comparator`とラムダ式を使えば、ユーザーが「優先度順」「期日順」「タスク名順」など、さまざまな条件でタスク一覧をソートする機能を、驚くほど簡潔に実装できます。
-  ```java
-  // 例：優先度（高→低）でソートするためのComparator
-  Comparator<Task> priorityComparator = 
-      Comparator.comparing(Task::getPriority).reversed();
-  
-  // このComparatorをList.sort()に渡すだけでソートが完了する
-  taskList.sort(priorityComparator);
-  ```
-- **データ構造の最適化**: 将来的にタスクの検索や追加・削除の性能が問題になった場合、`ArrayList`を`LinkedList`に変更したり、タグ管理に`TreeSet`を使って自動的にソートしたりと、本章の知識を活かして最適なデータ構造を選択できます。
+### 🎯 演習の目標
+- Stream APIの基本概念と利用方法の理解
+- 中間操作（filter、map、sorted等）と終端操作（collect、reduce等）の使い分け
+- データ処理パイプラインの構築
+- 並列ストリームによる性能向上
+- Optional クラスによる null 安全プログラミング
+- カスタムCollectorの実装による独自集約処理の開発
+
+### 📁 課題の場所
+演習課題は `exercises/chapter10/` ディレクトリに用意されています：
+
+```
+exercises/chapter10/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── Employee.java # 課題1: 社員データ分析システム
+│   ├── EmployeeAnalyzer.java
+│   ├── EmployeeAnalyzerTest.java
+│   ├── StudentGradeProcessor.java # 課題2: 学生成績処理システム
+│   ├── StudentGradeProcessorTest.java
+│   ├── LogProcessor.java # 課題3: ログ解析システム
+│   ├── LogProcessorTest.java
+│   ├── DataAnalyzer.java # 課題4: 高度データ分析
+│   ├── DataAnalyzerTest.java
+│   ├── CustomCollector.java # 課題5: カスタムコレクター
+│   └── CustomCollectorTest.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. Stream APIのパイプライン処理を理解する
+5. 並列処理と逐次処理の使い分けを習得する
+
+基本課題が完了したら、`advanced/`の発展課題でより複雑なデータ処理パイプラインに挑戦してみましょう！
 
 ## 📋 本章の学習目標
 

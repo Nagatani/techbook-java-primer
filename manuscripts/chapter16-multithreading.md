@@ -38,23 +38,42 @@
 
 ---
 
-## 🎯総合演習プロジェクトへのステップ
+## 📝 章末演習
 
-本章で学ぶマルチスレッド技術は、**総合演習プロジェクト「ToDoリストアプリケーション」** の応答性を向上させ、より快適なユーザー体験を実現するために応用できます。
+本章で学んだマルチスレッドプログラミングの概念を活用して、実践的な練習課題に取り組みましょう。
 
-- **UIの応答性維持**: タスクリストのファイル保存や読み込みは、データ量が多くなると時間がかかり、その間GUIが固まってしまう（フリーズする）可能性があります。これらの重いI/O処理をバックグラウンドのスレッドで実行することで、処理中もユーザーはGUIを操作し続けることができます。
-- **安全なUI更新**: バックグラウンドスレッドでの処理が完了した後、その結果（読み込んだタスクリストなど）をGUIに反映させる必要があります。Swingのコンポーネントは、イベントディスパッチスレッド（EDT）からしか安全に操作できません。`SwingUtilities.invokeLater`を使い、UIの更新処理をEDTに依頼することで、スレッドセーフなGUI更新を実現します。
-  ```java
-  // バックグラウンドスレッドでの処理
-  new Thread(() -> {
-      List<Task> loadedTasks = loadTasksFromFile(); // 時間のかかる処理
-      
-      // GUIの更新はEDTで行う
-      SwingUtilities.invokeLater(() -> {
-          updateTaskListUI(loadedTasks);
-      });
-  }).start();
-  ```
+### 🎯 演習の目標
+- マルチスレッドプログラミングの基本概念
+- ThreadクラスとRunnableインターフェイスの使い分け
+- 同期処理（synchronized、Lock）の理解と実装
+- java.util.concurrentパッケージの活用
+- スレッドプールとExecutorServiceの使用
+- 非同期プログラミング（CompletableFuture）による効率的な並行処理
+
+### 📁 課題の場所
+演習課題は `exercises/chapter16/` ディレクトリに用意されています：
+
+```
+exercises/chapter16/
+├── basic/          # 基本課題（必須）
+│   ├── README.md   # 課題の詳細説明
+│   ├── BasicThreading.java
+│   ├── SynchronizedCounter.java
+│   ├── ConcurrentCollections.java
+│   └── ProducerConsumer.java
+├── advanced/       # 発展課題（推奨）
+└── challenge/      # 挑戦課題（上級者向け）
+```
+
+### 🚀 推奨する学習の進め方
+
+1. **基本課題**から順番に取り組む
+2. 各課題のREADME.mdで詳細を確認
+3. TODOコメントを参考に実装
+4. スレッドセーフティを常に意識し、データ競合を防ぐ
+5. ExecutorServiceでスレッドプールを活用し、効率的な並行処理を実現する
+
+基本課題が完了したら、`advanced/`の発展課題でより高度な並行プログラミングに挑戦してみましょう！
 
 ## 20.1 マルチスレッドプログラミングの基礎
 
