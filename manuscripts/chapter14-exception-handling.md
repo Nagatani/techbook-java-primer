@@ -46,9 +46,9 @@
 - 例外処理の基本概念（例外の種類、try-catch-finally）
 - 検査例外と非検査例外の理解と使い分け
 - カスタム例外クラスの設計と実装
-- try-with-resources によるリソース管理
+- try-with-resourcesによるリソース管理
 - 例外処理のベストプラクティス
-- 例外チェーン（Exception Chaining）による根本原因の追跡技法
+- 例外チェイン（Exception Chaining）による根本原因の追跡技法
 
 ### 📁 課題の場所
 演習課題は `exercises/chapter14/` ディレクトリに用意されています：
@@ -69,7 +69,7 @@ exercises/chapter14/
 
 1. **基本課題**から順番に取り組む
 2. 各課題のREADME.mdで詳細を確認
-3. TODOコメントを参考に実装
+3. ToDoコメントを参考に実装
 4. 例外の階層構造を意識して、適切な例外タイプを選択する
 5. try-with-resourcesでリソース管理を確実に行う
 

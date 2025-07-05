@@ -48,7 +48,7 @@
 - 同期処理（synchronized、Lock）の理解と実装
 - java.util.concurrentパッケージの活用
 - スレッドプールとExecutorServiceの使用
-- 非同期プログラミング（CompletableFuture）による効率的な並行処理
+- 非同期プログラミング（CompleテーブルFuture）による効率的な並行処理
 
 ### 📁 課題の場所
 演習課題は `exercises/chapter16/` ディレクトリに用意されています：
@@ -69,7 +69,7 @@ exercises/chapter16/
 
 1. **基本課題**から順番に取り組む
 2. 各課題のREADME.mdで詳細を確認
-3. TODOコメントを参考に実装
+3. ToDoコメントを参考に実装
 4. スレッドセーフティを常に意識し、データ競合を防ぐ
 5. ExecutorServiceでスレッドプールを活用し、効率的な並行処理を実現する
 
