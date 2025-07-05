@@ -6,6 +6,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Japanese technical book project titled "Java入門" (Java Introduction) by Hidehiro Nagatani. The project uses Vivliostyle, a CSS-based typesetting system, to generate PDF publications from Markdown source files.
 
+## Educational Philosophy and Target Audience
+
+### Target Readers
+This book is specifically designed for students who have learned basic procedural programming through C language and are ready to advance to object-oriented programming with Java.
+
+### Educational Objectives
+The book aims to provide comprehensive knowledge through Java programming, including:
+
+1. **Programming History and Structure**: Understanding the evolution of programming paradigms and software development methodologies
+2. **Problem-Solving Approaches**: Learning systematic approaches to software design and implementation challenges  
+3. **Comprehensive Application Development**: Mastering full-stack application development techniques including:
+   - Object-oriented design patterns
+   - GUI programming with Swing/AWT
+   - Database integration and file I/O
+   - Testing methodologies (TDD, unit testing)
+   - Documentation and API design
+4. **Technical Communication**: Building foundational skills for effective technical communication and collaboration
+5. **Java's Core Technologies**: Deep understanding of Java's underlying technologies and modern language features including:
+   - JVM architecture and memory management
+   - Lambda expressions and functional programming concepts
+   - Concurrency and multithreading
+   - Modern Java features (Records, Pattern Matching, etc.)
+
+### Content Philosophy
+**Important**: The book intentionally includes advanced technical concepts, programming history, and theoretical foundations. These elements are essential for developing well-rounded software engineers who understand not just "how" but "why" certain approaches are used in modern software development.
+
+Rather than removing complex content, it should be strategically organized through:
+- **Progressive disclosure**: Basic concepts first, advanced topics as supplements
+- **Appendices and columns**: Deep technical content as optional reading
+- **Contextual integration**: Advanced concepts introduced when directly relevant to practical applications
+
+### Pedagogical Approach
+The book follows a spiral curriculum model where concepts are introduced at basic level and revisited with increasing complexity throughout the learning journey. This approach ensures both accessibility for beginners and depth for serious study.
+
 ## Commands
 
 ### Building

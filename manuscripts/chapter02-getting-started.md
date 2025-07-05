@@ -1142,6 +1142,196 @@ public static int add(int a, int b, int c) {
    - ゲーム盤（オセロ、三目並べ）の実装
    - 簡単な画像処理（ASCIIアート）
 
+## クラスとオブジェクトの基本
+
+章末の練習課題に取り組む前に、Javaプログラミングの核心であるクラスとオブジェクトの基本的な概念と構文を理解しておきましょう。
+
+### クラスの基本構造
+
+Javaでは、すべてのコードは**クラス**という単位で記述します。クラスは「設計図」であり、オブジェクトはその設計図から作られる「実体」です。
+
+#### 基本的なクラスの定義
+
+```java
+public class Person {
+    // フィールド（インスタンス変数）
+    private String name;
+    private int age;
+    
+    // コンストラクタ
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    // メソッド（振る舞い）
+    public String getName() {
+        return name;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    public void introduce() {
+        System.out.println("こんにちは、" + name + "です。" + age + "歳です。");
+    }
+}
+```
+
+### クラスの構成要素
+
+#### 1. フィールド（インスタンス変数）
+
+オブジェクトが持つデータを格納する変数です：
+
+```java
+private String name;    // 文字列を格納
+private int age;        // 整数を格納
+private double height;  // 小数を格納
+```
+
+**重要なポイント**：
+- `private`を使ってカプセル化（外部からの直接アクセスを防ぐ）
+- 各オブジェクトが独自の値を持つ
+
+#### 2. コンストラクタ
+
+オブジェクトを作成する際に呼び出される特別なメソッドです：
+
+```java
+public Person(String name, int age) {
+    this.name = name;  // パラメータの値をフィールドに設定
+    this.age = age;
+}
+```
+
+**重要なポイント**：
+- クラス名と同じ名前
+- 戻り値の型を書かない
+- `this`キーワードでフィールドを明示的に指定
+
+#### 3. メソッド
+
+オブジェクトの振る舞いを定義します：
+
+```java
+// 値を返すメソッド
+public String getName() {
+    return name;
+}
+
+// 処理を実行するメソッド
+public void introduce() {
+    System.out.println("こんにちは、" + name + "です。");
+}
+```
+
+### オブジェクトの作成と使用
+
+#### オブジェクトの作成
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        // newキーワードでオブジェクトを作成
+        Person person1 = new Person("田中太郎", 25);
+        Person person2 = new Person("佐藤花子", 30);
+        
+        // メソッドを呼び出す
+        person1.introduce();  // "こんにちは、田中太郎です。25歳です。"
+        person2.introduce();  // "こんにちは、佐藤花子です。30歳です。"
+        
+        // getterメソッドで値を取得
+        String name = person1.getName();
+        int age = person1.getAge();
+        System.out.println(name + "は" + age + "歳です。");
+    }
+}
+```
+
+### オブジェクト指向の基本概念
+
+#### カプセル化
+
+データ（フィールド）を`private`にして、`public`メソッドを通じてのみアクセスできるようにする：
+
+```java
+public class BankAccount {
+    private int balance;  // 残高は外部から直接変更できない
+    
+    public void deposit(int amount) {
+        if (amount > 0) {
+            balance += amount;  // 正の値のみ受け付ける
+        }
+    }
+    
+    public int getBalance() {
+        return balance;
+    }
+}
+```
+
+#### オブジェクト同士の連携
+
+```java
+public class Library {
+    private String name;
+    
+    public void lendBook(Person person, String bookTitle) {
+        System.out.println(person.getName() + "さんに「" + 
+                         bookTitle + "」を貸し出しました。");
+    }
+}
+```
+
+### よく使用されるパターン
+
+#### toString()メソッド
+
+オブジェクトの文字列表現を定義：
+
+```java
+public class Person {
+    // ... 他のコード ...
+    
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', age=" + age + "}";
+    }
+}
+```
+
+#### equals()とhashCode()
+
+オブジェクトの同値性を定義：
+
+```java
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Person person = (Person) obj;
+    return age == person.age && Objects.equals(name, person.name);
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(name, age);
+}
+```
+
+### 練習課題で使用する重要な概念
+
+1. **オブジェクトの状態管理**：フィールドを使ってオブジェクトの状態を保持
+2. **メソッドによる操作**：状態を変更したり、計算を行ったりするメソッド
+3. **オブジェクト間の関係**：異なるオブジェクト同士が連携する設計
+4. **データの妥当性**：setterメソッドでの入力値検証
+
+---
+
+これらの基本概念を理解することで、章末の練習課題により効果的に取り組むことができます。
+
 ## まとめ
 
 本章では、C言語との比較を通じてJavaの基本文法を学習しました。重要なのは、単に文法を暗記することではなく、Javaが提供する「安全性」「保守性」「可読性」という設計思想を理解することです。
