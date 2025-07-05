@@ -1,118 +1,156 @@
 /**
- * 第19章 GUI アプリケーション設計
- * 演習課題: StudentManagementGUI.java
+ * 第19章 課題1: 学生管理GUIアプリケーション
  * 
- * 【課題概要】
- * MVC パターンを適用した学生管理システムのGUIアプリケーションを作成してください。
+ * JTableとMVCパターンを使った学生管理システムを作成してください。
  * 
- * 【要求仕様】
- * 1. 学生情報の登録・編集・削除機能
- * 2. 学生リストの表示とソート機能
- * 3. 検索・フィルタリング機能
- * 4. 成績管理機能（科目別成績入力・計算）
- * 5. データの永続化（ファイル保存・読み込み）
- * 6. バックアップ・復元機能
- * 7. 統計情報の表示（平均点、分布等）
- * 8. 印刷・レポート出力機能
- * 9. ユーザー設定の保存・復元
- * 10. 多言語対応（日本語・英語）
+ * 要求仕様:
+ * - JTableによる学生データの表示
+ * - 学生の追加・編集・削除機能
+ * - ソート・フィルタリング機能
+ * - データの永続化（CSV保存・読込）
+ * - リアルタイムな検索機能
  * 
- * 【学習ポイント】
- * - MVC パターンの実装
- * - JTable と TableModel の活用
- * - データバインディングとObserver パターン
- * - ファイル I/O とデータ永続化
- * - 複雑な GUI コンポーネントの組み合わせ
- * - ユーザビリティを考慮した UI 設計
- * - エラーハンドリングとバリデーション
- * 
- * 【実装のヒント】
- * 1. Model、View、Controller の明確な分離
- * 2. AbstractTableModel を継承したカスタムテーブルモデル
- * 3. PropertyChangeListener による状態変更の通知
- * 4. Comparator による柔軟なソート機能
- * 5. JSON または XML によるデータ永続化
- * 
- * 【よくある間違いと対策】
- * - MVC の境界が曖昧
- *   → 各層の責任を明確に定義し、依存関係を整理
- * - GUI とビジネスロジックの混在
- *   → Model 層にビジネスロジックを集約
- * - データの整合性不備
- *   → 適切なバリデーションと例外処理
- * - メモリリークの発生
- *   → リスナーの適切な管理と削除
- * 
- * 【段階的な実装指針】
- * 1. Model クラス（Student、Grade等）の設計
- * 2. Controller の基本機能実装
- * 3. 基本的な GUI レイアウトの作成
- * 4. CRUD 操作の実装
- * 5. テーブル表示とソート機能の追加
- * 6. 検索・フィルタリング機能の実装
- * 7. データ永続化機能の追加
- * 8. 統計機能と UI の改善
+ * 学習ポイント:
+ * - JTableとTableModelの使い方
+ * - MVCパターンの実装
+ * - イベント駆動プログラミング
+ * - データバインディング
+ * - オブザーバーパターンの活用
  */
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.regex.Pattern;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 public class StudentManagementGUI extends JFrame {
-    private StudentController controller;
-    private StudentTableModel tableModel;
-    private JTable studentTable;
-    private TableRowSorter<StudentTableModel> sorter;
     
-    // UI コンポーネント
-    private JTextField searchField;
-    private JComboBox<String> filterComboBox;
-    private JTextField nameField;
-    private JTextField idField;
-    private JTextField emailField;
-    private JTextField phoneField;
-    private JSpinner ageSpinner;
-    private JComboBox<String> gradeComboBox;
-    private JTextArea notesArea;
+    // ここに実装してください
     
-    // メニューとツールバー
-    private JMenuBar menuBar;
-    private JToolBar toolBar;
+    // 必要なコンポーネントの例:
+    // private JTable studentTable;
+    // private StudentTableModel tableModel;
+    // private JTextField searchField;
+    // private JButton addButton, editButton, deleteButton;
+    // private JButton saveButton, loadButton;
     
-    public StudentManagementGUI() {
-        controller = new StudentController();
-        tableModel = new StudentTableModel(controller.getStudentList());
-        
-        initializeComponents();
-        setupMenuBar();
-        setupToolBar();
-        setupLayout();
-        setupEventHandlers();
-        setupWindow();
-        
-        loadData();
+    // 学生データモデル
+    public static class Student {
+        // ここに学生クラスを実装してください
+        // フィールド例: id, name, age, grade, email, enrollmentDate
     }
     
+    // テーブルモデル
+    private class StudentTableModel extends AbstractTableModel {
+        // ここにテーブルモデルを実装してください
+        // MVCパターンのModelの役割
+    }
+    
+    public StudentManagementGUI() {
+        // ここにコンストラクタを実装してください
+        // GUI初期化、イベントリスナー設定、初期データ読込
+    }
+    
+    // GUIコンポーネントの初期化
     private void initializeComponents() {
-        // テーブルの設定
-        studentTable = new JTable(tableModel);
-        sorter = new TableRowSorter<>(tableModel);
-        studentTable.setRowSorter(sorter);
-        studentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        studentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        
-        // 検索・フィルター
-        searchField = new JTextField(20);
-        filterComboBox = new JComboBox<>(new String[]{\n            \"すべて\", \"1年生\", \"2年生\", \"3年生\", \"4年生\"\n        });\n        \n        // 入力フィールド\n        nameField = new JTextField(20);\n        idField = new JTextField(10);\n        emailField = new JTextField(20);\n        phoneField = new JTextField(15);\n        ageSpinner = new JSpinner(new SpinnerNumberModel(18, 15, 100, 1));\n        gradeComboBox = new JComboBox<>(new String[]{\n            \"1年生\", \"2年生\", \"3年生\", \"4年生\"\n        });\n        notesArea = new JTextArea(3, 20);\n        notesArea.setLineWrap(true);\n        notesArea.setWrapStyleWord(true);\n    }\n    \n    private void setupMenuBar() {\n        menuBar = new JMenuBar();\n        \n        // ファイルメニュー\n        JMenu fileMenu = new JMenu(\"ファイル\");\n        \n        JMenuItem newItem = new JMenuItem(\"新規作成\");\n        newItem.addActionListener(e -> newDatabase());\n        \n        JMenuItem openItem = new JMenuItem(\"開く\");\n        openItem.addActionListener(e -> loadData());\n        \n        JMenuItem saveItem = new JMenuItem(\"保存\");\n        saveItem.addActionListener(e -> saveData());\n        \n        JMenuItem exportItem = new JMenuItem(\"エクスポート\");\n        exportItem.addActionListener(e -> exportData());\n        \n        JMenuItem exitItem = new JMenuItem(\"終了\");\n        exitItem.addActionListener(e -> exitApplication());\n        \n        fileMenu.add(newItem);\n        fileMenu.add(openItem);\n        fileMenu.add(saveItem);\n        fileMenu.addSeparator();\n        fileMenu.add(exportItem);\n        fileMenu.addSeparator();\n        fileMenu.add(exitItem);\n        \n        // 編集メニュー\n        JMenu editMenu = new JMenu(\"編集\");\n        \n        JMenuItem addItem = new JMenuItem(\"学生追加\");\n        addItem.addActionListener(e -> showAddStudentDialog());\n        \n        JMenuItem editItem = new JMenuItem(\"学生編集\");\n        editItem.addActionListener(e -> editSelectedStudent());\n        \n        JMenuItem deleteItem = new JMenuItem(\"学生削除\");\n        deleteItem.addActionListener(e -> deleteSelectedStudent());\n        \n        editMenu.add(addItem);\n        editMenu.add(editItem);\n        editMenu.add(deleteItem);\n        \n        // 表示メニュー\n        JMenu viewMenu = new JMenu(\"表示\");\n        \n        JMenuItem statisticsItem = new JMenuItem(\"統計情報\");\n        statisticsItem.addActionListener(e -> showStatistics());\n        \n        JMenuItem refreshItem = new JMenuItem(\"更新\");\n        refreshItem.addActionListener(e -> refreshTable());\n        \n        viewMenu.add(statisticsItem);\n        viewMenu.add(refreshItem);\n        \n        // ヘルプメニュー\n        JMenu helpMenu = new JMenu(\"ヘルプ\");\n        \n        JMenuItem aboutItem = new JMenuItem(\"バージョン情報\");\n        aboutItem.addActionListener(e -> showAbout());\n        \n        helpMenu.add(aboutItem);\n        \n        menuBar.add(fileMenu);\n        menuBar.add(editMenu);\n        menuBar.add(viewMenu);\n        menuBar.add(helpMenu);\n        \n        setJMenuBar(menuBar);\n    }\n    \n    private void setupToolBar() {\n        toolBar = new JToolBar();\n        toolBar.setFloatable(false);\n        \n        JButton addButton = new JButton(\"追加\");\n        addButton.addActionListener(e -> showAddStudentDialog());\n        \n        JButton editButton = new JButton(\"編集\");\n        editButton.addActionListener(e -> editSelectedStudent());\n        \n        JButton deleteButton = new JButton(\"削除\");\n        deleteButton.addActionListener(e -> deleteSelectedStudent());\n        \n        JButton refreshButton = new JButton(\"更新\");\n        refreshButton.addActionListener(e -> refreshTable());\n        \n        toolBar.add(addButton);\n        toolBar.add(editButton);\n        toolBar.add(deleteButton);\n        toolBar.addSeparator();\n        toolBar.add(refreshButton);\n    }\n    \n    private void setupLayout() {\n        setLayout(new BorderLayout());\n        \n        // 検索パネル（上部）\n        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));\n        searchPanel.setBorder(BorderFactory.createTitledBorder(\"検索・フィルター\"));\n        \n        searchPanel.add(new JLabel(\"検索:\"));\n        searchPanel.add(searchField);\n        searchPanel.add(new JLabel(\"フィルター:\"));\n        searchPanel.add(filterComboBox);\n        \n        JButton searchButton = new JButton(\"検索\");\n        searchButton.addActionListener(e -> performSearch());\n        searchPanel.add(searchButton);\n        \n        JButton clearButton = new JButton(\"クリア\");\n        clearButton.addActionListener(e -> clearSearch());\n        searchPanel.add(clearButton);\n        \n        // メインパネル（中央）\n        JScrollPane tableScrollPane = new JScrollPane(studentTable);\n        tableScrollPane.setPreferredSize(new Dimension(600, 300));\n        \n        // 詳細パネル（右側）\n        JPanel detailPanel = createDetailPanel();\n        \n        // 分割パネル\n        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, \n                                             tableScrollPane, detailPanel);\n        splitPane.setDividerLocation(400);\n        \n        add(toolBar, BorderLayout.NORTH);\n        add(searchPanel, BorderLayout.SOUTH);\n        add(splitPane, BorderLayout.CENTER);\n    }\n    \n    private JPanel createDetailPanel() {\n        JPanel panel = new JPanel(new GridBagLayout());\n        panel.setBorder(BorderFactory.createTitledBorder(\"学生詳細\"));\n        panel.setPreferredSize(new Dimension(300, 0));\n        \n        GridBagConstraints gbc = new GridBagConstraints();\n        gbc.insets = new Insets(5, 5, 5, 5);\n        gbc.anchor = GridBagConstraints.WEST;\n        \n        int row = 0;\n        \n        // 名前\n        gbc.gridx = 0; gbc.gridy = row;\n        panel.add(new JLabel(\"名前:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(nameField, gbc);\n        row++;\n        \n        // 学生ID\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        panel.add(new JLabel(\"学生ID:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(idField, gbc);\n        row++;\n        \n        // メールアドレス\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        panel.add(new JLabel(\"メール:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(emailField, gbc);\n        row++;\n        \n        // 電話番号\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        panel.add(new JLabel(\"電話:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(phoneField, gbc);\n        row++;\n        \n        // 年齢\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        panel.add(new JLabel(\"年齢:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(ageSpinner, gbc);\n        row++;\n        \n        // 学年\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        panel.add(new JLabel(\"学年:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;\n        panel.add(gradeComboBox, gbc);\n        row++;\n        \n        // 備考\n        gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;\n        gbc.anchor = GridBagConstraints.NORTHWEST;\n        panel.add(new JLabel(\"備考:\"), gbc);\n        gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 1.0;\n        panel.add(new JScrollPane(notesArea), gbc);\n        row++;\n        \n        // ボタンパネル\n        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;\n        gbc.weighty = 0;\n        \n        JPanel buttonPanel = new JPanel(new FlowLayout());\n        \n        JButton saveButton = new JButton(\"保存\");\n        saveButton.addActionListener(e -> saveCurrentStudent());\n        \n        JButton clearButton = new JButton(\"クリア\");\n        clearButton.addActionListener(e -> clearDetailFields());\n        \n        buttonPanel.add(saveButton);\n        buttonPanel.add(clearButton);\n        \n        panel.add(buttonPanel, gbc);\n        \n        return panel;\n    }\n    \n    private void setupEventHandlers() {\n        // テーブル選択イベント\n        studentTable.getSelectionModel().addListSelectionListener(e -> {\n            if (!e.getValueIsAdjusting()) {\n                int selectedRow = studentTable.getSelectedRow();\n                if (selectedRow != -1) {\n                    int modelRow = studentTable.convertRowIndexToModel(selectedRow);\n                    Student student = controller.getStudentList().get(modelRow);\n                    displayStudentDetails(student);\n                }\n            }\n        });\n        \n        // リアルタイム検索\n        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {\n            @Override\n            public void insertUpdate(javax.swing.event.DocumentEvent e) {\n                performSearch();\n            }\n            \n            @Override\n            public void removeUpdate(javax.swing.event.DocumentEvent e) {\n                performSearch();\n            }\n            \n            @Override\n            public void changedUpdate(javax.swing.event.DocumentEvent e) {\n                performSearch();\n            }\n        });\n        \n        // フィルターコンボボックス\n        filterComboBox.addActionListener(e -> performSearch());\n        \n        // ウィンドウクローズイベント\n        addWindowListener(new java.awt.event.WindowAdapter() {\n            @Override\n            public void windowClosing(java.awt.event.WindowEvent e) {\n                exitApplication();\n            }\n        });\n    }\n    \n    private void setupWindow() {\n        setTitle(\"学生管理システム\");\n        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);\n        setSize(1000, 700);\n        setLocationRelativeTo(null);\n    }\n    \n    // アクションメソッド\n    private void showAddStudentDialog() {\n        StudentDialog dialog = new StudentDialog(this, \"学生追加\", null);\n        dialog.setVisible(true);\n        \n        if (dialog.isConfirmed()) {\n            Student newStudent = dialog.getStudent();\n            controller.addStudent(newStudent);\n            refreshTable();\n        }\n    }\n    \n    private void editSelectedStudent() {\n        int selectedRow = studentTable.getSelectedRow();\n        if (selectedRow == -1) {\n            JOptionPane.showMessageDialog(this, \"編集する学生を選択してください。\");\n            return;\n        }\n        \n        int modelRow = studentTable.convertRowIndexToModel(selectedRow);\n        Student student = controller.getStudentList().get(modelRow);\n        \n        StudentDialog dialog = new StudentDialog(this, \"学生編集\", student);\n        dialog.setVisible(true);\n        \n        if (dialog.isConfirmed()) {\n            Student updatedStudent = dialog.getStudent();\n            controller.updateStudent(modelRow, updatedStudent);\n            refreshTable();\n        }\n    }\n    \n    private void deleteSelectedStudent() {\n        int selectedRow = studentTable.getSelectedRow();\n        if (selectedRow == -1) {\n            JOptionPane.showMessageDialog(this, \"削除する学生を選択してください。\");\n            return;\n        }\n        \n        int result = JOptionPane.showConfirmDialog(this, \n            \"選択した学生を削除してもよろしいですか？\", \n            \"削除確認\", JOptionPane.YES_NO_OPTION);\n        \n        if (result == JOptionPane.YES_OPTION) {\n            int modelRow = studentTable.convertRowIndexToModel(selectedRow);\n            controller.removeStudent(modelRow);\n            refreshTable();\n            clearDetailFields();\n        }\n    }\n    \n    private void performSearch() {\n        String searchText = searchField.getText().toLowerCase();\n        String filterText = (String) filterComboBox.getSelectedItem();\n        \n        RowFilter<StudentTableModel, Object> filter = new RowFilter<StudentTableModel, Object>() {\n            @Override\n            public boolean include(Entry<? extends StudentTableModel, ? extends Object> entry) {\n                // 検索テキストによるフィルタ\n                if (!searchText.isEmpty()) {\n                    boolean found = false;\n                    for (int i = 0; i < entry.getValueCount(); i++) {\n                        if (entry.getStringValue(i).toLowerCase().contains(searchText)) {\n                            found = true;\n                            break;\n                        }\n                    }\n                    if (!found) return false;\n                }\n                \n                // 学年フィルタ\n                if (!\"すべて\".equals(filterText)) {\n                    String grade = entry.getStringValue(4); // 学年列\n                    if (!grade.equals(filterText)) {\n                        return false;\n                    }\n                }\n                \n                return true;\n            }\n        };\n        \n        sorter.setRowFilter(filter);\n    }\n    \n    private void clearSearch() {\n        searchField.setText(\"\");\n        filterComboBox.setSelectedIndex(0);\n        sorter.setRowFilter(null);\n    }\n    \n    private void displayStudentDetails(Student student) {\n        nameField.setText(student.getName());\n        idField.setText(student.getStudentId());\n        emailField.setText(student.getEmail());\n        phoneField.setText(student.getPhone());\n        ageSpinner.setValue(student.getAge());\n        gradeComboBox.setSelectedItem(student.getGrade());\n        notesArea.setText(student.getNotes());\n    }\n    \n    private void saveCurrentStudent() {\n        try {\n            String name = nameField.getText().trim();\n            String id = idField.getText().trim();\n            String email = emailField.getText().trim();\n            String phone = phoneField.getText().trim();\n            int age = (Integer) ageSpinner.getValue();\n            String grade = (String) gradeComboBox.getSelectedItem();\n            String notes = notesArea.getText();\n            \n            if (name.isEmpty() || id.isEmpty()) {\n                JOptionPane.showMessageDialog(this, \"名前と学生IDは必須項目です。\");\n                return;\n            }\n            \n            Student student = new Student(name, id, email, phone, age, grade, notes);\n            \n            int selectedRow = studentTable.getSelectedRow();\n            if (selectedRow != -1) {\n                int modelRow = studentTable.convertRowIndexToModel(selectedRow);\n                controller.updateStudent(modelRow, student);\n            } else {\n                controller.addStudent(student);\n            }\n            \n            refreshTable();\n            JOptionPane.showMessageDialog(this, \"学生情報を保存しました。\");\n            \n        } catch (Exception ex) {\n            JOptionPane.showMessageDialog(this, \"保存中にエラーが発生しました: \" + ex.getMessage(),\n                \"エラー\", JOptionPane.ERROR_MESSAGE);\n        }\n    }\n    \n    private void clearDetailFields() {\n        nameField.setText(\"\");\n        idField.setText(\"\");\n        emailField.setText(\"\");\n        phoneField.setText(\"\");\n        ageSpinner.setValue(18);\n        gradeComboBox.setSelectedIndex(0);\n        notesArea.setText(\"\");\n    }\n    \n    private void refreshTable() {\n        tableModel.fireTableDataChanged();\n    }\n    \n    private void newDatabase() {\n        int result = JOptionPane.showConfirmDialog(this,\n            \"新しいデータベースを作成します。現在のデータは失われますが、よろしいですか？\",\n            \"新規作成確認\", JOptionPane.YES_NO_OPTION);\n        \n        if (result == JOptionPane.YES_OPTION) {\n            controller.clearAllStudents();\n            refreshTable();\n            clearDetailFields();\n        }\n    }\n    \n    private void loadData() {\n        try {\n            controller.loadFromFile(\"students.dat\");\n            refreshTable();\n            JOptionPane.showMessageDialog(this, \"データを読み込みました。\");\n        } catch (Exception ex) {\n            // ファイルが存在しない場合は無視\n        }\n    }\n    \n    private void saveData() {\n        try {\n            controller.saveToFile(\"students.dat\");\n            JOptionPane.showMessageDialog(this, \"データを保存しました。\");\n        } catch (Exception ex) {\n            JOptionPane.showMessageDialog(this, \"保存中にエラーが発生しました: \" + ex.getMessage(),\n                \"エラー\", JOptionPane.ERROR_MESSAGE);\n        }\n    }\n    \n    private void exportData() {\n        JFileChooser fileChooser = new JFileChooser();\n        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(\n            \"CSV Files\", \"csv\"));\n        \n        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {\n            File file = fileChooser.getSelectedFile();\n            try {\n                controller.exportToCsv(file.getAbsolutePath());\n                JOptionPane.showMessageDialog(this, \"データをエクスポートしました: \" + file.getName());\n            } catch (Exception ex) {\n                JOptionPane.showMessageDialog(this, \"エクスポート中にエラーが発生しました: \" + ex.getMessage(),\n                    \"エラー\", JOptionPane.ERROR_MESSAGE);\n            }\n        }\n    }\n    \n    private void showStatistics() {\n        StatisticsDialog dialog = new StatisticsDialog(this, controller.getStudentList());\n        dialog.setVisible(true);\n    }\n    \n    private void showAbout() {\n        JOptionPane.showMessageDialog(this,\n            \"学生管理システム v1.0\\n\" +\n            \"Java Swing MVCパターン実装例\\n\" +\n            \"Java入門 第19章 演習課題\",\n            \"バージョン情報\", JOptionPane.INFORMATION_MESSAGE);\n    }\n    \n    private void exitApplication() {\n        int result = JOptionPane.showConfirmDialog(this,\n            \"アプリケーションを終了しますか？\\n未保存のデータは失われます。\",\n            \"終了確認\", JOptionPane.YES_NO_OPTION);\n        \n        if (result == JOptionPane.YES_OPTION) {\n            saveData(); // 自動保存\n            System.exit(0);\n        }\n    }\n    \n    public static void main(String[] args) {\n        SwingUtilities.invokeLater(() -> {\n            try {\n                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());\n            } catch (Exception e) {\n                e.printStackTrace();\n            }\n            \n            new StudentManagementGUI().setVisible(true);\n        });\n    }\n}\n\n// Studentモデルクラス\nclass Student implements Serializable {\n    private static final long serialVersionUID = 1L;\n    \n    private String name;\n    private String studentId;\n    private String email;\n    private String phone;\n    private int age;\n    private String grade;\n    private String notes;\n    private LocalDate registrationDate;\n    \n    public Student(String name, String studentId, String email, String phone, \n                  int age, String grade, String notes) {\n        this.name = name;\n        this.studentId = studentId;\n        this.email = email;\n        this.phone = phone;\n        this.age = age;\n        this.grade = grade;\n        this.notes = notes;\n        this.registrationDate = LocalDate.now();\n    }\n    \n    // Getters and Setters\n    public String getName() { return name; }\n    public void setName(String name) { this.name = name; }\n    \n    public String getStudentId() { return studentId; }\n    public void setStudentId(String studentId) { this.studentId = studentId; }\n    \n    public String getEmail() { return email; }\n    public void setEmail(String email) { this.email = email; }\n    \n    public String getPhone() { return phone; }\n    public void setPhone(String phone) { this.phone = phone; }\n    \n    public int getAge() { return age; }\n    public void setAge(int age) { this.age = age; }\n    \n    public String getGrade() { return grade; }\n    public void setGrade(String grade) { this.grade = grade; }\n    \n    public String getNotes() { return notes; }\n    public void setNotes(String notes) { this.notes = notes; }\n    \n    public LocalDate getRegistrationDate() { return registrationDate; }\n    \n    @Override\n    public String toString() {\n        return name + \" (\" + studentId + \")\";\n    }\n}\n\n// Controllerクラス\nclass StudentController {\n    private List<Student> studentList;\n    private PropertyChangeSupport pcs;\n    \n    public StudentController() {\n        studentList = new ArrayList<>();\n        pcs = new PropertyChangeSupport(this);\n    }\n    \n    public void addStudent(Student student) {\n        studentList.add(student);\n        pcs.firePropertyChange(\"studentAdded\", null, student);\n    }\n    \n    public void updateStudent(int index, Student student) {\n        if (index >= 0 && index < studentList.size()) {\n            Student oldStudent = studentList.get(index);\n            studentList.set(index, student);\n            pcs.firePropertyChange(\"studentUpdated\", oldStudent, student);\n        }\n    }\n    \n    public void removeStudent(int index) {\n        if (index >= 0 && index < studentList.size()) {\n            Student removedStudent = studentList.remove(index);\n            pcs.firePropertyChange(\"studentRemoved\", removedStudent, null);\n        }\n    }\n    \n    public List<Student> getStudentList() {\n        return studentList;\n    }\n    \n    public void clearAllStudents() {\n        studentList.clear();\n        pcs.firePropertyChange(\"allStudentsCleared\", null, null);\n    }\n    \n    public void saveToFile(String filename) throws IOException {\n        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {\n            oos.writeObject(studentList);\n        }\n    }\n    \n    @SuppressWarnings(\"unchecked\")\n    public void loadFromFile(String filename) throws IOException, ClassNotFoundException {\n        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {\n            studentList = (List<Student>) ois.readObject();\n            pcs.firePropertyChange(\"dataLoaded\", null, studentList);\n        }\n    }\n    \n    public void exportToCsv(String filename) throws IOException {\n        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {\n            writer.println(\"名前,学生ID,メール,電話,年齢,学年,備考,登録日\");\n            \n            for (Student student : studentList) {\n                writer.printf(\"%s,%s,%s,%s,%d,%s,\\\"%s\\\",%s%n\",\n                    student.getName(),\n                    student.getStudentId(),\n                    student.getEmail(),\n                    student.getPhone(),\n                    student.getAge(),\n                    student.getGrade(),\n                    student.getNotes().replace(\"\\\"\", \"\\\\\\\"\"),\n                    student.getRegistrationDate().format(DateTimeFormatter.ISO_LOCAL_DATE)\n                );\n            }\n        }\n    }\n    \n    public void addPropertyChangeListener(PropertyChangeListener listener) {\n        pcs.addPropertyChangeListener(listener);\n    }\n    \n    public void removePropertyChangeListener(PropertyChangeListener listener) {\n        pcs.removePropertyChangeListener(listener);\n    }\n}\n\n// テーブルモデルクラス\nclass StudentTableModel extends AbstractTableModel {\n    private static final String[] COLUMN_NAMES = {\n        \"名前\", \"学生ID\", \"メール\", \"年齢\", \"学年\", \"登録日\"\n    };\n    \n    private List<Student> studentList;\n    \n    public StudentTableModel(List<Student> studentList) {\n        this.studentList = studentList;\n    }\n    \n    @Override\n    public int getRowCount() {\n        return studentList.size();\n    }\n    \n    @Override\n    public int getColumnCount() {\n        return COLUMN_NAMES.length;\n    }\n    \n    @Override\n    public String getColumnName(int column) {\n        return COLUMN_NAMES[column];\n    }\n    \n    @Override\n    public Object getValueAt(int rowIndex, int columnIndex) {\n        Student student = studentList.get(rowIndex);\n        switch (columnIndex) {\n            case 0: return student.getName();\n            case 1: return student.getStudentId();\n            case 2: return student.getEmail();\n            case 3: return student.getAge();\n            case 4: return student.getGrade();\n            case 5: return student.getRegistrationDate().format(DateTimeFormatter.ofPattern(\"yyyy/MM/dd\"));\n            default: return null;\n        }\n    }\n    \n    @Override\n    public Class<?> getColumnClass(int columnIndex) {\n        switch (columnIndex) {\n            case 3: return Integer.class;\n            default: return String.class;\n        }\n    }\n}\n\n// 学生詳細ダイアログクラス\nclass StudentDialog extends JDialog {\n    private Student student;\n    private boolean confirmed = false;\n    \n    // フィールド（実装は省略）\n    // ...\n    \n    public StudentDialog(Frame parent, String title, Student student) {\n        super(parent, title, true);\n        this.student = student;\n        // 実装詳細は省略\n    }\n    \n    public boolean isConfirmed() {\n        return confirmed;\n    }\n    \n    public Student getStudent() {\n        return student;\n    }\n}\n\n// 統計ダイアログクラス\nclass StatisticsDialog extends JDialog {\n    public StatisticsDialog(Frame parent, List<Student> studentList) {\n        super(parent, \"統計情報\", true);\n        // 実装詳細は省略\n        setSize(400, 300);\n        setLocationRelativeTo(parent);\n    }\n}
+        // ここにコンポーネント初期化を実装してください
+    }
+    
+    // レイアウトの設定
+    private void setupLayout() {
+        // ここにレイアウト設定を実装してください
+    }
+    
+    // イベントリスナーの設定
+    private void setupEventListeners() {
+        // ここにイベントリスナーを実装してください
+    }
+    
+    // 学生追加ダイアログ
+    private void showAddStudentDialog() {
+        // ここに学生追加ダイアログを実装してください
+    }
+    
+    // 学生編集ダイアログ
+    private void showEditStudentDialog() {
+        // ここに学生編集ダイアログを実装してください
+    }
+    
+    // 学生削除処理
+    private void deleteSelectedStudent() {
+        // ここに学生削除処理を実装してください
+    }
+    
+    // 検索フィルタリング
+    private void filterStudents(String searchText) {
+        // ここに検索フィルタリングを実装してください
+    }
+    
+    // データ保存
+    private void saveToCSV() {
+        // ここにCSV保存処理を実装してください
+    }
+    
+    // データ読込
+    private void loadFromCSV() {
+        // ここにCSV読込処理を実装してください
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            new StudentManagementGUI().setVisible(true);
+        });
+    }
+}
+
+/*
+ * 実装のヒント:
+ * 
+ * 1. MVCパターンの実装
+ *    - Model: Student クラス、StudentTableModel
+ *    - View: JTable、各種JButton、JTextField
+ *    - Controller: イベントハンドラメソッド
+ * 
+ * 2. JTableの活用
+ *    - AbstractTableModelを継承したカスタムモデル
+ *    - TableRowSorterによるソート機能
+ *    - RowFilterによるフィルタリング
+ * 
+ * 3. データの永続化
+ *    - CSV形式でのデータ保存・読込
+ *    - ファイルチューザーによるファイル選択
+ *    - エラーハンドリング
+ * 
+ * 4. ユーザーインターフェース
+ *    - ツールバーによる操作ボタン
+ *    - ステータスバーによる情報表示
+ *    - ダイアログによるデータ入力
+ * 
+ * 5. リアルタイム検索
+ *    - DocumentListenerによる入力監視
+ *    - 即座のフィルタリング更新
+ *    - 大文字小文字を区別しない検索
+ * 
+ * よくある間違い:
+ * - TableModelの更新通知忘れ（fireTableDataChanged等）
+ * - イベントディスパッチスレッド外でのGUI操作
+ * - リソースのクローズ忘れ
+ * - データバリデーションの不備
+ * 
+ * 発展課題:
+ * - データベース連携
+ * - 印刷機能
+ * - エクスポート機能（Excel等）
+ * - 詳細画面の実装
+ * - 統計情報の表示
+ */
