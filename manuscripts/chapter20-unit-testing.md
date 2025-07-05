@@ -244,3 +244,122 @@ TDDでは、以下の短いサイクルを繰り返します。
 3.  **🔵 Refactoring**: テストが成功する状態を保ったまま、**コードをよりきれいに、効率的に**書き直します。
 
 TDDを実践するには、テストがしやすい疎結合なコードが不可欠なため、TDDとDIは非常に相性の良い組み合わせです。
+
+## 20.5 高度なテストテクニック
+
+### パラメータ化テスト
+
+同じテスト論理を複数の入力パラメータで実行したい場合、JUnit 5の`@ParameterizedTest`を使用します。
+
+```java
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class ParameterizedTestExample {
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"racecar", "radar", "level", "noon"})
+    void testPalindrome(String word) {
+        assertTrue(isPalindrome(word));
+    }
+    
+    @ParameterizedTest
+    @CsvSource({
+        "1, 1, 2",
+        "2, 3, 5", 
+        "5, 7, 12",
+        "10, 15, 25"
+    })
+    void testAddition(int a, int b, int expected) {
+        assertEquals(expected, a + b);
+    }
+    
+    private boolean isPalindrome(String str) {
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equals(reversed);
+    }
+}
+```
+
+### テストダブル（モック、スタブ、スパイ）
+
+テストダブルは、テスト時に本物のオブジェクトの代わりに使用する偽物のオブジェクトです。
+
+#### スタブ (Stub)
+決まった値を返すだけのシンプルな偽物です。
+
+```java
+public class EmailServiceStub implements EmailService {
+    @Override
+    public boolean sendEmail(String to, String subject, String body) {
+        // 実際には送信せず、常にtrueを返す
+        return true;
+    }
+}
+```
+
+#### モック (Mock)
+呼び出しの検証も行う高機能な偽物です。Mockitoを使用した例：
+
+```java
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class UserServiceMockTest {
+    
+    @Mock
+    private UserRepository userRepository;
+    
+    @Test
+    void testGetUserProfile() {
+        // Arrange
+        when(userRepository.findById("123")).thenReturn("Test User");
+        UserService userService = new UserService(userRepository);
+        
+        // Act
+        String result = userService.getUserProfile("123");
+        
+        // Assert
+        assertEquals("【Profile】Test User", result);
+        verify(userRepository).findById("123"); // 呼び出しの検証
+    }
+}
+```
+
+#### スパイ (Spy)
+実際のオブジェクトの一部メソッドだけをモック化します。
+
+```java
+@Test
+void testPartialMocking() {
+    List<String> list = new ArrayList<>();
+    List<String> spyList = spy(list);
+    
+    // 一部のメソッドだけモック化
+    when(spyList.size()).thenReturn(100);
+    
+    spyList.add("one");
+    assertEquals(1, spyList.size()); // 実際の動作
+    
+    when(spyList.size()).thenReturn(100);
+    assertEquals(100, spyList.size()); // モック化された動作
+}
+```
+
+### テストダブルの使い分け
+
+| 種類 | 用途 | 特徴 |
+|------|------|------|
+| **スタブ** | 決まった値を返す | シンプル、状態の確認が主目的 |
+| **モック** | 呼び出しの検証 | 相互作用の検証が主目的 |
+| **スパイ** | 部分的なモック化 | 実オブジェクトの拡張 |
+
+選択指針：
+- **状態の確認**が主目的 → スタブ
+- **相互作用の検証**が主目的 → モック
+- **実オブジェクトの部分的な置き換え** → スパイ

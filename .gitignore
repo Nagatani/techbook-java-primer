@@ -3,6 +3,8 @@
 # vivliostyle
 output/
 
+# Java Examples Class Files
+*.class
 
 # Logs
 logs

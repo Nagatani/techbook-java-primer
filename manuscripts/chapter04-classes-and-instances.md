@@ -85,117 +85,309 @@ exercises/chapter04/
 
 クラス設計は、単なるコードの書き方ではありません。データと処理を適切に組み合わせ、保守性と拡張性の高いソフトウェアを構築するための重要な技術です。
 
-### コンピュータにおけるデータ表現の歴史
+## カプセル化とアクセス制御
 
-コンピュータの歴史を振り返ると、データの表現方法は段階的に進化してきました。初期のコンピュータでは、すべてのデータは単純な0と1のビット列として扱われていました。プログラマは、このビット列が数値を表すのか、文字を表すのか、命令を表すのかを、自分で管理する必要がありました。
+### カプセル化の基本概念
 
-1940年代から1950年代の初期のコンピュータでは、「型」という概念は存在せず、プログラマは以下のような課題に直面していました：
+カプセル化は、関連するデータ（フィールド）と処理（メソッド）を1つのクラスにまとめ、外部から直接アクセスできないよう保護する技術です。これにより、オブジェクトの内部状態を安全に管理できます。
 
-**データの意味のあいまい性**：同じビット列が、文脈によって整数、浮動小数点数、文字、アドレスなど、さまざまな意味を持つことがありました。このあいまい性は、プログラムのバグの重要な原因となっていました。
+### アクセス修飾子の詳細
 
-**演算の不適切性**：たとえば、文字列データに対して数値演算を行ってしまったり、ポインタを数値として加算してしまったりするなど、論理的に不適切な操作が可能でした。
+Javaでは、4つのアクセス修飾子でフィールドとメソッドの可視性を制御します：
 
-**メモリ管理の困難さ**：異なる種類のデータが混在するメモリ領域で、どの部分がどのような構造を持つかを追跡することが極めて困難でした。
+| 修飾子 | 同じクラス | 同じパッケージ | サブクラス | 他のクラス |
+|--------|-----------|---------------|-----------|-----------|
+| private | ○ | × | × | × |
+| (なし) | ○ | ○ | × | × |
+| protected | ○ | ○ | ○ | × |
+| public | ○ | ○ | ○ | ○ |
 
-**移植性の欠如**：異なるハードウェアアーキテクチャでは、同じデータでも異なるビット表現を持つことがあり、プログラムの移植が困難でした。
+**privateの使用例**：
+```java
+public class BankAccount {
+    private double balance;  // 外部から直接変更不可
+    
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;  // 同じクラス内からは可視
+        }
+    }
+}
+```
 
-### 型システムの誕生と発展
+**publicの使用例**：
+```java
+public class Calculator {
+    public int add(int a, int b) {  // どこからでも呼び出し可能
+        return a + b;
+    }
+}
+```
 
-これらの問題を解決するため、1950年代から1960年代にかけて、プログラミング言語に「型システム」という概念が導入されました。型システムは、データの意味と操作を明確に定義し、不適切な操作をコンパイル時または実行時に検出するしくみです。
+### getter/setterメソッドのベストプラクティス
 
-**FORTRAN（1957年）**：科学技術計算向けに開発された言語で、INTEGER（整数）、REAL（実数）、LOGICAL（論理値）などの基本的な型を導入しました。これにより、数値計算の精度と信頼性が大幅に向上しました。
+プライベートフィールドへの安全なアクセスを提供するパターン：
 
-**COBOL（1959年）**：事務処理向けに開発された言語で、固定小数点数、文字列、日付などのビジネス処理に特化した型を提供しました。
+```java
+public class Product {
+    private String name;
+    private double price;
+    
+    // getter：値を取得
+    public String getName() {
+        return name;
+    }
+    
+    public double getPrice() {
+        return price;
+    }
+    
+    // setter：データ検証付きで値を設定
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("商品名は必須です");
+        }
+        this.name = name;
+    }
+    
+    public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("価格は負の値にできません");
+        }
+        this.price = price;
+    }
+}
+```
 
-**ALGOL 60（1960年）**：構造化プログラミングの基礎となった言語で、より厳密な型システムを導入し、現代の型システムの基盤を築きました。
+### データ検証の重要性
 
-**Pascal（1970年）**：ニクラウス・ヴィルト（Niklaus Wirth）によって開発された言語で、強い型付けという概念を確立しました。型の適合性がコンパイル時に厳密にチェックされ、型安全性の重要性が認識されるようになりました。
+setterメソッドでデータの妥当性を検証することで、オブジェクトの整合性を保ちます：
 
-### 静的型付けと動的型付けの対比
+```java
+public class Employee {
+    private String name;
+    private int age;
+    private double salary;
+    
+    public void setAge(int age) {
+        if (age < 18 || age > 100) {
+            throw new IllegalArgumentException("年齢は18歳以上100歳以下で入力してください");
+        }
+        this.age = age;
+    }
+    
+    public void setSalary(double salary) {
+        if (salary < 0) {
+            throw new IllegalArgumentException("給与は負の値にできません");
+        }
+        this.salary = salary;
+    }
+}
+```
 
-プログラミング言語の型システムは、大きく「静的型付け」と「動的型付け」に分類されます。この違いを理解することは、Javaの型システムの特徴を理解する上で重要です。
+## 🔍 Deep Dive: 設計原則とソフトウェアアーキテクチャ
 
-**静的型付き言語**：変数の型がコンパイル時に決定され、実行前に型の整合性がチェックされます。Java、C、C++、C#などがこのカテゴリに属します。
+> **対象読者**: ソフトウェア設計の原則に興味がある読者向け  
+> **前提知識**: カプセル化、継承の基本概念  
+> **学習時間**: 約15分
 
-静的型付けの利点：
-- コンパイル時のエラー検出により、多くのバグを実行前に発見できる
-- IDEによる強力なコード補完とリファクタリング支援
-- 実行時の型チェックが不要なため、実行性能が高い
-- 大規模開発における安全性と保守性の向上
+### SOLID原則との関連
 
-**動的型付き言語**：変数の型が実行時に決定され、実行中に型が変更される可能性があります。Python、JavaScript、Ruby、PHPなどがこのカテゴリに属します。
+オブジェクト指向設計では、保守性の高いコードを書くためのSOLID原則があります。カプセル化は特に以下の原則と密接に関連しています：
 
-動的型付けの利点：
-- 型宣言が不要で、記述が簡潔
-- 実行時の柔軟性が高い
-- プロトタイピングや小規模スクリプトに適している
-- より表現力豊かなプログラミングが可能
+#### 単一責任原則 (Single Responsibility Principle)
+```java
+// 悪い例：複数の責任を持つクラス
+public class Employee {
+    private String name;
+    private double salary;
+    
+    // 給与計算の責任
+    public double calculateYearlySalary() { /* ... */ }
+    
+    // データベース操作の責任
+    public void saveToDatabase() { /* ... */ }
+    
+    // レポート生成の責任  
+    public String generateReport() { /* ... */ }
+}
 
-### Javaの型システムの革新性
+// 良い例：責任を分離
+public class Employee {
+    private String name;
+    private double salary;
+    
+    // 基本的なデータのみを管理
+    public double getSalary() { return salary; }
+}
 
-Javaの型システムは、従来の静的型付き言語の利点を保ちながら、新しい革新的な特徴を導入しました：
+public class SalaryCalculator {
+    public double calculateYearlySalary(Employee employee) { /* ... */ }
+}
 
-**プリミティブ型と参照型の明確な分離**：性能を重視する場面では直接的なプリミティブ型を使用し、オブジェクト指向の恩恵を受けたい場面では参照型を使用するという、柔軟な選択が可能になりました。
+public class EmployeeRepository {
+    public void save(Employee employee) { /* ... */ }
+}
+```
 
-**自動ボクシング・アンボクシング**：Java 5以降では、プリミティブ型とそのラッパクラス間の変換が自動化され、型システムの複雑性を隠蔽しながら利便性を向上させました。
+#### 開放閉鎖原則 (Open/Closed Principle)
+カプセル化により内部実装を隠蔽し、インターフェイスを安定させることで、拡張に開かれ、修正に閉じた設計が可能になります。
 
-**ジェネリクス**：型パラメータを使用することで、型安全性を保ちながらコードの再利用性を大幅に向上させました。
+### 情報隠蔽の深い意味
 
-**強い型安全性**：C++のような型の抜け道（キャスト演算子による強制変換など）を制限し、より安全な型システムを実現しました。
+カプセル化は単なる「データを隠す」技術ではありません。David Parnasが提唱した情報隠蔽の概念は、以下の利点をもたらします：
 
-### メモリ管理と型システムの関係
+1. **変更の局所化**: 実装変更の影響を最小限に抑える
+2. **再利用性の向上**: インターフェイスが安定することで再利用しやすくなる
+3. **テスト容易性**: 依存関係が明確になりテストが書きやすくなる
+4. **並行開発**: 異なる開発者が独立してクラスを開発できる
 
-Javaの型システムのもう1つの重要な特徴は、自動メモリ管理（ガベージコレクション）との緊密な統合です。従来のC/C++では、プログラマがメモリの確保と解放を手動で管理する必要がありましたが、これは以下のような深刻な問題を引き起こしていました：
+### 抽象化レベルの考え方
 
-**メモリリーク**：確保したメモリを解放し忘れることで、利用可能メモリが徐々に減少し、最終的にシステムがクラッシュする問題です。
+優れたクラス設計では、適切な抽象化レベルを維持することが重要です：
 
-**ダングリングポインタ**：解放されたメモリ領域を指すポインタを使用することで、予期しない動作やセキュリティホールを引き起こす問題です。
+```java
+// 低レベルな実装詳細を隠蔽する例
+public class FileProcessor {
+    private List<String> processedLines;
+    private BufferedReader reader;
+    
+    // 高レベルなインターフェイス
+    public List<String> processFile(String filename) {
+        // 内部で複雑な処理を隠蔽
+        openFile(filename);
+        readLines();
+        processLines();
+        closeFile();
+        return processedLines;
+    }
+    
+    // 低レベルな詳細は private で隠蔽
+    private void openFile(String filename) { /* ... */ }
+    private void readLines() { /* ... */ }
+    private void processLines() { /* ... */ }
+    private void closeFile() { /* ... */ }
+}
+```
 
-**二重解放**：同じメモリ領域を複数回解放しようとすることで発生する、深刻なプログラムクラッシュです。
+### 契約による設計 (Design by Contract)
 
-Javaでは、型システムとガベージコレクションの統合により、これらの問題が根本的に解決されています：
+カプセル化は、クラスが外部に提供する「契約」を明確にします：
 
-**参照の明確な管理**：すべてのオブジェクトへのアクセスは参照を通じて行われ、直接的なメモリアドレス操作は禁止されています。
+- **事前条件 (Precondition)**: メソッド呼び出し時に満たすべき条件
+- **事後条件 (Postcondition)**: メソッド実行後に保証される条件  
+- **不変条件 (Invariant)**: オブジェクトが常に満たすべき条件
 
-**自動的な生存期間管理**：オブジェクトの生存期間は、参照の有無によって自動的に管理され、不要になったオブジェクトは自動的に回収されます。
+```java
+public class Rectangle {
+    private double width, height;
+    
+    public void setWidth(double width) {
+        // 事前条件: 幅は正の値
+        if (width <= 0) {
+            throw new IllegalArgumentException("幅は正の値である必要があります");
+        }
+        this.width = width;
+        // 事後条件: 不変条件（面積 > 0）が維持される
+        assert calculateArea() > 0;
+    }
+    
+    // 不変条件: 長方形の面積は常に正の値
+    private boolean invariant() {
+        return width > 0 && height > 0;
+    }
+}
+```
 
-**型安全な配列アクセス**：配列の境界チェックが実行時に行われ、バッファオーバーフローによるセキュリティ脆弱性を防ぎます。
+### 参考文献・関連資料
+- "Clean Code" - Robert C. Martin
+- "Effective Java" - Joshua Bloch
+- "Object-Oriented Software Construction" - Bertrand Meyer
 
-### プリミティブ型の設計思想
+## 実践的なクラス設計例
 
-Javaにおけるプリミティブ型の設計は、性能と安全性のバランスを取る巧妙なしくみです。オブジェクト指向言語でありながら、基本的なデータ型をオブジェクトとして扱わない理由は、以下の実用的な考慮によるものです：
+### 銀行口座クラスの設計
 
-**性能の最適化**：整数や浮動小数点数などの基本的な計算は、プログラムの実行において最も頻繁に行われる操作です。これらをオブジェクトとして扱うと、メモリ使用量と実行時間の大幅なオーバーヘッドが発生します。
+カプセル化とアクセス制御を活用した実践的な例：
 
-**数値計算の精度保証**：IEEE 754浮動小数点標準に準拠した精密な数値表現により、科学技術計算や金融計算における信頼性を確保しています。
+```java
+public class BankAccount {
+    // プライベートフィールド：外部から直接変更不可
+    private String accountNumber;
+    private String accountHolder;
+    private double balance;
+    private boolean isActive;
+    
+    // コンストラクタ：初期化時のデータ検証
+    public BankAccount(String accountNumber, String accountHolder, double initialBalance) {
+        setAccountNumber(accountNumber);
+        setAccountHolder(accountHolder);
+        setBalance(initialBalance);
+        this.isActive = true;
+    }
+    
+    // パブリックメソッド：外部インターフェイス
+    public void deposit(double amount) {
+        validateAccount();
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は正の値である必要があります");
+        }
+        balance += amount;
+    }
+    
+    public void withdraw(double amount) {
+        validateAccount();
+        if (amount <= 0) {
+            throw new IllegalArgumentException("出金額は正の値である必要があります");
+        }
+        if (balance < amount) {
+            throw new IllegalArgumentException("残高不足です");
+        }
+        balance -= amount;
+    }
+    
+    // プライベートメソッド：内部ロジック
+    private void validateAccount() {
+        if (!isActive) {
+            throw new IllegalStateException("この口座は無効です");
+        }
+    }
+    
+    // getter/setterメソッド
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    private void setAccountNumber(String accountNumber) {
+        if (accountNumber == null || !accountNumber.matches("\\d{10}")) {
+            throw new IllegalArgumentException("口座番号は10桁の数字である必要があります");
+        }
+        this.accountNumber = accountNumber;
+    }
+    
+    public double getBalance() {
+        validateAccount();
+        return balance;
+    }
+    
+    private void setBalance(double balance) {
+        if (balance < 0) {
+            throw new IllegalArgumentException("残高は負の値にできません");
+        }
+        this.balance = balance;
+    }
+}
+```
 
-**プラットフォーム独立性**：プリミティブ型のサイズと表現を言語仕様で固定することで、異なるプラットフォーム間での完全な互換性を実現しています。
+### クラス設計のベストプラクティス
 
-### 現代的なプログラミングパラダイムとの統合
+1. **単一責任の原則**：1つのクラスは1つの責任のみを持つ
+2. **データの隠蔽**：重要なデータはprivateにして、メソッド経由でアクセス
+3. **入力検証**：setterメソッドやコンストラクタで必ずデータを検証
+4. **意味のある名前**：クラス名、メソッド名、フィールド名は目的を明確に表現
+5. **不変条件の維持**：オブジェクトの状態が常に有効になるよう設計
 
-現代のJava開発では、従来の型システムに加えて、新しいプログラミングパラダイムが統合されています：
-
-**関数型プログラミング**：Java 8で導入されたラムダ式と関数型インターフェイスにより、型安全な関数型プログラミングが可能になりました。
-
-**null安全性**：Java 8のOptionalクラスにより、null参照による実行時エラーを型システムレベルで防ぐしくみが導入されました。
-
-**パターンマッチング**：Java 14以降で導入されたswitc式とパターンマッチングにより、より表現力豊かで安全な制御構造が利用できるようになりました。
-
-**値型の導入**：Project Valhallaプロジェクトでは、オブジェクトの利便性とプリミティブ型の性能を両立する新しい型システムが研究されています。
-
-### 本章で学習する内容の意義
-
-本章では、これらの歴史的背景と技術的意義を踏まえて、Javaの基本構文とデータ型を体系的に学習していきます。単に文法を覚えるのではなく、以下の点を重視して学習を進めます：
-
-**型安全性の実践**：なぜ型が重要なのか、どのような場面で型エラーが発生するのかを理解し、安全なプログラムを作成する能力を身につけます。
-
-**適切な型の選択**：問題の性質に応じて最適なデータ型を選択する判断力を養い、性能と保守性を両立したプログラムを作成する能力を習得します。
-
-**現代的な機能の活用**：自動ボクシング、ジェネリクス、関数型インターフェイスなど、現代的なJava機能を効果的に活用する技術を身につけます。
-
-**将来への拡張性**：基本的な型システムを深く理解することで、より高度なライブラリやフレームワークの学習、新しい言語機能の習得の基盤を築きます。
-
-型システムを深く理解することは、単にJavaプログラマとしての技術向上だけでなく、プログラミング全般における思考力の向上にもつながります。データの性質を正確に理解し、適切な抽象化を行い、安全で効率的なプログラムを設計する能力は、あらゆるプログラミング言語で活用できる普遍的なスキルです。
+これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。次の章では、これらのクラスを組み合わせて、より複雑なオブジェクト指向設計を学習していきます。
 
 本章を通じて、Javaという言語の持つ型システムの力強さと精密さを理解し、現代のソフトウェア開発者として必要な基礎的な素養を身につけていきましょう。
 

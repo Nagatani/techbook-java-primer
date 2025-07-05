@@ -138,7 +138,7 @@ public class LogProcessor {
             .average()
             .orElse(0.0);
         
-        Set<String> anomalousS sources = sourceCounts.entrySet().stream()
+        Set<String> anomalousSources = sourceCounts.entrySet().stream()
             .filter(entry -> entry.getValue() > averageCount * 2)
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());

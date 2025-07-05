@@ -205,6 +205,156 @@ public class JTableExample {
 }
 ```
 
+### カスタムTableModelの実装
+
+`DefaultTableModel`は便利ですが、より高度な制御が必要な場合は`AbstractTableModel`を継承してカスタムモデルを作成します。
+
+```java
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EmployeeTableModel extends AbstractTableModel {
+    private final String[] columnNames = {"ID", "名前", "年齢", "部署", "給与"};
+    private final List<Employee> employees = new ArrayList<>();
+    
+    public static class Employee {
+        private int id;
+        private String name;
+        private int age;
+        private String department;
+        private double salary;
+        
+        public Employee(int id, String name, int age, String department, double salary) {
+            this.id = id;
+            this.name = name;
+            this.age = age;
+            this.department = department;
+            this.salary = salary;
+        }
+        
+        // getters and setters...
+        public int getId() { return id; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public int getAge() { return age; }
+        public void setAge(int age) { this.age = age; }
+        public String getDepartment() { return department; }
+        public void setDepartment(String department) { this.department = department; }
+        public double getSalary() { return salary; }
+        public void setSalary(double salary) { this.salary = salary; }
+    }
+    
+    @Override
+    public int getRowCount() {
+        return employees.size();
+    }
+    
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+    
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+    
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        Employee employee = employees.get(rowIndex);
+        switch (columnIndex) {
+            case 0: return employee.getId();
+            case 1: return employee.getName();
+            case 2: return employee.getAge();
+            case 3: return employee.getDepartment();
+            case 4: return employee.getSalary();
+            default: return null;
+        }
+    }
+    
+    @Override
+    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+        Employee employee = employees.get(rowIndex);
+        switch (columnIndex) {
+            case 1: employee.setName((String) value); break;
+            case 2: employee.setAge((Integer) value); break;
+            case 3: employee.setDepartment((String) value); break;
+            case 4: employee.setSalary((Double) value); break;
+        }
+        fireTableCellUpdated(rowIndex, columnIndex);
+    }
+    
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        // IDは編集不可、その他は編集可能
+        return columnIndex != 0;
+    }
+    
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 0: case 2: return Integer.class;
+            case 1: case 3: return String.class;
+            case 4: return Double.class;
+            default: return Object.class;
+        }
+    }
+    
+    public void addEmployee(Employee employee) {
+        employees.add(employee);
+        fireTableRowsInserted(employees.size() - 1, employees.size() - 1);
+    }
+    
+    public void removeEmployee(int rowIndex) {
+        employees.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+}
+```
+
+### カスタムセルレンダラーの実装
+
+表示をカスタマイズするために、セルレンダラーを作成できます。
+
+```java
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+
+public class SalaryRenderer extends DefaultTableCellRenderer {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        
+        Component component = super.getTableCellRendererComponent(
+            table, value, isSelected, hasFocus, row, column);
+        
+        if (value instanceof Double) {
+            Double salary = (Double) value;
+            
+            // 給与に応じて背景色を変更
+            if (salary >= 8000000) {
+                component.setBackground(new Color(144, 238, 144)); // ライトグリーン
+            } else if (salary >= 5000000) {
+                component.setBackground(new Color(255, 255, 224)); // ライトイエロー
+            } else {
+                component.setBackground(new Color(255, 182, 193)); // ライトピンク
+            }
+            
+            // 通貨形式でフォーマット
+            setText(String.format("¥%,.0f", salary));
+        }
+        
+        return component;
+    }
+}
+
+// 使用例
+JTable table = new JTable(employeeTableModel);
+table.getColumnModel().getColumn(4).setCellRenderer(new SalaryRenderer());
+```
+
 ## まとめ
 
 本章では、`JList`や`JTable`といった、より複雑なデータを扱うための高度なGUIコンポーネントについて学びました。

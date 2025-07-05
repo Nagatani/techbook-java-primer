@@ -4,6 +4,7 @@ module.exports = {
   language: 'ja',
   entry: [
     'cover.md',
+    'learning-path-guide.md',
     'chapter01-introduction.md',
     'chapter02-getting-started.md',
     'chapter03-oop-basics.md',
@@ -30,6 +31,7 @@ module.exports = {
     'appendix-b-programming-history.md',
     'appendix-c-theoretical-foundations.md',
     'appendix-javabeans.md',
+    'cross-reference-guide.md',
     'glossary.md',
     'colophon.md',
   ],
