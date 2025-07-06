@@ -1,41 +1,137 @@
 # 第2章 Java基本文法
 
-## 📝 章末演習
+## 章末演習
 
-本章で学んだJava基本文法を活用して、実践的な練習課題に取り組みましょう。
+本章で学んだJava基本文法を活用して、段階的な練習課題に取り組みましょう。各レベルは前のレベルの習得を前提として設計されています。
 
-### 🎯 演習の目標
+### 演習の目標
 - 変数とデータ型の適切な使用
 - 制御構造（if文、for文、while文）の実装
 - 配列の操作と活用
 - メソッドの定義と呼び出し
+
+### 演習課題の難易度レベル
+
+#### 🟢 基礎レベル（Basic）
+- **目的**: Java基本文法の確実な理解と基本的な実装力の習得
+- **所要時間**: 15-30分/課題
+- **前提**: 教科書の例題が理解できること
+- **評価基準**: 
+  - 基本構文を正しく使える（変数宣言、型、演算子）
+  - 簡単な制御構造が実装できる（if文、for文、while文）
+  - エラーなくコンパイル・実行できる
+  - 期待される出力が得られる
+
+#### 🟡 応用レベル（Applied）
+- **目的**: 複数の概念を組み合わせた実践的な問題解決
+- **所要時間**: 30-45分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - 複数の基本構文を適切に組み合わせられる
+  - 配列とメソッドを効果的に活用できる
+  - 簡単なアルゴリズムが実装できる
+  - 可読性のあるコードが書ける
+
+#### 🔴 発展レベル（Advanced）
+- **目的**: より実務に近い複雑な問題への挑戦
+- **所要時間**: 45-60分/課題
+- **前提**: 応用レベルを完了し、追加の調査意欲があること
+- **評価基準**:
+  - 効率的なアルゴリズムを選択できる
+  - エラーハンドリングを考慮している
+  - 拡張性を意識した実装ができる
+
+#### ⚫ 挑戦レベル（Challenge）
+- **目的**: 創造性と高度な問題解決能力の発揮
+- **所要時間**: 60分以上
+- **前提**: 発展レベル完了と自主的な学習
+- **評価基準**:
+  - 独創的なアプローチで問題解決できる
+  - 複数の解法を比較検討できる
+  - 他者に説明できるレベルの理解
 
 ### 📁 課題の場所
 演習課題は `exercises/chapter02/` ディレクトリに用意されています：
 
 ```
 exercises/chapter02/
-├── basic/          # 基本課題（必須）
+├── basic/          # 🟢 基礎レベル（必須）
 │   ├── README.md   # 課題の詳細説明
-│   ├── Calculator.java # 課題1: 計算機プログラム
-│   ├── ArrayUtils.java # 課題2: 配列操作
-│   ├── StringProcessor.java # 課題3: 文字列処理
-│   └── NumberAnalyzer.java  # 課題4: 数値解析
-├── advanced/       # 発展課題（推奨）
-└── challenge/      # 挑戦課題（上級者向け）
+│   ├── Calculator.java      # 課題1: 基本計算機
+│   ├── ArrayBasics.java     # 課題2: 配列の基本操作
+│   ├── StringBasics.java    # 課題3: 文字列の基本処理
+│   └── MethodBasics.java    # 課題4: メソッドの基本使用
+├── applied/        # 🟡 応用レベル（推奨）
+│   ├── README.md
+│   ├── ScientificCalculator.java  # 課題1: 科学計算機
+│   ├── ArrayProcessor.java        # 課題2: 配列処理アルゴリズム
+│   ├── TextAnalyzer.java         # 課題3: テキスト解析
+│   └── NumberGame.java           # 課題4: 数当てゲーム
+├── advanced/       # 🔴 発展レベル（挑戦者向け）
+│   ├── README.md
+│   ├── MatrixCalculator.java     # 課題1: 行列計算
+│   ├── SortingAlgorithms.java    # 課題2: ソートアルゴリズム
+│   └── DataProcessor.java        # 課題3: データ処理システム
+└── challenge/      # ⚫ 挑戦レベル（上級者向け）
+    ├── README.md
+    ├── MiniCompiler.java         # 課題1: 簡易式計算機
+    └── GameEngine.java           # 課題2: 簡易ゲームエンジン
 ```
 
-### 🚀 推奨する学習の進め方
+### 推奨学習パス
 
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. 変数、制御構造、配列、メソッドを組み合わせて実装
-4. 実行例と同じ出力になることを確認
-5. 基本文法の理解を確実にする
+```
+【段階的学習フロー】
+🟢 基礎課題1-4 (全完了必須)
+    ↓
+🟡 応用課題1 → 応用課題2 → 応用課題3 → 応用課題4
+    ↓ (80%以上達成で進級)
+🔴 発展課題 (1課題以上完了推奨)
+    ↓
+⚫ 挑戦課題 (自由選択)
+```
 
-基本課題が完了したら、`advanced/`の発展課題でより複雑な基本文法の組み合わせに挑戦してみましょう！
+### 学習の進め方
 
-## 📋 本章の学習目標
+1. **🟢 基礎レベル**: 4課題すべてを順番に完了してください
+   - 各課題で基本構文の使い方を確認
+   - エラーメッセージを理解し、修正する練習
+   - コードの実行結果を予測する練習
+
+2. **🟡 応用レベル**: 基礎完了後、興味のある課題から取り組む
+   - 複数の概念を組み合わせる練習
+   - 小さなアルゴリズムの実装練習
+   - コードの改善・最適化を考える
+
+3. **🔴 発展レベル**: より実務に近い問題に挑戦
+   - 効率性と可読性のバランスを考慮
+   - エラーハンドリングの実装
+   - 設計の改善を意識
+
+4. **⚫ 挑戦レベル**: 創造性を発揮して自由に挑戦
+   - 独自のアプローチを考える
+   - 機能の拡張を検討
+   - 他の解法との比較
+
+### 自己評価チェックリスト
+
+各レベル完了時に以下をチェックしてください：
+
+#### 🟢 基礎レベル完了の条件
+- [ ] 変数宣言と初期化が正しくできる
+- [ ] 基本的な演算子を使った計算ができる  
+- [ ] if文、for文、while文を適切に使い分けられる
+- [ ] 配列の宣言、初期化、要素アクセスができる
+- [ ] 簡単なメソッドを定義し、呼び出すことができる
+
+#### 🟡 応用レベル完了の条件
+- [ ] 複数の制御構造を組み合わせた処理が書ける
+- [ ] 配列を使った検索・集計処理が実装できる
+- [ ] 文字列の操作と変換が適切にできる
+- [ ] メソッドを使ったモジュール化ができる
+- [ ] 基本的なアルゴリズム（線形探索、バブルソート等）が理解できる
+
+## 本章の学習目標
 
 ### 前提知識
 **必須前提**：
@@ -67,7 +163,7 @@ exercises/chapter02/
 - エラーメッセージの理解と基本的なデバッグ
 
 **到達レベルの指標**：
-- 手続き型スタイルでの基本的なJavaプログラムが独力��作成できる
+- 手続き型スタイルでの基本的なJavaプログラムが独力で作成できる
 - C言語とJavaの文法的違いを説明できる
 - 基本的なコンパイルエラーを理解し修正できる
 - 簡単なアルゴリズム（ソート、検索）をJavaで実装できる
@@ -114,7 +210,7 @@ Javaは以下のような特徴を持つプログラミング言語です：
 - **強い型付け**：コンパイル時の型チェック
 - **豊富なライブラリ**：標準ライブラリとサードパーティライブラリ
 
-## 🔍 Deep Dive: メモリ管理とガベージコレクション
+## Deep Dive: メモリ管理とガベージコレクション
 
 > **対象読者**: C言語のメモリ管理（malloc/free）を理解している読者向け  
 > **前提知識**: ポインタ、ヒープ領域、メモリリークの概念  
@@ -150,17 +246,110 @@ String message = new String("Hello");  // 自動でメモリ確保
 
 ### ガベージコレクションの仕組み
 
+#### 基本的なアルゴリズム：Mark-Sweep-Compact
+
 GCは以下の手順でメモリを自動管理します：
 
-1. **マーク段階**: 使用中のオブジェクトをマーク
-2. **スイープ段階**: マークされていないオブジェクトを削除
-3. **コンパクト段階**: メモリの断片化を解消
+1. **マーク段階**: ルートオブジェクト（ローカル変数、静的変数など）から辿れるすべてのオブジェクトをマーク
+2. **スイープ段階**: マークされていないオブジェクトを削除し、メモリを解放
+3. **コンパクト段階**: メモリの断片化を解消し、生きているオブジェクトを連続した領域に移動
 
-この自動化により、プログラマはビジネスロジックに集中でき、メモリ関連のバグが大幅に減少します。
+#### 世代別ガベージコレクション（Generational GC）
+
+実際のJVMは「世代別仮説」に基づいた効率的なGCを実装しています：
+
+**仮説**: 「ほとんどのオブジェクトは若い段階で死ぬ」
+
+この仮説に基づき、ヒープを世代別に分割：
+
+```
+【JVMヒープ構造】
+Young Generation (新世代)
+├── Eden Space        ← 新しいオブジェクトが最初に作られる場所
+├── Survivor Space 0  ← 1回のGCを生き残ったオブジェクト
+└── Survivor Space 1  ← 複数回のGCを生き残ったオブジェクト
+
+Old Generation (旧世代)  ← 長寿命のオブジェクト
+```
+
+#### 主要なGCアルゴリズム
+
+**1. Serial GC**
+- シングルスレッドで動作
+- 小規模アプリケーション向け
+- 停止時間: 長い、スループット: 高い
+
+**2. Parallel GC（Java 8のデフォルト）**
+- マルチスレッドで並列処理
+- サーバーアプリケーション向け
+- 停止時間: 中程度、スループット: 非常に高い
+
+**3. G1 GC（Java 9以降のデフォルト）**
+- 低遅延を重視した設計
+- 大容量ヒープ（6GB以上）に最適化
+- 停止時間: 短い（10ms以下目標）、スループット: 高い
+
+**4. ZGC / Shenandoah（Java 11以降）**
+- 超低遅延コレクタ
+- テラバイト級ヒープにも対応
+- 停止時間: 極短（1-2ms）、スループット: 中程度
+
+#### Javaでも発生し得るメモリリーク
+
+自動メモリ管理でも、以下のパターンでメモリリークが発生します：
+
+```java
+// 悪い例：Staticコレクションへの無制限追加
+public class UserCache {
+    private static final List<User> cache = new ArrayList<>();
+    
+    public static void addUser(User user) {
+        cache.add(user);  // 永続的に参照を保持 → メモリリーク
+    }
+}
+
+// 改善例：WeakReferenceの使用
+public class UserCache {
+    private static final List<WeakReference<User>> cache = new ArrayList<>();
+    
+    public static void addUser(User user) {
+        cache.add(new WeakReference<>(user));  // 弱参照で保持
+    }
+}
+```
 
 ### パフォーマンスとのトレードオフ
 
-自動メモリ管理は安全性と引き換えに、わずかなパフォーマンス・コストが発生します。しかし、現代のJVMは高度に最適化されており、多くの場合、手動管理のC言語と同等かそれ以上の性能を実現しています。
+#### GCの影響
+
+1. **Stop-the-World**: GC実行中は全スレッドが停止（数ミリ秒〜数秒）
+2. **CPU使用率**: GCによるオーバーヘッド（通常5-15%）
+3. **メモリ使用量**: GC管理用のメタデータが必要
+
+#### 現代JVMの優秀性
+
+しかし、現代のJVMは以下の最適化により、手動管理を上回る性能を実現：
+
+1. **逃避解析（Escape Analysis）**: スタック上に直接オブジェクトを配置
+2. **TLAB（Thread Local Allocation Buffer）**: スレッドローカルなメモリ割り当て
+3. **適応的サイズ調整**: 実行パターンに基づく自動チューニング
+
+**ベンチマーク例**：
+- C言語（手動管理）: 100% の相対性能
+- Java（現代のJVM）: 95-105% の相対性能
+- 長時間実行アプリケーションではJavaが勝ることも多い
+
+#### GCチューニングの基本
+
+プロダクション環境では以下のパラメータを調整：
+
+```bash
+# G1GCの例
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200    # 最大停止時間の目標
+-XX:G1HeapRegionSize=16m    # リージョンサイズ
+-Xms4g -Xmx4g              # ヒープサイズの固定
+```
 
 ### 参考文献・関連資料
 - "Java Performance: The Definitive Guide" - Scott Oaks
@@ -435,28 +624,174 @@ public class StandardInput {
 
 ### 標準入力から受けた文字列から数値変換を行う
 
-実用的なプログラムでは、ユーザーから数値を入力してもらい、計算処理を行うことが頻繁にあります。しかし、コンソールからの入力はすべて文字列として扱われるため、数値として使用するには型変換が必要です。このプログラムでは、文字列から整数への変換と基本的な算術演算を学習します。
+実用的なプログラムでは、ユーザーから数値を入力してもらい、計算処理を行うことが頻繁にあります。しかし、コンソールからの入力はすべて文字列として扱われるため、数値として使用するには型変換が必要です。
 
-ファイル名「```ParseInt.java```」
+#### 基本的な数値変換（問題あり版）
+
+まず、最もシンプルな実装から始めましょう：
+
+ファイル名「```ParseIntBasic.java```」
 
 ```java
-import java.util.Scanner;  // このライブラリをParseIntクラスで使う宣言
+import java.util.Scanner;
 
-public class ParseInt {
+public class ParseIntBasic {
     public static void main(String[] args) {
-        // 標準入力をScannerで取得する
         Scanner in = new Scanner(System.in);
-        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す
+        System.out.print("数値を入力してください: ");
+        
         String inputLine = in.nextLine();
-        // ↑inputLineという変数には、入力された文字列データが格納されます
-
-        // 変数numに文字列データを整数値に変換して格納
-        int num = Integer.parseInt(inputLine);
-        // 整数変換された文字列データに10を足した結果を変数ansに格納
+        
+        // 問題：この実装では不正な入力でプログラムがクラッシュする
+        int num = Integer.parseInt(inputLine);  // 例："abc"を入力すると例外発生
         int ans = num + 10;
+        
+        System.out.println("結果: " + ans);
+        in.close();
+    }
+}
+```
 
-        // 変数ansを出力
-        System.out.println(ans);
+**この実装の問題点：**
+- ユーザーが「abc」や「12.5」などの無効な値を入力すると`NumberFormatException`が発生
+- プログラムが予期せず終了してしまう
+- 実際のアプリケーションでは致命的
+
+#### 改善版：エラーハンドリングあり
+
+実用的なプログラムでは、不正な入力に対する適切な処理が必要です：
+
+ファイル名「```ParseIntSafe.java```」
+
+```java
+import java.util.Scanner;
+
+public class ParseIntSafe {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int num = 0;
+        boolean validInput = false;
+        
+        // 有効な入力が得られるまでループを継続
+        while (!validInput) {
+            System.out.print("整数を入力してください: ");
+            String inputLine = in.nextLine();
+            
+            try {
+                // 数値変換を試行
+                num = Integer.parseInt(inputLine);
+                
+                // 範囲チェック（例：1-100の範囲のみ許可）
+                if (num < 1 || num > 100) {
+                    System.out.println("エラー: 1から100の範囲で入力してください");
+                    continue;  // ループの先頭に戻る
+                }
+                
+                validInput = true;  // 有効な入力が得られた
+                
+            } catch (NumberFormatException e) {
+                // 数値以外が入力された場合の処理
+                System.out.println("エラー: 整数を入力してください（入力値: " + inputLine + "）");
+                // validInputはfalseのままなので、ループが継続される
+            }
+        }
+        
+        // 有効な入力が確定した後の処理
+        int ans = num + 10;
+        System.out.println("入力値: " + num);
+        System.out.println("結果: " + ans);
+        
+        in.close();
+    }
+}
+```
+
+**この実装の改善点：**
+1. **例外処理**: `try-catch`で`NumberFormatException`をキャッチ
+2. **入力検証**: 範囲チェックで適切な値のみ受け入れ
+3. **再入力の促進**: エラー時にユーザーに再入力を求める
+4. **わかりやすいメッセージ**: 何が間違っているかを明確に表示
+5. **リソース管理**: `Scanner`の適切なクローズ
+
+#### より実践的な例：計算機プログラム
+
+実際のアプリケーションを想定した、より高度な例です：
+
+ファイル名「```Calculator.java```」
+
+```java
+import java.util.Scanner;
+
+public class Calculator {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        
+        System.out.println("=== 簡易計算機 ===");
+        
+        // 第1オペランドの入力
+        double num1 = getValidNumber(in, "1つ目の数値を入力してください: ");
+        
+        // 演算子の入力
+        String operator = getValidOperator(in);
+        
+        // 第2オペランドの入力
+        double num2 = getValidNumber(in, "2つ目の数値を入力してください: ");
+        
+        // 計算実行
+        double result = calculate(num1, operator, num2);
+        
+        // 結果表示
+        System.out.printf("%.2f %s %.2f = %.2f%n", num1, operator, num2, result);
+        
+        in.close();
+    }
+    
+    // 有効な数値入力を取得するメソッド
+    private static double getValidNumber(Scanner in, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = in.nextLine();
+            
+            try {
+                return Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                System.out.println("エラー: 数値を入力してください");
+            }
+        }
+    }
+    
+    // 有効な演算子入力を取得するメソッド
+    private static String getValidOperator(Scanner in) {
+        while (true) {
+            System.out.print("演算子を入力してください (+, -, *, /): ");
+            String operator = in.nextLine().trim();
+            
+            if (operator.equals("+") || operator.equals("-") || 
+                operator.equals("*") || operator.equals("/")) {
+                return operator;
+            }
+            
+            System.out.println("エラー: +, -, *, / のいずれかを入力してください");
+        }
+    }
+    
+    // 計算を実行するメソッド
+    private static double calculate(double num1, String operator, double num2) {
+        switch (operator) {
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
+                if (num2 == 0) {
+                    throw new ArithmeticException("ゼロで割ることはできません");
+                }
+                return num1 / num2;
+            default:
+                throw new IllegalArgumentException("不正な演算子: " + operator);
+        }
     }
 }
 ```
@@ -976,7 +1311,7 @@ public static int add(int a, int b, int c) {
 
 今回学習した基本文法は、フレームワーク開発、Webアプリケーション構築、マイクロサービスアーキテクチャ、クラウドネイティブ開発など、現代のあらゆるJava開発の基盤となります。型安全性、例外処理、適切なメソッド設計などの概念は、企業での実際の開発において直接活用される重要なスキルです。
 
-## 🏋️ 実践演習課題
+## 実践演習課題
 
 本章で学習した内容を定着させるため、段階的な演習課題に取り組みましょう。各課題は、実用的な場面を想定して設計されています。
 
@@ -1020,7 +1355,7 @@ public static int add(int a, int b, int c) {
 
 **評価ポイント**：
 
-| 評価項��� |
+| 評価項目 |
 | :--- |
 | 適切な条件分岐の使用 |
 | 繰り返し処理による効率的な実装 |
@@ -1099,7 +1434,7 @@ public static int add(int a, int b, int c) {
 | 他の問題に応用できる自信がある |
 | より良い実装方法を考えることができる |
 
-### 🎯 発展的な学習課題
+### 発展的な学習課題
 
 さらなるスキル向上を目指す方は、以下の課題にも挑戦してみてください：
 

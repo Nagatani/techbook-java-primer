@@ -1,10 +1,10 @@
 # 第4章 クラスとインスタンス
 
-## 📝 章末演習
+## 章末演習
 
 本章で学んだクラスとインスタンス、カプセル化の概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 🎯 演習の目標
+### 演習の目標
 - クラスとインスタンスの関係の理解
 - カプセル化の実践とアクセス修飾子の使い分け
 - privateフィールドとpublicメソッドの適切な設計
@@ -29,7 +29,7 @@ exercises/chapter04/
 └── challenge/      # 挑戦課題（上級者向け）
 ```
 
-### 🚀 推奨する学習の進め方
+### 推奨する学習の進め方
 
 1. **基本課題**から順番に取り組む
 2. 各課題のREADME.mdで詳細を確認
@@ -39,7 +39,7 @@ exercises/chapter04/
 
 基本課題が完了したら、`advanced/`の発展課題でより複雑なクラス設計に挑戦してみましょう！
 
-## 📋 本章の学習目標
+## 本章の学習目標
 
 ### 前提知識
 **必須前提**：
@@ -185,7 +185,7 @@ public class Employee {
 }
 ```
 
-## 🔍 Deep Dive: 設計原則とソフトウェアアーキテクチャ
+## Deep Dive: 設計原則とソフトウェアアーキテクチャ
 
 > **対象読者**: ソフトウェア設計の原則に興味がある読者向け  
 > **前提知識**: カプセル化、継承の基本概念  
@@ -232,6 +232,92 @@ public class EmployeeRepository {
 
 #### 開放閉鎖原則 (Open/Closed Principle)
 カプセル化により内部実装を隠蔽し、インターフェイスを安定させることで、拡張に開かれ、修正に閉じた設計が可能になります。
+
+#### インターフェイス分離原則 (Interface Segregation Principle)
+クライアントが使用しないメソッドへの依存を強制すべきではありません。大きなインターフェイスを小さな専用インターフェイスに分割します。
+
+```java
+// 悪い例：大きすぎるインターフェイス
+interface Worker {
+    void work();
+    void eat();
+    void sleep();
+}
+
+// ロボットクラスはeat()とsleep()を必要としない
+class Robot implements Worker {
+    public void work() { /* 実装 */ }
+    public void eat() { /* 不要だが実装を強制される */ }
+    public void sleep() { /* 不要だが実装を強制される */ }
+}
+
+// 良い例：インターフェイスを分離
+interface Workable {
+    void work();
+}
+
+interface Feedable {
+    void eat();
+}
+
+interface Sleepable {
+    void sleep();
+}
+
+class Human implements Workable, Feedable, Sleepable {
+    public void work() { /* 実装 */ }
+    public void eat() { /* 実装 */ }
+    public void sleep() { /* 実装 */ }
+}
+
+class Robot implements Workable {
+    public void work() { /* 実装 */ }
+    // 不要なメソッドの実装は強制されない
+}
+```
+
+#### 依存関係逆転原則 (Dependency Inversion Principle)
+高レベルモジュールは低レベルモジュールに依存すべきではありません。両方とも抽象に依存すべきです。
+
+```java
+// 悪い例：具象クラスに直接依存
+class EmailService {
+    public void sendEmail(String message) { /* 実装 */ }
+}
+
+class NotificationManager {
+    private EmailService emailService = new EmailService(); // 具象依存
+    
+    public void sendNotification(String message) {
+        emailService.sendEmail(message);
+    }
+}
+
+// 良い例：抽象に依存
+interface NotificationService {
+    void send(String message);
+}
+
+class EmailService implements NotificationService {
+    public void send(String message) { /* Email実装 */ }
+}
+
+class SMSService implements NotificationService {
+    public void send(String message) { /* SMS実装 */ }
+}
+
+class NotificationManager {
+    private NotificationService service; // 抽象に依存
+    
+    public NotificationManager(NotificationService service) {
+        this.service = service; // 依存性注入
+    }
+    
+    public void sendNotification(String message) {
+        service.send(message);
+    }
+}
+```
 
 ### 情報隠蔽の深い意味
 

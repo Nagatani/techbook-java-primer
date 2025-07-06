@@ -4,7 +4,7 @@
 
 2025年7月5日に実施した全章の演習課題の動作確認結果をまとめます。
 
-## ✅ 動作確認済み章
+## 動作確認済み章
 
 ### 第5章: 継承とポリモーフィズム
 **検証状況**: 正常動作確認済み
@@ -20,7 +20,7 @@
 ミケは「ニャーニャー」と鳴きます。/ ミケは毛づくろいをしています。
 ```
 
-## ⚠️ 修正が必要な章
+## 修正が必要な章
 
 ### 第10章: 高度なコレクション操作
 **問題点**: 
@@ -52,13 +52,13 @@ UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 ```
 
-## 📋 検証対象外
+## 検証対象外
 
 ### テスト環境の制約により未検証の章
 - **第6章〜第20章**: JUnit5依存のテストクラスが多数存在
 - **GUI関連章 (第18-19章)**: デスクトップ環境でのGUI表示が必要
 
-## 📊 総合評価
+## 総合評価
 
 ### 課題の品質
 - **設計**: オブジェクト指向の概念が段階的に学習できる優れた構成
@@ -81,7 +81,7 @@ UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 - JUnit不要の基本動作確認方法の提供
 - Makefileまたはビルドスクリプトの追加
 
-## 🎯 次回検証計画
+## 次回検証計画
 
 ### 即座に対応すべき項目
 1. 第17章のUIManager API修正
