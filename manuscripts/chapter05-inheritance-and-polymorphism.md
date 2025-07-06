@@ -68,6 +68,182 @@ public class Wizard {
 
 継承を使うと、これらの共通部分を`Character`という親クラスにまとめ、各職業クラスはそれを継承することで、重複をなくし、コードをすっきりとさせることができます。
 
+### 段階的リファクタリング：重複コードから継承へ
+
+実際の開発では、最初から完璧な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
+
+**ステップ1：重複コードの発見**
+
+```java
+// 最初の実装：各クラスが独立して作成されている
+public class Car {
+    private String model;
+    private String color;
+    private int speed;
+    
+    public void start() {
+        System.out.println(model + " のエンジンを始動");
+    }
+    
+    public void accelerate() {
+        speed += 10;
+        System.out.println(model + " が加速: " + speed + "km/h");
+    }
+    
+    public void brake() {
+        speed = Math.max(0, speed - 10);
+        System.out.println(model + " が減速: " + speed + "km/h");
+    }
+}
+
+public class Truck {
+    private String model;
+    private String color;
+    private int speed;
+    private int loadCapacity; // トラック固有
+    
+    // Car と全く同じメソッド（重複！）
+    public void start() {
+        System.out.println(model + " のエンジンを始動");
+    }
+    
+    public void accelerate() {
+        speed += 10;
+        System.out.println(model + " が加速: " + speed + "km/h");
+    }
+    
+    public void brake() {
+        speed = Math.max(0, speed - 10);
+        System.out.println(model + " が減速: " + speed + "km/h");
+    }
+    
+    // トラック固有のメソッド
+    public void loadCargo(int weight) {
+        System.out.println(weight + "kg の荷物を積載");
+    }
+}
+
+public class Motorcycle {
+    private String model;
+    private String color;
+    private int speed;
+    
+    // また同じメソッドの重複！
+    public void start() {
+        System.out.println(model + " のエンジンを始動");
+    }
+    
+    public void accelerate() {
+        speed += 10;
+        System.out.println(model + " が加速: " + speed + "km/h");
+    }
+    
+    public void brake() {
+        speed = Math.max(0, speed - 10);
+        System.out.println(model + " が減速: " + speed + "km/h");
+    }
+}
+```
+
+**ステップ2：共通部分の抽出**
+
+```java
+// 共通部分を親クラスとして抽出
+public abstract class Vehicle {
+    protected String model;
+    protected String color;
+    protected int speed;
+    
+    public Vehicle(String model, String color) {
+        this.model = model;
+        this.color = color;
+        this.speed = 0;
+    }
+    
+    // 共通メソッドを親クラスに移動
+    public void start() {
+        System.out.println(model + " のエンジンを始動");
+    }
+    
+    public void accelerate() {
+        speed += 10;
+        System.out.println(model + " が加速: " + speed + "km/h");
+    }
+    
+    public void brake() {
+        speed = Math.max(0, speed - 10);
+        System.out.println(model + " が減速: " + speed + "km/h");
+    }
+    
+    // ゲッターとセッター
+    public String getModel() { return model; }
+    public int getSpeed() { return speed; }
+}
+```
+
+**ステップ3：子クラスの再実装**
+
+```java
+// リファクタリング後：重複が除去された
+public class Car extends Vehicle {
+    public Car(String model, String color) {
+        super(model, color);
+    }
+    
+    // Car固有の機能があれば追加
+    public void openTrunk() {
+        System.out.println(model + " のトランクを開く");
+    }
+}
+
+public class Truck extends Vehicle {
+    private int loadCapacity;
+    
+    public Truck(String model, String color, int loadCapacity) {
+        super(model, color);
+        this.loadCapacity = loadCapacity;
+    }
+    
+    // accelerateメソッドをオーバーライド（重い車両は加速が遅い）
+    @Override
+    public void accelerate() {
+        speed += 5; // トラックは加速が遅い
+        System.out.println(model + " がゆっくり加速: " + speed + "km/h");
+    }
+    
+    public void loadCargo(int weight) {
+        if (weight <= loadCapacity) {
+            System.out.println(weight + "kg の荷物を積載");
+        } else {
+            System.out.println("積載量オーバー！");
+        }
+    }
+}
+
+public class Motorcycle extends Vehicle {
+    public Motorcycle(String model, String color) {
+        super(model, color);
+    }
+    
+    // accelerateメソッドをオーバーライド（バイクは加速が速い）
+    @Override
+    public void accelerate() {
+        speed += 20; // バイクは加速が速い
+        System.out.println(model + " が素早く加速: " + speed + "km/h");
+    }
+    
+    public void wheelie() {
+        System.out.println(model + " がウィリー！");
+    }
+}
+```
+
+**リファクタリングの効果**
+- コードの重複が除去され、保守性が向上
+- 共通機能の変更が1箇所で済む
+- 各車両の特性をオーバーライドで表現可能
+- 新しい車両タイプの追加が容易
+
 ### 継承の書き方：`extends`
 
 Javaで継承を行うには、子クラスの宣言時に`extends`キーワードを使います。
@@ -109,6 +285,109 @@ public class Wizard extends Character {
 - 「魔法使い(Wizard) **is a** キャラクタ(Character)」
 
 このような関係が成り立つ場合、継承の利用を検討します。一方、「車(Car) **has a** エンジン(Engine)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
+
+### 継承の誤用例：よくある間違い
+
+継承を誤用すると、論理的に破綻したコードになってしまいます。有名な例として「正方形と長方形」の問題を見てみましょう。
+
+```java
+// 問題のあるコード：数学的には正方形は長方形の一種だが...
+public class Rectangle {
+    protected int width;
+    protected int height;
+    
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    public void setWidth(int width) {
+        this.width = width;
+    }
+    
+    public void setHeight(int height) {
+        this.height = height;
+    }
+    
+    public int getArea() {
+        return width * height;
+    }
+}
+
+// 正方形を長方形として継承すると問題が発生
+public class Square extends Rectangle {
+    public Square(int size) {
+        super(size, size);
+    }
+    
+    // 正方形では幅と高さは常に同じでなければならない
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+        this.height = width; // 高さも同じ値に！
+    }
+    
+    @Override
+    public void setHeight(int height) {
+        this.width = height; // 幅も同じ値に！
+        this.height = height;
+    }
+}
+
+// 使用例で問題が明らかに
+public class GeometryTest {
+    public static void main(String[] args) {
+        Rectangle rect = new Square(5);
+        
+        // 長方形として扱うコード
+        rect.setWidth(10);  // 幅を10に
+        rect.setHeight(5);  // 高さを5に
+        
+        // 期待値：10 × 5 = 50
+        // 実際の結果：5 × 5 = 25（最後のsetHeightで幅も5になってしまう）
+        System.out.println("面積: " + rect.getArea()); // 25が出力される
+    }
+}
+```
+
+この例は**リスコフの置換原則**に違反しています。子クラスは親クラスと置き換え可能でなければなりませんが、`Square`は`Rectangle`の期待される振る舞いを破壊してしまっています。
+
+**解決策：コンポジションの使用**
+
+```java
+// 改善されたコード：継承ではなくインターフェースを使用
+public interface Shape {
+    int getArea();
+}
+
+public class Rectangle implements Shape {
+    private final int width;
+    private final int height;
+    
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public int getArea() {
+        return width * height;
+    }
+}
+
+public class Square implements Shape {
+    private final int size;
+    
+    public Square(int size) {
+        this.size = size;
+    }
+    
+    @Override
+    public int getArea() {
+        return size * size;
+    }
+}
+```
 
 ### 継承の実践例
 
@@ -281,6 +560,128 @@ public class GameParty {
 この`for`ループの中では、`member`が`Hero`なのか`Wizard`なのかを一切気にする必要がありません。ただ`attack()`を呼びだすだけで、各キャラクタは自身の職業に合った攻撃を自動的に行ってくれます。
 
 もし将来、「忍者 `Ninja`」という新しい職業クラスを追加したくなっても、`GameParty`クラスのコードは**一切変更する必要がありません**。`Ninja`クラスを作成し、`Character`を継承して`attack()`をオーバーライドし、`party`配列に追加するだけで、新しいキャラクタも問題なく動作します。これがポリモーフィズムがもたらす**拡張性**です。
+
+### ポリモーフィズムのBefore/After比較
+
+ポリモーフィズムを使わない場合と使った場合の違いを、実際のコードで比較してみましょう。
+
+**Before：ポリモーフィズムを使わない場合**
+
+```java
+// 型ごとに別々の処理を書く必要がある
+public class GamePartyBefore {
+    public static void main(String[] args) {
+        Hero hero = new Hero("勇者", 100);
+        Wizard wizard = new Wizard("魔法使い", 70, 50);
+        Knight knight = new Knight("騎士", 120);
+        
+        // それぞれの型に応じた攻撃処理
+        System.out.println("=== パーティ全員の攻撃（ポリモーフィズムなし）===");
+        
+        // Heroの攻撃
+        hero.attack();
+        
+        // Wizardの攻撃
+        wizard.attack();
+        
+        // Knightの攻撃
+        knight.attack();
+        
+        // 新しいメンバーを追加するたびに、ここにコードを追加する必要がある
+        // Archer archer = new Archer("弓使い", 80);
+        // archer.attack();
+    }
+    
+    // 全員の合計ダメージを計算する場合も型別処理が必要
+    public static int calculateTotalDamage(Hero hero, Wizard wizard, Knight knight) {
+        int totalDamage = 0;
+        
+        // 各型ごとに個別に処理
+        if (hero != null) {
+            totalDamage += 50; // Heroの攻撃力
+        }
+        if (wizard != null) {
+            totalDamage += 30; // Wizardの攻撃力
+        }
+        if (knight != null) {
+            totalDamage += 70; // Knightの攻撃力
+        }
+        
+        // 新しい型が増えるたびに、このメソッドも修正が必要
+        return totalDamage;
+    }
+}
+```
+
+**After：ポリモーフィズムを使った場合**
+
+```java
+// 統一的な処理で全ての型を扱える
+public class GamePartyAfter {
+    public static void main(String[] args) {
+        // ポリモーフィズム：親クラスの型で管理
+        Character[] party = {
+            new Hero("勇者", 100),
+            new Wizard("魔法使い", 70, 50),
+            new Knight("騎士", 120)
+            // 新しいメンバーを追加しても、以下のコードは変更不要
+            // new Archer("弓使い", 80)
+        };
+        
+        System.out.println("=== パーティ全員の攻撃（ポリモーフィズムあり）===");
+        
+        // 統一的な処理で全員を扱える
+        for (Character member : party) {
+            member.attack(); // 実際の型に応じた攻撃が自動的に呼ばれる
+        }
+    }
+    
+    // 合計ダメージ計算も拡張性が高い
+    public static int calculateTotalDamage(Character[] party) {
+        int totalDamage = 0;
+        
+        // 型を意識せずに処理できる
+        for (Character member : party) {
+            totalDamage += member.getAttackPower(); // 各キャラクタの攻撃力を取得
+        }
+        
+        return totalDamage;
+    }
+    
+    // 特定の条件での処理も簡潔に書ける
+    public static void healLowHpMembers(Character[] party) {
+        for (Character member : party) {
+            if (member.getHp() < 30) {
+                member.heal(20); // HPが低いメンバーを回復
+                System.out.println(member.getName() + " を回復しました");
+            }
+        }
+    }
+}
+
+// 親クラスに共通インターフェースを定義
+abstract class Character {
+    protected String name;
+    protected int hp;
+    
+    public abstract int getAttackPower();
+    
+    public void heal(int amount) {
+        this.hp += amount;
+    }
+    
+    public String getName() { return name; }
+    public int getHp() { return hp; }
+}
+```
+
+**ポリモーフィズムの利点まとめ**
+
+1. **コードの簡潔性**: 型別の条件分岐が不要になり、コードがシンプルに
+2. **拡張性**: 新しい型を追加してもクライアントコードの変更が不要
+3. **保守性**: 処理の追加・変更が容易
+4. **再利用性**: 汎用的なメソッドが書きやすい
+5. **型安全性**: コンパイル時に型チェックが行われる
 
 ## 5.4 `instanceof`演算子とキャスト
 

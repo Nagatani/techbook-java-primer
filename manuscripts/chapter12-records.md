@@ -4,55 +4,13 @@
 
 本章で学んだRecordクラスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 🎯 演習の目標
-- Recordクラスの基本概念と利点の理解
-- 不変データ構造としてのRecordの活用
-- 従来のクラスとRecordの使い分け
-- Recordの制限事項と適用場面の理解
-- Recordを使ったデータ中心設計の実践
-- データ転送オブジェクト（DTO）としてのRecordの効果的な活用
+### 演習の目標
+Recordクラスを使った不変データ構造の設計と実装技術を習得します。
 
-### 演習課題の難易度レベル
-
-#### 🟢 基礎レベル（Basic）
-- **目的**: Recordの基本概念と構文の理解
-- **所要時間**: 20-30分/課題
-- **前提**: 本章の内容を理解していること
-- **評価基準**: 
-  - Recordの正しい定義と使用
-  - 不変性の理解と活用
-  - 自動生成メソッドの理解
-  - 従来クラスとの比較
-
-#### 🟡 応用レベル（Applied）  
-- **目的**: 実践的なRecordの活用と設計
-- **所要時間**: 30-45分/課題
-- **前提**: 基礎レベルを完了していること
-- **評価基準**:
-  - 複雑なRecord構造の設計
-  - DTOとしての効果的な活用
-  - 設定管理やデータ変換での実用性
-  - パターンマッチングとの組み合わせ
-
-#### 🔴 発展レベル（Advanced）
-- **目的**: Recordの高度な活用とアーキテクチャ設計
-- **所要時間**: 45-60分/課題
-- **前提**: 応用レベルを完了していること
-- **評価基準**:
-  - 型安全なAPI設計
-  - パフォーマンスを考慮した設計
-  - シリアライゼーションとの組み合わせ
-  - フレームワークレベルの活用
-
----
-
-## 🟢 基礎レベル課題（必須）
+## 基礎レベル課題（必須）
 
 ### 課題1: 基本的なRecord定義と活用
 
-**学習目標：** Recordの基本構文、自動生成メソッド、不変性の理解
-
-**問題説明：**
 基本的なRecordクラスを定義し、その特性を理解してください。
 
 **要求仕様：**
@@ -93,29 +51,8 @@ Record vs 従来クラス比較:
 Recordの行数: 1行（record Person(String name, int age) {}）
 ```
 
-**実装ヒント：**
-```java
-// 基本的なRecord定義
-public record Point(int x, int y) {}
-
-public record Person(String name, int age, String email) {
-    // コンパクトコンストラクタでバリデーション
-    public Person {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("名前は必須です");
-        }
-        if (age < 0) {
-            throw new IllegalArgumentException("年齢は0以上である必要があります");
-        }
-    }
-}
-```
-
 ### 課題2: Recordを使ったデータ転送オブジェクト（DTO）
 
-**学習目標：** RecordのDTOとしての活用、ネスト構造、データ変換
-
-**問題説明：**
 RecordをDTOとして活用し、データ転送の実装を行ってください。
 
 **要求仕様：**
@@ -153,47 +90,8 @@ Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
 エラー: [IDは1以上である必要があります, 名前は必須です, メールアドレスの形式が正しくありません]
 ```
 
-**実装ヒント：**
-```java
-public record UserDTO(long id, String name, String email, boolean active) {
-    public String toCSV() {
-        return String.format("%d,%s,%s,%b", id, name, email, active);
-    }
-    
-    public Map<String, Object> toMap() {
-        return Map.of(
-            "id", id,
-            "name", name,
-            "email", email,
-            "active", active
-        );
-    }
-    
-    public List<String> validate() {
-        List<String> errors = new ArrayList<>();
-        if (id <= 0) errors.add("IDは1以上である必要があります");
-        if (name == null || name.isBlank()) errors.add("名前は必須です");
-        if (!email.contains("@")) errors.add("メールアドレスの形式が正しくありません");
-        return errors;
-    }
-}
-
-public record OrderItem(String productName, int quantity, int price) {}
-
-public record OrderDTO(
-    String orderId,
-    UserDTO user,
-    List<OrderItem> items,
-    int totalAmount,
-    LocalDateTime orderDate
-) {}
-```
-
 ### 課題3: Record と設定管理
 
-**学習目標：** 複雑なRecord構造、不変性を保った部分更新、設定管理
-
-**問題説明：**
 Recordを使ったアプリケーション設定管理システムを実装してください。
 
 **要求仕様：**
@@ -255,56 +153,8 @@ debug=true
 ✗ パスワードが設定されていません（警告）
 ```
 
-**実装ヒント：**
-```java
-public record DatabaseConfig(
-    String url,
-    String username,
-    String password,
-    int maxConnections,
-    int timeout
-) {
-    public static DatabaseConfig defaults() {
-        return new DatabaseConfig(
-            "jdbc:h2:mem:testdb",
-            "sa",
-            "",
-            10,
-            30
-        );
-    }
-}
-
-public record AppConfig(
-    String appName,
-    String version,
-    DatabaseConfig database,
-    List<String> features,
-    boolean debug
-) {
-    // withメソッドパターンで部分更新
-    public AppConfig withDatabase(DatabaseConfig newDatabase) {
-        return new AppConfig(appName, version, newDatabase, features, debug);
-    }
-    
-    public AppConfig withMaxConnections(int maxConnections) {
-        DatabaseConfig newDb = new DatabaseConfig(
-            database.url(),
-            database.username(),
-            database.password(),
-            maxConnections,
-            database.timeout()
-        );
-        return withDatabase(newDb);
-    }
-}
-```
-
 ### 課題4: Record とパターンマッチング（Java 17+）
 
-**学習目標：** sealed interface、パターンマッチング、Recordデコンストラクション
-
-**問題説明：**
 Recordとパターンマッチングを組み合わせた処理を実装してください。
 
 **要求仕様：**
@@ -347,40 +197,9 @@ switch 文で全ケースを網羅
 コンパイル時に型安全性を保証
 ```
 
-**実装ヒント：**
-```java
-public sealed interface Shape
-    permits Circle, Rectangle, Triangle {
-    
-    default double area() {
-        return switch (this) {
-            case Circle(double radius) -> Math.PI * radius * radius;
-            case Rectangle(double width, double height) -> width * height;
-            case Triangle(double base, double height) -> 0.5 * base * height;
-        };
-    }
-}
-
-public record Circle(double radius) implements Shape {}
-public record Rectangle(double width, double height) implements Shape {}
-public record Triangle(double base, double height) implements Shape {}
-
-public class PatternMatching {
-    public static String describe(Shape shape) {
-        return switch (shape) {
-            case Circle(var radius) -> "円（半径: " + radius + "）";
-            case Rectangle(var width, var height) -> 
-                "長方形（幅: " + width + ", 高さ: " + height + "）";
-            case Triangle(var base, var height) -> 
-                "三角形（底辺: " + base + ", 高さ: " + height + "）";
-        };
-    }
-}
-```
-
 ---
 
-## 💡 実装のヒント
+## 実装のヒント
 
 ### Record の基本原則
 1. **簡漁性**: 定義は最小限に、機能は最大限に
@@ -402,7 +221,7 @@ public class PatternMatching {
 
 ---
 
-## 🔗 実装環境
+## 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -421,7 +240,7 @@ exercises/chapter12/
 
 ---
 
-## ✅ 完了確認チェックリスト
+## 完了確認チェックリスト
 
 ### 基礎レベル
 - [ ] 基本的なRecordの定義と特性が理解できている

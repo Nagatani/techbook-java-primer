@@ -1144,7 +1144,7 @@ public class GreetingApp extends JFrame {
 3. **時間計算プログラム** (`TimeCalculation.java`)
    - 時間の単位変換と計算を行うプログラム
 
-### 💪 チャレンジ課題【任意】
+### チャレンジ課題【任意】
 さらなるスキルアップを目指す方向けの高度な課題です。
 
 **課題の場所**: `exercises/chapter01/challenge/`
@@ -1155,7 +1155,7 @@ public class GreetingApp extends JFrame {
 3. コンパイル・実行して動作確認
 4. `solutions/` フォルダの解答例で学習ポイントを確認
 
-### 🎓 完了の目安
+### 完了の目安
 - [ ] 基本課題4つすべてが正常に動作する
 - [ ] Java開発環境でのコンパイル・実行ができる
 - [ ] 変数の宣言と基本的な演算ができる

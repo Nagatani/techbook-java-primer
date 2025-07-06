@@ -4,55 +4,15 @@
 
 本章で学んだ列挙型（Enum）の概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 🎯 演習の目標
-- Enum（列挙型）の基本概念と利点の理解
-- 定数としてのEnumの適切な使用
-- Enumのメソッドとフィールドの活用
-- 状態マシンパターンの実装
-- EnumとSwitch文の効果的な組み合わせ
-- EnumSetとEnumMapを活用した高性能なコレクション操作
-
-### 演習課題の難易度レベル
-
-#### 🟢 基礎レベル（Basic）
-- **目的**: Enumの基本概念と構文の理解
-- **所要時間**: 25-35分/課題
-- **前提**: 本章の内容を理解していること
-- **評価基準**: 
-  - Enumの正しい定義と使用
-  - 基本メソッドの理解と活用
-  - Switch文での適切な使用
-  - 型安全性の理解
-
-#### 🟡 応用レベル（Applied）  
-- **目的**: 実践的なEnum活用と状態管理
-- **所要時間**: 35-50分/課題
-- **前提**: 基礎レベルを完了していること
-- **評価基準**:
-  - 状態管理パターンの実装
-  - ビジネスロジックとEnumの統合
-  - 関数型インターフェイスとの組み合わせ
-  - 複雑な設定管理システム
-
-#### 🔴 発展レベル（Advanced）
-- **目的**: Enumの高度な活用とアーキテクチャ設計
-- **所要時間**: 50-70分/課題
-- **前提**: 応用レベルを完了していること
-- **評価基準**:
-  - 抽象メソッドとポリモーフィズム
-  - EnumSet、EnumMapの効果的な活用
-  - フレームワークレベルの設計
-  - パフォーマンスを考慮した実装
+### 演習の目標
+Enum（列挙型）を使った型安全なプログラミング技術を習得します。
 
 ---
 
-## 🟢 基礎レベル課題（必須）
+## 基礎レベル課題（必須）
 
 ### 課題1: 基本的なEnum定義と活用
 
-**学習目標：** Enumの基本構文、基本メソッド、Switch文での活用
-
-**問題説明：**
 基本的なEnumクラスを定義し、その特性を理解してください。
 
 **要求仕様：**
@@ -100,57 +60,8 @@ URGENT.compareTo(LOW): -3
 URGENT < LOW: true（数値が小さいほう が優先度高）
 ```
 
-**実装ヒント：**
-```java
-public enum DayOfWeek {
-    MONDAY("Monday", true),
-    TUESDAY("Tuesday", true),
-    WEDNESDAY("Wednesday", true),
-    THURSDAY("Thursday", true),
-    FRIDAY("Friday", true),
-    SATURDAY("Saturday", false),
-    SUNDAY("Sunday", false);
-    
-    private final String displayName;
-    private final boolean isWeekday;
-    
-    DayOfWeek(String displayName, boolean isWeekday) {
-        this.displayName = displayName;
-        this.isWeekday = isWeekday;
-    }
-    
-    public boolean isWeekday() { return isWeekday; }
-    public boolean isWeekend() { return !isWeekday; }
-    public String getDisplayName() { return displayName; }
-}
-
-public enum Priority {
-    URGENT(1), HIGH(2), MEDIUM(3), LOW(4);
-    
-    private final int level;
-    
-    Priority(int level) {
-        this.level = level;
-    }
-    
-    public int getLevel() { return level; }
-    
-    public String getDescription() {
-        return switch (this) {
-            case URGENT -> "即座に対応が必要です";
-            case HIGH -> "今日中に対応してください";
-            case MEDIUM -> "今週中に対応してください";
-            case LOW -> "時間があるときに対応してください";
-        };
-    }
-}
-```
-
 ### 課題2: 注文状態管理システム
 
-**学習目標：** 状態パターン、ビジネスロジックのEnum内実装、状態遷移検証
-
-**問題説明：**
 注文の状態をEnumで管理し、状態遷移を実装してください。
 
 **要求仕様：**
@@ -197,51 +108,8 @@ DELIVERED → PENDING: ✗ 無効な遷移です
 追跡可能状態: SHIPPED, DELIVERED
 ```
 
-**実装ヒント：**
-```java
-public enum OrderStatus {
-    PENDING("注文受付中", Set.of(CONFIRMED, CANCELLED)),
-    CONFIRMED("注文確認済み", Set.of(PREPARING, CANCELLED)),
-    PREPARING("準備中", Set.of(SHIPPED, CANCELLED)),
-    SHIPPED("発送済み", Set.of(DELIVERED)),
-    DELIVERED("配達完了", Set.of(RETURNED)),
-    CANCELLED("キャンセル済み", Set.of()),
-    RETURNED("返品済み", Set.of());
-    
-    private final String description;
-    private final Set<OrderStatus> allowedTransitions;
-    
-    OrderStatus(String description, Set<OrderStatus> allowedTransitions) {
-        this.description = description;
-        this.allowedTransitions = allowedTransitions;
-    }
-    
-    public boolean canTransitionTo(OrderStatus next) {
-        return allowedTransitions.contains(next);
-    }
-    
-    public boolean isCancellable() {
-        return this == PENDING || this == CONFIRMED || this == PREPARING;
-    }
-    
-    public List<String> getAvailableActions() {
-        return switch (this) {
-            case PENDING -> List.of("確認", "キャンセル");
-            case CONFIRMED -> List.of("準備開始", "キャンセル");
-            case PREPARING -> List.of("発送", "キャンセル");
-            case SHIPPED -> List.of("配達完了");
-            case DELIVERED -> List.of("返品受付");
-            default -> List.of();
-        };
-    }
-}
-```
-
 ### 課題3: 計算機の演算子Enum
 
-**学習目標：** 関数型インターフェイスとの統合、複雑なビジネスロジック実装
-
-**問題説明：**
 計算機の演算子をEnumで実装し、関数型インターフェイスと組み合わせてください。
 
 **要求仕様：**
@@ -289,43 +157,8 @@ SUBTRACT: 1
 √-1 = エラー: 負の数の平方根は計算できません
 ```
 
-**実装ヒント：**
-```java
-public enum Operation {
-    ADD("+", 1, (x, y) -> x + y),
-    SUBTRACT("-", 1, (x, y) -> x - y),
-    MULTIPLY("*", 2, (x, y) -> x * y),
-    DIVIDE("/", 2, (x, y) -> {
-        if (y == 0) {
-            throw new ArithmeticException("ゼロ除算は実行できません");
-        }
-        return x / y;
-    });
-    
-    private final String symbol;
-    private final int precedence;
-    private final BinaryOperator<Double> operation;
-    
-    Operation(String symbol, int precedence, BinaryOperator<Double> operation) {
-        this.symbol = symbol;
-        this.precedence = precedence;
-        this.operation = operation;
-    }
-    
-    public double apply(double x, double y) {
-        return operation.apply(x, y);
-    }
-    
-    public String getSymbol() { return symbol; }
-    public int getPrecedence() { return precedence; }
-}
-```
-
 ### 課題4: ゲーム設定のEnum活用
 
-**学習目標：** 複数Enumの組み合わせ設計、動的設定システム
-
-**問題説明：**
 ゲーム設定を管理するEnumシステムを実装してください。
 
 **要求仕様：**
@@ -376,7 +209,7 @@ HEALTH_REGEN: HP回復（効果時間: 60秒）
 
 ---
 
-## 💡 実装のヒント
+## 実装のヒント
 
 ### Enum の基本原則
 1. **型安全性**: コンパイル時の値チェック
@@ -398,7 +231,7 @@ HEALTH_REGEN: HP回復（効果時間: 60秒）
 
 ---
 
-## 🔗 実装環境
+## 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -417,7 +250,7 @@ exercises/chapter13/
 
 ---
 
-## ✅ 完了確認チェックリスト
+## 完了確認チェックリスト
 
 ### 基礎レベル
 - [ ] 基本的なEnumの定義と使用ができている

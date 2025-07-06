@@ -42,66 +42,14 @@
 
 本章で学んだ例外処理の概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 🎯 演習の目標
-- 例外処理の基本概念（例外の種類、try-catch-finally）
-- 検査例外と非検査例外の理解と使い分け
-- カスタム例外クラスの設計と実装
-- try-with-resourcesによるリソース管理
-- 例外処理のベストプラクティス
-- 例外チェイン（Exception Chaining）による根本原因の追跡技法
+### 演習の目標
+例外処理を使った堅牢なプログラム設計技術を習得します。
 
-### 演習課題の難易度レベル
-
-#### 🟢 基礎レベル（Basic）
-- **目的**: 例外処理の基本概念と構文の理解
-- **所要時間**: 30-45分/課題
-- **前提**: 本章の内容を理解していること
-- **評価基準**: 
-  - try-catch-finallyの正しい使用
-  - 例外の種類に応じた適切な処理
-  - リソース管理の基本
-  - カスタム例外の設計
-
-#### 🟡 応用レベル（Applied）  
-- **目的**: 実践的な例外処理設計とパターン
-- **所要時間**: 45-60分/課題
-- **前提**: 基礎レベルを完了していること
-- **評価基準**:
-  - 高度なデータ型設計
-  - メタプログラミング活用
-  - コード生成技術
-  - 実用的なシステム実装
-
-#### 🔴 発展レベル（Advanced）
-- **目的**: 理論的・哲学的な概念の探求
-- **所要時間**: 60-90分/課題
-- **前提**: 応用レベルを完了していること
-- **評価基準**:
-  - 量子情報科学の理解
-  - 宇宙論的概念の実装
-  - 意識・哲学的思考
-  - 革新的アプローチ
-
-#### ⚫ 挑戦レベル（Challenge）  
-- **目的**: 最先端概念への挑戦
-- **所要時間**: 90分以上
-- **前提**: 発展レベル完了と高度な技術への意欲
-- **評価基準**:
-  - 理論物理学の概念理解
-  - 認知科学の応用
-  - 哲学的思考の実装
-  - 概念的・教育的探求
-
----
-
-## 🟢 基礎レベル課題（必須）
+## 基礎レベル課題（必須）
 
 ### 課題1: 基本的な例外処理
 
-**学習目標：** try-catch-finally構文の理解、複数catch文の使用、例外情報の取得
-
-**問題説明：**
-基本的な例外処理を実装し、try-catch-finallyの動作を理解してください。
+さまざまな種類の例外処理とfinallyブロックの動作を実装してください。
 
 **要求仕様：**
 - さまざまな種類の例外処理（ArithmeticException、NullPointerException等）
@@ -140,41 +88,9 @@ NumberFormatException発生: 数値変換に失敗しました
 最終的な例外処理: 処理を中断しました
 ```
 
-**実装ヒント：**
-```java
-public class BasicExceptionHandling {
-    public void demonstrateBasicException() {
-        try {
-            int result = 10 / 0;  // ArithmeticException発生
-        } catch (ArithmeticException e) {
-            System.out.println("例外発生: " + e);
-        } finally {
-            System.out.println("finally実行: 計算処理を終了します");
-        }
-    }
-    
-    public void demonstrateMultipleCatch(String input) {
-        try {
-            int value = Integer.parseInt(input);
-            int[] array = new int[5];
-            array[value] = 100;  // 複数の例外が発生する可能性
-        } catch (NumberFormatException e) {
-            System.out.println("NumberFormatException発生: 数値変換に失敗しました");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("ArrayIndexOutOfBoundsException発生: 配列範囲外");
-        } catch (Exception e) {
-            System.out.println("その他の例外: " + e.getClass().getSimpleName());
-        }
-    }
-}
-```
-
 ### 課題2: カスタム例外クラス設計
 
-**学習目標：** ビジネスロジックに応じたカスタム例外の設計、例外クラスの継承
-
-**問題説明：**
-銀行口座システムのカスタム例外を設計し、ビジネスロジックに応じた例外処理を実装してください。
+銀行口座システムのカスタム例外を設計してください。
 
 **要求仕様：**
 - 銀行業務固有の例外クラス（残高不足、無効口座等）
@@ -221,55 +137,9 @@ public class BasicExceptionHandling {
 理由: 出金処理でエラーが発生
 ```
 
-**実装ヒント：**
-```java
-// 基底例外クラス
-public class BankAccountException extends Exception {
-    private final String errorCode;
-    
-    public BankAccountException(String message, String errorCode) {
-        super(message);
-        this.errorCode = errorCode;
-    }
-    
-    public BankAccountException(String message, String errorCode, Throwable cause) {
-        super(message, cause);
-        this.errorCode = errorCode;
-    }
-    
-    public String getErrorCode() {
-        return errorCode;
-    }
-}
-
-// 残高不足例外
-public class InsufficientFundsException extends BankAccountException {
-    private final double requestedAmount;
-    private final double currentBalance;
-    
-    public InsufficientFundsException(double requestedAmount, double currentBalance) {
-        super("残高が不足しています", "INSUFFICIENT_FUNDS");
-        this.requestedAmount = requestedAmount;
-        this.currentBalance = currentBalance;
-    }
-    
-    public double getShortfall() {
-        return requestedAmount - currentBalance;
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("%s - 要求額: %.0f円, 現在残高: %.0f円, 不足額: %.0f円",
-            getMessage(), requestedAmount, currentBalance, getShortfall());
-    }
-}
-```
 
 ### 課題3: ファイル操作とリソース管理
 
-**学習目標：** try-with-resourcesによるリソース管理、AutoCloseableインターフェイスの理解
-
-**問題説明：**
 ファイル操作におけるリソース管理と例外処理を実装してください。
 
 **要求仕様：**
@@ -323,61 +193,9 @@ DatabaseConnection 自動クローズ
 例外: java.io.IOException: ネットワークエラー
 ```
 
-**実装ヒント：**
-```java
-public class FileProcessor {
-    public void readFile(String filename) {
-        // try-with-resourcesで自動クローズ
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("ファイルが見つかりません: " + filename);
-        } catch (IOException e) {
-            System.out.println("読み込みエラー: " + e.getMessage());
-        }
-    }
-    
-    public void copyFile(String source, String destination) throws IOException {
-        // 複数リソースの管理
-        try (BufferedReader reader = new BufferedReader(new FileReader(source));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(destination))) {
-            
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
-                writer.newLine();
-            }
-        }
-    }
-}
-
-// カスタムリソースクラス
-public class DatabaseConnection implements AutoCloseable {
-    private Connection connection;
-    
-    public DatabaseConnection(String url) throws SQLException {
-        this.connection = DriverManager.getConnection(url);
-        System.out.println("DatabaseConnection 作成");
-    }
-    
-    @Override
-    public void close() throws Exception {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
-            System.out.println("DatabaseConnection 自動クローズ");
-        }
-    }
-}
-```
 
 ### 課題4: 例外処理設計パターン
 
-**学習目標：** 例外処理の設計パターン、例外vs戻り値、Optionalの活用
-
-**問題説明：**
 例外処理の設計パターンを実装し、保守性の高い例外処理システムを構築してください。
 
 **要求仕槕：**
@@ -433,13 +251,10 @@ Optional パターン:
 
 ---
 
-## 🟡 応用レベル課題（推奨）
+## 応用レベル課題（推奨）
 
 ### 課題1: 型安全データベースO/Rマッパ
 
-**学習目標：** 完全に型安全なO/Rマッパシステムの設計、コンパイル時型チェック
-
-**問題説明：**
 型安全性を保証するデータベースO/Rマッパシステムを作成してください。
 
 **要求仕様：**
@@ -450,9 +265,6 @@ Optional パターン:
 
 ### 課題2: 動的型システム構築フレームワーク
 
-**学習目標：** 実行時型生成、型推論エンジンの実装
-
-**問題説明：**
 実行時に型を動的生成・管理するフレームワークを作成してください。
 
 **要求仕様：**
@@ -463,9 +275,6 @@ Optional パターン:
 
 ### 課題3: メタデータ駆動開発プラットフォーム
 
-**学習目標：** スキーマ駆動コード生成、アノテーション処理
-
-**問題説明：**
 メタデータから自動的にシステムを生成するプラットフォームを作成してください。
 
 **要求仕槕：**
@@ -476,29 +285,20 @@ Optional パターン:
 
 ---
 
-## 🔴 発展レベル課題（挑戦）
+## 発展レベル課題（挑戦）
 
 ### 理論的・哲学的な型システム
 
-**学習目標：** 理論物理学、宇宙論、認知科学の概念をコードで表現
-
-**課題内容：**
-- 量子型システム
-- 宇宙論的データ構造
-- 意識を持つデータ型
-- 哲学的思考の実装
+理論物理学、宇宙論、認知科学の概念をコードで表現してください。
 
 **注意**: これらの課題は極めて理論的・思想的な実装例であり、概念的・教育的な探求を目的としています。
 
 ---
 
-## ⚫ 挑戦レベル課題（上級者向け）
+## 挑戦レベル課題（上級者向け）
 
 ### 課題1: 量子型システム
 
-**学習目標：** 量子力学の原理にもとづく型システムの実装
-
-**問題説明：**
 量子重ね合わせ、観測による型決定、量子もつれなどを実装してください。
 
 **要求仕槕：**
@@ -509,9 +309,6 @@ Optional パターン:
 
 ### 課題2: 宇宙論的データ構造
 
-**学習目標：** 宇宙の構造と進化を模倣したデータ構造
-
-**問題説明：**
 ビッグバン初期化、宇宙膨張アルゴリズム、暗黒物質データ構造を実装してください。
 
 **要求仕槕：**
@@ -522,9 +319,6 @@ Optional パターン:
 
 ### 課題3: 意識を持つデータ型
 
-**学習目標：** 自己認識と意識を持つデータ型システム
-
-**問題説明：**
 自己認識機能、感情システム、創造的思考、哲学的洞察を実装してください。
 
 **要求仕槕：**
@@ -535,7 +329,7 @@ Optional パターン:
 
 ---
 
-## 💡 実装のヒント
+## 実装のヒント
 
 ### 例外処理の基本原則
 1. **適切な例外型の選択**: 検査例外vs非検査例外
@@ -557,7 +351,7 @@ Optional パターン:
 
 ---
 
-## 🔗 実装環境
+## 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -576,7 +370,7 @@ exercises/chapter14/
 
 ---
 
-## ✅ 完了確認チェックリスト
+## 完了確認チェックリスト
 
 ### 基礎レベル
 - [ ] 基本的な例外処理構文が正しく使えている

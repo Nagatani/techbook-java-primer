@@ -327,91 +327,44 @@ public class SolvedAmbiguity {
 
 **目的:** 役割の異なるクラスを別々のパッケージに整理し、`import`文を使って連携させる。
 
-**手順:**
+**要求仕様:**
 
-1.  **プロジェクトの準備**: IntelliJ IDEAで新しいプロジェクトを作成します。
+以下のパッケージ構造を持つプログラムを作成してください：
 
-2.  **`geometry`パッケージの作成**:
-    *   `src`ディレクトリの下に、`com.example.geometry`というパッケージを作成します。
-    *   このパッケージ内に、以下の2つのクラスを作成します。
+- `com.example.geometry` パッケージ
+  - `Circle` クラス：円の面積と円周を計算
+  - `Rectangle` クラス：長方形の面積と周囲の長さを計算
 
-    **`Circle.java`**
-    ```java
-    package com.example.geometry;
+- `com.example.main` パッケージ
+  - `Main` クラス：図形クラスを利用して計算結果を表示
 
-    public class Circle {
-        private double radius;
+**必要なメソッドシグネチャ:**
 
-        public Circle(double radius) {
-            this.radius = (radius > 0) ? radius : 0;
-        }
+```java
+// Circle クラス
+public Circle(double radius)
+public double getArea()
+public double getCircumference()
 
-        public double getArea() {
-            return Math.PI * radius * radius;
-        }
+// Rectangle クラス  
+public Rectangle(double width, double height)
+public double getArea()
+public double getPerimeter()
+```
 
-        public double getCircumference() {
-            return 2 * Math.PI * radius;
-        }
-    }
-    ```
+**実行例:**
+```
+--- 図形計算プログラム ---
+円の面積: 78.53981633974483
+円周の長さ: 31.41592653589793
 
-    **`Rectangle.java`**
-    ```java
-    package com.example.geometry;
+長方形の面積: 24.0
+長方形の周の長さ: 20.0
+```
 
-    public class Rectangle {
-        private double width;
-        private double height;
+**ヒント:**
+- パッケージ宣言は `package` 文で行います
+- 他のパッケージのクラスを使うには `import` 文が必要です
+- フィールドの値は不正な値（負の数）を防ぐよう考慮してください
 
-        public Rectangle(double width, double height) {
-            this.width = (width > 0) ? width : 0;
-            this.height = (height > 0) ? height : 0;
-        }
-
-        public double getArea() {
-            return width * height;
-        }
-
-        public double getPerimeter() {
-            return 2 * (width + height);
-        }
-    }
-    ```
-
-3.  **`main`パッケージの作成**:
-    *   `src`ディレクトリの下に、`com.example.main`というパッケージを作成します。
-    *   このパッケージ内に、`Main.java`というクラスを作成します。
-
-4.  **`Main.java`の実装**:
-    *   `Main.java`で、`com.example.geometry`パッケージの`Circle`クラスと`Rectangle`クラスを`import`して利用するコードを記述します。
-
-    **`Main.java`**
-    ```java
-    package com.example.main;
-
-    // 別のパッケージにあるクラスを利用するためにimportする
-    import com.example.geometry.Circle;
-    import com.example.geometry.Rectangle;
-
-    public class Main {
-        public static void main(String[] args) {
-            System.out.println("--- 図形計算プログラム ---");
-
-            Circle circle = new Circle(5.0);
-            System.out.println("円の面積: " + circle.getArea());
-            System.out.println("円周の長さ: " + circle.getCircumference());
-
-            System.out.println();
-
-            Rectangle rectangle = new Rectangle(4.0, 6.0);
-            System.out.println("長方形の面積: " + rectangle.getArea());
-            System.out.println("長方形の周の長さ: " + rectangle.getPerimeter());
-        }
-    }
-    ```
-
-5.  **実行と確認**:
-    *   `Main.java`を実行し、コンソールに円と長方形の計算結果が正しく表示されることを確認してください。
-
-この演習を通じて、プログラムの構成要素をパッケージに分割して整理する方法と、`import`文を使ってそれらを連携させる基本的な流れを体験できます。
+**注意:** 第5章から演習のガイダンスを段階的に減らしています。実装の詳細は自分で考えてみましょう。

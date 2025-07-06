@@ -4,50 +4,10 @@
 
 本章で学んだコレクションフレームワークの概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 🎯 演習の目標
-- コレクションフレームワークの基本概念と階層構造の理解
-- List、Set、Mapの特性と使い分け
-- ArrayList、LinkedList、HashSet、TreeSet、HashMap、TreeMapの実装の違い
-- 効率的なデータ構造選択の判断基準
-- Iteratorを使った安全な要素操作
-- カスタムComparatorとComparableの実装による高度なソート機能
+### 演習の目標
+本章で学んだList、Set、Mapの特性を活かした実装を行います。
 
-### 演習課題の難易度レベル
-
-#### 🟢 基礎レベル（Basic）
-- **目的**: コレクションの基本操作と特性の理解
-- **所要時間**: 30-45分/課題
-- **前提**: 本章の内容を理解していること
-- **評価基準**: 
-  - 適切なコレクション型の選択
-  - 基本的な操作（追加、削除、検索）の実装
-  - 性能特性の理解
-  - Iteratorの適切な使用
-
-#### 🟡 応用レベル（Applied）
-- **目的**: 実践的なデータ構造活用と最適化
-- **所要時間**: 45-60分/課題
-- **前提**: 基礎レベルを完了していること
-- **評価基準**:
-  - 複雑な要件に対する適切な設計
-  - パフォーマンスを考慮した実装
-  - 大規模データへの対応
-  - アルゴリズムの最適化
-
-#### 🔴 発展レベル（Advanced）
-- **目的**: 高度なアルゴリズムと商用レベルの実装
-- **所要時間**: 60-90分/課題
-- **前提**: 応用レベルを完了していること
-- **評価基準**:
-  - カスタムデータ構造の設計
-  - 高度なアルゴリズムの実装
-  - 実用的なアプリケーション開発
-  - パフォーマンスの極限追求
-
-#### ⚫ 挑戦レベル（Challenge）
-- **目的**: 最先端技術への挑戦と革新的実装
-- **所要時間**: 90分以上
-- **前提**: 発展レベル完了と高度な技術への意欲
+**注意：** 第8章以降は、問題文と期待される動作のみを提示します。実装方法は自分で考えてください。
 - **評価基準**:
   - 分散システムの設計・実装
   - マイクロ秒レベルの最適化
@@ -56,7 +16,7 @@
 
 ---
 
-## 🟢 基礎レベル課題（必須）
+## 基礎レベル課題（必須）
 
 ### 課題1: 学生管理システム（List活用）
 
@@ -98,33 +58,6 @@ ArrayList アクセス時間: 2ms
 LinkedList アクセス時間: 45ms
 ```
 
-**実装ヒント：**
-```java
-public class StudentManager {
-    private List<Student> students;
-    
-    public StudentManager() {
-        this.students = new ArrayList<>();  // またはLinkedList
-    }
-    
-    public void addStudent(Student student) {
-        students.add(student);
-    }
-    
-    public void sortByScore() {
-        // Comparator.comparingInt()を使用
-        students.sort(Comparator.comparingInt(Student::getScore).reversed());
-    }
-    
-    public void performanceTest() {
-        // System.currentTimeMillis()で時間測定
-        long startTime = System.currentTimeMillis();
-        // 処理...
-        long endTime = System.currentTimeMillis();
-        System.out.println("処理時間: " + (endTime - startTime) + "ms");
-    }
-}
-```
 
 ### 課題2: 単語カウンタ（Map活用）
 
@@ -174,19 +107,6 @@ with: 1回
 平均出現回数: 1.29回
 ```
 
-**実装ヒント：**
-```java
-public class WordCounter {
-    private Map<String, Integer> wordCount;
-    
-    public void countWords(String text) {
-        wordCount = new HashMap<>();
-        String[] words = text.toLowerCase().split("\\W+");
-        
-        for (String word : words) {
-            if (!word.isEmpty()) {
-                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
-            }
         }
     }
     
@@ -296,7 +216,7 @@ Python基礎（2,500円）
 
 ---
 
-## 🟡 応用レベル課題（推奨）
+## 応用レベル課題（推奨）
 
 ### 課題1: 動的配列ベースのデータベース
 
@@ -326,7 +246,7 @@ ArrayListを使用して、簡易的なインメモリデータベースを実�
 
 ---
 
-## 🔴 発展レベル課題（挑戦）
+## 発展レベル課題（挑戦）
 
 ### 高度なコレクション活用
 
@@ -340,7 +260,7 @@ ArrayListを使用して、簡易的なインメモリデータベースを実�
 
 ---
 
-## ⚫ 挑戦レベル課題（上級者向け）
+## 挑戦レベル課題（上級者向け）
 
 ### 課題1: 分散インメモリ検索エンジン
 
@@ -383,7 +303,7 @@ Elasticsearch風の分散検索エンジンをコレクションフレームワ�
 
 ---
 
-## 💡 実装のヒント
+## 実装のヒント
 
 ### コレクション選択の指針
 1. **List**: 順序が重要、インデックスアクセスが必要な場合
@@ -402,7 +322,7 @@ Elasticsearch風の分散検索エンジンをコレクションフレームワ�
 
 ---
 
-## 🔗 実装環境
+## 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -421,7 +341,7 @@ exercises/chapter08/
 
 ---
 
-## ✅ 完了確認チェックリスト
+## 完了確認チェックリスト
 
 ### 基礎レベル
 - [ ] 学生管理システムでListの特性を理解できている
