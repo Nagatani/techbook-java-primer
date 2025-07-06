@@ -39,11 +39,5 @@ module.exports = {
   output: './output/techbook-java-primer.pdf',
   workspaceDir: '.vivliostyle',
   toc: true,
-  style: [
-    '@vivliostyle/theme-techbook',
-    './styles/book-theme.css',
-    './styles/code-blocks.css',
-    './styles/special-sections.css',
-    './styles/cover.css'
-  ],
+  style: 'standalone-theme.css',
 };
