@@ -79,6 +79,148 @@ public class SimpleApp {
 }
 ```
 
+### 複数のクラスファイルを含むアプリケーションの例
+
+実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です：
+
+```java
+// AppConfig.java
+public class AppConfig {
+    private static final String VERSION = "1.0.0";
+    private static final String APP_NAME = "Todo Manager";
+    
+    public static String getVersion() {
+        return VERSION;
+    }
+    
+    public static String getAppName() {
+        return APP_NAME;
+    }
+}
+```
+
+```java
+// TodoItem.java
+public class TodoItem {
+    private String title;
+    private boolean completed;
+    
+    public TodoItem(String title) {
+        this.title = title;
+        this.completed = false;
+    }
+    
+    public String getTitle() {
+        return title;
+    }
+    
+    public boolean isCompleted() {
+        return completed;
+    }
+    
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    
+    @Override
+    public String toString() {
+        return (completed ? "[✓] " : "[ ] ") + title;
+    }
+}
+```
+
+```java
+// TodoApp.java
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TodoApp {
+    private List<TodoItem> items = new ArrayList<>();
+    private DefaultListModel<TodoItem> listModel = new DefaultListModel<>();
+    
+    public TodoApp() {
+        createAndShowGUI();
+    }
+    
+    private void createAndShowGUI() {
+        JFrame frame = new JFrame(AppConfig.getAppName() + " v" + AppConfig.getVersion());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        
+        // リストコンポーネント
+        JList<TodoItem> todoList = new JList<>(listModel);
+        todoList.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(todoList);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        
+        // 入力パネル
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        JTextField inputField = new JTextField();
+        JButton addButton = new JButton("追加");
+        
+        addButton.addActionListener(e -> {
+            String text = inputField.getText().trim();
+            if (!text.isEmpty()) {
+                TodoItem item = new TodoItem(text);
+                items.add(item);
+                listModel.addElement(item);
+                inputField.setText("");
+            }
+        });
+        
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(addButton, BorderLayout.EAST);
+        frame.add(inputPanel, BorderLayout.SOUTH);
+        
+        // ボタンパネル
+        JPanel buttonPanel = new JPanel();
+        JButton completeButton = new JButton("完了/未完了");
+        JButton deleteButton = new JButton("削除");
+        
+        completeButton.addActionListener(e -> {
+            int index = todoList.getSelectedIndex();
+            if (index >= 0) {
+                TodoItem item = items.get(index);
+                item.setCompleted(!item.isCompleted());
+                listModel.setElementAt(item, index);
+            }
+        });
+        
+        deleteButton.addActionListener(e -> {
+            int index = todoList.getSelectedIndex();
+            if (index >= 0) {
+                items.remove(index);
+                listModel.remove(index);
+            }
+        });
+        
+        buttonPanel.add(completeButton);
+        buttonPanel.add(deleteButton);
+        frame.add(buttonPanel, BorderLayout.NORTH);
+        
+        frame.setSize(400, 300);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TodoApp::new);
+    }
+}
+```
+
+複数のクラスファイルを含むJARを作成するには：
+
+```bash
+# すべてのJavaファイルをコンパイル
+javac *.java
+
+# 複数のクラスファイルを含むJARを作成
+jar cvfm TodoApp.jar manifest.txt *.class
+```
+
 ### ステップ2: コンパイル
 
 まず、ソースコードをコンパイルしてクラスファイル (`.class`) を作成します。
@@ -97,6 +239,107 @@ Main-Class: SimpleApp
 
 ```
 **【重要】**: `Main-Class:`の後には半角スペースが1つ必要です。また、**ファイルの末尾には必ず改行を入れてください。** 改行がないと正しく認識されない場合があります。
+
+### マニフェストファイルの詳細なオプション
+
+マニフェストファイルには、`Main-Class`以外にも様々な情報を記述できます：
+
+```text
+Manifest-Version: 1.0
+Main-Class: TodoApp
+Class-Path: lib/commons-lang3-3.12.0.jar lib/gson-2.10.1.jar
+Created-By: 21.0.6 (Oracle Corporation)
+Implementation-Title: Todo Manager Application
+Implementation-Version: 1.0.0
+Implementation-Vendor: MyCompany Inc.
+Specification-Title: Todo Management API
+Specification-Version: 1.0
+Specification-Vendor: MyCompany Inc.
+Sealed: true
+
+```
+
+各属性の説明：
+- **Class-Path**: 外部ライブラリへのパスを指定（相対パス）
+- **Created-By**: JARを作成したJDKのバージョン
+- **Implementation-***: 実装に関する情報（バージョン、ベンダーなど）
+- **Specification-***: 仕様に関する情報
+- **Sealed**: trueにすると、このJAR内のパッケージは他のJARから拡張できない
+
+### リソースファイルを含むJARの作成
+
+アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります：
+
+```java
+// ResourceApp.java
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class ResourceApp {
+    private Properties config = new Properties();
+    
+    public ResourceApp() {
+        loadConfiguration();
+        createGUI();
+    }
+    
+    private void loadConfiguration() {
+        try (InputStream is = getClass().getResourceAsStream("/config.properties")) {
+            if (is != null) {
+                config.load(is);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void createGUI() {
+        JFrame frame = new JFrame(config.getProperty("app.title", "Default App"));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // アイコンの読み込み
+        ImageIcon icon = new ImageIcon(getClass().getResource("/icon.png"));
+        JLabel label = new JLabel("リソースを含むアプリケーション", icon, JLabel.CENTER);
+        label.setFont(new Font("Sans-serif", Font.BOLD, 16));
+        
+        frame.add(label);
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(ResourceApp::new);
+    }
+}
+```
+
+```properties
+# config.properties
+app.title=Resource Demo Application
+app.version=1.0.0
+app.author=Developer
+```
+
+リソースを含むJARの作成方法：
+
+```bash
+# ディレクトリ構造
+# project/
+# ├── ResourceApp.java
+# ├── config.properties
+# ├── icon.png
+# └── manifest.txt
+
+# コンパイル
+javac ResourceApp.java
+
+# JARファイルの作成（リソースファイルも含める）
+jar cvfm ResourceApp.jar manifest.txt ResourceApp.class config.properties icon.png
+```
 
 ### ステップ4: `jar`コマンドによるパッケージング
 
@@ -129,6 +372,267 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 2.  `Artifacts` -> `+` -> `JAR` -> `From modules with dependencies...` を選択します。
 3.  `Main Class`として実行したいクラス（例： `SimpleApp`）を選択し、OKを押します。
 4.  メニューの `Build` -> `Build Artifacts...` -> `(作成したArtifact名)` -> `Build` を選択すると、`out/artifacts`ディレクトリ以下にJARファイルが生成されます。
+
+### 外部ライブラリを含むFat JARの作成
+
+外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成することができます：
+
+```java
+// JsonProcessorApp.java
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Date;
+
+public class JsonProcessorApp {
+    
+    static class Person {
+        private String name;
+        private int age;
+        private Date created;
+        
+        public Person(String name, int age) {
+            this.name = name;
+            this.age = age;
+            this.created = new Date();
+        }
+        
+        // Getters and Setters
+        public String getName() { return name; }
+        public int getAge() { return age; }
+        public Date getCreated() { return created; }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("JSON Processor");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLayout(new BorderLayout());
+            
+            // 入力パネル
+            JPanel inputPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+            inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            inputPanel.add(new JLabel("Name:"));
+            JTextField nameField = new JTextField();
+            inputPanel.add(nameField);
+            
+            inputPanel.add(new JLabel("Age:"));
+            JTextField ageField = new JTextField();
+            inputPanel.add(ageField);
+            
+            JButton convertButton = new JButton("Convert to JSON");
+            inputPanel.add(convertButton);
+            inputPanel.add(new JLabel()); // 空のセル
+            
+            // 出力エリア
+            JTextArea outputArea = new JTextArea(10, 40);
+            outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+            outputArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(outputArea);
+            
+            // ボタンのアクション
+            Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+                
+            convertButton.addActionListener(e -> {
+                try {
+                    String name = nameField.getText();
+                    int age = Integer.parseInt(ageField.getText());
+                    
+                    Person person = new Person(name, age);
+                    String json = gson.toJson(person);
+                    
+                    outputArea.setText(json);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, 
+                        "年齢は数値で入力してください", 
+                        "入力エラー", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            
+            frame.add(inputPanel, BorderLayout.NORTH);
+            frame.add(scrollPane, BorderLayout.CENTER);
+            
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
+}
+```
+
+Fat JARを手動で作成する方法：
+
+```bash
+# 1. 作業ディレクトリの準備
+mkdir temp
+cd temp
+
+# 2. 外部ライブラリ（gson-2.10.1.jar）を展開
+jar xf ../lib/gson-2.10.1.jar
+
+# 3. アプリケーションのクラスファイルをコピー
+cp ../JsonProcessorApp*.class .
+
+# 4. マニフェストファイルの作成
+echo "Main-Class: JsonProcessorApp" > manifest.txt
+echo "" >> manifest.txt
+
+# 5. すべてを含むFat JARの作成
+jar cvfm ../JsonProcessorApp-all.jar manifest.txt .
+
+# 6. 一時ディレクトリの削除
+cd ..
+rm -rf temp
+```
+
+### Maven/Gradleでのビルド設定例
+
+#### Mavenでの実行可能JAR作成（pom.xml）
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.example</groupId>
+    <artifactId>todo-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- 実行可能JARを作成するプラグイン -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.example.TodoApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Fat JARを作成するプラグイン -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.example.TodoApp</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Mavenでのビルドコマンド：
+
+```bash
+# クリーンビルド
+mvn clean package
+
+# 実行可能JARの実行
+java -jar target/todo-app-1.0.0.jar
+```
+
+#### Gradleでの実行可能JAR作成（build.gradle）
+
+```gradle
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+}
+
+application {
+    mainClass = 'com.example.TodoApp'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.TodoApp',
+            'Implementation-Title': 'Todo Application',
+            'Implementation-Version': version
+        )
+    }
+}
+
+// Fat JARタスク
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.example.TodoApp'
+    }
+    archiveClassifier = 'all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+```
+
+Gradleでのビルドコマンド：
+
+```bash
+# 通常のビルド
+gradle build
+
+# Fat JARの作成
+gradle fatJar
+
+# 実行
+java -jar build/libs/todo-app-1.0.0-all.jar
+```
 
 ## 22.3 （応用）`jpackage`によるネイティブアプリケーション化
 
@@ -168,6 +672,145 @@ jpackage --type app-image \
 - `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定します。
 - `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定します。
 - `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定します。
+
+### jpackageの詳細なオプション
+
+より本格的なアプリケーション配布のための高度なオプション例：
+
+#### Windows向けの設定（.msiインストーラ）
+
+```bash
+jpackage --type msi \
+         --name "TodoManager" \
+         --app-version "1.0.0" \
+         --vendor "MyCompany Inc." \
+         --description "Simple Todo Management Application" \
+         --copyright "Copyright (c) 2024 MyCompany Inc." \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --icon ./resources/app-icon.ico \
+         --win-menu \
+         --win-shortcut \
+         --win-dir-chooser \
+         --win-per-user-install \
+         --dest ./output
+```
+
+追加オプションの説明：
+- `--app-version`: アプリケーションのバージョン
+- `--vendor`: ベンダー名（開発元）
+- `--icon`: アプリケーションアイコン（.ico形式）
+- `--win-menu`: スタートメニューにショートカットを作成
+- `--win-shortcut`: デスクトップにショートカットを作成
+- `--win-dir-chooser`: インストール時にディレクトリ選択を可能にする
+- `--win-per-user-install`: ユーザーごとのインストール（管理者権限不要）
+
+#### macOS向けの設定（.dmgインストーラ）
+
+```bash
+jpackage --type dmg \
+         --name "TodoManager" \
+         --app-version "1.0.0" \
+         --vendor "MyCompany Inc." \
+         --description "Simple Todo Management Application" \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --icon ./resources/app-icon.icns \
+         --mac-package-name "com.mycompany.todomanager" \
+         --mac-package-identifier "com.mycompany.todomanager" \
+         --mac-sign \
+         --mac-signing-key-user-name "Developer ID Application: MyCompany Inc." \
+         --dest ./output
+```
+
+macOS固有オプション：
+- `--icon`: macOS用アイコン（.icns形式）
+- `--mac-package-identifier`: バンドル識別子
+- `--mac-sign`: アプリケーションに署名（Gatekeeperに必要）
+- `--mac-signing-key-user-name`: 署名に使用する開発者証明書
+
+#### Linux向けの設定（.debパッケージ）
+
+```bash
+jpackage --type deb \
+         --name "todomanager" \
+         --app-version "1.0.0" \
+         --vendor "MyCompany Inc." \
+         --description "Simple Todo Management Application" \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --icon ./resources/app-icon.png \
+         --linux-menu-group "Office" \
+         --linux-shortcut \
+         --linux-deb-maintainer "dev@mycompany.com" \
+         --linux-app-category "office" \
+         --dest ./output
+```
+
+Linux固有オプション：
+- `--linux-menu-group`: メニューカテゴリ
+- `--linux-shortcut`: デスクトップショートカット作成
+- `--linux-deb-maintainer`: パッケージメンテナー情報
+- `--linux-app-category`: アプリケーションカテゴリ
+
+### ランタイムオプションとJVMパラメータ
+
+アプリケーションの実行時にJVMパラメータを設定することもできます：
+
+```bash
+jpackage --type app-image \
+         --name "TodoManager" \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --java-options "-Xmx512m" \
+         --java-options "-Dfile.encoding=UTF-8" \
+         --java-options "-Duser.language=ja" \
+         --java-options "-Duser.country=JP" \
+         --arguments "arg1" \
+         --arguments "arg2" \
+         --dest ./output
+```
+
+- `--java-options`: JVMオプション（複数指定可能）
+- `--arguments`: アプリケーションへの引数
+
+### ファイル関連付けの設定
+
+特定のファイル拡張子をアプリケーションに関連付ける：
+
+```bash
+jpackage --type msi \
+         --name "TodoManager" \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --file-associations ./file-associations.properties \
+         --dest ./output
+```
+
+file-associations.propertiesの内容：
+```properties
+extension=todo
+mime-type=application/x-todo
+description=Todo List File
+icon=./resources/todo-file-icon.ico
+```
+
+### モジュラーアプリケーションのパッケージング
+
+Java 9以降のモジュールシステムを使用している場合：
+
+```bash
+# jlinkでカスタムランタイムを作成
+jlink --add-modules java.desktop,java.logging \
+      --output custom-runtime
+
+# jpackageでパッケージング
+jpackage --type app-image \
+         --name "ModularApp" \
+         --runtime-image ./custom-runtime \
+         --module com.example.app/com.example.app.Main \
+         --dest ./output
+```
 
 コマンドが成功すると、`output`ディレクトリ内に`SimpleApp`という名前のアプリケーションが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ほかのユーザーにそのまま配布できます。
 

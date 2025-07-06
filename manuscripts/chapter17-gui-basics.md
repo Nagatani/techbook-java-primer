@@ -417,13 +417,609 @@ public class MyFirstFrame {
 | `JCheckBox` | オン／オフを選択できるチェックボックス | 設定の有効/無効、複数選択 |
 | `JRadioButton` | 複数から1つだけ選ぶラジオボタン | 性別、配送方法の選択 |
 
+### 基本コンポーネントの詳細な使用例
+
+#### JLabelとアイコンの活用
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class JLabelExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("JLabel Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(4, 1, 10, 10));
+        
+        // 基本的なテキストラベル
+        JLabel textLabel = new JLabel("これは基本的なラベルです");
+        frame.add(textLabel);
+        
+        // HTML形式のラベル（複数行、色、フォント指定）
+        JLabel htmlLabel = new JLabel(
+            "<html><body style='width: 200px'>" +
+            "<h2 style='color: blue'>HTMLラベル</h2>" +
+            "<p>HTMLタグが使えるので、<br>" +
+            "<b>太字</b>や<i>斜体</i>、<u>下線</u>なども表現できます。</p>" +
+            "</body></html>"
+        );
+        frame.add(htmlLabel);
+        
+        // アイコン付きラベル
+        ImageIcon icon = new ImageIcon("icon.png"); // 実際の画像パスを指定
+        JLabel iconLabel = new JLabel("アイコン付きラベル", icon, JLabel.LEFT);
+        iconLabel.setHorizontalTextPosition(JLabel.RIGHT); // テキストの位置
+        iconLabel.setVerticalTextPosition(JLabel.CENTER);   // テキストの垂直位置
+        frame.add(iconLabel);
+        
+        // カスタマイズされたラベル
+        JLabel customLabel = new JLabel("カスタムラベル", JLabel.CENTER);
+        customLabel.setFont(new Font("MS Gothic", Font.BOLD, 18));
+        customLabel.setForeground(Color.WHITE);
+        customLabel.setBackground(Color.DARK_GRAY);
+        customLabel.setOpaque(true); // 背景色を有効にする
+        customLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        frame.add(customLabel);
+        
+        frame.setSize(400, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+#### JButtonの高度な使用
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class JButtonExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("JButton Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        
+        // 基本的なボタン
+        JButton basicButton = new JButton("基本ボタン");
+        basicButton.addActionListener(e -> 
+            JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！")
+        );
+        frame.add(basicButton);
+        
+        // アイコン付きボタン
+        JButton iconButton = new JButton("保存", new ImageIcon("save.png"));
+        iconButton.setToolTipText("ファイルを保存します");
+        frame.add(iconButton);
+        
+        // カスタマイズボタン
+        JButton customButton = new JButton("カスタムボタン");
+        customButton.setFont(new Font("Arial", Font.BOLD, 16));
+        customButton.setForeground(Color.WHITE);
+        customButton.setBackground(new Color(0, 123, 255));
+        customButton.setBorderPainted(false);
+        customButton.setFocusPainted(false);
+        customButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        // ホバー効果
+        customButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                customButton.setBackground(new Color(0, 86, 179));
+            }
+            public void mouseExited(MouseEvent e) {
+                customButton.setBackground(new Color(0, 123, 255));
+            }
+        });
+        frame.add(customButton);
+        
+        // 無効化されたボタン
+        JButton disabledButton = new JButton("無効なボタン");
+        disabledButton.setEnabled(false);
+        frame.add(disabledButton);
+        
+        // ニーモニック（Alt+キー）設定
+        JButton mnemonicButton = new JButton("実行(R)");
+        mnemonicButton.setMnemonic(KeyEvent.VK_R);
+        frame.add(mnemonicButton);
+        
+        frame.setSize(600, 200);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+#### テキスト入力コンポーネント
+
+```java
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+
+public class TextComponentExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Text Component Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+        
+        // JTextField - 1行入力
+        JPanel textFieldPanel = new JPanel(new FlowLayout());
+        textFieldPanel.add(new JLabel("名前:"));
+        JTextField nameField = new JTextField(20);
+        nameField.setToolTipText("お名前を入力してください");
+        
+        // リアルタイムで入力を監視
+        nameField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { checkInput(); }
+            public void removeUpdate(DocumentEvent e) { checkInput(); }
+            public void changedUpdate(DocumentEvent e) { checkInput(); }
+            
+            void checkInput() {
+                System.out.println("入力: " + nameField.getText());
+            }
+        });
+        textFieldPanel.add(nameField);
+        frame.add(textFieldPanel);
+        
+        // JPasswordField - パスワード入力
+        JPanel passwordPanel = new JPanel(new FlowLayout());
+        passwordPanel.add(new JLabel("パスワード:"));
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setEchoChar('●'); // 表示文字を変更
+        passwordPanel.add(passwordField);
+        frame.add(passwordPanel);
+        
+        // JFormattedTextField - フォーマット付き入力
+        JPanel formattedPanel = new JPanel(new FlowLayout());
+        formattedPanel.add(new JLabel("郵便番号:"));
+        try {
+            JFormattedTextField zipField = new JFormattedTextField(
+                new javax.swing.text.MaskFormatter("###-####")
+            );
+            zipField.setColumns(10);
+            formattedPanel.add(zipField);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        frame.add(formattedPanel);
+        
+        // JTextArea - 複数行入力
+        JPanel textAreaPanel = new JPanel(new BorderLayout());
+        textAreaPanel.setBorder(BorderFactory.createTitledBorder("コメント"));
+        JTextArea textArea = new JTextArea(5, 30);
+        textArea.setLineWrap(true); // 自動改行
+        textArea.setWrapStyleWord(true); // 単語単位で改行
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        textAreaPanel.add(scrollPane);
+        frame.add(textAreaPanel);
+        
+        // 送信ボタン
+        JButton submitButton = new JButton("送信");
+        submitButton.addActionListener(e -> {
+            String name = nameField.getText();
+            String password = new String(passwordField.getPassword());
+            String comment = textArea.getText();
+            
+            JOptionPane.showMessageDialog(frame,
+                "名前: " + name + "\n" +
+                "パスワード: " + (password.isEmpty() ? "未入力" : "****") + "\n" +
+                "コメント: " + comment
+            );
+        });
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(submitButton);
+        frame.add(buttonPanel);
+        
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+#### 選択コンポーネント
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class SelectionComponentExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Selection Component Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+        
+        // JCheckBox - 複数選択
+        JPanel checkBoxPanel = new JPanel();
+        checkBoxPanel.setBorder(BorderFactory.createTitledBorder("趣味（複数選択可）"));
+        
+        JCheckBox readingCB = new JCheckBox("読書", true); // 初期選択
+        JCheckBox movieCB = new JCheckBox("映画鑑賞");
+        JCheckBox sportsCB = new JCheckBox("スポーツ");
+        JCheckBox gamingCB = new JCheckBox("ゲーム");
+        
+        // チェック状態の変更を監視
+        ItemListener checkListener = e -> {
+            JCheckBox cb = (JCheckBox)e.getSource();
+            System.out.println(cb.getText() + ": " + cb.isSelected());
+        };
+        
+        readingCB.addItemListener(checkListener);
+        movieCB.addItemListener(checkListener);
+        sportsCB.addItemListener(checkListener);
+        gamingCB.addItemListener(checkListener);
+        
+        checkBoxPanel.add(readingCB);
+        checkBoxPanel.add(movieCB);
+        checkBoxPanel.add(sportsCB);
+        checkBoxPanel.add(gamingCB);
+        frame.add(checkBoxPanel);
+        
+        // JRadioButton - 単一選択
+        JPanel radioPanel = new JPanel();
+        radioPanel.setBorder(BorderFactory.createTitledBorder("性別"));
+        
+        JRadioButton maleRB = new JRadioButton("男性");
+        JRadioButton femaleRB = new JRadioButton("女性");
+        JRadioButton otherRB = new JRadioButton("その他", true);
+        
+        // ButtonGroupで排他制御
+        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup.add(maleRB);
+        genderGroup.add(femaleRB);
+        genderGroup.add(otherRB);
+        
+        radioPanel.add(maleRB);
+        radioPanel.add(femaleRB);
+        radioPanel.add(otherRB);
+        frame.add(radioPanel);
+        
+        // JComboBox - ドロップダウンリスト
+        JPanel comboPanel = new JPanel();
+        comboPanel.setBorder(BorderFactory.createTitledBorder("都道府県"));
+        
+        String[] prefectures = {"東京都", "大阪府", "愛知県", "福岡県", "北海道"};
+        JComboBox<String> prefectureCombo = new JComboBox<>(prefectures);
+        prefectureCombo.setSelectedIndex(0); // 初期選択
+        
+        // 編集可能なコンボボックス
+        JComboBox<String> editableCombo = new JComboBox<>(new String[]{"選択1", "選択2", "その他"});
+        editableCombo.setEditable(true);
+        
+        comboPanel.add(new JLabel("居住地:"));
+        comboPanel.add(prefectureCombo);
+        comboPanel.add(new JLabel("  カスタム:"));
+        comboPanel.add(editableCombo);
+        frame.add(comboPanel);
+        
+        // JList - リスト選択
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.setBorder(BorderFactory.createTitledBorder("言語（複数選択可）"));
+        
+        String[] languages = {"Java", "Python", "JavaScript", "C++", "Ruby", "Go", "Rust"};
+        JList<String> languageList = new JList<>(languages);
+        languageList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        languageList.setVisibleRowCount(4);
+        
+        JScrollPane listScrollPane = new JScrollPane(languageList);
+        listPanel.add(listScrollPane);
+        frame.add(listPanel);
+        
+        // 結果表示ボタン
+        JButton showButton = new JButton("選択内容を表示");
+        showButton.addActionListener(e -> {
+            StringBuilder result = new StringBuilder("選択内容:\n");
+            
+            // チェックボックス
+            result.append("趣味: ");
+            if (readingCB.isSelected()) result.append("読書 ");
+            if (movieCB.isSelected()) result.append("映画 ");
+            if (sportsCB.isSelected()) result.append("スポーツ ");
+            if (gamingCB.isSelected()) result.append("ゲーム ");
+            result.append("\n");
+            
+            // ラジオボタン
+            result.append("性別: ");
+            if (maleRB.isSelected()) result.append("男性");
+            else if (femaleRB.isSelected()) result.append("女性");
+            else result.append("その他");
+            result.append("\n");
+            
+            // コンボボックス
+            result.append("居住地: ").append(prefectureCombo.getSelectedItem()).append("\n");
+            
+            // リスト
+            result.append("言語: ").append(languageList.getSelectedValuesList());
+            
+            JOptionPane.showMessageDialog(frame, result.toString());
+        });
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(showButton);
+        frame.add(buttonPanel);
+        
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
 ### コンポーネントの配置とレイアウト管理
 
 コンポーネントをどこに配置するかを決めるのが**レイアウトマネージャ**の役割です。ウィンドウサイズが変わってもレイアウトが崩れないように、ルールに従って自動で再配置してくれます。
 
+#### 基本的なレイアウトマネージャー
+
+##### FlowLayout：流れるような配置
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class FlowLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("FlowLayout Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // FlowLayoutの設定（整列方法、水平間隔、垂直間隔）
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
+        
+        // 複数のボタンを追加
+        for (int i = 1; i <= 10; i++) {
+            panel.add(new JButton("Button " + i));
+        }
+        
+        frame.add(panel);
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+##### BorderLayout：5方向の配置
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class BorderLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("BorderLayout Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // BorderLayoutはJFrameのデフォルト
+        frame.add(new JButton("North (上部)"), BorderLayout.NORTH);
+        frame.add(new JButton("South (下部)"), BorderLayout.SOUTH);
+        frame.add(new JButton("East (右側)"), BorderLayout.EAST);
+        frame.add(new JButton("West (左側)"), BorderLayout.WEST);
+        frame.add(new JButton("Center (中央)"), BorderLayout.CENTER);
+        
+        frame.setSize(400, 300);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+##### GridLayout：格子状の配置
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class GridLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("GridLayout Example - 計算機");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // 4行4列のグリッド（行数、列数、水平間隔、垂直間隔）
+        JPanel panel = new JPanel(new GridLayout(4, 4, 5, 5));
+        
+        // 計算機のボタン配置
+        String[] buttons = {
+            "7", "8", "9", "÷",
+            "4", "5", "6", "×",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+"
+        };
+        
+        for (String label : buttons) {
+            JButton button = new JButton(label);
+            button.setFont(new Font("Arial", Font.BOLD, 20));
+            panel.add(button);
+        }
+        
+        frame.add(panel);
+        frame.setSize(300, 300);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+##### BoxLayout：一方向への配置
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class BoxLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("BoxLayout Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // 垂直配置のBoxLayout
+        JPanel verticalPanel = new JPanel();
+        verticalPanel.setLayout(new BoxLayout(verticalPanel, BoxLayout.Y_AXIS));
+        verticalPanel.setBorder(BorderFactory.createTitledBorder("垂直配置"));
+        
+        verticalPanel.add(new JButton("ボタン 1"));
+        verticalPanel.add(Box.createRigidArea(new Dimension(0, 10))); // 固定サイズの空白
+        verticalPanel.add(new JButton("ボタン 2"));
+        verticalPanel.add(Box.createVerticalGlue()); // 伸縮可能な空白
+        verticalPanel.add(new JButton("ボタン 3"));
+        
+        // 水平配置のBoxLayout
+        JPanel horizontalPanel = new JPanel();
+        horizontalPanel.setLayout(new BoxLayout(horizontalPanel, BoxLayout.X_AXIS));
+        horizontalPanel.setBorder(BorderFactory.createTitledBorder("水平配置"));
+        
+        horizontalPanel.add(new JButton("左"));
+        horizontalPanel.add(Box.createHorizontalGlue());
+        horizontalPanel.add(new JButton("中央"));
+        horizontalPanel.add(Box.createHorizontalGlue());
+        horizontalPanel.add(new JButton("右"));
+        
+        frame.setLayout(new GridLayout(1, 2));
+        frame.add(verticalPanel);
+        frame.add(horizontalPanel);
+        
+        frame.setSize(500, 300);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+##### CardLayout：カード型の切り替え
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class CardLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("CardLayout Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // CardLayoutの作成
+        CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout);
+        
+        // 各カード（パネル）の作成
+        JPanel card1 = new JPanel();
+        card1.setBackground(Color.RED);
+        card1.add(new JLabel("カード 1 - 赤"));
+        
+        JPanel card2 = new JPanel();
+        card2.setBackground(Color.GREEN);
+        card2.add(new JLabel("カード 2 - 緑"));
+        
+        JPanel card3 = new JPanel();
+        card3.setBackground(Color.BLUE);
+        card3.add(new JLabel("カード 3 - 青"));
+        
+        // カードの追加（名前付き）
+        cardPanel.add(card1, "red");
+        cardPanel.add(card2, "green");
+        cardPanel.add(card3, "blue");
+        
+        // 制御ボタン
+        JPanel controlPanel = new JPanel();
+        JButton prevButton = new JButton("前へ");
+        JButton nextButton = new JButton("次へ");
+        
+        prevButton.addActionListener(e -> cardLayout.previous(cardPanel));
+        nextButton.addActionListener(e -> cardLayout.next(cardPanel));
+        
+        controlPanel.add(prevButton);
+        controlPanel.add(nextButton);
+        
+        frame.add(cardPanel, BorderLayout.CENTER);
+        frame.add(controlPanel, BorderLayout.SOUTH);
+        
+        frame.setSize(400, 300);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+##### GridBagLayout：最も柔軟な配置
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class GridBagLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("GridBagLayout Example - ログインフォーム");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // コンポーネント間の余白
+        
+        // ラベル：ユーザー名
+        gbc.gridx = 0; // 列位置
+        gbc.gridy = 0; // 行位置
+        gbc.anchor = GridBagConstraints.EAST; // 右寄せ
+        panel.add(new JLabel("ユーザー名:"), gbc);
+        
+        // テキストフィールド：ユーザー名
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // 水平方向に伸縮
+        gbc.weightx = 1.0; // 余白の配分比率
+        panel.add(new JTextField(15), gbc);
+        
+        // ラベル：パスワード
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        panel.add(new JLabel("パスワード:"), gbc);
+        
+        // パスワードフィールド
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        panel.add(new JPasswordField(15), gbc);
+        
+        // チェックボックス：ログイン状態を保持
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2; // 2列分を使用
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.WEST; // 左寄せ
+        panel.add(new JCheckBox("ログイン状態を保持"), gbc);
+        
+        // ボタンパネル
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(new JButton("ログイン"));
+        buttonPanel.add(new JButton("キャンセル"));
+        
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER; // 中央配置
+        panel.add(buttonPanel, gbc);
+        
+        frame.add(panel);
+        frame.pack(); // コンポーネントに合わせてサイズ調整
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
 - **`FlowLayout`**: 部品を左から右へ、行が埋まると次の行へと流れるように配置します。(`JPanel`のデフォルト）
 - **`BorderLayout`**: 画面を「上下左右中央（North/South/East/West/Center)」の5領域に分割します。（`JFrame`のデフォルト）
 - **`GridLayout`**: 画面を格子状（マス目）に分割し、全部品を同じサイズで配置します。
+- **`BoxLayout`**: 一方向（水平または垂直）に部品を配置し、柔軟な余白設定が可能です。
+- **`CardLayout`**: 複数のパネルを重ねて、一度に1つだけ表示する切り替え型レイアウトです。
+- **`GridBagLayout`**: 最も柔軟で複雑なレイアウトが可能ですが、設定も複雑です。
 
 #### レイアウトの組み合わせによる画面構築
 

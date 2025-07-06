@@ -484,6 +484,927 @@ public class WindowEventExample {
 }
 ```
 
+### 詳細なイベント処理の実装例
+
+#### 1. マウスイベントの完全な処理
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class MouseEventCompleteExample extends JFrame {
+    private JTextArea logArea;
+    private JPanel drawPanel;
+    private Point startPoint;
+    private Point currentPoint;
+    
+    public MouseEventCompleteExample() {
+        setTitle("マウスイベント完全例");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        // 描画パネル
+        drawPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (startPoint != null && currentPoint != null) {
+                    g.setColor(Color.BLUE);
+                    g.drawLine(startPoint.x, startPoint.y, currentPoint.x, currentPoint.y);
+                }
+            }
+        };
+        drawPanel.setBackground(Color.WHITE);
+        drawPanel.setPreferredSize(new Dimension(400, 300));
+        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
+        // ログエリア
+        logArea = new JTextArea(10, 40);
+        logArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(logArea);
+        
+        // マウスリスナーの追加
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String button = getButtonName(e.getButton());
+                int clickCount = e.getClickCount();
+                log("クリック: " + button + " (回数: " + clickCount + ") at " + 
+                    e.getPoint());
+                
+                // ダブルクリックの検出
+                if (clickCount == 2) {
+                    log("ダブルクリック検出！");
+                }
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                startPoint = e.getPoint();
+                log("マウス押下: " + getButtonName(e.getButton()) + " at " + startPoint);
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                log("マウス解放: " + getButtonName(e.getButton()) + " at " + e.getPoint());
+                startPoint = null;
+                currentPoint = null;
+                drawPanel.repaint();
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                drawPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                log("マウスがパネルに入りました");
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                drawPanel.setCursor(Cursor.getDefaultCursor());
+                log("マウスがパネルから出ました");
+            }
+            
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                currentPoint = e.getPoint();
+                drawPanel.repaint();
+                log("ドラッグ中: " + currentPoint);
+            }
+            
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // 頻繁に発生するので通常はログしない
+                // log("マウス移動: " + e.getPoint());
+            }
+            
+            private String getButtonName(int button) {
+                switch (button) {
+                    case MouseEvent.BUTTON1: return "左ボタン";
+                    case MouseEvent.BUTTON2: return "中央ボタン";
+                    case MouseEvent.BUTTON3: return "右ボタン";
+                    default: return "不明なボタン";
+                }
+            }
+        };
+        
+        drawPanel.addMouseListener(mouseHandler);
+        drawPanel.addMouseMotionListener(mouseHandler);
+        
+        // コンテキストメニュー（右クリックメニュー）
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(new JMenuItem("切り取り"));
+        popupMenu.add(new JMenuItem("コピー"));
+        popupMenu.add(new JMenuItem("貼り付け"));
+        
+        drawPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+        
+        add(drawPanel, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.SOUTH);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    private void log(String message) {
+        logArea.append(message + "\n");
+        logArea.setCaretPosition(logArea.getDocument().getLength());
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new MouseEventCompleteExample().setVisible(true);
+        });
+    }
+}
+```
+
+#### 2. キーボードイベントの高度な処理
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.HashSet;
+import java.util.Set;
+
+public class KeyboardEventAdvancedExample extends JFrame {
+    private JTextArea textArea;
+    private JLabel statusLabel;
+    private Set<Integer> pressedKeys = new HashSet<>();
+    
+    public KeyboardEventAdvancedExample() {
+        setTitle("高度なキーボードイベント処理");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        // テキストエリア
+        textArea = new JTextArea(10, 40);
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        
+        // ステータスラベル
+        statusLabel = new JLabel("キーを押してください");
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        // キーリスナーの追加
+        textArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                pressedKeys.add(e.getKeyCode());
+                updateStatus(e, "押下");
+                
+                // ショートカットキーの検出
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+                    saveDocument();
+                    e.consume(); // デフォルトの動作をキャンセル
+                } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
+                    textArea.selectAll();
+                    e.consume();
+                } else if (e.getKeyCode() == KeyEvent.VK_F1) {
+                    showHelp();
+                }
+                
+                // 複数キーの同時押し検出
+                if (pressedKeys.contains(KeyEvent.VK_CONTROL) && 
+                    pressedKeys.contains(KeyEvent.VK_SHIFT) && 
+                    pressedKeys.contains(KeyEvent.VK_D)) {
+                    duplicateLine();
+                }
+            }
+            
+            @Override
+            public void keyReleased(KeyEvent e) {
+                pressedKeys.remove(e.getKeyCode());
+                updateStatus(e, "解放");
+            }
+            
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // 文字が入力された時
+                char ch = e.getKeyChar();
+                if (!Character.isISOControl(ch)) {
+                    statusLabel.setText("入力文字: '" + ch + "' (Unicode: " + 
+                        (int)ch + ")");
+                }
+            }
+        });
+        
+        // InputMapとActionMapを使ったより高度なキーバインディング
+        InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap actionMap = textArea.getActionMap();
+        
+        // Ctrl+Dで行複製
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 
+            InputEvent.CTRL_DOWN_MASK), "duplicate-line");
+        actionMap.put("duplicate-line", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                duplicateLine();
+            }
+        });
+        
+        // F5でタイムスタンプ挿入
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), "insert-timestamp");
+        actionMap.put("insert-timestamp", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.insert(new java.util.Date().toString(), 
+                    textArea.getCaretPosition());
+            }
+        });
+        
+        // メニューバーの作成（アクセラレータキー付き）
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("ファイル");
+        fileMenu.setMnemonic(KeyEvent.VK_F); // Alt+F
+        
+        JMenuItem saveItem = new JMenuItem("保存");
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 
+            InputEvent.CTRL_DOWN_MASK));
+        saveItem.addActionListener(e -> saveDocument());
+        
+        JMenuItem exitItem = new JMenuItem("終了");
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 
+            InputEvent.CTRL_DOWN_MASK));
+        exitItem.addActionListener(e -> System.exit(0));
+        
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+        menuBar.add(fileMenu);
+        
+        setJMenuBar(menuBar);
+        add(scrollPane, BorderLayout.CENTER);
+        add(statusLabel, BorderLayout.SOUTH);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    private void updateStatus(KeyEvent e, String action) {
+        String modifiers = "";
+        if (e.isControlDown()) modifiers += "Ctrl+";
+        if (e.isAltDown()) modifiers += "Alt+";
+        if (e.isShiftDown()) modifiers += "Shift+";
+        
+        String keyText = KeyEvent.getKeyText(e.getKeyCode());
+        statusLabel.setText("キー" + action + ": " + modifiers + keyText + 
+            " (コード: " + e.getKeyCode() + ")");
+    }
+    
+    private void saveDocument() {
+        JOptionPane.showMessageDialog(this, "ドキュメントを保存しました（仮想）");
+    }
+    
+    private void showHelp() {
+        JOptionPane.showMessageDialog(this, 
+            "ショートカットキー:\n" +
+            "Ctrl+S: 保存\n" +
+            "Ctrl+A: すべて選択\n" +
+            "Ctrl+D: 行複製\n" +
+            "F1: このヘルプ\n" +
+            "F5: タイムスタンプ挿入");
+    }
+    
+    private void duplicateLine() {
+        try {
+            int caretPos = textArea.getCaretPosition();
+            int lineNum = textArea.getLineOfOffset(caretPos);
+            int lineStart = textArea.getLineStartOffset(lineNum);
+            int lineEnd = textArea.getLineEndOffset(lineNum);
+            String line = textArea.getText(lineStart, lineEnd - lineStart);
+            textArea.insert(line, lineEnd);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new KeyboardEventAdvancedExample().setVisible(true);
+        });
+    }
+}
+```
+
+#### 3. DocumentListenerによるテキスト変更の監視
+
+```java
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.util.regex.*;
+
+public class DocumentListenerExample extends JFrame {
+    private JTextField emailField;
+    private JPasswordField passwordField;
+    private JPasswordField confirmPasswordField;
+    private JTextArea commentArea;
+    private JLabel emailStatus;
+    private JLabel passwordStatus;
+    private JLabel confirmStatus;
+    private JLabel charCountLabel;
+    private JButton submitButton;
+    
+    public DocumentListenerExample() {
+        setTitle("リアルタイムバリデーション");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        
+        // Email入力
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(new JLabel("Email:"), gbc);
+        
+        gbc.gridx = 1;
+        emailField = new JTextField(20);
+        add(emailField, gbc);
+        
+        gbc.gridx = 2;
+        emailStatus = new JLabel("必須");
+        emailStatus.setForeground(Color.GRAY);
+        add(emailStatus, gbc);
+        
+        // パスワード入力
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(new JLabel("パスワード:"), gbc);
+        
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        add(passwordField, gbc);
+        
+        gbc.gridx = 2;
+        passwordStatus = new JLabel("8文字以上");
+        passwordStatus.setForeground(Color.GRAY);
+        add(passwordStatus, gbc);
+        
+        // パスワード確認
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(new JLabel("パスワード確認:"), gbc);
+        
+        gbc.gridx = 1;
+        confirmPasswordField = new JPasswordField(20);
+        add(confirmPasswordField, gbc);
+        
+        gbc.gridx = 2;
+        confirmStatus = new JLabel("一致確認");
+        confirmStatus.setForeground(Color.GRAY);
+        add(confirmStatus, gbc);
+        
+        // コメント入力
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(new JLabel("コメント:"), gbc);
+        
+        gbc.gridx = 1; gbc.gridwidth = 2;
+        commentArea = new JTextArea(5, 30);
+        commentArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(commentArea);
+        add(scrollPane, gbc);
+        
+        gbc.gridx = 1; gbc.gridy = 4; gbc.gridwidth = 1;
+        charCountLabel = new JLabel("0/200文字");
+        add(charCountLabel, gbc);
+        
+        // 送信ボタン
+        gbc.gridx = 1; gbc.gridy = 5;
+        submitButton = new JButton("送信");
+        submitButton.setEnabled(false);
+        add(submitButton, gbc);
+        
+        // DocumentListenerの追加
+        emailField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { validateEmail(); }
+            public void removeUpdate(DocumentEvent e) { validateEmail(); }
+            public void changedUpdate(DocumentEvent e) { validateEmail(); }
+        });
+        
+        passwordField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { validatePassword(); }
+            public void removeUpdate(DocumentEvent e) { validatePassword(); }
+            public void changedUpdate(DocumentEvent e) { validatePassword(); }
+        });
+        
+        confirmPasswordField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { validatePasswordConfirm(); }
+            public void removeUpdate(DocumentEvent e) { validatePasswordConfirm(); }
+            public void changedUpdate(DocumentEvent e) { validatePasswordConfirm(); }
+        });
+        
+        // 文字数制限付きDocumentListenter
+        commentArea.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { updateCharCount(); }
+            public void removeUpdate(DocumentEvent e) { updateCharCount(); }
+            public void changedUpdate(DocumentEvent e) { updateCharCount(); }
+            
+            private void updateCharCount() {
+                int length = commentArea.getText().length();
+                charCountLabel.setText(length + "/200文字");
+                if (length > 200) {
+                    charCountLabel.setForeground(Color.RED);
+                    // 文字数制限を超えた場合の処理
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            commentArea.setText(commentArea.getText(0, 200));
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                } else {
+                    charCountLabel.setForeground(Color.BLACK);
+                }
+                checkFormValidity();
+            }
+        });
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    private void validateEmail() {
+        String email = emailField.getText();
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+        Matcher matcher = pattern.matcher(email);
+        
+        if (email.isEmpty()) {
+            emailStatus.setText("必須");
+            emailStatus.setForeground(Color.GRAY);
+            emailField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        } else if (matcher.matches()) {
+            emailStatus.setText("✓ OK");
+            emailStatus.setForeground(Color.GREEN);
+            emailField.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        } else {
+            emailStatus.setText("✗ 無効");
+            emailStatus.setForeground(Color.RED);
+            emailField.setBorder(BorderFactory.createLineBorder(Color.RED));
+        }
+        checkFormValidity();
+    }
+    
+    private void validatePassword() {
+        String password = new String(passwordField.getPassword());
+        boolean hasUpperCase = !password.equals(password.toLowerCase());
+        boolean hasLowerCase = !password.equals(password.toUpperCase());
+        boolean hasDigit = password.matches(".*\\d.*");
+        
+        if (password.length() >= 8 && hasUpperCase && hasLowerCase && hasDigit) {
+            passwordStatus.setText("✓ 強い");
+            passwordStatus.setForeground(Color.GREEN);
+            passwordField.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        } else if (password.length() >= 8) {
+            passwordStatus.setText("△ 普通");
+            passwordStatus.setForeground(Color.ORANGE);
+            passwordField.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
+        } else {
+            passwordStatus.setText("✗ 弱い");
+            passwordStatus.setForeground(Color.RED);
+            passwordField.setBorder(BorderFactory.createLineBorder(Color.RED));
+        }
+        validatePasswordConfirm();
+        checkFormValidity();
+    }
+    
+    private void validatePasswordConfirm() {
+        String password = new String(passwordField.getPassword());
+        String confirm = new String(confirmPasswordField.getPassword());
+        
+        if (confirm.isEmpty()) {
+            confirmStatus.setText("一致確認");
+            confirmStatus.setForeground(Color.GRAY);
+            confirmPasswordField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        } else if (password.equals(confirm)) {
+            confirmStatus.setText("✓ 一致");
+            confirmStatus.setForeground(Color.GREEN);
+            confirmPasswordField.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        } else {
+            confirmStatus.setText("✗ 不一致");
+            confirmStatus.setForeground(Color.RED);
+            confirmPasswordField.setBorder(BorderFactory.createLineBorder(Color.RED));
+        }
+        checkFormValidity();
+    }
+    
+    private void checkFormValidity() {
+        boolean emailValid = emailStatus.getText().contains("✓");
+        boolean passwordValid = passwordStatus.getText().contains("✓") || 
+                              passwordStatus.getText().contains("△");
+        boolean confirmValid = confirmStatus.getText().contains("✓");
+        
+        submitButton.setEnabled(emailValid && passwordValid && confirmValid);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new DocumentListenerExample().setVisible(true);
+        });
+    }
+}
+```
+
+#### 4. カスタムイベントとObserverパターン
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+
+// カスタムイベントクラス
+class TemperatureChangeEvent extends EventObject {
+    private final double temperature;
+    
+    public TemperatureChangeEvent(Object source, double temperature) {
+        super(source);
+        this.temperature = temperature;
+    }
+    
+    public double getTemperature() {
+        return temperature;
+    }
+}
+
+// カスタムリスナーインターフェース
+interface TemperatureChangeListener extends EventListener {
+    void temperatureChanged(TemperatureChangeEvent e);
+}
+
+// 温度センサーモデル
+class TemperatureSensor {
+    private double temperature = 20.0;
+    private List<TemperatureChangeListener> listeners = new ArrayList<>();
+    
+    public void addTemperatureChangeListener(TemperatureChangeListener listener) {
+        listeners.add(listener);
+    }
+    
+    public void removeTemperatureChangeListener(TemperatureChangeListener listener) {
+        listeners.remove(listener);
+    }
+    
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+        fireTemperatureChanged();
+    }
+    
+    private void fireTemperatureChanged() {
+        TemperatureChangeEvent event = new TemperatureChangeEvent(this, temperature);
+        for (TemperatureChangeListener listener : listeners) {
+            listener.temperatureChanged(event);
+        }
+    }
+    
+    public double getTemperature() {
+        return temperature;
+    }
+}
+
+// メインアプリケーション
+public class CustomEventExample extends JFrame {
+    private TemperatureSensor sensor;
+    private JSlider temperatureSlider;
+    private JLabel temperatureLabel;
+    private JProgressBar temperatureBar;
+    private JPanel colorPanel;
+    private List<JLabel> observerLabels;
+    
+    public CustomEventExample() {
+        setTitle("カスタムイベントとObserverパターン");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        sensor = new TemperatureSensor();
+        
+        // コントロールパネル
+        JPanel controlPanel = new JPanel();
+        temperatureSlider = new JSlider(-20, 50, 20);
+        temperatureSlider.setMajorTickSpacing(10);
+        temperatureSlider.setPaintTicks(true);
+        temperatureSlider.setPaintLabels(true);
+        
+        temperatureSlider.addChangeListener(e -> {
+            if (!temperatureSlider.getValueIsAdjusting()) {
+                sensor.setTemperature(temperatureSlider.getValue());
+            }
+        });
+        
+        controlPanel.add(new JLabel("温度設定:"));
+        controlPanel.add(temperatureSlider);
+        
+        // 表示パネル
+        JPanel displayPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        displayPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // 温度表示
+        temperatureLabel = new JLabel("現在の温度: 20.0°C");
+        temperatureLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        displayPanel.add(temperatureLabel);
+        
+        // 温度バー
+        temperatureBar = new JProgressBar(-20, 50);
+        temperatureBar.setValue(20);
+        temperatureBar.setStringPainted(true);
+        displayPanel.add(temperatureBar);
+        
+        // 色表示パネル
+        colorPanel = new JPanel();
+        colorPanel.setPreferredSize(new Dimension(200, 50));
+        colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        displayPanel.add(colorPanel);
+        
+        // 複数のオブザーバー
+        JPanel observerPanel = new JPanel(new GridLayout(3, 1));
+        observerLabels = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            JLabel label = new JLabel("Observer " + (i+1) + ": 待機中");
+            observerLabels.add(label);
+            observerPanel.add(label);
+        }
+        displayPanel.add(observerPanel);
+        
+        // リスナーの登録
+        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+            @Override
+            public void temperatureChanged(TemperatureChangeEvent e) {
+                double temp = e.getTemperature();
+                temperatureLabel.setText(String.format("現在の温度: %.1f°C", temp));
+            }
+        });
+        
+        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+            @Override
+            public void temperatureChanged(TemperatureChangeEvent e) {
+                int value = (int)e.getTemperature();
+                temperatureBar.setValue(value);
+                temperatureBar.setString(value + "°C");
+            }
+        });
+        
+        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+            @Override
+            public void temperatureChanged(TemperatureChangeEvent e) {
+                double temp = e.getTemperature();
+                Color color;
+                if (temp < 0) {
+                    color = Color.BLUE;
+                } else if (temp < 15) {
+                    color = Color.CYAN;
+                } else if (temp < 25) {
+                    color = Color.GREEN;
+                } else if (temp < 35) {
+                    color = Color.ORANGE;
+                } else {
+                    color = Color.RED;
+                }
+                colorPanel.setBackground(color);
+            }
+        });
+        
+        // 個別のオブザーバー
+        for (int i = 0; i < observerLabels.size(); i++) {
+            final int index = i;
+            sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+                @Override
+                public void temperatureChanged(TemperatureChangeEvent e) {
+                    double temp = e.getTemperature();
+                    String status;
+                    if (index == 0) {
+                        status = temp > 30 ? "警告: 高温！" : "正常";
+                    } else if (index == 1) {
+                        status = temp < 5 ? "警告: 低温！" : "正常";
+                    } else {
+                        status = String.format("%.1f°C 受信", temp);
+                    }
+                    observerLabels.get(index).setText("Observer " + (index+1) + ": " + status);
+                }
+            });
+        }
+        
+        // 自動温度変化シミュレーション
+        JButton simulateButton = new JButton("温度変化シミュレーション");
+        simulateButton.addActionListener(e -> {
+            Timer timer = new Timer(100, null);
+            timer.addActionListener(evt -> {
+                double current = sensor.getTemperature();
+                double random = (Math.random() - 0.5) * 2;
+                double newTemp = Math.max(-20, Math.min(50, current + random));
+                sensor.setTemperature(newTemp);
+                temperatureSlider.setValue((int)newTemp);
+                
+                if (timer.isRunning() && 
+                    ((Timer)evt.getSource()).getDelay() * 
+                    ((Timer)evt.getSource()).getActionListeners().length > 5000) {
+                    timer.stop();
+                }
+            });
+            timer.start();
+            
+            // 5秒後に停止
+            Timer stopTimer = new Timer(5000, evt -> timer.stop());
+            stopTimer.setRepeats(false);
+            stopTimer.start();
+        });
+        
+        controlPanel.add(simulateButton);
+        
+        add(controlPanel, BorderLayout.NORTH);
+        add(displayPanel, BorderLayout.CENTER);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new CustomEventExample().setVisible(true);
+        });
+    }
+}
+```
+
+#### 5. ドラッグ＆ドロップの実装
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.io.File;
+import java.util.List;
+
+public class DragAndDropExample extends JFrame {
+    private JList<String> sourceList;
+    private JList<String> targetList;
+    private DefaultListModel<String> sourceModel;
+    private DefaultListModel<String> targetModel;
+    private JTextArea dropArea;
+    
+    public DragAndDropExample() {
+        setTitle("ドラッグ＆ドロップの実装");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        // リスト間のドラッグ＆ドロップ
+        JPanel listsPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        listsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // ソースリスト
+        sourceModel = new DefaultListModel<>();
+        sourceModel.addElement("アイテム 1");
+        sourceModel.addElement("アイテム 2");
+        sourceModel.addElement("アイテム 3");
+        sourceModel.addElement("アイテム 4");
+        sourceModel.addElement("アイテム 5");
+        
+        sourceList = new JList<>(sourceModel);
+        sourceList.setDragEnabled(true);
+        sourceList.setTransferHandler(new ListTransferHandler());
+        
+        // ターゲットリスト
+        targetModel = new DefaultListModel<>();
+        targetList = new JList<>(targetModel);
+        targetList.setTransferHandler(new ListTransferHandler());
+        
+        JScrollPane sourceScroll = new JScrollPane(sourceList);
+        sourceScroll.setBorder(BorderFactory.createTitledBorder("ソース"));
+        JScrollPane targetScroll = new JScrollPane(targetList);
+        targetScroll.setBorder(BorderFactory.createTitledBorder("ターゲット"));
+        
+        listsPanel.add(sourceScroll);
+        listsPanel.add(targetScroll);
+        
+        // ファイルドロップエリア
+        dropArea = new JTextArea(10, 40);
+        dropArea.setText("ここにファイルをドロップしてください...");
+        dropArea.setEditable(false);
+        JScrollPane dropScroll = new JScrollPane(dropArea);
+        dropScroll.setBorder(BorderFactory.createTitledBorder("ファイルドロップエリア"));
+        
+        // ドロップターゲットの設定
+        new DropTarget(dropArea, new DropTargetListener() {
+            @Override
+            public void dragEnter(DropTargetDragEvent dtde) {
+                dropArea.setBackground(Color.LIGHT_GRAY);
+            }
+            
+            @Override
+            public void dragOver(DropTargetDragEvent dtde) {
+                // 必要に応じて処理
+            }
+            
+            @Override
+            public void dropActionChanged(DropTargetDragEvent dtde) {
+                // 必要に応じて処理
+            }
+            
+            @Override
+            public void dragExit(DropTargetEvent dte) {
+                dropArea.setBackground(Color.WHITE);
+            }
+            
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                try {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                    Transferable transferable = dtde.getTransferable();
+                    
+                    if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        @SuppressWarnings("unchecked")
+                        List<File> files = (List<File>) transferable.getTransferData(
+                            DataFlavor.javaFileListFlavor);
+                        
+                        dropArea.setText("ドロップされたファイル:\n");
+                        for (File file : files) {
+                            dropArea.append("- " + file.getAbsolutePath() + "\n");
+                            dropArea.append("  サイズ: " + file.length() + " bytes\n");
+                            dropArea.append("  更新日時: " + new java.util.Date(
+                                file.lastModified()) + "\n\n");
+                        }
+                    }
+                    
+                    dtde.dropComplete(true);
+                    dropArea.setBackground(Color.WHITE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    dtde.dropComplete(false);
+                }
+            }
+        });
+        
+        add(listsPanel, BorderLayout.CENTER);
+        add(dropScroll, BorderLayout.SOUTH);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    // カスタムTransferHandler
+    class ListTransferHandler extends TransferHandler {
+        @Override
+        public boolean canImport(TransferSupport support) {
+            return support.isDataFlavorSupported(DataFlavor.stringFlavor);
+        }
+        
+        @Override
+        public boolean importData(TransferSupport support) {
+            if (!canImport(support)) {
+                return false;
+            }
+            
+            JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+            int index = dl.getIndex();
+            
+            try {
+                String data = (String) support.getTransferable().getTransferData(
+                    DataFlavor.stringFlavor);
+                
+                if (support.getComponent() == targetList) {
+                    if (index == -1) {
+                        targetModel.addElement(data);
+                    } else {
+                        targetModel.add(index, data);
+                    }
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            return false;
+        }
+        
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            @SuppressWarnings("unchecked")
+            JList<String> list = (JList<String>) c;
+            String value = list.getSelectedValue();
+            return new StringSelection(value);
+        }
+        
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY;
+        }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new DragAndDropExample().setVisible(true);
+        });
+    }
+}
+```
+
 ## まとめ
 
 本章では、GUIアプリケーションに命を吹き込むイベント処理の基本を学びました。

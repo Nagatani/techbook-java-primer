@@ -483,6 +483,7 @@ class SynchronizedCounter {
 ```java
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ExecutorExample {
     public static void main(String[] args) {
@@ -492,12 +493,549 @@ public class ExecutorExample {
         for (int i = 0; i < 10; i++) {
             final int taskId = i;
             executor.execute(() -> {
-                System.out.println("Task " + taskId + " is being executed by " + Thread.currentThread().getName());
+                System.out.println("Task " + taskId + " is being executed by " + 
+                    Thread.currentThread().getName());
+                try {
+                    Thread.sleep(1000); // 1秒の処理をシミュレート
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             });
         }
 
         // ExecutorServiceをシャットダウン
         executor.shutdown();
+        try {
+            if (!executor.awaitTermination(15, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+        }
+    }
+}
+```
+
+### 実践的なマルチスレッドの例
+
+#### 1. プロデューサー・コンシューマーパターンの実装
+
+```java
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class ProducerConsumerExample {
+    // 共有キュー
+    private static final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(10);
+    private static final AtomicInteger producedCount = new AtomicInteger(0);
+    private static final AtomicInteger consumedCount = new AtomicInteger(0);
+    
+    // プロデューサー（生産者）
+    static class Producer implements Runnable {
+        private final String name;
+        private final int itemsToProduce;
+        
+        public Producer(String name, int itemsToProduce) {
+            this.name = name;
+            this.itemsToProduce = itemsToProduce;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                for (int i = 0; i < itemsToProduce; i++) {
+                    int item = producedCount.incrementAndGet();
+                    queue.put(item); // キューがいっぱいの場合はブロック
+                    System.out.printf("%s produced: %d (queue size: %d)%n", 
+                        name, item, queue.size());
+                    Thread.sleep(100); // 生産に時間がかかることをシミュレート
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    
+    // コンシューマー（消費者）
+    static class Consumer implements Runnable {
+        private final String name;
+        private final int itemsToConsume;
+        
+        public Consumer(String name, int itemsToConsume) {
+            this.name = name;
+            this.itemsToConsume = itemsToConsume;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                for (int i = 0; i < itemsToConsume; i++) {
+                    Integer item = queue.take(); // キューが空の場合はブロック
+                    consumedCount.incrementAndGet();
+                    System.out.printf("%s consumed: %d (queue size: %d)%n", 
+                        name, item, queue.size());
+                    Thread.sleep(200); // 消費に時間がかかることをシミュレート
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        
+        // 2つのプロデューサーと3つのコンシューマーを作成
+        executor.execute(new Producer("Producer-1", 10));
+        executor.execute(new Producer("Producer-2", 10));
+        executor.execute(new Consumer("Consumer-1", 7));
+        executor.execute(new Consumer("Consumer-2", 7));
+        executor.execute(new Consumer("Consumer-3", 6));
+        
+        executor.shutdown();
+        executor.awaitTermination(30, TimeUnit.SECONDS);
+        
+        System.out.println("\n=== 最終結果 ===");
+        System.out.println("生産された総数: " + producedCount.get());
+        System.out.println("消費された総数: " + consumedCount.get());
+        System.out.println("キューの残り: " + queue.size());
+    }
+}
+```
+
+#### 2. Future と Callable を使った非同期処理
+
+```java
+import java.util.concurrent.*;
+import java.util.List;
+import java.util.ArrayList;
+
+public class FutureCallableExample {
+    
+    // 計算に時間がかかるタスク
+    static class CalculationTask implements Callable<Long> {
+        private final int n;
+        
+        public CalculationTask(int n) {
+            this.n = n;
+        }
+        
+        @Override
+        public Long call() throws Exception {
+            System.out.println("計算開始: フィボナッチ数列の第" + n + "項");
+            long start = System.currentTimeMillis();
+            long result = fibonacci(n);
+            long time = System.currentTimeMillis() - start;
+            System.out.printf("計算完了: F(%d) = %d (所要時間: %dms)%n", n, result, time);
+            return result;
+        }
+        
+        private long fibonacci(int n) {
+            if (n <= 1) return n;
+            return fibonacci(n - 1) + fibonacci(n - 2);
+        }
+    }
+    
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Future<Long>> futures = new ArrayList<>();
+        
+        // 複数の計算タスクを非同期で実行
+        int[] numbers = {35, 38, 40, 42};
+        for (int n : numbers) {
+            Future<Long> future = executor.submit(new CalculationTask(n));
+            futures.add(future);
+        }
+        
+        // 他の処理を実行できる
+        System.out.println("計算中に他の処理を実行...");
+        Thread.sleep(100);
+        
+        // 結果を取得（必要になったタイミングで）
+        System.out.println("\n=== 計算結果 ===");
+        for (int i = 0; i < futures.size(); i++) {
+            try {
+                // get()は結果が得られるまでブロック
+                Long result = futures.get(i).get(10, TimeUnit.SECONDS);
+                System.out.println("F(" + numbers[i] + ") = " + result);
+            } catch (TimeoutException e) {
+                System.out.println("F(" + numbers[i] + ") = タイムアウト");
+                futures.get(i).cancel(true); // タスクをキャンセル
+            }
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+#### 3. CompletableFuture による高度な非同期処理
+
+```java
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.Random;
+
+public class CompletableFutureExample {
+    
+    // 外部APIを呼び出すシミュレーション
+    static class WeatherService {
+        private static final Random random = new Random();
+        
+        public static CompletableFuture<String> getTemperature(String city) {
+            return CompletableFuture.supplyAsync(() -> {
+                System.out.println("気温取得中: " + city);
+                // APIコールをシミュレート
+                try {
+                    Thread.sleep(1000 + random.nextInt(1000));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                int temp = 20 + random.nextInt(15);
+                return city + ": " + temp + "°C";
+            });
+        }
+        
+        public static CompletableFuture<String> getHumidity(String city) {
+            return CompletableFuture.supplyAsync(() -> {
+                System.out.println("湿度取得中: " + city);
+                try {
+                    Thread.sleep(1000 + random.nextInt(1000));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                int humidity = 40 + random.nextInt(40);
+                return city + ": " + humidity + "%";
+            });
+        }
+    }
+    
+    public static void main(String[] args) throws Exception {
+        // 1. 単純な非同期処理
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println("非同期タスク開始");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return "処理完了";
+        });
+        
+        // 2. チェーン処理
+        CompletableFuture<String> chainedFuture = future1
+            .thenApply(result -> result + " -> 変換処理")
+            .thenApply(result -> result + " -> 最終処理");
+        
+        System.out.println("チェーン結果: " + chainedFuture.get());
+        
+        // 3. 複数の非同期処理を組み合わせる
+        String[] cities = {"東京", "大阪", "名古屋"};
+        
+        // 各都市の気温と湿度を並行して取得
+        CompletableFuture<Void> allWeatherData = CompletableFuture.allOf(
+            cities[0], cities[1], cities[2]
+        ).stream()
+        .map(city -> {
+            CompletableFuture<String> temp = WeatherService.getTemperature(city);
+            CompletableFuture<String> humidity = WeatherService.getHumidity(city);
+            
+            // 気温と湿度を組み合わせる
+            return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
+        })
+        .map(future -> future.thenAccept(System.out::println))
+        .toArray(CompletableFuture[]::new);
+        
+        // すべての処理が完了するまで待つ
+        CompletableFuture.allOf(allWeatherData).get();
+        
+        // 4. タイムアウト処理
+        CompletableFuture<String> timeoutFuture = CompletableFuture
+            .supplyAsync(() -> {
+                try {
+                    Thread.sleep(5000); // 長時間かかる処理
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return "遅い処理の結果";
+            })
+            .orTimeout(2, TimeUnit.SECONDS)
+            .exceptionally(e -> "タイムアウトしました");
+        
+        System.out.println("\nタイムアウト処理: " + timeoutFuture.get());
+    }
+}
+```
+
+#### 4. 並行コレクションの活用
+
+```java
+import java.util.concurrent.*;
+import java.util.Map;
+import java.util.List;
+import java.util.Random;
+
+public class ConcurrentCollectionsExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        // 1. ConcurrentHashMap - スレッドセーフなマップ
+        ConcurrentHashMap<String, Integer> wordCount = new ConcurrentHashMap<>();
+        String[] words = {"apple", "banana", "apple", "cherry", "banana", "apple"};
+        
+        // 複数スレッドで単語をカウント
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        for (String word : words) {
+            executor.execute(() -> {
+                wordCount.merge(word, 1, Integer::sum);
+                System.out.println(Thread.currentThread().getName() + 
+                    " counted " + word + ": " + wordCount.get(word));
+            });
+        }
+        
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+        
+        System.out.println("\n単語カウント結果: " + wordCount);
+        
+        // 2. CopyOnWriteArrayList - 読み取り最適化リスト
+        CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+        list.addAll(List.of("初期値1", "初期値2", "初期値3"));
+        
+        // 読み取りスレッド（高速・ロックなし）
+        Runnable reader = () -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("読み取り: " + list);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+        
+        // 書き込みスレッド（コピーが発生）
+        Runnable writer = () -> {
+            for (int i = 0; i < 3; i++) {
+                list.add("新規追加" + i);
+                System.out.println("書き込み: 新規追加" + i);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+        
+        Thread readerThread = new Thread(reader);
+        Thread writerThread = new Thread(writer);
+        readerThread.start();
+        writerThread.start();
+        readerThread.join();
+        writerThread.join();
+        
+        // 3. ConcurrentLinkedQueue - ロックフリーキュー
+        ConcurrentLinkedQueue<Integer> queue = new ConcurrentLinkedQueue<>();
+        Random random = new Random();
+        
+        // 生産者
+        Thread producer = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                int value = random.nextInt(100);
+                queue.offer(value);
+                System.out.println("生産: " + value);
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        
+        // 消費者
+        Thread consumer = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                Integer value;
+                while ((value = queue.poll()) == null) {
+                    // キューが空の場合は待機
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+                System.out.println("消費: " + value);
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+        producer.join();
+        consumer.join();
+    }
+}
+```
+
+#### 5. 高度な同期プリミティブ
+
+```java
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
+
+public class AdvancedSynchronizationExample {
+    
+    // 1. ReadWriteLock - 読み取り/書き込みロック
+    static class SharedResource {
+        private final ReadWriteLock lock = new ReentrantReadWriteLock();
+        private final Lock readLock = lock.readLock();
+        private final Lock writeLock = lock.writeLock();
+        private String data = "初期データ";
+        
+        public String read() {
+            readLock.lock();
+            try {
+                System.out.println(Thread.currentThread().getName() + " 読み取り開始");
+                Thread.sleep(100); // 読み取り処理をシミュレート
+                return data;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
+            } finally {
+                System.out.println(Thread.currentThread().getName() + " 読み取り完了");
+                readLock.unlock();
+            }
+        }
+        
+        public void write(String newData) {
+            writeLock.lock();
+            try {
+                System.out.println(Thread.currentThread().getName() + " 書き込み開始");
+                Thread.sleep(500); // 書き込み処理をシミュレート
+                data = newData;
+                System.out.println(Thread.currentThread().getName() + " 書き込み完了: " + newData);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                writeLock.unlock();
+            }
+        }
+    }
+    
+    // 2. Semaphore - リソース数制限
+    static class ResourcePool {
+        private final Semaphore semaphore;
+        private final boolean[] resources;
+        
+        public ResourcePool(int size) {
+            this.semaphore = new Semaphore(size);
+            this.resources = new boolean[size];
+        }
+        
+        public int acquire() throws InterruptedException {
+            semaphore.acquire();
+            synchronized (resources) {
+                for (int i = 0; i < resources.length; i++) {
+                    if (!resources[i]) {
+                        resources[i] = true;
+                        System.out.println(Thread.currentThread().getName() + 
+                            " がリソース " + i + " を取得");
+                        return i;
+                    }
+                }
+            }
+            throw new IllegalStateException("リソースが見つかりません");
+        }
+        
+        public void release(int resourceId) {
+            synchronized (resources) {
+                resources[resourceId] = false;
+                System.out.println(Thread.currentThread().getName() + 
+                    " がリソース " + resourceId + " を解放");
+            }
+            semaphore.release();
+        }
+    }
+    
+    // 3. CountDownLatch - カウントダウン同期
+    static class RaceExample {
+        public static void demonstrate() throws InterruptedException {
+            int runnerCount = 5;
+            CountDownLatch startSignal = new CountDownLatch(1);
+            CountDownLatch finishSignal = new CountDownLatch(runnerCount);
+            
+            for (int i = 0; i < runnerCount; i++) {
+                int runnerId = i + 1;
+                new Thread(() -> {
+                    try {
+                        System.out.println("ランナー " + runnerId + " 準備完了");
+                        startSignal.await(); // スタート信号を待つ
+                        
+                        System.out.println("ランナー " + runnerId + " スタート！");
+                        Thread.sleep((long)(Math.random() * 3000)); // 走行時間
+                        System.out.println("ランナー " + runnerId + " ゴール！");
+                        
+                        finishSignal.countDown(); // ゴールしたことを通知
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
+            }
+            
+            Thread.sleep(1000);
+            System.out.println("位置について... よーい...");
+            Thread.sleep(1000);
+            System.out.println("ドン！");
+            startSignal.countDown(); // 全ランナーをスタートさせる
+            
+            finishSignal.await(); // 全ランナーのゴールを待つ
+            System.out.println("レース終了！");
+        }
+    }
+    
+    public static void main(String[] args) throws Exception {
+        // ReadWriteLockのデモ
+        System.out.println("=== ReadWriteLock デモ ===");
+        SharedResource resource = new SharedResource();
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        
+        // 複数の読み取りスレッド（並行実行可能）
+        for (int i = 0; i < 3; i++) {
+            executor.execute(() -> {
+                String data = resource.read();
+                System.out.println("読み取りデータ: " + data);
+            });
+        }
+        
+        // 書き込みスレッド（排他実行）
+        executor.execute(() -> resource.write("更新データ"));
+        
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+        
+        // Semaphoreのデモ
+        System.out.println("\n=== Semaphore デモ ===");
+        ResourcePool pool = new ResourcePool(3);
+        ExecutorService poolExecutor = Executors.newFixedThreadPool(5);
+        
+        for (int i = 0; i < 5; i++) {
+            poolExecutor.execute(() -> {
+                try {
+                    int resourceId = pool.acquire();
+                    Thread.sleep(1000); // リソースを使用
+                    pool.release(resourceId);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
+        
+        poolExecutor.shutdown();
+        poolExecutor.awaitTermination(10, TimeUnit.SECONDS);
+        
+        // CountDownLatchのデモ
+        System.out.println("\n=== CountDownLatch デモ ===");
+        RaceExample.demonstrate();
     }
 }
 ```
@@ -530,6 +1068,373 @@ public class FutureExample {
         Integer result = future.get();
         System.out.println("計算結果: " + result);
 
+        executor.shutdown();
+    }
+}
+```
+
+### 実践的なパフォーマンス測定とベンチマーク
+
+```java
+import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.Random;
+
+public class ParallelPerformanceExample {
+    
+    // 大規模配列の並列ソート
+    public static void parallelSortBenchmark() {
+        int size = 10_000_000;
+        int[] array1 = new int[size];
+        int[] array2 = new int[size];
+        Random random = new Random();
+        
+        // ランダムデータの生成
+        for (int i = 0; i < size; i++) {
+            int value = random.nextInt();
+            array1[i] = value;
+            array2[i] = value;
+        }
+        
+        // シングルスレッドソート
+        long startTime = System.currentTimeMillis();
+        Arrays.sort(array1);
+        long singleThreadTime = System.currentTimeMillis() - startTime;
+        
+        // 並列ソート
+        startTime = System.currentTimeMillis();
+        Arrays.parallelSort(array2);
+        long parallelTime = System.currentTimeMillis() - startTime;
+        
+        System.out.println("=== ソートベンチマーク ===");
+        System.out.println("配列サイズ: " + size);
+        System.out.println("シングルスレッド: " + singleThreadTime + "ms");
+        System.out.println("並列処理: " + parallelTime + "ms");
+        System.out.println("性能向上: " + 
+            String.format("%.2fx", (double)singleThreadTime / parallelTime));
+    }
+    
+    // 並列ストリーム処理
+    public static void parallelStreamExample() {
+        int size = 50_000_000;
+        long[] numbers = new long[size];
+        Arrays.fill(numbers, 1);
+        
+        // シーケンシャル処理
+        long startTime = System.currentTimeMillis();
+        long sum1 = Arrays.stream(numbers).sum();
+        long sequentialTime = System.currentTimeMillis() - startTime;
+        
+        // 並列処理
+        startTime = System.currentTimeMillis();
+        long sum2 = Arrays.stream(numbers).parallel().sum();
+        long parallelTime = System.currentTimeMillis() - startTime;
+        
+        System.out.println("\n=== ストリーム処理ベンチマーク ===");
+        System.out.println("要素数: " + size);
+        System.out.println("シーケンシャル: " + sequentialTime + "ms");
+        System.out.println("並列: " + parallelTime + "ms");
+        System.out.println("性能向上: " + 
+            String.format("%.2fx", (double)sequentialTime / parallelTime));
+    }
+    
+    // ForkJoinPoolを使った再帰的並列処理
+    static class RecursiveSum extends RecursiveTask<Long> {
+        private static final int THRESHOLD = 10_000;
+        private final long[] array;
+        private final int start, end;
+        
+        public RecursiveSum(long[] array, int start, int end) {
+            this.array = array;
+            this.start = start;
+            this.end = end;
+        }
+        
+        @Override
+        protected Long compute() {
+            if (end - start <= THRESHOLD) {
+                // 小さなタスクは直接計算
+                long sum = 0;
+                for (int i = start; i < end; i++) {
+                    sum += array[i];
+                }
+                return sum;
+            } else {
+                // 大きなタスクは分割
+                int mid = (start + end) / 2;
+                RecursiveSum left = new RecursiveSum(array, start, mid);
+                RecursiveSum right = new RecursiveSum(array, mid, end);
+                
+                left.fork(); // 左側を非同期実行
+                long rightResult = right.compute(); // 右側を現在のスレッドで実行
+                long leftResult = left.join(); // 左側の結果を待つ
+                
+                return leftResult + rightResult;
+            }
+        }
+    }
+    
+    public static void forkJoinExample() {
+        int size = 100_000_000;
+        long[] array = new long[size];
+        Arrays.fill(array, 1);
+        
+        ForkJoinPool pool = new ForkJoinPool();
+        
+        long startTime = System.currentTimeMillis();
+        Long result = pool.invoke(new RecursiveSum(array, 0, size));
+        long time = System.currentTimeMillis() - startTime;
+        
+        System.out.println("\n=== ForkJoinPool ベンチマーク ===");
+        System.out.println("要素数: " + size);
+        System.out.println("計算結果: " + result);
+        System.out.println("処理時間: " + time + "ms");
+        System.out.println("使用スレッド数: " + pool.getParallelism());
+    }
+    
+    public static void main(String[] args) {
+        // CPUコア数の確認
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println("利用可能なCPUコア数: " + processors);
+        
+        parallelSortBenchmark();
+        parallelStreamExample();
+        forkJoinExample();
+    }
+}
+```
+
+### スレッドセーフなシングルトンパターン
+
+```java
+public class ThreadSafeSingletonExamples {
+    
+    // 1. 同期化メソッドを使った実装（シンプルだが遅い）
+    static class SynchronizedSingleton {
+        private static SynchronizedSingleton instance;
+        
+        private SynchronizedSingleton() {}
+        
+        public static synchronized SynchronizedSingleton getInstance() {
+            if (instance == null) {
+                instance = new SynchronizedSingleton();
+            }
+            return instance;
+        }
+    }
+    
+    // 2. ダブルチェックロッキング（高速だが複雑）
+    static class DoubleCheckedSingleton {
+        private static volatile DoubleCheckedSingleton instance;
+        
+        private DoubleCheckedSingleton() {}
+        
+        public static DoubleCheckedSingleton getInstance() {
+            if (instance == null) {
+                synchronized (DoubleCheckedSingleton.class) {
+                    if (instance == null) {
+                        instance = new DoubleCheckedSingleton();
+                    }
+                }
+            }
+            return instance;
+        }
+    }
+    
+    // 3. 静的内部クラスホルダー（推奨・遅延初期化）
+    static class HolderSingleton {
+        private HolderSingleton() {}
+        
+        private static class Holder {
+            private static final HolderSingleton INSTANCE = new HolderSingleton();
+        }
+        
+        public static HolderSingleton getInstance() {
+            return Holder.INSTANCE;
+        }
+    }
+    
+    // 4. Enumシングルトン（最も安全）
+    enum EnumSingleton {
+        INSTANCE;
+        
+        public void doSomething() {
+            System.out.println("Enum singleton method");
+        }
+    }
+    
+    public static void main(String[] args) throws InterruptedException {
+        // マルチスレッドでのシングルトンアクセステスト
+        ExecutorService executor = Executors.newFixedThreadPool(100);
+        CountDownLatch latch = new CountDownLatch(100);
+        
+        for (int i = 0; i < 100; i++) {
+            executor.execute(() -> {
+                // 各実装のインスタンスを取得
+                HolderSingleton singleton = HolderSingleton.getInstance();
+                System.out.println(Thread.currentThread().getName() + 
+                    ": " + singleton.hashCode());
+                latch.countDown();
+            });
+        }
+        
+        latch.await();
+        executor.shutdown();
+        
+        // すべて同じハッシュコードが出力されることを確認
+    }
+}
+```
+
+### 一般的な並行処理の落とし穴と解決策
+
+```java
+import java.util.*;
+import java.util.concurrent.*;
+
+public class ConcurrencyPitfallsAndSolutions {
+    
+    // 落とし穴1: 不適切な同期によるデッドロック
+    static class DeadlockExample {
+        private final Object lock1 = new Object();
+        private final Object lock2 = new Object();
+        
+        // デッドロックが発生する可能性のあるコード
+        public void method1() {
+            synchronized (lock1) {
+                System.out.println("Method1: lock1を取得");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                synchronized (lock2) {
+                    System.out.println("Method1: lock2を取得");
+                }
+            }
+        }
+        
+        public void method2() {
+            synchronized (lock2) {
+                System.out.println("Method2: lock2を取得");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                synchronized (lock1) {
+                    System.out.println("Method2: lock1を取得");
+                }
+            }
+        }
+        
+        // 解決策: ロック順序の統一
+        public void safeMethod1() {
+            synchronized (lock1) {
+                synchronized (lock2) {
+                    System.out.println("Safe method1 実行");
+                }
+            }
+        }
+        
+        public void safeMethod2() {
+            synchronized (lock1) {  // 同じ順序でロック
+                synchronized (lock2) {
+                    System.out.println("Safe method2 実行");
+                }
+            }
+        }
+    }
+    
+    // 落とし穴2: 不適切なvolatileの使用
+    static class VolatileMisuse {
+        // 誤り: volatileは複合操作をアトミックにしない
+        private volatile int counter = 0;
+        
+        public void incorrectIncrement() {
+            counter++; // これはアトミックではない！
+        }
+        
+        // 解決策: AtomicIntegerを使用
+        private final AtomicInteger atomicCounter = new AtomicInteger(0);
+        
+        public void correctIncrement() {
+            atomicCounter.incrementAndGet();
+        }
+    }
+    
+    // 落とし穴3: スレッドセーフでないコレクションの誤用
+    static class CollectionMisuse {
+        // 誤り: 通常のHashMapは並行アクセスに対して安全でない
+        private final Map<String, Integer> unsafeMap = new HashMap<>();
+        
+        public void unsafeOperation() {
+            // 複数スレッドから同時に呼ばれると問題発生
+            unsafeMap.put("key", unsafeMap.getOrDefault("key", 0) + 1);
+        }
+        
+        // 解決策1: ConcurrentHashMapを使用
+        private final ConcurrentHashMap<String, Integer> safeMap = 
+            new ConcurrentHashMap<>();
+        
+        public void safeOperation1() {
+            safeMap.merge("key", 1, Integer::sum);
+        }
+        
+        // 解決策2: 同期化
+        private final Map<String, Integer> syncMap = new HashMap<>();
+        
+        public synchronized void safeOperation2() {
+            syncMap.put("key", syncMap.getOrDefault("key", 0) + 1);
+        }
+    }
+    
+    // 落とし穴4: スレッドリーク
+    static class ThreadLeakExample {
+        // 誤り: ExecutorServiceを適切にシャットダウンしない
+        public void causeThreadLeak() {
+            ExecutorService executor = Executors.newFixedThreadPool(10);
+            executor.execute(() -> System.out.println("Task"));
+            // executorをシャットダウンしないとスレッドがリーク！
+        }
+        
+        // 解決策: try-finallyまたはtry-with-resourcesパターン
+        public void preventThreadLeak() {
+            ExecutorService executor = Executors.newFixedThreadPool(10);
+            try {
+                executor.execute(() -> System.out.println("Task"));
+            } finally {
+                executor.shutdown();
+                try {
+                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                        executor.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    executor.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("並行処理の一般的な落とし穴の例");
+        
+        // デッドロックの回避例
+        DeadlockExample example = new DeadlockExample();
+        Thread t1 = new Thread(example::safeMethod1);
+        Thread t2 = new Thread(example::safeMethod2);
+        t1.start();
+        t2.start();
+        
+        // アトミック操作の例
+        VolatileMisuse volatileExample = new VolatileMisuse();
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        
+        for (int i = 0; i < 1000; i++) {
+            executor.execute(volatileExample::correctIncrement);
+        }
+        
         executor.shutdown();
     }
 }
