@@ -225,87 +225,28 @@ public class UserCache {
 - Oracle JVMガベージコレクション チュートリアル
 
 ## 2.2 開発環境の準備
-### JDK(JavaSDK)
 
-プログラミング言語Javaの開発環境をJava Software Development Kitと呼び、JavaSDKやJDKなどと略されます。  
-Javaでの開発は、複数あるJDKのどれかをインストールすることから始まります。
+Javaプログラミングを始めるには、開発環境の構築が必要です。本書では、JDK（Java Development Kit）のインストールとIDE（統合開発環境）のセットアップを行います。
 
-Javaでの開発にお勧めのIDEである、IntelliJ IDEAからもJDKをインストールできるようになっています。  
-ですが、本書では、本書の内容以外でもJDKを使った開発ができるように、一括でバージョン管理が可能なソフトウェアを使用して必要なバージョンのJDKをインストールします。
+**環境構築の詳細な手順については、付録A「開発環境の構築」を参照してください。**
 
-### JDKの種類
+以下の環境構築が必要です：
 
-JDKに挟まざまな提供元があり、インストールするJDKの種類が異なることによって講義を円滑に進められない場合もあります。
-そのため、本書で使用するJDKはこの内容で指定しているものを必ずインストールするようにしてください。
+1. **JDKのインストール**
+   - 本書では`OpenJDK 21.0.6 (Microsoft)`を使用します
+   - SDKMANを使用したバージョン管理を推奨します
 
-#### JDKの種類が混乱するほど増えている理由
+2. **IDEのセットアップ**
+   - IntelliJ IDEA Community Edition（推奨）
+   - Visual Studio Code（Java拡張機能必須）
 
-JDKと一言で言っても、開発元であるOracle以外にもいくつかの企業や団体がJDKとしてリリースしているものがあり、その配布元ごとにさまざまなバージョンのものがあります。
-
-まず、JavaはOSSです。  
-（単純にソフトウェアとしての側面のほかに、エコシステムとしての側面もあります）
-
-Javaの商標は、開発元であるOracleが保持しています。ですので、本来はJava™のような書き方をするのが正しいのかもしれません。
-
-JDKの種類が多い理由として、OSSである点が第一に挙げられます。商標自体はOracleが保持していますが、JDK自体のソースコードの取得は開かれているので、それをビルドしてリリースする企業やコミュニティの数だけ、JDKの種類が増えます。
-JDKの基本的な機能がその種類ごとで大きく異なってしまうということはあまり考えにくいのですが、状況によっては選んだJDKによって動作が異なることもあり得ます。
-Javaでの開発を始める前に、開発を行う企業やコミュニティで使用されているJDKを確認して、それに合わせるように心がけましょう。
-
-### 開発環境のインストールを行います
-
-本書で使用するJavaのバージョンは、OpenJDKと呼ばれるオープン版のJDKを使用し、以下の開発バージョンを使います。
-
-- `OpenJDK 21.0.6 (Microsoft)`
-
-※本書執筆時点のLTS版（長期サポート対応バージョン）の中で最も新しいものを使用しています。
-
-## 2.3 SDKMANを使用したバージョン管理
-
-JDKのインストールの前に、JDKやJavaの開発ライブラリのバージョン別インストールをサポートしてくれるバージョン管理ツールをインストールします。
-SDKMAN自体についてや各環境に合わせたインストール方法など、詳しくは以下のリンク先をみてください。
-
-- [SDKMAN!](https://sdkman.io/)
-
-### SDKMANのインストール
-
-1. ターミナルを起動する
-    - macOSのターミナルソフトウェアが起動すればよいです。 ターミナルソフトウェアが分からなければ、以下の操作で起動するウィンドウを使います。
-    - `[⌘] + [space]`で `Spotlight` から `terminal` を起動
-2. 以下のコマンドを実行してダウンロードする（`$`は入力しません）
-    - $ `curl -s "https://get.sdkman.io" | bash`
-3. 以下のコマンドを実行して初期設定を行う
-    - $ `source "$HOME/.sdkman/bin/sdkman-init.sh"`
-4. 以下のコマンドで正しくインストールされたかを確認する
-    - $ `sdk version`
-    - ```SDKMAN!```<br>```script: 5.19.0```<br>```native: 0.7.4 (macos aarch64)```のようなバージョン情報が出力されていればOKです。
-5. 使用しているターミナルソフトウェアに合わせて環境変数を設定
-
-macOSのターミナルソフトウェアとして、zshを使用している場合は以下のコマンドを使用します（`$`は入力しません）
-
-```zsh
-$ echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' >> ~/.zprofile
-$ echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.zprofile
-$ source ~/.zprofile
-```
-
-これらの環境変数の設定は、ほかのJavaを参照するアプリケーションのために設定しておきます。
-
-#### 再履修者向け: SDKMANのアップグレード
-
-すでにSDKMANをインストール済みの場合は、以下のコマンドでセルフアップグレードを行ってください。
+環境構築が完了したことを確認するため、以下のコマンドでJavaのバージョンを確認してください：
 
 ```bash
-$ sdk selfupdate force
+$ java -version
 ```
 
-### SDKMANを使用したJDKインストール
-
-1. ターミナルを起動
-2. $ `sdk list java` で現在インストール可能なJavaを一覧表示できます（開かれたテキストはvi形式です。次の行はエンターキー、次のページはスペースキー、閉じる場合は`:q`と入力します）
-3. $ `sdk install java 21.0.6-ms` でJDKがインストールされます。
-4. $ `java -version` でインストールされたJDKのバージョンが正しいか確認します。
-
-以下のようにバージョン情報が出力されていればOKです。
+正しくインストールされていれば、以下のような出力が表示されます：
 
 ```
 openjdk 21.0.6 2025-01-21 LTS
@@ -313,60 +254,13 @@ OpenJDK Runtime Environment Microsoft-10800196 (build 21.0.6+7-LTS)
 OpenJDK 64-Bit Server VM Microsoft-10800196 (build 21.0.6+7-LTS, mixed mode, sharing)
 ```
 
-これでJDKの用意は完了です。
+## 2.3 Hello Worldプログラム
 
-## 2.4 複数バージョンのJDKをインストールした場合
-
-SDKMANをインストールして、SDKMAN経由でJDKをインストールした場合は、SDKMANが使用するバージョンをコントロールしてくれるため、設定ファイルを細々と書き換える必要はありません。
-
-SDKMANでJDKのバージョンを切り替えたい場合は、以下のように行います。
-
-```bash
-sdk list java                  # インストール可能なバージョンとインストール済みのバージョンを確認
-sdk use java 21.0.6-ms         # 現在のターミナルで使用するバージョンを設定
-sdk default java 21.0.6-ms     # 標準で使用するバージョンを設定
-```
-
-## 2.5 統合開発環境（IDE）
-
-本書では以下のIDEを推奨します：
-- **IntelliJ IDEA**（Community Editionで十分）
-- **Visual Studio Code**（Java開発の拡張機能が必須です）
-
-IDEの利用に関しては、IntelliJ IDEA Community Editionがお勧めです。
-
-本書で取り上げる操作説明などは、IntelliJ IDEA Community Editionを基本とします。
-
-## 2.6 Hello Worldプログラム
-
-Javaの開発環境構築やIDEのインストールが完了したところだと思います。  
-まずは、JDKのみを使用し、IDEを使わずにJavaのプログラムを作成する方法を知りましょう。
-
-本章の内容に限り、ターミナル上でプログラムを書きます。  
-では、macOSに標準搭載されている簡易なテキストエディタである `nano` を使って簡単なプログラムを書いてみましょう。
-
-### 作業スペースの作成
-
-ターミナルを開き、以下のコマンドを入力しましょう。
-
-```bash
-$ cd                       # ホームディレクトリに移動
-$ mkdir java-practice      # programming-practiceというディレクトリを作成する
-$ cd java-practice         # oop1に移動する
-```
+Javaの開発環境構築が完了したら、最初のプログラムを作成してみましょう。まずは、IDEを使わずにコマンドラインでJavaプログラムを作成する基本的な流れを理解します。
 
 ### 画面に「Hello, World!!」を表示するプログラム
 
-テキストエディタは何でも良いのですが、ファイル名「```HelloWorld.java```」として、ファイルを新規作成しましょう。
-本書では、標準搭載されているテキストエディタnanoを使用する方法を書きます。
-
-作業スペースを作成した続きで以下のコマンドを使用します。
-
-```bash
-$ nano HelloWorld.java
-```
-
-以下のコードを書きます。
+以下のコードを`HelloWorld.java`というファイル名で作成します：
 
 ### HelloWorld.java
 
@@ -429,374 +323,58 @@ public class HelloWorld {
 
 ## 2.7 コンパイルと実行
 
-1. 以下のコマンドで、指定されたJavaファイルをコンパイルする
-    - $ `javac HelloWorld.java`
-2. コンパイルが成功すると、メッセージは何も表示されません
-    - コンパイルに失敗する場合、ソースコードのどこに間違いがあるかがメッセージで表示されます。
-    - コンパイル後にいくつかメッセージが表示されて、.classファイルなどが生成されていない、更新されていない場合はJavaファイルのコードを見直して、間違いがないか確認しましょう（エラーメッセージ内に間違っている箇所のヒントが書かれています。それを読みましょう）
-3. ワークスペースのディレクトリをFinder等で見ると、「HelloWorld.class」と言ったクラスファイルが生成されている
-    - .classファイルが、コンパイルされたJavaの実行ファイルです。
-4. 以下のコマンドでプログラムを実行する
-    - $ `java HelloWorld`
+作成したJavaプログラムは、コンパイルしてから実行する必要があります。
 
-正しく実行できた場合、ターミナル上には、以下のような出力がされます。
+**コマンドラインでのコンパイルと実行の詳細な手順については、付録A「開発環境の構築」のA.4節を参照してください。**
 
-```bash
-Hello, World!!
-```
+基本的な流れ：
+1. `javac`コマンドでソースファイル（.java）をコンパイル
+2. `java`コマンドでクラスファイル（.class）を実行
 
-ターミナルを使用したJavaプログラムのコンパイルと実行は、統合開発環境を使用する開発に入る前まで、以上の手順を用います。
-
-### 覚えておこう！ コンパイルと実行
-
-IDEを使用し始めると、コンパイルしてから実行という作業が、単に実行だけになります（IDEがコードを書いている裏で自動的にコンパイルしてくれている）
-
-```bash
-$ javac Javaファイル名
-$ java 実行するクラス名
-```
+IDEを使用する場合は、これらの作業が自動化されるため、実行ボタンをクリックするだけでプログラムを実行できます。
 
 ## 2.8 基本的な入出力
 
-Javaプログラムでのプログラムへのデータの受け渡し方法は、さまざまな方法があります。
-今回は、プログラムの実行後、キーボードからの入力を待ち受け、Enterキー押下で後続の処理が行われる方法を学びます。
+Javaプログラムでは、ユーザーとのインタラクションを実現するために、標準入出力を使用します。
+
+### 標準出力
+
+Javaで最も基本的な出力方法は`System.out.println()`です。これはHello Worldプログラムでも使用しました。
 
 ### 標準入力
 
-ユーザーとのインタラクティブなやりとりを実現するため、キーボードからの入力を受け付けるプログラムを作成します。このプログラムは、Java標準ライブラリの`Scanner`クラスを使用して、コンソールからのテキスト入力を処理する方法を学習できます。
+キーボードからの入力を受け取るには、`Scanner`クラスを使用します。
 
-ファイル名「```StandardInput.java```」
+**標準入力の詳細な使い方、数値変換、エラーハンドリングについては、付録A「開発環境の構築」のA.7節を参照してください。**
 
-```java
-import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言
-
-public class StandardInput {
-    public static void main(String[] args) {
-        // 標準入力をScannerで取得する
-        Scanner in = new Scanner(System.in);
-        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す
-        String inputLine = in.nextLine();
-        // ↑inputLineという変数には、入力された文字列データが設定されています
-
-        // 入力された文字列データをそのまま出力
-        System.out.println(inputLine);
-    }
-}
-```
-
-**このコードで学習できる重要な概念：**
-
-- **パッケージのインポート（`import java.util.Scanner`）**：Java標準ライブラリから必要なクラスを使用可能にします。これにより、ほかの開発者が作成した便利な機能を再利用できます。
-- **Scannerクラスの活用**：`System.in`（標準入力ストリーム）をラップして、さまざまな形式でのデータ入力を可能にします。C言語の`scanf`に相当しますが、より安全で使いやすい設計です。
-- **ブロッキング処理**：`nextLine()`メソッドはユーザーの入力を待機し、Enterキーが押されるまでプログラムの実行が一時停止します。このしくみにより、ユーザーのペースに合わせたプログラム実行が可能になります。
-- **文字列の取得と表示**：入力された文字列を変数に格納し、あとで利用する基本的なパターンを学習できます。
-
-### 標準入力から受けた文字列から数値変換を行う
-
-実用的なプログラムでは、ユーザーから数値を入力してもらい、計算処理を行うことが頻繁にあります。しかし、コンソールからの入力はすべて文字列として扱われるため、数値として使用するには型変換が必要です。
-
-#### 基本的な数値変換（問題あり版）
-
-まず、最もシンプルな実装から始めましょう：
-
-ファイル名「```ParseIntBasic.java```」
-
+基本的な使用例：
 ```java
 import java.util.Scanner;
 
-public class ParseIntBasic {
+public class InputExample {
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        System.out.print("数値を入力してください: ");
-        
-        String inputLine = in.nextLine();
-        
-        // 問題：この実装では不正な入力でプログラムがクラッシュする
-        int num = Integer.parseInt(inputLine);  // 例："abc"を入力すると例外発生
-        int ans = num + 10;
-        
-        System.out.println("結果: " + ans);
-        in.close();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("名前を入力してください: ");
+        String name = scanner.nextLine();
+        System.out.println("こんにちは、" + name + "さん！");
+        scanner.close();
     }
 }
 ```
 
-**この実装の問題点：**
-- ユーザーが「abc」や「12.5」などの無効な値を入力すると`NumberFormatException`が発生
-- プログラムが予期せず終了してしまう
-- 実際のアプリケーションでは致命的
+### 標準出力の詳細
 
-#### 改善版：エラーハンドリングあり
+Javaには複数の出力メソッドがあり、用途に応じて使い分けることが重要です：
 
-実用的なプログラムでは、不正な入力に対する適切な処理が必要です：
-
-ファイル名「```ParseIntSafe.java```」
+1. **`System.out.println()`** - 自動改行付き出力
+2. **`System.out.print()`** - 改行なし出力
+3. **`System.out.printf()`** - フォーマット指定付き出力（C言語のprintf相当）
 
 ```java
-import java.util.Scanner;
-
-public class ParseIntSafe {
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int num = 0;
-        boolean validInput = false;
-        
-        // 有効な入力が得られるまでループを継続
-        while (!validInput) {
-            System.out.print("整数を入力してください: ");
-            String inputLine = in.nextLine();
-            
-            try {
-                // 数値変換を試行
-                num = Integer.parseInt(inputLine);
-                
-                // 範囲チェック（例：1-100の範囲のみ許可）
-                if (num < 1 || num > 100) {
-                    System.out.println("エラー: 1から100の範囲で入力してください");
-                    continue;  // ループの先頭に戻る
-                }
-                
-                validInput = true;  // 有効な入力が得られた
-                
-            } catch (NumberFormatException e) {
-                // 数値以外が入力された場合の処理
-                System.out.println("エラー: 整数を入力してください（入力値: " + inputLine + "）");
-                // validInputはfalseのままなので、ループが継続される
-            }
-        }
-        
-        // 有効な入力が確定した後の処理
-        int ans = num + 10;
-        System.out.println("入力値: " + num);
-        System.out.println("結果: " + ans);
-        
-        in.close();
-    }
-}
+System.out.println("改行あり");     // 自動的に改行
+System.out.print("改行なし");       // 改行しない
+System.out.printf("値: %d\n", 42); // フォーマット指定
 ```
-
-**この実装の改善点：**
-1. **例外処理**: `try-catch`で`NumberFormatException`をキャッチ
-2. **入力検証**: 範囲チェックで適切な値のみ受け入れ
-3. **再入力の促進**: エラー時にユーザーに再入力を求める
-4. **わかりやすいメッセージ**: 何が間違っているかを明確に表示
-5. **リソース管理**: `Scanner`の適切なクローズ
-
-#### より実践的な例：計算機プログラム
-
-実際のアプリケーションを想定した、より高度な例です：
-
-ファイル名「```Calculator.java```」
-
-```java
-import java.util.Scanner;
-
-public class Calculator {
-    public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        
-        System.out.println("=== 簡易計算機 ===");
-        
-        // 第1オペランドの入力
-        double num1 = getValidNumber(in, "1つ目の数値を入力してください: ");
-        
-        // 演算子の入力
-        String operator = getValidOperator(in);
-        
-        // 第2オペランドの入力
-        double num2 = getValidNumber(in, "2つ目の数値を入力してください: ");
-        
-        // 計算実行
-        double result = calculate(num1, operator, num2);
-        
-        // 結果表示
-        System.out.printf("%.2f %s %.2f = %.2f%n", num1, operator, num2, result);
-        
-        in.close();
-    }
-    
-    // 有効な数値入力を取得するメソッド
-    private static double getValidNumber(Scanner in, String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = in.nextLine();
-            
-            try {
-                return Double.parseDouble(input);
-            } catch (NumberFormatException e) {
-                System.out.println("エラー: 数値を入力してください");
-            }
-        }
-    }
-    
-    // 有効な演算子入力を取得するメソッド
-    private static String getValidOperator(Scanner in) {
-        while (true) {
-            System.out.print("演算子を入力してください (+, -, *, /): ");
-            String operator = in.nextLine().trim();
-            
-            if (operator.equals("+") || operator.equals("-") || 
-                operator.equals("*") || operator.equals("/")) {
-                return operator;
-            }
-            
-            System.out.println("エラー: +, -, *, / のいずれかを入力してください");
-        }
-    }
-    
-    // 計算を実行するメソッド
-    private static double calculate(double num1, String operator, double num2) {
-        switch (operator) {
-            case "+":
-                return num1 + num2;
-            case "-":
-                return num1 - num2;
-            case "*":
-                return num1 * num2;
-            case "/":
-                if (num2 == 0) {
-                    throw new ArithmeticException("ゼロで割ることはできません");
-                }
-                return num1 / num2;
-            default:
-                throw new IllegalArgumentException("不正な演算子: " + operator);
-        }
-    }
-}
-```
-
-**このコードで学習できる重要な概念：**
-
-- **型変換の必要性**：Javaは強い型付け言語のため、文字列と数値は明確に区別されます。計算を行うには適切な型への変換が必須です。
-- **Integer.parseInt()メソッド**：文字列を整数に変換するJava標準の方法です。このメソッドは文字列の内容を解析し、有効な整数表現の場合にのみ変換を行います。
-- **算術演算**：整数に変換された値は、通常の数値として四則演算が可能になります。C言語と同様の演算子が使用できます。
-- **変数の型宣言**：`String inputLine`、`int num`、`int ans`のように、Javaでは変数の型を明示的に宣言する必要があります。これにより、コンパイル時に型の不整合を検出できます。
-
-#### 入力文字列が整数値に変換できない場合
-
-Javaの型安全性の特徴を理解するため、意図的に無効な入力を試してみましょう。試しに`aa`という文字列を入力してみます。
-
-**実行時例外（Runtime Exception）の発生：**
-```
-Exception in thread "main" java.lang.NumberFormatException: For input string: "aa"
-	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
-	at java.lang.Integer.parseInt(Integer.java:580)
-	at java.lang.Integer.parseInt(Integer.java:615)
-	at ParseInt.main(ParseInt.java:14)
-```
-
-この結果は、Javaの重要な特徴である「型安全性」と「例外処理システム」を示しています。現時点ではこのエラーが発生することが正常な動作です。
-
-**例外処理システムが示すJavaの設計思想：**
-
-このプログラムは整数値に変換可能な文字列の入力を前提として設計されています。「整数値に変換できない文字列が入力されることは想定外」であるため、エラーが出力される動作が正常です。
-
-この`NumberFormatException`例外は、以下の重要な概念を示しています：
-
-- **型安全性の実装**：C言語では不正な型変換によってプログラムクラッシュを引き起こす可能性がありますが、Javaでは例外として制御可能な形でエラーを報告します。
-- **早期エラー検出**：問題のあるデータを使用して計算が進行する前に、データの妥当性を検証し、適切な時点でエラーを発生させます。
-- **デバッグ支援**：スタックトレースにより、エラーが発生した正確な場所とその経路が明確に示されます。
-
-このようなエラーを回避するには、入力値の事前検証や例外処理（try-catch文）などの制御が必要になります。これらの高度な技術については、後の章で詳しく解説します。現時点では、Javaが提供する安全性機能の1つとして理解しておきましょう。
-
-もう少し詳しく解説をすると、`Integer.parseInt("")`という処理は、引数で渡された文字を符号付き10進数の整数型として構文解析します。
-この時、内部的には`Integer.parseInt("", 10)`の処理内容と同じことをしています。  
-Oracleの公式ドキュメントによると、以下の条件で`java.lang.NumberFormatException`という例外が発生します。と解説がされています。
-
-- 1番目の引数がnullであるか、長さゼロの文字列。
-- radixがCharacter.MIN_RADIXよりも小さいか、Character.MAX_RADIXよりも大きい。
-- 文字列の中に、指定された基数による桁には使えない文字がある。ただし、文字列の長さが1よりも大きい場合は、1番目の文字がマイナス記号'-'（'\u002D'）またはプラス記号'+' ('\u002B')であってもかまわない。
-- 文字列によって表される値が、int型の値ではない。
-
-参考： [Integer (Java SE 21 & JDK 21)](https://docs.oracle.com/javase/jp/21/docs/api/java.base/java/lang/Integer.html#parseInt(java.lang.String,int))
-
-### 画面に文字列を出力する方法
-
-Javaでは、画面に文字列を出力する方法として、いくつかの方法があります。出力方法の選択は、プログラムの要求に応じて使い分けることが重要です。
-
-#### 1.`System.out.println`
-
-**事前説明：**
-`System.out.println`は、Javaにおける最も基本的で頻繁に使用される出力メソッドです。デバッグ情報の表示、ユーザーへのメッセージ表示、プログラムの実行結果出力など、さまざまな場面で活用されます。自動改行機能により、整理された見やすい出力を簡単に実現できます。
-
-この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
-
-```java
-System.out.println("Hello, World!!");
-```
-
-これをC言語でたとえるなら、以下のようになるはずです。
-
-```c
-printf("%s\n" , "Hello, World!!");
-```
-
-`\n`が自動的に追加されるイメージで良いでしょう。
-
-**学習できる重要な概念：**
-- **静的メソッド呼び出し**：`System.out.println`は静的メソッドであり、オブジェクトの生成なしに直接呼び出せます。
-- **自動改行機能**：C言語の`printf`と異なり、明示的な改行文字の指定が不要です。
-- **型の柔軟性**：文字列以外にも数値、真偽値などさまざまな型のデータを自動的に文字列に変換して出力できます。
-
-#### 2. `System.out.print`
-
-**事前説明：**
-改行を含まない出力が必要な場合に使用します。複数の値を同一行に連続して出力したい場合や、入力プロンプトの表示など、改行が不要な場面で重要な役割を果たします。
-
-これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
-
-**学習できる重要な概念：**
-- **出力制御の精密性**：改行の有無を明示的にコントロールできることで、より柔軟な出力フォーマットが実現できます。
-- **ユーザーインターフェイス設計**：プロンプトメッセージなど、ユーザーとのインタラクションを意識した出力に不可欠です。
-
-#### 3. `System.out.printf`
-
-**事前説明：**
-C言語の`printf`関数に慣れ親しんだ開発者や、複雑なフォーマット指定が必要な場合に有効です。数値の桁数制御、小数点以下の桁数指定、文字列の幅指定など、高度な出力フォーマット制御が可能になります。
-
-C言語ライクに書きたい場合は、printfを使用してください。
-C言語のprintfと同じような書き方で出力が可能です。
-
-**学習できる重要な概念：**
-- **フォーマット文字列の活用**：`%d`、`%f`、`%s`などの書式指定子により、データの表示形式を細かく制御できます。
-- **言語間の互換性**：C言語の知識を活用しつつ、Javaの型安全性の恩恵を受けられます。
-- **プロフェッショナルな出力**：レポート生成や数値データの整理された表示に適しています。
-
-##### サンプルソース
-
-**事前説明：**
-このプログラムは、Javaの3つの主要な出力メソッドの違いと特徴を実践的に学習するためのサンプルです。各メソッドの出力結果を比較することで、適切な使い分けの判断基準を身につけることができます。
-
-ファイル名「`StandardOutput.java`」
-
-```java
-public class StandardOutput {
-    public static void main(String[] args) {
-        System.out.println("標準出力は、「System.out.printlnメソッド」を使用します。");
-        System.out.println("「System.out.println」は末尾に改行コードも併せて出力します。");
-        System.out.println(); // 引数なしで改行のみ出力されます。
-        System.out.print("「System.out.print」を使うと、末尾に改行は出力されません。");
-        System.out.print("改行は\\nで出力できます。\n");
-        System.out.print("\n");
-        String message = "C言語のprintf関数のように出力したい場合は、「System.out.printf」を使います。";
-        System.out.printf("%s\n", message);
-        System.out.printf("整数値: %d, 実数値: %f\n", 10, 3.142592654d);
-    }
-}
-```
-
-**このコードで学習できる重要な概念：**
-
-- **出力メソッドの使い分け**：各メソッドの特性を理解し、目的に応じた適切な選択ができます。
-- **文字列リテラル内でのエスケープ処理**：`\\n`のように、特殊文字を文字列内で表現する方法を学習できます。
-- **変数を利用した出力**：`String message`変数を使用することで、データの再利用と可読性の向上を実現しています。
-- **書式指定子の活用**：`%s`（文字列）、`%d`（整数）、`%f`（浮動小数点数）の基本的な使用方法を学習できます。
-- **型安全性の恩恵**：Javaの型システムにより、書式指定子と実際のデータ型の不整合をコンパイル時に検出できます。
-
-**C言語との比較ポイント：**
-- C言語では`printf`のみですべての出力を行いますが、Javaでは用途に応じて3つのメソッドを使い分けることで、より明確で保守しやすいコードが書けます。
-- Javaの`printf`は、C言語の知識を活用しつつ、より安全な型チェック機能を提供します。
-
 
 ## 2.9 データ型
 

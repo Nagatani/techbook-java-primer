@@ -41,19 +41,206 @@ Javaでの開発を始める前に、開発を行う企業やコミュニティ�
 
 ## A.2 SDKMANを使用したバージョン管理
 
-JDKのインストールの前に、JDKやJavaの開発ライブラリのバージョン別インストールをサポートしてくれるバージョン管理ツールをインストールします。
-SDKMAN自体についてや各環境に合わせたインストール方法など、詳しくは以下のリンク先をみてください。
+### バージョン管理ツールとは何か
 
-- [SDKMAN!](https://sdkman.io/)
+ソフトウェア開発において、**バージョン管理ツール**は開発環境の管理を劇的に改善する重要なツールです。とくにJavaのような、頻繁にバージョンアップされるプログラミング言語では、以下のような課題が発生します：
+
+- **複数プロジェクトでの異なるバージョン要求**: プロジェクトAではJava 8、プロジェクトBではJava 17が必要
+- **新バージョンの検証**: 新しいJavaバージョンをテストしつつ、安定版も維持したい
+- **チーム開発での環境統一**: 開発メンバー全員が同じバージョンを使用する必要がある
+- **OS標準のJavaとの競合**: システムにプリインストールされたJavaと開発用Javaの混在
+
+### 従来の方法の問題点
+
+バージョン管理ツールを使わない場合、以下のような作業が必要になります：
+
+1. **手動でのダウンロードとインストール**
+   - Oracleや各ベンダーのWebサイトから手動でダウンロード
+   - OSごとに異なるインストール手順の実行
+
+2. **環境変数の手動設定**
+   ```bash
+   # 毎回手動で変更が必要
+   export JAVA_HOME=/usr/local/java/jdk-21.0.6
+   export PATH=$JAVA_HOME/bin:$PATH
+   ```
+
+3. **バージョン切り替えの煩雑さ**
+   - プロジェクトごとに環境変数を手動で変更
+   - 設定ミスによる予期しないエラーの発生
+
+### SDKMANが解決する課題
+
+**SDKMAN!**（The Software Development Kit Manager）は、JVM系言語のSDKを管理するためのコマンドラインツールです。以下の機能により、上記の問題を解決します：
+
+#### 1. 統一されたコマンドインターフェース
+```bash
+# JDKのインストールが1コマンドで完了
+sdk install java 21.0.6-ms
+
+# バージョン切り替えも簡単
+sdk use java 17.0.9-tem
+```
+
+#### 2. 複数バージョンの共存管理
+```bash
+# インストール済みバージョンの確認
+sdk list java
+
+# プロジェクトごとの自動切り替え
+cd project-a  # .sdkmanrcファイルがあれば自動的にJava 8に
+cd project-b  # 自動的にJava 17に切り替わる
+```
+
+#### 3. ベンダー中立なJDK管理
+SDKMANは主要なJDKディストリビューションをすべてサポート：
+- Oracle JDK
+- OpenJDK (Microsoft, Amazon Corretto, Eclipse Temurin等)
+- GraalVM
+- その他多数のディストリビューション
+
+#### 4. Java以外のツールも管理
+```bash
+sdk install gradle      # ビルドツール
+sdk install maven       # ビルドツール
+sdk install springboot  # フレームワーク
+sdk install kotlin      # JVM言語
+```
+
+### なぜSDKMANを選ぶのか
+
+本書でSDKMANを採用する理由：
+
+1. **クロスプラットフォーム対応**: macOS、Linux、Windowsで同じコマンドが使える
+2. **初心者にも優しい**: 複雑な環境設定を自動化
+3. **プロフェッショナルも愛用**: 実際の開発現場で広く使われている
+4. **無料・オープンソース**: 誰でも自由に使用可能
+
+### SDKMANの内部動作
+
+SDKMANは以下のような仕組みで動作します：
+
+1. **候補リポジトリの管理**
+   - 利用可能なSDKのメタデータをオンラインで管理
+   - 常に最新のバージョン情報を取得
+
+2. **ローカルキャッシュ**
+   - `~/.sdkman/candidates/`にSDKを保存
+   - シンボリックリンクで現在のバージョンを管理
+
+3. **シェル統合**
+   - bashやzshの初期化スクリプトに統合
+   - ターミナル起動時に自動的に環境を設定
+
+これらの機能により、開発者は本来のプログラミングに集中でき、環境管理の煩わしさから解放されます。
+
+- [SDKMAN!公式サイト](https://sdkman.io/)
+
+### SDKMANのインストール
+
+1. ターミナルを起動する
+    - macOSのターミナルソフトウェアが起動すればよいです。 ターミナルソフトウェアが分からなければ、以下の操作で起動するウィンドウを使います。
+    - `[⌘] + [space]`で `Spotlight` から `terminal` を起動
+2. 以下のコマンドを実行してダウンロードする（`$`は入力しません）
+    - $ `curl -s "https://get.sdkman.io" | bash`
+3. 以下のコマンドを実行して初期設定を行う
+    - $ `source "$HOME/.sdkman/bin/sdkman-init.sh"`
+4. 以下のコマンドで正しくインストールされたかを確認する
+    - $ `sdk version`
+    - ```SDKMAN!```<br>```script: 5.19.0```<br>```native: 0.7.4 (macos aarch64)```のようなバージョン情報が出力されていればOKです。
+5. 使用しているターミナルソフトウェアに合わせて環境変数を設定
+
+macOSのターミナルソフトウェアとして、zshを使用している場合は以下のコマンドを使用します（`$`は入力しません）
+
+```zsh
+$ echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' >> ~/.zprofile
+$ echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.zprofile
+$ source ~/.zprofile
+```
+
+これらの環境変数の設定は、ほかのJavaを参照するアプリケーションのために設定しておきます。
+
+#### 再履修者向け: SDKMANのアップグレード
+
+すでにSDKMANをインストール済みの場合は、以下のコマンドでセルフアップグレードを行ってください。
+
+```bash
+$ sdk selfupdate force
+```
 
 ### SDKMANを使用したJDKインストール
 
-1. ターミナルを起動
-2. $ `sdk list java` で現在インストール可能なJavaを一覧表示できます（開かれたテキストはvi形式です。次の行はエンターキー、次のページはスペースキー、閉じる場合は`:q`と入力します）
-3. $ `sdk install java 21.0.6-ms` でJDKがインストールされます。
-4. $ `java -version` でインストールされたJDKのバージョンが正しいか確認します。
+#### 利用可能なJDKの確認
 
-以下のようにバージョン情報が出力されていればOKです。
+まず、インストール可能なJDKのバージョンを確認します：
+
+```bash
+$ sdk list java
+```
+
+このコマンドを実行すると、以下のような一覧が表示されます：
+
+```
+================================================================================
+Available Java Versions for macOS ARM 64bit
+================================================================================
+ Vendor        | Use | Version      | Dist    | Status     | Identifier
+--------------------------------------------------------------------------------
+ Corretto      |     | 21.0.5       | amzn    |            | 21.0.5-amzn
+ Corretto      |     | 17.0.13      | amzn    |            | 17.0.13-amzn
+ Corretto      |     | 11.0.25      | amzn    |            | 11.0.25-amzn
+ Gluon         |     | 22.1.0.1.r17 | gln     |            | 22.1.0.1.r17-gln
+ GraalVM CE    |     | 21.0.5       | graalce |            | 21.0.5-graalce
+ Java.net      |     | 24.ea.2      | open    |            | 24.ea.2-open
+ Java.net      |     | 23           | open    |            | 23-open
+ Microsoft     |     | 21.0.6       | ms      |            | 21.0.6-ms      
+ Microsoft     |     | 17.0.13      | ms      |            | 17.0.13-ms
+ Oracle        |     | 23           | oracle  |            | 23-oracle
+ Oracle        |     | 21.0.5       | oracle  |            | 21.0.5-oracle
+ Temurin       |     | 21.0.5       | tem     |            | 21.0.5-tem
+================================================================================
+```
+
+**一覧の見方：**
+- **Vendor**: JDKの提供元（Microsoft、Oracle、Amazon等）
+- **Use**: 現在使用中のバージョン（>>>マークが付く）
+- **Version**: JDKのバージョン番号
+- **Dist**: ディストリビューションの略称
+- **Status**: インストール状態（installedが表示される）
+- **Identifier**: インストール時に使用する識別子
+
+#### JDKのインストール
+
+本書で使用するMicrosoft版のOpenJDK 21.0.6をインストールします：
+
+```bash
+$ sdk install java 21.0.6-ms
+```
+
+インストール中の表示例：
+```
+Downloading: java 21.0.6-ms
+
+In progress...
+############################# 100.0%
+
+Installing: java 21.0.6-ms
+Done installing!
+
+Do you want java 21.0.6-ms to be set as default? (Y/n): Y
+
+Setting java 21.0.6-ms as default.
+```
+
+#### インストールの確認
+
+インストールが完了したら、以下のコマンドで確認します：
+
+```bash
+$ java -version
+```
+
+以下のようなバージョン情報が出力されていればOKです：
 
 ```
 openjdk 21.0.6 2025-01-21 LTS
@@ -61,19 +248,82 @@ OpenJDK Runtime Environment Microsoft-10800196 (build 21.0.6+7-LTS)
 OpenJDK 64-Bit Server VM Microsoft-10800196 (build 21.0.6+7-LTS, mixed mode, sharing)
 ```
 
-これでJDKの用意は完了です。
+### SDKMANの実践的な使い方
 
+#### 複数バージョンの管理
 
-### 複数バージョンのJDKをインストールした場合
-
-SDKMANをインストールして、SDKMAN経由でJDKをインストールした場合は、SDKMANが使用するバージョンをコントロールしてくれるため、設定ファイルを細々と書き換える必要はありません。
-
-SDKMANでJDKのバージョンを切り替えたい場合は、以下のように行います。
+実際の開発では、プロジェクトごとに異なるJavaバージョンを使用することがあります。SDKMANはこのような状況を簡単に管理できます。
 
 ```bash
-sdk list java                  # インストール可能なバージョンとインストール済みのバージョンを確認
-sdk use java 21.0.6-ms         # 現在のターミナルで使用するバージョンを設定
-sdk default java 21.0.6-ms     # 標準で使用するバージョンを設定
+# 別のバージョンをインストール
+$ sdk install java 17.0.13-ms
+
+# インストール済みのバージョンを確認
+$ sdk list java installed
+```
+
+#### バージョンの切り替え
+
+```bash
+# 一時的な切り替え（現在のターミナルセッションのみ）
+$ sdk use java 17.0.13-ms
+Using java version 17.0.13-ms in this shell.
+
+# デフォルトバージョンの変更（永続的）
+$ sdk default java 21.0.6-ms
+Default java version set to 21.0.6-ms
+
+# 現在のバージョンを確認
+$ sdk current java
+Using java version 21.0.6-ms
+```
+
+#### プロジェクトごとの自動切り替え
+
+プロジェクトのルートディレクトリに`.sdkmanrc`ファイルを作成すると、ディレクトリ移動時に自動的にバージョンが切り替わります：
+
+```bash
+# .sdkmanrcファイルの作成
+$ echo "java=17.0.13-ms" > .sdkmanrc
+
+# ディレクトリに入ると自動切り替え
+$ cd my-project
+Using java version 17.0.13-ms in this shell.
+```
+
+#### SDKMANのその他の便利なコマンド
+
+```bash
+# 古いバージョンの削除
+$ sdk uninstall java 11.0.25-amzn
+
+# SDKMANのアップデート
+$ sdk selfupdate
+
+# オフラインモードの切り替え（インターネット接続なしで使用）
+$ sdk offline enable
+
+# 環境変数の確認
+$ sdk env
+```
+
+### トラブルシューティング
+
+#### SDKMANが認識されない場合
+
+```bash
+# 初期化スクリプトを再実行
+$ source "$HOME/.sdkman/bin/sdkman-init.sh"
+```
+
+#### プロキシ環境での使用
+
+企業ネットワークなどプロキシ環境下では、以下の設定が必要です：
+
+```bash
+# ~/.sdkman/etc/config に追加
+sdkman_proxy_host=proxy.example.com
+sdkman_proxy_port=8080
 ```
 
 
