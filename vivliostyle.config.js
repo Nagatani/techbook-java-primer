@@ -27,6 +27,7 @@ module.exports = {
     'chapter20-unit-testing.md',
     'chapter21-documentation-and-libraries.md',
     'chapter22-build-and-deploy.md',
+    'appendix-environment-setup.md',
     'appendix-a-technical-deep-dive.md',
     'appendix-b-programming-history.md',
     'appendix-c-theoretical-foundations.md',
