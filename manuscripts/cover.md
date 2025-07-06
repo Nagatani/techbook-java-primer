@@ -1,54 +1,30 @@
 <div class="cover-page">
 
-# Java入門
-## プログラミングの基礎からオブジェクト指向まで
+  <div class="cover-header">
+    <div class="cover-logo">TechBook Series</div>
+    <div class="cover-series">プログラミング学習シリーズ</div>
+  </div>
 
-<div class="cover-subtitle">
-C言語の基礎を学んだ方のための実践的Java入門書
-</div>
+  <div class="cover-main">
+    <div class="cover-title">Java入門</div>
+    <div class="cover-subtitle">C言語から始める実践的オブジェクト指向プログラミング</div>
+    
+    <div class="cover-java-icon"></div>
+    
+    <div class="cover-level">初級〜中級者向け</div>
+  </div>
 
-<div class="cover-details">
-<div class="cover-author">著者: Hidehiro Nagatani</div>
-<div class="cover-year">2024年</div>
-</div>
+  <div class="cover-footer">
+    <div class="cover-author">
+      <div class="cover-author-label">著者</div>
+      <div class="cover-author-name">Hidehiro Nagatani</div>
+    </div>
+    <div class="cover-publisher">
+      <div class="cover-publisher-logo">TechPress</div>
+      <div class="cover-year">2024</div>
+    </div>
+  </div>
 
-<div class="cover-description">
-本書は、C言語の基礎を習得した方を対象としたJava入門書です。
-オブジェクト指向プログラミングの基本概念から、
-モダンなJavaの機能まで、実践的なサンプルコードを通じて学習できます。
-</div>
-
----
-
-## 本書の特徴
-
-- **段階的学習設計**: C言語からJavaへの円滑な移行をサポート
-- **実践的なサンプルコード**: 実際の開発現場で使える実用的な例を豊富に収録
-- **現代的なJava機能**: Java 8以降の新機能（ラムダ式、Stream API等）も詳細に解説
-- **体系的な構成**: 基礎文法からモダンな開発手法まで15章で完全網羅
-
-## 対象読者
-
-- C言語でプログラミングの基礎を学んだ方
-- オブジェクト指向プログラミングを学びたい方  
-- モダンなJavaの機能を習得したい方
-- 実用的なJavaアプリケーション開発を目指す方
-
-## 学習内容
-
-- Java基本文法とSDK環境構築
-- オブジェクト指向プログラミングの基礎と実践
-- 継承、ポリモーフィズム、インターフェイス
-- 例外処理とリソース管理
-- コレクションフレームワークとジェネリクス
-- ラムダ式とStream APIなどのモダンJava機能
-- ファイル入出力とネットワークプログラミング
-- マルチスレッドプログラミング
-- GUIアプリケーション開発
-- 外部ライブラリの活用方法
-
-<div class="cover-footer">
-この本で、あなたもJavaプログラマの第一歩を踏み出しましょう
-</div>
+  <div class="cover-tech-bg"></div>
 
 </div>

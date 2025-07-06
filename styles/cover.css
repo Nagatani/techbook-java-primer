@@ -1,0 +1,316 @@
+/**
+ * 表紙デザイン
+ * 一般的な技術書レベルの表紙デザイン
+ */
+
+/* ========================================
+   表紙専用ページ設定
+   ======================================== */
+
+@page cover {
+  size: var(--page-width) var(--page-height);
+  margin: 0;
+  
+  @bottom-center {
+    content: none;
+  }
+}
+
+/* ========================================
+   表紙コンテナ
+   ======================================== */
+
+.cover-page {
+  page: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  
+  /* Java言語をイメージしたグラデーション背景 */
+  background: linear-gradient(135deg, #001122 0%, var(--java-dark-blue) 30%, var(--java-blue) 70%, #00bcd4 100%);
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem 2rem;
+  box-sizing: border-box;
+  color: var(--text-inverse);
+  text-align: center;
+}
+
+/* ========================================
+   ヘッダー部分（ロゴ・シリーズ名）
+   ======================================== */
+
+.cover-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cover-logo {
+  font-family: var(--font-english);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.cover-series {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  text-align: right;
+}
+
+/* ========================================
+   メインタイトル部分
+   ======================================== */
+
+.cover-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 80%;
+}
+
+/* メインタイトル */
+.cover-title {
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  
+  /* グラデーションテキスト効果 */
+  background: linear-gradient(45deg, #ffffff 0%, #f0f8ff 50%, #e1f5fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* サブタイトル */
+.cover-subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Javaロゴ風の装飾要素 */
+.cover-java-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--java-orange) 0%, #ff8a50 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 1rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.cover-java-icon::before {
+  content: "{ }";
+  color: var(--text-inverse);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 技術レベル表示 */
+.cover-level {
+  font-size: 1rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   著者・出版情報
+   ======================================== */
+
+.cover-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cover-author {
+  text-align: left;
+}
+
+.cover-author-label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cover-author-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.cover-publisher {
+  text-align: right;
+}
+
+.cover-publisher-logo {
+  font-family: var(--font-english);
+  font-size: 1rem;
+  font-weight: 700;
+  opacity: 0.8;
+  margin-bottom: 0.2rem;
+}
+
+.cover-year {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+/* ========================================
+   背景装飾要素
+   ======================================== */
+
+/* 背景のコードパターン */
+.cover-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255, 255, 255, 0.1) 20px,
+      rgba(255, 255, 255, 0.1) 21px
+    );
+  pointer-events: none;
+}
+
+/* 技術的なテキスト装飾 */
+.cover-tech-bg {
+  position: absolute;
+  top: 20%;
+  right: -10%;
+  font-family: var(--font-code);
+  font-size: 8rem;
+  font-weight: 100;
+  opacity: 0.03;
+  transform: rotate(15deg);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.cover-tech-bg::before {
+  content: "public class Java { }";
+}
+
+/* ========================================
+   レスポンシブ対応
+   ======================================== */
+
+@media screen and (max-width: 768px) {
+  .cover-page {
+    padding: 2rem 1rem;
+  }
+  
+  .cover-title {
+    font-size: 2.5rem;
+  }
+  
+  .cover-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .cover-java-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .cover-header,
+  .cover-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+/* ========================================
+   印刷最適化
+   ======================================== */
+
+@media print {
+  .cover-page {
+    background: linear-gradient(135deg, #333 0%, #666 100%);
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  
+  .cover-title {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: white;
+    background-clip: unset;
+  }
+  
+  .cover-tech-bg,
+  .cover-page::before {
+    display: none;
+  }
+}
+
+/* ========================================
+   アニメーション（画面表示時のみ）
+   ======================================== */
+
+@media screen {
+  .cover-main {
+    animation: fadeInUp 1.5s ease-out;
+  }
+  
+  .cover-java-icon {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}

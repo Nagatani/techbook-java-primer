@@ -1,0 +1,264 @@
+/**
+ * コードブロック専用スタイル
+ * ストライプ背景・シンタックスハイライト・行番号対応
+ */
+
+/* ========================================
+   基本コードスタイル
+   ======================================== */
+
+code {
+  font-family: var(--font-code);
+  font-size: 0.9em;
+  font-weight: 400;
+  line-height: 1.5;
+  font-feature-settings: "liga" 0;
+}
+
+/* インラインコード */
+code:not(pre code) {
+  background-color: var(--gray-100);
+  color: var(--java-dark-blue);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  border: 1px solid var(--gray-300);
+  white-space: nowrap;
+}
+
+/* ========================================
+   コードブロック（pre）
+   ======================================== */
+
+pre {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  border-radius: 6px;
+  border-left: 4px solid var(--java-blue);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  break-inside: avoid;
+  
+  /* ストライプ背景の実装 */
+  background-image: 
+    linear-gradient(
+      to bottom,
+      var(--gray-100) 0%,
+      var(--gray-100) 50%,
+      #f1f3f4 50%,
+      #f1f3f4 100%
+    );
+  background-size: 100% 2.4em; /* 1行の高さ × line-height */
+  background-repeat: repeat-y;
+  background-position: 0 0;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: var(--text-primary);
+  white-space: pre;
+  display: block;
+}
+
+/* ========================================
+   言語別ラベル
+   ======================================== */
+
+/* コードブロックの言語表示 */
+pre[class*="language-"]::before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--java-blue);
+  color: var(--text-inverse);
+  padding: 0.2em 0.5em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom-left-radius: 4px;
+}
+
+/* Java言語の特別表示 */
+pre[class*="language-java"]::before {
+  content: "Java";
+  background-color: var(--java-orange);
+}
+
+pre[class*="language-javascript"]::before {
+  content: "JavaScript";
+  background-color: #f7df1e;
+  color: var(--text-primary);
+}
+
+pre[class*="language-css"]::before {
+  content: "CSS";
+  background-color: #1572b6;
+}
+
+pre[class*="language-html"]::before {
+  content: "HTML";
+  background-color: #e34f26;
+}
+
+pre[class*="language-shell"]::before,
+pre[class*="language-bash"]::before {
+  content: "Shell";
+  background-color: var(--gray-900);
+}
+
+/* ========================================
+   行番号システム（オプション）
+   ======================================== */
+
+.code-with-line-numbers {
+  position: relative;
+  counter-reset: line-numbers;
+}
+
+.code-with-line-numbers pre {
+  padding-left: 3em;
+}
+
+.code-with-line-numbers pre code {
+  position: relative;
+}
+
+.code-with-line-numbers pre code::before {
+  counter-increment: line-numbers;
+  content: counter(line-numbers);
+  position: absolute;
+  left: -2.5em;
+  width: 2em;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 0.8em;
+  line-height: inherit;
+}
+
+/* ========================================
+   特殊なコードブロック
+   ======================================== */
+
+/* 実行結果・出力 */
+.output pre {
+  border-left-color: var(--java-orange);
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  background-image: none;
+}
+
+.output pre::before {
+  content: "Output";
+  background-color: var(--java-orange);
+  color: var(--text-inverse);
+}
+
+/* エラー出力 */
+.error pre {
+  border-left-color: #dc3545;
+  background-color: #f8d7da;
+  color: #721c24;
+  background-image: none;
+}
+
+.error pre::before {
+  content: "Error";
+  background-color: #dc3545;
+  color: var(--text-inverse);
+}
+
+/* 設定ファイル */
+.config pre {
+  border-left-color: #6f42c1;
+  background-image: 
+    linear-gradient(
+      to bottom,
+      #f8f9fa 0%,
+      #f8f9fa 50%,
+      #f3e8ff 50%,
+      #f3e8ff 100%
+    );
+}
+
+.config pre::before {
+  content: "Config";
+  background-color: #6f42c1;
+  color: var(--text-inverse);
+}
+
+/* ========================================
+   レスポンシブ対応
+   ======================================== */
+
+/* 小さい画面でのコードブロック調整 */
+@media screen and (max-width: 768px) {
+  pre {
+    font-size: 0.8rem;
+    padding: var(--spacing-sm);
+    margin-left: -var(--spacing-sm);
+    margin-right: -var(--spacing-sm);
+    border-radius: 0;
+  }
+  
+  pre[class*="language-"]::before {
+    font-size: 0.6rem;
+    padding: 0.1em 0.3em;
+  }
+}
+
+/* ========================================
+   コードフォーカス・ハイライト
+   ======================================== */
+
+/* 特定行のハイライト */
+.highlight-line {
+  background-color: rgba(255, 235, 59, 0.3);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* コメント行のスタイル */
+.comment-line {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* 追加・削除行（diff風） */
+.added-line {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-left: 3px solid #4caf50;
+}
+
+.removed-line {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left: 3px solid #f44336;
+}
+
+/* ========================================
+   印刷最適化
+   ======================================== */
+
+@media print {
+  pre {
+    background-image: none;
+    border: 1px solid var(--gray-300);
+    padding: var(--spacing-sm);
+  }
+  
+  pre[class*="language-"]::before {
+    display: none;
+  }
+  
+  .code-with-line-numbers pre {
+    padding-left: var(--spacing-md);
+  }
+  
+  .code-with-line-numbers pre code::before {
+    display: none;
+  }
+}
