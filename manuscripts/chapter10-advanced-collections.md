@@ -128,15 +128,71 @@ public class AdvancedSortExample {
 
 ## 10.3 Stream APIによる現代的なコレクション操作
 
-Java 8で導入された**Stream API**は、コレクションの要素の集まりを「データの流れ（ストリーム）」として扱い、その流れに対してさまざまな処理を連結（パイプライン化）していくしくみです。ラムダ式と組み合わせることで、コレクション操作を非常に宣言的（「何をするか」を記述するスタイル）で、かつ簡潔に書くことができます。
+Java 8で導入された**Stream API**は、コレクションの要素の集まりを「データの流れ（ストリーム）」として扱い、その流れに対してさまざまな処理を連結（パイプライン化）していくしくみです。
+
+### なぜStream APIが必要なのか
+
+従来のコレクション操作では、forループとif文を組み合わせた命令型のコードを書く必要がありました。このアプローチには以下のような課題がありました：
+
+1. **可読性の問題**：ネストしたループや複雑な条件分岐により、コードの意図が読み取りにくい
+2. **並列処理の困難さ**：マルチコアCPUを活用した並列処理を実装するには、複雑なスレッド管理が必要
+3. **再利用性の低さ**：処理ロジックがループ構造と密結合し、再利用が困難
+
+Stream APIは、関数型プログラミングの概念を取り入れることでこれらの課題を解決します。データ処理を「変換のパイプライン」として表現することで、より宣言的で理解しやすいコードを実現します。
+
+### 遅延評価のしくみ
+
+Stream APIの重要な特徴の一つが**遅延評価（Lazy Evaluation）**です。中間操作（filter、mapなど）は、終端操作（collect、forEachなど）が呼ばれるまで実際には実行されません。これにより：
+
+- 不要な計算を避けることができる
+- メモリ効率が向上する
+- 無限ストリームの処理が可能になる
+
+```java
+// この時点ではまだフィルタリングは実行されない
+Stream<Integer> stream = numbers.stream()
+    .filter(n -> {
+        System.out.println("Filtering: " + n);
+        return n > 10;
+    });
+
+// collect()が呼ばれて初めてフィルタリングが実行される
+List<Integer> result = stream.collect(Collectors.toList());
+```
+
+ラムダ式と組み合わせることで、コレクション操作を非常に宣言的（「何をするか」を記述するスタイル）で、かつ簡潔に書くことができます。
 
 ### Stream操作の基本パターン
 
 `コレクション.stream().中間操作1().中間操作2()...終端操作()`
 
-- **ストリームの生成**: `list.stream()`のように、コレクションからストリームを生成します。
-- **中間操作**: `filter`（フィルタリング）、`map`（変換）、`sorted`（ソート）など。処理結果として新しいストリームを返します。何度でも連結できます。
-- **終端操作**: `forEach`（繰り返し処理）、`collect`（結果をコレクションに集約）、`count`（要素数を数える）など。ストリームの処理を最終的に実行し、結果を返します。
+#### ストリーム処理の3つのフェーズ
+
+1. **ストリームの生成**: 
+   - `list.stream()`：コレクションからストリームを生成
+   - `Arrays.stream(array)`：配列からストリームを生成
+   - `Stream.of(値1, 値2, ...)`：個別の値からストリームを生成
+   - `Stream.generate()`や`Stream.iterate()`：無限ストリームの生成
+
+2. **中間操作（Intermediate Operations）**: 
+   中間操作は新しいストリームを返すため、メソッドチェーンで連結できます。主な中間操作：
+   - `filter(Predicate)`：条件に合う要素のみを通過させる
+   - `map(Function)`：各要素を別の形に変換する
+   - `flatMap(Function)`：ネストした構造を平坦化する
+   - `sorted()`：要素をソートする
+   - `distinct()`：重複を除去する
+   - `limit(n)`：最初のn個の要素に制限する
+   - `skip(n)`：最初のn個の要素をスキップする
+
+3. **終端操作（Terminal Operations）**: 
+   終端操作はストリームを「消費」し、結果を生成します。終端操作が呼ばれて初めて、すべての処理が実行されます：
+   - `collect(Collector)`：結果を収集する（最も柔軟な終端操作）
+   - `forEach(Consumer)`：各要素に対して処理を実行
+   - `count()`：要素数を返す
+   - `reduce(BinaryOperator)`：要素を集約して単一の結果を生成
+   - `anyMatch(Predicate)`：いずれかの要素が条件を満たすか
+   - `allMatch(Predicate)`：すべての要素が条件を満たすか
+   - `findFirst()`/`findAny()`：最初の要素/任意の要素を取得
 
 ### `filter`: 条件に合う要素だけを抽出
 
@@ -190,6 +246,104 @@ public class StreamExample {
 }
 ```
 従来の`for`ループと`if`文を組み合わせるよりも、処理の流れが明確で読みやすいコードになるのがStream APIの大きな利点です。
+
+## 10.4 並列ストリームによるパフォーマンス向上
+
+### マルチコア時代のプログラミング
+
+現代のCPUは複数のコアを持ち、複数の処理を同時に実行できます。しかし、従来のループ処理はシングルスレッドで実行されるため、1つのコアしか使用しません。Stream APIの**並列ストリーム**を使うと、データ処理を自動的に複数のコアに分散して実行できます。
+
+### 並列ストリームの使い方
+
+並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです：
+
+```java
+// シーケンシャル（直列）処理
+long sum = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .mapToLong(n -> n * n)
+    .sum();
+
+// 並列処理
+long sumParallel = numbers.parallelStream()
+    .filter(n -> n % 2 == 0)
+    .mapToLong(n -> n * n)
+    .sum();
+```
+
+### 並列ストリームの内部動作
+
+並列ストリームは、Javaの**Fork/Joinフレームワーク**を使用して実装されています。処理の流れは以下のようになります：
+
+1. **分割（Split）**：データを複数の小さなチャンクに分割
+2. **処理（Process）**：各チャンクを異なるスレッドで並列に処理
+3. **統合（Combine）**：各スレッドの結果を統合して最終結果を生成
+
+```java
+import java.util.stream.IntStream;
+import java.time.Duration;
+import java.time.Instant;
+
+public class ParallelStreamExample {
+    public static void main(String[] args) {
+        int size = 100_000_000;
+        
+        // シーケンシャル処理の計測
+        Instant start = Instant.now();
+        double sumSeq = IntStream.range(0, size)
+            .mapToDouble(Math::sqrt)
+            .sum();
+        Duration seqTime = Duration.between(start, Instant.now());
+        
+        // 並列処理の計測
+        start = Instant.now();
+        double sumPar = IntStream.range(0, size)
+            .parallel()
+            .mapToDouble(Math::sqrt)
+            .sum();
+        Duration parTime = Duration.between(start, Instant.now());
+        
+        System.out.println("シーケンシャル: " + seqTime.toMillis() + "ms");
+        System.out.println("並列: " + parTime.toMillis() + "ms");
+        System.out.println("高速化率: " + 
+            (double)seqTime.toMillis() / parTime.toMillis() + "倍");
+    }
+}
+```
+
+### 並列ストリームの注意点
+
+並列ストリームは強力な機能ですが、すべての状況で性能が向上するわけではありません：
+
+#### 1. オーバーヘッドの問題
+スレッドの作成やコンテキストスイッチにはコストがかかります。データ量が少ない場合、このオーバーヘッドが並列化の利点を上回ることがあります。
+
+#### 2. スレッドセーフティ
+並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります：
+
+```java
+// スレッドセーフでない例（避けるべき）
+List<Integer> results = new ArrayList<>();  // スレッドセーフでない
+numbers.parallelStream()
+    .forEach(n -> results.add(n * 2));  // データ競合の危険！
+
+// スレッドセーフな代替方法
+List<Integer> results = numbers.parallelStream()
+    .map(n -> n * 2)
+    .collect(Collectors.toList());  // スレッドセーフ
+```
+
+#### 3. 順序の保証
+並列ストリームでは、処理の順序が保証されない場合があります。順序が重要な場合は、`forEachOrdered()`を使用するか、シーケンシャルストリームを使う必要があります。
+
+### 並列ストリームを使うべき場合
+
+以下の条件が揃った場合に、並列ストリームの使用を検討しましょう：
+
+1. **大量のデータ**：数千以上の要素を処理する場合
+2. **CPU集約的な処理**：各要素の処理に計算コストがかかる場合
+3. **状態を共有しない処理**：各要素が独立して処理できる場合
+4. **順序が重要でない場合**：出力の順序が問題にならない場合
 
 ## まとめ
 

@@ -84,13 +84,13 @@ The build process converts Markdown files listed in the `entry` array (currently
 **Critical**: The `manuscripts/` directory should contain ONLY the actual book content files that will be included in the final publication. 
 
 - **Book content only**: All files in `manuscripts/` must be part of the actual book
-- **Auxiliary files**: Planning documents, checklists, notes, and other auxiliary files should be stored in `docs/planning/`
-- **Never create**: Do not create management files, TODO lists, or planning documents in `manuscripts/`
+- **Auxiliary files**: Any auxiliary files such as planning documents, guidelines, checklists, or notes must be stored in `meta/` directory
+- **Never create**: Do not create management files, TODO lists, planning documents, or writing guidelines in `manuscripts/`
 - **Before creating**: Always verify that a new file in `manuscripts/` will be added to `vivliostyle.config.js`
 
 Directory structure:
-- `manuscripts/`: Book content only (chapters, appendices included in vivliostyle.config.js)
-- `docs/planning/`: Planning documents, checklists, future topics, notes
+- `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
+- `meta/`: Auxiliary files for book creation (planning documents, guidelines, cross-reference guides, etc.)
 - `source/`: Original lecture materials and reference code (read-only)
 - `output/`: Generated PDF files
 
