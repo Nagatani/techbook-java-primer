@@ -1,61 +1,5 @@
 # 第7章 抽象クラスとインターフェイス
 
-## 章末演習
-
-本章で学んだ抽象クラスとインターフェイスの概念を活用して、実践的な練習課題に取り組みましょう。
-
-### 演習の目標
-- 抽象クラス（abstract class）の概念と実装
-- インターフェイス（interface）の設計と活用
-- 抽象メソッドと具象メソッドの使い分け
-- 多重継承の代替としてのインターフェイス
-- デフォルトメソッドと静的メソッドの活用
-- SOLID原則にもとづく抽象化設計の理解と実践
-
-### 📁 課題の場所
-演習課題は `exercises/chapter07/` ディレクトリに用意されています：
-
-```
-exercises/chapter07/
-├── basic/          # 基本課題（必須）
-│   ├── README.md   # 課題の詳細説明
-│   ├── Shape.java  # 課題1: 図形の抽象クラス設計
-│   ├── Circle.java
-│   ├── Rectangle.java
-│   ├── ShapeTest.java
-│   ├── Flyable.java # 課題2: 動物の行動インターフェイス
-│   ├── Swimmable.java
-│   ├── Walkable.java
-│   ├── Bird.java
-│   ├── Fish.java
-│   ├── Duck.java
-│   ├── AnimalInterfaceTest.java
-│   ├── PaymentMethod.java # 課題3: 支払い方法の戦略パターン
-│   ├── CreditCard.java
-│   ├── DebitCard.java
-│   ├── Cash.java
-│   ├── PaymentProcessor.java
-│   ├── PaymentTest.java
-│   ├── Notifiable.java # 課題4: 通知システムの複合インターフェイス
-│   ├── Loggable.java
-│   ├── EmailNotifier.java
-│   ├── SMSNotifier.java
-│   ├── SystemLogger.java
-│   └── NotificationTest.java
-├── advanced/       # 発展課題（推奨）
-└── challenge/      # 挑戦課題（上級者向け）
-```
-
-### 推奨する学習の進め方
-
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. ToDoコメントを参考に実装
-4. 抽象クラスとインターフェイスの使い分けを理解する
-5. デフォルトメソッドと多重実装を活用する
-
-基本課題が完了したら、`advanced/`の発展課題でより複雑な抽象化設計に挑戦してみましょう！
-
 ## 本章の学習目標
 
 ### 前提知識
@@ -328,37 +272,492 @@ int result = Calculable.triple(5); // 15
 
 ## 7.6 章末演習
 
-### 演習：データリポジトリの設計
+本章で学んだ抽象クラスとインターフェイスの概念を実践的に活用する演習課題に取り組みましょう。
 
-**目的:** 抽象クラスとインターフェイスを組み合わせ、柔軟なデータアクセス層を設計する。
+### 🎯 演習の目標
+- 抽象クラス（abstract class）の概念と実装
+- インターフェイス（interface）の設計と活用
+- 抽象メソッドと具象メソッドの使い分け
+- 多重継承の代替としてのインターフェイス
+- デフォルトメソッドと静的メソッドの活用
+- SOLID原則に基づく抽象化設計の理解と実践
 
-**シナリオ:**
-さまざまな種類のデータを保存・読み込みするシステムを考えます。データには必ずIDがあり、保存・読み込みの操作は共通ですが、保存形式（ファイル、データベースなど）は異なります。
+### 演習課題の難易度レベル
 
-**手順:**
+#### 🟢 基礎レベル（Basic）
+- **目的**: 抽象クラスとインターフェイスの基本概念の確実な理解
+- **所要時間**: 30-45分/課題
+- **前提**: 本章の内容を理解していること
+- **評価基準**: 
+  - 抽象クラスの適切な設計と継承
+  - インターフェイスの実装と多重実装の理解
+  - ポリモーフィズムの活用
+  - デフォルトメソッドの理解
 
-1.  **`Storable`インターフェイスの作成**:
-    *   `Storable.java`というインターフェイスを作成します。
-    *   `void save()` と `void load()` という2つの抽象メソッドを定義します。
+#### 🟡 応用レベル（Applied）
+- **目的**: デザインパターンと実践的な設計
+- **所要時間**: 45-60分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - SOLID原則の適用
+  - 戦略パターンやテンプレートメソッドパターンの実装
+  - 実世界の問題への適用
+  - コードの再利用性と拡張性
 
-2.  **`BaseRepository`抽象クラスの作成**:
-    *   `BaseRepository.java`という**抽象クラス**を作成し、`Storable`インターフェイスを**実装**します。
-    *   `protected String id;` というフィールドを持ちます。
-    *   IDを初期化するコンストラクタを作成します。
-    *   `displayId()`という、IDを表示する具象メソッドを実装します。
-    *   `save()`と`load()`は、この段階では実装できないので、**抽象メソッド**のままにしておきます。
+#### 🔴 発展レベル（Advanced）
+- **目的**: 複雑なシステム設計と高度な抽象化
+- **所要時間**: 60-90分/課題
+- **前提**: 応用レベルを完了していること
+- **評価基準**:
+  - 複数のデザインパターンの組み合わせ
+  - 大規模システムの設計
+  - パフォーマンスと保守性の考慮
+  - 実用的なフレームワーク設計
 
-3.  **`FileRepository`具象クラスの作成**:
-    *   `BaseRepository`を**継承**した`FileRepository.java`を作成します。
-    *   コンストラクタで親のコンストラクタを呼び出します。
-    *   `save()`メソッドをオーバーライドし、「(id)をファイルに保存しました」と表示する処理を実装します。
-    *   `load()`メソッドをオーバーライドし、「(id)をファイルから読み込みました」と表示する処理を実装します。
+#### ⚫ 挑戦レベル（Challenge）
+- **目的**: 総合的な設計力と実装力の実証
+- **所要時間**: 90分以上
+- **前提**: 発展レベル完了と高度な設計への意欲
+- **評価基準**:
+  - 革新的な設計アプローチ
+  - 複雑な要求への対応
+  - プロダクションレベルの品質
+  - 拡張性と保守性の両立
 
-4.  **`DatabaseRepository`具象クラスの作成**:
-    *   同様に、`DatabaseRepository.java`を作成します。
-    *   `save()`では「データベースに保存」、`load()`では「データベースから読み込み」と表示するように実装します。
+---
 
-5.  **`Main`実行クラスの作成**:
-    *   `main`メソッドを持つ`Main.java`を作成します。
-    *   `Storable`型の配列を作成し、`FileRepository`と`DatabaseRepository`のインスタンスを格納します。
-    *   ループ処理で、各要素の`save()`と`load()`メソッドを呼び出し、ポリモーフィズムによってそれぞれの実装が呼び出されることを確認してください。
+## 🟢 基礎レベル課題（必須）
+
+### 課題1: 図形の抽象クラス設計（Shape.java）
+
+**学習目標：** 抽象クラスの定義、継承、ポリモーフィズム
+
+**問題説明：**
+図形を表す抽象クラスShapeを作成し、具体的な図形クラス（Circle、Rectangle）で実装してください。全ての図形は色を持ち、面積と周囲の長さを計算できます。
+
+**要求仕様：**
+1. 抽象クラスShape:
+   - privateフィールド: `color`（String）
+   - コンストラクタで色を初期化
+   - 抽象メソッド: `calculateArea()`、`calculatePerimeter()`
+   - 具象メソッド: `getColor()`、`displayInfo()`
+
+2. Circleクラス（Shapeを継承）:
+   - privateフィールド: `radius`（double）
+   - 面積計算: π × 半径²
+   - 周囲計算: 2 × π × 半径
+
+3. Rectangleクラス（Shapeを継承）:
+   - privateフィールド: `width`、`height`（double）
+   - 面積計算: 幅 × 高さ
+   - 周囲計算: 2 × (幅 + 高さ)
+
+**実行例：**
+```
+=== 図形抽象クラステスト ===
+円:
+色: 赤
+半径: 5.0
+面積: 78.54
+周囲: 31.42
+
+長方形:
+色: 青
+幅: 8.0, 高さ: 3.0
+面積: 24.0
+周囲: 22.0
+
+全図形の合計面積: 102.54
+```
+
+**実装ヒント：**
+```java
+public abstract class Shape {
+    private String color;
+    
+    public Shape(String color) {
+        this.color = color;
+    }
+    
+    // 抽象メソッド（サブクラスで実装必須）
+    public abstract double calculateArea();
+    public abstract double calculatePerimeter();
+    
+    // 具象メソッド（共通実装）
+    public String getColor() {
+        return color;
+    }
+    
+    public void displayInfo() {
+        System.out.println("色: " + color);
+        System.out.println("面積: " + String.format("%.2f", calculateArea()));
+        System.out.println("周囲: " + String.format("%.2f", calculatePerimeter()));
+    }
+}
+
+public class Circle extends Shape {
+    private double radius;
+    
+    public Circle(String color, double radius) {
+        super(color);  // 親クラスのコンストラクタを呼び出す
+        this.radius = radius;
+    }
+    
+    @Override
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+    
+    @Override
+    public double calculatePerimeter() {
+        return 2 * Math.PI * radius;
+    }
+}
+```
+
+### 課題2: 動物の行動インターフェイス設計
+
+**学習目標：** インターフェイスの定義、多重実装、デフォルトメソッド
+
+**問題説明：**
+動物の行動を表すインターフェイス（Flyable、Swimmable、Walkable）を作成し、様々な動物クラスで実装してください。一部の動物は複数の行動が可能です。
+
+**要求仕様：**
+1. インターフェイス定義:
+   - Flyable: `fly()`メソッド、デフォルトメソッド`getAltitude()`
+   - Swimmable: `swim()`メソッド、デフォルトメソッド`getDiveDepth()`
+   - Walkable: `walk()`メソッド
+
+2. 動物クラス:
+   - Bird: Flyable、Walkableを実装
+   - Fish: Swimmableを実装
+   - Duck: Flyable、Swimmable、Walkableを実装（全て実装）
+
+**実行例：**
+```
+=== 動物行動インターフェイステスト ===
+鳥の行動:
+空を飛んでいます（高度: 100m）
+地面を歩いています
+
+魚の行動:
+水中を泳いでいます（深度: 10m）
+
+アヒルの行動:
+空を飛んでいます（高度: 50m）
+水中を泳いでいます（深度: 2m）
+地面を歩いています
+
+移動可能な動物の総数: 3
+```
+
+**実装ヒント：**
+```java
+public interface Flyable {
+    void fly();
+    
+    // デフォルトメソッド
+    default int getAltitude() {
+        return 100;  // デフォルトの高度
+    }
+}
+
+public interface Swimmable {
+    void swim();
+    
+    default int getDiveDepth() {
+        return 10;  // デフォルトの深度
+    }
+}
+
+public class Duck implements Flyable, Swimmable, Walkable {
+    @Override
+    public void fly() {
+        System.out.println("空を飛んでいます（高度: " + getAltitude() + "m）");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("水中を泳いでいます（深度: " + getDiveDepth() + "m）");
+    }
+    
+    @Override
+    public void walk() {
+        System.out.println("地面を歩いています");
+    }
+    
+    // 必要に応じてデフォルトメソッドをオーバーライド
+    @Override
+    public int getAltitude() {
+        return 50;  // アヒルは低く飛ぶ
+    }
+}
+```
+
+### 課題3: 支払い方法の戦略パターン（PaymentMethod.java）
+
+**学習目標：** インターフェイスによる戦略パターン、統一的な処理
+
+**問題説明：**
+支払い方法を表すインターフェイスを作成し、異なる支払い方法（クレジットカード、デビットカード、現金）を実装してください。各支払い方法には手数料計算があります。
+
+**要求仕様：**
+1. PaymentMethodインターフェイス:
+   - `processPayment(double amount)`
+   - `calculateFee(double amount)`
+   - デフォルトメソッド`getPaymentType()`
+
+2. 実装クラス:
+   - CreditCard: 手数料3%
+   - DebitCard: 手数料2%
+   - Cash: 手数料0%
+
+3. PaymentProcessorクラス:
+   - 支払い方法を受け取り、統一的に処理
+
+**実行例：**
+```
+=== 支払い方法戦略パターンテスト ===
+クレジットカード支払い:
+支払い金額: 10,000円
+手数料: 300円
+合計: 10,300円
+支払い完了
+
+デビットカード支払い:
+支払い金額: 5,000円
+手数料: 100円
+合計: 5,100円
+支払い完了
+
+現金支払い:
+支払い金額: 3,000円
+手数料: 0円
+合計: 3,000円
+支払い完了
+
+今日の総売上: 18,400円
+```
+
+### 課題4: 通知システムの複合インターフェイス（Notifiable.java）
+
+**学習目標：** 複数インターフェイスの実装、機能の組み合わせ
+
+**問題説明：**
+通知とログ機能を持つシステムを作成してください。一部のクラスは両方の機能を持ち、一部は片方のみを実装します。
+
+**要求仕様：**
+1. インターフェイス:
+   - Notifiable: `sendNotification(String message)`
+   - Loggable: `log(String message)`、デフォルトメソッド`getTimestamp()`
+
+2. 実装クラス:
+   - EmailNotifier: Notifiable、Loggableを実装
+   - SMSNotifier: Notifiable、Loggableを実装
+   - SystemLogger: Loggableのみ実装
+
+**実行例：**
+```
+=== 通知システム複合インターフェイステスト ===
+Emailによる通知:
+[EMAIL] メッセージを送信しました: システム開始
+[LOG] 2024-07-04 10:30:00 - Email送信: システム開始
+
+SMSによる通知:
+[SMS] メッセージを送信しました: エラー発生
+[LOG] 2024-07-04 10:30:01 - SMS送信: エラー発生
+
+システムログ:
+[LOG] 2024-07-04 10:30:02 - システム情報: 処理完了
+
+全通知件数: 3件
+```
+
+---
+
+## 🟡 応用レベル課題（推奨）
+
+### 課題1: ゲームキャラクターシステム
+
+**学習目標：** 抽象クラスとインターフェイスの組み合わせ、テンプレートメソッドパターン
+
+**問題説明：**
+ゲームキャラクターシステムを設計してください。全キャラクターは基本的な属性を持ち、種類によって異なる行動や能力を持ちます。
+
+**要求仕様：**
+1. GameCharacter抽象クラス:
+   - フィールド: name、health、attackPower
+   - 抽象メソッド: attack()、defend()
+   - テンプレートメソッド: performTurn()
+
+2. Drawableインターフェイス:
+   - draw()メソッド
+   - getPosition()メソッド
+
+3. 具象クラス:
+   - Player: GameCharacterを継承、Drawableを実装
+   - Enemy: GameCharacterを継承、Drawableを実装
+   - 特殊能力の実装
+
+### 課題2: 支払いシステムの拡張
+
+**学習目標：** インターフェイス分離原則、実世界のビジネスロジック
+
+**問題説明：**
+給与計算システムを作成してください。従業員と請求書の両方を統一的に処理できるようにします。
+
+**要求仕様：**
+1. Payableインターフェイス:
+   - getPaymentAmount()
+   - getPaymentName()
+   - デフォルトメソッドgetPaymentDescription()
+
+2. 実装クラス:
+   - Employee: 月給制、時給制の従業員
+   - Invoice: 商品の請求書
+   - Contractor: 契約社員（特別な計算ロジック）
+
+### 課題3: ソート可能オブジェクト
+
+**学翕目標：** 複数基準でのソート、列挙型の活用
+
+**問題説明：**
+学生情報を管理し、複数の基準でソートできるシステムを作成してください。
+
+**要求仕様：**
+1. Sortableインターフェイス:
+   - compareTo()メソッド
+   - setSortCriteria()メソッド
+
+2. SortCriteria列挙型:
+   - NAME、SCORE、STUDENT_ID
+
+3. Studentクラス:
+   - SortableとComparableの両方を実装
+   - 名前、点数、学籍番号の管理
+
+---
+
+## 🔴 発展レベル課題（挑戦）
+
+### 課題1: プラグインシステムの設計
+
+**学習目標：** 拡張可能なアーキテクチャ、高度な抽象化
+
+**問題説明：**
+プラグイン可能なアプリケーションフレームワークを設計してください。新しい機能を既存コードを変更せずに追加できるようにします。
+
+**要求仕様：**
+1. Pluginインターフェイス階層:
+   - Plugin: 基本インターフェイス
+   - Configurable: 設定可能なプラグイン
+   - Lifecycle: ライフサイクル管理
+
+2. PluginManager:
+   - プラグインの登録、実行、管理
+   - 依存関係の解決
+   - イベントシステム
+
+### 課題2: データアクセス層の抽象化
+
+**学習目標：** リポジトリパターン、データベース抽象化
+
+**問題説明：**
+異なるデータソース（ファイル、データベース、メモリ）に対して統一的なアクセスを提供するシステムを作成してください。
+
+**要求仕様：**
+1. Repository階層:
+   - Repository<T>: ジェネリックインターフェイス
+   - CrudRepository<T>: CRUD操作
+   - QueryableRepository<T>: クエリ機能
+
+2. 実装:
+   - FileRepository
+   - DatabaseRepository
+   - InMemoryRepository
+
+---
+
+## ⚫ 挑戦レベル課題（上級者向け）
+
+### 統合プロジェクト: ゲームエンジンフレームワーク
+
+**学習目標：** 総合的な設計力、実用的なフレームワーク構築
+
+**問題説明：**
+2Dゲームを作成するための基本的なゲームエンジンフレームワークを設計してください。
+
+**要求仕様：**
+
+1. **コアシステム:**
+   - GameObject抽象クラス
+   - Component システム（コンポーネント指向設計）
+   - Scene管理
+   - GameLoop（テンプレートメソッド）
+
+2. **インターフェイス階層:**
+   - Renderable: 描画可能
+   - Updateable: 更新可能
+   - Collidable: 衝突判定可能
+   - Interactive: インタラクション可能
+
+3. **具体的な実装:**
+   - Sprite: 画像表示
+   - AnimatedSprite: アニメーション
+   - PhysicsBody: 物理演算
+   - InputHandler: 入力処理
+
+4. **高度な機能:**
+   - イベントシステム
+   - リソース管理
+   - ステート管理
+   - 拡張可能なアーキテクチャ
+
+**評価ポイント：**
+- SOLID原則の適用
+- デザインパターンの活用
+- 拡張性と保守性
+- パフォーマンスの考慮
+- ドキュメントとテスト
+
+---
+
+## 🔗 実装環境
+
+演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
+
+```
+exercises/chapter07/
+├── basic/          # 基礎レベル課題
+│   ├── README.md   # 詳細な課題説明
+│   ├── Shape.java
+│   ├── Circle.java
+│   ├── Rectangle.java
+│   └── ShapeTest.java
+├── advanced/       # 応用・発展レベル課題
+│   └── README.md
+├── challenge/      # 挑戦レベル課題
+└── solutions/      # 解答例（実装完了後に参照）
+```
+
+---
+
+## ✅ 完了確認チェックリスト
+
+### 基礎レベル
+- [ ] Shape抽象クラスと図形クラスが正しく実装されている
+- [ ] 動物行動インターフェイスで多重実装ができている
+- [ ] 支払い方法で戦略パターンが実装されている
+- [ ] 通知システムで複合インターフェイスが活用されている
+
+### 技術要素
+- [ ] 抽象クラスとインターフェイスの使い分けができている
+- [ ] ポリモーフィズムを活用した統一的な処理ができている
+- [ ] デフォルトメソッドの意味と使い方を理解している
+- [ ] SOLID原則を意識した設計ができている
+
+### 応用・発展レベル
+- [ ] 複数のデザインパターンを適切に適用できている
+- [ ] 実世界の問題を抽象化して設計できている
+- [ ] 拡張性と保守性を考慮した設計ができている
+- [ ] 大規模なシステムアーキテクチャを構築できている

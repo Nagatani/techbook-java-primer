@@ -1,567 +1,383 @@
 # 第5章 継承とポリモーフィズム
 
-## 章末演習
-
-本章で学んだ継承とポリモーフィズムの概念を段階的に実践し、オブジェクト指向の真髄を理解しましょう。各レベルは継承階層の複雑さと設計の深さで難易度を分けています。
-
-### 演習の目標
-- 継承の概念と実装方法の理解
-- superキーワードの使い方
-- メソッドオーバーライドの実践
-- ポリモーフィズムの基本概念
-- 抽象クラスとインターフェイスの基本
-- is-a関係とhas-a関係の使い分け
-
-### 演習課題の難易度レベル
-
-#### 🟢 基礎レベル（Basic）
-- **目的**: 継承とオーバーライドの基本的な理解と実装
-- **所要時間**: 25-40分/課題
-- **前提**: 第3章のクラス設計を習得していること
-- **評価基準**: 
-  - 適切な継承関係を設計できる
-  - メソッドオーバーライドを正しく実装できる
-  - superキーワードを適切に使用できる
-  - is-a関係を理解している
-
-#### 🟡 応用レベル（Applied）
-- **目的**: ポリモーフィズムを活用した柔軟な設計
-- **所要時間**: 40-60分/課題
-- **前提**: 基礎レベルを完了していること
-- **評価基準**:
-  - ポリモーフィズムを効果的に活用できる
-  - 継承階層を適切に設計できる
-  - 抽象クラスとインターフェイスを使い分けられる
-  - 拡張しやすい設計ができる
-
-#### 🔴 発展レベル（Advanced）
-- **目的**: 実務レベルの継承設計と設計パターンの適用
-- **所要時間**: 60-80分/課題
-- **前提**: 応用レベルを完了し、設計パターンに興味があること
-- **評価基準**:
-  - 複雑な継承階層を適切に管理できる
-  - Template Methodパターン等の基本パターンが使える
-  - 継承と委譲を適切に使い分けられる
-  - パフォーマンスと保守性を考慮した設計ができる
-
-#### ⚫ 挑戦レベル（Challenge）
-- **目的**: 高度な設計パターンと創造的な問題解決
-- **所要時間**: 80分以上
-- **前提**: 発展レベル完了と深い理解への探求心
-- **評価基準**:
-  - 複数の設計パターンを組み合わせて使える
-  - 独創的な継承設計ができる
-  - フレームワーク設計の基本が理解できる
-  - アーキテクチャレベルの判断ができる
-
-### 📁 課題の場所
-演習課題は `exercises/chapter05/` ディレクトリに用意されています：
-
-```
-exercises/chapter05/
-├── basic/          # 🟢 基礎レベル（必須）
-│   ├── README.md   # 課題の詳細説明
-│   ├── Animal.java         # 課題1: 基本継承階層
-│   ├── Dog.java
-│   ├── Cat.java
-│   ├── AnimalTest.java
-│   ├── Shape.java          # 課題2: 図形とオーバーライド
-│   ├── Rectangle.java
-│   ├── Circle.java
-│   ├── ShapeTest.java
-│   ├── Vehicle.java        # 課題3: 交通手段の継承
-│   ├── Car.java
-│   ├── Bicycle.java
-│   └── VehicleTest.java
-├── applied/        # 🟡 応用レベル（推奨）
-│   ├── README.md
-│   ├── Employee.java       # 課題1: 従業員システム
-│   ├── Manager.java
-│   ├── Engineer.java
-│   ├── EmployeeTest.java
-│   ├── MediaPlayer.java    # 課題2: メディアプレイヤー
-│   ├── AudioPlayer.java
-│   ├── VideoPlayer.java
-│   ├── MediaPlayerTest.java
-│   ├── GameCharacter.java  # 課題3: RPGキャラクター
-│   ├── Warrior.java
-│   ├── Mage.java
-│   └── GameCharacterTest.java
-├── advanced/       # 🔴 発展レベル（挑戦者向け）
-│   ├── README.md
-│   ├── FileProcessor.java      # 課題1: ファイル処理システム
-│   ├── TextProcessor.java
-│   ├── ImageProcessor.java
-│   ├── FileProcessorTest.java
-│   ├── DrawingEngine.java      # 課題2: 描画エンジン
-│   ├── VectorGraphics.java
-│   ├── RasterGraphics.java
-│   └── DrawingEngineTest.java
-└── challenge/      # ⚫ 挑戦レベル（上級者向け）
-    ├── README.md
-    ├── PluginSystem.java       # 課題1: プラグインシステム
-    ├── PluginManager.java
-    ├── PluginSystemTest.java
-    ├── MiniMVC.java           # 課題2: 簡易MVCフレームワーク
-    ├── Controller.java
-    ├── View.java
-    ├── Model.java
-    └── MiniMVCTest.java
-```
-
-### 推奨学習パス
-
-```
-【段階的学習フロー】
-🟢 基礎課題1-3 (全完了必須)
-    ↓
-🟡 応用課題1 → 応用課題2 → 応用課題3
-    ↓ (2課題以上完了で進級)
-🔴 発展課題 (1課題以上完了推奨)
-    ↓
-⚫ 挑戦課題 (自由選択)
-```
-
-### 課題の種類と学習効果
-
-#### 継承設計課題（全レベル）
-- 適切な継承階層の設計と実装
-- is-a関係の理解と実践
-
-#### ポリモーフィズム活用課題（応用以上）
-- 統一的なインターフェイスでの多様な実装
-- 実行時の動的な振る舞い変更
-
-#### リファクタリング課題（発展以上）
-- 継承を使った既存コードの改善
-- 設計パターンの適用練習
-
-#### フレームワーク設計課題（挑戦レベル）
-- 拡張可能なアーキテクチャの設計
-- 高度な抽象化と設計パターン
-
-### 推奨する学習の進め方
-
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. ToDoコメントを参考に実装
-4. 継承関係とメソッドオーバーライドを理解する
-5. ポリモーフィズムによる統一的な処理を実装する
-
-基本課題が完了したら、`advanced/`の発展課題でより複雑な継承階層に挑戦してみましょう！
-
 ## 本章の学習目標
 
 ### 前提知識
-**必須前提**：
-- 第4章までのオブジェクト指向概念の習得
-- 複数クラスを含むプログラムの設計・実装経験
-- クラスとインスタンスの基本概念の理解
+- **第4章のカプセル化とアクセス制御の理解**：`public`, `private`などの役割の理解
+- **クラスの基本的な設計経験**：フィールド、メソッド、コンストラクタの作成経験
 
-**プロジェクト経験前提**：
-- 中規模なクラス群を含むプログラムの開発経験
-- 名前の衝突問題の実体験
+### 到達目標
 
-### 学習目標
-**知識理解目標**：
-- パッケージシステムの設計思想と利点
-- Java標準ライブラリの構造とパッケージ設計
-- 4つのアクセスレベル（public、protected、package-private、private）の理解
-- モジュラープログラミングの原則
+#### 知識理解目標
+- 継承の概念と、is-a関係の理解
+- `extends`キーワードと`super`キーワードの役割
+- メソッドオーバーライドのルールと目的
+- ポリモーフィズム（多態性）の概念と、それがもたらす柔軟性の理解
+- アップキャストとダウンキャスト、そして`instanceof`演算子の役割
 
-**技能習得目標**：
-- 適切なパッケージ構造の設計と実装
-- import文の効率的な使用
-- アクセス修飾子を使った適切な情報隠蔽
-- パッケージを跨いだクラス間の連携実装
+#### 技能習得目標
+- `extends`を使って既存のクラスを継承し、新しいクラスを定義する
+- 親クラスのメソッドを`@Override`アノテーションを使って正しくオーバーライドする
+- 親クラスのコンストラクタを`super()`で呼びだす
+- 親クラスの型で子クラスのインスタンスを扱い、ポリモーフィズムを実践する
+- `instanceof`とキャストを使い、特定のサブクラスの機能を利用する
 
-**アーキテクチャ能力目標**：
-- 大規模システムを想定した構造化設計
-- 再利用可能なライブラリ設計の基礎
-- 依存関係の管理と最適化
+#### 到達レベルの指標
 
-**到達レベルの指標**：
-- 複数パッケージで構成される中規模アプリケーションが設計・実装できる
-- Java標準ライブラリを効果的に活用できる
-- 適切なアクセス制御により保守性の高いコードが書ける
-- プロジェクトの構造化とモジュール分割ができる
+| 到達レベル |
+| :--- |
+| 継承関係を適切に設計し、コードの再利用性を高めることができる |
+| ポリモーフィズムを活用し、拡張しやすく保守性の高いコードを記述できる |
+| is-a関係とhas-a関係を理解し、継承とコンポジションを適切に使い分けられる |
+| 実行時のオブジェクトの型に応じて動的に振る舞いが変わるプログラムを作成できる |
 
 ---
 
-## 4.1 カプセル化とアクセス制限
+## 5.1 継承：クラスの機能を引き継ぐ
 
-オブジェクト指向プログラミングの重要な原則の1つである**カプセル化 (Encapsulation)** について詳しく学習しましょう。カプセル化とは、オブジェクトのデータ（フィールド）とそのデータを操作するメソッドを1つにまとめ、オブジェクトの内部構造を外部から隠蔽することです。
+オブジェクト指向プログラミングには、「カプセル化」「継承」「ポリモーフィズム」という三大原則があります。本章では、その中でも特にコードの再利用性と拡張性を高める「継承」と「ポリモーフィズム」について学びます。
 
-### なぜカプセル化が必要か？
+**継承 (Inheritance)** とは、あるクラスが持つフィールドやメソッドなどの性質を、別のクラスが引き継ぐことができるしくみです。
 
-もし、クラスのフィールドが外部から自由にアクセスできてしまうと、どうなるでしょうか？
+- **親クラス（スーパークラス）**: 性質を継承される元のクラス。
+- **子クラス（サブクラス）**: 性質を継承する先のクラス。
+
+これにより、子クラスは親クラスの機能を再利用しつつ、新しい機能を追加したり、既存の機能を変更（オーバーライド）したりできます。
+
+### なぜ継承が必要か？
+
+たとえば、ゲームに登場するさまざまなキャラクタを考えてみましょう。「勇者」「魔法使い」「戦士」は、それぞれ異なる能力を持っていますが、「名前」「HP」「MP」といった共通のパラメータや、「攻撃する」「防御する」といった共通の行動も持っています。
+
+継承を使わない場合、それぞれのクラスで同じ内容のコードを何度も書く必要があり、非効率で間違いも起きやすくなります。
 
 ```java
-// カプセル化されていない例
-public class BankAccount {
-    public String ownerName;
-    public double balance; // publicなので誰でも直接変更できてしまう
+// 継承を使わない場合
+public class Hero {
+    String name;
+    int hp;
+    void attack() { /* ... */ }
 }
 
-public class BankTest {
-    public static void main(String[] args) {
-        BankAccount account = new BankAccount();
-        account.ownerName = "山田太郎";
-        account.balance = 100000;
+public class Wizard {
+    String name; // Heroと重複
+    int hp;     // Heroと重複
+    void attack() { /* ... */ } // Heroと重複
+    void castSpell() { /* ... */ }
+}
+```
 
-        // 外部から直接、不正な値に書き換えられてしまう
-        account.balance = -50000; // 本来ありえない「負の残高」が設定できてしまう
-        System.out.println(account.ownerName + "さんの残高: " + account.balance);
+継承を使うと、これらの共通部分を`Character`という親クラスにまとめ、各職業クラスはそれを継承することで、重複をなくし、コードをすっきりとさせることができます。
+
+### 継承の書き方：`extends`
+
+Javaで継承を行うには、子クラスの宣言時に`extends`キーワードを使います。
+
+```java
+// 親クラス
+public class Character {
+    String name;
+    int hp;
+
+    void attack() {
+        System.out.println(this.name + "の攻撃！");
+    }
+}
+
+// Characterクラスを継承した子クラス
+public class Hero extends Character {
+    // Characterのname, hp, attack()を自動的に引き継いでいる
+    void specialMove() {
+        System.out.println(this.name + "の必殺技！");
+    }
+}
+
+// Characterクラスを継承した子クラス
+public class Wizard extends Character {
+    int mp; // Wizard独自のフィールド
+
+    void castSpell() {
+        System.out.println(this.name + "は魔法を唱えた！");
     }
 }
 ```
-このように、外部から直接データを操作できると、オブジェクトが不正な状態になったり、意図しない変更が加えられたりする危険性があります。
 
-カプセル化は、このような問題を防ぎ、以下の利点をもたらします。
+### is-a関係
 
-*   **データの保護（整合性の維持）**: 外部から直接フィールドにアクセスできなくすることで、意図しない値の書き換えや、不正な状態になることを防ぎます。
-*   **保守性の向上**: クラスの内部実装（フィールドの持ち方やメソッド内のロジック）を変更しても、外部への影響を最小限に抑えることができます。公開しているメソッドの仕様が変わらなければ、内部は自由に変更できます。
-*   **独立性と再利用性の向上**: 適切にカプセル化されたクラスは、部品としての独立性が高まり、ほかのプログラムでも安心して利用しやすくなります。
+継承は、クラス間に「**is-a関係**」（〜は〜の一種である）が成り立つ場合に使うのが適切です。
 
-### アクセス修飾子によるアクセス制御
+- 「勇者(Hero) **is a** キャラクタ(Character)」
+- 「魔法使い(Wizard) **is a** キャラクタ(Character)」
 
-Javaでは、クラス、フィールド、メソッド、コンストラクタに対して**アクセス修飾子**を指定することで、外部からのアクセスレベルを制御します。
+このような関係が成り立つ場合、継承の利用を検討します。一方、「車(Car) **has a** エンジン(Engine)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
 
-| 修飾子 | 同じクラス | 同じパッケージ | サブクラス (別パッケージ) | それ以外 (別パッケージ) | 説明 |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `public` | ○ | ○ | ○ | ○ | **公開**。どこからでもアクセス可能。 |
-| `protected` | ○ | ○ | ○ | × | **保護**。同じクラス、同じパッケージ、または別パッケージのサブクラスからアクセス可能。 |
-| (修飾子なし) | ○ | ○ | × | × | **パッケージプライベート**。修飾子を記述しない場合。同じパッケージ内からのみアクセス可能。 |
-| `private` | ○ | × | × | × | **非公開**。同じクラス内からのみアクセス可能。 |
-
-**選択の基本方針:**
-*   **フィールドは原則 `private`**: クラスの心臓部であるデータは、外部から直接触られないように隠します。
-*   **メソッドは外部に公開するものだけ `public`**: 外部から使われることを意図した機能だけを公開し、内部だけで使う補助的なメソッドは `private` にします。
-*   **迷ったら、できるだけ厳しい（狭い）範囲の修飾子を選ぶ**: 最初は `private` にしておき、必要に応じてアクセス範囲を広げていくのが安全なアプローチです。
-
-### getter/setter パターンによる実践
-
-カプセル化の最も一般的な実践方法が、`private`なフィールドと、それに対応する`public`な**getter**（ゲッタ／取得メソッド）と**setter**（セッタ／設定メソッド）を用意するパターンです。
-
--   **getter**: `private`なフィールドの値を読み取って返すメソッド。メソッド名は `getフィールド名()` とするのが慣例です（例： `getName()`）。
--   **setter**: `private`なフィールドに値を設定するメソッド。メソッド名は `setフィールド名()` とするのが慣例です（例： `setAge(int age)`）。
-
-setterメソッドの重要な役割は、フィールドに値を設定する前に、その値が**妥当かどうかを検証（バリデーション）**できる点にあります。
-
-#### 実践例：`Employee`クラス
+### 継承の実践例
 
 ```java
-// Employee.java
-public class Employee {
-    private String name; // private: このクラス内からのみアクセス可能
-    private int age;     // private: このクラス内からのみアクセス可能
-    private double salary;
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        Hero hero = new Hero();
+        hero.name = "勇者"; // 親クラスのフィールドを利用
+        hero.hp = 100;
 
-    public Employee(String name, int age, double salary) {
-        // コンストラクタでもsetterを呼ぶことで、生成時にもバリデーションを適用できる
-        this.setName(name);
-        this.setAge(age);
-        this.setSalary(salary);
+        Wizard wizard = new Wizard();
+        wizard.name = "魔法使い";
+        wizard.hp = 70;
+        wizard.mp = 50; // 子クラス独自のフィールド
+
+        hero.attack();       // 親クラスのメソッドを利用
+        hero.specialMove();  // 子クラス独自のメソッド
+
+        wizard.attack();     // 親クラスのメソッドを利用
+        wizard.castSpell();  // 子クラス独自のメソッド
+    }
+}
+```
+
+## 5.2 メソッドのオーバーライド
+
+継承の強力な機能の1つが、**メソッドのオーバーライド (Method Overriding)** です。
+
+オーバーライドとは、親クラスで定義されたメソッドを、子クラスで**再定義（上書き）**することです。これにより、子クラスは親クラスの基本的な振る舞いを引き継ぎつつ、自身の特性に合わせた具体的な振る舞いを実装できます。
+
+たとえば、`Character`クラスの`attack()`メソッドは「〜の攻撃！」と表示するだけですが、「勇者」は剣で攻撃し、「魔法使い」は杖で攻撃するなど、職業によって攻撃方法は異なります。これをオーバーライドで表現します。
+
+### オーバーライドのルール
+
+1.  メソッド名、引数の型・数・順序が親クラスのメソッドと**完全に一致**していること。
+2.  戻り値の型が親クラスのメソッドと**同じ**であること（または、より具体的な型（共変戻り値型）であること）。
+3.  アクセス修飾子は、親クラスのメソッドよりも**制限を緩くすることしかできない**（例： `protected` → `public` はOK、`public` → `private` はNG）。
+
+### `@Override`アノテーション
+
+オーバーライドを行う際は、メソッドの直前に`@Override`という**アノテーション**を付けることが強く推奨されます。
+
+これは、コンパイラに対して「このメソッドは親クラスのメソッドをオーバーライドする意図で書いています」と伝える目印です。もし、タイプミスなどでオーバーライドのルールを満たせていない場合、コンパイラがエラーを検知してくれます。
+
+### `super`キーワード
+
+子クラスのオーバーライドしたメソッド内から、親クラスの同名メソッドを呼び出したい場合があります。その際に使うのが`super`キーワードです。
+
+`super.メソッド名()`とすることで、親クラスのメソッドを呼びだすことができます。これにより、親クラスの共通処理を活かしつつ、子クラス独自の処理を追加できます。
+
+#### 実践例：`attack`メソッドのオーバーライド
+
+```java
+// 親クラス
+public class Character {
+    String name;
+    int hp;
+
+    public Character(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
     }
 
-    // nameフィールドのgetter
-    public String getName() {
-        return this.name;
+    public void attack() {
+        System.out.println(this.name + "の攻撃！");
+    }
+}
+
+// 子クラス
+public class Wizard extends Character {
+    int mp;
+
+    public Wizard(String name, int hp, int mp) {
+        // super()で親クラスのコンストラクタを呼び出す
+        super(name, hp); 
+        this.mp = mp;
     }
 
-    // nameフィールドのsetter
-    public void setName(String name) {
-        if (name != null && !name.trim().isEmpty()) {
-            this.name = name.trim();
-        } else {
-            // 不正な値の場合は例外を投げて処理を中断する（例外処理は後の章で学びます）
-            throw new IllegalArgumentException("名前は空にできません。");
+    // attackメソッドをオーバーライド
+    @Override
+    public void attack() {
+        System.out.println(this.name + "は杖で殴った！");
+    }
+
+    public void castSpell() {
+        System.out.println(this.name + "は魔法を唱えた！");
+    }
+}
+
+// 子クラス
+public class Knight extends Character {
+    public Knight(String name, int hp) {
+        super(name, hp);
+    }
+
+    // attackメソッドをオーバーライドし、親の処理も利用する
+    @Override
+    public void attack() {
+        super.attack(); // 親クラスのattack()を呼び出す
+        System.out.println("追加で剣を振るった！"); // 子クラス独自の処理を追加
+    }
+}
+```
+
+### コンストラクタと`super()`
+
+子クラスのコンストラクタでは、その処理の**一番初め**に、親クラスのコンストラクタを呼びだす必要があります。これは`super()`を使って行います。
+
+-   もし、子クラスのコンストラクタで明示的に`super()`を呼び出さない場合、コンパイラは自動的に親クラスの**引数なしのコンストラクタ (`super()`)** を呼びだすコードを挿入します。
+-   親クラスに引数なしのコンストラクタが存在しない場合は、子クラスのコンストラクタで必ず明示的に`super(...)`を呼び出さなければならず、さもないとコンパイルエラーになります。
+
+## 5.3 ポリモーフィズム（多態性）
+
+**ポリモーフィズム (Polymorphism)** は、ギリシャ語で「多くの形を持つ」という意味で、オブジェクト指向における最も強力で柔軟な概念の1つです。
+
+ポリモーフィズムとは、**同じ型の変数や同じメソッド呼び出しが、実行時のオブジェクトの種類によって異なる振る舞いをする**性質を指します。
+
+継承とオーバーライドは、このポリモーフィズムを実現するための土台となります。
+
+### 親クラスの型で子クラスのインスタンスを扱う
+
+Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これを**アップキャスト**と呼びます。
+
+```java
+// 親クラス型の変数に、子クラスのインスタンスを代入
+Character chara1 = new Hero("勇者", 100);
+Character chara2 = new Wizard("魔法使い", 70, 50);
+Character chara3 = new Knight("騎士", 120);
+```
+
+このとき、変数`chara1`, `chara2`, `chara3`はすべて`Character`型として扱われます。しかし、それぞれの変数が実際に指し示しているオブジェクトの実体は`Hero`, `Wizard`, `Knight`と異なります。
+
+### 同じ呼び出しで、異なる振る舞いを実現する
+
+ここからがポリモーフィズムの真骨頂です。これらの`Character`型の変数に対して`attack()`メソッドを呼びだすと、何が起こるでしょうか。
+
+```java
+chara1.attack(); // 実行結果: 勇者の攻撃！
+chara2.attack(); // 実行結果: 魔法使いは杖で殴った！
+chara3.attack(); // 実行結果: 騎士の攻撃！
+                 //         追加で剣を振るった！
+```
+
+`chara2.attack()`という同じ呼び出し方にもかかわらず、Javaの実行環境は`chara2`が実際に`Wizard`オブジェクトを指していることを認識し、`Wizard`クラスでオーバーライドされた`attack()`メソッドを自動的に呼び出します。これがポリモーフィズムです。
+
+### ポリモーフィズムの利点
+
+この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなキャラクタをまとめて管理する配列を考えてみましょう。
+
+```java
+public class GameParty {
+    public static void main(String[] args) {
+        // 親クラスの配列に、様々な子クラスのインスタンスを格納できる
+        Character[] party = new Character[3];
+        party[0] = new Hero("勇者", 100);
+        party[1] = new Wizard("魔法使い", 70, 50);
+        party[2] = new Knight("騎士", 120);
+
+        // パーティ全員で一斉攻撃！
+        for (Character member : party) {
+            // member変数の型はCharacterだが、実行時には
+            // 実際のインスタンスのattack()が呼び出される
+            member.attack(); 
         }
     }
+}
+```
 
-    // ageフィールドのgetter
-    public int getAge() {
-        return this.age;
-    }
+この`for`ループの中では、`member`が`Hero`なのか`Wizard`なのかを一切気にする必要がありません。ただ`attack()`を呼びだすだけで、各キャラクタは自身の職業に合った攻撃を自動的に行ってくれます。
 
-    // ageフィールドのsetter（バリデーション付き）
-    public void setAge(int age) {
-        if (age >= 18 && age < 150) {
-            this.age = age;
-        } else {
-            throw new IllegalArgumentException("年齢は18～149の範囲で入力してください。");
+もし将来、「忍者 `Ninja`」という新しい職業クラスを追加したくなっても、`GameParty`クラスのコードは**一切変更する必要がありません**。`Ninja`クラスを作成し、`Character`を継承して`attack()`をオーバーライドし、`party`配列に追加するだけで、新しいキャラクタも問題なく動作します。これがポリモーフィズムがもたらす**拡張性**です。
+
+## 5.4 `instanceof`演算子とキャスト
+
+親クラスの型でオブジェクトを扱っていると、そのオブジェクトがもともとどの具体的な子クラスのインスタンスだったかを知り、その子クラス独自の機能を使いたくなることがあります。
+
+たとえば、`Character`型の変数`member`が、もし`Wizard`だったら`castSpell()`メソッドを呼びたい、という場合です。
+
+```java
+Character member = new Wizard("魔法使い", 70, 50);
+// member.castSpell(); // コンパイルエラー！
+```
+これはコンパイルエラーになります。なぜなら、コンパイラは変数`member`を`Character`型としてしか認識しておらず、`Character`クラスには`castSpell()`メソッドが定義されていないからです。
+
+### `instanceof`演算子：型の調査
+
+`instanceof`演算子を使うと、あるオブジェクトが特定のクラス（またはそのサブクラス）のインスタンスであるかどうかを調べることができます。
+
+`変数 instanceof クラス名` の形で使用し、結果は`boolean`値（`true`または`false`）で返されます。
+
+### キャスト：型変換
+
+オブジェクトが特定の子クラスのインスタンスであることが分かったら、その変数の型を一時的に子クラスの型に変換できます。これを**ダウンキャスト**と呼びます。
+
+`(変換したい型)変数` のように記述します。
+
+```java
+public class GameParty {
+    public static void main(String[] args) {
+        Character[] party = {
+            new Hero("勇者", 100),
+            new Wizard("魔法使い", 70, 50),
+            new Knight("騎士", 120)
+        };
+
+        for (Character member : party) {
+            member.attack(); // これはポリモーフィズムでOK
+
+            // もし、メンバーがWizardだったら、特別に魔法も使わせる
+            if (member instanceof Wizard) {
+                // memberをWizard型にダウンキャストする
+                Wizard wizard = (Wizard) member; 
+                wizard.castSpell();
+            }
         }
     }
-
-    // salaryフィールドのgetter
-    public double getSalary() {
-        return this.salary;
-    }
-    
-    // salaryフィールドのsetter
-    public void setSalary(double salary) {
-        if (salary >= 0) {
-            this.salary = salary;
-        } else {
-            throw new IllegalArgumentException("給与は0以上である必要があります。");
-        }
-    }
-
-    // 昇給メソッド（ビジネスロジック）
-    public void giveRaise(double percentage) {
-        if (percentage > 0) {
-            // salaryフィールドの操作はクラス内部なので自由に行える
-            this.salary *= (1 + percentage / 100.0);
-        } else {
-            throw new IllegalArgumentException("昇給率は正の値である必要があります。");
-        }
-    }
-
-    public void displayInfo() {
-        System.out.println("名前: " + this.name + ", 年齢: " + this.age + ", 給与: " + this.salary);
-    }
 }
 ```
 
+**注意:** `instanceof`でチェックせずにいきなりキャストしようとすると、もしオブジェクトがその型でなかった場合に`ClassCastException`という実行時エラーが発生します。必ず`instanceof`で確認してからキャストするのが安全です。
+
+#### モダンJavaのパターンマッチング
+
+Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
+
 ```java
-// EmployeeManagement.java
-public class EmployeeManagement {
-    public static void main(String[] args) {
-        Employee emp = new Employee("山田 太郎", 30, 300000);
-        emp.displayInfo();
+// 従来の書き方
+if (member instanceof Wizard) {
+    Wizard wizard = (Wizard) member;
+    wizard.castSpell();
+}
 
-        // フィールドへの直接アクセスはコンパイルエラーになる
-        // emp.salary = -10000; 
-
-        // setterを使って安全に値を変更
-        emp.setSalary(320000);
-        System.out.println("新しい給与: " + emp.getSalary());
-
-        // ビジネスロジックの実行
-        emp.giveRaise(5); // 5%昇給
-        System.out.println("昇給後の給与: " + emp.getSalary());
-
-        // 不正な値を設定しようとすると、例外が発生してプログラムが停止する
-        try {
-            emp.setAge(200);
-        } catch (IllegalArgumentException e) {
-            System.err.println("エラー: " + e.getMessage());
-        }
-        
-        // 現在の状態を再表示
-        emp.displayInfo();
-    }
+// パターンマッチングを使った書き方 (Java 16以降)
+if (member instanceof Wizard wizard) {
+    // instanceofがtrueの場合、キャスト済みのwizard変数が使える
+    wizard.castSpell();
 }
 ```
+この新しい書き方を使うと、より安全で読みやすいコードになります。
 
-この例のように、カプセル化はクラスを「データの番人」として機能させ、オブジェクトが常に正しく、一貫性のある状態を保つことを保証します。
+## 5.5 章末演習
 
-## 4.2 パッケージによるクラスの整理
+### 演習：さまざまな従業員の給与計算
 
-プログラムの規模が大きくなると、作成するクラスの数も増えていきます。すべてのクラスを同じ場所に置いていると、名前の衝突が起きたり、目的のクラスを探すのがたいへんになったりします。
-
-そこでJavaでは、関連するクラスをグループ化するためのしくみとして**パッケージ (package)** が用意されています。
-
-パッケージは、コンピュータのフォルダ（ディレクトリ）でファイルを整理するのと似ています。
-
-### パッケージの役割
-
-*   **名前空間の提供**: パッケージが異なれば、同じ名前のクラスを定義できます。これにより、Java標準ライブラリのクラス名（例： `List`）や、外部ライブラリのクラス名と偶然同じ名前を付けてしまっても、衝突を避けられます。クラスの完全な名前は `パッケージ名.クラス名` となります（例： `java.util.List`）。
-*   **クラスの分類**: 機能や役割に応じてクラスを分類することで、プロジェクトの構造が分かりやすくなります。たとえば、データモデル関連のクラスを`model`パッケージに、UI関連のクラスを`ui`パッケージにまとめる、といった使い方ができます。
-*   **アクセス制御**: パッケージはアクセス制御の単位にもなります。アクセス修飾子を何も付けない（`default`）場合、そのメンバーは同じパッケージ内のクラスからのみアクセス可能になります。
-
-### パッケージの宣言とディレクトリ構造
-
-クラスがどのパッケージに属するかを指定するには、ソースファイルの先頭で`package`文を使います。
-
-```java
-package com.example.geometry; // このファイル内のクラスは com.example.geometry パッケージに属する
-
-public class Circle {
-    // ...
-}
-```
-
-この`package`宣言は、ソースファイルの**物理的なディレクトリ構造と一致している必要があります**。`com.example.geometry`パッケージの場合、ソースファイルは以下のようなディレクトリに配置されている必要があります。
-
-```
-(プロジェクトのソースルート)
-└── com
-    └── example
-        └── geometry
-            ├── Circle.java
-            └── Rectangle.java
-```
-
-### パッケージの命名規則
-
-パッケージ名が世界中で一意（ユニーク）になるように、Javaでは組織が所有する**インターネットのドメイン名を逆順にする**ことが推奨されています。
-
-*   例： `example.com` というドメインを持つ組織なら、`com.example.プロジェクト名.機能名` のように命名します。
-
-この規則は、特にライブラリを公開する場合に重要です。個人学習や組織内での利用の場合は、必ずしもこの規則に従う必要はありませんが、`「逆引きドメイン名」.プロジェクト名` のような構造的な命名を心がけると良いでしょう。また、パッケージ名は**すべて小文字**で記述するのが慣例です。
-
-## 4.3 import文によるクラスの利用
-
-他のパッケージに属するクラスを利用するには、本来`パッケージ名.クラス名`という**完全限定名 (Fully Qualified Name)** で記述する必要があります。
-
-```java
-// importを使わない場合
-java.util.Scanner scanner = new java.util.Scanner(System.in);
-java.util.ArrayList<String> list = new java.util.ArrayList<>();
-```
-
-しかし、これではコードが長くなり、可読性が低下します。そこで、ソースファイルの先頭（`package`文の後）に`import`文を記述することで、クラス名を短く書けます。
-
-```java
-import java.util.Scanner; // java.util.Scannerクラスをインポート
-import java.util.ArrayList; // java.util.ArrayListクラスをインポート
-
-public class MyProgram {
-    public static void main(String[] args) {
-        // importしているので、クラス名だけで書ける
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
-    }
-}
-```
-
-### オンデマンドインポート
-
-同じパッケージの多くのクラスを使いたい場合、アスタリスク `*` を使って、そのパッケージに属するすべての`public`なクラスをまとめてインポートできます。これを**オンデマンドインポート**と呼びます。
-
-```java
-import java.util.*; // java.utilパッケージの全クラスを対象にする
-
-public class MyProgram {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
-        Random random = new Random();
-    }
-}
-```
-**注意:** オンデマンドインポートは、そのパッケージのさらに下のサブパッケージのクラスまではインポートしません（例： `import java.util.*` は `java.util.regex.Pattern` をインポートしない）。
-
-### `import`文の注意点：名前の衝突
-
-異なるパッケージに同じ名前のクラスが存在する場合、両方を同時にオンデマンドインポートしたり、個別にインポートしたりすると、コンパイラがどちらのクラスを使えばよいか判断できず、コンパイルエラーになります。
-
-```java
-import java.util.List;
-import java.awt.List; // エラー: Listクラスが両方のパッケージに存在する
-
-public class AmbiguousClass {
-    // List list; // どちらのListか不明
-}
-```
-
-このような場合は、片方を`import`し、もう片方は完全限定名で記述して、どちらのクラスを使うかを明示的に指定する必要があります。
-
-```java
-import java.util.List; // java.util.Listを主に使うと決める
-
-public class SolvedAmbiguity {
-    public static void main(String[] args) {
-        List<String> utilList = new java.util.ArrayList<>(); // importした方
-        java.awt.List awtList = new java.awt.List();      // 完全限定名で指定
-    }
-}
-```
-
-## 4.4 章末演習
-
-本章で学んだパッケージと`import`の概念を実践的に理解するため、以下の演習に取り組みましょう。
-
-### 演習：図形計算プログラムのパッケージ分割
-
-**目的:** 役割の異なるクラスを別々のパッケージに整理し、`import`文を使って連携させる。
+**目的:** 継承、オーバーライド、ポリモーフィズムを使って、異なる種類の従業員の給与計算を統一的に扱うプログラムを作成する。
 
 **手順:**
 
-1.  **プロジェクトの準備**: IntelliJ IDEAで新しいプロジェクトを作成します。
+1.  **`Employee`親クラスの作成**:
+    *   `Employee.java`を作成します。
+    *   フィールド： `name` (String), `baseSalary` (double)
+    *   コンストラクタ： 名前と基本給を初期化する。
+    *   メソッド： `calculateSalary()`: 基本給をそのまま返す。`displayInfo()`: 名前と計算後の給与を表示する。
 
-2.  **`geometry`パッケージの作成**:
-    *   `src`ディレクトリの下に、`com.example.geometry`というパッケージを作成します。
-    *   このパッケージ内に、以下の2つのクラスを作成します。
+2.  **`Manager`子クラスの作成**:
+    *   `Employee`を継承した`Manager.java`を作成します。
+    *   フィールド： `bonus` (double)
+    *   コンストラクタ： 名前、基本給、ボーナスを初期化する（親クラスのコンストラクタを`super`で呼びだす）。
+    *   メソッド： `calculateSalary()`を**オーバーライド**し、「基本給 + ボーナス」を返すように変更する。
 
-    **`Circle.java`**
-    ```java
-    package com.example.geometry;
+3.  **`Engineer`子クラスの作成**:
+    *   `Employee`を継承した`Engineer.java`を作成します。
+    *   フィールド： `overtimeHours` (int)
+    *   コンストラクタ： 名前、基本給、残業時間を初期化する。
+    *   メソッド： `calculateSalary()`を**オーバーライド**し、「基本給 +（残業時間 * 5000）」を返すように変更する。
 
-    public class Circle {
-        private double radius;
-
-        public Circle(double radius) {
-            this.radius = (radius > 0) ? radius : 0;
-        }
-
-        public double getArea() {
-            return Math.PI * radius * radius;
-        }
-
-        public double getCircumference() {
-            return 2 * Math.PI * radius;
-        }
-    }
-    ```
-
-    **`Rectangle.java`**
-    ```java
-    package com.example.geometry;
-
-    public class Rectangle {
-        private double width;
-        private double height;
-
-        public Rectangle(double width, double height) {
-            this.width = (width > 0) ? width : 0;
-            this.height = (height > 0) ? height : 0;
-        }
-
-        public double getArea() {
-            return width * height;
-        }
-
-        public double getPerimeter() {
-            return 2 * (width + height);
-        }
-    }
-    ```
-
-3.  **`main`パッケージの作成**:
-    *   `src`ディレクトリの下に、`com.example.main`というパッケージを作成します。
-    *   このパッケージ内に、`Main.java`というクラスを作成します。
-
-4.  **`Main.java`の実装**:
-    *   `Main.java`で、`com.example.geometry`パッケージの`Circle`クラスと`Rectangle`クラスを`import`して利用するコードを記述します。
-
-    **`Main.java`**
-    ```java
-    package com.example.main;
-
-    // 別のパッケージにあるクラスを利用するためにimportする
-    import com.example.geometry.Circle;
-    import com.example.geometry.Rectangle;
-
-    public class Main {
-        public static void main(String[] args) {
-            System.out.println("--- 図形計算プログラム ---");
-
-            Circle circle = new Circle(5.0);
-            System.out.println("円の面積: " + circle.getArea());
-            System.out.println("円周の長さ: " + circle.getCircumference());
-
-            System.out.println();
-
-            Rectangle rectangle = new Rectangle(4.0, 6.0);
-            System.out.println("長方形の面積: " + rectangle.getArea());
-            System.out.println("長方形の周の長さ: " + rectangle.getPerimeter());
-        }
-    }
-    ```
-
-5.  **実行と確認**:
-    *   `Main.java`を実行し、コンソールに円と長方形の計算結果が正しく表示されることを確認してください。
-
-この演習を通じて、プログラムの構成要素をパッケージに分割して整理する方法と、`import`文を使ってそれらを連携させる基本的な流れを体験できます。
+4.  **`PayrollSystem`実行クラスの作成**:
+    *   `main`メソッドを持つ`PayrollSystem.java`を作成します。
+    *   `Employee`型の配列を作成し、その中に`Manager`と`Engineer`のインスタンスを複数格納します。
+    *   `for`ループを使って配列を処理し、各従業員の`displayInfo()`メソッドを呼び出します。ポリモーフィズムにより、それぞれの役職に応じた給与が正しく計算・表示されることを確認してください。
+    *   （チャレンジ）ループの中で、`instanceof`を使って、もし従業員が`Manager`だったら「役職： 管理職」と追加で表示するようにしてみましょう。

@@ -4,40 +4,442 @@
 
 本章で学んだRecordクラスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 演習の目標
-- Recordクラスの基本概念と利点の理解
-- 不変データ構造としてのRecordの活用
-- 従来のクラスとRecordの使い分け
-- Recordの制限事項と適用場面の理解
-- Recordを使ったデータ中心設計の実践
-- データ転送オブジェクト（DTO）としてのRecordの効果的な活用
+### 🎯 演習の目標
+- Record クラスの基本概念と利点の理解
+- 不変データ構造としての Record の活用
+- 従来のクラスと Record の使い分け
+- Record の制限事項と適用場面の理解
+- Record を使ったデータ中心設計の実践
+- データ転送オブジェクト（DTO）としての Record の効果的な活用
 
-### 📁 課題の場所
-演習課題は `exercises/chapter12/` ディレクトリに用意されています：
+### 演習課題の難易度レベル
+
+#### 🟢 基礎レベル（Basic）
+- **目的**: Record の基本概念と構文の理解
+- **所要時間**: 20-30分/課題
+- **前提**: 本章の内容を理解していること
+- **評価基準**: 
+  - Record の正しい定義と使用
+  - 不変性の理解と活用
+  - 自動生成メソッドの理解
+  - 従来クラスとの比較
+
+#### 🟡 応用レベル（Applied）  
+- **目的**: 実践的な Record の活用と設計
+- **所要時間**: 30-45分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - 複雑な Record 構造の設計
+  - DTO としての効果的な活用
+  - 設定管理やデータ変換での実用性
+  - パターンマッチングとの組み合わせ
+
+#### 🔴 発展レベル（Advanced）
+- **目的**: Record の高度な活用とアーキテクチャ設計
+- **所要時間**: 45-60分/課題
+- **前提**: 応用レベルを完了していること
+- **評価基準**:
+  - 型安全な API 設計
+  - パフォーマンスを考慮した設計
+  - シリアライゼーションとの組み合わせ
+  - フレームワークレベルの活用
+
+---
+
+## 🟢 基礎レベル課題（必須）
+
+### 課題1: 基本的なRecord定義と活用
+
+**学習目標：** Record の基本構文、自動生成メソッド、不変性の理解
+
+**問題説明：**
+基本的なRecordクラスを定義し、その特性を理解してください。
+
+**要求仕様：**
+- シンプルなRecord定義（Point、Person等）
+- 自動生成されるメソッド（equals、hashCode、toString）の確認
+- Record のアクセサメソッドの使用
+- Record の不変性の確認
+- 従来のクラスとの比較
+
+**実行例：**
+```
+=== 基本的なRecord定義と活用 ===
+座標Record:
+point1: Point[x=3, y=4]
+point2: Point[x=3, y=4]
+
+アクセサメソッド:
+X座標: 3
+Y座標: 4
+
+equals比較:
+point1.equals(point2): true
+point1 == point2: false
+
+hashCode比較:
+point1.hashCode(): 128
+point2.hashCode(): 128
+
+人物Record:
+person: Person[name=田中太郎, age=30, email=tanaka@example.com]
+
+不変性確認:
+// 以下はコンパイルエラー
+// person.name = "佐藤花子";  // フィールドは final
+
+Record vs 従来クラス比較:
+従来クラスの行数: 35行（getter、setter、equals、hashCode、toString）
+Recordの行数: 1行（record Person(String name, int age) {}）
+```
+
+**実装ヒント：**
+```java
+// 基本的なRecord定義
+public record Point(int x, int y) {}
+
+public record Person(String name, int age, String email) {
+    // コンパクトコンストラクタでバリデーション
+    public Person {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("名前は必須です");
+        }
+        if (age < 0) {
+            throw new IllegalArgumentException("年齢は0以上である必要があります");
+        }
+    }
+}
+```
+
+### 課題2: Recordを使ったデータ転送オブジェクト（DTO）
+
+**学習目標：** Record のDTOとしての活用、ネスト構造、データ変換
+
+**問題説明：**
+RecordをDTOとして活用し、データ転送の実装を行ってください。
+
+**要求仕様：**
+- ユーザー情報のRecord DTO
+- 注文情報のRecord DTO（ネストしたRecord含む）
+- JSON風データ構造の表現
+- Record のバリデーション機能
+- Record の変換メソッド
+
+**実行例：**
+```
+=== Recordを使ったデータ転送オブジェクト ===
+ユーザーDTO:
+user: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true]
+
+注文DTO（ネストしたRecord）:
+order: OrderDTO[
+  orderId=ORD-2024-001,
+  user=UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true],
+  items=[
+    OrderItem[productName=ノートPC, quantity=1, price=150000],
+    OrderItem[productName=マウス, quantity=2, price=3000]
+  ],
+  totalAmount=156000,
+  orderDate=2024-07-04T10:30:00
+]
+
+データ変換:
+CSV形式: "1001,田中太郎,tanaka@example.com,true"
+Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
+
+バリデーション:
+有効なユーザー: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true] ✓
+無効なユーザー: UserDTO[id=0, name=, email=invalid-email, active=false] ✗
+エラー: [IDは1以上である必要があります, 名前は必須です, メールアドレスの形式が正しくありません]
+```
+
+**実装ヒント：**
+```java
+public record UserDTO(long id, String name, String email, boolean active) {
+    public String toCSV() {
+        return String.format("%d,%s,%s,%b", id, name, email, active);
+    }
+    
+    public Map<String, Object> toMap() {
+        return Map.of(
+            "id", id,
+            "name", name,
+            "email", email,
+            "active", active
+        );
+    }
+    
+    public List<String> validate() {
+        List<String> errors = new ArrayList<>();
+        if (id <= 0) errors.add("IDは1以上である必要があります");
+        if (name == null || name.isBlank()) errors.add("名前は必須です");
+        if (!email.contains("@")) errors.add("メールアドレスの形式が正しくありません");
+        return errors;
+    }
+}
+
+public record OrderItem(String productName, int quantity, int price) {}
+
+public record OrderDTO(
+    String orderId,
+    UserDTO user,
+    List<OrderItem> items,
+    int totalAmount,
+    LocalDateTime orderDate
+) {}
+```
+
+### 課題3: Record と設定管理
+
+**学習目標：** 複雑なRecord構造、不変性を保った部分更新、設定管理
+
+**問題説明：**
+Recordを使ったアプリケーション設定管理システムを実装してください。
+
+**要求仕様：**
+- 階層的な設定構造（Record内にRecord）
+- 設定の読み込みと保存
+- デフォルト値の提供
+- 設定の部分更新（新しいRecordインスタンス生成）
+- 設定の検証機能
+
+**実行例：**
+```
+=== Record と設定管理 ===
+デフォルト設定:
+AppConfig[
+  appName=MyApplication,
+  version=1.0.0,
+  database=DatabaseConfig[
+    url=jdbc:h2:mem:testdb,
+    username=sa,
+    password=,
+    maxConnections=10,
+    timeout=30
+  ],
+  features=[logging, caching],
+  debug=true
+]
+
+設定更新（部分更新）:
+データベース接続数だ20に変更:
+新しい設定: AppConfig[
+  appName=MyApplication,
+  version=1.0.0,
+  database=DatabaseConfig[
+    url=jdbc:h2:mem:testdb,
+    username=sa,
+    password=,
+    maxConnections=20,
+    timeout=30
+  ],
+  features=[logging, caching],
+  debug=true
+]
+
+設定ファイル形式での出力:
+app.name=MyApplication
+app.version=1.0.0
+database.url=jdbc:h2:mem:testdb
+database.username=sa
+database.password=
+database.maxConnections=20
+database.timeout=30
+features=logging,caching
+debug=true
+
+設定検証:
+✓ アプリケーション名が設定されています
+✓ データベースURLが有効です
+✓ 接続数が適切な範囲内です
+✗ パスワードが設定されていません（警告）
+```
+
+**実装ヒント：**
+```java
+public record DatabaseConfig(
+    String url,
+    String username,
+    String password,
+    int maxConnections,
+    int timeout
+) {
+    public static DatabaseConfig defaults() {
+        return new DatabaseConfig(
+            "jdbc:h2:mem:testdb",
+            "sa",
+            "",
+            10,
+            30
+        );
+    }
+}
+
+public record AppConfig(
+    String appName,
+    String version,
+    DatabaseConfig database,
+    List<String> features,
+    boolean debug
+) {
+    // withメソッドパターンで部分更新
+    public AppConfig withDatabase(DatabaseConfig newDatabase) {
+        return new AppConfig(appName, version, newDatabase, features, debug);
+    }
+    
+    public AppConfig withMaxConnections(int maxConnections) {
+        DatabaseConfig newDb = new DatabaseConfig(
+            database.url(),
+            database.username(),
+            database.password(),
+            maxConnections,
+            database.timeout()
+        );
+        return withDatabase(newDb);
+    }
+}
+```
+
+### 課題4: Record とパターンマッチング（Java 17+）
+
+**学習目標：** sealed interface、パターンマッチング、Recordデコンストラクション
+
+**問題説明：**
+Recordとパターンマッチングを組み合わせた処理を実装してください。
+
+**要求仕様：**
+- 図形を表すRecord（Circle、Rectangle、Triangle）
+- sealed interface との組み合わせ
+- パターンマッチング（switch式）の活用
+- Record のデコンストラクション
+- 型安全な処理の実装
+
+**実行例：**
+```
+=== Record とパターンマッチング ===
+図形Record定義:
+circle: Circle[radius=5.0]
+rectangle: Rectangle[width=4.0, height=3.0]
+triangle: Triangle[base=6.0, height=4.0]
+
+面積計算（パターンマッチング）:
+円の面積: 78.54
+長方形の面積: 12.0
+三角形の面積: 12.0
+
+周囲計算（パターンマッチング）:
+円の周囲: 31.42
+長方形の周囲: 14.0
+三角形の周囲: （計算複雑）
+
+Record デコンストラクション:
+circle(5.0) → 半径: 5.0
+rectangle(4.0, 3.0) → 幅: 4.0, 高さ: 3.0
+triangle(6.0, 4.0) → 底辺: 6.0, 高さ: 4.0
+
+図形分類:
+小さい図形（面積20未満）: [circle, rectangle, triangle]
+中くらいの図形（面積20-100）: []
+大きい図形（面積100以上）: []
+
+型安全性確認:
+switch 文で全ケースを網羅
+コンパイル時に型安全性を保証
+```
+
+**実装ヒント：**
+```java
+public sealed interface Shape
+    permits Circle, Rectangle, Triangle {
+    
+    default double area() {
+        return switch (this) {
+            case Circle(double radius) -> Math.PI * radius * radius;
+            case Rectangle(double width, double height) -> width * height;
+            case Triangle(double base, double height) -> 0.5 * base * height;
+        };
+    }
+}
+
+public record Circle(double radius) implements Shape {}
+public record Rectangle(double width, double height) implements Shape {}
+public record Triangle(double base, double height) implements Shape {}
+
+public class PatternMatching {
+    public static String describe(Shape shape) {
+        return switch (shape) {
+            case Circle(var radius) -> "円（半径: " + radius + "）";
+            case Rectangle(var width, var height) -> 
+                "長方形（幅: " + width + ", 高さ: " + height + "）";
+            case Triangle(var base, var height) -> 
+                "三角形（底辺: " + base + ", 高さ: " + height + "）";
+        };
+    }
+}
+```
+
+---
+
+## 💡 実装のヒント
+
+### Record の基本原則
+1. **簡漁性**: 定義は最小限に、機能は最大限に
+2. **不変性**: フィールドは自動的にfinal
+3. **透明性**: データ構造が一目でわかる
+4. **自動生成**: equals、hashCode、toStringは自動実装
+
+### よくある落とし穴
+- Recordは継承できない（finalクラス）
+- コンストラクタパラメータ以外のフィールド追加不可
+- アクセサメソッド名はgetプレフィクスなし
+- コンパクトコンストラクタでのパラメータ名省略
+
+### 設計のベストプラクティス
+- DTOや値オブジェクトに最適
+- ビジネスロジックは別クラスに分離
+- コンパクトコンストラクタでバリデーション
+- sealed interfaceと組み合わせて型安全性向上
+
+---
+
+## 🔗 実装環境
+
+演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
 ```
 exercises/chapter12/
-├── basic/          # 基本課題（必須）
-│   ├── README.md   # 課題の詳細説明
-│   ├── PersonRecord.java # 課題1: 基本的なRecord定義と活用
-│   ├── PersonRecordTest.java
-│   ├── ImmutableData.java # 課題2: 不変データ構造
-│   ├── ImmutableDataTest.java
-│   ├── DTOExample.java # 課題3: データ転送オブジェクト
-│   └── DTOExampleTest.java
-├── advanced/       # 発展課題（推奨）
-└── challenge/      # 挑戦課題（上級者向け）
+├── basic/          # 基礎レベル課題
+│   ├── README.md   # 詳細な課題説明
+│   ├── BasicRecord.java
+│   ├── UserDTO.java
+│   ├── AppConfig.java
+│   └── Shape.java
+├── advanced/       # 応用レベル課題
+├── challenge/      # 発展レベル課題
+└── solutions/      # 解答例（実装完了後に参照）
 ```
 
-### 推奨する学習の進め方
+---
 
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. ToDoコメントを参考に実装
-4. Recordと従来のクラスの違いを理解する
-5. 不変性の利点と活用場面を習得する
+## ✅ 完了確認チェックリスト
 
-基本課題が完了したら、`advanced/`の発展課題でより複雑なデータ構造設計に挑戦してみましょう！
+### 基礎レベル
+- [ ] 基本的なRecordの定義と特性が理解できている
+- [ ] RecordをDTOとして適切に活用できている
+- [ ] 複雑なRecord構造と設定管理ができている
+- [ ] パターンマッチングと組み合わせて使えている
+
+### 技術要素
+- [ ] Record の利点と制限を理解している
+- [ ] 従来のクラスとの使い分けができている
+- [ ] 不変性を保った設計ができている
+- [ ] コンパクトコンストラクタでバリデーションができている
+
+### 応用レベル
+- [ ] シリアライゼーションやJSON連携ができている
+- [ ] パフォーマンスを考慮した設計ができている
+- [ ] フレームワークやライブラリとの統合ができている
+- [ ] レガシーコードからRecordへのマイグレーションができている
 
 ## 本章の学習目標
 

@@ -4,7 +4,7 @@
 
 本章で学んだラムダ式と関数型インターフェイスの概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 演習の目標
+### 🎯 演習の目標
 - ラムダ式の基本構文と概念の理解
 - 関数型インターフェイス（Function、Predicate、Consumer等）の活用
 - メソッド参照の使い方（::演算子）
@@ -12,36 +12,372 @@
 - 関数型プログラミングの基本的な思考法
 - 関数合成とパイプライン処理による宣言的プログラミングの実践
 
-### 📁 課題の場所
-演習課題は `exercises/chapter11/` ディレクトリに用意されています：
+### 演習課題の難易度レベル
+
+#### 🟢 基礎レベル（Basic）
+- **目的**: ラムダ式と関数型インターフェイスの基本理解
+- **所要時間**: 30-45分/課題
+- **前提**: 本章の内容を理解していること
+- **評価基準**: 
+  - ラムダ式の正しい構文使用
+  - 関数型インターフェイスの適切な活用
+  - メソッド参照の理解と使用
+  - 匿名クラスからの移行
+
+#### 🟡 応用レベル（Applied）  
+- **目的**: 実践的な関数型プログラミング技法
+- **所要時間**: 45-60分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - カスタム関数型インターフェイス設計
+  - 高階関数とカリー化
+  - 関数合成とパイプライン処理
+  - 実用的なアプリケーション設計
+
+#### 🔴 発展レベル（Advanced）
+- **目的**: 関数型プログラミングの高度な応用
+- **所要時間**: 60-90分/課題
+- **前提**: 応用レベルを完了していること
+- **評価基準**:
+  - モナドパターンの理解
+  - リアクティブプログラミング
+  - 並列処理と関数型アプローチ
+  - フレームワークレベルの設計
+
+---
+
+## 🟢 基礎レベル課題（必須）
+
+### 課題1: 基本的なラムダ式の活用
+
+**学習目標：** ラムダ式の基本構文、標準関数型インターフェイスの活用
+
+**問題説明：**
+基本的なラムダ式を活用した処理を実装し、関数型インターフェイスを理解してください。
+
+**要求仕様：**
+- Predicate<T> を使った条件判定
+- Function<T, R> を使ったデータ変換
+- Consumer<T> を使った処理実行
+- Supplier<T> を使った値生成
+- Comparator<T> を使ったソート
+
+**実行例：**
+```
+=== 基本的なラムダ式の活用 ===
+数値リスト: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+Predicate（偶数判定）:
+偶数: [2, 4, 6, 8, 10]
+
+Function（２乗変換）:
+元の値: [1, 2, 3, 4, 5]
+２乗後: [1, 4, 9, 16, 25]
+
+Consumer（出力処理）:
+値の出力: 1, 2, 3, 4, 5
+
+Supplier（ランダム値生成）:
+ランダム値: 42, 17, 89, 33, 56
+
+Comparator（ソート）:
+文字列長さソート: ["a", "bb", "ccc", "dddd"]
+逆順ソート: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+```
+
+**実装ヒント：**
+```java
+public class BasicLambda {
+    public void demonstrateFunctionalInterfaces() {
+        // Predicate例
+        Predicate<Integer> isEven = n -> n % 2 == 0;
+        
+        // Function例
+        Function<Integer, Integer> square = x -> x * x;
+        
+        // Consumer例
+        Consumer<String> printer = System.out::println;
+        
+        // Supplier例
+        Supplier<Integer> randomInt = () -> new Random().nextInt(100);
+        
+        // Comparator例
+        Comparator<String> byLength = (s1, s2) -> s1.length() - s2.length();
+    }
+}
+```
+
+### 課題2: カスタム関数型インターフェイス設計
+
+**学習目標：** 独自の関数型インターフェイス設計、@FunctionalInterface、デフォルトメソッド
+
+**問題説明：**
+独自の関数型インターフェイスを設計し、ラムダ式で実装してください。
+
+**要求仕様：**
+- @FunctionalInterface アノテーション使用
+- 数学演算用の関数型インターフェイス
+- 文字列処理用の関数型インターフェイス
+- デフォルトメソッドの活用
+- 複数の実装パターン
+
+**実行例：**
+```
+=== カスタム関数型インターフェイス設計 ===
+数学演算テスト:
+加算: 10 + 5 = 15
+減算: 10 - 5 = 5
+乗算: 10 * 5 = 50
+除算: 10 / 5 = 2.0
+
+複合演算:
+(10 + 5) * 2 = 30
+(10 - 5) / 2 = 2.5
+
+文字列処理テスト:
+大文字変換: "hello" → "HELLO"
+小文字変換: "WORLD" → "world"
+逆順変換: "Java" → "avaJ"
+
+複合処理:
+"hello world" → 大文字化 → 逆順 → "DLROW OLLEH"
+
+条件付き処理:
+長さ5以上の文字列のみ大文字化:
+"hi" → "hi" (変換なし)
+"hello" → "HELLO" (変換実行)
+```
+
+**実装ヒント：**
+```java
+@FunctionalInterface
+public interface MathOperation {
+    double calculate(double a, double b);
+    
+    // デフォルトメソッドで複合演算を実現
+    default MathOperation andThen(MathOperation after) {
+        return (a, b) -> after.calculate(this.calculate(a, b), 0);
+    }
+}
+
+@FunctionalInterface
+public interface StringProcessor {
+    String process(String input);
+    
+    default StringProcessor andThen(StringProcessor after) {
+        return input -> after.process(this.process(input));
+    }
+    
+    default StringProcessor compose(StringProcessor before) {
+        return input -> this.process(before.process(input));
+    }
+}
+```
+
+### 課題3: メソッド参照とコンストラクタ参照
+
+**学習目標：** 4種類のメソッド参照、コンストラクタ参照、ラムダ式との比較
+
+**問題説明：**
+メソッド参照とコンストラクタ参照を活用した処理を実装してください。
+
+**要求仕様：**
+- 静的メソッド参照（Class::staticMethod）
+- インスタンスメソッド参照（instance::method）
+- 任意オブジェクトのインスタンスメソッド参照（Class::instanceMethod）
+- コンストラクタ参照（Class::new）
+- メソッド参照からラムダ式への変換比較
+
+**実行例：**
+```
+=== メソッド参照とコンストラクタ参照 ===
+静的メソッド参照テスト:
+数値リスト: [1, 4, 9, 16, 25]
+平方根: [1.0, 2.0, 3.0, 4.0, 5.0]
+
+インスタンスメソッド参照テスト:
+文字列リスト: ["hello", "world", "java"]
+大文字変換: ["HELLO", "WORLD", "JAVA"]
+
+任意オブジェクトのメソッド参照:
+文字列長さ: [5, 5, 4]
+
+コンストラクタ参照テスト:
+Person生成:
+田中太郎（25歳）
+佐藤花子（30歳）
+鈴木一郎（35歳）
+
+配列コンストラクタ参照:
+整数配列: [0, 0, 0, 0, 0]
+文字列配列: [null, null, null]
+
+ラムダ式 vs メソッド参照比較:
+ラムダ式: x -> Math.sqrt(x)
+メソッド参照: Math::sqrt
+結果は同じ: [1.0, 2.0, 3.0]
+```
+
+**実装ヒント：**
+```java
+public class MethodReference {
+    public void demonstrateMethodReferences() {
+        List<String> words = Arrays.asList("hello", "world", "java");
+        
+        // 静的メソッド参照
+        List<Double> numbers = Arrays.asList(1.0, 4.0, 9.0);
+        numbers.stream().map(Math::sqrt).collect(Collectors.toList());
+        
+        // インスタンスメソッド参照
+        words.forEach(System.out::println);
+        
+        // 任意オブジェクトのメソッド参照
+        words.stream().map(String::toUpperCase).collect(Collectors.toList());
+        
+        // コンストラクタ参照
+        Supplier<List<String>> listFactory = ArrayList::new;
+        Function<String, Person> personFactory = Person::new;
+    }
+}
+```
+
+### 課題4: 高階関数とカリー化
+
+**学習目標：** 高階関数、カリー化、関数合成、遅延評価
+
+**問題説明：**
+高階関数とカリー化を実装し、関数型プログラミングの高度な概念を理解してください。
+
+**要求仕様：**
+- 関数を引数として受け取る高階関数
+- 関数を戻り値として返す高階関数
+- カリー化（部分適用）の実装
+- 関数の合成（compose、andThen）
+- 遅延評価の実装
+
+**実行例：**
+```
+=== 高階関数とカリー化 ===
+高階関数テスト（関数を引数に取る）:
+リスト: [1, 2, 3, 4, 5]
+処理1（2倍）: [2, 4, 6, 8, 10]
+処理2（2乗）: [1, 4, 9, 16, 25]
+
+高階関数テスト（関数を返す）:
+加算器生成:
+add5 = createAdder(5)
+add5(10) = 15
+add5(20) = 25
+
+カリー化テスト:
+三項演算: f(x, y, z) = x + y * z
+カリー化: f(2)(3)(4) = 2 + 3 * 4 = 14
+
+部分適用:
+multiply(2, 3) = 6
+multiplyBy2 = multiply(2, _)
+multiplyBy2(3) = 6
+multiplyBy2(5) = 10
+
+関数合成テスト:
+f(x) = x * 2
+g(x) = x + 3
+compose: g(f(5)) = g(10) = 13
+andThen: f(g(5)) = f(8) = 16
+
+遅延評価テスト:
+計算定義時: (処理なし)
+実行時: 2 * 3 + 5 = 11
+```
+
+**実装ヒント：**
+```java
+public class HigherOrderFunction {
+    // 高階関数（関数を引数に取る）
+    public static <T> List<T> mapList(List<T> list, Function<T, T> mapper) {
+        return list.stream().map(mapper).collect(Collectors.toList());
+    }
+    
+    // 高階関数（関数を返す）
+    public static Function<Integer, Integer> createAdder(int value) {
+        return x -> x + value;
+    }
+    
+    // カリー化
+    public static Function<Integer, Function<Integer, Function<Integer, Integer>>> 
+        curriedAdd() {
+        return x -> y -> z -> x + y * z;
+    }
+    
+    // 遅延評価
+    public static Supplier<Integer> lazyComputation(int a, int b, int c) {
+        return () -> a * b + c;
+    }
+}
+```
+
+---
+
+## 💡 実装のヒント
+
+### ラムダ式の基本原則
+1. **簡潔な構文**: (parameters) -> expression
+2. **型推論**: コンパイラが型を推論
+3. **メソッド参照**: 既存メソッドの簡潔な表現
+4. **関数合成**: andThen、composeで連鎖処理
+
+### よくある落とし穴
+- ラムダ式内でのfinalまたは実質的にfinalな変数のみ参照可能
+- メソッド参照の種類の混同
+- カリー化での型の複雑さ
+- 関数型インターフェイスの選択
+
+### 設計のベストプラクティス
+- 可能な限りメソッド参照を使用
+- 適切な関数型インターフェイスを選択
+- 副作用の少ない関数を心がける
+- 関数合成で柔軟な設計を実現
+
+---
+
+## 🔗 実装環境
+
+演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
 ```
 exercises/chapter11/
-├── basic/          # 基本課題（必須）
-│   ├── README.md   # 課題の詳細説明
-│   ├── BasicLambda.java # 課題1: 基本的なラムダ式の活用
-│   ├── BasicLambdaTest.java
-│   ├── FunctionalCalculator.java # 課題2: 関数型電卓
-│   ├── FunctionalCalculatorTest.java
-│   ├── EventProcessor.java # 課題3: イベント処理システム
-│   ├── EventProcessorTest.java
-│   ├── ValidationSystem.java # 課題4: バリデーションシステム
-│   ├── ValidationSystemTest.java
-│   ├── PipelineProcessor.java # 課題5: データパイプライン処理
-│   └── PipelineProcessorTest.java
-├── advanced/       # 発展課題（推奨）
-└── challenge/      # 挑戦課題（上級者向け）
+├── basic/          # 基礎レベル課題
+│   ├── README.md   # 詳細な課題説明
+│   ├── BasicLambda.java
+│   ├── CustomFunctionalInterface.java
+│   ├── MethodReference.java
+│   └── HigherOrderFunction.java
+├── advanced/       # 応用レベル課題
+├── challenge/      # 発展レベル課題
+└── solutions/      # 解答例（実装完了後に参照）
 ```
 
-### 推奨する学習の進め方
+---
 
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. ToDoコメントを参考に実装
-4. ラムダ式と従来の匿名クラスの違いを理解する
-5. 関数型インターフェイスの使い分けを習得する
+## ✅ 完了確認チェックリスト
 
-基本課題が完了したら、`advanced/`の発展課題でより複雑な関数型プログラミングに挑戦してみましょう！
+### 基礎レベル
+- [ ] 基本的なラムダ式と関数型インターフェイスが使えている
+- [ ] カスタム関数型インターフェイスが設計できている
+- [ ] メソッド参照の4パターンが理解できている
+- [ ] 高階関数とカリー化が実装できている
+
+### 技術要素
+- [ ] ラムダ式の構文を正しく理解している
+- [ ] 関数型プログラミングの基本概念を把握している
+- [ ] 匿名クラスからラムダ式への移行ができている
+- [ ] 関数合成で複雑な処理を表現できている
+
+### 応用レベル
+- [ ] モナドパターンの基本を理解している
+- [ ] 並列処理での関数型アプローチを活用できている
+- [ ] 宣言的なプログラミングスタイルを実践できている
+- [ ] 関数型ライブラリやフレームワークが設計できている
 
 ## 本章の学習目標
 

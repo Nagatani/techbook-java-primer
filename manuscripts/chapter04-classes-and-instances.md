@@ -1,44 +1,5 @@
 # 第4章 クラスとインスタンス
 
-## 章末演習
-
-本章で学んだクラスとインスタンス、カプセル化の概念を活用して、実践的な練習課題に取り組みましょう。
-
-### 演習の目標
-- クラスとインスタンスの関係の理解
-- カプセル化の実践とアクセス修飾子の使い分け
-- privateフィールドとpublicメソッドの適切な設計
-- getterとsetterメソッドの実装とデータ検証
-
-### 📁 課題の場所
-演習課題は `exercises/chapter04/` ディレクトリに用意されています：
-
-```
-exercises/chapter04/
-├── basic/          # 基本課題（必須）
-│   ├── README.md   # 課題の詳細説明
-│   ├── Employee.java # 課題1: カプセル化実践
-│   ├── EmployeeTest.java
-│   ├── SecureBankAccount.java # 課題2: セキュリティ強化
-│   ├── SecureBankAccountTest.java
-│   ├── Product.java # 課題3: データ管理
-│   ├── ProductTest.java
-│   ├── Game.java    # 課題4: 状態管理
-│   └── GameTest.java
-├── advanced/       # 発展課題（推奨）
-└── challenge/      # 挑戦課題（上級者向け）
-```
-
-### 推奨する学習の進め方
-
-1. **基本課題**から順番に取り組む
-2. 各課題のREADME.mdで詳細を確認
-3. ToDoコメントを参考に実装
-4. データの妥当性検証を適切に実装する
-5. privateフィールドとpublicメソッドの使い分けを理解する
-
-基本課題が完了したら、`advanced/`の発展課題でより複雑なクラス設計に挑戦してみましょう！
-
 ## 本章の学習目標
 
 ### 前提知識
@@ -2070,7 +2031,267 @@ System.out.println("加算結果: " + sum);
 -   ユーザーに走行距離を繰り返し入力させます。「end」と入力されたらループを終了します。
 -   入力があるたびに`Car`の`run`メソッドを呼び出し、`getInfo`メソッドで現在の状況を表示します。
 
-### チャレンジ課題：じゃんけんゲーム
+## 章末演習
+
+本章で学んだカプセル化、アクセス制御、クラス設計の概念を段階的に実践し、実用的なクラス設計能力を身につけましょう。各レベルは前のレベルの習得を前提として設計されています。
+
+### 演習の目標
+- カプセル化の適切な実装
+- アクセス修飾子の正しい使用
+- getter/setterパターンの実践
+- 入力検証とデータ整合性の確保
+- 複数クラス間の連携設計
+
+### 演習課題の難易度レベル
+
+#### 🟢 基礎レベル（Basic）
+- **目的**: カプセル化とアクセス制御の基本概念の確実な理解
+- **所要時間**: 25-40分/課題
+- **前提**: 第3章のクラス設計を理解していること
+- **評価基準**: 
+  - privateフィールドとpublicメソッドの適切な使い分け
+  - 基本的な入力検証の実装
+  - getter/setterの正しい実装
+  - データの整合性を保つ設計
+
+#### 🟡 応用レベル（Applied）
+- **目的**: より実践的なクラス設計と複数クラス間の連携
+- **所要時間**: 40-60分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - 複数クラスを適切に連携させた設計
+  - ビジネスロジックの適切な配置
+  - より高度な入力検証とエラーハンドリング
+  - 保守性を考慮した設計
+
+#### 🔴 発展レベル（Advanced）
+- **目的**: 設計原則に基づいた高品質なクラス設計
+- **所要時間**: 60-80分/課題
+- **前提**: 応用レベルを完了し、設計原則に興味があること
+- **評価基準**:
+  - SOLID原則を意識した設計
+  - デザインパターンの適用
+  - 拡張性と保守性を考慮した設計
+  - パフォーマンスを意識した実装
+
+#### ⚫ 挑戦レベル（Challenge）
+- **目的**: 実務レベルの複雑なシステム設計
+- **所要時間**: 80分以上
+- **前提**: 発展レベル完了と深い設計への関心
+- **評価基準**:
+  - 複雑なドメインモデルの設計
+  - アーキテクチャパターンの適用
+  - テスタビリティを考慮した設計
+  - ドキュメント化されたコード
+
+### 演習課題の詳細
+
+演習課題の完全な解答例とテストファイルは `exercises/chapter04/` ディレクトリにあります。
+以下では各課題の問題内容、要求仕様、実装ヒントを示します。
+
+## 🟢 基礎レベル課題（必須）
+
+### 課題1: 書籍管理クラス（Book.java）
+
+**学習目標：** カプセル化、入力検証、getter/setter
+
+**問題説明：**
+書籍の情報を管理するBookクラスを作成し、適切なカプセル化と入力検証を実装してください。
+
+**要求仕様：**
+1. プライベートフィールド：`title`（String）、`author`（String）、`isbn`（String）、`price`（double）、`stock`（int）
+2. コンストラクタ：全フィールドを初期化（適切な検証を含む）
+3. getter/setterメソッド：すべてのフィールドに対して
+4. `displayInfo()`メソッド：書籍情報を整理して表示
+5. 入力検証：価格は正の値、在庫は0以上、ISBNは13桁
+
+**実行例：**
+```
+=== 書籍管理システム ===
+ISBN: 9784797386295
+タイトル: Java入門
+著者: 山田太郎
+価格: 3200円
+在庫: 15冊
+
+在庫更新: 15 → 12
+価格更新: 3200円 → 2800円
+更新後の書籍情報:
+ISBN: 9784797386295
+タイトル: Java入門
+著者: 山田太郎
+価格: 2800円
+在庫: 12冊
+```
+
+**実装ヒント：**
+```java
+public class Book {
+    private String title;
+    private String author;
+    private String isbn;
+    private double price;
+    private int stock;
+    
+    public Book(String title, String author, String isbn, double price, int stock) {
+        setTitle(title);
+        setAuthor(author);
+        setIsbn(isbn);
+        setPrice(price);
+        setStock(stock);
+    }
+    
+    // ISBNの検証付きsetter
+    public void setIsbn(String isbn) {
+        if (isbn == null || isbn.replaceAll("[^0-9]", "").length() != 13) {
+            throw new IllegalArgumentException("ISBNは13桁の数字である必要があります");
+        }
+        this.isbn = isbn;
+    }
+    
+    // 価格の検証付きsetter
+    public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("価格は正の値である必要があります");
+        }
+        this.price = price;
+    }
+    
+    // 在庫の検証付きsetter
+    public void setStock(int stock) {
+        if (stock < 0) {
+            throw new IllegalArgumentException("在庫は0以上である必要があります");
+        }
+        this.stock = stock;
+    }
+    
+    public void displayInfo() {
+        System.out.println("ISBN: " + isbn);
+        System.out.println("タイトル: " + title);
+        System.out.println("著者: " + author);
+        System.out.println("価格: " + (int)price + "円");
+        System.out.println("在庫: " + stock + "冊");
+    }
+}
+```
+
+**評価基準：**
+- [ ] 適切なカプセル化（privateフィールド）
+- [ ] コンストラクタでの初期化と検証
+- [ ] 全フィールドのgetter/setter実装
+- [ ] 入力検証の適切な実装
+- [ ] 情報表示メソッドの実装
+
+---
+
+### 課題2: 製品管理クラス（Product.java）
+
+**学習目標：** より複雑なビジネスロジック、カテゴリ管理
+
+**問題説明：**
+製品の情報を管理するProductクラスを作成し、価格計算と在庫管理のロジックを実装してください。
+
+**要求仕様：**
+1. フィールド：`productId`、`name`、`category`、`basePrice`、`discountRate`、`stock`
+2. 割引適用後の価格計算メソッド
+3. 在庫の増減メソッド（売上・入荷）
+4. カテゴリ別の税率適用
+5. 在庫警告機能（最低在庫数を下回った場合）
+
+**実行例：**
+```
+=== 製品管理システム ===
+商品ID: P001
+商品名: ノートパソコン
+カテゴリ: 電子機器
+基本価格: 80000円
+割引率: 10%
+販売価格: 72000円（税込: 79200円）
+在庫: 25個
+
+販売処理: 3個
+残り在庫: 22個
+入荷処理: 10個
+現在在庫: 32個
+```
+
+### 課題3: 従業員クラス（Employee.java）
+
+**学習目標：** 給与計算、部署管理、権限制御
+
+**問題説明：**
+従業員の情報を管理し、給与計算と権限管理を行うEmployeeクラスを作成してください。
+
+**要求仕様：**
+1. 基本情報：社員ID、名前、部署、役職、基本給
+2. 勤務時間の記録と残業代計算
+3. 部署別の手当計算
+4. 権限レベルによるアクセス制御
+5. 給与明細の生成
+
+### 課題4: 銀行口座の改良版（AdvancedBankAccount.java）
+
+**学習目標：** 取引履歴、口座種別、利息計算
+
+**問題説明：**
+第3章で作成した銀行口座クラスを拡張し、より実用的な機能を追加してください。
+
+**要求仕様：**
+1. 取引履歴の記録（日時、取引種別、金額、残高）
+2. 口座種別（普通、定期、当座）による機能差別化
+3. 利息計算と自動付与
+4. 月末処理（手数料徴収、利息付与）
+5. 取引制限（日次限度額、時間制限）
+
+## 🟡 応用レベル課題（推奨）
+
+### 課題1: 図書館管理システム（Library.java, Book.java, Member.java）
+
+**学習目標：** 複数クラスの連携、貸出管理、期限管理
+
+**問題説明：**
+図書館の貸出管理システムを作成し、複数のクラスを適切に連携させてください。
+
+**主要機能：**
+- 書籍の登録・検索・貸出・返却
+- 会員の登録・管理
+- 貸出期限の管理と延滞処理
+- 予約システム
+- 統計情報の生成
+
+### 課題2: ショッピングカートシステム（ShoppingCart.java, Product.java, Customer.java）
+
+**学習目標：** ECサイトのカート機能、割引計算、注文処理
+
+**問題説明：**
+オンラインショッピングのカート機能を実装し、商品管理から注文確定までを統合してください。
+
+### 課題3: 在庫管理システム（Inventory.java, Warehouse.java, Supplier.java）
+
+**学習目標：** 倉庫管理、発注システム、在庫最適化
+
+**問題説明：**
+倉庫の在庫管理システムを作成し、自動発注や在庫最適化機能を実装してください。
+
+## 🔴 発展レベル課題（挑戦者向け）
+
+### 課題1: 学生管理システム（Student.java, Course.java, University.java）
+
+**学習目標：** 成績管理、履修システム、GPA計算
+
+**問題説明：**
+大学の学生管理システムを作成し、履修登録から成績管理まで統合してください。
+
+### 課題2: プロジェクト管理システム（Project.java, Task.java, Team.java）
+
+**学習目標：** タスク管理、進捗追跡、リソース配分
+
+**問題説明：**
+ソフトウェア開発プロジェクトの管理システムを作成してください。
+
+## ⚫ 挑戦レベル課題（上級者向け）
+
+### 課題1: じゃんけんゲーム（統合版）
 
 これまでの知識を応用して、簡単な対戦ゲームを作成します。クラス間の連携（オブジェクトがほかのオブジェクトをフィールドとして持つ）について考える良い練習になります。
 
@@ -2119,3 +2340,447 @@ System.out.println("加算結果: " + sum);
 -   どちらかのプレイヤーが指定された回数（例： 3回）勝利するまで、`JankenGame`の`play()`メソッドを呼び出し続けます。
 -   毎回の結果を`getInfo()`で表示します。
 -   ゲームが終了したら、最終的な勝者と勝利数を表示します。
+
+---
+
+## 📝 章末演習
+
+本章で学んだクラスとインスタンス、カプセル化の概念を実践的に活用する演習課題に取り組みましょう。
+
+### 🎯 演習の目標
+- クラスとインスタンスの関係の理解
+- カプセル化の実践とアクセス修飾子の使い分け
+- privateフィールドとpublicメソッドの適切な設計
+- getterとsetterメソッドの実装とデータ検証
+- コンストラクタとthisキーワードの活用
+- インスタンス変数とインスタンスメソッドの理解
+
+### 演習課題の難易度レベル
+
+#### 🟢 基礎レベル（Basic）
+- **目的**: クラス設計とカプセル化の基本概念の確実な理解
+- **所要時間**: 20-30分/課題
+- **前提**: 本章の内容を理解していること
+- **評価基準**: 
+  - privateフィールドとpublicメソッドの適切な使用
+  - getterとsetterメソッドの正しい実装
+  - データの妥当性検証の実装
+  - thisキーワードの理解と適切な使用
+
+#### 🟡 応用レベル（Applied）
+- **目的**: 複雑なクラス設計と実践的なカプセル化
+- **所要時間**: 30-45分/課題
+- **前提**: 基礎レベルを完了していること
+- **評価基準**:
+  - 複数のクラス間の協調動作の実装
+  - セキュリティを意識したカプセル化
+  - ビジネスロジックの適切な実装
+  - エラーハンドリングの充実
+
+#### 🔴 発展レベル（Advanced）
+- **目的**: 高度なクラス設計とセキュリティ考慮
+- **所要時間**: 45-60分/課題
+- **前提**: 応用レベルを完了していること
+- **評価基準**:
+  - アクセス修飾子の戦略的使用
+  - セキュアなシステム設計
+  - データの整合性保護
+  - 設計パターンの理解
+
+#### ⚫ 挑戦レベル（Challenge）
+- **目的**: 統合的なオブジェクト指向設計
+- **所要時間**: 60分以上
+- **前提**: 発展レベル完了と高度な設計への意欲
+- **評価基準**:
+  - 複雑なドメインモデルの設計
+  - 拡張性と保守性を考慮した実装
+  - 総合的なシステム設計能力
+
+---
+
+## 🟢 基礎レベル課題（必須）
+
+### 課題1: 従業員管理クラス（Employee.java）
+
+**学習目標：** カプセル化の基本、getter/setter、データ検証
+
+**問題説明：**
+従業員を表すEmployeeクラスを作成し、適切なカプセル化を実装してください。データの妥当性を検証し、不正な値の設定を防ぐ仕組みを組み込みます。
+
+**要求仕様：**
+1. privateフィールド：`name`（String）、`age`（int）、`salary`（double）
+2. コンストラクタで初期値を設定（妥当性検証含む）
+3. 各フィールドのgetter/setterメソッド
+4. 年齢：0歳以上の検証
+5. 給与：0円以上の検証
+6. 従業員情報を表示するdisplayInfo()メソッド
+
+**実行例：**
+```
+=== 従業員管理システム ===
+従業員情報:
+名前: 田中太郎
+年齢: 30歳
+給与: 400,000円
+
+年齢を35歳に変更しました。
+給与を450,000円に変更しました。
+
+更新後の従業員情報:
+名前: 田中太郎
+年齢: 35歳
+給与: 450,000円
+
+エラー: 年齢は0歳以上である必要があります。
+エラー: 給与は0円以上である必要があります。
+```
+
+**実装ヒント：**
+```java
+public class Employee {
+    private String name;
+    private int age;
+    private double salary;
+    
+    public Employee(String name, int age, double salary) {
+        this.name = name;
+        setAge(age);     // setterを使って検証
+        setSalary(salary);
+    }
+    
+    // setterメソッドで妥当性検証
+    public void setAge(int age) {
+        if (age >= 0) {
+            this.age = age;
+        } else {
+            System.out.println("エラー: 年齢は0歳以上である必要があります。");
+        }
+    }
+    
+    // getterメソッド
+    public int getAge() {
+        return this.age;
+    }
+    
+    // 情報表示メソッド
+    public void displayInfo() {
+        System.out.println("名前: " + this.name);
+        System.out.println("年齢: " + this.age + "歳");
+        System.out.println("給与: " + String.format("%.0f", this.salary) + "円");
+    }
+}
+```
+
+### 課題2: 商品管理クラス（Product.java）
+
+**学習目標：** 複数フィールドの管理、ビジネスロジック、計算メソッド
+
+**問題説明：**
+商品を表すProductクラスを作成し、在庫管理と価格計算機能を実装してください。
+
+**要求仕様：**
+1. privateフィールド：`id`（int）、`name`（String）、`price`（double）、`stock`（int）
+2. 在庫管理メソッド：`addStock(int amount)`、`removeStock(int amount)`
+3. 税込価格計算メソッド：`getTaxIncludedPrice()`（税率10%）
+4. 商品情報表示メソッド
+5. 在庫不足時のエラーハンドリング
+
+**実行例：**
+```
+=== 商品管理システム ===
+商品ID: 001
+商品名: ノートPC
+価格: 80,000円（税込: 88,000円）
+在庫数: 10個
+
+入荷処理: 5個を入荷しました。
+現在の在庫: 15個
+
+出荷処理: 3個を出荷しました。
+現在の在庫: 12個
+
+エラー: 在庫が不足しています。（要求: 20個, 在庫: 12個）
+```
+
+**実装ヒント：**
+```java
+public class Product {
+    private int id;
+    private String name;
+    private double price;
+    private int stock;
+    
+    public Product(int id, String name, double price, int stock) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+    
+    // 在庫追加
+    public void addStock(int amount) {
+        if (amount > 0) {
+            this.stock += amount;
+            System.out.println("入荷処理: " + amount + "個を入荷しました。");
+            System.out.println("現在の在庫: " + this.stock + "個");
+        }
+    }
+    
+    // 在庫減少（出荷）
+    public boolean removeStock(int amount) {
+        if (amount <= this.stock) {
+            this.stock -= amount;
+            System.out.println("出荷処理: " + amount + "個を出荷しました。");
+            System.out.println("現在の在庫: " + this.stock + "個");
+            return true;
+        } else {
+            System.out.println("エラー: 在庫が不足しています。（要求: " + amount + "個, 在庫: " + this.stock + "個）");
+            return false;
+        }
+    }
+    
+    // 税込価格計算
+    public double getTaxIncludedPrice() {
+        return this.price * 1.1;
+    }
+}
+```
+
+### 課題3: 銀行口座クラス（SecureBankAccount.java）
+
+**学習目標：** セキュリティ意識、認証システム、状態管理
+
+**問題説明：**
+銀行口座を表すクラスを作成し、PINコードによる認証システムを実装してください。
+
+**要求仕様：**
+1. privateフィールド：`accountNumber`（String）、`balance`（double）、`pin`（String）
+2. PINコード認証メソッド：`authenticate(String inputPin)`
+3. 認証成功時のみ実行可能な取引メソッド：`deposit(double amount, String pin)`、`withdraw(double amount, String pin)`
+4. 残高照会メソッド（認証必要）
+5. 取引履歴の簡易表示
+
+**実行例：**
+```
+=== セキュア銀行口座システム ===
+口座作成: 口座番号 123456
+残高: 100,000円
+
+PIN認証成功
+10,000円を入金しました。
+現在の残高: 110,000円
+
+PIN認証失敗
+取引が拒否されました。
+
+PIN認証成功
+50,000円を出金しました。
+現在の残高: 60,000円
+```
+
+**実装ヒント：**
+```java
+public class SecureBankAccount {
+    private String accountNumber;
+    private double balance;
+    private String pin;
+    
+    public SecureBankAccount(String accountNumber, double initialBalance, String pin) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+        this.pin = pin;
+    }
+    
+    // PIN認証（privateメソッド）
+    private boolean authenticate(String inputPin) {
+        return this.pin.equals(inputPin);
+    }
+    
+    // 入金（認証必要）
+    public boolean deposit(double amount, String inputPin) {
+        if (authenticate(inputPin)) {
+            System.out.println("PIN認証成功");
+            this.balance += amount;
+            System.out.println(amount + "円を入金しました。");
+            System.out.println("現在の残高: " + String.format("%.0f", this.balance) + "円");
+            return true;
+        } else {
+            System.out.println("PIN認証失敗");
+            System.out.println("取引が拒否されました。");
+            return false;
+        }
+    }
+    
+    // 出金（認証必要）
+    public boolean withdraw(double amount, String inputPin) {
+        if (authenticate(inputPin)) {
+            if (amount <= this.balance) {
+                System.out.println("PIN認証成功");
+                this.balance -= amount;
+                System.out.println(amount + "円を出金しました。");
+                System.out.println("現在の残高: " + String.format("%.0f", this.balance) + "円");
+                return true;
+            } else {
+                System.out.println("残高不足です。");
+                return false;
+            }
+        } else {
+            System.out.println("PIN認証失敗");
+            System.out.println("取引が拒否されました。");
+            return false;
+        }
+    }
+}
+```
+
+### 課題4: ゲーム状態管理クラス（Game.java）
+
+**学習目標：** 状態管理、boolean型の活用、条件分岐
+
+**問題説明：**
+ゲームの状態を管理するGameクラスを作成し、プレイヤーの進行状況を追跡してください。
+
+**要求仕様：**
+1. privateフィールド：`playerName`（String）、`level`（int）、`score`（int）、`isGameOver`（boolean）
+2. スコア加算メソッド：`addScore(int points)`
+3. レベルアップメソッド：`levelUp()`（スコア100点ごと）
+4. ゲーム終了メソッド：`gameOver()`
+5. ゲーム状態表示メソッド
+
+**実行例：**
+```
+=== ゲーム管理システム ===
+プレイヤー: 太郎
+レベル: 1
+スコア: 0点
+ゲーム状態: プレイ中
+
+100点を獲得しました！
+現在のスコア: 100点
+
+レベルアップ！レベル2になりました。
+現在のレベル: 2
+
+ゲームオーバー！
+最終スコア: 350点
+最終レベル: 3
+```
+
+---
+
+## 🟡 応用レベル課題（推奨）
+
+### 課題1: 図書館管理システム
+
+**学習目標：** クラス間の協調、複雑なビジネスロジック
+
+**問題説明：**
+図書館の書籍貸出システムを作成してください。Book、Member、Libraryクラスを組み合わせた総合的なシステムです。
+
+**要求仕様：**
+1. Bookクラス：ISBN、タイトル、著者、貸出状況
+2. Memberクラス：会員ID、名前、貸出中書籍リスト
+3. Libraryクラス：書籍管理、貸出処理、返却処理
+4. 貸出上限数の管理（1人3冊まで）
+5. 書籍の重複貸出防止
+
+### 課題2: ショッピングカートシステム
+
+**学習目標：** コレクション操作、総合計算、状態管理
+
+**問題説明：**
+オンラインショッピングのカート機能を実装してください。商品の追加、削除、合計金額計算を行います。
+
+**要求仕様：**
+1. CartItemクラス：商品、数量、小計計算
+2. ShoppingCartクラス：アイテム管理、合計計算
+3. 商品の数量変更機能
+4. 割引適用機能
+5. 注文確定機能
+
+---
+
+## 🔴 発展レベル課題（挑戦）
+
+### 課題1: セキュアユーザー管理システム
+
+**学習目標：** アクセス修飾子の戦略的使用、セキュリティ設計
+
+**問題説明：**
+ユーザーの機密情報を安全に管理するシステムを作成してください。パスワード暗号化、権限管理、ログイン試行制限を実装します。
+
+**要求仕様：**
+1. アクセス修飾子の適切な使い分け
+2. パスワードの暗号化保存
+3. 権限レベルによるアクセス制御
+4. ログイン試行回数制限
+5. セキュリティログの記録
+
+### 課題2: 設定管理システム
+
+**学習目標：** 設定の安全な管理、バリデーション、履歴管理
+
+**問題説明：**
+アプリケーションの設定を安全に管理するシステムを作成してください。設定値の検証、環境別管理、変更履歴を実装します。
+
+---
+
+## ⚫ 挑戦レベル課題（上級者向け）
+
+### 統合プロジェクト: 従業員管理システム
+
+**学習目標：** 総合的なオブジェクト指向設計、複雑なドメインモデル
+
+**問題説明：**
+企業の従業員管理システムを作成してください。従業員情報、部署管理、給与計算、勤怠管理を統合したシステムです。
+
+**要求仕様：**
+1. Employee、Department、Salaryクラスの設計
+2. 継承を使った従業員タイプの表現
+3. 給与計算ロジックの実装
+4. 部署移動機能
+5. 管理者権限システム
+6. データの整合性保証
+
+---
+
+## 🔗 実装環境
+
+演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
+
+```
+exercises/chapter04/
+├── basic/          # 基礎レベル課題
+│   ├── README.md   # 詳細な課題説明
+│   ├── Employee.java
+│   ├── Product.java
+│   ├── SecureBankAccount.java
+│   └── Game.java
+├── advanced/       # 応用・発展レベル課題
+│   └── README.md
+├── challenge/      # 挑戦レベル課題
+└── solutions/      # 解答例（実装完了後に参照）
+```
+
+---
+
+## ✅ 完了確認チェックリスト
+
+### 基礎レベル
+- [ ] Employee.java: 適切なカプセル化と検証ができている
+- [ ] Product.java: 在庫管理と計算ロジックが実装されている
+- [ ] SecureBankAccount.java: 認証システムが動作している
+- [ ] Game.java: ゲーム状態の管理ができている
+
+### 技術要素
+- [ ] privateフィールドとpublicメソッドの使い分けができている
+- [ ] getter/setterメソッドが適切に実装されている
+- [ ] データの妥当性検証が組み込まれている
+- [ ] thisキーワードを理解して使用している
+- [ ] コンストラクタでの初期化が適切にできている
+
+### 応用・発展レベル
+- [ ] 複数クラス間の協調動作が実装できている
+- [ ] セキュリティを意識したクラス設計ができている
+- [ ] ビジネスロジックが適切に分離されている
+- [ ] アクセス修飾子を戦略的に使い分けている
