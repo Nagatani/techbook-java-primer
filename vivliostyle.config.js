@@ -52,6 +52,7 @@ module.exports = {
     'chapter21-documentation-and-libraries.md',
     'chapter22-build-and-deploy.md',
     // 付録
+    'appendix-index.md', // 付録一覧
     'appendix-environment-setup.md', // 付録A: 開発環境の構築
     // 付録B: 技術的詳細解説（Deep Dive）
     'appendix-b-index.md',
@@ -60,7 +61,9 @@ module.exports = {
     'appendix-b03-programming-paradigms.md',
     'appendix-b04-concurrent-distributed.md',
     'appendix-b05-software-design.md',
-    'appendix-javabeans.md', // 付録C: JavaBeansの仕様
+    // 付録C: 上級技術解説
+    'appendix-c-theoretical-foundations.md', // ソフトウェア工学の理論的基盤
+    'appendix-javabeans.md', // 付録D: JavaBeansの仕様
     'cross-reference-guide.md',
     'glossary.md',
     'colophon.md',

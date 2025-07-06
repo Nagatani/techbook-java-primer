@@ -79,8 +79,24 @@ The build process converts Markdown files listed in the `entry` array (currently
 6. Run `npm run build` to ensure the book builds successfully
 7. Update `TODO.md` after completing tasks
 
+## Important Directory Structure Rules
+
+**Critical**: The `manuscripts/` directory should contain ONLY the actual book content files that will be included in the final publication. 
+
+- **Book content only**: All files in `manuscripts/` must be part of the actual book
+- **Auxiliary files**: Planning documents, checklists, notes, and other auxiliary files should be stored in `docs/planning/`
+- **Never create**: Do not create management files, TODO lists, or planning documents in `manuscripts/`
+- **Before creating**: Always verify that a new file in `manuscripts/` will be added to `vivliostyle.config.js`
+
+Directory structure:
+- `manuscripts/`: Book content only (chapters, appendices included in vivliostyle.config.js)
+- `docs/planning/`: Planning documents, checklists, future topics, notes
+- `source/`: Original lecture materials and reference code (read-only)
+- `output/`: Generated PDF files
+
 ## Content Guidelines
 
 - Only use the official Oracle Java website as a reference
 - Maintain consistent tone and style suitable for a published book
 - Use textlint for Japanese manuscript linting and formatting
+- Do not add emojis unless explicitly requested by the user
