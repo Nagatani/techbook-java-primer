@@ -38,7 +38,46 @@
 
 ---
 
-## 章末演習
+## 章の構成
+
+本章は、マルチスレッドプログラミングを体系的に学習できるよう、以下のパートで構成されています：
+
+### [Part A: マルチスレッドの基礎](chapter16a-thread-basics.md)
+- マルチスレッドプログラミングの必要性
+- スレッドの作成と実行
+- 共有リソースと同期制御
+- synchronizedキーワードによる排他制御
+
+### [Part B: Executorフレームワーク](chapter16b-executor-framework.md)
+- ExecutorServiceとスレッドプール
+- Future と Callable による非同期処理
+- CompletableFuture による高度な非同期処理
+
+### [Part C: 並行コレクションと同期プリミティブ](chapter16c-concurrent-utilities.md)
+- 並行コレクション（ConcurrentHashMap、BlockingQueue等）
+- 高度な同期プリミティブ（Lock、Semaphore、CountDownLatch等）
+- プロデューサー・コンシューマーパターン
+
+### [Part D: 実践的な並行処理](chapter16d-practical-concurrency.md)
+- パフォーマンス測定とベンチマーク
+- スレッドセーフなパターン
+- 並行処理の落とし穴と解決策
+- ForkJoinPoolと並列ストリーム
+
+### [Part E: 章末演習](chapter16e-exercises.md)
+- 基礎レベル課題：スレッド操作と同期処理
+- 実践レベル課題：並行コレクションとExecutor
+- 応用レベル課題：高度な並行処理パターン
+
+## 学習の進め方
+
+1. Part Aで スレッドの基本概念と同期制御を理解
+2. Part Bで 実用的なExecutorフレームワークを習得
+3. Part Cで 並行処理専用のユーティリティを学習
+4. Part Dで 実践的な並行処理の設計と実装を習得
+5. Part Eの演習課題で実践的なスキルを身につける
+
+各パートは独立して読むことも可能ですが、順番に学習することで、基礎から実践まで体系的にマルチスレッドプログラミングを習得できるよう設計されています。
 
 本章で学んだマルチスレッドプログラミングの概念を活用して、実践的な練習課題に取り組みましょう。
 
