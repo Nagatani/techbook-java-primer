@@ -226,8 +226,8 @@ public class StreamExample {
 社員データを分析するシステムを作成し、Stream APIを活用してください。
 
 **要求仕様**:
-- Employee クラス（名前、年齢、部署、給与）
-- Stream API による多様な分析処理
+- Employeeクラス（名前、年齢、部署、給与）
+- Stream APIによる多様な分析処理
 - フィルタリング、ソート、グループ化、集約
 - 部署別・年齢層別の統計分析
 
@@ -278,10 +278,10 @@ public class StreamExample {
 商品売上データを分析するシステムを作成し、高度なStream処理を実装してください。
 
 **要求仕様**:
-- Sale クラス（商品名、カテゴリ、売上金額、売上日）
+- Saleクラス（商品名、カテゴリ、売上金額、売上日）
 - 期間別・カテゴリ別の売上分析
-- Stream API の高度な操作（flatMap、partition等）
-- Optional を活用した安全なデータアクセス
+- Stream APIの高度な操作（flatMap、partition等）
+- Optionalを活用した安全なデータアクセス
 
 **実行例**:
 ```
@@ -318,7 +318,7 @@ Optional活用例:
 **実装のヒント**:
 - LocalDate.parse() で日付変換
 - Stream.flatMap() で入れ子構造の平坦化
-- Optional.map() でチェーン処理
+- Optional.map() でチェイン処理
 
 #### 🟡 課題3: テキスト解析システム（応用）
 **難易度**: ★★★★☆
@@ -327,7 +327,7 @@ Optional活用例:
 
 **要求仕様**:
 - テキストファイルの読み込みと単語分析
-- Stream API による文字列処理
+- Stream APIによる文字列処理
 - 並列ストリームによる性能向上
 - 正規表現と組み合わせた高度な解析
 
@@ -372,7 +372,7 @@ functional（1回）
 
 **実装のヒント**:
 - Files.lines() でファイル読み込み
-- String.split() と Pattern.compile() で単語分割
+- String.split（） とPattern.compile() で単語分割
 - parallelStream() で並列処理
 
 #### 🔴 課題4: データ変換パイプライン（上級）
@@ -421,7 +421,7 @@ functional（1回）
 **実装のヒント**:
 - Collector.of() でカスタムコレクター作成
 - Stream.concat() でストリーム結合
-- try-catch と filter() で例外処理
+- try-catchとfilter() で例外処理
 
 ### 📁 課題の場所
 演習課題の詳細と解答例は `exercises/chapter10/` ディレクトリに用意されています：

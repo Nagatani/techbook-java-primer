@@ -63,15 +63,15 @@
 **学習目標：** Listインターフェイスの理解、ArrayListとLinkedListの性能比較
 
 **問題説明：**
-学生情報を管理するシステムを作成し、Listの特性を活用してください。全ての学生は一意のID、名前、成績を持ちます。
+学生情報を管理するシステムを作成し、Listの特性を活用してください。すべての学生は一意のID、名前、成績を持ちます。
 
 **要求仕様：**
-1. Studentクラス:
-   - privateフィールド: `id`（String）、`name`（String）、`score`（int）
-   - 適切なコンストラクタとゲッターの実装
+1. Studentクラス：
+   - privateフィールド： `id`（String）、`name`（String）、`score`（int）
+   - 適切なコンストラクタとゲッタの実装
    - toStringメソッドのオーバーライド
 
-2. StudentManagerクラス:
+2. StudentManagerクラス：
    - Listを使った学生管理（追加、削除、検索）
    - 成績順、名前順でのソート機能
    - ArrayListとLinkedListの性能測定メソッド
@@ -126,7 +126,7 @@ public class StudentManager {
 }
 ```
 
-### 課題2: 単語カウンター（Map活用）
+### 課題2: 単語カウンタ（Map活用）
 
 **学習目標：** Mapインターフェイスの理解、HashMapとTreeMapの使い分け
 
@@ -134,7 +134,7 @@ public class StudentManager {
 テキストの単語出現頻度を集計するシステムを作成し、Mapの特性を活用してください。
 
 **要求仕様：**
-1. WordCounterクラス:
+1. WordCounterクラス：
    - テキストから単語を抽出して出現回数をカウント
    - 大文字小文字を区別しない
    - 頻度順、アルファベット順でのソート表示
@@ -207,7 +207,7 @@ public class WordCounter {
 データの重複を除去するシステムを作成し、Setの特性を活用してください。
 
 **要求仕様：**
-1. DuplicateRemoverクラス:
+1. DuplicateRemoverクラス：
    - 文字列リストから重複を除去
    - HashSetとTreeSetの使い分け
    - 集合演算（和集合、積集合、差集合）の実装
@@ -250,7 +250,7 @@ Person{name='鈴木', age=25}
 
 **要求仕様：**
 1. Productクラス（ID、名前、価格、カテゴリ）
-2. InventoryManagerクラス:
+2. InventoryManagerクラス：
    - カテゴリ別商品管理（Map<String, List<Product>>）
    - 価格帯別集計（TreeMap使用）
    - 在庫検索・フィルタリング機能
@@ -425,7 +425,7 @@ exercises/chapter08/
 
 ### 基礎レベル
 - [ ] 学生管理システムでListの特性を理解できている
-- [ ] 単語カウンターでMapを効率的に使用できている
+- [ ] 単語カウンタでMapを効率的に使用できている
 - [ ] 重複除去システムでSetの特性を活用できている
 - [ ] 在庫管理システムで複合コレクションを設計できている
 

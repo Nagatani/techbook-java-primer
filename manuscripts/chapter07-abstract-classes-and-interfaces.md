@@ -280,7 +280,7 @@ int result = Calculable.triple(5); // 15
 - 抽象メソッドと具象メソッドの使い分け
 - 多重継承の代替としてのインターフェイス
 - デフォルトメソッドと静的メソッドの活用
-- SOLID原則に基づく抽象化設計の理解と実践
+- SOLID原則にもとづく抽象化設計の理解と実践
 
 ### 演習課題の難易度レベル
 
@@ -333,24 +333,24 @@ int result = Calculable.triple(5); // 15
 **学習目標：** 抽象クラスの定義、継承、ポリモーフィズム
 
 **問題説明：**
-図形を表す抽象クラスShapeを作成し、具体的な図形クラス（Circle、Rectangle）で実装してください。全ての図形は色を持ち、面積と周囲の長さを計算できます。
+図形を表す抽象クラスShapeを作成し、具体的な図形クラス（Circle、Rectangle）で実装してください。すべての図形は色を持ち、面積と周囲の長さを計算できます。
 
 **要求仕様：**
 1. 抽象クラスShape:
-   - privateフィールド: `color`（String）
+   - privateフィールド： `color`（String）
    - コンストラクタで色を初期化
-   - 抽象メソッド: `calculateArea()`、`calculatePerimeter()`
-   - 具象メソッド: `getColor()`、`displayInfo()`
+   - 抽象メソッド： `calculateArea()`、`calculatePerimeter()`
+   - 具象メソッド： `getColor()`、`displayInfo()`
 
 2. Circleクラス（Shapeを継承）:
-   - privateフィールド: `radius`（double）
-   - 面積計算: π × 半径²
-   - 周囲計算: 2 × π × 半径
+   - privateフィールド： `radius`（double）
+   - 面積計算： π × 半径²
+   - 周囲計算： 2 × π × 半径
 
 3. Rectangleクラス（Shapeを継承）:
-   - privateフィールド: `width`、`height`（double）
-   - 面積計算: 幅 × 高さ
-   - 周囲計算: 2 × (幅 + 高さ)
+   - privateフィールド： `width`、`height`（double）
+   - 面積計算： 幅 × 高さ
+   - 周囲計算： 2 × （幅 + 高さ）
 
 **実行例：**
 ```
@@ -420,18 +420,18 @@ public class Circle extends Shape {
 **学習目標：** インターフェイスの定義、多重実装、デフォルトメソッド
 
 **問題説明：**
-動物の行動を表すインターフェイス（Flyable、Swimmable、Walkable）を作成し、様々な動物クラスで実装してください。一部の動物は複数の行動が可能です。
+動物の行動を表すインターフェイス（Flyable、Swimmable、Walkable）を作成し、さまざまな動物クラスで実装してください。一部の動物は複数の行動が可能です。
 
 **要求仕様：**
-1. インターフェイス定義:
+1. インターフェイス定義：
    - Flyable: `fly()`メソッド、デフォルトメソッド`getAltitude()`
    - Swimmable: `swim()`メソッド、デフォルトメソッド`getDiveDepth()`
    - Walkable: `walk()`メソッド
 
-2. 動物クラス:
+2. 動物クラス：
    - Bird: Flyable、Walkableを実装
    - Fish: Swimmableを実装
-   - Duck: Flyable、Swimmable、Walkableを実装（全て実装）
+   - Duck: Flyable、Swimmable、Walkableを実装（すべて実装）
 
 **実行例：**
 ```
@@ -502,17 +502,17 @@ public class Duck implements Flyable, Swimmable, Walkable {
 支払い方法を表すインターフェイスを作成し、異なる支払い方法（クレジットカード、デビットカード、現金）を実装してください。各支払い方法には手数料計算があります。
 
 **要求仕様：**
-1. PaymentMethodインターフェイス:
+1. PaymentMethodインターフェイス：
    - `processPayment(double amount)`
    - `calculateFee(double amount)`
    - デフォルトメソッド`getPaymentType()`
 
-2. 実装クラス:
+2. 実装クラス：
    - CreditCard: 手数料3%
    - DebitCard: 手数料2%
    - Cash: 手数料0%
 
-3. PaymentProcessorクラス:
+3. PaymentProcessorクラス：
    - 支払い方法を受け取り、統一的に処理
 
 **実行例：**
@@ -547,11 +547,11 @@ public class Duck implements Flyable, Swimmable, Walkable {
 通知とログ機能を持つシステムを作成してください。一部のクラスは両方の機能を持ち、一部は片方のみを実装します。
 
 **要求仕様：**
-1. インターフェイス:
+1. インターフェイス：
    - Notifiable: `sendNotification(String message)`
    - Loggable: `log(String message)`、デフォルトメソッド`getTimestamp()`
 
-2. 実装クラス:
+2. 実装クラス：
    - EmailNotifier: Notifiable、Loggableを実装
    - SMSNotifier: Notifiable、Loggableを実装
    - SystemLogger: Loggableのみ実装
@@ -577,24 +577,24 @@ SMSによる通知:
 
 ## 🟡 応用レベル課題（推奨）
 
-### 課題1: ゲームキャラクターシステム
+### 課題1: ゲームキャラクタシステム
 
 **学習目標：** 抽象クラスとインターフェイスの組み合わせ、テンプレートメソッドパターン
 
 **問題説明：**
-ゲームキャラクターシステムを設計してください。全キャラクターは基本的な属性を持ち、種類によって異なる行動や能力を持ちます。
+ゲームキャラクタシステムを設計してください。全キャラクタは基本的な属性を持ち、種類によって異なる行動や能力を持ちます。
 
 **要求仕様：**
-1. GameCharacter抽象クラス:
-   - フィールド: name、health、attackPower
-   - 抽象メソッド: attack()、defend()
-   - テンプレートメソッド: performTurn()
+1. GameCharacter抽象クラス：
+   - フィールド： name、health、attackPower
+   - 抽象メソッド： attack()、defend()
+   - テンプレートメソッド： performTurn()
 
-2. Drawableインターフェイス:
+2. Drawableインターフェイス：
    - draw()メソッド
    - getPosition()メソッド
 
-3. 具象クラス:
+3. 具象クラス：
    - Player: GameCharacterを継承、Drawableを実装
    - Enemy: GameCharacterを継承、Drawableを実装
    - 特殊能力の実装
@@ -607,12 +607,12 @@ SMSによる通知:
 給与計算システムを作成してください。従業員と請求書の両方を統一的に処理できるようにします。
 
 **要求仕様：**
-1. Payableインターフェイス:
+1. Payableインターフェイス：
    - getPaymentAmount()
    - getPaymentName()
    - デフォルトメソッドgetPaymentDescription()
 
-2. 実装クラス:
+2. 実装クラス：
    - Employee: 月給制、時給制の従業員
    - Invoice: 商品の請求書
    - Contractor: 契約社員（特別な計算ロジック）
@@ -625,15 +625,15 @@ SMSによる通知:
 学生情報を管理し、複数の基準でソートできるシステムを作成してください。
 
 **要求仕様：**
-1. Sortableインターフェイス:
+1. Sorテーブルインターフェイス：
    - compareTo()メソッド
    - setSortCriteria()メソッド
 
-2. SortCriteria列挙型:
+2. SortCriteria列挙型：
    - NAME、SCORE、STUDENT_ID
 
-3. Studentクラス:
-   - SortableとComparableの両方を実装
+3. Studentクラス：
+   - SorテーブルとComparableの両方を実装
    - 名前、点数、学籍番号の管理
 
 ---
@@ -648,7 +648,7 @@ SMSによる通知:
 プラグイン可能なアプリケーションフレームワークを設計してください。新しい機能を既存コードを変更せずに追加できるようにします。
 
 **要求仕様：**
-1. Pluginインターフェイス階層:
+1. Pluginインターフェイス階層：
    - Plugin: 基本インターフェイス
    - Configurable: 設定可能なプラグイン
    - Lifecycle: ライフサイクル管理
@@ -666,12 +666,12 @@ SMSによる通知:
 異なるデータソース（ファイル、データベース、メモリ）に対して統一的なアクセスを提供するシステムを作成してください。
 
 **要求仕様：**
-1. Repository階層:
+1. Repository階層：
    - Repository<T>: ジェネリックインターフェイス
    - CrudRepository<T>: CRUD操作
    - QueryableRepository<T>: クエリ機能
 
-2. 実装:
+2. 実装：
    - FileRepository
    - DatabaseRepository
    - InMemoryRepository
@@ -691,7 +691,7 @@ SMSによる通知:
 
 1. **コアシステム:**
    - GameObject抽象クラス
-   - Component システム（コンポーネント指向設計）
+   - Componentシステム（コンポーネント指向設計）
    - Scene管理
    - GameLoop（テンプレートメソッド）
 

@@ -115,7 +115,7 @@ public class BasicLambda {
 独自の関数型インターフェイスを設計し、ラムダ式で実装してください。
 
 **要求仕様：**
-- @FunctionalInterface アノテーション使用
+- @FunctionalInterfaceアノテーション使用
 - 数学演算用の関数型インターフェイス
 - 文字列処理用の関数型インターフェイス
 - デフォルトメソッドの活用
@@ -454,13 +454,13 @@ button.addActionListener(new ActionListener() {
 
 ### 関数型言語の系譜
 
-**LISP（1958年）**
+**Lisp（1958年）**
 John McCarthyによって開発された最初の関数型言語：
 ```lisp
 (lambda (x) (+ x 1))  ; xに1を加える関数
 ```
 
-**ML（1973年）・Haskell（1990年）**
+**メーリングリスト（1973年）・Haskell（1990年）**
 より純粋な関数型言語として発展：
 ```haskell
 -- Haskellの例

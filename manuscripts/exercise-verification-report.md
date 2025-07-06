@@ -63,7 +63,7 @@ UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 ### 課題の品質
 - **設計**: オブジェクト指向の概念が段階的に学習できる優れた構成
 - **実装**: 実践的で学習効果の高い課題内容
-- **コメント**: 学習者向けの適切なTODOコメントとヒント
+- **コメント**: 学習者向けの適切なToDoコメントとヒント
 
 ### 改善推奨事項
 

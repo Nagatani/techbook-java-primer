@@ -48,7 +48,7 @@
 - 同期処理（synchronized、Lock）の理解と実装
 - java.util.concurrentパッケージの活用
 - スレッドプールとExecutorServiceの使用
-- 非同期プログラミング（CompletableFuture）による効率的な並行処理
+- 非同期プログラミング（CompleテーブルFuture）による効率的な並行処理
 
 ### 演習課題の難易度レベル
 
@@ -129,7 +129,7 @@ Thread-pool-1-thread-3: カウンタ 2
 - スレッドライフサイクルの理解
 
 **実装ヒント：**
-- Thread.start() でスレッド開始（run() 直接呼び出しは×）
+- Thread.start（） でスレッド開始（run() 直接呼び出しは×）
 - Thread.join() で他スレッドの完了待機
 - Thread.sleep() で一時停止
 
@@ -143,9 +143,9 @@ Thread-pool-1-thread-3: カウンタ 2
 同期処理を実装し、データ競合を防ぐ方法を理解してください。
 
 **要求仕様：**
-- synchronized キーワードによる排他制御
-- Lock インターフェイスを使った明示的なロック
-- volatile キーワードの使用
+- synchronizedキーワードによる排他制御
+- Lockインターフェイスを使った明示的なロック
+- volatileキーワードの使用
 - スレッドセーフなデータ構造の実装
 - デッドロック回避策
 
@@ -203,15 +203,15 @@ volatile変数テスト:
 - デッドロック回避策の理解
 
 **実装ヒント：**
-- synchronized メソッド: public synchronized void method()
-- synchronized ブロック: synchronized(object) { ... }
-- ReentrantLock で明示的ロック制御
+- synchronizedメソッド： public synchronized void method()
+- synchronizedブロック： synchronized(object) { ... }
+- ReentrantLockで明示的ロック制御
 
 ---
 
 ### 課題3: 並行コレクションとExecutor
 
-**学習目標：** 並行コレクションの適切な選択、ExecutorService の効果的な活用、非同期処理パターンの実装
+**学習目標：** 並行コレクションの適切な選択、ExecutorServiceの効果的な活用、非同期処理パターンの実装
 
 **問題説明：**
 並行処理専用のコレクションとExecutorServiceを活用してください。
@@ -219,8 +219,8 @@ volatile変数テスト:
 **要求仕様：**
 - ConcurrentHashMap、CopyOnWriteArrayList等の使用
 - ExecutorServiceによるスレッドプール管理
-- Future と Callable による結果取得
-- CompletableFuture による非同期処理
+- FutureとCallableによる結果取得
+- CompleテーブルFutureによる非同期処理
 - 並行処理パターンの実装
 
 **実行例：**
@@ -284,13 +284,13 @@ step3: 集計処理 → 30
 
 **評価ポイント：**
 - 並行コレクションの適切な選択
-- ExecutorService の効果的な活用
+- ExecutorServiceの効果的な活用
 - 非同期処理パターンの実装
 
 **実装ヒント：**
 - Executors.newFixedThreadPool(n) でスレッドプール
 - Future<T> で非同期結果取得
-- CompletableFuture.supplyAsync() で非同期実行
+- CompleテーブルFuture.supplyAsync() で非同期実行
 
 ---
 
@@ -302,8 +302,8 @@ step3: 集計処理 → 30
 生産者・消費者パターンを実装し、スレッド間通信を理解してください。
 
 **要求仕様：**
-- BlockingQueue を使った生産者・消費者パターン
-- wait/notify を使った低レベル同期
+- BlockingQueueを使った生産者・消費者パターン
+- wait/notifyを使った低レベル同期
 - セマフォによるリソース制限
 - スレッド間のデータ受け渡し
 - 処理能力のバランス調整
@@ -371,9 +371,9 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 - スループット最適化の考慮
 
 **実装ヒント：**
-- ArrayBlockingQueue で固定サイズキュー
-- put() でブロッキング挿入、take() でブロッキング取得
-- Semaphore でリソース数制限
+- ArrayBlockingQueueで固定サイズキュー
+- put（） でブロッキング挿入、take() でブロッキング取得
+- Semaphoreでリソース数制限
 
 ---
 
@@ -381,21 +381,21 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 ### マルチスレッドのポイント
 
-1. **スレッド作成**: Thread継承 vs Runnable実装
-2. **同期制御**: synchronized vs Lock インターフェイス
+1. **スレッド作成**: Thread継承vs Runnable実装
+2. **同期制御**: synchronized vs Lockインターフェイス
 3. **並行コレクション**: スレッドセーフなデータ構造
 4. **ExecutorService**: スレッドプールによる効率的管理
 5. **スレッド間通信**: BlockingQueue、wait/notify
 6. **パフォーマンス**: 適切な並行度とオーバーヘッド考慮
 
 ### よくある落とし穴
-- run()メソッドの直接呼び出し（start()を使う）
+- run（）メソッドの直接呼び出し（start()を使う）
 - 同期処理の範囲が広すぎる・狭すぎる
 - デッドロックの発生（ロック順序に注意）
 - リソースリーク（ExecutorServiceのshutdown忘れ）
 
 ### 設計のベストプラクティス
-- 可能な限りimmutableオブジェクトを使用
+- 可能な限りimmuテーブルオブジェクトを使用
 - 共有状態を最小限に抑制
 - 並行コレクションの積極的活用
 - 適切な粒度での同期処理設計

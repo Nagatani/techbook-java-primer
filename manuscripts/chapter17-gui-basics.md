@@ -122,7 +122,7 @@
 **実装ヒント：**
 - GridLayout(4, 4) で4×4のボタン配置
 - Double型で計算精度を保つ
-- try-catch でNumberFormatException処理
+- try-catchでNumberFormatException処理
 
 ---
 
@@ -191,9 +191,9 @@
 - キーボードショートカットの実装
 
 **実装ヒント：**
-- JScrollPane で自動スクロール
-- JFileChooser でファイル選択ダイアログ
-- KeyStroke でキーボードショートカット
+- JScrollPaneで自動スクロール
+- JFileChooserでファイル選択ダイアログ
+- KeyStrokeでキーボードショートカット
 
 ---
 
@@ -240,15 +240,15 @@
 - レイアウトの動的変更実装
 
 **実装ヒント：**
-- JTabbedPane でタブ切り替え
-- GridBagConstraints で制約設定
+- JTabbedPaneでタブ切り替え
+- GridBagConstraintsで制約設定
 - revalidate()、repaint() で再描画
 
 ---
 
 ### 課題4: カラーピッカー
 
-**学習目標：** JSliderの効果的な使用、Color クラスの RGB/HSB 変換理解、リアルタイム更新の実装
+**学習目標：** JSliderの効果的な使用、ColorクラスのRGB/HSB変換理解、リアルタイム更新の実装
 
 **問題説明：**
 色を選択・調整できるカラーピッカーアプリケーションを作成してください。
@@ -308,13 +308,13 @@
 
 **評価ポイント：**
 - JSliderの効果的な使用
-- Color クラスの RGB/HSB 変換理解
+- ColorクラスのRGB/HSB変換理解
 - リアルタイム更新の実装
 
 **実装ヒント：**
-- Color.RGBtoHSB() と Color.HSBtoRGB() を使用
-- JSlider の値変更リスナーでリアルタイム更新
-- ArrayList で色履歴を管理
+- Color.RGBtoHSB（） とColor.HSBtoRGB() を使用
+- JSliderの値変更リスナでリアルタイム更新
+- ArrayListで色履歴を管理
 
 ---
 
@@ -322,7 +322,7 @@
 
 ### GUI基礎のポイント
 
-1. **コンポーネント階層**: Container → Component の関係
+1. **コンポーネント階層**: Container → Componentの関係
 2. **レイアウトマネージャー**: BorderLayout、GridLayout、FlowLayout等
 3. **イベント処理**: ActionListener、ChangeListener等
 4. **スレッド**: Event Dispatch Thread（EDT）での実行
@@ -332,7 +332,7 @@
 ### よくある落とし穴
 - EDT以外からのGUI操作（SwingUtilities.invokeLater使用）
 - レイアウトマネージャーの不適切な選択
-- イベントリスナーのメモリリーク
+- イベントリスナのメモリリーク
 - 適切なサイズ設定とリサイズ対応
 
 ### 設計のベストプラクティス
@@ -372,7 +372,7 @@ exercises/chapter17/
 
 ### 技術要素
 - [ ] Swingの基本コンポーネントを理解している
-- [ ] イベント処理の仕組みを把握している
+- [ ] イベント処理のしくみを把握している
 - [ ] レイアウトマネージャーを適切に使い分けできている
 - [ ] ユーザビリティを考慮した設計ができている
 
