@@ -277,7 +277,7 @@ int result = Calculable.triple(5); // 15
 ### 演習の目標
 - 抽象クラスとインターフェイスの基本概念の習得
 - デザインパターンの実践的な適用
-- SOLID原則に基づく設計
+- SOLID原則にもとづく設計
 
 ### 演習課題
 
@@ -316,7 +316,7 @@ public interface Drawable {
 3. Rectangleクラス（Shapeを継承）:
    - privateフィールド： `width`、`height`（double）
    - 面積計算： 幅 × 高さ
-   - 周囲計算： 2 × （幅 + 高さ）
+   - 周囲計算： 2 ×（幅 + 高さ）
 
 **実行例：**
 ```

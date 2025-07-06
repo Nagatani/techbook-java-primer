@@ -50,8 +50,8 @@
 
 ### [Part B: Executorフレームワーク](chapter16b-executor-framework.md)
 - ExecutorServiceとスレッドプール
-- Future と Callable による非同期処理
-- CompletableFuture による高度な非同期処理
+- FutureとCallableによる非同期処理
+- CompleテーブルFutureによる高度な非同期処理
 
 ### [Part C: 並行コレクションと同期プリミティブ](chapter16c-concurrent-utilities.md)
 - 並行コレクション（ConcurrentHashMap、BlockingQueue等）
@@ -71,10 +71,10 @@
 
 ## 学習の進め方
 
-1. Part Aで スレッドの基本概念と同期制御を理解
-2. Part Bで 実用的なExecutorフレームワークを習得
-3. Part Cで 並行処理専用のユーティリティを学習
-4. Part Dで 実践的な並行処理の設計と実装を習得
+1. Part Aでスレッドの基本概念と同期制御を理解
+2. Part Bで実用的なExecutorフレームワークを習得
+3. Part Cで並行処理専用のユーティリティを学習
+4. Part Dで実践的な並行処理の設計と実装を習得
 5. Part Eの演習課題で実践的なスキルを身につける
 
 各パートは独立して読むことも可能ですが、順番に学習することで、基礎から実践まで体系的にマルチスレッドプログラミングを習得できるよう設計されています。
@@ -149,7 +149,7 @@ Thread-pool-1-thread-3: カウンタ 2
 - スレッドライフサイクルの理解
 
 **実装ヒント：**
-- Thread.start（） でスレッド開始（run() 直接呼び出しは×）
+- Thread.start（）でスレッド開始（run() 直接呼び出しは×）
 - Thread.join() で他スレッドの完了待機
 - Thread.sleep() で一時停止
 
@@ -365,7 +365,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 **実装ヒント：**
 - ArrayBlockingQueueで固定サイズキュー
-- put（） でブロッキング挿入、take() でブロッキング取得
+- put（）でブロッキング挿入、take() でブロッキング取得
 - Semaphoreでリソース数制限
 
 ---
@@ -709,7 +709,7 @@ public class FutureCallableExample {
 }
 ```
 
-#### 3. CompletableFuture による高度な非同期処理
+#### 3. CompleテーブルFuture による高度な非同期処理
 
 ```java
 import java.util.concurrent.CompletableFuture;

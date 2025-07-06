@@ -247,7 +247,7 @@ public enum DatabaseConnectionEnum {
 }
 ```
 
-#### ファクトリーパターン
+#### ファクトリパターン
 
 ```java
 // 抽象ファクトリーパターン
@@ -298,7 +298,7 @@ public class Application {
 
 ### 構造パターン
 
-#### アダプターパターン
+#### アダプタパターン
 
 ```java
 // 既存のクラス（変更不可）
@@ -403,7 +403,7 @@ System.out.println(coffee.description() + " costs " + coffee.cost());
 
 ### 振る舞いパターン
 
-#### オブザーバーパターン
+#### オブザーバパターン
 
 ```java
 // Subject（観察対象）
@@ -512,7 +512,7 @@ class ShoppingCart {
 
 ## B.5.3 アーキテクチャパターン
 
-### レイヤードアーキテクチャ
+### レイヤドアーキテクチャ
 
 ```java
 // プレゼンテーション層
@@ -556,7 +556,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 }
 ```
 
-### ヘキサゴナルアーキテクチャ（ポート&アダプター）
+### ヘキサゴナルアーキテクチャ（ポート&アダプタ）
 
 ```java
 // ドメイン層（中心）

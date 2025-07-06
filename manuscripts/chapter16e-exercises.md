@@ -69,7 +69,7 @@ Thread-pool-1-thread-3: カウンタ 2
 - スレッドライフサイクルの理解
 
 **実装ヒント：**
-- Thread.start（） でスレッド開始（run() 直接呼び出しは×）
+- Thread.start（）でスレッド開始（run() 直接呼び出しは×）
 - Thread.join() で他スレッドの完了待機
 - Thread.sleep() で一時停止
 
@@ -283,7 +283,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 **実装ヒント：**
 - ArrayBlockingQueueで固定サイズキュー
-- put（） でブロッキング挿入、take() でブロッキング取得
+- put（）でブロッキング挿入、take() でブロッキング取得
 - Semaphoreでリソース数制限
 
 ---

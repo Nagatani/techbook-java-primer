@@ -111,9 +111,9 @@ public class GreetingApp {
 }
 ```
 
-### より実践的な例：カウンターアプリケーション
+### より実践的な例：カウンタアプリケーション
 
-ボタンクリックで数値を増減させるカウンターアプリケーションを作成してみましょう。
+ボタンクリックで数値を増減させるカウンタアプリケーションを作成してみましょう。
 
 ```java
 import javax.swing.*;
@@ -187,7 +187,7 @@ public class CounterApp extends JFrame {
 
 #### 1. Event Dispatch Thread (EDT) の理解
 
-Swingのすべての GUI操作は、Event Dispatch Thread (EDT) という専用のスレッドで実行される必要があります。
+SwingのすべてのGUI操作は、Event Dispatch Thread (EDT) という専用のスレッドで実行される必要があります。
 
 ```java
 // 正しい方法：EDTでGUIを作成
@@ -269,7 +269,7 @@ public class LongTaskExample extends JFrame {
 
 ### 複数のイベントソースの処理
 
-一つのリスナーで複数のイベントソースを処理することもできます。
+1つのリスナで複数のイベントソースを処理することもできます。
 
 ```java
 public class MultiButtonExample extends JFrame implements ActionListener {
@@ -343,7 +343,7 @@ public class MultiButtonExample extends JFrame implements ActionListener {
 
 - **イベント処理の3要素**：イベントソース、イベントオブジェクト、イベントリスナ
 - **ActionListener**：ボタンクリックなどのアクションイベントの処理
-- **ラムダ式**：簡潔なイベントリスナーの記述方法
+- **ラムダ式**：簡潔なイベントリスナの記述方法
 - **EDT**：SwingのGUI操作は必ずEvent Dispatch Threadで実行
 - **SwingWorker**：長時間処理を別スレッドで実行
 

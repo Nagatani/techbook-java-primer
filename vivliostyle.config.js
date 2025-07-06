@@ -51,17 +51,16 @@ module.exports = {
     'chapter20-unit-testing.md',
     'chapter21-documentation-and-libraries.md',
     'chapter22-build-and-deploy.md',
-    // 付録A - 環境構築
-    'appendix-a-environment-setup.md',
-    // 付録B - Deep Dive
+    // 付録
+    'appendix-environment-setup.md', // 付録A: 開発環境の構築
+    // 付録B: 技術的詳細解説（Deep Dive）
     'appendix-b-index.md',
     'appendix-b01-language-design.md',
     'appendix-b02-memory-performance.md',
     'appendix-b03-programming-paradigms.md',
     'appendix-b04-concurrent-distributed.md',
     'appendix-b05-software-design.md',
-    // その他の付録
-    'appendix-javabeans.md',
+    'appendix-javabeans.md', // 付録C: JavaBeansの仕様
     'cross-reference-guide.md',
     'glossary.md',
     'colophon.md',

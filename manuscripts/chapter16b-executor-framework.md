@@ -146,7 +146,7 @@ public class FutureCallableExample {
 }
 ```
 
-### CompletableFuture による高度な非同期処理
+### CompleテーブルFuture による高度な非同期処理
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -416,7 +416,7 @@ public class ExecutorBestPractices {
 
 - **ExecutorService**：スレッドプールによる効率的なタスク管理
 - **Future と Callable**：非同期処理の結果取得
-- **CompletableFuture**：チェーン処理や組み合わせ処理が可能な高度な非同期処理
+- **CompleテーブルFuture**：チェイン処理や組み合わせ処理が可能な高度な非同期処理
 - **さまざまなExecutor**：用途に応じた適切なExecutorの選択
 - **ベストプラクティス**：カスタム設定と適切なリソース管理
 

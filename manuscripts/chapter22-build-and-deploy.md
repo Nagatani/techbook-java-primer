@@ -242,7 +242,7 @@ Main-Class: SimpleApp
 
 ### マニフェストファイルの詳細なオプション
 
-マニフェストファイルには、`Main-Class`以外にも様々な情報を記述できます：
+マニフェストファイルには、`Main-Class`以外にもさまざまな情報を記述できます：
 
 ```text
 Manifest-Version: 1.0
@@ -264,7 +264,7 @@ Sealed: true
 - **Created-By**: JARを作成したJDKのバージョン
 - **Implementation-***: 実装に関する情報（バージョン、ベンダーなど）
 - **Specification-***: 仕様に関する情報
-- **Sealed**: trueにすると、このJAR内のパッケージは他のJARから拡張できない
+- **Sealed**: trueにすると、このJAR内のパッケージはほかのJARから拡張できない
 
 ### リソースファイルを含むJARの作成
 
@@ -375,7 +375,7 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 ### 外部ライブラリを含むFat JARの作成
 
-外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成することができます：
+外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成できます：
 
 ```java
 // JsonProcessorApp.java

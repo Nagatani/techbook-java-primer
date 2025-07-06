@@ -274,7 +274,7 @@ Swingを使ったデスクトップGUIアプリケーションの基礎を習得
 - リアルタイム更新の実装
 
 **実装ヒント：**
-- Color.RGBtoHSB（） とColor.HSBtoRGB() を使用
+- Color.RGBtoHSB（）とColor.HSBtoRGB() を使用
 - JSliderの値変更リスナでリアルタイム更新
 - ArrayListで色履歴を管理
 

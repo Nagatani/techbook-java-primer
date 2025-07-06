@@ -101,7 +101,7 @@
 
 **実装ヒント：**
 - Timerクラスで入力完了後の遅延バリデーション
-- setBorder（） やsetBackground() で視覚的フィードバック
+- setBorder（）やsetBackground() で視覚的フィードバック
 - ActionMapとInputMapでキーバインディング設定
 
 ---

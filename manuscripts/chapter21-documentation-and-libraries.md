@@ -287,7 +287,7 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 #### IntelliJ IDEA
 メニューの `Tools` -> `Generate JavaDoc...` から生成できます。
 - Output directory: `doc` または `javadoc`
-- Other command line arguments: `-encoding UTF-8 -charset UTF-8`
+- Other command LINE arguments: `-encoding UTF-8 -charset UTF-8`
 - 必要に応じて `-author`、`-version` オプションを追加
 
 ## 21.2 外部ライブラリの利用
@@ -587,7 +587,7 @@ public class CommonsLangExample {
 }
 ```
 
-#### Commons IOの例
+#### Commons I/Oの例
 ```xml
 <dependency>
     <groupId>commons-io</groupId>
@@ -762,7 +762,7 @@ public class OkHttpExample {
 
 ### Lombok - ボイラープレートコードの削減
 
-Lombokは、アノテーションを使ってゲッター、セッター、コンストラクタなどを自動生成します。
+Lombokは、アノテーションを使ってゲッタ、セッタ、コンストラクタなどを自動生成します。
 
 ```xml
 <dependency>
