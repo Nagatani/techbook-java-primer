@@ -61,6 +61,8 @@ module.exports = {
     'appendix-b03-programming-paradigms.md',
     'appendix-b04-concurrent-distributed.md',
     'appendix-b05-software-design.md',
+    'appendix-b06-compiler-ast.md',
+    'appendix-b07-language-evolution.md',
     // 付録C: 上級技術解説
     'appendix-c-theoretical-foundations.md', // ソフトウェア工学の理論的基盤
     'appendix-javabeans.md', // 付録D: JavaBeansの仕様
