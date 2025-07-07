@@ -4,7 +4,7 @@
 
 ### 前提知識
 
-本章を学習するためには、第11章までに習得した総合的なJavaプログラミング能力が必須となります。特に、クラスとオブジェクトの設計、継承とインターフェイス、例外処理、コレクションフレームワーク、ファイル入出力など、これまで学んだ技術要素を組み合わせて実用的なプログラムを作成できる能力が求められます。また、イベント処理の基本概念について理解していることも重要です。ユーザーの操作（ボタンクリック、キー入力など）に応じてプログラムが反応するという、これまでのコンソールアプリケーションとは異なるプログラミングパラダイムを理解する準備ができていることが必要です。さらに、オブジェクト指向設計の実践経験があることで、GUIコンポーネントの階層構造や、イベントリスナーパターンなどの設計思想をより深く理解できます。
+本章を学習するためには、第11章までに習得した総合的なJavaプログラミング能力が必須となります。特に、クラスとオブジェクトの設計、継承とインターフェイス、例外処理、コレクションフレームワーク、ファイル入出力など、これまで学んだ技術要素を組み合わせて実用的なプログラムを作成できる能力が求められます。また、イベント処理の基本概念について理解していることも重要です。ユーザーの操作（ボタンクリック、キー入力など）に応じてプログラムが反応するという、これまでのコンソールアプリケーションとは異なるプログラミングパラダイムを理解する準備ができていることが必要です。さらに、オブジェクト指向設計の実践経験があることで、GUIコンポーネントの階層構造や、イベントリスナパターンなどの設計思想をより深く理解できます。
 
 ユーザーインターフェイスの前提として、日常的にGUIアプリケーションを使用した経験があることが望ましいです。Windows、macOS、あるいはLinuxのデスクトップ環境でアプリケーションを使用し、メニュー、ボタン、テキストフィールド、スクロールバーなどの標準的なGUIコンポーネントの動作を体験的に理解していることで、開発者としての視点でこれらの実装方法を学ぶことができます。また、ユーザビリティに対する基本的な理解、つまり使いやすいインターフェイスとは何か、ユーザーの期待に応える操作性とは何かという問題意識を持っていることで、単に動くGUIではなく、使いやすいGUIを設計する能力の基礎を築くことができます。
 
@@ -12,13 +12,323 @@
 
 本章では、Javaを使ったデスクトップGUIアプリケーション開発の基礎を体系的に学習します。知識理解の面では、まずGUIプログラミングの基本概念と、それがもたらす新たな課題について理解します。コンソールアプリケーションが上から下へ順番に実行される手続き的なモデルであるのに対し、GUIアプリケーションはユーザーの操作を待ち、それに反応するイベント駆動型のモデルを採用しています。この根本的な違いを理解することが、効果的なGUIプログラミングの第一歩となります。
 
-Swingフレームワークのアーキテクチャについても深く理解します。SwingはJavaの標準GUIツールキットとして、軽量コンポーネントアーキテクチャを採用し、プラットフォーム独立性を保ちながら豊富な機能を提供します。コンポーネントの階層構造、ペイントシステム、イベントディスパッチスレッド（EDT）など、Swingの内部動作を理解することで、より効率的で安定したGUIアプリケーションを開発できるようになります。また、BorderLayout、FlowLayout、GridLayoutなど、さまざまなレイアウトマネージャーの特徴を理解し、画面サイズの変更に柔軟に対応できる設計方法を学びます。
+Swingフレームワークのアーキテクチャについても深く理解します。SwingはJavaの標準GUIツールキットとして、軽量コンポーネントアーキテクチャを採用し、プラットフォーム独立性を保ちながら豊富な機能を提供します。コンポーネントの階層構造、ペイントシステム、イベントディスパッチスレッド（EDT）など、Swingの内部動作を理解することで、より効率的で安定したGUIアプリケーションを開発できます。また、BorderLayout、FlowLayout、GridLayoutなど、さまざまなレイアウトマネージャーの特徴を理解し、画面サイズの変更に柔軟に対応できる設計方法を学びます。
 
 技能習得の観点では、JFrame、JButton、JTextField、JLabelなどの基本的なGUIコンポーネントの使用方法から始め、これらを組み合わせて実用的なインターフェイスを構築する技術を習得します。イベントリスナの実装では、ActionListener、MouseListener、KeyListenerなどのインターフェイスを使って、ユーザーの操作に応答するプログラムを作成します。ラムダ式を使った簡潔なイベントハンドラの記述方法も学び、現代的なJavaプログラミングスタイルを身につけます。
 
-アプリケーション設計能力の面では、Model-View-Controller（MVC）パターンを意識したGUI設計を学びます。ビジネスロジックとプレゼンテーション層を適切に分離することで、テスト可能で保守性の高いアプリケーションを構築する方法を習得します。また、ユーザビリティを考慮したインターフェイス設計の基本原則、例えば一貫性のある操作性、適切なフィードバック、エラー処理などを実践的に学びます。
+アプリケーション設計能力の面では、Model-View-Controller（MVC）パターンを意識したGUI設計を学びます。ビジネスロジックとプレゼンテーション層を適切に分離することで、テスト可能で保守性の高いアプリケーションを構築する方法を習得します。また、ユーザビリティを考慮したインターフェイス設計の基本原則、たとえば一貫性のある操作性、適切なフィードバック、エラー処理などを実践的に学びます。
 
-最終的な到達レベルとして、基本的な機能を持つGUIアプリケーションを独力で開発できるようになることを目指します。これには、ユーザーの操作に適切に応答するイベント処理の実装、画面レイアウトとコンポーネント配置の適切な設計、そしてファイルI/Oやデータベースアクセスなど、これまで学んだ技術とGUIを連携させたアプリケーションの作成能力が含まれます。これらのスキルにより、エンドユーザーに価値を提供する実用的なデスクトップアプリケーションを開発できるようになります。
+最終的な到達レベルとして、基本的な機能を持つGUIアプリケーションを独力で開発できるようになることを目指します。これには、ユーザーの操作に適切に応答するイベント処理の実装、画面レイアウトとコンポーネント配置の適切な設計、そしてファイルI/Oやデータベースアクセスなど、これまで学んだ技術とGUIを連携させたアプリケーションの作成能力が含まれます。これらのスキルにより、エンドユーザーに価値を提供する実用的なデスクトップアプリケーションを開発できます。
+
+---
+
+## 17.1 初めてのGUIプログラム
+
+### Hello Swing - ウィンドウを表示してみよう
+
+まずは最も基本的なGUIプログラムから始めましょう。以下は、単純なウィンドウを表示するプログラムです：
+
+```java
+import javax.swing.JFrame;
+
+public class HelloSwing {
+    public static void main(String[] args) {
+        // JFrameのインスタンスを作成
+        JFrame frame = new JFrame("はじめてのSwingアプリケーション");
+        
+        // ウィンドウのサイズを設定
+        frame.setSize(400, 300);
+        
+        // ウィンドウを閉じたときの動作を設定
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // ウィンドウを画面中央に配置
+        frame.setLocationRelativeTo(null);
+        
+        // ウィンドウを表示
+        frame.setVisible(true);
+    }
+}
+```
+
+このプログラムの各行を詳しく見ていきましょう：
+
+1. **JFrameクラス**: Swingでウィンドウを表すクラスです。すべてのGUIアプリケーションの基礎となります。
+2. **setSize()**: ウィンドウの幅と高さをピクセル単位で設定します。
+3. **setDefaultCloseOperation()**: ウィンドウの×ボタンを押したときの動作を指定します。
+4. **setLocationRelativeTo(null)**: nullを指定すると、ウィンドウが画面中央に配置されます。
+5. **setVisible(true)**: ウィンドウを表示します。これを呼ばないと画面に表示されません。
+
+## 17.2 基本的なコンポーネントの配置
+
+### JLabelで文字を表示する
+
+ウィンドウに文字を表示してみましょう：
+
+```java
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class HelloLabel {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("ラベルの表示");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // JLabelを作成して文字を設定
+        JLabel label = new JLabel("Hello, Swing!");
+        label.setHorizontalAlignment(JLabel.CENTER);  // 中央揃え
+        
+        // フレームにラベルを追加
+        frame.add(label);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+### 複数のコンポーネントを配置する
+
+複数のコンポーネントを配置するには、レイアウトマネージャーを使います：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class MultipleComponents {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("複数のコンポーネント");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // レイアウトマネージャーを設定
+        frame.setLayout(new FlowLayout());
+        
+        // 各種コンポーネントを作成
+        JLabel label = new JLabel("名前：");
+        JTextField textField = new JTextField(20);
+        JButton button = new JButton("OK");
+        
+        // フレームに追加
+        frame.add(label);
+        frame.add(textField);
+        frame.add(button);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+## 17.3 レイアウトマネージャーの基礎
+
+### BorderLayout - 5つの領域に配置
+
+BorderLayoutは、コンテナを5つの領域（北、南、東、西、中央）に分割します：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class BorderLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("BorderLayoutの例");
+        frame.setSize(500, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // BorderLayoutはJFrameのデフォルト
+        frame.setLayout(new BorderLayout());
+        
+        // 各領域にボタンを配置
+        frame.add(new JButton("北 (North)"), BorderLayout.NORTH);
+        frame.add(new JButton("南 (South)"), BorderLayout.SOUTH);
+        frame.add(new JButton("東 (East)"), BorderLayout.EAST);
+        frame.add(new JButton("西 (West)"), BorderLayout.WEST);
+        frame.add(new JButton("中央 (Center)"), BorderLayout.CENTER);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+### GridLayout - 格子状に配置
+
+GridLayoutは、コンポーネントを格子状に均等配置します：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class GridLayoutExample {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("GridLayoutの例");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // 3行3列のグリッドレイアウト
+        frame.setLayout(new GridLayout(3, 3, 5, 5)); // 行、列、水平間隔、垂直間隔
+        
+        // 9個のボタンを追加
+        for (int i = 1; i <= 9; i++) {
+            frame.add(new JButton("ボタン " + i));
+        }
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+## 17.4 パネルを使った複雑なレイアウト
+
+### JPanelで階層的なレイアウトを構築
+
+実用的なGUIでは、JPanelを使って階層的にレイアウトを組み合わせます：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class ComplexLayout {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("複雑なレイアウト");
+        frame.setSize(500, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // メインパネル（BorderLayout）
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        
+        // 上部パネル（FlowLayout）
+        JPanel topPanel = new JPanel(new FlowLayout());
+        topPanel.add(new JLabel("検索："));
+        topPanel.add(new JTextField(20));
+        topPanel.add(new JButton("検索"));
+        
+        // 中央パネル（スクロール可能なテキストエリア）
+        JTextArea textArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        
+        // 下部パネル（FlowLayout、右寄せ）
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(new JButton("保存"));
+        bottomPanel.add(new JButton("キャンセル"));
+        
+        // メインパネルに各パネルを配置
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+        
+        // フレームにメインパネルを追加
+        frame.add(mainPanel);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+## 17.5 簡単なイベント処理の導入
+
+### ボタンクリックに反応する
+
+第18章で詳しく学ぶイベント処理の基礎を見てみましょう：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class SimpleEventHandling {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("簡単なイベント処理");
+        frame.setSize(400, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new FlowLayout());
+        
+        JLabel label = new JLabel("ボタンをクリックしてください");
+        JButton button = new JButton("クリック！");
+        
+        // イベントリスナーを追加（ラムダ式を使用）
+        button.addActionListener(e -> {
+            label.setText("ボタンがクリックされました！");
+        });
+        
+        frame.add(label);
+        frame.add(button);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+### カウンタアプリケーション
+
+もう少し実用的な例として、クリック回数を数えるアプリケーションを作ってみましょう：
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class CounterApp {
+    private int count = 0;
+    private JLabel countLabel;
+    
+    public CounterApp() {
+        JFrame frame = new JFrame("カウンターアプリ");
+        frame.setSize(300, 150);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridLayout(3, 1, 10, 10));
+        
+        // カウント表示ラベル
+        countLabel = new JLabel("カウント: 0", JLabel.CENTER);
+        countLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        
+        // ボタンパネル
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton incrementButton = new JButton("+1");
+        JButton decrementButton = new JButton("-1");
+        JButton resetButton = new JButton("リセット");
+        
+        // イベント処理
+        incrementButton.addActionListener(e -> updateCount(count + 1));
+        decrementButton.addActionListener(e -> updateCount(count - 1));
+        resetButton.addActionListener(e -> updateCount(0));
+        
+        buttonPanel.add(decrementButton);
+        buttonPanel.add(incrementButton);
+        buttonPanel.add(resetButton);
+        
+        frame.add(countLabel);
+        frame.add(buttonPanel);
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    private void updateCount(int newCount) {
+        count = newCount;
+        countLabel.setText("カウント: " + count);
+    }
+    
+    public static void main(String[] args) {
+        // Event Dispatch Thread上でGUIを作成
+        SwingUtilities.invokeLater(() -> new CounterApp());
+    }
+}
+```
+
+このセクションで学んだこと：
+- JFrameを使った基本的なウィンドウの作成
+- JLabel、JTextField、JButtonなどの基本コンポーネント
+- レイアウトマネージャーによるコンポーネント配置
+- JPanelを使った階層的なレイアウト構築
+- 簡単なイベント処理の実装
+
+これらの基礎を理解することで、第18章でより高度なイベント処理を学ぶ準備が整います。
 
 ---
 
@@ -168,7 +478,7 @@ menu.setMnemonic(KeyEvent.VK_F);
 **ドキュメントの状態管理：**
 - **変更フラグ**：DocumentListenerで検知
 - **ファイルパス**：現在編集中のファイル
-- **タイトルバー**："ファイル名 - アプリ名"形式
+- **タイトルバー**："ファイル名 - アプリケーション名"形式
 - **未保存警告**：閉じる前の確認ダイアログ
 
 **実際のテキストエディタの機能階層：**
@@ -251,7 +561,7 @@ menu.setMnemonic(KeyEvent.VK_F);
 
 **技術的背景：レイアウトマネージャーの設計思想と適用場面**
 
-Javaのレイアウトマネージャーは、画面解像度の多様性に対応する革新的な仕組みです：
+Javaのレイアウトマネージャーは、画面解像度の多様性に対応する革新的なしくみです：
 
 **レイアウトマネージャーの必要性：**
 - **解像度独立**：640×480から4K、8Kまで対応

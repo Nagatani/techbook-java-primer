@@ -95,7 +95,7 @@ cd project-b  # 自動的にJava 17に切り替わる
 #### 3. ベンダー中立なJDK管理
 SDKMANは主要なJDKディストリビューションをすべてサポート：
 - Oracle JDK
-- OpenJDK （Microsoft, Amazon Corretto, Eclipse Temurin等）
+- OpenJDK（Microsoft, Amazon Corretto, Eclipse Temurin等）
 - GraalVM
 - そのほか多数のディストリビューション
 

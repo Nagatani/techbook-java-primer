@@ -518,8 +518,6 @@ rules:
     expected: だいたい
   - pattern: 大抵
     expected: たいてい
-  - pattern: 大変
-    expected: たいへん
   - pattern: 沢山
     expected: たくさん
   - pattern:
@@ -711,8 +709,6 @@ rules:
     expected: ふせん
   - pattern: 殆ど
     expected: ほとんど
-  - pattern: 正に
-    expected: まさに
   - pattern:
       - 益々
       - 増々
@@ -1722,11 +1718,6 @@ rules:
     pattern:  /デコーダー/
   - expected: エミュレータ
     pattern:  /エミュレーター/
-  - expected: エンティティ
-    pattern:
-      - Entity
-      - entity
-      - エンティティー
   - expected: エントリ
     pattern:  /エントリー/
   - expected: オブザーバ
@@ -1879,10 +1870,6 @@ rules:
     pattern:  /\bSoftBank\b/
   - expected: ダイアグラム
     pattern:  /ダイヤグラム/
-  - expected: タイムスタンプ
-    pattern:
-      - timestamp
-      - Timestamp
   - expected: ツイート
     pattern:
       - tweet
@@ -1892,12 +1879,6 @@ rules:
     pattern:  /ツリー・オブジェクト/
   - expected: ツリーエントリ
     pattern:  /ツリー・エントリ/
-  - expected: テーブル
-    pattern:
-      - table
-      - Table
-  - expected: データサービス
-    pattern:  /\bData Services\b/
   - expected: データ
     pattern:  /データー/
   - expected: データセンター$1
@@ -1908,8 +1889,6 @@ rules:
     pattern:  /チェーン/
   - expected: ディザスタリカバリ
     pattern:  /ディザスタ・リカバリ/
-  - expected: ディスク
-    pattern:  /\bDisk\b/
   - expected: ディスパッチャ
     pattern:  /ディスパッチャー/
   - expected: ディスプレイ
@@ -2063,23 +2042,12 @@ rules:
     pattern:  /マネージメント/
   - expected: メーカー
     pattern:  /メーカ(?!ー)/
-  - expected: メーリングリスト
-    pattern:  /\bML\b(?!系)/
-    specs:
-      - from: SML#
-        to:   SML#
-      - from: ML系言語
-        to:   ML系言語
-      - from: MLなど
-        to:   メーリングリストなど
   - expected: メタファ
     pattern:  /メタファー/
   - expected: メモリ
     pattern:  /メモリー/
   - expected: メンテナンス
     pattern:  /メインテナンス/
-  - expected: メンテナンス$1
-    pattern:  /メンテ([^ナ])/
   - expected: モジュール
     pattern:  /\bmodule\b|\bModule\b/
   - expected: モータ$1
@@ -2106,7 +2074,6 @@ rules:
   - expected: リグレッション
     pattern:
       - デグレード
-      # デグレは英語圏では使わない by Jenkins川口さん
       - デグレ
   - expected: リスナ
     pattern:  /リスナー/
@@ -2191,12 +2158,6 @@ rules:
     pattern:  /プロデューサ([^ー])/
   - expected: プランナー$1
     pattern:  /プランナ([^ー])/
-  - expected: $1マスタ$2
-    pattern:  /(?:([^ム])マスター)|(?:マスター([^.]))/
-  - expected: $1マスタ$2
-    pattern:  /(?:([^ム])\bMaster)|(?:Master\b([^.]))/
-  - expected: $1マスタ$2
-    pattern:  /(?:([^ム])\bmaster)|(?:master\b([^.]))/
   - expected: マネージャー$1
     pattern:  /マネージャ([^ー])/
   - expected: メンテナー$1
@@ -2283,8 +2244,6 @@ rules:
     pattern:  /\bBabel\b/i
   - expected: bash
     pattern:  /\bBash\b/
-  - expected: Bean
-    pattern:  /ビーン/
   - expected: Bigtable
     pattern:  /\bBigTable\b|\bBig Table\b|\bBig table\b/
   - expected: Bitbucket
@@ -2395,10 +2354,6 @@ rules:
     pattern:  /\bFireFox\b|\bFire Fox\b|ファイアーフォックス|ファイヤーフォックス/
   - expected: Fitbit
     pattern:  /\bFitbit\b/i
-  - expected: Flash
-    pattern:  /フラッシュ/
-  - expected: Flash Lite
-    pattern:  /\bFlashLite\b/
   - expected: Flash Player
     pattern:  /Flashプレイヤー|Flash プレイヤー|Flashプレーヤ|Flash プレーヤ|Flashプレーヤー|Flash プレーヤー|\bFlashPlayer\b/
   - expected: Flashプラットフォーム
@@ -2423,8 +2378,6 @@ rules:
     pattern:  /(?:([^/.])\bgithub)|(?:github\b([^/.]))/
   - expected: $1GitHub$2
     pattern:  /(?:([^/.])\bGithub)|(?:Github\b([^/.]))/
-  - expected: Git
-    pattern:  /\bGit\b/i
   - expected: Gmail
     pattern:  /\bGmail\b/i
   - expected: Google Gadget
