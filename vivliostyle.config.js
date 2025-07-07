@@ -40,7 +40,13 @@ module.exports = {
     'chapter16c-concurrent-utilities.md',
     'chapter16d-practical-concurrency.md',
     'chapter16e-exercises.md',
+    // 第17章 GUIプログラミングの基礎
     'chapter17-gui-basics.md',
+    'chapter17a-basic-components.md',
+    'chapter17b-event-handling-intro.md',
+    'chapter17c-edt-thread-safety.md',
+    'chapter17d-custom-components.md',
+    'chapter17e-exercises.md',
     // 第18章 GUIのイベント処理
     'chapter18-gui-event-handling.md',
     'chapter18a-event-basics.md',
