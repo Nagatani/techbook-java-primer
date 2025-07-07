@@ -33,6 +33,31 @@
 
 さまざまな種類の例外処理とfinallyブロックの動作を実装してください。
 
+**技術的背景：実行時例外の種類と発生原因**
+
+実行時例外（RuntimeException）は、プログラムのバグや予期しない状況で発生します。主要な例外とその発生原因：
+
+**よく遭遇する実行時例外：**
+- **NullPointerException**：最も頻繁に発生。null参照への操作
+- **ArrayIndexOutOfBoundsException**：配列の範囲外アクセス
+- **ArithmeticException**：ゼロ除算などの算術エラー
+- **ClassCastException**：不正な型キャスト
+- **IllegalArgumentException**：メソッドへの不正な引数
+
+**finallyブロックの重要性：**
+- **確実なリソース解放**：例外発生時でも必ず実行される
+- **データベース接続のクローズ**：接続リークを防ぐ
+- **ファイルハンドルの解放**：ファイルディスクリプタの枯渇を防ぐ
+- **ロックの解放**：デッドロックの防止
+
+**実際のシステムでの影響：**
+- **メモリリーク**：リソースの未解放による
+- **システムハング**：デッドロックやリソース枯渇
+- **データ不整合**：トランザクションの不完全な終了
+- **セキュリティリスク**：エラー情報の漏洩
+
+この演習では、例外処理の基本パターンと、確実なリソース管理の重要性を学びます。
+
 **要求仕様：**
 - さまざまな種類の例外処理（ArithmeticException、NullPointerException等）
 - 複数catch文による例外の使い分け
@@ -73,6 +98,54 @@ NumberFormatException発生: 数値変換に失敗しました
 ### 課題2: カスタム例外クラス設計
 
 銀行口座システムのカスタム例外を設計してください。
+
+**技術的背景：ドメイン特化例外の設計原則**
+
+金融システムでは、業務固有の例外処理が信頼性の要です：
+
+**実際の金融システムでの例外設計：**
+```java
+// 業務例外の階層設計
+BankingException（基底例外）
+├── AccountException（口座関連）
+│   ├── InvalidAccountException（無効口座）
+│   └── AccountLockedException（口座凍結）
+├── TransactionException（取引関連）
+│   ├── InsufficientFundsException（残高不足）
+│   └── TransactionLimitException（限度額超過）
+└── SecurityException（セキュリティ関連）
+    ├── UnauthorizedException（認証失敗）
+    └── FraudDetectedException（不正検知）
+```
+
+**例外設計のベストプラクティス：**
+- **情報の豊富さ**：エラーコード、詳細メッセージ、発生時刻
+- **国際化対応**：多言語エラーメッセージ
+- **監査証跡**：コンプライアンス要件への対応
+- **リカバリ情報**：復旧方法の提示
+
+**実際の問題事例：**
+- **みずほ銀行システム障害（2002年）**：例外処理の不備で大規模障害
+- **証券取引システム**：ミリ秒単位の例外処理が要求される
+- **ATMシステム**：ネットワーク断絶時の適切な処理
+
+**トランザクション管理との連携：**
+```java
+try {
+    beginTransaction();
+    // 送金処理
+    commit();
+} catch (InsufficientFundsException e) {
+    rollback();  // 確実なロールバック
+    notifyUser(e);
+} catch (Exception e) {
+    rollback();
+    logError(e);
+    throw new SystemException("取引処理エラー", e);
+}
+```
+
+この演習では、実際の金融システムで使われる例外設計パターンを学びます。
 
 **要求仕様：**
 - 銀行業務固有の例外クラス（残高不足、無効口座等）
@@ -123,6 +196,57 @@ NumberFormatException発生: 数値変換に失敗しました
 ### 課題3: ファイル操作とリソース管理
 
 ファイル操作におけるリソース管理と例外処理を実装してください。
+
+**技術的背景：リソースリークとその影響**
+
+リソース管理の失敗は、システムの安定性に深刻な影響を与えます：
+
+**リソースリークの実例：**
+- **ファイルハンドルの枯渇**：Windowsでは約10,000、Linuxでは約1,024が上限
+- **データベース接続プール枯渇**：新規接続不可によるサービス停止
+- **メモリリーク**：長時間稼働でのOutOfMemoryError
+
+**try-with-resourcesの革新性：**
+```java
+// Java 7以前の冗長なコード
+BufferedReader br = null;
+try {
+    br = new BufferedReader(new FileReader(path));
+    return br.readLine();
+} catch (IOException e) {
+    throw e;
+} finally {
+    if (br != null) {
+        try {
+            br.close();
+        } catch (IOException e) {
+            // クローズ時の例外処理も必要
+        }
+    }
+}
+
+// Java 7以降のシンプルなコード
+try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+    return br.readLine();
+}  // 自動的にclose()が呼ばれる
+```
+
+**複数リソースの管理：**
+```java
+try (FileInputStream fis = new FileInputStream(src);
+     FileOutputStream fos = new FileOutputStream(dst);
+     BufferedInputStream bis = new BufferedInputStream(fis);
+     BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+    // 逆順（bos→bis→fos→fis）でクローズされる
+}
+```
+
+**実際のシステムでの問題：**
+- **Webアプリケーション**：ファイルアップロード処理でのリーク
+- **バッチ処理**：大量ファイル処理での累積的リーク
+- **ログシステム**：ログファイルのローテーション失敗
+
+この演習では、確実なリソース管理の実装方法を学びます。
 
 **要求仕様：**
 - try-with-resourcesによるリソース管理
@@ -180,7 +304,73 @@ DatabaseConnection 自動クローズ
 
 例外処理の設計パターンを実装し、保守性の高い例外処理システムを構築してください。
 
-**要求仕槕：**
+**技術的背景：例外処理の設計哲学**
+
+例外処理の設計は、システムアーキテクチャの品質を左右します：
+
+**例外 vs 戻り値の選択基準：**
+- **例外を使うべき場合**：
+  - 本当に例外的な状況（ファイルが見つからない、ネットワーク断）
+  - 呼び出し元が必ず対処すべき問題
+  - 複数レベルの呼び出しをまたぐエラー
+
+- **戻り値を使うべき場合**：
+  - 通常のビジネスロジックの一部（検索結果なし）
+  - パフォーマンスが重要な処理
+  - 関数型プログラミングスタイル
+
+**Optionalパターンの活用：**
+```java
+// nullチェックの連鎖（アンチパターン）
+if (user != null) {
+    Address address = user.getAddress();
+    if (address != null) {
+        String city = address.getCity();
+        if (city != null) {
+            return city.toUpperCase();
+        }
+    }
+}
+return "UNKNOWN";
+
+// Optionalを使った簡潔な表現
+return Optional.ofNullable(user)
+    .map(User::getAddress)
+    .map(Address::getCity)
+    .map(String::toUpperCase)
+    .orElse("UNKNOWN");
+```
+
+**バリデーション結果の集約：**
+```java
+// 複数のエラーを収集するパターン
+public class ValidationResult {
+    private final List<String> errors = new ArrayList<>();
+    
+    public void addError(String field, String message) {
+        errors.add(field + ": " + message);
+    }
+    
+    public boolean hasErrors() {
+        return !errors.isEmpty();
+    }
+    
+    public void throwIfInvalid() {
+        if (hasErrors()) {
+            throw new ValidationException(errors);
+        }
+    }
+}
+```
+
+**パフォーマンスへの影響：**
+- **例外生成のコスト**：スタックトレース生成で約1,000倍遅い
+- **Try-catchのコスト**：例外が発生しなければほぼゼロ
+- **最適化の指針**：通常フローに例外を使わない
+
+この演習では、実用的な例外処理設計を学びます。
+
+**要求仕様：**
 - 例外vs戻り値によるエラー表現の比較
 - Optionalを活用した安全なプログラミング
 - バリデーション結果の集約

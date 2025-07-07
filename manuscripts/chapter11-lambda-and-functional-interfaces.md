@@ -13,6 +13,37 @@
 
 基本的なラムダ式を活用した処理を実装し、関数型インターフェイスを理解してください。
 
+**技術的背景：関数型プログラミングの台頭**
+
+Java 8でラムダ式が導入された背景には、以下の課題がありました：
+
+**従来の匿名クラスの問題：**
+```java
+// 冗長な匿名クラス
+Collections.sort(list, new Comparator<String>() {
+    public int compare(String s1, String s2) {
+        return s1.length() - s2.length();
+    }
+});
+
+// ラムダ式による簡潔な記述
+Collections.sort(list, (s1, s2) -> s1.length() - s2.length());
+```
+
+**標準関数型インターフェイスの実用例：**
+- **Predicate<T>**：フィルタリング処理（ユーザー権限チェック、データ検証）
+- **Function<T,R>**：データ変換（DTOからエンティティへの変換、文字列パース）
+- **Consumer<T>**：副作用のある処理（ログ出力、データベース更新）
+- **Supplier<T>**：遅延評価（重い処理の遅延実行、デフォルト値の提供）
+- **Comparator<T>**：柔軟なソート（多重キーソート、動的ソート条件）
+
+**関数型プログラミングの利点：**
+- **簡潔性**：ボイラープレートコードの削減
+- **可読性**：処理の意図が明確
+- **並列処理**：Stream APIとの組み合わせで容易な並列化
+
+この演習では、現代のJava開発で必須となる関数型プログラミングの基礎を習得します。
+
 **要求仕様：**
 - Predicate<T> を使った条件判定
 - Function<T, R> を使ったデータ変換
@@ -46,6 +77,42 @@ Comparator（ソート）:
 ### 課題2: カスタム関数型インターフェイス設計
 
 独自の関数型インターフェイスを設計し、ラムダ式で実装してください。
+
+**技術的背景：ドメイン特化の関数型インターフェイス**
+
+標準の関数型インターフェイスで不十分な場合、独自のインターフェイスが必要になります：
+
+**カスタムインターフェイスが必要な場面：**
+- **複数引数の処理**：3つ以上の引数を取る関数（BiFunction は2つまで）
+- **チェック例外の扱い**：標準インターフェイスは非チェック例外のみ
+- **ドメイン特化の名前**：ビジネスロジックを明確に表現
+- **追加のデフォルトメソッド**：合成や変換の便利メソッド
+
+**実際の使用例：**
+```java
+@FunctionalInterface
+public interface ThrowingFunction<T, R> {
+    R apply(T t) throws Exception;
+    
+    // 例外をRuntimeExceptionでラップするデフォルトメソッド
+    default Function<T, R> unchecked() {
+        return t -> {
+            try {
+                return apply(t);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
+}
+```
+
+**設計の注意点：**
+- **単一抽象メソッド**：@FunctionalInterfaceで保証
+- **型パラメータの適切な使用**：汎用性と型安全性のバランス
+- **意味のある名前**：applyよりcalculate、processなど
+
+この演習では、実務で必要となるカスタム関数型インターフェイスの設計技術を学びます。
 
 **要求仕様：**
 - @FunctionalInterfaceアノテーション使用
@@ -84,6 +151,41 @@ Comparator（ソート）:
 ### 課題3: メソッド参照とコンストラクタ参照
 
 メソッド参照とコンストラクタ参照を活用した処理を実装してください。
+
+**技術的背景：メソッド参照による更なる簡潔化**
+
+メソッド参照は、既存のメソッドをラムダ式として再利用する強力な機能です：
+
+**4種類のメソッド参照：**
+1. **静的メソッド参照**：`Integer::parseInt`
+2. **特定オブジェクトのインスタンスメソッド参照**：`System.out::println`
+3. **任意オブジェクトのインスタンスメソッド参照**：`String::length`
+4. **コンストラクタ参照**：`ArrayList::new`
+
+**実用例での比較：**
+```java
+// ラムダ式
+list.stream().map(s -> Integer.parseInt(s))
+// メソッド参照（より簡潔）
+list.stream().map(Integer::parseInt)
+
+// ラムダ式でのオブジェクト生成
+Supplier<List<String>> supplier = () -> new ArrayList<>();
+// コンストラクタ参照
+Supplier<List<String>> supplier = ArrayList::new;
+```
+
+**メソッド参照の利点：**
+- **可読性**：意図が明確で理解しやすい
+- **再利用性**：既存メソッドの活用
+- **パフォーマンス**：わずかながら効率的
+
+**実際の活用場面：**
+- **Stream API**：`map(String::toUpperCase)`
+- **Optional**：`orElseThrow(IllegalArgumentException::new)`
+- **Comparator**：`comparing(Person::getName)`
+
+この演習では、コードをより簡潔で表現力豊かにする技術を学びます。
 
 **要求仕様：**
 - 静的メソッド参照（Class::staticMethod）
@@ -125,6 +227,40 @@ Person生成:
 ### 課題4: 高階関数とカリー化
 
 高階関数とカリー化を実装し、関数型プログラミングの高度な概念を理解してください。
+
+**技術的背景：関数型プログラミングの高度な技法**
+
+高階関数とカリー化は、関数型プログラミングの強力な技法です：
+
+**高階関数の実用例：**
+- **戦略パターンの実装**：アルゴリズムを関数として渡す
+- **デコレータパターン**：関数を拡張する関数
+- **ファクトリーパターン**：関数を生成する関数
+
+```java
+// 関数を返す高階関数の例
+Function<Integer, Predicate<String>> lengthChecker = 
+    maxLength -> str -> str.length() <= maxLength;
+
+Predicate<String> isShort = lengthChecker.apply(5);
+// isShort は文字列長が5以下かチェックする関数
+```
+
+**カリー化の利点：**
+- **部分適用**：一部の引数を固定した特殊化関数の作成
+- **関数の再利用**：汎用関数から特定用途の関数を派生
+- **設定の分離**：設定とデータ処理の分離
+
+**実際の応用例：**
+- **バリデーション**：`validate(rules)(data)` - ルールとデータを分離
+- **レート制限**：`rateLimit(maxCalls)(timeWindow)(function)` - 段階的な設定
+- **ロギング**：`withLogging(logger)(level)(function)` - 設定可能なログ
+
+**関数合成の重要性：**
+- **パイプライン処理**：小さな関数を組み合わせて複雑な処理を構築
+- **モジュラー設計**：再利用可能な小さな関数の組み合わせ
+
+この演習では、関数型プログラミングの真髄である「関数を第一級オブジェクトとして扱う」技術を習得します。
 
 **要求仕様：**
 - 関数を引数として受け取る高階関数

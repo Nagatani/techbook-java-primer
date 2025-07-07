@@ -15,6 +15,45 @@ Enum（列挙型）を使った型安全なプログラミング技術を習得�
 
 基本的なEnumクラスを定義し、その特性を理解してください。
 
+**技術的背景：型安全な定数管理の重要性**
+
+従来の定数定義方法には多くの問題がありました：
+
+**整数定数の問題：**
+```java
+// アンチパターン：int定数
+public static final int MONDAY = 0;
+public static final int TUESDAY = 1;
+// ...
+public static final int PRIORITY_HIGH = 0;
+public static final int PRIORITY_LOW = 1;
+
+// 問題：異なる意味の定数を混同可能
+setDay(PRIORITY_HIGH);  // コンパイルエラーにならない！
+```
+
+**文字列定数の問題：**
+```java
+// 文字列比較の罠
+if (status == "PENDING") {  // 文字列の==比較は危険
+    // ...
+}
+```
+
+**Enumによる解決：**
+- **型安全性**：異なるEnum型は混同できない
+- **名前空間**：定数が論理的にグループ化される
+- **メソッド追加可能**：振る舞いを持つ定数
+- **switch文での網羅性チェック**：すべてのケースの処理を強制
+
+**実際の活用例：**
+- **HTTPステータスコード**：200 OK、404 Not Foundなど
+- **ログレベル**：DEBUG、INFO、WARN、ERROR
+- **権限レベル**：ADMIN、USER、GUEST
+- **設定値**：環境（DEV、TEST、PROD）
+
+この演習では、保守性と安全性を高めるEnum設計の基礎を学びます。
+
 **要求仕様：**
 - 曜日を表すEnum（メソッド付き）
 - 優先度を表すEnum（数値付き）
@@ -63,6 +102,56 @@ URGENT < LOW: true（数値が小さいほう が優先度高）
 ### 課題2: 注文状態管理システム
 
 注文の状態をEnumで管理し、状態遷移を実装してください。
+
+**技術的背景：状態機械とEnumの相性**
+
+注文処理のような状態遷移を伴うシステムでは、状態管理が複雑になりがちです：
+
+**従来の状態管理の問題：**
+```java
+// 文字列による状態管理（エラーが起きやすい）
+String status = "PENDING";
+if (status.equals("PEDING")) {  // タイポに気づかない
+    status = "CONFIRMED";
+}
+
+// 不正な状態遷移を防げない
+status = "DELIVERED";  // PENDINGから直接DELIVEREDへ
+```
+
+**Enumによる状態機械の実装：**
+```java
+public enum OrderStatus {
+    PENDING {
+        @Override
+        public boolean canTransitionTo(OrderStatus next) {
+            return next == CONFIRMED || next == CANCELLED;
+        }
+    },
+    CONFIRMED {
+        @Override
+        public boolean canTransitionTo(OrderStatus next) {
+            return next == PREPARING || next == CANCELLED;
+        }
+    },
+    // ... 他の状態
+    
+    public abstract boolean canTransitionTo(OrderStatus next);
+}
+```
+
+**実際のシステムでの活用：**
+- **ECサイト**：注文→支払い→配送→完了の流れ
+- **ワークフロー**：申請→承認→実行→完了
+- **チケット管理**：新規→対応中→解決→クローズ
+- **製造ライン**：設計→製造→検査→出荷
+
+**状態機械の利点：**
+- **不正な遷移の防止**：ビジネスルールの強制
+- **可視化**：状態遷移図との対応が明確
+- **テスタビリティ**：各状態の振る舞いを独立してテスト
+
+この演習では、実務で頻繁に必要となる状態管理パターンを学びます。
 
 **要求仕様：**
 - 注文状態を表すEnum（状態遷移メソッド付き）

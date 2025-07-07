@@ -36,6 +36,47 @@
 
 さまざまなI/O手法を使ったファイル読み書きを実装してください。
 
+**技術的背景：ファイルI/Oの進化と現代的手法**
+
+JavaのファイルI/O APIは時代とともに進化してきました：
+
+**歴史的変遷：**
+- **Java 1.0 (1996)**: InputStream/OutputStream（バイトストリーム）
+- **Java 1.1 (1997)**: Reader/Writer（文字ストリーム）導入
+- **Java 7 (2011)**: NIO.2（Files/Path）による革新的改善
+
+**各手法の特徴と使い分け：**
+```java
+// 1. 旧来の方法（冗長でエラーが起きやすい）
+BufferedReader br = null;
+try {
+    br = new BufferedReader(new FileReader("file.txt"));
+    // 処理
+} finally {
+    if (br != null) br.close();  // 忘れやすい
+}
+
+// 2. 現代的な方法（簡潔で安全）
+List<String> lines = Files.readAllLines(Path.of("file.txt"));
+
+// 3. 大容量ファイル向け（メモリ効率的）
+try (Stream<String> stream = Files.lines(Path.of("large.txt"))) {
+    stream.forEach(System.out::println);
+}
+```
+
+**文字エンコーディングの重要性：**
+- **文字化けの原因**：エンコーディングの不一致
+- **日本の特殊事情**：Shift_JIS、EUC-JP、UTF-8の混在
+- **国際化対応**：UTF-8の標準化
+
+**実際のシステムでの問題事例：**
+- **Windowsの改行コード問題**：CRLF vs LF
+- **BOM（Byte Order Mark）**：UTF-8 with BOMの扱い
+- **大容量ログファイル**：メモリ不足によるOutOfMemoryError
+
+この演習では、各手法の特性を理解し、適切な選択ができる能力を養います。
+
 **要求仕様：**
 - テキストファイルの読み込み（Files.readAllLines、BufferedReader等）
 - テキストファイルの書き込み（Files.write、BufferedWriter等）
@@ -106,6 +147,53 @@ Files.readAllLines使用: 89ms
 **問題説明：**
 ディレクトリの操作とファイル検索機能を実装してください。
 
+**技術的背景：ファイルシステム操作の課題と解決**
+
+ファイルシステム操作は、OSの違いやパフォーマンスの課題を抱えています：
+
+**従来のFile APIの問題点：**
+```java
+// Java 7以前の問題のあるコード
+File dir = new File("/path/to/dir");
+File[] files = dir.listFiles();  // nullが返る可能性
+if (files != null) {
+    for (File file : files) {
+        // 大量ファイルでメモリ逼迫
+    }
+}
+```
+
+**NIO.2による改善：**
+```java
+// Stream APIで遅延評価
+try (Stream<Path> paths = Files.walk(Paths.get("/path"))) {
+    paths.filter(Files::isRegularFile)
+         .filter(p -> p.toString().endsWith(".java"))
+         .forEach(System.out::println);
+}
+```
+
+**実際のシステムでの課題：**
+- **ファイル数の爆発**：node_modules、.gitなどの巨大ディレクトリ
+- **シンボリックリンク**：無限ループの危険性
+- **アクセス権限**：権限不足によるAccessDeniedException
+- **ネットワークドライブ**：遅延とタイムアウト
+
+**パフォーマンス最適化：**
+- **Files.walkFileTree**：大規模ディレクトリでの効率的走査
+- **並列処理**：parallelStreamでの高速化
+- **早期終了**：findFirstやanyMatchの活用
+
+**クロスプラットフォーム対応：**
+```java
+// OSに依存しないパス結合
+Path path = Paths.get("parent").resolve("child");
+// パス区切り文字の自動処理
+String separator = FileSystems.getDefault().getSeparator();
+```
+
+この演習では、実用的なファイル管理ツールの基礎を学びます。
+
 **要求仕様：**
 - ディレクトリの作成・削除・移動
 - ファイル一覧の取得（フィルタリング付き）
@@ -170,6 +258,55 @@ Files.readAllLines使用: 89ms
 ### 課題3: CSVデータ処理システム
 
 CSVファイルの読み書きと集計処理を実装してください。
+
+**技術的背景：CSVの落とし穴と堅牢な処理**
+
+CSVは単純に見えて、実は多くの落とし穴があるフォーマットです：
+
+**CSVの問題点：**
+- **標準規格の欠如**：RFC 4180はあるが、実装はバラバラ
+- **区切り文字の混在**：カンマ、タブ、セミコロン
+- **引用符の扱い**：ダブルクォート内のカンマやエスケープ
+- **改行コードの処理**：フィールド内改行の扱い
+- **文字エンコーディング**：ExcelのShift_JIS問題
+
+**実装の落とし穴：**
+```java
+// 単純すぎる実装（問題あり）
+String[] fields = line.split(",");  // "Tokyo, Japan"が分割される
+
+// 適切な実装
+// 1. 専用ライブラリ（Apache Commons CSV、OpenCSV）
+// 2. 正規表現での慎重な処理
+// 3. ステートマシンによる解析
+```
+
+**実際のビジネスでの課題：**
+- **Excel互換性**：BOM付きUTF-8、数値の指数表記
+- **大容量データ**：数GB規模のCSVファイル処理
+- **データ品質**：不正なデータの検出と処理
+- **国際化**：日付形式、数値形式の地域差
+
+**パフォーマンス考慮：**
+```java
+// メモリ効率的な処理
+try (Stream<String> lines = Files.lines(path)) {
+    lines.skip(1)  // ヘッダスキップ
+         .map(line -> parseCSVLine(line))
+         .filter(record -> record.isValid())
+         .collect(Collectors.groupingBy(
+             Record::getDepartment,
+             Collectors.summarizingDouble(Record::getSalary)
+         ));
+}
+```
+
+**エラー処理戦略：**
+- **スキップして続行**：エラー行を記録して処理継続
+- **早期終了**：データ品質を重視
+- **修正試行**：一般的なエラーパターンの自動修正
+
+この演習では、実務で使えるCSV処理技術を学びます。
 
 **要求仕様：**
 - CSVファイルの読み込み（ヘッダ処理含む）
@@ -240,6 +377,60 @@ CSVファイル出力:
 ### 課題4: ログファイル解析システム
 
 ログファイルを解析し、統計情報を生成するシステムを実装してください。
+
+**技術的背景：ログ解析の実務的重要性**
+
+ログ解析は、システム運用において不可欠な技術です：
+
+**ログ解析の重要性：**
+- **障害分析**：エラーの原因特定と影響範囲の把握
+- **セキュリティ監視**：不正アクセスの検知
+- **パフォーマンス分析**：ボトルネックの特定
+- **ビジネス分析**：ユーザー行動の理解
+
+**一般的なログフォーマット：**
+```
+# Apache Common Log Format
+127.0.0.1 - - [10/Jul/2024:13:55:36 +0900] "GET /index.html HTTP/1.1" 200 2326
+
+# JSON形式（構造化ログ）
+{"timestamp":"2024-07-10T13:55:36+09:00","level":"INFO","message":"User login","userId":1234}
+
+# アプリケーションログ
+2024-07-10 13:55:36.123 [INFO] com.example.Service - Processing request: id=12345
+```
+
+**大容量ログの課題：**
+- **ファイルサイズ**：数GB〜数TBのログファイル
+- **リアルタイム処理**：tail -fのような追記監視
+- **圧縮ファイル**：.gz形式での保存と処理
+- **ローテーション**：日付別ファイルの処理
+
+**効率的な処理手法：**
+```java
+// 正規表現のコンパイル最適化
+private static final Pattern LOG_PATTERN = Pattern.compile(
+    "^(\\S+) \\S+ \\S+ \\[(.*?)\\] \"(.*?)\" (\\d+) (\\d+)$"
+);
+
+// 並列処理での高速化
+Files.lines(path)
+     .parallel()
+     .map(LOG_PATTERN::matcher)
+     .filter(Matcher::matches)
+     .map(LogEntry::parse)
+     .collect(Collectors.groupingByConcurrent(
+         LogEntry::getStatusCode,
+         Collectors.counting()
+     ));
+```
+
+**実際のツールとの比較：**
+- **Elasticsearch/Kibana**：大規模ログの全文検索
+- **Splunk**：エンタープライズログ管理
+- **AWK/sed**：UNIXツールでの処理
+
+この演習では、ログ解析の基本技術を実装を通して学びます。
 
 **要求仕様：**
 - ログファイルの解析（アクセスログ、エラーログ等）

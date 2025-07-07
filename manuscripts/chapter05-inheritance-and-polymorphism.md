@@ -49,21 +49,53 @@
 
 継承を使わない場合、それぞれのクラスで同じ内容のコードを何度も書く必要があり、非効率で間違いも起きやすくなります。
 
+### 継承を使わない場合の深刻な問題
+
+以下のコードは、継承を使わずに実装した場合の典型的な例です。このアプローチがなぜ保守性の観点から深刻な問題を引き起こすのか、具体的に見ていきましょう：
+
 ```java
-// 継承を使わない場合
+// 継承を使わない場合の問題のあるコード
 public class Hero {
     String name;
     int hp;
-    void attack() { /* ... */ }
+    int maxHp;  // 最大HPの管理も必要
+    
+    void attack() { 
+        System.out.println(name + "が攻撃！");
+    }
+    
+    void takeDamage(int damage) {
+        hp -= damage;
+        if (hp < 0) hp = 0;  // HPが負にならないよう制御
+    }
 }
 
 public class Wizard {
-    String name; // Heroと重複
-    int hp;     // Heroと重複
-    void attack() { /* ... */ } // Heroと重複
-    void castSpell() { /* ... */ }
+    String name;      // Heroと完全に重複
+    int hp;          // Heroと完全に重複
+    int maxHp;       // Heroと完全に重複
+    int mp;          // 魔法使い特有
+    
+    void attack() {  // Heroとほぼ同じ実装
+        System.out.println(name + "が攻撃！");
+    }
+    
+    void takeDamage(int damage) {  // Heroと完全に重複
+        hp -= damage;
+        if (hp < 0) hp = 0;  // このロジックも重複
+    }
+    
+    void castSpell() { /* 魔法使い特有の処理 */ }
 }
 ```
+
+**このコードが引き起こす実際の問題**：
+
+1. **バグ修正の見落とし**：`takeDamage`メソッドにバグが見つかった場合、すべてのクラスで個別に修正が必要。一つでも修正を忘れると、特定のキャラクタだけバグが残る
+
+2. **仕様変更の困難さ**：例えば「ダメージを受けた時にログを出力する」という仕様追加があった場合、すべてのクラスを探して修正する必要がある
+
+3. **一貫性の欠如**：開発者Aが`Hero`クラスを修正し、開発者Bが`Wizard`クラスを修正した場合、微妙に異なる実装になる可能性がある
 
 継承を使うと、これらの共通部分を`Character`という親クラスにまとめ、各職業クラスはそれを継承することで、重複をなくし、コードをすっきりとさせることができます。
 
@@ -767,3 +799,63 @@ if (member instanceof Wizard wizard) {
 同様に、エンジニアを表す`Engineer`クラスも作成します。`Engineer.java`ファイルで`Employee`クラスを継承し、エンジニア独自の特性として残業時間を表す`overtimeHours`（int型）フィールドを追加します。コンストラクタでは名前、基本給、残業時間を初期化し、`calculateSalary()`メソッドをオーバーライドして、基本給に残業手当（残業時間 × 5000円）を加えた値を返すように実装します。
 
 最後に、これらのクラスを統合的に扱う`PayrollSystem`クラスを作成します。`PayrollSystem.java`ファイルの`main`メソッド内で、`Employee`型の配列を作成し、その中に`Manager`と`Engineer`のインスタンスを複数格納します。これがポリモーフィズムの実践です。`for`ループを使って配列を処理し、各従業員の`displayInfo()`メソッドを呼び出すことで、それぞれの役職に応じた給与が正しく計算・表示されることを確認します。さらにチャレンジ課題として、ループの中で`instanceof`演算子を使って従業員の実際の型を判定し、`Manager`の場合は「役職： 管理職」と追加情報を表示する機能を実装してみましょう。
+
+### スケルトンコード
+
+演習を始めるための基本的な構造を以下に示します：
+
+```java
+// Employee.java (親クラス)
+public class Employee {
+    // TODO: フィールドの定義
+    // - name (String型)
+    // - baseSalary (double型)
+    
+    // TODO: コンストラクタ
+    
+    // TODO: calculateSalary()メソッド
+    // 基本給をそのまま返す
+    
+    // TODO: displayInfo()メソッド
+    // 名前と計算後の給与を表示
+}
+
+// Manager.java (子クラス)
+public class Manager extends Employee {
+    // TODO: 追加フィールド
+    // - bonus (double型)
+    
+    // TODO: コンストラクタ
+    // super()を使って親クラスのコンストラクタを呼び出す
+    
+    // TODO: calculateSalary()メソッドのオーバーライド
+    // 基本給 + ボーナスを返す
+}
+
+// Engineer.java (子クラス)
+public class Engineer extends Employee {
+    // TODO: 追加フィールド
+    // - overtimeHours (int型)
+    
+    // TODO: コンストラクタ
+    
+    // TODO: calculateSalary()メソッドのオーバーライド
+    // 基本給 + (残業時間 × 5000円)を返す
+}
+
+// PayrollSystem.java (メインクラス)
+public class PayrollSystem {
+    public static void main(String[] args) {
+        // TODO: Employee型の配列を作成
+        Employee[] employees = new Employee[4];
+        
+        // TODO: 配列に各種従業員を格納
+        // employees[0] = new Manager(...);
+        // employees[1] = new Engineer(...);
+        // ...
+        
+        // TODO: ループで各従業員の情報を表示
+        // ポリモーフィズムが機能することを確認
+    }
+}
+```

@@ -43,4 +43,85 @@
 3. Part Bの演習課題に段階的に取り組む
 4. 解答例と比較して、より良い設計を学ぶ
 
+## 基本的なクラスとインスタンスの例
+
+本章の詳細な内容はPart Aで扱いますが、ここでは基本的なクラスとインスタンスの関係を簡単な例で確認しておきましょう：
+
+### 銀行口座クラスの基本構造
+
+以下は、銀行口座を表現するシンプルなクラスの例です。このクラスはカプセル化の基本的な原則に従って設計されています：
+
+```java
+// BankAccount.java
+public class BankAccount {
+    // インスタンス変数（プライベートにして直接アクセスを防ぐ）
+    private String accountNumber;
+    private String ownerName;
+    private double balance;
+    
+    // コンストラクタ（新しい口座を作成）
+    public BankAccount(String accountNumber, String ownerName, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.ownerName = ownerName;
+        this.balance = initialBalance;
+    }
+    
+    // 入金メソッド
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println(amount + "円を入金しました。");
+        } else {
+            System.out.println("入金額は正の値である必要があります。");
+        }
+    }
+    
+    // 出金メソッド
+    public boolean withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println(amount + "円を出金しました。");
+            return true;
+        } else {
+            System.out.println("出金できません。");
+            return false;
+        }
+    }
+    
+    // 残高照会（getter）
+    public double getBalance() {
+        return balance;
+    }
+    
+    // 口座情報の表示
+    public void displayInfo() {
+        System.out.println("口座番号: " + accountNumber);
+        System.out.println("名義人: " + ownerName);
+        System.out.println("残高: " + balance + "円");
+    }
+}
+
+// 使用例
+public class BankAccountTest {
+    public static void main(String[] args) {
+        // インスタンスの作成（新しい口座を開設）
+        BankAccount myAccount = new BankAccount("12345", "山田太郎", 10000);
+        
+        // メソッドを使った操作
+        myAccount.displayInfo();
+        myAccount.deposit(5000);
+        myAccount.withdraw(3000);
+        
+        // 現在の残高を確認
+        System.out.println("現在の残高: " + myAccount.getBalance() + "円");
+    }
+}
+```
+
+**このコードのポイント**：
+- **カプセル化**: インスタンス変数はprivateで保護され、publicメソッドを通じてのみアクセス可能
+- **コンストラクタ**: オブジェクト生成時に必要な初期化を行う
+- **インスタンスメソッド**: オブジェクトの状態を操作する振る舞いを定義
+- **バリデーション**: メソッド内で適切な値の検証を行い、不正な操作を防ぐ
+
 本章を通じて、オブジェクト指向プログラミングの核心である「データと処理の適切な組み合わせ」を実践的に身につけていきましょう。

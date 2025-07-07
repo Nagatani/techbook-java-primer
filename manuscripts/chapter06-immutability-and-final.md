@@ -28,25 +28,48 @@
 
 もし、クラスのフィールドが外部から自由にアクセスできてしまうと、どうなるでしょうか？
 
+### 実際の開発で起こる深刻な問題
+
+以下のコードは、カプセル化を無視した設計が実際の開発でどのような深刻な問題を引き起こすかを示しています：
+
 ```java
-// カプセル化されていない例
+// カプセル化されていない危険なコード
 public class BankAccount {
     public String ownerName;
-    public double balance; // publicなので誰でも直接変更できてしまう
+    public double balance;      // publicなので誰でも直接変更できてしまう
+    public double creditLimit;  // クレジット限度額
+    public double loanAmount;   // ローン残高
 }
 
-public class BankTest {
+public class BankingSystemProblem {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();
         account.ownerName = "山田太郎";
         account.balance = 100000;
+        account.creditLimit = 500000;
+        account.loanAmount = 200000;
 
-        // 外部から直接、不正な値に書き換えられてしまう
-        account.balance = -50000; // 本来ありえない「負の残高」が設定できてしまう
-        System.out.println(account.ownerName + "さんの残高: " + account.balance);
+        // 問題1: 不正な値の設定による論理的矛盾
+        account.balance = -50000;  // 負の残高（物理的にありえない）
+        
+        // 問題2: ビジネスルールの破壊
+        account.loanAmount = 1000000;  // クレジット限度額を超えるローン
+        
+        // 問題3: 悪意のある操作やバグによるデータ破壊
+        account.balance = Double.MAX_VALUE;  // 突然、無限のお金持ちに！
+        
+        // 問題4: 並行処理での競合状態
+        // スレッドAとスレッドBが同時にbalanceを変更すると...
+        // データの整合性が保証されない
     }
 }
 ```
+
+**実際に発生した事例**：
+- **金融システムでの事故**：直接フィールドアクセスを許可していたため、バグにより顧客の口座残高が誤って変更され、多額の損失が発生
+- **在庫管理システムでの問題**：複数の処理が同時に在庫数を直接変更した結果、実際の在庫と記録が一致しなくなり、ビジネスに深刻な影響
+- **セキュリティの脆弱性**：外部からの入力値を検証せずに直接フィールドに設定できたため、SQLインジェクションなどの攻撃を受ける
+
 このように、外部から直接データを操作できると、オブジェクトが不正な状態になったり、意図しない変更が加えられたりする危険性があります。
 
 カプセル化は、このような問題を防ぎ、以下の利点をもたらします。

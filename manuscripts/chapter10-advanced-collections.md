@@ -365,6 +365,55 @@ List<Integer> results = numbers.parallelStream()
 
 社員データを分析するシステムを作成し、Stream APIを活用してください。
 
+**技術的背景：ビジネスインテリジェンスにおけるデータ分析**
+
+現代の企業では、人事データの分析が経営戦略の重要な要素となっています。Stream APIを使ったデータ分析の実用例：
+
+**従来の課題：**
+```java
+// 複雑なネストループと条件分岐
+Map<String, List<Employee>> byDept = new HashMap<>();
+for (Employee e : employees) {
+    if (!byDept.containsKey(e.getDepartment())) {
+        byDept.put(e.getDepartment(), new ArrayList<>());
+    }
+    byDept.get(e.getDepartment()).add(e);
+}
+
+Map<String, Double> avgSalary = new HashMap<>();
+for (String dept : byDept.keySet()) {
+    double sum = 0;
+    for (Employee e : byDept.get(dept)) {
+        sum += e.getSalary();
+    }
+    avgSalary.put(dept, sum / byDept.get(dept).size());
+}
+```
+
+**Stream APIによる解決：**
+```java
+// 1行で部署別平均給与を算出
+Map<String, Double> avgSalary = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.averagingDouble(Employee::getSalary)
+    ));
+```
+
+**実際のビジネスでの活用：**
+- **人材配置最適化**：スキルと給与のバランス分析
+- **昇進候補者の選定**：多面的な評価指標での絞り込み
+- **離職リスク分析**：年齢、給与、部署の相関分析
+- **ダイバーシティ推進**：属性別の統計分析
+
+**Stream APIの利点：**
+- **宣言的なコード**：「何を」求めるかを明確に表現
+- **メンテナンス性**：ビジネスロジックの変更が容易
+- **並列処理**：大量データでも高速処理可能
+- **関数型プログラミング**：副作用のない安全なコード
+
+この演習では、実際のビジネス分析で使われるデータ処理パターンを学びます。
+
 **要求仕様**:
 - Employeeクラス（名前、年齢、部署、給与）
 - Stream APIによる多様な分析処理
@@ -411,6 +460,51 @@ List<Integer> results = numbers.parallelStream()
 
 商品売上データを分析するシステムを作成し、高度なStream処理を実装してください。
 
+**技術的背景：ECサイトにおけるリアルタイム分析**
+
+Eコマースの急成長により、売上データのリアルタイム分析は競争優位性の源泉となっています：
+
+**ビジネス課題：**
+- **在庫最適化**：売上傾向から適正在庫を予測
+- **価格戦略**：カテゴリ別の価格弾力性分析
+- **顧客行動分析**：購買パターンの可視化
+- **キャンペーン効果測定**：期間別の売上変動分析
+
+**Stream APIの高度な活用：**
+```java
+// flatMapを使った複雑なデータ構造の処理
+sales.stream()
+    .collect(Collectors.groupingBy(
+        Sale::getCategory,
+        Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> {
+                DoubleSummaryStatistics stats = list.stream()
+                    .mapToDouble(Sale::getAmount)
+                    .summaryStatistics();
+                return new CategoryStats(
+                    stats.getCount(),
+                    stats.getSum(),
+                    stats.getAverage(),
+                    stats.getMax()
+                );
+            }
+        )
+    ));
+```
+
+**Optionalの実践的活用：**
+- **nullポインタ例外の回避**：データ欠損への対応
+- **デフォルト値の提供**：分析結果が存在しない場合の処理
+- **連鎖的な処理**：map、filter、orElseの組み合わせ
+
+**実際のシステムでの応用：**
+- **Amazon**：リアルタイムレコメンデーション
+- **楽天**：フラッシュセールの動的価格調整
+- **メルカリ**：カテゴリ別の需要予測
+
+この演習では、実際のECサイトで使われる分析手法を学びます。
+
 **要求仕様**:
 - Saleクラス（商品名、カテゴリ、売上金額、売上日）
 - 期間別・カテゴリ別の売上分析
@@ -452,6 +546,45 @@ Optional活用例:
 #### 課題3: テキスト解析システム（応用）
 
 テキストデータを解析するシステムを作成し、文字列処理でのStream活用を実装してください。
+
+**技術的背景：自然言語処理とテキストマイニング**
+
+テキスト解析は、ビッグデータ時代の重要な技術です。Stream APIと並列処理の組み合わせが威力を発揮する分野：
+
+**実際の応用分野：**
+- **ソーシャルメディア分析**：Twitter、Facebookの感情分析
+- **カスタマーレビュー分析**：商品評価の自動分類
+- **文書要約システム**：重要キーワードの抽出
+- **スパム検出**：メール、コメントのフィルタリング
+
+**並列ストリームの効果的な使用：**
+```java
+// 大量テキストの並列処理
+long wordCount = files.parallelStream()
+    .flatMap(file -> readLines(file).stream())
+    .flatMap(line -> Arrays.stream(line.split("\\s+")))
+    .filter(word -> word.length() > 3)
+    .distinct()
+    .count();
+```
+
+**パフォーマンス最適化のポイント：**
+- **データ分割の粒度**：適切なチャンクサイズの選択
+- **CPU集約的処理**：正規表現のコンパイル最適化
+- **メモリ効率**：中間結果の最小化
+- **I/O処理**：ファイル読み込みの並列化
+
+**実際の事例：**
+- **Google**：検索クエリの自動補完
+- **Amazon**：レビューからの商品特徴抽出
+- **新聞社**：記事の自動カテゴリ分類
+
+**注意点：**
+- **文字エンコーディング**：UTF-8対応
+- **言語特性**：日本語の形態素解析
+- **メモリ使用量**：大規模テキストでのOutOfMemory対策
+
+この演習では、実用的なテキスト処理技術を学びます。
 
 **要求仕様**:
 - テキストファイルの読み込みと単語分析
@@ -501,6 +634,55 @@ functional（1回）
 #### 課題4: データ変換パイプライン（上級）
 
 複雑なデータ変換パイプラインを作成し、Stream APIの高度な機能を実装してください。
+
+**技術的背景：ETLプロセスとデータパイプライン**
+
+現代のデータエンジニアリングにおいて、ETL（Extract, Transform, Load）プロセスは基幹技術です：
+
+**実際のユースケース：**
+- **データウェアハウス構築**：異種データソースの統合
+- **リアルタイムダッシュボード**：ストリーミングデータの処理
+- **機械学習の前処理**：データクレンジングと特徴量生成
+- **マイクロサービス間連携**：データ形式の変換
+
+**カスタムコレクターの実装：**
+```java
+// 統計情報を収集するカスタムコレクター
+public static <T> Collector<T, ?, Statistics<T>> 
+    toStatistics(Function<T, Double> mapper) {
+    return Collector.of(
+        Statistics::new,
+        (stats, item) -> stats.accept(mapper.apply(item)),
+        (stats1, stats2) -> stats1.combine(stats2),
+        Function.identity()
+    );
+}
+```
+
+**ストリームの合成と分岐：**
+```java
+// Teeingコレクター（Java 12+）を使った同時集計
+Map.Entry<List<Integer>, List<Integer>> result = 
+    numbers.stream().collect(
+        Collectors.teeing(
+            Collectors.filtering(n -> n % 2 == 0, Collectors.toList()),
+            Collectors.filtering(n -> n % 2 != 0, Collectors.toList()),
+            Map::entry
+        )
+    );
+```
+
+**例外処理の実装パターン：**
+- **Try-Catchラッパー**：ラムダ内での例外処理
+- **Either型**：成功/失敗を表現するデータ型
+- **Validation**：複数のエラーを蓄積
+
+**実際の企業での活用：**
+- **Netflix**：ビデオストリーミングのメタデータ処理
+- **Spotify**：音楽推薦のためのデータ変換
+- **Uber**：リアルタイム位置情報の処理
+
+この演習では、プロダクションレベルのデータ処理技術を学びます。
 
 **要求仕様**:
 - 複数段階のデータ変換処理

@@ -13,6 +13,61 @@ Recordクラスを使った不変データ構造の設計と実装技術を習�
 
 基本的なRecordクラスを定義し、その特性を理解してください。
 
+**技術的背景：データクラスのボイラープレート問題**
+
+Java 14で導入されたRecordは、長年の「ボイラープレートコード」問題を解決します：
+
+**従来のデータクラスの問題：**
+```java
+// 従来の方法：約40行のコード
+public class Point {
+    private final int x;
+    private final int y;
+    
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Point)) return false;
+        Point point = (Point) o;
+        return x == point.x && y == point.y;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+    
+    @Override
+    public String toString() {
+        return "Point{x=" + x + ", y=" + y + "}";
+    }
+}
+
+// Recordによる解決：1行
+public record Point(int x, int y) {}
+```
+
+**Recordが解決する問題：**
+- **コード量の削減**：97%以上のコード削減
+- **バグの防止**：equals/hashCodeの不整合を防ぐ
+- **可読性**：データの意図が明確
+- **不変性の保証**：スレッドセーフティ
+
+**実際の活用場面：**
+- **APIレスポンス**：REST APIのレスポンスボディ
+- **イベント**：イベント駆動アーキテクチャでのイベント定義
+- **設定値**：アプリケーション設定の保持
+
+この演習では、現代的なJavaプログラミングで必須となるRecordの基礎を学びます。
+
 **要求仕様：**
 - シンプルなRecord定義（Point、Person等）
 - 自動生成されるメソッド（equals、hashCode、toString）の確認
@@ -55,6 +110,51 @@ Recordの行数: 1行（record Person(String name, int age) {}）
 
 RecordをDTOとして活用し、データ転送の実装を行ってください。
 
+**技術的背景：DTOパターンとRecordの相性**
+
+データ転送オブジェクト（DTO）パターンは、レイヤー間のデータ転送に特化したオブジェクトです：
+
+**DTOが必要な理由：**
+- **レイヤー分離**：エンティティとAPIレスポンスの分離
+- **データの最小化**：必要なデータのみを転送
+- **バージョン管理**：APIの後方互換性維持
+- **セキュリティ**：機密情報の除外
+
+**RecordがDTOに最適な理由：**
+```java
+// エンティティ（永続化層）
+@Entity
+public class User {
+    @Id private Long id;
+    private String password;  // 機密情報
+    private String email;
+    private LocalDateTime createdAt;
+    // ... 多くのフィールドとメソッド
+}
+
+// DTO（転送用）
+public record UserDTO(
+    Long id,
+    String email,
+    String displayName  // 必要な情報のみ
+) {
+    // バリデーションをコンパクトコンストラクタで実装
+    public UserDTO {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+    }
+}
+```
+
+**実際の使用例：**
+- **REST API**：リクエスト/レスポンスボディ
+- **マイクロサービス**：サービス間通信
+- **GraphQL**：スキーマ定義との対応
+- **イベントソーシング**：イベントの定義
+
+この演習では、実務で頻繁に使用されるDTOパターンをRecordで効率的に実装する方法を学びます。
+
 **要求仕様：**
 - ユーザー情報のRecord DTO
 - 注文情報のRecord DTO（ネストしたRecord含む）
@@ -93,6 +193,57 @@ Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
 ### 課題3: Record と設定管理
 
 Recordを使ったアプリケーション設定管理システムを実装してください。
+
+**技術的背景：不変設定オブジェクトの重要性**
+
+アプリケーション設定の管理は、システムの信頼性に直結する重要な要素です：
+
+**従来の設定管理の問題：**
+- **実行時の変更**：意図しない設定変更によるバグ
+- **スレッドセーフティ**：並行アクセスでの不整合
+- **設定の散在**：グローバル変数や可変オブジェクト
+- **型安全性の欠如**：文字列ベースの設定
+
+**Recordによる解決：**
+```java
+// 階層的な不変設定
+public record DatabaseConfig(
+    String url,
+    String username,
+    int maxConnections,
+    Duration timeout
+) {
+    // コンパクトコンストラクタでバリデーション
+    public DatabaseConfig {
+        if (maxConnections <= 0) {
+            throw new IllegalArgumentException("maxConnections must be positive");
+        }
+        if (timeout.isNegative()) {
+            throw new IllegalArgumentException("timeout cannot be negative");
+        }
+    }
+}
+
+public record AppConfig(
+    String appName,
+    String version,
+    DatabaseConfig database,
+    List<String> features
+) {
+    // 部分更新メソッド（新しいインスタンスを返す）
+    public AppConfig withDatabase(DatabaseConfig newDatabase) {
+        return new AppConfig(appName, version, newDatabase, features);
+    }
+}
+```
+
+**実際の活用例：**
+- **Spring Boot**：@ConfigurationPropertiesとの組み合わせ
+- **環境別設定**：開発/本番環境の設定切り替え
+- **Feature Toggle**：機能フラグの管理
+- **動的設定更新**：設定変更時の安全な切り替え
+
+この演習では、不変性を活用した安全な設定管理システムの構築方法を学びます。
 
 **要求仕様：**
 - 階層的な設定構造（Record内にRecord）
@@ -156,6 +307,58 @@ debug=true
 ### 課題4: Record とパターンマッチング（Java 17+）
 
 Recordとパターンマッチングを組み合わせた処理を実装してください。
+
+**技術的背景：代数的データ型とパターンマッチング**
+
+Java 17以降のパターンマッチングとRecordの組み合わせは、関数型プログラミングで知られる代数的データ型（ADT）の実現を可能にします：
+
+**従来のアプローチの問題：**
+```java
+// ポリモーフィズムによる実装（冗長）
+public interface Shape {
+    double calculateArea();
+}
+
+public class Circle implements Shape {
+    private double radius;
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+// 型チェックとキャスト（エラーが起きやすい）
+if (shape instanceof Circle) {
+    Circle circle = (Circle) shape;
+    double radius = circle.getRadius();
+    // ...
+}
+```
+
+**パターンマッチングによる解決：**
+```java
+// sealed interfaceとRecordの組み合わせ
+public sealed interface Shape 
+    permits Circle, Rectangle, Triangle {}
+
+public record Circle(double radius) implements Shape {}
+public record Rectangle(double width, double height) implements Shape {}
+public record Triangle(double base, double height) implements Shape {}
+
+// パターンマッチングによる処理
+double area = switch (shape) {
+    case Circle(var r) -> Math.PI * r * r;
+    case Rectangle(var w, var h) -> w * h;
+    case Triangle(var b, var h) -> 0.5 * b * h;
+};
+```
+
+**実務での活用例：**
+- **コンパイラ実装**：抽象構文木（AST）の処理
+- **イベント処理**：異なるイベントタイプの処理
+- **状態機械**：状態遷移の実装
+- **ビジネスルール**：複雑な条件分岐の簡潔な表現
+
+この演習では、オブジェクト指向と関数型プログラミングを融合させた最新のJava機能を学びます。
 
 **要求仕様：**
 - 図形を表すRecord（Circle、Rectangle、Triangle）
