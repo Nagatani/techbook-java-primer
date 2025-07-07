@@ -1,96 +1,96 @@
-# Exception Performance Deep Dive
+# 例外処理のパフォーマンス詳解
 
-A comprehensive Java project demonstrating exception handling performance characteristics, optimization techniques, and alternative error handling patterns.
+例外処理のパフォーマンス特性、最適化技術、代替エラーハンドリングパターンを実装した包括的なJavaプロジェクトです。
 
-## Overview
+## 概要
 
-This project provides practical implementations and benchmarks that explore:
-- The true cost of exception handling in Java
-- Stack trace generation overhead
-- Exception pooling and optimization techniques
-- Alternative error handling patterns (Result/Either, Null Object)
-- Performance monitoring and metrics collection
+このプロジェクトは以下の内容を実装とベンチマークを通じて探求します：
+- Javaにおける例外処理の真のコスト
+- スタックトレース生成のオーバーヘッド
+- 例外プーリングと最適化技術
+- 代替エラーハンドリングパターン（Result/Either、Null Object）
+- パフォーマンスモニタリングとメトリクス収集
 
-## Key Findings
+## 主要な発見
 
-### Performance Impact
+### パフォーマンスへの影響
 
-Based on our benchmarks, exception handling can be:
-- **100-1000x slower** than normal control flow
-- Stack trace generation accounts for **95%** of exception cost
-- Exception depth increases cost **linearly** with call stack size
-- Try-catch blocks have **minimal overhead** when no exception is thrown
+ベンチマーク結果によると、例外処理は：
+- 通常の制御フローより **100-1000倍遅い**
+- スタックトレース生成が例外コストの **95%** を占める
+- 例外の深さはコールスタックサイズに対して **線形的に** コストが増加
+- try-catchブロックは例外が発生しない場合は **最小限のオーバーヘッド**
 
-### When Exception Performance Matters
+### 例外パフォーマンスが重要になる場合
 
-1. **High-frequency operations** (>1000/sec)
-2. **Tight loops** and performance-critical paths
-3. **Input validation** in APIs
-4. **Control flow** decisions (anti-pattern)
+1. **高頻度の操作** (>1000回/秒)
+2. **タイトループ** とパフォーマンスクリティカルなパス
+3. APIでの **入力検証**
+4. **制御フロー** の決定（アンチパターン）
 
-### When It Doesn't Matter
+### 例外パフォーマンスが問題にならない場合
 
-1. **Truly exceptional conditions** (rare errors)
-2. **Application startup/shutdown**
-3. **Configuration errors**
-4. **Network/IO failures** (already slow)
+1. **真に例外的な状況** （まれなエラー）
+2. **アプリケーションの起動/終了**
+3. **設定エラー**
+4. **ネットワーク/IO障害** （すでに遅い）
 
-## Project Structure
+## プロジェクト構成
 
 ```
 src/main/java/com/example/exception/
-├── performance/          # JMH benchmarks
+├── performance/          # JMHベンチマーク
 │   ├── BasicExceptionBenchmark.java
 │   ├── StackTraceDepthBenchmark.java
 │   └── ExceptionTypeBenchmark.java
-├── optimization/         # Optimization techniques
+├── optimization/         # 最適化技術
 │   ├── ExceptionPool.java
 │   ├── ValidationException.java
 │   └── ConditionalStackTraceException.java
-├── patterns/            # Alternative patterns
+├── patterns/            # 代替パターン
 │   ├── Result.java
 │   └── NullObject.java
-├── monitoring/          # Metrics and monitoring
+├── monitoring/          # メトリクスとモニタリング
 │   ├── ExceptionMetrics.java
 │   └── ExceptionHandler.java
-└── Demo.java           # Demonstration program
+└── Demo.java           # デモプログラム
 ```
 
-## Running the Project
+## プロジェクトの実行
 
-### Prerequisites
+### 前提条件
 
-- Java 17 or higher
+- Java 17以上
 - Maven 3.6+
 
-### Build and Run
+### ビルドと実行
 
 ```bash
-# Build the project
+# プロジェクトのビルド
 mvn clean package
 
-# Run the demo
+# デモの実行
 mvn exec:java -Dexec.mainClass="com.example.exception.Demo"
 
-# Run specific benchmarks
+# 特定のベンチマークを実行
 java -jar target/benchmarks.jar BasicExceptionBenchmark
 
-# Run all benchmarks
+# すべてのベンチマークを実行
 java -jar target/benchmarks.jar
 
-# Run with specific parameters
+# 特定のパラメータで実行
 java -jar target/benchmarks.jar StackTraceDepthBenchmark -p stackDepth=10,50,100
 ```
 
-### Run Tests
+### テストの実行
 
 ```bash
 mvn test
 ```
 
-## Benchmark Results
+## ベンチマーク結果
 
-### Basic Exception Performance
+### 基本的な例外パフォーマンス
 
 ```
 Benchmark                                Mode  Cnt     Score    Error  Units
@@ -99,12 +99,12 @@ BasicExceptionBenchmark.exceptionFlow    avgt   5  1250.0 ±  50.0    ns/op
 BasicExceptionBenchmark.cachedException  avgt   5    45.0 ±   3.0    ns/op
 ```
 
-Key insights:
-- Normal flow: ~2 ns
-- Exception with stack trace: ~1250 ns (600x slower)
-- Cached exception: ~45 ns (20x slower, but 27x faster than full exception)
+主要な洞察:
+- 通常フロー: 約2 ns
+- スタックトレース付き例外: 約1250 ns (600倍遅い)
+- キャッシュされた例外: 約45 ns (20倍遅いが、完全な例外より27倍速い)
 
-### Stack Depth Impact
+### スタックの深さの影響
 
 ```
 Benchmark                              (depth)  Mode  Cnt     Score    Error  Units
@@ -114,19 +114,19 @@ StackTraceDepthBenchmark.exception         50  avgt   5  3500.0 ± 100.0    ns/o
 StackTraceDepthBenchmark.exception        100  avgt   5  6200.0 ± 200.0    ns/op
 ```
 
-## Optimization Techniques
+## 最適化技術
 
-### 1. Exception Pooling
+### 1. 例外プーリング
 
-For high-frequency exceptions where stack traces aren't needed:
+スタックトレースが不要な高頻度の例外の場合:
 
 ```java
 ExceptionPool<ValidationException> pool = new ExceptionPool<>(
     ValidationException::create, 100
 );
 
-// Use pooled exception
-ValidationException e = pool.acquire("Validation failed");
+// プールされた例外を使用
+ValidationException e = pool.acquire("検証に失敗しました");
 try {
     throw e;
 } catch (ValidationException ve) {

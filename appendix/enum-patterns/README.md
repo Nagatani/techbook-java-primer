@@ -1,59 +1,59 @@
-# Java Enum Patterns Deep Dive
+# Java Enumパターン詳解
 
-A comprehensive collection of advanced enum design patterns in Java, demonstrating how enums can be used beyond simple constants to create robust, type-safe, and maintainable solutions.
+Javaにおける高度なenumデザインパターンの包括的なコレクションです。単純な定数を超えて、堅牢で型安全、保守しやすいソリューションを作成する方法を実演します。
 
-## Overview
+## 概要
 
-This project showcases advanced enum patterns that solve real-world problems in enterprise applications. Each pattern is implemented with executable examples and practical use cases.
+このプロジェクトは、エンタープライズアプリケーションにおける実際の問題を解決する高度なenumパターンを紹介します。各パターンは実行可能な例と実践的なユースケースとともに実装されています。
 
-## Why Enum Patterns?
+## なぜEnumパターンが重要なのか
 
-### Traditional Approach Problems
+### 従来のアプローチの問題点
 
-1. **String-based State Management**
-   - Prone to typos and runtime errors
-   - No compile-time validation
-   - Difficult to track valid transitions
+1. **文字列ベースの状態管理**
+   - タイプミスや実行時エラーが発生しやすい
+   - コンパイル時検証がない
+   - 有効な遷移の追跡が困難
 
-2. **Magic Numbers**
-   - Unclear meaning
-   - Scattered validation logic
-   - Maintenance nightmare
+2. **マジックナンバー**
+   - 意味が不明確
+   - 検証ロジックが分散
+   - 保守の悪夢
 
-3. **Scattered Business Logic**
-   - State checks duplicated across codebase
-   - High risk of bugs when rules change
-   - Poor testability
+3. **分散したビジネスロジック**
+   - 状態チェックがコードベース全体で重複
+   - ルール変更時のバグリスクが高い
+   - テスト容易性が低い
 
-### Enum Pattern Benefits
+### Enumパターンの利点
 
-1. **Type Safety**: Compile-time validation prevents invalid states
-2. **Performance**: EnumSet uses bit manipulation for O(1) operations
-3. **Maintainability**: Centralized business logic
-4. **Thread Safety**: Enum instances are inherently thread-safe
-5. **Memory Efficiency**: Single instance per enum value
+1. **型安全性**: コンパイル時検証により無効な状態を防止
+2. **パフォーマンス**: EnumSetはビット操作でO(1)演算を実現
+3. **保守性**: 中央集権化されたビジネスロジック
+4. **スレッドセーフティ**: Enumインスタンスは本質的にスレッドセーフ
+5. **メモリ効率**: enum値ごとに単一インスタンス
 
-## Project Structure
+## プロジェクト構成
 
 ```
 enum-patterns/
 ├── src/main/java/com/example/enumpatterns/
-│   ├── statemachine/      # State machine implementations
-│   ├── strategy/          # Strategy pattern with enums
-│   ├── permission/        # Permission and security patterns
-│   ├── configuration/     # Type-safe configuration
-│   ├── event/            # Event-driven architecture
-│   ├── factory/          # Factory patterns
-│   ├── performance/      # Performance demonstrations
-│   └── examples/         # Complete application examples
-└── docs/                 # Additional documentation
+│   ├── statemachine/      # ステートマシン実装
+│   ├── strategy/          # enumを使用したStrategyパターン
+│   ├── permission/        # パーミッションとセキュリティパターン
+│   ├── configuration/     # 型安全な設定
+│   ├── event/            # イベント駆動アーキテクチャ
+│   ├── factory/          # Factoryパターン
+│   ├── performance/      # パフォーマンスデモンストレーション
+│   └── examples/         # 完全なアプリケーション例
+└── docs/                 # 追加ドキュメント
 ```
 
-## Patterns Included
+## 含まれるパターン
 
-### 1. State Machine Pattern
+### 1. ステートマシンパターン
 
-Implement complex state transitions with compile-time validation:
+コンパイル時検証を伴う複雑な状態遷移を実装:
 
 ```java
 OrderState state = OrderState.PENDING;
@@ -62,30 +62,30 @@ state = state.ship();     // Returns SHIPPED
 state = state.cancel();   // Throws IllegalStateException
 ```
 
-**Use Cases:**
-- Order processing workflows
-- User lifecycle management
-- Game state management
-- Document approval processes
+**ユースケース:**
+- 注文処理ワークフロー
+- ユーザーライフサイクル管理
+- ゲーム状態管理
+- ドキュメント承認プロセス
 
-### 2. Strategy Pattern
+### 2. Strategyパターン
 
-Replace complex if-else chains with elegant enum strategies:
+複雑なif-elseチェーンをエレガントなenumストラテジーに置き換え:
 
 ```java
 CalculationStrategy strategy = CalculationStrategy.PROGRESSIVE;
 BigDecimal tax = strategy.calculateTax(amount, context);
 ```
 
-**Use Cases:**
-- Tax calculation systems
-- Pricing algorithms
-- Data processing pipelines
-- Protocol implementations
+**ユースケース:**
+- 税金計算システム
+- 価格設定アルゴリズム
+- データ処理パイプライン
+- プロトコル実装
 
-### 3. Singleton Pattern
+### 3. Singletonパターン
 
-Thread-safe singleton implementation using enums:
+enumを使用したスレッドセーフなシングルトン実装:
 
 ```java
 public enum DatabaseConnection {
@@ -99,169 +99,169 @@ public enum DatabaseConnection {
 }
 ```
 
-**Use Cases:**
-- Resource managers
-- Configuration holders
-- Service locators
-- Registry implementations
+**ユースケース:**
+- リソースマネージャー
+- 設定ホルダー
+- サービスロケーター
+- レジストリ実装
 
-### 4. Permission System
+### 4. パーミッションシステム
 
-Type-safe permission management with EnumSet:
+EnumSetを使用した型安全なパーミッション管理:
 
 ```java
 EnumSet<Permission> userPerms = EnumSet.of(READ, WRITE);
 boolean canDelete = userPerms.contains(DELETE);  // false
 ```
 
-**Use Cases:**
-- Role-based access control
-- Feature flags
-- Resource permissions
-- API access control
+**ユースケース:**
+- ロールベースアクセス制御
+- フィーチャーフラグ
+- リソースパーミッション
+- APIアクセス制御
 
-### 5. Configuration Management
+### 5. 設定管理
 
-Type-safe configuration with automatic parsing:
+自動パーシングを伴う型安全な設定:
 
 ```java
 int port = config.get(ConfigKey.SERVER_PORT);  // Type-safe
 boolean featureEnabled = config.get(ConfigKey.FEATURE_NEW_UI);
 ```
 
-**Use Cases:**
-- Application settings
-- Environment configurations
-- Feature toggles
-- Runtime parameters
+**ユースケース:**
+- アプリケーション設定
+- 環境設定
+- フィーチャートグル
+- ランタイムパラメータ
 
-### 6. Event-Driven Architecture
+### 6. イベント駆動アーキテクチャ
 
-Event routing and handling with enums:
+enumを使用したイベントルーティングとハンドリング:
 
 ```java
 EventType.USER_CREATED.createEvent(data);
 registry.register(EnumSet.of(USER_CREATED, USER_UPDATED), handler);
 ```
 
-**Use Cases:**
-- Message processing
-- Event sourcing
-- Notification systems
-- Audit logging
+**ユースケース:**
+- メッセージ処理
+- イベントソーシング
+- 通知システム
+- 監査ログ
 
-## Performance Benefits
+## パフォーマンスの利点
 
-### EnumSet vs HashSet Performance
+### EnumSet vs HashSetのパフォーマンス
 
 ```
-Operation    | EnumSet | HashSet | Improvement
+操作         | EnumSet | HashSet | 改善度
 -------------|---------|---------|-------------
-Add          | 2ms     | 15ms    | 7.5x faster
-Contains     | 1ms     | 8ms     | 8x faster
-Remove       | 2ms     | 12ms    | 6x faster
-Union        | 3ms     | 25ms    | 8.3x faster
+追加         | 2ms     | 15ms    | 7.5倍高速
+含有チェック   | 1ms     | 8ms     | 8倍高速
+削除         | 2ms     | 12ms    | 6倍高速
+和集合       | 3ms     | 25ms    | 8.3倍高速
 ```
 
-### Memory Usage
+### メモリ使用量
 
-- EnumSet: Uses bit vector (1 bit per enum value)
-- HashSet: Uses hash table with object references
-- Memory savings: Up to 95% for large sets
+- EnumSet: ビットベクター使用（enum値ごとに1ビット）
+- HashSet: オブジェクト参照を持つハッシュテーブル使用
+- メモリ節約: 大きなセットで最大95%
 
-## Running the Examples
+## サンプルの実行
 
-### Prerequisites
+### 前提条件
 
-- Java 17 or higher
-- Maven or your preferred build tool
+- Java 17以上
+- Mavenまたは好みのビルドツール
 
-### Quick Start
+### クイックスタート
 
-1. Clone the repository:
+1. リポジトリをクローン:
 ```bash
 git clone <repository-url>
 cd enum-patterns
 ```
 
-2. Compile the project:
+2. プロジェクトをコンパイル:
 ```bash
 javac -d out src/main/java/com/example/enumpatterns/**/*.java
 ```
 
-3. Run examples:
+3. サンプルを実行:
 ```bash
-# State Machine Demo
+# ステートマシンのデモ
 java -cp out com.example.enumpatterns.examples.StateMachineDemo
 
-# Permission System Demo
+# パーミッションシステムのデモ
 java -cp out com.example.enumpatterns.examples.PermissionDemo
 
-# Performance Comparison
+# パフォーマンス比較
 java -cp out com.example.enumpatterns.examples.PerformanceDemo
 ```
 
-## Real-World Success Stories
+## 実世界での成功事例
 
-### E-commerce Platform
-- **Problem**: Order state inconsistencies causing shipping errors
-- **Solution**: Enum state machine with validated transitions
-- **Result**: 95% reduction in state-related bugs
+### Eコマースプラットフォーム
+- **問題**: 注文状態の不整合による配送エラー
+- **解決策**: 検証済み遷移を持つEnumステートマシン
+- **結果**: 状態関連バグの95%削減
 
-### Workflow Management System
-- **Problem**: Complex approval workflows with scattered logic
-- **Solution**: Enum-based workflow engine
-- **Result**: 3x improvement in development efficiency
+### ワークフロー管理システム
+- **問題**: 分散したロジックを持つ複雑な承認ワークフロー
+- **解決策**: Enumベースのワークフローエンジン
+- **結果**: 開発効率が3倍向上
 
-### Gaming Platform
-- **Problem**: Player state bugs causing game crashes
-- **Solution**: Type-safe state management with enums
-- **Result**: 90% reduction in state-related crashes
+### ゲーミングプラットフォーム
+- **問題**: ゲームクラッシュを引き起こすプレイヤー状態バグ
+- **解決策**: enumを使用した型安全な状態管理
+- **結果**: 状態関連クラッシュの90%削減
 
-## Best Practices
+## ベストプラクティス
 
-1. **Use EnumSet for Collections**
-   - 64x faster than HashSet for enum collections
-   - Type-safe and memory efficient
+1. **コレクションにはEnumSetを使用**
+   - enumコレクションでHashSetより64倍高速
+   - 型安全でメモリ効率的
 
-2. **Implement Business Logic in Enums**
-   - Centralize related logic
-   - Leverage polymorphism
+2. **Enumにビジネスロジックを実装**
+   - 関連するロジックを集約
+   - ポリモーフィズムを活用
 
-3. **Prefer Enums for Fixed Sets**
-   - Configuration keys
-   - State machines
-   - Permission systems
+3. **固定セットにはEnumを優先**
+   - 設定キー
+   - ステートマシン
+   - パーミッションシステム
 
-4. **Combine with Modern Java Features**
-   - Switch expressions
-   - Pattern matching
-   - Records for data transfer
+4. **モダンJava機能と組み合わせる**
+   - スイッチ式
+   - パターンマッチング
+   - データ転送用のRecords
 
-## Common Pitfalls to Avoid
+## 避けるべき一般的な落とし穴
 
-1. **Don't Use Ordinal Values**
-   - Use explicit fields instead
-   - Ordinal can change with reordering
+1. **序数値を使わない**
+   - 代わりに明示的なフィールドを使用
+   - 序数は順序変更で変わる可能性がある
 
-2. **Avoid Mutable State in Enums**
-   - Enums should be immutable
-   - Use external storage for mutable data
+2. **Enumに可変状態を持たせない**
+   - Enumは不変であるべき
+   - 可変データには外部ストレージを使用
 
-3. **Don't Overuse Enums**
-   - Not suitable for dynamic sets
-   - Consider alternatives for large datasets
+3. **Enumを過度に使用しない**
+   - 動的なセットには不適切
+   - 大きなデータセットには代替案を検討
 
-## Contributing
+## 貢献方法
 
-Contributions are welcome! Please see the examples directory for the coding style and patterns used in this project.
+貢献を歓迎します！このプロジェクトで使用されているコーディングスタイルとパターンについては、examplesディレクトリを参照してください。
 
-## License
+## ライセンス
 
-This project is part of the Java Primer technical book and is provided for educational purposes.
+このプロジェクトはJava入門技術書の一部であり、教育目的で提供されています。
 
-## Further Reading
+## さらなる学習資料
 
-- [Effective Java, 3rd Edition](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/) - Joshua Bloch
-- [Java Language Specification](https://docs.oracle.com/javase/specs/)
-- [Java Enum Documentation](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
+- [Effective Java 第3版](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/) - Joshua Bloch
+- [Java言語仕様](https://docs.oracle.com/javase/specs/)
+- [Java Enumドキュメント](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)

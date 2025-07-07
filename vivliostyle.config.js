@@ -53,32 +53,37 @@ module.exports = {
     'chapter22-build-and-deploy.md',
     // 付録
     'appendix-index.md', // 付録一覧
-    'appendix-environment-setup.md', // 付録A: 開発環境の構築
+    'appendix-a-environment-setup.md', // 付録A: 開発環境の構築
     // 付録B: 技術的詳細解説（Deep Dive）
     'appendix-b-index.md',
+    // 基礎概念（第1-2章関連）
     'appendix-b01-language-design.md',
-    'appendix-b02-memory-performance.md',
-    'appendix-b03-programming-paradigms.md',
-    'appendix-b04-concurrent-distributed.md',
-    'appendix-b05-software-design.md',
-    'appendix-b06-compiler-ast.md',
-    'appendix-b07-language-evolution.md',
-    'appendix-b08-stream-api-internals.md',
-    'appendix-b09-java-memory-model.md',
-    'appendix-b10-collection-internals.md',
-    'appendix-b11-type-erasure.md',
-    'appendix-b13-testing-strategies.md',
-    'appendix-b14-virtual-method-table.md',
-    'appendix-b15-nio2-advanced.md',
-    'appendix-b16-cicd-cloud-native.md',
-    'appendix-b17-jvm-architecture.md',
-    'appendix-b18-immutability-patterns.md',
-    'appendix-b20-enum-patterns.md',
-    'appendix-b21-exception-performance.md',
-    'appendix-b22-opensource-ecosystem.md',
+    'appendix-b02-jvm-architecture.md',
+    'appendix-b03-language-evolution.md',
+    'appendix-b04-compiler-ast.md',
+    // オブジェクト指向概念（第3-7章関連）
+    'appendix-b05-programming-paradigms.md',
+    'appendix-b06-software-design.md',
+    'appendix-b07-virtual-method-table.md',
+    'appendix-b08-immutability-patterns.md',
+    // コレクションとジェネリクス（第8-10章関連）
+    'appendix-b09-collection-internals.md',
+    'appendix-b10-type-erasure.md',
+    'appendix-b11-stream-api-internals.md',
+    // モダンJava機能（第11-13章関連）
+    'appendix-b12-enum-patterns.md',
+    // 例外処理とI/O（第14-15章関連）
+    'appendix-b13-exception-performance.md',
+    'appendix-b14-nio2-advanced.md',
+    // 並行処理（第16章関連）
+    'appendix-b15-concurrent-distributed.md',
+    'appendix-b16-java-memory-model.md',
+    'appendix-b17-memory-performance.md',
+    // 高度なトピック（第20-22章関連）
+    'appendix-b18-testing-strategies.md',
     // 付録C: 上級技術解説
     'appendix-c-theoretical-foundations.md', // ソフトウェア工学の理論的基盤
-    'appendix-javabeans.md', // 付録D: JavaBeansの仕様
+    'appendix-d-javabeans.md', // 付録D: JavaBeansの仕様
     'cross-reference-guide.md',
     'glossary.md',
     'colophon.md',

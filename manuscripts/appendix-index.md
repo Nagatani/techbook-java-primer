@@ -22,10 +22,10 @@ Java開発を始めるための環境構築手順を詳細に解説します。�
 
 **シリーズ構成：**
 - [B.01 言語設計とプラットフォーム](appendix-b01-language-design.md)
-- [B.02 メモリ管理とパフォーマンス](appendix-b02-memory-performance.md)
-- [B.03 プログラミングパラダイムの進化](appendix-b03-programming-paradigms.md)
-- [B.04 並行処理と分散システム](appendix-b04-concurrent-distributed.md)
-- [B.05 ソフトウェア設計原則](appendix-b05-software-design.md)
+- [B.02 JVMアーキテクチャとバイトコード](appendix-b02-jvm-architecture.md)
+- [B.03 プログラミング言語の歴史的発展](appendix-b03-language-evolution.md)
+- [B.04 コンパイラ技術と抽象構文木](appendix-b04-compiler-ast.md)
+- [B.05 プログラミングパラダイムの進化](appendix-b05-programming-paradigms.md)
 
 詳細は[付録B インデックス](appendix-b-index.md)を参照してください。
 

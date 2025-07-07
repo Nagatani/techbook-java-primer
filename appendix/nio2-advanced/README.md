@@ -1,182 +1,182 @@
-# NIO.2 Advanced Features Deep Dive
+# NIO.2高度機能の詳細解説
 
-This project demonstrates advanced NIO.2 features in Java, showcasing high-performance I/O operations, file system monitoring, and asynchronous processing capabilities.
+Javaの高度なNIO.2機能を実演するプロジェクトで、高性能I/O操作、ファイルシステム監視、非同期処理機能を紹介します。
 
-## Why NIO.2?
+## なぜNIO.2が必要なのか
 
-### Real-World Performance Problems and Solutions
+### 実世界のパフォーマンス問題と解決策
 
-#### Problem 1: Slow Batch File Processing
-Traditional I/O processes files sequentially, leading to:
-- **1000 files taking 1 hour** to process
-- CPU sitting idle while waiting for I/O
-- Memory usage proportional to file size
+#### 問題1: 遅いバッチファイル処理
+従来のI/Oはファイルを逐次処理するため、以下の問題が発生：
+- **1000ファイルの処理に1時間**かかる
+- I/O待機中にCPUがアイドル状態
+- ファイルサイズに比例したメモリ使用
 
-**With NIO.2**: Process the same files in **12 minutes** (5x faster) using asynchronous I/O and parallel processing.
+**NIO.2を使用**: 非同期I/Oと並列処理により、同じファイルを**12分**で処理（5倍高速）。
 
-#### Problem 2: Delayed File Change Detection
-Polling-based monitoring causes:
-- High CPU usage (constant checking)
-- Detection delays (1-5 seconds)
-- Poor scalability with file count
+#### 問題2: ファイル変更検出の遅延
+ポーリングベースの監視による問題：
+- 高いCPU使用率（継続的なチェック）
+- 検出遅延（1-5秒）
+- ファイル数に対するスケーラビリティの低さ
 
-**With NIO.2**: Instant notification (< 50ms) with minimal CPU usage using WatchService.
+**NIO.2を使用**: WatchServiceにより最小限のCPU使用で即座に通知（< 50ms）。
 
-#### Problem 3: Out of Memory with Large Files
-Traditional file reading loads entire file into memory:
-- 2GB file = 2GB+ memory usage
-- Application crashes with large files
-- Unable to process files larger than heap
+#### 問題3: 大きなファイルでのメモリ不足
+従来のファイル読み込みは全体をメモリにロード：
+- 2GBファイル = 2GB以上のメモリ使用
+- 大きなファイルでアプリケーションがクラッシュ
+- ヒープより大きなファイルを処理できない
 
-**With NIO.2**: Process 100GB files with only 200MB memory using memory-mapped files.
+**NIO.2を使用**: メモリマップファイルを使用して、わずか200MBのメモリで100GBのファイルを処理。
 
-### Business Impact
+### ビジネスへの影響
 
-- **Financial Systems**: Reduced overnight batch processing from 10 hours to 2 hours
-- **Monitoring Systems**: Instant alerts instead of 5-minute delays
-- **Data Analytics**: Process terabyte-scale data without memory constraints
-- **Cost Savings**: 70% reduction in server requirements due to efficient resource usage
+- **金融システム**: 夜間バッチ処理を10時間から2時間に短縮
+- **監視システム**: 5分の遅延から即時アラートへ
+- **データ分析**: メモリ制約なしでテラバイト規模のデータを処理
+- **コスト削減**: 効率的なリソース使用により必要サーバー数を70%削減
 
-## Features Demonstrated
+## 実演機能
 
-### 1. File System Watching (WatchService)
-- Real-time directory monitoring
-- Event debouncing for rapid changes
-- Recursive directory watching
-- File type-specific processing
+### 1. ファイルシステム監視（WatchService）
+- リアルタイムディレクトリ監視
+- 高速変更のためのイベントデバウンシング
+- 再帰的ディレクトリ監視
+- ファイルタイプ固有の処理
 
-### 2. Asynchronous File I/O
-- Non-blocking file operations
-- Parallel file processing
-- CompletableFuture integration
-- Progress tracking and cancellation
+### 2. 非同期ファイルI/O
+- ノンブロッキングファイル操作
+- 並列ファイル処理
+- CompletableFuture統合
+- 進捗追跡とキャンセル
 
-### 3. Memory-Mapped Files
-- Large file processing without loading into heap
-- Shared memory between processes
-- Direct memory access for performance
-- Efficient random access patterns
+### 3. メモリマップファイル
+- ヒープにロードせずに大きなファイルを処理
+- プロセス間での共有メモリ
+- パフォーマンスのための直接メモリアクセス
+- 効率的なランダムアクセスパターン
 
-### 4. Reactive I/O Streams
-- Backpressure handling
-- Flow API integration
-- Stream processing with controlled memory usage
-- Event-driven file processing
+### 4. リアクティブI/Oストリーム
+- バックプレッシャー処理
+- Flow API統合
+- 制御されたメモリ使用でのストリーム処理
+- イベント駆動ファイル処理
 
-### 5. Performance Benchmarks
-- Comparison of I/O approaches
-- JMH benchmarks for accurate measurement
-- Memory usage profiling
-- Throughput analysis
+### 5. パフォーマンスベンチマーク
+- I/Oアプローチの比較
+- 正確な測定のためのJMHベンチマーク
+- メモリ使用量プロファイリング
+- スループット分析
 
-## Quick Start
+## クイックスタート
 
-### Prerequisites
-- Java 11 or higher
+### 前提条件
+- Java 11以上
 - Maven 3.6+
 
-### Building the Project
+### プロジェクトのビルド
 ```bash
 mvn clean install
 ```
 
-### Running Examples
+### サンプルの実行
 
-#### 1. File Watcher Demo
+#### 1. ファイルウォッチャーデモ
 ```bash
-# Watch a directory for changes
+# ディレクトリの変更を監視
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.watcher.FileWatcherDemo /path/to/watch
 
-# Advanced watcher with debouncing
+# デバウンシング付き高度なウォッチャー
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.watcher.AdvancedWatcherDemo /path/to/watch
 ```
 
-#### 2. Asynchronous File Processing
+#### 2. 非同期ファイル処理
 ```bash
-# Process multiple files in parallel
+# 複数ファイルを並列処理
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.async.AsyncFileProcessorDemo file1.txt file2.txt file3.txt
 
-# Large file async copy
+# 大きなファイルの非同期コピー
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.async.AsyncFileCopyDemo source.dat destination.dat
 ```
 
-#### 3. Memory-Mapped File Examples
+#### 3. メモリマップファイルの例
 ```bash
-# Process large file without loading into memory
+# メモリにロードせずに大きなファイルを処理
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.memory.MemoryMappedDemo large-file.dat
 
-# Shared memory example
+# 共有メモリの例
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.memory.SharedMemoryDemo
 ```
 
-#### 4. Reactive I/O Demo
+#### 4. リアクティブI/Oデモ
 ```bash
-# Stream large file with backpressure
+# バックプレッシャー付きで大きなファイルをストリーム
 java -cp target/nio2-advanced-1.0.jar com.example.nio2.reactive.ReactiveFileDemo large-file.log
 ```
 
-#### 5. Performance Benchmarks
+#### 5. パフォーマンスベンチマーク
 ```bash
-# Run JMH benchmarks
+# JMHベンチマークを実行
 java -jar target/benchmarks.jar
 ```
 
-## When to Use Each Feature
+## 各機能を使用すべき場面
 
-### Use WatchService When:
-- You need real-time file system notifications
-- Building file synchronization tools
-- Implementing hot-reload functionality
-- Creating backup or monitoring systems
+### WatchServiceを使用すべき場面：
+- リアルタイムファイルシステム通知が必要
+- ファイル同期ツールの構築
+- ホットリロード機能の実装
+- バックアップまたは監視システムの作成
 
-### Use Asynchronous I/O When:
-- Processing many files concurrently
-- I/O operations shouldn't block the main thread
-- Building responsive applications
-- Network file operations with unpredictable latency
+### 非同期I/Oを使用すべき場面：
+- 多くのファイルを同時に処理
+- I/O操作がメインスレッドをブロックすべきでない
+- レスポンシブアプリケーションの構築
+- 予測不可能な遅延を持つネットワークファイル操作
 
-### Use Memory-Mapped Files When:
-- Working with files larger than available heap
-- Need random access to file contents
-- Sharing data between processes
-- Implementing databases or caches
+### メモリマップファイルを使用すべき場面：
+- 利用可能なヒープより大きなファイルでの作業
+- ファイル内容へのランダムアクセスが必要
+- プロセス間でのデータ共有
+- データベースまたはキャッシュの実装
 
-### Use Reactive Streams When:
-- Processing infinite or very large streams
-- Need backpressure handling
-- Building event-driven systems
-- Integrating with reactive frameworks
+### リアクティブストリームを使用すべき場面：
+- 無限または非常に大きなストリームの処理
+- バックプレッシャー処理が必要
+- イベント駆動システムの構築
+- リアクティブフレームワークとの統合
 
-## Performance Comparison
+## パフォーマンス比較
 
-| Operation | Traditional I/O | NIO.2 | Improvement |
+| 操作 | 従来のI/O | NIO.2 | 改善度 |
 |-----------|----------------|--------|-------------|
-| Read 1GB file | 2.5s | 0.8s | 3.1x faster |
-| Monitor 1000 files | 30% CPU | 2% CPU | 15x more efficient |
-| Process 100 files | Sequential: 100s | Parallel: 15s | 6.7x faster |
-| 10GB file memory | 10GB+ | 200MB | 50x less memory |
+| 1GBファイル読み込み | 2.5秒 | 0.8秒 | 3.1倍高速 |
+| 1000ファイル監視 | CPU 30% | CPU 2% | 15倍効率的 |
+| 100ファイル処理 | 逐次: 100秒 | 並列: 15秒 | 6.7倍高速 |
+| 10GBファイルメモリ | 10GB以上 | 200MB | 50倍少ない |
 
-## Architecture
+## アーキテクチャ
 
-### Package Structure
-- `com.example.nio2.watcher` - File system watching implementations
-- `com.example.nio2.async` - Asynchronous I/O examples
-- `com.example.nio2.memory` - Memory-mapped file utilities
-- `com.example.nio2.reactive` - Reactive stream processors
-- `com.example.nio2.benchmark` - Performance benchmarks
-- `com.example.nio2.utils` - Common utilities and helpers
+### パッケージ構造
+- `com.example.nio2.watcher` - ファイルシステム監視実装
+- `com.example.nio2.async` - 非同期I/Oの例
+- `com.example.nio2.memory` - メモリマップファイルユーティリティ
+- `com.example.nio2.reactive` - リアクティブストリームプロセッサ
+- `com.example.nio2.benchmark` - パフォーマンスベンチマーク
+- `com.example.nio2.utils` - 共通ユーティリティとヘルパー
 
-### Design Patterns Used
-- **Observer Pattern**: WatchService for file system events
-- **Future Pattern**: Asynchronous operations with CompletableFuture
-- **Producer-Consumer**: Reactive streams with backpressure
-- **Strategy Pattern**: Pluggable file processors
+### 使用されるデザインパターン
+- **Observerパターン**: ファイルシステムイベントのWatchService
+- **Futureパターン**: CompletableFutureによる非同期操作
+- **Producer-Consumer**: バックプレッシャー付きリアクティブストリーム
+- **Strategyパターン**: プラガブルファイルプロセッサ
 
-## Common Use Cases
+## 一般的な使用例
 
-### 1. Log File Processing System
+### 1. ログファイル処理システム
 ```java
-// Process log files as they're created
+// 作成されたログファイルを処理
 LogProcessor processor = new LogProcessor();
 processor.watchDirectory("/var/log/app")
     .filterByExtension(".log")
@@ -185,9 +185,9 @@ processor.watchDirectory("/var/log/app")
     .exportReport();
 ```
 
-### 2. Real-time Data Pipeline
+### 2. リアルタイムデータパイプライン
 ```java
-// Stream large data files with controlled memory
+// 制御されたメモリで大きなデータファイルをストリーム
 DataPipeline pipeline = new DataPipeline();
 pipeline.streamFile("input.csv")
     .transform(row -> parseAndValidate(row))
@@ -195,9 +195,9 @@ pipeline.streamFile("input.csv")
     .writeToDatabase();
 ```
 
-### 3. File Synchronization Service
+### 3. ファイル同期サービス
 ```java
-// Sync changes between directories
+// ディレクトリ間で変更を同期
 FileSynchronizer sync = new FileSynchronizer();
 sync.watchSource("/source")
     .debounce(Duration.ofSeconds(1))
@@ -205,61 +205,61 @@ sync.watchSource("/source")
     .withConflictResolution(ConflictStrategy.NEWER_WINS);
 ```
 
-## Best Practices
+## ベストプラクティス
 
 ### WatchService
-- Always reset the WatchKey after processing events
-- Handle OVERFLOW events gracefully
-- Use separate threads for watching and processing
-- Implement debouncing for rapidly changing files
+- イベント処理後は必ずWatchKeyをリセット
+- OVERFLOWイベントを適切に処理
+- 監視と処理に別々のスレッドを使用
+- 高速に変更されるファイルにはデバウンシングを実装
 
-### Asynchronous I/O
-- Use direct ByteBuffers for better performance
-- Implement proper error handling in completion handlers
-- Limit concurrent operations to avoid resource exhaustion
-- Clean up channels properly in all code paths
+### 非同期I/O
+- より良いパフォーマンスのため直接ByteBufferを使用
+- 完了ハンドラで適切なエラー処理を実装
+- リソース枯渇を避けるため同時操作を制限
+- すべてのコードパスでチャンネルを適切にクリーンアップ
 
-### Memory-Mapped Files
-- Map only the required portion of large files
-- Force writes for critical data persistence
-- Clean up mapped buffers to avoid memory leaks
-- Be aware of OS-specific limitations
+### メモリマップファイル
+- 大きなファイルの必要な部分のみをマップ
+- 重要なデータの永続性のために書き込みを強制
+- メモリリークを避けるためマップされたバッファをクリーンアップ
+- OS固有の制限に注意
 
-### General
-- Profile before optimizing
-- Choose the right tool for the job
-- Handle errors gracefully
-- Test with realistic data sizes
+### 一般
+- 最適化前にプロファイル
+- 仕事に適したツールを選択
+- エラーを適切に処理
+- 現実的なデータサイズでテスト
 
-## Troubleshooting
+## トラブルシューティング
 
-### Common Issues
+### よくある問題
 
-1. **WatchService not detecting changes**
-   - Check file system support (some network drives don't support watching)
-   - Verify permissions on watched directories
-   - Ensure WatchKey is properly reset
+1. **WatchServiceが変更を検出しない**
+   - ファイルシステムのサポートを確認（一部のネットワークドライブは監視をサポートしない）
+   - 監視対象ディレクトリの権限を確認
+   - WatchKeyが適切にリセットされていることを確認
 
-2. **Memory-mapped file errors**
-   - Check available system memory
-   - Verify file permissions
-   - Ensure file isn't being modified by other processes
+2. **メモリマップファイルエラー**
+   - 利用可能なシステムメモリを確認
+   - ファイル権限を確認
+   - ファイルが他のプロセスによって変更されていないことを確認
 
-3. **Async operations hanging**
-   - Check for deadlocks in completion handlers
-   - Verify executor service configuration
-   - Look for uncaught exceptions
+3. **非同期操作がハング**
+   - 完了ハンドラでのデッドロックを確認
+   - Executorサービスの設定を確認
+   - キャッチされていない例外を探す
 
-## Further Reading
+## 参考資料
 
-- [Java NIO.2 Documentation](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/package-summary.html)
-- [Asynchronous File Channel Guide](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html)
-- [WatchService Tutorial](https://docs.oracle.com/javase/tutorial/essential/io/notification.html)
+- [Java NIO.2ドキュメント](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/package-summary.html)
+- [非同期ファイルチャンネルガイド](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html)
+- [WatchServiceチュートリアル](https://docs.oracle.com/javase/tutorial/essential/io/notification.html)
 
-## Contributing
+## 貢献方法
 
-Feel free to submit issues and enhancement requests!
+問題や機能強化のリクエストをお気軽に提出してください！
 
-## License
+## ライセンス
 
-This project is part of the Java Primer technical book and is provided for educational purposes.
+このプロジェクトはJava入門技術書の一部であり、教育目的で提供されています。
