@@ -71,6 +71,61 @@ Swingイベント処理機構の詳細についても学習します。イベン
 
 マウス操作で図形を描画できるアプリケーションを作成してください。
 
+**技術的背景：イベント駆動グラフィックスと描画システム**
+
+インタラクティブな描画アプリケーションは、イベント処理の実践的な応用例です：
+
+**マウスイベントの種類と描画への応用：**
+```java
+// MouseListener：クリックイベント
+mousePressed()  // 描画開始点
+mouseReleased() // 描画終了点（矩形確定等）
+
+// MouseMotionListener：マウス移動
+mouseDragged()  // ドラッグ中の座標取得
+mouseMoved()    // カーソル追跡
+```
+
+**描画システムのアーキテクチャ：**
+- **ペイントコンポーネント**：JPanel + paintComponent()
+- **ダブルバッファリング**：ちらつき防止
+- **描画コマンドパターン**：アンドゥ機能実現
+- **ラスタ画像**：BufferedImageへの描画
+
+**実際のペイントアプリケーションの例：**
+- **MS Paint**：シンプルで直感的
+- **Photoshop**：レイヤー、ブレンドモード
+- **Procreate**：タッチジェスチャー
+- **Inkscape**：ベクターグラフィックス
+
+**パフォーマンスの考慮点：**
+```java
+// 非効率的：毎回全体再描画
+public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    // すべての図形を再描画
+}
+
+// 効率的：BufferedImageへの差分描画
+Graphics2D g2d = bufferedImage.createGraphics();
+g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+```
+
+**アンドゥ/リドゥの実装パターン：**
+- **コマンドパターン**：操作の抽象化
+- **メモントパターン**：状態の保存と復元
+- **スナップショット方式**：画像全体の保存
+- **差分記録**：メモリ効率的
+
+**高度な機能の実装アイデア：**
+- **プレビュー表示**：ドラッグ中の図形予測
+- **スナップ機能**：グリッドへの吸着
+- **レイヤー管理**：複数描画層の管理
+- **ズーム機能**：AffineTransformによる変換
+
+この演習では、リアルタイムグラフィックス処理の基礎を学びます。
+
 **要求仕様：**
 - マウスドラッグによる線・矩形・楕円の描画
 - 色選択機能（パレットまたはカラーチューザー）
@@ -115,6 +170,63 @@ Swingイベント処理機構の詳細についても学習します。イベン
 ### 課題2: フォームバリデータ
 
 リアルタイムバリデーション機能付きのフォームを作成してください。
+
+**技術的背景：ユーザーエクスペリエンスとデータ品質の向上**
+
+リアルタイムバリデーションは、現代のWebアプリケーションで標準的な機能です：
+
+**バリデーションのタイミング戦略：**
+```java
+// 1. 即座バリデーション（キー入力毎）
+document.addDocumentListener(new DocumentListener() {
+    public void insertUpdate(DocumentEvent e) { validate(); }
+    public void removeUpdate(DocumentEvent e) { validate(); }
+    public void changedUpdate(DocumentEvent e) { validate(); }
+});
+
+// 2. 遅延バリデーション（入力停止後）
+Timer delayTimer = new Timer(500, e -> validate());
+delayTimer.setRepeats(false);
+```
+
+**バリデーションルールの階層：**
+1. **形式検証**：正規表現パターン
+2. **論理検証**：値の整合性チェック
+3. **ビジネス検証**：業務ルール適合
+4. **サーバー検証**：重複チェック等
+
+**視覚的フィードバックのベストプラクティス：**
+```java
+// 色による状態表示
+Color VALID = new Color(144, 238, 144);   // 淡い緑
+Color INVALID = new Color(255, 182, 193); // 淡い赤
+Color NORMAL = UIManager.getColor("TextField.background");
+
+// アイコンによる状態表示
+Icon CHECK = new ImageIcon("check.png");
+Icon CROSS = new ImageIcon("cross.png");
+Icon INFO = new ImageIcon("info.png");
+```
+
+**実際のアプリケーションでの例：**
+- **Gmail**：メールアドレスの即座検証
+- **GitHub**：ユーザー名の重複チェック
+- **Amazon**：クレジットカード番号検証
+- **銀行システム**：口座番号のチェックデジット
+
+**パスワード強度の評価基準：**
+- **長さ**：最低8文字以上
+- **文字種**：大文字、小文字、数字、特殊文字
+- **辞書攻撃耐性**：一般的な単語の検出
+- **エントロピー**：予測困難性の数値化
+
+**アクセシビリティの考慮：**
+- **スクリーンリーダー対応**：適切なラベル付け
+- **色覚多様性**：色以外の表示方法
+- **キーボードナビゲーション**：Tabキーでの移動
+- **エラーメッセージ**：明確で具体的な指示
+
+この演習では、ユーザー中心設計の実践とデータ品質向上の手法を学びます。
 
 **要求仕様：**
 - 複数の入力フィールド（名前、メール、電話番号、パスワード、確認パスワード）
@@ -171,6 +283,76 @@ Swingイベント処理機構の詳細についても学習します。イベン
 
 **問題説明：**
 多層メニューシステムと動的メニュー生成機能を持つアプリケーションを作成してください。
+
+**技術的背景：Actionパターンと統一的なUI操作**
+
+Actionパターンは、同じ機能を複数のUI要素から実行できるようにする設計パターンです：
+
+**Actionパターンの利点：**
+```java
+// 従来の方法：重複コード
+JMenuItem saveMenuItem = new JMenuItem("保存");
+saveMenuItem.addActionListener(e -> saveFile());
+JButton saveButton = new JButton("保存");
+saveButton.addActionListener(e -> saveFile());
+
+// Actionパターン：一元管理
+Action saveAction = new AbstractAction("保存") {
+    public void actionPerformed(ActionEvent e) {
+        saveFile();
+    }
+};
+saveAction.putValue(Action.ACCELERATOR_KEY, 
+    KeyStroke.getKeyStroke("ctrl S"));
+saveAction.putValue(Action.SMALL_ICON, saveIcon);
+
+// 複数のUI要素で共有
+new JMenuItem(saveAction);
+new JButton(saveAction);
+```
+
+**動的メニューの実装パターン：**
+- **MRU（Most Recently Used）**：最近使用ファイル
+- **プラグインメニュー**：動的追加/削除
+- **コンテキスト依存**：状態に応じた内容
+- **ロールベース**：権限に基づく表示
+
+**コンテキストメニューの実装：**
+```java
+// マウスイベントでの表示制御
+component.addMouseListener(new MouseAdapter() {
+    public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) showPopup(e);
+    }
+    public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) showPopup(e);
+    }
+    private void showPopup(MouseEvent e) {
+        // コンテキストに応じたメニュー構築
+        JPopupMenu popup = createContextMenu(e.getComponent());
+        popup.show(e.getComponent(), e.getX(), e.getY());
+    }
+});
+```
+
+**実際のアプリケーションでのメニュー設計：**
+- **Office製品**：リボンUI、コンテキストメニュー
+- **IDE**：高度にカスタマイズ可能なメニュー
+- **ブラウザ**：拡張機能によるメニュー追加
+- **ゲーム**：状態に応じたメニュー切替
+
+**メニューのアクセシビリティ：**
+- **ニーモニック**：Alt+Fでファイルメニュー
+- **アクセラレータ**：Ctrl+Sで保存
+- **ツールチップ**：機能説明の表示
+- **ステータス表示**：有効/無効の表現
+
+**パフォーマンス最適化：**
+- **遅延ロード**：メニュー表示時に構築
+- **キャッシュ**：頻繁に使うメニューの保持
+- **非同期更新**：バックグラウンドでの状態確認
+
+この演習では、プロフェッショナルなアプリケーションレベルのメニュー設計を学びます。
 
 **要求仕様：**
 - 階層的なメニュー構造（メニュー、サブメニュー、サブサブメニュー）

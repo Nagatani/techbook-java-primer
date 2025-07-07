@@ -38,6 +38,54 @@ Swingを使ったデスクトップGUIアプリケーションの基礎を習得
 
 四則演算ができる電卓GUIアプリケーションを作成してください。
 
+**技術的背景：GUIアプリケーション開発の基礎とSwing**
+
+GUIプログラミングは、コンソールプログラミングとは根本的に異なるパラダイムです：
+
+**イベント駆動プログラミングの特徴：**
+- **イベントループ**：ユーザー入力を待機し続ける
+- **非同期処理**：いつ何が起きるか予測不能
+- **コールバック**：イベント発生時の処理登録
+- **状態管理**：画面の現在状態を常に把握
+
+**Swingの特徴と選択理由：**
+```java
+// JavaFX vs Swing
+// Swing：成熟、安定、豊富なサードパーティライブラリ
+// JavaFX：モダン、CSS対応、JavaFX 11からOpenJFX化
+
+// 電卓の基本構造
+JFrame frame = new JFrame("Calculator");
+JTextField display = new JTextField();
+JPanel buttonPanel = new JPanel(new GridLayout(4, 4));
+```
+
+**MVC（Model-View-Controller）パターンの適用：**
+- **Model**：計算ロジック（四則演算、状態管理）
+- **View**：GUI部品（ボタン、ディスプレイ）
+- **Controller**：イベントハンドラ（ボタンクリック処理）
+
+**実際の電卓アプリケーションの設計考慮点：**
+- **数値精度**：BigDecimalによる正確な計算
+- **エラー処理**：ゼロ除算、オーバーフロー
+- **ユーザビリティ**：キーボード入力対応
+- **状態遷移**：数値入力→演算子→数値入力→計算
+
+**レイアウト管理の重要性：**
+```java
+// GridLayoutの利点：均等配置、自動リサイズ
+new GridLayout(rows, cols, hgap, vgap)
+// BorderLayoutの利点：領域分割、柔軟性
+new BorderLayout()
+```
+
+**実世界の電卓アプリケーション例：**
+- **Windows計算機**：標準/関数電卓モード切替
+- **macOS計算機**：ウィジェット対応
+- **Google計算機**：単位変換、グラフ表示
+
+この演習では、実用的なGUIアプリケーションの基礎を学びます。
+
 **要求仕様：**
 - 数字ボタン（0-9）と演算子ボタン（+、-、×、÷）
 - 結果表示用のJTextField
@@ -94,6 +142,53 @@ Swingを使ったデスクトップGUIアプリケーションの基礎を習得
 
 **問題説明：**
 基本的なテキストエディタGUIアプリケーションを作成してください。
+
+**技術的背景：メニューシステムとドキュメント中心アプリケーション**
+
+テキストエディタは、GUIアプリケーションの基本パターンを学ぶ最適な題材です：
+
+**メニューシステムの階層構造：**
+```java
+JMenuBar → JMenu → JMenuItem/JCheckBoxMenuItem/JRadioButtonMenuItem
+                 → JSeparator（区切り線）
+                 → JMenu（サブメニュー）
+```
+
+**アクセラレータとニーモニックの違い：**
+- **アクセラレータ**：Ctrl+S（どこからでも実行可能）
+- **ニーモニック**：Alt+F→S（メニュー経由）
+```java
+// アクセラレータ設定
+menuItem.setAccelerator(KeyStroke.getKeyStroke(
+    KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+// ニーモニック設定
+menu.setMnemonic(KeyEvent.VK_F);
+```
+
+**ドキュメントの状態管理：**
+- **変更フラグ**：DocumentListenerで検知
+- **ファイルパス**：現在編集中のファイル
+- **タイトルバー**："ファイル名 - アプリ名"形式
+- **未保存警告**：閉じる前の確認ダイアログ
+
+**実際のテキストエディタの機能階層：**
+1. **基本機能**：開く、保存、編集
+2. **標準機能**：検索・置換、印刷
+3. **高度な機能**：シンタックスハイライト、自動補完
+4. **統合機能**：プラグイン、マクロ
+
+**プロフェッショナルエディタの例：**
+- **Notepad++**：軽量、多機能、プラグイン対応
+- **VSCode**：Electron製、拡張機能豊富
+- **IntelliJ IDEA**：Swing製の大規模IDE
+
+**ファイルI/O統合の注意点：**
+- **文字エンコーディング**：UTF-8標準化
+- **改行コード**：OS間の違い（\r\n vs \n）
+- **大容量ファイル**：メモリ効率的な読み込み
+- **自動バックアップ**：定期保存機能
+
+この演習では、実用的なドキュメント編集アプリケーションの基礎を習得します。
 
 **要求仕様：**
 - JTextAreaによるテキスト編集エリア
@@ -154,6 +249,65 @@ Swingを使ったデスクトップGUIアプリケーションの基礎を習得
 
 異なるレイアウトマネージャーの動作を比較できるデモアプリケーションを作成してください。
 
+**技術的背景：レイアウトマネージャーの設計思想と適用場面**
+
+Javaのレイアウトマネージャーは、画面解像度の多様性に対応する革新的な仕組みです：
+
+**レイアウトマネージャーの必要性：**
+- **解像度独立**：640×480から4K、8Kまで対応
+- **動的リサイズ**：ウィンドウサイズ変更への追従
+- **国際化対応**：文字列長の違いへの適応
+- **プラットフォーム独立**：OS固有のUIガイドライン
+
+**各レイアウトマネージャーの設計思想：**
+```java
+// BorderLayout：領域分割型（ドッキング）
+// 用途：メインウィンドウ、ツールバー配置
+add(toolbar, BorderLayout.NORTH);
+add(content, BorderLayout.CENTER);
+add(status, BorderLayout.SOUTH);
+
+// GridBagLayout：制約ベース配置
+// 用途：複雑なフォーム、ダイアログ
+GridBagConstraints c = new GridBagConstraints();
+c.gridx = 0; c.gridy = 0;
+c.gridwidth = 2; c.fill = GridBagConstraints.HORIZONTAL;
+```
+
+**レイアウト選択の判断基準：**
+| レイアウト | 使用場面 | 特徴 |
+|------------|----------|------|
+| BorderLayout | メインウィンドウ | 5領域分割 |
+| FlowLayout | ボタン配置 | 流し込み |
+| GridLayout | 電卓、カレンダー | 均等グリッド |
+| BoxLayout | ツールバー | 一方向配置 |
+| CardLayout | ウィザード | 画面切替 |
+| GridBagLayout | 複雑なフォーム | 最も柔軟 |
+
+**実際のアプリケーションでの組み合わせ例：**
+```java
+// IntelliJ IDEAのような複雑なレイアウト
+BorderLayout（メイン）
+├── North: BoxLayout（ツールバー）
+├── Center: JSplitPane
+│   ├── Left: JTree（プロジェクト構造）
+│   └── Right: JTabbedPane（エディタ）
+└── South: GridBagLayout（ステータスバー）
+```
+
+**レスポンシブデザインの実現：**
+- **最小サイズ**：setMinimumSize()で崩れ防止
+- **優先サイズ**：setPreferredSize()で理想配置
+- **最大サイズ**：setMaximumSize()で拡大制限
+- **重み付け**：GridBagConstraints.weightx/y
+
+**モダンなレイアウト手法：**
+- **MigLayout**：制約ベースの外部ライブラリ
+- **JavaFX**：FXML、CSS対応
+- **Web技術**：Electronによるレスポンシブ設計
+
+この演習では、各レイアウトマネージャーの特性を実践的に理解します。
+
 **要求仕様：**
 - 複数のレイアウトマネージャーを試せるタブ画面
 - BorderLayout、FlowLayout、GridLayout、BoxLayout、CardLayout、GridBagLayoutのデモ
@@ -198,6 +352,67 @@ Swingを使ったデスクトップGUIアプリケーションの基礎を習得
 
 **問題説明：**
 色を選択・調整できるカラーピッカーアプリケーションを作成してください。
+
+**技術的背景：色空間の理解とリアルタイムUI更新**
+
+色の表現と操作は、グラフィックスプログラミングの基礎です：
+
+**色空間（Color Space）の種類と特徴：**
+```java
+// RGB：加法混色（ディスプレイ向け）
+Color.rgb(255, 128, 0)  // オレンジ色
+
+// HSB/HSV：直感的な色指定
+// H(Hue)：色相（0-360度）
+// S(Saturation)：彩度（0-100%）
+// B(Brightness)：明度（0-100%）
+Color.hsb(30, 100, 100)  // 鮮やかなオレンジ
+
+// CMYK：減法混色（印刷向け）
+// JavaではColorクラスでは直接サポートせず
+```
+
+**JSliderの高度な使い方：**
+```java
+// カスタム目盛り表示
+slider.setMajorTickSpacing(50);
+slider.setMinorTickSpacing(10);
+slider.setPaintTicks(true);
+slider.setPaintLabels(true);
+
+// リアルタイム更新
+slider.addChangeListener(e -> {
+    if (!slider.getValueIsAdjusting()) {
+        updateColor();  // ドラッグ終了時のみ
+    }
+});
+```
+
+**パフォーマンス最適化の考慮：**
+- **更新頻度**：ChangeListenerの呼び出し回数
+- **再描画**：repaint()の最適化
+- **スレッド**：EDTでの軽量処理
+- **バッファリング**：ダブルバッファリング
+
+**実際のカラーピッカーの実装例：**
+- **Photoshop**：HSB円盤、スポイトツール
+- **macOS**：システムカラーピッカー
+- **Web**：HTML5 input type="color"
+- **VS Code**：インラインカラーピッカー
+
+**高度な機能の実装アイデア：**
+- **カラーパレット**：よく使う色の保存
+- **カラーハーモニー**：補色、類似色の提案
+- **グラデーション**：2色間の補間
+- **透明度**：アルファチャンネル対応
+
+**アクセシビリティの考慮：**
+- **色覚異常対応**：色名表示、パターン併用
+- **キーボード操作**：矢印キーでの微調整
+- **数値入力**：直接RGB値入力
+- **コントラスト確認**：WCAG基準チェック
+
+この演習では、インタラクティブなUIコンポーネントの実装を学びます。
 
 **要求仕様：**
 - RGB値を個別に調整できるスライダー

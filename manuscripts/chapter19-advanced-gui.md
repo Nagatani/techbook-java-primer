@@ -16,6 +16,84 @@
 
 データの表示・編集・ソート・フィルタリングができる高機能テーブルを作成してください。
 
+**技術的背景：JTableのMVCアーキテクチャとエンタープライズアプリケーション**
+
+JTableは、Swingの中で最も複雑で強力なコンポーネントの一つです：
+
+**JTableのMVCアーキテクチャ：**
+```java
+// Model：データの管理
+TableModel model = new AbstractTableModel() {
+    public int getRowCount() { return data.size(); }
+    public int getColumnCount() { return columns.length; }
+    public Object getValueAt(int row, int col) { 
+        return data.get(row).get(col); 
+    }
+};
+
+// View：表示のカスタマイズ
+TableCellRenderer renderer = new DefaultTableCellRenderer() {
+    public Component getTableCellRendererComponent(...) {
+        // セルの外観をカスタマイズ
+    }
+};
+
+// Controller：イベント処理
+TableCellEditor editor = new DefaultCellEditor(textField);
+```
+
+**エンタープライズアプリケーションでの実例：**
+- **ERPシステム**：在庫管理、受注管理
+- **CRMシステム**：顧客情報管理
+- **金融システム**：取引履歴表示
+- **分析ツール**：データ集計表示
+
+**パフォーマンス最適化の技術：**
+```java
+// 仮想化（Virtual Scrolling）
+// 表示領域のみのデータをロード
+public Object getValueAt(int row, int col) {
+    if (!isDataLoaded(row)) {
+        loadDataAsync(row);  // 非同期読み込み
+        return "Loading...";
+    }
+    return cache.get(row, col);
+}
+```
+
+**ソートとフィルタリングの高度な実装：**
+- **複数列ソート**：RowSorterのチェーン
+- **カスタムフィルタ**：RowFilterの拡張
+- **リアルタイムフィルタ**：DocumentListener連携
+- **ファセット検索**：複数条件の組み合わせ
+
+**データ編集のベストプラクティス：**
+- **トランザクション**：一括確定/キャンセル
+- **検証**：セルエディタでの入力チェック
+- **アンドゥ/リドゥ**：編集履歴の管理
+- **ロック**：同時編集の制御
+
+**セルレンダラーの高度な活用：**
+```java
+// 条件付き書式
+if (value instanceof Number && ((Number)value).doubleValue() > 1000000) {
+    setBackground(Color.GREEN);  // 高額を緑色で強調
+}
+
+// プログレスバー表示
+JProgressBar progress = new JProgressBar(0, 100);
+progress.setValue((Integer)value);
+return progress;  // セルにプログレスバー表示
+```
+
+**実際のシステムでの課題と解決策：**
+- **大量データ**：ページング、遅延ロード
+- **メモリ管理**：WeakReferenceでキャッシュ
+- **レスポンシブネス**：SwingWorkerで非同期処理
+- **アクセシビリティ**：AccessibleTable実装
+
+この演習では、業務アプリケーションレベルのテーブル実装を学びます。
+
 **要求仕様：**
 - カスタムテーブルModelの実装
 - セルレンダラーとエディタのカスタマイズ
@@ -146,6 +224,86 @@
 
 **問題説明：**
 階層データを管理するツリーブラウザを作成し、ファイルシステムやXMLデータの表示を実装してください。
+
+**技術的背景：JTreeの柔軟性と階層データの可視化**
+
+JTreeは階層構造データの表現に最適なコンポーネントです：
+
+**TreeModelの設計パターン：**
+```java
+// 遅延読み込みパターン
+class LazyTreeNode extends DefaultMutableTreeNode {
+    private boolean loaded = false;
+    
+    public void loadChildren() {
+        if (!loaded) {
+            // 必要時に子ノードをロード
+            SwingUtilities.invokeLater(() -> {
+                List<Node> children = fetchChildren();
+                children.forEach(child -> 
+                    add(new LazyTreeNode(child)));
+                loaded = true;
+            });
+        }
+    }
+}
+```
+
+**実際のアプリケーションでの使用例：**
+- **ファイルエクスプローラ**：Windows Explorer、Finder
+- **IDEのプロジェクトビュー**：IntelliJ、Eclipse
+- **データベースブラウザ**：テーブル、スキーマ表示
+- **XML/JSONエディタ**：構造化データの編集
+
+**パフォーマンス最適化技術：**
+```java
+// 大量ノードへの対応
+tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+    public void treeWillExpand(TreeExpansionEvent e) {
+        TreePath path = e.getPath();
+        LazyTreeNode node = (LazyTreeNode)path.getLastPathComponent();
+        node.loadChildren();  // 展開時にロード
+    }
+});
+```
+
+**ドラッグ＆ドロップの実装：**
+- **TransferHandler**：データ転送の管理
+- **ドロップ位置の計算**：ノード間、ノード内
+- **視覚的フィードバック**：ドロップ可能位置の強調
+- **アンドゥ対応**：移動操作の取り消し
+
+**カスタムレンダラーの活用：**
+```java
+// アイコンと色分け
+class FileTreeCellRenderer extends DefaultTreeCellRenderer {
+    public Component getTreeCellRendererComponent(...) {
+        super.getTreeCellRendererComponent(...);
+        if (value instanceof FileNode) {
+            FileNode node = (FileNode)value;
+            setIcon(getIconForFile(node.getFile()));
+            if (node.isModified()) {
+                setForeground(Color.BLUE);
+            }
+        }
+        return this;
+    }
+}
+```
+
+**階層データの編集機能：**
+- **インプレース編集**：F2キーで名前変更
+- **コンテキストメニュー**：右クリック操作
+- **キーボードナビゲーション**：矢印キーでの移動
+- **マルチ選択**：Ctrl+クリック
+
+**実装上の課題と解決策：**
+- **循環参照**：WeakReferenceの活用
+- **更新通知**：TreeModelListenerの適切な実装
+- **展開状態の保存**：TreePathのシリアライズ
+- **検索機能**：深さ優先/幅優先探索
+
+この演習では、複雑な階層データの効率的な管理と表示技術を習得します。
 
 **要求仕様：**
 - カスタムTreeModelの実装
@@ -311,6 +469,76 @@ XMLデータブラウザ:
 
 **問題説明：**
 データモデルとGUIコンポーネントを自動同期するバインディングシステムを実装してください。
+
+**技術的背景：MVCパターンとリアクティブプログラミング**
+
+データバインディングは、モダンなGUIフレームワークの中核技術です：
+
+**双方向バインディングの仕組み：**
+```java
+// JavaBeansプロパティ変更通知
+public class Person {
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private String name;
+    
+    public void setName(String name) {
+        String oldName = this.name;
+        this.name = name;
+        pcs.firePropertyChange("name", oldName, name);
+    }
+    
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+    }
+}
+```
+
+**データバインディングの利点：**
+- **宣言的プログラミング**：何をするかを記述
+- **自動同期**：手動更新コードの削減
+- **保守性向上**：UIとロジックの分離
+- **テスタビリティ**：UIなしでモデルテスト可能
+
+**実際のフレームワークでの実装：**
+- **JavaFX**：Property APIとバインディング
+- **Angular**：双方向データバインディング
+- **React**：単方向データフロー+setState
+- **Vue.js**：リアクティブシステム
+
+**リアクティブプログラミングの概念：**
+```java
+// 計算プロパティの例
+class Invoice {
+    private DoubleProperty price = new SimpleDoubleProperty();
+    private DoubleProperty quantity = new SimpleDoubleProperty();
+    private DoubleBinding total;
+    
+    public Invoice() {
+        // 自動計算バインディング
+        total = price.multiply(quantity);
+    }
+}
+```
+
+**バインディングの種類：**
+1. **単純バインディング**：1対1のプロパティ接続
+2. **式バインディング**：計算式による結合
+3. **条件バインディング**：if-then-else的な結合
+4. **コレクションバインディング**：リスト同期
+
+**パフォーマンス最適化技術：**
+- **遅延評価**：必要時まで計算を遅延
+- **バッチ更新**：複数変更を一括処理
+- **弱参照**：メモリリーク防止
+- **変更通知の最適化**：不要な通知の抑制
+
+**実装上の注意点：**
+- **循環参照**：A→B→A の依存関係
+- **メモリリーク**：リスナーの削除忘れ
+- **スレッド安全性**：EDT外からの更新
+- **無限ループ**：相互更新の制御
+
+この演習では、プロダクションレベルのデータバインディングシステムを構築します。
 
 **要求仕様：**
 - PropertyChangeListenerによる双方向バインディング
