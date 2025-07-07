@@ -790,6 +790,43 @@ if (member instanceof Wizard wizard) {
 
 **目的:** 継承、オーバーライド、ポリモーフィズムを使って、異なる種類の従業員の給与計算を統一的に扱うプログラムを作成する。
 
+**技術的背景：給与計算システムにおける継承の実践的価値**
+
+企業の人事・給与システムは、継承とポリモーフィズムが最も効果的に活用される領域の一つです。実際の企業では、以下のような複雑な雇用形態が存在します：
+
+- **正社員**：基本給＋役職手当＋住宅手当＋家族手当
+- **契約社員**：時給ベース＋深夜手当＋休日手当
+- **パートタイマー**：時給ベース（最低賃金保証あり）
+- **管理職**：年俸制＋業績連動ボーナス
+- **営業職**：基本給＋インセンティブ（売上の〇％）
+
+**継承を使わない場合の問題点：**
+```java
+// 悪い例：型ごとの条件分岐が膨大に
+public double calculatePayroll(String employeeType, Map<String, Object> data) {
+    if (employeeType.equals("MANAGER")) {
+        double base = (Double) data.get("baseSalary");
+        double bonus = (Double) data.get("bonus");
+        return base + bonus;
+    } else if (employeeType.equals("ENGINEER")) {
+        double base = (Double) data.get("baseSalary");
+        int overtime = (Integer) data.get("overtimeHours");
+        return base + (overtime * 5000);
+    } else if (employeeType.equals("SALES")) {
+        // さらに複雑な計算...
+    }
+    // 新しい雇用形態が増えるたびにこのメソッドが肥大化
+}
+```
+
+**継承とポリモーフィズムによる解決：**
+- **拡張性**：新しい雇用形態の追加が容易（既存コードを変更せずに新クラスを追加）
+- **保守性**：各雇用形態の給与計算ロジックが独立して管理される
+- **法令対応**：労働基準法の改正時も、該当クラスのみ修正すればよい
+- **テスト容易性**：各クラスの計算ロジックを個別にユニットテスト可能
+
+この演習では、実際の給与システム開発で必要となる設計原則を、シンプルな例を通じて学習します。
+
 **手順:**
 
 この演習では、段階的にクラスを構築していきます。まず最初に、すべての従業員の基本となる`Employee`親クラスを作成します。`Employee.java`ファイルを作成し、従業員の名前を表す`name`（String型）と基本給を表す`baseSalary`（double型）の2つのフィールドを定義します。コンストラクタではこれらの値を初期化し、給与を計算する`calculateSalary()`メソッドでは基本給をそのまま返します。また、従業員情報を表示する`displayInfo()`メソッドでは、名前と計算後の給与を出力します。
