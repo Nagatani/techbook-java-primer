@@ -4,6 +4,98 @@
 
 本章で学ぶビルドと配布の技術は、開発した**総合演習プロジェクト「ToDoリストアプリケーション」** を、Java開発環境がない友人やほかのユーザーにも使ってもらうための最終ステップです。
 
+### 技術的背景：モダンなソフトウェア配布の課題と解決策
+
+**なぜ配布が複雑なのか：**
+
+現代のソフトウェア配布には多くの課題があります：
+
+1. **環境依存性の問題**
+   - Java Runtime Environment (JRE) のバージョン差異
+   - OS固有の実行形式（.exe, .app, .sh）
+   - システムライブラリの依存関係
+   - パス設定やレジストリの違い
+
+2. **ユーザビリティの課題**
+   - コマンドライン操作への抵抗感
+   - 複雑なインストール手順
+   - セキュリティ警告への対処
+   - アンインストールの困難さ
+
+3. **セキュリティ要件**
+   - コード署名の必要性
+   - ネットワーク経由の配布時の改ざん防止
+   - 権限昇格の最小化
+   - サンドボックス化の要求
+
+**JARからネイティブアプリへの進化：**
+
+```
+1990年代: クラスファイルの直接配布
+2000年代: JARファイル（java -jar app.jar）
+2010年代: Web Start, 自己完結型アプリ
+2020年代: jpackage, GraalVM native-image
+```
+
+**実践的な配布戦略：**
+
+1. **開発者向け配布**
+   ```bash
+   # Maven/Gradle経由
+   mvn install
+   gradle publishToMavenLocal
+   ```
+
+2. **エンドユーザー向け配布**
+   ```bash
+   # jpackageによるインストーラ作成
+   jpackage --input lib --name MyApp \
+     --main-jar myapp.jar --main-class com.example.Main \
+     --type msi  # Windows
+     --type dmg  # macOS
+     --type deb  # Ubuntu/Debian
+   ```
+
+3. **クラウド時代の配布**
+   ```dockerfile
+   # Dockerコンテナ化
+   FROM openjdk:17-slim
+   COPY target/myapp.jar /app.jar
+   ENTRYPOINT ["java", "-jar", "/app.jar"]
+   ```
+
+**実世界の配布例：**
+
+- **IntelliJ IDEA**: カスタムJREバンドル、自動更新機能
+- **Minecraft**: 独自ランチャー、マルチバージョン管理
+- **Jenkins**: WAR形式、組み込みサーバー付き
+- **ElasticSearch**: シェルスクリプトラッパー、サービス登録
+
+**配布の自動化とCI/CD：**
+
+```yaml
+# GitHub Actions による自動リリース
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build with jpackage
+        run: ./build-installer.sh
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+```
+
+この章では、これらの実践的な配布技術を段階的に学習します。
+
 - **実行可能JARファイルの作成**: アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめます。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できます。
 - **`jpackage`によるネイティブアプリケーション化**: さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成します。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がります。
 

@@ -7,6 +7,88 @@
 ### 演習の目標
 ユニットテストとテスト駆動開発の実践技術を習得します。
 
+### 技術的背景：ソフトウェアテストの重要性と現代的アプローチ
+
+**なぜテストが必要なのか：**
+
+ソフトウェア開発において、テストは単なる「バグ探し」以上の重要な役割を担っています：
+
+1. **早期バグ発見によるコスト削減**
+   - 開発段階でのバグ修正コスト: 1
+   - リリース後のバグ修正コスト: 100〜1000倍
+   - 有名な事例: アリアン5ロケットの爆発（整数オーバーフロー）
+
+2. **リファクタリングの安全網**
+   - 既存機能を壊していないことの保証
+   - 設計改善への心理的障壁の除去
+   - 継続的な品質向上の実現
+
+3. **生きたドキュメントとしての価値**
+   - テストコードが仕様書の役割
+   - 新メンバーの学習材料
+   - APIの使用例の提供
+
+**テスト駆動開発（TDD）の実践：**
+
+```java
+// Red: 失敗するテストを書く
+@Test
+void testCalculateTax() {
+    TaxCalculator calc = new TaxCalculator();
+    assertEquals(1100, calc.calculateWithTax(1000));
+}
+
+// Green: テストを通す最小限のコード
+public int calculateWithTax(int price) {
+    return (int)(price * 1.1);
+}
+
+// Refactor: コードを改善
+public int calculateWithTax(int price) {
+    return applyTaxRate(price, getTaxRate());
+}
+```
+
+**現代的なテスティング戦略：**
+
+1. **テストピラミッド**
+   ```
+   ／＼     E2Eテスト（少量）
+  ／  ＼    統合テスト（中量）
+ ／____＼   ユニットテスト（大量）
+   ```
+
+2. **継続的インテグレーション（CI）**
+   - コミット毎の自動テスト実行
+   - 品質ゲートの設定
+   - テストカバレッジの可視化
+
+3. **モックとスタブの使い分け**
+   - モック: 振る舞いの検証
+   - スタブ: 固定値の返却
+   - スパイ: 実装の一部を置き換え
+
+**実務でのテスト設計パターン：**
+
+```java
+// Given-When-Then パターン
+@Test
+void testBankTransfer() {
+    // Given: 事前条件の設定
+    Account sender = new Account(1000);
+    Account receiver = new Account(0);
+    
+    // When: 実行
+    transferService.transfer(sender, receiver, 300);
+    
+    // Then: 結果の検証
+    assertEquals(700, sender.getBalance());
+    assertEquals(300, receiver.getBalance());
+}
+```
+
+この演習では、これらの実践的なテスト技術を身につけます。
+
 ### 課題の場所
 演習課題は `exercises/chapter20/` ディレクトリに用意されています：
 

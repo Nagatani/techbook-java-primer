@@ -7,6 +7,117 @@
 ### 演習の目標
 ドキュメント作成と外部ライブラリの活用技術を習得します。
 
+### 技術的背景：現代的なJava開発エコシステム
+
+**ドキュメントの重要性：**
+
+優れたドキュメントは、ソフトウェア開発において以下の重要な役割を果たします：
+
+1. **開発効率の向上**
+   - APIの使用方法が明確
+   - 試行錯誤の時間削減
+   - チーム内の知識共有促進
+
+2. **保守性の向上**
+   - 将来の自分への説明
+   - 新メンバーのオンボーディング短縮
+   - 設計意図の記録
+
+3. **品質保証**
+   - 仕様の明文化
+   - 期待動作の明確化
+   - エッジケースの文書化
+
+**Javadocの実践的活用：**
+
+```java
+/**
+ * 銀行口座を表すクラス。
+ * 
+ * <p>このクラスはスレッドセーフではありません。
+ * 同期が必要な場合は{@link SynchronizedAccount}を使用してください。</p>
+ * 
+ * @author 田中太郎
+ * @version 1.0
+ * @since 2024-01-01
+ * @see SynchronizedAccount
+ */
+public class BankAccount {
+    /**
+     * 口座から指定金額を引き出します。
+     * 
+     * @param amount 引き出し金額（正の値）
+     * @return 引き出し後の残高
+     * @throws IllegalArgumentException 金額が0以下の場合
+     * @throws InsufficientFundsException 残高不足の場合
+     */
+    public double withdraw(double amount) 
+        throws InsufficientFundsException {
+        // 実装
+    }
+}
+```
+
+**外部ライブラリのエコシステム：**
+
+1. **Maven Central Repository**
+   - 40万以上のライブラリ
+   - 自動依存関係解決
+   - セキュリティ脆弱性チェック
+
+2. **主要ライブラリカテゴリ**
+   - **ロギング**: SLF4J, Logback
+   - **JSON処理**: Jackson, Gson
+   - **HTTPクライアント**: Apache HttpClient, OkHttp
+   - **テスト**: JUnit, Mockito, AssertJ
+   - **ユーティリティ**: Apache Commons, Guava
+
+3. **依存関係管理の課題**
+   ```
+   プロジェクト
+   └── LibraryA v1.0
+       └── LibraryB v2.0
+   └── LibraryC v1.0
+       └── LibraryB v3.0  ← バージョン競合！
+   ```
+
+**ビルドツールの活用：**
+
+Maven/Gradleは単なるビルドツール以上の価値を提供：
+
+```xml
+<!-- Maven POM.xml の例 -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version>
+    <scope>compile</scope>
+</dependency>
+```
+
+```gradle
+// Gradle build.gradle の例
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+}
+```
+
+**実務でのベストプラクティス：**
+
+1. **ライブラリ選定基準**
+   - ライセンス互換性の確認
+   - コミュニティの活発さ
+   - 最終更新日とメンテナンス状況
+   - ドキュメントの充実度
+
+2. **セキュリティ考慮事項**
+   - 定期的な依存関係更新
+   - 脆弱性スキャンの自動化
+   - ライセンスコンプライアンス
+
+この演習では、実際のプロジェクトで必要となるこれらの技術を実践的に学びます。
+
 ### 課題の場所
 演習課題は `exercises/chapter21/` ディレクトリに用意されています：
 

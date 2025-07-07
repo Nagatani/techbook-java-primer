@@ -319,7 +319,206 @@ public class Wizard extends Character {
 
 ### 継承の誤用例：よくある間違い
 
-継承を誤用すると、論理的に破綻したコードになってしまいます。有名な例として「正方形と長方形」の問題を見てみましょう。
+継承を誤用すると、論理的に破綻したコードになってしまいます。実際の開発現場でよく見られる誤用パターンをいくつか見てみましょう。
+
+#### 誤用例1：スタックがArrayListを継承
+
+```java
+// 悪い例：実装の詳細を継承してしまう
+public class MyStack<E> extends ArrayList<E> {
+    public void push(E item) {
+        add(item);
+    }
+    
+    public E pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return remove(size() - 1);
+    }
+    
+    public E peek() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return get(size() - 1);
+    }
+}
+
+// 問題点が露呈する使用例
+public class StackProblem {
+    public static void main(String[] args) {
+        MyStack<String> stack = new MyStack<>();
+        stack.push("first");
+        stack.push("second");
+        stack.push("third");
+        
+        // ArrayListのメソッドが露出してしまう
+        stack.add(1, "WRONG!"); // スタックの途中に要素を挿入できてしまう
+        stack.remove(0); // スタックの底から要素を削除できてしまう
+        stack.clear(); // スタック全体をクリアできてしまう
+        
+        // スタックの約束（LIFO）が破られる
+    }
+}
+```
+
+**解決策：コンポジションを使用**
+
+```java
+// 良い例：内部実装を隠蔽
+public class MyStack<E> {
+    private final ArrayList<E> elements = new ArrayList<>(); // privateで隠蔽
+    
+    public void push(E item) {
+        elements.add(item);
+    }
+    
+    public E pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return elements.remove(elements.size() - 1);
+    }
+    
+    public E peek() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return elements.get(elements.size() - 1);
+    }
+    
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
+    
+    public int size() {
+        return elements.size();
+    }
+    // ArrayListの他のメソッドは公開されない
+}
+```
+
+#### 誤用例2：鳥の階層での問題
+
+```java
+// 悪い例：すべての鳥が飛べるという誤った前提
+public class Bird {
+    protected String name;
+    
+    public Bird(String name) {
+        this.name = name;
+    }
+    
+    public void fly() {
+        System.out.println(name + " が飛んでいる");
+    }
+}
+
+public class Eagle extends Bird {
+    public Eagle(String name) {
+        super(name);
+    }
+    // flyメソッドを適切に継承
+}
+
+public class Penguin extends Bird {
+    public Penguin(String name) {
+        super(name);
+    }
+    
+    @Override
+    public void fly() {
+        // ペンギンは飛べない！
+        throw new UnsupportedOperationException("ペンギンは飛べません");
+    }
+}
+
+// 使用時の問題
+public class BirdPark {
+    public static void makeBirdsFly(List<Bird> birds) {
+        for (Bird bird : birds) {
+            bird.fly(); // ペンギンで例外が発生！
+        }
+    }
+}
+```
+
+**解決策：インターフェースによる能力の分離**
+
+```java
+// 良い例：能力をインターフェースで表現
+public abstract class Bird {
+    protected String name;
+    
+    public Bird(String name) {
+        this.name = name;
+    }
+    
+    public abstract void move();
+}
+
+// 飛行能力を表すインターフェース
+interface Flyable {
+    void fly();
+}
+
+// 泳ぐ能力を表すインターフェース
+interface Swimmable {
+    void swim();
+}
+
+public class Eagle extends Bird implements Flyable {
+    public Eagle(String name) {
+        super(name);
+    }
+    
+    @Override
+    public void move() {
+        System.out.println(name + " が歩いている");
+    }
+    
+    @Override
+    public void fly() {
+        System.out.println(name + " が大空を飛んでいる");
+    }
+}
+
+public class Penguin extends Bird implements Swimmable {
+    public Penguin(String name) {
+        super(name);
+    }
+    
+    @Override
+    public void move() {
+        System.out.println(name + " がよちよち歩いている");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println(name + " が泳いでいる");
+    }
+}
+
+// 安全な使用例
+public class BirdPark {
+    public static void makeFlyableBirdsFly(List<Flyable> flyables) {
+        for (Flyable bird : flyables) {
+            bird.fly(); // 飛べる鳥だけが対象
+        }
+    }
+    
+    public static void makeSwimmableBirdsSwim(List<Swimmable> swimmers) {
+        for (Swimmable bird : swimmers) {
+            bird.swim(); // 泳げる鳥だけが対象
+        }
+    }
+}
+```
+
+#### 誤用例3：正方形と長方形の問題
+
+有名な例として「正方形と長方形」の問題も見てみましょう。
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -416,6 +615,136 @@ public class Square implements Shape {
     @Override
     public int getArea() {
         return size * size;
+    }
+}
+```
+
+### その他の継承の誤用パターン
+
+継承の誤用は「正方形と長方形」以外にも多くのパターンがあります。以下によくある間違いを示します。
+
+#### 誤用例1：実装の都合だけで継承を使う
+
+```java
+// 悪い例：Stackを継承したMyStack
+public class MyStack<E> extends ArrayList<E> {
+    public void push(E item) {
+        add(item);
+    }
+    
+    public E pop() {
+        return remove(size() - 1);
+    }
+    
+    public E peek() {
+        return get(size() - 1);
+    }
+}
+
+// 問題：ArrayListのすべてのメソッドが公開されてしまう
+MyStack<String> stack = new MyStack<>();
+stack.push("A");
+stack.push("B");
+stack.add(0, "C");  // スタックの途中に挿入できてしまう！
+stack.remove(1);    // スタックの途中から削除できてしまう！
+```
+
+**改善策：コンポジション（委譲）を使う**
+
+```java
+// 良い例：ArrayListを内部で使用
+public class MyStack<E> {
+    private ArrayList<E> list = new ArrayList<>();
+    
+    public void push(E item) {
+        list.add(item);
+    }
+    
+    public E pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return list.remove(list.size() - 1);
+    }
+    
+    public E peek() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return list.get(list.size() - 1);
+    }
+    
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+    
+    public int size() {
+        return list.size();
+    }
+}
+```
+
+#### 誤用例2：多重継承の代替として無理な継承
+
+```java
+// 悪い例：「飛べる鳥」と「泳げる鳥」を無理に継承で表現
+public class Bird {
+    public void eat() { /* ... */ }
+    public void sleep() { /* ... */ }
+}
+
+public class FlyingBird extends Bird {
+    public void fly() { /* ... */ }
+}
+
+public class SwimmingBird extends Bird {
+    public void swim() { /* ... */ }
+}
+
+// 問題：ペンギンは飛べないが泳げる、鴨は飛べて泳げる
+// どちらを継承すればよい？
+```
+
+**改善策：インターフェースで能力を表現**
+
+```java
+// 良い例：インターフェースで能力を分離
+public interface Flyable {
+    void fly();
+}
+
+public interface Swimmable {
+    void swim();
+}
+
+public class Bird {
+    public void eat() { /* ... */ }
+    public void sleep() { /* ... */ }
+}
+
+public class Duck extends Bird implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("鴨が飛んでいる");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("鴨が泳いでいる");
+    }
+}
+
+public class Penguin extends Bird implements Swimmable {
+    @Override
+    public void swim() {
+        System.out.println("ペンギンが高速で泳いでいる");
+    }
+}
+
+public class Eagle extends Bird implements Flyable {
+    @Override
+    public void fly() {
+        System.out.println("鷲が高く飛んでいる");
     }
 }
 ```
@@ -715,6 +1044,204 @@ abstract class Character {
 3. **保守性**: 処理の追加・変更が容易
 4. **再利用性**: 汎用的なメソッドが書きやすい
 5. **型安全性**: コンパイル時に型チェックが行われる
+
+### ポリモーフィズムの実践例：図形描画システム
+
+より実践的な例として、図形描画システムを考えてみましょう。
+
+**Before：ポリモーフィズムを使わない場合**
+
+```java
+// 図形の種類を列挙型で管理
+enum ShapeType {
+    CIRCLE, RECTANGLE, TRIANGLE
+}
+
+// すべての図形データを1つのクラスで管理（悪い設計）
+class ShapeData {
+    ShapeType type;
+    // 円の属性
+    double radius;
+    // 長方形の属性
+    double width, height;
+    // 三角形の属性
+    double base, triangleHeight;
+    
+    double calculateArea() {
+        switch (type) {
+            case CIRCLE:
+                return Math.PI * radius * radius;
+            case RECTANGLE:
+                return width * height;
+            case TRIANGLE:
+                return 0.5 * base * triangleHeight;
+            default:
+                return 0;
+        }
+    }
+    
+    void draw() {
+        switch (type) {
+            case CIRCLE:
+                System.out.println("円を描画：半径 = " + radius);
+                break;
+            case RECTANGLE:
+                System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
+                break;
+            case TRIANGLE:
+                System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + triangleHeight);
+                break;
+        }
+    }
+}
+
+// 使用例
+public class DrawingAppBefore {
+    public static void main(String[] args) {
+        ShapeData[] shapes = new ShapeData[3];
+        
+        // 円を作成
+        shapes[0] = new ShapeData();
+        shapes[0].type = ShapeType.CIRCLE;
+        shapes[0].radius = 5.0;
+        
+        // 長方形を作成
+        shapes[1] = new ShapeData();
+        shapes[1].type = ShapeType.RECTANGLE;
+        shapes[1].width = 10.0;
+        shapes[1].height = 20.0;
+        
+        // 三角形を作成
+        shapes[2] = new ShapeData();
+        shapes[2].type = ShapeType.TRIANGLE;
+        shapes[2].base = 15.0;
+        shapes[2].triangleHeight = 8.0;
+        
+        // すべての図形を描画
+        for (ShapeData shape : shapes) {
+            shape.draw();
+            System.out.println("面積: " + shape.calculateArea());
+        }
+    }
+}
+```
+
+**After：ポリモーフィズムを使った場合**
+
+```java
+// 抽象基底クラス
+abstract class Shape {
+    abstract double calculateArea();
+    abstract void draw();
+}
+
+// 円クラス
+class Circle extends Shape {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("円を描画：半径 = " + radius);
+    }
+}
+
+// 長方形クラス
+class Rectangle extends Shape {
+    private double width;
+    private double height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    double calculateArea() {
+        return width * height;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
+    }
+}
+
+// 三角形クラス
+class Triangle extends Shape {
+    private double base;
+    private double height;
+    
+    public Triangle(double base, double height) {
+        this.base = base;
+        this.height = height;
+    }
+    
+    @Override
+    double calculateArea() {
+        return 0.5 * base * height;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + height);
+    }
+}
+
+// 使用例
+public class DrawingAppAfter {
+    public static void main(String[] args) {
+        Shape[] shapes = {
+            new Circle(5.0),
+            new Rectangle(10.0, 20.0),
+            new Triangle(15.0, 8.0)
+        };
+        
+        // すべての図形を描画（型を意識しない）
+        for (Shape shape : shapes) {
+            shape.draw();
+            System.out.println("面積: " + shape.calculateArea());
+        }
+        
+        // 新しい図形（五角形）を追加しても、このコードは変更不要
+    }
+}
+
+// 新しい図形の追加が容易
+class Pentagon extends Shape {
+    private double side;
+    
+    public Pentagon(double side) {
+        this.side = side;
+    }
+    
+    @Override
+    double calculateArea() {
+        return 0.25 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5))) * side * side;
+    }
+    
+    @Override
+    void draw() {
+        System.out.println("五角形を描画：一辺 = " + side);
+    }
+}
+```
+
+**ポリモーフィズムがもたらす設計上の利点**
+
+1. **Open/Closed原則の実現**: 拡張に対して開いており、修正に対して閉じている
+2. **単一責任原則**: 各図形クラスは自身の描画と面積計算のみに責任を持つ
+3. **依存関係逆転の原則**: 高レベルのコードが低レベルの詳細に依存しない
+4. **テストの容易性**: 各図形クラスを独立してテスト可能
+5. **並列開発**: 複数の開発者が異なる図形クラスを同時に開発可能
 
 ## 5.4 `instanceof`演算子とキャスト
 
