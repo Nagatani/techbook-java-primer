@@ -1,0 +1,21 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "application.*"
+      },
+      {
+        "pattern": "META-INF/spring.*"
+      },
+      {
+        "pattern": "db/migration/.*"
+      },
+      {
+        "pattern": "static/.*"
+      },
+      {
+        "pattern": "templates/.*"
+      }
+    ]
+  }
+}

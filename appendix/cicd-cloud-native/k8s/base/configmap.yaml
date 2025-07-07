@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: cicd-app
+data:
+  application.yaml: |
+    server:
+      port: 8080
+    logging:
+      level:
+        root: INFO
+        com.example: DEBUG
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics,prometheus
+      metrics:
+        export:
+          prometheus:
+            enabled: true

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: cicd-cloud-native-app
+description: A Helm chart for CI/CD Cloud Native Application
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - java
+  - spring-boot
+  - microservice
+home: https://github.com/myorg/cicd-cloud-native-app
+sources:
+  - https://github.com/myorg/cicd-cloud-native-app
+maintainers:
+  - name: DevOps Team
+    email: devops@example.com
