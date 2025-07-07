@@ -8,11 +8,74 @@
 **前提知識**: 第9章「ジェネリクス」の内容、基本的なJavaの型システム  
 **関連章**: 第9章、第1章（JVMとバイトコード）
 
+## なぜ型消去を理解する必要があるのか
+
+### 実際に遭遇する問題とその原因
+
+**問題1: 実行時型情報の喪失によるバグ**
+```java
+// 以下のコードが期待通りに動作しない理由
+public class GenericService<T> {
+    public void process(List<T> items) {
+        if (items instanceof List<String>) { // コンパイルエラー
+            // String固有の処理
+        }
+    }
+}
+```
+**原因**: 型消去により実行時にはList<String>とList<Integer>が区別できない
+**影響**: 型による動的な処理分岐ができない
+
+**問題2: 配列作成の制限**
+```java
+// なぜジェネリック配列が作れないのか
+public class GenericArray<T> {
+    private T[] array = new T[10]; // コンパイルエラー
+    
+    // 回避策が複雑になる
+    @SuppressWarnings("unchecked")
+    private T[] array = (T[]) new Object[10]; // 型安全性を失う
+}
+```
+**影響**: 型安全なジェネリック配列の実装が困難
+
+**問題3: メソッドオーバーロードの制限**
+```java
+public class ProcessingService {
+    // 以下2つのメソッドは共存できない
+    public void process(List<String> strings) { }
+    public void process(List<Integer> integers) { } // コンパイルエラー
+}
+```
+**原因**: 型消去後は同じシグネチャ process(List) になる
+
+### ビジネスへの実際の影響
+
+**フレームワーク開発での課題:**
+- **Jackson JSON**: @JsonTypeInfoなどの回避策が必要
+- **Spring Framework**: @Autowiredでの型解決問題
+- **Hibernate**: エンティティマッピングの複雑化
+
+**実際の障害事例:**
+- **レガシーコードとの混在**: 型安全性の喪失によるClassCastException
+- **リフレクション処理**: 実行時型情報不足による処理失敗
+- **API設計の制約**: 型パラメータの表現力不足
+
 ---
 
 ## 型消去の基本概念
 
-### なぜ型消去が必要だったのか
+### なぜ型消去が採用されたのか - 歴史的背景
+
+**Java 5のジレンマ:**
+1. **型安全性の向上**: ジェネリクスによるコンパイル時チェック
+2. **後方互換性**: 既存のコードを破壊しない
+3. **JVM変更の回避**: バイトコードレベルでの互換性維持
+
+**型消去という妥協案:**
+- コンパイル時のみ型情報を保持
+- バイトコードでは従来通りObject型を使用
+- 既存のJVMで新しいジェネリクスコードが動作
 
 ```java
 // Java 5以前のコード（ジェネリクスなし）

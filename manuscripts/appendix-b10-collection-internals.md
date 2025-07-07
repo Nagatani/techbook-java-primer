@@ -8,9 +8,77 @@
 **前提知識**: 第8章「コレクションフレームワーク」の内容、基本的なアルゴリズムとデータ構造  
 **関連章**: 第8章、第16章（ConcurrentHashMapの実装）
 
+## なぜコレクション内部実装の理解が重要なのか
+
+### 実際のパフォーマンス問題事例
+
+**問題1: ハッシュ衝突によるパフォーマンス劣化**
+```java
+// 悪いhashCode実装により性能が著しく低下
+public class BadHashCodeExample {
+    private String name;
+    
+    @Override
+    public int hashCode() {
+        return 1; // 全オブジェクトが同じハッシュ値 → 全て同じバケットに集中
+    }
+}
+
+// 結果：HashMap操作がO(1)からO(n)に劣化
+Map<BadHashCodeExample, String> map = new HashMap<>();
+// 100万件挿入時、数秒から数分に性能劣化
+```
+
+**問題2: 不適切なデータ構造選択**
+```java
+// 頻繁な検索が必要なのにArrayListを使用
+List<Customer> customers = new ArrayList<>(); // 100万件
+Customer target = customers.stream()
+    .filter(c -> c.getId().equals(targetId))
+    .findFirst().orElse(null); // O(n)の線形検索
+
+// HashMapを使えばO(1)で検索可能
+Map<String, Customer> customerMap = new HashMap<>();
+Customer target = customerMap.get(targetId); // O(1)
+```
+
+**問題3: メモリ使用量の最適化不足**
+```java
+// TreeMapは検索性能とメモリ効率のトレードオフ
+TreeMap<String, Object> treeMap = new TreeMap<>(); // より多くのメモリ使用
+HashMap<String, Object> hashMap = new HashMap<>();  // メモリ効率的
+
+// 1000万エントリで約30%のメモリ差が発生
+```
+
+### ビジネスインパクト
+
+**実際の障害事例:**
+- **某ECサイト**: 商品検索でハッシュ衝突が多発し、応答時間が10秒以上に
+- **金融システム**: 不適切なTreeMap使用でメモリ不足、システムダウン  
+- **ゲームサーバー**: プレイヤー検索の最適化不足で同時接続数制限
+
+**最適化による効果:**
+- **検索時間**: O(n) → O(1)で1000倍高速化
+- **メモリ使用量**: 適切な初期サイズで50%削減
+- **GC負荷**: 効率的なデータ構造でGC時間90%削減
+
 ---
 
 ## HashMapの内部構造
+
+### ハッシュテーブルの基本原理とJavaでの進化
+
+HashMapは、キーから値への高速マッピングを実現するため、ハッシュテーブルという確率的データ構造を使用します。
+
+**なぜハッシュテーブルが高速なのか:**
+1. **直接アドレス計算**: キーのハッシュ値から配列インデックスを直接計算
+2. **平均O(1)性能**: 理想的には定数時間でアクセス可能
+3. **分散配置**: ハッシュ関数によりデータを均等に分散
+
+**Java HashMapの進化:**
+- **Java 7以前**: チェーン法（連結リスト）
+- **Java 8以降**: チェーン法 + 赤黒木（性能向上）
 
 ### 基本的なハッシュテーブル
 

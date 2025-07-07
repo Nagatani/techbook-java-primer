@@ -8,13 +8,88 @@
 **前提知識**: 第10章「Stream APIと高度なコレクション操作」の内容、基本的な並行処理の知識  
 **関連章**: 第10章、第16章（マルチスレッドプログラミング）
 
+## なぜStream APIの内部実装を理解する必要があるのか
+
+### 実際の性能問題とその解決
+
+現代のアプリケーションでは、大量データ処理が日常的に発生します：
+
+**問題1: 大量データ処理でのパフォーマンス不足**
+```java
+// 1000万件の顧客データから高価値顧客を抽出する処理
+List<Customer> customers = loadCustomers(); // 1000万件
+List<Customer> highValueCustomers = customers.stream()
+    .filter(c -> c.getTotalPurchase() > 100000)
+    .filter(c -> c.isActive())
+    .sorted(Comparator.comparing(Customer::getTotalPurchase).reversed())
+    .collect(Collectors.toList());
+```
+
+**問題**: この処理が数十秒かかり、ユーザー体験を損なう
+**解決**: 並列ストリームと内部最適化の理解により10倍高速化可能
+
+**問題2: メモリ不足によるOutOfMemoryError**
+```java
+// ログファイル解析で全データをメモリに展開してしまう
+List<LogEntry> allLogs = Files.lines(Paths.get("huge-log.txt"))
+    .map(LogParser::parse)
+    .collect(Collectors.toList()); // メモリ枯渇の原因
+```
+
+**解決**: Stream APIの遅延評価を活用してメモリ効率的な処理を実現
+
+**問題3: 不適切な並列化によるパフォーマンス劣化**
+```java
+// 小さなデータセットで並列ストリームを使用
+List<String> smallList = Arrays.asList("A", "B", "C", "D", "E");
+String result = smallList.parallelStream()  // オーバーヘッドで逆に遅くなる
+    .map(String::toLowerCase)
+    .collect(Collectors.joining());
+```
+
+### ビジネスへの影響
+
+- **Eコマースサイト**: 商品検索の高速化により売上向上
+- **金融システム**: リスク分析の処理時間短縮
+- **データ分析**: 大量ログ解析の効率化
+- **リアルタイム処理**: ストリーミングデータの低遅延処理
+
 ---
 
 ## Spliteratorの仕組み
 
-### Spliteratorとは
+### Spliteratorとは何か、なぜ重要なのか
 
 Spliterator（分割可能イテレータ）は、Stream APIの心臓部です。従来のIteratorと異なり、要素を並列処理のために分割する能力を持っています。
+
+**従来のIteratorの限界:**
+```java
+// 順次処理のみ可能
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    process(iterator.next()); // 1つずつしか処理できない
+}
+```
+
+**Spliteratorによる並列化の実現:**
+```java
+// 自動的に分割され、複数スレッドで並列処理
+list.parallelStream()
+    .forEach(this::process); // 内部でSpliteratorが分割を管理
+```
+
+### なぜ分割が重要なのか
+
+**1. CPUリソースの最大活用**
+- 現代のマルチコアCPUを効率的に使用
+- 8コアCPUなら理論上8倍の高速化が可能
+
+**2. メモリ局所性の向上**
+- データを適切なサイズに分割することでキャッシュ効率が向上
+- L1/L2キャッシュに収まるサイズで処理
+
+**3. 負荷バランシング**
+- Work Stealingアルゴリズムにより、空いているスレッドが作業を分担
 
 ```java
 public interface Spliterator<T> {

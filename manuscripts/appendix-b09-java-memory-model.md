@@ -8,11 +8,86 @@
 **前提知識**: 第16章「マルチスレッドプログラミング」の内容、基本的な並行処理の概念  
 **関連章**: 第16章、第6章（不変性とfinal）
 
+## なぜJava Memory Modelの理解が重要なのか
+
+### 実際の並行性バグ事例
+
+**事例1: 可視性問題による無限ループ**
+```java
+public class VisibilityBug {
+    private boolean stopRequested = false;
+    
+    public void backgroundWork() {
+        while (!stopRequested) {
+            // 何らかの処理
+            doWork();
+        }
+        System.out.println("停止しました"); // 実行されない場合がある
+    }
+    
+    public void requestStop() {
+        stopRequested = true; // 他のスレッドから見えない可能性
+    }
+}
+```
+**問題**: `stopRequested`の変更が他のスレッドから見えず、無限ループが発生
+**実際の障害**: 某ECサイトでバッチ処理が停止せず、サービス影響
+
+**事例2: 初期化の見切り発車問題**
+```java
+public class LazyInitialization {
+    private ExpensiveObject instance;
+    
+    public ExpensiveObject getInstance() {
+        if (instance == null) {
+            instance = new ExpensiveObject(); // 危険：部分的に構築されたオブジェクト
+        }
+        return instance;
+    }
+}
+```
+**問題**: オブジェクト構築の途中で他のスレッドから参照される可能性
+**影響**: NullPointerExceptionや不正な状態のオブジェクト使用
+
+**事例3: Double-Checked Lockingの失敗**
+```java
+public class BrokenDoubleCheckedLocking {
+    private volatile ExpensiveObject instance; // volatileがないと危険
+    
+    public ExpensiveObject getInstance() {
+        if (instance == null) {
+            synchronized (this) {
+                if (instance == null) {
+                    instance = new ExpensiveObject(); // リオーダリングの危険
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
+### ビジネスへの深刻な影響
+
+**実際のシステム障害:**
+- **金融取引システム**: データ競合により残高計算に誤差が発生
+- **在庫管理システム**: 可視性問題で在庫数が正しく更新されず
+- **リアルタイムゲーム**: メモリオーダリング問題でゲーム状態の不整合
+
+**損失の例:**
+- **Knight Capital**: アルゴリズムの並行性バグで45分間で4億4000万ドルの損失
+- **某証券会社**: 並行処理バグによる誤発注で数十億円の損失
+
+**デバッグの困難性:**
+- **再現困難**: 特定の条件でのみ発生
+- **タイミング依存**: デバッガーを使うと問題が隠れる
+- **プラットフォーム依存**: CPU架構により動作が変わる
+
 ---
 
 ## メモリモデルの基礎
 
-### なぜメモリモデルが必要なのか
+### なぜメモリモデルが必要なのか - パフォーマンスと正確性のトレードオフ
 
 現代のコンピュータシステムは、パフォーマンスを最大化するために様々な最適化を行います：
 

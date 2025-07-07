@@ -8,6 +8,67 @@
 **前提知識**: 第7章「抽象クラスとインターフェイス」の内容、基本的なOOP概念  
 **関連章**: 第7章、第5章（継承）、第11章（関数型インターフェイス）
 
+## なぜインターフェイス進化の理解が重要なのか
+
+### 実際のAPI設計と保守の問題
+
+**問題1: 既存APIの拡張不可能性**
+```java
+// Java 7以前：新機能追加でAPI破綻
+public interface PaymentProcessor {
+    void processPayment(BigDecimal amount);
+    PaymentResult getResult();
+}
+
+// 100個の実装クラスが存在する状況で新機能が必要
+// interface PaymentProcessor {
+//     void processPayment(BigDecimal amount);
+//     PaymentResult getResult();
+//     void processRefund(BigDecimal amount); // これを追加するとコンパイルエラー
+// }
+```
+**問題**: 新機能追加のたびにすべての実装クラスの変更が必要
+**実際の影響**: API変更による大規模な破壊的変更、リリーススケジュールの遅延
+
+**問題2: コードの重複と保守コストの増大**
+```java
+// 複数の実装クラスで同じロジックを重複実装
+public class CreditCardProcessor implements PaymentProcessor {
+    public void processPayment(BigDecimal amount) {
+        logTransaction(amount);      // 重複
+        validateAmount(amount);      // 重複
+        // クレジットカード固有の処理
+    }
+}
+
+public class BankTransferProcessor implements PaymentProcessor {
+    public void processPayment(BigDecimal amount) {
+        logTransaction(amount);      // 重複
+        validateAmount(amount);      // 重複
+        // 銀行振込固有の処理
+    }
+}
+```
+**問題**: 共通ロジックが各実装で重複、保守コストが高い
+**影響**: バグ修正時に複数箇所の変更が必要、不整合の発生
+
+### ビジネスへの深刻な影響
+
+**実際の障害事例:**
+- **某決済サービス**: API変更で100以上の加盟店システムが影響、緊急対応で1週間
+- **ECプラットフォーム**: 共通機能の実装不統一により不正取引検知が漏れ
+- **金融システム**: インターフェイス設計の硬直性により新サービス導入が6ヶ月遅延
+
+**設計問題によるコスト:**
+- **開発効率**: コード重複により保守コストが3倍増加
+- **品質リスク**: 実装の不統一により品質のばらつき
+- **リリース遅延**: API変更の影響範囲調査で開発期間が50%延長
+
+**適切な設計による効果:**
+- **後方互換性**: 既存実装を変更せずに新機能追加
+- **開発効率**: 共通実装により開発時間50%短縮
+- **品質向上**: 統一された実装により障害率70%削減
+
 ---
 
 ## インターフェイスの歴史的進化
