@@ -72,31 +72,25 @@ Enum状態パターンの導入により、様々な面で具体的な改善が�
 
 ### 基本的な状態機械
 
-```java
-// 注文処理の状態機械
-public enum OrderState {
-    PENDING {
-        @Override
-        public OrderState cancel() {
-            return CANCELLED;
-        }
-        
-        @Override
-        public OrderState confirm() {
-            return CONFIRMED;
-        }
-        
-        @Override
-        public boolean canModify() {
-            return true;
-        }
-    },
-    
-    CONFIRMED {
-        @Override
-        public OrderState ship() {
-            return SHIPPED;
-        }
+**Enumによる型安全な状態遷移管理**
+
+Enumを活用した状態機械パターンは、複雑な業務ルールを型安全かつ保守しやすい形で実装するための強力な手法です：
+
+**状態機械設計の基本原則**：
+- 各状態をEnumの値として定義
+- 抽象メソッドによる状態固有の動作定義
+- IllegalStateExceptionによる不正遷移の防止
+
+**実装における技術的利点**：
+- **型安全性**: コンパイル時に状態遷移の正当性を検証
+- **一元管理**: 全ての状態遷移ルールを単一箇所に集約
+- **保守性**: 新状態追加時の影響範囲を明確化
+- **テスト性**: 状態ごとの単体テストが容易
+
+**ビジネスルールの明確化**：
+- canModify()のような状態固有の可能性判定
+- 業務フローと実装の一致による理解容易性
+- ステートパターンの自然な表現
         
         @Override
         public OrderState cancel() {

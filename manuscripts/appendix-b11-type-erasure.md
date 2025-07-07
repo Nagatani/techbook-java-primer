@@ -13,40 +13,31 @@
 ### 実際に遭遇する問題とその原因
 
 **問題1: 実行時型情報の喪失によるバグ**
-```java
-// 以下のコードが期待通りに動作しない理由
-public class GenericService<T> {
-    public void process(List<T> items) {
-        if (items instanceof List<String>) { // コンパイルエラー
-            // String固有の処理
-        }
-    }
-}
-```
-**原因**: 型消去により実行時にはList<String>とList<Integer>が区別できない
+
+**技術的問題**:
+- 型消去により実行時型情報が失われる
+- List<String>とList<Integer>が実行時に区別不可
+- instanceof演算子での型チェックが制限される
+
+**原因**: JVMレベルでのジェネリクス非対応による設計制約
 **影響**: 型による動的な処理分岐ができない
 
 **問題2: 配列作成の制限**
-```java
-// なぜジェネリック配列が作れないのか
-public class GenericArray<T> {
-    private T[] array = new T[10]; // コンパイルエラー
-    
-    // 回避策が複雑になる
-    @SuppressWarnings("unchecked")
-    private T[] array = (T[]) new Object[10]; // 型安全性を失う
-}
-```
+
+**技術的問題**:
+- ジェネリック型の配列作成が不可能
+- 型安全性を保持した配列実装の困難性
+- 回避策における型安全性の喪失
+
 **影響**: 型安全なジェネリック配列の実装が困難
 
 **問題3: メソッドオーバーロードの制限**
-```java
-public class ProcessingService {
-    // 以下2つのメソッドは共存できない
-    public void process(List<String> strings) { }
-    public void process(List<Integer> integers) { } // コンパイルエラー
-}
-```
+
+**技術的問題**:
+- 型消去後の同一シグネチャによる競合
+- コンパイル時と実行時の型情報の差異
+- オーバーロード解決の制限
+
 **原因**: 型消去後は同じシグネチャ process(List) になる
 
 ### ビジネスへの実際の影響

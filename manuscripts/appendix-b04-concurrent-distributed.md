@@ -72,32 +72,27 @@ public class Inventory {
 
 ### アクターモデルの概要
 
-オブジェクト指向の考え方は、並行処理にも応用されています。アクターモデルは、並行処理の複雑性を管理するための優れたアプローチです：
+**並行処理アーキテクチャの革新的アプローチ**
 
-```java
-// 従来のスレッドベース並行処理（危険）
-public class BankAccount {
-    private double balance;
-    
-    public void transfer(BankAccount to, double amount) {
-        synchronized(this) {  // デッドロックの危険
-            synchronized(to) {
-                this.balance -= amount;
-                to.balance += amount;
-            }
-        }
-    }
-}
+アクターモデルは、従来のスレッドベース並行処理の問題を根本的に解決する設計パラダイムです：
 
-// アクターモデルによる並行処理（安全）
-public class AccountActor extends AbstractActor {
-    private double balance = 0;
-    
-    @Override
-    public Receive createReceive() {
-        return receiveBuilder()
-            .match(Deposit.class, msg -> {
-                balance += msg.amount;
+**従来のスレッドベース並行処理の課題**：
+- 共有状態によるデッドロック発生
+- 複雑なロック機構による保守困難性
+- 競合状態（Race Condition）による予期しない動作
+- デバッグとテストの極端な困難性
+
+**アクターモデルの技術的特徴**：
+- **メッセージパッシング**: 共有状態を排除した通信方式
+- **カプセル化**: 各アクターが独立した状態と処理を保持
+- **非同期処理**: ノンブロッキングなメッセージ交換
+- **障害分離**: 一つのアクター障害が他に波及しない設計
+
+**実装における利点**：
+- **デッドロック回避**: メッセージベース通信によるロック不要
+- **スケーラビリティ**: 分散環境での自然な拡張
+- **保守性**: 各アクターの独立性による変更容易性
+- **テスト性**: メッセージ入出力による明確なテスト境界
                 sender().tell(new DepositResult(balance), self());
             })
             .match(Transfer.class, msg -> {

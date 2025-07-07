@@ -226,53 +226,641 @@ public class Character implements Drawable, Serializable {
 *   迷ったら、まずは**インターフェイス**で考える。インターフェイスの方が柔軟性が高い。
 *   子クラス間で共通のコードやフィールドをどうしても共有したい場合に、**抽象クラス**を検討する。
 
-## 7.5 `default`メソッドと`static`メソッド
+## 7.5 Java 8以降のインターフェイス進化
 
-Java 8から、インターフェイスに実装を持つメソッド（`default`メソッドと`static`メソッド）を追加できるようになり、より柔軟性が増しました。
+Java 8以降、インターフェイスは劇的に進化し、より柔軟で強力な設計が可能になりました。この進化により、既存のAPIを破壊することなく新機能を追加でき、コードの重複を減らし、より優れた設計パターンを実現できるようになりました。
 
-### `default`メソッド
+### インターフェイスの歴史的進化
 
-`default`メソッドは、インターフェイス内に**デフォルトの実装**を持つことができるメソッドです。
-このメソッドの主な目的は、**既存のインターフェイスに新しいメソッドを追加しつつ、すでにある実装クラスがコンパイルエラーになるのを防ぐ**ことです。
+#### Java 7まで：純粋な契約
 
 ```java
-public interface Loggable {
-    void log(String message);
+// 従来のインターフェイス（Java 7まで）
+public interface OldStyleInterface {
+    // 定数のみ（暗黙的にpublic static final）
+    int CONSTANT = 42;
+    
+    // 抽象メソッドのみ（暗黙的にpublic abstract）
+    void abstractMethod();
+    String anotherMethod(int param);
+}
+```
 
-    // defaultメソッド
-    default void logError(String errorMessage) {
-        System.err.println("【ERROR】" + errorMessage);
+#### Java 8：defaultメソッドとstaticメソッドの導入
+
+```java
+// Java 8でのインターフェイス拡張
+public interface ModernInterface {
+    // 従来の抽象メソッド
+    void abstractMethod();
+    
+    // defaultメソッド：実装を持つ
+    default void defaultMethod() {
+        System.out.println("デフォルト実装");
+    }
+    
+    // staticメソッド：ユーティリティ機能
+    static void staticUtilityMethod() {
+        System.out.println("静的ユーティリティ");
+    }
+}
+```
+
+#### Java 9：privateメソッドの追加
+
+```java
+// Java 9でのさらなる拡張
+public interface CompleteInterface {
+    // publicメソッド
+    default void publicMethod() {
+        privateMethod();
+        privateStaticMethod();
+    }
+    
+    // privateメソッド：内部実装の共有
+    private void privateMethod() {
+        System.out.println("内部実装の詳細");
+    }
+    
+    // private staticメソッド
+    private static void privateStaticMethod() {
+        System.out.println("静的な内部処理");
+    }
+}
+```
+
+### defaultメソッドの設計思想
+
+#### 後方互換性の維持
+
+defaultメソッドの最も重要な目的は、**既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れない**ことです。
+
+```java
+// 既存のインターフェイス（多くの実装クラスが存在）
+public interface Collection<E> {
+    int size();
+    boolean isEmpty();
+    // ... 他の既存メソッド
+    
+    // Java 8で追加されたdefaultメソッド
+    default Stream<E> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+    
+    default Stream<E> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
     }
 }
 
-public class MyLogger implements Loggable {
+// 既存の実装クラスは変更不要
+class MyCollection<E> implements Collection<E> {
+    // streamメソッドを実装しなくても、defaultが使われる
+}
+```
+
+#### テンプレートメソッドパターンの実現
+
+```java
+// インターフェイスでテンプレートメソッドパターン
+public interface DataProcessor {
+    // テンプレートメソッド
+    default void process() {
+        var data = loadData();
+        var validated = validate(data);
+        if (validated) {
+            var processed = transform(data);
+            save(processed);
+            onSuccess();
+        } else {
+            onError("Validation failed");
+        }
+    }
+    
+    // 抽象メソッド（サブクラスで実装）
+    Object loadData();
+    boolean validate(Object data);
+    Object transform(Object data);
+    void save(Object data);
+    
+    // フックメソッド（オプション）
+    default void onSuccess() {
+        System.out.println("Processing completed successfully");
+    }
+    
+    default void onError(String message) {
+        System.err.println("Error: " + message);
+    }
+}
+```
+
+### 多重継承問題の解決
+
+#### ダイヤモンド問題
+
+複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します。
+
+```java
+// ダイヤモンド継承の例
+interface A {
+    default void method() {
+        System.out.println("A");
+    }
+}
+
+interface B extends A {
     @Override
-    public void log(String message) {
-        System.out.println(message);
+    default void method() {
+        System.out.println("B");
     }
-    // logErrorは実装しなくても、デフォルト実装が使われる
+}
+
+interface C extends A {
+    @Override
+    default void method() {
+        System.out.println("C");
+    }
+}
+
+// ダイヤモンド問題：BとCの両方を継承
+class D implements B, C {
+    // コンパイルエラー：どちらのmethod()を使うか不明
+    
+    // 解決策：明示的にオーバーライド
+    @Override
+    public void method() {
+        // 特定のインターフェイスのメソッドを呼び出す
+        B.super.method();  // Bのdefaultメソッドを使用
+        // または
+        // C.super.method();  // Cのdefaultメソッドを使用
+        // または独自実装
+    }
 }
 ```
 
-### `static`メソッド
+#### 継承の優先順位規則
 
-インターフェイスに`static`メソッドを定義することもできます。これは、そのインターフェイスに関連するユーティリティメソッドなどを提供するのに便利です。
+Javaは以下の規則で優先順位を決定します：
+
+1. **クラスが常に優先**: 実装クラスまたは親クラスのメソッドが優先
+2. **より具体的なインターフェイスが優先**: サブインターフェイスのメソッドが優先
+3. **それでも不明な場合はコンパイルエラー**: 明示的なオーバーライドが必要
 
 ```java
-public interface Calculable {
-    int calculate(int x);
-
-    // staticメソッド
-    static int triple(int num) {
-        return num * 3;
+// 規則1：クラスが常に優先
+class BaseClass {
+    public void method() {
+        System.out.println("BaseClass");
     }
 }
 
-// 呼び出し方
-int result = Calculable.triple(5); // 15
+interface BaseInterface {
+    default void method() {
+        System.out.println("BaseInterface");
+    }
+}
+
+class Derived extends BaseClass implements BaseInterface {
+    // BaseClassのmethod()が自動的に使われる（インターフェイスより優先）
+}
+
+// 規則2：より具体的なインターフェイスが優先
+interface Parent {
+    default void method() {
+        System.out.println("Parent");
+    }
+}
+
+interface Child extends Parent {
+    @Override
+    default void method() {
+        System.out.println("Child");
+    }
+}
+
+class Implementation implements Parent, Child {
+    // Childのmethod()が自動的に使われる（より具体的）
+}
 ```
 
-## 7.6 章末演習
+### staticメソッドの活用
+
+インターフェイスのstaticメソッドは、そのインターフェイスに関連するユーティリティ機能を提供します。
+
+```java
+public interface JsonSerializable {
+    String toJson();
+    
+    // ファクトリメソッド
+    static <T extends JsonSerializable> String serializeList(List<T> items) {
+        return items.stream()
+            .map(JsonSerializable::toJson)
+            .collect(Collectors.joining(",", "[", "]"));
+    }
+    
+    // ユーティリティメソッド
+    static String escapeJson(String input) {
+        return input.replace("\"", "\\\"")
+                   .replace("\n", "\\n")
+                   .replace("\r", "\\r");
+    }
+}
+
+// 使用例
+List<User> users = List.of(new User("Alice"), new User("Bob"));
+String json = JsonSerializable.serializeList(users);
+```
+
+### 実践的な活用例：防御的プログラミング
+
+```java
+interface DefensiveInterface {
+    List<String> getItems();
+    
+    // 防御的なdefaultメソッド
+    default List<String> getSafeItems() {
+        List<String> items = getItems();
+        return items != null ? new ArrayList<>(items) : Collections.emptyList();
+    }
+    
+    default Optional<String> getFirstItem() {
+        List<String> items = getSafeItems();
+        return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
+    }
+    
+    default Stream<String> streamItems() {
+        return getSafeItems().stream();
+    }
+    
+    // バリデーション付きメソッド
+    default boolean addItem(String item) {
+        if (item == null || item.trim().isEmpty()) {
+            return false;
+        }
+        getItems().add(item);
+        return true;
+    }
+}
+```
+
+## 7.6 高度な設計パターン
+
+インターフェイスの進化により、より洗練された設計パターンを実装できるようになりました。ここでは実践的な設計パターンとその実装例を紹介します。
+
+### Mixinパターン
+
+**Mixin**は、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
+
+```java
+// 複数の機能を提供するMixin
+interface Timestamped {
+    long getTimestamp();
+    
+    default boolean isExpired(long expirationTime) {
+        return System.currentTimeMillis() - getTimestamp() > expirationTime;
+    }
+    
+    default Duration getAge() {
+        return Duration.ofMillis(System.currentTimeMillis() - getTimestamp());
+    }
+}
+
+interface Identifiable {
+    String getId();
+    
+    default String getFullIdentifier() {
+        return getClass().getSimpleName() + "#" + getId();
+    }
+}
+
+interface Versioned {
+    int getVersion();
+    
+    default boolean isNewerThan(Versioned other) {
+        return this.getVersion() > other.getVersion();
+    }
+    
+    default boolean isOlderThan(Versioned other) {
+        return this.getVersion() < other.getVersion();
+    }
+}
+
+// 複数のMixinを組み合わせ
+class Document implements Timestamped, Identifiable, Versioned {
+    private final String id;
+    private final long timestamp;
+    private int version;
+    private String content;
+    
+    public Document(String id, String content) {
+        this.id = id;
+        this.timestamp = System.currentTimeMillis();
+        this.version = 1;
+        this.content = content;
+    }
+    
+    @Override
+    public String getId() { return id; }
+    
+    @Override
+    public long getTimestamp() { return timestamp; }
+    
+    @Override
+    public int getVersion() { return version; }
+    
+    public void update(String newContent) {
+        this.content = newContent;
+        this.version++;
+        
+        // デフォルトメソッドを活用
+        if (isExpired(3600000)) {  // 1時間
+            System.out.println("Document " + getFullIdentifier() + " has expired");
+        }
+    }
+}
+```
+
+### トレイトパターン
+
+**トレイト**は、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
+
+```java
+// 比較可能オブジェクトのトレイト
+interface ComparableTrait<T> extends Comparable<T> {
+    
+    default boolean isLessThan(T other) {
+        return compareTo(other) < 0;
+    }
+    
+    default boolean isGreaterThan(T other) {
+        return compareTo(other) > 0;
+    }
+    
+    default boolean isEqualTo(T other) {
+        return compareTo(other) == 0;
+    }
+    
+    default boolean isBetween(T lower, T upper) {
+        return isGreaterThan(lower) && isLessThan(upper);
+    }
+    
+    default T max(T other) {
+        return isGreaterThan(other) ? (T) this : other;
+    }
+    
+    default T min(T other) {
+        return isLessThan(other) ? (T) this : other;
+    }
+}
+
+// 使用例
+class Temperature implements ComparableTrait<Temperature> {
+    private final double celsius;
+    
+    public Temperature(double celsius) {
+        this.celsius = celsius;
+    }
+    
+    @Override
+    public int compareTo(Temperature other) {
+        return Double.compare(this.celsius, other.celsius);
+    }
+    
+    public void checkRange() {
+        Temperature freezing = new Temperature(0);
+        Temperature boiling = new Temperature(100);
+        
+        if (this.isBetween(freezing, boiling)) {
+            System.out.println("水は液体状態です");
+        }
+    }
+}
+```
+
+### インターフェイス分離原則（ISP）の実践
+
+**インターフェイス分離原則**は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
+
+```java
+// 悪い例：肥大化したインターフェイス
+interface BadUserService {
+    void createUser(User user);
+    void deleteUser(String id);
+    void updateUser(User user);
+    User findUser(String id);
+    List<User> findAllUsers();
+    void sendEmail(String userId, String message);
+    void generateReport(String userId);
+    void backupUserData(String userId);
+}
+
+// 良い例：責務ごとに分離されたインターフェイス
+interface UserRepository {
+    void save(User user);
+    void delete(String id);
+    User findById(String id);
+    List<User> findAll();
+}
+
+interface UserNotificationService {
+    void sendEmail(String userId, String message);
+    
+    default void sendWelcomeEmail(String userId) {
+        sendEmail(userId, "ようこそ！サービスへの登録ありがとうございます。");
+    }
+    
+    default void sendPasswordResetEmail(String userId, String resetLink) {
+        sendEmail(userId, "パスワードリセット: " + resetLink);
+    }
+}
+
+interface UserReportService {
+    void generateReport(String userId);
+    
+    default void generateMonthlyReport(String userId) {
+        System.out.println("月次レポートを生成中: " + userId);
+        generateReport(userId);
+    }
+    
+    default void generateYearlyReport(String userId) {
+        System.out.println("年次レポートを生成中: " + userId);
+        generateReport(userId);
+    }
+}
+
+// 必要な機能だけを実装
+class BasicUserService implements UserRepository, UserNotificationService {
+    private Map<String, User> users = new HashMap<>();
+    
+    @Override
+    public void save(User user) {
+        users.put(user.getId(), user);
+        sendWelcomeEmail(user.getId());  // defaultメソッドを活用
+    }
+    
+    @Override
+    public void delete(String id) {
+        users.remove(id);
+    }
+    
+    @Override
+    public User findById(String id) {
+        return users.get(id);
+    }
+    
+    @Override
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
+    }
+    
+    @Override
+    public void sendEmail(String userId, String message) {
+        System.out.println("メール送信 to " + userId + ": " + message);
+    }
+}
+```
+
+### 関数型インターフェイスとの統合
+
+defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
+
+```java
+@FunctionalInterface
+interface EnhancedFunction<T, R> extends Function<T, R> {
+    
+    // Function<T, R>のapplyメソッドは抽象メソッド
+    
+    // 条件付き適用
+    default Function<T, R> when(Predicate<T> condition, R defaultValue) {
+        return t -> condition.test(t) ? this.apply(t) : defaultValue;
+    }
+    
+    // リトライ機能
+    default Function<T, R> withRetry(int maxAttempts) {
+        return t -> {
+            Exception lastException = null;
+            for (int i = 0; i < maxAttempts; i++) {
+                try {
+                    return this.apply(t);
+                } catch (Exception e) {
+                    lastException = e;
+                    try {
+                        Thread.sleep(100 * (i + 1));  // 指数バックオフ
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
+            throw new RuntimeException("Failed after " + maxAttempts + " attempts", lastException);
+        };
+    }
+    
+    // メモ化（結果のキャッシュ）
+    default Function<T, R> memoized() {
+        Map<T, R> cache = new ConcurrentHashMap<>();
+        return t -> cache.computeIfAbsent(t, this::apply);
+    }
+    
+    // 実行時間計測
+    default Function<T, R> timed(Consumer<Long> timeConsumer) {
+        return t -> {
+            long start = System.nanoTime();
+            try {
+                return this.apply(t);
+            } finally {
+                timeConsumer.accept(System.nanoTime() - start);
+            }
+        };
+    }
+}
+
+// 使用例
+public class FunctionEnhancementDemo {
+    public static void main(String[] args) {
+        // 高価な計算を行う関数
+        EnhancedFunction<Integer, Double> expensiveComputation = n -> {
+            System.out.println("計算中: " + n);
+            return Math.sqrt(n) * Math.PI;
+        };
+        
+        // 機能を組み合わせて使用
+        Function<Integer, Double> optimizedFunction = expensiveComputation
+            .when(n -> n > 0, -1.0)  // 正の数のみ計算
+            .memoized()              // 結果をキャッシュ
+            .timed(time -> System.out.println("実行時間: " + time + "ns"));
+        
+        // 同じ値で複数回呼び出し
+        System.out.println(optimizedFunction.apply(16));  // 計算実行
+        System.out.println(optimizedFunction.apply(16));  // キャッシュから取得
+        System.out.println(optimizedFunction.apply(-5));  // デフォルト値を返す
+    }
+}
+```
+
+### バージョニング戦略
+
+APIの進化を管理するための戦略的なアプローチです。
+
+```java
+// API進化の管理
+interface ServiceV1 {
+    String process(String input);
+}
+
+interface ServiceV2 extends ServiceV1 {
+    // 新機能をdefaultメソッドで追加（後方互換性維持）
+    default String processWithOptions(String input, Map<String, String> options) {
+        // デフォルトではオプションを無視して従来の処理
+        return process(input);
+    }
+    
+    // 型安全な設定オプション
+    default String processWithConfig(String input, ServiceConfig config) {
+        Map<String, String> options = new HashMap<>();
+        options.put("timeout", String.valueOf(config.getTimeout()));
+        options.put("retries", String.valueOf(config.getRetries()));
+        return processWithOptions(input, options);
+    }
+}
+
+interface ServiceV3 extends ServiceV2 {
+    // さらなる拡張：非同期処理
+    default CompletableFuture<String> processAsync(String input) {
+        return CompletableFuture.supplyAsync(() -> process(input));
+    }
+    
+    // バッチ処理のサポート
+    default List<String> processBatch(List<String> inputs) {
+        return inputs.stream()
+            .map(this::process)
+            .collect(Collectors.toList());
+    }
+    
+    // 非推奨メソッドの管理
+    @Deprecated(since = "3.0", forRemoval = true)
+    default String oldProcess(String input) {
+        System.err.println("警告: oldProcessは非推奨です。processを使用してください。");
+        return process(input);
+    }
+}
+
+// 実装クラスは最小限の変更で新バージョンに対応
+class ServiceImpl implements ServiceV3 {
+    @Override
+    public String process(String input) {
+        return "Processed: " + input.toUpperCase();
+    }
+    
+    // オプションで新機能をオーバーライド
+    @Override
+    public String processWithOptions(String input, Map<String, String> options) {
+        String timeout = options.getOrDefault("timeout", "1000");
+        return "Processed with timeout " + timeout + ": " + input.toUpperCase();
+    }
+}
+```
+
+## 7.7 章末演習
 
 本章で学んだ抽象クラスとインターフェイスの概念を実践的に活用する演習課題に取り組みましょう。
 
@@ -846,19 +1434,6 @@ exercises/chapter07/
 
 ---
 
-## より深い理解のために
-
-本章で学んだインターフェイスの基本概念をさらに深く理解したい方は、付録B.12「Java 8以降のインターフェイス進化と設計パターン」を参照してください。この付録では以下の高度なトピックを扱います：
-
-- **インターフェイスの歴史的進化**: Java 7からJava 9への機能拡張
-- **defaultメソッドの設計思想**: 後方互換性とテンプレートメソッドパターン
-- **多重継承問題の解決**: ダイヤモンド問題と優先順位規則
-- **高度な設計パターン**: Mixinパターン、トレイトパターン、ISPの実践
-- **関数型インターフェイスとの統合**: defaultメソッドによる関数合成
-
-これらの知識は、モダンなJavaアプリケーションの設計において重要な役割を果たします。
-
----
 
 ## 完了確認チェックリスト
 

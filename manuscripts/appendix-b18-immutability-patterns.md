@@ -77,467 +77,124 @@ items.clear();  // 注文内容が予期せず削除される
 
 ### 完全な不変性の実現
 
-```java
-// 不変クラスの完全な実装
-public final class ImmutablePerson {
-    private final String name;
-    private final LocalDate birthDate;
-    private final List<String> nicknames;
-    private final Map<String, String> attributes;
-    
-    // コンストラクタでのディープコピー
-    public ImmutablePerson(String name, LocalDate birthDate, 
-                          List<String> nicknames, Map<String, String> attributes) {
-        this.name = Objects.requireNonNull(name, "name cannot be null");
-        this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null");
-        
-        // 防御的コピー
-        this.nicknames = nicknames == null 
-            ? List.of() 
-            : List.copyOf(nicknames);
-        
-        this.attributes = attributes == null 
-            ? Map.of() 
-            : Map.copyOf(attributes);
-    }
-    
-    // ゲッターでも防御的コピー（必要な場合）
-    public List<String> getNicknames() {
-        return nicknames; // Java 9+ のList.copyOf()は既に不変
-    }
-    
-    public Map<String, String> getAttributes() {
-        return attributes; // Java 9+ のMap.copyOf()は既に不変
-    }
-    
-    // withメソッドパターン
-    public ImmutablePerson withName(String newName) {
-        return new ImmutablePerson(newName, birthDate, nicknames, attributes);
-    }
-    
-    public ImmutablePerson withNickname(String nickname) {
-        List<String> newNicknames = new ArrayList<>(nicknames);
-        newNicknames.add(nickname);
-        return new ImmutablePerson(name, birthDate, newNicknames, attributes);
-    }
-    
-    public ImmutablePerson withAttribute(String key, String value) {
-        Map<String, String> newAttributes = new HashMap<>(attributes);
-        newAttributes.put(key, value);
-        return new ImmutablePerson(name, birthDate, nicknames, newAttributes);
-    }
-    
-    // equals, hashCode, toString の実装
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ImmutablePerson)) return false;
-        ImmutablePerson other = (ImmutablePerson) obj;
-        return Objects.equals(name, other.name) &&
-               Objects.equals(birthDate, other.birthDate) &&
-               Objects.equals(nicknames, other.nicknames) &&
-               Objects.equals(attributes, other.attributes);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, birthDate, nicknames, attributes);
-    }
-}
+**不変オブジェクトの設計戦略**
+
+完全な不変性の実現には、以下の技術的要素が重要です：
+
+**防御的コピーの重要性**：
+- コンストラクタでの引数値の深いコピー
+- ゲッターメソッドでの内部状態保護
+- 参照型フィールドの不変コレクション化
+
+**withメソッドパターンの効果**：
+- オブジェクトの部分的更新による新インスタンス生成
+- 元オブジェクトの不変性維持
+- Builder パターンとの組み合わせによる柔軟性向上
+
+**equals/hashCode実装のベストプラクティス**：
+- 不変フィールドに基づく一貫したハッシュ値計算
+- コレクション参照の適切な比較処理
+- null値への適切な対応
 ```
 
 ### ビルダーパターンとの組み合わせ
 
-```java
-public final class ImmutableOrder {
-    private final String orderId;
-    private final LocalDateTime orderDate;
-    private final List<OrderItem> items;
-    private final BigDecimal totalAmount;
-    private final OrderStatus status;
-    
-    private ImmutableOrder(Builder builder) {
-        this.orderId = builder.orderId;
-        this.orderDate = builder.orderDate;
-        this.items = List.copyOf(builder.items);
-        this.totalAmount = builder.totalAmount;
-        this.status = builder.status;
-    }
-    
-    public static Builder builder() {
-        return new Builder();
-    }
-    
-    // 既存のオブジェクトからビルダーを作成
-    public Builder toBuilder() {
-        return new Builder()
-            .orderId(orderId)
-            .orderDate(orderDate)
-            .items(new ArrayList<>(items))
-            .totalAmount(totalAmount)
-            .status(status);
-    }
-    
-    public static class Builder {
-        private String orderId;
-        private LocalDateTime orderDate;
-        private List<OrderItem> items = new ArrayList<>();
-        private BigDecimal totalAmount = BigDecimal.ZERO;
-        private OrderStatus status = OrderStatus.PENDING;
-        
-        public Builder orderId(String orderId) {
-            this.orderId = orderId;
-            return this;
-        }
-        
-        public Builder orderDate(LocalDateTime orderDate) {
-            this.orderDate = orderDate;
-            return this;
-        }
-        
-        public Builder items(List<OrderItem> items) {
-            this.items = new ArrayList<>(items);
-            return this;
-        }
-        
-        public Builder addItem(OrderItem item) {
-            this.items.add(item);
-            this.totalAmount = totalAmount.add(item.getPrice());
-            return this;
-        }
-        
-        public Builder totalAmount(BigDecimal totalAmount) {
-            this.totalAmount = totalAmount;
-            return this;
-        }
-        
-        public Builder status(OrderStatus status) {
-            this.status = status;
-            return this;
-        }
-        
-        public ImmutableOrder build() {
-            // バリデーション
-            Objects.requireNonNull(orderId, "orderId is required");
-            Objects.requireNonNull(orderDate, "orderDate is required");
-            if (items.isEmpty()) {
-                throw new IllegalStateException("Order must have at least one item");
-            }
-            
-            return new ImmutableOrder(this);
-        }
-    }
-}
+**複雑オブジェクト構築のための設計パターン**
+
+ビルダーパターンと不変性の組み合わせにより、以下の利点が得られます：
+
+**段階的オブジェクト構築**：
+- 必須フィールドと任意フィールドの明確な分離
+- メソッドチェーンによる可読性の高い構築プロセス
+- ビルド時バリデーションによる不正状態の防止
+
+**toBuilderパターンの活用**：
+- 既存オブジェクトからの部分的変更
+- イミュータブルオブジェクトの効率的な更新
+- ビルダー状態の再利用による性能向上
+
+**型安全性の確保**：
+- コンパイル時の必須フィールドチェック
+- 不正な状態遷移の防止
+- ジェネリクスによる型安全なビルダー実装
 ```
 
 ---
 
 ## Copy-on-Writeパターン
 
-### 基本的なCopy-on-Write実装
+### 読み取り最適化のためのコピー戦略
 
-```java
-public class CopyOnWriteMap<K, V> {
-    private volatile Map<K, V> map = new HashMap<>();
-    
-    public V get(K key) {
-        return map.get(key);  // 読み込みは高速
-    }
-    
-    public synchronized V put(K key, V value) {
-        Map<K, V> newMap = new HashMap<>(map);  // コピー作成
-        V oldValue = newMap.put(key, value);
-        map = newMap;  // 参照の原子的な置き換え
-        return oldValue;
-    }
-    
-    public synchronized V remove(K key) {
-        Map<K, V> newMap = new HashMap<>(map);
-        V oldValue = newMap.remove(key);
-        map = newMap;
-        return oldValue;
-    }
-    
-    public Map<K, V> snapshot() {
-        return new HashMap<>(map);  // 現在の状態のスナップショット
-    }
-}
-```
+**Copy-on-Write パターンの技術的特徴**
 
-### 効率的なCopy-on-Write with 構造共有
+Copy-on-Writeパターンは、読み取り頻度が高く、変更頻度が低いデータ構造に最適化された設計手法です：
 
-```java
-// Persistent Data Structure（構造共有）の実装例
-public class PersistentList<T> {
-    private static class Node<T> {
-        final T value;
-        final Node<T> next;
-        
-        Node(T value, Node<T> next) {
-            this.value = value;
-            this.next = next;
-        }
-    }
-    
-    private final Node<T> head;
-    private final int size;
-    
-    private PersistentList(Node<T> head, int size) {
-        this.head = head;
-        this.size = size;
-    }
-    
-    public static <T> PersistentList<T> empty() {
-        return new PersistentList<>(null, 0);
-    }
-    
-    // O(1) で新しい要素を追加（構造を共有）
-    public PersistentList<T> prepend(T value) {
-        return new PersistentList<>(new Node<>(value, head), size + 1);
-    }
-    
-    // O(1) で先頭要素を取得
-    public Optional<T> head() {
-        return head == null ? Optional.empty() : Optional.of(head.value);
-    }
-    
-    // O(1) で残りのリストを取得（構造を共有）
-    public PersistentList<T> tail() {
-        if (head == null) {
-            throw new IllegalStateException("Empty list has no tail");
-        }
-        return new PersistentList<>(head.next, size - 1);
-    }
-    
-    public boolean isEmpty() {
-        return head == null;
-    }
-    
-    public int size() {
-        return size;
-    }
-    
-    // イテレータ実装
-    public Stream<T> stream() {
-        return StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(
-                new Iterator<T>() {
-                    private Node<T> current = head;
-                    
-                    @Override
-                    public boolean hasNext() {
-                        return current != null;
-                    }
-                    
-                    @Override
-                    public T next() {
-                        if (!hasNext()) {
-                            throw new NoSuchElementException();
-                        }
-                        T value = current.value;
-                        current = current.next;
-                        return value;
-                    }
-                },
-                Spliterator.ORDERED | Spliterator.IMMUTABLE
-            ),
-            false
-        );
-    }
-}
-```
+**実装における技術的考慮点**：
+- volatile キーワードによる適切なメモリ可視性確保
+- synchronized による変更操作の排他制御
+- 原子的参照更新による一貫性の保証
+
+**パフォーマンス特性**：
+- 読み取り操作：ロックフリーで高速実行
+- 書き込み操作：完全コピーによるオーバーヘッド
+- メモリ使用量：一時的な重複による増加
+
+### 構造共有による効率的な永続データ構造
+
+**Persistent Data Structure の利点**
+
+永続的データ構造では、データの変更時に既存の構造を可能な限り再利用することで、メモリ効率と性能を両立します：
+
+**構造共有の技術的実装**：
+- 不変なノード構造による安全な共有
+- O(1) 時間複雑度での先頭要素操作
+- 関数型プログラミングパラダイムとの親和性
+
+**メモリ効率の向上**：
+- 変更されない部分の構造再利用
+- ガベージコレクション負荷の軽減
+- 大規模データセットでの顕著な効果
 
 ---
 
 ## イミュータブルコレクション
 
-### カスタムイミュータブルコレクション
+### カスタムイミュータブルコレクションの設計戦略
 
-```java
-public final class ImmutableArrayList<E> extends AbstractList<E> 
-                                        implements RandomAccess {
-    private final Object[] elements;
-    
-    @SafeVarargs
-    public ImmutableArrayList(E... elements) {
-        this.elements = Arrays.copyOf(elements, elements.length);
-    }
-    
-    public ImmutableArrayList(Collection<? extends E> c) {
-        this.elements = c.toArray();
-    }
-    
-    @Override
-    public E get(int index) {
-        @SuppressWarnings("unchecked")
-        E element = (E) elements[index];
-        return element;
-    }
-    
-    @Override
-    public int size() {
-        return elements.length;
-    }
-    
-    // 変更操作は例外をスロー
-    @Override
-    public E set(int index, E element) {
-        throw new UnsupportedOperationException("ImmutableArrayList cannot be modified");
-    }
-    
-    // withメソッドで新しいインスタンスを返す
-    public ImmutableArrayList<E> with(int index, E element) {
-        Object[] newElements = Arrays.copyOf(elements, elements.length);
-        newElements[index] = element;
-        return new ImmutableArrayList<>(newElements);
-    }
-    
-    public ImmutableArrayList<E> append(E element) {
-        Object[] newElements = Arrays.copyOf(elements, elements.length + 1);
-        newElements[elements.length] = element;
-        return new ImmutableArrayList<>(newElements);
-    }
-    
-    public ImmutableArrayList<E> remove(int index) {
-        if (index < 0 || index >= elements.length) {
-            throw new IndexOutOfBoundsException("Index: " + index);
-        }
-        
-        Object[] newElements = new Object[elements.length - 1];
-        System.arraycopy(elements, 0, newElements, 0, index);
-        System.arraycopy(elements, index + 1, newElements, index, elements.length - index - 1);
-        return new ImmutableArrayList<>(newElements);
-    }
-}
-```
+**配列ベース不変コレクションの実装**
 
-### Trie（トライ木）ベースの永続的マップ
+高性能な不変コレクションの実装には、以下の技術的要素が重要です：
 
-```java
-// 簡略化されたPersistent Hash Map（概念的実装）
-public class PersistentHashMap<K, V> {
-    private static final int SHIFT = 5;
-    private static final int BUCKET_SIZE = 1 << SHIFT; // 32
-    private static final int MASK = BUCKET_SIZE - 1;
-    
-    private interface Node<K, V> {
-        V find(int hash, K key);
-        Node<K, V> insert(int shift, int hash, K key, V value);
-        Node<K, V> remove(int shift, int hash, K key);
-    }
-    
-    private static class LeafNode<K, V> implements Node<K, V> {
-        final int hash;
-        final K key;
-        final V value;
-        
-        LeafNode(int hash, K key, V value) {
-            this.hash = hash;
-            this.key = key;
-            this.value = value;
-        }
-        
-        @Override
-        public V find(int hash, K key) {
-            return this.hash == hash && Objects.equals(this.key, key) ? value : null;
-        }
-        
-        @Override
-        public Node<K, V> insert(int shift, int hash, K key, V value) {
-            if (this.hash == hash && Objects.equals(this.key, key)) {
-                return new LeafNode<>(hash, key, value);
-            }
-            
-            // 衝突時は分岐ノードを作成
-            return BranchNode.<K, V>empty()
-                .insert(shift, this.hash, this.key, this.value)
-                .insert(shift, hash, key, value);
-        }
-        
-        @Override
-        public Node<K, V> remove(int shift, int hash, K key) {
-            return this.hash == hash && Objects.equals(this.key, key) ? null : this;
-        }
-    }
-    
-    private static class BranchNode<K, V> implements Node<K, V> {
-        final Node<K, V>[] children;
-        
-        @SuppressWarnings("unchecked")
-        BranchNode(Node<K, V>[] children) {
-            this.children = children;
-        }
-        
-        static <K, V> BranchNode<K, V> empty() {
-            return new BranchNode<>(new Node[BUCKET_SIZE]);
-        }
-        
-        @Override
-        public V find(int hash, K key) {
-            int index = (hash >>> shift) & MASK;
-            Node<K, V> child = children[index];
-            return child == null ? null : child.find(hash, key);
-        }
-        
-        @Override
-        public Node<K, V> insert(int shift, int hash, K key, V value) {
-            int index = (hash >>> shift) & MASK;
-            Node<K, V> child = children[index];
-            Node<K, V> newChild = child == null 
-                ? new LeafNode<>(hash, key, value)
-                : child.insert(shift + SHIFT, hash, key, value);
-            
-            Node<K, V>[] newChildren = Arrays.copyOf(children, children.length);
-            newChildren[index] = newChild;
-            return new BranchNode<>(newChildren);
-        }
-        
-        @Override
-        public Node<K, V> remove(int shift, int hash, K key) {
-            int index = (hash >>> shift) & MASK;
-            Node<K, V> child = children[index];
-            if (child == null) return this;
-            
-            Node<K, V> newChild = child.remove(shift + SHIFT, hash, key);
-            if (newChild == child) return this;
-            
-            Node<K, V>[] newChildren = Arrays.copyOf(children, children.length);
-            newChildren[index] = newChild;
-            return new BranchNode<>(newChildren);
-        }
-    }
-    
-    private final Node<K, V> root;
-    private final int size;
-    
-    private PersistentHashMap(Node<K, V> root, int size) {
-        this.root = root;
-        this.size = size;
-    }
-    
-    public static <K, V> PersistentHashMap<K, V> empty() {
-        return new PersistentHashMap<>(null, 0);
-    }
-    
-    public V get(K key) {
-        if (root == null) return null;
-        return root.find(key.hashCode(), key);
-    }
-    
-    public PersistentHashMap<K, V> put(K key, V value) {
-        int hash = key.hashCode();
-        Node<K, V> newRoot = root == null 
-            ? new LeafNode<>(hash, key, value)
-            : root.insert(0, hash, key, value);
-        
-        return new PersistentHashMap<>(newRoot, size + (containsKey(key) ? 0 : 1));
-    }
-    
-    public boolean containsKey(K key) {
-        return get(key) != null;
-    }
-}
-```
+**内部実装の最適化**：
+- 配列による高速ランダムアクセス
+- 防御的コピーによる外部変更の防止
+- UnsupportedOperationException による変更操作の適切な拒否
+
+**withメソッドパターンの活用**：
+- 元インスタンスの不変性維持
+- System.arraycopy による効率的なコピー操作
+- インデックスアクセスによる高速な要素更新
+
+### Trie構造による高効率永続マップ
+
+**ハッシュ配列マップトライ（HAMT）の応用**
+
+永続的ハッシュマップの高効率実装には、トライ木構造を活用したハッシュ配列マップトライ（HAMT）が適用されます：
+
+**構造的特徴と利点**：
+- ビットマスクによる高速ノード検索
+- 構造共有による O(log₃₂ n) 時間複雑度
+- ハッシュ衝突時の効率的な分岐ノード生成
+
+**メモリ効率の実現**：
+- 未使用ノードの動的割り当て
+- 構造共有による重複データの排除
+- ガベージコレクション負荷の最小化
+
+**実装上の技術的考慮点**：
+- ビット演算による高速インデックス計算
+- 再帰的ノード操作による構造整合性
+- 型安全性を保持したジェネリクス実装
 
 ---
 

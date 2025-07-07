@@ -60,23 +60,26 @@ String result = smallList.parallelStream()  // オーバーヘッドで逆に遅
 
 ### Spliteratorとは何か、なぜ重要なのか
 
-Spliterator（分割可能イテレータ）は、Stream APIの心臓部です。従来のIteratorと異なり、要素を並列処理のために分割する能力を持っています。
+**分割可能イテレータによる並列処理の実現**
 
-**従来のIteratorの限界:**
-```java
-// 順次処理のみ可能
-Iterator<String> iterator = list.iterator();
-while (iterator.hasNext()) {
-    process(iterator.next()); // 1つずつしか処理できない
-}
-```
+Spliterator（分割可能イテレータ）は、Stream APIの並列処理における中核技術です：
 
-**Spliteratorによる並列化の実現:**
-```java
-// 自動的に分割され、複数スレッドで並列処理
-list.parallelStream()
-    .forEach(this::process); // 内部でSpliteratorが分割を管理
-```
+**従来のIteratorの限界**：
+- 順次処理のみ対応
+- 単一スレッドでの要素アクセス
+- 分割・並列化の機能なし
+- マルチコアCPUの活用不可
+
+**Spliteratorの技術的革新**：
+- **分割性**: データセットを効率的に分割
+- **並列性**: 複数スレッドでの同時処理
+- **特性情報**: データの性質（サイズ、順序等）を保持
+- **最適化**: データ構造に特化した分割戦略
+
+**実装における利点**：
+- CPUリソースの最大活用
+- メモリ局所性の向上
+- Work Stealingによる負荷バランシング
 
 ### なぜ分割が重要なのか
 

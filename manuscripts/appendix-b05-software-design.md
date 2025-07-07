@@ -66,38 +66,27 @@ SOLID原則の導入により、多くの組織が顕著な成果を上げてい
 オブジェクト指向設計では、保守性の高いコードを書くためのSOLID原則があります。カプセル化は特に以下の原則と密接に関連しています：
 
 #### 単一責任原則 (Single Responsibility Principle)
-```java
-// 悪い例：複数の責任を持つクラス
-public class Employee {
-    private String name;
-    private double salary;
-    
-    // 給与計算の責任
-    public double calculateYearlySalary() { /* ... */ }
-    
-    // データベース操作の責任
-    public void saveToDatabase() { /* ... */ }
-    
-    // レポート生成の責任  
-    public String generateReport() { /* ... */ }
-}
 
-// 良い例：責任を分離
-public class Employee {
-    private String name;
-    private double salary;
-    
-    // 基本的なデータのみを管理
-    public double getSalary() { return salary; }
-}
+**責任の分離による保守性向上**
 
-public class SalaryCalculator {
-    public double calculateYearlySalary(Employee employee) { /* ... */ }
-}
+単一責任原則は、クラスが変更される理由を一つに限定することで、システムの安定性と保守性を向上させます：
 
-public class EmployeeRepository {
-    public void save(Employee employee) { /* ... */ }
-}
+**原則違反の問題点**：
+- 一つの変更が複数の機能に影響
+- テストケースの作成が複雑化
+- 修正時のリグレッション発生リスク
+- 異なる変更理由による競合の発生
+
+**適切な責任分離の効果**：
+- **変更の局所化**: 給与計算変更時にDB操作に影響しない
+- **テスト容易性**: 各責任を独立してテスト可能
+- **再利用性**: SalaryCalculatorを他の文脈でも利用可能
+- **並行開発**: 異なるチームが独立して開発可能
+
+**実装戦略**：
+- Employeeクラス：データ保持のみに責任を限定
+- SalaryCalculatorクラス：計算ロジックに特化
+- EmployeeRepositoryクラス：永続化処理に特化
 ```
 
 #### 開放閉鎖原則 (Open/Closed Principle)
