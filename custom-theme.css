@@ -1,3 +1,412 @@
+@charset "UTF-8";
+
+/* ページ設定 */
+@page {
+  size: A4;
+  margin: 20mm 15mm;
+  
+  @top-center {
+    content: env(pub-title);
+    font-size: 10pt;
+    color: #666;
+  }
+  
+  @bottom-center {
+    content: counter(page);
+    font-size: 10pt;
+  }
+}
+
+/* 基本設定 */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --text-color: #333;
+  --background-color: #fff;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  color: var(--text-color);
+}
+
+/* 見出しスタイル */
 h1 {
-  color: rebeccapurple;
+  font-size: 24pt;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--secondary-color);
+  padding-bottom: 0.5em;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+  break-before: page;
+}
+
+h2 {
+  font-size: 18pt;
+  color: var(--primary-color);
+  border-left: 5px solid var(--secondary-color);
+  padding-left: 0.5em;
+  margin-top: 1.2em;
+  margin-bottom: 0.8em;
+}
+
+h3 {
+  font-size: 14pt;
+  color: var(--primary-color);
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+/* 段落 */
+p {
+  text-indent: 1em;
+  margin-bottom: 0.8em;
+}
+
+/* リスト */
+ul, ol {
+  margin-left: 2em;
+  margin-bottom: 1em;
+}
+
+li {
+  margin-bottom: 0.3em;
+}
+
+/* 引用 */
+blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 1em;
+  margin-left: 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* テーブル */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.5em;
+  text-align: left;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* リンク */
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 画像 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+/* 脚注 */
+.footnote {
+  font-size: 8pt;
+  vertical-align: super;
+}
+
+/* コードブロック - ゼブラストライプ背景 */
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0;
+  margin: 1em 0;
+  overflow-x: auto;
+  position: relative;
+}
+
+/* コード部分 */
+pre code {
+  display: block;
+  padding: 1em;
+  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 9pt;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  /* 各行の背景（ゼブラストライプ） */
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.5em,
+    rgba(0, 0, 0, 0.02) 1.5em,
+    rgba(0, 0, 0, 0.02) 3em
+  );
+}
+
+/* 既存のprismクラスがある場合のスタイル */
+pre.prism-code {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+/* オプション: 行番号表示（手動で追加する場合） */
+pre.line-numbers {
+  padding-left: 3.5em;
+  counter-reset: line;
+}
+
+pre.line-numbers::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5em;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+}
+
+pre.line-numbers code {
+  position: relative;
+  display: block;
+  padding-left: 0;
+}
+
+/* 各行のスタイル */
+pre.line-numbers code > span {
+  display: block;
+  position: relative;
+  counter-increment: line;
+}
+
+pre.line-numbers code > span::before {
+  content: counter(line);
+  position: absolute;
+  left: -3.5em;
+  width: 3em;
+  text-align: right;
+  color: #999;
+  font-size: 0.9em;
+  user-select: none;
+  border-right: 1px solid #ddd;
+  padding-right: 0.5em;
+}
+
+/* 代替: data属性を使用した行番号 */
+pre[data-line-numbers="true"] {
+  position: relative;
+  padding-left: 3.5em;
+  counter-reset: line-counter;
+}
+
+pre[data-line-numbers="true"] code {
+  display: block;
+  position: relative;
+}
+
+pre[data-line-numbers="true"] code .line {
+  display: block;
+  position: relative;
+  counter-increment: line-counter;
+}
+
+pre[data-line-numbers="true"] code .line::before {
+  content: counter(line-counter);
+  position: absolute;
+  left: -3.5em;
+  width: 3em;
+  text-align: right;
+  color: #999;
+  font-size: 0.9em;
+  user-select: none;
+  padding-right: 0.5em;
+}
+
+/* インラインコード */
+code:not(pre code) {
+  background-color: #f5f5f5;
+  color: #d14;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 0.9em;
+}
+
+/* シンタックスハイライト - Javaコード用 */
+/* キーワード */
+.token.keyword,
+.hljs-keyword,
+code .keyword {
+  color: #0000ff;
+  font-weight: bold;
+}
+
+/* Markdownのコードブロック言語指定に基づくスタイル */
+pre[data-lang="java"] {
+  border-left: 4px solid #f89820;
+}
+
+pre[data-lang="javascript"],
+pre[data-lang="js"] {
+  border-left: 4px solid #f7df1e;
+}
+
+pre[data-lang="python"] {
+  border-left: 4px solid #3776ab;
+}
+
+pre[data-lang="bash"],
+pre[data-lang="shell"] {
+  border-left: 4px solid #4eaa25;
+  background-color: #2d2d2d;
+}
+
+pre[data-lang="bash"] code,
+pre[data-lang="shell"] code {
+  color: #f8f8f2;
+}
+
+/* 文字列 */
+.token.string {
+  color: #008000;
+}
+
+/* コメント */
+.token.comment {
+  color: #808080;
+  font-style: italic;
+}
+
+/* 数値 */
+.token.number {
+  color: #098658;
+}
+
+/* クラス名 */
+.token.class-name {
+  color: #2b91af;
+  font-weight: bold;
+}
+
+/* 関数・メソッド名 */
+.token.function {
+  color: #795e26;
+}
+
+/* 演算子 */
+.token.operator {
+  color: #000000;
+}
+
+/* 区切り文字 */
+.token.punctuation {
+  color: #000000;
+}
+
+/* アノテーション */
+.token.annotation {
+  color: #808000;
+  font-weight: bold;
+}
+
+/* 型 */
+.token.builtin,
+.token.type {
+  color: #2b91af;
+}
+
+/* 変数 */
+.token.variable {
+  color: #001080;
+}
+
+/* パッケージ・インポート */
+.token.namespace {
+  color: #000080;
+}
+
+/* 言語別コードブロックのスタイル */
+pre[class*="language-"] {
+  background-color: #f8f8f8;
+}
+
+pre[class*="language-java"] {
+  border-left: 4px solid #f89820;
+}
+
+pre[class*="language-javascript"],
+pre[class*="language-js"] {
+  border-left: 4px solid #f7df1e;
+}
+
+pre[class*="language-python"] {
+  border-left: 4px solid #3776ab;
+}
+
+pre[class*="language-bash"],
+pre[class*="language-shell"] {
+  border-left: 4px solid #4eaa25;
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+}
+
+/* bashコード用の配色 */
+pre[class*="language-bash"] code,
+pre[class*="language-shell"] code {
+  color: #f8f8f2;
+}
+
+pre[class*="language-bash"] .token.function,
+pre[class*="language-shell"] .token.function {
+  color: #50fa7b;
+}
+
+pre[class*="language-bash"] .token.string,
+pre[class*="language-shell"] .token.string {
+  color: #f1fa8c;
+}
+
+pre[class*="language-bash"] .token.comment,
+pre[class*="language-shell"] .token.comment {
+  color: #6272a4;
+}
+
+/* カスタムクラス */
+.note {
+  background-color: #e8f4f8;
+  border-left: 4px solid var(--secondary-color);
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.warning {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.important {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 1em;
+  margin: 1em 0;
 }
