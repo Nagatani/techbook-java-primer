@@ -599,6 +599,55 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.nio.file.Files`クラスと`BufferedReader`を使うのが現代的な方法です。
 
+### Scannerクラスによる柔軟な入力処理
+
+`java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます：
+
+```java
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+public class ScannerExample {
+    public static void main(String[] args) {
+        Path path = Paths.get("data.txt");
+        
+        // 1. 行単位の読み込み
+        try (Scanner scanner = new Scanner(Files.newBufferedReader(path, StandardCharsets.UTF_8))) {
+            System.out.println("--- Scannerによる行単位の読み込み ---");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // 2. デリミターを使った読み込み
+        String csvData = "リンゴ,150,赤\nバナナ,100,黄";
+        try (Scanner scanner = new Scanner(csvData)) {
+            scanner.useDelimiter(",|\\n");  // コンマまたは改行で区切る
+            while (scanner.hasNext()) {
+                System.out.println(scanner.next());
+            }
+        }
+        
+        // 3. 型を指定した読み込み
+        String numbers = "100 3.14 true";
+        try (Scanner scanner = new Scanner(numbers)) {
+            int intValue = scanner.nextInt();
+            double doubleValue = scanner.nextDouble();
+            boolean boolValue = scanner.nextBoolean();
+            System.out.printf("整数: %d, 小数: %.2f, 真偽値: %b%n", 
+                            intValue, doubleValue, boolValue);
+        }
+    }
+}
+```
+
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -668,7 +717,109 @@ public class TextFileWriterExample {
 ```
 `StandardOpenOption.APPEND`を指定すると、ファイルの末尾に追記できます。
 
-## 15.3 オブジェクトの直列化（シリアライズ）
+### 文字エンコーディングの指定
+
+テキストファイルを扱う際には、文字コード（エンコーディング）の指定が重要です。文字コードが異なると、文字化けが発生する可能性があります。
+
+**主要な文字エンコーディング**：
+- **UTF-8**: 現在最も広く使用される可変長エンコーディング
+- **Shift_JIS (MS932)**: Windows環境で使用される日本語エンコーディング
+- **ISO-8859-1**: 西欧言語用の1バイトエンコーディング
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class CharacterEncodingExample {
+    public static void main(String[] args) {
+        Path path = Paths.get("japanese.txt");
+        
+        // UTF-8で書き込み
+        try {
+            Files.writeString(path, "こんにちは、世界！", StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Shift_JISで読み込み（文字化けの例）
+        System.out.println("--- Shift_JISで読み込み（文字化け） ---");
+        try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("Shift_JIS"))) {
+            System.out.println(reader.readLine());  // 文字化けが発生
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // UTF-8で正しく読み込み
+        System.out.println("\n--- UTF-8で正しく読み込み ---");
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            System.out.println(reader.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // システムデフォルトのエンコーディング確認
+        System.out.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
+    }
+}
+```
+
+## 15.3 バイナリファイルの高度な処理
+
+### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
+
+Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します：
+
+```java
+import java.io.*;
+
+public class DataStreamExample {
+    public static void main(String[] args) throws IOException {
+        String filename = "data.bin";
+        
+        // データの書き込み
+        try (DataOutputStream dos = new DataOutputStream(
+                new BufferedOutputStream(new FileOutputStream(filename)))) {
+            // プリミティブ型の書き込み
+            dos.writeInt(12345);
+            dos.writeLong(9876543210L);
+            dos.writeDouble(3.14159);
+            dos.writeBoolean(true);
+            dos.writeUTF("こんにちは、世界！");  // 修正UTF-8形式
+            
+            System.out.println("データを書き込みました。");
+        }
+        
+        // データの読み込み（書き込んだ順序と同じ順序で読む）
+        try (DataInputStream dis = new DataInputStream(
+                new BufferedInputStream(new FileInputStream(filename)))) {
+            int intValue = dis.readInt();
+            long longValue = dis.readLong();
+            double doubleValue = dis.readDouble();
+            boolean boolValue = dis.readBoolean();
+            String strValue = dis.readUTF();
+            
+            System.out.printf("読み込んだデータ: %d, %d, %.5f, %b, %s%n",
+                            intValue, longValue, doubleValue, boolValue, strValue);
+        }
+    }
+}
+```
+
+**重要な注意点**：
+1. **順序の一致**: 書き込んだ順序と完全に同じ順序で読み込む必要があります
+2. **エンディアン**: DataStream系は常にビッグエンディアン（ネットワークバイトオーダー）を使用
+3. **文字列の制限**: `writeUTF()`は最大65535バイトまでの文字列しか扱えません
+
+### BufferedInputStream/BufferedOutputStreamの活用
+
+これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、特に大量のデータを扱う場合に有効です。
+
+## 15.4 オブジェクトの直列化（シリアライズ）
 
 Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを**直列化（シリアライズ）**、バイト列からオブジェクトを復元することを**非直列化（デシリアライズ）**と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です。
 
@@ -710,7 +861,7 @@ public class SerializationExample {
 }
 ```
 
-## 15.4 ファイルシステムの操作 (NIO.2)
+## 15.5 ファイルシステムの操作 (NIO.2)
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、よりモダンで高機能なファイル・ディレクトリ操作が可能です。
 
@@ -751,7 +902,7 @@ public class FileSystemExample {
 }
 ```
 
-## 15.5 GUIでのファイル選択: `JFileChooser`
+## 15.6 GUIでのファイル選択: `JFileChooser`
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 

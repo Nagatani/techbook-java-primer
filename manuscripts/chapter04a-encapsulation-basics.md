@@ -56,31 +56,103 @@
 
 Javaのアクセス制御は、カプセル化を実現する上で最も重要な機能の1つです。Javaは4つのアクセス修飾子を提供しており、これらを適切に使い分けることで、クラスの内部実装を隠蔽しながら必要な機能だけを外部に公開できます。各修飾子は、フィールドとメソッドの可視性を段階的に制御し、オブジェクト指向設計の原則である「必要最小限の公開」を実現します。
 
-| 修飾子 | 同じクラス | 同じパッケージ | サブクラス | 他のクラス |
-|--------|-----------|---------------|-----------|-----------|
-| private | ○ | × | × | × |
-| (なし) | ○ | ○ | × | × |
-| protected | ○ | ○ | ○ | × |
-| public | ○ | ○ | ○ | ○ |
+#### アクセス修飾子の可視性マトリックス
 
-**privateの使用例**：
+| 修飾子 | 同じクラス | 同じパッケージ | サブクラス（別パッケージ） | それ以外（別パッケージ） | 説明 |
+|--------|-----------|---------------|---------------------------|-------------------------|------|
+| `private` | ○ | × | × | × | 同じクラス内からのみアクセス可能 |
+| (なし)※ | ○ | ○ | × | × | 同じパッケージ内からのみアクセス可能 |
+| `protected` | ○ | ○ | ○ | × | 同じパッケージまたはサブクラスからアクセス可能 |
+| `public` | ○ | ○ | ○ | ○ | どこからでもアクセス可能 |
+
+※ 修飾子を記述しない場合（デフォルトアクセス、package-privateとも呼ばれる）
+
+#### アクセス修飾子の使い分け原則
+
+1. **`private`を基本とする**: フィールドは原則として`private`にし、必要に応じてgetter/setterを提供
+2. **`public`は慎重に**: 外部APIとして公開する必要があるメソッドのみ`public`にする
+3. **`protected`の活用**: 継承関係で使用する場合に限定し、設計意図を明確にする
+4. **パッケージプライベートの戦略的使用**: 同一パッケージ内での協調動作が必要な場合に使用
+
+#### 各アクセス修飾子の詳細と使用例
+
+**`private`の使用例**：
 ```java
 public class BankAccount {
-    private double balance;  // 外部から直接変更不可
+    private double balance;      // 外部から直接変更不可
+    private String accountId;    // 内部管理用ID
     
     public void deposit(double amount) {
         if (amount > 0) {
-            balance += amount;  // 同じクラス内からは可視
+            balance += amount;   // 同じクラス内からは可視
+            logTransaction();    // プライベートメソッドの呼び出し
         }
+    }
+    
+    private void logTransaction() {  // 内部処理専用メソッド
+        // トランザクションログの記録
     }
 }
 ```
 
-**publicの使用例**：
+**パッケージプライベート（デフォルト）の使用例**：
 ```java
-public class Calculator {
-    public int add(int a, int b) {  // どこからでも呼び出し可能
+package com.example.internal;
+
+public class DataProcessor {
+    String processId;     // 同じパッケージ内からアクセス可能
+    
+    void processInternal() {  // パッケージ内協調用メソッド
+        // 内部処理
+    }
+}
+
+// 同じパッケージ内の別クラス
+class ProcessorHelper {
+    void assist(DataProcessor processor) {
+        processor.processId = "PROC-001";     // OK: 同じパッケージ
+        processor.processInternal();           // OK: 同じパッケージ
+    }
+}
+```
+
+**`protected`の使用例**：
+```java
+package com.example.base;
+
+public class Vehicle {
+    protected String engineType;     // サブクラスからアクセス可能
+    protected int maxSpeed;
+    
+    protected void startEngine() {   // サブクラスで利用可能
+        System.out.println("Engine started: " + engineType);
+    }
+}
+
+// 別パッケージのサブクラス
+package com.example.cars;
+import com.example.base.Vehicle;
+
+public class Car extends Vehicle {
+    public void initialize() {
+        engineType = "V6";          // OK: protected継承
+        maxSpeed = 200;             // OK: protected継承
+        startEngine();              // OK: protectedメソッド
+    }
+}
+```
+
+**`public`の使用例**：
+```java
+public class MathUtils {
+    public static final double PI = 3.14159;  // 公開定数
+    
+    public static int add(int a, int b) {     // 公開ユーティリティメソッド
         return a + b;
+    }
+    
+    public boolean isPositive(int number) {   // 公開インスタンスメソッド
+        return number > 0;
     }
 }
 ```
@@ -238,6 +310,137 @@ public class BankAccount {
 **入力検証**も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクタで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、**意味のある名前**を使用することで、コードの可読性と保守性が大幅に向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます。
 
 最後に、**不変条件の維持**は、オブジェクトの整合性を保証する上で極めて重要です。オブジェクトの生成から破棄まで、常に満たされるべき条件（不変条件）を明確に定義し、すべての操作でこれを維持するよう設計します。
+
+これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
+
+## パッケージシステムとクラスの組織化
+
+### パッケージの概念と必要性
+
+Javaにおけるパッケージは、関連するクラスやインターフェースをグループ化するための仕組みです。大規模なプロジェクトでは何百、何千ものクラスが存在することがあり、適切な組織化なしには管理が困難になります。パッケージは以下の重要な役割を果たします：
+
+1. **名前空間の提供**: 異なるパッケージに同じ名前のクラスを作成可能
+2. **アクセス制御**: パッケージレベルでのアクセス制限を実現
+3. **論理的な構造化**: 機能や責任に基づいてクラスを整理
+4. **クラスの再利用**: パッケージ単位での配布と利用
+
+### パッケージの命名規則
+
+Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています：
+
+```java
+// ドメイン名: example.com
+// パッケージ名: com.example.プロジェクト名.モジュール名
+package com.example.myapp.service;
+
+// ドメイン名: ac.jp（教育機関）
+// パッケージ名: jp.ac.大学名.プロジェクト名
+package jp.ac.university.research;
+```
+
+**命名規則のポイント**：
+- すべて小文字を使用
+- ドメイン名を逆順に記述
+- 意味のある階層構造を作成
+- Javaの予約語は使用しない
+
+### パッケージとディレクトリ構造
+
+パッケージ名はファイルシステムのディレクトリ構造と対応している必要があります：
+
+```
+src/
+└── com/
+    └── example/
+        └── myapp/
+            ├── model/
+            │   ├── User.java
+            │   └── Product.java
+            ├── service/
+            │   ├── UserService.java
+            │   └── ProductService.java
+            └── util/
+                └── DateUtils.java
+```
+
+### import文の使い方
+
+パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します：
+
+```java
+// 完全限定名での使用
+java.util.List<String> names = new java.util.ArrayList<>();
+
+// import文を使用した場合
+import java.util.List;
+import java.util.ArrayList;
+
+List<String> names = new ArrayList<>();
+```
+
+**import文の種類**：
+
+1. **単一型インポート**：
+```java
+import java.util.Scanner;  // Scannerクラスのみインポート
+```
+
+2. **オンデマンドインポート**：
+```java
+import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
+```
+
+3. **静的インポート**：
+```java
+import static java.lang.Math.PI;
+import static java.lang.Math.sqrt;
+
+double circumference = 2 * PI * radius;  // Math.PI と書く必要がない
+double result = sqrt(16);                 // Math.sqrt と書く必要がない
+```
+
+### import文の注意点
+
+異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です：
+
+```java
+import java.util.*;
+import java.awt.*;
+
+public class Example {
+    // コンパイルエラー: List はどちらのパッケージか不明
+    // List myList;  
+    
+    // 解決策1: 完全限定名を使用
+    java.util.List<String> utilList;
+    java.awt.List awtList;
+    
+    // 解決策2: 片方のみimport
+    // import java.util.List;
+    // List<String> utilList;  // java.util.List
+    // java.awt.List awtList;  // 完全限定名
+}
+```
+
+### パッケージ構成のベストプラクティス
+
+効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます：
+
+```java
+com.example.myapp/
+├── model/          // ドメインモデル（エンティティ）
+├── service/        // ビジネスロジック
+├── repository/     // データアクセス層
+├── controller/     // UIコントローラ
+├── util/          // ユーティリティクラス
+└── exception/     // カスタム例外
+```
+
+**設計原則**：
+- 機能的凝集性: 関連する機能を同じパッケージに
+- 循環依存の回避: パッケージ間の依存関係を一方向に
+- 適切な粒度: 大きすぎず小さすぎないパッケージサイズ
+- 明確な責任: 各パッケージの役割を明確に定義
 
 これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。次の章では、これらのクラスを組み合わせて、より複雑なオブジェクト指向設計を学習していきます。
 
