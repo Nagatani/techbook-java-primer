@@ -54,6 +54,7 @@ module.exports = {
     'chapter18c-advanced-events.md',
     'chapter18d-exercises.md',
     'chapter19-advanced-gui.md',
+    'chapter20-network-programming.md', // 新規追加：ネットワークプログラミング
     'chapter20-unit-testing.md',
     'chapter21-documentation-and-libraries.md',
     'chapter22-build-and-deploy.md',
@@ -98,12 +99,5 @@ module.exports = {
   output: './output/techbook-java-primer.pdf',
   theme: '@vivliostyle/theme-techbook',
   workspaceDir: '.vivliostyle',
-  toc: true,
-  style: [
-    '@vivliostyle/theme-techbook',
-    './styles/book-theme.css',
-    './styles/code-blocks.css',
-    './styles/special-sections.css',
-    './styles/cover.css'
-  ],
+  toc: true
 };
