@@ -8,7 +8,7 @@ Java 7で導入されたNIO.2の高度な機能について学べます。WatchS
 
 本付録の詳細な解説、実装例、パフォーマンス分析は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/nio2-advanced/`**
+**`/appendix/nio2-advanced/`**
 
 ### 提供内容
 

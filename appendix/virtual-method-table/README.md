@@ -262,7 +262,7 @@ for (Customer customer : customers) {
     customer.updateScore();  // モノモーフィック
 }
 
-// ⚠️ 型が不安定なループ
+// 型が不安定なループ
 List<Object> items = getMixedItems();
 for (Object item : items) {
     if (item instanceof Processable) {

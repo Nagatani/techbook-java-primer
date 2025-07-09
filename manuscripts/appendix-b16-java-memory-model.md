@@ -8,7 +8,7 @@ Javaの並行プログラミングにおける最も重要かつ難解な概念�
 
 本付録の詳細な解説、実装例、並行性バグの実証は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/java-memory-model/`**
+**`/appendix/java-memory-model/`**
 
 ### 提供内容
 

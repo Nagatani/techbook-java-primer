@@ -8,7 +8,7 @@ Javaが現在の形に至るまでのプログラミング言語の長い進化�
 
 本付録の詳細な解説、歴史的実装例、進化の実証は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/language-evolution/`**
+**`/appendix/language-evolution/`**
 
 ### 提供内容
 

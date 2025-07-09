@@ -8,7 +8,7 @@ Javaコレクションフレームワークの中核を成すHashMapとTreeMap�
 
 本付録の詳細な解説、実装例、パフォーマンス分析は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/collection-internals/`**
+**`/appendix/collection-internals/`**
 
 ### 提供内容
 

@@ -8,7 +8,7 @@ Java例外処理の内部実装とパフォーマンス特性について、詳�
 
 本付録の詳細な解説、実装例、ベンチマーク結果は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/exception-performance/`**
+**`/appendix/exception-performance/`**
 
 ### 提供内容
 

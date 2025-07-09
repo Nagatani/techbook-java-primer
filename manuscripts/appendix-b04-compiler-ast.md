@@ -8,7 +8,7 @@
 
 本付録の詳細な解説、実装例、解析ツールは以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/compiler-ast/`**
+**`/appendix/compiler-ast/`**
 
 ### 提供内容
 

@@ -8,7 +8,7 @@ JVMにおけるポリモーフィズムの実装メカニズムである仮想�
 
 本付録の詳細な解説、実装例、パフォーマンス測定は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/virtual-method-table/`**
+**`/appendix/virtual-method-table/`**
 
 ### 提供内容
 

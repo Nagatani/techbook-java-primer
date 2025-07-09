@@ -8,7 +8,7 @@ Java Virtual Machine（JVM）の内部アーキテクチャとバイトコード
 
 本付録の詳細な解説、実装例、ベンチマーク結果は以下のGitHubプロジェクトで公開されています：
 
-📁 **`/appendix/jvm-architecture/`**
+**`/appendix/jvm-architecture/`**
 
 ### 提供内容
 
