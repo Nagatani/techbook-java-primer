@@ -415,7 +415,17 @@ button.addActionListener(new ActionListener() {
 2010年代に入ると、並行処理やビッグデータ処理の重要性が高まり、Java 8（2014年）やJavaScript ES6（2015年）など、オブジェクト指向言語にも関数型の機能が取り入れられました。
 
 **関数型プログラミングの歴史的背景、数学的基盤、実務での活用例についての詳細は、付録B.3「プログラミングパラダイムの進化」を参照してください。**
-    }
+
+### カリー化の実装例：通貨変換
+
+```java
+public class CurrencyConverter {
+    // 通常の2引数から3引数の変換で、通貨レートを適用
+    public Function<String, Function<String, Function<Double, Double>>> 
+        curriedConvert = from -> to -> amount -> {
+            double rate = getExchangeRate(from, to);
+            return amount * rate;
+        };
     
     // 使用例
     public void demonstrateCurrying() {
@@ -470,7 +480,8 @@ public class UserService {
         return userRepository.findByIdAsync(userId)
             .thenCompose(userOpt -> userOpt
                 .map(user -> notificationService.send(user))
-                .orElse(CompletableFuture.completedFuture("User not found"))
+                .orElse(CompletableFuture.
+                    completedFuture("User not found"))
             );
     }
 }
@@ -528,7 +539,8 @@ Netflixは1日に数十億のAPIリクエストを処理するために、関数
 public class VideoRecommendationService {
     public List<Video> getRecommendations(String userId) {
         User user = userService.getUser(userId);  // ブロッキング
-        List<Video> watched = historyService.getWatchHistory(userId);  // ブロッキング
+        List<Video> watched = historyService.getWatchHistory(userId);
+                                                        // ブロッキング
         List<Video> trending = trendingService.getTrending();  // ブロッキング
         
         return recommendationEngine.calculate(user, watched, trending);
@@ -729,7 +741,8 @@ public class LambdaPerformance {
         long methodRefTime = System.nanoTime() - start;
         
         System.out.printf("Inline: %dms, Method ref: %dms%n",
-            inlineTime / 1_000_000, methodRefTime / 1_000_000);
+            inlineTime / 1_000_000, 
+            methodRefTime / 1_000_000);
     }
 }
 ```
@@ -818,7 +831,8 @@ public class TradingSystem {
             
             return marketData -> strategies.stream()
                 .map(strategy -> strategy.evaluate(marketData))
-                .reduce(TradingDecision.NEUTRAL, TradingDecision::combine);
+                .reduce(TradingDecision.NEUTRAL, 
+                    TradingDecision::combine);
         }
     }
 }
@@ -1020,14 +1034,16 @@ public class MonadExample {
     // flatMap操作（モナド）
     Optional<Address> getAddress(int id) {
         return findUser(id)
-            .flatMap(User::getAddress)  // Optional<Optional<Address>>を平坦化
+            .flatMap(User::getAddress)  
+            // Optional<Optional<Address>>を平坦化
             .flatMap(Address::validate); // チェーン可能
     }
     
     // モナド則の検証
     // 左単位元則: Optional.of(x).flatMap(f) == f.apply(x)
     // 右単位元則: m.flatMap(Optional::of) == m
-    // 結合則: m.flatMap(f).flatMap(g) == m.flatMap(x -> f.apply(x).flatMap(g))
+    // 結合則: m.flatMap(f).flatMap(g) == 
+    //     m.flatMap(x -> f.apply(x).flatMap(g))
 }
 ```
 

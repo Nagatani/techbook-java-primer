@@ -152,7 +152,8 @@ public class MultiThreadedServer {
     private static final int THREAD_POOL_SIZE = 10;
     
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        ExecutorService executor = 
+            Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("マルチスレッドサーバーが起動しました");
@@ -186,7 +187,8 @@ class ClientHandler implements Runnable {
             
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                System.out.println(Thread.currentThread().getName() + 
+                System.out.println(
+                    Thread.currentThread().getName() + 
                     " - 受信: " + inputLine);
                 
                 // 簡単なプロトコル処理
@@ -202,7 +204,8 @@ class ClientHandler implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("クライアント処理エラー: " + e.getMessage());
+            System.err.println(
+                "クライアント処理エラー: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
@@ -305,7 +308,8 @@ public class HttpURLConnectionExample {
     public static void main(String[] args) {
         try {
             URL url = new URL("https://api.github.com/users/github");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = 
+                (HttpURLConnection) url.openConnection();
             
             // リクエストの設定
             conn.setRequestMethod("GET");
@@ -320,7 +324,8 @@ public class HttpURLConnectionExample {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 // レスポンスの読み取り
                 try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream()))) {
+                        new InputStreamReader(
+                            conn.getInputStream()))) {
                     String line;
                     StringBuilder response = new StringBuilder();
                     
@@ -328,7 +333,8 @@ public class HttpURLConnectionExample {
                         response.append(line);
                     }
                     
-                    System.out.println("Response: " + response.toString());
+                    System.out.println(
+                        "Response: " + response.toString());
                 }
             }
             
@@ -418,7 +424,8 @@ public class ChatServer {
                     broadcast(username + ": " + message, this);
                 }
             } catch (IOException e) {
-                System.err.println("クライアントエラー: " + e.getMessage());
+                System.err.println(
+                    "クライアントエラー: " + e.getMessage());
             } finally {
                 // 退室処理
                 if (username != null) {
@@ -515,10 +522,12 @@ public class SSLClient {
         try {
             SSLSocketFactory factory = 
                 (SSLSocketFactory) SSLSocketFactory.getDefault();
-            SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+            SSLSocket socket = 
+                (SSLSocket) factory.createSocket(host, port);
             
             // サポートされているプロトコルを設定
-            socket.setEnabledProtocols(new String[] {"TLSv1.2", "TLSv1.3"});
+            socket.setEnabledProtocols(
+                new String[] {"TLSv1.2", "TLSv1.3"});
             
             // ハンドシェイクを開始
             socket.startHandshake();
@@ -557,7 +566,8 @@ public class NIOServer {
     
     public static void main(String[] args) throws IOException {
         Selector selector = Selector.open();
-        ServerSocketChannel serverChannel = ServerSocketChannel.open();
+        ServerSocketChannel serverChannel = 
+            ServerSocketChannel.open();
         serverChannel.bind(new InetSocketAddress(PORT));
         serverChannel.configureBlocking(false);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);

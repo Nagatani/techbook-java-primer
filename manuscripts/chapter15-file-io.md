@@ -616,7 +616,8 @@ public class ScannerExample {
         Path path = Paths.get("data.txt");
         
         // 1. 行単位の読み込み
-        try (Scanner scanner = new Scanner(Files.newBufferedReader(path, StandardCharsets.UTF_8))) {
+        try (Scanner scanner = new Scanner(
+                Files.newBufferedReader(path, StandardCharsets.UTF_8))) {
             System.out.println("--- Scannerによる行単位の読み込み ---");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -665,7 +666,8 @@ public class TextFileReaderExample {
 
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
         System.out.println("--- 1行ずつ読み込み ---");
-        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = Files.newBufferedReader(
+                filePath, StandardCharsets.UTF_8)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
@@ -677,7 +679,8 @@ public class TextFileReaderExample {
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
         System.out.println("\n--- 全行を一度に読み込み ---");
         try {
-            List<String> lines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(
+                    filePath, StandardCharsets.UTF_8);
             lines.forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
@@ -703,8 +706,10 @@ public class TextFileWriterExample {
     public static void main(String[] args) {
         Path filePath = Paths.get("output.txt");
 
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                filePath, StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, 
+                StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write("最初の行。");
             writer.newLine(); // 改行
             writer.write("次の行。");
@@ -748,7 +753,8 @@ public class CharacterEncodingExample {
         
         // Shift_JISで読み込み（文字化けの例）
         System.out.println("--- Shift_JISで読み込み（文字化け） ---");
-        try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("Shift_JIS"))) {
+        try (BufferedReader reader = Files.newBufferedReader(
+                path, Charset.forName("Shift_JIS"))) {
             System.out.println(reader.readLine());  // 文字化けが発生
         } catch (IOException e) {
             e.printStackTrace();
@@ -756,7 +762,8 @@ public class CharacterEncodingExample {
         
         // UTF-8で正しく読み込み
         System.out.println("\n--- UTF-8で正しく読み込み ---");
-        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = Files.newBufferedReader(
+                path, StandardCharsets.UTF_8)) {
             System.out.println(reader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
@@ -804,7 +811,8 @@ public class DataStreamExample {
             String strValue = dis.readUTF();
             
             System.out.printf("読み込んだデータ: %d, %d, %.5f, %b, %s%n",
-                            intValue, longValue, doubleValue, boolValue, strValue);
+                    intValue, longValue, doubleValue, 
+                    boolValue, strValue);
         }
     }
 }
@@ -837,8 +845,15 @@ class UserProfile implements Serializable {
     String name;
     transient String password; // 直列化されない
     Date registrationDate;
-    public UserProfile(String name, String pw) { this.name = name; this.password = pw; this.registrationDate = new Date(); }
-    public String toString() { return "User[name=" + name + ", pw=" + password + ", date=" + registrationDate + "]"; }
+    public UserProfile(String name, String pw) { 
+        this.name = name; 
+        this.password = pw; 
+        this.registrationDate = new Date(); 
+    }
+    public String toString() { 
+        return "User[name=" + name + ", pw=" + password + 
+               ", date=" + registrationDate + "]"; 
+    }
 }
 
 public class SerializationExample {
@@ -847,15 +862,18 @@ public class SerializationExample {
         String filename = "user.ser";
 
         // 1. 直列化してファイルに保存
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream(filename))) {
             oos.writeObject(user);
             System.out.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
         // 2. ファイルから非直列化して復元
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream(filename))) {
             UserProfile loadedUser = (UserProfile) ois.readObject();
-            System.out.println("復元されたオブジェクト: " + loadedUser); // passwordはnullになる
+            System.out.println("復元されたオブジェクト: " + loadedUser); 
+            // passwordはnullになる
         } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
 }
@@ -918,14 +936,16 @@ public class FileChooserExample {
         int openResult = fileChooser.showOpenDialog(null);
         if (openResult == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println("選択されたファイル（開く）: " + selectedFile.getAbsolutePath());
+            System.out.println("選択されたファイル（開く）: " + 
+                    selectedFile.getAbsolutePath());
         }
 
         // ファイルを保存するダイアログ
         int saveResult = fileChooser.showSaveDialog(null);
         if (saveResult == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("保存するファイル: " + fileToSave.getAbsolutePath());
+            System.out.println("保存するファイル: " + 
+                    fileToSave.getAbsolutePath());
         }
     }
 }

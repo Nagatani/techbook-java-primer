@@ -66,7 +66,9 @@ button.addActionListener(e -> {
 });
 
 // 処理が1行なら波括弧も省略可能
-button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！"));
+button.addActionListener(
+    e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！")
+);
 ```
 これ以降のサンプルコードでは、主にこのラムダ式を使っていきます。
 

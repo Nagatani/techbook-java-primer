@@ -33,7 +33,9 @@ TableModel model = new AbstractTableModel() {
 
 // View：表示のカスタマイズ
 TableCellRenderer renderer = new DefaultTableCellRenderer() {
-    public Component getTableCellRendererComponent(...) {
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
         // セルの外観をカスタマイズ
     }
 };
@@ -212,8 +214,8 @@ return progress;  // セルにプログレスバー表示
 - 複雑なデータ操作機能
 
 **実装ヒント：**
-- AbstractテーブルModelを継承してfireテーブルDataChanged() で更新通知
-- テーブルCellRenderer.getテーブルCellRendererComponent() で描画カスタマイズ
+- AbstractTableModelを継承してfireTableDataChanged()で更新通知
+- TableCellRenderer.getTableCellRendererComponent()で描画カスタマイズ
 - RowSorterでソート機能、RowFilterでフィルタリング
 
 ---
@@ -277,8 +279,12 @@ tree.addTreeWillExpandListener(new TreeWillExpandListener() {
 ```java
 // アイコンと色分け
 class FileTreeCellRenderer extends DefaultTreeCellRenderer {
-    public Component getTreeCellRendererComponent(...) {
-        super.getTreeCellRendererComponent(...);
+    public Component getTreeCellRendererComponent(
+            JTree tree, Object value, boolean selected,
+            boolean expanded, boolean leaf, int row,
+            boolean hasFocus) {
+        super.getTreeCellRendererComponent(
+            tree, value, selected, expanded, leaf, row, hasFocus);
         if (value instanceof FileNode) {
             FileNode node = (FileNode)value;
             setIcon(getIconForFile(node.getFile()));
@@ -457,7 +463,7 @@ XMLデータブラウザ:
 - 階層データの直感的な操作
 
 **実装ヒント：**
-- DefaultMuテーブルTreeNodeでノード作成
+- DefaultMutableTreeNodeでノード作成
 - TreeWillExpandListenerで遅延読み込み
 - DefaultTreeCellRendererを継承してアイコンと表示をカスタマイズ
 
@@ -487,7 +493,8 @@ public class Person {
         pcs.firePropertyChange("name", oldName, name);
     }
     
-    public void addPropertyChangeListener(PropertyChangeListener l) {
+    public void addPropertyChangeListener(
+            PropertyChangeListener l) {
         pcs.addPropertyChangeListener(l);
     }
 }
@@ -613,7 +620,8 @@ monthlyPay = salary / 12
 tax = salary * 0.2
 netPay = salary - tax
 ageGroup = age < 30 ? "20代" : age < 40 ? "30代" : "40代以上"
-salaryRank = salary < 400万 ? "初級" : salary < 600万 ? "中級" : "上級"
+salaryRank = salary < 400万 ? "初級" : 
+             salary < 600万 ? "中級" : "上級"
 
 依存関係グラフ:
 salary → monthlyPay
@@ -1044,7 +1052,8 @@ public class JTableExample {
         // 3. Controllerの役割
         addButton.addActionListener(e -> {
             // Modelに行を追加
-            tableModel.addRow(new Object[]{"新人 幸子", 22, "研修中"});
+            Object[] newRow = {"新人 幸子", 22, "研修中"};
+            tableModel.addRow(newRow);
         });
         controlPanel.add(addButton);
 
@@ -1076,7 +1085,8 @@ public class EmployeeTableModel extends AbstractTableModel {
         private String department;
         private double salary;
         
-        public Employee(int id, String name, int age, String department, double salary) {
+        public Employee(int id, String name, int age, 
+                String department, double salary) {
             this.id = id;
             this.name = name;
             this.age = age;
@@ -1091,9 +1101,13 @@ public class EmployeeTableModel extends AbstractTableModel {
         public int getAge() { return age; }
         public void setAge(int age) { this.age = age; }
         public String getDepartment() { return department; }
-        public void setDepartment(String department) { this.department = department; }
+        public void setDepartment(String department) {
+            this.department = department;
+        }
         public double getSalary() { return salary; }
-        public void setSalary(double salary) { this.salary = salary; }
+        public void setSalary(double salary) {
+            this.salary = salary;
+        }
     }
     
     @Override
@@ -1154,7 +1168,8 @@ public class EmployeeTableModel extends AbstractTableModel {
     
     public void addEmployee(Employee employee) {
         employees.add(employee);
-        fireTableRowsInserted(employees.size() - 1, employees.size() - 1);
+        int lastRow = employees.size() - 1;
+        fireTableRowsInserted(lastRow, lastRow);
     }
     
     public void removeEmployee(int rowIndex) {
@@ -1175,8 +1190,9 @@ import java.awt.*;
 
 public class SalaryRenderer extends DefaultTableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
         
         Component component = super.getTableCellRendererComponent(
             table, value, isSelected, hasFocus, row, column);
@@ -1186,11 +1202,14 @@ public class SalaryRenderer extends DefaultTableCellRenderer {
             
             // 給与に応じて背景色を変更
             if (salary >= 8000000) {
-                component.setBackground(new Color(144, 238, 144)); // ライトグリーン
+                // ライトグリーン
+                component.setBackground(new Color(144, 238, 144));
             } else if (salary >= 5000000) {
-                component.setBackground(new Color(255, 255, 224)); // ライトイエロー
+                // ライトイエロー
+                component.setBackground(new Color(255, 255, 224));
             } else {
-                component.setBackground(new Color(255, 182, 193)); // ライトピンク
+                // ライトピンク
+                component.setBackground(new Color(255, 182, 193));
             }
             
             // 通貨形式でフォーマット

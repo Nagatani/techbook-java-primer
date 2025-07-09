@@ -39,7 +39,8 @@ public class Main {
 
         // ラムダ式を使えばさらに簡潔
         new Thread(() -> {
-            System.out.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
+            System.out.println("ラムダ式でのタスク実行: " + 
+                Thread.currentThread().getName());
         }).start();
     }
 }

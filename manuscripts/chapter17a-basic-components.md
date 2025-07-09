@@ -147,7 +147,8 @@ public class AdvancedLabel {
         JLabel textLabel = new JLabel("通常のテキスト");
         
         // HTMLを使用したリッチテキスト
-        JLabel htmlLabel = new JLabel("<html><b>太字</b>と<i>斜体</i>と<font color='red'>赤色</font></html>");
+        JLabel htmlLabel = new JLabel(
+            "<html><b>太字</b>と<i>斜体</i>と<font color='red'>赤色</font></html>");
         
         // 複数行テキスト
         JLabel multiLineLabel = new JLabel("<html>複数行の<br>テキストを<br>表示</html>");
@@ -235,7 +236,8 @@ public class TextInputComponents {
         
         // 数値スピナー
         frame.add(new JLabel("数値:"));
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        JSpinner spinner = new JSpinner(
+            new SpinnerNumberModel(0, 0, 100, 1));
         frame.add(spinner);
         
         // スライダー
@@ -292,7 +294,9 @@ public class SelectionComponents {
         
         // リスト
         frame.add(new JLabel("リスト:"));
-        String[] listItems = {"アイテム1", "アイテム2", "アイテム3", "アイテム4", "アイテム5"};
+        String[] listItems = {
+            "アイテム1", "アイテム2", "アイテム3", "アイテム4", "アイテム5"
+        };
         JList<String> list = new JList<>(listItems);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScrollPane = new JScrollPane(list);
@@ -356,7 +360,8 @@ public class GridLayoutExample {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // 3行2列のグリッドレイアウト
-        frame.setLayout(new GridLayout(3, 2, 5, 5)); // 行、列、水平間隔、垂直間隔
+        // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
+        frame.setLayout(new GridLayout(3, 2, 5, 5));
         
         // ボタンを順番に配置
         for (int i = 1; i <= 6; i++) {
@@ -384,7 +389,8 @@ public class FlowLayoutExample {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
-        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        frame.setLayout(new FlowLayout(
+            FlowLayout.CENTER, 10, 5));
         
         // さまざまなサイズのボタンを追加
         frame.add(new JButton("短い"));
@@ -418,7 +424,8 @@ public class ComplexLayoutExample {
         frame.setLayout(new BorderLayout());
         
         // ツールバー（上部）
-        JPanel toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel toolbarPanel = new JPanel(
+            new FlowLayout(FlowLayout.LEFT));
         toolbarPanel.add(new JButton("新規"));
         toolbarPanel.add(new JButton("開く"));
         toolbarPanel.add(new JButton("保存"));
@@ -433,7 +440,8 @@ public class ComplexLayoutExample {
         
         // 左側のサイドバー
         JPanel sidebarPanel = new JPanel(new BorderLayout());
-        sidebarPanel.setBorder(BorderFactory.createTitledBorder("ファイル一覧"));
+        sidebarPanel.setBorder(
+            BorderFactory.createTitledBorder("ファイル一覧"));
         String[] files = {"ファイル1.txt", "ファイル2.txt", "ファイル3.txt"};
         JList<String> fileList = new JList<>(files);
         sidebarPanel.add(new JScrollPane(fileList), BorderLayout.CENTER);
@@ -445,14 +453,16 @@ public class ComplexLayoutExample {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         JScrollPane textScrollPane = new JScrollPane(textArea);
-        textScrollPane.setBorder(BorderFactory.createTitledBorder("エディタ"));
+        textScrollPane.setBorder(
+            BorderFactory.createTitledBorder("エディタ"));
         mainPanel.add(textScrollPane, BorderLayout.CENTER);
         
         frame.add(mainPanel, BorderLayout.CENTER);
         
         // ステータスバー（下部）
         JPanel statusPanel = new JPanel(new BorderLayout());
-        statusPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusPanel.setBorder(
+            BorderFactory.createLoweredBevelBorder());
         statusPanel.add(new JLabel("準備完了"), BorderLayout.WEST);
         statusPanel.add(new JLabel("行: 1, 列: 1"), BorderLayout.EAST);
         frame.add(statusPanel, BorderLayout.SOUTH);
@@ -507,12 +517,14 @@ public class CombinedLayoutExample {
         frame.add(topPanel, BorderLayout.NORTH);
         
         // 中央：分割パネル
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        JSplitPane splitPane = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(200);
         
         // 左側パネル
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBorder(BorderFactory.createTitledBorder("プロジェクト"));
+        leftPanel.setBorder(
+            BorderFactory.createTitledBorder("プロジェクト"));
         
         // ツリー構造
         JTree tree = new JTree();
@@ -547,10 +559,12 @@ public class CombinedLayoutExample {
         
         // 下部：ステータスバー
         JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusBar.setBorder(
+            BorderFactory.createLoweredBevelBorder());
         statusBar.add(new JLabel("準備完了"), BorderLayout.WEST);
         
-        JPanel rightStatus = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel rightStatus = new JPanel(
+            new FlowLayout(FlowLayout.RIGHT));
         rightStatus.add(new JLabel("行: 1"));
         rightStatus.add(new JLabel("列: 1"));
         rightStatus.add(new JLabel("エンコーディング: UTF-8"));
