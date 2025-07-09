@@ -1,13 +1,13 @@
-# NIO.2 Advanced Features - Practical Examples
+# NIO.2 高度な機能 - 実践的な例
 
-This document provides practical examples and use cases for NIO.2 advanced features.
+このドキュメントでは、NIO.2の高度な機能の実践的な例と使用例を提供します。
 
-## 1. Real-time Log Monitoring System
+## 1. リアルタイムログ監視システム
 
-### Problem
-Monitor multiple log files across different servers, detect errors in real-time, and alert administrators.
+### 問題
+複数のサーバーにまたがる複数のログファイルを監視し、リアルタイムでエラーを検出し、管理者に警告を送信する。
 
-### Solution using WatchService
+### WatchServiceを使用した解決策
 ```java
 public class LogMonitoringSystem {
     private final AdvancedFileWatcher watcher;
@@ -17,10 +17,10 @@ public class LogMonitoringSystem {
         this.watcher = new AdvancedFileWatcher();
         this.alertService = new AlertService();
         
-        // Configure debouncing to avoid processing partial writes
+        // 部分的な書き込みの処理を避けるためにデバウンスを設定
         watcher.setDebounceDelay(Duration.ofMillis(500));
         
-        // Register processor for log files
+        // ログファイル用のプロセッサを登録
         watcher.registerProcessor("*.log", new LogProcessor());
     }
     
@@ -28,10 +28,10 @@ public class LogMonitoringSystem {
         @Override
         public void process(Path file, WatchEvent.Kind<?> eventType) {
             if (eventType == StandardWatchEventKinds.ENTRY_MODIFY) {
-                // Read only new content
+                // 新しいコンテンツのみを読み取る
                 String newContent = readNewContent(file);
                 
-                // Check for errors
+                // エラーをチェック
                 if (newContent.contains("ERROR") || newContent.contains("FATAL")) {
                     alertService.sendAlert(file, extractErrors(newContent));
                 }
@@ -41,26 +41,26 @@ public class LogMonitoringSystem {
     
     public void startMonitoring(Path... directories) throws IOException {
         for (Path dir : directories) {
-            watcher.watchDirectory(dir, true); // Recursive
+            watcher.watchDirectory(dir, true); // 再帰的
         }
         watcher.startWatching();
     }
 }
 ```
 
-## 2. High-Performance File Processing Pipeline
+## 2. 高性能ファイル処理パイプライン
 
-### Problem
-Process thousands of CSV files daily, each 100MB+, extract data, transform, and load into database.
+### 問題
+毎日数千のCSVファイル（各100MB以上）を処理し、データを抽出、変換してデータベースにロードする。
 
-### Solution using Asynchronous I/O
+### 非同期I/Oを使用した解決策
 ```java
 public class CSVProcessingPipeline {
     private final ParallelFileProcessor processor;
     private final DatabaseService database;
     
     public CSVProcessingPipeline() {
-        // Use optimal parallelism based on system
+        // システムに基づいて最適な並列性を使用
         this.processor = new ParallelFileProcessor(
             Runtime.getRuntime().availableProcessors() * 2
         );
@@ -70,7 +70,7 @@ public class CSVProcessingPipeline {
     public CompletableFuture<ProcessingResult> processCsvFiles(List<Path> files) {
         return processor.processFilesInBatches(files, this::processSingleFile, 10)
             .thenApply(results -> {
-                // Aggregate results
+                // 結果を集計
                 int totalRecords = results.values().stream()
                     .mapToInt(r -> r.recordCount)
                     .sum();
@@ -81,35 +81,35 @@ public class CSVProcessingPipeline {
     
     private ProcessingResult processSingleFile(Path csvFile) {
         try {
-            // Use memory-mapped file for large CSV
+            // 大きなCSVにはメモリマップドファイルを使用
             List<Record> records = readCsvWithMemoryMapping(csvFile);
             
-            // Transform data
+            // データを変換
             List<TransformedRecord> transformed = records.parallelStream()
                 .map(this::transformRecord)
                 .collect(Collectors.toList());
             
-            // Batch insert to database
+            // データベースへのバッチ挿入
             database.batchInsert(transformed);
             
             return new ProcessingResult(1, transformed.size());
         } catch (Exception e) {
-            logger.error("Failed to process: " + csvFile, e);
+            logger.error("処理に失敗しました: " + csvFile, e);
             return new ProcessingResult(0, 0);
         }
     }
 }
 ```
 
-## 3. Large File Search Engine
+## 3. 大規模ファイル検索エンジン
 
-### Problem
-Search through terabytes of log files for specific patterns without loading entire files into memory.
+### 問題
+ファイル全体をメモリにロードせずに、テラバイト規模のログファイルから特定のパターンを検索する。
 
-### Solution using Memory-Mapped Files
+### メモリマップドファイルを使用した解決策
 ```java
 public class LargeFileSearchEngine {
-    private final int CHUNK_SIZE = 100 * 1024 * 1024; // 100MB chunks
+    private final int CHUNK_SIZE = 100 * 1024 * 1024; // 100MBチャンク
     
     public List<SearchResult> searchPattern(Path file, String pattern) 
             throws IOException {
@@ -127,7 +127,7 @@ public class LargeFileSearchEngine {
                     FileChannel.MapMode.READ_ONLY, position, mapSize
                 );
                 
-                // Search in this chunk
+                // このチャンク内を検索
                 List<Long> matches = searchInBuffer(buffer, patternBytes);
                 for (Long offset : matches) {
                     results.add(new SearchResult(
@@ -137,7 +137,7 @@ public class LargeFileSearchEngine {
                     ));
                 }
                 
-                position += mapSize - patternBytes.length; // Overlap for boundary
+                position += mapSize - patternBytes.length; // 境界のためにオーバーラップ
             }
         }
         
@@ -166,27 +166,27 @@ public class LargeFileSearchEngine {
 }
 ```
 
-## 4. Real-time Data Streaming Platform
+## 4. リアルタイムデータストリーミングプラットフォーム
 
-### Problem
-Stream large data files to multiple consumers with different processing speeds (backpressure handling).
+### 問題
+大規模なデータファイルを処理速度の異なる複数のコンシューマーにストリーミングする（バックプレッシャー処理）。
 
-### Solution using Reactive Streams
+### リアクティブストリームを使用した解決策
 ```java
 public class DataStreamingPlatform {
     
     public void streamDataFile(Path dataFile, List<DataConsumer> consumers) {
         ReactiveFileReader reader = new ReactiveFileReader(dataFile, 64 * 1024);
         
-        // Create a multicast processor
+        // マルチキャストプロセッサを作成
         MulticastProcessor processor = new MulticastProcessor();
         
-        // Subscribe consumers with different speeds
+        // 異なる速度のコンシューマーを購読
         for (DataConsumer consumer : consumers) {
             processor.subscribe(new ConsumerAdapter(consumer));
         }
         
-        // Start streaming
+        // ストリーミングを開始
         reader.subscribe(processor);
     }
     
@@ -203,16 +203,16 @@ public class DataStreamingPlatform {
         @Override
         public void onSubscribe(Subscription subscription) {
             this.subscription = subscription;
-            // Request based on consumer's capacity
+            // コンシューマーの容量に基づいてリクエスト
             subscription.request(bufferSize);
         }
         
         @Override
         public void onNext(String data) {
-            // Process at consumer's pace
+            // コンシューマーのペースで処理
             CompletableFuture.runAsync(() -> {
                 consumer.process(data);
-                // Request more when ready
+                // 準備ができたらさらにリクエスト
                 subscription.request(1);
             });
         }
@@ -230,12 +230,12 @@ public class DataStreamingPlatform {
 }
 ```
 
-## 5. Distributed File Synchronization
+## 5. 分散ファイル同期
 
-### Problem
-Synchronize files across multiple servers with minimal network overhead and instant change detection.
+### 問題
+最小限のネットワークオーバーヘッドと即座の変更検出で、複数のサーバー間でファイルを同期する。
 
-### Solution combining WatchService and Async I/O
+### WatchServiceと非同期I/Oを組み合わせた解決策
 ```java
 public class DistributedFileSync {
     private final FileWatcher watcher;
@@ -245,10 +245,10 @@ public class DistributedFileSync {
     public void setupSync(Path localDir, List<RemoteServer> servers) 
             throws IOException {
         
-        // Watch local directory
+        // ローカルディレクトリを監視
         watcher.watchDirectory(localDir, true);
         
-        // Process changes
+        // 変更を処理
         watcher.registerProcessor("*", (file, eventType) -> {
             switch (eventType) {
                 case ENTRY_CREATE:
@@ -263,10 +263,10 @@ public class DistributedFileSync {
     }
     
     private void syncFileToServers(Path file, List<RemoteServer> servers) {
-        // Read file asynchronously
+        // ファイルを非同期で読み取る
         asyncIO.readFileAsync(file)
             .thenCompose(content -> {
-                // Upload to all servers in parallel
+                // すべてのサーバーに並列でアップロード
                 List<CompletableFuture<Void>> uploads = servers.stream()
                     .map(server -> network.uploadAsync(server, file, content))
                     .collect(Collectors.toList());
@@ -276,7 +276,7 @@ public class DistributedFileSync {
                 );
             })
             .exceptionally(throwable -> {
-                logger.error("Sync failed for: " + file, throwable);
+                logger.error("同期に失敗しました: " + file, throwable);
                 scheduleRetry(file, servers);
                 return null;
             });
@@ -284,30 +284,30 @@ public class DistributedFileSync {
 }
 ```
 
-## 6. Memory-Efficient Database Export
+## 6. メモリ効率的なデータベースエクスポート
 
-### Problem
-Export gigabytes of data from database to files without consuming excessive heap memory.
+### 問題
+過度なヒープメモリを消費せずに、ギガバイト規模のデータをデータベースからファイルにエクスポートする。
 
-### Solution using Memory-Mapped Files
+### メモリマップドファイルを使用した解決策
 ```java
 public class DatabaseExporter {
     private static final int BATCH_SIZE = 10000;
     
     public void exportToFile(String query, Path outputFile) throws Exception {
-        // Pre-allocate file space
+        // ファイルスペースを事前に割り当て
         long estimatedSize = database.estimateResultSize(query);
         
         try (SharedMemoryFile sharedFile = new SharedMemoryFile(outputFile, estimatedSize)) {
             AtomicLong position = new AtomicLong(0);
             
-            // Stream results from database
+            // データベースから結果をストリーム
             database.streamQuery(query, BATCH_SIZE, resultSet -> {
-                // Convert to CSV in memory
+                // メモリ内でCSVに変換
                 String csvBatch = convertToCsv(resultSet);
                 byte[] data = csvBatch.getBytes(StandardCharsets.UTF_8);
                 
-                // Write directly to memory-mapped file
+                // メモリマップドファイルに直接書き込み
                 long writePosition = position.getAndAdd(data.length);
                 sharedFile.writeData((int) writePosition, data);
             });
@@ -331,37 +331,37 @@ public class DatabaseExporter {
 }
 ```
 
-## Performance Comparison Results
+## パフォーマンス比較結果
 
-Based on real-world benchmarks:
+実際のベンチマークに基づく結果：
 
-| Operation | Traditional I/O | NIO.2 Solution | Improvement |
-|-----------|----------------|----------------|-------------|
-| Monitor 1000 files | 30% CPU, 5s delay | 2% CPU, 50ms delay | 15x CPU reduction, 100x faster |
-| Process 100 CSV files (100MB each) | 45 minutes | 8 minutes | 5.6x faster |
-| Search 1TB logs | Out of memory | 12 minutes | Now possible |
-| Stream 10GB file | 8GB heap used | 200MB heap used | 40x memory reduction |
-| Sync 10,000 files | 2 hours | 15 minutes | 8x faster |
+| 操作 | 従来のI/O | NIO.2ソリューション | 改善 |
+|------|----------|-------------------|------|
+| 1000ファイルの監視 | CPU 30%、5秒遅延 | CPU 2%、50ms遅延 | CPU 15倍削減、100倍高速 |
+| 100個のCSVファイル処理（各100MB） | 45分 | 8分 | 5.6倍高速 |
+| 1TBログ検索 | メモリ不足 | 12分 | 実行可能に |
+| 10GBファイルストリーム | 8GBヒープ使用 | 200MBヒープ使用 | メモリ40倍削減 |
+| 10,000ファイル同期 | 2時間 | 15分 | 8倍高速 |
 
-## Best Practices
+## ベストプラクティス
 
-1. **Choose the Right Tool**
-   - WatchService: Real-time file system monitoring
-   - Async I/O: Concurrent file operations
-   - Memory-mapped: Large file random access
-   - Reactive: Streaming with backpressure
+1. **適切なツールの選択**
+   - WatchService: リアルタイムファイルシステム監視
+   - 非同期I/O: 並行ファイル操作
+   - メモリマップド: 大規模ファイルのランダムアクセス
+   - リアクティブ: バックプレッシャー付きストリーミング
 
-2. **Resource Management**
-   - Always use try-with-resources
-   - Clean up memory-mapped buffers explicitly
-   - Limit concurrent operations
+2. **リソース管理**
+   - 常にtry-with-resourcesを使用
+   - メモリマップドバッファを明示的にクリーンアップ
+   - 並行操作を制限
 
-3. **Error Handling**
-   - Implement retry mechanisms
-   - Handle partial failures gracefully
-   - Log detailed error information
+3. **エラー処理**
+   - リトライメカニズムを実装
+   - 部分的な失敗を適切に処理
+   - 詳細なエラー情報をログに記録
 
-4. **Performance Optimization**
-   - Profile before optimizing
-   - Use direct ByteBuffers for better performance
-   - Batch operations when possible
+4. **パフォーマンス最適化**
+   - 最適化前にプロファイリング
+   - パフォーマンス向上のためダイレクトByteBufferを使用
+   - 可能な場合はバッチ操作を使用
