@@ -130,20 +130,20 @@ ValidationException e = pool.acquire("検証に失敗しました");
 try {
     throw e;
 } catch (ValidationException ve) {
-    // Handle
+    // 処理
 } finally {
     pool.release(e);
 }
 ```
 
-**Performance improvement**: 10-20x faster than creating new exceptions
+**パフォーマンス改善**: 新しい例外を作成するより10-20倍高速
 
-### 2. Conditional Stack Traces
+### 2. 条件付きスタックトレース
 
-Generate stack traces only when needed:
+必要な時のみスタックトレースを生成:
 
 ```java
-// Environment-based
+// 環境ベース
 public class ProductionException extends RuntimeException {
     @Override
     public Throwable fillInStackTrace() {
@@ -151,18 +151,18 @@ public class ProductionException extends RuntimeException {
     }
 }
 
-// Rate-limited (once per minute)
+// レート制限（1分に1回）
 throw new RateLimitedException("Too many requests");
 
-// Sampling (1 in 100)
+// サンプリング（100回に1回）
 throw new SamplingException("Common error");
 ```
 
-**Performance improvement**: 95% reduction in exception cost
+**パフォーマンス改善**: 例外コストを95%削減
 
-### 3. Result Pattern
+### 3. Resultパターン
 
-Avoid exceptions entirely for expected errors:
+予期されるエラーでは例外を完全に回避:
 
 ```java
 Result<Integer, String> result = parseNumber(input)
@@ -174,37 +174,37 @@ result.ifSuccess(System.out::println)
       .ifFailure(error -> log.warn("Error: {}", error));
 ```
 
-**Performance improvement**: 100-1000x faster than exception-based flow
+**パフォーマンス改善**: 例外ベースのフローより100-1000倍高速
 
-### 4. Null Object Pattern
+### 4. Null Objectパターン
 
-Eliminate null checks and NullPointerExceptions:
+nullチェックとNullPointerExceptionを排除:
 
 ```java
-User user = userService.findById(userId); // Never returns null
+User user = userService.findById(userId); // nullを返さない
 if (user.isValid()) {
-    // Process valid user
+    // 有効なユーザーを処理
 } else {
-    // Handle invalid/missing user
+    // 無効/不在のユーザーを処理
 }
 ```
 
-**Performance improvement**: Eliminates exception possibility entirely
+**パフォーマンス改善**: 例外の可能性を完全に排除
 
-## Real-World Scenarios
+## 実世界のシナリオ
 
-### Input Validation
+### 入力検証
 
-**Bad:**
+**悪い例:**
 ```java
 public void validateInput(String input) throws ValidationException {
     if (input == null) throw new ValidationException("Null input");
     if (input.isEmpty()) throw new ValidationException("Empty input");
-    // More validations...
+    // その他の検証...
 }
 ```
 
-**Good:**
+**良い例:**
 ```java
 public Result<ValidInput, List<String>> validateInput(String input) {
     List<String> errors = new ArrayList<>();
@@ -217,34 +217,34 @@ public Result<ValidInput, List<String>> validateInput(String input) {
 }
 ```
 
-### Resource Loading
+### リソース読み込み
 
-**Bad:**
+**悪い例:**
 ```java
 public Resource loadResource(String path) throws ResourceException {
-    // Throws exception for missing resources
+    // リソースがない場合に例外をスロー
 }
 ```
 
-**Good:**
+**良い例:**
 ```java
 public Optional<Resource> loadResource(String path) {
-    // Returns Optional.empty() for missing resources
+    // リソースがない場合にOptional.empty()を返す
 }
 ```
 
-### Business Logic
+### ビジネスロジック
 
-**Bad:**
+**悪い例:**
 ```java
 try {
     processOrder(order);
 } catch (InsufficientFundsException e) {
-    // Expected business condition
+    // 予期されるビジネス条件
 }
 ```
 
-**Good:**
+**良い例:**
 ```java
 OrderResult result = processOrder(order);
 switch (result.getStatus()) {
@@ -254,22 +254,22 @@ switch (result.getStatus()) {
 }
 ```
 
-## Monitoring and Metrics
+## モニタリングとメトリクス
 
-The project includes comprehensive exception monitoring:
+プロジェクトには包括的な例外モニタリングが含まれています:
 
 ```java
 ExceptionMetrics metrics = new ExceptionMetrics(true);
 ExceptionHandler handler = new ExceptionHandler(metrics);
 
-// Monitor operations
+// 操作をモニタリング
 handler.monitor(() -> riskyOperation());
 
-// Get detailed report
+// 詳細レポートを取得
 System.out.println(metrics.generateReport());
 ```
 
-Output:
+出力:
 ```
 === Exception Metrics Report ===
 Uptime: PT5M
@@ -285,48 +285,48 @@ IllegalArgumentException:
     Max: 45
 ```
 
-## Best Practices
+## ベストプラクティス
 
-### When to Optimize Exception Performance
+### 例外パフォーマンスを最適化すべき場合
 
-1. **Profile first** - Measure actual impact
-2. **High-frequency paths** - Focus on hot spots
-3. **Business logic** - Use domain models, not exceptions
-4. **Validation** - Return errors, don't throw
-5. **Expected conditions** - Use Optional/Result
+1. **まずプロファイリング** - 実際の影響を測定
+2. **高頻度のパス** - ホットスポットに焦点を当てる
+3. **ビジネスロジック** - 例外ではなくドメインモデルを使用
+4. **検証** - 例外を投げずにエラーを返す
+5. **予期される条件** - Optional/Resultを使用
 
-### When NOT to Optimize
+### 最適化すべきでない場合
 
-1. **True exceptions** - Rare, unexpected errors
-2. **Framework boundaries** - Follow conventions
-3. **Debugging** - Stack traces are valuable
-4. **Premature optimization** - Clarity over performance
+1. **真の例外** - まれで予期しないエラー
+2. **フレームワークの境界** - 規約に従う
+3. **デバッグ** - スタックトレースは貴重
+4. **早すぎる最適化** - パフォーマンスより明瞭性
 
-## JVM Optimizations
+## JVMの最適化
 
-The JVM applies several optimizations:
-- **Exception table lookup** - O(1) in most cases
-- **Inlining** - Reduces exception overhead
-- **Escape analysis** - May eliminate allocations
-- **Profile-guided optimization** - Optimizes common paths
+JVMはいくつかの最適化を適用します：
+- **例外テーブル検索** - ほとんどの場合O(1)
+- **インライン化** - 例外のオーバーヘッドを削減
+- **エスケープ解析** - アロケーションを排除する可能性
+- **プロファイルガイド最適化** - 一般的なパスを最適化
 
-However, these optimizations have limits:
-- Cannot eliminate stack trace cost
-- Limited by exception frequency
-- Defeated by complex control flow
+ただし、これらの最適化には限界があります：
+- スタックトレースのコストは排除できない
+- 例外の頻度に制限される
+- 複雑な制御フローで無効化される
 
-## Conclusion
+## まとめ
 
-Exception performance optimization is crucial for:
-- High-performance applications
-- Low-latency systems
-- High-throughput services
-- Mobile/embedded systems
+例外パフォーマンスの最適化は以下の場合に重要です：
+- 高性能アプリケーション
+- 低レイテンシシステム
+- 高スループットサービス
+- モバイル/組み込みシステム
 
-Remember:
-- **Measure first** - Don't assume performance problems
-- **Design appropriately** - Use exceptions for exceptional cases
-- **Optimize wisely** - Focus on measurable improvements
-- **Maintain clarity** - Don't sacrifice readability
+覚えておくべきこと：
+- **まず測定する** - パフォーマンス問題を仮定しない
+- **適切に設計する** - 例外は例外的なケースに使用
+- **賢明に最適化する** - 測定可能な改善に焦点を当てる
+- **明瞭性を維持する** - 可読性を犠牲にしない
 
-For most applications, clean exception handling is more important than micro-optimizations. However, understanding these techniques helps make informed decisions when performance truly matters.
+ほとんどのアプリケーションでは、マイクロ最適化よりもクリーンな例外処理の方が重要です。しかし、これらの技術を理解することで、パフォーマンスが本当に重要な場合に情報に基づいた決定を下すことができます。
