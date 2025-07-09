@@ -78,40 +78,48 @@ public class BankAccount {
 
 #### 2. 継承
 ```java
-public class Animal {
+public class Product {
+    protected String productId;
     protected String name;
+    protected int price;
     
-    public void eat() {
-        System.out.println(name + "が食事をしています");
+    public void displayInfo() {
+        System.out.println("商品名: " + name + ", 価格: " + price + "円");
     }
 }
 
-public class Dog extends Animal {
-    public void bark() {
-        System.out.println(name + "が吠えています");
+public class Book extends Product {
+    private String author;
+    private String isbn;
+    
+    public void displayBookInfo() {
+        displayInfo();  // 親クラスのメソッドを呼び出し
+        System.out.println("著者: " + author + ", ISBN: " + isbn);
     }
 }
 ```
 
 #### 3. ポリモーフィズム
 ```java
-public interface Shape {
-    double calculateArea();
+public interface PaymentMethod {
+    void processPayment(double amount);
 }
 
-public class Circle implements Shape {
-    private double radius;
+public class CreditCardPayment implements PaymentMethod {
+    private String cardNumber;
     
-    public double calculateArea() {
-        return Math.PI * radius * radius;
+    public void processPayment(double amount) {
+        System.out.println("クレジットカードで" + amount + "円を決済しました");
+        // 実際のクレジットカード決済処理
     }
 }
 
-public class Rectangle implements Shape {
-    private double width, height;
+public class BankTransferPayment implements PaymentMethod {
+    private String accountNumber;
     
-    public double calculateArea() {
-        return width * height;
+    public void processPayment(double amount) {
+        System.out.println("銀行振込で" + amount + "円を送金しました");
+        // 実際の銀行振込処理
     }
 }
 ```
@@ -123,30 +131,46 @@ public class Rectangle implements Shape {
 ### クラスの基本構造
 
 ```java
-public class Car {
+public class Order {
     // フィールド（状態）
-    private String model;
-    private String color;
-    private int speed;
+    private String orderId;
+    private String customerName;
+    private String status;  // "受付中", "処理中", "配送中", "完了"
+    private double totalAmount;
     
     // コンストラクタ
-    public Car(String model, String color) {
-        this.model = model;
-        this.color = color;
-        this.speed = 0;
+    public Order(String orderId, String customerName, double totalAmount) {
+        this.orderId = orderId;
+        this.customerName = customerName;
+        this.totalAmount = totalAmount;
+        this.status = "受付中";
     }
     
     // メソッド（振る舞い）
-    public void accelerate(int increment) {
-        speed += increment;
+    public void processOrder() {
+        if (status.equals("受付中")) {
+            status = "処理中";
+            System.out.println("注文 " + orderId + " の処理を開始しました");
+        }
     }
     
-    public void brake(int decrement) {
-        speed = Math.max(0, speed - decrement);
+    public void ship() {
+        if (status.equals("処理中")) {
+            status = "配送中";
+            System.out.println("注文 " + orderId + " を発送しました");
+        }
+    }
+    
+    public void complete() {
+        if (status.equals("配送中")) {
+            status = "完了";
+            System.out.println("注文 " + orderId + " が完了しました");
+        }
     }
     
     public void displayInfo() {
-        System.out.println(model + " (" + color + ") - 速度: " + speed + "km/h");
+        System.out.printf("注文ID: %s, 顧客: %s, 金額: %.2f円, 状態: %s%n",
+                orderId, customerName, totalAmount, status);
     }
 }
 ```
@@ -154,29 +178,35 @@ public class Car {
 ### mainメソッドとプログラムの実行
 
 ```java
-public class CarDemo {
+public class OrderDemo {
     public static void main(String[] args) {
         // オブジェクトの生成
-        Car myCar = new Car("プリウス", "シルバー");
+        Order order1 = new Order("ORD-001", "田中太郎", 15800);
         
-        // メソッドの呼び出し
-        myCar.accelerate(50);
-        myCar.displayInfo();
+        // 注文のライフサイクルをシミュレート
+        order1.displayInfo();
         
-        myCar.accelerate(30);
-        myCar.displayInfo();
+        order1.processOrder();
+        order1.displayInfo();
         
-        myCar.brake(20);
-        myCar.displayInfo();
+        order1.ship();
+        order1.displayInfo();
+        
+        order1.complete();
+        order1.displayInfo();
     }
 }
 ```
 
 実行結果：
 ```
-プリウス (シルバー) - 速度: 50km/h
-プリウス (シルバー) - 速度: 80km/h
-プリウス (シルバー) - 速度: 60km/h
+注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 受付中
+注文 ORD-001 の処理を開始しました
+注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 処理中
+注文 ORD-001 を発送しました
+注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 配送中
+注文 ORD-001 が完了しました
+注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 完了
 ```
 
 ## 2.5 実用的なクラス設計例
