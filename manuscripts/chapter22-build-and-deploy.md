@@ -461,19 +461,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class JsonProcessorApp {
     
     static class Person {
         private String name;
         private int age;
-        private Date created;
+        private LocalDateTime created;
         
         public Person(String name, int age) {
             this.name = name;
             this.age = age;
-            this.created = new Date();
+            this.created = LocalDateTime.now();
         }
         
         // Getters and Setters

@@ -47,73 +47,28 @@
 
 本章の詳細な内容はPart Aで扱いますが、ここでは基本的なクラスとインスタンスの関係を簡単な例で確認しておきましょう：
 
-### 銀行口座クラスの基本構造
+### 銀行口座クラスの復習と発展
 
-以下は、銀行口座を表現するシンプルなクラスの例です。このクラスはカプセル化の基本的な原則に従って設計されています：
+第2章で基本的なBankAccountクラスを紹介し、第3章でカプセル化の段階的な改善（V1→V2→V3）を学習しました。ここでは、これまでの学習内容を踏まえて、クラスとインスタンスの関係をより深く理解していきましょう。
+
+第3章で学習したBankAccountV3クラスを振り返ると、以下の重要な設計原則が適用されていました：
+
+- **カプセル化**: privateフィールドとpublicメソッドによるデータ保護
+- **不変性**: finalキーワードによる口座番号の不変性保証
+- **検証**: コンストラクタとメソッドでの入力値検証
+- **履歴管理**: トランザクション履歴の記録
+
+これらの原則を基に、本章では以下の観点からクラス設計をさらに深めていきます：
 
 ```java
-// BankAccount.java
-public class BankAccount {
-    // インスタンス変数（プライベートにして直接アクセスを防ぐ）
-    private String accountNumber;
-    private String ownerName;
-    private double balance;
-    
-    // コンストラクタ（新しい口座を作成）
-    public BankAccount(String accountNumber, String ownerName, double initialBalance) {
-        this.accountNumber = accountNumber;
-        this.ownerName = ownerName;
-        this.balance = initialBalance;
-    }
-    
-    // 入金メソッド
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-            System.out.println(amount + "円を入金しました。");
-        } else {
-            System.out.println("入金額は正の値である必要があります。");
-        }
-    }
-    
-    // 出金メソッド
-    public boolean withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
-            balance -= amount;
-            System.out.println(amount + "円を出金しました。");
-            return true;
-        } else {
-            System.out.println("出金できません。");
-            return false;
-        }
-    }
-    
-    // 残高照会（getter）
-    public double getBalance() {
-        return balance;
-    }
-    
-    // 口座情報の表示
-    public void displayInfo() {
-        System.out.println("口座番号: " + accountNumber);
-        System.out.println("名義人: " + ownerName);
-        System.out.println("残高: " + balance + "円");
-    }
-}
-
-// 使用例
-public class BankAccountTest {
+// 使用例：第3章のBankAccountV3クラスを使った実例
+public class BankAccountDemo {
     public static void main(String[] args) {
-        // インスタンスの作成（新しい口座を開設）
-        BankAccount myAccount = new BankAccount("12345", "山田太郎", 10000);
+        // インスタンスの作成（第3章のBankAccountV3を使用）
+        // BankAccountV3 myAccount = new BankAccountV3("1234567890", 10000);
         
-        // メソッドを使った操作
-        myAccount.displayInfo();
-        myAccount.deposit(5000);
-        myAccount.withdraw(3000);
-        
-        // 現在の残高を確認
-        System.out.println("現在の残高: " + myAccount.getBalance() + "円");
+        // この章では、より高度なクラス設計パターンを学習します
+        System.out.println("クラスとインスタンスの関係を深く理解しましょう");
     }
 }
 ```
@@ -359,78 +314,86 @@ public class Employee {
 
 ## 実践的なクラス設計例
 
-### 銀行口座クラスの設計
+### 銀行口座クラスの発展的な設計
 
-カプセル化とアクセス制御を活用した実践的な例：
+第3章で学習したBankAccountの段階的な改善（V1→V2→V3）を踏まえて、本章では更に高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です：
 
 ```java
-public class BankAccount {
-    // プライベートフィールド：外部から直接変更不可
-    private String accountNumber;
-    private String accountHolder;
-    private double balance;
-    private boolean isActive;
+// 第3章のBankAccountV3をさらに発展させた設計例
+public class EnhancedBankAccount extends BankAccountV3 {
+    // 追加のフィールド：口座の状態管理
+    private AccountStatus status;
+    private LocalDateTime lastActivityDate;
+    private int failedTransactionCount;
     
-    // コンストラクタ：初期化時のデータ検証
-    public BankAccount(String accountNumber, String accountHolder, double initialBalance) {
-        setAccountNumber(accountNumber);
-        setAccountHolder(accountHolder);
-        setBalance(initialBalance);
-        this.isActive = true;
+    // 列挙型で口座状態を管理
+    public enum AccountStatus {
+        ACTIVE,      // アクティブ
+        SUSPENDED,   // 一時停止
+        CLOSED       // 閉鎖
     }
     
-    // パブリックメソッド：外部インターフェイス
+    // 拡張されたコンストラクタ
+    public EnhancedBankAccount(String accountNumber, String accountHolder, double initialBalance) {
+        super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
+        this.status = AccountStatus.ACTIVE;
+        this.lastActivityDate = LocalDateTime.now();
+        this.failedTransactionCount = 0;
+    }
+    
+    // オーバーライドされた入金メソッド：状態チェックを追加
+    @Override
     public void deposit(double amount) {
-        validateAccount();
-        if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要があります");
-        }
-        balance += amount;
+        validateAccountStatus();
+        super.deposit(amount);
+        updateLastActivity();
     }
     
-    public void withdraw(double amount) {
-        validateAccount();
-        if (amount <= 0) {
-            throw new IllegalArgumentException("出金額は正の値である必要があります");
+    // オーバーライドされた出金メソッド：失敗回数の追跡
+    @Override
+    public boolean withdraw(double amount) {
+        validateAccountStatus();
+        boolean success = super.withdraw(amount);
+        if (!success) {
+            failedTransactionCount++;
+            if (failedTransactionCount >= 3) {
+                status = AccountStatus.SUSPENDED;
+                System.out.println("連続した取引失敗により、口座が一時停止されました。");
+            }
+        } else {
+            failedTransactionCount = 0;  // 成功したらリセット
         }
-        if (balance < amount) {
-            throw new IllegalArgumentException("残高不足です");
-        }
-        balance -= amount;
+        updateLastActivity();
+        return success;
     }
     
     // プライベートメソッド：内部ロジック
-    private void validateAccount() {
-        if (!isActive) {
-            throw new IllegalStateException("この口座は無効です");
+    private void validateAccountStatus() {
+        if (status != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("口座がアクティブではありません: " + status);
         }
     }
     
-    // getter/setterメソッド
-    public String getAccountNumber() {
-        return accountNumber;
+    private void updateLastActivity() {
+        this.lastActivityDate = LocalDateTime.now();
     }
     
-    private void setAccountNumber(String accountNumber) {
-        if (accountNumber == null || !accountNumber.matches("\\d{10}")) {
-            throw new IllegalArgumentException("口座番号は10桁の数字である必要があります");
+    // 口座の再アクティブ化
+    public void reactivateAccount() {
+        if (status == AccountStatus.SUSPENDED) {
+            status = AccountStatus.ACTIVE;
+            failedTransactionCount = 0;
+            System.out.println("口座が再アクティブ化されました。");
         }
-        this.accountNumber = accountNumber;
-    }
-    
-    public double getBalance() {
-        validateAccount();
-        return balance;
-    }
-    
-    private void setBalance(double balance) {
-        if (balance < 0) {
-            throw new IllegalArgumentException("残高は負の値にできません");
-        }
-        this.balance = balance;
     }
 }
 ```
+
+**この設計の要点**：
+- **継承の活用**: 第3章のBankAccountV3を基に機能を拡張
+- **列挙型**: 口座状態を型安全に管理
+- **状態管理**: 失敗回数の追跡と自動停止機能
+- **テンプレートメソッドパターン**: 基本動作を保持しつつ拡張
 
 ### クラス設計のベストプラクティス
 

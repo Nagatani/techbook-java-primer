@@ -262,7 +262,7 @@ TDDでは、以下の短いサイクルを繰り返します：
 
 ### 20.7.2 TDDの実践例
 
-#### ステップ1: 🔴 Red - 失敗するテストを書く
+#### ステップ1: Red - 失敗するテストを書く
 
 ```java
 public class StringCalculatorTest {
@@ -275,7 +275,7 @@ public class StringCalculatorTest {
 }
 ```
 
-#### ステップ2: 🟢 Green - テストを通す最小限のコード
+#### ステップ2: Green - テストを通す最小限のコード
 
 ```java
 public class StringCalculator {
@@ -285,7 +285,7 @@ public class StringCalculator {
 }
 ```
 
-#### ステップ3: 🔵 Refactoring - 必要に応じてコードを改善
+#### ステップ3: Refactoring - 必要に応じてコードを改善
 
 この段階では特にリファクタリングは不要です。次のテストに進みます。
 

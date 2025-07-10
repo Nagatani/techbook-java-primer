@@ -425,7 +425,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
 
@@ -439,7 +439,7 @@ public class Task {
     @Expose(serialize = false)  // シリアライズ時に除外
     private String internalId;
     
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private List<String> tags;
     
     public Task(String title, boolean completed) {
@@ -612,7 +612,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class CommonsLangExample {
     

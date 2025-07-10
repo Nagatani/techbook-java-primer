@@ -917,7 +917,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
         actionMap.put("insert-timestamp", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textArea.insert(new java.util.Date().toString(), 
+                textArea.insert(java.time.LocalDateTime.now().toString(), 
                     textArea.getCaretPosition());
             }
         });
@@ -2199,8 +2199,9 @@ public class DragAndDropExample extends JFrame {
                         for (File file : files) {
                             dropArea.append("- " + file.getAbsolutePath() + "\n");
                             dropArea.append("  サイズ: " + file.length() + " bytes\n");
-                            dropArea.append("  更新日時: " + new java.util.Date(
-                                file.lastModified()) + "\n\n");
+                            dropArea.append("  更新日時: " + java.time.LocalDateTime.ofInstant(
+                                java.time.Instant.ofEpochMilli(file.lastModified()), 
+                                java.time.ZoneId.systemDefault()) + "\n\n");
                         }
                     }
                     

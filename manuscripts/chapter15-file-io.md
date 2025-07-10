@@ -837,18 +837,18 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 
 ```java
 import java.io.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 // Serializableを実装したクラス
 class UserProfile implements Serializable {
     private static final long serialVersionUID = 1L; // クラスのバージョン管理用
     String name;
     transient String password; // 直列化されない
-    Date registrationDate;
+    LocalDateTime registrationDate;
     public UserProfile(String name, String pw) { 
         this.name = name; 
         this.password = pw; 
-        this.registrationDate = new Date(); 
+        this.registrationDate = LocalDateTime.now(); 
     }
     public String toString() { 
         return "User[name=" + name + ", pw=" + password + 

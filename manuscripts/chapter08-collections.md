@@ -1,5 +1,330 @@
 # 第8章 コレクションフレームワーク
 
+## 本章の学習目標
+
+本章では、Javaのコレクションフレームワークについて学習します。配列は固定サイズのデータ構造ですが、実際のプログラムでは動的にサイズが変化するデータを扱う必要が頻繁にあります。コレクションフレームワークは、このようなニーズに応える柔軟で強力なデータ構造を提供します。
+
+### 前提知識
+- 第6章までの基本的なJava文法
+- 配列の使い方と限界の理解
+- インターフェイスの基本概念
+- ジェネリクスの基礎（第9章で詳しく学習）
+
+### 学習内容
+- コレクションフレームワークの全体像と設計思想
+- List、Set、Mapの基本的な使い方と特徴
+- 各実装クラス（ArrayList、HashSet、HashMap等）の使い分け
+- イテレータによる要素の走査
+- コレクションの実践的な活用方法
+
+## 8.1 なぜコレクションフレームワークが必要か
+
+### 配列の限界
+
+配列は基本的なデータ構造ですが、実践的なプログラミングでは以下の限界に直面します：
+
+```java
+// 配列の問題点1: サイズが固定
+String[] students = new String[30];  // 30人分しか格納できない
+// 31人目の学生を追加したい場合は？
+
+// 配列の問題点2: 要素の削除が困難
+// 配列の中間要素を削除すると「穴」ができる
+students[5] = null;  // 削除？でも配列のサイズは変わらない
+
+// 配列の問題点3: 便利なメソッドがない
+// 要素の検索、ソート、重複除去などは自分で実装する必要がある
+```
+
+### コレクションフレームワークの利点
+
+コレクションフレームワークはこれらの問題を解決します：
+
+```java
+// 動的なサイズ変更
+List<String> studentList = new ArrayList<>();
+studentList.add("田中");    // いくらでも追加可能
+studentList.add("佐藤");
+studentList.remove("田中");  // 簡単に削除
+
+// 重複を許さないデータ構造
+Set<String> uniqueNames = new HashSet<>();
+uniqueNames.add("山田");
+uniqueNames.add("山田");  // 2回目は追加されない
+
+// キーと値のペアを管理
+Map<String, Integer> scores = new HashMap<>();
+scores.put("田中", 85);
+scores.put("佐藤", 92);
+```
+
+## 8.2 コレクションフレームワークの全体像
+
+Javaのコレクションフレームワークは、以下の主要なインターフェイスで構成されています：
+
+### 主要インターフェイス
+
+1. **Collection**: すべてのコレクションの基底インターフェイス
+   - **List**: 順序付きコレクション（重複可）
+   - **Set**: 重複を許さないコレクション
+   - **Queue**: FIFO（先入れ先出し）のコレクション
+
+2. **Map**: キーと値のペアを管理（Collectionとは独立）
+
+### インターフェイス階層
+
+```
+Collection
+├── List
+│   ├── ArrayList
+│   ├── LinkedList
+│   └── Vector（レガシー）
+├── Set
+│   ├── HashSet
+│   ├── TreeSet
+│   └── LinkedHashSet
+└── Queue
+    ├── LinkedList（Listとの二重実装）
+    └── PriorityQueue
+
+Map
+├── HashMap
+├── TreeMap
+├── LinkedHashMap
+└── Hashtable（レガシー）
+```
+
+## 8.3 List インターフェイス
+
+Listは順序を保持し、インデックスによるアクセスが可能なコレクションです。
+
+### ArrayList vs LinkedList
+
+```java
+// ArrayList: 内部的に配列を使用
+List<String> arrayList = new ArrayList<>();
+arrayList.add("要素1");
+arrayList.add("要素2");
+String element = arrayList.get(0);  // 高速なランダムアクセス
+
+// LinkedList: 双方向連結リストを使用
+List<String> linkedList = new LinkedList<>();
+linkedList.add("要素1");
+linkedList.add(0, "先頭に挿入");  // 先頭への挿入が高速
+```
+
+**使い分けの指針：**
+- **ArrayList**: ランダムアクセスが多い場合（get/set操作）
+- **LinkedList**: 先頭・末尾での追加・削除が多い場合
+
+### 主な操作
+
+```java
+List<String> list = new ArrayList<>();
+
+// 追加
+list.add("Java");
+list.add(0, "Hello");  // 指定位置に挿入
+
+// 取得
+String first = list.get(0);
+int size = list.size();
+
+// 削除
+list.remove("Java");
+list.remove(0);  // インデックスで削除
+
+// 検索
+boolean contains = list.contains("Hello");
+int index = list.indexOf("Java");
+
+// 繰り返し処理
+for (String item : list) {
+    System.out.println(item);
+}
+```
+
+## 8.4 Set インターフェイス
+
+Setは重複要素を許さないコレクションです。数学的な集合の概念に対応します。
+
+### HashSet vs TreeSet vs LinkedHashSet
+
+```java
+// HashSet: ハッシュテーブルを使用（順序は保証されない）
+Set<Integer> hashSet = new HashSet<>();
+hashSet.add(3);
+hashSet.add(1);
+hashSet.add(2);
+// 出力順序は不定
+
+// TreeSet: ソートされた順序を維持
+Set<Integer> treeSet = new TreeSet<>();
+treeSet.add(3);
+treeSet.add(1);
+treeSet.add(2);
+// 出力: 1, 2, 3（昇順）
+
+// LinkedHashSet: 挿入順序を維持
+Set<Integer> linkedHashSet = new LinkedHashSet<>();
+linkedHashSet.add(3);
+linkedHashSet.add(1);
+linkedHashSet.add(2);
+// 出力: 3, 1, 2（挿入順）
+```
+
+### 集合演算
+
+```java
+Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
+Set<String> set2 = new HashSet<>(Arrays.asList("B", "C", "D"));
+
+// 和集合
+Set<String> union = new HashSet<>(set1);
+union.addAll(set2);  // {A, B, C, D}
+
+// 積集合
+Set<String> intersection = new HashSet<>(set1);
+intersection.retainAll(set2);  // {B, C}
+
+// 差集合
+Set<String> difference = new HashSet<>(set1);
+difference.removeAll(set2);  // {A}
+```
+
+## 8.5 Map インターフェイス
+
+Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます。
+
+### HashMap vs TreeMap vs LinkedHashMap
+
+```java
+// HashMap: 高速な検索・挿入（順序は保証されない）
+Map<String, Integer> hashMap = new HashMap<>();
+hashMap.put("Java", 25);
+hashMap.put("Python", 30);
+hashMap.put("JavaScript", 27);
+
+// TreeMap: キーでソートされた順序を維持
+Map<String, Integer> treeMap = new TreeMap<>();
+treeMap.putAll(hashMap);
+// キーのアルファベット順で格納
+
+// LinkedHashMap: 挿入順序を維持
+Map<String, Integer> linkedHashMap = new LinkedHashMap<>();
+linkedHashMap.putAll(hashMap);
+// 挿入した順序で格納
+```
+
+### 主な操作
+
+```java
+Map<String, String> map = new HashMap<>();
+
+// 追加・更新
+map.put("JP", "日本");
+map.put("US", "アメリカ");
+
+// 取得
+String country = map.get("JP");
+String defaultValue = map.getOrDefault("UK", "不明");
+
+// 削除
+map.remove("US");
+
+// 存在確認
+boolean hasKey = map.containsKey("JP");
+boolean hasValue = map.containsValue("日本");
+
+// すべてのキー・値を処理
+for (String key : map.keySet()) {
+    System.out.println(key + ": " + map.get(key));
+}
+
+// エントリーセットで処理（より効率的）
+for (Map.Entry<String, String> entry : map.entrySet()) {
+    System.out.println(entry.getKey() + ": " + entry.getValue());
+}
+```
+
+## 8.6 イテレータとfor-each文
+
+### イテレータの基本
+
+```java
+List<String> list = Arrays.asList("A", "B", "C");
+
+// イテレータを使った走査
+Iterator<String> iter = list.iterator();
+while (iter.hasNext()) {
+    String element = iter.next();
+    System.out.println(element);
+}
+
+// 走査中の安全な削除
+Iterator<String> iter2 = list.iterator();
+while (iter2.hasNext()) {
+    String element = iter2.next();
+    if (element.equals("B")) {
+        iter2.remove();  // イテレータ経由で削除
+    }
+}
+```
+
+### 拡張for文（for-each）
+
+```java
+// より簡潔な記述
+for (String element : list) {
+    System.out.println(element);
+}
+
+// ただし、走査中の削除はできない
+// for (String element : list) {
+//     if (element.equals("B")) {
+//         list.remove(element);  // ConcurrentModificationException!
+//     }
+// }
+```
+
+## 8.7 コレクションの選択指針
+
+### パフォーマンス特性
+
+| 操作 | ArrayList | LinkedList | HashSet | TreeSet | HashMap | TreeMap |
+|------|-----------|------------|---------|---------|---------|---------|
+| 追加（末尾） | O(1) | O(1) | O(1) | O(log n) | O(1) | O(log n) |
+| 削除（インデックス） | O(n) | O(n) | - | - | - | - |
+| 検索（値） | O(n) | O(n) | O(1) | O(log n) | - | - |
+| 取得（インデックス） | O(1) | O(n) | - | - | - | - |
+| 取得（キー） | - | - | - | - | O(1) | O(log n) |
+
+### 使用場面の例
+
+1. **ArrayList**: 
+   - 学生名簿、商品リスト
+   - インデックスアクセスが多い場合
+
+2. **LinkedList**:
+   - 待ち行列、履歴管理
+   - 先頭・末尾での操作が多い場合
+
+3. **HashSet**:
+   - ユニークなID管理、重複チェック
+   - 順序が重要でない場合
+
+4. **TreeSet**:
+   - ランキング、ソート済みデータ
+   - 常にソートされた状態が必要な場合
+
+5. **HashMap**:
+   - 辞書、キャッシュ、設定値管理
+   - キーによる高速検索が必要な場合
+
+6. **TreeMap**:
+   - ソート済み辞書、範囲検索
+   - キーの順序が重要な場合
+
 ## 章末演習
 
 本章で学んだコレクションフレームワークの概念を活用して、実践的な練習課題に取り組みましょう。
@@ -8,7 +333,7 @@
 本章で学んだList、Set、Mapの特性を活かした実装を行います。
 
 **注意：** 第8章以降は、問題文と期待される動作のみを提示します。実装方法は自分で考えてください。
-これらの課題では、最高レベルの評価基準を設定しています。分散システムの設計・実装能力、マイクロ秒レベルでのパフォーマンス最適化、AIや機械学習技術の統合能力、そして商用品質のシステム構築能力が求められます。
+課題は段階的に難易度が上がるよう設計されています。基礎レベルでコレクションの基本を習得し、応用レベルで実践的な活用方法を学び、挑戦レベルでより高度な設計パターンに取り組みます。
 
 
 
@@ -320,44 +645,61 @@ ArrayListを使用して、簡易的なインメモリデータベースを実�
 
 ## 挑戦レベル課題（上級者向け）
 
-### 課題1: 分散インメモリ検索エンジン
+### 課題1: 簡易テキスト検索エンジン
 
-**学習目標：** 分散システムアーキテクチャ、検索エンジン技術、機械学習の統合
-
-**問題説明：**
-Elasticsearch風の分散検索エンジンをコレクションフレームワークベースで実装してください。
-
-**要求仕様：**
-- 全文検索エンジンの実装
-- 分散インデックス管理
-- リアルタイム検索
-- 機械学習による関連度スコアリング
-
-### 課題2: 高頻度取引システム
-
-**学習目標：** マイクロ秒レベルの超高性能実装、金融システム特有の要求への対応
+**学習目標：** 転置インデックス、検索アルゴリズム、コレクションの高度な活用
 
 **問題説明：**
-金融市場の高頻度取引システムを極限の性能で実装してください。
+複数のテキストファイルから単語を検索できる簡易検索エンジンを実装してください。
 
 **要求仕様：**
-- マイクロ秒レベルの取引実行
-- リアルタイム市場データ処理
-- リスク管理システム
-- 機械学習による価格予測
+- 単語の出現位置を記録する転置インデックス（Map<String, List<DocumentPosition>>）
+- AND/OR検索の実装
+- 検索結果のランキング（出現頻度順）
+- 大文字小文字を区別しない検索
 
-### 課題3: 自律分散ロボット制御システム
+**実装のポイント：**
+- HashMapで単語をキーとしたインデックス管理
+- TreeMapで検索結果の自動ソート
+- SetとListを組み合わせた効率的な検索処理
 
-**学習目標：** 分散協調制御、リアルタイムシステム、AI統合
+### 課題2: 図書館管理システム
+
+**学習目標：** 複数コレクションの連携、実用的なCRUD操作、データの一貫性管理
 
 **問題説明：**
-複数ロボットが協調する自律分散制御システムを実装してください。
+図書の貸出管理ができる図書館システムを実装してください。
 
 **要求仕様：**
-- リアルタイム分散協調制御
-- 動的環境認識・地図生成
-- 群知能アルゴリズム
-- 人間との協調作業
+- 書籍管理（Map<String, Book>でISBNをキーに管理）
+- 利用者管理（Map<String, User>で利用者IDをキーに管理）
+- 貸出履歴（List<LoanRecord>で時系列管理）
+- 期限切れ図書の検索（TreeSetで日付順管理）
+- ジャンル別・著者別の集計機能
+
+**実装のポイント：**
+- 適切なコレクションの選択による効率化
+- データの整合性チェック（同じ本の二重貸出防止など）
+- 日付を使った期限管理の実装
+
+### 課題3: ゲームのランキングシステム
+
+**学習目標：** ソート済みコレクション、リアルタイム更新、効率的なデータ構造
+
+**問題説明：**
+オンラインゲームのスコアランキングシステムを実装してください。
+
+**要求仕様：**
+- プレイヤーのスコア管理（TreeMapで自動ソート）
+- トップ10ランキングの表示
+- 同点の場合の順位付けルール
+- 週間・月間ランキングの管理
+- プレイヤーの順位検索機能
+
+**実装のポイント：**
+- TreeMapとComparatorを使った効率的なランキング管理
+- 複数期間のランキングを効率的に管理する方法
+- 大量データでも高速に動作する設計
 
 
 
