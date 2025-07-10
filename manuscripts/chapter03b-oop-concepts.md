@@ -1,12 +1,12 @@
-# 第3章 オブジェクト指向の考え方 - Part B: オブジェクト指向の基本概念
+## 第3章 オブジェクト指向の考え方 - Part B: オブジェクト指向の基本概念
 
-## 2.3 オブジェクト指向の基本概念を実際のコードで理解する
+### 2.3 オブジェクト指向の基本概念を実際のコードで理解する
 
 理論的な説明の前に、実際のJavaコードを見てオブジェクト指向の基本概念を理解しましょう。
 
-### 手続き型とオブジェクト指向の違い
+#### 手続き型とオブジェクト指向の違い
 
-#### 手続き型の例（C言語風）
+##### 手続き型の例（C言語風）
 ```java
 // データと処理が分離している
 public class ProceduralExample {
@@ -26,7 +26,7 @@ public class ProceduralExample {
 }
 ```
 
-#### オブジェクト指向の例
+##### オブジェクト指向の例
 ```java
 // データと処理が一体化している
 public class Student {
@@ -57,9 +57,9 @@ public class ObjectOrientedExample {
 }
 ```
 
-### オブジェクト指向の3つの基本原則
+#### オブジェクト指向の3つの基本原則
 
-#### 1. カプセル化
+##### 1. カプセル化
 ```java
 public class BankAccount {
     private double balance;  // privateで隠蔽
@@ -76,7 +76,7 @@ public class BankAccount {
 }
 ```
 
-#### 2. 継承
+##### 2. 継承
 ```java
 public class Product {
     protected String productId;
@@ -99,7 +99,7 @@ public class Book extends Product {
 }
 ```
 
-#### 3. ポリモーフィズム
+##### 3. ポリモーフィズム
 ```java
 public interface PaymentMethod {
     void processPayment(double amount);
@@ -124,11 +124,11 @@ public class BankTransferPayment implements PaymentMethod {
 }
 ```
 
-## 2.4 クラスの作成
+### 2.4 クラスの作成
 
 オブジェクト指向プログラミングでは、**クラス**という設計図を作成し、その設計図から**オブジェクト（インスタンス）**を生成します。
 
-### クラスの基本構造
+#### クラスの基本構造
 
 ```java
 public class Order {
@@ -175,7 +175,7 @@ public class Order {
 }
 ```
 
-### mainメソッドとプログラムの実行
+#### mainメソッドとプログラムの実行
 
 ```java
 public class OrderDemo {
@@ -209,9 +209,9 @@ public class OrderDemo {
 注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 完了
 ```
 
-## 2.5 実用的なクラス設計例
+### 2.5 実用的なクラス設計例
 
-### 例1：図書管理システム
+#### 例1：図書管理システム
 
 ```java
 public class Book {
@@ -246,7 +246,7 @@ public class Book {
 }
 ```
 
-### 例2：ショッピングカート
+#### 例2：ショッピングカート
 
 ```java
 import java.util.ArrayList;
@@ -306,7 +306,7 @@ public class ShoppingCart {
 }
 ```
 
-## まとめ
+### まとめ
 
 このパートでは、オブジェクト指向の基本概念を実際のコードを通じて学習しました。重要なポイントは：
 

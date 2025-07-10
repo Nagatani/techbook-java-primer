@@ -1,8 +1,8 @@
-# Part A: 基本コンポーネントとレイアウト
+## Part A: 基本コンポーネントとレイアウト
 
-## 17.1 はじめてのGUIプログラム
+### 17.1 はじめてのGUIプログラム
 
-### Hello Swing - ウィンドウを表示してみよう
+#### Hello Swing - ウィンドウを表示してみよう
 
 まずはもっとも基本的なGUIプログラムから始めましょう。以下は、単純なウィンドウを表示するプログラムです：
 
@@ -37,7 +37,7 @@ public class HelloSwing {
 4. **setLocationRelativeTo(null)**: nullを指定すると、ウィンドウが画面中央に配置されます。
 5. **setVisible(true)**: ウィンドウを表示します。これを呼ばないと画面に表示されません。
 
-### ウィンドウの基本設定
+#### ウィンドウの基本設定
 
 `JFrame`オブジェクトのメソッドを呼び出すことで、ウィンドウのさまざまな設定が可能です：
 
@@ -69,9 +69,9 @@ public class WindowSettings {
 }
 ```
 
-## 17.2 基本的なコンポーネントの配置
+### 17.2 基本的なコンポーネントの配置
 
-### JLabelで文字を表示する
+#### JLabelで文字を表示する
 
 ウィンドウに文字を表示してみましょう：
 
@@ -98,7 +98,7 @@ public class HelloLabel {
 }
 ```
 
-### 複数のコンポーネントを配置する
+#### 複数のコンポーネントを配置する
 
 複数のコンポーネントを配置するには、レイアウトマネージャーを使います：
 
@@ -128,9 +128,9 @@ public class MultipleComponents {
 }
 ```
 
-### 基本コンポーネントの詳細な使用例
+#### 基本コンポーネントの詳細な使用例
 
-#### JLabelとアイコンの活用
+##### JLabelとアイコンの活用
 
 ```java
 import javax.swing.*;
@@ -163,7 +163,7 @@ public class AdvancedLabel {
 }
 ```
 
-#### JButtonの高度な使用
+##### JButtonの高度な使用
 
 ```java
 import javax.swing.*;
@@ -203,7 +203,7 @@ public class AdvancedButton {
 }
 ```
 
-#### テキスト入力コンポーネント
+##### テキスト入力コンポーネント
 
 ```java
 import javax.swing.*;
@@ -254,7 +254,7 @@ public class TextInputComponents {
 }
 ```
 
-#### 選択コンポーネント
+##### 選択コンポーネント
 
 ```java
 import javax.swing.*;
@@ -308,9 +308,9 @@ public class SelectionComponents {
 }
 ```
 
-## 17.3 レイアウトマネージャーの基礎
+### 17.3 レイアウトマネージャーの基礎
 
-### BorderLayout - 5つの領域に配置
+#### BorderLayout - 5つの領域に配置
 
 `BorderLayout`は、ウィンドウを5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置します：
 
@@ -345,7 +345,7 @@ public class BorderLayoutExample {
 - **EAST**と**WEST**：残りの高さいっぱいに広がり、幅は推奨サイズ
 - **CENTER**：残りの領域すべてを占める
 
-### GridLayout - 格子状に配置
+#### GridLayout - 格子状に配置
 
 `GridLayout`は、コンポーネントを格子状（行と列）に配置します：
 
@@ -374,7 +374,7 @@ public class GridLayoutExample {
 }
 ```
 
-### FlowLayout - 流れるような配置
+#### FlowLayout - 流れるような配置
 
 `FlowLayout`は、コンポーネントを左から右へ、行がいっぱいになったら次の行へと配置します：
 
@@ -406,9 +406,9 @@ public class FlowLayoutExample {
 }
 ```
 
-## 17.4 パネルを使った複雑なレイアウト
+### 17.4 パネルを使った複雑なレイアウト
 
-### JPanelで階層的なレイアウトを構築
+#### JPanelで階層的なレイアウトを構築
 
 複雑なレイアウトを実現するには、`JPanel`を使って階層的にコンポーネントを組み合わせます：
 
@@ -473,7 +473,7 @@ public class ComplexLayoutExample {
 }
 ```
 
-### レイアウトの組み合わせによる画面構築
+#### レイアウトの組み合わせによる画面構築
 
 レイアウトマネージャーを組み合わせることで、より柔軟な画面設計が可能です：
 
@@ -578,7 +578,7 @@ public class CombinedLayoutExample {
 }
 ```
 
-### まとめ
+#### まとめ
 
 本パートでは、Swingを使った基本的なGUIプログラミングについて学習しました：
 

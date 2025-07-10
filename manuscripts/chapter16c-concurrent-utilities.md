@@ -1,10 +1,10 @@
-# 第16章 マルチスレッドプログラミング - Part C: 並行コレクションと同期プリミティブ
+## 第16章 マルチスレッドプログラミング - Part C: 並行コレクションと同期プリミティブ
 
-## 並行コレクションの活用
+### 並行コレクションの活用
 
 通常のコレクション（ArrayList、HashMap等）は、複数のスレッドから同時にアクセスされることを想定していません。Javaは、並行処理に対応した特別なコレクションを提供しています。
 
-### ConcurrentHashMap
+#### ConcurrentHashMap
 
 ```java
 import java.util.concurrent.*;
@@ -35,7 +35,7 @@ public class ConcurrentCollectionsExample {
 }
 ```
 
-### CopyOnWriteArrayList
+#### CopyOnWriteArrayList
 
 ```java
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -82,7 +82,7 @@ public class CopyOnWriteExample {
 }
 ```
 
-### BlockingQueue と プロデューサー・コンシューマーパターン
+#### BlockingQueue と プロデューサー・コンシューマーパターン
 
 ```java
 import java.util.concurrent.BlockingQueue;
@@ -168,9 +168,9 @@ public class ProducerConsumerExample {
 }
 ```
 
-## 高度な同期プリミティブ
+### 高度な同期プリミティブ
 
-### ReadWriteLock - 読み取り/書き込みロック
+#### ReadWriteLock - 読み取り/書き込みロック
 
 ```java
 import java.util.concurrent.*;
@@ -238,7 +238,7 @@ public class AdvancedSynchronizationExample {
 }
 ```
 
-### Semaphore - リソース数制限
+#### Semaphore - リソース数制限
 
 ```java
 import java.util.concurrent.Semaphore;
@@ -305,7 +305,7 @@ public class SemaphoreExample {
 }
 ```
 
-### CountDownLatch - カウントダウン同期
+#### CountDownLatch - カウントダウン同期
 
 ```java
 import java.util.concurrent.CountDownLatch;
@@ -355,7 +355,7 @@ public class CountDownLatchExample {
 }
 ```
 
-### CyclicBarrier - 循環バリア
+#### CyclicBarrier - 循環バリア
 
 ```java
 import java.util.concurrent.CyclicBarrier;
@@ -397,7 +397,7 @@ public class CyclicBarrierExample {
 }
 ```
 
-### Exchanger - データ交換
+#### Exchanger - データ交換
 
 ```java
 import java.util.concurrent.Exchanger;
@@ -442,7 +442,7 @@ public class ExchangerExample {
 }
 ```
 
-### wait/notify を使った低レベル同期
+#### wait/notify を使った低レベル同期
 
 ```java
 public class WaitNotifyExample {
@@ -489,7 +489,7 @@ public class WaitNotifyExample {
 }
 ```
 
-### 並行コレクションの性能比較
+#### 並行コレクションの性能比較
 
 ```java
 import java.util.*;
@@ -547,7 +547,7 @@ public class CollectionPerformanceComparison {
 }
 ```
 
-## まとめ
+### まとめ
 
 このパートでは、並行コレクションと高度な同期プリミティブについて学習しました：
 
