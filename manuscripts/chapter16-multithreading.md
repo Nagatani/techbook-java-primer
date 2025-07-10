@@ -1,14 +1,14 @@
 # 第16章 マルチスレッドプログラミング
 
-## 本章の学習目標
+## 16.1 本章の学習目標
 
-### 前提知識
+### 16.1.1 前提知識
 
 本章を学習するためには、第13章までに習得した実用的なJavaアプリケーション開発能力が必須となります。特に、オブジェクト指向設計の実践的な理解、インターフェイスと実装の分離、例外処理やコレクションフレームワークの適切な使用など、堅牢なプログラムを作成する基本的な能力が求められます。また、同期処理と非同期処理の概念的な理解も重要です。単一のスレッドで順番に処理が実行される同期処理と、複数の処理が並行して実行される非同期処理の違いを理解し、なぜ非同期処理が必要なのかを認識していることが必要です。さらに、現代のソフトウェア開発においてパフォーマンスとスケーラビリティがなぜ重要なのかという問題意識を持っていることで、本章の内容をより深く理解できます。
 
 システム理解の前提として、OSにおけるプロセスとスレッドの基本概念を理解していることが望ましいです。プロセスが独立したメモリ空間を持つのに対し、スレッドは同一プロセス内でメモリを共有するという違いを理解することで、マルチスレッドプログラミングの利点と課題がより明確になります。また、CPUのコア数、キャッシュメモリ、メモリの可視性といったハードウェアアーキテクチャの基本的な理解があることで、並行処理で発生する問題の本質的な原因を理解しやすくなります。
 
-### 学習目標
+### 16.1.2 学習目標
 
 本章では、現代のJavaアプリケーション開発に不可欠なマルチスレッドプログラミングを体系的に学習します。知識理解の面では、まずマルチスレッドプログラミングがなぜ必要なのか、その本質的な価値を理解します。マルチコアCPUが標準となった現代において、単一スレッドでは活用できない計算資源を最大限に活用し、応答性の高いアプリケーションを構築するためには、並行処理が不可欠です。同時に、並行処理がもたらす新たな課題、特に競合状態（レースコンディション）やデッドロックといった問題の本質を理解し、これらを回避・解決するための理論的基盤を学びます。
 
@@ -22,38 +22,38 @@ Java 5で導入されたjava.util.concurrentパッケージの設計思想を理
 
 
 
-## 章の構成
+## 16.2 章の構成
 
 本章は、マルチスレッドプログラミングを体系的に学習できるよう、以下のパートで構成されています：
 
-### [Part A: マルチスレッドの基礎](chapter16a-thread-basics.md)
+### 16.2.1 [Part A: マルチスレッドの基礎](chapter16a-thread-basics.md)
 - マルチスレッドプログラミングの必要性
 - スレッドの作成と実行
 - 共有リソースと同期制御
 - synchronizedキーワードによる排他制御
 
-### [Part B: Executorフレームワーク](chapter16b-executor-framework.md)
+### 16.2.2 [Part B: Executorフレームワーク](chapter16b-executor-framework.md)
 - ExecutorServiceとスレッドプール
 - FutureとCallableによる非同期処理
 - CompleテーブルFutureによる高度な非同期処理
 
-### [Part C: 並行コレクションと同期プリミティブ](chapter16c-concurrent-utilities.md)
+### 16.2.3 [Part C: 並行コレクションと同期プリミティブ](chapter16c-concurrent-utilities.md)
 - 並行コレクション（ConcurrentHashMap、BlockingQueue等）
 - 高度な同期プリミティブ（Lock、Semaphore、CountDownLatch等）
 - プロデューサー・コンシューマーパターン
 
-### [Part D: 実践的な並行処理](chapter16d-practical-concurrency.md)
+### 16.2.4 [Part D: 実践的な並行処理](chapter16d-practical-concurrency.md)
 - パフォーマンス測定とベンチマーク
 - スレッドセーフなパターン
 - 並行処理の落とし穴と解決策
 - ForkJoinPoolと並列ストリーム
 
-### [Part E: 章末演習](chapter16e-exercises.md)
+### 16.2.5 [Part E: 章末演習](chapter16e-exercises.md)
 - 基礎レベル課題：スレッド操作と同期処理
 - 実践レベル課題：並行コレクションとExecutor
 - 応用レベル課題：高度な並行処理パターン
 
-## 学習の進め方
+## 16.3 学習の進め方
 
 1. Part Aでスレッドの基本概念と同期制御を理解
 2. Part Bで実用的なExecutorフレームワークを習得
@@ -65,15 +65,15 @@ Java 5で導入されたjava.util.concurrentパッケージの設計思想を理
 
 本章で学んだマルチスレッドプログラミングの概念を活用して、実践的な練習課題に取り組みましょう。
 
-### 演習の目標
+### 16.3.1 演習の目標
 マルチスレッドプログラミングの基礎から高度な並行処理までを習得します。
 
 
 
 
-## 基礎レベル課題（必須）
+## 16.4 基礎レベル課題（必須）
 
-### 課題1: 基本的なスレッド操作
+### 16.4.1 課題1: 基本的なスレッド操作
 
 基本的なスレッド生成と操作を実装してください。
 
@@ -184,7 +184,7 @@ Thread-pool-1-thread-3: カウンタ 2
 
 
 
-### 課題2: 同期処理とデータ競合対策
+### 16.4.2 課題2: 同期処理とデータ競合対策
 
 同期処理を実装し、データ競合を防ぐ方法を理解してください。
 
@@ -289,7 +289,7 @@ volatile変数テスト:
 
 
 
-### 課題3: 並行コレクションとExecutor
+### 16.4.3 課題3: 並行コレクションとExecutor
 
 並行処理専用のコレクションとExecutorServiceを活用してください。
 
@@ -410,7 +410,7 @@ step3: 集計処理 → 30
 
 
 
-### 課題4: 生産者・消費者パターン
+### 16.4.4 課題4: 生産者・消費者パターン
 
 生産者・消費者パターンを実装し、スレッド間通信を理解してください。
 
@@ -548,9 +548,9 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 
 
-## 実装のヒント
+## 16.5 実装のヒント
 
-### マルチスレッドのポイント
+### 16.5.1 マルチスレッドのポイント
 
 1. **スレッド作成**: Thread継承vs Runnable実装
 2. **同期制御**: synchronized vs Lockインターフェイス
@@ -559,13 +559,13 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 5. **スレッド間通信**: BlockingQueue、wait/notify
 6. **パフォーマンス**: 適切な並行度とオーバーヘッド考慮
 
-### よくある落とし穴
+### 16.5.2 よくある落とし穴
 - run（）メソッドの直接呼び出し（start()を使う）
 - 同期処理の範囲が広すぎる・狭すぎる
 - デッドロックの発生（ロック順序に注意）
 - リソースリーク（ExecutorServiceのshutdown忘れ）
 
-### 設計のベストプラクティス
+### 16.5.3 設計のベストプラクティス
 - 可能な限りimmuテーブルオブジェクトを使用
 - 共有状態を最小限に抑制
 - 並行コレクションの積極的活用
@@ -573,7 +573,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 
 
-## 実装環境
+## 16.6 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -592,7 +592,7 @@ exercises/chapter16/
 
 
 
-## 完了確認チェックリスト
+## 16.7 完了確認チェックリスト
 
 ### 基礎レベル
 - [ ] 基本的なスレッド操作ができている
@@ -614,7 +614,7 @@ exercises/chapter16/
 
 **次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度な並行プログラミングに挑戦しましょう！
 
-## 20.1 マルチスレッドプログラミングの基礎
+## 16.8 マルチスレッドプログラミングの基礎
 
 スレッドとは、プログラム内での処理の流れを表す実行単位です。通常、1つのプログラムは1つのスレッド（メインスレッド）で実行されます。
 
@@ -628,7 +628,7 @@ exercises/chapter16/
 -   **応答性の維持**: GUIアプリケーションなどで、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスが固まるのを防ぎます。
 -   **リソースの有効活用**: サーバアプリケーションなどでは、複数のクライアントからのリクエストを同時に処理することで、計算リソースを有効に活用できます。
 
-## 20.2 スレッドの作成と実行
+### 16.8.1 スレッドの作成と実行
 
 Javaでスレッドを作成するには、主に`Runnable`インターフェイスを実装する方法が推奨されます。
 
@@ -661,7 +661,7 @@ public class Main {
 
 `Runnable`を利用する方法は、Javaがクラスの多重継承をサポートしないという制約を受けず、また「タスク（何をするか）」と「スレッド（どう実行するか）」を分離できるため、より柔軟な設計が可能です。
 
-## 20.3 共有リソースと同期制御
+### 16.8.2 共有リソースと同期制御
 
 複数のスレッドが、同じデータ（オブジェクトや変数）に同時にアクセスすると、予期せぬ問題が発生することがあります。これを**競合状態 (Race Condition)** と呼びます。
 
@@ -686,11 +686,11 @@ class SynchronizedCounter {
 
 `synchronized`は非常に強力ですが、ロックの範囲が広すぎるとパフォーマンスの低下を招いたり、複数のロックが絡み合うと**デッドロック**（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こしたりする危険性もあります。
 
-## 20.4 Executorフレームワークによる高度なスレッド管理
+### 16.8.3 Executorフレームワークによる高度なスレッド管理
 
 スレッドを直接生成・管理するのは複雑で、エラーも発生しやすいため、現代のJavaプログラミングでは**Executorフレームワーク**を使用するのが一般的です。これは、スレッドの生成・管理を抽象化し、**スレッドプール**を利用して効率的にタスクを実行するためのしくみです。
 
-### `ExecutorService`とスレッドプール
+#### 16.9.1 ExecutorServiceとスレッドプール
 
 `ExecutorService`は、タスクの投入とスレッドプールの管理を行うためのインターフェイスです。スレッドプールは、あらかじめ作成された再利用可能なスレッドの集まりです。
 
@@ -1257,7 +1257,7 @@ public class AdvancedSynchronizationExample {
 }
 ```
 
-### `Future`による非同期処理の結果取得
+#### 16.9.2 Futureによる非同期処理の結果取得
 
 計算結果などの戻り値が必要なタスクには、`Callable<V>`インターフェイスを使います。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが返されます。
 
@@ -1503,7 +1503,7 @@ public class ThreadSafeSingletonExamples {
 }
 ```
 
-### 一般的な並行処理の落とし穴と解決策
+#### 16.15 一般的な並行処理の落とし穴と解決策
 
 ```java
 import java.util.*;
@@ -1657,7 +1657,7 @@ public class ConcurrencyPitfallsAndSolutions {
 }
 ```
 
-## より深い理解のために
+### 16.8.4 より深い理解のために
 
 本章で学んだマルチスレッドプログラミングの基礎をさらに深く理解したい方は、付録B.09「Java Memory ModelとHappens-Before関係」を参照してください。この付録では以下の高度なトピックを扱います：
 
@@ -1669,7 +1669,7 @@ public class ConcurrencyPitfallsAndSolutions {
 
 これらの知識は、高性能な並行アプリケーションの開発や、微妙な並行性バグのデバッグに役立ちます。
 
-## まとめ
+### 16.8.5 まとめ
 
 -   **マルチスレッド**は、複数の処理を並行して実行し、アプリケーションのパフォーマンスや応答性を向上させる技術です。
 -   タスクの定義には、柔軟性の高い`Runnable`インターフェイス（特にラムダ式）の使用が推奨されます。
@@ -1683,313 +1683,17 @@ public class ConcurrencyPitfallsAndSolutions {
 <!-- Merged from chapter16a-thread-basics.md -->
 
 
-## 20.1 マルチスレッドプログラミングの基礎
-
-スレッドとは、プログラム内での処理の流れを表す実行単位です。通常、1つのプログラムは1つのスレッド（メインスレッド）で実行されます。
-
-**マルチスレッド**とは、1つのプログラム内で複数のスレッドを同時に実行し、処理を並行して進める技術です。
-
-### なぜマルチスレッドが必要か
-
-現代のコンピュータは、複数のコアを持つCPU（マルチコアプロセッサ）を搭載するのが一般的です。マルチスレッドプログラミングは、この複数のコアを効率的に活用し、アプリケーションのパフォーマンスを向上させるための重要な技術です。
-
--   **パフォーマンスの向上**: 時間のかかる処理を複数のスレッドに分割し、同時に実行することで、全体の処理時間を短縮できます。
--   **応答性の維持**: GUIアプリケーションなどで、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスが固まるのを防ぎます。
--   **リソースの有効活用**: サーバアプリケーションなどでは、複数のクライアントからのリクエストを同時に処理することで、計算リソースを有効に活用できます。
-
-## 20.2 スレッドの作成と実行
-
-Javaでスレッドを作成するには、主に`Runnable`インターフェイスを実装する方法が推奨されます。
-
-### `Runnable`インターフェイスの実装（推奨）
-
-`Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
-
-```java
-// Runnableを実装したクラス
-class MyTask implements Runnable {
-    @Override
-    public void run() {
-        System.out.println("タスク実行中: " + Thread.currentThread().getName());
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        MyTask task = new MyTask();
-        Thread thread = new Thread(task);
-        thread.start(); // スレッドを開始
-
-        // ラムダ式を使えばさらに簡潔
-        new Thread(() -> {
-            System.out.println("ラムダ式でのタスク実行: " + 
-                Thread.currentThread().getName());
-        }).start();
-    }
-}
-```
-
-`Runnable`を利用する方法は、Javaがクラスの多重継承をサポートしないという制約を受けず、また「タスク（何をするか）」と「スレッド（どう実行するか）」を分離できるため、より柔軟な設計が可能です。
-
-## 20.3 共有リソースと同期制御
-
-複数のスレッドが、同じデータ（オブジェクトや変数）に同時にアクセスすると、予期せぬ問題が発生することがあります。これを**競合状態 (Race Condition)** と呼びます。
-
-### `synchronized`による排他制御
-
-この問題を解決するために、Javaは`synchronized`キーワードによる**排他制御**のしくみを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。
-
-```java
-class SynchronizedCounter {
-    private int count = 0;
-
-    // このメソッドはsynchronizedによりスレッドセーフになる
-    public synchronized void increment() {
-        count++;
-    }
-
-    public int getCount() {
-        return count;
-    }
-}
-```
-
-`synchronized`は非常に強力ですが、ロックの範囲が広すぎるとパフォーマンスの低下を招いたり、複数のロックが絡み合うと**デッドロック**（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こしたりする危険性もあります。
-
-### 基本的なスレッド操作の例
-
-```java
-public class BasicThreadExample {
-    public static void main(String[] args) throws InterruptedException {
-        // スレッドの作成と開始
-        Thread thread1 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                System.out.println("Thread-1: " + i);
-                try {
-                    Thread.sleep(1000); // 1秒間スリープ
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-        
-        Thread thread2 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                System.out.println("Thread-2: " + i);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-        
-        // スレッドの開始
-        thread1.start();
-        thread2.start();
-        
-        // スレッドの完了を待つ
-        thread1.join();
-        thread2.join();
-        
-        System.out.println("すべてのスレッドが完了しました");
-    }
-}
-```
-
-### データ競合の例と対策
-
-```java
-// データ競合が発生する例
-class UnsafeCounter {
-    private int count = 0;
-    
-    public void increment() {
-        count++; // これはアトミックな操作ではない
-    }
-    
-    public int getCount() {
-        return count;
-    }
-}
-
-// スレッドセーフな例
-class SafeCounter {
-    private int count = 0;
-    
-    public synchronized void increment() {
-        count++; // synchronizedにより同時に1つのスレッドのみアクセス可能
-    }
-    
-    public synchronized int getCount() {
-        return count;
-    }
-}
-
-public class DataRaceExample {
-    public static void main(String[] args) throws InterruptedException {
-        // 非安全なカウンタのテスト
-        UnsafeCounter unsafeCounter = new UnsafeCounter();
-        Thread[] threads = new Thread[10];
-        
-        for (int i = 0; i < 10; i++) {
-            threads[i] = new Thread(() -> {
-                for (int j = 0; j < 1000; j++) {
-                    unsafeCounter.increment();
-                }
-            });
-            threads[i].start();
-        }
-        
-        // すべてのスレッドの完了を待つ
-        for (Thread t : threads) {
-            t.join();
-        }
-        
-        System.out.println("非安全なカウンタ: " + unsafeCounter.getCount());
-        // 期待値は10,000だが、データ競合により異なる値になる可能性がある
-        
-        // 安全なカウンタのテスト
-        SafeCounter safeCounter = new SafeCounter();
-        Thread[] safeThreads = new Thread[10];
-        
-        for (int i = 0; i < 10; i++) {
-            safeThreads[i] = new Thread(() -> {
-                for (int j = 0; j < 1000; j++) {
-                    safeCounter.increment();
-                }
-            });
-            safeThreads[i].start();
-        }
-        
-        for (Thread t : safeThreads) {
-            t.join();
-        }
-        
-        System.out.println("安全なカウンタ: " + safeCounter.getCount());
-        // 必ず10,000になる
-    }
-}
-```
-
-### synchronizedブロックの使用
-
-```java
-class BankAccount {
-    private double balance;
-    private final Object lock = new Object();
-    
-    public BankAccount(double initialBalance) {
-        this.balance = initialBalance;
-    }
-    
-    public void deposit(double amount) {
-        synchronized (lock) {
-            if (amount > 0) {
-                balance += amount;
-                System.out.println(Thread.currentThread().getName() + 
-                    " が " + amount + " 円入金しました。残高: " + balance);
-            }
-        }
-    }
-    
-    public boolean withdraw(double amount) {
-        synchronized (lock) {
-            if (amount > 0 && balance >= amount) {
-                balance -= amount;
-                System.out.println(Thread.currentThread().getName() + 
-                    " が " + amount + " 円出金しました。残高: " + balance);
-                return true;
-            }
-            return false;
-        }
-    }
-    
-    public double getBalance() {
-        synchronized (lock) {
-            return balance;
-        }
-    }
-}
-
-public class BankAccountExample {
-    public static void main(String[] args) throws InterruptedException {
-        BankAccount account = new BankAccount(1000);
-        
-        // 複数のスレッドが同時に口座にアクセス
-        Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                account.deposit(100);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }, "入金スレッド1");
-        
-        Thread t2 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                account.withdraw(50);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }, "出金スレッド1");
-        
-        Thread t3 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
-                account.deposit(200);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }, "入金スレッド2");
-        
-        t1.start();
-        t2.start();
-        t3.start();
-        
-        t1.join();
-        t2.join();
-        t3.join();
-        
-        System.out.println("最終残高: " + account.getBalance());
-    }
-}
-```
-
-## まとめ
-
-このパートでは、マルチスレッドプログラミングの基礎を学習しました：
-
-- **スレッドの概念**：プログラム内の並行実行単位
-- **スレッドの作成**：Runnableインターフェイスを使った実装
-- **競合状態**：複数スレッドが共有データに同時アクセスする問題
-- **同期制御**：synchronizedキーワードによる排他制御
-
-これらの基礎知識は、より高度な並行処理プログラミングを学ぶための土台となります。次のパートでは、Executorフレームワークを使った、より実践的なスレッド管理について学習します。
-
-
-
-次のパート：[Part B - Executorフレームワーク](chapter16b-executor-framework.md)
 
 
 
 
 <!-- Merged from chapter16b-executor-framework.md -->
 
-# 第16章 マルチスレッドプログラミング - Part B: Executorフレームワーク
-
-# 20.4 Executorフレームワークによる高度なスレッド管理
+## 16.9 Executorフレームワーク
 
 スレッドを直接生成・管理するのは複雑で、エラーも発生しやすいため、現代のJavaプログラミングでは**Executorフレームワーク**を使用するのが一般的です。これは、スレッドの生成・管理を抽象化し、**スレッドプール**を利用して効率的にタスクを実行するためのしくみです。
 
-## `ExecutorService`とスレッドプール
+### 16.9.1 ExecutorServiceとスレッドプール
 
 `ExecutorService`は、タスクの投入とスレッドプールの管理を行うためのインターフェイスです。スレッドプールは、あらかじめ作成された再利用可能なスレッドの集まりです。
 
@@ -2032,7 +1736,7 @@ public class ExecutorExample {
 }
 ```
 
-## `Future`による非同期処理の結果取得
+### 16.9.2 Futureによる非同期処理の結果取得
 
 計算結果などの戻り値が必要なタスクには、`Callable<V>`インターフェイスを使います。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが返されます。
 
@@ -2065,7 +1769,7 @@ public class FutureExample {
 }
 ```
 
-## Future と Callable を使った非同期処理
+### 16.9.3 Future と Callable を使った非同期処理
 
 ```java
 import java.util.concurrent.*;
@@ -2131,7 +1835,7 @@ public class FutureCallableExample {
 }
 ```
 
-## CompleテーブルFuture による高度な非同期処理
+### 16.9.4 CompletableFuture による高度な非同期処理
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -2227,7 +1931,7 @@ public class CompletableFutureExample {
 }
 ```
 
-## さまざまなExecutorの種類
+### 16.9.5 さまざまなExecutorの種類
 
 ```java
 import java.util.concurrent.*;
@@ -2307,7 +2011,7 @@ public class ExecutorTypesExample {
 }
 ```
 
-## Executorのベストプラクティス
+### 16.9.6 Executorのベストプラクティス
 
 ```java
 import java.util.concurrent.*;
@@ -2395,9 +2099,9 @@ public class ExecutorBestPractices {
 }
 ```
 
-# まとめ
+### 16.9.7 まとめ
 
-このパートでは、Executorフレームワークを使った高度なスレッド管理について学習しました：
+このセクションでは、Executorフレームワークを使った高度なスレッド管理について学習しました：
 
 - **ExecutorService**：スレッドプールによる効率的なタスク管理
 - **Future と Callable**：非同期処理の結果取得
@@ -2416,11 +2120,11 @@ Executorフレームワークを使うことで、スレッドの直接管理か
 <!-- Merged from chapter16c-concurrent-utilities.md -->
 
 
-## 並行コレクションの活用
+## 16.10 並行コレクションの活用
 
 通常のコレクション（ArrayList、HashMap等）は、複数のスレッドから同時にアクセスされることを想定していません。Javaは、並行処理に対応した特別なコレクションを提供しています。
 
-### ConcurrentHashMap
+### 16.10.1 ConcurrentHashMap
 
 ```java
 import java.util.concurrent.*;
@@ -2451,7 +2155,7 @@ public class ConcurrentCollectionsExample {
 }
 ```
 
-### CopyOnWriteArrayList
+### 16.10.2 CopyOnWriteArrayList
 
 ```java
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -2498,7 +2202,7 @@ public class CopyOnWriteExample {
 }
 ```
 
-### BlockingQueue と プロデューサー・コンシューマーパターン
+### 16.10.3 BlockingQueue と プロデューサー・コンシューマーパターン
 
 ```java
 import java.util.concurrent.BlockingQueue;
@@ -2584,9 +2288,9 @@ public class ProducerConsumerExample {
 }
 ```
 
-## 高度な同期プリミティブ
+## 16.11 高度な同期プリミティブ
 
-### ReadWriteLock - 読み取り/書き込みロック
+### 16.11.1 ReadWriteLock - 読み取り/書き込みロック
 
 ```java
 import java.util.concurrent.*;
@@ -2654,7 +2358,7 @@ public class AdvancedSynchronizationExample {
 }
 ```
 
-### Semaphore - リソース数制限
+### 16.11.2 Semaphore - リソース数制限
 
 ```java
 import java.util.concurrent.Semaphore;
@@ -2721,7 +2425,7 @@ public class SemaphoreExample {
 }
 ```
 
-### CountDownLatch - カウントダウン同期
+### 16.11.3 CountDownLatch - カウントダウン同期
 
 ```java
 import java.util.concurrent.CountDownLatch;
@@ -2771,7 +2475,7 @@ public class CountDownLatchExample {
 }
 ```
 
-### CyclicBarrier - 循環バリア
+### 16.11.4 CyclicBarrier - 循環バリア
 
 ```java
 import java.util.concurrent.CyclicBarrier;
@@ -2813,7 +2517,7 @@ public class CyclicBarrierExample {
 }
 ```
 
-### Exchanger - データ交換
+### 16.11.5 Exchanger - データ交換
 
 ```java
 import java.util.concurrent.Exchanger;
@@ -2858,7 +2562,7 @@ public class ExchangerExample {
 }
 ```
 
-### wait/notify を使った低レベル同期
+### 16.11.6 wait/notify を使った低レベル同期
 
 ```java
 public class WaitNotifyExample {
@@ -2905,7 +2609,7 @@ public class WaitNotifyExample {
 }
 ```
 
-### 並行コレクションの性能比較
+### 16.11.7 並行コレクションの性能比較
 
 ```java
 import java.util.*;
@@ -2963,9 +2667,9 @@ public class CollectionPerformanceComparison {
 }
 ```
 
-## まとめ
+## 16.12 まとめ
 
-このパートでは、並行コレクションと高度な同期プリミティブについて学習しました：
+このセクションでは、並行コレクションと高度な同期プリミティブについて学習しました：
 
 - **並行コレクション**：ConcurrentHashMap、CopyOnWriteArrayList、BlockingQueue
 - **プロデューサー・コンシューマーパターン**：BlockingQueueを使った実装
@@ -2988,9 +2692,7 @@ public class CollectionPerformanceComparison {
 
 <!-- Merged from chapter16d-practical-concurrency.md -->
 
-# 第16章 マルチスレッドプログラミング - Part D: 実践的な並行処理
-
-# 実践的なパフォーマンス測定とベンチマーク
+## 16.13 実践的なパフォーマンス測定とベンチマーク
 
 ```java
 import java.util.concurrent.*;
@@ -3121,7 +2823,7 @@ public class ParallelPerformanceExample {
 }
 ```
 
-# スレッドセーフなシングルトンパターン
+## 16.14 スレッドセーフなシングルトンパターン
 
 ```java
 public class ThreadSafeSingletonExamples {
@@ -3203,7 +2905,7 @@ public class ThreadSafeSingletonExamples {
 }
 ```
 
-# 一般的な並行処理の落とし穴と解決策
+## 16.15 一般的な並行処理の落とし穴と解決策
 
 ```java
 import java.util.*;
@@ -3357,9 +3059,9 @@ public class ConcurrencyPitfallsAndSolutions {
 }
 ```
 
-# 実践的な並行処理パターン
+## 16.16 実践的な並行処理パターン
 
-## 並列データ処理パイプライン
+### 16.16.1 並列データ処理パイプライン
 
 ```java
 import java.util.concurrent.*;
@@ -3447,7 +3149,7 @@ public class ParallelDataPipeline {
 }
 ```
 
-## リトライとサーキットブレーカーパターン
+### 16.16.2 リトライとサーキットブレーカーパターン
 
 ```java
 import java.util.concurrent.*;
@@ -3579,9 +3281,9 @@ public class ResiliencePatterns {
 }
 ```
 
-# まとめ
+## 16.17 本章のまとめ
 
-このパートでは、実践的な並行処理について学習しました：
+本章では、マルチスレッドプログラミングの基礎から実践的な並行処理まで体系的に学習しました：
 
 - **パフォーマンス測定**：並列処理による性能向上の測定方法
 - **ForkJoinPool**：分割統治法による並列処理
@@ -3607,18 +3309,18 @@ public class ResiliencePatterns {
 
 <!-- Merged from chapter16e-exercises.md -->
 
-# 第16章 マルチスレッドプログラミング - Part E: 章末演習
+## 16.18 章末演習
 
 本章で学んだマルチスレッドプログラミングの概念を活用して、実践的な練習課題に取り組みましょう。
 
-# 演習の目標
+### 16.18.1 演習の目標
 マルチスレッドプログラミングの基礎から高度な並行処理までを習得します。
 
 
 
-# 基礎レベル課題（必須）
+## 16.19 基礎レベル課題（必須）
 
-## 課題1: 基本的なスレッド操作
+### 16.19.1 課題1: 基本的なスレッド操作
 
 基本的なスレッド生成と操作を実装してください。
 
@@ -3684,7 +3386,7 @@ Thread-pool-1-thread-3: カウンタ 2
 
 
 
-## 課題2: 同期処理とデータ競合対策
+### 16.19.2 課題2: 同期処理とデータ競合対策
 
 同期処理を実装し、データ競合を防ぐ方法を理解してください。
 
@@ -3745,7 +3447,7 @@ volatile変数テスト:
 
 
 
-## 課題3: 並行コレクションとExecutor
+### 16.19.3 課題3: 並行コレクションとExecutor
 
 並行処理専用のコレクションとExecutorServiceを活用してください。
 
@@ -3817,7 +3519,7 @@ step3: 集計処理 → 30
 
 
 
-## 課題4: 生産者・消費者パターン
+### 16.19.4 課題4: 生産者・消費者パターン
 
 生産者・消費者パターンを実装し、スレッド間通信を理解してください。
 
@@ -3897,9 +3599,9 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 
 
-# 実装のヒント
+## 16.20 実装のヒント
 
-## マルチスレッドのポイント
+### 16.20.1 マルチスレッドのポイント
 
 1. **スレッド作成**: Thread継承vs Runnable実装
 2. **同期制御**: synchronized vs Lockインターフェイス
@@ -3908,13 +3610,13 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 5. **スレッド間通信**: BlockingQueue、wait/notify
 6. **パフォーマンス**: 適切な並行度とオーバーヘッド考慮
 
-## よくある落とし穴
+### 16.20.2 よくある落とし穴
 - run（）メソッドの直接呼び出し（start()を使う）
 - 同期処理の範囲が広すぎる・狭すぎる
 - デッドロックの発生（ロック順序に注意）
 - リソースリーク（ExecutorServiceのshutdown忘れ）
 
-## 設計のベストプラクティス
+### 16.20.3 設計のベストプラクティス
 - 可能な限りimmuテーブルオブジェクトを使用
 - 共有状態を最小限に抑制
 - 並行コレクションの積極的活用
@@ -3922,7 +3624,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 
 
-# 実装環境
+## 16.21 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
 
@@ -3941,21 +3643,21 @@ exercises/chapter16/
 
 
 
-# 完了確認チェックリスト
+## 16.22 完了確認チェックリスト
 
-## 基礎レベル
+### 16.22.1 基礎レベル
 - [ ] 基本的なスレッド操作ができている
 - [ ] 同期処理とデータ競合対策が実装できている
 - [ ] 並行コレクションとExecutorが活用できている
 - [ ] 生産者・消費者パターンが実装できている
 
-## 技術要素
+### 16.22.2 技術要素
 - [ ] スレッドセーフなプログラムが書けている
 - [ ] 適切な並行処理設計ができている
 - [ ] パフォーマンスを考慮した実装ができている
 - [ ] デッドロック等の問題を回避できている
 
-## 応用レベル
+### 16.22.3 応用レベル
 - [ ] 高度な並行処理パターンを実装できている
 - [ ] パフォーマンス測定と最適化ができている
 - [ ] 実用的な並行アプリケーションが構築できている
