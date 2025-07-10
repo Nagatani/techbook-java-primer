@@ -44,7 +44,7 @@
 - 不変性の維持
 - メソッドからの新しいインスタンス返却
 
----
+
 
 ### 課題2: 不変の人物情報クラス
 **ファイル名**: `ImmutablePerson.java`, `ImmutablePersonTest.java`
@@ -80,7 +80,7 @@
 - 不変性を保った更新メソッド
 - 元のオブジェクトの保護
 
----
+
 
 ### 課題3: 設定値管理クラス
 **ファイル名**: `ApplicationConfig.java`, `ApplicationConfigTest.java`
@@ -116,7 +116,7 @@
 - ビルダーパターンの活用
 - 設定値の妥当性検証
 
----
+
 
 ### 課題4: 金額計算クラス
 **ファイル名**: `Money.java`, `MoneyTest.java`

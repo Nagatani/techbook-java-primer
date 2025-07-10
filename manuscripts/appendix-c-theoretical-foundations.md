@@ -15,7 +15,7 @@
 - **C.5 アーキテクチャ理論**: 第19章（MVC）の設計思想
 - **C.6 形式手法**: 第14章（例外処理）の契約理論
 
----
+
 
 ## C.1 ソフトウェアクライシスとその解決策
 
@@ -132,7 +132,7 @@ public int findMax(int[] array) {
 }
 ```
 
----
+
 
 ## C.2 オブジェクト指向の理論的基盤
 
@@ -340,7 +340,7 @@ class Square implements Shape {
 }
 ```
 
----
+
 
 ## C.3 ソフトウェア品質メトリクス
 
@@ -449,7 +449,7 @@ public class Utilities {
 }
 ```
 
----
+
 
 ## 🔄 C.4 設計パターンの理論的分析
 
@@ -590,7 +590,7 @@ class StockDisplay implements Observer {
 - 通知の順序保証性
 - メモリリークの防止（WeakReference）
 
----
+
 
 ## 📐 C.5 アルゴリズム解析と設計
 
@@ -768,7 +768,7 @@ public class HashTable<K, V> {
 - 最悪時間：O(n)（すべてのキーが同じバケットにハッシュ）
 - 全域ハッシュ（Universal Hashing）による期待性能保証
 
----
+
 
 ## C.6 形式手法と仕様記述
 
@@ -880,7 +880,7 @@ public class BankAccount {
 }
 ```
 
----
+
 
 ## C.7 並行プログラミングの理論
 
@@ -1024,7 +1024,7 @@ public class MemoryModelExample {
 }
 ```
 
----
+
 
 ## まとめ：理論と実践の統合
 

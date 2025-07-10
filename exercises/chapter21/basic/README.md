@@ -305,7 +305,7 @@ double average = MathUtils.average(data);
 - HTMLドキュメントの自動生成
 - ドキュメント品質の維持
 
----
+
 
 ### 課題2: 外部ライブラリ活用システム
 **ファイル名**: `LibraryIntegration.java`, `pom.xml`, `build.gradle`
@@ -641,7 +641,7 @@ JSON処理 (1,000オブジェクト):
 - 依存関係管理のベストプラクティス
 - セキュリティとライセンスの理解
 
----
+
 
 ### 課題3: APIドキュメント自動生成システム
 **ファイル名**: `RestApiController.java`, `openapi-spec.yaml`, `swagger-config.java`
@@ -1000,7 +1000,7 @@ HTML ページサイズ: 1.2MB
 - インタラクティブドキュメントの構築
 - 実用的なAPI設計の文書化
 
----
+
 
 ### 課題4: 独自ライブラリ作成とパッケージング
 **ファイル名**: `MathLibrary.java`, `pom.xml`, `README.md`

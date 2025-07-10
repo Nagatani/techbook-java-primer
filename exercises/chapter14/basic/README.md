@@ -57,7 +57,7 @@ NumberFormatException発生: 数値変換に失敗しました
 - 例外の種類に応じた適切な処理
 - 例外情報の有効活用
 
----
+
 
 ### 課題2: カスタム例外クラス設計
 **ファイル名**: `BankAccountException.java`, `InsufficientFundsException.java`, `InvalidAccountException.java`, `BankAccount.java`, `CustomExceptionTest.java`
@@ -114,7 +114,7 @@ NumberFormatException発生: 数値変換に失敗しました
 - 例外クラスの継承関係の理解
 - 詳細な例外情報の提供
 
----
+
 
 ### 課題3: ファイル操作とリソース管理
 **ファイル名**: `FileProcessor.java`, `ResourceManagerTest.java`
@@ -177,7 +177,7 @@ DatabaseConnection 自動クローズ
 - リソースリークの防止
 - AutoCloseable インターフェイスの理解
 
----
+
 
 ### 課題4: 例外処理設計パターン
 **ファイル名**: `ValidationResult.java`, `UserService.java`, `ExceptionDesignTest.java`

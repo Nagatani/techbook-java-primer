@@ -29,7 +29,7 @@
 - 計算状態をenum で管理
 - NumberFormatを使った数値フォーマット
 
----
+
 
 ### 解答例2: シンプルメモ帳
 **ファイル名**: `SimpleNotepad.java`
@@ -51,7 +51,7 @@
 - WindowAdapterでウィンドウクローズ処理
 - KeyStrokeでキーボードショートカット
 
----
+
 
 ### 解答例3: レイアウトデモ
 **ファイル名**: `LayoutDemo.java`
@@ -71,7 +71,7 @@
 - BoxLayoutによる柔軟な配置
 - revalidate()とrepaint()による再描画
 
----
+
 
 ### 解答例4: カラーピッカー
 **ファイル名**: `ColorPicker.java`

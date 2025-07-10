@@ -43,7 +43,7 @@
 - superキーワードの正しい使用
 - メソッドオーバーライドの実装
 
----
+
 
 ### 課題2: 図形クラスの継承と面積計算
 **ファイル名**: `Shape.java`, `Rectangle.java`, `Circle.java`, `ShapeTest.java`
@@ -75,7 +75,7 @@
 - ポリモーフィズムの活用
 - 継承による設計の統一性
 
----
+
 
 ### 課題3: 従業員クラスの継承階層
 **ファイル名**: `Employee.java`, `Manager.java`, `Engineer.java`, `EmployeeTest.java`
@@ -113,7 +113,7 @@
 - 役職に応じた特化処理
 - 給与計算ロジックの適切な分離
 
----
+
 
 ### 課題4: 車両クラスの継承と多態性
 **ファイル名**: `Vehicle.java`, `Car.java`, `Motorcycle.java`, `VehicleTest.java`

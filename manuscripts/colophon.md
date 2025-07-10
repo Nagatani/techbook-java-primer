@@ -1,6 +1,6 @@
 <div class="colophon-page">
 
----
+
 
 ## 奥付
 
@@ -41,7 +41,7 @@ Email:（連絡先がある場合はここに記載）
 
 </div>
 
----
+
 
 <div class="colophon-footer">
 © 2024 Hidehiro Nagatani. All rights reserved.

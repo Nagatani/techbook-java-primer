@@ -1,6 +1,6 @@
----
+
 title: "IntelliJ IDEA Community Editionのダウンロードとインストール"
----
+
 
 ## ダウンロード
 

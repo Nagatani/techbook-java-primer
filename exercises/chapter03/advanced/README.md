@@ -68,7 +68,7 @@ class BankAccount {
 - thisによるコードの簡潔化
 - 口座種別に応じた適切な初期化
 
----
+
 
 ### 課題2: 商品在庫管理
 **ファイル名**: `ProductInventory.java`
@@ -153,7 +153,7 @@ class Product {
 - 在庫操作の多様性への対応
 - カテゴリ別処理の実装
 
----
+
 
 ### 課題3: 図形描画システム
 **ファイル名**: `GeometrySystem.java`

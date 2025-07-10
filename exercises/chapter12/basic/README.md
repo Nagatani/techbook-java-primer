@@ -58,7 +58,7 @@ Recordの行数: 1行（record Person(String name, int age) {}）
 - 自動生成メソッドの理解
 - 不変性の確認
 
----
+
 
 ### 課題2: Recordを使ったデータ転送オブジェクト（DTO）
 **ファイル名**: `UserDTO.java`, `OrderDTO.java`, `DTOTest.java`
@@ -105,7 +105,7 @@ Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
 - DTO としての適切な設計
 - データ変換処理の実装
 
----
+
 
 ### 課題3: Record と設定管理
 **ファイル名**: `AppConfig.java`, `DatabaseConfig.java`, `ConfigManager.java`, `ConfigTest.java`
@@ -176,7 +176,7 @@ debug=true
 - 不変性を保った部分更新
 - 設定管理システムの実装
 
----
+
 
 ### 課題4: Record とパターンマッチング（Java 17+）
 **ファイル名**: `Shape.java`, `PatternMatching.java`, `PatternMatchingTest.java`

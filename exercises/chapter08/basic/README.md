@@ -48,7 +48,7 @@ LinkedList アクセス時間: 45ms
 - ArrayList と LinkedList の使い分け
 - Comparator を使ったソート
 
----
+
 
 ### 課題2: 単語カウンター（Map活用）
 **ファイル名**: `WordCounter.java`, `WordCounterTest.java`
@@ -100,7 +100,7 @@ with: 1回
 - HashMap と TreeMap の特性理解
 - EntrySet を使った効率的な処理
 
----
+
 
 ### 課題3: 重複除去システム（Set活用）
 **ファイル名**: `DuplicateRemover.java`, `DuplicateRemoverTest.java`
@@ -146,7 +146,7 @@ Person{name='鈴木', age=25}
 - HashSet と TreeSet の性能差理解
 - equals() と hashCode() の重要性理解
 
----
+
 
 ### 課題4: 在庫管理システム（複合コレクション活用）
 **ファイル名**: `Product.java`, `InventoryManager.java`, `InventoryManagerTest.java`

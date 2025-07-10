@@ -106,7 +106,7 @@ class OnlineBookStore {
 - 高度な検索・推薦機能
 - 実用的なユーザビリティ
 
----
+
 
 ### 課題2: 総合人事管理システム
 **ファイル名**: `HRManagementSystem.java`
@@ -199,7 +199,7 @@ class HRManagementSystem {
 - 階層構造の適切な実装
 - データセキュリティの考慮
 
----
+
 
 ### 課題3: スマート在庫管理システム
 **ファイル名**: `SmartInventorySystem.java`

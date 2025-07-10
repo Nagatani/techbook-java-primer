@@ -62,7 +62,7 @@
 - 複雑なデータ処理パイプラインの構築
 - Collectors クラスの活用
 
----
+
 
 ### 課題2: 商品売上分析システム
 **ファイル名**: `Sale.java`, `SalesAnalyzer.java`, `SalesAnalyzerTest.java`
@@ -112,7 +112,7 @@ Optional活用例:
 - flatMap による階層データの平坦化
 - Optional による null 安全処理
 
----
+
 
 ### 課題3: テキスト解析システム
 **ファイル名**: `TextAnalyzer.java`, `TextAnalyzerTest.java`
@@ -169,7 +169,7 @@ functional（1回）
 - 並列ストリームの理解と適用
 - 正規表現との組み合わせ
 
----
+
 
 ### 課題4: データ変換パイプライン
 **ファイル名**: `DataProcessor.java`, `DataProcessorTest.java`

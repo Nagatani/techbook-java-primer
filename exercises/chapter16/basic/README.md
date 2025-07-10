@@ -70,7 +70,7 @@ Thread-pool-1-thread-3: カウンタ 2
 - 並行実行の概念理解
 - スレッドライフサイクルの理解
 
----
+
 
 ### 課題2: 同期処理とデータ競合対策
 **ファイル名**: `SynchronizedCounter.java`, `BankAccount.java`, `SynchronizationTest.java`
@@ -137,7 +137,7 @@ volatile変数テスト:
 - パフォーマンスを考慮した同期設計
 - デッドロック回避策の理解
 
----
+
 
 ### 課題3: 並行コレクションとExecutor
 **ファイル名**: `ConcurrentCollections.java`, `TaskExecutor.java`, `ConcurrentTest.java`
@@ -215,7 +215,7 @@ step3: 集計処理 → 30
 - ExecutorService の効果的な活用
 - 非同期処理パターンの実装
 
----
+
 
 ### 課題4: 生産者・消費者パターン
 **ファイル名**: `ProducerConsumer.java`, `BlockingQueueExample.java`, `ProducerConsumerTest.java`

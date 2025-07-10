@@ -164,7 +164,7 @@ StringUtils.java:
 - 包括的なテストケースの作成
 - 適切なアサーションの使用
 
----
+
 
 ### 課題2: テスト駆動開発（TDD）実践
 **ファイル名**: `BankAccount.java`, `BankAccountTest.java`, `PasswordValidator.java`, `PasswordValidatorTest.java`
@@ -329,7 +329,7 @@ TDDの利点確認:
 - 段階的な機能開発
 - 効果的なリファクタリング
 
----
+
 
 ### 課題3: モックとスタブを使ったテスト
 **ファイル名**: `UserService.java`, `UserServiceTest.java`, `EmailService.java`, `EmailServiceTest.java`
@@ -549,7 +549,7 @@ void testAsyncOperation_カスタム動作() {
 - 依存関係の適切な分離
 - 複雑なシナリオのテスト実装
 
----
+
 
 ### 課題4: テストスイートと継続的インテグレーション
 **ファイル名**: `TestSuite.java`, `IntegrationTest.java`, `PerformanceTest.java`, `CITest.java`

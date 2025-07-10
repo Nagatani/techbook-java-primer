@@ -65,7 +65,7 @@ URGENT < LOW: true（数値が小さいほう が優先度高）
 - メソッドとフィールドの追加
 - Switch文での適切な使用
 
----
+
 
 ### 課題2: 注文状態管理システム
 **ファイル名**: `OrderStatus.java`, `Order.java`, `OrderStatusTest.java`
@@ -121,7 +121,7 @@ DELIVERED → PENDING: ✗ 無効な遷移です
 - ビジネスロジックのEnum内実装
 - 状態遷移の検証
 
----
+
 
 ### 課題3: 計算機の演算子Enum
 **ファイル名**: `Operation.java`, `Calculator.java`, `OperationTest.java`
@@ -178,7 +178,7 @@ SUBTRACT: 1
 - 複雑なビジネスロジックの実装
 - エラーハンドリング
 
----
+
 
 ### 課題4: ゲーム設定のEnum活用
 **ファイル名**: `Difficulty.java`, `GameMode.java`, `PowerUp.java`, `GameConfig.java`, `GameConfigTest.java`
