@@ -1,4 +1,4 @@
-# 第17章 GUIプログラミングの基礎
+# 第18章 GUIプログラミングの基礎
 
 ## 本章の学習目標
 
@@ -28,25 +28,25 @@ Swingフレームワークのアーキテクチャについても深く理解し
 
 本章は、GUIプログラミングの基礎を体系的に学習できるよう、以下のパートで構成されています：
 
-### [Part A: 基本コンポーネントとレイアウト](chapter17a-basic-components.md)
+### [Part A: 基本コンポーネントとレイアウト](chapter18a-basic-components.md)
 - はじめてのGUIプログラム
 - 基本コンポーネントの配置（JFrame、JLabel、JButton）
 - レイアウトマネージャーの基礎（BorderLayout、GridLayout）
 - パネルを使った複雑なレイアウト
 
-### [Part B: イベント処理入門](chapter17b-event-handling-intro.md)
+### [Part B: イベント処理入門](chapter18b-event-handling-intro.md)
 - イベント駆動プログラミングの概念
 - ボタンクリックに反応するプログラム
 - ActionListenerとラムダ式
 - カウンタアプリケーション
 
-### [Part C: EDT（Event Dispatch Thread）とスレッド安全性](chapter17c-edt-thread-safety.md)
+### [Part C: EDT（Event Dispatch Thread）とスレッド安全性](chapter18c-edt-thread-safety.md)
 - EDTとは何か、なぜ重要なのか
 - SwingUtilities.invokeLater()の使用方法
 - SwingWorkerによる非同期処理
 - GUIアプリケーションのスレッド安全性
 
-### [Part D: カスタムコンポーネントの作成](chapter17d-custom-components.md)
+### [Part D: カスタムコンポーネントの作成](chapter18d-custom-components.md)
 - JComponentを継承したカスタムコンポーネント
 - paintComponent()メソッドのオーバーライド
 - マウスイベントとキーボードイベントの処理
@@ -68,7 +68,7 @@ Swingフレームワークのアーキテクチャについても深く理解し
 
 各パートは独立して読むことも可能ですが、順番に学習することで、GUIプログラミングの基礎から応用まで体系的に習得できるよう設計されています。
 
-本章で学んだGUIプログラミングの基礎を活用して、第18章ではより高度なイベント処理について学習します。
+本章で学んだGUIプログラミングの基礎を活用して、第19章ではより高度なイベント処理について学習します。
 
 
 
