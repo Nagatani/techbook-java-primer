@@ -82,28 +82,31 @@ Swingフレームワークのアーキテクチャについても深く理解し
 
 まずはもっとも基本的なGUIプログラムから始めましょう。以下は、単純なウィンドウを表示するプログラムです：
 
+**Swingアプリケーションの基本構造**：
+
+このコードは、Swing GUIアプリケーションの最小構成を示しています。各ステップは、ウィンドウの作成から表示までの標準的なフローを表しています。
+
 ```java
 import javax.swing.JFrame;
 
 public class HelloSwing {
     public static void main(String[] args) {
-        // JFrameのインスタンスを作成
-        JFrame frame = new JFrame("はじめてのSwingアプリケーション");
+        JFrame frame = new JFrame("はじめてのSwingアプリケーション"); // ①
         
-        // ウィンドウのサイズを設定
-        frame.setSize(400, 300);
-        
-        // ウィンドウを閉じたときの動作を設定
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // ウィンドウを画面中央に配置
-        frame.setLocationRelativeTo(null);
-        
-        // ウィンドウを表示
-        frame.setVisible(true);
+        frame.setSize(400, 300);                          // ②
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ③
+        frame.setLocationRelativeTo(null);                // ④
+        frame.setVisible(true);                           // ⑤
     }
 }
 ```
+
+**コードの実行フロー**：
+- ① **JFrameオブジェクト作成** - タイトル付きウィンドウのインスタンスを生成
+- ② **ウィンドウサイズ設定** - 幅400ピクセル、高さ300ピクセルに設定
+- ③ **終了動作指定** - ウィンドウを閉じたときにアプリケーションを終了
+- ④ **中央配置** - ウィンドウをスクリーンの中央に自動配置
+- ⑤ **表示実行** - ウィンドウを画面に表示（これがないと非表示状態）
 
 このプログラムの各行を詳しく見ていきましょう：
 
@@ -117,6 +120,10 @@ public class HelloSwing {
 
 `JFrame`オブジェクトのメソッドを呼び出すことで、ウィンドウのさまざまな設定が可能です：
 
+**ウィンドウの詳細設定例**：
+
+このコードは、ウィンドウの外観や動作をカスタマイズする方法を示しています。各設定はユーザーエクスペリエンスに直接影響します。
+
 ```java
 import javax.swing.JFrame;
 
@@ -124,26 +131,23 @@ public class WindowSettings {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         
-        // タイトルバーに表示されるテキストを設定
-        frame.setTitle("カスタマイズされたウィンドウ");
-        
-        // ウィンドウサイズを設定（幅500px、高さ400px）
-        frame.setSize(500, 400);
-        
-        // ウィンドウのリサイズを禁止
-        frame.setResizable(false);
-        
-        // ウィンドウの初期位置を指定（画面左上から100px右、50px下）
-        frame.setLocation(100, 50);
-        
-        // ウィンドウを閉じたときにプログラムを終了
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // ウィンドウを表示
-        frame.setVisible(true);
+        frame.setTitle("カスタマイズされたウィンドウ");     // ①
+        frame.setSize(500, 400);                      // ②
+        frame.setResizable(false);                    // ③
+        frame.setLocation(100, 50);                   // ④
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ⑤
+        frame.setVisible(true);                       // ⑥
     }
 }
 ```
+
+**各設定オプションの説明**：
+- ① **タイトルバー文字** - ウィンドウ上部に表示されるアプリケーション名
+- ② **ウィンドウサイズ** - 幅500ピクセル、高さ400ピクセルに固定
+- ③ **リサイズ禁止** - ユーザーがウィンドウサイズを変更できないように制限
+- ④ **絶対位置指定** - スクリーン左上から横100px、縦50pxの位置に配置
+- ⑤ **終了動作** - ×ボタンクリック時にアプリケーションを完全終了
+- ⑥ **表示実行** - ウィンドウをスクリーンに表示
 
 ### 17.2 基本的なコンポーネントの配置
 

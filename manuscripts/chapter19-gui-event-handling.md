@@ -76,15 +76,27 @@ Swingイベント処理機構の詳細についても学習します。イベン
 インタラクティブな描画アプリケーションは、イベント処理の実践的な応用例です：
 
 **マウスイベントの種類と描画への応用：**
-```java
-// MouseListener：クリックイベント
-mousePressed()  // 描画開始点
-mouseReleased() // 描画終了点（矩形確定等）
 
-// MouseMotionListener：マウス移動
-mouseDragged()  // ドラッグ中の座標取得
-mouseMoved()    // カーソル追跡
+描画アプリケーションでは、マウスの操作状態に応じて異なるイベントを処理する必要があります：
+
+1. **MouseListenerインターフェイス** - マウスボタンの状態変化を検出
+2. **MouseMotionListenerインターフェイス** - マウスポインタの移動を追跡
+
+```java
+// ① MouseListener：クリックイベントの処理
+mousePressed()  // ①-1
+mouseReleased() // ①-2
+
+// ② MouseMotionListener：マウス移動の処理
+mouseDragged()  // ②-1
+mouseMoved()    // ②-2
 ```
+
+**各イベントの用途**：
+- ①-1 **描画開始点の記録** - マウスボタンが押された座標を保存
+- ①-2 **描画終了点の確定** - 矩形や楕円など形状の完成時に呼ばれる
+- ②-1 **ドラッグ中の座標取得** - ボタンを押しながら移動中の座標を連続取得
+- ②-2 **カーソル追跡** - ボタンを押さずに移動中の座標（プレビュー表示等に使用）
 
 **描画システムのアーキテクチャ：**
 - **ペイントコンポーネント**：JPanel + paintComponent()
@@ -99,18 +111,30 @@ mouseMoved()    // カーソル追跡
 - **Inkscape**：ベクタグラフィックス
 
 **パフォーマンスの考慮点：**
+
+グラフィックスアプリケーションにおけるパフォーマンス最適化の基本概念：
+
+1. **全体再描画 vs 差分描画** - 描画効率の最適化手法
+2. **BufferedImage活用** - メモリ内での画像操作による高速化
+3. **アンチエイリアシング** - 滑らかな描画のための品質設定
+
 ```java
-// 非効率的：毎回全体再描画
+// ① 非効率的なアプローチ：毎回全体再描画
 public void paintComponent(Graphics g) {
     super.paintComponent(g);
-    // すべての図形を再描画
+    // ①-1: すべての図形を毎回再描画
 }
 
-// 効率的：BufferedImageへの差分描画
-Graphics2D g2d = bufferedImage.createGraphics();
-g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+// ② 効率的なアプローチ：BufferedImageへの差分描画
+Graphics2D g2d = bufferedImage.createGraphics(); // ②-1
+g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
                     RenderingHints.VALUE_ANTIALIAS_ON);
 ```
+
+**最適化手法の詳細**：
+- ①-1 **全体再描画の問題** - 図形数に比例して処理時間が増加し、複雑な図形では描画が遅くなる
+- ②-1 **BufferedImage利用** - メモリ内のビットマップに直接描画することで、表示時はコピーのみ
+- ②-2 **品質設定の調整** - アンチエイリアシングにより滑らかな描画を実現（処理負荷は増加）
 
 **アンドゥ/リドゥの実装パターン：**
 - **コマンドパターン**：操作の抽象化

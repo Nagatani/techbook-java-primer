@@ -242,37 +242,48 @@ C言語で大規模なプログラムを書くと、データと処理が分離�
 
 C言語では商品情報と処理を別々に管理していましたが、Javaではこれらを1つの「クラス」にまとめます：
 
+**Javaでのオブジェクト指向アプローチ**：
+
+このコードは、オブジェクト指向の主要な原則を示しています：
+
+1. **カプセル化** - データ（name, price）をprivateで保護
+2. **データと処理の一体化** - 商品に関するデータとメソッドを同じクラス内に配置
+3. **再利用性** - Productクラスは他の場所でも使用可能
+
 ```java
-// 商品を表すクラス
 public class Product {
-    // データ（フィールド）
-    private String name;    // 商品名
-    private int price;      // 価格
+    private String name;  // ①
+    private int price;    // ②
     
-    // コンストラクタ（初期化処理）
-    public Product(String name, int price) {
+    public Product(String name, int price) { // ③
         this.name = name;
         this.price = price;
     }
     
-    // 処理（メソッド）
-    public int getPriceWithTax() {
+    public int getPriceWithTax() {           // ④
         return (int)(price * 1.1);
     }
     
-    public void display() {
+    public void display() {                  // ⑤
         System.out.println(name + ": " + getPriceWithTax() + "円（税込）");
     }
 }
 
-// 実際に使う
 public class Main {
     public static void main(String[] args) {
-        Product pencil = new Product("鉛筆", 100);
-        pencil.display();  // 鉛筆: 110円（税込）
+        Product pencil = new Product("鉛筆", 100); // ⑥
+        pencil.display();                            // ⑦
     }
 }
 ```
+
+**コードの構造解説**：
+- ①② **privateフィールド** - 外部から直接アクセスできないデータ領域
+- ③ **コンストラクタ** - オブジェクト生成時の初期化処理
+- ④ **ビジネスロジック** - 税込価格の計算処理
+- ⑤ **表示処理** - 商品情報の出力機能
+- ⑥ **オブジェクト生成** - newキーワードでProductインスタンスを作成
+- ⑦ **メソッド呼び出し** - オブジェクトの機能を実行（出力：「鉛筆: 110円（税込）」）
 
 ##### C言語との違い
 

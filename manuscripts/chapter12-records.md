@@ -65,29 +65,42 @@ public record Person(String name, int age) {}
 
 これだけで、以下をすべて定義したのとほぼ同じ意味になります。
 
-```java
-// 上記のRecord定義とほぼ等価なクラス
-public final class Person { // finalクラスになる
-    private final String name; // private finalフィールド
-    private final int age;
+**Recordが自動生成する等価なクラス構造**：
 
-    public Person(String name, int age) { // コンストラクタ
+上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります。
+
+```java
+public final class Person {
+    private final String name;  // ①
+    private final int age;      // ①
+
+    public Person(String name, int age) {  // ②
         this.name = name;
         this.age = age;
     }
 
-    public String name() { return this.name; } // アクセサメソッド（getXXXではない）
-    public int age() { return this.age; }
+    public String name() { return this.name; }  // ③
+    public int age() { return this.age; }       // ③
 
     @Override
-    public boolean equals(Object o) { /* 全フィールドを比較する実装 */ }
+    public boolean equals(Object o) { /* 全フィールドを比較する実装 */ }  // ④
 
     @Override
-    public int hashCode() { /* 全フィールドから計算する実装 */ }
+    public int hashCode() { /* 全フィールドから計算する実装 */ }  // ⑤
 
     @Override
-    public String toString() { /* 全フィールドを表示する実装 */ }
+    public String toString() { /* 全フィールドを表示する実装 */ }  // ⑥
 }
+```
+
+**自動生成される要素の詳細**：
+
+①　**不変フィールド**: 全フィールドがprivate finalとして宣言され、インスタンス生成後は変更不可
+②　**正準コンストラクタ**: 全フィールドを初期化する標準的なコンストラクタ
+③　**アクセサメソッド**: フィールド名と同じ名前のメソッド（従来のgetXxx()形式ではない）  
+④　**equals()メソッド**: 全フィールドの値を比較する適切な実装
+⑤　**hashCode()メソッド**: 全フィールドから一貫性のあるハッシュ値を計算
+⑥　**toString()メソッド**: フィールド名と値を読みやすい形式で表示
 ```
 
 ### Recordのメリット・デメリット
@@ -105,27 +118,37 @@ public final class Person { // finalクラスになる
 
 `Record`の使い方は、通常のクラスとほとんど同じです。
 
+**Recordの基本的な使用方法**：
+
+Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています。
+
 ```java
 public class RecordExample {
     public static void main(String[] args) {
-        // インスタンスの作成
-        Person alice = new Person("Alice", 30);
-        Person bob = new Person("Bob", 40);
-        Person alice2 = new Person("Alice", 30);
+        Person alice = new Person("Alice", 30);    // ①
+        Person bob = new Person("Bob", 40);        // ①
+        Person alice2 = new Person("Alice", 30);   // ①
 
-        // アクセサメソッドで値を取得（メソッド名はフィールド名と同じ）
-        System.out.println("名前: " + alice.name());
-        System.out.println("年齢: " + alice.age());
+        System.out.println("名前: " + alice.name());  // ②
+        System.out.println("年齢: " + alice.age());   // ②
 
-        // toString()が自動生成されている
-        System.out.println(alice); // Person[name=Alice, age=30]
+        System.out.println(alice);  // ③
 
-        // equals()が全フィールドを比較するように自動生成されている
-        System.out.println("aliceとbobは等しいか？: " + alice.equals(bob));     // false
-        System.out.println("aliceとalice2は等しいか？: " + alice.equals(alice2)); // true
+        System.out.println("aliceとbobは等しいか？: " + alice.equals(bob));     // ④
+        System.out.println("aliceとalice2は等しいか？: " + alice.equals(alice2)); // ④
     }
 }
 ```
+
+**各操作の詳細解説**：
+
+①　**インスタンス生成**: 通常のクラスと同じく`new`キーワードでインスタンスを作成します。同じ値を持つ複数のインスタンス（alice vs alice2）も作成可能です。
+
+②　**フィールドアクセス**: アクセサメソッド名はフィールド名と同じです（従来のgetName()、getAge()ではなく、name()、age()）。この命名規則により、より自然で読みやすいコードになります。
+
+③　**文字列表現**: toString()メソッドが自動生成され、`Person[name=Alice, age=30]`のような読みやすい形式で表示されます。
+
+④　**値の比較**: equals()メソッドが全フィールドの値を比較するように実装されているため、aliceとalice2は異なるインスタンスですが、同じ値を持つため等しいと判定されます。
 
 ### コンパクトコンストラクタ
 
