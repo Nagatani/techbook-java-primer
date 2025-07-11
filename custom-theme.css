@@ -510,6 +510,7 @@ h1:first-child:contains("目次") {
   color: #666;
   font-size: 0.85em;
   padding: 0.3em 0;
+  margin-top: 1rem;
   margin-bottom: -1px; /* コードブロックとの間隔を詰める */
   border-radius: 4px 4px 0 0;
   border: 1px solid #ddd;
