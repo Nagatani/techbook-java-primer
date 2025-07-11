@@ -38,6 +38,7 @@
 #### ソフトウェアの複雑性メトリクス
 
 **循環的複雑度（Cyclomatic Complexity）**
+**リストAC-1**
 ```java
 // 複雑度が高いコード例（複雑度: 6）
 public String processData(int type, boolean flag, String data) {
@@ -59,6 +60,7 @@ public String processData(int type, boolean flag, String data) {
 ```
 
 **改善後（複雑度: 3）**
+**リストAC-2**
 ```java
 public String processData(int type, boolean flag, String data) {
     switch (type) {                     // +1
@@ -86,6 +88,7 @@ private String processType1(boolean flag, String data) {
 任意のプログラムは以下の3つの制御構造の組み合わせで表現可能：
 
 1. **順次処理（Sequence）**
+**リストAC-3**
 ```java
 statement1;
 statement2;
@@ -93,6 +96,7 @@ statement3;
 ```
 
 2. **分岐処理（Selection）**
+**リストAC-4**
 ```java
 if (condition) {
     statementA;
@@ -102,6 +106,7 @@ if (condition) {
 ```
 
 3. **反復処理（Iteration）**
+**リストAC-5**
 ```java
 while (condition) {
     statements;
@@ -111,6 +116,7 @@ while (condition) {
 #### 形式的証明と不変条件
 
 **ループ不変条件の例**
+**リストAC-6**
 ```java
 // 配列の最大値を求めるアルゴリズム
 public int findMax(int[] array) {
@@ -146,6 +152,7 @@ public int findMax(int[] array) {
 - **公理系（Axiom System）**: 操作の性質を定義する規則
 
 **スタックADTの例**
+**リストAC-7**
 ```java
 // スタックの抽象仕様
 public interface Stack<T> {
@@ -212,6 +219,7 @@ public class ArrayStack<T> implements Stack<T> {
 - 実装の詳細は外部から見えないようにする
 
 **悪い例：実装詳細の露出**
+**リストAC-8**
 ```java
 public class BadBankAccount {
     public double[] transactionHistory; // 実装詳細の露出
@@ -225,6 +233,7 @@ public class BadBankAccount {
 ```
 
 **良い例：適切なカプセル化**
+**リストAC-9**
 ```java
 public class GoodBankAccount {
     private List<Transaction> transactions; // 実装詳細を隠蔽
@@ -256,6 +265,7 @@ public class GoodBankAccount {
 型Sが型Tのサブタイプである場合、プログラム内でT型のオブジェクトが使われている箇所は、すべてS型のオブジェクトで置き換え可能でなければならない。
 
 **LSP違反の例**
+**リストAC-10**
 ```java
 class Rectangle {
     protected int width, height;
@@ -297,6 +307,7 @@ public void testLSPViolation() {
 ```
 
 **LSP遵守の設計**
+**リストAC-11**
 ```java
 interface Shape {
     int getArea();
@@ -349,6 +360,7 @@ class Square implements Shape {
 #### 結合度の階層（弱い順）
 
 1. **データ結合（Data Coupling）**
+**リストAC-12**
 ```java
 // 最も弱い結合 - 基本データのみを渡す
 public double calculateTax(double income, double rate) {
@@ -357,6 +369,7 @@ public double calculateTax(double income, double rate) {
 ```
 
 2. **スタンプ結合（Stamp Coupling）**
+**リストAC-13**
 ```java
 // データ構造を渡すが、全体を使用
 public double calculateTax(TaxInfo taxInfo) {
@@ -365,6 +378,7 @@ public double calculateTax(TaxInfo taxInfo) {
 ```
 
 3. **制御結合（Control Coupling）**
+**リストAC-14**
 ```java
 // 悪い例：制御フラグを渡す
 public void processData(Data data, int mode) {
@@ -382,6 +396,7 @@ public interface DataProcessor {
 ```
 
 4. **共通結合（Common Coupling）**
+**リストAC-15**
 ```java
 // 悪い例：グローバル変数への依存
 public class OrderProcessor {
@@ -409,6 +424,7 @@ public class OrderProcessor {
 #### 凝集度の階層（強い順）
 
 1. **機能的凝集（Functional Cohesion）**
+**リストAC-16**
 ```java
 // 単一の機能に特化
 public class PrimeChecker {
@@ -423,6 +439,7 @@ public class PrimeChecker {
 ```
 
 2. **逐次的凝集（Sequential Cohesion）**
+**リストAC-17**
 ```java
 // 出力が次の入力になる処理の連鎖
 public class DataProcessor {
@@ -439,6 +456,7 @@ public class DataProcessor {
 ```
 
 3. **偶発的凝集（Coincidental Cohesion）** - 避けるべき
+**リストAC-18**
 ```java
 // 悪い例：関連のない機能の寄せ集め
 public class Utilities {
@@ -459,6 +477,7 @@ public class Utilities {
 オブジェクトの生成に関する問題を解決：
 
 **Singletonパターンの理論的分析**
+**リストAC-19**
 ```java
 // スレッドセーフなSingleton実装
 public class DatabaseConnection {
@@ -499,6 +518,7 @@ public enum DatabaseConnection {
 #### 構造パターン（Structural Patterns）
 
 **Decoratorパターンの数学的モデル**
+**リストAC-20**
 ```java
 // Component = 基本機能の抽象化
 interface Coffee {
@@ -545,6 +565,7 @@ Coffee coffee = new MilkDecorator(
 #### 振る舞いパターン（Behavioral Patterns）
 
 **Observerパターンとイベント代数**
+**リストAC-21**
 ```java
 // Subject = 観察される対象
 public class Stock {
@@ -601,6 +622,7 @@ class StockDisplay implements Observer {
 **大O記法（Big-O Notation）**
 f(n) = O(g(n)) ⟺ ∃c > 0, ∃n₀ > 0, ∀n ≥ n₀: f(n) ≤ c·g(n)
 
+**リストAC-22**
 ```java
 // O(n²) の例：バブルソート
 public void bubbleSort(int[] arr) {
@@ -633,6 +655,7 @@ public void mergeSort(int[] arr, int left, int right) {
 
 #### 空間複雑度の分析
 
+**リストAC-23**
 ```java
 // O(1) 空間：in-place ソート
 public void quickSortIterative(int[] arr) {
@@ -672,6 +695,7 @@ public int[] mergeSortWithCopy(int[] arr) {
 
 #### 動的配列（ArrayList）の償却解析
 
+**リストAC-24**
 ```java
 public class DynamicArray<T> {
     private Object[] array;
@@ -708,6 +732,7 @@ public class DynamicArray<T> {
 
 #### ハッシュテーブルの理論
 
+**リストAC-25**
 ```java
 public class HashTable<K, V> {
     private static class Entry<K, V> {
@@ -781,6 +806,7 @@ public class HashTable<K, V> {
 - S：文（Statement）
 - Q：事後条件（Postcondition）
 
+**リストAC-26**
 ```java
 /**
  * 二分探索アルゴリズム
@@ -819,6 +845,7 @@ public int binarySearch(int[] arr, int target) {
 
 #### クラス不変条件の例
 
+**リストAC-27**
 ```java
 public class BankAccount {
     private double balance;
@@ -894,6 +921,7 @@ public class BankAccount {
 3. 同期機構によって順序付けされていない
 4. 異なるスレッドで実行
 
+**リストAC-28**
 ```java
 public class RaceConditionExample {
     private int counter = 0; // 共有状態
@@ -931,6 +959,7 @@ public class RaceConditionExample {
 3. **非プリエンプション（No Preemption）**: リソースは強制的に奪取できない
 4. **循環待機（Circular Wait）**: プロセス間でリソース待機の循環が存在
 
+**リストAC-29**
 ```java
 public class DeadlockExample {
     private final Object lock1 = new Object();
@@ -984,6 +1013,7 @@ public class DeadlockExample {
 
 #### Java Memory Model (JMM)
 
+**リストAC-30**
 ```java
 public class MemoryModelExample {
     private boolean ready = false;

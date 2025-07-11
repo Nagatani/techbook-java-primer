@@ -39,6 +39,7 @@
 
 まず、シングルスレッドの例を見てみましょう：
 
+**リスト16-1**
 ```java
 public class SingleThreadExample {
     public static void main(String[] args) {
@@ -87,6 +88,7 @@ public class SingleThreadExample {
 
 これをマルチスレッドで書き換えると：
 
+**リスト16-2**
 ```java
 public class MultiThreadExample {
     public static void main(String[] args) throws InterruptedException {
@@ -212,6 +214,7 @@ Java 5で導入されたjava.util.concurrentパッケージの設計思想を理
 
 ③ ラムダ式を使用した方式は、Java 8以降で利用可能な最も簡潔な記法で、関数型プログラミングの利点を活用できます。短い処理に対しては可読性が最も高くなります。
 
+**リスト16-3**
 ```java
 // ① Thread継承方式（非推奨）
 class MyThread extends Thread {
@@ -328,6 +331,7 @@ Thread-pool-1-thread-3: カウンタ 2
 
 以下の例は、マルチスレッド環境でデータ競合（レースコンディション）が発生する典型的なパターンです。一見単純に見える`count++`操作が、実際にはCPUレベルで3つの独立した処理（①現在値の読み込み、②値のインクリメント、③結果の書き込み）に分解されるため、複数のスレッドが同時にこの処理を実行すると、期待される結果とは異なる値になってしまいます。
 
+**リスト16-4**
 ```java
 class UnsafeCounter {
     private int count = 0;
@@ -441,6 +445,7 @@ Executorフレームワークは、Doug Leaによって設計された革新的�
 
 以下は、マルチスレッドプログラミングでよく見られる危険なアンチパターンです。大量のタスクに対して無制限にスレッドを生成することで、深刻なパフォーマンス問題とシステムクラッシュを引き起こす可能性があります。
 
+**リスト16-5**
 ```java
 // アンチパターン：スレッドの無制限生成
 for (int i = 0; i < 10000; i++) {
@@ -464,6 +469,7 @@ for (int i = 0; i < 10000; i++) {
 
 通常のコレクションクラスは、マルチスレッド環境では致命的な問題を引き起こす可能性があります。以下の例では、スレッドセーフでないHashMapと、並行アクセスに対応したConcurrentHashMapの違いを示しています。
 
+**リスト16-6**
 ```java
 // 危険：通常のHashMapの並行アクセス
 Map<String, Integer> unsafeMap = new HashMap<>();  // ①
@@ -594,6 +600,7 @@ step3: 集計処理 → 30
 **動画エンコーディングシステムの場合**：
 大容量の動画ファイルを効率的に処理するために、①動画読み込み部（生産者）がフレームを抽出し、②フレームキュー（バッファ）がメモリ使用量を制御しながらフレームを蓄積し、③エンコーダー（消費者）が圧縮処理を実行します。これにより、I/O処理とCPU集約的な処理を分離し、マルチコアCPUの性能を最大限に活用できます。
 
+**リスト16-7**
 ```java
 // システム構成の概念図
 // Producer → [BlockingQueue] → Consumer
@@ -611,6 +618,7 @@ step3: 集計処理 → 30
 
 wait/notifyを使用したスレッド間同期は、多くの微妙な問題を含んでいます。以下の例では、よくある間違った実装と正しい実装パターンを比較します。
 
+**リスト16-8**
 ```java
 // 誤った実装例（危険）
 synchronized(lock) {
@@ -814,6 +822,7 @@ Javaでスレッドを作成するには、主に`Runnable`インターフェイ
 
 `Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
 
+**リスト16-9**
 ```java
 // Runnableを実装したクラス
 class MyTask implements Runnable {
@@ -847,6 +856,7 @@ public class Main {
 
 この問題を解決するために、Javaは`synchronized`キーワードによる**排他制御**のしくみを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。
 
+**リスト16-10**
 ```java
 class SynchronizedCounter {
     private int count = 0;
@@ -875,6 +885,7 @@ class SynchronizedCounter {
 -   **パフォーマンス向上**: スレッドの生成・破棄コストを削減できます。
 -   **リソース管理**: 作成されるスレッド数を制限し、システムの安定性を高めます。
 
+**リスト16-11**
 ```java
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -915,6 +926,7 @@ public class ExecutorExample {
 
 #### 1. プロデューサー・コンシューマーパターンの実装
 
+**リスト16-12**
 ```java
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -1001,6 +1013,7 @@ public class ProducerConsumerExample {
 
 #### 2. Future と Callable を使った非同期処理
 
+**リスト16-13**
 ```java
 import java.util.concurrent.*;
 import java.util.List;
@@ -1067,6 +1080,7 @@ public class FutureCallableExample {
 
 #### 3. CompleテーブルFuture による高度な非同期処理
 
+**リスト16-14**
 ```java
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -1165,6 +1179,7 @@ public class CompletableFutureExample {
 
 #### 4. 並行コレクションの活用
 
+**リスト16-15**
 ```java
 import java.util.concurrent.*;
 import java.util.Map;
@@ -1274,6 +1289,7 @@ public class ConcurrentCollectionsExample {
 
 #### 5. 高度な同期プリミティブ
 
+**リスト16-16**
 ```java
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
@@ -1439,6 +1455,7 @@ public class AdvancedSynchronizationExample {
 
 計算結果などの戻り値が必要なタスクには、`Callable<V>`インターフェイスを使います。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが返されます。
 
+**リスト16-17**
 ```java
 import java.util.concurrent.*;
 
@@ -1470,6 +1487,7 @@ public class FutureExample {
 
 ### 実践的なパフォーマンス測定とベンチマーク
 
+**リスト16-18**
 ```java
 import java.util.concurrent.*;
 import java.util.Arrays;
@@ -1601,6 +1619,7 @@ public class ParallelPerformanceExample {
 
 ### スレッドセーフなシングルトンパターン
 
+**リスト16-19**
 ```java
 public class ThreadSafeSingletonExamples {
     
@@ -1683,6 +1702,7 @@ public class ThreadSafeSingletonExamples {
 
 #### 16.15 一般的な並行処理の落とし穴と解決策
 
+**リスト16-20**
 ```java
 import java.util.*;
 import java.util.concurrent.*;
@@ -1873,6 +1893,7 @@ public class ConcurrencyPitfallsAndSolutions {
 
 計算結果などの戻り値が必要なタスクには、`Callable<V>`インターフェイスを使います。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが返されます。
 
+**リスト16-21**
 ```java
 import java.util.concurrent.*;
 
@@ -1904,6 +1925,7 @@ public class FutureExample {
 
 ### 16.9.4 さまざまなExecutorの種類
 
+**リスト16-22**
 ```java
 import java.util.concurrent.*;
 
@@ -1984,6 +2006,7 @@ public class ExecutorTypesExample {
 
 ### 16.9.6 Executorのベストプラクティス
 
+**リスト16-23**
 ```java
 import java.util.concurrent.*;
 
@@ -2099,6 +2122,7 @@ Executorフレームワークを使うことで、スレッドの直接管理か
 
 ### 16.10.2 CopyOnWriteArrayList
 
+**リスト16-24**
 ```java
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
@@ -2150,6 +2174,7 @@ public class CopyOnWriteExample {
 
 ### 16.11.1 ReadWriteLock - 読み取り/書き込みロック
 
+**リスト16-25**
 ```java
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
@@ -2218,6 +2243,7 @@ public class AdvancedSynchronizationExample {
 
 ### 16.11.2 Semaphore - リソース数制限
 
+**リスト16-26**
 ```java
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ExecutorService;
@@ -2285,6 +2311,7 @@ public class SemaphoreExample {
 
 ### 16.11.3 CountDownLatch - カウントダウン同期
 
+**リスト16-27**
 ```java
 import java.util.concurrent.CountDownLatch;
 
@@ -2335,6 +2362,7 @@ public class CountDownLatchExample {
 
 ### 16.11.4 CyclicBarrier - 循環バリア
 
+**リスト16-28**
 ```java
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.BrokenBarrierException;
@@ -2377,6 +2405,7 @@ public class CyclicBarrierExample {
 
 ### 16.11.5 Exchanger - データ交換
 
+**リスト16-29**
 ```java
 import java.util.concurrent.Exchanger;
 
@@ -2422,6 +2451,7 @@ public class ExchangerExample {
 
 ### 16.11.6 wait/notify を使った低レベル同期
 
+**リスト16-30**
 ```java
 public class WaitNotifyExample {
     private static final Object lock = new Object();
@@ -2469,6 +2499,7 @@ public class WaitNotifyExample {
 
 ### 16.11.7 並行コレクションの性能比較
 
+**リスト16-31**
 ```java
 import java.util.*;
 import java.util.concurrent.*;
@@ -2552,6 +2583,7 @@ public class CollectionPerformanceComparison {
 
 ## 16.13 実践的なパフォーマンス測定とベンチマーク
 
+**リスト16-32**
 ```java
 import java.util.concurrent.*;
 import java.util.Arrays;
@@ -2683,6 +2715,7 @@ public class ParallelPerformanceExample {
 
 ## 16.14 スレッドセーフなシングルトンパターン
 
+**リスト16-33**
 ```java
 public class ThreadSafeSingletonExamples {
     
@@ -2765,6 +2798,7 @@ public class ThreadSafeSingletonExamples {
 
 ## 16.15 一般的な並行処理の落とし穴と解決策
 
+**リスト16-34**
 ```java
 import java.util.*;
 import java.util.concurrent.*;
@@ -2921,6 +2955,7 @@ public class ConcurrencyPitfallsAndSolutions {
 
 ### 16.16.1 並列データ処理パイプライン
 
+**リスト16-35**
 ```java
 import java.util.concurrent.*;
 import java.util.List;
@@ -3009,6 +3044,7 @@ public class ParallelDataPipeline {
 
 ### 16.16.2 リトライとサーキットブレーカーパターン
 
+**リスト16-36**
 ```java
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;

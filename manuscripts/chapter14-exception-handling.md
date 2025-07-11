@@ -131,6 +131,7 @@ Javaでは、プログラム実行中に発生する「例外的状況」を**�
 -   **`try`ブロック**: 例外が発生する可能性のある処理をこのブロックで囲みます。
 -   **`catch`ブロック**: `try`ブロック内で特定の型の例外が発生した場合に、その例外を捕捉（キャッチ）し、対応する処理を記述します。`catch`ブロックは複数記述でき、より具体的な例外から順に書きます。
 
+**リスト14-1**
 ```java
 public class TryCatchSample {
     public static void main(String[] args) {
@@ -153,6 +154,7 @@ public class TryCatchSample {
 
 `finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、**必ず実行される**処理を記述します。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
 
+**リスト14-2**
 ```java
 // ...
 try {
@@ -169,6 +171,7 @@ try {
 
 `AutoCloseable`インターフェイスを実装したリソース（ファイルストリームなど）を扱う場合、`try-with-resources`文を使うと、`finally`ブロックで明示的に`close()`を呼ぶ必要がなくなり、コードが簡潔かつ安全になります。
 
+**リスト14-3**
 ```java
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -224,6 +227,7 @@ Javaの例外は、コンパイラがその処理を強制するかどうかに�
 
 メソッド内で発生した検査例外を自身で処理せず、そのメソッドの呼び出し元に処理を任せたい場合、メソッドシグネチャに`throws`を記述します。
 
+**リスト14-4**
 ```java
 import java.io.IOException;
 
@@ -255,6 +259,7 @@ public class ThrowsExample {
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
+**リスト14-5**
 ```java
 // 独自の検査例外クラス
 class BalanceInsufficientException extends Exception {
@@ -280,6 +285,7 @@ public class BankAccount {
 
 ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
+**リスト14-6**
 ```java
 class DataAccessException extends Exception {
     public DataAccessException(String message, Throwable cause) {

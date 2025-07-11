@@ -256,6 +256,7 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 
 手続き型プログラミングでは、データと処理が完全に分離された構造となります。以下の例では、この分離がどのような問題を引き起こすかを示しています。
 
+**リスト3-1**
 ```java
 public class ProceduralExample {
     public static void main(String[] args) {
@@ -285,6 +286,7 @@ public class ProceduralExample {
 
 オブジェクト指向では、関連するデータと処理を1つのクラスに統合し、概念の一貫性と責任の明確化を実現します。
 
+**リスト3-2**
 ```java
 public class Student {
     private String name;  // ①
@@ -330,6 +332,7 @@ public class ObjectOrientedExample {
 
 カプセル化は、オブジェクトの内部データを外部から直接アクセスできないように保護し、適切なメソッドを通じてのみ操作を許可する仕組みです。
 
+**リスト3-3**
 ```java
 public class BankAccount {
     private double balance;  // ①
@@ -360,6 +363,7 @@ public class BankAccount {
 
 継承は、既存のクラス（親クラス）の機能を新しいクラス（子クラス）が引き継ぎ、さらに独自の機能を追加する仕組みです。
 
+**リスト3-4**
 ```java
 public class Product {
     protected String productId;  // ①
@@ -400,6 +404,7 @@ public class Book extends Product {  // ③
 
 ポリモーフィズム（多態性）は、同じインターフェイスを通じて異なる実装を統一的に扱える仕組みです。これにより、新しい実装を追加してもクライアントコードを変更する必要がありません。
 
+**リスト3-5**
 ```java
 public interface PaymentMethod {  // ①
     void processPayment(double amount);
@@ -440,6 +445,7 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 
 ### クラスの基本構造
 
+**リスト3-6**
 ```java
 public class Order {
     // フィールド（状態）
@@ -487,6 +493,7 @@ public class Order {
 
 ### mainメソッドとプログラムの実行
 
+**リスト3-7**
 ```java
 public class OrderDemo {
     public static void main(String[] args) {
@@ -523,6 +530,7 @@ public class OrderDemo {
 
 ### 例1：図書管理システム
 
+**リスト3-8**
 ```java
 public class Book {
     private String isbn;
@@ -558,6 +566,7 @@ public class Book {
 
 ### 例2：ショッピングカート
 
+**リスト3-9**
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -716,6 +725,7 @@ void printStudent(struct Student s) {
 オブジェクト指向では、関連するデータとそれを操作する処理を1つのクラスにまとめることで、上記の問題を解決します：
 
 **オブジェクト指向プログラミング（Java）**
+**リスト3-10**
 ```java
 // データと処理が一体化している
 public class Student {
@@ -806,6 +816,7 @@ public class Student {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です：
 
+**リスト3-11**
 ```java
 public class Book {
     // フィールド（属性）
@@ -866,6 +877,7 @@ public class Book {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています：
 
+**リスト3-12**
 ```java
 public class BookTest {
     public static void main(String[] args) {
@@ -917,6 +929,7 @@ public class BookTest {
 
 まず、カプセル化されていない設計から始めます：
 
+**リスト3-13**
 ```java
 // 悪い例：カプセル化されていない銀行口座
 public class BankAccountV1 {
@@ -954,6 +967,7 @@ public class ProblemExample {
 
 privateキーワードとメソッドを使って基本的なカプセル化を実装：
 
+**リスト3-14**
 ```java
 // 改善例：基本的なカプセル化
 public class BankAccountV2 {
@@ -997,6 +1011,7 @@ public class BankAccountV2 {
 
 実際の業務システムで求められるレベルのカプセル化：
 
+**リスト3-15**
 ```java
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -1171,6 +1186,7 @@ Javaには8つのプリミティブ型が存在します。先述の表を参照
 - 配列
 - 列挙型（enum）
 
+**リスト3-16**
 ```java
 // プリミティブ型
 int number = 42;
@@ -1189,6 +1205,7 @@ int[] numbers = {1, 2, 3, 4, 5};  // 配列も参照型
 
 #### 整数リテラル
 
+**リスト3-17**
 ```java
 int decimal = 100;      // 10進数
 int binary = 0b1100100; // 2進数（0bプレフィックス）
@@ -1201,6 +1218,7 @@ long largeNumber = 1_000_000_000L;  // 読みやすくするためのアンダ�
 
 #### 浮動小数点リテラル
 
+**リスト3-18**
 ```java
 double normalNotation = 3.14159;
 double scientificNotation = 3.14159e0;  // 科学記法
@@ -1209,6 +1227,7 @@ float floatValue = 3.14f;  // float型はfまたはFサフィックスが必要
 
 #### 文字・文字列リテラル
 
+**リスト3-19**
 ```java
 char singleChar = 'A';          // 文字リテラル（シングルクォート）
 char unicodeChar = '\u0041';    // Unicode表現（'A'と同じ）
@@ -1232,6 +1251,7 @@ boolean isFalse = false;
 
 小さい型から大きい型への変換は自動的に行われます：
 
+**リスト3-20**
 ```java
 int intValue = 100;
 long longValue = intValue;    // int → long（自動変換）
@@ -1242,6 +1262,7 @@ double doubleValue = intValue; // int → double（自動変換）
 
 大きい型から小さい型への変換は明示的なキャストが必要です：
 
+**リスト3-21**
 ```java
 double doubleValue = 3.14159;
 int intValue = (int) doubleValue;  // 3になる（小数部分は切り捨て）
@@ -1256,6 +1277,7 @@ int intValue2 = (int) longValue;   // 明示的なキャストが必要
 
 各プリミティブ型には対応するラッパクラスが存在します：
 
+**リスト3-22**
 ```java
 // オートボクシング（Java 5以降）
 Integer boxedInt = 100;  // int → Integer（自動変換）
@@ -1327,6 +1349,7 @@ a = b = 5;
 算術演算子は、プログラミングの基本中の基本であり、数学的な計算、データ解析、アルゴリズムの実装など、あらゆるプログラムで使用されます。以下のプログラムは、Javaの基本的な算術演算子の動作を確認し、整数型の演算がどのように実行されるかを理解するための重要な学習材料です：
 
 ファイル名： ArithmeticSample.java
+**リスト3-23**
 ```java
 class ArithmeticSample {
   public static void main(String[] args) {
@@ -1452,6 +1475,7 @@ int num = (int)s; // ← numには、1234 が代入される
 
 次のプログラムはどのような結果を出力するでしょう？
 
+**リスト3-24**
 ```java
 int a = 3;
 int b = 5;
@@ -1488,6 +1512,7 @@ System.out.println("文字列と数値を結合すると..." + a + b);
 
 括弧内の条件（*boolean型*）に合致する（値が`true`）の場合に、波括弧`{ }`内のブロックの処理を行います。
 
+**リスト3-25**
 ```java
 if ( 条件 ) {
     ここは条件に合致した場合にのみ実行される
@@ -1512,6 +1537,7 @@ if ( 条件 )
 これは正常に動きます。  
 次に、このコードを改修する際、以下のようなコードの修正を行ってしまいやすい点が波括弧を省略した際に起こりやすいです。
 
+**リスト3-26**
 ```java
 if ( 条件 )
     最初にif文を書いた人が書いた条件内のコード
@@ -1530,6 +1556,7 @@ if ( 条件 )
 
 ifの条件に合致しなかった場合のみ実行される処理を書ける
 
+**リスト3-27**
 ```java
 if ( 条件 ) {
     ここは条件に合致した場合にのみ実行される
@@ -1542,6 +1569,7 @@ if ( 条件 ) {
 
 条件に合致しなかった場合、再度評価を行うこともできる
 
+**リスト3-28**
 ```java
 if ( 条件1 ) {
     条件1に合致した場合にのみ実行される
@@ -1559,6 +1587,7 @@ if文の条件は、条件1かつ条件2と言ったように、1つのif文で�
 ###### AND（〜かつ〜）
 ###### AND（〜かつ〜）
 
+**リスト3-29**
 ```java
 if ( 条件１ && 条件２ ) {
     条件１と条件２どちらにも合致した場合にのみ実行される
@@ -1568,6 +1597,7 @@ if ( 条件１ && 条件２ ) {
 ###### OR（〜または〜）
 ###### OR（〜または〜）
 
+**リスト3-30**
 ```java
 if ( 条件１ || 条件２ ) {
     条件１か条件２のどちらかに合致した場合にのみ実行される
@@ -1580,6 +1610,7 @@ if ( 条件１ || 条件２ ) {
 
 ファイル名： MembershipDiscount.java
 
+**リスト3-31**
 ```java
 public class MembershipDiscount {
     public static void main(String[] args) {
@@ -1656,6 +1687,7 @@ public class MembershipDiscount {
 
 三項演算子は、`if...else...`を式として扱えます。
 
+**リスト3-32**
 ```java
 System.out.println(条件 ? "true" : "false");
 //条件に合致していればtrueと表示されます。合致していなければfalseと表示されます。
@@ -1674,6 +1706,7 @@ if ( 条件 ) {
 
 switchの括弧内の変数に入っている値がcaseの値に該当した時、処理を実行します。
 
+**リスト3-33**
 ```java
 switch ( 検査対象の値 ) {
     case 値1:
@@ -1695,6 +1728,7 @@ breakが書かれていない場合は、その下にあるcaseの処理も実�
 
 Java 14以降、switch文が大幅に強化され、より安全で簡潔な記述が可能になりました。
 
+**リスト3-34**
 ```java
 // 従来のswitch文
 String dayType;
@@ -1731,6 +1765,7 @@ String dayType = switch (day) {
 *   **網羅性のチェック:** `default`節がない場合など、すべての可能性を網羅していないとコンパイルエラーになります（`enum`型を`switch`する場合など）。これにより、条件漏れを防ぐことができます。
 *   **複数行の処理と`yield`**: `case`の処理が複数行にわたる場合は、ブロック`{}`で囲み、`yield`キーワードを使って値を返します。
 
+**リスト3-35**
 ```java
 // yieldを使った例
 String message = switch (day) {
@@ -1746,6 +1781,7 @@ String message = switch (day) {
 **パターンマッチング for switch (Java 17以降):**
 `switch`で変数の型をチェックし、そのままその型の変数として利用できます。
 
+**リスト3-36**
 ```java
 Object obj = "Hello";
 String formatted = switch (obj) {
@@ -1764,6 +1800,7 @@ switch文は、特定の値にもとづいた分岐処理に優れており、�
 
 ファイル名： GradeCalculator.java
 
+**リスト3-37**
 ```java
 public class GradeCalculator {
     public static void main(String[] args) {
@@ -1895,6 +1932,7 @@ JavaのString型は、プログラミング初心者が遇遇する最も細か�
 
 このサンプルを通じて、Javaの文字列プール機能、オブジェクトの同一性、メモリ管理のしくみを理解しましょう：
 
+**リスト3-38**
 ```java
 public class StringEval {
   public static void main(String[] args) {
@@ -1945,6 +1983,7 @@ public class StringEval {
 
 **実用的な注意点：**
 
+**リスト3-39**
 ```java
 // 良い例
 if (userInput.equals("yes")) {
@@ -1970,6 +2009,7 @@ if ("yes".equals(userInput)) {
 
 while文の括弧内で指定された条件に、合致している間は処理を繰り返します。
 
+**リスト3-40**
 ```java
 while ( 条件 ) {
     条件が真値(true)の間、繰り返す処理
@@ -1981,6 +2021,7 @@ while ( 条件 ) {
 
 while文では、繰り返しの条件となるものが必要となります。
 
+**リスト3-41**
 ```java
 int count = 1;
 while ( count <= 10 ) {
@@ -1993,6 +2034,7 @@ while ( count <= 10 ) {
 
 while文なんだけど、条件の検査が波括弧を閉じるタイミングで行われるため、波括弧内の処理は、条件にかかわらず一度は実行され繰り返し処理です。
 
+**リスト3-42**
 ```java
 do {
     処理を実行後、条件が真値の場合には何度も繰り返す
@@ -2004,6 +2046,7 @@ do {
 ###### 10回繰り返す
 ###### 10回繰り返す
 
+**リスト3-43**
 ```java
 int count = 1;
 do {
@@ -2019,6 +2062,7 @@ whileループの繰り返し条件用の数値型変数を簡略化して書け
 初期化された変数が、波括弧内の処理を繰り返す都度、指定された変化ルールに従って変化します。  
 変化した値が繰り返し条件に合致しなくなった場合、繰り返しから抜けられます。
 
+**リスト3-44**
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2028,6 +2072,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 ###### 10回繰り返す
 ###### 10回繰り返す
 
+**リスト3-45**
 ```java
 for (int count = 1; count <= 10; count++) {
     繰り返す処理
@@ -2042,6 +2087,7 @@ for (int count = 1; count <= 10; count++) {
 
 for文を例にした場合：
 
+**リスト3-46**
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2053,6 +2099,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 
 ループ処理中に、continueが実行されると、それ以降の処理は1回の繰り返し処理時のみ飛ばして次の繰り返し処理が実行されます。
 
+**リスト3-47**
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2118,6 +2165,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 
 `static`フィールドと`static`メソッドの具体的な使い方を見てみましょう。
 
+**リスト3-48**
 ```java
 // StaticMemberExample.java
 class Tool {
@@ -2191,6 +2239,7 @@ public class StaticMemberExample {
 1. **インスタンスメンバーにアクセスできない**: `this`キーワードを使うことができず、インスタンスフィールドやインスタンスメソッドを直接呼び出せません。
 2. **staticメンバーのみアクセス可能**: staticメソッドやstaticフィールドのみ使用できます。
 
+**リスト3-49**
 ```java
 class Example {
     String instanceField = "インスタンス";
@@ -2215,6 +2264,7 @@ class Example {
 
 数学関数や文字列処理など、状態を持たない汎用的な処理を提供するクラス：
 
+**リスト3-50**
 ```java
 public class MathUtils {
     // privateコンストラクタでインスタンス化を防ぐ
@@ -2238,6 +2288,7 @@ double area = MathUtils.calculateCircleArea(5.0);
 
 プログラム全体で共有される定数値：
 
+**リスト3-51**
 ```java
 public class Constants {
     public static final double TAX_RATE = 0.10;  // 消費税率
@@ -2250,6 +2301,7 @@ public class Constants {
 
 アプリケーション全体で1つしか存在しないインスタンスを保証する設計パターン：
 
+**リスト3-52**
 ```java
 public class DatabaseConnection {
     private static DatabaseConnection instance;
@@ -2343,6 +2395,7 @@ scores = new int[5];
 
 配列の宣言と領域の確保を同時に行う場合は以下のように書けます。
 
+**リスト3-53**
 ```java
 int[] scores;		      // 宣言
 scores = new int[5];	// 領域を5つ確保する
@@ -2368,6 +2421,7 @@ System.out.println(scores.length);    // 5と表示
 
 for文の条件や、配列の要素の最後にアクセスする場合などに使用できます。
 
+**リスト3-54**
 ```java
 int[] scores = {74, 88, 98, 53, 25};
 
@@ -2397,6 +2451,7 @@ int[][] scoresOfStudents = new int[3][5];
 
 基本は1次元配列と同じです。
 
+**リスト3-55**
 ```java
 // 一人目の点数を代入
 scoresOfStudents[0][0] = 100;
@@ -2419,6 +2474,7 @@ scoresOfStudents[1][4] = 70;
 
 配列内部の`{}`をカンマで区切ることで、多次元の配列を同時に宣言、初期化、代入ができます。
 
+**リスト3-56**
 ```java
 int[][] scoresOfStudents = {
     {70, 60, 80, 90, 50},
@@ -2448,6 +2504,7 @@ System.out.println(scoresOfStudents[0].length);    //5と表示
 
 Java 5から導入された拡張for文を使うと、配列の要素を簡潔に反復処理できます：
 
+**リスト3-57**
 ```java
 int[] scores = {74, 88, 98, 53, 25};
 
@@ -2466,6 +2523,7 @@ for (int score : scores) {
 
 配列をコピーする場合は、`System.arraycopy()`メソッドや`Arrays.copyOf()`メソッドを使用します：
 
+**リスト3-58**
 ```java
 int[] original = {1, 2, 3, 4, 5};
 int[] copy1 = new int[original.length];
@@ -2481,6 +2539,7 @@ int[] copy2 = Arrays.copyOf(original, original.length);
 
 `Arrays.sort()`メソッドを使って配列を簡単にソートできます：
 
+**リスト3-59**
 ```java
 int[] numbers = {5, 2, 8, 1, 9};
 Arrays.sort(numbers);
@@ -2493,6 +2552,7 @@ Arrays.sort(numbers);
 2. **参照の共有**: 配列は参照型ですので、代入は参照のコピーになります
 3. **サイズの固定**: 一度作成した配列のサイズは変更できません
 
+**リスト3-60**
 ```java
 // 範囲外アクセスの例（エラーになる）
 int[] arr = new int[5];
@@ -2587,6 +2647,7 @@ exercises/chapter03/
    - mainメソッドから各メソッドを呼び出して動作確認
 
 **コード構造のヒント**:
+**リスト3-61**
 ```java
 public class MethodsPractice {
     // ここに各メソッドを実装

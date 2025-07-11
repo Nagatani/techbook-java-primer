@@ -379,6 +379,7 @@ $ nano HelloWorld.java
 
 以下のコードを書きます。
 
+**リストAA-1**
 ```java
 public class HelloWorld {
     public static void main(String[] args) {
@@ -485,6 +486,7 @@ Javaプログラムでのプログラムへのデータの受け渡し方法は�
 
 ファイル名「```StandardInput.java```」
 
+**リストAA-2**
 ```java
 import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言
 
@@ -508,6 +510,7 @@ public class StandardInput {
 
 ファイル名「```ParseInt.java```」
 
+**リストAA-3**
 ```java
 import java.util.Scanner;  // このライブラリをParseIntクラスで使う宣言
 

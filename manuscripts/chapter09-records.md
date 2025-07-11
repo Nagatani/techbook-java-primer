@@ -69,6 +69,7 @@ public record Person(String name, int age) {}
 
 上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります。
 
+**リスト9-1**
 ```java
 public final class Person {
     private final String name;  // ①
@@ -122,6 +123,7 @@ public final class Person {
 
 Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています。
 
+**リスト9-2**
 ```java
 public class RecordExample {
     public static void main(String[] args) {
@@ -154,6 +156,7 @@ public class RecordExample {
 
 `Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
 
+**リスト9-3**
 ```java
 public record PositivePoint(int x, int y) {
     // コンパクトコンストラクタ
@@ -184,6 +187,7 @@ Charlie,35,Nagoya
 public record PersonRecord(String name, int age, String city) {}
 ```
 
+**リスト9-4**
 ```java
 // CsvReader.java
 import java.io.IOException;
@@ -227,6 +231,7 @@ public class CsvReader {
 #### 従来のOOPとDOPの違い
 
 **従来のOOPアプローチ**:
+**リスト9-5**
 ```java
 // データとロジックが密結合
 public class Order {
@@ -242,6 +247,7 @@ public class Order {
 ```
 
 **DOPアプローチ**:
+**リスト9-6**
 ```java
 // データの定義（Records）
 public record Order(String orderId, Customer customer, List<OrderItem> items, LocalDateTime orderDate) {}
@@ -290,6 +296,7 @@ public class OrderProcessor {
 
 #### 開発効率の劇的向上
 
+**リスト9-7**
 ```java
 // 従来のデータクラス：約100行のコード
 public class TraditionalUser {
@@ -332,6 +339,7 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 
 #### 1. データモデルの設計
 
+**リスト9-8**
 ```java
 // ドメインモデルの明確な表現
 public record Product(
@@ -360,6 +368,7 @@ public record Money(BigDecimal amount, Currency currency) {
 
 #### 2. ビジネスロジックの実装
 
+**リスト9-9**
 ```java
 public class ProductService {
     // 純粋関数による処理
@@ -388,6 +397,7 @@ public class ProductService {
 
 #### 3. 型安全な状態管理
 
+**リスト9-10**
 ```java
 // 状態を型で表現
 public sealed interface OrderStatus permits Pending, Confirmed, Shipped, Delivered {}
@@ -416,6 +426,7 @@ Java 17以降の**パターンマッチング**とRecordの組み合わせは、
 
 **sealed interface**は、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
 
+**リスト9-11**
 ```java
 // 図形を表現する代数的データ型
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
@@ -429,6 +440,7 @@ public record Triangle(double base, double height) implements Shape {}
 
 従来のinstance of + キャストの冗長な記述を、**switch式**と**パターンマッチング**で簡潔に表現できます。
 
+**リスト9-12**
 ```java
 // 面積計算（パターンマッチング使用）
 public static double calculateArea(Shape shape) {
@@ -457,6 +469,7 @@ public static double calculatePerimeter(Shape shape) {
 
 複雑なデータ構造に対しても、ネストしたパターンで処理できます。
 
+**リスト9-13**
 ```java
 // ネストしたRecord構造
 public record Address(String street, String city, String country) {}
@@ -490,6 +503,7 @@ public static String getLocationInfo(Object obj) {
 
 **when句**を使用して、パターンに条件を追加できます。
 
+**リスト9-14**
 ```java
 // 年齢による分類（ガード条件付き）
 public static String categorizeAge(Person person) {
@@ -510,6 +524,7 @@ public static String categorizeAge(Person person) {
 
 代数的データ型を使った**式評価器**の例で、パターンマッチングの強力さを示します。
 
+**リスト9-15**
 ```java
 // 数式を表現する代数的データ型
 public sealed interface Expr permits Const, Add, Mul, Var {}
@@ -569,6 +584,7 @@ public static String toString(Expr expr) {
 
 ### パターンマッチングの実用例
 
+**リスト9-16**
 ```java
 public class ExpressionDemo {
     public static void main(String[] args) {
@@ -603,6 +619,7 @@ sealed interfaceとパターンマッチングにより、以下の利点が得�
 2. **型安全性**: キャストなしでの安全なデータアクセス
 3. **保守性**: 新しい型を追加した際の変更箇所の特定が容易
 
+**リスト9-17**
 ```java
 // 新しい図形を追加した場合
 public sealed interface Shape permits Circle, Rectangle, Triangle, Square {}
@@ -625,6 +642,7 @@ public static double calculateArea(Shape shape) {
 
 Recordの背後では、Javaコンパイラが大量のコードを自動生成しています。このしくみを理解することで、Recordの動作や制限について深く理解できます。
 
+**リスト9-18**
 ```java
 // ソースコード
 public record Point(int x, int y) {}
@@ -675,6 +693,7 @@ public final class Point extends Record {
 
 **コンパクトコンストラクタ**は、Recordの強力なカスタマイズ機能です。パラメータリストを省略し、バリデーションや正規化を行えます。
 
+**リスト9-19**
 ```java
 // 基本的なコンパクトコンストラクタ
 public record ValidatedEmail(String value) {
@@ -696,6 +715,7 @@ public record ValidatedEmail(String value) {
 }
 ```
 
+**リスト9-20**
 ```java
 // 複雑なバリデーションの例
 public record Money(BigDecimal amount, Currency currency) {
@@ -738,6 +758,7 @@ public record Money(BigDecimal amount, Currency currency) {
 
 不変性を保ちながら部分的な更新を行う**withメソッドパターン**は、Recordで頻繁に使用されます。
 
+**リスト9-21**
 ```java
 public record Configuration(
     String host,
@@ -816,6 +837,7 @@ public record Configuration(
 
 Recordには、コンストラクタパラメータ以外の追加メソッドを定義できます。
 
+**リスト9-22**
 ```java
 public record Range(int start, int end) {
     public Range {
@@ -871,6 +893,7 @@ public record Range(int start, int end) {
 
 RecordはSerializableインターフェイスを実装することで、シリアライゼーションに対応できます。
 
+**リスト9-23**
 ```java
 import java.io.Serializable;
 
@@ -912,6 +935,7 @@ public record SerializableUser(
 
 現代のアプリケーションでは、RecordとJSON処理の統合が重要です。
 
+**リスト9-24**
 ```java
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -980,6 +1004,7 @@ class MoneyDeserializer extends JsonDeserializer<Money> {
 
 Recordsとパターンマッチングを組み合わせることで、**イベントソーシング**のような高度なデータ処理パターンを簡潔に実装できます。
 
+**リスト9-25**
 ```java
 // イベントの定義
 public sealed interface UserEvent permits UserCreated, UserUpdated, UserDeleted {}
@@ -1013,6 +1038,7 @@ public record UserSnapshot(
 ) {}
 ```
 
+**リスト9-26**
 ```java
 // イベントストリームの処理
 public class UserEventProcessor {
@@ -1084,6 +1110,7 @@ public class UserEventProcessor {
 
 ### Stream APIとの高度な統合
 
+**リスト9-27**
 ```java
 public class DataPipelineExample {
     
@@ -1162,6 +1189,7 @@ public record UserAnalytics(
 
 ### 実際のアプリケーション例：注文処理システム
 
+**リスト9-28**
 ```java
 // 注文処理のドメインモデル
 public record Customer(String id, String name, String email) {}
@@ -1289,6 +1317,7 @@ public record OrderReport(
 
 ### 関数型プログラミングとの統合
 
+**リスト9-29**
 ```java
 // 関数型スタイルでのデータ処理
 public class FunctionalDataProcessing {
@@ -1367,6 +1396,7 @@ Recordは、その設計により多くのパフォーマンス上の利点を�
 
 #### JVMによる最適化
 
+**リスト9-30**
 ```java
 // インライン化されやすいRecord
 @jdk.internal.ValueBased  // 将来のValue Typeの候補
@@ -1399,6 +1429,7 @@ public record OptimizedData(
 
 #### ガベージコレクション効率
 
+**リスト9-31**
 ```java
 // 短命なオブジェクトとしてのRecord活用
 public class CalculationService {
@@ -1425,6 +1456,7 @@ public class CalculationService {
 
 ### ベンチマーク実例
 
+**リスト9-32**
 ```java
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -1513,6 +1545,7 @@ RecordBenchmark.hashCodeRecord          avgt   10   2.934 ± 0.052  ns/op
 
 ### メモリ使用量の最適化
 
+**リスト9-33**
 ```java
 public class MemoryOptimization {
     
@@ -1595,6 +1628,7 @@ public class MemoryOptimization {
 
 ### オブジェクトプーリング戦略
 
+**リスト9-34**
 ```java
 // 高頻度で作成されるRecordのプーリング
 public class RecordPooling {
@@ -1633,6 +1667,7 @@ public class RecordPooling {
 
 ### 大量データ処理での最適化
 
+**リスト9-35**
 ```java
 public class BigDataOptimization {
     
@@ -1703,6 +1738,7 @@ public class BigDataOptimization {
 
 **Project Valhalla**は、Javaに**Value Types**を導入するプロジェクトで、Recordsの未来に大きな影響を与えます。
 
+**リスト9-36**
 ```java
 // 将来のValue Records（概念的な例）
 public value record ComplexNumber(double real, double imaginary) {
@@ -1748,6 +1784,7 @@ public inline record Vec3(float x, float y, float z) {
 
 ### パターンマッチングの進化
 
+**リスト9-37**
 ```java
 // 将来のパターンマッチング拡張（概念的）
 public class FuturePatternMatching {
@@ -1783,6 +1820,7 @@ public class FuturePatternMatching {
 
 ### 型システムの進化
 
+**リスト9-38**
 ```java
 // 将来の型システム拡張
 public class TypeSystemEvolution {
@@ -1814,6 +1852,7 @@ public class TypeSystemEvolution {
 
 ### 相互運用性の向上
 
+**リスト9-39**
 ```java
 // 他言語・フレームワークとの統合改善
 public class InteroperabilityEnhancements {

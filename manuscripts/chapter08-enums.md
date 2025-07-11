@@ -142,6 +142,7 @@ enumのインスタンス性とsingleton性の理解も重要なポイントで�
 
 ### 基本的な構文と使い方
 
+**リスト8-1**
 ```java
 public enum DayOfWeek {
     SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
@@ -149,6 +150,7 @@ public enum DayOfWeek {
 ```
 これだけで、`DayOfWeek`という新しい型が作られ、その型が取りうる値は定義された7つの曜日に限定されます。
 
+**リスト8-2**
 ```java
 public class EnumExample {
     public static void main(String[] args) {
@@ -171,6 +173,7 @@ Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、
 -   `name()`: 列挙子の名前（定義した通りの文字列）を返します。
 -   `ordinal()`: 列挙子の定義順序（ゼロから始まる）を返します。
 
+**リスト8-3**
 ```java
 // DayOfWeek.values() を使って全曜日をループ処理
 for (DayOfWeek day : DayOfWeek.values()) {
@@ -186,6 +189,7 @@ System.out.println(friday); // FRIDAY
 
 `enum`は`switch`文と非常に相性が良く、安全で読みやすいコードを書くことができます。
 
+**リスト8-4**
 ```java
 public class TrafficLight {
     public static void checkSignal(DayOfWeek day) {
@@ -204,6 +208,7 @@ public class TrafficLight {
 
 `enum`は単なる定数の集まりではなく、クラスのようにフィールドやコンストラクタ、メソッドを持たせることができます。これにより、定数に関連するデータや振る舞いをカプセル化できます。
 
+**リスト8-5**
 ```java
 public enum Planet {
     // 各列挙子を定義する際に、コンストラクタの引数を渡す
@@ -241,6 +246,7 @@ public class PlanetTest {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。これは**ストラテジーパターン**を簡潔に実現する方法の1つです。
 
+**リスト8-6**
 ```java
 public enum Operation {
     PLUS("+") {
@@ -261,6 +267,7 @@ public enum Operation {
 
 `enum`はクラスを継承できませんが、インターフェイスを実装することは可能です。
 
+**リスト8-7**
 ```java
 interface Loggable {
     String getLogMessage();

@@ -1,0 +1,33 @@
+# 第09章 サンプルコード
+
+## リスト一覧
+- [list9-1-2/](./list9-1-2/) - 関連する複数のクラス
+- [list9-10/](./list9-10/) - CodeSnippet
+- [list9-11-12/](./list9-11-12/) - 関連する複数のクラス
+- [list9-13-14/](./list9-13-14/) - 関連する複数のクラス
+- [list9-15-16/](./list9-15-16/) - 関連する複数のクラス
+- [list9-17/](./list9-17/) - CodeSnippet
+- [list9-18/](./list9-18/) - CodeSnippet
+- [list9-19/](./list9-19/) - CodeSnippet
+- [list9-20/](./list9-20/) - CodeSnippet
+- [list9-21/](./list9-21/) - CodeSnippet
+- [list9-22/](./list9-22/) - CodeSnippet
+- [list9-23/](./list9-23/) - CodeSnippet
+- [list9-24/](./list9-24/) - CodeSnippet
+- [list9-25-27/](./list9-25-27/) - 関連する複数のクラス
+- [list9-28-29/](./list9-28-29/) - 関連する複数のクラス
+- [list9-3/](./list9-3/) - CodeSnippet
+- [list9-30/](./list9-30/) - CodeSnippet
+- [list9-31/](./list9-31/) - CalculationService
+- [list9-32/](./list9-32/) - RecordBenchmark
+- [list9-33/](./list9-33/) - MemoryOptimization
+- [list9-34/](./list9-34/) - RecordPooling
+- [list9-35/](./list9-35/) - BigDataOptimization
+- [list9-36/](./list9-36/) - CodeSnippet
+- [list9-37/](./list9-37/) - FuturePatternMatching
+- [list9-38/](./list9-38/) - TypeSystemEvolution
+- [list9-39/](./list9-39/) - InteroperabilityEnhancements
+- [list9-4/](./list9-4/) - CsvReader
+- [list9-5-6/](./list9-5-6/) - 関連する複数のクラス
+- [list9-7/](./list9-7/) - TraditionalUser
+- [list9-8-9/](./list9-8-9/) - 関連する複数のクラス

@@ -74,6 +74,7 @@
 
 ファイルなどの外部リソースは、使い終わったら必ず「閉じる（closeする）」必要があります。これを怠ると、リソースリークなどの問題を引き起こします。Java 7以降で導入された`try-with-resources`文を使うと、リソースのクローズ処理が自動的に行われ、安全かつ簡潔にコードを記述できます。
 
+**リスト15-1**
 ```java
 // try()の括弧内でリソースを初期化する
 try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
@@ -94,6 +95,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます：
 
+**リスト15-2**
 ```java
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -140,6 +142,7 @@ public class ScannerExample {
 }
 ```
 
+**リスト15-3**
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -184,6 +187,7 @@ public class TextFileReaderExample {
 
 同様に`Files`クラスと`BufferedWriter`を使います。
 
+**リスト15-4**
 ```java
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -222,6 +226,7 @@ public class TextFileWriterExample {
 - **Shift_JIS (MS932)**: Windows環境で使用される日本語エンコーディング
 - **ISO-8859-1**: 西欧言語用の1バイトエンコーディング
 
+**リスト15-5**
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -272,6 +277,7 @@ public class CharacterEncodingExample {
 
 Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します：
 
+**リスト15-6**
 ```java
 import java.io.*;
 
@@ -326,6 +332,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 -   `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
 -   `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）。
 
+**リスト15-7**
 ```java
 import java.io.*;
 import java.time.LocalDateTime;
@@ -378,6 +385,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 -   **`Paths`**: `Path`オブジェクトを生成するためのユーティリティクラス。
 -   **`Files`**: ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス。
 
+**リスト15-8**
 ```java
 import java.io.IOException;
 import java.nio.file.*;
@@ -415,6 +423,7 @@ public class FileSystemExample {
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 
+**リスト15-9**
 ```java
 import javax.swing.*;
 import java.io.File;

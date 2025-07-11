@@ -125,6 +125,7 @@
 
 ### 17.3.2 基本的なTCPクライアント
 
+**リスト17-1**
 ```java
 import java.io.*;
 import java.net.*;
@@ -158,6 +159,7 @@ public class SimpleTCPClient {
 
 ### 17.3.3 基本的なTCPサーバー
 
+**リスト17-2**
 ```java
 import java.io.*;
 import java.net.*;
@@ -209,6 +211,7 @@ public class SimpleTCPServer {
 
 ### 17.4.1 スレッドベースのサーバー
 
+**リスト17-3**
 ```java
 import java.io.*;
 import java.net.*;
@@ -311,6 +314,7 @@ Content-Length: 1234
 
 ### 17.5.2 簡単なHTTPクライアント
 
+**リスト17-4**
 ```java
 import java.io.*;
 import java.net.*;
@@ -367,6 +371,7 @@ public class SimpleHTTPClient {
 
 Javaは、より高レベルなHTTP通信のためのAPIも提供しています。
 
+**リスト17-5**
 ```java
 import java.io.*;
 import java.net.*;
@@ -418,6 +423,7 @@ public class HttpURLConnectionExample {
 
 ### 17.6.1 チャットサーバー
 
+**リスト17-6**
 ```java
 import java.io.*;
 import java.net.*;
@@ -516,6 +522,7 @@ public class ChatServer {
 
 ### 17.6.2 チャットクライアント
 
+**リスト17-7**
 ```java
 import java.io.*;
 import java.net.*;
@@ -577,6 +584,7 @@ public class ChatClient {
 
 ### 17.7.2 SSL/TLSの使用例
 
+**リスト17-8**
 ```java
 import javax.net.ssl.*;
 import java.io.*;
@@ -622,6 +630,7 @@ public class SSLClient {
 
 Java NIOを使用すると、より効率的なネットワークプログラミングが可能です。
 
+**リスト17-9**
 ```java
 import java.nio.*;
 import java.nio.channels.*;
