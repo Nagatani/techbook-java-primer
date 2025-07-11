@@ -1,0 +1,121 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'com.example.chapter22'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    
+    // Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // Apache Commons Lang
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    
+    // SLF4J + Logback
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+}
+
+application {
+    mainClass = 'chapter22.solutions.StudentManager'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Javadocタスクの設定
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.author = true
+    options.version = true
+    options.use = true
+    options.locale = 'ja_JP'
+    options.windowTitle = "${project.name} ${project.version} API"
+}
+
+// 実行可能JARの作成
+shadowJar {
+    archiveBaseName.set('documentation-examples')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+    manifest {
+        attributes 'Main-Class': 'chapter22.solutions.StudentManager'
+    }
+}
+
+// カスタムタスク: すべての例を実行
+task runAllExamples {
+    doLast {
+        println '=== Library Example ==='
+        javaexec {
+            mainClass = 'chapter22.solutions.Library'
+            classpath = sourceSets.main.runtimeClasspath
+        }
+        
+        println '\n=== StudentManager Example ==='
+        javaexec {
+            mainClass = 'chapter22.solutions.StudentManager'
+            classpath = sourceSets.main.runtimeClasspath
+        }
+        
+        println '\n=== TextProcessor Example ==='
+        javaexec {
+            mainClass = 'chapter22.solutions.TextProcessor'
+            classpath = sourceSets.main.runtimeClasspath
+        }
+    }
+}
+
+// ソースJARの生成
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier.set('sources')
+}
+
+// JavadocJARの生成
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+// ビルド時にすべてのJARを生成
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+// プロジェクト情報の表示
+task projectInfo {
+    doLast {
+        println """
+プロジェクト情報:
+- グループ: ${project.group}
+- 名前: ${project.name}
+- バージョン: ${project.version}
+- Javaバージョン: ${java.sourceCompatibility}
+
+依存関係:
+"""
+        configurations.implementation.dependencies.each {
+            println "- ${it.group}:${it.name}:${it.version}"
+        }
+    }
+}

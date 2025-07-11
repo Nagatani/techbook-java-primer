@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Main-Class: chapter23.solutions.CalculatorApp
+Created-By: 11.0 (Oracle Corporation)
+Implementation-Title: Calculator Application
+Implementation-Version: 1.0
+Implementation-Vendor: Hidehiro Nagatani
