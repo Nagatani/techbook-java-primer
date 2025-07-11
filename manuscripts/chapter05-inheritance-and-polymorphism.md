@@ -53,41 +53,56 @@
 
 以下のコードは、継承を使わずに実装した場合の典型的な例です。このアプローチがなぜ保守性の観点から深刻な問題を引き起こすのか、具体的に見ていきましょう：
 
+**継承を使わない場合のコード重複問題**：
+
+以下のコードは、継承を使わずに複数のキャラクタークラスを実装した場合の深刻な問題を示しています。
+
 ```java
-// 継承を使わない場合の問題のあるコード
 public class Hero {
-    String name;
-    int hp;
-    int maxHp;  // 最大HPの管理も必要
+    String name;      // ①
+    int hp;          // ①
+    int maxHp;       // ①
     
     void attack() { 
         System.out.println(name + "が攻撃！");
     }
     
-    void takeDamage(int damage) {
+    void takeDamage(int damage) {  // ②
         hp -= damage;
-        if (hp < 0) hp = 0;  // HPが負にならないよう制御
+        if (hp < 0) hp = 0;
     }
 }
 
 public class Wizard {
-    String name;      // Heroと完全に重複
-    int hp;          // Heroと完全に重複
-    int maxHp;       // Heroと完全に重複
-    int mp;          // 魔法使い特有
+    String name;      // ①と重複
+    int hp;          // ①と重複
+    int maxHp;       // ①と重複
+    int mp;          // ③
     
-    void attack() {  // Heroとほぼ同じ実装
+    void attack() {  // ④
         System.out.println(name + "が攻撃！");
     }
     
-    void takeDamage(int damage) {  // Heroと完全に重複
+    void takeDamage(int damage) {  // ②と完全重複
         hp -= damage;
-        if (hp < 0) hp = 0;  // このロジックも重複
+        if (hp < 0) hp = 0;
     }
     
-    void castSpell() { /* 魔法使い特有の処理 */ }
+    void castSpell() { /* 魔法使い特有の処理 */ }  // ⑤
 }
 ```
+
+**コード重複による具体的な問題**：
+
+①　**フィールドの重複**: name、hp、maxHpという共通属性が各クラスで個別に定義され、同じデータ構造が複数箇所に散在
+
+②　**ダメージ処理の重複**: HPを減らして負の値を防ぐという重要なビジネスロジックが、すべてのキャラクタークラスで同じコードとして重複
+
+③　**特有属性の追加**: Wizardクラスには魔法ポイント（mp）という独自の属性が必要だが、共通部分との区別が不明確
+
+④　**同一処理の重複実装**: attack()メソッドの実装が完全に同じであるにも関わらず、各クラスで個別に記述
+
+⑤　**特有メソッドの混在**: castSpell()のようなクラス固有のメソッドと共通メソッドが同じレベルで混在し、構造が不明瞭
 
 **このコードが引き起こす実際の問題**：
 
@@ -105,54 +120,68 @@ public class Wizard {
 
 **ステップ1：重複コードの発見**
 
+実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
+
 ```java
-// 最初の実装：各クラスが独立して作成されている
 public class Car {
-    private String model;
-    private String color;
-    private int speed;
+    private String model;     // ①
+    private String color;     // ①
+    private int speed;        // ①
     
-    public void start() {
+    public void start() {     // ②
         System.out.println(model + " のエンジンを始動");
     }
     
-    public void accelerate() {
+    public void accelerate() {  // ③
         speed += 10;
         System.out.println(model + " が加速: " + speed + "km/h");
     }
     
-    public void brake() {
+    public void brake() {       // ④
         speed = Math.max(0, speed - 10);
         System.out.println(model + " が減速: " + speed + "km/h");
     }
 }
 
 public class Truck {
-    private String model;
-    private String color;
-    private int speed;
-    private int loadCapacity; // トラック固有
+    private String model;       // ①と重複
+    private String color;       // ①と重複
+    private int speed;          // ①と重複
+    private int loadCapacity;   // ⑤
     
-    // Car と全く同じメソッド（重複！）
-    public void start() {
+    public void start() {       // ②と完全重複
         System.out.println(model + " のエンジンを始動");
     }
     
-    public void accelerate() {
+    public void accelerate() {  // ③と完全重複
         speed += 10;
         System.out.println(model + " が加速: " + speed + "km/h");
     }
     
-    public void brake() {
+    public void brake() {       // ④と完全重複
         speed = Math.max(0, speed - 10);
         System.out.println(model + " が減速: " + speed + "km/h");
     }
     
-    // トラック固有のメソッド
-    public void loadCargo(int weight) {
+    public void loadCargo(int weight) {  // ⑥
         System.out.println(weight + "kg の荷物を積載");
     }
 }
+```
+
+**重複コードの分析**：
+
+①　**共通フィールド**: model、color、speedという車両の基本属性がCarとTruckで重複して定義されている
+
+②　**エンジン始動処理**: start()メソッドの実装が両クラスで完全に同一
+
+③　**加速処理**: accelerate()メソッドでspeedを10増加させる処理とメッセージ出力が重複
+
+④　**ブレーキ処理**: brake()メソッドでspeedを10減少させ、負の値を防ぐロジックが重複
+
+⑤　**固有フィールド**: loadCapacity（積載量）はトラック特有の属性として追加
+
+⑥　**固有メソッド**: loadCargo()はトラック特有の機能として実装
 
 public class Motorcycle {
     private String model;
@@ -253,20 +282,30 @@ public class Truck extends Vehicle {
 
 public class Motorcycle extends Vehicle {
     public Motorcycle(String model, String color) {
-        super(model, color);
+        super(model, color);  // ①
     }
     
-    // accelerateメソッドをオーバーライド（バイクは加速が速い）
-    @Override
+    @Override  // ②
     public void accelerate() {
-        speed += 20; // バイクは加速が速い
+        speed += 20;  // ③
         System.out.println(model + " が素早く加速: " + speed + "km/h");
     }
     
-    public void wheelie() {
+    public void wheelie() {  // ④
         System.out.println(model + " がウィリー！");
     }
 }
+```
+
+**オーバーライドと特化機能の実装**：
+
+①　**親クラスのコンストラクタ呼び出し**: super()により、親クラスの初期化処理を適切に実行
+
+②　**オーバーライドアノテーション**: @Overrideによりコンパイラが親クラスのメソッドを正しくオーバーライドしていることを検証
+
+③　**特化した振る舞い**: 親クラスではspeed += 10だが、バイクの特性として20増加するよう変更
+
+④　**固有メソッドの追加**: wheelie()はバイク特有の機能として、親クラスには存在しないメソッドを追加
 ```
 
 **リファクタリングの効果**
@@ -279,34 +318,44 @@ public class Motorcycle extends Vehicle {
 
 Javaで継承を行うには、子クラスの宣言時に`extends`キーワードを使います。
 
-```java
-// 親クラス
-public class Character {
-    String name;
-    int hp;
+**継承の基本構文と継承される要素**：
 
-    void attack() {
+```java
+public class Character {  // 親クラス（スーパークラス）
+    String name;         // ①
+    int hp;              // ①
+
+    void attack() {      // ②
         System.out.println(this.name + "の攻撃！");
     }
 }
 
-// Characterクラスを継承した子クラス
-public class Hero extends Character {
-    // Characterのname, hp, attack()を自動的に引き継いでいる
-    void specialMove() {
+public class Hero extends Character {  // ③
+    void specialMove() {  // ④
         System.out.println(this.name + "の必殺技！");
     }
 }
 
-// Characterクラスを継承した子クラス
-public class Wizard extends Character {
-    int mp; // Wizard独自のフィールド
+public class Wizard extends Character {  // ③
+    int mp;  // ⑤
 
-    void castSpell() {
+    void castSpell() {  // ④
         System.out.println(this.name + "は魔法を唱えた！");
     }
 }
 ```
+
+**継承の仕組みと効果**：
+
+①　**フィールドの継承**: name、hpというフィールドは自動的にすべての子クラスに引き継がれる
+
+②　**メソッドの継承**: attack()メソッドも同様に、すべての子クラスで利用可能になる
+
+③　**extends宣言**: `extends Character`により、HeroとWizardはCharacterクラスのすべての非privateメンバを継承
+
+④　**固有メソッドの追加**: 各子クラスは継承した機能に加えて、独自のメソッドを定義可能
+
+⑤　**固有フィールドの追加**: Wizardクラスは継承したフィールドに加えて、mp（マジックポイント）を独自に持つ
 
 ### is-a関係
 
@@ -1315,9 +1364,16 @@ if (member instanceof Wizard wizard) {
 
 本章で学んだ継承とポリモーフィズムを実践的な課題で確認しましょう。
 
-### 演習課題へのアクセス
+### 学習チェックポイント
 
-本書の演習課題は、以下のGitHubリポジトリで提供されています：
+演習を始める前に、以下の概念を理解できているか確認してください：
+- [ ] 継承の目的とis-a関係
+- [ ] extendsキーワードとsuper()の使い方
+- [ ] メソッドオーバーライドと@Overrideアノテーション
+- [ ] ポリモーフィズムの概念と利点
+- [ ] アップキャストとダウンキャスト
+
+### 演習課題へのアクセス
 
 **リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
@@ -1335,17 +1391,25 @@ exercises/chapter05/
 
 ### 学習の目標
 
-本章の演習を通じて以下のスキルを習得します：
 - 継承を使ったクラス階層の設計と実装
 - メソッドのオーバーライドによる振る舞いの特殊化
 - ポリモーフィズムを活用した柔軟なプログラム設計
 - instanceof演算子とキャストの適切な使用
 
-### 課題の概要
+### 基礎課題のヒント
 
-1. **基礎課題**: 従業員の給与計算システム - 継承とポリモーフィズムの基本実装
-2. **発展課題**: 図形描画システム - 抽象的な親クラスと具体的な子クラスの設計
-3. **チャレンジ課題**: ゲームキャラクタシステム - 複雑な継承階層とポリモーフィズムの応用
+**PayrollSystem（給与計算システム）**
+- Employeeクラスを親クラスとして設計
+- 正社員、アルバイト、派遣社員などの子クラスを実装
+- calculateSalary()メソッドをオーバーライドして各雇用形態に応じた給与計算を実装
+- 配列を使って異なる型の従業員を一括管理
+
+### 実装のポイント
+
+1. **親クラスの設計**: 共通属性（名前、社員番号）を定義
+2. **抽象メソッドの活用**: 給与計算ロジックは子クラスで実装
+3. **ポリモーフィズムの実践**: Employee[]配列で全従業員を管理
+4. **型判定の活用**: 必要に応じてinstanceofで特定の処理を実行
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
@@ -1353,7 +1417,11 @@ exercises/chapter05/
 
 ## より深い理解のために
 
-本章で学んだポリモーフィズムの内部実装について、さらに深く理解したい方は、付録B.14「仮想メソッドテーブル（vtable）と動的ディスパッチ」を参照してください。この付録では以下の高度なトピックを扱います：
+本章で学んだポリモーフィズムの内部実装について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
+
+**付録リソース**: `/appendix/b05-virtual-method-table/`
+
+この付録では以下の高度なトピックを扱います：
 
 - **メソッド呼び出しの種類**: 静的ディスパッチと動的ディスパッチの違い
 - **仮想メソッドテーブルの構造**: JVMがメソッド呼び出しを解決するしくみ

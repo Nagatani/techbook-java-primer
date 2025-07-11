@@ -86,6 +86,10 @@ Swingフレームワークのアーキテクチャについても深く理解し
 
 このコードは、Swing GUIアプリケーションの最小構成を示しています。各ステップは、ウィンドウの作成から表示までの標準的なフローを表しています。
 
+**最小限のSwingアプリケーションの構造**：
+
+Swingを使ったGUIアプリケーションの最小限の構造を理解するために、ウィンドウを表示するだけのシンプルなプログラムを見てみましょう。
+
 ```java
 import javax.swing.JFrame;
 
@@ -101,12 +105,17 @@ public class HelloSwing {
 }
 ```
 
-**コードの実行フロー**：
-- ① **JFrameオブジェクト作成** - タイトル付きウィンドウのインスタンスを生成
-- ② **ウィンドウサイズ設定** - 幅400ピクセル、高さ300ピクセルに設定
-- ③ **終了動作指定** - ウィンドウを閉じたときにアプリケーションを終了
-- ④ **中央配置** - ウィンドウをスクリーンの中央に自動配置
-- ⑤ **表示実行** - ウィンドウを画面に表示（これがないと非表示状態）
+**Swingアプリケーションの基本的な初期化手順**：
+
+①　**メインウィンドウの作成**: JFrameオブジェクトを生成し、ウィンドウのタイトルバーに表示される文字列を指定します。この時点ではまだウィンドウは表示されません。
+
+②　**ウィンドウサイズの設定**: setSize()メソッドで横400ピクセル、縦300ピクセルの大きさを指定します。この値はタイトルバーやウィンドウ枠を含む全体のサイズです。
+
+③　**終了動作の設定**: ユーザーがウィンドウの×ボタンをクリックした際の動作を定義します。EXIT_ON_CLOSEは、ウィンドウを閉じると同時にJavaアプリケーション全体を終了する設定です。
+
+④　**ウィンドウ位置の調整**: setLocationRelativeTo(null)により、ウィンドウをスクリーンの中央に自動的に配置します。nullを指定することで、画面全体を基準とした中央配置になります。
+
+⑤　**ウィンドウの表示**: setVisible(true)を呼び出すことで、これまでに設定されたすべての属性を反映してウィンドウが画面に表示されます。このメソッド呼び出しは必須で、これがないとウィンドウは非表示状態のままです。
 
 このプログラムの各行を詳しく見ていきましょう：
 
@@ -182,6 +191,10 @@ public class HelloLabel {
 
 複数のコンポーネントを配置するには、レイアウトマネージャーを使います：
 
+**BorderLayoutによる5領域レイアウトの実装**：
+
+BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャです。多くのアプリケーションで使用される基本的なレイアウトパターンです。
+
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -192,21 +205,30 @@ public class MultipleComponents {
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // レイアウトマネージャーをBorderLayoutに設定
-        frame.setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());  // ①
         
-        // 各領域にコンポーネントを配置
-        frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);
-        frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);
-        frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);
-        frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);
-        frame.add(new JLabel("中央", JLabel.CENTER), BorderLayout.CENTER);
+        frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);   // ②
+        frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);   // ②
+        frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);    // ②
+        frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);    // ②
+        frame.add(new JLabel("中央", JLabel.CENTER), BorderLayout.CENTER); // ②
         
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
 ```
+
+**BorderLayoutの特徴と配置ルール**：
+
+①　**レイアウトマネージャの設定**: JFrameのデフォルトレイアウトもBorderLayoutですが、明示的に設定することで意図を明確にします。
+
+②　**5領域への配置**: 各領域は以下の特性を持ちます
+- **NORTH/SOUTH**: 水平方向に最大まで拡張し、コンポーネントの推奨高さを維持
+- **EAST/WEST**: 垂直方向に最大まで拡張し、コンポーネントの推奨幅を維持  
+- **CENTER**: 残りのすべてのスペースを占有し、ウィンドウサイズ変更時に最も影響を受ける
+
+この配置方法により、典型的なアプリケーション構造（ツールバー・メインエリア・ステータスバー）を簡単に実現できます。
 
 #### 基本コンポーネントの詳細な使用例
 

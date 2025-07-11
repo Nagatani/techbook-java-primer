@@ -80,7 +80,87 @@ exercises/chapter09/
 
 ## 9.1 なぜジェネリクスが必要なのか？
 
-### 型安全性の歴史的背景
+### 第8章で見た不思議な記法
+
+前章でコレクションを学習したとき、以下のような記法を見たはずです：
+
+```java
+List<String> students = new ArrayList<String>();
+Set<Integer> numbers = new HashSet<Integer>();
+Map<String, Integer> scores = new HashMap<String, Integer>();
+```
+
+この`<>`で囲まれた部分が**ジェネリクス**です。なぜこのような記法が必要なのでしょうか？実は、これはJavaの進化の過程で生まれた重要な機能なのです。
+
+### まずは問題を体験してみよう
+
+ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です：
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollectionProblem {
+    public static void main(String[] args) {
+        // ジェネリクスを使わないリスト（raw type）
+        List list = new ArrayList();
+        
+        // 文字列を追加
+        list.add("Java");
+        list.add("Python");
+        
+        // うっかり数値も追加できてしまう！
+        list.add(42);
+        
+        // 取り出すとき...
+        for (int i = 0; i < list.size(); i++) {
+            // Object型として取り出される
+            Object item = list.get(i);
+            
+            // 文字列として使いたい場合は型変換が必要
+            String language = (String) item;  // 3番目の要素で実行時エラー！
+            System.out.println(language.toUpperCase());
+        }
+    }
+}
+```
+
+このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。これは**実行時**まで発見できないエラーです。
+
+### ジェネリクスによる解決
+
+同じプログラムをジェネリクスを使って書き直してみましょう：
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollectionSolution {
+    public static void main(String[] args) {
+        // String型だけを格納できるリスト
+        List<String> list = new ArrayList<String>();
+        
+        // 文字列は問題なく追加できる
+        list.add("Java");
+        list.add("Python");
+        
+        // 数値を追加しようとすると...
+        // list.add(42);  // コンパイルエラー！実行前に問題を発見
+        
+        // 取り出すときも型変換不要
+        for (String language : list) {
+            System.out.println(language.toUpperCase());
+        }
+    }
+}
+```
+
+ジェネリクスを使うことで：
+1. **コンパイル時**に型の不一致を検出できる
+2. 明示的な型変換（キャスト）が不要になる
+3. コードの意図が明確になる（「文字列のリスト」であることが一目瞭然）
+
+### 型安全性の重要性
 
 プログラミング言語における型システムの目的は、プログラムの正しさをコンパイル時に検証し、実行時エラーを減らすことです。しかし、汎用的なデータ構造（コレクションなど）を実装する際には、「どんな型でも扱える」柔軟性と「型の安全性」を両立させる必要がありました。
 
@@ -307,7 +387,11 @@ public class WildcardExample {
 
 ## より深い理解のために
 
-本章で学んだジェネリクスの内部実装について、さらに深く理解したい方は、付録B.11「型消去（Type Erasure）とブリッジメソッド」を参照してください。この付録では以下の高度なトピックを扱います：
+本章で学んだジェネリクスの内部実装について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
+
+**付録リソース**: `/appendix/b09-type-erasure-patterns/`
+
+この付録では以下の高度なトピックを扱います：
 
 - **型消去のメカニズム**: コンパイル時と実行時の型情報の違い
 - **ブリッジメソッド**: 型消去で生じる問題を解決するしくみ

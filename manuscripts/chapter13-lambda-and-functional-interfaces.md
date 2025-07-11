@@ -1,4 +1,4 @@
-# 第11章 ラムダ式と関数型インターフェイス
+# 第13章 ラムダ式と関数型インターフェイス
 
 ## 章末演習
 
@@ -10,10 +10,10 @@
 
 **リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
-### 第11章の課題構成
+### 第13章の課題構成
 
 ```
-exercises/chapter11/
+exercises/chapter13/
 ├── basic/              # 基礎課題（必須）
 │   ├── README.md       # 詳細な課題説明
 │   └── BasicLambda.java
@@ -37,13 +37,13 @@ exercises/chapter11/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第12章「レコード(Records)とデータ指向プログラミング」に進みましょう。
+**次のステップ**: 基礎課題が完了したら、第14章「例外処理」に進みましょう。
 
 ## 本章の学習目標
 
 ### 前提知識
 
-本章を学習するためには、いくつかの重要な前提知識が必要です。まず必須の前提として、第9章までに学んだオブジェクト指向プログラミングとジェネリクスの概念を十分に習得していることが求められます。特に、インターフェイスの設計と実装、匿名クラスの作成と活用についての実践的な経験が不可欠です。これらの知識は、ラムダ式が匿名クラスの簡潔な表現であること、そして関数型インターフェイスとの関係性を理解する上で基礎となります。コレクションフレームワークの実践的な使用経験も重要で、List、Set、Mapの操作を通じてラムダ式の実用性を実感できます。
+本章を学習するためには、いくつかの重要な前提知識が必要です。まず必須の前提として、第11章までに学んだオブジェクト指向プログラミングとジェネリクスの概念を十分に習得していることが求められます。特に、インターフェイスの設計と実装、匿名クラスの作成と活用についての実践的な経験が不可欠です。これらの知識は、ラムダ式が匿名クラスの簡潔な表現であること、そして関数型インターフェイスとの関係性を理解する上で基礎となります。コレクションフレームワークの実践的な使用経験も重要で、List、Set、Mapの操作を通じてラムダ式の実用性を実感できます。
 
 さらに、概念的な前提として、関数型プログラミングの基本概念への関心を持っていることが推奨されます。従来の命令型プログラミングとは異なるアプローチである関数型プログラミングでは、「どうやって」ではなく「何を」するかを表現する宣言的なスタイルが特徴です。コードの簡潔性と可読性への意識も重要で、ラムダ式や関数型インターフェイスを用いることで、より簡潔で表現力の高いコードを書けるようになるためです。
 
@@ -61,9 +61,32 @@ exercises/chapter11/
 
 
 
-## 11.1 匿名クラスからラムダ式へ
+## 13.1 匿名クラスからラムダ式へ
 
 Java 8でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには**匿名クラス（Anonymous Class）**が使われていました。これは名前を持たないクラスで、特にGUIのイベントリスナなどで多用されていました。
+
+### ラムダ式への第一歩：簡単な例から始める
+
+まず、最も簡単な例でラムダ式の基本を理解しましょう。Runnableインターフェイスを使った例を見てみます：
+
+```java
+// 従来の匿名クラスを使った方法
+Runnable task1 = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Hello from anonymous class!");
+    }
+};
+
+// ラムダ式を使った方法（同じ動作）
+Runnable task2 = () -> System.out.println("Hello from lambda!");
+
+// 実行（どちらも同じ結果）
+task1.run();  // Hello from anonymous class!
+task2.run();  // Hello from lambda!
+```
+
+ラムダ式は、匿名クラスの冗長な記述を大幅に簡略化します。`() ->` が「引数なしで何かを実行する」という意味になります。
 
 ```java
 // 匿名クラスを使ったボタンのクリック処理
@@ -86,7 +109,6 @@ button.addActionListener(new ActionListener() {
 
 2010年代に入ると、並行処理やビッグデータ処理の重要性が高まり、Java 8（2014年）やJavaScript ES6（2015年）など、オブジェクト指向言語にも関数型の機能が取り入れられました。
 
-**関数型プログラミングの歴史的背景、数学的基盤、実務での活用例についての詳細は、付録B.3「プログラミングパラダイムの進化」を参照してください。**
 
 ### カリー化の実装例：通貨変換
 
@@ -524,13 +546,13 @@ public class TradingSystem {
 button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
 ```
 
-## 11.2 関数型インターフェイス
+## 13.2 関数型インターフェイス
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、**関数型インターフェイス（Functional Interface）** として扱われます。
 
 **関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることが推奨されます。
 
-`ActionListener`や前章の`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
+`ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
 ```java
 @FunctionalInterface
@@ -596,7 +618,7 @@ public class StandardFunctionalInterfaces {
 }
 ```
 
-## 11.3 メソッド参照
+## 13.3 メソッド参照
 
 ラムダ式が既存のメソッドを呼びだすだけの場合、**メソッド参照（Method Reference）**という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
 
@@ -638,7 +660,7 @@ public class MethodReferenceExample {
 }
 ```
 
-## 11.4 ラムダ式の応用例
+## 13.4 ラムダ式の応用例
 
 ラムダ式はコレクション操作だけでなく、Javaプログラムのさまざまな場面でコードを簡潔にします。
 
@@ -664,180 +686,8 @@ public class ThreadLambdaExample {
 }
 ```
 
-## Deep Dive: 関数型プログラミングの数学的基礎
+## さらに深い理解のために
 
-**関数型プログラミングの詳細な数学的基礎とモナド・ファンクタの理論については、付録B.03「プログラミングパラダイムの進化」を参照してください。**
-
-以下は、本章の理解に必要な基本的な概念の概要です。
-
-### 関数型プログラミングの理論的背景
-
-関数型プログラミングは、数学の圏論（Category Theory）とラムダ計算（Lambda Calculus）にもとづいています。これらの概念を理解することで、より深いレベルでJavaの関数型機能を活用できます。
-
-#### ラムダ計算の基礎
-
-ラムダ計算は、1930年代にアロンゾ・チャーチによって考案された計算モデルです：
-
-```
-// ラムダ計算の基本形式
-λx.x           // 恒等関数（Identity function）
-λx.λy.x        // 定数関数（Constant function）
-λf.λx.f(f(x))  // 関数の2回適用
-
-// Javaでの対応
-Function<Integer, Integer> identity = x -> x;
-Function<Integer, Function<Integer, Integer>> constant = x -> y -> x;
-Function<Function<Integer, Integer>, Function<Integer, Integer>> twice = 
-    f -> x -> f.apply(f.apply(x));
-```
-
-#### モナドとその実践的価値
-
-モナド（Monad）は、計算の文脈を扱うための数学的構造です。JavaのOptionalやStreamは、モナドの性質を持っています：
-
-```java
-// Optionalモナドの例
-public class MonadExample {
-    // map操作（ファンクタ）
-    Optional<String> getName(int id) {
-        return findUser(id).map(User::getName);
-    }
-    
-    // flatMap操作（モナド）
-    Optional<Address> getAddress(int id) {
-        return findUser(id)
-            .flatMap(User::getAddress)  
-            // Optional<Optional<Address>>を平坦化
-            .flatMap(Address::validate); // チェーン可能
-    }
-    
-    // モナド則の検証
-    // 左単位元則: Optional.of(x).flatMap(f) == f.apply(x)
-    // 右単位元則: m.flatMap(Optional::of) == m
-    // 結合則: m.flatMap(f).flatMap(g) == 
-    //     m.flatMap(x -> f.apply(x).flatMap(g))
-}
-```
-
-#### ファンクタとその応用
-
-ファンクタ（Functor）は、構造を保ちながら値を変換する概念です：
-
-```java
-// カスタムファンクタの実装
-public interface Functor<T> {
-    <R> Functor<R> map(Function<T, R> mapper);
-}
-
-// 実装例：Result型（成功/失敗を表現）
-public abstract class Result<T> implements Functor<T> {
-    
-    public static class Success<T> extends Result<T> {
-        private final T value;
-        
-        public Success(T value) { this.value = value; }
-        
-        @Override
-        public <R> Result<R> map(Function<T, R> mapper) {
-            return new Success<>(mapper.apply(value));
-        }
-    }
-    
-    public static class Failure<T> extends Result<T> {
-        private final String error;
-        
-        public Failure(String error) { this.error = error; }
-        
-        @Override
-        public <R> Result<R> map(Function<T, R> mapper) {
-            return new Failure<>(error);  // エラーを伝播
-        }
-    }
-}
-```
-
-### 高階関数とカリー化
-
-高階関数は、関数を引数として受け取るか、関数を返す関数です：
-
-```java
-// カリー化（Currying）の実装
-public class Currying {
-    // 通常の2引数関数
-    BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
-    
-    // カリー化された関数
-    Function<Integer, Function<Integer, Integer>> curriedAdd = 
-        a -> b -> a + b;
-    
-    // 部分適用
-    Function<Integer, Integer> add5 = curriedAdd.apply(5);
-    // add5.apply(3) == 8
-    
-    // 汎用的なカリー化関数
-    public static <A, B, C> Function<A, Function<B, C>> curry(
-            BiFunction<A, B, C> biFunction) {
-        return a -> b -> biFunction.apply(a, b);
-    }
-}
-```
-
-### 実務での関数型パターン
-
-**1. レンズパターン（不変オブジェクトの更新）**
-
-```java
-public class Lens<T, F> {
-    private final Function<T, F> getter;
-    private final BiFunction<T, F, T> setter;
-    
-    public Lens(Function<T, F> getter, BiFunction<T, F, T> setter) {
-        this.getter = getter;
-        this.setter = setter;
-    }
-    
-    public F get(T target) { return getter.apply(target); }
-    public T set(T target, F value) { return setter.apply(target, value); }
-    
-    // 使用例
-    Lens<Person, String> nameLens = new Lens<>(
-        Person::getName,
-        (person, name) -> new Person(name, person.getAge())
-    );
-}
-```
-
-**2. Free Monadパターン（DSLの構築）**
-
-```java
-// ドメイン固有言語（DSL）の例
-public abstract class Free<F, A> {
-    // 省略：実装の詳細は高度すぎるため
-    
-    // 使用例：データベース操作DSL
-    Free<DbOp, User> program = 
-        select("users", "id = 1")
-        .flatMap(data -> insert("audit", data))
-        .map(this::toUser);
-}
-```
-
-### パフォーマンスへの影響
-
-関数型プログラミングのオーバーヘッド：
-
-```java
-// ベンチマーク結果（JMH使用）
-// 命令型ループ: 100ns
-// Stream API: 150ns (50%のオーバーヘッド)
-// 並列Stream: 30ns (3.3倍高速、8コアCPU)
-
-// 最適化のポイント
-Stream.of(1, 2, 3, 4, 5)
-    .filter(x -> x > 2)      // 中間操作（遅延評価）
-    .map(x -> x * 2)         // 中間操作（遅延評価）
-    .collect(toList());      // 終端操作（ここで実行）
-```
 
 ## まとめ
 
@@ -851,3 +701,16 @@ Stream.of(1, 2, 3, 4, 5)
 関数型プログラミングの理論的背景を理解することで、より洗練されたコードを書くことができます。しかし、実務では可読性とパフォーマンスのバランスを考慮し、適切に使い分けることが重要です。
 
 これらの機能を使いこなすことで、コードの可読性が向上し、より宣言的で簡潔なプログラミングが可能になります。
+
+## より深い理解のために
+
+本章で学んだ関数型プログラミングについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
+
+**付録リソース**: `/manuscripts/appendix-b03-programming-paradigms.md`
+
+この付録では以下の高度なトピックを扱います：
+
+- **関数型プログラミングの歴史的背景**: LispからHaskell、そしてモダン言語への発展
+- **数学的基礎**: ラムダ計算、チャーチ数、Yコンビネータ
+- **圏論とモナド**: ファンクタ、アプリカティブ、モナドのコンセプトとJavaにおける実装
+- **実務での活用例**: ドメイン固有言語（DSL）、状態管理、エラーハンドリング

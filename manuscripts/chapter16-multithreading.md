@@ -1,8 +1,123 @@
 # 第16章 マルチスレッドプログラミング
 
-## 16.1 本章の学習目標
+## 16.1 並行処理の世界への招待
 
-### 16.1.1 前提知識
+### 16.1.1 なぜマルチスレッドが必要なのか
+
+これまでの章で学習してきたプログラムは、すべて「一つずつ順番に」処理を実行してきました。しかし、現実のアプリケーションでは、複数の作業を同時に行いたい場面がよくあります。
+
+たとえば、Webブラウザを考えてみましょう：
+- 画像をダウンロードしている
+- HTMLを解析している
+- JavaScriptを実行している
+- ユーザーのクリックに反応している
+
+これらすべてが「同時に」動いているように見えます。もし一つずつ順番に処理していたら、画像のダウンロードが終わるまでページが表示されず、とても使いづらいブラウザになってしまいます。
+
+### 16.1.2 身近な例で理解する並行処理
+
+レストランの厨房を想像してください：
+
+**シングルスレッド（一人のシェフ）の場合：**
+```
+1. お客様Aの前菜を作る（5分）
+2. お客様Aのメイン料理を作る（15分）
+3. お客様Aのデザートを作る（5分）
+4. お客様Bの前菜を作る（5分）... 
+```
+お客様Aの料理がすべて完成するまで25分、お客様Bは最低でも25分待たなければなりません。
+
+**マルチスレッド（複数のシェフ）の場合：**
+```
+シェフ1: お客様Aの前菜 → お客様Bの前菜 → ...
+シェフ2: お客様Aのメイン → お客様Bのメイン → ...
+シェフ3: お客様Aのデザート → お客様Bのデザート → ...
+```
+複数のシェフが並行して働くことで、効率的に料理を提供できます。
+
+### 16.1.3 Javaでの簡単な例
+
+まず、シングルスレッドの例を見てみましょう：
+
+```java
+public class SingleThreadExample {
+    public static void main(String[] args) {
+        System.out.println("朝食の準備を開始");
+        
+        // コーヒーを淹れる（3秒かかる）
+        makeCoffee();
+        
+        // トーストを焼く（2秒かかる）
+        makeToast();
+        
+        // 卵を茹でる（5秒かかる）
+        boilEgg();
+        
+        System.out.println("朝食の準備完了！");
+        // 合計: 10秒かかる
+    }
+    
+    private static void makeCoffee() {
+        System.out.println("コーヒーを淹れています...");
+        sleep(3000);
+        System.out.println("コーヒーができました");
+    }
+    
+    private static void makeToast() {
+        System.out.println("トーストを焼いています...");
+        sleep(2000);
+        System.out.println("トーストができました");
+    }
+    
+    private static void boilEgg() {
+        System.out.println("卵を茹でています...");
+        sleep(5000);
+        System.out.println("ゆで卵ができました");
+    }
+    
+    private static void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+これをマルチスレッドで書き換えると：
+
+```java
+public class MultiThreadExample {
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("朝食の準備を開始");
+        
+        // それぞれ別々のスレッドで同時に実行
+        Thread coffeeThread = new Thread(() -> makeCoffee());
+        Thread toastThread = new Thread(() -> makeToast());
+        Thread eggThread = new Thread(() -> boilEgg());
+        
+        // スレッドを開始
+        coffeeThread.start();
+        toastThread.start();
+        eggThread.start();
+        
+        // すべてのスレッドが終了するのを待つ
+        coffeeThread.join();
+        toastThread.join();
+        eggThread.join();
+        
+        System.out.println("朝食の準備完了！");
+        // 合計: 約5秒（最も時間のかかる卵の時間）で完了
+    }
+    
+    // makeCoffee、makeToast、boilEgg、sleepメソッドは同じ
+}
+```
+
+このように、マルチスレッドを使うことで、10秒かかっていた処理を5秒に短縮できました。
+
+### 16.1.4 前提知識
 
 本章を学習するためには、第13章までに習得した実用的なJavaアプリケーション開発能力が必須となります。特に、オブジェクト指向設計の実践的な理解、インターフェイスと実装の分離、例外処理やコレクションフレームワークの適切な使用など、堅牢なプログラムを作成する基本的な能力が求められます。また、同期処理と非同期処理の概念的な理解も重要です。単一のスレッドで順番に処理が実行される同期処理と、複数の処理が並行して実行される非同期処理の違いを理解し、なぜ非同期処理が必要なのかを認識していることが必要です。さらに、現代のソフトウェア開発においてパフォーマンスとスケーラビリティがなぜ重要なのかという問題意識を持っていることで、本章の内容をより深く理解できます。
 
@@ -1719,15 +1834,6 @@ public class ConcurrencyPitfallsAndSolutions {
     }
 }
 ```
-
-### 16.8.4 より深い理解のために
-
-本章で学んだマルチスレッドプログラミングの基礎をさらに深く理解したい方は、付録B.09「Java Memory ModelとHappens-Before関係」を参照してください。この付録では以下の高度なトピックを扱います：
-
-- **Java Memory Model（JMM）**: メモリの可視性とプログラムの実行順序を定義するしくみ
-- **Happens-Before関係**: 並行プログラムの正確性を保証する順序関係
-- **メモリバリアとvolatileの実装**: ハードウェアレベルでの同期メカニズム
-- **ロックフリーアルゴリズム**: 高性能な並行データ構造の実装
 - **False Sharingとパフォーマンス最適化**: CPUキャッシュを考慮した最適化技術
 
 これらの知識は、高性能な並行アプリケーションの開発や、微妙な並行性バグのデバッグに役立ちます。
@@ -3099,6 +3205,19 @@ exercises/chapter16/
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
 **次のステップ**: 基礎課題が完了したら、第17章「ネットワークプログラミング」に進みましょう。
+
+## より深い理解のために
+
+本章で学んだマルチスレッドプログラミングの基礎をさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
+
+**付録リソース**: `/appendix/b16-java-memory-model/`
+
+この付録では以下の高度なトピックを扱います：
+
+- **Java Memory Model（JMM）**: メモリの可視性とプログラムの実行順序を定義するしくみ
+- **Happens-Before関係**: 並行プログラムの正確性を保証する順序関係
+- **メモリバリアとvolatileの実装**: ハードウェアレベルでの同期メカニズム
+- **ロックフリーアルゴリズム**: 高性能な並行データ構造の実装
 
 
 

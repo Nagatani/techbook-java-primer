@@ -198,7 +198,6 @@ void withdraw(struct Account* acc, double amount) {
 
 このパラダイムシフトは、現代のデザインパターン、フレームワーク、マイクロサービス、ドメイン駆動設計などの基盤となっています。
 
-**オブジェクト指向の詳細な歴史と実装パターンについては、付録B.03「プログラミングパラダイムの進化」を参照してください。**
 
 ## 2.1 オブジェクト指向とは
 
@@ -253,122 +252,187 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 ### 手続き型とオブジェクト指向の違い
 
 #### 手続き型の例（C言語風）
+**手続き型プログラミングの典型的な構造**：
+
+手続き型プログラミングでは、データと処理が完全に分離された構造となります。以下の例では、この分離がどのような問題を引き起こすかを示しています。
+
 ```java
-// データと処理が分離している
 public class ProceduralExample {
     public static void main(String[] args) {
-        // データは単なる変数
-        String studentName = "田中太郎";
-        int studentAge = 20;
-        double studentGpa = 3.5;
+        String studentName = "田中太郎";  // ①
+        int studentAge = 20;             // ①
+        double studentGpa = 3.5;         // ①
         
-        // 処理は独立した関数
-        printStudent(studentName, studentAge, studentGpa);
+        printStudent(studentName, studentAge, studentGpa);  // ②
     }
     
-    public static void printStudent(String name, int age, double gpa) {
+    public static void printStudent(String name, int age, double gpa) {  // ③
         System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
 }
 ```
 
+**構造的問題の分析**：
+
+①　**データの散在**: 学生に関する情報（名前、年齢、GPA）が独立した変数として存在し、これらが一つの概念（学生）を表すという関係性がコード上で明確でない
+
+②　**パラメータ渡しの煩雑さ**: 関連するデータを処理するたびに、すべてのパラメータを個別に渡す必要があり、データの追加や変更時に多くの関数の引数リストを修正する必要がある
+
+③　**責任の分散**: 学生データの検証、変更、表示など、学生に関する処理が複数の場所に散らばり、どこで何をしているかが把握しにくい
+
 #### オブジェクト指向の例
+**オブジェクト指向プログラミングによる改善されたアプローチ**：
+
+オブジェクト指向では、関連するデータと処理を1つのクラスに統合し、概念の一貫性と責任の明確化を実現します。
+
 ```java
-// データと処理が一体化している
 public class Student {
-    // データ（状態）
-    private String name;
-    private int age;
-    private double gpa;
+    private String name;  // ①
+    private int age;      // ①
+    private double gpa;   // ①
     
-    // コンストラクタ
-    public Student(String name, int age, double gpa) {
+    public Student(String name, int age, double gpa) {  // ②
         this.name = name;
         this.age = age;
         this.gpa = gpa;
     }
     
-    // 処理（振る舞い）
-    public void printInfo() {
+    public void printInfo() {  // ③
         System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
 }
 
-// 使用例
 public class ObjectOrientedExample {
     public static void main(String[] args) {
-        Student student = new Student("田中太郎", 20, 3.5);
-        student.printInfo();  // オブジェクトに処理を依頼
+        Student student = new Student("田中太郎", 20, 3.5);  // ④
+        student.printInfo();  // ⑤
     }
 }
 ```
+
+**オブジェクト指向の利点の実現**：
+
+①　**データのカプセル化**: 学生に関するすべての属性がprivateフィールドとして一箇所に集約され、外部からの直接アクセスを制限
+
+②　**初期化の保証**: コンストラクタにより、オブジェクト生成時に必要なデータがすべて設定されることを保証
+
+③　**振る舞いの局所化**: 学生データの表示処理がStudentクラス内部に定義され、データとその操作の責任が明確
+
+④　**概念の一体性**: `Student`オブジェクトとして学生という概念を直接的にプログラムで表現
+
+⑤　**インターフェイスの簡潔性**: 外部からは単純にメソッドを呼び出すだけで、内部の複雑さを隠蔽
 
 ### オブジェクト指向の3つの基本原則
 
 #### 1. カプセル化
+
+**データ保護と制御されたアクセスの実現**：
+
+カプセル化は、オブジェクトの内部データを外部から直接アクセスできないように保護し、適切なメソッドを通じてのみ操作を許可する仕組みです。
+
 ```java
 public class BankAccount {
-    private double balance;  // privateで隠蔽
+    private double balance;  // ①
     
-    public void deposit(double amount) {
+    public void deposit(double amount) {  // ②
         if (amount > 0) {
-            balance += amount;  // 適切な検証後に変更
+            balance += amount;
         }
     }
     
-    public double getBalance() {
-        return balance;  // 読み取り専用のアクセス
+    public double getBalance() {  // ③
+        return balance;
     }
 }
 ```
 
+**カプセル化の効果**：
+
+①　**データの隠蔽**: `private`修飾子により残高データを直接操作不可能にし、不正な値の設定を防止
+
+②　**制御された変更**: 入金処理では金額の妥当性を検証してから残高を更新し、負の値の入金を防ぐ
+
+③　**安全な読み取り**: 残高の確認は可能だが、直接的な変更はできないため、データの整合性を保証
+
 #### 2. 継承
+
+**コードの再利用と階層構造の構築**：
+
+継承は、既存のクラス（親クラス）の機能を新しいクラス（子クラス）が引き継ぎ、さらに独自の機能を追加する仕組みです。
+
 ```java
 public class Product {
-    protected String productId;
-    protected String name;
-    protected int price;
+    protected String productId;  // ①
+    protected String name;       // ①
+    protected int price;         // ①
     
-    public void displayInfo() {
+    public void displayInfo() {  // ②
         System.out.println("商品名: " + name + ", 価格: " + price + "円");
     }
 }
 
-public class Book extends Product {
-    private String author;
-    private String isbn;
+public class Book extends Product {  // ③
+    private String author;     // ④
+    private String isbn;       // ④
     
-    public void displayBookInfo() {
-        displayInfo();  // 親クラスのメソッドを呼び出し
+    public void displayBookInfo() {  // ⑤
+        displayInfo();  // ②を呼び出し
         System.out.println("著者: " + author + ", ISBN: " + isbn);
     }
 }
 ```
 
+**継承による機能拡張**：
+
+①　**共通属性の継承**: 商品ID、名前、価格など、すべての商品に共通する属性を親クラスで定義
+
+②　**共通機能の継承**: 基本的な商品情報表示機能を親クラスで実装し、子クラスでも利用可能
+
+③　**is-a関係の表現**: 「本は商品である」という概念的関係をextends文で明確に表現
+
+④　**専用属性の追加**: 本特有の情報（著者、ISBN）を子クラスで独自に定義
+
+⑤　**機能の組み合わせ**: 親クラスの機能を活用しつつ、子クラス独自の機能を追加
+
 #### 3. ポリモーフィズム
+
+**同一インターフェイスによる多様な実装の統一的扱い**：
+
+ポリモーフィズム（多態性）は、同じインターフェイスを通じて異なる実装を統一的に扱える仕組みです。これにより、新しい実装を追加してもクライアントコードを変更する必要がありません。
+
 ```java
-public interface PaymentMethod {
+public interface PaymentMethod {  // ①
     void processPayment(double amount);
 }
 
-public class CreditCardPayment implements PaymentMethod {
+public class CreditCardPayment implements PaymentMethod {  // ②
     private String cardNumber;
     
-    public void processPayment(double amount) {
+    public void processPayment(double amount) {  // ③
         System.out.println("クレジットカードで" + amount + "円を決済しました");
-        // 実際のクレジットカード決済処理
     }
 }
 
-public class BankTransferPayment implements PaymentMethod {
+public class BankTransferPayment implements PaymentMethod {  // ②
     private String accountNumber;
     
-    public void processPayment(double amount) {
+    public void processPayment(double amount) {  // ④
         System.out.println("銀行振込で" + amount + "円を送金しました");
-        // 実際の銀行振込処理
     }
 }
 ```
+
+**ポリモーフィズムの仕組み**：
+
+①　**統一インターフェイス**: すべての決済方法が実装すべき共通のメソッド仕様を定義
+
+②　**多様な実装**: 同じインターフェイスに対して、具体的な決済手段ごとに異なる実装を提供
+
+③　**クレジットカード固有処理**: カード決済に特化した具体的な処理を実装
+
+④　**銀行振込固有処理**: 銀行振込に特化した具体的な処理を実装
+
+この設計により、`PaymentMethod`型の変数で異なる決済方法を統一的に扱えるため、新しい決済方法（PayPal、仮想通貨など）を追加しても既存のコードに影響を与えません。
 
 ## 2.4 クラスの作成
 
@@ -2459,6 +2523,19 @@ System.out.println(arr1[0]);  // 99と表示される
 
 本章で学んだオブジェクト指向の基本概念を実践的な課題で確認しましょう。
 
+### 演習を始める前の確認
+
+第3章では、オブジェクト指向プログラミングの中核概念を学習しました。演習に入る前に、以下の重要概念を理解できているか確認しましょう：
+
+✅ **理解度チェックリスト**
+- [ ] クラスとオブジェクトの違いを説明できる
+- [ ] フィールドとメソッドの役割を理解している
+- [ ] コンストラクタの目的と書き方を理解している
+- [ ] thisキーワードの使い方を理解している
+- [ ] メソッドオーバーロードの概念を理解している
+- [ ] カプセル化（private/public）の重要性を理解している
+- [ ] staticとインスタンスメンバーの違いを理解している
+
 ### 演習課題へのアクセス
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
@@ -2469,14 +2546,14 @@ System.out.println(arr1[0]);  // 99と表示される
 
 ```
 exercises/chapter03/
-├── basic/              # 基礎課題（必須）
-│   ├── README.md       # 詳細な課題説明
+├── basic/              # 基礎課題（必須）- オブジェクト指向の基本を確実に
+│   ├── README.md       # 詳細な課題説明と段階的な実装ガイド
 │   ├── MethodsPractice.java
 │   └── StudentScores.java
-├── advanced/           # 発展課題（推奨）
+├── advanced/           # 発展課題（推奨）- より実践的な設計課題
 │   ├── Car.java
 │   └── FuelExpenseCalculator.java
-├── challenge/          # チャレンジ課題（任意）
+├── challenge/          # チャレンジ課題（任意）- 応用力を試す
 └── solutions/          # 解答例（実装後に参照）
 ```
 
@@ -2488,12 +2565,156 @@ exercises/chapter03/
 - オブジェクトの状態管理
 - カプセル化の実践
 
-### 課題の概要
+### 基礎課題の詳細ガイド
 
-1. **基礎課題**: メソッド作成練習、テストの点数管理クラス
-2. **発展課題**: 車の燃料消費シミュレータ
-3. **チャレンジ課題**: より高度なオブジェクト指向設計の実践
+#### MethodsPractice.java - メソッドの基本実装
+**目的**: メソッドの定義、呼び出し、オーバーロードを実践
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
+**実装する機能**:
+1. **基本的な計算メソッド**
+   - add(int a, int b) - 2つの整数の和
+   - subtract(int a, int b) - 2つの整数の差
+   - multiply(int a, int b) - 2つの整数の積
 
-**次のステップ**: 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。
+2. **オーバーロードの実践**
+   - add(double a, double b) - 小数の和
+   - add(int a, int b, int c) - 3つの整数の和
+   - add(String a, String b) - 文字列の連結
+
+3. **実装のポイント**
+   - メソッドの戻り値の型に注意
+   - 引数の個数や型によるオーバーロードの理解
+   - mainメソッドから各メソッドを呼び出して動作確認
+
+**コード構造のヒント**:
+```java
+public class MethodsPractice {
+    // ここに各メソッドを実装
+    
+    public static void main(String[] args) {
+        // メソッドの呼び出しと結果の表示
+    }
+}
+```
+
+#### StudentScores.java - オブジェクトの状態管理
+**目的**: クラス設計とオブジェクトの基本操作を実践
+
+**実装する機能**:
+1. **フィールドの定義**
+   - name (String) - 学生名
+   - mathScore (int) - 数学の点数
+   - englishScore (int) - 英語の点数
+   - scienceScore (int) - 理科の点数
+
+2. **コンストラクタの実装**
+   - 引数なしコンストラクタ（デフォルト値設定）
+   - 全フィールドを初期化するコンストラクタ
+
+3. **メソッドの実装**
+   - getAverage() - 3教科の平均点を計算
+   - getTotal() - 3教科の合計点を計算
+   - displayInfo() - 学生情報を整形して表示
+
+4. **カプセル化の実践**
+   - フィールドはprivateで定義
+   - 必要に応じてゲッター・セッターを実装
+   - 点数の妥当性チェック（0-100の範囲）
+
+### 発展課題への橋渡し
+
+基礎課題を完了したら、発展課題で以下の概念を学びます：
+
+#### Car.java - 状態変化を伴うオブジェクト
+**新しく学ぶ概念**:
+- オブジェクトの状態変化（燃料の消費）
+- メソッド間の連携（drive → consumeFuel）
+- エラーハンドリングの基礎（燃料不足の処理）
+
+**実装のアイデア**:
+- 走行距離に応じた燃料消費
+- 燃料補給メソッド
+- 走行可能距離の計算
+
+#### FuelExpenseCalculator.java - 複数オブジェクトの管理
+**新しく学ぶ概念**:
+- 複数のオブジェクトを配列で管理
+- オブジェクト間の計算と集計
+- より複雑なビジネスロジックの実装
+
+### よくある実装ミスと対策
+
+| ミスの種類 | 症状 | 対策 |
+|------------|------|------|
+| フィールドの初期化忘れ | NullPointerException | コンストラクタで確実に初期化 |
+| thisの使い忘れ | 引数とフィールドの混同 | 同名の場合は必ずthisを使用 |
+| staticの誤用 | "non-static variable" エラー | インスタンスメソッドではstaticを外す |
+| アクセス修飾子の誤り | privateフィールドに直接アクセス | ゲッターメソッドを使用 |
+
+### 段階的な実装アプローチ
+
+1. **スケルトン作成**（5分）
+   - クラスの枠組みだけ作成
+   - メソッドのシグネチャだけ定義
+   - コンパイルが通ることを確認
+
+2. **基本機能実装**（15分）
+   - 最も簡単なメソッドから実装
+   - 各メソッドごとに動作確認
+   - printlnでデバッグ出力
+
+3. **機能追加**（10分）
+   - エラーチェック追加
+   - 出力の整形
+   - コメント追加
+
+4. **テストと改善**（10分）
+   - 境界値でのテスト
+   - エラーケースの確認
+   - コードの整理
+
+### 学習を深める追加実験
+
+基礎課題完了後、以下の実験を試してみましょう：
+
+1. **メモリ効率の実験**
+   - 大量のオブジェクトを作成して挙動を観察
+   - staticメソッドとインスタンスメソッドの使い分け
+
+2. **設計の改善**
+   - より使いやすいAPIを考える
+   - メソッドチェーンの実装に挑戦
+
+3. **実用的な拡張**
+   - ファイルからデータを読み込む（次章の予習）
+   - 簡単な対話型プログラムの作成
+
+### デバッグのヒント
+
+**オブジェクト指向特有のデバッグ方法**:
+1. **toString()メソッドの活用**
+   - オブジェクトの状態を文字列で確認
+   - デバッグ時の状態把握に便利
+
+2. **段階的なコンストラクタ実行**
+   - 各フィールドの初期化を確認
+   - thisの参照先を意識
+
+3. **メソッド呼び出しの追跡**
+   - どのオブジェクトのメソッドが呼ばれているか
+   - staticコンテキストとインスタンスコンテキストの区別
+
+**次のステップ**: 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
+
+## より深い理解のために
+
+本章で学んだプログラミングパラダイムについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
+
+**付録リソース**: `/manuscripts/appendix-b03-programming-paradigms.md`
+
+この付録では以下の高度なトピックを扱います：
+
+- **オブジェクト指向の歴史的発展**: SimulaからJavaへの歴史的経緯
+- **プログラミングパラダイムの比較**: 手続き型、オブジェクト指向、関数型の差異
+- **オブジェクト指向設計の成功事例**: 実世界での適用例とパターン
+- **関数型プログラミングの数学的基礎**: ラムダ計算、圏論、モナド等

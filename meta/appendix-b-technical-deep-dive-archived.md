@@ -597,7 +597,7 @@ Java Virtual Machine（JVM）の内部アーキテクチャとバイトコード
 
 本付録の詳細な解説、実装例、ベンチマーク結果は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/jvm-architecture/`**
+**`/appendix/b01-jvm-architecture/`**
 
 #### 提供内容
 
@@ -630,7 +630,7 @@ Java Virtual Machine（JVM）の内部アーキテクチャとバイトコード
 
 ### 実践的なサンプルコード
 
-本付録で解説したJVMアーキテクチャとバイトコードの実践的なサンプルコードは、`/appendix/jvm-architecture/`ディレクトリに収録されています。クラスローダの実装例、バイトコード解析ツール、JITコンパイラのベンチマークなど、JVMの内部動作を理解するための具体的なコード例を参照できます。
+本付録で解説したJVMアーキテクチャとバイトコードの実践的なサンプルコードは、`/appendix/b01-jvm-architecture/`ディレクトリに収録されています。クラスローダの実装例、バイトコード解析ツール、JITコンパイラのベンチマークなど、JVMの内部動作を理解するための具体的なコード例を参照できます。
 
 
 
@@ -647,7 +647,7 @@ Javaが現在の形に至るまでのプログラミング言語の長い進化�
 
 本付録の詳細な解説、歴史的実装例、進化の実証は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/language-evolution/`**
+**`/appendix/b02-language-evolution/`**
 
 #### 提供内容
 
@@ -680,7 +680,7 @@ Javaが現在の形に至るまでのプログラミング言語の長い進化�
 
 ### 実践的なサンプルコード
 
-本付録で解説したプログラミング言語の歴史的発展の実践的なサンプルコードは、`/appendix/language-evolution/`ディレクトリに収録されています。各時代のプログラミング手法、パラダイムシフトの実例、現代への応用など、言語進化の理解を深める具体的なコード例を参照できます。
+本付録で解説したプログラミング言語の歴史的発展の実践的なサンプルコードは、`/appendix/b02-language-evolution/`ディレクトリに収録されています。各時代のプログラミング手法、パラダイムシフトの実例、現代への応用など、言語進化の理解を深める具体的なコード例を参照できます。
 
 
 
@@ -697,7 +697,7 @@ Javaが現在の形に至るまでのプログラミング言語の長い進化�
 
 本付録の詳細な解説、実装例、解析ツールは以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/compiler-ast/`**
+**`/appendix/b03-compiler-ast/`**
 
 #### 提供内容
 
@@ -730,7 +730,7 @@ Javaが現在の形に至るまでのプログラミング言語の長い進化�
 
 ### 実践的なサンプルコード
 
-本付録で解説したコンパイラ技術と抽象構文木の実践的なサンプルコードは、`/appendix/compiler-ast/`ディレクトリに収録されています。AST構築、バイトコード生成、最適化手法など、コンパイラの内部動作を理解するための具体的なコード例を参照できます。
+本付録で解説したコンパイラ技術と抽象構文木の実践的なサンプルコードは、`/appendix/b03-compiler-ast/`ディレクトリに収録されています。AST構築、バイトコード生成、最適化手法など、コンパイラの内部動作を理解するための具体的なコード例を参照できます。
 
 
 
@@ -804,6 +804,36 @@ public class Account {
 }
 ```
 
+**歴史的マイルストーン**
+
+1. **Simula 67（1967年）** - 最初のオブジェクト指向言語
+   - ノルウェーのKristen NygaardとOle-Johan Dahlが開発
+   - 離散事象シミュレーション用に設計
+   - クラス、オブジェクト、継承の概念を初めて導入
+   ```simula
+   Class Rectangle(Width, Height); Real Width, Height;
+   Begin
+      Real Area;
+      Area := Width * Height;
+   End;
+   ```
+
+2. **Smalltalk（1972年）** - 純粋なオブジェクト指向言語
+   - Xerox PARCでAlan Kayらが開発
+   - 「すべてがオブジェクト」という思想
+   - GUIの先駆けとなるウィンドウシステムも実装
+   - 後のMacintoshやWindowsに大きな影響を与えた
+
+3. **C++（1985年）** - C言語にオブジェクト指向を追加
+   - Bjarne Stroustrupが開発
+   - 既存のC言語プログラマーが移行しやすい設計
+   - システムプログラミングとオブジェクト指向の融合
+
+4. **Java（1995年）** - "Write Once, Run Anywhere"
+   - James Goslingらが開発
+   - C++の複雑さを排除し、より純粋なオブジェクト指向を実現
+   - インターネット時代に適応した設計思想
+
 #### パラダイムシフトの影響
 
 オブジェクト指向パラダイムは、ソフトウェア開発に以下の変革をもたらしました：
@@ -822,20 +852,6 @@ public class Account {
 - **マイクロサービス**: オブジェクト指向の分散システムへの応用
 - **ドメイン駆動設計**: ビジネス概念のオブジェクト化
 
-#### 具体的な影響と成功事例
-
-**大規模システムでの実績**
-
-1. **銀行システムの変革**
-   - 1990年代、多くの銀行がCOBOLからオブジェクト指向システムへ移行
-   - 新商品の追加時間が数ヵ月から数週間に短縮
-   - コードの再利用により開発コストが約40%削減
-
-2. **エンタープライズソフトウェア**
-   - SAPやOracleなどのERPシステムがオブジェクト指向を採用
-   - モジュール化により顧客ごとのカスタマイズが容易に
-   - 保守コストの大幅な削減を実現
-
 #### メトリクスで見る改善効果
 
 **保守性の向上**
@@ -847,6 +863,106 @@ public class Account {
 - **新機能追加時間**: 平均3週間 → 平均1週間
 - **テストカバレッジ**: 40% → 85%（テストしやすい設計）
 - **並行開発**: 5人まで → 20人以上（モジュール独立性）
+
+#### 実際のコード例での比較
+
+**問題設定**: 図書館管理システムで本の貸出・返却を管理
+
+**手続き型アプローチ（C言語風）**
+```c
+// データ構造（グローバル変数）
+typedef struct {
+    int id;
+    char title[100];
+    int is_borrowed;
+    int borrower_id;
+} Book;
+
+Book library[1000];
+int book_count = 0;
+
+// 本の追加（データ構造を直接操作）
+void add_book(int id, char* title) {
+    library[book_count].id = id;
+    strcpy(library[book_count].title, title);
+    library[book_count].is_borrowed = 0;
+    library[book_count].borrower_id = -1;
+    book_count++;
+}
+
+// 本の貸出（複雑な条件チェック）
+int borrow_book(int book_id, int user_id) {
+    for (int i = 0; i < book_count; i++) {
+        if (library[i].id == book_id) {
+            if (library[i].is_borrowed) {
+                return -1; // すでに貸出中
+            }
+            library[i].is_borrowed = 1;
+            library[i].borrower_id = user_id;
+            return 0;
+        }
+    }
+    return -2; // 本が見つからない
+}
+```
+
+**オブジェクト指向アプローチ（Java）**
+```java
+// カプセル化されたBookクラス
+public class Book {
+    private int id;
+    private String title;
+    private boolean isBorrowed;
+    private User borrower;
+    
+    public Book(int id, String title) {
+        this.id = id;
+        this.title = title;
+        this.isBorrowed = false;
+        this.borrower = null;
+    }
+    
+    // 振る舞いがオブジェクトに所属
+    public void borrowTo(User user) throws BookNotAvailableException {
+        if (isBorrowed) {
+            throw new BookNotAvailableException("Book is already borrowed");
+        }
+        this.isBorrowed = true;
+        this.borrower = user;
+        user.addBorrowedBook(this);
+    }
+    
+    public void returnBook() {
+        if (borrower != null) {
+            borrower.removeBorrowedBook(this);
+        }
+        this.isBorrowed = false;
+        this.borrower = null;
+    }
+}
+
+// 図書館クラス（本のコレクションを管理）
+public class Library {
+    private List<Book> books = new ArrayList<>();
+    
+    public void addBook(Book book) {
+        books.add(book);
+    }
+    
+    public Book findBookById(int id) {
+        return books.stream()
+                   .filter(book -> book.getId() == id)
+                   .findFirst()
+                   .orElseThrow(() -> new BookNotFoundException());
+    }
+}
+```
+
+**設計上の違いとメリット**
+1. **責任の明確化**: 各クラスが単一の責任を持つ
+2. **変更の局所化**: Bookの内部実装を変更してもLibraryクラスへの影響なし
+3. **例外処理**: より明確なエラーハンドリング
+4. **拡張性**: 新しい本の種類（DVD、電子書籍）を継承で簡単に追加可能
 
 ### B.3.2 関数型プログラミングパラダイムの歴史
 
@@ -1899,7 +2015,7 @@ JVMにおけるポリモーフィズムの実装メカニズムである仮想�
 
 本付録の詳細な解説、実装例、パフォーマンス測定は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/virtual-method-table/`**
+**`/appendix/b05-virtual-method-table/`**
 
 #### 提供内容
 
@@ -1933,7 +2049,7 @@ JVMにおけるポリモーフィズムの実装メカニズムである仮想�
 
 ### 実践的なサンプルコード
 
-本付録で解説した仮想メソッドテーブルと動的ディスパッチの実践的なサンプルコードは、`/appendix/virtual-method-table/`ディレクトリに収録されています。vtable構造の理解、JVM最適化の実証、パフォーマンス測定など、ポリモーフィズムの内部動作を理解するための具体的なコード例を参照できます。
+本付録で解説した仮想メソッドテーブルと動的ディスパッチの実践的なサンプルコードは、`/appendix/b05-virtual-method-table/`ディレクトリに収録されています。vtable構造の理解、JVM最適化の実証、パフォーマンス測定など、ポリモーフィズムの内部動作を理解するための具体的なコード例を参照できます。
 
 
 
@@ -2428,7 +2544,7 @@ public final class LazyImmutable {
 
 ### 実践的なサンプルコード
 
-本付録で解説した不変性の設計パターンと実装テクニックの実践的なサンプルコードは、`/appendix/immutability-patterns/`ディレクトリに収録されています。イミュータブルコレクション、永続的データ構造、レンズパターンなど、高度な不変性パターンの実装例を参照することで、実際のプロジェクトへの適用方法を学べます。
+本付録で解説した不変性の設計パターンと実装テクニックの実践的なサンプルコードは、`/appendix/b06-immutability-patterns/`ディレクトリに収録されています。イミュータブルコレクション、永続的データ構造、レンズパターンなど、高度な不変性パターンの実装例を参照することで、実際のプロジェクトへの適用方法を学べます。
 
 
 
@@ -2445,7 +2561,7 @@ Javaコレクションフレームワークの中核を成すHashMapとTreeMap�
 
 本付録の詳細な解説、実装例、パフォーマンス分析は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/collection-internals/`**
+**`/appendix/b08-collection-internals/`**
 
 #### 提供内容
 
@@ -2479,7 +2595,7 @@ Javaコレクションフレームワークの中核を成すHashMapとTreeMap�
 
 ### 実践的なサンプルコード
 
-本付録で解説したハッシュテーブルとレッドブラックツリーの内部実装の実践的なサンプルコードは、`/appendix/collection-internals/`ディレクトリに収録されています。データ構造の実装、パフォーマンス分析、最適化技法など、コレクションフレームワークの理解を深める具体的なコード例を参照できます。
+本付録で解説したハッシュテーブルとレッドブラックツリーの内部実装の実践的なサンプルコードは、`/appendix/b08-collection-internals/`ディレクトリに収録されています。データ構造の実装、パフォーマンス分析、最適化技法など、コレクションフレームワークの理解を深める具体的なコード例を参照できます。
 
 
 
@@ -4593,7 +4709,7 @@ Enumsを使った高度な設計パターンにより：
 
 ### 実践的なサンプルコード
 
-本付録で解説したEnumsを使った高度な設計パターンの実践的なサンプルコードは、`/appendix/enum-patterns/`ディレクトリに収録されています。状態機械、戦略パターン、権限管理システム、イベント駆動システムなど、Enumを活用した実装例を参照することで、実際のプロジェクトへの適用方法を学べます。
+本付録で解説したEnumsを使った高度な設計パターンの実践的なサンプルコードは、`/appendix/b13-enum-patterns/`ディレクトリに収録されています。状態機械、戦略パターン、権限管理システム、イベント駆動システムなど、Enumを活用した実装例を参照することで、実際のプロジェクトへの適用方法を学べます。
 
 
 
@@ -4610,7 +4726,7 @@ Java例外処理の内部実装とパフォーマンス特性について、詳�
 
 本付録の詳細な解説、実装例、ベンチマーク結果は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/exception-performance/`**
+**`/appendix/b14-exception-performance/`**
 
 #### 提供内容
 
@@ -4629,7 +4745,7 @@ Java例外処理の内部実装とパフォーマンス特性について、詳�
 
 ### 実践的なサンプルコード
 
-本付録で解説した例外処理の最適化技法の実践的なサンプルコードは、`/appendix/exception-performance/`ディレクトリに収録されています。JMHベンチマーク、最適化実装、代替パターンなど、高性能Javaアプリケーション開発に役立つ具体的なコード例を参照できます。
+本付録で解説した例外処理の最適化技法の実践的なサンプルコードは、`/appendix/b14-exception-performance/`ディレクトリに収録されています。JMHベンチマーク、最適化実装、代替パターンなど、高性能Javaアプリケーション開発に役立つ具体的なコード例を参照できます。
 
 
 
@@ -4646,7 +4762,7 @@ Java 7で導入されたNIO.2の高度な機能について学べます。WatchS
 
 本付録の詳細な解説、実装例、パフォーマンス分析は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/nio2-advanced/`**
+**`/appendix/b15-nio2-advanced/`**
 
 #### 提供内容
 
@@ -4680,7 +4796,7 @@ Java 7で導入されたNIO.2の高度な機能について学べます。WatchS
 
 ### 実践的なサンプルコード
 
-本付録で解説したNIO.2の高度な機能の実践的なサンプルコードは、`/appendix/nio2-advanced/`ディレクトリに収録されています。ファイル監視、非同期I/O、メモリマップドファイルなど、各機能の具体的な実装例を参照することで、高性能I/O処理の理解が深まります。
+本付録で解説したNIO.2の高度な機能の実践的なサンプルコードは、`/appendix/b15-nio2-advanced/`ディレクトリに収録されています。ファイル監視、非同期I/O、メモリマップドファイルなど、各機能の具体的な実装例を参照することで、高性能I/O処理の理解が深まります。
 
 
 
@@ -5181,7 +5297,7 @@ Javaの並行プログラミングにおける最も重要かつ難解な概念�
 
 本付録の詳細な解説、実装例、並行性バグの実証は以下のGitHubプロジェクトで公開されています：
 
-**`/appendix/java-memory-model/`**
+**`/appendix/b16-java-memory-model/`**
 
 #### 提供内容
 
@@ -5215,7 +5331,7 @@ Javaの並行プログラミングにおける最も重要かつ難解な概念�
 
 ### 実践的なサンプルコード
 
-本付録で解説したJava Memory ModelとHappens-Before関係の実践的なサンプルコードは、`/appendix/java-memory-model/`ディレクトリに収録されています。並行性バグの実証、安全な同期化技法、ロックフリーアルゴリズムなど、並行プログラミングの理解を深める具体的なコード例を参照できます。
+本付録で解説したJava Memory ModelとHappens-Before関係の実践的なサンプルコードは、`/appendix/b16-java-memory-model/`ディレクトリに収録されています。並行性バグの実証、安全な同期化技法、ロックフリーアルゴリズムなど、並行プログラミングの理解を深める具体的なコード例を参照できます。
 
 
 
@@ -5757,7 +5873,7 @@ Contract TestingとChaos Engineeringは、分散システム時代の新たな�
 
 本付録で解説した概念の実践的な実装例は、以下のGitHubリポジトリで確認できます：
 
-**[→ テスト戦略の実装例とデモ](/appendix/testing-strategies/)**
+**[→ テスト戦略の実装例とデモ](/appendix/b21-testing-strategies/)**
 
 このリポジトリには以下が含まれています：
 
