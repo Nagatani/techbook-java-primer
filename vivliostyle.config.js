@@ -29,7 +29,6 @@ const markdownFiles = [
   'appendix-a-environment-setup.md', // 付録A: 開発環境の構築
   'appendix-b-index-revised.md', // 付録B: 技術的詳細解説（Deep Dive）インデックス
   'appendix-c-theoretical-foundations.md', // 付録C: ソフトウェア工学の理論的基盤
-  'appendix-d-javabeans.md', // 付録D: JavaBeansの仕様
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',
