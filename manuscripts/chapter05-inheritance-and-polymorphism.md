@@ -1313,116 +1313,43 @@ if (member instanceof Wizard wizard) {
 
 ## 5.5 章末演習
 
-### 演習：さまざまな従業員の給与計算
+本章で学んだ継承とポリモーフィズムを実践的な課題で確認しましょう。
 
-**目的:** 継承、オーバーライド、ポリモーフィズムを使って、異なる種類の従業員の給与計算を統一的に扱うプログラムを作成する。
+### 演習課題へのアクセス
 
-**技術的背景：給与計算システムにおける継承の実践的価値**
+本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-企業の人事・給与システムは、継承とポリモーフィズムが最も効果的に活用される領域の1つです。実際の企業では、以下のような複雑な雇用形態が存在します：
+**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
-- **正社員**：基本給＋役職手当＋住宅手当＋家族手当
-- **契約社員**：時給ベース＋深夜手当＋休日手当
-- **パートタイマー**：時給ベース（最低賃金保証あり）
-- **管理職**：年俸制＋業績連動ボーナス
-- **営業職**：基本給＋インセンティブ（売上の〇％）
+### 第5章の課題構成
 
-**継承を使わない場合の問題点：**
-```java
-// 悪い例：型ごとの条件分岐が膨大に
-public double calculatePayroll(String employeeType, Map<String, Object> data) {
-    if (employeeType.equals("MANAGER")) {
-        double base = (Double) data.get("baseSalary");
-        double bonus = (Double) data.get("bonus");
-        return base + bonus;
-    } else if (employeeType.equals("ENGINEER")) {
-        double base = (Double) data.get("baseSalary");
-        int overtime = (Integer) data.get("overtimeHours");
-        return base + (overtime * 5000);
-    } else if (employeeType.equals("SALES")) {
-        // さらに複雑な計算...
-    }
-    // 新しい雇用形態が増えるたびにこのメソッドが肥大化
-}
+```
+exercises/chapter05/
+├── basic/              # 基礎課題（必須）
+│   ├── README.md       # 詳細な課題説明
+│   └── PayrollSystem/  # 給与計算システム課題
+├── advanced/           # 発展課題（推奨）
+├── challenge/          # チャレンジ課題（任意）
+└── solutions/          # 解答例（実装後に参照）
 ```
 
-**継承とポリモーフィズムによる解決：**
-- **拡張性**：新しい雇用形態の追加が容易（既存コードを変更せずに新クラスを追加）
-- **保守性**：各雇用形態の給与計算ロジックが独立して管理される
-- **法令対応**：労働基準法の改正時も、該当クラスのみ修正すればよい
-- **テスト容易性**：各クラスの計算ロジックを個別にユニットテスト可能
+### 学習の目標
 
-この演習では、実際の給与システム開発で必要となる設計原則を、シンプルな例を通じて学習します。
+本章の演習を通じて以下のスキルを習得します：
+- 継承を使ったクラス階層の設計と実装
+- メソッドのオーバーライドによる振る舞いの特殊化
+- ポリモーフィズムを活用した柔軟なプログラム設計
+- instanceof演算子とキャストの適切な使用
 
-**手順:**
+### 課題の概要
 
-この演習では、段階的にクラスを構築していきます。まず最初に、すべての従業員の基本となる`Employee`親クラスを作成します。`Employee.java`ファイルを作成し、従業員の名前を表す`name`（String型）と基本給を表す`baseSalary`（double型）の2つのフィールドを定義します。コンストラクタではこれらの値を初期化し、給与を計算する`calculateSalary()`メソッドでは基本給をそのまま返します。また、従業員情報を表示する`displayInfo()`メソッドでは、名前と計算後の給与を出力します。
+1. **基礎課題**: 従業員の給与計算システム - 継承とポリモーフィズムの基本実装
+2. **発展課題**: 図形描画システム - 抽象的な親クラスと具体的な子クラスの設計
+3. **チャレンジ課題**: ゲームキャラクタシステム - 複雑な継承階層とポリモーフィズムの応用
 
-次に、管理職を表す`Manager`クラスを作成します。`Manager.java`ファイルで`Employee`クラスを継承し、管理職独自の特性としてボーナスを表す`bonus`（double型）フィールドを追加します。コンストラクタでは、名前、基本給、ボーナスを受け取り、`super`キーワードを使って親クラスのコンストラクタを呼び出して名前と基本給を初期化します。そして、`calculateSalary()`メソッドをオーバーライドして、基本給にボーナスを加えた値を返すように実装します。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-同様に、エンジニアを表す`Engineer`クラスも作成します。`Engineer.java`ファイルで`Employee`クラスを継承し、エンジニア独自の特性として残業時間を表す`overtimeHours`（int型）フィールドを追加します。コンストラクタでは名前、基本給、残業時間を初期化し、`calculateSalary()`メソッドをオーバーライドして、基本給に残業手当（残業時間 × 5000円）を加えた値を返すように実装します。
-
-最後に、これらのクラスを統合的に扱う`PayrollSystem`クラスを作成します。`PayrollSystem.java`ファイルの`main`メソッド内で、`Employee`型の配列を作成し、その中に`Manager`と`Engineer`のインスタンスを複数格納します。これがポリモーフィズムの実践です。`for`ループを使って配列を処理し、各従業員の`displayInfo()`メソッドを呼びだすことで、それぞれの役職に応じた給与が正しく計算・表示されることを確認します。さらにチャレンジ課題として、ループの中で`instanceof`演算子を使って従業員の実際の型を判定し、`Manager`の場合は「役職： 管理職」と追加情報を表示する機能を実装してみましょう。
-
-### スケルトンコード
-
-演習を始めるための基本的な構造を以下に示します：
-
-```java
-// Employee.java (親クラス)
-public class Employee {
-    // TODO: フィールドの定義
-    // - name (String型)
-    // - baseSalary (double型)
-    
-    // TODO: コンストラクタ
-    
-    // TODO: calculateSalary()メソッド
-    // 基本給をそのまま返す
-    
-    // TODO: displayInfo()メソッド
-    // 名前と計算後の給与を表示
-}
-
-// Manager.java (子クラス)
-public class Manager extends Employee {
-    // TODO: 追加フィールド
-    // - bonus (double型)
-    
-    // TODO: コンストラクタ
-    // super()を使って親クラスのコンストラクタを呼び出す
-    
-    // TODO: calculateSalary()メソッドのオーバーライド
-    // 基本給 + ボーナスを返す
-}
-
-// Engineer.java (子クラス)
-public class Engineer extends Employee {
-    // TODO: 追加フィールド
-    // - overtimeHours (int型)
-    
-    // TODO: コンストラクタ
-    
-    // TODO: calculateSalary()メソッドのオーバーライド
-    // 基本給 + (残業時間 × 5000円)を返す
-}
-
-// PayrollSystem.java (メインクラス)
-public class PayrollSystem {
-    public static void main(String[] args) {
-        // TODO: Employee型の配列を作成
-        Employee[] employees = new Employee[4];
-        
-        // TODO: 配列に各種従業員を格納
-        // employees[0] = new Manager(...);
-        // employees[1] = new Engineer(...);
-        // ...
-        
-        // TODO: ループで各従業員の情報を表示
-        // ポリモーフィズムが機能することを確認
-    }
-}
-```
+**次のステップ**: 基礎課題が完了したら、第6章「不変性とfinalキーワード」に進みましょう。
 
 ## より深い理解のために
 
