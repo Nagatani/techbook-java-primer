@@ -18,6 +18,9 @@ const markdownFiles = [
   'chapter15-file-io.md',
   'chapter16-multithreading.md',
   'chapter17-network-programming.md',
+  'chapter18-gui-basics.md',
+  'chapter19-gui-event-handling.md',
+  'chapter20-advanced-gui.md',
   'chapter21-unit-testing.md',
   'chapter22-documentation-and-libraries.md',
   'chapter23-build-and-deploy.md',
@@ -27,7 +30,6 @@ const markdownFiles = [
   'appendix-b-index-revised.md', // 付録B: 技術的詳細解説（Deep Dive）インデックス
   'appendix-c-theoretical-foundations.md', // 付録C: ソフトウェア工学の理論的基盤
   'appendix-d-javabeans.md', // 付録D: JavaBeansの仕様
-  'appendix-e-gui-programming.md', // 付録E: Swingを使ったGUIプログラミング
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',
