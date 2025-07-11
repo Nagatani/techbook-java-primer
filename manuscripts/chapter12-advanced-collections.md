@@ -73,7 +73,7 @@ Setの実装クラスの選択は、アプリケーションの要件によっ�
 
 ラムダ式が登場する前は、`Comparator`をその場で実装するために**匿名クラス**が使われていました。
 
-**リスト12-1**
+<span class="listing-number">**サンプルコード12-1**</span>
 ```java
 import java.util.Comparator;
 // ...
@@ -101,7 +101,7 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 - `reversed()`: 比較順序を逆にする。
 - `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する。
 
-**リスト12-2**
+<span class="listing-number">**サンプルコード12-2**</span>
 ```java
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -161,7 +161,7 @@ Stream APIの重要な特徴の1つが**遅延評価（Lazy Evaluation）**で�
 - メモリ効率が向上する
 - 無限ストリームの処理が可能になる
 
-**リスト12-3**
+<span class="listing-number">**サンプルコード12-3**</span>
 ```java
 // この時点ではまだフィルタリングは実行されない
 Stream<Integer> stream = numbers.stream()
@@ -212,7 +212,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。
 
-**リスト12-4**
+<span class="listing-number">**サンプルコード12-4**</span>
 ```java
 List<Student> list = ...;
 // 点数が90点以上の生徒だけを抽出
@@ -225,7 +225,7 @@ List<Student> highScorers = list.stream()
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。
 
-**リスト12-5**
+<span class="listing-number">**サンプルコード12-5**</span>
 ```java
 // 生徒のリストから、名前のリストを生成
 List<String> names = list.stream()
@@ -235,7 +235,7 @@ List<String> names = list.stream()
 
 ### 組み合わせた例
 
-**リスト12-6**
+<span class="listing-number">**サンプルコード12-6**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -274,7 +274,7 @@ public class StreamExample {
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです：
 
-**リスト12-7**
+<span class="listing-number">**サンプルコード12-7**</span>
 ```java
 // シーケンシャル（直列）処理
 long sum = numbers.stream()
@@ -297,7 +297,7 @@ long sumParallel = numbers.parallelStream()
 2. **処理（Process）**：各チャンクを異なるスレッドで並列に処理
 3. **統合（Combine）**：各スレッドの結果を統合して最終結果を生成
 
-**リスト12-8**
+<span class="listing-number">**サンプルコード12-8**</span>
 ```java
 import java.util.stream.IntStream;
 import java.time.Duration;
@@ -340,7 +340,7 @@ public class ParallelStreamExample {
 #### 2. スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります：
 
-**リスト12-9**
+<span class="listing-number">**サンプルコード12-9**</span>
 ```java
 // スレッドセーフでない例（避けるべき）
 List<Integer> results = new ArrayList<>();  // スレッドセーフでない

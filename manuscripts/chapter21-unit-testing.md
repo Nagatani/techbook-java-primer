@@ -60,7 +60,7 @@
 
 開発の初期段階でバグを発見できれば、修正は比較的簡単です。単体テストは、**コードを書いた直後に品質を検証する**ことで、手戻りのコストを大幅に削減します。
 
-**リスト21-1**
+<span class="listing-number">**サンプルコード21-1**</span>
 ```java
 // バグ修正のコスト
 // 開発段階でのバグ修正コスト： 1
@@ -91,7 +91,7 @@
 
 ### テスト対象のクラス
 
-**リスト21-2**
+<span class="listing-number">**サンプルコード21-2**</span>
 ```java
 // Calculator.java
 public class Calculator {
@@ -103,7 +103,7 @@ public class Calculator {
 
 ### テストコードの実践
 
-**リスト21-3**
+<span class="listing-number">**サンプルコード21-3**</span>
 ```java
 // CalculatorManualTest.java
 public class CalculatorManualTest {
@@ -135,7 +135,7 @@ public class CalculatorManualTest {
 
 ### テストしにくいコードの例
 
-**リスト21-4**
+<span class="listing-number">**サンプルコード21-4**</span>
 ```java
 // UserRepository.java - DBからユーザー情報を取得するクラス
 public class UserRepository {
@@ -182,7 +182,7 @@ public class UserService {
 
 コンストラクタの引数を通じて依存性を注入します。**最も推奨される方法**です。
 
-**リスト21-5**
+<span class="listing-number">**サンプルコード21-5**</span>
 ```java
 public class UserService {
     private final UserRepository userRepository;
@@ -202,7 +202,7 @@ public class UserService {
 
 セッターメソッドを通じて依存性を注入します。
 
-**リスト21-6**
+<span class="listing-number">**サンプルコード21-6**</span>
 ```java
 public class UserService {
     private UserRepository userRepository;
@@ -232,7 +232,7 @@ DIの核心は、依存関係を外部から制御できる点にあります。
 
 #### DIを適用したサービスクラス
 
-**リスト21-7**
+<span class="listing-number">**サンプルコード21-7**</span>
 ```java
 // UserRepository.java - インターフェース
 public interface UserRepository {
@@ -256,7 +256,7 @@ public class UserService {
 
 ### 21.6.2 スタブを使った単体テストの実践
 
-**リスト21-8**
+<span class="listing-number">**サンプルコード21-8**</span>
 ```java
 // UserRepositoryStub.java - テスト用の偽物リポジトリ
 public class UserRepositoryStub implements UserRepository {
@@ -306,7 +306,7 @@ TDDでは、以下の短いサイクルを繰り返します：
 
 #### ステップ1: Red - 失敗するテストを書く
 
-**リスト21-9**
+<span class="listing-number">**サンプルコード21-9**</span>
 ```java
 public class StringCalculatorTest {
     @Test
@@ -320,7 +320,7 @@ public class StringCalculatorTest {
 
 #### ステップ2: Green - テストを通す最小限のコード
 
-**リスト21-10**
+<span class="listing-number">**サンプルコード21-10**</span>
 ```java
 public class StringCalculator {
     public int add(String numbers) {
@@ -339,7 +339,7 @@ public class StringCalculator {
 
 実際の開発では、JUnitのようなテストフレームワークを使用します。
 
-**リスト21-11**
+<span class="listing-number">**サンプルコード21-11**</span>
 ```java
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -376,7 +376,7 @@ public class CalculatorTest {
 
 Mockitoなどのモックフレームワークを使うと、より柔軟なテストが可能になります。
 
-**リスト21-12**
+<span class="listing-number">**サンプルコード21-12**</span>
 ```java
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -414,7 +414,7 @@ public class UserServiceTest {
 
 ### 21.9.2 テストの構造化
 
-**リスト21-13**
+<span class="listing-number">**サンプルコード21-13**</span>
 ```java
 public class PaymentServiceTest {
     

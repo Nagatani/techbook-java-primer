@@ -82,7 +82,7 @@ Swingイベント処理機構の詳細についても学習します。イベン
 1. **MouseListenerインターフェイス** - マウスボタンの状態変化を検出
 2. **MouseMotionListenerインターフェイス** - マウスポインタの移動を追跡
 
-**リスト19-1**
+<span class="listing-number">**サンプルコード19-1**</span>
 ```java
 // ① MouseListener：クリックイベントの処理
 mousePressed()  // ①-1
@@ -119,7 +119,7 @@ mouseMoved()    // ②-2
 2. **BufferedImage活用** - メモリ内での画像操作による高速化
 3. **アンチエイリアシング** - 滑らかな描画のための品質設定
 
-**リスト19-2**
+<span class="listing-number">**サンプルコード19-2**</span>
 ```java
 // ① 非効率的なアプローチ：毎回全体再描画
 public void paintComponent(Graphics g) {
@@ -202,7 +202,7 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 リアルタイムバリデーションは、現代のWebアプリケーションで標準的な機能です：
 
 **バリデーションのタイミング戦略：**
-**リスト19-3**
+<span class="listing-number">**サンプルコード19-3**</span>
 ```java
 // 1. 即座バリデーション（キー入力毎）
 document.addDocumentListener(new DocumentListener() {
@@ -223,7 +223,7 @@ delayTimer.setRepeats(false);
 4. **サーバ検証**：重複チェック等
 
 **視覚的フィードバックのベストプラクティス：**
-**リスト19-4**
+<span class="listing-number">**サンプルコード19-4**</span>
 ```java
 // 色による状態表示
 Color VALID = new Color(144, 238, 144);   // 淡い緑
@@ -317,7 +317,7 @@ Icon INFO = new ImageIcon("info.png");
 Actionパターンは、同じ機能を複数のUI要素から実行できるようにする設計パターンです：
 
 **Actionパターンの利点：**
-**リスト19-5**
+<span class="listing-number">**サンプルコード19-5**</span>
 ```java
 // 従来の方法：重複コード
 JMenuItem saveMenuItem = new JMenuItem("保存");
@@ -347,7 +347,7 @@ new JButton(saveAction);
 - **ロールベース**：権限にもとづく表示
 
 **コンテキストメニューの実装：**
-**リスト19-6**
+<span class="listing-number">**サンプルコード19-6**</span>
 ```java
 // マウスイベントでの表示制御
 component.addMouseListener(new MouseAdapter() {
@@ -575,7 +575,7 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 
 最も基本的な、ボタンクリックイベントを処理してみましょう。
 
-**リスト19-7**
+<span class="listing-number">**サンプルコード19-7**</span>
 ```java
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -617,7 +617,7 @@ public class ButtonEventExample {
 
 `ActionListener`のように、実装すべきメソッドが1つだけのインターフェイス（**関数型インターフェイス**）は、ラムダ式を使って非常に簡潔に記述できます。
 
-**リスト19-8**
+<span class="listing-number">**サンプルコード19-8**</span>
 ```java
 // 上記の匿名クラスの部分をラムダ式で書き換える
 button.addActionListener(e -> {
@@ -633,7 +633,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
 
-**リスト19-9**
+<span class="listing-number">**サンプルコード19-9**</span>
 ```java
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -689,7 +689,7 @@ Swingに挟まざまなイベントがあります。目的に応じて適切な
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。`WindowListener`インターフェイスには多くのメソッドがありますが、`WindowAdapter`クラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
-**リスト19-10**
+<span class="listing-number">**サンプルコード19-10**</span>
 ```java
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -723,7 +723,7 @@ public class WindowEventExample {
 
 ##### 1. マウスイベントの完全な処理
 
-**リスト19-11**
+<span class="listing-number">**サンプルコード19-11**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -864,7 +864,7 @@ public class MouseEventCompleteExample extends JFrame {
 
 ##### 2. キーボードイベントの高度な処理
 
-**リスト19-12**
+<span class="listing-number">**サンプルコード19-12**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -1034,7 +1034,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 
 ##### 3. DocumentListenerによるテキスト変更の監視
 
-**リスト19-13**
+<span class="listing-number">**サンプルコード19-13**</span>
 ```java
 import javax.swing.*;
 import javax.swing.event.*;
@@ -1251,7 +1251,7 @@ public class DocumentListenerExample extends JFrame {
 
 ##### 4. カスタムイベントとObserverパターン
 
-**リスト19-14**
+<span class="listing-number">**サンプルコード19-14**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -1479,7 +1479,7 @@ public class CustomEventExample extends JFrame {
 
 JavaBeansの仕様では、イベント処理を以下のパターンで実装することが推奨されています：
 
-**リスト19-15**
+<span class="listing-number">**サンプルコード19-15**</span>
 ```java
 import java.beans.*;
 import java.util.*;
@@ -1815,7 +1815,7 @@ public class JavaBeansEventExample extends JFrame {
 
 より複雑な業務アプリケーションで使用される高度なJavaBeansパターンを学習しましょう：
 
-**リスト19-16**
+<span class="listing-number">**サンプルコード19-16**</span>
 ```java
 import java.beans.*;
 import java.util.*;
@@ -2146,7 +2146,7 @@ public class AdvancedJavaBeansExample extends JFrame {
 
 ##### 5. ドラッグ&ドロップの実装
 
-**リスト19-17**
+<span class="listing-number">**サンプルコード19-17**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;

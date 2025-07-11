@@ -250,7 +250,7 @@ C言語では商品情報と処理を別々に管理していましたが、Java
 2. **データと処理の一体化** - 商品に関するデータとメソッドを同じクラス内に配置
 3. **再利用性** - Productクラスは他の場所でも使用可能
 
-**リスト1-1**
+<span class="listing-number">**サンプルコード1-1**</span>
 ```java
 public class Product {
     private String name;  // ①
@@ -337,7 +337,7 @@ Javaプログラミングを始めるには、まず開発環境を整える必�
 
 以下は、画面に「Hello, World!!」と表示する最も基本的なJavaプログラムです：
 
-**リスト1-2**
+<span class="listing-number">**サンプルコード1-2**</span>
 ```java
 public class HelloWorld {
     public static void main(String[] args) {
@@ -364,7 +364,7 @@ public class HelloWorld {
 
 Javaでは、すべてのコードは「**クラス**」という単位で記述します。クラスは、関連するデータとそれを操作する処理をまとめたものです。
 
-**リスト1-3**
+<span class="listing-number">**サンプルコード1-3**</span>
 ```java
 public class クラス名 {
     public static void main(String[] args) {
@@ -411,7 +411,7 @@ Javaランタイム（javaコマンド）は、指定されたクラスの中か
 ```
 
 **実例**：
-**リスト1-4**
+<span class="listing-number">**サンプルコード1-4**</span>
 ```java
 int age;                           // 宣言のみ
 int price = 1000;                  // 宣言と同時に初期化
@@ -429,7 +429,7 @@ String name = "田中太郎";           // 文字列の場合
 - 変数名は小文字で始める（camelCase）
 - 意味のある名前を付ける
 
-**リスト1-5**
+<span class="listing-number">**サンプルコード1-5**</span>
 ```java
 // 良い例
 int studentAge = 20;
@@ -460,7 +460,7 @@ Javaのデータ型は大きく**プリミティブ型**と**参照型**に分�
 | `boolean` | - | `true`または`false` | 真偽値 | `true` |
 
 **重要なリテラル記法**：
-**リスト1-6**
+<span class="listing-number">**サンプルコード1-6**</span>
 ```java
 long bigNumber = 9000000000L;      // long型はLを末尾に付ける
 float pi = 3.14f;                  // float型はfを末尾に付ける
@@ -499,7 +499,7 @@ double result2 = 15.0 / 4; // 結果: 3.75（どちらか一方がdoubleなら�
 
 `+`演算子は文字列連結にも使用されます：
 
-**リスト1-7**
+<span class="listing-number">**サンプルコード1-7**</span>
 ```java
 String firstName = "太郎";
 String lastName = "田中";
@@ -521,7 +521,7 @@ System.out.println("結果: " + (10 + 20));   // "結果: 30"（カッコで計�
 
 #### 基本的な使用方法
 
-**リスト1-8**
+<span class="listing-number">**サンプルコード1-8**</span>
 ```java
 System.out.println("Hello, World!");       // 文字列リテラル
 System.out.println(42);                    // 数値
@@ -534,7 +534,7 @@ System.out.println("数値: " + number);      // 文字列と変数の連結
 
 #### print()との違い
 
-**リスト1-9**
+<span class="listing-number">**サンプルコード1-9**</span>
 ```java
 System.out.print("Hello");     // 改行なし
 System.out.print("World");     // 改行なし  → "HelloWorld"と出力
@@ -556,7 +556,7 @@ int age = 20;  // 変数の後にも書けます
 
 #### 複数行コメント
 
-**リスト1-10**
+<span class="listing-number">**サンプルコード1-10**</span>
 ```java
 /*
  これは複数行にわたる
@@ -569,7 +569,7 @@ int price = 1000;
 
 **Javaでは、ほとんどの文の終わりにセミコロン（`;`）が必要です**。
 
-**リスト1-11**
+<span class="listing-number">**サンプルコード1-11**</span>
 ```java
 int x = 10;                    // 変数宣言
 System.out.println("Hello");  // メソッド呼び出し
@@ -577,7 +577,7 @@ x = x + 5;                     // 代入
 ```
 
 **セミコロンが不要な場合**：
-**リスト1-12**
+<span class="listing-number">**サンプルコード1-12**</span>
 ```java
 public class Sample {          // クラス宣言
     public static void main(String[] args) {  // メソッド宣言
@@ -596,7 +596,7 @@ error: ';' expected
 ```
 
 **原因と対処**：
-**リスト1-13**
+<span class="listing-number">**サンプルコード1-13**</span>
 ```java
 // エラー例
 int x = 10  // セミコロンがない
@@ -613,7 +613,7 @@ error: cannot find symbol
 ```
 
 **原因と対処**：
-**リスト1-14**
+<span class="listing-number">**サンプルコード1-14**</span>
 ```java
 // エラー例
 system.out.println("Hello");  // systemが小文字
@@ -638,7 +638,7 @@ error: class HelloWorld is public, should be declared in a file named HelloWorld
 
 外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
 
-**リスト1-15**
+<span class="listing-number">**サンプルコード1-15**</span>
 ```java
 import java.util.Scanner;  // Scannerクラスを使用するための宣言
 
@@ -708,7 +708,7 @@ C言語のprintfと同じような書き方で出力が可能です。
 
 ファイル名「`StandardOutput.java`」
 
-**リスト1-16**
+<span class="listing-number">**サンプルコード1-16**</span>
 ```java
 public class StandardOutput {
     public static void main(String[] args) {
@@ -730,7 +730,7 @@ public class StandardOutput {
 
 ボタン押下でメッセージの変更を行うサンプル
 
-**リスト1-17**
+<span class="listing-number">**サンプルコード1-17**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -776,7 +776,7 @@ public class HelloGUIApp extends JFrame {
 
 名前の入力欄を追加し、ボタン押下で挨拶を行うサンプル
 
-**リスト1-18**
+<span class="listing-number">**サンプルコード1-18**</span>
 ```java
 import javax.swing.*;
 import java.awt.*;

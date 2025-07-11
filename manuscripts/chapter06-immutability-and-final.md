@@ -43,7 +43,7 @@
 
 以下のコードは、カプセル化を無視した設計が実際の開発でどのような深刻な問題を引き起こすかを示しています：
 
-**リスト6-1**
+<span class="listing-number">**サンプルコード6-1**</span>
 ```java
 // カプセル化されていない危険なコード
 public class BankAccount {
@@ -123,7 +123,7 @@ setterメソッドの重要な役割は、フィールドに値を設定する�
 
 #### 実践例：`Employee`クラス
 
-**リスト6-2**
+<span class="listing-number">**サンプルコード6-2**</span>
 ```java
 // Employee.java
 public class Employee {
@@ -197,7 +197,7 @@ public class Employee {
 }
 ```
 
-**リスト6-3**
+<span class="listing-number">**サンプルコード6-3**</span>
 ```java
 // EmployeeManagement.java
 public class EmployeeManagement {
@@ -249,7 +249,7 @@ public class EmployeeManagement {
 
 クラスがどのパッケージに属するかを指定するには、ソースファイルの先頭で`package`文を使います。
 
-**リスト6-4**
+<span class="listing-number">**サンプルコード6-4**</span>
 ```java
 package com.example.geometry; // このファイル内のクラスは com.example.geometry パッケージに属する
 
@@ -281,7 +281,7 @@ public class Circle {
 
 他のパッケージに属するクラスを利用するには、本来`パッケージ名.クラス名`という**完全限定名 (Fully Qualified Name)** で記述する必要があります。
 
-**リスト6-5**
+<span class="listing-number">**サンプルコード6-5**</span>
 ```java
 // importを使わない場合
 java.util.Scanner scanner = new java.util.Scanner(System.in);
@@ -290,7 +290,7 @@ java.util.ArrayList<String> list = new java.util.ArrayList<>();
 
 しかし、これではコードが長くなり、可読性が低下します。そこで、ソースファイルの先頭（`package`文の後）に`import`文を記述することで、クラス名を短く書けます。
 
-**リスト6-6**
+<span class="listing-number">**サンプルコード6-6**</span>
 ```java
 import java.util.Scanner; // java.util.Scannerクラスをインポート
 import java.util.ArrayList; // java.util.ArrayListクラスをインポート
@@ -308,7 +308,7 @@ public class MyProgram {
 
 同じパッケージの多くのクラスを使いたい場合、アスタリスク `*` を使って、そのパッケージに属するすべての`public`なクラスをまとめてインポートできます。これを**オンデマンドインポート**と呼びます。
 
-**リスト6-7**
+<span class="listing-number">**サンプルコード6-7**</span>
 ```java
 import java.util.*; // java.utilパッケージの全クラスを対象にする
 
@@ -326,7 +326,7 @@ public class MyProgram {
 
 異なるパッケージに同じ名前のクラスが存在する場合、両方を同時にオンデマンドインポートしたり、個別にインポートしたりすると、コンパイラがどちらのクラスを使えばよいか判断できず、コンパイルエラーになります。
 
-**リスト6-8**
+<span class="listing-number">**サンプルコード6-8**</span>
 ```java
 import java.util.List;
 import java.awt.List; // エラー: Listクラスが両方のパッケージに存在する
@@ -338,7 +338,7 @@ public class AmbiguousClass {
 
 このような場合は、片方を`import`し、もう片方は完全限定名で記述して、どちらのクラスを使うかを明示的に指定する必要があります。
 
-**リスト6-9**
+<span class="listing-number">**サンプルコード6-9**</span>
 ```java
 import java.util.List; // java.util.Listを主に使うと決める
 

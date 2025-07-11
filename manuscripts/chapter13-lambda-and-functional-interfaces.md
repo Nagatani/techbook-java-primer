@@ -69,7 +69,7 @@ Java 8でラムダ式が導入される前、その場限りのインターフ�
 
 まず、最も簡単な例でラムダ式の基本を理解しましょう。Runnableインターフェイスを使った例を見てみます：
 
-**リスト13-1**
+<span class="listing-number">**サンプルコード13-1**</span>
 ```java
 // 従来の匿名クラスを使った方法
 Runnable task1 = new Runnable() {
@@ -89,7 +89,7 @@ task2.run();  // Hello from lambda!
 
 ラムダ式は、匿名クラスの冗長な記述を大幅に簡略化します。`() ->` が「引数なしで何かを実行する」という意味になります。
 
-**リスト13-2**
+<span class="listing-number">**サンプルコード13-2**</span>
 ```java
 // 匿名クラスを使ったボタンのクリック処理
 button.addActionListener(new ActionListener() {
@@ -114,7 +114,7 @@ button.addActionListener(new ActionListener() {
 
 ### カリー化の実装例：通貨変換
 
-**リスト13-3**
+<span class="listing-number">**サンプルコード13-3**</span>
 ```java
 public class CurrencyConverter {
     // 通常の2引数から3引数の変換で、通貨レートを適用
@@ -145,7 +145,7 @@ public class CurrencyConverter {
 
 **モナドの実践例：Optionalを使ったエラーハンドリング**
 
-**リスト13-4**
+<span class="listing-number">**サンプルコード13-4**</span>
 ```java
 public class UserService {
     // モナドを使わない場合
@@ -189,7 +189,7 @@ public class UserService {
 
 **アンチパターン1: 過度なラムダネスト**
 
-**リスト13-5**
+<span class="listing-number">**サンプルコード13-5**</span>
 ```java
 // 悪い例：読みづらいネストされたラムダ
 result = list.stream()
@@ -214,7 +214,7 @@ private Item transformItem(Item x) {
 
 **アンチパターン2: 副作用の濫用**
 
-**リスト13-6**
+<span class="listing-number">**サンプルコード13-6**</span>
 ```java
 // 悪い例：ラムダ内で外部状態を変更
 List<String> results = new ArrayList<>();
@@ -234,7 +234,7 @@ List<String> results = items.stream()
 
 Netflixは1日に数十億のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用：
 
-**リスト13-7**
+<span class="listing-number">**サンプルコード13-7**</span>
 ```java
 // 従来の同期的アプローチ（スケールしない）
 public class VideoRecommendationService {
@@ -278,7 +278,7 @@ public class ReactiveVideoRecommendationService {
 
 **1. リトライとサーキットブレーカー**
 
-**リスト13-8**
+<span class="listing-number">**サンプルコード13-8**</span>
 ```java
 public class ResilientService {
     // 関数型リトライメカニズム
@@ -318,7 +318,7 @@ public class ResilientService {
 
 **2. 関数合成によるミドルウェアパターン**
 
-**リスト13-9**
+<span class="listing-number">**サンプルコード13-9**</span>
 ```java
 public class MiddlewareChain {
     // HTTPリクエスト処理のミドルウェア
@@ -377,7 +377,7 @@ public class MiddlewareChain {
 
 **3. イベントソーシングとCQRS**
 
-**リスト13-10**
+<span class="listing-number">**サンプルコード13-10**</span>
 ```java
 public class EventSourcedAccount {
     // イベントの定義
@@ -419,7 +419,7 @@ public class EventSourcedAccount {
 
 **ラムダ式の内部実装とメモリ使用**
 
-**リスト13-11**
+<span class="listing-number">**サンプルコード13-11**</span>
 ```java
 public class LambdaPerformance {
     // ラムダ式のキャプチャによるメモリ影響
@@ -454,7 +454,7 @@ public class LambdaPerformance {
 
 ### 実践的なデザインパターン：関数型ビルダ
 
-**リスト13-12**
+<span class="listing-number">**サンプルコード13-12**</span>
 ```java
 public class FunctionalBuilder {
     // 従来のビルダーパターン
@@ -513,7 +513,7 @@ public class FunctionalBuilder {
 
 **高頻度取引（HFT）システムでの関数型アプローチ**
 
-**リスト13-13**
+<span class="listing-number">**サンプルコード13-13**</span>
 ```java
 public class TradingSystem {
     // マーケットデータのストリーム処理
@@ -567,7 +567,7 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
-**リスト13-14**
+<span class="listing-number">**サンプルコード13-14**</span>
 ```java
 @FunctionalInterface
 interface MyFunction {
@@ -608,7 +608,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `UnaryOperator<T>` | `T apply(T t)` | T型を受け取り、同じT型を返す（単項演算） |
 | `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（二項演算） |
 
-**リスト13-15**
+<span class="listing-number">**サンプルコード13-15**</span>
 ```java
 import java.util.function.*;
 
@@ -644,7 +644,7 @@ public class StandardFunctionalInterfaces {
 | **インスタンスメソッド参照**<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | **コンストラクタ参照** | `クラス名::new` | `() -> new ArrayList<>()` |
 
-**リスト13-16**
+<span class="listing-number">**サンプルコード13-16**</span>
 ```java
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -684,7 +684,7 @@ public class MethodReferenceExample {
 
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 
-**リスト13-17**
+<span class="listing-number">**サンプルコード13-17**</span>
 ```java
 public class ThreadLambdaExample {
     public static void main(String[] args) {

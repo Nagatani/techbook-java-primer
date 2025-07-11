@@ -25,7 +25,7 @@
 
 まず、配列を使った簡単な例から始めましょう：
 
-**リスト10-1**
+<span class="listing-number">**サンプルコード10-1**</span>
 ```java
 // 学生の名前を管理するプログラム
 public class StudentManager {
@@ -54,7 +54,7 @@ public class StudentManager {
 
 新学期になって6人目の学生が転入してきたらどうしましょう？配列のサイズは作成時に決まるため、後から変更できません：
 
-**リスト10-2**
+<span class="listing-number">**サンプルコード10-2**</span>
 ```java
 String[] students = new String[5];
 // ... 5人分のデータを登録 ...
@@ -64,7 +64,7 @@ students[5] = "山田";  // ArrayIndexOutOfBoundsException!
 
 従来の解決方法は、より大きな配列を作り直してコピーすることでした：
 
-**リスト10-3**
+<span class="listing-number">**サンプルコード10-3**</span>
 ```java
 // 面倒な配列の拡張処理
 String[] newStudents = new String[10];  // 大きめの配列を作成
@@ -79,7 +79,7 @@ students[5] = "山田";    // やっと6人目を追加できる
 
 転校した学生のデータを削除する場合も複雑です：
 
-**リスト10-4**
+<span class="listing-number">**サンプルコード10-4**</span>
 ```java
 // 鈴木さん（インデックス2）が転校
 students[2] = null;  // nullを代入しても...
@@ -98,7 +98,7 @@ students[students.length - 1] = null;
 
 よく使う操作も自分で実装する必要があります：
 
-**リスト10-5**
+<span class="listing-number">**サンプルコード10-5**</span>
 ```java
 // 特定の学生が在籍しているか確認
 boolean found = false;
@@ -122,7 +122,7 @@ for (String student : students) {
 
 これらの問題を解決するために、Javaはコレクションフレームワークを提供しています。同じ学生管理プログラムをArrayListで書き直してみましょう：
 
-**リスト10-6**
+<span class="listing-number">**サンプルコード10-6**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -199,7 +199,7 @@ Listは順序を保持し、インデックスによるアクセスが可能な�
 
 ### ArrayList vs LinkedList
 
-**リスト10-7**
+<span class="listing-number">**サンプルコード10-7**</span>
 ```java
 // ArrayList: 内部的に配列を使用
 List<String> arrayList = new ArrayList<>();
@@ -219,7 +219,7 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入が高速
 
 ### 主な操作
 
-**リスト10-8**
+<span class="listing-number">**サンプルコード10-8**</span>
 ```java
 List<String> list = new ArrayList<>();
 
@@ -251,7 +251,7 @@ Setは重複要素を許さないコレクションです。数学的な集合�
 
 ### HashSet vs TreeSet vs LinkedHashSet
 
-**リスト10-9**
+<span class="listing-number">**サンプルコード10-9**</span>
 ```java
 // HashSet: ハッシュテーブルを使用（順序は保証されない）
 Set<Integer> hashSet = new HashSet<>();
@@ -277,7 +277,7 @@ linkedHashSet.add(2);
 
 ### 集合演算
 
-**リスト10-10**
+<span class="listing-number">**サンプルコード10-10**</span>
 ```java
 Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
 Set<String> set2 = new HashSet<>(Arrays.asList("B", "C", "D"));
@@ -301,7 +301,7 @@ Mapはキーと値のペアを管理するデータ構造です。辞書やハ�
 
 ### HashMap vs TreeMap vs LinkedHashMap
 
-**リスト10-11**
+<span class="listing-number">**サンプルコード10-11**</span>
 ```java
 // HashMap: 高速な検索・挿入（順序は保証されない）
 Map<String, Integer> hashMap = new HashMap<>();
@@ -322,7 +322,7 @@ linkedHashMap.putAll(hashMap);
 
 ### 主な操作
 
-**リスト10-12**
+<span class="listing-number">**サンプルコード10-12**</span>
 ```java
 Map<String, String> map = new HashMap<>();
 
@@ -356,7 +356,7 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 
 ### イテレータの基本
 
-**リスト10-13**
+<span class="listing-number">**サンプルコード10-13**</span>
 ```java
 List<String> list = Arrays.asList("A", "B", "C");
 
@@ -379,7 +379,7 @@ while (iter2.hasNext()) {
 
 ### 拡張for文（for-each）
 
-**リスト10-14**
+<span class="listing-number">**サンプルコード10-14**</span>
 ```java
 // より簡潔な記述
 for (String element : list) {
@@ -506,7 +506,7 @@ Javaプログラミングの初期に学ぶ配列は、複数のデータをま�
 1.  **サイズが固定**: 配列は、一度作成するとそのサイズを変更できません。
 2.  **機能が限定的**: 要素の追加や削除、検索といった一般的な操作を自前で実装する必要があり、手間がかかります。
 
-**リスト10-15**
+<span class="listing-number">**サンプルコード10-15**</span>
 ```java
 // 配列の例：要素を追加するのも一苦労
 String[] users = new String[3];
@@ -539,7 +539,7 @@ Javaのコレクションフレームワークは、データを効率的に扱�
 
 ### `ArrayList`の基本的な使い方
 
-**リスト10-16**
+<span class="listing-number">**サンプルコード10-16**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -595,7 +595,7 @@ public class ArrayListExample {
 
 #### 拡張for文 (推奨)
 最も簡潔で一般的な方法です。
-**リスト10-17**
+<span class="listing-number">**サンプルコード10-17**</span>
 ```java
 for (String name : nameList) {
     System.out.println(name);
@@ -604,7 +604,7 @@ for (String name : nameList) {
 
 #### イテレータ (Iterator)
 ループ中にコレクションから要素を安全に削除したい場合に使います。
-**リスト10-18**
+<span class="listing-number">**サンプルコード10-18**</span>
 ```java
 Iterator<String> iterator = cityList.iterator();
 while (iterator.hasNext()) {
@@ -619,7 +619,7 @@ while (iterator.hasNext()) {
 
 `java.util.Arrays`クラスや`List`インターフェイスのメソッドを利用します。
 
-**リスト10-19**
+<span class="listing-number">**サンプルコード10-19**</span>
 ```java
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -650,7 +650,7 @@ String[] fruitArray = fruitList.toArray(new String[0]);
 
 ### `HashSet`の基本的な使い方
 
-**リスト10-20**
+<span class="listing-number">**サンプルコード10-20**</span>
 ```java
 import java.util.HashSet;
 import java.util.Set;
@@ -686,7 +686,7 @@ public class HashSetExample {
 
 ### `HashMap`の基本的な使い方
 
-**リスト10-21**
+<span class="listing-number">**サンプルコード10-21**</span>
 ```java
 import java.util.HashMap;
 import java.util.Map;

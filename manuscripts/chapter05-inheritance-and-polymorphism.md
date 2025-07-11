@@ -57,7 +57,7 @@
 
 以下のコードは、継承を使わずに複数のキャラクタークラスを実装した場合の深刻な問題を示しています。
 
-**リスト5-1**
+<span class="listing-number">**サンプルコード5-1**</span>
 ```java
 public class Hero {
     String name;      // ①
@@ -123,7 +123,7 @@ public class Wizard {
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
 
-**リスト5-2**
+<span class="listing-number">**サンプルコード5-2**</span>
 ```java
 public class Car {
     private String model;     // ①
@@ -209,7 +209,7 @@ public class Motorcycle {
 
 **ステップ2：共通部分の抽出**
 
-**リスト5-3**
+<span class="listing-number">**サンプルコード5-3**</span>
 ```java
 // 共通部分を親クラスとして抽出
 public abstract class Vehicle {
@@ -246,7 +246,7 @@ public abstract class Vehicle {
 
 **ステップ3：子クラスの再実装**
 
-**リスト5-4**
+<span class="listing-number">**サンプルコード5-4**</span>
 ```java
 // リファクタリング後：重複が除去された
 public class Car extends Vehicle {
@@ -324,7 +324,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 **継承の基本構文と継承される要素**：
 
-**リスト5-5**
+<span class="listing-number">**サンプルコード5-5**</span>
 ```java
 public class Character {  // 親クラス（スーパークラス）
     String name;         // ①
@@ -377,7 +377,7 @@ public class Wizard extends Character {  // ③
 
 #### 誤用例1：スタックがArrayListを継承
 
-**リスト5-6**
+<span class="listing-number">**サンプルコード5-6**</span>
 ```java
 // 悪い例：実装の詳細を継承してしまう
 public class MyStack<E> extends ArrayList<E> {
@@ -420,7 +420,7 @@ public class StackProblem {
 
 **解決策：コンポジションを使用**
 
-**リスト5-7**
+<span class="listing-number">**サンプルコード5-7**</span>
 ```java
 // 良い例：内部実装を隠蔽
 public class MyStack<E> {
@@ -457,7 +457,7 @@ public class MyStack<E> {
 
 #### 誤用例2：鳥の階層での問題
 
-**リスト5-8**
+<span class="listing-number">**サンプルコード5-8**</span>
 ```java
 // 悪い例：すべての鳥が飛べるという誤った前提
 public class Bird {
@@ -503,7 +503,7 @@ public class BirdPark {
 
 **解決策：インターフェイスによる能力の分離**
 
-**リスト5-9**
+<span class="listing-number">**サンプルコード5-9**</span>
 ```java
 // 良い例：能力をインターフェースで表現
 public abstract class Bird {
@@ -578,7 +578,7 @@ public class BirdPark {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。
 
-**リスト5-10**
+<span class="listing-number">**サンプルコード5-10**</span>
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
 public class Rectangle {
@@ -643,7 +643,7 @@ public class GeometryTest {
 
 **解決策：コンポジションの使用**
 
-**リスト5-11**
+<span class="listing-number">**サンプルコード5-11**</span>
 ```java
 // 改善されたコード：継承ではなくインターフェースを使用
 public interface Shape {
@@ -685,7 +685,7 @@ public class Square implements Shape {
 
 #### 誤用例1：実装の都合だけで継承を使う
 
-**リスト5-12**
+<span class="listing-number">**サンプルコード5-12**</span>
 ```java
 // 悪い例：Stackを継承したMyStack
 public class MyStack<E> extends ArrayList<E> {
@@ -712,7 +712,7 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 **改善策：コンポジション（委譲）を使う**
 
-**リスト5-13**
+<span class="listing-number">**サンプルコード5-13**</span>
 ```java
 // 良い例：ArrayListを内部で使用
 public class MyStack<E> {
@@ -748,7 +748,7 @@ public class MyStack<E> {
 
 #### 誤用例2：多重継承の代替として無理な継承
 
-**リスト5-14**
+<span class="listing-number">**サンプルコード5-14**</span>
 ```java
 // 悪い例：「飛べる鳥」と「泳げる鳥」を無理に継承で表現
 public class Bird {
@@ -770,7 +770,7 @@ public class SwimmingBird extends Bird {
 
 **改善策：インターフェイスで能力を表現**
 
-**リスト5-15**
+<span class="listing-number">**サンプルコード5-15**</span>
 ```java
 // 良い例：インターフェースで能力を分離
 public interface Flyable {
@@ -815,7 +815,7 @@ public class Eagle extends Bird implements Flyable {
 
 ### 継承の実践例
 
-**リスト5-16**
+<span class="listing-number">**サンプルコード5-16**</span>
 ```java
 // Main.java
 public class Main {
@@ -868,7 +868,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-**リスト5-17**
+<span class="listing-number">**サンプルコード5-17**</span>
 ```java
 // 親クラス
 public class Character {
@@ -940,7 +940,7 @@ public class Knight extends Character {
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これを**アップキャスト**と呼びます。
 
-**リスト5-18**
+<span class="listing-number">**サンプルコード5-18**</span>
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
 Character chara1 = new Hero("勇者", 100);
@@ -954,7 +954,7 @@ Character chara3 = new Knight("騎士", 120);
 
 ここからがポリモーフィズムの真骨頂です。これらの`Character`型の変数に対して`attack()`メソッドを呼びだすと、何が起こるでしょうか。
 
-**リスト5-19**
+<span class="listing-number">**サンプルコード5-19**</span>
 ```java
 chara1.attack(); // 実行結果: 勇者の攻撃！
 chara2.attack(); // 実行結果: 魔法使いは杖で殴った！
@@ -968,7 +968,7 @@ chara3.attack(); // 実行結果: 騎士の攻撃！
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなキャラクタをまとめて管理する配列を考えてみましょう。
 
-**リスト5-20**
+<span class="listing-number">**サンプルコード5-20**</span>
 ```java
 public class GameParty {
     public static void main(String[] args) {
@@ -998,7 +998,7 @@ public class GameParty {
 
 **Before：ポリモーフィズムを使わない場合**
 
-**リスト5-21**
+<span class="listing-number">**サンプルコード5-21**</span>
 ```java
 // 型ごとに別々の処理を書く必要がある
 public class GamePartyBefore {
@@ -1047,7 +1047,7 @@ public class GamePartyBefore {
 
 **After：ポリモーフィズムを使った場合**
 
-**リスト5-22**
+<span class="listing-number">**サンプルコード5-22**</span>
 ```java
 // 統一的な処理で全ての型を扱える
 public class GamePartyAfter {
@@ -1122,7 +1122,7 @@ abstract class Character {
 
 **Before：ポリモーフィズムを使わない場合**
 
-**リスト5-23**
+<span class="listing-number">**サンプルコード5-23**</span>
 ```java
 // 図形の種類を列挙型で管理
 enum ShapeType {
@@ -1200,7 +1200,7 @@ public class DrawingAppBefore {
 
 **After：ポリモーフィズムを使った場合**
 
-**リスト5-24**
+<span class="listing-number">**サンプルコード5-24**</span>
 ```java
 // 抽象基底クラス
 abstract class Shape {
@@ -1340,7 +1340,7 @@ Character member = new Wizard("魔法使い", 70, 50);
 
 `(変換したい型)変数` のように記述します。
 
-**リスト5-25**
+<span class="listing-number">**サンプルコード5-25**</span>
 ```java
 public class GameParty {
     public static void main(String[] args) {
@@ -1370,7 +1370,7 @@ public class GameParty {
 
 Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
 
-**リスト5-26**
+<span class="listing-number">**サンプルコード5-26**</span>
 ```java
 // 従来の書き方
 if (member instanceof Wizard) {

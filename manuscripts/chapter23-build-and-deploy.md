@@ -181,7 +181,7 @@ JARファイルのしくみとクラスパスについての深い理解も重�
 
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
-**リスト23-1**
+<span class="listing-number">**サンプルコード23-1**</span>
 ```java
 // SimpleApp.java
 import javax.swing.*;
@@ -204,7 +204,7 @@ public class SimpleApp {
 
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です：
 
-**リスト23-2**
+<span class="listing-number">**サンプルコード23-2**</span>
 ```java
 // AppConfig.java
 public class AppConfig {
@@ -221,7 +221,7 @@ public class AppConfig {
 }
 ```
 
-**リスト23-3**
+<span class="listing-number">**サンプルコード23-3**</span>
 ```java
 // TodoItem.java
 public class TodoItem {
@@ -252,7 +252,7 @@ public class TodoItem {
 }
 ```
 
-**リスト23-4**
+<span class="listing-number">**サンプルコード23-4**</span>
 ```java
 // TodoApp.java
 import javax.swing.*;
@@ -394,7 +394,7 @@ Sealed: true
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります：
 
-**リスト23-5**
+<span class="listing-number">**サンプルコード23-5**</span>
 ```java
 // ResourceApp.java
 import javax.swing.*;
@@ -502,7 +502,7 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成できます：
 
-**リスト23-6**
+<span class="listing-number">**サンプルコード23-6**</span>
 ```java
 // JsonProcessorApp.java
 import com.google.gson.Gson;

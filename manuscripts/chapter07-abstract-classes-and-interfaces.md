@@ -57,7 +57,7 @@
 
 「図形」の例を抽象クラスで実装してみましょう。
 
-**リスト7-1**
+<span class="listing-number">**サンプルコード7-1**</span>
 ```java
 // 抽象クラス Shape
 public abstract class Shape {
@@ -88,7 +88,7 @@ public abstract class Shape {
 
 子クラスである`Circle`と`Rectangle`は、`Shape`クラスを継承し、それぞれの方法で`getArea()`メソッドを実装します。
 
-**リスト7-2**
+<span class="listing-number">**サンプルコード7-2**</span>
 ```java
 // Circle.java
 public class Circle extends Shape {
@@ -129,7 +129,7 @@ public class Rectangle extends Shape {
 
 抽象クラスはインスタンス化できませんが、親クラスとしてポリモーフィズムを活用することはできます。
 
-**リスト7-3**
+<span class="listing-number">**サンプルコード7-3**</span>
 ```java
 // Main.java
 public class Main {
@@ -164,7 +164,7 @@ public class Main {
 
 ### 実践例：`Drawable`と`Serializable`インターフェイス
 
-**リスト7-4**
+<span class="listing-number">**サンプルコード7-4**</span>
 ```java
 // Drawable.java
 public interface Drawable {
@@ -182,7 +182,7 @@ public interface Serializable {
 
 `implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
 
-**リスト7-5**
+<span class="listing-number">**サンプルコード7-5**</span>
 ```java
 // Character.java
 // DrawableとSerializableの両方のインターフェイスを実装する
@@ -232,7 +232,7 @@ Java 8以降、インターフェイスは劇的に進化し、より柔軟で�
 
 #### Java 7まで：純粋な契約
 
-**リスト7-6**
+<span class="listing-number">**サンプルコード7-6**</span>
 ```java
 // 従来のインターフェイス（Java 7まで）
 public interface OldStyleInterface {
@@ -247,7 +247,7 @@ public interface OldStyleInterface {
 
 #### Java 8：defaultメソッドとstaticメソッドの導入
 
-**リスト7-7**
+<span class="listing-number">**サンプルコード7-7**</span>
 ```java
 // Java 8でのインターフェイス拡張
 public interface ModernInterface {
@@ -268,7 +268,7 @@ public interface ModernInterface {
 
 #### Java 9：privateメソッドの追加
 
-**リスト7-8**
+<span class="listing-number">**サンプルコード7-8**</span>
 ```java
 // Java 9でのさらなる拡張
 public interface CompleteInterface {
@@ -296,7 +296,7 @@ public interface CompleteInterface {
 
 defaultメソッドの最も重要な目的は、**既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れない**ことです。
 
-**リスト7-9**
+<span class="listing-number">**サンプルコード7-9**</span>
 ```java
 // 既存のインターフェイス（多くの実装クラスが存在）
 public interface Collection<E> {
@@ -322,7 +322,7 @@ class MyCollection<E> implements Collection<E> {
 
 #### テンプレートメソッドパターンの実現
 
-**リスト7-10**
+<span class="listing-number">**サンプルコード7-10**</span>
 ```java
 // インターフェイスでテンプレートメソッドパターン
 public interface DataProcessor {
@@ -362,7 +362,7 @@ public interface DataProcessor {
 
 複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します。
 
-**リスト7-11**
+<span class="listing-number">**サンプルコード7-11**</span>
 ```java
 // ダイヤモンド継承の例
 interface A {
@@ -409,7 +409,7 @@ Javaは以下の規則で優先順位を決定します：
 2. **より具体的なインターフェイスが優先**: サブインターフェイスのメソッドが優先
 3. **それでも不明な場合はコンパイルエラー**: 明示的なオーバーライドが必要
 
-**リスト7-12**
+<span class="listing-number">**サンプルコード7-12**</span>
 ```java
 // 規則1：クラスが常に優先
 class BaseClass {
@@ -451,7 +451,7 @@ class Implementation implements Parent, Child {
 
 インターフェイスのstaticメソッドは、そのインターフェイスに関連するユーティリティ機能を提供します。
 
-**リスト7-13**
+<span class="listing-number">**サンプルコード7-13**</span>
 ```java
 public interface JsonSerializable {
     String toJson();
@@ -478,7 +478,7 @@ String json = JsonSerializable.serializeList(users);
 
 ### 実践的な活用例：防御的プログラミング
 
-**リスト7-14**
+<span class="listing-number">**サンプルコード7-14**</span>
 ```java
 interface DefensiveInterface {
     List<String> getItems();
@@ -517,7 +517,7 @@ interface DefensiveInterface {
 
 **Mixin**は、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
-**リスト7-15**
+<span class="listing-number">**サンプルコード7-15**</span>
 ```java
 // 複数の機能を提供するMixin
 interface Timestamped {
@@ -591,7 +591,7 @@ class Document implements Timestamped, Identifiable, Versioned {
 
 **トレイト**は、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
-**リスト7-16**
+<span class="listing-number">**サンプルコード7-16**</span>
 ```java
 // 比較可能オブジェクトのトレイト
 interface ComparableTrait<T> extends Comparable<T> {
@@ -649,7 +649,7 @@ class Temperature implements ComparableTrait<Temperature> {
 
 **インターフェイス分離原則**は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
-**リスト7-17**
+<span class="listing-number">**サンプルコード7-17**</span>
 ```java
 // 悪い例：肥大化したインターフェイス
 interface BadUserService {
@@ -733,7 +733,7 @@ class BasicUserService implements UserRepository, UserNotificationService {
 
 defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
 
-**リスト7-18**
+<span class="listing-number">**サンプルコード7-18**</span>
 ```java
 @FunctionalInterface
 interface EnhancedFunction<T, R> extends Function<T, R> {
@@ -812,7 +812,7 @@ public class FunctionEnhancementDemo {
 
 APIの進化を管理するための戦略的なアプローチです。
 
-**リスト7-19**
+<span class="listing-number">**サンプルコード7-19**</span>
 ```java
 // API進化の管理
 interface ServiceV1 {

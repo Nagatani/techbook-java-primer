@@ -84,7 +84,7 @@ exercises/chapter09/
 
 前章でコレクションを学習したとき、以下のような記法を見たはずです：
 
-**リスト11-1**
+<span class="listing-number">**サンプルコード11-1**</span>
 ```java
 List<String> students = new ArrayList<String>();
 Set<Integer> numbers = new HashSet<Integer>();
@@ -97,7 +97,7 @@ Map<String, Integer> scores = new HashMap<String, Integer>();
 
 ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です：
 
-**リスト11-2**
+<span class="listing-number">**サンプルコード11-2**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -133,7 +133,7 @@ public class CollectionProblem {
 
 同じプログラムをジェネリクスを使って書き直してみましょう：
 
-**リスト11-3**
+<span class="listing-number">**サンプルコード11-3**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -169,7 +169,7 @@ public class CollectionSolution {
 
 Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
 
-**リスト11-4**
+<span class="listing-number">**サンプルコード11-4**</span>
 ```java
 // ジェネリクスがなかった時代のコード（現在は非推奨）
 import java.util.ArrayList;
@@ -212,7 +212,7 @@ Javaのジェネリクスの重要な特徴の1つが「型消去」です。こ
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。これを**型パラメータ**と呼びます。
 
-**リスト11-5**
+<span class="listing-number">**サンプルコード11-5**</span>
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -255,7 +255,7 @@ public class WithGenericsExample {
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-**リスト11-6**
+<span class="listing-number">**サンプルコード11-6**</span>
 ```java
 // Tという型パラメータを持つジェネリッククラス
 public class Box<T> {
@@ -300,7 +300,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 クラス全体ではなく、特定のメソッドだけをジェネリックにすることも可能です。メソッドの戻り値の型の前に型パラメータを宣言します。
 
-**リスト11-7**
+<span class="listing-number">**サンプルコード11-7**</span>
 ```java
 public class GenericMethodExample {
     // Tという型パラメータを持つジェネリックメソッド
@@ -330,7 +330,7 @@ public class GenericMethodExample {
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-**リスト11-8**
+<span class="listing-number">**サンプルコード11-8**</span>
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
 public class NumericBox<T extends Number> {
@@ -369,7 +369,7 @@ public class BoundedTypeExample {
 -   `List<? extends Type>`: **上限境界ワイルドカード**。`Type`またはそのサブクラスのリストを受け取れる。主にデータの**読み取り（Producer）**に使う。
 -   `List<? super Type>`: **下限境界ワイルドカード**。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの**書き込み（Consumer）**に使う。
 
-**リスト11-9**
+<span class="listing-number">**サンプルコード11-9**</span>
 ```java
 import java.util.List;
 import java.util.ArrayList;

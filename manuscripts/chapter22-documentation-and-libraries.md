@@ -50,7 +50,7 @@ Javaには、ソースコード内に記述した特定の形式のコメント�
 
 Javadocコメントは `/**` で始まり、`*/` で終わります。クラス、フィールド、コンストラクタ、メソッドなどの宣言の直前に記述します。
 
-**リスト22-1**
+<span class="listing-number">**サンプルコード22-1**</span>
 ```java
 /**
  * 2つの整数の和を計算して返します。
@@ -88,7 +88,7 @@ public int add(int a, int b) {
 
 ### 実践的なJavadocの例
 
-**リスト22-2**
+<span class="listing-number">**サンプルコード22-2**</span>
 ```java
 /**
  * タスク管理システムのコアクラスです。
@@ -310,7 +310,7 @@ Java仮想マシン（JVM）がプログラムの実行時に必要なクラス�
 
 `pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
-**リスト22-3**
+<span class="listing-number">**サンプルコード22-3**</span>
 ```java
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -399,7 +399,7 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。高速�
 ```
 
 #### Jacksonの使用例
-**リスト22-4**
+<span class="listing-number">**サンプルコード22-4**</span>
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -496,7 +496,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 </dependency>
 ```
 
-**リスト22-5**
+<span class="listing-number">**サンプルコード22-5**</span>
 ```java
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -584,7 +584,7 @@ public class CommonsLangExample {
 </dependency>
 ```
 
-**リスト22-6**
+<span class="listing-number">**サンプルコード22-6**</span>
 ```java
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -665,7 +665,7 @@ OkHttpは、効率的なHTTP通信を行うためのライブラリです。
 </dependency>
 ```
 
-**リスト22-7**
+<span class="listing-number">**サンプルコード22-7**</span>
 ```java
 import okhttp3.*;
 import java.io.IOException;
@@ -763,7 +763,7 @@ Lombokは、アノテーションを使ってゲッタ、セッタ、コンス�
 </dependency>
 ```
 
-**リスト22-8**
+<span class="listing-number">**サンプルコード22-8**</span>
 ```java
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -863,7 +863,7 @@ GoogleのGuavaライブラリは、コレクション、キャッシュ、文字
 </dependency>
 ```
 
-**リスト22-9**
+<span class="listing-number">**サンプルコード22-9**</span>
 ```java
 import com.google.common.collect.*;
 import com.google.common.base.*;
@@ -961,7 +961,7 @@ public class GuavaExample {
 - **採用実績**: 大規模プロジェクトでの採用実績
 
 #### 2. ライセンスの確認
-**リスト22-10**
+<span class="listing-number">**サンプルコード22-10**</span>
 ```java
 // pom.xmlでライセンスを確認
 <licenses>
@@ -1085,7 +1085,7 @@ public class GuavaExample {
 
 ### 実践的な開発フロー
 
-**リスト22-11**
+<span class="listing-number">**サンプルコード22-11**</span>
 ```java
 // 1. プロジェクトの初期化（Maven）
 mvn archetype:generate -DgroupId=com.example -DartifactId=myapp
@@ -1107,7 +1107,7 @@ mvn versions:display-dependency-updates
 
 よくある問題と解決方法：
 
-**リスト22-12**
+<span class="listing-number">**サンプルコード22-12**</span>
 ```java
 // 1. 依存関係の競合
 // 解決策: 明示的にバージョンを指定
