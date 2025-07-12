@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須前提**：
+**ポイントとなる前提**：
 - 第4章のクラスとインスタンス（基本的なOOPの概念）
 - 第14章の例外処理（try-catch、例外の種類）
 - 第15章のファイル入出力（基本的なI/O操作）
 - HTMLの基礎知識
 
-**望ましい前提**：
+**あるとよい前提**：
 - 第21章のユニットテスト（テストコードの作成）
 - ビルドツール（Maven、Gradle）の基本概念
 - JSONデータ形式の理解
@@ -132,7 +132,7 @@ public class Task {
     /** タスクの一意識別子 */
     private final long id;
     
-    /** タスクのタイトル（必須、最大100文字） */
+    /** タスクのタイトル（ポイント、最大100文字） */
     private String title;
     
     /** タスクの詳細説明（オプション） */
@@ -164,10 +164,10 @@ public class Task {
      */
     public Task(String title, Priority priority) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("タイトルは必須です");
+            throw new IllegalArgumentException("タイトルはポイントです");
         }
         if (priority == null) {
-            throw new IllegalArgumentException("優先度は必須です");
+            throw new IllegalArgumentException("優先度はポイントです");
         }
         
         this.id = System.currentTimeMillis();
@@ -193,7 +193,7 @@ public class Task {
      */
     public void setTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("タイトルは必須です");
+            throw new IllegalArgumentException("タイトルはポイントです");
         }
         this.title = title;
     }
@@ -1169,7 +1169,7 @@ mvn dependency:purge-local-repository
 ## まとめ
 
 -   **Javadoc**は、ソースコード内のコメントからAPI仕様書を自動生成する標準ツールです。適切なコメントは、コードの可読性と保守性を高めます。
--   **外部ライブラリ**は、既存の優れた機能を活用し、開発を効率化するために不可欠です。
+-   **外部ライブラリ**は、既存の優れた機能を活用し、開発を効率化するために必要です。
 -   **Maven**のような依存関係管理ツールを使うことで、外部ライブラリの導入と管理が劇的に簡単になります。
 -   `pom.xml`に必要なライブラリの情報を記述するだけで、ライブラリのダウンロードからクラスパスの設定までが自動で行われます。
 
@@ -1187,7 +1187,7 @@ mvn dependency:purge-local-repository
 
 ```
 exercises/chapter22/
-├── basic/              # 基礎課題（必須）
+├── basic/              # 基礎課題（ポイント）
 │   ├── README.md       # 詳細な課題説明
 │   └── [関連ファイル名]
 ├── advanced/           # 発展課題（推奨）

@@ -538,3 +538,198 @@ p:has(span.listing-number) + pre {
     page-break-after: always;
   }
 }
+
+/* コラムのスタイル（旧HTMLタグ方式） */
+.column {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* コラムのタイトル（旧HTMLタグ方式） */
+.column::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -0.8rem;
+  left: 1.5rem;
+  background-color: #fff;
+  padding: 0 0.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* Markdown拡張記法によるコラムスタイル */
+.column,
+[data-type="column"] {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* コラムの最初の太字をタイトルとして装飾 */
+.column > p:first-child > strong:first-child,
+[data-type="column"] > p:first-child > strong:first-child {
+  display: inline-block;
+  background-color: #fff;
+  padding: 0.2rem 0.8rem;
+  margin: -2rem 0 1rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* コラム内の見出し */
+.column h3,
+[data-type="column"] h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #343a40;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.column h4,
+[data-type="column"] h4 {
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #495057;
+}
+
+/* コラム内のコードブロック */
+.column pre,
+[data-type="column"] pre {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0.8rem 0;
+}
+
+/* コラム内の強調表示（タイトル以外） */
+.column p:not(:first-child) strong,
+[data-type="column"] p:not(:first-child) strong {
+  color: #212529;
+  font-weight: bold;
+}
+
+/* コラム内のリスト */
+.column ul,
+.column ol,
+[data-type="column"] ul,
+[data-type="column"] ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.column li,
+[data-type="column"] li {
+  margin: 0.3rem 0;
+}
+
+/* 印刷時のコラム調整 */
+@media print {
+  .column,
+  [data-type="column"] {
+    background-color: #fafafa;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  
+  .column::before,
+  .column > p:first-child > strong:first-child,
+  [data-type="column"] > p:first-child > strong:first-child {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+}
+
+/* Blockquoteベースのコラムスタイル */
+blockquote:has(strong.column-section) {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 2px solid #e9ecef; /* blockquoteのデフォルトborder-leftを上書き */
+}
+
+/* コラムタイトルの装飾 */
+blockquote:has(strong.column-section) > p:first-child > strong.column-section {
+  display: inline-block;
+  background-color: #fff;
+  padding: 0.2rem 0.8rem;
+  margin: -2rem 0 1rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* blockquoteコラム内の見出し */
+blockquote:has(strong.column-section) h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #343a40;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+blockquote:has(strong.column-section) h4 {
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #495057;
+}
+
+/* blockquoteコラム内のコードブロック */
+blockquote:has(strong.column-section) pre {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0.8rem 0;
+}
+
+/* blockquoteコラム内の強調表示（タイトル以外） */
+blockquote:has(strong.column-section) p:not(:first-child) strong {
+  color: #212529;
+  font-weight: bold;
+}
+
+/* blockquoteコラム内のリスト */
+blockquote:has(strong.column-section) ul,
+blockquote:has(strong.column-section) ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+blockquote:has(strong.column-section) li {
+  margin: 0.3rem 0;
+}
+
+/* 印刷時のblockquoteコラム調整 */
+@media print {
+  blockquote:has(strong.column-section) {
+    background-color: #fafafa;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  
+  blockquote:has(strong.column-section) > p:first-child > strong.column-section {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+}
