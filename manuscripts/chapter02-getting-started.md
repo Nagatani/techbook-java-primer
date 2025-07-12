@@ -89,15 +89,7 @@ C言語とJavaの文法的違いを具体例を交えて説明できるように
 - 文字列の基本操作
 - StringBuilderによる効率的な文字列処理
 
-### [Part D: クラスとオブジェクトの基礎](chapter02d-class-basics.md)
-- クラスの基本構造
-- フィールド、メソッド、コンストラクタ
-- オブジェクトの作成と使用
-- カプセル化の基本
-- アクセス修飾子
-- staticキーワード
-
-### [Part E: 章末演習](chapter02e-exercises.md)
+### [Part D: 章末演習](chapter02d-exercises.md)
 - 基礎演習：データ型と変数
 - 応用演習：制御構造の活用
 - 実践演習：配列を使った数値処理
@@ -303,54 +295,288 @@ int bitXor = m ^ n;  // ⑧ 0110 = 6
 
 ## 2.5 型変換
 
-Javaの型変換システムは、プログラムの安全性を保証するために厳格に設計されています。C言語では暗黙的に行われていた多くの型変換が、Javaでは明示的なキャストを要求されます。これは一見煩雑に思えるかもしれませんが、予期しないデータ損失やバグを防ぐ重要なしくみです。型変換には、データの精度を失わない拡たいへん換（widening conversion）と、精度を失う可能性がある縮小変換（narrowing conversion）があります：
+### 型変換の基本概念と設計思想
+
+Javaの型変換システムは、プログラムの安全性を保証するために厳格に設計されています。C言語では暗黙的に行われていた多くの型変換が、Javaでは明示的なキャストを要求されます。これは一見煩雑に思えるかもしれませんが、予期しないデータ損失やバグを防ぐ重要なしくみです。
+
+### 型変換の分類
+
+型変換には、データの精度を失わない拡大変換（widening conversion）と、精度を失う可能性がある縮小変換（narrowing conversion）があります。
+
+**拡大変換の特徴**：
+- データ損失がない安全な変換
+- 暗黙的に（自動的に）実行される
+- 小さい型から大きい型への変換
+- 例：`byte → short → int → long → float → double`
+
+**縮小変換の特徴**：
+- データ損失の可能性がある
+- 明示的なキャストが必要
+- 大きい型から小さい型への変換
+- プログラマーの責任で実行
+
+### 他言語との比較による理解
+
+**C言語との違い**：
+```c
+// C言語では暗黙的な変換が多い
+double pi = 3.14159;
+int truncated = pi;  // 警告は出るが、コンパイルは通る
+```
+
+C言語では、上記のような危険な変換も警告レベルで許可されますが、Javaではコンパイルエラーになります。
+
+**Python との違い**：
+```python
+# Pythonは動的型付けで、自由に変換
+num = 123
+text = str(num)  # 自動的に文字列に変換
+result = "Value: " + str(num)  # 明示的な変換が必要
+```
+
+Pythonは動的型付けなので実行時に型が決まりますが、Javaは静的型付けでコンパイル時に型の整合性を保証します。
+
+**JavaScript との違い**：
+```javascript
+// JavaScriptは自動的に型変換（型強制）
+let result = "5" + 3;  // "53" (文字列連結)
+let calc = "5" * 3;    // 15 (数値計算)
+```
+
+JavaScriptの自動型変換は便利ですが、予期しない動作の原因にもなります。Javaは明示的な変換を要求することで、このような問題を防ぎます。
 
 <span class="listing-number">**サンプルコード2-4**</span>
 
 ```java
-// 暗黙的な型変換（拡大変換）
-int i = 100;
-long l = i;        // OK: int → long
-double d = i;      // OK: int → double
-
-// 明示的な型変換（縮小変換）
-double pi = 3.14159;
-int truncated = (int) pi;  // 3（小数部分は切り捨て）
-
-// 文字列との変換
-String str = "123";
-int num = Integer.parseInt(str);  // 文字列→整数
-String str2 = String.valueOf(num);  // 整数→文字列
+public class TypeConversionExample {
+    public static void main(String[] args) {
+        // 暗黙的な型変換（拡大変換）
+        int i = 100;
+        long l = i;        // OK: int → long（32ビット → 64ビット）
+        double d = i;      // OK: int → double（整数 → 浮動小数点）
+        
+        System.out.println("int: " + i);     // 100
+        System.out.println("long: " + l);    // 100
+        System.out.println("double: " + d);  // 100.0
+        
+        // 明示的な型変換（縮小変換）
+        double pi = 3.14159;
+        int truncated = (int) pi;  // 3（小数部分は切り捨て）
+        
+        // オーバーフローの例
+        int largeInt = 130;
+        byte smallByte = (byte) largeInt;  // -126（オーバーフロー）
+        
+        System.out.println("元の値: " + largeInt);
+        System.out.println("byte変換後: " + smallByte);
+        
+        // 文字列との変換
+        String str = "123";
+        int num = Integer.parseInt(str);     // 文字列→整数
+        String str2 = String.valueOf(num);   // 整数→文字列
+        
+        // 数値解析のエラー処理
+        try {
+            String invalidStr = "abc";
+            int invalid = Integer.parseInt(invalidStr);  // NumberFormatException
+        } catch (NumberFormatException e) {
+            System.out.println("数値変換エラー: " + e.getMessage());
+        }
+    }
+}
 ```
+
+### 型変換の実践的な利点
+
+**1. 精度を考慮した計算**：
+```java
+// 整数同士の除算での落とし穴
+int a = 5, b = 2;
+double result1 = a / b;         // 2.0（整数除算後に変換）
+double result2 = (double)a / b; // 2.5（浮動小数点除算）
+```
+
+**2. メモリ効率の最適化**：
+```java
+// 大量のデータを扱う場合の型選択
+byte[] imageData = new byte[1024 * 1024];  // 1MBのバイト配列
+int[] inefficient = new int[1024 * 1024];   // 4MBの整数配列（非効率）
+```
+
+**3. APIとの整合性**：
+```java
+// 多くのJava APIは特定の型を要求
+Math.sqrt(25);        // double型を要求
+Math.round(3.7f);     // float型を受け付ける
+Collections.shuffle(list, new Random(42L));  // long型のシード
+```
+
+### 型変換のベストプラクティス
+
+1. **必要最小限のキャスト**: 型変換は最小限に抑え、設計段階で適切な型を選択する
+2. **データ損失の確認**: 縮小変換を行う前に、値の範囲を確認する
+3. **例外処理の実装**: 文字列から数値への変換では、必ず例外処理を実装する
+4. **定数の型指定**: リテラルには適切な型サフィックスを使用（`100L`, `3.14f`など）
 
 ## 2.6 コンソール入出力
 
-プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージと`java.util`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を、よりオブジェクト指向的な方法で実現しています。以下の例では、基本的な出力方法と、`Scanner`クラスを使用した入力処理を示します：
+### 標準入出力の設計思想
+
+プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージと`java.util`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を、よりオブジェクト指向的な方法で実現しています。
+
+### Javaの入出力設計の特徴
+
+**1. オブジェクト指向的アプローチ**：
+- `System.out`は`PrintStream`オブジェクト
+- `System.in`は`InputStream`オブジェクト
+- メソッド呼び出しによる操作
+
+**2. 型安全性の重視**：
+- `Scanner`クラスによる型別の入力メソッド
+- 入力値の検証機能
+- 例外処理による安全な入力処理
+
+**3. 国際化対応**：
+- Unicodeによる多言語対応
+- ロケール設定による書式制御
+- 文字エンコーディングの自動処理
+
+### 他言語との比較
+
+**C言語との違い**：
+```c
+// C言語の入出力
+printf("Hello, %s!\n", name);
+scanf("%d", &age);  // バッファオーバーフローの危険性
+```
+
+**Python との違い**：
+```python
+# Pythonの入出力
+name = input("名前を入力: ")  # 常に文字列を返す
+age = int(input("年齢を入力: "))  # 明示的な型変換が必要
+print(f"{name}さん（{age}歳）、こんにちは！")
+```
+
+**JavaScript (Node.js) との違い**：
+```javascript
+// Node.jsでの非同期入力（複雑）
+const readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+rl.question('名前を入力: ', (name) => {
+    // コールバック内で処理
+});
+```
 
 <span class="listing-number">**サンプルコード2-5**</span>
 
 ```java
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class IOExample {
     public static void main(String[] args) {
-        // 出力
-        System.out.println("Hello, World!");
-        System.out.print("改行なし");
-        System.out.printf("書式付き出力: %d, %.2f%n", 10, 3.14159);
+        // === 出力メソッドの使い分け ===
+        System.out.println("Hello, World!");      // 改行付き出力
+        System.out.print("改行なし");             // 改行なし出力
+        System.out.print("出力\n");               // 手動で改行を追加
         
-        // 入力
+        // printf による書式付き出力（C言語風）
+        System.out.printf("整数: %d, 浮動小数点: %.2f%n", 10, 3.14159);
+        System.out.printf("文字列: %-10s | 右寄せ: %10s%n", "左寄せ", "右寄せ");
+        
+        // === Scanner による安全な入力処理 ===
         Scanner scanner = new Scanner(System.in);
-        System.out.print("名前を入力: ");
-        String name = scanner.nextLine();
-        System.out.print("年齢を入力: ");
-        int age = scanner.nextInt();
         
+        // 文字列入力
+        System.out.print("名前を入力してください: ");
+        String name = scanner.nextLine();
+        
+        // 整数入力（エラー処理付き）
+        int age = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            System.out.print("年齢を入力してください: ");
+            try {
+                age = scanner.nextInt();
+                scanner.nextLine(); // 改行文字を消費
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("エラー: 整数を入力してください");
+                scanner.nextLine(); // 不正な入力をクリア
+            }
+        }
+        
+        // 入力値の確認出力
         System.out.printf("%sさん（%d歳）、こんにちは！%n", name, age);
+        
+        // リソースの解放
         scanner.close();
     }
 }
 ```
+
+### Scanner クラスの高度な使い方
+
+**1. 型別の入力メソッド**：
+```java
+Scanner sc = new Scanner(System.in);
+
+// 各種データ型の入力
+int intValue = sc.nextInt();           // 整数
+double doubleValue = sc.nextDouble();  // 浮動小数点
+boolean boolValue = sc.nextBoolean();  // 真偽値
+String word = sc.next();               // 空白までの単語
+String line = sc.nextLine();           // 行全体
+```
+
+**2. 入力検証機能**：
+```java
+Scanner sc = new Scanner(System.in);
+
+// 入力可能かチェック
+if (sc.hasNextInt()) {
+    int value = sc.nextInt();
+    System.out.println("入力値: " + value);
+} else {
+    System.out.println("整数ではありません");
+    sc.next(); // 不正な入力をスキップ
+}
+```
+
+**3. 区切り文字の変更**：
+```java
+Scanner sc = new Scanner("apple,banana,orange");
+sc.useDelimiter(",");  // カンマ区切りに変更
+
+while (sc.hasNext()) {
+    System.out.println(sc.next());
+}
+// 出力: apple, banana, orange（各行）
+```
+
+### 入出力のベストプラクティス
+
+**1. エラー処理の重要性**：
+入力処理では必ず例外処理を実装し、ユーザーの誤入力に対して適切に対応することが重要です。
+
+**2. リソース管理**：
+`Scanner`などのリソースは使用後に必ず`close()`メソッドで解放します。Java 7以降では`try-with-resources`構文も使用できます：
+
+```java
+try (Scanner sc = new Scanner(System.in)) {
+    // Scannerの使用
+} // 自動的にcloseされる
+```
+
+**3. バッファリングの理解**：
+`nextInt()`などの後に`nextLine()`を使う場合、改行文字が残ることに注意が必要です。
+
+**4. ロケールへの配慮**：
+数値の書式は地域によって異なる（小数点がカンマの国もある）ため、国際化を考慮する場合は適切なロケール設定が必要です。
 
 
 
@@ -669,20 +895,143 @@ public class Calculator {
 
 **高度なメソッド活用例：**
 
+### メソッドオーバーロード（Method Overloading）
+
+メソッドオーバーロードは、Javaの最も便利な機能の一つで、**同じ名前で異なるパラメータを持つメソッドを複数定義**できる機能です。これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが大幅に向上します。
+
+**C言語との決定的な違い：**
+C言語では関数名は一意でなければならず、パラメータが違っても別の名前を付ける必要がありました：
+```c
+// C言語では別々の名前が必要
+int add_int(int a, int b);
+double add_double(double a, double b);
+int add_three_ints(int a, int b, int c);
+```
+
+一方、Javaではすべて同じ`add`という名前で定義できます：
+
 <span class="listing-number">**サンプルコード2-16**</span>
 
 ```java
-// メソッドオーバーロードの例
-public static int add(int a, int b) {
-    return a + b;
+public class OverloadExample {
+    // int型の2つの数を加算
+    public static int add(int a, int b) {
+        System.out.println("int版のaddが呼ばれました");
+        return a + b;
+    }
+    
+    // double型の2つの数を加算
+    public static double add(double a, double b) {
+        System.out.println("double版のaddが呼ばれました");
+        return a + b;
+    }
+    
+    // int型の3つの数を加算
+    public static int add(int a, int b, int c) {
+        System.out.println("3つの引数版のaddが呼ばれました");
+        return a + b + c;
+    }
+    
+    // 文字列の連結もaddという名前で提供
+    public static String add(String a, String b) {
+        System.out.println("String版のaddが呼ばれました");
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        // コンパイラが自動的に適切なメソッドを選択
+        System.out.println(add(5, 3));           // int版が呼ばれる → 8
+        System.out.println(add(5.5, 3.3));       // double版が呼ばれる → 8.8
+        System.out.println(add(1, 2, 3));        // 3つの引数版が呼ばれる → 6
+        System.out.println(add("Hello, ", "World!")); // String版が呼ばれる → Hello, World!
+    }
 }
+```
 
-public static double add(double a, double b) {
-    return a + b;
+**オーバーロードのメリット：**
+
+1. **直感的なAPI設計**：
+   - 利用者は1つのメソッド名を覚えるだけで、さまざまな状況で使える
+   - `Math.max(int, int)`、`Math.max(double, double)`、`Math.max(float, float)`など、統一的な名前で提供
+
+2. **型安全性の向上**：
+   - コンパイル時に適切なメソッドが選択されるため、型エラーが実行前に検出される
+   - C言語の可変長引数（`...`）より安全で明確
+
+3. **後方互換性の維持**：
+   - 既存のメソッドを変更せずに、新しいパラメータパターンを追加できる
+   - ライブラリの進化が容易
+
+**オーバーロードの解決規則：**
+
+Javaコンパイラは以下の順序でメソッドを選択します：
+
+<span class="listing-number">**サンプルコード2-17**</span>
+
+```java
+public class OverloadResolution {
+    public static void test(int x) {
+        System.out.println("int: " + x);
+    }
+    
+    public static void test(long x) {
+        System.out.println("long: " + x);
+    }
+    
+    public static void test(Integer x) {
+        System.out.println("Integer: " + x);
+    }
+    
+    public static void test(int... x) {
+        System.out.println("可変長引数: " + Arrays.toString(x));
+    }
+    
+    public static void main(String[] args) {
+        byte b = 10;
+        test(b);      // int版が呼ばれる（自動拡大変換）
+        test(10);     // int版が呼ばれる（完全一致）
+        test(10L);    // long版が呼ばれる（完全一致）
+        test(Integer.valueOf(10)); // Integer版が呼ばれる
+        test(1, 2, 3); // 可変長引数版が呼ばれる
+    }
 }
+```
 
-public static int add(int a, int b, int c) {
-    return a + b + c;
+**他の言語との比較：**
+
+- **Python**：デフォルト引数や`*args`、`**kwargs`で似た機能を実現するが、型による区別はできない
+- **JavaScript**：関数のオーバーロードは存在せず、引数の数や型を実行時にチェックする必要がある
+- **C++**：Javaと同様にオーバーロードをサポートするが、演算子オーバーロードも可能
+- **Go**：オーバーロードを意図的にサポートしない（シンプルさを重視）
+
+**実践的な活用例：**
+
+<span class="listing-number">**サンプルコード2-18**</span>
+
+```java
+public class StringFormatter {
+    // さまざまな型を統一的にフォーマット
+    public static String format(int value) {
+        return String.format("整数: %d", value);
+    }
+    
+    public static String format(double value) {
+        return String.format("実数: %.2f", value);
+    }
+    
+    public static String format(String value) {
+        return String.format("文字列: \"%s\"", value);
+    }
+    
+    public static String format(Date value) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return String.format("日付: %s", sdf.format(value));
+    }
+    
+    // 配列版も同じ名前で提供
+    public static String format(int[] values) {
+        return String.format("整数配列: %s", Arrays.toString(values));
+    }
 }
 ```
 
@@ -690,12 +1039,92 @@ public static int add(int a, int b, int c) {
 
 - **クラス内での定義**：Javaのメソッドは必ずクラス内に定義される必要があり、グローバル関数は存在しません。
 - **アクセス制御**：`public`、`private`などの修飾子により、メソッドの可視性を細かく制御できます。
-- **オーバーロード機能**：同じ名前で異なるパラメータを持つメソッドを複数定義でき、利便性が向上します。
+- **オーバーロード機能**：同じ名前で異なるパラメータを持つメソッドを複数定義でき、API設計の柔軟性が大幅に向上します。
 - **例外処理システム**：エラー処理がより構造化され、安全なプログラムの作成を支援します。
 
 ## 2.15 文字列処理
 
-Javaにおける文字列処理は、C言語のアプローチとは根本的に異なる設計思想にもとづいています。C言語では文字列を文字の配列として扱い、終端文字（\0）で管理していましたが、Javaでは文字列を第一級のオブジェクトとして扱います。この設計により、文字列の長さの管理、メモリの確保と解放、バッファオーバーフローの防止など、C言語で頻繁に問題となっていた課題が根本的に解決されています。さらに、豊富な文字列操作メソッドが標準で提供され、複雑な文字列処理も簡潔かつ安全に実装できるようになりました。
+### C言語とJavaの文字列処理の根本的な違い
+
+Javaにおける文字列処理は、C言語のアプローチとは根本的に異なる設計思想にもとづいています。この違いを理解することは、C言語からJavaへ移行する上で極めて重要です。
+
+**C言語の文字列処理の課題**：
+```c
+// C言語での文字列処理
+char str[100] = "Hello";
+strcat(str, " World");  // バッファオーバーフローの危険性
+int len = strlen(str);  // 毎回O(n)の計算コスト
+char *copy = malloc(len + 1);
+strcpy(copy, str);  // メモリリークの可能性
+```
+
+**Javaの文字列処理の利点**：
+```java
+// Javaでの文字列処理
+String str = "Hello";
+str = str + " World";  // 安全な連結
+int len = str.length();  // O(1)で取得
+String copy = str;  // 参照のコピー（安全）
+```
+
+### 文字列設計の重要な違い
+
+**1. メモリ管理**：
+- **C言語**: 手動でメモリ確保・解放が必要
+- **Java**: 自動メモリ管理（ガベージコレクション）
+
+**2. 安全性**：
+- **C言語**: バッファオーバーフロー、セグメンテーション違反のリスク
+- **Java**: 境界チェックにより安全性を保証
+
+**3. 文字列の表現**：
+- **C言語**: char配列 + null終端文字
+- **Java**: Stringオブジェクト（長さ情報を内部保持）
+
+**4. 文字エンコーディング**：
+- **C言語**: プラットフォーム依存（ASCII、ShiftJIS等）
+- **Java**: Unicode（UTF-16）で統一
+
+### 実践的な比較例
+
+**文字列の長さ取得**：
+```c
+// C言語 - O(n)の計算が必要
+int len = strlen(str);  // 毎回文字列を走査
+```
+
+```java
+// Java - O(1)で即座に取得
+int len = str.length();  // 内部フィールドを返すだけ
+```
+
+**文字列の比較**：
+```c
+// C言語
+if (strcmp(str1, str2) == 0) {
+    // 等しい
+}
+```
+
+```java
+// Java
+if (str1.equals(str2)) {
+    // 等しい
+}
+```
+
+**部分文字列の取得**：
+```c
+// C言語 - 手動でメモリ管理
+char sub[10];
+strncpy(sub, str + 5, 9);
+sub[9] = '\0';
+```
+
+```java
+// Java - 簡潔で安全
+String sub = str.substring(5, 14);
+```
 
 ### 文字列の基本
 
@@ -829,25 +1258,33 @@ String result = sb.toString();
 
 **現代的なプログラミング手法への接続：**
 
-今回学習した基本文法は、フレームワーク開発、Webアプリケーション構築、マイクロサービスアーキテクチャ、クラウドネイティブ開発など、現代のあらゆるJava開発の基盤となります。型安全性、例外処理、適切なメソッド設計などの概念は、企業での実際の開発において直接活用される重要なスキルです。
+今回学習した基本文法は、フレームワーク開発、Webアプリケーション構築、マイクロサービスアーキテクチャ、クラウドネイティブ開発など、現代のあらゆるJava開発の基盤となります。型安全性、適切なメソッド設計などの概念は、企業での実際の開発において直接活用される重要なスキルです。
+
+### まとめ
+
+本章で学習した内容は、Javaプログラミングの基礎を形成する重要な要素です。基本的なデータ型から始まり、制御構造、配列、メソッド、文字列処理まで、幅広い概念を学習しました。
+
+これらの概念は互いに関連し合い、より大きなプログラムを構築するための基盤となります。とくに重要なのは以下の点です：
+
+1. **型安全性**: Javaの強い型付けシステムは、多くのエラーをコンパイル時に検出し、安全なプログラムの作成を支援します
+2. **メソッドによる構造化**: 処理を適切にメソッドに分割することで、保守性と再利用性の高いコードを作成できます
+3. **文字列処理の安全性**: 不変性を持つStringクラスにより、安全で効率的な文字列操作が可能です
+
+これらの基礎をしっかりと理解することで、次章以降で学ぶオブジェクト指向プログラミング（クラス、継承、ポリモーフィズム、インターフェイスなど）の学習がスムーズに進みます。プログラミングは実践が重要ですので、各概念を学んだ後は必ず自分でコードを書いて試してみることをオススメします。
 
 
 
-次のパート：[Part D - クラスとオブジェクトの基礎](chapter02d-class-basics.md)
+次のパート：[Part D - 章末演習](chapter02d-exercises.md)
 
 
 
 
-<!-- Merged from chapter02d-class-basics.md -->
+<!-- Merged from chapter02d-exercises.md -->
 
 
-## クラスとオブジェクトの基本
+## 章末演習
 
-章末の練習課題に取り組む前に、Javaプログラミングの核心であるクラスとオブジェクトの基本的な概念と構文を理解しておきましょう。これらの概念は、オブジェクト指向プログラミングの基盤となる重要な要素です。
-
-### クラスの基本構造
-
-Javaプログラミングにおいて、すべてのコードはクラスという単位で記述されます。クラスをしばしば「設計図」にたとえることがありますが、これは建築における設計図と同じように、実際の建物（オブジェクト）を作るための詳細な仕様を定義するからです。1つの設計図から同じ構造を持つ複数の建物を建ていることができるように、1つのクラスから同じ構造を持つ複数のオブジェクトを作成できます。この関係性を理解することが、オブジェクト指向プログラミングの第一歩となります。
+本章で学んだJavaの基本文法を実践的な課題で確認しましょう。クラスをしばしば「設計図」にたとえることがありますが、これは建築における設計図と同じように、実際の建物（オブジェクト）を作るための詳細な仕様を定義するからです。1つの設計図から同じ構造を持つ複数の建物を建ていることができるように、1つのクラスから同じ構造を持つ複数のオブジェクトを作成できます。この関係性を理解することが、オブジェクト指向プログラミングの第一歩となります。
 
 #### 基本的なクラスの定義
 
@@ -1039,105 +1476,29 @@ public class BankExample {
 }
 ```
 
-### クラス設計の重要な概念
 
-#### 1. カプセル化
-
-データ（フィールド）を`private`にして外部から直接アクセスできないようにし、メソッドを通じてのみアクセスを許可する設計パターン：
-
-<span class="listing-number">**サンプルコード2-29**</span>
-
-```java
-// 悪い例（カプセル化されていない）
-public class BadExample {
-    public double balance;  // 外部から直接変更可能
-}
-
-// 良い例（カプセル化されている）
-public class GoodExample {
-    private double balance;  // 外部から直接アクセス不可
-    
-    public double getBalance() {
-        return balance;
-    }
-    
-    public void setBalance(double balance) {
-        if (balance >= 0) {  // 検証ロジック
-            this.balance = balance;
-        }
-    }
-}
-```
-
-#### 2. 情報隠蔽
-
-クラスの内部実装を隠し、必要なインターフェイスのみを公開する原則：
-
-<span class="listing-number">**サンプルコード2-30**</span>
-
-```java
-public class Calculator {
-    // 内部的な計算方法は隠蔽
-    private double internalCalculation(double a, double b) {
-        // 複雑な計算ロジック
-        return a * b * 0.95;
-    }
-    
-    // 公開インターフェース
-    public double calculate(double a, double b) {
-        return internalCalculation(a, b);
-    }
-}
-```
-
-### アクセス修飾子
-
-Javaには4つのアクセスレベルがあります：
-
-| 修飾子 | 同じクラス | 同じパッケージ | サブクラス | すべて |
-|--------|-----------|---------------|-----------|---------|
-| private | ○ | × | × | × |
-| (なし) | ○ | ○ | × | × |
-| protected | ○ | ○ | ○ | × |
-| public | ○ | ○ | ○ | ○ |
-
-### staticキーワード
-
-`static`を付けることで、クラスレベルのメンバー（クラス変数・クラスメソッド）を定義できます：
-
-<span class="listing-number">**サンプルコード2-31**</span>
-
-```java
-public class MathUtils {
-    // クラス変数
-    public static final double PI = 3.14159265359;
-    
-    // クラスメソッド
-    public static double circleArea(double radius) {
-        return PI * radius * radius;
-    }
-}
-
-// 使用例（インスタンス化不要）
-double area = MathUtils.circleArea(5.0);
-```
 
 ### まとめ
 
-本節で学習したクラスとオブジェクトの概念は、Javaプログラミングの基礎を形成する重要な要素です。クラスは、関連するデータ（フィールド）と操作（メソッド）を1つの単位にまとめた設計図として機能します。この設計図から作成されるオブジェクトは、それぞれが独立した状態を持つ実体となります。
+本章で学習した内容は、Javaプログラミングの基礎を形成する重要な要素です。基本的なデータ型から始まり、制御構造、配列、メソッド、そして文字列処理まで、幅広い概念を学習しました。
 
-フィールドはオブジェクトの状態を表現し、メソッドはその状態に対する操作を定義します。コンストラクタは、オブジェクトが作成される際に適切な初期状態を設定する重要な役割を担います。そして、カプセル化の原則により、オブジェクトの内部状態を保護し、制御された方法でのみアクセスを許可することで、プログラムの安全性と保守性を高めています。
+これらの概念は互いに関連し合い、より大きなプログラムを構築するための基盤となります。とくに重要なのは以下の点です：
 
-これらの概念は、単なる文法上の規則ではなく、現実世界の複雑な問題をプログラムで表現するための強力な道具です。銀行口座の例で見たように、実世界の概念（口座、入金、出金）をクラスとして適切にモデル化することで、理解しやすく保守しやすいプログラムを作成できます。次章以降では、これらの基本概念をさらに発展させ、継承やポリモーフィズムといった高度なオブジェクト指向の概念を学習していきます。
+1. **型安全性**: Javaの強い型付けシステムは、多くのエラーをコンパイル時に検出し、安全なプログラムの作成を支援します
+2. **制御構造**: 条件分岐と繰り返し処理を適切に組み合わせることで、複雑なロジックを表現できます
+3. **メソッド**: 処理を適切に分割することで、再利用可能で保守しやすいコードを作成できます
+4. **文字列処理**: Javaの強力な文字列処理機能により、テキストデータを効率的に扱えます
+
+これらの基礎をしっかりと理解することで、次章以降で学ぶより高度な概念（オブジェクト指向、継承、ポリモーフィズム、インターフェイスなど）の学習がスムーズに進みます。プログラミングは実践が重要ですので、各概念を学んだ後は必ず自分でコードを書いて試してみることをオススメします。
 
 
 
-次のパート：[Part E - 章末演習](chapter02e-exercises.md)
+次のパート：[Part D - 章末演習](chapter02d-exercises.md)
 
 
 
 
-<!-- Merged from chapter02e-exercises.md -->
+<!-- Merged from chapter02d-exercises.md -->
 
 
 ## 章末演習
@@ -1155,7 +1516,6 @@ double area = MathUtils.circleArea(5.0);
 - [ ] for文とwhile文の使い分けができる
 - [ ] 配列の宣言と要素へのアクセス方法を理解している
 - [ ] メソッドの定義と呼び出しができる
-- [ ] クラスの基本構造（フィールド、メソッド、コンストラクタ）を理解している
 
 ### 演習課題へのアクセス
 
@@ -1169,11 +1529,12 @@ double area = MathUtils.circleArea(5.0);
 exercises/chapter02/
 ├── basic/          # 基礎課題（必須）- まずはここから
 │   ├── README.md   # 詳細な課題説明と実装のヒント
-│   ├── Person.java
-│   └── PersonTest.java
+│   ├── DataTypeExercise.java   # データ型と変数の練習
+│   ├── ControlFlowExercise.java # 制御構造の練習
+│   └── ArrayExercise.java       # 配列の練習
 ├── advanced/       # 発展課題（推奨）- 基礎が終わったら挑戦
-│   ├── GradeManagement.java
-│   └── LibraryManagement.java
+│   ├── MethodExercise.java      # メソッドの活用
+│   └── StringExercise.java      # 文字列処理
 ├── challenge/      # チャレンジ課題（任意）- 実力を試したい方へ
 └── solutions/      # 解答例（実装後に参照）
 ```
@@ -1188,63 +1549,68 @@ exercises/chapter02/
 
 ### 基礎課題の詳細とアドバイス
 
-#### Person.java - クラスとオブジェクトの基本
-**目的**: オブジェクト指向の基本となるクラスの実装
+#### DataTypeExercise.java - データ型と変数の練習
+**目的**: Javaのデータ型と変数の扱い方を習得
 
 **実装のポイント**:
-1. **フィールドの定義**
-   - name（String型）とage（int型）をprivateで定義
-   - privateにする理由：カプセル化の実践
+1. **基本データ型の使い分け**
+   - int、double、boolean、charの適切な使用
+   - 型変換（キャスト）の練習
 
-2. **コンストラクタの実装**
-   - 引数でnameとageを受け取り、フィールドに設定
-   - thisキーワードを使ってフィールドと引数を区別
+2. **変数の宣言と初期化**
+   - ローカル変数の適切な命名
+   - 定数（final）の活用
 
-3. **ゲッター・セッターの実装**
-   - getName()、getAge()でフィールドの値を返す
-   - setAge()で年齢の妥当性をチェック（負の値は拒否）
-
-4. **挨拶メソッドの実装**
-   - greet()メソッドで自己紹介文を出力
-   - 例：「こんにちは、私の名前は〇〇です。年齢は△△歳です。」
-
-#### PersonTest.java - 作成したクラスのテスト
-**目的**: クラスの使い方とオブジェクトの操作を理解
+#### ControlFlowExercise.java - 制御構造の練習
+**目的**: 条件分岐と繰り返し処理の基本をマスター
 
 **実装のポイント**:
-1. **オブジェクトの生成**
-   - new演算子を使ってPersonオブジェクトを作成
-   - 複数のPersonオブジェクトを作成して配列で管理
+1. **条件分岐の実装**
+   - if-else文での複数条件の処理
+   - switch文を使った効率的な分岐
 
-2. **メソッドの呼び出し**
-   - 各オブジェクトのgreet()メソッドを呼び出す
-   - ゲッター・セッターを使った値の取得と変更
+2. **繰り返し処理の活用**
+   - for文での決まった回数の処理
+   - while文での条件に基づく繰り返し
+   - 拡張for文での配列の処理
+
+#### ArrayExercise.java - 配列の練習
+**目的**: 配列を使ったデータの管理と処理
+
+**実装のポイント**:
+1. **配列の基本操作**
+   - 配列の宣言、初期化、要素へのアクセス
+   - 配列の長さを使った安全な処理
+
+2. **配列を使った計算**
+   - 合計、平均、最大値、最小値の算出
+   - ソートや検索の基本アルゴリズム
 
 ### 発展課題へのステップアップ
 
 基礎課題を完了したら、より実践的な発展課題に挑戦しましょう：
 
-#### GradeManagement.java - 成績管理システム
+#### MethodExercise.java - メソッドの活用
 **必要な知識**:
-- 配列を使った複数データの管理
-- 繰り返し処理による集計
-- 条件分岐による成績判定
+- メソッドの定義と呼び出し
+- パラメータと戻り値
+- メソッドのオーバーロード
 
 **実装のヒント**:
-- 学生の名前と点数を管理するクラスを作成
-- 平均点、最高点、最低点を計算するメソッドを実装
-- 成績をA〜Fで判定するメソッドを追加
+- 計算処理を複数のメソッドに分割
+- 共通処理をメソッドとして抽出
+- 同じ名前で異なるパラメータのメソッドを作成
 
-#### LibraryManagement.java - 図書管理システム
+#### StringExercise.java - 文字列処理
 **必要な知識**:
-- 複数のクラスの連携
-- オブジェクトの配列
-- 検索と状態管理
+- Stringクラスの各種メソッド
+- StringBuilderの活用
+- 文字列の検索と置換
 
 **実装のヒント**:
-- Bookクラス（書名、著者、貸出状態）を作成
-- Libraryクラスで複数の本を管理
-- 貸出・返却メソッドの実装
+- 文字列の分割と結合
+- 大文字・小文字の変換
+- パターンマッチングの基礎
 
 ### よくあるつまずきポイントと解決策
 
@@ -1274,15 +1640,15 @@ exercises/chapter02/
 余裕がある方は、以下の追加課題にも挑戦してみましょう：
 
 1. **データ検証の強化**
-   - 年齢の上限チェック（150歳以下）
-   - 名前の空文字チェック
+   - 数値入力の範囲チェック
+   - 文字列の妥当性検証（空文字、長さ制限など）
 
 2. **機能の拡張**
-   - 誕生日から年齢を自動計算
-   - 複数人の情報を年齢順にソート
+   - 配列データの高度な処理（ソート、検索、フィルタリング）
+   - メソッドを活用した再利用可能なコード
 
-3. **ファイル入出力**（第3章の内容を先取り）
-   - 人物情報をファイルに保存
-   - ファイルから読み込んで復元
+3. **総合演習**
+   - 複数の概念を組み合わせた実践的なプログラム
+   - 例：簡単な計算機、テキスト解析ツールなど
 
-**次のステップ**: 基礎課題が完了したら、第3章「オブジェクト指向プログラミングの基礎」に進みましょう。第3章では、カプセル化、継承、ポリモーフィズムといったオブジェクト指向の核心概念を学びます。
+**次のステップ**: 基礎課題が完了したら、第3章「オブジェクト指向プログラミングの基礎」に進みましょう。第3章では、クラスとオブジェクト、カプセル化、継承、ポリモーフィズムといったオブジェクト指向の核心概念を学びます。
