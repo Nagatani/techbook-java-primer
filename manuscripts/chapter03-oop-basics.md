@@ -62,74 +62,18 @@
 
 ## 章の構成
 
-本章は、オブジェクト指向プログラミングの基礎から実践まで、段階的に学習できるよう構成されています：
+本章では、オブジェクト指向プログラミングの基本的な考え方と実装方法を学習します。プログラミングパラダイムの歴史的な発展を理解した上で、以下の内容を順に学んでいきます：
 
-### [Part A: 導入](chapter03a-oop-introduction.md)
-- オブジェクト指向が生まれた背景
-- ソフトウェア開発の課題とさまざまな解決アプローチ
-- オブジェクト指向の基本的な考え方と適用場面
+1. **オブジェクト指向の背景** - ソフトウェア開発の課題と解決アプローチ
+2. **オブジェクト指向の基本概念** - 手続き型との違いと3つの基本原則
+3. **クラスとオブジェクト** - 設計図と実体の関係性
+4. **カプセル化の実践** - データ保護とアクセス制御
+5. **静的メンバー** - クラスレベルの共有データと処理
+6. **配列の活用** - データの集合を効率的に管理
 
-### [Part B: オブジェクト指向の基本概念](chapter03b-oop-concepts.md)
-- 手続き型とオブジェクト指向の違い
-- オブジェクト指向の3つの基本原則
-- クラスの作成と基本構造
-- 実用的なクラス設計例
+オブジェクト指向は、大規模なソフトウェア開発において威力を発揮する**一つの有効なアプローチ**です。その考え方と実装技術を実践的に身につけていきます。
 
-### [Part C: クラスとオブジェクトの詳細](chapter03c-classes-and-objects.md)
-- オブジェクト指向の重要な用語と概念
-- クラス、インスタンス、オブジェクトの関係
-- カプセル化の実践
-- アクセス修飾子の段階的理解
-
-### [Part D: Java言語の基礎](chapter03d-java-basics.md)
-- 型とリテラル
-- プリミティブ型と参照型
-- 型変換とラッパクラス
-
-### [Part E: 演算子と式](chapter03e-operators.md)
-- 代入演算子と算術演算子
-- 比較演算子と論理演算子
-- インクリメント・デクリメント
-- 文字列との連結
-
-### [Part F: 制御構造](chapter03f-control-structures.md)
-- if文による条件分岐
-- switch文による複数の選択肢の比較
-- while、do-while、forによる繰り返し
-- break、continueによる制御
-
-### [Part G: 配列と文字列](chapter03g-arrays-strings.md)
-- 文字列の作成と操作（作成予定）
-- 文字列の比較と検索（作成予定）
-
-### [Part H: static修飾子](chapter03h-static-modifier.md)
-- インスタンスメンバーとクラスメンバー
-- staticフィールドとstaticメソッド
-- staticの実用的な使用例
-
-### [Part I: 配列](chapter03i-arrays.md)
-- 配列の宣言と領域確保
-- 多次元配列
-- 配列の実践的な使用例
-
-### [Part J: 章末演習](chapter03j-exercises.md)
-- メソッド作成練習
-- テストの点数管理クラス
-- 車の燃料消費シミュレータ
-
-## 学習の進め方
-
-1. Part A-Cでオブジェクト指向の基本概念を理解
-2. Part D-FでJava言語の基本文法を習得
-3. Part G-Iで実践的なプログラミング技術を学習
-4. Part Jの演習課題で理解を深める
-
-各パートは独立して読むことも可能ですが、順番に学習することで、オブジェクト指向プログラミングの全体像を体系的に理解できるよう設計されています。
-
-<!-- Merged from chapter03a-oop-introduction.md -->
-
-
-## 始めに：オブジェクト指向が生まれた背景
+## はじめに：オブジェクト指向が生まれた背景
 
 前章では、Javaの歴史的背景と特徴について学習しました。本章では、Javaの核心となる「オブジェクト指向プログラミング」について学習します。
 
@@ -237,12 +181,10 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 
 
 
-次のパート：[Part B - オブジェクト指向の基本概念](chapter03b-oop-concepts.md)
 
 
 
 
-<!-- Merged from chapter03b-oop-concepts.md -->
 
 
 ## 2.3 オブジェクト指向の基本概念を実際のコードで理解する
@@ -655,16 +597,13 @@ public class ShoppingCart {
 3. **オブジェクトの生成と操作**：newキーワードでインスタンスを生成し、メソッドを通じて操作
 4. **現実世界のモデリング**：実世界の概念をクラスとして表現
 
-次のパートでは、より詳細なクラスの機能について学習します。
-
-
-
-次のパート：[Part C - クラスとオブジェクト](chapter03c-classes-and-objects.md)
 
 
 
 
-<!-- Merged from chapter03c-classes-and-objects.md -->
+
+
+
 
 
 ## 2.4 オブジェクト指向の重要な用語と概念
@@ -1161,12 +1100,10 @@ public class BankAccountV3 {
 
 
 
-次のパート：[Part D - Java言語の基礎](chapter03d-java-basics.md)
 
 
 
 
-<!-- Merged from chapter03d-java-basics.md -->
 
 
 ここから、Javaを使ったオブジェクト指向プログラミングを学びますが、そもそもそれ以前に、Javaというプログラミング言語の基本構文について学びましょう。
@@ -1341,12 +1278,10 @@ String binaryStr = Integer.toBinaryString(42); // "101010"
 
 
 
-次のパート：[Part E - 演算子と式](chapter03e-operators.md)
 
 
 
 
-<!-- Merged from chapter03e-operators.md -->
 
 
 ## 3.2 演算子
@@ -1542,12 +1477,10 @@ System.out.println("文字列と数値を結合すると..." + a + b);
 
 
 
-次のパート：[Part F - 制御構造](chapter03f-control-structures.md)
 
 
 
 
-<!-- Merged from chapter03f-control-structures.md -->
 
 
 ## 3.3 制御構造
@@ -2181,12 +2114,10 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 
 
 
-次のパート：[Part G - 配列と文字列](chapter03g-arrays-strings.md)
 
 
 
 
-<!-- Merged from chapter03h-static-modifier.md -->
 
 
 ## 3.5 static修飾子：インスタンス不要の共有メンバー
@@ -2410,12 +2341,10 @@ public class DatabaseConnection {
 
 
 
-次のパート：[Part I - 配列](chapter03i-arrays.md)
 
 
 
 
-<!-- Merged from chapter03i-arrays.md -->
 
 
 ## 3.6 配列：要素を効率的に管理する
@@ -2662,12 +2591,10 @@ System.out.println(arr1[0]);  // 99と表示される
 
 
 
-次のパート：[Part J - 章末演習](chapter03j-exercises.md)
 
 
 
 
-<!-- Merged from chapter03j-exercises.md -->
 
 
 ## 3.7 章末演習
