@@ -70,6 +70,7 @@ Java 8でラムダ式が導入される前、その場限りのインターフ�
 まず、最も簡単な例でラムダ式の基本を理解しましょう。Runnableインターフェイスを使った例を見てみます：
 
 <span class="listing-number">**サンプルコード13-1**</span>
+
 ```java
 // 従来の匿名クラスを使った方法
 Runnable task1 = new Runnable() {
@@ -90,6 +91,7 @@ task2.run();  // Hello from lambda!
 ラムダ式は、匿名クラスの冗長な記述を大幅に簡略化します。`() ->` が「引数なしで何かを実行する」という意味になります。
 
 <span class="listing-number">**サンプルコード13-2**</span>
+
 ```java
 // 匿名クラスを使ったボタンのクリック処理
 button.addActionListener(new ActionListener() {
@@ -117,6 +119,7 @@ button.addActionListener(new ActionListener() {
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化し、様々な具体的な処理を統一的に扱うことができます。以下の例では、取引戦略の評価とリスク管理を高階関数として実装しています。
 
 <span class="listing-number">**サンプルコード13-20**</span>
+
 ```java
 public class HigherOrderFunctions {
     // 高階関数によるリスク管理の抽象化
@@ -154,6 +157,7 @@ public class HigherOrderFunctions {
 ### カリー化の実装例：通貨変換
 
 <span class="listing-number">**サンプルコード13-3**</span>
+
 ```java
 public class CurrencyConverter {
     // 通常の2引数から3引数の変換で、通貨レートを適用
@@ -185,6 +189,7 @@ public class CurrencyConverter {
 **モナドの実践例：Optionalを使ったエラーハンドリング**
 
 <span class="listing-number">**サンプルコード13-4**</span>
+
 ```java
 public class UserService {
     // モナドを使わない場合
@@ -229,6 +234,7 @@ public class UserService {
 **アンチパターン1: 過度なラムダネスト**
 
 <span class="listing-number">**サンプルコード13-5**</span>
+
 ```java
 // 悪い例：読みづらいネストされたラムダ
 result = list.stream()
@@ -254,6 +260,7 @@ private Item transformItem(Item x) {
 **アンチパターン2: 副作用の濫用**
 
 <span class="listing-number">**サンプルコード13-6**</span>
+
 ```java
 // 悪い例：ラムダ内で外部状態を変更
 List<String> results = new ArrayList<>();
@@ -274,6 +281,7 @@ List<String> results = items.stream()
 Netflixは1日に数十億のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用：
 
 <span class="listing-number">**サンプルコード13-7**</span>
+
 ```java
 // 従来の同期的アプローチ（スケールしない）
 public class VideoRecommendationService {
@@ -318,6 +326,7 @@ public class ReactiveVideoRecommendationService {
 **1. リトライとサーキットブレーカー**
 
 <span class="listing-number">**サンプルコード13-8**</span>
+
 ```java
 public class ResilientService {
     // 関数型リトライメカニズム
@@ -330,6 +339,7 @@ public class ResilientService {
 イベント駆動アーキテクチャにおいて、関数型プログラミングは特に有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
 <span class="listing-number">**サンプルコード13-25**</span>
+
 ```java
 public class EventProcessor {
     private final Map<Class<?>, List<Consumer<Object>>> handlers = new ConcurrentHashMap<>();
@@ -397,6 +407,7 @@ public class EventProcessor {
 **2. 関数合成によるミドルウェアパターン**
 
 <span class="listing-number">**サンプルコード13-9**</span>
+
 ```java
 public class MiddlewareChain {
     // HTTPリクエスト処理のミドルウェア
@@ -418,6 +429,7 @@ public class MiddlewareChain {
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
 <span class="listing-number">**サンプルコード13-23**</span>
+
 ```java
 // データ処理の基本的なテンプレート
 public class DataProcessingTemplate {
@@ -489,6 +501,7 @@ public class DataProcessingTemplate {
 **3. イベントソーシングとCQRS**
 
 <span class="listing-number">**サンプルコード13-10**</span>
+
 ```java
 public class EventSourcedAccount {
     // イベントの定義
@@ -500,6 +513,7 @@ public class EventSourcedAccount {
 従来のファクトリーパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
 
 <span class="listing-number">**サンプルコード13-24**</span>
+
 ```java
 // 関数型ファクトリパターン
 public class ProcessorFactory {
@@ -560,6 +574,7 @@ public class ProcessorFactory {
 **ラムダ式の内部実装とメモリ使用**
 
 <span class="listing-number">**サンプルコード13-11**</span>
+
 ```java
 public class LambdaPerformance {
     // ラムダ式のキャプチャによるメモリ影響
@@ -599,6 +614,7 @@ public class LambdaPerformance {
 ### 実践的なデザインパターン：関数型ビルダ
 
 <span class="listing-number">**サンプルコード13-12**</span>
+
 ```java
 public class FunctionalBuilder {
     // 従来のビルダーパターン
@@ -644,6 +660,7 @@ public class FunctionalBuilder {
 設定やコンフィギュレーションを構築する際、関数型ビルダーパターンは特に威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
 
 <span class="listing-number">**サンプルコード13-27**</span>
+
 ```java
 public class ConfigurationBuilder {
     public static class DatabaseConfig {
@@ -690,6 +707,7 @@ public class ConfigurationBuilder {
 **高頻度取引（HFT）システムでの関数型アプローチ**
 
 <span class="listing-number">**サンプルコード13-13**</span>
+
 ```java
 public class TradingSystem {
     // マーケットデータのストリーム処理
@@ -705,6 +723,7 @@ public class TradingSystem {
 複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
 
 <span class="listing-number">**サンプルコード13-26**</span>
+
 ```java
 public class BusinessLogicProcessor {
     // 純粋関数による価格計算
@@ -772,6 +791,7 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 データ並び替え処理において、Comparatorインターフェイスは可読性と性能の両方を向上させる重要な機能です。従来の冗長なComparable実装に比べて、ラムダ式を使ったComparatorは処理の意図を明確にし、複雑な並び替え条件も直感的に表現できます。特に、コレクションのソート処理でその威力を発揮し、ビジネスロジックに集中できる簡潔なコードを実現します。
 
 <span class="listing-number">**サンプルコード13-18**</span>
+
 ```java
 // 従来の方法：冗長で理解しにくい
 Collections.sort(students, new Comparator<Student>() {
@@ -791,6 +811,7 @@ students.sort(Comparator.comparing(Student::getName));
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
 <span class="listing-number">**サンプルコード13-14**</span>
+
 ```java
 @FunctionalInterface
 interface MyFunction {
@@ -823,6 +844,7 @@ public class Main {
 実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
 
 <span class="listing-number">**サンプルコード13-19**</span>
+
 ```java
 // 学年で並び替え、同じ学年の場合は名前で並び替え、
 // さらに同名の場合は学生番号で並び替え
@@ -860,6 +882,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（二項演算） |
 
 <span class="listing-number">**サンプルコード13-15**</span>
+
 ```java
 import java.util.function.*;
 
@@ -896,6 +919,7 @@ public class StandardFunctionalInterfaces {
 | **コンストラクタ参照** | `クラス名::new` | `() -> new ArrayList<>()` |
 
 <span class="listing-number">**サンプルコード13-16**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -913,6 +937,7 @@ public class MethodReferenceExample {
 並行処理において、ラムダ式は特に威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。特に、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 
 <span class="listing-number">**サンプルコード13-21**</span>
+
 ```java
 // ExecutorServiceとラムダ式の組み合わせ
 ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -953,6 +978,7 @@ try {
 メソッド参照は、既存のメソッドを呼び出すだけのラムダ式をより簡潔に表現する方法です。特に、Streamのmap操作やcollect操作でよく使われ、コードの意図をより明確に示すことができます。
 
 <span class="listing-number">**サンプルコード13-22**</span>
+
 ```java
 // ラムダ式 vs メソッド参照の比較
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
@@ -991,6 +1017,7 @@ List<Person> people = names.stream()
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 
 <span class="listing-number">**サンプルコード13-17**</span>
+
 ```java
 public class ThreadLambdaExample {
     public static void main(String[] args) {
@@ -1030,6 +1057,7 @@ public class ThreadLambdaExample {
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
 <span class="listing-number">**サンプルコード13-28**</span>
+
 ```java
 public class ValidationFramework {
     // 基本的なバリデーション関数

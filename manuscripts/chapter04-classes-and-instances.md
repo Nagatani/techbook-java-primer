@@ -61,6 +61,7 @@
 これらの原則を基に、本章では以下の観点からクラス設計をさらに深めていきます：
 
 <span class="listing-number">**サンプルコード4-1**</span>
+
 ```java
 // 使用例：第3章のBankAccountV3クラスを使った実例
 public class BankAccountDemo {
@@ -165,6 +166,7 @@ Javaのアクセス制御は、カプセル化を実現する上で最も重要�
 
 **`private`の使用例**：
 <span class="listing-number">**サンプルコード4-2**</span>
+
 ```java
 public class BankAccount {
     private double balance;      // 外部から直接変更不可
@@ -185,6 +187,7 @@ public class BankAccount {
 
 **パッケージプライベート（デフォルト）の使用例**：
 <span class="listing-number">**サンプルコード4-3**</span>
+
 ```java
 package com.example.internal;
 
@@ -207,6 +210,7 @@ class ProcessorHelper {
 
 **`protected`の使用例**：
 <span class="listing-number">**サンプルコード4-4**</span>
+
 ```java
 package com.example.base;
 
@@ -234,6 +238,7 @@ public class Car extends Vehicle {
 
 **`public`の使用例**：
 <span class="listing-number">**サンプルコード4-5**</span>
+
 ```java
 public class MathUtils {
     public static final double PI = 3.14159;  // 公開定数
@@ -253,6 +258,7 @@ public class MathUtils {
 getter/setterメソッド（アクセサメソッドとも呼ばれます）は、カプセル化の実装において中心的な役割を果たします。単にフィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軟性を提供します。以下の例では、プライベートフィールドへの安全なアクセスを提供する標準的なパターンを示します：
 
 <span class="listing-number">**サンプルコード4-6**</span>
+
 ```java
 public class Product {
     private String name;
@@ -289,6 +295,7 @@ public class Product {
 オブジェクト指向プログラミングにおいて、オブジェクトの状態を常に有効に保つことは極めて重要です。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。適切なデータ検証を実装することで、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します：
 
 <span class="listing-number">**サンプルコード4-7**</span>
+
 ```java
 public class Employee {
     private String name;
@@ -324,6 +331,7 @@ public class Employee {
 第3章で学習したBankAccountの段階的な改善（V1→V2→V3）を踏まえて、本章では更に高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です：
 
 <span class="listing-number">**サンプルコード4-8**</span>
+
 ```java
 // 第3章のBankAccountV3をさらに発展させた設計例
 public class EnhancedBankAccount extends BankAccountV3 {
@@ -429,6 +437,7 @@ Javaにおけるパッケージは、関連するクラスやインターフェ�
 Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています：
 
 <span class="listing-number">**サンプルコード4-9**</span>
+
 ```java
 // ドメイン名: example.com
 // パッケージ名: com.example.プロジェクト名.モジュール名
@@ -469,6 +478,7 @@ src/
 パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します：
 
 <span class="listing-number">**サンプルコード4-10**</span>
+
 ```java
 // 完全限定名での使用
 java.util.List<String> names = new java.util.ArrayList<>();
@@ -494,6 +504,7 @@ import java.util.*;  // java.utilパッケージのすべてのクラスをイ�
 
 3. **静的インポート**：
 <span class="listing-number">**サンプルコード4-11**</span>
+
 ```java
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
@@ -507,6 +518,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です：
 
 <span class="listing-number">**サンプルコード4-12**</span>
+
 ```java
 import java.util.*;
 import java.awt.*;
@@ -531,6 +543,7 @@ public class Example {
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます：
 
 <span class="listing-number">**サンプルコード4-13**</span>
+
 ```java
 com.example.myapp/
 ├── model/          // ドメインモデル（エンティティ）

@@ -53,6 +53,7 @@ Javadocコメントは `/**` で始まり、`*/` で終わります。クラス�
 以下の例では、メソッドに対する完全なJavadocコメントの記述方法を示します。最初の行は概要説明、HTMLタグを使った詳細説明、そして様々なJavadocタグによる構造化された情報が含まれています。
 
 <span class="listing-number">**サンプルコード22-1**</span>
+
 ```java
 /**
  * 2つの整数の和を計算して返します。
@@ -93,6 +94,7 @@ public int add(int a, int b) {
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクタ、メソッドに至るまで、包括的なドキュメントを提供しています。
 
 <span class="listing-number">**サンプルコード22-2**</span>
+
 ```java
 /**
  * タスク管理システムのコアクラスです。
@@ -317,6 +319,7 @@ Java仮想マシン（JVM）がプログラムの実行時に必要なクラス�
 以下の例では、Gsonの高度な機能を示します。@SerializedNameアノテーションによるJSONフィールド名のカスタマイズ、@Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、実務でよく使われるパターンを網羅しています。
 
 <span class="listing-number">**サンプルコード22-3**</span>
+
 ```java
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -409,6 +412,7 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。高速�
 Jacksonはエンタープライズアプリケーションで広く使われている高性能JSONライブラリです。以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
 <span class="listing-number">**サンプルコード22-4**</span>
+
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -508,6 +512,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
 
 <span class="listing-number">**サンプルコード22-5**</span>
+
 ```java
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -598,6 +603,7 @@ public class CommonsLangExample {
 Apache Commons I/Oは、ファイルやストリームの操作を大幅に簡略化するライブラリです。Java標準APIでは何行も必要なファイル操作が、1行で実装できます。以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、実務で頻繁に使用される機能を紹介します。
 
 <span class="listing-number">**サンプルコード22-6**</span>
+
 ```java
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -681,6 +687,7 @@ OkHttpは、効率的なHTTP通信を行うためのライブラリです。
 OkHttpはSquare社が開発した高性能なHTTPクライアントライブラリで、コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
 <span class="listing-number">**サンプルコード22-7**</span>
+
 ```java
 import okhttp3.*;
 import java.io.IOException;
@@ -781,6 +788,7 @@ Lombokは、アノテーションを使ってゲッタ、セッタ、コンス�
 Lombokはコンパイル時にアノテーションを処理し、ボイラープレートコードを自動生成する革新的なライブラリです。@Dataアノテーション一つでゲッタ、セッタ、equals、hashCode、toStringメソッドが自動生成されます。以下の例では、主要なアノテーションの使用方法を示します。
 
 <span class="listing-number">**サンプルコード22-8**</span>
+
 ```java
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -883,6 +891,7 @@ GoogleのGuavaライブラリは、コレクション、キャッシュ、文字
 GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。不変コレクション、Multimap、BiMap、Table、強力な文字列処理、キャッシュ機能など、実用的な機能が豊富に含まれています。以下の例では、これらの主要機能の使用方法を示します。
 
 <span class="listing-number">**サンプルコード22-9**</span>
+
 ```java
 import com.google.common.collect.*;
 import com.google.common.base.*;
@@ -981,6 +990,7 @@ public class GuavaExample {
 
 #### 2. ライセンスの確認
 <span class="listing-number">**サンプルコード22-10**</span>
+
 ```java
 // pom.xmlでライセンスを確認
 <licenses>
@@ -1105,6 +1115,7 @@ public class GuavaExample {
 ### 実践的な開発フロー
 
 <span class="listing-number">**サンプルコード22-11**</span>
+
 ```java
 // 1. プロジェクトの初期化（Maven）
 mvn archetype:generate -DgroupId=com.example -DartifactId=myapp
@@ -1127,6 +1138,7 @@ mvn versions:display-dependency-updates
 よくある問題と解決方法：
 
 <span class="listing-number">**サンプルコード22-12**</span>
+
 ```java
 // 1. 依存関係の競合
 // 解決策: 明示的にバージョンを指定

@@ -29,6 +29,7 @@
 最初のプログラミングパラダイムは、コンピュータのハードウェアアーキテクチャを直接反映した命令型プログラミングでした。
 
 <span class="listing-number">**リストAB-1**</span>
+
 ```java
 // 命令型スタイル：状態の変更を通じて計算を表現
 int sum = 0;
@@ -41,6 +42,7 @@ for (int i = 1; i <= 10; i++) {
 ダイクストラの「GOTO文有害論」をきっかけに、プログラムの制御フローを構造化する動きが生まれました。
 
 <span class="listing-number">**リストAB-2**</span>
+
 ```java
 // 構造化プログラミング：制御構造の明確化
 public int calculateSum(int n) {
@@ -59,6 +61,7 @@ public int calculateSum(int n) {
 Simulaに始まり、Smalltalk、C++、Javaへと発展したオブジェクト指向は、データと処理を一体化する革新的なアプローチでした。
 
 <span class="listing-number">**リストAB-3**</span>
+
 ```java
 // オブジェクト指向：データと振る舞いのカプセル化
 public class Counter {
@@ -78,6 +81,7 @@ public class Counter {
 数学的な関数の概念に基づく関数型プログラミングは、LISPから始まり、ML、Haskell、そして現代のマルチパラダイム言語へと発展しました。
 
 <span class="listing-number">**リストAB-4**</span>
+
 ```java
 // 関数型スタイル：副作用のない関数の組み合わせ
 IntStream.rangeClosed(1, 10)
@@ -112,6 +116,7 @@ f: A → B
 これは、集合Aの各要素を集合Bの要素に対応付ける規則を表します。
 
 <span class="listing-number">**リストAB-5**</span>
+
 ```java
 // 数学的関数の実装例
 Function<Integer, Integer> square = x -> x * x;
@@ -123,6 +128,7 @@ Function<Integer, Integer> square = x -> x * x;
 関数型プログラミングの強力な特性の1つは、関数の合成可能性です：
 
 <span class="listing-number">**リストAB-6**</span>
+
 ```java
 // 関数の合成：(f ∘ g)(x) = f(g(x))
 Function<Integer, Integer> addOne = x -> x + 1;
@@ -158,6 +164,7 @@ System.out.println(multiplyThenAddOne.apply(3));    // (3 * 2) + 1 = 7
 3. **適用**：M N（関数Mに引数Nを適用）
 
 <span class="listing-number">**リストAB-7**</span>
+
 ```java
 // ラムダ計算の基本形式をJavaで表現
 
@@ -177,6 +184,7 @@ int result = increment.apply(5); // 6
 カリー化は、複数引数の関数を単一引数の関数の連鎖に変換する技法です：
 
 <span class="listing-number">**リストAB-8**</span>
+
 ```java
 // 通常の2引数関数
 BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
@@ -222,6 +230,7 @@ System.out.println(withTax.apply(100.0)); // 110.0
 これは、関数適用時に引数を代入することを表します：
 
 <span class="listing-number">**リストAB-9**</span>
+
 ```java
 // ベータ簡約の例
 // (λx.x * x) 5 → 5 * 5 → 25
@@ -248,6 +257,7 @@ int result2 = twice.apply(increment).apply(5); // 7
 ラムダ計算では、自然数も関数として表現できます（チャーチ数）：
 
 <span class="listing-number">**リストAB-10**</span>
+
 ```java
 // チャーチ数の実装
 interface ChurchNumeral {
@@ -317,6 +327,7 @@ System.out.println(toInt(succ(two)));   // 3
 4. **恒等射（Identity）**：各対象に対する恒等関数
 
 <span class="listing-number">**リストAB-11**</span>
+
 ```java
 // Javaにおける圏の要素
 
@@ -344,6 +355,7 @@ Function<A, A> idA = Function.identity();
 2. **単位法則**：`id ∘ f = f` かつ `f ∘ id = f`
 
 <span class="listing-number">**リストAB-12**</span>
+
 ```java
 // 結合法則の検証
 Function<Integer, Integer> f = x -> x + 1;
@@ -394,6 +406,7 @@ System.out.println(fWithId2.apply(5)); // 6
 JavaのOptionalはモナドの性質を持っています：
 
 <span class="listing-number">**リストAB-13**</span>
+
 ```java
 // Optionalモナドの実装例
 
@@ -438,6 +451,7 @@ System.out.println(assoc1.equals(assoc2)); // true
 独自のモナドを実装する例：
 
 <span class="listing-number">**リストAB-14**</span>
+
 ```java
 // Resultモナド：成功/失敗を表現
 public abstract class Result<T> {
@@ -541,6 +555,7 @@ public class ResultMonadExample {
 JavaのStreamもモナド的な性質を持っています：
 
 <span class="listing-number">**リストAB-15**</span>
+
 ```java
 // Streamモナドの例
 
@@ -596,6 +611,7 @@ asciiCodes.forEach(System.out::println); // 65, 66
 ### 6.3 Javaにおけるファンクタの実装
 
 <span class="listing-number">**リストAB-16**</span>
+
 ```java
 // ファンクタインターフェイス
 public interface Functor<T> {
@@ -669,6 +685,7 @@ public class FunctorLawsTest {
 ### 6.4 二重ファンクタとトラバース
 
 <span class="listing-number">**リストAB-17**</span>
+
 ```java
 // 二重ファンクタの扱い
 public class BiFunctor {
@@ -746,6 +763,7 @@ Java 8は、関数型プログラミングの要素を大幅に取り入れま�
 ### 7.2 高階関数の実装パターン
 
 <span class="listing-number">**リストAB-18**</span>
+
 ```java
 public class HigherOrderFunctions {
     
@@ -799,6 +817,7 @@ public class HigherOrderFunctions {
 ### 7.3 遅延評価の実装
 
 <span class="listing-number">**リストAB-19**</span>
+
 ```java
 public class LazyEvaluation {
     
@@ -903,6 +922,7 @@ public class LazyEvaluation {
 関数型プログラミングの応用例として、パーサーコンビネータを実装します：
 
 <span class="listing-number">**リストAB-20**</span>
+
 ```java
 public class ParserCombinator {
     
@@ -1029,6 +1049,7 @@ public class ParserCombinator {
 ### 8.2 代数的データ型の実装
 
 <span class="listing-number">**リストAB-21**</span>
+
 ```java
 // sealed classを使った代数的データ型
 public sealed interface Expression {
@@ -1133,6 +1154,7 @@ public class AlgebraicDataTypeExample {
 ### 8.3 効果システムの実装
 
 <span class="listing-number">**リストAB-22**</span>
+
 ```java
 // IOモナドの簡易実装
 public abstract class IO<T> {

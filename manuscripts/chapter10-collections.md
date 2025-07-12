@@ -26,6 +26,7 @@
 まず、配列を使った簡単な例から始めましょう：
 
 <span class="listing-number">**サンプルコード10-1**</span>
+
 ```java
 // 学生の名前を管理するプログラム
 public class StudentManager {
@@ -55,6 +56,7 @@ public class StudentManager {
 新学期になって6人目の学生が転入してきたらどうしましょう？配列のサイズは作成時に決まるため、後から変更できません：
 
 <span class="listing-number">**サンプルコード10-2**</span>
+
 ```java
 String[] students = new String[5];
 // ... 5人分のデータを登録 ...
@@ -65,6 +67,7 @@ students[5] = "山田";  // ArrayIndexOutOfBoundsException!
 従来の解決方法は、より大きな配列を作り直してコピーすることでした：
 
 <span class="listing-number">**サンプルコード10-3**</span>
+
 ```java
 // 面倒な配列の拡張処理
 String[] newStudents = new String[10];  // 大きめの配列を作成
@@ -80,6 +83,7 @@ students[5] = "山田";    // やっと6人目を追加できる
 転校した学生のデータを削除する場合も複雑です：
 
 <span class="listing-number">**サンプルコード10-4**</span>
+
 ```java
 // 鈴木さん（インデックス2）が転校
 students[2] = null;  // nullを代入しても...
@@ -99,6 +103,7 @@ students[students.length - 1] = null;
 よく使う操作も自分で実装する必要があります：
 
 <span class="listing-number">**サンプルコード10-5**</span>
+
 ```java
 // 特定の学生が在籍しているか確認
 boolean found = false;
@@ -123,6 +128,7 @@ for (String student : students) {
 これらの問題を解決するために、Javaはコレクションフレームワークを提供しています。同じ学生管理プログラムをArrayListで書き直してみましょう：
 
 <span class="listing-number">**サンプルコード10-6**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -200,6 +206,7 @@ Listは順序を保持し、インデックスによるアクセスが可能な�
 ### ArrayList vs LinkedList
 
 <span class="listing-number">**サンプルコード10-7**</span>
+
 ```java
 // ArrayList: 内部的に配列を使用
 List<String> arrayList = new ArrayList<>();
@@ -220,6 +227,7 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入が高速
 ### 主な操作
 
 <span class="listing-number">**サンプルコード10-8**</span>
+
 ```java
 List<String> list = new ArrayList<>();
 
@@ -254,6 +262,7 @@ Setは重複要素を許さないコレクションです。数学的な集合�
 Setの実装クラスは、内部構造の違いにより異なる特性を持ちます。データの順序が重要かどうか、検索や挿入の頻度、ソートが必要かどうかを考慮して選択します。
 
 <span class="listing-number">**サンプルコード10-9**</span>
+
 ```java
 // HashSet: ハッシュテーブルを使用（順序は保証されない）
 Set<Integer> hashSet = new HashSet<>();
@@ -287,6 +296,7 @@ linkedHashSet.add(2);
 Setは数学の集合論に基づく演算を簡単に実装できます。これらの演算は、データ分析、権限管理、フィルタリング処理などで頻繁に使用されます。例えば、ユーザーの権限セットとアクセス要求権限セットの積集合を求めることで、実際にアクセス可能な機能を判定できます。
 
 <span class="listing-number">**サンプルコード10-10**</span>
+
 ```java
 Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
 Set<String> set2 = new HashSet<>(Arrays.asList("B", "C", "D"));
@@ -315,6 +325,7 @@ Mapはキーと値のペアを管理するデータ構造です。辞書やハ�
 Map実装の選択は、データ量、検索頻度、順序の重要性によって決まります。辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装し、一般的なデータ検索ではHashMapで最高速度を実現します。
 
 <span class="listing-number">**サンプルコード10-11**</span>
+
 ```java
 // HashMap: 高速な検索・挿入（順序は保証されない）
 Map<String, Integer> hashMap = new HashMap<>();
@@ -343,6 +354,7 @@ linkedHashMap.putAll(hashMap);
 Mapは辞書的なデータ管理の核となる操作を提供します。基本的なCRUD操作（Create, Read, Update, Delete）に加え、キーや値の存在確認、全要素の走査など、実用的なメソッドが豊富に用意されています。
 
 <span class="listing-number">**サンプルコード10-12**</span>
+
 ```java
 Map<String, String> map = new HashMap<>();
 
@@ -384,6 +396,7 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 イテレータ（Iterator）は、コレクションの要素を順次アクセスするための統一されたインターフェイスです。for-each文は内部的にイテレータを使用しているため、理解しておくことで、より柔軟なコレクション操作が可能になります。特に、走査中に要素を削除する必要がある場合には、イテレータが不可欠です。
 
 <span class="listing-number">**サンプルコード10-13**</span>
+
 ```java
 List<String> list = Arrays.asList("A", "B", "C");
 
@@ -415,6 +428,7 @@ while (iter2.hasNext()) {
 拡張for文（for-each文）は、Java 5で導入された簡潔で読みやすいコレクション走査の記法です。内部的にはイテレータを使用しているため、すべてのコレクション型で使用できます。日常的なコレクション処理の大部分は、この記法で十分カバーできます。
 
 <span class="listing-number">**サンプルコード10-14**</span>
+
 ```java
 // より簡潔な記述：最も一般的なコレクション走査方法
 for (String element : list) {
@@ -553,6 +567,7 @@ Javaプログラミングの初期に学ぶ配列は、複数のデータをま�
 2.  **機能が限定的**: 要素の追加や削除、検索といった一般的な操作を自前で実装する必要があり、手間がかかります。
 
 <span class="listing-number">**サンプルコード10-15**</span>
+
 ```java
 // 配列の例：要素を追加するのも一苦労
 String[] users = new String[3];
@@ -586,6 +601,7 @@ Javaのコレクションフレームワークは、データを効率的に扱�
 ### `ArrayList`の基本的な使い方
 
 <span class="listing-number">**サンプルコード10-16**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -642,6 +658,7 @@ public class ArrayListExample {
 #### 拡張for文 (推奨)
 最も簡潔で一般的な方法です。
 <span class="listing-number">**サンプルコード10-17**</span>
+
 ```java
 for (String name : nameList) {
     System.out.println(name);
@@ -651,6 +668,7 @@ for (String name : nameList) {
 #### イテレータ (Iterator)
 ループ中にコレクションから要素を安全に削除したい場合に使います。
 <span class="listing-number">**サンプルコード10-18**</span>
+
 ```java
 Iterator<String> iterator = cityList.iterator();
 while (iterator.hasNext()) {
@@ -666,6 +684,7 @@ while (iterator.hasNext()) {
 `java.util.Arrays`クラスや`List`インターフェイスのメソッドを利用します。
 
 <span class="listing-number">**サンプルコード10-19**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -697,6 +716,7 @@ String[] fruitArray = fruitList.toArray(new String[0]);
 ### `HashSet`の基本的な使い方
 
 <span class="listing-number">**サンプルコード10-20**</span>
+
 ```java
 import java.util.HashSet;
 import java.util.Set;
@@ -733,6 +753,7 @@ public class HashSetExample {
 ### `HashMap`の基本的な使い方
 
 <span class="listing-number">**サンプルコード10-21**</span>
+
 ```java
 import java.util.HashMap;
 import java.util.Map;

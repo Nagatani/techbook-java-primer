@@ -70,6 +70,7 @@ public record Person(String name, int age) {}
 上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります。
 
 <span class="listing-number">**サンプルコード9-1**</span>
+
 ```java
 public final class Person {
     private final String name;  // ①
@@ -124,6 +125,7 @@ public final class Person {
 Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています。
 
 <span class="listing-number">**サンプルコード9-2**</span>
+
 ```java
 public class RecordExample {
     public static void main(String[] args) {
@@ -157,6 +159,7 @@ public class RecordExample {
 `Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
 
 <span class="listing-number">**サンプルコード9-3**</span>
+
 ```java
 public record PositivePoint(int x, int y) {
     // コンパクトコンストラクタ
@@ -188,6 +191,7 @@ public record PersonRecord(String name, int age, String city) {}
 ```
 
 <span class="listing-number">**サンプルコード9-4**</span>
+
 ```java
 // CsvReader.java
 import java.io.IOException;
@@ -232,6 +236,7 @@ public class CsvReader {
 
 **従来のOOPアプローチ**:
 <span class="listing-number">**サンプルコード9-5**</span>
+
 ```java
 // データとロジックが密結合
 public class Order {
@@ -251,6 +256,7 @@ public class Order {
 DOPでは、データ構造とビジネスロジックを明確に分離します。データはRecordsで定義し、処理は純粋関数として実装することで、テスト容易性と保守性が向上します。
 
 <span class="listing-number">**サンプルコード9-6**</span>
+
 ```java
 // データの定義（Records）
 public record Order(String orderId, Customer customer, List<OrderItem> items, LocalDateTime orderDate) {}
@@ -302,6 +308,7 @@ public class OrderProcessor {
 Recordsを使用することで、従来のデータクラス実装で必要だった大量のボイラープレートコードを劇的に削減できます。以下の比較例で、その効果を具体的に見てみましょう。
 
 <span class="listing-number">**サンプルコード9-7**</span>
+
 ```java
 // 従来のデータクラス：約100行のコード
 public class TraditionalUser {
@@ -347,6 +354,7 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 DOPの最初のステップは、ドメインモデルを明確に表現することです。Recordsを使用することで、ビジネスドメインの概念を直接的にコードに反映できます。
 
 <span class="listing-number">**サンプルコード9-8**</span>
+
 ```java
 // ドメインモデルの明確な表現
 public record Product(
@@ -378,6 +386,7 @@ public record Money(BigDecimal amount, Currency currency) {
 DOPでは、ビジネスロジックは純粋関数として実装します。これにより、ロジックの再利用性とテスト容易性が大幅に向上します。
 
 <span class="listing-number">**サンプルコード9-9**</span>
+
 ```java
 public class ProductService {
     // 純粋関数による処理
@@ -409,6 +418,7 @@ public class ProductService {
 sealed interfaceとRecordsを組み合わせることで、アプリケーションの状態を型レベルで安全に管理できます。これにより、不正な状態遷移をコンパイル時に防ぐことができます。
 
 <span class="listing-number">**サンプルコード9-10**</span>
+
 ```java
 // 状態を型で表現
 public sealed interface OrderStatus permits Pending, Confirmed, Shipped, Delivered {}
@@ -438,6 +448,7 @@ Java 17以降の**パターンマッチング**とRecordの組み合わせは、
 **sealed interface**は、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
 
 <span class="listing-number">**サンプルコード9-11**</span>
+
 ```java
 // 図形を表現する代数的データ型
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
@@ -452,6 +463,7 @@ public record Triangle(double base, double height) implements Shape {}
 従来のinstance of + キャストの冗長な記述を、**switch式**と**パターンマッチング**で簡潔に表現できます。
 
 <span class="listing-number">**サンプルコード9-12**</span>
+
 ```java
 // 面積計算（パターンマッチング使用）
 public static double calculateArea(Shape shape) {
@@ -481,6 +493,7 @@ public static double calculatePerimeter(Shape shape) {
 複雑なデータ構造に対しても、ネストしたパターンで処理できます。
 
 <span class="listing-number">**サンプルコード9-13**</span>
+
 ```java
 // ネストしたRecord構造
 public record Address(String street, String city, String country) {}
@@ -515,6 +528,7 @@ public static String getLocationInfo(Object obj) {
 **when句**を使用して、パターンに条件を追加できます。
 
 <span class="listing-number">**サンプルコード9-14**</span>
+
 ```java
 // 年齢による分類（ガード条件付き）
 public static String categorizeAge(Person person) {
@@ -536,6 +550,7 @@ public static String categorizeAge(Person person) {
 代数的データ型を使った**式評価器**の例で、パターンマッチングの強力さを示します。
 
 <span class="listing-number">**サンプルコード9-15**</span>
+
 ```java
 // 数式を表現する代数的データ型
 public sealed interface Expr permits Const, Add, Mul, Var {}
@@ -596,6 +611,7 @@ public static String toString(Expr expr) {
 ### パターンマッチングの実用例
 
 <span class="listing-number">**サンプルコード9-16**</span>
+
 ```java
 public class ExpressionDemo {
     public static void main(String[] args) {
@@ -633,6 +649,7 @@ sealed interfaceとパターンマッチングにより、以下の利点が得�
 3. **保守性**: 新しい型を追加した際の変更箇所の特定が容易
 
 <span class="listing-number">**サンプルコード9-17**</span>
+
 ```java
 // 新しい図形を追加した場合
 public sealed interface Shape permits Circle, Rectangle, Triangle, Square {}
@@ -656,6 +673,7 @@ public static double calculateArea(Shape shape) {
 Recordの背後では、Javaコンパイラが大量のコードを自動生成しています。このしくみを理解することで、Recordの動作や制限について深く理解できます。
 
 <span class="listing-number">**サンプルコード9-18**</span>
+
 ```java
 // ソースコード
 public record Point(int x, int y) {}
@@ -707,6 +725,7 @@ public final class Point extends Record {
 **コンパクトコンストラクタ**は、Recordの強力なカスタマイズ機能です。パラメータリストを省略し、バリデーションや正規化を行えます。
 
 <span class="listing-number">**サンプルコード9-19**</span>
+
 ```java
 // 基本的なコンパクトコンストラクタ
 public record ValidatedEmail(String value) {
@@ -733,6 +752,7 @@ public record ValidatedEmail(String value) {
 以下の例では、より複雑なビジネスルールを持つMoneyレコードを示します。コンパクトコンストラクタ内で、null チェック、負値チェック、通貨に応じた小数点以下桁数の正規化を行っています。このような包括的なバリデーションにより、不正な状態のオブジェクトが作成されることを防ぎます。
 
 <span class="listing-number">**サンプルコード9-20**</span>
+
 ```java
 // 複雑なバリデーションの例
 public record Money(BigDecimal amount, Currency currency) {
@@ -776,6 +796,7 @@ public record Money(BigDecimal amount, Currency currency) {
 不変性を保ちながら部分的な更新を行う**withメソッドパターン**は、Recordで頻繁に使用されます。
 
 <span class="listing-number">**サンプルコード9-21**</span>
+
 ```java
 public record Configuration(
     String host,
@@ -855,6 +876,7 @@ public record Configuration(
 Recordには、コンストラクタパラメータ以外の追加メソッドを定義できます。
 
 <span class="listing-number">**サンプルコード9-22**</span>
+
 ```java
 public record Range(int start, int end) {
     public Range {
@@ -911,6 +933,7 @@ public record Range(int start, int end) {
 RecordはSerializableインターフェイスを実装することで、シリアライゼーションに対応できます。
 
 <span class="listing-number">**サンプルコード9-23**</span>
+
 ```java
 import java.io.Serializable;
 
@@ -953,6 +976,7 @@ public record SerializableUser(
 現代のアプリケーションでは、RecordとJSON処理の統合が重要です。RecordsはJacksonなどのJSONライブラリと優れた互換性を持ち、アノテーションを使用してシリアライゼーション/デシリアライゼーションの詳細な制御が可能です。以下の例では、APIレスポンスの標準化とカスタムシリアライザーの実装を示します。
 
 <span class="listing-number">**サンプルコード9-24**</span>
+
 ```java
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -1022,6 +1046,7 @@ class MoneyDeserializer extends JsonDeserializer<Money> {
 Recordsとパターンマッチングを組み合わせることで、**イベントソーシング**のような高度なデータ処理パターンを簡潔に実装できます。
 
 <span class="listing-number">**サンプルコード9-25**</span>
+
 ```java
 // イベントの定義
 public sealed interface UserEvent permits UserCreated, UserUpdated, UserDeleted {}
@@ -1060,6 +1085,7 @@ public record UserSnapshot(
 以下のUserEventProcessorクラスでは、イベントソーシングパターンを使用して、ユーザーに関するイベントのストリームから現在の状態（スナップショット）を再構築します。これは、監査ログや履歴管理が重要なシステムで使用される高度なパターンです。
 
 <span class="listing-number">**サンプルコード9-26**</span>
+
 ```java
 // イベントストリームの処理
 public class UserEventProcessor {
@@ -1134,6 +1160,7 @@ public class UserEventProcessor {
 RecordsとStream APIを組み合わせることで、複雑なデータ処理パイプラインを関数型スタイルで実装できます。以下の例では、イベントストリームから分析用のデータを生成する実践的なパイプラインを示します。このパターンは、リアルタイム分析やレポート生成システムで広く使用されています。
 
 <span class="listing-number">**サンプルコード9-27**</span>
+
 ```java
 public class DataPipelineExample {
     
@@ -1215,6 +1242,7 @@ public record UserAnalytics(
 実際のビジネスアプリケーションでRecordsとDOPを活用する例として、ECサイトの注文処理システムを実装します。この例では、注文、顧客、商品といったドメインモデルをRecordsで表現し、ビジネスロジックを純粋関数として実装します。また、sealed interfaceを使用して注文の状態遷移を型安全に管理します。
 
 <span class="listing-number">**サンプルコード9-28**</span>
+
 ```java
 // 注文処理のドメインモデル
 public record Customer(String id, String name, String email) {}
@@ -1345,6 +1373,7 @@ public record OrderReport(
 RecordsはJavaの関数型プログラミング機能と優れた相性を持ちます。不変性、パターンマッチング、Stream APIとの統合により、宣言的で読みやすいコードを書くことができます。以下の例では、注文データの分析処理を関数型スタイルで実装します。
 
 <span class="listing-number">**サンプルコード9-29**</span>
+
 ```java
 // 関数型スタイルでのデータ処理
 public class FunctionalDataProcessing {
@@ -1426,6 +1455,7 @@ Recordは、その設計により多くのパフォーマンス上の利点を�
 JVMは、Recordsの不変性と値ベースの性質を利用して、様々な最適化を行います。以下の例では、JVMが効率的に最適化できるRecordの設計パターンを示します。小さく不変なRecordは、将来のProject ValhallaのValue Typesの候補となり、さらなるパフォーマンス向上が期待できます。
 
 <span class="listing-number">**サンプルコード9-30**</span>
+
 ```java
 // インライン化されやすいRecord
 @jdk.internal.ValueBased  // 将来のValue Typeの候補
@@ -1461,6 +1491,7 @@ public record OptimizedData(
 Recordsの不変性は、ガベージコレクションの効率を向上させます。不変オブジェクトは世代別GCでYoung世代に留まりやすく、効率的に回収されます。以下の例では、短命なオブジェクトとしてRecordを活用する実践的なパターンを示します。
 
 <span class="listing-number">**サンプルコード9-31**</span>
+
 ```java
 // 短命なオブジェクトとしてのRecord活用
 public class CalculationService {
@@ -1490,6 +1521,7 @@ public class CalculationService {
 RecordsとtraditionalなJavaクラスのパフォーマンスを比較するため、JMH（Java Microbenchmark Harness）を使用したベンチマークを実施します。以下の例では、オブジェクトの作成、equals、hashCodeメソッドの実行速度を測定し、Recordsが従来のクラスと同等以上のパフォーマンスを持つことを示します。
 
 <span class="listing-number">**サンプルコード9-32**</span>
+
 ```java
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
@@ -1579,6 +1611,7 @@ RecordBenchmark.hashCodeRecord          avgt   10   2.934 ± 0.052  ns/op
 ### メモリ使用量の最適化
 
 <span class="listing-number">**サンプルコード9-33**</span>
+
 ```java
 public class MemoryOptimization {
     
@@ -1662,6 +1695,7 @@ public class MemoryOptimization {
 ### オブジェクトプーリング戦略
 
 <span class="listing-number">**サンプルコード9-34**</span>
+
 ```java
 // 高頻度で作成されるRecordのプーリング
 public class RecordPooling {
@@ -1701,6 +1735,7 @@ public class RecordPooling {
 ### 大量データ処理での最適化
 
 <span class="listing-number">**サンプルコード9-35**</span>
+
 ```java
 public class BigDataOptimization {
     
@@ -1772,6 +1807,7 @@ public class BigDataOptimization {
 **Project Valhalla**は、Javaに**Value Types**を導入するプロジェクトで、Recordsの未来に大きな影響を与えます。
 
 <span class="listing-number">**サンプルコード9-36**</span>
+
 ```java
 // 将来のValue Records（概念的な例）
 public value record ComplexNumber(double real, double imaginary) {
@@ -1818,6 +1854,7 @@ public inline record Vec3(float x, float y, float z) {
 ### パターンマッチングの進化
 
 <span class="listing-number">**サンプルコード9-37**</span>
+
 ```java
 // 将来のパターンマッチング拡張（概念的）
 public class FuturePatternMatching {
@@ -1854,6 +1891,7 @@ public class FuturePatternMatching {
 ### 型システムの進化
 
 <span class="listing-number">**サンプルコード9-38**</span>
+
 ```java
 // 将来の型システム拡張
 public class TypeSystemEvolution {
@@ -1886,6 +1924,7 @@ public class TypeSystemEvolution {
 ### 相互運用性の向上
 
 <span class="listing-number">**サンプルコード9-39**</span>
+
 ```java
 // 他言語・フレームワークとの統合改善
 public class InteroperabilityEnhancements {

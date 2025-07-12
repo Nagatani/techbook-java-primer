@@ -61,6 +61,7 @@
 開発の初期段階でバグを発見できれば、修正は比較的簡単です。単体テストは、**コードを書いた直後に品質を検証する**ことで、手戻りのコストを大幅に削減します。
 
 <span class="listing-number">**サンプルコード21-1**</span>
+
 ```java
 // バグ修正のコスト
 // 開発段階でのバグ修正コスト： 1
@@ -92,6 +93,7 @@
 ### テスト対象のクラス
 
 <span class="listing-number">**サンプルコード21-2**</span>
+
 ```java
 // Calculator.java
 public class Calculator {
@@ -106,6 +108,7 @@ public class Calculator {
 以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を明確に示します。各ステップが明確に分離され、テストの意図が一目で理解できるようになっています。
 
 <span class="listing-number">**サンプルコード21-3**</span>
+
 ```java
 // CalculatorManualTest.java
 public class CalculatorManualTest {
@@ -140,6 +143,7 @@ public class CalculatorManualTest {
 以下の例では、密結合によってテストが困難になる典型的なケースを示します。UserServiceがUserRepositoryを内部で直接生成しているため、テスト時にデータベース接続が必須となってしまいます。
 
 <span class="listing-number">**サンプルコード21-4**</span>
+
 ```java
 // UserRepository.java - DBからユーザー情報を取得するクラス
 public class UserRepository {
@@ -189,6 +193,7 @@ public class UserService {
 以下の例では、UserServiceがUserRepositoryを外部から受け取るように変更しています。これにより、テスト時にはモックオブジェクトを、本番時には実際の実装を注入できるようになります。
 
 <span class="listing-number">**サンプルコード21-5**</span>
+
 ```java
 public class UserService {
     private final UserRepository userRepository;
@@ -211,6 +216,7 @@ public class UserService {
 セッターインジェクションは、オプショナルな依存性や、オブジェクト生成後に依存性を変更したい場合に便利ですが、必須の依存性には不適切です。
 
 <span class="listing-number">**サンプルコード21-6**</span>
+
 ```java
 public class UserService {
     private UserRepository userRepository;
@@ -243,6 +249,7 @@ DIの核心は、依存関係を外部から制御できる点にあります。
 以下の例では、UserRepositoryをインターフェースとして定義し、UserServiceが具体的な実装ではなく抽象に依存するように変更しています。これが疎結合設計の核心です。
 
 <span class="listing-number">**サンプルコード21-7**</span>
+
 ```java
 // UserRepository.java - インターフェース
 public interface UserRepository {
@@ -269,6 +276,7 @@ public class UserService {
 スタブ（偽物オブジェクト）を使用することで、データベースに接続することなくUserServiceのロジックをテストできます。以下の例では、テスト用の偽物リポジトリを作成し、それを使ってUserServiceをテストしています。
 
 <span class="listing-number">**サンプルコード21-8**</span>
+
 ```java
 // UserRepositoryStub.java - テスト用の偽物リポジトリ
 public class UserRepositoryStub implements UserRepository {
@@ -321,6 +329,7 @@ TDDでは、以下の短いサイクルを繰り返します：
 TDDの最初のステップでは、まだ存在しないクラスやメソッドに対してテストを書きます。このテストは当然失敗しますが、これが「何を実装すべきか」を明確にする仕様となります。
 
 <span class="listing-number">**サンプルコード21-9**</span>
+
 ```java
 public class StringCalculatorTest {
     @Test
@@ -337,6 +346,7 @@ public class StringCalculatorTest {
 次に、テストが通る最小限の実装を行います。この段階では、ハードコーディングでも構いません。重要なのは、テストを緑（成功）にすることです。
 
 <span class="listing-number">**サンプルコード21-10**</span>
+
 ```java
 public class StringCalculator {
     public int add(String numbers) {
@@ -358,6 +368,7 @@ public class StringCalculator {
 JUnit 5（Jupiter）を使用した基本的なテストの例を示します。@Testアノテーションでテストメソッドをマークし、@BeforeEachで各テスト前の初期化処理を定義し、Assertionsクラスのメソッドで検証を行います。
 
 <span class="listing-number">**サンプルコード21-11**</span>
+
 ```java
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -397,6 +408,7 @@ Mockitoなどのモックフレームワークを使うと、より柔軟なテ�
 Mockitoを使用すると、モックオブジェクトの振る舞いを詳細に制御でき、メソッド呼び出しの検証も可能になります。以下の例では、@Mockアノテーションでモックを宣言し、when-thenReturnで振る舞いを定義し、verifyでメソッド呼び出しを検証しています。
 
 <span class="listing-number">**サンプルコード21-12**</span>
+
 ```java
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -437,6 +449,7 @@ public class UserServiceTest {
 JUnit 5の@Nestedアノテーションを使用すると、テストを論理的にグループ化できます。@DisplayNameを使用することで、テストレポートに読みやすい説明を表示できます。以下の例では、正常系と異常系のテストを明確に分離しています。
 
 <span class="listing-number">**サンプルコード21-13**</span>
+
 ```java
 public class PaymentServiceTest {
     

@@ -39,6 +39,7 @@
 
 **循環的複雑度（Cyclomatic Complexity）**
 <span class="listing-number">**リストAC-1**</span>
+
 ```java
 // 複雑度が高いコード例（複雑度: 6）
 public String processData(int type, boolean flag, String data) {
@@ -61,6 +62,7 @@ public String processData(int type, boolean flag, String data) {
 
 **改善後（複雑度: 3）**
 <span class="listing-number">**リストAC-2**</span>
+
 ```java
 public String processData(int type, boolean flag, String data) {
     switch (type) {                     // +1
@@ -89,6 +91,7 @@ private String processType1(boolean flag, String data) {
 
 1. **順次処理（Sequence）**
 <span class="listing-number">**リストAC-3**</span>
+
 ```java
 statement1;
 statement2;
@@ -97,6 +100,7 @@ statement3;
 
 2. **分岐処理（Selection）**
 <span class="listing-number">**リストAC-4**</span>
+
 ```java
 if (condition) {
     statementA;
@@ -107,6 +111,7 @@ if (condition) {
 
 3. **反復処理（Iteration）**
 <span class="listing-number">**リストAC-5**</span>
+
 ```java
 while (condition) {
     statements;
@@ -117,6 +122,7 @@ while (condition) {
 
 **ループ不変条件の例**
 <span class="listing-number">**リストAC-6**</span>
+
 ```java
 // 配列の最大値を求めるアルゴリズム
 public int findMax(int[] array) {
@@ -153,6 +159,7 @@ public int findMax(int[] array) {
 
 **スタックADTの例**
 <span class="listing-number">**リストAC-7**</span>
+
 ```java
 // スタックの抽象仕様
 public interface Stack<T> {
@@ -220,6 +227,7 @@ public class ArrayStack<T> implements Stack<T> {
 
 **悪い例：実装詳細の露出**
 <span class="listing-number">**リストAC-8**</span>
+
 ```java
 public class BadBankAccount {
     public double[] transactionHistory; // 実装詳細の露出
@@ -234,6 +242,7 @@ public class BadBankAccount {
 
 **良い例：適切なカプセル化**
 <span class="listing-number">**リストAC-9**</span>
+
 ```java
 public class GoodBankAccount {
     private List<Transaction> transactions; // 実装詳細を隠蔽
@@ -266,6 +275,7 @@ public class GoodBankAccount {
 
 **LSP違反の例**
 <span class="listing-number">**リストAC-10**</span>
+
 ```java
 class Rectangle {
     protected int width, height;
@@ -308,6 +318,7 @@ public void testLSPViolation() {
 
 **LSP遵守の設計**
 <span class="listing-number">**リストAC-11**</span>
+
 ```java
 interface Shape {
     int getArea();
@@ -361,6 +372,7 @@ class Square implements Shape {
 
 1. **データ結合（Data Coupling）**
 <span class="listing-number">**リストAC-12**</span>
+
 ```java
 // 最も弱い結合 - 基本データのみを渡す
 public double calculateTax(double income, double rate) {
@@ -370,6 +382,7 @@ public double calculateTax(double income, double rate) {
 
 2. **スタンプ結合（Stamp Coupling）**
 <span class="listing-number">**リストAC-13**</span>
+
 ```java
 // データ構造を渡すが、全体を使用
 public double calculateTax(TaxInfo taxInfo) {
@@ -379,6 +392,7 @@ public double calculateTax(TaxInfo taxInfo) {
 
 3. **制御結合（Control Coupling）**
 <span class="listing-number">**リストAC-14**</span>
+
 ```java
 // 悪い例：制御フラグを渡す
 public void processData(Data data, int mode) {
@@ -397,6 +411,7 @@ public interface DataProcessor {
 
 4. **共通結合（Common Coupling）**
 <span class="listing-number">**リストAC-15**</span>
+
 ```java
 // 悪い例：グローバル変数への依存
 public class OrderProcessor {
@@ -425,6 +440,7 @@ public class OrderProcessor {
 
 1. **機能的凝集（Functional Cohesion）**
 <span class="listing-number">**リストAC-16**</span>
+
 ```java
 // 単一の機能に特化
 public class PrimeChecker {
@@ -440,6 +456,7 @@ public class PrimeChecker {
 
 2. **逐次的凝集（Sequential Cohesion）**
 <span class="listing-number">**リストAC-17**</span>
+
 ```java
 // 出力が次の入力になる処理の連鎖
 public class DataProcessor {
@@ -457,6 +474,7 @@ public class DataProcessor {
 
 3. **偶発的凝集（Coincidental Cohesion）** - 避けるべき
 <span class="listing-number">**リストAC-18**</span>
+
 ```java
 // 悪い例：関連のない機能の寄せ集め
 public class Utilities {
@@ -478,6 +496,7 @@ public class Utilities {
 
 **Singletonパターンの理論的分析**
 <span class="listing-number">**リストAC-19**</span>
+
 ```java
 // スレッドセーフなSingleton実装
 public class DatabaseConnection {
@@ -519,6 +538,7 @@ public enum DatabaseConnection {
 
 **Decoratorパターンの数学的モデル**
 <span class="listing-number">**リストAC-20**</span>
+
 ```java
 // Component = 基本機能の抽象化
 interface Coffee {
@@ -566,6 +586,7 @@ Coffee coffee = new MilkDecorator(
 
 **Observerパターンとイベント代数**
 <span class="listing-number">**リストAC-21**</span>
+
 ```java
 // Subject = 観察される対象
 public class Stock {
@@ -623,6 +644,7 @@ class StockDisplay implements Observer {
 f(n) = O(g(n)) ⟺ ∃c > 0, ∃n₀ > 0, ∀n ≥ n₀: f(n) ≤ c·g(n)
 
 <span class="listing-number">**リストAC-22**</span>
+
 ```java
 // O(n²) の例：バブルソート
 public void bubbleSort(int[] arr) {
@@ -656,6 +678,7 @@ public void mergeSort(int[] arr, int left, int right) {
 #### 空間複雑度の分析
 
 <span class="listing-number">**リストAC-23**</span>
+
 ```java
 // O(1) 空間：in-place ソート
 public void quickSortIterative(int[] arr) {
@@ -696,6 +719,7 @@ public int[] mergeSortWithCopy(int[] arr) {
 #### 動的配列（ArrayList）の償却解析
 
 <span class="listing-number">**リストAC-24**</span>
+
 ```java
 public class DynamicArray<T> {
     private Object[] array;
@@ -733,6 +757,7 @@ public class DynamicArray<T> {
 #### ハッシュテーブルの理論
 
 <span class="listing-number">**リストAC-25**</span>
+
 ```java
 public class HashTable<K, V> {
     private static class Entry<K, V> {
@@ -807,6 +832,7 @@ public class HashTable<K, V> {
 - Q：事後条件（Postcondition）
 
 <span class="listing-number">**リストAC-26**</span>
+
 ```java
 /**
  * 二分探索アルゴリズム
@@ -846,6 +872,7 @@ public int binarySearch(int[] arr, int target) {
 #### クラス不変条件の例
 
 <span class="listing-number">**リストAC-27**</span>
+
 ```java
 public class BankAccount {
     private double balance;
@@ -922,6 +949,7 @@ public class BankAccount {
 4. 異なるスレッドで実行
 
 <span class="listing-number">**リストAC-28**</span>
+
 ```java
 public class RaceConditionExample {
     private int counter = 0; // 共有状態
@@ -960,6 +988,7 @@ public class RaceConditionExample {
 4. **循環待機（Circular Wait）**: プロセス間でリソース待機の循環が存在
 
 <span class="listing-number">**リストAC-29**</span>
+
 ```java
 public class DeadlockExample {
     private final Object lock1 = new Object();
@@ -1014,6 +1043,7 @@ public class DeadlockExample {
 #### Java Memory Model (JMM)
 
 <span class="listing-number">**リストAC-30**</span>
+
 ```java
 public class MemoryModelExample {
     private boolean ready = false;

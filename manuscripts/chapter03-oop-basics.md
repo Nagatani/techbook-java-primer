@@ -257,6 +257,7 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 手続き型プログラミングでは、データと処理が完全に分離された構造となります。以下の例では、この分離がどのような問題を引き起こすかを示しています。
 
 <span class="listing-number">**サンプルコード3-1**</span>
+
 ```java
 public class ProceduralExample {
     public static void main(String[] args) {
@@ -287,6 +288,7 @@ public class ProceduralExample {
 オブジェクト指向では、関連するデータと処理を1つのクラスに統合し、概念の一貫性と責任の明確化を実現します。
 
 <span class="listing-number">**サンプルコード3-2**</span>
+
 ```java
 public class Student {
     private String name;  // ①
@@ -333,6 +335,7 @@ public class ObjectOrientedExample {
 カプセル化は、オブジェクトの内部データを外部から直接アクセスできないように保護し、適切なメソッドを通じてのみ操作を許可する仕組みです。
 
 <span class="listing-number">**サンプルコード3-3**</span>
+
 ```java
 public class BankAccount {
     private double balance;  // ①
@@ -364,6 +367,7 @@ public class BankAccount {
 継承は、既存のクラス（親クラス）の機能を新しいクラス（子クラス）が引き継ぎ、さらに独自の機能を追加する仕組みです。
 
 <span class="listing-number">**サンプルコード3-4**</span>
+
 ```java
 public class Product {
     protected String productId;  // ①
@@ -405,6 +409,7 @@ public class Book extends Product {  // ③
 ポリモーフィズム（多態性）は、同じインターフェイスを通じて異なる実装を統一的に扱える仕組みです。これにより、新しい実装を追加してもクライアントコードを変更する必要がありません。
 
 <span class="listing-number">**サンプルコード3-5**</span>
+
 ```java
 public interface PaymentMethod {  // ①
     void processPayment(double amount);
@@ -448,6 +453,7 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 ECサイトの注文管理システムを例に、実用的なクラス設計を見てみましょう。Orderクラスは、注文の状態を管理し、その状態変化に応じた振る舞いを持つオブジェクトです。
 
 <span class="listing-number">**サンプルコード3-6**</span>
+
 ```java
 public class Order {
     // フィールド（状態）
@@ -500,6 +506,7 @@ public class Order {
 実際にOrderクラスを使用して、注文のライフサイクル全体をシミュレートしてみましょう。このデモンストレーションでは、オブジェクトの生成から各状態変化までの一連の流れを確認できます。
 
 <span class="listing-number">**サンプルコード3-7**</span>
+
 ```java
 public class OrderDemo {
     public static void main(String[] args) {
@@ -539,6 +546,7 @@ public class OrderDemo {
 図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
 <span class="listing-number">**サンプルコード3-8**</span>
+
 ```java
 public class Book {
     private String isbn;
@@ -579,6 +587,7 @@ public class Book {
 ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
 
 <span class="listing-number">**サンプルコード3-9**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -738,6 +747,7 @@ void printStudent(struct Student s) {
 
 **オブジェクト指向プログラミング（Java）**
 <span class="listing-number">**サンプルコード3-10**</span>
+
 ```java
 // データと処理が一体化している
 public class Student {
@@ -829,6 +839,7 @@ public class Student {
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です：
 
 <span class="listing-number">**サンプルコード3-11**</span>
+
 ```java
 public class Book {
     // フィールド（属性）
@@ -890,6 +901,7 @@ public class Book {
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています：
 
 <span class="listing-number">**サンプルコード3-12**</span>
+
 ```java
 public class BookTest {
     public static void main(String[] args) {
@@ -942,6 +954,7 @@ public class BookTest {
 まず、カプセル化されていない設計から始めます：
 
 <span class="listing-number">**サンプルコード3-13**</span>
+
 ```java
 // 悪い例：カプセル化されていない銀行口座
 public class BankAccountV1 {
@@ -980,6 +993,7 @@ public class ProblemExample {
 privateキーワードとメソッドを使って基本的なカプセル化を実装：
 
 <span class="listing-number">**サンプルコード3-14**</span>
+
 ```java
 // 改善例：基本的なカプセル化
 public class BankAccountV2 {
@@ -1024,6 +1038,7 @@ public class BankAccountV2 {
 実際の業務システムで求められるレベルのカプセル化：
 
 <span class="listing-number">**サンプルコード3-15**</span>
+
 ```java
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -1199,6 +1214,7 @@ Javaには8つのプリミティブ型が存在します。先述の表を参照
 - 列挙型（enum）
 
 <span class="listing-number">**サンプルコード3-16**</span>
+
 ```java
 // プリミティブ型
 int number = 42;
@@ -1220,6 +1236,7 @@ int[] numbers = {1, 2, 3, 4, 5};  // 配列も参照型
 Javaでは整数を様々な進数で表現できます。特に、大きな数値を扱う際はアンダースコアを使って可読性を向上させることが可能です。
 
 <span class="listing-number">**サンプルコード3-17**</span>
+
 ```java
 int decimal = 100;      // 10進数
 int binary = 0b1100100; // 2進数（0bプレフィックス）
@@ -1235,6 +1252,7 @@ long largeNumber = 1_000_000_000L;  // 読みやすくするためのアンダ�
 浮動小数点数は通常の小数記法と科学記法で表現できます。float型を使用する場合は、明示的にfサフィックスをつける必要があります。
 
 <span class="listing-number">**サンプルコード3-18**</span>
+
 ```java
 double normalNotation = 3.14159;
 double scientificNotation = 3.14159e0;  // 科学記法
@@ -1246,6 +1264,7 @@ float floatValue = 3.14f;  // float型はfまたはFサフィックスが必要
 文字と文字列の表現方法と、特殊文字を表すエスケープシーケンスの使用例です。Unicode文字も直接表現できます。
 
 <span class="listing-number">**サンプルコード3-19**</span>
+
 ```java
 char singleChar = 'A';          // 文字リテラル（シングルクォート）
 char unicodeChar = '\u0041';    // Unicode表現（'A'と同じ）
@@ -1261,6 +1280,7 @@ String escaped = "Line 1\nLine 2\t\"Quoted\"";
 boolean型は、trueとfalseの2つの値のみを持ちます。他の言語とは異なり、0や1では表現できません。
 
 <span class="listing-number">**サンプルコード3-20**</span>
+
 ```java
 boolean isTrue = true;
 boolean isFalse = false;
@@ -1273,6 +1293,7 @@ boolean isFalse = false;
 小さい型から大きい型への変換は自動的に行われます。これはデータの精度や範囲が失われることがないため、安全な変換として自動的に実行されます。
 
 <span class="listing-number">**サンプルコード3-21**</span>
+
 ```java
 int intValue = 100;
 long longValue = intValue;    // int → long（自動変換）
@@ -1284,6 +1305,7 @@ double doubleValue = intValue; // int → double（自動変換）
 大きい型から小さい型への変換は明示的なキャストが必要です：
 
 <span class="listing-number">**サンプルコード3-21**</span>
+
 ```java
 double doubleValue = 3.14159;
 int intValue = (int) doubleValue;  // 3になる（小数部分は切り捨て）
@@ -1299,6 +1321,7 @@ int intValue2 = (int) longValue;   // 明示的なキャストが必要
 各プリミティブ型には対応するラッパクラスが存在します：
 
 <span class="listing-number">**サンプルコード3-22**</span>
+
 ```java
 // オートボクシング（Java 5以降）
 Integer boxedInt = 100;  // int → Integer（自動変換）
@@ -1371,6 +1394,7 @@ a = b = 5;
 
 ファイル名： ArithmeticSample.java
 <span class="listing-number">**サンプルコード3-23**</span>
+
 ```java
 class ArithmeticSample {
   public static void main(String[] args) {
@@ -1482,6 +1506,7 @@ class ArithmeticSample {
 ただし、整数型に型の強制変換を行ったタイミングで、小数点以下の値は切り捨てられてしまうので注意が必要です。
 
 <span class="listing-number">**サンプルコード3-22**</span>
+
 ```java
 float s = 1234.567f;
 int num = (int)s; // ← numには、1234 が代入される
@@ -1498,6 +1523,7 @@ int num = (int)s; // ← numには、1234 が代入される
 次のプログラムはどのような結果を出力するでしょう？
 
 <span class="listing-number">**サンプルコード3-24**</span>
+
 ```java
 int a = 3;
 int b = 5;
@@ -1535,6 +1561,7 @@ System.out.println("文字列と数値を結合すると..." + a + b);
 括弧内の条件（*boolean型*）に合致する（値が`true`）の場合に、波括弧`{ }`内のブロックの処理を行います。
 
 <span class="listing-number">**サンプルコード3-25**</span>
+
 ```java
 if ( 条件 ) {
     ここは条件に合致した場合にのみ実行される
@@ -1560,6 +1587,7 @@ if ( 条件 )
 次に、このコードを改修する際、以下のようなコードの修正を行ってしまいやすい点が波括弧を省略した際に起こりやすいです。
 
 <span class="listing-number">**サンプルコード3-26**</span>
+
 ```java
 if ( 条件 )
     最初にif文を書いた人が書いた条件内のコード
@@ -1579,6 +1607,7 @@ if ( 条件 )
 ifの条件に合致しなかった場合のみ実行される処理を書ける
 
 <span class="listing-number">**サンプルコード3-27**</span>
+
 ```java
 if ( 条件 ) {
     ここは条件に合致した場合にのみ実行される
@@ -1592,6 +1621,7 @@ if ( 条件 ) {
 条件に合致しなかった場合、再度評価を行うこともできる
 
 <span class="listing-number">**サンプルコード3-28**</span>
+
 ```java
 if ( 条件1 ) {
     条件1に合致した場合にのみ実行される
@@ -1611,6 +1641,7 @@ if文の条件は、条件1かつ条件2と言ったように、1つのif文で�
 論理積AND演算子（&&）を使うと、複数の条件がすべて真の場合のみ処理を実行できます。短絡評価（左の条件が偽なら右の条件を評価しない）が行われるため、効率的です。
 
 <span class="listing-number">**サンプルコード3-29**</span>
+
 ```java
 if ( 条件１ && 条件２ ) {
     条件１と条件２どちらにも合致した場合にのみ実行される
@@ -1622,6 +1653,7 @@ if ( 条件１ && 条件２ ) {
 論理和OR演算子（||）を使うと、複数の条件のいずれかが真の場合に処理を実行できます。これも短絡評価（左の条件が真なら右の条件を評価しない）が行われます。
 
 <span class="listing-number">**サンプルコード3-30**</span>
+
 ```java
 if ( 条件１ || 条件２ ) {
     条件１か条件２のどちらかに合致した場合にのみ実行される
@@ -1635,6 +1667,7 @@ if ( 条件１ || 条件２ ) {
 ファイル名： MembershipDiscount.java
 
 <span class="listing-number">**サンプルコード3-31**</span>
+
 ```java
 public class MembershipDiscount {
     public static void main(String[] args) {
@@ -1712,6 +1745,7 @@ public class MembershipDiscount {
 三項演算子は、`if...else...`を式として扱えます。
 
 <span class="listing-number">**サンプルコード3-32**</span>
+
 ```java
 System.out.println(条件 ? "true" : "false");
 //条件に合致していればtrueと表示されます。合致していなければfalseと表示されます。
@@ -1731,6 +1765,7 @@ if ( 条件 ) {
 switchの括弧内の変数に入っている値がcaseの値に該当した時、処理を実行します。
 
 <span class="listing-number">**サンプルコード3-33**</span>
+
 ```java
 switch ( 検査対象の値 ) {
     case 値1:
@@ -1753,6 +1788,7 @@ breakが書かれていない場合は、その下にあるcaseの処理も実�
 Java 14以降、switch文が大幅に強化され、より安全で簡潔な記述が可能になりました。
 
 <span class="listing-number">**サンプルコード3-34**</span>
+
 ```java
 // 従来のswitch文
 String dayType;
@@ -1790,6 +1826,7 @@ String dayType = switch (day) {
 *   **複数行の処理と`yield`**: `case`の処理が複数行にわたる場合は、ブロック`{}`で囲み、`yield`キーワードを使って値を返します。
 
 <span class="listing-number">**サンプルコード3-35**</span>
+
 ```java
 // yieldを使った例
 String message = switch (day) {
@@ -1806,6 +1843,7 @@ String message = switch (day) {
 `switch`で変数の型をチェックし、そのままその型の変数として利用できます。
 
 <span class="listing-number">**サンプルコード3-36**</span>
+
 ```java
 Object obj = "Hello";
 String formatted = switch (obj) {
@@ -1825,6 +1863,7 @@ switch文は、特定の値にもとづいた分岐処理に優れており、�
 ファイル名： GradeCalculator.java
 
 <span class="listing-number">**サンプルコード3-37**</span>
+
 ```java
 public class GradeCalculator {
     public static void main(String[] args) {
@@ -1957,6 +1996,7 @@ JavaのString型は、プログラミング初心者が遇遇する最も細か�
 このサンプルを通じて、Javaの文字列プール機能、オブジェクトの同一性、メモリ管理のしくみを理解しましょう：
 
 <span class="listing-number">**サンプルコード3-38**</span>
+
 ```java
 public class StringEval {
   public static void main(String[] args) {
@@ -2008,6 +2048,7 @@ public class StringEval {
 **実用的な注意点：**
 
 <span class="listing-number">**サンプルコード3-39**</span>
+
 ```java
 // 良い例
 if (userInput.equals("yes")) {
@@ -2034,6 +2075,7 @@ if ("yes".equals(userInput)) {
 while文の括弧内で指定された条件に、合致している間は処理を繰り返します。
 
 <span class="listing-number">**サンプルコード3-40**</span>
+
 ```java
 while ( 条件 ) {
     条件が真値(true)の間、繰り返す処理
@@ -2046,6 +2088,7 @@ while ( 条件 ) {
 while文では、繰り返しの条件となるものが必要となります。
 
 <span class="listing-number">**サンプルコード3-41**</span>
+
 ```java
 int count = 1;
 while ( count <= 10 ) {
@@ -2059,6 +2102,7 @@ while ( count <= 10 ) {
 do-whileループは、条件チェックがループの末尾で行われるため、少なくとも1回は必ず処理が実行されます。ユーザー入力を求めて、適切な入力があるまで繰り返すようなケースで有用です。
 
 <span class="listing-number">**サンプルコード3-42**</span>
+
 ```java
 do {
     処理を実行後、条件が真値の場合には何度も繰り返す
@@ -2071,6 +2115,7 @@ do {
 ###### 10回繰り返す
 
 <span class="listing-number">**サンプルコード3-43**</span>
+
 ```java
 int count = 1;
 do {
@@ -2084,6 +2129,7 @@ do {
 forループは、カウンタ変数の初期化、条件チェック、インクリメントを一行で書ける、最も一般的なループ構造です。特に回数が事前に分かっている場合に適しています。
 
 <span class="listing-number">**サンプルコード3-44**</span>
+
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2095,6 +2141,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 以下の例では、カウンタ変数countを1から10まで增加させながら10回の繰り返しを実行します。forループの簡潔さと可読性がよく分かる例です。
 
 <span class="listing-number">**サンプルコード3-45**</span>
+
 ```java
 for (int count = 1; count <= 10; count++) {
     繰り返す処理
@@ -2110,6 +2157,7 @@ for (int count = 1; count <= 10; count++) {
 for文を例にした場合：
 
 <span class="listing-number">**サンプルコード3-46**</span>
+
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2122,6 +2170,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 ループ処理中に、continueが実行されると、それ以降の処理は1回の繰り返し処理時のみ飛ばして次の繰り返し処理が実行されます。
 
 <span class="listing-number">**サンプルコード3-47**</span>
+
 ```java
 for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
     繰り返す処理
@@ -2188,6 +2237,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 `static`フィールドと`static`メソッドの具体的な使い方を見てみましょう。
 
 <span class="listing-number">**サンプルコード3-48**</span>
+
 ```java
 // StaticMemberExample.java
 class Tool {
@@ -2264,6 +2314,7 @@ public class StaticMemberExample {
 以下の例で、staticメソッドでのアクセス制約を具体的に確認できます。インスタンスメンバーへのアクセスはコンパイルエラーとなります。
 
 <span class="listing-number">**サンプルコード3-49**</span>
+
 ```java
 class Example {
     String instanceField = "インスタンス";
@@ -2289,6 +2340,7 @@ class Example {
 数学関数や文字列処理など、状態を持たない汎用的な処理を提供するクラス：
 
 <span class="listing-number">**サンプルコード3-50**</span>
+
 ```java
 public class MathUtils {
     // privateコンストラクタでインスタンス化を防ぐ
@@ -2313,6 +2365,7 @@ double area = MathUtils.calculateCircleArea(5.0);
 プログラム全体で共有される定数値：
 
 <span class="listing-number">**サンプルコード3-51**</span>
+
 ```java
 public class Constants {
     public static final double TAX_RATE = 0.10;  // 消費税率
@@ -2326,6 +2379,7 @@ public class Constants {
 アプリケーション全体で1つしか存在しないインスタンスを保証する設計パターン：
 
 <span class="listing-number">**サンプルコード3-52**</span>
+
 ```java
 public class DatabaseConnection {
     private static DatabaseConnection instance;
@@ -2424,6 +2478,7 @@ scores = new int[5];
 配列の宣言と領域の確保を同時に行う場合は以下のように書けます。
 
 <span class="listing-number">**サンプルコード3-53**</span>
+
 ```java
 int[] scores;		      // 宣言
 scores = new int[5];	// 領域を5つ確保する
@@ -2450,6 +2505,7 @@ System.out.println(scores.length);    // 5と表示
 for文の条件や、配列の要素の最後にアクセスする場合などに使用できます。
 
 <span class="listing-number">**サンプルコード3-54**</span>
+
 ```java
 int[] scores = {74, 88, 98, 53, 25};
 
@@ -2480,6 +2536,7 @@ int[][] scoresOfStudents = new int[3][5];
 基本は1次元配列と同じです。
 
 <span class="listing-number">**サンプルコード3-55**</span>
+
 ```java
 // 一人目の点数を代入
 scoresOfStudents[0][0] = 100;
@@ -2503,6 +2560,7 @@ scoresOfStudents[1][4] = 70;
 配列内部の`{}`をカンマで区切ることで、多次元の配列を同時に宣言、初期化、代入ができます。
 
 <span class="listing-number">**サンプルコード3-56**</span>
+
 ```java
 int[][] scoresOfStudents = {
     {70, 60, 80, 90, 50},
@@ -2516,6 +2574,7 @@ int[][] scoresOfStudents = {
 多次元配列では、lengthプロパティを使って各次元のサイズを取得できます。第一次元のサイズと第二次元のサイズをそれぞれ異なる方法で取得できます。
 
 <span class="listing-number">**サンプルコード3-56a**</span>
+
 ```java
 System.out.println(scoresOfStudents.length);    //3と表示
 ```
@@ -2533,6 +2592,7 @@ System.out.println(scoresOfStudents[0].length);    //5と表示
 Java 5から導入された拡張for文を使うと、配列の要素を簡潔に反復処理できます：
 
 <span class="listing-number">**サンプルコード3-57**</span>
+
 ```java
 int[] scores = {74, 88, 98, 53, 25};
 
@@ -2552,6 +2612,7 @@ for (int score : scores) {
 配列をコピーする場合は、`System.arraycopy()`メソッドや`Arrays.copyOf()`メソッドを使用します：
 
 <span class="listing-number">**サンプルコード3-58**</span>
+
 ```java
 int[] original = {1, 2, 3, 4, 5};
 int[] copy1 = new int[original.length];
@@ -2568,6 +2629,7 @@ int[] copy2 = Arrays.copyOf(original, original.length);
 `Arrays.sort()`メソッドを使って配列を簡単にソートできます：
 
 <span class="listing-number">**サンプルコード3-59**</span>
+
 ```java
 int[] numbers = {5, 2, 8, 1, 9};
 Arrays.sort(numbers);
@@ -2581,6 +2643,7 @@ Arrays.sort(numbers);
 3. **サイズの固定**: 一度作成した配列のサイズは変更できません
 
 <span class="listing-number">**サンプルコード3-60**</span>
+
 ```java
 // 範囲外アクセスの例（エラーになる）
 int[] arr = new int[5];
@@ -2676,6 +2739,7 @@ exercises/chapter03/
 
 **コード構造のヒント**:
 <span class="listing-number">**サンプルコード3-61**</span>
+
 ```java
 public class MethodsPractice {
     // ここに各メソッドを実装

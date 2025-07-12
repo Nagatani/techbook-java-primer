@@ -83,6 +83,7 @@ Swingイベント処理機構の詳細についても学習します。イベン
 2. **MouseMotionListenerインターフェイス** - マウスポインタの移動を追跡
 
 <span class="listing-number">**サンプルコード19-1**</span>
+
 ```java
 // ① MouseListener：クリックイベントの処理
 mousePressed()  // ①-1
@@ -120,6 +121,7 @@ mouseMoved()    // ②-2
 3. **アンチエイリアシング** - 滑らかな描画のための品質設定
 
 <span class="listing-number">**サンプルコード19-2**</span>
+
 ```java
 // ① 非効率的なアプローチ：毎回全体再描画
 public void paintComponent(Graphics g) {
@@ -203,6 +205,7 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 
 **バリデーションのタイミング戦略：**
 <span class="listing-number">**サンプルコード19-3**</span>
+
 ```java
 // 1. 即座バリデーション（キー入力毎）
 document.addDocumentListener(new DocumentListener() {
@@ -224,6 +227,7 @@ delayTimer.setRepeats(false);
 
 **視覚的フィードバックのベストプラクティス：**
 <span class="listing-number">**サンプルコード19-4**</span>
+
 ```java
 // 色による状態表示
 Color VALID = new Color(144, 238, 144);   // 淡い緑
@@ -318,6 +322,7 @@ Actionパターンは、同じ機能を複数のUI要素から実行できるよ
 
 **Actionパターンの利点：**
 <span class="listing-number">**サンプルコード19-5**</span>
+
 ```java
 // 従来の方法：重複コード
 JMenuItem saveMenuItem = new JMenuItem("保存");
@@ -348,6 +353,7 @@ new JButton(saveAction);
 
 **コンテキストメニューの実装：**
 <span class="listing-number">**サンプルコード19-6**</span>
+
 ```java
 // マウスイベントでの表示制御
 component.addMouseListener(new MouseAdapter() {
@@ -589,6 +595,7 @@ Swingのイベント処理は、イベントディスパッチスレッド（EDT
 ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド一つだけを実装すればよいシンプルなインターフェースです。
 
 <span class="listing-number">**サンプルコード19-7**</span>
+
 ```java
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -639,6 +646,7 @@ public class ButtonEventExample {
 ラムダ式はJava 8で導入された機能で、関数型インターフェースの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
 
 <span class="listing-number">**サンプルコード19-8**</span>
+
 ```java
 // 上記の匿名クラスの部分をラムダ式で書き換える
 button.addActionListener(e -> {
@@ -655,6 +663,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
 
 <span class="listing-number">**サンプルコード19-9**</span>
+
 ```java
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -723,6 +732,7 @@ WindowListenerはウィンドウの状態変化を検出するインターフェ
 ウィンドウを閉じる際に確認ダイアログを表示する例です。`WindowListener`インターフェイスには多くのメソッドがありますが、`WindowAdapter`クラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
 <span class="listing-number">**サンプルコード19-10**</span>
+
 ```java
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -769,6 +779,7 @@ MouseListenerはマウスの基本的な操作（クリック、プレス、リ�
 マウスの動きを追跡するにはMouseMotionListenerも併せて使用します。
 
 <span class="listing-number">**サンプルコード19-11**</span>
+
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -931,6 +942,7 @@ KeyListenerはキーボードの入力を検出するインターフェースで
 特殊キー（F1、Ctrl、Shiftなど）のkeyTypedでは検出されず、keyPressed/keyReleasedでのみ検出されます。ショートカットキーの実装やゲームのキー操作などに使用されます。
 
 <span class="listing-number">**サンプルコード19-12**</span>
+
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -1101,6 +1113,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 ##### 3. DocumentListenerによるテキスト変更の監視
 
 <span class="listing-number">**サンプルコード19-13**</span>
+
 ```java
 import javax.swing.*;
 import javax.swing.event.*;
@@ -1329,6 +1342,7 @@ public class DocumentListenerExample extends JFrame {
 Observerパターンを使用することで、オブジェクトの状態変化を複数のオブザーバーに通知できます。
 
 <span class="listing-number">**サンプルコード19-14**</span>
+
 ```java
 import javax.swing.*;
 import java.awt.*;
@@ -1557,6 +1571,7 @@ public class CustomEventExample extends JFrame {
 JavaBeansの仕様では、イベント処理を以下のパターンで実装することが推奨されています：
 
 <span class="listing-number">**サンプルコード19-15**</span>
+
 ```java
 import java.beans.*;
 import java.util.*;
@@ -1893,6 +1908,7 @@ public class JavaBeansEventExample extends JFrame {
 より複雑な業務アプリケーションで使用される高度なJavaBeansパターンを学習しましょう：
 
 <span class="listing-number">**サンプルコード19-16**</span>
+
 ```java
 import java.beans.*;
 import java.util.*;
@@ -2224,6 +2240,7 @@ public class AdvancedJavaBeansExample extends JFrame {
 ##### 5. ドラッグ&ドロップの実装
 
 <span class="listing-number">**サンプルコード19-17**</span>
+
 ```java
 import javax.swing.*;
 import java.awt.*;

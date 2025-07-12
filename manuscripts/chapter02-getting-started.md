@@ -176,6 +176,7 @@ Javaのデータ型システムは、プログラムの安全性と効率性を�
 各基本データ型には明確な用途があり、適切な型を選択することでメモリ効率とプログラムの表現力のバランスを取ることができます。
 
 <span class="listing-number">**サンプルコード2-1**</span>
+
 ```java
 // 整数型の使い分け例
 byte age = 25;                    // ①
@@ -225,6 +226,7 @@ boolean isStudent = true;         // ⑧
 Javaでは、すべての変数は使用前に宣言する必要があり、型の明示が必須です。これはC言語と同様ですが、Javaはより厳格な初期化ルールを持っています。ローカル変数は明示的に初期化しないと使用できません。また、`final`キーワードを使用することで、一度だけ値を設定できる定数を作成できます。以下の例で、さまざまな変数宣言のパターンを示します：
 
 <span class="listing-number">**サンプルコード2-2**</span>
+
 ```java
 // 宣言と同時に初期化
 int count = 0;
@@ -247,6 +249,7 @@ Javaの演算子体系は、C言語の演算子をベースにしていますが
 Javaの演算子は目的別に分類され、それぞれ異なる動作と優先順位を持ちます。
 
 <span class="listing-number">**サンプルコード2-3**</span>
+
 ```java
 // 算術演算子
 int a = 10, b = 3;
@@ -303,6 +306,7 @@ int bitXor = m ^ n;  // ⑧ 0110 = 6
 Javaの型変換システムは、プログラムの安全性を保証するために厳格に設計されています。C言語では暗黙的に行われていた多くの型変換が、Javaでは明示的なキャストを要求されます。これは一見煩雑に思えるかもしれませんが、予期しないデータ損失やバグを防ぐ重要なしくみです。型変換には、データの精度を失わない拡たいへん換（widening conversion）と、精度を失う可能性がある縮小変換（narrowing conversion）があります：
 
 <span class="listing-number">**サンプルコード2-4**</span>
+
 ```java
 // 暗黙的な型変換（拡大変換）
 int i = 100;
@@ -324,6 +328,7 @@ String str2 = String.valueOf(num);  // 整数→文字列
 プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージと`java.util`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を、よりオブジェクト指向的な方法で実現しています。以下の例では、基本的な出力方法と、`Scanner`クラスを使用した入力処理を示します：
 
 <span class="listing-number">**サンプルコード2-5**</span>
+
 ```java
 import java.util.Scanner;
 
@@ -368,6 +373,7 @@ public class IOExample {
 条件分岐は、プログラムが状況に応じて異なる処理を選択するしくみです。成績判定、ユーザー入力の検証、システム状態の確認など、実用的なプログラムには不可欠な機能です。
 
 <span class="listing-number">**サンプルコード2-6**</span>
+
 ```java
 // if文（C言語と同じ）
 int score = 85;
@@ -402,6 +408,7 @@ String grade = switch (score / 10) {
 
 従来のswitch文：
 <span class="listing-number">**サンプルコード2-7**</span>
+
 ```java
 String grade;
 switch (score / 10) {
@@ -423,6 +430,7 @@ switch (score / 10) {
 
 新しいswitch式：
 <span class="listing-number">**サンプルコード2-8**</span>
+
 ```java
 String grade = switch (score / 10) {
     case 10, 9 -> "優";
@@ -443,6 +451,7 @@ String grade = switch (score / 10) {
 繰り返し処理（ループ）は、同じ処理を効率的に何度も実行するためのしくみです。配列の全要素を処理する、計算を指定回数繰り返す、条件が満たされるまで処理を続けるなど、プログラミングの基本的なパターンを実現します。Javaでは、用途に応じて3つの主要なループ構文を提供しています。
 
 <span class="listing-number">**サンプルコード2-9**</span>
+
 ```java
 // for文
 for (int i = 0; i < 10; i++) {
@@ -488,6 +497,7 @@ while (count < 5) {
 配列は、同じ型の複数のデータを効率的に管理するための基本的なデータ構造です。学生の成績管理、商品の在庫管理、数値計算など、プログラミングの多くの場面で配列が活用されます。Javaの配列は、C言語の配列の利便性を継承しつつ、境界チェックや自動初期化により安全性を大幅に向上させています。
 
 <span class="listing-number">**サンプルコード2-10**</span>
+
 ```java
 // 配列の宣言と初期化
 int[] numbers = {1, 2, 3, 4, 5};
@@ -519,6 +529,7 @@ int[][] matrix = {
 **配列操作の実用例：**
 
 <span class="listing-number">**サンプルコード2-11**</span>
+
 ```java
 // 配列の全要素を処理する安全な方法
 int[] data = {10, 20, 30, 40, 50};
@@ -544,6 +555,7 @@ for (int value : data) {
 ### 配列操作の応用例
 
 <span class="listing-number">**サンプルコード2-12**</span>
+
 ```java
 // 配列の要素を検索する
 public static int findElement(int[] array, int target) {
@@ -580,6 +592,7 @@ int[] copy2 = Arrays.copyOf(original, original.length);
 
 2. **参照型としての配列**：配列は参照型ですので、配列変数の代入は参照のコピーになります：
 <span class="listing-number">**サンプルコード2-13**</span>
+
 ```java
 int[] a = {1, 2, 3};
 int[] b = a;  // bはaと同じ配列を参照
@@ -588,6 +601,7 @@ b[0] = 100;   // a[0]も100になる
 
 3. **多次元配列の柔軟性**：Javaの多次元配列は各行の長さが異なってもかまいません：
 <span class="listing-number">**サンプルコード2-14**</span>
+
 ```java
 int[][] jaggedArray = {
     {1, 2},
@@ -612,6 +626,7 @@ int[][] jaggedArray = {
 メソッド（関数）は、特定の処理をまとめて名前を付け、必要な時に呼び出して使用するしくみです。コードの再利用性を高め、プログラムの構造を整理し、保守性を向上させる重要な概念です。Javaのメソッドは、C言語の関数の概念を発展させ、オブジェクト指向プログラミングの基礎となる機能を提供しています。
 
 <span class="listing-number">**サンプルコード2-15**</span>
+
 ```java
 public class Calculator {
     // メソッドの定義
@@ -655,6 +670,7 @@ public class Calculator {
 **高度なメソッド活用例：**
 
 <span class="listing-number">**サンプルコード2-16**</span>
+
 ```java
 // メソッドオーバーロードの例
 public static int add(int a, int b) {
@@ -686,6 +702,7 @@ Javaにおける文字列処理は、C言語のアプローチとは根本的に
 文字列オブジェクトの作成と基本操作は、Javaプログラミングにおいて最も頻繁に使用される機能の1つです。以下のコード例では、文字列の作成、連結、長さの取得、個別文字へのアクセスという基本的な操作を示します：
 
 <span class="listing-number">**サンプルコード2-17**</span>
+
 ```java
 // 文字列の作成
 String str1 = "Hello";
@@ -708,6 +725,7 @@ char firstChar = message.charAt(0);  // 'H'
 文字列の比較は、Javaプログラミングで最も誤解されやすい概念の1つです。C言語では`strcmp()`関数を使用していましたが、Javaではオブジェクトの比較という観点から、より慎重なアプローチが必要です。以下のコード例で、参照の比較と内容の比較の重要な違いを示します：
 
 <span class="listing-number">**サンプルコード2-18**</span>
+
 ```java
 String s1 = "Java";
 String s2 = "Java";
@@ -732,6 +750,7 @@ boolean ignore = s1.equalsIgnoreCase("java");  // true
 Javaの`String`クラスは、テキスト処理に必要な豊富なメソッドを提供しています。これらのメソッドは、Web開発でのユーザー入力の処理、データベースから取得した文字列の整形、ファイルの読み書きなど、実際の開発で頻繁に使用されます。以下のコード例で、最も重要な文字列操作メソッドを実践的に学習します：
 
 <span class="listing-number">**サンプルコード2-19**</span>
+
 ```java
 String text = "  Java Programming  ";
 
@@ -764,6 +783,7 @@ boolean contains = text.contains("Java");  // true
 Javaの文字列設計における最も重要な特徴の1つが不変性（Immutability）です。この設計思想は、最初は直感に反するように感じるかもしれませんが、スレッドセーフティ、セキュリティ、パフォーマンスの観点から極めて重要な役割を果たしています。文字列が不変であることにより、複数のスレッドが同じ文字列オブジェクトを安全に共有でき、予期しない変更によるバグを防ぐことができます。以下のコード例で、この重要な概念を実際に確認してみましょう：
 
 <span class="listing-number">**サンプルコード2-20**</span>
+
 ```java
 String str = "Hello";
 str.concat(" World");  // str自体は変更されない
@@ -781,6 +801,7 @@ System.out.println(str);  // "Hello World"
 文字列の不変性は多くの利点をもたらしますが、頻繁な文字列操作が必要な場合にはパフォーマンスの問題を引き起こす可能性があります。なぜなら、文字列を連結するたびに新しいオブジェクトが作成され、古いオブジェクトはガベージコレクションの対象となるからです。この問題を解決するために、Javaは`StringBuilder`クラスを提供しています。`StringBuilder`は内部にmuテーブルな（変更可能な）文字配列を持ち、効率的な文字列操作を可能にします：
 
 <span class="listing-number">**サンプルコード2-21**</span>
+
 ```java
 StringBuilder sb = new StringBuilder();
 sb.append("Hello");
@@ -833,6 +854,7 @@ Javaプログラミングにおいて、すべてのコードはクラスとい�
 以下のコード例では、人物を表現する`Person`クラスを定義しています。このクラスは、実世界の「人」という概念をプログラムで表現するための構造を提供します：
 
 <span class="listing-number">**サンプルコード2-22**</span>
+
 ```java
 public class Person {
     // フィールド（インスタンス変数）
@@ -869,6 +891,7 @@ public class Person {
 オブジェクトが持つデータを格納する変数です：
 
 <span class="listing-number">**サンプルコード2-23**</span>
+
 ```java
 private String name;    // 文字列を格納
 private int age;        // 整数を格納
@@ -882,6 +905,7 @@ private double height;  // 小数を格納
 オブジェクトを作成する際に呼び出される特別なメソッドです：
 
 <span class="listing-number">**サンプルコード2-24**</span>
+
 ```java
 public Person(String name, int age) {
     this.name = name;  // パラメータの値をフィールドに設定
@@ -896,6 +920,7 @@ public Person(String name, int age) {
 オブジェクトの振る舞いを定義します。メソッドには、値を返すメソッド（getter）と、処理を実行するメソッドがあります。適切なメソッド設計により、オブジェクトの機能を安全に公開できます。
 
 <span class="listing-number">**サンプルコード2-25**</span>
+
 ```java
 // 値を返すメソッド
 public String getName() {
@@ -915,6 +940,7 @@ public void introduce() {
 `new`キーワードを使用してクラスからオブジェクト（インスタンス）を作成します。同じクラスから複数のオブジェクトを作成でき、それぞれが独立した状態を持ちます。
 
 <span class="listing-number">**サンプルコード2-26**</span>
+
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -940,6 +966,7 @@ public class Main {
 銀行口座クラスの定義では、残高の管理、入金・出金処理、不正な操作への防護など、実用的な機能を実装しています。これはカプセル化の重要性を示す例で、フィールドをprivateにしてメソッド経由でのみアクセスを許可しています。
 
 <span class="listing-number">**サンプルコード2-27**</span>
+
 ```java
 public class BankAccount {
     // フィールド
@@ -995,6 +1022,7 @@ public class BankAccount {
 以下の例では、BankAccountクラスを実際に使用して、口座の作成から入金・出金操作までの一連の流れを確認できます。メソッドを通じて安全に残高を操作できることが分かります。
 
 <span class="listing-number">**サンプルコード2-28**</span>
+
 ```java
 public class BankExample {
     public static void main(String[] args) {
@@ -1018,6 +1046,7 @@ public class BankExample {
 データ（フィールド）を`private`にして外部から直接アクセスできないようにし、メソッドを通じてのみアクセスを許可する設計パターン：
 
 <span class="listing-number">**サンプルコード2-29**</span>
+
 ```java
 // 悪い例（カプセル化されていない）
 public class BadExample {
@@ -1045,6 +1074,7 @@ public class GoodExample {
 クラスの内部実装を隠し、必要なインターフェイスのみを公開する原則：
 
 <span class="listing-number">**サンプルコード2-30**</span>
+
 ```java
 public class Calculator {
     // 内部的な計算方法は隠蔽
@@ -1076,6 +1106,7 @@ Javaには4つのアクセスレベルがあります：
 `static`を付けることで、クラスレベルのメンバー（クラス変数・クラスメソッド）を定義できます：
 
 <span class="listing-number">**サンプルコード2-31**</span>
+
 ```java
 public class MathUtils {
     // クラス変数

@@ -182,6 +182,7 @@ JARファイルのしくみとクラスパスについての深い理解も重�
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
 <span class="listing-number">**サンプルコード23-1**</span>
+
 ```java
 // SimpleApp.java
 import javax.swing.*;
@@ -205,6 +206,7 @@ public class SimpleApp {
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です：
 
 <span class="listing-number">**サンプルコード23-2**</span>
+
 ```java
 // AppConfig.java
 public class AppConfig {
@@ -224,6 +226,7 @@ public class AppConfig {
 次に、データモデルとしてのTodoItemクラスを作成します。このクラスはタスクの情報を保持し、完了状態を管理します。toStringメソッドをオーバーライドして、リスト表示用のフォーマットを提供します。
 
 <span class="listing-number">**サンプルコード23-3**</span>
+
 ```java
 // TodoItem.java
 public class TodoItem {
@@ -255,6 +258,7 @@ public class TodoItem {
 ```
 
 <span class="listing-number">**サンプルコード23-4**</span>
+
 ```java
 // TodoApp.java
 import javax.swing.*;
@@ -397,6 +401,7 @@ Sealed: true
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります：
 
 <span class="listing-number">**サンプルコード23-5**</span>
+
 ```java
 // ResourceApp.java
 import javax.swing.*;
@@ -507,6 +512,7 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 以下の例では、Gsonライブラリを使用したJSON処理アプリケーションを示します。このアプリケーションをFat JARとしてパッケージングすることで、Gsonライブラリも含めた自己完結型の実行可能JARを作成できます。
 
 <span class="listing-number">**サンプルコード23-6**</span>
+
 ```java
 // JsonProcessorApp.java
 import com.google.gson.Gson;

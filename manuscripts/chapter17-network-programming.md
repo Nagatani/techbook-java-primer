@@ -128,6 +128,7 @@
 TCPクライアントは、Socketクラスを使用してサーバーに接続します。接続が確立されると、入力ストリームと出力ストリームを通じてデータの送受信を行います。TCPは信頼性の高い接続指向のプロトコルであり、データの順序と到達が保証されます。
 
 <span class="listing-number">**サンプルコード17-1**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -164,6 +165,7 @@ public class SimpleTCPClient {
 TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
 
 <span class="listing-number">**サンプルコード17-2**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -222,6 +224,7 @@ public class SimpleTCPServer {
 ### 17.4.1 スレッドベースのサーバー
 
 <span class="listing-number">**サンプルコード17-3**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -327,6 +330,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
 <span class="listing-number">**サンプルコード17-4**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -386,6 +390,7 @@ public class SimpleHTTPClient {
 Javaは、より高レベルなHTTP通信のためのAPIも提供しています。
 
 <span class="listing-number">**サンプルコード17-5**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -438,6 +443,7 @@ public class HttpURLConnectionExample {
 Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
 <span class="listing-number">**サンプルコード17-5-2**</span>
+
 ```java
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -501,6 +507,7 @@ public class AsyncHttpClientExample {
 UDPは、コネクションレスで信頼性の低いプロトコルですが、低遅延で高速な通信が可能です。リアルタイムゲーム、ストリーミング、DNS などで使用されます。
 
 <span class="listing-number">**サンプルコード17-5-3**</span>
+
 ```java
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -543,6 +550,7 @@ public class UDPServer {
 ### UDP受信側
 
 <span class="listing-number">**サンプルコード17-5-4**</span>
+
 ```java
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -591,6 +599,7 @@ public class UDPClient {
 ### 17.6.1 チャットサーバー
 
 <span class="listing-number">**サンプルコード17-6**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -690,6 +699,7 @@ public class ChatServer {
 ### 17.6.2 チャットクライアント
 
 <span class="listing-number">**サンプルコード17-7**</span>
+
 ```java
 import java.io.*;
 import java.net.*;
@@ -742,6 +752,7 @@ public class ChatClient {
 現代のWebアプリケーションでは、JSON形式でのデータ交換が標準的です。JavaでJSON APIを扱う方法を学びます。
 
 <span class="listing-number">**サンプルコード17-8**</span>
+
 ```java
 import java.net.URI;
 import java.net.http.*;
@@ -865,6 +876,7 @@ Java標準APIやJettyなどのライブラリを使用してWebSocketクライ�
 SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
 <span class="listing-number">**サンプルコード17-8**</span>
+
 ```java
 import javax.net.ssl.*;
 import java.io.*;
@@ -911,6 +923,7 @@ public class SSLClient {
 Java NIOを使用すると、より効率的なネットワークプログラミングが可能です。
 
 <span class="listing-number">**サンプルコード17-9**</span>
+
 ```java
 import java.nio.*;
 import java.nio.channels.*;

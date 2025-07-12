@@ -58,6 +58,7 @@
 「図形」の例を抽象クラスで実装してみましょう。
 
 <span class="listing-number">**サンプルコード7-1**</span>
+
 ```java
 // 抽象クラス Shape
 public abstract class Shape {
@@ -89,6 +90,7 @@ public abstract class Shape {
 子クラスである`Circle`と`Rectangle`は、`Shape`クラスを継承し、それぞれの方法で`getArea()`メソッドを実装します。
 
 <span class="listing-number">**サンプルコード7-2**</span>
+
 ```java
 // Circle.java
 public class Circle extends Shape {
@@ -130,6 +132,7 @@ public class Rectangle extends Shape {
 抽象クラスはインスタンス化できませんが、親クラスとしてポリモーフィズムを活用することはできます。
 
 <span class="listing-number">**サンプルコード7-3**</span>
+
 ```java
 // Main.java
 public class Main {
@@ -165,6 +168,7 @@ public class Main {
 ### 実践例：`Drawable`と`Serializable`インターフェイス
 
 <span class="listing-number">**サンプルコード7-4**</span>
+
 ```java
 // Drawable.java
 public interface Drawable {
@@ -183,6 +187,7 @@ public interface Serializable {
 `implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
 
 <span class="listing-number">**サンプルコード7-5**</span>
+
 ```java
 // Character.java
 // DrawableとSerializableの両方のインターフェイスを実装する
@@ -235,6 +240,7 @@ Java 8以降、インターフェイスは劇的に進化し、より柔軟で�
 Java 7まで、インターフェイスは「純粋な契約」として機能していました。この制約は、インターフェイスの役割を明確にする一方で、API の進化において大きな課題をもたらしていました。例えば、既存のインターフェイスに新しいメソッドを追加すると、そのインターフェイスを実装しているすべてのクラスがコンパイルエラーを起こしてしまうという問題がありました。
 
 <span class="listing-number">**サンプルコード7-6**</span>
+
 ```java
 // 従来のインターフェイス（Java 7まで）
 public interface OldStyleInterface {
@@ -254,6 +260,7 @@ public interface OldStyleInterface {
 Java 8 では、インターフェイスの進化における最大の課題である「後方互換性」を解決するため、`default`メソッドと`static`メソッドが導入されました。これにより、既存のインターフェイスを壊すことなく新機能を追加できるようになり、Java のエコシステム全体の進化が大幅に加速されました。特に、Java 8 で導入されたStream API は、この機能なしには既存のコレクションフレームワークに統合することができませんでした。
 
 <span class="listing-number">**サンプルコード7-7**</span>
+
 ```java
 // Java 8でのインターフェイス拡張
 public interface ModernInterface {
@@ -279,6 +286,7 @@ public interface ModernInterface {
 Java 9 では、インターフェイス内での`private`メソッドがサポートされました。これにより、複数の`default`メソッドや`static`メソッド間で共通ロジックを共有できるようになり、コードの重複を避けながらインターフェイス内部の実装を整理できるようになりました。`private`メソッドは外部から見えないため、インターフェイスの公開APIを汚すことなく、内部実装の詳細を隠蔽できます。
 
 <span class="listing-number">**サンプルコード7-8**</span>
+
 ```java
 // Java 9でのさらなる拡張
 public interface CompleteInterface {
@@ -309,6 +317,7 @@ public interface CompleteInterface {
 defaultメソッドの最も重要な目的は、**既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れない**ことです。
 
 <span class="listing-number">**サンプルコード7-9**</span>
+
 ```java
 // 既存のインターフェイス（多くの実装クラスが存在）
 public interface Collection<E> {
@@ -341,6 +350,7 @@ class MyCollection<E> implements Collection<E> {
 `default`メソッドの強力な応用例として、**テンプレートメソッドパターン**をインターフェイスで実現できるようになりました。従来このパターンは抽象クラスでしか実装できませんでしたが、インターフェイスでも実現可能になったことで、より柔軟な設計が可能になりました。このパターンは、処理の大枠（アルゴリズムの骨格）を定義しつつ、個別のステップを実装クラスに委ねる場合に非常に有効です。
 
 <span class="listing-number">**サンプルコード7-10**</span>
+
 ```java
 // インターフェイスでテンプレートメソッドパターン
 public interface DataProcessor {
@@ -383,6 +393,7 @@ public interface DataProcessor {
 複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します。
 
 <span class="listing-number">**サンプルコード7-11**</span>
+
 ```java
 // ダイヤモンド継承の例
 interface A {
@@ -430,6 +441,7 @@ Javaは以下の規則で優先順位を決定します：
 3. **それでも不明な場合はコンパイルエラー**: 明示的なオーバーライドが必要
 
 <span class="listing-number">**サンプルコード7-12**</span>
+
 ```java
 // 規則1：クラスが常に優先
 class BaseClass {
@@ -474,6 +486,7 @@ class Implementation implements Parent, Child {
 インターフェイスの`static`メソッドは、そのインターフェイスに関連するユーティリティ機能を提供する強力な手段です。これにより、関連する機能を1つのインターフェイス内にまとめ、使いやすいAPIを設計できます。特に、ファクトリメソッドや共通的なユーティリティ処理を提供する場合に威力を発揮します。
 
 <span class="listing-number">**サンプルコード7-13**</span>
+
 ```java
 public interface JsonSerializable {
     String toJson();
@@ -507,6 +520,7 @@ String json = JsonSerializable.serializeList(users);
 `default`メソッドは、**防御的プログラミング**の実装においても非常に有効です。実装クラスが不正な値や例外的な状態を返す可能性がある場合でも、インターフェイス側で安全なラッパーメソッドを提供することで、呼び出し側のコードをより安全で使いやすくできます。これは特に、外部ライブラリとの境界や、信頼性の異なる複数の実装が存在する場合に重要です。
 
 <span class="listing-number">**サンプルコード7-14**</span>
+
 ```java
 interface DefensiveInterface {
     List<String> getItems();
@@ -548,6 +562,7 @@ interface DefensiveInterface {
 **Mixin**は、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
 <span class="listing-number">**サンプルコード7-15**</span>
+
 ```java
 // 複数の機能を提供するMixin
 interface Timestamped {
@@ -622,6 +637,7 @@ class Document implements Timestamped, Identifiable, Versioned {
 **トレイト**は、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
 <span class="listing-number">**サンプルコード7-16**</span>
+
 ```java
 // 比較可能オブジェクトのトレイト
 interface ComparableTrait<T> extends Comparable<T> {
@@ -680,6 +696,7 @@ class Temperature implements ComparableTrait<Temperature> {
 **インターフェイス分離原則**は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
 <span class="listing-number">**サンプルコード7-17**</span>
+
 ```java
 // 悪い例：肥大化したインターフェイス
 interface BadUserService {
@@ -764,6 +781,7 @@ class BasicUserService implements UserRepository, UserNotificationService {
 defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
 
 <span class="listing-number">**サンプルコード7-18**</span>
+
 ```java
 @FunctionalInterface
 interface EnhancedFunction<T, R> extends Function<T, R> {
@@ -843,6 +861,7 @@ public class FunctionEnhancementDemo {
 APIの進化を管理するための戦略的なアプローチです。
 
 <span class="listing-number">**サンプルコード7-19**</span>
+
 ```java
 // API進化の管理
 interface ServiceV1 {

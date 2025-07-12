@@ -74,6 +74,7 @@ Setの実装クラスの選択は、アプリケーションの要件によっ�
 ラムダ式が登場する前は、`Comparator`をその場で実装するために**匿名クラス**が使われていました。
 
 <span class="listing-number">**サンプルコード12-1**</span>
+
 ```java
 import java.util.Comparator;
 // ...
@@ -102,6 +103,7 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 - `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する。
 
 <span class="listing-number">**サンプルコード12-2**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -162,6 +164,7 @@ Stream APIの重要な特徴の1つが**遅延評価（Lazy Evaluation）**で�
 - 無限ストリームの処理が可能になる
 
 <span class="listing-number">**サンプルコード12-3**</span>
+
 ```java
 // この時点ではまだフィルタリングは実行されない
 Stream<Integer> stream = numbers.stream()
@@ -213,6 +216,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。
 
 <span class="listing-number">**サンプルコード12-4**</span>
+
 ```java
 List<Student> list = ...;
 // 点数が90点以上の生徒だけを抽出
@@ -226,6 +230,7 @@ List<Student> highScorers = list.stream()
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。
 
 <span class="listing-number">**サンプルコード12-5**</span>
+
 ```java
 // 生徒のリストから、名前のリストを生成
 List<String> names = list.stream()
@@ -236,6 +241,7 @@ List<String> names = list.stream()
 ### 組み合わせた例
 
 <span class="listing-number">**サンプルコード12-6**</span>
+
 ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -275,6 +281,7 @@ public class StreamExample {
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです：
 
 <span class="listing-number">**サンプルコード12-7**</span>
+
 ```java
 // シーケンシャル（直列）処理
 long sum = numbers.stream()
@@ -298,6 +305,7 @@ long sumParallel = numbers.parallelStream()
 3. **統合（Combine）**：各スレッドの結果を統合して最終結果を生成
 
 <span class="listing-number">**サンプルコード12-8**</span>
+
 ```java
 import java.util.stream.IntStream;
 import java.time.Duration;
@@ -341,6 +349,7 @@ public class ParallelStreamExample {
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります：
 
 <span class="listing-number">**サンプルコード12-9**</span>
+
 ```java
 // スレッドセーフでない例（避けるべき）
 List<Integer> results = new ArrayList<>();  // スレッドセーフでない
@@ -372,6 +381,7 @@ List<Integer> results = numbers.parallelStream()
 `flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などに特に有用です。
 
 <span class="listing-number">**サンプルコード12-10**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -419,6 +429,7 @@ public class FlatMapExample {
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
 <span class="listing-number">**サンプルコード12-11**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -469,6 +480,7 @@ public class ReduceExample {
 `Collectors`クラスは、ストリームの要素を様々な形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
 <span class="listing-number">**サンプルコード12-12**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -516,6 +528,7 @@ public class CollectorsExample {
 `Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
 
 <span class="listing-number">**サンプルコード12-13**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -553,6 +566,7 @@ public class OptionalExample {
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-null チェックの連続を大幅に簡素化します。
 
 <span class="listing-number">**サンプルコード12-14**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -584,6 +598,7 @@ public class OptionalChainingExample {
 実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理する必要があります。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
 <span class="listing-number">**サンプルコード12-15**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -623,6 +638,7 @@ public class NullSafeProcessingExample {
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを効率的に処理する際に重要です。
 
 <span class="listing-number">**サンプルコード12-16**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -660,6 +676,7 @@ public class ShortCircuitExample {
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、適切な配列コンストラクタを指定することが重要です。
 
 <span class="listing-number">**サンプルコード12-17**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;
@@ -691,6 +708,7 @@ public class ToArrayExample {
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
 <span class="listing-number">**サンプルコード12-18**</span>
+
 ```java
 import java.util.Arrays;
 import java.util.List;

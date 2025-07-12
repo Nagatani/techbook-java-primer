@@ -75,6 +75,7 @@
 ファイルなどの外部リソースは、使い終わったら必ず「閉じる（closeする）」必要があります。これを怠ると、リソースリークなどの問題を引き起こします。Java 7以降で導入された`try-with-resources`文を使うと、リソースのクローズ処理が自動的に行われ、安全かつ簡潔にコードを記述できます。
 
 <span class="listing-number">**サンプルコード15-1**</span>
+
 ```java
 // try()の括弧内でリソースを初期化する
 try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
@@ -96,6 +97,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます：
 
 <span class="listing-number">**サンプルコード15-2**</span>
+
 ```java
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -143,6 +145,7 @@ public class ScannerExample {
 ```
 
 <span class="listing-number">**サンプルコード15-3**</span>
+
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -197,6 +200,7 @@ public class TextFileReaderExample {
 同様に`Files`クラスと`BufferedWriter`を使います。
 
 <span class="listing-number">**サンプルコード15-4**</span>
+
 ```java
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -243,6 +247,7 @@ public class TextFileWriterExample {
 - **ISO-8859-1**: 西欧言語用の1バイトエンコーディング
 
 <span class="listing-number">**サンプルコード15-5**</span>
+
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -297,6 +302,7 @@ public class CharacterEncodingExample {
 Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します：
 
 <span class="listing-number">**サンプルコード15-6**</span>
+
 ```java
 import java.io.*;
 
@@ -359,6 +365,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 -   `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）。
 
 <span class="listing-number">**サンプルコード15-7**</span>
+
 ```java
 import java.io.*;
 import java.time.LocalDateTime;
@@ -418,6 +425,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 -   **`Files`**: ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス。
 
 <span class="listing-number">**サンプルコード15-8**</span>
+
 ```java
 import java.io.IOException;
 import java.nio.file.*;
@@ -471,6 +479,7 @@ public class FileSystemExample {
 // 以下は基本的なCSV読み込み・書き込みの実装例です。
 
 <span class="listing-number">**サンプルコード15-8-1**</span>
+
 ```java
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -544,6 +553,7 @@ public class CSVProcessingExample {
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 
 <span class="listing-number">**サンプルコード15-9**</span>
+
 ```java
 import javax.swing.*;
 import java.io.File;

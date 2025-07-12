@@ -380,6 +380,7 @@ $ nano HelloWorld.java
 以下のコードを書きます。
 
 <span class="listing-number">**リストAA-1**</span>
+
 ```java
 public class HelloWorld {
     public static void main(String[] args) {
@@ -487,6 +488,7 @@ Javaプログラムでのプログラムへのデータの受け渡し方法は�
 ファイル名「```StandardInput.java```」
 
 <span class="listing-number">**リストAA-2**</span>
+
 ```java
 import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言
 
@@ -511,6 +513,7 @@ public class StandardInput {
 ファイル名「```ParseInt.java```」
 
 <span class="listing-number">**リストAA-3**</span>
+
 ```java
 import java.util.Scanner;  // このライブラリをParseIntクラスで使う宣言
 
