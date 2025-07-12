@@ -233,6 +233,9 @@ class MyTask implements Runnable {
 }
 
 // ③ ラムダ式方式（Java 8以降推奨）
+// ラムダ式を使用することで、簡潔でわかりやすいスレッド作成が可能になります。
+// この方式は一度だけ実行する短時間のタスクに最適で、無名クラスの冗長さを排除できます。
+// 関数型プログラミングのパラダイムに従い、実行される処理（タスク）を明確に表現できます。
 new Thread(() -> {
     System.out.println("ラムダ式方式で実行");
 }).start();
@@ -616,7 +619,14 @@ step3: 集計処理 → 30
 
 **古典的wait/notifyの問題点と正しい実装パターン**：
 
-wait/notifyを使用したスレッド間同期は、多くの微妙な問題を含んでいます。以下の例では、よくある間違った実装と正しい実装パターンを比較します。
+wait/notifyは、Javaの初期から存在するスレッド間通信のメカニズムです。一つのスレッドが特定の条件を待ち（wait）、別のスレッドがその条件を満たしたら通知（notify）するという仕組みです。しかし、このメカニズムは多くの微妙な問題を含んでおり、正しく使用するには注意が必要です。
+
+**wait/notifyの基本的な仕組み**：
+- `wait()`: 現在のスレッドを待機状態にし、ロックを解放する
+- `notify()`: 待機中のスレッドを一つ起こす
+- `notifyAll()`: 待機中のすべてのスレッドを起こす
+
+以下の例では、よくある間違った実装と正しい実装パターンを比較します。
 
 <span class="listing-number">**サンプルコード16-8**</span>
 ```java
@@ -852,27 +862,205 @@ public class Main {
 
 複数のスレッドが、同じデータ（オブジェクトや変数）に同時にアクセスすると、予期せぬ問題が発生することがあります。これを**競合状態 (Race Condition)** と呼びます。
 
+**同期の必要性を示す具体例**
+
+例えば、銀行口座の残高を更新する処理を考えてみましょう。残高10,000円の口座から、2つのATMで同時に8,000円を引き出そうとした場合、同期制御がないと両方の引き出しが成功してしまい、残高がマイナスになる可能性があります。これは、以下のような処理の流れで発生します：
+
+1. ATM1が残高10,000円を読み取る
+2. ATM2も残高10,000円を読み取る（まだATM1の処理は完了していない）
+3. ATM1が「10,000円 - 8,000円 = 2,000円」と計算して更新
+4. ATM2も「10,000円 - 8,000円 = 2,000円」と計算して更新
+5. 結果：16,000円が引き出されてしまう
+
 ### `synchronized`による排他制御
 
 この問題を解決するために、Javaは`synchronized`キーワードによる**排他制御**のしくみを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。
+
+**synchronizedメソッドの基本的な使い方**
+
+`synchronized`キーワードをメソッドに付けることで、そのメソッド全体が排他制御の対象となります。これにより、同時に1つのスレッドしかそのメソッドを実行できなくなり、データの整合性が保たれます。
 
 <span class="listing-number">**サンプルコード16-10**</span>
 ```java
 class SynchronizedCounter {
     private int count = 0;
 
-    // このメソッドはsynchronizedによりスレッドセーフになる
+    // synchronizedキーワードにより、このメソッドは同時に1つのスレッドしか実行できない
+    // これにより、count++という複合操作（読み取り→インクリメント→書き込み）が
+    // 原子的（アトミック）に実行されることが保証される
     public synchronized void increment() {
         count++;
     }
 
-    public int getCount() {
+    // 読み取りメソッドも一貫性のため、synchronizedにすることが推奨される
+    public synchronized int getCount() {
         return count;
     }
 }
 ```
 
 `synchronized`は非常に強力ですが、ロックの範囲が広すぎるとパフォーマンスの低下を招いたり、複数のロックが絡み合うと**デッドロック**（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こしたりする危険性もあります。
+
+**synchronizedブロックによる細かい制御**
+
+メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
+
+<span class="listing-number">**サンプルコード16-10-2**</span>
+```java
+class BankAccount {
+    private double balance;
+    private final Object lock = new Object(); // ロックオブジェクト
+    
+    public void deposit(double amount) {
+        // 検証処理は同期化の外で実行（パフォーマンス向上）
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は正の数である必要があります");
+        }
+        
+        // 残高の更新部分だけを同期化
+        synchronized (lock) {
+            System.out.println("入金前残高: " + balance);
+            balance += amount;
+            System.out.println("入金後残高: " + balance);
+        }
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        
+        synchronized (lock) {
+            if (balance >= amount) {
+                System.out.println("引き出し前残高: " + balance);
+                balance -= amount;
+                System.out.println("引き出し後残高: " + balance);
+                return true;
+            }
+            return false;
+        }
+    }
+}
+```
+
+### 16.8.2.1 volatileキーワードによるメモリ可視性の保証
+
+`volatile`キーワードは、変数への変更が他のスレッドから即座に見えることを保証します。これは主に、スレッド間でのフラグの共有などに使用されます。
+
+**volatileの主な特徴**：
+- メモリの可視性を保証（あるスレッドの変更が他のスレッドから即座に見える）
+- 単純な読み書きのみをアトミックにする（複合操作は保証しない）
+- synchronized より軽量だが、機能も限定的
+
+<span class="listing-number">**サンプルコード16-10-3**</span>
+```java
+class ThreadStopExample {
+    // volatileフラグによる安全なスレッド停止
+    private volatile boolean stopRequested = false;
+    
+    public void startWorker() {
+        Thread worker = new Thread(() -> {
+            int count = 0;
+            // volatileフラグを定期的にチェック
+            while (!stopRequested) {
+                count++;
+                if (count % 1000000 == 0) {
+                    System.out.println("Working... count: " + count);
+                }
+            }
+            System.out.println("Worker stopped at count: " + count);
+        });
+        worker.start();
+    }
+    
+    public void stopWorker() {
+        // volatileにより、この変更は即座に他のスレッドから見える
+        stopRequested = true;
+        System.out.println("Stop requested");
+    }
+}
+
+// 使用例
+public class VolatileDemo {
+    public static void main(String[] args) throws InterruptedException {
+        ThreadStopExample example = new ThreadStopExample();
+        example.startWorker();
+        
+        // 3秒間動作させる
+        Thread.sleep(3000);
+        
+        // ワーカーを停止
+        example.stopWorker();
+    }
+}
+```
+
+**注意点**：volatileは複合操作（読み取り→計算→書き込み）をアトミックにしません。カウンターのインクリメントなどには使用できないため、そのような場合は`AtomicInteger`などのアトミッククラスを使用する必要があります。
+
+### 16.8.2.2 Atomicクラスによるロックフリーなアトミック操作
+
+`java.util.concurrent.atomic`パッケージは、ロックを使わずにアトミックな操作を実現するクラス群を提供します。これらは内部的にCAS（Compare-And-Swap）操作を使用し、高性能な並行処理を実現します。
+
+**主なAtomicクラス**：
+- `AtomicInteger`: int値のアトミック操作
+- `AtomicLong`: long値のアトミック操作
+- `AtomicBoolean`: boolean値のアトミック操作
+- `AtomicReference<T>`: 参照型のアトミック操作
+
+<span class="listing-number">**サンプルコード16-10-4**</span>
+```java
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class AtomicCounterExample {
+    // スレッドセーフなカウンター
+    private final AtomicInteger counter = new AtomicInteger(0);
+    
+    public void performCounting() throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        
+        // 10スレッドが同時に1000回ずつインクリメント
+        for (int i = 0; i < 10; i++) {
+            executor.execute(() -> {
+                for (int j = 0; j < 1000; j++) {
+                    // アトミックなインクリメント操作
+                    int newValue = counter.incrementAndGet();
+                    if (newValue % 1000 == 0) {
+                        System.out.println("Counter reached: " + newValue);
+                    }
+                }
+            });
+        }
+        
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.SECONDS);
+        
+        System.out.println("Final counter value: " + counter.get());
+        // 常に正確に10,000になる
+    }
+    
+    // その他の便利なアトミック操作
+    public void demonstrateAtomicOperations() {
+        AtomicInteger value = new AtomicInteger(10);
+        
+        // 現在値を取得して、新しい値を設定
+        int oldValue = value.getAndSet(20);
+        System.out.println("Old: " + oldValue + ", New: " + value.get());
+        
+        // 条件付き更新（CAS操作）
+        boolean updated = value.compareAndSet(20, 30);
+        System.out.println("Updated: " + updated + ", Value: " + value.get());
+        
+        // 加算操作
+        int result = value.addAndGet(5);
+        System.out.println("After adding 5: " + result);
+    }
+}
+```
+
+Atomicクラスはsynchronizedよりもはるかに高速で、特に読み取りが多い場合や競合が少ない場合に優れたパフォーマンスを発揮します。
 
 ### 16.8.3 Executorフレームワークによる高度なスレッド管理
 
@@ -882,8 +1070,17 @@ class SynchronizedCounter {
 
 `ExecutorService`は、タスクの投入とスレッドプールの管理を行うためのインターフェイスです。スレッドプールは、あらかじめ作成された再利用可能なスレッドの集まりです。
 
+**ExecutorServiceの利点**：
 -   **パフォーマンス向上**: スレッドの生成・破棄コストを削減できます。
 -   **リソース管理**: 作成されるスレッド数を制限し、システムの安定性を高めます。
+-   **タスクキューイング**: 実行待ちタスクを効率的に管理します。
+-   **エラーハンドリング**: 例外が発生してもスレッドプールは継続して動作します。
+
+**主なExecutorServiceの種類**：
+- `newFixedThreadPool(int)`: 固定数のスレッドを持つプール
+- `newCachedThreadPool()`: 必要に応じてスレッドを作成・再利用するプール
+- `newSingleThreadExecutor()`: 単一スレッドで順次実行するプール
+- `newScheduledThreadPool(int)`: スケジュール実行が可能なプール
 
 <span class="listing-number">**サンプルコード16-11**</span>
 ```java
@@ -926,6 +1123,8 @@ public class ExecutorExample {
 
 #### 1. プロデューサー・コンシューマーパターンの実装
 
+プロデューサー・コンシューマーパターンは、並行処理における古典的かつ重要なデザインパターンです。生産者（プロデューサー）がデータを生成し、消費者（コンシューマー）がそれを処理するという構造で、両者の処理速度の違いをバッファ（キュー）で吸収します。このパターンは、ログ処理、メッセージキュー、パイプライン処理など、多くの実用的なシステムで使用されています。
+
 <span class="listing-number">**サンプルコード16-12**</span>
 ```java
 import java.util.concurrent.BlockingQueue;
@@ -934,6 +1133,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProducerConsumerExample {
     // 共有キュー
+    // BlockingQueueは、スレッド間でデータを安全に受け渡すための
+    // 特殊なキューです。キューが満杯の時は生産者が自動的にブロックされ、
+    // キューが空の時は消費者が自動的にブロックされます。
     private static final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(10);
     private static final AtomicInteger producedCount = new AtomicInteger(0);
     private static final AtomicInteger consumedCount = new AtomicInteger(0);
@@ -1013,6 +1215,14 @@ public class ProducerConsumerExample {
 
 #### 2. Future と Callable を使った非同期処理
 
+`Future`インターフェイスは、非同期処理の結果を表現するオブジェクトです。`Callable`は`Runnable`と似ていますが、値を返すことができ、例外をスローすることも可能です。
+
+**FutureとCallableの特徴**：
+- **Callable**: 戻り値を持つタスクを定義（`Runnable`は戻り値なし）
+- **Future**: 非同期処理の結果を保持し、完了を待機できる
+- **例外処理**: `Callable`は検査例外をスローできる
+- **キャンセル機能**: 実行中のタスクをキャンセル可能
+
 <span class="listing-number">**サンプルコード16-13**</span>
 ```java
 import java.util.concurrent.*;
@@ -1078,7 +1288,15 @@ public class FutureCallableExample {
 }
 ```
 
-#### 3. CompleテーブルFuture による高度な非同期処理
+#### 3. CompletableFuture による高度な非同期処理
+
+`CompletableFuture`は、Java 8で導入された強力な非同期処理フレームワークです。従来の`Future`の制限を克服し、関数型プログラミングスタイルで非同期処理を記述できます。
+
+**CompletableFutureの主な特徴**：
+- **非同期処理の連鎖**: `thenApply`、`thenCompose`などで処理を連鎖
+- **例外処理**: `exceptionally`、`handle`で例外を優雅に処理
+- **複数の非同期処理の組み合わせ**: `allOf`、`anyOf`で複数の処理を統合
+- **タイムアウト処理**: Java 9以降では`orTimeout`メソッドも利用可能
 
 <span class="listing-number">**サンプルコード16-14**</span>
 ```java
@@ -1177,6 +1395,76 @@ public class CompletableFutureExample {
 }
 ```
 
+#### 3.1 非同期処理の連鎖と合成
+
+`CompletableFuture`の真の力は、複数の非同期処理を優雅に連鎖・合成できる点にあります。これにより、複雑な非同期ワークフローを宣言的に記述できます。
+
+**主な連鎖メソッド**：
+- `thenApply()`: 結果を変換（同期的）
+- `thenApplyAsync()`: 結果を変換（非同期的）
+- `thenCompose()`: 別のCompletableFutureを返す関数を適用
+- `thenCombine()`: 2つのCompletableFutureの結果を結合
+- `thenAccept()`: 結果を消費（戻り値なし）
+
+<span class="listing-number">**サンプルコード16-14-2**</span>
+```java
+public class AsyncChainingExample {
+    
+    // ユーザー情報を取得
+    static CompletableFuture<User> fetchUser(String userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("Fetching user: " + userId);
+            // データベースアクセスをシミュレート
+            sleep(1000);
+            return new User(userId, "User-" + userId);
+        });
+    }
+    
+    // ユーザーの注文履歴を取得
+    static CompletableFuture<List<Order>> fetchOrders(User user) {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("Fetching orders for: " + user.getName());
+            sleep(1500);
+            return List.of(
+                new Order("Order-1", 1000),
+                new Order("Order-2", 2000)
+            );
+        });
+    }
+    
+    // 注文の合計金額を計算
+    static int calculateTotal(List<Order> orders) {
+        System.out.println("Calculating total...");
+        return orders.stream()
+            .mapToInt(Order::getAmount)
+            .sum();
+    }
+    
+    public static void main(String[] args) throws Exception {
+        // 非同期処理を連鎖させる
+        CompletableFuture<Integer> totalFuture = fetchUser("USER001")
+            .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
+            .thenApply(orders -> calculateTotal(orders))  // 同期的な変換
+            .exceptionally(ex -> {
+                System.err.println("Error occurred: " + ex.getMessage());
+                return 0;  // デフォルト値を返す
+            });
+        
+        System.out.println("Total amount: " + totalFuture.get());
+    }
+    
+    private static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+```
+
+この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、美しく連鎖させています。各ステップは非同期に実行され、エラーハンドリングも含まれています。
+
 #### 4. 並行コレクションの活用
 
 <span class="listing-number">**サンプルコード16-15**</span>
@@ -1190,6 +1478,9 @@ public class ConcurrentCollectionsExample {
     
     public static void main(String[] args) throws InterruptedException {
         // 1. ConcurrentHashMap - スレッドセーフなマップ
+        // ConcurrentHashMapは、高い並行性を実現するスレッドセーフなマップ実装です。
+        // 内部的にセグメントロックを使用し、異なる部分への同時アクセスを可能にします。
+        // これにより、HashTableのような全体ロックに比べて大幅に性能が向上します。
         ConcurrentHashMap<String, Integer> wordCount = new ConcurrentHashMap<>();
         String[] words = {"apple", "banana", "apple", "cherry", "banana", "apple"};
         
@@ -1485,7 +1776,59 @@ public class FutureExample {
 }
 ```
 
+### TimerとTimerTaskによるスケジュール実行（レガシー）
+
+Java 1.3から存在する`Timer`クラスは、タスクを定期的に実行するための古典的な方法です。現在では`ScheduledExecutorService`の使用が推奨されますが、既存のコードで見かけることがあるため、理解しておくことが重要です。
+
+<span class="listing-number">**サンプルコード16-17-2**</span>
+```java
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Date;
+
+public class TimerExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        Timer timer = new Timer("MyTimer");
+        
+        // 1. 一度だけ実行するタスク
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("One-time task executed at: " + new Date());
+            }
+        }, 2000); // 2秒後に実行
+        
+        // 2. 定期的に実行するタスク
+        timer.scheduleAtFixedRate(new TimerTask() {
+            private int count = 0;
+            
+            @Override
+            public void run() {
+                System.out.println("Periodic task #" + (++count) + " at: " + new Date());
+                if (count >= 5) {
+                    timer.cancel(); // 5回実行したら停止
+                }
+            }
+        }, 1000, 1000); // 1秒後から1秒間隔で実行
+        
+        // メインスレッドを待機
+        Thread.sleep(10000);
+    }
+}
+```
+
+**Timerクラスの問題点**：
+- シングルスレッドで実行されるため、一つのタスクが遅延すると他のタスクも影響を受ける
+- 例外が発生するとTimerスレッド全体が停止する
+- タスクのキャンセルが難しい
+- より柔軟な制御ができない
+
+これらの理由から、現在では`ScheduledExecutorService`の使用が強く推奨されています。
+
 ### 実践的なパフォーマンス測定とベンチマーク
+
+並列処理の効果を正しく評価するには、適切なベンチマークとパフォーマンス測定が不可欠です。このセクションでは、並列ソート、並列ストリーム、ForkJoinPoolを使った実践的な例を紹介します。
 
 <span class="listing-number">**サンプルコード16-18**</span>
 ```java
@@ -1980,6 +2323,9 @@ public class ExecutorTypesExample {
         singleExecutor.awaitTermination(2, TimeUnit.SECONDS);
         
         // 4. スケジュール機能付きExecutor
+        // ScheduledExecutorServiceは、タスクを指定した時間後に実行したり、
+        // 定期的に繰り返し実行したりするための強力な機能を提供します。
+        // これにより、従来のTimerクラスよりも柔軟で信頼性の高いスケジューリングが可能になります。
         ScheduledExecutorService scheduledExecutor = 
             Executors.newScheduledThreadPool(2);
         System.out.println("\n=== Scheduled Executor ===");

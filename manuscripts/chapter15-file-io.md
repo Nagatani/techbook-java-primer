@@ -159,6 +159,9 @@ public class TextFileReaderExample {
         try { Files.writeString(filePath, "Line 1\nLine 2"); } catch (IOException e) {}
 
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
+        // テキストファイルの読み込み
+        // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
+        // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションでは最も推奨される方法です。
         System.out.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -170,8 +173,14 @@ public class TextFileReaderExample {
             e.printStackTrace();
         }
 
+        // 大きなファイルの効率的読み込み
+        // readAllLines()は小さなファイル（数MBまで）に適しています。
+        // 大容量ファイルではメモリ不足の原因となるため、上記の1行ずつ読み込み方式を使用してください。
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
         System.out.println("\n--- 全行を一度に読み込み ---");
+        // テキストファイルの一括読み込み
+        // readAllLines()は小容量ファイル専用の便利メソッドです。
+        // 設定ファイルや小さなデータファイルの処理に適していますが、大容量ファイルではOutOfMemoryErrorの原因となります。
         try {
             List<String> lines = Files.readAllLines(
                     filePath, StandardCharsets.UTF_8);
@@ -201,6 +210,10 @@ public class TextFileWriterExample {
     public static void main(String[] args) {
         Path filePath = Paths.get("output.txt");
 
+        // ファイルへの書き込み
+        // BufferedWriterを使用してテキストデータを効率的にファイルに書き込みます。
+        // CREATE: ファイルが存在しない場合は新規作成
+        // TRUNCATE_EXISTING: 既存ファイルがある場合は内容を消去して上書き
         try (BufferedWriter writer = Files.newBufferedWriter(
                 filePath, StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, 
@@ -215,6 +228,9 @@ public class TextFileWriterExample {
     }
 }
 ```
+// 追記モード
+// StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追加できます。
+// ログファイルの作成や、既存データを保持しながら新しい情報を追加する場合に使用します。
 `StandardOpenOption.APPEND`を指定すると、ファイルの末尾に追記できます。
 
 ### 文字エンコーディングの指定
@@ -275,6 +291,9 @@ public class CharacterEncodingExample {
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
 
+// バイナリファイルの読み込み
+// DataInputStream/DataOutputStreamは、プリミティブ型のデータを効率的にバイナリ形式で保存・読み込みするためのクラスです。
+// テキスト形式と比較してファイルサイズが小さく、読み書き速度も高速です。
 Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します：
 
 <span class="listing-number">**サンプルコード15-6**</span>
@@ -285,6 +304,9 @@ public class DataStreamExample {
     public static void main(String[] args) throws IOException {
         String filename = "data.bin";
         
+        // バイナリファイルの書き込み
+        // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
+        // この方法により、データの型情報を保持したまま効率的にファイルに保存できます。
         // データの書き込み
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(filename)))) {
@@ -321,6 +343,10 @@ public class DataStreamExample {
 3. **文字列の制限**: `writeUTF()`は最大65535バイトまでの文字列しか扱えません
 
 ### BufferedInputStream/BufferedOutputStreamの活用
+
+// Files クラスの使用
+// NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
+// パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用すべきAPIです。
 
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、特に大量のデータを扱う場合に有効です。
 
@@ -359,6 +385,9 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
+        // FileVisitor の実装
+        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式でファイルに保存します。
+        // オブジェクトの構造や状態をそのまま保持できるため、データの永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
@@ -366,6 +395,9 @@ public class SerializationExample {
             System.out.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
+        // ストリーム API との統合
+        // ObjectInputStreamでファイルからオブジェクトを復元します。
+        // オブジェクトの状態が完全に復元され、保存時と同じ構造とデータを持つオブジェクトが復元されます。
         // 2. ファイルから非直列化して復元
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {
@@ -395,16 +427,26 @@ public class FileSystemExample {
         Path dir = Paths.get("my_temp_dir");
         Path file = dir.resolve("my_file.txt");
 
+        // ディレクトリ操作
+        // Files.createDirectory()は指定されたディレクトリを作成します。
+        // createDirectories()を使用すると、必要に応じて親ディレクトリも同時に作成されます。
         // ディレクトリ作成
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
             System.out.println("ディレクトリを作成しました: " + dir);
         }
 
+        // テキストファイルの一括書き込み
+        // writeString()は小容量のテキストデータを簡単にファイルに保存できる便利メソッドです。
+        // 内部的にはBufferedWriterが使用されており、効率的な書き込みが行われます。
         // ファイル作成と書き込み
         Files.writeString(file, "Hello, NIO.2!");
         System.out.println("ファイルを作成しました: " + file);
 
+        // ファイル属性の取得
+        // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
+        // REPLACE_EXISTING: 同名ファイルがある場合は上書き
+        // COPY_ATTRIBUTES: ファイルの属性（作成日時、アクセス権など）もコピー
         // ファイルのコピー
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile, StandardCopyOption.REPLACE_EXISTING);
@@ -419,7 +461,85 @@ public class FileSystemExample {
 }
 ```
 
-## 15.6 GUIでのファイル選択: `JFileChooser`
+## 15.6 実践的なファイル処理例
+
+### CSV ファイルの処理
+
+// CSV ファイルの処理
+// CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
+// Javaでは標準ライブラリだけでも基本的なCSV処理が可能ですが、複雑な処理では専用ライブラリ（Apache Commons CSV等）の使用を推奨します。
+// 以下は基本的なCSV読み込み・書き込みの実装例です。
+
+<span class="listing-number">**サンプルコード15-8-1**</span>
+```java
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
+
+public class CSVProcessingExample {
+    public static void main(String[] args) {
+        Path csvFile = Paths.get("sample.csv");
+        
+        // CSVファイルの作成（サンプルデータ）
+        createSampleCSV(csvFile);
+        
+        // CSVファイルの読み込み
+        List<List<String>> csvData = readCSV(csvFile);
+        System.out.println("読み込んだCSVデータ:");
+        csvData.forEach(row -> System.out.println(String.join(" | ", row)));
+        
+        // CSVファイルの書き込み
+        writeCSV(Paths.get("output.csv"), csvData);
+    }
+    
+    // CSVファイルの読み込み
+    public static List<List<String>> readCSV(Path filePath) {
+        List<List<String>> result = new ArrayList<>();
+        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                List<String> row = parseCSVLine(line);
+                result.add(row);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    // 簡単なCSV行解析（引用符などの複雑なケースは考慮していません）
+    private static List<String> parseCSVLine(String line) {
+        return Arrays.asList(line.split(","));
+    }
+    
+    // CSVファイルの書き込み
+    public static void writeCSV(Path filePath, List<List<String>> data) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+            for (List<String> row : data) {
+                writer.write(String.join(",", row));
+                writer.newLine();
+            }
+            System.out.println("CSVファイルを書き込みました: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // サンプルCSVファイルの作成
+    private static void createSampleCSV(Path filePath) {
+        List<List<String>> sampleData = Arrays.asList(
+            Arrays.asList("名前", "年齢", "職業"),
+            Arrays.asList("田中太郎", "30", "エンジニア"),
+            Arrays.asList("佐藤花子", "25", "デザイナー"),
+            Arrays.asList("鈴木一郎", "35", "マネージャー")
+        );
+        writeCSV(filePath, sampleData);
+    }
+}
+```
+
+## 15.7 GUIでのファイル選択: `JFileChooser`
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 

@@ -365,6 +365,382 @@ List<Integer> results = numbers.parallelStream()
 3. **状態を共有しない処理**：各要素が独立して処理できる場合
 4. **順序が重要でない場合**：出力の順序が問題にならない場合
 
+## 12.5 高度なStream操作
+
+### flatMapによる複雑なデータ変換
+
+`flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などに特に有用です。
+
+<span class="listing-number">**サンプルコード12-10**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FlatMapExample {
+    public static void main(String[] args) {
+        List<List<String>> nestedList = Arrays.asList(
+            Arrays.asList("Java", "Python"),
+            Arrays.asList("JavaScript", "Go"),
+            Arrays.asList("Rust", "C++")
+        );
+        
+        // flatMapを使ってネストしたリストを平坦化する
+        // この例では、リストのリストから単一の文字列リストを作成
+        List<String> flatList = nestedList.stream()
+            .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
+            .collect(Collectors.toList());
+        
+        System.out.println(flatList);
+        // 出力: [Java, Python, JavaScript, Go, Rust, C++]
+        
+        // 文字列を単語に分割する例
+        List<String> sentences = Arrays.asList(
+            "Hello world",
+            "Java programming",
+            "Stream API"
+        );
+        
+        // 各文字列を単語に分割し、すべての単語を1つのリストにまとめる
+        List<String> words = sentences.stream()
+            .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+            .collect(Collectors.toList());
+        
+        System.out.println(words);
+        // 出力: [Hello, world, Java, programming, Stream, API]
+    }
+}
+```
+
+`flatMap`は、一対多の関係を持つデータを処理する際に非常に強力です。各学生が複数の科目を履修している場合など、実世界のデータ構造でよく遭遇するパターンを効率的に処理できます。
+
+### reduceによる集約処理
+
+`reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
+
+<span class="listing-number">**サンプルコード12-11**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+        
+        // 基本的なreduce操作：数値の合計を計算
+        // reduce(初期値, 二項演算子)の形式
+        int sum = numbers.stream()
+            .reduce(0, (a, b) -> a + b);  // 初期値0から開始し、各要素を加算
+        System.out.println("合計: " + sum); // 出力: 合計: 15
+        
+        // より複雑な例：最大値を求める（初期値なし）
+        // この場合、空のストリームの可能性があるためOptionalが返される
+        Optional<Integer> max = numbers.stream()
+            .reduce((a, b) -> a > b ? a : b);
+        max.ifPresent(value -> System.out.println("最大値: " + value)); // 出力: 最大値: 5
+        
+        // 文字列の結合例
+        List<String> words = Arrays.asList("Java", "is", "awesome");
+        String sentence = words.stream()
+            .reduce("", (result, word) -> result.isEmpty() ? word : result + " " + word);
+        System.out.println(sentence); // 出力: Java is awesome
+        
+        // 複雑な集約：学生の点数から統計情報を計算
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 85, 165),
+            new Student("Bob", 92, 170),
+            new Student("Charlie", 78, 180)
+        );
+        
+        // 全学生の平均点を計算（reduceを使った方法）
+        double average = students.stream()
+            .mapToInt(Student::getScore)
+            .reduce(0, Integer::sum) / (double) students.size();
+        System.out.println("平均点: " + average); // 出力: 平均点: 85.0
+    }
+}
+```
+
+`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`, `max()`, `min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます。
+
+### Collectorsによる高度なデータ収集
+
+`Collectors`クラスは、ストリームの要素を様々な形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
+
+<span class="listing-number">**サンプルコード12-12**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class CollectorsExample {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 85, 165),
+            new Student("Bob", 92, 170),
+            new Student("Charlie", 78, 180),
+            new Student("David", 92, 175),
+            new Student("Eve", 88, 160)
+        );
+        
+        // 基本的なcollect操作：リストへの収集
+        // 高得点（85点以上）の学生の名前をリストで取得
+        List<String> highScorers = students.stream()
+            .filter(s -> s.getScore() >= 85)
+            .map(Student::getName)
+            .collect(Collectors.toList());
+        System.out.println("高得点者: " + highScorers);
+        
+        // グループ化の例：点数でグループ分け
+        // 同じ点数の学生をグループ化する実用的な例
+        Map<Integer, List<Student>> scoreGroups = students.stream()
+            .collect(Collectors.groupingBy(Student::getScore));
+        System.out.println("点数別グループ: " + scoreGroups);
+        
+        // より複雑な変換：条件による分類
+        // 80点以上かどうかで学生を分類
+        Map<Boolean, List<Student>> passFail = students.stream()
+            .collect(Collectors.partitioningBy(s -> s.getScore() >= 80));
+        System.out.println("合格者: " + passFail.get(true).size() + "人");
+        System.out.println("不合格者: " + passFail.get(false).size() + "人");
+    }
+}
+```
+
+`Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句に相当する処理をJavaのコード内で簡潔に実現できます。
+
+### Optionalによる安全なデータ処理
+
+`Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
+
+<span class="listing-number">**サンプルコード12-13**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class OptionalExample {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 85, 165),
+            new Student("Bob", 92, 170),
+            new Student("Charlie", 78, 180)
+        );
+        
+        // Optionalの基本使用：最初の高得点者を安全に取得
+        // findFirst()はOptional<Student>を返すため、null安全
+        Optional<Student> firstHighScorer = students.stream()
+            .filter(s -> s.getScore() >= 90)
+            .findFirst();
+        
+        // 値が存在する場合のみ処理を実行
+        firstHighScorer.ifPresent(student -> 
+            System.out.println("最初の高得点者: " + student.getName()));
+        
+        // デフォルト値を使用した安全な処理
+        String topScorerName = firstHighScorer
+            .map(Student::getName)
+            .orElse("該当者なし");
+        System.out.println("トップスコアラー: " + topScorerName);
+    }
+}
+```
+
+### Optionalの連鎖操作
+
+`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-null チェックの連続を大幅に簡素化します。
+
+<span class="listing-number">**サンプルコード12-14**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class OptionalChainingExample {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 85, 165),
+            new Student("Bob", 92, 170),
+            new Student("Charlie", 78, 180)
+        );
+        
+        // Optionalの連鎖：複数の変換を安全に実行
+        // 最高得点者の名前を大文字で取得（該当者がいない場合は"N/A"）
+        String result = students.stream()
+            .max((s1, s2) -> Integer.compare(s1.getScore(), s2.getScore()))
+            .map(Student::getName)          // 学生が見つかれば名前を取得
+            .map(String::toUpperCase)       // 名前を大文字に変換
+            .orElse("N/A");                 // 見つからない場合のデフォルト値
+        
+        System.out.println("最高得点者（大文字）: " + result);
+    }
+}
+```
+
+### null安全な処理パターン
+
+実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理する必要があります。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
+
+<span class="listing-number">**サンプルコード12-15**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public class NullSafeProcessingExample {
+    public static void main(String[] args) {
+        // nullが混入する可能性があるデータ
+        List<String> namesWithNull = Arrays.asList("Alice", null, "Bob", "", "Charlie");
+        
+        // null安全な処理：nullや空文字列を適切に処理
+        List<String> validNames = namesWithNull.stream()
+            .filter(Objects::nonNull)           // nullを除外
+            .filter(name -> !name.trim().isEmpty()) // 空文字列を除外
+            .map(String::toUpperCase)           // 大文字に変換
+            .collect(Collectors.toList());
+        
+        System.out.println("有効な名前: " + validNames);
+        // 出力: 有効な名前: [ALICE, BOB, CHARLIE]
+        
+        // Optionalでnullをラップしてnullセーフ処理
+        Optional<String> nullableName = Optional.ofNullable(null);
+        String safeName = nullableName
+            .filter(name -> !name.isEmpty())
+            .map(String::toUpperCase)
+            .orElse("UNKNOWN");
+        
+        System.out.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
+    }
+}
+```
+
+### 早期終了操作の活用
+
+Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを効率的に処理する際に重要です。
+
+<span class="listing-number">**サンプルコード12-16**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class ShortCircuitExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        
+        // 早期終了操作：条件を満たす要素が見つかれば処理を停止
+        // すべての要素が偶数かチェック（1つでも奇数があればfalse）
+        boolean allEven = numbers.stream()
+            .peek(n -> System.out.println("チェック中: " + n)) // 処理の流れを観察
+            .allMatch(n -> n % 2 == 0);
+        System.out.println("すべて偶数: " + allEven);
+        
+        // いずれかの要素が条件を満たすかチェック
+        boolean hasLargeNumber = numbers.stream()
+            .anyMatch(n -> n > 7);
+        System.out.println("7より大きい数あり: " + hasLargeNumber);
+        
+        // 最初のn個に制限して処理
+        List<Integer> firstThree = numbers.stream()
+            .limit(3)  // 最初の3要素のみ処理
+            .collect(Collectors.toList());
+        System.out.println("最初の3つ: " + firstThree);
+    }
+}
+```
+
+早期終了操作は、特に大量のデータや無限ストリームを扱う際に、パフォーマンスの向上とメモリ効率の最適化に大きく貢献します。
+
+### 実用的なtoArray操作
+
+ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、適切な配列コンストラクタを指定することが重要です。
+
+<span class="listing-number">**サンプルコード12-17**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ToArrayExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+        
+        // toArrayの正しい使い方：型安全な配列を取得
+        // String[]::newを指定することで、適切な型の配列が生成される
+        String[] nameArray = names.stream()
+            .filter(name -> name.length() > 3)  // 3文字より長い名前のみ
+            .map(String::toUpperCase)           // 大文字に変換
+            .toArray(String[]::new);            // String配列として取得
+        
+        System.out.println("結果配列: " + Arrays.toString(nameArray));
+        // 出力: 結果配列: [ALICE, CHARLIE, DAVID]
+        
+        // サイズを指定した配列生成も可能
+        String[] sizedArray = names.stream()
+            .toArray(size -> new String[size]);
+        System.out.println("サイズ指定配列: " + Arrays.toString(sizedArray));
+    }
+}
+```
+
+### 複雑な処理パイプラインの実装
+
+実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
+
+<span class="listing-number">**サンプルコード12-18**</span>
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class ComplexProcessingExample {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 85, 165),
+            new Student("Bob", 92, 170),
+            new Student("Charlie", 78, 180),
+            new Student("David", 92, 175),
+            new Student("Eve", 88, 160),
+            new Student("Frank", 82, 178),
+            new Student("Grace", 95, 168)
+        );
+        
+        // 複雑な処理：高得点者（85点以上）を身長でグループ化し、
+        // 各グループで最高得点者の名前を取得
+        Map<String, String> heightGroupTopScorers = students.stream()
+            .filter(s -> s.getScore() >= 85)                    // 高得点者のみ
+            .collect(Collectors.groupingBy(                     // 身長でグループ化
+                s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
+                Collectors.collectingAndThen(                   // グループ内での最高得点者を取得
+                    Collectors.maxBy((s1, s2) -> Integer.compare(s1.getScore(), s2.getScore())),
+                    opt -> opt.map(Student::getName).orElse("該当者なし")
+                )
+            ));
+        
+        System.out.println("身長グループ別最高得点者:");
+        heightGroupTopScorers.forEach((group, name) -> 
+            System.out.println(group + ": " + name));
+        
+        // さらに複雑な例：統計情報の収集
+        Map<String, Double> heightGroupAverages = students.stream()
+            .collect(Collectors.groupingBy(
+                s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
+                Collectors.averagingInt(Student::getScore)
+            ));
+        
+        System.out.println("\n身長グループ別平均点:");
+        heightGroupAverages.forEach((group, avg) -> 
+            System.out.printf("%s: %.1f点%n", group, avg));
+    }
+}
+```
+
+このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
+
 ## まとめ
 
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
@@ -372,6 +748,8 @@ List<Integer> results = numbers.parallelStream()
 - **データ構造の選択**: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが重要です。
 - **ラムダ式と`Comparator`**: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
 - **Stream API**: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
+- **高度なStream操作**: `flatMap`によるデータ平坦化、`reduce`による集約処理、`Optional`による安全なnull処理など、実用的な高度技術を習得できます。
+- **並列ストリーム**: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
 
 これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。
 

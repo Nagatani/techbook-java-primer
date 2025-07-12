@@ -112,6 +112,45 @@ button.addActionListener(new ActionListener() {
 2010年代に入ると、並行処理やビッグデータ処理の重要性が高まり、Java 8（2014年）やJavaScript ES6（2015年）など、オブジェクト指向言語にも関数型の機能が取り入れられました。
 
 
+**高階関数による処理の抽象化**
+
+高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化し、様々な具体的な処理を統一的に扱うことができます。以下の例では、取引戦略の評価とリスク管理を高階関数として実装しています。
+
+<span class="listing-number">**サンプルコード13-20**</span>
+```java
+public class HigherOrderFunctions {
+    // 高階関数によるリスク管理の抽象化
+    public <T, R> Function<T, R> withRiskManagement(
+        Function<T, R> strategy,
+        Predicate<T> riskCheck,
+        R defaultValue) {
+        
+        return input -> {
+            if (riskCheck.test(input)) {
+                return strategy.apply(input);
+            }
+            return defaultValue;
+        };
+    }
+    
+    // 使用例：取引戦略にリスク管理を適用
+    public void demonstrateHigherOrderFunction() {
+        Function<MarketData, TradingDecision> baseStrategy = 
+            data -> new TradingDecision(data.getPrice() > 100 ? BUY : SELL);
+            
+        Function<MarketData, TradingDecision> safeStrategy = 
+            withRiskManagement(
+                baseStrategy,
+                data -> data.getVolatility() < 0.5,  // リスクチェック
+                TradingDecision.HOLD  // デフォルト値
+            );
+            
+        // 実際の取引実行
+        TradingDecision decision = safeStrategy.apply(currentMarketData);
+    }
+}
+```
+
 ### カリー化の実装例：通貨変換
 
 <span class="listing-number">**サンプルコード13-3**</span>
@@ -286,6 +325,45 @@ public class ResilientService {
         return () -> {
             AtomicInteger attempts = new AtomicInteger(0);
             
+**イベント処理システムでの関数型アプローチ**
+
+イベント駆動アーキテクチャにおいて、関数型プログラミングは特に有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
+
+<span class="listing-number">**サンプルコード13-25**</span>
+```java
+public class EventProcessor {
+    private final Map<Class<?>, List<Consumer<Object>>> handlers = new ConcurrentHashMap<>();
+    
+    // イベントハンドラの登録
+    public <T> void on(Class<T> eventType, Consumer<T> handler) {
+        handlers.computeIfAbsent(eventType, k -> new CopyOnWriteArrayList<>())
+                .add((Consumer<Object>) handler);
+    }
+    
+    // 関数型フィルタとトランスフォーマー
+    public <T> void onFiltered(Class<T> eventType, 
+                              Predicate<T> filter,
+                              Consumer<T> handler) {
+        on(eventType, event -> {
+            if (filter.test(event)) {
+                handler.accept(event);
+            }
+        });
+    }
+    
+    // 使用例
+    public void setupEventHandlers() {
+        // 単純なハンドラ
+        on(OrderCreated.class, order -> logger.info("Order created: {}", order.getId()));
+        
+        // フィルタ付きハンドラ
+        onFiltered(OrderCreated.class,
+            order -> order.getAmount() > 1000,
+            order -> notificationService.sendHighValueOrderAlert(order));
+    }
+}
+```
+
             return Stream.generate(() -> {
                 try {
                     return Optional.of(supplier.get());
@@ -335,6 +413,39 @@ public class MiddlewareChain {
         }
     }
     
+**テンプレートメソッドパターンの関数型実装**
+
+テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
+
+<span class="listing-number">**サンプルコード13-23**</span>
+```java
+// データ処理の基本的なテンプレート
+public class DataProcessingTemplate {
+    public <T, R> R processData(
+        T input,
+        Function<T, T> preprocessor,
+        Function<T, R> processor,
+        Function<R, R> postprocessor) {
+        
+        T preprocessed = preprocessor.apply(input);
+        R processed = processor.apply(preprocessed);
+        return postprocessor.apply(processed);
+    }
+    
+    // 使用例：CSVデータの処理
+    public List<Customer> processCsvData(String csvData) {
+        return processData(
+            csvData,
+            data -> data.trim().toLowerCase(),  // 前処理
+            this::parseCustomers,              // メイン処理
+            customers -> customers.stream()     // 後処理
+                .filter(c -> c.isValid())
+                .collect(Collectors.toList())
+        );
+    }
+}
+```
+
     // 認証ミドルウェア
     Middleware authenticate = request -> {
         String token = request.getHeader("Authorization");
@@ -384,6 +495,35 @@ public class EventSourcedAccount {
     sealed interface AccountEvent permits 
         AccountCreated, MoneyDeposited, MoneyWithdrawn {}
     
+**ファクトリーパターンの関数型実装**
+
+従来のファクトリーパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
+
+<span class="listing-number">**サンプルコード13-24**</span>
+```java
+// 関数型ファクトリパターン
+public class ProcessorFactory {
+    private final Map<String, Supplier<DataProcessor>> processors = Map.of(
+        "csv", CsvProcessor::new,
+        "xml", XmlProcessor::new,
+        "json", JsonProcessor::new
+    );
+    
+    public Optional<DataProcessor> createProcessor(String type) {
+        return Optional.ofNullable(processors.get(type))
+                      .map(Supplier::get);
+    }
+    
+    // さらに高度な例：パラメータ化されたファクトリ
+    public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
+        String type) {
+        return config -> processors.get(type)
+                                  .get()
+                                  .configure(config);
+    }
+}
+```
+
     record AccountCreated(String accountId, String owner) implements AccountEvent {}
     record MoneyDeposited(String accountId, Money amount) implements AccountEvent {}
     record MoneyWithdrawn(String accountId, Money amount) implements AccountEvent {}
@@ -452,6 +592,10 @@ public class LambdaPerformance {
 }
 ```
 
+**デザインパターンでの関数型アプローチ活用**
+
+関数型プログラミングは、従来のデザインパターンをより簡潔かつ柔軟に実装する手段を提供します。特に、戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式を使うことで実装を大幅に簡素化できます。以下では、実際のビジネスロジックでよく使われるパターンを関数型アプローチで実装する方法を紹介します。
+
 ### 実践的なデザインパターン：関数型ビルダ
 
 <span class="listing-number">**サンプルコード13-12**</span>
@@ -495,6 +639,38 @@ public class FunctionalBuilder {
     
     // 使用例
     public void demonstrateBuilders() {
+**設定ビルダーパターンの関数型実装**
+
+設定やコンフィギュレーションを構築する際、関数型ビルダーパターンは特に威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
+
+<span class="listing-number">**サンプルコード13-27**</span>
+```java
+public class ConfigurationBuilder {
+    public static class DatabaseConfig {
+        private String host;
+        private int port;
+        private String database;
+        private boolean sslEnabled;
+        
+        // 設定メソッド（省略）
+    }
+    
+    public DatabaseConfig buildDatabaseConfig(String environment) {
+        return new FunctionalConfigBuilder<DatabaseConfig>()
+            .with(config -> config.setHost("localhost"))  // デフォルト設定
+            .with(config -> config.setPort(5432))
+            .whenCondition("production".equals(environment),
+                config -> {
+                    config.setHost("prod-db.company.com");
+                    config.setSslEnabled(true);
+                })
+            .whenCondition("test".equals(environment),
+                config -> config.setDatabase("test_db"))
+            .build(DatabaseConfig::new);
+    }
+}
+```
+
         // 関数型ビルダーの利点：動的な構築ロジック
         Person person = new FunctionalPersonBuilder()
             .with(p -> p.setName("Alice"))
@@ -524,6 +700,32 @@ public class TradingSystem {
                 .window(Duration.ofSeconds(1))
                 .flatMap(window -> window
                     .collect(Collectors.toList())
+**関数型アプローチによるビジネスロジック設計**
+
+複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
+
+<span class="listing-number">**サンプルコード13-26**</span>
+```java
+public class BusinessLogicProcessor {
+    // 純粋関数による価格計算
+    public Function<Order, BigDecimal> calculatePrice = order -> {
+        BigDecimal basePrice = order.getBasePrice();
+        BigDecimal discount = applyDiscount(order);
+        BigDecimal tax = calculateTax(basePrice.subtract(discount));
+        return basePrice.subtract(discount).add(tax);
+    };
+    
+    // 関数合成による複雑な処理
+    public Function<Order, ProcessedOrder> processOrder = 
+        order -> Optional.of(order)
+            .map(this::validateOrder)
+            .map(this::applyBusinessRules)
+            .map(this::calculateFinalPrice)
+            .map(this::generateProcessedOrder)
+            .orElseThrow(() -> new OrderProcessingException("Invalid order"));
+}
+```
+
                     .map(this::calculateVolatility)
                 )
                 .filter(volatility -> volatility > THRESHOLD)
@@ -565,6 +767,27 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 **関数型インターフェイス**とは、**実装すべき抽象メソッドが1つだけ**定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることが推奨されます。
 
+**Comparatorを使ったデータ並び替えの最適化**
+
+データ並び替え処理において、Comparatorインターフェイスは可読性と性能の両方を向上させる重要な機能です。従来の冗長なComparable実装に比べて、ラムダ式を使ったComparatorは処理の意図を明確にし、複雑な並び替え条件も直感的に表現できます。特に、コレクションのソート処理でその威力を発揮し、ビジネスロジックに集中できる簡潔なコードを実現します。
+
+<span class="listing-number">**サンプルコード13-18**</span>
+```java
+// 従来の方法：冗長で理解しにくい
+Collections.sort(students, new Comparator<Student>() {
+    @Override
+    public int compare(Student s1, Student s2) {
+        return s1.getName().compareTo(s2.getName());
+    }
+});
+
+// ラムダ式：簡潔で意図が明確
+students.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
+
+// メソッド参照：さらに簡潔
+students.sort(Comparator.comparing(Student::getName));
+```
+
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
 <span class="listing-number">**サンプルコード13-14**</span>
@@ -594,6 +817,34 @@ public class Main {
 -   **引数が1つの場合、括弧の省略**: `(a) -> ...` は `a -> ...` と書けます。
 -   **処理が1行の場合、中括弧の省略**: `a -> { return a * 2; }` は `a -> a * 2` と書けます。
 -   **引数がない場合**: `() -> System.out.println("Hello");` のように括弧だけを書きます。
+
+**複数条件でのComparator組み合わせ**
+
+実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
+
+<span class="listing-number">**サンプルコード13-19**</span>
+```java
+// 学年で並び替え、同じ学年の場合は名前で並び替え、
+// さらに同名の場合は学生番号で並び替え
+students.sort(
+    Comparator.comparing(Student::getGrade)
+        .thenComparing(Student::getName)
+        .thenComparing(Student::getStudentId)
+);
+
+// 降順ソートの組み合わせ
+students.sort(
+    Comparator.comparing(Student::getGrade).reversed()
+        .thenComparing(Student::getName)
+);
+
+// 複雑な条件：優先度、作成日時、タイトルの順
+tasks.sort(
+    Comparator.comparing(Task::getPriority).reversed()
+        .thenComparing(Task::getCreatedAt)
+        .thenComparing(Task::getTitle)
+);
+```
 
 ### `java.util.function` パッケージ
 
@@ -657,6 +908,36 @@ public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
 
+**実践的なラムダ式の活用パターン**
+
+並行処理において、ラムダ式は特に威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。特に、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
+
+<span class="listing-number">**サンプルコード13-21**</span>
+```java
+// ExecutorServiceとラムダ式の組み合わせ
+ExecutorService executor = Executors.newFixedThreadPool(4);
+
+// 複数のタスクを並行実行
+List<Callable<String>> tasks = Arrays.asList(
+    () -> "Task 1 completed",
+    () -> "Task 2 completed", 
+    () -> "Task 3 completed"
+);
+
+try {
+    List<Future<String>> results = executor.invokeAll(tasks);
+    results.forEach(future -> {
+        try {
+            System.out.println(future.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    });
+} finally {
+    executor.shutdown();
+}
+```
+
         // ラムダ: s -> System.out.println(s)
         // メソッド参照: System.out::println
         words.forEach(System.out::println);
@@ -666,6 +947,31 @@ public class MethodReferenceExample {
         words.stream()
              .map(String::toUpperCase)
              .forEach(System.out::println);
+
+**メソッド参照による可読性の向上**
+
+メソッド参照は、既存のメソッドを呼び出すだけのラムダ式をより簡潔に表現する方法です。特に、Streamのmap操作やcollect操作でよく使われ、コードの意図をより明確に示すことができます。
+
+<span class="listing-number">**サンプルコード13-22**</span>
+```java
+// ラムダ式 vs メソッド参照の比較
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+// ラムダ式：やや冗長
+names.stream()
+     .map(name -> name.toUpperCase())
+     .forEach(name -> System.out.println(name));
+
+// メソッド参照：簡潔で意図が明確
+names.stream()
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+
+// コンストラクタ参照の活用
+List<Person> people = names.stream()
+    .map(Person::new)  // name -> new Person(name) と同じ
+    .collect(Collectors.toList());
+```
 
         // ラムダ: () -> new ArrayList<>()
         // メソッド参照: ArrayList::new
@@ -718,6 +1024,51 @@ public class ThreadLambdaExample {
 関数型プログラミングの理論的背景を理解することで、より洗練されたコードを書くことができます。しかし、実務では可読性とパフォーマンスのバランスを考慮し、適切に使い分けることが重要です。
 
 これらの機能を使いこなすことで、コードの可読性が向上し、より宣言的で簡潔なプログラミングが可能になります。
+
+**データバリデーション処理の関数型実装**
+
+複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
+
+<span class="listing-number">**サンプルコード13-28**</span>
+```java
+public class ValidationFramework {
+    // 基本的なバリデーション関数
+    public static Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
+    public static Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    public static Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
+    public static Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
+    
+    // 複合バリデーション
+    public static Predicate<User> validUser = user ->
+        notEmpty.test(user.getName()) &&
+        validEmail.test(user.getEmail()) &&
+        minLength.apply(8).test(user.getPassword());
+    
+    // エラーメッセージ付きバリデーション
+    public static class ValidationResult {
+        private final boolean valid;
+        private final List<String> errors;
+        
+        // コンストラクタとメソッド（省略）
+    }
+    
+    public static Function<User, ValidationResult> validateUserWithErrors = user -> {
+        List<String> errors = new ArrayList<>();
+        
+        if (!notEmpty.test(user.getName())) {
+            errors.add("名前は必須です");
+        }
+        if (!validEmail.test(user.getEmail())) {
+            errors.add("有効なメールアドレスを入力してください");
+        }
+        if (!minLength.apply(8).test(user.getPassword())) {
+            errors.add("パスワードは8文字以上である必要があります");
+        }
+        
+        return new ValidationResult(errors.isEmpty(), errors);
+    };
+}
+```
 
 ## より深い理解のために
 

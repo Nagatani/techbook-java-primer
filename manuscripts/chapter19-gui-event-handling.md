@@ -571,9 +571,22 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 
 処理の流れは、「ユーザーが**イベントソース**を操作 → **イベントオブジェクト**が生成され、登録済みの**イベントリスナ**に通知 → リスナ内の処理が実行される」となります。
 
+**イベントディスパッチスレッド**
+
+Swingのイベント処理は、イベントディスパッチスレッド（EDT: Event Dispatch Thread）と呼ばれる専用のスレッドで実行されます。EDTは以下の特徴を持ちます：
+
+1. **単一スレッド**: すべてのGUIイベントは1つのスレッドで順番に処理
+2. **スレッドセーフ**: GUIコンポーネントの更新はEDT上でのみ安全
+3. **非ブロッキング**: 長時間の処理はUIをフリーズさせる
+4. **イベントキュー**: イベントはFIFO順で処理
+
 ### 18.1.2 ボタンクリックに応答する
 
 最も基本的な、ボタンクリックイベントを処理してみましょう。
+
+**ActionListener の例**
+
+ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド一つだけを実装すればよいシンプルなインターフェースです。
 
 <span class="listing-number">**サンプルコード19-7**</span>
 ```java
@@ -615,7 +628,15 @@ public class ButtonEventExample {
 
 ### 18.1.3 ラムダ式による簡潔な記述
 
+**匿名クラスの使用**
+
+上記の例では、ActionListenerインターフェースを匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェースを実装してインスタンスを作成できます。イベントリスナーのように、一度しか使わないクラスを定義する場合に便利です。
+
 `ActionListener`のように、実装すべきメソッドが1つだけのインターフェイス（**関数型インターフェイス**）は、ラムダ式を使って非常に簡潔に記述できます。
+
+**ラムダ式の使用**
+
+ラムダ式はJava 8で導入された機能で、関数型インターフェースの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
 
 <span class="listing-number">**サンプルコード19-8**</span>
 ```java
@@ -687,6 +708,18 @@ Swingに挟まざまなイベントがあります。目的に応じて適切な
 
 ### 18.2.1 `WindowListener`で終了確認
 
+**WindowListener の例**
+
+WindowListenerはウィンドウの状態変化を検出するインターフェースで、7つのメソッドを実装する必要があります：
+
+- **windowOpened**: ウィンドウが初めて表示された
+- **windowClosing**: ウィンドウが閉じられようとしている
+- **windowClosed**: ウィンドウが閉じられた
+- **windowIconified**: ウィンドウが最小化された
+- **windowDeiconified**: ウィンドウが最小化から復元された
+- **windowActivated**: ウィンドウがアクティブになった
+- **windowDeactivated**: ウィンドウが非アクティブになった
+
 ウィンドウを閉じる際に確認ダイアログを表示する例です。`WindowListener`インターフェイスには多くのメソッドがありますが、`WindowAdapter`クラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
 <span class="listing-number">**サンプルコード19-10**</span>
@@ -722,6 +755,18 @@ public class WindowEventExample {
 ### 18.2.2 詳細なイベント処理の実装例
 
 ##### 1. マウスイベントの完全な処理
+
+**MouseListener の例**
+
+MouseListenerはマウスの基本的な操作（クリック、プレス、リリース、入退室）を検出するインターフェースです。5つのメソッドを実装する必要があります：
+
+- **mouseClicked**: マウスボタンがクリック（押して離す）された
+- **mousePressed**: マウスボタンが押された
+- **mouseReleased**: マウスボタンが離された
+- **mouseEntered**: マウスがコンポーネントに入った
+- **mouseExited**: マウスがコンポーネントから出た
+
+マウスの動きを追跡するにはMouseMotionListenerも併せて使用します。
 
 <span class="listing-number">**サンプルコード19-11**</span>
 ```java
@@ -761,6 +806,11 @@ public class MouseEventCompleteExample extends JFrame {
         JScrollPane scrollPane = new JScrollPane(logArea);
         
         // マウスリスナーの追加
+        
+        **MouseAdapter の使用**
+        
+        MouseAdapterは、MouseListenerとMouseMotionListenerのすべてのメソッドに空の実装を提供する便利なクラスです。MouseListenerインターフェースを直接実装すると、使わないメソッドも含めて5つすべて実装する必要がありますが、MouseAdapterを継承すれば必要なメソッドだけをオーバーライドできます。
+        
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -854,6 +904,12 @@ public class MouseEventCompleteExample extends JFrame {
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
     
+    **SwingUtilities.invokeLater**
+    
+    SwingUtilities.invokeLaterは、指定されたRunnableをイベントディスパッチスレッド（EDT）上で実行するためのメソッドです。SwingのすべてのGUI操作はEDT上で実行される必要があるため、mainメソッドからGUIを初期化する際には必ずこのメソッドを使用します。
+    
+    EDTは単一のスレッドで、すべてのGUIイベントと描画処理を順番に処理します。これにより、スレッドセーフな操作が保証され、競合状態やデッドロックを避けることができます。
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MouseEventCompleteExample().setVisible(true);
@@ -863,6 +919,16 @@ public class MouseEventCompleteExample extends JFrame {
 ```
 
 ##### 2. キーボードイベントの高度な処理
+
+**KeyListener の例**
+
+KeyListenerはキーボードの入力を検出するインターフェースで、3つのメソッドを実装します：
+
+- **keyPressed**: キーが押された（押しっぱなしの間連続発生）
+- **keyReleased**: キーが離された
+- **keyTyped**: 文字が入力された（Unicode文字が生成された場合）
+
+特殊キー（F1、Ctrl、Shiftなど）のkeyTypedでは検出されず、keyPressed/keyReleasedでのみ検出されます。ショートカットキーの実装やゲームのキー操作などに使用されます。
 
 <span class="listing-number">**サンプルコード19-12**</span>
 ```java
@@ -1250,6 +1316,17 @@ public class DocumentListenerExample extends JFrame {
 ```
 
 ##### 4. カスタムイベントとObserverパターン
+
+**カスタムイベント**
+
+カスタムイベントは、標準のSwingイベントでは対応できない、アプリケーション固有のイベントを定義する仕組みです。JavaBeansのイベントモデルに従って実装することで、再利用可能で保守性の高いコンポーネントを作成できます。
+
+カスタムイベントの実装には以下の要素が必要です：
+1. **イベントクラス**: EventObjectを継承したクラス
+2. **リスナーインターフェース**: EventListenerを継承したインターフェース
+3. **イベントソース**: リスナーの管理とイベントの発行を行うクラス
+
+Observerパターンを使用することで、オブジェクトの状態変化を複数のオブザーバーに通知できます。
 
 <span class="listing-number">**サンプルコード19-14**</span>
 ```java

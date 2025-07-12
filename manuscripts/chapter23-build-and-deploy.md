@@ -221,6 +221,8 @@ public class AppConfig {
 }
 ```
 
+次に、データモデルとしてのTodoItemクラスを作成します。このクラスはタスクの情報を保持し、完了状態を管理します。toStringメソッドをオーバーライドして、リスト表示用のフォーマットを提供します。
+
 <span class="listing-number">**サンプルコード23-3**</span>
 ```java
 // TodoItem.java
@@ -502,6 +504,8 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成できます：
 
+以下の例では、Gsonライブラリを使用したJSON処理アプリケーションを示します。このアプリケーションをFat JARとしてパッケージングすることで、Gsonライブラリも含めた自己完結型の実行可能JARを作成できます。
+
 <span class="listing-number">**サンプルコード23-6**</span>
 ```java
 // JsonProcessorApp.java
@@ -619,7 +623,11 @@ rm -rf temp
 
 #### Maven/Gradleでのビルド設定例
 
+現代のJava開発では、MavenやGradleなどのビルドツールを使用してプロジェクトを管理するのが一般的です。これらのツールを使用することで、依存関係の管理や実行可能JARの作成が大幅に簡素化されます。
+
 ##### Mavenでの実行可能JAR作成（pom.xml）
+
+以下はpom.xmlの設定例です。maven-jar-pluginで通常の実行可能JARを、maven-shade-pluginで依存ライブラリを含むFat JARを作成できます。
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -701,6 +709,8 @@ java -jar target/todo-app-1.0.0.jar
 ```
 
 ##### Gradleでの実行可能JAR作成（build.gradle）
+
+Gradleでの設定例です。applicationプラグインを使用することで、アプリケーションの実行と配布が簡単になります。カスタムタスクでFat JARの作成も定義しています。
 
 ```gradle
 plugins {

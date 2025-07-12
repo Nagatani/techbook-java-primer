@@ -251,6 +251,8 @@ Setは重複要素を許さないコレクションです。数学的な集合�
 
 ### HashSet vs TreeSet vs LinkedHashSet
 
+Setの実装クラスは、内部構造の違いにより異なる特性を持ちます。データの順序が重要かどうか、検索や挿入の頻度、ソートが必要かどうかを考慮して選択します。
+
 <span class="listing-number">**サンプルコード10-9**</span>
 ```java
 // HashSet: ハッシュテーブルを使用（順序は保証されない）
@@ -275,31 +277,42 @@ linkedHashSet.add(2);
 // 出力: 3, 1, 2（挿入順）
 ```
 
+**使い分けの指針：**
+- **HashSet**: 最高の性能（O(1)）が必要で、順序は重要でない場合。重複チェックや集合演算に最適
+- **TreeSet**: 常にソートされた状態を保ちたい場合。範囲検索や順序が重要な処理に適している
+- **LinkedHashSet**: 挿入順序を保持しつつ重複を排除したい場合。キャッシュやログ処理に有効
+
 ### 集合演算
+
+Setは数学の集合論に基づく演算を簡単に実装できます。これらの演算は、データ分析、権限管理、フィルタリング処理などで頻繁に使用されます。例えば、ユーザーの権限セットとアクセス要求権限セットの積集合を求めることで、実際にアクセス可能な機能を判定できます。
 
 <span class="listing-number">**サンプルコード10-10**</span>
 ```java
 Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
 Set<String> set2 = new HashSet<>(Arrays.asList("B", "C", "D"));
 
-// 和集合
+// 和集合：すべての要素を含む集合
 Set<String> union = new HashSet<>(set1);
 union.addAll(set2);  // {A, B, C, D}
 
-// 積集合
+// 積集合：両方に共通する要素のみ
 Set<String> intersection = new HashSet<>(set1);
 intersection.retainAll(set2);  // {B, C}
 
-// 差集合
+// 差集合：set1にあってset2にない要素
 Set<String> difference = new HashSet<>(set1);
 difference.removeAll(set2);  // {A}
 ```
+
+これらの集合演算は、データベースのJOIN操作や、アクセス制御、重複検出などの実用的な場面で威力を発揮します。
 
 ## 8.5 Map インターフェイス
 
 Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます。
 
 ### HashMap vs TreeMap vs LinkedHashMap
+
+Map実装の選択は、データ量、検索頻度、順序の重要性によって決まります。辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装し、一般的なデータ検索ではHashMapで最高速度を実現します。
 
 <span class="listing-number">**サンプルコード10-11**</span>
 ```java
@@ -320,54 +333,68 @@ linkedHashMap.putAll(hashMap);
 // 挿入した順序で格納
 ```
 
+**パフォーマンスと用途：**
+- **HashMap**: 最高の検索性能（O(1)）。設定ファイルや一般的なデータ検索に最適
+- **TreeMap**: ソート済み処理（O(log n)）。辞書、ランキング、範囲検索が必要な場合
+- **LinkedHashMap**: 順序保持とLRU実装。キャッシュや履歴管理に適している
+
 ### 主な操作
+
+Mapは辞書的なデータ管理の核となる操作を提供します。基本的なCRUD操作（Create, Read, Update, Delete）に加え、キーや値の存在確認、全要素の走査など、実用的なメソッドが豊富に用意されています。
 
 <span class="listing-number">**サンプルコード10-12**</span>
 ```java
 Map<String, String> map = new HashMap<>();
 
-// 追加・更新
+// 追加・更新：putは新規追加と既存更新の両方を行う
 map.put("JP", "日本");
 map.put("US", "アメリカ");
 
-// 取得
-String country = map.get("JP");
-String defaultValue = map.getOrDefault("UK", "不明");
+// 取得：存在しないキーの安全な処理
+String country = map.get("JP");  // "日本"を返す
+String defaultValue = map.getOrDefault("UK", "不明");  // "不明"を返す
 
-// 削除
+// 削除：指定したキーと値のペアを削除
 map.remove("US");
 
-// 存在確認
+// 存在確認：処理前の事前チェックに使用
 boolean hasKey = map.containsKey("JP");
 boolean hasValue = map.containsValue("日本");
 
-// すべてのキー・値を処理
+// すべてのキー・値を処理：キーセットでの走査
 for (String key : map.keySet()) {
     System.out.println(key + ": " + map.get(key));
 }
 
-// エントリーセットで処理（より効率的）
+// エントリーセットで処理（より効率的）：キーと値を同時取得
 for (Map.Entry<String, String> entry : map.entrySet()) {
     System.out.println(entry.getKey() + ": " + entry.getValue());
 }
 ```
 
+**重要なポイント：**
+- `getOrDefault()`はnullチェックの煩雑さを解消し、安全なデフォルト値処理を実現
+- エントリーセットでの走査は、内部的にキーでの値検索を避けるため、大きなMapでは大幅に高速
+- `containsKey()`での事前チェックにより、存在しないキーへのアクセスエラーを防止
+
 ## 8.6 イテレータとfor-each文
 
 ### イテレータの基本
+
+イテレータ（Iterator）は、コレクションの要素を順次アクセスするための統一されたインターフェイスです。for-each文は内部的にイテレータを使用しているため、理解しておくことで、より柔軟なコレクション操作が可能になります。特に、走査中に要素を削除する必要がある場合には、イテレータが不可欠です。
 
 <span class="listing-number">**サンプルコード10-13**</span>
 ```java
 List<String> list = Arrays.asList("A", "B", "C");
 
-// イテレータを使った走査
+// イテレータを使った走査：全コレクション型で統一された方法
 Iterator<String> iter = list.iterator();
 while (iter.hasNext()) {
     String element = iter.next();
     System.out.println(element);
 }
 
-// 走査中の安全な削除
+// 走査中の安全な削除：ConcurrentModificationExceptionを回避
 Iterator<String> iter2 = list.iterator();
 while (iter2.hasNext()) {
     String element = iter2.next();
@@ -377,11 +404,19 @@ while (iter2.hasNext()) {
 }
 ```
 
+**イテレータの利点：**
+- **一貫性**: List、Set、Mapに関係なく同じパターンで要素走査が可能
+- **安全性**: 走査中の削除でも`ConcurrentModificationException`が発生しない
+- **柔軟性**: 条件分岐を含む複雑な削除処理で威力を発揮
+- **効率性**: LinkedListなどで、for-each文より高速な場合がある
+
 ### 拡張for文（for-each）
+
+拡張for文（for-each文）は、Java 5で導入された簡潔で読みやすいコレクション走査の記法です。内部的にはイテレータを使用しているため、すべてのコレクション型で使用できます。日常的なコレクション処理の大部分は、この記法で十分カバーできます。
 
 <span class="listing-number">**サンプルコード10-14**</span>
 ```java
-// より簡潔な記述
+// より簡潔な記述：最も一般的なコレクション走査方法
 for (String element : list) {
     System.out.println(element);
 }
@@ -393,6 +428,17 @@ for (String element : list) {
 //     }
 // }
 ```
+
+**拡張for文の特徴：**
+- **簡潔性**: 従来のインデックスループやイテレータより短く書ける
+- **安全性**: インデックス範囲外エラーが発生しない
+- **可読性**: コードの意図が明確で、保守しやすい
+- **制限**: 走査中の削除操作はできない（イテレータが必要）
+
+**使い分けの指針：**
+- **拡張for文**: 要素の参照のみ、または新しいコレクションへの変換
+- **イテレータ**: 走査中の削除、複雑な条件処理
+- **従来のforループ**: インデックスが必要、逆順アクセス
 
 ## 8.7 コレクションの選択指針
 

@@ -247,6 +247,9 @@ public class Order {
 ```
 
 **DOPアプローチ**:
+
+DOPでは、データ構造とビジネスロジックを明確に分離します。データはRecordsで定義し、処理は純粋関数として実装することで、テスト容易性と保守性が向上します。
+
 <span class="listing-number">**サンプルコード9-6**</span>
 ```java
 // データの定義（Records）
@@ -296,6 +299,8 @@ public class OrderProcessor {
 
 #### 開発効率の劇的向上
 
+Recordsを使用することで、従来のデータクラス実装で必要だった大量のボイラープレートコードを劇的に削減できます。以下の比較例で、その効果を具体的に見てみましょう。
+
 <span class="listing-number">**サンプルコード9-7**</span>
 ```java
 // 従来のデータクラス：約100行のコード
@@ -339,6 +344,8 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 
 #### 1. データモデルの設計
 
+DOPの最初のステップは、ドメインモデルを明確に表現することです。Recordsを使用することで、ビジネスドメインの概念を直接的にコードに反映できます。
+
 <span class="listing-number">**サンプルコード9-8**</span>
 ```java
 // ドメインモデルの明確な表現
@@ -368,6 +375,8 @@ public record Money(BigDecimal amount, Currency currency) {
 
 #### 2. ビジネスロジックの実装
 
+DOPでは、ビジネスロジックは純粋関数として実装します。これにより、ロジックの再利用性とテスト容易性が大幅に向上します。
+
 <span class="listing-number">**サンプルコード9-9**</span>
 ```java
 public class ProductService {
@@ -396,6 +405,8 @@ public class ProductService {
 ```
 
 #### 3. 型安全な状態管理
+
+sealed interfaceとRecordsを組み合わせることで、アプリケーションの状態を型レベルで安全に管理できます。これにより、不正な状態遷移をコンパイル時に防ぐことができます。
 
 <span class="listing-number">**サンプルコード9-10**</span>
 ```java
@@ -611,6 +622,8 @@ public class ExpressionDemo {
 }
 ```
 
+このコードの実行結果は、式の構築、自動的な簡約化（たとえば、`y + 0`が`y`に簡約される）、そして変数の値を代入した評価を示します。パターンマッチングにより、複雑な条件分岐が簡潔で読みやすいコードで表現されています。
+
 ### 型安全性と網羅性
 
 sealed interfaceとパターンマッチングにより、以下の利点が得られます：
@@ -714,6 +727,10 @@ public record ValidatedEmail(String value) {
     }
 }
 ```
+
+### 複雑なバリデーションの実装
+
+以下の例では、より複雑なビジネスルールを持つMoneyレコードを示します。コンパクトコンストラクタ内で、null チェック、負値チェック、通貨に応じた小数点以下桁数の正規化を行っています。このような包括的なバリデーションにより、不正な状態のオブジェクトが作成されることを防ぎます。
 
 <span class="listing-number">**サンプルコード9-20**</span>
 ```java
@@ -933,7 +950,7 @@ public record SerializableUser(
 
 ### JSON統合（Jackson）
 
-現代のアプリケーションでは、RecordとJSON処理の統合が重要です。
+現代のアプリケーションでは、RecordとJSON処理の統合が重要です。RecordsはJacksonなどのJSONライブラリと優れた互換性を持ち、アノテーションを使用してシリアライゼーション/デシリアライゼーションの詳細な制御が可能です。以下の例では、APIレスポンスの標準化とカスタムシリアライザーの実装を示します。
 
 <span class="listing-number">**サンプルコード9-24**</span>
 ```java
@@ -1038,6 +1055,10 @@ public record UserSnapshot(
 ) {}
 ```
 
+### イベントストリーム処理の実装
+
+以下のUserEventProcessorクラスでは、イベントソーシングパターンを使用して、ユーザーに関するイベントのストリームから現在の状態（スナップショット）を再構築します。これは、監査ログや履歴管理が重要なシステムで使用される高度なパターンです。
+
 <span class="listing-number">**サンプルコード9-26**</span>
 ```java
 // イベントストリームの処理
@@ -1109,6 +1130,8 @@ public class UserEventProcessor {
 ```
 
 ### Stream APIとの高度な統合
+
+RecordsとStream APIを組み合わせることで、複雑なデータ処理パイプラインを関数型スタイルで実装できます。以下の例では、イベントストリームから分析用のデータを生成する実践的なパイプラインを示します。このパターンは、リアルタイム分析やレポート生成システムで広く使用されています。
 
 <span class="listing-number">**サンプルコード9-27**</span>
 ```java
@@ -1188,6 +1211,8 @@ public record UserAnalytics(
 ```
 
 ### 実際のアプリケーション例：注文処理システム
+
+実際のビジネスアプリケーションでRecordsとDOPを活用する例として、ECサイトの注文処理システムを実装します。この例では、注文、顧客、商品といったドメインモデルをRecordsで表現し、ビジネスロジックを純粋関数として実装します。また、sealed interfaceを使用して注文の状態遷移を型安全に管理します。
 
 <span class="listing-number">**サンプルコード9-28**</span>
 ```java
@@ -1317,6 +1342,8 @@ public record OrderReport(
 
 ### 関数型プログラミングとの統合
 
+RecordsはJavaの関数型プログラミング機能と優れた相性を持ちます。不変性、パターンマッチング、Stream APIとの統合により、宣言的で読みやすいコードを書くことができます。以下の例では、注文データの分析処理を関数型スタイルで実装します。
+
 <span class="listing-number">**サンプルコード9-29**</span>
 ```java
 // 関数型スタイルでのデータ処理
@@ -1396,6 +1423,8 @@ Recordは、その設計により多くのパフォーマンス上の利点を�
 
 #### JVMによる最適化
 
+JVMは、Recordsの不変性と値ベースの性質を利用して、様々な最適化を行います。以下の例では、JVMが効率的に最適化できるRecordの設計パターンを示します。小さく不変なRecordは、将来のProject ValhallaのValue Typesの候補となり、さらなるパフォーマンス向上が期待できます。
+
 <span class="listing-number">**サンプルコード9-30**</span>
 ```java
 // インライン化されやすいRecord
@@ -1429,6 +1458,8 @@ public record OptimizedData(
 
 #### ガベージコレクション効率
 
+Recordsの不変性は、ガベージコレクションの効率を向上させます。不変オブジェクトは世代別GCでYoung世代に留まりやすく、効率的に回収されます。以下の例では、短命なオブジェクトとしてRecordを活用する実践的なパターンを示します。
+
 <span class="listing-number">**サンプルコード9-31**</span>
 ```java
 // 短命なオブジェクトとしてのRecord活用
@@ -1455,6 +1486,8 @@ public class CalculationService {
 ```
 
 ### ベンチマーク実例
+
+RecordsとtraditionalなJavaクラスのパフォーマンスを比較するため、JMH（Java Microbenchmark Harness）を使用したベンチマークを実施します。以下の例では、オブジェクトの作成、equals、hashCodeメソッドの実行速度を測定し、Recordsが従来のクラスと同等以上のパフォーマンスを持つことを示します。
 
 <span class="listing-number">**サンプルコード9-32**</span>
 ```java

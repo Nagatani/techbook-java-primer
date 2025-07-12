@@ -50,6 +50,8 @@ Javaには、ソースコード内に記述した特定の形式のコメント�
 
 Javadocコメントは `/**` で始まり、`*/` で終わります。クラス、フィールド、コンストラクタ、メソッドなどの宣言の直前に記述します。
 
+以下の例では、メソッドに対する完全なJavadocコメントの記述方法を示します。最初の行は概要説明、HTMLタグを使った詳細説明、そして様々なJavadocタグによる構造化された情報が含まれています。
+
 <span class="listing-number">**サンプルコード22-1**</span>
 ```java
 /**
@@ -87,6 +89,8 @@ public int add(int a, int b) {
 | `@deprecated` | 非推奨のAPIであることを示し、代替手段を案内します。 |
 
 ### 実践的なJavadocの例
+
+以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクタ、メソッドに至るまで、包括的なドキュメントを提供しています。
 
 <span class="listing-number">**サンプルコード22-2**</span>
 ```java
@@ -310,6 +314,8 @@ Java仮想マシン（JVM）がプログラムの実行時に必要なクラス�
 
 `pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
+以下の例では、Gsonの高度な機能を示します。@SerializedNameアノテーションによるJSONフィールド名のカスタマイズ、@Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、実務でよく使われるパターンを網羅しています。
+
 <span class="listing-number">**サンプルコード22-3**</span>
 ```java
 import com.google.gson.Gson;
@@ -399,6 +405,9 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。高速�
 ```
 
 #### Jacksonの使用例
+
+Jacksonはエンタープライズアプリケーションで広く使われている高性能JSONライブラリです。以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
+
 <span class="listing-number">**サンプルコード22-4**</span>
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -496,6 +505,8 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 </dependency>
 ```
 
+Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
+
 <span class="listing-number">**サンプルコード22-5**</span>
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -584,6 +595,8 @@ public class CommonsLangExample {
 </dependency>
 ```
 
+Apache Commons I/Oは、ファイルやストリームの操作を大幅に簡略化するライブラリです。Java標準APIでは何行も必要なファイル操作が、1行で実装できます。以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、実務で頻繁に使用される機能を紹介します。
+
 <span class="listing-number">**サンプルコード22-6**</span>
 ```java
 import org.apache.commons.io.FileUtils;
@@ -664,6 +677,8 @@ OkHttpは、効率的なHTTP通信を行うためのライブラリです。
     <version>4.11.0</version>
 </dependency>
 ```
+
+OkHttpはSquare社が開発した高性能なHTTPクライアントライブラリで、コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
 <span class="listing-number">**サンプルコード22-7**</span>
 ```java
@@ -762,6 +777,8 @@ Lombokは、アノテーションを使ってゲッタ、セッタ、コンス�
     <scope>provided</scope>
 </dependency>
 ```
+
+Lombokはコンパイル時にアノテーションを処理し、ボイラープレートコードを自動生成する革新的なライブラリです。@Dataアノテーション一つでゲッタ、セッタ、equals、hashCode、toStringメソッドが自動生成されます。以下の例では、主要なアノテーションの使用方法を示します。
 
 <span class="listing-number">**サンプルコード22-8**</span>
 ```java
@@ -862,6 +879,8 @@ GoogleのGuavaライブラリは、コレクション、キャッシュ、文字
     <version>32.1.1-jre</version>
 </dependency>
 ```
+
+GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。不変コレクション、Multimap、BiMap、Table、強力な文字列処理、キャッシュ機能など、実用的な機能が豊富に含まれています。以下の例では、これらの主要機能の使用方法を示します。
 
 <span class="listing-number">**サンプルコード22-9**</span>
 ```java

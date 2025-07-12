@@ -470,8 +470,9 @@ boolean isValid = true;            // boolean型はtrue/false
 
 #### 参照型
 
-最も基本的な参照型は`String`（文字列）です：
+最も基本的な参照型は`String`（文字列）です。参照型はオブジェクトへの参照（アドレス）を保持し、複雑なデータ構造と機能を持つことができます。
 
+<span class="listing-number">**サンプルコード1-6**</span>
 ```java
 String message = "Hello, World!";  // 文字列は二重引用符で囲む
 String name = "田中太郎";           // 日本語文字列も可能
@@ -521,6 +522,8 @@ System.out.println("結果: " + (10 + 20));   // "結果: 30"（カッコで計�
 
 #### 基本的な使用方法
 
+System.out.println()は、引数として渡された値を標準出力に表示し、最後に改行を追加します。文字列、数値、変数など、様々な型の値を出力できます。
+
 <span class="listing-number">**サンプルコード1-8**</span>
 ```java
 System.out.println("Hello, World!");       // 文字列リテラル
@@ -533,6 +536,8 @@ System.out.println("数値: " + number);      // 文字列と変数の連結
 ```
 
 #### print()との違い
+
+println()とprint()の主な違いは、出力後に改行が追加されるかどうかです。print()は改行を追加せず、連続して呼び出すと同じ行に出力されます。
 
 <span class="listing-number">**サンプルコード1-9**</span>
 ```java
@@ -549,6 +554,9 @@ System.out.println("World");   // 改行あり  → "Hello"と"World"が別々�
 
 #### 単行コメント
 
+//で始まる単行コメントは、その行の残りをすべてコメントとして扱います。簡潔な説明や一時的なメモに適しています。
+
+<span class="listing-number">**サンプルコード1-10**</span>
 ```java
 // これは単行コメントです
 int age = 20;  // 変数の後にも書けます
@@ -556,7 +564,9 @@ int age = 20;  // 変数の後にも書けます
 
 #### 複数行コメント
 
-<span class="listing-number">**サンプルコード1-10**</span>
+/*と*/で囲まれた範囲は、複数行にわたるコメントとして扱われます。詳細な説明や一時的なコードの無効化に使用します。
+
+<span class="listing-number">**サンプルコード1-11**</span>
 ```java
 /*
  これは複数行にわたる
@@ -577,6 +587,9 @@ x = x + 5;                     // 代入
 ```
 
 **セミコロンが不要な場合**：
+
+クラスやメソッドの宣言、ブロックの終わりなど、構造的な要素にはセミコロンは不要です。ブロック（{}）自体が文の区切りとして機能します。
+
 <span class="listing-number">**サンプルコード1-12**</span>
 ```java
 public class Sample {          // クラス宣言
@@ -773,6 +786,8 @@ public class HelloGUIApp extends JFrame {
     }
 }
 ```
+
+このサンプルでは、Swingライブラリを使用して簡単なGUIアプリケーションを作成しています。ラムダ式やイベント処理など、後の章で学習する概念も含まれていますが、Javaの表現力を示す例として紹介しています。
 
 名前の入力欄を追加し、ボタン押下で挨拶を行うサンプル
 

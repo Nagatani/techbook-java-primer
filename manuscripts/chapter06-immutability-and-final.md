@@ -197,6 +197,8 @@ public class Employee {
 }
 ```
 
+以下の例では、Employeeクラスを実際に使用して、カプセル化されたフィールドへの安全なアクセス、ビジネスロジックの実行、不正な値に対するエラーハンドリングを確認できます。
+
 <span class="listing-number">**サンプルコード6-3**</span>
 ```java
 // EmployeeManagement.java

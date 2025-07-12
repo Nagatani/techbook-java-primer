@@ -103,6 +103,8 @@ public class Calculator {
 
 ### テストコードの実践
 
+以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を明確に示します。各ステップが明確に分離され、テストの意図が一目で理解できるようになっています。
+
 <span class="listing-number">**サンプルコード21-3**</span>
 ```java
 // CalculatorManualTest.java
@@ -134,6 +136,8 @@ public class CalculatorManualTest {
 問題は、クラスが他のクラスに**依存**している場合です。特に、あるクラスが別の**具体的なクラス**を内部で直接生成している状態（**密結合**）は、テストを著しく困難にします。
 
 ### テストしにくいコードの例
+
+以下の例では、密結合によってテストが困難になる典型的なケースを示します。UserServiceがUserRepositoryを内部で直接生成しているため、テスト時にデータベース接続が必須となってしまいます。
 
 <span class="listing-number">**サンプルコード21-4**</span>
 ```java
@@ -182,6 +186,8 @@ public class UserService {
 
 コンストラクタの引数を通じて依存性を注入します。**最も推奨される方法**です。
 
+以下の例では、UserServiceがUserRepositoryを外部から受け取るように変更しています。これにより、テスト時にはモックオブジェクトを、本番時には実際の実装を注入できるようになります。
+
 <span class="listing-number">**サンプルコード21-5**</span>
 ```java
 public class UserService {
@@ -201,6 +207,8 @@ public class UserService {
 #### 2. セッターインジェクション
 
 セッターメソッドを通じて依存性を注入します。
+
+セッターインジェクションは、オプショナルな依存性や、オブジェクト生成後に依存性を変更したい場合に便利ですが、必須の依存性には不適切です。
 
 <span class="listing-number">**サンプルコード21-6**</span>
 ```java
@@ -232,6 +240,8 @@ DIの核心は、依存関係を外部から制御できる点にあります。
 
 #### DIを適用したサービスクラス
 
+以下の例では、UserRepositoryをインターフェースとして定義し、UserServiceが具体的な実装ではなく抽象に依存するように変更しています。これが疎結合設計の核心です。
+
 <span class="listing-number">**サンプルコード21-7**</span>
 ```java
 // UserRepository.java - インターフェース
@@ -255,6 +265,8 @@ public class UserService {
 ```
 
 ### 21.6.2 スタブを使った単体テストの実践
+
+スタブ（偽物オブジェクト）を使用することで、データベースに接続することなくUserServiceのロジックをテストできます。以下の例では、テスト用の偽物リポジトリを作成し、それを使ってUserServiceをテストしています。
 
 <span class="listing-number">**サンプルコード21-8**</span>
 ```java
@@ -306,6 +318,8 @@ TDDでは、以下の短いサイクルを繰り返します：
 
 #### ステップ1: Red - 失敗するテストを書く
 
+TDDの最初のステップでは、まだ存在しないクラスやメソッドに対してテストを書きます。このテストは当然失敗しますが、これが「何を実装すべきか」を明確にする仕様となります。
+
 <span class="listing-number">**サンプルコード21-9**</span>
 ```java
 public class StringCalculatorTest {
@@ -319,6 +333,8 @@ public class StringCalculatorTest {
 ```
 
 #### ステップ2: Green - テストを通す最小限のコード
+
+次に、テストが通る最小限の実装を行います。この段階では、ハードコーディングでも構いません。重要なのは、テストを緑（成功）にすることです。
 
 <span class="listing-number">**サンプルコード21-10**</span>
 ```java
@@ -338,6 +354,8 @@ public class StringCalculator {
 ### 21.8.1 JUnitの基本的な使い方
 
 実際の開発では、JUnitのようなテストフレームワークを使用します。
+
+JUnit 5（Jupiter）を使用した基本的なテストの例を示します。@Testアノテーションでテストメソッドをマークし、@BeforeEachで各テスト前の初期化処理を定義し、Assertionsクラスのメソッドで検証を行います。
 
 <span class="listing-number">**サンプルコード21-11**</span>
 ```java
@@ -376,6 +394,8 @@ public class CalculatorTest {
 
 Mockitoなどのモックフレームワークを使うと、より柔軟なテストが可能になります。
 
+Mockitoを使用すると、モックオブジェクトの振る舞いを詳細に制御でき、メソッド呼び出しの検証も可能になります。以下の例では、@Mockアノテーションでモックを宣言し、when-thenReturnで振る舞いを定義し、verifyでメソッド呼び出しを検証しています。
+
 <span class="listing-number">**サンプルコード21-12**</span>
 ```java
 import org.junit.jupiter.api.Test;
@@ -413,6 +433,8 @@ public class UserServiceTest {
 - **Timely（適時）**: プロダクトコードと同時、または先に書かれる
 
 ### 21.9.2 テストの構造化
+
+JUnit 5の@Nestedアノテーションを使用すると、テストを論理的にグループ化できます。@DisplayNameを使用することで、テストレポートに読みやすい説明を表示できます。以下の例では、正常系と異常系のテストを明確に分離しています。
 
 <span class="listing-number">**サンプルコード21-13**</span>
 ```java

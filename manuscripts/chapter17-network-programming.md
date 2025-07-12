@@ -125,6 +125,8 @@
 
 ### 17.3.2 基本的なTCPクライアント
 
+TCPクライアントは、Socketクラスを使用してサーバーに接続します。接続が確立されると、入力ストリームと出力ストリームを通じてデータの送受信を行います。TCPは信頼性の高い接続指向のプロトコルであり、データの順序と到達が保証されます。
+
 <span class="listing-number">**サンプルコード17-1**</span>
 ```java
 import java.io.*;
@@ -158,6 +160,8 @@ public class SimpleTCPClient {
 ```
 
 ### 17.3.3 基本的なTCPサーバー
+
+TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
 
 <span class="listing-number">**サンプルコード17-2**</span>
 ```java
@@ -208,6 +212,12 @@ public class SimpleTCPServer {
 ## 17.4 マルチスレッドサーバーの実装
 
 単一スレッドのサーバーでは、一度に一つのクライアントしか処理できません。実用的なサーバーでは、複数のクライアントを同時に処理する必要があります。
+
+**マルチクライアント対応の重要性**：
+- 同時接続性：複数のクライアントが同時にサービスを利用できる
+- スケーラビリティ：クライアント数の増加に対応できる
+- 応答性：一つのクライアントの処理が他のクライアントに影響しない
+- リソース効率：スレッドプールを使用することで効率的なリソース管理が可能
 
 ### 17.4.1 スレッドベースのサーバー
 
@@ -314,6 +324,8 @@ Content-Length: 1234
 
 ### 17.5.2 簡単なHTTPクライアント
 
+ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
+
 <span class="listing-number">**サンプルコード17-4**</span>
 ```java
 import java.io.*;
@@ -337,7 +349,9 @@ public class SimpleHTTPClient {
             out.println("Connection: close");
             out.println(); // 空行でヘッダー終了
             
-            // レスポンスを読み取る
+            // HTTPレスポンスの取得
+            // HTTPレスポンスは、ステータスライン、ヘッダー、空行、ボディの順で構成されています。
+            // ヘッダーとボディは空行で区切られているため、これを検出して処理を分けます。
             String line;
             boolean isHeader = true;
             StringBuilder headers = new StringBuilder();
@@ -418,6 +432,159 @@ public class HttpURLConnectionExample {
     }
 }
 ```
+
+### 17.5.4 非同期HTTPクライアント（Java 11+）
+
+Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
+
+<span class="listing-number">**サンプルコード17-5-2**</span>
+```java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+
+public class AsyncHttpClientExample {
+    
+    public static void main(String[] args) throws Exception {
+        // HTTPクライアントの作成
+        HttpClient client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+        
+        // HTTPリクエストの作成
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
+            .timeout(Duration.ofMinutes(1))
+            .header("Accept", "application/json")
+            .GET()
+            .build();
+        
+        // 非同期でリクエストを送信
+        CompletableFuture<HttpResponse<String>> future = 
+            client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        
+        // 非同期処理の連鎖
+        future
+            .thenApply(response -> {
+                System.out.println("Status: " + response.statusCode());
+                return response.body();
+            })
+            .thenAccept(body -> {
+                System.out.println("Response Body: " + body);
+            })
+            .exceptionally(e -> {
+                System.err.println("Error: " + e.getMessage());
+                return null;
+            });
+        
+        // 他の処理を並行して実行可能
+        System.out.println("他の処理を継続中...");
+        
+        // 結果を待つ（必要な場合）
+        future.join();
+    }
+}
+```
+
+**非同期HTTPの利点**：
+- ノンブロッキング処理により、レスポンスを待つ間も他の処理を継続できる
+- 複数のHTTPリクエストを並行して送信できる
+- CompletableFutureによる柔軟なエラーハンドリングと処理の連鎖
+- HTTP/2のサポートによる効率的な通信
+
+## 17.5.5 UDP通信の実装
+
+UDPは、コネクションレスで信頼性の低いプロトコルですが、低遅延で高速な通信が可能です。リアルタイムゲーム、ストリーミング、DNS などで使用されます。
+
+<span class="listing-number">**サンプルコード17-5-3**</span>
+```java
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+
+public class UDPServer {
+    private static final int PORT = 9999;
+    
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket(PORT)) {
+            System.out.println("UDPサーバーがポート " + PORT + " で起動しました");
+            
+            byte[] buffer = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            
+            while (true) {
+                // データを受信
+                socket.receive(packet);
+                
+                String received = new String(packet.getData(), 0, 
+                    packet.getLength(), StandardCharsets.UTF_8);
+                System.out.println("受信: " + received + " from " + 
+                    packet.getAddress());
+                
+                // エコーレスポンスを送信
+                String response = "Echo: " + received;
+                byte[] responseData = response.getBytes(StandardCharsets.UTF_8);
+                DatagramPacket responsePacket = new DatagramPacket(
+                    responseData, responseData.length,
+                    packet.getAddress(), packet.getPort());
+                
+                socket.send(responsePacket);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### UDP受信側
+
+<span class="listing-number">**サンプルコード17-5-4**</span>
+```java
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+
+public class UDPClient {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            InetAddress serverAddress = InetAddress.getByName("localhost");
+            int serverPort = 9999;
+            
+            // データを送信
+            String message = "Hello UDP Server!";
+            byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket packet = new DatagramPacket(
+                buffer, buffer.length, serverAddress, serverPort);
+            
+            socket.send(packet);
+            System.out.println("送信: " + message);
+            
+            // レスポンスを受信
+            byte[] responseBuffer = new byte[1024];
+            DatagramPacket responsePacket = new DatagramPacket(
+                responseBuffer, responseBuffer.length);
+            
+            socket.receive(responsePacket);
+            
+            String response = new String(responsePacket.getData(), 0,
+                responsePacket.getLength(), StandardCharsets.UTF_8);
+            System.out.println("受信: " + response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**UDPの特徴と使用場面**：
+- パケット損失の可能性があるが、高速
+- 順序保証がない
+- ブロードキャストやマルチキャストが可能
+- リアルタイム性が重要なアプリケーションに適している
 
 ## 17.6 実践的な例：チャットアプリケーション
 
@@ -570,6 +737,117 @@ public class ChatClient {
 }
 ```
 
+## 17.6.3 JSON APIクライアントの実装
+
+現代のWebアプリケーションでは、JSON形式でのデータ交換が標準的です。JavaでJSON APIを扱う方法を学びます。
+
+<span class="listing-number">**サンプルコード17-8**</span>
+```java
+import java.net.URI;
+import java.net.http.*;
+import java.util.Map;
+import java.util.HashMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JsonApiClient {
+    private final HttpClient client;
+    private final ObjectMapper mapper;
+    
+    public JsonApiClient() {
+        this.client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .build();
+        this.mapper = new ObjectMapper();
+    }
+    
+    // GETリクエスト
+    public <T> T get(String url, Class<T> responseType) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Accept", "application/json")
+            .GET()
+            .build();
+        
+        HttpResponse<String> response = client.send(request, 
+            HttpResponse.BodyHandlers.ofString());
+        
+        if (response.statusCode() == 200) {
+            return mapper.readValue(response.body(), responseType);
+        } else {
+            throw new RuntimeException("HTTP error: " + response.statusCode());
+        }
+    }
+    
+    // POSTリクエスト
+    public <T> T post(String url, Object data, Class<T> responseType) 
+            throws Exception {
+        String json = mapper.writeValueAsString(data);
+        
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .build();
+        
+        HttpResponse<String> response = client.send(request,
+            HttpResponse.BodyHandlers.ofString());
+        
+        return mapper.readValue(response.body(), responseType);
+    }
+    
+    public static void main(String[] args) throws Exception {
+        JsonApiClient apiClient = new JsonApiClient();
+        
+        // GET例：ユーザー情報の取得
+        Map<String, Object> user = apiClient.get(
+            "https://jsonplaceholder.typicode.com/users/1",
+            Map.class);
+        System.out.println("User: " + user);
+        
+        // POST例：新しい投稿の作成
+        Map<String, Object> newPost = new HashMap<>();
+        newPost.put("title", "New Post");
+        newPost.put("body", "This is a new post");
+        newPost.put("userId", 1);
+        
+        Map<String, Object> result = apiClient.post(
+            "https://jsonplaceholder.typicode.com/posts",
+            newPost, Map.class);
+        System.out.println("Created: " + result);
+    }
+}
+```
+
+**JSON処理のポイント**：
+- Jackson, Gson などのライブラリを使用してJSONのシリアライズ/デシリアライズ
+- 適切なContent-TypeとAcceptヘッダーの設定
+- エラーハンドリングとHTTPステータスコードの確認
+- 型安全なデータマッピング
+
+## 17.6.4 REST API実装の基礎
+
+REST（Representational State Transfer）は、Web APIの設計原則です。JavaでRESTful APIを実装する基本的な概念を理解しましょう。
+
+**RESTの原則**：
+- リソース指向：すべてをリソースとして扱う
+- 統一インターフェース：HTTPメソッド（GET, POST, PUT, DELETE）の適切な使用
+- ステートレス：各リクエストが独立している
+- キャッシュ可能性：レスポンスのキャッシュ制御
+
+実際のREST API実装には、Spring Boot、JAX-RS（Jersey）などのフレームワークを使用することが一般的です。
+
+## 17.6.5 WebSocketクライアントの基礎
+
+WebSocketは、双方向のリアルタイム通信を可能にするプロトコルです。HTTPのアップグレードメカニズムを使用して、永続的な接続を確立します。
+
+**WebSocketの特徴**：
+- 双方向通信：サーバーからクライアントへのプッシュが可能
+- 低レイテンシ：HTTPのオーバーヘッドなし
+- リアルタイム性：チャット、ゲーム、株価配信などに最適
+
+Java標準APIやJettyなどのライブラリを使用してWebSocketクライアントを実装できます。
+
 ## 17.7 セキュリティの考慮事項
 
 ネットワークプログラミングでは、セキュリティを常に意識する必要があります。
@@ -582,7 +860,9 @@ public class ChatClient {
 4. **タイムアウト**: DoS攻撃を防ぐためタイムアウトを設定する
 5. **リソース制限**: 接続数やメモリ使用量を制限する
 
-### 17.7.2 SSL/TLSの使用例
+### 17.7.2 セキュアな通信の実装
+
+SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
 <span class="listing-number">**サンプルコード17-8**</span>
 ```java
