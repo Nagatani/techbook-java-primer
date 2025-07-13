@@ -1016,7 +1016,7 @@ public class Logger {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第4章の課題構成
 
@@ -1056,7 +1056,7 @@ exercises/chapter04/
 
 本章で学んだクラス設計とカプセル化について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b04-software-design-principles/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-software-design-principles/`
 
 この付録では以下の高度なトピックを扱います：
 

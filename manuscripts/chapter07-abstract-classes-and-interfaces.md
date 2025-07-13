@@ -1247,7 +1247,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 ### 演習課題へのアクセス
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第7章の課題構成
 

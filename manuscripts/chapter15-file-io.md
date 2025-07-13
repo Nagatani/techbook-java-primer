@@ -22,7 +22,7 @@
 
 ## 章末演習
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 課題
 - ファイル読み書き（Files API）
@@ -1675,7 +1675,7 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 
 本章で学んだ基本的なファイルI/Oをさらに発展させたい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b15-nio2-advanced/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-nio2-advanced/`
 
 この付録では以下の高度なトピックを扱います：
 

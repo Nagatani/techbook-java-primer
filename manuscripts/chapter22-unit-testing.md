@@ -551,7 +551,7 @@ jacocoTestCoverageVerification {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第22章の課題構成
 

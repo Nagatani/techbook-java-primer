@@ -1509,7 +1509,7 @@ if (member instanceof Wizard wizard) {
 
 ### 演習課題へのアクセス
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第5章の課題構成
 
@@ -1553,7 +1553,7 @@ exercises/chapter05/
 
 本章で学んだポリモーフィズムの内部実装について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b05-virtual-method-table/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-virtual-method-table/`
 
 この付録では以下の高度なトピックを扱います：
 

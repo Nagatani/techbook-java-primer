@@ -1234,7 +1234,7 @@ public class ComplexProcessingExample {
 
 ### 演習課題へのアクセス
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ```
 exercises/chapter10/
@@ -1260,7 +1260,7 @@ exercises/chapter10/
 
 本章で学んだStream APIについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b10-stream-api-internals/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-stream-api-internals/`
 
 この付録では以下の高度なトピックを扱います：
 

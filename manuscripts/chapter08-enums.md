@@ -49,7 +49,7 @@
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第8章の課題構成
 
@@ -312,7 +312,7 @@ public enum Status implements Loggable {
 
 本章で学んだEnumsをさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b13-enum-patterns/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-enum-patterns/`
 
 この付録では以下の高度なトピックを扱います：
 

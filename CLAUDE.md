@@ -84,15 +84,68 @@ The build process converts Markdown files listed in the `entry` array (currently
 **Critical**: The `manuscripts/` directory should contain ONLY the actual book content files that will be included in the final publication. 
 
 - **Book content only**: All files in `manuscripts/` must be part of the actual book
-- **Auxiliary files**: Any auxiliary files such as planning documents, guidelines, checklists, or notes must be stored in `meta/` directory
+- **Auxiliary files**: Any auxiliary files such as planning documents, guidelines, checklists, or notes must be stored in `docs/` directory
 - **Never create**: Do not create management files, TODO lists, planning documents, or writing guidelines in `manuscripts/`
 - **Before creating**: Always verify that a new file in `manuscripts/` will be added to `vivliostyle.config.js`
 
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
-- `meta/`: Auxiliary files for book creation (planning documents, guidelines, cross-reference guides, etc.)
+- `docs/`: Project documentation and analysis files (maintained continuously)
 - `source/`: Original lecture materials and reference code (read-only)
 - `output/`: Generated PDF files
+
+## Analysis Documentation Management
+
+**Critical**: The `docs/analysis/` directory contains comprehensive project analysis files that must be maintained continuously during all work sessions. These files track the current state of the book project and identify ongoing issues.
+
+### Required Analysis Files Maintenance
+
+When performing any modifications to the book content, you must:
+
+1. **Read current analysis status**: Always consult the latest analysis files before starting work:
+   - `docs/analysis/comprehensive-project-analysis.md`: Overall project state
+   - `docs/analysis/issues-tracking.md`: Current prioritized issues
+   - `docs/analysis/improvement-roadmap.md`: Planned improvements
+
+2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
+   - Resolved issues (mark as completed in issues-tracking.md)
+   - New issues discovered (add to issues-tracking.md with appropriate priority)
+   - Progress on roadmap items (update improvement-roadmap.md)
+
+3. **Maintain consistency**: Ensure analysis files remain consistent with actual project state:
+   - Chapter counts, file existence, and structural changes
+   - Reference link status and appendix completeness
+   - New features or improvements implemented
+
+4. **Analysis file locations**:
+   - All analysis documentation must be stored in `docs/analysis/`
+   - Never create analysis files in `manuscripts/` directory
+   - Always use absolute paths when referencing files in analysis
+
+### Critical Project Issues (as of current analysis)
+
+The following issues require ongoing attention and should be referenced during any work:
+
+1. **High Priority**: Appendix B system incomplete (18 sections planned, only 1 exists)
+2. ~~**High Priority**: GitHub repository placeholders unresolved~~ ✅ **Resolved** (2025-07-13)
+3. **Medium Priority**: Chapter 15 exercise format inconsistency
+4. **Medium Priority**: Chapter ordering optimization (Chapter 21 placement)
+
+## Repository Information
+
+**GitHub Repository**: https://github.com/Nagatani/techbook-java-primer
+
+This repository contains:
+- Book manuscript files (`manuscripts/` directory)
+- Exercise source code and examples (`source/` directory)
+- Project documentation and analysis (`docs/` directory)
+- Build configuration and theme settings
+
+### Exercise References
+All chapter exercise sections reference this repository URL. The structure is:
+- Exercise files: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+- Appendix resources: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix`
+- Source code examples: `/source/` directory
 
 ## Content Guidelines
 

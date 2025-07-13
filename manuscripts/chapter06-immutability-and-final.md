@@ -615,7 +615,7 @@ public class BuilderExample {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第6章の課題構成
 
@@ -651,7 +651,7 @@ exercises/chapter06/
 
 本章で学んだ不変性の基本概念をさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b06-immutability-patterns/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-immutability-patterns/`
 
 この付録では以下の高度なトピックを扱います：
 

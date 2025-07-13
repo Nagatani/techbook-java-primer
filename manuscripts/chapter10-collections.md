@@ -500,7 +500,7 @@ for (String element : list) {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第10章の課題構成
 
@@ -789,7 +789,7 @@ public class HashMapExample {
 
 本章で学んだコレクションフレームワークの内部実装について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b08-collection-internals/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b08-collection-internals/`
 
 この付録では以下の高度なトピックを扱います：
 

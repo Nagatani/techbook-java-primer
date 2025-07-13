@@ -3598,7 +3598,7 @@ public class ResiliencePatterns {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
+**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第16章の課題構成
 
@@ -3633,7 +3633,7 @@ exercises/chapter16/
 
 本章で学んだマルチスレッドプログラミングの基礎をさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/appendix/b16-java-memory-model/`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b16-java-memory-model/`
 
 この付録では以下の高度なトピックを扱います：
 
