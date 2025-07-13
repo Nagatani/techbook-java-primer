@@ -915,7 +915,7 @@ class SynchronizedCounter {
 
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
-<span class="listing-number">**サンプルコード16-10-2**</span>
+<span class="listing-number">**サンプルコード16-11**</span>
 
 ```java
 class BankAccount {
@@ -963,7 +963,7 @@ class BankAccount {
 - 単純な読み書きのみをアトミックにする（複合操作は保証しない）
 - synchronized より軽量だが、機能も限定的
 
-<span class="listing-number">**サンプルコード16-10-3**</span>
+<span class="listing-number">**サンプルコード16-12**</span>
 
 ```java
 class ThreadStopExample {
@@ -1019,7 +1019,7 @@ public class VolatileDemo {
 - `AtomicBoolean`: boolean値のアトミック操作
 - `AtomicReference<T>`: 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード16-10-4**</span>
+<span class="listing-number">**サンプルコード16-13**</span>
 
 ```java
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1095,7 +1095,7 @@ Atomicクラスはsynchronizedよりもはるかに高速で、特に読み取�
 - `newSingleThreadExecutor()`: 単一スレッドで順次実行するプール
 - `newScheduledThreadPool(int)`: スケジュール実行が可能なプール
 
-<span class="listing-number">**サンプルコード16-11**</span>
+<span class="listing-number">**サンプルコード16-14**</span>
 
 ```java
 import java.util.concurrent.ExecutorService;
@@ -1139,7 +1139,7 @@ public class ExecutorExample {
 
 プロデューサー・コンシューマーパターンは、並行処理における古典的かつ大切なデザインパターンです。生産者（プロデューサー）がデータを生成し、消費者（コンシューマー）がそれを処理するという構造で、両者の処理速度の違いをバッファ（キュー）で吸収します。このパターンは、ログ処理、メッセージキュー、パイプライン処理など、多くの実用的なシステムで使用されています。
 
-<span class="listing-number">**サンプルコード16-12**</span>
+<span class="listing-number">**サンプルコード16-15**</span>
 
 ```java
 import java.util.concurrent.BlockingQueue;
@@ -1238,7 +1238,7 @@ public class ProducerConsumerExample {
 - **例外処理**: `Callable`は検査例外をスローできる
 - **キャンセル機能**: 実行中のタスクをキャンセル可能
 
-<span class="listing-number">**サンプルコード16-13**</span>
+<span class="listing-number">**サンプルコード16-16**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1314,7 +1314,7 @@ public class FutureCallableExample {
 - **複数の非同期処理の組み合わせ**: `allOf`、`anyOf`で複数の処理を統合
 - **タイムアウト処理**: Java 9以降では`orTimeout`メソッドも利用可能
 
-<span class="listing-number">**サンプルコード16-14**</span>
+<span class="listing-number">**サンプルコード16-17**</span>
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -1423,7 +1423,7 @@ public class CompletableFutureExample {
 - `thenCombine()`: 2つのCompletableFutureの結果を結合
 - `thenAccept()`: 結果を消費（戻り値なし）
 
-<span class="listing-number">**サンプルコード16-14-2**</span>
+<span class="listing-number">**サンプルコード16-18**</span>
 
 ```java
 public class AsyncChainingExample {
@@ -1485,7 +1485,7 @@ public class AsyncChainingExample {
 
 #### 4. 並行コレクションの活用
 
-<span class="listing-number">**サンプルコード16-15**</span>
+<span class="listing-number">**サンプルコード16-19**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1599,7 +1599,7 @@ public class ConcurrentCollectionsExample {
 
 #### 5. 高度な同期プリミティブ
 
-<span class="listing-number">**サンプルコード16-16**</span>
+<span class="listing-number">**サンプルコード16-20**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1766,7 +1766,7 @@ public class AdvancedSynchronizationExample {
 
 計算結果などの戻り値が必要なタスクには、`Callable<V>`インターフェイスを使います。`submit()`メソッドで`Callable`を投入すると、非同期処理の結果を表す`Future<V>`オブジェクトが返されます。
 
-<span class="listing-number">**サンプルコード16-17**</span>
+<span class="listing-number">**サンプルコード16-21**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1801,7 +1801,7 @@ public class FutureExample {
 
 Java 1.3から存在する`Timer`クラスは、タスクを定期的に実行するための古典的な方法です。現在では`ScheduledExecutorService`の使用があるとよいでしょうが、既存のコードで見かけることがあるため、理解しておくことが大切です。
 
-<span class="listing-number">**サンプルコード16-17-2**</span>
+<span class="listing-number">**サンプルコード16-22**</span>
 
 ```java
 import java.util.Timer;
@@ -1852,7 +1852,7 @@ public class TimerExample {
 
 並列処理の効果を正しく評価するには、適切なベンチマークとパフォーマンス測定が必要です。このセクションでは、並列ソート、並列ストリーム、ForkJoinPoolを使った実践的な例を紹介します。
 
-<span class="listing-number">**サンプルコード16-18**</span>
+<span class="listing-number">**サンプルコード16-23**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1985,7 +1985,7 @@ public class ParallelPerformanceExample {
 
 ### スレッドセーフなシングルトンパターン
 
-<span class="listing-number">**サンプルコード16-19**</span>
+<span class="listing-number">**サンプルコード16-24**</span>
 
 ```java
 public class ThreadSafeSingletonExamples {

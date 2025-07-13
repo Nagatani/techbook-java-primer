@@ -442,7 +442,7 @@ public class HttpURLConnectionExample {
 
 Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード17-5-2**</span>
+<span class="listing-number">**サンプルコード17-6**</span>
 
 ```java
 import java.net.URI;
@@ -506,7 +506,7 @@ public class AsyncHttpClientExample {
 
 UDPは、コネクションレスで信頼性の低いプロトコルですが、低遅延で高速な通信が可能です。リアルタイムゲーム、ストリーミング、DNS などで使用されます。
 
-<span class="listing-number">**サンプルコード17-5-3**</span>
+<span class="listing-number">**サンプルコード17-7**</span>
 
 ```java
 import java.net.*;
@@ -549,7 +549,7 @@ public class UDPServer {
 
 ### UDP受信側
 
-<span class="listing-number">**サンプルコード17-5-4**</span>
+<span class="listing-number">**サンプルコード17-8**</span>
 
 ```java
 import java.net.*;
@@ -875,7 +875,7 @@ Java標準APIやJettyなどのライブラリを使用してWebSocketクライ�
 
 SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
-<span class="listing-number">**サンプルコード17-8**</span>
+<span class="listing-number">**サンプルコード17-9**</span>
 
 ```java
 import javax.net.ssl.*;
@@ -922,7 +922,7 @@ public class SSLClient {
 
 Java NIOを使用すると、より効率的なネットワークプログラミングが可能です。
 
-<span class="listing-number">**サンプルコード17-9**</span>
+<span class="listing-number">**サンプルコード17-10**</span>
 
 ```java
 import java.nio.*;

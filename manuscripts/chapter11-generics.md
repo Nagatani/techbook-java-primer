@@ -4,7 +4,7 @@
 
 ### 前提知識
 **ポイントとなる前提**：
-- 第8章のコレクションフレームワークの理解と実践経験
+- 第10章のコレクションフレームワークの理解と実践経験
 - 型システムの基本的な理解
 - オブジェクト指向の継承とポリモーフィズムの理解
 
@@ -18,17 +18,20 @@
 - 型パラメータと型引数の概念
 - 境界ワイルドカード（? extends、? super）の理解
 - 型消去（Type Erasure）のしくみと制限事項
+- var型推論のメカニズムと適用範囲
 
 **技能習得目標**：
 - ジェネリッククラスとインターフェイスの設計・実装
 - ジェネリックメソッドの効果的な使用
 - 境界ワイルドカードを使った柔軟な型設計
 - 既存のジェネリックAPIの効果的な活用
+- var型推論を使った可読性の高いコードの作成
 
 **設計能力目標**：
 - 型安全で再利用可能なライブラリの設計
 - 複雑な型関係を持つシステムの設計
 - ジェネリクスを活用したAPIの設計
+- var型推論を適切に判断・活用したコード設計
 
 **到達レベルの指標**：
 - 型安全で再利用可能なジェネリッククラスが独力で設計・実装できる
@@ -38,11 +41,11 @@
 
 
 
-## 9.1 なぜジェネリクスが必要なのか？
+## 11.1 なぜジェネリクスが必要なのか？
 
-### 第8章で見た不思議な記法
+### 第10章で見た不思議な記法
 
-前章でコレクションを学習したとき、以下のような記法を見たはずです：
+第10章でコレクションフレームワークを学習したとき、以下のような記法を見たはずです：
 
 <span class="listing-number">**サンプルコード11-1**</span>
 
@@ -199,7 +202,7 @@ public class WithGenericsExample {
 
 ジェネリクスを使うことで、コンパイラが型の整合性をチェックしてくれるため、意図しない型のデータが混入するのを防ぎ、プログラムの安全性を大幅に向上させることができます。
 
-## 9.2 ジェネリッククラスの作成
+## 11.2 ジェネリッククラスの作成
 
 ジェネリクスはコレクションだけでなく、自作のクラスにも適用できます。これにより、特定の型に依存しない、再利用性の高いクラスを作成できます。
 
@@ -262,7 +265,7 @@ Java 7からは、右辺の型パラメータを省略できる**ダイヤモン
 Map<String, List<Integer>> complexMap = new HashMap<>();
 ```
 
-## 9.3 ジェネリックメソッド
+## 11.3 ジェネリックメソッド
 
 クラス全体ではなく、特定のメソッドだけをジェネリックにすることも可能です。メソッドの戻り値の型の前に型パラメータを宣言します。
 
@@ -291,7 +294,7 @@ public class GenericMethodExample {
 }
 ```
 
-## 9.4 型制約（境界のある型パラメータ）
+## 11.4 型制約（境界のある型パラメータ）
 
 ジェネリクスで使える型を、特定のクラスのサブクラスや、特定のインターフェイスを実装したクラスに限定したい場合があります。これを**境界のある型パラメータ**とよい、`extends`キーワードを使います。
 
@@ -329,7 +332,7 @@ public class BoundedTypeExample {
 }
 ```
 
-## 9.5 ワイルドカード
+## 11.5 ワイルドカード
 
 ジェネリクスを使ったメソッドの引数などで、より柔軟にさまざまな型を受け入れたい場合に**ワイルドカード (`?`)** を使います。
 
@@ -363,6 +366,347 @@ public class WildcardExample {
 }
 ```
 
+## 11.6 var型推論とジェネリクス
+
+Java 10で導入された**var型推論**は、ジェネリクスと組み合わせることで、より簡潔で読みやすいコードを書くことができます。本セクションでは、ジェネリクスの文脈でのvar型推論の活用方法について学習します。
+
+### var型推論の基本概念
+
+var型推論は、**ローカル変数型推論（Local Variable Type Inference）**とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます：
+
+<span class="listing-number">**サンプルコード11-10**</span>
+
+```java
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class VarBasicExample {
+    public static void main(String[] args) {
+        // 従来の書き方
+        List<String> languages = new ArrayList<String>();
+        Map<String, Integer> scores = new HashMap<String, Integer>();
+
+        // ダイヤモンド演算子を使った書き方（Java 7以降）
+        List<String> languagesV7 = new ArrayList<>();
+        Map<String, Integer> scoresV7 = new HashMap<>();
+
+        // var型推論を使った書き方（Java 10以降）
+        var languagesVar = new ArrayList<String>();
+        var scoresVar = new HashMap<String, Integer>();
+
+        // いずれも同じ型になる
+        System.out.println("languages: " + languages.getClass());
+        System.out.println("languagesVar: " + languagesVar.getClass());
+    }
+}
+```
+
+### 使用できる場面と制限事項
+
+var型推論は、以下の場面でのみ使用できます：
+
+1. **ローカル変数の初期化**（コンストラクタ、メソッド内）
+2. **拡張for文のインデックス変数**
+3. **try-with-resources文のリソース変数**（Java 14以降）
+
+一方、以下の場面では使用できません：
+
+<span class="listing-number">**サンプルコード11-11**</span>
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public class VarLimitations {
+    // var field = new ArrayList<String>(); // フィールドでは使用不可
+    
+    // public void method(var param) { } // パラメータでは使用不可
+    
+    // public var method() { return ""; } // 戻り値型では使用不可
+    
+    public static void demonstrateLimitations() {
+        // OK: ローカル変数の初期化
+        var list = new ArrayList<String>();
+        
+        // NG: 初期化なし
+        // var uninitialized; // コンパイルエラー
+        
+        // NG: null初期化
+        // var nullVar = null; // コンパイルエラー
+        
+        // NG: 配列初期化子
+        // var array = {1, 2, 3}; // コンパイルエラー
+        
+        // OK: 明示的な配列作成
+        var validArray = new int[]{1, 2, 3};
+        
+        // NG: ダイヤモンド演算子単体
+        // var diamond = new ArrayList<>(); // コンパイルエラー
+        
+        // OK: 型が推論可能
+        var inferredList = new ArrayList<String>();
+    }
+}
+```
+
+### 可読性の向上とトレードオフ
+
+var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります：
+
+<span class="listing-number">**サンプルコード11-12**</span>
+
+```java
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
+public class VarReadabilityExample {
+    public static void demonstrateGoodUsage() {
+        // 良い使用例：型が明らかで、冗長性を減らす
+        var students = List.of("Alice", "Bob", "Charlie");
+        var scoreMap = new HashMap<String, Integer>();
+        var builder = new StringBuilder();
+        
+        // 複雑なジェネリック型で特に有効
+        var complexMap = new HashMap<String, List<Map<String, Object>>>();
+        
+        // Stream APIとの組み合わせ
+        var upperCaseNames = students.stream()
+            .map(String::toUpperCase)
+            .collect(Collectors.toList());
+    }
+    
+    public static void demonstratePoorUsage() {
+        // 悪い使用例：型が不明確
+        var data = getData();           // 戻り値の型が不明
+        var result = process(data);     // メソッドの結果の型が不明
+        var flag = checkCondition();    // boolean? String? 不明
+        
+        // 数値型の場合は明示的な型の方が良い場合も
+        var count = 0;      // int? long? 
+        var rate = 0.5;     // float? double?
+        
+        // より明確な書き方
+        int itemCount = 0;
+        double successRate = 0.5;
+    }
+    
+    private static Object getData() { return null; }
+    private static Object process(Object data) { return null; }
+    private static boolean checkCondition() { return true; }
+}
+```
+
+### ジェネリクスとvarの組み合わせ
+
+var型推論は、ジェネリクスと組み合わせることで特に威力を発揮します：
+
+<span class="listing-number">**サンプルコード11-13**</span>
+
+```java
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class VarWithGenericsExample {
+    public static void main(String[] args) {
+        // 複雑なジェネリック型の簡略化
+        var userPreferences = new HashMap<String, List<String>>();
+        var nestedData = new ArrayList<Map<String, Set<Integer>>>();
+        
+        // メソッドチェーンでの型推論
+        var processedData = Arrays.asList("apple", "banana", "cherry")
+            .stream()
+            .filter(s -> s.length() > 5)
+            .map(String::toUpperCase)
+            .collect(Collectors.toList());
+        
+        // ワイルドカードとの組み合わせ
+        List<? extends Number> numbers = Arrays.asList(1, 2.5, 3L);
+        var sum = calculateSum(numbers);
+        
+        // ジェネリックメソッドの戻り値
+        var pair = createPair("Hello", 42);
+        System.out.println("First: " + pair.getFirst());
+        System.out.println("Second: " + pair.getSecond());
+    }
+    
+    public static double calculateSum(List<? extends Number> numbers) {
+        return numbers.stream()
+            .mapToDouble(Number::doubleValue)
+            .sum();
+    }
+    
+    public static <T, U> Pair<T, U> createPair(T first, U second) {
+        return new Pair<>(first, second);
+    }
+    
+    static class Pair<T, U> {
+        private final T first;
+        private final U second;
+        
+        public Pair(T first, U second) {
+            this.first = first;
+            this.second = second;
+        }
+        
+        public T getFirst() { return first; }
+        public U getSecond() { return second; }
+    }
+}
+```
+
+### ベストプラクティスとアンチパターン
+
+var型推論を効果的に使用するためのガイドライン：
+
+<span class="listing-number">**サンプルコード11-14**</span>
+
+```java
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class VarBestPractices {
+    
+    // ✅ GOOD: 変数名で型が明確
+    public static void goodPractices() {
+        var studentList = new ArrayList<String>();
+        var scoreMap = new HashMap<String, Integer>();
+        var messageBuilder = new StringBuilder();
+        
+        // ✅ 長いジェネリック型の簡略化
+        var complexStructure = new HashMap<String, List<Map<String, Object>>>();
+        
+        // ✅ ファクトリーメソッドでの使用
+        var immutableList = List.of("a", "b", "c");
+        var emptySet = Set.of();
+        
+        // ✅ Stream API処理結果
+        var evenNumbers = List.of(1, 2, 3, 4, 5)
+            .stream()
+            .filter(n -> n % 2 == 0)
+            .collect(Collectors.toList());
+    }
+    
+    // ❌ POOR: 型が不明確
+    public static void poorPractices() {
+        // ❌ 変数名だけでは型が不明
+        var data = processData();
+        var result = calculate();
+        var value = getValue();
+        
+        // ❌ プリミティブ型での誤用
+        var x = 10;          // int? long?
+        var y = 3.14;        // float? double?
+        
+        // ❌ nullリテラル（コンパイルエラー）
+        // var nullValue = null;
+        
+        // ❌ 配列初期化子（コンパイルエラー）
+        // var array = {1, 2, 3};
+    }
+    
+    // ✅ GOOD: 型注釈を活用した明確化
+    public static void typeAnnotationPattern() {
+        // 必要に応じて型注釈で明確化
+        List<String> stringList = new ArrayList<>();  // 明示的
+        var numberList = new ArrayList<Integer>();     // 推論、型は明確
+        
+        // メソッド参照で型が明確な場合
+        var upperCaseConverter = String::toUpperCase;
+        
+        // ラムダ式では文脈から型が明確
+        var predicate = (String s) -> s.length() > 3;
+    }
+    
+    private static Object processData() { return new Object(); }
+    private static int calculate() { return 42; }
+    private static String getValue() { return "value"; }
+}
+```
+
+### リファクタリングでのvar活用
+
+既存のコードをvarを使ってリファクタリングする際の戦略：
+
+<span class="listing-number">**サンプルコード11-15**</span>
+
+```java
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class VarRefactoringExample {
+    
+    // リファクタリング前
+    public static void beforeRefactoring() {
+        HashMap<String, List<Map<String, Object>>> complexData = 
+            new HashMap<String, List<Map<String, Object>>>();
+        
+        ArrayList<String> filteredNames = new ArrayList<String>();
+        
+        List<Integer> processedNumbers = Arrays.asList(1, 2, 3, 4, 5)
+            .stream()
+            .filter(n -> n % 2 == 0)
+            .map(n -> n * 2)
+            .collect(Collectors.toList());
+    }
+    
+    // リファクタリング後
+    public static void afterRefactoring() {
+        var complexData = new HashMap<String, List<Map<String, Object>>>();
+        var filteredNames = new ArrayList<String>();
+        
+        var processedNumbers = Arrays.asList(1, 2, 3, 4, 5)
+            .stream()
+            .filter(n -> n % 2 == 0)
+            .map(n -> n * 2)
+            .collect(Collectors.toList());
+    }
+    
+    // 段階的リファクタリングの例
+    public static void gradualRefactoring() {
+        // ステップ1: 最も冗長な部分から開始
+        var userCache = new ConcurrentHashMap<String, UserProfile>();
+        
+        // ステップ2: 型が明確なファクトリーメソッド
+        var emptyList = Collections.<String>emptyList();
+        
+        // ステップ3: Stream処理結果
+        var groupedUsers = getAllUsers()
+            .stream()
+            .collect(Collectors.groupingBy(UserProfile::getDepartment));
+    }
+    
+    private static List<UserProfile> getAllUsers() {
+        return List.of();
+    }
+    
+    static class UserProfile {
+        public String getDepartment() { return "Engineering"; }
+    }
+}
+```
+
+### var型推論の実践的な判断基準
+
+var型推論を使用するかどうかの判断基準：
+
+1. **使用を推奨する場面**：
+   - 複雑なジェネリック型で冗長性が高い
+   - 変数名から型が明確に推測できる
+   - 初期化式から型が明らか（ファクトリーメソッド、new演算子）
+   - Stream APIの処理結果
+
+2. **明示的な型宣言を推奨する場面**：
+   - メソッドの戻り値型が不明確
+   - プリミティブ型で精度が重要
+   - パブリックAPIの一部
+   - 型が重要な意味を持つ場合
+
+var型推論は、Javaの表現力を高める強力な機能ですが、適切に使用することでコードの可読性と保守性を向上させることができます。ジェネリクスと組み合わせて使用することで、複雑な型宣言を簡潔にし、本質的なロジックに集中できるコードを書くことが可能になります。
+
 ## より深い理解のために
 
 本章で学んだジェネリクスの内部実装について、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
@@ -381,14 +725,16 @@ public class WildcardExample {
 
 ## まとめ
 
-本章では、Javaの型安全性を支える大切な機能であるジェネリクスについて学びました。
+本章では、Javaの型安全性を支える大切な機能であるジェネリクスと、それを補完するvar型推論について学びました。
 
 -   **ジェネリクス**は、クラスやメソッドが扱うデータ型をコンパイル時に指定し、型の安全性を保証するしくみです。
 -   これにより、実行時エラーである`ClassCastException`を未然に防ぐことができます。
 -   自作のクラスやメソッドもジェネリックにすることで、**再利用性**を高めることができます。
 -   **型制約**や**ワイルドカード**を使うことで、より柔軟で安全なメソッド設計が可能になります。
+-   **var型推論**は、ジェネリクスの複雑な型宣言を簡潔にし、コードの可読性を向上させる強力な機能です。
+-   適切にvar型推論を活用することで、型安全性を保ちながら、より保守しやすいコードを書くことができます。
 
-コレクションを扱う際には、必ずジェネリクスを使い、その恩恵を最大限に活用することが、現代的なJavaプログラミングの基本です。
+コレクションを扱う際には、必ずジェネリクスを使い、必要に応じてvar型推論も活用して、その恩恵を最大限に活用することが、現代的なJavaプログラミングの基本です。
 
 ## 章末演習
 
@@ -418,11 +764,12 @@ exercises/chapter11/
 - ジェネリッククラスとメソッドの設計・実装
 - 境界付き型パラメータの効果的な使用
 - ワイルドカードとPECS原則の実践的な活用
+- var型推論を使った可読性の高いコード作成
 
 ### 課題の概要
 
-1. **基礎課題**: ジェネリックペアクラス、コンテナクラス、ワイルドカード活用など、ジェネリクスの基本概念の実装
-2. **発展課題**: 高度なジェネリックメソッド、型変換ユーティリティの作成
+1. **基礎課題**: ジェネリックペアクラス、コンテナクラス、ワイルドカード活用、var型推論の適用など、ジェネリクスの基本概念の実装
+2. **発展課題**: 高度なジェネリックメソッド、型変換ユーティリティの作成、var型推論を活用したリファクタリング
 3. **チャレンジ課題**: 実用的なジェネリックライブラリの設計・実装
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。

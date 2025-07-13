@@ -954,7 +954,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 最も基本的なFactoryパターンの実装例を見てみましょう：
 
-<span class="listing-number">**サンプルコード7-16**</span>
+<span class="listing-number">**サンプルコード7-20**</span>
 
 ```java
 // 共通のインターフェイス
@@ -1074,7 +1074,7 @@ public class FactoryDemo {
 
 より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します：
 
-<span class="listing-number">**サンプルコード7-17**</span>
+<span class="listing-number">**サンプルコード7-21**</span>
 
 ```java
 // 抽象ファクトリークラス
@@ -1157,7 +1157,7 @@ class PdfDocument implements Document {
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-18**</span>
+<span class="listing-number">**サンプルコード7-22**</span>
 
 ```java
 // データベース接続インターフェイス

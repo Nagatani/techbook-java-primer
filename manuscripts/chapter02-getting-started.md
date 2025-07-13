@@ -679,6 +679,374 @@ while (count < 5) {
 - ループ変数のスコープがより厳密に管理されています。
 - 配列アクセスの安全性が大幅に向上しています。
 
+### Switch式（Java 14）の詳細解説
+
+Java 14で導入されたSwitch式は、従来のswitch文の問題点を解決し、より現代的で安全なプログラミングスタイルを可能にする重要な言語改良です。このセクションでは、従来のswitch文の課題を分析し、新しいSwitch式の利点と実用的な使用法を詳しく学習します。
+
+#### 従来のswitch文の問題点
+
+**事前説明：**
+従来のswitch文には、長年にわたって開発者を悩ませてきたいくつかの構造的な問題がありました。これらの問題を理解することで、なぜSwitch式が導入されたのか、その設計思想を深く理解できます。
+
+**主要な問題点とその影響**：
+
+1. **fall-through問題**：`break`文の書き忘れによる意図しない動作
+2. **値の返却の複雑さ**：switch文は文（statement）であり、値を直接返せない
+3. **冗長な記述**：同じ処理を行う複数のcaseを記述する際の冗長性
+4. **スコープの問題**：case内で宣言した変数のスコープ管理の複雑さ
+
+<span class="listing-number">**サンプルコード2-24**</span>
+
+```java
+// 従来のswitch文の問題例
+public class TraditionalSwitchProblems {
+    // 問題1: fall-through問題
+    public static String getSeasonMessage(int month) {
+        String message;
+        switch (month) {
+            case 12:
+            case 1:
+            case 2:
+                message = "寒い冬です";
+                break;  // break忘れでfall-throughが発生
+            case 3:
+            case 4:
+            case 5:
+                message = "暖かい春です";
+                // breakを忘れると、次のcaseも実行される
+            case 6:
+            case 7:
+            case 8:
+                message = "暑い夏です";
+                break;
+            default:
+                message = "秋です";
+                break;
+        }
+        return message;
+    }
+    
+    // 問題2: 値の返却の複雑さ
+    public static String getDayType(String day) {
+        String type;  // 変数の事前宣言が必要
+        switch (day) {
+            case "Monday":
+            case "Tuesday":
+            case "Wednesday":
+            case "Thursday":
+            case "Friday":
+                type = "平日";
+                break;
+            case "Saturday":
+            case "Sunday":
+                type = "休日";
+                break;
+            default:
+                type = "不明";
+                break;
+        }
+        return type;  // 最後に明示的に返す必要
+    }
+}
+```
+
+**この従来コードで見られる問題点の詳細分析**：
+
+- **break文の必須性**：各caseブロックの最後に`break`文を書かないと、次のcaseブロックも実行されてしまいます（fall-through）。これは初心者が頻繁にやってしまうバグの原因です。
+- **変数の事前宣言**：switch文は値を返せないため、結果を格納する変数を事前に宣言する必要があります。
+- **重複したbreak文**：すべてのcaseでbreak文を書く必要があり、コードが冗長になります。
+- **default処理の強制**：すべてのケースを網羅していても、default節を書かないとコンパイラが警告を出すことがあります。
+
+#### Switch式の基本構文と利点
+
+Switch式は、これらの問題を根本的に解決する新しいアプローチです。最も重要な特徴は、**式（expression）として値を返す**ことができる点です。
+
+<span class="listing-number">**サンプルコード2-25**</span>
+
+```java
+// Switch式による問題解決
+public class ModernSwitchExpression {
+    // 解決1: arrow syntax（->）による安全な処理
+    public static String getSeasonMessage(int month) {
+        return switch (month) {
+            case 12, 1, 2 -> "寒い冬です";        // ①
+            case 3, 4, 5 -> "暖かい春です";        // ②
+            case 6, 7, 8 -> "暑い夏です";          // ③
+            case 9, 10, 11 -> "涼しい秋です";      // ④
+            default -> "無効な月です";              // ⑤
+        };
+    }
+    
+    // 解決2: 直接値を返すことができる
+    public static String getDayType(String day) {
+        return switch (day) {
+            case "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" -> "平日";
+            case "Saturday", "Sunday" -> "休日";
+            default -> "不明";
+        };
+    }
+    
+    // より複雑な処理もブロック構文で対応
+    public static String getDetailedDayInfo(String day) {
+        return switch (day) {
+            case "Monday" -> {
+                String mood = "やる気";
+                yield "月曜日：週の始まり（" + mood + "）";  // ⑥
+            }
+            case "Friday" -> {
+                String mood = "解放感";
+                yield "金曜日：週の終わり（" + mood + "）";
+            }
+            case "Saturday", "Sunday" -> "週末：リラックス";
+            default -> {
+                yield "平日：通常業務";
+            }
+        };
+    }
+}
+```
+
+**Switch式の重要な改良点の詳細説明**：
+
+①②③④　**複数ケースの同時指定**：`case 12, 1, 2 ->`のように、カンマ区切りで複数の値を1つのケースで処理できます。これにより、従来のようにfall-throughを意図的に使う必要がなくなります。
+
+⑤　**arrow syntax（->）**：従来の`:`の代わりに`->`を使用することで、fall-through問題を根本的に解決します。`->`は「この条件の場合、この結果を返す」という明確な意味を表現します。
+
+⑥　**yield文による値の返却**：ブロック構文（`{}`）を使用する場合は、`yield`文で値を返します。これにより複雑な処理も記述可能です。
+
+#### yield文の詳細と応用例
+
+`yield`文は、Switch式のブロック構文で値を返すための専用キーワードです。`return`文とは異なり、Switch式の結果として値を生成するために使用されます。
+
+<span class="listing-number">**サンプルコード2-26**</span>
+
+```java
+public class YieldExampleAdvanced {
+    // yield文を使った複雑な処理の例
+    public static String calculateGrade(int score) {
+        return switch (score / 10) {
+            case 10, 9 -> {
+                // 複数行の処理が可能
+                String rank = "最優秀";
+                String comment = "素晴らしい成績です";
+                yield rank + "（" + comment + "）";  // ①
+            }
+            case 8 -> {
+                boolean isPerfect = (score >= 85);
+                yield isPerfect ? "優（上位）" : "優（標準）";  // ②
+            }
+            case 7 -> "良";  // 単一式の場合はyield不要
+            case 6 -> "可";
+            default -> {
+                if (score < 0 || score > 100) {
+                    yield "エラー：無効なスコア";  // ③
+                }
+                yield "不可";
+            }
+        };
+    }
+    
+    // 計算処理を含むSwitch式
+    public static double calculateTax(String category, double amount) {
+        double rate = switch (category) {
+            case "food" -> 0.08;        // 軽減税率
+            case "book" -> 0.08;        // 軽減税率
+            case "general" -> 0.10;     // 標準税率
+            case "luxury" -> {
+                // 奢侈品は段階的な税率
+                yield amount > 100000 ? 0.15 : 0.12;  // ④
+            }
+            default -> throw new IllegalArgumentException("未知のカテゴリ: " + category);
+        };
+        return amount * rate;
+    }
+}
+```
+
+**yield文の重要なポイント**：
+
+①　**複数行処理との組み合わせ**：ブロック内で複数の変数を使った複雑な処理を行い、最終的に`yield`で結果を返します。
+
+②　**条件式との組み合わせ**：`yield`文では三項演算子なども使用できます。
+
+③　**エラー処理の実装**：不正な入力値に対する適切なエラーハンドリングも可能です。
+
+④　**動的な値の計算**：Switch式の中で条件に応じた計算を行い、その結果を返すことができます。
+
+#### パターンマッチングとの関係（将来拡張）
+
+Switch式は、Java 17以降で段階的に導入されているパターンマッチング機能の基盤となっています。現在のSwitch式は値による分岐ですが、将来的には型や構造による分岐も可能になる予定です。
+
+<span class="listing-number">**サンプルコード2-27**</span>
+
+```java
+// 将来のパターンマッチングの方向性（参考）
+// ※この例は現在のJavaでは動作しません
+public class FuturePatternMatching {
+    // 型によるパターンマッチング（Java 17+のプレビュー機能）
+    public static String describe(Object obj) {
+        return switch (obj) {
+            case String s -> "文字列: " + s;
+            case Integer i -> "整数: " + i;
+            case Double d -> "実数: " + d;
+            case null -> "null値";
+            default -> "未知の型: " + obj.getClass().getSimpleName();
+        };
+    }
+    
+    // 現在利用可能な instanceof パターン（Java 14+）
+    public static String describeWithInstanceof(Object obj) {
+        if (obj instanceof String s) {
+            return "文字列: " + s;  // sは自動的にStringとして利用可能
+        } else if (obj instanceof Integer i) {
+            return "整数: " + i;
+        }
+        return "その他";
+    }
+}
+```
+
+この例は将来の機能拡張の方向性を示しており、Switch式がJavaの式指向プログラミングの重要な一歩であることを理解できます。
+
+#### 実践的な使用例とベストプラクティス
+
+Switch式は、関数型プログラミングスタイルとの相性が良く、Webアプリケーション開発、データ処理、設定管理など様々な場面で活用できます。
+
+<span class="listing-number">**サンプルコード2-28**</span>
+
+```java
+public class PracticalSwitchExamples {
+    // HTTP ステータスコードの処理
+    public static String getStatusMessage(int statusCode) {
+        return switch (statusCode / 100) {
+            case 1 -> "情報レスポンス";
+            case 2 -> "成功";
+            case 3 -> "リダイレクト";
+            case 4 -> "クライアントエラー";
+            case 5 -> "サーバーエラー";
+            default -> "未知のステータス";
+        };
+    }
+    
+    // 設定値の変換
+    public static int getRetryCount(String environment) {
+        return switch (environment.toLowerCase()) {
+            case "development", "dev" -> 1;
+            case "testing", "test" -> 3;
+            case "staging", "stage" -> 5;
+            case "production", "prod" -> {
+                // 本番環境では詳細な設定
+                yield 10;
+            }
+            default -> throw new IllegalArgumentException(
+                "未対応の環境: " + environment
+            );
+        };
+    }
+    
+    // 曜日からイベント種別を判定
+    public static String getEventType(String dayOfWeek, boolean isHoliday) {
+        return switch (dayOfWeek.toLowerCase()) {
+            case "monday", "tuesday", "wednesday", "thursday" -> {
+                yield isHoliday ? "祝日イベント" : "平日イベント";
+            }
+            case "friday" -> isHoliday ? "祝日イベント" : "プレミアムフライデー";
+            case "saturday", "sunday" -> "週末イベント";
+            default -> "無効な曜日";
+        };
+    }
+}
+```
+
+#### switch文からswitch式への移行指針
+
+既存のswitch文をSwitch式に移行する際の具体的な手順とガイドラインを以下に示します。
+
+**移行の判断基準**：
+
+1. **Switch式に移行すべき場合**：
+   - switch文が値を返すことが主目的の場合
+   - fall-throughを意図的に使用していない場合
+   - 各caseが比較的単純な処理の場合
+
+2. **従来のswitch文を保持すべき場合**：
+   - 複雑な副作用を持つ処理が多い場合
+   - デバッグのためのログ出力が多い場合
+   - 既存コードとの互換性を重視する場合
+
+**段階的な移行手順**：
+
+<span class="listing-number">**サンプルコード2-29**</span>
+
+```java
+public class MigrationExample {
+    // 移行前の従来のswitch文
+    public static String getOldStyleMessage(int code) {
+        String message;
+        switch (code) {
+            case 1:
+                message = "処理開始";
+                break;
+            case 2:
+                message = "処理中";
+                break;
+            case 3:
+                message = "処理完了";
+                break;
+            default:
+                message = "不明な状態";
+                break;
+        }
+        return message;
+    }
+    
+    // 移行後のSwitch式
+    public static String getNewStyleMessage(int code) {
+        return switch (code) {
+            case 1 -> "処理開始";
+            case 2 -> "処理中";
+            case 3 -> "処理完了";
+            default -> "不明な状態";
+        };
+    }
+    
+    // 複雑な処理の移行例
+    public static String processComplexCase(String input) {
+        return switch (input.toLowerCase()) {
+            case "start" -> {
+                // 初期化処理
+                System.out.println("システムを初期化しています...");
+                yield "初期化完了";
+            }
+            case "stop" -> {
+                // 終了処理
+                System.out.println("システムを停止しています...");
+                yield "停止完了";
+            }
+            default -> {
+                System.out.println("未知のコマンド: " + input);
+                yield "エラー";
+            }
+        };
+    }
+}
+```
+
+**移行時の注意点**：
+
+1. **break文の削除**：Switch式では`break`文は不要（エラーになる）
+2. **yield文の追加**：ブロック構文を使用する場合は`yield`が必要
+3. **例外処理**：Switch式内でthrowする場合も考慮が必要
+4. **コードレビュー**：移行後は必ずテストとレビューを実施
+
+**パフォーマンスとコンパイラ最適化**：
+
+Switch式は、コンパイラによる最適化の恩恵を受けやすく設計されています。特に、`tableswitch`や`lookupswitch`バイトコード命令の最適化により、従来のif-elseチェーンよりも高速な実行が期待できます。また、JVMのJIT（Just-In-Time）コンパイラも、Switch式のパターンを効率的に最適化できます。
+
+**まとめ**：
+
+Switch式は、Javaの言語仕様を現代化し、より安全で読みやすいコードの作成を支援する重要な改良です。従来のswitch文の問題点を解決し、関数型プログラミングスタイルとの親和性を高め、将来のパターンマッチング機能への道筋をつけています。適切に活用することで、コードの品質と保守性を大幅に向上させることができます。
+
 ## 2.8 配列
 
 **事前説明：**

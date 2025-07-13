@@ -329,6 +329,759 @@ public class UserService {
 
 これらの技術は、特に高性能が要求されるシステムや大量トランザクション処理において重要な役割を果たします。
 
+## 14.4.1 実践的な例外処理パターン
+
+実際のシステム開発では、単純な`try-catch`を超えた高度な例外処理パターンが必要になります。ここでは、実践的な開発で頻繁に使われる重要なパターンを学びます。
+
+### リトライパターン（一時的な障害への対処）
+
+ネットワーク接続の一時的な問題やリソースの一時的な不足など、時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
+
+<span class="listing-number">**サンプルコード14-7**</span>
+
+```java
+import java.util.concurrent.Callable;
+import java.io.IOException;
+
+public class RetryableOperation {
+    private static final int MAX_RETRY_COUNT = 3;
+    private static final long RETRY_DELAY_MS = 1000;
+    
+    public static <T> T executeWithRetry(Callable<T> operation, 
+                                       Class<? extends Exception> retryableException) 
+                                       throws Exception {
+        Exception lastException = null;
+        
+        for (int attempt = 1; attempt <= MAX_RETRY_COUNT; attempt++) {
+            try {
+                return operation.call();
+            } catch (Exception e) {
+                if (!retryableException.isInstance(e)) {
+                    throw e; // リトライ対象外の例外は即座に再スロー
+                }
+                
+                lastException = e;
+                System.out.printf("試行 %d/%d 失敗: %s%n", 
+                    attempt, MAX_RETRY_COUNT, e.getMessage());
+                
+                if (attempt < MAX_RETRY_COUNT) {
+                    try {
+                        Thread.sleep(RETRY_DELAY_MS);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("リトライ中に中断されました", ie);
+                    }
+                }
+            }
+        }
+        
+        throw new RuntimeException("最大リトライ回数に達しました", lastException);
+    }
+    
+    // 使用例
+    public static void main(String[] args) {
+        try {
+            String result = executeWithRetry(() -> {
+                // 一時的に失敗する可能性のある処理
+                if (Math.random() < 0.7) {
+                    throw new IOException("ネットワークエラー");
+                }
+                return "成功";
+            }, IOException.class);
+            
+            System.out.println("結果: " + result);
+        } catch (Exception e) {
+            System.err.println("最終的に失敗: " + e.getMessage());
+        }
+    }
+}
+```
+
+### サーキットブレーカーパターン（連続失敗への対処）
+
+連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです。マイクロサービスアーキテクチャで特に重要です。
+
+<span class="listing-number">**サンプルコード14-8**</span>
+
+```java
+import java.util.concurrent.Callable;
+
+public class CircuitBreaker {
+    private enum State {
+        CLOSED,    // 通常状態
+        OPEN,      // 遮断状態
+        HALF_OPEN  // 半開状態（テスト中）
+    }
+    
+    private State state = State.CLOSED;
+    private int failureCount = 0;
+    private long lastFailureTime = 0;
+    
+    private final int failureThreshold;
+    private final long timeout;
+    
+    public CircuitBreaker(int failureThreshold, long timeoutMs) {
+        this.failureThreshold = failureThreshold;
+        this.timeout = timeoutMs;
+    }
+    
+    public <T> T execute(Callable<T> operation) throws Exception {
+        if (state == State.OPEN) {
+            if (System.currentTimeMillis() - lastFailureTime > timeout) {
+                state = State.HALF_OPEN;
+            } else {
+                throw new RuntimeException("サーキットブレーカーが開いています");
+            }
+        }
+        
+        try {
+            T result = operation.call();
+            onSuccess();
+            return result;
+        } catch (Exception e) {
+            onFailure();
+            throw e;
+        }
+    }
+    
+    private void onSuccess() {
+        failureCount = 0;
+        state = State.CLOSED;
+    }
+    
+    private void onFailure() {
+        failureCount++;
+        lastFailureTime = System.currentTimeMillis();
+        
+        if (failureCount >= failureThreshold) {
+            state = State.OPEN;
+            System.err.println("サーキットブレーカーを開きました");
+        }
+    }
+}
+```
+
+### 例外の集約と報告
+
+複数の処理を並行実行する場合、発生した例外を集約して適切に報告する必要があります。
+
+<span class="listing-number">**サンプルコード14-9**</span>
+
+```java
+import java.util.*;
+
+public class ExceptionAggregator {
+    private final List<Exception> exceptions = new ArrayList<>();
+    
+    public void addException(Exception e) {
+        exceptions.add(e);
+    }
+    
+    public void throwIfAny() throws AggregateException {
+        if (!exceptions.isEmpty()) {
+            throw new AggregateException(exceptions);
+        }
+    }
+    
+    // 集約例外クラス
+    public static class AggregateException extends Exception {
+        private final List<Exception> exceptions;
+        
+        public AggregateException(List<Exception> exceptions) {
+            super(String.format("%d個の例外が発生しました", exceptions.size()));
+            this.exceptions = new ArrayList<>(exceptions);
+        }
+        
+        public List<Exception> getExceptions() {
+            return Collections.unmodifiableList(exceptions);
+        }
+        
+        @Override
+        public void printStackTrace() {
+            super.printStackTrace();
+            System.err.println("--- 内包する例外 ---");
+            for (int i = 0; i < exceptions.size(); i++) {
+                System.err.printf("例外 %d:%n", i + 1);
+                exceptions.get(i).printStackTrace();
+            }
+        }
+    }
+    
+    // 使用例
+    public static void processMultipleTasks(List<Runnable> tasks) 
+            throws AggregateException {
+        ExceptionAggregator aggregator = new ExceptionAggregator();
+        
+        for (Runnable task : tasks) {
+            try {
+                task.run();
+            } catch (Exception e) {
+                aggregator.addException(e);
+            }
+        }
+        
+        aggregator.throwIfAny();
+    }
+}
+```
+
+## 14.4.2 リソース管理の実践例
+
+### 複数リソースのtry-with-resources
+
+実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
+
+<span class="listing-number">**サンプルコード14-10**</span>
+
+```java
+import java.io.*;
+import java.sql.*;
+
+public class MultiResourceExample {
+    public static void copyFile(String sourcePath, String destPath) 
+            throws IOException {
+        // 複数のリソースをセミコロンで区切って宣言
+        try (FileInputStream fis = new FileInputStream(sourcePath);
+             FileOutputStream fos = new FileOutputStream(destPath);
+             BufferedInputStream bis = new BufferedInputStream(fis);
+             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+            
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            
+            while ((bytesRead = bis.read(buffer)) != -1) {
+                bos.write(buffer, 0, bytesRead);
+            }
+            
+        } // すべてのリソースが逆順（宣言と逆の順序）で自動的にクローズされる
+    }
+    
+    // データベース接続の例
+    public static void executeDatabaseTransaction() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/mydb";
+        
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement pstmt = conn.prepareStatement(
+                 "INSERT INTO users (name, email) VALUES (?, ?)");
+             Statement stmt = conn.createStatement()) {
+            
+            conn.setAutoCommit(false);
+            
+            try {
+                pstmt.setString(1, "山田太郎");
+                pstmt.setString(2, "yamada@example.com");
+                pstmt.executeUpdate();
+                
+                ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM users");
+                if (rs.next()) {
+                    System.out.println("ユーザー数: " + rs.getInt(1));
+                }
+                
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
+}
+```
+
+### カスタムAutoCloseableの実装
+
+独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェースを実装することで、try-with-resourcesで使用できるようになります。
+
+<span class="listing-number">**サンプルコード14-11**</span>
+
+```java
+import java.util.*;
+
+public class ResourcePool implements AutoCloseable {
+    private final Queue<Resource> availableResources = new LinkedList<>();
+    private final Set<Resource> usedResources = new HashSet<>();
+    private boolean closed = false;
+    
+    public ResourcePool(int poolSize) {
+        for (int i = 0; i < poolSize; i++) {
+            availableResources.offer(new Resource(i));
+        }
+    }
+    
+    public Resource acquire() throws InterruptedException {
+        synchronized (this) {
+            while (availableResources.isEmpty() && !closed) {
+                wait();
+            }
+            
+            if (closed) {
+                throw new IllegalStateException("プールはクローズされています");
+            }
+            
+            Resource resource = availableResources.poll();
+            usedResources.add(resource);
+            return resource;
+        }
+    }
+    
+    public void release(Resource resource) {
+        synchronized (this) {
+            if (usedResources.remove(resource)) {
+                availableResources.offer(resource);
+                notify();
+            }
+        }
+    }
+    
+    @Override
+    public void close() {
+        synchronized (this) {
+            closed = true;
+            notifyAll();
+            
+            // すべてのリソースをクリーンアップ
+            for (Resource resource : availableResources) {
+                resource.cleanup();
+            }
+            for (Resource resource : usedResources) {
+                resource.cleanup();
+            }
+        }
+    }
+    
+    // リソースクラス
+    static class Resource {
+        private final int id;
+        
+        Resource(int id) {
+            this.id = id;
+        }
+        
+        void cleanup() {
+            System.out.println("リソース " + id + " をクリーンアップしました");
+        }
+    }
+}
+```
+
+## 14.4.3 例外処理とログ記録
+
+### 適切なログレベルの選択
+
+ログ記録は例外処理の重要な要素です。適切なログレベルを選択することで、問題の深刻度を正確に伝えることができます。
+
+<span class="listing-number">**サンプルコード14-12**</span>
+
+```java
+import java.util.logging.*;
+import java.time.Instant;
+import java.util.*;
+
+public class ExceptionLogging {
+    private static final Logger logger = 
+        Logger.getLogger(ExceptionLogging.class.getName());
+    
+    public void processUserRequest(String userId) {
+        try {
+            // ユーザー情報の取得
+            User user = findUser(userId);
+            
+            // 処理の実行
+            performBusinessLogic(user);
+            
+        } catch (UserNotFoundException e) {
+            // ビジネス例外：警告レベル
+            logger.log(Level.WARNING, 
+                "ユーザーが見つかりません: " + userId, e);
+            
+        } catch (ValidationException e) {
+            // 入力検証エラー：情報レベル（想定内のエラー）
+            logger.log(Level.INFO, 
+                "検証エラー: " + e.getMessage());
+            
+        } catch (DatabaseException e) {
+            // システム例外：エラーレベル
+            logger.log(Level.SEVERE, 
+                "データベースエラーが発生しました", e);
+            
+            // アラート送信などの追加処理
+            notifyAdministrator(e);
+            
+        } catch (Exception e) {
+            // 予期せぬ例外：重大エラー
+            logger.log(Level.SEVERE, 
+                "予期せぬエラーが発生しました", e);
+            
+            // エラーIDを生成してユーザーに提示
+            String errorId = generateErrorId();
+            logger.severe("エラーID: " + errorId);
+            
+            throw new SystemException(
+                "システムエラーが発生しました。エラーID: " + errorId, e);
+        }
+    }
+    
+    private String generateErrorId() {
+        return "ERR-" + System.currentTimeMillis();
+    }
+    
+    private void notifyAdministrator(Exception e) {
+        // 管理者への通知処理
+    }
+}
+```
+
+### 例外情報の構造化記録
+
+本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
+
+<span class="listing-number">**サンプルコード14-13**</span>
+
+```java
+public class StructuredExceptionLogger {
+    private static final Logger logger = 
+        Logger.getLogger(StructuredExceptionLogger.class.getName());
+    
+    public static void logException(String operation, 
+                                  Exception exception, 
+                                  Map<String, Object> context) {
+        // 構造化されたログエントリを作成
+        LogRecord record = new LogRecord(Level.SEVERE, 
+            createStructuredMessage(operation, exception, context));
+        
+        record.setThrown(exception);
+        record.setSourceClassName(getCallerClassName());
+        record.setSourceMethodName(getCallerMethodName());
+        
+        logger.log(record);
+    }
+    
+    private static String createStructuredMessage(String operation, 
+                                                Exception exception, 
+                                                Map<String, Object> context) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"timestamp\":\"").append(Instant.now()).append("\",");
+        sb.append("\"operation\":\"").append(operation).append("\",");
+        sb.append("\"error_type\":\"").append(exception.getClass().getName()).append("\",");
+        sb.append("\"error_message\":\"").append(escapeJson(exception.getMessage())).append("\",");
+        sb.append("\"context\":{");
+        
+        boolean first = true;
+        for (Map.Entry<String, Object> entry : context.entrySet()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(entry.getKey()).append("\":\"")
+              .append(escapeJson(String.valueOf(entry.getValue()))).append("\"");
+            first = false;
+        }
+        
+        sb.append("}}");
+        return sb.toString();
+    }
+    
+    private static String escapeJson(String text) {
+        if (text == null) return "null";
+        return text.replace("\"", "\\\"")
+                  .replace("\n", "\\n")
+                  .replace("\r", "\\r");
+    }
+    
+    private static String getCallerClassName() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return stackTrace.length > 3 ? stackTrace[3].getClassName() : "Unknown";
+    }
+    
+    private static String getCallerMethodName() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return stackTrace.length > 3 ? stackTrace[3].getMethodName() : "Unknown";
+    }
+}
+```
+
+## 14.4.4 業務アプリケーションでの例外設計
+
+### ビジネス例外とシステム例外の分離
+
+大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
+
+<span class="listing-number">**サンプルコード14-14**</span>
+
+```java
+import java.util.*;
+import java.time.Instant;
+
+// ビジネス例外の基底クラス
+public abstract class BusinessException extends Exception {
+    private final String errorCode;
+    private final Map<String, Object> details;
+    
+    protected BusinessException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+        this.details = new HashMap<>();
+    }
+    
+    protected BusinessException(String errorCode, String message, 
+                              Map<String, Object> details) {
+        super(message);
+        this.errorCode = errorCode;
+        this.details = new HashMap<>(details);
+    }
+    
+    public String getErrorCode() {
+        return errorCode;
+    }
+    
+    public Map<String, Object> getDetails() {
+        return Collections.unmodifiableMap(details);
+    }
+    
+    public void addDetail(String key, Object value) {
+        details.put(key, value);
+    }
+}
+
+// 具体的なビジネス例外
+public class InsufficientBalanceException extends BusinessException {
+    public InsufficientBalanceException(double currentBalance, 
+                                      double requestedAmount) {
+        super("ACC-001", "残高が不足しています");
+        addDetail("currentBalance", currentBalance);
+        addDetail("requestedAmount", requestedAmount);
+        addDetail("shortage", requestedAmount - currentBalance);
+    }
+}
+
+// システム例外の基底クラス
+public abstract class SystemException extends RuntimeException {
+    private final String errorId;
+    private final Instant occurredAt;
+    
+    protected SystemException(String message, Throwable cause) {
+        super(message, cause);
+        this.errorId = generateErrorId();
+        this.occurredAt = Instant.now();
+    }
+    
+    private String generateErrorId() {
+        return String.format("SYS-%s-%s", 
+            getClass().getSimpleName(), 
+            java.util.UUID.randomUUID().toString().substring(0, 8));
+    }
+    
+    public String getErrorId() {
+        return errorId;
+    }
+    
+    public Instant getOccurredAt() {
+        return occurredAt;
+    }
+}
+```
+
+### エラーコードとメッセージの管理
+
+エラーコードとメッセージを一元管理することで、国際化やメンテナンスが容易になります。
+
+<span class="listing-number">**サンプルコード14-15**</span>
+
+```java
+public enum ErrorCode {
+    // アカウント関連エラー
+    ACC_001("ACC-001", "残高が不足しています"),
+    ACC_002("ACC-002", "アカウントが凍結されています"),
+    ACC_003("ACC-003", "取引限度額を超えています"),
+    
+    // 認証関連エラー
+    AUTH_001("AUTH-001", "認証に失敗しました"),
+    AUTH_002("AUTH-002", "セッションの有効期限が切れました"),
+    AUTH_003("AUTH-003", "アクセス権限がありません"),
+    
+    // システムエラー
+    SYS_001("SYS-001", "システムエラーが発生しました"),
+    SYS_002("SYS-002", "サービスが一時的に利用できません"),
+    SYS_003("SYS-003", "データベース接続エラー");
+    
+    private final String code;
+    private final String defaultMessage;
+    
+    ErrorCode(String code, String defaultMessage) {
+        this.code = code;
+        this.defaultMessage = defaultMessage;
+    }
+    
+    public String getCode() {
+        return code;
+    }
+    
+    public String getMessage() {
+        return defaultMessage;
+    }
+    
+    // メッセージテンプレートを使用したエラーメッセージ生成
+    public String formatMessage(Object... args) {
+        return String.format(defaultMessage, args);
+    }
+}
+
+// エラーレスポンスの統一フォーマット
+public class ErrorResponse {
+    private final String errorCode;
+    private final String message;
+    private final Map<String, Object> details;
+    private final String timestamp;
+    private final String path;
+    
+    public ErrorResponse(BusinessException e, String path) {
+        this.errorCode = e.getErrorCode();
+        this.message = e.getMessage();
+        this.details = e.getDetails();
+        this.timestamp = Instant.now().toString();
+        this.path = path;
+    }
+    
+    public ErrorResponse(SystemException e, String path) {
+        this.errorCode = "SYS-999";
+        this.message = "システムエラーが発生しました";
+        this.details = Map.of("errorId", e.getErrorId());
+        this.timestamp = e.getOccurredAt().toString();
+        this.path = path;
+    }
+    
+    // ゲッターメソッド省略
+}
+```
+
+### 例外処理戦略の実装例
+
+実際のアプリケーションでの例外処理戦略の実装例を示します。
+
+<span class="listing-number">**サンプルコード14-16**</span>
+
+```java
+import java.math.BigDecimal;
+
+// 以下はSpring Frameworkを使用した例
+// @Service, @Autowired, @Transactionalアノテーションは
+// 実際の使用時にはSpringの依存関係が必要
+public class TransferService {
+    // private static final Logger logger = 
+    //     LoggerFactory.getLogger(TransferService.class);
+    
+    // @Autowired
+    private AccountRepository accountRepository;
+    
+    // @Autowired
+    private TransactionRepository transactionRepository;
+    
+    // @Transactional
+    public TransferResult transfer(String fromAccountId, 
+                                 String toAccountId, 
+                                 BigDecimal amount) 
+            throws BusinessException {
+        
+        // logger.info("送金処理開始: {} -> {}, 金額: {}", 
+        //     fromAccountId, toAccountId, amount);
+        System.out.println("送金処理開始: " + fromAccountId + " -> " + toAccountId + ", 金額: " + amount);
+        
+        try {
+            // 入力検証
+            validateTransferRequest(fromAccountId, toAccountId, amount);
+            
+            // アカウント取得
+            Account fromAccount = accountRepository.findById(fromAccountId)
+                .orElseThrow(() -> new AccountNotFoundException(fromAccountId));
+            
+            Account toAccount = accountRepository.findById(toAccountId)
+                .orElseThrow(() -> new AccountNotFoundException(toAccountId));
+            
+            // ビジネスルールチェック
+            checkBusinessRules(fromAccount, amount);
+            
+            // 送金実行
+            fromAccount.withdraw(amount);
+            toAccount.deposit(amount);
+            
+            // トランザクション記録
+            Transaction transaction = new Transaction(
+                fromAccountId, toAccountId, amount, TransactionType.TRANSFER);
+            transactionRepository.save(transaction);
+            
+            // 結果返却
+            TransferResult result = new TransferResult(
+                transaction.getId(), 
+                fromAccount.getBalance(), 
+                toAccount.getBalance());
+            
+            // logger.info("送金処理完了: {}", result);
+            System.out.println("送金処理完了: " + result);
+            return result;
+            
+        } catch (BusinessException e) {
+            // ビジネス例外は呼び出し元に伝播
+            // logger.warn("送金処理でビジネスエラー: {}", e.getMessage());
+            System.err.println("送金処理でビジネスエラー: " + e.getMessage());
+            throw e;
+            
+        } catch (Exception e) {
+            // 予期せぬエラー（DataAccessExceptionなども含む）
+            // logger.error("予期せぬエラー", e);
+            e.printStackTrace();
+            // SystemExceptionは抽象クラスなので、実装クラスが必要
+            throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
+        }
+    }
+    
+    private void validateTransferRequest(String fromAccountId, 
+                                       String toAccountId, 
+                                       BigDecimal amount) 
+            throws ValidationException {
+        
+        if (fromAccountId == null || fromAccountId.isEmpty()) {
+            throw new ValidationException("送金元アカウントIDが指定されていません");
+        }
+        
+        if (toAccountId == null || toAccountId.isEmpty()) {
+            throw new ValidationException("送金先アカウントIDが指定されていません");
+        }
+        
+        if (fromAccountId.equals(toAccountId)) {
+            throw new ValidationException("同一アカウント間での送金はできません");
+        }
+        
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("送金額は0より大きい値を指定してください");
+        }
+    }
+    
+    private void checkBusinessRules(Account account, BigDecimal amount) 
+            throws BusinessException {
+        
+        if (account.isFrozen()) {
+            throw new AccountFrozenException(account.getId());
+        }
+        
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException(
+                account.getBalance().doubleValue(), 
+                amount.doubleValue());
+        }
+        
+        BigDecimal dailyLimit = account.getDailyTransferLimit();
+        BigDecimal todayTotal = transactionRepository
+            .getTodayTotalAmount(account.getId());
+        
+        if (todayTotal.add(amount).compareTo(dailyLimit) > 0) {
+            throw new DailyLimitExceededException(
+                dailyLimit.doubleValue(), 
+                todayTotal.doubleValue(), 
+                amount.doubleValue());
+        }
+    }
+}
+```
+
+これらの実践的なパターンを理解し適切に適用することで、エラーに強く、保守性の高いシステムを構築することができます。
+
 ## 14.5 例外処理のベストプラクティス
 
 -   **例外を無視しない**: `catch`ブロックを空にしないでください。少なくともログには記録しましょう。

@@ -172,59 +172,94 @@ public record PositivePoint(int x, int y) {
 }
 ```
 
-## 9.3 実践例：CSVファイルの読み込み
+## 9.3 実践例：データ変換と処理
 
-`Record`は、ファイルから読み込んだ構造化されたデータを保持するのに非常に適しています。
+`Record`は、構造化されたデータを保持し、変換するのに非常に適しています。ここでは、CSVデータの処理を例に見てみましょう。
 
-**data.csv**
-```csv
-Alice,25,Tokyo
-Bob,30,Osaka
-Charlie,35,Nagoya
-```
+### データの定義
 
-このCSVの各行を表現する`PersonRecord`を定義します。
+従業員データを表現する`PersonRecord`を定義します。
 
 ```java
 // PersonRecord.java
 public record PersonRecord(String name, int age, String city) {}
 ```
 
+### データ処理の実装
+
 <span class="listing-number">**サンプルコード9-4**</span>
 
 ```java
-// CsvReader.java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+// DataProcessor.java
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class CsvReader {
-    public static void main(String[] args) {
-        Path filePath = Path.of("data.csv");
-        try {
-            List<PersonRecord> persons = Files.lines(filePath) // ファイルを1行ずつのStreamに
-                .map(line -> line.split(",")) // 各行をカンマで分割
-                .filter(fields -> fields.length == 3) // 配列の長さが3であることを確認
-                .map(fields -> new PersonRecord(
-                    fields[0],                      // name
-                    Integer.parseInt(fields[1]),    // age
-                    fields[2]                       // city
-                ))
-                .collect(Collectors.toList()); // 結果をListに集約
-
-            persons.forEach(System.out::println);
-
-        } catch (IOException e) {
-            System.err.println("ファイルの読み込みに失敗しました: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("年齢の形式が正しくありません: " + e.getMessage());
+public class DataProcessor {
+    
+    // サンプルデータの作成
+    public static List<String> createSampleData() {
+        List<String> data = new ArrayList<>();
+        data.add("Alice,25,Tokyo");
+        data.add("Bob,30,Osaka");
+        data.add("Charlie,35,Nagoya");
+        data.add("David,28,Kyoto");
+        data.add("Eve,32,Fukuoka");
+        return data;
+    }
+    
+    // CSV形式の文字列をPersonRecordに変換
+    public static PersonRecord parsePersonData(String csvLine) {
+        String[] fields = csvLine.split(",");
+        if (fields.length != 3) {
+            return null; // 不正なデータはnullを返す
         }
+        
+        // 年齢の解析（エラー時はデフォルト値を使用）
+        int age = 0;
+        try {
+            age = Integer.parseInt(fields[1].trim());
+        } catch (NumberFormatException e) {
+            // エラーの場合は0歳とする（後でフィルタリング）
+        }
+        
+        return new PersonRecord(
+            fields[0].trim(),
+            age,
+            fields[2].trim()
+        );
+    }
+    
+    public static void main(String[] args) {
+        // サンプルデータの取得
+        List<String> csvData = createSampleData();
+        
+        // データの処理
+        List<PersonRecord> persons = csvData.stream()
+            .map(DataProcessor::parsePersonData)
+            .filter(person -> person != null && person.age() > 0) // 無効なデータを除外
+            .collect(Collectors.toList());
+        
+        // 結果の表示
+        System.out.println("=== 全従業員データ ===");
+        persons.forEach(System.out::println);
+        
+        // 年齢別の集計
+        System.out.println("\n=== 30歳以上の従業員 ===");
+        persons.stream()
+            .filter(person -> person.age() >= 30)
+            .forEach(System.out::println);
+        
+        // 都市別のグループ化
+        System.out.println("\n=== 都市別の従業員数 ===");
+        persons.stream()
+            .collect(Collectors.groupingBy(PersonRecord::city, Collectors.counting()))
+            .forEach((city, count) -> System.out.println(city + ": " + count + "名"));
     }
 }
 ```
-この例では、Stream APIと組み合わせることで、ファイル読み込みから`Record`への変換、リストへの格納までを非常に簡潔に記述できています。
+
+この例では、Stream APIと組み合わせることで、データの変換、フィルタリング、集約を簡潔に記述できています。ファイルI/Oを使わずに、メモリ上のデータ処理として実装することで、例外処理の必要性を回避しています。
 
 ## 9.4 データ指向プログラミング（DOP）
 
@@ -936,6 +971,8 @@ RecordはSerializableインターフェイスを実装することで、シリ�
 
 ```java
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public record SerializableUser(
     String id,
@@ -954,42 +991,55 @@ public record SerializableUser(
         Objects.requireNonNull(createdAt, "Created at cannot be null");
     }
     
-    // カスタムシリアライゼーション制御（必要に応じて）
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-        out.defaultWriteObject();
-        // カスタム処理があれば追加
+    // バリデーションメソッド
+    public boolean isValid() {
+        return id != null && !id.isEmpty() &&
+               name != null && !name.isEmpty() &&
+               email != null && email.contains("@") &&
+               createdAt != null;
     }
     
-    private void readObject(java.io.ObjectInputStream in) 
-            throws java.io.IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        // デシリアライゼーション後のバリデーション
-        if (id == null || name == null || email == null || createdAt == null) {
-            throw new java.io.InvalidObjectException("Required fields cannot be null");
+    // 文字列表現への変換（シリアライゼーションの代替）
+    public String toSerializedString() {
+        return String.format("%s|%s|%s|%s", id, name, email, createdAt);
+    }
+    
+    // 文字列からの復元（デシリアライゼーションの代替）
+    public static SerializableUser fromSerializedString(String serialized) {
+        String[] parts = serialized.split("\\|");
+        if (parts.length != 4) {
+            return null;
         }
+        return new SerializableUser(
+            parts[0],
+            parts[1],
+            parts[2],
+            LocalDateTime.parse(parts[3])
+        );
     }
 }
 ```
 
-### JSON統合（Jackson）
+### JSON統合（概念的な例）
 
-現代のアプリケーションでは、RecordとJSON処理の統合が大切です。RecordsはJacksonなどのJSONライブラリと優れた互換性を持ち、アノテーションを使用してシリアライゼーション/デシリアライゼーションの詳細な制御が可能です。以下の例では、APIレスポンスの標準化とカスタムシリアライザーの実装を示します。
+現代のアプリケーションでは、RecordとJSON処理の統合が大切です。RecordsはJSONライブラリと優れた互換性を持ち、データ交換フォーマットとして活用できます。以下は、RecordをJSON相当の形式で扱う概念的な例です。
 
 <span class="listing-number">**サンプルコード9-24**</span>
 
 ```java
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import java.time.Instant;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Currency;
+import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 
-// 基本的なJSON対応Record
-@JsonInclude(JsonInclude.Include.NON_NULL)
+// APIレスポンスのRecord
 public record ApiResponse<T>(
     boolean success,
     T data,
-    @JsonProperty("error_message") String errorMessage,
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    String errorMessage,
     Instant timestamp
 ) {
     // 成功レスポンスのファクトリ
@@ -1001,40 +1051,72 @@ public record ApiResponse<T>(
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, null, message, Instant.now());
     }
+    
+    // 簡易的なJSON風の文字列表現
+    public String toJsonString() {
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"success\": ").append(success).append(", ");
+        if (data != null) {
+            sb.append("\"data\": \"").append(data).append("\", ");
+        }
+        if (errorMessage != null) {
+            sb.append("\"error_message\": \"").append(errorMessage).append("\", ");
+        }
+        sb.append("\"timestamp\": \"").append(timestamp).append("\"}");
+        return sb.toString();
+    }
 }
 
-// カスタムシリアライザー付きRecord
-@JsonSerialize(using = MoneySerializer.class)
-@JsonDeserialize(using = MoneyDeserializer.class)
+// 通貨を表すRecord
 public record Money(BigDecimal amount, Currency currency) {
     public Money {
-        Objects.requireNonNull(amount);
-        Objects.requireNonNull(currency);
+        Objects.requireNonNull(amount, "Amount cannot be null");
+        Objects.requireNonNull(currency, "Currency cannot be null");
         if (amount.scale() > currency.getDefaultFractionDigits()) {
             amount = amount.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_UP);
         }
     }
-}
-
-class MoneySerializer extends JsonSerializer<Money> {
-    @Override
-    public void serialize(Money value, JsonGenerator gen, SerializerProvider serializers) 
-            throws IOException {
-        gen.writeStartObject();
-        gen.writeNumberField("amount", value.amount());
-        gen.writeStringField("currency", value.currency().getCurrencyCode());
-        gen.writeEndObject();
+    
+    // Map形式への変換（JSONの代替）
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("amount", amount.doubleValue());
+        map.put("currency", currency.getCurrencyCode());
+        return map;
+    }
+    
+    // Map形式からの生成（JSONパースの代替）
+    public static Money fromMap(Map<String, Object> map) {
+        Double amountValue = (Double) map.get("amount");
+        String currencyCode = (String) map.get("currency");
+        
+        if (amountValue == null || currencyCode == null) {
+            return null;
+        }
+        
+        return new Money(
+            BigDecimal.valueOf(amountValue),
+            Currency.getInstance(currencyCode)
+        );
+    }
+    
+    // 文字列表現
+    public String toSimpleString() {
+        return amount + " " + currency.getCurrencyCode();
     }
 }
 
-class MoneyDeserializer extends JsonDeserializer<Money> {
-    @Override
-    public Money deserialize(JsonParser p, DeserializationContext ctxt) 
-            throws IOException {
-        JsonNode node = p.getCodec().readTree(p);
-        BigDecimal amount = node.get("amount").decimalValue();
-        Currency currency = Currency.getInstance(node.get("currency").asText());
-        return new Money(amount, currency);
+// 使用例
+public class JsonIntegrationExample {
+    public static void main(String[] args) {
+        // Moneyオブジェクトの作成と変換
+        Money money = new Money(BigDecimal.valueOf(1000.50), Currency.getInstance("JPY"));
+        Map<String, Object> moneyMap = money.toMap();
+        System.out.println("Money as map: " + moneyMap);
+        
+        // APIレスポンスの作成
+        ApiResponse<Money> response = ApiResponse.success(money);
+        System.out.println("Response: " + response.toJsonString());
     }
 }
 ```

@@ -33,7 +33,7 @@
 
 ## 12.1 データ構造の選択
 
-第8章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。状況に応じて最適なものを選択することが、パフォーマンスの良いプログラムを書く鍵となります。
+第10章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。状況に応じて最適なものを選択することが、パフォーマンスの良いプログラムを書く鍵となります。
 
 ### `ArrayList` vs `LinkedList`
 
@@ -152,6 +152,7 @@ Java 8で導入された**Stream API**は、コレクションの要素の集ま
 1. **可読性の問題**：ネストしたループや複雑な条件分岐により、コードの意図が読み取りにくい
 2. **並列処理の困難さ**：マルチコアCPUを活用した並列処理を実装するには、複雑なスレッド管理が必要
 3. **再利用性の低さ**：処理ロジックがループ構造と密結合し、再利用が困難
+4. **null安全性の欠如**：nullチェックが散在し、NullPointerExceptionのリスクが常に存在
 
 Stream APIは、関数型プログラミングの概念を取り入れることでこれらの課題を解決します。データ処理を「変換のパイプライン」として表現することで、より宣言的で理解しやすいコードを実現します。
 
@@ -270,7 +271,462 @@ public class StreamExample {
 ```
 従来の`for`ループと`if`文を組み合わせるよりも、処理の流れが明確で読みやすいコードになるのがStream APIの大きな利点です。
 
-## 12.4 並列ストリームによるパフォーマンス向上
+## 12.4 Optional型による安全なnull処理
+
+### null参照の問題
+
+JavaプログラミングにおいてNullPointerException（NPE）は最も頻繁に遭遇する実行時エラーの1つです。Tony Hoareは自身が発明したnull参照を「10億ドルの過ち」と呼びました。従来のJavaコードでは、nullチェックが至る所に散在し、コードの可読性と保守性を著しく低下させていました。
+
+### Optional型の概念
+
+Java 8で導入された**Optional**クラスは、「値が存在するかもしれない」という概念を型レベルで表現します。これにより、nullの可能性を明示的に扱い、コンパイル時にnull安全性を強制することができます。
+
+Optional型の主な利点：
+- **明示的なnull可能性**：メソッドの戻り値がnullになる可能性を型で表現
+- **強制的なnullチェック**：値を取り出す前に存在確認を強制
+- **関数型スタイルの処理**：map、filter、flatMapなどの操作をチェインできる
+
+### Optionalの作成
+
+Optionalオブジェクトを作成する3つの基本的な方法があります：
+
+<span class="listing-number">**サンプルコード12-7**</span>
+
+```java
+import java.util.Optional;
+
+public class OptionalCreationExample {
+    public static void main(String[] args) {
+        // 1. of() - null以外の値を持つOptionalを作成
+        // nullを渡すとNullPointerExceptionが発生する
+        Optional<String> presentValue = Optional.of("Hello");
+        System.out.println("of(): " + presentValue);  // Optional[Hello]
+        
+        // 2. ofNullable() - nullの可能性がある値をラップ
+        // nullの場合は空のOptionalを返す
+        String nullableString = null;
+        Optional<String> nullableValue = Optional.ofNullable(nullableString);
+        System.out.println("ofNullable(null): " + nullableValue);  // Optional.empty
+        
+        String nonNullString = "World";
+        Optional<String> nonNullValue = Optional.ofNullable(nonNullString);
+        System.out.println("ofNullable(\"World\"): " + nonNullValue);  // Optional[World]
+        
+        // 3. empty() - 空のOptionalを作成
+        Optional<String> emptyValue = Optional.empty();
+        System.out.println("empty(): " + emptyValue);  // Optional.empty
+    }
+}
+```
+
+### 値の取得方法
+
+Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています：
+
+<span class="listing-number">**サンプルコード12-8**</span>
+
+```java
+import java.util.Optional;
+import java.util.NoSuchElementException;
+
+public class OptionalRetrievalExample {
+    public static void main(String[] args) {
+        Optional<String> present = Optional.of("Hello");
+        Optional<String> empty = Optional.empty();
+        
+        // 1. get() - 値が存在しない場合はNoSuchElementExceptionを投げる（非推奨）
+        try {
+            String value1 = present.get();
+            System.out.println("get() with value: " + value1);  // Hello
+            
+            String value2 = empty.get();  // 例外発生！
+        } catch (NoSuchElementException e) {
+            System.out.println("get() on empty: " + e.getMessage());
+        }
+        
+        // 2. orElse() - 値が存在しない場合のデフォルト値を指定
+        String value3 = present.orElse("Default");
+        String value4 = empty.orElse("Default");
+        System.out.println("orElse() with value: " + value3);     // Hello
+        System.out.println("orElse() on empty: " + value4);       // Default
+        
+        // 3. orElseGet() - 値が存在しない場合にSupplierから値を生成
+        // orElseより効率的（デフォルト値の生成コストが高い場合）
+        String value5 = empty.orElseGet(() -> {
+            System.out.println("Generating default value...");
+            return "Generated Default";
+        });
+        System.out.println("orElseGet(): " + value5);  // Generated Default
+        
+        // 4. orElseThrow() - 値が存在しない場合に指定した例外を投げる
+        try {
+            String value6 = empty.orElseThrow(() -> 
+                new IllegalStateException("値が存在しません"));
+        } catch (IllegalStateException e) {
+            System.out.println("orElseThrow(): " + e.getMessage());
+        }
+    }
+}
+```
+
+### 値の存在確認と条件付き処理
+
+値の存在を確認し、存在する場合のみ処理を実行する方法：
+
+<span class="listing-number">**サンプルコード12-9**</span>
+
+```java
+import java.util.Optional;
+
+public class OptionalPresenceExample {
+    public static void main(String[] args) {
+        Optional<String> present = Optional.of("Hello");
+        Optional<String> empty = Optional.empty();
+        
+        // 1. isPresent() - 値が存在するかをboolean値で返す
+        if (present.isPresent()) {
+            System.out.println("isPresent: " + present.get());
+        }
+        
+        // 2. isEmpty() - 値が存在しないかをboolean値で返す（Java 11以降）
+        if (empty.isEmpty()) {
+            System.out.println("isEmpty: 値が存在しません");
+        }
+        
+        // 3. ifPresent() - 値が存在する場合のみ処理を実行（関数型スタイル）
+        present.ifPresent(value -> 
+            System.out.println("ifPresent: " + value));
+        
+        empty.ifPresent(value -> 
+            System.out.println("この行は実行されません"));
+        
+        // 4. ifPresentOrElse() - 値の有無で処理を分岐（Java 9以降）
+        present.ifPresentOrElse(
+            value -> System.out.println("値あり: " + value),
+            () -> System.out.println("値なし")
+        );
+        
+        empty.ifPresentOrElse(
+            value -> System.out.println("この行は実行されません"),
+            () -> System.out.println("空のOptional")
+        );
+    }
+}
+```
+
+### Optionalの変換操作
+
+Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします：
+
+<span class="listing-number">**サンプルコード12-10**</span>
+
+```java
+import java.util.Optional;
+
+public class OptionalTransformationExample {
+    static class User {
+        private String name;
+        private Optional<String> email;
+        
+        public User(String name, String email) {
+            this.name = name;
+            this.email = Optional.ofNullable(email);
+        }
+        
+        public String getName() { return name; }
+        public Optional<String> getEmail() { return email; }
+    }
+    
+    public static void main(String[] args) {
+        Optional<User> user = Optional.of(new User("Alice", "alice@example.com"));
+        Optional<User> userWithoutEmail = Optional.of(new User("Bob", null));
+        
+        // 1. map() - 値が存在する場合に変換を適用
+        Optional<String> userName = user.map(User::getName);
+        System.out.println("map: " + userName);  // Optional[Alice]
+        
+        // ネストしたmapの例
+        Optional<Integer> nameLength = user
+            .map(User::getName)
+            .map(String::length);
+        System.out.println("Nested map: " + nameLength);  // Optional[5]
+        
+        // 2. flatMap() - Optional<Optional<T>>を平坦化
+        // getUserはOptional<User>を返し、getEmailもOptional<String>を返す
+        Optional<String> email = user.flatMap(u -> u.getEmail());
+        System.out.println("flatMap: " + email);  // Optional[alice@example.com]
+        
+        Optional<String> noEmail = userWithoutEmail.flatMap(u -> u.getEmail());
+        System.out.println("flatMap (no email): " + noEmail);  // Optional.empty
+        
+        // 3. filter() - 条件を満たす場合のみ値を保持
+        Optional<User> longNameUser = user
+            .filter(u -> u.getName().length() > 3);
+        System.out.println("filter (passed): " + longNameUser.isPresent());  // true
+        
+        Optional<User> shortNameUser = user
+            .filter(u -> u.getName().length() > 10);
+        System.out.println("filter (failed): " + shortNameUser.isPresent());  // false
+    }
+}
+```
+
+### Stream APIとの連携
+
+OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます：
+
+<span class="listing-number">**サンプルコード12-11**</span>
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class OptionalStreamExample {
+    static class Product {
+        private String name;
+        private double price;
+        
+        public Product(String name, double price) {
+            this.name = name;
+            this.price = price;
+        }
+        
+        public String getName() { return name; }
+        public double getPrice() { return price; }
+    }
+    
+    public static void main(String[] args) {
+        List<Product> products = Arrays.asList(
+            new Product("Laptop", 1200.0),
+            new Product("Mouse", 25.0),
+            new Product("Keyboard", 75.0),
+            new Product("Monitor", 300.0)
+        );
+        
+        // findFirst() - 最初の要素をOptionalで返す
+        Optional<Product> firstExpensive = products.stream()
+            .filter(p -> p.getPrice() > 100)
+            .findFirst();
+        
+        firstExpensive.ifPresent(p -> 
+            System.out.println("最初の高額商品: " + p.getName()));
+        
+        // findAny() - 任意の要素をOptionalで返す（並列処理で効率的）
+        Optional<Product> anyProduct = products.parallelStream()
+            .filter(p -> p.getPrice() < 50)
+            .findAny();
+        
+        System.out.println("安価な商品: " + 
+            anyProduct.map(Product::getName).orElse("なし"));
+        
+        // max/min - 最大値・最小値をOptionalで返す
+        Optional<Product> mostExpensive = products.stream()
+            .max((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+        
+        mostExpensive.ifPresent(p -> 
+            System.out.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
+        
+        // OptionalをStreamに変換（Java 9以降）
+        List<String> expensiveProductNames = products.stream()
+            .map(p -> p.getPrice() > 500 ? Optional.of(p.getName()) : Optional.<String>empty())
+            .flatMap(Optional::stream)  // Optional -> Stream変換
+            .collect(Collectors.toList());
+        
+        System.out.println("高額商品リスト: " + expensiveProductNames);
+    }
+}
+```
+
+### 実践的な使用例
+
+実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう：
+
+<span class="listing-number">**サンプルコード12-12**</span>
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+public class OptionalPracticalExample {
+    // データベースの代わりとなるメモリ内ストレージ
+    static class UserRepository {
+        private Map<Long, User> users = new HashMap<>();
+        
+        public UserRepository() {
+            users.put(1L, new User(1L, "Alice", "alice@example.com"));
+            users.put(2L, new User(2L, "Bob", null));  // メールアドレスなし
+        }
+        
+        // Optionalを返すことで、ユーザーが見つからない可能性を明示
+        public Optional<User> findById(Long id) {
+            return Optional.ofNullable(users.get(id));
+        }
+    }
+    
+    static class User {
+        private Long id;
+        private String name;
+        private String email;
+        
+        public User(Long id, String name, String email) {
+            this.id = id;
+            this.name = name;
+            this.email = email;
+        }
+        
+        public Long getId() { return id; }
+        public String getName() { return name; }
+        public Optional<String> getEmail() { 
+            return Optional.ofNullable(email); 
+        }
+    }
+    
+    static class ConfigService {
+        private Map<String, String> config = new HashMap<>();
+        
+        public ConfigService() {
+            config.put("app.name", "MyApp");
+            config.put("app.version", "1.0.0");
+            // app.timeoutは設定されていない
+        }
+        
+        // 設定値の取得（存在しない可能性を考慮）
+        public Optional<String> getConfig(String key) {
+            return Optional.ofNullable(config.get(key));
+        }
+        
+        // タイムアウト値の取得（デフォルト値付き）
+        public int getTimeout() {
+            return getConfig("app.timeout")
+                .map(Integer::parseInt)
+                .orElse(30);  // デフォルト30秒
+        }
+    }
+    
+    public static void main(String[] args) {
+        UserRepository repo = new UserRepository();
+        ConfigService config = new ConfigService();
+        
+        // データベース検索の例
+        Long userId = 1L;
+        String emailDomain = repo.findById(userId)
+            .flatMap(User::getEmail)
+            .map(email -> email.substring(email.indexOf("@") + 1))
+            .orElse("ドメインなし");
+        
+        System.out.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
+        
+        // 存在しないユーザーの処理
+        Long nonExistentId = 999L;
+        repo.findById(nonExistentId)
+            .ifPresentOrElse(
+                user -> System.out.println("ユーザー名: " + user.getName()),
+                () -> System.out.println("ユーザーID " + nonExistentId + " は存在しません")
+            );
+        
+        // 設定値の取得
+        String appName = config.getConfig("app.name")
+            .orElse("Unknown App");
+        System.out.println("アプリケーション名: " + appName);
+        
+        int timeout = config.getTimeout();
+        System.out.println("タイムアウト値: " + timeout + "秒");
+    }
+}
+```
+
+### アンチパターンと注意点
+
+Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス：
+
+<span class="listing-number">**サンプルコード12-13**</span>
+
+```java
+import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
+public class OptionalAntiPatternsExample {
+    static class BadExample {
+        // アンチパターン1: フィールドにOptionalを使用（避けるべき）
+        private Optional<String> name = Optional.empty();  // 悪い例
+        
+        // アンチパターン2: メソッド引数にOptionalを使用（避けるべき）
+        public void processUser(Optional<String> userName) {  // 悪い例
+            // 処理...
+        }
+        
+        // アンチパターン3: コレクションにOptionalを使用（避けるべき）
+        public Optional<List<String>> getNames() {  // 悪い例
+            // 空のリストを返すべき
+            return Optional.empty();
+        }
+    }
+    
+    static class GoodExample {
+        // 良い例1: フィールドは通常の型で、getterでOptionalを返す
+        private String name;  // nullableフィールド
+        
+        public Optional<String> getName() {
+            return Optional.ofNullable(name);
+        }
+        
+        // 良い例2: メソッド引数は通常の型で、内部でOptionalに変換
+        public void processUser(String userName) {
+            Optional.ofNullable(userName)
+                .filter(name -> !name.isEmpty())
+                .ifPresent(name -> System.out.println("Processing: " + name));
+        }
+        
+        // 良い例3: コレクションは空のコレクションを返す
+        public List<String> getNames() {
+            // nullの代わりに空のリストを返す
+            return names != null ? names : new ArrayList<>();
+        }
+        
+        private List<String> names;
+    }
+    
+    public static void main(String[] args) {
+        // アンチパターン4: get()の過度な使用
+        Optional<String> optional = Optional.of("value");
+        
+        // 悪い例：isPresentとgetの組み合わせ
+        if (optional.isPresent()) {
+            String value = optional.get();
+            System.out.println(value.toUpperCase());
+        }
+        
+        // 良い例：mapを使用
+        optional.map(String::toUpperCase)
+            .ifPresent(System.out::println);
+        
+        // アンチパターン5: Optional<Optional<T>>の作成
+        // これは避けて、flatMapを使用すべき
+        
+        // 注意点：Optionalは値の一時的なコンテナ
+        // - Serializableではない
+        // - 長期保存には適さない
+        // - APIの戻り値として使用し、フィールドには使わない
+    }
+}
+```
+
+### Optionalのベストプラクティス
+
+1. **APIデザイン**: メソッドの戻り値にOptionalを使用し、nullを返す可能性を明示
+2. **チェイン操作**: map、flatMap、filterを活用して宣言的なコードを書く
+3. **デフォルト値**: orElse、orElseGetを使用して適切なデフォルト値を提供
+4. **早期リターン**: 値が存在しない場合の処理を早めに行う
+5. **Stream統合**: Stream APIと組み合わせて、より表現力豊かなコードを実現
+
+Optionalを適切に使用することで、NullPointerExceptionを防ぎ、より安全で読みやすいコードを書くことができます。
+
+## 12.5 並列ストリームによるパフォーマンス向上
 
 ### マルチコア時代のプログラミング
 
@@ -280,7 +736,7 @@ public class StreamExample {
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです：
 
-<span class="listing-number">**サンプルコード12-7**</span>
+<span class="listing-number">**サンプルコード12-14**</span>
 
 ```java
 // シーケンシャル（直列）処理
@@ -304,7 +760,7 @@ long sumParallel = numbers.parallelStream()
 2. **処理（Process）**：各チャンクを異なるスレッドで並列に処理
 3. **統合（Combine）**：各スレッドの結果を統合して最終結果を生成
 
-<span class="listing-number">**サンプルコード12-8**</span>
+<span class="listing-number">**サンプルコード12-15**</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -348,7 +804,7 @@ public class ParallelStreamExample {
 #### 2. スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります：
 
-<span class="listing-number">**サンプルコード12-9**</span>
+<span class="listing-number">**サンプルコード12-16**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -374,13 +830,13 @@ List<Integer> results = numbers.parallelStream()
 3. **状態を共有しない処理**：各要素が独立して処理できる場合
 4. **順序が重要でない場合**：出力の順序が問題にならない場合
 
-## 12.5 高度なStream操作
+## 12.6 高度なStream操作
 
 ### flatMapによる複雑なデータ変換
 
 `flatMap`は、ネストした構造を平坦化するために使用される大切な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などに特に有用です。
 
-<span class="listing-number">**サンプルコード12-10**</span>
+<span class="listing-number">**サンプルコード12-17**</span>
 
 ```java
 import java.util.Arrays;
@@ -428,7 +884,7 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-11**</span>
+<span class="listing-number">**サンプルコード12-18**</span>
 
 ```java
 import java.util.Arrays;
@@ -479,7 +935,7 @@ public class ReduceExample {
 
 `Collectors`クラスは、ストリームの要素を様々な形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-12**</span>
+<span class="listing-number">**サンプルコード12-19**</span>
 
 ```java
 import java.util.Arrays;
@@ -527,7 +983,7 @@ public class CollectorsExample {
 
 `Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された大切な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
 
-<span class="listing-number">**サンプルコード12-13**</span>
+<span class="listing-number">**サンプルコード12-20**</span>
 
 ```java
 import java.util.Arrays;
@@ -565,7 +1021,7 @@ public class OptionalExample {
 
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-null チェックの連続を大幅に簡素化します。
 
-<span class="listing-number">**サンプルコード12-14**</span>
+<span class="listing-number">**サンプルコード12-21**</span>
 
 ```java
 import java.util.Arrays;
@@ -597,7 +1053,7 @@ public class OptionalChainingExample {
 
 実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理する必要があります。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
-<span class="listing-number">**サンプルコード12-15**</span>
+<span class="listing-number">**サンプルコード12-22**</span>
 
 ```java
 import java.util.Arrays;
@@ -637,7 +1093,7 @@ public class NullSafeProcessingExample {
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを効率的に処理する際に大切です。
 
-<span class="listing-number">**サンプルコード12-16**</span>
+<span class="listing-number">**サンプルコード12-23**</span>
 
 ```java
 import java.util.Arrays;
@@ -675,7 +1131,7 @@ public class ShortCircuitExample {
 
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、適切な配列コンストラクタを指定することが大切です。
 
-<span class="listing-number">**サンプルコード12-17**</span>
+<span class="listing-number">**サンプルコード12-24**</span>
 
 ```java
 import java.util.Arrays;
@@ -707,7 +1163,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-18**</span>
+<span class="listing-number">**サンプルコード12-25**</span>
 
 ```java
 import java.util.Arrays;
@@ -766,8 +1222,9 @@ public class ComplexProcessingExample {
 - **データ構造の選択**: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが大切です。
 - **ラムダ式と`Comparator`**: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
 - **Stream API**: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
-- **高度なStream操作**: `flatMap`によるデータ平坦化、`reduce`による集約処理、`Optional`による安全なnull処理など、実用的な高度技術を習得できます。
+- **Optional型**: null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
 - **並列ストリーム**: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
+- **高度なStream操作**: `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
 
 これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。
 

@@ -974,7 +974,7 @@ void printStudent(struct Student s) {
 オブジェクト指向では、関連するデータとそれを操作する処理を1つのクラスにまとめることで、上記の問題を解決します：
 
 **オブジェクト指向プログラミング（Java）**
-<span class="listing-number">**サンプルコード3-13**</span>
+<span class="listing-number">**サンプルコード3-15**</span>
 
 ```java
 // データと処理が一体化している
@@ -1066,7 +1066,7 @@ public class Student {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です：
 
-<span class="listing-number">**サンプルコード3-14**</span>
+<span class="listing-number">**サンプルコード3-16**</span>
 
 ```java
 public class Book {
@@ -1128,7 +1128,7 @@ public class Book {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています：
 
-<span class="listing-number">**サンプルコード3-15**</span>
+<span class="listing-number">**サンプルコード3-17**</span>
 
 ```java
 public class BookTest {
@@ -1182,7 +1182,7 @@ public class BookTest {
 - 外部から直接アクセスできない
 - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-16**</span>
+<span class="listing-number">**サンプルコード3-18**</span>
 
 ```java
 public class Student {
@@ -1223,7 +1223,7 @@ public class Student {
 
 フィールドをprivateにする理由を具体例で見てみましょう：
 
-<span class="listing-number">**サンプルコード3-17**</span>
+<span class="listing-number">**サンプルコード3-19**</span>
 
 ```java
 public class Product {
@@ -1309,7 +1309,7 @@ public class Product {
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-17**</span>
+<span class="listing-number">**サンプルコード3-20**</span>
 
 ```java
 public class MathHelper {
@@ -1343,7 +1343,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-18**</span>
+<span class="listing-number">**サンプルコード3-21**</span>
 
 ```java
 // StaticMemberExample.java
@@ -1445,7 +1445,7 @@ staticの詳細な使い方や設計パターンについては、第7章以降�
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-19**</span>
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -1467,7 +1467,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-20**</span>
+<span class="listing-number">**サンプルコード3-23**</span>
 
 ```java
 public class StudentArrayExample {
@@ -1501,7 +1501,7 @@ public class StudentArrayExample {
 
 オブジェクト配列を操作する際の最も重要な注意点は、nullチェックです：
 
-<span class="listing-number">**サンプルコード3-21**</span>
+<span class="listing-number">**サンプルコード3-24**</span>
 
 ```java
 public class NullCheckExample {
@@ -1523,7 +1523,7 @@ public class NullCheckExample {
 
 ### オブジェクト配列とプリミティブ配列の違い
 
-<span class="listing-number">**サンプルコード3-22**</span>
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
 // プリミティブ型の配列
@@ -1617,7 +1617,7 @@ exercises/chapter03/
    - mainメソッドから各メソッドを呼び出して動作確認
 
 **コード構造のヒント**:
-<span class="listing-number">**サンプルコード3-23**</span>
+<span class="listing-number">**サンプルコード3-26**</span>
 
 ```java
 public class MethodsPractice {
