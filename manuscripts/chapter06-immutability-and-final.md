@@ -31,337 +31,576 @@
 
 
 
-## 4.1 カプセル化とアクセス制限
+## 6.1 不変性の概念と重要性
 
-プログラミングにおいて重要な概念の1つである**カプセル化 (Encapsulation)** について詳しく学習しましょう。オブジェクト指向プログラミングで特に重視されるこの概念は、データと操作をカプセル（カプセル化）することでデータの整合性を保ちます。カプセル化とは、オブジェクトのデータ（フィールド）とそのデータを操作するメソッドを1つにまとめ、オブジェクトの内部構造を外部から隠蔽することです。
+第4章でカプセル化について学び、第5章で継承の高度な活用法を習得しました。本章では、オブジェクトの状態を変更できないようにする「不変性（Immutability）」という設計概念と、それを実現するための`final`キーワードについて学習します。
 
-### なぜカプセル化が必要か？
+不変性は、一度作成されたオブジェクトの状態が変更できないという性質です。この概念は、バグの少ない堅牢なプログラムを作成する上で非常に重要な役割を果たします。
 
-もし、クラスのフィールドが外部から自由にアクセスできてしまうと、どうなるでしょうか？
+### なぜ不変性が重要なのか
 
-### 実際の開発で起こる深刻な問題
+可変オブジェクトは、プログラムの複雑性を増大させ、予期しないバグの原因となることがあります。特に以下のような状況で問題が顕著になります：
 
-以下のコードは、カプセル化を無視した設計が実際の開発でどのような深刻な問題を引き起こすかを示しています：
+**1. マルチスレッド環境での競合状態**
+
+以下のコードは、可変オブジェクトがマルチスレッド環境でどのような問題を引き起こすかを示しています：
 
 <span class="listing-number">**サンプルコード6-1**</span>
 
 ```java
-// カプセル化されていない危険なコード
-public class BankAccount {
-    public String ownerName;
-    public double balance;      // publicなので誰でも直接変更できてしまう
-    public double creditLimit;  // クレジット限度額
-    public double loanAmount;   // ローン残高
+// 可変オブジェクトの問題例
+public class MutablePoint {
+    private int x;
+    private int y;
+    
+    public MutablePoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public void setX(int x) { this.x = x; }
+    public void setY(int y) { this.y = y; }
+    public int getX() { return x; }
+    public int getY() { return y; }
 }
 
-public class BankingSystemProblem {
-    public static void main(String[] args) {
-        BankAccount account = new BankAccount();
-        account.ownerName = "山田太郎";
-        account.balance = 100000;
-        account.creditLimit = 500000;
-        account.loanAmount = 200000;
-
-        // 問題1: 不正な値の設定による論理的矛盾
-        account.balance = -50000;  // 負の残高（物理的にありえない）
+// マルチスレッド環境での競合状態の例
+public class ThreadSafetyProblem {
+    public static void main(String[] args) throws InterruptedException {
+        MutablePoint point = new MutablePoint(0, 0);
         
-        // 問題2: ビジネスルールの破壊
-        account.loanAmount = 1000000;  // クレジット限度額を超えるローン
+        // 複数のスレッドが同じオブジェクトを変更
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                point.setX(point.getX() + 1);
+            }
+        });
         
-        // 問題3: 悪意のある操作やバグによるデータ破壊
-        account.balance = Double.MAX_VALUE;  // 突然、無限のお金持ちに！
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                point.setX(point.getX() + 1);
+            }
+        });
         
-        // 問題4: 並行処理での競合状態
-        // スレッドAとスレッドBが同時にbalanceを変更すると...
-        // データの整合性が保証されない
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        
+        // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
+        System.out.println("X座標: " + point.getX());
     }
 }
 ```
 
-**実際に発生した事例**：
-- **金融システムでの事故**：直接フィールドアクセスを許可していたため、バグにより顧客の口座残高が誤って変更され、多額の損失が発生
-- **在庫管理システムでの問題**：複数の処理が同時に在庫数を直接変更した結果、実際の在庫と記録が一致しなくなり、ビジネスに深刻な影響
-- **セキュリティの脆弱性**：外部からの入力値を検証せずに直接フィールドに設定できたため、SQLインジェクションなどの攻撃を受ける
+**2. 意図しない副作用**
 
-このように、外部から直接データを操作できると、オブジェクトが不正な状態になったり、意図しない変更が加えられたりする危険性があります。
+```java
+// 可変オブジェクトを返すメソッドの問題
+public class Employee {
+    private MutablePoint location;
+    
+    public MutablePoint getLocation() {
+        return location;  // 可変オブジェクトへの参照を返す
+    }
+}
 
-カプセル化は、このような問題を防ぎ、以下の利点をもたらします。
+// 呼び出し側のコード
+Employee emp = new Employee();
+MutablePoint loc = emp.getLocation();
+loc.setX(100);  // Employeeの内部状態が外部から変更される！
+```
 
-まず最も大切な利点は、**データの保護と整合性の維持**です。外部から直接フィールドにアクセスできなくすることで、意図しない値の書き換えや、不正な状態になることを防ぎます。たとえば、銀行口座の残高が負の値になったり、人の年齢が負の値になったりするような、ビジネスロジック上あり得ない状態を確実に防止できます。
+### 不変オブジェクトによる解決
 
-次に、**保守性の向上**という大きなメリットがあります。クラスの内部実装（フィールドの持ち方やメソッド内のロジック）を変更しても、外部への影響を最小限に抑えることができます。公開しているメソッドの仕様が変わらなければ、内部は自由に変更できます。これにより、パフォーマンスの最適化やバグ修正を、ほかのコードに影響を与えることなく実施できます。
+これらの問題を解決するのが、不変オブジェクトです：
 
-さらに、**独立性と再利用性の向上**も大切な利点です。適切にカプセル化されたクラスは、部品としての独立性が高まり、ほかのプログラムでも安心して利用しやすくなります。使う側は公開されたインターフェイス（メソッド）だけを意識すればよく、内部の複雑な実装を知ることは大切ではありません。これにより、クラスをライブラリとして配布したり、チーム開発で共有したりすることが容易になります。
+```java
+// 不変オブジェクトの実装
+public final class ImmutablePoint {
+    private final int x;
+    private final int y;
+    
+    public ImmutablePoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    
+    // setterメソッドは存在しない
+    
+    // 値を変更したい場合は新しいオブジェクトを作成
+    public ImmutablePoint withX(int newX) {
+        return new ImmutablePoint(newX, this.y);
+    }
+    
+    public ImmutablePoint withY(int newY) {
+        return new ImmutablePoint(this.x, newY);
+    }
+}
+```
 
-### アクセス修飾子によるアクセス制御
+**不変オブジェクトの利点**：
 
-Javaでは、クラス、フィールド、メソッド、コンストラクタに対して**アクセス修飾子**を指定することで、外部からのアクセスレベルを制御します。
+1. **スレッドセーフティ**: 状態が変更されないため、同期化なしで安全に共有できる
+2. **予測可能性**: 一度作成されたオブジェクトの状態は変わらない
+3. **キャッシュ可能**: 状態が変わらないため、安全にキャッシュできる
+4. **デバッグの容易さ**: 状態変更のタイミングを追跡する必要がない
 
-| 修飾子 | 同じクラス | 同じパッケージ | サブクラス (別パッケージ) | それ以外 (別パッケージ) | 説明 |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| `public` | ○ | ○ | ○ | ○ | **公開**。どこからでもアクセス可能。 |
-| `protected` | ○ | ○ | ○ | × | **保護**。同じクラス、同じパッケージ、または別パッケージのサブクラスからアクセス可能。 |
-| (修飾子なし) | ○ | ○ | × | × | **パッケージプライベート**。修飾子を記述しない場合。同じパッケージ内からのみアクセス可能。 |
-| `private` | ○ | × | × | × | **非公開**。同じクラス内からのみアクセス可能。 |
+## 6.2 finalキーワードの3つの用途
 
-**選択の基本方針:**
+`final`キーワードは、Javaで「変更不可」を表現するための重要な機能です。`final`は以下の3つの場所で使用でき、それぞれ異なる意味を持ちます：
 
-アクセス修飾子を選択する際の基本方針を理解することは、安全で保守性の高いコードを書く上でポイントになります。一般的な慣習として、**フィールドは`private`にする**ことが推奨されています。クラスの心臓部であるデータは、外部から直接触られないように隠し、オブジェクトの状態の一貫性を保ちます。これにより、フィールドの値が不正に変更されるリスクを最小化できます。
+### 6.2.1 final変数（定数と不変フィールド）
 
-次に、**メソッドは外部に公開するものだけを`public`にする**という方針も大切です。外部から使われることを意図した機能だけを公開し、内部だけで使う補助的なメソッドは`private`にします。これにより、クラスのインターフェイスが明確になり、使う側が必要以上に複雑な内部構造を意識する必要がなくなります。
+`final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります。
 
-最後に、**迷ったらできるだけ厳しい（狭い）範囲の修飾子を選ぶ**という安全第一のアプローチを推奨します。最初は`private`にしておき、必要に応じてアクセス範囲を広げていく方が、最初から広い範囲を設定してしまい、後から狭めるよりも、はるかに安全です。この方針に従うことで、予期せぬ副作用やセキュリティ上の問題を未然に防ぐことができます。
+```java
+public class Constants {
+    // クラス定数（static final）
+    public static final double PI = 3.14159265359;
+    public static final int MAX_CONNECTIONS = 100;
+    
+    // インスタンス定数（finalフィールド）
+    private final String id;
+    private final LocalDateTime createdAt;
+    
+    public Constants(String id) {
+        this.id = id;
+        this.createdAt = LocalDateTime.now();  // コンストラクタで初期化
+    }
+    
+    // finalローカル変数
+    public void processData(List<String> data) {
+        final int size = data.size();
+        // size = 10;  // コンパイルエラー： final変数は変更不可
+        
+        data.forEach(item -> {
+            // ラムダ式内でローカル変数を使う場合、実質的にfinalである必要がある
+            System.out.println(item + " (total: " + size + ")");
+        });
+    }
+}
+```
 
-### getter/setter パターンによる実践
+**final変数の初期化タイミング**：
+- **宣言時**: `final int x = 10;`
+- **コンストラクタ内**: インスタンスフィールドの場合
+- **インスタンス初期化子**: インスタンスフィールドの場合
+- **static初期化子**: static finalフィールドの場合
 
-カプセル化の最も一般的な実践方法が、`private`なフィールドと、それに対応する`public`な**getter**（ゲッタ／取得メソッド）と**setter**（セッタ／設定メソッド）を用意するパターンです。
+### 6.2.2 finalメソッド（オーバーライドの禁止）
 
-カプセル化されたフィールドにアクセスするための標準的な方法として、**getterメソッド**と**setterメソッド**があります。getterメソッドは、`private`なフィールドの値を読み取って返すメソッドで、メソッド名は`get`にフィールド名を続けた形（例：`getName()`）とするのが慣例です。これにより、外部からフィールドの値を安全に取得できます。
+`final`をメソッドに付けると、サブクラスでそのメソッドをオーバーライドできなくなります。
 
-一方、setterメソッドは、`private`なフィールドに値を設定するメソッドで、メソッド名は`set`にフィールド名を続けた形（例：`setAge(int age)`）とします。setterメソッドの大切な役割は、単に値を設定するだけではなく、設定される値が適切かどうかを検証できる点にあります。
+```java
+public class SecurityManager {
+    // テンプレートメソッドパターンでfinalを使用
+    public final boolean authenticate(String username, String password) {
+        // 認証の基本フローは変更させない
+        if (!validateInput(username, password)) {
+            return false;
+        }
+        
+        // 具体的な認証方法はサブクラスで実装
+        return doAuthenticate(username, password);
+    }
+    
+    // サブクラスでオーバーライド可能
+    protected boolean doAuthenticate(String username, String password) {
+        // デフォルト実装
+        return false;
+    }
+    
+    private boolean validateInput(String username, String password) {
+        return username != null && !username.isEmpty() 
+            && password != null && !password.isEmpty();
+    }
+}
+```
 
-setterメソッドの大切な役割は、フィールドに値を設定する前に、その値が**妥当かどうかを検証（バリデーション）**できる点にあります。
+### 6.2.3 finalクラス（継承の禁止）
 
-#### 実践例：`Employee`クラス
+`final`をクラスに付けると、そのクラスを継承できなくなります。
+
+```java
+// Stringクラスのfinalクラスの代表例
+public final class String {
+    // Stringクラスは継承できない
+}
+
+// 不変クラスは通常finalにする
+public final class ImmutablePerson {
+    private final String name;
+    private final int age;
+    
+    public ImmutablePerson(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public String getName() { return name; }
+    public int getAge() { return age; }
+}
+
+// 以下はコンパイルエラー
+// class ExtendedPerson extends ImmutablePerson { }
+```
+
+**finalクラスの利点**：
+1. **セキュリティ**: 悪意のあるサブクラスによる動作の改変を防ぐ
+2. **パフォーマンス**: JVMが最適化しやすい
+3. **設計の明確化**: このクラスは継承を意図していないことを明示
+
+## 6.3 不変オブジェクトの設計パターン
+
+不変オブジェクトを正しく設計するには、いくつかの重要なルールを守る必要があります。
+
+### 6.3.1 不変クラスの基本ルール
+
+1. **クラスをfinalにする**: 継承を防ぐ
+2. **すべてのフィールドをprivate finalにする**: 外部からの直接アクセスと変更を防ぐ
+3. **setterメソッドを提供しない**: 状態変更の手段を提供しない
+4. **コンストラクタで初期化を完了する**: すべてのフィールドをコンストラクタで設定
+5. **防御的コピーを行う**: 可変オブジェクトをフィールドに持つ場合
+
+### 6.3.2 実践例：不変な`Person`クラス
 
 <span class="listing-number">**サンプルコード6-2**</span>
 
 ```java
-// Employee.java
-public class Employee {
-    private String name; // private: このクラス内からのみアクセス可能
-    private int age;     // private: このクラス内からのみアクセス可能
-    private double salary;
-
-    public Employee(String name, int age, double salary) {
-        // コンストラクタでもsetterを呼ぶことで、生成時にもバリデーションを適用できる
-        this.setName(name);
-        this.setAge(age);
-        this.setSalary(salary);
-    }
-
-    // nameフィールドのgetter
-    public String getName() {
-        return this.name;
-    }
-
-    // nameフィールドのsetter
-    public void setName(String name) {
-        if (name != null && !name.trim().isEmpty()) {
-            this.name = name.trim();
-        } else {
-            // 不正な値の場合は例外を投げて処理を中断する（例外処理は後の章で学びます）
-            throw new IllegalArgumentException("名前は空にできません。");
+// 完全な不変クラスの例
+public final class ImmutablePerson {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies;
+    
+    public ImmutablePerson(String name, int age, List<String> hobbies) {
+        // パラメータの検証
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("名前は必須です");
         }
-    }
-
-    // ageフィールドのgetter
-    public int getAge() {
-        return this.age;
-    }
-
-    // ageフィールドのsetter（バリデーション付き）
-    public void setAge(int age) {
-        if (age >= 18 && age < 150) {
-            this.age = age;
-        } else {
-            throw new IllegalArgumentException("年齢は18～149の範囲で入力してください。");
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("年齢は0～150の範囲である必要があります");
         }
-    }
-
-    // salaryフィールドのgetter
-    public double getSalary() {
-        return this.salary;
+        
+        this.name = name.trim();
+        this.age = age;
+        // 防御的コピー：外部のリストが変更されても影響を受けない
+        this.hobbies = hobbies != null 
+            ? new ArrayList<>(hobbies) 
+            : new ArrayList<>();
     }
     
-    // salaryフィールドのsetter
-    public void setSalary(double salary) {
-        if (salary >= 0) {
-            this.salary = salary;
-        } else {
-            throw new IllegalArgumentException("給与は0以上である必要があります。");
-        }
+    // getterメソッドのみ提供（setterは存在しない）
+    public String getName() {
+        return name;
     }
-
-    // 昇給メソッド（ビジネスロジック）
-    public void giveRaise(double percentage) {
-        if (percentage > 0) {
-            // salaryフィールドの操作はクラス内部なので自由に行える
-            this.salary *= (1 + percentage / 100.0);
-        } else {
-            throw new IllegalArgumentException("昇給率は正の値である必要があります。");
-        }
+    
+    public int getAge() {
+        return age;
     }
-
-    public void displayInfo() {
-        System.out.println("名前: " + this.name + ", 年齢: " + this.age + ", 給与: " + this.salary);
+    
+    public List<String> getHobbies() {
+        // 防御的コピー：内部リストへの参照を返さない
+        return new ArrayList<>(hobbies);
+    }
+    
+    // 値を変更したい場合は新しいオブジェクトを作成
+    public ImmutablePerson withAge(int newAge) {
+        return new ImmutablePerson(this.name, newAge, this.hobbies);
+    }
+    
+    public ImmutablePerson addHobby(String hobby) {
+        List<String> newHobbies = new ArrayList<>(this.hobbies);
+        newHobbies.add(hobby);
+        return new ImmutablePerson(this.name, this.age, newHobbies);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ImmutablePerson that = (ImmutablePerson) obj;
+        return age == that.age && 
+               Objects.equals(name, that.name) && 
+               Objects.equals(hobbies, that.hobbies);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, hobbies);
+    }
+    
+    @Override
+    public String toString() {
+        return "ImmutablePerson{name='" + name + "', age=" + age + 
+               ", hobbies=" + hobbies + "}";
     }
 }
 ```
 
-以下の例では、Employeeクラスを実際に使用して、カプセル化されたフィールドへの安全なアクセス、ビジネスロジックの実行、不正な値に対するエラーハンドリングを確認できます。
+### 6.3.3 不変オブジェクトの使用例
 
 <span class="listing-number">**サンプルコード6-3**</span>
 
 ```java
-// EmployeeManagement.java
-public class EmployeeManagement {
+public class ImmutableExample {
     public static void main(String[] args) {
-        Employee emp = new Employee("山田 太郎", 30, 300000);
-        emp.displayInfo();
-
-        // フィールドへの直接アクセスはコンパイルエラーになる
-        // emp.salary = -10000; 
-
-        // setterを使って安全に値を変更
-        emp.setSalary(320000);
-        System.out.println("新しい給与: " + emp.getSalary());
-
-        // ビジネスロジックの実行
-        emp.giveRaise(5); // 5%昇給
-        System.out.println("昇給後の給与: " + emp.getSalary());
-
-        // 不正な値を設定しようとすると、例外が発生してプログラムが停止する
-        try {
-            emp.setAge(200);
-        } catch (IllegalArgumentException e) {
-            System.err.println("エラー: " + e.getMessage());
-        }
+        // 不変オブジェクトの作成
+        List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
+        ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
         
-        // 現在の状態を再表示
-        emp.displayInfo();
+        // 元のリストを変更してもオブジェクトには影響しない
+        hobbies = new ArrayList<>(hobbies);
+        hobbies.add("スポーツ");
+        System.out.println(person.getHobbies()); // [読書, 映画鑑賞]
+        
+        // 値を変更したい場合は新しいオブジェクトを作成
+        ImmutablePerson olderPerson = person.withAge(26);
+        System.out.println("元の人: " + person); // age=25
+        System.out.println("新しい人: " + olderPerson); // age=26
+        
+        // 趣味を追加
+        ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
+        System.out.println("元の趣味: " + person.getHobbies());
+        System.out.println("新しい趣味: " + personWithNewHobby.getHobbies());
+        
+        // マルチスレッド環境での安全な共有
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                // 不変オブジェクトはスレッドセーフ
+                System.out.println("T1: " + person.getName());
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                System.out.println("T2: " + person.getAge());
+            }
+        });
+        
+        t1.start();
+        t2.start();
     }
 }
 ```
 
-この例のように、カプセル化はクラスを「データの番人」として機能させ、オブジェクトが常に正しく、一貫性のある状態を保つことを保証します。
+**不変オブジェクトの重要な特性**：
 
-## 4.2 パッケージによるクラスの整理
+1. **スレッドセーフティ**: 同期化なしで複数のスレッドから安全にアクセス可能
+2. **予測可能性**: オブジェクトの状態が変わらないためデバッグが容易
+3. **キャッシュ可能**: 状態が変わらないためHashMapのキーとして安全に使用可能
+4. **関数型プログラミングとの親和性**: 副作用のないコードが書きやすい
 
-プログラムの規模が大きくなると、作成するクラスの数も増えていきます。すべてのクラスを同じ場所に置いていると、名前の衝突が起きたり、目的のクラスを探すのがたいへんになったりします。
+## 6.4 防御的コピーとビルダーパターン
 
-そこでJavaでは、関連するクラスをグループ化するためのしくみとして**パッケージ (package)** が用意されています。
+### 6.4.1 防御的コピーの重要性
 
-パッケージは、コンピュータのフォルダ（ディレクトリ）でファイルを整理するのと似ています。
-
-### パッケージの役割
-
-*   **名前空間の提供**: パッケージが異なれば、同じ名前のクラスを定義できます。これにより、Java標準ライブラリのクラス名（例： `List`）や、外部ライブラリのクラス名と偶然同じ名前を付けてしまっても、衝突を避けられます。クラスの完全な名前は `パッケージ名.クラス名` となります（例： `java.util.List`）。
-*   **クラスの分類**: 機能や役割に応じてクラスを分類することで、プロジェクトの構造が分かりやすくなります。たとえば、データモデル関連のクラスを`model`パッケージに、UI関連のクラスを`ui`パッケージにまとめる、といった使い方ができます。
-*   **アクセス制御**: パッケージはアクセス制御の単位にもなります。アクセス修飾子を何も付けない（`default`）場合、そのメンバーは同じパッケージ内のクラスからのみアクセス可能になります。
-
-### パッケージの宣言とディレクトリ構造
-
-クラスがどのパッケージに属するかを指定するには、ソースファイルの先頭で`package`文を使います。
+不変オブジェクトを設計する際、可変オブジェクト（配列やコレクション）をフィールドに持つ場合は特に注意が必要です。単に参照を保持するだけでは、外部から内容を変更される可能性があります。
 
 <span class="listing-number">**サンプルコード6-4**</span>
 
 ```java
-package com.example.geometry; // このファイル内のクラスは com.example.geometry パッケージに属する
-
-public class Circle {
-    // ...
+// 防御的コピーの実装例
+public final class DateRange {
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final List<LocalDate> holidays;
+    
+    public DateRange(LocalDate start, LocalDate end, List<LocalDate> holidays) {
+        // パラメータの検証
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("日付はnullにできません");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("開始日は終了日より前である必要があります");
+        }
+        
+        this.startDate = start;  // LocalDateは不変なのでコピー不要
+        this.endDate = end;
+        
+        // 防御的コピー：外部のリストが変更されても影響を受けない
+        this.holidays = holidays != null 
+            ? new ArrayList<>(holidays) 
+            : new ArrayList<>();
+    }
+    
+    public List<LocalDate> getHolidays() {
+        // 防御的コピー：内部リストの参照を返さない
+        return new ArrayList<>(holidays);
+    }
+    
+    // 配列の場合の防御的コピー
+    public LocalDate[] getHolidaysAsArray() {
+        return holidays.toArray(new LocalDate[0]);
+    }
 }
 ```
+### 6.4.2 ビルダーパターンによる不変オブジェクトの構築
 
-この`package`宣言は、ソースファイルの**物理的なディレクトリ構造と一致している必要があります**。`com.example.geometry`パッケージの場合、ソースファイルは以下のようなディレクトリに配置されている必要があります。
-
-```
-(プロジェクトのソースルート)
-└── com
-    └── example
-        └── geometry
-            ├── Circle.java
-            └── Rectangle.java
-```
-
-### パッケージの命名規則
-
-パッケージ名が世界中で一意（ユニーク）になるように、Javaでは組織が所有する**インターネットのドメイン名を逆順にする**ことが推奨されています。
-
-*   例： `example.com` というドメインを持つ組織なら、`com.example.プロジェクト名.機能名` のように命名します。
-
-この規則は、特にライブラリを公開する場合に大切です。個人学習や組織内での利用の場合は、`「逆引きドメイン名」.プロジェクト名` のような構造的な命名を心がけるとよいでしょう。また、パッケージ名は**すべて小文字**で記述するのが慣例です。
-
-## 4.3 import文によるクラスの利用
-
-他のパッケージに属するクラスを利用するには、本来`パッケージ名.クラス名`という**完全限定名 (Fully Qualified Name)** で記述する必要があります。
+複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
 
 <span class="listing-number">**サンプルコード6-5**</span>
 
 ```java
-// importを使わない場合
-java.util.Scanner scanner = new java.util.Scanner(System.in);
-java.util.ArrayList<String> list = new java.util.ArrayList<>();
-```
+// ビルダーパターンを使った不変オブジェクトの構築
+public final class Book {
+    private final String isbn;
+    private final String title;
+    private final String author;
+    private final String publisher;
+    private final int publicationYear;
+    private final int pages;
+    private final String genre;
+    
+    // プライベートコンストラクタ
+    private Book(Builder builder) {
+        this.isbn = builder.isbn;
+        this.title = builder.title;
+        this.author = builder.author;
+        this.publisher = builder.publisher;
+        this.publicationYear = builder.publicationYear;
+        this.pages = builder.pages;
+        this.genre = builder.genre;
+    }
+    
+    // ビルダークラス
+    public static class Builder {
+        // 必須パラメータ
+        private final String isbn;
+        private final String title;
+        
+        // オプションパラメータ（デフォルト値を設定）
+        private String author = "Unknown";
+        private String publisher = "";
+        private int publicationYear = 0;
+        private int pages = 0;
+        private String genre = "General";
+        
+        // 必須パラメータのコンストラクタ
+        public Builder(String isbn, String title) {
+            if (isbn == null || isbn.trim().isEmpty()) {
+                throw new IllegalArgumentException("ISBNは必須です");
+            }
+            if (title == null || title.trim().isEmpty()) {
+                throw new IllegalArgumentException("タイトルは必須です");
+            }
+            this.isbn = isbn;
+            this.title = title;
+        }
+        
+        // オプションパラメータのセッター（メソッドチェーン）
+        public Builder author(String author) {
+            this.author = author;
+            return this;
+        }
+        
+        public Builder publisher(String publisher) {
+            this.publisher = publisher;
+            return this;
+        }
+        
+        public Builder publicationYear(int year) {
+            if (year < 0 || year > LocalDate.now().getYear()) {
+                throw new IllegalArgumentException("無効な出版年です");
+            }
+            this.publicationYear = year;
+            return this;
+        }
+        
+        public Builder pages(int pages) {
+            if (pages < 0) {
+                throw new IllegalArgumentException("ページ数は正の値である必要があります");
+            }
+            this.pages = pages;
+            return this;
+        }
+        
+        public Builder genre(String genre) {
+            this.genre = genre;
+            return this;
+        }
+        
+        // Bookオブジェクトの構築
+        public Book build() {
+            return new Book(this);
+        }
+    }
+    
+    // getterメソッド（省略）
+    public String getIsbn() { return isbn; }
+    public String getTitle() { return title; }
+    // ... 他のgetterメソッド
+}```
 
-しかし、これではコードが長くなり、可読性が低下します。そこで、ソースファイルの先頭（`package`文の後）に`import`文を記述することで、クラス名を短く書けます。
+
+### 6.4.3 ビルダーパターンの使用例
 
 <span class="listing-number">**サンプルコード6-6**</span>
 
 ```java
-import java.util.Scanner; // java.util.Scannerクラスをインポート
-import java.util.ArrayList; // java.util.ArrayListクラスをインポート
-
-public class MyProgram {
+public class BuilderExample {
     public static void main(String[] args) {
-        // importしているので、クラス名だけで書ける
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
+        // ビルダーパターンによる不変オブジェクトの構築
+        Book book1 = new Book.Builder("978-4-123456-78-9", "Javaプログラミング入門")
+            .author("山田太郎")
+            .publisher("技術評論社")
+            .publicationYear(2024)
+            .pages(350)
+            .genre("プログラミング")
+            .build();
+        
+        // 必須パラメータのみで構築
+        Book book2 = new Book.Builder("978-4-987654-32-1", "データベース設計")
+            .build();
+        
+        // 一部のオプションパラメータを設定
+        Book book3 = new Book.Builder("978-4-111111-11-1", "アルゴリズム入門")
+            .author("鈴木花子")
+            .pages(280)
+            .build();
+        
+        // メソッドチェーンによる可読性の高いコード
+        Book textbook = new Book.Builder("978-4-222222-22-2", "オブジェクト指向設計")
+            .author("佐藤一郎")
+            .publisher("オライリー・ジャパン")
+            .publicationYear(2023)
+            .pages(450)
+            .genre("ソフトウェア工学")
+            .build();
     }
 }
 ```
 
-### オンデマンドインポート
+**ビルダーパターンの利点**：
+1. **可読性**: どのパラメータに何を設定しているかが明確
+2. **柔軟性**: 必須パラメータとオプションパラメータを明確に区別
+3. **不変性の保証**: 構築後は変更不可能
+4. **バリデーション**: 構築時に値の妥当性を検証
 
-同じパッケージの多くのクラスを使いたい場合、アスタリスク `*` を使って、そのパッケージに属するすべての`public`なクラスをまとめてインポートできます。これを**オンデマンドインポート**と呼びます。
+## 6.5 まとめ
 
-<span class="listing-number">**サンプルコード6-7**</span>
+本章では、Javaにおける不変性とfinalキーワードの重要性について学習しました。
 
-```java
-import java.util.*; // java.utilパッケージの全クラスを対象にする
+**学習した主な内容**：
+1. **不変オブジェクトの概念**: 一度作成されたら状態が変更できないオブジェクト
+2. **finalキーワードの3つの用途**: 変数、メソッド、クラスへの適用
+3. **防御的コピー**: 可変オブジェクトを安全に扱う技術
+4. **ビルダーパターン**: 複雑な不変オブジェクトを構築する設計パターン
 
-public class MyProgram {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
-        Random random = new Random();
-    }
-}
-```
-**注意:** オンデマンドインポートは、そのパッケージのさらに下のサブパッケージのクラスまではインポートしません（例： `import java.util.*` は `java.util.regex.Pattern` をインポートしない）。
+**不変性の利点**：
+- **スレッドセーフティ**: 同期化なしで安全に共有可能
+- **予測可能性**: 状態が変わらないため動作が予測しやすい
+- **キャッシュ可能性**: 安全にキャッシュできる
+- **デバッグの容易さ**: 状態変更のタイミングを追跡する必要がない
 
-### `import`文の注意点：名前の衝突
+不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。特に並行プログラミングや大規模システムの開発において、その価値が発揮されます。
 
-異なるパッケージに同じ名前のクラスが存在する場合、両方を同時にオンデマンドインポートしたり、個別にインポートしたりすると、コンパイラがどちらのクラスを使えばよいか判断できず、コンパイルエラーになります。
+## 6.6 章末演習
 
-<span class="listing-number">**サンプルコード6-8**</span>
-
-```java
-import java.util.List;
-import java.awt.List; // エラー: Listクラスが両方のパッケージに存在する
-
-public class AmbiguousClass {
-    // List list; // どちらのListか不明
-}
-```
-
-このような場合は、片方を`import`し、もう片方は完全限定名で記述して、どちらのクラスを使うかを明示的に指定する必要があります。
-
-<span class="listing-number">**サンプルコード6-9**</span>
-
-```java
-import java.util.List; // java.util.Listを主に使うと決める
-
-public class SolvedAmbiguity {
-    public static void main(String[] args) {
-        List<String> utilList = new java.util.ArrayList<>(); // importした方
-        java.awt.List awtList = new java.awt.List();      // 完全限定名で指定
-    }
-}
-```
-
-## 4.4 章末演習
 
 本章で学んだ不変性とfinalキーワードを実践的な課題で確認しましょう。
 

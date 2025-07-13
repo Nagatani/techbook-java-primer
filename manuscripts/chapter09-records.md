@@ -44,7 +44,7 @@
 
 
 
-## 12.1 Recordとは？
+## 9.1 Recordとは？
 
 **Record**は、Java 16で正式に導入された、**不変（immuテーブル）なデータを保持するため**の、簡潔なクラスを定義するための機能です。
 
@@ -116,7 +116,7 @@ public final class Person {
 - **拡張性の制限**: `Record`は暗黙的に`final`であり、ほかのクラスを継承したり、ほかのクラスに継承させたりすることはできません。
 - **可変オブジェクトには不向き**: 状態を変更する必要があるオブジェクトには使えません。
 
-## 12.2 Recordの使い方
+## 9.2 Recordの使い方
 
 `Record`の使い方は、通常のクラスとほとんど同じです。
 
@@ -172,7 +172,7 @@ public record PositivePoint(int x, int y) {
 }
 ```
 
-## 12.3 実践例：CSVファイルの読み込み
+## 9.3 実践例：CSVファイルの読み込み
 
 `Record`は、ファイルから読み込んだ構造化されたデータを保持するのに非常に適しています。
 
@@ -226,7 +226,7 @@ public class CsvReader {
 ```
 この例では、Stream APIと組み合わせることで、ファイル読み込みから`Record`への変換、リストへの格納までを非常に簡潔に記述できています。
 
-## 12.2 データ指向プログラミング（DOP）
+## 9.4 データ指向プログラミング（DOP）
 
 ### DOPとは何か
 
@@ -439,7 +439,7 @@ public static String getStatusMessage(OrderStatus status) {
 }
 ```
 
-## 12.3 高度なパターンマッチング
+## 9.5 高度なパターンマッチング
 
 Java 17以降の**パターンマッチング**とRecordの組み合わせは、**代数的データ型（Algebraic Data Types）**を実現し、関数型プログラミングの強力な表現力をJavaにもたらします。
 
@@ -666,7 +666,7 @@ public static double calculateArea(Shape shape) {
 }
 ```
 
-## 12.4 Recordsの内部実装とカスタマイズ
+## 9.6 Recordsの内部実装とカスタマイズ
 
 ### コンパイラが生成するコード
 
@@ -1039,7 +1039,7 @@ class MoneyDeserializer extends JsonDeserializer<Money> {
 }
 ```
 
-## 12.5 実践的なデータパイプライン
+## 9.7 実践的なデータパイプライン
 
 ### イベントソーシング風データモデル
 
@@ -1444,7 +1444,7 @@ public record CustomerSummary(
 public record ProductSales(Product product, int quantitySold) {}
 ```
 
-## 12.6 パフォーマンスとメモリ効率
+## 9.8 パフォーマンスとメモリ効率
 
 ### Recordの最適化特性
 
@@ -1800,7 +1800,7 @@ public class BigDataOptimization {
 }
 ```
 
-## 12.7 将来の発展
+## 9.9 将来の発展
 
 ### Project Valhallaとの統合
 

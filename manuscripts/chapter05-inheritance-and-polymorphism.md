@@ -33,88 +33,182 @@
 
 
 
-## 5.1 継承：クラスの機能を引き継ぐ
+## 5.1 実践的な継承設計パターン
 
-オブジェクト指向プログラミングでは、「カプセル化」「継承」「ポリモーフィズム」という概念がよく知られています。本章では、その中でもコードの再利用性と拡張性に寄与する「継承」と「ポリモーフィズム」について学びます。
+第3章でオブジェクト指向の基本概念として継承を学び、第4章では実際のクラス設計で継承を活用しました。本章では、これらの基礎知識を発展させ、より高度で実践的な継承設計パターンと、ポリモーフィズムを活用した柔軟なプログラム構造について学習します。
 
-**継承 (Inheritance)** とは、あるクラスが持つフィールドやメソッドなどの性質を、別のクラスが引き継ぐことができるしくみです。この機能により、コードの再利用性が高まり、保守性が向上します。
+継承は単なるコードの再利用手段ではなく、システムの拡張性と保守性を大幅に向上させる設計技法です。本章では、現実的なビジネス要件に対応できる継承階層の設計方法と、それを支えるポリモーフィズムの実践的な活用法を習得します。
 
-継承関係には、**親クラス（スーパークラス）**と**子クラス（サブクラス）**という2つの役割が存在します。親クラスは性質を継承される元のクラスで、共通の機能を定義します。一方、子クラスは性質を継承する先のクラスで、親クラスの機能を引き継ぎながら、独自の機能を追加したり、既存の機能を上書き（オーバーライド）したりできます。
+### 高度な継承設計における共通課題
 
-これにより、子クラスは親クラスの機能を再利用しつつ、新しい機能を追加したり、既存の機能を変更（オーバーライド）したりできます。
+実践的なソフトウェア開発では、単純な継承から複雑なドメインモデルまで、様々なレベルの継承設計が求められます。特に企業システムやWebアプリケーションでは、ビジネスルールの変化に対応できる柔軟な継承階層の設計が大切です。
 
-### 継承の利点と限界
+本章では、これまで学んだ基礎知識を活用して、以下のような実践的な設計課題に取り組みます：
 
-たとえば、ゲームに登場するさまざまなキャラクタを考えてみましょう。「勇者」「魔法使い」「戦士」は、それぞれ異なる能力を持っていますが、「名前」「HP」「MP」といった共通のパラメータや、「攻撃する」「防御する」といった共通の行動も持っています。
+- **テンプレートメソッドパターン**：共通アルゴリズムの骨格を定義し、詳細を子クラスに委ねる設計
+- **戦略パターンとの組み合わせ**：継承と委譲を適切に使い分ける設計判断
+- **リスコフ置換原則の実践**：安全で予測可能な継承階層の構築
+- **拡張性を考慮した設計**：将来の要件変更に対応できる柔軟な構造
 
-継承を使わない場合、それぞれのクラスで同じ内容のコードを何度も書く必要があり、非効率で間違いも起きやすくなります。ただし、継承は万能ではありません。関数型プログラミングでは高階関数やジェネリクスを使ってコードの再利用を実現し、コンポジションベースの設計では継承よりも柔軟な構造を作ることができます。
+### 継承設計の実践例：決済システム
 
-### 継承を使わない場合の深刻な問題
-
-以下のコードは、継承を使わずに実装した場合の典型的な例です。このアプローチがなぜ保守性の観点から深刻な問題を引き起こすのか、具体的に見ていきましょう：
-
-**継承を使わない場合のコード重複問題**：
-
-以下のコードは、継承を使わずに複数のキャラクタークラスを実装した場合の深刻な問題を示しています。
+実際のビジネスシステムでよく見られる決済処理を例に、段階的な継承設計の改善プロセスを見ていきましょう。ここでは、抽象クラスを使わずに、具象クラスの継承とメソッドのオーバーライドによってテンプレートメソッドパターンを実現する方法を示します。
 
 <span class="listing-number">**サンプルコード5-1**</span>
 
 ```java
-public class Hero {
-    String name;      // ①
-    int hp;          // ①
-    int maxHp;       // ①
+// 決済処理の基底クラス：テンプレートメソッドパターンの実装
+public class PaymentProcessor {
+    protected String transactionId;
+    protected BigDecimal amount;
+    protected String currency;
     
-    void attack() { 
-        System.out.println(name + "が攻撃！");
+    public PaymentProcessor(String transactionId, BigDecimal amount, String currency) {
+        this.transactionId = transactionId;
+        this.amount = amount;
+        this.currency = currency;
     }
     
-    void takeDamage(int damage) {  // ②
-        hp -= damage;
-        if (hp < 0) hp = 0;
+    // テンプレートメソッド：決済処理の共通フロー
+    public final PaymentResult processPayment() {
+        try {
+            // 1. 事前検証（共通処理）
+            validateCommonParameters();
+            
+            // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
+            validatePaymentSpecific();
+            
+            // 3. 外部API呼び出し（子クラスでオーバーライド可能）
+            String authorizationCode = callExternalAPI();
+            
+            // 4. 処理結果の記録（共通処理）
+            logTransaction(authorizationCode);
+            
+            return new PaymentResult(true, authorizationCode, "決済完了");
+            
+        } catch (PaymentException e) {
+            logError(e);
+            return new PaymentResult(false, null, e.getMessage());
+        }
     }
-}
-
-public class Wizard {
-    String name;      // ①と重複
-    int hp;          // ①と重複
-    int maxHp;       // ①と重複
-    int mp;          // ③
     
-    void attack() {  // ④
-        System.out.println(name + "が攻撃！");
+    // 共通の検証ロジック
+    private void validateCommonParameters() throws PaymentException {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new PaymentException("金額は正の値である必要があります");
+        }
+        if (amount.compareTo(new BigDecimal("1000000")) > 0) {
+            throw new PaymentException("決済上限額を超えています");
+        }
     }
     
-    void takeDamage(int damage) {  // ②と完全重複
-        hp -= damage;
-        if (hp < 0) hp = 0;
+    // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
+    protected void validatePaymentSpecific() throws PaymentException {
+        // デフォルトでは追加の検証なし
+        // 子クラスで必要に応じてオーバーライド
     }
     
-    void castSpell() { /* 魔法使い特有の処理 */ }  // ⑤
+    protected String callExternalAPI() throws PaymentException {
+        // デフォルトでは基本的な決済処理を実行
+        // 実際の実装では外部決済サービスのAPIを呼び出す
+        return "DEFAULT-" + System.currentTimeMillis();
+    }
+    
+    // フックメソッド：子クラスで必要に応じてオーバーライド
+    protected void logTransaction(String authCode) {
+        System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
+    }
+    
+    protected void logError(PaymentException e) {
+        System.err.println("決済エラー[" + transactionId + "]: " + e.getMessage());
+    }
 }
 ```
 
-**コード重複による具体的な問題**：
+**テンプレートメソッドパターンの重要なポイント**：
 
-①　**フィールドの重複**: name、hp、maxHpという共通属性が各クラスで個別に定義され、同じデータ構造が複数箇所に散在
+1. **共通フローの定義**: `processPayment()`メソッドで決済処理の標準的な流れを定義
+2. **拡張ポイントの明確化**: 子クラスがオーバーライド可能なメソッドでカスタマイズポイントを提供
+3. **不変性の保証**: `final`キーワードでテンプレートメソッドの改変を防止
+4. **デフォルト実装**: 基本的な動作を提供しつつ、必要に応じて子クラスで特化した実装を可能にする
 
-②　**ダメージ処理の重複**: HPを減らして負の値を防ぐという大切なビジネスロジックが、すべてのキャラクタークラスで同じコードとして重複
+**具体的な決済処理の実装例**：
 
-③　**特有属性の追加**: Wizardクラスには魔法ポイント（mp）という独自の属性が必要だが、共通部分との区別が不明確
+<span class="listing-number">**サンプルコード5-2**</span>
 
-④　**同一処理の重複実装**: attack()メソッドの実装が完全に同じであるにも関わらず、各クラスで個別に記述
+```java
+// クレジットカード決済の実装
+public class CreditCardPayment extends PaymentProcessor {
+    private String cardNumber;
+    private String cvv;
+    
+    public CreditCardPayment(String transactionId, BigDecimal amount, 
+                           String currency, String cardNumber, String cvv) {
+        super(transactionId, amount, currency);
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+    }
+    
+    @Override
+    protected void validatePaymentSpecific() throws PaymentException {
+        // クレジットカード固有の検証
+        if (cardNumber == null || cardNumber.length() != 16) {
+            throw new PaymentException("無効なカード番号です");
+        }
+        if (cvv == null || cvv.length() != 3) {
+            throw new PaymentException("無効なCVVです");
+        }
+    }
+    
+    @Override
+    protected String callExternalAPI() throws PaymentException {
+        // クレジットカード決済API呼び出しのシミュレーション
+        System.out.println("クレジットカード決済APIを呼び出し中...");
+        // 実際の実装では外部APIを呼び出す
+        return "CC-" + System.currentTimeMillis();
+    }
+}
 
-⑤　**特有メソッドの混在**: castSpell()のようなクラス固有のメソッドと共通メソッドが同じレベルで混在し、構造が不明瞭
+// PayPal決済の実装
+public class PayPalPayment extends PaymentProcessor {
+    private String email;
+    private String password;
+    
+    public PayPalPayment(String transactionId, BigDecimal amount, 
+                        String currency, String email, String password) {
+        super(transactionId, amount, currency);
+        this.email = email;
+        this.password = password;
+    }
+    
+    @Override
+    protected void validatePaymentSpecific() throws PaymentException {
+        // PayPal固有の検証
+        if (email == null || !email.contains("@")) {
+            throw new PaymentException("無効なメールアドレスです");
+        }
+        if (password == null || password.length() < 8) {
+            throw new PaymentException("パスワードが短すぎます");
+        }
+    }
+    
+    @Override
+    protected String callExternalAPI() throws PaymentException {
+        // PayPal API呼び出しのシミュレーション
+        System.out.println("PayPal APIを呼び出し中...");
+        return "PP-" + System.currentTimeMillis();
+    }
+    
+    @Override
+    protected void logTransaction(String authCode) {
+        // PayPalでは詳細なログを記録
+        super.logTransaction(authCode);
+        System.out.println("PayPalアカウント: " + email);
+    }
+}
+```
 
-**このコードが引き起こす実際の問題**：
-
-1. **バグ修正の見落とし**：`takeDamage`メソッドにバグが見つかった場合、すべてのクラスで個別に修正が必要。1つでも修正を忘れると、特定のキャラクタだけバグが残る
-
-2. **仕様変更の困難さ**：たとえば「ダメージを受けた時にログを出力する」という仕様追加があった場合、すべてのクラスを探して修正する必要がある
-
-3. **一貫性の欠如**：開発者Aが`Hero`クラスを修正し、開発者Bが`Wizard`クラスを修正した場合、微妙に異なる実装になる可能性がある
-
-継承を使うと、これらの共通部分を`Character`という親クラスにまとめ、各職業クラスはそれを継承することで、重複をなくし、コードをすっきりとさせることができます。
+このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは必要に応じてこれらのメソッドをオーバーライドすることで、独自の振る舞いを実装できます。
 
 ### 段階的リファクタリング：重複コードから継承へ
 
@@ -124,7 +218,7 @@ public class Wizard {
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
 
-<span class="listing-number">**サンプルコード5-2**</span>
+<span class="listing-number">**サンプルコード5-3**</span>
 
 ```java
 public class Car {
@@ -211,11 +305,11 @@ public class Motorcycle {
 
 **ステップ2：共通部分の抽出**
 
-<span class="listing-number">**サンプルコード5-3**</span>
+<span class="listing-number">**サンプルコード5-4**</span>
 
 ```java
 // 共通部分を親クラスとして抽出
-public abstract class Vehicle {
+public class Vehicle {
     protected String model;
     protected String color;
     protected int speed;
@@ -249,7 +343,7 @@ public abstract class Vehicle {
 
 **ステップ3：子クラスの再実装**
 
-<span class="listing-number">**サンプルコード5-4**</span>
+<span class="listing-number">**サンプルコード5-5**</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -328,7 +422,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 **継承の基本構文と継承される要素**：
 
-<span class="listing-number">**サンプルコード5-5**</span>
+<span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
 public class Character {  // 親クラス（スーパークラス）
@@ -382,7 +476,7 @@ public class Wizard extends Character {  // ③
 
 #### 誤用例1：スタックがArrayListを継承
 
-<span class="listing-number">**サンプルコード5-6**</span>
+<span class="listing-number">**サンプルコード5-7**</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -513,79 +607,11 @@ public class BirdPark {
 }
 ```
 
-**解決策：インターフェイスによる能力の分離**
+この問題は、すべての鳥が飛べるという誤った仮定に基づいた継承設計の典型的な例です。ペンギンは鳥ですが飛べないため、`fly()`メソッドで例外を投げることになり、リスコフの置換原則に違反しています。
 
-<span class="listing-number">**サンプルコード5-9**</span>
+この問題を適切に解決するためには、継承階層を見直し、共通の振る舞いのみを親クラスに定義する必要があります。より良い解決策として、インターフェイスを使用した設計がありますが、これについては第7章「抽象クラスとインターフェイス」で詳しく説明します。
 
-```java
-// 良い例：能力をインターフェースで表現
-public abstract class Bird {
-    protected String name;
-    
-    public Bird(String name) {
-        this.name = name;
-    }
-    
-    public abstract void move();
-}
-
-// 飛行能力を表すインターフェース
-interface Flyable {
-    void fly();
-}
-
-// 泳ぐ能力を表すインターフェース
-interface Swimmable {
-    void swim();
-}
-
-public class Eagle extends Bird implements Flyable {
-    public Eagle(String name) {
-        super(name);
-    }
-    
-    @Override
-    public void move() {
-        System.out.println(name + " が歩いている");
-    }
-    
-    @Override
-    public void fly() {
-        System.out.println(name + " が大空を飛んでいる");
-    }
-}
-
-public class Penguin extends Bird implements Swimmable {
-    public Penguin(String name) {
-        super(name);
-    }
-    
-    @Override
-    public void move() {
-        System.out.println(name + " がよちよち歩いている");
-    }
-    
-    @Override
-    public void swim() {
-        System.out.println(name + " が泳いでいる");
-    }
-}
-
-// 安全な使用例
-public class BirdPark {
-    public static void makeFlyableBirdsFly(List<Flyable> flyables) {
-        for (Flyable bird : flyables) {
-            bird.fly(); // 飛べる鳥だけが対象
-        }
-    }
-    
-    public static void makeSwimmableBirdsSwim(List<Swimmable> swimmers) {
-        for (Swimmable bird : swimmers) {
-            bird.swim(); // 泳げる鳥だけが対象
-        }
-    }
-}
-```
+> **注意**: 継承を使用する際は、「is-a」の関係だけでなく、すべての子クラスが親クラスの振る舞いを適切に実装できるかを慎重に検討する必要があります。
 
 #### 誤用例3：正方形と長方形の問題
 
@@ -655,44 +681,11 @@ public class GeometryTest {
 
 この例は**リスコフの置換原則**に違反しています。子クラスは親クラスと置き換え可能であることが大切ですが、`Square`は`Rectangle`の期待される振る舞いを破壊してしまっています。
 
-**解決策：コンポジションの使用**
+この問題の根本的な原因は、数学的な関係（正方形は長方形の一種）とオブジェクト指向の継承関係が必ずしも一致しないことにあります。継承は「振る舞いの継承」であり、単なる概念的な関係ではありません。
 
-<span class="listing-number">**サンプルコード5-11**</span>
+この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。これらの高度な設計手法については、第7章「抽象クラスとインターフェイス」で詳しく解説します。
 
-```java
-// 改善されたコード：継承ではなくインターフェースを使用
-public interface Shape {
-    int getArea();
-}
-
-public class Rectangle implements Shape {
-    private final int width;
-    private final int height;
-    
-    public Rectangle(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    @Override
-    public int getArea() {
-        return width * height;
-    }
-}
-
-public class Square implements Shape {
-    private final int size;
-    
-    public Square(int size) {
-        this.size = size;
-    }
-    
-    @Override
-    public int getArea() {
-        return size * size;
-    }
-}
-```
+> **重要**: 継承を使用する際は、親クラスの契約（期待される振る舞い）を子クラスが完全に満たせるかを確認することが重要です。
 
 ### そのほかの継承の誤用パターン
 
@@ -790,55 +783,13 @@ public class SwimmingBird extends Bird {
 // どちらを継承すればよい？
 ```
 
-**改善策：インターフェイスで能力を表現**
+この問題は、Javaが単一継承しかサポートしないことによる制約を示しています。複数の能力を持つオブジェクトを表現しようとすると、継承階層が複雑になり、設計の柔軟性が失われます。
 
-インターフェイスを使用することで、異なる能力を独立して定義し、クラスが必要な能力のみを選択的に実装できます。これにより、継承階層の爆発や不適切なメソッドの継承を防げます。
+例えば、鴨（Duck）は飛ぶこともできるし泳ぐこともできますが、`FlyingBird`と`SwimmingBird`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
 
-<span class="listing-number">**サンプルコード5-15**</span>
+この問題を解決する最も効果的な方法は、インターフェイスを使用して能力を表現することです。インターフェイスを使えば、クラスは必要な能力を選択的に実装でき、継承階層をシンプルに保つことができます。この設計手法については、第7章「抽象クラスとインターフェイス」で詳しく説明します。
 
-```java
-// 良い例：インターフェースで能力を分離
-public interface Flyable {
-    void fly();
-}
-
-public interface Swimmable {
-    void swim();
-}
-
-public class Bird {
-    public void eat() { /* ... */ }
-    public void sleep() { /* ... */ }
-}
-
-public class Duck extends Bird implements Flyable, Swimmable {
-    @Override
-    public void fly() {
-        System.out.println("鴨が飛んでいる");
-    }
-    
-    @Override
-    public void swim() {
-        System.out.println("鴨が泳いでいる");
-    }
-}
-
-public class Penguin extends Bird implements Swimmable {
-    @Override
-    public void swim() {
-        System.out.println("ペンギンが高速で泳いでいる");
-    }
-}
-
-public class Eagle extends Bird implements Flyable {
-    @Override
-    public void fly() {
-        System.out.println("鷲が高く飛んでいる");
-    }
-}
-```
-
-この解決策では、ペンギンはSwimmableのみ、ワシはFlyableのみを実装し、カモは両方を実装できます。これにより、継承階層を簡潔に保ち、柔軟性のある設計が実現できます。
+> **ポイント**: 継承は強力な機能ですが、すべての問題を解決できるわけではありません。特に複数の異なる能力を持つオブジェクトを表現する場合は、継承以外の設計手法を検討する必要があります。
 
 ### 継承の実践例
 
@@ -1129,11 +1080,14 @@ public class GamePartyAfter {
 }
 
 // 親クラスに共通インターフェースを定義
-abstract class Character {
+class Character {
     protected String name;
     protected int hp;
     
-    public abstract int getAttackPower();
+    public int getAttackPower() {
+        // デフォルトの攻撃力
+        return 10;
+    }
     
     public void heal(int amount) {
         this.hp += amount;
@@ -1240,10 +1194,17 @@ public class DrawingAppBefore {
 <span class="listing-number">**サンプルコード5-24**</span>
 
 ```java
-// 抽象基底クラス
-abstract class Shape {
-    abstract double calculateArea();
-    abstract void draw();
+// 基底クラス
+class Shape {
+    double calculateArea() {
+        // デフォルトの実装（面積0を返す）
+        return 0.0;
+    }
+    
+    void draw() {
+        // デフォルトの実装
+        System.out.println("基本的な図形を描画");
+    }
 }
 
 // 円クラス
