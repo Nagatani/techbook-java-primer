@@ -1,31 +1,75 @@
 # ドキュメント管理ディレクトリ
 
-このディレクトリには、書籍執筆に使用した補助的なファイルや管理ドキュメントが格納されています。
+このディレクトリには、書籍プロジェクトの基本情報が格納されています。
 
-## ディレクトリ構成
+## プロジェクト概要
 
-### `/planning/`
-執筆計画や教育設計に関するドキュメント
-- `instructor-guide.md` - 講師向けガイド
-- `learner-guide.md` - 学習者向けガイド
-- `learning-path-guide.md` - 学習パスガイド
-- `cross-reference-guide.md` - 相互参照ガイド
-- `standalone-theme.css` - カスタムテーマ（試作）
+**書籍名**: 大学2年生のためのプログラミング入門 オブジェクト指向言語 Java
+**著者**: Hidehiro Nagatani
+**対象読者**: Java初学者から中級者まで
+**前提知識**: 基本的なプログラミング概念（C言語程度）
 
-### `/reports/`
-執筆プロセスで作成された各種レポート
-- `chapter-consistency-report.md` - 章構成の一貫性レポート
-- `educational-restructuring-completion-report.md` - 教育的再構成完了レポート
-- `exercise-content-transfer-checklist.md` - 演習内容転記チェックリスト
-- `exercise-migration-complete-survey.md` - 演習移行完了調査
-- `exercise-migration-final-report.md` - 演習移行最終レポート
-- `exercise-verification-report.md` - 演習検証レポート
+## 最新の構成情報（2024年12月）
 
-### `/analysis/`
-技術的な分析や知識ギャップの調査
-- `technical-knowledge-gap-analysis.md` - 技術的知識ギャップ分析
+### 章構成
+- **全24章** + 付録4件
+- **総ページ数（推定）**: 600-700ページ
+- **Java対応バージョン**: Java 8 - Java 17
+
+### 主要な特徴
+- **現代的なJava機能の包括的カバー**: var型推論、Text Blocks、Switch式、Optional、java.time API
+- **実践的なプロジェクト例**: データベースプログラミング、GUI開発、統合プロジェクト
+- **段階的学習設計**: 基礎から応用まで自然な流れ
+
+## 詳細情報の参照先
+
+### 計画・設計資料
+詳細な構成情報や教育設計については、以下を参照してください：
+- `meta/planning/book_structure_plan.md` - 最新の章構成と学習フロー
+- `meta/planning/instructor-guide.md` - 指導者向けガイド
+- `meta/planning/learner-guide.md` - 学習者向けガイド
+
+### 開発ガイドライン
+執筆・編集時のガイドラインについては、以下を参照してください：
+- `meta/code-styling-guide.md` - コードスタイリングガイド
+- `meta/column-guidelines.md` - コラム執筆ガイドライン
+- `meta/bullet-point-usage-guide.md` - 書式ガイドライン
+
+## プロジェクト状態
+
+### 完成状況
+**✅ 執筆完了** - 2024年12月時点で全章の執筆が完了
+**✅ 構造最適化完了** - 章番号統一、参照修正、現代的機能追加
+**✅ 内容充実化完了** - データベース章追加、GUI章拡充、統合プロジェクト追加
+
+### ビルド設定
+- **設定ファイル**: `vivliostyle.config.js`
+- **テーマ**: `custom-theme.css`
+- **出力先**: `output/techbook-java-primer.pdf`
+
+## 使用方法
+
+### ビルド実行
+```bash
+npm run build        # PDF生成
+npm run preview      # プレビュー表示
+npm run lint         # 校正チェック
+npm run lint:fix     # 自動修正
+```
+
+### 開発作業
+```bash
+# 開発用コマンド
+npm run dev          # 開発サーバー起動
+```
 
 ## 注意事項
 
-これらのファイルは書籍の執筆・編集プロセスをサポートするための内部文書です。
-書籍の最終成果物には含まれません。
+- このディレクトリの内容は書籍の最終成果物には含まれません
+- 実際の書籍内容は `manuscripts/` ディレクトリに格納されています
+- 作業用の分析ファイルや古い計画書は定期的に整理済みです
+
+---
+
+**最終更新**: 2024年12月
+**プロジェクト管理**: Claude Code を使用した自動化された改善プロセス
