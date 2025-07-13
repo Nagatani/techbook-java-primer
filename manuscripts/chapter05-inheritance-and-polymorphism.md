@@ -57,60 +57,90 @@
 <span class="listing-number">**サンプルコード5-1**</span>
 
 ```java
+import java.math.BigDecimal;
+
+// 決済結果を保持するクラス
+public class PaymentResult {
+    private boolean success;
+    private String authorizationCode;
+    private String message;
+    
+    public PaymentResult(boolean success, String authorizationCode, String message) {
+        this.success = success;
+        this.authorizationCode = authorizationCode;
+        this.message = message;
+    }
+    
+    public boolean isSuccess() { return success; }
+    public String getAuthorizationCode() { return authorizationCode; }
+    public String getMessage() { return message; }
+}
+
 // 決済処理の基底クラス：テンプレートメソッドパターンの実装
 public class PaymentProcessor {
     protected String transactionId;
     protected BigDecimal amount;
     protected String currency;
+    protected String errorMessage; // エラーメッセージを保持するフィールド
     
     public PaymentProcessor(String transactionId, BigDecimal amount, String currency) {
         this.transactionId = transactionId;
         this.amount = amount;
         this.currency = currency;
+        this.errorMessage = null;
     }
     
     // テンプレートメソッド：決済処理の共通フロー
     public final PaymentResult processPayment() {
-        try {
-            // 1. 事前検証（共通処理）
-            validateCommonParameters();
-            
-            // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
-            validatePaymentSpecific();
-            
-            // 3. 外部API呼び出し（子クラスでオーバーライド可能）
-            String authorizationCode = callExternalAPI();
-            
-            // 4. 処理結果の記録（共通処理）
-            logTransaction(authorizationCode);
-            
-            return new PaymentResult(true, authorizationCode, "決済完了");
-            
-        } catch (PaymentException e) {
-            logError(e);
-            return new PaymentResult(false, null, e.getMessage());
+        // 1. 事前検証（共通処理）
+        if (!validateCommonParameters()) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
         }
+        
+        // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
+        if (!validatePaymentSpecific()) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
+        }
+        
+        // 3. 外部API呼び出し（子クラスでオーバーライド可能）
+        String authorizationCode = callExternalAPI();
+        if (authorizationCode == null) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
+        }
+        
+        // 4. 処理結果の記録（共通処理）
+        logTransaction(authorizationCode);
+        
+        return new PaymentResult(true, authorizationCode, "決済完了");
     }
     
-    // 共通の検証ロジック
-    private void validateCommonParameters() throws PaymentException {
+    // 共通の検証ロジック（boolean返却、エラーメッセージはフィールドに設定）
+    private boolean validateCommonParameters() {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new PaymentException("金額は正の値である必要があります");
+            errorMessage = "金額は正の値である必要があります";
+            return false;
         }
         if (amount.compareTo(new BigDecimal("1000000")) > 0) {
-            throw new PaymentException("決済上限額を超えています");
+            errorMessage = "決済上限額を超えています";
+            return false;
         }
+        return true;
     }
     
     // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
-    protected void validatePaymentSpecific() throws PaymentException {
+    protected boolean validatePaymentSpecific() {
         // デフォルトでは追加の検証なし
         // 子クラスで必要に応じてオーバーライド
+        return true;
     }
     
-    protected String callExternalAPI() throws PaymentException {
+    protected String callExternalAPI() {
         // デフォルトでは基本的な決済処理を実行
         // 実際の実装では外部決済サービスのAPIを呼び出す
+        // エラーの場合はnullを返し、errorMessageを設定
         return "DEFAULT-" + System.currentTimeMillis();
     }
     
@@ -119,8 +149,13 @@ public class PaymentProcessor {
         System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
     }
     
-    protected void logError(PaymentException e) {
-        System.err.println("決済エラー[" + transactionId + "]: " + e.getMessage());
+    protected void logError() {
+        System.err.println("決済エラー[" + transactionId + "]: " + errorMessage);
+    }
+    
+    // エラーメッセージを設定するヘルパーメソッド（子クラスから利用可能）
+    protected void setErrorMessage(String message) {
+        this.errorMessage = message;
     }
 }
 ```
@@ -150,21 +185,31 @@ public class CreditCardPayment extends PaymentProcessor {
     }
     
     @Override
-    protected void validatePaymentSpecific() throws PaymentException {
+    protected boolean validatePaymentSpecific() {
         // クレジットカード固有の検証
         if (cardNumber == null || cardNumber.length() != 16) {
-            throw new PaymentException("無効なカード番号です");
+            setErrorMessage("無効なカード番号です");
+            return false;
         }
         if (cvv == null || cvv.length() != 3) {
-            throw new PaymentException("無効なCVVです");
+            setErrorMessage("無効なCVVです");
+            return false;
         }
+        return true;
     }
     
     @Override
-    protected String callExternalAPI() throws PaymentException {
+    protected String callExternalAPI() {
         // クレジットカード決済API呼び出しのシミュレーション
         System.out.println("クレジットカード決済APIを呼び出し中...");
+        
         // 実際の実装では外部APIを呼び出す
+        // ここではシミュレーションとして、まれにエラーが発生する例を示す
+        if (Math.random() < 0.1) {  // 10%の確率でエラー
+            setErrorMessage("クレジットカード決済が拒否されました");
+            return null;
+        }
+        
         return "CC-" + System.currentTimeMillis();
     }
 }
@@ -182,20 +227,31 @@ public class PayPalPayment extends PaymentProcessor {
     }
     
     @Override
-    protected void validatePaymentSpecific() throws PaymentException {
+    protected boolean validatePaymentSpecific() {
         // PayPal固有の検証
         if (email == null || !email.contains("@")) {
-            throw new PaymentException("無効なメールアドレスです");
+            setErrorMessage("無効なメールアドレスです");
+            return false;
         }
         if (password == null || password.length() < 8) {
-            throw new PaymentException("パスワードが短すぎます");
+            setErrorMessage("パスワードが短すぎます");
+            return false;
         }
+        return true;
     }
     
     @Override
-    protected String callExternalAPI() throws PaymentException {
+    protected String callExternalAPI() {
         // PayPal API呼び出しのシミュレーション
         System.out.println("PayPal APIを呼び出し中...");
+        
+        // 実際の実装では外部APIを呼び出す
+        // エラーが発生した場合はnullを返す
+        if (email.equals("error@example.com")) {  // テスト用のエラー条件
+            setErrorMessage("PayPalアカウントが一時的に利用できません");
+            return null;
+        }
+        
         return "PP-" + System.currentTimeMillis();
     }
     
@@ -210,6 +266,57 @@ public class PayPalPayment extends PaymentProcessor {
 
 このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは必要に応じてこれらのメソッドをオーバーライドすることで、独自の振る舞いを実装できます。
 
+**例外を使わない決済処理の使用例**：
+
+<span class="listing-number">**サンプルコード5-3**</span>
+
+```java
+public class PaymentExample {
+    public static void main(String[] args) {
+        // クレジットカード決済の例
+        CreditCardPayment ccPayment = new CreditCardPayment(
+            "TXN001", 
+            new BigDecimal("5000"), 
+            "JPY",
+            "1234567890123456",
+            "123"
+        );
+        
+        PaymentResult ccResult = ccPayment.processPayment();
+        if (ccResult.isSuccess()) {
+            System.out.println("決済成功: " + ccResult.getAuthorizationCode());
+        } else {
+            System.out.println("決済失敗: " + ccResult.getMessage());
+        }
+        
+        // PayPal決済の例（エラーケース）
+        PayPalPayment ppPayment = new PayPalPayment(
+            "TXN002",
+            new BigDecimal("10000"),
+            "JPY",
+            "invalid-email",  // 無効なメールアドレス
+            "pass123"
+        );
+        
+        PaymentResult ppResult = ppPayment.processPayment();
+        if (ppResult.isSuccess()) {
+            System.out.println("決済成功: " + ppResult.getAuthorizationCode());
+        } else {
+            System.out.println("決済失敗: " + ppResult.getMessage());
+        }
+    }
+}
+```
+
+**エラー処理の設計ポイント**：
+
+1. **boolean戻り値**: 検証メソッドは成功/失敗をbooleanで返す
+2. **エラーメッセージの保持**: errorMessageフィールドにエラー情報を格納
+3. **nullチェック**: API呼び出しの結果がnullの場合をエラーとして扱う
+4. **PaymentResultクラス**: 処理結果とエラー情報をカプセル化
+
+この設計により、例外処理を学ぶ前でも、エラー状態を適切に管理できるテンプレートメソッドパターンを実装できます。
+
 ### 段階的リファクタリング：重複コードから継承へ
 
 実際の開発では、最初から完璧な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
@@ -218,7 +325,7 @@ public class PayPalPayment extends PaymentProcessor {
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
 
-<span class="listing-number">**サンプルコード5-3**</span>
+<span class="listing-number">**サンプルコード5-4**</span>
 
 ```java
 public class Car {
@@ -305,7 +412,7 @@ public class Motorcycle {
 
 **ステップ2：共通部分の抽出**
 
-<span class="listing-number">**サンプルコード5-4**</span>
+<span class="listing-number">**サンプルコード5-5**</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -343,7 +450,7 @@ public class Vehicle {
 
 **ステップ3：子クラスの再実装**
 
-<span class="listing-number">**サンプルコード5-5**</span>
+<span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -422,7 +529,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 **継承の基本構文と継承される要素**：
 
-<span class="listing-number">**サンプルコード5-6**</span>
+<span class="listing-number">**サンプルコード5-7**</span>
 
 ```java
 public class Character {  // 親クラス（スーパークラス）
@@ -476,7 +583,7 @@ public class Wizard extends Character {  // ③
 
 #### 誤用例1：スタックがArrayListを継承
 
-<span class="listing-number">**サンプルコード5-7**</span>
+<span class="listing-number">**サンプルコード5-8**</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -520,7 +627,7 @@ public class StackProblem {
 
 **解決策：コンポジションを使用**
 
-<span class="listing-number">**サンプルコード5-7**</span>
+<span class="listing-number">**サンプルコード5-9**</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -562,7 +669,7 @@ public class MyStack<E> {
 
 以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。この設計はリスコフ置換原則に違反します。
 
-<span class="listing-number">**サンプルコード5-8**</span>
+<span class="listing-number">**サンプルコード5-10**</span>
 
 ```java
 // 悪い例：すべての鳥が飛べるという誤った前提
@@ -617,7 +724,7 @@ public class BirdPark {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。
 
-<span class="listing-number">**サンプルコード5-10**</span>
+<span class="listing-number">**サンプルコード5-11**</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -795,7 +902,7 @@ public class SwimmingBird extends Bird {
 
 RPGゲームのキャラクターシステムを例に、継承を実際に使用した実装例です。親クラスのフィールドやメソッドを子クラスで活用し、独自の機能を追加する方法を示しています。
 
-<span class="listing-number">**サンプルコード5-16**</span>
+<span class="listing-number">**サンプルコード5-15**</span>
 
 ```java
 // Main.java
@@ -849,7 +956,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-17**</span>
+<span class="listing-number">**サンプルコード5-16**</span>
 
 ```java
 // 親クラス
@@ -922,7 +1029,7 @@ public class Knight extends Character {
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これを**アップキャスト**と呼びます。
 
-<span class="listing-number">**サンプルコード5-18**</span>
+<span class="listing-number">**サンプルコード5-17**</span>
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
@@ -937,7 +1044,7 @@ Character chara3 = new Knight("騎士", 120);
 
 ここからがポリモーフィズムの真骨頂です。これらの`Character`型の変数に対して`attack()`メソッドを呼びだすと、何が起こるでしょうか。
 
-<span class="listing-number">**サンプルコード5-19**</span>
+<span class="listing-number">**サンプルコード5-18**</span>
 
 ```java
 chara1.attack(); // 実行結果: 勇者の攻撃！
@@ -952,7 +1059,7 @@ chara3.attack(); // 実行結果: 騎士の攻撃！
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなキャラクタをまとめて管理する配列を考えてみましょう。
 
-<span class="listing-number">**サンプルコード5-20**</span>
+<span class="listing-number">**サンプルコード5-19**</span>
 
 ```java
 public class GameParty {
@@ -983,7 +1090,7 @@ public class GameParty {
 
 **Before：ポリモーフィズムを使わない場合**
 
-<span class="listing-number">**サンプルコード5-21**</span>
+<span class="listing-number">**サンプルコード5-20**</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -1033,7 +1140,7 @@ public class GamePartyBefore {
 
 **After：ポリモーフィズムを使った場合**
 
-<span class="listing-number">**サンプルコード5-22**</span>
+<span class="listing-number">**サンプルコード5-21**</span>
 
 ```java
 // 統一的な処理で全ての型を扱える
@@ -1112,7 +1219,7 @@ class Character {
 
 **Before：ポリモーフィズムを使わない場合**
 
-<span class="listing-number">**サンプルコード5-23**</span>
+<span class="listing-number">**サンプルコード5-22**</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1191,7 +1298,7 @@ public class DrawingAppBefore {
 
 **After：ポリモーフィズムを使った場合**
 
-<span class="listing-number">**サンプルコード5-24**</span>
+<span class="listing-number">**サンプルコード5-23**</span>
 
 ```java
 // 基底クラス
@@ -1339,7 +1446,7 @@ Character member = new Wizard("魔法使い", 70, 50);
 
 `(変換したい型)変数` のように記述します。
 
-<span class="listing-number">**サンプルコード5-25**</span>
+<span class="listing-number">**サンプルコード5-24**</span>
 
 ```java
 public class GameParty {
@@ -1370,7 +1477,7 @@ public class GameParty {
 
 Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
 
-<span class="listing-number">**サンプルコード5-26**</span>
+<span class="listing-number">**サンプルコード5-25**</span>
 
 ```java
 // 従来の書き方

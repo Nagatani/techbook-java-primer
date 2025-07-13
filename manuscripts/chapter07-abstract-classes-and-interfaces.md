@@ -257,7 +257,7 @@ public interface OldStyleInterface {
 
 #### Java 8：defaultメソッドとstaticメソッドの導入
 
-Java 8 では、インターフェイスの進化における最大の課題である「後方互換性」を解決するため、`default`メソッドと`static`メソッドが導入されました。これにより、既存のインターフェイスを壊すことなく新機能を追加できるようになり、Java のエコシステム全体の進化が大幅に加速されました。特に、Java 8 で導入されたStream API は、この機能なしには既存のコレクションフレームワークに統合することができませんでした。
+Java 8 では、インターフェイスの進化における最大の課題である「後方互換性」を解決するため、`default`メソッドと`static`メソッドが導入されました。これにより、既存のインターフェイスを壊すことなく新機能を追加できるようになり、Java のエコシステム全体の進化が大幅に加速されました。この機能により、既存のコレクションフレームワークに新しい機能を追加することが可能になりました（Stream APIなどの高度な機能はChapter 12で学習します）。
 
 <span class="listing-number">**サンプルコード7-7**</span>
 
@@ -325,23 +325,38 @@ public interface Collection<E> {
     boolean isEmpty();
     // ... 他の既存メソッド
     
-    // Java 8で追加されたdefaultメソッド
-    default Stream<E> stream() {
-        return StreamSupport.stream(spliterator(), false);
+    // Java 8で追加されたdefaultメソッドの例
+    // 注：Stream APIはChapter 12で詳しく学習します
+    // ここでは別のdefaultメソッドの例を示します
+    default boolean containsAll(Collection<?> c) {
+        for (Object e : c) {
+            if (!contains(e)) {
+                return false;
+            }
+        }
+        return true;
     }
     
-    default Stream<E> parallelStream() {
-        return StreamSupport.stream(spliterator(), true);
+    default boolean removeIf(Predicate<? super E> filter) {
+        boolean removed = false;
+        Iterator<E> each = iterator();
+        while (each.hasNext()) {
+            if (filter.test(each.next())) {
+                each.remove();
+                removed = true;
+            }
+        }
+        return removed;
     }
 }
 
 // 既存の実装クラスは変更不要
 class MyCollection<E> implements Collection<E> {
-    // streamメソッドを実装しなくても、defaultが使われる
+    // defaultメソッドを実装しなくても、デフォルト実装が使われる
 }
 ```
 
-この例は`default`メソッドの最も大切な利点を実証しています。Java 8のリリース時点で、`Collection`インターフェイスを実装する無数のクラス（`ArrayList`、`HashSet`、`TreeMap`など）が既に存在していましたが、`stream()`メソッドを`default`として追加することで、既存コードを一切変更することなく、すべてのコレクションでStream APIを利用できるようになりました。これにより、Javaエコシステム全体が一気に関数型プログラミングの恩恵を受けることができました。
+この例は`default`メソッドの最も大切な利点を実証しています。Java 8のリリース時点で、`Collection`インターフェイスを実装する無数のクラス（`ArrayList`、`HashSet`、`TreeMap`など）が既に存在していましたが、新しいメソッドを`default`として追加することで、既存コードを一切変更することなく、すべてのコレクションで新機能を利用できるようになりました。これにより、APIの後方互換性を保ちながら機能を拡張できるようになりました。
 
 #### テンプレートメソッドパターンの実現
 
@@ -493,9 +508,15 @@ public interface JsonSerializable {
     
     // ファクトリメソッド
     static <T extends JsonSerializable> String serializeList(List<T> items) {
-        return items.stream()
-            .map(JsonSerializable::toJson)
-            .collect(Collectors.joining(",", "[", "]"));
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < items.size(); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(items.get(i).toJson());
+        }
+        sb.append("]");
+        return sb.toString();
     }
     
     // ユーティリティメソッド
@@ -536,8 +557,8 @@ interface DefensiveInterface {
         return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
     }
     
-    default Stream<String> streamItems() {
-        return getSafeItems().stream();
+    default Iterator<String> iterateItems() {
+        return getSafeItems().iterator();
     }
     
     // バリデーション付きメソッド
@@ -892,9 +913,11 @@ interface ServiceV3 extends ServiceV2 {
     
     // バッチ処理のサポート
     default List<String> processBatch(List<String> inputs) {
-        return inputs.stream()
-            .map(this::process)
-            .collect(Collectors.toList());
+        List<String> results = new ArrayList<>();
+        for (String input : inputs) {
+            results.add(process(input));
+        }
+        return results;
     }
     
     // 非推奨メソッドの管理

@@ -20,10 +20,11 @@ const markdownFiles = [
   'chapter17-network-programming.md',
   'chapter18-gui-basics.md',
   'chapter19-gui-event-handling.md',
-  'chapter20-advanced-gui.md',
-  'chapter21-unit-testing.md',
-  'chapter22-documentation-and-libraries.md',
-  'chapter23-build-and-deploy.md',
+  'chapter20-database-programming.md',
+  'chapter21-advanced-gui.md',
+  'chapter22-unit-testing.md',
+  'chapter23-documentation-and-libraries.md',
+  'chapter24-build-and-deploy.md',
   // 付録
   'appendix-index.md', // 付録一覧
   'appendix-a-environment-setup.md', // 付録A: 開発環境の構築

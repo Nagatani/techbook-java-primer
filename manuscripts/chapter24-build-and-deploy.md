@@ -1,4 +1,4 @@
-# 第23章 ビルドとデプロイ
+# 第24章 ビルドとデプロイ
 
 ## 本章の学習目標
 
@@ -165,7 +165,7 @@ JARファイルのしくみとクラスパスについての深い理解も大�
 
 
 
-## 23.1 なぜビルドと配布が必要か？
+## 24.1 なぜビルドと配布が必要か？
 
 これまでの章では、主にIDE（統合開発環境）から直接ソースコードを実行してきました。しかし、開発したアプリケーションをほかの人に使ってもらうには、ソースコードそのものを渡すわけにはいきません。
 
@@ -173,7 +173,7 @@ JARファイルのしくみとクラスパスについての深い理解も大�
 
 本章では、Javaアプリケーションを配布するための最も基本的な形式である**実行可能JARファイル**の作成方法と、さらに一歩進んでOSネイティブのアプリケーションを作成する方法を学びます。
 
-## 23.2 実行可能JARファイルの作成
+## 24.2 実行可能JARファイルの作成
 
 **JAR (Java Archive)** は、複数のJavaクラスファイルや、画像・設定ファイルなどのリソースを、ZIP形式で1つにまとめたファイルです。このJARファイルに「どのクラスの`main`メソッドからプログラムを開始するか」という情報を加えることで、ダブルクリックや簡単なコマンドで実行できる「実行可能JARファイル」を作成できます。
 
@@ -181,7 +181,7 @@ JARファイルのしくみとクラスパスについての深い理解も大�
 
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
-<span class="listing-number">**サンプルコード23-1**</span>
+<span class="listing-number">**サンプルコード24-1**</span>
 
 ```java
 // SimpleApp.java
@@ -205,7 +205,7 @@ public class SimpleApp {
 
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です：
 
-<span class="listing-number">**サンプルコード23-2**</span>
+<span class="listing-number">**サンプルコード24-2**</span>
 
 ```java
 // AppConfig.java
@@ -225,7 +225,7 @@ public class AppConfig {
 
 次に、データモデルとしてのTodoItemクラスを作成します。このクラスはタスクの情報を保持し、完了状態を管理します。toStringメソッドをオーバーライドして、リスト表示用のフォーマットを提供します。
 
-<span class="listing-number">**サンプルコード23-3**</span>
+<span class="listing-number">**サンプルコード24-3**</span>
 
 ```java
 // TodoItem.java
@@ -257,7 +257,7 @@ public class TodoItem {
 }
 ```
 
-<span class="listing-number">**サンプルコード23-4**</span>
+<span class="listing-number">**サンプルコード24-4**</span>
 
 ```java
 // TodoApp.java
@@ -400,7 +400,7 @@ Sealed: true
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります：
 
-<span class="listing-number">**サンプルコード23-5**</span>
+<span class="listing-number">**サンプルコード24-5**</span>
 
 ```java
 // ResourceApp.java
@@ -511,7 +511,7 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 以下の例では、Gsonライブラリを使用したJSON処理アプリケーションを示します。このアプリケーションをFat JARとしてパッケージングすることで、Gsonライブラリも含めた自己完結型の実行可能JARを作成できます。
 
-<span class="listing-number">**サンプルコード23-6**</span>
+<span class="listing-number">**サンプルコード24-6**</span>
 
 ```java
 // JsonProcessorApp.java
@@ -776,7 +776,7 @@ gradle fatJar
 java -jar build/libs/todo-app-1.0.0-all.jar
 ```
 
-## 23.3 （応用）`jpackage`によるネイティブアプリケーション化
+## 24.3 （応用）`jpackage`によるネイティブアプリケーション化
 
 JARファイルは便利ですが、実行するにはユーザーのPCにJavaランタイム（JRE）がインストールされている必要があります。
 
@@ -980,10 +980,10 @@ jpackage --type app-image \
 
 **リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
-### 第23章の課題構成
+### 第24章の課題構成
 
 ```
-exercises/chapter23/
+exercises/chapter24/
 ├── basic/              # 基礎課題（ポイント）
 │   ├── README.md       # 詳細な課題説明
 │   └── [関連ファイル名]

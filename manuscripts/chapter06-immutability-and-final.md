@@ -66,7 +66,7 @@ public class MutablePoint {
 
 // マルチスレッド環境での競合状態の例
 public class ThreadSafetyProblem {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         MutablePoint point = new MutablePoint(0, 0);
         
         // 複数のスレッドが同じオブジェクトを変更
@@ -84,8 +84,15 @@ public class ThreadSafetyProblem {
         
         t1.start();
         t2.start();
-        t1.join();
-        t2.join();
+        
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            // スレッドが中断された場合の処理
+            Thread.currentThread().interrupt();
+            System.err.println("スレッドの待機が中断されました");
+        }
         
         // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
         System.out.println("X座標: " + point.getX());

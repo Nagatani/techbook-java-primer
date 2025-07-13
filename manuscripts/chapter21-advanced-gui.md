@@ -1,4 +1,4 @@
-# 第20章 高度なGUIコンポーネント
+# 第21章 高度なGUIコンポーネント
 
 ## 本章の学習目標
 
@@ -52,10 +52,10 @@
 
 **リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
-### 第20章の課題構成
+### 第21章の課題構成
 
 ```
-exercises/chapter20/
+exercises/chapter21/
 ├── basic/              # 基礎課題（必須）
 │   ├── README.md       # 詳細な課題説明
 │   └── AdvancedGUI.java
@@ -79,4 +79,4 @@ exercises/chapter20/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第21章「デザインパターン」に進みましょう。
+**次のステップ**: 基礎課題が完了したら、第22章「単体テスト」に進みましょう。

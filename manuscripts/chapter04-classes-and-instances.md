@@ -456,21 +456,19 @@ BankAccountV3の設計を基に、本章ではさらに高度な設計パター�
 // BankAccountV3をさらに発展させた設計例
 public class EnhancedBankAccount extends BankAccountV3 {
     // 追加のフィールド：口座の状態管理
-    private AccountStatus status;
+    private String status;
     private LocalDateTime lastActivityDate;
     private int failedTransactionCount;
     
-    // 列挙型で口座状態を管理
-    public enum AccountStatus {
-        ACTIVE,      // アクティブ
-        SUSPENDED,   // 一時停止
-        CLOSED       // 閉鎖
-    }
+    // 口座状態を表す定数
+    public static final String STATUS_ACTIVE = "ACTIVE";      // アクティブ
+    public static final String STATUS_SUSPENDED = "SUSPENDED"; // 一時停止
+    public static final String STATUS_CLOSED = "CLOSED";       // 閉鎖
     
     // 拡張されたコンストラクタ
     public EnhancedBankAccount(String accountNumber, String accountHolder, double initialBalance) {
         super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
-        this.status = AccountStatus.ACTIVE;
+        this.status = STATUS_ACTIVE;
         this.lastActivityDate = LocalDateTime.now();
         this.failedTransactionCount = 0;
     }
@@ -491,7 +489,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
         if (!success) {
             failedTransactionCount++;
             if (failedTransactionCount >= 3) {
-                status = AccountStatus.SUSPENDED;
+                status = STATUS_SUSPENDED;
                 System.out.println("連続した取引失敗により、口座が一時停止されました。");
             }
         } else {
@@ -503,7 +501,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
     
     // プライベートメソッド：内部ロジック
     private void validateAccountStatus() {
-        if (status != AccountStatus.ACTIVE) {
+        if (!STATUS_ACTIVE.equals(status)) {
             throw new IllegalStateException("口座がアクティブではありません: " + status);
         }
     }
@@ -514,8 +512,8 @@ public class EnhancedBankAccount extends BankAccountV3 {
     
     // 口座の再アクティブ化
     public void reactivateAccount() {
-        if (status == AccountStatus.SUSPENDED) {
-            status = AccountStatus.ACTIVE;
+        if (STATUS_SUSPENDED.equals(status)) {
+            status = STATUS_ACTIVE;
             failedTransactionCount = 0;
             System.out.println("口座が再アクティブ化されました。");
         }
@@ -525,15 +523,15 @@ public class EnhancedBankAccount extends BankAccountV3 {
 
 **この設計の要点**：
 - **継承の活用**: 第3章のBankAccountV3を基に機能を拡張
-- **列挙型**: 口座状態を型安全に管理
+- **定数による状態管理**: 口座状態を文字列定数で管理
 - **状態管理**: 失敗回数の追跡と自動停止機能
 - **テンプレートメソッドパターン**: 基本動作を保持しつつ拡張
 
 ### クラス設計のベストプラクティス
 
-適切なクラス設計は、ソフトウェアの品質向上に寄与する要素の一つです。オブジェクト指向設計の実践から生まれたベストプラクティスは、保守性、拡張性、信頼性の高いソフトウェアを構築するための有用な指針を提供します。ただし、これらは唯一の解決策ではなく、問題の性質によっては関数型プログラミングのイミュータブルなデータ構造や、手続き型プログラミングのシンプルな関数分解が適している場合もあります。
+適切なクラス設計は、ソフトウェアの品質向上に寄与する要素の1つです。オブジェクト指向設計の実践から生まれたベストプラクティスは、保守性、拡張性、信頼性の高いソフトウェアを構築するための有用な指針を提供します。ただし、これらは唯一の解決策ではなく、問題の性質によっては関数型プログラミングのイミュータブルなデータ構造や、手続き型プログラミングのシンプルな関数分解が適している場合もあります。
 
-最も基本的な原則は**単一責任の原則**です。1つのクラスは1つの明確な責任のみを持つべきであり、これにより変更の理由が限定され、クラスの理解と保守が容易になります。次に重要なのは**データの隠蔽**で、クラスの内部状態をprivateで保護し、必要な操作のみをパブリックメソッドとして公開します。これにより、実装の詳細を変更してもクライアントコードに影響を与えません。
+もっとも基本的な原則は**単一責任の原則**です。1つのクラスは1つの明確な責任のみを持つべきであり、これにより変更の理由が限定され、クラスの理解と保守が容易になります。次に重要なのは**データの隠蔽**で、クラスの内部状態をprivateで保護し、必要な操作のみをパブリックメソッドとして公開します。これにより、実装の詳細を変更してもクライアントコードに影響を与えません。
 
 **入力検証**も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクタで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、**意味のある名前**を使用することで、コードの可読性と保守性が大幅に向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます。
 
@@ -545,7 +543,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
 
 ### パッケージの概念と必要性
 
-Javaにおけるパッケージは、関連するクラスやインターフェースをグループ化するための仕組みです。大規模なプロジェクトでは何百、何千ものクラスが存在することがあり、適切な組織化なしには管理が困難になります。パッケージは以下の重要な役割を果たします：
+Javaにおけるパッケージは、関連するクラスやインターフェイスをグループ化するための仕組みです。大規模なプロジェクトでは何百、何千ものクラスが存在することがあり、適切な組織化なしには管理が困難になります。パッケージは以下の重要な役割を果たします：
 
 1. **名前空間の提供**: 異なるパッケージに同じ名前のクラスを作成可能
 2. **アクセス制御**: パッケージレベルでのアクセス制限を実現
@@ -862,7 +860,7 @@ public class DatabaseConfig {
 
 #### 3. コールバックでのthis渡し
 
-イベント処理やコールバック関数において、現在のオブジェクトを別のオブジェクトに渡す場合に使用します：
+イベント処理やコールバック関数において、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します：
 
 <span class="listing-number">**サンプルコード4-21**</span>
 
@@ -949,7 +947,7 @@ public class Logger {
     }
     
     // レベル付きログ
-    public void log(LogLevel level, String message) {
+    public void log(String level, String message) {
         System.out.println("[" + level + "] " + message);
     }
     
@@ -958,12 +956,16 @@ public class Logger {
         System.out.println("[INFO] " + String.format(format, args));
     }
     
-    enum LogLevel { DEBUG, INFO, WARN, ERROR }
+    // ログレベルを表す定数
+    public static final String LOG_DEBUG = "DEBUG";
+    public static final String LOG_INFO = "INFO";
+    public static final String LOG_WARN = "WARN";
+    public static final String LOG_ERROR = "ERROR"
 }
 ```
 
 **実践的なオーバーロード設計原則**：
-- 最も多機能なメソッドを1つ定義し、他はそれを呼び出す
+- もっとも多機能なメソッドを1つ定義し、他はそれを呼び出す
 - デフォルト値は意味のある値を選ぶ
 - 引数の順序を統一する（URL → オプション → タイムアウトなど）
 - null安全性を考慮する

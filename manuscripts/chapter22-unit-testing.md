@@ -1,4 +1,4 @@
-# 第21章 ユニットテストと品質保証
+# 第22章 ユニットテストと品質保証
 
 ## 本章の学習目標
 
@@ -553,10 +553,10 @@ jacocoTestCoverageVerification {
 
 **リポジトリ**: `https://github.com/[your-repo]/java-primer-exercises`
 
-### 第21章の課題構成
+### 第22章の課題構成
 
 ```
-exercises/chapter21/
+exercises/chapter22/
 ├── basic/              # 基礎課題（ポイント）
 │   ├── README.md       # 詳細な課題説明
 │   └── [関連ファイル名]
