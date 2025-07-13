@@ -170,7 +170,7 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 > **補足**: プログラミングパラダイムの歴史的発展について詳しく知りたい方は、付録B.03「プログラミングパラダイムの進化」を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
 
 
-## 2.1 オブジェクト指向とは
+## 3.1 オブジェクト指向とは
 
 オブジェクト指向という言葉は、実は多様な意味を持っています。ソフトウェア開発のさまざまな工程で、オブジェクト指向の考え方が適用されているからです。
 
@@ -180,7 +180,7 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 
 さらに幅広い視点では、開発方法論やプロジェクト管理手法としてのオブジェクト指向、そしてプログラミング言語仕様としてのオブジェクト指向も存在しますが、これらは本書の範囲を超える内容です。
 
-## 2.2 オブジェクト指向を学ぶ意義
+## 3.2 オブジェクト指向を学ぶ意義
 
 オブジェクト指向は、プログラミングの歴史の中で生まれた**多くのアプローチの一つ**です。本書では、オブジェクト指向を特別視するのではなく、**問題解決のための便利なツールの一つ**として学びます。
 
@@ -214,7 +214,7 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 
 
 
-## 2.3 オブジェクト指向の基本概念を実際のコードで理解する
+## 3.3 オブジェクト指向の基本概念を実際のコードで理解する
 
 理論的な説明の前に、実際のJavaコードを見てオブジェクト指向の基本概念を理解しましょう。
 
@@ -413,7 +413,7 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 
 この設計により、`PaymentMethod`型の変数で異なる決済方法を統一的に扱えるため、新しい決済方法（PayPal、仮想通貨など）を追加しても既存のコードに影響を与えません。
 
-## 2.4 クラスの作成
+## 3.4 クラスの作成
 
 オブジェクト指向プログラミングでは、**クラス**という設計図を作成し、その設計図から**オブジェクト（インスタンス）**を生成します。
 
@@ -470,11 +470,153 @@ public class Order {
 
 このOrderクラスでは、注文の各状態（受付中→処理中→配送中→完了）が適切に管理され、不正な状態遷移を防ぐロジックが組み込まれています。
 
+### フィールド（インスタンス変数）の詳細
+
+フィールドは、オブジェクトの状態を表現する変数です。クラス内で宣言され、そのクラスから生成される各オブジェクトが独自の値を保持します。
+
+#### フィールドの宣言構文
+
+```java
+アクセス修飾子 データ型 フィールド名;
+アクセス修飾子 データ型 フィールド名 = 初期値;
+```
+
+<span class="listing-number">**サンプルコード3-7**</span>
+
+```java
+public class Student {
+    // フィールドの宣言例
+    private String name;                    // 初期値なし（nullになる）
+    private int age;                        // 初期値なし（0になる）
+    private double gpa = 0.0;              // 明示的な初期値
+    private boolean isActive = true;        // 明示的な初期値
+    private static int studentCount = 0;    // クラス変数（全インスタンスで共有）
+    
+    // finalフィールド（変更不可）
+    private final String studentId;         // コンストラクタで初期化必須
+}
+```
+
+#### フィールドのデフォルト値
+
+フィールドに初期値を指定しない場合、以下のデフォルト値が自動的に設定されます：
+
+| データ型 | デフォルト値 |
+|---------|------------|
+| byte, short, int, long | 0 |
+| float, double | 0.0 |
+| char | '\u0000' |
+| boolean | false |
+| 参照型（クラス、配列など） | null |
+
+### メソッドの詳細
+
+メソッドは、オブジェクトの振る舞いを定義する関数です。データの処理、状態の変更、情報の取得などの操作を実装します。
+
+#### メソッドの宣言構文
+
+```java
+アクセス修飾子 戻り値の型 メソッド名(引数リスト) {
+    // メソッドの処理
+    return 戻り値;  // 戻り値がある場合
+}
+```
+
+<span class="listing-number">**サンプルコード3-8**</span>
+
+```java
+public class Calculator {
+    private double result;
+    
+    // 戻り値なし（void）のメソッド
+    public void reset() {
+        result = 0.0;
+    }
+    
+    // 引数を受け取り、戻り値を返すメソッド
+    public double add(double a, double b) {
+        result = a + b;
+        return result;
+    }
+    
+    // 複数の引数を受け取るメソッド
+    public double calculateAverage(double[] numbers) {
+        if (numbers.length == 0) {
+            return 0.0;
+        }
+        double sum = 0.0;
+        for (double num : numbers) {
+            sum += num;
+        }
+        return sum / numbers.length;
+    }
+    
+    // 現在の状態を返すメソッド
+    public double getResult() {
+        return result;
+    }
+}
+```
+
+#### メソッドの種類と役割
+
+1. **コンストラクタ**: オブジェクトの初期化を行う特殊なメソッド
+2. **アクセサメソッド（getter）**: フィールドの値を取得するメソッド
+3. **ミューテータメソッド（setter）**: フィールドの値を設定するメソッド
+4. **ビジネスロジックメソッド**: オブジェクトの主要な機能を実装するメソッド
+5. **ユーティリティメソッド**: 補助的な処理を行うprivateメソッド
+
+### getter/setterメソッドの基本
+
+オブジェクト指向プログラミングでは、フィールドをprivateにして直接アクセスを禁止し、publicメソッドを通じてアクセスする方法が推奨されます。これをアクセサメソッド（getter/setter）パターンと呼びます。
+
+<span class="listing-number">**サンプルコード3-9**</span>
+
+```java
+public class Person {
+    // privateフィールド
+    private String name;
+    private int age;
+    
+    // getter：フィールドの値を取得
+    public String getName() {
+        return name;
+    }
+    
+    // setter：フィールドの値を設定
+    public void setName(String name) {
+        this.name = name;  // thisは現在のオブジェクトを指す
+    }
+    
+    // 年齢のgetter
+    public int getAge() {
+        return age;
+    }
+    
+    // 年齢のsetter（簡単な検証付き）
+    public void setAge(int age) {
+        if (age >= 0 && age <= 150) {
+            this.age = age;
+        } else {
+            System.out.println("無効な年齢です");
+        }
+    }
+}
+```
+
+**getter/setterを使う利点**：
+- フィールドへのアクセスを制御できる
+- 値の設定時に検証を行える
+- 将来的に実装を変更しても、外部インターフェースは変わらない
+- デバッグ時にアクセスポイントを特定しやすい
+
+> **注意**: すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。本当に外部からアクセスが必要なフィールドにのみ提供し、可能な限りオブジェクトの内部状態は隠蔽することが良い設計です。
+
 ### mainメソッドとプログラムの実行
 
 実際にOrderクラスを使用して、注文のライフサイクル全体をシミュレートしてみましょう。このデモンストレーションでは、オブジェクトの生成から各状態変化までの一連の流れを確認できます。
 
-<span class="listing-number">**サンプルコード3-7**</span>
+<span class="listing-number">**サンプルコード3-10**</span>
 
 ```java
 public class OrderDemo {
@@ -508,13 +650,13 @@ public class OrderDemo {
 注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 完了
 ```
 
-## 2.5 実用的なクラス設計例
+## 3.5 実用的なクラス設計例
 
 ### 例1：図書管理システム
 
 図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
-<span class="listing-number">**サンプルコード3-8**</span>
+<span class="listing-number">**サンプルコード3-11**</span>
 
 ```java
 public class Book {
@@ -555,7 +697,7 @@ public class Book {
 
 ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
 
-<span class="listing-number">**サンプルコード3-9**</span>
+<span class="listing-number">**サンプルコード3-12**</span>
 
 ```java
 import java.util.ArrayList;
@@ -633,7 +775,7 @@ public class ShoppingCart {
 
 
 
-## 2.4 オブジェクト指向の重要な用語と概念
+## 3.6 オブジェクト指向の重要な用語と概念
 
 ここからは、オブジェクト指向プログラミングで使用される重要な用語と概念を、実践的な例を交えて説明します。
 
@@ -712,7 +854,7 @@ void printStudent(struct Student s) {
 オブジェクト指向では、関連するデータとそれを操作する処理を1つのクラスにまとめることで、上記の問題を解決します：
 
 **オブジェクト指向プログラミング（Java）**
-<span class="listing-number">**サンプルコード3-10**</span>
+<span class="listing-number">**サンプルコード3-13**</span>
 
 ```java
 // データと処理が一体化している
@@ -796,7 +938,7 @@ public class Student {
 これは通過点であり、オブジェクト指向の考え方を学ぶことですべてのことが説明できる気になったりましますが、これですべてを賄えることはありません。
 本書では、オブジェクト指向という道具を学びますが、これはただのプログラミングテクニックの1つとして、使いたいときに使えるよう、適切な使い方を身に付けましょう。
 
-## 2.5 クラスとオブジェクト
+## 3.7 クラスとオブジェクト
 
 ### クラスの定義
 
@@ -804,7 +946,7 @@ public class Student {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です：
 
-<span class="listing-number">**サンプルコード3-11**</span>
+<span class="listing-number">**サンプルコード3-14**</span>
 
 ```java
 public class Book {
@@ -866,7 +1008,7 @@ public class Book {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています：
 
-<span class="listing-number">**サンプルコード3-12**</span>
+<span class="listing-number">**サンプルコード3-15**</span>
 
 ```java
 public class BookTest {
@@ -902,7 +1044,7 @@ public class BookTest {
 **実行時の動作理解：**
 このプログラムを実行すると、メモリ上に2つの独立したBookオブジェクトが作成され、それぞれが異なる本の情報を保持します。price変更後のbook1は新しい価格情報を保持し続け、これによりオブジェクトの「状態を持つ」という特性を実感できます。
 
-## 2.3 カプセル化
+## 3.8 カプセル化
 
 カプセル化は、オブジェクト指向プログラミングの最も重要な原則の1つです。この概念は、関連するデータと処理を1つの単位にまとめ、外部からの不適切なアクセスを制限することで、システムの安全性と保守性を大幅に向上させます。
 
@@ -919,7 +1061,7 @@ public class BookTest {
 
 まず、カプセル化されていない設計から始めます：
 
-<span class="listing-number">**サンプルコード3-13**</span>
+<span class="listing-number">**サンプルコード3-16**</span>
 
 ```java
 // 悪い例：カプセル化されていない銀行口座
@@ -958,7 +1100,7 @@ public class ProblemExample {
 
 privateキーワードとメソッドを使って基本的なカプセル化を実装：
 
-<span class="listing-number">**サンプルコード3-14**</span>
+<span class="listing-number">**サンプルコード3-17**</span>
 
 ```java
 // 改善例：基本的なカプセル化
@@ -1003,7 +1145,7 @@ public class BankAccountV2 {
 
 実際の業務システムで求められるレベルのカプセル化：
 
-<span class="listing-number">**サンプルコード3-15**</span>
+<span class="listing-number">**サンプルコード3-18**</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -1125,1029 +1267,7 @@ public class BankAccountV3 {
 
 このように、カプセル化は単にprivateを使うだけでなく、システムの要求に応じて適切なレベルで実装する必要があります。
 
-
-
-
-
-
-
-
-
-ここから、Javaを使ったオブジェクト指向プログラミングを学びますが、そもそもそれ以前に、Javaというプログラミング言語の基本構文について学びましょう。
-
-## 3.1 型とリテラル
-
-### 型
-
-型、またはデータ型とは、プログラミング言語における「データを保持する形式」という認識で（いまのところは）良いでしょう。  
-Javaにおける基本的な型の種類は以下の表を参照してください。
-
-| 型名 | サイズ | 用途 | 想定される値 | ラッパクラス |
-|-----|-----------------|-----|------------|--------------|
-| `boolean` | -  | 真偽値 | true または false | Boolean
-| `char` | 2byte | 文字(一文字分) | \u0000 〜 \uffff | Character
-| `byte` | 1byte | 整数 | -128 〜 127 | Byte
-| `short` | 2byte | 整数 | -32768 〜 32767 | Short
-| `int` | 4byte | 整数 | -2147483648 〜 2147483647 | Integer
-| `long` | 8byte | 整数 | -9223372036854775808 〜 9223372036854775807 | Long
-| `float` | 4byte | 小数 | 1.4e-45 〜 3.4e+38 | Float
-| `double` | 8byte | 小数 | 4.9e-324 〜 1.7e+308 | Double
-
-これらの型は、**基本データ型**(primitive data type)または**プリミティブ型**と呼ばれます。
-
-なお、int型では、おおよそ正負21億の整数が格納可能です。
-ちなみに、`String`（文字列）は基本データ型ではなく、クラスです。
-文字列に関しても、クラスという概念を学んだ後に、より詳しく学びます。
-
-プログラミング初心者の方は、「（いまのところは）boolean、int、double、そしてString」で大丈夫です、と言っておきます。
-
-### プリミティブ型
-
-Javaには8つのプリミティブ型が存在します。先述の表を参照してください。
-これらはオブジェクトではなく、単純な値を表現します。
-
-メモリ効率を重視する場合や、高速な計算処理が必要な場合に使用されます。
-
-### 参照型
-
-プリミティブ型以外のすべての型は参照型です。これには以下が含まれます：
-
-- クラス（String、Integer、自作のクラスなど）
-- インターフェイス
-- 配列
-- 列挙型（enum）
-
-<span class="listing-number">**サンプルコード3-16**</span>
-
-```java
-// プリミティブ型
-int number = 42;
-double price = 99.99;
-boolean isValid = true;
-
-// 参照型
-String text = "Hello Java";
-Integer boxedNumber = 100;  // Integerクラス（Wrapper）
-int[] numbers = {1, 2, 3, 4, 5};  // 配列も参照型
-```
-
-### リテラル
-
-リテラルとは、プログラムのソースコード内で直接表現される値のことです。
-
-#### 整数リテラル
-
-Javaでは整数を様々な進数で表現できます。特に、大きな数値を扱う際はアンダースコアを使って可読性を向上させることが可能です。
-
-<span class="listing-number">**サンプルコード3-17**</span>
-
-```java
-int decimal = 100;      // 10進数
-int binary = 0b1100100; // 2進数（0bプレフィックス）
-int octal = 0144;       // 8進数（0プレフィックス）
-int hex = 0x64;         // 16進数（0xプレフィックス）
-
-// 数値の区切り（Java 7以降）
-long largeNumber = 1_000_000_000L;  // 読みやすくするためのアンダースコア
-```
-
-#### 浮動小数点リテラル
-
-浮動小数点数は通常の小数記法と科学記法で表現できます。float型を使用する場合は、明示的にfサフィックスをつける必要があります。
-
-<span class="listing-number">**サンプルコード3-18**</span>
-
-```java
-double normalNotation = 3.14159;
-double scientificNotation = 3.14159e0;  // 科学記法
-float floatValue = 3.14f;  // float型はfまたはFサフィックスが必要
-```
-
-#### 文字・文字列リテラル
-
-文字と文字列の表現方法と、特殊文字を表すエスケープシーケンスの使用例です。Unicode文字も直接表現できます。
-
-<span class="listing-number">**サンプルコード3-19**</span>
-
-```java
-char singleChar = 'A';          // 文字リテラル（シングルクォート）
-char unicodeChar = '\u0041';    // Unicode表現（'A'と同じ）
-String text = "Hello World";    // 文字列リテラル（ダブルクォート）
-
-// エスケープシーケンス
-String escaped = "Line 1\nLine 2\t\"Quoted\"";
-// \n: 改行、\t: タブ、\": ダブルクォート
-```
-
-#### 真偽値リテラル
-
-boolean型は、trueとfalseの2つの値のみを持ちます。他の言語とは異なり、0や1では表現できません。
-
-<span class="listing-number">**サンプルコード3-20**</span>
-
-```java
-boolean isTrue = true;
-boolean isFalse = false;
-```
-
-### 型変換
-
-#### 暗黙的な型変換（拡大変換）
-
-小さい型から大きい型への変換は自動的に行われます。これはデータの精度や範囲が失われることがないため、安全な変換として自動的に実行されます。
-
-<span class="listing-number">**サンプルコード3-21**</span>
-
-```java
-int intValue = 100;
-long longValue = intValue;    // int → long（自動変換）
-double doubleValue = intValue; // int → double（自動変換）
-```
-
-#### 明示的な型変換（キャスト・縮小変換）
-
-大きい型から小さい型への変換は明示的なキャストが必要です：
-
-<span class="listing-number">**サンプルコード3-21**</span>
-
-```java
-double doubleValue = 3.14159;
-int intValue = (int) doubleValue;  // 3になる（小数部分は切り捨て）
-
-long longValue = 1000L;
-int intValue2 = (int) longValue;   // 明示的なキャストが必要
-```
-
-**注意**: 縮小変換では情報の損失が発生する可能性があります。
-
-### ラッパクラス
-
-各プリミティブ型には対応するラッパクラスが存在します：
-
-<span class="listing-number">**サンプルコード3-22**</span>
-
-```java
-// オートボクシング（Java 5以降）
-Integer boxedInt = 100;  // int → Integer（自動変換）
-Double boxedDouble = 3.14;  // double → Double（自動変換）
-
-// アンボクシング
-int primitiveInt = boxedInt;  // Integer → int（自動変換）
-double primitiveDouble = boxedDouble;  // Double → double（自動変換）
-
-// ラッパークラスの便利なメソッド
-String numberStr = "123";
-int parsedInt = Integer.parseInt(numberStr);  // 文字列から数値への変換
-String binaryStr = Integer.toBinaryString(42); // "101010"
-```
-
-ラッパクラスは、プリミティブ型をオブジェクトとして扱う必要がある場合（コレクションフレームワークなど）に使用されます。
-
-
-
-
-
-
-
-
-
-## 3.2 演算子
-
-数値の計算や、文字列の連結など、さまざまな場所で演算子を使った処理を行います。  
-すべての演算子が今すぐ使うものではありません。
-いつ使うのか分からない演算子も、こういった書き方もできるということを覚えておきましょう。
-
-### 代入演算子
-
-変数へ値を代入するには、 `=` を使用します。
-
-例：変数に代入を行う場合（aという変数に5を代入する）
-
-```java
-a = 5;
-```
-
-左辺に対して、右辺を代入します。逆はできません。
-
-次は文法上可能ですが、あまり好ましくない例です。
-
-```java
-a = b = 5;
-```
-
-とすると、aには「b=5」が代入されるのですが、このとき「b=5」の処理結果は、5を返すため、a,bどちらにも5が代入されます。  
-この書き方をたまにすることがありますが、本来ならコードを見た時に認識しづらい書き方だと思われるので極力使わないようにしましょう。
-
-### 算術演算子
-
-算術演算子には、以下のものがあります。
-
-| 演算子記号 | 役割 | 算出時の優先順位
-|----------|------|----|
-| `+` | 足し算(加法演算子) | 後
-| `-` | 引き算(加法演算子) | 後
-| `*` | 掛け算(乗法演算子) | 先
-| `/` | 割り算(乗法演算子) | 先
-| `%` | 余り(乗法演算子) | 先
-
-#### 算術演算子サンプルプログラム
-
-算術演算子は、プログラミングの基本中の基本であり、数学的な計算、データ解析、アルゴリズムの実装など、あらゆるプログラムで使用されます。以下のプログラムは、Javaの基本的な算術演算子の動作を確認し、整数型の演算がどのように実行されるかを理解するための重要な学習材料です：
-
-ファイル名： ArithmeticSample.java
-<span class="listing-number">**サンプルコード3-23**</span>
-
-```java
-class ArithmeticSample {
-  public static void main(String[] args) {
-    int num1 = 10;
-    int num2 = 5;
-
-    System.out.println("num1とnum2にいろいろな演算を行います。");
-    System.out.println("num1 + num2は" + (num1 + num2) + "です。");
-    System.out.println("num1 - num2は" + (num1 - num2) + "です。");
-    System.out.println("num1 * num2は" + (num1 * num2) + "です。");
-    System.out.println("num1 / num2は" + (num1 / num2) + "です。");
-    System.out.println("num1 % num2は" + (num1 % num2) + "です。");
-  }
-}
-```
-
-**このプログラムから学ぶ重要な数学的概念と演算特性：**
-
-1. **整数除算の特性**：`num1 / num2`（10 / 5）の結果は2となりますが、これは整数どうしの除算では小数点以下が切り捨てられるためです。たとえば、num1を3、num2を2に変更すると、3 / 2 = 1（数学的には1.5）となります。
-
-2. **剰余演算の重要性**：`%`演算子（モジュロ演算）は、プログラミングで非常に有用で、偶数・奇数の判定、循環処理の制御、ハッシュテーブルのインデックス計算などで頻繁に使用されます。
-
-3. **演算子優先度の実践**：コード内の`(num1 + num2)`のような括弧は、文字列連結よりも先に算術演算を実行させるために必要です。括弧がないと、文字列連結が優先されて意図しない結果になります。
-
-4. **型安全性とオーバーフロー**：int型の範囲内での演算である限り、このプログラムは安全に実行されます。しかし、很大きな数値を使用する場合は、オーバーフローの可能性を考慮する必要があります。
-
-5. **コードの可読性とデバッグ**：各演算を個別のSytem.out.println文で出力することで、各演算の結果を個別に確認でき、デバッグや動作確認が容易になっています。
-
-**学習のための発展的な実験：**
-
-このプログラムを実行して基本動作を確認した後、以下のような値で実験してみることをお勧めします：
-
-- **整数除算の特性理解**：num1=7, num2=3（7/3=2, 7%3=1）
-- **負の数での演算**：num1=-10, num2=3（負の数の剰余演算の理解）
-- **ゼロ除算のエラー**：num2=0に設定して、ArithmeticExceptionの発生を確認
-- **大きな数値でのオーバーフロー**：num1=Integer.MAX_VALUE, num2=1での加算
-
-これらの実験を通じて、Javaの数値演算の特性と限界を深く理解し、実際のプログラム開発で注意すべきポイントを学ぶことができます。
-
-### 算術演算を伴う代入演算子（再帰代入演算子）
-
-左辺に対して、右辺との算術演算を行った後に、左辺に代入する処理を省略して書くことができます。
-
-| 演算子記号 | 役割 | 同じ処理で違う書き方
-|----------|------|----|
-| `+=` | 左辺に右辺を足し算した後に左辺へ代入 | `x += 5;`, `x = x + 5;`
-| `-=` | 左辺に右辺を引き算した後に左辺へ代入 | `x -= 5;`, `x = x - 5;`
-| `*=` | 左辺に右辺を掛け算した後に左辺へ代入 | `x *= 5;`, `x = x * 5;`
-| `/=` | 左辺に右辺を割り算した後に左辺へ代入 | `x /= 5;`, `x = x / 5;`
-| `%=` | 左辺に右辺の値で余りを算出した後に左辺へ代入 | `x %= 5;`, `x = x % 5;`
-
-### 比較演算子
-
-※両辺を比較する場合に使用し、演算子の結果はboolean型で戻ってきます。
-
-| 演算子 | 例 | 説明
-|----------|------|------|
-| `==` | `a == b` | aとbが等しいときtrue
-| `!=` | `a != b` | aとbが等しくないときtrue
-| `>` | `a > b` | aがbより大きいときtrue
-| `<` | `a < b` | aがbより小さいきとtrue
-| `>=` | `a >= b` | aがb以上のときtrue
-| `<=` | `a <= b` | aがb以下のときtrue
-
-### 論理演算子(ショートサーキット演算子)
-
-※両辺ともbooleanの場合に使用します。
-
-| 演算子 | 例 | 説明
-|----------|------|------|
-| `&&` | `a && b` | aとbの両方がtrueのときtrue
-| `||` | `a || b` | aとbのどちらかがtrueのときtrue
-| `!` | `!a` | aがfalseのときtrue。逆になる
-
-### インクリメント・デクリメント
-
-インクリメント・デクリメントの演算子は、それぞれ2種類ずつあります。
-この演算子を式中で使う場合、この違いがとても大きく、間違えやすい点ですので、注意が必要です。
-
-#### インクリメント
-
-| 演算子(位置に注意) | 式中で行われるものと同義のステートメント | 式中での評価、更新順序
-|------|------|------|
-| `y++` | `y = y + 1;` | y を評価してから式を演算し、 y + 1 に更新
-| `++y` | `y = y + 1;` | y + 1 に更新してから式の評価、演算
-
-#### デクリメント
-
-| 演算子(位置に注意) | 式中で行われるものと同義のステートメント | 式中での評価、更新順序
-|------|------|------|
-| `y--` | `y = y - 1;` | y を評価してから式を演算し、 y - 1 に更新
-| `--y` | `y = y - 1;` | y - 1 に更新してから式の評価、演算
-
-### データ型による演算の制約
-
-演算時の注意点として、データ型による丸めの発生があります。
-
-- 整数型どうしの除算は、小数点以下切り捨て
-    + 10 / 4 = 2
-- どちらかに浮動小数点型の数値がある場合は、小数点以下も計算されます。
-    + 10.0 / 4 = 2.5
-    + この場合、計算結果は浮動小数点型となります。
-
-### キャスト演算子
-
-整数型の変数に、浮動小数点型の数値を代入しようとするとエラーとなります。
-
-浮動小数点数を整数に***強制的に変換***し、代入をすればエラーとなりません。  
-ただし、整数型に型の強制変換を行ったタイミングで、小数点以下の値は切り捨てられてしまうので注意が必要です。
-
-<span class="listing-number">**サンプルコード3-22**</span>
-
-```java
-float s = 1234.567f;
-int num = (int)s; // ← numには、1234 が代入される
-```
-
-### 文字列との連結
-
-`+` を使います。
-
-```
-"Hello, " + "World!!" → "Hello, World!!"
-```
-
-次のプログラムはどのような結果を出力するでしょう？
-
-<span class="listing-number">**サンプルコード3-24**</span>
-
-```java
-int a = 3;
-int b = 5;
-System.out.println("文字列と数値を結合すると..." + a + b);
-```
-
-出力結果：
-
-```bash
-文字列と数値を結合すると...35
-```
-
-基本的には、式中に文字列がある場合、その式が返す値はすべて文字列になります（ただし、括弧などにより、数値の演算のみを優先的に行うことは可能です）。
-数値は暗黙的に文字列へ変換されてしまいます。
-表示結果をコントロールしたい場合は、この暗黙的な型変換に注意してください。
-
-
-
-
-
-
-
-
-
-## 3.3 制御構造
-
-プログラミングにおいて、最も重要で最もバグを出しやすい部分です。
-
-### if文による条件分岐
-
-#### if – 基本的な書き方
-
-括弧内の条件（*boolean型*）に合致する（値が`true`）の場合に、波括弧`{ }`内のブロックの処理を行います。
-
-<span class="listing-number">**サンプルコード3-25**</span>
-
-```java
-if ( 条件 ) {
-    ここは条件に合致した場合にのみ実行される
-}
-```
-
-波括弧のブロックは、実行する処理が1行の場合のみ省略が可能ですが、波括弧は省略しない方が良いです。
-
-もし、条件に合致した場合実行する処理が1行だけのとき、次の書き方のように改行を挟まず1行で書くようにすると分かりやすいです。
-
-```java
-if ( 条件 ) ここは条件に合致した場合にのみ実行される
-```
-
-波括弧を省略してほしくない理由は、次のようなパターンが考えられるからです。
-
-```java
-if ( 条件 )
-    最初にif文を書いた人が書いた条件内のコード
-```
-
-これは正常に動きます。  
-次に、このコードを改修する際、以下のようなコードの修正を行ってしまいやすい点が波括弧を省略した際に起こりやすいです。
-
-<span class="listing-number">**サンプルコード3-26**</span>
-
-```java
-if ( 条件 )
-    最初にif文を書いた人が書いた条件内のコード
-    追加された条件内コードのつもりで書かれたコード
-```
-
-このとき、追加されたコードは、ifの条件にまったく関係なく処理が実行されてしまい、これが意図しない処理としてバグにつながります。
-すぐに気付けるようだったら良いのですが、追加されたコードの影響が、かなり後の方（たとえばリリース後など）で気付く状況も少なからずあります。
-そもそも波括弧を省略していなければ防げているバグを発生させないためにも、必ず波括弧を書きましょう。
-
-少し逸れますがバグの混入を防ぐ話として、インデントをそろえることも重要です。  
-インデントはタブでもスペースでもかまいませんが、コードブロックが分かりやすくなるように適切な字下げをしましょう。  
-また、インデントに関していえば、IDEに搭載されているコードフォーマッタを使うのもよいです。自動的にコードの整形を行ってくれるため、先ほどの追加コードのような不具合もコードの整形によって気付きやすくなります。
-
-#### if-else – どちらかを実行
-
-ifの条件に合致しなかった場合のみ実行される処理を書ける
-
-<span class="listing-number">**サンプルコード3-27**</span>
-
-```java
-if ( 条件 ) {
-    ここは条件に合致した場合にのみ実行される
-} else {
-    条件に合致しなかった場合にのみ実行される
-}
-```
-
-#### if-elseif-else – 複数の条件
-
-条件に合致しなかった場合、再度評価を行うこともできる
-
-<span class="listing-number">**サンプルコード3-28**</span>
-
-```java
-if ( 条件1 ) {
-    条件1に合致した場合にのみ実行される
-} else if ( 条件2 ) {
-    条件1に合致せず、条件2に合致した場合
-} else {
-    上記すべての条件に合致しなかった場合
-}
-```
-
-#### 比較演算子と論理演算子を組み合わせた複数条件指定
-
-if文の条件は、条件1かつ条件2と言ったように、1つのif文で複数の条件を入れることが可能です。
-
-###### AND（〜かつ〜）
-
-論理積AND演算子（&&）を使うと、複数の条件がすべて真の場合のみ処理を実行できます。短絡評価（左の条件が偽なら右の条件を評価しない）が行われるため、効率的です。
-
-<span class="listing-number">**サンプルコード3-29**</span>
-
-```java
-if ( 条件１ && 条件２ ) {
-    条件１と条件２どちらにも合致した場合にのみ実行される
-}
-```
-
-###### OR（〜または〜）
-
-論理和OR演算子（||）を使うと、複数の条件のいずれかが真の場合に処理を実行できます。これも短絡評価（左の条件が真なら右の条件を評価しない）が行われます。
-
-<span class="listing-number">**サンプルコード3-30**</span>
-
-```java
-if ( 条件１ || 条件２ ) {
-    条件１か条件２のどちらかに合致した場合にのみ実行される
-}
-```
-
-#### 条件分岐の実践例
-
-論理演算子を使った複雑な条件分岐は、実際のビジネスロジックを実装する際に頻繁に使用されます。以下のプログラムは、会員システムの割り引き判定という実用的な例を通じて、論理演算子の効果的な使用方法を学習するための材料です：
-
-ファイル名： MembershipDiscount.java
-
-<span class="listing-number">**サンプルコード3-31**</span>
-
-```java
-public class MembershipDiscount {
-    public static void main(String[] args) {
-        // 顧客情報の設定
-        int age = 25;
-        boolean isPremiumMember = true;
-        int purchaseAmount = 5000;
-        int membershipYears = 3;
-        
-        System.out.println("=== 顧客情報 ===");
-        System.out.println("年齢: " + age + "歳");
-        System.out.println("プレミアム会員: " + (isPremiumMember ? "はい" : "いいえ"));
-        System.out.println("購入金額: " + purchaseAmount + "円");
-        System.out.println("会員歴: " + membershipYears + "年");
-        System.out.println();
-        
-        // 複数の割引条件を論理演算子で組み合わせた判定
-        System.out.println("=== 割引判定結果 ===");
-        
-        // 条件1: シニア割引（65歳以上）
-        if (age >= 65) {
-            System.out.println("シニア割引が適用されます（20%オフ）");
-        }
-        
-        // 条件2: プレミアム会員かつ高額購入
-        if (isPremiumMember && purchaseAmount >= 3000) {
-            System.out.println("プレミアム会員高額購入割引が適用されます（15%オフ）");
-        }
-        
-        // 条件3: 若年層または長期会員
-        if (age <= 25 || membershipYears >= 5) {
-            System.out.println("若年層・長期会員割引が適用されます（10%オフ）");
-        }
-        
-        // 条件4: 複雑な組み合わせ条件
-        if ((isPremiumMember && purchaseAmount >= 5000) || 
-            (age >= 60 && membershipYears >= 3)) {
-            System.out.println("特別VIP割引が適用されます（25%オフ）");
-        }
-        
-        // 条件5: 除外条件を含む複雑な判定
-        if (purchaseAmount >= 10000 && age >= 20 && age <= 60 && !isPremiumMember) {
-            System.out.println("一般会員高額購入割引が適用されます（5%オフ）");
-        }
-    }
-}
-```
-
-**このプログラムから学ぶ重要な概念：**
-
-1. **論理AND演算子（&&）の実用性**：「プレミアム会員かつ高額購入」のように、複数の条件を同時に満たす場合の判定に使用します。ビジネスルールでは「すべての条件を満たす」ケースが頻繁にあります。
-
-2. **論理OR演算子（||）の柔軟性**：「若年層または長期会員」のように、いずれかの条件を満たせば良い場合に使用します。顧客の多様なニーズに対応するための重要なしくみです。
-
-3. **複雑な条件の構築**：括弧を使用することで、より複雑なビジネスロジックを表現できます。例：「（プレミアム会員で高額購入）または（シニアで長期会員）」
-
-4. **論理NOT演算子（!）の活用**：`!isPremiumMember`のように、特定の条件を除外する際に使用します。「プレミアム会員ではない一般会員に対する特別オファー」などの実装に有用です。
-
-5. **短絡評価（Short-circuit evaluation）の重要性**：`&&`演算子では、左の条件がfalseの場合、右の条件は評価されません。`||`演算子では、左の条件がtrueの場合、右の条件は評価されません。これにより、効率的で安全な条件判定が可能になります。
-
-**複合条件の実用的な応用例**：
-
-複合条件は、現実のソフトウェア開発では非常に適用範囲が幅広い技術です。ECサイトの価格計算システムでは、顧客の年齢、会員ランク、購入金額、購入回数などの複数の属性を組み合わせ、個々の顧客に最適な割引率を動的に計算します。このような複雑なビジネスロジックを実現するためには、高度な条件分岐の仕組みが必要不可欠です。
-
-アクセス制御システムでは、ユーザーの権限レベル、所属部署、登録年数、アクセス時間などの複数条件を組み合わせて、特定の機能やデータへのアクセスを制御します。ゲーム開発では、プレイヤーのレベル、所持アイテム、スキルポイント、ゲームの進行状況などを組み合わせて、適切なタイミングで新しい機能やシナリオをアンロックします。在庫管理システムでは、商品の種類、現在の在庫量、季節的な需要変動、供給リードタイムなどを統合的に判断し、最適な発注タイミングと数量を自動的に決定します。
-
-**論理演算子使用時の注意点：**
-
-1. **可読性の確保**：複雑な条件は適切に括弧でグループ化し、意図を明確にする
-2. **ド・モルガンの法則**：`!(A && B)` = `!A || !B`、`!(A || B)` = `!A && !B`の理解
-3. **null安全性**：オブジェクトの参照がnullでないことを最初に確認する習慣
-
-#### 三項演算子
-
-三項演算子は、`if...else...`を式として扱えます。
-
-<span class="listing-number">**サンプルコード3-32**</span>
-
-```java
-System.out.println(条件 ? "true" : "false");
-//条件に合致していればtrueと表示されます。合致していなければfalseと表示されます。
-
-//↑の処理と同じように書く場合↓
-if ( 条件 ) {
-    System.out.println("true");
-} else {
-    System.out.println("false");
-}
-```
-
-### switch文による複数の選択肢の比較
-
-「`==`」を条件としたif文を複数書くような場合は、switch文を使って記述できます。
-
-switchの括弧内の変数に入っている値がcaseの値に該当した時、処理を実行します。
-
-<span class="listing-number">**サンプルコード3-33**</span>
-
-```java
-switch ( 検査対象の値 ) {
-    case 値1:
-        検査対象の値が値１だった場合の処理
-        break;
-    case 値2:
-        検査対象の値が値２だった場合の処理
-        break;
-    default:
-        いずれのcaseに合致しない場合
-        break;
-}
-```
-
-breakが書かれていない場合は、その下にあるcaseの処理も実行されます。  
-これは多くのプログラマにとって期待していない処理ですので、必ずcaseにはbreakを入れましょう。
-
-#### 拡張switch文（switch式）：モダンJavaの新機能
-
-Java 14以降、switch文が大幅に強化され、より安全で簡潔な記述が可能になりました。
-
-<span class="listing-number">**サンプルコード3-34**</span>
-
-```java
-// 従来のswitch文
-String dayType;
-switch (day) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-        dayType = "平日";
-        break;
-    case 6:
-    case 7:
-        dayType = "休日";
-        break;
-    default:
-        dayType = "無効な曜日";
-}
-
-// 新しいswitch式（Java 14以降）
-int day = 3;
-String dayType = switch (day) {
-    case 1, 2, 3, 4, 5 -> "平日";
-    case 6, 7 -> "休日";
-    default -> "無効な曜日";
-};
-```
-
-**switch式のポイント:**
-
-*   **`->`（アロー）ラベル:** `case`の後にコロン`:`の代わりにアロー`->`を使います。
-*   **`break`不要:** アローの右側が単一の式かブロックの場合、`break`は不要です。これにより、`break`の書き忘れによるバグ（フォールスルー）を完全に防ぐことができます。
-*   **値を返す:** `switch`式全体が値を返すため、結果を直接変数に代入できます。
-*   **網羅性のチェック:** `default`節がない場合など、すべての可能性を網羅していないとコンパイルエラーになります（`enum`型を`switch`する場合など）。これにより、条件漏れを防ぐことができます。
-*   **複数行の処理と`yield`**: `case`の処理が複数行にわたる場合は、ブロック`{}`で囲み、`yield`キーワードを使って値を返します。
-
-<span class="listing-number">**サンプルコード3-35**</span>
-
-```java
-// yieldを使った例
-String message = switch (day) {
-    case 1, 2, 3, 4, 5 -> {
-        System.out.println("今日は頑張る日！");
-        yield "平日"; // ブロックから値を返す
-    }
-    case 6, 7 -> "休日";
-    default -> "無効な曜日";
-};
-```
-
-**パターンマッチング for switch (Java 17以降):**
-`switch`で変数の型をチェックし、そのままその型の変数として利用できます。
-
-<span class="listing-number">**サンプルコード3-36**</span>
-
-```java
-Object obj = "Hello";
-String formatted = switch (obj) {
-    case Integer i -> String.format("Integer: %d", i);
-    case String s -> String.format("String: %s", s);
-    case null -> "It's null"; // nullもcaseとして扱える
-    default -> "Unknown type";
-};
-System.out.println(formatted); // "String: Hello"
-```
-この機能により、冗長な`if-else`の`instanceof`チェインを、安全で読みやすい`switch`式に置き換えることができます。
-
-#### switch文の実践例
-
-switch文は、特定の値にもとづいた分岐処理に優れており、特に列挙型のような限定された値セットを扱う場合に威力を発揮します。以下のプログラムは、成績管理システムという実用的な例を通じて、switch文の効果的な使用方法を学習するための材料です：
-
-ファイル名： GradeCalculator.java
-
-<span class="listing-number">**サンプルコード3-37**</span>
-
-```java
-public class GradeCalculator {
-    public static void main(String[] args) {
-        // テストケースとして複数の成績を評価
-        char[] grades = {'A', 'B', 'C', 'D', 'F', 'B'};
-        int totalGradePoints = 0;
-        int courseCount = grades.length;
-        
-        System.out.println("=== 成績評価システム ===");
-        System.out.println("履修科目数: " + courseCount + "科目");
-        System.out.println();
-        
-        for (int i = 0; i < grades.length; i++) {
-            char grade = grades[i];
-            int gradePoint;
-            String evaluation;
-            
-            // switch文による成績の詳細評価
-            switch (grade) {
-                case 'A':
-                    gradePoint = 4;
-                    evaluation = "優秀（Excellent）";
-                    break;
-                case 'B':
-                    gradePoint = 3;
-                    evaluation = "良好（Good）";
-                    break;
-                case 'C':
-                    gradePoint = 2;
-                    evaluation = "普通（Average）";
-                    break;
-                case 'D':
-                    gradePoint = 1;
-                    evaluation = "要努力（Below Average）";
-                    break;
-                case 'F':
-                    gradePoint = 0;
-                    evaluation = "不合格（Fail）";
-                    break;
-                default:
-                    gradePoint = 0;
-                    evaluation = "無効な成績";
-                    System.out.println("警告: 無効な成績 '" + grade + "' が検出されました");
-                    break;
-            }
-            
-            totalGradePoints += gradePoint;
-            System.out.println("科目" + (i + 1) + ": " + grade + "(" + gradePoint + "点) - " + evaluation);
-        }
-        
-        System.out.println();
-        
-        // GPA計算と総合評価
-        double gpa = (double) totalGradePoints / courseCount;
-        System.out.println("総ポイント: " + totalGradePoints + "点");
-        System.out.printf("GPA: %.2f\n", gpa);
-        
-        // GPAにもとづく総合評価（switch文の応用）
-        int gpaCategory = (int) gpa; // 小数点以下切り捨て
-        
-        System.out.print("総合評価: ");
-        switch (gpaCategory) {
-            case 4:
-                System.out.println("最優秀（Summa Cum Laude）- 学長表彰対象");
-                break;
-            case 3:
-                System.out.println("優秀（Magna Cum Laude）- 学部長表彰対象");
-                break;
-            case 2:
-                System.out.println("良好（Cum Laude）- 追加指導不要");
-                break;
-            case 1:
-                System.out.println("要注意（Academic Warning）- 学習指導が必要");
-                break;
-            case 0:
-                System.out.println("要改善（Academic Probation）- 緊急学習支援が必要");
-                break;
-            default:
-                System.out.println("計算エラー");
-                break;
-        }
-        
-        // 複数caseラベルの活用例（奨学金適用条件）
-        System.out.print("奨学金適用: ");
-        switch (gpaCategory) {
-            case 4:
-            case 3:
-                System.out.println("特待生奨学金適用対象");
-                break;
-            case 2:
-                System.out.println("一般奨学金適用対象");
-                break;
-            default:
-                System.out.println("奨学金適用対象外");
-                break;
-        }
-    }
-}
-```
-
-**このプログラムから学ぶ重要な概念：**
-
-1. **switch文の適用場面**：文字や整数などの離散的な値による分岐において、if-else文よりも読みやすく、効率的な処理が可能です。特に「成績」「曜日」「月」「状態」などの列挙可能な値に最適です。
-
-2. **break文の重要性**：各caseの最後にbreak文を配置することで、意図しないfall-through動作を防ぎます。break文を忘れると、次のcaseも実行されてしまう重大なバグの原因となります。
-
-3. **default句の活用**：予期しない値に対する安全な処理を提供します。入力検証やエラーハンドリングの重要な要素として機能します。
-
-4. **複数caseラベルの実用性**：同じ処理を複数の値で実行したい場合、case文を連続して記述することで、コードの重複を避けられます。
-
-5. **型安全性とパフォーマンス**：switch文は、コンパイル時に値のチェックが行われ、実行時は効率的なジャンプテーブルとして最適化される場合があります。
-
-**switch文の実用的な応用例**：
-
-switch文は、離散的な値による分岐処理で真価を発揮します。状態管理システムでは、注文状態（待機中、処理中、発送済み、完了等）ごとに異なる処理を実行し、適切な次のアクションやユーザーインターフェイスの更新を行います。このようなパターンは、ワークフロー管理システムや承認フローなどで频繁に使用されます。
-
-ゲーム開発では、プレイヤーの入力アクション（移動、攻撃、防御、アイテム使用等）に応じてゲーム状態を変更し、適切な反応やアニメーションを実行します。ユーザーインターフェイスでは、メニュー選択やボタンクリックに応じて異なる機能を呼び出し、ユーザーが期待する処理を実行します。データ変換処理では、ファイルの拡張子やMIMEタイプによって適切なパーサや変換ロジックを選択し、効率的なデータ処理を実現します。
-
-**switch文使用時のベストプラクティス：**
-
-1. **必ずdefault句を含める**：予期しない値に対する適切な処理を提供
-2. **各caseにbreak文を配置**：意図しないfall-throughを防ぐ
-3. **複雑な処理はメソッドに分割**：各caseの処理が長くなる場合は、別メソッドに委譲
-4. **列挙型（enum）との組み合わせ**：型安全性をさらに向上させるため、可能な限りenum型を使用
-
-### String型の内容評価について
-
-JavaのString型は、プログラミング初心者が遇遇する最も細かい罠の1つであり、同時にJavaのメモリ管理とオブジェクト指向の本質を理解するための絶好の教材でもあります。以下のプログラムは、String型の特別な性質と、参照比較と値比較の違いを具体的に示しています。
-
-このサンプルを通じて、Javaの文字列プール機能、オブジェクトの同一性、メモリ管理のしくみを理解しましょう：
-
-<span class="listing-number">**サンプルコード3-38**</span>
-
-```java
-public class StringEval {
-  public static void main(String[] args) {
-
-    String a = "Hello";
-    String b = "Hello";
-
-    if (a == b) {
-      System.out.println("同じだよ！");  // こっち
-    } else {
-      System.out.println("違うよ！");
-    }
-
-    // a,b両方に処理を加えて値を変化させる
-    a += 1;
-    b += 1;
-    System.out.println("a:" + System.identityHashCode(a));
-    System.out.println("b:" + System.identityHashCode(b));
-
-    if (a == b) {
-      System.out.println("同じだよ！");
-    } else {
-      System.out.println("違うよ！");  // こっち
-    }
-
-    if (a.equals(b)) {
-      System.out.println("equalsなら同じだよ！");  // こっち
-    } else {
-      System.out.println("equalsでも違うよ！");
-    }
-  }
-}
-```
-
-**このプログラムが示す重要な概念：**
-
-1. **文字列プール（String Pool）の存在**：最初の`a == b`がtrueになるのは、Javaが同じ文字列リテラル"Hello"を自動的に共有するためです。これは文字列プールというしくみにより、メモリ効率を向上させています。
-
-2. **参照の同一性 vs 値の同等性**：
-   - `==`演算子：2つの変数が同じオブジェクトを参照しているかをチェック（参照の同一性）
-   - `equals()`メソッド：2つのオブジェクトの内容が同じかをチェック（値の同等性）
-
-3. **Stringの不変性（Immutability）**：`a += 1`のような操作は、既存の文字列を変更するのではなく、新しい文字列オブジェクトを生成します。これがSystem.identityHashCode()で異なる値を示す理由です。
-
-4. **メモリ効率の考慮**：文字列プールの存在により、同じ内容の文字列リテラルを複数ヵ所で使用してもメモリを節約できます。ただし、動的に生成された文字列（演算結果など）は自動的にプールには入りません。
-
-5. **プログラミングのベストプラクティス**：文字列の比較には常に`equals()`メソッドを使用すべきです。`==`での比較は、意図しない結果を引き起こす可能性があります。
-
-**実用的な注意点：**
-
-<span class="listing-number">**サンプルコード3-39**</span>
-
-```java
-// 良い例
-if (userInput.equals("yes")) {
-    // 処理
-}
-
-// 悪い例（バグの原因）
-if (userInput == "yes") {
-    // userInputが動的に生成された場合、falseになる可能性大
-}
-
-// null安全な比較
-if ("yes".equals(userInput)) {
-    // userInputがnullでもNullPointerExceptionを回避
-}
-```
-
-このような文字列の特性を理解することは、Javaプログラマとして必須の知識であり、多くのバグを未然に防ぐことができます。
-
-### 単純な繰り返し
-
-#### while
-
-while文の括弧内で指定された条件に、合致している間は処理を繰り返します。
-
-<span class="listing-number">**サンプルコード3-40**</span>
-
-```java
-while ( 条件 ) {
-    条件が真値(true)の間、繰り返す処理
-}
-```
-
-###### 10回繰り返す
-###### 10回繰り返す
-
-while文では、繰り返しの条件となるものが必要となります。
-
-<span class="listing-number">**サンプルコード3-41**</span>
-
-```java
-int count = 1;
-while ( count <= 10 ) {
-    繰り返す処理をここに書きます。
-    count += 1;
-}
-```
-
-#### do…while
-
-do-whileループは、条件チェックがループの末尾で行われるため、少なくとも1回は必ず処理が実行されます。ユーザー入力を求めて、適切な入力があるまで繰り返すようなケースで有用です。
-
-<span class="listing-number">**サンプルコード3-42**</span>
-
-```java
-do {
-    処理を実行後、条件が真値の場合には何度も繰り返す
-} while ( 条件 ); //セミコロンを忘れずに付けましょう！
-```
-
-存在を忘れがちですので、覚えておきましょう。
-
-###### 10回繰り返す
-###### 10回繰り返す
-
-<span class="listing-number">**サンプルコード3-43**</span>
-
-```java
-int count = 1;
-do {
-    繰り返す処理 (countの初期値が11だった場合でも処理は実行されます)
-    count += 1;
-} while ( count <= 10 );
-```
-
-#### for
-
-forループは、カウンタ変数の初期化、条件チェック、インクリメントを一行で書ける、最も一般的なループ構造です。特に回数が事前に分かっている場合に適しています。
-
-<span class="listing-number">**サンプルコード3-44**</span>
-
-```java
-for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
-    繰り返す処理
-}
-```
-
-###### 10回繰り返す
-
-以下の例では、カウンタ変数countを1から10まで增加させながら10回の繰り返しを実行します。forループの簡潔さと可読性がよく分かる例です。
-
-<span class="listing-number">**サンプルコード3-45**</span>
-
-```java
-for (int count = 1; count <= 10; count++) {
-    繰り返す処理
-}
-```
-
-### 繰り返し処理中に例外的な処理を行う
-
-#### 繰り返し中に別の条件でループを抜けたい - break
-
-ループ処理に限らず、ブロックから抜け出すことができる命令としてbreakがあります。
-
-for文を例にした場合：
-
-<span class="listing-number">**サンプルコード3-46**</span>
-
-```java
-for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
-    繰り返す処理
-    if ( 別の条件 ) break;
-}
-```
-
-#### 一度だけ処理を飛ばして、次の繰り返しを行う - continue
-
-ループ処理中に、continueが実行されると、それ以降の処理は1回の繰り返し処理時のみ飛ばして次の繰り返し処理が実行されます。
-
-<span class="listing-number">**サンプルコード3-47**</span>
-
-```java
-for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
-    繰り返す処理
-    if ( 別の条件 ) continue;
-    別の条件に合致する場合、実行されない処理
-}
-```
-
-
-
-
-
-
-
-
-
-## 3.5 static修飾子：インスタンス不要の共有メンバー
+## 3.9 static修飾子：インスタンス不要の共有メンバー
 
 これまでに見てきたクラスのフィールドやメソッドは、すべて`new`キーワードによってオブジェクト（インスタンス）を生成してからでないと利用できませんでした。これらを「**インスタンスメンバー**」と呼びます。
 
@@ -2194,7 +1314,7 @@ for (変数の初期化; 繰り返し条件; 繰り返し時の変化) {
 
 `static`フィールドと`static`メソッドの具体的な使い方を見てみましょう。
 
-<span class="listing-number">**サンプルコード3-48**</span>
+<span class="listing-number">**サンプルコード3-19**</span>
 
 ```java
 // StaticMemberExample.java
@@ -2271,7 +1391,7 @@ public class StaticMemberExample {
 
 以下の例で、staticメソッドでのアクセス制約を具体的に確認できます。インスタンスメンバーへのアクセスはコンパイルエラーとなります。
 
-<span class="listing-number">**サンプルコード3-49**</span>
+<span class="listing-number">**サンプルコード3-20**</span>
 
 ```java
 class Example {
@@ -2297,7 +1417,7 @@ class Example {
 
 数学関数や文字列処理など、状態を持たない汎用的な処理を提供するクラス：
 
-<span class="listing-number">**サンプルコード3-50**</span>
+<span class="listing-number">**サンプルコード3-21**</span>
 
 ```java
 public class MathUtils {
@@ -2322,7 +1442,7 @@ double area = MathUtils.calculateCircleArea(5.0);
 
 プログラム全体で共有される定数値：
 
-<span class="listing-number">**サンプルコード3-51**</span>
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
 public class Constants {
@@ -2336,7 +1456,7 @@ public class Constants {
 
 アプリケーション全体で1つしか存在しないインスタンスを保証する設計パターン：
 
-<span class="listing-number">**サンプルコード3-52**</span>
+<span class="listing-number">**サンプルコード3-23**</span>
 
 ```java
 public class DatabaseConnection {
@@ -2374,247 +1494,111 @@ public class DatabaseConnection {
 
 
 
-## 3.6 配列：要素を効率的に管理する
+## 3.10 オブジェクトの配列
 
-### 配列とは？
+### オブジェクト配列の基本
 
-配列とは、***変数をまとめて管理する***しくみです。
-その存在と利用法については、すでにC言語で学習しているものとして、Javaでの書き方について確認しましょう。
+第2章で基本的な配列の使い方を学習しました。ここでは、オブジェクト指向プログラミングの文脈で重要な「オブジェクトの配列」について学習します。
 
-#### 配列を使う場面
+プリミティブ型の配列とは異なり、オブジェクトの配列は参照の配列として実装されます。これは、配列の各要素がオブジェクトそのものではなく、オブジェクトへの参照を保持することを意味します。
 
-複数の同じような値を同じような計算などで処理する場合に、配列にまとめて管理すると処理を行いやすいです。
+### オブジェクト配列の宣言と初期化
 
-前述のとおり、Javaはオブジェクト指向言語ではありますが、配列もサポートしています。
-(C++と同じスタンス）
-
-今でこそ、後の章で紹介されるコレクションAPIを使って配列よりも楽にデータ管理ができます。しかし、処理速度を優先したい場合や、プリミティブ型での要素管理をしたい場合などでは、配列を使うケースがあります。
-
-配列の短所としては、サイズが決まっていること（宣言時またはインスタンス化時に決まる）など、管理がたいへんなケースがあるということです。また、配列内の要素の数が変わるような処理を行う場合、配列は向いていません。
-
-### 配列の宣言
-
-#### 書き方パターン1（推奨）
-
-Javaでは型の直後に[]を置くことで、その型の配列であることを明示できます。この書き方が可読性の点で推奨されています。
+<span class="listing-number">**サンプルコード3-24**</span>
 
 ```java
-型[] 配列名;
+// オブジェクト配列の宣言
+Student[] students;  // Studentクラスの配列
+
+// 配列の初期化（参照の配列を作成）
+students = new Student[5];  // 5人分のStudent参照を保持できる配列
+
+// 各要素にオブジェクトを代入
+students[0] = new Student("田中太郎", 20, 3.5);
+students[1] = new Student("佐藤花子", 21, 3.8);
+// students[2]〜students[4]はnullのまま
 ```
 
-#### 書き方パターン2（C言語と同じ）
+**重要なポイント**：
+- `new Student[5]`はStudentオブジェクト5個を作るのではなく、Studentへの参瑧5個分の配列を作ります
+- 初期化直後の各要素は`null`です
+- 各要素に対して個別に`new`でオブジェクトを作成して代入する必要があります
 
-C言語と同様に、変数名の後に[]を置くことも可能です。しかし、Javaでは型の後に[]を置くパターン1が推奨されています。
+### オブジェクト配列の操作
 
-```java
-型 配列名[];
-```
-
-配列の場合、型、配列変数名（識別子）に加え、`[]`を付けます。Javaの場合、配列であることが分かりやすいため、型の後に`[]`をつけることが推奨されています。
-
-```java
-// intの配列を宣言する
-int[] scores;
-```
-
-### 配列の領域確保
-
-宣言しただけでは、配列の要素を格納する領域（どの程度の要素数が必要か）がまだ決まっていません。
-以下の書き方で、どの程度の要素数を格納する領域を確保するかを決定します。
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
-配列名 = new 型[要素数];
-```
-
-例：
-```java
-scores = new int[5];
-```
-
-配列の宣言と領域の確保を同時に行う場合は以下のように書けます。
-
-<span class="listing-number">**サンプルコード3-53**</span>
-
-```java
-int[] scores;		      // 宣言
-scores = new int[5];	// 領域を5つ確保する
-// ↓ 宣言と同時に領域確保
-int[] scores = new int[5];
-```
-
-配列の宣言と、領域の確保、値の代入をまとめて行う場合は、`{ }`を使い、リテラルをカンマ区切りで必要数分記入します。
-
-```java
-int[] scores = {74, 88, 98, 53, 25};
-```
-
-###### 配列の領域数（要素数）を取得
-###### 配列の領域数（要素数）を取得
-
-確保された領域の数を取得するには、配列の変数の`length`を参照します。
-
-```java
-int[] scores = {74, 88, 98, 53, 25};
-System.out.println(scores.length);    // 5と表示
-```
-
-for文の条件や、配列の要素の最後にアクセスする場合などに使用できます。
-
-<span class="listing-number">**サンプルコード3-54**</span>
-
-```java
-int[] scores = {74, 88, 98, 53, 25};
-
-// 要素の最後にアクセス
-System.out.println(scores[scores.length - 1]); //25と表示される
-
-// 各要素を順に表示
-for (int i = 0; i < scores.length; i++) {
-  System.out.print(scores[i] + ", "); // 74, 88, 98, 53, 25と表示される。
+public class StudentArrayExample {
+    public static void main(String[] args) {
+        // オブジェクト配列の作成と初期化
+        Student[] students = new Student[3];
+        
+        // 各要素にオブジェクトを代入
+        students[0] = new Student("田中太郎", 20, 3.5);
+        students[1] = new Student("佐藤花子", 21, 3.8);
+        students[2] = new Student("鈴木一郎", 19, 3.2);
+        
+        // オブジェクト配列の反復処理
+        System.out.println("学生一覧:");
+        for (Student student : students) {
+            student.display();  // 各オブジェクトのメソッドを呼び出し
+        }
+        
+        // GPAの平均を計算
+        double totalGpa = 0;
+        for (Student student : students) {
+            totalGpa += student.getGpa();
+        }
+        double averageGpa = totalGpa / students.length;
+        System.out.println("\n平均GPA: " + averageGpa);
+    }
 }
 ```
 
-#### 複数次元の配列(多次元配列)
+### オブジェクト配列のnullチェック
 
-先ほどまでのは、1次元配列と呼ばれるものです。要素は単一のインデックス（整数値による連番：ゼロからスタート）でアクセスできます。
-それに対して、複数の次元を持たせた配列を使うこともできます。
+オブジェクト配列を操作する際の最も重要な注意点は、nullチェックです：
 
-```java
-// 教科ごとの点数(1次元)を生徒ごと(2次元)で管理したい
-int[][] scoresOfStudents = new int[3][5];
-```
-
-必要な次元の数だけ`[]`をつなげます。
-
-###### 多次元配列における各要素へのアクセス
-###### 多次元配列における各要素へのアクセス
-
-基本は1次元配列と同じです。
-
-<span class="listing-number">**サンプルコード3-55**</span>
+<span class="listing-number">**サンプルコード3-26**</span>
 
 ```java
-// 一人目の点数を代入
-scoresOfStudents[0][0] = 100;
-scoresOfStudents[0][1] = 70;
-scoresOfStudents[0][2] = 50;
-scoresOfStudents[0][3] = 98;
-scoresOfStudents[0][4] = 45;
-// 二人目
-scoresOfStudents[1][0] = 70;
-scoresOfStudents[1][1] = 70;
-scoresOfStudents[1][2] = 45;
-scoresOfStudents[1][3] = 68;
-scoresOfStudents[1][4] = 70;
-
-// ...以下省略
-```
-
-###### 多次元配列もまとめて初期化可能
-###### 多次元配列もまとめて初期化可能
-
-配列内部の`{}`をカンマで区切ることで、多次元の配列を同時に宣言、初期化、代入ができます。
-
-<span class="listing-number">**サンプルコード3-56**</span>
-
-```java
-int[][] scoresOfStudents = {
-    {70, 60, 80, 90, 50},
-    {81, 45, 32, 78, 100},
-    {32, 44, 34, 55, 70},
-};
-```
-
-###### 多次元配列の領域数を取得
-
-多次元配列では、lengthプロパティを使って各次元のサイズを取得できます。第一次元のサイズと第二次元のサイズをそれぞれ異なる方法で取得できます。
-
-<span class="listing-number">**サンプルコード3-56a**</span>
-
-```java
-System.out.println(scoresOfStudents.length);    //3と表示
-```
-
-次元ごとの領域数を取得するには、
-
-```java
-System.out.println(scoresOfStudents[0].length);    //5と表示
-```
-
-### 配列の実践的な使用例
-
-#### 拡張for文（for-each文）
-
-Java 5から導入された拡張for文を使うと、配列の要素を簡潔に反復処理できます：
-
-<span class="listing-number">**サンプルコード3-57**</span>
-
-```java
-int[] scores = {74, 88, 98, 53, 25};
-
-// 従来のfor文
-for (int i = 0; i < scores.length; i++) {
-    System.out.println("点数: " + scores[i]);
-}
-
-// 拡張for文（推奨）
-for (int score : scores) {
-    System.out.println("点数: " + score);
+public class NullCheckExample {
+    public static void main(String[] args) {
+        Student[] students = new Student[5];
+        students[0] = new Student("田中", 20, 3.5);
+        students[1] = new Student("佐藤", 21, 3.8);
+        // students[2]〜[4]はnull
+        
+        // nullチェックを忘れるとNullPointerExceptionが発生
+        for (int i = 0; i < students.length; i++) {
+            if (students[i] != null) {  // nullチェックが必須
+                students[i].display();
+            }
+        }
+    }
 }
 ```
 
-#### 配列のコピー
+### オブジェクト配列とプリミティブ配列の違い
 
-配列をコピーする場合は、`System.arraycopy()`メソッドや`Arrays.copyOf()`メソッドを使用します：
-
-<span class="listing-number">**サンプルコード3-58**</span>
+<span class="listing-number">**サンプルコード3-27**</span>
 
 ```java
-int[] original = {1, 2, 3, 4, 5};
-int[] copy1 = new int[original.length];
+// プリミティブ型の配列
+int[] numbers = new int[5];     // 各要素は0で初期化される
+System.out.println(numbers[0]); // 0が表示される
 
-// System.arraycopy()を使用
-System.arraycopy(original, 0, copy1, 0, original.length);
-
-// Arrays.copyOf()を使用（より簡潔）
-int[] copy2 = Arrays.copyOf(original, original.length);
-```
-
-#### 配列のソート
-
-`Arrays.sort()`メソッドを使って配列を簡単にソートできます：
-
-<span class="listing-number">**サンプルコード3-59**</span>
-
-```java
-int[] numbers = {5, 2, 8, 1, 9};
-Arrays.sort(numbers);
-// numbers は {1, 2, 5, 8, 9} になる
-```
-
-### 配列使用時の注意点
-
-1. **配列の境界チェック**: 配列の範囲外アクセスは`ArrayIndexOutOfBoundsException`を引き起こします
-2. **参照の共有**: 配列は参照型ですので、代入は参照のコピーになります
-3. **サイズの固定**: 一度作成した配列のサイズは変更できません
-
-<span class="listing-number">**サンプルコード3-60**</span>
-
-```java
-// 範囲外アクセスの例（エラーになる）
-int[] arr = new int[5];
-// arr[5] = 10;  // エラー！インデックスは0-4まで
-
-// 参照の共有の例
-int[] arr1 = {1, 2, 3};
-int[] arr2 = arr1;  // 参照のコピー
-arr2[0] = 99;
-System.out.println(arr1[0]);  // 99と表示される
+// オブジェクトの配列
+Student[] students = new Student[5]; // 各要素はnullで初期化される
+System.out.println(students[0]);     // nullが表示される
 ```
 
 ### まとめ
 
-配列は、同じ型の複数の値を効率的に管理するための基本的なデータ構造です。固定サイズという制約はありますが、メモリ効率が良く、高速なアクセスが可能です。より柔軟なデータ構造が必要な場合は、後の章で学習するコレクションフレームワーク（`ArrayList`など）の使用を検討してください。
+オブジェクト配列は、複数のオブジェクトを効率的に管理するための重要なデータ構造です。プリミティブ型の配列とは異なり、参照の配列であることを理解し、nullチェックを忘れずに行うことが重要です。
+
+より柔軟なオブジェクト管理が必要な場合は、第8章で学習するコレクションフレームワーク（`ArrayList`など）の使用を検討してください。
 
 
 
@@ -2624,7 +1608,7 @@ System.out.println(arr1[0]);  // 99と表示される
 
 
 
-## 3.7 章末演習
+## 3.11 章末演習
 
 本章で学んだオブジェクト指向の基本概念を実践的な課題で確認しましょう。
 
@@ -2692,7 +1676,7 @@ exercises/chapter03/
    - mainメソッドから各メソッドを呼び出して動作確認
 
 **コード構造のヒント**:
-<span class="listing-number">**サンプルコード3-61**</span>
+<span class="listing-number">**サンプルコード3-28**</span>
 
 ```java
 public class MethodsPractice {
