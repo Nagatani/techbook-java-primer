@@ -52,11 +52,45 @@ h6 {
 
 h1 {
   break-before: recto;
-  font-size: 72Q;
-  line-height: 100Q;
-  margin-block-start: 40mm;
+  font-size: 48Q;
+  line-height: 72Q;
+  margin-block-start: 30mm;
+  margin-block-end: 20mm;
   text-align: center;
   counter-reset: section-counter 0;
+  font-weight: 700;
+  color: #2c3e50;
+  position: relative;
+  
+  /* 章番号と章タイトルの間隔調整 */
+  letter-spacing: 0.05em;
+  
+  /* 見出しの装飾的な要素 */
+  padding: 2em 1em 1.5em;
+}
+
+/* 章番号（第X章）の装飾 */
+h1::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+}
+
+/* 章タイトル下の装飾線 */
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #95a5a6 50%, transparent 100%);
 }
 
 /* 章レベルの見出し（第X章）は改ページ維持 */
@@ -79,8 +113,8 @@ h1:contains("付録") {
 
 /* h2スタイル - 改ページなし・背景付きデザイン */
 h2 {
-  font-size: 28Q;
-  line-height: 40Q;
+  font-size: 25Q;
+  line-height: 30Q;
   margin-block: 2em 1.5em;
   margin-inline: 0;
   padding: 20px 24px;
@@ -171,33 +205,47 @@ img[src$=".svg"] {
 }
 
 
-/* コードブロック - ゼブラストライプ背景 */
+/* コードブロック - 自動改行対応ゼブラストライプ背景 */
 pre {
   background-color: #f8f8f8;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 0;
   margin: 1em 0;
-  overflow-x: auto;
   position: relative;
+  /* 横スクロールを防ぐ */
+  overflow-x: visible;
+  overflow: visible;
+  max-width: 100%;
 }
 
 /* コード部分 */
 pre code {
   display: block;
-  padding: 1em;
+  padding: calc(1.5em - 2px) 1em;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
-  font-size: 9pt;
+  font-size: 8pt;
   line-height: 1.5;
-  white-space: pre;
-  overflow-x: auto;
-  /* 各行の背景（ゼブラストライプ） */
+  
+  /* 自動改行設定 - 書籍向け */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  
+  /* 横幅制限 */
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: visible;
+  
+  /* ゼブラストライプ背景 - 改行対応版 */
   background-image: repeating-linear-gradient(
     transparent,
     transparent 1.5em,
-    rgba(0, 0, 0, 0.02) 1.5em,
-    rgba(0, 0, 0, 0.02) 3em
+    rgba(0, 0, 0, 0.025) 1.5em,
+    rgba(0, 0, 0, 0.025) 3em
   );
+  background-attachment: local;
 }
 
 /* 既存のprismクラスがある場合のスタイル */
@@ -207,7 +255,12 @@ pre.prism-code {
   border-radius: 4px;
   padding: 1em;
   margin: 1em 0;
-  overflow-x: auto;
+  /* 改行対応 */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: visible;
+  max-width: 100%;
 }
 
 /* オプション: 行番号表示（手動で追加する場合） */
@@ -291,6 +344,10 @@ code:not(pre code) {
   border-radius: 3px;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 0.9em;
+  /* インラインコードも改行対応 */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* シンタックスハイライト - Javaコード用 */
@@ -470,6 +527,13 @@ article > h1:first-child,
   page-break-after: always;
   position: relative;
   overflow: hidden;
+  
+  /* 章見出し専用の読みやすいスタイル */
+  font-size: 36Q;
+  line-height: 54Q;
+  font-weight: 600;
+  color: #2c3e50;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 章タイトルページの背景パターン（幾何学模様） */
@@ -502,6 +566,40 @@ h1[data-chapter-number]::before {
   line-height: 1;
 }
 
+/* 「第X章」形式の章番号を分離して装飾 */
+section > h1:first-child,
+article > h1:first-child,
+.chapter > h1:first-child {
+  /* 章番号と章タイトルを視覚的に分離 */
+  text-align: center;
+  white-space: pre-line;
+}
+
+/* 章番号部分の強調 */
+section > h1:first-child span.chapter-number,
+article > h1:first-child span.chapter-number,
+.chapter > h1:first-child span.chapter-number {
+  display: block;
+  font-size: 24Q;
+  font-weight: 400;
+  color: #7f8c8d;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* 章タイトル部分の装飾 */
+section > h1:first-child span.chapter-title,
+article > h1:first-child span.chapter-title,
+.chapter > h1:first-child span.chapter-title {
+  display: block;
+  font-size: 42Q;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
 /* 章タイトルの装飾的な枠線 */
 section > h1:first-child::after,
 article > h1:first-child::after,
@@ -527,7 +625,64 @@ h1:first-child:contains("目次") {
     radial-gradient(circle at center, rgba(44, 62, 80, 0.03) 0%, transparent 70%);
 }
 
-/* サンプルコードの図番号スタイル */
+/* 章見出しのサブテキスト（章の概要説明）スタイル */
+h1 + .chapter-subtitle,
+h1 + .chapter-description,
+.chapter-subtitle {
+  display: block;
+  text-align: center;
+  font-size: 16Q;
+  line-height: 24Q;
+  color: #7f8c8d;
+  font-weight: 400;
+  margin-top: -10mm;
+  margin-bottom: 15mm;
+  padding: 0 2em;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* 章タイトルページでのサブテキスト */
+section > h1:first-child + .chapter-subtitle,
+article > h1:first-child + .chapter-subtitle,
+.chapter > h1:first-child + .chapter-subtitle {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 600px;
+  margin: 0;
+  padding: 1em 2em;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* より柔軟な章サブテキストの実装 - small要素を使用 */
+h1 small {
+  display: block;
+  font-size: 18Q;
+  font-weight: 400;
+  color: #7f8c8d;
+  margin-top: 0.5em;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  font-style: normal;
+}
+
+/* 章タイトルページでのsmall要素 */
+section > h1:first-child small,
+article > h1:first-child small,
+.chapter > h1:first-child small {
+  font-size: 20Q;
+  color: #5d6d7e;
+  margin-top: 1em;
+  max-width: 600px;
+  text-shadow: none;
+}
+
+/* サンプルコードの図番号スタイル - 改ページ制御強化版 */
 .listing-number {
   display: block;
   text-align: center;
@@ -540,12 +695,39 @@ h1:first-child:contains("目次") {
   border-radius: 4px 4px 0 0;
   border: 1px solid #ddd;
   border-bottom: none;
+  
+  /* 改ページ制御 - コードブロックと分離させない */
+  break-after: avoid;
+  page-break-after: avoid;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* 図番号を含む段落全体の改ページ制御 */
+p:has(span.listing-number) {
+  break-after: avoid;
+  page-break-after: avoid;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 0;
 }
 
 /* 図番号の次のコードブロックは上部の角丸をなくす */
 p:has(span.listing-number) + pre {
   margin-top: 0;
   border-radius: 0 0 4px 4px;
+  
+  /* 図番号と一体化するための改ページ制御 */
+  break-before: avoid;
+  page-break-before: avoid;
+}
+
+/* 図番号とコードブロックを1つのユニットとして扱う */
+p:has(span.listing-number) + pre,
+p:has(span.listing-number) {
+  /* コンテナとして改ページ制御 */
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 /* 印刷時の調整 */
@@ -1420,6 +1602,49 @@ h2:contains("付録") + ul a {
 
 h2:contains("付録") + ul a:hover {
   color: #34495e;
+}
+
+/* 印刷時のコードブロック調整 */
+@media print {
+  pre {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px solid #666;
+    background-color: #f9f9f9 !important;
+    overflow: visible !important;
+  }
+  
+  pre code {
+    font-size: 7.5pt !important;
+    line-height: 1.3 !important;
+    /* 印刷時の強制改行 */
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    /* ゼブラストライプの印刷対応 */
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 1.3em,
+      rgba(0, 0, 0, 0.05) 1.3em,
+      rgba(0, 0, 0, 0.05) 2.6em
+    ) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* 長いコードは改ページ許可 */
+  pre.allow-break {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+  
+  /* インラインコードの印刷調整 */
+  code:not(pre code) {
+    background-color: #e0e0e0 !important;
+    word-break: break-word !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 /* 印刷時のh2見出し調整 */
