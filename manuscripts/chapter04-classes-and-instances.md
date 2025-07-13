@@ -684,29 +684,43 @@ com.example.myapp/
 
 ## コンストラクタとthisキーワード
 
-### コンストラクタの詳細
+### 高度なコンストラクタ設計
 
-コンストラクタは、オブジェクトが生成される際に自動的に呼び出される特殊なメソッドです。クラス名と同じ名前を持ち、戻り値の型を指定しません。
+第3章ではコンストラクタの基本的な書き方を学びました。本章では、実践的なアプリケーション開発で必要となる、より高度なコンストラクタ設計パターンを学習します。
 
-#### デフォルトコンストラクタ
+#### コンストラクタでのバリデーション
 
-コンストラクタを一つも定義しない場合、Javaコンパイラは自動的に引数なしのデフォルトコンストラクタを生成します：
+実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます：
 
 <span class="listing-number">**サンプルコード4-17**</span>
 
 ```java
-public class Person {
-    private String name;
-    private int age;
+public class User {
+    private final String email;
+    private final String username;
+    private final int age;
     
-    // コンストラクタを定義しない場合、以下が自動生成される
-    // public Person() {
-    //     super();  // Objectクラスのコンストラクタを呼び出す
-    // }
+    public User(String email, String username, int age) {
+        // メールアドレスの検証
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("有効なメールアドレスが必要です");
+        }
+        
+        // ユーザー名の検証
+        if (username == null || username.trim().length() < 3) {
+            throw new IllegalArgumentException("ユーザー名は3文字以上である必要があります");
+        }
+        
+        // 年齢の検証
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("年齢は0歳以上150歳以下である必要があります");
+        }
+        
+        this.email = email;
+        this.username = username.trim();
+        this.age = age;
+    }
 }
-
-// 使用例
-Person person = new Person();  // デフォルトコンストラクタが呼ばれる
 ```
 
 #### 複数のコンストラクタ（オーバーロード）
@@ -742,138 +756,217 @@ public class Book {
 }
 ```
 
-### thisキーワードの3つの用法
+### thisキーワードの高度な活用
 
-`this`キーワードには主に3つの用法があります：
+第3章では`this`の基本的な使い方を学びました。ここでは、より実践的で高度な`this`の活用パターンを学習します。
 
-#### 1. インスタンス変数の参照
+#### 1. ビルダーパターンでの活用
 
-パラメータ名とフィールド名が同じ場合の区別：
+複雑なオブジェクト構築において、`this`を返すことで流暢なインターフェイスを実現できます：
 
 <span class="listing-number">**サンプルコード4-19**</span>
 
 ```java
-public class Student {
-    private String name;
-    private int grade;
+public class EmailBuilder {
+    private String to;
+    private String subject;
+    private String body;
+    private boolean isHtml = false;
     
-    public Student(String name, int grade) {
-        this.name = name;    // this.name はフィールド、name はパラメータ
-        this.grade = grade;  // this.grade はフィールド、grade はパラメータ
+    public EmailBuilder to(String to) {
+        this.to = to;
+        return this;  // メソッドチェーンを可能にする
     }
     
-    // thisを省略できる場合（名前が重複しない）
-    public void updateGrade(int newGrade) {
-        grade = newGrade;  // this.grade と同じ
+    public EmailBuilder subject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+    
+    public EmailBuilder body(String body) {
+        this.body = body;
+        return this;
+    }
+    
+    public EmailBuilder asHtml() {
+        this.isHtml = true;
+        return this;
+    }
+    
+    public Email build() {
+        return new Email(to, subject, body, isHtml);
     }
 }
+
+// 使用例：流暢なインターフェイス
+Email email = new EmailBuilder()
+    .to("user@example.com")
+    .subject("重要なお知らせ")
+    .body("<h1>こんにちは</h1>")
+    .asHtml()
+    .build();
 ```
 
-#### 2. 他のコンストラクタの呼び出し
+#### 2. 高度なコンストラクタチェーン
 
-同じクラス内の別のコンストラクタを呼び出す：
+実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します：
 
 <span class="listing-number">**サンプルコード4-20**</span>
 
 ```java
-public class Rectangle {
-    private double width;
-    private double height;
+public class DatabaseConfig {
+    private final String host;
+    private final int port;
+    private final String database;
+    private final String username;
+    private final String password;
+    private final int maxConnections;
+    private final int timeoutSeconds;
     
-    // メインコンストラクタ
-    public Rectangle(double width, double height) {
-        if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("幅と高さは正の値である必要があります");
+    // マスターコンストラクタ（すべての検証をここに集約）
+    public DatabaseConfig(String host, int port, String database, 
+                         String username, String password, 
+                         int maxConnections, int timeoutSeconds) {
+        // 詳細な検証ロジック
+        if (host == null || host.trim().isEmpty()) {
+            throw new IllegalArgumentException("ホスト名は必須です");
         }
-        this.width = width;
-        this.height = height;
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("ポート番号は1-65535の範囲で指定してください");
+        }
+        if (maxConnections < 1) {
+            throw new IllegalArgumentException("最大接続数は1以上である必要があります");
+        }
+        
+        this.host = host.trim();
+        this.port = port;
+        this.database = database;
+        this.username = username;
+        this.password = password;
+        this.maxConnections = maxConnections;
+        this.timeoutSeconds = timeoutSeconds;
     }
     
-    // 正方形用のコンストラクタ
-    public Rectangle(double side) {
-        this(side, side);  // 最初の行でなければならない
+    // 開発環境用のコンストラクタ
+    public DatabaseConfig(String host, String database) {
+        this(host, 5432, database, "dev_user", "dev_password", 10, 30);
     }
     
-    // デフォルトコンストラクタ
-    public Rectangle() {
-        this(1.0, 1.0);  // 1x1の長方形
+    // 本番環境用のコンストラクタ
+    public DatabaseConfig(String host, int port, String database, 
+                         String username, String password) {
+        this(host, port, database, username, password, 100, 60);
     }
 }
 ```
 
-#### 3. 現在のオブジェクトの参照を返す
+#### 3. コールバックでのthis渡し
 
-メソッドチェーンを可能にする流暢なインターフェイス：
+イベント処理やコールバック関数において、現在のオブジェクトを別のオブジェクトに渡す場合に使用します：
 
 <span class="listing-number">**サンプルコード4-21**</span>
 
 ```java
-public class MessageBuilder {
-    private String buffer = "";
+public class EventProcessor {
+    private String name;
     
-    public MessageBuilder append(String str) {
-        buffer += str;
-        return this;  // 自分自身を返す
+    public EventProcessor(String name) {
+        this.name = name;
     }
     
-    public MessageBuilder appendLine(String str) {
-        buffer += str + "\n";
-        return this;
+    public void startProcessing() {
+        // 自分自身をイベントハンドラーに登録
+        EventManager.register(this);
+        System.out.println(name + " が処理を開始しました");
     }
     
-    public String toString() {
-        return buffer;
+    public void handleEvent(String event) {
+        System.out.println(name + " がイベントを処理: " + event);
     }
 }
 
-// 使用例：メソッドチェーン
-String result = new MessageBuilder()
-    .append("Hello")
-    .append(" ")
-    .append("World")
-    .appendLine("!")
-    .toString();
+class EventManager {
+    private static List<EventProcessor> processors = new ArrayList<>();
+    
+    public static void register(EventProcessor processor) {
+        processors.add(processor);
+    }
+    
+    public static void fireEvent(String event) {
+        for (EventProcessor processor : processors) {
+            processor.handleEvent(event);
+        }
+    }
+}
 ```
 
-### メソッドオーバーロード
+### 高度なメソッドオーバーロード設計
 
-メソッドオーバーロードは、同じ名前で異なるパラメータリストを持つ複数のメソッドを定義する機能です：
+第3章でメソッドオーバーロードの基本を学びました。ここでは、実用的なAPIデザインにおけるオーバーロードの活用パターンを学習します。
+
+#### デフォルト値を提供するオーバーロード
+
+オーバーロードを使って、使いやすいAPIを設計できます：
 
 <span class="listing-number">**サンプルコード4-22**</span>
 
 ```java
-public class Calculator {
-    // int型の加算
-    public int add(int a, int b) {
-        return a + b;
+public class HttpClient {
+    // フルスペックのメソッド
+    public String get(String url, Map<String, String> headers, int timeoutMs) {
+        // HTTP GET実装
+        return "Response from " + url;
     }
     
-    // double型の加算
-    public double add(double a, double b) {
-        return a + b;
+    // ヘッダーのデフォルト値を提供
+    public String get(String url, int timeoutMs) {
+        return get(url, new HashMap<>(), timeoutMs);
     }
     
-    // 3つの数の加算
-    public int add(int a, int b, int c) {
-        return a + b + c;
-    }
-    
-    // 配列の要素の合計
-    public int add(int[] numbers) {
-        int sum = 0;
-        for (int num : numbers) {
-            sum += num;
-        }
-        return sum;
+    // タイムアウトのデフォルト値も提供
+    public String get(String url) {
+        return get(url, 5000);  // 5秒のデフォルトタイムアウト
     }
 }
 ```
 
-**オーバーロードの規則**：
-- メソッド名は同じでなければならない
-- パラメータリスト（個数、型、順序）が異なる必要がある
-- 戻り値の型だけが異なる場合はオーバーロードできない
-- アクセス修飾子は異なってもよい
+#### 型安全性を高めるオーバーロード
+
+異なるデータ型に対応しながら、型安全性を維持します：
+
+<span class="listing-number">**サンプルコード4-23**</span>
+
+```java
+public class Logger {
+    // 文字列メッセージ
+    public void log(String message) {
+        System.out.println("[INFO] " + message);
+    }
+    
+    // 例外情報
+    public void log(String message, Exception e) {
+        System.out.println("[ERROR] " + message + ": " + e.getMessage());
+    }
+    
+    // レベル付きログ
+    public void log(LogLevel level, String message) {
+        System.out.println("[" + level + "] " + message);
+    }
+    
+    // フォーマット付きメッセージ
+    public void log(String format, Object... args) {
+        System.out.println("[INFO] " + String.format(format, args));
+    }
+    
+    enum LogLevel { DEBUG, INFO, WARN, ERROR }
+}
+```
+
+**実践的なオーバーロード設計原則**：
+- 最も多機能なメソッドを1つ定義し、他はそれを呼び出す
+- デフォルト値は意味のある値を選ぶ
+- 引数の順序を統一する（URL → オプション → タイムアウトなど）
+- null安全性を考慮する
 
 ## まとめ
 
