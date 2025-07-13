@@ -419,56 +419,67 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 
 ### クラスの基本構造
 
-ECサイトの注文管理システムを例に、実用的なクラス設計を見てみましょう。Orderクラスは、注文の状態を管理し、その状態変化に応じた振る舞いを持つオブジェクトです。
+クラスは主に以下の要素で構成されます：
+1. **フィールド（属性）** - オブジェクトが持つデータ
+2. **メソッド（操作）** - オブジェクトができる処理
+3. **コンストラクタ** - オブジェクトを初期化する特別なメソッド
+
+これらの要素について、順に詳しく見ていきましょう。
+
+### フィールド（属性）の基礎
+
+フィールドは、オブジェクトが持つデータを表現します。各オブジェクトは自分専用のフィールドの値を持ちます。
 
 <span class="listing-number">**サンプルコード3-6**</span>
 
 ```java
-public class Order {
-    // フィールド（状態）
-    private String orderId;
-    private String customerName;
-    private String status;  // "受付中", "処理中", "配送中", "完了"
-    private double totalAmount;
+public class Student {
+    // フィールドの宣言
+    String name;           // 名前
+    int age;              // 年齢
+    double height;        // 身長（cm）
+    boolean isActive;     // 在籍中かどうか
     
-    // コンストラクタ
-    public Order(String orderId, String customerName, double totalAmount) {
-        this.orderId = orderId;
-        this.customerName = customerName;
-        this.totalAmount = totalAmount;
-        this.status = "受付中";
-    }
-    
-    // メソッド（振る舞い）
-    public void processOrder() {
-        if (status.equals("受付中")) {
-            status = "処理中";
-            System.out.println("注文 " + orderId + " の処理を開始しました");
-        }
-    }
-    
-    public void ship() {
-        if (status.equals("処理中")) {
-            status = "配送中";
-            System.out.println("注文 " + orderId + " を発送しました");
-        }
-    }
-    
-    public void complete() {
-        if (status.equals("配送中")) {
-            status = "完了";
-            System.out.println("注文 " + orderId + " が完了しました");
-        }
-    }
-    
-    public void displayInfo() {
-        System.out.printf("注文ID: %s, 顧客: %s, 金額: %.2f円, 状態: %s%n",
-                orderId, customerName, totalAmount, status);
-    }
+    // 初期値を持つフィールド
+    String school = "東京大学";    // 学校名（初期値付き）
+    int grade = 1;                // 学年（初期値: 1年生）
 }
 ```
 
-このOrderクラスでは、注文の各状態（受付中→処理中→配送中→完了）が適切に管理され、不正な状態遷移を防ぐロジックが組み込まれています。
+**フィールドの重要なポイント：**
+- フィールドは通常、クラスの最初に宣言します
+- 各フィールドには型（String、int、doubleなど）が必要です
+- 初期値を設定しない場合、デフォルト値が自動的に設定されます
+- フィールド名は意味が分かりやすい名前にします
+
+#### フィールドのデフォルト値
+
+<span class="listing-number">**サンプルコード3-7**</span>
+
+```java
+public class DefaultValueDemo {
+    // 数値型のデフォルト値
+    int intValue;         // 0
+    double doubleValue;   // 0.0
+    
+    // その他の型のデフォルト値
+    boolean boolValue;    // false
+    char charValue;       // '\u0000' (空文字)
+    String stringValue;   // null
+    
+    public void showDefaults() {
+        System.out.println("int: " + intValue);        // 0
+        System.out.println("double: " + doubleValue);  // 0.0
+        System.out.println("boolean: " + boolValue);   // false
+        System.out.println("String: " + stringValue);  // null
+    }
+    
+    public static void main(String[] args) {
+        DefaultValueDemo demo = new DefaultValueDemo();
+        demo.showDefaults();
+    }
+}
+```
 
 ### フィールド（インスタンス変数）の詳細
 
@@ -481,19 +492,41 @@ public class Order {
 アクセス修飾子 データ型 フィールド名 = 初期値;
 ```
 
-<span class="listing-number">**サンプルコード3-7**</span>
+**実際の使用例：**
+
+<span class="listing-number">**サンプルコード3-8**</span>
 
 ```java
-public class Student {
-    // フィールドの宣言例
-    private String name;                    // 初期値なし（nullになる）
-    private int age;                        // 初期値なし（0になる）
-    private double gpa = 0.0;              // 明示的な初期値
-    private boolean isActive = true;        // 明示的な初期値
-    private static int studentCount = 0;    // クラス変数（全インスタンスで共有）
+public class Car {
+    // フィールドの宣言
+    private String model;      // 車種
+    private String color;      // 色  
+    private int year;         // 年式
+    private double mileage;   // 走行距離
     
-    // finalフィールド（変更不可）
-    private final String studentId;         // コンストラクタで初期化必須
+    // コンストラクタでフィールドを初期化
+    public Car(String model, String color, int year) {
+        this.model = model;    // thisは現在のオブジェクトを指す
+        this.color = color;
+        this.year = year;
+        this.mileage = 0.0;    // 新車なので0km
+    }
+    
+    // フィールドを使った処理
+    public void drive(double distance) {
+        if (distance > 0) {
+            mileage += distance;  // 走行距離を更新
+            System.out.println(distance + "km走行しました");
+        }
+    }
+    
+    // フィールドの値を表示
+    public void showInfo() {
+        System.out.println("車種: " + model);
+        System.out.println("色: " + color);
+        System.out.println("年式: " + year + "年");
+        System.out.println("走行距離: " + mileage + "km");
+    }
 }
 ```
 
@@ -509,9 +542,9 @@ public class Student {
 | boolean | false |
 | 参照型（クラス、配列など） | null |
 
-### メソッドの詳細
+### メソッド（操作）の基礎
 
-メソッドは、オブジェクトの振る舞いを定義する関数です。データの処理、状態の変更、情報の取得などの操作を実装します。
+メソッドは、オブジェクトが「できること」を定義します。C言語の関数と似ていますが、オブジェクトに属している点が異なります。
 
 #### メソッドの宣言構文
 
@@ -522,55 +555,103 @@ public class Student {
 }
 ```
 
-<span class="listing-number">**サンプルコード3-8**</span>
+<span class="listing-number">**サンプルコード3-9**</span>
 
 ```java
-public class Calculator {
-    private double result;
+public class Rectangle {
+    // フィールド
+    private double width;
+    private double height;
     
-    // 戻り値なし（void）のメソッド
-    public void reset() {
-        result = 0.0;
+    // コンストラクタ（特別なメソッド）
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
     }
     
-    // 引数を受け取り、戻り値を返すメソッド
-    public double add(double a, double b) {
-        result = a + b;
-        return result;
+    // 戻り値があるメソッド
+    public double calculateArea() {
+        return width * height;
     }
     
-    // 複数の引数を受け取るメソッド
-    public double calculateAverage(double[] numbers) {
-        if (numbers.length == 0) {
-            return 0.0;
+    // 戻り値があるメソッド
+    public double calculatePerimeter() {
+        return 2 * (width + height);
+    }
+    
+    // 戻り値がないメソッド（void）
+    public void displayInfo() {
+        System.out.println("幅: " + width);
+        System.out.println("高さ: " + height);
+        System.out.println("面積: " + calculateArea());
+        System.out.println("周囲: " + calculatePerimeter());
+    }
+    
+    // 引数を受け取るメソッド
+    public void resize(double factor) {
+        if (factor > 0) {
+            width *= factor;
+            height *= factor;
+            System.out.println(factor + "倍にリサイズしました");
         }
-        double sum = 0.0;
-        for (double num : numbers) {
-            sum += num;
-        }
-        return sum / numbers.length;
     }
-    
-    // 現在の状態を返すメソッド
-    public double getResult() {
-        return result;
+}
+
+// 使用例
+public class RectangleExample {
+    public static void main(String[] args) {
+        // オブジェクトの作成
+        Rectangle rect = new Rectangle(10.0, 5.0);
+        
+        // メソッドの呼び出し
+        rect.displayInfo();
+        
+        // メソッドの戻り値を使用
+        double area = rect.calculateArea();
+        System.out.println("面積は" + area + "です");
+        
+        // 引数付きメソッドの呼び出し
+        rect.resize(2.0);
+        rect.displayInfo();
     }
 }
 ```
 
-#### メソッドの種類と役割
+#### メソッドの種類
 
-1. **コンストラクタ**: オブジェクトの初期化を行う特殊なメソッド
-2. **アクセサメソッド（getter）**: フィールドの値を取得するメソッド
-3. **ミューテータメソッド（setter）**: フィールドの値を設定するメソッド
-4. **ビジネスロジックメソッド**: オブジェクトの主要な機能を実装するメソッド
-5. **ユーティリティメソッド**: 補助的な処理を行うprivateメソッド
+**1. 戻り値がないメソッド（voidメソッド）**
+```java
+public void printMessage() {
+    System.out.println("こんにちは！");
+}
+```
+
+**2. 戻り値があるメソッド**
+```java
+public int add(int a, int b) {
+    return a + b;  // int型の値を返す
+}
+```
+
+**3. 引数がないメソッド**
+```java
+public void showTime() {
+    System.out.println("現在時刻: " + new Date());
+}
+```
+
+**4. 複数の引数を持つメソッド**
+```java
+public double calculateBMI(double weight, double height) {
+    return weight / (height * height);
+}
+```
 
 ### getter/setterメソッドの基本
 
 オブジェクト指向プログラミングでは、フィールドをprivateにして直接アクセスを禁止し、publicメソッドを通じてアクセスする方法が推奨されます。これをアクセサメソッド（getter/setter）パターンと呼びます。
 
-<span class="listing-number">**サンプルコード3-9**</span>
+<span class="listing-number">**サンプルコード3-10**</span>
 
 ```java
 public class Person {
@@ -612,43 +693,82 @@ public class Person {
 
 > **注意**: すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。本当に外部からアクセスが必要なフィールドにのみ提供し、可能な限りオブジェクトの内部状態は隠蔽することが良い設計です。
 
-### mainメソッドとプログラムの実行
+### コンストラクタ（初期化メソッド）
 
-実際にOrderクラスを使用して、注文のライフサイクル全体をシミュレートしてみましょう。このデモンストレーションでは、オブジェクトの生成から各状態変化までの一連の流れを確認できます。
+コンストラクタは、オブジェクトを作成するときに自動的に呼ばれる特別なメソッドです。
 
-<span class="listing-number">**サンプルコード3-10**</span>
+<span class="listing-number">**サンプルコード3-11**</span>
 
 ```java
-public class OrderDemo {
+public class Book {
+    private String title;
+    private String author;
+    private int pages;
+    
+    // コンストラクタ（クラス名と同じ名前）
+    public Book(String title, String author, int pages) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+    }
+    
+    // デフォルトコンストラクタ（引数なし）
+    public Book() {
+        this.title = "未設定";
+        this.author = "不明";
+        this.pages = 0;
+    }
+    
+    public void displayInfo() {
+        System.out.println("タイトル: " + title);
+        System.out.println("著者: " + author);
+        System.out.println("ページ数: " + pages);
+    }
+}
+}
+```
+
+### メソッドオーバーロード（同じ名前のメソッド）
+
+Javaでは、同じ名前のメソッドを複数定義できます。これを「メソッドオーバーロード」と呼びます。
+
+<span class="listing-number">**サンプルコード3-12**</span>
+
+```java
+public class PrintHelper {
+    // 文字列を出力
+    public void print(String message) {
+        System.out.println(message);
+    }
+    
+    // 整数を出力
+    public void print(int number) {
+        System.out.println("数値: " + number);
+    }
+    
+    // 2つの値を出力
+    public void print(String label, int value) {
+        System.out.println(label + ": " + value);
+    }
+}
+
+// 使用例
+public class OverloadExample {
     public static void main(String[] args) {
-        // オブジェクトの生成
-        Order order1 = new Order("ORD-001", "田中太郎", 15800);
+        PrintHelper helper = new PrintHelper();
         
-        // 注文のライフサイクルをシミュレート
-        order1.displayInfo();
-        
-        order1.processOrder();
-        order1.displayInfo();
-        
-        order1.ship();
-        order1.displayInfo();
-        
-        order1.complete();
-        order1.displayInfo();
+        // 同じprintという名前だが、引数によって異なるメソッドが呼ばれる
+        helper.print("こんにちは");          // String版
+        helper.print(42);                   // int版
+        helper.print("年齢", 20);           // String, int版
     }
 }
 ```
 
-実行結果：
-```
-注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 受付中
-注文 ORD-001 の処理を開始しました
-注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 処理中
-注文 ORD-001 を発送しました
-注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 配送中
-注文 ORD-001 が完了しました
-注文ID: ORD-001, 顧客: 田中太郎, 金額: 15800.00円, 状態: 完了
-```
+**メソッドオーバーロードのポイント：**
+- 引数の数や型が異なれば、同じ名前のメソッドを作れる
+- Javaが自動的に適切なメソッドを選んで実行する
+- コードが読みやすくなる
 
 ## 3.5 実用的なクラス設計例
 
@@ -656,7 +776,7 @@ public class OrderDemo {
 
 図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
-<span class="listing-number">**サンプルコード3-11**</span>
+<span class="listing-number">**サンプルコード3-13**</span>
 
 ```java
 public class Book {
@@ -697,7 +817,7 @@ public class Book {
 
 ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
 
-<span class="listing-number">**サンプルコード3-12**</span>
+<span class="listing-number">**サンプルコード3-14**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1044,277 +1164,186 @@ public class BookTest {
 **実行時の動作理解：**
 このプログラムを実行すると、メモリ上に2つの独立したBookオブジェクトが作成され、それぞれが異なる本の情報を保持します。price変更後のbook1は新しい価格情報を保持し続け、これによりオブジェクトの「状態を持つ」という特性を実感できます。
 
-## 3.8 カプセル化
+## 3.8 publicとprivate - アクセス修飾子の基本
 
-カプセル化は、オブジェクト指向プログラミングの最も重要な原則の1つです。この概念は、関連するデータと処理を1つの単位にまとめ、外部からの不適切なアクセスを制限することで、システムの安全性と保守性を大幅に向上させます。
+ここまでの例では、フィールドやメソッドの前に`public`や`private`というキーワードを使ってきました。これらは「アクセス修飾子」と呼ばれ、クラスのメンバー（フィールドやメソッド）へのアクセスを制御する重要な仕組みです。
 
-カプセル化の本質は「情報隠蔽」と「責任の局所化」であり、これにより以下の利益を得られます：
-- データの整合性保護（不正な状態への変更を防ぐ）
-- 変更の影響範囲の局所化（内部実装を変更しても外部への影響を最小限に抑える）
-- 再利用性の向上（明確なインターフェイスを通じた利用）
+### アクセス修飾子の基本的な使い分け
 
-### アクセス修飾子とカプセル化の段階的理解
+3章では、最も基本的な2つのアクセス修飾子について学習します：
 
-カプセル化の重要性を理解するために、段階的に設計を改善していく例を見てみましょう。
+**1. public修飾子**
+- どこからでもアクセス可能
+- 他のクラスから自由に使用できる
+- 主にメソッドで使用（クラスの機能を外部に公開）
 
-#### 段階1: カプセル化なし（問題のある設計）
-
-まず、カプセル化されていない設計から始めます：
+**2. private修飾子**
+- 同じクラス内からのみアクセス可能
+- 外部から直接アクセスできない
+- 主にフィールドで使用（データを保護）
 
 <span class="listing-number">**サンプルコード3-16**</span>
 
 ```java
-// 悪い例：カプセル化されていない銀行口座
-public class BankAccountV1 {
-    public String accountNumber;  // public: 誰でも変更可能
-    public double balance;        // public: 残高を直接操作可能
+public class Student {
+    // privateフィールド - クラス内部でのみアクセス可能
+    private String name;
+    private int age;
+    private double gpa;
     
-    public BankAccountV1(String accountNumber, double initialBalance) {
-        this.accountNumber = accountNumber;
-        this.balance = initialBalance;
+    // publicコンストラクタ - 外部からオブジェクト作成可能
+    public Student(String name, int age, double gpa) {
+        this.name = name;
+        this.age = age;
+        this.gpa = gpa;
     }
-}
-
-// 使用例（問題のある使い方）
-public class ProblemExample {
-    public static void main(String[] args) {
-        BankAccountV1 account = new BankAccountV1("12345", 1000.0);
-        
-        // 問題：残高を直接操作できてしまう
-        account.balance = -500.0;  // 負の残高！
-        account.accountNumber = "";  // 口座番号を空に！
-        
-        // 問題：取引履歴が残らない
-        account.balance += 1000.0;  // 誰がいつ入金したか不明
+    
+    // publicメソッド - 外部から呼び出し可能
+    public void introduce() {
+        System.out.println("私は" + name + "です。" + age + "歳です。");
+    }
+    
+    // privateメソッド - クラス内部でのみ使用
+    private boolean isAdult() {
+        return age >= 20;
+    }
+    
+    // publicメソッドからprivateメソッドを呼び出す
+    public void checkStatus() {
+        if (isAdult()) {
+            System.out.println("成人です");
+        } else {
+            System.out.println("未成年です");
+        }
     }
 }
 ```
 
-**この設計の問題点：**
-- データの整合性が保証されない（負の残高、空の口座番号）
-- ビジネスルールを強制できない
-- 変更履歴が追跡できない
-- 誤った使用方法を防げない
+### なぜprivateを使うのか？
 
-#### 段階2: 基本的なカプセル化
-
-privateキーワードとメソッドを使って基本的なカプセル化を実装：
+フィールドをprivateにする理由を具体例で見てみましょう：
 
 <span class="listing-number">**サンプルコード3-17**</span>
 
 ```java
-// 改善例：基本的なカプセル化
-public class BankAccountV2 {
-    private String accountNumber;
-    private double balance;
-    
-    public BankAccountV2(String accountNumber, double initialBalance) {
-        this.accountNumber = accountNumber;
-        this.balance = initialBalance;
-    }
-    
-    // 入金メソッド
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-        }
-    }
-    
-    // 出金メソッド
-    public boolean withdraw(double amount) {
-        if (amount > 0 && balance >= amount) {
-            balance -= amount;
-            return true;
-        }
-        return false;
-    }
-    
-    // 残高照会
-    public double getBalance() {
-        return balance;
+public class Product {
+    // publicフィールドの問題点
+    public double price;     // 誰でも直接変更できる
+    public int stock;        // 在庫数も自由に変更可能
+}
+
+// 使用例（問題のある使い方）
+public class BadExample {
+    public static void main(String[] args) {
+        Product product = new Product();
+        
+        // 問題1: 負の価格を設定できてしまう
+        product.price = -100.0;
+        
+        // 問題2: 在庫数を不正に操作できる
+        product.stock = -50;
+        
+        // 問題3: データの整合性が保てない
+        product.stock = 1000000;  // 現実的でない在庫数
     }
 }
 ```
 
-**改善された点：**
-- フィールドがprivateで保護されている
-- メソッドを通じてのみ操作可能
-- 基本的な検証ロジックを実装
-
-#### 段階3: 完全なカプセル化（エンタープライズレベル）
-
-実際の業務システムで求められるレベルのカプセル化：
-
-<span class="listing-number">**サンプルコード3-18**</span>
+**privateを使った改善例：**
 
 ```java
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-public class BankAccountV3 {
-    private final String accountNumber;  // finalで不変性を保証
-    private double balance;
-    private final List<Transaction> transactions;
-    private boolean isActive;
+public class Product {
+    // privateフィールド - 直接アクセスできない
+    private double price;
+    private int stock;
     
-    public BankAccountV3(String accountNumber, double initialBalance) {
-        // コンストラクタでも検証
-        if (!isValidAccountNumber(accountNumber)) {
-            throw new IllegalArgumentException("無効な口座番号です");
-        }
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+    // コンストラクタで初期値を設定
+    public Product(double price, int stock) {
+        // 初期値の検証も可能
+        if (price < 0) {
+            this.price = 0;
+        } else {
+            this.price = price;
         }
         
-        this.accountNumber = accountNumber;
-        this.balance = initialBalance;
-        this.transactions = new ArrayList<>();
-        this.isActive = true;
-        
-        // 初期取引を記録
-        transactions.add(new Transaction(
-            TransactionType.INITIAL_DEPOSIT, 
-            initialBalance, 
-            LocalDateTime.now()
-        ));
-    }
-    
-    public synchronized void deposit(double amount) {
-        validateAccountActive();
-        if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要があります");
-        }
-        
-        balance += amount;
-        transactions.add(new Transaction(
-            TransactionType.DEPOSIT, 
-            amount, 
-            LocalDateTime.now()
-        ));
-    }
-    
-    public synchronized boolean withdraw(double amount) {
-        validateAccountActive();
-        if (amount <= 0) {
-            throw new IllegalArgumentException("出金額は正の値である必要があります");
-        }
-        
-        if (balance < amount) {
-            return false;  // 残高不足
-        }
-        
-        balance -= amount;
-        transactions.add(new Transaction(
-            TransactionType.WITHDRAWAL, 
-            amount, 
-            LocalDateTime.now()
-        ));
-        return true;
-    }
-    
-    // イミュータブルな取引履歴を返す
-    public List<Transaction> getTransactionHistory() {
-        return new ArrayList<>(transactions);  // 防御的コピー
-    }
-    
-    // アカウントの凍結
-    public void freeze() {
-        this.isActive = false;
-    }
-    
-    private void validateAccountActive() {
-        if (!isActive) {
-            throw new IllegalStateException("この口座は凍結されています");
+        if (stock < 0) {
+            this.stock = 0;
+        } else {
+            this.stock = stock;
         }
     }
     
-    private static boolean isValidAccountNumber(String accountNumber) {
-        return accountNumber != null && accountNumber.matches("\\d{10}");
-    }
-    
-    // 内部クラスで取引を表現
-    public static class Transaction {
-        private final TransactionType type;
-        private final double amount;
-        private final LocalDateTime timestamp;
-        
-        private Transaction(TransactionType type, double amount, LocalDateTime timestamp) {
-            this.type = type;
-            this.amount = amount;
-            this.timestamp = timestamp;
+    // publicメソッドを通じて安全にアクセス
+    public void updatePrice(double newPrice) {
+        if (newPrice >= 0) {
+            price = newPrice;
+            System.out.println("価格を更新しました: " + price + "円");
+        } else {
+            System.out.println("エラー: 価格は0円以上である必要があります");
         }
-        
-        // getterのみ提供（イミュータブル）
-        public TransactionType getType() { return type; }
-        public double getAmount() { return amount; }
-        public LocalDateTime getTimestamp() { return timestamp; }
     }
     
-    public enum TransactionType {
-        INITIAL_DEPOSIT, DEPOSIT, WITHDRAWAL
+    public void addStock(int amount) {
+        if (amount > 0) {
+            stock += amount;
+            System.out.println("在庫を追加しました。現在の在庫: " + stock);
+        }
+    }
+    
+    public boolean sell(int amount) {
+        if (amount > 0 && stock >= amount) {
+            stock -= amount;
+            System.out.println("販売しました。残り在庫: " + stock);
+            return true;
+        }
+        System.out.println("在庫が不足しています");
+        return false;
     }
 }
 ```
 
-**エンタープライズレベルのカプセル化の特徴：**
-1. **完全な検証**：すべての入力を検証
-2. **イミュータビリティ**：変更不可能なフィールドはfinalで宣言
-3. **防御的コピー**：内部状態を返す際はコピーを返す
-4. **スレッドセーフティ**：synchronizedで同時アクセスを制御
-5. **監査証跡**：すべての操作を記録
-6. **状態管理**：アカウントの有効/無効状態を管理
 
-このように、カプセル化は単にprivateを使うだけでなく、システムの要求に応じて適切なレベルで実装する必要があります。
+## 3.9 static修飾子の基本
 
-## 3.9 static修飾子：インスタンス不要の共有メンバー
+これまで学習したフィールドやメソッドは、`new`でオブジェクトを作ってから使用していました。しかし、`static`修飾子を付けると、オブジェクトを作らなくても使えるようになります。
 
-これまでに見てきたクラスのフィールドやメソッドは、すべて`new`キーワードによってオブジェクト（インスタンス）を生成してからでないと利用できませんでした。これらを「**インスタンスメンバー**」と呼びます。
+### staticメソッドの例
 
-しかし、Javaにはインスタンスを生成しなくても利用できる特別なメンバーが存在します。それが`static`修飾子を付けた「**クラスメンバー**」または「**静的メンバー**」です。
+<span class="listing-number">**サンプルコード3-17**</span>
 
-### インスタンスメンバー vs クラスメンバー
+```java
+public class MathHelper {
+    // staticメソッド - オブジェクトを作らずに使える
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static double calculateCircleArea(double radius) {
+        return 3.14159 * radius * radius;
+    }
+}
 
-この2つの違いを理解することは、オブジェクト指向プログラミングにおいて非常に重要です。
-
-*   **インスタンスメンバー（`static`なし）**
-    *   **所有者**: 個々のインスタンス
-    *   **メモリ**: インスタンスが生成されるたびに、そのインスタンス専用の領域が確保される。
-    *   **アクセス**: `インスタンス変数名.メンバー名`
-    *   **比喩**:「**住宅の各戸が持つ家具**」。Aさんの家のテーブルとBさんの家のテーブルは別物です。
-
-*   **クラスメンバー（`static`あり）**
-    *   **所有者**: クラスそのもの
-    *   **メモリ**: クラスがロードされる時に一度だけ、クラス共有の領域が確保される。
-    *   **アクセス**: `クラス名.メンバー名`
-    *   **比喩**:「**マンションの共有掲示板**」。どの部屋の住人が見ても、掲示板は1つであり、そこに書かれた情報は全住人で共有されます。
-
-### メモリ上のイメージ
-
-```
-【メモリ空間】
-+-----------------------------------------------------------------+
-| **クラス領域（共有）**                                          |
-| +-------------------------------------------------------------+ |
-| | **Toolクラス**                                              | |
-| |   `static String sharedInfo = "共有情報";`  <-- 1つだけ存在 | |
-| |   `static void showSharedInfo()`                           | |
-| +-------------------------------------------------------------+ |
-+-----------------------------------------------------------------+
-| **ヒープ領域（インスタンスごと）**                              |
-| +---------------------------+ +---------------------------+     |
-| | **tool1インスタンス**     | | **tool2インスタンス**     |     |
-| | `String instanceName;`    | | `String instanceName;`    |     |
-| | `void showInstanceName()` | | `void showInstanceName()` |     |
-| +---------------------------+ +---------------------------+     |
-+-----------------------------------------------------------------+
+// 使用例
+public class StaticExample {
+    public static void main(String[] args) {
+        // newを使わずに直接呼び出し
+        int sum = MathHelper.add(5, 3);
+        System.out.println("合計: " + sum);
+        
+        double area = MathHelper.calculateCircleArea(10.0);
+        System.out.println("円の面積: " + area);
+    }
+}
 ```
 
-### `static`メンバーの実践例
+**staticの特徴：**
+- クラス名.メソッド名()で呼び出す
+- オブジェクトを作る必要がない
+- ユーティリティメソッドに便利
 
-`static`フィールドと`static`メソッドの具体的な使い方を見てみましょう。
+### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-19**</span>
+<span class="listing-number">**サンプルコード3-18**</span>
 
 ```java
 // StaticMemberExample.java
@@ -1382,109 +1411,21 @@ public class StaticMemberExample {
 作成されたツールの総数は 2 です。
 ```
 
-### `static`の重要な制約
+### staticを使う場面
 
-`static`メソッド内では、以下の制約があります：
+staticは主に以下の場面で使用します：
 
-1. **インスタンスメンバーにアクセスできない**: `this`キーワードを使うことができず、インスタンスフィールドやインスタンスメソッドを直接呼び出せません。
-2. **staticメンバーのみアクセス可能**: staticメソッドやstaticフィールドのみ使用できます。
+1. **ユーティリティメソッド**: 計算や変換などの汎用的な処理
+2. **共有カウンタ**: すべてのインスタンスで共有する値
+3. **定数の定義**: 変更されない固定値
 
-以下の例で、staticメソッドでのアクセス制約を具体的に確認できます。インスタンスメンバーへのアクセスはコンパイルエラーとなります。
+### staticの注意点
 
-<span class="listing-number">**サンプルコード3-20**</span>
+- staticメソッド内では`this`は使えません
+- staticメソッドからインスタンスフィールドにアクセスできません
+- 使いすぎるとオブジェクト指向の利点が失われます
 
-```java
-class Example {
-    String instanceField = "インスタンス";
-    static String staticField = "スタティック";
-
-    void instanceMethod() {
-        System.out.println(instanceField);  // OK
-        System.out.println(staticField);    // OK
-    }
-
-    static void staticMethod() {
-        // System.out.println(instanceField);  // エラー！
-        System.out.println(staticField);        // OK
-        // instanceMethod();                    // エラー！
-    }
-}
-```
-
-### `static`の実用的な使用例
-
-#### 1. ユーティリティクラス
-
-数学関数や文字列処理など、状態を持たない汎用的な処理を提供するクラス：
-
-<span class="listing-number">**サンプルコード3-21**</span>
-
-```java
-public class MathUtils {
-    // privateコンストラクタでインスタンス化を防ぐ
-    private MathUtils() {}
-
-    public static double calculateCircleArea(double radius) {
-        return Math.PI * radius * radius;
-    }
-
-    public static int factorial(int n) {
-        if (n <= 1) return 1;
-        return n * factorial(n - 1);
-    }
-}
-
-// 使用例
-double area = MathUtils.calculateCircleArea(5.0);
-```
-
-#### 2. 定数の定義
-
-プログラム全体で共有される定数値：
-
-<span class="listing-number">**サンプルコード3-22**</span>
-
-```java
-public class Constants {
-    public static final double TAX_RATE = 0.10;  // 消費税率
-    public static final int MAX_RETRY_COUNT = 3;  // 最大リトライ回数
-    public static final String DEFAULT_ENCODING = "UTF-8";
-}
-```
-
-#### 3. Singletonパターン
-
-アプリケーション全体で1つしか存在しないインスタンスを保証する設計パターン：
-
-<span class="listing-number">**サンプルコード3-23**</span>
-
-```java
-public class DatabaseConnection {
-    private static DatabaseConnection instance;
-
-    private DatabaseConnection() {
-        // プライベートコンストラクタ
-    }
-
-    public static DatabaseConnection getInstance() {
-        if (instance == null) {
-            instance = new DatabaseConnection();
-        }
-        return instance;
-    }
-}
-```
-
-### `static`使用時のベストプラクティス
-
-1. **過度な使用を避ける**: `static`を多用するとオブジェクト指向の利点が失われます
-2. **状態を持たない処理に使用**: ユーティリティメソッドなど、インスタンスの状態に依存しない処理に適しています
-3. **定数にはfinalと併用**: 変更不可能な定数には`static final`を使用します
-4. **スレッドセーフティに注意**: staticフィールドは全スレッドで共有されるため、同期処理が必要な場合があります
-
-### まとめ
-
-`static`修飾子は、クラスレベルでデータや機能を共有する強力な機能です。しかし、オブジェクト指向プログラミングの本質は「データと振る舞いをカプセル化したオブジェクトの相互作用」にあるため、`static`の使用は慎重に行うべきです。適切に使用することで、より効率的で保守性の高いプログラムを作成できます。
+staticの詳細な使い方や設計パターンについては、第7章以降でさらに詳しく学習します。
 
 
 
@@ -1504,7 +1445,7 @@ public class DatabaseConnection {
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-24**</span>
+<span class="listing-number">**サンプルコード3-19**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -1526,7 +1467,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-25**</span>
+<span class="listing-number">**サンプルコード3-20**</span>
 
 ```java
 public class StudentArrayExample {
@@ -1560,7 +1501,7 @@ public class StudentArrayExample {
 
 オブジェクト配列を操作する際の最も重要な注意点は、nullチェックです：
 
-<span class="listing-number">**サンプルコード3-26**</span>
+<span class="listing-number">**サンプルコード3-21**</span>
 
 ```java
 public class NullCheckExample {
@@ -1582,7 +1523,7 @@ public class NullCheckExample {
 
 ### オブジェクト配列とプリミティブ配列の違い
 
-<span class="listing-number">**サンプルコード3-27**</span>
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
 // プリミティブ型の配列
@@ -1676,7 +1617,7 @@ exercises/chapter03/
    - mainメソッドから各メソッドを呼び出して動作確認
 
 **コード構造のヒント**:
-<span class="listing-number">**サンプルコード3-28**</span>
+<span class="listing-number">**サンプルコード3-23**</span>
 
 ```java
 public class MethodsPractice {
@@ -1809,3 +1750,17 @@ public class MethodsPractice {
 - **プログラミングパラダイムの比較**: 手続き型、オブジェクト指向、関数型の差異
 - **オブジェクト指向設計の成功事例**: 実世界での適用例とパターン
 - **関数型プログラミングの数学的基礎**: ラムダ計算、圏論、モナド等
+
+## 次章への橋渡し
+
+本章では、オブジェクト指向プログラミングの基本的な考え方と、クラス・フィールド・メソッドの基本的な書き方を学びました。簡単なgetter/setterメソッドやpublic/privateの使い分けについても触れました。
+
+次章「第4章 クラスとインスタンス」では、より高度なカプセル化技術について学びます。具体的には：
+
+- アクセス修飾子（public、private、protected、パッケージプライベート）の詳細
+- 完全なカプセル化の実現方法（BankAccountの段階的改善例）
+- データ検証とバリデーション
+- 防御的プログラミング
+- パッケージシステムとクラスの組織化
+
+第3章で学んだ基礎をもとに、実践的で堅牢なクラス設計の技術を身につけていきましょう。

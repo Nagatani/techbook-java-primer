@@ -22,117 +22,74 @@
 
 ## 章の構成
 
-本章は、以下のパートで構成されています：
+本章では、以下の内容を学習します：
 
-### [Part A: カプセル化の基礎](chapter04a-encapsulation-basics.md)
-- カプセル化の基本概念
-- アクセス修飾子の詳細
-- getter/setterメソッドのベストプラクティス
-- 実践的なクラス設計例
+1. **カプセル化とアクセス制御**
+   - カプセル化の基本概念
+   - アクセス修飾子の詳細（public、private、protected、パッケージプライベート）
+   - データ保護の重要性
 
-### [Part B: 章末演習](chapter04b-exercises.md)
-- 基礎レベル課題：カプセル化の基本実践
-- 応用レベル課題：複数クラスの連携
-- 発展レベル課題：設計パターンの適用
-- 挑戦レベル課題：実務レベルのシステム設計
+2. **実践的なクラス設計**
+   - 銀行口座クラスの段階的改善（V0→V1→V2→V3）
+   - getter/setterメソッドのベストプラクティス
+   - データ検証とバリデーション
 
-## 学習の進め方
+3. **コンストラクタとオブジェクト生成**
+   - コンストラクタの役割と種類
+   - thisキーワードの活用
+   - オーバーロードによる柔軟な初期化
 
-1. Part Aで基本概念と実装方法を学習
-2. 各パートのサンプルコードを実際に動かして理解を深める
-3. Part Bの演習課題に段階的に取り組む
-4. 解答例と比較して、より良い設計を学ぶ
+4. **パッケージシステム**
+   - パッケージの概念と命名規則
+   - import文の使い方
+   - クラスの組織化
 
-## 基本的なクラスとインスタンスの例
-
-本章の詳細な内容はPart Aで扱いますが、ここでは基本的なクラスとインスタンスの関係を簡単な例で確認しておきましょう：
+## はじめに：なぜカプセル化が重要なのか
 
 ### 銀行口座クラスの復習と発展
 
-第2章で基本的なBankAccountクラスを紹介し、第3章でカプセル化の段階的な改善（V1→V2→V3）を学習しました。ここでは、これまでの学習内容を踏まえて、クラスとインスタンスの関係をより深く理解していきましょう。
+第3章では基本的なクラスの作り方を学習しました。本章では、実践的なカプセル化の技術を、銀行口座クラスの段階的な改善を通じて学んでいきます。
 
-第3章で学習したBankAccountV3クラスを振り返ると、以下の大切な設計原則が適用されていました：
-
-- **カプセル化**: privateフィールドとpublicメソッドによるデータ保護
-- **不変性**: finalキーワードによる口座番号の不変性保証
-- **検証**: コンストラクタとメソッドでの入力値検証
-- **履歴管理**: トランザクション履歴の記録
-
-これらの原則を基に、本章では以下の観点からクラス設計をさらに深めていきます：
+まずは、カプセル化を適用していない問題のあるクラスから始めて、段階的に改善していく過程を見ていきましょう：
 
 <span class="listing-number">**サンプルコード4-1**</span>
 
 ```java
-// 使用例：第3章のBankAccountV3クラスを使った実例
-public class BankAccountDemo {
+// 初期バージョン：カプセル化なし（問題のある設計）
+public class BankAccountV0 {
+    public String accountNumber;
+    public double balance;
+    
+    public BankAccountV0(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+}
+
+// 使用例
+public class ProblemDemo {
     public static void main(String[] args) {
-        // インスタンスの作成（第3章のBankAccountV3を使用）
-        // BankAccountV3 myAccount = new BankAccountV3("1234567890", 10000);
+        BankAccountV0 account = new BankAccountV0("123456", 10000);
         
-        // この章では、より高度なクラス設計パターンを学習します
-        System.out.println("クラスとインスタンスの関係を深く理解しましょう");
+        // 問題1: 直接残高を変更できてしまう
+        account.balance = -1000;  // 不正な値の設定が可能
+        
+        // 問題2: 口座番号を後から変更できてしまう
+        account.accountNumber = "999999";  // 口座番号の改ざん
+        
+        // 問題3: 取引履歴が残らない
+        account.balance += 5000;  // 入金の記録がない
     }
 }
 ```
 
-**このコードのポイント**：
-- **カプセル化**: インスタンス変数はprivateで保護され、publicメソッドを通じてのみアクセス可能
-- **コンストラクタ**: オブジェクト生成時に必要な初期化を行う
-- **インスタンスメソッド**: オブジェクトの状態を操作する振る舞いを定義
-- **バリデーション**: メソッド内で適切な値の検証を行い、不正な操作を防ぐ
+**このコードの問題点**：
+- **カプセル化の欠如**: すべてのフィールドがpublicで、外部から自由にアクセス・変更可能
+- **データの整合性**: 不正な値（負の残高など）を防ぐ仕組みがない
+- **変更の追跡**: 誰がいつ値を変更したか記録できない
+- **ビジネスルールの実装場所**: 入出金のルールをクラス外部で実装する必要がある
 
-本章を通じて、「データと処理の適切な組み合わせ」という設計手法を実践的に身につけていきましょう。これはオブジェクト指向プログラミングで重視される考え方の一つですが、関数型プログラミングやデータ指向プログラミングなど、他のパラダイムでも異なる形で実現されています。
-
-
-
-<!-- Merged from chapter04a-encapsulation-basics.md -->
-
-
-## 本章の学習目標
-
-### 前提知識
-**基本的な前提**：
-- 第3章のオブジェクト指向基礎概念の理解
-- 基本的なクラス設計と実装の経験
-- カプセル化の実践的な理解
-
-**設計経験前提**：
-- 複数のクラスを含むプログラムの作成経験
-- オブジェクト間の関係性の実装経験
-
-### 学習目標
-**知識理解目標**：
-- クラスとインスタンス（オブジェクト）の関係性
-- コンストラクタの役割と種類
-- インスタンス変数とインスタンスメソッドの概念
-- thisキーワードの意味と使用法
-- メソッドオーバーロードの概念
-
-**技能習得目標**：
-- クラスの基本構造（フィールド、メソッド、コンストラクタ）の実装
-- 適切なコンストラクタの定義
-- thisキーワードを使った明確なコード記述
-- メソッドオーバーロードの効果的な活用
-- インスタンス変数の適切な初期化
-
-**設計能力目標**：
-- 責任が明確なクラスの設計
-- 適切なカプセル化による情報隠蔽
-- 使いやすいクラスインターフェイスの設計
-
-**到達レベルの指標**：
-- 実世界の概念をクラスとして適切に設計・実装できる
-- 複数のコンストラクタを持つクラスが作成できる
-- インスタンス変数とメソッドを適切に組み合わせたクラスが実装できる
-- 他のクラスから利用しやすいクラスが設計できる
-
-
-
-## 始めに：クラス設計の実践とカプセル化
-
-前章では、オブジェクト指向プログラミングの基本概念について学習しました。本章では、実践的なクラス設計とカプセル化の技術について詳細に学習します。
-
-クラス設計は、単なるコードの書き方ではありません。データと処理を適切に組み合わせ、保守性と拡張性の高いソフトウェアを構築するための重要な技術です。
+これらの問題を解決するために、カプセル化という技術を使います。本章では、このBankAccountクラスを段階的に改善しながら、実践的なカプセル化の技術を身につけていきます。
 
 ## カプセル化とアクセス制御
 
@@ -326,14 +283,177 @@ public class Employee {
 
 ## 実践的なクラス設計例
 
-### 銀行口座クラスの発展的な設計
+### 銀行口座クラスの段階的な改善
 
-第3章で学習したBankAccountの段階的な改善（V1→V2→V3）を踏まえて、本章では更に高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です：
+先ほどの問題のあるBankAccountV0を、カプセル化の原則に従って段階的に改善していきましょう。
+
+#### ステップ1: 基本的なカプセル化（BankAccountV1）
+
+まず、フィールドをprivateにして、publicメソッドを通じてのみアクセスできるようにします：
 
 <span class="listing-number">**サンプルコード4-8**</span>
 
 ```java
-// 第3章のBankAccountV3をさらに発展させた設計例
+public class BankAccountV1 {
+    private String accountNumber;
+    private double balance;
+    
+    public BankAccountV1(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+    
+    public void deposit(double amount) {
+        balance += amount;
+    }
+    
+    public void withdraw(double amount) {
+        balance -= amount;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+}
+```
+
+**改善点**：
+- フィールドがprivateになり、直接アクセスできない
+- メソッドを通じてのみ操作可能
+
+**残る問題**：
+- 負の金額でも入金・出金できてしまう
+- 残高不足でも出金できてしまう
+- 初期残高が負の値でも設定できる
+
+#### ステップ2: 基本的な検証を追加（BankAccountV2）
+
+<span class="listing-number">**サンプルコード4-9**</span>
+
+```java
+public class BankAccountV2 {
+    private String accountNumber;
+    private double balance;
+    
+    public BankAccountV2(String accountNumber, double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+        }
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+    
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は正の値である必要があります");
+        }
+        balance += amount;
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        if (balance >= amount) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+}
+```
+
+**改善点**：
+- コンストラクタで初期値を検証
+- 入金時に金額を検証
+- 出金時に残高と金額を確認
+
+**残る問題**：
+- 口座番号が後から変更可能（getterがない）
+- 取引履歴が残らない
+- 口座番号の検証がない
+
+#### ステップ3: 完全なカプセル化（BankAccountV3）
+
+<span class="listing-number">**サンプルコード4-10**</span>
+
+```java
+import java.util.*;
+
+public class BankAccountV3 {
+    private final String accountNumber;  // finalで不変にする
+    private double balance;
+    private List<String> transactionHistory;
+    
+    public BankAccountV3(String accountNumber, double initialBalance) {
+        // 口座番号の検証
+        if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("口座番号は必須です");
+        }
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+        }
+        
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+        this.transactionHistory = new ArrayList<>();
+        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance + "円");
+    }
+    
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は正の値である必要があります");
+        }
+        balance += amount;
+        transactionHistory.add("入金: " + amount + "円");
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        if (balance >= amount) {
+            balance -= amount;
+            transactionHistory.add("出金: " + amount + "円");
+            return true;
+        }
+        transactionHistory.add("出金失敗（残高不足）: " + amount + "円");
+        return false;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    // 防御的コピーで履歴を返す
+    public List<String> getTransactionHistory() {
+        return new ArrayList<>(transactionHistory);
+    }
+}
+```
+
+**完成した設計の特徴**：
+- **不変性**: 口座番号はfinalで変更不可
+- **完全な検証**: すべての入力を検証
+- **履歴管理**: すべての取引を記録
+- **防御的コピー**: 内部リストの参照を外部に漏らさない
+
+### 銀行口座クラスのさらなる発展
+
+BankAccountV3の設計を基に、本章ではさらに高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です：
+
+<span class="listing-number">**サンプルコード4-11**</span>
+
+```java
+// BankAccountV3をさらに発展させた設計例
 public class EnhancedBankAccount extends BankAccountV3 {
     // 追加のフィールド：口座の状態管理
     private AccountStatus status;
@@ -436,7 +556,7 @@ Javaにおけるパッケージは、関連するクラスやインターフェ�
 
 Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています：
 
-<span class="listing-number">**サンプルコード4-9**</span>
+<span class="listing-number">**サンプルコード4-12**</span>
 
 ```java
 // ドメイン名: example.com
@@ -477,7 +597,7 @@ src/
 
 パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します：
 
-<span class="listing-number">**サンプルコード4-10**</span>
+<span class="listing-number">**サンプルコード4-13**</span>
 
 ```java
 // 完全限定名での使用
@@ -503,7 +623,7 @@ import java.util.*;  // java.utilパッケージのすべてのクラスをイ�
 ```
 
 3. **静的インポート**：
-<span class="listing-number">**サンプルコード4-11**</span>
+<span class="listing-number">**サンプルコード4-14**</span>
 
 ```java
 import static java.lang.Math.PI;
@@ -517,7 +637,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です：
 
-<span class="listing-number">**サンプルコード4-12**</span>
+<span class="listing-number">**サンプルコード4-15**</span>
 
 ```java
 import java.util.*;
@@ -542,7 +662,7 @@ public class Example {
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます：
 
-<span class="listing-number">**サンプルコード4-13**</span>
+<span class="listing-number">**サンプルコード4-16**</span>
 
 ```java
 com.example.myapp/
@@ -560,19 +680,238 @@ com.example.myapp/
 - 適切な粒度: 大きすぎず小さすぎないパッケージサイズ
 - 明確な責任: 各パッケージの役割を明確に定義
 
-これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。次の章では、これらのクラスを組み合わせて、より複雑なオブジェクト指向設計を学習していきます。
+これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
 
-本章を通じて、Javaという言語の持つ型システムの力強さと精密さを理解し、現代のソフトウェア開発者として必要な基礎的な素養を身につけていきましょう。
+## コンストラクタとthisキーワード
 
+### コンストラクタの詳細
 
+コンストラクタは、オブジェクトが生成される際に自動的に呼び出される特殊なメソッドです。クラス名と同じ名前を持ち、戻り値の型を指定しません。
 
-次のパート：[Part B - コンストラクタとthisキーワード](chapter04b-constructors-this.md)
+#### デフォルトコンストラクタ
 
+コンストラクタを一つも定義しない場合、Javaコンパイラは自動的に引数なしのデフォルトコンストラクタを生成します：
 
+<span class="listing-number">**サンプルコード4-17**</span>
 
+```java
+public class Person {
+    private String name;
+    private int age;
+    
+    // コンストラクタを定義しない場合、以下が自動生成される
+    // public Person() {
+    //     super();  // Objectクラスのコンストラクタを呼び出す
+    // }
+}
 
-<!-- Merged from chapter04b-exercises.md -->
+// 使用例
+Person person = new Person();  // デフォルトコンストラクタが呼ばれる
+```
 
+#### 複数のコンストラクタ（オーバーロード）
+
+クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます：
+
+<span class="listing-number">**サンプルコード4-18**</span>
+
+```java
+public class Book {
+    private String title;
+    private String author;
+    private int pages;
+    private double price;
+    
+    // コンストラクタ1：すべてのフィールドを初期化
+    public Book(String title, String author, int pages, double price) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.price = price;
+    }
+    
+    // コンストラクタ2：必須フィールドのみ
+    public Book(String title, String author) {
+        this(title, author, 0, 0.0);  // 他のコンストラクタを呼び出す
+    }
+    
+    // コンストラクタ3：タイトルのみ
+    public Book(String title) {
+        this(title, "Unknown", 0, 0.0);
+    }
+}
+```
+
+### thisキーワードの3つの用法
+
+`this`キーワードには主に3つの用法があります：
+
+#### 1. インスタンス変数の参照
+
+パラメータ名とフィールド名が同じ場合の区別：
+
+<span class="listing-number">**サンプルコード4-19**</span>
+
+```java
+public class Student {
+    private String name;
+    private int grade;
+    
+    public Student(String name, int grade) {
+        this.name = name;    // this.name はフィールド、name はパラメータ
+        this.grade = grade;  // this.grade はフィールド、grade はパラメータ
+    }
+    
+    // thisを省略できる場合（名前が重複しない）
+    public void updateGrade(int newGrade) {
+        grade = newGrade;  // this.grade と同じ
+    }
+}
+```
+
+#### 2. 他のコンストラクタの呼び出し
+
+同じクラス内の別のコンストラクタを呼び出す：
+
+<span class="listing-number">**サンプルコード4-20**</span>
+
+```java
+public class Rectangle {
+    private double width;
+    private double height;
+    
+    // メインコンストラクタ
+    public Rectangle(double width, double height) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("幅と高さは正の値である必要があります");
+        }
+        this.width = width;
+        this.height = height;
+    }
+    
+    // 正方形用のコンストラクタ
+    public Rectangle(double side) {
+        this(side, side);  // 最初の行でなければならない
+    }
+    
+    // デフォルトコンストラクタ
+    public Rectangle() {
+        this(1.0, 1.0);  // 1x1の長方形
+    }
+}
+```
+
+#### 3. 現在のオブジェクトの参照を返す
+
+メソッドチェーンを可能にする流暢なインターフェイス：
+
+<span class="listing-number">**サンプルコード4-21**</span>
+
+```java
+public class MessageBuilder {
+    private String buffer = "";
+    
+    public MessageBuilder append(String str) {
+        buffer += str;
+        return this;  // 自分自身を返す
+    }
+    
+    public MessageBuilder appendLine(String str) {
+        buffer += str + "\n";
+        return this;
+    }
+    
+    public String toString() {
+        return buffer;
+    }
+}
+
+// 使用例：メソッドチェーン
+String result = new MessageBuilder()
+    .append("Hello")
+    .append(" ")
+    .append("World")
+    .appendLine("!")
+    .toString();
+```
+
+### メソッドオーバーロード
+
+メソッドオーバーロードは、同じ名前で異なるパラメータリストを持つ複数のメソッドを定義する機能です：
+
+<span class="listing-number">**サンプルコード4-22**</span>
+
+```java
+public class Calculator {
+    // int型の加算
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    // double型の加算
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    // 3つの数の加算
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+    
+    // 配列の要素の合計
+    public int add(int[] numbers) {
+        int sum = 0;
+        for (int num : numbers) {
+            sum += num;
+        }
+        return sum;
+    }
+}
+```
+
+**オーバーロードの規則**：
+- メソッド名は同じでなければならない
+- パラメータリスト（個数、型、順序）が異なる必要がある
+- 戻り値の型だけが異なる場合はオーバーロードできない
+- アクセス修飾子は異なってもよい
+
+## まとめ
+
+本章では、オブジェクト指向プログラミングの中核となるカプセル化とクラス設計について学習しました。
+
+### 学習した重要概念
+
+1. **カプセル化**
+   - データと処理を1つのクラスにまとめる
+   - privateフィールドとpublicメソッドによるアクセス制御
+   - データの整合性と安全性の確保
+
+2. **アクセス修飾子**
+   - `private`: 同じクラス内のみ
+   - パッケージプライベート（デフォルト）: 同じパッケージ内
+   - `protected`: 同じパッケージまたはサブクラス
+   - `public`: どこからでもアクセス可能
+
+3. **実践的なクラス設計**
+   - BankAccountの段階的改善（V0→V1→V2→V3）
+   - getter/setterによる安全なデータアクセス
+   - バリデーションによるデータ検証
+   - 防御的コピーによる内部状態の保護
+
+4. **コンストラクタとthisキーワード**
+   - デフォルトコンストラクタとカスタムコンストラクタ
+   - コンストラクタオーバーロード
+   - thisキーワードの3つの用法
+   - メソッドオーバーロードによる柔軟なAPI設計
+
+5. **パッケージシステム**
+   - 論理的なクラスの組織化
+   - 名前空間の管理
+   - import文による効率的なクラス利用
+
+### 次章への展望
+
+第5章「継承とポリモーフィズム」では、本章で学んだクラス設計の技術をさらに発展させ、クラス間の関係性を表現する方法を学びます。継承により既存のクラスを拡張し、ポリモーフィズムにより柔軟で拡張性の高いプログラムを作成する技術を習得します。
 
 ## 章末演習
 

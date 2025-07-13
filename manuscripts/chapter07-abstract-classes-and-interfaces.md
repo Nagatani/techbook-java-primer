@@ -921,7 +921,304 @@ class ServiceImpl implements ServiceV3 {
 }
 ```
 
-## 7.7 章末演習
+## 7.7 Factoryパターン：オブジェクト生成の抽象化
+
+### Factoryパターンとは
+
+Factoryパターンは、オブジェクトの生成を専門に行うクラス（ファクトリー）を用意することで、オブジェクト生成のロジックをカプセル化するデザインパターンです。これにより、クライアントコードは具体的なクラスに依存することなく、インターフェイスや抽象クラスを通じてオブジェクトを利用できます。
+
+### Simple Factory パターン
+
+最も基本的なFactoryパターンの実装例を見てみましょう：
+
+<span class="listing-number">**サンプルコード7-16**</span>
+
+```java
+// 共通のインターフェイス
+interface Shape {
+    void draw();
+    double getArea();
+}
+
+// 具体的な実装クラス
+class Circle implements Shape {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("○ 半径 " + radius + " の円を描画");
+    }
+    
+    @Override
+    public double getArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle implements Shape {
+    private double width;
+    private double height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("□ " + width + " x " + height + " の長方形を描画");
+    }
+    
+    @Override
+    public double getArea() {
+        return width * height;
+    }
+}
+
+class Triangle implements Shape {
+    private double base;
+    private double height;
+    
+    public Triangle(double base, double height) {
+        this.base = base;
+        this.height = height;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("△ 底辺 " + base + ", 高さ " + height + " の三角形を描画");
+    }
+    
+    @Override
+    public double getArea() {
+        return base * height / 2;
+    }
+}
+
+// ファクトリークラス
+public class ShapeFactory {
+    public static Shape createShape(String type, double... params) {
+        switch (type.toLowerCase()) {
+            case "circle":
+                if (params.length != 1) {
+                    throw new IllegalArgumentException("円には半径が必要です");
+                }
+                return new Circle(params[0]);
+                
+            case "rectangle":
+                if (params.length != 2) {
+                    throw new IllegalArgumentException("長方形には幅と高さが必要です");
+                }
+                return new Rectangle(params[0], params[1]);
+                
+            case "triangle":
+                if (params.length != 2) {
+                    throw new IllegalArgumentException("三角形には底辺と高さが必要です");
+                }
+                return new Triangle(params[0], params[1]);
+                
+            default:
+                throw new IllegalArgumentException("不明な図形タイプ: " + type);
+        }
+    }
+}
+
+// 使用例
+public class FactoryDemo {
+    public static void main(String[] args) {
+        // ファクトリーを使って図形を生成
+        Shape circle = ShapeFactory.createShape("circle", 5.0);
+        Shape rectangle = ShapeFactory.createShape("rectangle", 4.0, 6.0);
+        Shape triangle = ShapeFactory.createShape("triangle", 3.0, 4.0);
+        
+        // 具体的なクラスを知らなくても使える
+        List<Shape> shapes = List.of(circle, rectangle, triangle);
+        
+        for (Shape shape : shapes) {
+            shape.draw();
+            System.out.println("面積: " + shape.getArea());
+            System.out.println();
+        }
+    }
+}
+```
+
+### Factory Method パターン
+
+より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します：
+
+<span class="listing-number">**サンプルコード7-17**</span>
+
+```java
+// 抽象ファクトリークラス
+abstract class DocumentFactory {
+    // Factory Method - サブクラスで実装
+    public abstract Document createDocument();
+    
+    // テンプレートメソッド
+    public Document newDocument() {
+        Document doc = createDocument();
+        doc.open();
+        return doc;
+    }
+}
+
+// 具体的なファクトリー
+class WordDocumentFactory extends DocumentFactory {
+    @Override
+    public Document createDocument() {
+        return new WordDocument();
+    }
+}
+
+class PdfDocumentFactory extends DocumentFactory {
+    @Override
+    public Document createDocument() {
+        return new PdfDocument();
+    }
+}
+
+// ドキュメントインターフェイス
+interface Document {
+    void open();
+    void save();
+    void close();
+}
+
+// 具体的なドキュメント実装
+class WordDocument implements Document {
+    @Override
+    public void open() {
+        System.out.println("Word文書を開いています...");
+    }
+    
+    @Override
+    public void save() {
+        System.out.println("Word文書を保存しています...");
+    }
+    
+    @Override
+    public void close() {
+        System.out.println("Word文書を閉じています...");
+    }
+}
+
+class PdfDocument implements Document {
+    @Override
+    public void open() {
+        System.out.println("PDF文書を開いています...");
+    }
+    
+    @Override
+    public void save() {
+        System.out.println("PDF文書を保存しています...");
+    }
+    
+    @Override
+    public void close() {
+        System.out.println("PDF文書を閉じています...");
+    }
+}
+```
+
+### Factoryパターンの利点
+
+1. **結合度の低減**: クライアントコードは具体的なクラスに依存しない
+2. **拡張性**: 新しい型を追加しても既存のコードを変更する必要がない
+3. **複雑な生成ロジックの隠蔽**: オブジェクト生成の詳細をファクトリー内に隠蔽
+4. **一貫性**: オブジェクト生成の方法を統一できる
+
+### 実践的な使用例：データベース接続
+
+<span class="listing-number">**サンプルコード7-18**</span>
+
+```java
+// データベース接続インターフェイス
+interface DatabaseConnection {
+    void connect();
+    void executeQuery(String sql);
+    void close();
+}
+
+// 具体的な実装
+class MySQLConnection implements DatabaseConnection {
+    private String connectionString;
+    
+    public MySQLConnection(String host, int port, String database) {
+        this.connectionString = String.format("mysql://%s:%d/%s", host, port, database);
+    }
+    
+    @Override
+    public void connect() {
+        System.out.println("MySQLに接続: " + connectionString);
+    }
+    
+    @Override
+    public void executeQuery(String sql) {
+        System.out.println("MySQLでクエリ実行: " + sql);
+    }
+    
+    @Override
+    public void close() {
+        System.out.println("MySQL接続を閉じる");
+    }
+}
+
+class PostgreSQLConnection implements DatabaseConnection {
+    private String connectionString;
+    
+    public PostgreSQLConnection(String host, int port, String database) {
+        this.connectionString = String.format("postgresql://%s:%d/%s", host, port, database);
+    }
+    
+    @Override
+    public void connect() {
+        System.out.println("PostgreSQLに接続: " + connectionString);
+    }
+    
+    @Override
+    public void executeQuery(String sql) {
+        System.out.println("PostgreSQLでクエリ実行: " + sql);
+    }
+    
+    @Override
+    public void close() {
+        System.out.println("PostgreSQL接続を閉じる");
+    }
+}
+
+// データベース接続ファクトリー
+public class DatabaseConnectionFactory {
+    public static DatabaseConnection createConnection(String type, String host, int port, String database) {
+        switch (type.toUpperCase()) {
+            case "MYSQL":
+                return new MySQLConnection(host, port, database);
+            case "POSTGRESQL":
+                return new PostgreSQLConnection(host, port, database);
+            default:
+                throw new IllegalArgumentException("サポートされていないデータベース: " + type);
+        }
+    }
+    
+    // 設定ファイルから接続を作成
+    public static DatabaseConnection createConnectionFromConfig(Properties config) {
+        String type = config.getProperty("db.type");
+        String host = config.getProperty("db.host", "localhost");
+        int port = Integer.parseInt(config.getProperty("db.port", "3306"));
+        String database = config.getProperty("db.database");
+        
+        return createConnection(type, host, port, database);
+    }
+}
+```
+
+Factoryパターンは、オブジェクト指向設計において非常に重要なパターンの1つです。適切に使用することで、保守性と拡張性の高いシステムを構築できます。
+
+## 7.8 章末演習
 
 本章で学んだ抽象クラスとインターフェイスの概念を実践的な課題で確認しましょう。
 

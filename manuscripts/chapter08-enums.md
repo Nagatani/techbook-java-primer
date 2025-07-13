@@ -336,3 +336,134 @@ public enum Status implements Loggable {
 -   列挙子ごとにメソッドを実装したり、インターフェイスを実装したりすることで、さらに柔軟な設計が可能です。
 
 プログラムの中で「種類」「状態」「ステータス」などを表す値が出てきたら、まず`enum`が使えないか検討することは、高品質なコードを書くための良い習慣です。
+
+## 13.5 enumを使ったSingletonパターン
+
+### Singletonパターンとは
+
+Singletonパターンは、クラスのインスタンスがシステム全体で1つだけ存在することを保証するデザインパターンです。データベース接続、設定管理、ログ管理など、システム全体で共有されるリソースの管理によく使用されます。
+
+### 従来のSingleton実装の問題点
+
+第3章で触れたstaticを使った従来のSingleton実装には、いくつかの問題があります：
+
+<span class="listing-number">**サンプルコード8-8**</span>
+
+```java
+// 従来のSingleton実装（問題がある）
+public class DatabaseConnection {
+    private static DatabaseConnection instance;
+    
+    private DatabaseConnection() {
+        // プライベートコンストラクタ
+    }
+    
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnection();  // スレッドセーフではない
+        }
+        return instance;
+    }
+}
+```
+
+この実装の問題点：
+- **スレッドセーフティ**: 複数のスレッドが同時にgetInstance()を呼ぶと、複数のインスタンスが作られる可能性がある
+- **シリアライゼーション**: デシリアライズ時に新しいインスタンスが作られてしまう
+- **リフレクション攻撃**: リフレクションAPIを使って複数のインスタンスを作成できる
+
+### enumを使った最適なSingleton実装
+
+Javaでは、enumを使うことで最もシンプルかつ安全なSingletonを実装できます：
+
+<span class="listing-number">**サンプルコード8-9**</span>
+
+```java
+public enum DatabaseConnectionManager {
+    INSTANCE;
+    
+    private Connection connection;
+    
+    // enumのコンストラクタは暗黙的にprivate
+    DatabaseConnectionManager() {
+        // 初期化処理
+        initializeConnection();
+    }
+    
+    private void initializeConnection() {
+        // データベース接続の初期化
+        System.out.println("データベース接続を初期化しています...");
+    }
+    
+    public Connection getConnection() {
+        return connection;
+    }
+    
+    public void executeQuery(String sql) {
+        System.out.println("クエリを実行: " + sql);
+    }
+}
+
+// 使用例
+public class Application {
+    public static void main(String[] args) {
+        // どこからアクセスしても同じインスタンス
+        DatabaseConnectionManager.INSTANCE.executeQuery("SELECT * FROM users");
+        
+        // 別の場所から
+        DatabaseConnectionManager dbManager = DatabaseConnectionManager.INSTANCE;
+        dbManager.executeQuery("UPDATE users SET active = true");
+    }
+}
+```
+
+### enumによるSingletonの利点
+
+1. **スレッドセーフ**: JVMがenum定数の初期化を保証するため、自動的にスレッドセーフ
+2. **シリアライゼーション対応**: enumは自動的に適切にシリアライズ・デシリアライズされる
+3. **リフレクション攻撃への耐性**: enumのインスタンス化はJVMレベルで制限される
+4. **シンプルな実装**: 複雑な同期処理やダブルチェックロッキングが不要
+
+### 実践的な例：アプリケーション設定管理
+
+<span class="listing-number">**サンプルコード8-10**</span>
+
+```java
+public enum ConfigurationManager {
+    INSTANCE;
+    
+    private final Properties properties = new Properties();
+    
+    ConfigurationManager() {
+        loadConfiguration();
+    }
+    
+    private void loadConfiguration() {
+        try {
+            properties.load(getClass().getResourceAsStream("/config.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException("設定ファイルの読み込みに失敗しました", e);
+        }
+    }
+    
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+    
+    public int getIntProperty(String key, int defaultValue) {
+        String value = properties.getProperty(key);
+        return value != null ? Integer.parseInt(value) : defaultValue;
+    }
+}
+
+// 使用例
+public class App {
+    public static void main(String[] args) {
+        // アプリケーションのどこからでも同じ設定にアクセス
+        String dbUrl = ConfigurationManager.INSTANCE.getProperty("database.url");
+        int maxConnections = ConfigurationManager.INSTANCE.getIntProperty("database.maxConnections", 10);
+    }
+}
+```
+
+このように、enumを使ったSingletonパターンは、Javaにおける最も推奨される実装方法です。
