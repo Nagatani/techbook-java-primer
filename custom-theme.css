@@ -6,7 +6,7 @@
 }
 
 @page {
-  size: A4;
+  size: B5;
   font-size: 10Q;
   @bottom-center {
     content: counter(page);
@@ -59,6 +59,17 @@ h1 {
   counter-reset: section-counter 0;
 }
 
+/* 章レベルの見出し（第X章）は改ページ維持 */
+h1:contains("第"),
+h1:contains("章") {
+  break-before: page;
+}
+
+/* 付録レベルの見出しも改ページ維持 */
+h1:contains("付録") {
+  break-before: page;
+}
+
 .subtitle {
   font-size: 24Q;
   text-align: center;
@@ -66,32 +77,45 @@ h1 {
   margin-block-start: 40mm;
 }
 
+/* h2スタイル - 改ページなし・背景付きデザイン */
 h2 {
-  break-before: page;
-  font-size: 40Q;
-  line-height: 54Q;
-  inline-size: 10em;
-  block-size: 2lh;
-  margin-block: 0 11mm;
+  font-size: 28Q;
+  line-height: 40Q;
+  margin-block: 2em 1.5em;
+  margin-inline: 0;
+  padding: 20px 24px;
+  
+  /* 美しい背景デザイン */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  
+  /* テキストスタイル */
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  
+  /* 改ページを防ぐ */
+  break-before: auto;
+  break-after: avoid;
+  break-inside: avoid;
+  
+  /* セクションカウンターを継続 */
+  counter-increment: section-counter;
+  
+  /* レスポンシブ対応 */
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* h2のセクション番号を左側に表示 */
 h2::before {
-  content: counter(section-counter);
-  color: #999;
-  counter-increment: section-counter;
-
-  background-color: #ddd;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cpath fill='%23999999' fill-opacity='0.4' d='M192 15v2a11 11 0 0 0-11 11c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H145v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11 13 13 0 1 1 .02 26 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43a6.1 6.1 0 0 0-3.03 4.87V143h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 181 164a11 11 0 0 0 11 11v2a13 13 0 0 1-13-13 12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84a6.1 6.1 0 0 0-4.87-3.03H145v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 124 181a11 11 0 0 0-11 11h-2a13 13 0 0 1 13-13c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43a6.1 6.1 0 0 0 3.03-4.87V145h-35.02a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 107 124a11 11 0 0 0-22 0c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H49v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11A13 13 0 0 1 81 192h-2a11 11 0 0 0-11-11c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V145H11.98a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 0 1 0 177v-2a11 11 0 0 0 11-11c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H47v-35.02a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 28 109a13 13 0 1 1 0-26c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43A6.1 6.1 0 0 0 47 84.02V49H11.98a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 11 28 11 11 0 0 0 0 17v-2a13 13 0 0 1 13 13c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84A6.1 6.1 0 0 0 11.98 47H47V11.98a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 68 11 11 11 0 0 0 79 0h2a13 13 0 0 1-13 13 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43A6.1 6.1 0 0 0 49 11.98V47h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 85 68a11 11 0 0 0 22 0c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H143V11.98a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 124 13a13 13 0 0 1-13-13h2a11 11 0 0 0 11 11c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V47h35.02a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 179 28a13 13 0 0 1 13-13zM84.02 143a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 83 124a13 13 0 1 1 26 0c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84a6.1 6.1 0 0 0 4.87 3.03H143v-35.02a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 164 107a11 11 0 0 0 0-22c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V49h-35.02a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 1 1 83 68a12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84A6.1 6.1 0 0 0 84.02 49H49v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 28 85a11 11 0 0 0 0 22c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V143h35.02z'%3E%3C/path%3E%3C/svg%3E");
-  font-size: 180Q;
-  line-height: 1em;
-  inline-size: 37mm;
-  block-size: 47mm;
-  padding-inline-start: 4mm;
-  border-end-end-radius: 50%;
-  position: absolute;
-  inset-block-start: -15mm;
-  inset-inline-start: -16mm;
-  z-index: -1;
+  content: counter(section-counter, decimal-leading-zero) ".";
+  display: inline-block;
+  margin-right: 0.5em;
+  font-size: 0.9em;
+  opacity: 0.9;
+  font-weight: 400;
 }
 
 h3 {
@@ -99,7 +123,8 @@ h3 {
   line-height: 24Q;
   margin-block-start: 0.8lh;
   margin-block-end: 0.2lh;
-  margin-break: auto;
+  break-inside: avoid;
+  break-after: avoid;
 }
 
 p {
@@ -731,5 +756,711 @@ blockquote:has(strong.column-section) li {
   blockquote:has(strong.column-section) > p:first-child > strong.column-section {
     background-color: #fff;
     border-color: #ccc;
+  }
+}
+
+/* テーブルスタイル - 読みやすい枠線付きデザイン */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12Q;
+  line-height: 1.4;
+}
+
+/* テーブルヘッダー */
+table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13Q;
+  border: none;
+  position: relative;
+}
+
+table thead th:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* テーブルボディ */
+table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+table tbody tr:hover {
+  background-color: #e3f2fd;
+}
+
+table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* テーブルセル */
+table td,
+table th {
+  padding: 10px 16px;
+  vertical-align: top;
+  border-left: 1px solid #dee2e6;
+}
+
+table td:first-child,
+table th:first-child {
+  border-left: none;
+}
+
+/* 数値やコードを含むセル */
+table td code {
+  background-color: #f1f3f4;
+  color: #d73a49;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 11Q;
+}
+
+/* チェックボックス付きテーブル */
+table td input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+/* テーブル内のリンク */
+table a {
+  color: #0366d6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+table a:hover {
+  text-decoration: underline;
+  color: #0256cc;
+}
+
+/* ステータス表示用のスタイル */
+table .status-completed {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .status-in-progress {
+  background-color: #cce5ff;
+  color: #004085;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 優先度表示用のスタイル */
+table .priority-high {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .priority-medium {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .priority-low {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  table {
+    font-size: 11Q;
+  }
+  
+  table td,
+  table th {
+    padding: 8px 12px;
+  }
+  
+  table thead th {
+    padding: 10px 12px;
+    font-size: 12Q;
+  }
+}
+
+/* 印刷時のテーブル調整 */
+@media print {
+  table {
+    box-shadow: none;
+    border: 1px solid #666;
+  }
+  
+  table thead {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+  
+  table thead th {
+    border-bottom: 2px solid #666;
+  }
+  
+  table tbody tr {
+    border-bottom: 1px solid #999;
+  }
+  
+  table tbody tr:nth-child(even) {
+    background-color: #f9f9f9 !important;
+  }
+  
+  table tbody tr:hover {
+    background-color: inherit !important;
+  }
+  
+  /* ステータス・優先度表示の印刷時調整 */
+  table .status-completed,
+  table .status-pending,
+  table .status-in-progress,
+  table .priority-high,
+  table .priority-medium,
+  table .priority-low {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    border: 1px solid #666;
+  }
+}
+
+/* 大きなテーブルのためのスクロール対応 */
+.table-container {
+  overflow-x: auto;
+  margin: 1.5em 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-container table {
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* テーブルキャプション */
+table caption {
+  caption-side: top;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 14Q;
+  color: #495057;
+  text-align: left;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+/* ================================
+   表紙デザイン - 技術書スタイル
+   ================================ */
+
+.cover-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, 
+    #667eea 0%, 
+    #764ba2 25%, 
+    #f093fb 50%, 
+    #f5576c 75%, 
+    #4facfe 100%);
+  color: white;
+  font-family: "Noto Sans JP", sans-serif;
+  page-break-after: always;
+  
+  /* 表紙専用ページ設定 */
+  break-before: auto;
+  break-after: page;
+}
+
+/* 表紙の背景パターン */
+.cover-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(45deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%, transparent);
+  background-size: 30px 30px, 40px 40px, 20px 20px;
+  z-index: 1;
+}
+
+/* 技術的な背景要素 */
+.cover-tech-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'%3E%3Ccircle cx='200' cy='200' r='150'/%3E%3Ccircle cx='800' cy='300' r='100'/%3E%3Ccircle cx='300' cy='700' r='120'/%3E%3Crect x='500' y='100' width='200' height='200' rx='20'/%3E%3Cpolygon points='100,500 200,400 300,500 200,600'/%3E%3Cpath d='M600,600 Q700,500 800,600 T1000,600'/%3E%3Cline x1='50' y1='50' x2='200' y2='200'/%3E%3Cline x1='800' y1='100' x2='950' y2='250'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+}
+
+/* ヘッダー部分 */
+.cover-header {
+  position: relative;
+  z-index: 10;
+  padding: 40px 60px 20px;
+  text-align: right;
+}
+
+.cover-logo {
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 5px;
+}
+
+.cover-series {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+}
+
+/* メイン部分 */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  padding: 0 80px;
+  text-align: center;
+}
+
+.cover-title {
+  font-size: 84px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 4px;
+  line-height: 1.1;
+}
+
+.cover-subtitle {
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 60px;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Javaアイコン風の装飾 */
+.cover-java-icon {
+  width: 120px;
+  height: 120px;
+  margin: 40px auto;
+  background: linear-gradient(45deg, #f89820, #ed8936);
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cover-java-icon::before {
+  content: "{ }";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+  font-family: "Consolas", "Monaco", monospace;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cover-java-icon::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  background: #4facfe;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cover-level {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  margin-top: 20px;
+}
+
+/* フッター部分 */
+.cover-footer {
+  position: relative;
+  z-index: 10;
+  padding: 20px 60px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cover-author {
+  text-align: left;
+}
+
+.cover-author-label {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.cover-author-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cover-publisher {
+  text-align: right;
+}
+
+.cover-publisher-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.cover-year {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 印刷時の表紙調整 */
+@media print {
+  .cover-page {
+    background: linear-gradient(135deg, 
+      #4a5568 0%, 
+      #2d3748 25%, 
+      #718096 50%, 
+      #4a5568 75%, 
+      #2d3748 100%) !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .cover-page::before {
+    background-image: none;
+  }
+  
+  .cover-tech-bg {
+    display: none;
+  }
+  
+  .cover-java-icon {
+    background: #4a5568 !important;
+    border: 2px solid white;
+  }
+  
+  .cover-java-icon::after {
+    background: white !important;
+  }
+  
+  .cover-level {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: white;
+  }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .cover-header,
+  .cover-footer {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  
+  .cover-main {
+    padding: 0 40px;
+  }
+  
+  .cover-title {
+    font-size: 64px;
+    letter-spacing: 2px;
+  }
+  
+  .cover-subtitle {
+    font-size: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .cover-java-icon {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .cover-java-icon::before {
+    font-size: 40px;
+  }
+  
+  .cover-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .cover-author,
+  .cover-publisher {
+    text-align: center;
+  }
+}
+
+/* 技術書らしい装飾要素 */
+.cover-page::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.5) 20%, 
+    rgba(255,255,255,0.8) 50%, 
+    rgba(255,255,255,0.5) 80%, 
+    transparent 100%);
+  z-index: 15;
+}
+
+/* バーコード風の装飾（オプション） */
+.cover-footer::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  right: 60px;
+  width: 100px;
+  height: 20px;
+  background: repeating-linear-gradient(90deg,
+    rgba(255,255,255,0.8) 0px,
+    rgba(255,255,255,0.8) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  z-index: 15;
+}
+
+/* 表紙を目次から除外する設定 */
+.cover-page h1,
+.cover-page h2,
+.cover-page h3,
+.cover-page h4,
+.cover-page h5,
+.cover-page h6 {
+  /* 表紙内の見出しはすべて目次に含めない */
+  counter-increment: none;
+  break-before: auto;
+}
+
+/* 手動目次ページのスタイル */
+article:has(h1:contains("目次")),
+section:has(h1:contains("目次")) {
+  break-before: page;
+  break-after: page;
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+/* 目次ページの見出しスタイル */
+h1:contains("目次") {
+  text-align: center;
+  font-size: 48Q;
+  margin-bottom: 2em;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5em;
+}
+
+/* 目次の各部スタイル */
+h2:contains("学習ガイド"),
+h2:contains("本編"),
+h2:contains("付録"),
+h2:contains("索引・資料") {
+  font-size: 24Q;
+  color: #34495e;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  padding-left: 1em;
+  border-left: 4px solid #3498db;
+  background-color: #f8f9fa;
+  padding: 0.5em 1em;
+}
+
+/* 目次の章グループスタイル */
+h3:contains("第"),
+h3:contains("部") {
+  font-size: 18Q;
+  color: #2c3e50;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+/* 目次のリストスタイル */
+h2 + ul,
+h3 + ul {
+  margin-left: 2em;
+  margin-bottom: 1.5em;
+}
+
+h2 + ul li,
+h3 + ul li {
+  margin: 0.4em 0;
+  padding: 0.2em 0;
+  border-bottom: 1px dotted #bdc3c7;
+  font-size: 14Q;
+  line-height: 1.6;
+}
+
+h2 + ul li:last-child,
+h3 + ul li:last-child {
+  border-bottom: none;
+}
+
+/* 目次のリンクスタイル */
+h2 + ul a,
+h3 + ul a {
+  text-decoration: none;
+  color: #2c3e50;
+  display: block;
+  padding: 0.2em 0;
+  transition: color 0.2s ease;
+}
+
+h2 + ul a:hover,
+h3 + ul a:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+/* 付録セクションの特別スタイル */
+h2:contains("付録") + ul li {
+  color: #7f8c8d;
+}
+
+h2:contains("付録") + ul a {
+  color: #7f8c8d;
+}
+
+h2:contains("付録") + ul a:hover {
+  color: #34495e;
+}
+
+/* 印刷時のh2見出し調整 */
+@media print {
+  h2 {
+    background: #4a5568 !important;
+    color: white !important;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  h2::before {
+    opacity: 1;
+  }
+}
+
+/* 印刷時の目次調整 */
+@media print {
+  h1:contains("目次") {
+    color: #000 !important;
+    border-bottom-color: #666 !important;
+  }
+  
+  h2:contains("学習ガイド"),
+  h2:contains("本編"),
+  h2:contains("付録"),
+  h2:contains("索引・資料") {
+    background-color: #f0f0f0 !important;
+    border-left-color: #666 !important;
+    color: #000 !important;
+  }
+  
+  h2 + ul a,
+  h3 + ul a {
+    color: #000 !important;
+  }
+  
+  h2 + ul a:hover,
+  h3 + ul a:hover {
+    color: #000 !important;
+    text-decoration: none !important;
   }
 }

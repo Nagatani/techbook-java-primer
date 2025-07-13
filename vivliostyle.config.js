@@ -1,5 +1,5 @@
 const markdownFiles = [
-  'cover.md',
+  'table-of-contents.md',
   'learning-path-guide.md',
   'chapter01-introduction.md',
   'chapter02-getting-started.md',
@@ -44,11 +44,15 @@ module.exports = {
   language: 'ja',
   theme: './custom-theme.css',
 
-  entry: markdownFiles.map(file => ({
-    path: file
-  })),
+  entry: [
+    // 表紙を最初に配置
+    { path: 'cover.md', title: '表紙' },
+    // 目次は自動生成される
+    ...markdownFiles.map(file => ({
+      path: file
+    }))
+  ],
   
   entryContext: './manuscripts',
-  output: './output/techbook-java-primer.pdf',
-  toc: true
+  output: './output/techbook-java-primer.pdf'
 };
