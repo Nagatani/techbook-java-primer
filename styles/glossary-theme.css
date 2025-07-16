@@ -1,20 +1,15 @@
-/* 索引・用語集専用CSS */
-@import url("@vivliostyle/theme-techbook");
-
-/* ページ設定 */
-@page {
-  size: 210mm 297mm;
-  margin: 20mm 15mm 20mm 15mm;
-}
-
-/* 基本設定 */
-body {
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-  line-height: 1.6;
-  color: #333;
-}
-
 /* メインタイトル */
+
+@page {
+  size: B5;
+}
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}
+
 h1 {
   font-size: 28pt;
   color: #2c3e50;

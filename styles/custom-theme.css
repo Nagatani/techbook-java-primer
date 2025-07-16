@@ -1179,325 +1179,6 @@ table caption {
   border-radius: 6px 6px 0 0;
 }
 
-/* ================================
-   表紙デザイン - 技術書スタイル
-   ================================ */
-
-.cover-page {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, 
-    #667eea 0%, 
-    #764ba2 25%, 
-    #f093fb 50%, 
-    #f5576c 75%, 
-    #4facfe 100%);
-  color: white;
-  font-family: "Noto Sans JP", sans-serif;
-  page-break-after: always;
-  
-  /* 表紙専用ページ設定 */
-  break-before: auto;
-  break-after: page;
-}
-
-/* 表紙の背景パターン */
-.cover-page::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
-    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(45deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%, transparent);
-  background-size: 30px 30px, 40px 40px, 20px 20px;
-  z-index: 1;
-}
-
-/* 技術的な背景要素 */
-.cover-tech-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'%3E%3Ccircle cx='200' cy='200' r='150'/%3E%3Ccircle cx='800' cy='300' r='100'/%3E%3Ccircle cx='300' cy='700' r='120'/%3E%3Crect x='500' y='100' width='200' height='200' rx='20'/%3E%3Cpolygon points='100,500 200,400 300,500 200,600'/%3E%3Cpath d='M600,600 Q700,500 800,600 T1000,600'/%3E%3Cline x1='50' y1='50' x2='200' y2='200'/%3E%3Cline x1='800' y1='100' x2='950' y2='250'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  opacity: 0.3;
-}
-
-/* ヘッダー部分 */
-.cover-header {
-  position: relative;
-  z-index: 10;
-  padding: 40px 60px 20px;
-  text-align: right;
-}
-
-.cover-logo {
-  font-size: 18px;
-  font-weight: 300;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 5px;
-}
-
-.cover-series {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 1px;
-}
-
-/* メイン部分 */
-.cover-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-  padding: 0 80px;
-  text-align: center;
-}
-
-.cover-title {
-  font-size: 84px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 4px;
-  line-height: 1.1;
-}
-
-.cover-subtitle {
-  font-size: 24px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 60px;
-  line-height: 1.4;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Javaアイコン風の装飾 */
-.cover-java-icon {
-  width: 120px;
-  height: 120px;
-  margin: 40px auto;
-  background: linear-gradient(45deg, #f89820, #ed8936);
-  border-radius: 20px;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.cover-java-icon::before {
-  content: "{ }";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  font-weight: bold;
-  color: white;
-  font-family: "Consolas", "Monaco", monospace;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.cover-java-icon::after {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  width: 30px;
-  height: 30px;
-  background: #4facfe;
-  border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.cover-level {
-  font-size: 16px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px 24px;
-  border-radius: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  margin-top: 20px;
-}
-
-/* フッター部分 */
-.cover-footer {
-  position: relative;
-  z-index: 10;
-  padding: 20px 60px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.cover-author {
-  text-align: left;
-}
-
-.cover-author-label {
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-}
-
-.cover-author-name {
-  font-size: 22px;
-  font-weight: 600;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.cover-publisher {
-  text-align: right;
-}
-
-.cover-publisher-logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 5px;
-  letter-spacing: 2px;
-}
-
-.cover-year {
-  font-size: 16px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-/* 印刷時の表紙調整 */
-@media print {
-  .cover-page {
-    background: linear-gradient(135deg, 
-      #4a5568 0%, 
-      #2d3748 25%, 
-      #718096 50%, 
-      #4a5568 75%, 
-      #2d3748 100%) !important;
-    color: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  
-  .cover-page::before {
-    background-image: none;
-  }
-  
-  .cover-tech-bg {
-    display: none;
-  }
-  
-  .cover-java-icon {
-    background: #4a5568 !important;
-    border: 2px solid white;
-  }
-  
-  .cover-java-icon::after {
-    background: white !important;
-  }
-  
-  .cover-level {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: white;
-  }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .cover-header,
-  .cover-footer {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-  
-  .cover-main {
-    padding: 0 40px;
-  }
-  
-  .cover-title {
-    font-size: 64px;
-    letter-spacing: 2px;
-  }
-  
-  .cover-subtitle {
-    font-size: 20px;
-    margin-bottom: 40px;
-  }
-  
-  .cover-java-icon {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .cover-java-icon::before {
-    font-size: 40px;
-  }
-  
-  .cover-footer {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  .cover-author,
-  .cover-publisher {
-    text-align: center;
-  }
-}
-
-/* 技術書らしい装飾要素 */
-.cover-page::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(255,255,255,0.5) 20%, 
-    rgba(255,255,255,0.8) 50%, 
-    rgba(255,255,255,0.5) 80%, 
-    transparent 100%);
-  z-index: 15;
-}
-
-/* バーコード風の装飾（オプション） */
-.cover-footer::after {
-  content: "";
-  position: absolute;
-  bottom: 10px;
-  right: 60px;
-  width: 100px;
-  height: 20px;
-  background: repeating-linear-gradient(90deg,
-    rgba(255,255,255,0.8) 0px,
-    rgba(255,255,255,0.8) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  z-index: 15;
-}
 
 /* 表紙を目次から除外する設定 */
 .cover-page h1,
@@ -1688,4 +1369,34 @@ h2:contains("付録") + ul a:hover {
     color: #000 !important;
     text-decoration: none !important;
   }
+}
+
+
+/*.running head */
+@page: right {
+  @right-middle {
+    content: string(chapter, first);
+    font-size: 11Q;
+    writing-mode: vertical-rl;
+    vertical-align: top;
+  }
+  @top-right {
+    content: string(section-number, first) " " string(section, first);
+    font-size: 11Q;
+  }
+}
+@page: nth(1) {
+  @right-middle {
+    content: none;
+  }
+}
+
+/* 柱 */
+h1 {
+  /* string-set: chapter content(); */
+  string-set: chapter content();
+}
+
+h2 {
+  string-set: section content(), section-number content(before);
 }

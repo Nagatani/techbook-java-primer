@@ -1,0 +1,77 @@
+/* 表紙ページ */
+
+@page {
+  size: B5;
+  margin: 0;
+  padding: 0;
+}
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}
+/* ================================
+   表紙デザイン - 技術書スタイル
+   ================================ */
+
+.cover-page {
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+  grid-template: " header " 2cm 
+                 " title " 5cm
+                 " main " 1fr
+                 " footer" 5cm / 1fr;
+}
+
+.cover-header {
+  grid-area: header;
+  padding: 1cm;
+}
+
+.cover-titles {
+  grid-area: title;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1cm;
+}
+.cover-titles .cover-subtitle {
+  font-size: 26px;
+  font-weight: normal;
+  line-height: 1.6;
+  margin: 0;
+}
+.cover-titles .cover-title {
+  font-size: 44px;
+  font-weight: bold;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.cover-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background-color: darkolivegreen;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(45deg, transparent 24%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.03) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03) 76%, transparent 77%, transparent);
+  background-size: 30px 30px, 40px 40px, 20px 20px;
+}
+
+.cover-footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px;
+}
+

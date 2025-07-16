@@ -1,17 +1,12 @@
-/* 目次専用CSS */
-@import url("@vivliostyle/theme-techbook");
 
-/* ページ設定 */
 @page {
-  size: 210mm 297mm;
-  margin: 20mm 15mm 20mm 15mm;
+  size: B5;
 }
-
-/* 基本フォント設定 */
-body {
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-  line-height: 1.8;
-  color: #333;
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 /* 目次タイトル */

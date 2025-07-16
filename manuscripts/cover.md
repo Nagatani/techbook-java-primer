@@ -1,30 +1,22 @@
 <div class="cover-page">
 
   <div class="cover-header">
-    <div class="cover-logo">TechBook Series</div>
-    <div class="cover-series">プログラミング学習シリーズ</div>
   </div>
 
-  <div class="cover-main">
-    <div class="cover-title">Java入門</div>
-    <div class="cover-subtitle">C言語から始める実践的オブジェクト指向プログラミング</div>
-    
-    <div class="cover-java-icon"></div>
-    
-    <div class="cover-level">初級〜中級者向け</div>
+  <div class="cover-titles">
+    <h1 class="cover-subtitle">大学2年生のための実践的プログラミング入門</h1>
+    <h1 class="cover-title">オブジェクト指向言語 Java</h1>
+    <div class="cover-author">
+      <div class="cover-author-name">Hidehiro Nagatani [著]</div>
+    </div>
   </div>
+
+  <div class="cover-main"></div>
 
   <div class="cover-footer">
-    <div class="cover-author">
-      <div class="cover-author-label">著者</div>
-      <div class="cover-author-name">Hidehiro Nagatani</div>
-    </div>
     <div class="cover-publisher">
-      <div class="cover-publisher-logo">TechPress</div>
-      <div class="cover-year">2024</div>
+      <div class="cover-logo">大学実習教材</div>
+      <div class="cover-year">2025</div>
     </div>
   </div>
-
-  <div class="cover-tech-bg"></div>
-
 </div>

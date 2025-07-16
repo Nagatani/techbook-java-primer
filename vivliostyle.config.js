@@ -42,20 +42,20 @@ module.exports = {
   title: '大学2年生のためのプログラミング入門 オブジェクト指向言語 Java',
   author: 'Hidehiro Nagatani',
   language: 'ja',
-  theme: './custom-theme.css',
+  theme: './styles/custom-theme.css',
 
   entry: [
     // 表紙を最初に配置（専用CSS使用）
     { 
       path: 'cover.md', 
       title: '表紙',
-      theme: './cover-theme.css'
+      theme: './styles/cover-theme.css'
     },
     // 目次（専用CSS使用）
     {
       path: 'table-of-contents.md',
       title: '目次',
-      theme: './toc-theme.css'
+      theme: './styles/toc-theme.css'
     },
     // 残りのファイル（learning-path-guide.mdを除外）
     ...markdownFiles.slice(2).map(file => {
@@ -63,7 +63,7 @@ module.exports = {
       if (file === 'glossary.md') {
         return {
           path: file,
-          theme: './glossary-theme.css'
+          theme: './styles/glossary-theme.css'
         };
       }
       // その他は通常のテーマを使用
