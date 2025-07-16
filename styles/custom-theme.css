@@ -152,13 +152,80 @@ h2::before {
   font-weight: 400;
 }
 
+/* h3 スタイル - 節見出し */
 h3 {
   font-size: 18Q;
   line-height: 24Q;
+  margin-block-start: 1.2lh;
+  margin-block-end: 0.4lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 600;
+  color: #2c3e50;
+  padding-left: 1em;
+  position: relative;
+}
+
+/* h3の左側装飾線 */
+h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 4px;
+  background: linear-gradient(to bottom, #3498db, #2980b9);
+  border-radius: 2px;
+}
+
+/* h4 スタイル - 小節見出し */
+h4 {
+  font-size: 16Q;
+  line-height: 22Q;
+  margin-block-start: 1lh;
+  margin-block-end: 0.3lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 600;
+  color: #34495e;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.2em;
+}
+
+/* h5 スタイル - 項見出し */
+h5 {
+  font-size: 14Q;
+  line-height: 20Q;
   margin-block-start: 0.8lh;
   margin-block-end: 0.2lh;
   break-inside: avoid;
   break-after: avoid;
+  font-weight: 600;
+  color: #34495e;
+  display: inline-block;
+  background-color: #f8f9fa;
+  padding: 0.2em 0.8em;
+  border-radius: 4px;
+}
+
+/* h6 スタイル - 小項見出し */
+h6 {
+  font-size: 13Q;
+  line-height: 20Q;
+  margin-block-start: 0.6lh;
+  margin-block-end: 0.2lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 700;
+  color: #495057;
+  font-style: italic;
+}
+
+/* h6の前に記号を追加 */
+h6::before {
+  content: "▸ ";
+  color: #3498db;
+  margin-right: 0.3em;
 }
 
 p {
