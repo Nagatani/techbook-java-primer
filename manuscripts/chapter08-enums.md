@@ -1,4 +1,4 @@
-# 第8章 列挙型(Enums)<small>型安全な定数と状態管理の技術</small>
+# <b>8章</b><span>列挙型(Enums)</span><small>型安全な定数と状態管理の技術</small>
 
 ## 本章の学習目標
 

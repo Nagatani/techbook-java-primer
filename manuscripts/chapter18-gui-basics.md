@@ -1,4 +1,4 @@
-# 第18章 GUIプログラミングの基礎<small>Swingで作るデスクトップアプリ</small>
+# <b>18章</b><span>GUIプログラミングの基礎</span><small>Swingで作るデスクトップアプリ</small>
 
 ## 本章の学習目標
 

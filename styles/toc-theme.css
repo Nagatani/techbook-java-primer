@@ -64,7 +64,7 @@ li::before {
   font-size: 0.9em;
 }
 
-/* 第1章から順番にカウント */
+/* 1章から順番にカウント */
 body {
   counter-reset: chapter-counter 0;
 }

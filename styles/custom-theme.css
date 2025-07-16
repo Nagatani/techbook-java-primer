@@ -23,7 +23,7 @@
 @page: nth(1) {
   margin: 0;
   background-color: #dddddd;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cpath fill='%23999999' fill-opacity='0.4' d='M192 15v2a11 11 0 0 0-11 11c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H145v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11 13 13 0 1 1 .02 26 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43a6.1 6.1 0 0 0-3.03 4.87V143h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 181 164a11 11 0 0 0 11 11v2a13 13 0 0 1-13-13 12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84a6.1 6.1 0 0 0-4.87-3.03H145v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 124 181a11 11 0 0 0-11 11h-2a13 13 0 0 1 13-13c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43a6.1 6.1 0 0 0 3.03-4.87V145h-35.02a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 107 124a11 11 0 0 0-22 0c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H49v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11A13 13 0 0 1 81 192h-2a11 11 0 0 0-11-11c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V145H11.98a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 0 1 0 177v-2a11 11 0 0 0 11-11c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H47v-35.02a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 28 109a13 13 0 1 1 0-26c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43A6.1 6.1 0 0 0 47 84.02V49H11.98a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 11 28 11 11 0 0 0 0 17v-2a13 13 0 0 1 13 13c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84A6.1 6.1 0 0 0 11.98 47H47V11.98a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 68 11 11 11 0 0 0 79 0h2a13 13 0 0 1-13 13 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43A6.1 6.1 0 0 0 49 11.98V47h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 85 68a11 11 0 0 0 22 0c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H143V11.98a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 124 13a13 13 0 0 1-13-13h2a11 11 0 0 0 11 11c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V47h35.02a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 179 28a13 13 0 0 1 13-13zM84.02 143a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 83 124a13 13 0 1 1 26 0c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84a6.1 6.1 0 0 0 4.87 3.03H143v-35.02a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 164 107a11 11 0 0 0 0-22c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V49h-35.02a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 1 1 83 68a12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84A6.1 6.1 0 0 0 84.02 49H49v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 28 85a11 11 0 0 0 0 22c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V143h35.02z'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22a%22%20width%3D%2270%22%20height%3D%2270%22%20patternTransform%3D%22rotate(65)scale(4)%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23e5e6eb%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23b0b0b0%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M-4.8%204.44%204%2016.59%2016.14%207.8M32%2030.54l-13.23%207.07%207.06%2013.23M-9%2038.04l-3.81%2014.5%2014.5%203.81M65.22%204.44%2074%2016.59%2086.15%207.8M61%2038.04l-3.81%2014.5%2014.5%203.81%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23d1d3dc%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M59.71%2062.88v3h3M4.84%2025.54%202.87%2027.8l2.26%201.97m7.65%2016.4-2.21-2.03-2.03%202.21m29.26%207.13.56%202.95%202.95-.55%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23c0c2ce%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m58.98%2027.57-2.35-10.74-10.75%202.36M31.98-4.87l2.74%2010.65%2010.65-2.73M31.98%2065.13l2.74%2010.66%2010.65-2.74%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23f9f9fb%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m8.42%2062.57%206.4%202.82%202.82-6.41m33.13-15.24-4.86-5.03-5.03%204.86m-14-19.64%204.84-5.06-5.06-4.84%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22800%25%22%20height%3D%22800%25%22%20fill%3D%22url(%23a)%22%20transform%3D%22translate(-284%20-128)%22%2F%3E%3C%2Fsvg%3E');
   @bottom-center {
     content: none;
   }
@@ -52,24 +52,18 @@ h6 {
 
 h1 {
   break-before: recto;
-  font-size: 48Q;
-  line-height: 72Q;
+  line-height: 1.2;
   margin-block-start: 30mm;
   margin-block-end: 20mm;
   text-align: center;
   counter-reset: section-counter 0;
-  font-weight: 700;
-  color: #2c3e50;
   position: relative;
-  
-  /* 章番号と章タイトルの間隔調整 */
-  letter-spacing: 0.05em;
   
   /* 見出しの装飾的な要素 */
   padding: 2em 1em 1.5em;
 }
 
-/* 章番号（第X章）の装飾 */
+/* 章番号（n章）の装飾 */
 h1::before {
   content: "";
   position: absolute;
@@ -93,8 +87,7 @@ h1::after {
   background: linear-gradient(90deg, transparent 0%, #95a5a6 50%, transparent 100%);
 }
 
-/* 章レベルの見出し（第X章）は改ページ維持 */
-h1:contains("第"),
+/* 章レベルの見出し（n章）は改ページ維持 */
 h1:contains("章") {
   break-before: page;
 }
@@ -102,6 +95,37 @@ h1:contains("章") {
 /* 付録レベルの見出しも改ページ維持 */
 h1:contains("付録") {
   break-before: page;
+}
+
+/* 章タイトル内のHTMLタグスタイリング */
+/* 章番号 */
+h1 b {
+  display: block;
+  font-size: 24Q;
+  font-weight: 400;
+  color: #7f8c8d;
+  margin-bottom: 0.3em;
+  letter-spacing: 0.2em;
+}
+
+/* メインタイトル */
+h1 span {
+  display: block;
+  font-size: 48Q;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+/* サブタイトル */
+h1 small {
+  display: block;
+  font-size: 20Q;
+  font-weight: 400;
+  color: #5d6d7e;
+  font-style: italic;
+  line-height: 1.4;
 }
 
 .subtitle {
@@ -118,16 +142,6 @@ h2 {
   margin-block: 2em 1.5em;
   margin-inline: 0;
   padding: 20px 24px;
-  
-  /* 美しい背景デザイン */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-  
-  /* テキストスタイル */
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   
   /* 改ページを防ぐ */
   break-before: auto;
@@ -202,7 +216,6 @@ h5 {
   break-after: avoid;
   font-weight: 600;
   color: #34495e;
-  display: inline-block;
   background-color: #f8f9fa;
   padding: 0.2em 0.8em;
   border-radius: 4px;
@@ -615,7 +628,7 @@ article > h1:first-child::before,
   height: 200%;
   z-index: -1;
   opacity: 0.08;
-  background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232c3e50;stop-opacity:0.5' /%3E%3Cstop offset='100%25' style='stop-color:%233498db;stop-opacity:0.5' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23grad1)'%3E%3Ccircle cx='50' cy='50' r='40' fill-opacity='0.3'/%3E%3Ccircle cx='150' cy='50' r='40' fill-opacity='0.3'/%3E%3Ccircle cx='50' cy='150' r='40' fill-opacity='0.3'/%3E%3Ccircle cx='150' cy='150' r='40' fill-opacity='0.3'/%3E%3Cpath d='M100 20 L180 100 L100 180 L20 100 Z' fill-opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='70' height='70' patternTransform='scale(4) rotate(65)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(230,13%,91%,1)'/><path d='M-4.8 4.44L4 16.59 16.14 7.8M32 30.54l-13.23 7.07 7.06 13.23M-9 38.04l-3.81 14.5 14.5 3.81M65.22 4.44L74 16.59 86.15 7.8M61 38.04l-3.81 14.5 14.5 3.81'  stroke-linejoin='round' stroke-linecap='round' stroke-width='2' stroke='hsla(0,0%,68.6%,1)' fill='none'/><path d='M59.71 62.88v3h3M4.84 25.54L2.87 27.8l2.26 1.97m7.65 16.4l-2.21-2.03-2.03 2.21m29.26 7.13l.56 2.95 2.95-.55'  stroke-linejoin='round' stroke-linecap='round' stroke-width='2' stroke='hsla(228,12.5%,84.3%,1)' fill='none'/><path d='M58.98 27.57l-2.35-10.74-10.75 2.36M31.98-4.87l2.74 10.65 10.65-2.73M31.98 65.13l2.74 10.66 10.65-2.74'  stroke-linejoin='round' stroke-linecap='round' stroke-width='2' stroke='hsla(231,12.5%,78%,1)' fill='none'/><path d='M8.42 62.57l6.4 2.82 2.82-6.41m33.13-15.24l-4.86-5.03-5.03 4.86m-14-19.64l4.84-5.06-5.06-4.84'  stroke-linejoin='round' stroke-linecap='round' stroke-width='2' stroke='hsla(240,16.7%,97.6%,1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(-284,-128)' fill='url(%23a)'/></svg>")
   background-size: 200px 200px;
   background-repeat: repeat;
   transform: rotate(15deg);
@@ -633,7 +646,7 @@ h1[data-chapter-number]::before {
   line-height: 1;
 }
 
-/* 「第X章」形式の章番号を分離して装飾 */
+/* 「n章」形式の章番号を分離して装飾 */
 section > h1:first-child,
 article > h1:first-child,
 .chapter > h1:first-child {
@@ -726,25 +739,28 @@ article > h1:first-child + .chapter-subtitle,
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* より柔軟な章サブテキストの実装 - small要素を使用 */
-h1 small {
-  display: block;
-  font-size: 18Q;
-  font-weight: 400;
+
+/* 章タイトルページでの各要素のスタイル調整 */
+section > h1:first-child b,
+article > h1:first-child b,
+.chapter > h1:first-child b {
+  font-size: 28Q;
   color: #7f8c8d;
-  margin-top: 0.5em;
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  font-style: normal;
+  margin-bottom: 0.5em;
 }
 
-/* 章タイトルページでのsmall要素 */
+section > h1:first-child span,
+article > h1:first-child span,
+.chapter > h1:first-child span {
+  font-size: 42Q;
+  margin-bottom: 0.8em;
+}
+
 section > h1:first-child small,
 article > h1:first-child small,
 .chapter > h1:first-child small {
-  font-size: 20Q;
+  font-size: 22Q;
   color: #5d6d7e;
-  margin-top: 1em;
   max-width: 600px;
   text-shadow: none;
 }
@@ -1267,91 +1283,6 @@ section:has(h1:contains("目次")) {
   font-family: "Noto Sans JP", sans-serif;
 }
 
-/* 目次ページの見出しスタイル */
-h1:contains("目次") {
-  text-align: center;
-  font-size: 48Q;
-  margin-bottom: 2em;
-  color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 0.5em;
-}
-
-/* 目次の各部スタイル */
-h2:contains("学習ガイド"),
-h2:contains("本編"),
-h2:contains("付録"),
-h2:contains("索引・資料") {
-  font-size: 24Q;
-  color: #34495e;
-  margin-top: 2em;
-  margin-bottom: 1em;
-  padding-left: 1em;
-  border-left: 4px solid #3498db;
-  background-color: #f8f9fa;
-  padding: 0.5em 1em;
-}
-
-/* 目次の章グループスタイル */
-h3:contains("第"),
-h3:contains("部") {
-  font-size: 18Q;
-  color: #2c3e50;
-  margin-top: 1.5em;
-  margin-bottom: 0.8em;
-  font-weight: 600;
-}
-
-/* 目次のリストスタイル */
-h2 + ul,
-h3 + ul {
-  margin-left: 2em;
-  margin-bottom: 1.5em;
-}
-
-h2 + ul li,
-h3 + ul li {
-  margin: 0.4em 0;
-  padding: 0.2em 0;
-  border-bottom: 1px dotted #bdc3c7;
-  font-size: 14Q;
-  line-height: 1.6;
-}
-
-h2 + ul li:last-child,
-h3 + ul li:last-child {
-  border-bottom: none;
-}
-
-/* 目次のリンクスタイル */
-h2 + ul a,
-h3 + ul a {
-  text-decoration: none;
-  color: #2c3e50;
-  display: block;
-  padding: 0.2em 0;
-  transition: color 0.2s ease;
-}
-
-h2 + ul a:hover,
-h3 + ul a:hover {
-  color: #3498db;
-  text-decoration: underline;
-}
-
-/* 付録セクションの特別スタイル */
-h2:contains("付録") + ul li {
-  color: #7f8c8d;
-}
-
-h2:contains("付録") + ul a {
-  color: #7f8c8d;
-}
-
-h2:contains("付録") + ul a:hover {
-  color: #34495e;
-}
-
 /* 印刷時のコードブロック調整 */
 @media print {
   pre {
@@ -1409,35 +1340,6 @@ h2:contains("付録") + ul a:hover {
     opacity: 1;
   }
 }
-
-/* 印刷時の目次調整 */
-@media print {
-  h1:contains("目次") {
-    color: #000 !important;
-    border-bottom-color: #666 !important;
-  }
-  
-  h2:contains("学習ガイド"),
-  h2:contains("本編"),
-  h2:contains("付録"),
-  h2:contains("索引・資料") {
-    background-color: #f0f0f0 !important;
-    border-left-color: #666 !important;
-    color: #000 !important;
-  }
-  
-  h2 + ul a,
-  h3 + ul a {
-    color: #000 !important;
-  }
-  
-  h2 + ul a:hover,
-  h3 + ul a:hover {
-    color: #000 !important;
-    text-decoration: none !important;
-  }
-}
-
 
 /*.running head */
 @page: right {

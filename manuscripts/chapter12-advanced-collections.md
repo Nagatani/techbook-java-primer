@@ -1,4 +1,4 @@
-# 第12章 Stream APIと高度なコレクション操作<small>宣言的データ処理のマスター</small>
+# <b>12章</b><span>Stream APIと高度なコレクション操作</span><small>宣言的データ処理のマスター</small>
 
 ## 本章の学習目標
 
