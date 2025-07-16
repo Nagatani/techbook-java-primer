@@ -58,7 +58,7 @@
 - 関連章: 第10章
 
 **B.03 プログラミングパラダイム**
-- 場所: `/manuscripts/appendix-b03-programming-paradigms.md`
+- 場所: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
 - 内容: 関数型プログラミングの数学的基礎（ラムダ計算、圏論、モナド）
 - 関連章: 第11章
 

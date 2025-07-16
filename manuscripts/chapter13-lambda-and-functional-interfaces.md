@@ -1102,7 +1102,7 @@ public class ValidationFramework {
 
 本章で学んだ関数型プログラミングについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/manuscripts/appendix-b03-programming-paradigms.md`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
 
 この付録では以下の高度なトピックを扱います：
 

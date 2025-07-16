@@ -167,7 +167,7 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 
 この章では、C言語での開発経験を活かしながら、オブジェクト指向がどのようにこれらの課題を解決するかを実践的に学んでいきます。
 
-> **補足**: プログラミングパラダイムの歴史的発展について詳しく知りたい方は、付録B.03「プログラミングパラダイムの進化」を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
+> **補足**: プログラミングパラダイムの歴史的発展について詳しく知りたい方は、GitHubリポジトリの付録資料（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`）を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
 
 
 ## 3.1 オブジェクト指向とは
@@ -1742,7 +1742,7 @@ public class MethodsPractice {
 
 本章で学んだプログラミングパラダイムについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `/manuscripts/appendix-b03-programming-paradigms.md`
+**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
 
 この付録では以下の高度なトピックを扱います：
 
