@@ -45,12 +45,32 @@ module.exports = {
   theme: './custom-theme.css',
 
   entry: [
-    // 表紙を最初に配置
-    { path: 'cover.md', title: '表紙' },
-    // 目次は自動生成される
-    ...markdownFiles.map(file => ({
-      path: file
-    }))
+    // 表紙を最初に配置（専用CSS使用）
+    { 
+      path: 'cover.md', 
+      title: '表紙',
+      theme: './cover-theme.css'
+    },
+    // 目次（専用CSS使用）
+    {
+      path: 'table-of-contents.md',
+      title: '目次',
+      theme: './toc-theme.css'
+    },
+    // 残りのファイル（learning-path-guide.mdを除外）
+    ...markdownFiles.slice(2).map(file => {
+      // 用語集に専用CSSを適用
+      if (file === 'glossary.md') {
+        return {
+          path: file,
+          theme: './glossary-theme.css'
+        };
+      }
+      // その他は通常のテーマを使用
+      return {
+        path: file
+      };
+    })
   ],
   
   entryContext: './manuscripts',

@@ -1,0 +1,152 @@
+/* 目次専用CSS */
+@import url("@vivliostyle/theme-techbook");
+
+/* ページ設定 */
+@page {
+  size: 210mm 297mm;
+  margin: 20mm 15mm 20mm 15mm;
+}
+
+/* 基本フォント設定 */
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* 目次タイトル */
+h1 {
+  font-size: 28pt;
+  color: #2c3e50;
+  text-align: center;
+  margin: 2em 0 1.5em 0;
+  padding-bottom: 0.5em;
+  border-bottom: 3px solid #3498db;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* パート見出し（第X部） */
+h2 {
+  font-size: 18pt;
+  color: #34495e;
+  margin: 2em 0 0.5em 0;
+  padding: 0.5em 0 0.3em 0;
+  border-bottom: 1px solid #bdc3c7;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* セクション見出し */
+h3 {
+  font-size: 16pt;
+  color: #2c3e50;
+  margin: 1.5em 0 0.5em 0;
+  font-weight: 500;
+}
+
+/* リストスタイル */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5em 0 1.5em 0;
+}
+
+li {
+  position: relative;
+  padding: 0.4em 0 0.4em 3.5em;
+  line-height: 1.8;
+  border-bottom: 1px dotted #ecf0f1;
+}
+
+/* 章番号 */
+li::before {
+  content: counter(chapter-counter, decimal-leading-zero) ".";
+  position: absolute;
+  left: 0;
+  color: #7f8c8d;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* 第1章から順番にカウント */
+body {
+  counter-reset: chapter-counter 0;
+}
+
+ul li {
+  counter-increment: chapter-counter;
+}
+
+/* 章タイトルのリンク */
+a {
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  display: inline-block;
+  width: 100%;
+}
+
+a:hover {
+  color: #3498db;
+  padding-left: 0.5em;
+}
+
+/* ページ番号（将来の実装用） */
+.page-number {
+  position: absolute;
+  right: 0;
+  color: #95a5a6;
+  font-size: 0.9em;
+}
+
+/* 特別なセクション（学習ガイド、索引など） */
+h2:first-of-type {
+  margin-top: 1em;
+}
+
+/* 学習ガイドセクション */
+h2:contains("学習ガイド") + ul li::before {
+  content: "▸";
+  font-weight: normal;
+}
+
+/* 索引・資料セクション */
+h2:contains("索引・資料") + ul li::before {
+  content: "◆";
+  font-weight: normal;
+}
+
+/* 付録セクション */
+h2:contains("付録") + ul li::before {
+  content: "付録";
+  width: auto;
+  font-size: 0.8em;
+}
+
+/* リンクホバー時の背景 */
+li:hover {
+  background-color: #f8f9fa;
+}
+
+/* 章タイトルの省略記号対応 */
+li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a {
+  white-space: normal;
+}
+
+/* ページ区切り */
+@media print {
+  h2 {
+    break-after: avoid;
+  }
+  
+  ul {
+    break-inside: avoid;
+  }
+}

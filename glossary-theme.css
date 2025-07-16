@@ -1,0 +1,176 @@
+/* 索引・用語集専用CSS */
+@import url("@vivliostyle/theme-techbook");
+
+/* ページ設定 */
+@page {
+  size: 210mm 297mm;
+  margin: 20mm 15mm 20mm 15mm;
+}
+
+/* 基本設定 */
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* メインタイトル */
+h1 {
+  font-size: 28pt;
+  color: #2c3e50;
+  text-align: center;
+  margin: 2em 0 1.5em 0;
+  padding-bottom: 0.5em;
+  border-bottom: 3px solid #3498db;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* アルファベット・五十音見出し */
+h2, h3 {
+  font-size: 20pt;
+  color: #fff;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  margin: 2em 0 0.5em 0;
+  padding: 0.3em 0;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 2カラムレイアウト */
+.content-wrapper {
+  column-count: 2;
+  column-gap: 2em;
+  column-rule: 1px solid #ecf0f1;
+}
+
+/* 用語リスト */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5em 0;
+  break-inside: avoid;
+}
+
+li {
+  padding: 0.3em 0;
+  line-height: 1.6;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* 用語（太字部分） */
+strong {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-right: 0.5em;
+}
+
+/* ページ参照 */
+li::after {
+  content: "";
+}
+
+/* 章番号リンク */
+a {
+  color: #3498db;
+  text-decoration: none;
+  font-size: 0.9em;
+  margin-left: 0.3em;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 定義リスト版（dl/dt/dd）対応 */
+dl {
+  margin: 0;
+  padding: 0;
+}
+
+dt {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-top: 0.8em;
+  padding: 0.3em 0 0.2em 0;
+  border-bottom: 1px solid #ecf0f1;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+dd {
+  margin: 0.3em 0 0.8em 1.5em;
+  color: #555;
+  line-height: 1.6;
+  break-before: avoid;
+  page-break-before: avoid;
+}
+
+/* ルビ（読み仮名）対応 */
+ruby {
+  ruby-align: start;
+}
+
+rt {
+  font-size: 0.6em;
+  color: #7f8c8d;
+}
+
+/* 相互参照 */
+.see-also {
+  font-style: italic;
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.see-also::before {
+  content: "→ ";
+}
+
+/* ページ番号表示（将来の実装用） */
+.page-ref {
+  float: right;
+  color: #95a5a6;
+  font-size: 0.85em;
+  font-style: normal;
+}
+
+/* セクション間のスペース */
+h2 + ul,
+h3 + ul,
+h2 + dl,
+h3 + dl {
+  margin-top: 0.5em;
+}
+
+/* 印刷時の最適化 */
+@media print {
+  h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  
+  dt {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  
+  /* カラムの境界で項目が分断されないように */
+  li, dl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* 特殊文字の強調 */
+code {
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  background-color: #f4f4f4;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
