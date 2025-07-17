@@ -567,7 +567,7 @@ exercises/chapter18/
 
 前章で作成した画面は、まだ見た目だけの「静的」なものでした。GUIアプリケーションを「動かす」ためには、ユーザーの操作（イベント）に応じた処理（イベントハンドリング）を実装する必要があります。
 
-### 18.1.1 イベント処理の3要素
+### イベント処理の3要素
 
 Swingのイベント処理は、以下の3つの要素で構成されます。
 
@@ -586,7 +586,7 @@ Swingのイベント処理は、イベントディスパッチスレッド（EDT
 3. **非ブロッキング**: 長時間の処理はUIをフリーズさせる
 4. **イベントキュー**: イベントはFIFO順で処理
 
-### 18.1.2 ボタンクリックに応答する
+### ボタンクリックに応答する
 
 最も基本的な、ボタンクリックイベントを処理してみましょう。
 
@@ -633,7 +633,7 @@ public class ButtonEventExample {
 }
 ```
 
-### 18.1.3 ラムダ式による簡潔な記述
+### ラムダ式による簡潔な記述
 
 **匿名クラスの使用**
 
@@ -658,7 +658,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 ```
 これ以降のサンプルコードでは、主にこのラムダ式を使っていきます。
 
-### 18.1.4 簡単なアプリケーション：挨拶プログラム
+### 簡単なアプリケーション：挨拶プログラム
 
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
 
@@ -715,7 +715,7 @@ Swingに挟まざまなイベントがあります。目的に応じて適切な
 | `FocusEvent` | コンポーネントがフォーカスを得る/失う | `FocusListener` |
 | `ChangeEvent` | スライダーなど、コンポーネントの内部状態の連続的な変化 | `ChangeListener` |
 
-### 18.2.1 `WindowListener`で終了確認
+### `WindowListener`で終了確認
 
 **WindowListener の例**
 
@@ -762,9 +762,9 @@ public class WindowEventExample {
 }
 ```
 
-### 18.2.2 詳細なイベント処理の実装例
+### 詳細なイベント処理の実装例
 
-##### 1. マウスイベントの完全な処理
+##### マウスイベントの完全な処理
 
 **MouseListener の例**
 
@@ -929,7 +929,7 @@ public class MouseEventCompleteExample extends JFrame {
 }
 ```
 
-##### 2. キーボードイベントの高度な処理
+##### キーボードイベントの高度な処理
 
 **KeyListener の例**
 
@@ -1110,7 +1110,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 }
 ```
 
-##### 3. DocumentListenerによるテキスト変更の監視
+##### DocumentListenerによるテキスト変更の監視
 
 <span class="listing-number">**サンプルコード19-13**</span>
 
@@ -1328,7 +1328,7 @@ public class DocumentListenerExample extends JFrame {
 }
 ```
 
-##### 4. カスタムイベントとObserverパターン
+##### カスタムイベントとObserverパターン
 
 **カスタムイベント**
 
@@ -2237,7 +2237,7 @@ public class AdvancedJavaBeansExample extends JFrame {
 3. **カスタムイベント**: 業務固有のイベント処理
 4. **複合イベント**: 複数のプロパティ変更の協調
 
-##### 5. ドラッグ&ドロップの実装
+##### ドラッグ&ドロップの実装
 
 <span class="listing-number">**サンプルコード19-17**</span>
 

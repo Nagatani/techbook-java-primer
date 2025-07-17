@@ -384,7 +384,7 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 
 ### DOPの設計パターン
 
-#### 1. データモデルの設計
+#### データモデルの設計
 
 DOPの最初のステップは、ドメインモデルを明確に表現することです。Recordsを使用することで、ビジネスドメインの概念を直接的にコードに反映できます。
 
@@ -416,7 +416,7 @@ public record Money(BigDecimal amount, Currency currency) {
 }
 ```
 
-#### 2. ビジネスロジックの実装
+#### ビジネスロジックの実装
 
 DOPでは、ビジネスロジックは純粋関数として実装します。これにより、ロジックの再利用性とテスト容易性が大幅に向上します。
 
@@ -448,7 +448,7 @@ public class ProductService {
 }
 ```
 
-#### 3. 型安全な状態管理
+#### 型安全な状態管理
 
 sealed interfaceとRecordsを組み合わせることで、アプリケーションの状態を型レベルで安全に管理できます。これにより、不正な状態遷移をコンパイル時に防ぐことができます。
 

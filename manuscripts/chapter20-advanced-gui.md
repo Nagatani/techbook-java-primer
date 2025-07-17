@@ -44,7 +44,7 @@
 
 ## JTableの詳細な実装
 
-### 1.1 基本的なJTableの作成
+### 基本的なJTableの作成
 
 JTableは、表形式のデータを表示・編集するための強力なコンポーネントです。まず、基本的な使い方から見ていきましょう。
 
@@ -88,7 +88,7 @@ public class BasicTableExample extends JFrame {
 }
 ```
 
-### 1.2 カスタムTableModelの実装
+### カスタムTableModelの実装
 
 より高度な制御を行うには、AbstractTableModelを継承してカスタムモデルを作成します。
 
@@ -208,7 +208,7 @@ class PersonTableModel extends AbstractTableModel {
 }
 ```
 
-### 1.3 テーブルのソートとフィルタリング
+### テーブルのソートとフィルタリング
 
 JTableは組み込みのソート機能を提供しています。
 
@@ -294,7 +294,7 @@ public class SortableTableExample extends JFrame {
 
 ## JTreeの実装
 
-### 2.1 基本的なJTreeの作成
+### 基本的なJTreeの作成
 
 JTreeは階層構造のデータを表示するコンポーネントです。
 
@@ -352,7 +352,7 @@ public class BasicTreeExample extends JFrame {
 }
 ```
 
-### 2.2 動的なツリー操作
+### 動的なツリー操作
 
 ユーザーの操作に応じてツリーノードを動的に追加・削除する実装例です。
 
@@ -514,7 +514,7 @@ public class DynamicTreeExample extends JFrame {
 
 ## JListの高度な使用法
 
-### 3.1 カスタムレンダラーを使ったJList
+### カスタムレンダラーを使ったJList
 
 JListにカスタムレンダラーを適用して、リッチな表示を実現します。
 
@@ -726,7 +726,7 @@ public class AdvancedListExample extends JFrame {
 
 ## カスタムセルエディターの実装
 
-### 4.1 JTableのカスタムエディター
+### JTableのカスタムエディター
 
 テーブルセルに特殊な入力コンポーネントを使用する例です。
 
@@ -872,7 +872,7 @@ public class CustomEditorExample extends JFrame {
 
 ## 実践的なアプリケーション例
 
-### 5.1 統合型データ管理アプリケーション
+### 統合型データ管理アプリケーション
 
 JTable、JTree、JListを組み合わせた総合的なアプリケーションの例です。
 

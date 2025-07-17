@@ -503,10 +503,10 @@ printf("%s\n" , "Hello, World!!");
 
 `\n`が自動的に追加されるイメージで良いでしょう。
 
-#### 2. `System.out.print`
+#### `System.out.print`
 これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
 
-#### 3. `System.out.printf`
+#### `System.out.printf`
 C言語ライクに書きたい場合は、printfを使用してください。
 C言語のprintfと同じような書き方で出力が可能です。
 
