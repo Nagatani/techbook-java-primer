@@ -42,7 +42,7 @@
 - カスタムコンポーネントを作成し再利用可能なGUIライブラリが構築できる
 - プロフェッショナルレベルのデスクトップアプリケーションが開発できる
 
-## 1. JTableの詳細な実装
+## JTableの詳細な実装
 
 ### 1.1 基本的なJTableの作成
 
@@ -292,7 +292,7 @@ public class SortableTableExample extends JFrame {
 }
 ```
 
-## 2. JTreeの実装
+## JTreeの実装
 
 ### 2.1 基本的なJTreeの作成
 
@@ -512,7 +512,7 @@ public class DynamicTreeExample extends JFrame {
 }
 ```
 
-## 3. JListの高度な使用法
+## JListの高度な使用法
 
 ### 3.1 カスタムレンダラーを使ったJList
 
@@ -724,7 +724,7 @@ public class AdvancedListExample extends JFrame {
 }
 ```
 
-## 4. カスタムセルエディターの実装
+## カスタムセルエディターの実装
 
 ### 4.1 JTableのカスタムエディター
 
@@ -870,7 +870,7 @@ public class CustomEditorExample extends JFrame {
 }
 ```
 
-## 5. 実践的なアプリケーション例
+## 実践的なアプリケーション例
 
 ### 5.1 統合型データ管理アプリケーション
 

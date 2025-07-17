@@ -42,7 +42,7 @@
 - トランザクションを適切に管理できる
 - パフォーマンスを考慮したデータアクセス処理が実装できる
 
-## 20.1 JDBCの基礎
+## JDBCの基礎
 
 ### JDBCとは
 
@@ -89,7 +89,7 @@ public class BasicJDBCExample {
 }
 ```
 
-## 20.2 基本的なCRUD操作
+## 基本的なCRUD操作
 
 ### テーブルの作成
 
@@ -233,7 +233,7 @@ public class DeleteExample {
 }
 ```
 
-## 20.3 PreparedStatementとSQL Injection対策
+## PreparedStatementとSQL Injection対策
 
 ### SQL Injectionの危険性
 
@@ -288,7 +288,7 @@ public class SecureExample {
 }
 ```
 
-## 20.4 トランザクション管理
+## トランザクション管理
 
 ### トランザクションの基本
 
@@ -356,7 +356,7 @@ public class TransactionExample {
 }
 ```
 
-## 20.5 DAOパターンの実装
+## DAOパターンの実装
 
 ### DAOパターンとは
 
@@ -605,7 +605,7 @@ public class DaoExample {
 }
 ```
 
-## 20.6 コネクションプール
+## コネクションプール
 
 ### コネクションプールの必要性
 
@@ -684,7 +684,7 @@ public class PooledDaoExample {
 }
 ```
 
-## 20.7 バッチ処理
+## バッチ処理
 
 ### 大量データの効率的な処理
 

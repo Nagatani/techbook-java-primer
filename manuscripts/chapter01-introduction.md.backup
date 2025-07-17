@@ -1,6 +1,6 @@
 # <b>1章</b> <span>Java入門と開発環境構築</span> <small>プログラミングの新たな世界への第一歩</small>
 
-## 本章の学習目標 <small>あああ</small>
+## 本章の学習目標
 
 ### この章で学ぶこと
 
@@ -374,7 +374,7 @@ public class Main {
 
 この違いがもっとも顕著に現れるのは、プログラムが大規模化したときです。オブジェクト指向により、数百、数千のクラスからなる大規模システムでも、各部分の責任範囲が明確になり、保守性と拡張性が大幅に向上します。
 
-> **より深く学びたい方へ**
+> **より深く学びたい方へ**  
 > プログラミング言語がソースコードをどのように解釈し、実行可能な形式に変換するかについて興味がある方は、本書の巻末にある「Deep Dive: 抽象構文木（AST）とコンパイラの仕組み」をご覧ください。IDE（統合開発環境）の高度な機能や、現代的なフレームワークの動作原理を理解する上で役立つ知識が得られます。
 
 ## Javaの特徴
@@ -399,8 +399,7 @@ Javaプログラミングを始めるには、まず開発環境を整える必�
 
 開発効率を大幅に向上させるため、**IDE（統合開発環境）**としてIntelliJ IDEA Community Editionを使用します。IDEは単なるテキストエディタではなく、コード補完、リファクタリング支援、デバッガ、ビルドツール統合など、現代的なソフトウェア開発に必要な機能が統合されたパワフルな開発環境です。とくにIntelliJ IDEAは、Javaに特化した高度な支援機能により、初学者でも効率的にコードを書くことができます。
 
-> **環境構築の詳細**
-> 環境構築の詳細な手順については、付録A「開発環境の構築」を参照してください。
+> **環境構築の詳細な手順については、付録A「開発環境の構築」を参照してください。**
 
 環境構築が完了したら、次のセクションに進んでください。
 
@@ -428,12 +427,9 @@ public class HelloWorld {
 
 実際の処理を行っているのは `System.out.println("Hello, World!!")` です。これは標準出力（通常は画面）に文字列を出力し、最後に改行を加えるメソッドです。Systemクラスのoutフィールド（標準出力ストリーム）に対してprintlnメソッドを呼びだすという、オブジェクト指向的な記述方法になっています。
 
+> **コンパイルと実行の詳細な手順については、付録A「開発環境の構築」のA.4節を参照してください。**
 
-> **詳細な手順の参照先**
-> **コンパイルと実行**： コンパイルと実行の詳細な手順については、付録A「開発環境の構築」のA.4節を参照してください。
-> **標準入力の扱い方**： 標準入力の詳しい扱い方については、付録A「開発環境の構築」のA.7節を参照してください。
-
-</div>
+> **標準入力の詳しい扱い方については、付録A「開発環境の構築」のA.7節を参照してください。**
 
 ## Javaプログラムの基本構文
 
@@ -480,61 +476,239 @@ public static void main(String[] args)
 **なぜこの書き方が必要なのか？**
 Javaランタイム（javaコマンド）は、指定されたクラスの中からこの正確なシグネチャを持つ`main`メソッドを探して、プログラムの実行を開始します。一文字でも違うと認識されません。
 
+> **ポイント**： 変数やデータ型などの詳細な構文解説は第2章で学習します。まずはHello Worldを動かすことに集中しましょう！
 
-> **学習のポイント**
-> 変数やデータ型などの詳細な構文解説は第2章で学習します。まずはHello Worldを動かすことに集中しましょう！
+### 変数の宣言と初期化
 
-### 画面に文字列を出力する方法
+変数は「データを格納する入れ物」です。Javaでは使用前に必ず**型**と**名前**を宣言する必要があります。
 
-Javaでは、画面に文字列を出力する方法として、いくつかの方法があります。
-
-#### 1.`System.out.println`
-この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
+#### 基本的な変数宣言の構文
 
 ```java
-System.out.println("Hello, World!!");
+データ型 変数名;                    // 宣言のみ
+データ型 変数名 = 初期値;           // 宣言と同時に初期化
 ```
 
-これをC言語でたとえるなら、以下のようになるはずです。
-
-```c
-printf("%s\n" , "Hello, World!!");
-```
-
-`\n`が自動的に追加されるイメージで良いでしょう。
-
-#### 2. `System.out.print`
-これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
-
-#### 3. `System.out.printf`
-C言語ライクに書きたい場合は、printfを使用してください。
-C言語のprintfと同じような書き方で出力が可能です。
-
-##### サンプルソース
-
-ファイル名「`StandardOutput.java`」
-
-<span class="listing-number">**サンプルコード1-16**</span>
+**実例**：
+<span class="listing-number">**サンプルコード1-4**</span>
 
 ```java
-public class StandardOutput {
-    public static void main(String[] args) {
-        System.out.println("標準出力は、「System.out.printlnメソッド」を使用します。");
-        System.out.println("「System.out.println」は末尾に改行コードも併せて出力します。");
-        System.out.println(); // 引数なしで改行のみ出力されます。
-        System.out.print("「System.out.print」を使うと、末尾に改行は出力されません。");
-        System.out.print("改行は\\nで出力できます。\n");
-        System.out.print("\n");
-        String message = "C言語のprintf関数のように出力したい場合は、「System.out.printf」を使います。";
-        System.out.printf("%s\n", message);
-        System.out.printf("整数値: %d, 実数値: %f\n", 10, 3.142592654d);
-    }
-}
+int age;                           // 宣言のみ
+int price = 1000;                  // 宣言と同時に初期化
+String name = "田中太郎";           // 文字列の場合
 ```
 
-## 標準入出力を扱うサンプルを動かしてみよう
+#### 変数の命名規則
 
-ターミナルやコマンドプロンプトなど、黒い画面で動作するプログラムにて、ユーザーからデータの入力をできるようになるためのサンプルコードを実行してみましょう。
+**基本的なルール**：
+- 最初の文字は英字、`_`、`$`のいずれか（数字は不可）
+- 2文字目以降は英字、数字、`_`、`$`を使用可能
+- Javaの予約語（`int`, `class`, `public`など）は使用不可
+
+**慣例的なルール**：
+- 変数名は小文字で始める（camelCase）
+- 意味のある名前を付ける
+
+<span class="listing-number">**サンプルコード1-5**</span>
+
+```java
+// 良い例
+int studentAge = 20;
+String userName = "yamada";
+double totalPrice = 12500.0;
+
+// 推奨されない例
+int a = 20;              // 意味が不明
+String _name = "yamada"; // アンダースコアで開始（慣例違反）
+double 価格 = 12500.0;   // 日本語（技術的には可能だが推奨されない）
+```
+
+### データ型の体系的理解
+
+Javaのデータ型は大きく**プリミティブ型**と**参照型**に分かれます。
+
+#### プリミティブ型（基本データ型）
+
+| 型名 | サイズ | 値の範囲 | 用途 | リテラル例 |
+|------|--------|----------|------|-----------|
+| `byte` | 8bit | -128 ～ 127 | 小さな整数 | `100` |
+| `short` | 16bit | -32,768 ～ 32,767 | 中程度の整数 | `30000` |
+| `int` | 32bit | -2,147,483,648 ～ 2,147,483,647 | 一般的な整数 | `2000000` |
+| `long` | 64bit | -9,223,372,036,854,775,808 ～ 9,223,372,036,854,775,807 | 大きな整数 | `9000000000L` |
+| `float` | 32bit | 約±3.4×10^38（7桁精度） | 単精度小数 | `3.14f` |
+| `double` | 64bit | 約±1.8×10^308（15桁精度） | 倍精度小数 | `3.141592653589793` |
+| `char` | 16bit | 0 ～ 65,535（Unicode文字） | 一文字 | `'A'` |
+| `boolean` | - | `true`または`false` | 真偽値 | `true` |
+
+**重要なリテラル記法**：
+<span class="listing-number">**サンプルコード1-6**</span>
+
+```java
+long bigNumber = 9000000000L;      // long型はLを末尾に付ける
+float pi = 3.14f;                  // float型はfを末尾に付ける
+char grade = 'A';                  // char型は単一引用符で囲む
+boolean isValid = true;            // boolean型はtrue/false
+```
+
+#### 参照型
+
+もっとも基本的な参照型は`String`（文字列）です。参照型はオブジェクトへの参照（アドレス）を保持し、複雑なデータ構造と機能を持つことができます。
+
+<span class="listing-number">**サンプルコード1-7**</span>
+
+```java
+String message = "Hello, World!";  // 文字列は二重引用符で囲む
+String name = "田中太郎";           // 日本語文字列も可能
+String text = "絵文字も使えま🍣";    // 文字列中であれば絵文字も使用可能
+```
+
+### 演算子の使い方
+
+#### 算術演算子
+
+| 演算子 | 意味 | 例 | 結果 |
+|--------|------|----|----- |
+| `+` | 加算 | `5 + 3` | `8` |
+| `-` | 減算 | `5 - 3` | `2` |
+| `*` | 乗算 | `5 * 3` | `15` |
+| `/` | 除算 | `15 / 4` | `3`（整数除算） |
+| `%` | 余り | `15 % 4` | `3` |
+
+**整数除算の重要な注意点**：
+```java
+int result1 = 15 / 4;      // 結果: 3（小数部は切り捨て）
+double result2 = 15.0 / 4; // 結果: 3.75（どちらか一方がdoubleなら小数計算）
+```
+
+#### 文字列連結演算子
+
+`+`演算子は文字列連結にも使用されます：
+
+<span class="listing-number">**サンプルコード1-8**</span>
+
+```java
+String firstName = "太郎";
+String lastName = "田中";
+String fullName = lastName + firstName;     // "田中太郎"
+
+int age = 20;
+String message = "年齢: " + age + "歳";      // "年齢: 20歳"
+```
+
+**混在する場合の評価順序**：
+```java
+System.out.println("結果: " + 10 + 20);     // "結果: 1020"（左から文字列連結）
+System.out.println("結果: " + (10 + 20));   // "結果: 30"（カッコで計算を先に実行）
+```
+
+### コメントの書き方
+
+コードの説明や覚書のために**コメント**を使用します。コメントはコンパイル時に無視されます。
+
+#### 単行コメント
+
+//で始まる単行コメントは、その行の残りをすべてコメントとして扱います。簡潔な説明や一時的なメモに適しています。
+
+<span class="listing-number">**サンプルコード1-9**</span>
+
+```java
+// これは単行コメントです
+int age = 20;  // 変数の後にも書けます
+```
+
+#### 複数行コメント
+
+/*と*/で囲まれた範囲は、複数行にわたるコメントとして扱われます。詳細な説明や一時的なコードの無効化に使用します。
+
+<span class="listing-number">**サンプルコード1-10**</span>
+
+```java
+/*
+ これは複数行にわたる
+ コメントです
+ */
+int price = 1000;
+```
+
+### セミコロンの必要性
+
+**Javaでは、ほとんどの文の終わりにセミコロン（`;`）が必要です**。
+
+<span class="listing-number">**サンプルコード1-11**</span>
+
+```java
+int x = 10;                    // 変数宣言
+System.out.println("Hello");  // メソッド呼び出し
+x = x + 5;                     // 代入
+```
+
+**セミコロンが不要な場合**：
+
+クラスやメソッドの宣言、ブロックの終わりなど、構造的な要素にはセミコロンは不要です。ブロック（{}）自体が文の区切りとして機能します。
+
+<span class="listing-number">**サンプルコード1-12**</span>
+
+```java
+public class Sample {          // クラス宣言
+    public static void main(String[] args) {  // メソッド宣言
+        // 処理
+    }                          // ブロックの終わり
+}                              // クラスの終わり
+```
+
+### よくあるコンパイルエラーとその対処法
+
+#### 1. セミコロン忘れ
+
+**エラーメッセージ**：
+```
+error: ';' expected
+```
+
+**原因と対処**：
+<span class="listing-number">**サンプルコード1-13**</span>
+
+```java
+// エラー例
+int x = 10  // セミコロンがない
+
+// 修正版
+int x = 10; // セミコロンを追加
+```
+
+#### 2. 大文字・小文字の間違い
+
+**エラーメッセージ**：
+```
+error: cannot find symbol
+```
+
+**原因と対処**：
+<span class="listing-number">**サンプルコード1-14**</span>
+
+```java
+// エラー例
+system.out.println("Hello");  // systemが小文字
+
+// 修正版
+System.out.println("Hello");  // Systemを大文字で開始
+```
+
+#### 3. クラス名とファイル名の不一致
+
+**エラーメッセージ**：
+```
+error: class HelloWorld is public, should be declared in a file named HelloWorld.java
+```
+
+**原因と対処**：
+- ファイル名： `Sample.java`
+- クラス名： `public class HelloWorld`
+- → ファイル名を`HelloWorld.java`に変更、またはクラス名を`Sample`に変更
+
+### import文の使い方
+
+外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
 
 <span class="listing-number">**サンプルコード1-15**</span>
 
@@ -565,19 +739,16 @@ public class InputExample {
 }
 ```
 
-#### このコードのポイント：
-1. import文: `java.util.Scanner`をインポートして入力機能を使用
-2. Scanner: `new Scanner(System.in)`で標準入力から読み取るScannerを作成
-3. 入力の受け取り: `scanner.nextLine()`で1行分の文字列を取得
-4. 型変換: `Integer.parseInt()`で文字列を整数に変換
-5. リソース管理: 使い終わったら`scanner.close()`でリソースを解放
+**このコードのポイント**：
+1. **import文**: `java.util.Scanner`をインポートして入力機能を使用
+2. **Scanner作成**: `new Scanner(System.in)`で標準入力から読み取るScannerを作成
+3. **入力の受け取り**: `scanner.nextLine()`で1行分の文字列を取得
+4. **型変換**: `Integer.parseInt()`で文字列を整数に変換
+5. **リソース管理**: 使い終わったら`scanner.close()`でリソースを解放
 
-**基本的なパッケージは自動でimport済み**：
-
+**基本パッケージは自動的にimport済み**：
 - `java.lang`パッケージ（`String`, `System`, `Integer`など）は自動的に利用可能
 - そのため`System.out.println()`や`Integer.parseInt()`にはimport文は不要
-
-
 
 > **コラム：Integer.parseIntのエラーから学ぶ**{.column-section}
 > 
@@ -637,6 +808,61 @@ public class InputExample {
 > ```
 > 
 > **ポイント**：エラーは学習の機会です。エラーメッセージは敵ではなく、問題解決のヒントを与えてくれる味方として捉えると、プログラミングがより楽しくなります。
+
+
+
+これらの基本構文を理解していれば、章末の練習課題に安心して取り組むことができます。わからないことがあれば、この節に戻って確認してください。
+
+
+
+
+### 画面に文字列を出力する方法
+
+Javaでは、画面に文字列を出力する方法として、いくつかの方法があります。
+
+#### 1.`System.out.println`
+この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
+
+```java
+System.out.println("Hello, World!!");
+```
+
+これをC言語でたとえるなら、以下のようになるはずです。
+
+```c
+printf("%s\n" , "Hello, World!!");
+```
+
+`\n`が自動的に追加されるイメージで良いでしょう。
+
+#### 2. `System.out.print`
+これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
+
+#### 3. `System.out.printf`
+C言語ライクに書きたい場合は、printfを使用してください。
+C言語のprintfと同じような書き方で出力が可能です。
+
+##### サンプルソース
+
+ファイル名「`StandardOutput.java`」
+
+<span class="listing-number">**サンプルコード1-16**</span>
+
+```java
+public class StandardOutput {
+    public static void main(String[] args) {
+        System.out.println("標準出力は、「System.out.printlnメソッド」を使用します。");
+        System.out.println("「System.out.println」は末尾に改行コードも併せて出力します。");
+        System.out.println(); // 引数なしで改行のみ出力されます。
+        System.out.print("「System.out.print」を使うと、末尾に改行は出力されません。");
+        System.out.print("改行は\\nで出力できます。\n");
+        System.out.print("\n");
+        String message = "C言語のprintf関数のように出力したい場合は、「System.out.printf」を使います。";
+        System.out.printf("%s\n", message);
+        System.out.printf("整数値: %d, 実数値: %f\n", 10, 3.142592654d);
+    }
+}
+```
 
 
 ## GUIアプリケーションのサンプルを動かしてみよう

@@ -61,7 +61,7 @@
 
 次のステップ: 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
 
-## 15.1 ファイルI/Oの基礎とストリーム
+## ファイルI/Oの基礎とストリーム
 
 プログラムが外部のファイルとデータをやりとりすることを**ファイル入出力 (I/O)** と呼びます。Javaでは、このデータの流れを**ストリーム (Stream)** という統一された概念で扱います。
 
@@ -86,7 +86,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 // tryブロックを抜ける際にbrが自動的にクローズされる
 ```
 
-## 15.2 テキストファイルの読み書き
+## テキストファイルの読み書き
 
 ### テキストファイルの読み込み
 
@@ -292,7 +292,7 @@ public class CharacterEncodingExample {
 }
 ```
 
-## 15.3 バイナリファイルの高度な処理
+## バイナリファイルの高度な処理
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
 
@@ -356,7 +356,7 @@ public class DataStreamExample {
 
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、特に大量のデータを扱う場合に有効です。
 
-## 15.4 オブジェクトの直列化（シリアライズ）
+## オブジェクトの直列化（シリアライズ）
 
 Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを**直列化（シリアライズ）**、バイト列からオブジェクトを復元することを**非直列化（デシリアライズ）**と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です。
 
@@ -416,7 +416,7 @@ public class SerializationExample {
 }
 ```
 
-## 15.5 ファイルシステムの操作 (NIO.2)
+## ファイルシステムの操作 (NIO.2)
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、よりモダンで高機能なファイル・ディレクトリ操作が可能です。
 
@@ -469,7 +469,7 @@ public class FileSystemExample {
 }
 ```
 
-## 15.6 実践的なファイル処理例
+## 実践的なファイル処理例
 
 ### CSV ファイルの処理
 
@@ -548,7 +548,7 @@ public class CSVProcessingExample {
 }
 ```
 
-## 15.7 java.time APIによる日付時刻処理
+## java.time APIによる日付時刻処理
 
 ### レガシーDate/Calendarの問題点
 
@@ -1000,7 +1000,7 @@ public class LegacyConversionExample {
 
 これらの新しいAPIを使用することで、日付時刻処理のコードがより明確で、バグの少ないものになります。
 
-## 15.8 GUIでのファイル選択: `JFileChooser`
+## GUIでのファイル選択: `JFileChooser`
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 
@@ -1033,7 +1033,7 @@ public class FileChooserExample {
 }
 ```
 
-## 15.9 Text Blocks - 複数行文字列の効率的な処理
+## Text Blocks - 複数行文字列の効率的な処理
 
 Java 15で正式に導入された**Text Blocks**は、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。特にファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
 

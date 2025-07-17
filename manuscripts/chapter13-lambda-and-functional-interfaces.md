@@ -22,7 +22,7 @@
 
 
 
-## 13.1 匿名クラスからラムダ式へ
+## 匿名クラスからラムダ式へ
 
 Java 8でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには**匿名クラス（Anonymous Class）**が使われていました。これは名前を持たないクラスで、特にGUIのイベントリスナなどで多用されていました。
 
@@ -295,6 +295,37 @@ public class ResilientService {
         return () -> {
             AtomicInteger attempts = new AtomicInteger(0);
             
+
+            return Stream.generate(() -> {
+                try {
+                    return Optional.of(supplier.get());
+                } catch (Exception e) {
+                    if (attempts.incrementAndGet() >= maxAttempts) {
+                        throw new RuntimeException("Max attempts reached", e);
+                    }
+                    return Optional.<T>empty();
+                }
+            })
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst()
+            .orElseThrow();
+        };
+    }
+    
+    // 使用例
+    public String fetchDataWithRetry() {
+        Supplier<String> unreliableService = () -> {
+            if (Math.random() < 0.7) throw new RuntimeException("Service unavailable");
+            return "Success!";
+        };
+        
+        Supplier<String> resilientService = withRetry(unreliableService, 3);
+        return resilientService.get();
+    }
+}
+```
+
 **イベント処理システムでの関数型アプローチ**
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングは特に有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
@@ -335,36 +366,6 @@ public class EventProcessor {
 }
 ```
 
-            return Stream.generate(() -> {
-                try {
-                    return Optional.of(supplier.get());
-                } catch (Exception e) {
-                    if (attempts.incrementAndGet() >= maxAttempts) {
-                        throw new RuntimeException("Max attempts reached", e);
-                    }
-                    return Optional.<T>empty();
-                }
-            })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst()
-            .orElseThrow();
-        };
-    }
-    
-    // 使用例
-    public String fetchDataWithRetry() {
-        Supplier<String> unreliableService = () -> {
-            if (Math.random() < 0.7) throw new RuntimeException("Service unavailable");
-            return "Success!";
-        };
-        
-        Supplier<String> resilientService = withRetry(unreliableService, 3);
-        return resilientService.get();
-    }
-}
-```
-
 **2. 関数合成によるミドルウェアパターン**
 
 <span class="listing-number">**サンプルコード13-9**</span>
@@ -385,40 +386,6 @@ public class MiddlewareChain {
         }
     }
     
-**テンプレートメソッドパターンの関数型実装**
-
-テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
-
-<span class="listing-number">**サンプルコード13-23**</span>
-
-```java
-// データ処理の基本的なテンプレート
-public class DataProcessingTemplate {
-    public <T, R> R processData(
-        T input,
-        Function<T, T> preprocessor,
-        Function<T, R> processor,
-        Function<R, R> postprocessor) {
-        
-        T preprocessed = preprocessor.apply(input);
-        R processed = processor.apply(preprocessed);
-        return postprocessor.apply(processed);
-    }
-    
-    // 使用例：CSVデータの処理
-    public List<Customer> processCsvData(String csvData) {
-        return processData(
-            csvData,
-            data -> data.trim().toLowerCase(),  // 前処理
-            this::parseCustomers,              // メイン処理
-            customers -> customers.stream()     // 後処理
-                .filter(c -> c.isValid())
-                .collect(Collectors.toList())
-        );
-    }
-}
-```
-
     // 認証ミドルウェア
     Middleware authenticate = request -> {
         String token = request.getHeader("Authorization");
@@ -456,6 +423,41 @@ public class DataProcessingTemplate {
         .andThen(rateLimiting)
         .andThen(authenticate)
         .andThen(request -> businessLogic.handle(request));
+}
+```
+
+
+**テンプレートメソッドパターンの関数型実装**
+
+テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
+
+<span class="listing-number">**サンプルコード13-23**</span>
+
+```java
+// データ処理の基本的なテンプレート
+public class DataProcessingTemplate {
+    public <T, R> R processData(
+        T input,
+        Function<T, T> preprocessor,
+        Function<T, R> processor,
+        Function<R, R> postprocessor) {
+        
+        T preprocessed = preprocessor.apply(input);
+        R processed = processor.apply(preprocessed);
+        return postprocessor.apply(processed);
+    }
+    
+    // 使用例：CSVデータの処理
+    public List<Customer> processCsvData(String csvData) {
+        return processData(
+            csvData,
+            data -> data.trim().toLowerCase(),  // 前処理
+            this::parseCustomers,              // メイン処理
+            customers -> customers.stream()     // 後処理
+                .filter(c -> c.isValid())
+                .collect(Collectors.toList())
+        );
+    }
 }
 ```
 
@@ -616,6 +618,21 @@ public class FunctionalBuilder {
     
     // 使用例
     public void demonstrateBuilders() {
+
+        // 関数型ビルダーの利点：動的な構築ロジック
+        Person person = new FunctionalPersonBuilder()
+            .with(p -> p.setName("Alice"))
+            .with(p -> p.setAge(30))
+            .with(p -> {
+                if (p.getAge() >= 18) {
+                    p.grantAdultPrivileges();
+                }
+            })
+            .build();
+    }
+}
+```
+
 **設定ビルダーパターンの関数型実装**
 
 設定やコンフィギュレーションを構築する際、関数型ビルダーパターンは特に威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
@@ -649,19 +666,6 @@ public class ConfigurationBuilder {
 }
 ```
 
-        // 関数型ビルダーの利点：動的な構築ロジック
-        Person person = new FunctionalPersonBuilder()
-            .with(p -> p.setName("Alice"))
-            .with(p -> p.setAge(30))
-            .with(p -> {
-                if (p.getAge() >= 18) {
-                    p.grantAdultPrivileges();
-                }
-            })
-            .build();
-    }
-}
-```
 
 ### 産業界での採用事例：金融取引システム
 
@@ -679,6 +683,27 @@ public class TradingSystem {
                 .window(Duration.ofSeconds(1))
                 .flatMap(window -> window
                     .collect(Collectors.toList())
+                    .map(this::calculateVolatility)
+                )
+                .filter(volatility -> volatility > THRESHOLD)
+                .map(this::generateTradingSignal)
+                .onBackpressureBuffer(1000)
+                .publishOn(Schedulers.parallel());
+        }
+        
+        // 複雑な取引戦略の組み合わせ
+        public Function<MarketData, TradingDecision> combineStrategies(
+            List<TradingStrategy> strategies) {
+            
+            return marketData -> strategies.stream()
+                .map(strategy -> strategy.evaluate(marketData))
+                .reduce(TradingDecision.NEUTRAL, 
+                    TradingDecision::combine);
+        }
+    }
+}
+```
+
 **関数型アプローチによるビジネスロジック設計**
 
 複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
@@ -706,42 +731,12 @@ public class BusinessLogicProcessor {
 }
 ```
 
-                    .map(this::calculateVolatility)
-                )
-                .filter(volatility -> volatility > THRESHOLD)
-                .map(this::generateTradingSignal)
-                .onBackpressureBuffer(1000)
-                .publishOn(Schedulers.parallel());
-        }
-        
-        // 複雑な取引戦略の組み合わせ
-        public Function<MarketData, TradingDecision> combineStrategies(
-            List<TradingStrategy> strategies) {
-            
-            return marketData -> strategies.stream()
-                .map(strategy -> strategy.evaluate(marketData))
-                .reduce(TradingDecision.NEUTRAL, 
-                    TradingDecision::combine);
-        }
-    }
-}
-```
-
-### 参考文献・関連資料
-- "Structure and Interpretation of Computer Programs" - Abelson & Sussman
-- "Functional Programming in Java" - Venkat Subramaniam
-- "Java 8 in Action" - Raoul-Gabriel Urma
-- "Effective Java (3rd Edition)" - Joshua Bloch
-- "Modern Java in Action" - Raoul-Gabriel Urma, Mario Fusco, Alan Mycroft
-- "Reactive Programming with RxJava" - Tomasz Nurkiewicz
-- "Functional and Reactive Domain Modeling" - Debasish Ghosh
-
 ```java
 // ラムダ式を使った場合
 button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
 ```
 
-## 13.2 関数型インターフェイス
+## 関数型インターフェイス
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、**関数型インターフェイス（Functional Interface）** として扱われます。
 
@@ -868,7 +863,7 @@ public class StandardFunctionalInterfaces {
 }
 ```
 
-## 13.3 メソッド参照
+## メソッド参照
 
 ラムダ式が既存のメソッドを呼びだすだけの場合、**メソッド参照（Method Reference）**という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
 
@@ -958,7 +953,6 @@ names.stream()
 List<Person> people = names.stream()
     .map(Person::new)  // name -> new Person(name) と同じ
     .collect(Collectors.toList());
-```
 
         // ラムダ: () -> new ArrayList<>()
         // メソッド参照: ArrayList::new
@@ -969,7 +963,7 @@ List<Person> people = names.stream()
 }
 ```
 
-## 13.4 ラムダ式の応用例
+## ラムダ式の応用例
 
 ラムダ式はコレクション操作だけでなく、Javaプログラムのさまざまな場面でコードを簡潔にします。
 
