@@ -57,7 +57,7 @@
 
 まずは、カプセル化を適用していない問題のあるクラスから始めて、段階的に改善していく過程を見ていきましょう：
 
-<span class="listing-number">**リスト4.1**: カプセル化なしのBankAccountクラス（問題あり）</span>
+<span class="listing-number">**サンプルコード4-1**</span>
 
 ```java
 // 初期バージョン：カプセル化なし（問題のある設計）
@@ -127,7 +127,7 @@ Javaのアクセス制御は、カプセル化を実現する上で最も重要�
 #### 各アクセス修飾子の詳細と使用例
 
 **`private`の使用例**：
-<span class="listing-number">**リスト4.2**: カプセル化を適用したBankAccountクラス</span>
+<span class="listing-number">**サンプルコード4-2**</span>
 
 ```java
 public class BankAccount {
@@ -148,7 +148,7 @@ public class BankAccount {
 ```
 
 **パッケージプライベート（デフォルト）の使用例**：
-<span class="listing-number">**リスト4.3**: メソッドの追加とビジネスロジック</span>
+<span class="listing-number">**サンプルコード4-3**</span>
 
 ```java
 package com.example.internal;
@@ -171,7 +171,7 @@ class ProcessorHelper {
 ```
 
 **`protected`の使用例**：
-<span class="listing-number">**リスト4.4**: BankAccountクラスの使用例</span>
+<span class="listing-number">**サンプルコード4-4**</span>
 
 ```java
 package com.example.base;
@@ -199,7 +199,7 @@ public class Car extends Vehicle {
 ```
 
 **`public`の使用例**：
-<span class="listing-number">**リスト4.5**: コンストラクタオーバーロードの例</span>
+<span class="listing-number">**サンプルコード4-5**</span>
 
 ```java
 public class MathUtils {
