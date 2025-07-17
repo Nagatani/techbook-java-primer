@@ -1,4 +1,4 @@
-# <b>19章</b><span>GUIのイベント処理</span><small>ユーザー操作への応答性を高める</small>
+# <b>19章</b> <span>GUIのイベント処理</span> <small>ユーザー操作への応答性を高める</small>
 
 ## 本章の学習目標
 
@@ -559,7 +559,7 @@ exercises/chapter18/
 - [ ] カスタムコンポーネントとイベント処理が作成できている
 - [ ] ユーザビリティの高いインターフェイスが設計できている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより複雑なイベント処理とカスタムコンポーネントの実装に挑戦しましょう！
+次のステップ: 基本課題が完了したら、advanced/の発展課題でより複雑なイベント処理とカスタムコンポーネントの実装に挑戦しましょう！
 
 
 
@@ -721,13 +721,13 @@ Swingに挟まざまなイベントがあります。目的に応じて適切な
 
 WindowListenerはウィンドウの状態変化を検出するインターフェースで、7つのメソッドを実装する必要があります：
 
-- **windowOpened**: ウィンドウが初めて表示された
-- **windowClosing**: ウィンドウが閉じられようとしている
-- **windowClosed**: ウィンドウが閉じられた
-- **windowIconified**: ウィンドウが最小化された
-- **windowDeiconified**: ウィンドウが最小化から復元された
-- **windowActivated**: ウィンドウがアクティブになった
-- **windowDeactivated**: ウィンドウが非アクティブになった
+- windowOpened: ウィンドウが初めて表示された
+- windowClosing: ウィンドウが閉じられようとしている
+- windowClosed: ウィンドウが閉じられた
+- windowIconified: ウィンドウが最小化された
+- windowDeiconified: ウィンドウが最小化から復元された
+- windowActivated: ウィンドウがアクティブになった
+- windowDeactivated: ウィンドウが非アクティブになった
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。`WindowListener`インターフェイスには多くのメソッドがありますが、`WindowAdapter`クラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
@@ -770,11 +770,11 @@ public class WindowEventExample {
 
 MouseListenerはマウスの基本的な操作（クリック、プレス、リリース、入退室）を検出するインターフェースです。5つのメソッドを実装する必要があります：
 
-- **mouseClicked**: マウスボタンがクリック（押して離す）された
-- **mousePressed**: マウスボタンが押された
-- **mouseReleased**: マウスボタンが離された
-- **mouseEntered**: マウスがコンポーネントに入った
-- **mouseExited**: マウスがコンポーネントから出た
+- mouseClicked: マウスボタンがクリック（押して離す）された
+- mousePressed: マウスボタンが押された
+- mouseReleased: マウスボタンが離された
+- mouseEntered: マウスがコンポーネントに入った
+- mouseExited: マウスがコンポーネントから出た
 
 マウスの動きを追跡するにはMouseMotionListenerも併せて使用します。
 
@@ -935,9 +935,9 @@ public class MouseEventCompleteExample extends JFrame {
 
 KeyListenerはキーボードの入力を検出するインターフェースで、3つのメソッドを実装します：
 
-- **keyPressed**: キーが押された（押しっぱなしの間連続発生）
-- **keyReleased**: キーが離された
-- **keyTyped**: 文字が入力された（Unicode文字が生成された場合）
+- keyPressed: キーが押された（押しっぱなしの間連続発生）
+- keyReleased: キーが離された
+- keyTyped: 文字が入力された（Unicode文字が生成された場合）
 
 特殊キー（F1、Ctrl、Shiftなど）のkeyTypedでは検出されず、keyPressed/keyReleasedでのみ検出されます。ショートカットキーの実装やゲームのキー操作などに使用されます。
 
@@ -2431,7 +2431,7 @@ public class DragAndDropExample extends JFrame {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第19章の課題構成
 
@@ -2460,5 +2460,5 @@ exercises/chapter19/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第20章「高度なGUIコンポーネント」に進みましょう。
+次のステップ: 基礎課題が完了したら、第20章「高度なGUIコンポーネント」に進みましょう。
 

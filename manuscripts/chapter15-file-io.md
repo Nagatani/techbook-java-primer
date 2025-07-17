@@ -1,4 +1,4 @@
-# <b>15章</b><span>ファイルI/O</span><small>外部データとの安全な連携</small>
+# <b>15章</b> <span>ファイルI/O</span> <small>外部データとの安全な連携</small>
 
 ## 本章の学習目標
 
@@ -22,7 +22,7 @@
 
 ## 章末演習
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 課題
 - ファイル読み書き（Files API）
@@ -59,7 +59,7 @@
 - [ ] エラーハンドリングが適切に実装できている
 - [ ] 実用的なファイル処理ツールが作成できている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
+次のステップ: 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
 
 ## 15.1 ファイルI/Oの基礎とストリーム
 
@@ -242,9 +242,9 @@ public class TextFileWriterExample {
 テキストファイルを扱う際には、文字コード（エンコーディング）の指定が大切です。文字コードが異なると、文字化けが発生する可能性があります。
 
 **主要な文字エンコーディング**：
-- **UTF-8**: 現在最も広く使用される可変長エンコーディング
-- **Shift_JIS (MS932)**: Windows環境で使用される日本語エンコーディング
-- **ISO-8859-1**: 西欧言語用の1バイトエンコーディング
+- UTF-8: 現在最も広く使用される可変長エンコーディング
+- Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
+- ISO-8859-1: 西欧言語用の1バイトエンコーディング
 
 <span class="listing-number">**サンプルコード15-5**</span>
 
@@ -1675,15 +1675,15 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 
 本章で学んだ基本的なファイルI/Oをさらに発展させたい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-nio2-advanced/`
+付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-nio2-advanced/`
 
 この付録では以下の高度なトピックを扱います：
 
-- **WatchService**: ファイルシステムの変更をリアルタイムで監視
-- **非同期ファイルI/O**: AsynchronousFileChannelによるノンブロッキング処理
-- **メモリマップドファイル**: 大容量ファイルの高速処理
-- **リアクティブI/O**: Flow APIを使用したバックプレッシャー対応
-- **パフォーマンス最適化**: 各種I/O手法のベンチマークと選択指針
+- WatchService: ファイルシステムの変更をリアルタイムで監視
+- 非同期ファイルI/O: AsynchronousFileChannelによるノンブロッキング処理
+- メモリマップドファイル: 大容量ファイルの高速処理
+- リアクティブI/O: Flow APIを使用したバックプレッシャー対応
+- パフォーマンス最適化: 各種I/O手法のベンチマークと選択指針
 
 これらの技術は、高性能なファイル処理システムやリアルタイムデータ処理アプリケーションの開発に役立ちます。
 

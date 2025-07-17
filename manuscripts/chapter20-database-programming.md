@@ -1,4 +1,4 @@
-# <b>20章</b><span>データベースプログラミング</span><small>JDBCで実現するデータ永続化</small>
+# <b>20章</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>
 
 ## 本章の学習目標
 
@@ -18,25 +18,25 @@
 
 ### 学習目標
 
-**知識理解目標**：
+#### 知識理解目標
 - JDBCの役割とアーキテクチャの理解
 - データベース接続の仕組みとコネクションプール
 - PreparedStatementとSQL injectionのリスク
 - トランザクション管理とACID特性
 
-**技能習得目標**：
+#### 技能習得目標
 - JDBCを使用したデータベース接続の実装
 - CRUD操作の実装（Create、Read、Update、Delete）
 - PreparedStatementを使用した安全なSQL実行
 - トランザクション制御の実装
 
-**実践的な活用目標**：
+#### 実践的な活用目標
 - DAOパターンを使用したデータアクセス層の設計
 - コネクションプールを使用した効率的な接続管理
 - バッチ処理による大量データの効率的な処理
 - 実践的なWebアプリケーションのデータ層実装
 
-**到達レベルの指標**：
+#### 到達レベルの指標
 - データベースを使用したアプリケーションが設計・実装できる
 - SQL injectionなどのセキュリティリスクを理解し対策できる
 - トランザクションを適切に管理できる
@@ -733,15 +733,15 @@ public class BatchProcessingExample {
 
 本章で学んだデータベースプログラミングをさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
+付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
 
 この付録では以下の高度なトピックを扱います：
 
-- **ストアドプロシージャとファンクション**: データベース側での処理の実装
-- **インデックスとクエリ最適化**: パフォーマンスチューニング
-- **NoSQLデータベース**: MongoDB、Redisとの連携
-- **ORMフレームワーク**: Hibernate、MyBatisの基礎
-- **データベースマイグレーション**: Flywayを使用したスキーマ管理
+- ストアドプロシージャとファンクション: データベース側での処理の実装
+- インデックスとクエリ最適化: パフォーマンスチューニング
+- NoSQLデータベース: MongoDB、Redisとの連携
+- ORMフレームワーク: Hibernate、MyBatisの基礎
+- データベースマイグレーション: Flywayを使用したスキーマ管理
 
 これらの技術は、エンタープライズアプリケーション開発において重要な役割を果たします。
 
@@ -749,13 +749,13 @@ public class BatchProcessingExample {
 
 本章では、JavaのJDBCを使用したデータベースプログラミングの基礎を学習しました：
 
-- **JDBC**: Javaからデータベースにアクセスするための標準API
-- **CRUD操作**: Create、Read、Update、Deleteの基本操作
-- **PreparedStatement**: SQL Injectionを防ぐ安全なSQL実行
-- **トランザクション**: 複数の操作を1つの作業単位として扱う
-- **DAOパターン**: データアクセスロジックの分離と再利用
-- **コネクションプール**: 接続の再利用による性能向上
-- **バッチ処理**: 大量データの効率的な処理
+- JDBC: Javaからデータベースにアクセスするための標準API
+- CRUD操作: Create、Read、Update、Deleteの基本操作
+- PreparedStatement: SQL Injectionを防ぐ安全なSQL実行
+- トランザクション: 複数の操作を1つの作業単位として扱う
+- DAOパターン: データアクセスロジックの分離と再利用
+- コネクションプール: 接続の再利用による性能向上
+- バッチ処理: 大量データの効率的な処理
 
 これらの技術を組み合わせることで、実践的なデータベースアプリケーションを開発できます。
 
@@ -767,7 +767,7 @@ public class BatchProcessingExample {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第20章の課題構成
 
@@ -796,4 +796,4 @@ exercises/chapter20/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第21章「高度なGUIコンポーネント」に進みましょう。
+次のステップ: 基礎課題が完了したら、第21章「高度なGUIコンポーネント」に進みましょう。

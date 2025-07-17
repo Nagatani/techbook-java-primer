@@ -1,4 +1,4 @@
-# <b>7章</b><span>抽象クラスとインターフェイス</span><small>柔軟なシステム設計の基礎</small>
+# <b>7章</b> <span>抽象クラスとインターフェイス</span> <small>柔軟なシステム設計の基礎</small>
 
 ## 本章の学習目標
 
@@ -1247,7 +1247,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 ### 演習課題へのアクセス
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第7章の課題構成
 
@@ -1281,4 +1281,4 @@ exercises/chapter07/
 
 詳細はGitHubリポジトリのREADMEを参照してください。
 
-**次のステップ**: 第8章「列挙型(Enums)」へ進みましょう。
+次のステップ: 第8章「列挙型(Enums)」へ進みましょう。

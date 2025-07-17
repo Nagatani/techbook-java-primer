@@ -1,4 +1,4 @@
-# <b>12章</b><span>Stream APIと高度なコレクション操作</span><small>宣言的データ処理のマスター</small>
+# <b>12章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的データ処理のマスター</small>
 
 ## 本章の学習目標
 
@@ -6,12 +6,12 @@
 
 本章を学習するためには、いくつかの大切な前提知識がポイントです。
 
-**ポイントとなる前提**：
+#### ポイントとなる前提
 - 第10章のコレクションフレームワーク（List、Set、Map）
 - 第11章のジェネリクス
 - 基本的なラムダ式の理解（本章で復習します）
 
-**あるとよい前提**：
+#### あるとよい前提
 - ループ処理でのデータ処理経験
 - ソートやフィルタリングの実装経験
 
@@ -1219,12 +1219,12 @@ public class ComplexProcessingExample {
 
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
-- **データ構造の選択**: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが大切です。
-- **ラムダ式と`Comparator`**: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
-- **Stream API**: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
-- **Optional型**: null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
-- **並列ストリーム**: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
-- **高度なStream操作**: `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
+- データ構造の選択: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが大切です。
+- ラムダ式と`Comparator`: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
+- Stream API: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
+- Optional型: null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
+- 並列ストリーム: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
+- 高度なStream操作: `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
 
 これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。
 
@@ -1234,7 +1234,7 @@ public class ComplexProcessingExample {
 
 ### 演習課題へのアクセス
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ```
 exercises/chapter10/
@@ -1260,13 +1260,13 @@ exercises/chapter10/
 
 本章で学んだStream APIについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-stream-api-internals/`
+付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-stream-api-internals/`
 
 この付録では以下の高度なトピックを扱います：
 
-- **Spliteratorの仕組み**: 並列処理を支える分割可能なイテレータの実装詳細
-- **Fork/Joinフレームワーク**: 並列ストリームの内部で使用される並列処理メカニズム
-- **カスタムコレクターの実装**: 独自の集約処理を実装する高度なテクニック
-- **パフォーマンス最適化**: JMHを使ったベンチマーキングと最適化手法
-- **エラー処理**: 例外やnullを適切に処理しているか
-- **パフォーマンス**: 必要に応じて並列処理を活用しているか
+- Spliteratorの仕組み: 並列処理を支える分割可能なイテレータの実装詳細
+- Fork/Joinフレームワーク: 並列ストリームの内部で使用される並列処理メカニズム
+- カスタムコレクターの実装: 独自の集約処理を実装する高度なテクニック
+- パフォーマンス最適化: JMHを使ったベンチマーキングと最適化手法
+- エラー処理: 例外やnullを適切に処理しているか
+- パフォーマンス: 必要に応じて並列処理を活用しているか

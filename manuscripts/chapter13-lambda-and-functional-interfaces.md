@@ -1,4 +1,4 @@
-# <b>13章</b><span>ラムダ式と関数型インターフェイス</span><small>関数型プログラミングへの扱い</small>
+# <b>13章</b> <span>ラムダ式と関数型インターフェイス</span> <small>関数型プログラミングへの扱い</small>
 
 ## 本章の学習目標
 
@@ -1021,7 +1021,7 @@ public class ThreadLambdaExample {
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第13章の課題構成
 
@@ -1050,7 +1050,7 @@ exercises/chapter13/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第14章「例外処理」に進みましょう。
+次のステップ: 基礎課題が完了したら、第14章「例外処理」に進みましょう。
 
 **データバリデーション処理の関数型実装**
 
@@ -1102,11 +1102,11 @@ public class ValidationFramework {
 
 本章で学んだ関数型プログラミングについて、さらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
+付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
 
 この付録では以下の高度なトピックを扱います：
 
-- **関数型プログラミングの歴史的背景**: LispからHaskell、そしてモダン言語への発展
-- **数学的基礎**: ラムダ計算、チャーチ数、Yコンビネータ
-- **圏論とモナド**: ファンクタ、アプリカティブ、モナドのコンセプトとJavaにおける実装
-- **実務での活用例**: ドメイン固有言語（DSL）、状態管理、エラーハンドリング
+- 関数型プログラミングの歴史的背景: LispからHaskell、そしてモダン言語への発展
+- 数学的基礎: ラムダ計算、チャーチ数、Yコンビネータ
+- 圏論とモナド: ファンクタ、アプリカティブ、モナドのコンセプトとJavaにおける実装
+- 実務での活用例: ドメイン固有言語（DSL）、状態管理、エラーハンドリング

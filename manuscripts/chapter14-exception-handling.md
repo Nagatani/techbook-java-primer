@@ -1,4 +1,4 @@
-# <b>14章</b><span>例外処理</span><small>障害に強いプログラムの構築</small>
+# <b>14章</b> <span>例外処理</span> <small>障害に強いプログラムの構築</small>
 
 ## 本章の学習目標
 
@@ -28,7 +28,7 @@
 
 本書の演習課題は、以下のGitHubリポジトリで提供されています：
 
-**リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
+リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
 ### 第14章の課題構成
 
@@ -57,7 +57,7 @@ exercises/chapter14/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-**次のステップ**: 基礎課題が完了したら、第15章「ファイル入出力」に進みましょう。
+次のステップ: 基礎課題が完了したら、第15章「ファイル入出力」に進みましょう。
 
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください：
@@ -317,15 +317,15 @@ public class UserService {
 
 本章で学んだ例外処理をさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
 
-**付録リソース**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-exception-performance/`
+付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-exception-performance/`
 
 この付録では以下の高度なトピックを扱います：
 
-- **例外処理の内部メカニズム**: 例外テーブルとバイトコード、JVMでの例外処理フロー
-- **パフォーマンスコストの分析**: 例外発生時のオーバーヘッド、スタックトレース生成コスト
-- **最適化テクニック**: 例外の事前割り当て、条件付きスタックトレース生成
-- **高性能例外処理パターン**: Result型、Optional活用、Null Objectパターン
-- **メモリ効率と監視**: 例外オブジェクトのメモリ使用量、例外処理の統計情報収集
+- 例外処理の内部メカニズム: 例外テーブルとバイトコード、JVMでの例外処理フロー
+- パフォーマンスコストの分析: 例外発生時のオーバーヘッド、スタックトレース生成コスト
+- 最適化テクニック: 例外の事前割り当て、条件付きスタックトレース生成
+- 高性能例外処理パターン: Result型、Optional活用、Null Objectパターン
+- メモリ効率と監視: 例外オブジェクトのメモリ使用量、例外処理の統計情報収集
 
 これらの技術は、特に高性能が要求されるシステムや大量トランザクション処理において重要な役割を果たします。
 
