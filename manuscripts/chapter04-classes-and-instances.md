@@ -1064,3 +1064,602 @@ exercises/chapter04/
 - 情報隠蔽の深い意味: デメテルの法則、Tell Don't Askの原則
 - 契約による設計: 事前条件、事後条件、不変条件による堅牢な設計
 - デザインパターン: GoFパターンの実践的な適用例
+
+## よくあるエラーと対処法
+
+クラスとインスタンスの学習において、開発者が遭遇する典型的なエラーと、その解決方法について詳しく説明します。
+
+### 1. クラス設計に関する問題
+
+#### エラー1: 神（God）クラスの作成
+
+**問題のあるコード**:
+```java
+// 一つのクラスに責任を詰め込みすぎた例
+public class UserManager {
+    private String username;
+    private String password;
+    private String email;
+    
+    // データベース操作
+    public void saveToDatabase() { /* ... */ }
+    public void deleteFromDatabase() { /* ... */ }
+    
+    // メール送信
+    public void sendWelcomeEmail() { /* ... */ }
+    public void sendPasswordResetEmail() { /* ... */ }
+    
+    // ログイン処理
+    public boolean authenticate(String password) { /* ... */ }
+    public void generateSession() { /* ... */ }
+    
+    // レポート生成
+    public void generateUserReport() { /* ... */ }
+    public void exportToCSV() { /* ... */ }
+}
+```
+
+**エラーメッセージ**:
+```
+設計上の問題: 単一責任の原則に違反している
+```
+
+**修正方法**:
+```java
+// 責任を分離したクラス設計
+public class User {
+    private String username;
+    private String password;
+    private String email;
+    
+    // コンストラクタ、getter、setter
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+    
+    // 基本的なユーザー操作のみ
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
+}
+
+public class UserRepository {
+    public void save(User user) { /* データベース操作 */ }
+    public void delete(String username) { /* データベース操作 */ }
+}
+
+public class EmailService {
+    public void sendWelcomeEmail(User user) { /* メール送信 */ }
+    public void sendPasswordResetEmail(User user) { /* メール送信 */ }
+}
+
+public class AuthenticationService {
+    public boolean authenticate(User user, String password) { /* 認証処理 */ }
+    public String generateSession(User user) { /* セッション生成 */ }
+}
+```
+
+#### エラー2: 過度なgetterとsetterの使用
+
+**問題のあるコード**:
+```java
+public class BankAccount {
+    private double balance;
+    
+    public double getBalance() { return balance; }
+    public void setBalance(double balance) { this.balance = balance; }
+}
+
+// 使用例での問題
+BankAccount account = new BankAccount();
+account.setBalance(1000.0);
+double currentBalance = account.getBalance();
+account.setBalance(currentBalance - 100.0);  // 直接残高操作
+```
+
+**エラーメッセージ**:
+```
+設計上の問題: カプセル化が不十分で、ビジネスロジックが外部に漏れている
+```
+
+**修正方法**:
+```java
+public class BankAccount {
+    private double balance;
+    
+    public BankAccount(double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+        }
+        this.balance = initialBalance;
+    }
+    
+    // 残高の取得は許可
+    public double getBalance() { return balance; }
+    
+    // 直接設定は不可、代わりにビジネスロジックメソッドを提供
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は0より大きい必要があります");
+        }
+        this.balance += amount;
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("出金額は0より大きい必要があります");
+        }
+        if (this.balance < amount) {
+            return false;  // 残高不足
+        }
+        this.balance -= amount;
+        return true;
+    }
+}
+```
+
+### 2. コンストラクタ関連のエラー
+
+#### エラー3: デフォルトコンストラクタが見つからない
+
+**エラーメッセージ**:
+```
+error: The constructor User() is undefined
+```
+
+**問題のあるコード**:
+```java
+public class User {
+    private String name;
+    private int age;
+    
+    // カスタムコンストラクタを定義
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+// 使用時のエラー
+User user = new User();  // コンパイルエラー
+```
+
+**修正方法**:
+```java
+public class User {
+    private String name;
+    private int age;
+    
+    // デフォルトコンストラクタを明示的に定義
+    public User() {
+        this("Unknown", 0);
+    }
+    
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+```
+
+#### エラー4: コンストラクタでのnull値未検証
+
+**問題のあるコード**:
+```java
+public class Product {
+    private String name;
+    private double price;
+    
+    public Product(String name, double price) {
+        this.name = name;  // null チェックなし
+        this.price = price;
+    }
+}
+
+// 実行時エラーが発生する可能性
+Product product = new Product(null, 100.0);
+System.out.println(product.name.length());  // NullPointerException
+```
+
+**エラーメッセージ**:
+```
+Exception in thread "main" java.lang.NullPointerException
+```
+
+**修正方法**:
+```java
+public class Product {
+    private String name;
+    private double price;
+    
+    public Product(String name, double price) {
+        if (name == null) {
+            throw new IllegalArgumentException("商品名はnullにできません");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("価格は0以上である必要があります");
+        }
+        this.name = name;
+        this.price = price;
+    }
+}
+```
+
+### 3. メソッドオーバーロードの問題
+
+#### エラー5: 引数の型による曖昧性
+
+**問題のあるコード**:
+```java
+public class Calculator {
+    public int calculate(int a, double b) {
+        return (int)(a + b);
+    }
+    
+    public double calculate(double a, int b) {
+        return a + b;
+    }
+}
+
+// 使用時のエラー
+Calculator calc = new Calculator();
+calc.calculate(10, 20);  // どちらのメソッドが呼ばれるか不明
+```
+
+**エラーメッセージ**:
+```
+error: The method calculate(int, double) is ambiguous for the type Calculator
+```
+
+**修正方法**:
+```java
+public class Calculator {
+    public int calculate(int a, int b) {
+        return a + b;
+    }
+    
+    public double calculate(double a, double b) {
+        return a + b;
+    }
+    
+    public double calculate(int a, double b) {
+        return a + b;
+    }
+    
+    public double calculate(double a, int b) {
+        return a + b;
+    }
+}
+```
+
+#### エラー6: 戻り値の型のみが異なるオーバーロード
+
+**問題のあるコード**:
+```java
+public class DataProcessor {
+    public String process(String data) {
+        return data.toUpperCase();
+    }
+    
+    public int process(String data) {  // コンパイルエラー
+        return data.length();
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+error: Duplicate method process(String) in type DataProcessor
+```
+
+**修正方法**:
+```java
+public class DataProcessor {
+    public String processToUpperCase(String data) {
+        return data.toUpperCase();
+    }
+    
+    public int processToLength(String data) {
+        return data.length();
+    }
+    
+    // または、より明確な名前を使用
+    public String formatText(String data) {
+        return data.toUpperCase();
+    }
+    
+    public int calculateLength(String data) {
+        return data.length();
+    }
+}
+```
+
+### 4. オブジェクト参照の理解不足
+
+#### エラー7: 参照の共有による意図しない変更
+
+**問題のあるコード**:
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        this.members = members;  // 参照をそのまま保存
+    }
+    
+    public List<String> getMembers() {
+        return members;  // 内部リストを直接返す
+    }
+}
+
+// 使用時の問題
+List<String> originalList = new ArrayList<>();
+originalList.add("Alice");
+originalList.add("Bob");
+
+Team team = new Team(originalList);
+originalList.add("Charlie");  // 意図せずTeamの内部状態を変更
+
+List<String> teamMembers = team.getMembers();
+teamMembers.add("David");  // 意図せずTeamの内部状態を変更
+```
+
+**修正方法**:
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        // 防御的コピー
+        this.members = new ArrayList<>(members);
+    }
+    
+    public List<String> getMembers() {
+        // 防御的コピーを返す
+        return new ArrayList<>(members);
+    }
+    
+    // 正しい方法でメンバーを追加
+    public void addMember(String member) {
+        if (member != null && !member.trim().isEmpty()) {
+            members.add(member);
+        }
+    }
+}
+```
+
+### 5. メモリリークの基礎
+
+#### エラー8: リスナーの未解除
+
+**問題のあるコード**:
+```java
+public class EventSource {
+    private List<EventListener> listeners = new ArrayList<>();
+    
+    public void addListener(EventListener listener) {
+        listeners.add(listener);
+    }
+    
+    // リスナーを削除するメソッドがない
+    public void fireEvent(String event) {
+        for (EventListener listener : listeners) {
+            listener.onEvent(event);
+        }
+    }
+}
+
+public class EventHandler implements EventListener {
+    private EventSource source;
+    
+    public EventHandler(EventSource source) {
+        this.source = source;
+        source.addListener(this);
+    }
+    
+    @Override
+    public void onEvent(String event) {
+        System.out.println("Received: " + event);
+    }
+}
+```
+
+**修正方法**:
+```java
+public class EventSource {
+    private List<EventListener> listeners = new ArrayList<>();
+    
+    public void addListener(EventListener listener) {
+        listeners.add(listener);
+    }
+    
+    public void removeListener(EventListener listener) {
+        listeners.remove(listener);
+    }
+    
+    public void fireEvent(String event) {
+        for (EventListener listener : listeners) {
+            listener.onEvent(event);
+        }
+    }
+}
+
+public class EventHandler implements EventListener {
+    private EventSource source;
+    
+    public EventHandler(EventSource source) {
+        this.source = source;
+        source.addListener(this);
+    }
+    
+    // リソースの解放メソッド
+    public void cleanup() {
+        if (source != null) {
+            source.removeListener(this);
+            source = null;
+        }
+    }
+    
+    @Override
+    public void onEvent(String event) {
+        System.out.println("Received: " + event);
+    }
+}
+```
+
+### 6. equals()とhashCode()の実装ミス
+
+#### エラー9: equals()のみの実装
+
+**問題のあるコード**:
+```java
+public class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return age == person.age && Objects.equals(name, person.name);
+    }
+    
+    // hashCode() の実装が不足
+}
+
+// 使用時の問題
+Set<Person> people = new HashSet<>();
+people.add(new Person("Alice", 30));
+people.add(new Person("Alice", 30));  // 重複として検出されない
+System.out.println(people.size());  // 期待値: 1、実際: 2
+```
+
+**修正方法**:
+```java
+public class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return age == person.age && Objects.equals(name, person.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+```
+
+### 7. toString()メソッドの問題
+
+#### エラー10: 無限再帰による StackOverflowError
+
+**問題のあるコード**:
+```java
+public class Department {
+    private String name;
+    private List<Employee> employees;
+    
+    public Department(String name) {
+        this.name = name;
+        this.employees = new ArrayList<>();
+    }
+    
+    @Override
+    public String toString() {
+        return "Department{name='" + name + "', employees=" + employees + "}";
+    }
+}
+
+public class Employee {
+    private String name;
+    private Department department;
+    
+    public Employee(String name, Department department) {
+        this.name = name;
+        this.department = department;
+    }
+    
+    @Override
+    public String toString() {
+        return "Employee{name='" + name + "', department=" + department + "}";
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+Exception in thread "main" java.lang.StackOverflowError
+```
+
+**修正方法**:
+```java
+public class Department {
+    private String name;
+    private List<Employee> employees;
+    
+    public Department(String name) {
+        this.name = name;
+        this.employees = new ArrayList<>();
+    }
+    
+    @Override
+    public String toString() {
+        return "Department{name='" + name + "', employeeCount=" + employees.size() + "}";
+    }
+}
+
+public class Employee {
+    private String name;
+    private Department department;
+    
+    public Employee(String name, Department department) {
+        this.name = name;
+        this.department = department;
+    }
+    
+    @Override
+    public String toString() {
+        String deptName = department != null ? department.getName() : "None";
+        return "Employee{name='" + name + "', department='" + deptName + "'}";
+    }
+}
+```
+
+### デバッグのヒント
+
+1. **IDE の活用**: 
+   - ブレークポイントを設定してオブジェクトの状態を確認
+   - Watch機能で変数の値を監視
+
+2. **ログ出力**:
+   - System.out.println()でデバッグ情報を出力
+   - オブジェクトの状態変化を追跡
+
+3. **単体テスト**:
+   - 小さな単位でクラスの動作を検証
+   - 境界値やエラーケースもテスト
+
+4. **コードレビュー**:
+   - 第三者の目で設計の問題を発見
+   - ベストプラクティスの共有
+
+これらの典型的なエラーパターンを理解し、適切な対処法を身につけることで、堅牢で保守性の高いJavaプログラムを作成できるようになります。

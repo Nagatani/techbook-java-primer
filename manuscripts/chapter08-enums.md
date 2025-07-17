@@ -466,3 +466,328 @@ public class App {
 ```
 
 このように、enumを使ったSingletonパターンは、Javaにおける最も推奨される実装方法です。
+
+## よくあるエラーと対処法
+
+enumを学習する際に遭遇する典型的なエラーとその対処法を示します。
+
+### enum定数の不正な使用
+
+**エラー例1: enum定数の大文字小文字を間違える**
+
+```java
+public enum Status {
+    ACTIVE, INACTIVE, PENDING
+}
+
+// 間違った使用
+if (status == Status.active) {  // コンパイルエラー
+    // 処理
+}
+```
+
+**エラーメッセージ:**
+```
+error: cannot find symbol
+  symbol:   variable active
+  location: class Status
+```
+
+**対処法:**
+```java
+// 正しい使用
+if (status == Status.ACTIVE) {
+    // 処理
+}
+```
+
+**エラー例2: enum定数をnewで作成しようとする**
+
+```java
+Status status = new Status();  // コンパイルエラー
+```
+
+**エラーメッセージ:**
+```
+error: enum types may not be instantiated
+```
+
+**対処法:**
+```java
+// 正しい使用
+Status status = Status.ACTIVE;
+```
+
+### switchステートメントでのenum取り扱い
+
+**エラー例3: switch文でenum名を含めてしまう**
+
+```java
+switch (status) {
+    case Status.ACTIVE:  // コンパイルエラー
+        break;
+    case Status.INACTIVE:
+        break;
+}
+```
+
+**エラーメッセージ:**
+```
+error: an enum switch case label must be the unqualified name of an enumeration constant
+```
+
+**対処法:**
+```java
+// 正しい使用
+switch (status) {
+    case ACTIVE:
+        break;
+    case INACTIVE:
+        break;
+}
+```
+
+**エラー例4: switch文でのdefault句の省略**
+
+```java
+public enum Priority {
+    HIGH, MEDIUM, LOW
+}
+
+// 全てのcase句を書いていない場合
+switch (priority) {
+    case HIGH:
+        // 処理
+        break;
+    case MEDIUM:
+        // 処理
+        break;
+    // LOWのcase句がない
+}
+```
+
+**問題点:**
+新しいenum値が追加されたときに、コンパイル時に検出されない可能性があります。
+
+**対処法:**
+```java
+// 推奨：全てのcase句を書く、またはdefaultを使用
+switch (priority) {
+    case HIGH:
+        // 処理
+        break;
+    case MEDIUM:
+        // 処理
+        break;
+    case LOW:
+        // 処理
+        break;
+    default:
+        throw new IllegalArgumentException("Unknown priority: " + priority);
+}
+```
+
+### enumのコンストラクタ呼び出し
+
+**エラー例5: enumのコンストラクタを直接呼び出す**
+
+```java
+public enum Color {
+    RED(255, 0, 0),
+    GREEN(0, 255, 0),
+    BLUE(0, 0, 255);
+    
+    private final int r, g, b;
+    
+    Color(int r, int g, int b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+}
+
+// 間違った使用
+Color color = new Color(128, 128, 128);  // コンパイルエラー
+```
+
+**エラーメッセージ:**
+```
+error: enum types may not be instantiated
+```
+
+**対処法:**
+```java
+// 正しい使用：定義済みの定数のみ使用可能
+Color color = Color.RED;
+
+// 新しい色が必要な場合は、enum定義に追加
+public enum Color {
+    RED(255, 0, 0),
+    GREEN(0, 255, 0),
+    BLUE(0, 0, 255),
+    GRAY(128, 128, 128);  // 新しい定数を追加
+    
+    // ... コンストラクタとメソッド
+}
+```
+
+### Comparableインターフェイスとの関係
+
+**エラー例6: enumの比較で間違った方法を使用**
+
+```java
+public enum Size {
+    SMALL, MEDIUM, LARGE
+}
+
+// 間違った使用
+if (size1 > size2) {  // コンパイルエラー
+    // 処理
+}
+```
+
+**エラーメッセージ:**
+```
+error: bad operand types for binary operator '>'
+```
+
+**対処法:**
+```java
+// 正しい使用：ordinal()の比較またはcompareTo()を使用
+if (size1.ordinal() > size2.ordinal()) {
+    // 処理
+}
+
+// より良い方法：compareTo()を使用
+if (size1.compareTo(size2) > 0) {
+    // 処理
+}
+```
+
+### enumの拡張に関する誤解
+
+**エラー例7: enumを継承しようとする**
+
+```java
+public enum BasicColor {
+    RED, GREEN, BLUE
+}
+
+// 間違った使用
+public enum ExtendedColor extends BasicColor {  // コンパイルエラー
+    YELLOW, CYAN, MAGENTA
+}
+```
+
+**エラーメッセージ:**
+```
+error: enum cannot inherit from classes
+```
+
+**対処法1: インターフェイスを使用**
+```java
+public interface ColorInterface {
+    String getHexValue();
+}
+
+public enum BasicColor implements ColorInterface {
+    RED("#FF0000"),
+    GREEN("#00FF00"),
+    BLUE("#0000FF");
+    
+    private final String hexValue;
+    
+    BasicColor(String hexValue) {
+        this.hexValue = hexValue;
+    }
+    
+    @Override
+    public String getHexValue() {
+        return hexValue;
+    }
+}
+
+public enum ExtendedColor implements ColorInterface {
+    YELLOW("#FFFF00"),
+    CYAN("#00FFFF"),
+    MAGENTA("#FF00FF");
+    
+    private final String hexValue;
+    
+    ExtendedColor(String hexValue) {
+        this.hexValue = hexValue;
+    }
+    
+    @Override
+    public String getHexValue() {
+        return hexValue;
+    }
+}
+```
+
+**対処法2: 抽象メソッドを使用して多態性を実現**
+```java
+public enum Operation {
+    PLUS {
+        @Override
+        public double apply(double x, double y) {
+            return x + y;
+        }
+    },
+    MINUS {
+        @Override
+        public double apply(double x, double y) {
+            return x - y;
+        }
+    };
+    
+    public abstract double apply(double x, double y);
+}
+```
+
+### 実践的なデバッグのヒント
+
+**デバッグ時の確認ポイント:**
+
+1. **null値の確認**
+```java
+// enumはnullになる可能性がある
+if (status != null && status == Status.ACTIVE) {
+    // 処理
+}
+```
+
+2. **文字列からenumへの変換**
+```java
+// 安全な変換
+public static Status fromString(String value) {
+    try {
+        return Status.valueOf(value.toUpperCase());
+    } catch (IllegalArgumentException e) {
+        return null;  // またはデフォルト値
+    }
+}
+```
+
+3. **enumの順序に依存しない設計**
+```java
+// 悪い例：ordinal()に依存
+int level = priority.ordinal();  // 順序が変わると破綻
+
+// 良い例：明示的な値を持つ
+public enum Priority {
+    HIGH(1), MEDIUM(2), LOW(3);
+    
+    private final int level;
+    
+    Priority(int level) {
+        this.level = level;
+    }
+    
+    public int getLevel() {
+        return level;
+    }
+}
+```
+
+これらのエラーパターンを理解することで、enumをより安全かつ効果的に使用できるようになります。

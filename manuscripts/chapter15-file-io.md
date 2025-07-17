@@ -1259,3 +1259,354 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 -   **オブジェクト直列化**は、オブジェクトの状態を簡単に保存・復元する強力な手段です。
 -   **NIO.2 (`java.nio.file`)** を使うと、モダンで高機能なファイルシステム操作が可能です。
 -   GUIでは**`JFileChooser`**を使って、ユーザーにファイルを選択させることができます。
+
+## よくあるエラーと対処法
+
+ファイルI/O操作において開発者が遭遇しやすいエラーとその対処法を理解しておくことは、堅牢なアプリケーションを開発するために重要です。
+
+### 1. ファイルパスの問題
+
+**問題**: 相対パスや絶対パスの混在によるファイルが見つからないエラー
+
+```java
+// 悪い例
+File file = new File("data/config.txt");
+if (!file.exists()) {
+    System.out.println("ファイルが見つかりません");
+}
+```
+
+**エラーメッセージ**: `FileNotFoundException` または `NoSuchFileException`
+
+**対処法**: 適切なパス管理と存在チェックを実装する
+
+```java
+// 良い例
+Path configPath = Paths.get("data", "config.txt");
+Path absolutePath = configPath.toAbsolutePath();
+
+System.out.println("検索パス: " + absolutePath);
+
+if (Files.exists(configPath)) {
+    try {
+        String content = Files.readString(configPath);
+        System.out.println("設定を読み込みました");
+    } catch (IOException e) {
+        System.err.println("ファイル読み込みエラー: " + e.getMessage());
+    }
+} else {
+    System.err.println("設定ファイルが見つかりません: " + absolutePath);
+    // デフォルト設定を作成
+    createDefaultConfig(configPath);
+}
+```
+
+### 2. エンコーディングの問題
+
+**問題**: 文字化けや不正な文字でのファイル読み書き
+
+```java
+// 悪い例
+FileReader reader = new FileReader("japanese.txt");
+BufferedReader br = new BufferedReader(reader);
+String line = br.readLine(); // 文字化けする可能性
+```
+
+**エラーメッセージ**: `MalformedInputException` または文字化けした出力
+
+**対処法**: 明示的にエンコーディングを指定する
+
+```java
+// 良い例
+try (BufferedReader reader = Files.newBufferedReader(
+        Paths.get("japanese.txt"), StandardCharsets.UTF_8)) {
+    
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.err.println("ファイル読み込みエラー: " + e.getMessage());
+}
+
+// 書き込み時も同様
+try (BufferedWriter writer = Files.newBufferedWriter(
+        Paths.get("output.txt"), StandardCharsets.UTF_8)) {
+    writer.write("日本語のテキスト");
+} catch (IOException e) {
+    System.err.println("ファイル書き込みエラー: " + e.getMessage());
+}
+```
+
+### 3. ファイルロックとアクセス権限の問題
+
+**問題**: ファイルが他のプロセスによって使用されている、または権限不足
+
+```java
+// 問題のあるコード
+try {
+    Files.write(Paths.get("C:/Windows/system.log"), "data".getBytes());
+} catch (IOException e) {
+    e.printStackTrace(); // 権限エラーの詳細が不明
+}
+```
+
+**エラーメッセージ**: `AccessDeniedException` または `FileSystemException`
+
+**対処法**: 適切な権限チェックとエラーハンドリングを実装する
+
+```java
+// 良い例
+Path logFile = Paths.get("logs", "application.log");
+
+try {
+    // ディレクトリの存在チェックと作成
+    Files.createDirectories(logFile.getParent());
+    
+    // 書き込み権限の確認
+    if (!Files.isWritable(logFile.getParent())) {
+        throw new IOException("ログディレクトリに書き込み権限がありません");
+    }
+    
+    // ファイルロックを考慮した書き込み
+    try (FileChannel channel = FileChannel.open(logFile, 
+            StandardOpenOption.CREATE, 
+            StandardOpenOption.APPEND)) {
+        
+        try (FileLock lock = channel.tryLock()) {
+            if (lock != null) {
+                channel.write(ByteBuffer.wrap("ログデータ\n".getBytes()));
+            } else {
+                System.err.println("ファイルがロックされています");
+            }
+        }
+    }
+    
+} catch (AccessDeniedException e) {
+    System.err.println("アクセス権限エラー: " + e.getMessage());
+} catch (IOException e) {
+    System.err.println("ファイル操作エラー: " + e.getMessage());
+}
+```
+
+### 4. メモリ効率の問題
+
+**問題**: 大きなファイルを一度にメモリに読み込む
+
+```java
+// 悪い例（大きなファイルでOutOfMemoryError）
+String content = Files.readString(Paths.get("large_file.txt"));
+String[] lines = content.split("\n");
+```
+
+**エラーメッセージ**: `OutOfMemoryError`
+
+**対処法**: ストリーミング処理やBufferedReaderを使用する
+
+```java
+// 良い例1: ストリーミング処理
+try (Stream<String> lines = Files.lines(Paths.get("large_file.txt"))) {
+    lines.filter(line -> line.contains("ERROR"))
+         .forEach(System.out::println);
+} catch (IOException e) {
+    System.err.println("ファイル読み込みエラー: " + e.getMessage());
+}
+
+// 良い例2: バッファリングによる効率的な処理
+try (BufferedReader reader = Files.newBufferedReader(
+        Paths.get("large_file.txt"))) {
+    
+    String line;
+    int lineCount = 0;
+    while ((line = reader.readLine()) != null) {
+        if (line.contains("ERROR")) {
+            System.out.println("Line " + lineCount + ": " + line);
+        }
+        lineCount++;
+        
+        // 進捗表示（10000行ごと）
+        if (lineCount % 10000 == 0) {
+            System.out.println("処理済み: " + lineCount + "行");
+        }
+    }
+} catch (IOException e) {
+    System.err.println("ファイル読み込みエラー: " + e.getMessage());
+}
+```
+
+### 5. クロスプラットフォーム対応の問題
+
+**問題**: 特定のOS固有のパス区切り文字やファイル名制限
+
+```java
+// 悪い例
+File file = new File("data\\config\\settings.txt"); // Windows固有
+String path = "/home/user/data.txt"; // Unix固有
+```
+
+**対処法**: `java.nio.file.Path`とシステムプロパティを活用する
+
+```java
+// 良い例
+Path dataDir = Paths.get(System.getProperty("user.home"), "myapp", "data");
+Path configFile = dataDir.resolve("config.properties");
+
+// ディレクトリの作成
+try {
+    Files.createDirectories(dataDir);
+    
+    // プラットフォーム固有の区切り文字を自動処理
+    System.out.println("設定ファイル: " + configFile.toAbsolutePath());
+    
+    // 無効な文字のチェック
+    if (isValidFileName(configFile.getFileName().toString())) {
+        // ファイル操作
+        if (Files.notExists(configFile)) {
+            Files.createFile(configFile);
+        }
+    }
+    
+} catch (IOException e) {
+    System.err.println("ファイル操作エラー: " + e.getMessage());
+}
+
+private static boolean isValidFileName(String fileName) {
+    // 各OS共通の無効文字をチェック
+    String invalidChars = "<>:\"/\\|?*";
+    for (char c : invalidChars.toCharArray()) {
+        if (fileName.indexOf(c) >= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+### 6. 並行ファイルアクセスの問題
+
+**問題**: 複数のスレッドからの同時ファイルアクセス
+
+```java
+// 悪い例
+public void appendLog(String message) {
+    try (FileWriter writer = new FileWriter("app.log", true)) {
+        writer.write(message + "\n");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+```
+
+**対処法**: 適切な同期化とファイルロックを実装する
+
+```java
+// 良い例
+public class ThreadSafeFileLogger {
+    private final Path logFile;
+    private final Object lock = new Object();
+    
+    public ThreadSafeFileLogger(String filename) {
+        this.logFile = Paths.get(filename);
+    }
+    
+    public void appendLog(String message) {
+        synchronized (lock) {
+            try (FileChannel channel = FileChannel.open(logFile,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND)) {
+                
+                String timestampedMessage = LocalDateTime.now() + ": " + message + "\n";
+                channel.write(ByteBuffer.wrap(timestampedMessage.getBytes()));
+                
+            } catch (IOException e) {
+                System.err.println("ログ書き込みエラー: " + e.getMessage());
+            }
+        }
+    }
+}
+```
+
+### 7. 一時ファイルの管理問題
+
+**問題**: 一時ファイルの削除忘れによるディスク容量の浪費
+
+```java
+// 悪い例
+File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
+// 処理後にファイルが残る
+```
+
+**対処法**: 適切な一時ファイル管理を実装する
+
+```java
+// 良い例
+Path tempFile = null;
+try {
+    tempFile = Files.createTempFile("myapp_", ".tmp");
+    System.out.println("一時ファイル: " + tempFile);
+    
+    // 一時ファイルでの処理
+    Files.writeString(tempFile, "一時的なデータ");
+    
+    // 処理の実行
+    processTemporaryFile(tempFile);
+    
+} catch (IOException e) {
+    System.err.println("一時ファイル処理エラー: " + e.getMessage());
+} finally {
+    // 確実にクリーンアップ
+    if (tempFile != null) {
+        try {
+            Files.deleteIfExists(tempFile);
+            System.out.println("一時ファイルを削除しました");
+        } catch (IOException e) {
+            System.err.println("一時ファイル削除エラー: " + e.getMessage());
+        }
+    }
+}
+
+// JVMシャットダウン時の自動削除
+Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+    try {
+        Files.deleteIfExists(tempFile);
+    } catch (IOException e) {
+        // シャットダウン時なので、エラーログのみ
+        System.err.println("シャットダウン時のファイル削除エラー: " + e.getMessage());
+    }
+}));
+```
+
+### デバッグのヒント
+
+1. **ファイルパスの確認**:
+   ```java
+   Path path = Paths.get("config.txt");
+   System.out.println("現在のディレクトリ: " + System.getProperty("user.dir"));
+   System.out.println("絶対パス: " + path.toAbsolutePath());
+   System.out.println("ファイル存在: " + Files.exists(path));
+   ```
+
+2. **ファイル属性の確認**:
+   ```java
+   if (Files.exists(path)) {
+       System.out.println("読み取り可能: " + Files.isReadable(path));
+       System.out.println("書き込み可能: " + Files.isWritable(path));
+       System.out.println("ファイルサイズ: " + Files.size(path));
+       System.out.println("最終更新: " + Files.getLastModifiedTime(path));
+   }
+   ```
+
+3. **例外の詳細情報の活用**:
+   ```java
+   try {
+       Files.readString(path);
+   } catch (NoSuchFileException e) {
+       System.err.println("ファイルが見つかりません: " + e.getFile());
+   } catch (AccessDeniedException e) {
+       System.err.println("アクセス権限エラー: " + e.getFile());
+   } catch (IOException e) {
+       System.err.println("I/Oエラー: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+   }
+   ```
+
+これらの対処法を理解し実践することで、より信頼性の高いファイルI/O処理を実装できるようになります。

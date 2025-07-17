@@ -1090,3 +1090,263 @@ public class TransferService {
 -   **ユーザーに見せる情報とログに残す情報を分ける**: ユーザーには分かりやすいメッセージとエラーIDを、ログには原因究明のための詳細な情報（スタックトレースなど）を記録します。
 
 適切な例外処理を実装することは、信頼性の高いソフトウェアを開発するための必須スキルです。
+
+## よくあるエラーと対処法
+
+例外処理の学習において、開発者がよく遭遇するエラーとその対処法を理解しておくことは重要です。以下は典型的なエラーパターンとその解決方法です。
+
+### 1. try-catch文の不適切な使用
+
+**問題**: すべての処理をひとつのtry-catchで囲む
+
+```java
+// 悪い例
+try {
+    FileReader reader = new FileReader("file.txt");
+    BufferedReader br = new BufferedReader(reader);
+    String line = br.readLine();
+    int number = Integer.parseInt(line);
+    System.out.println(number);
+} catch (Exception e) {
+    System.out.println("エラーが発生しました");
+}
+```
+
+**エラーメッセージ**: 特定のエラーが分からない
+
+**対処法**: 具体的な例外をキャッチし、適切にリソースを管理する
+
+```java
+// 良い例
+try (FileReader reader = new FileReader("file.txt");
+     BufferedReader br = new BufferedReader(reader)) {
+    
+    String line = br.readLine();
+    if (line != null) {
+        try {
+            int number = Integer.parseInt(line);
+            System.out.println(number);
+        } catch (NumberFormatException e) {
+            System.err.println("数値変換エラー: " + line);
+        }
+    }
+} catch (FileNotFoundException e) {
+    System.err.println("ファイルが見つかりません: " + e.getMessage());
+} catch (IOException e) {
+    System.err.println("ファイル読み込みエラー: " + e.getMessage());
+}
+```
+
+### 2. 例外の握りつぶし
+
+**問題**: 例外を無視する空のcatchブロック
+
+```java
+// 悪い例
+try {
+    processImportantData();
+} catch (Exception e) {
+    // 何もしない（例外を握りつぶす）
+}
+```
+
+**対処法**: 最低限ログを記録し、適切に処理する
+
+```java
+// 良い例
+try {
+    processImportantData();
+} catch (BusinessException e) {
+    logger.warn("業務処理エラー: " + e.getMessage());
+    // 必要に応じてユーザーに通知
+    notifyUser("処理を完了できませんでした: " + e.getMessage());
+} catch (Exception e) {
+    logger.error("予期せぬエラー", e);
+    throw new SystemException("システムエラーが発生しました", e);
+}
+```
+
+### 3. 適切でない例外型の使用
+
+**問題**: RuntimeExceptionを不適切に使用
+
+```java
+// 悪い例
+public void validateAge(int age) {
+    if (age < 0 || age > 150) {
+        throw new RuntimeException("年齢が不正です");
+    }
+}
+```
+
+**エラーメッセージ**: 呼び出し元で適切に処理できない
+
+**対処法**: 適切な例外型を定義・使用する
+
+```java
+// 良い例
+public class ValidationException extends Exception {
+    public ValidationException(String message) {
+        super(message);
+    }
+}
+
+public void validateAge(int age) throws ValidationException {
+    if (age < 0) {
+        throw new ValidationException("年齢は0以上である必要があります");
+    }
+    if (age > 150) {
+        throw new ValidationException("年齢は150以下である必要があります");
+    }
+}
+```
+
+### 4. リソース管理の問題
+
+**問題**: finallyブロックでのリソース解放漏れ
+
+```java
+// 悪い例
+FileInputStream fis = null;
+try {
+    fis = new FileInputStream("file.txt");
+    // 処理
+} catch (IOException e) {
+    e.printStackTrace();
+} finally {
+    if (fis != null) {
+        fis.close(); // IOExceptionが発生する可能性
+    }
+}
+```
+
+**エラーメッセージ**: `Error: unreported exception IOException; must be caught or declared to be thrown`
+
+**対処法**: try-with-resourcesを使用する
+
+```java
+// 良い例
+try (FileInputStream fis = new FileInputStream("file.txt")) {
+    // 処理
+} catch (IOException e) {
+    logger.error("ファイル処理エラー", e);
+    throw new ProcessingException("ファイル処理に失敗しました", e);
+}
+```
+
+### 5. カスタム例外の設計ミス
+
+**問題**: 例外クラスに適切なコンストラクタがない
+
+```java
+// 悪い例
+public class CustomException extends Exception {
+    public CustomException(String message) {
+        super(message);
+    }
+    // 原因となった例外を保持できない
+}
+```
+
+**対処法**: 標準的なコンストラクタを提供する
+
+```java
+// 良い例
+public class CustomException extends Exception {
+    public CustomException(String message) {
+        super(message);
+    }
+    
+    public CustomException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+    public CustomException(Throwable cause) {
+        super(cause);
+    }
+}
+```
+
+### 6. 例外の再スロー時の問題
+
+**問題**: スタックトレースの情報が失われる
+
+```java
+// 悪い例
+try {
+    dangerousOperation();
+} catch (Exception e) {
+    throw new RuntimeException("操作に失敗しました");
+}
+```
+
+**対処法**: 原因例外を保持する
+
+```java
+// 良い例
+try {
+    dangerousOperation();
+} catch (SpecificException e) {
+    logger.error("特定の操作エラー", e);
+    throw new BusinessException("操作に失敗しました", e);
+} catch (Exception e) {
+    logger.error("予期せぬエラー", e);
+    throw new SystemException("システムエラーが発生しました", e);
+}
+```
+
+### 7. 並行処理での例外処理
+
+**問題**: スレッドでの例外が適切に処理されない
+
+```java
+// 悪い例
+Thread thread = new Thread(() -> {
+    try {
+        riskyOperation();
+    } catch (Exception e) {
+        // このエラーはメインスレッドで捕捉できない
+        e.printStackTrace();
+    }
+});
+thread.start();
+```
+
+**対処法**: 適切な例外処理戦略を採用する
+
+```java
+// 良い例
+ExecutorService executor = Executors.newFixedThreadPool(2);
+CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+    try {
+        return riskyOperation();
+    } catch (Exception e) {
+        throw new CompletionException("並行処理でエラーが発生しました", e);
+    }
+}, executor);
+
+future.exceptionally(ex -> {
+    logger.error("並行処理エラー", ex);
+    return "デフォルト値";
+});
+```
+
+### デバッグのヒント
+
+1. **例外の詳細情報を活用する**:
+   - `getMessage()`: エラーメッセージを取得
+   - `getCause()`: 原因となった例外を取得
+   - `getStackTrace()`: スタックトレースを取得
+
+2. **適切なログレベルを使用する**:
+   - ERROR: システムエラー
+   - WARN: ビジネスエラー
+   - INFO: 重要な処理の完了
+   - DEBUG: デバッグ情報
+
+3. **例外の発生箇所を特定する**:
+   - IDEのデバッガーを活用
+   - ログに十分な情報を記録
+   - スタックトレースを読み解く
+
+これらの対処法を理解し実践することで、より堅牢で保守性の高い例外処理を実装できるようになります。

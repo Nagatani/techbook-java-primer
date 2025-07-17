@@ -887,3 +887,251 @@ exercises/chapter01/
 - 診断とモニタリング: JVMフラグとパフォーマンスチューニング
 
 これらの知識は、Javaプログラムのパフォーマンス最適化や高度なトラブルシューティングに役立ちます。
+
+## よくあるエラーと対処法
+
+Java開発環境を構築し、初めてのプログラムを作成する際によく遭遇するエラーとその対処法を以下にまとめます。
+
+### 環境構築関連のエラー
+
+#### JDKが見つからない
+
+**エラーメッセージ**：
+```
+'java' is not recognized as an internal or external command
+```
+
+**原因と対処**：
+- JDKがインストールされていない、またはPATHが設定されていない
+- **対処法**：
+  1. JDKをインストール（推奨：Oracle JDK 11以上）
+  2. 環境変数PATHにJDKのbinディレクトリを追加
+  3. コマンドプロンプトで`java -version`を実行して確認
+
+#### 文字化けエラー
+
+**症状**：
+- コンソールで日本語が正しく表示されない
+- ソースコードの日本語コメントが文字化けする
+
+**原因と対処**：
+```java
+// 文字化けの例
+System.out.println("縺薙s縺ｫ縺｡縺ｯ");  // 正しく表示されない
+
+// 修正版
+// ファイルをUTF-8で保存し、適切なエンコーディングでコンパイル
+javac -encoding UTF-8 HelloWorld.java
+```
+
+### コンパイル関連のエラー
+
+#### クラス名とファイル名の不一致
+
+**エラーメッセージ**：
+```
+error: class HelloWorld is public, should be declared in a file named HelloWorld.java
+```
+
+**原因と対処**：
+```java
+// エラー例：ファイル名が「Sample.java」だが、クラス名がHelloWorld
+public class HelloWorld {  // クラス名とファイル名が一致しない
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+
+// 修正版1：ファイル名をHelloWorld.javaに変更
+// 修正版2：クラス名をSampleに変更
+public class Sample {
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+```
+
+#### mainメソッドのシグネチャが間違っている
+
+**エラーメッセージ**：
+```
+Error: Main method not found in class HelloWorld
+```
+
+**原因と対処**：
+```java
+// エラー例：mainメソッドのシグネチャが間違っている
+public class HelloWorld {
+    public void main(String[] args) {  // staticが抜けている
+        System.out.println("Hello");
+    }
+}
+
+// 修正版：正しいmainメソッドのシグネチャ
+public class HelloWorld {
+    public static void main(String[] args) {  // staticを追加
+        System.out.println("Hello");
+    }
+}
+```
+
+### 実行時エラー
+
+#### クラスファイルが見つからない
+
+**エラーメッセージ**：
+```
+Error: Could not find or load main class HelloWorld
+```
+
+**原因と対処**：
+```bash
+# エラー例：コンパイルせずに実行しようとした
+java HelloWorld.java  # 間違い
+
+# 修正版：コンパイルしてから実行
+javac HelloWorld.java  # コンパイル
+java HelloWorld        # 実行（.classは不要）
+```
+
+#### NumberFormatExceptionと入力処理
+
+**エラーメッセージ**：
+```
+Exception in thread "main" java.lang.NumberFormatException: For input string: "abc"
+```
+
+**原因と対処**：
+```java
+// エラー例：数値以外の入力を数値に変換しようとした
+Scanner scanner = new Scanner(System.in);
+System.out.print("数値を入力: ");
+String input = scanner.nextLine();
+int number = Integer.parseInt(input);  // "abc"を入力するとエラー
+
+// 修正版：入力値の検証（第1章レベルでの対処）
+Scanner scanner = new Scanner(System.in);
+System.out.print("数値を入力: ");
+String input = scanner.nextLine();
+
+// 簡単な数値チェック
+if (input.matches("\\d+")) {  // 数字のみの場合
+    int number = Integer.parseInt(input);
+    System.out.println("入力された数値: " + number);
+} else {
+    System.out.println("数値を入力してください");
+}
+```
+
+### IDE関連のトラブル
+
+#### IntelliJ IDEAでのプロジェクト設定
+
+**問題**：新規プロジェクトが正しく動作しない
+
+**対処法**：
+1. **プロジェクトSDKの設定**
+   - File → Project Structure → Project → Project SDK
+   - インストールしたJDKを選択
+
+2. **モジュール設定の確認**
+   - File → Project Structure → Modules
+   - Sourcesタブでsrcフォルダがソースルートに設定されているか確認
+
+3. **エンコーディングの設定**
+   - File → Settings → Editor → File Encodings
+   - Global EncodingとProject EncodingをUTF-8に設定
+
+#### Eclipse特有の問題
+
+**問題**：「The type java.lang.String cannot be resolved」
+
+**対処法**：
+1. プロジェクトを右クリック → Properties
+2. Java Build Path → Libraries
+3. Add Library → JRE System Library → Next → Finish
+
+### コマンドライン実行のコツ
+
+#### 基本的なコンパイル・実行手順
+
+```bash
+# 1. ソースコードの作成
+# HelloWorld.javaファイルを作成
+
+# 2. コンパイル
+javac HelloWorld.java
+
+# 3. 実行
+java HelloWorld
+
+# 4. 複数ファイルの場合
+javac *.java        # 全てのJavaファイルをコンパイル
+java MainClass      # メインクラスを実行
+```
+
+#### パッケージを使用している場合
+
+```bash
+# パッケージ com.example のクラスの場合
+javac com/example/HelloWorld.java
+java com.example.HelloWorld
+```
+
+### デバッグの基本
+
+#### println()を使ったデバッグ
+
+```java
+public class DebugExample {
+    public static void main(String[] args) {
+        int a = 10;
+        int b = 20;
+        
+        System.out.println("a = " + a);  // デバッグ出力
+        System.out.println("b = " + b);  // デバッグ出力
+        
+        int sum = a + b;
+        System.out.println("sum = " + sum);  // 計算結果を確認
+    }
+}
+```
+
+#### 段階的な実行確認
+
+```java
+public class StepByStepDebug {
+    public static void main(String[] args) {
+        System.out.println("プログラム開始");
+        
+        int x = 5;
+        System.out.println("x に 5 を代入しました");
+        
+        int y = x * 2;
+        System.out.println("y に x * 2 の結果を代入しました: " + y);
+        
+        System.out.println("プログラム終了");
+    }
+}
+```
+
+### 初心者向けベストプラクティス
+
+1. **エラーメッセージを恐れない**
+   - エラーメッセージは問題解決のヒント
+   - 行番号を確認してエラーの場所を特定
+
+2. **小さなステップで進む**
+   - 一度に多くのコードを書かない
+   - 動作確認を頻繁に行う
+
+3. **コーディング規約を守る**
+   - クラス名は大文字で始める（PascalCase）
+   - 変数名は小文字で始める（camelCase）
+   - インデント（字下げ）を適切に使う
+
+4. **コメントを活用する**
+   - コードの意図を日本語で説明
+   - 複雑な処理には必ずコメントを追加
+
+これらの対処法を参考に、Java開発環境での学習を進めてください。

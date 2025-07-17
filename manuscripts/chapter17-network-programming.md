@@ -1045,3 +1045,510 @@ exercises/chapter17/
 
 次のステップ: 基礎課題が完了したら、第18章「GUIプログラミング基礎」に進みましょう。
 
+## よくあるエラーと対処法
+
+ネットワークプログラミングでは、ネットワークの不安定性やセキュリティ要件により、様々なエラーが発生しやすくなります。以下は典型的な問題とその対処法です。
+
+### 1. 接続エラー
+
+**問題**: サーバーへの接続が失敗する
+
+```java
+// 悪い例
+public class BadConnection {
+    public void connect() {
+        try {
+            Socket socket = new Socket("example.com", 80);
+            // 接続に失敗した場合の処理がない
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**エラーメッセージ**: 
+- `ConnectException: Connection refused`
+- `UnknownHostException: example.com`
+- `SocketTimeoutException: Read timed out`
+
+**対処法**: 適切なエラーハンドリングとリトライ機能を実装する
+
+```java
+// 良い例
+public class ReliableConnection {
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 1000;
+    
+    public Socket connectWithRetry(String host, int port) throws IOException {
+        Exception lastException = null;
+        
+        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                System.out.println("接続試行 " + attempt + "/" + MAX_RETRIES);
+                
+                Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(host, port), 5000); // 5秒タイムアウト
+                
+                System.out.println("接続成功: " + host + ":" + port);
+                return socket;
+                
+            } catch (UnknownHostException e) {
+                System.err.println("ホストが見つかりません: " + host);
+                throw e; // リトライしても無駄
+                
+            } catch (ConnectException e) {
+                lastException = e;
+                System.err.println("接続拒否 (試行 " + attempt + "): " + e.getMessage());
+                
+            } catch (SocketTimeoutException e) {
+                lastException = e;
+                System.err.println("接続タイムアウト (試行 " + attempt + "): " + e.getMessage());
+                
+            } catch (IOException e) {
+                lastException = e;
+                System.err.println("I/Oエラー (試行 " + attempt + "): " + e.getMessage());
+            }
+            
+            // 最後の試行でなければ待機
+            if (attempt < MAX_RETRIES) {
+                try {
+                    Thread.sleep(RETRY_DELAY_MS * attempt); // 指数バックオフ
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("接続試行が中断されました", ie);
+                }
+            }
+        }
+        
+        throw new IOException("接続に失敗しました (最大試行回数: " + MAX_RETRIES + ")", lastException);
+    }
+}
+```
+
+### 2. タイムアウト設定の問題
+
+**問題**: 適切なタイムアウトが設定されていない
+
+```java
+// 悪い例
+Socket socket = new Socket("slow-server.com", 80);
+BufferedReader reader = new BufferedReader(
+    new InputStreamReader(socket.getInputStream()));
+String response = reader.readLine(); // 無限に待機する可能性
+```
+
+**エラー症状**: アプリケーションが応答しない
+
+**対処法**: 適切なタイムアウト値を設定する
+
+```java
+// 良い例
+public class TimeoutConfiguration {
+    public void configureTimeouts() throws IOException {
+        Socket socket = new Socket();
+        
+        // 接続タイムアウト: 5秒
+        socket.connect(new InetSocketAddress("example.com", 80), 5000);
+        
+        // 読み取りタイムアウト: 10秒
+        socket.setSoTimeout(10000);
+        
+        // キープアライブの設定
+        socket.setKeepAlive(true);
+        
+        // 送信バッファサイズの設定
+        socket.setSendBufferSize(32768);
+        socket.setReceiveBufferSize(32768);
+        
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream()))) {
+            
+            String response = reader.readLine(); // 10秒でタイムアウト
+            System.out.println("応答: " + response);
+            
+        } catch (SocketTimeoutException e) {
+            System.err.println("読み取りタイムアウト: " + e.getMessage());
+        } finally {
+            socket.close();
+        }
+    }
+}
+```
+
+### 3. データの送受信エラー
+
+**問題**: 不完全なデータの送受信
+
+```java
+// 悪い例
+public void sendData(Socket socket, String data) throws IOException {
+    OutputStream out = socket.getOutputStream();
+    out.write(data.getBytes()); // エンコーディングが不明
+    // データの完全性チェックがない
+}
+```
+
+**エラー症状**: 文字化け、データの欠落
+
+**対処法**: 適切なエンコーディングとデータ完全性チェックを実装する
+
+```java
+// 良い例
+public class DataTransmission {
+    private static final String CHARSET = "UTF-8";
+    
+    public void sendData(Socket socket, String data) throws IOException {
+        try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
+            byte[] bytes = data.getBytes(CHARSET);
+            
+            // データサイズを先に送信
+            out.writeInt(bytes.length);
+            out.write(bytes);
+            out.flush();
+            
+            System.out.println("データ送信完了: " + bytes.length + " bytes");
+        }
+    }
+    
+    public String receiveData(Socket socket) throws IOException {
+        try (DataInputStream in = new DataInputStream(socket.getInputStream())) {
+            // データサイズを受信
+            int dataSize = in.readInt();
+            
+            if (dataSize < 0 || dataSize > 1024 * 1024) { // 1MB制限
+                throw new IOException("無効なデータサイズ: " + dataSize);
+            }
+            
+            // データを受信
+            byte[] buffer = new byte[dataSize];
+            int totalRead = 0;
+            
+            while (totalRead < dataSize) {
+                int bytesRead = in.read(buffer, totalRead, dataSize - totalRead);
+                if (bytesRead == -1) {
+                    throw new IOException("接続が予期せず終了しました");
+                }
+                totalRead += bytesRead;
+            }
+            
+            String result = new String(buffer, CHARSET);
+            System.out.println("データ受信完了: " + totalRead + " bytes");
+            
+            return result;
+        }
+    }
+}
+```
+
+### 4. HTTPクライアントのエラー処理
+
+**問題**: HTTPレスポンスのエラー処理が不十分
+
+```java
+// 悪い例
+HttpClient client = HttpClient.newHttpClient();
+HttpResponse<String> response = client.send(request, 
+    HttpResponse.BodyHandlers.ofString());
+String body = response.body(); // ステータスコードをチェックしない
+```
+
+**対処法**: 適切なHTTPステータスコードの処理を実装する
+
+```java
+// 良い例
+public class HttpErrorHandling {
+    private final HttpClient client;
+    
+    public HttpErrorHandling() {
+        this.client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+    }
+    
+    public String fetchData(String url) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(30))
+            .header("User-Agent", "MyApp/1.0")
+            .GET()
+            .build();
+        
+        HttpResponse<String> response = client.send(request, 
+            HttpResponse.BodyHandlers.ofString());
+        
+        int statusCode = response.statusCode();
+        
+        if (statusCode >= 200 && statusCode < 300) {
+            return response.body();
+            
+        } else if (statusCode == 404) {
+            throw new IOException("リソースが見つかりません: " + url);
+            
+        } else if (statusCode == 401) {
+            throw new IOException("認証が必要です: " + url);
+            
+        } else if (statusCode == 403) {
+            throw new IOException("アクセスが拒否されました: " + url);
+            
+        } else if (statusCode >= 500) {
+            throw new IOException("サーバーエラー (" + statusCode + "): " + url);
+            
+        } else {
+            throw new IOException("HTTPエラー " + statusCode + ": " + url);
+        }
+    }
+    
+    public String fetchDataWithRetry(String url) throws IOException {
+        int maxRetries = 3;
+        
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                return fetchData(url);
+                
+            } catch (IOException e) {
+                if (attempt == maxRetries) {
+                    throw e;
+                }
+                
+                System.err.println("試行 " + attempt + " 失敗: " + e.getMessage());
+                
+                try {
+                    Thread.sleep(1000 * attempt); // 指数バックオフ
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("処理が中断されました", ie);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException("処理が中断されました", e);
+            }
+        }
+        
+        throw new IOException("予期しないエラー");
+    }
+}
+```
+
+### 5. エンコーディングの問題
+
+**問題**: 文字エンコーディングの不整合
+
+```java
+// 悪い例
+String postData = "名前=田中&年齢=30";
+byte[] postBytes = postData.getBytes(); // デフォルトエンコーディング
+```
+
+**エラー症状**: 文字化け、不正なデータ
+
+**対処法**: 明示的なエンコーディング指定を行う
+
+```java
+// 良い例
+public class EncodingHandling {
+    private static final String CHARSET = "UTF-8";
+    
+    public String sendPostRequest(String url, Map<String, String> params) 
+            throws IOException, InterruptedException {
+        
+        // URLエンコーディングを適切に行う
+        String postData = params.entrySet().stream()
+            .map(entry -> {
+                try {
+                    return URLEncoder.encode(entry.getKey(), CHARSET) + "=" + 
+                           URLEncoder.encode(entry.getValue(), CHARSET);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException("エンコーディングエラー", e);
+                }
+            })
+            .collect(java.util.stream.Collectors.joining("&"));
+        
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=" + CHARSET)
+            .POST(HttpRequest.BodyPublishers.ofString(postData, StandardCharsets.UTF_8))
+            .build();
+        
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, 
+            HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        
+        return response.body();
+    }
+}
+```
+
+### 6. セキュリティの問題
+
+**問題**: SSL/TLS証明書の検証を無効化
+
+```java
+// 悪い例 - セキュリティリスク
+// すべてのSSL証明書を受け入れる（本番環境では絶対に使用しない）
+HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+```
+
+**対処法**: 適切なSSL/TLS設定を行う
+
+```java
+// 良い例
+public class SecureConnection {
+    public HttpClient createSecureClient() {
+        return HttpClient.newBuilder()
+            .sslContext(createSecureSSLContext())
+            .build();
+    }
+    
+    private SSLContext createSecureSSLContext() {
+        try {
+            // デフォルトのSSLContext（証明書検証を行う）
+            SSLContext context = SSLContext.getDefault();
+            
+            // 必要に応じてカスタムトラストストアを設定
+            // TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+            //     TrustManagerFactory.getDefaultAlgorithm());
+            // tmf.init(customTrustStore);
+            // context.init(null, tmf.getTrustManagers(), null);
+            
+            return context;
+        } catch (Exception e) {
+            throw new RuntimeException("SSL設定エラー", e);
+        }
+    }
+    
+    public void validateHostname(String hostname) throws IOException {
+        if (hostname == null || hostname.trim().isEmpty()) {
+            throw new IOException("ホスト名が無効です");
+        }
+        
+        // IPアドレスの検証
+        try {
+            InetAddress.getByName(hostname);
+        } catch (UnknownHostException e) {
+            throw new IOException("ホストが見つかりません: " + hostname, e);
+        }
+    }
+}
+```
+
+### 7. リソース管理の問題
+
+**問題**: ネットワークリソースの適切な解放
+
+```java
+// 悪い例
+ServerSocket serverSocket = new ServerSocket(8080);
+while (true) {
+    Socket clientSocket = serverSocket.accept();
+    // クライアントソケットが適切に閉じられない
+    handleClient(clientSocket);
+}
+```
+
+**対処法**: try-with-resourcesと適切なリソース管理を実装する
+
+```java
+// 良い例
+public class ResourceManagement {
+    private volatile boolean running = true;
+    
+    public void startServer() {
+        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+            System.out.println("サーバーを開始しました: " + serverSocket.getLocalSocketAddress());
+            
+            while (running) {
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    
+                    // 各クライアントを別スレッドで処理
+                    Thread clientThread = new Thread(() -> {
+                        try (Socket socket = clientSocket) {
+                            handleClient(socket);
+                        } catch (IOException e) {
+                            System.err.println("クライアント処理エラー: " + e.getMessage());
+                        }
+                    });
+                    
+                    clientThread.setDaemon(true);
+                    clientThread.start();
+                    
+                } catch (IOException e) {
+                    if (running) {
+                        System.err.println("クライアント接続エラー: " + e.getMessage());
+                    }
+                }
+            }
+            
+        } catch (IOException e) {
+            System.err.println("サーバー開始エラー: " + e.getMessage());
+        }
+    }
+    
+    public void stopServer() {
+        running = false;
+    }
+    
+    private void handleClient(Socket clientSocket) throws IOException {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(clientSocket.getInputStream()));
+             PrintWriter writer = new PrintWriter(
+                clientSocket.getOutputStream(), true)) {
+            
+            String request = reader.readLine();
+            System.out.println("受信: " + request);
+            
+            writer.println("Echo: " + request);
+            
+        } catch (IOException e) {
+            System.err.println("クライアント通信エラー: " + e.getMessage());
+            throw e;
+        }
+    }
+}
+```
+
+### デバッグのヒント
+
+1. **ネットワーク接続の診断**:
+   ```java
+   public void diagnoseConnection(String host, int port) {
+       try {
+           InetAddress address = InetAddress.getByName(host);
+           System.out.println("IP Address: " + address.getHostAddress());
+           System.out.println("Is Reachable: " + address.isReachable(5000));
+           
+           Socket socket = new Socket();
+           socket.connect(new InetSocketAddress(host, port), 5000);
+           System.out.println("Connection successful");
+           socket.close();
+           
+       } catch (UnknownHostException e) {
+           System.err.println("ホスト解決エラー: " + e.getMessage());
+       } catch (IOException e) {
+           System.err.println("接続エラー: " + e.getMessage());
+       }
+   }
+   ```
+
+2. **HTTPヘッダーの確認**:
+   ```java
+   HttpResponse<String> response = client.send(request, 
+       HttpResponse.BodyHandlers.ofString());
+   
+   System.out.println("Status: " + response.statusCode());
+   System.out.println("Headers:");
+   response.headers().map().forEach((key, value) -> {
+       System.out.println("  " + key + ": " + value);
+   });
+   ```
+
+3. **ネットワークトラフィックの監視**:
+   ```java
+   // システムプロパティでデバッグ情報を有効化
+   System.setProperty("java.net.debug", "all");
+   System.setProperty("javax.net.debug", "ssl");
+   ```
+
+これらの対処法を理解し実践することで、より堅牢で信頼性の高いネットワークアプリケーションを開発できるようになります。
+

@@ -1104,3 +1104,230 @@ public class ValidationFramework {
 - 数学的基礎: ラムダ計算、チャーチ数、Yコンビネータ
 - 圏論とモナド: ファンクタ、アプリカティブ、モナドのコンセプトとJavaにおける実装
 - 実務での活用例: ドメイン固有言語（DSL）、状態管理、エラーハンドリング
+
+## よくあるエラーと対処法
+
+ラムダ式と関数型インターフェイスの学習で遭遇する典型的なエラーと、その対処法について説明します。
+
+### ラムダ式のシンタックスエラー
+
+**エラー例**:
+```java
+// ❌ 不正なラムダ式の構文
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+names.forEach(name -> {
+    System.out.println(name)  // セミコロン忘れ
+});
+```
+
+**エラーメッセージ**:
+```
+error: ';' expected
+```
+
+**対処法**:
+```java
+// ✅ 正しいラムダ式の構文
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+names.forEach(name -> {
+    System.out.println(name);  // セミコロンを追加
+});
+
+// または単一式の場合は波括弧を省略
+names.forEach(name -> System.out.println(name));
+```
+
+### 型推論の問題
+
+**エラー例**:
+```java
+// ❌ 型推論が曖昧な場合
+Comparator<String> comp = (x, y) -> x.length() - y.length();
+// 以下のように使用すると型推論エラーが発生する場合がある
+var result = someMethod((x, y) -> x.length() - y.length());
+```
+
+**エラーメッセージ**:
+```
+error: Cannot infer type arguments for method
+```
+
+**対処法**:
+```java
+// ✅ 明示的な型指定
+Comparator<String> comp = (String x, String y) -> x.length() - y.length();
+
+// またはメソッド参照を使用
+Comparator<String> comp = Comparator.comparing(String::length);
+```
+
+### 例外処理での問題
+
+**エラー例**:
+```java
+// ❌ チェック例外のハンドリング
+List<String> files = Arrays.asList("file1.txt", "file2.txt");
+files.stream()
+    .map(file -> Files.readString(Path.of(file)))  // IOException発生
+    .collect(Collectors.toList());
+```
+
+**エラーメッセージ**:
+```
+error: Unhandled exception type IOException
+```
+
+**対処法**:
+```java
+// ✅ 例外をランタイム例外でラップ
+List<String> contents = files.stream()
+    .map(file -> {
+        try {
+            return Files.readString(Path.of(file));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    })
+    .collect(Collectors.toList());
+
+// またはOptionalを使用した安全な処理
+List<String> contents = files.stream()
+    .map(file -> {
+        try {
+            return Optional.of(Files.readString(Path.of(file)));
+        } catch (IOException e) {
+            return Optional.<String>empty();
+        }
+    })
+    .filter(Optional::isPresent)
+    .map(Optional::get)
+    .collect(Collectors.toList());
+```
+
+### 変数スコープとキャプチャの問題
+
+**エラー例**:
+```java
+// ❌ 変数キャプチャの問題
+public void processNumbers(List<Integer> numbers) {
+    int threshold = 10;
+    threshold = 20;  // 変数の変更
+    
+    List<Integer> filtered = numbers.stream()
+        .filter(n -> n > threshold)  // エラー: 実質的にfinalではない
+        .collect(Collectors.toList());
+}
+```
+
+**エラーメッセージ**:
+```
+error: Variable used in lambda expression should be final or effectively final
+```
+
+**対処法**:
+```java
+// ✅ 実質的にfinalな変数を使用
+public void processNumbers(List<Integer> numbers) {
+    final int threshold = 20;  // finalキーワード
+    
+    List<Integer> filtered = numbers.stream()
+        .filter(n -> n > threshold)
+        .collect(Collectors.toList());
+}
+
+// または異なる変数名を使用
+public void processNumbers(List<Integer> numbers) {
+    int initialThreshold = 10;
+    int finalThreshold = 20;
+    
+    List<Integer> filtered = numbers.stream()
+        .filter(n -> n > finalThreshold)
+        .collect(Collectors.toList());
+}
+```
+
+### 関数型インターフェイスの実装間違い
+
+**エラー例**:
+```java
+// ❌ 関数型インターフェイスの誤用
+@FunctionalInterface
+interface Calculator {
+    int calculate(int a, int b);
+    int subtract(int a, int b);  // 複数の抽象メソッド
+}
+```
+
+**エラーメッセージ**:
+```
+error: Multiple non-overriding abstract methods found in interface Calculator
+```
+
+**対処法**:
+```java
+// ✅ 単一の抽象メソッドを持つ関数型インターフェイス
+@FunctionalInterface
+interface Calculator {
+    int calculate(int a, int b);
+    
+    // デフォルトメソッドまたは静的メソッドは許可される
+    default int subtract(int a, int b) {
+        return a - b;
+    }
+}
+
+// 使用例
+Calculator adder = (a, b) -> a + b;
+Calculator multiplier = (a, b) -> a * b;
+```
+
+### メソッド参照の型不一致
+
+**エラー例**:
+```java
+// ❌ メソッド参照の型不一致
+List<String> strings = Arrays.asList("1", "2", "3");
+List<Integer> numbers = strings.stream()
+    .map(Integer::parseInt)  // int返却だが、Integer期待
+    .collect(Collectors.toList());
+```
+
+**エラーメッセージ**:
+```
+error: Cannot infer type arguments for collect
+```
+
+**対処法**:
+```java
+// ✅ オートボクシングによる自動変換
+List<Integer> numbers = strings.stream()
+    .map(Integer::parseInt)  // intからIntegerへ自動変換
+    .collect(Collectors.toList());
+
+// または明示的な型指定
+List<Integer> numbers = strings.stream()
+    .map(Integer::valueOf)  // Integer返却
+    .collect(Collectors.toList());
+```
+
+### 共通の対処戦略
+
+1. **IDEの支援を活用する**: 自動補完とエラー検出機能を使用
+2. **段階的な開発**: 複雑なラムダ式は段階的に構築する
+3. **型注釈の活用**: 必要に応じて明示的な型指定を行う
+4. **例外処理の統一**: プロジェクト全体で一貫した例外処理戦略を採用
+5. **テストの充実**: ラムダ式の動作を確認するユニットテストを記述
+6. **コードレビュー**: 可読性とパフォーマンスの観点からレビューを実施
+
+## まとめ
+
+本章では、Java 8で導入されたラムダ式と関数型インターフェイスについて学びました。
+
+-   **ラムダ式**は、匿名関数を簡潔に記述するための構文で、冗長な匿名クラスを置き換えます。
+-   ラムダ式は、**抽象メソッドが1つだけの関数型インターフェイス**として扱われます。
+-   `Predicate`, `Function`, `Consumer`, `Supplier`など、汎用的な関数型インターフェイスが標準で用意されています。
+-   **メソッド参照**を使うと、既存のメソッドを呼びだすだけのラムダ式をさらに簡潔に書けます。
+
+関数型プログラミングの理論的背景を理解することで、より洗練されたコードを書くことができます。しかし、実務では可読性とパフォーマンスのバランスを考慮し、適切に使い分けることが大切です。
+
+これらの機能を使いこなすことで、コードの可読性が向上し、より宣言的で簡潔なプログラミングが可能になります。

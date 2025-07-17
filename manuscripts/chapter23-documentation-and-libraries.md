@@ -1211,3 +1211,501 @@ exercises/chapter23/
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
 次のステップ: 基礎課題が完了したら、第24章「ビルドとデプロイ」に進みましょう。
+
+## よくあるエラーと対処法
+
+ドキュメント作成と外部ライブラリの使用において、よく遭遇するエラーとその対処法を説明します。
+
+### Javadocの生成エラー
+
+#### 1. Javadocコメントの構文エラー
+
+**問題**: Javadocコメントの構文が正しくない
+
+**エラー例**:
+```java
+/**
+ * ユーザー情報を処理するクラス
+ * @param name ユーザー名  // クラスレベルでは@paramは使用不可
+ * @return なし          // クラスレベルでは@returnは使用不可
+ */
+public class UserService {
+    // ...
+}
+```
+
+**エラーメッセージ**:
+```
+warning: @param has no meaning in class documentation
+warning: @return has no meaning in class documentation
+```
+
+**解決策**:
+```java
+/**
+ * ユーザー情報を処理するクラス
+ * <p>
+ * このクラスは、ユーザーの作成、更新、削除などの
+ * 基本的なCRUD操作を提供します。
+ * </p>
+ * 
+ * @author 開発者名
+ * @version 1.0
+ * @since 2023-01-01
+ */
+public class UserService {
+    
+    /**
+     * 新しいユーザーを作成します
+     * 
+     * @param name ユーザー名（null不可）
+     * @param email メールアドレス（null不可）
+     * @return 作成されたユーザーオブジェクト
+     * @throws IllegalArgumentException 引数がnullの場合
+     */
+    public User createUser(String name, String email) {
+        // ...
+    }
+}
+```
+
+#### 2. 文字エンコーディングの問題
+
+**問題**: 日本語のJavadocが文字化けする
+
+**エラー例**:
+```bash
+javadoc -d docs src/*.java
+# 日本語が文字化けして表示される
+```
+
+**解決策**:
+```bash
+# 文字エンコーディングを明示的に指定
+javadoc -d docs -encoding UTF-8 -charset UTF-8 -docencoding UTF-8 src/*.java
+
+# Mavenを使用する場合
+mvn javadoc:javadoc -Dfile.encoding=UTF-8
+```
+
+#### 3. HTMLタグの誤用
+
+**問題**: JavadocでHTMLタグを間違って使用
+
+**エラー例**:
+```java
+/**
+ * ユーザー情報を<strong>処理するクラス
+ * <p>主な機能：
+ * <ul>
+ * <li>ユーザー作成
+ * <li>ユーザー更新  // 閉じタグなし
+ * </ul>
+ */
+public class UserService {
+    // ...
+}
+```
+
+**エラーメッセージ**:
+```
+warning: unclosed tag: <strong>
+warning: unclosed tag: <li>
+```
+
+**解決策**:
+```java
+/**
+ * ユーザー情報を<strong>処理する</strong>クラス
+ * <p>主な機能：</p>
+ * <ul>
+ * <li>ユーザー作成</li>
+ * <li>ユーザー更新</li>
+ * <li>ユーザー削除</li>
+ * </ul>
+ */
+public class UserService {
+    // ...
+}
+```
+
+### 依存関係の競合
+
+#### 1. バージョン競合
+
+**問題**: 異なるバージョンのライブラリが競合する
+
+**エラー例**:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.12.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.15.0</version>  <!-- 異なるバージョン -->
+    </dependency>
+</dependencies>
+```
+
+**エラーメッセージ**:
+```
+java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenerator
+```
+
+**解決策**:
+```xml
+<properties>
+    <jackson.version>2.15.0</jackson.version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+</dependencies>
+```
+
+#### 2. 推移的依存関係の問題
+
+**問題**: 間接的に依存するライブラリが競合する
+
+**エラー例**:
+```bash
+mvn dependency:tree
+# 出力例
+[INFO] com.example:myapp:jar:1.0.0
+[INFO] +- org.springframework:spring-core:jar:5.3.0:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] \- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO]    \- commons-logging:commons-logging:jar:1.1.3:compile
+```
+
+**解決策**:
+```xml
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>5.3.0</version>
+    <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<!-- 明示的に使用するバージョンを指定 -->
+<dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>1.2</version>
+</dependency>
+```
+
+### ライブラリのバージョン管理
+
+#### 1. 古いバージョンの使用
+
+**問題**: セキュリティ脆弱性のある古いライブラリを使用
+
+**エラー例**:
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.9.8</version>  <!-- 脆弱性のあるバージョン -->
+</dependency>
+```
+
+**解決策**:
+```xml
+<!-- 脆弱性チェックプラグインを追加 -->
+<plugin>
+    <groupId>org.owasp</groupId>
+    <artifactId>dependency-check-maven</artifactId>
+    <version>8.3.1</version>
+    <configuration>
+        <failBuildOnCVSS>7</failBuildOnCVSS>
+    </configuration>
+</plugin>
+
+<!-- 最新の安全なバージョンを使用 -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version>
+</dependency>
+```
+
+#### 2. バージョン範囲の誤用
+
+**問題**: バージョン範囲が適切でない
+
+**エラー例**:
+```xml
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>[3.0,)</version>  <!-- 上限なしは危険 -->
+</dependency>
+```
+
+**解決策**:
+```xml
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>  <!-- 具体的なバージョンを指定 -->
+</dependency>
+```
+
+### APIの非互換性
+
+#### 1. メソッドシグネチャの変更
+
+**問題**: ライブラリのバージョンアップでAPIが変更される
+
+**エラー例**:
+```java
+// 古いバージョン（1.x）
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(object);
+
+// 新しいバージョン（2.x）でコンパイルエラー
+```
+
+**エラーメッセージ**:
+```
+java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeValueAsString
+```
+
+**解決策**:
+```java
+// 新しいAPIに対応
+ObjectMapper mapper = new ObjectMapper();
+try {
+    String json = mapper.writeValueAsString(object);
+} catch (JsonProcessingException e) {
+    // 新しいバージョンでは例外処理が必要
+    throw new RuntimeException("JSON変換エラー", e);
+}
+```
+
+#### 2. 廃止予定APIの使用
+
+**問題**: 廃止予定のAPIを使用している
+
+**エラー例**:
+```java
+@SuppressWarnings("deprecation")
+Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
+```
+
+**解決策**:
+```java
+// 新しいAPIを使用
+LocalDate date = LocalDate.of(2023, 1, 1);
+Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+```
+
+### クラスパスの問題
+
+#### 1. クラスが見つからない
+
+**問題**: 必要なクラスがクラスパスに存在しない
+
+**エラー例**:
+```java
+import org.apache.commons.lang3.StringUtils;
+
+public class Example {
+    public static void main(String[] args) {
+        StringUtils.isEmpty("test");  // NoClassDefFoundError
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
+```
+
+**解決策**:
+```xml
+<!-- 必要な依存関係を追加 -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>
+</dependency>
+```
+
+#### 2. 実行時とコンパイル時のクラスパスの違い
+
+**問題**: コンパイルは成功するが実行時にエラーが発生
+
+**エラー例**:
+```bash
+# コンパイル時
+javac -cp "lib/*" src/Example.java
+
+# 実行時にクラスパスを指定し忘れ
+java Example  # ClassNotFoundException
+```
+
+**解決策**:
+```bash
+# 実行時にも適切なクラスパスを指定
+java -cp "lib/*:src" Example
+
+# または実行可能JARを作成
+mvn clean package
+java -jar target/myapp.jar
+```
+
+### 設定ファイルの問題
+
+#### 1. 設定ファイルの読み込みエラー
+
+**問題**: 設定ファイルが正しく読み込まれない
+
+**エラー例**:
+```java
+// application.propertiesが見つからない
+Properties props = new Properties();
+props.load(new FileInputStream("application.properties"));
+```
+
+**エラーメッセージ**:
+```
+java.io.FileNotFoundException: application.properties (No such file or directory)
+```
+
+**解決策**:
+```java
+// クラスパスから読み込み
+Properties props = new Properties();
+try (InputStream input = getClass().getClassLoader()
+        .getResourceAsStream("application.properties")) {
+    if (input == null) {
+        throw new RuntimeException("設定ファイルが見つかりません");
+    }
+    props.load(input);
+}
+```
+
+#### 2. 設定値の型変換エラー
+
+**問題**: 設定値の型が期待と異なる
+
+**エラー例**:
+```properties
+# application.properties
+server.port=8080abc  # 数値でない
+```
+
+```java
+int port = Integer.parseInt(props.getProperty("server.port"));
+```
+
+**エラーメッセージ**:
+```
+java.lang.NumberFormatException: For input string: "8080abc"
+```
+
+**解決策**:
+```java
+public static int getIntProperty(Properties props, String key, int defaultValue) {
+    String value = props.getProperty(key);
+    if (value == null) {
+        return defaultValue;
+    }
+    
+    try {
+        return Integer.parseInt(value.trim());
+    } catch (NumberFormatException e) {
+        System.err.println("設定値が不正です: " + key + "=" + value);
+        return defaultValue;
+    }
+}
+
+// 使用例
+int port = getIntProperty(props, "server.port", 8080);
+```
+
+### ライブラリの組み合わせ問題
+
+#### 1. ログフレームワークの競合
+
+**問題**: 複数のログフレームワークが競合する
+
+**エラー例**:
+```
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:.../slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+```
+
+**解決策**:
+```xml
+<!-- 不要なログ実装を除外 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>5.3.0</version>
+    <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<!-- 使用するログ実装を明示的に指定 -->
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.12</version>
+</dependency>
+```
+
+#### 2. 異なるJSONライブラリの混在
+
+**問題**: JacksonとGsonが混在してAPIが混乱する
+
+**解決策**:
+```java
+// 使用するJSONライブラリを統一
+public class JsonUtil {
+    private static final ObjectMapper mapper = new ObjectMapper();
+    
+    public static String toJson(Object obj) {
+        try {
+            return mapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON変換エラー", e);
+        }
+    }
+    
+    public static <T> T fromJson(String json, Class<T> clazz) {
+        try {
+            return mapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON解析エラー", e);
+        }
+    }
+}
+```
+
+これらの問題を理解し、適切に対処することで、外部ライブラリを効果的に活用し、保守性の高いアプリケーションを開発できます。

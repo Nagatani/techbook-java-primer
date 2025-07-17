@@ -1241,6 +1241,375 @@ public class DatabaseConnectionFactory {
 
 Factoryパターンは、オブジェクト指向設計において非常に重要なパターンの1つです。適切に使用することで、保守性と拡張性の高いシステムを構築できます。
 
+## よくあるエラーと対処法
+
+抽象クラスとインターフェイスの学習過程で遭遇する典型的なエラーと、その対処法を解説します。
+
+### 1. 抽象クラスのインスタンス化エラー
+
+抽象クラスは直接インスタンス化できません。
+
+**エラー例：**
+```java
+abstract class Animal {
+    public abstract void makeSound();
+}
+
+// コンパイルエラーが発生
+Animal animal = new Animal();  // Cannot instantiate the type Animal
+```
+
+**エラーメッセージ：**
+```
+Cannot instantiate the type Animal
+```
+
+**対処法：**
+```java
+// 抽象クラスを継承した具象クラスを作成
+class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("ワンワン");
+    }
+}
+
+// 具象クラスをインスタンス化
+Animal animal = new Dog();  // OK
+```
+
+### 2. 抽象メソッドの実装忘れ
+
+抽象メソッドを実装しないと、継承先のクラスも抽象クラスになってしまいます。
+
+**エラー例：**
+```java
+abstract class Shape {
+    public abstract double getArea();
+    public abstract void draw();
+}
+
+// コンパイルエラー：抽象メソッドが未実装
+class Rectangle extends Shape {
+    private double width, height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public double getArea() {
+        return width * height;
+    }
+    
+    // draw()メソッドの実装が不足
+}
+```
+
+**エラーメッセージ：**
+```
+The type Rectangle must implement the inherited abstract method Shape.draw()
+```
+
+**対処法：**
+```java
+class Rectangle extends Shape {
+    private double width, height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public double getArea() {
+        return width * height;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("長方形を描画");
+    }
+}
+```
+
+### 3. インターフェイスの実装不備
+
+インターフェイスのすべての抽象メソッドを実装する必要があります。
+
+**エラー例：**
+```java
+interface Drawable {
+    void draw();
+    void setColor(String color);
+}
+
+// コンパイルエラー：すべてのメソッドが実装されていない
+class Circle implements Drawable {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println("円を描画");
+    }
+    
+    // setColor()メソッドの実装が不足
+}
+```
+
+**エラーメッセージ：**
+```
+The type Circle must implement the inherited abstract method Drawable.setColor(String)
+```
+
+**対処法：**
+```java
+class Circle implements Drawable {
+    private double radius;
+    private String color = "black";
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    public void draw() {
+        System.out.println(color + "の円を描画");
+    }
+    
+    @Override
+    public void setColor(String color) {
+        this.color = color;
+    }
+}
+```
+
+### 4. 多重継承とダイヤモンド問題
+
+Javaでは複数の抽象クラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
+
+**エラー例：**
+```java
+interface Flyable {
+    default void move() {
+        System.out.println("飛んで移動");
+    }
+}
+
+interface Swimmable {
+    default void move() {
+        System.out.println("泳いで移動");
+    }
+}
+
+// コンパイルエラー：同名のdefaultメソッドが衝突
+class Duck implements Flyable, Swimmable {
+    // どちらのmove()メソッドを使用するか不明
+}
+```
+
+**エラーメッセージ：**
+```
+Duplicate default methods named move with the parameters () and () are inherited from the types Swimmable and Flyable
+```
+
+**対処法：**
+```java
+class Duck implements Flyable, Swimmable {
+    @Override
+    public void move() {
+        // 明示的にどちらのメソッドを使用するか指定
+        System.out.println("アヒルは");
+        Flyable.super.move();  // 飛行を選択
+        System.out.println("または");
+        Swimmable.super.move();  // 泳ぎを選択
+    }
+    
+    // または独自の実装を提供
+    public void moveOnLand() {
+        System.out.println("歩いて移動");
+    }
+}
+```
+
+### 5. defaultメソッドとstaticメソッドの混乱
+
+インターフェイスのstaticメソッドは継承されず、直接インターフェイス名で呼び出す必要があります。
+
+**エラー例：**
+```java
+interface MathUtils {
+    static double PI = 3.14159;
+    
+    static double calculateCircleArea(double radius) {
+        return PI * radius * radius;
+    }
+    
+    default void printInfo() {
+        // staticメソッドの呼び出し方が間違っている
+        System.out.println("面積: " + calculateCircleArea(5.0));  // コンパイルエラー
+    }
+}
+
+class Calculator implements MathUtils {
+    public void doCalculation() {
+        // staticメソッドの呼び出し方が間違っている
+        double area = calculateCircleArea(3.0);  // コンパイルエラー
+    }
+}
+```
+
+**エラーメッセージ：**
+```
+Cannot make a static reference to the non-static method calculateCircleArea(double) from the type MathUtils
+```
+
+**対処法：**
+```java
+interface MathUtils {
+    static double PI = 3.14159;
+    
+    static double calculateCircleArea(double radius) {
+        return PI * radius * radius;
+    }
+    
+    default void printInfo() {
+        // インターフェイス名を明示して呼び出し
+        System.out.println("面積: " + MathUtils.calculateCircleArea(5.0));
+    }
+}
+
+class Calculator implements MathUtils {
+    public void doCalculation() {
+        // インターフェイス名を明示して呼び出し
+        double area = MathUtils.calculateCircleArea(3.0);
+    }
+}
+```
+
+### 6. 抽象クラスvsインターフェイスの使い分け間違い
+
+どちらを使用するべきか迷うケースがあります。
+
+**間違った選択例：**
+```java
+// 状態を持つのに無理にインターフェイスを使用
+interface Vehicle {
+    // インターフェイスでは実装できない
+    // private String brand;  // コンパイルエラー
+    
+    void start();
+    void stop();
+    
+    default String getBrand() {
+        // 状態を持てないため、この実装は不完全
+        return "unknown";
+    }
+}
+```
+
+**正しい選択：**
+```java
+// 共通の状態と実装を持つ場合は抽象クラス
+abstract class Vehicle {
+    protected String brand;
+    protected boolean isRunning;
+    
+    public Vehicle(String brand) {
+        this.brand = brand;
+        this.isRunning = false;
+    }
+    
+    public String getBrand() {
+        return brand;
+    }
+    
+    public abstract void start();
+    public abstract void stop();
+    
+    public final boolean isRunning() {
+        return isRunning;
+    }
+}
+
+// 行動の契約のみを定義する場合はインターフェイス
+interface Maintainable {
+    void performMaintenance();
+    
+    default void scheduleMaintenanceReminder() {
+        System.out.println("メンテナンスをスケジュール");
+    }
+}
+
+class Car extends Vehicle implements Maintainable {
+    public Car(String brand) {
+        super(brand);
+    }
+    
+    @Override
+    public void start() {
+        isRunning = true;
+        System.out.println(brand + "の車を始動");
+    }
+    
+    @Override
+    public void stop() {
+        isRunning = false;
+        System.out.println(brand + "の車を停止");
+    }
+    
+    @Override
+    public void performMaintenance() {
+        System.out.println(brand + "の車のメンテナンス実行");
+    }
+}
+```
+
+### 7. オーバーライドアノテーションの省略
+
+`@Override`アノテーションを省略すると、メソッドの実装ミスに気づきにくくなります。
+
+**問題のあるコード：**
+```java
+abstract class Animal {
+    public abstract void makeSound();
+}
+
+class Cat extends Animal {
+    // @Overrideアノテーションがない
+    public void makesound() {  // メソッド名のタイプミス
+        System.out.println("ニャー");
+    }
+}
+```
+
+この場合、`makesound()`は新しいメソッドとして認識され、`makeSound()`の実装が不足しているエラーが発生します。
+
+**正しい実装：**
+```java
+class Cat extends Animal {
+    @Override
+    public void makeSound() {  // 正しいメソッド名
+        System.out.println("ニャー");
+    }
+}
+```
+
+### トラブルシューティングのベストプラクティス
+
+1. **IDEの活用**: 現代のIDEはコンパイルエラーを即座に表示し、修正提案を提供します
+2. **@Overrideアノテーション**: 必ず付与して、実装ミスを防ぎましょう
+3. **段階的な実装**: 複雑な継承階層は一度に実装せず、段階的に構築しましょう
+4. **テストの活用**: 抽象クラスやインターフェイスの実装は、単体テストで動作確認しましょう
+5. **コードレビュー**: 設計の妥当性を同僚と確認しましょう
+
+これらの知識を身につけることで、抽象クラスとインターフェイスを効果的に活用した、保守性の高いJavaプログラムを作成できるようになります。
+
 ## 章末演習
 
 本章で学んだ抽象クラスとインターフェイスの概念を実践的な課題で確認しましょう。

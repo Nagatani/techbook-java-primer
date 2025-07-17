@@ -2141,3 +2141,384 @@ exercises/chapter09/
 - パフォーマンスを考慮した設計ができている
 - フレームワークやライブラリとの統合ができている
 - レガシーコードからRecordへのマイグレーションができている
+
+## よくあるエラーと対処法
+
+Recordを学習する際に遭遇する典型的なエラーとその対処法を示します。
+
+### レコードの不変性に関する誤解
+
+**エラー例1: レコードのフィールドを変更しようとする**
+
+```java
+public record Person(String name, int age) {}
+
+// 間違った使用
+Person person = new Person("田中", 25);
+person.age = 30;  // コンパイルエラー
+```
+
+**エラーメッセージ:**
+```
+error: cannot assign a value to final variable age
+```
+
+**対処法:**
+```java
+// 正しい使用：新しいインスタンスを作成
+Person person = new Person("田中", 25);
+Person olderPerson = new Person(person.name(), 30);
+
+// または、withメソッドを追加
+public record Person(String name, int age) {
+    public Person withAge(int newAge) {
+        return new Person(this.name, newAge);
+    }
+    
+    public Person withName(String newName) {
+        return new Person(newName, this.age);
+    }
+}
+
+// 使用例
+Person person = new Person("田中", 25);
+Person olderPerson = person.withAge(30);
+```
+
+**エラー例2: ミュータブルなオブジェクトを含むレコードで不変性を破る**
+
+```java
+import java.util.List;
+
+public record Student(String name, List<String> subjects) {}
+
+// 問題のあるコード
+Student student = new Student("山田", List.of("数学", "英語"));
+student.subjects().add("科学");  // 実行時エラー（UnsupportedOperationException）
+```
+
+**エラーメッセージ:**
+```
+Exception in thread "main" java.lang.UnsupportedOperationException
+    at java.base/java.util.ImmutableCollections.uoe(ImmutableCollections.java:142)
+```
+
+**対処法:**
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public record Student(String name, List<String> subjects) {
+    // コンパクトコンストラクタで防御的コピーを作成
+    public Student {
+        subjects = List.copyOf(subjects);  // 不変リストを作成
+    }
+    
+    // 科目を追加した新しいインスタンスを返すメソッド
+    public Student addSubject(String subject) {
+        List<String> newSubjects = new ArrayList<>(subjects);
+        newSubjects.add(subject);
+        return new Student(name, newSubjects);
+    }
+}
+
+// 使用例
+Student student = new Student("山田", List.of("数学", "英語"));
+Student updatedStudent = student.addSubject("科学");
+```
+
+### レコードのコンストラクタ
+
+**エラー例3: レコードに通常のコンストラクタを追加しようとする**
+
+```java
+public record Point(int x, int y) {
+    // 間違った使用
+    public Point() {  // コンパイルエラー
+        // 処理
+    }
+}
+```
+
+**エラーメッセージ:**
+```
+error: non-canonical constructor must delegate to another constructor
+```
+
+**対処法:**
+```java
+public record Point(int x, int y) {
+    // 正しい使用：非カノニカルコンストラクタはカノニカルコンストラクタに委譲
+    public Point() {
+        this(0, 0);  // デフォルト値でカノニカルコンストラクタを呼び出し
+    }
+    
+    public Point(int value) {
+        this(value, value);  // 正方形のポイントを作成
+    }
+}
+```
+
+**エラー例4: コンパクトコンストラクタでフィールドに代入**
+
+```java
+public record Person(String name, int age) {
+    // 間違った使用
+    public Person {
+        this.name = name.trim();  // コンパイルエラー
+        this.age = Math.max(0, age);
+    }
+}
+```
+
+**エラーメッセージ:**
+```
+error: cannot assign a value to final variable name
+```
+
+**対処法:**
+```java
+public record Person(String name, int age) {
+    // 正しい使用：パラメータを再代入
+    public Person {
+        name = name.trim();  // thisを使わずにパラメータを再代入
+        age = Math.max(0, age);
+    }
+}
+```
+
+### レコードの継承制限
+
+**エラー例5: レコードを継承しようとする**
+
+```java
+public record Animal(String name) {}
+
+// 間違った使用
+public record Dog(String name, String breed) extends Animal {  // コンパイルエラー
+    // 処理
+}
+```
+
+**エラーメッセージ:**
+```
+error: classes cannot directly extend records
+```
+
+**対処法1: 組み合わせを使用**
+```java
+public record Animal(String name) {}
+
+public record Dog(Animal animal, String breed) {
+    public String name() {
+        return animal.name();
+    }
+}
+
+// 使用例
+Dog dog = new Dog(new Animal("ポチ"), "柴犬");
+```
+
+**対処法2: インターフェイスを使用**
+```java
+public interface Animal {
+    String name();
+}
+
+public record Dog(String name, String breed) implements Animal {}
+public record Cat(String name, int age) implements Animal {}
+```
+
+**エラー例6: レコードから継承しようとする**
+
+```java
+public record BaseRecord(String value) {}
+
+// 間違った使用
+public class ExtendedClass extends BaseRecord {  // コンパイルエラー
+    // 処理
+}
+```
+
+**エラーメッセージ:**
+```
+error: cannot inherit from final class
+```
+
+**対処法:**
+```java
+// レコードは継承できないため、組み合わせまたはインターフェイスを使用
+public interface ValueHolder {
+    String value();
+}
+
+public record BaseRecord(String value) implements ValueHolder {}
+
+public class ExtendedClass implements ValueHolder {
+    private final String value;
+    
+    public ExtendedClass(String value) {
+        this.value = value;
+    }
+    
+    @Override
+    public String value() {
+        return value;
+    }
+}
+```
+
+### equals()とhashCode()の自動実装
+
+**エラー例7: equals()をオーバーライドしようとする**
+
+```java
+public record Person(String name, int age) {
+    // 間違った使用
+    @Override
+    public boolean equals(Object obj) {  // コンパイルエラー
+        // カスタムロジック
+        return super.equals(obj);
+    }
+}
+```
+
+**エラーメッセージ:**
+```
+error: cannot override equals in record
+```
+
+**対処法:**
+```java
+// レコードのequals()は自動生成される
+public record Person(String name, int age) {
+    // equals()をオーバーライドする必要はない
+}
+
+// カスタムな比較が必要な場合は、別のメソッドを作成
+public record Person(String name, int age) {
+    public boolean hasSameName(Person other) {
+        return this.name.equals(other.name);
+    }
+}
+```
+
+### レコードとクラスの使い分け
+
+**エラー例8: レコードにミュータブルなメソッドを追加**
+
+```java
+public record Counter(int value) {
+    // 間違った設計
+    public void increment() {  // コンパイルエラー
+        value++;
+    }
+}
+```
+
+**エラーメッセージ:**
+```
+error: cannot assign a value to final variable value
+```
+
+**対処法:**
+```java
+// 解決法1: 新しいインスタンスを返す
+public record Counter(int value) {
+    public Counter increment() {
+        return new Counter(value + 1);
+    }
+}
+
+// 解決法2: ミュータブルな状態が必要な場合は通常のクラスを使用
+public class MutableCounter {
+    private int value;
+    
+    public MutableCounter(int value) {
+        this.value = value;
+    }
+    
+    public void increment() {
+        value++;
+    }
+    
+    public int getValue() {
+        return value;
+    }
+}
+```
+
+### 実践的なデバッグのヒント
+
+**デバッグ時の確認ポイント:**
+
+1. **null値の処理**
+```java
+public record Person(String name, int age) {
+    public Person {
+        if (name == null) {
+            throw new IllegalArgumentException("名前はnullにできません");
+        }
+        if (age < 0) {
+            throw new IllegalArgumentException("年齢は0以上である必要があります");
+        }
+    }
+}
+```
+
+2. **ディープコピーが必要な場合**
+```java
+import java.util.List;
+
+public record StudentGrades(String name, List<Integer> grades) {
+    public StudentGrades {
+        grades = List.copyOf(grades);  // 防御的コピー
+    }
+    
+    public StudentGrades addGrade(int grade) {
+        List<Integer> newGrades = new ArrayList<>(grades);
+        newGrades.add(grade);
+        return new StudentGrades(name, newGrades);
+    }
+}
+```
+
+3. **シリアライゼーション時の注意**
+```java
+import java.io.Serializable;
+
+public record SerializableData(String value, int number) implements Serializable {
+    // レコードは自動的にシリアライズ可能
+    // カスタムシリアライゼーションが必要な場合は通常のクラスを使用
+}
+```
+
+4. **パフォーマンスを考慮した設計**
+```java
+// 大量のデータを扱う場合は注意
+public record LargeData(String[] data) {
+    public LargeData {
+        data = data.clone();  // 配列のコピー
+    }
+}
+
+// より効率的な設計
+public record OptimizedData(List<String> data) {
+    public OptimizedData {
+        data = List.copyOf(data);  // 効率的な不変コピー
+    }
+}
+```
+
+5. **JSON連携時の注意**
+```java
+// Jackson等のライブラリを使用する場合
+public record ApiResponse(String status, String message, Object data) {
+    // デフォルトコンストラクタが必要な場合
+    public ApiResponse() {
+        this("success", "", null);
+    }
+}
+```
+
+これらのエラーパターンを理解することで、Recordをより安全かつ効果的に使用できるようになります。Recordは不変性を重視した設計に適しており、ミュータブルな状態が必要な場合は通常のクラスを使用することを検討しましょう。

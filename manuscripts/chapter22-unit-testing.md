@@ -581,3 +581,402 @@ exercises/chapter22/
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
 次のステップ: 基礎課題が完了したら、第23章「ドキュメントと外部ライブラリ」に進みましょう。
+
+## よくあるエラーと対処法
+
+単体テストの学習と実践において、よく遭遇するエラーとその対処法を説明します。
+
+### テストケースの設計問題
+
+#### 1. テストケースが網羅的でない
+
+**問題**: テストケースが期待値のみをチェックし、境界値や異常値をテストしていない
+
+**エラー例**:
+```java
+// 不十分なテストケース
+@Test
+void testAdd() {
+    Calculator calc = new Calculator();
+    assertEquals(5, calc.add(2, 3));
+}
+```
+
+**解決策**:
+```java
+// 網羅的なテストケース
+@Test
+void testAdd() {
+    Calculator calc = new Calculator();
+    
+    // 正常値のテスト
+    assertEquals(5, calc.add(2, 3));
+    
+    // 境界値のテスト
+    assertEquals(0, calc.add(0, 0));
+    assertEquals(Integer.MAX_VALUE, calc.add(Integer.MAX_VALUE, 0));
+    
+    // 負数のテスト
+    assertEquals(-1, calc.add(-3, 2));
+    assertEquals(-5, calc.add(-2, -3));
+}
+```
+
+#### 2. テストメソッド名が不適切
+
+**問題**: テストメソッド名からテストの目的が分からない
+
+**エラー例**:
+```java
+@Test
+void test1() {
+    // テストの目的が不明
+}
+```
+
+**解決策**:
+```java
+@Test
+void addTwoPositiveNumbers_ReturnsSum() {
+    // テストの目的が明確
+}
+
+@Test
+void addNegativeNumber_ReturnsCorrectResult() {
+    // 具体的なテストケースが理解できる
+}
+```
+
+### アサーションの誤用
+
+#### 1. 適切でないアサーションメソッドの使用
+
+**問題**: `assertTrue`や`assertFalse`を多用し、失敗時の原因が分からない
+
+**エラー例**:
+```java
+@Test
+void testStringEquals() {
+    String expected = "Hello";
+    String actual = getString();
+    assertTrue(expected.equals(actual)); // 失敗時の情報が少ない
+}
+```
+
+**解決策**:
+```java
+@Test
+void testStringEquals() {
+    String expected = "Hello";
+    String actual = getString();
+    assertEquals(expected, actual); // 失敗時に期待値と実際の値が表示される
+}
+```
+
+#### 2. 浮動小数点の比較問題
+
+**問題**: 浮動小数点の厳密な比較によるテスト失敗
+
+**エラー例**:
+```java
+@Test
+void testDoubleCalculation() {
+    double result = 0.1 + 0.2;
+    assertEquals(0.3, result); // 失敗する可能性がある
+}
+```
+
+**解決策**:
+```java
+@Test
+void testDoubleCalculation() {
+    double result = 0.1 + 0.2;
+    assertEquals(0.3, result, 0.0001); // 許容誤差を指定
+}
+```
+
+### モックオブジェクトの問題
+
+#### 1. モックの設定不足
+
+**問題**: モックオブジェクトの振る舞いが正しく設定されていない
+
+**エラー例**:
+```java
+@Test
+void testUserService() {
+    UserRepository mockRepo = mock(UserRepository.class);
+    UserService service = new UserService(mockRepo);
+    
+    // when句の設定なし
+    User user = service.findById(1L);
+    assertNotNull(user); // NullPointerExceptionが発生
+}
+```
+
+**解決策**:
+```java
+@Test
+void testUserService() {
+    UserRepository mockRepo = mock(UserRepository.class);
+    UserService service = new UserService(mockRepo);
+    
+    // モックの振る舞いを設定
+    when(mockRepo.findById(1L)).thenReturn(new User(1L, "Test User"));
+    
+    User user = service.findById(1L);
+    assertNotNull(user);
+    assertEquals("Test User", user.getName());
+}
+```
+
+#### 2. モックの検証不足
+
+**問題**: モックが期待通りに呼び出されたかの検証が不十分
+
+**エラー例**:
+```java
+@Test
+void testDeleteUser() {
+    UserRepository mockRepo = mock(UserRepository.class);
+    UserService service = new UserService(mockRepo);
+    
+    service.deleteUser(1L);
+    
+    // 削除が実際に呼ばれたかの検証なし
+}
+```
+
+**解決策**:
+```java
+@Test
+void testDeleteUser() {
+    UserRepository mockRepo = mock(UserRepository.class);
+    UserService service = new UserService(mockRepo);
+    
+    service.deleteUser(1L);
+    
+    // モックの呼び出しを検証
+    verify(mockRepo).deleteById(1L);
+}
+```
+
+### テストの実行順序の依存
+
+#### 1. テスト間の依存関係
+
+**問題**: テストの実行順序に依存したテストケース
+
+**エラー例**:
+```java
+private static int counter = 0;
+
+@Test
+void testIncrement() {
+    counter++;
+    assertEquals(1, counter);
+}
+
+@Test
+void testDoubleIncrement() {
+    counter++;
+    assertEquals(2, counter); // 実行順序によって失敗する
+}
+```
+
+**解決策**:
+```java
+@Test
+void testIncrement() {
+    int counter = 0;
+    counter++;
+    assertEquals(1, counter);
+}
+
+@Test
+void testDoubleIncrement() {
+    int counter = 0;
+    counter += 2;
+    assertEquals(2, counter);
+}
+```
+
+#### 2. 静的変数の使用問題
+
+**問題**: 静的変数がテスト間で共有されることによる問題
+
+**エラー例**:
+```java
+public class DatabaseCounter {
+    private static int count = 0;
+    
+    public static void increment() {
+        count++;
+    }
+    
+    public static int getCount() {
+        return count;
+    }
+}
+
+@Test
+void testFirstIncrement() {
+    DatabaseCounter.increment();
+    assertEquals(1, DatabaseCounter.getCount());
+}
+
+@Test
+void testSecondIncrement() {
+    DatabaseCounter.increment();
+    assertEquals(1, DatabaseCounter.getCount()); // 失敗する可能性
+}
+```
+
+**解決策**:
+```java
+@BeforeEach
+void setUp() {
+    // 各テスト前に状態をリセット
+    DatabaseCounter.reset();
+}
+
+@Test
+void testFirstIncrement() {
+    DatabaseCounter.increment();
+    assertEquals(1, DatabaseCounter.getCount());
+}
+
+@Test
+void testSecondIncrement() {
+    DatabaseCounter.increment();
+    assertEquals(1, DatabaseCounter.getCount());
+}
+```
+
+### テストデータの管理問題
+
+#### 1. テストデータの準備不足
+
+**問題**: テストに必要なデータが正しく準備されていない
+
+**エラー例**:
+```java
+@Test
+void testUserValidation() {
+    UserValidator validator = new UserValidator();
+    User user = new User(); // 必要なデータが設定されていない
+    
+    boolean isValid = validator.validate(user);
+    assertTrue(isValid); // 不正なデータでテストが失敗
+}
+```
+
+**解決策**:
+```java
+@Test
+void testUserValidation() {
+    UserValidator validator = new UserValidator();
+    User user = new User();
+    user.setName("Test User");
+    user.setEmail("test@example.com");
+    user.setAge(25);
+    
+    boolean isValid = validator.validate(user);
+    assertTrue(isValid);
+}
+
+// さらに良い方法：テストデータビルダーパターン
+@Test
+void testUserValidationWithBuilder() {
+    UserValidator validator = new UserValidator();
+    User user = UserTestDataBuilder.aUser()
+        .withName("Test User")
+        .withEmail("test@example.com")
+        .withAge(25)
+        .build();
+    
+    boolean isValid = validator.validate(user);
+    assertTrue(isValid);
+}
+```
+
+#### 2. テストデータのクリーンアップ不足
+
+**問題**: テスト実行後のデータクリーンアップが不十分
+
+**エラー例**:
+```java
+@Test
+void testCreateUser() {
+    UserService service = new UserService();
+    User user = service.createUser("Test User", "test@example.com");
+    
+    assertNotNull(user);
+    // データベースに残ったテストデータがクリーンアップされない
+}
+```
+
+**解決策**:
+```java
+@Test
+void testCreateUser() {
+    UserService service = new UserService();
+    User user = service.createUser("Test User", "test@example.com");
+    
+    assertNotNull(user);
+    
+    // テスト後のクリーンアップ
+    service.deleteUser(user.getId());
+}
+
+// さらに良い方法：@AfterEachでの自動クリーンアップ
+@AfterEach
+void tearDown() {
+    // 各テスト後にデータをクリーンアップ
+    testDataCleaner.cleanup();
+}
+```
+
+### その他の一般的な問題
+
+#### 1. テストの実行時間が長すぎる
+
+**問題**: テストが時間のかかる外部依存を持つ
+
+**解決策**:
+```java
+// 時間のかかる処理はモック化
+@Test
+void testEmailService() {
+    EmailProvider mockProvider = mock(EmailProvider.class);
+    EmailService service = new EmailService(mockProvider);
+    
+    // 実際のメール送信は行わない
+    when(mockProvider.sendEmail(any())).thenReturn(true);
+    
+    boolean result = service.sendWelcomeEmail("test@example.com");
+    assertTrue(result);
+}
+```
+
+#### 2. テストの可読性が低い
+
+**問題**: テストコードが理解しにくい
+
+**解決策**:
+```java
+@Test
+void shouldReturnTrueWhenUserIsAdult() {
+    // Given（準備）
+    User user = new User("John", 25);
+    AgeValidator validator = new AgeValidator();
+    
+    // When（実行）
+    boolean isAdult = validator.isAdult(user);
+    
+    // Then（検証）
+    assertTrue(isAdult);
+}
+```
+
+これらの問題を理解し、適切に対処することで、より効果的で保守性の高いテストコードを書くことができます。

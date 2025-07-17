@@ -2462,3 +2462,364 @@ exercises/chapter19/
 
 次のステップ: 基礎課題が完了したら、第20章「高度なGUIコンポーネント」に進みましょう。
 
+## よくあるエラーと対処法
+
+GUIイベント処理の学習において遭遇しやすい典型的なエラーとその対処法を以下にまとめます。
+
+### イベントリスナーの登録忘れ
+
+#### 問題：ボタンを押してもイベントが発生しない
+
+**エラー症状**：
+```java
+JButton button = new JButton("クリック");
+// ボタンをクリックしても何も起こらない
+```
+
+**原因**：
+- ActionListenerが登録されていない
+- リスナーが正しく実装されていない
+
+**対処法**：
+```java
+JButton button = new JButton("クリック");
+button.addActionListener(e -> {
+    System.out.println("ボタンがクリックされました");
+});
+
+// または匿名クラスを使用
+button.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("ボタンがクリックされました");
+    }
+});
+```
+
+#### 問題：複数のリスナーが重複して登録される
+
+**エラー症状**：
+```java
+// 初期化メソッドが複数回呼び出されると...
+button.addActionListener(e -> System.out.println("処理"));
+button.addActionListener(e -> System.out.println("処理"));
+// 同じ処理が複数回実行される
+```
+
+**原因**：
+- 同じリスナーが複数回登録されている
+- 古いリスナーが削除されていない
+
+**対処法**：
+```java
+// 既存のリスナーを削除してから新しいリスナーを登録
+ActionListener[] listeners = button.getActionListeners();
+for (ActionListener listener : listeners) {
+    button.removeActionListener(listener);
+}
+button.addActionListener(e -> System.out.println("処理"));
+
+// または、リスナーを一度だけ登録するフラグを使用
+private boolean listenerAdded = false;
+
+if (!listenerAdded) {
+    button.addActionListener(e -> System.out.println("処理"));
+    listenerAdded = true;
+}
+```
+
+### イベントの重複処理
+
+#### 問題：一つのイベントが複数回発生する
+
+**エラー症状**：
+```java
+JSlider slider = new JSlider(0, 100);
+slider.addChangeListener(e -> {
+    System.out.println("値: " + slider.getValue());
+});
+// スライダーをドラッグすると大量のメッセージが出力される
+```
+
+**原因**：
+- ChangeListenerがドラッグ中に継続的に呼び出される
+- 処理を制限していない
+
+**対処法**：
+```java
+JSlider slider = new JSlider(0, 100);
+slider.addChangeListener(e -> {
+    // ドラッグ中は処理をスキップ
+    if (!slider.getValueIsAdjusting()) {
+        System.out.println("最終値: " + slider.getValue());
+    }
+});
+
+// または、タイマーを使用してイベントをスロットリング
+Timer timer = new Timer(100, null);
+timer.setRepeats(false);
+
+slider.addChangeListener(e -> {
+    timer.restart();
+    timer.addActionListener(evt -> {
+        System.out.println("値: " + slider.getValue());
+    });
+});
+```
+
+### 無限ループの発生
+
+#### 問題：イベントハンドラ内での状態変更が無限ループを引き起こす
+
+**エラー症状**：
+```java
+JTextField textField = new JTextField();
+textField.addActionListener(e -> {
+    textField.setText("自動設定");  // これが再びイベントを発生させる
+});
+// StackOverflowError が発生
+```
+
+**原因**：
+- イベントハンドラ内でイベントを発生させるコンポーネントを変更している
+- 相互にイベントを発生させる処理がある
+
+**対処法**：
+```java
+JTextField textField = new JTextField();
+private boolean updating = false;
+
+textField.addActionListener(e -> {
+    if (!updating) {
+        updating = true;
+        textField.setText("自動設定");
+        updating = false;
+    }
+});
+
+// または、DocumentListenerを使用
+textField.getDocument().addDocumentListener(new DocumentListener() {
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        if (!updating) {
+            // 処理
+        }
+    }
+    // 他のメソッドも同様に実装
+});
+```
+
+### メモリリークの問題
+
+#### 問題：リスナーが解放されずメモリリークが発生
+
+**エラー症状**：
+```java
+// ウィンドウを閉じてもメモリが解放されない
+public class MyWindow extends JFrame {
+    private Timer timer;
+    
+    public MyWindow() {
+        timer = new Timer(1000, e -> updateDisplay());
+        timer.start();
+        // ウィンドウを閉じてもタイマーが動き続ける
+    }
+}
+```
+
+**原因**：
+- Timer や EventListener が適切に停止・削除されていない
+- 静的フィールドにリスナーが保存されている
+
+**対処法**：
+```java
+public class MyWindow extends JFrame {
+    private Timer timer;
+    
+    public MyWindow() {
+        timer = new Timer(1000, e -> updateDisplay());
+        timer.start();
+        
+        // ウィンドウクローズ時にリソースを解放
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (timer != null) {
+                    timer.stop();
+                    timer = null;
+                }
+            }
+        });
+    }
+    
+    @Override
+    public void dispose() {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+        super.dispose();
+    }
+}
+```
+
+### 長時間処理による画面フリーズ
+
+#### 問題：イベントハンドラで重い処理を行うとGUIが応答しない
+
+**エラー症状**：
+```java
+JButton button = new JButton("重い処理");
+button.addActionListener(e -> {
+    // 長時間かかる処理
+    for (int i = 0; i < 1000000; i++) {
+        // 重い計算処理
+    }
+    // この間、画面がフリーズする
+});
+```
+
+**原因**：
+- EDT（Event Dispatch Thread）上で重い処理を実行している
+- UIの更新が阻害されている
+
+**対処法**：
+```java
+JButton button = new JButton("重い処理");
+button.addActionListener(e -> {
+    button.setEnabled(false);  // ボタンを無効化
+    
+    // SwingWorkerを使用して背景で実行
+    SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+        @Override
+        protected Void doInBackground() throws Exception {
+            for (int i = 0; i < 1000000; i++) {
+                // 重い計算処理
+                if (i % 10000 == 0) {
+                    publish(i);  // 進捗を報告
+                }
+            }
+            return null;
+        }
+        
+        @Override
+        protected void process(List<Integer> chunks) {
+            // 進捗更新（EDT上で実行）
+            for (Integer progress : chunks) {
+                System.out.println("進捗: " + progress);
+            }
+        }
+        
+        @Override
+        protected void done() {
+            button.setEnabled(true);  // ボタンを再有効化
+            System.out.println("処理完了");
+        }
+    };
+    
+    worker.execute();
+});
+```
+
+### イベントパラメータの誤用
+
+#### 問題：イベントオブジェクトから間違った情報を取得する
+
+**エラー症状**：
+```java
+JButton button1 = new JButton("ボタン1");
+JButton button2 = new JButton("ボタン2");
+
+ActionListener listener = e -> {
+    // 間違い：常にbutton1の情報を取得
+    System.out.println("クリック: " + button1.getText());
+};
+
+button1.addActionListener(listener);
+button2.addActionListener(listener);  // button2をクリックしても"ボタン1"が表示
+```
+
+**原因**：
+- イベントソースを正しく取得していない
+- 固定のコンポーネントを参照している
+
+**対処法**：
+```java
+ActionListener listener = e -> {
+    // 正しい：イベントソースを取得
+    JButton source = (JButton) e.getSource();
+    System.out.println("クリック: " + source.getText());
+};
+
+button1.addActionListener(listener);
+button2.addActionListener(listener);
+
+// または、個別のリスナーを作成
+button1.addActionListener(e -> 
+    System.out.println("ボタン1がクリックされました"));
+button2.addActionListener(e -> 
+    System.out.println("ボタン2がクリックされました"));
+```
+
+### デバッグのヒント
+
+#### 1. イベントの発生確認
+
+```java
+button.addActionListener(e -> {
+    System.out.println("イベント発生: " + e.getActionCommand());
+    System.out.println("ソース: " + e.getSource());
+    System.out.println("時刻: " + System.currentTimeMillis());
+    
+    // 実際の処理
+    performAction();
+});
+```
+
+#### 2. リスナーの登録状況確認
+
+```java
+// 登録されているリスナーの数を確認
+ActionListener[] listeners = button.getActionListeners();
+System.out.println("登録されているリスナー数: " + listeners.length);
+
+// 各リスナーの情報を表示
+for (ActionListener listener : listeners) {
+    System.out.println("リスナー: " + listener.getClass().getName());
+}
+```
+
+#### 3. EDTの確認
+
+```java
+// イベントハンドラ内でEDTチェック
+button.addActionListener(e -> {
+    if (SwingUtilities.isEventDispatchThread()) {
+        System.out.println("EDTで実行中");
+    } else {
+        System.out.println("警告: EDT外で実行中");
+    }
+});
+```
+
+#### 4. 例外処理の追加
+
+```java
+button.addActionListener(e -> {
+    try {
+        // 処理
+        performAction();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(
+            button, 
+            "エラーが発生しました: " + ex.getMessage(),
+            "エラー", 
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+});
+```
+
+これらの対処法を参考に、堅牢なGUIイベント処理を実装してください。問題が発生した場合は、まず最小限のコードで問題を再現し、段階的にデバッグを進めることが重要です。
+

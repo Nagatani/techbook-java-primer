@@ -1730,7 +1730,7 @@ rules:
     pattern:  /カウンター/
   - expected: カバレッジ
     pattern:  /カバリッジ|カバレージ/
-  - expected: ガベージ
+  - expected: ガーベジ
     pattern:  /ガベージ・|ガーベジ|ガーベジ・|ガーベージ|ガーベージ・|ガーベッジ|ガーベッジ・|ガベッジ/
   - expected: カテゴリ
     pattern:  /カテゴリー/

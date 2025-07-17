@@ -2537,3 +2537,249 @@ exercises/chapter18/
 
 次のステップ: 基礎課題が完了したら、第19章「GUIイベント処理」に進みましょう。
 
+## よくあるエラーと対処法
+
+GUI基礎の学習において遭遇しやすい典型的なエラーとその対処法を以下にまとめます。
+
+### レイアウトマネージャーの問題
+
+#### 問題：コンポーネントが表示されない
+
+**エラー症状**：
+```
+JFrame frame = new JFrame("タイトル");
+frame.add(new JButton("ボタン"));
+frame.setVisible(true);
+// ボタンが表示されない
+```
+
+**原因**：
+- `frame.setSize()`または`frame.pack()`が呼び出されていない
+- レイアウトマネージャーの制約が正しく設定されていない
+
+**対処法**：
+```java
+JFrame frame = new JFrame("タイトル");
+frame.setSize(300, 200);  // サイズを明示的に設定
+frame.add(new JButton("ボタン"));
+frame.setVisible(true);
+
+// または
+frame.pack();  // 推奨サイズに自動調整
+```
+
+#### 問題：BorderLayoutで複数のコンポーネントが重なる
+
+**エラー症状**：
+```java
+frame.setLayout(new BorderLayout());
+frame.add(new JButton("ボタン1"));
+frame.add(new JButton("ボタン2"));
+// ボタン1が見えない
+```
+
+**原因**：
+- BorderLayoutの位置指定が省略されている
+- 同じ位置に複数のコンポーネントが配置されている
+
+**対処法**：
+```java
+frame.setLayout(new BorderLayout());
+frame.add(new JButton("ボタン1"), BorderLayout.NORTH);
+frame.add(new JButton("ボタン2"), BorderLayout.SOUTH);
+```
+
+### コンポーネントの表示問題
+
+#### 問題：JPanelの背景色が反映されない
+
+**エラー症状**：
+```java
+JPanel panel = new JPanel();
+panel.setBackground(Color.RED);
+// 背景色が表示されない
+```
+
+**原因**：
+- `setOpaque(true)`が設定されていない
+- 親コンポーネントの背景色が優先されている
+
+**対処法**：
+```java
+JPanel panel = new JPanel();
+panel.setBackground(Color.RED);
+panel.setOpaque(true);  // 不透明に設定
+```
+
+#### 問題：JTextFieldが編集できない
+
+**エラー症状**：
+```java
+JTextField textField = new JTextField("初期値");
+// テキストが編集できない
+```
+
+**原因**：
+- `setEditable(false)`が設定されている
+- フォーカスが取得できない状態
+
+**対処法**：
+```java
+JTextField textField = new JTextField("初期値");
+textField.setEditable(true);   // 編集可能に設定
+textField.setFocusable(true);  // フォーカス取得可能に設定
+```
+
+### イベントディスパッチスレッドの問題
+
+#### 問題：GUI更新でException in thread "AWT-EventQueue-0"が発生
+
+**エラーメッセージ**：
+```
+Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+	at SwingApplication.updateUI(SwingApplication.java:45)
+```
+
+**原因**：
+- EDT（Event Dispatch Thread）以外からGUIコンポーネントにアクセスしている
+- コンポーネントがnullのまま使用されている
+
+**対処法**：
+```java
+// 別スレッドからGUIを更新する場合
+SwingUtilities.invokeLater(() -> {
+    label.setText("更新されたテキスト");
+});
+
+// コンポーネントのnullチェック
+if (label != null) {
+    label.setText("安全な更新");
+}
+```
+
+### コンポーネントのサイズ設定
+
+#### 問題：JTextAreaが1行しか表示されない
+
+**エラー症状**：
+```java
+JTextArea textArea = new JTextArea();
+textArea.setText("長いテキスト...");
+// 1行しか見えない
+```
+
+**原因**：
+- JScrollPaneに配置されていない
+- 適切なサイズが設定されていない
+
+**対処法**：
+```java
+JTextArea textArea = new JTextArea(10, 30);  // 行数と列数を指定
+textArea.setLineWrap(true);  // 行の折り返しを有効
+textArea.setWrapStyleWord(true);  // 単語単位で折り返し
+
+JScrollPane scrollPane = new JScrollPane(textArea);
+frame.add(scrollPane);
+```
+
+#### 問題：JButtonのサイズが意図通りにならない
+
+**エラー症状**：
+```java
+JButton button = new JButton("ボタン");
+button.setSize(200, 100);
+// サイズが反映されない
+```
+
+**原因**：
+- レイアウトマネージャーがサイズを制御している
+- `setPreferredSize()`を使用していない
+
+**対処法**：
+```java
+JButton button = new JButton("ボタン");
+button.setPreferredSize(new Dimension(200, 100));
+
+// または、レイアウトマネージャーをnullに設定
+frame.setLayout(null);
+button.setBounds(10, 10, 200, 100);
+```
+
+### 画面のちらつき問題
+
+#### 問題：コンポーネントの更新時に画面がちらつく
+
+**エラー症状**：
+```java
+// 大量のコンポーネントを動的に追加・削除する際のちらつき
+panel.removeAll();
+for (int i = 0; i < 100; i++) {
+    panel.add(new JLabel("Item " + i));
+}
+panel.revalidate();
+panel.repaint();
+```
+
+**原因**：
+- 個別の更新処理が画面に反映されている
+- ダブルバッファリングが無効になっている
+
+**対処法**：
+```java
+// 更新処理をバッチ化
+panel.setVisible(false);  // 一時的に非表示
+panel.removeAll();
+for (int i = 0; i < 100; i++) {
+    panel.add(new JLabel("Item " + i));
+}
+panel.revalidate();
+panel.repaint();
+panel.setVisible(true);  // 再表示
+
+// または、SwingUtilities.invokeLaterを使用
+SwingUtilities.invokeLater(() -> {
+    // 更新処理
+    panel.removeAll();
+    // コンポーネント追加
+    panel.revalidate();
+    panel.repaint();
+});
+```
+
+### デバッグのヒント
+
+#### 1. コンポーネントの境界を可視化する
+
+```java
+// 境界線を追加してレイアウトを確認
+component.setBorder(BorderFactory.createLineBorder(Color.RED));
+
+// または、背景色を設定
+component.setBackground(Color.YELLOW);
+component.setOpaque(true);
+```
+
+#### 2. レイアウトマネージャーの確認
+
+```java
+// 現在のレイアウトマネージャーを確認
+System.out.println("Layout: " + container.getLayout());
+
+// コンポーネントのサイズ情報を確認
+System.out.println("Size: " + component.getSize());
+System.out.println("Preferred Size: " + component.getPreferredSize());
+```
+
+#### 3. イベントディスパッチスレッドの確認
+
+```java
+// 現在のスレッドがEDTかどうかを確認
+if (SwingUtilities.isEventDispatchThread()) {
+    System.out.println("EDTで実行中");
+} else {
+    System.out.println("EDTではないスレッドで実行中");
+}
+```
+
+これらの対処法を参考に、GUI基礎の学習を進めてください。問題が解決しない場合は、エラーメッセージを詳しく確認し、最小限の再現可能なコードで問題を特定することが重要です。
+

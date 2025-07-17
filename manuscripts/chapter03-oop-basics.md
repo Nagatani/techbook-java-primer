@@ -1764,3 +1764,430 @@ public class MethodsPractice {
 - パッケージシステムとクラスの組織化
 
 第3章で学んだ基礎をもとに、実践的で堅牢なクラス設計の技術を身につけていきましょう。
+
+## よくあるエラーと対処法
+
+オブジェクト指向プログラミングを始めたばかりの学習者が遭遇する典型的なエラーと、その対処法を紹介します。これらのエラーメッセージを理解し、適切に対処できるようになることで、効率的にプログラムを作成できます。
+
+### 1. クラスとインスタンスの概念の混乱
+
+#### よくある混乱
+```java
+// 間違った理解の例
+public class Student {
+    private String name;
+    
+    public void setName(String name) {
+        name = name;  // thisを使っていない
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student.setName("太郎");  // クラス名で呼び出そうとする
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: non-static method setName(String) cannot be referenced from a static context
+```
+
+#### 対処法
+```java
+public class Student {
+    private String name;
+    
+    public void setName(String name) {
+        this.name = name;  // thisを使って区別
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Student student = new Student();  // インスタンスを作成
+        student.setName("太郎");          // インスタンスから呼び出し
+    }
+}
+```
+
+**理解のポイント**:
+- クラスは設計図、インスタンスは実体
+- インスタンスメソッドは`new`で作成したオブジェクトから呼び出す
+- `this`は現在のオブジェクトを指す
+
+### 2. コンストラクタ関連のエラー
+
+#### パターン1: コンストラクタの戻り値を指定
+```java
+// 間違った例
+public class Book {
+    private String title;
+    
+    public void Book(String title) {  // 戻り値型voidを指定している
+        this.title = title;
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: invalid method declaration; return type required
+```
+
+#### 対処法
+```java
+public class Book {
+    private String title;
+    
+    public Book(String title) {  // 戻り値型は指定しない
+        this.title = title;
+    }
+}
+```
+
+#### パターン2: デフォルトコンストラクタの欠如
+```java
+public class Product {
+    private String name;
+    
+    public Product(String name) {  // 引数ありコンストラクタのみ定義
+        this.name = name;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Product product = new Product();  // 引数なしで呼び出し
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: constructor Product in class Product cannot be applied to given types;
+  required: String
+  found: no arguments
+```
+
+#### 対処法
+```java
+public class Product {
+    private String name;
+    
+    // デフォルトコンストラクタを明示的に定義
+    public Product() {
+        this.name = "未設定";
+    }
+    
+    public Product(String name) {
+        this.name = name;
+    }
+}
+```
+
+### 3. フィールドとメソッドのアクセス
+
+#### パターン1: privateフィールドへの直接アクセス
+```java
+public class Person {
+    private String name;
+    private int age;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Person person = new Person();
+        person.name = "太郎";  // privateフィールドに直接アクセス
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: name has private access in Person
+```
+
+#### 対処法
+```java
+public class Person {
+    private String name;
+    private int age;
+    
+    // publicなsetterメソッドを提供
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return this.name;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Person person = new Person();
+        person.setName("太郎");  // setterメソッドを使用
+        System.out.println(person.getName());
+    }
+}
+```
+
+#### パターン2: フィールドの初期化忘れ
+```java
+public class Calculator {
+    private int result;  // 初期化されていない
+    
+    public void add(int value) {
+        result += value;  // 初期値が0なので問題ないが、明示的に初期化が推奨
+    }
+}
+```
+
+#### 対処法
+```java
+public class Calculator {
+    private int result = 0;  // 明示的に初期化
+    
+    // またはコンストラクタで初期化
+    public Calculator() {
+        this.result = 0;
+    }
+}
+```
+
+### 4. thisキーワードの使い方
+
+#### パターン1: thisの使い忘れ
+```java
+public class Student {
+    private String name;
+    
+    public void setName(String name) {
+        name = name;  // 引数の値を引数自身に代入（無意味）
+    }
+}
+```
+
+#### 問題の発見方法
+デバッグ時に値が設定されていない、またはgetterで期待する値が返されない。
+
+#### 対処法
+```java
+public class Student {
+    private String name;
+    
+    public void setName(String name) {
+        this.name = name;  // thisを使ってフィールドを明示
+    }
+    
+    // 別解：引数名を変える
+    public void setName(String studentName) {
+        name = studentName;  // 異なる名前なのでthisは省略可能
+    }
+}
+```
+
+### 5. static vs non-staticの混乱
+
+#### パターン1: staticメソッドからインスタンスメンバーへのアクセス
+```java
+public class MathUtils {
+    private int baseValue = 10;
+    
+    public static int calculate(int input) {
+        return input + baseValue;  // staticメソッドからインスタンスフィールドにアクセス
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: non-static variable baseValue cannot be referenced from a static context
+```
+
+#### 対処法
+```java
+public class MathUtils {
+    private static int baseValue = 10;  // staticフィールドにする
+    
+    public static int calculate(int input) {
+        return input + baseValue;  // OK：staticフィールドにアクセス
+    }
+}
+
+// または、インスタンスメソッドにする
+public class MathUtils {
+    private int baseValue = 10;
+    
+    public int calculate(int input) {  // staticを外す
+        return input + baseValue;
+    }
+}
+```
+
+#### パターン2: mainメソッドからインスタンスメソッドの呼び出し
+```java
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        int result = add(5, 3);  // staticメソッドからインスタンスメソッドを呼び出し
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: non-static method add(int,int) cannot be referenced from a static context
+```
+
+#### 対処法
+```java
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();  // インスタンスを作成
+        int result = calc.add(5, 3);         // インスタンスから呼び出し
+    }
+}
+```
+
+### 6. カプセル化とアクセス修飾子の問題
+
+#### パターン1: 不適切なアクセス修飾子の使用
+```java
+public class BankAccount {
+    public double balance = 1000.0;  // 残高を直接変更可能
+    
+    public void withdraw(double amount) {
+        balance -= amount;  // 残高チェックなし
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount();
+        account.balance = -500.0;  // 不正な残高設定が可能
+    }
+}
+```
+
+#### 対処法
+```java
+public class BankAccount {
+    private double balance = 1000.0;  // privateで保護
+    
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+        } else {
+            System.out.println("引き出し不可：残高不足または無効な金額");
+        }
+    }
+    
+    public double getBalance() {
+        return balance;  // 読み取り専用のアクセス
+    }
+    
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+}
+```
+
+### 7. NullPointerExceptionの発生
+
+#### パターン1: 初期化されていないオブジェクト
+```java
+public class Student {
+    private String name;
+    
+    public int getNameLength() {
+        return name.length();  // nameがnullの場合にNullPointerException
+    }
+}
+```
+
+#### 対処法
+```java
+public class Student {
+    private String name;
+    
+    public Student(String name) {
+        this.name = name;  // コンストラクタで初期化
+    }
+    
+    public int getNameLength() {
+        if (name != null) {
+            return name.length();
+        }
+        return 0;  // またはデフォルト値を返す
+    }
+}
+```
+
+### 8. メソッドオーバーロードの問題
+
+#### パターン1: 曖昧な引数型
+```java
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+        int result = calc.add(5, 3.0);  // intとdoubleの混在
+    }
+}
+```
+
+#### エラーメッセージ
+```
+error: reference to add is ambiguous
+```
+
+#### 対処法
+```java
+public static void main(String[] args) {
+    Calculator calc = new Calculator();
+    double result = calc.add(5.0, 3.0);  // 型を明示的に統一
+    // または
+    int result2 = calc.add(5, 3);       // 同じ型を使用
+}
+```
+
+### トラブルシューティングの基本手順
+
+1. **エラーメッセージを注意深く読む**
+   - エラーの種類と発生場所を特定
+   - 行番号を確認
+
+2. **基本的な確認項目**
+   - クラス名とファイル名の一致
+   - インスタンス化の必要性
+   - アクセス修飾子の適切性
+
+3. **段階的なデバッグ**
+   - 簡単なprintln文で値を確認
+   - 一つずつ機能を追加して問題を特定
+
+4. **コードレビューの習慣**
+   - thisキーワードの使用状況
+   - null チェックの有無
+   - 適切な初期化の確認
+
+これらのエラーパターンを理解し、適切に対処することで、オブジェクト指向プログラミングの学習がより効率的になります。

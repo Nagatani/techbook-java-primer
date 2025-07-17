@@ -723,6 +723,186 @@ var型推論は、Javaの表現力を高める強力な機能ですが、適切�
 
 これらの知識は、フレームワーク開発や高度なライブラリ設計において大切な役割を果たします。
 
+## よくあるエラーと対処法
+
+ジェネリクスの学習で遭遇する典型的なエラーと、その対処法について説明します。
+
+### Raw typeの使用エラー
+
+**エラー例**:
+```java
+// ❌ Raw typeの使用
+List list = new ArrayList();
+list.add("Hello");
+String str = (String) list.get(0); // キャストが必要
+```
+
+**警告メッセージ**:
+```
+Note: GenericsExample.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for more details.
+```
+
+**対処法**:
+```java
+// ✅ ジェネリクスを使用
+List<String> list = new ArrayList<>();
+list.add("Hello");
+String str = list.get(0); // キャスト不要
+```
+
+### 型パラメータの不適切な使用
+
+**エラー例**:
+```java
+// ❌ 不適切な型パラメータの使用
+public class Container<T> {
+    private T value;
+    
+    public void setNewValue() {
+        this.value = new T(); // コンパイルエラー
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+error: Cannot instantiate the type T
+```
+
+**対処法**:
+```java
+// ✅ ファクトリーメソッドを使用
+public class Container<T> {
+    private T value;
+    private Supplier<T> factory;
+    
+    public Container(Supplier<T> factory) {
+        this.factory = factory;
+    }
+    
+    public void setNewValue() {
+        this.value = factory.get();
+    }
+}
+```
+
+### ワイルドカードの誤用
+
+**エラー例**:
+```java
+// ❌ ワイルドカードの誤用
+List<? extends Number> numbers = new ArrayList<Integer>();
+numbers.add(1); // コンパイルエラー
+```
+
+**エラーメッセージ**:
+```
+error: The method add(capture#1-of ? extends Number) is not applicable for the arguments (int)
+```
+
+**対処法**:
+```java
+// ✅ 適切なワイルドカードの使用
+List<Integer> integers = new ArrayList<>();
+integers.add(1);
+List<? extends Number> numbers = integers; // 読み取り専用として使用
+```
+
+### 型消去に関する問題
+
+**エラー例**:
+```java
+// ❌ 型消去による問題
+public class GenericArray<T> {
+    private T[] array;
+    
+    public GenericArray(int size) {
+        array = new T[size]; // コンパイルエラー
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+error: Cannot create a generic array of T
+```
+
+**対処法**:
+```java
+// ✅ 型消去を考慮した実装
+public class GenericArray<T> {
+    private T[] array;
+    
+    @SuppressWarnings("unchecked")
+    public GenericArray(Class<T> clazz, int size) {
+        array = (T[]) Array.newInstance(clazz, size);
+    }
+}
+```
+
+### 境界型パラメータの問題
+
+**エラー例**:
+```java
+// ❌ 境界型パラメータの誤用
+public class NumberContainer<T extends Number> {
+    private T value;
+    
+    public void multiplyBy(T factor) {
+        this.value = this.value * factor; // コンパイルエラー
+    }
+}
+```
+
+**エラーメッセージ**:
+```
+error: The operator * is undefined for the argument type(s) T, T
+```
+
+**対処法**:
+```java
+// ✅ 適切な境界型パラメータの使用
+public class NumberContainer<T extends Number> {
+    private T value;
+    
+    public void multiplyBy(double factor) {
+        // Number型の共通メソッドを使用
+        double result = this.value.doubleValue() * factor;
+        // 結果の設定は型に応じて処理
+    }
+}
+```
+
+### var型推論の誤用
+
+**エラー例**:
+```java
+// ❌ var型推論の誤用
+var list = new ArrayList(); // Raw typeになる
+var value = null; // コンパイルエラー
+```
+
+**エラーメッセージ**:
+```
+error: Cannot infer type for local variable value
+```
+
+**対処法**:
+```java
+// ✅ 適切なvar型推論の使用
+var list = new ArrayList<String>(); // 型パラメータを明示
+String value = null; // 明示的な型宣言
+```
+
+### 共通の対処戦略
+
+1. **コンパイル時の警告を無視しない**: `-Xlint:unchecked`オプションを使用して詳細な警告を確認する
+2. **型パラメータの制約を理解する**: 何ができて何ができないかを明確に把握する
+3. **適切な設計パターンを使用する**: Factory Method、Builder、Strategy パターンなどの活用
+4. **IDEの支援を活用する**: Eclipse、IntelliJ IDEAなどの自動補完とエラー検出機能を使用
+5. **段階的なリファクタリング**: 既存のraw typeコードを少しずつジェネリクスに移行する
+
 ## まとめ
 
 本章では、Javaの型安全性を支える大切な機能であるジェネリクスと、それを補完するvar型推論について学びました。

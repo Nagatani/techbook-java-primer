@@ -1009,3 +1009,581 @@ exercises/chapter24/
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
 次のステップ: 基礎課題が完了したら、総合演習プロジェクトに進みましょう。
+
+## よくあるエラーと対処法
+
+ビルドとデプロイの学習と実践において、よく遭遇するエラーとその対処法を説明します。
+
+### Mavenビルドエラー
+
+#### 1. 依存関係の解決エラー
+
+**問題**: 指定した依存関係が見つからない
+
+**エラー例**:
+```xml
+<dependency>
+    <groupId>com.example</groupId>
+    <artifactId>non-existent-library</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+**エラーメッセージ**:
+```
+[ERROR] Failed to execute goal on project myapp: Could not resolve dependencies for project com.example:myapp:jar:1.0.0: Could not find artifact com.example:non-existent-library:jar:1.0.0
+```
+
+**解決策**:
+```bash
+# 1. 依存関係の存在を確認
+mvn help:describe -Dplugin=dependency -Ddetail
+
+# 2. 正しいgroupId, artifactId, versionを確認
+# Maven Central Repository で検索: https://search.maven.org/
+
+# 3. 正しい依存関係を追加
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>
+</dependency>
+```
+
+#### 2. Javaバージョンの不一致
+
+**問題**: プロジェクトのJavaバージョンと実行環境のJavaバージョンが異なる
+
+**エラー例**:
+```xml
+<properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+</properties>
+```
+
+**エラーメッセージ**:
+```
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project myapp: Fatal error compiling: invalid target release: 17
+```
+
+**解決策**:
+```bash
+# 1. 現在のJavaバージョンを確認
+java -version
+javac -version
+
+# 2. 適切なJavaバージョンをインストール
+# または環境変数JAVA_HOMEを設定
+
+# 3. pom.xmlで適切なバージョンを指定
+<properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+</properties>
+```
+
+#### 3. テストの失敗によるビルドエラー
+
+**問題**: テストが失敗してビルドが停止する
+
+**エラーメッセージ**:
+```
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.2:test (default-test) on project myapp: There are test failures.
+```
+
+**解決策**:
+```bash
+# 1. 詳細なテスト結果を確認
+mvn test
+
+# 2. 特定のテストをスキップ
+mvn clean package -DskipTests
+
+# 3. テストを修正してから再ビルド
+mvn clean test
+mvn clean package
+```
+
+#### 4. メモリ不足エラー
+
+**問題**: ビルド時にメモリ不足が発生する
+
+**エラーメッセージ**:
+```
+[ERROR] Java heap space
+[ERROR] The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+```
+
+**解決策**:
+```bash
+# 1. Maven実行時のメモリを増加
+export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=256m"
+
+# 2. プロジェクトごとの設定（.mvn/jvm.config）
+echo "-Xmx2g -XX:MaxPermSize=256m" > .mvn/jvm.config
+
+# 3. Surefireプラグインの設定
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.2</version>
+    <configuration>
+        <argLine>-Xmx1024m</argLine>
+    </configuration>
+</plugin>
+```
+
+### Gradleの設定問題
+
+#### 1. Gradle Wrapperの実行エラー
+
+**問題**: Gradle Wrapperが実行できない
+
+**エラー例**:
+```bash
+./gradlew build
+```
+
+**エラーメッセージ**:
+```
+Permission denied: ./gradlew
+```
+
+**解決策**:
+```bash
+# 1. 実行権限を付与
+chmod +x gradlew
+
+# 2. または直接Gradleを使用
+gradle build
+
+# 3. Gradle Wrapperの再生成
+gradle wrapper
+```
+
+#### 2. 依存関係の競合
+
+**問題**: 複数のライブラリが同じクラスを提供している
+
+**エラー例**:
+```groovy
+dependencies {
+    implementation 'org.slf4j:slf4j-log4j12:1.7.30'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+}
+```
+
+**エラーメッセージ**:
+```
+SLF4J: Class path contains multiple SLF4J bindings.
+```
+
+**解決策**:
+```groovy
+dependencies {
+    implementation('org.springframework:spring-core:5.3.0') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+}
+
+// または依存関係レポートで確認
+gradle dependencies --configuration runtimeClasspath
+```
+
+#### 3. ビルドスクリプトの構文エラー
+
+**問題**: build.gradleの構文が正しくない
+
+**エラー例**:
+```groovy
+plugins {
+    id 'java'
+    id 'application'
+}
+
+// mainClassNameは廃止予定
+mainClassName = 'com.example.Main'
+```
+
+**エラーメッセージ**:
+```
+The mainClassName property has been deprecated and is scheduled to be removed in Gradle 8.0.
+```
+
+**解決策**:
+```groovy
+plugins {
+    id 'java'
+    id 'application'
+}
+
+// 新しい構文を使用
+application {
+    mainClass = 'com.example.Main'
+}
+```
+
+### JARファイルの実行エラー
+
+#### 1. Main-Classが見つからない
+
+**問題**: JARファイルにMain-Classが指定されていない
+
+**エラー例**:
+```bash
+java -jar myapp.jar
+```
+
+**エラーメッセージ**:
+```
+no main manifest attribute, in myapp.jar
+```
+
+**解決策**:
+```xml
+<!-- Maven -->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>3.2.2</version>
+    <configuration>
+        <archive>
+            <manifest>
+                <mainClass>com.example.Main</mainClass>
+            </manifest>
+        </archive>
+    </configuration>
+</plugin>
+```
+
+```groovy
+// Gradle
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.example.Main'
+    }
+}
+```
+
+#### 2. 依存関係が含まれていない
+
+**問題**: 外部ライブラリがJARファイルに含まれていない
+
+**エラーメッセージ**:
+```
+java.lang.ClassNotFoundException: org.apache.commons.lang3.StringUtils
+```
+
+**解決策**:
+```xml
+<!-- Maven: Fat JAR作成 -->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.4.1</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>com.example.Main</mainClass>
+                    </transformer>
+                </transformers>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+```groovy
+// Gradle: Fat JAR作成
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.example.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+```
+
+#### 3. モジュールパスの問題（Java 9+）
+
+**問題**: モジュールシステムでのクラスパスの問題
+
+**エラーメッセージ**:
+```
+java.lang.module.FindException: Module com.example not found
+```
+
+**解決策**:
+```bash
+# 1. モジュールパスを明示的に指定
+java --module-path ./lib --module com.example/com.example.Main
+
+# 2. またはクラスパスを使用
+java -cp "lib/*:myapp.jar" com.example.Main
+
+# 3. jlinkでカスタムランタイムを作成
+jlink --module-path $JAVA_HOME/jmods:lib \
+      --add-modules com.example \
+      --output custom-runtime
+```
+
+### クラスパスの問題
+
+#### 1. クラスパスの設定ミス
+
+**問題**: 実行時にクラスパスが正しく設定されていない
+
+**エラー例**:
+```bash
+java -cp "lib/commons-lang3-3.12.0.jar" com.example.Main
+```
+
+**エラーメッセージ**:
+```
+java.lang.ClassNotFoundException: com.example.Main
+```
+
+**解決策**:
+```bash
+# 1. 現在のディレクトリも含める
+java -cp ".:lib/commons-lang3-3.12.0.jar" com.example.Main
+
+# 2. すべてのJARファイルを含める
+java -cp ".:lib/*" com.example.Main
+
+# 3. Windows環境では区切り文字に注意
+java -cp ".;lib/*" com.example.Main
+```
+
+#### 2. 相対パスの問題
+
+**問題**: 実行ディレクトリによってクラスパスが変わる
+
+**エラー例**:
+```bash
+cd /different/directory
+java -cp "lib/*" com.example.Main  # libディレクトリが見つからない
+```
+
+**解決策**:
+```bash
+# 1. 絶対パスを使用
+java -cp "/path/to/app/lib/*:/path/to/app/classes" com.example.Main
+
+# 2. スクリプトファイルを作成
+#!/bin/bash
+APP_HOME=$(dirname "$0")
+java -cp "$APP_HOME/lib/*:$APP_HOME/classes" com.example.Main
+```
+
+### 環境依存の問題
+
+#### 1. 文字エンコーディングの問題
+
+**問題**: 異なる環境で文字化けが発生する
+
+**エラー例**:
+```java
+// 日本語が含まれるファイルを読み込み
+Files.readAllLines(Paths.get("data.txt"))
+```
+
+**解決策**:
+```java
+// 文字エンコーディングを明示的に指定
+Files.readAllLines(Paths.get("data.txt"), StandardCharsets.UTF_8)
+```
+
+```bash
+# JVM起動時に文字エンコーディングを指定
+java -Dfile.encoding=UTF-8 -jar myapp.jar
+```
+
+#### 2. パスセパレータの問題
+
+**問題**: Windows/Linux/macOSでパスの区切り文字が異なる
+
+**エラー例**:
+```java
+String path = "data/config/settings.txt";  // Windowsでは問題が発生する可能性
+```
+
+**解決策**:
+```java
+// プラットフォーム独立なパス操作
+Path path = Paths.get("data", "config", "settings.txt");
+String pathString = path.toString();
+
+// またはFile.separatorを使用
+String path = "data" + File.separator + "config" + File.separator + "settings.txt";
+```
+
+#### 3. JVMバージョンの違い
+
+**問題**: 開発環境と本番環境でJavaバージョンが異なる
+
+**エラー例**:
+```java
+// Java 11で導入されたメソッド
+String result = str.isBlank();  // Java 8では利用不可
+```
+
+**解決策**:
+```java
+// バージョン固有の機能を使用する前にチェック
+if (System.getProperty("java.version").startsWith("11")) {
+    // Java 11以降の処理
+} else {
+    // Java 8対応の処理
+}
+
+// またはMavenでターゲットバージョンを明示
+<properties>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+</properties>
+```
+
+### jpackageの問題
+
+#### 1. 必要なツールが不足
+
+**問題**: jpackageに必要なネイティブツールがインストールされていない
+
+**エラーメッセージ**:
+```
+jpackage: error: Bundler "MSI" (msi) failed to produce a bundle.
+```
+
+**解決策**:
+```bash
+# Windows: WiX Toolsetをインストール
+# https://wixtoolset.org/releases/
+
+# macOS: Xcodeコマンドラインツールをインストール
+xcode-select --install
+
+# Linux: 必要なパッケージをインストール
+sudo apt-get install fakeroot
+```
+
+#### 2. モジュールパスの設定問題
+
+**問題**: モジュールパスが正しく設定されていない
+
+**エラー例**:
+```bash
+jpackage --type app-image \
+         --name "MyApp" \
+         --module com.example.app/com.example.app.Main \
+         --dest ./output
+```
+
+**エラーメッセージ**:
+```
+jpackage: error: Module com.example.app not found
+```
+
+**解決策**:
+```bash
+# 1. モジュールパスを明示的に指定
+jpackage --type app-image \
+         --name "MyApp" \
+         --module-path ./lib:./modules \
+         --module com.example.app/com.example.app.Main \
+         --dest ./output
+
+# 2. またはJARファイルを使用
+jpackage --type app-image \
+         --name "MyApp" \
+         --input ./lib \
+         --main-jar myapp.jar \
+         --main-class com.example.app.Main \
+         --dest ./output
+```
+
+#### 3. アプリケーションアイコンの問題
+
+**問題**: アプリケーションアイコンが正しく設定されない
+
+**エラー例**:
+```bash
+jpackage --type app-image \
+         --name "MyApp" \
+         --icon ./icon.png \
+         --main-jar myapp.jar \
+         --dest ./output
+```
+
+**解決策**:
+```bash
+# 1. プラットフォーム固有の形式を使用
+# Windows: .ico
+# macOS: .icns
+# Linux: .png
+
+# 2. 適切なサイズのアイコンを使用
+# Windows: 256x256 pixels
+# macOS: 512x512 pixels
+# Linux: 512x512 pixels
+
+jpackage --type app-image \
+         --name "MyApp" \
+         --icon ./icon.ico \
+         --main-jar myapp.jar \
+         --dest ./output
+```
+
+### 一般的なデバッグ手法
+
+#### 1. 詳細なエラーログの取得
+
+```bash
+# Mavenの詳細ログ
+mvn clean package -X
+
+# Gradleの詳細ログ
+./gradlew build --debug --stacktrace
+
+# Java実行時の詳細ログ
+java -verbose:class -jar myapp.jar
+```
+
+#### 2. 依存関係の確認
+
+```bash
+# Maven依存関係ツリー
+mvn dependency:tree
+
+# Gradle依存関係
+./gradlew dependencies
+
+# JARファイルの内容確認
+jar tf myapp.jar | head -20
+```
+
+#### 3. 環境変数の確認
+
+```bash
+# Java環境の確認
+echo $JAVA_HOME
+java -version
+javac -version
+
+# クラスパスの確認
+echo $CLASSPATH
+
+# Maven設定の確認
+mvn help:effective-pom
+```
+
+これらの問題を理解し、適切に対処することで、スムーズなビルドとデプロイが可能になります。
