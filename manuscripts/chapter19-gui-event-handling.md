@@ -45,11 +45,6 @@ Swingイベント処理機構の詳細についても学習します。イベン
 - キーボードイベントの高度な処理
 - WindowListenerとウィンドウイベント
 
-### [Part C: 高度なイベント処理](chapter19c-advanced-events.md)
-- DocumentListenerによるテキスト変更の監視
-- カスタムイベントとObserverパターン
-- ドラッグ&ドロップの実装
-
 ### [Part D: 章末演習](chapter19d-exercises.md)
 - インタラクティブ描画アプリケーション
 - フォームバリデータ

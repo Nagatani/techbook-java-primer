@@ -72,18 +72,9 @@ button.addActionListener(new ActionListener() {
 
 **ラムダ式**は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
 
-## 関数型プログラミングパラダイムの歴史
-
-関数型プログラミングの理論的基盤は、1930年代にアロンゾ・チャーチが開発したラムダ計算（Lambda Calculus）にあります。このシンプルな記法が、現代のラムダ式の源流となっています。
-
-1958年にJohn McCarthyが開発したLispは最初の関数型言語であり、その後、メーリングリスト（1973年）、Haskell（1990年）などの純粋関数型言語が登場しました。
-
-2010年代に入ると、並行処理やビッグデータ処理の重要性が高まり、Java 8（2014年）やJavaScript ES6（2015年）など、オブジェクト指向言語にも関数型の機能が取り入れられました。
-
-
 **高階関数による処理の抽象化**
 
-高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化し、様々な具体的な処理を統一的に扱うことができます。以下の例では、取引戦略の評価とリスク管理を高階関数として実装しています。
+高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
 <span class="listing-number">**サンプルコード13-20**</span>
 
@@ -121,82 +112,7 @@ public class HigherOrderFunctions {
 }
 ```
 
-### カリー化の実装例：通貨変換
-
-<span class="listing-number">**サンプルコード13-3**</span>
-
-```java
-public class CurrencyConverter {
-    // 通常の2引数から3引数の変換で、通貨レートを適用
-    public Function<String, Function<String, Function<Double, Double>>> 
-        curriedConvert = from -> to -> amount -> {
-            double rate = getExchangeRate(from, to);
-            return amount * rate;
-        };
-    
-    // 使用例
-    public void demonstrateCurrying() {
-        // USDからJPYへの変換関数を作成
-        Function<Double, Double> usdToJpy = curriedConvert("USD", "JPY");
-        
-        // 同じ変換を何度も使える
-        System.out.println(usdToJpy.apply(100.0));  // 15000.0
-        System.out.println(usdToJpy.apply(250.0));  // 37500.0
-        
-        // 複数の変換関数をマップで管理
-        Map<String, Function<Double, Double>> converters = Map.of(
-            "USD_TO_JPY", curriedConvert("USD", "JPY"),
-            "EUR_TO_JPY", curriedConvert("EUR", "JPY"),
-            "GBP_TO_JPY", curriedConvert("GBP", "JPY")
-        );
-    }
-}
-```
-
-**モナドの実践例：Optionalを使ったエラーハンドリング**
-
-<span class="listing-number">**サンプルコード13-4**</span>
-
-```java
-public class UserService {
-    // モナドを使わない場合
-    public String getUserEmailTraditional(String userId) {
-        User user = userRepository.findById(userId);
-        if (user != null) {
-            Profile profile = user.getProfile();
-            if (profile != null) {
-                Email email = profile.getEmail();
-                if (email != null && email.isVerified()) {
-                    return email.getAddress();
-                }
-            }
-        }
-        return "noemail@example.com";
-    }
-    
-    // Optionalモナドを使った場合
-    public String getUserEmail(String userId) {
-        return userRepository.findById(userId)
-            .map(User::getProfile)
-            .map(Profile::getEmail)
-            .filter(Email::isVerified)
-            .map(Email::getAddress)
-            .orElse("noemail@example.com");
-    }
-    
-    // さらに高度なモナドの合成
-    public CompletableFuture<String> sendNotification(String userId) {
-        return userRepository.findByIdAsync(userId)
-            .thenCompose(userOpt -> userOpt
-                .map(user -> notificationService.send(user))
-                .orElse(CompletableFuture.
-                    completedFuture("User not found"))
-            );
-    }
-}
-```
-
-### 関数型プログラミングのアンチパターンと回避方法
+### 関数型プログラミングのベストプラクティス
 
 **アンチパターン1: 過度なラムダネスト**
 
@@ -1028,7 +944,7 @@ public class ThreadLambdaExample {
 
 1. **基礎課題**: 標準関数型インターフェイスの活用とラムダ式の基本構文
 2. **発展課題**: カスタム関数型インターフェイスの設計とメソッド参照
-3. **チャレンジ課題**: 高階関数とカリー化による関数型プログラミング
+3. **チャレンジ課題**: 高階関数による関数型プログラミング
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 

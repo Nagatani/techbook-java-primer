@@ -1,4 +1,4 @@
-# <b>20章</b> <span>高度なGUIコンポーネント</span> <small>表やツリーで複雑なデータを表現</small>
+# <b>20章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>
 
 ## 本章の学習目標
 
@@ -19,28 +19,21 @@
 ### 学習目標
 
 #### 知識理解目標
-- JTable、JTree、JList等の高度なコンポーネントの内部構造
-- Model-View-Controller（MVC）パターンの GUI での実装
-- カスタムレンダラーとエディターの仕組み
-- Look & Feel の概念と切り替え機能
+- JTableとJListの基本的な使い方
+- 表形式データの表示と操作
+- リストコンポーネントの活用
 
 #### 技能習得目標
-- TableModel、TreeModel を活用したデータ表示
-- カスタムセルレンダラーとセルエディターの実装
-- JTableでの複雑なデータ操作（ソート、フィルタリング、編集）
-- JTree での階層データの表現と操作
+- 基本的なJTableの作成とデータ表示
+- JListでのアイテム選択と表示
+- 基本的なテーブル操作（選択、クリック）
 
 #### 実践的な活用目標
-- データベース風テーブルアプリケーションの開発
-- ファイルエクスプローラー風アプリケーションの構築
-- 統合開発環境（IDE）風のコンポーネント配置
-- ドラッグ&ドロップ機能の実装
+- 簡単なデータ表示アプリケーションの作成
+- ユーザーが選択できるリストの実装
 
 #### 到達レベルの指標
-- 複雑なデータ構造をGUIで直感的に表現できる
-- MVCパターンを活用した保守性の高いGUIアプリケーションが設計できる
-- カスタムコンポーネントを作成し再利用可能なGUIライブラリが構築できる
-- プロフェッショナルレベルのデスクトップアプリケーションが開発できる
+- テーブルとリストを使った基本的なGUIアプリケーションが作成できる
 
 ## JTableの詳細な実装
 
@@ -88,127 +81,7 @@ public class BasicTableExample extends JFrame {
 }
 ```
 
-### カスタムTableModelの実装
-
-より高度な制御を行うには、AbstractTableModelを継承してカスタムモデルを作成します。
-
-```java
-import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.List;
-
-// データクラス（Java 14以降ならRecordを使用可能）
-class Person {
-    private int id;
-    private String name;
-    private int age;
-    private String email;
-    
-    public Person(int id, String name, int age, String email) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.email = email;
-    }
-    
-    // getter/setter省略
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public int getAge() { return age; }
-    public String getEmail() { return email; }
-    
-    public void setName(String name) { this.name = name; }
-    public void setAge(int age) { this.age = age; }
-    public void setEmail(String email) { this.email = email; }
-}
-
-// カスタムTableModel
-class PersonTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"ID", "名前", "年齢", "メール"};
-    private List<Person> persons = new ArrayList<>();
-    
-    public PersonTableModel() {
-        // サンプルデータの追加
-        persons.add(new Person(1, "田中太郎", 25, "tanaka@example.com"));
-        persons.add(new Person(2, "鈴木花子", 30, "suzuki@example.com"));
-        persons.add(new Person(3, "佐藤次郎", 28, "sato@example.com"));
-    }
-    
-    @Override
-    public int getRowCount() {
-        return persons.size();
-    }
-    
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
-    }
-    
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-    
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Person person = persons.get(rowIndex);
-        switch (columnIndex) {
-            case 0: return person.getId();
-            case 1: return person.getName();
-            case 2: return person.getAge();
-            case 3: return person.getEmail();
-            default: return null;
-        }
-    }
-    
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 0: return Integer.class;
-            case 1: return String.class;
-            case 2: return Integer.class;
-            case 3: return String.class;
-            default: return Object.class;
-        }
-    }
-    
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        // ID列は編集不可
-        return columnIndex != 0;
-    }
-    
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        Person person = persons.get(rowIndex);
-        switch (columnIndex) {
-            case 1: person.setName((String) aValue); break;
-            case 2: person.setAge((Integer) aValue); break;
-            case 3: person.setEmail((String) aValue); break;
-        }
-        fireTableCellUpdated(rowIndex, columnIndex);
-    }
-    
-    // データ操作メソッド
-    public void addPerson(Person person) {
-        persons.add(person);
-        fireTableRowsInserted(persons.size() - 1, persons.size() - 1);
-    }
-    
-    public void removePerson(int row) {
-        if (row >= 0 && row < persons.size()) {
-            persons.remove(row);
-            fireTableRowsDeleted(row, row);
-        }
-    }
-    
-    public Person getPerson(int row) {
-        return persons.get(row);
-    }
-}
-```
-
-### テーブルのソートとフィルタリング
+## テーブルのソートとフィルタリング
 
 JTableは組み込みのソート機能を提供しています。
 
