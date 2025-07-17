@@ -42,6 +42,164 @@
 - トランザクションを適切に管理できる
 - パフォーマンスを考慮したデータアクセス処理が実装できる
 
+## SQL基礎の復習
+
+### SQLとは
+
+SQL（Structured Query Language）は、リレーショナルデータベースでデータの操作や管理を行うための標準的な言語です。JDBCを効果的に使用するためには、基本的なSQL文の理解が不可欠です。
+
+### 基本的なSQL文の種類
+
+<span class="listing-number">**サンプルコード21-1**</span>
+
+```sql
+-- 1. データ定義言語（DDL: Data Definition Language）
+-- テーブルの作成
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL,
+    age INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- テーブル構造の変更
+ALTER TABLE users ADD COLUMN last_login TIMESTAMP;
+
+-- テーブルの削除
+DROP TABLE IF EXISTS users;
+
+-- 2. データ操作言語（DML: Data Manipulation Language）
+-- データの挿入
+INSERT INTO users (username, email, age) 
+VALUES ('tanaka', 'tanaka@example.com', 25);
+
+-- 複数データの挿入
+INSERT INTO users (username, email, age) VALUES 
+    ('sato', 'sato@example.com', 30),
+    ('suzuki', 'suzuki@example.com', 28);
+
+-- データの更新
+UPDATE users 
+SET email = 'tanaka.new@example.com', age = 26 
+WHERE username = 'tanaka';
+
+-- データの削除
+DELETE FROM users WHERE age < 20;
+
+-- 3. データ照会言語（DQL: Data Query Language）
+-- 基本的な検索
+SELECT * FROM users;
+
+-- 条件付き検索
+SELECT username, email FROM users WHERE age > 25;
+
+-- 並び替え
+SELECT * FROM users ORDER BY age DESC, username ASC;
+
+-- グループ化と集約関数
+SELECT age, COUNT(*) as user_count 
+FROM users 
+GROUP BY age 
+HAVING COUNT(*) > 1;
+
+-- 結合（JOIN）
+SELECT u.username, p.title 
+FROM users u 
+INNER JOIN posts p ON u.id = p.user_id;
+```
+
+### よく使用されるSQL関数と演算子
+
+<span class="listing-number">**サンプルコード21-2**</span>
+
+```sql
+-- 文字列関数
+SELECT 
+    CONCAT(username, '@', email) as full_email,
+    UPPER(username) as upper_name,
+    LENGTH(username) as name_length
+FROM users;
+
+-- 数値関数
+SELECT 
+    COUNT(*) as total_users,
+    AVG(age) as average_age,
+    MAX(age) as max_age,
+    MIN(age) as min_age
+FROM users;
+
+-- 日付関数
+SELECT 
+    username,
+    created_at,
+    YEAR(created_at) as created_year,
+    DATEDIFF(NOW(), created_at) as days_since_created
+FROM users;
+
+-- 条件演算子
+SELECT 
+    username,
+    age,
+    CASE 
+        WHEN age < 20 THEN '未成年'
+        WHEN age < 65 THEN '成年'
+        ELSE '高齢者'
+    END as age_category
+FROM users;
+
+-- パターンマッチング
+SELECT * FROM users WHERE email LIKE '%@gmail.com';
+SELECT * FROM users WHERE username REGEXP '^[a-z]+$';
+```
+
+### インデックスと制約
+
+<span class="listing-number">**サンプルコード21-3**</span>
+
+```sql
+-- インデックスの作成
+CREATE INDEX idx_email ON users(email);
+CREATE INDEX idx_username_age ON users(username, age);
+
+-- 制約の追加
+ALTER TABLE users 
+ADD CONSTRAINT chk_age CHECK (age >= 0 AND age <= 120);
+
+-- 外部キー制約
+CREATE TABLE posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(200) NOT NULL,
+    content TEXT,
+    user_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+### トランザクションの基本概念
+
+SQLレベルでのトランザクション制御も理解しておくことが重要です：
+
+<span class="listing-number">**サンプルコード21-4**</span>
+
+```sql
+-- トランザクションの開始
+START TRANSACTION;
+
+-- 複数の操作を実行
+UPDATE accounts SET balance = balance - 1000 WHERE id = 1;
+UPDATE accounts SET balance = balance + 1000 WHERE id = 2;
+
+-- 問題がなければコミット
+COMMIT;
+
+-- 問題があればロールバック
+-- ROLLBACK;
+```
+
+これらのSQL基礎知識を理解した上で、JDBCによるJavaからのデータベース操作に進みましょう。
+
 ## JDBCの基礎
 
 ### JDBCとは
@@ -61,7 +219,7 @@ JDBCは以下の主要コンポーネントで構成されています：
 
 ### 基本的な接続の流れ
 
-<span class="listing-number">**サンプルコード20-1**</span>
+<span class="listing-number">**サンプルコード21-5**</span>
 
 ```java
 import java.sql.*;
@@ -95,7 +253,7 @@ public class BasicJDBCExample {
 
 まず、サンプルで使用するテーブルを作成します：
 
-<span class="listing-number">**サンプルコード20-2**</span>
+<span class="listing-number">**サンプルコード21-6**</span>
 
 ```java
 public class CreateTableExample {
@@ -119,7 +277,7 @@ public class CreateTableExample {
 
 ### データの挿入（CREATE）
 
-<span class="listing-number">**サンプルコード20-3**</span>
+<span class="listing-number">**サンプルコード21-7**</span>
 
 ```java
 public class InsertExample {
@@ -141,7 +299,7 @@ public class InsertExample {
 
 ### データの検索（READ）
 
-<span class="listing-number">**サンプルコード20-4**</span>
+<span class="listing-number">**サンプルコード21-8**</span>
 
 ```java
 public class SelectExample {
@@ -186,7 +344,7 @@ public class SelectExample {
 
 ### データの更新（UPDATE）
 
-<span class="listing-number">**サンプルコード20-5**</span>
+<span class="listing-number">**サンプルコード21-9**</span>
 
 ```java
 public class UpdateExample {
@@ -212,7 +370,7 @@ public class UpdateExample {
 
 ### データの削除（DELETE）
 
-<span class="listing-number">**サンプルコード20-6**</span>
+<span class="listing-number">**サンプルコード21-10**</span>
 
 ```java
 public class DeleteExample {
@@ -239,7 +397,7 @@ public class DeleteExample {
 
 SQL Injectionは、悪意のあるSQL文をアプリケーションに実行させる攻撃手法です。以下は脆弱な例です：
 
-<span class="listing-number">**サンプルコード20-7**</span>
+<span class="listing-number">**サンプルコード21-11**</span>
 
 ```java
 // 危険な例 - 絶対に使用しないでください！
@@ -266,7 +424,7 @@ public class VulnerableExample {
 
 ### PreparedStatementによる安全な実装
 
-<span class="listing-number">**サンプルコード20-8**</span>
+<span class="listing-number">**サンプルコード21-12**</span>
 
 ```java
 public class SecureExample {
@@ -294,7 +452,7 @@ public class SecureExample {
 
 トランザクションは、複数のデータベース操作を1つの作業単位として扱う仕組みです。ACID特性（Atomicity、Consistency、Isolation、Durability）を保証します。
 
-<span class="listing-number">**サンプルコード20-9**</span>
+<span class="listing-number">**サンプルコード21-13**</span>
 
 ```java
 public class TransactionExample {
@@ -364,7 +522,7 @@ DAO（Data Access Object）パターンは、データアクセスロジック�
 
 ### エンティティクラス
 
-<span class="listing-number">**サンプルコード20-10**</span>
+<span class="listing-number">**サンプルコード21-14**</span>
 
 ```java
 import java.sql.Timestamp;
@@ -412,7 +570,7 @@ public class User {
 
 ### DAOインターフェイス
 
-<span class="listing-number">**サンプルコード20-11**</span>
+<span class="listing-number">**サンプルコード21-15**</span>
 
 ```java
 import java.util.List;
@@ -441,7 +599,7 @@ public interface UserDao {
 
 ### DAO実装クラス
 
-<span class="listing-number">**サンプルコード20-12**</span>
+<span class="listing-number">**サンプルコード21-16**</span>
 
 ```java
 import java.sql.*;
@@ -565,7 +723,7 @@ public class UserDaoImpl implements UserDao {
 
 ### DAOの使用例
 
-<span class="listing-number">**サンプルコード20-13**</span>
+<span class="listing-number">**サンプルコード21-17**</span>
 
 ```java
 public class DaoExample {
@@ -615,7 +773,7 @@ public class DaoExample {
 
 HikariCPは高性能なコネクションプールライブラリです：
 
-<span class="listing-number">**サンプルコード20-14**</span>
+<span class="listing-number">**サンプルコード21-18**</span>
 
 ```java
 import com.zaxxer.hikari.HikariConfig;
@@ -655,7 +813,7 @@ public class ConnectionPoolExample {
 
 ### コネクションプールを使用したDAO
 
-<span class="listing-number">**サンプルコード20-15**</span>
+<span class="listing-number">**サンプルコード21-19**</span>
 
 ```java
 public class PooledDaoExample {
@@ -690,7 +848,7 @@ public class PooledDaoExample {
 
 大量のデータを処理する場合、バッチ処理を使用すると性能が大幅に向上します：
 
-<span class="listing-number">**サンプルコード20-16**</span>
+<span class="listing-number">**サンプルコード21-20**</span>
 
 ```java
 public class BatchProcessingExample {
@@ -769,10 +927,10 @@ public class BatchProcessingExample {
 
 リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 
-### 第20章の課題構成
+### 第21章の課題構成
 
 ```
-exercises/chapter20/
+exercises/chapter21/
 ├── basic/              # 基礎課題（必須）
 │   ├── README.md       # 詳細な課題説明
 │   └── DatabaseBasics.java
@@ -796,4 +954,4 @@ exercises/chapter20/
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-次のステップ: 基礎課題が完了したら、第21章「高度なGUIコンポーネント」に進みましょう。
+次のステップ: 基礎課題が完了したら、第22章「単体テスト」に進みましょう。

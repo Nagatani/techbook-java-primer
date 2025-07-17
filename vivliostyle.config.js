@@ -12,8 +12,8 @@ const markdownFiles = [
   'chapter09-records.md',
   'chapter10-collections.md',
   'chapter11-generics.md',
-  'chapter12-advanced-collections.md',
-  'chapter13-lambda-and-functional-interfaces.md',
+  'chapter12-lambda-and-functional-interfaces.md',
+  'chapter13-advanced-collections.md',
   'chapter14-exception-handling.md',
   'chapter15-file-io.md',
   'chapter16-multithreading.md',
@@ -31,6 +31,7 @@ const markdownFiles = [
   'appendix-b-index-revised.md', // 付録B: 技術的詳細解説（Deep Dive）インデックス
   'appendix-c-theoretical-foundations.md', // 付録C: ソフトウェア工学の理論的基盤
   'appendix-d-integrated-project.md', // 付録D: 統合プロジェクト - 学生管理システム
+  'appendix-f-java-time-api.md', // 付録F: java.time API完全ガイド
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',
