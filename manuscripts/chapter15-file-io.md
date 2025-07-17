@@ -66,7 +66,7 @@
 - エラーハンドリングが適切に実装できている
 - 実用的なファイル処理ツールが作成できている
 
-次のステップ: 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
+次のステップ： 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
 
 ## ファイルI/Oの基礎とストリーム
 
@@ -357,7 +357,7 @@ public class DataStreamExample {
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
-// Files クラスの使用
+// Filesクラスの使用
 // NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
 // パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用するとよいAPIです。
 
@@ -480,7 +480,7 @@ public class FileSystemExample {
 
 ### CSV ファイルの処理
 
-// CSV ファイルの処理
+// CSVファイルの処理
 // CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
 // Javaでは標準ライブラリだけでも基本的なCSV処理が可能ですが、複雑な処理では専用ライブラリ（Apache Commons CSV等）の使用を推奨します。
 // 以下は基本的なCSV読み込み・書き込みの実装例です。
@@ -696,7 +696,7 @@ public class TextBlockBasics {
 
 ### インデントの自動処理
 
-Text Blocksの最も重要な特徴の一つは、**共通インデントの自動除去**です：
+Text Blocksの最も重要な特徴の1つは、**共通インデントの自動除去**です：
 
 <span class="listing-number">**サンプルコード15-21**</span>
 

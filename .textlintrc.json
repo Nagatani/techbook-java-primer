@@ -2,11 +2,6 @@
   "filters": {},
   "rules": {
     "preset-japanese": true,
-        "prh": {
-      "rulePaths": [
-        "prh-rules.yml"
-      ]
-    },
     "preset-ja-technical-writing": {
       "sentence-length": {
         "max": 120
@@ -25,11 +20,6 @@
       },
       "ja-no-redundant-expression": false
     },
-    "@textlint-ja/preset-ai-writing": {
-        "ai-tech-writing-guideline": {
-            "severity": "info"
-        }
-    },
     "preset-jtf-style": {
       "1.1.1.本文": true,
       "1.1.3.箇条書き": true,
@@ -47,6 +37,11 @@
       "4.3.1.丸かっこ（）": true
     },
     "spellcheck-tech-word": false,
-    "no-mixed-zenkaku-and-hankaku-alphabet": false
+    "no-mixed-zenkaku-and-hankaku-alphabet": false,
+    "@textlint-ja/preset-ai-writing": {
+        "ai-tech-writing-guideline": {
+            "severity": "info"
+        }
+    }
   }
 }

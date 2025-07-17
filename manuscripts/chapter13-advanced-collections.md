@@ -1014,7 +1014,7 @@ public class OptionalExample {
 
 ### Optionalの連鎖操作
 
-`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-null チェックの連続を大幅に簡素化します。
+`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続を大幅に簡素化します。
 
 <span class="listing-number">**サンプルコード12-21**</span>
 
@@ -1214,12 +1214,12 @@ public class ComplexProcessingExample {
 
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
-- データ構造の選択: `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが大切です。
+- データ構造の選択： `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが大切です。
 - ラムダ式と`Comparator`: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
 - Stream API: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
-- Optional型: null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
-- 並列ストリーム: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
-- 高度なStream操作: `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
+- Optional型： null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
+- 並列ストリーム： マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
+- 高度なStream操作： `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
 
 これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。
 
@@ -1471,8 +1471,8 @@ List<String> contents = files.stream()
 
 - ラムダ式と`Comparator`: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できます。
 - Stream API: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できます。
-- Optional型: null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
-- 並列ストリーム: マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
-- 高度なStream操作: `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
+- Optional型： null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現します。
+- 並列ストリーム： マルチコアCPUを活用した並列処理により、大量データの効率的な処理が可能になります。
+- 高度なStream操作： `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できます。
 
 これらの知識を身につけることで、より効率的で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。

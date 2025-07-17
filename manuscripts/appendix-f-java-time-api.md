@@ -442,11 +442,11 @@ public class LegacyConversionExample {
 ## java.time APIのベストプラクティス
 
 1. **適切なクラスの選択**:
-   - 日付のみ: `LocalDate`
-   - 時刻のみ: `LocalTime`
-   - 日付と時刻: `LocalDateTime`
-   - タイムゾーン付き: `ZonedDateTime`
-   - タイムスタンプ: `Instant`
+   - 日付のみ： `LocalDate`
+   - 時刻のみ： `LocalTime`
+   - 日付と時刻： `LocalDateTime`
+   - タイムゾーン付き： `ZonedDateTime`
+   - タイムスタンプ： `Instant`
 
 2. **不変性の活用**: java.timeのクラスはすべて不変なので、スレッドセーフで安全に使用できます
 
