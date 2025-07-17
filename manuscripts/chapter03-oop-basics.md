@@ -218,7 +218,7 @@ C言語でも不可能ではありませんが「もっと効率良くしたい�
 
 手続き型プログラミングでは、データと処理が完全に分離された構造となります。以下の例では、この分離がどのような問題を引き起こすかを示しています。
 
-<span class="listing-number">**サンプルコード3-1**</span>
+<span class="listing-number">**リスト3.1**: 手続き型プログラムの例</span>
 
 ```java
 public class ProceduralExample {
@@ -249,7 +249,7 @@ public class ProceduralExample {
 
 オブジェクト指向では、関連するデータと処理を1つのクラスに統合し、概念の一貫性と責任の明確化を実現します。
 
-<span class="listing-number">**サンプルコード3-2**</span>
+<span class="listing-number">**リスト3.2**: オブジェクト指向プログラムの例</span>
 
 ```java
 public class Student {
@@ -296,7 +296,7 @@ public class ObjectOrientedExample {
 
 カプセル化は、オブジェクトの内部データを外部から直接アクセスできないように保護し、適切なメソッドを通じてのみ操作を許可する仕組みです。
 
-<span class="listing-number">**サンプルコード3-3**</span>
+<span class="listing-number">**リスト3.3**: Studentクラスの基本定義</span>
 
 ```java
 public class BankAccount {
@@ -328,7 +328,7 @@ public class BankAccount {
 
 継承は、既存のクラス（親クラス）の機能を新しいクラス（子クラス）が引き継ぎ、さらに独自の機能を追加する仕組みです。
 
-<span class="listing-number">**サンプルコード3-4**</span>
+<span class="listing-number">**リスト3.4**: コンストラクタとgetterメソッドの実装</span>
 
 ```java
 public class Product {
@@ -370,7 +370,7 @@ public class Book extends Product {  // ③
 
 ポリモーフィズム（多態性）は、同じインターフェイスを通じて異なる実装を統一的に扱える仕組みです。これにより、新しい実装を追加してもクライアントコードを変更する必要がありません。
 
-<span class="listing-number">**サンプルコード3-5**</span>
+<span class="listing-number">**リスト3.5**: メソッドの追加とカプセル化</span>
 
 ```java
 public interface PaymentMethod {  // ①

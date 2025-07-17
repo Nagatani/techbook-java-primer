@@ -1,4 +1,4 @@
-# <b>20章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>
+# <b>21章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>
 
 ## 本章の学習目標
 
@@ -1082,7 +1082,7 @@ public class IntegratedDataManagementApp extends JFrame {
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています：
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`
 
 ### 課題構成
 - **基礎課題**: 本章の基本概念の理解確認

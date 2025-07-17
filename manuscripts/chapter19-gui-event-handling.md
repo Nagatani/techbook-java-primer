@@ -2445,7 +2445,7 @@ public class DragAndDropExample extends JFrame {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-次のステップ: 基礎課題が完了したら、第20章「高度なGUIコンポーネント」に進みましょう。
+次のステップ: 基礎課題が完了したら、第21章「JTableとJListの基礎」に進みましょう。
 
 ## よくあるエラーと対処法
 

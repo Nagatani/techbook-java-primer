@@ -57,10 +57,10 @@
 - 内容: Spliterator、並列処理、パフォーマンス最適化
 - 関連章: 第10章
 
-**B.03 プログラミングパラダイム**
-- 場所: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
-- 内容: 関数型プログラミングの数学的基礎（ラムダ計算、圏論、モナド）
-- 関連章: 第11章
+**B.03 関数型プログラミングの理論的基礎**
+- 場所: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-functional-programming-theory/`
+- 内容: ラムダ計算、圏論、モナド、関数型インターフェイス、メソッド参照の理論的背景
+- 関連章: 第13章
 
 ### 高度な言語機能
 
@@ -86,12 +86,19 @@
 - 内容: WatchService、非同期I/O、メモリマップドファイル
 - 関連章: 第15章
 
+### データベース・永続化
+
+**B.20 データベース高度機能**
+- 場所: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
+- 内容: JDBCの高度な機能、コネクションプーリング、トランザクション分離レベル、パフォーマンスチューニング
+- 関連章: 第20章
+
 ### テスト・開発プロセス
 
 **B.21 テスト戦略**
 - 場所: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b21-testing-strategies/`
 - 内容: テストピラミッド、統合テスト、モックの活用
-- 関連章: 第21章
+- 関連章: 第22章
 
 ## 付録の活用方法
 

@@ -1,4 +1,4 @@
-# <b>21章</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>
+# <b>20章</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>
 
 ## 本章の学習目標
 
@@ -907,7 +907,7 @@ public class BatchProcessingExample {
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています：
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`
 
 ### 課題構成
 - **基礎課題**: 本章の基本概念の理解確認

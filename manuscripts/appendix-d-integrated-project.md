@@ -61,6 +61,42 @@ public class Student {
 }
 ```
 
+### フェーズ1実装ガイド
+
+**実装手順**:
+1. Student.javaファイルを作成
+2. 基本的なフィールドとコンストラクタを実装
+3. 適切なgetter/setterメソッドを追加
+4. toString()メソッドをオーバーライド
+
+**検証手順**:
+```java
+// StudentTest.java - 簡単な動作確認
+public class StudentTest {
+    public static void main(String[] args) {
+        Student student = new Student("S001", "田中太郎", 20, "情報工学科");
+        
+        System.out.println("学生情報: " + student);
+        
+        student.setGpa(3.7);
+        System.out.println("GPA更新後: " + student.getGpa());
+        
+        // 異常値のテスト
+        try {
+            student.setGpa(-1.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("正常にエラーが検出されました: " + e.getMessage());
+        }
+    }
+}
+```
+
+**学習ポイント**:
+- カプセル化の重要性（privateフィールド + public getter/setter）
+- データ検証の実装（setterでの値チェック）
+- コンストラクタでの初期化
+- toString()メソッドによる表示機能
+
 ## フェーズ2: 継承とポリモーフィズム（第5-7章）
 
 異なる種類の学生（学部生、大学院生）を表現するため、継承を活用します。
@@ -1036,7 +1072,7 @@ public class StudentService {
 }
 ```
 
-## フェーズ7: テスト実装（第21章）
+## フェーズ7: テスト実装（第22章）
 
 JUnitを使用した単体テストを作成します。
 
