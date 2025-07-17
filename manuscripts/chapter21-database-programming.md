@@ -1,4 +1,4 @@
-# <b>20章</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>
+# <b>21章</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>
 
 ## 本章の学習目標
 
