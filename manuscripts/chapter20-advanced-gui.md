@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須前提**：
+**必須**：
 - 第18章のGUIプログラミングの基礎（Swing、AWT、基本コンポーネント）
 - 第19章のGUIイベント処理（ActionListener、MouseListener等）
 - 第10章のコレクションフレームワーク（List、Set、Map）
 - 第7章の抽象クラスとインターフェイス
 
-**望ましい前提**：
+**推奨**：
 - 第12章のRecord（データ表現）
 - MVCアーキテクチャパターンの基本概念
 - オブザーバーパターンの理解
@@ -1207,34 +1207,16 @@ public class IntegratedDataManagementApp extends JFrame {
 
 ## 章末演習
 
-本章で学んだ高度なGUIコンポーネントを実践的な課題で確認しましょう。
-
 ### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されています：
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`
 
-本書の演習課題は、以下のGitHubリポジトリで提供されています：
+### 課題構成
+- **基礎課題**: 本章の基本概念の理解確認
+- **発展課題**: 応用的な実装練習
+- **チャレンジ課題**: 実践的な総合問題
 
-リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
-
-### 第21章の課題構成
-
-```
-exercises/chapter21/
-├── basic/              # 基礎課題（必須）
-│   ├── README.md       # 詳細な課題説明
-│   └── AdvancedGUI.java
-├── advanced/           # 発展課題（推奨）
-├── challenge/          # チャレンジ課題（任意）
-└── solutions/          # 解答例（実装後に参照）
-```
-
-### 学習の目標
-
-本章の演習を通じて以下のスキルを習得します：
-- JTableとJTreeの高度な活用
-- MVCパターンによるアプリケーション設計
-- カスタムコンポーネントの作成技術
-
-### 課題の概要
+詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
 1. **基礎課題**: 高度なテーブル操作システムの実装
 2. **発展課題**: ファイルエクスプローラの開発

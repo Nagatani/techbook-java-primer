@@ -639,172 +639,21 @@ public class InputExample {
 > **ポイント**：エラーは学習の機会です。エラーメッセージは敵ではなく、問題解決のヒントを与えてくれる味方として捉えると、プログラミングがより楽しくなります。
 
 
-## GUIアプリケーションのサンプルを動かしてみよう
-
-本書では、最終的にGUIアプリケーションを作成するための内容まで学習します。
-
-ここで、ボタン押下でメッセージの変更を行うサンプルを提示するので一度自分の環境でGUIアプリケーションを作ることがどんな感じかを知っておきましょう。
-
-<span class="listing-number">**サンプルコード1-17**</span>
-
-```java
-import javax.swing.*;
-import java.awt.*;
-
-public class HelloGUIApp extends JFrame {
-
-    private JLabel label;
-    private JButton button;
-
-    public HelloGUIApp() {
-        // JFrameの初期設定
-        setTitle("Hello GUI App!!");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // ウィンドウのサイズを設定
-        setSize(300, 150);
-        setLocationRelativeTo(null); // 画面中央に表示
-
-        // レイアウトマネージャの設定
-        setLayout(new GridLayout(2, 1));
-
-        // ラベルの作成と初期テキストの設定
-        label = new JLabel("こんにちは");
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        add(label);
-
-        // ボタンの作成とActionListenerの設定
-        button = new JButton("押して");
-        button.addActionListener(e -> {
-            label.setText("Hello, OOP!!");
-        });
-        add(button);
-
-        // ウィンドウを表示
-        setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new HelloGUIApp());
-    }
-}
-```
-
-このサンプルでは、Swingライブラリを使用して簡単なGUIアプリケーションを作成しています。ラムダ式やイベント処理など、後の章で学習する概念も含まれていますが、Javaの表現力を示す例として紹介しています。
-
-名前の入力欄を追加し、ボタン押下で挨拶を行うサンプル
-
-<span class="listing-number">**サンプルコード1-18**</span>
-
-```java
-import javax.swing.*;
-import java.awt.*;
-
-public class GreetingApp extends JFrame {
-
-    private JLabel messageLabel;
-    private JTextField nameTextField;
-    private JButton greetButton;
-
-    public GreetingApp() {
-        // ウィンドウの基本設定
-        setTitle("名前入力");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
-        setLocationRelativeTo(null);
-
-        // レイアウトマネージャーを GridLayout に設定（4行1列）
-        setLayout(new GridLayout(4, 1));
-
-        // ラベル（説明）の作成
-        JLabel nameLabel = new JLabel("名前を入力してください:");
-        nameLabel.setHorizontalAlignment(SwingConstants.CENTER); // テキストを中央揃え
-        add(nameLabel);
-
-        // テキストボックスの作成
-        nameTextField = new JTextField(15);
-        add(nameTextField);
-
-        // メッセージ表示用ラベルの作成
-        messageLabel = new JLabel("");
-        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(messageLabel);
-
-        // ボタンの作成とActionListenerの設定
-        greetButton = new JButton("挨拶する");
-        greetButton.addActionListener(e -> {
-            String name = nameTextField.getText();
-            if (!name.isEmpty()) {
-                messageLabel.setText("こんにちは！" + name + "さん");
-            } else {
-                messageLabel.setText("名前を入力してください");
-            }
-        });
-        add(greetButton);
-
-        // ウィンドウを表示
-        setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        // イベントディスパッチスレッドでGUIを作成・実行
-        SwingUtilities.invokeLater(() -> new GreetingApp());
-    }
-}
-```
 
 
 
 ## 章末演習
 
-本章で学んだJava開発環境と基本文法の知識を実践的な課題で確認しましょう。
-
-### 演習を始める前に
-
-第1章の演習課題は、Java学習の第一歩となる重要な課題です。まずは環境構築が正しく完了していることを確認しましょう：
-
-✅ **環境構築チェックリスト**
-- JDKがインストールされ、`java -version`でバージョンが表示される
-- `javac`コマンドが使用できる
-- IntelliJ IDEAまたはお好みのエディタが設定されている
-- HelloWorld.javaのコンパイルと実行に成功している
-
 ### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されています：
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter01/`
 
-本書の演習課題は、以下のGitHubリポジトリで提供されています：
+### 課題構成
+- **基礎課題**: 本章の基本概念の理解確認
+- **発展課題**: 応用的な実装練習
+- **チャレンジ課題**: 実践的な総合問題
 
-リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
-
-### 第1章の課題構成
-
-```
-exercises/chapter01/
-├── basic/          # 基礎課題 - まずはここから始めましょう
-│   ├── README.md   # 詳細な課題説明と実装のヒント
-│   ├── Exercise01_HelloWorld.java
-│   ├── Exercise02_SelfIntroduction.java
-│   ├── Exercise03_BasicCalculation.java
-│   └── Exercise04_DataTypes.java
-├── advanced/       # 発展課題（推奨）- 余裕があれば挑戦
-│   ├── Calculator.java
-│   ├── PersonalInfo.java
-│   └── TimeCalculation.java
-├── challenge/      # チャレンジ課題（任意）- 腕試しに
-└── solutions/      # 解答例（実装後に参照）
-```
-
-### 学習の目標
-
-本章の演習を通じて以下のスキルを習得します：
-- Java開発環境での基本的なプログラム作成
-- 変数の宣言と基本的な演算
-- 各種データ型の適切な使用
-- コンパイルから実行までの一連の流れ
-
-### 基礎課題の詳細とヒント
-
-#### Exercise01_HelloWorld.java
-**目的**: もっとも基本的なJavaプログラムの作成と実行
+詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
 **実装のポイント**:
 - クラス名とファイル名を一致させる
@@ -872,21 +721,7 @@ exercises/chapter01/
 
 次のステップ: 基礎課題が完了したら、第2章「Java基本文法」に進みましょう。第2章では、より本格的なオブジェクト指向プログラミングの世界に入っていきます。
 
-## より深い理解のために
-
-本章で学んだJavaの基礎をさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
-
-付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`
-
-この付録では以下の高度なトピックを扱います：
-
-- JVMアーキテクチャ: クラスローダ、ランタイムデータエリア、実行エンジン
-- バイトコード命令: Javaコードがどのような命令に変換されるか
-- JITコンパイラ: インタプリタからネイティブコードへの最適化
-- メモリモデル: スタック、ヒープ、メタスペースの詳細
-- 診断とモニタリング: JVMフラグとパフォーマンスチューニング
-
-これらの知識は、Javaプログラムのパフォーマンス最適化や高度なトラブルシューティングに役立ちます。
+※ 本章の高度な内容については、付録B01「JVMアーキテクチャ」を参照してください。
 
 ## よくあるエラーと対処法
 

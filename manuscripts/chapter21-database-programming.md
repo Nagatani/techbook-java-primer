@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須前提**：
+**必須**：
 - 第14章の例外処理（SQLException等のデータベース例外処理）
 - 第15章のファイルI/O（リソース管理、try-with-resources）
 - 第10章のコレクションフレームワーク（ResultSetのデータ格納）
 - 第4章のクラスとインスタンス（エンティティクラスの設計）
 
-**望ましい前提**：
+**推奨**：
 - SQLの基本知識（SELECT、INSERT、UPDATE、DELETE）
 - リレーショナルデータベースの基本概念
 - 第17章のネットワークプログラミング（接続の概念）
@@ -887,21 +887,7 @@ public class BatchProcessingExample {
 }
 ```
 
-## より深い理解のために
-
-本章で学んだデータベースプログラミングをさらに深く理解したい方は、GitHubリポジトリの付録資料を参照してください：
-
-付録リソース: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
-
-この付録では以下の高度なトピックを扱います：
-
-- ストアドプロシージャとファンクション: データベース側での処理の実装
-- インデックスとクエリ最適化: パフォーマンスチューニング
-- NoSQLデータベース: MongoDB、Redisとの連携
-- ORMフレームワーク: Hibernate、MyBatisの基礎
-- データベースマイグレーション: Flywayを使用したスキーマ管理
-
-これらの技術は、エンタープライズアプリケーション開発において重要な役割を果たします。
+※ 本章の高度な内容については、付録B20「データベース高度機能」を参照してください。
 
 ## まとめ
 
@@ -919,34 +905,16 @@ public class BatchProcessingExample {
 
 ## 章末演習
 
-本章で学んだデータベースプログラミングを実践的な課題で確認しましょう。
-
 ### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されています：
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`
 
-本書の演習課題は、以下のGitHubリポジトリで提供されています：
+### 課題構成
+- **基礎課題**: 本章の基本概念の理解確認
+- **発展課題**: 応用的な実装練習
+- **チャレンジ課題**: 実践的な総合問題
 
-リポジトリ: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
-
-### 第21章の課題構成
-
-```
-exercises/chapter21/
-├── basic/              # 基礎課題（必須）
-│   ├── README.md       # 詳細な課題説明
-│   └── DatabaseBasics.java
-├── advanced/           # 発展課題（推奨）
-├── challenge/          # チャレンジ課題（任意）
-└── solutions/          # 解答例（実装後に参照）
-```
-
-### 学習の目標
-
-本章の演習を通じて以下のスキルを習得します：
-- JDBCを使用した基本的なデータベース操作
-- DAOパターンの実装と活用
-- トランザクション管理の実践
-
-### 課題の概要
+詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
 1. **基礎課題**: 書籍管理システムのデータアクセス層実装
 2. **発展課題**: 在庫管理システムのトランザクション処理
