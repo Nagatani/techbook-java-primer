@@ -462,15 +462,15 @@ $ javac -encoding UTF-8 HelloWorld.java
 
 環境構築が正しく完了したことを確認するためのチェックリストです：
 
-- [ ] JDKがインストールされている
+- JDKがインストールされている
   - `java -version`でバージョンが表示される
   - `javac -version`でバージョンが表示される
-- [ ] SDKMANが正しく動作している
+- SDKMANが正しく動作している
   - `sdk version`でSDKMANのバージョンが表示される
-- [ ] IDEがインストールされている
+- IDEがインストールされている
   - IntelliJ IDEAまたはVS Codeが起動する
   - IDEからJavaプロジェクトを作成できる
-- [ ] Hello Worldプログラムが実行できる
+- Hello Worldプログラムが実行できる
   - コマンドラインで実行できる
   - IDEから実行できる
 

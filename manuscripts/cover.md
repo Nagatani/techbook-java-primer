@@ -14,6 +14,14 @@
   <div class="cover-main"></div>
 
   <div class="cover-footer">
+    <div class="footer-note">
+      <h3>この本の対象読者：</h3>
+      <ul>
+        <li>手続き型のプログラミング言語（Cなど）で基礎を学び終えた人</li>
+        <li>より実践的なプログラミング手法を学ぼうとしている人</li>
+        <li>プログラミングの基礎から次のステップに進みたい人</li>
+      </ul>
+    </div>
     <div class="cover-publisher">
       <div class="cover-logo">大学実習教材</div>
       <div class="cover-year">2025</div>
