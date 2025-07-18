@@ -65,7 +65,7 @@ public record Person(String name, int age) {}
 
 これだけで、以下をすべて定義したのとほぼ同じ意味になります。
 
-Recordが自動生成する等価なクラス構造。
+Recordが自動生成する等価なクラス構造：
 
 #### 上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります
 
@@ -95,14 +95,14 @@ public final class Person {
 }
 ```
 
-自動生成される要素の詳細。
+### 自動生成される要素の詳細
 
-①　不変フィールド： 全フィールドがprivate finalとして宣言され、インスタンス生成後は変更不可。
-②　正準コンストラクタ： 全フィールドを初期化する標準的なコンストラクタ。
+①　不変フィールド： 全フィールドがprivate finalとして宣言され、インスタンス生成後は変更不可
+②　正準コンストラクタ： 全フィールドを初期化する標準的なコンストラクタ
 ③　アクセサメソッド： フィールド名と同じ名前のメソッド（従来のgetXxx()形式ではない）  
-④　equals()メソッド： 全フィールドの値を比較する適切な実装。
-⑤　hashCode()メソッド： 全フィールドから一貫性のあるハッシュ値を計算。
-⑥　toString()メソッド： フィールド名と値を読みやすい形式で表示。
+④　equals()メソッド： 全フィールドの値を比較する適切な実装
+⑤　hashCode()メソッド： 全フィールドから一貫性のあるハッシュ値を計算
+⑥　toString()メソッド： フィールド名と値を読みやすい形式で表示
 ```
 
 ### Recordのメリット・デメリット
@@ -133,13 +133,13 @@ public class RecordExample {
         Person bob = new Person("Bob", 40);        // ①
         Person alice2 = new Person("Alice", 30);   // ①
 
-        System.out.println("名前: " + alice.name());  // ②。
-        System.out.println("年齢: " + alice.age());   // ②。
+        System.out.println("名前: " + alice.name());  // ②
+        System.out.println("年齢: " + alice.age());   // ②
 
         System.out.println(alice);  // ③
 
-        System.out.println("aliceとbobは等しいか？: " + alice.equals(bob));     // ④。
-        System.out.println("aliceとalice2は等しいか？: " + alice.equals(alice2)); // ④。
+        System.out.println("aliceとbobは等しいか？: " + alice.equals(bob));     // ④
+        System.out.println("aliceとalice2は等しいか？: " + alice.equals(alice2)); // ④
     }
 }
 ```
@@ -162,10 +162,10 @@ public class RecordExample {
 
 ```java
 public record PositivePoint(int x, int y) {
-    // コンパクトコンストラクタ。
+    // コンパクトコンストラクタ
     public PositivePoint {
         if (x < 0 || y < 0) {
-            throw new IllegalArgumentException("座標は負の値にできません");。
+            throw new IllegalArgumentException("座標は負の値にできません");
         }
         // ここで this.x = x; のような代入は不要（自動的に行われる）
     }
@@ -197,7 +197,7 @@ import java.util.stream.Collectors;
 
 public class DataProcessor {
     
-    // サンプルデータの作成。
+    // サンプルデータの作成
     public static List<String> createSampleData() {
         List<String> data = new ArrayList<>();
         data.add("Alice,25,Tokyo");
@@ -208,11 +208,11 @@ public class DataProcessor {
         return data;
     }
     
-    // CSV形式の文字列をPersonRecordに変換。
+    // CSV形式の文字列をPersonRecordに変換
     public static PersonRecord parsePersonData(String csvLine) {
         String[] fields = csvLine.split(",");
         if (fields.length != 3) {
-            return null; // 不正なデータはnullを返す。
+            return null; // 不正なデータはnullを返す
         }
         
         // 年齢の解析（エラー時はデフォルト値を使用）
@@ -231,30 +231,30 @@ public class DataProcessor {
     }
     
     public static void main(String[] args) {
-        // サンプルデータの取得。
+        // サンプルデータの取得
         List<String> csvData = createSampleData();
         
-        // データの処理。
+        // データの処理
         List<PersonRecord> persons = csvData.stream()
             .map(DataProcessor::parsePersonData)
-            .filter(person -> person != null && person.age() > 0) // 無効なデータを除外。
+            .filter(person -> person != null && person.age() > 0) // 無効なデータを除外
             .collect(Collectors.toList());
         
-        // 結果の表示。
-        System.out.println("=== 全従業員データ ===");。
+        // 結果の表示
+        System.out.println("=== 全従業員データ ===");
         persons.forEach(System.out::println);
         
-        // 年齢別の集計。
-        System.out.println("\n=== 30歳以上の従業員 ===");。
+        // 年齢別の集計
+        System.out.println("\n=== 30歳以上の従業員 ===");
         persons.stream()
             .filter(person -> person.age() >= 30)
             .forEach(System.out::println);
         
-        // 都市別のグループ化。
-        System.out.println("\n=== 都市別の従業員数 ===");。
+        // 都市別のグループ化
+        System.out.println("\n=== 都市別の従業員数 ===");
         persons.stream()
             .collect(Collectors.groupingBy(PersonRecord::city, Collectors.counting()))
-            .forEach((city, count) -> System.out.println(city + ": " + count + "名"));。
+            .forEach((city, count) -> System.out.println(city + ": " + count + "名"));
     }
 }
 ```
@@ -273,12 +273,12 @@ public class DataProcessor {
 <span class="listing-number">**サンプルコード9-5**</span>
 
 ```java
-// データとロジックが密結合。
+// データとロジックが密結合
 public class Order {
     private List<OrderItem> items;
     private Customer customer;
     
-    // データとロジックが混在。
+    // データとロジックが混在
     public BigDecimal calculateTotal() { /* 計算ロジック */ }
     public void processPayment() { /* 決済ロジック */ }
     public void updateInventory() { /* 在庫更新ロジック */ }
@@ -307,11 +307,11 @@ public class OrderProcessor {
     }
     
     public static PaymentResult processPayment(Order order, PaymentMethod method) {
-        // 支払い処理ロジック。
+        // 支払い処理ロジック
     }
     
     public static void updateInventory(Order order) {
-        // 在庫更新ロジック。
+        // 在庫更新ロジック
     }
 }
 ```
@@ -345,18 +345,18 @@ Recordsを使用することで、従来のデータクラス実装で必要だ�
 <span class="listing-number">**サンプルコード9-7**</span>
 
 ```java
-// 従来のデータクラス：約100行のコード。
+// 従来のデータクラス：約100行のコード
 public class TraditionalUser {
     private final String id;
     private final String name;
     private final String email;
     private final LocalDateTime createdAt;
     
-    // コンストラクタ、getter、equals、hashCode、toString...。
-    // 約90行のボイラープレートコード。
+    // コンストラクタ、getter、equals、hashCode、toString...
+    // 約90行のボイラープレートコード
 }
 
-// Record：1行で同等の機能。
+// Record：1行で同等の機能
 public record User(String id, String name, String email, LocalDateTime createdAt) {}
 ```
 
@@ -391,7 +391,7 @@ DOPの最初のステップは、ドメインモデルを明確に表現する�
 <span class="listing-number">**サンプルコード9-8**</span>
 
 ```java
-// ドメインモデルの明確な表現。
+// ドメインモデルの明確な表現
 public record Product(
     String id,
     String name,
@@ -424,7 +424,7 @@ DOPでは、ビジネスロジックは純粋関数として実装します。�
 
 ```java
 public class ProductService {
-    // 純粋関数による処理。
+    // 純粋関数による処理
     public static boolean isAvailable(Product product) {
         return product.inventory().quantity() > 0;
     }
@@ -455,21 +455,21 @@ sealed interfaceとRecordsを組み合わせることで、アプリケーショ
 <span class="listing-number">**サンプルコード9-10**</span>
 
 ```java
-// 状態を型で表現。
+// 状態を型で表現
 public sealed interface OrderStatus permits Pending, Confirmed, Shipped, Delivered {}
 public record Pending() implements OrderStatus {}
 public record Confirmed(LocalDateTime confirmedAt) implements OrderStatus {}
 public record Shipped(String trackingNumber, LocalDateTime shippedAt) implements OrderStatus {}
 public record Delivered(LocalDateTime deliveredAt) implements OrderStatus {}
 
-// パターンマッチングによる状態処理。
+// パターンマッチングによる状態処理
 public static String getStatusMessage(OrderStatus status) {
     return switch (status) {
-        case Pending() -> "注文を受け付けました";。
-        case Confirmed(var confirmedAt) -> "注文が確定しました: " + confirmedAt;。
+        case Pending() -> "注文を受け付けました";
+        case Confirmed(var confirmedAt) -> "注文が確定しました: " + confirmedAt;
         case Shipped(var trackingNumber, var shippedAt) -> 
-            "発送しました（追跡番号: " + trackingNumber + "）";。
-        case Delivered(var deliveredAt) -> "配達完了: " + deliveredAt;。
+            "発送しました（追跡番号: " + trackingNumber + "）";
+        case Delivered(var deliveredAt) -> "配達完了: " + deliveredAt;
     };
 }
 ```
@@ -485,7 +485,7 @@ sealed interfaceは、実装可能なクラスを明示的に制限する機能�
 <span class="listing-number">**サンプルコード9-11**</span>
 
 ```java
-// 図形を表現する代数的データ型。
+// 図形を表現する代数的データ型
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
 
 public record Circle(double radius) implements Shape {}
@@ -509,13 +509,13 @@ public static double calculateArea(Shape shape) {
     };
 }
 
-// 周囲計算。
+// 周囲計算
 public static double calculatePerimeter(Shape shape) {
     return switch (shape) {
         case Circle(var radius) -> 2 * Math.PI * radius;
         case Rectangle(var width, var height) -> 2 * (width + height);
         case Triangle(var base, var height) -> {
-            // 正三角形と仮定した場合の計算。
+            // 正三角形と仮定した場合の計算
             double side = Math.sqrt(Math.pow(base/2, 2) + Math.pow(height, 2));
             yield base + 2 * side;
         }
@@ -530,30 +530,30 @@ public static double calculatePerimeter(Shape shape) {
 <span class="listing-number">**サンプルコード9-13**</span>
 
 ```java
-// ネストしたRecord構造。
+// ネストしたRecord構造
 public record Address(String street, String city, String country) {}
 public record Person(String name, int age, Address address) {}
 public record Company(String name, Person ceo, List<Person> employees) {}
 
-// 深いパターンマッチング。
+// 深いパターンマッチング
 public static String getLocationInfo(Object obj) {
     return switch (obj) {
-        // ネストしたRecordの分解。
+        // ネストしたRecordの分解
         case Person(var name, var age, Address(var street, var city, "Japan")) ->
-            name + "さんは日本の" + city + "在住です";。
+            name + "さんは日本の" + city + "在住です";
         
         case Person(var name, var age, Address(var street, var city, var country)) ->
-            name + "さんは" + country + "の" + city + "在住です";。
+            name + "さんは" + country + "の" + city + "在住です";
         
-        // リストのパターンマッチング。
+        // リストのパターンマッチング
         case Company(var companyName, Person(var ceoName, _, _), var employees) 
             when employees.size() > 100 ->
-            companyName + "は" + ceoName + "がCEOの大企業です";。
+            companyName + "は" + ceoName + "がCEOの大企業です";
         
         case Company(var companyName, Person(var ceoName, _, _), var employees) ->
-            companyName + "は" + ceoName + "がCEOの会社です（従業員" + employees.size() + "名）";。
+            companyName + "は" + ceoName + "がCEOの会社です（従業員" + employees.size() + "名）";
         
-        default -> "不明な情報です";。
+        default -> "不明な情報です";
     };
 }
 ```
@@ -569,13 +569,13 @@ when句を使用して、パターンに条件を追加できます
 public static String categorizeAge(Person person) {
     return switch (person) {
         case Person(var name, var age, _) when age < 18 -> 
-            name + "さんは未成年です";。
+            name + "さんは未成年です";
         case Person(var name, var age, _) when age >= 65 -> 
-            name + "さんは高齢者です";。
+            name + "さんは高齢者です";
         case Person(var name, var age, Address(_, _, "Japan")) when age >= 20 ->
-            name + "さんは日本で飲酒可能な成人です";。
+            name + "さんは日本で飲酒可能な成人です";
         case Person(var name, _, _) -> 
-            name + "さんは成人です";。
+            name + "さんは成人です";
     };
 }
 ```
@@ -587,7 +587,7 @@ public static String categorizeAge(Person person) {
 <span class="listing-number">**サンプルコード9-15**</span>
 
 ```java
-// 数式を表現する代数的データ型。
+// 数式を表現する代数的データ型
 public sealed interface Expr permits Const, Add, Mul, Var {}
 
 public record Const(double value) implements Expr {}
@@ -595,7 +595,7 @@ public record Add(Expr left, Expr right) implements Expr {}
 public record Mul(Expr left, Expr right) implements Expr {}
 public record Var(String name) implements Expr {}
 
-// 式の評価。
+// 式の評価
 public static double eval(Expr expr, Map<String, Double> env) {
     return switch (expr) {
         case Const(var value) -> value;
@@ -608,21 +608,21 @@ public static double eval(Expr expr, Map<String, Double> env) {
 // 式の簡約（最適化）
 public static Expr simplify(Expr expr) {
     return switch (expr) {
-        // 定数の計算。
+        // 定数の計算
         case Add(Const(var a), Const(var b)) -> new Const(a + b);
         case Mul(Const(var a), Const(var b)) -> new Const(a * b);
         
-        // 恒等元による簡約。
+        // 恒等元による簡約
         case Add(Const(0), var e) -> simplify(e);
         case Add(var e, Const(0)) -> simplify(e);
         case Mul(Const(1), var e) -> simplify(e);
         case Mul(var e, Const(1)) -> simplify(e);
         
-        // 零元による簡約。
+        // 零元による簡約
         case Mul(Const(0), _) -> new Const(0);
         case Mul(_, Const(0)) -> new Const(0);
         
-        // 再帰的簡約。
+        // 再帰的簡約
         case Add(var left, var right) -> new Add(simplify(left), simplify(right));
         case Mul(var left, var right) -> new Mul(simplify(left), simplify(right));
         
@@ -630,7 +630,7 @@ public static Expr simplify(Expr expr) {
     };
 }
 
-// 式の文字列表現。
+// 式の文字列表現
 public static String toString(Expr expr) {
     return switch (expr) {
         case Const(var value) -> String.valueOf(value);
@@ -656,19 +656,19 @@ public class ExpressionDemo {
             new Add(new Var("y"), new Const(0))
         );
         
-        System.out.println("元の式: " + toString(expr));。
+        System.out.println("元の式: " + toString(expr));
         // 出力: ((x + 1.0) * (y + 0.0))
         
-        // 式の簡約。
+        // 式の簡約
         Expr simplified = simplify(expr);
-        System.out.println("簡約後: " + toString(simplified));。
+        System.out.println("簡約後: " + toString(simplified));
         // 出力: ((x + 1.0) * y)
         
-        // 変数代入による評価。
+        // 変数代入による評価
         Map<String, Double> env = Map.of("x", 3.0, "y", 4.0);
         double result = eval(simplified, env);
-        System.out.println("x=3, y=4の時の値: " + result);。
-        // 出力: x=3, y=4の時の値: 16.0。
+        System.out.println("x=3, y=4の時の値: " + result);
+        // 出力: x=3, y=4の時の値: 16.0
     }
 }
 ```
@@ -686,17 +686,17 @@ public class ExpressionDemo {
 <span class="listing-number">**サンプルコード9-17**</span>
 
 ```java
-// 新しい図形を追加した場合。
+// 新しい図形を追加した場合
 public sealed interface Shape permits Circle, Rectangle, Triangle, Square {}
 public record Square(double side) implements Shape {}
 
-// コンパイルエラー：Squareケースが処理されていない。
+// コンパイルエラー：Squareケースが処理されていない
 public static double calculateArea(Shape shape) {
     return switch (shape) {
         case Circle(var radius) -> Math.PI * radius * radius;
         case Rectangle(var width, var height) -> width * height;
         case Triangle(var base, var height) -> 0.5 * base * height;
-        // case Square(var side) -> side * side;  // これが必要。
+        // case Square(var side) -> side * side;  // これが必要
     };
 }
 ```
@@ -710,7 +710,7 @@ Recordの背後では、Javaコンパイラが大量のコードを自動生成�
 <span class="listing-number">**サンプルコード9-18**</span>
 
 ```java
-// ソースコード。
+// ソースコード
 public record Point(int x, int y) {}
 
 // コンパイラが生成する実際のコード（概念的表現）
@@ -718,36 +718,36 @@ public final class Point extends Record {
     private final int x;
     private final int y;
     
-    // カノニカルコンストラクタ。
+    // カノニカルコンストラクタ
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
     
-    // アクセサメソッド。
+    // アクセサメソッド
     public int x() { return x; }
     public int y() { return y; }
     
-    // equals メソッド。
+    // equals メソッド
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Point other &&
                x == other.x && y == other.y;
     }
     
-    // hashCode メソッド。
+    // hashCode メソッド
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
     }
     
-    // toString メソッド。
+    // toString メソッド
     @Override
     public String toString() {
         return "Point[x=" + x + ", y=" + y + "]";
     }
     
-    // Record特有のメソッド。
+    // Record特有のメソッド
     @Override
     public final Object[] componentArray() {
         return new Object[] { x, y };
@@ -762,16 +762,16 @@ public final class Point extends Record {
 <span class="listing-number">**サンプルコード9-19**</span>
 
 ```java
-// 基本的なコンパクトコンストラクタ。
+// 基本的なコンパクトコンストラクタ
 public record ValidatedEmail(String value) {
     public ValidatedEmail {
         if (value == null || !value.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new IllegalArgumentException("Invalid email: " + value);
         }
-        value = value.toLowerCase(); // 正規化。
+        value = value.toLowerCase(); // 正規化
     }
     
-    // 追加のメソッド。
+    // 追加のメソッド
     public String domain() {
         return value.substring(value.indexOf('@') + 1);
     }
@@ -789,7 +789,7 @@ public record ValidatedEmail(String value) {
 <span class="listing-number">**サンプルコード9-20**</span>
 
 ```java
-// 複雑なバリデーションの例。
+// 複雑なバリデーションの例
 public record Money(BigDecimal amount, Currency currency) {
     public Money {
         Objects.requireNonNull(amount, "Amount cannot be null");
@@ -799,7 +799,7 @@ public record Money(BigDecimal amount, Currency currency) {
             throw new IllegalArgumentException("Amount cannot be negative");
         }
         
-        // 通貨の小数点桁数に合わせて正規化。
+        // 通貨の小数点桁数に合わせて正規化
         if (amount.scale() > currency.getDefaultFractionDigits()) {
             amount = amount.setScale(
                 currency.getDefaultFractionDigits(), 
@@ -808,7 +808,7 @@ public record Money(BigDecimal amount, Currency currency) {
         }
     }
     
-    // ビジネスロジックメソッド。
+    // ビジネスロジックメソッド
     public Money add(Money other) {
         if (!currency.equals(other.currency)) {
             throw new IllegalArgumentException("Currency mismatch");
@@ -840,7 +840,7 @@ public record Configuration(
     Duration timeout,
     Map<String, String> properties
 ) {
-    // コンパクトコンストラクタでバリデーション。
+    // コンパクトコンストラクタでバリデーション
     public Configuration {
         Objects.requireNonNull(host, "Host cannot be null");
         if (port <= 0 || port > 65535) {
@@ -850,11 +850,11 @@ public record Configuration(
         if (timeout.isNegative()) {
             throw new IllegalArgumentException("Timeout cannot be negative");
         }
-        // 防御的コピー。
+        // 防御的コピー
         properties = Map.copyOf(properties);
     }
     
-    // withメソッド群。
+    // withメソッド群
     public Configuration withHost(String newHost) {
         return new Configuration(newHost, port, useSsl, timeout, properties);
     }
@@ -883,7 +883,7 @@ public record Configuration(
         return new Configuration(host, port, useSsl, timeout, newProperties);
     }
     
-    // ファクトリメソッド。
+    // ファクトリメソッド
     public static Configuration createDefault() {
         return new Configuration(
             "localhost", 
@@ -920,22 +920,22 @@ public record Range(int start, int end) {
         }
     }
     
-    // 範囲の長さ。
+    // 範囲の長さ
     public int length() {
         return end - start;
     }
     
-    // 値が範囲内かチェック。
+    // 値が範囲内かチェック
     public boolean contains(int value) {
         return value >= start && value <= end;
     }
     
-    // 範囲の重複チェック。
+    // 範囲の重複チェック
     public boolean overlaps(Range other) {
         return this.start <= other.end && other.start <= this.end;
     }
     
-    // 範囲の結合。
+    // 範囲の結合
     public Range union(Range other) {
         if (!this.overlaps(other) && !this.isAdjacent(other)) {
             throw new IllegalArgumentException("Ranges must overlap or be adjacent");
@@ -946,17 +946,17 @@ public record Range(int start, int end) {
         );
     }
     
-    // 隣接チェック。
+    // 隣接チェック
     public boolean isAdjacent(Range other) {
         return this.end + 1 == other.start || other.end + 1 == this.start;
     }
     
-    // Streamとの統合。
+    // Streamとの統合
     public IntStream stream() {
         return IntStream.rangeClosed(start, end);
     }
     
-    // Iterableの実装。
+    // Iterableの実装
     public Iterable<Integer> asIterable() {
         return () -> stream().iterator();
     }
@@ -991,7 +991,7 @@ public record SerializableUser(
         Objects.requireNonNull(createdAt, "Created at cannot be null");
     }
     
-    // バリデーションメソッド。
+    // バリデーションメソッド
     public boolean isValid() {
         return id != null && !id.isEmpty() &&
                name != null && !name.isEmpty() &&
@@ -1035,24 +1035,24 @@ import java.util.Objects;
 import java.util.Map;
 import java.util.HashMap;
 
-// APIレスポンスのRecord。
+// APIレスポンスのRecord
 public record ApiResponse<T>(
     boolean success,
     T data,
     String errorMessage,
     Instant timestamp
 ) {
-    // 成功レスポンスのファクトリ。
+    // 成功レスポンスのファクトリ
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(true, data, null, Instant.now());
     }
     
-    // エラーレスポンスのファクトリ。
+    // エラーレスポンスのファクトリ
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, null, message, Instant.now());
     }
     
-    // 簡易的なJSON風の文字列表現。
+    // 簡易的なJSON風の文字列表現
     public String toJsonString() {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"success\": ").append(success).append(", ");
@@ -1067,7 +1067,7 @@ public record ApiResponse<T>(
     }
 }
 
-// 通貨を表すRecord。
+// 通貨を表すRecord
 public record Money(BigDecimal amount, Currency currency) {
     public Money {
         Objects.requireNonNull(amount, "Amount cannot be null");
@@ -1100,21 +1100,21 @@ public record Money(BigDecimal amount, Currency currency) {
         );
     }
     
-    // 文字列表現。
+    // 文字列表現
     public String toSimpleString() {
         return amount + " " + currency.getCurrencyCode();
     }
 }
 
-// 使用例。
+// 使用例：
 public class JsonIntegrationExample {
     public static void main(String[] args) {
-        // Moneyオブジェクトの作成と変換。
+        // Moneyオブジェクトの作成と変換
         Money money = new Money(BigDecimal.valueOf(1000.50), Currency.getInstance("JPY"));
         Map<String, Object> moneyMap = money.toMap();
         System.out.println("Money as map: " + moneyMap);
         
-        // APIレスポンスの作成。
+        // APIレスポンスの作成
         ApiResponse<Money> response = ApiResponse.success(money);
         System.out.println("Response: " + response.toJsonString());
     }
@@ -1130,7 +1130,7 @@ Recordsとパターンマッチングを組み合わせることで、イベン�
 <span class="listing-number">**サンプルコード9-25**</span>
 
 ```java
-// イベントの定義。
+// イベントの定義
 public sealed interface UserEvent permits UserCreated, UserUpdated, UserDeleted {}
 
 public record UserCreated(
@@ -1152,7 +1152,7 @@ public record UserDeleted(
     Instant timestamp
 ) implements UserEvent {}
 
-// ユーザーの状態スナップショット。
+// ユーザーの状態スナップショット
 public record UserSnapshot(
     String userId,
     String name,
@@ -1169,10 +1169,10 @@ public record UserSnapshot(
 <span class="listing-number">**サンプルコード9-26**</span>
 
 ```java
-// イベントストリームの処理。
+// イベントストリームの処理
 public class UserEventProcessor {
     
-    // イベントからスナップショットへの集約。
+    // イベントからスナップショットへの集約
     public static Map<String, UserSnapshot> processEvents(Stream<UserEvent> events) {
         return events.reduce(
             new HashMap<String, UserSnapshot>(),
@@ -1181,7 +1181,7 @@ public class UserEventProcessor {
         );
     }
     
-    // 単一イベントの適用。
+    // 単一イベントの適用
     private static Map<String, UserSnapshot> applyEvent(
             Map<String, UserSnapshot> snapshots, 
             UserEvent event) {
@@ -1214,7 +1214,7 @@ public class UserEventProcessor {
         return updated;
     }
     
-    // 特定時点での状態復元。
+    // 特定時点での状態復元
     public static Map<String, UserSnapshot> replayEventsUntil(
             Stream<UserEvent> events, 
             Instant cutoff) {
@@ -1246,7 +1246,7 @@ RecordsとStream APIを組み合わせることで、複雑なデータ処理パ
 ```java
 public class DataPipelineExample {
     
-    // 複雑なデータ変換パイプライン。
+    // 複雑なデータ変換パイプライン
     public static List<UserAnalytics> generateUserAnalytics(
             Stream<UserEvent> events,
             Duration timeWindow) {
@@ -1326,7 +1326,7 @@ public record UserAnalytics(
 <span class="listing-number">**サンプルコード9-28**</span>
 
 ```java
-// 注文処理のドメインモデル。
+// 注文処理のドメインモデル
 public record Customer(String id, String name, String email) {}
 
 public record Product(String id, String name, Money price) {}
@@ -1360,7 +1360,7 @@ public record Order(
     }
 }
 
-// 注文状態の管理。
+// 注文状態の管理
 public sealed interface OrderStatus permits Pending, Confirmed, Shipped, Delivered, Cancelled {}
 public record Pending() implements OrderStatus {}
 public record Confirmed(LocalDateTime confirmedAt, String paymentId) implements OrderStatus {}
@@ -1368,20 +1368,20 @@ public record Shipped(LocalDateTime shippedAt, String trackingNumber) implements
 public record Delivered(LocalDateTime deliveredAt, String signature) implements OrderStatus {}
 public record Cancelled(LocalDateTime cancelledAt, String reason) implements OrderStatus {}
 
-// ビジネスロジックの実装。
+// ビジネスロジックの実装：
 public class OrderService {
     
     public static String getOrderStatusMessage(Order order) {
         return switch (order.status()) {
-            case Pending() -> "ご注文を受け付けました";。
+            case Pending() -> "ご注文を受け付けました";
             case Confirmed(var confirmedAt, var paymentId) -> 
-                "お支払いが確認できました（決済ID: " + paymentId + "）";。
+                "お支払いが確認できました（決済ID: " + paymentId + "）";
             case Shipped(var shippedAt, var trackingNumber) -> 
-                "商品を発送しました（追跡番号: " + trackingNumber + "）";。
+                "商品を発送しました（追跡番号: " + trackingNumber + "）";
             case Delivered(var deliveredAt, var signature) -> 
-                "配達が完了しました（受領者: " + signature + "）";。
+                "配達が完了しました（受領者: " + signature + "）";
             case Cancelled(var cancelledAt, var reason) -> 
-                "注文がキャンセルされました（理由: " + reason + "）";。
+                "注文がキャンセルされました（理由: " + reason + "）";
         };
     }
     
@@ -1420,7 +1420,7 @@ public class OrderService {
         );
     }
     
-    // 注文レポートの生成。
+    // 注文レポートの生成
     public static OrderReport generateReport(List<Order> orders, LocalDate date) {
         var ordersOnDate = orders.stream()
             .filter(order -> order.createdAt().toLocalDate().equals(date))
@@ -1457,10 +1457,10 @@ RecordsはJavaの関数型プログラミング機能と優れた相性を持ち
 <span class="listing-number">**サンプルコード9-29**</span>
 
 ```java
-// 関数型スタイルでのデータ処理。
+// 関数型スタイルでのデータ処理
 public class FunctionalDataProcessing {
     
-    // 注文データの関数型処理。
+    // 注文データの関数型処理
     public static Optional<Order> findHighestValueOrder(Stream<Order> orders) {
         return orders
             .filter(order -> !(order.status() instanceof Cancelled))
@@ -1468,7 +1468,7 @@ public class FunctionalDataProcessing {
                 Comparator.comparing(Money::amount)));
     }
     
-    // 顧客別注文サマリーの生成。
+    // 顧客別注文サマリーの生成
     public static Map<Customer, CustomerSummary> generateCustomerSummaries(Stream<Order> orders) {
         return orders
             .filter(order -> !(order.status() instanceof Cancelled))
@@ -1499,7 +1499,7 @@ public class FunctionalDataProcessing {
         return new CustomerSummary(orderCount, totalSpent, lastOrderDate, averageOrderValue);
     }
     
-    // 商品別売上分析。
+    // 商品別売上分析
     public static List<ProductSales> analyzeProductSales(Stream<Order> orders) {
         return orders
             .filter(order -> !(order.status() instanceof Cancelled))
@@ -1539,10 +1539,10 @@ JVMは、Recordsの不変性と値ベースの性質を利用して、様々な�
 <span class="listing-number">**サンプルコード9-30**</span>
 
 ```java
-// インライン化されやすいRecord。
-@jdk.internal.ValueBased  // 将来のValue Typeの候補。
+// インライン化されやすいRecord
+@jdk.internal.ValueBased  // 将来のValue Typeの候補
 public record Point2D(double x, double y) {
-    // 小さく、不変で、equalsとhashCodeが値ベース。
+    // 小さく、不変で、equalsとhashCodeが値ベース
     
     public double distanceFrom(Point2D other) {
         double dx = x - other.x;
@@ -1555,14 +1555,14 @@ public record Point2D(double x, double y) {
     }
 }
 
-// メモリレイアウトの最適化。
+// メモリレイアウトの最適化
 public record OptimizedData(
     // プリミティブ型を前に配置（メモリ効率向上）
     long id,
     int count,
     boolean active,
     byte flags,
-    // 参照型は後に配置。
+    // 参照型は後に配置
     String name,
     List<String> tags
 ) {}
@@ -1575,7 +1575,7 @@ Recordsの不変性は、ガベージコレクションの効率を向上させ�
 <span class="listing-number">**サンプルコード9-31**</span>
 
 ```java
-// 短命なオブジェクトとしてのRecord活用。
+// 短命なオブジェクトとしてのRecord活用
 public class CalculationService {
     
     public record CalculationResult(double value, boolean isValid, String message) {}
@@ -1589,7 +1589,7 @@ public class CalculationService {
         return new CalculationResult(result, true, "Success");
     }
     
-    // 大量のRecord作成でもGC効率が良い。
+    // 大量のRecord作成でもGC効率が良い
     public List<CalculationResult> processBatch(List<Double> inputs) {
         return inputs.stream()
             .map(this::calculate)
@@ -1612,7 +1612,7 @@ RecordsとtraditionalなJavaクラスのパフォーマンスを比較するた�
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
 public class RecordBenchmark {
     
-    // 従来のクラス。
+    // 従来のクラス
     static class TraditionalPoint {
         private final int x, y;
         
@@ -1638,7 +1638,7 @@ public class RecordBenchmark {
         }
     }
     
-    // Record版。
+    // Record版
     record RecordPoint(int x, int y) {}
     
     @Benchmark
@@ -1697,9 +1697,9 @@ RecordBenchmark.hashCodeRecord          avgt   10   2.934 ± 0.052  ns/op
 ```java
 public class MemoryOptimization {
     
-    // メモリ効率を考慮したRecord設計。
+    // メモリ効率を考慮したRecord設計
     public record CompactUser(
-        // 必要最小限のフィールド。
+        // 必要最小限のフィールド
         String id,           // 8 bytes (reference)
         short age,           // 2 bytes (short instead of int)
         byte status          // 1 byte (enum ordinalを使用)
@@ -1721,14 +1721,14 @@ public class MemoryOptimization {
     
     enum UserStatus { ACTIVE, INACTIVE, SUSPENDED }
     
-    // 大量データでのメモリ効率測定。
+    // 大量データでのメモリ効率測定
     public static void memoryUsageComparison() {
         int count = 1_000_000;
         
-        // メモリ使用量測定用。
+        // メモリ使用量測定用
         Runtime runtime = Runtime.getRuntime();
         
-        // 従来のクラス。
+        // 従来のクラス
         runtime.gc();
         long beforeTraditional = runtime.totalMemory() - runtime.freeMemory();
         
@@ -1740,7 +1740,7 @@ public class MemoryOptimization {
         long afterTraditional = runtime.totalMemory() - runtime.freeMemory();
         long traditionalMemory = afterTraditional - beforeTraditional;
         
-        // Record版。
+        // Record版
         runtime.gc();
         long beforeRecord = runtime.totalMemory() - runtime.freeMemory();
         
@@ -1769,7 +1769,7 @@ public class MemoryOptimization {
             this.status = status;
         }
         
-        // getter、equals、hashCodeなど。
+        // getter、equals、hashCodeなど
     }
 }
 ```
@@ -1779,7 +1779,7 @@ public class MemoryOptimization {
 <span class="listing-number">**サンプルコード9-34**</span>
 
 ```java
-// 高頻度で作成されるRecordのプーリング。
+// 高頻度で作成されるRecordのプーリング
 public class RecordPooling {
     
     public record Coordinate(int x, int y) {}
@@ -1793,7 +1793,7 @@ public class RecordPooling {
             return POOL.computeIfAbsent(key, k -> new Coordinate(x, y));
         }
         
-        // よく使われる座標の事前作成。
+        // よく使われる座標の事前作成
         static {
             for (int x = -100; x <= 100; x++) {
                 for (int y = -100; y <= 100; y++) {
@@ -1803,13 +1803,13 @@ public class RecordPooling {
         }
     }
     
-    // 使用例。
+    // 使用例：
     public void gameLoop() {
         // プールから取得（新規作成なし）
         Coordinate playerPos = CoordinatePool.get(10, 20);
         Coordinate enemyPos = CoordinatePool.get(-5, 15);
         
-        // ゲームロジック...。
+        // ゲームロジック...
     }
 }
 ```
@@ -1821,7 +1821,7 @@ public class RecordPooling {
 ```java
 public class BigDataOptimization {
     
-    // 大量のRecordを効率的に処理。
+    // 大量のRecordを効率的に処理
     public record LogEntry(
         Instant timestamp,
         String level,
@@ -1829,10 +1829,10 @@ public class BigDataOptimization {
         String source
     ) {}
     
-    // メモリ効率を重視したストリーム処理。
+    // メモリ効率を重視したストリーム処理
     public static Map<String, Long> analyzeLogsByLevel(Stream<String> logLines) {
         return logLines
-            .parallel() // 並列処理。
+            .parallel() // 並列処理
             .map(BigDataOptimization::parseLogEntry)
             .filter(Objects::nonNull)
             .collect(Collectors.groupingByConcurrent(
@@ -1848,7 +1848,7 @@ public class BigDataOptimization {
             
             return new LogEntry(
                 Instant.parse(parts[0]),
-                parts[1].intern(), // 文字列インターン化でメモリ削減。
+                parts[1].intern(), // 文字列インターン化でメモリ削減
                 parts[2],
                 parts[3].intern()
             );
@@ -1857,19 +1857,19 @@ public class BigDataOptimization {
         }
     }
     
-    // バッチ処理でのメモリ効率。
+    // バッチ処理でのメモリ効率
     public static void processBatchData(List<LogEntry> entries) {
-        // チャンクサイズを調整してメモリ使用量制御。
+        // チャンクサイズを調整してメモリ使用量制御
         int chunkSize = 10_000;
         
         for (int i = 0; i < entries.size(); i += chunkSize) {
             int end = Math.min(i + chunkSize, entries.size());
             List<LogEntry> chunk = entries.subList(i, end);
             
-            // チャンクごとに処理。
+            // チャンクごとに処理
             processChunk(chunk);
             
-            // ガベージコレクションのヒント。
+            // ガベージコレクションのヒント
             if (i % (chunkSize * 10) == 0) {
                 System.gc();
             }
@@ -1877,7 +1877,7 @@ public class BigDataOptimization {
     }
     
     private static void processChunk(List<LogEntry> chunk) {
-        // 実際の処理...。
+        // 実際の処理...
     }
 }
 ```
@@ -1893,10 +1893,10 @@ Project Valhallaは、JavaにValue Typesを導入するプロジェクトで、R
 ```java
 // 将来のValue Records（概念的な例）
 public value record ComplexNumber(double real, double imaginary) {
-    // Value Typeとして最適化される。
-    // - ヒープではなくスタックに配置可能。
-    // - 配列がフラットに格納される。
-    // - オブジェクトヘッダーのオーバーヘッド除去。
+    // Value Typeとして最適化される
+    // - ヒープではなくスタックに配置可能
+    // - 配列がフラットに格納される
+    // - オブジェクトヘッダーのオーバーヘッド除去
     
     public ComplexNumber add(ComplexNumber other) {
         return new ComplexNumber(
@@ -1919,9 +1919,9 @@ public value record ComplexNumber(double real, double imaginary) {
 
 // Inline Classesとの統合（将来の機能）
 public inline record Vec3(float x, float y, float z) {
-    // 完全にスタック割り当て。
-    // 配列がcontiguousに配置される。
-    // C/C++並みのパフォーマンス。
+    // 完全にスタック割り当て
+    // 配列がcontiguousに配置される
+    // C/C++並みのパフォーマンス
     
     public Vec3 add(Vec3 other) {
         return new Vec3(x + other.x, y + other.y, z + other.z);
@@ -1944,17 +1944,17 @@ public class FuturePatternMatching {
     public record Point(int x, int y) {}
     public record Circle(Point center, int radius) {}
     
-    // Array Patternsの統合。
+    // Array Patternsの統合
     public static String analyzePoints(Point[] points) {
         return switch (points) {
-            case [] -> "空の配列";。
-            case [var single] -> "単一点: " + single;。
-            case [var first, var second] -> "2点: " + first + ", " + second;。
-            case [var first, var... rest] -> "複数点（先頭: " + first + "）";。
+            case [] -> "空の配列";
+            case [var single] -> "単一点: " + single;
+            case [var first, var second] -> "2点: " + first + ", " + second;
+            case [var first, var... rest] -> "複数点（先頭: " + first + "）";
         };
     }
     
-    // String Patternsとの統合。
+    // String Patternsとの統合
     public static void processCommand(String command) {
         switch (command) {
             case "move ${int x} ${int y}" -> move(x, y);
@@ -1975,7 +1975,7 @@ public class FuturePatternMatching {
 <span class="listing-number">**サンプルコード9-38**</span>
 
 ```java
-// 将来の型システム拡張。
+// 将来の型システム拡張
 public class TypeSystemEvolution {
     
     // Union Typesとの統合（概念的）
@@ -1983,9 +1983,9 @@ public class TypeSystemEvolution {
     public record Success<T, E>(T value) implements Result<T, E> {}
     public record Error<T, E>(E error) implements Result<T, E> {}
     
-    // Generic Records の拡張。
+    // Generic Records の拡張
     public record Pair<T, U>(T first, U second) {
-        // より高度な制約。
+        // より高度な制約
         public <R> Pair<R, U> mapFirst(Function<T, R> mapper) {
             return new Pair<>(mapper.apply(first), second);
         }
@@ -2008,16 +2008,16 @@ public class TypeSystemEvolution {
 <span class="listing-number">**サンプルコード9-39**</span>
 
 ```java
-// 他言語・フレームワークとの統合改善。
+// 他言語・フレームワークとの統合改善
 public class InteroperabilityEnhancements {
     
-    // Native interopの改善。
+    // Native interopの改善
     @Foreign
     public record NativePoint(int x, int y) {
-        // C/C++構造体との直接マッピング。
+        // C/C++構造体との直接マッピング
     }
     
-    // JSON Schemaとの自動統合。
+    // JSON Schemaとの自動統合
     @JsonSchema
     public record ApiRequest(
         @NotNull String operation,
@@ -2025,7 +2025,7 @@ public class InteroperabilityEnhancements {
         @Pattern(regexp = "v\\d+") String version
     ) {}
     
-    // データベースマッピングの改善。
+    // データベースマッピングの改善
     @Entity
     public record UserEntity(
         @Id String id,
@@ -2037,7 +2037,7 @@ public class InteroperabilityEnhancements {
 
 ## まとめ
 
-本章では、Recordとデータ指向プログラミング（DOP）について包括的に学びました。
+本章では、Recordとデータ指向プログラミング（DOP）について包括的に学びました：
 
 ### Recordsの革新性
 
@@ -2058,7 +2058,7 @@ DOP（Data-Oriented Programming）は、従来のOOPとは異なる新しいア�
 
 ### 高度な機能との統合
 
-現代的なJava開発の中核技術として以下の統合を実現。
+### 現代的なJava開発の中核技術として以下の統合を実現
 
 - sealed interfaceとパターンマッチング：代数的データ型による型安全な設計
 - Stream APIとの連携：関数型プログラミングとの親和性
@@ -2135,9 +2135,9 @@ Recordを学習する際に遭遇する典型的なエラーとその対処法�
 ```java
 public record Person(String name, int age) {}
 
-// 間違った使用。
-Person person = new Person("田中", 25);。
-person.age = 30;  // コンパイルエラー。
+// 間違った使用
+Person person = new Person("田中", 25);
+person.age = 30;  // コンパイルエラー
 ```
 
 ##### エラーメッセージ:
@@ -2147,11 +2147,11 @@ error: cannot assign a value to final variable age
 
 ##### 対処法:
 ```java
-// 正しい使用：新しいインスタンスを作成。
-Person person = new Person("田中", 25);。
+// 正しい使用：新しいインスタンスを作成
+Person person = new Person("田中", 25);
 Person olderPerson = new Person(person.name(), 30);
 
-// または、withメソッドを追加。
+// または、withメソッドを追加
 public record Person(String name, int age) {
     public Person withAge(int newAge) {
         return new Person(this.name, newAge);
@@ -2162,8 +2162,8 @@ public record Person(String name, int age) {
     }
 }
 
-// 使用例。
-Person person = new Person("田中", 25);。
+// 使用例：
+Person person = new Person("田中", 25);
 Person olderPerson = person.withAge(30);
 ```
 
@@ -2174,8 +2174,8 @@ import java.util.List;
 
 public record Student(String name, List<String> subjects) {}
 
-// 問題のあるコード。
-Student student = new Student("山田", List.of("数学", "英語"));。
+// 問題のあるコード
+Student student = new Student("山田", List.of("数学", "英語"));
 student.subjects().add("科学");  // 実行時エラー（UnsupportedOperationException）
 ```
 
@@ -2191,12 +2191,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 public record Student(String name, List<String> subjects) {
-    // コンパクトコンストラクタで防御的コピーを作成。
+    // コンパクトコンストラクタで防御的コピーを作成
     public Student {
-        subjects = List.copyOf(subjects);  // 不変リストを作成。
+        subjects = List.copyOf(subjects);  // 不変リストを作成
     }
     
-    // 科目を追加した新しいインスタンスを返すメソッド。
+    // 科目を追加した新しいインスタンスを返すメソッド
     public Student addSubject(String subject) {
         List<String> newSubjects = new ArrayList<>(subjects);
         newSubjects.add(subject);
@@ -2204,9 +2204,9 @@ public record Student(String name, List<String> subjects) {
     }
 }
 
-// 使用例。
-Student student = new Student("山田", List.of("数学", "英語"));。
-Student updatedStudent = student.addSubject("科学");。
+// 使用例：
+Student student = new Student("山田", List.of("数学", "英語"));
+Student updatedStudent = student.addSubject("科学");
 ```
 
 ### レコードのコンストラクタ
@@ -2215,9 +2215,9 @@ Student updatedStudent = student.addSubject("科学");。
 
 ```java
 public record Point(int x, int y) {
-    // 間違った使用。
-    public Point() {  // コンパイルエラー。
-        // 処理。
+    // 間違った使用
+    public Point() {  // コンパイルエラー
+        // 処理
     }
 }
 ```
@@ -2230,13 +2230,13 @@ error: non-canonical constructor must delegate to another constructor
 ##### 対処法:
 ```java
 public record Point(int x, int y) {
-    // 正しい使用：非カノニカルコンストラクタはカノニカルコンストラクタに委譲。
+    // 正しい使用：非カノニカルコンストラクタはカノニカルコンストラクタに委譲
     public Point() {
-        this(0, 0);  // デフォルト値でカノニカルコンストラクタを呼び出し。
+        this(0, 0);  // デフォルト値でカノニカルコンストラクタを呼び出し
     }
     
     public Point(int value) {
-        this(value, value);  // 正方形のポイントを作成。
+        this(value, value);  // 正方形のポイントを作成
     }
 }
 ```
@@ -2245,9 +2245,9 @@ public record Point(int x, int y) {
 
 ```java
 public record Person(String name, int age) {
-    // 間違った使用。
+    // 間違った使用
     public Person {
-        this.name = name.trim();  // コンパイルエラー。
+        this.name = name.trim();  // コンパイルエラー
         this.age = Math.max(0, age);
     }
 }
@@ -2261,9 +2261,9 @@ error: cannot assign a value to final variable name
 ##### 対処法:
 ```java
 public record Person(String name, int age) {
-    // 正しい使用：パラメータを再代入。
+    // 正しい使用：パラメータを再代入
     public Person {
-        name = name.trim();  // thisを使わずにパラメータを再代入。
+        name = name.trim();  // thisを使わずにパラメータを再代入
         age = Math.max(0, age);
     }
 }
@@ -2276,9 +2276,9 @@ public record Person(String name, int age) {
 ```java
 public record Animal(String name) {}
 
-// 間違った使用。
-public record Dog(String name, String breed) extends Animal {  // コンパイルエラー。
-    // 処理。
+// 間違った使用
+public record Dog(String name, String breed) extends Animal {  // コンパイルエラー
+    // 処理
 }
 ```
 
@@ -2297,8 +2297,8 @@ public record Dog(Animal animal, String breed) {
     }
 }
 
-// 使用例。
-Dog dog = new Dog(new Animal("ポチ"), "柴犬");。
+// 使用例：
+Dog dog = new Dog(new Animal("ポチ"), "柴犬");
 ```
 
 ##### 対処法2: インターフェイスを使用
@@ -2316,9 +2316,9 @@ public record Cat(String name, int age) implements Animal {}
 ```java
 public record BaseRecord(String value) {}
 
-// 間違った使用。
-public class ExtendedClass extends BaseRecord {  // コンパイルエラー。
-    // 処理。
+// 間違った使用
+public class ExtendedClass extends BaseRecord {  // コンパイルエラー
+    // 処理
 }
 ```
 
@@ -2329,7 +2329,7 @@ error: cannot inherit from final class
 
 ##### 対処法:
 ```java
-// レコードは継承できないため、組み合わせまたはインターフェイスを使用。
+// レコードは継承できないため、組み合わせまたはインターフェイスを使用
 public interface ValueHolder {
     String value();
 }
@@ -2356,10 +2356,10 @@ public class ExtendedClass implements ValueHolder {
 
 ```java
 public record Person(String name, int age) {
-    // 間違った使用。
+    // 間違った使用
     @Override
-    public boolean equals(Object obj) {  // コンパイルエラー。
-        // カスタムロジック。
+    public boolean equals(Object obj) {  // コンパイルエラー
+        // カスタムロジック
         return super.equals(obj);
     }
 }
@@ -2372,12 +2372,12 @@ error: cannot override equals in record
 
 ##### 対処法:
 ```java
-// レコードのequals()は自動生成される。
+// レコードのequals()は自動生成される
 public record Person(String name, int age) {
-    // equals()をオーバーライドする必要はない。
+    // equals()をオーバーライドする必要はない
 }
 
-// カスタムな比較が必要な場合は、別のメソッドを作成。
+// カスタムな比較が必要な場合は、別のメソッドを作成
 public record Person(String name, int age) {
     public boolean hasSameName(Person other) {
         return this.name.equals(other.name);
@@ -2392,7 +2392,7 @@ public record Person(String name, int age) {
 ```java
 public record Counter(int value) {
     // 間違った設計。
-    public void increment() {  // コンパイルエラー。
+    public void increment() {  // コンパイルエラー
         value++;
     }
 }
@@ -2405,14 +2405,14 @@ error: cannot assign a value to final variable value
 
 ##### 対処法:
 ```java
-// 解決法1: 新しいインスタンスを返す。
+// 解決法1: 新しいインスタンスを返す
 public record Counter(int value) {
     public Counter increment() {
         return new Counter(value + 1);
     }
 }
 
-// 解決法2: ミュータブルな状態が必要な場合は通常のクラスを使用。
+// 解決法2: ミュータブルな状態が必要な場合は通常のクラスを使用
 public class MutableCounter {
     private int value;
     
@@ -2439,10 +2439,10 @@ public class MutableCounter {
 public record Person(String name, int age) {
     public Person {
         if (name == null) {
-            throw new IllegalArgumentException("名前はnullにできません");。
+            throw new IllegalArgumentException("名前はnullにできません");
         }
         if (age < 0) {
-            throw new IllegalArgumentException("年齢は0以上である必要があります");。
+            throw new IllegalArgumentException("年齢は0以上である必要があります");
         }
     }
 }
@@ -2454,7 +2454,7 @@ import java.util.List;
 
 public record StudentGrades(String name, List<Integer> grades) {
     public StudentGrades {
-        grades = List.copyOf(grades);  // 防御的コピー。
+        grades = List.copyOf(grades);  // 防御的コピー
     }
     
     public StudentGrades addGrade(int grade) {
@@ -2470,37 +2470,37 @@ public record StudentGrades(String name, List<Integer> grades) {
 import java.io.Serializable;
 
 public record SerializableData(String value, int number) implements Serializable {
-    // レコードは自動的にシリアライズ可能。
-    // カスタムシリアライゼーションが必要な場合は通常のクラスを使用。
+    // レコードは自動的にシリアライズ可能
+    // カスタムシリアライゼーションが必要な場合は通常のクラスを使用
 }
 ```
 
 4. パフォーマンスを考慮した設計
 ```java
-// 大量のデータを扱う場合は注意。
+// 大量のデータを扱う場合は注意
 public record LargeData(String[] data) {
     public LargeData {
-        data = data.clone();  // 配列のコピー。
+        data = data.clone();  // 配列のコピー
     }
 }
 
-// より効率的な設計。
+// より効率的な設計
 public record OptimizedData(List<String> data) {
     public OptimizedData {
-        data = List.copyOf(data);  // 効率的な不変コピー。
+        data = List.copyOf(data);  // 効率的な不変コピー
     }
 }
 ```
 
 5. JSON連携時の注意
 ```java
-// Jackson等のライブラリを使用する場合。
+// Jackson等のライブラリを使用する場合
 public record ApiResponse(String status, String message, Object data) {
-    // デフォルトコンストラクタが必要な場合。
+    // デフォルトコンストラクタが必要な場合
     public ApiResponse() {
         this("success", "", null);
     }
 }
 ```
 
-これらのエラーパターンを理解することで、Recordをより安全かつ効果的に使用できるようになります。Recordは不変性を重視した設計に適しており、ミュータブルな状態が必要な場合は通常のクラスを使用することを検討しましょう。
+これらのエラーパターンを理解することで、Recordをより安全かつ効果的に使用できるようになります。Recordは不変性を重視した設計に適しており、ミュータブルな状態が必要な場合は通常のクラスを使用することを検討しましょう

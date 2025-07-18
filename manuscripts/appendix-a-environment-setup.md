@@ -201,7 +201,7 @@ Available Java Versions for macOS ARM 64bit
 ================================================================================
 ```
 
-一覧の見方
+#### 一覧の見方
 
 - Vendor: JDKの提供元（Microsoft、Oracle、Amazon等）
 - Use: 現在使用中のバージョン（`>>>`マークが付く）
