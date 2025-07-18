@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須**：
+必須
 - 第6章の不変性とfinalキーワードの概念
 - 第4章のクラスとインスタンス（コンストラクタ、メソッド）
 - 第5章のequals、hashCode、toStringメソッド
 - 基本的なデータクラスの実装経験
 
-**推奨**：
+推奨
 - 第13章のラムダ式と関数型インターフェイス
 - ボイラープレートコードの問題に関する実体験
 - オブジェクト指向設計における「データ」と「振る舞い」の分離
@@ -46,7 +46,7 @@
 
 ## Recordとは？
 
-**Record**は、Java 16で正式に導入された、**不変（immuテーブル）なデータを保持するため**の、簡潔なクラスを定義するための機能です。
+Recordは、Java 16で正式に導入された、不変（immuテーブル）なデータを保持するための、簡潔なクラスを定義するための機能です
 
 これまで、データを保持するためだけのクラス（データクラスやデータキャリアと呼ばれる）を作るには、多くの定型的なコード（ボイラープレートコード）が必要でした。
 
@@ -55,7 +55,7 @@
 -   全フィールドのゲッタメソッド（アクセサ）
 -   `equals()`, `hashCode()`, `toString()` メソッドのオーバーライド
 
-`Record`は、これらの定型コードを**コンパイラが自動的に生成**してくれます。
+`Record`は、これらの定型コードをコンパイラが自動的に生成してくれます。
 
 ### 基本的な構文
 
@@ -65,9 +65,9 @@ public record Person(String name, int age) {}
 
 これだけで、以下をすべて定義したのとほぼ同じ意味になります。
 
-**Recordが自動生成する等価なクラス構造**：
+Recordが自動生成する等価なクラス構造
 
-上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります。
+上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります：
 
 <span class="listing-number">**サンプルコード9-1**</span>
 
@@ -95,7 +95,7 @@ public final class Person {
 }
 ```
 
-**自動生成される要素の詳細**：
+自動生成される要素の詳細
 
 ①　不変フィールド： 全フィールドがprivate finalとして宣言され、インスタンス生成後は変更不可
 ②　正準コンストラクタ： 全フィールドを初期化する標準的なコンストラクタ
@@ -108,21 +108,21 @@ public final class Person {
 ### Recordのメリット・デメリット
 
 メリット:
-- 簡潔さ: ボイラープレートコードを劇的に削減できます。
-- 不変性（Immutability）: フィールドはすべて`final`となり、一度作成したオブジェクトの状態は変更できません。これにより、プログラムの安全性が向上し、特にマルチスレッド環境で安心して扱えます。
-- 明確な意図: このクラスが「データを保持するためのものである」という意図が明確になります。
+- 簡潔さ: ボイラープレートコードを劇的に削減できます
+- 不変性（Immutability）: フィールドはすべて`final`となり、一度作成したオブジェクトの状態は変更できません。これにより、プログラムの安全性が向上し、特にマルチスレッド環境で安心して扱えます
+- 明確な意図: このクラスが「データを保持するためのものである」という意図が明確になります
 
 デメリット:
-- 拡張性の制限: `Record`は暗黙的に`final`であり、ほかのクラスを継承したり、ほかのクラスに継承させたりすることはできません。
-- 可変オブジェクトには不向き: 状態を変更する必要があるオブジェクトには使えません。
+- 拡張性の制限: `Record`は暗黙的に`final`であり、ほかのクラスを継承したり、ほかのクラスに継承させたりすることはできません
+- 可変オブジェクトには不向き: 状態を変更する必要があるオブジェクトには使えません
 
 ## Recordの使い方
 
 `Record`の使い方は、通常のクラスとほとんど同じです。
 
-**Recordの基本的な使用方法**：
+Recordの基本的な使用方法
 
-Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています。
+Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています：
 
 <span class="listing-number">**サンプルコード9-2**</span>
 
@@ -144,11 +144,11 @@ public class RecordExample {
 }
 ```
 
-**各操作の詳細解説**：
+各操作の詳細解説
 
 ①　インスタンス生成： 通常のクラスと同じく`new`キーワードでインスタンスを作成します。同じ値を持つ複数のインスタンス（alice vs alice2）も作成可能です。
 
-②　フィールドアクセス： アクセサメソッド名はフィールド名と同じです（従来のgetName（）、getAge()ではなく、name()、age()）。この命名規則により、より自然で読みやすいコードになります。
+②　フィールドアクセス： アクセサメソッド名はフィールド名と同じです（従来のgetName（）、getAge（）ではなく、name()、age()）。この命名規則により、より自然で読みやすいコードになります。
 
 ③　文字列表現： toString()メソッドが自動生成され、`Person[name=Alice, age=30]`のような読みやすい形式で表示されます。
 
@@ -156,7 +156,7 @@ public class RecordExample {
 
 ### コンパクトコンストラクタ
 
-`Record`では、引数のバリデーション（検証）などのために、**コンパクトコンストラクタ**という特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
+`Record`では、引数のバリデーション（検証）などのために、コンパクトコンストラクタという特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
 
 <span class="listing-number">**サンプルコード9-3**</span>
 
@@ -265,11 +265,11 @@ public class DataProcessor {
 
 ### DOPとは何か
 
-**データ指向プログラミング（Data-Oriented Programming, DOP）**は、従来のオブジェクト指向プログラミング（OOP）とは異なるアプローチでソフトウェアを構築する設計パラダイムです。
+データ指向プログラミング（Data-Oriented Programming, DOP）は、従来のオブジェクト指向プログラミング（OOP）とは異なるアプローチでソフトウェアを構築する設計パラダイムです
 
 #### 従来のOOPとDOPの違い
 
-**従来のOOPアプローチ**:
+##### 従来のOOPアプローチ:
 <span class="listing-number">**サンプルコード9-5**</span>
 
 ```java
@@ -286,7 +286,7 @@ public class Order {
 }
 ```
 
-**DOPアプローチ**:
+##### DOPアプローチ:
 
 DOPでは、データ構造とビジネスロジックを明確に分離します。データはRecordsで定義し、処理は純粋関数として実装することで、テスト容易性と保守性が向上します。
 
@@ -318,21 +318,21 @@ public class OrderProcessor {
 
 #### DOPの基本原則
 
-1. **データとロジックの明確な分離**
+1. データとロジックの明確な分離
    - データはRecordsで表現
    - ロジックは純粋関数で実装
    - 副作用を最小限に抑制
 
-2. **不変性の活用**
+2. 不変性の活用
    - すべてのデータ構造が不変
    - スレッドセーフティの確保
    - 予測可能な動作
 
-3. **表現力の向上**
+3. 表現力の向上
    - パターンマッチングによる簡潔な条件分岐
    - 型システムを活用した安全性
 
-4. **テスト容易性**
+4. テスト容易性
    - 純粋関数によるユニットテストの簡素化
    - モック不要の設計
 
@@ -360,27 +360,27 @@ public class TraditionalUser {
 public record User(String id, String name, String email, LocalDateTime createdAt) {}
 ```
 
-**実際の効果測定**:
-- コード量削減： 70-90%の大幅削減
-- 開発時間： API開発時間50%短縮
-- バグ率： データ関連バグ95%減少
+##### 実際の効果測定:
+- コード量削減: 70-90%の大幅削減
+- 開発時間: API開発時間50%短縮
+- バグ率: データ関連バグ95%減少
 
 #### 実際の改善事例
 
-**某SaaS企業の事例**:
-- 課題： ユーザー情報管理で大量のボイラープレートコード
-- 解決： RecordsとDOPの導入
-- 効果： 開発時間50%短縮、保守コスト70%削減
+##### 某SaaS企業の事例:
+- 課題: ユーザー情報管理で大量のボイラープレートコード
+- 解決: RecordsとDOPの導入
+- 効果: 開発時間50%短縮、保守コスト70%削減
 
-**金融システムの事例**:
-- 課題： 複雑なデータモデルでの不整合バグ
-- 解決： 不変データ構造と型安全性の活用
-- 効果： データ不整合バグ90%削減、監査対応時間75%短縮
+##### 金融システムの事例:
+- 課題: 複雑なデータモデルでの不整合バグ
+- 解決: 不変データ構造と型安全性の活用
+- 効果: データ不整合バグ90%削減、監査対応時間75%短縮
 
-**ECプラットフォームの事例**:
-- 課題： 商品分類ロジックの複雑化
-- 解決： パターンマッチングによる条件分岐の簡素化
-- 効果： ロジック理解時間60%短縮、新機能追加コスト50%削減
+##### ECプラットフォームの事例:
+- 課題: 商品分類ロジックの複雑化
+- 解決: パターンマッチングによる条件分岐の簡素化
+- 効果: ロジック理解時間60%短縮、新機能追加コスト50%削減
 
 ### DOPの設計パターン
 
@@ -476,11 +476,11 @@ public static String getStatusMessage(OrderStatus status) {
 
 ## 高度なパターンマッチング
 
-Java 17以降の**パターンマッチング**とRecordの組み合わせは、**代数的データ型（Algebraic Data Types）**を実現し、関数型プログラミングの強力な表現力をJavaにもたらします。
+Java 17以降のパターンマッチングとRecordの組み合わせは、代数的データ型（Algebraic Data Types）を実現し、関数型プログラミングの強力な表現力をJavaにもたらします。
 
 ### sealed interfaceとRecordの組み合わせ
 
-**sealed interface**は、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
+sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます
 
 <span class="listing-number">**サンプルコード9-11**</span>
 
@@ -495,7 +495,7 @@ public record Triangle(double base, double height) implements Shape {}
 
 ### パターンマッチングによる処理
 
-従来のinstance of + キャストの冗長な記述を、**switch式**と**パターンマッチング**で簡潔に表現できます。
+従来のinstance of + キャストの冗長な記述を、switch式とパターンマッチングで簡潔に表現できます。
 
 <span class="listing-number">**サンプルコード9-12**</span>
 
@@ -560,7 +560,7 @@ public static String getLocationInfo(Object obj) {
 
 ### ガード条件付きパターンマッチング
 
-**when句**を使用して、パターンに条件を追加できます。
+when句を使用して、パターンに条件を追加できます
 
 <span class="listing-number">**サンプルコード9-14**</span>
 
@@ -582,7 +582,7 @@ public static String categorizeAge(Person person) {
 
 ### 実用的な例：式評価器の実装
 
-代数的データ型を使った**式評価器**の例で、パターンマッチングの強力さを示します。
+代数的データ型を使った式評価器の例で、パターンマッチングの強力さを示します。
 
 <span class="listing-number">**サンプルコード9-15**</span>
 
@@ -679,9 +679,9 @@ public class ExpressionDemo {
 
 sealed interfaceとパターンマッチングにより、以下の利点が得られます：
 
-1. **コンパイル時の網羅性チェック**: すべてのケースを処理していないとコンパイルエラー
-2. **型安全性**: キャストなしでの安全なデータアクセス
-3. **保守性**: 新しい型を追加した際の変更箇所の特定が容易
+1. コンパイル時の網羅性チェック： すべてのケースを処理していないとコンパイルエラー
+2. 型安全性： キャストなしでの安全なデータアクセス
+3. 保守性： 新しい型を追加した際の変更箇所の特定が容易
 
 <span class="listing-number">**サンプルコード9-17**</span>
 
@@ -757,7 +757,7 @@ public final class Point extends Record {
 
 ### コンパクトコンストラクタによるカスタマイズ
 
-**コンパクトコンストラクタ**は、Recordの強力なカスタマイズ機能です。パラメータリストを省略し、バリデーションや正規化を行えます。
+コンパクトコンストラクタは、Recordの強力なカスタマイズ機能です。パラメータリストを省略し、バリデーションや正規化を行えます
 
 <span class="listing-number">**サンプルコード9-19**</span>
 
@@ -828,7 +828,7 @@ public record Money(BigDecimal amount, Currency currency) {
 
 ### withメソッドパターン
 
-不変性を保ちながら部分的な更新を行う**withメソッドパターン**は、Recordで頻繁に使用されます。
+不変性を保ちながら部分的な更新を行うwithメソッドパターンは、Recordで頻繁に使用されます。
 
 <span class="listing-number">**サンプルコード9-21**</span>
 
@@ -1125,7 +1125,7 @@ public class JsonIntegrationExample {
 
 ### イベントソーシング風データモデル
 
-Recordsとパターンマッチングを組み合わせることで、**イベントソーシング**のような高度なデータ処理パターンを簡潔に実装できます。
+Recordsとパターンマッチングを組み合わせることで、イベントソーシングのような高度なデータ処理パターンを簡潔に実装できます。
 
 <span class="listing-number">**サンプルコード9-25**</span>
 
@@ -1679,7 +1679,7 @@ public class RecordBenchmark {
 }
 ```
 
-**典型的なベンチマーク結果**:
+##### 典型的なベンチマーク結果:
 ```
 Benchmark                               Mode  Cnt   Score   Error  Units
 RecordBenchmark.createTraditional       avgt   10   3.421 ± 0.089  ns/op
@@ -1886,7 +1886,7 @@ public class BigDataOptimization {
 
 ### Project Valhallaとの統合
 
-**Project Valhalla**は、Javaに**Value Types**を導入するプロジェクトで、Recordsの未来に大きな影響を与えます。
+Project Valhallaは、JavaにValue Typesを導入するプロジェクトで、Recordsの未来に大きな影響を与えます
 
 <span class="listing-number">**サンプルコード9-36**</span>
 
@@ -2037,68 +2037,68 @@ public class InteroperabilityEnhancements {
 
 ## まとめ
 
-本章では、**Record**と**データ指向プログラミング（DOP）**について包括的に学びました。
+本章では、Recordとデータ指向プログラミング（DOP）について包括的に学びました。
 
 ### Recordsの革新性
 
-**Record**は、Java 16で正式導入された画期的な機能で、データ保持に特化したクラスを極めて簡潔に定義できます：
+Recordは、Java 16で正式導入された画期的な機能で、データ保持に特化したクラスを極めて簡潔に定義できます
 
-- ボイラープレートコードの劇的削減： 従来100行必要だったコードを1行で実現
-- 自動生成される機能： コンストラクタ、アクセサ、equals、hashCode、toStringが自動実装
-- 不変性の保証： デフォルトでimmutableなオブジェクトを生成
-- 型安全性： コンパイル時の型チェックによる堅牢性
+- ボイラープレートコードの劇的削減: 従来100行必要だったコードを1行で実現
+- 自動生成される機能: コンストラクタ、アクセサ、equals、hashCode、toStringが自動実装
+- 不変性の保証: デフォルトでimmutableなオブジェクトを生成
+- 型安全性: コンパイル時の型チェックによる堅牢性
 
 ### データ指向プログラミングのパラダイム
 
-**DOP（Data-Oriented Programming）**は、従来のOOPとは異なる新しいアプローチです：
+DOP（Data-Oriented Programming）は、従来のOOPとは異なる新しいアプローチです
 
-- データとロジックの分離： Recordでデータ、純粋関数でロジックを表現
-- 表現力の向上： パターンマッチングによる簡潔な条件分岐
-- 実用的な効果： 開発時間50%短縮、バグ率95%削減の実績
+- データとロジックの分離: Recordでデータ、純粋関数でロジックを表現
+- 表現力の向上: パターンマッチングによる簡潔な条件分岐
+- 実用的な効果: 開発時間50%短縮、バグ率95%削減の実績
 
 ### 高度な機能との統合
 
-現代的なJava開発の中核技術として以下の統合を実現：
+現代的なJava開発の中核技術として以下の統合を実現。
 
-- sealed interfaceとパターンマッチング： 代数的データ型による型安全な設計
-- Stream APIとの連携： 関数型プログラミングとの親和性
-- JSONシリアライゼーション： REST API開発での活用
-- イベントソーシング： 高度なデータ処理パターンの実装
+- sealed interfaceとパターンマッチング：代数的データ型による型安全な設計
+- Stream APIとの連携：関数型プログラミングとの親和性
+- JSONシリアライゼーション：REST API開発での活用
+- イベントソーシング：高度なデータ処理パターンの実装
 
 ### パフォーマンスと将来性
 
-**技術的優位性**:
+##### 技術的優位性:
 - JVMレベルでの最適化によるパフォーマンス向上
 - メモリ効率の改善とガベージコレクションの最適化
 - 将来のProject Valhalla（Value Types）との統合
 
 ### 実践的価値
 
-Recordとデータ指向プログラミングは、単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする大切な技術です。特に以下の領域で威力を発揮します：
+Recordとデータ指向プログラミングは、単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする大切な技術です。特に以下の領域で威力を発揮します。
 
-- API開発： 型安全で簡潔なデータ転送
-- ドメインモデリング： ビジネスロジックの明確な表現
-- 関数型プログラミング： 不変データによる安全な処理
-- 大規模システム： 保守性と拡張性の向上
+- API開発：型安全で簡潔なデータ転送
+- ドメインモデリング：ビジネスロジックの明確な表現
+- 関数型プログラミング：不変データによる安全な処理
+- 大規模システム：保守性と拡張性の向上
 
 これらの技術は、現代のJavaアプリケーション開発において大切なスキルとなっており、効率的で安全なソフトウェアの構築に大きく貢献します。
 
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています：
+本章の演習課題は、GitHubリポジトリで提供されています。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`
 
 ### 課題構成
-- **基礎課題**: 本章の基本概念の理解確認
-- **発展課題**: 応用的な実装練習
-- **チャレンジ課題**: 実践的な総合問題
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
-1. **基礎課題**: 基本的なRecord定義と自動生成メソッドの理解
-2. **発展課題**: RecordをDTOとして活用した実践的な実装
-3. **チャレンジ課題**: 複雑なRecord構造とパターンマッチングの応用
+1. 基礎課題： 基本的なRecord定義と自動生成メソッドの理解
+2. 発展課題： RecordをDTOとして活用した実践的な実装
+3. チャレンジ課題： 複雑なRecord構造とパターンマッチングの応用
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
@@ -2130,7 +2130,7 @@ Recordを学習する際に遭遇する典型的なエラーとその対処法�
 
 ### レコードの不変性に関する誤解
 
-**エラー例1: レコードのフィールドを変更しようとする**
+#### エラー例1: レコードのフィールドを変更しようとする
 
 ```java
 public record Person(String name, int age) {}
@@ -2140,12 +2140,12 @@ Person person = new Person("田中", 25);
 person.age = 30;  // コンパイルエラー
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: cannot assign a value to final variable age
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 // 正しい使用：新しいインスタンスを作成
 Person person = new Person("田中", 25);
@@ -2167,7 +2167,7 @@ Person person = new Person("田中", 25);
 Person olderPerson = person.withAge(30);
 ```
 
-**エラー例2: ミュータブルなオブジェクトを含むレコードで不変性を破る**
+#### エラー例2: ミュータブルなオブジェクトを含むレコードで不変性を破る
 
 ```java
 import java.util.List;
@@ -2179,13 +2179,13 @@ Student student = new Student("山田", List.of("数学", "英語"));
 student.subjects().add("科学");  // 実行時エラー（UnsupportedOperationException）
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 Exception in thread "main" java.lang.UnsupportedOperationException
     at java.base/java.util.ImmutableCollections.uoe(ImmutableCollections.java:142)
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 import java.util.List;
 import java.util.ArrayList;
@@ -2211,7 +2211,7 @@ Student updatedStudent = student.addSubject("科学");
 
 ### レコードのコンストラクタ
 
-**エラー例3: レコードに通常のコンストラクタを追加しようとする**
+#### エラー例3: レコードに通常のコンストラクタを追加しようとする
 
 ```java
 public record Point(int x, int y) {
@@ -2222,12 +2222,12 @@ public record Point(int x, int y) {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: non-canonical constructor must delegate to another constructor
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 public record Point(int x, int y) {
     // 正しい使用：非カノニカルコンストラクタはカノニカルコンストラクタに委譲
@@ -2241,7 +2241,7 @@ public record Point(int x, int y) {
 }
 ```
 
-**エラー例4: コンパクトコンストラクタでフィールドに代入**
+#### エラー例4: コンパクトコンストラクタでフィールドに代入
 
 ```java
 public record Person(String name, int age) {
@@ -2253,12 +2253,12 @@ public record Person(String name, int age) {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: cannot assign a value to final variable name
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 public record Person(String name, int age) {
     // 正しい使用：パラメータを再代入
@@ -2271,7 +2271,7 @@ public record Person(String name, int age) {
 
 ### レコードの継承制限
 
-**エラー例5: レコードを継承しようとする**
+#### エラー例5: レコードを継承しようとする
 
 ```java
 public record Animal(String name) {}
@@ -2282,12 +2282,12 @@ public record Dog(String name, String breed) extends Animal {  // コンパイ�
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: classes cannot directly extend records
 ```
 
-**対処法1: 組み合わせを使用**
+##### 対処法1: 組み合わせを使用
 ```java
 public record Animal(String name) {}
 
@@ -2301,7 +2301,7 @@ public record Dog(Animal animal, String breed) {
 Dog dog = new Dog(new Animal("ポチ"), "柴犬");
 ```
 
-**対処法2: インターフェイスを使用**
+##### 対処法2: インターフェイスを使用
 ```java
 public interface Animal {
     String name();
@@ -2311,7 +2311,7 @@ public record Dog(String name, String breed) implements Animal {}
 public record Cat(String name, int age) implements Animal {}
 ```
 
-**エラー例6: レコードから継承しようとする**
+#### エラー例6: レコードから継承しようとする
 
 ```java
 public record BaseRecord(String value) {}
@@ -2322,12 +2322,12 @@ public class ExtendedClass extends BaseRecord {  // コンパイルエラー
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: cannot inherit from final class
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 // レコードは継承できないため、組み合わせまたはインターフェイスを使用
 public interface ValueHolder {
@@ -2352,7 +2352,7 @@ public class ExtendedClass implements ValueHolder {
 
 ### equals()とhashCode()の自動実装
 
-**エラー例7: equals()をオーバーライドしようとする**
+#### エラー例7: equals()をオーバーライドしようとする
 
 ```java
 public record Person(String name, int age) {
@@ -2365,12 +2365,12 @@ public record Person(String name, int age) {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: cannot override equals in record
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 // レコードのequals()は自動生成される
 public record Person(String name, int age) {
@@ -2387,7 +2387,7 @@ public record Person(String name, int age) {
 
 ### レコードとクラスの使い分け
 
-**エラー例8: レコードにミュータブルなメソッドを追加**
+#### エラー例8: レコードにミュータブルなメソッドを追加
 
 ```java
 public record Counter(int value) {
@@ -2398,12 +2398,12 @@ public record Counter(int value) {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ:
 ```
 error: cannot assign a value to final variable value
 ```
 
-**対処法:**
+##### 対処法:
 ```java
 // 解決法1: 新しいインスタンスを返す
 public record Counter(int value) {
@@ -2432,9 +2432,9 @@ public class MutableCounter {
 
 ### 実践的なデバッグのヒント
 
-**デバッグ時の確認ポイント:**
+##### デバッグ時の確認ポイント:
 
-1. **null値の処理**
+1. null値の処理
 ```java
 public record Person(String name, int age) {
     public Person {
@@ -2448,7 +2448,7 @@ public record Person(String name, int age) {
 }
 ```
 
-2. **ディープコピーが必要な場合**
+2. ディープコピーが必要な場合
 ```java
 import java.util.List;
 
@@ -2465,7 +2465,7 @@ public record StudentGrades(String name, List<Integer> grades) {
 }
 ```
 
-3. **シリアライゼーション時の注意**
+3. シリアライゼーション時の注意
 ```java
 import java.io.Serializable;
 
@@ -2475,7 +2475,7 @@ public record SerializableData(String value, int number) implements Serializable
 }
 ```
 
-4. **パフォーマンスを考慮した設計**
+4. パフォーマンスを考慮した設計
 ```java
 // 大量のデータを扱う場合は注意
 public record LargeData(String[] data) {
@@ -2492,7 +2492,7 @@ public record OptimizedData(List<String> data) {
 }
 ```
 
-5. **JSON連携時の注意**
+5. JSON連携時の注意
 ```java
 // Jackson等のライブラリを使用する場合
 public record ApiResponse(String status, String message, Object data) {

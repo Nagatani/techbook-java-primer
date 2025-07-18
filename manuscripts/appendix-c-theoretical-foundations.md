@@ -8,12 +8,12 @@
 
 各セクションは本文の設計概念と理論的に連動しています：
 
-- **C.1 ソフトウェアクライシス**: 第3章（OOP必要性）の理論的背景
-- **C.2 設計原則**: 第4章（カプセル化）・第8章（設計パターン）の基礎理論
-- **C.3 複雑度理論**: 第6章（パッケージ）・第7章（継承）の設計指針
-- **C.4 品質メトリクス**: 第22章（テスト）の理論的基盤
-- **C.5 アーキテクチャ理論**: 第21章（MVC）の設計思想
-- **C.6 形式手法**: 第14章（例外処理）の契約理論
+- 第3章（OOP必要性）の理論的背景
+- 第4章（カプセル化）・第8章（設計パターン）の基礎理論
+- 第6章（パッケージ）・第7章（継承）の設計指針
+- 第22章（テスト）の理論的基盤
+- 第21章（MVC）の設計思想
+- 第14章（例外処理）の契約理論
 
 
 
@@ -25,20 +25,20 @@
 
 #### プロジェクト失敗の典型的パターン
 
-**IBM System/360 OS開発（1960年代）**
-- 予算：当初5000万ドル → 最終5億ドル（10倍超過）
-- 期間：2年予定 → 4年以上
-- 品質：リリース後も深刻なバグが多数発見
+IBM System/360 OS開発（1960年代）
+- 予算: 当初5000万ドル → 最終5億ドル（10倍超過）
+- 期間: 2年予定 → 4年以上
+- 品質: リリース後も深刻なバグが多数発見
 
-**原因分析**：
-1. **複雑性の指数的増大**: 機能数の増加に対してバグ数が指数的に増加
-2. **コミュニケーションコスト**: チームサイズnに対してコミュニケーション経路がn(n-1)/2で増加
-3. **変更の波及効果**: 1箇所の変更が予期しない複数ヵ所に影響
+原因分析
+1. 複雑性の指数的増大： 機能数の増加に対してバグ数が指数的に増加
+2. コミュニケーションコスト： チームサイズnに対してコミュニケーション経路がn(n-1)/2で増加
+3. 変更の波及効果： 1箇所の変更が予期しない複数ヵ所に影響
 
 #### ソフトウェアの複雑性メトリクス
 
-**循環的複雑度（Cyclomatic Complexity）**
-<span class="listing-number">**リストAC-1**</span>
+循環的複雑度（Cyclomatic Complexity）
+<span class="listing-number">リストAC-1</span>
 
 ```java
 // 複雑度が高いコード例（複雑度: 6）
@@ -60,8 +60,8 @@ public String processData(int type, boolean flag, String data) {
 }
 ```
 
-**改善後（複雑度: 3）**
-<span class="listing-number">**リストAC-2**</span>
+改善後（複雑度: 3）
+<span class="listing-number">リストAC-2</span>
 
 ```java
 public String processData(int type, boolean flag, String data) {
@@ -89,8 +89,8 @@ private String processType1(boolean flag, String data) {
 
 任意のプログラムは以下の3つの制御構造の組み合わせで表現可能：
 
-1. **順次処理（Sequence）**
-<span class="listing-number">**リストAC-3**</span>
+1. 順次処理（Sequence）
+<span class="listing-number">リストAC-3</span>
 
 ```java
 statement1;
@@ -98,8 +98,8 @@ statement2;
 statement3;
 ```
 
-2. **分岐処理（Selection）**
-<span class="listing-number">**リストAC-4**</span>
+2. 分岐処理（Selection）
+<span class="listing-number">リストAC-4</span>
 
 ```java
 if (condition) {
@@ -109,8 +109,8 @@ if (condition) {
 }
 ```
 
-3. **反復処理（Iteration）**
-<span class="listing-number">**リストAC-5**</span>
+3. 反復処理（Iteration）
+<span class="listing-number">リストAC-5</span>
 
 ```java
 while (condition) {
@@ -120,8 +120,8 @@ while (condition) {
 
 #### 形式的証明と不変条件
 
-**ループ不変条件の例**
-<span class="listing-number">**リストAC-6**</span>
+ループ不変条件の例
+<span class="listing-number">リストAC-6</span>
 
 ```java
 // 配列の最大値を求めるアルゴリズム
@@ -148,11 +148,11 @@ public int findMax(int[] array) {
 
 理論的基盤の理解を深めるため、以下の付録Bセクションで具体的な実装技術を学習できます：
 
-**JVM レベルでの最適化理解**:
+JVM レベルでの最適化理解:
 - 付録B.01「JVMアーキテクチャとバイトコード」
   - ソフトウェアクライシスで問題となった複雑性制御が、JVMレベルでどう解決されているか
 
-**設計原則の実装技術**:
+設計原則の実装技術:
 - 付録B.04「ソフトウェア設計原則」
   - SOLID原則の具体的なJava実装パターン
   - 複雑度削減のための実践的デザインパターン
@@ -166,12 +166,12 @@ public int findMax(int[] array) {
 #### ADTの数学的定義
 
 抽象データ型は以下の要素で構成される：
-- **キャリア集合（Carrier Set）**: データの値域
-- **操作集合（Operation Set）**: データに対する操作
-- **公理系（Axiom System）**: 操作の性質を定義する規則
+- データの値域
+- データに対する操作
+- 操作の性質を定義する規則
 
-**スタックADTの例**
-<span class="listing-number">**リストAC-7**</span>
+スタックADTの例
+<span class="listing-number">リストAC-7</span>
 
 ```java
 // スタックの抽象仕様
@@ -233,13 +233,13 @@ public class ArrayStack<T> implements Stack<T> {
 
 #### 情報隠蔽の原則（Parnas, 1972）
 
-**モジュール分割の基準**：
+モジュール分割の基準
 - 各モジュールは変更されやすい設計決定を隠蔽する
 - インターフェイスは安定的で最小限に保つ
 - 実装の詳細は外部から見えないようにする
 
-**悪い例：実装詳細の露出**
-<span class="listing-number">**リストAC-8**</span>
+悪い例実装詳細の露出
+<span class="listing-number">リストAC-8</span>
 
 ```java
 public class BadBankAccount {
@@ -253,8 +253,8 @@ public class BadBankAccount {
 }
 ```
 
-**良い例：適切なカプセル化**
-<span class="listing-number">**リストAC-9**</span>
+良い例適切なカプセル化
+<span class="listing-number">リストAC-9</span>
 
 ```java
 public class GoodBankAccount {
@@ -286,8 +286,8 @@ public class GoodBankAccount {
 
 型Sが型Tのサブタイプである場合、プログラム内でT型のオブジェクトが使われている箇所は、すべてS型のオブジェクトで置き換え可能でなければならない。
 
-**LSP違反の例**
-<span class="listing-number">**リストAC-10**</span>
+LSP違反の例
+<span class="listing-number">リストAC-10</span>
 
 ```java
 class Rectangle {
@@ -329,8 +329,8 @@ public void testLSPViolation() {
 }
 ```
 
-**LSP遵守の設計**
-<span class="listing-number">**リストAC-11**</span>
+LSP遵守の設計
+<span class="listing-number">リストAC-11</span>
 
 ```java
 interface Shape {
@@ -383,8 +383,8 @@ class Square implements Shape {
 
 #### 結合度の階層（弱い順）
 
-1. **データ結合（Data Coupling）**
-<span class="listing-number">**リストAC-12**</span>
+1. データ結合（Data Coupling）
+<span class="listing-number">リストAC-12</span>
 
 ```java
 // 最も弱い結合 - 基本データのみを渡す
@@ -393,8 +393,8 @@ public double calculateTax(double income, double rate) {
 }
 ```
 
-2. **スタンプ結合（Stamp Coupling）**
-<span class="listing-number">**リストAC-13**</span>
+2. スタンプ結合（Stamp Coupling）
+<span class="listing-number">リストAC-13</span>
 
 ```java
 // データ構造を渡すが、全体を使用
@@ -403,8 +403,8 @@ public double calculateTax(TaxInfo taxInfo) {
 }
 ```
 
-3. **制御結合（Control Coupling）**
-<span class="listing-number">**リストAC-14**</span>
+3. 制御結合（Control Coupling）
+<span class="listing-number">リストAC-14</span>
 
 ```java
 // 悪い例：制御フラグを渡す
@@ -422,8 +422,8 @@ public interface DataProcessor {
 }
 ```
 
-4. **共通結合（Common Coupling）**
-<span class="listing-number">**リストAC-15**</span>
+4. 共通結合（Common Coupling）
+<span class="listing-number">リストAC-15</span>
 
 ```java
 // 悪い例：グローバル変数への依存
@@ -451,8 +451,8 @@ public class OrderProcessor {
 
 #### 凝集度の階層（強い順）
 
-1. **機能的凝集（Functional Cohesion）**
-<span class="listing-number">**リストAC-16**</span>
+1. 機能的凝集（Functional Cohesion）
+<span class="listing-number">リストAC-16</span>
 
 ```java
 // 単一の機能に特化
@@ -467,8 +467,8 @@ public class PrimeChecker {
 }
 ```
 
-2. **逐次的凝集（Sequential Cohesion）**
-<span class="listing-number">**リストAC-17**</span>
+2. 逐次的凝集（Sequential Cohesion）
+<span class="listing-number">リストAC-17</span>
 
 ```java
 // 出力が次の入力になる処理の連鎖
@@ -485,8 +485,8 @@ public class DataProcessor {
 }
 ```
 
-3. **偶発的凝集（Coincidental Cohesion）** - 避けるべき
-<span class="listing-number">**リストAC-18**</span>
+3. 偶発的凝集（Coincidental Cohesion）- 避けるべき
+<span class="listing-number">リストAC-18</span>
 
 ```java
 // 悪い例：関連のない機能の寄せ集め
@@ -507,8 +507,8 @@ public class Utilities {
 #### 生成パターン（Creational Patterns）
 オブジェクトの生成に関する問題を解決：
 
-**Singletonパターンの理論的分析**
-<span class="listing-number">**リストAC-19**</span>
+Singletonパターンの理論的分析
+<span class="listing-number">リストAC-19</span>
 
 ```java
 // スレッドセーフなSingleton実装
@@ -542,15 +542,15 @@ public enum DatabaseConnection {
 }
 ```
 
-**理論的考察**：
+理論的考察
 - メモリ可視性の問題（volatile修飾子の必要性）
 - Double-checked lockingパターンの正当性
 - 初期化のthread-safety
 
 #### 構造パターン（Structural Patterns）
 
-**Decoratorパターンの数学的モデル**
-<span class="listing-number">**リストAC-20**</span>
+Decoratorパターンの数学的モデル
+<span class="listing-number">リストAC-20</span>
 
 ```java
 // Component = 基本機能の抽象化
@@ -597,8 +597,8 @@ Coffee coffee = new MilkDecorator(
 
 #### 振る舞いパターン（Behavioral Patterns）
 
-**Observerパターンとイベント代数**
-<span class="listing-number">**リストAC-21**</span>
+Observerパターンとイベント代数
+<span class="listing-number">リストAC-21</span>
 
 ```java
 // Subject = 観察される対象
@@ -640,7 +640,7 @@ class StockDisplay implements Observer {
 }
 ```
 
-**理論的考察**：
+理論的考察
 - イベント-リスナパターンの数学的モデル
 - 通知の順序保証性
 - メモリリークの防止（WeakReference）
@@ -653,10 +653,10 @@ class StockDisplay implements Observer {
 
 #### 時間複雑度の厳密な定義
 
-**大O記法（Big-O Notation）**
+大O記法（Big-O Notation）
 f(n) = O(g(n)) ⟺ ∃c > 0, ∃n₀ > 0, ∀n ≥ n₀: f(n) ≤ c·g(n)
 
-<span class="listing-number">**リストAC-22**</span>
+<span class="listing-number">リストAC-22</span>
 
 ```java
 // O(n²) の例：バブルソート
@@ -690,7 +690,7 @@ public void mergeSort(int[] arr, int left, int right) {
 
 #### 空間複雑度の分析
 
-<span class="listing-number">**リストAC-23**</span>
+<span class="listing-number">リストAC-23</span>
 
 ```java
 // O(1) 空間：in-place ソート
@@ -731,7 +731,7 @@ public int[] mergeSortWithCopy(int[] arr) {
 
 #### 動的配列（ArrayList）の償却解析
 
-<span class="listing-number">**リストAC-24**</span>
+<span class="listing-number">リストAC-24</span>
 
 ```java
 public class DynamicArray<T> {
@@ -761,15 +761,15 @@ public class DynamicArray<T> {
 }
 ```
 
-**償却解析**：
-- resize操作の頻度：1, 2, 4, 8, 16, ..., 2ⁱ
+償却解析
+- resize操作の頻度: 1, 2, 4, 8, 16, ..., 2ⁱ
 - n回のadd操作でresizeはlog₂(n) 回発生
-- 総コスト：n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
-- 償却時間計算量：O(3n/n) = O(1)
+- 総コスト: n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
+- 償却時間計算量: O(3n/n) = O(1)
 
 #### ハッシュテーブルの理論
 
-<span class="listing-number">**リストAC-25**</span>
+<span class="listing-number">リストAC-25</span>
 
 ```java
 public class HashTable<K, V> {
@@ -826,9 +826,9 @@ public class HashTable<K, V> {
 }
 ```
 
-**理論的考察**：
-- 期待検索時間：O(1 + α)（αは負荷率）
-- 最悪時間：O(n)（すべてのキーが同じバケットにハッシュ）
+理論的考察
+- 期待検索時間O(1 + α)（αは負荷率）
+- 最悪時間O(n)（すべてのキーが同じバケットにハッシュ）
 - 全域ハッシュ（Universal Hashing）による期待性能保証
 
 
@@ -840,11 +840,11 @@ public class HashTable<K, V> {
 #### ホーア論理（Hoare Logic）
 
 {P} S {Q} の形式で表現：
-- P：事前条件（Precondition）
-- S：文（Statement）
-- Q：事後条件（Postcondition）
+- P事前条件（Precondition）
+- S文（Statement）
+- Q事後条件（Postcondition）
 
-<span class="listing-number">**リストAC-26**</span>
+<span class="listing-number">リストAC-26</span>
 
 ```java
 /**
@@ -884,7 +884,7 @@ public int binarySearch(int[] arr, int target) {
 
 #### クラス不変条件の例
 
-<span class="listing-number">**リストAC-27**</span>
+<span class="listing-number">リストAC-27</span>
 
 ```java
 public class BankAccount {
@@ -961,7 +961,7 @@ public class BankAccount {
 3. 同期機構によって順序付けされていない
 4. 異なるスレッドで実行
 
-<span class="listing-number">**リストAC-28**</span>
+<span class="listing-number">リストAC-28</span>
 
 ```java
 public class RaceConditionExample {
@@ -995,12 +995,12 @@ public class RaceConditionExample {
 #### コフマンの4条件
 
 デッドロックが発生するための必要十分条件：
-1. **相互排除（Mutual Exclusion）**: リソースは同時に1つのプロセスのみが使用
-2. **保持と待機（Hold and Wait）**: プロセスは1つ以上のリソースを保持しながらほかのリソースを待機
-3. **非プリエンプション（No Preemption）**: リソースは強制的に奪取できない
-4. **循環待機（Circular Wait）**: プロセス間でリソース待機の循環が存在
+1. 相互排除（Mutual Exclusion）: リソースは同時に1つのプロセスのみが使用
+2. 保持と待機（Hold and Wait）: プロセスは1つ以上のリソースを保持しながらほかのリソースを待機
+3. 非プリエンプション（No Preemption）: リソースは強制的に奪取できない
+4. 循環待機（Circular Wait）: プロセス間でリソース待機の循環が存在
 
-<span class="listing-number">**リストAC-29**</span>
+<span class="listing-number">リストAC-29</span>
 
 ```java
 public class DeadlockExample {
@@ -1055,7 +1055,7 @@ public class DeadlockExample {
 
 #### Java Memory Model (JMM)
 
-<span class="listing-number">**リストAC-30**</span>
+<span class="listing-number">リストAC-30</span>
 
 ```java
 public class MemoryModelExample {
@@ -1105,19 +1105,19 @@ public class MemoryModelExample {
 
 ### 理論の実践的応用
 
-1. **設計判断の根拠**: なぜ特定の設計パターンや原則が推奨されるのか
-2. **パフォーマンス予測**: アルゴリズムの計算複雑度による性能見積もり
-3. **バグの予防**: 形式的仕様による論理的正確性の検証
-4. **並行性の制御**: 競合状態やデッドロックの理論的理解にもとづく安全な実装
+1. 設計判断の根拠： なぜ特定の設計パターンや原則が推奨されるのか
+2. パフォーマンス予測： アルゴリズムの計算複雑度による性能見積もり
+3. バグの予防： 形式的仕様による論理的正確性の検証
+4. 並行性の制御： 競合状態やデッドロックの理論的理解にもとづく安全な実装
 
 ### 継続学習への基盤
 
 これらの理論的知識は、新しい技術やパラダイムを学ぶ際の基礎となります：
 
-- **関数型プログラミング**: ラムダ計算や圏論の理解
-- **分散システム**: CAP定理や分散コンセンサスアルゴリズム
-- **機械学習**: 最適化理論や統計学習理論
-- **量子コンピューティング**: 量子力学と計算理論の融合
+- ラムダ計算や圏論の理解
+- CAP定理や分散コンセンサスアルゴリズム
+- 最適化理論や統計学習理論
+- 量子力学と計算理論の融合
 
 理論と実践のバランスを保ちながら、この知識を実際のプロジェクトで活用してください。
 

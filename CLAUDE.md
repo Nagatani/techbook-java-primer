@@ -152,4 +152,20 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Only use the official Oracle Java website as a reference
 - Maintain consistent tone and style suitable for a published book
 - Use textlint for Japanese manuscript linting and formatting
+- **文体統一**: 本文はですます調で統一する（である調は使用しない）
+- **リスト表記ルール**: 
+  - 絵文字を使用しない
+  - リスト項目の末尾にコロン（：）を使用しない
+  - 文字強調（**太字**）を必要以上に使用しない
+  - 文末に句読点（。）を付けない
+  - リストに限ってはである調を使用する
+  - **重要**: リストを導入する文章の末尾には、文法的に必要な場合コロン（：）を使用する
+    - 例：「以下のような利点があります：」「主な機能：」「メリット：」
+    - コロンの削除は機械的に行わず、文法的に必要な箇所は残す
+- **強調表記（太字）の使用禁止事項**:
+  - **禁止**: 強調表記（** **）を見出しとして使用すること
+  - 見出しが必要な場合は、適切なMarkdown見出し記法（#、##、### など）を使用する
+  - 強調表記は、本文中で真に強調が必要な単語や短いフレーズにのみ限定する
+  - 許可される強調表記：
+    - コードリスト番号（**リストX-Y**、**サンプルコードX-Y**）のみ
 - Do not add emojis unless explicitly requested by the user

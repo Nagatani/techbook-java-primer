@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須**：
+必須
 - 第1章のJava開発環境構築（javac、javaコマンド）
 - 第15章のファイル入出力（クラスパス、リソースファイル）
 - 第23章のドキュメントと外部ライブラリ（Maven、Gradle）
 - 基本的なコマンドライン操作
 
-**推奨**：
+推奨
 - 第22章のユニットテスト（テスト自動化）
 - 継続的インテグレーション（CI/CD）の基本概念
 - ソフトウェアデプロイメントの基礎知識
@@ -46,33 +46,33 @@
 
 ### 総合演習プロジェクトへのステップ
 
-本章で学ぶビルドと配布の技術は、開発した**総合演習プロジェクト「ToDoリストアプリケーション」** を、Java開発環境がない友人やほかのユーザーにも使ってもらうための最終ステップです。
+本章で学ぶビルドと配布の技術は、開発した総合演習プロジェクト「ToDoリストアプリケーション」 を、Java開発環境がない友人やほかのユーザーにも使ってもらうための最終ステップです。
 
 #### 技術的背景：モダンなソフトウェア配布の課題と解決策
 
-**なぜ配布が複雑なのか：**
+なぜ配布が複雑なのか
 
-現代のソフトウェア配布には多くの課題があります：
+現代のソフトウェア配布には多くの課題があります。
 
-1. **環境依存性の問題**
+1. 環境依存性の問題
    - Java Runtime Environment (JRE) のバージョン差異
    - OS固有の実行形式（.exe, .app, .sh）
    - システムライブラリの依存関係
    - パス設定やレジストリの違い
 
-2. **ユーザビリティの課題**
+2. ユーザビリティの課題
    - コマンドライン操作への抵抗感
    - 複雑なインストール手順
    - セキュリティ警告への対処
    - アンインストールの困難さ
 
-3. **セキュリティ要件**
+3. セキュリティ要件
    - コード署名の必要性
    - ネットワーク経由の配布時の改ざん防止
    - 権限昇格の最小化
    - サンドボックス化の要求
 
-**JARからネイティブアプリケーションへの進化：**
+JARからネイティブアプリケーションへの進化
 
 ```
 1990年代: クラスファイルの直接配布
@@ -81,16 +81,16 @@
 2020年代: jpackage, GraalVM native-image
 ```
 
-**実践的な配布戦略：**
+実践的な配布戦略
 
-1. **開発者向け配布**
+1. 開発者向け配布
    ```bash
    # Maven/Gradle経由
    mvn install
    gradle publishToMavenLocal
    ```
 
-2. **エンドユーザー向け配布**
+2. エンドユーザー向け配布
    ```bash
    # jpackageによるインストーラ作成
    jpackage --input lib --name MyApp \
@@ -100,7 +100,7 @@
      --type deb  # Ubuntu/Debian
    ```
 
-3. **クラウド時代の配布**
+3. クラウド時代の配布
    ```dockerfile
    # Dockerコンテナ化
    FROM openjdk:17-slim
@@ -108,14 +108,14 @@
    ENTRYPOINT ["java", "-jar", "/app.jar"]
    ```
 
-**実世界の配布例：**
+実世界の配布例
 
 - IntelliJ IDEA: カスタムJREバンドル、自動更新機能
 - Minecraft: 独自ランチャー、マルチバージョン管理
 - Jenkins: WAR形式、組込みーバー付き
 - ElasticSearch: シェルスクリプトラッパ、サービス登録
 
-**配布の自動化とCI/CD：**
+配布の自動化とCI/CD
 
 ```yaml
 # GitHub Actions による自動リリース
@@ -140,8 +140,8 @@ jobs:
 
 本章では、これらの実践的な配布技術を段階的に学習します。
 
-- 実行可能JARファイルの作成： アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめます。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できます。
-- `jpackage`によるネイティブアプリケーション化： さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成します。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がります。
+- 実行可能JARファイルの作成アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめます。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できます
+- `jpackage`によるネイティブアプリケーション化さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成します。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がります
 
 ### 本章の学習目標
 
@@ -169,13 +169,13 @@ JARファイルのしくみとクラスパスについての深い理解も大�
 
 これまでの章では、主にIDE（統合開発環境）から直接ソースコードを実行してきました。しかし、開発したアプリケーションをほかの人に使ってもらうには、ソースコードそのものを渡すわけにはいきません。
 
-ユーザーがJava開発環境を持っていない場合でも簡単に実行できるように、必要なファイルをすべて1つにまとめ、実行可能な形式に変換する必要があります。この一連の作業を「**ビルド**」と「**パッケージング**」と呼び、最終的にユーザーに渡せる形にすることを「**配布**」と言います。
+ユーザーがJava開発環境を持っていない場合でも簡単に実行できるように、必要なファイルをすべて1つにまとめ、実行可能な形式に変換する必要があります。この一連の作業を「ビルド」と「パッケージング」と呼び、最終的にユーザーに渡せる形にすることを「配布」と言います。
 
-本章では、Javaアプリケーションを配布するための最も基本的な形式である**実行可能JARファイル**の作成方法と、さらに一歩進んでOSネイティブのアプリケーションを作成する方法を学びます。
+本章では、Javaアプリケーションを配布するための最も基本的な形式である実行可能JARファイルの作成方法と、さらに一歩進んでOSネイティブのアプリケーションを作成する方法を学びます。
 
 ## 実行可能JARファイルの作成
 
-**JAR (Java Archive)** は、複数のJavaクラスファイルや、画像・設定ファイルなどのリソースを、ZIP形式で1つにまとめたファイルです。このJARファイルに「どのクラスの`main`メソッドからプログラムを開始するか」という情報を加えることで、ダブルクリックや簡単なコマンドで実行できる「実行可能JARファイル」を作成できます。
+JAR (Java Archive) は、複数のJavaクラスファイルや、画像・設定ファイルなどのリソースを、ZIP形式で1つにまとめたファイルです。このJARファイルに「どのクラスの`main`メソッドからプログラムを開始するか」という情報を加えることで、ダブルクリックや簡単なコマンドで実行できる「実行可能JARファイル」を作成できます
 
 #### ステップ1: サンプルアプリケーションの準備
 
@@ -203,7 +203,7 @@ public class SimpleApp {
 
 #### 複数のクラスファイルを含むアプリケーションの例
 
-実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です：
+実際のアプリケーションは通常、複数のクラスから構成されます。以下は、より実践的な例です。
 
 <span class="listing-number">**サンプルコード24-2**</span>
 
@@ -341,7 +341,7 @@ public class TodoApp {
 }
 ```
 
-複数のクラスファイルを含むJARを作成するには：
+複数のクラスファイルを含むJARを作成するには。
 
 ```bash
 # すべてのJavaファイルをコンパイル
@@ -362,17 +362,17 @@ javac SimpleApp.java
 
 #### ステップ3: マニフェストファイルの作成
 
-次に、JARファイルに「メインクラスは何か」を教えるための**マニフェストファイル**を作成します。`manifest.txt`という名前で、以下の内容を記述します。
+次に、JARファイルに「メインクラスは何か」を教えるためのマニフェストファイルを作成します。`manifest.txt`という名前で、以下の内容を記述します。
 
 ```text
 Main-Class: SimpleApp
 
 ```
-**【大切】**: `Main-Class:`の後には半角スペースが1つ必要です。また、**ファイルの末尾には改行を入れることが大切です。** 改行がないと正しく認識されない場合があります。
+【大切】: `Main-Class:`の後には半角スペースが1つ必要です。また、ファイルの末尾には改行を入れることが大切です。 改行がないと正しく認識されない場合があります
 
 #### マニフェストファイルの詳細なオプション
 
-マニフェストファイルには、`Main-Class`以外にもさまざまな情報を記述できます：
+マニフェストファイルには、`Main-Class`以外にもさまざまな情報を記述できます。
 
 ```text
 Manifest-Version: 1.0
@@ -389,16 +389,16 @@ Sealed: true
 
 ```
 
-各属性の説明：
-- Class-パス： 外部ライブラリへのパスを指定（相対パス）
+各属性の説明。
+- Class-パス外部ライブラリへのパスを指定（相対パス）
 - Created-By: JARを作成したJDKのバージョン
-- **Implementation-***: 実装に関する情報（バージョン、ベンダーなど）
-- **Specification-***: 仕様に関する情報
+- 実装に関する情報（バージョン、ベンダーなど）
+- 仕様に関する情報
 - Sealed: trueにすると、このJAR内のパッケージはほかのJARから拡張できない
 
 #### リソースファイルを含むJARの作成
 
-アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります：
+アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
 <span class="listing-number">**サンプルコード24-5**</span>
 
@@ -456,7 +456,7 @@ app.version=1.0.0
 app.author=Developer
 ```
 
-リソースを含むJARの作成方法：
+リソースを含むJARの作成方法。
 
 ```bash
 # ディレクトリ構造
@@ -507,7 +507,7 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 #### 外部ライブラリを含むFat JARの作成
 
-外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成できます：
+外部ライブラリを使用するアプリケーションの場合、すべての依存関係を1つのJARにまとめた「Fat JAR」を作成できます。
 
 以下の例では、Gsonライブラリを使用したJSON処理アプリケーションを示します。このアプリケーションをFat JARとしてパッケージングすることで、Gsonライブラリも含めた自己完結型の実行可能JARを作成できます。
 
@@ -602,7 +602,7 @@ public class JsonProcessorApp {
 }
 ```
 
-Fat JARを手動で作成する方法：
+Fat JARを手動で作成する方法。
 
 ```bash
 # 1. 作業ディレクトリの準備
@@ -705,7 +705,7 @@ rm -rf temp
 </project>
 ```
 
-Mavenでのビルドコマンド：
+Mavenでのビルドコマンド。
 
 ```bash
 # クリーンビルド
@@ -764,7 +764,7 @@ task fatJar(type: Jar) {
 }
 ```
 
-Gradleでのビルドコマンド：
+Gradleでのビルドコマンド。
 
 ```bash
 # 通常のビルド
@@ -781,11 +781,11 @@ java -jar build/libs/todo-app-1.0.0-all.jar
 
 JARファイルは便利ですが、実行するにはユーザーのPCにJavaランタイム（JRE）がインストールされている必要があります。
 
-Java 14から導入された`jpackage`ツールを使えば、**アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラや実行ファイル（Windowsなら`.exe`、Macなら`.app`）を作成できます。** これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
+Java 14から導入された`jpackage`ツールを使えば、アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラや実行ファイル（Windowsなら`.exe`、Macなら`.app`）を作成できます。 これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
 
 #### `jpackage`を使うための準備：入力と出力の分離
 
-`jpackage`でエラーを起こさないための重要なポイントは、**「パッケージ化の材料（入力）が入ったディレクトリ」と「作成されたアプリケーション（出力）を保存するディレクトリ」**を完全に分けることです。
+`jpackage`でエラーを起こさないための重要なポイントは、「パッケージ化の材料（入力）が入ったディレクトリ」と「作成されたアプリケーション（出力）を保存するディレクトリ」を完全に分けることです。
 
 ```
 /MyProject/
@@ -810,15 +810,15 @@ jpackage --type app-image \
           --main-jar SimpleApp.jar \
           --dest ./output
 ```
-- `--type app-image`: アプリケーションイメージを作成します。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定します。
-- `--name "SimpleApp"`: アプリケーションの名前を指定します。
-- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定します。
-- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定します。
-- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定します。
+- `--type app-image`: アプリケーションイメージを作成します。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定します
+- `--name "SimpleApp"`: アプリケーションの名前を指定します
+- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定します
+- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定します
+- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定します
 
 #### jpackageの詳細なオプション
 
-より本格的なアプリケーション配布のための高度なオプション例：
+より本格的なアプリケーション配布のための高度なオプション例。
 
 ##### Windows向けの設定（.msiインストーラ）
 
@@ -839,7 +839,7 @@ jpackage --type msi \
          --dest ./output
 ```
 
-追加オプションの説明：
+追加オプションの説明。
 - `--app-version`: アプリケーションのバージョン
 - `--vendor`: ベンダー名（開発元）
 - `--icon`: アプリケーションアイコン（.ico形式）
@@ -866,7 +866,7 @@ jpackage --type dmg \
          --dest ./output
 ```
 
-macOS固有オプション：
+macOS固有オプション。
 - `--icon`: macOS用アイコン（.icns形式）
 - `--mac-package-identifier`: バンドル識別子
 - `--mac-sign`: アプリケーションに署名（Gatekeeperに必要）
@@ -890,7 +890,7 @@ jpackage --type deb \
          --dest ./output
 ```
 
-Linux固有オプション：
+Linux固有オプション。
 - `--linux-menu-group`: メニューカテゴリ
 - `--linux-shortcut`: デスクトップショートカット作成
 - `--linux-deb-maintainer`: パッケージメンテナーー情報
@@ -898,7 +898,7 @@ Linux固有オプション：
 
 #### ランタイムオプションとJVMパラメータ
 
-アプリケーションの実行時にJVMパラメータを設定することもできます：
+アプリケーションの実行時にJVMパラメータを設定することもできます。
 
 ```bash
 jpackage --type app-image \
@@ -919,7 +919,7 @@ jpackage --type app-image \
 
 #### ファイル関連付けの設定
 
-特定のファイル拡張子をアプリケーションに関連付ける：
+特定のファイル拡張子をアプリケーションに関連付ける。
 
 ```bash
 jpackage --type msi \
@@ -930,7 +930,7 @@ jpackage --type msi \
          --dest ./output
 ```
 
-file-associations.propertiesの内容：
+file-associations.propertiesの内容。
 ```properties
 extension=todo
 mime-type=application/x-todo
@@ -940,7 +940,7 @@ icon=./resources/todo-file-icon.ico
 
 #### モジュラーアプリケーションのパッケージング
 
-Java 9以降のモジュールシステムを使用している場合：
+Java 9以降のモジュールシステムを使用している場合。
 
 ```bash
 # jlinkでカスタムランタイムを作成
@@ -964,29 +964,29 @@ jpackage --type app-image \
 
 本章では、開発したJavaアプリケーションをほかのユーザーに届けるための基本的な手法を学びました。
 
-- **JARファイル**は、Javaのクラスファイルやリソースをまとめる標準的な方法です。
-- **マニフェストファイル**に`Main-Class`を記述することで、実行可能なJARファイルを作成できます。
-- **`java -jar`コマンド**で、実行可能JARファイルを起動できます。
-- **`jpackage`ツール**を使えば、Javaランタイムを同梱した、より配布しやすいネイティブアプリケーションを作成できます。
+- JARファイルは、Javaのクラスファイルやリソースをまとめる標準的な方法です
+- マニフェストファイルに`Main-Class`を記述することで、実行可能なJARファイルを作成できます
+- `java -jar`コマンドで、実行可能JARファイルを起動できます
+- `jpackage`ツールを使えば、Javaランタイムを同梱した、より配布しやすいネイティブアプリケーションを作成できます
 
 ソフトウェア開発は、コードを書くだけでなく、それを価値ある成果物としてユーザーに届けるところまでが含まれます。本章で学んだビルドと配布の知識は、あなたの作品を世界に公開するための第一歩です。
 
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています：
+本章の演習課題は、GitHubリポジトリで提供されています。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter24/`
 
 ### 課題構成
-- **基礎課題**: 本章の基本概念の理解確認
-- **発展課題**: 応用的な実装練習
-- **チャレンジ課題**: 実践的な総合問題
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
-1. **基礎課題**: シンプルなアプリケーションの実行可能JAR作成
-2. **発展課題**: 外部ライブラリを含むFat JARの作成とビルド自動化
-3. **チャレンジ課題**: 各OS向けのネイティブインストーラ作成
+1. 基礎課題： シンプルなアプリケーションの実行可能JAR作成
+2. 発展課題： 外部ライブラリを含むFat JARの作成とビルド自動化
+3. チャレンジ課題： 各OS向けのネイティブインストーラ作成
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
@@ -1000,9 +1000,10 @@ jpackage --type app-image \
 
 #### 1. 依存関係の解決エラー
 
-**問題**: 指定した依存関係が見つからない
+##### 問題
+指定した依存関係が見つからない
 
-**エラー例**:
+##### エラー例
 ```xml
 <dependency>
     <groupId>com.example</groupId>
@@ -1011,12 +1012,12 @@ jpackage --type app-image \
 </dependency>
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 [ERROR] Failed to execute goal on project myapp: Could not resolve dependencies for project com.example:myapp:jar:1.0.0: Could not find artifact com.example:non-existent-library:jar:1.0.0
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 依存関係の存在を確認
 mvn help:describe -Dplugin=dependency -Ddetail
@@ -1034,9 +1035,10 @@ mvn help:describe -Dplugin=dependency -Ddetail
 
 #### 2. Javaバージョンの不一致
 
-**問題**: プロジェクトのJavaバージョンと実行環境のJavaバージョンが異なる
+##### 問題
+プロジェクトのJavaバージョンと実行環境のJavaバージョンが異なる
 
-**エラー例**:
+##### エラー例
 ```xml
 <properties>
     <maven.compiler.source>17</maven.compiler.source>
@@ -1044,12 +1046,12 @@ mvn help:describe -Dplugin=dependency -Ddetail
 </properties>
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile (default-compile) on project myapp: Fatal error compiling: invalid target release: 17
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 現在のJavaバージョンを確認
 java -version
@@ -1067,14 +1069,15 @@ javac -version
 
 #### 3. テストの失敗によるビルドエラー
 
-**問題**: テストが失敗してビルドが停止する
+##### 問題
+テストが失敗してビルドが停止する
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.2:test (default-test) on project myapp: There are test failures.
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 詳細なテスト結果を確認
 mvn test
@@ -1089,15 +1092,16 @@ mvn clean package
 
 #### 4. メモリ不足エラー
 
-**問題**: ビルド時にメモリ不足が発生する
+##### 問題
+ビルド時にメモリ不足が発生する
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 [ERROR] Java heap space
 [ERROR] The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. Maven実行時のメモリを増加
 export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=256m"
@@ -1120,19 +1124,20 @@ echo "-Xmx2g -XX:MaxPermSize=256m" > .mvn/jvm.config
 
 #### 1. Gradle Wrapperの実行エラー
 
-**問題**: Gradle Wrapperが実行できない
+##### 問題
+Gradle Wrapperが実行できない
 
-**エラー例**:
+##### エラー例
 ```bash
 ./gradlew build
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 Permission denied: ./gradlew
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 実行権限を付与
 chmod +x gradlew
@@ -1146,9 +1151,10 @@ gradle wrapper
 
 #### 2. 依存関係の競合
 
-**問題**: 複数のライブラリが同じクラスを提供している
+##### 問題
+複数のライブラリが同じクラスを提供している
 
-**エラー例**:
+##### エラー例
 ```groovy
 dependencies {
     implementation 'org.slf4j:slf4j-log4j12:1.7.30'
@@ -1156,12 +1162,12 @@ dependencies {
 }
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 SLF4J: Class path contains multiple SLF4J bindings.
 ```
 
-**解決策**:
+##### 解決策
 ```groovy
 dependencies {
     implementation('org.springframework:spring-core:5.3.0') {
@@ -1176,9 +1182,10 @@ gradle dependencies --configuration runtimeClasspath
 
 #### 3. ビルドスクリプトの構文エラー
 
-**問題**: build.gradleの構文が正しくない
+##### 問題
+build.gradleの構文が正しくない
 
-**エラー例**:
+##### エラー例
 ```groovy
 plugins {
     id 'java'
@@ -1189,12 +1196,12 @@ plugins {
 mainClassName = 'com.example.Main'
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 The mainClassName property has been deprecated and is scheduled to be removed in Gradle 8.0.
 ```
 
-**解決策**:
+##### 解決策
 ```groovy
 plugins {
     id 'java'
@@ -1211,19 +1218,20 @@ application {
 
 #### 1. Main-Classが見つからない
 
-**問題**: JARファイルにMain-Classが指定されていない
+##### 問題
+JARファイルにMain-Classが指定されていない
 
-**エラー例**:
+##### エラー例
 ```bash
 java -jar myapp.jar
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 no main manifest attribute, in myapp.jar
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <!-- Maven -->
 <plugin>
@@ -1251,14 +1259,15 @@ jar {
 
 #### 2. 依存関係が含まれていない
 
-**問題**: 外部ライブラリがJARファイルに含まれていない
+##### 問題
+外部ライブラリがJARファイルに含まれていない
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.ClassNotFoundException: org.apache.commons.lang3.StringUtils
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <!-- Maven: Fat JAR作成 -->
 <plugin>
@@ -1297,14 +1306,15 @@ jar {
 
 #### 3. モジュールパスの問題（Java 9+）
 
-**問題**: モジュールシステムでのクラスパスの問題
+##### 問題
+モジュールシステムでのクラスパスの問題
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.module.FindException: Module com.example not found
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. モジュールパスを明示的に指定
 java --module-path ./lib --module com.example/com.example.Main
@@ -1322,19 +1332,20 @@ jlink --module-path $JAVA_HOME/jmods:lib \
 
 #### 1. クラスパスの設定ミス
 
-**問題**: 実行時にクラスパスが正しく設定されていない
+##### 問題
+実行時にクラスパスが正しく設定されていない
 
-**エラー例**:
+##### エラー例
 ```bash
 java -cp "lib/commons-lang3-3.12.0.jar" com.example.Main
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.ClassNotFoundException: com.example.Main
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 現在のディレクトリも含める
 java -cp ".:lib/commons-lang3-3.12.0.jar" com.example.Main
@@ -1348,15 +1359,16 @@ java -cp ".;lib/*" com.example.Main
 
 #### 2. 相対パスの問題
 
-**問題**: 実行ディレクトリによってクラスパスが変わる
+##### 問題
+実行ディレクトリによってクラスパスが変わる
 
-**エラー例**:
+##### エラー例
 ```bash
 cd /different/directory
 java -cp "lib/*" com.example.Main  # libディレクトリが見つからない
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. 絶対パスを使用
 java -cp "/path/to/app/lib/*:/path/to/app/classes" com.example.Main
@@ -1371,15 +1383,16 @@ java -cp "$APP_HOME/lib/*:$APP_HOME/classes" com.example.Main
 
 #### 1. 文字エンコーディングの問題
 
-**問題**: 異なる環境で文字化けが発生する
+##### 問題
+異なる環境で文字化けが発生する
 
-**エラー例**:
+##### エラー例
 ```java
 // 日本語が含まれるファイルを読み込み
 Files.readAllLines(Paths.get("data.txt"))
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // 文字エンコーディングを明示的に指定
 Files.readAllLines(Paths.get("data.txt"), StandardCharsets.UTF_8)
@@ -1392,14 +1405,15 @@ java -Dfile.encoding=UTF-8 -jar myapp.jar
 
 #### 2. パスセパレータの問題
 
-**問題**: Windows/Linux/macOSでパスの区切り文字が異なる
+##### 問題
+Windows/Linux/macOSでパスの区切り文字が異なる
 
-**エラー例**:
+##### エラー例
 ```java
 String path = "data/config/settings.txt";  // Windowsでは問題が発生する可能性
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // プラットフォーム独立なパス操作
 Path path = Paths.get("data", "config", "settings.txt");
@@ -1411,15 +1425,16 @@ String path = "data" + File.separator + "config" + File.separator + "settings.tx
 
 #### 3. JVMバージョンの違い
 
-**問題**: 開発環境と本番環境でJavaバージョンが異なる
+##### 問題
+開発環境と本番環境でJavaバージョンが異なる
 
-**エラー例**:
+##### エラー例
 ```java
 // Java 11で導入されたメソッド
 String result = str.isBlank();  // Java 8では利用不可
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // バージョン固有の機能を使用する前にチェック
 if (System.getProperty("java.version").startsWith("11")) {
@@ -1439,14 +1454,15 @@ if (System.getProperty("java.version").startsWith("11")) {
 
 #### 1. 必要なツールが不足
 
-**問題**: jpackageに必要なネイティブツールがインストールされていない
+##### 問題
+jpackageに必要なネイティブツールがインストールされていない
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 jpackage: error: Bundler "MSI" (msi) failed to produce a bundle.
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # Windows: WiX Toolsetをインストール
 # https://wixtoolset.org/releases/
@@ -1460,9 +1476,10 @@ sudo apt-get install fakeroot
 
 #### 2. モジュールパスの設定問題
 
-**問題**: モジュールパスが正しく設定されていない
+##### 問題
+モジュールパスが正しく設定されていない
 
-**エラー例**:
+##### エラー例
 ```bash
 jpackage --type app-image \
          --name "MyApp" \
@@ -1470,12 +1487,12 @@ jpackage --type app-image \
          --dest ./output
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 jpackage: error: Module com.example.app not found
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. モジュールパスを明示的に指定
 jpackage --type app-image \
@@ -1495,9 +1512,10 @@ jpackage --type app-image \
 
 #### 3. アプリケーションアイコンの問題
 
-**問題**: アプリケーションアイコンが正しく設定されない
+##### 問題
+アプリケーションアイコンが正しく設定されない
 
-**エラー例**:
+##### エラー例
 ```bash
 jpackage --type app-image \
          --name "MyApp" \
@@ -1506,7 +1524,7 @@ jpackage --type app-image \
          --dest ./output
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 1. プラットフォーム固有の形式を使用
 # Windows: .ico

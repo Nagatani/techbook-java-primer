@@ -11,9 +11,9 @@
 ## 1. 書籍構成の整合性分析
 
 ### 1.1 章構成の現状
-- **設定値**: vivliostyle.config.jsで24章構成として定義
-- **実際のファイル**: 24個の章ファイルが存在し、完全に一致
-- **章番号**: chapter01-introduction.md から chapter24-build-and-deploy.md まで連番で統一
+- vivliostyle.config.jsで24章構成として定義
+- 24個の章ファイルが存在し、完全に一致
+- chapter01-introduction.md から chapter24-build-and-deploy.md まで連番で統一
 
 ### 1.2 書籍構成の詳細
 ```
@@ -66,8 +66,8 @@
 | 付録D | ✅ | ✅ | 実装済み |
 
 ### 2.2 付録B（Deep Dive）の詳細状況
-- **問題**: 付録Bインデックスでは18セクション構成を謳っているが、実際には `appendix-b03-programming-paradigms.md` のみ存在
-- **本文からの参照**: 複数章から付録Bの各セクション（B.01-B.18）への参照があるが、実体ファイルが不足
+- 付録Bインデックスでは18セクション構成を謳っているが、実際には `appendix-b03-programming-paradigms.md` のみ存在
+- 複数章から付録Bの各セクション（B.01-B.18）への参照があるが、実体ファイルが不足
 
 ### 2.3 本文からの付録参照の正確性
 **評価: 要改善**

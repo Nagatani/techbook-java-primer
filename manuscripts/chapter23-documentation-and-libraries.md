@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須**：
+必須
 - 第4章のクラスとインスタンス（基本的なOOPの概念）
 - 第14章の例外処理（try-catch、例外の種類）
 - 第15章のファイル入出力（基本的なI/O操作）
 - HTMLの基礎知識
 
-**推奨**：
+推奨
 - 第22章のユニットテスト（テストコードの作成）
 - ビルドツール（Maven、Gradle）の基本概念
 - JSONデータ形式の理解
@@ -44,7 +44,7 @@
 
 ## Javadocによるドキュメント
 
-Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成する**Javadoc**というツールが標準で備わっています。Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
+Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成するJavadocというツールが標準で備わっています。Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
 
 ### Javadocコメントの書き方
 
@@ -56,9 +56,9 @@ Javadocコメントは `/**` で始まり、`*/` で終わります。クラス�
 
 ```java
 /**
- * 2つの整数の和を計算して返します。
+ * 2つの整数の和を計算して返します
  * <p>
- * このメソッドは、nullを許容せず、オーバーフローも考慮しません。
+ * このメソッドは、nullを許容せず、オーバーフローも考慮しません
  * </p>
  *
  * @param a 加算する最初の整数
@@ -76,7 +76,7 @@ public int add(int a, int b) {
 
 ### 主要なJavadocタグ
 
-コメント内では`@`で始まる**Javadocタグ**を使い、構造化された情報を記述します。
+コメント内では`@`で始まるJavadocタグを使い、構造化された情報を記述します。
 
 | タグ | 説明 |
 | :--- | :--- |
@@ -97,10 +97,10 @@ public int add(int a, int b) {
 
 ```java
 /**
- * タスク管理システムのコアクラスです。
+ * タスク管理システムのコアクラスです
  * <p>
  * このクラスは、ToDoリストアプリケーションのタスクを表現し、
- * タスクの作成、更新、完了状態の管理を行います。
+ * タスクの作成、更新、完了状態の管理を行います
  * </p>
  * 
  * <h2>使用例</h2>
@@ -145,7 +145,7 @@ public class Task {
     private Priority priority;
     
     /**
-     * 指定されたタイトルとデフォルトの優先度で新しいタスクを作成します。
+     * 指定されたタイトルとデフォルトの優先度で新しいタスクを作成します
      * 
      * @param title タスクのタイトル（null不可、空文字不可）
      * @throws IllegalArgumentException titleがnullまたは空文字の場合
@@ -155,7 +155,7 @@ public class Task {
     }
     
     /**
-     * 指定されたタイトルと優先度で新しいタスクを作成します。
+     * 指定されたタイトルと優先度で新しいタスクを作成します
      * 
      * @param title タスクのタイトル（null不可、空文字不可）
      * @param priority タスクの優先度（null不可）
@@ -177,7 +177,7 @@ public class Task {
     }
     
     /**
-     * タスクのタイトルを取得します。
+     * タスクのタイトルを取得します
      * 
      * @return タスクのタイトル（nullではない）
      */
@@ -186,7 +186,7 @@ public class Task {
     }
     
     /**
-     * タスクのタイトルを設定します。
+     * タスクのタイトルを設定します
      * 
      * @param title 新しいタイトル（null不可、空文字不可）
      * @throws IllegalArgumentException titleがnullまたは空文字の場合
@@ -199,9 +199,9 @@ public class Task {
     }
     
     /**
-     * タスクを完了状態にします。
+     * タスクを完了状態にします
      * <p>
-     * このメソッドは {@code setCompleted(true)} と同等です。
+     * このメソッドは {@code setCompleted(true)} と同等です
      * </p>
      * 
      * @see #setCompleted(boolean)
@@ -211,9 +211,9 @@ public class Task {
     }
     
     /**
-     * タスクの優先度を1段階上げます。
+     * タスクの優先度を1段階上げます
      * <p>
-     * 既にHIGHの場合は変更されません。
+     * 既にHIGHの場合は変更されません
      * </p>
      * 
      * @return 優先度が変更された場合はtrue、そうでない場合はfalse
@@ -232,7 +232,7 @@ public class Task {
     }
     
     /**
-     * タスクを文字列表現に変換します。
+     * タスクを文字列表現に変換します
      * 
      * @return タスクの文字列表現
      * @deprecated {@link #toDetailedString()} を使用してください
@@ -244,7 +244,7 @@ public class Task {
     }
     
     /**
-     * タスクの詳細な文字列表現を返します。
+     * タスクの詳細な文字列表現を返します
      * 
      * @return タスクの詳細情報を含む文字列
      * @since 2.0
@@ -283,21 +283,21 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 
 ## 外部ライブラリの利用
 
-現代のソフトウェア開発では、車輪の再発明を避け、高品質な**外部ライブラリ**を活用するのが一般的です。Javaの世界には、さまざまな機能を提供する膨大な数のオープンソースライブラリが存在します。
+現代のソフトウェア開発では、車輪の再発明を避け、高品質な外部ライブラリを活用するのが一般的です。Javaの世界には、さまざまな機能を提供する膨大な数のオープンソースライブラリが存在します。
 
 ### クラスパスとは
 
-Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を探すための場所（ディレクトリやファイルのパス）を**クラスパス**と呼びます。外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
+Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
 
 ### 依存関係管理ツール：Maven
 
-手動でJARファイルをダウンロードし、クラスパスを設定するのは非常に手間がかかり、管理も煩雑です。そこで、**Maven**や**Gradle**といった**依存関係管理ツール（ビルドツール）**を使うのが現代の標準的な開発スタイルです。
+手動でJARファイルをダウンロードし、クラスパスを設定するのは非常に手間がかかり、管理も煩雑です。そこで、MavenやGradleといった依存関係管理ツール（ビルドツール）を使うのが現代の標準的な開発スタイルです。
 
-**Maven**は、`pom.xml`という設定ファイルに、利用したいライブラリの名前とバージョンを記述するだけで、必要なJARファイルをインターネット上のリポジトリ（Maven Central Repositoryなど）から自動的にダウンロードし、クラスパスの設定まで行ってくれます。
+Mavenは、`pom.xml`という設定ファイルに、利用したいライブラリの名前とバージョンを記述するだけで、必要なJARファイルをインターネット上のリポジトリ（Maven Central Repositoryなど）から自動的にダウンロードし、クラスパスの設定まで行ってくれます
 
 #### `pom.xml`での依存関係の記述
 
-たとえば、Googleが開発したJSONライブラリである**Gson**を利用したい場合、`pom.xml`の`<dependencies>`セクションに以下のように記述します。
+たとえば、Googleが開発したJSONライブラリであるGsonを利用したい場合、`pom.xml`の`<dependencies>`セクションに以下のように記述します。
 
 ```xml
 <dependencies>
@@ -983,10 +983,10 @@ public class GuavaExample {
 適切なライブラリを選ぶことは、プロジェクトの成功に大きく影響します。以下の観点から評価しましょう。
 
 #### ライブラリの成熟度と信頼性
-- リリース履歴： 安定版がリリースされているか（1.0以上）
-- 更新頻度： 定期的にメンテナンスされているか
-- コミュニティ： 活発なコミュニティが存在するか
-- 採用実績： 大規模プロジェクトでの採用実績
+- リリース履歴安定版がリリースされているか（1.0以上）
+- 更新頻度定期的にメンテナンスされているか
+- コミュニティ活発なコミュニティが存在するか
+- 採用実績大規模プロジェクトでの採用実績
 
 #### ライセンスの確認
 <span class="listing-number">**サンプルコード23-10**</span>
@@ -1001,7 +1001,7 @@ public class GuavaExample {
 </licenses>
 ```
 
-主要なオープンソースライセンス：
+主要なオープンソースライセンス。
 - Apache License 2.0: 商用利用可、特許条項あり
 - MIT License: 最も制限が少ない
 - GPL: ソースコード公開義務あり（商用利用注意）
@@ -1055,7 +1055,7 @@ public class GuavaExample {
 
 #### ライブラリの組み合わせ例
 
-実際のプロジェクトでよく使われる組み合わせ：
+実際のプロジェクトでよく使われる組み合わせ。
 
 ```xml
 <!-- Webアプリケーション開発 -->
@@ -1135,7 +1135,7 @@ mvn versions:display-dependency-updates
 
 ### トラブルシューティング
 
-よくある問題と解決方法：
+よくある問題と解決方法。
 
 <span class="listing-number">**サンプルコード23-12**</span>
 
@@ -1168,27 +1168,27 @@ mvn dependency:purge-local-repository
 
 ## まとめ
 
--   **Javadoc**は、ソースコード内のコメントからAPI仕様書を自動生成する標準ツールです。適切なコメントは、コードの可読性と保守性を高めます。
--   **外部ライブラリ**は、既存の優れた機能を活用し、開発を効率化するために必要です。
--   **Maven**のような依存関係管理ツールを使うことで、外部ライブラリの導入と管理が劇的に簡単になります。
--   `pom.xml`に必要なライブラリの情報を記述するだけで、ライブラリのダウンロードからクラスパスの設定までが自動で行われます。
+- Javadocは、ソースコード内のコメントからAPI仕様書を自動生成する標準ツールです。適切なコメントは、コードの可読性と保守性を高めます
+- 外部ライブラリは、既存の優れた機能を活用し、開発を効率化するために必要です
+- Mavenのような依存関係管理ツールを使うことで、外部ライブラリの導入と管理が劇的に簡単になります
+- `pom.xml`に必要なライブラリの情報を記述するだけで、ライブラリのダウンロードからクラスパスの設定までが自動で行われます
 
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています：
+本章の演習課題は、GitHubリポジトリで提供されています。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/`
 
 ### 課題構成
-- **基礎課題**: 本章の基本概念の理解確認
-- **発展課題**: 応用的な実装練習
-- **チャレンジ課題**: 実践的な総合問題
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
-1. **基礎課題**: Javadocコメントの記述とHTML文書の生成
-2. **発展課題**: Mavenプロジェクトの作成と外部ライブラリの統合
-3. **チャレンジ課題**: 複数のライブラリを組み合わせた実用的なアプリケーション開発
+1. 基礎課題： Javadocコメントの記述とHTML文書の生成
+2. 発展課題： Mavenプロジェクトの作成と外部ライブラリの統合
+3. チャレンジ課題： 複数のライブラリを組み合わせた実用的なアプリケーション開発
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
@@ -1202,9 +1202,10 @@ mvn dependency:purge-local-repository
 
 #### 1. Javadocコメントの構文エラー
 
-**問題**: Javadocコメントの構文が正しくない
+##### 問題
+Javadocコメントの構文が正しくない
 
-**エラー例**:
+##### エラー例
 ```java
 /**
  * ユーザー情報を処理するクラス
@@ -1216,19 +1217,19 @@ public class UserService {
 }
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 warning: @param has no meaning in class documentation
 warning: @return has no meaning in class documentation
 ```
 
-**解決策**:
+##### 解決策
 ```java
 /**
  * ユーザー情報を処理するクラス
  * <p>
  * このクラスは、ユーザーの作成、更新、削除などの
- * 基本的なCRUD操作を提供します。
+ * 基本的なCRUD操作を提供します
  * </p>
  * 
  * @author 開発者名
@@ -1253,15 +1254,16 @@ public class UserService {
 
 #### 2. 文字エンコーディングの問題
 
-**問題**: 日本語のJavadocが文字化けする
+##### 問題
+日本語のJavadocが文字化けする
 
-**エラー例**:
+##### エラー例
 ```bash
 javadoc -d docs src/*.java
 # 日本語が文字化けして表示される
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 文字エンコーディングを明示的に指定
 javadoc -d docs -encoding UTF-8 -charset UTF-8 -docencoding UTF-8 src/*.java
@@ -1272,13 +1274,14 @@ mvn javadoc:javadoc -Dfile.encoding=UTF-8
 
 #### 3. HTMLタグの誤用
 
-**問題**: JavadocでHTMLタグを間違って使用
+##### 問題
+JavadocでHTMLタグを間違って使用
 
-**エラー例**:
+##### エラー例
 ```java
 /**
  * ユーザー情報を<strong>処理するクラス
- * <p>主な機能：
+ * <p>主な機能
  * <ul>
  * <li>ユーザー作成
  * <li>ユーザー更新  // 閉じタグなし
@@ -1289,17 +1292,17 @@ public class UserService {
 }
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 warning: unclosed tag: <strong>
 warning: unclosed tag: <li>
 ```
 
-**解決策**:
+##### 解決策
 ```java
 /**
  * ユーザー情報を<strong>処理する</strong>クラス
- * <p>主な機能：</p>
+ * <p>主な機能</p>
  * <ul>
  * <li>ユーザー作成</li>
  * <li>ユーザー更新</li>
@@ -1315,9 +1318,10 @@ public class UserService {
 
 #### 1. バージョン競合
 
-**問題**: 異なるバージョンのライブラリが競合する
+##### 問題
+異なるバージョンのライブラリが競合する
 
-**エラー例**:
+##### エラー例
 ```xml
 <dependencies>
     <dependency>
@@ -1333,12 +1337,12 @@ public class UserService {
 </dependencies>
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenerator
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <properties>
     <jackson.version>2.15.0</jackson.version>
@@ -1360,9 +1364,10 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 #### 2. 推移的依存関係の問題
 
-**問題**: 間接的に依存するライブラリが競合する
+##### 問題
+間接的に依存するライブラリが競合する
 
-**エラー例**:
+##### エラー例
 ```bash
 mvn dependency:tree
 # 出力例
@@ -1373,7 +1378,7 @@ mvn dependency:tree
 [INFO]    \- commons-logging:commons-logging:jar:1.1.3:compile
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <dependency>
     <groupId>org.springframework</groupId>
@@ -1399,9 +1404,10 @@ mvn dependency:tree
 
 #### 1. 古いバージョンの使用
 
-**問題**: セキュリティ脆弱性のある古いライブラリを使用
+##### 問題
+セキュリティ脆弱性のある古いライブラリを使用
 
-**エラー例**:
+##### エラー例
 ```xml
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
@@ -1410,7 +1416,7 @@ mvn dependency:tree
 </dependency>
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <!-- 脆弱性チェックプラグインを追加 -->
 <plugin>
@@ -1432,9 +1438,10 @@ mvn dependency:tree
 
 #### 2. バージョン範囲の誤用
 
-**問題**: バージョン範囲が適切でない
+##### 問題
+バージョン範囲が適切でない
 
-**エラー例**:
+##### エラー例
 ```xml
 <dependency>
     <groupId>org.apache.commons</groupId>
@@ -1443,7 +1450,7 @@ mvn dependency:tree
 </dependency>
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <dependency>
     <groupId>org.apache.commons</groupId>
@@ -1456,9 +1463,10 @@ mvn dependency:tree
 
 #### 1. メソッドシグネチャの変更
 
-**問題**: ライブラリのバージョンアップでAPIが変更される
+##### 問題
+ライブラリのバージョンアップでAPIが変更される
 
-**エラー例**:
+##### エラー例
 ```java
 // 古いバージョン（1.x）
 ObjectMapper mapper = new ObjectMapper();
@@ -1467,12 +1475,12 @@ String json = mapper.writeValueAsString(object);
 // 新しいバージョン（2.x）でコンパイルエラー
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeValueAsString
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // 新しいAPIに対応
 ObjectMapper mapper = new ObjectMapper();
@@ -1486,15 +1494,16 @@ try {
 
 #### 2. 廃止予定APIの使用
 
-**問題**: 廃止予定のAPIを使用している
+##### 問題
+廃止予定のAPIを使用している
 
-**エラー例**:
+##### エラー例
 ```java
 @SuppressWarnings("deprecation")
 Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // 新しいAPIを使用
 LocalDate date = LocalDate.of(2023, 1, 1);
@@ -1505,9 +1514,10 @@ Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant(
 
 #### 1. クラスが見つからない
 
-**問題**: 必要なクラスがクラスパスに存在しない
+##### 問題
+必要なクラスがクラスパスに存在しない
 
-**エラー例**:
+##### エラー例
 ```java
 import org.apache.commons.lang3.StringUtils;
 
@@ -1518,12 +1528,12 @@ public class Example {
 }
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <!-- 必要な依存関係を追加 -->
 <dependency>
@@ -1535,9 +1545,10 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 #### 2. 実行時とコンパイル時のクラスパスの違い
 
-**問題**: コンパイルは成功するが実行時にエラーが発生
+##### 問題
+コンパイルは成功するが実行時にエラーが発生
 
-**エラー例**:
+##### エラー例
 ```bash
 # コンパイル時
 javac -cp "lib/*" src/Example.java
@@ -1546,7 +1557,7 @@ javac -cp "lib/*" src/Example.java
 java Example  # ClassNotFoundException
 ```
 
-**解決策**:
+##### 解決策
 ```bash
 # 実行時にも適切なクラスパスを指定
 java -cp "lib/*:src" Example
@@ -1560,21 +1571,22 @@ java -jar target/myapp.jar
 
 #### 1. 設定ファイルの読み込みエラー
 
-**問題**: 設定ファイルが正しく読み込まれない
+##### 問題
+設定ファイルが正しく読み込まれない
 
-**エラー例**:
+##### エラー例
 ```java
 // application.propertiesが見つからない
 Properties props = new Properties();
 props.load(new FileInputStream("application.properties"));
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.io.FileNotFoundException: application.properties (No such file or directory)
 ```
 
-**解決策**:
+##### 解決策
 ```java
 // クラスパスから読み込み
 Properties props = new Properties();
@@ -1589,9 +1601,10 @@ try (InputStream input = getClass().getClassLoader()
 
 #### 2. 設定値の型変換エラー
 
-**問題**: 設定値の型が期待と異なる
+##### 問題
+設定値の型が期待と異なる
 
-**エラー例**:
+##### エラー例
 ```properties
 # application.properties
 server.port=8080abc  # 数値でない
@@ -1601,12 +1614,12 @@ server.port=8080abc  # 数値でない
 int port = Integer.parseInt(props.getProperty("server.port"));
 ```
 
-**エラーメッセージ**:
+##### エラーメッセージ
 ```
 java.lang.NumberFormatException: For input string: "8080abc"
 ```
 
-**解決策**:
+##### 解決策
 ```java
 public static int getIntProperty(Properties props, String key, int defaultValue) {
     String value = props.getProperty(key);
@@ -1630,16 +1643,17 @@ int port = getIntProperty(props, "server.port", 8080);
 
 #### 1. ログフレームワークの競合
 
-**問題**: 複数のログフレームワークが競合する
+##### 問題
+複数のログフレームワークが競合する
 
-**エラー例**:
+##### エラー例
 ```
 SLF4J: Class path contains multiple SLF4J bindings.
 SLF4J: Found binding in [jar:file:.../slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 ```
 
-**解決策**:
+##### 解決策
 ```xml
 <!-- 不要なログ実装を除外 -->
 <dependency>
@@ -1664,9 +1678,10 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 
 #### 2. 異なるJSONライブラリの混在
 
-**問題**: JacksonとGsonが混在してAPIが混乱する
+##### 問題
+JacksonとGsonが混在してAPIが混乱する
 
-**解決策**:
+##### 解決策
 ```java
 // 使用するJSONライブラリを統一
 public class JsonUtil {

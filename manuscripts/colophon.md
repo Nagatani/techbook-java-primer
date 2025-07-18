@@ -18,9 +18,9 @@
 **製本**: PDF版  
 
 **使用技術**:  
-- 組版システム： Vivliostyle  
-- フォント： Noto Sans JP, Noto Serif JP  
-- 開発環境： Node.js, npm  
+- 組版システム: Vivliostyle  
+- フォント: Noto Sans JP, Noto Serif JP  
+- 開発環境: Node.js, npm  
 
 **ライセンス**:  
 本書の内容は著作権法により保護されています。  

@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須**：
+必須
 - 第14章の例外処理の概念と技術
 - 第10章までの基本的なJavaプログラミング能力
 - コレクション、ラムダ式、Stream API
 - try-with-resourcesの理解と実践
 
-**推奨**：
+推奨
 - ファイルシステムの基本概念（ファイル、ディレクトリ、パス）
 - 文字エンコーディングの基本知識（UTF-8、Shift_JIS、ASCIIなど）
 
@@ -29,13 +29,13 @@
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています：
+本章の演習課題は、GitHubリポジトリで提供されています。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`
 
 ### 課題構成
-- **基礎課題**: 本章の基本概念の理解確認
-- **発展課題**: 応用的な実装練習
-- **チャレンジ課題**: 実践的な総合問題
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
@@ -70,12 +70,12 @@
 
 ## ファイルI/Oの基礎とストリーム
 
-プログラムが外部のファイルとデータをやりとりすることを**ファイル入出力 (I/O)** と呼びます。Javaでは、このデータの流れを**ストリーム (Stream)** という統一された概念で扱います。
+プログラムが外部のファイルとデータをやりとりすることをファイル入出力 (I/O) と呼びます。Javaでは、このデータの流れをストリーム (Stream) という統一された概念で扱います。
 
--   **入力ストリーム (`InputStream`, `Reader`)**: ファイルなどからプログラムへデータを読み込む流れ。
--   **出力ストリーム (`OutputStream`, `Writer`)**: プログラムからファイルなどへデータを書き出す流れ。
+- ファイルなどからプログラムへデータを読み込む流れ
+- プログラムからファイルなどへデータを書き出す流れ
 
-ストリームには、データをバイト単位で扱う**バイトストリーム**と、文字単位で扱う**キャラクタストリーム**があります。テキストファイルを扱う際は、文字コードを正しく解釈できるキャラクタストリームを使うのが基本です。
+ストリームには、データをバイト単位で扱うバイトストリームと、文字単位で扱うキャラクタストリームがあります。テキストファイルを扱う際は、文字コードを正しく解釈できるキャラクタストリームを使うのが基本です。
 
 ### `try-with-resources`による安全なリソース管理
 
@@ -101,7 +101,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 ### Scannerクラスによる柔軟な入力処理
 
-`java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます：
+`java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
 
 <span class="listing-number">**サンプルコード15-2**</span>
 
@@ -248,7 +248,7 @@ public class TextFileWriterExample {
 
 テキストファイルを扱う際には、文字コード（エンコーディング）の指定が大切です。文字コードが異なると、文字化けが発生する可能性があります。
 
-**主要な文字エンコーディング**：
+主要な文字エンコーディング
 - UTF-8: 現在最も広く使用される可変長エンコーディング
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
@@ -306,7 +306,7 @@ public class CharacterEncodingExample {
 // バイナリファイルの読み込み
 // DataInputStream/DataOutputStreamは、プリミティブ型のデータを効率的にバイナリ形式で保存・読み込みするためのクラスです。
 // テキスト形式と比較してファイルサイズが小さく、読み書き速度も高速です。
-Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します：
+Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
 
 <span class="listing-number">**サンプルコード15-6**</span>
 
@@ -350,10 +350,10 @@ public class DataStreamExample {
 }
 ```
 
-**大切な注意点**：
-1. **順序の一致**: 書き込んだ順序と完全に同じ順序で読み込む必要があります
-2. **エンディアン**: DataStream系は常にビッグエンディアン（ネットワークバイトオーダー）を使用
-3. **文字列の制限**: `writeUTF()`は最大65535バイトまでの文字列しか扱えません
+大切な注意点
+1. 順序の一致： 書き込んだ順序と完全に同じ順序で読み込む必要があります
+2. エンディアン： DataStream系は常にビッグエンディアン（ネットワークバイトオーダー）を使用
+3. 文字列の制限： `writeUTF()`は最大65535バイトまでの文字列しか扱えません
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
@@ -365,11 +365,11 @@ public class DataStreamExample {
 
 ## オブジェクトの直列化（シリアライズ）
 
-Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを**直列化（シリアライズ）**、バイト列からオブジェクトを復元することを**非直列化（デシリアライズ）**と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です。
+Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを直列化（シリアライズ）、バイト列からオブジェクトを復元することを非直列化（デシリアライズ）と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です。
 
--   直列化したいクラスは`java.io.Serializable`インターフェイスを実装する必要があります。
--   `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
--   `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）。
+- 直列化したいクラスは`java.io.Serializable`インターフェイスを実装する必要があります
+- `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します
+- `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）
 
 <span class="listing-number">**サンプルコード15-7**</span>
 
@@ -427,9 +427,9 @@ public class SerializationExample {
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、よりモダンで高機能なファイル・ディレクトリ操作が可能です。
 
--   **`Path`**: ファイルやディレクトリのパスを表現します。
--   **`Paths`**: `Path`オブジェクトを生成するためのユーティリティクラス。
--   **`Files`**: ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス。
+- ファイルやディレクトリのパスを表現します
+- `Path`オブジェクトを生成するためのユーティリティクラス
+- ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
 
 <span class="listing-number">**サンプルコード15-8**</span>
 
@@ -559,7 +559,7 @@ public class CSVProcessingExample {
 
 ファイル操作でしばしば必要となる日付時刻処理については、Java 8で導入されたjava.time APIを使用することを強く推奨します。従来のjava.util.DateやCalendarクラスは多くの問題があるため、新しいAPIを使用してください。
 
-java.time APIの詳細な使い方については、**付録F: java.time API完全ガイド**を参照してください。そこでは以下の内容を詳しく解説しています：
+java.time APIの詳細な使い方については、付録F: java.time API完全ガイドを参照してください。そこでは以下の内容を詳しく解説しています。
 
 - レガシーDate/Calendarの問題点
 - LocalDate、LocalTime、LocalDateTime、ZonedDateTimeの使い分け
@@ -606,11 +606,11 @@ public class FileChooserExample {
 
 ## Text Blocks - 複数行文字列の効率的な処理
 
-Java 15で正式に導入された**Text Blocks**は、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。特にファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
+Java 15で正式に導入されたText Blocksは、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。特にファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
 
 ### 従来の文字列連結の問題点
 
-Text Blocksが導入される前は、複数行の文字列を作成するために文字列連結やエスケープシーケンスを多用する必要がありました：
+Text Blocksが導入される前は、複数行の文字列を作成するために文字列連結やエスケープシーケンスを多用する必要がありました。
 
 <span class="listing-number">**サンプルコード15-19**</span>
 
@@ -655,7 +655,7 @@ public class TraditionalStringProblems {
 
 ### Text Blocksの基本構文
 
-Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します：
+Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
 
 <span class="listing-number">**サンプルコード15-20**</span>
 
@@ -696,7 +696,7 @@ public class TextBlockBasics {
 
 ### インデントの自動処理
 
-Text Blocksの最も重要な特徴の1つは、**共通インデントの自動除去**です：
+Text Blocksの最も重要な特徴の1つは、共通インデントの自動除去です。
 
 <span class="listing-number">**サンプルコード15-21**</span>
 
@@ -755,7 +755,7 @@ public class TextBlockIndentation {
 
 ### エスケープシーケンスの簡略化
 
-Text Blocksでは多くのエスケープシーケンスが不要になります：
+Text Blocksでは多くのエスケープシーケンスが不要になります。
 
 <span class="listing-number">**サンプルコード15-22**</span>
 
@@ -807,7 +807,7 @@ public class TextBlockEscaping {
 
 ### 実践例：構造化データの処理
 
-Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際に特に威力を発揮します：
+Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際に特に威力を発揮します。
 
 <span class="listing-number">**サンプルコード15-23**</span>
 
@@ -989,7 +989,7 @@ public class TextBlockStructuredData {
 
 ### ファイルI/Oでの活用例
 
-Text Blocksをファイル読み書きと組み合わせた実践的な使用例：
+Text Blocksをファイル読み書きと組み合わせた実践的な使用例。
 
 <span class="listing-number">**サンプルコード15-24**</span>
 
@@ -1230,15 +1230,15 @@ public class TextBlockFileIO {
 
 ### Text Blocksのベストプラクティス
 
-1. **構造化データでの活用**: JSON、XML、SQL、HTMLなどの複雑な構造を持つテキストでText Blocksの真価が発揮されます。
+1. 構造化データでの活用： JSON、XML、SQL、HTMLなどの複雑な構造を持つテキストでText Blocksの真価が発揮されます。
 
-2. **適切なインデント管理**: 最も左の行がインデントの基準となることを理解して使用しましょう。
+2. 適切なインデント管理： 最も左の行がインデントの基準となることを理解して使用しましょう。
 
-3. **文字列フォーマッティングとの組み合わせ**: `formatted()`メソッドや`String.format()`と組み合わせることで、動的なコンテンツ生成が可能です。
+3. 文字列フォーマッティングとの組み合わせ： `formatted()`メソッドや`String.format()`と組み合わせることで、動的なコンテンツ生成が可能です。
 
-4. **ファイルテンプレートとしての利用**: 設定ファイル、レポート、コード生成のテンプレートとして活用できます。
+4. ファイルテンプレートとしての利用： 設定ファイル、レポート、コード生成のテンプレートとして活用できます。
 
-5. **可読性の向上**: 従来のエスケープシーケンスを多用した文字列と比較して、大幅に可読性が向上します。
+5. 可読性の向上： 従来のエスケープシーケンスを多用した文字列と比較して、大幅に可読性が向上します。
 
 Text Blocksは、特にファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生成など、現代的なJavaアプリケーション開発において欠かせない機能となっています。
 
@@ -1246,12 +1246,12 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 
 ## まとめ
 
--   JavaのファイルI/Oは**ストリーム**ベースです。
--   リソース管理には**`try-with-resources`**を使い、安全性を高めましょう。
--   テキストファイルは**キャラクタストリーム**（`Reader`/`Writer`）、バイナリファイルは**バイトストリーム**（`InputStream`/`OutputStream`）で扱います。
--   **オブジェクト直列化**は、オブジェクトの状態を簡単に保存・復元する強力な手段です。
--   **NIO.2 (`java.nio.file`)** を使うと、モダンで高機能なファイルシステム操作が可能です。
--   GUIでは**`JFileChooser`**を使って、ユーザーにファイルを選択させることができます。
+- JavaのファイルI/Oはストリームベースです
+- リソース管理には`try-with-resources`を使い、安全性を高めましょう
+- テキストファイルはキャラクタストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱います
+- オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段です
+- NIO.2 (`java.nio.file`) を使うと、モダンで高機能なファイルシステム操作が可能です
+- GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させることができます
 
 ## よくあるエラーと対処法
 
@@ -1259,7 +1259,8 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 
 ### 1. ファイルパスの問題
 
-**問題**: 相対パスや絶対パスの混在によるファイルが見つからないエラー
+##### 問題
+相対パスや絶対パスの混在によるファイルが見つからないエラー
 
 ```java
 // 悪い例
@@ -1269,9 +1270,10 @@ if (!file.exists()) {
 }
 ```
 
-**エラーメッセージ**: `FileNotFoundException` または `NoSuchFileException`
+エラーメッセージ: `FileNotFoundException` または `NoSuchFileException`
 
-**対処法**: 適切なパス管理と存在チェックを実装する
+##### 対処法
+適切なパス管理と存在チェックを実装する
 
 ```java
 // 良い例
@@ -1296,7 +1298,8 @@ if (Files.exists(configPath)) {
 
 ### 2. エンコーディングの問題
 
-**問題**: 文字化けや不正な文字でのファイル読み書き
+##### 問題
+文字化けや不正な文字でのファイル読み書き
 
 ```java
 // 悪い例
@@ -1305,9 +1308,9 @@ BufferedReader br = new BufferedReader(reader);
 String line = br.readLine(); // 文字化けする可能性
 ```
 
-**エラーメッセージ**: `MalformedInputException` または文字化けした出力
+エラーメッセージ: `MalformedInputException` または文字化けした出力
 
-**対処法**: 明示的にエンコーディングを指定する
+対処法: 明示的にエンコーディングを指定する
 
 ```java
 // 良い例
@@ -1333,7 +1336,8 @@ try (BufferedWriter writer = Files.newBufferedWriter(
 
 ### 3. ファイルロックとアクセス権限の問題
 
-**問題**: ファイルが他のプロセスによって使用されている、または権限不足
+##### 問題
+ファイルが他のプロセスによって使用されている、または権限不足
 
 ```java
 // 問題のあるコード
@@ -1344,9 +1348,9 @@ try {
 }
 ```
 
-**エラーメッセージ**: `AccessDeniedException` または `FileSystemException`
+エラーメッセージ: `AccessDeniedException` または `FileSystemException`
 
-**対処法**: 適切な権限チェックとエラーハンドリングを実装する
+対処法: 適切な権限チェックとエラーハンドリングを実装する
 
 ```java
 // 良い例
@@ -1384,7 +1388,8 @@ try {
 
 ### 4. メモリ効率の問題
 
-**問題**: 大きなファイルを一度にメモリに読み込む
+##### 問題
+大きなファイルを一度にメモリに読み込む
 
 ```java
 // 悪い例（大きなファイルでOutOfMemoryError）
@@ -1392,9 +1397,9 @@ String content = Files.readString(Paths.get("large_file.txt"));
 String[] lines = content.split("\n");
 ```
 
-**エラーメッセージ**: `OutOfMemoryError`
+エラーメッセージ: `OutOfMemoryError`
 
-**対処法**: ストリーミング処理やBufferedReaderを使用する
+対処法: ストリーミング処理やBufferedReaderを使用する
 
 ```java
 // 良い例1: ストリーミング処理
@@ -1429,7 +1434,8 @@ try (BufferedReader reader = Files.newBufferedReader(
 
 ### 5. クロスプラットフォーム対応の問題
 
-**問題**: 特定のOS固有のパス区切り文字やファイル名制限
+##### 問題
+特定のOS固有のパス区切り文字やファイル名制限
 
 ```java
 // 悪い例
@@ -1437,7 +1443,7 @@ File file = new File("data\\config\\settings.txt"); // Windows固有
 String path = "/home/user/data.txt"; // Unix固有
 ```
 
-**対処法**: `java.nio.file.Path`とシステムプロパティを活用する
+対処法: `java.nio.file.Path`とシステムプロパティを活用する
 
 ```java
 // 良い例
@@ -1477,7 +1483,8 @@ private static boolean isValidFileName(String fileName) {
 
 ### 6. 並行ファイルアクセスの問題
 
-**問題**: 複数のスレッドからの同時ファイルアクセス
+##### 問題
+複数のスレッドからの同時ファイルアクセス
 
 ```java
 // 悪い例
@@ -1490,7 +1497,7 @@ public void appendLog(String message) {
 }
 ```
 
-**対処法**: 適切な同期化とファイルロックを実装する
+対処法: 適切な同期化とファイルロックを実装する
 
 ```java
 // 良い例
@@ -1521,7 +1528,8 @@ public class ThreadSafeFileLogger {
 
 ### 7. 一時ファイルの管理問題
 
-**問題**: 一時ファイルの削除忘れによるディスク容量の浪費
+##### 問題
+一時ファイルの削除忘れによるディスク容量の浪費
 
 ```java
 // 悪い例
@@ -1529,7 +1537,7 @@ File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
 // 処理後にファイルが残る
 ```
 
-**対処法**: 適切な一時ファイル管理を実装する
+対処法: 適切な一時ファイル管理を実装する
 
 ```java
 // 良い例
@@ -1571,7 +1579,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
 ### デバッグのヒント
 
-1. **ファイルパスの確認**:
+1. ファイルパスの確認：
    ```java
    Path path = Paths.get("config.txt");
    System.out.println("現在のディレクトリ: " + System.getProperty("user.dir"));
@@ -1579,7 +1587,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
    System.out.println("ファイル存在: " + Files.exists(path));
    ```
 
-2. **ファイル属性の確認**:
+2. ファイル属性の確認：
    ```java
    if (Files.exists(path)) {
        System.out.println("読み取り可能: " + Files.isReadable(path));
@@ -1589,7 +1597,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
    }
    ```
 
-3. **例外の詳細情報の活用**:
+3. 例外の詳細情報の活用：
    ```java
    try {
        Files.readString(path);

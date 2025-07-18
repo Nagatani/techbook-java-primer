@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-**必須**：
+必須
 - 第5章までのオブジェクト指向プログラミングの基本概念
 - クラスとインスタンスの関係
 - カプセル化とアクセス制御
 - オブジェクトの状態（フィールド）とその変更
 
-**推奨**：
+推奨
 - マルチスレッド環境での共有データの問題理解
 - 大規模プログラムでのデータ一貫性維持の経験
 
@@ -28,7 +28,7 @@
 
 ### 到達レベルの指標
 
-最終的な到達レベルとしては、以下のことができます：
+最終的な到達レベルとしては、以下のことができます。
 - finalキーワードの3つの用途を正しく理解し、状況に応じて適切に使い分けられる
 - 完全な不変オブジェクトを設計・実装し、その利点を最大限に活用できる
 - スレッドセーフなコードを不変性を使って実現できる
@@ -45,11 +45,11 @@
 
 ### なぜ不変性が重要なのか
 
-可変オブジェクトは、プログラムの複雑性を増大させ、予期しないバグの原因となることがあります。特に以下のような状況で問題が顕著になります：
+可変オブジェクトは、プログラムの複雑性を増大させ、予期しないバグの原因となることがあります。特に以下のような状況で問題が顕著になります。
 
-**1. マルチスレッド環境での競合状態**
+#### 1. マルチスレッド環境での競合状態
 
-以下のコードは、可変オブジェクトがマルチスレッド環境でどのような問題を引き起こすかを示しています：
+以下のコードは、可変オブジェクトがマルチスレッド環境でどのような問題を引き起こすかを示しています。
 
 <span class="listing-number">**サンプルコード6-1**</span>
 
@@ -106,7 +106,7 @@ public class ThreadSafetyProblem {
 }
 ```
 
-**2. 意図しない副作用**
+#### 2. 意図しない副作用
 
 ```java
 // 可変オブジェクトを返すメソッドの問題
@@ -126,7 +126,7 @@ loc.setX(100);  // Employeeの内部状態が外部から変更される！
 
 ### 不変オブジェクトによる解決
 
-これらの問題を解決するのが、不変オブジェクトです：
+これらの問題を解決するのが、不変オブジェクトです。
 
 ```java
 // 不変オブジェクトの実装
@@ -155,16 +155,16 @@ public final class ImmutablePoint {
 }
 ```
 
-**不変オブジェクトの利点**：
+不変オブジェクトの利点
 
-1. **スレッドセーフティ**: 状態が変更されないため、同期化なしで安全に共有できる
-2. **予測可能性**: 一度作成されたオブジェクトの状態は変わらない
-3. **キャッシュ可能**: 状態が変わらないため、安全にキャッシュできる
-4. **デバッグの容易さ**: 状態変更のタイミングを追跡する必要がない
+1. スレッドセーフティ： 状態が変更されないため、同期化なしで安全に共有できる
+2. 予測可能性： 一度作成されたオブジェクトの状態は変わらない
+3. キャッシュ可能： 状態が変わらないため、安全にキャッシュできる
+4. デバッグの容易さ： 状態変更のタイミングを追跡する必要がない
 
 ## finalキーワードの3つの用途
 
-`final`キーワードは、Javaで「変更不可」を表現するための重要な機能です。`final`は以下の3つの場所で使用でき、それぞれ異なる意味を持ちます：
+`final`キーワードは、Javaで「変更不可」を表現するための重要な機能です。`final`は以下の3つの場所で使用でき、それぞれ異なる意味を持ちます。
 
 ### final変数（定数と不変フィールド）
 
@@ -198,11 +198,11 @@ public class Constants {
 }
 ```
 
-**final変数の初期化タイミング**：
-- 宣言時： `final int x = 10;`
-- コンストラクタ内： インスタンスフィールドの場合
-- インスタンス初期化子： インスタンスフィールドの場合
-- static初期化子： static finalフィールドの場合
+final変数の初期化タイミング
+- 宣言時: `final int x = 10;`
+- コンストラクタ内: インスタンスフィールドの場合
+- インスタンス初期化子: インスタンスフィールドの場合
+- static初期化子: static finalフィールドの場合
 
 ### finalメソッド（オーバーライドの禁止）
 
@@ -262,10 +262,10 @@ public final class ImmutablePerson {
 // class ExtendedPerson extends ImmutablePerson { }
 ```
 
-**finalクラスの利点**：
-1. **セキュリティ**: 悪意のあるサブクラスによる動作の改変を防ぐ
-2. **パフォーマンス**: JVMが最適化しやすい
-3. **設計の明確化**: このクラスは継承を意図していないことを明示
+finalクラスの利点
+1. セキュリティ： 悪意のあるサブクラスによる動作の改変を防ぐ
+2. パフォーマンス： JVMが最適化しやすい
+3. 設計の明確化： このクラスは継承を意図していないことを明示
 
 ## 不変オブジェクトの設計パターン
 
@@ -273,11 +273,11 @@ public final class ImmutablePerson {
 
 ### 不変クラスの基本ルール
 
-1. **クラスをfinalにする**: 継承を防ぐ
-2. **すべてのフィールドをprivate finalにする**: 外部からの直接アクセスと変更を防ぐ
-3. **setterメソッドを提供しない**: 状態変更の手段を提供しない
-4. **コンストラクタで初期化を完了する**: すべてのフィールドをコンストラクタで設定
-5. **防御的コピーを行う**: 可変オブジェクトをフィールドに持つ場合
+1. クラスをfinalにする： 継承を防ぐ
+2. すべてのフィールドをprivate finalにする： 外部からの直接アクセスと変更を防ぐ
+3. setterメソッドを提供しない： 状態変更の手段を提供しない
+4. コンストラクタで初期化を完了する： すべてのフィールドをコンストラクタで設定
+5. 防御的コピーを行う： 可変オブジェクトをフィールドに持つ場合
 
 ### 実践例：不変な`Person`クラス
 
@@ -401,12 +401,12 @@ public class ImmutableExample {
 }
 ```
 
-**不変オブジェクトの重要な特性**：
+不変オブジェクトの重要な特性
 
-1. **スレッドセーフティ**: 同期化なしで複数のスレッドから安全にアクセス可能
-2. **予測可能性**: オブジェクトの状態が変わらないためデバッグが容易
-3. **キャッシュ可能**: 状態が変わらないためHashMapのキーとして安全に使用可能
-4. **関数型プログラミングとの親和性**: 副作用のないコードが書きやすい
+1. スレッドセーフティ： 同期化なしで複数のスレッドから安全にアクセス可能
+2. 予測可能性： オブジェクトの状態が変わらないためデバッグが容易
+3. キャッシュ可能： 状態が変わらないためHashMapのキーとして安全に使用可能
+4. 関数型プログラミングとの親和性： 副作用のないコードが書きやすい
 
 ## 防御的コピーとビルダーパターン
 
@@ -588,48 +588,48 @@ public class BuilderExample {
 }
 ```
 
-**ビルダーパターンの利点**：
-1. **可読性**: どのパラメータに何を設定しているかが明確
-2. **柔軟性**: 必須パラメータとオプションパラメータを明確に区別
-3. **不変性の保証**: 構築後は変更不可能
-4. **バリデーション**: 構築時に値の妥当性を検証
+ビルダーパターンの利点
+1. 可読性： どのパラメータに何を設定しているかが明確
+2. 柔軟性： 必須パラメータとオプションパラメータを明確に区別
+3. 不変性の保証： 構築後は変更不可能
+4. バリデーション： 構築時に値の妥当性を検証
 
 ## まとめ
 
 本章では、Javaにおける不変性とfinalキーワードの重要性について学習しました。
 
-**学習した主な内容**：
-1. **不変オブジェクトの概念**: 一度作成されたら状態が変更できないオブジェクト
-2. **finalキーワードの3つの用途**: 変数、メソッド、クラスへの適用
-3. **防御的コピー**: 可変オブジェクトを安全に扱う技術
-4. **ビルダーパターン**: 複雑な不変オブジェクトを構築する設計パターン
+学習した主な内容
+1. 不変オブジェクトの概念： 一度作成されたら状態が変更できないオブジェクト
+2. finalキーワードの3つの用途： 変数、メソッド、クラスへの適用
+3. 防御的コピー: 可変オブジェクトを安全に扱う技術
+4. ビルダーパターン： 複雑な不変オブジェクトを構築する設計パターン
 
-**不変性の利点**：
-- スレッドセーフティ： 同期化なしで安全に共有可能
-- 予測可能性： 状態が変わらないため動作が予測しやすい
-- キャッシュ可能性： 安全にキャッシュできる
-- デバッグの容易さ： 状態変更のタイミングを追跡する必要がない
+不変性の利点
+- スレッドセーフティ同期化なしで安全に共有可能
+- 予測可能性状態が変わらないため動作が予測しやすい
+- キャッシュ可能性安全にキャッシュできる
+- デバッグの容易さ状態変更のタイミングを追跡する必要がない
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。特に並行プログラミングや大規模システムの開発において、その価値が発揮されます。
 
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています：
+本章の演習課題は、GitHubリポジトリで提供されています。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter06/`
 
 ### 課題構成
-- **基礎課題**: 本章の基本概念の理解確認
-- **発展課題**: 応用的な実装練習
-- **チャレンジ課題**: 実践的な総合問題
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
 ### 課題の概要
 
-1. **基礎課題**: 不変なPointクラス - 基本的な不変オブジェクトの実装
-2. **発展課題**: 不変コレクション - 防御的コピーを使った複雑な不変性の実現
-3. **チャレンジ課題**: ビルダーパターン - 不変オブジェクトの柔軟な構築
+1. 基礎課題： 不変なPointクラス - 基本的な不変オブジェクトの実装
+2. 発展課題： 不変コレクション - 防御的コピーを使った複雑な不変性の実現
+3. チャレンジ課題： ビルダーパターン - 不変オブジェクトの柔軟な構築
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
@@ -643,7 +643,7 @@ public class BuilderExample {
 
 ### 1. finalキーワードの使い方の間違い
 
-**エラー例: final変数の再代入**
+#### エラー例: final変数の再代入
 
 ```java
 public class FinalErrorExample {
@@ -654,12 +654,12 @@ public class FinalErrorExample {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ
 ```
 Error: Cannot assign a value to final variable number
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public class FinalCorrectExample {
     public static void main(String[] args) {
@@ -674,7 +674,7 @@ public class FinalCorrectExample {
 }
 ```
 
-**エラー例: final変数の未初期化**
+#### エラー例: final変数の未初期化
 
 ```java
 public class UninitializedFinalExample {
@@ -686,12 +686,12 @@ public class UninitializedFinalExample {
 }
 ```
 
-**エラーメッセージ:**
+##### エラーメッセージ
 ```
 Error: Variable name might not have been initialized
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public class InitializedFinalExample {
     private final String name;
@@ -711,7 +711,7 @@ public class InitializedFinalExample {
 
 ### 2. 不変オブジェクトの設計ミス
 
-**エラー例: 可変フィールドの露出**
+#### エラー例: 可変フィールドの露出
 
 ```java
 public final class BrokenImmutablePerson {
@@ -729,7 +729,7 @@ public final class BrokenImmutablePerson {
 }
 ```
 
-**問題点:**
+##### 問題点
 ```java
 List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
 BrokenImmutablePerson person = new BrokenImmutablePerson("太郎", hobbies);
@@ -739,7 +739,7 @@ person.getHobbies().add("ゲーム"); // RuntimeException
 hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public final class ImmutablePerson {
     private final String name;
@@ -766,7 +766,7 @@ public final class ImmutablePerson {
 
 ### 3. 防御的コピーの実装忘れ
 
-**エラー例: 日付オブジェクトの不適切な扱い**
+#### エラー例: 日付オブジェクトの不適切な扱い
 
 ```java
 public final class BrokenImmutableEvent {
@@ -784,7 +784,7 @@ public final class BrokenImmutableEvent {
 }
 ```
 
-**問題点:**
+##### 問題点
 ```java
 Date date = new Date();
 BrokenImmutableEvent event = new BrokenImmutableEvent("会議", date);
@@ -794,7 +794,7 @@ date.setTime(System.currentTimeMillis() + 86400000); // 翌日に変更
 event.getEventDate().setTime(0); // イベント日時が変更される
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public final class ImmutableEvent {
     private final String title;
@@ -817,7 +817,7 @@ public final class ImmutableEvent {
 }
 ```
 
-**モダンなアプローチ（推奨）:**
+##### モダンなアプローチ（推奨）
 ```java
 public final class ModernImmutableEvent {
     private final String title;
@@ -840,7 +840,7 @@ public final class ModernImmutableEvent {
 
 ### 4. final配列・コレクションの誤解
 
-**エラー例: final配列の誤用**
+#### エラー例: final配列の誤用
 
 ```java
 public class FinalArrayMisunderstanding {
@@ -858,7 +858,7 @@ public class FinalArrayMisunderstanding {
 }
 ```
 
-**対処法（真の不変配列）:**
+##### 対処法（真の不変配列）
 ```java
 public final class ImmutableArray {
     private final int[] numbers;
@@ -883,7 +883,7 @@ public final class ImmutableArray {
 }
 ```
 
-**エラー例: Listの不変性に関する誤解**
+#### エラー例: Listの不変性に関する誤解
 
 ```java
 public class ListImmutabilityMisunderstanding {
@@ -903,7 +903,7 @@ public class ListImmutabilityMisunderstanding {
 
 ### 5. 不変性の破綻パターン
 
-**エラー例: 継承による不変性の破綻**
+#### エラー例: 継承による不変性の破綻
 
 ```java
 public class ImmutablePerson {
@@ -936,7 +936,7 @@ public class MutableEmployee extends ImmutablePerson {
 }
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public final class ImmutablePerson { // finalクラス
     private final String name;
@@ -959,7 +959,7 @@ public final class ImmutablePerson { // finalクラス
 
 ### 6. パフォーマンスへの影響
 
-**エラー例: 不必要な防御的コピー**
+#### エラー例: 不必要な防御的コピー
 
 ```java
 public final class IneffientImmutableClass {
@@ -980,7 +980,7 @@ public final class IneffientImmutableClass {
 }
 ```
 
-**対処法:**
+##### 対処法
 ```java
 public final class EfficientImmutableClass {
     private final List<String> items;
@@ -1003,7 +1003,7 @@ public final class EfficientImmutableClass {
 }
 ```
 
-**大量データの場合の最適化:**
+##### 大量データの場合の最適化
 ```java
 public final class OptimizedImmutableClass {
     private final List<String> items;
@@ -1028,9 +1028,9 @@ public final class OptimizedImmutableClass {
 
 ### デバッグのヒント
 
-1. **不変性の検証**: オブジェクトが本当に不変かテストで確認
-2. **防御的コピーの確認**: 入力と出力の両方で適切に実装されているか確認
-3. **finalキーワードの使用**: IDEの警告を活用してfinalを適切に使用
-4. **不変コレクションの活用**: `Collections.unmodifiableList()`などの使用
+1. 不変性の検証： オブジェクトが本当に不変かテストで確認
+2. 防御的コピーの確認： 入力と出力の両方で適切に実装されているか確認
+3. finalキーワードの使用： IDEの警告を活用してfinalを適切に使用
+4. 不変コレクションの活用： `Collections.unmodifiableList()`などの使用
 
 これらのエラーパターンを理解することで、堅牢で効率的な不変オブジェクトを設計できるようになります。
