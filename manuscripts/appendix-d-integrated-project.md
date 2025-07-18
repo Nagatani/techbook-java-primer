@@ -1392,7 +1392,7 @@ public class DatabaseIntegrationTest {
 - パフォーマンス重視の環境構築
 
 ### 技術詳細の深堀り
-付録B: 技術的詳細解説（Deep Dive）
+付録B: 技術的な詳細解説（Deep Dive）
 
 #### プロジェクトの各フェーズに対応する詳細技術
 

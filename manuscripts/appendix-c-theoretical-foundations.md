@@ -253,7 +253,7 @@ public class BadBankAccount {
 }
 ```
 
-良い例適切なカプセル化。
+良い例：データの整合性を保証するカプセル化。
 <span class="listing-number">リストAC-9</span>
 
 ```java
@@ -649,7 +649,7 @@ class StockDisplay implements Observer {
 
 ## 📐 C.5 アルゴリズム解析と設計
 
-### C.5.1 計算複雑度理論
+### C.5.1 計算の複雑度理論
 
 #### 時間複雑度の厳密な定義
 
@@ -762,10 +762,10 @@ public class DynamicArray<T> {
 ```
 
 償却解析。
-- resize操作の頻度： 1, 2, 4, 8, 16, ..., 2ⁱ
+- resize操作の頻度： 1, 2, 4, 8, 16, ... 2ⁱ（2のi乗）
 - n回のadd操作でresizeはlog₂(n) 回発生
 - 総コスト： n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
-- 償却時間計算量： O(3n/n) = O(1)
+- 償却時間の計算量： O(3n/n) = O(1)
 
 #### ハッシュテーブルの理論
 
