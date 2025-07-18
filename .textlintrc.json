@@ -1,7 +1,6 @@
 {
   "filters": {},
   "rules": {
-    "preset-japanese": true,
     "preset-ja-technical-writing": {
       "sentence-length": {
         "max": 120
@@ -10,15 +9,24 @@
         "max": 4
       },
       "no-exclamation-question-mark": false,
-      "no-doubled-joshi": {
-        "strict": false,
-        "allow": ["も", "や", "か"]
-      },
       "ja-no-successive-word": false,
-      "ja-no-mixed-period": {
-        "allowPeriodMarks": [":", "："]
-      },
+      "no-doubled-joshi": false,
+      "ja-no-mixed-period": false,
+      "ja-unnatural-alphabet": false,
       "ja-no-redundant-expression": false
+    },
+    "spellcheck-tech-word": false,
+    "no-mixed-zenkaku-and-hankaku-alphabet": false,
+    "@textlint-ja/preset-ai-writing": {
+      "ai-tech-writing-guideline": {
+        "severity": "info"
+      }
+    }
+  },
+  "rules_bk": {
+    "preset-japanese": true,
+    "ja-no-mixed-period": {
+      "allowPeriodMarks": [":", "："]
     },
     "preset-jtf-style": {
       "1.1.1.本文": true,
@@ -36,12 +44,9 @@
       "4.2.7.コロン(：)": true,
       "4.3.1.丸かっこ（）": true
     },
-    "spellcheck-tech-word": false,
-    "no-mixed-zenkaku-and-hankaku-alphabet": false,
-    "@textlint-ja/preset-ai-writing": {
-        "ai-tech-writing-guideline": {
-            "severity": "info"
-        }
+    "no-doubled-joshi": {
+      "strict": false,
+      "allow": ["も", "や", "か"]
     }
   }
 }
