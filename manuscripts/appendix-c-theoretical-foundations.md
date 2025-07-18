@@ -6,7 +6,7 @@
 
 ## 章とのマッピング
 
-各セクションは本文の設計概念と理論的に連動しています：
+### 各セクションは本文の設計概念と理論的に連動しています
 
 - 第3章（OOP必要性）の理論的背景
 - 第4章（カプセル化）・第8章（設計パターン）の基礎理論
@@ -26,11 +26,11 @@
 #### プロジェクト失敗の典型的パターン
 
 IBM System/360 OS開発（1960年代）
-- 予算: 当初5000万ドル → 最終5億ドル（10倍超過）
-- 期間: 2年予定 → 4年以上
-- 品質: リリース後も深刻なバグが多数発見
+- 予算： 当初5000万ドル → 最終5億ドル（10倍超過）
+- 期間： 2年予定 → 4年以上
+- 品質： リリース後も深刻なバグが多数発見
 
-原因分析
+原因分析。
 1. 複雑性の指数的増大： 機能数の増加に対してバグ数が指数的に増加
 2. コミュニケーションコスト： チームサイズnに対してコミュニケーション経路がn(n-1)/2で増加
 3. 変更の波及効果： 1箇所の変更が予期しない複数ヵ所に影響
@@ -60,7 +60,7 @@ public String processData(int type, boolean flag, String data) {
 }
 ```
 
-改善後（複雑度: 3）
+改善後（複雑度： 3）
 <span class="listing-number">リストAC-2</span>
 
 ```java
@@ -87,7 +87,7 @@ private String processType1(boolean flag, String data) {
 
 #### Dijkstraの構造化定理
 
-任意のプログラムは以下の3つの制御構造の組み合わせで表現可能：
+##### 任意のプログラムは以下の3つの制御構造の組み合わせで表現可能
 
 1. 順次処理（Sequence）
 <span class="listing-number">リストAC-3</span>
@@ -120,7 +120,7 @@ while (condition) {
 
 #### 形式的証明と不変条件
 
-ループ不変条件の例
+ループ不変条件の例。
 <span class="listing-number">リストAC-6</span>
 
 ```java
@@ -146,13 +146,13 @@ public int findMax(int[] array) {
 
 ### 実装詳細との対応
 
-理論的基盤の理解を深めるため、以下の付録Bセクションで具体的な実装技術を学習できます：
+#### 理論的基盤の理解を深めるため、以下の付録Bセクションで具体的な実装技術を学習できます
 
-JVM レベルでの最適化理解:
+#### JVMレベルでの最適化理解
 - 付録B.01「JVMアーキテクチャとバイトコード」
   - ソフトウェアクライシスで問題となった複雑性制御が、JVMレベルでどう解決されているか
 
-設計原則の実装技術:
+#### 設計原則の実装技術
 - 付録B.04「ソフトウェア設計原則」
   - SOLID原則の具体的なJava実装パターン
   - 複雑度削減のための実践的デザインパターン
@@ -165,12 +165,12 @@ JVM レベルでの最適化理解:
 
 #### ADTの数学的定義
 
-抽象データ型は以下の要素で構成される：
+##### 抽象データ型は以下の要素で構成される
 - データの値域
 - データに対する操作
 - 操作の性質を定義する規則
 
-スタックADTの例
+スタックADTの例。
 <span class="listing-number">リストAC-7</span>
 
 ```java
@@ -233,12 +233,12 @@ public class ArrayStack<T> implements Stack<T> {
 
 #### 情報隠蔽の原則（Parnas, 1972）
 
-モジュール分割の基準
+モジュール分割の基準。
 - 各モジュールは変更されやすい設計決定を隠蔽する
 - インターフェイスは安定的で最小限に保つ
 - 実装の詳細は外部から見えないようにする
 
-悪い例実装詳細の露出
+悪い例実装詳細の露出。
 <span class="listing-number">リストAC-8</span>
 
 ```java
@@ -253,7 +253,7 @@ public class BadBankAccount {
 }
 ```
 
-良い例適切なカプセル化
+良い例適切なカプセル化。
 <span class="listing-number">リストAC-9</span>
 
 ```java
@@ -286,7 +286,7 @@ public class GoodBankAccount {
 
 型Sが型Tのサブタイプである場合、プログラム内でT型のオブジェクトが使われている箇所は、すべてS型のオブジェクトで置き換え可能でなければならない。
 
-LSP違反の例
+LSP違反の例。
 <span class="listing-number">リストAC-10</span>
 
 ```java
@@ -329,7 +329,7 @@ public void testLSPViolation() {
 }
 ```
 
-LSP遵守の設計
+LSP遵守の設計。
 <span class="listing-number">リストAC-11</span>
 
 ```java
@@ -505,9 +505,9 @@ public class Utilities {
 ### C.4.1 GoFパターンの分類理論
 
 #### 生成パターン（Creational Patterns）
-オブジェクトの生成に関する問題を解決：
+##### オブジェクトの生成に関する問題を解決
 
-Singletonパターンの理論的分析
+Singletonパターンの理論的分析。
 <span class="listing-number">リストAC-19</span>
 
 ```java
@@ -542,14 +542,14 @@ public enum DatabaseConnection {
 }
 ```
 
-理論的考察
+理論的考察。
 - メモリ可視性の問題（volatile修飾子の必要性）
 - Double-checked lockingパターンの正当性
 - 初期化のthread-safety
 
 #### 構造パターン（Structural Patterns）
 
-Decoratorパターンの数学的モデル
+Decoratorパターンの数学的モデル。
 <span class="listing-number">リストAC-20</span>
 
 ```java
@@ -597,7 +597,7 @@ Coffee coffee = new MilkDecorator(
 
 #### 振る舞いパターン（Behavioral Patterns）
 
-Observerパターンとイベント代数
+Observerパターンとイベント代数。
 <span class="listing-number">リストAC-21</span>
 
 ```java
@@ -640,7 +640,7 @@ class StockDisplay implements Observer {
 }
 ```
 
-理論的考察
+理論的考察。
 - イベント-リスナパターンの数学的モデル
 - 通知の順序保証性
 - メモリリークの防止（WeakReference）
@@ -761,11 +761,11 @@ public class DynamicArray<T> {
 }
 ```
 
-償却解析
-- resize操作の頻度: 1, 2, 4, 8, 16, ..., 2ⁱ
+償却解析。
+- resize操作の頻度： 1, 2, 4, 8, 16, ..., 2ⁱ
 - n回のadd操作でresizeはlog₂(n) 回発生
-- 総コスト: n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
-- 償却時間計算量: O(3n/n) = O(1)
+- 総コスト： n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
+- 償却時間計算量： O(3n/n) = O(1)
 
 #### ハッシュテーブルの理論
 
@@ -826,7 +826,7 @@ public class HashTable<K, V> {
 }
 ```
 
-理論的考察
+理論的考察。
 - 期待検索時間O(1 + α)（αは負荷率）
 - 最悪時間O(n)（すべてのキーが同じバケットにハッシュ）
 - 全域ハッシュ（Universal Hashing）による期待性能保証
@@ -839,7 +839,7 @@ public class HashTable<K, V> {
 
 #### ホーア論理（Hoare Logic）
 
-{P} S {Q} の形式で表現：
+##### {P} S {Q} の形式で表現
 - P事前条件（Precondition）
 - S文（Statement）
 - Q事後条件（Postcondition）
@@ -955,7 +955,7 @@ public class BankAccount {
 
 #### データ競合の定義
 
-2つのメモリアクセス操作が以下の条件を満たすとき、データ競合が発生：
+##### 2つのメモリアクセス操作が以下の条件を満たすとき、データ競合が発生
 1. 同じメモリ位置にアクセス
 2. 少なくとも一方が書き込み操作
 3. 同期機構によって順序付けされていない
@@ -994,7 +994,7 @@ public class RaceConditionExample {
 
 #### コフマンの4条件
 
-デッドロックが発生するための必要十分条件：
+##### デッドロックが発生するための必要十分条件
 1. 相互排除（Mutual Exclusion）: リソースは同時に1つのプロセスのみが使用
 2. 保持と待機（Hold and Wait）: プロセスは1つ以上のリソースを保持しながらほかのリソースを待機
 3. 非プリエンプション（No Preemption）: リソースは強制的に奪取できない
@@ -1101,7 +1101,7 @@ public class MemoryModelExample {
 
 ## まとめ：理論と実践の統合
 
-この付録で扱った理論的基盤は、単なる学術的興味にとどまらず、実際のソフトウェア開発において以下のような実践的価値を提供します：
+### この付録で扱った理論的基盤は、単なる学術的興味にとどまらず、実際のソフトウェア開発において以下のような実践的価値を提供します
 
 ### 理論の実践的応用
 
@@ -1112,7 +1112,7 @@ public class MemoryModelExample {
 
 ### 継続学習への基盤
 
-これらの理論的知識は、新しい技術やパラダイムを学ぶ際の基礎となります：
+#### これらの理論的知識は、新しい技術やパラダイムを学ぶ際の基礎となります
 
 - ラムダ計算や圏論の理解
 - CAP定理や分散コンセンサスアルゴリズム

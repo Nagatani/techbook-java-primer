@@ -9,18 +9,18 @@
 
 <div class="colophon-info">
 
-**著者**: Hidehiro Nagatani  
-**発行日**: 2024年12月22日  
-**版**: 第1版  
+**著者**: Hidehiro Nagatani。
+**発行日**: 2024年12月22日。
+**版**: 第1版。  
 
-**ページ数**: 約500ページ  
-**判型**: A4  
-**製本**: PDF版  
+**ページ数**: 約500ページ。
+**判型**: A4。
+**製本**: PDF版。  
 
 **使用技術**:  
-- 組版システム: Vivliostyle  
-- フォント: Noto Sans JP, Noto Serif JP  
-- 開発環境: Node.js, npm  
+- 組版システム： Vivliostyle  
+- フォント： Noto Sans JP, Noto Serif JP  
+- 開発環境： Node.js, npm  
 
 **ライセンス**:  
 本書の内容は著作権法により保護されています。  

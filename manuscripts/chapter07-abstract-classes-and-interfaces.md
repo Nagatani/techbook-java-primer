@@ -46,9 +46,9 @@
 
 ## 抽象クラスと抽象メソッド
 
-抽象クラス (Abstract Class) とは、不完全な部分を持つ、インスタンス化できないクラスのことです。その不完全な部分が抽象メソッドです
+抽象クラス (Abstract Class) とは、不完全な部分を持つ、インスタンス化できないクラスのことです。その不完全な部分が抽象メソッドです。
 
-抽象メソッド (Abstract Method) とは、実装（メソッドの中身の処理）を持たないメソッドのことです。`abstract`修飾子を付け、メソッドの定義（名前、引数、戻り値の型）だけを宣言します
+抽象メソッド (Abstract Method) とは、実装（メソッドの中身の処理）を持たないメソッドのことです。`abstract`修飾子を付け、メソッドの定義（名前、引数、戻り値の型）だけを宣言します。
 
 ### 抽象クラスのルール
 
@@ -157,7 +157,7 @@ public class Main {
 
 ## インターフェイス：振る舞いの契約
 
-インターフェイス (Interface) は、クラスがどのような振る舞い（メソッド）を持つことが大切かを定めた「契約」です
+インターフェイス (Interface) は、クラスがどのような振る舞い（メソッド）を持つことが大切かを定めた「契約」です。
 
 インターフェイスは、メソッドのシグネチャ（名前、引数、戻り値の型）と定数のみを定義でき、インスタンスフィールドを持つことはできません。実装は一切持たず、クラスが実装することが大切なメソッドの仕様だけを列挙します。
 
@@ -225,10 +225,10 @@ public class Character implements Drawable, Serializable {
 
 | 特徴 | 抽象クラス | インターフェイス |
 | :--- | :--- | :--- |
-| 目的 | is-a関係。共通の基盤・性質を共有する。 | can-do関係。特定の能力・振る舞いを実装する。 |
+| 目的 | is-a関係。共通の基盤・性質を共有する | can-do関係。特定の能力・振る舞いを実装する |
 | 継承/実装 | `extends` (単一継承のみ) | `implements` (複数実装が可能) |
 | メンバー | インスタンスフィールド、コンストラクタ、実装済みメソッド、抽象メソッド | 定数、抽象メソッド、default/staticメソッド |
-| 使い分け | 密接に関連するクラス階層を構築したい場合。<br>共通のコードや状態を共有させたい。 | 無関係なクラスに共通の機能を持たせたい場合。<br>APIの「契約」を定義したい。 |
+| 使い分け | 密接に関連するクラス階層を構築したい場合。<br>共通のコードや状態を共有させたい | 無関係なクラスに共通の機能を持たせたい場合。<br>APIの「契約」を定義したい |
 
 #### 経験則
 * 迷ったら、まずはインターフェイスで考える。インターフェイスの方が柔軟性が高い
@@ -585,7 +585,7 @@ interface DefensiveInterface {
 
 ### Mixinパターン
 
-Mixinは、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました
+Mixinは、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
 <span class="listing-number">**サンプルコード7-15**</span>
 
@@ -660,7 +660,7 @@ class Document implements Timestamped, Identifiable, Versioned {
 
 ### トレイトパターン
 
-トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます
+トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
 <span class="listing-number">**サンプルコード7-16**</span>
 
@@ -719,7 +719,7 @@ class Temperature implements ComparableTrait<Temperature> {
 
 ### インターフェイス分離原則（ISP）の実践
 
-インターフェイス分離原則は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です
+インターフェイス分離原則は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
 <span class="listing-number">**サンプルコード7-17**</span>
 
@@ -1254,7 +1254,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 抽象クラスは直接インスタンス化できません。
 
-エラー例
+エラー例。
 ```java
 abstract class Animal {
     public abstract void makeSound();
@@ -1264,12 +1264,12 @@ abstract class Animal {
 Animal animal = new Animal();  // Cannot instantiate the type Animal
 ```
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Cannot instantiate the type Animal
 ```
 
-対処法
+対処法。
 ```java
 // 抽象クラスを継承した具象クラスを作成
 class Dog extends Animal {
@@ -1287,7 +1287,7 @@ Animal animal = new Dog();  // OK
 
 抽象メソッドを実装しないと、継承先のクラスも抽象クラスになってしまいます。
 
-エラー例
+エラー例。
 ```java
 abstract class Shape {
     public abstract double getArea();
@@ -1312,12 +1312,12 @@ class Rectangle extends Shape {
 }
 ```
 
-エラーメッセージ
+エラーメッセージ。
 ```
 The type Rectangle must implement the inherited abstract method Shape.draw()
 ```
 
-対処法
+対処法。
 ```java
 class Rectangle extends Shape {
     private double width, height;
@@ -1343,7 +1343,7 @@ class Rectangle extends Shape {
 
 インターフェイスのすべての抽象メソッドを実装する必要があります。
 
-エラー例
+エラー例。
 ```java
 interface Drawable {
     void draw();
@@ -1367,12 +1367,12 @@ class Circle implements Drawable {
 }
 ```
 
-エラーメッセージ
+エラーメッセージ。
 ```
 The type Circle must implement the inherited abstract method Drawable.setColor(String)
 ```
 
-対処法
+対処法。
 ```java
 class Circle implements Drawable {
     private double radius;
@@ -1398,7 +1398,7 @@ class Circle implements Drawable {
 
 Javaでは複数の抽象クラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
 
-エラー例
+エラー例。
 ```java
 interface Flyable {
     default void move() {
@@ -1418,12 +1418,12 @@ class Duck implements Flyable, Swimmable {
 }
 ```
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Duplicate default methods named move with the parameters () and () are inherited from the types Swimmable and Flyable
 ```
 
-対処法
+対処法。
 ```java
 class Duck implements Flyable, Swimmable {
     @Override
@@ -1446,7 +1446,7 @@ class Duck implements Flyable, Swimmable {
 
 インターフェイスのstaticメソッドは継承されず、直接インターフェイス名で呼び出す必要があります。
 
-エラー例
+エラー例。
 ```java
 interface MathUtils {
     static double PI = 3.14159;
@@ -1469,12 +1469,12 @@ class Calculator implements MathUtils {
 }
 ```
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Cannot make a static reference to the non-static method calculateCircleArea(double) from the type MathUtils
 ```
 
-対処法
+対処法。
 ```java
 interface MathUtils {
     static double PI = 3.14159;
@@ -1501,7 +1501,7 @@ class Calculator implements MathUtils {
 
 どちらを使用するべきか迷うケースがあります。
 
-間違った選択例
+間違った選択例。
 ```java
 // 状態を持つのに無理にインターフェイスを使用
 interface Vehicle {
@@ -1518,7 +1518,7 @@ interface Vehicle {
 }
 ```
 
-正しい選択
+正しい選択。
 ```java
 // 共通の状態と実装を持つ場合は抽象クラス
 abstract class Vehicle {
@@ -1579,7 +1579,7 @@ class Car extends Vehicle implements Maintainable {
 
 `@Override`アノテーションを省略すると、メソッドの実装ミスに気づきにくくなります。
 
-問題のあるコード
+問題のあるコード。
 ```java
 abstract class Animal {
     public abstract void makeSound();
@@ -1595,7 +1595,7 @@ class Cat extends Animal {
 
 この場合、`makesound()`は新しいメソッドとして認識され、`makeSound()`の実装が不足しているエラーが発生します。
 
-正しい実装
+正しい実装。
 ```java
 class Cat extends Animal {
     @Override
@@ -1629,7 +1629,7 @@ class Cat extends Animal {
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 - DrawableインターフェイスでSVG出力機能を追加
 
-PaymentSystem（支払い）課題
+PaymentSystem（支払い）課題。
 - PaymentMethodインターフェイスで戦略パターンを実装
 - CreditCard、BankTransfer、DigitalWalletを実装
 - 支払い手数料の計算をdefaultメソッドで共通化

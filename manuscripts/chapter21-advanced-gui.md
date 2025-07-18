@@ -1107,7 +1107,7 @@ public class IntegratedDataManagementApp extends JFrame {
 
 #### 問題：paintComponent()で描画した内容が表示されない
 
-エラー症状
+エラー症状。
 ```java
 public class CustomPanel extends JPanel {
     @Override
@@ -1124,7 +1124,7 @@ public class CustomPanel extends JPanel {
 - コンポーネントのサイズが0になっている
 - 透明度の設定に問題がある
 
-対処法
+対処法。
 ```java
 public class CustomPanel extends JPanel {
     @Override
@@ -1144,7 +1144,7 @@ public class CustomPanel extends JPanel {
 
 #### 問題：カスタム描画がちらつく
 
-エラー症状
+エラー症状。
 ```java
 @Override
 public void paintComponent(Graphics g) {
@@ -1163,7 +1163,7 @@ public void paintComponent(Graphics g) {
 - 描画処理が重すぎる
 - 不要な再描画が発生している
 
-対処法
+対処法。
 ```java
 public class SmoothPanel extends JPanel {
     private BufferedImage buffer;
@@ -1210,7 +1210,7 @@ public class SmoothPanel extends JPanel {
 
 #### 問題：背景スレッドからGUIを更新すると例外が発生
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Exception in thread "Thread-1" java.lang.IllegalStateException: 
 This component does not support a null LayoutManager
@@ -1220,7 +1220,7 @@ This component does not support a null LayoutManager
 - EDT（Event Dispatch Thread）以外からGUIコンポーネントを更新している
 - スレッドセーフでない操作を実行している
 
-対処法
+対処法。
 ```java
 // 間違った方法
 new Thread(() -> {
@@ -1262,7 +1262,7 @@ worker.execute();
 
 #### 問題：大量の画像を扱うとメモリ不足になる
 
-エラーメッセージ
+エラーメッセージ。
 ```
 java.lang.OutOfMemoryError: Java heap space
 ```
@@ -1272,7 +1272,7 @@ java.lang.OutOfMemoryError: Java heap space
 - 大きな画像を縮小せずに使用している
 - 画像のキャッシュが適切に管理されていない
 
-対処法
+対処法。
 ```java
 public class ImageManager {
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
@@ -1338,7 +1338,7 @@ public class ImageManager {
 
 #### 問題：大量のデータを表示するJTableの動作が遅い
 
-エラー症状
+エラー症状。
 ```java
 // 10万行のデータを表示すると動作が非常に遅くなる
 DefaultTableModel model = new DefaultTableModel();
@@ -1353,7 +1353,7 @@ table.setModel(model);
 - 適切な仮想化が行われていない
 - 不要な再描画が発生している
 
-対処法
+対処法。
 ```java
 // 1. 遅延読み込み（Lazy Loading）の実装
 public class LazyTableModel extends AbstractTableModel {
@@ -1415,7 +1415,7 @@ table.setRowHeight(20);  // 固定の行高さを設定
 
 #### 問題：動的にコンポーネントを追加・削除すると配置が崩れる
 
-エラー症状
+エラー症状。
 ```java
 JPanel panel = new JPanel(new GridBagLayout());
 GridBagConstraints gbc = new GridBagConstraints();
@@ -1436,7 +1436,7 @@ panel.revalidate();
 - レイアウトの再計算が正しく行われていない
 - コンポーネントの削除後に制約が更新されていない
 
-対処法
+対処法。
 ```java
 public class DynamicPanel extends JPanel {
     private final List<JComponent> components = new ArrayList<>();
@@ -1490,7 +1490,7 @@ public class DynamicPanel extends JPanel {
 
 #### 問題：JTableのカスタムレンダラーで選択状態が正しく表示されない
 
-エラー症状
+エラー症状。
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
     @Override
@@ -1508,7 +1508,7 @@ table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 - 選択状態やフォーカス状態を適切に処理していない
 - コンポーネントの設定が不完全
 
-対処法
+対処法。
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
     @Override

@@ -70,9 +70,9 @@ button.addActionListener(new ActionListener() {
 ```
 このコードは、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
 
-ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました
+ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
 
-高階関数による処理の抽象化
+高階関数による処理の抽象化。
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
@@ -114,7 +114,7 @@ public class HigherOrderFunctions {
 
 ### 関数型プログラミングのベストプラクティス
 
-アンチパターン1: 過度なラムダネスト
+アンチパターン1: 過度なラムダネスト。
 
 <span class="listing-number">**サンプルコード13-5**</span>
 
@@ -140,7 +140,7 @@ private Item transformItem(Item x) {
 }
 ```
 
-アンチパターン2: 副作用の濫用
+アンチパターン2: 副作用の濫用。
 
 <span class="listing-number">**サンプルコード13-6**</span>
 
@@ -159,7 +159,7 @@ List<String> results = items.stream()
 
 ### 実世界での応用例：リアクティブストリーム処理
 
-Netflix のマイクロサービスアーキテクチャ
+Netflixのマイクロサービスアーキテクチャ。
 
 Netflixは1日に数十億のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用。
 
@@ -199,10 +199,10 @@ public class ReactiveVideoRecommendationService {
 }
 ```
 
-パフォーマンス比較
-- レイテンシ: 300ms → 50ms（83%削減）
-- スループット: 1000 req/s → 10000 req/s（10倍向上）
-- リソース使用率: 80% → 30%（62%削減）
+パフォーマンス比較。
+- レイテンシ： 300ms → 50ms（83%削減）
+- スループット： 1000 req/s → 10000 req/s（10倍向上）
+- リソース使用率： 80% → 30%（62%削減）
 
 ### 関数型プログラミングの実装パターン集
 
@@ -248,7 +248,7 @@ public class ResilientService {
 }
 ```
 
-イベント処理システムでの関数型アプローチ
+イベント処理システムでの関数型アプローチ。
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングは特に有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
@@ -349,7 +349,7 @@ public class MiddlewareChain {
 ```
 
 
-テンプレートメソッドパターンの関数型実装
+テンプレートメソッドパターンの関数型実装。
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
@@ -400,7 +400,7 @@ public class EventSourcedAccount {
 <span class="listing-number">**サンプルコード13-24**</span>
 
 ```java
-// 関数型ファクトリパターン
+// 関数型ファクトリパターン。
 public class ProcessorFactory {
     private final Map<String, Supplier<DataProcessor>> processors = Map.of(
         "csv", CsvProcessor::new,
@@ -413,7 +413,7 @@ public class ProcessorFactory {
                       .map(Supplier::get);
     }
     
-    // さらに高度な例：パラメータ化されたファクトリ
+    // さらに高度な例：パラメータ化されたファクトリ。
     public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
         String type) {
         return config -> processors.get(type)
@@ -456,7 +456,7 @@ public class ProcessorFactory {
 
 ### メモリ効率とパフォーマンス最適化
 
-ラムダ式の内部実装とメモリ使用
+ラムダ式の内部実装とメモリ使用。
 
 <span class="listing-number">**サンプルコード13-11**</span>
 
@@ -492,7 +492,7 @@ public class LambdaPerformance {
 }
 ```
 
-デザインパターンでの関数型アプローチ活用
+デザインパターンでの関数型アプローチ活用。
 
 関数型プログラミングは、従来のデザインパターンをより簡潔かつ柔軟に実装する手段を提供します。特に、戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式を使うことで実装を大幅に簡素化できます。以下では、実際のビジネスロジックでよく使われるパターンを関数型アプローチで実装する方法を紹介します。
 
@@ -555,7 +555,7 @@ public class FunctionalBuilder {
 }
 ```
 
-設定ビルダーパターンの関数型実装
+設定ビルダーパターンの関数型実装。
 
 設定やコンフィギュレーションを構築する際、関数型ビルダーパターンは特に威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
 
@@ -591,7 +591,7 @@ public class ConfigurationBuilder {
 
 ### 産業界での採用事例：金融取引システム
 
-高頻度取引（HFT）システムでの関数型アプローチ
+高頻度取引（HFT）システムでの関数型アプローチ。
 
 <span class="listing-number">**サンプルコード13-13**</span>
 
@@ -626,7 +626,7 @@ public class TradingSystem {
 }
 ```
 
-関数型アプローチによるビジネスロジック設計
+関数型アプローチによるビジネスロジック設計。
 
 複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
 
@@ -660,11 +660,11 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 ## 関数型インターフェイス
 
-ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、関数型インターフェイス（Functional Interface） として扱われます。
+ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、関数型インターフェイス（Functional Interface）として扱われます。
 
-関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることがあるとよいでしょう
+関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることがあるとよいでしょう。
 
-Comparatorを使ったデータ並び替えの最適化
+Comparatorを使ったデータ並び替えの最適化。
 
 データ並び替え処理において、Comparatorインターフェイスは可読性と性能の両方を向上させる大切な機能です。従来の冗長なComparable実装に比べて、ラムダ式を使ったComparatorは処理の意図を明確にし、複雑な並び替え条件も直感的に表現できます。特に、コレクションのソート処理でその威力を発揮し、ビジネスロジックに集中できる簡潔なコードを実現します。
 
@@ -717,7 +717,7 @@ public class Main {
 - `a -> { return a * 2; }` は `a -> a * 2` と書ける
 - `() -> System.out.println("Hello");` のように括弧だけを書く
 
-複数条件でのComparator組み合わせ
+複数条件でのComparator組み合わせ。
 
 実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
 
@@ -787,7 +787,7 @@ public class StandardFunctionalInterfaces {
 
 ## メソッド参照
 
-ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
+ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します
 
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
@@ -817,10 +817,10 @@ public class MethodReferenceExample {
 <span class="listing-number">**サンプルコード13-21**</span>
 
 ```java
-// ExecutorServiceとラムダ式の組み合わせ
+// ExecutorServiceとラムダ式の組み合わせ。
 ExecutorService executor = Executors.newFixedThreadPool(4);
 
-// 複数のタスクを並行実行
+// 複数のタスクを並行実行。
 List<Callable<String>> tasks = Arrays.asList(
     () -> "Task 1 completed",
     () -> "Task 2 completed", 
@@ -858,29 +858,29 @@ try {
 <span class="listing-number">**サンプルコード13-22**</span>
 
 ```java
-// ラムダ式 vs メソッド参照の比較
+// ラムダ式 vs メソッド参照の比較。
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 
-// ラムダ式：やや冗長
+// ラムダ式：やや冗長。
 names.stream()
      .map(name -> name.toUpperCase())
      .forEach(name -> System.out.println(name));
 
-// メソッド参照：簡潔で意図が明確
+// メソッド参照：簡潔で意図が明確。
 names.stream()
      .map(String::toUpperCase)
      .forEach(System.out::println);
 
-// コンストラクタ参照の活用
+// コンストラクタ参照の活用。
 List<Person> people = names.stream()
-    .map(Person::new)  // name -> new Person(name) と同じ
+    .map(Person::new)  // name -> new Person(name) と同じ。
     .collect(Collectors.toList());
 
         // ラムダ: () -> new ArrayList<>()
-        // メソッド参照: ArrayList::new
+        // メソッド参照: ArrayList::new。
         Supplier<List<String>> listFactory = ArrayList::new;
         List<String> newList = listFactory.get();
-        System.out.println("新しいリスト: " + newList);
+        System.out.println("新しいリスト: " + newList);。
     }
 }
 ```
@@ -898,7 +898,7 @@ List<Person> people = names.stream()
 ```java
 public class ThreadLambdaExample {
     public static void main(String[] args) {
-        // 匿名クラスでのRunnable
+        // 匿名クラスでのRunnable。
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 System.out.println("Thread t1 (Anonymous) is running...");
@@ -906,7 +906,7 @@ public class ThreadLambdaExample {
         });
         t1.start();
 
-        // ラムダ式でのRunnable
+        // ラムダ式でのRunnable。
         Thread t2 = new Thread(() -> System.out.println("Thread t2 (Lambda) is running..."));
         t2.start();
     }
@@ -958,19 +958,19 @@ public class ThreadLambdaExample {
 
 ```java
 public class ValidationFramework {
-    // 基本的なバリデーション関数
+    // 基本的なバリデーション関数。
     public static Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
     public static Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
     public static Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
     public static Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
     
-    // 複合バリデーション
+    // 複合バリデーション。
     public static Predicate<User> validUser = user ->
         notEmpty.test(user.getName()) &&
         validEmail.test(user.getEmail()) &&
         minLength.apply(8).test(user.getPassword());
     
-    // エラーメッセージ付きバリデーション
+    // エラーメッセージ付きバリデーション。
     public static class ValidationResult {
         private final boolean valid;
         private final List<String> errors;
@@ -982,13 +982,13 @@ public class ValidationFramework {
         List<String> errors = new ArrayList<>();
         
         if (!notEmpty.test(user.getName())) {
-            errors.add("名前はポイントです");
+            errors.add("名前はポイントです");。
         }
         if (!validEmail.test(user.getEmail())) {
-            errors.add("有効なメールアドレスを入力してください");
+            errors.add("有効なメールアドレスを入力してください");。
         }
         if (!minLength.apply(8).test(user.getPassword())) {
-            errors.add("パスワードは8文字以上である必要があります");
+            errors.add("パスワードは8文字以上である必要があります");。
         }
         
         return new ValidationResult(errors.isEmpty(), errors);
@@ -1006,10 +1006,10 @@ public class ValidationFramework {
 
 ##### エラー例
 ```java
-// ❌ 不正なラムダ式の構文
+// ❌ 不正なラムダ式の構文。
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.forEach(name -> {
-    System.out.println(name)  // セミコロン忘れ
+    System.out.println(name)  // セミコロン忘れ。
 });
 ```
 
@@ -1020,13 +1020,13 @@ error: ';' expected
 
 ##### 対処法
 ```java
-// ✅ 正しいラムダ式の構文
+// ✅ 正しいラムダ式の構文。
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.forEach(name -> {
-    System.out.println(name);  // セミコロンを追加
+    System.out.println(name);  // セミコロンを追加。
 });
 
-// または単一式の場合は波括弧を省略
+// または単一式の場合は波括弧を省略。
 names.forEach(name -> System.out.println(name));
 ```
 
@@ -1034,9 +1034,9 @@ names.forEach(name -> System.out.println(name));
 
 ##### エラー例
 ```java
-// ❌ 型推論が曖昧な場合
+// ❌ 型推論が曖昧な場合。
 Comparator<String> comp = (x, y) -> x.length() - y.length();
-// 以下のように使用すると型推論エラーが発生する場合がある
+// 以下のように使用すると型推論エラーが発生する場合がある。
 var result = someMethod((x, y) -> x.length() - y.length());
 ```
 
@@ -1047,10 +1047,10 @@ error: Cannot infer type arguments for method
 
 ##### 対処法
 ```java
-// ✅ 明示的な型指定
+// ✅ 明示的な型指定。
 Comparator<String> comp = (String x, String y) -> x.length() - y.length();
 
-// またはメソッド参照を使用
+// またはメソッド参照を使用。
 Comparator<String> comp = Comparator.comparing(String::length);
 ```
 
@@ -1058,10 +1058,10 @@ Comparator<String> comp = Comparator.comparing(String::length);
 
 ##### エラー例
 ```java
-// ❌ チェック例外のハンドリング
+// ❌ チェック例外のハンドリング。
 List<String> files = Arrays.asList("file1.txt", "file2.txt");
 files.stream()
-    .map(file -> Files.readString(Path.of(file)))  // IOException発生
+    .map(file -> Files.readString(Path.of(file)))  // IOException発生。
     .collect(Collectors.toList());
 ```
 
@@ -1072,7 +1072,7 @@ error: Unhandled exception type IOException
 
 ##### 対処法
 ```java
-// ✅ 例外をランタイム例外でラップ
+// ✅ 例外をランタイム例外でラップ。
 List<String> contents = files.stream()
     .map(file -> {
         try {
@@ -1083,7 +1083,7 @@ List<String> contents = files.stream()
     })
     .collect(Collectors.toList());
 
-// またはOptionalを使用した安全な処理
+// またはOptionalを使用した安全な処理。
 List<String> contents = files.stream()
     .map(file -> {
         try {
@@ -1101,13 +1101,13 @@ List<String> contents = files.stream()
 
 ##### エラー例
 ```java
-// ❌ 変数キャプチャの問題
+// ❌ 変数キャプチャの問題。
 public void processNumbers(List<Integer> numbers) {
     int threshold = 10;
-    threshold = 20;  // 変数の変更
+    threshold = 20;  // 変数の変更。
     
     List<Integer> filtered = numbers.stream()
-        .filter(n -> n > threshold)  // エラー: 実質的にfinalではない
+        .filter(n -> n > threshold)  // エラー: 実質的にfinalではない。
         .collect(Collectors.toList());
 }
 ```
@@ -1119,16 +1119,16 @@ error: Variable used in lambda expression should be final or effectively final
 
 ##### 対処法
 ```java
-// ✅ 実質的にfinalな変数を使用
+// ✅ 実質的にfinalな変数を使用。
 public void processNumbers(List<Integer> numbers) {
-    final int threshold = 20;  // finalキーワード
+    final int threshold = 20;  // finalキーワード。
     
     List<Integer> filtered = numbers.stream()
         .filter(n -> n > threshold)
         .collect(Collectors.toList());
 }
 
-// または異なる変数名を使用
+// または異なる変数名を使用。
 public void processNumbers(List<Integer> numbers) {
     int initialThreshold = 10;
     int finalThreshold = 20;
@@ -1143,11 +1143,11 @@ public void processNumbers(List<Integer> numbers) {
 
 ##### エラー例
 ```java
-// ❌ 関数型インターフェイスの誤用
+// ❌ 関数型インターフェイスの誤用。
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
-    int subtract(int a, int b);  // 複数の抽象メソッド
+    int subtract(int a, int b);  // 複数の抽象メソッド。
 }
 ```
 
@@ -1158,18 +1158,18 @@ error: Multiple non-overriding abstract methods found in interface Calculator
 
 ##### 対処法
 ```java
-// ✅ 単一の抽象メソッドを持つ関数型インターフェイス
+// ✅ 単一の抽象メソッドを持つ関数型インターフェイス。
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
     
-    // デフォルトメソッドまたは静的メソッドは許可される
+    // デフォルトメソッドまたは静的メソッドは許可される。
     default int subtract(int a, int b) {
         return a - b;
     }
 }
 
-// 使用例
+// 使用例。
 Calculator adder = (a, b) -> a + b;
 Calculator multiplier = (a, b) -> a * b;
 ```
@@ -1178,10 +1178,10 @@ Calculator multiplier = (a, b) -> a * b;
 
 ##### エラー例
 ```java
-// ❌ メソッド参照の型不一致
+// ❌ メソッド参照の型不一致。
 List<String> strings = Arrays.asList("1", "2", "3");
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // int返却だが、Integer期待
+    .map(Integer::parseInt)  // int返却だが、Integer期待。
     .collect(Collectors.toList());
 ```
 
@@ -1192,14 +1192,14 @@ error: Cannot infer type arguments for collect
 
 ##### 対処法
 ```java
-// ✅ オートボクシングによる自動変換
+// ✅ オートボクシングによる自動変換。
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // intからIntegerへ自動変換
+    .map(Integer::parseInt)  // intからIntegerへ自動変換。
     .collect(Collectors.toList());
 
-// または明示的な型指定
+// または明示的な型指定。
 List<Integer> numbers = strings.stream()
-    .map(Integer::valueOf)  // Integer返却
+    .map(Integer::valueOf)  // Integer返却。
     .collect(Collectors.toList());
 ```
 

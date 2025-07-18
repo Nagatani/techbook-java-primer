@@ -74,11 +74,11 @@ Swingイベント処理機構の詳細についても学習します。イベン
 
 マウス操作で図形を描画できるアプリケーションを作成してください。
 
-技術的背景イベント駆動グラフィックスと描画システム
+技術的背景イベント駆動グラフィックスと描画システム。
 
 インタラクティブな描画アプリケーションは、イベント処理の実践的な応用例です。
 
-マウスイベントの種類と描画への応用
+マウスイベントの種類と描画への応用。
 
 描画アプリケーションでは、マウスの操作状態に応じて異なるイベントを処理する必要があります。
 
@@ -97,25 +97,25 @@ mouseDragged()  // ②-1
 mouseMoved()    // ②-2
 ```
 
-各イベントの用途
-- ①-1 描画開始点の記録 - マウスボタンが押された座標を保存
-- ①-2 描画終了点の確定 - 矩形や楕円など形状の完成時に呼ばれる
-- ②-1 ドラッグ中の座標取得 - ボタンを押しながら移動中の座標を連続取得
-- ②-2 カーソル追跡 - ボタンを押さずに移動中の座標（プレビュー表示等に使用）
+各イベントの用途。
+- ①-1描画開始点の記録 - マウスボタンが押された座標を保存
+- ①-2描画終了点の確定 - 矩形や楕円など形状の完成時に呼ばれる
+- ②-1ドラッグ中の座標取得 - ボタンを押しながら移動中の座標を連続取得
+- ②-2カーソル追跡 - ボタンを押さずに移動中の座標（プレビュー表示等に使用）
 
-描画システムのアーキテクチャ
+描画システムのアーキテクチャ。
 - ペイントコンポーネントJPanel + paintComponent()
 - ダブルバッファリングちらつき防止
 - 描画コマンドパターンアンドゥ機能実現
 - ラスタ画像BufferedImageへの描画
 
-実際のペイントアプリケーションの例
+実際のペイントアプリケーションの例。
 - MS Paintシンプルで直感的
 - Photoshopレイヤ、ブレンドモード
 - Procreateタッチジェスチャ
 - Inkscapeベクタグラフィックス
 
-パフォーマンスの考慮点
+パフォーマンスの考慮点。
 
 グラフィックスアプリケーションにおけるパフォーマンス最適化の基本概念。
 
@@ -138,18 +138,18 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
                     RenderingHints.VALUE_ANTIALIAS_ON);
 ```
 
-最適化手法の詳細
-- ①-1 全体再描画の問題 - 図形数に比例して処理時間が増加し、複雑な図形では描画が遅くなる
+最適化手法の詳細。
+- ①-1全体再描画の問題 - 図形数に比例して処理時間が増加し、複雑な図形では描画が遅くなる
 - ②-1 BufferedImage利用 - メモリ内のビットマップに直接描画することで、表示時はコピーのみ
-- ②-2 品質設定の調整 - アンチエイリアシングにより滑らかな描画を実現（処理負荷は増加）
+- ②-2品質設定の調整 - アンチエイリアシングにより滑らかな描画を実現（処理負荷は増加）
 
-アンドゥ/リドゥの実装パターン
+アンドゥ/リドゥの実装パターン。
 - コマンドパターン操作の抽象化
 - メモントパターン状態の保存と復元
 - スナップショット方式画像全体の保存
 - 差分記録メモリ効率的
 
-高度な機能の実装アイデア
+高度な機能の実装アイデア。
 - プレビュー表示ドラッグ中の図形予測
 - スナップ機能グリッドへの吸着
 - レイヤ管理複数描画層の管理
@@ -157,7 +157,7 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 
 この演習では、リアルタイムグラフィックス処理の基礎を学びます。
 
-要求仕様
+要求仕様。
 - マウスドラッグによる線・矩形・楕円の描画
 - 色選択機能（パレットまたはカラーチューザー）
 - 線の太さ調整スライダー
@@ -165,7 +165,7 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 - 描画のアンドゥ・リドゥ機能
 - 描画内容のファイル保存・読み込み
 
-実行例
+実行例。
 ```
 === インタラクティブ描画アプリケーション ===
 ウィンドウ表示: "Interactive Drawing Application"
@@ -202,11 +202,11 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 
 リアルタイムバリデーション機能付きのフォームを作成してください。
 
-技術的背景ユーザーエクスペリエンスとデータ品質の向上
+技術的背景ユーザーエクスペリエンスとデータ品質の向上。
 
 リアルタイムバリデーションは、現代のWebアプリケーションで標準的な機能です。
 
-バリデーションのタイミング戦略
+バリデーションのタイミング戦略。
 <span class="listing-number">**サンプルコード19-3**</span>
 
 ```java
@@ -222,13 +222,13 @@ Timer delayTimer = new Timer(500, e -> validate());
 delayTimer.setRepeats(false);
 ```
 
-バリデーションルールの階層
+バリデーションルールの階層。
 1. 形式検証：正規表現パターン
 2. 論理検証：値の整合性チェック
 3. ビジネス検証：業務ルール適合
 4. サーバ検証：重複チェック等
 
-視覚的フィードバックのベストプラクティス
+視覚的フィードバックのベストプラクティス。
 <span class="listing-number">**サンプルコード19-4**</span>
 
 ```java
@@ -243,19 +243,19 @@ Icon CROSS = new ImageIcon("cross.png");
 Icon INFO = new ImageIcon("info.png");
 ```
 
-実際のアプリケーションでの例
+実際のアプリケーションでの例。
 - Gmailメールアドレスの即座検証
 - GitHubユーザー名の重複チェック
 - Amazonクレジットカード番号検証
 - 銀行システム口座番号のチェックデジット
 
-パスワード強度の評価基準
+パスワード強度の評価基準。
 - 長さ最低8文字以上
 - 文字種大文字、小文字、数字、特殊文字
 - 辞書攻撃耐性一般的な単語の検出
 - エントロピー予測困難性の数値化
 
-アクセシビリティの考慮
+アクセシビリティの考慮。
 - スクリーンリーダー対応適切なラベル付け
 - 色覚多様性色以外の表示方法
 - キーボードナビゲーションTabキーでの移動
@@ -263,14 +263,14 @@ Icon INFO = new ImageIcon("info.png");
 
 この演習では、ユーザー中心設計の実践とデータ品質向上の手法を学びます。
 
-要求仕様
+要求仕様。
 - 複数の入力フィールド（名前、メール、電話番号、パスワード、確認パスワード）
 - リアルタイムバリデーション（文字入力時に即座にチェック）
 - バリデーション結果の視覚的フィードバック（色変更、アイコン表示）
 - 送信ボタンの有効/無効制御
 - キーボードショートカット（Enterで次フィールド移動等）
 
-実行例
+実行例。
 ```
 === フォームバリデーター ===
 ウィンドウ表示: "Form Validator - リアルタイムバリデーション"
@@ -300,12 +300,12 @@ Icon INFO = new ImageIcon("info.png");
 ✓ 有効入力 → 緑色のボーダーとチェックマーク表示
 ```
 
-評価ポイント
+評価ポイント。
 - DocumentListenerによるリアルタイム入力監視
 - 正規表現を使った入力値の検証
 - 視覚的フィードバックの実装
 
-実装ヒント
+実装ヒント。
 - Timerクラスで入力完了後の遅延バリデーション
 - setBorder（）やsetBackground() で視覚的フィードバック
 - ActionMapとInputMapでキーバインディング設定
@@ -314,16 +314,16 @@ Icon INFO = new ImageIcon("info.png");
 
 #### 課題3: 高度なメニューシステム
 
-学習目標 JMenuBar、JMenu、JMenuItemの階層構造、Actionクラスによる統一的なアクション管理、PopupMenuの作成と表示制御
+学習目標JMenuBar、JMenu、JMenuItemの階層構造、Actionクラスによる統一的なアクション管理、PopupMenuの作成と表示制御。
 
-問題説明
+問題説明。
 多層メニューシステムと動的メニュー生成機能を持つアプリケーションを作成してください。
 
-技術的背景Actionパターンと統一的なUI操作
+技術的背景Actionパターンと統一的なUI操作。
 
 Actionパターンは、同じ機能を複数のUI要素から実行できるようにする設計パターンです。
 
-Actionパターンの利点
+Actionパターンの利点。
 <span class="listing-number">**サンプルコード19-5**</span>
 
 ```java
@@ -348,13 +348,13 @@ new JMenuItem(saveAction);
 new JButton(saveAction);
 ```
 
-動的メニューの実装パターン
+動的メニューの実装パターン。
 - MRU（Most Recently Used）最近使用ファイル
 - プラグインメニュー動的追加/削除
 - コンテキスト依存状態に応じた内容
 - ロールベース権限にもとづく表示
 
-コンテキストメニューの実装
+コンテキストメニューの実装。
 <span class="listing-number">**サンプルコード19-6**</span>
 
 ```java
@@ -374,33 +374,33 @@ component.addMouseListener(new MouseAdapter() {
 });
 ```
 
-実際のアプリケーションでのメニュー設計
+実際のアプリケーションでのメニュー設計。
 - Office製品リボンUI、コンテキストメニュー
 - IDE高度にカスタマイズ可能なメニュー
 - ブラウザ拡張機能によるメニュー追加
 - ゲーム状態に応じたメニュー切替
 
-メニューのアクセシビリティ
+メニューのアクセシビリティ。
 - ニーモニックAlt+Fでファイルメニュー
 - アクセラレータCtrl+Sで保存
 - ツールチップ機能説明の表示
 - ステータス表示有効/無効の表現
 
-パフォーマンス最適化
+パフォーマンス最適化。
 - 遅延ロードメニュー表示時に構築
 - キャッシュ頻繁に使うメニューの保持
 - 非同期更新バックグラウンドでの状態確認
 
 この演習では、プロフェッショナルなアプリケーションレベルのメニュー設計を学びます。
 
-要求仕様
+要求仕様。
 - 階層的なメニュー構造（メニュー、サブメニュー、サブサブメニュー）
 - 動的メニュー項目の追加・削除・変更機能
 - コンテキストメニュー（右クリックメニュー）の実装
 - 最近使用したファイル（MRU: Most Recently Used）メニュー
 - メニューアクションの履歴管理
 
-実行例
+実行例。
 ```
 === 高度なメニューシステム ===
 ウィンドウ表示: "Advanced Menu System"
@@ -428,12 +428,12 @@ component.addMouseListener(new MouseAdapter() {
            → メニューをリセット
 ```
 
-評価ポイント
+評価ポイント。
 - JMenuBar、JMenu、JMenuItemの階層構造
 - Actionクラスによる統一的なアクション管理
 - PopupMenuの作成と表示制御
 
-実装ヒント
+実装ヒント。
 - Actionクラスでアクションの統一管理
 - MenuListenerでメニューの表示/非表示イベントを処理
 - DefaultListModelでMRUリストを管理
@@ -442,12 +442,12 @@ component.addMouseListener(new MouseAdapter() {
 
 #### 課題4: マウストラッカー
 
-学習目標 MouseListener、MouseMotionListenerの詳細実装、Pointクラスと座標計算、数学的計算（距離、速度、角度）
+学習目標MouseListener、MouseMotionListenerの詳細実装、Pointクラスと座標計算、数学的計算（距離、速度、角度）
 
-問題説明
+問題説明。
 マウスの詳細な動作を追跡・分析できるアプリケーションを作成してください。
 
-要求仕様
+要求仕様。
 - リアルタイムマウス座標表示
 - マウスの移動軌跡の記録と表示
 - クリック位置のマーキング（左、右、中央ボタン別）
@@ -455,7 +455,7 @@ component.addMouseListener(new MouseAdapter() {
 - マウスイベントログの記録と出力
 - 統計情報の表示（総移動距離、クリック数等）
 
-実行例
+実行例。
 ```
 === マウストラッカー ===
 ウィンドウ表示: "Advanced Mouse Tracker"
@@ -486,12 +486,12 @@ component.addMouseListener(new MouseAdapter() {
 [12:34:59] Right click at (160, 200)
 ```
 
-評価ポイント
+評価ポイント。
 - MouseListener、MouseMotionListenerの詳細な実装
 - Pointクラスと座標計算
 - 数学的計算（距離、速度、角度）
 
-実装ヒント
+実装ヒント。
 - System.currentTimeMillis() で時間測定
 - Point.distance() で移動距離計算
 - CircularBufferの使用でメモリ効率化
@@ -562,7 +562,7 @@ exercises/chapter18/
 - カスタムコンポーネントとイベント処理が作成できている
 - ユーザビリティの高いインターフェイスが設計できている
 
-次のステップ： 基本課題が完了したら、advanced/の発展課題でより複雑なイベント処理とカスタムコンポーネントの実装に挑戦しましょう！
+次のステップ： 基本課題が完了したら、advanced/の発展課題でより複雑なイベント処理とカスタムコンポーネントの実装に挑戦しましょう！。
 
 
 
@@ -574,13 +574,13 @@ exercises/chapter18/
 
 Swingのイベント処理は、以下の3つの要素で構成されます。
 
-1. イベントソース （Event Source): イベントを発生させる部品 （`JButton`、`JTextField`など)。
-2. イベントオブジェクト （Event Object): 発生したイベントの詳細情報を持つオブジェクト （`ActionEvent`、`MouseEvent`など)。
-3. イベントリスナ （Event Listener): イベントの発生を監視し、通知を受け取って実際の処理を実行するオブジェクト （`ActionListener`など)。
+1. イベントソース（Event Source): イベントを発生させる部品（`JButton`、`JTextField`など)。
+2. イベントオブジェクト（Event Object): 発生したイベントの詳細情報を持つオブジェクト（`ActionEvent`、`MouseEvent`など)。
+3. イベントリスナ（Event Listener): イベントの発生を監視し、通知を受け取って実際の処理を実行するオブジェクト（`ActionListener`など)。
 
 処理の流れは、「ユーザーがイベントソースを操作 → イベントオブジェクトが生成され、登録済みのイベントリスナに通知 → リスナ内の処理が実行される」となります。
 
-イベントディスパッチスレッド
+イベントディスパッチスレッド。
 
 Swingのイベント処理は、イベントディスパッチスレッド（EDT: Event Dispatch Thread）と呼ばれる専用のスレッドで実行されます。EDTは以下の特徴を持ちます。
 
@@ -593,7 +593,7 @@ Swingのイベント処理は、イベントディスパッチスレッド（EDT
 
 最も基本的な、ボタンクリックイベントを処理してみましょう。
 
-ActionListener の例
+ActionListenerの例。
 
 ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド1つだけを実装すればよいシンプルなインターフェースです。
 
@@ -638,13 +638,13 @@ public class ButtonEventExample {
 
 ### ラムダ式による簡潔な記述
 
-匿名クラスの使用
+匿名クラスの使用。
 
 上記の例では、ActionListenerインターフェースを匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェースを実装してインスタンスを作成できます。イベントリスナーのように、一度しか使わないクラスを定義する場合に便利です。
 
 `ActionListener`のように、実装すべきメソッドが1つだけのインターフェイス（関数型インターフェイス）は、ラムダ式を使って非常に簡潔に記述できます。
 
-ラムダ式の使用
+ラムダ式の使用。
 
 ラムダ式はJava 8で導入された機能で、関数型インターフェースの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
 
@@ -706,7 +706,7 @@ public class GreetingApp {
 
 ## 代表的なイベントの種類
 
-Swingに挟まざまなイベントがあります。目的に応じて適切なリスナを使い分けましょう。
+Swingに挟まざまなイベントがあります。目的に応じて適切なリスナを使い分けましょう
 
 | イベント | 説明 | 主なリスナ |
 | :--- | :--- | :--- |
@@ -720,7 +720,7 @@ Swingに挟まざまなイベントがあります。目的に応じて適切な
 
 ### `WindowListener`で終了確認
 
-WindowListener の例**
+WindowListenerの例**。
 
 WindowListenerはウィンドウの状態変化を検出するインターフェースで、7つのメソッドを実装する必要があります。
 
@@ -769,7 +769,7 @@ public class WindowEventExample {
 
 ##### マウスイベントの完全な処理
 
-MouseListener の例
+MouseListenerの例。
 
 MouseListenerはマウスの基本的な操作（クリック、プレス、リリース、入退室）を検出するインターフェースです。5つのメソッドを実装する必要があります。
 
@@ -934,7 +934,7 @@ public class MouseEventCompleteExample extends JFrame {
 
 ##### キーボードイベントの高度な処理
 
-KeyListener の例
+KeyListenerの例。
 
 KeyListenerはキーボードの入力を検出するインターフェースで、3つのメソッドを実装します。
 
@@ -1333,7 +1333,7 @@ public class DocumentListenerExample extends JFrame {
 
 ##### カスタムイベントとObserverパターン
 
-カスタムイベント
+カスタムイベント。
 
 カスタムイベントは、標準のSwingイベントでは対応できない、アプリケーション固有のイベントを定義する仕組みです。JavaBeansのイベントモデルに従って実装することで、再利用可能で保守性の高いコンポーネントを作成できます。
 
@@ -2455,7 +2455,7 @@ GUIイベント処理の学習において遭遇しやすい典型的なエラ�
 
 #### 問題：ボタンを押してもイベントが発生しない
 
-エラー症状
+エラー症状。
 ```java
 JButton button = new JButton("クリック");
 // ボタンをクリックしても何も起こらない
@@ -2465,7 +2465,7 @@ JButton button = new JButton("クリック");
 - ActionListenerが登録されていない
 - リスナーが正しく実装されていない
 
-対処法
+対処法。
 ```java
 JButton button = new JButton("クリック");
 button.addActionListener(e -> {
@@ -2483,7 +2483,7 @@ button.addActionListener(new ActionListener() {
 
 #### 問題：複数のリスナーが重複して登録される
 
-エラー症状
+エラー症状。
 ```java
 // 初期化メソッドが複数回呼び出されると...
 button.addActionListener(e -> System.out.println("処理"));
@@ -2495,7 +2495,7 @@ button.addActionListener(e -> System.out.println("処理"));
 - 同じリスナーが複数回登録されている
 - 古いリスナーが削除されていない
 
-対処法
+対処法。
 ```java
 // 既存のリスナーを削除してから新しいリスナーを登録
 ActionListener[] listeners = button.getActionListeners();
@@ -2517,7 +2517,7 @@ if (!listenerAdded) {
 
 #### 問題：一つのイベントが複数回発生する
 
-エラー症状
+エラー症状。
 ```java
 JSlider slider = new JSlider(0, 100);
 slider.addChangeListener(e -> {
@@ -2530,7 +2530,7 @@ slider.addChangeListener(e -> {
 - ChangeListenerがドラッグ中に継続的に呼び出される
 - 処理を制限していない
 
-対処法
+対処法。
 ```java
 JSlider slider = new JSlider(0, 100);
 slider.addChangeListener(e -> {
@@ -2556,7 +2556,7 @@ slider.addChangeListener(e -> {
 
 #### 問題：イベントハンドラ内での状態変更が無限ループを引き起こす
 
-エラー症状
+エラー症状。
 ```java
 JTextField textField = new JTextField();
 textField.addActionListener(e -> {
@@ -2569,7 +2569,7 @@ textField.addActionListener(e -> {
 - イベントハンドラ内でイベントを発生させるコンポーネントを変更している
 - 相互にイベントを発生させる処理がある
 
-対処法
+対処法。
 ```java
 JTextField textField = new JTextField();
 private boolean updating = false;
@@ -2598,7 +2598,7 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 
 #### 問題：リスナーが解放されずメモリリークが発生
 
-エラー症状
+エラー症状。
 ```java
 // ウィンドウを閉じてもメモリが解放されない
 public class MyWindow extends JFrame {
@@ -2616,7 +2616,7 @@ public class MyWindow extends JFrame {
 - TimerやEventListenerが適切に停止・削除されていない
 - 静的フィールドにリスナーが保存されている
 
-対処法
+対処法。
 ```java
 public class MyWindow extends JFrame {
     private Timer timer;
@@ -2652,7 +2652,7 @@ public class MyWindow extends JFrame {
 
 #### 問題：イベントハンドラで重い処理を行うとGUIが応答しない
 
-エラー症状
+エラー症状。
 ```java
 JButton button = new JButton("重い処理");
 button.addActionListener(e -> {
@@ -2668,7 +2668,7 @@ button.addActionListener(e -> {
 - EDT（Event Dispatch Thread）上で重い処理を実行している
 - UIの更新が阻害されている
 
-対処法
+対処法。
 ```java
 JButton button = new JButton("重い処理");
 button.addActionListener(e -> {
@@ -2710,7 +2710,7 @@ button.addActionListener(e -> {
 
 #### 問題：イベントオブジェクトから間違った情報を取得する
 
-エラー症状
+エラー症状。
 ```java
 JButton button1 = new JButton("ボタン1");
 JButton button2 = new JButton("ボタン2");
@@ -2728,7 +2728,7 @@ button2.addActionListener(listener);  // button2をクリックしても"ボタ�
 - イベントソースを正しく取得していない
 - 固定のコンポーネントを参照している
 
-対処法
+対処法。
 ```java
 ActionListener listener = e -> {
     // 正しい：イベントソースを取得

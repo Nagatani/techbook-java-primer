@@ -87,11 +87,11 @@ Swingフレームワークのアーキテクチャについても深く理解し
 
 まずはもっとも基本的なGUIプログラムから始めましょう。以下は、単純なウィンドウを表示するプログラムです。
 
-Swingアプリケーションの基本構造
+Swingアプリケーションの基本構造。
 
 このコードは、Swing GUIアプリケーションの最小構成を示しています。各ステップは、ウィンドウの作成から表示までの標準的なフローを表しています。
 
-最小限のSwingアプリケーションの構造
+最小限のSwingアプリケーションの構造。
 
 Swingを使ったGUIアプリケーションの最小限の構造を理解するために、ウィンドウを表示するだけのシンプルなプログラムを見てみましょう。
 
@@ -112,7 +112,7 @@ public class HelloSwing {
 }
 ```
 
-Swingアプリケーションの基本的な初期化手順
+Swingアプリケーションの基本的な初期化手順。
 
 ①　メインウィンドウの作成： JFrameオブジェクトを生成し、ウィンドウのタイトルバーに表示される文字列を指定します。この時点ではまだウィンドウは表示されません。
 
@@ -136,11 +136,11 @@ Swingアプリケーションの基本的な初期化手順
 
 `JFrame`オブジェクトのメソッドを呼び出すことで、ウィンドウのさまざまな設定が可能です。
 
-ウィンドウの詳細設定例
+ウィンドウの詳細設定例。
 
 このコードは、ウィンドウの外観や動作をカスタマイズする方法を示しています。各設定はユーザーエクスペリエンスに直接影響します。
 
-基本的なウィンドウ
+基本的なウィンドウ。
 
 JFrameクラスは、Swingアプリケーションの基本となるトップレベルコンテナです。すべてのGUIアプリケーションは、少なくとも1つのJFrameを持ちます。JFrameは、タイトルバー、境界線、メニューバー、およびコンテンツペインを含む完全なウィンドウフレームを提供します。
 
@@ -165,7 +165,7 @@ public class WindowSettings {
 }
 ```
 
-各設定オプションの説明
+各設定オプションの説明。
 - ① タイトルバー文字 - ウィンドウ上部に表示されるアプリケーション名
 - ② ウィンドウサイズ - 幅500ピクセル、高さ400ピクセルに固定
 - ③ リサイズ禁止 - ユーザーがウィンドウサイズを変更できないように制限
@@ -177,7 +177,7 @@ public class WindowSettings {
 
 #### JLabelで文字を表示する
 
-ボタンとラベル
+ボタンとラベル。
 
 GUIアプリケーションの基本要素であるボタンとラベルは、ユーザーインターフェースの中核をなすコンポーネントです。JLabelはテキストやアイコンを表示するための読み取り専用コンポーネントで、JButtonはユーザーのクリック操作を受け付けるインタラクティブなコンポーネントです。
 
@@ -217,7 +217,7 @@ public class HelloLabel {
 
 複数のコンポーネントを配置するには、レイアウトマネージャーを使います。
 
-レイアウトマネージャー
+レイアウトマネージャー。
 
 レイアウトマネージャーは、コンテナ内のコンポーネントの配置を自動的に管理する仕組みです。ウィンドウサイズの変更や異なる画面解像度に対応するため、絶対位置ではなく相対的な配置ルールを使用します。Javaのレイアウトマネージャーの主な特徴。
 
@@ -226,7 +226,7 @@ public class HelloLabel {
 3. コンポーネントの優先サイズ： 各コンポーネントの推奨サイズを考慮
 4. 柔軟な配置： 画面の文字サイズやDPIに対応
 
-BorderLayoutによる5領域レイアウトの実装
+BorderLayoutによる5領域レイアウトの実装。
 
 BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャです。多くのアプリケーションで使用される基本的なレイアウトパターンです。
 
@@ -256,11 +256,11 @@ public class MultipleComponents {
 }
 ```
 
-BorderLayoutの特徴と配置ルール
+BorderLayoutの特徴と配置ルール。
 
 ①　レイアウトマネージャの設定： JFrameのデフォルトレイアウトもBorderLayoutですが、明示的に設定することで意図を明確にします。
 
-②　5領域への配置： 各領域は以下の特性を持ちます
+②　5領域への配置： 各領域は以下の特性を持ちます。
 - NORTH/SOUTH: 水平方向に最大まで拡張し、コンポーネントの推奨高さを維持
 - EAST/WEST: 垂直方向に最大まで拡張し、コンポーネントの推奨幅を維持  
 - CENTER: 残りのすべてのスペースを占有し、ウィンドウサイズ変更時に最も影響を受ける
@@ -348,7 +348,7 @@ public class AdvancedButton {
 
 #### テキスト入力コンポーネント
 
-テキストフィールド
+テキストフィールド。
 
 テキスト入力はGUIアプリケーションの基本的な入力手段です。Swingはさまざまなテキスト入力コンポーネントを提供しており、用途に応じて選択できます。
 
@@ -410,19 +410,19 @@ public class TextInputComponents {
 
 #### 選択コンポーネント
 
-チェックボックス
+チェックボックス。
 
 チェックボックスは、複数の選択肢から任意の組み合わせを選択できるコンポーネントです。各項目は独立しており、オン/オフを自由に切り替えられます。設定画面のオプション選択や、アンケートの複数回答などに適しています。
 
-ラジオボタン
+ラジオボタン。
 
 ラジオボタンは、複数の選択肢から1つだけを選択する場合に使用します。ButtonGroupにグループ化することで、同一グループ内では1つのラジオボタンしか選択できなくなります。
 
-コンボボックス
+コンボボックス。
 
 コンボボックス（ドロップダウンリスト）は、限られたスペースで多くの選択肢を提供する場合に有効です。通常は1つの項目のみ表示され、クリックするとリストが展開されます。
 
-リスト
+リスト。
 
 JListは、複数の項目を一度に表示し、単一または複数選択を可能にするコンポーネントです。スクロール機能を追加することで、大量のデータも扱えます。
 
@@ -484,7 +484,7 @@ public class SelectionComponents {
 
 #### BorderLayout - 5つの領域に配置
 
-BorderLayout の例
+BorderLayoutの例。
 
 BorderLayoutは、ウィンドウを方位に基づいた5つの領域に分割するレイアウトマネージャーです。JFrameのデフォルトレイアウトであり、多くのアプリケーションで基本構造として使用されます。
 
@@ -523,14 +523,14 @@ public class BorderLayoutExample {
 }
 ```
 
-BorderLayoutの特徴
+BorderLayoutの特徴。
 - NORTHとSOUTH画面の幅いっぱいに広がり、高さは推奨サイズ
 - EASTとWEST残りの高さいっぱいに広がり、幅は推奨サイズ
 - CENTER残りの領域すべてを占める
 
 #### GridLayout - 格子状に配置
 
-GridLayout の例
+GridLayoutの例。
 
 GridLayoutは、コンポーネントを同じサイズのセルに均等に配置するレイアウトマネージャーです。電卓のボタン配置や、カレンダーの日付表示など、規則的な配置が必要な場合に最適です。
 
@@ -571,7 +571,7 @@ public class GridLayoutExample {
 
 #### FlowLayout - 流れるような配置
 
-FlowLayout の例
+FlowLayoutの例。
 
 FlowLayoutは、コンポーネントを流れるように配置する最もシンプルなレイアウトマネージャーです。コンポーネントはコンテナの幅に応じて自動的に折り返されるため、ウィンドウサイズの変更に柔軟に対応します。
 
@@ -617,7 +617,7 @@ public class FlowLayoutExample {
 
 #### JPanelで階層的なレイアウトを構築
 
-JPanel の使用
+JPanelの使用。
 
 JPanelは、Swingで最も頻繁に使用されるコンテナコンポーネントの1つです。軽量なコンテナとして、他のコンポーネントを整理し、グループ化するために使用されます。JPanelの主な用途には以下があります。
 
@@ -1268,7 +1268,7 @@ public class FormApplication {
 
 #### EDTとは何か
 
-Event Dispatch Thread（EDT）は、Swingアプリケーションにおいてすべてのイベント処理とUI更新を担当する専用のスレッドです。Swingのコンポーネントはスレッドセーフではないため、複数のスレッドから同時にアクセスされると、予期しない動作やクラッシュを引き起こす可能性があります
+Event Dispatch Thread（EDT）は、Swingアプリケーションにおいてすべてのイベント処理とUI更新を担当する専用のスレッドです。Swingのコンポーネントはスレッドセーフではないため、複数のスレッドから同時にアクセスされると、予期しない動作やクラッシュを引き起こす可能性があります。
 
 ##### EDTの重要性
 
@@ -1905,7 +1905,7 @@ GUI基礎の学習において遭遇しやすい典型的なエラーとその�
 
 #### 問題：コンポーネントが表示されない
 
-エラー症状
+エラー症状。
 ```
 JFrame frame = new JFrame("タイトル");
 frame.add(new JButton("ボタン"));
@@ -1917,7 +1917,7 @@ frame.setVisible(true);
 - `frame.setSize()`または`frame.pack()`が呼び出されていない
 - レイアウトマネージャーの制約が正しく設定されていない
 
-対処法
+対処法。
 ```java
 JFrame frame = new JFrame("タイトル");
 frame.setSize(300, 200);  // サイズを明示的に設定
@@ -1930,7 +1930,7 @@ frame.pack();  // 推奨サイズに自動調整
 
 #### 問題：BorderLayoutで複数のコンポーネントが重なる
 
-エラー症状
+エラー症状。
 ```java
 frame.setLayout(new BorderLayout());
 frame.add(new JButton("ボタン1"));
@@ -1942,7 +1942,7 @@ frame.add(new JButton("ボタン2"));
 - BorderLayoutの位置指定が省略されている
 - 同じ位置に複数のコンポーネントが配置されている
 
-対処法
+対処法。
 ```java
 frame.setLayout(new BorderLayout());
 frame.add(new JButton("ボタン1"), BorderLayout.NORTH);
@@ -1953,7 +1953,7 @@ frame.add(new JButton("ボタン2"), BorderLayout.SOUTH);
 
 #### 問題：JPanelの背景色が反映されない
 
-エラー症状
+エラー症状。
 ```java
 JPanel panel = new JPanel();
 panel.setBackground(Color.RED);
@@ -1964,7 +1964,7 @@ panel.setBackground(Color.RED);
 - `setOpaque(true)`が設定されていない
 - 親コンポーネントの背景色が優先されている
 
-対処法
+対処法。
 ```java
 JPanel panel = new JPanel();
 panel.setBackground(Color.RED);
@@ -1973,7 +1973,7 @@ panel.setOpaque(true);  // 不透明に設定
 
 #### 問題：JTextFieldが編集できない
 
-エラー症状
+エラー症状。
 ```java
 JTextField textField = new JTextField("初期値");
 // テキストが編集できない
@@ -1983,7 +1983,7 @@ JTextField textField = new JTextField("初期値");
 - `setEditable(false)`が設定されている
 - フォーカスが取得できない状態
 
-対処法
+対処法。
 ```java
 JTextField textField = new JTextField("初期値");
 textField.setEditable(true);   // 編集可能に設定
@@ -1994,7 +1994,7 @@ textField.setFocusable(true);  // フォーカス取得可能に設定
 
 #### 問題：GUI更新でException in thread "AWT-EventQueue-0"が発生
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at SwingApplication.updateUI(SwingApplication.java:45)
@@ -2004,7 +2004,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 - EDT（Event Dispatch Thread）以外からGUIコンポーネントにアクセスしている
 - コンポーネントがnullのまま使用されている
 
-対処法
+対処法。
 ```java
 // 別スレッドからGUIを更新する場合
 SwingUtilities.invokeLater(() -> {
@@ -2021,7 +2021,7 @@ if (label != null) {
 
 #### 問題：JTextAreaが1行しか表示されない
 
-エラー症状
+エラー症状。
 ```java
 JTextArea textArea = new JTextArea();
 textArea.setText("長いテキスト...");
@@ -2032,7 +2032,7 @@ textArea.setText("長いテキスト...");
 - JScrollPaneに配置されていない
 - 適切なサイズが設定されていない
 
-対処法
+対処法。
 ```java
 JTextArea textArea = new JTextArea(10, 30);  // 行数と列数を指定
 textArea.setLineWrap(true);  // 行の折り返しを有効
@@ -2044,7 +2044,7 @@ frame.add(scrollPane);
 
 #### 問題：JButtonのサイズが意図通りにならない
 
-エラー症状
+エラー症状。
 ```java
 JButton button = new JButton("ボタン");
 button.setSize(200, 100);
@@ -2055,7 +2055,7 @@ button.setSize(200, 100);
 - レイアウトマネージャーがサイズを制御している
 - `setPreferredSize()`を使用していない
 
-対処法
+対処法。
 ```java
 JButton button = new JButton("ボタン");
 button.setPreferredSize(new Dimension(200, 100));
@@ -2069,7 +2069,7 @@ button.setBounds(10, 10, 200, 100);
 
 #### 問題：コンポーネントの更新時に画面がちらつく
 
-エラー症状
+エラー症状。
 ```java
 // 大量のコンポーネントを動的に追加・削除する際のちらつき
 panel.removeAll();
@@ -2084,7 +2084,7 @@ panel.repaint();
 - 個別の更新処理が画面に反映されている
 - ダブルバッファリングが無効になっている
 
-対処法
+対処法。
 ```java
 // 更新処理をバッチ化
 panel.setVisible(false);  // 一時的に非表示

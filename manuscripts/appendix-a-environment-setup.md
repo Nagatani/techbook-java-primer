@@ -45,10 +45,10 @@ Javaでの開発を始める前に、開発を行う企業やコミュニティ�
 
 ソフトウェア開発において、バージョン管理ツールは開発環境の管理を劇的に改善する重要なツールです。特にJavaのような、頻繁にバージョンアップされるプログラミング言語では、次のような課題が発生します。
 
-- 複数プロジェクトでの異なるバージョン要求: プロジェクトAではJava 8、プロジェクトBではJava 17が必要である
-- 新バージョンの検証: 新しいJavaバージョンをテストしつつ、安定版も維持する必要がある
-- チーム開発での環境統一: 開発メンバー全員が同じバージョンを使用する必要がある
-- OS標準のJavaとの競合: システムにプリインストールされたJavaと開発用Javaの混在がある
+- 複数プロジェクトでの異なるバージョン要求： プロジェクトAではJava 8、プロジェクトBではJava 17が必要である
+- 新バージョンの検証： 新しいJavaバージョンをテストしつつ、安定版も維持する必要がある
+- チーム開発での環境統一： 開発メンバー全員が同じバージョンを使用する必要がある
+- OS標準のJavaとの競合： システムにプリインストールされたJavaと開発用Javaの混在がある
 
 ### 従来の方法の問題点
 
@@ -93,7 +93,7 @@ cd project-b  # 自動的にJava 17に切り替わる
 ```
 
 #### 3. ベンダー中立なJDK管理
-SDKMANは主要なJDKディストリビューションをすべてサポート：
+##### SDKMANは主要なJDKディストリビューションをすべてサポート
 - Oracle JDK
 - OpenJDK（Microsoft, Amazon Corretto, Eclipse Temurin等）
 - GraalVM
@@ -109,7 +109,7 @@ sdk install kotlin      # JVM言語
 
 ### なぜSDKMANを選ぶのか
 
-本書でSDKMANを採用する理由：
+#### 本書でSDKMANを採用する理由
 
 1. クロスプラットフォーム対応： macOS、Linux、Windowsで同じコマンドが使える
 2. 初心者にも優しい： 複雑な環境設定を自動化
@@ -218,7 +218,7 @@ Available Java Versions for macOS ARM 64bit
 $ sdk install java 21.0.6-ms
 ```
 
-インストール中の表示例：
+##### インストール中の表示例
 ```
 Downloading: java 21.0.6-ms
 
@@ -281,7 +281,7 @@ Using java version 21.0.6-ms
 
 #### プロジェクトごとの自動切り替え
 
-プロジェクトのルートディレクトリに`.sdkmanrc`ファイルを作成すると、ディレクトリ移動時に自動的にバージョンが切り替わります：
+##### プロジェクトのルートディレクトリに`.sdkmanrc`ファイルを作成すると、ディレクトリ移動時に自動的にバージョンが切り替わります
 
 ```bash
 # .sdkmanrcファイルの作成
@@ -362,9 +362,9 @@ IDEを使わずに、コマンドラインでJavaプログラムを開発する�
 ターミナルを開き、以下のコマンドを入力しましょう。
 
 ```bash
-$ cd                       # ホームディレクトリに移動
-$ mkdir java-practice      # java-practiceというディレクトリを作成する
-$ cd java-practice         # java-practiceに移動する
+$ cd                       # ホームディレクトリに移動。
+$ mkdir java-practice      # java-practiceというディレクトリを作成する。
+$ cd java-practice         # java-practiceに移動する。
 ```
 
 ### プログラムの作成
@@ -432,7 +432,7 @@ $ java -version
 command not found: java
 ```
 
-このエラーが出る場合は、PATHが正しく設定されていません。SDKMANを使用している場合は：
+#### このエラーが出る場合は、PATHが正しく設定されていません。SDKMANを使用している場合は
 
 ```bash
 $ source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -453,7 +453,7 @@ HelloWorld.java:3: error: ';' expected
 
 ### 文字エンコーディングの問題
 
-日本語を含むソースファイルでエラーが出る場合：
+#### 日本語を含むソースファイルでエラーが出る場合
 
 ```bash
 $ javac -encoding UTF-8 HelloWorld.java
@@ -461,7 +461,7 @@ $ javac -encoding UTF-8 HelloWorld.java
 
 ## A.6 環境構築チェックリスト
 
-環境構築が正しく完了したことを確認するためのチェックリストです：
+### 環境構築が正しく完了したことを確認するためのチェックリストです
 
 - JDKがインストールされている
   - `java -version`でバージョンが表示される
@@ -484,24 +484,24 @@ Javaプログラムでのプログラムへのデータの受け渡し方法は�
 
 ### 標準入力の基本
 
-画面から文字列を入力し、そのまま画面表示するプログラム
+画面から文字列を入力し、そのまま画面表示するプログラム。
 
 ファイル名「```StandardInput.java```」
 
 <span class="listing-number">**リストAA-2**</span>
 
 ```java
-import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言
+import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言。
 
 public class StandardInput {
     public static void main(String[] args) {
-        // 標準入力をScannerで取得する
+        // 標準入力をScannerで取得する。
         Scanner in = new Scanner(System.in);
-        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す
+        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す。
         String inputLine = in.nextLine();
-        // ↑inputLineという変数には、入力された文字列データが設定されています
+        // ↑inputLineという変数には、入力された文字列データが設定されています。
 
-        // 入力された文字列データをそのまま出力
+        // 入力された文字列データをそのまま出力。
         System.out.println(inputLine);
     }
 }
@@ -562,18 +562,18 @@ Exception in thread "main" java.lang.NumberFormatException: For input string: "a
 
 ### 推奨学習パス
 
-JVMとJava実行環境の詳細理解:
+#### JVMとJava実行環境の詳細理解
 - 付録B.01「JVMアーキテクチャとバイトコード」
   - JVMの内部構造、クラスローディング、バイトコード実行の仕組み
   - JITコンパイレーションとパフォーマンス最適化
 
-開発環境と実行環境の関係理解:
+#### 開発環境と実行環境の関係理解
 - 付録B.01で学習したJVM知識を基に、以下を理解できる
   - なぜJDKのバージョン選択が重要なのか
   - コンパイル時と実行時の違い
   - 異なるJDK間での互換性の考慮点
 
-実践的な開発環境最適化:
+#### 実践的な開発環境最適化
 付録Bの各セクションを学習することで、単なる環境構築を超えた、パフォーマンスとセキュリティを考慮した本格的な開発環境の構築が可能になります。
 
 詳細は「付録B: 技術的詳細解説（Deep Dive）インデックス」を参照してください。

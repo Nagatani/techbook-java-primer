@@ -50,7 +50,7 @@
 
 実践的なソフトウェア開発では、単純な継承から複雑なドメインモデルまで、様々なレベルの継承設計が求められます。特に企業システムやWebアプリケーションでは、ビジネスルールの変化に対応できる柔軟な継承階層の設計が大切です。
 
-本章では、これまで学んだ基礎知識を活用して、以下のような実践的な設計課題に取り組みます：
+#### 本章では、これまで学んだ基礎知識を活用して、以下のような実践的な設計課題に取り組みます
 
 - テンプレートメソッドパターン共通アルゴリズムの骨格を定義し、詳細を子クラスに委ねる設計
 - 戦略パターンとの組み合わせ継承と委譲を適切に使い分ける設計判断
@@ -167,14 +167,14 @@ public class PaymentProcessor {
 }
 ```
 
-テンプレートメソッドパターンの重要なポイント
+テンプレートメソッドパターンの重要なポイント。
 
 1. 共通フローの定義： `processPayment()`メソッドで決済処理の標準的な流れを定義
 2. 拡張ポイントの明確化： 子クラスがオーバーライド可能なメソッドでカスタマイズポイントを提供
 3. 不変性の保証： `final`キーワードでテンプレートメソッドの改変を防止
 4. デフォルト実装： 基本的な動作を提供しつつ、必要に応じて子クラスで特化した実装を可能にする
 
-具体的な決済処理の実装例
+具体的な決済処理の実装例。
 
 <span class="listing-number">**サンプルコード5-2**</span>
 
@@ -273,7 +273,7 @@ public class PayPalPayment extends PaymentProcessor {
 
 このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは必要に応じてこれらのメソッドをオーバーライドすることで、独自の振る舞いを実装できます。
 
-例外を使わない決済処理の使用例
+例外を使わない決済処理の使用例。
 
 <span class="listing-number">**サンプルコード5-3**</span>
 
@@ -315,7 +315,7 @@ public class PaymentExample {
 }
 ```
 
-エラー処理の設計ポイント
+エラー処理の設計ポイント。
 
 1. boolean戻り値： 検証メソッドは成功/失敗をbooleanで返す
 2. エラーメッセージの保持： errorMessageフィールドにエラー情報を格納
@@ -328,7 +328,7 @@ public class PaymentExample {
 
 実際の開発では、最初から完璧な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
 
-ステップ1重複コードの発見
+ステップ1重複コードの発見。
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
 
@@ -381,38 +381,38 @@ public class Truck {
 }
 ```
 
-重複コードの分析
+重複コードの分析。
 
-①　共通フィールド： model、color、speedという車両の基本属性がCarとTruckで重複して定義されている
+①　共通フィールド： model、color、speedという車両の基本属性がCarとTruckで重複して定義されている。
 
-②　エンジン始動処理： start()メソッドの実装が両クラスで完全に同一
+②　エンジン始動処理： start()メソッドの実装が両クラスで完全に同一。
 
-③　加速処理： accelerate()メソッドでspeedを10増加させる処理とメッセージ出力が重複
+③　加速処理： accelerate()メソッドでspeedを10増加させる処理とメッセージ出力が重複。
 
-④　ブレーキ処理： brake()メソッドでspeedを10減少させ、負の値を防ぐロジックが重複
+④　ブレーキ処理： brake()メソッドでspeedを10減少させ、負の値を防ぐロジックが重複。
 
-⑤　固有フィールド： loadCapacity（積載量）はトラック特有の属性として追加
+⑤　固有フィールド： loadCapacity（積載量）はトラック特有の属性として追加。
 
-⑥　固有メソッド： loadCargo()はトラック特有の機能として実装
+⑥　固有メソッド： loadCargo()はトラック特有の機能として実装。
 
 public class Motorcycle {
     private String model;
     private String color;
     private int speed;
     
-    // また同じメソッドの重複！
+    // また同じメソッドの重複！。
     public void start() {
-        System.out.println(model + " のエンジンを始動");
+        System.out.println(model + " のエンジンを始動");。
     }
     
     public void accelerate() {
         speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+        System.out.println(model + " が加速: " + speed + "km/h");。
     }
     
     public void brake() {
         speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+        System.out.println(model + " が減速: " + speed + "km/h");。
     }
 }
 ```
@@ -422,7 +422,7 @@ public class Motorcycle {
 <span class="listing-number">**サンプルコード5-5**</span>
 
 ```java
-// 共通部分を親クラスとして抽出
+// 共通部分を親クラスとして抽出。
 public class Vehicle {
     protected String model;
     protected String color;
@@ -434,22 +434,22 @@ public class Vehicle {
         this.speed = 0;
     }
     
-    // 共通メソッドを親クラスに移動
+    // 共通メソッドを親クラスに移動。
     public void start() {
-        System.out.println(model + " のエンジンを始動");
+        System.out.println(model + " のエンジンを始動");。
     }
     
     public void accelerate() {
         speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+        System.out.println(model + " が加速: " + speed + "km/h");。
     }
     
     public void brake() {
         speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+        System.out.println(model + " が減速: " + speed + "km/h");。
     }
     
-    // ゲッターとセッター
+    // ゲッターとセッター。
     public String getModel() { return model; }
     public int getSpeed() { return speed; }
 }
@@ -460,15 +460,15 @@ public class Vehicle {
 <span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
-// リファクタリング後：重複が除去された
+// リファクタリング後：重複が除去された。
 public class Car extends Vehicle {
     public Car(String model, String color) {
         super(model, color);
     }
     
-    // Car固有の機能があれば追加
+    // Car固有の機能があれば追加。
     public void openTrunk() {
-        System.out.println(model + " のトランクを開く");
+        System.out.println(model + " のトランクを開く");。
     }
 }
 
@@ -483,15 +483,15 @@ public class Truck extends Vehicle {
     // accelerateメソッドをオーバーライド（重い車両は加速が遅い）
     @Override
     public void accelerate() {
-        speed += 5; // トラックは加速が遅い
-        System.out.println(model + " がゆっくり加速: " + speed + "km/h");
+        speed += 5; // トラックは加速が遅い。
+        System.out.println(model + " がゆっくり加速: " + speed + "km/h");。
     }
     
     public void loadCargo(int weight) {
         if (weight <= loadCapacity) {
-            System.out.println(weight + "kg の荷物を積載");
+            System.out.println(weight + "kg の荷物を積載");。
         } else {
-            System.out.println("積載量オーバー！");
+            System.out.println("積載量オーバー！");。
         }
     }
 }
@@ -504,11 +504,11 @@ public class Motorcycle extends Vehicle {
     @Override  // ②
     public void accelerate() {
         speed += 20;  // ③
-        System.out.println(model + " が素早く加速: " + speed + "km/h");
+        System.out.println(model + " が素早く加速: " + speed + "km/h");。
     }
     
     public void wheelie() {  // ④
-        System.out.println(model + " がウィリー！");
+        System.out.println(model + " がウィリー！");。
     }
 }
 ```
@@ -524,7 +524,7 @@ public class Motorcycle extends Vehicle {
 ④　固有メソッドの追加： wheelie()はバイク特有の機能として、親クラスには存在しないメソッドを追加
 ```
 
-リファクタリングの効果
+リファクタリングの効果。
 
 継承を導入したリファクタリングによって、コードの重複を削減できます。まず、コードの重複が除去されることで、保守性が飛躍的に向上します。同じコードを複数の場所に書く必要がなくなるため、バグの発生率が減り、修正も簡単になります。共通機能の変更が1箇所で済むことも大きな利点です。親クラスを修正するだけで、すべての子クラスに変更が反映されます。
 
@@ -534,7 +534,7 @@ public class Motorcycle extends Vehicle {
 
 Javaで継承を行うには、子クラスの宣言時に`extends`キーワードを使います。
 
-継承の基本構文と継承される要素
+継承の基本構文と継承される要素。
 
 <span class="listing-number">**サンプルコード5-7**</span>
 
@@ -563,26 +563,26 @@ public class Wizard extends Character {  // ③
 }
 ```
 
-継承の仕組みと効果
+継承の仕組みと効果。
 
-①　フィールドの継承： name、hpというフィールドは自動的にすべての子クラスに引き継がれる
+①　フィールドの継承： name、hpというフィールドは自動的にすべての子クラスに引き継がれる。
 
-②　メソッドの継承： attack()メソッドも同様に、すべての子クラスで利用可能になる
+②　メソッドの継承： attack()メソッドも同様に、すべての子クラスで利用可能になる。
 
-③　extends宣言： `extends Character`により、HeroとWizardはCharacterクラスのすべての非privateメンバを継承
+③　extends宣言： `extends Character`により、HeroとWizardはCharacterクラスのすべての非privateメンバを継承。
 
-④　固有メソッドの追加： 各子クラスは継承した機能に加えて、独自のメソッドを定義可能
+④　固有メソッドの追加： 各子クラスは継承した機能に加えて、独自のメソッドを定義可能。
 
-⑤　固有フィールドの追加： Wizardクラスは継承したフィールドに加えて、mp（マジックポイント）を独自に持つ
+⑤　固有フィールドの追加： Wizardクラスは継承したフィールドに加えて、mp（マジックポイント）を独自に持つ。
 
 ### is-a関係
 
 継承は、クラス間に「is-a関係」（〜は〜の一種である）が成り立つ場合に使うのが適切です。
 
-- 「勇者(Hero) is a キャラクタ(Character)」
-- 「魔法使い(Wizard) is a キャラクタ(Character)」
+- 「勇者（Hero） is aキャラクタ(Character)」
+- 「魔法使い（Wizard） is aキャラクタ(Character)」
 
-このような関係が成り立つ場合、継承の利用を検討します。一方、「車(Car) has a エンジン(Engine)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
+このような関係が成り立つ場合、継承の利用を検討します。一方、「車（Car） has aエンジン(Engine)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
 
 ### 継承の誤用例：よくある間違い
 
@@ -632,7 +632,7 @@ public class StackProblem {
 }
 ```
 
-解決策コンポジションを使用
+解決策コンポジションを使用。
 
 <span class="listing-number">**サンプルコード5-9**</span>
 
@@ -835,7 +835,7 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 この例では、継承を使用したためにMyStackがArrayListのすべてのメソッドを継承し、スタックの原則を破る不正な操作が可能になってしまいます。
 
-改善策コンポジション（委譲）を使う
+改善策コンポジション（委譲）を使う。
 
 <span class="listing-number">**サンプルコード5-13**</span>
 
@@ -1026,7 +1026,7 @@ public class Knight extends Character {
 
 ## ポリモーフィズム（多態性）
 
-ポリモーフィズム (Polymorphism) は、ギリシャ語で「多くの形を持つ」という意味で、プログラミングにおける柔軟性を実現する概念です。オブジェクト指向では継承とオーバーライドを通じて実現されますが、関数型プログラミングではパラメトリックポリモーフィズムやアドホックポリモーフィズムなど、異なる形で実現されます
+ポリモーフィズム (Polymorphism) は、ギリシャ語で「多くの形を持つ」という意味で、プログラミングにおける柔軟性を実現する概念です。オブジェクト指向では継承とオーバーライドを通じて実現されますが、関数型プログラミングではパラメトリックポリモーフィズムやアドホックポリモーフィズムなど、異なる形で実現されます。
 
 ポリモーフィズムとは、同じ型の変数や同じメソッド呼び出しが、実行時のオブジェクトの種類によって異なる振る舞いをする性質を指します。
 
@@ -1095,7 +1095,7 @@ public class GameParty {
 
 ポリモーフィズムを使わない場合と使った場合の違いを、実際のコードで比較してみましょう。
 
-Beforeポリモーフィズムを使わない場合
+Beforeポリモーフィズムを使わない場合。
 
 <span class="listing-number">**サンプルコード5-20**</span>
 
@@ -1145,7 +1145,7 @@ public class GamePartyBefore {
 }
 ```
 
-Afterポリモーフィズムを使った場合
+Afterポリモーフィズムを使った場合。
 
 <span class="listing-number">**サンプルコード5-21**</span>
 
@@ -1212,7 +1212,7 @@ class Character {
 }
 ```
 
-ポリモーフィズムの利点まとめ
+ポリモーフィズムの利点まとめ。
 
 1. コードの簡潔性： 型別の条件分岐が不要になり、コードがシンプルに
 2. 拡張性： 新しい型を追加してもクライアントコードの変更が不要
@@ -1224,7 +1224,7 @@ class Character {
 
 より実践的な例として、図形描画システムを考えてみましょう。
 
-Beforeポリモーフィズムを使わない場合
+Beforeポリモーフィズムを使わない場合。
 
 <span class="listing-number">**サンプルコード5-22**</span>
 
@@ -1303,7 +1303,7 @@ public class DrawingAppBefore {
 }
 ```
 
-Afterポリモーフィズムを使った場合
+Afterポリモーフィズムを使った場合。
 
 <span class="listing-number">**サンプルコード5-23**</span>
 
@@ -1421,7 +1421,7 @@ class Pentagon extends Shape {
 }
 ```
 
-ポリモーフィズムがもたらす設計上の利点
+ポリモーフィズムがもたらす設計上の利点。
 
 1. Open/Closed原則の実現： 拡張に対して開いており、修正に対して閉じている
 2. 単一責任原則： 各図形クラスは自身の描画と面積計算のみに責任を持つ
@@ -1478,7 +1478,7 @@ public class GameParty {
 }
 ```
 
-注意: `instanceof`でチェックせずにいきなりキャストしようとすると、もしオブジェクトがその型でなかった場合に`ClassCastException`という実行時エラーが発生します。必ず`instanceof`で確認してからキャストするのが安全です
+注意： `instanceof`でチェックせずにいきなりキャストしようとすると、もしオブジェクトがその型でなかった場合に`ClassCastException`という実行時エラーが発生します。必ず`instanceof`で確認してからキャストするのが安全です。
 
 #### モダンJavaのパターンマッチング
 
@@ -1622,12 +1622,12 @@ class Child extends Parent {
 
 #### super()の呼び出し忘れ
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: constructor Parent in class Parent cannot be applied to given types
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1659,12 +1659,12 @@ class Child extends Parent {
 
 #### アクセス修飾子の制限違反
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: doSomething() in Child cannot override doSomething() in Parent; attempting to assign weaker access privileges
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1688,12 +1688,12 @@ class Child extends Parent {
 
 #### 戻り値型の不一致
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: doSomething() in Child cannot override doSomething() in Parent; return type String is not compatible with int
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1737,12 +1737,12 @@ class Child extends Parent {
 
 #### ClassCastException
 
-エラーメッセージ
+エラーメッセージ。
 ```
 Exception in thread "main" java.lang.ClassCastException: Parent cannot be cast to Child
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1769,12 +1769,12 @@ if (p instanceof Child child) {
 
 #### メソッドが見つからない
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: cannot find symbol - method childMethod()
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1809,12 +1809,12 @@ class Child extends Parent {
 
 #### 抽象クラスのインスタンス化
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: Animal is abstract; cannot be instantiated
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1837,12 +1837,12 @@ Animal a = new Dog();  // OK：具象クラスのインスタンスを作成
 
 #### 抽象メソッドの実装忘れ
 
-エラーメッセージ
+エラーメッセージ。
 ```
 error: Dog is not abstract and does not override abstract method makeSound() in Animal
 ```
 
-原因と対処
+原因と対処。
 
 ```java
 // エラー例
@@ -1865,7 +1865,7 @@ class Dog extends Animal {
 
 ### thisとsuperの混同
 
-一般的な間違い
+一般的な間違い。
 
 ```java
 // 間違った使用例

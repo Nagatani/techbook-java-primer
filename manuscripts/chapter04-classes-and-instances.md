@@ -88,7 +88,7 @@ public class ProblemDemo {
 }
 ```
 
-このコードの問題点
+このコードの問題点。
 - カプセル化の欠如すべてのフィールドがpublicで、外部から自由にアクセス・変更可能
 - データの整合性不正な値（負の残高など）を防ぐ仕組みがない
 - 変更の追跡誰がいつ値を変更したか記録できない
@@ -126,7 +126,7 @@ Javaのアクセス制御は、カプセル化を実現する上で最も重要�
 
 #### 各アクセス修飾子の詳細と使用例
 
-`private`の使用例
+`private`の使用例。
 <span class="listing-number">**サンプルコード4-2**</span>
 
 ```java
@@ -147,7 +147,7 @@ public class BankAccount {
 }
 ```
 
-パッケージプライベート（デフォルト）の使用例
+パッケージプライベート（デフォルト）の使用例。
 <span class="listing-number">**サンプルコード4-3**</span>
 
 ```java
@@ -170,7 +170,7 @@ class ProcessorHelper {
 }
 ```
 
-`protected`の使用例
+`protected`の使用例。
 <span class="listing-number">**サンプルコード4-4**</span>
 
 ```java
@@ -198,7 +198,7 @@ public class Car extends Vehicle {
 }
 ```
 
-`public`の使用例
+`public`の使用例。
 <span class="listing-number">**サンプルコード4-5**</span>
 
 ```java
@@ -322,11 +322,11 @@ public class BankAccountV1 {
 }
 ```
 
-改善点
+改善点。
 - フィールドがprivateになり、直接アクセスできない
 - メソッドを通じてのみ操作可能
 
-残る問題
+残る問題。
 - 負の金額でも入金・出金できてしまう
 - 残高不足でも出金できてしまう
 - 初期残高が負の値でも設定できる
@@ -372,12 +372,12 @@ public class BankAccountV2 {
 }
 ```
 
-改善点
+改善点。
 - コンストラクタで初期値を検証
 - 入金時に金額を検証
 - 出金時に残高と金額を確認
 
-残る問題
+残る問題。
 - 口座番号が後から変更可能（getterがない）
 - 取引履歴が残らない
 - 口座番号の検証がない
@@ -445,7 +445,7 @@ public class BankAccountV3 {
 }
 ```
 
-完成した設計の特徴
+完成した設計の特徴。
 - 不変性口座番号はfinalで変更不可
 - 完全な検証すべての入力を検証
 - 履歴管理すべての取引を記録
@@ -526,7 +526,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
 }
 ```
 
-この設計の要点
+この設計の要点。
 - 継承の活用第3章のBankAccountV3を基に機能を拡張
 - 定数による状態管理口座状態を文字列定数で管理
 - 状態管理失敗回数の追跡と自動停止機能
@@ -538,7 +538,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
 
 もっとも基本的な原則は単一責任の原則です。1つのクラスは1つの明確な責任のみを持つべきであり、これにより変更の理由が限定され、クラスの理解と保守が容易になります。次に重要なのはデータの隠蔽で、クラスの内部状態をprivateで保護し、必要な操作のみをパブリックメソッドとして公開します。これにより、実装の詳細を変更してもクライアントコードに影響を与えません。
 
-入力検証も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクタで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、意味のある名前を使用することで、コードの可読性と保守性が大幅に向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます
+入力検証も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクタで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、意味のある名前を使用することで、コードの可読性と保守性が大幅に向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます。
 
 最後に、不変条件の維持は、オブジェクトの整合性を保証する上で極めて重要です。オブジェクトの生成から破棄まで、常に満たされるべき条件（不変条件）を明確に定義し、すべての操作でこれを維持するよう設計します。
 
@@ -571,7 +571,7 @@ package com.example.myapp.service;
 package jp.ac.university.research;
 ```
 
-命名規則のポイント
+命名規則のポイント。
 - すべて小文字を使用
 - ドメイン名を逆順に記述
 - 意味のある階層構造を作成
@@ -613,7 +613,7 @@ import java.util.ArrayList;
 List<String> names = new ArrayList<>();
 ```
 
-import文の種類
+import文の種類。
 
 1. 単一型インポート。
 ```java
@@ -677,7 +677,7 @@ com.example.myapp/
 └── exception/     // カスタム例外
 ```
 
-設計原則
+設計原則。
 - 機能的凝集性関連する機能を同じパッケージに
 - 循環依存の回避パッケージ間の依存関係を一方向に
 - 適切な粒度大きすぎず小さすぎないパッケージサイズ
@@ -969,7 +969,7 @@ public class Logger {
 }
 ```
 
-実践的なオーバーロード設計原則
+実践的なオーバーロード設計原則。
 - もっとも多機能なメソッドを1つ定義し、他はそれを呼び出す
 - デフォルト値は意味のある値を選ぶ
 - 引数の順序を統一する（URL → オプション → タイムアウトなど）
@@ -1034,7 +1034,7 @@ public class Logger {
 
 #### エラー1: 神（God）クラスの作成
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
 public class UserManager {
@@ -1060,12 +1060,12 @@ public class UserManager {
 }
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 設計上の問題: 単一責任の原則に違反している
 ```
 
-修正方法:
+##### 修正方法
 ```java
 // 責任を分離したクラス設計
 public class User {
@@ -1104,7 +1104,7 @@ public class AuthenticationService {
 
 #### エラー2: 過度なgetterとsetterの使用
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class BankAccount {
     private double balance;
@@ -1120,12 +1120,12 @@ double currentBalance = account.getBalance();
 account.setBalance(currentBalance - 100.0);  // 直接残高操作
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 設計上の問題: カプセル化が不十分で、ビジネスロジックが外部に漏れている
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class BankAccount {
     private double balance;
@@ -1165,12 +1165,12 @@ public class BankAccount {
 
 #### エラー3: デフォルトコンストラクタが見つからない
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 error: The constructor User() is undefined
 ```
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class User {
     private String name;
@@ -1187,7 +1187,7 @@ public class User {
 User user = new User();  // コンパイルエラー
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class User {
     private String name;
@@ -1207,7 +1207,7 @@ public class User {
 
 #### エラー4: コンストラクタでのnull値未検証
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class Product {
     private String name;
@@ -1224,12 +1224,12 @@ Product product = new Product(null, 100.0);
 System.out.println(product.name.length());  // NullPointerException
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 Exception in thread "main" java.lang.NullPointerException
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class Product {
     private String name;
@@ -1252,7 +1252,7 @@ public class Product {
 
 #### エラー5: 引数の型による曖昧性
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class Calculator {
     public int calculate(int a, double b) {
@@ -1269,12 +1269,12 @@ Calculator calc = new Calculator();
 calc.calculate(10, 20);  // どちらのメソッドが呼ばれるか不明
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 error: The method calculate(int, double) is ambiguous for the type Calculator
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class Calculator {
     public int calculate(int a, int b) {
@@ -1297,7 +1297,7 @@ public class Calculator {
 
 #### エラー6: 戻り値の型のみが異なるオーバーロード
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class DataProcessor {
     public String process(String data) {
@@ -1310,12 +1310,12 @@ public class DataProcessor {
 }
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 error: Duplicate method process(String) in type DataProcessor
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class DataProcessor {
     public String processToUpperCase(String data) {
@@ -1341,7 +1341,7 @@ public class DataProcessor {
 
 #### エラー7: 参照の共有による意図しない変更
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class Team {
     private List<String> members;
@@ -1367,7 +1367,7 @@ List<String> teamMembers = team.getMembers();
 teamMembers.add("David");  // 意図せずTeamの内部状態を変更
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class Team {
     private List<String> members;
@@ -1395,7 +1395,7 @@ public class Team {
 
 #### エラー8: リスナーの未解除
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class EventSource {
     private List<EventListener> listeners = new ArrayList<>();
@@ -1427,7 +1427,7 @@ public class EventHandler implements EventListener {
 }
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class EventSource {
     private List<EventListener> listeners = new ArrayList<>();
@@ -1474,7 +1474,7 @@ public class EventHandler implements EventListener {
 
 #### エラー9: equals()のみの実装
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class Person {
     private String name;
@@ -1503,7 +1503,7 @@ people.add(new Person("Alice", 30));  // 重複として検出されない
 System.out.println(people.size());  // 期待値: 1、実際: 2
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class Person {
     private String name;
@@ -1533,7 +1533,7 @@ public class Person {
 
 #### エラー10: 無限再帰による StackOverflowError
 
-問題のあるコード:
+##### 問題のあるコード
 ```java
 public class Department {
     private String name;
@@ -1566,12 +1566,12 @@ public class Employee {
 }
 ```
 
-エラーメッセージ:
+##### エラーメッセージ
 ```
 Exception in thread "main" java.lang.StackOverflowError
 ```
 
-修正方法:
+##### 修正方法
 ```java
 public class Department {
     private String name;

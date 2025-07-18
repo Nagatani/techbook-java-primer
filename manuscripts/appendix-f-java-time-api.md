@@ -8,7 +8,7 @@
 
 ## レガシーDate/Calendarの問題点
 
-Java 8以前は、日付時刻の処理に`java.util.Date`と`java.util.Calendar`を使用していましたが、これらのAPIには多くの問題がありました：
+### Java 8以前は、日付時刻の処理に`java.util.Date`と`java.util.Calendar`を使用していましたが、これらのAPIには多くの問題がありました
 
 1. 可変性（ミュータブル）: Dateオブジェクトは変更可能であるため、バグの温床となりやすい
 2. 設計の不整合： 月が0から始まる（1月が0）など、直感的でない仕様
@@ -18,7 +18,7 @@ Java 8以前は、日付時刻の処理に`java.util.Date`と`java.util.Calendar
 
 ## java.time APIの主要クラス
 
-Java 8で導入された`java.time`パッケージは、これらの問題を解決する新しい日付時刻APIです：
+### Java 8で導入された`java.time`パッケージは、これらの問題を解決する新しい日付時刻APIです
 
 <span class="listing-number">**サンプルコードF-1**</span>
 
@@ -61,7 +61,7 @@ public class JavaTimeBasicExample {
 
 ## 日付時刻の作成と操作
 
-java.time APIは不変（イミュータブル）であり、操作は常に新しいインスタンスを返します：
+### java.time APIは不変（イミュータブル）であり、操作は常に新しいインスタンスを返します
 
 <span class="listing-number">**サンプルコードF-2**</span>
 
@@ -118,7 +118,7 @@ public class DateTimeManipulationExample {
 
 ## フォーマットとパース（DateTimeFormatter）
 
-日付時刻の文字列表現との相互変換には`DateTimeFormatter`を使用します：
+### 日付時刻の文字列表現との相互変換には`DateTimeFormatter`を使用します
 
 <span class="listing-number">**サンプルコードF-3**</span>
 
@@ -172,7 +172,7 @@ public class DateTimeFormatterExample {
 
 ## 期間と期限の計算（Period、Duration）
 
-日付や時刻の差を扱うために、`Period`（日付ベース）と`Duration`（時間ベース）を使用します：
+### 日付や時刻の差を扱うために、`Period`（日付ベース）と`Duration`（時間ベース）を使用します
 
 <span class="listing-number">**サンプルコードF-4**</span>
 
@@ -224,7 +224,7 @@ public class PeriodDurationExample {
 
 ## タイムゾーンの扱い
 
-グローバルなアプリケーションでは、タイムゾーンの適切な処理が重要です：
+### グローバルなアプリケーションでは、タイムゾーンの適切な処理が重要です
 
 <span class="listing-number">**サンプルコードF-5**</span>
 
@@ -282,7 +282,7 @@ public class TimeZoneExample {
 
 ## ファイル操作での実践例
 
-java.time APIをファイル操作と組み合わせた実践的な例：
+### java.time APIをファイル操作と組み合わせた実践的な例
 
 <span class="listing-number">**サンプルコードF-6**</span>
 
@@ -370,7 +370,7 @@ public class FileTimeExample {
 
 ## レガシーAPIとの相互変換
 
-既存のコードとの互換性のため、java.time APIとレガシーAPIの間で変換が必要な場合があります：
+### 既存のコードとの互換性のため、java.time APIとレガシーAPIの間で変換が必要な場合があります
 
 <span class="listing-number">**サンプルコードF-7**</span>
 

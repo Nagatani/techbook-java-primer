@@ -66,11 +66,11 @@
 - エラーハンドリングが適切に実装できている
 - 実用的なファイル処理ツールが作成できている
 
-次のステップ： 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！
+次のステップ： 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！。
 
 ## ファイルI/Oの基礎とストリーム
 
-プログラムが外部のファイルとデータをやりとりすることをファイル入出力 (I/O) と呼びます。Javaでは、このデータの流れをストリーム (Stream) という統一された概念で扱います。
+プログラムが外部のファイルとデータをやりとりすることをファイル入出力 （I/O） と呼びます。Javaでは、このデータの流れをストリーム (Stream) という統一された概念で扱います。
 
 - ファイルなどからプログラムへデータを読み込む流れ
 - プログラムからファイルなどへデータを書き出す流れ
@@ -239,7 +239,7 @@ public class TextFileWriterExample {
     }
 }
 ```
-// 追記モード
+// 追記モード。
 // StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追加できます。
 // ログファイルの作成や、既存データを保持しながら新しい情報を追加する場合に使用します。
 `StandardOpenOption.APPEND`を指定すると、ファイルの末尾に追記できます。
@@ -248,7 +248,7 @@ public class TextFileWriterExample {
 
 テキストファイルを扱う際には、文字コード（エンコーディング）の指定が大切です。文字コードが異なると、文字化けが発生する可能性があります。
 
-主要な文字エンコーディング
+主要な文字エンコーディング。
 - UTF-8: 現在最も広く使用される可変長エンコーディング
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
@@ -303,7 +303,7 @@ public class CharacterEncodingExample {
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
 
-// バイナリファイルの読み込み
+// バイナリファイルの読み込み。
 // DataInputStream/DataOutputStreamは、プリミティブ型のデータを効率的にバイナリ形式で保存・読み込みするためのクラスです。
 // テキスト形式と比較してファイルサイズが小さく、読み書き速度も高速です。
 Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
@@ -350,14 +350,14 @@ public class DataStreamExample {
 }
 ```
 
-大切な注意点
+大切な注意点。
 1. 順序の一致： 書き込んだ順序と完全に同じ順序で読み込む必要がある
 2. エンディアン： DataStream系は常にビッグエンディアン（ネットワークバイトオーダー）を使用
 3. 文字列の制限： `writeUTF()`は最大65535バイトまでの文字列しか扱えません
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
-// Filesクラスの使用
+// Filesクラスの使用。
 // NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
 // パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用するとよいAPIです。
 
@@ -480,7 +480,7 @@ public class FileSystemExample {
 
 ### CSV ファイルの処理
 
-// CSVファイルの処理
+// CSVファイルの処理。
 // CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
 // Javaでは標準ライブラリだけでも基本的なCSV処理が可能ですが、複雑な処理では専用ライブラリ（Apache Commons CSV等）の使用を推奨します。
 // 以下は基本的なCSV読み込み・書き込みの実装例です。
@@ -1260,7 +1260,7 @@ Text Blocksは、特にファイルI/O処理において構造化されたテキ
 ### 1. ファイルパスの問題
 
 ##### 問題
-相対パスや絶対パスの混在によるファイルが見つからないエラー
+相対パスや絶対パスの混在によるファイルが見つからないエラー。
 
 ```java
 // 悪い例
@@ -1270,10 +1270,10 @@ if (!file.exists()) {
 }
 ```
 
-エラーメッセージ: `FileNotFoundException` または `NoSuchFileException`
+エラーメッセージ： `FileNotFoundException` または `NoSuchFileException`。
 
 ##### 対処法
-適切なパス管理と存在チェックを実装する
+適切なパス管理と存在チェックを実装する。
 
 ```java
 // 良い例
@@ -1299,7 +1299,7 @@ if (Files.exists(configPath)) {
 ### 2. エンコーディングの問題
 
 ##### 問題
-文字化けや不正な文字でのファイル読み書き
+文字化けや不正な文字でのファイル読み書き。
 
 ```java
 // 悪い例
@@ -1308,9 +1308,9 @@ BufferedReader br = new BufferedReader(reader);
 String line = br.readLine(); // 文字化けする可能性
 ```
 
-エラーメッセージ: `MalformedInputException` または文字化けした出力
+エラーメッセージ： `MalformedInputException` または文字化けした出力。
 
-対処法: 明示的にエンコーディングを指定する
+対処法： 明示的にエンコーディングを指定する。
 
 ```java
 // 良い例
@@ -1337,7 +1337,7 @@ try (BufferedWriter writer = Files.newBufferedWriter(
 ### 3. ファイルロックとアクセス権限の問題
 
 ##### 問題
-ファイルが他のプロセスによって使用されている、または権限不足
+ファイルが他のプロセスによって使用されている、または権限不足。
 
 ```java
 // 問題のあるコード
@@ -1348,9 +1348,9 @@ try {
 }
 ```
 
-エラーメッセージ: `AccessDeniedException` または `FileSystemException`
+エラーメッセージ： `AccessDeniedException` または `FileSystemException`。
 
-対処法: 適切な権限チェックとエラーハンドリングを実装する
+対処法： 適切な権限チェックとエラーハンドリングを実装する。
 
 ```java
 // 良い例
@@ -1389,7 +1389,7 @@ try {
 ### 4. メモリ効率の問題
 
 ##### 問題
-大きなファイルを一度にメモリに読み込む
+大きなファイルを一度にメモリに読み込む。
 
 ```java
 // 悪い例（大きなファイルでOutOfMemoryError）
@@ -1397,9 +1397,9 @@ String content = Files.readString(Paths.get("large_file.txt"));
 String[] lines = content.split("\n");
 ```
 
-エラーメッセージ: `OutOfMemoryError`
+エラーメッセージ： `OutOfMemoryError`。
 
-対処法: ストリーミング処理やBufferedReaderを使用する
+対処法： ストリーミング処理やBufferedReaderを使用する。
 
 ```java
 // 良い例1: ストリーミング処理
@@ -1435,7 +1435,7 @@ try (BufferedReader reader = Files.newBufferedReader(
 ### 5. クロスプラットフォーム対応の問題
 
 ##### 問題
-特定のOS固有のパス区切り文字やファイル名制限
+特定のOS固有のパス区切り文字やファイル名制限。
 
 ```java
 // 悪い例
@@ -1443,7 +1443,7 @@ File file = new File("data\\config\\settings.txt"); // Windows固有
 String path = "/home/user/data.txt"; // Unix固有
 ```
 
-対処法: `java.nio.file.Path`とシステムプロパティを活用する
+対処法： `java.nio.file.Path`とシステムプロパティを活用する。
 
 ```java
 // 良い例
@@ -1484,7 +1484,7 @@ private static boolean isValidFileName(String fileName) {
 ### 6. 並行ファイルアクセスの問題
 
 ##### 問題
-複数のスレッドからの同時ファイルアクセス
+複数のスレッドからの同時ファイルアクセス。
 
 ```java
 // 悪い例
@@ -1497,7 +1497,7 @@ public void appendLog(String message) {
 }
 ```
 
-対処法: 適切な同期化とファイルロックを実装する
+対処法： 適切な同期化とファイルロックを実装する。
 
 ```java
 // 良い例
@@ -1529,7 +1529,7 @@ public class ThreadSafeFileLogger {
 ### 7. 一時ファイルの管理問題
 
 ##### 問題
-一時ファイルの削除忘れによるディスク容量の浪費
+一時ファイルの削除忘れによるディスク容量の浪費。
 
 ```java
 // 悪い例
@@ -1537,7 +1537,7 @@ File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
 // 処理後にファイルが残る
 ```
 
-対処法: 適切な一時ファイル管理を実装する
+対処法： 適切な一時ファイル管理を実装する。
 
 ```java
 // 良い例

@@ -94,7 +94,7 @@ exercises/chapter14/
 プログラムを作成する上で、予期しない状況やエラーへの対応は避けて通れません。エラーには主に以下の3つの種類があります。
 
 1. 構文エラー (Syntax Error): コードの文法的な誤り。コンパイル時に発見され、修正しないとプログラムを実行できません。
-2. 実行時エラー （Runtime Error）: プログラムの実行中に発生する異常事態。本章で学ぶ「例外 (Exception)」もこの一種である。
+2. 実行時エラー（Runtime Error）: プログラムの実行中に発生する異常事態。本章で学ぶ「例外 (Exception)」もこの一種である。
 3. 論理エラー (Logic Error): プログラムはエラーなく動作するが、実行結果が意図通りにならない不具合。デバッグによって原因を特定し、ロジックを修正する必要がある。
 
 本章では、特に「実行時エラー」に焦点を当て、Javaの例外処理のしくみを学びます。
@@ -1072,7 +1072,7 @@ public class TransferService {
 ### 1. try-catch文の不適切な使用
 
 ##### 問題
-すべての処理をひとつのtry-catchで囲む
+すべての処理をひとつのtry-catchで囲む。
 
 ```java
 // 悪い例
@@ -1087,10 +1087,10 @@ try {
 }
 ```
 
-エラーメッセージ: 特定のエラーが分からない
+エラーメッセージ： 特定のエラーが分からない。
 
 ##### 対処法
-具体的な例外をキャッチし、適切にリソースを管理する
+具体的な例外をキャッチし、適切にリソースを管理する。
 
 ```java
 // 良い例
@@ -1116,7 +1116,7 @@ try (FileReader reader = new FileReader("file.txt");
 ### 2. 例外の握りつぶし
 
 ##### 問題
-例外を無視する空のcatchブロック
+例外を無視する空のcatchブロック。
 
 ```java
 // 悪い例
@@ -1127,7 +1127,7 @@ try {
 }
 ```
 
-対処法: 最低限ログを記録し、適切に処理する
+対処法： 最低限ログを記録し、適切に処理する。
 
 ```java
 // 良い例
@@ -1146,7 +1146,7 @@ try {
 ### 3. 適切でない例外型の使用
 
 ##### 問題
-RuntimeExceptionを不適切に使用
+RuntimeExceptionを不適切に使用。
 
 ```java
 // 悪い例
@@ -1157,9 +1157,9 @@ public void validateAge(int age) {
 }
 ```
 
-エラーメッセージ: 呼び出し元で適切に処理できない
+エラーメッセージ： 呼び出し元で適切に処理できない。
 
-対処法: 適切な例外型を定義・使用する
+対処法： 適切な例外型を定義・使用する。
 
 ```java
 // 良い例
@@ -1182,7 +1182,7 @@ public void validateAge(int age) throws ValidationException {
 ### 4. リソース管理の問題
 
 ##### 問題
-finallyブロックでのリソース解放漏れ
+finallyブロックでのリソース解放漏れ。
 
 ```java
 // 悪い例
@@ -1199,9 +1199,9 @@ try {
 }
 ```
 
-エラーメッセージ: `Error: unreported exception IOException; must be caught or declared to be thrown`
+エラーメッセージ： `Error: unreported exception IOException; must be caught or declared to be thrown`。
 
-対処法: try-with-resourcesを使用する
+対処法： try-with-resourcesを使用する。
 
 ```java
 // 良い例
@@ -1216,7 +1216,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 ### 5. カスタム例外の設計ミス
 
 ##### 問題
-例外クラスに適切なコンストラクタがない
+例外クラスに適切なコンストラクタがない。
 
 ```java
 // 悪い例
@@ -1228,7 +1228,7 @@ public class CustomException extends Exception {
 }
 ```
 
-対処法: 標準的なコンストラクタを提供する
+対処法： 標準的なコンストラクタを提供する。
 
 ```java
 // 良い例
@@ -1250,7 +1250,7 @@ public class CustomException extends Exception {
 ### 6. 例外の再スロー時の問題
 
 ##### 問題
-スタックトレースの情報が失われる
+スタックトレースの情報が失われる。
 
 ```java
 // 悪い例
@@ -1261,7 +1261,7 @@ try {
 }
 ```
 
-対処法: 原因例外を保持する
+対処法： 原因例外を保持する。
 
 ```java
 // 良い例
@@ -1279,7 +1279,7 @@ try {
 ### 7. 並行処理での例外処理
 
 ##### 問題
-スレッドでの例外が適切に処理されない
+スレッドでの例外が適切に処理されない。
 
 ```java
 // 悪い例
@@ -1294,7 +1294,7 @@ Thread thread = new Thread(() -> {
 thread.start();
 ```
 
-対処法: 適切な例外処理戦略を採用する
+対処法： 適切な例外処理戦略を採用する。
 
 ```java
 // 良い例
