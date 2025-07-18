@@ -140,8 +140,8 @@ jobs:
 
 本章では、これらの実践的な配布技術を段階的に学習します。
 
-- 実行可能JARファイルの作成アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめます。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できます
-- `jpackage`によるネイティブアプリケーション化さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成します。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がります
+- 実行可能JARファイルの作成アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめる。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できる
+- `jpackage`によるネイティブアプリケーション化さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成しる。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がりる
 
 ### 本章の学習目標
 
@@ -500,10 +500,10 @@ java -jar SimpleApp.jar
 
 #### IntelliJ IDEAでのJARファイル作成
 IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できます。
-1.  `File` -> `Project Structure...` を選択します。
-2.  `Artifacts` -> `+` -> `JAR` -> `From modules with dependencies...` を選択します。
-3.  `Main Class`として実行したいクラス（例： `SimpleApp`）を選択し、OKを押します。
-4.  メニューの `Build` -> `Build Artifacts...` -> `(作成したArtifact名)` -> `Build` を選択すると、`out/artifacts`ディレクトリ以下にJARファイルが生成されます。
+1.  `File` -> `Project Structure...` を選択しる。
+2.  `Artifacts` -> `+` -> `JAR` -> `From modules with dependencies...` を選択しる。
+3.  `Main Class`として実行したいクラス（例： `SimpleApp`）を選択し、OKを押しる。
+4.  メニューの `Build` -> `Build Artifacts...` -> `(作成したArtifact名)` -> `Build` を選択すると、`out/artifacts`ディレクトリ以下にJARファイルが生成される。
 
 #### 外部ライブラリを含むFat JARの作成
 
@@ -810,11 +810,11 @@ jpackage --type app-image \
           --main-jar SimpleApp.jar \
           --dest ./output
 ```
-- `--type app-image`: アプリケーションイメージを作成します。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定します
-- `--name "SimpleApp"`: アプリケーションの名前を指定します
-- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定します
-- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定します
-- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定します
+- `--type app-image`: アプリケーションイメージを作成しる。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定しる
+- `--name "SimpleApp"`: アプリケーションの名前を指定しる
+- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定しる
+- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定しる
+- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定しる
 
 #### jpackageの詳細なオプション
 
@@ -964,10 +964,10 @@ jpackage --type app-image \
 
 本章では、開発したJavaアプリケーションをほかのユーザーに届けるための基本的な手法を学びました。
 
-- JARファイルは、Javaのクラスファイルやリソースをまとめる標準的な方法です
-- マニフェストファイルに`Main-Class`を記述することで、実行可能なJARファイルを作成できます
-- `java -jar`コマンドで、実行可能JARファイルを起動できます
-- `jpackage`ツールを使えば、Javaランタイムを同梱した、より配布しやすいネイティブアプリケーションを作成できます
+- JARファイルは、Javaのクラスファイルやリソースをまとめる標準的な方法である
+- マニフェストファイルに`Main-Class`を記述することで、実行可能なJARファイルを作成できる
+- `java -jar`コマンドで、実行可能JARファイルを起動できる
+- `jpackage`ツールを使えば、Javaランタイムを同梱した、より配布しやすいネイティブアプリケーションを作成できる
 
 ソフトウェア開発は、コードを書くだけでなく、それを価値ある成果物としてユーザーに届けるところまでが含まれます。本章で学んだビルドと配布の知識は、あなたの作品を世界に公開するための第一歩です。
 

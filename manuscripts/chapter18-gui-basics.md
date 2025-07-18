@@ -126,11 +126,11 @@ Swingアプリケーションの基本的な初期化手順
 
 このプログラムの各行を詳しく見ていきましょう。
 
-1. JFrameクラス： Swingでウィンドウを表すクラスです。すべてのGUIアプリケーションの基礎となります。
-2. setSize(): ウィンドウの幅と高さをピクセル単位で設定します。
-3. setDefaultCloseOperation(): ウィンドウの×ボタンを押したときの動作を指定します。
-4. setLocationRelativeTo(null): nullを指定すると、ウィンドウが画面中央に配置されます。
-5. setVisible(true): ウィンドウを表示します。これを呼ばないと画面に表示されません。
+1. JFrameクラス： Swingでウィンドウを表すクラスである。すべてのGUIアプリケーションの基礎となりる。
+2. setSize(): ウィンドウの幅と高さをピクセル単位で設定しる。
+3. setDefaultCloseOperation(): ウィンドウの×ボタンを押したときの動作を指定しる。
+4. setLocationRelativeTo(null): nullを指定すると、ウィンドウが画面中央に配置される。
+5. setVisible(true): ウィンドウを表示しる。これを呼ばないと画面に表示されません。
 
 #### ウィンドウの基本設定
 
