@@ -72,12 +72,13 @@ The build process converts Markdown files listed in the `entry` array (currently
 ## Workflow
 
 1. Check `TODO.md` before starting any task to understand current priorities
-2. Write or edit manuscript files in `manuscripts/*.md`
-3. Add supplementary materials to `source/` directory if needed
-4. Run `npm run lint` to check for writing style issues
-5. Run `npm run lint:fix` to automatically format manuscript files
-6. Run `npm run build` to ensure the book builds successfully
-7. Update `TODO.md` after completing tasks
+2. **MANDATORY**: Read `docs/writing-guidelines-textlint-compliance.md` before writing or editing any manuscript content
+3. Write or edit manuscript files in `manuscripts/*.md`
+4. Add supplementary materials to `source/` directory if needed
+5. Run `npm run lint` to check for writing style issues
+6. Run `npm run lint:fix` to automatically format manuscript files
+7. Run `npm run build` to ensure the book builds successfully
+8. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules
 
@@ -106,6 +107,7 @@ When performing any modifications to the book content, you must:
    - `docs/analysis/comprehensive-project-analysis.md`: Overall project state
    - `docs/analysis/issues-tracking.md`: Current prioritized issues
    - `docs/analysis/improvement-roadmap.md`: Planned improvements
+   - **`docs/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
 
 2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
    - Resolved issues (mark as completed in issues-tracking.md)
@@ -152,6 +154,7 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Only use the official Oracle Java website as a reference
 - Maintain consistent tone and style suitable for a published book
 - Use textlint for Japanese manuscript linting and formatting
+- **CRITICAL**: Always refer to `docs/writing-guidelines-textlint-compliance.md` when generating or modifying text to prevent textlint errors
 - **文体統一**: 本文はですます調で統一する（である調は使用しない）
 - **リスト表記ルール**: 
   - 絵文字を使用しない
@@ -171,6 +174,13 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Do not add emojis unless explicitly requested by the user
 
 ## Linting and Text Modification Rules
+
+### Writing Guidelines Compliance
+
+**MANDATORY**: Before any text generation or modification:
+1. Read `docs/writing-guidelines-textlint-compliance.md` thoroughly
+2. Apply the guidelines proactively during writing to minimize errors
+3. Use the checklist in the guidelines to verify text before running `npm run lint`
 
 ### textlint修正時の重要な注意事項
 
