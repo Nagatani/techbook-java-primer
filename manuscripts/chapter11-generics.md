@@ -149,16 +149,16 @@ public class WithoutGenericsExample {
         list.add("Hello");
         list.add(123); // 文字列も数値も、何でも入ってしまう！
 
-        // 取り出すときに、本来の型を覚えておいて、キャストする必要がある
+        // 取り出すときにキャストが必要
         String message = (String) list.get(0); // OK
 
         // もし間違った型で取り出そうとすると...
-        // コンパイルは通ってしまうが、実行時に ClassCastException が発生！
+        // コンパイルは通るが実行時にClassCastExceptionが発生
         // String wrong = (String) list.get(1); 
     }
 }
 ```
-このように、コンパイラは型の誤りをチェックできず、バグが実行時まで発見されない危険な状態でした。
+このように、コンパイラは型の誤りをチェックできませんでした。バグが実行時まで発見されない危険な状態でした。
 
 この問題を解決するためにJava 5で導入されたのがジェネリクス（Generics）です。
 
