@@ -28,7 +28,7 @@
 - UDPを使った通信プログラムを作成できる
 - 簡単なHTTPクライアントを実装できる
 - マルチスレッドを使った並行サーバーを構築できる
-- ネットワーク通信のエラー処理を適切に実装できる
+- ネットワーク通信のエラー処理を体系的に実装できる
 
 実践応用。
 - チャットアプリケーションやファイル転送プログラムなど、実用的なネットワークアプリケーションを開発できる
@@ -211,13 +211,13 @@ public class SimpleTCPServer {
 
 ## マルチスレッドサーバーの実装
 
-単一スレッドのサーバーでは、一度に1つのクライアントしか処理できません。実用的なサーバーでは、複数のクライアントを同時に処理する必要があります。
+単一スレッドのサーバーでは、一度に1つのクライアントしか処理できません。実用的なサーバーでは、複数のクライアントを同時に処理します。
 
 マルチクライアント対応の重要性。
 - 同時接続性：複数のクライアントが同時にサービスを利用できる
 - スケーラビリティクライアント数の増加に対応できる
 - 応答性1つのクライアントの処理が他のクライアントに影響しない
-- リソース効率スレッドプールを使用することで効率的なリソース管理が可能
+- リソース効率スレッドプールを使用することでメモリとCPUの最適な利用が可能
 
 ### スレッドベースのサーバー
 
@@ -498,7 +498,7 @@ public class AsyncHttpClientExample {
 - ノンブロッキング処理により、レスポンスを待つ間も他の処理を継続できる
 - 複数のHTTPリクエストを並行して送信できる
 - CompletableFutureによる柔軟なエラーハンドリングと処理の連鎖
-- HTTP/2のサポートによる効率的な通信
+- HTTP/2のサポートによる多重化と低遅延通信の実現
 
 ## 17.5.5 UDP通信の実装
 
@@ -830,7 +830,7 @@ public class JsonApiClient {
 
 JSON処理のポイント。
 - Jackson, Gsonなどのライブラリを使用してJSONのシリアライズ/デシリアライズ
-- 適切なContent-TypeとAcceptヘッダーの設定
+- 正しいContent-TypeとAcceptヘッダーの設定
 - エラーハンドリングとHTTPステータスコードの確認
 - 型安全なデータマッピング
 
@@ -840,7 +840,7 @@ REST（Representational State Transfer）は、Web APIの設計原則です。Ja
 
 RESTの原則。
 - リソース指向すべてをリソースとして扱う
-- 統一インターフェースHTTPメソッド（GET, POST, PUT, DELETE）の適切な使用
+- 統一インターフェースHTTPメソッド（GET, POST, PUT, DELETE）のRESTfulな使用
 - ステートレス各リクエストが独立している
 - キャッシュ可能性レスポンスのキャッシュ制御
 
@@ -859,13 +859,13 @@ Java標準APIやJettyなどのライブラリを使用してWebSocketクライ�
 
 ## セキュリティの考慮事項
 
-ネットワークプログラミングでは、セキュリティを常に意識する必要があります。
+ネットワークプログラミングでは、セキュリティを常に意識してください。
 
 ### 基本的なセキュリティ対策
 
 1. 入力検証： すべての外部入力を検証する
 2. 暗号化： 機密データはSSL/TLSで暗号化する
-3. 認証： 適切な認証メカニズムを実装する
+3. 認証： 安全な認証メカニズムを実装する
 4. タイムアウト： DoS攻撃を防ぐためタイムアウトを設定する
 5. リソース制限： 接続数やメモリ使用量を制限する
 
@@ -918,7 +918,7 @@ public class SSLClient {
 
 ### ノンブロッキングI/O（NIO）
 
-Java NIOを使用すると、より効率的なネットワークプログラミングが可能です。
+Java NIOを使用すると、単一スレッドで複数の接続を管理できるスケーラブルなネットワークプログラミングが可能です。
 
 <span class="listing-number">**サンプルコード17-10**</span>
 
@@ -991,11 +991,11 @@ public class NIOServer {
 
 ### 重要なポイント
 
-1. ソケットプログラミング： TCPとUDPの違いを理解し、適切に使い分ける
+1. ソケットプログラミング： TCPとUDPの違いを理解し、用途に応じて使い分ける
 2. マルチスレッド： 複数のクライアントを同時に処理するサーバーの実装
 3. プロトコル： HTTPなどのアプリケーション層プロトコルの理解
 4. セキュリティ： 暗号化、認証、入力検証の重要性
-5. パフォーマンス： NIOを使用した効率的なI/O処理
+5. パフォーマンス： NIOを使用した非同期I/Oによる応答時間の短縮
 
 ### 次のステップ
 
@@ -1054,7 +1054,7 @@ public class BadConnection {
 - `SocketTimeoutException: Read timed out`
 
 ##### 対処法
-適切なエラーハンドリングとリトライ機能を実装する。
+包括的なエラーハンドリングとリトライ機能を実装する。
 
 ```java
 // 良い例
@@ -1111,7 +1111,7 @@ public class ReliableConnection {
 ### 2. タイムアウト設定の問題
 
 ##### 問題
-適切なタイムアウトが設定されていない。
+必要なタイムアウトが設定されていない。
 
 ```java
 // 悪い例
@@ -1123,7 +1123,7 @@ String response = reader.readLine(); // 無限に待機する可能性
 
 エラー症状： アプリケーションが応答しない。
 
-対処法： 適切なタイムアウト値を設定する。
+対処法： システム要件に応じたタイムアウト値を設定する。
 
 ```java
 // 良い例
@@ -1175,7 +1175,7 @@ public void sendData(Socket socket, String data) throws IOException {
 
 エラー症状： 文字化け、データの欠落。
 
-対処法： 適切なエンコーディングとデータ完全性チェックを実装する。
+対処法： 正しいエンコーディングとデータ完全性チェックを実装する。
 
 ```java
 // 良い例
@@ -1238,7 +1238,7 @@ HttpResponse<String> response = client.send(request,
 String body = response.body(); // ステータスコードをチェックしない
 ```
 
-対処法： 適切なHTTPステータスコードの処理を実装する。
+対処法： 各HTTPステータスコードに対応した処理を実装する。
 
 ```java
 // 良い例
@@ -1338,7 +1338,7 @@ public class EncodingHandling {
     public String sendPostRequest(String url, Map<String, String> params) 
             throws IOException, InterruptedException {
         
-        // URLエンコーディングを適切に行う
+        // URLエンコーディングを確実に行う
         String postData = params.entrySet().stream()
             .map(entry -> {
                 try {
@@ -1376,7 +1376,7 @@ SSL/TLS証明書の検証を無効化。
 HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
 ```
 
-対処法： 適切なSSL/TLS設定を行う。
+対処法： 安全なSSL/TLS設定を行う。
 
 ```java
 // 良い例
@@ -1422,19 +1422,19 @@ public class SecureConnection {
 ### 7. リソース管理の問題
 
 ##### 問題
-ネットワークリソースの適切な解放。
+ネットワークリソースの確実な解放。
 
 ```java
 // 悪い例
 ServerSocket serverSocket = new ServerSocket(8080);
 while (true) {
     Socket clientSocket = serverSocket.accept();
-    // クライアントソケットが適切に閉じられない
+    // クライアントソケットが確実に閉じられない
     handleClient(clientSocket);
 }
 ```
 
-対処法： try-with-resourcesと適切なリソース管理を実装する。
+対処法： try-with-resourcesと体系的なリソース管理を実装する。
 
 ```java
 // 良い例
