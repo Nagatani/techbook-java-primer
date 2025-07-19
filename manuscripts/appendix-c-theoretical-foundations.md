@@ -762,7 +762,7 @@ public class DynamicArray<T> {
 ```
 
 償却解析。
-- resize操作の頻度： 1, 2, 4, 8, 16, ... 2ⁱ（2のi乗）
+- resize操作の頻度： 1→2→4→8→16→...→2ⁱ（2のi乗）
 - n回のadd操作でresizeはlog₂(n) 回発生
 - 総コスト： n + (1 + 2 + 4 + ... + n) < n + 2n = 3n
 - 償却時間の計算量： O(3n/n) = O(1)
