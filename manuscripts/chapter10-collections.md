@@ -771,7 +771,7 @@ public class HashMapExample {
 }
 ```
 
-※ 本章の高度な内容については、付録B08「コレクション内部実装」を参照してください。
+※ 本章の高度な内容については、付録B.08「コレクションの内部実装」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b08-collection-internals/`）を参照してください。
 
 ## よくあるエラーと対処法
 

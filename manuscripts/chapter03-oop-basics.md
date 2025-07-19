@@ -1693,7 +1693,7 @@ public class MethodsPractice {
 
 次のステップ： 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
 
-※ 本章の高度な内容については、付録B03「プログラミングパラダイム」を参照してください。
+※ 本章の高度な内容については、付録B.04「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-software-design-principles/`）を参照してください。
 
 ## 次章への橋渡し
 

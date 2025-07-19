@@ -635,7 +635,7 @@ public class BuilderExample {
 
 次のステップ： 基礎課題が完了したら、第7章「抽象クラスとインターフェイス」に進みましょう。
 
-※ 本章の発展的な内容については、付録B06「不変性パターン」を参照してください。
+※ 本章の発展的な内容については、付録B.06「不変性の設計パターン」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-immutability-patterns/`）を参照してください。
 
 ## よくあるエラーと対処法
 

@@ -571,7 +571,7 @@ public class InputExample {
 
 次のステップ： 基礎課題が完了したら、第2章「Java基本文法」に進みましょう。第2章では、より本格的なオブジェクト指向プログラミングの世界に入っていきます。
 
-※ 本章の高度な内容については、付録B01「JVMアーキテクチャ」を参照してください。
+※ 本章の高度な内容については、付録B.01「JVMアーキテクチャとバイトコード」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`）を参照してください。
 
 ## よくあるエラーと対処法
 

@@ -290,7 +290,7 @@ public enum Status implements Loggable {
 }
 ```
 
-※ 本章の高度な内容については、付録B06「列挙型の内部実装」を参照してください。
+※ 本章の高度な内容については、付録B.13「Enumの高度な活用」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-enum-patterns/`）を参照してください。
 
 ## まとめ
 

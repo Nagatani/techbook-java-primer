@@ -26,21 +26,6 @@
 
 
 
-## 章末演習
-
-### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`
-
-### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
-
-詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
-
-
-
 
 
 
@@ -1242,7 +1227,7 @@ public class TextBlockFileIO {
 
 Text Blocksは、特にファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生成など、現代的なJavaアプリケーション開発において欠かせない機能となっています。
 
-※ 本章の高度な内容については、付録B12「高度なファイルI/O」を参照してください。
+※ 本章の高度な内容については、付録B.15「NIO.2の高度な機能」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-nio2-advanced/`）を参照してください。
 
 ## まとめ
 
@@ -1611,3 +1596,16 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
    ```
 
 これらの対処法を理解し実践することで、より信頼性の高いファイルI/O処理を実装できるようになります。
+
+## 章末演習
+
+### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されています。
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`
+
+### 課題構成
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
+
+詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
