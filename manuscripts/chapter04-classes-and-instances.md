@@ -342,7 +342,7 @@ public class BankAccountV2 {
     
     public BankAccountV2(String accountNumber, double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+            throw new IllegalArgumentException("初期残高は0以上である必要です");
         }
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
@@ -350,7 +350,7 @@ public class BankAccountV2 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要があります");
+            throw new IllegalArgumentException("入金額は正の値である必要です");
         }
         balance += amount;
     }
@@ -400,7 +400,7 @@ public class BankAccountV3 {
             throw new IllegalArgumentException("口座番号は必須です");
         }
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+            throw new IllegalArgumentException("初期残高は0以上である必要です");
         }
         
         this.accountNumber = accountNumber;
@@ -411,7 +411,7 @@ public class BankAccountV3 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要があります");
+            throw new IllegalArgumentException("入金額は正の値である必要です");
         }
         balance += amount;
         transactionHistory.add("入金: " + amount + "円");
@@ -680,7 +680,7 @@ com.example.myapp/
 設計原則。
 - 機能的凝集性：関連する機能を同じパッケージに
 - 循環依存の回避：AがBを使い、BがAを使うような相互依存を避ける
-- 適切な粒度：1パッケージに5～20クラス程度を目安とする
+- 推奨される粒度：1パッケージに5～20クラス程度を目安とする
 - 明確な責任：各パッケージがデータアクセス、ビジネスロジック、UIなどの役割を明確に持つ
 
 これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
@@ -1132,7 +1132,7 @@ public class BankAccount {
     
     public BankAccount(double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要があります");
+            throw new IllegalArgumentException("初期残高は0以上である必要です");
         }
         this.balance = initialBalance;
     }
@@ -1623,4 +1623,4 @@ public class Employee {
    - 第三者の目で設計の問題を発見
    - ベストプラクティスの共有
 
-これらの典型的なエラーパターンを理解し、適切な対処法を身につけることで、バグが少なく、変更に強く、チーム開発で扱いやすいJavaプログラムを作成できるようになります。
+これらの典型的なエラーパターンを理解し、各パターンに対応した対処法を身につけることで、バグが少なく、変更に強く、チーム開発で扱いやすいJavaプログラムを作成できるようになります。

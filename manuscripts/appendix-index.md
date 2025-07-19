@@ -56,7 +56,7 @@ Java開発を始めるための環境構築手順を詳細に解説します。�
 - セキュリティベストプラクティス安全なJavaアプリケーション開発
 - モダンJava機能ガイド最新バージョンの新機能解説
 
-※注意： 現在、付録Bの各章の詳細なサンプルコードと実装例は、GitHubリポジトリの`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/`ディレクトリに格納されています。各付録の末尾にあるリンクから参照してください。
+※注意： 現在、付録Bの各章の詳細なサンプルコードと実装例は、GitHubリポジトリに格納されています。`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/`ディレクトリから参照できます。各付録の末尾にあるリンクもご活用ください。
 
 ## 付録の活用方法
 

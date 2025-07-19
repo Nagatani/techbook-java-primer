@@ -243,11 +243,11 @@ Javaは1995年にSun Microsystems社によって開発され、現在では世�
 
 ## 開発環境の準備
 
-Javaプログラミングを始めるには、まず開発環境を整える必要があります。C言語では主にコンパイラとテキストエディタがあれば開発を始められましたが、現代のJava開発では、より統合された開発環境を使用することが一般的です。
+Javaプログラミングを始めるには、まず開発環境を整える必要です。C言語では主にコンパイラとテキストエディタがあれば開発を始められましたが、現代のJava開発では、より統合された開発環境を使用することが一般的です。
 
 本書では、実務でも広く使われている標準的な開発環境を採用します。まずJDK（Java Development Kit）として、Microsoft社が提供するOpenJDK 21.0.6を使用します。JDKにはJavaコンパイラ（javac）、Java仮想マシン（JVM）、標準ライブラリ、開発に必要な各種ツールが含まれており、Javaプログラムの開発と実行に必要なすべてがそろっています。
 
-開発効率を向上させるため、IDE（統合開発環境）としてIntelliJ IDEA Community Editionを使用します。IDEは単なるテキストエディタではなく、コード補完、リファクタリング支援、デバッガ、ビルドツール統合など、現代的なソフトウェア開発に必要な機能が統合されたパワフルな開発環境です。とくにIntelliJ IDEAは、Javaに特化した高度な支援機能により、初学者でも効率的にコードを書くことができます。
+開発効率を向上させるため、IDE（統合開発環境）としてIntelliJ IDEA Community Editionを使用します。IDEは単なるテキストエディタではなく、コード補完、リファクタリング支援、デバッガ、ビルドツール統合など、現代的なソフトウェア開発に必要な機能が統合されたパワフルな開発環境です。とくにIntelliJ IDEAは、Javaに特化した高度な支援機能により、初学者でもスムーズにコードを書くことができます。
 
 > 環境構築の詳細。
 > 環境構築の詳細な手順については、付録A「開発環境の構築」を参照してください。
@@ -272,7 +272,7 @@ public class HelloWorld {
 }
 ```
 
-このプログラムは、わずか5行ですが、Javaプログラミングの基本的な要素がすべて含まれています。まず `public class HelloWorld` は、HelloWorldという名前のクラスを宣言しています。Javaでは、すべてのコードはクラスの中に記述する必要があり、このクラス名はファイル名（HelloWorld.java）と一致させる必要があります。
+このプログラムは、わずか5行ですが、Javaプログラミングの基本的な要素がすべて含まれています。まず `public class HelloWorld` は、HelloWorldという名前のクラスを宣言しています。Javaでは、すべてのコードはクラスの中に記述し、このクラス名はファイル名（HelloWorld.java）と一致させます。
 
 プログラムの実行は `public static void main(String[] args)` から始まります。これはJavaプログラムのエントリポイント（開始点）となる特別なメソッドで、Javaランタイムはこのシグネチャ（署名）を持つメソッドを探して実行を開始します。C言語のmain関数と同じ役割を果たしますが、必ずクラスの中に定義する必要がある点が異なります。
 
@@ -357,7 +357,7 @@ printf("%s\n" , "Hello, World!!");
 これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
 
 #### `System.out.printf`
-C言語ライクに書きたい場合は、printfを使用してください。
+C言語ライクに書きたい場合は、printfを使用します。
 C言語のprintfと同じような書き方で出力が可能です。
 
 ##### サンプルソース
@@ -397,7 +397,7 @@ public class InputExample {
         Scanner scanner = new Scanner(System.in);
         
         // ユーザーへの入力促進メッセージ
-        System.out.print("整数値を入力してください: ");
+        System.out.print("整数値を入力: ");
         
         // 文字列として入力を受け取る
         String input = scanner.nextLine();
@@ -482,7 +482,7 @@ public class InputExample {
 >     int number = Integer.parseInt(input);
 >     // 正常処理
 > } catch (NumberFormatException e) {
->     System.out.println("数値を入力してください");
+>     System.out.println("数値を入力する必要があります");
 > }
 > ```
 > 
@@ -605,7 +605,7 @@ Java開発環境を構築し、初めてのプログラムを作成する際に�
 System.out.println("縺薙s縺ｫ縺｡縺ｯ");  // 正しく表示されない
 
 // 修正版
-// ファイルをUTF-8で保存し、適切なエンコーディングでコンパイル
+// ファイルをUTF-8で保存し、同じエンコーディングでコンパイル
 javac -encoding UTF-8 HelloWorld.java
 ```
 

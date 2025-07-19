@@ -1137,7 +1137,7 @@ public class CustomPanel extends JPanel {
     
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(200, 200);  // 適切なサイズを指定
+        return new Dimension(200, 200);  // コンポーネントの推奨サイズを指定
     }
 }
 ```
@@ -1350,7 +1350,7 @@ table.setModel(model);
 
 原因
 - 全てのデータを一度にメモリに読み込んでいる
-- 適切な仮想化が行われていない
+- 大量データの仮想化が実装されていない
 - 不要な再描画が発生している
 
 対処法。

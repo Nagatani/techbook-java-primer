@@ -1362,7 +1362,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 </dependencies>
 ```
 
-#### 2. 推移的依存関係の問題
+#### 2. 推移的な依存関係の問題
 
 ##### 問題
 間接的に依存するライブラリが競合する。
@@ -1559,7 +1559,7 @@ java Example  # ClassNotFoundException
 
 ##### 解決策
 ```bash
-# 実行時にも適切なクラスパスを指定
+# 実行時にも必要なクラスパスを指定
 java -cp "lib/*:src" Example
 
 # または実行可能JARを作成
