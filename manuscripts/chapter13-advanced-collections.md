@@ -20,9 +20,9 @@
 
 技能習得の面では、Stream APIを使った宣言的なデータ処理技術を身につけます。複雑なデータ変換とフィルタリングの実装方法を学び、実務で必要となるデータ操作スキルを習得します。Collectorsクラスを使った柔軟なデータ収集方法を学び、並列処理による性能向上の実践的な技術も習得します。
 
-データ処理能力の観点からは、大量データの高速な処理プログラムを実装できるようになることが目標です。宣言的なデータ処理パイプラインの設計方法を学び、従来の命令型処理との状況に応じた使い分けができます。これにより、処理の意図が明確になり、後からの修正やデバッグが容易になります。
+データ処理能力の観点からは、大量データをメモリ使用量を抑えて高速に処理するプログラムを実装できるようになることが目標です。宣言的なデータ処理パイプラインの設計方法を学び、従来の命令型処理との状況に応じた使い分けができます。これにより、処理の意図が明確になり、後からの修正やデバッグが容易になります。
 
-最終的な到達レベルとしては、複雑なデータ処理要件をStream APIで簡潔に実装できます。カスタムCollectorを作成して専用のデータ収集処理を実装する技術、並列ストリームを適切に活用した高性能データ処理の実現、そして従来のループ処理とStream処理を状況に応じて適切に使い分ける能力が、本章の最終目標です。
+最終的な到達レベルとしては、複雑なデータ処理要件をStream APIで簡潔に実装できます。カスタムCollectorを作成して専用のデータ収集処理を実装する技術、並列ストリームを活用したマルチコア環境での並列データ処理の実現、そして従来のループ処理とStream処理を状況に応じて使い分ける能力が、本章の最終目標です。
 
 
 
@@ -715,11 +715,11 @@ public class OptionalAntiPatternsExample {
 
 1. APIデザイン： メソッドの戻り値にOptionalを使用し、nullを返す可能性を明示
 2. チェイン操作： map、flatMap、filterを活用して宣言的なコードを書く
-3. デフォルト値： orElse、orElseGetを使用して適切なデフォルト値を提供
+3. デフォルト値： orElse、orElseGetを使用してコストやパフォーマンスを考慮したデフォルト値を提供
 4. 早期リターン： 値が存在しない場合の処理を早めに行う
 5. Stream統合： Stream APIと組み合わせて、より表現力豊かなコードを実現
 
-Optionalを適切に使用することで、NullPointerExceptionを防ぎ、より安全で読みやすいコードを書くことができます。
+Optionalをメソッドの戻り値やチェイン操作で使用することで、NullPointerExceptionを防ぎ、より安全で読みやすいコードを書くことができます。
 
 ## 並列ストリームによるパフォーマンス向上
 
@@ -1046,7 +1046,7 @@ public class OptionalChainingExample {
 
 ### null安全な処理パターン
 
-実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理する必要があります。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
+実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理します。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
 <span class="listing-number">**サンプルコード12-22**</span>
 
@@ -1062,7 +1062,7 @@ public class NullSafeProcessingExample {
         // nullが混入する可能性があるデータ
         List<String> namesWithNull = Arrays.asList("Alice", null, "Bob", "", "Charlie");
         
-        // null安全な処理：nullや空文字列を適切に処理
+        // null安全な処理：nullや空文字列を確実に処理
         List<String> validNames = namesWithNull.stream()
             .filter(Objects::nonNull)           // nullを除外
             .filter(name -> !name.trim().isEmpty()) // 空文字列を除外
@@ -1124,7 +1124,7 @@ public class ShortCircuitExample {
 
 ### 実用的なtoArray操作
 
-ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、適切な配列コンストラクタを指定することが大切です。
+ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが大切です。
 
 <span class="listing-number">**サンプルコード12-24**</span>
 
@@ -1137,7 +1137,7 @@ public class ToArrayExample {
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
         
         // toArrayの正しい使い方：型安全な配列を取得
-        // String[]::newを指定することで、適切な型の配列が生成される
+        // String[]::newを指定することで、正しい型の配列が生成される
         String[] nameArray = names.stream()
             .filter(name -> name.length() > 3)  // 3文字より長い名前のみ
             .map(String::toUpperCase)           // 大文字に変換
@@ -1244,7 +1244,7 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 
 ##### エラー例
 ```java
-// ❌ 不適切なStream操作のチェーン
+// ❌ 非効率的なStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
@@ -1258,7 +1258,7 @@ words.stream()
 
 ##### 対処法
 ```java
-// ✅ 適切なStream操作のチェーン
+// ✅ 効率的なStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
@@ -1331,7 +1331,7 @@ numbers.parallelStream()
 
 ##### エラー例
 ```java
-// ❌ Optionalの不適切な使用
+// ❌ Optionalの誤った使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 Optional<String> result = names.stream()
     .filter(name -> name.startsWith("D"))
@@ -1350,7 +1350,7 @@ if (result.isPresent()) {
 
 ##### 対処法
 ```java
-// ✅ Optionalの適切な使用
+// ✅ Optionalの正しい使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.stream()
     .filter(name -> name.startsWith("D"))
@@ -1427,7 +1427,7 @@ error: Unhandled exception type IOException
 
 ##### 対処法
 ```java
-// ✅ Stream内での適切な例外処理
+// ✅ Stream内での確実な例外処理
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");
 
 // 方法1: 例外を無視してフィルタ
@@ -1460,9 +1460,9 @@ List<String> contents = files.stream()
 1. Stream操作の順序を最適化する： フィルタリングは早い段階で実行し、処理量を減らす
 2. 終端操作を必ず含める： 中間操作だけでは実際の処理が行われない
 3. 並列処理の制限を理解する： 共有状態の変更を避け、スレッドセーフな操作を使用
-4. Optionalを適切に活用する： `isPresent()`と`get()`の組み合わせを避ける
-5. プリミティブ型Streamを使用する： 必要に応じて`IntStream`、`LongStream`、`DoubleStream`を使用
-6. 例外処理を適切に行う： チェック例外は事前に処理するか、ランタイム例外でラップする
+4. Optionalを効果的に活用する： `isPresent()`と`get()`の組み合わせを避ける
+5. プリミティブ型Streamを使用する： 数値計算処理では`IntStream`、`LongStream`、`DoubleStream`を使用
+6. 例外処理を確実に行う： チェック例外は事前に処理するか、ランタイム例外でラップする
 7. パフォーマンステストを実施する： 大量データでの並列処理の効果を測定する
 
 ## まとめ
