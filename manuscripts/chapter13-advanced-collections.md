@@ -1014,7 +1014,7 @@ public class OptionalExample {
 
 ### Optionalの連鎖操作
 
-`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続を大幅に簡素化します。
+`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
 
 <span class="listing-number">**サンプルコード12-21**</span>
 
