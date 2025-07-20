@@ -996,7 +996,7 @@ public class ValidationFramework {
 }
 ```
 
-※ 本章の高度な内容については、付録B.03「関数型プログラミングの理論的基礎」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-functional-programming-theory/`）を参照してください。
+※ 本章の高度な内容については、付録B.02「プログラミングパラダイム」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）を参照してください。
 
 ## よくあるエラーと対処法
 

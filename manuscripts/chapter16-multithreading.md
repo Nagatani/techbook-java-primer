@@ -2154,7 +2154,7 @@ public class ResiliencePatterns {
 
 次のステップ： 基礎課題が完了したら、第17章「ネットワークプログラミング」に進みましょう。
 
-※ 本章の高度な内容については、付録B.16「Javaメモリモデル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b16-java-memory-model/`）を参照してください。
+※ 本章の高度な内容については、付録B.14「Javaメモリモデル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`）を参照してください。
 
 ## よくあるエラーと対処法
 

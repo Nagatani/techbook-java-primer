@@ -708,7 +708,7 @@ var型推論を使用するかどうかの判断基準。
 
 var型推論は、Javaの表現力を高める強力な機能ですが、適切に使用することでコードの可読性と保守性を向上させることができます。ジェネリクスと組み合わせて使用することで、複雑な型宣言を簡潔にし、本質的なロジックに集中できるコードを書くことが可能になります。
 
-※ 本章の高度な内容については、付録B.09「型消去とジェネリクス」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b09-type-erasure-patterns/`）を参照してください。
+※ 本章の高度な内容については、付録B.07「型消去とジェネリクス」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`）を参照してください。
 
 ## よくあるエラーと対処法
 

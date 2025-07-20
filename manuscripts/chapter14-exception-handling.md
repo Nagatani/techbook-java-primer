@@ -301,7 +301,7 @@ public class UserService {
 }
 ```
 
-※ 本章の高度な内容については、付録B.14「例外処理のパフォーマンス」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-exception-performance/`）を参照してください。
+※ 本章の高度な内容については、付録B.12「例外処理のパフォーマンス」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`）を参照してください。
 
 ## 14.4.1 実践的な例外処理パターン
 

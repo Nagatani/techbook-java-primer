@@ -160,7 +160,7 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 
 この章では、C言語での開発経験を活かしながら、オブジェクト指向がどのようにこれらの課題を解決するかを実践的に学んでいきます。
 
-> 補足: プログラミングパラダイムの歴史的発展について詳しく知りたい方は、GitHubリポジトリの付録資料（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`）を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
+> 補足: プログラミングパラダイムの歴史的発展について詳しく知りたい方は、GitHubリポジトリの付録資料（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
 
 
 ## オブジェクト指向とは
@@ -1693,7 +1693,7 @@ public class MethodsPractice {
 
 次のステップ： 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
 
-※ 本章の高度な内容については、付録B.04「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-software-design-principles/`）を参照してください。
+※ 本章の高度な内容については、付録B.03「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`）を参照してください。
 
 ## 次章への橋渡し
 

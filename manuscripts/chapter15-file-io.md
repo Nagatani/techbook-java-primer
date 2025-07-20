@@ -1227,7 +1227,7 @@ public class TextBlockFileIO {
 
 Text Blocksは、特にファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生成など、現代的なJavaアプリケーション開発において欠かせない機能となっています。
 
-※ 本章の高度な内容については、付録B.15「NIO.2の高度な機能」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-nio2-advanced/`）を参照してください。
+※ 本章の高度な内容については、付録B.13「NIO.2の高度な機能」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`）を参照してください。
 
 ## まとめ
 
