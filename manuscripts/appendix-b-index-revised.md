@@ -1,4 +1,4 @@
-# 付録B: 技術的な詳細解説（Deep Dive）インデックス<small>上級者向け技術解説</small>
+# <b>付録B</b> <span>技術的な詳細解説（Deep Dive）インデックス</span> <small>上級者向け技術解説</small>
 
 この付録では、本書の各章で扱った技術的概念について、より深い理解を提供します。各付録は、GitHubリポジトリの`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/`ディレクトリに実装例とともに提供されています。
 
@@ -57,10 +57,10 @@
 - 内容：Spliterator、並列処理、パフォーマンス最適化
 - 関連章： 第10章
 
-#### B.03 関数型プログラミングの理論的基礎
-- 場所： `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-functional-programming-theory/`
-- 内容： ラムダ計算、圏論、モナド、関数型インターフェイス、メソッド参照の理論的背景
-- 関連章： 第13章
+#### B.03 プログラミングパラダイム
+- 場所： `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-programming-paradigms/`
+- 内容： 手続き型、オブジェクト指向、関数型プログラミングのパラダイム比較
+- 関連章： 第3章、第12章
 
 ### 高度な言語機能
 
@@ -86,12 +86,6 @@
 - 内容：WatchService、非同期I/O、メモリマップドファイル
 - 関連章： 第15章
 
-### データベース・永続化
-
-#### B.20 データベース高度機能
-- 場所： `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
-- 内容：JDBCの高度な機能、コネクションプーリング、トランザクション分離レベル、パフォーマンスチューニング
-- 関連章： 付録E
 
 ### テスト・開発プロセス
 

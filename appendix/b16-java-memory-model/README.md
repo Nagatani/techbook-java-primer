@@ -202,14 +202,6 @@ Performance improvement: 3.19x
 - **Executor framework**: スレッドプール管理
 - **Fork/Join framework**: 分割統治アルゴリズム
 
-## 参考資料
-
-- Java Language Specification: Chapter 17 (Threads and Locks)
-- JSR 133: Java Memory Model and Thread Specification Revision
-- "Java Concurrency in Practice" by Brian Goetz
-- "The Art of Multiprocessor Programming" by Maurice Herlihy
-- Intel Architecture Manuals
-
 ## まとめ
 
 Java Memory Modelの理解は、正確で高性能な並行プログラムを書くために不可欠です。このプロジェクトを通じて、メモリ可視性、Happens-Before関係、ロックフリープログラミング、パフォーマンス最適化の技術を実践的に学ぶことができます。ただし、過度な最適化は避け、まずは正確性を優先し、実測に基づいて最適化を行うことが重要です。

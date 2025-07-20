@@ -363,22 +363,4 @@ Calculator Module:
 - **Docker**: コンテナ化テスト環境
 - **Gradle/Maven**: ビルド自動化
 
-## 参考資料
-
-- **書籍**:
-  - "Growing Object-Oriented Software, Guided by Tests" - Freeman & Pryce
-  - "Effective Software Testing" - Maurício Aniche
-  - "Unit Testing Principles, Practices, and Patterns" - Vladimir Khorikov
-
-- **オンラインリソース**:
-  - TestPyramid.com - テストピラミッド公式ガイド
-  - Property-Based Testing - QuickCheck documentation
-  - Testcontainers Documentation
-  - PIT Mutation Testing Guide
-
-- **カンファレンス・コミュニティ**:
-  - Java Testing Community
-  - Property-Based Testing Meetup
-  - Testcontainers Community
-
 このプロジェクトを通じて、現代的なテスト戦略を身につけ、高品質なソフトウェア開発を実現できるスキルを習得することができます。単なるテストの書き方ではなく、戦略的なテスト設計の考え方を学び、実際のプロジェクトで応用できる実践的な知識を得ることが目標です。

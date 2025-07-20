@@ -119,11 +119,4 @@ Size: 100,000 | Sequential:  250ms | Parallel:   65ms | Speedup: 3.85x
 Size:1,000,000 | Sequential: 2500ms | Parallel:  420ms | Speedup: 5.95x
 ```
 
-## 参考資料
-
-- Java Platform Documentation: Stream API
-- "Java 8 in Action" by Raoul-Gabriel Urma
-- JSR 166: Concurrency Utilities
-- OpenJDK Source Code: java.util.stream package
-
 このプロジェクトを通じて、Stream APIの内部動作を深く理解し、実際のアプリケーションで高性能なデータ処理を実現する技術を身につけることができます。

@@ -252,16 +252,6 @@ java -cp out com.example.enumpatterns.examples.PerformanceDemo
    - 動的なセットには不適切
    - 大きなデータセットには代替案を検討
 
-## 貢献方法
-
-貢献を歓迎します！このプロジェクトで使用されているコーディングスタイルとパターンについては、examplesディレクトリを参照してください。
-
 ## ライセンス
 
 このプロジェクトはJava入門技術書の一部であり、教育目的で提供されています。
-
-## さらなる学習資料
-
-- [Effective Java 第3版](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/) - Joshua Bloch
-- [Java言語仕様](https://docs.oracle.com/javase/specs/)
-- [Java Enumドキュメント](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)

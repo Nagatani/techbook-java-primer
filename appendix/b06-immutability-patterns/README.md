@@ -478,24 +478,4 @@ Person updated = person.withAddress(
 Person updated = personCityLens.modify(person, String::toUpperCase);
 ```
 
-## 参考資料
-
-### 書籍・文献
-- "Functional Programming in Java" - Venkat Subramaniam
-- "Java Concurrency in Practice" - Brian Goetz
-- "Effective Java" - Joshua Bloch
-- "Purely Functional Data Structures" - Chris Okasaki
-
-### オンラインリソース
-- Oracle Java Documentation - Immutable Objects
-- Vavr Library Documentation (functional Java library)
-- Immutables Library (annotation-based immutable classes)
-- Google Guava - Immutable Collections
-
-### ツール・ライブラリ
-- **Immutables**: アノテーションベースの不変クラス生成
-- **Vavr**: 関数型プログラミングライブラリ
-- **Google Guava**: 不変コレクションとユーティリティ
-- **Lombok**: @Value アノテーションによる不変クラス
-
 このプロジェクトを通じて、不変性パターンの理論と実践を深く理解し、堅牢で保守しやすいJavaアプリケーションの設計能力を身につけることができます。不変性は複雑さを管理し、並行プログラミングを安全にする強力な手法ですが、パフォーマンスとのトレードオフを理解して適切に活用することが重要です。

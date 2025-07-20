@@ -425,24 +425,4 @@ public class NativeDemo {
 -XX:NewRatio=3 -XX:SurvivorRatio=8
 ```
 
-## 参考資料
-
-### 書籍・文献
-- "Java Performance: The Definitive Guide" - Scott Oaks
-- "Optimizing Java" - Benjamin Evans, James Gough, Chris Newland
-- "Java Virtual Machine Specification" - Oracle
-- "Deep Dive into the JVM" - Baeldung
-
-### オンラインリソース
-- Oracle JVM Documentation
-- OpenJDK HotSpot Wiki
-- JVM Performance Tuning Guide
-- Aleksey Shipilëv's JVM Blog
-
-### ツール・ライブラリ
-- **JMH**: Java Microbenchmark Harness
-- **JITWatch**: JITコンパイル可視化
-- **Eclipse MAT**: メモリダンプ分析
-- **async-profiler**: プロダクション対応プロファイラ
-
-このプロジェクトを通じて、JVMの内部動作を深く理解し、パフォーマンスチューニングの実践的なスキルを習得することができます。理論的な知識と実際のベンチマーク結果を組み合わせることで、実世界のJavaアプリケーション最適化に直接応用できる能力を身につけることが目標です。
+このプロジェクトを通じて、JVMの内部動作を深く理解し、パフォーマンスチューニングの実践的なスキルを習得できます。理論的な知識と実際のベンチマーク結果を組み合わせることで、実世界のJavaアプリケーション最適化に直接応用できる能力を身につけることが目標です。

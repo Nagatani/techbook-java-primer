@@ -380,24 +380,4 @@ Level 4: C2 (重最適化)
 -XX:InitialCodeCacheSize=64m
 ```
 
-## 参考資料
-
-### 書籍・論文
-- "Java Performance: The Definitive Guide" - Scott Oaks
-- "Optimizing Java" - Benjamin Evans, James Gough, Chris Newland
-- "HotSpot Virtual Machine Garbage Collection Tuning Guide"
-- "Understanding JIT Compilation and Optimizations" - Oracle
-
-### オンラインリソース
-- OpenJDK HotSpot Documentation
-- JVM Specification (Chapter 6: The Java Virtual Machine Instruction Set)
-- Oracle Java Performance Tuning Guide
-- Aleksey Shipilëv's JVM Performance Blog
-
-### ツール・ライブラリ
-- JMH (Java Microbenchmark Harness): 正確なベンチマーク
-- JITWatch: JITコンパイレーション可視化
-- perfasm: アセンブリレベル分析
-- async-profiler: プロダクション対応プロファイラ
-
 このプロジェクトを通じて、JVMの内部動作を深く理解し、パフォーマンスを意識した効果的なJavaコード設計スキルを習得することができます。理論的な知識だけでなく、実際のベンチマークと最適化効果を体験することで、実践的な最適化能力を身につけることが目標です。

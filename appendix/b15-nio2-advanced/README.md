@@ -250,16 +250,6 @@ sync.watchSource("/source")
    - Executorサービスの設定を確認
    - キャッチされていない例外を探す
 
-## 参考資料
-
-- [Java NIO.2ドキュメント](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/package-summary.html)
-- [非同期ファイルチャンネルガイド](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html)
-- [WatchServiceチュートリアル](https://docs.oracle.com/javase/tutorial/essential/io/notification.html)
-
-## 貢献方法
-
-問題や機能強化のリクエストをお気軽に提出してください！
-
 ## ライセンス
 
 このプロジェクトはJava入門技術書の一部であり、教育目的で提供されています。

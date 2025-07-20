@@ -195,12 +195,4 @@ interface EnhancedFunction<T, R> extends Function<T, R> {
 - **関数型プログラミング**: 高次関数と関数合成
 - **DI/IoC**: 依存性注入との組み合わせ
 
-## 参考資料
-
-- Java Platform Documentation: Interface Evolution
-- JSR 335: Lambda Expressions for the Java Programming Language
-- "Effective Java" by Joshua Bloch (Interface design principles)
-- "Java 8 in Action" by Raoul-Gabriel Urma
-- Oracle Tutorial: Default Methods
-
 このプロジェクトを通じて、Java 8以降のインターフェイス機能を深く理解し、実際のアプリケーション設計でより柔軟で保守性の高いコードを書く技術を身につけることができます。

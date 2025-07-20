@@ -86,10 +86,4 @@ java com.example.typeerasure.BridgeMethodExample
 - **ライブラリ設計**: Guava、Apache Commons
 - **実行時型操作**: リフレクション、アノテーション処理
 
-## 参考資料
-
-- Java Language Specification (JLS) §4.6 Type Erasure
-- Effective Java 第3版 Item 28: Prefer lists to arrays
-- Neal Gafter's Super Type Token pattern
-
 このプロジェクトを通じて、Javaジェネリクスの内部動作を深く理解し、実際の開発で遭遇する問題を解決する技術を身につけることができます。

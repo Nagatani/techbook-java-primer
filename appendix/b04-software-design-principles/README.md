@@ -279,12 +279,4 @@ void shouldCreateUserSuccessfully() {
 - **ArchUnit**: アーキテクチャテスト
 - **Maven/Gradle**: ビルド自動化
 
-## 参考資料
-
-- "Clean Code" - Robert C. Martin
-- "Effective Java" - Joshua Bloch  
-- "Design Patterns" - Gang of Four
-- "Clean Architecture" - Robert C. Martin
-- "Domain-Driven Design" - Eric Evans
-
 このプロジェクトを通じて、理論だけでなく実践的なソフトウェア設計スキルを身につけ、保守性の高い高品質なソフトウェアを開発する能力を向上させることができます。

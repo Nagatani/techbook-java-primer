@@ -425,23 +425,4 @@ public record VersionedData(String id, int version)
 }
 ```
 
-## 参考資料
-
-### 書籍・文献
-- "Java Language Updates" - Brian Goetz
-- "Data Oriented Programming" - Yehonathan Sharvit
-- "Modern Java in Action" - Raoul-Gabriel Urma
-- JEP 395: Records (Final)
-
-### オンラインリソース
-- Oracle Java Documentation - Records
-- OpenJDK Design Documents
-- Inside Java Podcast
-- Java Magazine Articles
-
-### 関連プロジェクト
-- **Project Amber**: パターンマッチング、Records
-- **Project Valhalla**: Value Types、Primitive Classes
-- **Project Loom**: 軽量スレッド、構造化並行性
-
 このプロジェクトを通じて、Recordsとデータ指向プログラミングの理論と実践を深く理解し、モダンなJavaアプリケーション開発のスキルを身につけることができます。Recordsは単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする重要な機能です。

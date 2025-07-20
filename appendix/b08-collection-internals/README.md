@@ -274,12 +274,4 @@ NavigableMap<Integer, Product> priceRange =
 - **キャッシュ効率**: CPU cache line considerations
 - **分散ハッシュ**: Consistent hashing
 
-## 参考資料
-
-- Java Collections Framework Documentation
-- "Introduction to Algorithms" - CLRS
-- "Java Performance: The Definitive Guide" - Scott Oaks
-- OpenJDK Source Code
-- "Effective Java" - Joshua Bloch
-
 このプロジェクトを通じて、コレクションフレームワークの内部動作を深く理解し、実際のアプリケーションで最適なデータ構造を選択する能力を身につけることができます。

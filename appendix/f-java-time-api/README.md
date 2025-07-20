@@ -494,8 +494,3 @@ java -cp out com.example.datetime.DateTimePerformanceComparison
 java.time APIは、従来のDate/Calendarクラスの問題を解決し、型安全で直感的な日付時刻処理を提供します。不変性、スレッドセーフティ、豊富な機能により、現代的なJavaアプリケーション開発には必須のAPIです。
 
 この付録で学んだ知識を活用して、堅牢で保守性の高い日付時刻処理を実装してください。
-
-## フィードバックとサポート
-
-本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：
-https://github.com/Nagatani/techbook-java-primer/issues
