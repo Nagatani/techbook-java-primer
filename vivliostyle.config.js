@@ -20,17 +20,17 @@ const markdownFiles = [
   'chapter17-network-programming.md',
   'chapter18-gui-basics.md',
   'chapter19-gui-event-handling.md',
-  'chapter20-database-programming.md',
-  'chapter21-advanced-gui.md',
-  'chapter22-unit-testing.md',
-  'chapter23-documentation-and-libraries.md',
-  'chapter24-build-and-deploy.md',
+  'chapter20-advanced-gui.md',
+  'chapter21-unit-testing.md',
+  'chapter22-documentation-and-libraries.md',
+  'chapter23-build-and-deploy.md',
   // 付録
   'appendix-index.md', // 付録一覧
   'appendix-a-environment-setup.md', // 付録A: 開発環境の構築
   'appendix-b-index-revised.md', // 付録B: 技術的詳細解説（Deep Dive）インデックス
   'appendix-c-theoretical-foundations.md', // 付録C: ソフトウェア工学の理論的基盤
   'appendix-d-integrated-project.md', // 付録D: 統合プロジェクト - 学生管理システム
+  'appendix-e-database-programming.md', // 付録E: データベースプログラミング
   'appendix-f-java-time-api.md', // 付録F: java.time API完全ガイド
   'cross-reference-guide.md',
   'glossary.md',

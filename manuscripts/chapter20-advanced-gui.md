@@ -1,4 +1,4 @@
-# <b>21章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>
+# <b>20章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>
 
 ## 本章の学習目標
 

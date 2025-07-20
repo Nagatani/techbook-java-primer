@@ -91,7 +91,7 @@
 #### B.20 データベース高度機能
 - 場所： `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`
 - 内容：JDBCの高度な機能、コネクションプーリング、トランザクション分離レベル、パフォーマンスチューニング
-- 関連章： 第20章
+- 関連章： 付録E
 
 ### テスト・開発プロセス
 

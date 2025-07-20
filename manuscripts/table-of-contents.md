@@ -31,13 +31,12 @@
 - [17章　ネットワークプログラミング](chapter17-network-programming.md)
 - [18章　GUIプログラミング基礎](chapter18-gui-basics.md)
 - [19章　GUIイベント処理](chapter19-gui-event-handling.md)
-- [20章　データベースプログラミング](chapter20-database-programming.md)
-- [21章　高度なGUI機能](chapter21-advanced-gui.md)
+- [20章　高度なGUI機能](chapter20-advanced-gui.md)
 
 ### 5部：実践編
-- [22章　単体テスト](chapter22-unit-testing.md)
-- [23章　ドキュメント化とライブラリ活用](chapter23-documentation-and-libraries.md)
-- [24章　ビルドとデプロイメント](chapter24-build-and-deploy.md)
+- [21章　単体テスト](chapter21-unit-testing.md)
+- [22章　ドキュメント化とライブラリ活用](chapter22-documentation-and-libraries.md)
+- [23章　ビルドとデプロイメント](chapter23-build-and-deploy.md)
 
 ## 付録
 - [付録一覧](appendix-index.md)
@@ -45,6 +44,8 @@
 - [付録B　技術的詳細解説（Deep Dive）](appendix-b-index-revised.md)
 - [付録C　ソフトウェア工学の理論的基盤](appendix-c-theoretical-foundations.md)
 - [付録D　統合プロジェクト - 学生管理システム](appendix-d-integrated-project.md)
+- [付録E　データベースプログラミング](appendix-e-database-programming.md)
+- [付録F　java.time API完全ガイド](appendix-f-java-time-api.md)
 
 ## 索引・資料
 - [相互参照ガイド](cross-reference-guide.md)

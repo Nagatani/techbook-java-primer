@@ -103,8 +103,8 @@ C言語経験者がつまずきやすいポイント、たとえばメモリ管�
 | 第1段階 | 1-3章 | Java基礎とオブジェクト指向の理解 | 2-3週間 |
 | 第2段階 | 4-7章 | オブジェクト指向設計の習得 | 3-4週間 |
 | 第3段階 | 8-14章 | 実用的プログラミング技法 | 4-5週間 |
-| 第4段階 | 15-20章 | 外部システム連携技術 | 4-5週間 |
-| 第5段階 | 21-24章 | 開発実践スキル | 2-3週間 |
+| 第4段階 | 15-19章 | 外部システム連携技術 | 4-5週間 |
+| 第5段階 | 20-23章 | 開発実践スキル | 2-3週間 |
 
 ### 学習のコツ
 
@@ -581,12 +581,14 @@ Java開発環境を構築し、初めてのプログラムを作成する際に�
 
 #### JDKが見つからない
 
-エラーメッセージ。
+##### エラーメッセージ
+
 ```
 'java' is not recognized as an internal or external command
 ```
 
-原因と対処。
+##### 原因と対処
+
 - JDKがインストールされていない、またはPATHが設定されていない
 - 対処法
   1. JDKをインストール（推奨：Oracle JDK 11以上）
@@ -664,13 +666,14 @@ public class HelloWorld {
 
 #### クラスファイルが見つからない
 
-エラーメッセージ。
+##### エラーメッセージ
 ```
 Error: Could not find or load main class HelloWorld
 ```
 
-原因と対処。
-```bash
+##### 原因と対処
+
+```
 # エラー例：コンパイルせずに実行しようとした
 java HelloWorld.java  # 間違い
 
@@ -681,12 +684,13 @@ java HelloWorld        # 実行（.classは不要）
 
 #### NumberFormatExceptionと入力処理
 
-エラーメッセージ。
+##### エラーメッセージ
+
 ```
 Exception in thread "main" java.lang.NumberFormatException: For input string: "abc"
 ```
 
-原因と対処。
+##### 原因と対処
 ```java
 // エラー例：数値以外の入力を数値に変換しようとした
 Scanner scanner = new Scanner(System.in);
@@ -727,20 +731,11 @@ if (input.matches("\\d+")) {  // 数字のみの場合
    - File → Settings → Editor → File Encodings
    - Global EncodingとProject EncodingをUTF-8に設定
 
-#### Eclipse特有の問題
-
-問題「The type java.lang.String cannot be resolved」
-
-対処法。
-1. プロジェクトを右クリック → Properties
-2. Java Build Path → Libraries
-3. Add Library → JRE System Library → Next → Finish
-
 ### コマンドライン実行のコツ
 
 #### 基本的なコンパイル・実行手順
 
-```bash
+```
 # 1. ソースコードの作成
 # HelloWorld.javaファイルを作成
 
@@ -757,7 +752,7 @@ java MainClass      # メインクラスを実行
 
 #### パッケージを使用している場合
 
-```bash
+```
 # パッケージ com.example のクラスの場合
 javac com/example/HelloWorld.java
 java com.example.HelloWorld
@@ -819,4 +814,4 @@ public class StepByStepDebug {
    - コードの意図を日本語で説明
    - 複雑な処理には必ずコメントを追加
 
-これらの対処法を参考に、Java開発環境での学習を進めてください。
+これらの対処法を参考に、Java開発環境を常に使える状態で学習を進めてください。

@@ -775,7 +775,7 @@ public class GradeManagementDialog extends JDialog {
 }
 ```
 
-## フェーズ6: データベース統合（第20章）
+## フェーズ6: データベース統合（付録E）
 
 データの永続化のためにデータベースを統合します。
 
