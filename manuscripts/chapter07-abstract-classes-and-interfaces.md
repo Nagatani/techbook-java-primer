@@ -170,20 +170,20 @@ public class Main {
 5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない。
 6.  クラスは複数のインターフェイスを同時に実装できる（`implements InterfaceA, InterfaceB`のようにカンマで区切る）。これはクラスの単一継承とは異なる大きな特徴である。
 
-### 実践例：`Drawable`と`Serializable`インターフェイス
+### 実践例：`Exportable`と`Archivable`インターフェイス
 
 <span class="listing-number">**サンプルコード7-4**</span>
 
 ```java
-// Drawable.java
-public interface Drawable {
+// Exportable.java
+public interface Exportable {
     // インターフェイス内のメソッドは自動的に public abstract になる
-    void draw();
+    void exportToFormat(String format);
 }
 
-// Serializable.java
-public interface Serializable {
-    void saveToFile(String filename);
+// Archivable.java
+public interface Archivable {
+    void archiveToStorage(String location);
 }
 ```
 
@@ -194,30 +194,32 @@ public interface Serializable {
 <span class="listing-number">**サンプルコード7-5**</span>
 
 ```java
-// Character.java
-// DrawableとSerializableの両方のインターフェイスを実装する
-public class Character implements Drawable, Serializable {
-    private String name;
+// Document.java
+// ExportableとArchivableの両方のインターフェイスを実装する
+public class Document implements Exportable, Archivable {
+    private String title;
+    private String content;
 
-    public Character(String name) {
-        this.name = name;
+    public Document(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
-    // Drawableインターフェイスのメソッドの実装
+    // Exportableインターフェイスのメソッドの実装
     @Override
-    public void draw() {
-        System.out.println(this.name + "を描画します。");
+    public void exportToFormat(String format) {
+        System.out.println(this.title + "を" + format + "形式でエクスポートします。");
     }
 
-    // Serializableインターフェイスのメソッドの実装
+    // Archivableインターフェイスのメソッドの実装
     @Override
-    public void saveToFile(String filename) {
-        System.out.println(this.name + "のデータをファイル " + filename + " に保存します。");
+    public void archiveToStorage(String location) {
+        System.out.println(this.title + "を" + location + "にアーカイブします。");
     }
 }
 ```
 
-インターフェイスは、共通の機能（契約）を、継承関係にない異なるクラス間で実現したい場合に非常に強力です。たとえば、「描画可能(`Drawable`)」という性質は、「キャラクタ」だけでなく「地図」や「グラフ」など、まったく異なるクラスも持つことができます。
+インターフェイスは、共通の機能（契約）を、継承関係にない異なるクラス間で実現したい場合に非常に強力です。たとえば、「エクスポート可能(`Exportable`)」という性質は、「ドキュメント」だけでなく「レポート」や「データセット」など、まったく異なるクラスも持つことができます。
 
 ## 抽象クラス vs インターフェイス
 
@@ -1256,31 +1258,31 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 エラー例：
 ```java
-abstract class Animal {
-    public abstract void makeSound();
+abstract class DataProcessor {
+    public abstract void processData();
 }
 
 // コンパイルエラーが発生
-Animal animal = new Animal();  // Cannot instantiate the type Animal
+DataProcessor processor = new DataProcessor();  // Cannot instantiate the type DataProcessor
 ```
 
 エラーメッセージ：
 ```
-Cannot instantiate the type Animal
+Cannot instantiate the type DataProcessor
 ```
 
 対処法：
 ```java
 // 抽象クラスを継承した具象クラスを作成
-class Dog extends Animal {
+class CsvDataProcessor extends DataProcessor {
     @Override
-    public void makeSound() {
-        System.out.println("ワンワン");
+    public void processData() {
+        System.out.println("CSVデータを処理中");
     }
 }
 
 // 具象クラスをインスタンス化
-Animal animal = new Dog();  // OK
+DataProcessor processor = new CsvDataProcessor();  // OK
 ```
 
 ### 2. 抽象メソッドの実装忘れ
@@ -1400,21 +1402,21 @@ Javaでは複数の抽象クラスを継承できませんが、インターフ�
 
 エラー例：
 ```java
-interface Flyable {
-    default void move() {
-        System.out.println("飛んで移動");
+interface Exportable {
+    default void export() {
+        System.out.println("データをエクスポート");
     }
 }
 
-interface Swimmable {
-    default void move() {
-        System.out.println("泳いで移動");
+interface Printable {
+    default void export() {
+        System.out.println("印刷用にエクスポート");
     }
 }
 
 // コンパイルエラー：同名のdefaultメソッドが衝突
-class Duck implements Flyable, Swimmable {
-    // どちらのmove()メソッドを使用するか不明
+class ReportDocument implements Exportable, Printable {
+    // どちらのexport()メソッドを使用するか不明
 }
 ```
 
@@ -1425,19 +1427,19 @@ Duplicate default methods named move with the parameters () and () are inherited
 
 対処法：
 ```java
-class Duck implements Flyable, Swimmable {
+class ReportDocument implements Exportable, Printable {
     @Override
-    public void move() {
+    public void export() {
         // 明示的にどちらのメソッドを使用するか指定
-        System.out.println("アヒルは");
-        Flyable.super.move();  // 飛行を選択
-        System.out.println("または");
-        Swimmable.super.move();  // 泳ぎを選択
+        System.out.println("レポートのエクスポート:");
+        Exportable.super.export();  // データエクスポートを選択
+        System.out.println("および");
+        Printable.super.export();  // 印刷エクスポートを選択
     }
     
     // または独自の実装を提供
-    public void moveOnLand() {
-        System.out.println("歩いて移動");
+    public void exportToPdf() {
+        System.out.println("PDFファイルにエクスポート");
     }
 }
 ```
@@ -1504,14 +1506,14 @@ class Calculator implements MathUtils {
 間違った選択例：
 ```java
 // 状態を持つのに無理にインターフェイスを使用
-interface Vehicle {
+interface Service {
     // インターフェイスでは実装できない
-    // private String brand;  // コンパイルエラー
+    // private String serviceId;  // コンパイルエラー
     
-    void start();
-    void stop();
+    void initialize();
+    void shutdown();
     
-    default String getBrand() {
+    default String getServiceId() {
         // 状態を持てないため、この実装は不完全
         return "unknown";
     }
@@ -1521,56 +1523,75 @@ interface Vehicle {
 正しい選択：
 ```java
 // 共通の状態と実装を持つ場合は抽象クラス
-abstract class Vehicle {
-    protected String brand;
-    protected boolean isRunning;
+abstract class BaseService {
+    protected String serviceId;
+    protected boolean isActive;
+    protected LocalDateTime startTime;
     
-    public Vehicle(String brand) {
-        this.brand = brand;
-        this.isRunning = false;
+    public BaseService(String serviceId) {
+        this.serviceId = serviceId;
+        this.isActive = false;
     }
     
-    public String getBrand() {
-        return brand;
+    public String getServiceId() {
+        return serviceId;
     }
     
-    public abstract void start();
-    public abstract void stop();
+    public abstract void initialize();
+    public abstract void shutdown();
     
-    public final boolean isRunning() {
-        return isRunning;
+    public final boolean isActive() {
+        return isActive;
+    }
+    
+    public Duration getUptime() {
+        return isActive ? Duration.between(startTime, LocalDateTime.now()) : Duration.ZERO;
     }
 }
 
 // 行動の契約のみを定義する場合はインターフェイス
-interface Maintainable {
-    void performMaintenance();
+interface Monitorable {
+    void checkHealth();
+    Map<String, Object> getMetrics();
     
-    default void scheduleMaintenanceReminder() {
-        System.out.println("メンテナンスをスケジュール");
+    default void scheduleHealthCheck() {
+        System.out.println("ヘルスチェックをスケジュール");
     }
 }
 
-class Car extends Vehicle implements Maintainable {
-    public Car(String brand) {
-        super(brand);
+class EmailService extends BaseService implements Monitorable {
+    private int sentCount = 0;
+    private int failureCount = 0;
+    
+    public EmailService(String serviceId) {
+        super(serviceId);
     }
     
     @Override
-    public void start() {
-        isRunning = true;
-        System.out.println(brand + "の車を始動");
+    public void initialize() {
+        isActive = true;
+        startTime = LocalDateTime.now();
+        System.out.println(serviceId + " メールサービスを起動");
     }
     
     @Override
-    public void stop() {
-        isRunning = false;
-        System.out.println(brand + "の車を停止");
+    public void shutdown() {
+        isActive = false;
+        System.out.println(serviceId + " メールサービスを停止");
     }
     
     @Override
-    public void performMaintenance() {
-        System.out.println(brand + "の車のメンテナンス実行");
+    public void checkHealth() {
+        System.out.println("メールサービスのヘルスチェック実行");
+    }
+    
+    @Override
+    public Map<String, Object> getMetrics() {
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("sent_count", sentCount);
+        metrics.put("failure_count", failureCount);
+        metrics.put("uptime_seconds", getUptime().getSeconds());
+        return metrics;
     }
 }
 ```
@@ -1581,26 +1602,26 @@ class Car extends Vehicle implements Maintainable {
 
 問題のあるコード：
 ```java
-abstract class Animal {
-    public abstract void makeSound();
+abstract class ReportGenerator {
+    public abstract void generateReport();
 }
 
-class Cat extends Animal {
+class PdfReportGenerator extends ReportGenerator {
     // @Overrideアノテーションがない
-    public void makesound() {  // メソッド名のタイプミス
-        System.out.println("ニャー");
+    public void generatereport() {  // メソッド名のタイプミス
+        System.out.println("PDFレポートを生成中");
     }
 }
 ```
 
-この場合、`makesound()`は新しいメソッドとして認識され、`makeSound()`の実装が不足しているエラーが発生します。
+この場合、`generatereport()`は新しいメソッドとして認識され、`generateReport()`の実装が不足しているエラーが発生します。
 
 正しい実装：
 ```java
-class Cat extends Animal {
+class PdfReportGenerator extends ReportGenerator {
     @Override
-    public void makeSound() {  // 正しいメソッド名
-        System.out.println("ニャー");
+    public void generateReport() {  // 正しいメソッド名
+        System.out.println("PDFレポートを生成中");
     }
 }
 ```

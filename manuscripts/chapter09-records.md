@@ -2278,10 +2278,10 @@ public record Person(String name, int age) {
 #### エラー例5: レコードを継承しようとする
 
 ```java
-public record Animal(String name) {}
+public record BaseEntity(String id) {}
 
 // 間違った使用
-public record Dog(String name, String breed) extends Animal {  // コンパイルエラー
+public record UserDTO(String id, String username, String email) extends BaseEntity {  // コンパイルエラー
     // 処理
 }
 ```
@@ -2293,26 +2293,26 @@ error: classes cannot directly extend records
 
 ##### 対処法1: 組み合わせを使用
 ```java
-public record Animal(String name) {}
+public record EntityIdentifier(String id) {}
 
-public record Dog(Animal animal, String breed) {
-    public String name() {
-        return animal.name();
+public record UserDTO(EntityIdentifier identifier, String username, String email) {
+    public String id() {
+        return identifier.id();
     }
 }
 
 // 使用例：
-Dog dog = new Dog(new Animal("ポチ"), "柴犬");
+UserDTO user = new UserDTO(new EntityIdentifier("USR-001"), "john_doe", "john@example.com");
 ```
 
 ##### 対処法2: インターフェイスを使用
 ```java
-public interface Animal {
-    String name();
+public interface Identifiable {
+    String id();
 }
 
-public record Dog(String name, String breed) implements Animal {}
-public record Cat(String name, int age) implements Animal {}
+public record UserDTO(String id, String username, String email) implements Identifiable {}
+public record OrderDTO(String id, String userId, LocalDateTime orderDate) implements Identifiable {}
 ```
 
 #### エラー例6: レコードから継承しようとする

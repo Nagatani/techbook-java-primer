@@ -335,85 +335,85 @@ public class PaymentExample {
 <span class="listing-number">**サンプルコード5-4**</span>
 
 ```java
-public class Car {
-    private String model;     // ①
-    private String color;     // ①
-    private int speed;        // ①
+public class WordDocument {
+    private String filename;     // ①
+    private String content;      // ①
+    private long fileSize;       // ①
     
-    public void start() {     // ②
-        System.out.println(model + " のエンジンを始動");
+    public void open() {         // ②
+        System.out.println(filename + " を開いています");
     }
     
-    public void accelerate() {  // ③
-        speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+    public void save() {         // ③
+        fileSize = content.length();
+        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
-    public void brake() {       // ④
-        speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+    public void close() {        // ④
+        content = null;
+        System.out.println(filename + " を閉じました");
     }
 }
 
-public class Truck {
-    private String model;       // ①と重複
-    private String color;       // ①と重複
-    private int speed;          // ①と重複
-    private int loadCapacity;   // ⑤
+public class PDFDocument {
+    private String filename;     // ①と重複
+    private String content;      // ①と重複
+    private long fileSize;       // ①と重複
+    private int pageCount;       // ⑤
     
-    public void start() {       // ②と完全重複
-        System.out.println(model + " のエンジンを始動");
+    public void open() {         // ②と完全重複
+        System.out.println(filename + " を開いています");
     }
     
-    public void accelerate() {  // ③と完全重複
-        speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+    public void save() {         // ③と完全重複
+        fileSize = content.length();
+        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
-    public void brake() {       // ④と完全重複
-        speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+    public void close() {        // ④と完全重複
+        content = null;
+        System.out.println(filename + " を閉じました");
     }
     
-    public void loadCargo(int weight) {  // ⑥
-        System.out.println(weight + "kg の荷物を積載");
+    public void generatePDF() {  // ⑥
+        System.out.println("PDF形式で " + pageCount + " ページを生成");
     }
 }
 ```
 
 #### 重複コードの分析
 
-①　共通フィールド： model、color、speedという車両の基本属性がCarとTruckで重複して定義されている。
+①　共通フィールド： filename、content、fileSizeというドキュメントの基本属性がWordDocumentとPDFDocumentで重複して定義されている。
 
-②　エンジン始動処理： start()メソッドの実装が両クラスで同一。
+②　ファイルオープン処理： open()メソッドの実装が両クラスで同一。
 
-③　加速処理： accelerate()メソッドでspeedを10増加させる処理とメッセージ出力が重複。
+③　保存処理： save()メソッドでfileSizeを計算し、メッセージ出力する処理が重複。
 
-④　ブレーキ処理： brake()メソッドでspeedを10減少させ、負の値を防ぐロジックが重複。
+④　クローズ処理： close()メソッドでcontentをnullにし、メッセージを出力するロジックが重複。
 
-⑤　固有フィールド： loadCapacity（積載量）はトラック特有の属性として追加。
+⑤　固有フィールド： pageCount（ページ数）はPDF特有の属性として追加。
 
-⑥　固有メソッド： loadCargo()はトラック特有の機能として実装。
+⑥　固有メソッド： generatePDF()はPDF特有の機能として実装。
 
 ```java
-public class Motorcycle {
-    private String model;
-    private String color;
-    private int speed;
+public class ExcelDocument {
+    private String filename;
+    private String content;
+    private long fileSize;
     
     // また同じメソッドの重複！
-    public void start() {
-        System.out.println(model + " のエンジンを始動");
+    public void open() {
+        System.out.println(filename + " を開いています");
     }
     
-    public void accelerate() {
-        speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+    public void save() {
+        fileSize = content.length();
+        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
-    public void brake() {
-        speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+    public void close() {
+        content = null;
+        System.out.println(filename + " を閉じました");
     }
 }
 ```
@@ -424,35 +424,35 @@ public class Motorcycle {
 
 ```java
 // 共通部分を親クラスとして抽出
-public class Vehicle {
-    protected String model;
-    protected String color;
-    protected int speed;
+public class Document {
+    protected String filename;
+    protected String content;
+    protected long fileSize;
     
-    public Vehicle(String model, String color) {
-        this.model = model;
-        this.color = color;
-        this.speed = 0;
+    public Document(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+        this.fileSize = content != null ? content.length() : 0;
     }
     
     // 共通メソッドを親クラスに移動
-    public void start() {
-        System.out.println(model + " のエンジンを始動");
+    public void open() {
+        System.out.println(filename + " を開いています");
     }
     
-    public void accelerate() {
-        speed += 10;
-        System.out.println(model + " が加速: " + speed + "km/h");
+    public void save() {
+        fileSize = content != null ? content.length() : 0;
+        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
-    public void brake() {
-        speed = Math.max(0, speed - 10);
-        System.out.println(model + " が減速: " + speed + "km/h");
+    public void close() {
+        content = null;
+        System.out.println(filename + " を閉じました");
     }
     
     // ゲッターとセッター
-    public String getModel() { return model; }
-    public int getSpeed() { return speed; }
+    public String getFilename() { return filename; }
+    public long getFileSize() { return fileSize; }
 }
 ```
 
@@ -462,54 +462,54 @@ public class Vehicle {
 
 ```java
 // リファクタリング後：重複が除去された
-public class Car extends Vehicle {
-    public Car(String model, String color) {
-        super(model, color);
+public class WordDocument extends Document {
+    public WordDocument(String filename, String content) {
+        super(filename, content);
     }
     
-    // Car固有の機能があれば追加
-    public void openTrunk() {
-        System.out.println(model + " のトランクを開く");
+    // WordDocument固有の機能があれば追加
+    public void applyTemplate(String templateName) {
+        System.out.println(filename + " にテンプレート " + templateName + " を適用");
     }
 }
 
-public class Truck extends Vehicle {
-    private int loadCapacity;
+public class PDFDocument extends Document {
+    private int pageCount;
     
-    public Truck(String model, String color, int loadCapacity) {
-        super(model, color);
-        this.loadCapacity = loadCapacity;
+    public PDFDocument(String filename, String content, int pageCount) {
+        super(filename, content);
+        this.pageCount = pageCount;
     }
     
-    // accelerateメソッドをオーバーライド（重い車両は加速が遅い）
+    // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
     @Override
-    public void accelerate() {
-        speed += 5; // トラックは加速が遅い
-        System.out.println(model + " がゆっくり加速: " + speed + "km/h");
+    public void save() {
+        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
+        System.out.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
-    public void loadCargo(int weight) {
-        if (weight <= loadCapacity) {
-            System.out.println(weight + "kg の荷物を積載");
+    public void generatePDF() {
+        if (pageCount > 0) {
+            System.out.println("PDF形式で " + pageCount + " ページを生成");
         } else {
-            System.out.println("積載量オーバー！");
+            System.out.println("ページ数が指定されていません");
         }
     }
 }
 
-public class Motorcycle extends Vehicle {
-    public Motorcycle(String model, String color) {
-        super(model, color);  // ①
+public class ExcelDocument extends Document {
+    public ExcelDocument(String filename, String content) {
+        super(filename, content);  // ①
     }
     
     @Override  // ②
-    public void accelerate() {
-        speed += 20;  // ③
-        System.out.println(model + " が素早く加速: " + speed + "km/h");
+    public void save() {
+        fileSize = content != null ? content.length() * 2 : 0;  // ③
+        System.out.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
     }
     
-    public void wheelie() {  // ④
-        System.out.println(model + " がウィリー！");
+    public void createChart() {  // ④
+        System.out.println(filename + " にグラフを作成");
     }
 }
 ```
@@ -520,16 +520,16 @@ public class Motorcycle extends Vehicle {
 
 ②　オーバーライドアノテーション： @Overrideによりコンパイラが親クラスのメソッドを正しくオーバーライドしていることを検証
 
-③　特化した振る舞い： 親クラスではspeed += 10だが、バイクの特性として20増加するよう変更
+③　特化した振る舞い： Excelファイルはメタデータを含むため、ファイルサイズが大きくなるよう設定
 
-④　固有メソッドの追加： wheelie()はバイク特有の機能として、親クラスには存在しないメソッドを追加
+④　固有メソッドの追加： createChart()はExcel特有の機能として、親クラスには存在しないメソッドを追加
 ```
 
 #### リファクタリングの効果
 
 継承を導入したリファクタリングによって、コードの重複を削減できます。まず、コードの重複が除去されることで、保守性が向上します。同じコードを複数の場所に書く必要がなくなるため、バグの発生率が減り、修正も簡単になります。共通機能の変更が1箇所で済むことも大きな利点です。親クラスを修正するだけで、すべての子クラスに変更が反映されます。
 
-また、各車両の特性をオーバーライドで表現できることで、柔軟な設計が可能になります。共通のインターフェイスを保ちながら、各子クラスが独自の実装を持つことができます。さらに、新しい車両タイプの追加が容易になります。親クラスを継承し、必要な部分だけをカスタマイズすることで、短時間で新しい機能を実装できます。このように、継承はソフトウェアの拡張性と保守性に寄与する技術の一つです。ただし、継承階層が3層以上になるとコードの理解が難しくなるため、コンポジションやインターフェイスの活用も検討すべきです。
+また、各ドキュメントタイプの特性をオーバーライドで表現できることで、柔軟な設計が可能になります。共通のインターフェイスを保ちながら、各子クラスが独自の実装を持つことができます。さらに、新しいドキュメントタイプの追加が容易になります。親クラスを継承し、必要な部分だけをカスタマイズすることで、短時間で新しい機能を実装できます。このように、継承はソフトウェアの拡張性と保守性に寄与する技術の一つです。ただし、継承階層が3層以上になるとコードの理解が難しくなるため、コンポジションやインターフェイスの活用も検討すべきです。
 
 ### 継承の書き方：`extends`
 
@@ -540,50 +540,50 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 <span class="listing-number">**サンプルコード5-7**</span>
 
 ```java
-public class Character {  // 親クラス（スーパークラス）
+public class Employee {  // 親クラス（スーパークラス）
+    String employeeId;   // ①
     String name;         // ①
-    int hp;              // ①
 
-    void attack() {      // ②
-        System.out.println(this.name + "の攻撃！");
+    void work() {        // ②
+        System.out.println(this.name + "が業務を実行中");
     }
 }
 
-public class Hero extends Character {  // ③
-    void specialMove() {  // ④
-        System.out.println(this.name + "の必殺技！");
+public class Manager extends Employee {  // ③
+    void conductMeeting() {  // ④
+        System.out.println(this.name + "が会議を主宰");
     }
 }
 
-public class Wizard extends Character {  // ③
-    int mp;  // ⑤
+public class Developer extends Employee {  // ③
+    String primaryLanguage;  // ⑤
 
-    void castSpell() {  // ④
-        System.out.println(this.name + "は魔法を唱えた！");
+    void writeCode() {  // ④
+        System.out.println(this.name + "が" + primaryLanguage + "でコーディング中");
     }
 }
 ```
 
 #### 継承の仕組みと効果
 
-①　フィールドの継承： name、hpというフィールドは自動的にすべての子クラスに引き継がれる。
+①　フィールドの継承： employeeId、nameというフィールドは自動的にすべての子クラスに引き継がれる。
 
-②　メソッドの継承： attack()メソッドも同様に、すべての子クラスで利用可能になる。
+②　メソッドの継承： work()メソッドも同様に、すべての子クラスで利用可能になる。
 
-③　extends宣言： `extends Character`により、HeroとWizardはCharacterクラスのすべての非privateメンバを継承。
+③　extends宣言： `extends Employee`により、ManagerとDeveloperはEmployeeクラスのすべての非privateメンバを継承。
 
 ④　固有メソッドの追加： 各子クラスは継承した機能に加えて、独自のメソッドを定義可能。
 
-⑤　固有フィールドの追加： Wizardクラスは継承したフィールドに加えて、mp（マジックポイント）を独自に持つ。
+⑤　固有フィールドの追加： Developerクラスは継承したフィールドに加えて、primaryLanguage（主要プログラミング言語）を独自に持つ。
 
 ### is-a関係
 
 継承は、クラス間に「is-a関係」（〜は〜の一種である）が成り立つ場合に使うのが適切です。
 
-- 「勇者（Hero） is aキャラクタ(Character)」
-- 「魔法使い（Wizard） is aキャラクタ(Character)」
+- 「マネージャー（Manager） is a従業員(Employee)」
+- 「開発者（Developer） is a従業員(Employee)」
 
-このような関係が成り立つ場合、継承の利用を検討します。一方、「車（Car） has aエンジン(Engine)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
+このような関係が成り立つ場合、継承の利用を検討します。一方、「プロジェクト（Project） has aタスク(Task)」のような「has-a関係」の場合は、継承ではなく、フィールドとして持つ（コンポジション）方が適切です。
 
 ### 継承の誤用例：よくある間違い
 
@@ -673,56 +673,58 @@ public class MyStack<E> {
 
 このMyStackクラスは、コンポジションを使用してArrayListを内部に保持し、スタックに必要な機能のみを公開しています。これにより、ArrayListのスタック操作に不要なメソッド（add、removeなど）が外部に公開されることを防いでいます。
 
-#### 誤用例2：鳥の階層での問題
+#### 誤用例2：従業員権限階層での問題
 
 以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。この設計はリスコフ置換原則に違反します。
 
 <span class="listing-number">**サンプルコード5-10**</span>
 
 ```java
-// 悪い例：すべての鳥が飛べるという誤った前提
-public class Bird {
+// 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
+public class Employee {
+    protected String employeeId;
     protected String name;
     
-    public Bird(String name) {
+    public Employee(String employeeId, String name) {
+        this.employeeId = employeeId;
         this.name = name;
     }
     
-    public void fly() {
-        System.out.println(name + " が飛んでいる");
+    public void modifySystemSettings() {
+        System.out.println(name + " がシステム設定を変更しました");
     }
 }
 
-public class Eagle extends Bird {
-    public Eagle(String name) {
-        super(name);
+public class SystemAdministrator extends Employee {
+    public SystemAdministrator(String employeeId, String name) {
+        super(employeeId, name);
     }
-    // flyメソッドを適切に継承
+    // modifySystemSettingsメソッドを適切に継承
 }
 
-public class Penguin extends Bird {
-    public Penguin(String name) {
-        super(name);
+public class RegularEmployee extends Employee {
+    public RegularEmployee(String employeeId, String name) {
+        super(employeeId, name);
     }
     
     @Override
-    public void fly() {
-        // ペンギンは飛べない！
-        throw new UnsupportedOperationException("ペンギンは飛べません");
+    public void modifySystemSettings() {
+        // 一般従業員にはシステム管理権限がない！
+        throw new UnsupportedOperationException("権限がありません");
     }
 }
 
 // 使用時の問題
-public class BirdPark {
-    public static void makeBirdsFly(List<Bird> birds) {
-        for (Bird bird : birds) {
-            bird.fly(); // ペンギンで例外が発生！
+public class EmployeeManagementSystem {
+    public static void performSystemMaintenance(List<Employee> employees) {
+        for (Employee employee : employees) {
+            employee.modifySystemSettings(); // 一般従業員で例外が発生！
         }
     }
 }
 ```
 
-この問題は、すべての鳥が飛べるという誤った仮定に基づいた継承設計の典型的な例です。ペンギンは鳥ですが飛べないため、`fly()`メソッドで例外を投げることになり、リスコフの置換原則に違反しています。
+この問題は、すべての従業員がシステム管理権限を持つという誤った仮定に基づいた継承設計の典型的な例です。一般従業員は従業員ですがシステム管理権限を持たないため、`modifySystemSettings()`メソッドで例外を投げることになり、リスコフの置換原則に違反しています。
 
 この問題を適切に解決するためには、継承階層を見直し、共通の振る舞いのみを親クラスに定義してください。より良い解決策として、インターフェイスを使用した設計がありますが、これについては第7章「抽象クラスとインターフェイス」で詳しく説明します。
 
@@ -880,27 +882,27 @@ Javaは多重継承をサポートしないため、複数の能力を持つオ�
 <span class="listing-number">**サンプルコード5-14**</span>
 
 ```java
-// 悪い例：「飛べる鳥」と「泳げる鳥」を無理に継承で表現
-public class Bird {
-    public void eat() { /* ... */ }
-    public void sleep() { /* ... */ }
+// 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
+public class Employee {
+    public void work() { /* ... */ }
+    public void attendMeeting() { /* ... */ }
 }
 
-public class FlyingBird extends Bird {
-    public void fly() { /* ... */ }
+public class ReportingEmployee extends Employee {
+    public void generateReport() { /* ... */ }
 }
 
-public class SwimmingBird extends Bird {
-    public void swim() { /* ... */ }
+public class ApprovingEmployee extends Employee {
+    public void approveRequest() { /* ... */ }
 }
 
-// 問題：ペンギンは飛べないが泳げる、鴨は飛べて泳げる
+// 問題：マネージャーはレポート作成も承認もできる、アナリストはレポート作成のみ
 // どちらを継承すればよい？
 ```
 
 この問題は、Javaが単一継承しかサポートしないことによる制約を示しています。複数の能力を持つオブジェクトを表現しようとすると、継承階層が複雑になり、設計の柔軟性が失われます。
 
-例えば、鴨（Duck）は飛ぶこともできるし泳ぐこともできますが、`FlyingBird`と`SwimmingBird`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
+例えば、マネージャー（Manager）はレポートを作成することもできるし承認権限も持っていますが、`ReportingEmployee`と`ApprovingEmployee`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
 
 この問題を解決する最も効果的な方法は、インターフェイスを使用して能力を表現することです。インターフェイスを使えば、クラスは必要な能力を選択的に実装でき、継承階層をシンプルに保つことができます。この設計手法については、第7章「抽象クラスとインターフェイス」で詳しく説明します。
 
@@ -940,7 +942,7 @@ public class Main {
 
 オーバーライドとは、親クラスで定義されたメソッドを、子クラスで再定義（上書き）することです。これにより、子クラスは親クラスの基本的な振る舞いを引き継ぎつつ、自身の特性に合わせた具体的な振る舞いを実装できます。
 
-たとえば、`Character`クラスの`attack()`メソッドは「〜の攻撃！」と表示するだけですが、「勇者」は剣で攻撃し、「魔法使い」は杖で攻撃するなど、職業によって攻撃方法は異なります。これをオーバーライドで表現します。
+たとえば、`User`クラスの`processRequest()`メソッドは基本的なリクエスト処理を行いますが、「管理者」は追加のセキュリティチェックを行い、「ゲストユーザー」は制限付きの処理のみを行うなど、ユーザータイプによって処理内容が異なります。これをオーバーライドで表現します。
 
 ### オーバーライドのルール
 
@@ -1041,56 +1043,57 @@ Javaでは、親クラス型の変数に、その子クラスのインスタン�
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
-Character chara1 = new Hero("勇者", 100);
-Character chara2 = new Wizard("魔法使い", 70, 50);
-Character chara3 = new Knight("騎士", 120);
+User user1 = new RegularUser("U001", "user1@example.com");
+User user2 = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+User user3 = new GuestUser("session123");
 ```
 
-このとき、変数`chara1`, `chara2`, `chara3`はすべて`Character`型として扱われます。しかし、それぞれの変数が実際に指し示しているオブジェクトの実体は`Hero`, `Wizard`, `Knight`と異なります。
+このとき、変数`user1`, `user2`, `user3`はすべて`User`型として扱われます。しかし、それぞれの変数が実際に指し示しているオブジェクトの実体は`RegularUser`, `AdminUser`, `GuestUser`と異なります。
 
 ### 同じ呼び出しで、異なる振る舞いを実現する
 
-ここからがポリモーフィズムの真骨頂です。これらの`Character`型の変数に対して`attack()`メソッドを呼びだすと、何が起こるでしょうか。
+ここからがポリモーフィズムの真骨頂です。これらの`User`型の変数に対して`processRequest()`メソッドを呼びだすと、何が起こるでしょうか。
 
 <span class="listing-number">**サンプルコード5-18**</span>
 
 ```java
-chara1.attack(); // 実行結果: 勇者の攻撃！
-chara2.attack(); // 実行結果: 魔法使いは杖で殴った！
-chara3.attack(); // 実行結果: 騎士の攻撃！
-                 //         追加で剣を振るった！
+user1.processRequest("READ"); // 実行結果: ユーザー U001 が READ をリクエストしました
+user2.processRequest("DELETE"); // 実行結果: 管理者権限での処理: DELETE
+                               //         セキュリティチェックを実行中...
+user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 が WRITE をリクエストしました
+                              //         ゲストユーザーのため、一部機能が制限されています
 ```
 
-`chara2.attack()`という同じ呼び出し方にもかかわらず、Javaの実行環境は`chara2`が実際に`Wizard`オブジェクトを指していることを認識します。そして、`Wizard`クラスでオーバーライドされた`attack()`メソッドを自動的に呼び出します。これがポリモーフィズムです。
+`user2.processRequest()`という同じ呼び出し方にもかかわらず、Javaの実行環境は`user2`が実際に`AdminUser`オブジェクトを指していることを認識します。そして、`AdminUser`クラスでオーバーライドされた`processRequest()`メソッドを自動的に呼び出します。これがポリモーフィズムです。
 
 ### ポリモーフィズムの利点
 
-この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなキャラクタをまとめて管理する配列を考えてみましょう。
+この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
 
 <span class="listing-number">**サンプルコード5-19**</span>
 
 ```java
-public class GameParty {
+public class UserManagementSystem {
     public static void main(String[] args) {
         // 親クラスの配列に、様々な子クラスのインスタンスを格納できる
-        Character[] party = new Character[3];
-        party[0] = new Hero("勇者", 100);
-        party[1] = new Wizard("魔法使い", 70, 50);
-        party[2] = new Knight("騎士", 120);
+        User[] users = new User[3];
+        users[0] = new RegularUser("U001", "user1@example.com");
+        users[1] = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+        users[2] = new GuestUser("session123");
 
-        // パーティ全員で一斉攻撃！
-        for (Character member : party) {
-            // member変数の型はCharacterだが、実行時には
-            // 実際のインスタンスのattack()が呼び出される
-            member.attack(); 
+        // 全ユーザーのリクエストを処理
+        for (User user : users) {
+            // user変数の型はUserだが、実行時には
+            // 実際のインスタンスのprocessRequest()が呼び出される
+            user.processRequest("READ"); 
         }
     }
 }
 ```
 
-この`for`ループの中では、`member`が`Hero`なのか`Wizard`なのかを一切気にする必要がありません。ただ`attack()`を呼びだすだけで、各キャラクタは自身の職業に合った攻撃を自動的に行ってくれます。
+この`for`ループの中では、`user`が`RegularUser`なのか`AdminUser`なのかを一切気にする必要がありません。ただ`processRequest()`を呼びだすだけで、各ユーザータイプに応じた適切な処理が自動的に実行されます。
 
-もし将来、「忍者 `Ninja`」という新しい職業クラスを追加したくなっても、`GameParty`クラスのコードは一切変更する必要がありません。`Ninja`クラスを作成し、`Character`を継承して`attack()`をオーバーライドし、`party`配列に追加するだけで、新しいキャラクタも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
+もし将来、「プレミアムユーザー `PremiumUser`」という新しいユーザータイプを追加したくなっても、`UserManagementSystem`クラスのコードは一切変更する必要がありません。`PremiumUser`クラスを作成し、`User`を継承して`processRequest()`をオーバーライドし、`users`配列に追加するだけで、新しいユーザータイプも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
 
 ### ポリモーフィズムのBefore/After比較
 
@@ -1102,46 +1105,44 @@ public class GameParty {
 
 ```java
 // 型ごとに別々の処理を書く必要がある
-public class GamePartyBefore {
+public class UserSystemBefore {
     public static void main(String[] args) {
-        Hero hero = new Hero("勇者", 100);
-        Wizard wizard = new Wizard("魔法使い", 70, 50);
-        Knight knight = new Knight("騎士", 120);
+        RegularUser regular = new RegularUser("U001", "user1@example.com");
+        AdminUser admin = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+        GuestUser guest = new GuestUser("session123");
         
-        // それぞれの型に応じた攻撃処理
-        System.out.println("=== パーティ全員の攻撃（ポリモーフィズムなし）===");
+        // それぞれの型に応じたリクエスト処理
+        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
         
-        // Heroの攻撃
-        hero.attack();
+        // RegularUserの処理
+        regular.processRequest("READ");
         
-        // Wizardの攻撃
-        wizard.attack();
+        // AdminUserの処理
+        admin.processRequest("DELETE");
         
-        // Knightの攻撃
-        knight.attack();
+        // GuestUserの処理
+        guest.processRequest("WRITE");
         
-        // 新しいメンバーを追加するたびに、ここにコードを追加する必要がある
-        // Archer archer = new Archer("弓使い", 80);
-        // archer.attack();
+        // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
+        // PremiumUser premium = new PremiumUser("P001", "premium@example.com");
+        // premium.processRequest("CREATE");
     }
     
-    // 全員の合計ダメージを計算する場合も型別処理が必要
-    public static int calculateTotalDamage(Hero hero, Wizard wizard, Knight knight) {
-        int totalDamage = 0;
-        
+    // アクセス権限を確認する場合も型別処理が必要
+    public static boolean checkAccessPermission(RegularUser regular, AdminUser admin, GuestUser guest, String resource) {
         // 各型ごとに個別に処理
-        if (hero != null) {
-            totalDamage += 50; // Heroの攻撃力
+        if (regular != null) {
+            return resource.equals("READ") || resource.equals("WRITE");
         }
-        if (wizard != null) {
-            totalDamage += 30; // Wizardの攻撃力
+        if (admin != null) {
+            return true; // 管理者はすべてのリソースにアクセス可能
         }
-        if (knight != null) {
-            totalDamage += 70; // Knightの攻撃力
+        if (guest != null) {
+            return resource.equals("READ"); // ゲストは読み取りのみ
         }
         
         // 新しい型が増えるたびに、このメソッドも修正が必要
-        return totalDamage;
+        return false;
     }
 }
 ```
@@ -1152,64 +1153,71 @@ public class GamePartyBefore {
 
 ```java
 // 統一的な処理で全ての型を扱える
-public class GamePartyAfter {
+public class UserSystemAfter {
     public static void main(String[] args) {
         // ポリモーフィズム：親クラスの型で管理
-        Character[] party = {
-            new Hero("勇者", 100),
-            new Wizard("魔法使い", 70, 50),
-            new Knight("騎士", 120)
-            // 新しいメンバーを追加しても、以下のコードは変更不要
-            // new Archer("弓使い", 80)
+        User[] users = {
+            new RegularUser("U001", "user1@example.com"),
+            new AdminUser("A001", "admin@example.com", "SuperAdmin"),
+            new GuestUser("session123")
+            // 新しいユーザータイプを追加しても、以下のコードは変更不要
+            // new PremiumUser("P001", "premium@example.com")
         };
         
-        System.out.println("=== パーティ全員の攻撃（ポリモーフィズムあり）===");
+        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===");
         
         // 統一的な処理で全員を扱える
-        for (Character member : party) {
-            member.attack(); // 実際の型に応じた攻撃が自動的に呼ばれる
+        for (User user : users) {
+            user.processRequest("READ"); // 実際の型に応じた処理が自動的に呼ばれる
         }
     }
     
-    // 合計ダメージ計算も拡張性が高い
-    public static int calculateTotalDamage(Character[] party) {
-        int totalDamage = 0;
+    // アクセス権限チェックも拡張性が高い
+    public static boolean checkAccessPermission(User[] users, String resource) {
+        boolean hasPermission = true;
         
         // 型を意識せずに処理できる
-        for (Character member : party) {
-            totalDamage += member.getAttackPower(); // 各キャラクタの攻撃力を取得
+        for (User user : users) {
+            if (!user.hasPermission(resource)) {
+                hasPermission = false;
+                System.out.println(user.getUserId() + " には " + resource + " 権限がありません");
+            }
         }
         
-        return totalDamage;
+        return hasPermission;
     }
     
     // 特定の条件での処理も簡潔に書ける
-    public static void healLowHpMembers(Character[] party) {
-        for (Character member : party) {
-            if (member.getHp() < 30) {
-                member.heal(20); // HPが低いメンバーを回復
-                System.out.println(member.getName() + " を回復しました");
+    public static void sendNotification(User[] users, String message) {
+        for (User user : users) {
+            if (user.isActive()) {
+                user.notify(message);
+                System.out.println(user.getUserId() + " に通知を送信しました");
             }
         }
     }
 }
 
 // 親クラスに共通インターフェースを定義
-class Character {
-    protected String name;
-    protected int hp;
+class User {
+    protected String userId;
+    protected String email;
     
-    public int getAttackPower() {
-        // デフォルトの攻撃力
-        return 10;
+    public boolean hasPermission(String resource) {
+        // デフォルトでは読み取り権限のみ
+        return resource.equals("READ");
     }
     
-    public void heal(int amount) {
-        this.hp += amount;
+    public void notify(String message) {
+        // 通知を送信
     }
     
-    public String getName() { return name; }
-    public int getHp() { return hp; }
+    public boolean isActive() {
+        return true; // デフォルトではアクティブ
+    }
+    
+    public String getUserId() { return userId; }
+    public String getEmail() { return email; }
 }
 ```
 
@@ -1434,13 +1442,13 @@ class Pentagon extends Shape {
 
 親クラスの型でオブジェクトを扱っていると、そのオブジェクトがもともとどの具体的な子クラスのインスタンスだったかを知り、その子クラス独自の機能を使いたくなることがあります。
 
-たとえば、`Character`型の変数`member`が、もし`Wizard`だったら`castSpell()`メソッドを呼びたい、という場合です。
+たとえば、`User`型の変数`user`が、もし`AdminUser`だったら`performAdminTask()`メソッドを呼びたい、という場合です。
 
 ```java
-Character member = new Wizard("魔法使い", 70, 50);
-// member.castSpell(); // コンパイルエラー！
+User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+// user.performAdminTask(); // コンパイルエラー！
 ```
-これはコンパイルエラーになります。なぜなら、コンパイラは変数`member`を`Character`型としてしか認識しておらず、`Character`クラスには`castSpell()`メソッドが定義されていないからです。
+これはコンパイルエラーになります。なぜなら、コンパイラは変数`user`を`User`型としてしか認識しておらず、`User`クラスには`performAdminTask()`メソッドが定義されていないからです。
 
 ### `instanceof`演算子：型の調査
 
@@ -1457,22 +1465,22 @@ Character member = new Wizard("魔法使い", 70, 50);
 <span class="listing-number">**サンプルコード5-24**</span>
 
 ```java
-public class GameParty {
+public class UserAccessControl {
     public static void main(String[] args) {
-        Character[] party = {
-            new Hero("勇者", 100),
-            new Wizard("魔法使い", 70, 50),
-            new Knight("騎士", 120)
+        User[] users = {
+            new RegularUser("U001", "user1@example.com"),
+            new AdminUser("A001", "admin@example.com", "SuperAdmin"),
+            new GuestUser("session123")
         };
 
-        for (Character member : party) {
-            member.attack(); // これはポリモーフィズムでOK
+        for (User user : users) {
+            user.processRequest("READ"); // これはポリモーフィズムでOK
 
-            // もし、メンバーがWizardだったら、特別に魔法も使わせる
-            if (member instanceof Wizard) {
-                // memberをWizard型にダウンキャストする
-                Wizard wizard = (Wizard) member; 
-                wizard.castSpell();
+            // もし、ユーザーがAdminUserだったら、特別に管理タスクを実行
+            if (user instanceof AdminUser) {
+                // userをAdminUser型にダウンキャストする
+                AdminUser admin = (AdminUser) user; 
+                admin.performAdminTask();
             }
         }
     }
@@ -1489,15 +1497,15 @@ Java 16から、`instanceof`とキャストをより簡潔に書ける「`instan
 
 ```java
 // 従来の書き方
-if (member instanceof Wizard) {
-    Wizard wizard = (Wizard) member;
-    wizard.castSpell();
+if (user instanceof AdminUser) {
+    AdminUser admin = (AdminUser) user;
+    admin.performAdminTask();
 }
 
 // パターンマッチングを使った書き方 (Java 16以降)
-if (member instanceof Wizard wizard) {
-    // instanceofがtrueの場合、キャスト済みのwizard変数が使える
-    wizard.castSpell();
+if (user instanceof AdminUser admin) {
+    // instanceofがtrueの場合、キャスト済みのadmin変数が使える
+    admin.performAdminTask();
 }
 ```
 この新しい書き方を使うと、より安全で読みやすいコードになります。

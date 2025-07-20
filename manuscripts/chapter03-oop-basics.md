@@ -43,7 +43,7 @@
 
 #### 到達レベルの指標
 
-本章を完了した時点で、実世界の概念（商品、人物、車、銀行口座など）をクラスとして設計・実装できるようになります。これには、データを表すフィールドの選択、振る舞いを実装するメソッドの定義、private/publicのアクセス制御の設定などが含まれます。
+本章を完了した時点で、実世界の概念（商品、顧客、注文、銀行口座など）をクラスとして設計・実装できるようになります。これには、データを表すフィールドの選択、振る舞いを実装するメソッドの定義、private/publicのアクセス制御の設定などが含まれます。
 
 複数のクラスを組み合わせた簡単なプログラムが作成できるレベルに到達することも目標です。クラス間の関係を設計し、オブジェクト同士が協調して動作するプログラムを実装できるようになります。
 
@@ -488,35 +488,35 @@ public class DefaultValueDemo {
 <span class="listing-number">**サンプルコード3-8**</span>
 
 ```java
-public class Car {
+public class Product {
     // フィールドの宣言
-    private String model;      // 車種
-    private String color;      // 色  
-    private int year;         // 年式
-    private double mileage;   // 走行距離
+    private String productId;  // 商品ID
+    private String name;       // 商品名  
+    private double price;      // 価格
+    private int stock;         // 在庫数
     
     // コンストラクタでフィールドを初期化
-    public Car(String model, String color, int year) {
-        this.model = model;    // thisは現在のオブジェクトを指す
-        this.color = color;
-        this.year = year;
-        this.mileage = 0.0;    // 新車なので0km
+    public Product(String productId, String name, double price) {
+        this.productId = productId;  // thisは現在のオブジェクトを指す
+        this.name = name;
+        this.price = price;
+        this.stock = 0;              // 初期在庫は0
     }
     
     // フィールドを使った処理
-    public void drive(double distance) {
-        if (distance > 0) {
-            mileage += distance;  // 走行距離を更新
-            System.out.println(distance + "km走行しました");
+    public void addStock(int quantity) {
+        if (quantity > 0) {
+            stock += quantity;  // 在庫数を更新
+            System.out.println(quantity + "個入荷しました");
         }
     }
     
     // フィールドの値を表示
     public void showInfo() {
-        System.out.println("車種: " + model);
-        System.out.println("色: " + color);
-        System.out.println("年式: " + year + "年");
-        System.out.println("走行距離: " + mileage + "km");
+        System.out.println("商品ID: " + productId);
+        System.out.println("商品名: " + name);
+        System.out.println("価格: ¥" + price);
+        System.out.println("在庫数: " + stock + "個");
     }
 }
 ```
@@ -1612,10 +1612,10 @@ public class MethodsPractice {
 
 基礎課題を完了したら、発展課題で以下の概念を学びます。
 
-#### Car.java - 状態変化を伴うオブジェクト
+#### Product.java - 状態変化を伴うオブジェクト
 ##### 新しく学ぶ概念
-- オブジェクトの状態変化（燃料の消費）
-- メソッド間の連携（drive → consumeFuel）
+- オブジェクトの状態変化（在庫の増減）
+- メソッド間の連携（sell → reduceStock）
 - エラーハンドリングの基礎（燃料不足の処理）
 
 ##### 実装のアイデア
