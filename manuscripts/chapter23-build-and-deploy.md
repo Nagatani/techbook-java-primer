@@ -141,7 +141,7 @@ jobs:
 本章では、これらの実践的な配布技術を段階的に学習します。
 
 - 実行可能JARファイルの作成アプリケーションの全クラスファイル（`Task.class`, `TaskListPanel.class`など）を1つの実行可能な`todo-app.jar`ファイルにまとめる。これにより、ユーザーは`java -jar todo-app.jar`という簡単なコマンドだけでアプリケーションを起動できる
-- `jpackage`によるネイティブアプリケーション化さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成しる。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がりる
+- `jpackage`によるネイティブアプリケーション化さらに一歩進んで、`jpackage`を使い、Windowsユーザー向けには`.exe`インストーラを、macOSユーザー向けには`.dmg`インストーラを作成する。これにより、ユーザーはJavaのインストールを意識することなく、普段使いのアプリケーションと同じようにインストールして利用できるようになり、配布のハードルが劇的に下がる
 
 ### 本章の学習目標
 
@@ -502,9 +502,9 @@ java -jar SimpleApp.jar
 
 #### IntelliJ IDEAでのJARファイル作成
 IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できます。
-1.  `File` -> `Project Structure...` を選択しる。
-2.  `Artifacts` -> `+` -> `JAR` -> `From modules with dependencies...` を選択しる。
-3.  `Main Class`として実行したいクラス（例： `SimpleApp`）を選択し、OKを押しる。
+1.  `File` -> `Project Structure...` を選択する。
+2.  `Artifacts` -> `+` -> `JAR` -> `From modules with dependencies...` を選択する。
+3.  `Main Class`として実行したいクラス（例： `SimpleApp`）を選択し、OKを押す。
 4.  メニューの `Build` -> `Build Artifacts...` -> `(作成したArtifact名)` -> `Build` を選択すると、`out/artifacts`ディレクトリ以下にJARファイルが生成される。
 
 #### 外部ライブラリを含むFat JARの作成
@@ -812,11 +812,11 @@ jpackage --type app-image \
           --main-jar SimpleApp.jar \
           --dest ./output
 ```
-- `--type app-image`: アプリケーションイメージを作成しる。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定しる
-- `--name "SimpleApp"`: アプリケーションの名前を指定しる
-- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定しる
-- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定しる
-- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定しる
+- `--type app-image`: アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`(macOS), `msi`(Windows), `rpm`/`deb`(Linux)などを指定する
+- `--name "SimpleApp"`: アプリケーションの名前を指定する
+- `--input ./input`: パッケージ化の材料（JARファイル）が入っているディレクトリを指定する
+- `--main-jar SimpleApp.jar`: 入力ディレクトリ内の、メインとなるJARファイル名を指定する
+- `--dest ./output`: 完成したアプリケーションを保存するディレクトリを指定する
 
 #### jpackageの詳細なオプション
 

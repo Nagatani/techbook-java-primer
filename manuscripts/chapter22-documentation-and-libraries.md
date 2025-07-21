@@ -145,7 +145,7 @@ public class Task {
     private Priority priority;
     
     /**
-     * 指定されたタイトルとデフォルトの優先度で新しいタスクを作成しる
+     * 指定されたタイトルとデフォルトの優先度で新しいタスクを作成する
      * 
      * @param title タスクのタイトル（null不可、空文字不可）
      * @throws IllegalArgumentException titleがnullまたは空文字の場合
@@ -155,7 +155,7 @@ public class Task {
     }
     
     /**
-     * 指定されたタイトルと優先度で新しいタスクを作成しる
+     * 指定されたタイトルと優先度で新しいタスクを作成する
      * 
      * @param title タスクのタイトル（null不可、空文字不可）
      * @param priority タスクの優先度（null不可）
@@ -177,7 +177,7 @@ public class Task {
     }
     
     /**
-     * タスクのタイトルを取得しる
+     * タスクのタイトルを取得する
      * 
      * @return タスクのタイトル（nullではない）
      */
@@ -186,7 +186,7 @@ public class Task {
     }
     
     /**
-     * タスクのタイトルを設定しる
+     * タスクのタイトルを設定する
      * 
      * @param title 新しいタイトル（null不可、空文字不可）
      * @throws IllegalArgumentException titleがnullまたは空文字の場合
@@ -199,7 +199,7 @@ public class Task {
     }
     
     /**
-     * タスクを完了状態にしる
+     * タスクを完了状態にする
      * <p>
      * このメソッドは {@code setCompleted(true)} と同等である
      * </p>
@@ -232,7 +232,7 @@ public class Task {
     }
     
     /**
-     * タスクを文字列表現に変換しる
+     * タスクを文字列表現に変換する
      * 
      * @return タスクの文字列表現
      * @deprecated {@link #toDetailedString()} を使用してください
@@ -1170,7 +1170,7 @@ mvn dependency:purge-local-repository
 
 - Javadocは、ソースコード内のコメントからAPI仕様書を自動生成する標準ツールである。パラメータ、戻り値、例外を記述したコメントは、APIの理解を容易にし、チーム間のコミュニケーションを円滑にする
 - 外部ライブラリは、既存の優れた機能を活用し、開発を効率化するために必要である
-- Mavenのような依存関係管理ツールを使うことで、外部ライブラリの導入と管理が劇的に簡単になりる
+- Mavenのような依存関係管理ツールを使うことで、外部ライブラリの導入と管理が劇的に簡単になる
 - `pom.xml`に必要なライブラリの情報を記述するだけで、ライブラリのダウンロードからクラスパスの設定までが自動で行われる
 
 ## 章末演習
@@ -1229,7 +1229,7 @@ warning: @return has no meaning in class documentation
  * ユーザー情報を処理するクラス
  * <p>
  * このクラスは、ユーザーの作成、更新、削除などの
- * 基本的なCRUD操作を提供しる
+ * 基本的なCRUD操作を提供する
  * </p>
  * 
  * @author 開発者名
@@ -1239,7 +1239,7 @@ warning: @return has no meaning in class documentation
 public class UserService {
     
     /**
-     * 新しいユーザーを作成しる
+     * 新しいユーザーを作成する
      * 
      * @param name ユーザー名（null不可）
      * @param email メールアドレス（null不可）
