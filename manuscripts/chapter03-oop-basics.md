@@ -330,7 +330,7 @@ public class BankAccount {
 
 ```java
 public class Product {
-    protected String productId;  // ①
+    protected String productId;  // ① protectedにより同一パッケージまたはサブクラスからアクセス可能
     protected String name;       // ①
     protected int price;         // ①
     
@@ -716,7 +716,6 @@ public class Book {
         System.out.println("ページ数: " + pages);
     }
 }
-}
 ```
 
 ### メソッドオーバーロード（同じ名前のメソッド）
@@ -760,6 +759,12 @@ public class OverloadExample {
 - 引数の数や型が異なれば、同じ名前のメソッドを作れる
 - Javaがコンパイル時に引数の型や数に基づいて、もっとも適合するメソッドを選んで実行する
 - コードが読みやすくなる
+
+> 重要: 戻り値の型だけが異なるメソッドはオーバーロードできません。以下はコンパイルエラーになります：
+> ```java
+> public int calculate() { return 1; }
+> public double calculate() { return 1.0; }  // エラー：戻り値の型だけでは区別できない
+> ```
 
 ## 実用的なクラス設計例
 
@@ -917,7 +922,9 @@ public class ShoppingCart {
 
 オブジェクトという用語は、文脈によって意味が変わることに注意が必要です。多くの場合、オブジェクトはインスタンスを指しますが、より幅広い概念を表す場合や、クラス自体を指す場合もあります。「オブジェクト指向」という場合のオブジェクトは、より抽象的な概念を表しています。
 
-※厳密には、インスタンス化をしなくても内部的に使用できる状態や振る舞いというのも存在します。それらは「静的（static）な○○」と呼ばれ、インスタンス化を明示的に行わなくても、プログラム実行時に自動的にメモリへ展開されており使用できるようになっています。対義語として「動的（dynamic）な○○」という言い方もあり、そちらはインスタンス化しないと使用できません。
+※厳密には、インスタンス化をしなくても内部的に使用できる状態や振る舞いというのも存在します。それらは「静的（static）な○○」と呼ばれ、インスタンス化を明示的に行わなくても、プログラム実行時にJVMによってクラスがロードされ、メモリへ展開されて使用できるようになっています。対義語として「動的（dynamic）な○○」という言い方もあり、そちらはインスタンス化しないと使用できません。
+
+> 補足: JVMのクラスローディング機構により、staticメンバーはクラスが初めて参照されたときに初期化されます。また、JITコンパイラによって実行時に最適化され、頻繁に使用されるstaticメソッドは高速に実行されます。
 
 ### クラスはどのように書くか
 
@@ -1613,12 +1620,12 @@ public class MethodsPractice {
 ##### 新しく学ぶ概念
 - オブジェクトの状態変化（在庫の増減）
 - メソッド間の連携（sell → reduceStock）
-- エラーハンドリングの基礎（燃料不足の処理）
+- エラーハンドリングの基礎（在庫不足の処理）
 
 ##### 実装のアイデア
-- 走行距離に応じた燃料消費
-- 燃料補給メソッド
-- 走行可能距離の計算
+- 在庫数に応じた販売可否判定
+- 在庫補充メソッド
+- 販売可能数の計算
 
 #### FuelExpenseCalculator.java - 複数オブジェクトの管理
 ##### 新しく学ぶ概念
@@ -2132,3 +2139,173 @@ public static void main(String[] args) {
    - すべてのフィールドがコンストラクタで初期化されているか確認
 
 これらのエラーパターンを理解し、適切に対処することで、オブジェクト指向プログラミングの学習がよりスムーズに進みます。
+
+## オブジェクトの等価性とhashCode
+
+オブジェクト指向プログラミングでは、オブジェクト同士が「等しい」かどうかを判定する必要があります。Javaでは、`==`演算子と`equals`メソッドの違いを理解することが重要です。
+
+### ==演算子とequalsメソッドの違い
+
+```java
+public class StringComparison {
+    public static void main(String[] args) {
+        String str1 = new String("Hello");
+        String str2 = new String("Hello");
+        String str3 = str1;
+        
+        // ==演算子：参照の比較
+        System.out.println(str1 == str2);  // false（異なるオブジェクト）
+        System.out.println(str1 == str3);  // true（同じオブジェクトを参照）
+        
+        // equalsメソッド：値の比較
+        System.out.println(str1.equals(str2));  // true（同じ値）
+        System.out.println(str1.equals(str3));  // true（同じ値）
+    }
+}
+```
+
+### カスタムクラスでのequalsメソッドの実装
+
+独自のクラスで`equals`メソッドを適切に実装する方法を示します。
+
+```java
+public class Student {
+    private String id;
+    private String name;
+    
+    public Student(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        // 同一オブジェクトの場合
+        if (this == obj) return true;
+        
+        // nullまたは異なるクラスの場合
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        // 型変換して比較
+        Student student = (Student) obj;
+        return id != null && id.equals(student.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        // equalsで使用するフィールドと同じフィールドを使用
+        return id != null ? id.hashCode() : 0;
+    }
+}
+```
+
+### equals/hashCodeの契約
+
+`equals`メソッドをオーバーライドする場合、必ず`hashCode`メソッドもオーバーライドしてください。これは以下の契約を満たすために必要です。
+
+1. `equals`で等しいと判定される2つのオブジェクトは、同じ`hashCode`を返す
+2. `hashCode`が同じでも、`equals`で等しいとは限らない（ハッシュ衝突）
+3. プログラムの実行中、同じオブジェクトの`hashCode`は一貫している
+
+## モダンJavaにおけるオブジェクト指向
+
+Java 21 LTSでは、オブジェクト指向プログラミングをより簡潔に記述できる新機能が追加されています。
+
+### Recordクラス（Java 14以降）
+
+不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
+
+```java
+// 従来の方法
+import java.util.Objects;
+
+public class Point {
+    private final int x;
+    private final int y;
+    
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return x == point.x && y == point.y;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+    
+    @Override
+    public String toString() {
+        return "Point{x=" + x + ", y=" + y + '}';
+    }
+}
+
+// Record を使った方法（Java 14以降）
+public record Point(int x, int y) {
+    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
+}
+```
+
+### Pattern Matching（Java 16以降）
+
+`instanceof`演算子と組み合わせたパターンマッチングにより、型チェックとキャストを簡潔に記述できます。
+
+```java
+// 従来の方法
+public void processShape(Shape shape) {
+    if (shape instanceof Circle) {
+        Circle circle = (Circle) shape;
+        System.out.println("円の半径: " + circle.getRadius());
+    } else if (shape instanceof Rectangle) {
+        Rectangle rectangle = (Rectangle) shape;
+        System.out.println("長方形の面積: " + rectangle.getArea());
+    }
+}
+
+// Pattern Matching を使った方法（Java 16以降）
+public void processShape(Shape shape) {
+    if (shape instanceof Circle circle) {
+        System.out.println("円の半径: " + circle.getRadius());
+    } else if (shape instanceof Rectangle rectangle) {
+        System.out.println("長方形の面積: " + rectangle.getArea());
+    }
+}
+```
+
+### Sealed Classes（Java 17以降）
+
+クラス階層を制限し、より安全な継承を実現できます。
+
+```java
+public sealed class Shape 
+    permits Circle, Rectangle, Triangle {
+    // Shapeクラスを継承できるのは、Circle、Rectangle、Triangleのみ
+}
+
+public final class Circle extends Shape {
+    private double radius;
+    // 実装
+}
+
+public final class Rectangle extends Shape {
+    private double width, height;
+    // 実装
+}
+
+public final class Triangle extends Shape {
+    private double base, height;
+    // 実装
+}
+```
+
+これらの新機能により、より安全で簡潔なオブジェクト指向プログラミングが可能になっています。ただし、基本的な概念の理解が前提となるため、本章で学んだ基礎をしっかりと理解してから活用しましょう。
