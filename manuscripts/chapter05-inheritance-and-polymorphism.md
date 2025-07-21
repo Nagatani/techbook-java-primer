@@ -17,13 +17,22 @@
 
 #### 知識理解目標
 
-本章では、Javaの重要な機能である継承とポリモーフィズムの概念を理解します。まず、継承の概念とis-a関係について学びます。継承は単なるコードの再利用技術ではなく、オブジェクト間の意味的な関係を表現するための強力な機能です。`extends`キーワードを使ってクラスの継承関係を定義し、`super`キーワードを使って親クラスの機能にアクセスする方法を習得します。
+本章では、Javaの重要な機能である継承とポリモーフィズムの概念を理解します。
+まず、継承の概念とis-a関係について学びます。
+継承は単なるコードの再利用技術ではなく、オブジェクト間の意味的な関係を表現するための強力な機能です。
+`extends`キーワードを使ってクラスの継承関係を定義し、`super`キーワードを使って親クラスの機能にアクセスする方法を習得します。
 
-メソッドオーバーライドのルールと目的も大切な学習ポイントです。オーバーライドによって、子クラスは親クラスの動作を特殊化し、より具体的な振る舞いを実装できます。さらに、ポリモーフィズム（多態性）の概念を理解することで、同じインターフェイスを通じて異なる実装を透過的に扱うことができ、これがプログラムに柔軟性と拡張性をもたらします。最後に、アップキャストとダウンキャスト、そして`instanceof`演算子の役割を学び、実行時の型判定と型変換の技術を身につけます。
+メソッドオーバーライドのルールと目的も大切な学習ポイントです。
+オーバーライドによって、子クラスは親クラスの動作を特殊化し、より具体的な振る舞いを実装できます。
+さらに、ポリモーフィズム（多態性）の概念を理解することで、同じインターフェイスを通じて異なる実装を透過的に扱うことができます。
+これがプログラムに柔軟性と拡張性をもたらします。
+最後に、アップキャストとダウンキャスト、そして`instanceof`演算子の役割を学び、実行時の型判定と型変換の技術を身につけます。
 
 #### 技能習得目標
 
-本章では、継承とポリモーフィズムを実装するための具体的な技術を習得します。まず、`extends`キーワードを使って既存のクラスを継承し、新しいクラスを定義する方法を学びます。この際、親クラスの公開メソッドとprotectedフィールドを継承しながら、子クラス独自の機能を追加する方法を理解します。
+本章では、継承とポリモーフィズムを実装するための具体的な技術を習得します。
+まず、`extends`キーワードを使って既存のクラスを継承し、新しいクラスを定義する方法を学びます。
+この際、公開メソッドとprotectedフィールドを継承しながら、子クラス独自の機能を追加する方法を理解します。
 
 次に、親クラスのメソッドを`@Override`アノテーションを使って正しくオーバーライドする技術を身につけます。このアノテーションはコンパイラによるチェックを可能にし、オーバーライドの正確性を保証します。また、親クラスのコンストラクタを`super()`で呼びだす方法も重要で、これにより親クラスの初期化処理を確実に実行し、オブジェクトの整合性を保ちます。
 
@@ -140,7 +149,7 @@ public class PaymentProcessor {
     // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
     protected boolean validatePaymentSpecific() {
         // デフォルトでは追加の検証なし
-        // 子クラスで必要に応じてオーバーライド
+        // 子クラスでオーバーライド可能
         return true;
     }
     
@@ -151,7 +160,7 @@ public class PaymentProcessor {
         return "DEFAULT-" + System.currentTimeMillis();
     }
     
-    // フックメソッド：子クラスで必要に応じてオーバーライド
+    // フックメソッド：子クラスでオーバーライド可能
     protected void logTransaction(String authCode) {
         System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
     }
@@ -165,6 +174,9 @@ public class PaymentProcessor {
         this.errorMessage = message;
     }
 }
+
+// 注意：このエラー処理の設計は単一スレッド環境を想定しています。
+// 並行処理環境では、errorMessageフィールドの共有により問題が生じる可能性があります。
 ```
 
 #### テンプレートメソッドパターンの重要なポイント
@@ -595,6 +607,9 @@ public class Developer extends Employee {  // ③
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
 public class MyStack<E> extends ArrayList<E> {
     public void push(E item) {
         add(item);
@@ -639,6 +654,9 @@ public class StackProblem {
 
 ```java
 // 良い例：内部実装を隠蔽
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
 public class MyStack<E> {
     private final ArrayList<E> elements = new ArrayList<>(); // privateで隠蔽
     
@@ -732,7 +750,7 @@ public class EmployeeManagementSystem {
 
 #### 誤用例3：正方形と長方形の問題
 
-有名な例として「正方形と長方形」の問題も見てみましょう。
+有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
 <span class="listing-number">**サンプルコード5-11**</span>
 
@@ -800,7 +818,51 @@ public class GeometryTest {
 
 この問題の根本的な原因は、数学的な関係（正方形は長方形の一種）とオブジェクト指向の継承関係が必ずしも一致しないことにあります。継承は「振る舞いの継承」であり、単なる概念的な関係ではありません。
 
-この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。これらの高度な設計手法については、第7章「抽象クラスとインターフェイス」で詳しく解説します。
+この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。例えば：
+
+```java
+// 解決策の例：インターフェイスを使用
+interface Shape {
+    double getArea();
+}
+
+class Rectangle implements Shape {
+    private int width;
+    private int height;
+    
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public double getArea() {
+        return width * height;
+    }
+    
+    // setterは矩形の特性に従う
+    public void setWidth(int width) { this.width = width; }
+    public void setHeight(int height) { this.height = height; }
+}
+
+class Square implements Shape {
+    private int side;
+    
+    public Square(int side) {
+        this.side = side;
+    }
+    
+    @Override
+    public double getArea() {
+        return side * side;
+    }
+    
+    // 正方形固有のsetter
+    public void setSide(int side) { this.side = side; }
+}
+```
+
+これらの高度な設計手法については、第7章「抽象クラスとインターフェイス」で詳しく解説します。
 
 > 重要: 継承を使用する際は、親クラスの契約（期待される振る舞い）を子クラスが満たせるかを確認することが重要です。
 
@@ -844,6 +906,9 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 ```java
 // 良い例：ArrayListを内部で使用
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
 public class MyStack<E> {
     private ArrayList<E> list = new ArrayList<>();
     
@@ -1091,9 +1156,9 @@ public class UserManagementSystem {
 }
 ```
 
-この`for`ループの中では、`user`が`RegularUser`なのか`AdminUser`なのかを一切気にする必要がありません。ただ`processRequest()`を呼びだすだけで、各ユーザータイプに応じた適切な処理が自動的に実行されます。
+この`for`ループの中では、`user`が`RegularUser`なのか`AdminUser`なのかを一切気にしません。ただ`processRequest()`を呼びだすだけで、各ユーザータイプに応じた処理が自動的に実行されます。
 
-もし将来、「プレミアムユーザー `PremiumUser`」という新しいユーザータイプを追加したくなっても、`UserManagementSystem`クラスのコードは一切変更する必要がありません。`PremiumUser`クラスを作成し、`User`を継承して`processRequest()`をオーバーライドし、`users`配列に追加するだけで、新しいユーザータイプも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
+もし将来、「プレミアムユーザー `PremiumUser`」という新しいユーザータイプを追加したくなっても、`UserManagementSystem`クラスのコードは一切変更しません。`PremiumUser`クラスを作成し、`User`を継承して`processRequest()`をオーバーライドし、`users`配列に追加するだけで、新しいユーザータイプも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
 
 ### ポリモーフィズムのBefore/After比較
 
@@ -1256,7 +1321,7 @@ class ShapeData {
     double calculateArea() {
         switch (type) {
             case CIRCLE:
-                return Math.PI * radius * radius;
+                return Math.PI * radius * radius;  // Math.PIは円周率の定数
             case RECTANGLE:
                 return width * height;
             case TRIANGLE:
@@ -1340,7 +1405,7 @@ class Circle extends Shape {
     
     @Override
     double calculateArea() {
-        return Math.PI * radius * radius;
+        return Math.PI * radius * radius;  // Math.PIは円周率の定数
     }
     
     @Override

@@ -91,9 +91,9 @@ public class ProblemDemo {
 ```
 
 #### このコードの問題点
-- カプセル化の欠如すべてのフィールドがpublicで、外部から自由にアクセス・変更可能
-- データの整合性不正な値（負の残高など）を防ぐ仕組みがない
-- 変更の追跡誰がいつ値を変更したか記録できない
+- カプセル化の欠如：すべてのフィールドがpublicで、外部から自由にアクセス・変更可能
+- データの整合性：不正な値（負の残高など）を防ぐ仕組みがない
+- 変更の追跡：誰がいつ値を変更したか記録できない
 - ビジネスルールの実装場所：入出金のルールをクラス外部で実装する必要がある
 
 これらの問題を解決するために、カプセル化という技術を使います。本章では、このBankAccountクラスを段階的に改善しながら、実践的なカプセル化の技術を身につけていきます。
@@ -449,8 +449,8 @@ public class BankAccountV3 {
 
 #### 完成した設計の特徴
 - 不変性：口座番号はfinalで変更不可
-- 完全な検証すべての入力を検証
-- 履歴管理すべての取引を記録
+- 完全な検証：すべての入力を検証
+- 履歴管理：すべての取引を記録
 - 防御的コピー: 内部リストの参照を外部に漏らさない
 
 ### 銀行口座クラスのさらなる発展
@@ -460,6 +460,8 @@ BankAccountV3の設計を基に、本章ではさらに高度な設計パター�
 <span class="listing-number">**サンプルコード4-11**</span>
 
 ```java
+import java.time.LocalDateTime;
+
 // BankAccountV3をさらに発展させた設計例
 public class EnhancedBankAccount extends BankAccountV3 {
     // 追加のフィールド：口座の状態管理
@@ -529,10 +531,10 @@ public class EnhancedBankAccount extends BankAccountV3 {
 ```
 
 この設計の要点。
-- 継承の活用第3章のBankAccountV3を基に機能を拡張
+- 継承の活用：第3章のBankAccountV3を基に機能を拡張
 - 定数による状態管理：口座状態を文字列定数で管理
 - 状態管理：失敗回数の追跡と自動停止機能
-- テンプレートメソッドパターン基本動作を保持しつつ拡張
+- テンプレートメソッドパターン：基本動作を保持しつつ拡張
 
 ### クラス設計のベストプラクティス
 
@@ -872,6 +874,9 @@ public class DatabaseConfig {
 <span class="listing-number">**サンプルコード4-21**</span>
 
 ```java
+import java.util.List;
+import java.util.ArrayList;
+
 public class EventProcessor {
     private String name;
     
@@ -916,6 +921,9 @@ class EventManager {
 <span class="listing-number">**サンプルコード4-22**</span>
 
 ```java
+import java.util.Map;
+import java.util.HashMap;
+
 public class HttpClient {
     // フルスペックのメソッド
     public String get(String url, Map<String, String> headers, int timeoutMs) {
@@ -967,7 +975,7 @@ public class Logger {
     public static final String LOG_DEBUG = "DEBUG";
     public static final String LOG_INFO = "INFO";
     public static final String LOG_WARN = "WARN";
-    public static final String LOG_ERROR = "ERROR"
+    public static final String LOG_ERROR = "ERROR";
 }
 ```
 
@@ -1028,15 +1036,17 @@ public class Logger {
 
 詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
 
-## よくあるエラーと対処法
+## 設計上やってしまいやすい問題とその解決方法
 
-クラスとインスタンスの学習において、開発者が遭遇する典型的なエラーと、その解決方法について詳しく説明します。
+オブジェクト指向プログラミングを学び始めた開発者が陥りやすい設計上の問題と、その解決方法について詳しく説明します。これらは実行時エラーではなく、設計品質に関わる問題です。
 
-### 1. クラス設計に関する問題
+### 1. 神クラス（Godクラス）の問題
 
-#### エラー1: 神（God）クラスの作成
+#### 問題の概要
+神クラスとは、あまりにも多くの責任を持ち、多くの機能を詰め込んだ巨大なクラスのことです。初心者は「すべてを1つのクラスにまとめれば管理が楽」と考えがちですが、実際には逆効果となります。
 
-##### 問題のあるコード
+#### 問題のあるコード例
+
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
 public class UserManager {
@@ -1062,12 +1072,15 @@ public class UserManager {
 }
 ```
 
-##### エラーメッセージ
-```
-設計上の問題: 単一責任の原則に違反している
-```
+#### なぜこれが問題なのか
 
-##### 修正方法
+1. 保守性の低下：1つのクラスが大きくなりすぎて、どこに何があるか把握が困難
+2. テストの困難さ：多くの依存関係があり、単体テストが書きにくい
+3. 再利用性の欠如：機能が密結合しているため、一部だけを再利用できない
+4. 変更の影響範囲：1つの変更が予期しない箇所に影響を与える可能性
+5. 並行開発の困難：複数の開発者が同じクラスを修正することで競合が発生
+
+#### 解決方法：責任の分離
 ```java
 // 責任を分離したクラス設計
 public class User {
@@ -1104,9 +1117,35 @@ public class AuthenticationService {
 }
 ```
 
-#### エラー2: 過度なgetterとsetterの使用
+#### 解決策のメリット
 
-##### 問題のあるコード
+1. 高い保守性：各クラスの責任が明確で、修正箇所が特定しやすい
+2. テストの容易さ：各クラスを独立してテスト可能
+3. 再利用性の向上：EmailServiceは他のエンティティでも利用可能
+4. 変更の局所化：データベースの変更はUserRepositoryのみに影響
+5. 並行開発の促進：異なる開発者が異なるクラスを担当できる
+
+#### 解決策のデメリット
+
+1. クラス数の増加：管理すべきファイル数が増える
+2. 初期開発の複雑さ：最初の設計に時間がかかる
+3. 過度な分割のリスク：細かすぎる分割は逆に複雑性を増す
+4. パッケージ構成の必要性：明確なパッケージ分けが必要
+
+#### 最適なバランスの見つけ方
+
+- 凝集度を高く保つ：関連する機能は同じクラスに
+- 結合度を低く保つ：クラス間の依存は最小限に
+- 将来の拡張性を考慮：新機能追加時の影響を予測
+- チームの規模に応じた設計：小規模なら適度な分割で十分
+
+### 2. 過度なgetter/setterの使用
+
+#### 問題の概要
+すべてのフィールドに機械的にgetterとsetterを作成することは、カプセル化の意味を失わせ、単なるデータ構造と変わらなくなってしまいます。
+
+#### 問題のあるコード例
+
 ```java
 public class BankAccount {
     private double balance;
@@ -1122,12 +1161,15 @@ double currentBalance = account.getBalance();
 account.setBalance(currentBalance - 100.0);  // 直接残高操作
 ```
 
-##### エラーメッセージ
-```
-設計上の問題: カプセル化が不十分で、ビジネスロジックが外部に漏れている
-```
+#### なぜこれが問題なのか
 
-##### 修正方法
+1. ビジネスロジックの分散：残高操作のルールが使用側に散らばる
+2. 不正な状態の可能性：負の残高など、ビジネス的に不正な値を設定可能
+3. 変更の困難さ：残高操作のルールを変更する際、全使用箇所を修正必要
+4. トランザクション管理の欠如：操作履歴や監査ログを残せない
+5. 並行処理の問題：複数スレッドからの同時アクセスで不整合が発生
+
+#### 解決方法：意味のあるメソッドの提供
 ```java
 public class BankAccount {
     private double balance;
@@ -1163,7 +1205,143 @@ public class BankAccount {
 }
 ```
 
-### 2. コンストラクタ関連のエラー
+#### 解決策のメリット
+
+1. ビジネスロジックの集約：残高操作のルールが1箇所に集中
+2. データ整合性の保証：不正な状態になることを防げる
+3. 変更の容易さ：ルール変更時の修正箇所が限定的
+4. 拡張性：履歴記録や通知機能を簡単に追加可能
+5. テストの簡潔さ：ビジネスロジックを集中的にテスト可能
+
+#### 解決策のデメリット
+
+1. 柔軟性の低下：特殊なケースへの対応が困難な場合がある
+2. メソッド数の増加：操作の種類が増えるとメソッドも増える
+3. 学習コスト：使用可能な操作を把握する必要がある
+4. 過度な制限のリスク：必要な操作まで制限してしまう可能性
+
+#### getter/setter設計のベストプラクティス
+
+1. getterの設計指針
+   - 内部状態を公開してもよいかを慎重に検討
+   - 必要なら防御的コピーを返す（コレクションなど）
+   - 計算結果を返すメソッドも検討（getTotal()など）
+
+2. setterの設計指針
+   - 本当に外部から変更可能にすべきか検討
+   - 検証ロジックを必ず含める
+   - イミュータブルオブジェクトの使用も検討
+
+3. 代替案の検討
+   - ビルダーパターンでの初期化
+   - ファクトリメソッドでの生成
+   - コンストラクタでの完全な初期化
+
+### 3. 防御的プログラミングの欠如
+
+#### 問題の概要
+外部から渡されたオブジェクトをそのまま保持したり、内部のオブジェクトをそのまま返したりすることで、意図しない変更を許してしまう問題です。
+
+#### 問題のあるコード例
+
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        this.members = members;  // 参照をそのまま保存
+    }
+    
+    public List<String> getMembers() {
+        return members;  // 内部リストを直接返す
+    }
+}
+
+// 使用例での問題
+List<String> originalList = new ArrayList<>();
+originalList.add("Alice");
+Team team = new Team(originalList);
+originalList.add("Bob");  // Teamの内部状態が変更される！
+
+List<String> teamMembers = team.getMembers();
+teamMembers.clear();  // Teamの内部状態が破壊される！
+```
+
+#### なぜこれが問題なのか
+
+1. カプセル化の破壊：外部から内部状態を直接操作可能
+2. 予期しない副作用：他の箇所での変更が影響する
+3. 不変条件の破壊：クラスの整合性が保てない
+4. デバッグの困難さ：変更箇所の特定が困難
+5. 並行処理での問題：スレッドセーフでない
+
+#### 解決方法：防御的コピー
+
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        // 防御的コピー（コンストラクタ）
+        this.members = new ArrayList<>(members);
+    }
+    
+    public List<String> getMembers() {
+        // 防御的コピー（getter）
+        return new ArrayList<>(members);
+    }
+    
+    // 正しい方法でメンバーを追加
+    public void addMember(String member) {
+        if (member != null && !member.trim().isEmpty()) {
+            members.add(member);
+        }
+    }
+    
+    // 正しい方法でメンバーを削除
+    public boolean removeMember(String member) {
+        return members.remove(member);
+    }
+}
+```
+
+#### 解決策のメリット
+
+1. 完全なカプセル化：内部状態が外部から保護される
+2. 予測可能な動作：外部の変更に影響されない
+3. 不変条件の維持：クラスの整合性が保証される
+4. デバッグの容易さ：変更箇所が限定的
+5. スレッドセーフ性の向上：明示的な同期化と組み合わせ可能
+
+#### 解決策のデメリット
+
+1. パフォーマンスコスト：コピー処理のオーバーヘッド
+2. メモリ使用量の増加：オブジェクトの複製によるメモリ消費
+3. 実装の複雑さ：深いコピーが必要な場合の実装が複雑
+4. 一貫性の確保：すべての箇所で防御的コピーを忘れずに実装する必要
+
+#### 防御的プログラミングのガイドライン
+
+1. **コンストラクタでの防御**
+   - 可変オブジェクトは必ずコピー
+   - nullチェックと検証を実施
+   - 不変オブジェクトの使用を検討
+
+2. getterでの防御
+   - コレクションは新しいインスタンスを返す
+   - 日付などの可変オブジェクトもコピー
+   - 読み取り専用ビューの提供も検討
+
+3. パフォーマンスとのバランス
+   - 小さなコレクションなら防御的コピー
+   - 大きなデータは読み取り専用ビュー
+   - イミュータブルコレクションの活用
+
+## よくあるエラーと対処法
+
+ここでは、コンパイルエラーや実行時エラーなど、実際のコーディングで遭遇する技術的なエラーとその対処法を説明します。
+
+### 1. コンストラクタ関連のエラー
 
 #### エラー3: デフォルトコンストラクタが見つからない
 
@@ -1399,6 +1577,14 @@ public class Team {
 
 ##### 問題のあるコード
 ```java
+import java.util.List;
+import java.util.ArrayList;
+
+// EventListenerインターフェースの定義
+interface EventListener {
+    void onEvent(String event);
+}
+
 public class EventSource {
     private List<EventListener> listeners = new ArrayList<>();
     
@@ -1478,6 +1664,8 @@ public class EventHandler implements EventListener {
 
 ##### 問題のあるコード
 ```java
+import java.util.Objects;
+
 public class Person {
     private String name;
     private int age;

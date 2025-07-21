@@ -16,15 +16,24 @@
 
 ### 知識理解目標
 
-本章では、Javaプログラミングにおける不変性（Immutability）とfinalキーワードの概念を深く理解することが目標です。不変性は、堅牢で保守性の高いソフトウェアを構築するための設計アプローチの1つです。関数型プログラミングでは不変性が中心的な概念となりますが、オブジェクト指向でも状況に応じて活用されます。finalキーワードの3つの用途（変数、メソッド、クラス）それぞれの意味と効果を理解し、それぞれの適用場面を判断して使い分けられます。また、不変オブジェクトがスレッドセーフティ、キャッシング、関数型プログラミングなどの実践的な設計パターンとどのように関連するかを学びます。
+本章では、Javaプログラミングにおける不変性（Immutability）とfinalキーワードの概念を深く理解することが目標です。
+不変性は、堅牢で保守性の高いソフトウェアを構築するための設計アプローチの1つです。
+関数型プログラミングでは不変性が中心的な概念となりますが、オブジェクト指向でも状況に応じて活用されます。
+finalキーワードの3つの用途（変数、メソッド、クラス）それぞれの意味と効果を理解し、適用場面を判断して使い分けられます。
+また、不変オブジェクトがスレッドセーフティ、キャッシング、関数型プログラミングなどの設計パターンとどのように関連するかを学びます。
 
 ### 技能習得目標
 
-技能習得の面では、不変オブジェクトを正しく設計・実装できるようになることが目標です。これには、finalフィールドの宣言、コンストラクタでの初期化、setterメソッドを持たない設計、防御的コピーの実装などが含まれます。また、既存の可変クラスを不変クラスに変換する技術、ビルダパターンを使った不変オブジェクトの構築方法も習得します。final変数を使った定数の定義、finalメソッドによる継承の制御、finalクラスによる拡張の防止など、finalキーワードのすべての側面を実践的に使いこなせます。
+技能習得の面では、不変オブジェクトを正しく設計・実装できるようになることが目標です。
+これには、finalフィールドの宣言、コンストラクタでの初期化、setterメソッドを持たない設計、防御的コピーの実装などが含まれます。
+また、既存の可変クラスを不変クラスに変換する技術、ビルダパターンを使った不変オブジェクトの構築方法も習得します。
+final変数を使った定数の定義、finalメソッドによる継承の制御、finalクラスによる拡張の防止など、finalキーワードのすべての側面を実践的に使いこなせます。
 
 ### 設計能力目標
 
-設計能力の観点からは、不変性を活用した安全で予測可能なシステム設計ができるようになることが目標です。これは、副作用を最小化したメソッド設計、状態変更を局所化したアーキテクチャ、不変性と可変性のトレードオフを考慮した設計判断などを含みます。値オブジェクトパターン、不変コレクションの活用、関数型プログラミングスタイルの採用など、モダンなJavaプログラミングで求められる設計スキルを身につけます。
+設計能力の観点からは、不変性を活用した安全で予測可能なシステム設計ができるようになることが目標です。
+これは、副作用を最小化したメソッド設計、状態変更を局所化したアーキテクチャ、不変性と可変性のトレードオフを考慮した設計判断などを含みます。
+値オブジェクトパターン、不変コレクションの活用、関数型プログラミングスタイルの採用など、モダンなJavaプログラミングで求められる設計スキルを身につけます。
 
 ### 到達レベルの指標
 
@@ -171,6 +180,9 @@ public final class ImmutablePoint {
 `final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります。
 
 ```java
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class Constants {
     // クラス定数（static final）
     public static final double PI = 3.14159265359;
@@ -284,6 +296,10 @@ finalクラスの利点。
 <span class="listing-number">**サンプルコード6-2**</span>
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 // 完全な不変クラスの例
 public final class ImmutablePerson {
     private final String name;
@@ -360,6 +376,10 @@ public final class ImmutablePerson {
 <span class="listing-number">**サンプルコード6-3**</span>
 
 ```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
@@ -417,6 +437,10 @@ public class ImmutableExample {
 <span class="listing-number">**サンプルコード6-4**</span>
 
 ```java
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 // 防御的コピーの実装例
 public final class DateRange {
     private final LocalDate startDate;
@@ -459,6 +483,8 @@ public final class DateRange {
 <span class="listing-number">**サンプルコード6-5**</span>
 
 ```java
+import java.time.LocalDate;
+
 // ビルダーパターンを使った不変オブジェクトの構築
 public final class Book {
     private final String isbn;
@@ -612,6 +638,30 @@ public class BuilderExample {
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。特に並行プログラミングや大規模システムの開発において、その価値が発揮されます。
 
+### パフォーマンスのトレードオフ
+
+不変性には多くの利点がありますが、パフォーマンス面でのトレードオフも理解しておく必要があります。
+
+1. **メモリ使用量の増加**： 状態を変更するたびに新しいオブジェクトを作成するため、メモリ使用量が増える可能性があります
+2. **オブジェクト生成のコスト**： 頻繁な状態変更が必要な場合、大量のオブジェクト生成によるGCの負荷が問題になることがあります
+3. **最適化の機会**： 一方で、不変性によりJVMが最適化を行いやすくなり、全体的なパフォーマンスが向上する場合もあります
+
+### Java 14以降の不変性サポート
+
+Java 14以降では、Recordクラスにより不変データクラスの作成がより簡潔になりました。
+
+```java
+// Java 14以降：Recordを使った不変クラス
+public record ImmutablePoint(int x, int y) {
+    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
+}
+
+// 使用例
+ImmutablePoint point = new ImmutablePoint(10, 20);
+System.out.println(point.x()); // 10
+System.out.println(point.y()); // 20
+```
+
 ## 章末演習
 
 ### 演習課題へのアクセス
@@ -741,6 +791,10 @@ hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
 
 ##### 対処法
 ```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class ImmutablePerson {
     private final String name;
     private final List<String> hobbies;
@@ -769,6 +823,8 @@ public final class ImmutablePerson {
 #### エラー例: 日付オブジェクトの防御的コピー漏れ
 
 ```java
+import java.util.Date;
+
 public final class BrokenImmutableEvent {
     private final String title;
     private final Date eventDate; // 問題: Dateは可変
@@ -796,6 +852,8 @@ event.getEventDate().setTime(0); // イベント日時が変更される
 
 ##### 対処法
 ```java
+import java.util.Date;
+
 public final class ImmutableEvent {
     private final String title;
     private final Date eventDate;
@@ -819,6 +877,8 @@ public final class ImmutableEvent {
 
 ##### モダンなアプローチ（推奨）
 ```java
+import java.time.LocalDateTime;
+
 public final class ModernImmutableEvent {
     private final String title;
     private final LocalDateTime eventDateTime;
@@ -853,13 +913,15 @@ public class FinalArrayMisunderstanding {
         // これはエラー（配列参照の変更は不可）
         // numbers = new int[]{6, 7, 8}; // コンパイルエラー
         
-        System.out.println(Arrays.toString(numbers)); // [10, 2, 3, 4, 5]
+        System.out.println(java.util.Arrays.toString(numbers)); // [10, 2, 3, 4, 5]
     }
 }
 ```
 
 ##### 対処法（真の不変配列）
 ```java
+import java.util.Arrays;
+
 public final class ImmutableArray {
     private final int[] numbers;
     
@@ -886,6 +948,10 @@ public final class ImmutableArray {
 #### エラー例: Listの不変性に関する誤解
 
 ```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ListImmutabilityMisunderstanding {
     public static void main(String[] args) {
         final List<String> items = new ArrayList<>();
@@ -962,6 +1028,9 @@ public final class ImmutablePerson { // finalクラス
 #### エラー例: 不必要な防御的コピー
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+
 public final class IneffientImmutableClass {
     private final List<String> items;
     
@@ -982,6 +1051,10 @@ public final class IneffientImmutableClass {
 
 ##### 対処法
 ```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class EfficientImmutableClass {
     private final List<String> items;
     
@@ -1005,9 +1078,14 @@ public final class EfficientImmutableClass {
 
 ##### 大量データの場合の最適化
 ```java
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 public final class OptimizedImmutableClass {
     private final List<String> items;
-    private volatile List<String> cachedView; // 遅延初期化
+    private volatile List<String> cachedView; // 遅延初期化（volatileはスレッド間での可視性を保証）
     
     public OptimizedImmutableClass(Collection<String> items) {
         this.items = new ArrayList<>(items);
