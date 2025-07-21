@@ -1,5 +1,4 @@
 const markdownFiles = [
-  'table-of-contents.md',
   'learning-path-guide.md',
   'chapter01-introduction.md',
   'chapter02-getting-started.md',
@@ -46,13 +45,11 @@ module.exports = {
   theme: './styles/custom-theme.css',
 
   entry: [
-    // 表紙を最初に配置（専用CSS使用）
     { 
       path: 'cover.md', 
       title: '表紙',
       theme: './styles/cover-theme.css'
     },
-    // 目次（専用CSS使用）
     {
       path: 'table-of-contents.md',
       title: '目次',
