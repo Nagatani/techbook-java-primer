@@ -1,0 +1,11 @@
+{
+  "name": "my-theme",
+  "description": "my-theme",
+  "version": "0.1.0",
+  "author": "Nagatani",
+  "main": "theme.css",
+  "files": [
+    "css/*.css",
+    "*.css"
+  ]
+}

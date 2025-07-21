@@ -53,7 +53,7 @@
 
 ### ビルド設定
 - **設定ファイル**: `vivliostyle.config.js`
-- **テーマ**: `custom-theme.css`
+- **テーマ**: `theme/my-theme/theme.css`
 - **出力先**: `output/techbook-java-primer.pdf`
 
 ## 使用方法

@@ -1,5 +1,5 @@
 const markdownFiles = [
-  'learning-path-guide.md',
+  'table-of-contents.md',
   'chapter01-introduction.md',
   'chapter02-getting-started.md',
   'chapter03-oop-basics.md',
@@ -42,26 +42,20 @@ module.exports = {
   title: '大学2年生のためのプログラミング入門 オブジェクト指向言語 Java',
   author: 'Hidehiro Nagatani',
   language: 'ja',
-  theme: './styles/custom-theme.css',
-
+  theme: './theme/my-theme',
+  size: 'B5',
   entry: [
     { 
       path: 'cover.md', 
       title: '表紙',
-      theme: './styles/cover-theme.css'
+      theme: './theme/my-theme/cover-theme.css'
     },
-    {
-      path: 'table-of-contents.md',
-      title: '目次',
-      theme: './styles/toc-theme.css'
-    },
-    // 残りのファイル（learning-path-guide.mdを除外）
-    ...markdownFiles.slice(2).map(file => {
+    ...markdownFiles.map(file => {
       // 用語集に専用CSSを適用
       if (file === 'glossary.md') {
         return {
           path: file,
-          theme: './styles/glossary-theme.css'
+          theme: './theme/my-theme/glossary-theme.css'
         };
       }
       // その他は通常のテーマを使用

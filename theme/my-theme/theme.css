@@ -1,0 +1,1567 @@
+@import url(./css/theme-all.css);
+@import url(./css/lib/prism/base.css);
+@import url(./css/lib/prism/theme-prism.css);
+
+/**
+ * Theme variables
+*/
+:root {
+  --vs-theme--anchor-color-body: #3498db;
+  --vs-theme--blockquote-color-bg: #ecf0f1;
+  --vs-theme--blockquote-color-body: #34495e;
+  --vs-theme--inline-code-color-bg: #ecf0f1;
+  --vs-theme--inline-code-color-body: #34495e;
+  --vs-theme--footnote-color-bg-on-screen: #e6f6d7;
+  --vs-theme--crossref-anchor-color-bg-on-screen: rgba(255, 0, 0, 0.3);
+  --vs-theme--crossref-anchor-color-body-on-screen: #e74c3c;
+  --vs-theme--image-resolution-for-figure-image: 300dpi;
+  --vs-theme--page-top-left-content: env(pub-title);
+  --vs-theme--page-top-right-content: env(doc-title);
+  --vs-theme--page-bottom-content: counter(page);
+}
+
+:root {
+  --vs-font-family: 'Neue Frutiger World', 'Verdana', 'Hiragino Sans',
+    sans-serif;
+  --vs-font-size-on-print: 75%;
+  --vs-line-height: 1.7;
+  --vs-widows-orphans: 3;
+
+  --vs--heading-line-height: 1.2;
+  --vs--monospace-font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
+    monospace;
+  --vs--h1-font-size: 2.4em;
+  --vs--h2-font-size: 1.8em;
+  --vs--h3-font-size: 1.4em;
+  --vs--h4-font-size: 1.2em;
+  --vs--h5-font-size: 1em;
+  --vs--h6-font-size: 0.83em;
+  --vs--blockquote-margin-inline: 0;
+  --vs--ul-minimum-inline-indent-size: 1rem;
+  --vs--table-border-width-block-start: 1px;
+  --vs--table-border-width-block-end: 1px;
+  --vs--table-border-width-inline-start: 0;
+  --vs--table-border-width-inline-end: 0;
+  --vs--table-border-width-thead-inner: 1px;
+  --vs--table-border-width-tfoot-inner: 1px;
+  --vs--table-border-width-column: 0;
+  --vs--table-border-width-row: 0.4px;
+  --vs--table-cell-padding-inline: 1rem;
+
+  --vs-footnote--area-before-margin-block: calc(var(--vs-spacing-rlh) * 0.25);
+  --vs-footnote--area-before-margin-inline: 0 70%;
+  --vs-footnote--area-margin-block: var(--vs-spacing-rlh) 0;
+
+  --vs-page--margin-top: 25mm;
+  --vs-page--margin-bottom: 25mm;
+  --vs-page--margin-inner: 22mm;
+  --vs-page--margin-outer: 22mm;
+
+  --vs-prism--inline-code-padding: 0.1em 0.3em;
+  --vs-prism--text-shadow: none;
+}
+
+blockquote {
+  background-color: var(--vs-theme--blockquote-color-bg);
+  border-radius: var(--vs-prism--block-code-border-radius);
+  color: var(--vs-theme--blockquote-color-body);
+  padding: var(--vs-prism--block-code-padding);
+}
+
+blockquote > p:first-child {
+  margin-block-start: unset;
+}
+
+blockquote > p:last-child {
+  margin-block-end: unset;
+}
+
+/*
+ * According to the specification, image-resolution is not applied to vector images,
+ * but Vivliostyle applies it to vector images as well.
+ * We set image-resolution only for images with raster image extensions.
+ * https://docs.vivliostyle.org/#/supported-css-features#css-images-3
+ */
+figure
+  img:is(
+    [src$='.png'],
+    [src$='.jpg'],
+    [src$='.jpeg'],
+    [src$='.gif'],
+    [src$='.webp'],
+    [src$='.apng']
+  ) {
+  --vs--img-image-resolution: var(
+    --vs-theme--image-resolution-for-figure-image
+  );
+}
+
+/* format for inline code */
+:not(pre) > code {
+  --vs-prism--background: var(--vs-theme--inline-code-color-bg);
+  --vs-prism--color: var(--vs-theme--inline-code-color-body);
+}
+
+@media screen {
+  :root {
+    --vs--anchor-color: var(--vs-theme--anchor-color-body);
+    --vs--anchor-text-decoration: none;
+    --vs--anchor-text-decoration-on-hover: underline;
+  }
+
+  body {
+    max-inline-size: 50rem;
+    margin: 2rem auto 2rem;
+    padding: 0 var(--vs-spacing-inline-indent);
+  }
+
+  .footnote {
+    display: block;
+    background-color: var(--vs-theme--footnote-color-bg-on-screen);
+    border-radius: var(--vs-prism--block-code-border-radius);
+    margin-block: var(--vs--blockquote-margin-block);
+    padding: var(--vs-prism--block-code-padding);
+  }
+
+  a[data-ref] {
+    color: var(--vs-theme--crossref-anchor-color-body-on-screen);
+    background-color: var(--vs-theme--crossref-anchor-color-bg-on-screen);
+  }
+}
+
+@page :left {
+  --vs-page--mbox-content-top-left: var(--vs-theme--page-top-left-content);
+  --vs-page--mbox-content-bottom-left: var(--vs-theme--page-bottom-content);
+}
+
+@page :right {
+  --vs-page--mbox-content-top-right: var(--vs-theme--page-top-right-content);
+  --vs-page--mbox-content-bottom-right: var(--vs-theme--page-bottom-content);
+}
+
+#toc,
+nav[role='doc-toc'] {
+  break-before: page;
+  font-size: 120%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@page {
+  size: B5;
+  font-size: 10Q;
+  @bottom-center {
+    content: counter(page);
+  }
+}
+
+
+@page:left {
+  margin-block: 15mm;
+  margin-inline: 16mm 18.25mm;
+}
+@page:right {
+  margin-block: 15mm;
+  margin-inline: 18.25mm 16mm;
+}
+@page:nth(1) {
+  margin: 0;
+  background-color: #dddddd;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22a%22%20width%3D%2270%22%20height%3D%2270%22%20patternTransform%3D%22rotate(65)scale(4)%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23e5e6eb%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23b0b0b0%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M-4.8%204.44%204%2016.59%2016.14%207.8M32%2030.54l-13.23%207.07%207.06%2013.23M-9%2038.04l-3.81%2014.5%2014.5%203.81M65.22%204.44%2074%2016.59%2086.15%207.8M61%2038.04l-3.81%2014.5%2014.5%203.81%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23d1d3dc%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M59.71%2062.88v3h3M4.84%2025.54%202.87%2027.8l2.26%201.97m7.65%2016.4-2.21-2.03-2.03%202.21m29.26%207.13.56%202.95%202.95-.55%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23c0c2ce%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m58.98%2027.57-2.35-10.74-10.75%202.36M31.98-4.87l2.74%2010.65%2010.65-2.73M31.98%2065.13l2.74%2010.66%2010.65-2.74%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23f9f9fb%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m8.42%2062.57%206.4%202.82%202.82-6.41m33.13-15.24-4.86-5.03-5.03%204.86m-14-19.64%204.84-5.06-5.06-4.84%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22800%25%22%20height%3D%22800%25%22%20fill%3D%22url(%23a)%22%20transform%3D%22translate(-284%20-128)%22%2F%3E%3C%2Fsvg%3E');
+  background-size: cover;
+  background-repeat: repeat;
+  @bottom-center {
+    content: none;
+  }
+}
+
+body {
+  font-size: 13Q;
+  line-height: 24Q;
+  font-family: "Noto Sans JP" sans-serif;
+  font-weight: 400;
+  text-spacing: auto;
+  text-justify: initial;
+  text-align: initial;
+  widows: 1;
+  orphans: 1;
+}
+
+/* 見出し類 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-feature-settings: "palt";
+  text-spacing: none;
+}
+
+h1 {
+  break-before: recto;
+  line-height: 1.2;
+  margin-block-start: 30mm;
+  margin-block-end: 20mm;
+  text-align: center;
+  counter-reset: section-counter 0;
+  position: relative;
+  
+  /* 見出しの装飾的な要素 */
+  padding: 2em 1em 1.5em;
+}
+
+/* 章番号（n章）の装飾 */
+h1::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+}
+
+/* 章タイトル下の装飾線 */
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #95a5a6 50%, transparent 100%);
+}
+
+/* 章レベルの見出し（n章）は改ページ維持 */
+h1:contains("章") {
+  break-before: page;
+}
+
+/* 付録レベルの見出しも改ページ維持 */
+h1:contains("付録") {
+  break-before: page;
+}
+
+/* 章タイトル内のHTMLタグスタイリング */
+/* 章番号 */
+h1 b {
+  display: block;
+  font-size: 24Q;
+  font-weight: 400;
+  color: #7f8c8d;
+  margin-bottom: 0.3em;
+  letter-spacing: 0.2em;
+}
+
+/* メインタイトル */
+h1 span {
+  display: block;
+  font-size: 48Q;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+/* サブタイトル */
+h1 small {
+  display: block;
+  font-size: 20Q;
+  font-weight: 400;
+  color: #5d6d7e;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.subtitle {
+  font-size: 24Q;
+  text-align: center;
+  font-weight: 700;
+  margin-block-start: 40mm;
+}
+
+
+
+/* h2スタイル - サブタイトル対応の新デザイン */
+h2 {
+  font-size: 24Q;
+  line-height: 32Q;
+  margin-block: 2.5em 1.8em;
+  margin-inline: 0;
+  padding: 1em 1em 1em 4.5em;
+  position: relative;
+  
+  /* 改ページを防ぐ */
+  break-before: auto;
+  break-after: avoid;
+  break-inside: avoid;
+  
+  /* セクションカウンターを継続 */
+  counter-increment: section-counter;
+  
+  /* レスポンシブ対応 */
+  width: 100%;
+  box-sizing: border-box;
+  
+  /* 見出しの装飾 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  
+  /* 背景グラデーション */
+  background: #f8f9fa;
+  border-left: 4px solid #3498db;
+}
+
+/* h2のセクション番号を左側に表示 */
+h2::before {
+  content: counter(section-counter, decimal-leading-zero);
+  position: absolute;
+  left: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5em;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20Q;
+  font-weight: 700;
+  color: #3498db;
+  background: white;
+  border-radius: 50%;
+  border: 2px solid #3498db;
+}
+
+/* h2直後のsmallタグをサブタイトルとして装飾 */
+h2 + small,
+h2 small {
+  display: block;
+  font-size: 14Q;
+  line-height: 20Q;
+  color: #6c757d;
+  font-weight: 400;
+  margin-top: 0.3em;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* h2内にsmallタグがある場合の調整 */
+h2:has(small) {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* 見出しテキストをラップする場合の考慮 */
+h2 > span:first-child:not(small) {
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* 印刷時のh2スタイル調整 */
+@media print {
+  h2 {
+    background: #f0f0f0;
+    border-left-color: #333;
+    page-break-before: auto;
+    page-break-after: avoid;
+  }
+  
+  h2::before {
+    background: white;
+    border-color: #666;
+    color: #000;
+  }
+  
+  h2 + small,
+  h2 small {
+    color: #333;
+  }
+}
+
+/* h3 スタイル - 節見出し */
+h3 {
+  font-size: 18Q;
+  line-height: 24Q;
+  margin-block-start: 1.2lh;
+  margin-block-end: 0.4lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 600;
+  color: #2c3e50;
+  padding-left: 1em;
+  position: relative;
+}
+
+/* h3の左側装飾線 */
+h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 4px;
+  background: linear-gradient(to bottom, #3498db, #2980b9);
+  border-radius: 2px;
+}
+
+/* h4 スタイル - 小節見出し */
+h4 {
+  font-size: 16Q;
+  line-height: 22Q;
+  margin-block-start: 1lh;
+  margin-block-end: 0.3lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 600;
+  color: #34495e;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 0.2em;
+}
+
+/* h5 スタイル - 項見出し */
+h5 {
+  font-size: 14Q;
+  line-height: 20Q;
+  margin-block-start: 0.8lh;
+  margin-block-end: 0.2lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 600;
+  color: #34495e;
+  background-color: #f8f9fa;
+  padding: 0.2em 0.8em;
+  border-radius: 4px;
+}
+
+/* h6 スタイル - 小項見出し */
+h6 {
+  font-size: 13Q;
+  line-height: 20Q;
+  margin-block-start: 0.6lh;
+  margin-block-end: 0.2lh;
+  break-inside: avoid;
+  break-after: avoid;
+  font-weight: 700;
+  color: #495057;
+  font-style: italic;
+}
+
+/* h6の前に記号を追加 */
+h6::before {
+  content: "▸ ";
+  color: #3498db;
+  margin-right: 0.3em;
+}
+
+p {
+  font-size: 13Q;
+  line-height: 24Q;
+  text-indent: 1em;
+  text-align: justify;
+  margin-block: 0;
+}
+
+ul,
+ol {
+  margin-block: 0.5lh;
+  margin-inline: 0 1em;
+  padding-left: 1em !important;
+}
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+  margin-block: 0.2lh !important;
+  margin-inline: 0 1em;
+  padding-left: 1em !important;
+}
+
+
+em {
+  font-style: normal;
+  text-decoration: underline;
+  text-decoration-thickness: 0.4em;
+  text-decoration-color: #bbb;
+  text-underline-offset: -0.1em;
+  text-decoration-skip-ink: none;
+}
+
+figure {
+  margin-block: 4mm;
+}
+figure.float-right {
+  float: inline-end;
+  inline-size: 17em;
+  margin-block: 2mm;
+  margin-inline: 2em 0;
+}
+
+img {
+  max-inline-size: 100%;
+  border: solid 0.5mm #000;
+}
+
+img[src$=".svg"] {
+  border: none;
+}
+
+
+/* コードブロック - 自動改行対応ゼブラストライプ背景 */
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0;
+  margin: 1em 0;
+  position: relative;
+  /* 横スクロールを防ぐ */
+  overflow-x: visible;
+  overflow: visible;
+  max-width: 100%;
+}
+
+/* コード部分 */
+pre code {
+  display: block;
+  padding: calc(1.5em - 2px) 1em;
+  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 8pt;
+  line-height: 1.5;
+  
+  /* 自動改行設定 - 書籍向け */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  
+  /* 横幅制限 */
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: visible;
+  
+  /* ゼブラストライプ背景 - 改行対応版 */
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 1.5em,
+    rgba(0, 0, 0, 0.025) 1.5em,
+    rgba(0, 0, 0, 0.025) 3em
+  );
+  background-attachment: local;
+}
+
+/* 既存のprismクラスがある場合のスタイル */
+pre.prism-code {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1em 0;
+  /* 改行対応 */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: visible;
+  max-width: 100%;
+}
+
+/* オプション: 行番号表示（手動で追加する場合） */
+pre.line-numbers {
+  padding-left: 3.5em;
+  counter-reset: line;
+}
+
+pre.line-numbers::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5em;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+}
+
+pre.line-numbers code {
+  position: relative;
+  display: block;
+  padding-left: 0;
+}
+
+/* 各行のスタイル */
+pre.line-numbers code > span {
+  display: block;
+  position: relative;
+  counter-increment: line;
+}
+
+pre.line-numbers code > span::before {
+  content: counter(line);
+  position: absolute;
+  left: -3.5em;
+  width: 3em;
+  text-align: right;
+  color: #999;
+  font-size: 0.9em;
+  user-select: none;
+  border-right: 1px solid #ddd;
+  padding-right: 0.5em;
+}
+
+/* 代替: data属性を使用した行番号 */
+pre[data-line-numbers="true"] {
+  position: relative;
+  padding-left: 3.5em;
+  counter-reset: line-counter;
+}
+
+pre[data-line-numbers="true"] code {
+  display: block;
+  position: relative;
+}
+
+pre[data-line-numbers="true"] code .line {
+  display: block;
+  position: relative;
+  counter-increment: line-counter;
+}
+
+pre[data-line-numbers="true"] code .line::before {
+  content: counter(line-counter);
+  position: absolute;
+  left: -3.5em;
+  width: 3em;
+  text-align: right;
+  color: #999;
+  font-size: 0.9em;
+  user-select: none;
+  padding-right: 0.5em;
+}
+
+/* インラインコード */
+code:not(pre code) {
+  background-color: #f5f5f5;
+  color: #d14;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 0.9em;
+  /* インラインコードも改行対応 */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* シンタックスハイライト - Javaコード用 */
+/* キーワード */
+.token.keyword,
+.hljs-keyword,
+code .keyword {
+  color: #0000ff;
+  font-weight: bold;
+}
+
+/* Markdownのコードブロック言語指定に基づくスタイル */
+pre[data-lang="java"] {
+  border-left: 4px solid #f89820;
+}
+
+pre[data-lang="javascript"],
+pre[data-lang="js"] {
+  border-left: 4px solid #f7df1e;
+}
+
+pre[data-lang="python"] {
+  border-left: 4px solid #3776ab;
+}
+
+pre[data-lang="bash"],
+pre[data-lang="shell"] {
+  border-left: 4px solid #4eaa25;
+  background-color: #2d2d2d;
+}
+
+pre[data-lang="bash"] code,
+pre[data-lang="shell"] code {
+  color: #f8f8f2;
+}
+
+/* 文字列 */
+.token.string {
+  color: #008000;
+}
+
+/* コメント */
+.token.comment {
+  color: #808080;
+  font-style: italic;
+}
+
+/* 数値 */
+.token.number {
+  color: #098658;
+}
+
+/* クラス名 */
+.token.class-name {
+  color: #2b91af;
+  font-weight: bold;
+}
+
+/* 関数・メソッド名 */
+.token.function {
+  color: #795e26;
+}
+
+/* 演算子 */
+.token.operator {
+  color: #000000;
+}
+
+/* 区切り文字 */
+.token.punctuation {
+  color: #000000;
+}
+
+/* アノテーション */
+.token.annotation {
+  color: #808000;
+  font-weight: bold;
+}
+
+/* 型 */
+.token.builtin,
+.token.type {
+  color: #2b91af;
+}
+
+/* 変数 */
+.token.variable {
+  color: #001080;
+}
+
+/* パッケージ・インポート */
+.token.namespace {
+  color: #000080;
+}
+
+/* 言語別コードブロックのスタイル */
+pre[class*="language-"] {
+  background-color: #f8f8f8;
+}
+
+pre[class*="language-java"] {
+  border-left: 4px solid #f89820;
+}
+
+pre[class*="language-javascript"],
+pre[class*="language-js"] {
+  border-left: 4px solid #f7df1e;
+}
+
+pre[class*="language-python"] {
+  border-left: 4px solid #3776ab;
+}
+
+pre[class*="language-bash"],
+pre[class*="language-shell"] {
+  border-left: 4px solid #4eaa25;
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+}
+
+/* bashコード用の配色 */
+pre[class*="language-bash"] code,
+pre[class*="language-shell"] code {
+  color: #f8f8f2;
+}
+
+pre[class*="language-bash"] .token.function,
+pre[class*="language-shell"] .token.function {
+  color: #50fa7b;
+}
+
+pre[class*="language-bash"] .token.string,
+pre[class*="language-shell"] .token.string {
+  color: #f1fa8c;
+}
+
+pre[class*="language-bash"] .token.comment,
+pre[class*="language-shell"] .token.comment {
+  color: #6272a4;
+}
+
+/* カスタムクラス */
+.note {
+  background-color: #e8f4f8;
+  border-left: 4px solid var(--secondary-color);
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.warning {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.important {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+/* 章タイトルページ専用のスタイル */
+/* 各章の最初のh1要素に特別なスタイルを適用 */
+section > h1:first-child,
+article > h1:first-child,
+.chapter > h1:first-child {
+  /* ページ全体を使った装飾的なレイアウト */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 3em 1em;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
+  
+  /* 章見出し専用の読みやすいスタイル */
+  font-size: 36Q;
+  line-height: 54Q;
+  font-weight: 600;
+  color: #2c3e50;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 章番号を大きく表示するスタイル（オプション） */
+h1[data-chapter-number]::before {
+  content: attr(data-chapter-number);
+  display: block;
+  font-size: 72pt;
+  color: var(--secondary-color);
+  opacity: 0.2;
+  font-weight: bold;
+  margin-bottom: 0.2em;
+  line-height: 1;
+}
+
+/* 「n章」形式の章番号を分離して装飾 */
+section > h1:first-child,
+article > h1:first-child,
+.chapter > h1:first-child {
+  /* 章番号と章タイトルを視覚的に分離 */
+  text-align: center;
+  white-space: pre-line;
+}
+
+/* 章番号部分の強調 */
+section > h1:first-child span.chapter-number,
+article > h1:first-child span.chapter-number,
+.chapter > h1:first-child span.chapter-number {
+  display: block;
+  font-size: 24Q;
+  font-weight: 400;
+  color: #7f8c8d;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* 章タイトル部分の装飾 */
+section > h1:first-child span.chapter-title,
+article > h1:first-child span.chapter-title,
+.chapter > h1:first-child span.chapter-title {
+  display: block;
+  font-size: 42Q;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+/* 章タイトルの装飾的な枠線 */
+section > h1:first-child::after,
+article > h1:first-child::after,
+.chapter > h1:first-child::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border: 2px solid var(--secondary-color);
+  opacity: 0.1;
+  border-radius: 20px;
+  z-index: -1;
+}
+
+/* 付録やインデックスページの特別なスタイル */
+h1:first-child:contains("付録"),
+h1:first-child:contains("索引"),
+h1:first-child:contains("目次") {
+  background: 
+    radial-gradient(circle at center, rgba(44, 62, 80, 0.03) 0%, transparent 70%);
+}
+
+/* 章見出しのサブテキスト（章の概要説明）スタイル */
+h1 + .chapter-subtitle,
+h1 + .chapter-description,
+.chapter-subtitle {
+  display: block;
+  text-align: center;
+  font-size: 16Q;
+  line-height: 24Q;
+  color: #7f8c8d;
+  font-weight: 400;
+  margin-top: -10mm;
+  margin-bottom: 15mm;
+  padding: 0 2em;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* 章タイトルページでのサブテキスト */
+section > h1:first-child + .chapter-subtitle,
+article > h1:first-child + .chapter-subtitle,
+.chapter > h1:first-child + .chapter-subtitle {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 600px;
+  margin: 0;
+  padding: 1em 2em;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+/* 章タイトルページでの各要素のスタイル調整 */
+section > h1:first-child b,
+article > h1:first-child b,
+.chapter > h1:first-child b {
+  font-size: 28Q;
+  color: #7f8c8d;
+  margin-bottom: 0.5em;
+}
+
+section > h1:first-child span,
+article > h1:first-child span,
+.chapter > h1:first-child span {
+  font-size: 42Q;
+  margin-bottom: 0.8em;
+}
+
+section > h1:first-child small,
+article > h1:first-child small,
+.chapter > h1:first-child small {
+  font-size: 22Q;
+  color: #5d6d7e;
+  max-width: 600px;
+  text-shadow: none;
+}
+
+/* サンプルコードの図番号スタイル - 改ページ制御強化版 */
+.listing-number {
+  display: block;
+  text-align: center;
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 0.85em;
+  padding: 0.3em 0;
+  margin-top: 1rem;
+  margin-bottom: -1px; /* コードブロックとの間隔を詰める */
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  
+  /* 改ページ制御 - コードブロックと分離させない */
+  break-after: avoid;
+  page-break-after: avoid;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* 図番号を含む段落全体の改ページ制御 */
+p:has(span.listing-number) {
+  break-after: avoid;
+  page-break-after: avoid;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 0;
+}
+
+/* 図番号の次のコードブロックは上部の角丸をなくす */
+p:has(span.listing-number) + pre {
+  margin-top: 0;
+  border-radius: 0 0 4px 4px;
+  
+  /* 図番号と一体化するための改ページ制御 */
+  break-before: avoid;
+  page-break-before: avoid;
+}
+
+/* 図番号とコードブロックを1つのユニットとして扱う */
+p:has(span.listing-number) + pre,
+p:has(span.listing-number) {
+  /* コンテナとして改ページ制御 */
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* 印刷時の調整 */
+@media print {
+  h1 {
+    break-before: page;
+    break-after: avoid;
+  }
+  
+  section > h1:first-child,
+  article > h1:first-child,
+  .chapter > h1:first-child {
+    min-height: 100vh;
+    page-break-before: always;
+    page-break-after: always;
+  }
+}
+
+/* コラムのスタイル（旧HTMLタグ方式） */
+.column {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* コラムのタイトル（旧HTMLタグ方式） */
+.column::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -0.8rem;
+  left: 1.5rem;
+  background-color: #fff;
+  padding: 0 0.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* Markdown拡張記法によるコラムスタイル */
+.column,
+[data-type="column"] {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* コラムの最初の太字をタイトルとして装飾 */
+.column > p:first-child > strong:first-child,
+[data-type="column"] > p:first-child > strong:first-child {
+  display: inline-block;
+  background-color: #fff;
+  padding: 0.2rem 0.8rem;
+  margin: -2rem 0 1rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* コラム内の見出し */
+.column h3,
+[data-type="column"] h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #343a40;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.column h4,
+[data-type="column"] h4 {
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #495057;
+}
+
+/* コラム内のコードブロック */
+.column pre,
+[data-type="column"] pre {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0.8rem 0;
+}
+
+/* コラム内の強調表示（タイトル以外） */
+.column p:not(:first-child) strong,
+[data-type="column"] p:not(:first-child) strong {
+  color: #212529;
+  font-weight: bold;
+}
+
+/* コラム内のリスト */
+.column ul,
+.column ol,
+[data-type="column"] ul,
+[data-type="column"] ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.column li,
+[data-type="column"] li {
+  margin: 0.3rem 0;
+}
+
+/* 印刷時のコラム調整 */
+@media print {
+  .column,
+  [data-type="column"] {
+    background-color: #fafafa;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  
+  .column::before,
+  .column > p:first-child > strong:first-child,
+  [data-type="column"] > p:first-child > strong:first-child {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+}
+
+/* Blockquoteベースのコラムスタイル */
+blockquote:has(strong.column-section) {
+  position: relative;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 2px solid #e9ecef; /* blockquoteのデフォルトborder-leftを上書き */
+}
+
+/* コラムタイトルの装飾 */
+blockquote:has(strong.column-section) > p:first-child > strong.column-section {
+  background-color: #fff;
+  padding: 0.2rem 0.8rem;
+  margin: -2rem 0 1rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+  border: 2px solid #e9ecef;
+  border-radius: 4px;
+  display: block;
+}
+
+/* blockquoteコラム内の見出し */
+blockquote:has(strong.column-section) h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #343a40;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+blockquote:has(strong.column-section) h4 {
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #495057;
+}
+
+/* blockquoteコラム内のコードブロック */
+blockquote:has(strong.column-section) pre {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  margin: 0.8rem 0;
+}
+
+/* blockquoteコラム内の強調表示（タイトル以外） */
+blockquote:has(strong.column-section) p:not(:first-child) strong {
+  color: #212529;
+  font-weight: bold;
+}
+
+/* blockquoteコラム内のリスト */
+blockquote:has(strong.column-section) ul,
+blockquote:has(strong.column-section) ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+blockquote:has(strong.column-section) li {
+  margin: 0.3rem 0;
+}
+
+/* 印刷時のblockquoteコラム調整 */
+@media print {
+  blockquote:has(strong.column-section) {
+    background-color: #fafafa;
+    border-color: #ccc;
+    box-shadow: none;
+  }
+  
+  blockquote:has(strong.column-section) > p:first-child > strong.column-section {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+}
+
+/* テーブルスタイル - 読みやすい枠線付きデザイン */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12Q;
+  line-height: 1.4;
+}
+
+/* テーブルヘッダー */
+table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13Q;
+  border: none;
+  position: relative;
+}
+
+table thead th:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* テーブルボディ */
+table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+table tbody tr:hover {
+  background-color: #e3f2fd;
+}
+
+table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* テーブルセル */
+table td,
+table th {
+  padding: 10px 16px;
+  vertical-align: top;
+  border-left: 1px solid #dee2e6;
+}
+
+table td:first-child,
+table th:first-child {
+  border-left: none;
+}
+
+/* 数値やコードを含むセル */
+table td code {
+  background-color: #f1f3f4;
+  color: #d73a49;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 11Q;
+}
+
+/* チェックボックス付きテーブル */
+table td input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+/* テーブル内のリンク */
+table a {
+  color: #0366d6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+table a:hover {
+  text-decoration: underline;
+  color: #0256cc;
+}
+
+/* ステータス表示用のスタイル */
+table .status-completed {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .status-in-progress {
+  background-color: #cce5ff;
+  color: #004085;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 優先度表示用のスタイル */
+table .priority-high {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .priority-medium {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+table .priority-low {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11Q;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  table {
+    font-size: 11Q;
+  }
+  
+  table td,
+  table th {
+    padding: 8px 12px;
+  }
+  
+  table thead th {
+    padding: 10px 12px;
+    font-size: 12Q;
+  }
+}
+
+/* 印刷時のテーブル調整 */
+@media print {
+  table {
+    box-shadow: none;
+    border: 1px solid #666;
+  }
+  
+  table thead {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+  
+  table thead th {
+    border-bottom: 2px solid #666;
+  }
+  
+  table tbody tr {
+    border-bottom: 1px solid #999;
+  }
+  
+  table tbody tr:nth-child(even) {
+    background-color: #f9f9f9 !important;
+  }
+  
+  table tbody tr:hover {
+    background-color: inherit !important;
+  }
+  
+  /* ステータス・優先度表示の印刷時調整 */
+  table .status-completed,
+  table .status-pending,
+  table .status-in-progress,
+  table .priority-high,
+  table .priority-medium,
+  table .priority-low {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    border: 1px solid #666;
+  }
+}
+
+/* 大きなテーブルのためのスクロール対応 */
+.table-container {
+  overflow-x: auto;
+  margin: 1.5em 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-container table {
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* テーブルキャプション */
+table caption {
+  caption-side: top;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 14Q;
+  color: #495057;
+  text-align: left;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+
+/* 表紙を目次から除外する設定 */
+.cover-page h1,
+.cover-page h2,
+.cover-page h3,
+.cover-page h4,
+.cover-page h5,
+.cover-page h6 {
+  /* 表紙内の見出しはすべて目次に含めない */
+  counter-increment: none;
+  break-before: auto;
+}
+
+/* 手動目次ページのスタイル */
+article:has(h1:contains("目次")),
+section:has(h1:contains("目次")) {
+  break-before: page;
+  break-after: page;
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+/* 印刷時のコードブロック調整 */
+@media print {
+  pre {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px solid #666;
+    background-color: #f9f9f9 !important;
+    overflow: visible !important;
+  }
+  
+  pre code {
+    font-size: 7.5pt !important;
+    line-height: 1.3 !important;
+    /* 印刷時の強制改行 */
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    /* ゼブラストライプの印刷対応 */
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 1.3em,
+      rgba(0, 0, 0, 0.05) 1.3em,
+      rgba(0, 0, 0, 0.05) 2.6em
+    ) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* 長いコードは改ページ許可 */
+  pre.allow-break {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+  
+  /* インラインコードの印刷調整 */
+  code:not(pre code) {
+    background-color: #e0e0e0 !important;
+    word-break: break-word !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+
+/*.running head */
+@page:right {
+  @right-middle {
+    content: string(chapter, first);
+    font-size: 11Q;
+    writing-mode: vertical-rl;
+    vertical-align: top;
+  }
+  @top-right {
+    content: string(section-number, first) " " string(section, first);
+    font-size: 11Q;
+  }
+}
+@page:nth(1) {
+  @right-middle {
+    content: none;
+  }
+}
+
+/* 柱 */
+h1 {
+  /* string-set: chapter content(); */
+  string-set: chapter content();
+}
+
+h2 {
+  string-set: section content(), section-number content(before);
+}
