@@ -4,13 +4,13 @@
 
 ### 前提知識
 
-必須
+#### 必須
 - 第6章の不変性とfinalキーワードの概念
 - 第4章のクラスとインスタンス（コンストラクタ、メソッド）
 - 第5章のequals、hashCode、toStringメソッド
 - 基本的なデータクラスの実装経験
 
-推奨
+#### 推奨
 - 第13章のラムダ式と関数型インターフェイス
 - ボイラープレートコードの問題に関する実体験
 - オブジェクト指向設計における「データ」と「振る舞い」の分離
@@ -297,6 +297,10 @@ DOPでは、データ構造とビジネスロジックを明確に分離しま�
 <span class="listing-number">**サンプルコード9-6**</span>
 
 ```java
+import java.util.List;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
+
 // データの定義（Records）
 public record Order(String orderId, Customer customer, List<OrderItem> items, LocalDateTime orderDate) {}
 public record Customer(String id, String name, String email) {}
@@ -1168,7 +1172,7 @@ public record UserSnapshot(
 
 ### イベントストリーム処理の実装
 
-以下のUserEventProcessorクラスでは、イベントソーシングパターンを使用して、ユーザーに関するイベントのストリームから現在の状態（スナップショット）を再構築します。これは、監査ログや履歴管理が大切なシステムで使用される高度なパターンです。
+以下のUserEventProcessorクラスでは、イベントソーシングパターンを使用して、ユーザーに関するイベントのストリームから現在の状態（スナップショット）を再構築します。これは、監査ログや履歴管理が重要なシステムで使用される高度なパターンです。
 
 <span class="listing-number">**サンプルコード9-26**</span>
 
@@ -1325,7 +1329,9 @@ public record UserAnalytics(
 
 ### 実際のアプリケーション例：注文処理システム
 
-実際のビジネスアプリケーションでRecordsとDOPを活用する例として、ECサイトの注文処理システムを実装します。この例では、注文、顧客、商品といったドメインモデルをRecordsで表現し、ビジネスロジックを純粋関数として実装します。また、sealed interfaceを使用して注文の状態遷移を型安全に管理します。
+実際のビジネスアプリケーションでRecordsとDOPを活用する例として、ECサイトの注文処理システムを実装します。
+この例では、注文、顧客、商品といったドメインモデルをRecordsで表現し、ビジネスロジックを純粋関数として実装します。
+また、sealed interfaceを使用して注文の状態遷移を型安全に管理します。
 
 <span class="listing-number">**サンプルコード9-28**</span>
 
@@ -1456,7 +1462,9 @@ public record OrderReport(
 
 ### 関数型プログラミングとの統合
 
-RecordsはJavaの関数型プログラミング機能と優れた相性を持ちます。不変性、パターンマッチング、Stream APIとの統合により、宣言的で読みやすいコードを書くことができます。以下の例では、注文データの分析処理を関数型スタイルで実装します。
+RecordsはJavaの関数型プログラミング機能と優れた相性を持ちます。
+不変性、パターンマッチング、Stream APIとの統合により、宣言的で読みやすいコードを書くことができます。
+以下の例では、注文データの分析処理を関数型スタイルで実装します。
 
 <span class="listing-number">**サンプルコード9-29**</span>
 
@@ -1538,7 +1546,9 @@ Recordは、その設計により多くのパフォーマンス上の利点を�
 
 #### JVMによる最適化
 
-JVMは、Recordsの不変性と値ベースの性質を利用して、様々な最適化を行います。以下の例では、JVMが最適化しやすいRecordの設計パターンを示します。小さく不変なRecordは、将来のProject ValhallaのValue Typesの候補となり、さらなるパフォーマンス向上が期待できます。
+JVMは、Recordsの不変性と値ベースの性質を利用して、様々な最適化を行います。
+以下の例では、JVMが最適化しやすいRecordの設計パターンを示します。
+小さく不変なRecordは、将来のProject ValhallaのValue Typesの候補となり、さらなるパフォーマンス向上が期待できます。
 
 <span class="listing-number">**サンプルコード9-30**</span>
 
@@ -1604,7 +1614,9 @@ public class CalculationService {
 
 ### ベンチマーク実例
 
-RecordsとtraditionalなJavaクラスのパフォーマンスを比較するため、JMH（Java Microbenchmark Harness）を使用したベンチマークを実施します。以下の例では、オブジェクトの作成、equals、hashCodeメソッドの実行速度を測定し、Recordsが従来のクラスと同等以上のパフォーマンスを持つことを示します。
+Recordsと従来のJavaクラスのパフォーマンスを比較するため、JMH（Java Microbenchmark Harness）を使用したベンチマークを実施します。
+以下の例では、オブジェクトの作成、equals、hashCodeメソッドの実行速度を測定します。
+Recordsが従来のクラスと同等以上のパフォーマンスを持つことを示します。
 
 <span class="listing-number">**サンプルコード9-32**</span>
 
@@ -2078,14 +2090,14 @@ DOP（Data-Oriented Programming）は、従来のOOPとは異なる新しいア�
 
 ### 実践的価値
 
-Recordとデータ指向プログラミングは、単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする大切な技術です。特に以下の領域で威力を発揮します。
+Recordとデータ指向プログラミングは、単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする重要な技術です。特に以下の領域で威力を発揮します。
 
 - API開発：型安全で簡潔なデータ転送
 - ドメインモデリング：ビジネスロジックの明確な表現
 - 関数型プログラミング：不変データによる安全な処理
 - 大規模システム：保守性と拡張性の向上
 
-これらの技術は、現代のJavaアプリケーション開発において大切なスキルとなっており、保守性が高く安全なソフトウェアの構築に大きく貢献します。
+これらの技術は、現代のJavaアプリケーション開発において重要なスキルとなっており、保守性が高く安全なソフトウェアの構築に大きく貢献します。
 
 ## 章末演習
 
