@@ -31,6 +31,7 @@ const markdownFiles = [
   'appendix-d-integrated-project.md', // 付録D: 統合プロジェクト - 学生管理システム
   'appendix-e-database-programming.md', // 付録E: データベースプログラミング
   'appendix-f-java-time-api.md', // 付録F: java.time API完全ガイド
+  'appendix-g-build-and-deploy.md', // 付録G: ビルドとデプロイ
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',
