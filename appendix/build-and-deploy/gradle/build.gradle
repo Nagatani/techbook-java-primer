@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+}
+
+application {
+    mainClass = 'com.example.TodoApp'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.TodoApp',
+            'Implementation-Title': 'Todo Application',
+            'Implementation-Version': version
+        )
+    }
+}
+
+// Fat JARタスク
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.example.TodoApp'
+    }
+    archiveClassifier = 'all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}

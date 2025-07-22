@@ -1,0 +1,126 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JSON処理
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // ユーティリティ
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    
+    // ロギング
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    
+    // テスト
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'com.example.TodoApp'
+}
+
+// エンコーディング設定
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    systemProperty 'file.encoding', 'UTF-8'
+}
+
+// テスト設定
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// 通常のJAR設定
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.TodoApp',
+            'Implementation-Title': 'Sample Todo Application',
+            'Implementation-Version': version,
+            'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' ')
+        )
+    }
+}
+
+// Fat JAR設定（shadowプラグイン使用）
+shadowJar {
+    archiveClassifier.set('all')
+    manifest {
+        attributes 'Main-Class': 'com.example.TodoApp'
+    }
+}
+
+// カスタムFat JARタスク
+task customFatJar(type: Jar) {
+    archiveClassifier = 'custom-all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': 'com.example.TodoApp'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+// 配布用タスク
+task createDistribution(type: Copy) {
+    dependsOn shadowJar
+    from shadowJar
+    from 'src/main/resources/scripts'
+    into "${buildDir}/distribution"
+}
+
+// jpackageタスク
+task jpackage(type: Exec) {
+    dependsOn shadowJar
+    
+    def inputDir = "${buildDir}/jpackage-input"
+    def outputDir = "${buildDir}/jpackage-output"
+    
+    doFirst {
+        file(inputDir).mkdirs()
+        copy {
+            from shadowJar
+            into inputDir
+        }
+    }
+    
+    commandLine 'jpackage',
+        '--type', 'app-image',
+        '--name', 'TodoApp',
+        '--input', inputDir,
+        '--main-jar', shadowJar.archiveFileName.get(),
+        '--dest', outputDir
+}
+
+// 依存関係レポート
+task dependencyReport {
+    doLast {
+        configurations.runtimeClasspath.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
+            println "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}"
+        }
+    }
+}
