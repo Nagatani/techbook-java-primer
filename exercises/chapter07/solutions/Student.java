@@ -3,7 +3,7 @@ package chapter07.solutions;
 /**
  * 学生を表すクラス
  * 
- * Sortableインターフェースを実装し、成績や名前で
+ * Sortableインターフェイスを実装し、成績や名前で
  * ソートできるようにしています。
  */
 public class Student implements Sortable {

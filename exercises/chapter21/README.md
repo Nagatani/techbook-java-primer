@@ -156,7 +156,7 @@ public class OrderService {
 
 ### 2. APIの使いやすさ
 ```java
-// ✅ 良い例: 流暢なインターフェース
+// ✅ 良い例: 流暢なインターフェイス
 QueryBuilder query = new QueryBuilder()
     .select("name", "email")
     .from("users")

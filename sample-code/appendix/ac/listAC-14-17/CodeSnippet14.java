@@ -1,6 +1,6 @@
 /**
  * リストAC-14
- * DataProcessorインターフェース
+ * DataProcessorインターフェイス
  * 
  * 元ファイル: appendix-c-theoretical-foundations.md (382行目)
  */

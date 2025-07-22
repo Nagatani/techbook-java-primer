@@ -85,7 +85,7 @@ game.adventure/
 │   ├── Level.java            # レベル
 │   ├── LevelLoader.java      # レベルローダー
 │   └── Tilemap.java          # タイルマップ
-├── ui/                       # ユーザーインターフェース
+├── ui/                       # ユーザーインターフェイス
 │   ├── GameUI.java           # ゲームUI
 │   ├── MenuSystem.java       # メニュー
 │   └── HUD.java              # ヘッドアップディスプレイ

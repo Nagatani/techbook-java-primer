@@ -1,6 +1,6 @@
 /**
  * リスト7-9
- * Collectionインターフェース
+ * Collectionインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (300行目)
  */

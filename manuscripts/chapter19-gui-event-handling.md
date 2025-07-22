@@ -605,7 +605,7 @@ Swingのイベント処理は、イベントディスパッチスレッド（EDT
 ActionListenerの例。
 
 ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
-Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド1つだけを実装すればよいシンプルなインターフェースです。
+Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド1つだけを実装すればよいシンプルなインターフェイスです。
 
 <span class="listing-number">**サンプルコード19-7**</span>
 
@@ -650,14 +650,14 @@ public class ButtonEventExample {
 
 匿名クラスの使用。
 
-上記の例では、ActionListenerインターフェースを匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェースを実装してインスタンスを作成できます。
+上記の例では、ActionListenerインターフェイスを匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェイスを実装してインスタンスを作成できます。
 イベントリスナーのように、一度しか使わないクラスを定義する場合に便利です。
 
 `ActionListener`のように、実装すべきメソッドが1つだけのインターフェイス（関数型インターフェイス）は、ラムダ式を使って非常に簡潔に記述できます。
 
 ラムダ式の使用。
 
-ラムダ式はJava 8で導入された機能で、関数型インターフェースの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
+ラムダ式はJava 8で導入された機能で、関数型インターフェイスの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
 
 <span class="listing-number">**サンプルコード19-8**</span>
 
@@ -733,7 +733,7 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 WindowListenerの例**。
 
-WindowListenerはウィンドウの状態変化を検出するインターフェースで、7つのメソッドを実装します。
+WindowListenerはウィンドウの状態変化を検出するインターフェイスで、7つのメソッドを実装します。
 
 - windowOpened: ウィンドウが初めて表示された
 - windowClosing: ウィンドウが閉じられようとしている
@@ -782,7 +782,7 @@ public class WindowEventExample {
 
 MouseListenerの例。
 
-MouseListenerはマウスの基本的な操作（クリック、プレス、リリース、入退室）を検出するインターフェースです。5つのメソッドを実装します。
+MouseListenerはマウスの基本的な操作（クリック、プレス、リリース、入退室）を検出するインターフェイスです。5つのメソッドを実装します。
 
 - mouseClicked: マウスボタンがクリック（押して離す）された
 - mousePressed: マウスボタンが押された
@@ -835,7 +835,7 @@ public class MouseEventCompleteExample extends JFrame {
         MouseAdapter の使用
         
         MouseAdapterは、MouseListenerとMouseMotionListenerのすべてのメソッドに空の実装を提供する便利なクラスです。
-MouseListenerインターフェースを直接実装すると、使わないメソッドも含めて5つすべて実装する必要がありますが、MouseAdapterを継承すれば必要なメソッドだけをオーバーライドできます。
+MouseListenerインターフェイスを直接実装すると、使わないメソッドも含めて5つすべて実装する必要がありますが、MouseAdapterを継承すれば必要なメソッドだけをオーバーライドできます。
         
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
@@ -949,7 +949,7 @@ SwingのすべてのGUI操作はEDT上で実行される必要があるため、
 
 KeyListenerの例。
 
-KeyListenerはキーボードの入力を検出するインターフェースで、3つのメソッドを実装します。
+KeyListenerはキーボードの入力を検出するインターフェイスで、3つのメソッドを実装します。
 
 - keyPressed: キーが押された（押しっぱなしの間連続発生）
 - keyReleased: キーが離された
@@ -1352,7 +1352,7 @@ public class DocumentListenerExample extends JFrame {
 
 カスタムイベントの実装には以下の要素が必要です。
 1. イベントクラス： EventObjectを継承したクラス
-2. リスナーインターフェース： EventListenerを継承したインターフェース
+2. リスナーインターフェイス： EventListenerを継承したインターフェイス
 3. イベントソース： リスナーの管理とイベントの発行を行うクラス
 
 Observerパターンを使用することで、オブジェクトの状態変化を複数のオブザーバーに通知できます。
@@ -1380,7 +1380,7 @@ class TemperatureChangeEvent extends EventObject {
     }
 }
 
-// カスタムリスナーインターフェース
+// カスタムリスナーインターフェイス
 interface TemperatureChangeListener extends EventListener {
     void temperatureChanged(TemperatureChangeEvent e);
 }
@@ -1610,7 +1610,7 @@ class TemperatureEvent extends PropertyChangeEvent {
     }
 }
 
-// 2. リスナーインターフェースの定義
+// 2. リスナーインターフェイスの定義
 interface TemperatureListener extends EventListener {
     void temperatureChanged(TemperatureEvent e);
 }

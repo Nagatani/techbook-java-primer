@@ -26,7 +26,7 @@ class TemperatureEvent extends PropertyChangeEvent {
     }
 }
 
-// 2. リスナーインターフェースの定義
+// 2. リスナーインターフェイスの定義
 interface TemperatureListener extends EventListener {
     void temperatureChanged(TemperatureEvent e);
 }

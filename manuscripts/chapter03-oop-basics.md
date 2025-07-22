@@ -38,7 +38,7 @@
 
 コンストラクタの定義と使用方法も大切なスキルです。オブジェクトの初期化はその後の処理の正確性に影響します。必須フィールドの初期化、デフォルト値の設定、入力値の検証を含むコンストラクタの設計により、安全で使いやすいクラスを作ることができます。
 
-さらに、インスタンス変数とメソッドの実装技術を習得し、オブジェクトの状態と振る舞いを表現できるようになります。特に、privateアクセス修飾子で内部データを隠蔽し、publicメソッドで制御されたアクセスを提供することで、カプセル化を実現し、クラスの内部実装を保護する方法を学びます。
+さらに、インスタンス変数とメソッドの実装技術を習得し、オブジェクトの状態と振る舞いを表現できるようになります。privateアクセス修飾子で内部データを隠蔽し、publicメソッドで制御されたアクセスを提供します。これによりカプセル化を実現し、クラスの内部実装を保護する方法を学びます。
 
 #### 設計思考目標
 
@@ -203,7 +203,8 @@ C言語でも十分なプログラミングは可能ですが、現実のソフ�
 C言語でも不可能ではありませんが「もっと効率良くしたい」という要望のために、オブジェクト指向という考え方が登場します。
 より効率良くプログラミングを行うことを目的として、保守運用を見据えた概念であることをよく理解してオブジェクト指向を学んでください。
 
-実際、現代のプログラミングでは、オブジェクト指向だけでなく、関数型プログラミング、並行プログラミング、リアクティブプログラミングなど、さまざまなパラダイムを組み合わせて使うことが一般的です。
+実際、現代のプログラミングでは、オブジェクト指向だけでなく、さまざまなパラダイムを組み合わせて使うことが一般的です。
+関数型プログラミング、並行プログラミング、リアクティブプログラミングなども併用されます。
 オブジェクト指向は、これらの中の1つのアプローチに過ぎません。
 
 
@@ -686,7 +687,7 @@ public class Person {
 #### getter/setterを使う利点
 - フィールドへのアクセスを制御できる
 - 値の設定時に検証を行える
-- 将来的に実装を変更しても、外部インターフェースは変わらない
+- 将来的に実装を変更しても、外部インターフェイスは変わらない
 - デバッグ時にアクセスポイントを特定しやすい
 
 > 注意: すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。本当に外部からアクセスが必要なフィールドにのみ提供し、可能な限りオブジェクトの内部状態は隠蔽することが良い設計です。
@@ -814,7 +815,8 @@ public class Book {
 }
 ```
 
-このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理し、borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
+このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
+borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
 
 ### 例2：ショッピングカート
 
@@ -941,7 +943,9 @@ public class ShoppingCart {
 
 ### 役割ごとに分割する利点
 
-役割ごとに分割することで、大規模なプログラムを作る際に管理しやすくなることがあります。ただし、これは1つのアプローチであり、WebアプリケーションではMVCパターン（Model-View-Controller）、マイクロサービスではドメイン分割など、システムの特性に応じた分割方法が用いられます。
+役割ごとに分割することで、大規模なプログラムを作る際に管理しやすくなることがあります。
+ただし、これは1つのアプローチに過ぎません。
+WebアプリケーションではMVCパターン（Model-View-Controller）、マイクロサービスではドメイン分割など、システムの特性に応じた分割方法が用いられます。
 管理しやすいとは、複雑でなく、バグの発見・修正が容易なことを指します。
 
 ### 手続き型 vs オブジェクト指向
@@ -1009,7 +1013,9 @@ public class Student {
 
 自分の作っているプログラムをよく分析して、どんな登場人物（データ）がいるか、それぞれどんな役割があるかで考え、クラスに分割しましょう。
 
-ここでは、子どもの着替えを例に考えてみましょう。子どもに対して着替えの指示を出す場合、細かくすべてを指示する必要があるでしょうか。例えば、上着を着ているか確認し、ボタンを外し、右腕から袖を通して脱ぎ、次にシャツも同様に…と、毎回すべての手順を指示するのは非常に手間がかかります。
+ここでは、子どもの着替えを例に考えてみましょう。
+子どもに対して着替えの指示を出す場合、細かくすべてを指示する必要があるでしょうか。
+例えば、上着を着ているか確認し、ボタンを外し、右腕から袖を通して脱ぐなど、毎回すべての手順を指示するのは非常に手間がかかります。
 
 毎回、全部指示出すのは面倒でありませんか？
 子どもには、「子どもは、着替えてください（服を）」というような命令で指示を出せて、結果だけ受け取ることができたらよいですよね？
@@ -1044,17 +1050,26 @@ public class Student {
 「似たデータ、似た処理をもつオブジェクトを、クラスの時点でまとめよう」として使用するのが継承という考え方になります。
 単にまとめるための手段だと知っておきましょう。
 
-このような設計では、「従業員クラス」「マネージャークラス」がそれぞれ「人事管理可能」インターフェイスを実装する場合もあります。これにより、どちらも「人事評価機能」を持つことができます。ただし、実際のシステムでは権限管理やロールベースのアクセス制御など、より洗練されたアプローチが必要です。
+このような設計では、「従業員クラス」「マネージャークラス」がそれぞれ「人事管理可能」インターフェイスを実装する場合もあります。
+これにより、どちらも「人事評価機能」を持つことができます。
+ただし、実際のシステムでは権限管理やロールベースのアクセス制御など、より洗練されたアプローチが必要です。
 
 ### システム開発に「銀の弾丸などない」
 
-フレッド・ブルックスが1975年に著した「人月の神話」で述べたように、ソフトウェア開発の複雑性を一挙に解決する「銀の弾丸」は存在しません。オブジェクト指向プログラミングも例外ではなく、万能の解決策ではありません。
+フレッド・ブルックスが1975年に著した「人月の神話」で述べたように、ソフトウェア開発の複雑性を一挙に解決する「銀の弾丸」は存在しません。
+オブジェクト指向プログラミングも例外ではなく、万能の解決策ではありません。
 
-オブジェクト指向を不適切に適用した場合、返って問題を悪化させることがあります。たとえば、100行未満のスクリプトや単機能のコマンドラインツールにオブジェクト指向を無理に取り入れると、シンプルな処理が複雑なクラス構造に埋もれてしまい、コードの記述量が数倍に膨れ上がることがあります。
+オブジェクト指向を不適切に適用した場合、返って問題を悪化させることがあります。
+たとえば、100行未満のスクリプトや単機能のコマンドラインツールにオブジェクト指向を無理に取り入れた場合です。
+シンプルな処理が複雑なクラス構造に埋もれてしまい、コードの記述量が数倍に膨れ上がることがあります。
 
-また、バッチ処理やパイプライン処理のように、単機能の処理が連続して呼び出されるシステムでは、オブジェクト指向のオーバーヘッドが大きくなり、手続き型のアプローチの方がメモリ使用量を抑えられる場合があります。さらに、過度な抽象化や継承の乱用は、コードの理解を困難にし、管理しきれない副作用を発生させる可能性があります。
+また、バッチ処理やパイプライン処理のように、単機能の処理が連続して呼び出されるシステムでは問題が生じます。
+オブジェクト指向のオーバーヘッドが大きくなり、手続き型のアプローチの方がメモリ使用量を抑えられる場合があります。
+さらに、過度な抽象化や継承の乱用は、コードの理解を困難にし、管理しきれない副作用を発生させる可能性があります。
 
-重要なのは、オブジェクト指向が有効な場面を見極め、適度に使用することです。一般的に、複数の開発者が長期間保守するシステム、ドメインモデルが複雑なビジネスアプリケーション、再利用可能なコンポーネントを作る場合などではオブジェクト指向が有効です。
+重要なのは、オブジェクト指向が有効な場面を見極め、適度に使用することです。
+一般的に、以下の場合にオブジェクト指向が有効です。
+複数の開発者が長期間保守するシステム、ドメインモデルが複雑なビジネスアプリケーション、再利用可能なコンポーネントを作る場合などです。
 
 ### オブジェクト指向は効率良く開発を行うための考え方
 
@@ -1722,430 +1737,97 @@ public class MethodsPractice {
 
 ## よくあるエラーと対処法
 
-オブジェクト指向プログラミングを始めたばかりの学習者が遭遇する典型的なエラーと、その対処法を紹介します。これらのエラーメッセージを理解し、適切に対処できるようになることで、スムーズにプログラムを作成できます。
+本章では、オブジェクト指向プログラミングの基礎を学ぶ際に特によく遭遇するエラーを扱います。
 
-### 1. クラスとインスタンスの概念の混乱
+### 本章特有のエラー
 
-#### よくある混乱
+#### 1. クラスとインスタンスの概念の混乱
+問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
+
 ```java
-// 間違った理解の例
-public class Student {
-    private String name;
-    
-    public void setName(String name) {
-        name = name;  // thisを使っていない
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Student.setName("太郎");  // クラス名で呼び出そうとする
-    }
-}
+// エラー例
+Student.setName("太郎");  // クラス名で呼び出している
 ```
 
-#### エラーメッセージ
-```
-error: non-static method setName(String) cannot be referenced from a static context
-```
-
-#### 対処法
+解決策:
 ```java
-public class Student {
-    private String name;
-    
-    public void setName(String name) {
-        this.name = name;  // thisを使って区別
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Student student = new Student();  // インスタンスを作成
-        student.setName("太郎");          // インスタンスから呼び出し
-    }
-}
+// 正しい例
+Student student = new Student();  // インスタンスを作成
+student.setName("太郎");          // インスタンスから呼び出し
 ```
 
-##### 理解のポイント
+重要なポイント:
 - クラスは設計図、インスタンスは実体
-- インスタンスメソッドは`new`で作成したオブジェクトから呼び出す
-- `this`は現在のオブジェクトを指す
+- インスタンスメソッドはnewで作成したオブジェクトから呼び出す
 
-### 2. コンストラクタ関連のエラー
+#### 2. static vs non-staticの混乱
+問題: staticメソッドからインスタンスメンバーにアクセスしようとする
 
-#### パターン1: コンストラクタの戻り値を指定
 ```java
-// 間違った例
-public class Book {
-    private String title;
-    
-    public void Book(String title) {  // 戻り値型voidを指定している
-        this.title = title;
-    }
+// エラー例
+public static void main(String[] args) {
+    int result = add(5, 3);  // インスタンスメソッドを直接呼び出し
 }
 ```
 
-#### エラーメッセージ
-```
-error: invalid method declaration; return type required
-```
-
-#### 対処法
+解決策:
 ```java
-public class Book {
-    private String title;
-    
-    public Book(String title) {  // 戻り値型は指定しない
-        this.title = title;
-    }
-}
-```
-
-#### パターン2: デフォルトコンストラクタの欠如
-```java
-public class Product {
-    private String name;
-    
-    public Product(String name) {  // 引数ありコンストラクタのみ定義
-        this.name = name;
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Product product = new Product();  // 引数なしで呼び出し
-    }
-}
-```
-
-#### エラーメッセージ
-```
-error: constructor Product in class Product cannot be applied to given types;
-  required: String
-  found: no arguments
-```
-
-#### 対処法
-```java
-public class Product {
-    private String name;
-    
-    // デフォルトコンストラクタを明示的に定義
-    public Product() {
-        this.name = "未設定";
-    }
-    
-    public Product(String name) {
-        this.name = name;
-    }
-}
-```
-
-### 3. フィールドとメソッドのアクセス
-
-#### パターン1: privateフィールドへの直接アクセス
-```java
-public class Person {
-    private String name;
-    private int age;
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Person person = new Person();
-        person.name = "太郎";  // privateフィールドに直接アクセス
-    }
-}
-```
-
-#### エラーメッセージ
-```
-error: name has private access in Person
-```
-
-#### 対処法
-```java
-public class Person {
-    private String name;
-    private int age;
-    
-    // publicなsetterメソッドを提供
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getName() {
-        return this.name;
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Person person = new Person();
-        person.setName("太郎");  // setterメソッドを使用
-        System.out.println(person.getName());
-    }
-}
-```
-
-#### パターン2: フィールドの初期化忘れ
-```java
-public class Calculator {
-    private int result;  // 初期化されていない
-    
-    public void add(int value) {
-        result += value;  // 初期値が0なので問題ないが、明示的に初期化が推奨
-    }
-}
-```
-
-#### 対処法
-```java
-public class Calculator {
-    private int result = 0;  // 明示的に初期化
-    
-    // またはコンストラクタで初期化
-    public Calculator() {
-        this.result = 0;
-    }
-}
-```
-
-### 4. thisキーワードの使い方
-
-#### パターン1: thisの使い忘れ
-```java
-public class Student {
-    private String name;
-    
-    public void setName(String name) {
-        name = name;  // 引数の値を引数自身に代入（無意味）
-    }
-}
-```
-
-#### 問題の発見方法
-デバッグ時に値が設定されていない、またはgetterで期待する値が返されない
-
-#### 対処法
-```java
-public class Student {
-    private String name;
-    
-    public void setName(String name) {
-        this.name = name;  // thisを使ってフィールドを明示
-    }
-    
-    // 別解：引数名を変える
-    public void setName(String studentName) {
-        name = studentName;  // 異なる名前なのでthisは省略可能
-    }
-}
-```
-
-### 5. static vs non-staticの混乱
-
-#### パターン1: staticメソッドからインスタンスメンバーへのアクセス
-```java
-public class MathUtils {
-    private int baseValue = 10;
-    
-    public static int calculate(int input) {
-        return input + baseValue;  // staticメソッドからインスタンスフィールドにアクセス
-    }
-}
-```
-
-#### エラーメッセージ
-```
-error: non-static variable baseValue cannot be referenced from a static context
-```
-
-#### 対処法
-```java
-public class MathUtils {
-    private static int baseValue = 10;  // staticフィールドにする
-    
-    public static int calculate(int input) {
-        return input + baseValue;  // OK：staticフィールドにアクセス
-    }
-}
-
-// または、インスタンスメソッドにする
-public class MathUtils {
-    private int baseValue = 10;
-    
-    public int calculate(int input) {  // staticを外す
-        return input + baseValue;
-    }
-}
-```
-
-#### パターン2: mainメソッドからインスタンスメソッドの呼び出し
-```java
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public static void main(String[] args) {
-        int result = add(5, 3);  // staticメソッドからインスタンスメソッドを呼び出し
-    }
-}
-```
-
-#### エラーメッセージ
-```
-error: non-static method add(int,int) cannot be referenced from a static context
-```
-
-#### 対処法
-```java
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public static void main(String[] args) {
-        Calculator calc = new Calculator();  // インスタンスを作成
-        int result = calc.add(5, 3);         // インスタンスから呼び出し
-    }
-}
-```
-
-### 6. カプセル化とアクセス修飾子の問題
-
-#### パターン1: 誤ったアクセス修飾子の使用
-```java
-public class BankAccount {
-    public double balance = 1000.0;  // 残高を直接変更可能
-    
-    public void withdraw(double amount) {
-        balance -= amount;  // 残高チェックなし
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        BankAccount account = new BankAccount();
-        account.balance = -500.0;  // 不正な残高設定が可能
-    }
-}
-```
-
-#### 対処法
-```java
-public class BankAccount {
-    private double balance = 1000.0;  // privateで保護
-    
-    public void withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
-            balance -= amount;
-        } else {
-            System.out.println("引き出し不可：残高不足または無効な金額");
-        }
-    }
-    
-    public double getBalance() {
-        return balance;  // 読み取り専用のアクセス
-    }
-    
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-        }
-    }
-}
-```
-
-### 7. NullPointerExceptionの発生
-
-#### パターン1: 初期化されていないオブジェクト
-```java
-public class Student {
-    private String name;
-    
-    public int getNameLength() {
-        return name.length();  // nameがnullの場合にNullPointerException
-    }
-}
-```
-
-#### 対処法
-```java
-public class Student {
-    private String name;
-    
-    public Student(String name) {
-        this.name = name;  // コンストラクタで初期化
-    }
-    
-    public int getNameLength() {
-        if (name != null) {
-            return name.length();
-        }
-        return 0;  // またはデフォルト値を返す
-    }
-}
-```
-
-### 8. メソッドオーバーロードの問題
-
-#### パターン1: 曖昧な引数型
-```java
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public double add(double a, double b) {
-        return a + b;
-    }
-    
-    public static void main(String[] args) {
-        Calculator calc = new Calculator();
-        int result = calc.add(5, 3.0);  // intとdoubleの混在
-    }
-}
-```
-
-#### エラーメッセージ
-```
-error: reference to add is ambiguous
-```
-
-#### 対処法
-```java
+// 正しい例
 public static void main(String[] args) {
     Calculator calc = new Calculator();
-    double result = calc.add(5.0, 3.0);  // 型を明示的に統一
-    // または
-    int result2 = calc.add(5, 3);       // 同じ型を使用
+    int result = calc.add(5, 3);  // インスタンス経由で呼び出し
 }
 ```
 
-### トラブルシューティングの基本手順
+重要なポイント:
+- staticメソッドはクラスに属し、インスタンスなしで呼び出せる
+- インスタンスメソッドはオブジェクトに属し、インスタンスが必要
 
-1. エラーメッセージを注意深く読む
-   - エラーの種類と発生場所を特定
-   - 行番号を確認
+#### 3. 基本的な構文エラー
+問題: Javaの基本構文を間違えて記述する
 
-2. 基本的な確認項目
-   - クラス名とファイル名の一致
-   - インスタンス化の必要性
-   - アクセス修飾子の適切性
+```java
+// よくあるエラー例
+System.out.println("Hello")  // セミコロン忘れ
+Public class MyClass { }      // 大文字のP
+```
 
-3. 段階的なデバッグ
-   - 簡単なprintln文で値を確認
-   - 1つずつ機能を追加して問題を特定
+解決策:
+```java
+// 正しい例
+System.out.println("Hello");  // セミコロンを追加
+public class MyClass { }      // 小文字のp
+```
 
-4. コードレビューの習慣
-   - thisキーワードの使用状況
-   - nullチェックの有無
-   - すべてのフィールドがコンストラクタで初期化されているか確認
+重要なポイント:
+- すべての文の末尾にはセミコロンが必要
+- キーワードは小文字（public、class、void等）
+- クラス名は大文字で始める（慣例）
 
-これらのエラーパターンを理解し、適切に対処することで、オブジェクト指向プログラミングの学習がよりスムーズに進みます。
+### 関連する共通エラー
+
+以下のエラーも本章の内容に関連します。
+
+- **NullPointerException**（→ 付録A.1.1）
+  - 特に初期化されていないフィールドへのアクセスで発生しやすい
+- **コンストラクタエラー**（→ 第4章）
+  - 本章では基本概念のみ、詳細は第4章で学習
+- **アクセス修飾子エラー**（→ 付録A.2.3）
+  - privateフィールドへの不正アクセス
+
+### デバッグのヒント
+
+エラーに遭遇した際の基本的な対処法：
+
+1. エラーメッセージを読む：行番号とエラーの種類を確認
+2. クラスとインスタンスの区別：staticかどうかを確認
+3. 初期化の確認：すべてのフィールドが初期化されているか確認
+
+### さらに学ぶには
+
+- 付録A: Java共通エラーガイド（基本的なエラーパターン）
+- 第4章: より詳細なコンストラクタとフィールドの扱い
+- 第14章: 例外処理の体系的な学習
 
 ## オブジェクトの等価性とhashCode
 

@@ -1,7 +1,7 @@
 # リスト7-10
 
 ## 概要
-DataProcessorインターフェース
+DataProcessorインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

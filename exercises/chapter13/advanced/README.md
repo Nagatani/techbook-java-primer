@@ -64,7 +64,7 @@ integration → business, auth
 - 総計: 591 classes, 154 interfaces
 
 === Core APIモジュール ===
-🔧 基盤インターフェース定義:
+🔧 基盤インターフェイス定義:
 
 ```java
 // module-info.java (Core API)
@@ -82,7 +82,7 @@ module com.enterprise.core.api {
     requires java.time;
 }
 
-// 共通インターフェース定義
+// 共通インターフェイス定義
 package com.enterprise.core.api.common;
 
 public interface Entity<ID> {
@@ -113,7 +113,7 @@ public interface Service<T extends Entity<ID>, ID> {
     void delete(ID id) throws EntityNotFoundException;
 }
 
-// 監査インターフェース
+// 監査インターフェイス
 public interface AuditableOperation {
     @AuditLogged
     void execute() throws OperationException;
@@ -123,7 +123,7 @@ public interface AuditableOperation {
     Map<String, Object> getOperationParameters();
 }
 
-// セキュリティインターフェース
+// セキュリティインターフェイス
 public interface SecuredResource {
     List<Permission> getRequiredPermissions();
     boolean isAccessibleBy(User user);
@@ -642,7 +642,7 @@ module com.framework.plugin.api {
     uses com.framework.plugin.api.ReportGenerator;
 }
 
-// プラグイン基底インターフェース
+// プラグイン基底インターフェイス
 public interface Plugin {
     PluginInfo getInfo();
     void initialize(PluginContext context) throws PluginException;
@@ -1045,7 +1045,7 @@ public class DiscountPolicyService {
     }
 }
 
-// リポジトリインターフェース（ドメイン層で定義）
+// リポジトリインターフェイス（ドメイン層で定義）
 public interface OrderRepository {
     Order save(Order order);
     Optional<Order> findById(OrderId id);

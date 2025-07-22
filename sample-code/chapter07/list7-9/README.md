@@ -1,7 +1,7 @@
 # リスト7-9
 
 ## 概要
-Collectionインターフェース
+Collectionインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

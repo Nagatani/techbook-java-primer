@@ -14,7 +14,7 @@
 ### 2部：オブジェクト指向編
 - [5章　継承とポリモーフィズム](chapter05-inheritance-and-polymorphism.md)
 - [6章　不変性とfinalキーワード](chapter06-immutability-and-final.md)
-- [7章　抽象クラスとインターフェース](chapter07-abstract-classes-and-interfaces.md)
+- [7章　抽象クラスとインターフェイス](chapter07-abstract-classes-and-interfaces.md)
 
 ### 3部：モダンJava機能編
 - [8章　列挙型（Enums）](chapter08-enums.md)
@@ -22,7 +22,7 @@
 - [10章　コレクションフレームワーク](chapter10-collections.md)
 - [11章　ジェネリクス](chapter11-generics.md)
 - [12章　高度なコレクション操作とStream API](chapter12-advanced-collections.md)
-- [13章　ラムダ式と関数型インターフェース](chapter13-lambda-and-functional-interfaces.md)
+- [13章　ラムダ式と関数型インターフェイス](chapter13-lambda-and-functional-interfaces.md)
 - [14章　例外処理](chapter14-exception-handling.md)
 
 ### 4部：外部システム連携編

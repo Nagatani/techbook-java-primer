@@ -3,7 +3,7 @@ package chapter07.solutions;
 /**
  * 従業員を表すクラス
  * 
- * Payableインターフェースを実装し、給与計算システムで
+ * Payableインターフェイスを実装し、給与計算システムで
  * 統一的に扱えるようにしています。
  */
 public class Employee implements Payable {

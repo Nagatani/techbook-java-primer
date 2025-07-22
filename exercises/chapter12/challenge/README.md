@@ -1,7 +1,7 @@
 # 第12章 チャレンジ課題
 
 ## 🎯 学習目標
-- インターフェースの究極的活用
+- インターフェイスの究極的活用
 - メタプログラミングの実装
 - 自己適応型システム
 - AI駆動アーキテクチャ
@@ -17,7 +17,7 @@
 **要求仕様**:
 
 **基本機能**:
-- 動的インターフェース生成
+- 動的インターフェイス生成
 - 実行時パフォーマンス学習
 - 自動アーキテクチャ最適化
 - コード自動生成
@@ -80,8 +80,8 @@ interface AIOptimizer {
 進化戦略: CMA-ES (Covariance Matrix Adaptation)
 ニューラル進化: NEAT (NeuroEvolution of Augmenting Topologies)
 
-=== 動的インターフェース生成 ===
-🔄 実行時インターフェース進化:
+=== 動的インターフェイス生成 ===
+🔄 実行時インターフェイス進化:
 
 ```java
 public class DynamicInterfaceGenerator {
@@ -94,7 +94,7 @@ public class DynamicInterfaceGenerator {
             // 現在のパフォーマンス測定
             PerformanceBaseline baseline = performanceAnalyzer.measureCurrent(spec);
             
-            // AI による最適インターフェース設計
+            // AI による最適インターフェイス設計
             InterfaceDesign design = codeGenerator.generateOptimalInterface(spec, baseline);
             
             // 動的クラス生成
@@ -123,12 +123,12 @@ public class DynamicInterfaceGenerator {
             // 進化履歴記録
             evolutionEngine.recordEvolution(spec, design, generatedClass);
             
-            logger.info("動的インターフェース生成完了: {}", design.getClassName());
+            logger.info("動的インターフェイス生成完了: {}", design.getClassName());
             
             return generatedClass;
             
         } catch (Exception e) {
-            logger.error("動的インターフェース生成エラー", e);
+            logger.error("動的インターフェイス生成エラー", e);
             
             // フォールバック: 従来型実装
             return generateFallbackInterface(spec);
@@ -165,9 +165,9 @@ public class DynamicInterfaceGenerator {
 
 動的生成例:
 ```
-=== インターフェース進化ログ ===
+=== インターフェイス進化ログ ===
 
-進化要求: DataProcessor インターフェース
+進化要求: DataProcessor インターフェイス
 要件: 100万レコード/秒処理
 
 進化プロセス:
@@ -385,10 +385,10 @@ public class AICodeGenerator {
 ```
 ```
 
-### 課題2: 量子計算インターフェース
+### 課題2: 量子計算インターフェイス
 **ファイル名**: `QuantumComputingInterface.java`
 
-量子コンピューティングとクラシックコンピューティングの橋渡しインターフェースを実装してください。
+量子コンピューティングとクラシックコンピューティングの橋渡しインターフェイスを実装してください。
 
 **要求仕様**:
 - 量子アルゴリズムの抽象化
@@ -398,7 +398,7 @@ public class AICodeGenerator {
 
 **実行例**:
 ```
-=== 量子計算インターフェース ===
+=== 量子計算インターフェイス ===
 
 ⚛️ QuantumBridge v∞
 
@@ -428,7 +428,7 @@ RAM: 2TB DDR5
 ⚛️ 量子計算の抽象化:
 
 ```java
-// 量子計算インターフェース
+// 量子計算インターフェイス
 public interface QuantumComputation<T> {
     // 量子回路定義
     QuantumCircuit defineCircuit();

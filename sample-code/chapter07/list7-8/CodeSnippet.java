@@ -1,6 +1,6 @@
 /**
  * リスト7-8
- * CompleteInterfaceインターフェース
+ * CompleteInterfaceインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (272行目)
  */

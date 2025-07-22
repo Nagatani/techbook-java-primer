@@ -585,7 +585,7 @@ public class MultiResourceExample {
 
 ### カスタムAutoCloseableの実装
 
-独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェースを実装することで、try-with-resourcesで使用できるようになります。
+独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
 <span class="listing-number">**サンプルコード14-11**</span>
 

@@ -1,6 +1,6 @@
 /**
  * リスト7-6
- * OldStyleInterfaceインターフェース
+ * OldStyleInterfaceインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (236行目)
  */

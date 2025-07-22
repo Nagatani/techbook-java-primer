@@ -689,11 +689,13 @@ public class MyStack<E> {
 }
 ```
 
-このMyStackクラスは、コンポジションを使用してArrayListを内部に保持し、スタックに必要な機能のみを公開しています。これにより、ArrayListのスタック操作に不要なメソッド（add、removeなど）が外部に公開されることを防いでいます。
+このMyStackクラスは、コンポジションを使用してArrayListを内部に保持し、スタックに必要な機能のみを公開しています。
+これにより、ArrayListのスタック操作に不要なメソッド（add、removeなど）が外部に公開されることを防いでいます。
 
 #### 誤用例2：従業員権限階層での問題
 
-以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。この設計はリスコフ置換原則に違反します。
+以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
+この設計はリスコフ置換原則に違反します。
 
 <span class="listing-number">**サンプルコード5-10**</span>
 
@@ -1263,7 +1265,7 @@ public class UserSystemAfter {
     }
 }
 
-// 親クラスに共通インターフェースを定義
+// 親クラスに共通インターフェイスを定義
 class User {
     protected String userId;
     protected String email;
@@ -1690,307 +1692,128 @@ class Child extends Parent {
 
 ## よくあるエラーと対処法
 
-継承とポリモーフィズムを学習する際によく遭遇するエラーとその対処法を以下にまとめます。
+本章では、継承とポリモーフィズムに特有のエラーを扱います。
 
-### コンストラクタ関連のエラー
+### 本章特有のエラー
 
-#### super()の呼び出し忘れ
-
-#### エラーメッセージ
-```
-error: constructor Parent in class Parent cannot be applied to given types
-```
-
-#### 原因と対処
+#### 1. super()呼び出しエラー
+問題: 親クラスのコンストラクタを正しく呼び出さない
 
 ```java
 // エラー例
 class Parent {
-    public Parent(String name) {
-        // パラメータ付きコンストラクタのみ定義
-    }
+    public Parent(String name) { }  // デフォルトコンストラクタなし
 }
 
 class Child extends Parent {
-    public Child() {  // エラー：親のデフォルトコンストラクタが存在しない
-        // super(); は暗黙的に呼ばれるが、Parent()は存在しない
-    }
+    public Child() { }  // エラー：super()が暗黙的に呼ばれるがParent()は存在しない
 }
+```
 
-// 修正版
+解決策:
+```java
 class Child extends Parent {
     public Child() {
         super("default");  // 明示的に親のコンストラクタを呼び出す
     }
+}
+```
+
+重要なポイント:
+- 親クラスにパラメータ付きコンストラクタのみがある場合は明示的なsuper()が必要
+- super()は必ずコンストラクタの最初に記述
+- デフォルトコンストラクタは自動生成されない
+
+#### 2. オーバーライドエラー
+問題: メソッドオーバーライド時の制約違反
+
+```java
+// エラー例1：アクセス修飾子の制限強化
+class Parent {
+    public void method() { }
+}
+class Child extends Parent {
+    private void method() { }  // エラー：publicからprivateへ
+}
+
+// エラー例2：戻り値型の不一致
+class Parent {
+    public int getValue() { return 0; }
+}
+class Child extends Parent {
+    public String getValue() { return ""; }  // エラー：戻り値型が異なる
+}
+```
+
+解決策:
+```java
+class Child extends Parent {
+    @Override
+    public void method() { }  // 同じかより緩いアクセス修飾子
     
-    public Child(String name) {
-        super(name);  // パラメータを渡して親のコンストラクタを呼び出す
-    }
+    @Override
+    public int getValue() { return 42; }  // 同じ戻り値型
 }
 ```
 
-### メソッドオーバーライド関連のエラー
+重要なポイント:
+- アクセス修飾子は同じかより緩いものを使用
+- 戻り値型は同じか共変戻り値型（サブタイプ）
+- @Overrideアノテーションでミスを防ぐ
 
-#### アクセス修飾子の制限違反
-
-#### エラーメッセージ
-```
-error: doSomething() in Child cannot override doSomething() in Parent; attempting to assign weaker access privileges
-```
-
-#### 原因と対処
+#### 3. キャストエラー
+問題: 互換性のない型へのキャストによるClassCastException
 
 ```java
 // エラー例
-class Parent {
-    public void doSomething() {  // public
-    }
-}
-
-class Child extends Parent {
-    private void doSomething() {  // エラー：publicからprivateに制限を強化
-    }
-}
-
-// 修正版
-class Child extends Parent {
-    @Override
-    public void doSomething() {  // 同じかより緩いアクセス修飾子を使用
-    }
-}
-```
-
-#### 戻り値型の不一致
-
-#### エラーメッセージ
-```
-error: doSomething() in Child cannot override doSomething() in Parent; return type String is not compatible with int
-```
-
-#### 原因と対処
-
-```java
-// エラー例
-class Parent {
-    public int doSomething() {
-        return 0;
-    }
-}
-
-class Child extends Parent {
-    @Override
-    public String doSomething() {  // エラー：戻り値型が異なる
-        return "hello";
-    }
-}
-
-// 修正版1：同じ戻り値型を使用
-class Child extends Parent {
-    @Override
-    public int doSomething() {  // 同じ戻り値型
-        return 42;
-    }
-}
-
-// 修正版2：共変戻り値型を使用（参照型の場合）
-class Parent {
-    public Object getValue() {
-        return new Object();
-    }
-}
-
-class Child extends Parent {
-    @Override
-    public String getValue() {  // ObjectのサブクラスなのでOK
-        return "hello";
-    }
-}
-```
-
-### キャスト関連のエラー
-
-#### ClassCastException
-
-#### エラーメッセージ
-```
-Exception in thread "main" java.lang.ClassCastException: Parent cannot be cast to Child
-```
-
-#### 原因と対処
-
-```java
-// エラー例
-Parent p = new Parent();  // Parent型のインスタンス
-Child c = (Child) p;      // 実行時エラー：ParentはChildではない
-
-// 修正版：instanceof演算子を使用
 Parent p = new Parent();
+Child c = (Child) p;  // 実行時エラー：ParentはChildではない
+```
+
+解決策:
+```java
+// instanceof使用
 if (p instanceof Child) {
-    Child c = (Child) p;  // 安全なキャスト
-    // Child固有の処理
-} else {
-    System.out.println("pはChild型ではありません");
+    Child c = (Child) p;
 }
 
-// より安全な方法：パターンマッチング（Java 14+）
+// パターンマッチング（Java 14+）
 if (p instanceof Child child) {
-    // childは自動的にChild型として利用可能
-    child.childSpecificMethod();
+    child.childMethod();
 }
 ```
 
-### メソッド呼び出し関連のエラー
+重要なポイント:
+- キャスト前にinstanceofで型チェック
+- ダウンキャストは慎重に行う
+- パターンマッチングで安全性と簡潔性を両立
 
-#### メソッドが見つからない
+### 関連する共通エラー
 
-#### エラーメッセージ
-```
-error: cannot find symbol - method childMethod()
-```
+以下のエラーも本章の内容に関連します。
 
-#### 原因と対処
+- **NullPointerException**（→ 付録A.1.1）
+  - 継承階層でのnull参照に注意
+- **抽象メソッドの実装忘れ**（→ 第7章）
+  - 抽象クラス継承時の必須実装
+- **メソッドシグネチャの理解不足**（→ 第4章）
+  - オーバーライド条件の詳細
 
-```java
-// エラー例
-Parent p = new Child();
-p.childMethod();  // エラー：Parent型の変数からChild固有のメソッドは呼べない
+### デバッグのヒント
 
-// 修正版1：キャストして呼び出し
-Parent p = new Child();
-if (p instanceof Child) {
-    ((Child) p).childMethod();  // キャストしてから呼び出し
-}
+1. 継承階層の可視化：
+   - クラス図を描いて関係を整理
+   - どのメソッドがどこで定義されているか確認
 
-// 修正版2：Child型の変数を使用
-Child c = new Child();
-c.childMethod();  // Child型なので直接呼び出し可能
-
-// 修正版3：ポリモーフィズムを活用
-// Parent側にabstractメソッドまたはインターフェイスを定義
-abstract class Parent {
-    public abstract void doSomething();  // 子クラスで実装必須
-}
-
-class Child extends Parent {
-    @Override
-    public void doSomething() {  // 実装
-        // 処理
-    }
-}
-```
-
-### 抽象クラス・インターフェイス関連のエラー
-
-#### 抽象クラスのインスタンス化
-
-#### エラーメッセージ
-```
-error: Animal is abstract; cannot be instantiated
-```
-
-#### 原因と対処
-
-```java
-// エラー例
-abstract class Animal {
-    public abstract void makeSound();
-}
-
-Animal a = new Animal();  // エラー：抽象クラスはインスタンス化不可
-
-// 修正版：具象クラスを作成
-class Dog extends Animal {
-    @Override
-    public void makeSound() {
-        System.out.println("ワンワン");
-    }
-}
-
-Animal a = new Dog();  // OK：具象クラスのインスタンスを作成
-```
-
-#### 抽象メソッドの実装忘れ
-
-#### エラーメッセージ
-```
-error: Dog is not abstract and does not override abstract method makeSound() in Animal
-```
-
-#### 原因と対処
-
-```java
-// エラー例
-abstract class Animal {
-    public abstract void makeSound();
-}
-
-class Dog extends Animal {
-    // makeSound()の実装が不足
-}
-
-// 修正版：すべての抽象メソッドを実装
-class Dog extends Animal {
-    @Override
-    public void makeSound() {  // 必須の実装
-        System.out.println("ワンワン");
-    }
-}
-```
-
-### thisとsuperの混同
-
-#### 一般的な間違い
-
-```java
-// 間違った使用例
-class Parent {
-    protected String name = "Parent";
-}
-
-class Child extends Parent {
-    private String name = "Child";
-    
-    public void printNames() {
-        System.out.println(name);        // Childのname
-        System.out.println(this.name);   // 同じくChildのname
-        System.out.println(super.name);  // Parentのname
-    }
-}
-
-// 正しい理解での使用例
-class Child extends Parent {
-    private String name = "Child";
-    
-    public void printNames() {
-        System.out.println("子クラス: " + this.name);   // "Child"
-        System.out.println("親クラス: " + super.name);  // "Parent"
-    }
-    
-    @Override
-    public void someMethod() {
-        super.someMethod();  // 親クラスのメソッドを呼び出し
-        // 追加の処理
-    }
-}
-```
-
-### デバッグのコツ
-
-1. エラーメッセージを注意深く読む
-   - 行番号と具体的な問題を確認
-   - 「cannot override」「cannot be cast」等のキーワードに注目
-
-2. 継承階層を図式化する
-   - どのクラスがどのクラスを継承しているか整理
-   - どのメソッドがどこで定義・オーバーライドされているか確認
-
-3. 段階的にテストする
-   - 親クラス単体で動作確認
-   - 子クラス単体で動作確認
-   - 継承関係での動作確認
-
-4. @Overrideアノテーションを活用
+2. @Overrideの活用：
+   - 必ず付けることでコンパイル時チェック
    - オーバーライドの意図を明確化
-   - コンパイル時のチェックを強化
 
-これらの対処法を参考に、継承とポリモーフィズムの学習を進めてください。
+3. 段階的なテスト：
+   - 親クラス単体→子クラス単体→ポリモーフィズムの順
+
+### さらに学ぶには
+
+- 付録A: Java共通エラーガイド（キャストの詳細）
+- 第7章: 抽象クラスとインターフェイスでの継承
+- 第11章: ジェネリクスを使った型安全な設計

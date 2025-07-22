@@ -45,7 +45,7 @@
 - **CustomCollectorTest.java**: CustomCollectorクラスのテスト
 
 #### 学習ポイント
-- Collectorインターフェースの実装
+- Collectorインターフェイスの実装
 - 状態を持つ集約処理
 - 並列処理対応
 - 再利用可能なCollectorの設計

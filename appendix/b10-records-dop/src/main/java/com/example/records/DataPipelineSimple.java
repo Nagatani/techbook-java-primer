@@ -80,7 +80,7 @@ public class DataPipelineSimple {
             }
         }
         
-        // イベントストアインターフェース
+        // イベントストアインターフェイス
         public interface EventStore {
             void append(UserEvent event);
             Stream<UserEvent> getEvents(String userId);

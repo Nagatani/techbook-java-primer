@@ -128,7 +128,7 @@ public class TypeSafeBuilder<T> {
         }
     }
     
-    // フルーエントインターフェースの例
+    // フルーエントインターフェイスの例
     public interface FluentBuilder<T> {
         T build();
     }

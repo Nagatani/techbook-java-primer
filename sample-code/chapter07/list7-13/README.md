@@ -1,7 +1,7 @@
 # リスト7-13
 
 ## 概要
-JsonSerializableインターフェース
+JsonSerializableインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

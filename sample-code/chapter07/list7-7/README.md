@@ -1,7 +1,7 @@
 # リスト7-7
 
 ## 概要
-ModernInterfaceインターフェース
+ModernInterfaceインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

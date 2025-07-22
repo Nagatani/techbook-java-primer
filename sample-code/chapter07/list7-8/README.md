@@ -1,7 +1,7 @@
 # リスト7-8
 
 ## 概要
-CompleteInterfaceインターフェース
+CompleteInterfaceインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

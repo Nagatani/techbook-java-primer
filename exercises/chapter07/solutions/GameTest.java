@@ -62,7 +62,7 @@ class GameTest {
     
     @Test
     void testDrawable() {
-        // プレイヤーとエネミーがDrawableインターフェースを実装していることを確認
+        // プレイヤーとエネミーがDrawableインターフェイスを実装していることを確認
         assertTrue(player instanceof Drawable);
         assertTrue(enemy instanceof Drawable);
         
@@ -85,7 +85,7 @@ class GameTest {
     
     @Test
     void testDrawablePolymorphism() {
-        // Drawableインターフェースを通じた多態性のテスト
+        // Drawableインターフェイスを通じた多態性のテスト
         Drawable[] drawables = {player, enemy};
         
         for (Drawable drawable : drawables) {

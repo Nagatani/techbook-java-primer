@@ -5,7 +5,7 @@
  * 元ファイル: chapter21-unit-testing.md (236行目)
  */
 
-// UserRepository.java - インターフェース
+// UserRepository.java - インターフェイス
 public interface UserRepository {
     String findById(String id);
 }

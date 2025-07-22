@@ -180,7 +180,7 @@ public class UserService {
 
 ### 解決策としての「疎結合」
 
-良い単体テストのためには、クラス同士の関係が緩やかである疎結合な設計が必要です。疎結合を実現する鍵は、具体的な実装クラスに依存するのではなく、その「役割」を定義したインターフェースに依存することです。
+良い単体テストのためには、クラス同士の関係が緩やかである疎結合な設計が必要です。疎結合を実現する鍵は、具体的な実装クラスに依存するのではなく、その「役割」を定義したインターフェイスに依存することです。
 
 ### Dependency Injection (DI) とは
 
@@ -254,12 +254,12 @@ DIの核心は、依存関係を外部から制御できる点にあります。
 
 #### DIを適用したサービスクラス
 
-以下の例では、UserRepositoryをインターフェースとして定義し、UserServiceが具体的な実装ではなく抽象に依存するように変更しています。これが疎結合設計の核心です。
+以下の例では、UserRepositoryをインターフェイスとして定義し、UserServiceが具体的な実装ではなく抽象に依存するように変更しています。これが疎結合設計の核心です。
 
 <span class="listing-number">**サンプルコード21-7**</span>
 
 ```java
-// UserRepository.java - インターフェース
+// UserRepository.java - インターフェイス
 public interface UserRepository {
     String findById(String id);
 }

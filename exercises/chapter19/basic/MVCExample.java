@@ -323,7 +323,7 @@ public class MVCExample extends JFrame {
         }
     }
     
-    // オブザーバーパターンのインターフェース
+    // オブザーバーパターンのインターフェイス
     public interface ModelObserver {
         void modelChanged(ModelEvent event);
     }

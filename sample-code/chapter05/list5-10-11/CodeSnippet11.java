@@ -5,7 +5,7 @@
  * 元ファイル: chapter05-inheritance-and-polymorphism.md (647行目)
  */
 
-// 改善されたコード：継承ではなくインターフェースを使用
+// 改善されたコード：継承ではなくインターフェイスを使用
 public interface Shape {
     int getArea();
 }

@@ -287,7 +287,7 @@ public class ThreadSafeCounter {
             void reset();
         }
         
-        // 各カウンター実装をCounter インターフェースでラップ
+        // 各カウンター実装をCounter インターフェイスでラップ
         public static class SynchronizedCounterWrapper implements Counter {
             private final SynchronizedCounter counter = new SynchronizedCounter();
             public void increment() { counter.increment(); }

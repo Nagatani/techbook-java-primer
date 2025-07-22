@@ -82,7 +82,7 @@ class PayrollTest {
     
     @Test
     void testPayablePolymorphism() {
-        // Payableインターフェースを通じた多態性のテスト
+        // Payableインターフェイスを通じた多態性のテスト
         Payable[] payables = {employee, invoice};
         
         double totalPayment = 0;

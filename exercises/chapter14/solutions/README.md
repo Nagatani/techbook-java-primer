@@ -16,7 +16,7 @@
 
 ### 2. ResourceManager.java - try-with-resources活用
 - 自動リソース管理の実装
-- AutoCloseableインターフェースの活用
+- AutoCloseableインターフェイスの活用
 - 複雑なリソース管理シナリオ
 
 **重要ポイント：**
@@ -53,7 +53,7 @@
 - 例外の階層設計
 
 ### 2. try-with-resources
-- AutoCloseableインターフェース
+- AutoCloseableインターフェイス
 - リソースの自動管理
 - 例外発生時の動作理解
 

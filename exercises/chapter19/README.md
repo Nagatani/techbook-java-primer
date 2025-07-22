@@ -119,7 +119,7 @@ public class Model extends Observable {
     // データ変更時にオブザーバーに通知
 }
 
-// View: ユーザーインターフェース
+// View: ユーザーインターフェイス
 public class View implements Observer {
     // モデルの変更を受けてUI更新
 }
@@ -203,7 +203,7 @@ public void testButtonClick() {
 - **設定ツール** - システム設定やコンフィグ管理
 
 ### プロトタイピング
-- **UI/UX検証** - インターフェース設計の検証
+- **UI/UX検証** - インターフェイス設計の検証
 - **機能デモ** - ステークホルダーへの提案
 - **ユーザビリティテスト** - 使いやすさの評価
 

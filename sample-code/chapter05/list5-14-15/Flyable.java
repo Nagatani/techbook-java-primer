@@ -5,7 +5,7 @@
  * 元ファイル: chapter05-inheritance-and-polymorphism.md (774行目)
  */
 
-// 良い例：インターフェースで能力を分離
+// 良い例：インターフェイスで能力を分離
 public interface Flyable {
     void fly();
 }

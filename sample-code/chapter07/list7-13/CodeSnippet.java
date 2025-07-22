@@ -1,6 +1,6 @@
 /**
  * リスト7-13
- * JsonSerializableインターフェース
+ * JsonSerializableインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (455行目)
  */

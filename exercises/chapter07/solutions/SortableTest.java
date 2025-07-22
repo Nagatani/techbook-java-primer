@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Sortableインターフェースとその実装のテストクラス
+ * Sortableインターフェイスとその実装のテストクラス
  */
 class SortableTest {
     
@@ -179,7 +179,7 @@ class SortableTest {
     
     @Test
     void testSortablePolymorphism() {
-        // Sortableインターフェースを通じた多態性のテスト
+        // Sortableインターフェイスを通じた多態性のテスト
         Sortable[] sortables = {student1, student2, student3};
         
         for (Sortable sortable : sortables) {

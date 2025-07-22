@@ -488,7 +488,7 @@ Reactive Streams、RxJava、Project Reactorを統合した高度なリアクテ�
 - RxJava 3.x: UI層リアクティブ処理
 - Project Reactor: Web層・データ層
 - Akka Streams: 大容量データ処理
-- Reactive Streams: 標準化インターフェース
+- Reactive Streams: 標準化インターフェイス
 
 ストリーム統計:
 アクティブストリーム: 247個

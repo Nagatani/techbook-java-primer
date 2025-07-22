@@ -2,7 +2,7 @@
 
 ## 概要
 
-第7章では、抽象クラスとインターフェースについて学習します。SOLID原則に基づいた設計を重視し、継承とポリモーフィズムを活用した実装を行います。
+第7章では、抽象クラスとインターフェイスについて学習します。SOLID原則に基づいた設計を重視し、継承とポリモーフィズムを活用した実装を行います。
 
 ## 解答例一覧
 
@@ -11,13 +11,13 @@
 - **Shape.java**: 図形の抽象基底クラス
 - **Circle.java**: 円クラス（Shapeを継承）
 - **Rectangle.java**: 矩形クラス（Shapeを継承）
-- **Drawable.java**: 描画可能なオブジェクトのインターフェース
+- **Drawable.java**: 描画可能なオブジェクトのインターフェイス
 - **ShapeTest.java**: 図形クラスのテスト
 
 #### 学習ポイント
 - 抽象クラスの定義と継承
 - 抽象メソッドの実装
-- インターフェースの定義と実装
+- インターフェイスの定義と実装
 - 多態性の活用
 
 ### 2. ゲームキャラクター (GameCharacter系)
@@ -30,32 +30,32 @@
 #### 学習ポイント
 - 抽象クラスによる共通機能の実装
 - 派生クラスでの特殊化
-- Drawableインターフェースの実装
+- Drawableインターフェイスの実装
 - 多態性を活用したゲームシステム
 
 ### 3. 支払いシステム (Payable系)
 
-- **Payable.java**: 支払い可能なオブジェクトのインターフェース
+- **Payable.java**: 支払い可能なオブジェクトのインターフェイス
 - **Employee.java**: 従業員クラス（Payableを実装）
 - **Invoice.java**: 請求書クラス（Payableを実装）
 - **PayrollTest.java**: 給与計算システムのテスト
 
 #### 学習ポイント
-- インターフェースによる統一的な処理
+- インターフェイスによる統一的な処理
 - デフォルトメソッドの活用
 - 異なる種類のオブジェクトの統一処理
 - 実世界の問題をオブジェクト指向で解決
 
 ### 4. ソートシステム (Sortable系)
 
-- **Sortable.java**: ソート可能なオブジェクトのインターフェース
+- **Sortable.java**: ソート可能なオブジェクトのインターフェイス
 - **Student.java**: 学生クラス（Sortableを実装）
 - **SortableTest.java**: ソートシステムのテスト
 
 #### 学習ポイント
 - 複数の基準でのソート機能
 - 列挙型の活用
-- Comparableインターフェースとの連携
+- Comparableインターフェイスとの連携
 - 柔軟なソート設計
 
 ## 設計原則
@@ -75,12 +75,12 @@
    - 例: Shape参照でCircleやRectangleを使用可能
 
 4. **Interface Segregation Principle (ISP)**
-   - インターフェースを機能別に分割
+   - インターフェイスを機能別に分割
    - 例: Drawable、Payable、Sortableの分離
 
 5. **Dependency Inversion Principle (DIP)**
    - 抽象に依存し、具象に依存しない
-   - 例: Payableインターフェースを通じた処理
+   - 例: Payableインターフェイスを通じた処理
 
 ## 実行方法
 
@@ -106,10 +106,10 @@ java -cp build/classes/java/main:build/classes/java/test chapter07.solutions.Gam
 
 ## 重要なポイント
 
-### 1. 抽象クラス vs インターフェース
+### 1. 抽象クラス vs インターフェイス
 
 - **抽象クラス**: 共通実装を持つ場合に使用
-- **インターフェース**: 契約（メソッドの約束）を定義
+- **インターフェイス**: 契約（メソッドの約束）を定義
 
 ### 2. 多態性の活用
 
@@ -124,7 +124,7 @@ for (Payable payable : payables) {
 ### 3. デフォルトメソッド
 
 ```java
-// インターフェースでの共通実装
+// インターフェイスでの共通実装
 default String getPaymentDescription() {
     return "支払い対象: " + getPaymentName();
 }

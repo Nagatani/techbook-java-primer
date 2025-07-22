@@ -1,7 +1,7 @@
 # リスト7-6
 
 ## 概要
-OldStyleInterfaceインターフェース
+OldStyleInterfaceインターフェイス
 
 ## ファイル構成
 - `CodeSnippet.java` - コードスニペット

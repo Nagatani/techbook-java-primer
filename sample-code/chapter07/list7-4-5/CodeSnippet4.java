@@ -1,6 +1,6 @@
 /**
  * リスト7-4
- * Drawableインターフェース
+ * Drawableインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (168行目)
  */

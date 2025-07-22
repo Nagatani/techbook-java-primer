@@ -1,7 +1,7 @@
 package com.example.theory.structures;
 
 /**
- * スタックの抽象仕様（インターフェース）
+ * スタックの抽象仕様（インターフェイス）
  * リストAC-7の一部
  */
 public interface Stack<T> {

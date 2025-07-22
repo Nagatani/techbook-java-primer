@@ -5,7 +5,7 @@
  * 元ファイル: chapter05-inheritance-and-polymorphism.md (507行目)
  */
 
-// 良い例：能力をインターフェースで表現
+// 良い例：能力をインターフェイスで表現
 public abstract class Bird {
     protected String name;
     
@@ -16,12 +16,12 @@ public abstract class Bird {
     public abstract void move();
 }
 
-// 飛行能力を表すインターフェース
+// 飛行能力を表すインターフェイス
 interface Flyable {
     void fly();
 }
 
-// 泳ぐ能力を表すインターフェース
+// 泳ぐ能力を表すインターフェイス
 interface Swimmable {
     void swim();
 }

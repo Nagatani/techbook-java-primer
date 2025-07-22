@@ -629,7 +629,7 @@ public class FormValidator extends JFrame {
         }
     }
     
-    // バリデーターインターフェース
+    // バリデーターインターフェイス
     @FunctionalInterface
     private interface Validator {
         ValidationResult validate(String text);

@@ -12,7 +12,7 @@ public class Calculator {
         return a * b * 0.95;
     }
     
-    // 公開インターフェース
+    // 公開インターフェイス
     public double calculate(double a, double b) {
         return internalCalculation(a, b);
     }

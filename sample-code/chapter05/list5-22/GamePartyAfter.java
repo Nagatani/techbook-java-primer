@@ -48,7 +48,7 @@ public class GamePartyAfter {
     }
 }
 
-// 親クラスに共通インターフェースを定義
+// 親クラスに共通インターフェイスを定義
 abstract class Character {
     protected String name;
     protected int hp;

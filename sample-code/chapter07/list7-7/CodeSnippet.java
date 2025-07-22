@@ -1,6 +1,6 @@
 /**
  * リスト7-7
- * ModernInterfaceインターフェース
+ * ModernInterfaceインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (251行目)
  */

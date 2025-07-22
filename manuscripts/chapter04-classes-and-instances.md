@@ -4,12 +4,12 @@
 
 ### 前提知識
 
-必須
+#### 必須
 - 第3章のオブジェクト指向の基礎概念
 - クラスが「設計図」、オブジェクトが「実体」という関係性
 - カプセル化によるデータ保護の意義
 
-推奨
+#### 推奨
 - 基本的なクラスの設計と実装の経験
 - 複数のクラスを含むプログラムの作成経験
 
@@ -219,7 +219,9 @@ public class MathUtils {
 
 ### getter/setterメソッドのベストプラクティス
 
-getter/setterメソッド（アクセサメソッドとも呼ばれます）は、カプセル化の実装において中心的な役割を果たします。単にフィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軟性を提供します。以下の例では、プライベートフィールドへの安全なアクセスを提供する標準的なパターンを示します。
+getter/setterメソッド（アクセサメソッドとも呼ばれます）は、カプセル化の実装において中心的な役割を果たします。
+単にフィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軟性を提供します。
+以下の例では、プライベートフィールドへの安全なアクセスを提供する標準的なパターンを示します。
 
 <span class="listing-number">**サンプルコード4-6**</span>
 
@@ -1043,7 +1045,8 @@ public class Logger {
 ### 1. 神クラス（Godクラス）の問題
 
 #### 問題の概要
-神クラスとは、あまりにも多くの責任を持ち、多くの機能を詰め込んだ巨大なクラスのことです。初心者は「すべてを1つのクラスにまとめれば管理が楽」と考えがちですが、実際には逆効果となります。
+神クラスとは、あまりにも多くの責任を持ち、多くの機能を詰め込んだ巨大なクラスのことです。
+初心者は「すべてを1つのクラスにまとめれば管理が楽」と考えがちですが、実際には逆効果となります。
 
 #### 問題のあるコード例
 
@@ -1339,215 +1342,135 @@ public class Team {
 
 ## よくあるエラーと対処法
 
-ここでは、コンパイルエラーや実行時エラーなど、実際のコーディングで遭遇する技術的なエラーとその対処法を説明します。
+本章では、クラスとインスタンスを扱う際に特によく遭遇するエラーを扱います。
 
-### 1. コンストラクタ関連のエラー
+### 本章特有のエラー
 
-#### エラー3: デフォルトコンストラクタが見つからない
+#### 1. コンストラクタ関連のエラー（統合版）
+問題: コンストラクタの定義や使用方法を誤る
 
-##### エラーメッセージ
-```
-error: The constructor User() is undefined
-```
-
-##### 問題のあるコード
 ```java
+// エラー例1：デフォルトコンストラクタが見つからない
 public class User {
-    private String name;
-    private int age;
-    
-    // カスタムコンストラクタを定義
-    public User(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
+    public User(String name) { }  // カスタムコンストラクタのみ
 }
+User user = new User();  // エラー：引数なしコンストラクタがない
 
-// 使用時のエラー
-User user = new User();  // コンパイルエラー
+// エラー例2：戻り値型を指定
+public void User() { }  // エラー：コンストラクタに戻り値型
 ```
 
-##### 修正方法
+解決策:
 ```java
 public class User {
-    private String name;
-    private int age;
-    
     // デフォルトコンストラクタを明示的に定義
     public User() {
-        this("Unknown", 0);
+        this("Unknown");
     }
     
-    public User(String name, int age) {
+    public User(String name) {  // 戻り値型なし
         this.name = name;
-        this.age = age;
     }
 }
 ```
 
-#### エラー4: コンストラクタでのnull値未検証
+重要なポイント:
+- カスタムコンストラクタを定義すると、デフォルトコンストラクタは自動生成されない
+- コンストラクタには戻り値型を指定しない
+- this()でコンストラクタチェーンを活用
 
-##### 問題のあるコード
+#### 2. NullPointerException完全ガイド
+問題: nullの参照に対してメソッド呼び出しやフィールドアクセスを行う
+
 ```java
+// エラー例
 public class Product {
     private String name;
-    private double price;
     
-    public Product(String name, double price) {
-        this.name = name;  // null チェックなし
-        this.price = price;
+    public Product(String name) {
+        this.name = name;  // nullチェックなし
+    }
+    
+    public int getNameLength() {
+        return name.length();  // nameがnullの場合エラー
     }
 }
-
-// 実行時エラーが発生する可能性
-Product product = new Product(null, 100.0);
-System.out.println(product.name.length());  // NullPointerException
 ```
 
-##### エラーメッセージ
-```
-Exception in thread "main" java.lang.NullPointerException
-```
-
-##### 修正方法
+解決策:
 ```java
 public class Product {
     private String name;
-    private double price;
     
-    public Product(String name, double price) {
+    public Product(String name) {
+        // コンストラクタでの検証
         if (name == null) {
             throw new IllegalArgumentException("商品名はnullにできません");
         }
-        if (price < 0) {
-            throw new IllegalArgumentException("価格は0以上である必要があります");
-        }
         this.name = name;
-        this.price = price;
+    }
+    
+    public int getNameLength() {
+        // 防御的プログラミング
+        return (name != null) ? name.length() : 0;
     }
 }
 ```
 
-### 3. メソッドオーバーロードの問題
+重要なポイント:
+- コンストラクタで引数を検証する
+- メソッド内でnullチェックを行う
+- 有効なデフォルト値または例外処理を使用
 
-#### エラー5: 引数の型による曖昧性
+#### 3. メソッドオーバーロードの問題
+問題: 曖昧なオーバーロードや不正な定義
 
-##### 問題のあるコード
 ```java
-public class Calculator {
-    public int calculate(int a, double b) {
-        return (int)(a + b);
-    }
-    
-    public double calculate(double a, int b) {
-        return a + b;
-    }
-}
+// エラー例1：曖昧な呼び出し
+public int calc(int a, double b) { }
+public double calc(double a, int b) { }
+calc(10, 20);  // どちらを呼ぶか不明
 
-// 使用時のエラー
-Calculator calc = new Calculator();
-calc.calculate(10, 20);  // どちらのメソッドが呼ばれるか不明
+// エラー例2：戻り値型のみ異なる
+public String process(String s) { }
+public int process(String s) { }  // エラー
 ```
 
-##### エラーメッセージ
-```
-error: The method calculate(int, double) is ambiguous for the type Calculator
-```
-
-##### 修正方法
+解決策:
 ```java
-public class Calculator {
-    public int calculate(int a, int b) {
-        return a + b;
-    }
-    
-    public double calculate(double a, double b) {
-        return a + b;
-    }
-    
-    public double calculate(int a, double b) {
-        return a + b;
-    }
-    
-    public double calculate(double a, int b) {
-        return a + b;
-    }
-}
+// 明確な引数型
+public int calc(int a, int b) { }
+public double calc(double a, double b) { }
+
+// 異なるメソッド名
+public String processToString(String s) { }
+public int processToLength(String s) { }
 ```
 
-#### エラー6: 戻り値の型のみが異なるオーバーロード
+重要なポイント:
+- 引数の型は明確に区別できるようにする
+- 戻り値型だけでは区別できない
+- 必要に応じて異なるメソッド名を使用
 
-##### 問題のあるコード
+#### 4. オブジェクト参照と防御的コピー
+問題: 参照の共有により意図しない変更が発生
+
 ```java
-public class DataProcessor {
-    public String process(String data) {
-        return data.toUpperCase();
-    }
-    
-    public int process(String data) {  // コンパイルエラー
-        return data.length();
-    }
-}
-```
-
-##### エラーメッセージ
-```
-error: Duplicate method process(String) in type DataProcessor
-```
-
-##### 修正方法
-```java
-public class DataProcessor {
-    public String processToUpperCase(String data) {
-        return data.toUpperCase();
-    }
-    
-    public int processToLength(String data) {
-        return data.length();
-    }
-    
-    // または、より明確な名前を使用
-    public String formatText(String data) {
-        return data.toUpperCase();
-    }
-    
-    public int calculateLength(String data) {
-        return data.length();
-    }
-}
-```
-
-### 4. オブジェクト参照の理解不足
-
-#### エラー7: 参照の共有による意図しない変更
-
-##### 問題のあるコード
-```java
+// エラー例
 public class Team {
     private List<String> members;
     
     public Team(List<String> members) {
-        this.members = members;  // 参照をそのまま保存
+        this.members = members;  // 参照を共有
     }
     
     public List<String> getMembers() {
-        return members;  // 内部リストを直接返す
+        return members;  // 内部状態を露出
     }
 }
-
-// 使用時の問題
-List<String> originalList = new ArrayList<>();
-originalList.add("Alice");
-originalList.add("Bob");
-
-Team team = new Team(originalList);
-originalList.add("Charlie");  // 意図せずTeamの内部状態を変更
-
-List<String> teamMembers = team.getMembers();
-teamMembers.add("David");  // 意図せずTeamの内部状態を変更
 ```
 
-##### 修正方法
+解決策:
 ```java
 public class Team {
     private List<String> members;
@@ -1561,256 +1484,42 @@ public class Team {
         // 防御的コピーを返す
         return new ArrayList<>(members);
     }
-    
-    // 正しい方法でメンバーを追加
-    public void addMember(String member) {
-        if (member != null && !member.trim().isEmpty()) {
-            members.add(member);
-        }
-    }
 }
 ```
 
-### 5. メモリリークの基礎
+重要なポイント:
+- コンストラクタで防御的コピーを作成
+- getterでも内部状態を直接返さない
+- 可変オブジェクトは特に注意が必要
 
-#### エラー8: リスナーの未解除
+### 関連する共通エラー
 
-##### 問題のあるコード
-```java
-import java.util.List;
-import java.util.ArrayList;
+以下のエラーも本章の内容に関連します。
 
-// EventListenerインターフェースの定義
-interface EventListener {
-    void onEvent(String event);
-}
-
-public class EventSource {
-    private List<EventListener> listeners = new ArrayList<>();
-    
-    public void addListener(EventListener listener) {
-        listeners.add(listener);
-    }
-    
-    // リスナーを削除するメソッドがない
-    public void fireEvent(String event) {
-        for (EventListener listener : listeners) {
-            listener.onEvent(event);
-        }
-    }
-}
-
-public class EventHandler implements EventListener {
-    private EventSource source;
-    
-    public EventHandler(EventSource source) {
-        this.source = source;
-        source.addListener(this);
-    }
-    
-    @Override
-    public void onEvent(String event) {
-        System.out.println("Received: " + event);
-    }
-}
-```
-
-##### 修正方法
-```java
-public class EventSource {
-    private List<EventListener> listeners = new ArrayList<>();
-    
-    public void addListener(EventListener listener) {
-        listeners.add(listener);
-    }
-    
-    public void removeListener(EventListener listener) {
-        listeners.remove(listener);
-    }
-    
-    public void fireEvent(String event) {
-        for (EventListener listener : listeners) {
-            listener.onEvent(event);
-        }
-    }
-}
-
-public class EventHandler implements EventListener {
-    private EventSource source;
-    
-    public EventHandler(EventSource source) {
-        this.source = source;
-        source.addListener(this);
-    }
-    
-    // リソースの解放メソッド
-    public void cleanup() {
-        if (source != null) {
-            source.removeListener(this);
-            source = null;
-        }
-    }
-    
-    @Override
-    public void onEvent(String event) {
-        System.out.println("Received: " + event);
-    }
-}
-```
-
-### 6. equals()とhashCode()の実装ミス
-
-#### エラー9: equals()のみの実装
-
-##### 問題のあるコード
-```java
-import java.util.Objects;
-
-public class Person {
-    private String name;
-    private int age;
-    
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Person person = (Person) obj;
-        return age == person.age && Objects.equals(name, person.name);
-    }
-    
-    // hashCode() の実装が不足
-}
-
-// 使用時の問題
-Set<Person> people = new HashSet<>();
-people.add(new Person("Alice", 30));
-people.add(new Person("Alice", 30));  // 重複として検出されない
-System.out.println(people.size());  // 期待値: 1、実際: 2
-```
-
-##### 修正方法
-```java
-public class Person {
-    private String name;
-    private int age;
-    
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Person person = (Person) obj;
-        return age == person.age && Objects.equals(name, person.name);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, age);
-    }
-}
-```
-
-### 7. toString()メソッドの問題
-
-#### エラー10: 無限再帰による StackOverflowError
-
-##### 問題のあるコード
-```java
-public class Department {
-    private String name;
-    private List<Employee> employees;
-    
-    public Department(String name) {
-        this.name = name;
-        this.employees = new ArrayList<>();
-    }
-    
-    @Override
-    public String toString() {
-        return "Department{name='" + name + "', employees=" + employees + "}";
-    }
-}
-
-public class Employee {
-    private String name;
-    private Department department;
-    
-    public Employee(String name, Department department) {
-        this.name = name;
-        this.department = department;
-    }
-    
-    @Override
-    public String toString() {
-        return "Employee{name='" + name + "', department=" + department + "}";
-    }
-}
-```
-
-##### エラーメッセージ
-```
-Exception in thread "main" java.lang.StackOverflowError
-```
-
-##### 修正方法
-```java
-public class Department {
-    private String name;
-    private List<Employee> employees;
-    
-    public Department(String name) {
-        this.name = name;
-        this.employees = new ArrayList<>();
-    }
-    
-    @Override
-    public String toString() {
-        return "Department{name='" + name + "', employeeCount=" + employees.size() + "}";
-    }
-}
-
-public class Employee {
-    private String name;
-    private Department department;
-    
-    public Employee(String name, Department department) {
-        this.name = name;
-        this.department = department;
-    }
-    
-    @Override
-    public String toString() {
-        String deptName = department != null ? department.getName() : "None";
-        return "Employee{name='" + name + "', department='" + deptName + "'}";
-    }
-}
-```
+- **ClassCastException**（→ 付録A.1.3）
+  - 型キャストの誤りで発生
+- **equals/hashCodeの契約違反**（→ 付録A.3）
+  - コレクションで使用する際に問題となる
+- **thisキーワードの使い忘れ**（→ 第3章）
+  - フィールドと引数の区別ができない
 
 ### デバッグのヒント
 
-1. IDEの活用： 
-   - ブレークポイントを設定してオブジェクトの状態を確認
-   - Watch機能で変数の値を監視
+1. NullPointerExceptionが発生したら：
+   - スタックトレースで発生箇所を特定
+   - 該当行の変数がnullでないか確認
+   - 初期化処理を見直す
 
-2. ログ出力：
-   - System.out.println()でデバッグ情報を出力
-   - オブジェクトの状態変化を追跡
+2. オーバーロードエラーの場合：
+   - コンパイラのエラーメッセージを詳しく読む
+   - 引数の型を明示的にキャストして確認
 
-3. 単体テスト：
-   - 小さな単位でクラスの動作を検証
-   - 境界値やエラーケースもテスト
+3. 参照関連の問題：
+   - デバッガで参照先のオブジェクトを確認
+   - 同一性（==）と等価性（equals）を区別
 
-4. コードレビュー:
-   - 第三者の目で設計の問題を発見
-   - ベストプラクティスの共有
+### さらに学ぶには
 
-これらの典型的なエラーパターンを理解し、各パターンに対応した対処法を身につけることで、バグが少なく、変更に強く、チーム開発で扱いやすいJavaプログラムを作成できるようになります。
+- 付録A: Java共通エラーガイド（詳細なエラーパターン）
+- 第6章: 不変性とfinalによる安全なクラス設計
+- 第14章: 例外処理の体系的な学習

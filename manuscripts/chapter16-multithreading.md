@@ -27,15 +27,14 @@
 
 Java 5で導入されたjava.util.concurrentパッケージの設計思想を理解することも重要な学習目標です。
 このパッケージは、Doug Leaらによって設計された、高性能かつ安全な並行処理のための包括的なフレームワークです。
-スレッドプールとExecutorServiceの概念を理解することで、スレッドの生成と破棄のオーバーヘッドを通常の10分の1以下に削減し、
-CPUリソースを最大限に活用するタスク管理を実現する方法を学びます。
+スレッドプールとExecutorServiceの概念を理解することで、スレッドの生成と破棄のオーバーヘッドを通常の10分の1以下に削減できます。
+これにより、CPUリソースを最大限に活用するタスク管理を実現する方法を学びます。
 
 技能習得の観点では、基本的なスレッドの生成と管理から始め、段階的に高度な並行処理技術を習得します。
 synchronizedキーワードによる排他制御の基本から、より柔軟なLockインターフェイス、
 さらに高性能なAtomic変数の使用まで、さまざまな同期化メカニズムを状況に応じて使い分けられます。
-ExecutorServiceを使ったタスク管理では、CPUコア数に基づいた固定サイズのスレッドプール、
-I/O待機が多い場合のキャッシュ型スレッドプール、定期実行のためのスケジュール実行など、
-要件に応じた実装を選択できます。
+ExecutorServiceを使ったタスク管理では、要件に応じた実装を選択できます。
+CPUコア数に基づいた固定サイズのスレッドプール、I/O待機が多い場合のキャッシュ型スレッドプール、定期実行のためのスケジュール実行などがあります。
 
 並行プログラミング能力の面では、単に動作するマルチスレッドプログラムを書くだけでなく、
 安全でCPU効率を最大化する並行処理プログラムを設計・実装する能力を養います。
@@ -245,9 +244,9 @@ public class MultiThreadExample {
 
 スレッドを生成する方法には3つの主要なアプローチがあり、それぞれに特徴と適用場面があります。
 
-① Thread継承方式は最も直感的ですが、Javaの単一継承制約により他のクラスを継承できなくなるため、インターフェースの実装や他のクラスとの連携が困難になります。このため、現在では非推奨とされています。
+① Thread継承方式は最も直感的ですが、Javaの単一継承制約により他のクラスを継承できなくなるため、インターフェイスの実装や他のクラスとの連携が困難になります。このため、現在では非推奨とされています。
 
-② Runnable実装方式は、インターフェースを使用するため他のクラスとの継承関係を維持でき、設計の柔軟性を保てます。また、タスクとスレッドの責任を明確に分離できるため、保守性の高いコードを書けます。
+② Runnable実装方式は、インターフェイスを使用するため他のクラスとの継承関係を維持でき、設計の柔軟性を保てます。また、タスクとスレッドの責任を明確に分離できるため、保守性の高いコードを書けます。
 
 ③ ラムダ式を使用した方式は、Java 8以降で利用可能な最も簡潔な記法で、関数型プログラミングの利点を活用できます。短い処理に対しては可読性が最も高くなります。
 
@@ -639,10 +638,16 @@ step3: 集計処理 → 30
 生産者・消費者パターンは、多くの実際のシステムで活用されています。以下に代表的な適用例を示します。
 
 ログ処理システムの場合。
-多数のアプリケーションが生成するログメッセージを遅延なく処理するシステムでは、生産者・消費者パターンが有効です。①アプリケーション（生産者）がログメッセージを生成し、②BlockingQueue（バッファ）がメッセージを一時的に蓄積し、③ログライター（消費者）がファイルやデータベースに書き込みます。これにより、アプリケーションの処理速度とディスクI/Oの速度差を吸収できます。
+多数のアプリケーションが生成するログメッセージを遅延なく処理するシステムでは、生産者・消費者パターンが有効です。
+①アプリケーション（生産者）がログメッセージを生成し、②BlockingQueue（バッファ）がメッセージを一時的に蓄積します。
+③ログライター（消費者）がファイルやデータベースに書き込みます。
+これにより、アプリケーションの処理速度とディスクI/Oの速度差を吸収できます。
 
 動画エンコーディングシステムの場合。
-大容量の動画ファイルを高速に処理するために、①動画読み込み部（生産者）がフレームを抽出し、②フレームキュー（バッファ）がメモリ使用量を制御しながらフレームを蓄積し、③エンコーダー（消費者）が圧縮処理を実行します。これにより、I/O処理とCPU集約的な処理を分離し、マルチコアCPUの性能を最大限に活用できます。
+大容量の動画ファイルを高速に処理するために、以下の構成を使用します。
+①動画読み込み部（生産者）がフレームを抽出し、②フレームキュー（バッファ）がメモリ使用量を制御しながらフレームを蓄積します。
+③エンコーダー（消費者）が圧縮処理を実行します。
+これにより、I/O処理とCPU集約的な処理を分離し、マルチコアCPUの性能を最大限に活用できます。
 
 <span class="listing-number">**サンプルコード16-7**</span>
 
@@ -945,7 +950,9 @@ class SynchronizedCounter {
 }
 ```
 
-`synchronized`は非常に強力ですが、ロックの範囲が広すぎるとパフォーマンスの低下を招いたり、複数のロックが絡み合うとデッドロック（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こしたりする危険性もあります。
+`synchronized`は非常に強力ですが、使用には注意が必要です。
+ロックの範囲が広すぎるとパフォーマンスの低下を招きます。
+また、複数のロックが絡み合うとデッドロック（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こす危険性もあります。
 
 synchronizedブロックによる細かい制御。
 
@@ -2189,524 +2196,164 @@ public class ResiliencePatterns {
 
 ## よくあるエラーと対処法
 
-マルチスレッドプログラミングでは、並行処理特有の複雑な問題が発生することがあります。以下は典型的なエラーパターンとその対処法です。
+本章では、マルチスレッドプログラミングに特有のエラーを扱います。
 
-### 1. 競合状態（Race Condition）
+### 本章特有のエラー
 
-##### 問題
-複数のスレッドが同じデータに同時にアクセスして競合する。
+#### 1. 基本的な競合状態
+問題: 複数スレッドが同じデータに同時アクセスして値が破損
 
 ```java
-// 悪い例
+// エラー例
 public class Counter {
     private int count = 0;
     
     public void increment() {
         count++; // 非原子的操作
     }
-    
-    public int getCount() {
-        return count;
-    }
 }
 ```
 
-エラー症状： 期待した値と異なる結果、データの破損。
-
-##### 対処法
-正しい同期化を実装する。
-
+解決策:
 ```java
-// 良い例1: synchronized
-public class SyncCounter {
-    private int count = 0;
-    
-    public synchronized void increment() {
-        count++;
-    }
-    
-    public synchronized int getCount() {
-        return count;
-    }
+// synchronized使用
+public synchronized void increment() {
+    count++;
 }
 
-// 良い例2: Atomic classes
-public class AtomicCounter {
-    private final AtomicInteger count = new AtomicInteger(0);
-    
-    public void increment() {
-        count.incrementAndGet();
-    }
-    
-    public int getCount() {
-        return count.get();
-    }
-}
+// Atomicクラス使用
+private final AtomicInteger count = new AtomicInteger(0);
+count.incrementAndGet();
 ```
 
-### 2. デッドロック
+重要なポイント:
+- 共有データへのアクセスは同期化が必要
+- 単純な演算でもAtomicクラスを検討
+- volatileは可視性のみ保証
 
-##### 問題
-2つ以上のスレッドがお互いのロックを待って無限に待機する。
+#### 2. デッドロックの基礎
+問題: 複数スレッドが相互にロックを待って停止
 
 ```java
-// 悪い例
-public class DeadlockExample {
-    private final Object lock1 = new Object();
-    private final Object lock2 = new Object();
-    
-    public void method1() {
-        synchronized (lock1) {
-            try { Thread.sleep(100); } catch (InterruptedException e) {}
-            synchronized (lock2) {
-                System.out.println("Method 1");
-            }
-        }
-    }
-    
-    public void method2() {
+// エラー例：ロック順序の不一致
+method1: synchronized(lock1) → synchronized(lock2)
+method2: synchronized(lock2) → synchronized(lock1)
+```
+
+解決策:
+```java
+// 常に同じ順序でロック取得
+public void method1() {
+    synchronized (lock1) {
         synchronized (lock2) {
-            try { Thread.sleep(100); } catch (InterruptedException e) {}
-            synchronized (lock1) {
-                System.out.println("Method 2");
-            }
+            // 処理
+        }
+    }
+}
+
+public void method2() {
+    synchronized (lock1) {  // 同じ順序
+        synchronized (lock2) {
+            // 処理
         }
     }
 }
 ```
 
-エラー症状： アプリケーションが停止、CPU使用率が低い。
+重要なポイント:
+- ロック順序を統一する
+- 必要最小限のロック範囲
+- tryLockでタイムアウト設定
 
-対処法： ロックの順序を統一し、タイムアウトを設定する。
+#### 3. スレッドセーフでないコレクション
+問題: 通常のコレクションをマルチスレッドで使用
 
 ```java
-// 良い例
-public class DeadlockFixed {
-    private final Object lock1 = new Object();
-    private final Object lock2 = new Object();
-    
-    public void method1() {
-        // 常に同じ順序でロックを取得
-        synchronized (lock1) {
-            synchronized (lock2) {
-                System.out.println("Method 1");
-            }
-        }
-    }
-    
-    public void method2() {
-        // 同じ順序でロックを取得
-        synchronized (lock1) {
-            synchronized (lock2) {
-                System.out.println("Method 2");
-            }
-        }
-    }
-}
-
-// より良い例: ReentrantLockとtryLock
-public class DeadlockPrevention {
-    private final ReentrantLock lock1 = new ReentrantLock();
-    private final ReentrantLock lock2 = new ReentrantLock();
-    
-    public void method1() throws InterruptedException {
-        if (lock1.tryLock(1000, TimeUnit.MILLISECONDS)) {
-            try {
-                if (lock2.tryLock(1000, TimeUnit.MILLISECONDS)) {
-                    try {
-                        System.out.println("Method 1");
-                    } finally {
-                        lock2.unlock();
-                    }
-                } else {
-                    System.err.println("Method 1: Could not acquire lock2");
-                }
-            } finally {
-                lock1.unlock();
-            }
-        } else {
-            System.err.println("Method 1: Could not acquire lock1");
-        }
-    }
-}
+// エラー例
+List<String> list = new ArrayList<>();
+// 複数スレッドから同時にadd/remove → ConcurrentModificationException
 ```
 
-### 3. メモリ可視性の問題
+解決策:
+```java
+// 並行コレクション使用
+List<String> list = new CopyOnWriteArrayList<>();
+Map<String, String> map = new ConcurrentHashMap<>();
+Queue<String> queue = new ConcurrentLinkedQueue<>();
+```
 
-##### 問題
-あるスレッドの変更が他のスレッドに見えない。
+重要なポイント:
+- java.util.concurrentパッケージを活用
+- 読み込み頻度が高い場合はCopyOnWriteを検討
+- Collections.synchronizedXXX()は性能に注意
+
+#### 4. ExecutorServiceのリソース管理
+問題: スレッドプールが正しくシャットダウンされない
 
 ```java
-// 悪い例
-public class VisibilityProblem {
-    private boolean stopFlag = false;
-    
-    public void stopThread() {
-        stopFlag = true;
-    }
-    
-    public void doWork() {
-        while (!stopFlag) {
-            // 作業処理
-            // stopFlagの変更が見えない可能性
-        }
-    }
-}
+// エラー例
+ExecutorService executor = Executors.newFixedThreadPool(5);
+executor.submit(task);
+// shutdownを呼ばない → リソースリーク
 ```
 
-エラー症状： スレッドが停止しない、予期しない動作。
-
-対処法： volatileキーワードや正しい同期化を使用する。
-
+解決策:
 ```java
-// 良い例1: volatile
-public class VolatileFixed {
-    private volatile boolean stopFlag = false;
-    
-    public void stopThread() {
-        stopFlag = true;
-    }
-    
-    public void doWork() {
-        while (!stopFlag) {
-            // 作業処理
+ExecutorService executor = Executors.newFixedThreadPool(5);
+try {
+    executor.submit(task);
+} finally {
+    executor.shutdown();
+    try {
+        if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+            executor.shutdownNow();
         }
-    }
-}
-
-// 良い例2: AtomicBoolean
-public class AtomicFixed {
-    private final AtomicBoolean stopFlag = new AtomicBoolean(false);
-    
-    public void stopThread() {
-        stopFlag.set(true);
-    }
-    
-    public void doWork() {
-        while (!stopFlag.get()) {
-            // 作業処理
-        }
+    } catch (InterruptedException e) {
+        executor.shutdownNow();
     }
 }
 ```
 
-### 4. 同期化の問題
+重要なポイント:
+- 必ずfinallyでshutdown
+- awaitTerminationでタスク完了を待つ
+- タイムアウト時はshutdownNow
 
-##### 問題
-過度な同期化による性能低下や複雑性。
+### 関連する共通エラー
 
-```java
-// 悪い例
-public class OverSynchronized {
-    private final List<String> list = new ArrayList<>();
-    
-    public synchronized void add(String item) {
-        list.add(item);
-    }
-    
-    public synchronized String get(int index) {
-        return list.get(index);
-    }
-    
-    public synchronized int size() {
-        return list.size();
-    }
-    
-    // すべてのメソッドが同期化されている
-}
-```
+以下のエラーも本章の内容に関連します。
 
-対処法： 必要最小限の同期化レベルを選択し、並行コレクションを活用する。
-
-```java
-// 良い例
-public class ProperSynchronization {
-    private final List<String> list = new CopyOnWriteArrayList<>();
-    
-    public void add(String item) {
-        list.add(item); // 内部で確実に同期化済み
-    }
-    
-    public String get(int index) {
-        return list.get(index);
-    }
-    
-    public int size() {
-        return list.size();
-    }
-    
-    // 読み取り専用の操作
-    public List<String> getSnapshot() {
-        return new ArrayList<>(list);
-    }
-}
-```
-
-### 5. スレッドの確実な終了
-
-##### 問題
-スレッドが正しく終了されない。
-
-```java
-// 悪い例
-public class BadThreadStop {
-    private Thread workerThread;
-    
-    public void start() {
-        workerThread = new Thread(() -> {
-            while (true) {
-                // 停止条件がない無限ループ
-                doWork();
-            }
-        });
-        workerThread.start();
-    }
-    
-    public void stop() {
-        // 強制終了（非推奨）
-        workerThread.stop();
-    }
-}
-```
-
-エラー症状： スレッドが停止しない、リソースリーク。
-
-対処法： 安全な停止メカニズムを実装する。
-
-```java
-// 良い例
-public class GracefulThreadStop {
-    private volatile boolean stopRequested = false;
-    private Thread workerThread;
-    
-    public void start() {
-        stopRequested = false;
-        workerThread = new Thread(() -> {
-            while (!stopRequested && !Thread.currentThread().isInterrupted()) {
-                try {
-                    doWork();
-                } catch (InterruptedException e) {
-                    // 割り込み要求を受信
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-            System.out.println("Worker thread stopped gracefully");
-        });
-        workerThread.start();
-    }
-    
-    public void stop() {
-        stopRequested = true;
-        if (workerThread != null) {
-            workerThread.interrupt();
-        }
-    }
-    
-    public void waitForStop() throws InterruptedException {
-        if (workerThread != null) {
-            workerThread.join(5000); // 5秒でタイムアウト
-        }
-    }
-}
-```
-
-### 6. ExecutorServiceのリソース管理
-
-##### 問題
-ExecutorServiceが正しくシャットダウンされない。
-
-```java
-// 悪い例
-public class ExecutorLeaks {
-    public void doParallelWork() {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        
-        for (int i = 0; i < 10; i++) {
-            executor.submit(() -> {
-                doWork();
-            });
-        }
-        
-        // executorがシャットダウンされない
-    }
-}
-```
-
-エラー症状： スレッドプールが終了しない、アプリケーションが停止しない。
-
-対処法： try-with-resourcesやfinally blockでリソースを確実に解放する。
-
-```java
-// 良い例
-public class ExecutorProperShutdown {
-    public void doParallelWork() {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        
-        try {
-            List<Future<String>> futures = new ArrayList<>();
-            
-            for (int i = 0; i < 10; i++) {
-                Future<String> future = executor.submit(() -> {
-                    return doWork();
-                });
-                futures.add(future);
-            }
-            
-            // 結果を取得
-            for (Future<String> future : futures) {
-                try {
-                    String result = future.get(10, TimeUnit.SECONDS);
-                    System.out.println("Result: " + result);
-                } catch (TimeoutException e) {
-                    System.err.println("Task timed out");
-                    future.cancel(true);
-                } catch (ExecutionException e) {
-                    System.err.println("Task failed: " + e.getCause().getMessage());
-                }
-            }
-            
-        } finally {
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-}
-```
-
-### 7. 例外の確実な処理
-
-##### 問題
-マルチスレッドでの例外が正しく処理されない。
-
-```java
-// 悪い例
-public class UnhandledExceptions {
-    public void processData() {
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        
-        for (int i = 0; i < 5; i++) {
-            executor.submit(() -> {
-                // 例外が発生してもキャッチされない
-                riskyOperation();
-            });
-        }
-        
-        executor.shutdown();
-    }
-}
-```
-
-対処法： 包括的な例外処理を実装する。
-
-```java
-// 良い例
-public class ProperExceptionHandling {
-    private static final Logger logger = Logger.getLogger(ProperExceptionHandling.class.getName());
-    
-    public void processData() {
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        
-        try {
-            List<Future<String>> futures = new ArrayList<>();
-            
-            for (int i = 0; i < 5; i++) {
-                Future<String> future = executor.submit(() -> {
-                    try {
-                        return riskyOperation();
-                    } catch (Exception e) {
-                        logger.severe("タスクでエラーが発生: " + e.getMessage());
-                        throw e; // 再スロー
-                    }
-                });
-                futures.add(future);
-            }
-            
-            // 結果を取得し、例外をハンドリング
-            for (Future<String> future : futures) {
-                try {
-                    String result = future.get();
-                    System.out.println("Success: " + result);
-                } catch (ExecutionException e) {
-                    logger.severe("タスク実行エラー: " + e.getCause().getMessage());
-                    handleTaskError(e.getCause());
-                }
-            }
-            
-        } finally {
-            executor.shutdown();
-        }
-    }
-    
-    private void handleTaskError(Throwable cause) {
-        // エラーに応じた具体的な処理
-        if (cause instanceof IllegalArgumentException) {
-            System.err.println("入力データエラー: " + cause.getMessage());
-        } else {
-            System.err.println("予期しないエラー: " + cause.getMessage());
-        }
-    }
-}
-```
+- **メモリ可視性の問題**（→ 付録B.14）
+  - volatileキーワードの正しい使用法
+- **InterruptedException**（→ 第14章）
+  - スレッドの割り込み処理
+- **ConcurrentModificationException**（→ 付録A.1.4）
+  - 反復処理中のコレクション変更
 
 ### デバッグのヒント
 
-1. スレッドダンプの取得と分析：
+1. デッドロック検出：
    ```java
-   // JVMの全スレッドの状態を確認
-   ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-   ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(true, true);
-   
-   for (ThreadInfo threadInfo : threadInfos) {
-       System.out.println("Thread: " + threadInfo.getThreadName());
-       System.out.println("State: " + threadInfo.getThreadState());
-       System.out.println("Blocked Time: " + threadInfo.getBlockedTime());
+   ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+   long[] deadlocked = bean.findDeadlockedThreads();
+   if (deadlocked != null) {
+       // デッドロック発生
    }
    ```
 
-2. デッドロック検出：
-   ```java
-   ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-   long[] deadlockedThreads = threadMXBean.findDeadlockedThreads();
-   
-   if (deadlockedThreads != null) {
-       System.err.println("デッドロックを検出しました！");
-       ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(deadlockedThreads);
-       for (ThreadInfo threadInfo : threadInfos) {
-           System.err.println("デッドロック対象: " + threadInfo.getThreadName());
-       }
-   }
-   ```
+2. スレッドダンプ：
+   - jstackコマンドでスレッド状態確認
+   - IDEのデバッガでブレークポイント設定
 
-3. スレッドの監視：
-   ```java
-   public class ThreadMonitor {
-       public static void printThreadStats() {
-           Runtime runtime = Runtime.getRuntime();
-           ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-           
-           System.out.println("=== Thread Statistics ===");
-           System.out.println("Active Threads: " + Thread.activeCount());
-           System.out.println("Peak Threads: " + threadMXBean.getPeakThreadCount());
-           System.out.println("Total Started: " + threadMXBean.getTotalStartedThreadCount());
-           System.out.println("Available Processors: " + runtime.availableProcessors());
-           
-           // CPU使用率の監視
-           MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-           MemoryUsage heapUsage = memoryMXBean.getHeapMemoryUsage();
-           System.out.println("Heap Memory: " + heapUsage.getUsed() / 1024 / 1024 + " MB");
-       }
-   }
-   ```
+3. 並行処理のテスト：
+   - CountDownLatchで同期的にテスト
+   - 複数回実行して再現性確認
 
-これらの対処法を理解し実践することで、より安全で高速なマルチスレッドプログラムを作成できるようになります。
+### さらに学ぶには
+
+- 付録A: Java共通エラーガイド（並行処理の基本）
+- 付録B.14: Javaメモリモデル（高度な内容）
+- 第22章: 並行処理ライブラリの活用
 
 
 

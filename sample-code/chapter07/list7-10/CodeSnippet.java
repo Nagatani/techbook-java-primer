@@ -1,6 +1,6 @@
 /**
  * リスト7-10
- * DataProcessorインターフェース
+ * DataProcessorインターフェイス
  * 
  * 元ファイル: chapter07-abstract-classes-and-interfaces.md (326行目)
  */

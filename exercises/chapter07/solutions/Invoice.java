@@ -3,7 +3,7 @@ package chapter07.solutions;
 /**
  * 請求書を表すクラス
  * 
- * Payableインターフェースを実装し、給与計算システムで
+ * Payableインターフェイスを実装し、給与計算システムで
  * 統一的に扱えるようにしています。
  */
 public class Invoice implements Payable {

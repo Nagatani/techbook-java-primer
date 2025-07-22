@@ -5,7 +5,7 @@
  * 
  * 実装内容:
  * - Model: データとビジネスロジック
- * - View: ユーザーインターフェース
+ * - View: ユーザーインターフェイス
  * - Controller: ModelとViewの制御
  * 
  * 技術的特徴:
@@ -317,7 +317,7 @@ public class MVCExample {
     }
     
     /**
-     * View: ユーザーインターフェースを管理
+     * View: ユーザーインターフェイスを管理
      */
     public static class TaskView extends JFrame implements Observer {
         
@@ -538,7 +538,7 @@ public class MVCExample {
             setJMenuBar(menuBar);
         }
         
-        // Observerインターフェースの実装
+        // Observerインターフェイスの実装
         @Override
         public void update(Observable o, Object arg) {
             SwingUtilities.invokeLater(() -> {
@@ -988,7 +988,7 @@ public class MVCExample {
  *    - 統計情報の計算
  *    - データの整合性保証
  * 
- * 2. View（ユーザーインターフェース）
+ * 2. View（ユーザーインターフェイス）
  *    - GUI コンポーネントの管理
  *    - ユーザー入力の受け取り
  *    - モデルの変更を監視（Observer）
