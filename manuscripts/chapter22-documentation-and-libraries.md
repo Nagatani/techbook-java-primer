@@ -44,7 +44,9 @@
 
 ## Javadocによるドキュメント
 
-Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成するJavadocというツールが標準で備わっています。Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
+Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成する
+Javadocというツールが標準で備わっています。
+Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
 
 ### Javadocコメントの書き方
 
@@ -52,7 +54,7 @@ Javadocコメントは `/**` で始まり、`*/` で終わります。クラス�
 
 以下の例では、メソッドに対する完全なJavadocコメントの記述方法を示します。最初の行は概要説明、HTMLタグを使った詳細説明、そして様々なJavadocタグによる構造化された情報が含まれています。
 
-<span class="listing-number">**サンプルコード23-1**</span>
+<span class="listing-number">**サンプルコード22-1**</span>
 
 ```java
 /**
@@ -93,7 +95,7 @@ public int add(int a, int b) {
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクタ、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード23-2**</span>
+<span class="listing-number">**サンプルコード22-2**</span>
 
 ```java
 /**
@@ -132,7 +134,7 @@ public class Task {
     /** タスクの一意識別子 */
     private final long id;
     
-    /** タスクのタイトル（ポイント、最大100文字） */
+    /** タスクのタイトル（必須、最大100文字） */
     private String title;
     
     /** タスクの詳細説明（オプション） */
@@ -164,10 +166,10 @@ public class Task {
      */
     public Task(String title, Priority priority) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("タイトルはポイントです");
+            throw new IllegalArgumentException("タイトルは必須です");
         }
         if (priority == null) {
-            throw new IllegalArgumentException("優先度はポイントです");
+            throw new IllegalArgumentException("優先度は必須です");
         }
         
         this.id = System.currentTimeMillis();
@@ -193,7 +195,7 @@ public class Task {
      */
     public void setTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("タイトルはポイントです");
+            throw new IllegalArgumentException("タイトルは必須です");
         }
         this.title = title;
     }
@@ -287,13 +289,18 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 
 ### クラスパスとは
 
-Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
+Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を
+探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。
+外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
 
 ### 依存関係管理ツール：Maven
 
 手動でJARファイルをダウンロードし、クラスパスを設定するのは非常に手間がかかり、管理も煩雑です。そこで、MavenやGradleといった依存関係管理ツール（ビルドツール）を使うのが現代の標準的な開発スタイルです。
 
-Mavenは、`pom.xml`という設定ファイルに利用したいライブラリの名前とバージョンを記述するだけで、ライブラリの管理が完結します。必要なJARファイルはMaven Central Repositoryなどのリポジトリから自動的にダウンロードされ、クラスパスの設定も自動で行ってくれます。
+Mavenは、`pom.xml`という設定ファイルに利用したいライブラリの名前とバージョンを記述するだけで、
+ライブラリの管理が完結します。
+必要なJARファイルはMaven Central Repositoryなどのリポジトリから自動的にダウンロードされ、
+クラスパスの設定も自動で行ってくれます。
 
 #### `pom.xml`での依存関係の記述
 
@@ -316,9 +323,12 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 `pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
-以下の例では、Gsonの高度な機能を示します。@SerializedNameアノテーションによるJSONフィールド名のカスタマイズ、@Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、実務でよく使われるパターンを網羅しています。
+以下の例では、Gsonの高度な機能を示します。
+@SerializedNameアノテーションによるJSONフィールド名のカスタマイズ、
+@Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、
+実務でよく使われるパターンを網羅しています。
 
-<span class="listing-number">**サンプルコード23-3**</span>
+<span class="listing-number">**サンプルコード22-3**</span>
 
 ```java
 import com.google.gson.Gson;
@@ -345,7 +355,7 @@ public class Task {
     public Task(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
-        this.createdAt = new Date();
+        this.createdAt = LocalDateTime.now();
         this.tags = Arrays.asList("work", "important");
     }
     
@@ -409,9 +419,11 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。スト�
 
 #### Jacksonの使用例
 
-Jacksonはエンタープライズアプリケーションで広く使われている高性能JSONライブラリです。以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
+Jacksonはエンタープライズアプリケーションで広く使われている高性能JSONライブラリです。
+以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
+TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード23-4**</span>
+<span class="listing-number">**サンプルコード22-4**</span>
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -511,7 +523,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード23-5**</span>
+<span class="listing-number">**サンプルコード22-5**</span>
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -600,9 +612,12 @@ public class CommonsLangExample {
 </dependency>
 ```
 
-Apache Commons I/Oは、ファイルやストリームの操作を簡潔なメソッドで実現するライブラリです。Java標準APIでは何行も必要なファイル操作が、1行で実装できます。以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、実務で頻繁に使用される機能を紹介します。
+Apache Commons I/Oは、ファイルやストリームの操作を簡潔なメソッドで実現するライブラリです。
+Java標準APIでは何行も必要なファイル操作が、1行で実装できます。
+以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、
+実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード23-6**</span>
+<span class="listing-number">**サンプルコード22-6**</span>
 
 ```java
 import org.apache.commons.io.FileUtils;
@@ -684,9 +699,11 @@ OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を�
 </dependency>
 ```
 
-OkHttpはSquare社が開発した高性能なHTTPクライアントライブラリで、コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
+OkHttpはSquare社が開発した高性能なHTTPクライアントライブラリで、
+コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
+以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
-<span class="listing-number">**サンプルコード23-7**</span>
+<span class="listing-number">**サンプルコード22-7**</span>
 
 ```java
 import okhttp3.*;
@@ -785,9 +802,12 @@ Lombokは、アノテーションを使ってゲッタ、セッタ、コンス�
 </dependency>
 ```
 
-Lombokはコンパイル時にアノテーションを処理し、ボイラープレートコードを自動生成する革新的なライブラリです。@Dataアノテーション1つでゲッタ、セッタ、equals、hashCode、toStringメソッドが自動生成されます。以下の例では、主要なアノテーションの使用方法を示します。
+Lombokはコンパイル時にアノテーションを処理し、
+ボイラープレートコードを自動生成する革新的なライブラリです。
+@Dataアノテーション1つでゲッタ、セッタ、equals、hashCode、toStringメソッドが自動生成されます。
+以下の例では、主要なアノテーションの使用方法を示します。
 
-<span class="listing-number">**サンプルコード23-8**</span>
+<span class="listing-number">**サンプルコード22-8**</span>
 
 ```java
 import lombok.Data;
@@ -888,9 +908,12 @@ GoogleのGuavaライブラリは、コレクション、キャッシュ、文字
 </dependency>
 ```
 
-GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。不変コレクション、Multimap、BiMap、Table、強力な文字列処理、キャッシュ機能など、実用的な機能が豊富に含まれています。以下の例では、これらの主要機能の使用方法を示します。
+GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。
+不変コレクション、Multimap、BiMap、Table、強力な文字列処理、キャッシュ機能など、
+実用的な機能が豊富に含まれています。
+以下の例では、これらの主要機能の使用方法を示します。
 
-<span class="listing-number">**サンプルコード23-9**</span>
+<span class="listing-number">**サンプルコード22-9**</span>
 
 ```java
 import com.google.common.collect.*;
@@ -989,7 +1012,7 @@ public class GuavaExample {
 - 採用実績：大規模プロジェクトでの採用実績
 
 #### ライセンスの確認
-<span class="listing-number">**サンプルコード23-10**</span>
+<span class="listing-number">**サンプルコード22-10**</span>
 
 ```java
 // pom.xmlでライセンスを確認
@@ -1114,7 +1137,7 @@ public class GuavaExample {
 
 ### 実践的な開発フロー
 
-<span class="listing-number">**サンプルコード23-11**</span>
+<span class="listing-number">**サンプルコード22-11**</span>
 
 ```java
 // 1. プロジェクトの初期化（Maven）
@@ -1137,7 +1160,7 @@ mvn versions:display-dependency-updates
 
 よくある問題と解決方法。
 
-<span class="listing-number">**サンプルコード23-12**</span>
+<span class="listing-number">**サンプルコード22-12**</span>
 
 ```java
 // 1. 依存関係の競合
@@ -1177,7 +1200,7 @@ mvn dependency:purge-local-repository
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter22/`
 
 ### 課題構成
 - 本章の基本概念の理解確認

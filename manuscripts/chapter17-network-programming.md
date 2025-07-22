@@ -160,7 +160,8 @@ public class SimpleTCPClient {
 
 ### 基本的なTCPサーバー
 
-TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
+TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、
+クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
 
 <span class="listing-number">**サンプルコード17-2**</span>
 
@@ -325,7 +326,8 @@ Content-Length: 1234
 
 ### 簡単なHTTPクライアント
 
-ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
+ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
+実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
 <span class="listing-number">**サンプルコード17-4**</span>
 
@@ -596,7 +598,7 @@ UDPの特徴と使用場面。
 
 ### チャットサーバー
 
-<span class="listing-number">**サンプルコード17-6**</span>
+<span class="listing-number">**サンプルコード17-9**</span>
 
 ```java
 import java.io.*;
@@ -696,7 +698,7 @@ public class ChatServer {
 
 ### チャットクライアント
 
-<span class="listing-number">**サンプルコード17-7**</span>
+<span class="listing-number">**サンプルコード17-10**</span>
 
 ```java
 import java.io.*;
@@ -749,7 +751,7 @@ public class ChatClient {
 
 現代のWebアプリケーションでは、JSON形式でのデータ交換が標準的です。JavaでJSON APIを扱う方法を学びます。
 
-<span class="listing-number">**サンプルコード17-8**</span>
+<span class="listing-number">**サンプルコード17-11**</span>
 
 ```java
 import java.net.URI;
@@ -871,9 +873,10 @@ Java標準APIやJettyなどのライブラリを使用してWebSocketクライ�
 
 ### セキュアな通信の実装
 
-SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。JavaではSSLSocketを使用してセキュアな通信を実装できます。
+SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。
+JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
-<span class="listing-number">**サンプルコード17-9**</span>
+<span class="listing-number">**サンプルコード17-12**</span>
 
 ```java
 import javax.net.ssl.*;
@@ -920,7 +923,7 @@ public class SSLClient {
 
 Java NIOを使用すると、単一スレッドで複数の接続を管理できるスケーラブルなネットワークプログラミングが可能です。
 
-<span class="listing-number">**サンプルコード17-10**</span>
+<span class="listing-number">**サンプルコード17-13**</span>
 
 ```java
 import java.nio.*;
@@ -1331,6 +1334,14 @@ byte[] postBytes = postData.getBytes(); // デフォルトエンコーディン�
 対処法： 明示的なエンコーディング指定を行う。
 
 ```java
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.http.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 // 良い例
 public class EncodingHandling {
     private static final String CHARSET = "UTF-8";
@@ -1348,7 +1359,7 @@ public class EncodingHandling {
                     throw new RuntimeException("エンコーディングエラー", e);
                 }
             })
-            .collect(java.util.stream.Collectors.joining("&"));
+            .collect(Collectors.joining("&"));
         
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
