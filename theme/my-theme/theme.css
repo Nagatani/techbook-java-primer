@@ -246,8 +246,13 @@ nav[role='doc-toc'] {
     text-fill-color: transparent;
   }
 }
-/* 最初のページは表紙なので、theme.cssでは背景設定しない */
+
 @page:nth(1) {
+  margin: 0;
+  background-image: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22a%22%20width%3D%2270%22%20height%3D%2270%22%20patternTransform%3D%22rotate(65)scale(4)%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23e5e6eb%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23b0b0b0%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M-4.8%204.44%204%2016.59%2016.14%207.8M32%2030.54l-13.23%207.07%207.06%2013.23M-9%2038.04l-3.81%2014.5%2014.5%203.81M65.22%204.44%2074%2016.59%2086.15%207.8M61%2038.04l-3.81%2014.5%2014.5%203.81%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23d1d3dc%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M59.71%2062.88v3h3M4.84%2025.54%202.87%2027.8l2.26%201.97m7.65%2016.4-2.21-2.03-2.03%202.21m29.26%207.13.56%202.95%202.95-.55%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23c0c2ce%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m58.98%2027.57-2.35-10.74-10.75%202.36M31.98-4.87l2.74%2010.65%2010.65-2.73M31.98%2065.13l2.74%2010.66%2010.65-2.74%22%2F%3E%3Cpath%20fill%3D%22none%22%20stroke%3D%22%23f9f9fb%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22m8.42%2062.57%206.4%202.82%202.82-6.41m33.13-15.24-4.86-5.03-5.03%204.86m-14-19.64%204.84-5.06-5.06-4.84%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22800%25%22%20height%3D%22800%25%22%20fill%3D%22url(%23a)%22%20transform%3D%22translate(-284%20-128)%22%2F%3E%3C%2Fsvg%3E') !important;
+  background-size: cover;
+  background-repeat: repeat;
+
   @bottom-center {
     content: none;
   }
@@ -299,7 +304,6 @@ h1::before {
   transform: translateX(-50%);
   width: 120px;
   height: 3px;
-  background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
 }
 
 /* 章タイトル下の装飾線 */
@@ -311,7 +315,6 @@ h1::after {
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #95a5a6 50%, transparent 100%);
 }
 
 /* 章レベルの見出し（n章）は改ページ維持 */
@@ -338,25 +341,6 @@ h1 b {
   
   /* 章番号の装飾線 */
   padding: 0.5em 2em;
-}
-
-h1 b::before,
-h1 b::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 60px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--primary-color) 100%);
-}
-
-h1 b::before {
-  left: -80px;
-}
-
-h1 b::after {
-  right: -80px;
-  background: linear-gradient(90deg, #3498db 0%, transparent 100%);
 }
 
 /* メインタイトル */
@@ -1354,12 +1338,6 @@ article > h1:first-child,
   font-weight: 600;
   color: #2c3e50;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-  /* 豪華な背景装飾 */
-  background: 
-    radial-gradient(ellipse at top left, rgba(52, 152, 219, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(155, 89, 182, 0.05) 0%, transparent 50%),
-    linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 /* 章扉ページの装飾的な背景パターン */
@@ -1372,10 +1350,6 @@ article > h1:first-child::before,
   left: -50%;
   width: 200%;
   height: 200%;
-  background-image: 
-    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(52, 152, 219, 0.03) 35px, rgba(52, 152, 219, 0.03) 70px),
-    repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(155, 89, 182, 0.03) 35px, rgba(155, 89, 182, 0.03) 70px);
-  animation: subtle-shift 30s ease-in-out infinite;
   z-index: -2;
 }
 
@@ -1441,22 +1415,12 @@ article > h1:first-child::after,
   transform: translate(-50%, -50%);
   width: 85%;
   height: 85%;
-  border: 3px solid transparent;
-  border-image: linear-gradient(45deg, #3498db, #9b59b6, #3498db) 1;
   opacity: 0.15;
   border-radius: 30px;
   z-index: -1;
   box-shadow: 
     inset 0 0 30px rgba(52, 152, 219, 0.1),
     0 0 40px rgba(52, 152, 219, 0.05);
-}
-
-/* 付録やインデックスページの特別なスタイル */
-h1:first-child:contains("付録"),
-h1:first-child:contains("索引"),
-h1:first-child:contains("目次") {
-  background: 
-    radial-gradient(circle at center, rgba(44, 62, 80, 0.03) 0%, transparent 70%);
 }
 
 /* 章見出しのサブテキスト（章の概要説明）スタイル */
