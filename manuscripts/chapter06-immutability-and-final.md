@@ -674,7 +674,7 @@ System.out.println(point.y()); // 20
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter06/`
 
 ### 課題構成

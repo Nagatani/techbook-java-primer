@@ -1,4 +1,4 @@
-# <b>4章</b> <span>クラスとインスタンス</span> <small>設計図からオブジェクトを生み出す技術</small>
+# <b>4章</b> <span>クラスとインスタンス</span> <small>オブジェクトの生成と連携</small>
 
 ## 本章の学習目標
 
@@ -1028,7 +1028,7 @@ public class Logger {
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`
 
 ### 課題構成

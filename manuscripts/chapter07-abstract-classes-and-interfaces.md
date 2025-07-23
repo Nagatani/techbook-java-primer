@@ -1,4 +1,4 @@
-# <b>7章</b> <span>抽象クラスとインターフェイス</span> <small>柔軟なシステム設計の基礎</small>
+# <b>7章</b> <span>抽象クラスとインターフェイス</span> <small>柔軟なシステム設計の契約的なプログラミングの基礎</small>
 
 ## 本章の学習目標
 
@@ -1742,7 +1742,7 @@ class PdfReportGenerator extends ReportGenerator {
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/`
 
 ### 課題構成

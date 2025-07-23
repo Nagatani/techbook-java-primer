@@ -1,4 +1,4 @@
-# <b>13章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的データ処理のマスター</small>
+# <b>13章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的なデータ処理技法を覚えよう</small>
 
 ## 本章の学習目標
 
@@ -1253,7 +1253,7 @@ public class ComplexProcessingExample {
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`
 
 ### 課題構成

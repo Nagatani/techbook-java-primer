@@ -1,4 +1,4 @@
-# <b>12章</b> <span>ラムダ式と関数型インターフェイス</span> <small>関数型プログラミングへの扱い</small>
+# <b>12章</b> <span>ラムダ式と関数インターフェイス</span> <small>関数型プログラミングへの誘い</small>
 
 ## 本章の学習目標
 
@@ -943,7 +943,7 @@ public class ThreadLambdaExample {
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/`
 
 ### 課題構成

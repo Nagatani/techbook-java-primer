@@ -1,4 +1,4 @@
-# <b>3章</b> <span>オブジェクト指向の考え方</span> <small>現実世界をプログラムで表現する技術</small>
+# <b>3章</b> <span>オブジェクト指向の考え方</span> <small>よりよいプログラミング技法を求めて</small>
 
 ## 本章の学習目標
 
@@ -1571,7 +1571,7 @@ System.out.println(students[0]);     // nullが表示される
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter03/`
 
 ### 課題構成

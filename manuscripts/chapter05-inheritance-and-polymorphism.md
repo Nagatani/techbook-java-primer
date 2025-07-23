@@ -535,7 +535,7 @@ public class ExcelDocument extends Document {
 ③　特化した振る舞い： Excelファイルはメタデータを含むため、ファイルサイズが大きくなるよう設定
 
 ④　固有メソッドの追加： createChart()はExcel特有の機能として、親クラスには存在しないメソッドを追加
-```
+
 
 #### リファクタリングの効果
 
@@ -1584,7 +1584,7 @@ if (user instanceof AdminUser admin) {
 ## 章末演習
 
 ### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter05/`
 
 ### 課題構成

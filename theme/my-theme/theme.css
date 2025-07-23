@@ -1,19 +1,54 @@
 @import url(./theme-all.css);
-@import url(./css/lib/prism/base.css);
-@import url(./css/lib/prism/theme-prism.css);
 
 /**
  * Theme variables
 */
 :root {
-  --vs-theme--anchor-color-body: #3498db;
-  --vs-theme--blockquote-color-bg: #ecf0f1;
-  --vs-theme--blockquote-color-body: #34495e;
-  --vs-theme--inline-code-color-bg: #ecf0f1;
-  --vs-theme--inline-code-color-body: #34495e;
+  counter-reset: section-counter;
+  /* 基本色定義 */
+  --primary-color: #3498db;
+  --primary-color-light: #5dade2;
+  --primary-color-dark: #2c7fb8;
+  --secondary-color: #9b59b6;
+  --secondary-color-light: #bb8fce;
+  --secondary-color-dark: #7d3c98;
+  
+  /* 意味的な色 */
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --info-color: #3498db;
+  
+  /* グレースケール */
+  --gray-900: #2c3e50;
+  --gray-800: #34495e;
+  --gray-700: #495057;
+  --gray-600: #6c757d;
+  --gray-500: #95a5a6;
+  --gray-400: #bdc3c7;
+  --gray-300: #dee2e6;
+  --gray-200: #ecf0f1;
+  --gray-100: #f8f9fa;
+  
+  /* テキスト色 */
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-700);
+  --text-muted: var(--gray-600);
+  
+  /* 背景色 */
+  --bg-primary: #ffffff;
+  --bg-secondary: var(--gray-100);
+  --bg-tertiary: var(--gray-200);
+  
+  /* 既存のテーマ変数 */
+  --vs-theme--anchor-color-body: var(--primary-color);
+  --vs-theme--blockquote-color-bg: var(--gray-200);
+  --vs-theme--blockquote-color-body: var(--gray-800);
+  --vs-theme--inline-code-color-bg: var(--gray-200);
+  --vs-theme--inline-code-color-body: var(--gray-800);
   --vs-theme--footnote-color-bg-on-screen: #e6f6d7;
   --vs-theme--crossref-anchor-color-bg-on-screen: rgba(255, 0, 0, 0.3);
-  --vs-theme--crossref-anchor-color-body-on-screen: #e74c3c;
+  --vs-theme--crossref-anchor-color-body-on-screen: var(--danger-color);
   --vs-theme--image-resolution-for-figure-image: 300dpi;
   --vs-theme--page-top-left-content: env(pub-title);
   --vs-theme--page-top-right-content: env(doc-title);
@@ -21,10 +56,9 @@
 }
 
 :root {
-  --vs-font-family: 'Neue Frutiger World', 'Verdana', 'Hiragino Sans',
-    sans-serif;
+  --vs-font-family: 'Neue Frutiger World', 'Verdana', 'Hiragino Sans', sans-serif;
   --vs-font-size-on-print: 75%;
-  --vs-line-height: 1.7;
+  --vs-line-height: 1.6;
   --vs-widows-orphans: 3;
 
   --vs--heading-line-height: 1.2;
@@ -66,6 +100,12 @@ blockquote {
   border-radius: var(--vs-prism--block-code-border-radius);
   color: var(--vs-theme--blockquote-color-body);
   padding: var(--vs-prism--block-code-padding);
+}
+
+blockquote > p {
+  text-indent: 0;
+  line-height: var(--vs-line-height);
+  padding: 1em 2em;
 }
 
 blockquote > p:first-child {
@@ -152,19 +192,59 @@ nav[role='doc-toc'] {
 @page {
   size: B5;
   font-size: 10Q;
+  counter-reset: section-counter;
   @bottom-center {
-    content: counter(page);
+    content: none;
   }
 }
 
-
+/* 左ページ（偶数ページ）のスタイル */
 @page:left {
-  margin-block: 15mm;
-  margin-inline: 16mm 18.25mm;
+  margin-block: 20mm 25mm;
+  margin-inline: 20mm 22mm;
+  
+  @top-left {
+    content: none;
+  }
+  
+  @bottom-left {
+    content: counter(page);
+    font-size: 12Q;
+    font-weight: 600;
+    color: #495057;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 }
+
+/* 右ページ（奇数ページ）のスタイル */
 @page:right {
-  margin-block: 15mm;
-  margin-inline: 18.25mm 16mm;
+  margin-block: 20mm 25mm;
+  margin-inline: 22mm 20mm;
+  
+  @top-right {
+    content: string(section);
+    font-size: 10Q;
+    color: #6c757d;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    font-weight: 500;
+  }
+  
+  @bottom-right {
+    content: counter(page);
+    font-size: 12Q;
+    font-weight: 600;
+    color: #495057;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 }
 @page:nth(1) {
   margin: 0;
@@ -179,14 +259,15 @@ nav[role='doc-toc'] {
 
 body {
   font-size: 13Q;
-  line-height: 24Q;
-  font-family: "Noto Sans JP" sans-serif;
+  line-height: 26Q;
+  font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
   font-weight: 400;
   text-spacing: auto;
-  text-justify: initial;
-  text-align: initial;
-  widows: 1;
-  orphans: 1;
+  text-justify: inter-ideograph;
+  text-align: justify;
+  widows: 3;
+  orphans: 3;
+  letter-spacing: 0.02em;
 }
 
 /* 見出し類 */
@@ -206,7 +287,7 @@ h1 {
   margin-block-start: 30mm;
   margin-block-end: 20mm;
   text-align: center;
-  counter-reset: section-counter 0;
+  counter-reset: section-counter;
   position: relative;
   
   /* 見出しの装飾的な要素 */
@@ -251,31 +332,82 @@ h1:contains("付録") {
 /* 章番号 */
 h1 b {
   display: block;
-  font-size: 24Q;
-  font-weight: 400;
-  color: #7f8c8d;
-  margin-bottom: 0.3em;
-  letter-spacing: 0.2em;
+  font-size: 28Q;
+  font-weight: 300;
+  color: var(--primary-color);
+  margin-bottom: 0.5em;
+  letter-spacing: 0.3em;
+  position: relative;
+  text-transform: uppercase;
+  
+  /* 章番号の装飾線 */
+  padding: 0.5em 2em;
+}
+
+h1 b::before,
+h1 b::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--primary-color) 100%);
+}
+
+h1 b::before {
+  left: -80px;
+}
+
+h1 b::after {
+  right: -80px;
+  background: linear-gradient(90deg, #3498db 0%, transparent 100%);
 }
 
 /* メインタイトル */
 h1 span {
   display: block;
-  font-size: 48Q;
+  font-size: 52Q;
   font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.5em;
+  color: var(--text-primary);
+  margin-bottom: 0.6em;
   line-height: 1.2;
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 60px rgba(52, 152, 219, 0.15);
+  letter-spacing: 0.02em;
 }
 
 /* サブタイトル */
 h1 small {
   display: block;
-  font-size: 20Q;
+  font-size: 22Q;
   font-weight: 400;
-  color: #5d6d7e;
+  color: var(--text-secondary);
   font-style: italic;
-  line-height: 1.4;
+  line-height: 1.5;
+  padding: 0 3em;
+  position: relative;
+}
+
+/* サブタイトルの装飾的な引用符 */
+h1 small::before,
+h1 small::after {
+  position: absolute;
+  font-size: 36Q;
+  color: rgba(52, 152, 219, 0.2);
+  font-style: normal;
+}
+
+h1 small::before {
+  content: """;
+  left: 0.5em;
+  top: -0.2em;
+}
+
+h1 small::after {
+  content: """;
+  right: 0.5em;
+  bottom: -0.2em;
 }
 
 .subtitle {
@@ -291,9 +423,10 @@ h1 small {
 h2 {
   font-size: 24Q;
   line-height: 32Q;
-  margin-block: 2.5em 1.8em;
+  margin-block-start: 2em;
+  margin-block-end: 1.5em;
   margin-inline: 0;
-  padding: 1em 1em 1em 4.5em;
+  padding: 2.5em 1em 1em 1em;
   position: relative;
   
   /* 改ページを防ぐ */
@@ -309,33 +442,43 @@ h2 {
   box-sizing: border-box;
   
   /* 見出しの装飾 */
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  display: block;
   
   /* 背景グラデーション */
   background: #f8f9fa;
   border-left: 4px solid #3498db;
+  
+  color: #2c3e50;
+  font-weight: 700;
 }
 
-/* h2のセクション番号を左側に表示 */
-h2::before {
-  content: counter(section-counter, decimal-leading-zero);
-  position: absolute;
-  left: 0.5em;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2.5em;
-  height: 2.5em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20Q;
-  font-weight: 700;
-  color: #3498db;
-  background: white;
-  border-radius: 50%;
-  border: 2px solid #3498db;
+/* h2のセクション番号を左上に大きく表示 */
+body h2::before,
+article h2::before,
+section h2::before {
+  content: counter(section-counter, decimal-leading-zero) !important;
+  position: absolute !important;
+  left: 0.2em !important;
+  top: -0.3em !important;
+  font-size: 60Q !important;
+  font-weight: 900 !important;
+  color: rgb(52, 152, 219) !important;
+  z-index: 1 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.05em !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  background: none !important;
+  border: none !important;
+  transform: none !important;
+  /* 文字の縁取り */
+  text-shadow: 
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff,
+    2px 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* h2直後のsmallタグをサブタイトルとして装飾 */
@@ -389,13 +532,13 @@ h2 > span:first-child:not(small) {
 h3 {
   font-size: 18Q;
   line-height: 24Q;
-  margin-block-start: 1.2lh;
-  margin-block-end: 0.4lh;
+  margin-block-start: 2em;
+  margin-block-end: 0.8em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 600;
   color: #2c3e50;
-  padding-left: 1em;
+  padding-left: 2.5em;
   position: relative;
 }
 
@@ -411,12 +554,23 @@ h3::before {
   border-radius: 2px;
 }
 
+/* h3の装飾的な記号 */
+h3::after {
+  content: "▶";
+  position: absolute;
+  left: 0.7em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3498db;
+  font-size: 14px;
+}
+
 /* h4 スタイル - 小節見出し */
 h4 {
   font-size: 16Q;
   line-height: 22Q;
-  margin-block-start: 1lh;
-  margin-block-end: 0.3lh;
+  margin-block-start: 1.5em;
+  margin-block-end: 0.6em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 600;
@@ -429,58 +583,115 @@ h4 {
 h5 {
   font-size: 14Q;
   line-height: 20Q;
-  margin-block-start: 0.8lh;
-  margin-block-end: 0.2lh;
+  margin-block-start: 1.2em;
+  margin-block-end: 0.5em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 600;
   color: #34495e;
   background-color: #f8f9fa;
-  padding: 0.2em 0.8em;
+  padding: 0.3em 0.8em 0.3em 2em;
   border-radius: 4px;
+  position: relative;
+  border-left: 3px solid #3498db;
+}
+
+/* h5の装飾的なドット */
+h5::before {
+  content: "";
+  position: absolute;
+  left: 0.7em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: #3498db;
+  border-radius: 50%;
 }
 
 /* h6 スタイル - 小項見出し */
 h6 {
   font-size: 13Q;
   line-height: 20Q;
-  margin-block-start: 0.6lh;
-  margin-block-end: 0.2lh;
+  margin-block-start: 1em;
+  margin-block-end: 0.4em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 700;
   color: #495057;
   font-style: italic;
+  padding-left: 1.5em;
+  position: relative;
 }
 
 /* h6の前に記号を追加 */
 h6::before {
-  content: "▸ ";
-  color: #3498db;
-  margin-right: 0.3em;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent #3498db;
+  margin-right: 0.5em;
 }
 
 p {
   font-size: 13Q;
-  line-height: 24Q;
+  line-height: 26Q;
   text-indent: 1em;
   text-align: justify;
-  margin-block: 0;
+  margin-block-start: 0.5lh;
+  margin-block-end: 0.5lh;
+  hyphens: auto;
+}
+
+/* 見出し直後の段落はインデントなし */
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p {
+  text-indent: 0;
+  margin-block-start: 0.3lh;
 }
 
 ul,
 ol {
-  margin-block: 0.5lh;
-  margin-inline: 0 1em;
-  padding-left: 1em !important;
+  margin-block: 1lh;
+  margin-inline: 0 1.5em;
+  padding-left: 1.5em !important;
+  line-height: 1.8;
 }
+
+/* リスト項目の間隔 */
+li {
+  margin-block: 0.3lh;
+}
+
+/* ネストしたリスト */
 ul ul,
 ul ol,
 ol ul,
 ol ol {
-  margin-block: 0.2lh !important;
+  margin-block: 0.5lh !important;
   margin-inline: 0 1em;
-  padding-left: 1em !important;
+  padding-left: 1.5em !important;
+}
+
+/* リストの前後の余白 */
+p + ul,
+p + ol {
+  margin-block-start: 0.8lh;
+}
+
+ul + p,
+ol + p {
+  margin-block-start: 0.8lh;
 }
 
 
@@ -663,92 +874,153 @@ code:not(pre code) {
 .token.keyword,
 .hljs-keyword,
 code .keyword {
-  color: #0000ff;
+  color: #0066cc;
   font-weight: bold;
+  text-shadow: 0 0 1px rgba(0, 102, 204, 0.3);
 }
 
 /* Markdownのコードブロック言語指定に基づくスタイル */
 pre[data-lang="java"] {
-  border-left: 4px solid #f89820;
+  border-left: 5px solid #f89820;
+  box-shadow: inset 0 0 10px rgba(248, 152, 32, 0.1);
 }
 
 pre[data-lang="javascript"],
 pre[data-lang="js"] {
-  border-left: 4px solid #f7df1e;
+  border-left: 5px solid #f7df1e;
+  box-shadow: inset 0 0 10px rgba(247, 223, 30, 0.1);
 }
 
 pre[data-lang="python"] {
-  border-left: 4px solid #3776ab;
+  border-left: 5px solid #3776ab;
+  box-shadow: inset 0 0 10px rgba(55, 118, 171, 0.1);
 }
 
 pre[data-lang="bash"],
 pre[data-lang="shell"] {
-  border-left: 4px solid #4eaa25;
-  background-color: #2d2d2d;
+  border-left: 5px solid #4eaa25;
+  background-color: #1e1e1e;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 pre[data-lang="bash"] code,
 pre[data-lang="shell"] code {
-  color: #f8f8f2;
+  color: #d4d4d4;
+  background-image: none;
 }
 
 /* 文字列 */
-.token.string {
-  color: #008000;
+.token.string,
+.hljs-string {
+  color: #ce9178;
+  background-color: rgba(206, 145, 120, 0.05);
+  padding: 0 2px;
+  border-radius: 2px;
 }
 
 /* コメント */
-.token.comment {
-  color: #808080;
+.token.comment,
+.hljs-comment {
+  color: #6a9955;
   font-style: italic;
+  opacity: 0.8;
 }
 
 /* 数値 */
-.token.number {
-  color: #098658;
+.token.number,
+.hljs-number {
+  color: #6c875d;
+  font-weight: 500;
 }
 
 /* クラス名 */
-.token.class-name {
-  color: #2b91af;
+.token.class-name,
+.hljs-class .hljs-title {
+  color: rgb(76 159 142);
   font-weight: bold;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(78, 201, 176, 0.3);
 }
 
 /* 関数・メソッド名 */
-.token.function {
-  color: #795e26;
+.token.function,
+.hljs-function {
+  color: rgb(175 79 20);
+  font-weight: 600;
 }
 
 /* 演算子 */
-.token.operator {
-  color: #000000;
+.token.operator,
+.hljs-operator {
+  color: rgb(0, 102, 204);
+  font-weight: bold;
 }
 
 /* 区切り文字 */
 .token.punctuation {
-  color: #000000;
+  color: #808080;
 }
 
 /* アノテーション */
-.token.annotation {
-  color: #808000;
+.token.annotation,
+.hljs-meta {
+  color: #569cd6;
   font-weight: bold;
+  font-style: italic;
 }
 
 /* 型 */
 .token.builtin,
-.token.type {
-  color: #2b91af;
+.token.type,
+.hljs-type {
+  color: #4ec9b0;
+  font-style: italic;
 }
 
 /* 変数 */
-.token.variable {
-  color: #001080;
+.token.variable,
+.hljs-variable {
+  color: #9cdcfe;
 }
 
 /* パッケージ・インポート */
-.token.namespace {
-  color: #000080;
+.token.namespace,
+.hljs-namespace {
+  color: #c586c0;
+  opacity: 0.9;
+}
+
+/* 定数 */
+.token.constant,
+.hljs-constant {
+  color: #4fc1ff;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* 予約語・特殊な値 */
+.token.boolean,
+.token.null,
+.hljs-literal {
+  color: #569cd6;
+  font-weight: bold;
+}
+
+/* XMLタグ */
+.token.tag,
+.hljs-tag {
+  color: #569cd6;
+}
+
+.token.attr-name,
+.hljs-attr {
+  color: #9cdcfe;
+}
+
+.token.attr-value,
+.hljs-string {
+  color: #ce9178;
 }
 
 /* 言語別コードブロックのスタイル */
@@ -797,12 +1069,14 @@ pre[class*="language-shell"] .token.comment {
   color: #6272a4;
 }
 
-/* カスタムクラス */
+/* カスタムクラス - 学習支援要素 */
 .note {
   background-color: #e8f4f8;
   border-left: 4px solid var(--secondary-color);
   padding: 1em;
   margin: 1em 0;
+  position: relative;
+  border-radius: 0 8px 8px 0;
 }
 
 .warning {
@@ -810,6 +1084,8 @@ pre[class*="language-shell"] .token.comment {
   border-left: 4px solid #ffc107;
   padding: 1em;
   margin: 1em 0;
+  position: relative;
+  border-radius: 0 8px 8px 0;
 }
 
 .important {
@@ -817,6 +1093,246 @@ pre[class*="language-shell"] .token.comment {
   border-left: 4px solid #dc3545;
   padding: 1em;
   margin: 1em 0;
+  position: relative;
+  border-radius: 0 8px 8px 0;
+}
+
+/* ポイントボックス - 重要な概念や要点 */
+.point-box,
+.key-point {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5em 1.5em 1.5em 4em;
+  margin: 2em 0;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+  overflow: hidden;
+}
+
+.point-box::before,
+.key-point::before {
+  content: "";
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.3),
+    0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* POINTラベル */
+.point-box > h4::after,
+.key-point > h4::after {
+  content: "POINT";
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  font-size: 12Q;
+  font-weight: bold;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+}
+
+.point-box h4,
+.key-point h4 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-size: 18Q;
+  font-weight: bold;
+}
+
+.point-box p,
+.key-point p {
+  margin: 0.5em 0;
+  text-indent: 0;
+}
+
+/* 例題ボックス */
+.example-box,
+.example {
+  position: relative;
+  background-color: #f0f8ff;
+  border: 2px solid #4682b4;
+  border-radius: 10px;
+  padding: 2em;
+  margin: 2em 0;
+  box-shadow: 0 3px 15px rgba(70, 130, 180, 0.15);
+}
+
+.example-box::before,
+.example::before {
+  content: "例題";
+  position: absolute;
+  top: -0.7em;
+  left: 1.5em;
+  background: white;
+  padding: 0 0.8em;
+  font-weight: bold;
+  color: #4682b4;
+  font-size: 16Q;
+}
+
+.example-box h4,
+.example h4 {
+  margin-top: 0;
+  color: #2c5282;
+  font-size: 16Q;
+}
+
+/* 演習問題ボックス */
+.exercise-box,
+.practice {
+  position: relative;
+  background-color: #f5fff5;
+  border: 2px solid #228b22;
+  border-radius: 10px;
+  padding: 2em;
+  margin: 2em 0;
+  box-shadow: 0 3px 15px rgba(34, 139, 34, 0.15);
+}
+
+.exercise-box::before,
+.practice::before {
+  content: "演習";
+  position: absolute;
+  top: -0.7em;
+  left: 1.5em;
+  background: white;
+  padding: 0 0.8em;
+  font-weight: bold;
+  color: #228b22;
+  font-size: 16Q;
+}
+
+.exercise-box h4,
+.practice h4 {
+  margin-top: 0;
+  color: #1e5e1e;
+  font-size: 16Q;
+}
+
+/* チェックリスト */
+.checklist {
+  background-color: #fafafa;
+  border: 2px dashed #6c757d;
+  border-radius: 8px;
+  padding: 1.5em;
+  margin: 2em 0;
+}
+
+.checklist h4 {
+  margin-top: 0;
+  color: #495057;
+  font-size: 16Q;
+  margin-bottom: 1em;
+}
+
+.checklist ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist li {
+  position: relative;
+  padding-left: 2em;
+  margin: 0.5em 0;
+}
+
+.checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  color: #6c757d;
+  font-size: 1.2em;
+}
+
+.checklist li.checked::before {
+  content: "☑";
+  color: #28a745;
+}
+
+/* ヒントボックス */
+.hint-box,
+.tip {
+  position: relative;
+  background-color: #fffbf0;
+  border-left: 4px solid #ff9800;
+  padding: 1em 1em 1em 3em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.hint-box::before,
+.tip::before {
+  content: "?";
+  position: absolute;
+  left: 0.8em;
+  top: 1em;
+  width: 20px;
+  height: 20px;
+  background: #ff9800;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.hint-box h5,
+.tip h5 {
+  margin-top: 0;
+  color: #e65100;
+  font-size: 14Q;
+}
+
+/* まとめボックス */
+.summary-box {
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+  border: 2px solid #6c757d;
+  border-radius: 12px;
+  padding: 2em;
+  margin: 3em 0;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.summary-box::before {
+  content: "まとめ";
+  position: absolute;
+  top: -0.8em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 1.5em;
+  font-weight: bold;
+  font-size: 18Q;
+  color: #495057;
+  border: 2px solid #6c757d;
+  border-radius: 20px;
+}
+
+.summary-box h3 {
+  margin-top: 0.5em;
+  text-align: center;
+  color: #343a40;
+}
+
+.summary-box ul {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+.summary-box li {
+  margin: 0.5em 0;
+  color: #495057;
 }
 
 /* 章タイトルページ専用のスタイル */
@@ -842,6 +1358,34 @@ article > h1:first-child,
   font-weight: 600;
   color: #2c3e50;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* 豪華な背景装飾 */
+  background: 
+    radial-gradient(ellipse at top left, rgba(52, 152, 219, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(155, 89, 182, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* 章扉ページの装飾的な背景パターン */
+section > h1:first-child::before,
+article > h1:first-child::before,
+.chapter > h1:first-child::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(52, 152, 219, 0.03) 35px, rgba(52, 152, 219, 0.03) 70px),
+    repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(155, 89, 182, 0.03) 35px, rgba(155, 89, 182, 0.03) 70px);
+  animation: subtle-shift 30s ease-in-out infinite;
+  z-index: -2;
+}
+
+@keyframes subtle-shift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-20px, -20px) rotate(1deg); }
 }
 
 /* 章番号を大きく表示するスタイル（オプション） */
@@ -899,12 +1443,16 @@ article > h1:first-child::after,
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  height: 80%;
-  border: 2px solid var(--secondary-color);
-  opacity: 0.1;
-  border-radius: 20px;
+  width: 85%;
+  height: 85%;
+  border: 3px solid transparent;
+  border-image: linear-gradient(45deg, #3498db, #9b59b6, #3498db) 1;
+  opacity: 0.15;
+  border-radius: 30px;
   z-index: -1;
+  box-shadow: 
+    inset 0 0 30px rgba(52, 152, 219, 0.1),
+    0 0 40px rgba(52, 152, 219, 0.05);
 }
 
 /* 付録やインデックスページの特別なスタイル */
