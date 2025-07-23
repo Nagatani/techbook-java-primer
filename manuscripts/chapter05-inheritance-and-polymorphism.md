@@ -47,8 +47,6 @@
 | is-a関係とhas-a関係を理解し、継承とコンポジションを目的に応じて使い分けられる |
 | 実行時のオブジェクトの型に応じて動的に振る舞いが変わるプログラムを作成できる |
 
-
-
 ## 実践的な継承設計パターン
 
 第3章でオブジェクト指向の基本概念として継承を学び、第4章では実際のクラス設計で継承を活用しました。本章では、これらの基礎知識を発展させ、より高度で実践的な継承設計パターンと、ポリモーフィズムを活用した柔軟なプログラム構造について学習します。
@@ -70,7 +68,7 @@
 
 実際のビジネスシステムでよく見られる決済処理を例に、段階的な継承設計の改善プロセスを見ていきましょう。ここでは、抽象クラスを使わずに、具象クラスの継承とメソッドのオーバーライドによってテンプレートメソッドパターンを実現する方法を示します。
 
-<span class="listing-number">**サンプルコード5-1**</span>
+<span class="listing-number">**サンプルコード5-2**</span>
 
 ```java
 import java.math.BigDecimal;
@@ -188,7 +186,7 @@ public class PaymentProcessor {
 
 #### 具体的な決済処理の実装例
 
-<span class="listing-number">**サンプルコード5-2**</span>
+<span class="listing-number">**サンプルコード5-4**</span>
 
 ```java
 // クレジットカード決済の実装
@@ -287,7 +285,7 @@ public class PayPalPayment extends PaymentProcessor {
 
 #### 例外を使わない決済処理の使用例
 
-<span class="listing-number">**サンプルコード5-3**</span>
+<span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
 public class PaymentExample {
@@ -344,7 +342,7 @@ public class PaymentExample {
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。
 
-<span class="listing-number">**サンプルコード5-4**</span>
+<span class="listing-number">**サンプルコード5-8**</span>
 
 ```java
 public class WordDocument {
@@ -407,6 +405,8 @@ public class PDFDocument {
 
 ⑥　固有メソッド： generatePDF()はPDF特有の機能として実装。
 
+<span class="listing-number">**サンプルコード5-9**</span>
+
 ```java
 public class ExcelDocument {
     private String filename;
@@ -432,7 +432,7 @@ public class ExcelDocument {
 
 #### ステップ2：共通部分の抽出
 
-<span class="listing-number">**サンプルコード5-5**</span>
+<span class="listing-number">**サンプルコード5-11**</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -470,7 +470,7 @@ public class Document {
 
 #### ステップ3：子クラスの再実装
 
-<span class="listing-number">**サンプルコード5-6**</span>
+<span class="listing-number">**サンプルコード5-13**</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -549,7 +549,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 #### 継承の基本構文と継承される要素
 
-<span class="listing-number">**サンプルコード5-7**</span>
+<span class="listing-number">**サンプルコード5-15**</span>
 
 ```java
 public class Employee {  // 親クラス（スーパークラス）
@@ -603,7 +603,7 @@ public class Developer extends Employee {  // ③
 
 #### 誤用例1：スタックがArrayListを継承
 
-<span class="listing-number">**サンプルコード5-8**</span>
+<span class="listing-number">**サンプルコード5-17**</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -650,7 +650,7 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-9**</span>
+<span class="listing-number">**サンプルコード5-19**</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -697,7 +697,7 @@ public class MyStack<E> {
 以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
 この設計はリスコフ置換原則に違反します。
 
-<span class="listing-number">**サンプルコード5-10**</span>
+<span class="listing-number">**サンプルコード5-21**</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
@@ -754,7 +754,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-11**</span>
+<span class="listing-number">**サンプルコード5-23**</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -822,6 +822,8 @@ public class GeometryTest {
 
 この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。例えば：
 
+<span class="listing-number">**サンプルコード5-24**</span>
+
 ```java
 // 解決策の例：インターフェイスを使用
 interface Shape {
@@ -874,7 +876,7 @@ class Square implements Shape {
 
 #### 誤用例1：実装の都合だけで継承を使う
 
-<span class="listing-number">**サンプルコード5-12**</span>
+<span class="listing-number">**サンプルコード5-26**</span>
 
 ```java
 // 悪い例：Stackを継承したMyStack
@@ -904,7 +906,7 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 #### 改善策：コンポジション（委譲）を使う
 
-<span class="listing-number">**サンプルコード5-13**</span>
+<span class="listing-number">**サンプルコード5-28**</span>
 
 ```java
 // 良い例：ArrayListを内部で使用
@@ -946,7 +948,7 @@ public class MyStack<E> {
 
 Javaは多重継承をサポートしないため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
 
-<span class="listing-number">**サンプルコード5-14**</span>
+<span class="listing-number">**サンプルコード5-30**</span>
 
 ```java
 // 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
@@ -979,7 +981,7 @@ public class ApprovingEmployee extends Employee {
 
 RPGゲームのキャラクターシステムを例に、継承を実際に使用した実装例です。親クラスのフィールドやメソッドを子クラスで活用し、独自の機能を追加する方法を示しています。
 
-<span class="listing-number">**サンプルコード5-15**</span>
+<span class="listing-number">**サンプルコード5-32**</span>
 
 ```java
 // Main.java
@@ -1033,7 +1035,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-16**</span>
+<span class="listing-number">**サンプルコード5-34**</span>
 
 ```java
 // 親クラス
@@ -1106,7 +1108,7 @@ public class Knight extends Character {
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これをアップキャストと呼びます。
 
-<span class="listing-number">**サンプルコード5-17**</span>
+<span class="listing-number">**サンプルコード5-36**</span>
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
@@ -1121,7 +1123,7 @@ User user3 = new GuestUser("session123");
 
 ここからがポリモーフィズムの真骨頂です。これらの`User`型の変数に対して`processRequest()`メソッドを呼びだすと、何が起こるでしょうか。
 
-<span class="listing-number">**サンプルコード5-18**</span>
+<span class="listing-number">**サンプルコード5-38**</span>
 
 ```java
 user1.processRequest("READ"); // 実行結果: ユーザー U001 が READ をリクエストしました
@@ -1137,7 +1139,7 @@ user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 �
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
 
-<span class="listing-number">**サンプルコード5-19**</span>
+<span class="listing-number">**サンプルコード5-40**</span>
 
 ```java
 public class UserManagementSystem {
@@ -1168,7 +1170,7 @@ public class UserManagementSystem {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-20**</span>
+<span class="listing-number">**サンプルコード5-42**</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -1216,7 +1218,7 @@ public class UserSystemBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-21**</span>
+<span class="listing-number">**サンプルコード5-44**</span>
 
 ```java
 // 統一的な処理で全ての型を扱える
@@ -1302,7 +1304,7 @@ class User {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-22**</span>
+<span class="listing-number">**サンプルコード5-46**</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1381,7 +1383,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-23**</span>
+<span class="listing-number">**サンプルコード5-48**</span>
 
 ```java
 // 基底クラス
@@ -1511,6 +1513,8 @@ class Pentagon extends Shape {
 
 たとえば、`User`型の変数`user`が、もし`AdminUser`だったら`performAdminTask()`メソッドを呼びたい、という場合です。
 
+<span class="listing-number">**サンプルコード5-49**</span>
+
 ```java
 User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
 // user.performAdminTask(); // コンパイルエラー！
@@ -1529,7 +1533,7 @@ User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
 
 `(変換したい型)変数` のように記述します。
 
-<span class="listing-number">**サンプルコード5-24**</span>
+<span class="listing-number">**サンプルコード5-51**</span>
 
 ```java
 public class UserAccessControl {
@@ -1560,7 +1564,7 @@ public class UserAccessControl {
 
 Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
 
-<span class="listing-number">**サンプルコード5-25**</span>
+<span class="listing-number">**サンプルコード5-53**</span>
 
 ```java
 // 従来の書き方
@@ -1624,6 +1628,8 @@ PayrollSystem（給与計算システム）
 
 ### 基本的なtry-catch構文
 
+<span class="listing-number">**サンプルコード5-54**</span>
+
 ```java
 public class BasicExceptionExample {
     public static void main(String[] args) {
@@ -1645,18 +1651,27 @@ public class BasicExceptionExample {
 ### よく遭遇する例外
 
 1. NullPointerException: nullオブジェクトのメソッド呼び出し
+
+<span class="listing-number">**サンプルコード5-55**</span>
+
 ```java
 String str = null;
 // str.length();  // NullPointerException発生
 ```
 
 2. ArrayIndexOutOfBoundsException: 配列の範囲外アクセス
+
+<span class="listing-number">**サンプルコード5-56**</span>
+
 ```java
 int[] numbers = {1, 2, 3};
 // numbers[5];  // ArrayIndexOutOfBoundsException発生
 ```
 
 3. ClassCastException: instanceof確認なしでの型変換
+
+<span class="listing-number">**サンプルコード5-57**</span>
+
 ```java
 Object obj = "文字列";
 // Integer num = (Integer) obj;  // ClassCastException発生
@@ -1665,6 +1680,8 @@ Object obj = "文字列";
 ### 継承における例外処理の注意点
 
 メソッドをオーバーライドする際、親クラスのメソッドが投げる例外より広い例外を投げることはできません。
+
+<span class="listing-number">**サンプルコード5-58**</span>
 
 ```java
 class Parent {
@@ -1699,6 +1716,8 @@ class Child extends Parent {
 #### 1. super()呼び出しエラー
 問題: 親クラスのコンストラクタを正しく呼び出さない
 
+<span class="listing-number">**サンプルコード5-59**</span>
+
 ```java
 // エラー例
 class Parent {
@@ -1711,6 +1730,9 @@ class Child extends Parent {
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード5-60**</span>
+
 ```java
 class Child extends Parent {
     public Child() {
@@ -1726,6 +1748,8 @@ class Child extends Parent {
 
 #### 2. オーバーライドエラー
 問題: メソッドオーバーライド時の制約違反
+
+<span class="listing-number">**サンプルコード5-61**</span>
 
 ```java
 // エラー例1：アクセス修飾子の制限強化
@@ -1746,6 +1770,9 @@ class Child extends Parent {
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード5-62**</span>
+
 ```java
 class Child extends Parent {
     @Override
@@ -1764,6 +1791,8 @@ class Child extends Parent {
 #### 3. キャストエラー
 問題: 互換性のない型へのキャストによるClassCastException
 
+<span class="listing-number">**サンプルコード5-63**</span>
+
 ```java
 // エラー例
 Parent p = new Parent();
@@ -1771,6 +1800,9 @@ Child c = (Child) p;  // 実行時エラー：ParentはChildではない
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード5-64**</span>
+
 ```java
 // instanceof使用
 if (p instanceof Child) {

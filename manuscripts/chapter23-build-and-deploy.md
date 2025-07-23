@@ -42,7 +42,6 @@
 - 実行可能JARファイルの作成
 - jpackageによるネイティブアプリケーション化
 
-
 ## なぜビルドと配布が必要か
 
 これまでの章では、主にIDEから直接ソースコードを実行してきました。しかし、開発したアプリケーションを他の人に使ってもらうには、ソースコードそのものを渡すわけにはいきません。
@@ -59,7 +58,7 @@ JAR（Java Archive）は、複数のJavaクラスファイルや画像・設定�
 
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
-<span class="listing-number">**サンプルコード23-1**</span>
+<span class="listing-number">**サンプルコード23-2**</span>
 
 ```java
 // SimpleApp.java
@@ -83,7 +82,7 @@ public class SimpleApp {
 
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、シンプルなTodoアプリケーションの例です。
 
-<span class="listing-number">**サンプルコード23-2**</span>
+<span class="listing-number">**サンプルコード23-4**</span>
 
 ```java
 // TodoApp.java
@@ -137,6 +136,8 @@ public class TodoApp {
 
 複数のクラスファイルを含む場合のJAR作成
 
+<span class="listing-number">**サンプルコード23-5**</span>
+
 ```bash
 # すべてのJavaファイルをコンパイル
 javac *.java
@@ -149,6 +150,8 @@ jar cvfm TodoApp.jar manifest.txt *.class
 
 まず、ソースコードをコンパイルしてクラスファイル (`.class`) を作成します。
 
+<span class="listing-number">**サンプルコード23-6**</span>
+
 ```bash
 javac SimpleApp.java
 ```
@@ -157,6 +160,8 @@ javac SimpleApp.java
 ### ステップ3: マニフェストファイルの作成
 
 次に、JARファイルに「メインクラスは何か」を教えるためのマニフェストファイルを作成します。`manifest.txt`という名前で、以下の内容を記述します。
+
+<span class="listing-number">**サンプルコード23-7**</span>
 
 ```text
 Main-Class: SimpleApp
@@ -171,7 +176,7 @@ Main-Class: SimpleApp
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-3**</span>
+<span class="listing-number">**サンプルコード23-9**</span>
 
 ```java
 // ResourceApp.java
@@ -201,6 +206,8 @@ public class ResourceApp {
 
 リソースを含むJARの作成方法
 
+<span class="listing-number">**サンプルコード23-10**</span>
+
 ```bash
 # コンパイル
 javac ResourceApp.java
@@ -212,6 +219,8 @@ jar cvfm ResourceApp.jar manifest.txt ResourceApp.class icon.png
 ### ステップ4: `jar`コマンドによるパッケージング
 
 `jar`コマンドを使って、クラスファイルとマニフェストファイルを1つのJARファイルにまとめます。
+
+<span class="listing-number">**サンプルコード23-11**</span>
 
 ```bash
 # 書式: jar cvfm [出力JARファイル名] [マニフェストファイル名] [含めるクラスファイル]
@@ -229,6 +238,8 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 
 作成したJARファイルは、`java -jar`コマンドで実行できます。
 
+<span class="listing-number">**サンプルコード23-12**</span>
+
 ```bash
 java -jar SimpleApp.jar
 ```
@@ -242,7 +253,6 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 2. `Artifacts` → `+` → `JAR` → `From modules with dependencies...` を選択する
 3. `Main Class`として実行したいクラス（例：`SimpleApp`）を選択し、OKを押す
 4. メニューの `Build` → `Build Artifacts...` → `(作成したArtifact名)` → `Build` を選択すると、`out/artifacts`ディレクトリ以下にJARファイルが生成される
-
 
 ## jpackageによるネイティブアプリケーション化
 
@@ -273,6 +283,8 @@ Java 14から導入された`jpackage`ツールを使えば、アプリケーシ
 
 プロジェクトのルートディレクトリ (`/MyProject/`) で、以下のコマンドを実行します。
 
+<span class="listing-number">**サンプルコード23-13**</span>
+
 ```bash
 jpackage --type app-image \
           --name "SimpleApp" \
@@ -291,6 +303,8 @@ jpackage --type app-image \
 
 #### Windows向け（.exeまたは.msi）
 
+<span class="listing-number">**サンプルコード23-14**</span>
+
 ```bash
 jpackage --type exe \
          --name "SimpleApp" \
@@ -302,6 +316,8 @@ jpackage --type exe \
 
 #### macOS向け（.appまたは.dmg）
 
+<span class="listing-number">**サンプルコード23-15**</span>
+
 ```bash
 jpackage --type dmg \
          --name "SimpleApp" \
@@ -312,6 +328,8 @@ jpackage --type dmg \
 
 #### Linux向け（.debまたは.rpm）
 
+<span class="listing-number">**サンプルコード23-16**</span>
+
 ```bash
 jpackage --type deb \
          --name "simpleapp" \
@@ -321,7 +339,6 @@ jpackage --type deb \
 ```
 
 コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます。
-
 
 ## まとめ
 

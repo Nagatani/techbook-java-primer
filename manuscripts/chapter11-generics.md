@@ -40,15 +40,13 @@
 - 型関連のコンパイルエラーを適切に解決できる
 - ジェネリクスを使った柔軟で保守性の高いライブラリが作成できる
 
-
-
 ## なぜジェネリクスが必要なのか？
 
 ### 第10章で見た不思議な記法
 
 第10章でコレクションフレームワークを学習したとき、以下のような記法を見たはずです。
 
-<span class="listing-number">**サンプルコード11-1**</span>
+<span class="listing-number">**サンプルコード11-2**</span>
 
 ```java
 List<String> students = new ArrayList<String>();
@@ -62,7 +60,7 @@ Map<String, Integer> scores = new HashMap<String, Integer>();
 
 ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です。
 
-<span class="listing-number">**サンプルコード11-2**</span>
+<span class="listing-number">**サンプルコード11-4**</span>
 
 ```java
 import java.util.ArrayList;
@@ -99,7 +97,7 @@ public class CollectionProblem {
 
 同じプログラムをジェネリクスを使って書き直してみましょう。
 
-<span class="listing-number">**サンプルコード11-3**</span>
+<span class="listing-number">**サンプルコード11-6**</span>
 
 ```java
 import java.util.ArrayList;
@@ -137,7 +135,7 @@ public class CollectionSolution {
 
 Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
 
-<span class="listing-number">**サンプルコード11-4**</span>
+<span class="listing-number">**サンプルコード11-8**</span>
 
 ```java
 // ジェネリクスがなかった時代のコード（現在は非推奨）
@@ -181,7 +179,7 @@ Javaのジェネリクスの重要な特徴の1つが「型消去」です。
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。これを型パラメータと呼びます。
 
-<span class="listing-number">**サンプルコード11-5**</span>
+<span class="listing-number">**サンプルコード11-10**</span>
 
 ```java
 import java.util.ArrayList;
@@ -225,7 +223,7 @@ public class WithGenericsExample {
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-<span class="listing-number">**サンプルコード11-6**</span>
+<span class="listing-number">**サンプルコード11-12**</span>
 
 ```java
 // Tという型パラメータを持つジェネリッククラス
@@ -262,6 +260,8 @@ public class BoxExample {
 
 Java 7からは、右辺の型パラメータを省略できるダイヤモンド演算子 (`<>`)が導入され、より簡潔に記述できるようになりました。コンパイラが左辺の宣言から型を推論してくれます。
 
+<span class="listing-number">**サンプルコード11-13**</span>
+
 ```java
 // Java 7以降の推奨される書き方
 Map<String, List<Integer>> complexMap = new HashMap<>();
@@ -271,7 +271,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 クラス全体ではなく、特定のメソッドだけをジェネリックにすることも可能です。メソッドの戻り値の型の前に型パラメータを宣言します。
 
-<span class="listing-number">**サンプルコード11-7**</span>
+<span class="listing-number">**サンプルコード11-15**</span>
 
 ```java
 public class GenericMethodExample {
@@ -302,7 +302,7 @@ public class GenericMethodExample {
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-<span class="listing-number">**サンプルコード11-8**</span>
+<span class="listing-number">**サンプルコード11-17**</span>
 
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
@@ -342,7 +342,7 @@ public class BoundedTypeExample {
 - `List<? extends Type>`: 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
 - `List<? super Type>`: 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
 
-<span class="listing-number">**サンプルコード11-9**</span>
+<span class="listing-number">**サンプルコード11-19**</span>
 
 ```java
 import java.util.List;
@@ -376,7 +376,7 @@ Java 10で導入されたvar型推論は、ジェネリクスと組み合わせ�
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード11-10**</span>
+<span class="listing-number">**サンプルコード11-21**</span>
 
 ```java
 import java.util.ArrayList;
@@ -415,7 +415,7 @@ var型推論は、以下の場面でのみ使用できます。
 
 一方、以下の場面では使用できません。
 
-<span class="listing-number">**サンプルコード11-11**</span>
+<span class="listing-number">**サンプルコード11-23**</span>
 
 ```java
 import java.util.List;
@@ -457,7 +457,7 @@ public class VarLimitations {
 
 var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります。
 
-<span class="listing-number">**サンプルコード11-12**</span>
+<span class="listing-number">**サンプルコード11-25**</span>
 
 ```java
 import java.util.List;
@@ -506,7 +506,7 @@ public class VarReadabilityExample {
 
 var型推論は、ジェネリクスと組み合わせることで特に威力を発揮します。
 
-<span class="listing-number">**サンプルコード11-13**</span>
+<span class="listing-number">**サンプルコード11-27**</span>
 
 ```java
 import java.util.*;
@@ -564,7 +564,7 @@ public class VarWithGenericsExample {
 
 var型推論を効果的に使用するためのガイドライン。
 
-<span class="listing-number">**サンプルコード11-14**</span>
+<span class="listing-number">**サンプルコード11-29**</span>
 
 ```java
 import java.util.*;
@@ -633,7 +633,7 @@ public class VarBestPractices {
 
 既存のコードをvarを使ってリファクタリングする際の戦略。
 
-<span class="listing-number">**サンプルコード11-15**</span>
+<span class="listing-number">**サンプルコード11-31**</span>
 
 ```java
 import java.util.*;
@@ -720,6 +720,9 @@ var型推論は、Javaの表現力を高める強力な機能ですが、適切�
 ### Raw typeの使用エラー
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-32**</span>
+
 ```java
 // ❌ Raw typeの使用
 List list = new ArrayList();
@@ -734,6 +737,9 @@ Note: Recompile with -Xlint:unchecked for more details.
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-33**</span>
+
 ```java
 // ✅ ジェネリクスを使用
 List<String> list = new ArrayList<>();
@@ -744,6 +750,9 @@ String str = list.get(0); // キャスト不要
 ### 型パラメータの不適切な使用
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-34**</span>
+
 ```java
 // ❌ 不適切な使用例
 public class Container<T> {
@@ -761,6 +770,9 @@ error: Cannot instantiate the type T
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-35**</span>
+
 ```java
 // ✅ ファクトリーメソッドを使用
 public class Container<T> {
@@ -780,6 +792,9 @@ public class Container<T> {
 ### ワイルドカードの誤用
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-36**</span>
+
 ```java
 // ❌ ワイルドカードの誤用
 List<? extends Number> numbers = new ArrayList<Integer>();
@@ -792,6 +807,9 @@ error: The method add(capture#1-of ? extends Number) is not applicable for the a
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-37**</span>
+
 ```java
 // ✅ 適切な使用例
 List<Integer> integers = new ArrayList<>();
@@ -802,6 +820,9 @@ List<? extends Number> numbers = integers; // 読み取り専用として使用
 ### 型消去に関する問題
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-38**</span>
+
 ```java
 // ❌ 型消去による問題
 public class GenericArray<T> {
@@ -819,6 +840,9 @@ error: Cannot create a generic array of T
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-39**</span>
+
 ```java
 // ✅ 型消去を考慮した実装
 public class GenericArray<T> {
@@ -834,6 +858,9 @@ public class GenericArray<T> {
 ### 境界型パラメータの問題
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-40**</span>
+
 ```java
 // ❌ 境界型パラメータの誤用
 public class NumberContainer<T extends Number> {
@@ -851,6 +878,9 @@ error: The operator * is undefined for the argument type(s) T, T
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-41**</span>
+
 ```java
 // ✅ 適切な境界型パラメータ
 public class NumberContainer<T extends Number> {
@@ -867,6 +897,9 @@ public class NumberContainer<T extends Number> {
 ### var型推論の誤用
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード11-42**</span>
+
 ```java
 // ❌ var型推論の誤用
 var list = new ArrayList(); // Raw typeになる
@@ -879,6 +912,9 @@ error: Cannot infer type for local variable value
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード11-43**</span>
+
 ```java
 // ✅ 適切なvar使用例
 var list = new ArrayList<String>(); // 型パラメータを明示

@@ -37,8 +37,6 @@ try-with-resourcesの意義とリソース管理の重要性も学び、メモ�
 カスタム例外を活用した独自のエラー処理体系を設計し、ファイルやネットワークリソースを安全に扱うプログラムを実装できます。
 そして、例外ログの分析とデバッグができる能力を身につけ、実務で必要となる問題解決スキルを習得することが、本章の最終目標です。
 
-
-
 ## 章末演習
 
 ### 演習課題へのアクセス
@@ -60,7 +58,6 @@ try-with-resourcesの意義とリソース管理の重要性も学び、メモ�
 
 次のステップ： 基礎課題が完了したら、第15章「ファイル入出力」に進みましょう。
 
-
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
 
 ```
@@ -75,8 +72,6 @@ exercises/chapter14/
 ├── challenge/      # 挑戦レベル課題
 └── solutions/      # 解答例（実装完了後に参照）
 ```
-
-
 
 ## 完了確認チェックリスト
 
@@ -109,12 +104,12 @@ exercises/chapter14/
 プログラムを作成する上で、予期しない状況やエラーへの対応は避けて通れません。
 エラーには主に以下の3つの種類があります。
 
-1. 構文エラー (Syntax Error): コードの文法的な誤り。
-   コンパイル時に発見され、修正しないとプログラムを実行できません。
-2. 実行時エラー（Runtime Error）: プログラムの実行中に発生する異常事態。
-   本章で学ぶ「例外 (Exception)」もこの一種である。
-3. 論理エラー (Logic Error): プログラムはエラーなく動作するが、実行結果が意図通りにならない不具合。
-   デバッグによって原因を特定し、ロジックを修正する必要がある。
+1. 構文エラー (Syntax Error):
+    + コードの文法的な誤り。コンパイル時に発見され、修正しないとプログラムを実行できない。
+2. 実行時エラー（Runtime Error）: 
+    + プログラムの実行中に発生する異常事態。本章で学ぶ「例外 (Exception)」もこの一種。
+3. 論理エラー (Logic Error):
+    + プログラムはエラーなく動作するが、実行結果が意図通りにならない不具合。デバッグによって原因を特定し、ロジックを修正する必要がある。
 
 本章では、特に「実行時エラー」に焦点を当て、Javaの例外処理のしくみを学びます。
 
@@ -138,7 +133,7 @@ Javaでは、プログラム実行中に発生する「例外的状況」を例�
 - 例外が発生する可能性のある処理をこのブロックで囲む
 - `try`ブロック内で特定の型の例外が発生した場合に、その例外を捕捉（キャッチ）し、対応する処理を記述する。`catch`ブロックは複数記述でき、より具体的な例外から順に書ける
 
-<span class="listing-number">**サンプルコード14-1**</span>
+<span class="listing-number">**サンプルコード14-2**</span>
 
 ```java
 public class TryCatchSample {
@@ -162,7 +157,7 @@ public class TryCatchSample {
 
 `finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
 
-<span class="listing-number">**サンプルコード14-2**</span>
+<span class="listing-number">**サンプルコード14-4**</span>
 
 ```java
 // ...
@@ -180,7 +175,7 @@ try {
 
 `AutoCloseable`インターフェイスを実装したリソース（ファイルストリームなど）を扱う場合、`try-with-resources`文を使うことで、リソースの自動解放が保証されます。
 
-<span class="listing-number">**サンプルコード14-3**</span>
+<span class="listing-number">**サンプルコード14-6**</span>
 
 ```java
 import java.io.BufferedReader;
@@ -237,7 +232,7 @@ Javaの例外は、コンパイラがその処理を強制するかどうかに�
 
 メソッド内で発生した検査例外を自身で処理せず、そのメソッドの呼び出し元に処理を任せたい場合、メソッドシグネチャに`throws`を記述します。
 
-<span class="listing-number">**サンプルコード14-4**</span>
+<span class="listing-number">**サンプルコード14-8**</span>
 
 ```java
 import java.io.IOException;
@@ -270,7 +265,7 @@ public class ThrowsExample {
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード14-5**</span>
+<span class="listing-number">**サンプルコード14-10**</span>
 
 ```java
 // 独自の検査例外クラス
@@ -297,7 +292,7 @@ public class BankAccount {
 
 ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
-<span class="listing-number">**サンプルコード14-6**</span>
+<span class="listing-number">**サンプルコード14-12**</span>
 
 ```java
 class DataAccessException extends Exception {
@@ -333,7 +328,7 @@ public class UserService {
 ネットワーク接続の一時的な問題やリソースの一時的な不足など、
 時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
-<span class="listing-number">**サンプルコード14-7**</span>
+<span class="listing-number">**サンプルコード14-14**</span>
 
 ```java
 import java.util.concurrent.Callable;
@@ -397,7 +392,7 @@ public class RetryableOperation {
 
 連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです。マイクロサービスアーキテクチャで特に重要です。
 
-<span class="listing-number">**サンプルコード14-8**</span>
+<span class="listing-number">**サンプルコード14-16**</span>
 
 ```java
 import java.util.concurrent.Callable;
@@ -461,7 +456,7 @@ public class CircuitBreaker {
 
 複数の処理を並行実行する場合、発生した例外を集約して報告します。
 
-<span class="listing-number">**サンプルコード14-9**</span>
+<span class="listing-number">**サンプルコード14-18**</span>
 
 ```java
 import java.util.*;
@@ -527,7 +522,7 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
 
-<span class="listing-number">**サンプルコード14-10**</span>
+<span class="listing-number">**サンプルコード14-20**</span>
 
 ```java
 import java.io.*;
@@ -587,7 +582,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード14-11**</span>
+<span class="listing-number">**サンプルコード14-22**</span>
 
 ```java
 import java.util.*;
@@ -665,7 +660,7 @@ public class ResourcePool implements AutoCloseable {
 
 ログ記録は例外処理の重要な要素です。目的に応じたログレベルを選択することで、問題の深刻度を正確に伝えることができます。
 
-<span class="listing-number">**サンプルコード14-12**</span>
+<span class="listing-number">**サンプルコード14-24**</span>
 
 ```java
 import java.util.logging.*;
@@ -730,7 +725,7 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード14-13**</span>
+<span class="listing-number">**サンプルコード14-26**</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -799,7 +794,7 @@ public class StructuredExceptionLogger {
 
 大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
 
-<span class="listing-number">**サンプルコード14-14**</span>
+<span class="listing-number">**サンプルコード14-28**</span>
 
 ```java
 import java.util.*;
@@ -878,7 +873,7 @@ public abstract class SystemException extends RuntimeException {
 
 エラーコードとメッセージを一元管理することで、国際化やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード14-15**</span>
+<span class="listing-number">**サンプルコード14-30**</span>
 
 ```java
 public enum ErrorCode {
@@ -951,7 +946,7 @@ public class ErrorResponse {
 
 実際のアプリケーションでの例外処理戦略の実装例を示します。
 
-<span class="listing-number">**サンプルコード14-16**</span>
+<span class="listing-number">**サンプルコード14-32**</span>
 
 ```java
 import java.math.BigDecimal;
@@ -1096,6 +1091,8 @@ public class TransferService {
 ##### 問題
 すべての処理をひとつのtry-catchで囲む。
 
+<span class="listing-number">**サンプルコード14-33**</span>
+
 ```java
 // 悪い例
 try {
@@ -1109,10 +1106,12 @@ try {
 }
 ```
 
-エラーメッセージ： 特定のエラーが分からない。
+エラーメッセージ： 特定のエラーが分かりません。
 
 ##### 対処法
-具体的な例外をキャッチし、確実にリソースを管理する。
+具体的な例外をキャッチし、確実にリソースを管理します。
+
+<span class="listing-number">**サンプルコード14-34**</span>
 
 ```java
 // 良い例
@@ -1140,6 +1139,8 @@ try (FileReader reader = new FileReader("file.txt");
 ##### 問題
 例外を無視する空のcatchブロック。
 
+<span class="listing-number">**サンプルコード14-35**</span>
+
 ```java
 // 悪い例
 try {
@@ -1149,7 +1150,9 @@ try {
 }
 ```
 
-対処法： 最低限ログを記録し、意味のある処理をする。
+対処法： 最低限ログを記録し、意味のある処理をします。
+
+<span class="listing-number">**サンプルコード14-36**</span>
 
 ```java
 // 良い例
@@ -1170,6 +1173,8 @@ try {
 ##### 問題
 RuntimeExceptionを誤って使用。
 
+<span class="listing-number">**サンプルコード14-37**</span>
+
 ```java
 // 悪い例
 public void validateAge(int age) {
@@ -1179,9 +1184,11 @@ public void validateAge(int age) {
 }
 ```
 
-エラーメッセージ： 呼び出し元で正しく処理できない。
+エラーメッセージ： 呼び出し元で正しく処理できありません。
 
-対処法： 目的に合った例外型を定義・使用する。
+対処法： 目的に合った例外型を定義・使用します。
+
+<span class="listing-number">**サンプルコード14-38**</span>
 
 ```java
 // 良い例
@@ -1206,6 +1213,8 @@ public void validateAge(int age) throws ValidationException {
 ##### 問題
 finallyブロックでのリソース解放漏れ。
 
+<span class="listing-number">**サンプルコード14-39**</span>
+
 ```java
 // 悪い例
 FileInputStream fis = null;
@@ -1223,7 +1232,9 @@ try {
 
 エラーメッセージ： `Error: unreported exception IOException; must be caught or declared to be thrown`。
 
-対処法： try-with-resourcesを使用する。
+対処法： try-with-resourcesを使用します。
+
+<span class="listing-number">**サンプルコード14-40**</span>
 
 ```java
 // 良い例
@@ -1238,7 +1249,9 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 ### 5. カスタム例外の設計ミス
 
 ##### 問題
-例外クラスに必要なコンストラクタがない。
+例外クラスに必要なコンストラクタがありません。
+
+<span class="listing-number">**サンプルコード14-41**</span>
 
 ```java
 // 悪い例
@@ -1250,7 +1263,9 @@ public class CustomException extends Exception {
 }
 ```
 
-対処法： 標準的なコンストラクタを提供する。
+対処法： 標準的なコンストラクタを提供します。
+
+<span class="listing-number">**サンプルコード14-42**</span>
 
 ```java
 // 良い例
@@ -1274,6 +1289,8 @@ public class CustomException extends Exception {
 ##### 問題
 スタックトレースの情報が失われる。
 
+<span class="listing-number">**サンプルコード14-43**</span>
+
 ```java
 // 悪い例
 try {
@@ -1283,7 +1300,9 @@ try {
 }
 ```
 
-対処法： 原因例外を保持する。
+対処法： 原因例外を保持します。
+
+<span class="listing-number">**サンプルコード14-44**</span>
 
 ```java
 // 良い例
@@ -1301,7 +1320,9 @@ try {
 ### 7. 並行処理での例外処理
 
 ##### 問題
-スレッドでの例外が正しく処理されない。
+スレッドでの例外が正しく処理されありません。
+
+<span class="listing-number">**サンプルコード14-45**</span>
 
 ```java
 // 悪い例
@@ -1316,7 +1337,9 @@ Thread thread = new Thread(() -> {
 thread.start();
 ```
 
-対処法： 包括的な例外処理戦略を採用する。
+対処法： 包括的な例外処理戦略を採用します。
+
+<span class="listing-number">**サンプルコード14-46**</span>
 
 ```java
 // 良い例

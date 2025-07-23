@@ -36,8 +36,6 @@ EDTとスレッド安全性の基本概念の理解も重要で、なぜGUIの�
 これには、複数のイベントを組み合わせた高度な操作（ドラッグ&ドロップ、ジェスチャ認識など）の実装、カスタムコンポーネントと独自のイベント処理の設計・実装、そしてパフォーマンスと応答性を考慮した最適化されたイベント処理の実装が含まれます。
 これらのスキルにより、プロフェッショナルレベルのインタラクティブなGUIアプリケーションを開発できます。
 
-
-
 ## 章の構成
 
 本章は、GUIのイベント処理を体系的に学習できるよう、以下のパートで構成されています。
@@ -73,9 +71,6 @@ EDTとスレッド安全性の基本概念の理解も重要で、なぜGUIの�
 #### 演習の目標
 高度なGUIイベント処理とリアルタイムな双方向GUIアプリケーションの作成技術を習得します。
 
-
-
-
 #### 基礎レベル課題（必須）
 
 #### 課題1: インタラクティブ描画アプリケーション
@@ -93,7 +88,7 @@ EDTとスレッド安全性の基本概念の理解も重要で、なぜGUIの�
 1. MouseListenerインターフェイス - マウスボタンの状態変化を検出
 2. MouseMotionListenerインターフェイス - マウスポインタの移動を追跡
 
-<span class="listing-number">**サンプルコード19-1**</span>
+<span class="listing-number">**サンプルコード19-2**</span>
 
 ```java
 // ① MouseListener：クリックイベントの処理
@@ -131,7 +126,7 @@ mouseMoved()    // ②-2
 2. BufferedImage活用 - メモリ内での画像操作による高速化
 3. アンチエイリアシング - 滑らかな描画のための品質設定
 
-<span class="listing-number">**サンプルコード19-2**</span>
+<span class="listing-number">**サンプルコード19-4**</span>
 
 ```java
 // ① 非効率的なアプローチ：毎回全体再描画
@@ -204,9 +199,6 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 5. 保存: PNG形式でファイル保存
 ```
 
-
-
-
 #### 課題2: フォームバリデータ
 
 リアルタイムバリデーション機能付きのフォームを作成してください。
@@ -216,7 +208,7 @@ g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, // ②-2
 リアルタイムバリデーションは、現代のWebアプリケーションで標準的な機能です。
 
 バリデーションのタイミング戦略。
-<span class="listing-number">**サンプルコード19-3**</span>
+<span class="listing-number">**サンプルコード19-6**</span>
 
 ```java
 // 1. 即座バリデーション（キー入力毎）
@@ -238,7 +230,7 @@ delayTimer.setRepeats(false);
 4. サーバ検証：重複チェック等
 
 視覚的フィードバックのベストプラクティス。
-<span class="listing-number">**サンプルコード19-4**</span>
+<span class="listing-number">**サンプルコード19-8**</span>
 
 ```java
 // 色による状態表示
@@ -319,8 +311,6 @@ Icon INFO = new ImageIcon("info.png");
 - setBorder（）やsetBackground() で視覚的フィードバック
 - ActionMapとInputMapでキーバインディング設定
 
-
-
 #### 課題3: 高度なメニューシステム
 
 学習目標JMenuBar、JMenu、JMenuItemの階層構造、Actionクラスによる統一的なアクション管理、PopupMenuの作成と表示制御。
@@ -333,7 +323,7 @@ Icon INFO = new ImageIcon("info.png");
 Actionパターンは、同じ機能を複数のUI要素から実行できるようにする設計パターンです。
 
 Actionパターンの利点。
-<span class="listing-number">**サンプルコード19-5**</span>
+<span class="listing-number">**サンプルコード19-10**</span>
 
 ```java
 // 従来の方法：重複コード
@@ -364,7 +354,7 @@ new JButton(saveAction);
 - ロールベース権限にもとづく表示
 
 コンテキストメニューの実装。
-<span class="listing-number">**サンプルコード19-6**</span>
+<span class="listing-number">**サンプルコード19-12**</span>
 
 ```java
 // マウスイベントでの表示制御
@@ -447,8 +437,6 @@ component.addMouseListener(new MouseAdapter() {
 - MenuListenerでメニューの表示/非表示イベントを処理
 - DefaultListModelでMRUリストを管理
 
-
-
 #### 課題4: マウストラッカー
 
 学習目標MouseListener、MouseMotionListenerの詳細実装、Pointクラスと座標計算、数学的計算（距離、速度、角度）
@@ -505,8 +493,6 @@ component.addMouseListener(new MouseAdapter() {
 - Point.distance() で移動距離計算
 - CircularBufferの使用でメモリ効率化
 
-
-
 ### 実装のヒント
 
 #### 高度なイベント処理のポイント
@@ -530,8 +516,6 @@ component.addMouseListener(new MouseAdapter() {
 - ユーザビリティを重視したイベント設計
 - 複雑なイベント処理の段階的な実装
 
-
-
 ### 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
@@ -548,8 +532,6 @@ exercises/chapter18/
 ├── challenge/      # 発展レベル課題
 └── solutions/      # 解答例（実装完了後に参照）
 ```
-
-
 
 ### 完了確認チェックリスト
 
@@ -572,8 +554,6 @@ exercises/chapter18/
 - ユーザビリティの高いインターフェイスが設計できている
 
 次のステップ： 基本課題が完了したら、advanced/の発展課題でより複雑なイベント処理とカスタムコンポーネントの実装に挑戦しましょう！。
-
-
 
 ## イベント処理入門
 
@@ -607,7 +587,7 @@ ActionListenerの例。
 ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
 Swingで最も頻繁に使用されるイベントリスナーで、actionPerformedメソッド1つだけを実装すればよいシンプルなインターフェイスです。
 
-<span class="listing-number">**サンプルコード19-7**</span>
+<span class="listing-number">**サンプルコード19-14**</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -659,7 +639,7 @@ public class ButtonEventExample {
 
 ラムダ式はJava 8で導入された機能で、関数型インターフェイスの実装を非常に簡潔に記述できます。匿名クラスに比べてコードが短くなり、可読性が向上します。特にイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
 
-<span class="listing-number">**サンプルコード19-8**</span>
+<span class="listing-number">**サンプルコード19-16**</span>
 
 ```java
 // 上記の匿名クラスの部分をラムダ式で書き換える
@@ -676,7 +656,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
 
-<span class="listing-number">**サンプルコード19-9**</span>
+<span class="listing-number">**サンプルコード19-18**</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -745,7 +725,7 @@ WindowListenerはウィンドウの状態変化を検出するインターフェ
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。`WindowListener`インターフェイスには多くのメソッドがありますが、`WindowAdapter`クラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
-<span class="listing-number">**サンプルコード19-10**</span>
+<span class="listing-number">**サンプルコード19-20**</span>
 
 ```java
 import javax.swing.*;
@@ -792,7 +772,7 @@ MouseListenerはマウスの基本的な操作（クリック、プレス、リ�
 
 マウスの動きを追跡するにはMouseMotionListenerも併せて使用します。
 
-<span class="listing-number">**サンプルコード19-11**</span>
+<span class="listing-number">**サンプルコード19-22**</span>
 
 ```java
 import javax.swing.*;
@@ -957,7 +937,7 @@ KeyListenerはキーボードの入力を検出するインターフェイスで
 
 特殊キー（F1、Ctrl、Shiftなど）のkeyTypedでは検出されず、keyPressed/keyReleasedでのみ検出されます。ショートカットキーの実装やゲームのキー操作などに使用されます。
 
-<span class="listing-number">**サンプルコード19-12**</span>
+<span class="listing-number">**サンプルコード19-24**</span>
 
 ```java
 import javax.swing.*;
@@ -1128,7 +1108,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 
 ##### DocumentListenerによるテキスト変更の監視
 
-<span class="listing-number">**サンプルコード19-13**</span>
+<span class="listing-number">**サンプルコード19-26**</span>
 
 ```java
 import javax.swing.*;
@@ -1357,7 +1337,7 @@ public class DocumentListenerExample extends JFrame {
 
 Observerパターンを使用することで、オブジェクトの状態変化を複数のオブザーバーに通知できます。
 
-<span class="listing-number">**サンプルコード19-14**</span>
+<span class="listing-number">**サンプルコード19-28**</span>
 
 ```java
 import javax.swing.*;
@@ -1586,7 +1566,7 @@ public class CustomEventExample extends JFrame {
 
 JavaBeansの仕様では、イベント処理を以下のパターンで実装することが推奨されています。
 
-<span class="listing-number">**サンプルコード19-15**</span>
+<span class="listing-number">**サンプルコード19-30**</span>
 
 ```java
 import java.beans.*;
@@ -1923,7 +1903,7 @@ public class JavaBeansEventExample extends JFrame {
 
 より複雑な業務アプリケーションで使用される高度なJavaBeansパターンを学習しましょう。
 
-<span class="listing-number">**サンプルコード19-16**</span>
+<span class="listing-number">**サンプルコード19-32**</span>
 
 ```java
 import java.beans.*;
@@ -2255,7 +2235,7 @@ public class AdvancedJavaBeansExample extends JFrame {
 
 ##### ドラッグ&ドロップの実装
 
-<span class="listing-number">**サンプルコード19-17**</span>
+<span class="listing-number">**サンプルコード19-34**</span>
 
 ```java
 import javax.swing.*;
@@ -2469,6 +2449,9 @@ GUIイベント処理の学習において遭遇しやすい典型的なエラ�
 #### 問題：ボタンを押してもイベントが発生しない
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-35**</span>
+
 ```java
 JButton button = new JButton("クリック");
 // ボタンをクリックしても何も起こらない
@@ -2479,6 +2462,9 @@ JButton button = new JButton("クリック");
 - リスナーが正しく実装されていない
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-36**</span>
+
 ```java
 JButton button = new JButton("クリック");
 button.addActionListener(e -> {
@@ -2497,6 +2483,9 @@ button.addActionListener(new ActionListener() {
 #### 問題：複数のリスナーが重複して登録される
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-37**</span>
+
 ```java
 // 初期化メソッドが複数回呼び出されると...
 button.addActionListener(e -> System.out.println("処理"));
@@ -2509,6 +2498,9 @@ button.addActionListener(e -> System.out.println("処理"));
 - 古いリスナーが削除されていない
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-38**</span>
+
 ```java
 // 既存のリスナーを削除してから新しいリスナーを登録
 ActionListener[] listeners = button.getActionListeners();
@@ -2531,6 +2523,9 @@ if (!listenerAdded) {
 #### 問題：一つのイベントが複数回発生する
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-39**</span>
+
 ```java
 JSlider slider = new JSlider(0, 100);
 slider.addChangeListener(e -> {
@@ -2544,6 +2539,9 @@ slider.addChangeListener(e -> {
 - 処理を制限していない
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-40**</span>
+
 ```java
 JSlider slider = new JSlider(0, 100);
 slider.addChangeListener(e -> {
@@ -2570,6 +2568,9 @@ slider.addChangeListener(e -> {
 #### 問題：イベントハンドラ内での状態変更が無限ループを引き起こす
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-41**</span>
+
 ```java
 JTextField textField = new JTextField();
 textField.addActionListener(e -> {
@@ -2583,6 +2584,9 @@ textField.addActionListener(e -> {
 - 相互にイベントを発生させる処理がある
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-42**</span>
+
 ```java
 JTextField textField = new JTextField();
 private boolean updating = false;
@@ -2612,6 +2616,9 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 #### 問題：リスナーが解放されずメモリリークが発生
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-43**</span>
+
 ```java
 // ウィンドウを閉じてもメモリが解放されない
 public class MyWindow extends JFrame {
@@ -2630,6 +2637,9 @@ public class MyWindow extends JFrame {
 - 静的フィールドにリスナーが保存されている
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-44**</span>
+
 ```java
 public class MyWindow extends JFrame {
     private Timer timer;
@@ -2666,6 +2676,9 @@ public class MyWindow extends JFrame {
 #### 問題：イベントハンドラで重い処理を行うとGUIが応答しない
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-45**</span>
+
 ```java
 JButton button = new JButton("重い処理");
 button.addActionListener(e -> {
@@ -2682,6 +2695,9 @@ button.addActionListener(e -> {
 - UIの更新が阻害されている
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-46**</span>
+
 ```java
 JButton button = new JButton("重い処理");
 button.addActionListener(e -> {
@@ -2724,6 +2740,9 @@ button.addActionListener(e -> {
 #### 問題：イベントオブジェクトから間違った情報を取得する
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード19-47**</span>
+
 ```java
 JButton button1 = new JButton("ボタン1");
 JButton button2 = new JButton("ボタン2");
@@ -2742,6 +2761,9 @@ button2.addActionListener(listener);  // button2をクリックしても"ボタ�
 - 固定のコンポーネントを参照している
 
 対処法。
+
+<span class="listing-number">**サンプルコード19-48**</span>
+
 ```java
 ActionListener listener = e -> {
     // 正しい：イベントソースを取得
@@ -2763,6 +2785,8 @@ button2.addActionListener(e ->
 
 #### 1. イベントの発生確認
 
+<span class="listing-number">**サンプルコード19-49**</span>
+
 ```java
 button.addActionListener(e -> {
     System.out.println("イベント発生: " + e.getActionCommand());
@@ -2775,6 +2799,8 @@ button.addActionListener(e -> {
 ```
 
 #### 2. リスナーの登録状況確認
+
+<span class="listing-number">**サンプルコード19-50**</span>
 
 ```java
 // 登録されているリスナーの数を確認
@@ -2789,6 +2815,8 @@ for (ActionListener listener : listeners) {
 
 #### 3. EDTの確認
 
+<span class="listing-number">**サンプルコード19-51**</span>
+
 ```java
 // イベントハンドラ内でEDTチェック
 button.addActionListener(e -> {
@@ -2801,6 +2829,8 @@ button.addActionListener(e -> {
 ```
 
 #### 4. 例外処理の追加
+
+<span class="listing-number">**サンプルコード19-52**</span>
 
 ```java
 button.addActionListener(e -> {

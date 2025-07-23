@@ -91,7 +91,7 @@ ExecutorServiceを使った実用的な非同期処理の実装、デッドロ�
 
 まず、シングルスレッドの例を見てみましょう。
 
-<span class="listing-number">**サンプルコード16-1**</span>
+<span class="listing-number">**サンプルコード16-2**</span>
 
 ```java
 public class SingleThreadExample {
@@ -141,7 +141,7 @@ public class SingleThreadExample {
 
 これをマルチスレッドで書き換えると。
 
-<span class="listing-number">**サンプルコード16-2**</span>
+<span class="listing-number">**サンプルコード16-4**</span>
 
 ```java
 public class MultiThreadExample {
@@ -172,8 +172,6 @@ public class MultiThreadExample {
 ```
 
 このように、マルチスレッドを使うことで、10秒かかっていた処理を5秒に短縮できました。
-
-
 
 ## 章の構成
 
@@ -221,9 +219,6 @@ public class MultiThreadExample {
 ### 演習の目標
 マルチスレッドプログラミングの基礎から高度な並行処理までを習得します。
 
-
-
-
 ## 基礎レベル課題（ポイント）
 
 ### 課題1: 基本的なスレッド操作
@@ -250,7 +245,7 @@ public class MultiThreadExample {
 
 ③ ラムダ式を使用した方式は、Java 8以降で利用可能な最も簡潔な記法で、関数型プログラミングの利点を活用できます。短い処理に対しては可読性が最も高くなります。
 
-<span class="listing-number">**サンプルコード16-3**</span>
+<span class="listing-number">**サンプルコード16-6**</span>
 
 ```java
 // ① Thread継承方式（非推奨）
@@ -356,8 +351,6 @@ Thread-pool-1-thread-3: カウンタ 2
 - Thread.join() で他スレッドの完了待機
 - Thread.sleep() で一時停止
 
-
-
 ### 課題2: 同期処理とデータ競合対策
 
 同期処理を実装し、データ競合を防ぐ方法を理解してください。
@@ -371,7 +364,7 @@ Thread-pool-1-thread-3: カウンタ 2
 
 以下の例は、マルチスレッド環境でデータ競合（レースコンディション）が発生する典型的なパターンです。一見単純に見える`count++`操作が、実際にはCPUレベルで3つの独立した処理（①現在値の読み込み、②値のインクリメント、③結果の書き込み）に分解されます。複数のスレッドが同時に実行すると、期待と異なる結果になります。
 
-<span class="listing-number">**サンプルコード16-4**</span>
+<span class="listing-number">**サンプルコード16-8**</span>
 
 ```java
 class UnsafeCounter {
@@ -471,9 +464,6 @@ volatile変数テスト:
 フラグ変更後: true（全スレッドで即座に反映）
 ```
 
-
-
-
 ### 課題3: 並行コレクションとExecutor
 
 並行処理専用のコレクションとExecutorServiceを活用してください。
@@ -486,7 +476,7 @@ Executorフレームワークは、Doug Leaによって設計された革新的�
 
 以下は、マルチスレッドプログラミングでよく見られる危険なアンチパターンです。大量のタスクに対して無制限にスレッドを生成することで、深刻なパフォーマンス問題とシステムクラッシュを引き起こす可能性があります。
 
-<span class="listing-number">**サンプルコード16-5**</span>
+<span class="listing-number">**サンプルコード16-10**</span>
 
 ```java
 // アンチパターン：スレッドの無制限生成
@@ -511,7 +501,7 @@ Executorの利点。
 
 通常のコレクションクラスは、マルチスレッド環境では致命的な問題を引き起こす可能性があります。以下の例では、スレッドセーフでないHashMapと、並行アクセスに対応したConcurrentHashMapの違いを示しています。
 
-<span class="listing-number">**サンプルコード16-6**</span>
+<span class="listing-number">**サンプルコード16-12**</span>
 
 ```java
 // 危険：通常のHashMapの並行アクセス
@@ -616,9 +606,6 @@ step3: 集計処理 → 30
 プール状態: 正常終了
 ```
 
-
-
-
 ### 課題4: 生産者・消費者パターン
 
 生産者・消費者パターンを実装し、スレッド間通信を理解してください。
@@ -649,7 +636,7 @@ step3: 集計処理 → 30
 ③エンコーダー（消費者）が圧縮処理を実行します。
 これにより、I/O処理とCPU集約的な処理を分離し、マルチコアCPUの性能を最大限に活用できます。
 
-<span class="listing-number">**サンプルコード16-7**</span>
+<span class="listing-number">**サンプルコード16-14**</span>
 
 ```java
 // システム構成の概念図
@@ -675,7 +662,7 @@ wait/notifyの基本的な仕組み。
 
 以下の例では、よくある間違った実装と正しい実装パターンを比較します。
 
-<span class="listing-number">**サンプルコード16-8**</span>
+<span class="listing-number">**サンプルコード16-16**</span>
 
 ```java
 // 誤った実装例（危険）
@@ -790,8 +777,6 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 - put（）でブロッキング挿入、take() でブロッキング取得
 - Semaphoreでリソース数制限
 
-
-
 ## 実装のヒント
 
 ### マルチスレッドのポイント
@@ -815,8 +800,6 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 - 並行コレクションの積極的活用
 - ブロック単位やメソッド単位での必要最小限の同期処理設計
 
-
-
 ## 実装環境
 
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
@@ -833,8 +816,6 @@ exercises/chapter16/
 ├── challenge/      # 発展レベル課題
 └── solutions/      # 解答例（実装完了後に参照）
 ```
-
-
 
 ## 完了確認チェックリスト
 
@@ -881,7 +862,7 @@ Javaでスレッドを作成するには、主に`Runnable`インターフェイ
 
 `Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
 
-<span class="listing-number">**サンプルコード16-9**</span>
+<span class="listing-number">**サンプルコード16-18**</span>
 
 ```java
 // Runnableを実装したクラス
@@ -930,7 +911,7 @@ synchronizedメソッドの基本的な使い方。
 
 `synchronized`キーワードをメソッドに付けることで、そのメソッド全体が排他制御の対象となります。これにより、同時に1つのスレッドしかそのメソッドを実行できなくなり、データの整合性が保たれます。
 
-<span class="listing-number">**サンプルコード16-10**</span>
+<span class="listing-number">**サンプルコード16-20**</span>
 
 ```java
 class SynchronizedCounter {
@@ -958,7 +939,7 @@ synchronizedブロックによる細かい制御。
 
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
-<span class="listing-number">**サンプルコード16-11**</span>
+<span class="listing-number">**サンプルコード16-22**</span>
 
 ```java
 class BankAccount {
@@ -1006,7 +987,7 @@ volatileの主な特徴。
 - 単純な読み書きのみをアトミックにする（複合操作は保証しない）
 - synchronizedより軽量だが、機能も限定的
 
-<span class="listing-number">**サンプルコード16-12**</span>
+<span class="listing-number">**サンプルコード16-24**</span>
 
 ```java
 class ThreadStopExample {
@@ -1062,7 +1043,7 @@ public class VolatileDemo {
 - `AtomicBoolean`: boolean値のアトミック操作
 - `AtomicReference<T>`: 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード16-13**</span>
+<span class="listing-number">**サンプルコード16-26**</span>
 
 ```java
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1138,7 +1119,7 @@ ExecutorServiceの利点。
 - `newSingleThreadExecutor()`: 単一スレッドで順次実行するプール
 - `newScheduledThreadPool(int)`: スケジュール実行が可能なプール
 
-<span class="listing-number">**サンプルコード16-14**</span>
+<span class="listing-number">**サンプルコード16-28**</span>
 
 ```java
 import java.util.concurrent.ExecutorService;
@@ -1185,7 +1166,7 @@ public class ExecutorExample {
 両者の処理速度の違いをバッファ（キュー）で吸収します。
 このパターンは、ログ処理、メッセージキュー、パイプライン処理など、多くの実用的なシステムで使用されています。
 
-<span class="listing-number">**サンプルコード16-15**</span>
+<span class="listing-number">**サンプルコード16-30**</span>
 
 ```java
 import java.util.concurrent.BlockingQueue;
@@ -1284,7 +1265,7 @@ FutureとCallableの特徴。
 - 例外処理： `Callable`は検査例外をスローできる
 - キャンセル機能： 実行中のタスクをキャンセル可能
 
-<span class="listing-number">**サンプルコード16-16**</span>
+<span class="listing-number">**サンプルコード16-32**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1360,7 +1341,7 @@ CompletableFutureの主な特徴。
 - 複数の非同期処理の組み合わせ：`allOf`、`anyOf`で複数の処理を統合
 - タイムアウト処理：Java 9以降では`orTimeout`メソッドも利用可能
 
-<span class="listing-number">**サンプルコード16-17**</span>
+<span class="listing-number">**サンプルコード16-34**</span>
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -1469,7 +1450,7 @@ public class CompletableFutureExample {
 - `thenCombine()`: 2つのCompletableFutureの結果を結合
 - `thenAccept()`: 結果を消費（戻り値なし）
 
-<span class="listing-number">**サンプルコード16-18**</span>
+<span class="listing-number">**サンプルコード16-36**</span>
 
 ```java
 public class AsyncChainingExample {
@@ -1535,18 +1516,13 @@ public class AsyncChainingExample {
 
 これらのツールを目的に応じて使い分けることで、高速で安全な並行処理プログラムを作成できます。次のパートでは、実践的な並行処理のパターンと落とし穴について学習します。
 
-
-
 次のパート：[Part D - 実践的な並行処理](chapter16d-practical-concurrency.md)
-
-
-
 
 <!-- Merged from chapter16d-practical-concurrency.md -->
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
-<span class="listing-number">**サンプルコード16-32**</span>
+<span class="listing-number">**サンプルコード16-38**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1679,7 +1655,7 @@ public class ParallelPerformanceExample {
 
 ## スレッドセーフなシングルトンパターン
 
-<span class="listing-number">**サンプルコード16-33**</span>
+<span class="listing-number">**サンプルコード16-40**</span>
 
 ```java
 public class ThreadSafeSingletonExamples {
@@ -1763,7 +1739,7 @@ public class ThreadSafeSingletonExamples {
 
 ## 一般的な並行処理の落とし穴と解決策
 
-<span class="listing-number">**サンプルコード16-34**</span>
+<span class="listing-number">**サンプルコード16-42**</span>
 
 ```java
 import java.util.*;
@@ -1921,7 +1897,7 @@ public class ConcurrencyPitfallsAndSolutions {
 
 ### 並列データ処理パイプライン
 
-<span class="listing-number">**サンプルコード16-35**</span>
+<span class="listing-number">**サンプルコード16-44**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -2011,7 +1987,7 @@ public class ParallelDataPipeline {
 
 ### リトライとサーキットブレーカーパターン
 
-<span class="listing-number">**サンプルコード16-36**</span>
+<span class="listing-number">**サンプルコード16-46**</span>
 
 ```java
 import java.util.concurrent.*;
@@ -2163,11 +2139,7 @@ public class ResiliencePatterns {
 
 これらの知識を活用することで、安全で高性能な並行処理プログラムを設計・実装できます。
 
-
-
 次のパート：[Part E - 章末演習](chapter16e-exercises.md)
-
-
 
 <!-- Merged from chapter16e-exercises.md -->
 
@@ -2203,6 +2175,8 @@ public class ResiliencePatterns {
 #### 1. 基本的な競合状態
 問題: 複数スレッドが同じデータに同時アクセスして値が破損
 
+<span class="listing-number">**サンプルコード16-47**</span>
+
 ```java
 // エラー例
 public class Counter {
@@ -2215,6 +2189,9 @@ public class Counter {
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード16-48**</span>
+
 ```java
 // synchronized使用
 public synchronized void increment() {
@@ -2234,6 +2211,8 @@ count.incrementAndGet();
 #### 2. デッドロックの基礎
 問題: 複数スレッドが相互にロックを待って停止
 
+<span class="listing-number">**サンプルコード16-49**</span>
+
 ```java
 // エラー例：ロック順序の不一致
 method1: synchronized(lock1) → synchronized(lock2)
@@ -2241,6 +2220,9 @@ method2: synchronized(lock2) → synchronized(lock1)
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード16-50**</span>
+
 ```java
 // 常に同じ順序でロック取得
 public void method1() {
@@ -2268,6 +2250,8 @@ public void method2() {
 #### 3. スレッドセーフでないコレクション
 問題: 通常のコレクションをマルチスレッドで使用
 
+<span class="listing-number">**サンプルコード16-51**</span>
+
 ```java
 // エラー例
 List<String> list = new ArrayList<>();
@@ -2275,6 +2259,9 @@ List<String> list = new ArrayList<>();
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード16-52**</span>
+
 ```java
 // 並行コレクション使用
 List<String> list = new CopyOnWriteArrayList<>();
@@ -2290,6 +2277,8 @@ Queue<String> queue = new ConcurrentLinkedQueue<>();
 #### 4. ExecutorServiceのリソース管理
 問題: スレッドプールが正しくシャットダウンされない
 
+<span class="listing-number">**サンプルコード16-53**</span>
+
 ```java
 // エラー例
 ExecutorService executor = Executors.newFixedThreadPool(5);
@@ -2298,6 +2287,9 @@ executor.submit(task);
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード16-54**</span>
+
 ```java
 ExecutorService executor = Executors.newFixedThreadPool(5);
 try {
@@ -2333,6 +2325,9 @@ try {
 ### デバッグのヒント
 
 1. デッドロック検出：
+
+<span class="listing-number">**サンプルコード16-55**</span>
+
    ```java
    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
    long[] deadlocked = bean.findDeadlockedThreads();
@@ -2354,6 +2349,4 @@ try {
 - 付録A: Java共通エラーガイド（並行処理の基本）
 - 付録B.14: Javaメモリモデル（高度な内容）
 - 第22章: 並行処理ライブラリの活用
-
-
 

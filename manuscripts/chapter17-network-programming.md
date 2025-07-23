@@ -125,7 +125,7 @@
 
 TCPクライアントは、Socketクラスを使用してサーバーに接続します。接続が確立されると、入力ストリームと出力ストリームを通じてデータの送受信を行います。TCPは信頼性の高い接続指向のプロトコルであり、データの順序と到達が保証されます。
 
-<span class="listing-number">**サンプルコード17-1**</span>
+<span class="listing-number">**サンプルコード17-2**</span>
 
 ```java
 import java.io.*;
@@ -163,7 +163,7 @@ public class SimpleTCPClient {
 TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、
 クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
 
-<span class="listing-number">**サンプルコード17-2**</span>
+<span class="listing-number">**サンプルコード17-4**</span>
 
 ```java
 import java.io.*;
@@ -222,7 +222,7 @@ public class SimpleTCPServer {
 
 ### スレッドベースのサーバー
 
-<span class="listing-number">**サンプルコード17-3**</span>
+<span class="listing-number">**サンプルコード17-6**</span>
 
 ```java
 import java.io.*;
@@ -329,7 +329,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
-<span class="listing-number">**サンプルコード17-4**</span>
+<span class="listing-number">**サンプルコード17-8**</span>
 
 ```java
 import java.io.*;
@@ -389,7 +389,7 @@ public class SimpleHTTPClient {
 
 Javaは、より高レベルなHTTP通信のためのAPIも提供しています。
 
-<span class="listing-number">**サンプルコード17-5**</span>
+<span class="listing-number">**サンプルコード17-10**</span>
 
 ```java
 import java.io.*;
@@ -442,7 +442,7 @@ public class HttpURLConnectionExample {
 
 Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード17-6**</span>
+<span class="listing-number">**サンプルコード17-12**</span>
 
 ```java
 import java.net.URI;
@@ -506,7 +506,7 @@ public class AsyncHttpClientExample {
 
 UDPは、コネクションレスで信頼性の低いプロトコルですが、低遅延で高速な通信が可能です。リアルタイムゲーム、ストリーミング、DNSなどで使用されます。
 
-<span class="listing-number">**サンプルコード17-7**</span>
+<span class="listing-number">**サンプルコード17-14**</span>
 
 ```java
 import java.net.*;
@@ -549,7 +549,7 @@ public class UDPServer {
 
 ### UDP受信側
 
-<span class="listing-number">**サンプルコード17-8**</span>
+<span class="listing-number">**サンプルコード17-16**</span>
 
 ```java
 import java.net.*;
@@ -598,7 +598,7 @@ UDPの特徴と使用場面。
 
 ### チャットサーバー
 
-<span class="listing-number">**サンプルコード17-9**</span>
+<span class="listing-number">**サンプルコード17-18**</span>
 
 ```java
 import java.io.*;
@@ -698,7 +698,7 @@ public class ChatServer {
 
 ### チャットクライアント
 
-<span class="listing-number">**サンプルコード17-10**</span>
+<span class="listing-number">**サンプルコード17-20**</span>
 
 ```java
 import java.io.*;
@@ -751,7 +751,7 @@ public class ChatClient {
 
 現代のWebアプリケーションでは、JSON形式でのデータ交換が標準的です。JavaでJSON APIを扱う方法を学びます。
 
-<span class="listing-number">**サンプルコード17-11**</span>
+<span class="listing-number">**サンプルコード17-22**</span>
 
 ```java
 import java.net.URI;
@@ -876,7 +876,7 @@ Java標準APIやJettyなどのライブラリを使用してWebSocketクライ�
 SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです。
 JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
-<span class="listing-number">**サンプルコード17-12**</span>
+<span class="listing-number">**サンプルコード17-24**</span>
 
 ```java
 import javax.net.ssl.*;
@@ -923,7 +923,7 @@ public class SSLClient {
 
 Java NIOを使用すると、単一スレッドで複数の接続を管理できるスケーラブルなネットワークプログラミングが可能です。
 
-<span class="listing-number">**サンプルコード17-13**</span>
+<span class="listing-number">**サンプルコード17-26**</span>
 
 ```java
 import java.nio.*;
@@ -1037,6 +1037,8 @@ public class NIOServer {
 #### 1. 基本的な接続エラー
 問題: サーバーへの接続が失敗する
 
+<span class="listing-number">**サンプルコード17-27**</span>
+
 ```java
 // エラー例
 Socket socket = new Socket("example.com", 80);
@@ -1044,6 +1046,9 @@ Socket socket = new Socket("example.com", 80);
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード17-28**</span>
+
 ```java
 // タイムアウト設定とリトライ
 Socket socket = new Socket();
@@ -1068,6 +1073,8 @@ for (int i = 0; i < MAX_RETRIES; i++) {
 #### 2. データ送受信エラー
 問題: 文字エンコーディングやデータの不完全な受信
 
+<span class="listing-number">**サンプルコード17-29**</span>
+
 ```java
 // エラー例
 out.write(data.getBytes()); // エンコーディング不明
@@ -1075,6 +1082,9 @@ out.write(data.getBytes()); // エンコーディング不明
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード17-30**</span>
+
 ```java
 // UTF-8を明示的に指定
 byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
@@ -1099,6 +1109,8 @@ in.readFully(buffer); // すべて読み込むまで待機
 #### 3. HTTPクライアントエラー
 問題: HTTPステータスコードの未チェック
 
+<span class="listing-number">**サンプルコード17-31**</span>
+
 ```java
 // エラー例
 HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
@@ -1106,6 +1118,9 @@ String body = response.body(); // ステータスコードを確認しない
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード17-32**</span>
+
 ```java
 int status = response.statusCode();
 if (status >= 200 && status < 300) {
@@ -1125,6 +1140,8 @@ if (status >= 200 && status < 300) {
 #### 4. リソース管理エラー
 問題: ソケットやストリームが適切に閉じられない
 
+<span class="listing-number">**サンプルコード17-33**</span>
+
 ```java
 // エラー例
 ServerSocket server = new ServerSocket(8080);
@@ -1135,6 +1152,9 @@ while (true) {
 ```
 
 解決策:
+
+<span class="listing-number">**サンプルコード17-34**</span>
+
 ```java
 // try-with-resources使用
 try (ServerSocket server = new ServerSocket(8080)) {
@@ -1167,12 +1187,18 @@ try (ServerSocket server = new ServerSocket(8080)) {
 ### デバッグのヒント
 
 1. 接続診断：
+
+<span class="listing-number">**サンプルコード17-35**</span>
+
    ```java
    InetAddress.getByName(host).isReachable(5000);
    // ping相当の確認
    ```
 
 2. HTTPデバッグ：
+
+<span class="listing-number">**サンプルコード17-36**</span>
+
    ```java
    System.setProperty("java.net.debug", "all");
    // 詳細なネットワークログ

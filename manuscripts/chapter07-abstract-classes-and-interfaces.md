@@ -41,8 +41,6 @@
 - SOLID原則にもとづいた拡張性の高いシステムアーキテクチャを構築できる
 - 実世界の複雑な問題をシステムの要件に合わせた抽象化レベルでモデリングできる
 
-
-
 ## 抽象化の必要性
 
 これまでの章で、継承を使うとクラスの機能を再利用できることを学びました。しかし、親クラスの段階では、具体的な処理内容を決められない場合があります。
@@ -75,7 +73,7 @@
 
 「図形」の例を抽象クラスで実装してみましょう。
 
-<span class="listing-number">**サンプルコード7-1**</span>
+<span class="listing-number">**サンプルコード7-2**</span>
 
 ```java
 // 抽象クラス Shape
@@ -107,7 +105,7 @@ public abstract class Shape {
 
 子クラスである`Circle`と`Rectangle`は、`Shape`クラスを継承し、それぞれの方法で`getArea()`メソッドを実装します。
 
-<span class="listing-number">**サンプルコード7-2**</span>
+<span class="listing-number">**サンプルコード7-4**</span>
 
 ```java
 // Circle.java
@@ -149,7 +147,7 @@ public class Rectangle extends Shape {
 
 抽象クラスはインスタンス化できませんが、親クラスとしてポリモーフィズムを活用することはできます。
 
-<span class="listing-number">**サンプルコード7-3**</span>
+<span class="listing-number">**サンプルコード7-6**</span>
 
 ```java
 // Main.java
@@ -184,11 +182,11 @@ public class Main {
 4.  クラスは`implements`キーワードを使ってインターフェイスを実装する。
 5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない。
 6.  クラスは複数のインターフェイスを同時に実装できる（`implements InterfaceA, InterfaceB`のようにカンマで区切る）。
-    これはクラスの単一継承とは異なる大きな特徴である。
+    これはクラスの単一継承とは異なる大きな特徴です。
 
 ### 実践例：`Exportable`と`Archivable`インターフェイス
 
-<span class="listing-number">**サンプルコード7-4**</span>
+<span class="listing-number">**サンプルコード7-8**</span>
 
 ```java
 // Exportable.java
@@ -207,7 +205,7 @@ public interface Archivable {
 
 `implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
 
-<span class="listing-number">**サンプルコード7-5**</span>
+<span class="listing-number">**サンプルコード7-10**</span>
 
 ```java
 // Document.java
@@ -268,7 +266,7 @@ Java 7まで、インターフェイスは「純粋な契約」として機能�
 例えば、既存のインターフェイスに新しいメソッドを追加すると、
 そのインターフェイスを実装しているすべてのクラスがコンパイルエラーを起こしてしまうという問題がありました。
 
-<span class="listing-number">**サンプルコード7-6**</span>
+<span class="listing-number">**サンプルコード7-12**</span>
 
 ```java
 // 従来のインターフェイス（Java 7まで）
@@ -293,7 +291,7 @@ Javaのエコシステム全体の進化が加速されました。
 この機能により、既存のコレクションフレームワークに新しい機能を追加することが可能になりました
 （Stream APIなどの高度な機能はChapter 12で学習します）。
 
-<span class="listing-number">**サンプルコード7-7**</span>
+<span class="listing-number">**サンプルコード7-14**</span>
 
 ```java
 // Java 8でのインターフェイス拡張
@@ -323,7 +321,7 @@ Java 9では、インターフェイス内での`private`メソッドがサポ�
 `private`メソッドは外部から見えないため、インターフェイスの公開APIを汚すことなく、
 内部実装の詳細を隠蔽できます。
 
-<span class="listing-number">**サンプルコード7-8**</span>
+<span class="listing-number">**サンプルコード7-16**</span>
 
 ```java
 // Java 9でのさらなる拡張
@@ -355,7 +353,7 @@ public interface CompleteInterface {
 defaultメソッドの主な目的は、既存のインターフェイスに新しいメソッドを追加しても、
 既存の実装クラスが壊れないことです。
 
-<span class="listing-number">**サンプルコード7-9**</span>
+<span class="listing-number">**サンプルコード7-18**</span>
 
 ```java
 import java.util.Iterator;
@@ -411,7 +409,7 @@ Java 8のリリース時点で、`Collection`インターフェイスを実装�
 
 `default`メソッドの強力な応用例として、テンプレートメソッドパターンをインターフェイスで実現できるようになりました。従来このパターンは抽象クラスでしか実装できませんでしたが、インターフェイスでも実現可能になったことで、より柔軟な設計が可能になりました。このパターンは、処理の大枠（アルゴリズムの骨格）を定義しつつ、個別のステップを実装クラスに委ねる場合に非常に有効です。
 
-<span class="listing-number">**サンプルコード7-10**</span>
+<span class="listing-number">**サンプルコード7-20**</span>
 
 ```java
 // インターフェイスでテンプレートメソッドパターン
@@ -454,7 +452,7 @@ public interface DataProcessor {
 
 複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します。
 
-<span class="listing-number">**サンプルコード7-11**</span>
+<span class="listing-number">**サンプルコード7-22**</span>
 
 ```java
 // ダイヤモンド継承の例
@@ -502,7 +500,7 @@ Javaは以下の規則で優先順位を決定します。
 2. より具体的なインターフェイスが優先： サブインターフェイスのメソッドが優先
 3. それでも不明な場合はコンパイルエラー: 明示的なオーバーライドが必要
 
-<span class="listing-number">**サンプルコード7-12**</span>
+<span class="listing-number">**サンプルコード7-24**</span>
 
 ```java
 // 規則1：クラスが常に優先
@@ -547,7 +545,7 @@ class Implementation implements Parent, Child {
 
 インターフェイスの`static`メソッドは、そのインターフェイスに関連するユーティリティ機能を提供する強力な手段です。これにより、関連する機能を1つのインターフェイス内にまとめ、使いやすいAPIを設計できます。特に、ファクトリメソッドや共通的なユーティリティ処理を提供する場合に威力を発揮します。
 
-<span class="listing-number">**サンプルコード7-13**</span>
+<span class="listing-number">**サンプルコード7-26**</span>
 
 ```java
 import java.util.List;
@@ -589,7 +587,7 @@ String json = JsonSerializable.serializeList(users);
 
 `default`メソッドは、防御的プログラミングの実装においても非常に有効です。実装クラスが不正な値や例外的な状態を返す可能性がある場合でも、インターフェイス側で安全なラッパーメソッドを提供することで、呼び出し側のコードをより安全で使いやすくできます。これは特に、外部ライブラリとの境界や、信頼性の異なる複数の実装が存在する場合に大切です。
 
-<span class="listing-number">**サンプルコード7-14**</span>
+<span class="listing-number">**サンプルコード7-28**</span>
 
 ```java
 import java.util.*;
@@ -633,7 +631,7 @@ interface DefensiveInterface {
 
 Mixinは、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
-<span class="listing-number">**サンプルコード7-15**</span>
+<span class="listing-number">**サンプルコード7-30**</span>
 
 ```java
 import java.time.Duration;
@@ -710,7 +708,7 @@ class Document implements Timestamped, Identifiable, Versioned {
 
 トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
-<span class="listing-number">**サンプルコード7-16**</span>
+<span class="listing-number">**サンプルコード7-32**</span>
 
 ```java
 // 比較可能オブジェクトのトレイト
@@ -769,7 +767,7 @@ class Temperature implements ComparableTrait<Temperature> {
 
 インターフェイス分離原則は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
-<span class="listing-number">**サンプルコード7-17**</span>
+<span class="listing-number">**サンプルコード7-34**</span>
 
 ```java
 // 悪い例：肥大化したインターフェイス
@@ -854,7 +852,7 @@ class BasicUserService implements UserRepository, UserNotificationService {
 
 defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
 
-<span class="listing-number">**サンプルコード7-18**</span>
+<span class="listing-number">**サンプルコード7-36**</span>
 
 ```java
 import java.util.function.*;
@@ -938,7 +936,7 @@ public class FunctionEnhancementDemo {
 
 APIの進化を管理するための戦略的なアプローチです。
 
-<span class="listing-number">**サンプルコード7-19**</span>
+<span class="listing-number">**サンプルコード7-38**</span>
 
 ```java
 import java.util.Map;
@@ -1017,7 +1015,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 最も基本的なFactoryパターンの実装例を見てみましょう。
 
-<span class="listing-number">**サンプルコード7-20**</span>
+<span class="listing-number">**サンプルコード7-40**</span>
 
 ```java
 // 共通のインターフェイス
@@ -1137,7 +1135,7 @@ public class FactoryDemo {
 
 より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します。
 
-<span class="listing-number">**サンプルコード7-21**</span>
+<span class="listing-number">**サンプルコード7-42**</span>
 
 ```java
 // 抽象ファクトリークラス
@@ -1220,7 +1218,7 @@ class PdfDocument implements Document {
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-22**</span>
+<span class="listing-number">**サンプルコード7-44**</span>
 
 ```java
 import java.util.Properties;
@@ -1315,6 +1313,9 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 抽象クラスは直接インスタンス化できません。
 
 エラー例：
+
+<span class="listing-number">**サンプルコード7-45**</span>
+
 ```java
 abstract class DataProcessor {
     public abstract void processData();
@@ -1330,6 +1331,9 @@ Cannot instantiate the type DataProcessor
 ```
 
 対処法：
+
+<span class="listing-number">**サンプルコード7-46**</span>
+
 ```java
 // 抽象クラスを継承した具象クラスを作成
 class CsvDataProcessor extends DataProcessor {
@@ -1348,6 +1352,9 @@ DataProcessor processor = new CsvDataProcessor();  // OK
 抽象メソッドを実装しないと、継承先のクラスも抽象クラスになってしまいます。
 
 エラー例：
+
+<span class="listing-number">**サンプルコード7-47**</span>
+
 ```java
 abstract class Shape {
     public abstract double getArea();
@@ -1378,6 +1385,9 @@ The type Rectangle must implement the inherited abstract method Shape.draw()
 ```
 
 対処法：
+
+<span class="listing-number">**サンプルコード7-48**</span>
+
 ```java
 class Rectangle extends Shape {
     private double width, height;
@@ -1404,6 +1414,9 @@ class Rectangle extends Shape {
 インターフェイスのすべての抽象メソッドを実装してください。
 
 エラー例：
+
+<span class="listing-number">**サンプルコード7-49**</span>
+
 ```java
 interface Drawable {
     void draw();
@@ -1433,6 +1446,9 @@ The type Circle must implement the inherited abstract method Drawable.setColor(S
 ```
 
 対処法：
+
+<span class="listing-number">**サンプルコード7-50**</span>
+
 ```java
 class Circle implements Drawable {
     private double radius;
@@ -1459,6 +1475,9 @@ class Circle implements Drawable {
 Javaでは複数の抽象クラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
 
 エラー例：
+
+<span class="listing-number">**サンプルコード7-51**</span>
+
 ```java
 interface Exportable {
     default void export() {
@@ -1484,6 +1503,9 @@ Duplicate default methods named move with the parameters () and () are inherited
 ```
 
 対処法：
+
+<span class="listing-number">**サンプルコード7-52**</span>
+
 ```java
 class ReportDocument implements Exportable, Printable {
     @Override
@@ -1507,6 +1529,9 @@ class ReportDocument implements Exportable, Printable {
 インターフェイスのstaticメソッドは継承されず、直接インターフェイス名で呼び出す必要があります。
 
 エラー例：
+
+<span class="listing-number">**サンプルコード7-53**</span>
+
 ```java
 interface MathUtils {
     static double PI = 3.14159;
@@ -1535,6 +1560,9 @@ Cannot make a static reference to the non-static method calculateCircleArea(doub
 ```
 
 対処法：
+
+<span class="listing-number">**サンプルコード7-54**</span>
+
 ```java
 interface MathUtils {
     static double PI = 3.14159;
@@ -1562,6 +1590,9 @@ class Calculator implements MathUtils {
 どちらを使用するべきか迷うケースがあります。
 
 間違った選択例：
+
+<span class="listing-number">**サンプルコード7-55**</span>
+
 ```java
 // 状態を持つのに無理にインターフェイスを使用
 interface Service {
@@ -1579,6 +1610,9 @@ interface Service {
 ```
 
 正しい選択：
+
+<span class="listing-number">**サンプルコード7-56**</span>
+
 ```java
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -1664,6 +1698,9 @@ class EmailService extends BaseService implements Monitorable {
 `@Override`アノテーションを省略すると、メソッドの実装ミスに気づきにくくなります。
 
 問題のあるコード：
+
+<span class="listing-number">**サンプルコード7-57**</span>
+
 ```java
 abstract class ReportGenerator {
     public abstract void generateReport();
@@ -1680,6 +1717,9 @@ class PdfReportGenerator extends ReportGenerator {
 この場合、`generatereport()`は新しいメソッドとして認識され、`generateReport()`の実装が不足しているエラーが発生します。
 
 正しい実装：
+
+<span class="listing-number">**サンプルコード7-58**</span>
+
 ```java
 class PdfReportGenerator extends ReportGenerator {
     @Override

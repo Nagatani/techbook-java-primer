@@ -41,6 +41,8 @@
 
 JTableは、表形式のデータを表示・編集するための強力なコンポーネントです。まず、基本的な使い方から見ていきましょう。
 
+<span class="listing-number">**サンプルコード20-1**</span>
+
 ```java
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -84,6 +86,8 @@ public class BasicTableExample extends JFrame {
 ## テーブルのソートとフィルタリング
 
 JTableは組み込みのソート機能を提供しています。
+
+<span class="listing-number">**サンプルコード20-2**</span>
 
 ```java
 import javax.swing.*;
@@ -171,6 +175,8 @@ public class SortableTableExample extends JFrame {
 
 JTreeは階層構造のデータを表示するコンポーネントです。
 
+<span class="listing-number">**サンプルコード20-3**</span>
+
 ```java
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -228,6 +234,8 @@ public class BasicTreeExample extends JFrame {
 ### 動的なツリー操作
 
 ユーザーの操作に応じてツリーノードを動的に追加・削除する実装例です。
+
+<span class="listing-number">**サンプルコード20-4**</span>
 
 ```java
 import javax.swing.*;
@@ -390,6 +398,8 @@ public class DynamicTreeExample extends JFrame {
 ### カスタムレンダラーを使ったJList
 
 JListにカスタムレンダラーを適用して、リッチな表示を実現します。
+
+<span class="listing-number">**サンプルコード20-5**</span>
 
 ```java
 import javax.swing.*;
@@ -603,6 +613,8 @@ public class AdvancedListExample extends JFrame {
 
 テーブルセルに特殊な入力コンポーネントを使用する例です。
 
+<span class="listing-number">**サンプルコード20-6**</span>
+
 ```java
 import javax.swing.*;
 import javax.swing.table.*;
@@ -748,6 +760,8 @@ public class CustomEditorExample extends JFrame {
 ### 統合型データ管理アプリケーション
 
 JTable、JTree、JListを組み合わせた総合的なアプリケーションの例です。
+
+<span class="listing-number">**サンプルコード20-7**</span>
 
 ```java
 import javax.swing.*;
@@ -1108,6 +1122,9 @@ public class IntegratedDataManagementApp extends JFrame {
 #### 問題：paintComponent()で描画した内容が表示されない
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード20-8**</span>
+
 ```java
 public class CustomPanel extends JPanel {
     @Override
@@ -1125,6 +1142,9 @@ public class CustomPanel extends JPanel {
 - 透明度の設定に問題がある
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-9**</span>
+
 ```java
 public class CustomPanel extends JPanel {
     @Override
@@ -1145,6 +1165,9 @@ public class CustomPanel extends JPanel {
 #### 問題：カスタム描画がちらつく
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード20-10**</span>
+
 ```java
 @Override
 public void paintComponent(Graphics g) {
@@ -1164,6 +1187,9 @@ public void paintComponent(Graphics g) {
 - 不要な再描画が発生している
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-11**</span>
+
 ```java
 public class SmoothPanel extends JPanel {
     private BufferedImage buffer;
@@ -1221,6 +1247,9 @@ This component does not support a null LayoutManager
 - スレッドセーフでない操作を実行している
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-12**</span>
+
 ```java
 // 間違った方法
 new Thread(() -> {
@@ -1273,6 +1302,9 @@ java.lang.OutOfMemoryError: Java heap space
 - 画像のキャッシュが適切に管理されていない
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-13**</span>
+
 ```java
 public class ImageManager {
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
@@ -1339,6 +1371,9 @@ public class ImageManager {
 #### 問題：大量のデータを表示するJTableの動作が遅い
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード20-14**</span>
+
 ```java
 // 10万行のデータを表示すると動作が非常に遅くなる
 DefaultTableModel model = new DefaultTableModel();
@@ -1354,6 +1389,9 @@ table.setModel(model);
 - 不要な再描画が発生している
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-15**</span>
+
 ```java
 // 1. 遅延読み込み（Lazy Loading）の実装
 public class LazyTableModel extends AbstractTableModel {
@@ -1416,6 +1454,9 @@ table.setRowHeight(20);  // 固定の行高さを設定
 #### 問題：動的にコンポーネントを追加・削除すると配置が崩れる
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード20-16**</span>
+
 ```java
 JPanel panel = new JPanel(new GridBagLayout());
 GridBagConstraints gbc = new GridBagConstraints();
@@ -1437,6 +1478,9 @@ panel.revalidate();
 - コンポーネントの削除後に制約が更新されていない
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-17**</span>
+
 ```java
 public class DynamicPanel extends JPanel {
     private final List<JComponent> components = new ArrayList<>();
@@ -1491,6 +1535,9 @@ public class DynamicPanel extends JPanel {
 #### 問題：JTableのカスタムレンダラーで選択状態が正しく表示されない
 
 エラー症状。
+
+<span class="listing-number">**サンプルコード20-18**</span>
+
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
     @Override
@@ -1509,6 +1556,9 @@ table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 - コンポーネントの設定が不完全
 
 対処法。
+
+<span class="listing-number">**サンプルコード20-19**</span>
+
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
     @Override
@@ -1548,6 +1598,8 @@ table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 
 #### 1. 描画領域の可視化
 
+<span class="listing-number">**サンプルコード20-20**</span>
+
 ```java
 @Override
 public void paintComponent(Graphics g) {
@@ -1565,6 +1617,8 @@ public void paintComponent(Graphics g) {
 
 #### 2. パフォーマンスの測定
 
+<span class="listing-number">**サンプルコード20-21**</span>
+
 ```java
 long startTime = System.nanoTime();
 // 処理
@@ -1573,6 +1627,8 @@ System.out.println("処理時間: " + (endTime - startTime) / 1_000_000 + "ms");
 ```
 
 #### 3. メモリ使用量の監視
+
+<span class="listing-number">**サンプルコード20-22**</span>
 
 ```java
 Runtime runtime = Runtime.getRuntime();

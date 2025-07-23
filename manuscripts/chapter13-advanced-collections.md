@@ -33,8 +33,6 @@ Collectorsクラスを使った柔軟なデータ収集方法を学び、並列�
 最終的な到達レベルとしては、複雑なデータ処理要件をStream APIで簡潔に実装できます。
 カスタムCollectorを作成して専用のデータ収集処理を実装する技術、並列ストリームを活用したマルチコア環境での並列データ処理の実現、そして従来のループ処理とStream処理を状況に応じて使い分ける能力が、本章の最終目標です。
 
-
-
 ## データ構造の選択
 
 第10章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。
@@ -92,7 +90,7 @@ Java 8から導入されたラムダ式を使うと、この`Comparator`の実�
 
 ラムダ式が登場する前は、`Comparator`をその場で実装するために匿名クラスが使われていました。
 
-<span class="listing-number">**サンプルコード13-1**</span>
+<span class="listing-number">**サンプルコード13-2**</span>
 
 ```java
 import java.util.Comparator;
@@ -106,6 +104,8 @@ Comparator<Student> scoreComparator = new Comparator<Student>() {
 };
 ```
 この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。
+
+<span class="listing-number">**サンプルコード13-3**</span>
 
 ```java
 // ラムダ式を使ったComparatorの実装
@@ -121,7 +121,7 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 - `reversed()`: 比較順序を逆にする
 - `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する
 
-<span class="listing-number">**サンプルコード13-2**</span>
+<span class="listing-number">**サンプルコード13-5**</span>
 
 ```java
 import java.util.ArrayList;
@@ -186,7 +186,7 @@ Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
 - メモリ効率が向上する
 - 無限ストリームの処理が可能になる
 
-<span class="listing-number">**サンプルコード13-3**</span>
+<span class="listing-number">**サンプルコード13-7**</span>
 
 ```java
 // この時点ではまだフィルタリングは実行されない
@@ -238,7 +238,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。
 
-<span class="listing-number">**サンプルコード13-4**</span>
+<span class="listing-number">**サンプルコード13-9**</span>
 
 ```java
 List<Student> list = ...;
@@ -252,7 +252,7 @@ List<Student> highScorers = list.stream()
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。
 
-<span class="listing-number">**サンプルコード13-5**</span>
+<span class="listing-number">**サンプルコード13-11**</span>
 
 ```java
 // 生徒のリストから、名前のリストを生成
@@ -263,7 +263,7 @@ List<String> names = list.stream()
 
 ### 組み合わせた例
 
-<span class="listing-number">**サンプルコード13-6**</span>
+<span class="listing-number">**サンプルコード13-13**</span>
 
 ```java
 import java.util.ArrayList;
@@ -312,7 +312,7 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 #### Optionalオブジェクトを作成する3つの基本的な方法があります
 
-<span class="listing-number">**サンプルコード13-7**</span>
+<span class="listing-number">**サンプルコード13-15**</span>
 
 ```java
 import java.util.Optional;
@@ -345,7 +345,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。
 
-<span class="listing-number">**サンプルコード13-8**</span>
+<span class="listing-number">**サンプルコード13-17**</span>
 
 ```java
 import java.util.Optional;
@@ -395,7 +395,7 @@ public class OptionalRetrievalExample {
 
 値の存在を確認し、存在する場合のみ処理を実行する方法。
 
-<span class="listing-number">**サンプルコード13-9**</span>
+<span class="listing-number">**サンプルコード13-19**</span>
 
 ```java
 import java.util.Optional;
@@ -440,7 +440,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。
 
-<span class="listing-number">**サンプルコード13-10**</span>
+<span class="listing-number">**サンプルコード13-21**</span>
 
 ```java
 import java.util.Optional;
@@ -497,7 +497,7 @@ public class OptionalTransformationExample {
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。
 
-<span class="listing-number">**サンプルコード13-11**</span>
+<span class="listing-number">**サンプルコード13-23**</span>
 
 ```java
 import java.util.Arrays;
@@ -566,7 +566,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。
 
-<span class="listing-number">**サンプルコード13-12**</span>
+<span class="listing-number">**サンプルコード13-25**</span>
 
 ```java
 import java.util.HashMap;
@@ -665,7 +665,7 @@ public class OptionalPracticalExample {
 
 Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
 
-<span class="listing-number">**サンプルコード13-13**</span>
+<span class="listing-number">**サンプルコード13-27**</span>
 
 ```java
 import java.util.Optional;
@@ -758,7 +758,7 @@ Optionalをメソッドの戻り値やチェイン操作で使用することで
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
 
-<span class="listing-number">**サンプルコード13-14**</span>
+<span class="listing-number">**サンプルコード13-29**</span>
 
 ```java
 // シーケンシャル（直列）処理
@@ -782,7 +782,7 @@ long sumParallel = numbers.parallelStream()
 2. 処理（Process）：各チャンクを異なるスレッドで並列に処理
 3. 統合（Combine）：各スレッドの結果を統合して最終結果を生成
 
-<span class="listing-number">**サンプルコード13-15**</span>
+<span class="listing-number">**サンプルコード13-31**</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -826,7 +826,7 @@ public class ParallelStreamExample {
 #### スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
-<span class="listing-number">**サンプルコード13-16**</span>
+<span class="listing-number">**サンプルコード13-33**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -858,7 +858,7 @@ List<Integer> results = numbers.parallelStream()
 
 `flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などに特に有用です。
 
-<span class="listing-number">**サンプルコード13-17**</span>
+<span class="listing-number">**サンプルコード13-35**</span>
 
 ```java
 import java.util.Arrays;
@@ -906,7 +906,7 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード13-18**</span>
+<span class="listing-number">**サンプルコード13-37**</span>
 
 ```java
 import java.util.Arrays;
@@ -957,7 +957,7 @@ public class ReduceExample {
 
 `Collectors`クラスは、ストリームの要素を様々な形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード13-19**</span>
+<span class="listing-number">**サンプルコード13-39**</span>
 
 ```java
 import java.util.Arrays;
@@ -1005,7 +1005,7 @@ public class CollectorsExample {
 
 `Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
 
-<span class="listing-number">**サンプルコード13-20**</span>
+<span class="listing-number">**サンプルコード13-41**</span>
 
 ```java
 import java.util.Arrays;
@@ -1043,7 +1043,7 @@ public class OptionalExample {
 
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
 
-<span class="listing-number">**サンプルコード13-21**</span>
+<span class="listing-number">**サンプルコード13-43**</span>
 
 ```java
 import java.util.Arrays;
@@ -1075,7 +1075,7 @@ public class OptionalChainingExample {
 
 実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理します。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
-<span class="listing-number">**サンプルコード13-22**</span>
+<span class="listing-number">**サンプルコード13-45**</span>
 
 ```java
 import java.util.Arrays;
@@ -1115,7 +1115,7 @@ public class NullSafeProcessingExample {
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 
-<span class="listing-number">**サンプルコード13-23**</span>
+<span class="listing-number">**サンプルコード13-47**</span>
 
 ```java
 import java.util.Arrays;
@@ -1153,7 +1153,7 @@ public class ShortCircuitExample {
 
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが重要です。
 
-<span class="listing-number">**サンプルコード13-24**</span>
+<span class="listing-number">**サンプルコード13-49**</span>
 
 ```java
 import java.util.Arrays;
@@ -1185,7 +1185,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード13-25**</span>
+<span class="listing-number">**サンプルコード13-51**</span>
 
 ```java
 import java.util.Arrays;
@@ -1270,6 +1270,9 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 ### Stream操作のチェーンエラー
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-52**</span>
+
 ```java
 // ❌ 非効率的なStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "cherry");
@@ -1284,6 +1287,9 @@ words.stream()
 - `map(String::toUpperCase)`後に`filter(word -> word.startsWith("A"))`を使用しているが、大文字変換後なので条件が一致しない
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-53**</span>
+
 ```java
 // ✅ 効率的なStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "cherry");
@@ -1297,6 +1303,9 @@ words.stream()
 ### 終端操作の忘れ
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-54**</span>
+
 ```java
 // ❌ 終端操作を忘れた場合
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -1310,6 +1319,9 @@ numbers.stream()
 - コンパイルエラーは発生しないが、期待した処理が行われない
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-55**</span>
+
 ```java
 // ✅ 終端操作を追加
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -1322,6 +1334,9 @@ List<Integer> evenDoubled = numbers.stream()
 ### 並列処理での問題
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-56**</span>
+
 ```java
 // ❌ 並列処理での共有状態の変更
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -1337,6 +1352,9 @@ numbers.parallelStream()
 - データの破損や`ConcurrentModificationException`の発生
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-57**</span>
+
 ```java
 // ✅ 並列処理に適した方法
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -1357,6 +1375,9 @@ numbers.parallelStream()
 ### Optionalの誤用
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-58**</span>
+
 ```java
 // ❌ Optionalの誤った使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
@@ -1376,6 +1397,9 @@ if (result.isPresent()) {
 - Optionalの利点が活かされていない
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-59**</span>
+
 ```java
 // ✅ Optionalの正しい使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
@@ -1397,6 +1421,9 @@ String result = names.stream()
 ### パフォーマンスの問題
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-60**</span>
+
 ```java
 // ❌ 不効率なStream操作
 List<Integer> numbers = IntStream.range(1, 1000000)
@@ -1420,6 +1447,9 @@ int count = numbers.stream()
 - プリミティブ型の不要なボクシング/アンボクシング
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-61**</span>
+
 ```java
 // ✅ 効率的なStream操作
 // 最初からIntStreamを使用
@@ -1437,6 +1467,9 @@ System.out.println("Count: " + stats.getCount());
 ### 例外処理の問題
 
 ##### エラー例
+
+<span class="listing-number">**サンプルコード13-62**</span>
+
 ```java
 // ❌ Stream内での例外処理の問題
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");
@@ -1453,6 +1486,9 @@ error: Unhandled exception type IOException
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード13-63**</span>
+
 ```java
 // ✅ Stream内での確実な例外処理
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");

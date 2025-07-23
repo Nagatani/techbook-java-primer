@@ -40,6 +40,35 @@ Rather than removing complex content, it should be strategically organized throu
 ### Pedagogical Approach
 The book follows a spiral curriculum model where concepts are introduced at basic level and revisited with increasing complexity throughout the learning journey. This approach ensures both accessibility for beginners and depth for serious study.
 
+## Project Current Status (as of 2025-07-22)
+
+### Completed Work and Established Policies
+
+1. **Exercise Sections**: 各章の演習はGitHubリポジトリへのリンクのみで提供
+   - 章内に演習セクションは意図的に設けない方針
+   - リンク形式: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapterXX/`
+   - 全23章でこの形式を採用済み
+
+2. **Appendix Structure**: 付録はGitHubリポジトリへの参照として実装
+   - 付録B: GitHubリンク形式のインデックスとして完成
+   - 付録C〜G: 最小限の構成で、詳細はGitHubリポジトリで提供する方針
+   - 本文内に詳細な付録内容は記載しない
+
+3. **Writing Style Decisions**:
+   - 本文: ですます調で統一
+   - リスト項目: である調を使用（意図的な使い分け）
+   - 専門用語: 「インターフェイス」で統一（「インターフェース」ではない）
+
+4. **Code Listing Numbers**: 
+   - 現在887個のコードブロック中、422個に番号付与済み
+   - 形式: **リストX.Y** で統一
+   - 番号付けは継続的に実施中
+
+5. **Chapter Structure**:
+   - 全23章構成
+   - 第21章（ユニットテスト）の配置は現状維持
+   - 各章末にGitHubリポジトリへの演習リンクを配置
+
 ## Commands
 
 ### Building
@@ -124,14 +153,16 @@ When performing any modifications to the book content, you must:
    - Never create analysis files in `manuscripts/` directory
    - Always use absolute paths when referencing files in analysis
 
-### Critical Project Issues (as of current analysis)
+### Critical Project Issues (as of 2025-07-23)
 
 The following issues require ongoing attention and should be referenced during any work:
 
-1. **High Priority**: Appendix B system incomplete (18 sections planned, only 1 exists)
+1. ~~**High Priority**: Appendix B system incomplete~~ ✅ **Resolved** - GitHubリンク形式で実装完了 (2025-07-19)
 2. ~~**High Priority**: GitHub repository placeholders unresolved~~ ✅ **Resolved** (2025-07-13)
-3. **Medium Priority**: Chapter 15 exercise format inconsistency
-4. **Medium Priority**: Chapter ordering optimization (Chapter 21 placement)
+3. ~~**High Priority**: Code listing numbering inconsistency~~ ✅ **Resolved** - 1,221個を「サンプルコードX-Y」形式に統一 (2025-07-23)
+4. ~~**Medium Priority**: Chapter 15 exercise format inconsistency~~ ✅ **Resolved** - 全章GitHubリンク形式で統一
+5. ~~**Medium Priority**: Chapter ordering optimization (Chapter 21 placement)~~ ✅ **Resolved** - 現状配置を維持する方針決定
+6. **Medium Priority**: textlint errors remaining (37件) - 複雑な手動修正が必要
 
 ## Repository Information
 
@@ -156,6 +187,21 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Use textlint for Japanese manuscript linting and formatting
 - **CRITICAL**: Always refer to `docs/writing-guidelines-textlint-compliance.md` when generating or modifying text to prevent textlint errors
 - **文体統一**: 本文はですます調で統一する（である調は使用しない）
+- **コードリスト番号の統一ルール**:
+  - **Javaコードおよびプログラミング言語のコードブロック**（```java, ```xml, ```python等）には`<span class="listing-number">**サンプルコードX-Y**</span>`形式で番号を付与
+  - Xは章番号、Yは章内の連番（1から始まる）
+  - 「リスト」形式は使用禁止、必ず「サンプルコード」と記載
+  - 番号は重複させない（各章で1から連番）
+  - **番号を付けない例**:
+    - エラー出力、例外スタックトレース
+    - プログラムの実行結果、コンソール出力
+    - ディレクトリ構造、ASCII図表
+    - コマンドライン操作の例（ターミナル表示）
+  - **番号を付ける例**:
+    - Javaソースコード（.java）
+    - XMLファイル（pom.xml, web.xml等）
+    - プロパティファイル、設定ファイル
+    - その他のプログラミング言語のコード（Python, JavaScript等）
 - **リスト表記ルール**: 
   - 絵文字を使用しない
   - リスト項目の末尾にコロン（：）を使用しない
@@ -170,7 +216,10 @@ All chapter exercise sections reference this repository URL. The structure is:
   - 見出しが必要な場合は、適切なMarkdown見出し記法（#、##、### など）を使用する
   - 強調表記は、本文中で真に強調が必要な単語や短いフレーズにのみ限定する
   - 許可される強調表記：
-    - コードリスト番号（**リストX-Y**、**サンプルコードX-Y**）のみ
+    - コードリスト番号は必ず**サンプルコードX-Y**形式（Xは章番号、Yは連番）を使用すること
+    - **重要**: 「リスト」形式は使用禁止。すべて「サンプルコード」形式で統一
+- **演習セクション**: 章末にGitHubリンクのみを配置（章内に演習問題は記載しない）
+- **付録の扱い**: 基本的にGitHubリポジトリへの参照として実装し、詳細な内容はリポジトリで管理
 - Do not add emojis unless explicitly requested by the user
 
 ## Linting and Text Modification Rules

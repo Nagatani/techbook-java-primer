@@ -62,10 +62,6 @@
 
 次のステップ： 基礎課題が完了したら、第14章「例外処理の基礎と応用」に進みましょう。
 
-
-
-
-
 ## 前提知識
 
 本章を学習するためには、第6章で学んだfinalキーワードの理解とクラス設計の経験がポイントとなります。
@@ -104,8 +100,6 @@ enumのインスタンス性とsingleton性の理解も重要なポイントで�
 また、既存のレガシーコードに含まれる整数定数や文字列定数を、適切にenumへリファクタリングする能力も身につけます。
 これにより、保守性と可読性が明確に向上したコードベースを構築できます。
 
-
-
 ## enumとは？
 
 `enum`（列挙型）は、決まったいくつかの値だけを取りうる型を定義するための、特殊なクラスです。たとえば、「曜日（月、火、水、木、金、土、日）」や「信号の色（赤、青、黄）」のように、値の範囲が限定されているものを扱うのに最適です。
@@ -121,7 +115,7 @@ enumのインスタンス性とsingleton性の理解も重要なポイントで�
 
 ### 基本的な構文と使い方
 
-<span class="listing-number">**サンプルコード8-1**</span>
+<span class="listing-number">**サンプルコード8-2**</span>
 
 ```java
 public enum DayOfWeek {
@@ -130,7 +124,7 @@ public enum DayOfWeek {
 ```
 これだけで、`DayOfWeek`という新しい型が作られ、その型が取りうる値は定義された7つの曜日に限定されます。
 
-<span class="listing-number">**サンプルコード8-2**</span>
+<span class="listing-number">**サンプルコード8-4**</span>
 
 ```java
 public class EnumExample {
@@ -154,7 +148,7 @@ Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、
 - `name()`: 列挙子の名前（定義した通りの文字列）を返す
 - `ordinal()`: 列挙子の定義順序（ゼロから始まる）を返す
 
-<span class="listing-number">**サンプルコード8-3**</span>
+<span class="listing-number">**サンプルコード8-6**</span>
 
 ```java
 // DayOfWeek.values() を使って全曜日をループ処理
@@ -171,7 +165,7 @@ System.out.println(friday); // FRIDAY
 
 `enum`は`switch`文と非常に相性が良く、安全で読みやすいコードを書くことができます。
 
-<span class="listing-number">**サンプルコード8-4**</span>
+<span class="listing-number">**サンプルコード8-8**</span>
 
 ```java
 public class TrafficLight {
@@ -199,7 +193,7 @@ public class TrafficLight {
 - 定数に対応する計算処理やアルゴリズムが必要な場合
 - オブジェクト指向的な設計でストラテジーパターンを簡潔に実現したい場合
 
-<span class="listing-number">**サンプルコード8-5**</span>
+<span class="listing-number">**サンプルコード8-10**</span>
 
 ```java
 public enum Planet {
@@ -250,7 +244,7 @@ public class PlanetTest {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。これはストラテジーパターンを簡潔に実現する方法の1つです。
 
-<span class="listing-number">**サンプルコード8-6**</span>
+<span class="listing-number">**サンプルコード8-12**</span>
 
 ```java
 public enum Operation {
@@ -272,7 +266,7 @@ public enum Operation {
 
 `enum`はクラスを継承できませんが、インターフェイスを実装することは可能です。
 
-<span class="listing-number">**サンプルコード8-7**</span>
+<span class="listing-number">**サンプルコード8-14**</span>
 
 ```java
 interface Loggable {
@@ -314,7 +308,7 @@ Singletonパターンは、クラスのインスタンスがシステム全体�
 
 第3章で触れたstaticを使った従来のSingleton実装には、いくつかの問題があります。
 
-<span class="listing-number">**サンプルコード8-8**</span>
+<span class="listing-number">**サンプルコード8-16**</span>
 
 ```java
 // 従来のSingleton実装（問題がある）
@@ -343,7 +337,7 @@ public class DatabaseConnection {
 
 Javaでは、enumを使うことで最もシンプルかつ安全なSingletonを実装できます。
 
-<span class="listing-number">**サンプルコード8-9**</span>
+<span class="listing-number">**サンプルコード8-18**</span>
 
 ```java
 import java.sql.Connection;
@@ -395,7 +389,7 @@ public class Application {
 
 ### 実践的な例：アプリケーション設定管理
 
-<span class="listing-number">**サンプルコード8-10**</span>
+<span class="listing-number">**サンプルコード8-20**</span>
 
 ```java
 import java.util.Properties;
@@ -448,6 +442,8 @@ enumを学習する際に遭遇する典型的なエラーとその対処法を�
 
 #### エラー例1: enum定数の大文字小文字を間違える
 
+<span class="listing-number">**サンプルコード8-21**</span>
+
 ```java
 public enum Status {
     ACTIVE, INACTIVE, PENDING
@@ -467,6 +463,9 @@ error: cannot find symbol
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-22**</span>
+
 ```java
 // 正しい使用
 if (status == Status.ACTIVE) {
@@ -475,6 +474,8 @@ if (status == Status.ACTIVE) {
 ```
 
 #### エラー例2: enum定数をnewで作成しようとする
+
+<span class="listing-number">**サンプルコード8-23**</span>
 
 ```java
 Status status = new Status();  // コンパイルエラー
@@ -486,6 +487,9 @@ error: enum types may not be instantiated
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-24**</span>
+
 ```java
 // 正しい使用
 Status status = Status.ACTIVE;
@@ -494,6 +498,8 @@ Status status = Status.ACTIVE;
 ### switchステートメントでのenum取り扱い
 
 #### エラー例3: switch文でenum名を含めてしまう
+
+<span class="listing-number">**サンプルコード8-25**</span>
 
 ```java
 switch (status) {
@@ -510,6 +516,9 @@ error: an enum switch case label must be the unqualified name of an enumeration 
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-26**</span>
+
 ```java
 // 正しい使用
 switch (status) {
@@ -521,6 +530,8 @@ switch (status) {
 ```
 
 #### エラー例4: switch文でのdefault句の省略
+
+<span class="listing-number">**サンプルコード8-27**</span>
 
 ```java
 public enum Priority {
@@ -543,6 +554,9 @@ switch (priority) {
 新しいenum値が追加されたときに、コンパイル時に検出されない可能性があります。
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-28**</span>
+
 ```java
 // 推奨：全てのcase句を書く、またはdefaultを使用
 switch (priority) {
@@ -563,6 +577,8 @@ switch (priority) {
 ### enumのコンストラクタ呼び出し
 
 #### エラー例5: enumのコンストラクタを直接呼び出す
+
+<span class="listing-number">**サンプルコード8-29**</span>
 
 ```java
 public enum Color {
@@ -589,6 +605,9 @@ error: enum types may not be instantiated
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-30**</span>
+
 ```java
 // 正しい使用：定義済みの定数のみ使用可能
 Color color = Color.RED;
@@ -608,6 +627,8 @@ public enum Color {
 
 #### エラー例6: enumの比較で間違った方法を使用
 
+<span class="listing-number">**サンプルコード8-31**</span>
+
 ```java
 public enum Size {
     SMALL, MEDIUM, LARGE
@@ -625,6 +646,9 @@ error: bad operand types for binary operator '>'
 ```
 
 ##### 対処法
+
+<span class="listing-number">**サンプルコード8-32**</span>
+
 ```java
 // 正しい使用：ordinal()の比較またはcompareTo()を使用
 if (size1.ordinal() > size2.ordinal()) {
@@ -640,6 +664,8 @@ if (size1.compareTo(size2) > 0) {
 ### enumの拡張に関する誤解
 
 #### エラー例7: enumを継承しようとする
+
+<span class="listing-number">**サンプルコード8-33**</span>
 
 ```java
 public enum BasicColor {
@@ -658,6 +684,9 @@ error: enum cannot inherit from classes
 ```
 
 ##### 対処法1: インターフェイスを使用
+
+<span class="listing-number">**サンプルコード8-34**</span>
+
 ```java
 public interface ColorInterface {
     String getHexValue();
@@ -699,6 +728,9 @@ public enum ExtendedColor implements ColorInterface {
 ```
 
 ##### 対処法2: 抽象メソッドを使用して多態性を実現
+
+<span class="listing-number">**サンプルコード8-35**</span>
+
 ```java
 public enum Operation {
     PLUS {
@@ -723,6 +755,9 @@ public enum Operation {
 #### デバッグ時の確認ポイント
 
 1. null値の確認
+
+<span class="listing-number">**サンプルコード8-36**</span>
+
 ```java
 // enumはnullになる可能性がある
 if (status != null && status == Status.ACTIVE) {
@@ -731,6 +766,9 @@ if (status != null && status == Status.ACTIVE) {
 ```
 
 2. 文字列からenumへの変換
+
+<span class="listing-number">**サンプルコード8-37**</span>
+
 ```java
 // 安全な変換
 public static Status fromString(String value) {
@@ -743,6 +781,9 @@ public static Status fromString(String value) {
 ```
 
 3. enumの順序に依存しない設計
+
+<span class="listing-number">**サンプルコード8-38**</span>
+
 ```java
 // 悪い例：ordinal()に依存
 int level = priority.ordinal();  // 順序が変わると破綻
