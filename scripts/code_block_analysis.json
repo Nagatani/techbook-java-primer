@@ -1,0 +1,745 @@
+{
+  "overall_stats": {
+    "c": {
+      "total": 12,
+      "numbered": 12,
+      "unnumbered": 0
+    },
+    "java": {
+      "total": 613,
+      "numbered": 613,
+      "unnumbered": 0
+    },
+    "none": {
+      "total": 215,
+      "numbered": 5,
+      "unnumbered": 210
+    },
+    "python": {
+      "total": 2,
+      "numbered": 2,
+      "unnumbered": 0
+    },
+    "javascript": {
+      "total": 2,
+      "numbered": 2,
+      "unnumbered": 0
+    },
+    "yaml": {
+      "total": 1,
+      "numbered": 1,
+      "unnumbered": 0
+    },
+    "gradle": {
+      "total": 1,
+      "numbered": 1,
+      "unnumbered": 0
+    },
+    "bash": {
+      "total": 15,
+      "numbered": 15,
+      "unnumbered": 0
+    },
+    "xml": {
+      "total": 19,
+      "numbered": 19,
+      "unnumbered": 0
+    },
+    "properties": {
+      "total": 1,
+      "numbered": 1,
+      "unnumbered": 0
+    },
+    "text": {
+      "total": 1,
+      "numbered": 1,
+      "unnumbered": 0
+    }
+  },
+  "chapter_details": {
+    "chapter01-introduction.md": {
+      "total_blocks": 24,
+      "by_language": {
+        "c": {
+          "total": 2,
+          "numbered": 2,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "java": {
+          "total": 14,
+          "numbered": 14,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 8,
+          "numbered": 0,
+          "unnumbered": 8,
+          "examples": [
+            {
+              "line": 598,
+              "preview": "'java' is not recognized as an internal or externa..."
+            },
+            {
+              "line": 634,
+              "preview": "error: class HelloWorld is public, should be decla..."
+            },
+            {
+              "line": 662,
+              "preview": "Error: Main method not found in class HelloWorld..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter02-getting-started.md": {
+      "total_blocks": 59,
+      "by_language": {
+        "java": {
+          "total": 45,
+          "numbered": 45,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "c": {
+          "total": 7,
+          "numbered": 7,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "python": {
+          "total": 2,
+          "numbered": 2,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "javascript": {
+          "total": 2,
+          "numbered": 2,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 3,
+          "numbered": 0,
+          "unnumbered": 3,
+          "examples": [
+            {
+              "line": 1536,
+              "preview": "error: ';' expected..."
+            },
+            {
+              "line": 1554,
+              "preview": "error: cannot find symbol..."
+            },
+            {
+              "line": 1572,
+              "preview": "error: class HelloWorld is public, should be decla..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter03-oop-basics.md": {
+      "total_blocks": 48,
+      "by_language": {
+        "c": {
+          "total": 3,
+          "numbered": 3,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "java": {
+          "total": 44,
+          "numbered": 44,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 1,
+          "numbered": 0,
+          "unnumbered": 1,
+          "examples": [
+            {
+              "line": 1421,
+              "preview": "--- ツール作成前 ---..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter04-classes-and-instances.md": {
+      "total_blocks": 40,
+      "by_language": {
+        "java": {
+          "total": 39,
+          "numbered": 39,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 1,
+          "numbered": 0,
+          "unnumbered": 1,
+          "examples": [
+            {
+              "line": 588,
+              "preview": "src/..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter05-inheritance-and-polymorphism.md": {
+      "total_blocks": 39,
+      "by_language": {
+        "java": {
+          "total": 7,
+          "numbered": 7,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 32,
+          "numbered": 4,
+          "unnumbered": 28,
+          "examples": [
+            {
+              "line": 538,
+              "preview": "#### リファクタリングの効果..."
+            },
+            {
+              "line": 577,
+              "preview": "#### 継承の仕組みと効果..."
+            },
+            {
+              "line": 649,
+              "preview": "#### 解決策：コンポジションを使用..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter06-immutability-and-final.md": {
+      "total_blocks": 32,
+      "by_language": {
+        "java": {
+          "total": 10,
+          "numbered": 10,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 22,
+          "numbered": 0,
+          "unnumbered": 22,
+          "examples": [
+            {
+              "line": 622,
+              "preview": "#### ビルダーパターンの利点..."
+            },
+            {
+              "line": 672,
+              "preview": "## 章末演習..."
+            },
+            {
+              "line": 716,
+              "preview": "##### エラーメッセージ..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter07-abstract-classes-and-interfaces.md": {
+      "total_blocks": 41,
+      "by_language": {
+        "java": {
+          "total": 36,
+          "numbered": 36,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 5,
+          "numbered": 0,
+          "unnumbered": 5,
+          "examples": [
+            {
+              "line": 1329,
+              "preview": "Cannot instantiate the type DataProcessor..."
+            },
+            {
+              "line": 1383,
+              "preview": "The type Rectangle must implement the inherited ab..."
+            },
+            {
+              "line": 1444,
+              "preview": "The type Circle must implement the inherited abstr..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter08-enums.md": {
+      "total_blocks": 34,
+      "by_language": {
+        "java": {
+          "total": 28,
+          "numbered": 28,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 6,
+          "numbered": 0,
+          "unnumbered": 6,
+          "examples": [
+            {
+              "line": 459,
+              "preview": "error: cannot find symbol..."
+            },
+            {
+              "line": 485,
+              "preview": "error: enum types may not be instantiated..."
+            },
+            {
+              "line": 514,
+              "preview": "error: an enum switch case label must be the unqua..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter09-records.md": {
+      "total_blocks": 72,
+      "by_language": {
+        "java": {
+          "total": 2,
+          "numbered": 2,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 70,
+          "numbered": 1,
+          "unnumbered": 69,
+          "examples": [
+            {
+              "line": 110,
+              "preview": "### Recordのメリット・デメリット..."
+            },
+            {
+              "line": 149,
+              "preview": "各操作の詳細解説..."
+            },
+            {
+              "line": 177,
+              "preview": "## 実践例：データ変換と処理..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter10-collections.md": {
+      "total_blocks": 36,
+      "by_language": {
+        "java": {
+          "total": 30,
+          "numbered": 30,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 6,
+          "numbered": 0,
+          "unnumbered": 6,
+          "examples": [
+            {
+              "line": 187,
+              "preview": "Collection..."
+            },
+            {
+              "line": 792,
+              "preview": "Exception in thread \"main\" java.lang.NullPointerEx..."
+            },
+            {
+              "line": 840,
+              "preview": "Exception in thread \"main\" java.lang.ClassCastExce..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter11-generics.md": {
+      "total_blocks": 34,
+      "by_language": {
+        "java": {
+          "total": 28,
+          "numbered": 28,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 6,
+          "numbered": 0,
+          "unnumbered": 6,
+          "examples": [
+            {
+              "line": 734,
+              "preview": "Note: GenericsExample.java uses unchecked or unsaf..."
+            },
+            {
+              "line": 768,
+              "preview": "error: Cannot instantiate the type T..."
+            },
+            {
+              "line": 805,
+              "preview": "error: The method add(capture#1-of ? extends Numbe..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter12-lambda-and-functional-interfaces.md": {
+      "total_blocks": 44,
+      "by_language": {
+        "java": {
+          "total": 22,
+          "numbered": 22,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 22,
+          "numbered": 0,
+          "unnumbered": 22,
+          "examples": [
+            {
+              "line": 433,
+              "preview": "record AccountCreated(String accountId, String own..."
+            },
+            {
+              "line": 854,
+              "preview": "// ラムダ: s -> System.out.println(s)..."
+            },
+            {
+              "line": 898,
+              "preview": "## ラムダ式の応用例..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter13-advanced-collections.md": {
+      "total_blocks": 39,
+      "by_language": {
+        "java": {
+          "total": 38,
+          "numbered": 38,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 1,
+          "numbered": 0,
+          "unnumbered": 1,
+          "examples": [
+            {
+              "line": 1484,
+              "preview": "error: Unhandled exception type IOException..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter14-exception-handling.md": {
+      "total_blocks": 32,
+      "by_language": {
+        "none": {
+          "total": 2,
+          "numbered": 0,
+          "unnumbered": 2,
+          "examples": [
+            {
+              "line": 63,
+              "preview": "exercises/chapter14/..."
+            },
+            {
+              "line": 204,
+              "preview": "Throwable..."
+            }
+          ]
+        },
+        "java": {
+          "total": 30,
+          "numbered": 30,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter15-file-io.md": {
+      "total_blocks": 33,
+      "by_language": {
+        "java": {
+          "total": 33,
+          "numbered": 33,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter16-multithreading.md": {
+      "total_blocks": 40,
+      "by_language": {
+        "none": {
+          "total": 8,
+          "numbered": 0,
+          "unnumbered": 8,
+          "examples": [
+            {
+              "line": 74,
+              "preview": "1. お客様Aの前菜を作る（5分）..."
+            },
+            {
+              "line": 83,
+              "preview": "シェフ1: お客様Aの前菜 → お客様Bの前菜 → ......"
+            },
+            {
+              "line": 283,
+              "preview": "NEW → RUNNABLE → BLOCKED/WAITING/TIMED_WAITING → T..."
+            }
+          ]
+        },
+        "java": {
+          "total": 32,
+          "numbered": 32,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter17-network-programming.md": {
+      "total_blocks": 26,
+      "by_language": {
+        "none": {
+          "total": 3,
+          "numbered": 0,
+          "unnumbered": 3,
+          "examples": [
+            {
+              "line": 50,
+              "preview": "┌─────────────────────────────────────────┐..."
+            },
+            {
+              "line": 309,
+              "preview": "GET /index.html HTTP/1.1..."
+            },
+            {
+              "line": 319,
+              "preview": "HTTP/1.1 200 OK..."
+            }
+          ]
+        },
+        "java": {
+          "total": 23,
+          "numbered": 23,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter18-gui-basics.md": {
+      "total_blocks": 52,
+      "by_language": {
+        "java": {
+          "total": 49,
+          "numbered": 49,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 3,
+          "numbered": 0,
+          "unnumbered": 3,
+          "examples": [
+            {
+              "line": 843,
+              "preview": "ユーザー操作 → イベントソース → イベントオブジェクト生成 → リスナーに通知 → 処理実行..."
+            },
+            {
+              "line": 1910,
+              "preview": "JFrame frame = new JFrame(\"タイトル\");..."
+            },
+            {
+              "line": 2020,
+              "preview": "Exception in thread \"AWT-EventQueue-0\" java.lang.N..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter19-gui-event-handling.md": {
+      "total_blocks": 40,
+      "by_language": {
+        "java": {
+          "total": 35,
+          "numbered": 35,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 5,
+          "numbered": 0,
+          "unnumbered": 5,
+          "examples": [
+            {
+              "line": 173,
+              "preview": "=== インタラクティブ描画アプリケーション ===..."
+            },
+            {
+              "line": 275,
+              "preview": "=== フォームバリデーター ===..."
+            },
+            {
+              "line": 403,
+              "preview": "=== 高度なメニューシステム ===..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter20-advanced-gui.md": {
+      "total_blocks": 24,
+      "by_language": {
+        "java": {
+          "total": 22,
+          "numbered": 22,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 2,
+          "numbered": 0,
+          "unnumbered": 2,
+          "examples": [
+            {
+              "line": 1240,
+              "preview": "Exception in thread \"Thread-1\" java.lang.IllegalSt..."
+            },
+            {
+              "line": 1295,
+              "preview": "java.lang.OutOfMemoryError: Java heap space..."
+            }
+          ]
+        }
+      }
+    },
+    "chapter21-unit-testing.md": {
+      "total_blocks": 19,
+      "by_language": {
+        "java": {
+          "total": 17,
+          "numbered": 17,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "yaml": {
+          "total": 1,
+          "numbered": 1,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "gradle": {
+          "total": 1,
+          "numbered": 1,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter22-documentation-and-libraries.md": {
+      "total_blocks": 60,
+      "by_language": {
+        "java": {
+          "total": 26,
+          "numbered": 26,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "bash": {
+          "total": 6,
+          "numbered": 6,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "xml": {
+          "total": 19,
+          "numbered": 19,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 8,
+          "numbered": 0,
+          "unnumbered": 8,
+          "examples": [
+            {
+              "line": 1272,
+              "preview": "warning: @param has no meaning in class documentat..."
+            },
+            {
+              "line": 1359,
+              "preview": "warning: unclosed tag: <strong>..."
+            },
+            {
+              "line": 1410,
+              "preview": "java.lang.NoSuchMethodError: com.fasterxml.jackson..."
+            }
+          ]
+        },
+        "properties": {
+          "total": 1,
+          "numbered": 1,
+          "unnumbered": 0,
+          "examples": []
+        }
+      }
+    },
+    "chapter23-build-and-deploy.md": {
+      "total_blocks": 14,
+      "by_language": {
+        "java": {
+          "total": 3,
+          "numbered": 3,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "bash": {
+          "total": 9,
+          "numbered": 9,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "text": {
+          "total": 1,
+          "numbered": 1,
+          "unnumbered": 0,
+          "examples": []
+        },
+        "none": {
+          "total": 1,
+          "numbered": 0,
+          "unnumbered": 1,
+          "examples": [
+            {
+              "line": 270,
+              "preview": "/MyProject/..."
+            }
+          ]
+        }
+      }
+    }
+  }
+}
