@@ -1,0 +1,914 @@
+{
+  "chapters": [
+    {
+      "filename": "chapter01-introduction.md",
+      "chapter_num": 1,
+      "title": "<b>1章</b> <span>Java入門と開発環境構築</span> <small>プログラミングの新たな世界への第一歩</small>",
+      "line_count": 830,
+      "sections": [
+        "本章の学習目標",
+        "本書のGitHubリポジトリについて",
+        "本書の対象読者",
+        "本書で学べること",
+        "学習の進め方とロードマップ",
+        "Javaの特徴",
+        "開発環境の準備",
+        "最初のJavaプログラム",
+        "Javaプログラムの基本構文",
+        "標準入出力を扱うサンプルを動かしてみよう",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 12,
+      "code_blocks": 27,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録D",
+        "付録B.01",
+        "付録B",
+        "付録C",
+        "付録A"
+      ],
+      "chapter_refs": [
+        1,
+        2,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer",
+        "https://github.com/Nagatani/techbook-java-primer/issues",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter01/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`）を参照してください。"
+      ]
+    },
+    {
+      "filename": "chapter02-getting-started.md",
+      "chapter_num": 2,
+      "title": "<b>2章</b> <span>Java基本文法</span> <small>変数・制御構造・メソッドの基礎</small>",
+      "line_count": 1672,
+      "sections": [
+        "本章の学習目標",
+        "章の構成",
+        "はじめに",
+        "Javaの特徴",
+        "メモリ管理とガベージコレクション",
+        "基本データ型",
+        "変数の宣言と初期化",
+        "演算子",
+        "型変換",
+        "コンソール入出力",
+        "制御構造",
+        "配列",
+        "メソッド（関数）",
+        "文字列処理",
+        "import文の使い方",
+        "よくあるコンパイルエラーとその対処法",
+        "Java基本文法の総合的な理解",
+        "章末演習"
+      ],
+      "section_count": 18,
+      "code_blocks": 59,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        1,
+        3
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter02/`"
+      ]
+    },
+    {
+      "filename": "chapter03-oop-basics.md",
+      "chapter_num": 3,
+      "title": "<b>3章</b> <span>オブジェクト指向の考え方</span> <small>現実世界をプログラムで表現する技術</small>",
+      "line_count": 2000,
+      "sections": [
+        "本章の学習目標",
+        "章の構成",
+        "はじめに：C言語からJavaへ - なぜオブジェクト指向が必要なのか",
+        "オブジェクト指向とは",
+        "オブジェクト指向を学ぶ意義",
+        "オブジェクト指向の基本概念を実際のコードで理解する",
+        "クラスの作成",
+        "実用的なクラス設計例",
+        "まとめ",
+        "オブジェクト指向の重要な用語と概念",
+        "クラスとオブジェクト",
+        "publicとprivate - アクセス修飾子の基本",
+        "static修飾子の基本",
+        "オブジェクトの配列",
+        "章末演習",
+        "次章への橋渡し",
+        "よくあるエラーと対処法",
+        "オブジェクトの等価性とhashCode",
+        "モダンJavaにおけるオブジェクト指向"
+      ],
+      "section_count": 19,
+      "code_blocks": 49,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録A",
+        "付録A.2",
+        "付録B.03",
+        "付録A.1"
+      ],
+      "chapter_refs": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        10,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter03/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`）を参照してください。"
+      ]
+    },
+    {
+      "filename": "chapter04-classes-and-instances.md",
+      "chapter_num": 4,
+      "title": "<b>4章</b> <span>クラスとインスタンス</span> <small>設計図からオブジェクトを生み出す技術</small>",
+      "line_count": 1525,
+      "sections": [
+        "本章の学習目標",
+        "章の構成",
+        "はじめに：なぜカプセル化が重要なのか",
+        "カプセル化とアクセス制御",
+        "設計原則とソフトウェアアーキテクチャ",
+        "実践的なクラス設計例",
+        "パッケージシステムとクラスの組織化",
+        "コンストラクタとthisキーワード",
+        "まとめ",
+        "章末演習",
+        "設計上やってしまいやすい問題とその解決方法",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 12,
+      "code_blocks": 40,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録A.3",
+        "付録A",
+        "付録A.1"
+      ],
+      "chapter_refs": [
+        3,
+        5,
+        6,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`"
+      ]
+    },
+    {
+      "filename": "chapter05-inheritance-and-polymorphism.md",
+      "chapter_num": 5,
+      "title": "<b>5章</b> <span>継承とポリモーフィズム</span> <small>コードの再利用と柔軟性の実現</small>",
+      "line_count": 1819,
+      "sections": [
+        "本章の学習目標",
+        "実践的な継承設計パターン",
+        "メソッドのオーバーライド",
+        "ポリモーフィズム（多態性）",
+        "`instanceof`演算子とキャスト",
+        "章末演習",
+        "例外処理の基礎（補足）",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 8,
+      "code_blocks": 39,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録A",
+        "付録A.1",
+        "付録B.04"
+      ],
+      "chapter_refs": [
+        3,
+        4,
+        6,
+        7,
+        11,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter05/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`）を参照してください。"
+      ]
+    },
+    {
+      "filename": "chapter06-immutability-and-final.md",
+      "chapter_num": 6,
+      "title": "<b>6章</b> <span>不変性とfinalキーワード</span> <small>安全で予測可能なコードの設計</small>",
+      "line_count": 1114,
+      "sections": [
+        "本章の学習目標",
+        "不変性の概念と重要性",
+        "finalキーワードの3つの用途",
+        "不変オブジェクトの設計パターン",
+        "防御的コピーとビルダーパターン",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 8,
+      "code_blocks": 33,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.05"
+      ],
+      "chapter_refs": [
+        4,
+        5,
+        7
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter06/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/`）を参照してください。"
+      ]
+    },
+    {
+      "filename": "chapter07-abstract-classes-and-interfaces.md",
+      "chapter_num": 7,
+      "title": "<b>7章</b> <span>抽象クラスとインターフェイス</span> <small>柔軟なシステム設計の基礎</small>",
+      "line_count": 1723,
+      "sections": [
+        "本章の学習目標",
+        "抽象化の必要性",
+        "抽象クラスと抽象メソッド",
+        "インターフェイス：振る舞いの契約",
+        "抽象クラス vs インターフェイス",
+        "Java 8以降のインターフェイス進化",
+        "高度な設計パターン",
+        "Factoryパターン：オブジェクト生成の抽象化",
+        "よくあるエラーと対処法",
+        "章末演習"
+      ],
+      "section_count": 10,
+      "code_blocks": 41,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        8,
+        6
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/`"
+      ]
+    },
+    {
+      "filename": "chapter08-enums.md",
+      "chapter_num": 8,
+      "title": "<b>8章</b> <span>列挙型(Enums)</span> <small>型安全な定数と状態管理の技術</small>",
+      "line_count": 766,
+      "sections": [
+        "本章の学習目標",
+        "章末演習",
+        "前提知識",
+        "enumとは？",
+        "enumの便利な機能",
+        "フィールドとメソッドを持つenum",
+        "さらに高度な使い方",
+        "まとめ",
+        "enumを使ったSingletonパターン",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 10,
+      "code_blocks": 34,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.11"
+      ],
+      "chapter_refs": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter08/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b11-enum-patterns/`）"
+      ]
+    },
+    {
+      "filename": "chapter09-records.md",
+      "chapter_num": 9,
+      "title": "<b>9章</b> <span>レコード(Records)とデータ指向プログラミング</span> <small>シンプルなデータ構造の実現</small>",
+      "line_count": 2522,
+      "sections": [
+        "本章の学習目標",
+        "Recordとは？",
+        "Recordの使い方",
+        "実践例：データ変換と処理",
+        "データ指向プログラミング（DOP）",
+        "高度なパターンマッチング",
+        "Recordsの内部実装とカスタマイズ",
+        "実践的なデータパイプライン",
+        "パフォーマンスとメモリ効率",
+        "将来の発展",
+        "まとめ",
+        "章末演習",
+        "完了確認チェックリスト",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 14,
+      "code_blocks": 72,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        4,
+        5,
+        6,
+        10,
+        13
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`"
+      ]
+    },
+    {
+      "filename": "chapter10-collections.md",
+      "chapter_num": 10,
+      "title": "<b>10章</b> <span>コレクションフレームワーク</span> <small>柔軟なデータ構造と操作の基礎</small>",
+      "line_count": 1101,
+      "sections": [
+        "本章の学習目標",
+        "なぜコレクションフレームワークが必要か",
+        "コレクションフレームワークの全体像",
+        "List インターフェイス",
+        "Set インターフェイス",
+        "Map インターフェイス",
+        "イテレータとfor-each文",
+        "コレクションの選択指針",
+        "章末演習",
+        "本章の学習目標",
+        "データ管理の進化：配列からコレクションへ",
+        "`List`インターフェイス：順序のあるデータ列",
+        "`Set`インターフェイス：重複のないユニークな集合",
+        "`Map`インターフェイス：キーと値のペア",
+        "よくあるエラーと対処法",
+        "まとめ"
+      ],
+      "section_count": 16,
+      "code_blocks": 36,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.06"
+      ],
+      "chapter_refs": [
+        8,
+        9,
+        11,
+        7
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`）"
+      ]
+    },
+    {
+      "filename": "chapter11-generics.md",
+      "chapter_num": 11,
+      "title": "<b>11章</b> <span>ジェネリクス</span> <small>型安全なプログラミングの実現</small>",
+      "line_count": 928,
+      "sections": [
+        "本章の学習目標",
+        "なぜジェネリクスが必要なのか？",
+        "ジェネリッククラスの作成",
+        "ジェネリックメソッド",
+        "型制約（境界のある型パラメータ）",
+        "ワイルドカード",
+        "var型推論とジェネリクス",
+        "よくあるエラーと対処法",
+        "まとめ",
+        "章末演習"
+      ],
+      "section_count": 10,
+      "code_blocks": 34,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.07"
+      ],
+      "chapter_refs": [
+        10,
+        12
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`）",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`"
+      ]
+    },
+    {
+      "filename": "chapter12-lambda-and-functional-interfaces.md",
+      "chapter_num": 12,
+      "title": "<b>12章</b> <span>ラムダ式と関数型インターフェイス</span> <small>関数型プログラミングへの扱い</small>",
+      "line_count": 1241,
+      "sections": [
+        "本章の学習目標",
+        "匿名クラスからラムダ式へ",
+        "関数型インターフェイス",
+        "メソッド参照",
+        "ラムダ式の応用例",
+        "さらに深い理解のために",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法",
+        "まとめ"
+      ],
+      "section_count": 10,
+      "code_blocks": 44,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.02"
+      ],
+      "chapter_refs": [
+        11,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）"
+      ]
+    },
+    {
+      "filename": "chapter13-advanced-collections.md",
+      "chapter_num": 13,
+      "title": "<b>13章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的データ処理のマスター</small>",
+      "line_count": 1505,
+      "sections": [
+        "本章の学習目標",
+        "データ構造の選択",
+        "ラムダ式によるカスタムソート",
+        "Stream APIによる現代的なコレクション操作",
+        "Optional型による安全なnull処理",
+        "並列ストリームによるパフォーマンス向上",
+        "高度なStream操作",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法",
+        "まとめ"
+      ],
+      "section_count": 11,
+      "code_blocks": 39,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        10,
+        11,
+        12
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`"
+      ]
+    },
+    {
+      "filename": "chapter14-exception-handling.md",
+      "chapter_num": 14,
+      "title": "<b>14章</b> <span>例外処理</span> <small>障害に強いプログラムの構築</small>",
+      "line_count": 1356,
+      "sections": [
+        "本章の学習目標",
+        "章末演習",
+        "完了確認チェックリスト",
+        "エラーの種類と対処法",
+        "例外処理の基本: `try-catch-finally`",
+        "検査例外と非検査例外",
+        "独自例外と例外の連鎖",
+        "14.4.1 実践的な例外処理パターン",
+        "14.4.2 リソース管理の実践例",
+        "14.4.3 例外処理とログ記録",
+        "14.4.4 業務アプリケーションでの例外設計",
+        "例外処理のベストプラクティス",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 13,
+      "code_blocks": 32,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.12"
+      ],
+      "chapter_refs": [
+        5,
+        15
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`）"
+      ]
+    },
+    {
+      "filename": "chapter15-file-io.md",
+      "chapter_num": 15,
+      "title": "<b>15章</b> <span>ファイルI/O</span> <small>外部データとの安全な連携</small>",
+      "line_count": 1618,
+      "sections": [
+        "本章の学習目標",
+        "完了確認チェックリスト",
+        "ファイルI/Oの基礎とストリーム",
+        "テキストファイルの読み書き",
+        "バイナリファイルの高度な処理",
+        "オブジェクトの直列化（シリアライズ）",
+        "ファイルシステムの操作 (NIO.2)",
+        "実践的なファイル処理例",
+        "日付時刻処理について",
+        "GUIでのファイル選択: `JFileChooser`",
+        "Text Blocks - 複数行文字列の効率的な処理",
+        "まとめ",
+        "よくあるエラーと対処法",
+        "章末演習"
+      ],
+      "section_count": 14,
+      "code_blocks": 33,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録B.13",
+        "付録F"
+      ],
+      "chapter_refs": [
+        10,
+        14
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`）",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`"
+      ]
+    },
+    {
+      "filename": "chapter16-multithreading.md",
+      "chapter_num": 16,
+      "title": "<b>16章</b> <span>マルチスレッドプログラミング</span> <small>並行処理と同期制御の実践</small>",
+      "line_count": 2359,
+      "sections": [
+        "本章の学習目標",
+        "並行処理の世界への招待",
+        "章の構成",
+        "学習の進め方",
+        "基礎レベル課題（ポイント）",
+        "実装のヒント",
+        "実装環境",
+        "完了確認チェックリスト",
+        "マルチスレッドプログラミングの基礎",
+        "- Exchangerスレッド間のデータ交換",
+        "実践的なパフォーマンス測定とベンチマーク",
+        "スレッドセーフなシングルトンパターン",
+        "一般的な並行処理の落とし穴と解決策",
+        "実践的な並行処理パターン",
+        "本章のまとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 17,
+      "code_blocks": 40,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録A",
+        "付録B.14",
+        "付録A.1"
+      ],
+      "chapter_refs": [
+        17,
+        13,
+        14,
+        22
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter16/`",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`）を参照してください。"
+      ]
+    },
+    {
+      "filename": "chapter17-network-programming.md",
+      "chapter_num": 17,
+      "title": "<b>17章</b> <span>ネットワークプログラミング</span> <small>インターネット通信の実装技術</small>",
+      "line_count": 1190,
+      "sections": [
+        "本章の学習目標",
+        "はじめに",
+        "ネットワークプログラミングの基礎",
+        "ソケットプログラミングの基礎",
+        "マルチスレッドサーバーの実装",
+        "HTTPクライアントの実装",
+        "17.5.5 UDP通信の実装",
+        "実践的な例：チャットアプリケーション",
+        "17.6.3 JSON APIクライアントの実装",
+        "17.6.4 REST API実装の基礎",
+        "17.6.5 WebSocketクライアントの基礎",
+        "セキュリティの考慮事項",
+        "パフォーマンスの最適化",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 16,
+      "code_blocks": 26,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録A",
+        "付録B.16",
+        "付録B.15"
+      ],
+      "chapter_refs": [
+        14,
+        15,
+        16,
+        18,
+        22
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter17/`"
+      ]
+    },
+    {
+      "filename": "chapter18-gui-basics.md",
+      "chapter_num": 18,
+      "title": "<b>18章</b> <span>GUIプログラミングの基礎</span> <small>Swingで作るデスクトップアプリ</small>",
+      "line_count": 2159,
+      "sections": [
+        "本章の学習目標",
+        "章の構成",
+        "学習の進め方",
+        "Part A: 基本コンポーネントとレイアウト",
+        "Part B: イベント処理入門",
+        "Part C: EDT（Event Dispatch Thread）とスレッド安全性",
+        "Part D: カスタムコンポーネントの作成",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 9,
+      "code_blocks": 52,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        16,
+        19
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter18/`"
+      ]
+    },
+    {
+      "filename": "chapter19-gui-event-handling.md",
+      "chapter_num": 19,
+      "title": "<b>19章</b> <span>GUIのイベント処理</span> <small>ユーザー操作への応答性を高める</small>",
+      "line_count": 2823,
+      "sections": [
+        "本章の学習目標",
+        "章の構成",
+        "学習の進め方",
+        "イベント処理入門",
+        "代表的なイベントの種類",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 8,
+      "code_blocks": 40,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        18,
+        21
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/`"
+      ]
+    },
+    {
+      "filename": "chapter20-advanced-gui.md",
+      "chapter_num": 20,
+      "title": "<b>20章</b> <span>JTableとJListの基礎</span> <small>表形式データの表示</small>",
+      "line_count": 1583,
+      "sections": [
+        "本章の学習目標",
+        "JTableの詳細な実装",
+        "テーブルのソートとフィルタリング",
+        "JTreeの実装",
+        "JListの高度な使用法",
+        "カスタムセルエディターの実装",
+        "実践的なアプリケーション例",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 10,
+      "code_blocks": 24,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        7,
+        10,
+        12,
+        16,
+        18,
+        19,
+        22
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`"
+      ]
+    },
+    {
+      "filename": "chapter21-unit-testing.md",
+      "chapter_num": 21,
+      "title": "<b>21章</b> <span>ユニットテストと品質保証</span> <small>信頼性の高いソフトウェアを作る</small>",
+      "line_count": 653,
+      "sections": [
+        "本章の学習目標",
+        "はじめに",
+        "単体テストの基礎",
+        "テストの基本形（AAAパターン）",
+        "テストを妨げる「依存関係」",
+        "疎結合設計（Dependency Injection）",
+        "DIによるテスト容易性の向上",
+        "テスト駆動開発（TDD）",
+        "JUnitによる効率的なテスト",
+        "テストのベストプラクティス",
+        "継続的インテグレーション（CI）との統合",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 14,
+      "code_blocks": 19,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        4,
+        7,
+        14,
+        16,
+        23
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`"
+      ]
+    },
+    {
+      "filename": "chapter22-documentation-and-libraries.md",
+      "chapter_num": 22,
+      "title": "<b>22章</b> <span>ドキュメントと外部ライブラリ</span> <small>チーム開発を支える技術</small>",
+      "line_count": 1731,
+      "sections": [
+        "本章の学習目標",
+        "Javadocによるドキュメント",
+        "外部ライブラリの利用",
+        "まとめ",
+        "章末演習",
+        "よくあるエラーと対処法"
+      ],
+      "section_count": 6,
+      "code_blocks": 60,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [],
+      "chapter_refs": [
+        4,
+        14,
+        15,
+        22,
+        24
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter22/`"
+      ]
+    },
+    {
+      "filename": "chapter23-build-and-deploy.md",
+      "chapter_num": 23,
+      "title": "<b>23章</b> <span>ビルドとデプロイ</span> <small>アプリケーションの配布と実行</small>",
+      "line_count": 355,
+      "sections": [
+        "本章の学習目標",
+        "はじめに",
+        "なぜビルドと配布が必要か",
+        "実行可能JARファイルの作成",
+        "jpackageによるネイティブアプリケーション化",
+        "まとめ",
+        "章末演習"
+      ],
+      "section_count": 7,
+      "code_blocks": 14,
+      "has_exercise": false,
+      "exercise_at_end": null,
+      "appendix_refs": [
+        "付録G"
+      ],
+      "chapter_refs": [
+        1,
+        21,
+        22,
+        15
+      ],
+      "github_links": [
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`）",
+        "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/`"
+      ]
+    }
+  ],
+  "appendices": [
+    {
+      "filename": "appendix-a-common-errors.md",
+      "title": "<b>付録A</b> <span>Java共通エラーガイド</span> <small>よく遭遇するエラーと効果的な対処法</small>",
+      "line_count": 268,
+      "sections": [
+        "本付録の目的",
+        "A.1 実行時例外",
+        "A.2 コンパイルエラー",
+        "A.3 デバッグとトラブルシューティング",
+        "章別参照ガイド"
+      ],
+      "section_count": 5,
+      "code_blocks": 19
+    },
+    {
+      "filename": "appendix-a-environment-setup.md",
+      "title": "<b>付録A</b> <span>開発環境の構築</span> <small>JDKとIDEの詳細セットアップ</small>",
+      "line_count": 68,
+      "sections": [
+        "付録Aについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    },
+    {
+      "filename": "appendix-c-theoretical-foundations.md",
+      "title": "<b>付録C</b> <span>ソフトウェア工学の理論的基盤</span> <small>設計原則と品質メトリクス</small>",
+      "line_count": 81,
+      "sections": [
+        "付録Cについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    },
+    {
+      "filename": "appendix-d-integrated-project.md",
+      "title": "<b>付録D</b> <span>統合プロジェクト - 学生管理システム</span> <small>実践的アプリケーション開発</small>",
+      "line_count": 82,
+      "sections": [
+        "付録Dについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    },
+    {
+      "filename": "appendix-e-database-programming.md",
+      "title": "<b>付録E</b> <span>データベースプログラミング</span> <small>JDBCで実現するデータ永続化</small>",
+      "line_count": 65,
+      "sections": [
+        "付録Eについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    },
+    {
+      "filename": "appendix-f-java-time-api.md",
+      "title": "<b>付録F</b> <span>java.time API完全ガイド</span> <small>日付時刻処理の最新手法</small>",
+      "line_count": 71,
+      "sections": [
+        "付録Fについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    },
+    {
+      "filename": "appendix-g-build-and-deploy.md",
+      "title": "<b>付録G</b> <span>ビルドとデプロイ</span> <small>アプリケーションの配布と実行</small>",
+      "line_count": 74,
+      "sections": [
+        "付録Gについて"
+      ],
+      "section_count": 1,
+      "code_blocks": 0
+    }
+  ],
+  "total_code_blocks": 887
+}
