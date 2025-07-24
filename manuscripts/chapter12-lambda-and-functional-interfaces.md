@@ -257,7 +257,7 @@ public class ResilientService {
 }
 ```
 
-イベント処理システムでの関数型アプローチ。
+#### イベント処理システムでの関数型アプローチ
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングは特に有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
@@ -357,7 +357,7 @@ public class MiddlewareChain {
 }
 ```
 
-テンプレートメソッドパターンの関数型実装。
+#### テンプレートメソッドパターンの関数型実装
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
@@ -401,36 +401,6 @@ public class EventSourcedAccount {
     sealed interface AccountEvent permits 
         AccountCreated, MoneyDeposited, MoneyWithdrawn {}
     
-ファクトリーパターンの関数型実装
-
-従来のファクトリーパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。
-これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
-
-<span class="listing-number">**サンプルコード12-24**</span>
-
-```java
-// 関数型ファクトリパターン。
-public class ProcessorFactory {
-    private final Map<String, Supplier<DataProcessor>> processors = Map.of(
-        "csv", CsvProcessor::new,
-        "xml", XmlProcessor::new,
-        "json", JsonProcessor::new
-    );
-    
-    public Optional<DataProcessor> createProcessor(String type) {
-        return Optional.ofNullable(processors.get(type))
-                      .map(Supplier::get);
-    }
-    
-    // さらに高度な例：パラメータ化されたファクトリ。
-    public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
-        String type) {
-        return config -> processors.get(type)
-                                  .get()
-                                  .configure(config);
-    }
-}
-```
 
     record AccountCreated(String accountId, String owner) implements AccountEvent {}
     record MoneyDeposited(String accountId, Money amount) implements AccountEvent {}
@@ -463,9 +433,41 @@ public class ProcessorFactory {
 }
 ```
 
+
+#### ファクトリーパターンの関数型実装
+
+従来のファクトリーパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。
+これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
+
+<span class="listing-number">**サンプルコード12-24**</span>
+
+```java
+// 関数型ファクトリパターン。
+public class ProcessorFactory {
+    private final Map<String, Supplier<DataProcessor>> processors = Map.of(
+        "csv", CsvProcessor::new,
+        "xml", XmlProcessor::new,
+        "json", JsonProcessor::new
+    );
+    
+    public Optional<DataProcessor> createProcessor(String type) {
+        return Optional.ofNullable(processors.get(type))
+                      .map(Supplier::get);
+    }
+    
+    // さらに高度な例：パラメータ化されたファクトリ。
+    public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
+        String type) {
+        return config -> processors.get(type)
+                                  .get()
+                                  .configure(config);
+    }
+}
+```
+
 ### メモリ効率とパフォーマンス最適化
 
-ラムダ式の内部実装とメモリ使用。
+#### ラムダ式の内部実装とメモリ使用
 
 <span class="listing-number">**サンプルコード12-26**</span>
 
@@ -501,7 +503,8 @@ public class LambdaPerformance {
 }
 ```
 
-デザインパターンでの関数型アプローチ活用。
+
+#### デザインパターンでの関数型アプローチ活用
 
 関数型プログラミングは、従来のデザインパターンをより簡潔かつ柔軟に実装する手段を提供します。
 特に、戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式を使うことでクラス定義を省略して直接振る舞いを定義できます。

@@ -1210,7 +1210,7 @@ try (ServerSocket server = new ServerSocket(8080)) {
 
 ### さらに学ぶには
 
-- 付録A: Java共通エラーガイド（I/Oエラー）
+- 付録H: Java共通エラーガイド（I/Oエラー）
 - 付録B.15: ネットワークプログラミング詳細
 - 第22章: HTTPクライアントライブラリの活用
 
