@@ -935,29 +935,6 @@ Write-Host "セットアップが完了しました！" -ForegroundColor Green
 Write-Host "新しいコマンドプロンプトまたはPowerShellを開いて、java -versionを実行してください。"
 ```
 
-## 参考文献とさらなる学習リソース
-
-### 公式ドキュメント
-- [Oracle Java Documentation](https://docs.oracle.com/en/java/)
-- [OpenJDK](https://openjdk.org/)
-- [SDKMAN! Documentation](https://sdkman.io/usage)
-
-### 推奨書籍
-- 『Effective Java 第3版』（Joshua Bloch著）
-- 『Java言語仕様』（James Gosling他著）
-
-### オンラインリソース
-- [Java Tutorial (Oracle公式)](https://docs.oracle.com/javase/tutorial/)
-- [Baeldung](https://www.baeldung.com/) - Java開発の実践的なチュートリアル
-- [Java Code Geeks](https://www.javacodegeeks.com/)
-
-### コミュニティ
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/java)
-- [Reddit r/java](https://www.reddit.com/r/java/)
-- [Java User Groups](https://dev.java/community/jugs/)
-
-## 次のステップ: 技術の深い理解へ
-
 開発環境の構築が完了したら、より深いJava技術の理解を目指しましょう。本書では各章の学習内容をさらに深く掘り下げた技術詳細を付録Bで提供しています。
 
 ### 推奨学習パス
