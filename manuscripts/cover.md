@@ -3,6 +3,12 @@
   <div class="cover-header">
   </div>
 
+  <!-- アルファ版リボン -->
+  <div class="alpha-ribbon">
+    <span class="ribbon-text">ALPHA VERSION</span>
+    <span class="ribbon-subtext">執筆途中</span>
+  </div>
+
   <div class="cover-titles">
     <h1 class="cover-subtitle">大学2年生のための実践的プログラミング入門</h1>
     <h1 class="cover-title">オブジェクト指向言語 Java</h1>

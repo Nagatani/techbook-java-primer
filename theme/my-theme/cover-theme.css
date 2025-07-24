@@ -20,6 +20,8 @@ body {
 .cover-page {
   width: 100vw;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 
   display: grid;
   grid-template: " header " 2cm 
@@ -76,5 +78,59 @@ body {
   padding: 1cm;
   font-size: 14px;
   color: #333;
+}
+
+/* ================================
+   アルファ版リボン
+   ================================ */
+.alpha-ribbon {
+  position: absolute;
+  top: 2cm;
+  right: -6cm;
+  width: 20cm;
+  height: 4cm;
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: rotate(45deg);
+  transform-origin: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  overflow: hidden;
+  opacity: 0.5;
+}
+
+.alpha-ribbon::before,
+.alpha-ribbon::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  top: 8px;
+}
+
+.alpha-ribbon::after {
+  top: auto;
+  bottom: 8px;
+}
+
+.ribbon-text {
+  font-size: 2em;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.2em;
+}
+
+.ribbon-subtext {
+  font-size: 1.2em;
+  color: white;
+  font-weight: normal;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
