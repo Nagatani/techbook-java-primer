@@ -1002,11 +1002,13 @@ int[][] jaggedArray = {
 ```
 
 
-## メソッド（関数）
+## メソッド（staticメソッドの基本）
 
-### 事前説明
+### メソッドとは
 
-メソッド（関数）は、特定の処理をまとめて名前を付け、必要な時に呼び出して使用するしくみです。コードの再利用性を高め、プログラムの構造を整理し、保守性を向上させる重要な概念です。Javaのメソッドは、C言語の関数の概念を発展させ、オブジェクト指向プログラミングの基礎となる機能を提供しています。
+メソッドは、特定の処理をまとめて名前を付け、必要な時に呼び出して使用するしくみです。C言語の関数に相当しますが、Javaではすべてのメソッドはクラスの中に定義する必要があります。
+
+この章では、mainメソッドから直接呼び出すことができる「staticメソッド」の基本的な使い方を学習します。オブジェクト指向的なメソッド（インスタンスメソッド）については、第3章で詳しく説明します。
 
 <span class="listing-number">**サンプルコード2-15**</span>
 
@@ -1035,179 +1037,44 @@ public class Calculator {
 }
 ```
 
-##### このコードで学習できる重要な概念
-
-- メソッドシグネチャの構成
-    + `public static int add(int a, int b)`の各要素（アクセス修飾子、static修飾子、戻り値の型、メソッド名、パラメータ）の意味と役割を理解できる
-- 型安全なパラメータ渡し
-    + 引数の型が明確に定義されており、コンパイル時に型の不整合を検出できる
-- 戻り値の型宣言
-    + メソッドが返す値の型を明示することで、呼び出し側で正しい型の変数で結果を受け取れる
-- エラーハンドリングの実装
-    + ゼロ除算チェックにより、実行時エラーを防ぐ防御的プログラミングの手法を学習できる
-- 静的メソッドの特徴
-    + `static`修飾子により、オブジェクトの生成なしにメソッドを呼び出せる便利性を理解できる
-
-##### メソッド設計の重要な原則
-
-- 単一責任の原則
-    + `add`メソッドは加算のみ、`divide`メソッドは除算のみを担当し、1つのメソッドが1つの明確な役割を持っている
-- 再利用性の実現
-    + 一度定義したメソッドは、プログラム内の任意の場所から何度でも呼びだすことができる
-- デバッグの容易性
-    + 問題が発生した場合、特定のメソッド内に原因を特定しやすくなる
-- 可読性の向上
-    + メソッド名により処理内容が明確になり、プログラムの意図が理解しやすくなる
-
-
-### メソッドオーバーロード（Method Overloading）
-
-メソッドオーバーロードは、Javaの便利な機能の1つで、同じ名前で異なるパラメータを持つメソッドを複数定義できる機能です。これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが向上します。
-
-C言語との決定的な違い。
-C言語では関数名は一意でなければならず、パラメータが違っても別の名前を付ける必要がありました。
-```c
-// C言語では別々の名前が必要
-int add_int(int a, int b);
-double add_double(double a, double b);
-int add_three_ints(int a, int b, int c);
-```
-
-一方、Javaではすべて同じ`add`という名前で定義できます。
-
-<span class="listing-number">**サンプルコード2-16**</span>
+### staticメソッドの基本構文
 
 ```java
-public class OverloadExample {
-    // int型の2つの数を加算
-    public static int add(int a, int b) {
-        System.out.println("int版のaddが呼ばれました");
-        return a + b;
-    }
-    
-    // double型の2つの数を加算
-    public static double add(double a, double b) {
-        System.out.println("double版のaddが呼ばれました");
-        return a + b;
-    }
-    
-    // int型の3つの数を加算
-    public static int add(int a, int b, int c) {
-        System.out.println("3つの引数版のaddが呼ばれました");
-        return a + b + c;
-    }
-    
-    // 文字列の連結もaddという名前で提供
-    public static String add(String a, String b) {
-        System.out.println("String版のaddが呼ばれました");
-        return a + b;
-    }
-    
-    public static void main(String[] args) {
-        // コンパイラが引数の型に基づいてメソッドを選択
-        System.out.println(add(5, 3));           // int版が呼ばれる → 8
-        System.out.println(add(5.5, 3.3));       // double版が呼ばれる → 8.8
-        System.out.println(add(1, 2, 3));        // 3つの引数版が呼ばれる → 6
-        System.out.println(add("Hello, ", "World!")); // String版が呼ばれる → Hello, World!
-    }
+public static 戻り値の型 メソッド名(引数リスト) {
+    // メソッドの処理
+    return 戻り値;  // 戻り値がある場合
 }
 ```
 
-#### オーバーロードのメリット
+- **public**: どこからでもアクセス可能
+- **static**: クラスのインスタンスを作成せずに呼び出し可能
+- **戻り値の型**: メソッドが返す値の型（値を返さない場合はvoid）
+- **引数リスト**: メソッドに渡すデータ
 
-1. 直感的なAPI設計
-   - 利用者は1つのメソッド名を覚えるだけで、さまざまな状況で使える
-   - `Math.max(int, int)`、`Math.max(double, double)`、`Math.max(float, float)`など、統一的な名前で提供
-2. 型安全性の向上
-   - コンパイル時に引数の型に基づいてもっとも適合するメソッドが選択されるため、型エラーが実行前に検出される
-   - C言語の可変長引数（`...`）より安全で明確
-3. 後方互換性の維持
-   - 既存のメソッドを変更せずに、新しいパラメータパターンを追加できる
-   - ライブラリの進化が容易
+### staticメソッドの特徴
 
-#### オーバーロードの解決規則
+1. **mainメソッドから直接呼び出せる**
+   - mainメソッドもstaticなので、同じクラス内のstaticメソッドを直接呼び出せます
 
-Javaコンパイラは以下のサンプルコードで言うところの上から下への順序でメソッドを選択します。
+2. **処理の再利用**
+   - 同じ処理を何度も書く代わりに、メソッドとして定義して再利用できます
 
-<span class="listing-number">**サンプルコード2-17**</span>
+3. **プログラムの構造化**
+   - 処理を機能ごとに分割することで、プログラムが読みやすくなります
 
-```java
-public class OverloadResolution {
-    public static void test(int x) {
-        System.out.println("int: " + x);
-    }
-    
-    public static void test(long x) {
-        System.out.println("long: " + x);
-    }
-    
-    public static void test(Integer x) {
-        System.out.println("Integer: " + x);
-    }
-    
-    public static void test(int... x) {
-        System.out.println("可変長引数: " + Arrays.toString(x));
-    }
-    
-    public static void main(String[] args) {
-        byte b = 10;
-        test(b);      // int版が呼ばれる（自動拡大変換）
-        test(10);     // int版が呼ばれる（完全一致）
-        test(10L);    // long版が呼ばれる（完全一致）
-        test(Integer.valueOf(10)); // Integer版が呼ばれる
-        test(1, 2, 3); // 可変長引数版が呼ばれる
-    }
-}
-```
 
-他の言語との比較。
+### C言語との比較における学習ポイント
 
-- Pythonデフォルト引数や`*args`、`kwargs`で似た機能を実現するが、型による区別はできない
-- JavaScript関数のオーバーロードは存在せず、引数の数や型を実行時にチェックする必要がある
-- C++Javaと同様にオーバーロードをサポートするが、演算子オーバーロードも可能
-- Goオーバーロードを意図的にサポートしない（シンプルさを重視）
-
-実践的な活用例。
-
-<span class="listing-number">**サンプルコード2-18**</span>
-
-```java
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-
-public class StringFormatter {
-    // さまざまな型を統一的にフォーマット
-    public static String format(int value) {
-        return String.format("整数: %d", value);
-    }
-    
-    public static String format(double value) {
-        return String.format("実数: %.2f", value);
-    }
-    
-    public static String format(String value) {
-        return String.format("文字列: \"%s\"", value);
-    }
-    
-    public static String format(Date value) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return String.format("日付: %s", sdf.format(value));
-    }
-    
-    // 配列版も同じ名前で提供
-    public static String format(int[] values) {
-        return String.format("整数配列: %s", Arrays.toString(values));
-    }
-}
-```
-
-C言語との比較における学習ポイント。
-
-- クラス内での定義Javaのメソッドは必ずクラス内に定義される必要があり、グローバル関数は存在しません
-- アクセス制御`public`、`private`などの修飾子により、メソッドの可視性を細かく制御できる
-- オーバーロード機能：同じ名前で異なるパラメータを持つメソッドを複数定義でき、API設計の柔軟性が向上する
+- クラス内での定義：Javaのメソッドは必ずクラス内に定義される必要があり、グローバル関数は存在しません
+- アクセス制御：`public`、`private`などの修飾子により、メソッドの可視性を細かく制御できる
+- static修飾子：クラスのインスタンスを作成せずにメソッドを呼び出すことができる
 - 例外処理システム：エラー処理がより構造化され、安全なプログラムの作成を支援する
+
+### Javaのメソッドの基本まとめ
+
+Javaでは、すべてのメソッドはクラスの中に定義する必要があります。第2章では、mainメソッドから呼び出すことができるstaticメソッドの基本的な使い方を学習しました。staticメソッドは、オブジェクトを生成せずに直接呼び出すことができ、手続き型プログラミングのスタイルでJavaプログラムを作成する際の基本となります。
+
+次章以降では、オブジェクト指向プログラミングの文脈で、インスタンスメソッド、メソッドオーバーロード、コンストラクタなど、より高度なメソッドの概念を学習していきます。
 
 ## 文字列処理
 
