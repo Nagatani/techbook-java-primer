@@ -763,16 +763,111 @@ public class OverloadExample {
 }
 ```
 
-#### メソッドオーバーロードのポイント
-- 引数の数や型が異なれば、同じ名前のメソッドを作れる
-- Javaがコンパイル時に引数の型や数に基づいて、もっとも適合するメソッドを選んで実行する
-- コードが読みやすくなる
+#### メソッドオーバーロードの詳細
 
-> 重要: 戻り値の型だけが異なるメソッドはオーバーロードできません。以下はコンパイルエラーになります：
+メソッドオーバーロードは、同じ名前で異なるパラメータを持つメソッドを複数定義できる強力な機能です。これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが大幅に向上します。
+
+##### C言語との決定的な違い
+
+C言語では関数名は一意でなければならず、パラメータが違っても別の名前を付ける必要がありました：
+```c
+// C言語では別々の名前が必要
+int add_int(int a, int b);
+double add_double(double a, double b);
+int add_three_ints(int a, int b, int c);
+```
+
+一方、Javaではすべて同じ名前で定義できます：
+```java
+public int add(int a, int b) { return a + b; }
+public double add(double a, double b) { return a + b; }
+public int add(int a, int b, int c) { return a + b + c; }
+```
+
+##### オーバーロードのメリット
+
+1. **直感的なAPI設計**
+   - 利用者は1つのメソッド名を覚えるだけで、さまざまな状況で使える
+   - `Math.max(int, int)`、`Math.max(double, double)`など、統一的な名前で提供
+
+2. **型安全性の向上**
+   - コンパイル時に引数の型に基づいて最も適合するメソッドが選択される
+   - 型エラーが実行前に検出される
+
+3. **後方互換性の維持**
+   - 既存のメソッドを変更せずに、新しいパラメータパターンを追加できる
+   - ライブラリの進化が容易
+
+##### オーバーロードの解決規則
+
+Javaコンパイラは以下の優先順位でメソッドを選択します：
+
+1. 完全一致（型変換なし）
+2. プリミティブ型の拡大変換（int → long、float → double など）
+3. オートボクシング（int → Integer など）
+4. 可変長引数
+
+```java
+public class OverloadResolution {
+    public static void test(int x) {
+        System.out.println("int: " + x);
+    }
+    
+    public static void test(long x) {
+        System.out.println("long: " + x);
+    }
+    
+    public static void test(Integer x) {
+        System.out.println("Integer: " + x);
+    }
+    
+    public static void test(int... x) {
+        System.out.println("可変長引数: " + Arrays.toString(x));
+    }
+    
+    public static void main(String[] args) {
+        byte b = 10;
+        test(b);      // int版が呼ばれる（自動拡大変換）
+        test(10);     // int版が呼ばれる（完全一致）
+        test(10L);    // long版が呼ばれる（完全一致）
+        test(Integer.valueOf(10)); // Integer版が呼ばれる
+        test(1, 2, 3); // 可変長引数版が呼ばれる
+    }
+}
+```
+
+> **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。以下はコンパイルエラーになります：
 > ```java
 > public int calculate() { return 1; }
 > public double calculate() { return 1.0; }  // エラー：戻り値の型だけでは区別できない
 > ```
+
+##### コンストラクタのオーバーロード
+
+コンストラクタもメソッドと同様にオーバーロードできます。これにより、オブジェクトの作成時にさまざまな初期化方法を提供できます：
+
+```java
+public class Person {
+    private String name;
+    private int age;
+    
+    // デフォルトコンストラクタ
+    public Person() {
+        this("名無し", 0);
+    }
+    
+    // 名前のみを指定するコンストラクタ
+    public Person(String name) {
+        this(name, 0);
+    }
+    
+    // すべての属性を指定するコンストラクタ
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+```
 
 ## 実用的なクラス設計例
 
@@ -1322,9 +1417,13 @@ public class Product {
 ```
 
 
-## static修飾子の基本
+## static修飾子の詳細な理解
 
-これまで学習したフィールドやメソッドは、`new`でオブジェクトを作ってから使用していました。しかし、`static`修飾子を付けると、オブジェクトを作らなくても使えるようになります。
+第2章では、mainメソッドから直接呼び出せるstaticメソッドの基本を学習しました。ここでは、オブジェクト指向プログラミングの文脈におけるstatic修飾子の意味と使い方を、より体系的に理解していきます。
+
+### staticとは何か
+
+static修飾子は、フィールドやメソッドが「クラスに属する」ことを示します。通常のフィールドやメソッド（インスタンスメンバー）が各オブジェクトごとに存在するのに対し、staticメンバーはクラス全体で1つだけ存在します。
 
 ### staticメソッドの例
 
@@ -1430,21 +1529,76 @@ public class StaticMemberExample {
 作成されたツールの総数は 2 です。
 ```
 
-### staticを使う場面
+### staticとインスタンスメンバーの違い
 
-staticは主に以下の場面で使用します。
+#### インスタンスメンバー
+- 各オブジェクトが独自に持つ
+- `new`でオブジェクトを作成してから使用
+- `this`参照が使える
+- オブジェクトの状態を表現
 
-1. ユーティリティメソッド： 計算や変換などの汎用的な処理
-2. 共有カウンタ： すべてのインスタンスで共有する値
-3. 定数の定義： 変更されない固定値
+#### staticメンバー
+- クラス全体で1つだけ存在
+- クラス名経由で直接アクセス
+- `this`参照は使えない
+- クラス全体の共通情報を表現
 
-### staticの注意点
+### staticを使う適切な場面
 
-- staticメソッド内では`this`は使えません
-- staticメソッドからインスタンスフィールドにアクセスできません
-- 使いすぎるとオブジェクト指向の利点が失われる
+1. **ユーティリティメソッド**
+   ```java
+   public class MathUtils {
+       public static double calculateDistance(double x1, double y1, double x2, double y2) {
+           return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+       }
+   }
+   ```
 
-staticの詳細な使い方や設計パターンについては、第7章以降でさらに詳しく学習します。
+2. **ファクトリーメソッド**
+   ```java
+   public class Student {
+       private String name;
+       private int age;
+       
+       private Student(String name, int age) {
+           this.name = name;
+           this.age = age;
+       }
+       
+       public static Student createStudent(String name, int age) {
+           if (age < 0 || age > 150) {
+               throw new IllegalArgumentException("Invalid age");
+           }
+           return new Student(name, age);
+       }
+   }
+   ```
+
+3. **定数の定義**
+   ```java
+   public class Constants {
+       public static final double PI = 3.14159265359;
+       public static final int MAX_RETRY_COUNT = 3;
+   }
+   ```
+
+### staticの設計上の注意点
+
+1. **過度な使用を避ける**
+   - staticメソッドはテストが困難になる場合がある
+   - オブジェクト指向の柔軟性が失われる
+
+2. **状態を持たせない**
+   - staticフィールドは慎重に使用する
+   - 可変なstaticフィールドは避ける
+
+3. **適切な責任分担**
+   - オブジェクトの振る舞いはインスタンスメソッドで
+   - ユーティリティ的な処理はstaticメソッドで
+
+### まとめ
+
+static修飾子は強力な機能ですが、オブジェクト指向プログラミングの基本原則と相反する場合があります。適切な場面で適切に使用することで、より良い設計のプログラムを作成できます。第7章以降では、インターフェイスや抽象クラスと組み合わせた、より高度なstatic活用パターンを学習します。
 
 
 
