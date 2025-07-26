@@ -2,45 +2,20 @@
 
 ## 本章の学習目標
 
-### 前提知識
+### この章で学ぶこと
 
-#### 必須
-- 第6章の不変性とfinalキーワードの概念
-- 第4章のクラスとインスタンス（コンストラクタ、メソッド）
-- 第5章のequals、hashCode、toStringメソッド
-- 基本的なデータクラスの実装経験
+1. Recordの基本理解
+    - 不変データクラスの簡潔な定義、自動生成されるメソッド、ボイラープレート削減
+2. Recordの高度な機能
+    - コンパクトコンストラクタ、バリデーション実装、カスタムメソッド追加
+3. パターンマッチングとの統合
+    - instanceofパターン、switch式での活用、ネストされたRecordの分解
+4. 実践的な活用パターン
+    - DTOパターン、Value Objectパターン、イベントソーシング
 
-#### 推奨
-- 第13章のラムダ式と関数型インターフェイス
-- ボイラープレートコードの問題に関する実体験
-- オブジェクト指向設計における「データ」と「振る舞い」の分離
-- Stream APIの基本的な使い方
+### この章を始める前に
 
-### 学習目標
-
-#### 知識理解目標
-- Recordの設計思想と従来のクラスとの違い
-- 不変データ構造の利点とマルチスレッド環境での安全性
-- データ指向プログラミング（DOP）の基本概念
-- Recordの制約事項と限界の理解
-
-#### 技能習得目標
-- Recordによる簡潔なデータクラスの定義
-- コンパクトコンストラクタとバリデーションの実装
-- パターンマッチングとRecordの組み合わせ
-- 既存クラスからRecordへのリファクタリング
-
-#### 実践的な活用目標
-- DTOパターンでのRecord活用
-- JSONシリアライゼーションとの統合
-- Stream APIと組み合わせたデータ処理
-- イベントソーシングパターンの実装
-
-#### 到達レベルの指標
-- ボイラープレートコードを70-90%削減できる
-- 不変性を活かしたスレッドセーフな設計ができる
-- パターンマッチングで簡潔な条件分岐が書ける
-- 実務でRecordをDTO、Value Object、Eventモデルとして活用できる
+第6章の不変性とfinalキーワード、equals()等の基本メソッドを理解していれば準備完了です。
 
 ## Recordとは？
 
@@ -69,7 +44,7 @@ Recordが自動生成する等価なクラス構造：
 
 #### 上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます。この自動展開により、開発者は大量のボイラープレートコードを書く必要がなくなります
 
-<span class="listing-number">**サンプルコード9-3**</span>
+<span class="listing-number">**サンプルコード9-2**</span>
 
 ```java
 public final class Person {
@@ -129,7 +104,7 @@ Recordの基本的な使用方法
 
 ### Recordは通常のクラスと同様にインスタンス化し、メソッドを呼び出すことができます。以下の例では、Recordの主要な機能を実際に使用する方法を示しています
 
-<span class="listing-number">**サンプルコード9-5**</span>
+<span class="listing-number">**サンプルコード9-3**</span>
 
 ```java
 public class RecordExample {
@@ -166,7 +141,7 @@ public class RecordExample {
 
 `Record`では、引数のバリデーション（検証）などのために、コンパクトコンストラクタという特別な構文が使えます。引数リストを省略して記述し、フィールドへの代入（`this.x = x;`）は暗黙的に行われます。
 
-<span class="listing-number">**サンプルコード9-7**</span>
+<span class="listing-number">**サンプルコード9-4**</span>
 
 ```java
 public record PositivePoint(int x, int y) {
@@ -188,7 +163,7 @@ public record PositivePoint(int x, int y) {
 
 従業員データを表現する`PersonRecord`を定義します。
 
-<span class="listing-number">**サンプルコード9-8**</span>
+<span class="listing-number">**サンプルコード9-5**</span>
 
 ```java
 // PersonRecord.java
@@ -197,7 +172,7 @@ public record PersonRecord(String name, int age, String city) {}
 
 ### データ処理の実装
 
-<span class="listing-number">**サンプルコード9-10**</span>
+<span class="listing-number">**サンプルコード9-6**</span>
 
 ```java
 // DataProcessor.java
@@ -280,7 +255,7 @@ public class DataProcessor {
 #### 従来のOOPとDOPの違い
 
 ##### 従来のOOPアプローチ:
-<span class="listing-number">**サンプルコード9-12**</span>
+<span class="listing-number">**サンプルコード9-7**</span>
 
 ```java
 // データとロジックが密結合
@@ -300,7 +275,7 @@ public class Order {
 
 DOPでは、データ構造とビジネスロジックを明確に分離します。データはRecordsで定義し、処理は純粋関数として実装することで、テスト容易性と保守性が向上します。
 
-<span class="listing-number">**サンプルコード9-14**</span>
+<span class="listing-number">**サンプルコード9-8**</span>
 
 ```java
 import java.util.List;
@@ -356,7 +331,7 @@ public class OrderProcessor {
 
 Recordsを使用することで、従来のデータクラス実装で必要だった大量のボイラープレートコードを劇的に削減できます。以下の比較例で、その効果を具体的に見てみましょう。
 
-<span class="listing-number">**サンプルコード9-16**</span>
+<span class="listing-number">**サンプルコード9-9**</span>
 
 ```java
 // 従来のデータクラス：約100行のコード
@@ -414,7 +389,7 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 
 DOPの最初のステップは、ドメインモデルを明確に表現することです。Recordsを使用することで、ビジネスドメインの概念を直接的にコードに反映できます。
 
-<span class="listing-number">**サンプルコード9-18**</span>
+<span class="listing-number">**サンプルコード9-10**</span>
 
 ```java
 // ドメインモデルの明確な表現
@@ -446,7 +421,7 @@ public record Money(BigDecimal amount, Currency currency) {
 
 DOPでは、ビジネスロジックは副作用のない純粋関数として実装します。これにより、モックが不要でコンポーネント間の結合が疑いため、ロジックの再利用性とテスト容易性が向上します。
 
-<span class="listing-number">**サンプルコード9-20**</span>
+<span class="listing-number">**サンプルコード9-11**</span>
 
 ```java
 public class ProductService {
@@ -478,7 +453,7 @@ public class ProductService {
 
 sealed interfaceとRecordsを組み合わせることで、アプリケーションの状態を型レベルで安全に管理できます。これにより、不正な状態遷移をコンパイル時に防ぐことができます。
 
-<span class="listing-number">**サンプルコード9-22**</span>
+<span class="listing-number">**サンプルコード9-12**</span>
 
 ```java
 // 状態を型で表現
@@ -508,7 +483,7 @@ Java 17以降のパターンマッチングとRecordの組み合わせは、代�
 
 sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます
 
-<span class="listing-number">**サンプルコード9-24**</span>
+<span class="listing-number">**サンプルコード9-13**</span>
 
 ```java
 // 図形を表現する代数的データ型
@@ -523,7 +498,7 @@ public record Triangle(double base, double height) implements Shape {}
 
 従来のinstance of + キャストの冗長な記述を、switch式とパターンマッチングで簡潔に表現できます。
 
-<span class="listing-number">**サンプルコード9-26**</span>
+<span class="listing-number">**サンプルコード9-14**</span>
 
 ```java
 // 面積計算（パターンマッチング使用）
@@ -553,7 +528,7 @@ public static double calculatePerimeter(Shape shape) {
 
 複雑なデータ構造に対しても、ネストしたパターンで処理できます。
 
-<span class="listing-number">**サンプルコード9-28**</span>
+<span class="listing-number">**サンプルコード9-15**</span>
 
 ```java
 // ネストしたRecord構造
@@ -588,7 +563,7 @@ public static String getLocationInfo(Object obj) {
 
 when句を使用して、パターンに条件を追加できます
 
-<span class="listing-number">**サンプルコード9-30**</span>
+<span class="listing-number">**サンプルコード9-16**</span>
 
 ```java
 // 年齢による分類（ガード条件付き）
@@ -610,7 +585,7 @@ public static String categorizeAge(Person person) {
 
 代数的データ型を使った式評価器の例で、パターンマッチングの強力さを示します。
 
-<span class="listing-number">**サンプルコード9-32**</span>
+<span class="listing-number">**サンプルコード9-17**</span>
 
 ```java
 // 数式を表現する代数的データ型
@@ -671,7 +646,7 @@ public static String toString(Expr expr) {
 
 ### パターンマッチングの実用例
 
-<span class="listing-number">**サンプルコード9-34**</span>
+<span class="listing-number">**サンプルコード9-18**</span>
 
 ```java
 public class ExpressionDemo {
@@ -712,7 +687,7 @@ public class ExpressionDemo {
 3. 保守性
     + 新しい型を追加した際の変更箇所の特定が容易
 
-<span class="listing-number">**サンプルコード9-36**</span>
+<span class="listing-number">**サンプルコード9-19**</span>
 
 ```java
 // 新しい図形を追加した場合
@@ -736,7 +711,7 @@ public static double calculateArea(Shape shape) {
 
 Recordの背後では、Javaコンパイラが大量のコードを自動生成しています。このしくみを理解することで、Recordの動作や制限について深く理解できます。
 
-<span class="listing-number">**サンプルコード9-38**</span>
+<span class="listing-number">**サンプルコード9-20**</span>
 
 ```java
 // ソースコード
@@ -788,7 +763,7 @@ public final class Point extends Record {
 
 コンパクトコンストラクタは、Recordの強力なカスタマイズ機能です。パラメータリストを省略し、バリデーションや正規化を行えます
 
-<span class="listing-number">**サンプルコード9-40**</span>
+<span class="listing-number">**サンプルコード9-21**</span>
 
 ```java
 // 基本的なコンパクトコンストラクタ
@@ -815,7 +790,7 @@ public record ValidatedEmail(String value) {
 
 以下の例では、より複雑なビジネスルールを持つMoneyレコードを示します。コンパクトコンストラクタ内で、nullチェック、負値チェック、通貨に応じた小数点以下の桁数の正規化を行っています。このような包括的なバリデーションにより、不正な状態のオブジェクトが作成されることを防ぎます。
 
-<span class="listing-number">**サンプルコード9-42**</span>
+<span class="listing-number">**サンプルコード9-22**</span>
 
 ```java
 // 複雑なバリデーションの例
@@ -859,7 +834,7 @@ public record Money(BigDecimal amount, Currency currency) {
 
 不変性を保ちながら部分的な更新を行うwithメソッドパターンは、Recordで頻繁に使用されます。
 
-<span class="listing-number">**サンプルコード9-44**</span>
+<span class="listing-number">**サンプルコード9-23**</span>
 
 ```java
 public record Configuration(
@@ -939,7 +914,7 @@ public record Configuration(
 
 Recordには、コンストラクタパラメータ以外の追加メソッドを定義できます。
 
-<span class="listing-number">**サンプルコード9-46**</span>
+<span class="listing-number">**サンプルコード9-24**</span>
 
 ```java
 public record Range(int start, int end) {
@@ -996,7 +971,7 @@ public record Range(int start, int end) {
 
 RecordはSerializableインターフェイスを実装することで、シリアライゼーションに対応できます。
 
-<span class="listing-number">**サンプルコード9-48**</span>
+<span class="listing-number">**サンプルコード9-25**</span>
 
 ```java
 import java.io.Serializable;
@@ -1053,7 +1028,7 @@ public record SerializableUser(
 
 現代のアプリケーションでは、RecordとJSON処理の統合が大切です。RecordsはJSONライブラリと優れた互換性を持ち、データ交換フォーマットとして活用できます。以下は、RecordをJSON相当の形式で扱う概念的な例です。
 
-<span class="listing-number">**サンプルコード9-50**</span>
+<span class="listing-number">**サンプルコード9-26**</span>
 
 ```java
 import java.time.Instant;
@@ -1156,7 +1131,7 @@ public class JsonIntegrationExample {
 
 Recordsとパターンマッチングを組み合わせることで、イベントソーシングのような高度なデータ処理パターンを簡潔に実装できます。
 
-<span class="listing-number">**サンプルコード9-52**</span>
+<span class="listing-number">**サンプルコード9-27**</span>
 
 ```java
 // イベントの定義
@@ -1195,7 +1170,7 @@ public record UserSnapshot(
 
 以下のUserEventProcessorクラスでは、イベントソーシングパターンを使用して、ユーザーに関するイベントのストリームから現在の状態（スナップショット）を再構築します。これは、監査ログや履歴管理が重要なシステムで使用される高度なパターンです。
 
-<span class="listing-number">**サンプルコード9-54**</span>
+<span class="listing-number">**サンプルコード9-28**</span>
 
 ```java
 // イベントストリームの処理
@@ -1270,7 +1245,7 @@ public class UserEventProcessor {
 
 RecordsとStream APIを組み合わせることで、複雑なデータ処理パイプラインを関数型スタイルで実装できます。以下の例では、イベントストリームから分析用のデータを生成する実践的なパイプラインを示します。このパターンは、リアルタイム分析やレポート生成システムで広く使用されています。
 
-<span class="listing-number">**サンプルコード9-56**</span>
+<span class="listing-number">**サンプルコード9-29**</span>
 
 ```java
 public class DataPipelineExample {
@@ -1354,7 +1329,7 @@ public record UserAnalytics(
 この例では、注文、顧客、商品といったドメインモデルをRecordsで表現し、ビジネスロジックを純粋関数として実装します。
 また、sealed interfaceを使用して注文の状態遷移を型安全に管理します。
 
-<span class="listing-number">**サンプルコード9-58**</span>
+<span class="listing-number">**サンプルコード9-30**</span>
 
 ```java
 // 注文処理のドメインモデル
@@ -1487,7 +1462,7 @@ RecordsはJavaの関数型プログラミング機能と優れた相性を持ち
 不変性、パターンマッチング、Stream APIとの統合により、宣言的で読みやすいコードを書くことができます。
 以下の例では、注文データの分析処理を関数型スタイルで実装します。
 
-<span class="listing-number">**サンプルコード9-60**</span>
+<span class="listing-number">**サンプルコード9-31**</span>
 
 ```java
 // 関数型スタイルでのデータ処理
@@ -1571,7 +1546,7 @@ JVMは、Recordsの不変性と値ベースの性質を利用して、様々な�
 以下の例では、JVMが最適化しやすいRecordの設計パターンを示します。
 小さく不変なRecordは、将来のProject ValhallaのValue Typesの候補となり、さらなるパフォーマンス向上が期待できます。
 
-<span class="listing-number">**サンプルコード9-62**</span>
+<span class="listing-number">**サンプルコード9-32**</span>
 
 ```java
 // インライン化されやすいRecord
@@ -1607,7 +1582,7 @@ public record OptimizedData(
 
 Recordsの不変性は、ガベージコレクションの性能を向上させます。不変オブジェクトは世代別GCでYoung世代に留まりやすく、素早く回収されます。以下の例では、短命なオブジェクトとしてRecordを活用する実践的なパターンを示します。
 
-<span class="listing-number">**サンプルコード9-64**</span>
+<span class="listing-number">**サンプルコード9-33**</span>
 
 ```java
 // 短命なオブジェクトとしてのRecord活用
@@ -1639,7 +1614,7 @@ Recordsと従来のJavaクラスのパフォーマンスを比較するため、
 以下の例では、オブジェクトの作成、equals、hashCodeメソッドの実行速度を測定します。
 Recordsが従来のクラスと同等以上のパフォーマンスを持つことを示します。
 
-<span class="listing-number">**サンプルコード9-66**</span>
+<span class="listing-number">**サンプルコード9-34**</span>
 
 ```java
 @State(Scope.Thread)
@@ -1729,7 +1704,7 @@ RecordBenchmark.hashCodeRecord          avgt   10   2.934 ± 0.052  ns/op
 
 ### メモリ使用量の最適化
 
-<span class="listing-number">**サンプルコード9-68**</span>
+<span class="listing-number">**サンプルコード9-35**</span>
 
 ```java
 public class MemoryOptimization {
@@ -1813,7 +1788,7 @@ public class MemoryOptimization {
 
 ### オブジェクトプーリング戦略
 
-<span class="listing-number">**サンプルコード9-70**</span>
+<span class="listing-number">**サンプルコード9-36**</span>
 
 ```java
 // 高頻度で作成されるRecordのプーリング
@@ -1853,7 +1828,7 @@ public class RecordPooling {
 
 ### 大量データ処理での最適化
 
-<span class="listing-number">**サンプルコード9-72**</span>
+<span class="listing-number">**サンプルコード9-37**</span>
 
 ```java
 public class BigDataOptimization {
@@ -1925,7 +1900,7 @@ public class BigDataOptimization {
 
 Project Valhallaは、JavaにValue Typesを導入するプロジェクトで、Recordsの未来に大きな影響を与えます
 
-<span class="listing-number">**サンプルコード9-74**</span>
+<span class="listing-number">**サンプルコード9-38**</span>
 
 ```java
 // 将来のValue Records（概念的な例）
@@ -1972,7 +1947,7 @@ public inline record Vec3(float x, float y, float z) {
 
 ### パターンマッチングの進化
 
-<span class="listing-number">**サンプルコード9-76**</span>
+<span class="listing-number">**サンプルコード9-39**</span>
 
 ```java
 // 将来のパターンマッチング拡張（概念的）
@@ -2009,7 +1984,7 @@ public class FuturePatternMatching {
 
 ### 型システムの進化
 
-<span class="listing-number">**サンプルコード9-78**</span>
+<span class="listing-number">**サンプルコード9-40**</span>
 
 ```java
 // 将来の型システム拡張
@@ -2042,7 +2017,7 @@ public class TypeSystemEvolution {
 
 ### 相互運用性の向上
 
-<span class="listing-number">**サンプルコード9-80**</span>
+<span class="listing-number">**サンプルコード9-41**</span>
 
 ```java
 // 他言語・フレームワークとの統合改善
@@ -2179,7 +2154,7 @@ Recordを学習する際に遭遇する典型的なエラーとその対処法�
 
 #### エラー例1: レコードのフィールドを変更しようとする
 
-<span class="listing-number">**サンプルコード9-81**</span>
+<span class="listing-number">**サンプルコード9-42**</span>
 
 ```java
 public record Person(String name, int age) {}
@@ -2196,7 +2171,7 @@ error: cannot assign a value to final variable age
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-82**</span>
+<span class="listing-number">**サンプルコード9-43**</span>
 
 ```java
 // 正しい使用：新しいインスタンスを作成
@@ -2221,7 +2196,7 @@ Person olderPerson = person.withAge(30);
 
 #### エラー例2: ミュータブルなオブジェクトを含むレコードで不変性を破る
 
-<span class="listing-number">**サンプルコード9-83**</span>
+<span class="listing-number">**サンプルコード9-44**</span>
 
 ```java
 import java.util.List;
@@ -2241,7 +2216,7 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-84**</span>
+<span class="listing-number">**サンプルコード9-45**</span>
 
 ```java
 import java.util.List;
@@ -2270,7 +2245,7 @@ Student updatedStudent = student.addSubject("科学");
 
 #### エラー例3: レコードに通常のコンストラクタを追加しようとする
 
-<span class="listing-number">**サンプルコード9-85**</span>
+<span class="listing-number">**サンプルコード9-46**</span>
 
 ```java
 public record Point(int x, int y) {
@@ -2288,7 +2263,7 @@ error: non-canonical constructor must delegate to another constructor
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-86**</span>
+<span class="listing-number">**サンプルコード9-47**</span>
 
 ```java
 public record Point(int x, int y) {
@@ -2305,7 +2280,7 @@ public record Point(int x, int y) {
 
 #### エラー例4: コンパクトコンストラクタでフィールドに代入
 
-<span class="listing-number">**サンプルコード9-87**</span>
+<span class="listing-number">**サンプルコード9-48**</span>
 
 ```java
 public record Person(String name, int age) {
@@ -2324,7 +2299,7 @@ error: cannot assign a value to final variable name
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-88**</span>
+<span class="listing-number">**サンプルコード9-49**</span>
 
 ```java
 public record Person(String name, int age) {
@@ -2340,7 +2315,7 @@ public record Person(String name, int age) {
 
 #### エラー例5: レコードを継承しようとする
 
-<span class="listing-number">**サンプルコード9-89**</span>
+<span class="listing-number">**サンプルコード9-50**</span>
 
 ```java
 public record BaseEntity(String id) {}
@@ -2358,7 +2333,7 @@ error: classes cannot directly extend records
 
 ##### 対処法1: 組み合わせを使用
 
-<span class="listing-number">**サンプルコード9-90**</span>
+<span class="listing-number">**サンプルコード9-51**</span>
 
 ```java
 public record EntityIdentifier(String id) {}
@@ -2375,7 +2350,7 @@ UserDTO user = new UserDTO(new EntityIdentifier("USR-001"), "john_doe", "john@ex
 
 ##### 対処法2: インターフェイスを使用
 
-<span class="listing-number">**サンプルコード9-91**</span>
+<span class="listing-number">**サンプルコード9-52**</span>
 
 ```java
 public interface Identifiable {
@@ -2388,7 +2363,7 @@ public record OrderDTO(String id, String userId, LocalDateTime orderDate) implem
 
 #### エラー例6: レコードから継承しようとする
 
-<span class="listing-number">**サンプルコード9-92**</span>
+<span class="listing-number">**サンプルコード9-53**</span>
 
 ```java
 public record BaseRecord(String value) {}
@@ -2406,7 +2381,7 @@ error: cannot inherit from final class
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-93**</span>
+<span class="listing-number">**サンプルコード9-54**</span>
 
 ```java
 // レコードは継承できないため、組み合わせまたはインターフェイスを使用
@@ -2434,7 +2409,7 @@ public class ExtendedClass implements ValueHolder {
 
 #### エラー例7: equals()をオーバーライドしようとする
 
-<span class="listing-number">**サンプルコード9-94**</span>
+<span class="listing-number">**サンプルコード9-55**</span>
 
 ```java
 public record Person(String name, int age) {
@@ -2454,7 +2429,7 @@ error: cannot override equals in record
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-95**</span>
+<span class="listing-number">**サンプルコード9-56**</span>
 
 ```java
 // レコードのequals()は自動生成される
@@ -2474,7 +2449,7 @@ public record Person(String name, int age) {
 
 #### エラー例8: レコードにミュータブルなメソッドを追加
 
-<span class="listing-number">**サンプルコード9-96**</span>
+<span class="listing-number">**サンプルコード9-57**</span>
 
 ```java
 public record Counter(int value) {
@@ -2492,7 +2467,7 @@ error: cannot assign a value to final variable value
 
 ##### 対処法:
 
-<span class="listing-number">**サンプルコード9-97**</span>
+<span class="listing-number">**サンプルコード9-58**</span>
 
 ```java
 // 解決法1: 新しいインスタンスを返す
@@ -2526,7 +2501,7 @@ public class MutableCounter {
 
 1. null値の処理
 
-<span class="listing-number">**サンプルコード9-98**</span>
+<span class="listing-number">**サンプルコード9-59**</span>
 
 ```java
 public record Person(String name, int age) {
@@ -2543,7 +2518,7 @@ public record Person(String name, int age) {
 
 2. ディープコピーが必要な場合
 
-<span class="listing-number">**サンプルコード9-99**</span>
+<span class="listing-number">**サンプルコード9-60**</span>
 
 ```java
 import java.util.List;
@@ -2563,7 +2538,7 @@ public record StudentGrades(String name, List<Integer> grades) {
 
 3. シリアライゼーション時の注意
 
-<span class="listing-number">**サンプルコード9-100**</span>
+<span class="listing-number">**サンプルコード9-61**</span>
 
 ```java
 import java.io.Serializable;
@@ -2576,7 +2551,7 @@ public record SerializableData(String value, int number) implements Serializable
 
 4. パフォーマンスを考慮した設計
 
-<span class="listing-number">**サンプルコード9-101**</span>
+<span class="listing-number">**サンプルコード9-62**</span>
 
 ```java
 // 大量のデータを扱う場合は注意
@@ -2596,7 +2571,7 @@ public record OptimizedData(List<String> data) {
 
 5. JSON連携時の注意
 
-<span class="listing-number">**サンプルコード9-102**</span>
+<span class="listing-number">**サンプルコード9-63**</span>
 
 ```java
 // Jackson等のライブラリを使用する場合
