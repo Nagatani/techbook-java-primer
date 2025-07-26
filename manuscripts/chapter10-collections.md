@@ -2,26 +2,20 @@
 
 ## 本章の学習目標
 
-本章では、Javaのコレクションフレームワークについて学習します。
-配列は固定サイズのデータ構造ですが、実際のプログラムでは動的にサイズが変化するデータを扱う必要が頻繁にあります。
-コレクションフレームワークは、このようなニーズに応える柔軟で強力なデータ構造を提供します。
+### この章で学ぶこと
 
-### 前提知識
+1. コレクションの基本理解
+    - 配列の限界とコレクションの必要性、List・Set・Mapの特徴と使い分け
+2. 主要な実装クラス
+    - ArrayList/LinkedList、HashSet/TreeSet、HashMap/TreeMapの使い分け
+3. コレクションの操作
+    - 基本操作（追加・削除・検索）、イテレータと拡張for文、Collectionsユーティリティ
+4. 実践的な活用
+    - パフォーマンスを考慮した選択、時間計算量、スレッドセーフティ
 
-#### 必須
-- 第7章までの基本的なJava文法
-- 配列の使い方と限界の理解
-- インターフェイスの基本概念
+### この章を始める前に
 
-#### 推奨
-- ジェネリクスの基礎（第11章で詳しく学習）
-
-### 学習内容
-- コレクションフレームワークの全体像と設計思想
-- List、Set、Mapの基本的な使い方と特徴
-- 各実装クラス（ArrayList、HashSet、HashMap等）の使い分け
-- イテレータによる要素の走査
-- コレクションの実践的な活用方法
+配列の基本的な使い方とインターフェイスの概念を理解していれば準備完了です。
 
 ## なぜコレクションフレームワークが必要か
 
@@ -31,7 +25,7 @@
 
 まず、配列を使った簡単な例から始めましょう。
 
-<span class="listing-number">**サンプルコード10-2**</span>
+<span class="listing-number">**サンプルコード10-1**</span>
 
 ```java
 // 学生の名前を管理するプログラム
@@ -61,7 +55,7 @@ public class StudentManager {
 
 新学期になって6人目の学生が転入してきたらどうしましょう？配列のサイズは作成時に決まるため、後から変更できません。
 
-<span class="listing-number">**サンプルコード10-4**</span>
+<span class="listing-number">**サンプルコード10-2**</span>
 
 ```java
 String[] students = new String[5];
@@ -72,7 +66,7 @@ students[5] = "山田";  // ArrayIndexOutOfBoundsException!
 
 従来の解決方法は、より大きな配列を作り直してコピーすることでした。
 
-<span class="listing-number">**サンプルコード10-6**</span>
+<span class="listing-number">**サンプルコード10-3**</span>
 
 ```java
 // 面倒な配列の拡張処理
@@ -88,7 +82,7 @@ students[5] = "山田";    // やっと6人目を追加できる
 
 転校した学生のデータを削除する場合も複雑です。
 
-<span class="listing-number">**サンプルコード10-8**</span>
+<span class="listing-number">**サンプルコード10-4**</span>
 
 ```java
 // 鈴木さん（インデックス2）が転校
@@ -108,7 +102,7 @@ students[students.length - 1] = null;
 
 よく使う操作も自分で実装してください。
 
-<span class="listing-number">**サンプルコード10-10**</span>
+<span class="listing-number">**サンプルコード10-5**</span>
 
 ```java
 // 特定の学生が在籍しているか確認
@@ -133,7 +127,7 @@ for (String student : students) {
 
 これらの問題を解決するために、Javaはコレクションフレームワークを提供しています。同じ学生管理プログラムをArrayListで書き直してみましょう。
 
-<span class="listing-number">**サンプルコード10-12**</span>
+<span class="listing-number">**サンプルコード10-6**</span>
 
 ```java
 import java.util.ArrayList;
@@ -211,7 +205,7 @@ Listは順序を保持し、インデックスによるアクセスが可能な�
 
 ### ArrayList vs LinkedList
 
-<span class="listing-number">**サンプルコード10-14**</span>
+<span class="listing-number">**サンプルコード10-7**</span>
 
 ```java
 // ArrayList: 内部的に配列を使用
@@ -232,7 +226,7 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 
 ### 主な操作
 
-<span class="listing-number">**サンプルコード10-16**</span>
+<span class="listing-number">**サンプルコード10-8**</span>
 
 ```java
 List<String> list = new ArrayList<>();
@@ -267,7 +261,7 @@ Setは重複要素を許さないコレクションです。数学的な集合�
 
 Setの実装クラスは、内部構造の違いにより異なる特性を持ちます。データの順序が重要かどうか、検索や挿入の頻度、ソートが必要かどうかを考慮して選択します。
 
-<span class="listing-number">**サンプルコード10-18**</span>
+<span class="listing-number">**サンプルコード10-9**</span>
 
 ```java
 // HashSet: ハッシュテーブルを使用（順序は保証されない）
@@ -303,7 +297,7 @@ Setは数学の集合論に基づく演算を簡単に実装できます。
 これらの演算は、データ分析、権限管理、フィルタリング処理などで頻繁に使用されます。
 例えば、ユーザーの権限セットとアクセス要求権限セットの積集合を求めることで、実際にアクセス可能な機能を判定できます。
 
-<span class="listing-number">**サンプルコード10-20**</span>
+<span class="listing-number">**サンプルコード10-10**</span>
 
 ```java
 Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
@@ -334,7 +328,7 @@ Map実装の選択は、データ量、検索頻度、順序の重要性によ�
 辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装します。
 一般的なデータ検索ではHashMapで最高速度を実現します。
 
-<span class="listing-number">**サンプルコード10-22**</span>
+<span class="listing-number">**サンプルコード10-11**</span>
 
 ```java
 // HashMap: 高速な検索・挿入（順序は保証されない）
@@ -363,7 +357,7 @@ linkedHashMap.putAll(hashMap);
 
 Mapは辞書的なデータ管理の核となる操作を提供します。基本的なCRUD操作（Create, Read, Update, Delete）に加え、キーや値の存在確認、全要素の走査など、実用的なメソッドが豊富に用意されています。
 
-<span class="listing-number">**サンプルコード10-24**</span>
+<span class="listing-number">**サンプルコード10-12**</span>
 
 ```java
 Map<String, String> map = new HashMap<>();
@@ -407,7 +401,7 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 for-each文は内部的にイテレータを使用しているため、理解しておくことで、より柔軟なコレクション操作が可能になります。
 特に、走査中に要素を削除する必要がある場合には、イテレータが重要です。
 
-<span class="listing-number">**サンプルコード10-26**</span>
+<span class="listing-number">**サンプルコード10-13**</span>
 
 ```java
 List<String> list = Arrays.asList("A", "B", "C");
@@ -441,7 +435,7 @@ while (iter2.hasNext()) {
 内部的にはイテレータを使用しているため、すべてのコレクション型で使用できます。
 日常的なコレクション処理の大部分は、この記法で十分カバーできます。
 
-<span class="listing-number">**サンプルコード10-28**</span>
+<span class="listing-number">**サンプルコード10-14**</span>
 
 ```java
 // より簡潔な記述：最も一般的なコレクション走査方法
@@ -558,7 +552,7 @@ Javaプログラミングの初期に学ぶ配列は、複数のデータをま�
 1. サイズが固定： 配列は、一度作成するとそのサイズを変更できません。
 2. 機能が限定的： 要素の追加や削除、検索といった一般的な操作を自前で実装する必要があり、手間がかかる。
 
-<span class="listing-number">**サンプルコード10-30**</span>
+<span class="listing-number">**サンプルコード10-15**</span>
 
 ```java
 // 配列の例：要素を追加するのも一苦労
@@ -592,7 +586,7 @@ Javaのコレクションフレームワークは、データを効率的に扱�
 
 ### `ArrayList`の基本的な使い方
 
-<span class="listing-number">**サンプルコード10-32**</span>
+<span class="listing-number">**サンプルコード10-16**</span>
 
 ```java
 import java.util.ArrayList;
@@ -649,7 +643,7 @@ public class ArrayListExample {
 
 #### 拡張for文 (推奨)
 最も簡潔で一般的な方法です。
-<span class="listing-number">**サンプルコード10-34**</span>
+<span class="listing-number">**サンプルコード10-17**</span>
 
 ```java
 for (String name : nameList) {
@@ -659,7 +653,7 @@ for (String name : nameList) {
 
 #### イテレータ (Iterator)
 ループ中にコレクションから要素を安全に削除したい場合に使います。
-<span class="listing-number">**サンプルコード10-36**</span>
+<span class="listing-number">**サンプルコード10-18**</span>
 
 ```java
 Iterator<String> iterator = cityList.iterator();
@@ -675,7 +669,7 @@ while (iterator.hasNext()) {
 
 `java.util.Arrays`クラスや`List`インターフェイスのメソッドを利用します。
 
-<span class="listing-number">**サンプルコード10-38**</span>
+<span class="listing-number">**サンプルコード10-19**</span>
 
 ```java
 import java.util.Arrays;
@@ -707,7 +701,7 @@ String[] fruitArray = fruitList.toArray(new String[0]);
 
 ### `HashSet`の基本的な使い方
 
-<span class="listing-number">**サンプルコード10-40**</span>
+<span class="listing-number">**サンプルコード10-20**</span>
 
 ```java
 import java.util.HashSet;
@@ -744,7 +738,7 @@ public class HashSetExample {
 
 ### `HashMap`の基本的な使い方
 
-<span class="listing-number">**サンプルコード10-42**</span>
+<span class="listing-number">**サンプルコード10-21**</span>
 
 ```java
 import java.util.HashMap;
@@ -795,7 +789,7 @@ Exception in thread "main" java.lang.NullPointerException
 
 原因と対処。
 
-<span class="listing-number">**サンプルコード10-43**</span>
+<span class="listing-number">**サンプルコード10-22**</span>
 
 ```java
 // エラー例
@@ -809,7 +803,7 @@ list.add("Hello");  // OK
 
 #### null要素の扱い
 
-<span class="listing-number">**サンプルコード10-44**</span>
+<span class="listing-number">**サンプルコード10-23**</span>
 
 ```java
 // エラー例
@@ -843,7 +837,7 @@ Exception in thread "main" java.lang.ClassCastException: java.lang.Integer canno
 
 原因と対処。
 
-<span class="listing-number">**サンプルコード10-45**</span>
+<span class="listing-number">**サンプルコード10-24**</span>
 
 ```java
 // エラー例（ジェネリクスなし）
@@ -872,7 +866,7 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 
 原因と対処。
 
-<span class="listing-number">**サンプルコード10-46**</span>
+<span class="listing-number">**サンプルコード10-25**</span>
 
 ```java
 // エラー例
@@ -900,7 +894,7 @@ Exception in thread "main" java.util.ConcurrentModificationException
 
 原因と対処。
 
-<span class="listing-number">**サンプルコード10-47**</span>
+<span class="listing-number">**サンプルコード10-26**</span>
 
 ```java
 // エラー例
@@ -946,7 +940,7 @@ Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 5 out of b
 
 原因と対処。
 
-<span class="listing-number">**サンプルコード10-48**</span>
+<span class="listing-number">**サンプルコード10-27**</span>
 
 ```java
 // エラー例
@@ -977,7 +971,7 @@ try {
 
 #### 存在しないキーのアクセス
 
-<span class="listing-number">**サンプルコード10-49**</span>
+<span class="listing-number">**サンプルコード10-28**</span>
 
 ```java
 // 注意が必要な例
@@ -1012,7 +1006,7 @@ if (map.containsKey("key2")) {
 
 #### カスタムオブジェクトをHashSetやHashMapのキーで使用
 
-<span class="listing-number">**サンプルコード10-50**</span>
+<span class="listing-number">**サンプルコード10-29**</span>
 
 ```java
 // 問題のある例
@@ -1059,7 +1053,7 @@ class Person {
 
 #### Raw typeの使用
 
-<span class="listing-number">**サンプルコード10-51**</span>
+<span class="listing-number">**サンプルコード10-30**</span>
 
 ```java
 // 非推奨な例
