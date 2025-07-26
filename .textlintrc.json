@@ -15,7 +15,8 @@
       "ai-tech-writing-guideline": {
         "severity": "info"
       }
-    }
+    },
+    "ja-hiraku": true
   },
   "rules_bk": {
     "preset-ja-technical-writing": {

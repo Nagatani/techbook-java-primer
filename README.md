@@ -6,6 +6,17 @@
 
 https://vivliostyle.org/viewer/#src=https://nagatani.github.io/techbook-java-primer/publication.json
 
+
+## 開発環境
+
+Node.js 20以上
+
+### セットアップ
+
+```
+npm ci
+```
+
 ## ビルドコマンド
 
 ### build
@@ -41,14 +52,4 @@ npm run lint
 
 ```
 npm run lint:fix
-```
-
-## 必要環境
-
-Node.js 16以上
-
-## セットアップ
-
-```
-npm install
 ```
