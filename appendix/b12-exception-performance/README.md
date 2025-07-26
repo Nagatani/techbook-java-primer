@@ -140,7 +140,7 @@ try {
 
 ### 2. 条件付きスタックトレース
 
-必要な時のみスタックトレースを生成:
+必要なときのみスタックトレースを生成:
 
 ```java
 // 環境ベース
@@ -204,7 +204,7 @@ public void validateInput(String input) throws ValidationException {
 }
 ```
 
-**良い例:**
+**よい例:**
 ```java
 public Result<ValidInput, List<String>> validateInput(String input) {
     List<String> errors = new ArrayList<>();
@@ -226,7 +226,7 @@ public Resource loadResource(String path) throws ResourceException {
 }
 ```
 
-**良い例:**
+**よい例:**
 ```java
 public Optional<Resource> loadResource(String path) {
     // リソースがない場合にOptional.empty()を返す
@@ -244,7 +244,7 @@ try {
 }
 ```
 
-**良い例:**
+**よい例:**
 ```java
 OrderResult result = processOrder(order);
 switch (result.getStatus()) {
@@ -329,4 +329,4 @@ JVMはいくつかの最適化を適用します：
 - **賢明に最適化する** - 測定可能な改善に焦点を当てる
 - **明瞭性を維持する** - 可読性を犠牲にしない
 
-ほとんどのアプリケーションでは、マイクロ最適化よりもクリーンな例外処理の方が重要です。しかし、これらの技術を理解することで、パフォーマンスが本当に重要な場合に情報に基づいた決定を下すことができます。
+ほとんどのアプリケーションでは、マイクロ最適化よりもクリーンな例外処理のほうが重要です。しかし、これらの技術を理解することで、パフォーマンスが本当に重要な場合に情報に基づいた決定を下すことができます。

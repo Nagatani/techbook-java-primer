@@ -50,7 +50,7 @@ src/main/java/com/example/theory/
   - スタックADTの抽象仕様と具体実装
   
 - **EncapsulationExamples.java** (リストAC-8, AC-9)
-  - カプセル化の悪い例と良い例
+  - カプセル化の悪い例とよい例
   
 - **LiskovSubstitution.java** (リストAC-10, AC-11)
   - リスコフの置換原則（LSP）違反例と遵守例

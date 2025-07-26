@@ -1,6 +1,6 @@
 # Java Memory ModelとHappens-Before関係
 
-Java並行プログラミングにおける最も重要かつ難解な概念の一つである、Java Memory Model（JMM）とHappens-Before関係について学習できるプロジェクトです。
+Java並行プログラミングにおける最も重要かつ難解な概念の1つである、Java Memory Model（JMM）とHappens-Before関係について学習できるプロジェクトです。
 
 ## 概要
 
@@ -101,7 +101,7 @@ java -Xint com.example.memorymodel.HappensBeforeDemo
 ## 学習ポイント
 
 ### 1. Java Memory Modelの基礎
-- **メモリ可視性**: 一つのスレッドによる変更が他のスレッドから見える保証
+- **メモリ可視性**: 1つのスレッドによる変更が他のスレッドから見える保証
 - **原子性**: 操作が分割不可能な単位として実行される保証
 - **順序性**: 操作が特定の順序で実行される保証
 - **volatile**: 可視性と順序性を保証（原子性は保証しない）
@@ -174,7 +174,7 @@ public void testAtomic() {
 - **LoadLoad**: Load操作の順序保証
 - **StoreStore**: Store操作の順序保証  
 - **LoadStore**: LoadとStoreの順序保証
-- **StoreLoad**: 最も強力、全ての順序を保証
+- **StoreLoad**: 最も強力、すべての順序を保証
 
 ## ベンチマーク結果例
 

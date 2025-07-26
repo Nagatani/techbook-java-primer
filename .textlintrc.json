@@ -2,6 +2,9 @@
   "filters": {},
   "rules": {
     "preset-ja-technical-writing": {
+      "sentence-length": {
+        "max": 180
+      },
       "no-exclamation-question-mark": false,
       "ja-no-successive-word": false,
       "no-doubled-joshi": false,

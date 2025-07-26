@@ -7,8 +7,10 @@
     "build": "npx vivliostyle build",
     "build4web": "npx vivliostyle build -o dist",
     "preview": "npx vivliostyle preview",
-    "lint": "textlint manuscripts/*.md",
-    "lint:fix": "textlint --fix manuscripts/*.md"
+    "lint": "npx textlint manuscripts/*.md",
+    "lint:fix": "npx textlint --fix manuscripts/*.md",
+    "lintadx": "npx textlint appendix/**/*.md",
+    "lintadx:fix": "npx textlint --fix appendix/**/*.md"
   },
   "repository": {
     "type": "git",
