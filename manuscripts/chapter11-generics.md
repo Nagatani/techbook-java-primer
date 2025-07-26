@@ -449,7 +449,7 @@ public class VarReadabilityExample {
         var scoreMap = new HashMap<String, Integer>();
         var builder = new StringBuilder();
         
-        // 複雑なジェネリック型で特に有効
+        // 複雑なジェネリック型でとくに有効
         var complexMap = new HashMap<String, List<Map<String, Object>>>();
         
         // Stream APIとの組み合わせ
@@ -481,7 +481,7 @@ public class VarReadabilityExample {
 
 ### ジェネリクスとvarの組み合わせ
 
-var型推論は、ジェネリクスと組み合わせることで特に威力を発揮します。
+var型推論は、ジェネリクスと組み合わせることでとくに威力を発揮します。
 
 <span class="listing-number">**サンプルコード11-27**</span>
 
@@ -646,7 +646,7 @@ public class VarRefactoringExample {
     
     // 段階的リファクタリングの例
     public static void gradualRefactoring() {
-        // ステップ1: 最も冗長な部分から開始
+        // ステップ1: もっとも冗長な部分から開始
         var userCache = new ConcurrentHashMap<String, UserProfile>();
         
         // ステップ2: 型が明確なファクトリーメソッド

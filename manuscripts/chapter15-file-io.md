@@ -150,7 +150,7 @@ public class TextFileReaderExample {
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
         // テキストファイルの読み込み
         // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションでは最も推奨される方法です。
+        // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションではもっとも推奨される方法です。
         System.out.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -228,7 +228,7 @@ public class TextFileWriterExample {
 テキストファイルを扱う際には、文字コード（エンコーディング）の指定が大切です。文字コードが異なると、文字化けが発生する可能性があります。
 
 主要な文字エンコーディング。
-- UTF-8: 現在最も広く使用される可変長エンコーディング
+- UTF-8: 現在もっとも広く使用される可変長エンコーディング
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
 
@@ -340,7 +340,7 @@ public class DataStreamExample {
 // NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
 // パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用するとよいAPIです。
 
-これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、特に大量のデータを扱う場合に有効です。
+これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
 ## オブジェクトの直列化（シリアライズ）
 
@@ -585,7 +585,7 @@ public class FileChooserExample {
 
 ## Text Blocks - 複数行文字列の効率的な処理
 
-Java 15で正式に導入されたText Blocksは、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。特にファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
+Java 15で正式に導入されたText Blocksは、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。とくにファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
 
 ### 従来の文字列連結の問題点
 
@@ -675,7 +675,7 @@ public class TextBlockBasics {
 
 ### インデントの自動処理
 
-Text Blocksの最も重要な特徴の1つは、共通インデントの自動除去です。
+Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です。
 
 <span class="listing-number">**サンプルコード15-26**</span>
 
@@ -708,7 +708,7 @@ public class TextBlockIndentation {
         System.out.println("\n=== カスタムインデント ===");
         System.out.println(customIndent);
         
-        // 最も左にある行でインデントが決まる
+        // もっとも左にある行でインデントが決まる
         String mixedIndent = """
                     深いインデント
                 中程度のインデント
@@ -716,7 +716,7 @@ public class TextBlockIndentation {
                     再び深いインデント
             """;
         
-        System.out.println("\n=== 混合インデント（最も浅い行が基準） ===");
+        System.out.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
         System.out.println(mixedIndent);
         
         // stripIndent()メソッドでインデント除去を明示的に実行
@@ -786,7 +786,7 @@ public class TextBlockEscaping {
 
 ### 実践例：構造化データの処理
 
-Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際に特に威力を発揮します。
+Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
 <span class="listing-number">**サンプルコード15-30**</span>
 
@@ -1210,12 +1210,12 @@ public class TextBlockFileIO {
 ### Text Blocksのベストプラクティス
 
 1. 構造化データでの活用： JSON、XML、SQL、HTMLなどの複雑な構造を持つテキストでText Blocksの真価が発揮される
-2. 正しいインデント管理： 最も左の行がインデントの基準となることを理解して使用しましょう
+2. 正しいインデント管理： もっとも左の行がインデントの基準となることを理解して使用しましょう
 3. 文字列フォーマッティングとの組み合わせ： `formatted()`メソッドや`String.format()`と組み合わせることで、動的なコンテンツ生成が可能である
 4. ファイルテンプレートとしての利用： 設定ファイル、レポート、コード生成のテンプレートとして活用できる
 5. 可読性の向上： 従来のエスケープシーケンスを多用した文字列と比較して、コードの見た目がそのまま実際の出力に対応するため可読性が向上する
 
-Text Blocksは、特にファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。
+Text Blocksは、とくにファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。
 JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生成など、現代的なJavaアプリケーション開発において欠かせない機能となっています。
 
 ※ 本章の高度な内容については、付録B.13「NIO.2の高度な機能」を参照してください。

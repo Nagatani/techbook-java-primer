@@ -293,7 +293,7 @@ class ClientHandler implements Runnable {
 
 ### HTTPプロトコルの基礎
 
-HTTPは、Webで最も広く使用されているアプリケーション層プロトコルです。
+HTTPは、Webでもっとも広く使用されているアプリケーション層プロトコルです。
 
 HTTPリクエストの構造。
 ```
