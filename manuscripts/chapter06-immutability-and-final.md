@@ -2,47 +2,20 @@
 
 ## 本章の学習目標
 
-### 前提知識
+### この章で学ぶこと
 
-#### 必須
-- 第5章までのオブジェクト指向プログラミングの基本概念
-- クラスとインスタンスの関係
-- カプセル化とアクセス制御
-- オブジェクトの状態（フィールド）とその変更
+1. 不変性の概念理解
+    - 不変オブジェクトの定義と重要性、スレッドセーフティとの関係、実践的メリット
+2. finalキーワードの活用
+    - final変数・メソッド・クラスの使い分けと適切な使用場面
+3. 不変オブジェクトの設計
+    - 設計ルール、防御的コピー、ビルダーパターンの活用
+4. 実践的な実装技術
+    - 可変オブジェクトの安全な扱い、パフォーマンスとのトレードオフ
 
-#### 推奨
-- マルチスレッド環境での共有データの問題理解
-- 大規模プログラムでのデータ一貫性維持の経験
+### この章を始める前に
 
-### 知識理解目標
-
-本章では、Javaプログラミングにおける不変性（Immutability）とfinalキーワードの概念を深く理解することが目標です。
-不変性は、堅牢で保守性の高いソフトウェアを構築するための設計アプローチの1つです。
-関数型プログラミングでは不変性が中心的な概念となりますが、オブジェクト指向でも状況に応じて活用されます。
-finalキーワードの3つの用途（変数、メソッド、クラス）それぞれの意味と効果を理解し、適用場面を判断して使い分けられます。
-また、不変オブジェクトがスレッドセーフティ、キャッシング、関数型プログラミングなどの設計パターンとどのように関連するかを学びます。
-
-### 技能習得目標
-
-技能習得の面では、不変オブジェクトを正しく設計・実装できるようになることが目標です。
-これには、finalフィールドの宣言、コンストラクタでの初期化、setterメソッドを持たない設計、防御的コピーの実装などが含まれます。
-また、既存の可変クラスを不変クラスに変換する技術、ビルダパターンを使った不変オブジェクトの構築方法も習得します。
-final変数を使った定数の定義、finalメソッドによる継承の制御、finalクラスによる拡張の防止など、finalキーワードのすべての側面を実践的に使いこなせます。
-
-### 設計能力目標
-
-設計能力の観点からは、不変性を活用した安全で予測可能なシステム設計ができるようになることが目標です。
-これは、副作用を最小化したメソッド設計、状態変更を局所化したアーキテクチャ、不変性と可変性のトレードオフを考慮した設計判断などを含みます。
-値オブジェクトパターン、不変コレクションの活用、関数型プログラミングスタイルの採用など、モダンなJavaプログラミングで求められる設計スキルを身につけます。
-
-### 到達レベルの指標
-
-最終的な到達レベルとしては、以下のことができます。
-- finalキーワードの3つの用途を正しく理解し、それぞれの使用場面と効果を理解して使い分けられる
-- 完全な不変オブジェクトを設計・実装し、その利点を最大限に活用できる
-- スレッドセーフなコードを不変性を使って実現できる
-- 不変性と性能のトレードオフを理解し、性能要求と安全性の両立を考慮した設計ができる
-- Java標準ライブラリの不変クラス（String、Integer等）の設計思想を理解し、同様の品質のコードを書ける
+第4章のカプセル化と第5章の継承を理解していれば準備完了です。
 
 ## 不変性の概念と重要性
 
@@ -58,7 +31,7 @@ final変数を使った定数の定義、finalメソッドによる継承の制�
 
 以下のコードは、可変オブジェクトがマルチスレッド環境でどのような問題を引き起こすかを示しています。
 
-<span class="listing-number">**サンプルコード6-2**</span>
+<span class="listing-number">**サンプルコード6-1**</span>
 
 ```java
 // 可変オブジェクトの問題例
@@ -115,7 +88,7 @@ public class ThreadSafetyProblem {
 
 #### 2. 意図しない副作用
 
-<span class="listing-number">**サンプルコード6-3**</span>
+<span class="listing-number">**サンプルコード6-2**</span>
 
 ```java
 // 可変オブジェクトを返すメソッドの問題
@@ -137,7 +110,7 @@ loc.setX(100);  // Employeeの内部状態が外部から変更される！
 
 これらの問題を解決するのが、不変オブジェクトです。
 
-<span class="listing-number">**サンプルコード6-4**</span>
+<span class="listing-number">**サンプルコード6-3**</span>
 
 ```java
 // 不変オブジェクトの実装
@@ -181,7 +154,7 @@ public final class ImmutablePoint {
 
 `final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります。
 
-<span class="listing-number">**サンプルコード6-5**</span>
+<span class="listing-number">**サンプルコード6-4**</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -224,7 +197,7 @@ public class Constants {
 
 `final`をメソッドに付けると、サブクラスでそのメソッドをオーバーライドできなくなります。
 
-<span class="listing-number">**サンプルコード6-6**</span>
+<span class="listing-number">**サンプルコード6-5**</span>
 
 ```java
 public class SecurityManager {
@@ -256,7 +229,7 @@ public class SecurityManager {
 
 `final`をクラスに付けると、そのクラスを継承できなくなります。
 
-<span class="listing-number">**サンプルコード6-7**</span>
+<span class="listing-number">**サンプルコード6-6**</span>
 
 ```java
 // Stringクラスのfinalクラスの代表例
@@ -301,7 +274,7 @@ finalクラスの利点。
 
 ### 実践例：不変な`Person`クラス
 
-<span class="listing-number">**サンプルコード6-9**</span>
+<span class="listing-number">**サンプルコード6-7**</span>
 
 ```java
 import java.util.ArrayList;
@@ -381,7 +354,7 @@ public final class ImmutablePerson {
 
 ### 不変オブジェクトの使用例
 
-<span class="listing-number">**サンプルコード6-11**</span>
+<span class="listing-number">**サンプルコード6-8**</span>
 
 ```java
 import java.util.ArrayList;
@@ -442,7 +415,7 @@ public class ImmutableExample {
 
 不変オブジェクトを設計する際、可変オブジェクト（配列やコレクション）をフィールドに持つ場合は特に注意が必要です。単に参照を保持するだけでは、外部から内容を変更される可能性があります。
 
-<span class="listing-number">**サンプルコード6-13**</span>
+<span class="listing-number">**サンプルコード6-9**</span>
 
 ```java
 import java.time.LocalDate;
@@ -488,7 +461,7 @@ public final class DateRange {
 
 複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
 
-<span class="listing-number">**サンプルコード6-15**</span>
+<span class="listing-number">**サンプルコード6-10**</span>
 
 ```java
 import java.time.LocalDate;
@@ -585,7 +558,7 @@ public final class Book {
 
 ### ビルダーパターンの使用例
 
-<span class="listing-number">**サンプルコード6-17**</span>
+<span class="listing-number">**サンプルコード6-11**</span>
 
 ```java
 public class BuilderExample {
@@ -657,7 +630,7 @@ public class BuilderExample {
 
 Java 14以降では、Recordクラスにより不変データクラスの作成がより簡潔になりました。
 
-<span class="listing-number">**サンプルコード6-18**</span>
+<span class="listing-number">**サンプルコード6-12**</span>
 
 ```java
 // Java 14以降：Recordを使った不変クラス
@@ -704,7 +677,7 @@ System.out.println(point.y()); // 20
 
 #### エラー例: final変数の再代入
 
-<span class="listing-number">**サンプルコード6-19**</span>
+<span class="listing-number">**サンプルコード6-13**</span>
 
 ```java
 public class FinalErrorExample {
@@ -722,7 +695,7 @@ Error: Cannot assign a value to final variable number
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-20**</span>
+<span class="listing-number">**サンプルコード6-14**</span>
 
 ```java
 public class FinalCorrectExample {
@@ -740,7 +713,7 @@ public class FinalCorrectExample {
 
 #### エラー例: final変数の未初期化
 
-<span class="listing-number">**サンプルコード6-21**</span>
+<span class="listing-number">**サンプルコード6-15**</span>
 
 ```java
 public class UninitializedFinalExample {
@@ -759,7 +732,7 @@ Error: Variable name might not have been initialized
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-22**</span>
+<span class="listing-number">**サンプルコード6-16**</span>
 
 ```java
 public class InitializedFinalExample {
@@ -782,7 +755,7 @@ public class InitializedFinalExample {
 
 #### エラー例: 可変フィールドの露出
 
-<span class="listing-number">**サンプルコード6-23**</span>
+<span class="listing-number">**サンプルコード6-17**</span>
 
 ```java
 public final class BrokenImmutablePerson {
@@ -802,7 +775,7 @@ public final class BrokenImmutablePerson {
 
 ##### 問題点
 
-<span class="listing-number">**サンプルコード6-24**</span>
+<span class="listing-number">**サンプルコード6-18**</span>
 
 ```java
 List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
@@ -815,7 +788,7 @@ hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-25**</span>
+<span class="listing-number">**サンプルコード6-19**</span>
 
 ```java
 import java.util.ArrayList;
@@ -849,7 +822,7 @@ public final class ImmutablePerson {
 
 #### エラー例: 日付オブジェクトの防御的コピー漏れ
 
-<span class="listing-number">**サンプルコード6-26**</span>
+<span class="listing-number">**サンプルコード6-20**</span>
 
 ```java
 import java.util.Date;
@@ -871,7 +844,7 @@ public final class BrokenImmutableEvent {
 
 ##### 問題点
 
-<span class="listing-number">**サンプルコード6-27**</span>
+<span class="listing-number">**サンプルコード6-21**</span>
 
 ```java
 Date date = new Date();
@@ -884,7 +857,7 @@ event.getEventDate().setTime(0); // イベント日時が変更される
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-28**</span>
+<span class="listing-number">**サンプルコード6-22**</span>
 
 ```java
 import java.util.Date;
@@ -912,7 +885,7 @@ public final class ImmutableEvent {
 
 ##### モダンなアプローチ（推奨）
 
-<span class="listing-number">**サンプルコード6-29**</span>
+<span class="listing-number">**サンプルコード6-23**</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -940,7 +913,7 @@ public final class ModernImmutableEvent {
 
 #### エラー例: final配列の誤用
 
-<span class="listing-number">**サンプルコード6-30**</span>
+<span class="listing-number">**サンプルコード6-24**</span>
 
 ```java
 public class FinalArrayMisunderstanding {
@@ -960,7 +933,7 @@ public class FinalArrayMisunderstanding {
 
 ##### 対処法（真の不変配列）
 
-<span class="listing-number">**サンプルコード6-31**</span>
+<span class="listing-number">**サンプルコード6-25**</span>
 
 ```java
 import java.util.Arrays;
@@ -990,7 +963,7 @@ public final class ImmutableArray {
 
 #### エラー例: Listの不変性に関する誤解
 
-<span class="listing-number">**サンプルコード6-32**</span>
+<span class="listing-number">**サンプルコード6-26**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1016,7 +989,7 @@ public class ListImmutabilityMisunderstanding {
 
 #### エラー例: 継承による不変性の破綻
 
-<span class="listing-number">**サンプルコード6-33**</span>
+<span class="listing-number">**サンプルコード6-27**</span>
 
 ```java
 public class ImmutablePerson {
@@ -1051,7 +1024,7 @@ public class MutableEmployee extends ImmutablePerson {
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-34**</span>
+<span class="listing-number">**サンプルコード6-28**</span>
 
 ```java
 public final class ImmutablePerson { // finalクラス
@@ -1077,7 +1050,7 @@ public final class ImmutablePerson { // finalクラス
 
 #### エラー例: 不必要な防御的コピー
 
-<span class="listing-number">**サンプルコード6-35**</span>
+<span class="listing-number">**サンプルコード6-29**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1103,7 +1076,7 @@ public final class IneffientImmutableClass {
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-36**</span>
+<span class="listing-number">**サンプルコード6-30**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1133,7 +1106,7 @@ public final class EfficientImmutableClass {
 
 ##### 大量データの場合の最適化
 
-<span class="listing-number">**サンプルコード6-37**</span>
+<span class="listing-number">**サンプルコード6-31**</span>
 
 ```java
 import java.util.ArrayList;
