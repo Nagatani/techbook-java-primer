@@ -2,43 +2,20 @@
 
 ## 本章の学習目標
 
-### 前提知識
+### この章で学ぶこと
 
-#### 必須
-- 第10章のコレクションフレームワークの理解と実践経験
-- 型システムの基本的な理解
-- オブジェクト指向の継承とポリモーフィズムの理解
+1. ジェネリクスの基本理解
+    - 型安全性の必要性、型パラメータと型引数、型消去（Type Erasure）の仕組み
+2. ジェネリッククラスとメソッド
+    - ジェネリッククラスの定義、ジェネリックメソッド、複数の型パラメータ
+3. 境界ワイルドカード
+    - 上限境界（? extends）、下限境界（? super）、PECS原則
+4. var型推論
+    - ローカル変数の型推論、適切な使用場面、可読性とのバランス
 
-#### 推奨
-- コレクションを使った実用的なプログラム開発経験
-- 型安全性の問題（ClassCastException等）の経験
+### この章を始める前に
 
-### 学習目標
-#### 知識理解目標
-- ジェネリクスの設計目的と利点の深い理解
-- 型パラメータと型引数の概念
-- 境界ワイルドカード（? extends、? super）の理解
-- 型消去（Type Erasure）のしくみと制限事項
-- var型推論のメカニズムと適用範囲
-
-#### 技能習得目標
-- ジェネリッククラスとインターフェイスの設計・実装
-- ジェネリックメソッドの効果的な使用
-- 境界ワイルドカードを使った柔軟な型設計
-- 既存のジェネリックAPIの効果的な活用
-- var型推論を使った可読性の高いコードの作成
-
-#### 設計能力目標
-- 型安全で再利用可能なライブラリの設計
-- 複雑な型関係を持つシステムの設計
-- ジェネリクスを活用したAPIの設計
-- var型推論を適切に判断・活用したコード設計
-
-#### 到達レベルの指標
-- 型安全で再利用可能なジェネリッククラスが独力で設計・実装できる
-- 複雑なジェネリック型を含むAPIが理解・活用できる
-- 型関連のコンパイルエラーを適切に解決できる
-- ジェネリクスを使った柔軟で保守性の高いライブラリが作成できる
+第10章のコレクションフレームワークを理解していれば準備完了です。
 
 ## なぜジェネリクスが必要なのか？
 
@@ -46,7 +23,7 @@
 
 第10章でコレクションフレームワークを学習したとき、以下のような記法を見たはずです。
 
-<span class="listing-number">**サンプルコード11-2**</span>
+<span class="listing-number">**サンプルコード11-1**</span>
 
 ```java
 List<String> students = new ArrayList<String>();
@@ -60,7 +37,7 @@ Map<String, Integer> scores = new HashMap<String, Integer>();
 
 ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です。
 
-<span class="listing-number">**サンプルコード11-4**</span>
+<span class="listing-number">**サンプルコード11-2**</span>
 
 ```java
 import java.util.ArrayList;
@@ -97,7 +74,7 @@ public class CollectionProblem {
 
 同じプログラムをジェネリクスを使って書き直してみましょう。
 
-<span class="listing-number">**サンプルコード11-6**</span>
+<span class="listing-number">**サンプルコード11-3**</span>
 
 ```java
 import java.util.ArrayList;
@@ -135,7 +112,7 @@ public class CollectionSolution {
 
 Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
 
-<span class="listing-number">**サンプルコード11-8**</span>
+<span class="listing-number">**サンプルコード11-4**</span>
 
 ```java
 // ジェネリクスがなかった時代のコード（現在は非推奨）
@@ -179,7 +156,7 @@ Javaのジェネリクスの重要な特徴の1つが「型消去」です。
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。これを型パラメータと呼びます。
 
-<span class="listing-number">**サンプルコード11-10**</span>
+<span class="listing-number">**サンプルコード11-5**</span>
 
 ```java
 import java.util.ArrayList;
@@ -223,7 +200,7 @@ public class WithGenericsExample {
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-<span class="listing-number">**サンプルコード11-12**</span>
+<span class="listing-number">**サンプルコード11-6**</span>
 
 ```java
 // Tという型パラメータを持つジェネリッククラス
@@ -260,7 +237,7 @@ public class BoxExample {
 
 Java 7からは、右辺の型パラメータを省略できるダイヤモンド演算子 (`<>`)が導入され、より簡潔に記述できるようになりました。コンパイラが左辺の宣言から型を推論してくれます。
 
-<span class="listing-number">**サンプルコード11-13**</span>
+<span class="listing-number">**サンプルコード11-7**</span>
 
 ```java
 // Java 7以降の推奨される書き方
@@ -271,7 +248,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 クラス全体ではなく、特定のメソッドだけをジェネリックにすることも可能です。メソッドの戻り値の型の前に型パラメータを宣言します。
 
-<span class="listing-number">**サンプルコード11-15**</span>
+<span class="listing-number">**サンプルコード11-8**</span>
 
 ```java
 public class GenericMethodExample {
@@ -302,7 +279,7 @@ public class GenericMethodExample {
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-<span class="listing-number">**サンプルコード11-17**</span>
+<span class="listing-number">**サンプルコード11-9**</span>
 
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
@@ -342,7 +319,7 @@ public class BoundedTypeExample {
 - `List<? extends Type>`: 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
 - `List<? super Type>`: 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
 
-<span class="listing-number">**サンプルコード11-19**</span>
+<span class="listing-number">**サンプルコード11-10**</span>
 
 ```java
 import java.util.List;
@@ -376,7 +353,7 @@ Java 10で導入されたvar型推論は、ジェネリクスと組み合わせ�
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード11-21**</span>
+<span class="listing-number">**サンプルコード11-11**</span>
 
 ```java
 import java.util.ArrayList;
