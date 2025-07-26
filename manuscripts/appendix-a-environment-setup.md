@@ -6,14 +6,14 @@
 
 ### 学習内容
 
-- JDKの種類と選択基準
-- SDKMANを使用したバージョン管理
-- IntelliJ IDEAとVisual Studio Codeのセットアップ
-- コマンドラインでの開発手順
-- OS別の環境構築ガイド
-- トラブルシューティングとFAQ
-- Docker環境での開発（オプション）
-- 環境構築の自動化スクリプト
+1. JDKの種類と選択基準
+2. SDKMANを使用したバージョン管理
+3. IntelliJ IDEAとVisual Studio Codeのセットアップ
+4. コマンドラインでの開発手順
+5. OS別の環境構築ガイド
+6. トラブルシューティングとFAQ
+7. Docker環境での開発（オプション）
+8. 環境構築の自動化スクリプト
 
 ### 前提知識
 
@@ -25,20 +25,20 @@
 
 ### オンライン資料へのアクセス
 
-**GitHub リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/`
+**GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/
 
 リポジトリには以下の内容が含まれています：
 
-- 完全な解説文書（README.md）
-- 環境構築の自動化スクリプト
-- IDE設定ファイルのサンプル
-- OS別の詳細なセットアップガイド
-- トラブルシューティングガイド
-- 実行可能なサンプルプログラム
+1. 完全な解説文書（README.md）
+2. 環境構築の自動化スクリプト
+3. IDE設定ファイルのサンプル
+4. OS別の詳細なセットアップガイド
+5. トラブルシューティングガイド
+6. 実行可能なサンプルプログラム
 
 ### 問題や質問がある場合
 
-本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：
+本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：<br>
 https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 関連する付録
@@ -49,7 +49,7 @@ https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 学習のポイント
 
-開発環境の構築は、プログラミング学習の第一歩です。以下の点に注意して進めてください。
+開発環境の構築は、プログラミング学習の第一歩です。以下の点に注意して進めてください：
 
 1. **バージョン管理の重要性** - プロジェクトごとに異なるJavaバージョンを使い分ける必要性を理解する
 2. **自動化の活用** - SDKMANなどのツールを使って、環境管理を効率化する
@@ -58,7 +58,7 @@ https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 実践への応用
 
-本付録で構築した開発環境は、以下のような実践的な開発に活用できます。
+本付録で構築した開発環境は、以下のような実践的な開発に活用できます：
 
 - 本書の演習問題とサンプルコードの実行
 - 個人プロジェクトの開発

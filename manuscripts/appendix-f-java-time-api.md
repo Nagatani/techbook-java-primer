@@ -6,19 +6,19 @@
 
 ### 学習内容
 
-- レガシーDate/Calendarの問題点と解決策
-- java.time APIの主要クラス（LocalDate、LocalTime、LocalDateTime、ZonedDateTime、Instant）
-- 日付時刻の作成と操作
-- フォーマットとパース（DateTimeFormatter）
-- 期間と期限の計算（Period、Duration）
-- タイムゾーンの扱い
-- ファイル操作での実践例
-- レガシーAPIとの相互変換
-- ベストプラクティス
+1. レガシーDate/Calendarの問題点と解決策
+2. java.time APIの主要クラス（LocalDate、LocalTime、LocalDateTime、ZonedDateTime、Instant）
+3. 日付時刻の作成と操作
+4. フォーマットとパース（DateTimeFormatter）
+5. 期間と期限の計算（Period、Duration）
+6. タイムゾーンの扱い
+7. ファイル操作での実践例
+8. レガシーAPIとの相互変換
+9. ベストプラクティス
 
 ### 前提知識
 
-本付録の学習には、以下の章の内容を理解していることが推奨されます。
+本付録の学習には、以下の章の内容を理解していることが推奨されます：
 
 - 第4章：クラスとインスタンス（不変オブジェクトの概念）
 - 第10章：コレクションフレームワーク（Stream API）
@@ -27,19 +27,19 @@
 
 ### オンライン資料へのアクセス
 
-**GitHub リポジトリ**: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/f-java-time-api/`
+**GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/f-java-time-api/
 
-リポジトリには以下の内容が含まれています。
+リポジトリには以下の内容が含まれています：
 
-- 完全な解説文書（README.md）
-- 実行可能なサンプルコード（7つの基本例）
-- 追加の実践例（性能比較、妥当性検証、営業日計算、ユーティリティ集）
-- 演習問題と解答例
-- ベストプラクティスガイド
+1. 完全な解説文書（README.md）
+2. 実行可能なサンプルコード（7つの基本例）
+3. 追加の実践例（性能比較、妥当性検証、営業日計算、ユーティリティ集）
+4. 演習問題と解答例
+5. ベストプラクティスガイド
 
 ### 問題や質問がある場合
 
-本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：
+本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：<br>
 https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 関連する付録
@@ -49,7 +49,7 @@ https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 学習のポイント
 
-java.time APIを学ぶ際は、以下の点に注意してください。
+java.time APIを学ぶ際は、以下の点に注意してください：
 
 1. **不変性の理解** - すべてのjava.timeクラスは不変（イミュータブル）であり、操作は新しいインスタンスを返す
 2. **用途に応じたクラスの選択** - 用途に応じて最適なクラス（LocalDate、ZonedDateTimeなど）を選ぶ
@@ -59,7 +59,7 @@ java.time APIを学ぶ際は、以下の点に注意してください。
 
 ### 実践への応用
 
-本付録で学んだ内容は、以下のような実践的な場面で活用できます。
+本付録で学んだ内容は、以下のような実践的な場面で活用できます：
 
 - ログファイルのタイムスタンプ管理
 - スケジューリングシステムの実装
