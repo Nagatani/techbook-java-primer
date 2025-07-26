@@ -2,17 +2,6 @@
 
 ## 本章の学習目標
 
-### 前提知識
-
-#### 必須
-- 第3章のオブジェクト指向の基礎概念
-- クラスが「設計図」、オブジェクトが「実体」という関係性
-- カプセル化によるデータ保護の意義
-
-#### 推奨
-- 基本的なクラスの設計と実装の経験
-- 複数のクラスを含むプログラムの作成経験
-
 ### この章で学ぶこと
 
 1. カプセル化の実践
@@ -36,33 +25,7 @@
 
 第3章でクラスとオブジェクトの基本を理解していれば準備完了です。本章では、より実践的で安全なクラス設計の技術を身につけます。
 
-
-
-## 章の構成
-
-本章では、以下の内容を学習します。
-
-1. カプセル化とアクセス制御
-   - カプセル化の基本概念
-   - アクセス修飾子の詳細（public、private、protected、パッケージプライベート）
-   - データ保護の重要性
-
-2. 実践的なクラス設計
-   - 銀行口座クラスの段階的改善（V0→V1→V2→V3）
-   - getter/setterメソッドのベストプラクティス
-   - データ検証とバリデーション
-
-3. コンストラクタとオブジェクト生成
-   - コンストラクタの役割と種類
-   - thisキーワードの活用
-   - オーバーロードによる柔軟な初期化
-
-4. パッケージシステム
-   - パッケージの概念と命名規則
-   - import文の使い方
-   - クラスの組織化
-
-## はじめに：なぜカプセル化が重要なのか
+## なぜカプセル化が重要なのか
 
 ### 銀行口座クラスの復習と発展
 
@@ -633,11 +596,15 @@ List<String> names = new ArrayList<>();
 import文の種類。
 
 1. 単一型インポート。
+<span class="listing-number">**サンプルコード4-24**</span>
+
 ```java
 import java.util.Scanner;  // Scannerクラスのみインポート
 ```
 
 2. オンデマンドインポート。
+<span class="listing-number">**サンプルコード4-25**</span>
+
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
 ```
@@ -1061,6 +1028,8 @@ public class Logger {
 
 #### 問題のあるコード例
 
+<span class="listing-number">**サンプルコード4-26**</span>
+
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
 public class UserManager {
@@ -1095,6 +1064,8 @@ public class UserManager {
 5. 並行開発の困難：複数の開発者が同じクラスを修正することで競合が発生
 
 #### 解決方法：責任の分離
+<span class="listing-number">**サンプルコード4-27**</span>
+
 ```java
 // 責任を分離したクラス設計
 public class User {
@@ -1160,6 +1131,8 @@ public class AuthenticationService {
 
 #### 問題のあるコード例
 
+<span class="listing-number">**サンプルコード4-28**</span>
+
 ```java
 public class BankAccount {
     private double balance;
@@ -1184,6 +1157,8 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
 5. 並行処理の問題：複数スレッドからの同時アクセスで不整合が発生
 
 #### 解決方法：意味のあるメソッドの提供
+<span class="listing-number">**サンプルコード4-29**</span>
+
 ```java
 public class BankAccount {
     private double balance;
@@ -1258,6 +1233,8 @@ public class BankAccount {
 
 #### 問題のあるコード例
 
+<span class="listing-number">**サンプルコード4-30**</span>
+
 ```java
 public class Team {
     private List<String> members;
@@ -1290,6 +1267,8 @@ teamMembers.clear();  // Teamの内部状態が破壊される！
 5. 並行処理での問題：スレッドセーフでない
 
 #### 解決方法：防御的コピー
+
+<span class="listing-number">**サンプルコード4-31**</span>
 
 ```java
 public class Team {
@@ -1360,6 +1339,8 @@ public class Team {
 #### 1. コンストラクタ関連のエラー（統合版）
 問題: コンストラクタの定義や使用方法を誤る
 
+<span class="listing-number">**サンプルコード4-32**</span>
+
 ```java
 // エラー例1：デフォルトコンストラクタが見つからない
 public class User {
@@ -1372,6 +1353,8 @@ public void User() { }  // エラー：コンストラクタに戻り値型
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード4-33**</span>
+
 ```java
 public class User {
     // デフォルトコンストラクタを明示的に定義
@@ -1393,6 +1376,8 @@ public class User {
 #### 2. NullPointerException完全ガイド
 問題: nullの参照に対してメソッド呼び出しやフィールドアクセスを行う
 
+<span class="listing-number">**サンプルコード4-34**</span>
+
 ```java
 // エラー例
 public class Product {
@@ -1409,6 +1394,8 @@ public class Product {
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード4-35**</span>
+
 ```java
 public class Product {
     private String name;
@@ -1436,6 +1423,8 @@ public class Product {
 #### 3. メソッドオーバーロードの問題
 問題: 曖昧なオーバーロードや不正な定義
 
+<span class="listing-number">**サンプルコード4-36**</span>
+
 ```java
 // エラー例1：曖昧な呼び出し
 public int calc(int a, double b) { }
@@ -1448,6 +1437,8 @@ public int process(String s) { }  // エラー
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード4-37**</span>
+
 ```java
 // 明確な引数型
 public int calc(int a, int b) { }
@@ -1466,6 +1457,8 @@ public int processToLength(String s) { }
 #### 4. オブジェクト参照と防御的コピー
 問題: 参照の共有により意図しない変更が発生
 
+<span class="listing-number">**サンプルコード4-38**</span>
+
 ```java
 // エラー例
 public class Team {
@@ -1482,6 +1475,8 @@ public class Team {
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード4-39**</span>
+
 ```java
 public class Team {
     private List<String> members;
