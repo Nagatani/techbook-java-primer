@@ -61,7 +61,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 4. **Code Listing Numbers**: 
    - 現在887個のコードブロック中、422個に番号付与済み
-   - 形式: **リストX.Y** で統一
+   - 形式: **サンプルコードX−Y** で統一
    - 番号付けは継続的に実施中
 
 5. **Chapter Structure**:
