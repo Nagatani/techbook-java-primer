@@ -2,17 +2,6 @@
 
 ## 本章の学習目標
 
-### 前提知識
-
-#### 必須
-- 第1章のJava開発環境の構築
-- Java基本文法での簡単なプログラム作成経験
-- メソッドと変数の概念
-
-#### 推奨
-- 手続き型プログラミングの問題理解
-- 大規模システム開発の課題に関心
-
 ### この章で学ぶこと
 
 1. オブジェクト指向の基本概念
@@ -471,6 +460,8 @@ public class DefaultValueDemo {
 
 #### フィールドの宣言構文
 
+<span class="listing-number">**サンプルコード3-27**</span>
+
 ```java
 アクセス修飾子 データ型 フィールド名;
 アクセス修飾子 データ型 フィールド名 = 初期値;
@@ -531,6 +522,8 @@ public class Product {
 メソッドは、オブジェクトが「できること」を定義します。C言語の関数と似ていますが、オブジェクトに属している点が異なります。
 
 #### メソッドの宣言構文
+
+<span class="listing-number">**サンプルコード3-28**</span>
 
 ```java
 アクセス修飾子 戻り値の型 メソッド名(引数リスト) {
@@ -604,6 +597,8 @@ public class RectangleExample {
 #### メソッドの種類
 
 1. 戻り値がないメソッド（voidメソッド）
+<span class="listing-number">**サンプルコード3-29**</span>
+
 ```java
 public void printMessage() {
     System.out.println("こんにちは！");
@@ -611,6 +606,8 @@ public void printMessage() {
 ```
 
 2. 戻り値があるメソッド
+<span class="listing-number">**サンプルコード3-30**</span>
+
 ```java
 public int add(int a, int b) {
     return a + b;  // int型の値を返す
@@ -618,6 +615,8 @@ public int add(int a, int b) {
 ```
 
 3. 引数がないメソッド
+<span class="listing-number">**サンプルコード3-31**</span>
+
 ```java
 public void showTime() {
     System.out.println("現在時刻: " + new Date());
@@ -625,6 +624,8 @@ public void showTime() {
 ```
 
 4. 複数の引数を持つメソッド
+<span class="listing-number">**サンプルコード3-32**</span>
+
 ```java
 public double calculateBMI(double weight, double height) {
     return weight / (height * height);
@@ -763,6 +764,8 @@ int add_three_ints(int a, int b, int c);
 ```
 
 一方、Javaではすべて同じ名前で定義できます：
+<span class="listing-number">**サンプルコード3-33**</span>
+
 ```java
 public int add(int a, int b) { return a + b; }
 public double add(double a, double b) { return a + b; }
@@ -791,6 +794,8 @@ Javaコンパイラは以下の優先順位でメソッドを選択します：
 2. プリミティブ型の拡大変換（int → long、float → double など）
 3. オートボクシング（int → Integer など）
 4. 可変長引数
+
+<span class="listing-number">**サンプルコード3-34**</span>
 
 ```java
 public class OverloadResolution {
@@ -830,6 +835,8 @@ public class OverloadResolution {
 ##### コンストラクタのオーバーロード
 
 コンストラクタもメソッドと同様にオーバーロードできます。これにより、オブジェクトの作成時にさまざまな初期化方法を提供できます：
+
+<span class="listing-number">**サンプルコード3-35**</span>
 
 ```java
 public class Person {
@@ -1211,15 +1218,16 @@ public class Book {
 
 #### このクラス定義から学ぶ重要な概念
 
-1. カプセル化の実践：すべてのフィールドをprivateで宣言することで、外部からの直接アクセスを禁止し、データの整合性を保護している。
-
-2. コンストラクタによる初期化：オブジェクト作成時に必要な情報をすべて受け取ることで、不完全なオブジェクトの生成を防いでいる。
-
-3. 責任の明確化：本に関する表示処理（displayInfo）を本クラス自身が担当することで、「本は自分の情報を表示できる」という自然な責任分担を実現している。
-
-4. 制御されたアクセス：setPrice()メソッドで価格の妥当性をチェックすることで、ビジネスルール（価格は0以上）をクラス内で守っている。
-
-5. 情報隠蔽の原則：読み取り専用の情報（title, author）はgetterのみを提供し、変更可能な情報（price）には検証付きのsetterを提供するという、アクセス制御の使い分けを示している。
+1. カプセル化の実践
+    + すべてのフィールドをprivateで宣言することで、外部からの直接アクセスを禁止し、データの整合性を保護している
+2. コンストラクタによる初期化
+    + オブジェクト作成時に必要な情報をすべて受け取ることで、不完全なオブジェクトの生成を防いでいる
+3. 責任の明確化
+    + 本に関する表示処理（displayInfo）を本クラス自身が担当することで、「本は自分の情報を表示できる」という自然な責任分担を実現している
+4. 制御されたアクセス
+    + setPrice()メソッドで価格の妥当性をチェックすることで、ビジネスルール（価格は0以上）をクラス内で守っている
+5. 情報隠蔽の原則
+    + 読み取り専用の情報（title, author）はgetterのみを提供し、変更可能な情報（price）には検証付きのsetterを提供するという、アクセス制御の使い分けを示している
 
 ### オブジェクトの作成と使用
 
@@ -1250,18 +1258,20 @@ public class BookTest {
 
 #### このプログラムから学ぶオブジェクト指向の重要な概念
 
-1. オブジェクトの独立性：book1とbook2は同じBookクラスから作られているが、それぞれ独立したデータを持っている。一方のオブジェクトの状態を変更しても、他方には影響しません。
-
-2. new演算子の役割：`new Book(...)`は、メモリ上にBookオブジェクト用の領域を確保し、コンストラクタを呼び出してオブジェクトを初期化する。これにより、クラスという「型」から具体的な「実体」が作られる。
-
-3. メッセージパッシング：`book1.displayInfo()`のような記法は、book1オブジェクトに「自分の情報を表示して」というメッセージを送っていると解釈できる。オブジェクトは自分の責任範囲で処理を実行する。
-
-4. 状態の変更と永続性：`book1.setPrice(2500.0)`により、book1オブジェクトの内部状態が変更される。この変更は、そのオブジェクトが存在する限り維持される。
-
-5. 型安全性：BookTestクラスでは、Bookオブジェクトに対してBookクラスで定義されたメソッドのみ呼びだすことができ、不正な操作を防いでいる。
+1. オブジェクトの独立性
+    + book1とbook2は同じBookクラスから作られているが、それぞれ独立したデータを持っている。一方のオブジェクトの状態を変更しても、他方には影響しません
+2. new演算子の役割
+    + `new Book(...)`は、メモリ上にBookオブジェクト用の領域を確保し、コンストラクタを呼び出してオブジェクトを初期化する。これにより、クラスという「型」から具体的な「実体」が作られる
+3. メッセージパッシング
+    + `book1.displayInfo()`のような記法は、book1オブジェクトに「自分の情報を表示して」というメッセージを送っていると解釈できる。オブジェクトは自分の責任範囲で処理を実行する
+4. 状態の変更と永続性
+    + `book1.setPrice(2500.0)`により、book1オブジェクトの内部状態が変更される。この変更は、そのオブジェクトが存在する限り維持される
+5. 型安全性
+    + BookTestクラスでは、Bookオブジェクトに対してBookクラスで定義されたメソッドのみ呼びだすことができ、不正な操作を防いでいる
 
 #### 実行時の動作理解
-このプログラムを実行すると、メモリ上に2つの独立したBookオブジェクトが作成され、それぞれが異なる本の情報を保持します。price変更後のbook1は新しい価格情報を保持し続け、これによりオブジェクトの「状態を持つ」という特性を実感できます。
+このプログラムを実行すると、メモリ上に2つの独立したBookオブジェクトが作成され、それぞれが異なる本の情報を保持します。
+price変更後のbook1は新しい価格情報を保持し続け、これによりオブジェクトの「状態を持つ」という特性を実感できます。
 
 ## publicとprivate - アクセス修飾子の基本
 
@@ -1349,6 +1359,8 @@ public class BadExample {
 ```
 
 #### privateを使った改善例
+
+<span class="listing-number">**サンプルコード3-36**</span>
 
 ```java
 public class Product {
@@ -1531,6 +1543,8 @@ public class StaticMemberExample {
 ### staticを使う適切な場面
 
 1. **ユーティリティメソッド**
+<span class="listing-number">**サンプルコード3-37**</span>
+
    ```java
    public class MathUtils {
        public static double calculateDistance(double x1, double y1, double x2, double y2) {
@@ -1540,6 +1554,8 @@ public class StaticMemberExample {
    ```
 
 2. **ファクトリーメソッド**
+<span class="listing-number">**サンプルコード3-38**</span>
+
    ```java
    public class Student {
        private String name;
@@ -1560,6 +1576,8 @@ public class StaticMemberExample {
    ```
 
 3. **定数の定義**
+<span class="listing-number">**サンプルコード3-39**</span>
+
    ```java
    public class Constants {
        public static final double PI = 3.14159265359;
@@ -1883,12 +1901,16 @@ public class MethodsPractice {
 #### 1. クラスとインスタンスの概念の混乱
 問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
 
+<span class="listing-number">**サンプルコード3-40**</span>
+
 ```java
 // エラー例
 Student.setName("太郎");  // クラス名で呼び出している
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード3-41**</span>
+
 ```java
 // 正しい例
 Student student = new Student();  // インスタンスを作成
@@ -1902,6 +1924,8 @@ student.setName("太郎");          // インスタンスから呼び出し
 #### 2. static vs non-staticの混乱
 問題: staticメソッドからインスタンスメンバーにアクセスしようとする
 
+<span class="listing-number">**サンプルコード3-42**</span>
+
 ```java
 // エラー例
 public static void main(String[] args) {
@@ -1910,6 +1934,8 @@ public static void main(String[] args) {
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード3-43**</span>
+
 ```java
 // 正しい例
 public static void main(String[] args) {
@@ -1925,6 +1951,8 @@ public static void main(String[] args) {
 #### 3. 基本的な構文エラー
 問題: Javaの基本構文を間違えて記述する
 
+<span class="listing-number">**サンプルコード3-44**</span>
+
 ```java
 // よくあるエラー例
 System.out.println("Hello")  // セミコロン忘れ
@@ -1932,6 +1960,8 @@ Public class MyClass { }      // 大文字のP
 ```
 
 解決策:
+<span class="listing-number">**サンプルコード3-45**</span>
+
 ```java
 // 正しい例
 System.out.println("Hello");  // セミコロンを追加
@@ -1974,6 +2004,8 @@ public class MyClass { }      // 小文字のp
 
 ### ==演算子とequalsメソッドの違い
 
+<span class="listing-number">**サンプルコード3-46**</span>
+
 ```java
 public class StringComparison {
     public static void main(String[] args) {
@@ -1995,6 +2027,8 @@ public class StringComparison {
 ### カスタムクラスでのequalsメソッドの実装
 
 独自のクラスで`equals`メソッドを適切に実装する方法を示します。
+
+<span class="listing-number">**サンプルコード3-47**</span>
 
 ```java
 public class Student {
@@ -2043,6 +2077,8 @@ Java 21 LTSでは、オブジェクト指向プログラミングをより簡潔
 
 不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
 
+<span class="listing-number">**サンプルコード3-48**</span>
+
 ```java
 // 従来の方法
 import java.util.Objects;
@@ -2088,6 +2124,8 @@ public record Point(int x, int y) {
 
 `instanceof`演算子と組み合わせたパターンマッチングにより、型チェックとキャストを簡潔に記述できます。
 
+<span class="listing-number">**サンプルコード3-49**</span>
+
 ```java
 // 従来の方法
 public void processShape(Shape shape) {
@@ -2113,6 +2151,8 @@ public void processShape(Shape shape) {
 ### Sealed Classes（Java 17以降）
 
 クラス階層を制限し、より安全な継承を実現できます。
+
+<span class="listing-number">**サンプルコード3-50**</span>
 
 ```java
 public sealed class Shape 
