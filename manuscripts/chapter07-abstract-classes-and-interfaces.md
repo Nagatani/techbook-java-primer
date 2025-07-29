@@ -1736,4 +1736,4 @@ class PdfReportGenerator extends ReportGenerator {
 
 詳細はGitHubリポジトリのREADMEを参照してください。
 
-次のステップ： 第8章「列挙型(Enums)」へ進みましょう。
+次のステップ： 第8章「Javaの特殊なクラス形式」へ進みましょう。

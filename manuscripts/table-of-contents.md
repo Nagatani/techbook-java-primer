@@ -14,20 +14,20 @@
 - [7章　抽象クラスとインターフェイス](chapter07-abstract-classes-and-interfaces.md)
 
 ### 3部：モダンJava機能編
-- [8章　列挙型(Enums)](chapter08-enums.md)
-- [9章　レコード(Records)とデータ指向プログラミング](chapter09-records.md)
-- [10章　コレクションフレームワーク](chapter10-collections.md)
-- [11章　ジェネリクス](chapter11-generics.md)
-- [12章　ラムダ式と関数インターフェイス](chapter12-lambda-and-functional-interfaces.md)
-- [13章　Stream APIと高度なコレクション操作](chapter13-advanced-collections.md)
-- [14章　例外処理](chapter14-exception-handling.md)
+- [8章　Javaの特殊なクラス形式](chapter08-special-classes.md)
+- [9章　コレクションフレームワーク](chapter09-collections.md)
+- [10章　ジェネリクス](chapter10-generics.md)
+- [11章　ラムダ式と関数インターフェイス](chapter11-lambda-and-functional-interfaces.md)
+- [12章　Stream APIと高度なコレクション操作](chapter12-advanced-collections.md)
+- [13章　例外処理](chapter13-exception-handling.md)
 
 ### 4部：外部システム連携編
-- [15章　ファイルI/O](chapter15-file-io.md)
-- [16章　マルチスレッドプログラミング](chapter16-multithreading.md)
-- [17章　ネットワークプログラミング](chapter17-network-programming.md)
-- [18章　GUIプログラミングの基礎](chapter18-gui-basics.md)
-- [19章　GUIのイベント処理](chapter19-gui-event-handling.md)
+- [14章　ファイルI/O](chapter14-file-io.md)
+- [15章　マルチスレッドプログラミング](chapter15-multithreading.md)
+- [16章　ネットワークプログラミング](chapter16-network-programming.md)
+- [17章　GUIプログラミングの基礎](chapter17-gui-basics.md)
+- [18章　基本的なイベント処理](chapter18-event-basics.md)
+- [19章　高度なイベント処理パターン](chapter19-event-advanced.md)
 - [20章　JTableとJListの基礎](chapter20-advanced-gui.md)
 
 ### 5部：実践編
