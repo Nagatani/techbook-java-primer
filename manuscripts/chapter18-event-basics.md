@@ -15,11 +15,12 @@
     - ラムダ式を使った簡潔な記述方法
 3. 主要なイベントの種類と使い分け
     - ActionEvent、MouseEvent、KeyEvent、WindowEvent
+    - ItemEvent、FocusEvent、ChangeEventの基本
     - 各イベントリスナの基本的な使用方法
 
 ### この章を始める前に
 
-第18章のGUIプログラミングの基礎、とくにJFrame、JButton、JTextFieldなどの基本的なコンポーネントの使い方を理解していることが前提です。
+第17章のGUIプログラミングの基礎、とくにJFrame、JButton、JTextFieldなどの基本的なコンポーネントの使い方を理解していることが前提です。
 また、Java 8のラムダ式と関数型インターフェイスの基本知識があると、より効率的にイベント処理を実装できます。
 
 ## イベント駆動プログラミングの理解
@@ -52,7 +53,7 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 
 Swingのイベント処理は、イベントディスパッチスレッド（EDT: Event Dispatch Thread）と呼ばれる専用のスレッドで実行されます。
 
-EDTの特徴:
+EDTの特徴
 - 単一スレッド: すべてのGUIイベントは1つのスレッドで順番に処理
 - スレッドセーフ: GUIコンポーネントの更新はEDT上でのみ安全
 - 非ブロッキング: 長時間の処理はUIをフリーズさせる
@@ -64,7 +65,7 @@ EDTの特徴:
 
 もっとも基本的な、ボタンクリックイベントを処理してみましょう。ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
 
-<span class="listing-number">**サンプルコード19-1**</span>
+<span class="listing-number">**サンプルコード18-1**</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -113,7 +114,7 @@ public class ButtonEventExample {
 
 ActionListenerのように、実装すべきメソッドが1つだけのインターフェイス（関数型インターフェイス）は、ラムダ式を使って非常に簡潔に記述できます。
 
-<span class="listing-number">**サンプルコード19-2**</span>
+<span class="listing-number">**サンプルコード18-2**</span>
 
 ```java
 // 上記の匿名クラスの部分をラムダ式で書き換える
@@ -131,7 +132,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
 
-<span class="listing-number">**サンプルコード19-3**</span>
+<span class="listing-number">**サンプルコード18-3**</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -190,7 +191,7 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。WindowListenerインターフェイスには多くのメソッドがありますが、WindowAdapterクラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
-<span class="listing-number">**サンプルコード19-4**</span>
+<span class="listing-number">**サンプルコード18-4**</span>
 
 ```java
 import javax.swing.*;
@@ -225,7 +226,7 @@ public class WindowEventExample {
 
 マウスのクリックや移動を検出する基本的な例です。
 
-<span class="listing-number">**サンプルコード19-5**</span>
+<span class="listing-number">**サンプルコード18-5**</span>
 
 ```java
 import javax.swing.*;
@@ -294,7 +295,7 @@ public class BasicMouseEventExample extends JFrame {
 
 キーボード入力を検出する基本的な例です。
 
-<span class="listing-number">**サンプルコード19-6**</span>
+<span class="listing-number">**サンプルコード18-6**</span>
 
 ```java
 import javax.swing.*;
@@ -350,13 +351,313 @@ public class BasicKeyEventExample extends JFrame {
 }
 ```
 
+### ItemListenerによる選択状態の監視
+
+チェックボックスやラジオボタンの選択状態の変化を監視する例です。
+
+<span class="listing-number">**サンプルコード18-9**</span>
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ItemListenerExample extends JFrame {
+    private JCheckBox checkBox1, checkBox2, checkBox3;
+    private JRadioButton radio1, radio2, radio3;
+    private JLabel statusLabel;
+    
+    public ItemListenerExample() {
+        setTitle("ItemListener の例");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        // チェックボックスパネル
+        JPanel checkPanel = new JPanel();
+        checkPanel.setBorder(BorderFactory.createTitledBorder("オプション選択"));
+        checkBox1 = new JCheckBox("オプション1");
+        checkBox2 = new JCheckBox("オプション2");
+        checkBox3 = new JCheckBox("オプション3");
+        
+        ItemListener checkListener = new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                JCheckBox source = (JCheckBox) e.getSource();
+                String status = e.getStateChange() == ItemEvent.SELECTED ? "選択" : "解除";
+                statusLabel.setText(source.getText() + " が" + status + "されました");
+                updateSelection();
+            }
+        };
+        
+        checkBox1.addItemListener(checkListener);
+        checkBox2.addItemListener(checkListener);
+        checkBox3.addItemListener(checkListener);
+        
+        checkPanel.add(checkBox1);
+        checkPanel.add(checkBox2);
+        checkPanel.add(checkBox3);
+        
+        // ラジオボタンパネル
+        JPanel radioPanel = new JPanel();
+        radioPanel.setBorder(BorderFactory.createTitledBorder("サイズ選択"));
+        radio1 = new JRadioButton("小", true);
+        radio2 = new JRadioButton("中");
+        radio3 = new JRadioButton("大");
+        
+        ButtonGroup group = new ButtonGroup();
+        group.add(radio1);
+        group.add(radio2);
+        group.add(radio3);
+        
+        ItemListener radioListener = e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                JRadioButton source = (JRadioButton) e.getSource();
+                statusLabel.setText("サイズ: " + source.getText() + " が選択されました");
+            }
+        };
+        
+        radio1.addItemListener(radioListener);
+        radio2.addItemListener(radioListener);
+        radio3.addItemListener(radioListener);
+        
+        radioPanel.add(radio1);
+        radioPanel.add(radio2);
+        radioPanel.add(radio3);
+        
+        // ステータスラベル
+        statusLabel = new JLabel("選択してください");
+        statusLabel.setHorizontalAlignment(JLabel.CENTER);
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // レイアウト
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1));
+        mainPanel.add(checkPanel);
+        mainPanel.add(radioPanel);
+        
+        add(mainPanel, BorderLayout.CENTER);
+        add(statusLabel, BorderLayout.SOUTH);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    private void updateSelection() {
+        StringBuilder selected = new StringBuilder("選択中: ");
+        if (checkBox1.isSelected()) selected.append("オプション1 ");
+        if (checkBox2.isSelected()) selected.append("オプション2 ");
+        if (checkBox3.isSelected()) selected.append("オプション3 ");
+        System.out.println(selected.toString());
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new ItemListenerExample().setVisible(true);
+        });
+    }
+}
+```
+
+### FocusListenerによるフォーカス管理
+
+コンポーネントがフォーカスを得る・失うタイミングを検出する例です。
+
+<span class="listing-number">**サンプルコード18-10**</span>
+
+```java
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class FocusListenerExample extends JFrame {
+    private JTextField field1, field2, field3;
+    private JLabel statusLabel;
+    
+    public FocusListenerExample() {
+        setTitle("FocusListener の例");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        
+        // テキストフィールドの作成
+        field1 = new JTextField(15);
+        field2 = new JTextField(15);
+        field3 = new JTextField(15);
+        
+        // FocusListenerの作成
+        FocusListener focusListener = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextField source = (JTextField) e.getSource();
+                source.setBackground(Color.YELLOW);
+                statusLabel.setText("フォーカスを取得: " + getFieldName(source));
+            }
+            
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField source = (JTextField) e.getSource();
+                source.setBackground(Color.WHITE);
+                
+                // バリデーションの例
+                if (source == field1 && source.getText().isEmpty()) {
+                    statusLabel.setText("名前を入力してください");
+                    source.setBackground(Color.PINK);
+                }
+            }
+        };
+        
+        field1.addFocusListener(focusListener);
+        field2.addFocusListener(focusListener);
+        field3.addFocusListener(focusListener);
+        
+        // レイアウト
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(new JLabel("名前:"), gbc);
+        gbc.gridx = 1;
+        add(field1, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(new JLabel("メール:"), gbc);
+        gbc.gridx = 1;
+        add(field2, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(new JLabel("電話番号:"), gbc);
+        gbc.gridx = 1;
+        add(field3, gbc);
+        
+        // ステータスラベル
+        statusLabel = new JLabel("フィールドをクリックしてください");
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        add(statusLabel, gbc);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    private String getFieldName(JTextField field) {
+        if (field == field1) return "名前フィールド";
+        if (field == field2) return "メールフィールド";
+        if (field == field3) return "電話番号フィールド";
+        return "不明なフィールド";
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new FocusListenerExample().setVisible(true);
+        });
+    }
+}
+```
+
+### ChangeListenerによる値の変更監視
+
+スライダーやスピナーなどの値の変化を監視する例です。
+
+<span class="listing-number">**サンプルコード18-11**</span>
+
+```java
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+
+public class ChangeListenerExample extends JFrame {
+    private JSlider slider;
+    private JSpinner spinner;
+    private JProgressBar progressBar;
+    private JLabel valueLabel;
+    
+    public ChangeListenerExample() {
+        setTitle("ChangeListener の例");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        JPanel controlPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // スライダー
+        JPanel sliderPanel = new JPanel(new BorderLayout());
+        sliderPanel.setBorder(BorderFactory.createTitledBorder("音量"));
+        slider = new JSlider(0, 100, 50);
+        slider.setMajorTickSpacing(20);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int value = slider.getValue();
+                valueLabel.setText("現在の値: " + value);
+                progressBar.setValue(value);
+                
+                // ドラッグ終了時のみ処理
+                if (!slider.getValueIsAdjusting()) {
+                    System.out.println("最終値: " + value);
+                }
+            }
+        });
+        
+        sliderPanel.add(slider);
+        
+        // スピナー
+        JPanel spinnerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        spinnerPanel.setBorder(BorderFactory.createTitledBorder("数値入力"));
+        SpinnerModel model = new SpinnerNumberModel(50, 0, 100, 1);
+        spinner = new JSpinner(model);
+        
+        spinner.addChangeListener(e -> {
+            int value = (Integer) spinner.getValue();
+            slider.setValue(value);
+            progressBar.setValue(value);
+            valueLabel.setText("現在の値: " + value);
+        });
+        
+        spinnerPanel.add(new JLabel("値:"));
+        spinnerPanel.add(spinner);
+        
+        // プログレスバー
+        JPanel progressPanel = new JPanel(new BorderLayout());
+        progressPanel.setBorder(BorderFactory.createTitledBorder("進捗"));
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(50);
+        progressBar.setStringPainted(true);
+        progressPanel.add(progressBar);
+        
+        // コントロールの配置
+        controlPanel.add(sliderPanel);
+        controlPanel.add(spinnerPanel);
+        controlPanel.add(progressPanel);
+        
+        // 値表示ラベル
+        valueLabel = new JLabel("現在の値: 50");
+        valueLabel.setHorizontalAlignment(JLabel.CENTER);
+        valueLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        valueLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        add(controlPanel, BorderLayout.CENTER);
+        add(valueLabel, BorderLayout.SOUTH);
+        
+        pack();
+        setLocationRelativeTo(null);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new ChangeListenerExample().setVisible(true);
+        });
+    }
+}
+```
+
 ## イベント処理のベストプラクティス
 
 ### EDT上での実行
 
 SwingのすべてのGUI操作はイベントディスパッチスレッド上で実行します。
 
-<span class="listing-number">**サンプルコード19-7**</span>
+<span class="listing-number">**サンプルコード18-12**</span>
 
 ```java
 // メインメソッドからGUIを初期化する正しい方法
@@ -374,7 +675,7 @@ public static void main(String[] args) {
 
 イベントハンドラ内で長時間かかる処理を実行すると、UIがフリーズします。
 
-<span class="listing-number">**サンプルコード19-8**</span>
+<span class="listing-number">**サンプルコード18-13**</span>
 
 ```java
 // 悪い例：UIがフリーズする
@@ -413,7 +714,7 @@ button.addActionListener(e -> {
 - 各種イベントリスナの基本的な使い方
 
 ### 次のステップ
-基本的なイベント処理を理解したので、次章では、より高度なイベント処理パターンについて学習します。複雑なマウス操作、カスタムイベントの作成、パフォーマンスを考慮したイベント処理などを扱います。
+基本的なイベント処理を理解したので、次章では、より高度なイベント処理パターンについて学習します。DocumentListenerによるテキスト監視、カスタムイベントの作成、パフォーマンスを考慮したイベント処理などを扱います。
 
 ## 章末演習
 
@@ -421,7 +722,7 @@ button.addActionListener(e -> {
 
 本章の理解を深めるための演習課題を用意しています。以下のGitHubリポジトリで、実践的な問題に挑戦してください。
 
-**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/
+**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter18/
 
 ### 課題構成
 

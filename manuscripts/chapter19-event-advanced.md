@@ -1356,21 +1356,301 @@ public class SwingWorkerExample extends JFrame {
 ### 実践での活用
 これらの技術を組み合わせることで、応答性が高く、ユーザーフレンドリーなGUIアプリケーションを開発できます。とくに、長時間処理とUI更新の分離、イベント処理の最適化は、実務での開発において重要な技術です。
 
+## よくあるエラーと対処法
+
+高度なイベント処理を実装する際に遭遇しやすいエラーとその対処法をまとめます。
+
+### SwingWorkerでの典型的なエラー
+
+#### 問題：SwingWorkerから直接UIを更新してしまう
+
+エラー症状
+
+<span class="listing-number">**サンプルコード19-8**</span>
+
+```java
+SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+    @Override
+    protected Void doInBackground() throws Exception {
+        for (int i = 0; i <= 100; i++) {
+            progressBar.setValue(i);  // エラー：EDT外からUIを更新
+            Thread.sleep(50);
+        }
+        return null;
+    }
+};
+```
+
+原因
+- doInBackground()メソッドはバックグラウンドスレッドで実行される
+- Swingコンポーネントの更新はEDT上でのみ安全
+
+対処法
+
+<span class="listing-number">**サンプルコード19-9**</span>
+
+```java
+SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+    @Override
+    protected Void doInBackground() throws Exception {
+        for (int i = 0; i <= 100; i++) {
+            publish(i);  // 進捗を公開
+            Thread.sleep(50);
+        }
+        return null;
+    }
+    
+    @Override
+    protected void process(List<Integer> chunks) {
+        // EDT上で実行される
+        int latest = chunks.get(chunks.size() - 1);
+        progressBar.setValue(latest);
+    }
+};
+```
+
+### DocumentListenerでの無限ループ
+
+#### 問題：DocumentListener内でテキストを変更して無限ループ
+
+エラー症状
+
+<span class="listing-number">**サンプルコード19-10**</span>
+
+```java
+textField.getDocument().addDocumentListener(new DocumentListener() {
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        textField.setText(textField.getText().toUpperCase());  // 無限ループ
+    }
+    // 他のメソッドも同様
+});
+```
+
+原因
+- DocumentListener内でドキュメントを変更すると、再度イベントが発生
+- 再帰的にリスナーが呼び出される
+
+対処法
+
+<span class="listing-number">**サンプルコード19-11**</span>
+
+```java
+private boolean updating = false;
+
+textField.getDocument().addDocumentListener(new DocumentListener() {
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        if (!updating) {
+            updating = true;
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    String text = e.getDocument().getText(0, e.getDocument().getLength());
+                    textField.setText(text.toUpperCase());
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    updating = false;
+                }
+            });
+        }
+    }
+    // 他のメソッドも同様
+});
+```
+
+### カスタムイベントのメモリリーク
+
+#### 問題：リスナーが削除されずメモリリークが発生
+
+エラー症状
+
+<span class="listing-number">**サンプルコード19-12**</span>
+
+```java
+public class EventSource {
+    private List<CustomListener> listeners = new ArrayList<>();
+    
+    public void addListener(CustomListener listener) {
+        listeners.add(listener);  // 削除されない限り保持される
+    }
+    
+    // removeListenerメソッドがない、または呼ばれない
+}
+```
+
+原因
+- リスナーが強参照で保持される
+- イベントソースが生存する限り、リスナーもGCされない
+
+対処法
+
+<span class="listing-number">**サンプルコード19-13**</span>
+
+```java
+public class EventSource {
+    private List<WeakReference<CustomListener>> listeners = new ArrayList<>();
+    
+    public void addListener(CustomListener listener) {
+        listeners.add(new WeakReference<>(listener));
+    }
+    
+    public void removeListener(CustomListener listener) {
+        listeners.removeIf(ref -> ref.get() == null || ref.get() == listener);
+    }
+    
+    private void fireEvent(CustomEvent event) {
+        // 無効な参照を削除しながら通知
+        Iterator<WeakReference<CustomListener>> iterator = listeners.iterator();
+        while (iterator.hasNext()) {
+            CustomListener listener = iterator.next().get();
+            if (listener != null) {
+                listener.customEventOccurred(event);
+            } else {
+                iterator.remove();  // GCされたリスナーを削除
+            }
+        }
+    }
+}
+```
+
+### ドラッグ&ドロップの実装エラー
+
+#### 問題：ドロップが受け入れられない
+
+エラー症状
+
+<span class="listing-number">**サンプルコード19-14**</span>
+
+```java
+new DropTarget(component, new DropTargetListener() {
+    @Override
+    public void drop(DropTargetDropEvent dtde) {
+        // ドロップを受け入れていない
+        Transferable transferable = dtde.getTransferable();
+        // 処理...
+    }
+});
+```
+
+原因
+- acceptDrop()メソッドを呼び出していない
+- 適切なDataFlavorをサポートしていない
+
+対処法
+
+<span class="listing-number">**サンプルコード19-15**</span>
+
+```java
+new DropTarget(component, new DropTargetListener() {
+    @Override
+    public void drop(DropTargetDropEvent dtde) {
+        try {
+            // ドロップを受け入れる
+            dtde.acceptDrop(DnDConstants.ACTION_COPY);
+            
+            Transferable transferable = dtde.getTransferable();
+            if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                String data = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+                // 処理...
+                dtde.dropComplete(true);
+            } else {
+                dtde.rejectDrop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            dtde.dropComplete(false);
+        }
+    }
+    
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) {
+        // 適切なDataFlavorをチェック
+        if (dtde.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            dtde.acceptDrag(DnDConstants.ACTION_COPY);
+        } else {
+            dtde.rejectDrag();
+        }
+    }
+    // 他のメソッドも実装
+});
+```
+
+### デバッグのヒント
+
+#### 1. EDT違反の検出
+
+<span class="listing-number">**サンプルコード19-16**</span>
+
+```java
+// アプリケーション起動時に設定
+RepaintManager.setCurrentManager(new RepaintManager() {
+    @Override
+    public void addInvalidComponent(JComponent component) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            Exception e = new Exception("EDT違反検出");
+            e.printStackTrace();
+        }
+        super.addInvalidComponent(component);
+    }
+});
+```
+
+#### 2. イベント処理のプロファイリング
+
+<span class="listing-number">**サンプルコード19-17**</span>
+
+```java
+button.addActionListener(e -> {
+    long start = System.currentTimeMillis();
+    try {
+        // 処理
+        performAction();
+    } finally {
+        long elapsed = System.currentTimeMillis() - start;
+        if (elapsed > 100) {  // 100ms以上かかった場合
+            System.err.println("警告: イベント処理に" + elapsed + "msかかりました");
+        }
+    }
+});
+```
+
+#### 3. WeakReferenceの使用状況確認
+
+<span class="listing-number">**サンプルコード19-18**</span>
+
+```java
+public class ListenerManager {
+    private List<WeakReference<EventListener>> listeners = new ArrayList<>();
+    
+    public void debugListeners() {
+        int total = listeners.size();
+        int alive = 0;
+        for (WeakReference<EventListener> ref : listeners) {
+            if (ref.get() != null) alive++;
+        }
+        System.out.println("リスナー状況: " + alive + "/" + total + " 生存");
+    }
+}
+```
+
+これらの対処法を参考に、堅牢で効率的な高度なイベント処理を実装してください。
+
 ## 章末演習
 
 ### 演習課題へのアクセス
 
 本章の理解を深めるための演習課題を用意しています。以下のGitHubリポジトリで、実践的な問題に挑戦してください。
 
-**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19-advanced/
+**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/
 
 ### 課題構成
 
 演習は以下の実践的な課題で構成されています。
 
-- インタラクティブ描画アプリケーション: 高度なマウスイベント処理
-- フォームバリデータ: DocumentListenerを活用したリアルタイム検証
-- 高度なメニューシステム: Actionパターンと動的メニュー
-- マウストラッカー: 詳細なマウス動作の分析
+- インタラクティブ描画アプリケーション（高度なマウスイベント処理）
+- フォームバリデータ（DocumentListenerを活用したリアルタイム検証）
+- 高度なメニューシステム（Actionパターンと動的メニュー）
+- マウストラッカー（詳細なマウス動作の分析）
 
 各演習には、本章で学んだ技術を実践的に活用するための詳細な要件が含まれています。
