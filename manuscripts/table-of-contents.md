@@ -43,7 +43,7 @@
 - [付録D　統合プロジェクト - 学生管理システム](appendix-d-integrated-project.md)
 - [付録E　データベースプログラミング](appendix-e-database-programming.md)
 - [付録F　java.time API完全ガイド](appendix-f-java-time-api.md)
-- [付録G　ビルドとデプロイ](appendix-g-build-and-deploy.md)
+- [付録G　高度なビルドとデプロイメント技術](appendix-g-build-and-deploy.md)
 - [付録H　Javaプログラミングでよくあるエラーとその対処法](appendix-h-common-errors.md)
 
 ## 索引・資料

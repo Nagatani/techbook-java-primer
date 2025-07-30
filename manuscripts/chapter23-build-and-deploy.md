@@ -364,7 +364,7 @@ jpackage --type deb \
 
 より高度なビルド技術については、以下の付録を参照してください。
 
-※ 本章の高度な内容については、付録G「ビルドとデプロイ」を参照してください。
+※ 高度なビルド技術（Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用など）については、付録G「高度なビルドとデプロイメント技術」を参照してください。
 （`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`）
 
 ## 章末演習

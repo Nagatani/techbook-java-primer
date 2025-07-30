@@ -65,15 +65,25 @@
 - **対応状況**: 継続対応中
 - **残作業**: 手動修正が必要な複雑なケース
 
+#### Issue #007: 付録Gリンク不一致問題✨ **解決済み**
+- 付録Gのタイトルを「プロフェッショナルなビルドシステム」に変更したが、ディレクトリ名は「g-build-and-deploy」のまま
+- 誤ったリンク「.../appendix/g-professional-build-systems/」が存在
+- **解決日**: 2025年7月30日
+- **対応内容**: 
+  - chapter23-build-and-deploy.mdのリンク修正
+  - table-of-contents.mdの付録Gタイトル更新
+  - chapter01-introduction.mdの付録Gタイトル更新
+  - appendix-index.mdの付録Gタイトル更新
+
 ### 🟢 重要度：低（改善推奨）
 
-#### Issue #007: ~~付録システム間の相互参照不足~~ ✅ **GitHubリンクで対応済み**
+#### Issue #008: ~~付録システム間の相互参照不足~~ ✅ **GitHubリンクで対応済み**
 - 付録A-D間の有機的な連携が薄いとの指摘があった
 - 2025年7月19日
 - 付録はすべてGitHubリポジトリ参照として実装
 - 相互参照はGitHub内のREADMEで管理
 
-#### Issue #008: Modern Java機能の一部過小評価
+#### Issue #009: Modern Java機能の一部過小評価
 - Sealed Classesなど一部の現代Java機能の扱いが薄い
 - 最新技術習得機会の減少
 - 次期改訂時
@@ -284,7 +294,10 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 
 ### 残課題
 - textlintエラー68件（主に具体性、簡潔性エラー）
-- 第8章と第9章の統合検討
-- 付録Gと第23章の重複解消
-- GitHub連携の強化
-- 構造分析データの更新
+- 構造分析データの更新（book-structure.json）
+
+### 完了項目（2025年7月30日追加作業）
+- 第8章と第9章の統合検討 → 既に統合済みを確認
+- 付録Gと第23章の重複解消 → 付録Gを「プロフェッショナルなビルドシステム」に変更
+- GitHub連携の強化 → コード配置基準を策定、改善計画を作成
+- 付録Gリンク修正 → ディレクトリ名「g-build-and-deploy」との不一致を解消（chapter23、table-of-contents、chapter01、appendix-indexを修正）
