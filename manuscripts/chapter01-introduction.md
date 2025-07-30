@@ -441,6 +441,7 @@ public class InputExample {
 ```
 
 #### このコードのポイント
+
 1. import文
     + `java.util.Scanner`をインポートして入力機能を使用
 2. Scanner
@@ -452,10 +453,10 @@ public class InputExample {
 5. リソース管理
     + 使い終わったら`scanner.close()`でリソースを解放
 
-基本的なパッケージは自動でimport済み。
+基本的な構文やクラスなどはimportで書かなくても、自動でimport済みです。
 
 - `java.lang`パッケージ（`String`, `System`, `Integer`など）は自動的に利用可能
-- そのため`System.out.println()`や`Integer.parseInt()`にはimport文は不要
+    - `System.out.println()`や`Integer.parseInt()`にはimport文は不要
 
 
 
