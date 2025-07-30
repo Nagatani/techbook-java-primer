@@ -1627,68 +1627,16 @@ PayrollSystem（給与計算システム）
 
 ## 例外処理の基礎（補足）
 
-本章では継承とポリモーフィズムに焦点を当てましたが、実際のプログラムでは例外処理も重要です。ここでは、基本的な例外処理について簡単に触れておきます。詳細は第14章で学習します。
+本章では継承とポリモーフィズムに焦点を当てましたが、継承を使う際には例外処理に関する重要なルールがあります。
 
-### 例外とは
-
-例外（Exception）は、プログラム実行中に発生する異常な状況を表すオブジェクトです。Javaでは、これらの状況を適切に処理することで、プログラムの安定性を向上させます。
-
-### 基本的なtry-catch構文
-
-<span class="listing-number">**サンプルコード5-29**</span>
-
-```java
-public class BasicExceptionExample {
-    public static void main(String[] args) {
-        try {
-            // 例外が発生する可能性のあるコード
-            int result = 10 / 0;  // ArithmeticException発生
-            System.out.println("結果: " + result);
-        } catch (ArithmeticException e) {
-            // 例外が発生した場合の処理
-            System.out.println("エラー: ゼロで除算はできません");
-            System.out.println("詳細: " + e.getMessage());
-        }
-        
-        System.out.println("プログラムは継続します");
-    }
-}
-```
-
-### よく遭遇する例外
-
-1. NullPointerException: nullオブジェクトのメソッド呼び出し
-
-<span class="listing-number">**サンプルコード5-30**</span>
-
-```java
-String str = null;
-// str.length();  // NullPointerException発生
-```
-
-2. ArrayIndexOutOfBoundsException: 配列の範囲外アクセス
-
-<span class="listing-number">**サンプルコード5-31**</span>
-
-```java
-int[] numbers = {1, 2, 3};
-// numbers[5];  // ArrayIndexOutOfBoundsException発生
-```
-
-3. ClassCastException: instanceof確認なしでの型変換
-
-<span class="listing-number">**サンプルコード5-32**</span>
-
-```java
-Object obj = "文字列";
-// Integer num = (Integer) obj;  // ClassCastException発生
-```
+> **注意**: 例外処理の基本概念（try-catch構文、例外の種類など）については、第14章「例外処理」で詳しく説明しています。ここでは継承に関連する例外処理のルールのみを取り上げます。
 
 ### 継承における例外処理の注意点
 
+
 メソッドをオーバーライドする際、親クラスのメソッドが投げる例外より広い例外を投げることはできません。
 
-<span class="listing-number">**サンプルコード5-33**</span>
+<span class="listing-number">**サンプルコード5-29**</span>
 
 ```java
 class Parent {
@@ -1723,7 +1671,7 @@ class Child extends Parent {
 #### 1. super()呼び出しエラー
 問題: 親クラスのコンストラクタを正しく呼び出さない
 
-<span class="listing-number">**サンプルコード5-34**</span>
+<span class="listing-number">**サンプルコード5-30**</span>
 
 ```java
 // エラー例
@@ -1738,7 +1686,7 @@ class Child extends Parent {
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-35**</span>
+<span class="listing-number">**サンプルコード5-31**</span>
 
 ```java
 class Child extends Parent {
@@ -1756,7 +1704,7 @@ class Child extends Parent {
 #### 2. オーバーライドエラー
 問題: メソッドオーバーライド時の制約違反
 
-<span class="listing-number">**サンプルコード5-36**</span>
+<span class="listing-number">**サンプルコード5-32**</span>
 
 ```java
 // エラー例1：アクセス修飾子の制限強化
@@ -1778,7 +1726,7 @@ class Child extends Parent {
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-37**</span>
+<span class="listing-number">**サンプルコード5-33**</span>
 
 ```java
 class Child extends Parent {
@@ -1798,7 +1746,7 @@ class Child extends Parent {
 #### 3. キャストエラー
 問題: 互換性のない型へのキャストによるClassCastException
 
-<span class="listing-number">**サンプルコード5-38**</span>
+<span class="listing-number">**サンプルコード5-34**</span>
 
 ```java
 // エラー例
@@ -1808,7 +1756,7 @@ Child c = (Child) p;  // 実行時エラー：ParentはChildではない
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-39**</span>
+<span class="listing-number">**サンプルコード5-35**</span>
 
 ```java
 // instanceof使用
