@@ -484,11 +484,11 @@ public class InputExample {
 > プログラミング初学者にとって、このようなエラーメッセージは怖く見えることがあります。しかし、実はエラーメッセージは「なぜ動かないか」を教えてくれる親切なメッセージなのです。
 > 
 > - `NumberFormatException`
-    + 数値の形式が正しくないという例外。
+>     + 数値の形式が正しくないという例外。
 > - `For input string: ""`
-    + 空文字列を数値に変換しようとした。
+>     + 空文字列を数値に変換しようとした。
 > - スタックトレース
-    + エラーが発生した場所の履歴。
+>     + エラーが発生した場所の履歴。
 > 
 > #### 第1章での学習ポイント。
 > 
@@ -605,9 +605,10 @@ public class InputExample {
 
 を学習します。難易度は上がりますが、基礎課題の知識を応用すれば解決できます。
 
-次のステップ： 基礎課題が完了したら、第2章「Java基本文法」に進みましょう。第2章では、より本格的なオブジェクト指向プログラミングの世界に入っていきます。
+#### 次のステップ
+基礎課題が完了したら、第2章「Java基本文法」に進みましょう。第2章では、より本格的なオブジェクト指向プログラミングの世界に入っていきます。
 
-※ 本章の高度な内容については、付録B.01「JVMアーキテクチャとバイトコード」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`）を参照してください。
+> ※ 本章の高度な内容については、付録B.01「JVMアーキテクチャとバイトコード」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`）を参照してください。
 
 ## よくあるエラーと対処法
 
@@ -627,36 +628,20 @@ Java開発環境を構築し、はじめてのプログラムを作成する際�
 
 - JDKがインストールされていない、またはPATHが設定されていない
 - 対処法
-  1. JDKをインストール（推奨：Oracle JDK 11以上）
+  1. JDKをインストール（推奨：OpenJDK 21以上）
   2. 環境変数PATHにJDKのbinディレクトリを追加
   3. コマンドプロンプトで`java -version`を実行して確認
-
-#### 文字化けエラー
-
-症状
-- コンソールで日本語が正しく表示されない
-- ソースコードの日本語コメントが文字化けする
-
-原因と対処。
-```java
-// 文字化けの例
-System.out.println("縺薙s縺ｫ縺｡縺ｯ");  // 正しく表示されない
-
-// 修正版
-// ファイルをUTF-8で保存し、同じエンコーディングでコンパイル
-javac -encoding UTF-8 HelloWorld.java
-```
 
 ### コンパイル関連のエラー
 
 #### クラス名とファイル名の不一致
 
-エラーメッセージ。
+##### エラーメッセージ
 ```
 error: class HelloWorld is public, should be declared in a file named HelloWorld.java
 ```
 
-原因と対処。
+##### 原因と対処
 ```java
 // エラー例：ファイル名が「Sample.java」だが、クラス名がHelloWorld
 public class HelloWorld {  // クラス名とファイル名が一致しない
@@ -664,7 +649,6 @@ public class HelloWorld {  // クラス名とファイル名が一致しない
         System.out.println("Hello");
     }
 }
-
 // 修正版1：ファイル名をHelloWorld.javaに変更
 // 修正版2：クラス名をSampleに変更
 public class Sample {
@@ -676,12 +660,14 @@ public class Sample {
 
 #### mainメソッドのシグネチャが間違っている
 
-エラーメッセージ。
+##### エラーメッセージ
+
 ```
 Error: Main method not found in class HelloWorld
 ```
 
-原因と対処。
+##### 原因と対処
+
 ```java
 // エラー例：mainメソッドのシグネチャが間違っている
 public class HelloWorld {
@@ -689,7 +675,6 @@ public class HelloWorld {
         System.out.println("Hello");
     }
 }
-
 // 修正版：正しいmainメソッドのシグネチャ
 public class HelloWorld {
     public static void main(String[] args) {  // staticを追加
