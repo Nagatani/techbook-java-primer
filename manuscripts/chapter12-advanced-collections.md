@@ -72,7 +72,7 @@ Java 8から導入されたラムダ式を使うと、この`Comparator`の実�
 
 ### 匿名クラスからラムダ式へ
 
-ラムダ式が登場する前は、`Comparator`をその場で実装するために匿名クラスが使われていました。
+ラムダ式が登場する前は、`Comparator`をその場で実装するために匿名クラスが使われていました。以下のコードは、古い書き方でComparatorを実装した例です。
 
 <span class="listing-number">**サンプルコード13-2**</span>
 
@@ -87,7 +87,7 @@ Comparator<Student> scoreComparator = new Comparator<Student>() {
     }
 };
 ```
-この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。
+この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。ラムダ式を使った現代的な書き方です。
 
 <span class="listing-number">**サンプルコード13-3**</span>
 
@@ -104,6 +104,8 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 - `Comparator.comparing(keyExtractor)`: 比較のキーとなる値を抽出する関数を渡す
 - `reversed()`: 比較順序を逆にする
 - `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する
+
+これらのメソッドを使った具体的な例を見てみましょう。
 
 <span class="listing-number">**サンプルコード13-5**</span>
 
@@ -170,6 +172,8 @@ Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
 - メモリ効率が向上する
 - 無限ストリームの処理が可能になる
 
+この遅延評価の動作を具体的なコードで見てみましょう。以下のコードは、遅延評価がどのタイミングで実行されるかを実際に確認できる例です。
+
 <span class="listing-number">**サンプルコード13-7**</span>
 
 ```java
@@ -220,7 +224,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 ### `filter`: 条件に合う要素だけを抽出
 
-`filter`は、条件（`Predicate`）に一致する要素だけを残します。
+`filter`は、条件（`Predicate`）に一致する要素だけを残します。学生のリストから高得点者を抽出する例で確認してみましょう。以下のコードは、filter操作の基本的な使い方を示しています。
 
 <span class="listing-number">**サンプルコード13-9**</span>
 
@@ -234,7 +238,7 @@ List<Student> highScorers = list.stream()
 
 ### `map`: 要素を別の形に変換
 
-`map`は、各要素に関数（`Function`）を適用し、別の値に変換します。
+`map`は、各要素に関数（`Function`）を適用し、別の値に変換します。学生オブジェクトから名前だけを抽出する例です。以下のコードは、map操作を使った型変換の実例を示しています。
 
 <span class="listing-number">**サンプルコード13-11**</span>
 
@@ -246,6 +250,8 @@ List<String> names = list.stream()
 ```
 
 ### 組み合わせた例
+
+実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する実用的な例です。このコードは、Stream APIの真価を発揮する複合的な処理パイプラインの例です。
 
 <span class="listing-number">**サンプルコード13-13**</span>
 
@@ -296,6 +302,8 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 #### Optionalオブジェクトを作成する3つの基本的な方法があります
 
+Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
+
 <span class="listing-number">**サンプルコード13-15**</span>
 
 ```java
@@ -327,7 +335,7 @@ public class OptionalCreationExample {
 
 ### 値の取得方法
 
-Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。
+Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
 <span class="listing-number">**サンプルコード13-17**</span>
 
@@ -377,7 +385,7 @@ public class OptionalRetrievalExample {
 
 ### 値の存在確認と条件付き処理
 
-値の存在を確認し、存在する場合のみ処理を実行する方法。
+値の存在を確認し、存在する場合のみ処理を実行する方法。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
 <span class="listing-number">**サンプルコード13-19**</span>
 
@@ -422,7 +430,7 @@ public class OptionalPresenceExample {
 
 ### Optionalの変換操作
 
-Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。
+Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
 <span class="listing-number">**サンプルコード13-21**</span>
 
@@ -479,7 +487,7 @@ public class OptionalTransformationExample {
 
 ### Stream APIとの連携
 
-OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。
+OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
 <span class="listing-number">**サンプルコード13-23**</span>
 
@@ -548,7 +556,7 @@ public class OptionalStreamExample {
 
 ### 実践的な使用例
 
-実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。
+実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
 <span class="listing-number">**サンプルコード13-25**</span>
 
@@ -1255,6 +1263,8 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 
 ##### エラー例
 
+以下のコードは、Stream操作のチェーンでよくある間違いの例です。
+
 <span class="listing-number">**サンプルコード13-52**</span>
 
 ```java
@@ -1272,6 +1282,8 @@ words.stream()
 
 ##### 対処法
 
+以下のコードは、上記の問題を解決した正しいStream操作の例です。
+
 <span class="listing-number">**サンプルコード13-53**</span>
 
 ```java
@@ -1287,6 +1299,8 @@ words.stream()
 ### 終端操作の忘れ
 
 ##### エラー例
+
+以下のコードは、終端操作を忘れてしまった場合の問題を示しています。
 
 <span class="listing-number">**サンプルコード13-54**</span>
 
@@ -1304,6 +1318,8 @@ numbers.stream()
 
 ##### 対処法
 
+以下のコードは、終端操作を追加して問題を解決した例です。
+
 <span class="listing-number">**サンプルコード13-55**</span>
 
 ```java
@@ -1318,6 +1334,8 @@ List<Integer> evenDoubled = numbers.stream()
 ### 並列処理での問題
 
 ##### エラー例
+
+以下のコードは、並列処理でのスレッドセーフティの問題を示しています。
 
 <span class="listing-number">**サンプルコード13-56**</span>
 
@@ -1336,6 +1354,8 @@ numbers.parallelStream()
 - データの破損や`ConcurrentModificationException`の発生
 
 ##### 対処法
+
+以下のコードは、並列処理で安全にデータを収集する方法を示しています。
 
 <span class="listing-number">**サンプルコード13-57**</span>
 
@@ -1360,6 +1380,8 @@ numbers.parallelStream()
 
 ##### エラー例
 
+以下のコードは、Optionalの誤った使用方法の例です。
+
 <span class="listing-number">**サンプルコード13-58**</span>
 
 ```java
@@ -1381,6 +1403,8 @@ if (result.isPresent()) {
 - Optionalの利点が活かされていない
 
 ##### 対処法
+
+以下のコードは、Optionalの正しい使用方法を示しています。
 
 <span class="listing-number">**サンプルコード13-59**</span>
 
@@ -1405,6 +1429,8 @@ String result = names.stream()
 ### パフォーマンスの問題
 
 ##### エラー例
+
+以下のコードは、非効率なStream操作の例です。
 
 <span class="listing-number">**サンプルコード13-60**</span>
 
@@ -1432,6 +1458,8 @@ int count = numbers.stream()
 
 ##### 対処法
 
+以下のコードは、パフォーマンスを改善した効率的な処理の例です。
+
 <span class="listing-number">**サンプルコード13-61**</span>
 
 ```java
@@ -1452,6 +1480,8 @@ System.out.println("Count: " + stats.getCount());
 
 ##### エラー例
 
+以下のコードは、Stream内での例外処理の問題を示しています。
+
 <span class="listing-number">**サンプルコード13-62**</span>
 
 ```java
@@ -1470,6 +1500,8 @@ error: Unhandled exception type IOException
 ```
 
 ##### 対処法
+
+以下のコードは、Stream内での例外を適切に処理する方法を示しています。
 
 <span class="listing-number">**サンプルコード13-63**</span>
 

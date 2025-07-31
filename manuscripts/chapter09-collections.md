@@ -205,6 +205,8 @@ Listは順序を保持し、インデックスによるアクセスが可能な�
 
 ### ArrayList vs LinkedList
 
+以下のコードは、ArrayListとLinkedListの基本的な使い方と、それぞれの特性を比較するための例です。同じ操作でも、内部構造の違いにより性能特性が異なることを理解しましょう。
+
 <span class="listing-number">**サンプルコード10-7**</span>
 
 ```java
@@ -225,6 +227,8 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 - LinkedList: 先頭・末尾での追加・削除が多い場合
 
 ### 主な操作
+
+これらの操作を実際に使ってみましょう。以下のコードは、Listインターフェイスの基本操作を示しています。
 
 <span class="listing-number">**サンプルコード10-8**</span>
 
@@ -586,6 +590,8 @@ Javaのコレクションフレームワークは、データを効率的に扱�
 
 ### `ArrayList`の基本的な使い方
 
+まず、ArrayListの基本的な使い方を具体的なコード例で見てみましょう。
+
 <span class="listing-number">**サンプルコード10-16**</span>
 
 ```java
@@ -643,6 +649,9 @@ public class ArrayListExample {
 
 #### 拡張for文 (推奨)
 もっとも簡潔で一般的な方法です。
+
+以下のコードは、拡張for文を使用したコレクションの走査方法を示しています。この記法により、インデックスを意識することなく、すべての要素にアクセスできます。
+
 <span class="listing-number">**サンプルコード10-17**</span>
 
 ```java
@@ -653,6 +662,9 @@ for (String name : nameList) {
 
 #### イテレータ (Iterator)
 ループ中にコレクションから要素を安全に削除したい場合に使います。
+
+以下のコードは、イテレータを使用してループ中に要素を安全に削除する方法を示しています。拡張for文では実現できない、動的な要素の削除が可能です。
+
 <span class="listing-number">**サンプルコード10-18**</span>
 
 ```java
@@ -667,7 +679,7 @@ while (iterator.hasNext()) {
 
 ### 配列とListの相互変換
 
-`java.util.Arrays`クラスや`List`インターフェイスのメソッドを利用します。
+実際のアプリケーションでは、配列とListを相互に変換する場面が多々あります。以下のコードは、その方法を示しています。
 
 <span class="listing-number">**サンプルコード10-19**</span>
 
@@ -700,6 +712,8 @@ String[] fruitArray = fruitList.toArray(new String[0]);
 * `java.util.TreeSet`: 要素を自然順序（ソート順）で保持する
 
 ### `HashSet`の基本的な使い方
+
+HashSetの基本的な操作を実際のコード例で確認してみましょう。
 
 <span class="listing-number">**サンプルコード10-20**</span>
 
@@ -737,6 +751,8 @@ public class HashSetExample {
 * `java.util.TreeMap`: キーを自然順序（ソート順）で保持する
 
 ### `HashMap`の基本的な使い方
+
+Mapの具体的な操作方法を、学生の点数管理を例にして見てみましょう。
 
 <span class="listing-number">**サンプルコード10-21**</span>
 
@@ -789,6 +805,8 @@ Exception in thread "main" java.lang.NullPointerException
 
 原因と対処。
 
+以下のコードは、コレクションを初期化せずに使用しようとした例です。
+
 <span class="listing-number">**サンプルコード10-22**</span>
 
 ```java
@@ -802,6 +820,8 @@ list.add("Hello");  // OK
 ```
 
 #### null要素の扱い
+
+次のコードは、null要素を含むSetを扱う際の注意点を示しています。
 
 <span class="listing-number">**サンプルコード10-23**</span>
 
@@ -837,6 +857,8 @@ Exception in thread "main" java.lang.ClassCastException: java.lang.Integer canno
 
 原因と対処。
 
+以下のコードは、ジェネリクスを使用しない場合の問題を示しています。
+
 <span class="listing-number">**サンプルコード10-24**</span>
 
 ```java
@@ -866,6 +888,8 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 
 原因と対処。
 
+次のコードは、不変リストを変更しようとした場合の問題を示しています。
+
 <span class="listing-number">**サンプルコード10-25**</span>
 
 ```java
@@ -893,6 +917,8 @@ Exception in thread "main" java.util.ConcurrentModificationException
 ```
 
 原因と対処。
+
+以下のコードは、反復処理中にコレクションを変更しようとした例です。
 
 <span class="listing-number">**サンプルコード10-26**</span>
 
@@ -940,6 +966,8 @@ Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 5 out of b
 
 原因と対処。
 
+次のコードは、配列の範囲外にアクセスしようとした例です。
+
 <span class="listing-number">**サンプルコード10-27**</span>
 
 ```java
@@ -970,6 +998,8 @@ try {
 ### Map関連のエラー
 
 #### 存在しないキーのアクセス
+
+Mapで存在しないキーにアクセスする際の注意点を示すコード例です。
 
 <span class="listing-number">**サンプルコード10-28**</span>
 
@@ -1005,6 +1035,8 @@ if (map.containsKey("key2")) {
 ### equals()とhashCode()の問題
 
 #### カスタムオブジェクトをHashSetやHashMapのキーで使用
+
+カスタムオブジェクトをHashSetやHashMapで使用する際の問題を示すコード例です。
 
 <span class="listing-number">**サンプルコード10-29**</span>
 
@@ -1052,6 +1084,8 @@ class Person {
 ### 型安全性の問題
 
 #### Raw typeの使用
+
+型安全性を損なうRaw typeの使用例を示しています。
 
 <span class="listing-number">**サンプルコード10-30**</span>
 
