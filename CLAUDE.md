@@ -225,6 +225,10 @@ All chapter exercise sections reference this repository URL. The structure is:
   - 許可される強調表記：
     - コードリスト番号は必ず**サンプルコードX-Y**形式（Xは章番号、Yは連番）を使用すること
     - **重要**: 「リスト」形式は使用禁止。すべて「サンプルコード」形式で統一
+- **脚注（ページ内注釈）の文体ルール**:
+  - `<span class="footnote">`で囲われたページ内注釈は**必ずですます調**で記述する
+  - リストの中に含まれる脚注であっても、この例外ルールが優先される
+  - 例：`<span class="footnote">※ この機能はJava 8以降で使用できます。</span>`
 - **演習セクション**: 章末にGitHubリンクのみを配置（章内に演習問題は記載しない）
 - **付録の扱い**: 基本的にGitHubリポジトリへの参照として実装し、詳細な内容はリポジトリで管理
 - Do not add emojis unless explicitly requested by the user
