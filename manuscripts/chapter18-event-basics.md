@@ -65,6 +65,8 @@ EDTの特徴
 
 もっとも基本的な、ボタンクリックイベントを処理してみましょう。ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
 
+以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを作成し、actionPerformed()メソッドでクリック時の処理を定義します。addActionListener()メソッドでリスナーをボタンに登録することで、クリックイベントとの関連付けが完了します。
+
 <span class="listing-number">**サンプルコード18-1**</span>
 
 ```java
@@ -114,6 +116,8 @@ public class ButtonEventExample {
 
 ActionListenerのように、実装すべきメソッドが1つだけのインターフェイス（関数型インターフェイス）は、ラムダ式を使って非常に簡潔に記述できます。
 
+以下のコードは、先ほどの匿名クラスをラムダ式で書き換えた例です。ラムダ式を使用することで、コードがより簡潔になり、イベント処理の本質に集中できます。ActionEventのパラメータeはラムダ式内で参照できますが、この例では使用していません。
+
 <span class="listing-number">**サンプルコード18-2**</span>
 
 ```java
@@ -131,6 +135,8 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 ### 簡単なアプリケーション：挨拶プログラム
 
 テキストフィールドに入力された名前を使って、挨拶メッセージを表示するプログラムを作成しましょう。
+
+以下のコードは、テキストフィールドとボタン、ラベルを組み合わせたインタラクティブな挨拶アプリケーションの例です。ラムダ式を使用して、ボタンクリック時にテキストフィールドから入力を取得し、ラベルに動的にメッセージを表示します。
 
 <span class="listing-number">**サンプルコード18-3**</span>
 
@@ -191,6 +197,8 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。WindowListenerインターフェイスには多くのメソッドがありますが、WindowAdapterクラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
+以下のコードは、WindowAdapterを使用してウィンドウ閉じる際の終了確認を実装する例です。setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)でデフォルトの閉じる動作を無効化し、windowClosing()メソッドでカスタム処理を実行します。
+
 <span class="listing-number">**サンプルコード18-4**</span>
 
 ```java
@@ -225,6 +233,8 @@ public class WindowEventExample {
 ### 基本的なマウスイベント
 
 マウスのクリックや移動を検出する基本的な例です。
+
+以下のコードは、MouseListenerとMouseMotionListenerを実装して、マウスのさまざまなイベントを処理する例です。マウスのクリック、パネルへの出入り、マウスの移動などを検出し、ステータスラベルに現在の状態を表示します。
 
 <span class="listing-number">**サンプルコード18-5**</span>
 
@@ -295,6 +305,8 @@ public class BasicMouseEventExample extends JFrame {
 
 キーボード入力を検出する基本的な例です。
 
+以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています。consume()メソッドを使用することで、デフォルトのキー動作をキャンセルできます。
+
 <span class="listing-number">**サンプルコード18-6**</span>
 
 ```java
@@ -354,6 +366,8 @@ public class BasicKeyEventExample extends JFrame {
 ### ItemListenerによる選択状態の監視
 
 チェックボックスやラジオボタンの選択状態の変化を監視する例です。
+
+以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択がされたか解除されたかを判定し、現在の選択状態をリアルタイムで更新・表示します。
 
 <span class="listing-number">**サンプルコード18-9**</span>
 
@@ -461,6 +475,8 @@ public class ItemListenerExample extends JFrame {
 
 コンポーネントがフォーカスを得る・失うタイミングを検出する例です。
 
+以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容の検証を行います。この仕組みを使用することで、ユーザーフレンドリーなフォーム入力インターフェイスを実装できます。
+
 <span class="listing-number">**サンプルコード18-10**</span>
 
 ```java
@@ -554,6 +570,8 @@ public class FocusListenerExample extends JFrame {
 ### ChangeListenerによる値の変更監視
 
 スライダーやスピナーなどの値の変化を監視する例です。
+
+以下のコードは、ChangeListenerを使用してスライダーとスピナーの値の変化を監視し、連動させる例です。getValueIsAdjusting()メソッドを使用することで、スライダーのドラッグ中とドラッグ終了時を区別し、パフォーマンスを最適化できます。
 
 <span class="listing-number">**サンプルコード18-11**</span>
 
@@ -657,6 +675,8 @@ public class ChangeListenerExample extends JFrame {
 
 SwingのすべてのGUI操作はイベントディスパッチスレッド上で実行します。
 
+以下のコードは、SwingUtilities.invokeLater()を使用してGUIをEDT上で初期化する正しい方法を示しています。このパターンは、Swingアプリケーションを開発する際の基本であり、スレッドセーフティを保証します。
+
 <span class="listing-number">**サンプルコード18-12**</span>
 
 ```java
@@ -674,6 +694,8 @@ public static void main(String[] args) {
 ### 長時間処理の回避
 
 イベントハンドラ内で長時間かかる処理を実行すると、UIがフリーズします。
+
+以下のコードは、イベントハンドラ内で長時間の処理を実行した場合の問題と、SwingWorkerを使用した解決法を示しています。長時間の処理は別スレッドで実行し、UIの応答性を維持することが重要です。
 
 <span class="listing-number">**サンプルコード18-13**</span>
 
