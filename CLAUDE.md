@@ -89,21 +89,24 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 The project follows Vivliostyle's standard structure:
 - `manuscripts/`: Contains Markdown source files for book content (main working directory)
-- `source/`: Contains source code, exercises, and other materials referenced in the book (read-only)
+- `source/`: Contains original materials (currently empty after lecture materials were moved to docs/lecture-materials/)
+- `docs/lecture-materials/`: Contains original lecture materials moved from `source/` (read-only)
 - `vivliostyle.config.js`: Main configuration defining title, author, entry files, theme, and output settings
 - `output/`: Generated PDF files
 - Uses `@vivliostyle/theme-techbook` theme for technical book styling
 
 The build process converts Markdown files listed in the `entry` array (currently just `index.md`) into a single PDF using the techbook theme.
 
-**Important:** The `source/` directory contains original lecture materials and must be treated as read-only. All new content and modifications should be done within the `manuscripts/` directory.
+**Important:** The `docs/lecture-materials/` directory contains original lecture materials and must be treated as read-only. All new content and modifications should be done within the `manuscripts/` directory.
+
+**Note:** Sample code extracted from the book is stored in the `sample-code/` directory, not in `source/`.
 
 ## Workflow
 
 1. Check `TODO.md` before starting any task to understand current priorities
 2. **MANDATORY**: Read `docs/writing-guidelines-textlint-compliance.md` before writing or editing any manuscript content
 3. Write or edit manuscript files in `manuscripts/*.md`
-4. Add supplementary materials to `source/` directory if needed
+4. Sample code extracted from the book is maintained in `sample-code/` directory
 5. Run `npm run lint` to check for writing style issues
 6. Run `npm run lint:fix` to automatically format manuscript files
 7. Run `npm run build` to ensure the book builds successfully
@@ -121,7 +124,8 @@ The build process converts Markdown files listed in the `entry` array (currently
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
 - `docs/`: Project documentation and analysis files (maintained continuously)
-- `source/`: Original lecture materials and reference code (read-only)
+- `docs/lecture-materials/`: Original lecture materials moved from `source/` (read-only)
+- `source/`: Sample code and examples for the book (being organized)
 - `output/`: Generated PDF files
 
 ## Analysis Documentation Management
@@ -170,7 +174,9 @@ The following issues require ongoing attention and should be referenced during a
 
 This repository contains:
 - Book manuscript files (`manuscripts/` directory)
-- Exercise source code and examples (`source/` directory)
+- Sample code and examples (`source/` directory)
+- Exercise files (`exercises/` directory)
+- Original lecture materials (`docs/lecture-materials/` directory)
 - Project documentation and analysis (`docs/` directory)
 - Build configuration and theme settings
 
@@ -178,7 +184,8 @@ This repository contains:
 All chapter exercise sections reference this repository URL. The structure is:
 - Exercise files: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 - Appendix resources: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix`
-- Source code examples: `/source/` directory
+- Sample code examples: `/source/` directory
+- Original lecture materials: `/docs/lecture-materials/` directory
 
 ## Content Guidelines
 

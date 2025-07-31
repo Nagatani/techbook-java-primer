@@ -1,7 +1,13 @@
 # GitHubリポジトリ改善計画
 
-## 実施日
+## 計画策定日
 2025-07-30
+
+## 実施状況（2025-07-31時点）
+### Phase 1 - ✅ **完了**
+- `docs/lecture-materials/` ディレクトリの作成 ✅
+- `source/` から講義資料を移動 ✅  
+- README更新は順次進行中
 
 ## 現状分析
 
@@ -26,23 +32,21 @@ appendix/
 
 ### 2. sample-code/ ディレクトリの整理
 
-**現状の問題**:
-- `sample-code/` と `source/` の2つのディレクトリが存在
-- `sample-code/` には古い形式のコード（list1-1形式）が存在
+**現状**:
+- `sample-code/` には本文から抽出されたサンプルコードが格納
+- サンプルコードX-Y形式で整理されている
 
 **改善案**:
-- `sample-code/` の内容を精査し、必要なものは `source/` に移行
-- 不要なものは削除またはアーカイブ
+- 現在の構成を維持し、READMEで構成を明確に説明
+- 各章のサンプルコードが正しく抽出されているか確認
 
 ### 3. source/ ディレクトリの内容整理
 
-**現状の問題**:
-- 講義資料（.mdファイル）が混在
-- 本書のサンプルコードとしては不適切
+**現状の問題**: ~~講義資料（.mdファイル）が混在~~ ✅ **解決済み**
+~~本書のサンプルコードとしては不適切~~ ✅ **解決済み**
 
-**改善案**:
-- 講義資料は `docs/lecture-materials/` に移動
-- 本書で使用するサンプルコードのみを `source/` に配置
+**改善案**: ~~講義資料は `docs/lecture-materials/` に移動~~ ✅ **完了**
+- `source/` ディレクトリは現在空（講義資料をdocs/lecture-materials/に移動済み）
 
 ### 4. 演習課題の解答（solutions/）の配置
 
@@ -63,14 +67,14 @@ appendix/
 
 ## 実装計画
 
-### Phase 1（即座実施）
-1. `docs/lecture-materials/` ディレクトリの作成
-2. `source/` から講義資料を移動
-3. 各章のREADMEをテンプレートに合わせて更新
+### Phase 1（即座実施）- ✅ **完了**
+1. ~~`docs/lecture-materials/` ディレクトリの作成~~ ✅
+2. ~~`source/` から講義資料を移動~~ ✅
+3. 各章のREADMEをテンプレートに合わせて更新 ⏳ **進行中**
 
 ### Phase 2（1週間以内）
 1. 付録ディレクトリの再構成
-2. `sample-code/` の内容精査と移行
+2. `sample-code/` のREADME作成と構成説明
 3. 重複コードの削除
 
 ### Phase 3（検討事項）
@@ -90,7 +94,7 @@ mkdir -p appendix/b-technical-details
 mv appendix/b[0-9]* appendix/b-technical-details/
 
 # 不要ファイルの削除（要確認）
-# rm -rf sample-code/
+# sample-code/にはREADMEを追加して構成を説明
 ```
 
 ## リスクと対策

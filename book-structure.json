@@ -1,0 +1,334 @@
+{
+  "meta": {
+    "totalChapters": 23,
+    "totalAppendices": 8,
+    "generatedAt": "2025-07-31T10:30:00.000000",
+    "bookTitle": "Java入門",
+    "projectStatus": {
+      "textlintErrors": 57,
+      "codeListingsComplete": true,
+      "exerciseLinksComplete": true,
+      "lectureMaterialsLocation": "docs/lecture-materials/"
+    }
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "id": "chapter01",
+      "title": "Java入門と開発環境構築",
+      "subtitle": "プログラミングの新たな世界への第一歩",
+      "filePath": "manuscripts/chapter01-introduction.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter01/",
+      "stats": {
+        "codeListingCount": 18
+      }
+    },
+    {
+      "number": 2,
+      "id": "chapter02",
+      "title": "Javaプログラミングの基礎",
+      "subtitle": "変数、演算、制御構文の習得",
+      "filePath": "manuscripts/chapter02-getting-started.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter02/",
+      "stats": {
+        "codeListingCount": 29
+      }
+    },
+    {
+      "number": 3,
+      "id": "chapter03",
+      "title": "オブジェクト指向プログラミングの基礎",
+      "subtitle": "クラスとオブジェクトの概念",
+      "filePath": "manuscripts/chapter03-oop-basics.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter03/",
+      "stats": {
+        "codeListingCount": 25
+      }
+    },
+    {
+      "number": 4,
+      "id": "chapter04",
+      "title": "クラスとインスタンス",
+      "subtitle": "カプセル化とアクセス制御",
+      "filePath": "manuscripts/chapter04-classes-and-instances.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/",
+      "stats": {
+        "codeListingCount": 21
+      }
+    },
+    {
+      "number": 5,
+      "id": "chapter05",
+      "title": "継承と多態性",
+      "subtitle": "オブジェクト指向の核心概念",
+      "filePath": "manuscripts/chapter05-inheritance-and-polymorphism.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter05/",
+      "stats": {
+        "codeListingCount": 16
+      }
+    },
+    {
+      "number": 6,
+      "id": "chapter06",
+      "title": "不変性とfinal修飾子",
+      "subtitle": "安全で予測可能なプログラム設計",
+      "filePath": "manuscripts/chapter06-immutability-and-final.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter06/",
+      "stats": {
+        "codeListingCount": 24
+      }
+    },
+    {
+      "number": 7,
+      "id": "chapter07",
+      "title": "抽象クラスとインターフェイス",
+      "subtitle": "柔軟な設計のための抽象化",
+      "filePath": "manuscripts/chapter07-abstract-classes-and-interfaces.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/",
+      "stats": {
+        "codeListingCount": 19
+      }
+    },
+    {
+      "number": 8,
+      "id": "chapter08",
+      "title": "特殊なクラス",
+      "subtitle": "列挙型とRecordクラス",
+      "filePath": "manuscripts/chapter08-special-classes.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter08/",
+      "stats": {
+        "codeListingCount": 22
+      }
+    },
+    {
+      "number": 9,
+      "id": "chapter09",
+      "title": "コレクション",
+      "subtitle": "データ構造とコレクションフレームワーク",
+      "filePath": "manuscripts/chapter09-collections.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/",
+      "stats": {
+        "codeListingCount": 31
+      }
+    },
+    {
+      "number": 10,
+      "id": "chapter10",
+      "title": "ジェネリクス",
+      "subtitle": "型安全性とコードの再利用",
+      "filePath": "manuscripts/chapter10-generics.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/",
+      "stats": {
+        "codeListingCount": 21
+      }
+    },
+    {
+      "number": 11,
+      "id": "chapter11",
+      "title": "ラムダ式と関数型インターフェイス",
+      "subtitle": "関数型プログラミングの基礎",
+      "filePath": "manuscripts/chapter11-lambda-and-functional-interfaces.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/",
+      "stats": {
+        "codeListingCount": 25
+      }
+    },
+    {
+      "number": 12,
+      "id": "chapter12",
+      "title": "Stream APIとコレクション操作",
+      "subtitle": "データ処理の効率化",
+      "filePath": "manuscripts/chapter12-advanced-collections.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/",
+      "stats": {
+        "codeListingCount": 33
+      }
+    },
+    {
+      "number": 13,
+      "id": "chapter13",
+      "title": "例外処理",
+      "subtitle": "エラーハンドリングとプログラムの堅牢性",
+      "filePath": "manuscripts/chapter13-exception-handling.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/",
+      "stats": {
+        "codeListingCount": 25
+      }
+    },
+    {
+      "number": 14,
+      "id": "chapter14",
+      "title": "ファイル入出力",
+      "subtitle": "データの永続化と処理",
+      "filePath": "manuscripts/chapter14-file-io.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/",
+      "stats": {
+        "codeListingCount": 28
+      }
+    },
+    {
+      "number": 15,
+      "id": "chapter15",
+      "title": "マルチスレッドプログラミング",
+      "subtitle": "並行処理と同期制御",
+      "filePath": "manuscripts/chapter15-multithreading.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/",
+      "stats": {
+        "codeListingCount": 29
+      }
+    },
+    {
+      "number": 16,
+      "id": "chapter16",
+      "title": "ネットワークプログラミング",
+      "subtitle": "ネットワーク通信の実装",
+      "filePath": "manuscripts/chapter16-network-programming.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter16/",
+      "stats": {
+        "codeListingCount": 18
+      }
+    },
+    {
+      "number": 17,
+      "id": "chapter17",
+      "title": "GUIプログラミング基礎",
+      "subtitle": "Swingによるデスクトップアプリケーション開発",
+      "filePath": "manuscripts/chapter17-gui-basics.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter17/",
+      "stats": {
+        "codeListingCount": 19
+      }
+    },
+    {
+      "number": 18,
+      "id": "chapter18",
+      "title": "イベント処理の基礎",
+      "subtitle": "ユーザーインタラクションの実装",
+      "filePath": "manuscripts/chapter18-event-basics.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter18/",
+      "stats": {
+        "codeListingCount": 15
+      }
+    },
+    {
+      "number": 19,
+      "id": "chapter19",
+      "title": "高度なイベント処理",
+      "subtitle": "複雑なユーザーインターフェイスの構築",
+      "filePath": "manuscripts/chapter19-event-advanced.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/",
+      "stats": {
+        "codeListingCount": 19
+      }
+    },
+    {
+      "number": 20,
+      "id": "chapter20",
+      "title": "高度なGUIコンポーネント",
+      "subtitle": "プロフェッショナルなユーザーインターフェイス",
+      "filePath": "manuscripts/chapter20-advanced-gui.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/",
+      "stats": {
+        "codeListingCount": 12
+      }
+    },
+    {
+      "number": 21,
+      "id": "chapter21",
+      "title": "ユニットテスト",
+      "subtitle": "品質保証とテスト駆動開発",
+      "filePath": "manuscripts/chapter21-unit-testing.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/",
+      "stats": {
+        "codeListingCount": 24
+      }
+    },
+    {
+      "number": 22,
+      "id": "chapter22",
+      "title": "ドキュメント化とライブラリ活用",
+      "subtitle": "チーム開発を支える技術",
+      "filePath": "manuscripts/chapter22-documentation-and-libraries.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter22/",
+      "stats": {
+        "codeListingCount": 52
+      }
+    },
+    {
+      "number": 23,
+      "id": "chapter23",
+      "title": "ビルドとデプロイ",
+      "subtitle": "アプリケーションの配布と実行",
+      "filePath": "manuscripts/chapter23-build-and-deploy.md",
+      "exerciseLink": "https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/",
+      "stats": {
+        "codeListingCount": 13
+      }
+    }
+  ],
+  "appendices": [
+    {
+      "id": "appendix-a",
+      "title": "開発環境のセットアップ",
+      "filePath": "manuscripts/appendix-a-environment-setup.md",
+      "repositoryPath": "appendix/a-environment-setup/"
+    },
+    {
+      "id": "appendix-b",
+      "title": "技術的深堀り",
+      "filePath": "manuscripts/appendix-b-index-revised.md",
+      "repositoryPath": "appendix/b01-jvm-architecture/ to appendix/b15-testing-strategies/"
+    },
+    {
+      "id": "appendix-c",
+      "title": "理論的基盤",
+      "filePath": "manuscripts/appendix-c-theoretical-foundations.md",
+      "repositoryPath": "appendix/c-theoretical-foundations/"
+    },
+    {
+      "id": "appendix-d",
+      "title": "統合プロジェクト",
+      "filePath": "manuscripts/appendix-d-integrated-project.md",
+      "repositoryPath": "appendix/d-integrated-project/"
+    },
+    {
+      "id": "appendix-e",
+      "title": "データベースプログラミング",
+      "filePath": "manuscripts/appendix-e-database-programming.md",
+      "repositoryPath": "appendix/e-database-programming/"
+    },
+    {
+      "id": "appendix-f",
+      "title": "Java Time API",
+      "filePath": "manuscripts/appendix-f-java-time-api.md",
+      "repositoryPath": "appendix/f-java-time-api/"
+    },
+    {
+      "id": "appendix-g",
+      "title": "ビルドとデプロイ",
+      "filePath": "manuscripts/appendix-g-build-and-deploy.md",
+      "repositoryPath": "appendix/g-build-and-deploy/"
+    },
+    {
+      "id": "appendix-h",
+      "title": "よくあるエラーと解決法",
+      "filePath": "manuscripts/appendix-h-common-errors.md",
+      "repositoryPath": "appendix/h-common-errors/"
+    }
+  ],
+  "projectStatistics": {
+    "totalCodeListings": 479,
+    "totalExerciseLinks": 23,
+    "completionStatus": {
+      "codeListingNumbering": "complete",
+      "exerciseLinks": "complete",
+      "appendixSystem": "complete",
+      "textlintCompliance": "in-progress"
+    }
+  },
+  "buildConfiguration": {
+    "entryFile": "manuscripts/index.md",
+    "theme": "@vivliostyle/theme-techbook",
+    "outputFile": "output/techbook-java-primer.pdf"
+  }
+}

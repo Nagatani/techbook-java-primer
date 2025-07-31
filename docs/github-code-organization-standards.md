@@ -12,7 +12,7 @@
 techbook-java-primer/
 ├── README.md                    # プロジェクト概要
 ├── manuscripts/                 # 原稿ファイル（Markdown）
-├── source/                      # 本文中のサンプルコード
+├── sample-code/                # 本文から抽出されたサンプルコード
 ├── exercises/                   # 章末演習課題
 ├── appendix/                    # 付録の詳細資料
 ├── solutions/                   # 演習課題の解答例（別ブランチ推奨）
@@ -22,7 +22,7 @@ techbook-java-primer/
 
 ## コード配置基準
 
-### 1. 本文サンプルコード（source/）
+### 1. 本文サンプルコード（sample-code/）
 
 #### 配置対象
 - 本文中に掲載されている完全なサンプルコード
@@ -36,14 +36,14 @@ techbook-java-primer/
 
 #### ディレクトリ構造
 ```
-source/
+sample-code/
+├── chapter01/
+│   ├── サンプルコード1-1_HelloWorld.java
+│   ├── サンプルコード1-2_Variables.java
+│   └── ...
 ├── chapter03/
-│   ├── BankAccount/           # プロジェクト単位
-│   │   ├── BankAccount.java
-│   │   ├── Main.java
-│   │   └── README.md
-│   └── SimpleClass/
-│       └── SimpleClass.java
+│   ├── サンプルコード3-1_BankAccount.java
+│   └── ...
 ```
 
 #### 命名規則

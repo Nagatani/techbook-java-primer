@@ -293,11 +293,14 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
    - 構造分析データの更新が必要（古いデータでは127個と記載）
 
 ### 残課題
-- textlintエラー68件（主に具体性、簡潔性エラー）
+- textlintエラー59件（主に具体性、簡潔性エラー）
 - 構造分析データの更新（book-structure.json）
+- GitHubリポジトリ改善Phase 1の完了（残りの演習課題README更新）
 
 ### 完了項目（2025年7月30日追加作業）
 - 第8章と第9章の統合検討 → 既に統合済みを確認
-- 付録Gと第23章の重複解消 → 付録Gを「プロフェッショナルなビルドシステム」に変更
+- 付録Gと第23章の重複解消 → 付録Gを「プロフェッショナルなビルドシステム」に変更 → 「高度なビルドとデプロイメント技術」に再変更
 - GitHub連携の強化 → コード配置基準を策定、改善計画を作成
 - 付録Gリンク修正 → ディレクトリ名「g-build-and-deploy」との不一致を解消（chapter23、table-of-contents、chapter01、appendix-indexを修正）
+- textlintエラー削減 → 67件から59件に削減
+- GitHubリポジトリ改善Phase 1 → 講義資料をdocs/lecture-materials/に移動、演習課題READMEの作成開始
