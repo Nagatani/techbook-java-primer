@@ -1481,7 +1481,7 @@ error: class HelloWorld is public, should be declared in a file named HelloWorld
 
 ### 学習を深めるための追加課題
 
-余裕があるほうは、以下の追加課題にも挑戦してみましょう。
+余裕がある人は、以下の追加課題にも挑戦してみましょう。
 
 1. データ検証の強化
    - 数値入力の範囲チェック
