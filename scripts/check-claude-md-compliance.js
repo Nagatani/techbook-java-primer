@@ -55,6 +55,21 @@ const VIOLATION_PATTERNS = [
         description: 'リスト項目の末尾コロン使用',
         severity: 'warning',
         suggestion: 'リスト項目の末尾にコロンは使用しないでください'
+    },
+    {
+        id: 'title-colon-list',
+        pattern: /^(\s*[-\*\+]|\d+\.)\s+[^：\n]+：\s*[^\n]/gm,
+        description: '「項目タイトル： 説明文」形式のリスト項目',
+        severity: 'error',
+        suggestion: '階層化リストを使用してください（例: - タイトル\\n    + 説明文）',
+        customCheck: true // カスタムチェック関数を使用
+    },
+    {
+        id: 'trailing-colon-structure-break',
+        pattern: /^(\s*[-\*\+]|\d+\.)\s+[^：\n]+：\s*$/gm,
+        description: 'リスト項目末尾のコロンによる構造崩れ',
+        severity: 'error',
+        suggestion: 'コロンを削除するか階層化リストを使用してください'
     }
 ];
 
@@ -88,6 +103,56 @@ class ComplianceChecker {
     }
 
     /**
+     * 括弧内のコロンかどうかをチェック
+     */
+    isColonInParentheses(text, colonIndex) {
+        const brackets = [
+            ['（', '）'], ['(', ')'], ['【', '】'], ['[', ']'], 
+            ['『', '』'], ['「', '」'], ['〈', '〉'], ['<', '>'],
+            ['{', '}'], ['〔', '〕']
+        ];
+        
+        for (const [open, close] of brackets) {
+            // コロンより前の最後の開き括弧を検索
+            let openIndex = text.lastIndexOf(open, colonIndex - 1);
+            if (openIndex !== -1) {
+                // 開き括弧より後の最初の閉じ括弧を検索
+                let closeIndex = text.indexOf(close, openIndex + 1);
+                if (closeIndex !== -1 && openIndex < colonIndex && colonIndex < closeIndex) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * カスタムチェック関数
+     */
+    customCheckTitleColonList(content, rule) {
+        const violations = [];
+        const lines = content.split('\n');
+        
+        lines.forEach((line, index) => {
+            const match = line.match(/^(\s*[-\*\+]|\d+\.)\s+([^：\n]+)：\s*([^\n]+)/);
+            if (match) {
+                const colonIndex = line.indexOf('：');
+                // 括弧内のコロンは除外
+                if (!this.isColonInParentheses(line, colonIndex)) {
+                    violations.push({
+                        index: content.split('\n').slice(0, index).join('\n').length,
+                        match: match[0],
+                        line: index + 1,
+                        lineContent: line
+                    });
+                }
+            }
+        });
+        
+        return violations;
+    }
+
+    /**
      * ファイルをチェックしてルール違反を検出
      */
     checkFile(filePath) {
@@ -98,31 +163,50 @@ class ComplianceChecker {
         this.checkedFiles.push(filePath);
 
         VIOLATION_PATTERNS.forEach(rule => {
-            const matches = [...content.matchAll(rule.pattern)];
-            
-            matches.forEach(match => {
-                // マッチした位置の行番号を計算
-                const beforeMatch = content.slice(0, match.index);
-                const lineNumber = beforeMatch.split('\n').length;
-                const lineContent = lines[lineNumber - 1];
-
-                // 除外パターンをチェック
-                if (this.isExcluded(content, match, lineContent)) {
-                    return;
-                }
-
-                this.violations.push({
-                    file: filePath,
-                    line: lineNumber,
-                    column: match.index - beforeMatch.lastIndexOf('\n'),
-                    rule: rule.id,
-                    severity: rule.severity,
-                    description: rule.description,
-                    suggestion: rule.suggestion,
-                    content: lineContent.trim(),
-                    match: match[0]
+            if (rule.customCheck && rule.id === 'title-colon-list') {
+                // カスタムチェック関数を使用
+                const customViolations = this.customCheckTitleColonList(content, rule);
+                customViolations.forEach(violation => {
+                    this.violations.push({
+                        file: filePath,
+                        line: violation.line,
+                        column: 1,
+                        rule: rule.id,
+                        severity: rule.severity,
+                        description: rule.description,
+                        suggestion: rule.suggestion,
+                        content: violation.lineContent.trim(),
+                        match: violation.match
+                    });
                 });
-            });
+            } else {
+                // 通常の正規表現チェック
+                const matches = [...content.matchAll(rule.pattern)];
+                
+                matches.forEach(match => {
+                    // マッチした位置の行番号を計算
+                    const beforeMatch = content.slice(0, match.index);
+                    const lineNumber = beforeMatch.split('\n').length;
+                    const lineContent = lines[lineNumber - 1];
+
+                    // 除外パターンをチェック
+                    if (this.isExcluded(content, match, lineContent)) {
+                        return;
+                    }
+
+                    this.violations.push({
+                        file: filePath,
+                        line: lineNumber,
+                        column: match.index - beforeMatch.lastIndexOf('\n'),
+                        rule: rule.id,
+                        severity: rule.severity,
+                        description: rule.description,
+                        suggestion: rule.suggestion,
+                        content: lineContent.trim(),
+                        match: match[0]
+                    });
+                });
+            }
         });
     }
 
@@ -130,8 +214,17 @@ class ComplianceChecker {
      * 指定されたディレクトリ内のMarkdownファイルをチェック
      */
     checkDirectory(directory = 'manuscripts') {
-        const pattern = path.join(directory, '**/*.md');
-        const files = glob.sync(pattern);
+        let files = [];
+        
+        // 単一ファイルかディレクトリかを判定
+        if (fs.existsSync(directory) && fs.statSync(directory).isFile()) {
+            // 単一ファイルの場合
+            files = [directory];
+        } else {
+            // ディレクトリの場合
+            const pattern = path.join(directory, '**/*.md');
+            files = glob.sync(pattern);
+        }
 
         console.log(`\n🔍 CLAUDE.mdルール準拠性チェックを開始します...`);
         console.log(`📁 対象ディレクトリ: ${directory}`);

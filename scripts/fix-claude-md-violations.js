@@ -45,6 +45,8 @@ const AUTO_FIX_PATTERNS = [
         replacement: '$1- $2：$3',
         description: 'リスト項目の技術用語強調とコロンの修正'
     }
+    // 注意: title-colon-list は階層化が必要なため自動修正対象外
+    // 手動で「- タイトル\n    + 説明文」形式に変更してください
 ];
 
 // より複雑な修正パターン（手動確認推奨）
@@ -116,9 +118,11 @@ class ComplianceFixier {
             this.processedFiles++;
             
             // バックアップファイルを作成
-            const backupPath = `${filePath}.backup.${Date.now()}`;
+            const backupDir = path.join(path.dirname(filePath), 'backup');
+            fs.mkdirSync(backupDir, { recursive: true });
+            const backupPath = path.join(backupDir, path.basename(filePath) + '.backup.' + Date.now());
             fs.writeFileSync(backupPath, originalContent);
-            console.log(`   💾 バックアップ: ${backupPath}`);
+            console.log(`   💾 バックアップ: ${path.relative(process.cwd(), backupPath)}`);
         }
     }
 

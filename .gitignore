@@ -3,6 +3,8 @@
 # vivliostyle
 output/
 
+backup/
+
 # Java Examples Class Files
 *.class
 

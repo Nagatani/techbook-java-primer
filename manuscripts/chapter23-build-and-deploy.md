@@ -242,10 +242,14 @@ jar cvfm ResourceApp.jar manifest.txt ResourceApp.class icon.png
 jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 ```
 コマンドの各オプションの意味
-- `c`：新しいアーカイブを作成する（create）
-- `v`：詳細な情報を表示する（verbose）
-- `f`：作成するファイル名を指定する（file）
-- `m`：指定されたマニフェストファイルを取り込む（manifest）
+- `c`
+-    + 新しいアーカイブを作成する（create）
+- `v`
+-    + 詳細な情報を表示する（verbose）
+- `f`
+-    + 作成するファイル名を指定する（file）
+- `m`
+-    + 指定されたマニフェストファイルを取り込む（manifest）
 
 このコマンドを実行すると、`SimpleApp.jar`という実行可能なJARファイルが作成されます。
 
@@ -308,11 +312,16 @@ jpackage --type app-image \
           --dest ./output
 ```
 主なオプションの説明
-- `--type app-image`：アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`（macOS）、`msi`（Windows）、`rpm`/`deb`（Linux）などを指定する
-- `--name "SimpleApp"`：アプリケーションの名前を指定する
-- `--input ./input`：パッケージ化の材料（JARファイル）が入っているディレクトリを指定する
-- `--main-jar SimpleApp.jar`：入力ディレクトリ内の、メインとなるJARファイル名を指定する
-- `--dest ./output`：完成したアプリケーションを保存するディレクトリを指定する
+- `--type app-image`
+-    + アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`（macOS）、`msi`（Windows）、`rpm`/`deb`（Linux）などを指定する
+- `--name "SimpleApp"`
+-    + アプリケーションの名前を指定する
+- `--input ./input`
+-    + パッケージ化の材料（JARファイル）が入っているディレクトリを指定する
+- `--main-jar SimpleApp.jar`
+-    + 入力ディレクトリ内の、メインとなるJARファイル名を指定する
+- `--dest ./output`
+-    + 完成したアプリケーションを保存するディレクトリを指定する
 
 ### 各OSに向けた基本的なパッケージング例
 
@@ -392,9 +401,12 @@ jpackage --type deb \
 
 ### 課題構成
 
-1. 基礎課題：シンプルなアプリケーションの実行可能JAR作成
-2. 発展課題：リソースファイルを含むJARファイルの作成
-3. チャレンジ課題：各OS向けのネイティブインストーラ作成
+1. 基礎課題
+    + シンプルなアプリケーションの実行可能JAR作成
+2. 発展課題
+    + リソースファイルを含むJARファイルの作成
+3. チャレンジ課題
+    + 各OS向けのネイティブインストーラ作成
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
