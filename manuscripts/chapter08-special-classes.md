@@ -69,6 +69,11 @@ public class EnumExample {
 }
 ```
 
+実行結果：
+```
+今日は WEDNESDAY です。
+```
+
 ### enumの便利な機能
 
 Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、便利なメソッドが標準で提供されています。
@@ -93,6 +98,18 @@ public class EnumMethodsExample {
         System.out.println("金曜日: " + friday);
     }
 }
+```
+
+実行結果：
+```
+0: SUNDAY
+1: MONDAY
+2: TUESDAY
+3: WEDNESDAY
+4: THURSDAY
+5: FRIDAY
+6: SATURDAY
+金曜日: FRIDAY
 ```
 
 ### フィールドとメソッドを持つenum
@@ -161,6 +178,14 @@ public class TrafficLight {
 }
 ```
 
+実行結果（テストコード付き）：
+```
+信号のテスト:
+停止してください
+注意して進んでください
+進んでください
+```
+
 ### 列挙子ごとのメソッド実装
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。
@@ -195,6 +220,15 @@ public enum Operation {
         return symbol;
     }
 }
+```
+
+実行結果（テストコード付き）：
+```
+x = 6.0, y = 2.0
+6.000000 + 2.000000 = 8.000000
+6.000000 - 2.000000 = 4.000000
+6.000000 * 2.000000 = 12.000000
+6.000000 / 2.000000 = 3.000000
 ```
 
 ### enumを使ったデザインパターン
@@ -254,6 +288,14 @@ public enum PaymentStrategy {
     
     public abstract void pay(double amount);
 }
+```
+
+実行結果（テストコード付き）：
+```
+支払い方法のテスト:
+クレジットカードで1500.0円を支払いました
+銀行振込で1500.0円を支払いました
+現金で1500.0円を支払いました
 ```
 
 ### インターフェイスの実装
@@ -324,6 +366,16 @@ public class EnumCollectionExample {
         }
     }
 }
+```
+
+実行結果：
+```
+管理者権限: [READ, WRITE, EXECUTE, DELETE]
+ユーザー権限: [READ, WRITE]
+READ: 読み取り権限
+WRITE: 書き込み権限
+EXECUTE: 実行権限
+DELETE: 削除権限
 ```
 
 ### enumのベストプラクティス
@@ -489,6 +541,16 @@ public class RecordExample {
 }
 ```
 
+実行結果：
+```
+名前: 山田太郎
+年齢: 25
+Person[name=山田太郎, age=25]
+true
+false
+true
+```
+
 ### カスタムコンストラクタとバリデーション
 
 Recordでは、コンパクトコンストラクタを使用してバリデーションを追加できます。
@@ -629,6 +691,14 @@ public class PatternMatchingExample {
         System.out.println(describe(p));  // 座標(10, 20)の点
     }
 }
+```
+
+実行結果（拡張版）：
+```
+座標(10, 20)の点
+文字列: Hello
+null値
+未知のオブジェクト
 ```
 
 ### ローカルRecord
@@ -962,6 +1032,11 @@ public class OuterClass {
 }
 ```
 
+実行結果：
+```
+外部クラスのフィールド: 外部フィールド
+```
+
 #### 2. 静的内部クラス（Static Nested Class）
 
 外部クラスのインスタンスに依存しない内部クラスです。
@@ -990,6 +1065,11 @@ public class MathOperations {
         System.out.println("大きさ: " + vector.magnitude()); // 5.0
     }
 }
+```
+
+実行結果：
+```
+大きさ: 5.0
 ```
 
 #### 3. ローカル内部クラス（Local Inner Class）
@@ -1043,6 +1123,11 @@ public class AnonymousClassExample {
         System.out.println(Arrays.toString(names));
     }
 }
+```
+
+実行結果：
+```
+[Charlie, Bob, Alice]
 ```
 
 ### 実践的な使用例：イテレータパターン

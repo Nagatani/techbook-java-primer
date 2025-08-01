@@ -4,6 +4,7 @@
 output/
 
 backup/
+temp*/
 
 # Java Examples Class Files
 *.class

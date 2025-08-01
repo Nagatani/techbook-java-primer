@@ -30,20 +30,30 @@ Java 8でラムダ式が導入される前、その場限りのインターフ�
 <span class="listing-number">**サンプルコード12-2**</span>
 
 ```java
-// 従来の匿名クラスを使った方法
-Runnable task1 = new Runnable() {
-    @Override
-    public void run() {
-        System.out.println("Hello from anonymous class!");
+public class SampleCode12_2 {
+    public static void main(String[] args) {
+        // 従来の匿名クラスを使った方法
+        Runnable task1 = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Hello from anonymous class!");
+            }
+        };
+
+        // ラムダ式を使った方法（同じ動作）
+        Runnable task2 = () -> System.out.println("Hello from lambda!");
+
+        // 実行（どちらも同じ結果）
+        task1.run();  // Hello from anonymous class!
+        task2.run();  // Hello from lambda!
     }
-};
+}
+```
 
-// ラムダ式を使った方法（同じ動作）
-Runnable task2 = () -> System.out.println("Hello from lambda!");
-
-// 実行（どちらも同じ結果）
-task1.run();  // Hello from anonymous class!
-task2.run();  // Hello from lambda!
+**実行結果:**
+```
+Hello from anonymous class!
+Hello from lambda!
 ```
 
 ラムダ式は、匿名クラスの冗長な記述を簡潔に表現できます。`() ->` が「引数なしで何かを実行する」という意味になります。
@@ -59,6 +69,8 @@ button.addActionListener(new ActionListener() {
     }
 });
 ```
+
+<span class="footnote">※ このコードはGUIアプリケーション内での使用例を示しています。buttonオブジェクトは事前にJButtonとして定義されている前提です。</span>
 このコードは、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
 
 ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
@@ -70,7 +82,7 @@ button.addActionListener(new ActionListener() {
 <span class="listing-number">**サンプルコード12-6**</span>
 
 ```java
-public class HigherOrderFunctions {
+public class SampleCode12_6 {
     // 高階関数によるリスク管理の抽象化
     public <T, R> Function<T, R> withRiskManagement(
         Function<T, R> strategy,
@@ -88,7 +100,7 @@ public class HigherOrderFunctions {
     // 使用例：取引戦略にリスク管理を適用
     public void demonstrateHigherOrderFunction() {
         Function<MarketData, TradingDecision> baseStrategy = 
-            data -> new TradingDecision(data.getPrice() > 100 ? BUY : SELL);
+            data -> new TradingDecision(data.getPrice() > 100 ? TradeType.BUY : TradeType.SELL);
             
         Function<MarketData, TradingDecision> safeStrategy = 
             withRiskManagement(
@@ -98,9 +110,27 @@ public class HigherOrderFunctions {
             );
             
         // 実際の取引実行
+        MarketData currentMarketData = new MarketData(120.0, 0.3);
         TradingDecision decision = safeStrategy.apply(currentMarketData);
+        System.out.println("安全な取引決定: " + decision);
+        
+        // 高リスクの場合
+        MarketData highRiskData = new MarketData(90.0, 0.8);
+        TradingDecision highRiskDecision = safeStrategy.apply(highRiskData);
+        System.out.println("高リスク時の決定: " + highRiskDecision);
+    }
+    
+    public static void main(String[] args) {
+        SampleCode12_6 example = new SampleCode12_6();
+        example.demonstrateHigherOrderFunction();
     }
 }
+```
+
+**実行結果:**
+```
+安全な取引決定: TradingDecision{BUY}
+高リスク時の決定: TradingDecision{HOLD}
 ```
 
 ### 関数型プログラミングのベストプラクティス
@@ -131,6 +161,8 @@ private Item transformItem(Item x) {
 }
 ```
 
+<span class="footnote">※ このコードは設計上のアンチパターンを示す例のため、実行可能な完全なコードではありません。可読性の観点から、ラムダ式の過度なネストは避けるべきことを説明しています。</span>
+
 アンチパターン2: 副作用の濫用。
 
 <span class="listing-number">**サンプルコード12-10**</span>
@@ -147,6 +179,8 @@ List<String> results = items.stream()
     .map(this::processItem)
     .collect(Collectors.toList());
 ```
+
+<span class="footnote">※ このコードは副作用のアンチパターンを示す例です。実際のprocessItemメソッドの実装は省略されています。関数型プログラミングでは副作用を避け、純粋関数を使用することが推奨されます。</span>
 
 ### 実世界での応用例：リアクティブストリーム処理
 
@@ -168,6 +202,9 @@ public class VideoRecommendationService {
         return recommendationEngine.calculate(user, watched, trending);
     }
 }
+```
+
+<span class="footnote">※ このコードは高度なリアクティブプログラミングの概念例です。実際の動作にはReactor（Mono, Flux）やSpring WebFluxなどの追加ライブラリが必要です。Netflix等の大規模システムでの関数型アプローチの応用例として理解してください。</span>
 
 // リアクティブ・関数型アプローチ（高スケーラビリティ）
 public class ReactiveVideoRecommendationService {
@@ -189,6 +226,8 @@ public class ReactiveVideoRecommendationService {
     }
 }
 ```
+
+<span class="footnote">※ このコードは高度なリアクティブプログラミングの概念例です。実際の動作にはReactor（Mono, Flux）やSpring WebFluxなどの追加ライブラリが必要です。Netflix等の大規模システムでの関数型アプローチの応用例として理解してください。</span>
 
 パフォーマンス比較。
 - レイテンシ
@@ -418,6 +457,7 @@ public class EventSourcedAccount {
 }
 ```
 
+<span class="footnote">※ このコードはJava 17以降のsealed interface、record、switch式（パターンマッチング）を使用した高度な例です。実際の動作にはAccountState、Moneyクラスの実装が必要です。イベントソーシングの設計パターンを関数型で表現した概念例として理解してください。</span>
 
 #### ファクトリーパターンの関数型実装
 
@@ -449,6 +489,8 @@ public class ProcessorFactory {
     }
 }
 ```
+
+<span class="footnote">※ このコードは関数型ファクトリパターンの概念例です。実際の動作にはDataProcessor、CsvProcessor、XmlProcessor、JsonProcessor、ProcessorConfigクラスの実装が必要です。従来のファクトリパターンを関数型で簡潔に表現した設計例として理解してください。</span>
 
 ### メモリ効率とパフォーマンス最適化
 
@@ -658,6 +700,8 @@ public class BusinessLogicProcessor {
 button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
 ```
 
+<span class="footnote">※ このコードはサンプルコード12-4の匿名クラス版をラムダ式で簡潔に書き直した例です。buttonオブジェクトは事前にJButtonとして定義されている前提です。</span>
+
 ## 関数型インターフェイス
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、関数型インターフェイス（Functional Interface）として扱われます。
@@ -671,19 +715,45 @@ Comparatorを使ったデータ並び替えの最適化。
 <span class="listing-number">**サンプルコード12-37**</span>
 
 ```java
-// 従来の方法：冗長で理解しにくい
-Collections.sort(students, new Comparator<Student>() {
-    @Override
-    public int compare(Student s1, Student s2) {
-        return s1.getName().compareTo(s2.getName());
+public class SampleCode12_37 {
+    public static void main(String[] args) {
+        List<Student> students = Arrays.asList(
+            new Student("Charlie"),
+            new Student("Alice"),
+            new Student("Bob")
+        );
+        
+        System.out.println("ソート前: " + students);
+        
+        // 従来の方法：冗長で理解しにくい
+        List<Student> students1 = new ArrayList<>(students);
+        Collections.sort(students1, new Comparator<Student>() {
+            @Override
+            public int compare(Student s1, Student s2) {
+                return s1.getName().compareTo(s2.getName());
+            }
+        });
+        System.out.println("従来の方法: " + students1);
+
+        // ラムダ式：簡潔で意図が明確
+        List<Student> students2 = new ArrayList<>(students);
+        students2.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
+        System.out.println("ラムダ式: " + students2);
+
+        // メソッド参照：さらに簡潔
+        List<Student> students3 = new ArrayList<>(students);
+        students3.sort(Comparator.comparing(Student::getName));
+        System.out.println("メソッド参照: " + students3);
     }
-});
+}
+```
 
-// ラムダ式：簡潔で意図が明確
-students.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
-
-// メソッド参照：さらに簡潔
-students.sort(Comparator.comparing(Student::getName));
+**実行結果:**
+```
+ソート前: [Charlie, Alice, Bob]
+従来の方法: [Alice, Bob, Charlie]
+ラムダ式: [Alice, Bob, Charlie]
+メソッド参照: [Alice, Bob, Charlie]
 ```
 
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
@@ -696,7 +766,7 @@ interface MyFunction {
     int calculate(int x, int y);
 }
 
-public class Main {
+public class SampleCode12_39 {
     public static void main(String[] args) {
         // ラムダ式を関数型インターフェイス型の変数に代入
         MyFunction addition = (a, b) -> a + b;
@@ -706,6 +776,12 @@ public class Main {
         System.out.println("引き算: " + subtraction.calculate(10, 5)); // 5
     }
 }
+```
+
+**実行結果:**
+```
+足し算: 15
+引き算: 5
 ```
 
 ### ラムダ式の構文バリエーション
@@ -724,26 +800,67 @@ public class Main {
 <span class="listing-number">**サンプルコード12-41**</span>
 
 ```java
-// 学年で並び替え、同じ学年の場合は名前で並び替え、
-// さらに同名の場合は学生番号で並び替え
-students.sort(
-    Comparator.comparing(Student::getGrade)
-        .thenComparing(Student::getName)
-        .thenComparing(Student::getStudentId)
-);
+public class SampleCode12_41 {
+    public static void main(String[] args) {
+        // 学生のサンプルデータ
+        List<Student> students = Arrays.asList(
+            new Student("Alice", 2, "S003"),
+            new Student("Bob", 1, "S001"),
+            new Student("Charlie", 2, "S002"),
+            new Student("Alice", 1, "S004")
+        );
+        
+        // 学年で並び替え、同じ学年の場合は名前で並び替え、
+        // さらに同名の場合は学生番号で並び替え
+        List<Student> sortedStudents = new ArrayList<>(students);
+        sortedStudents.sort(
+            Comparator.comparing(Student::getGrade)
+                .thenComparing(Student::getName)
+                .thenComparing(Student::getStudentId)
+        );
 
-// 降順ソートの組み合わせ
-students.sort(
-    Comparator.comparing(Student::getGrade).reversed()
-        .thenComparing(Student::getName)
-);
+        // 降順ソートの組み合わせ
+        List<Student> reversedStudents = new ArrayList<>(students);
+        reversedStudents.sort(
+            Comparator.comparing(Student::getGrade).reversed()
+                .thenComparing(Student::getName)
+        );
 
-// 複雑な条件：優先度、作成日時、タイトルの順
-tasks.sort(
-    Comparator.comparing(Task::getPriority).reversed()
-        .thenComparing(Task::getCreatedAt)
-        .thenComparing(Task::getTitle)
-);
+        // 複雑な条件：優先度、作成日時、タイトルの順
+        List<Task> tasks = Arrays.asList(
+            new Task(1, LocalDateTime.now().minusHours(3), "Task C"),
+            new Task(3, LocalDateTime.now().minusHours(1), "Task A"),
+            new Task(1, LocalDateTime.now().minusHours(2), "Task B")
+        );
+        
+        List<Task> sortedTasks = new ArrayList<>(tasks);
+        sortedTasks.sort(
+            Comparator.comparing(Task::getPriority).reversed()
+                .thenComparing(Task::getCreatedAt)
+                .thenComparing(Task::getTitle)
+        );
+    }
+}
+```
+
+**実行結果:**
+```
+学生ソート後（学年→名前→学生番号）:
+Student{name='Alice', grade=1, id='S004'}
+Student{name='Bob', grade=1, id='S001'}
+Student{name='Alice', grade=2, id='S003'}
+Student{name='Charlie', grade=2, id='S002'}
+
+降順ソート（学年降順→名前昇順）:
+Student{name='Alice', grade=2, id='S003'}
+Student{name='Charlie', grade=2, id='S002'}
+Student{name='Alice', grade=1, id='S004'}
+Student{name='Bob', grade=1, id='S001'}
+
+タスクソート後（優先度降順→作成日時→タイトル）:
+Task{priority=3, title='Task A'}
+Task{priority=1, title='Task C'}
+Task{priority=1, title='Task B'}
 ```
 
 ### `java.util.function` パッケージ
@@ -764,25 +881,48 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 ```java
 import java.util.function.*;
 
-public class StandardFunctionalInterfaces {
+public class SampleCode12_43 {
     public static void main(String[] args) {
         // Predicate: 文字列が空かどうかを判定
         Predicate<String> isEmpty = s -> s.isEmpty();
         System.out.println("''は空？: " + isEmpty.test("")); // true
+        System.out.println("'Java'は空？: " + isEmpty.test("Java")); // false
 
         // Function: 文字列を長さに変換
         Function<String, Integer> getLength = s -> s.length();
         System.out.println("'Java'の長さ: " + getLength.apply("Java")); // 4
+        System.out.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
 
         // Consumer: 文字列を大文字で出力
         Consumer<String> printUpper = s -> System.out.println(s.toUpperCase());
+        System.out.print("'hello'を大文字で出力: ");
         printUpper.accept("hello"); // HELLO
 
         // Supplier: 現在時刻を供給
         Supplier<Long> currentTime = () -> System.currentTimeMillis();
         System.out.println("現在時刻: " + currentTime.get());
+        
+        // UnaryOperator: 同じ型の変換
+        UnaryOperator<String> addPrefix = s -> "Hello, " + s;
+        System.out.println("挨拶付き: " + addPrefix.apply("Java"));
+        
+        // BinaryOperator: 同じ型の2つの値から1つの値を生成
+        BinaryOperator<Integer> multiply = (a, b) -> a * b;
+        System.out.println("5 × 7 = " + multiply.apply(5, 7));
     }
 }
+```
+
+**実行結果:**
+```
+''は空？: true
+'Java'は空？: false
+'Java'の長さ: 4
+'Hello World'の長さ: 11
+'hello'を大文字で出力: HELLO
+現在時刻: 1754043968876
+挨拶付き: Hello, Java
+5 × 7 = 35
 ```
 
 ## メソッド参照
@@ -799,16 +939,60 @@ public class StandardFunctionalInterfaces {
 <span class="listing-number">**サンプルコード12-45**</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collectors;
 
-public class MethodReferenceExample {
+public class SampleCode12_45 {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
+        
+        System.out.println("元のリスト: " + words);
+
+        // 静的メソッド参照の例
+        List<String> numbers = Arrays.asList("123", "456", "789");
+        List<Integer> integers = numbers.stream()
+            .map(Integer::parseInt)  // s -> Integer.parseInt(s)
+            .collect(Collectors.toList());
+        System.out.println("文字列から整数への変換: " + integers);
+
+        // インスタンスメソッド参照（特定のインスタンス）
+        System.out.println("\n各単語を出力:");
+        words.forEach(System.out::println);  // s -> System.out.println(s)
+
+        // インスタンスメソッド参照（不特定のインスタンス）
+        System.out.println("\n大文字変換:");
+        words.stream()
+             .map(String::toUpperCase)  // s -> s.toUpperCase()
+             .forEach(System.out::println);
+
+        // コンストラクタ参照
+        Supplier<List<String>> listFactory = ArrayList::new;  // () -> new ArrayList<>()
+        List<String> newList = listFactory.get();
+        newList.add("Hello");
+        newList.add("World");
+        System.out.println("\n新しいリスト: " + newList);
+    }
+}
+```
+
+**実行結果:**
+```
+元のリスト: [apple, banana, cherry]
+文字列から整数への変換: [123, 456, 789]
+
+各単語を出力:
+apple
+banana
+cherry
+
+大文字変換:
+APPLE
+BANANA
+CHERRY
+
+新しいリスト: [Hello, World]
+```
 
 実践的なラムダ式の活用パターン
 
@@ -817,28 +1001,63 @@ public class MethodReferenceExample {
 <span class="listing-number">**サンプルコード12-47**</span>
 
 ```java
-// ExecutorServiceとラムダ式の組み合わせ。
-ExecutorService executor = Executors.newFixedThreadPool(4);
+import java.util.*;
+import java.util.concurrent.*;
 
-// 複数のタスクを並行実行。
-List<Callable<String>> tasks = Arrays.asList(
-    () -> "Task 1 completed",
-    () -> "Task 2 completed", 
-    () -> "Task 3 completed"
-);
-
-try {
-    List<Future<String>> results = executor.invokeAll(tasks);
-    results.forEach(future -> {
+public class SampleCode12_47 {
+    public static void main(String[] args) {
+        // ExecutorServiceとラムダ式の組み合わせ
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        
+        // 複数のタスクを並行実行
+        List<Callable<String>> tasks = Arrays.asList(
+            () -> {
+                Thread.sleep(1000);  // 1秒待機
+                return "Task 1 completed";
+            },
+            () -> {
+                Thread.sleep(500);   // 0.5秒待機
+                return "Task 2 completed";
+            }, 
+            () -> {
+                Thread.sleep(1500);  // 1.5秒待機
+                return "Task 3 completed";
+            }
+        );
+        
+        System.out.println("タスク実行開始...");
+        long startTime = System.currentTimeMillis();
+        
         try {
-            System.out.println(future.get());
-        } catch (Exception e) {
+            List<Future<String>> results = executor.invokeAll(tasks);
+            System.out.println("実行結果:");
+            results.forEach(future -> {
+                try {
+                    System.out.println(future.get());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            executor.shutdown();
         }
-    });
-} finally {
-    executor.shutdown();
+        
+        long endTime = System.currentTimeMillis();
+        System.out.println("実行時間: " + (endTime - startTime) + "ms");
+    }
 }
+```
+
+**実行結果:**
+```
+タスク実行開始...
+実行結果:
+Task 1 completed
+Task 2 completed
+Task 3 completed
+実行時間: 1511ms
 ```
 
         // ラムダ: s -> System.out.println(s)
@@ -858,31 +1077,68 @@ try {
 <span class="listing-number">**サンプルコード12-49**</span>
 
 ```java
-// ラムダ式 vs メソッド参照の比較。
-List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-// ラムダ式：やや冗長。
-names.stream()
-     .map(name -> name.toUpperCase())
-     .forEach(name -> System.out.println(name));
+public class SampleCode12_49 {
+    public static void main(String[] args) {
+        // ラムダ式 vs メソッド参照の比較
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+        
+        System.out.println("元のリスト: " + names);
+        
+        // ラムダ式：やや冗長
+        System.out.println("\nラムダ式を使用:");
+        names.stream()
+             .map(name -> name.toUpperCase())
+             .forEach(name -> System.out.println(name));
 
-// メソッド参照：簡潔で意図が明確。
-names.stream()
-     .map(String::toUpperCase)
-     .forEach(System.out::println);
+        // メソッド参照：簡潔で意図が明確
+        System.out.println("\nメソッド参照を使用:");
+        names.stream()
+             .map(String::toUpperCase)
+             .forEach(System.out::println);
 
-// コンストラクタ参照の活用。
-List<Person> people = names.stream()
-    .map(Person::new)  // name -> new Person(name) と同じ。
-    .collect(Collectors.toList());
+        // コンストラクタ参照の活用
+        List<Person> people = names.stream()
+            .map(Person::new)  // name -> new Person(name) と同じ
+            .collect(Collectors.toList());
+        
+        System.out.println("\nPersonオブジェクトのリスト:");
+        people.forEach(System.out::println);
 
         // ラムダ: () -> new ArrayList<>()
-        // メソッド参照: ArrayList::new。
+        // メソッド参照: ArrayList::new
         Supplier<List<String>> listFactory = ArrayList::new;
         List<String> newList = listFactory.get();
-        System.out.println("新しいリスト: " + newList);。
+        newList.add("Hello");
+        newList.add("Method Reference");
+        System.out.println("\n新しいリスト: " + newList);
     }
 }
+```
+
+**実行結果:**
+```
+元のリスト: [Alice, Bob, Charlie]
+
+ラムダ式を使用:
+ALICE
+BOB
+CHARLIE
+
+メソッド参照を使用:
+ALICE
+BOB
+CHARLIE
+
+Personオブジェクトのリスト:
+Person{name='Alice'}
+Person{name='Bob'}
+Person{name='Charlie'}
+
+新しいリスト: [Hello, Method Reference]
 ```
 
 ## ラムダ式の応用例
@@ -896,21 +1152,63 @@ List<Person> people = names.stream()
 <span class="listing-number">**サンプルコード12-51**</span>
 
 ```java
-public class ThreadLambdaExample {
+public class SampleCode12_51 {
     public static void main(String[] args) {
-        // 匿名クラスでのRunnable。
+        System.out.println("メインスレッド開始");
+        
+        // 匿名クラスでのRunnable
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 System.out.println("Thread t1 (Anonymous) is running...");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Thread t1 (Anonymous) finished");
             }
         });
         t1.start();
 
-        // ラムダ式でのRunnable。
-        Thread t2 = new Thread(() -> System.out.println("Thread t2 (Lambda) is running..."));
+        // ラムダ式でのRunnable
+        Thread t2 = new Thread(() -> {
+            System.out.println("Thread t2 (Lambda) is running...");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Thread t2 (Lambda) finished");
+        });
         t2.start();
+        
+        // より簡潔なラムダ式（単一ステートメント）
+        Thread t3 = new Thread(() -> System.out.println("Thread t3 (Simple Lambda) executed"));
+        t3.start();
+        
+        // すべてのスレッドの完了を待機
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("メインスレッド終了");
     }
 }
+```
+
+**実行結果:**
+```
+メインスレッド開始
+Thread t1 (Anonymous) is running...
+Thread t2 (Lambda) is running...
+Thread t3 (Simple Lambda) executed
+Thread t2 (Lambda) finished
+Thread t1 (Anonymous) finished
+メインスレッド終了
 ```
 
 ## さらに深い理解のために
@@ -995,7 +1293,30 @@ public class ValidationFramework {
         
         return new ValidationResult(errors.isEmpty(), errors);
     };
+    
+    public static void main(String[] args) {
+        // テストユーザー
+        User validUser = new User("太郎", "taro@example.com", "password123");
+        User invalidUser = new User("", "invalid-email", "123");
+        
+        System.out.println("有効なユーザーのバリデーション:");
+        ValidationResult result1 = validateUserWithErrors.apply(validUser);
+        System.out.println(result1);
+        
+        System.out.println("\n無効なユーザーのバリデーション:");
+        ValidationResult result2 = validateUserWithErrors.apply(invalidUser);
+        System.out.println(result2);
+    }
 }
+```
+
+**実行結果:**
+```
+有効なユーザーのバリデーション:
+有効
+
+無効なユーザーのバリデーション:
+無効: 名前は必須です, 有効なメールアドレスを入力してください, パスワードは8文字以上である必要があります
 ```
 
 ※ 本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください。
@@ -1012,12 +1333,14 @@ public class ValidationFramework {
 <span class="listing-number">**サンプルコード12-54**</span>
 
 ```java
-// ❌ 不正なラムダ式の構文。
+// ❌ 不正なラムダ式の構文
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.forEach(name -> {
-    System.out.println(name)  // セミコロン忘れ。
+    System.out.println(name)  // セミコロン忘れ
 });
 ```
+
+<span class="footnote">※ このコードはコンパイルエラーになります。実際に実行することはできません。</span>
 
 ##### エラーメッセージ
 ```
@@ -1029,14 +1352,37 @@ error: ';' expected
 <span class="listing-number">**サンプルコード12-55**</span>
 
 ```java
-// ✅ 正しいラムダ式の構文。
-List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
-names.forEach(name -> {
-    System.out.println(name);  // セミコロンを追加。
-});
+import java.util.Arrays;
+import java.util.List;
 
-// または単一式の場合は波括弧を省略。
-names.forEach(name -> System.out.println(name));
+public class SampleCode12_55 {
+    public static void main(String[] args) {
+        // ✅ 正しいラムダ式の構文
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+        
+        System.out.println("波括弧を使用した形式:");
+        names.forEach(name -> {
+            System.out.println(name);  // セミコロンを追加
+        });
+
+        // または単一式の場合は波括弧を省略
+        System.out.println("\n波括弧を省略した形式:");
+        names.forEach(name -> System.out.println(name));
+    }
+}
+```
+
+**実行結果:**
+```
+波括弧を使用した形式:
+Alice
+Bob
+Charlie
+
+波括弧を省略した形式:
+Alice
+Bob
+Charlie
 ```
 
 ### 型推論の問題

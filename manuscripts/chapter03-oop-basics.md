@@ -236,6 +236,11 @@ public class ProceduralExample {
 }
 ```
 
+実行結果：
+```
+名前: 田中太郎, 年齢: 20, GPA: 3.5
+```
+
 #### 構造的問題の分析
 
 - ①　データの散在
@@ -274,6 +279,11 @@ public class ObjectOrientedExample {
         student.printInfo();  // ⑤
     }
 }
+```
+
+実行結果：
+```
+名前: 田中太郎, 年齢: 20, GPA: 3.5
 ```
 
 #### オブジェクト指向の利点の実現
@@ -315,6 +325,30 @@ public class BankAccount {
 }
 ```
 
+使用例と実行結果：
+```java
+// BankAccountTest.java
+public class BankAccountTest {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount();
+        System.out.println("初期残高: " + account.getBalance() + "円");
+        
+        account.deposit(10000);
+        System.out.println("10000円入金後: " + account.getBalance() + "円");
+        
+        account.deposit(-5000);  // 負の値は無視される
+        System.out.println("負の値入金後: " + account.getBalance() + "円");
+    }
+}
+```
+
+実行結果：
+```
+初期残高: 0.0円
+10000円入金後: 10000.0円
+負の値入金後: 10000.0円
+```
+
 ##### カプセル化の効果
 
 - ①　データの隠蔽
@@ -352,6 +386,29 @@ public class Book extends Product {  // ③
         System.out.println("著者: " + author + ", ISBN: " + isbn);
     }
 }
+```
+
+使用例と実行結果：
+```java
+// InheritanceTest.java
+public class InheritanceTest {
+    public static void main(String[] args) {
+        Book book = new Book();
+        book.productId = "B001";
+        book.name = "Java入門";
+        book.price = 2800;
+        book.author = "田中太郎";
+        book.isbn = "978-4-12345-678-9";
+        
+        book.displayBookInfo();
+    }
+}
+```
+
+実行結果：
+```
+商品名: Java入門, 価格: 2800円
+著者: 田中太郎, ISBN: 978-4-12345-678-9
 ```
 
 ##### 継承による機能拡張
@@ -395,6 +452,30 @@ public class BankTransferPayment implements PaymentMethod {  // ②
         System.out.println("銀行振込で" + amount + "円を送金しました");
     }
 }
+```
+
+使用例と実行結果：
+```java
+// PolymorphismTest.java
+public class PolymorphismTest {
+    public static void main(String[] args) {
+        PaymentMethod[] payments = {
+            new CreditCardPayment(),
+            new BankTransferPayment()
+        };
+        
+        double amount = 5000;
+        for (PaymentMethod payment : payments) {
+            payment.processPayment(amount);
+        }
+    }
+}
+```
+
+実行結果：
+```
+クレジットカードで5000.0円を決済しました
+銀行振込で5000.0円を送金しました
 ```
 
 ##### ポリモーフィズムの仕組み
@@ -446,6 +527,8 @@ public class Student {
 }
 ```
 
+これはクラス構造の例です。
+
 #### フィールドの重要なポイント
 - フィールドは通常、クラスの最初に宣言する
 - 各フィールドには型（String、int、doubleなど）が必要である
@@ -486,6 +569,14 @@ public class DefaultValueDemo {
 }
 ```
 
+実行結果：
+```
+int: 0
+double: 0.0
+boolean: false
+String: null
+```
+
 ### フィールド（インスタンス変数）の詳細
 
 フィールドは、オブジェクトの状態を表現する変数です。クラス内で宣言され、そのクラスから生成される各オブジェクトが独自の値を保持します。
@@ -498,6 +589,8 @@ public class DefaultValueDemo {
 アクセス修飾子 データ型 フィールド名;
 アクセス修飾子 データ型 フィールド名 = 初期値;
 ```
+
+これは構文の説明です。
 
 #### 実際の使用例
 
@@ -537,6 +630,36 @@ public class Product {
 }
 ```
 
+使用例と実行結果：
+```java
+// ProductTest.java
+public class ProductTest {
+    public static void main(String[] args) {
+        Product product = new Product("P001", "ノートPC", 98000);
+        
+        product.showInfo();
+        System.out.println("---");
+        
+        product.addStock(10);
+        product.showInfo();
+    }
+}
+```
+
+実行結果：
+```
+商品ID: P001
+商品名: ノートPC
+価格: ¥98000.0
+在庫数: 0個
+---
+10個入荷しました
+商品ID: P001
+商品名: ノートPC
+価格: ¥98000.0
+在庫数: 10個
+```
+
 #### フィールドのデフォルト値
 
 フィールドに初期値を指定しない場合、以下のデフォルト値が自動的に設定されます。
@@ -554,7 +677,7 @@ public class Product {
 メソッドは、オブジェクトが「できること」を定義します。
 C言語の関数と似ていますが、関数とデータ（フィールド）がそれぞれオブジェクトに属している点が異なります。
 
-これにより、データとそれに対してできることをまとめて管理することができます。
+これにより、データとそれに対してできることをまとめて管理できます。
 
 #### メソッドの宣言構文
 
@@ -629,6 +752,20 @@ public class RectangleExample {
 }
 ```
 
+実行結果：
+```
+幅: 10.0
+高さ: 5.0
+面積: 50.0
+周囲: 30.0
+面積は50.0です
+2.0倍にリサイズしました
+幅: 20.0
+高さ: 10.0
+面積: 200.0
+周囲: 60.0
+```
+
 #### メソッドの種類
 
 ##### 1. 戻り値がないメソッド（voidメソッド）
@@ -641,6 +778,8 @@ public void printMessage() {
 }
 ```
 
+これは戻り値がないメソッドの構文例です。
+
 ##### 2. 戻り値があるメソッド
 
 <span class="listing-number">**サンプルコード3-30**</span>
@@ -650,6 +789,8 @@ public int add(int a, int b) {
     return a + b;  // int型の値を返す
 }
 ```
+
+これは戻り値があるメソッドの構文例です。
 
 ##### 3. 引数がないメソッド
 
@@ -661,6 +802,8 @@ public void showTime() {
 }
 ```
 
+これは引数がないメソッドの構文例です。
+
 ##### 4. 複数の引数を持つメソッド
 
 <span class="listing-number">**サンプルコード3-32**</span>
@@ -670,6 +813,8 @@ public double calculateBMI(double weight, double height) {
     return weight / (height * height);
 }
 ```
+
+これは複数の引数を持つメソッドの構文例です。
 
 ### getter/setterメソッドの基本
 
@@ -710,6 +855,34 @@ public class Person {
         }
     }
 }
+```
+
+使用例と実行結果：
+```java
+// PersonTest.java
+public class PersonTest {
+    public static void main(String[] args) {
+        Person person = new Person();
+        
+        // setterを使ってデータを設定
+        person.setName("山田太郎");
+        person.setAge(25);
+        
+        // getterを使ってデータを取得
+        System.out.println("名前: " + person.getName());
+        System.out.println("年齢: " + person.getAge() + "歳");
+        
+        // 無効な年齢を設定してみる
+        person.setAge(200);
+    }
+}
+```
+
+実行結果：
+```
+名前: 山田太郎
+年齢: 25歳
+無効な年齢です
 ```
 
 #### getter/setterを使う利点
@@ -754,6 +927,35 @@ public class Book {
 }
 ```
 
+使用例と実行結果：
+```java
+// BookTest.java
+public class BookTest {
+    public static void main(String[] args) {
+        // 引数ありコンストラクタで作成
+        Book book1 = new Book("Java入門", "田中太郎", 300);
+        book1.displayInfo();
+        
+        System.out.println("---");
+        
+        // デフォルトコンストラクタで作成
+        Book book2 = new Book();
+        book2.displayInfo();
+    }
+}
+```
+
+実行結果：
+```
+タイトル: Java入門
+著者: 田中太郎
+ページ数: 300
+---
+タイトル: 未設定
+著者: 不明
+ページ数: 0
+```
+
 ### メソッドオーバーロード（同じ名前のメソッド）
 
 Javaでは、同じ名前のメソッドを複数定義できます。これを「メソッドオーバーロード」と呼びます。
@@ -791,10 +993,17 @@ public class OverloadExample {
 }
 ```
 
+実行結果：
+```
+こんにちは
+数値: 42
+年齢: 20
+```
+
 #### メソッドオーバーロードの詳細
 
 メソッドオーバーロードは、同じ名前で異なるパラメータを持つメソッドを複数定義できる強力な機能です。
-これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが大幅に向上します。
+これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが向上します。
 
 ##### C言語との決定的な違い
 
@@ -816,6 +1025,8 @@ public double add(double a, double b) { return a + b; }
 public int add(int a, int b, int c) { return a + b + c; }
 ```
 
+これはメソッドオーバーロードの例です。
+
 ##### オーバーロードのメリット
 
 1. 直感的なAPI設計
@@ -831,7 +1042,7 @@ public int add(int a, int b, int c) { return a + b + c; }
 ##### オーバーロードの解決規則
 
 Javaコンパイラはメソッド選択の際に特定のルールに従います。
-以下の優先順位で適切なメソッドを選択します。
+以下の優先順位でメソッドを選択します。
 
 1. 完全一致（型変換なし）
 2. プリミティブ型の拡大変換（`int` → `long`、`float` → `double`など）
@@ -869,6 +1080,15 @@ public class OverloadResolution {
 }
 ```
 
+実行結果：
+```
+int: 10
+int: 10
+long: 10
+Integer: 10
+可変長引数: [1, 2, 3]
+```
+
 > **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。次のコードはコンパイルエラーになります。
 > ```java
 > public int calculate() { return 1; }
@@ -903,6 +1123,8 @@ public class Person {
     }
 }
 ```
+
+これはコンストラクタオーバーロードの例です。
 
 ## 実用的なクラス設計例
 
@@ -943,6 +1165,44 @@ public class Book {
         return String.format("%s - %s (%s) [%s]", isbn, title, author, status);
     }
 }
+```
+
+使用例と実行結果：
+```java
+// BookLibraryTest.java
+public class BookLibraryTest {
+    public static void main(String[] args) {
+        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
+        
+        System.out.println(book.getInfo());
+        
+        // 本を借りる
+        if (book.borrow()) {
+            System.out.println("貸出処理が完了しました");
+        }
+        System.out.println(book.getInfo());
+        
+        // もう一度借りようとする
+        if (!book.borrow()) {
+            System.out.println("この本は貸出中です");
+        }
+        
+        // 本を返却
+        book.returnBook();
+        System.out.println("返却処理が完了しました");
+        System.out.println(book.getInfo());
+    }
+}
+```
+
+実行結果：
+```
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+貸出処理が完了しました
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出中]
+この本は貸出中です
+返却処理が完了しました
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
 ```
 
 このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
@@ -1010,6 +1270,31 @@ public class ShoppingCart {
         }
     }
 }
+```
+
+使用例と実行結果：
+```java
+// ShoppingCartTest.java
+public class ShoppingCartTest {
+    public static void main(String[] args) {
+        ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%
+        
+        cart.addItem("ノートPC", 98000, 1);
+        cart.addItem("マウス", 3500, 2);
+        cart.addItem("キーボード", 8500, 1);
+        
+        cart.displayCart();
+    }
+}
+```
+
+実行結果：
+```
+=== ショッピングカート ===
+ノートPC - 98000.00円 × 1 = 98000.00円
+マウス - 3500.00円 × 2 = 7000.00円
+キーボード - 8500.00円 × 1 = 8500.00円
+合計（税込）: 125050.00円
 ```
 
 ## まとめ
@@ -1135,6 +1420,8 @@ public class Student {
 }
 ```
 
+これは手続き型との比較のためのクラス構造の例です。
+
 #### オブジェクト指向プログラミングによる問題解決
 
 オブジェクト指向プログラミングは、手続き型プログラミングの課題を体系的に解決します。もっとも重要な改善点は責任の明確化です。学生に関するすべての操作がStudentクラス内に集約されることで、データの管理責任が明確になり、どこに何の機能があるかが一目瞭然になります。これにより、バグの原因特定や機能追加が劇的に簡単になります。
@@ -1151,7 +1438,7 @@ public class Student {
 
 ここでは、小さい子ども（あなたはその子を世話する親とする）の着替えを例に考えてみましょう。
 小さい子どもに対して着替えの指示を出す場合、細かくすべてを指示する必要があるでしょうか。
-たとえば、対象の子どもが上着を着ているか確認し、近づいてボタンを外し、右腕から袖を通して脱がせるなど、毎回すべての手順を指示するのは非常に手間がかかります。
+たとえば、対象の子どもが上着を着ているか確認し、近づいてボタンを外し、右腕から袖を通して脱がせるなど、毎回すべての手順を指示するのは手間がかかります。
 
 毎回、状態を確認しつつすべての行動を指示出しするのは面倒でありませんか？
 子どもには、「あなたは、着替えてください（服を）」というような命令で指示を出せて、結果だけ受け取ることができたらよいですね。
@@ -1299,6 +1586,38 @@ public class Book {
 }
 ```
 
+使用例と実行結果：
+```java
+// BookClassTest.java
+public class BookClassTest {
+    public static void main(String[] args) {
+        Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
+        
+        book.displayInfo();
+        System.out.println("---");
+        
+        // 価格変更
+        book.setPrice(2500.0);
+        System.out.println("価格変更後:");
+        book.displayInfo();
+    }
+}
+```
+
+実行結果：
+```
+タイトル: Java入門
+著者: 田中太郎
+ページ数: 300
+価格: 2800.0円
+---
+価格変更後:
+タイトル: Java入門
+著者: 田中太郎
+ページ数: 300
+価格: 2500.0円
+```
+
 #### このクラス定義から学ぶ重要な概念
 
 1. カプセル化の実践
@@ -1337,6 +1656,20 @@ public class BookTest {
         System.out.println("変更後の価格: " + book1.getTitle() + " - " + book1.getPrice() + "円");
     }
 }
+```
+
+実行結果：
+```
+タイトル: Java入門
+著者: 田中太郎
+ページ数: 300
+価格: 2800.0円
+---
+タイトル: データ構造
+著者: 佐藤花子
+ページ数: 250
+価格: 3200.0円
+変更後の価格: Java入門 - 2500.0円
 ```
 
 #### このプログラムから学ぶオブジェクト指向の重要な概念
@@ -1410,6 +1743,32 @@ public class Student {
 }
 ```
 
+使用例と実行結果：
+```java
+// StudentAccessTest.java
+public class StudentAccessTest {
+    public static void main(String[] args) {
+        Student student = new Student("山田太郎", 22, 3.8);
+        
+        // publicメソッドは呼び出せる
+        student.introduce();
+        student.checkStatus();
+        
+        // privateフィールドには直接アクセスできない
+        // System.out.println(student.name); // コンパイルエラー
+        
+        // privateメソッドも直接呼び出せない
+        // student.isAdult(); // コンパイルエラー
+    }
+}
+```
+
+実行結果：
+```
+私は山田太郎です。22歳です。
+成人です
+```
+
 ### なぜprivateを使うのか？
 
 フィールドをprivateにする理由を具体例で見てみましょう。
@@ -1439,6 +1798,8 @@ public class BadExample {
     }
 }
 ```
+
+これはpublicフィールドの問題点を示す例です。
 
 #### privateを使った改善例
 
@@ -1495,6 +1856,34 @@ public class Product {
 }
 ```
 
+使用例と実行結果：
+```java
+// ImprovedProductTest.java
+public class ImprovedProductTest {
+    public static void main(String[] args) {
+        Product product = new Product(1500.0, 10);
+        
+        // 正常な操作
+        product.updatePrice(1800.0);
+        product.addStock(5);
+        product.sell(3);
+        
+        // 異常な操作（エラーが適切に処理される）
+        product.updatePrice(-500.0);
+        product.sell(20);
+    }
+}
+```
+
+実行結果：
+```
+価格を更新しました: 1800.0円
+在庫を追加しました。現在の在庫: 15
+販売しました。残り在庫: 12
+エラー: 価格は0円以上である必要です
+在庫が不足しています
+```
+
 
 ## static修飾子の詳細な理解
 
@@ -1531,6 +1920,12 @@ public class StaticExample {
         System.out.println("円の面積: " + area);
     }
 }
+```
+
+実行結果：
+```
+合計: 8
+円の面積: 314.159
 ```
 
 #### staticの特徴
@@ -1641,6 +2036,8 @@ public class StaticMemberExample {
    }
    ```
 
+   これはユーティリティメソッドの例です。
+
 #### ファクトリーメソッド
 
 <span class="listing-number">**サンプルコード3-38**</span>
@@ -1664,6 +2061,8 @@ public class StaticMemberExample {
    }
    ```
 
+   これはファクトリーメソッドパターンの例です。
+
 #### 定数の定義
 
 <span class="listing-number">**サンプルコード3-39**</span>
@@ -1674,6 +2073,8 @@ public class StaticMemberExample {
        public static final int MAX_RETRY_COUNT = 3;
    }
    ```
+
+   これは定数定義の例です。
 
 ### staticの設計上の注意点
 
@@ -1726,6 +2127,8 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 // students[2]〜students[4]はnullのまま
 ```
 
+これはオブジェクト配列の宣言と初期化の構文例です。
+
 #### 重要なポイント
 
 - `new Student[5]`はStudentオブジェクト5個を作るのではなく、Studentへの参照5個分の配列を作る
@@ -1764,6 +2167,39 @@ public class StudentArrayExample {
 }
 ```
 
+実行に必要なStudentクラスの定義（簡略版）：
+```java
+class Student {
+    private String name;
+    private int age;
+    private double gpa;
+    
+    public Student(String name, int age, double gpa) {
+        this.name = name;
+        this.age = age;
+        this.gpa = gpa;
+    }
+    
+    public void display() {
+        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+    }
+    
+    public double getGpa() {
+        return gpa;
+    }
+}
+```
+
+実行結果：
+```
+学生一覧:
+名前: 田中太郎, 年齢: 20, GPA: 3.5
+名前: 佐藤花子, 年齢: 21, GPA: 3.8
+名前: 鈴木一郎, 年齢: 19, GPA: 3.2
+
+平均GPA: 3.5
+```
+
 ### オブジェクト配列のnullチェック
 
 オブジェクト配列を操作する際のもっとも重要な注意点は、nullチェックです。
@@ -1792,6 +2228,12 @@ public class NullCheckExample {
 }
 ```
 
+実行結果：
+```
+名前: 田中, 年齢: 20, GPA: 3.5
+名前: 佐藤, 年齢: 21, GPA: 3.8
+```
+
 ### クラス型配列とプリミティブ型配列の違い
 
 クラス型の配列の初期値は`null`でしたが、プリミティブ型の配列の場合は、それぞれの型の初期値が代入されています。
@@ -1808,6 +2250,8 @@ System.out.println(numbers[0]); // 0が表示される
 Student[] students = new Student[5]; // 各要素はnullで初期化される
 System.out.println(students[0]);     // nullが表示される
 ```
+
+これは配列の初期値の違いを示す構文例です。
 
 ### まとめ
 

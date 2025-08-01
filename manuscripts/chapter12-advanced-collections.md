@@ -95,6 +95,15 @@ Comparator<Student> scoreComparator = new Comparator<Student>() {
 // ラムダ式を使ったComparatorの実装
 Comparator<Student> scoreComparator = (s1, s2) -> Integer.compare(s2.getScore(), s1.getScore());
 ```
+
+実行結果（両方とも同じ結果）：
+```
+山田: 92点
+鈴木: 88点
+田中: 85点
+佐藤: 78点
+```
+
 `compare`メソッドの実装だけを抜き出したような形になり、非常にシンプルになりました。`->`の左側がメソッドの引数、右側が処理本体です。
 
 ### `Comparator`の便利なメソッド
@@ -144,6 +153,12 @@ public class AdvancedSortExample {
     }
 }
 ```
+
+実行結果：
+```
+[Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
+```
+
 `Student::getScore`はメソッド参照とよい、`student -> student.getScore()`というラムダ式をさらに簡潔にした書き方です。
 
 ## Stream APIによる現代的なコレクション操作
@@ -489,6 +504,16 @@ public class OptionalTransformationExample {
 }
 ```
 
+実行結果：
+```
+map: Optional[Alice]
+Nested map: Optional[5]
+flatMap: Optional[alice@example.com]
+flatMap (no email): Optional.empty
+filter (passed): true
+filter (failed): false
+```
+
 ### Stream APIとの連携
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
@@ -556,6 +581,14 @@ public class OptionalStreamExample {
         System.out.println("高額商品リスト: " + expensiveProductNames);
     }
 }
+```
+
+実行結果：
+```
+最初の高額商品: Laptop
+安価な商品: Mouse
+最高額商品: Laptop ($1200.0)
+高額商品リスト: [Laptop]
 ```
 
 ### 実践的な使用例
@@ -655,6 +688,14 @@ public class OptionalPracticalExample {
         System.out.println("タイムアウト値: " + timeout + "秒");
     }
 }
+```
+
+実行結果：
+```
+ユーザー 1 のメールドメイン: example.com
+ユーザーID 999 は存在しません
+アプリケーション名: Sample Application
+タイムアウト値: 30秒
 ```
 
 ### アンチパターンと注意点
@@ -775,6 +816,12 @@ long sumParallel = numbers.parallelStream()
     .sum();
 ```
 
+実行結果：
+```
+シーケンシャル処理の結果: 220
+並列処理の結果: 220
+```
+
 ### 並列ストリームの内部動作
 
 並列ストリームは、JavaのFork/Joinフレームワークを使用して実装されています。処理の流れは以下のようになります。
@@ -818,6 +865,13 @@ public class ParallelStreamExample {
             (double)seqTime.toMillis() / parTime.toMillis() + "倍");
     }
 }
+```
+
+実行結果：
+```
+シーケンシャル: 304ms
+並列: 62ms
+高速化率: 4.903225806451613倍
 ```
 
 ### 並列ストリームの注意点
@@ -908,6 +962,12 @@ public class FlatMapExample {
 }
 ```
 
+実行結果：
+```
+[Java, Python, JavaScript, Go, Rust, C++]
+[Hello, world, Java, programming, Stream, API]
+```
+
 `flatMap`は、一対多の関係を持つデータを処理する際に非常に強力です。各学生が複数の科目を履修している場合など、実世界のデータ構造でよく遭遇するパターンを簡潔に処理できます。
 
 ### reduceによる集約処理
@@ -959,6 +1019,14 @@ public class ReduceExample {
 }
 ```
 
+実行結果：
+```
+合計: 15
+最大値: 5
+Java is awesome
+平均点: 85.0
+```
+
 `reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`, `max()`, `min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます。
 
 ### Collectorsによる高度なデータ収集
@@ -1007,6 +1075,14 @@ public class CollectorsExample {
 }
 ```
 
+実行結果：
+```
+高得点者: [Alice, Bob, David, Eve]
+点数別グループ: {85=[Alice(score:85, height:165)], 88=[Eve(score:88, height:160)], 92=[Bob(score:92, height:170), David(score:92, height:175)], 78=[Charlie(score:78, height:180)]}
+合格者: 4人
+不合格者: 1人
+```
+
 `Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句に相当する処理をJavaのコード内で簡潔に実現できます。
 
 ### Optionalによる安全なデータ処理
@@ -1047,6 +1123,12 @@ public class OptionalExample {
 }
 ```
 
+実行結果：
+```
+最初の高得点者: Bob
+トップスコアラー: Bob
+```
+
 ### Optionalの連鎖操作
 
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
@@ -1077,6 +1159,11 @@ public class OptionalChainingExample {
         System.out.println("最高得点者（大文字）: " + result);
     }
 }
+```
+
+実行結果：
+```
+最高得点者（大文字）: BOB
 ```
 
 ### null安全な処理パターン
@@ -1119,6 +1206,12 @@ public class NullSafeProcessingExample {
 }
 ```
 
+実行結果：
+```
+有効な名前: [ALICE, BOB, CHARLIE]
+安全な名前処理: UNKNOWN
+```
+
 ### 早期終了操作の活用
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
@@ -1155,6 +1248,14 @@ public class ShortCircuitExample {
 }
 ```
 
+実行結果：
+```
+チェック中: 1
+すべて偶数: false
+7より大きい数あり: true
+最初の3つ: [1, 2, 3]
+```
+
 早期終了操作は、とくに大量のデータや無限ストリームを扱う際に、パフォーマンスの向上とメモリ効率の最適化に大きく貢献します。
 
 ### 実用的なtoArray操作
@@ -1187,6 +1288,12 @@ public class ToArrayExample {
         System.out.println("サイズ指定配列: " + Arrays.toString(sizedArray));
     }
 }
+```
+
+実行結果：
+```
+結果配列: [ALICE, CHARLIE, DAVID]
+サイズ指定配列: [Alice, Bob, Charlie, David]
 ```
 
 ### 複雑な処理パイプラインの実装
@@ -1241,6 +1348,17 @@ public class ComplexProcessingExample {
             System.out.printf("%s: %.1f点%n", group, avg));
     }
 }
+```
+
+実行結果：
+```
+身長グループ別最高得点者:
+高身長: Bob
+標準身長: Grace
+
+身長グループ別平均点:
+高身長: 86.2点
+標準身長: 86.5点
 ```
 
 このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。

@@ -132,6 +132,27 @@ public class ScannerExample {
 }
 ```
 
+実行結果：
+```
+--- Scannerによる行単位の読み込み ---
+Line 1: This is the first line.
+Line 2: This is the second line.
+Line 3: Java programming is fun!
+100 200 300
+apple banana cherry
+
+--- デリミターを使った読み込み ---
+リンゴ
+150
+赤
+バナナ
+100
+黄
+
+--- 型を指定した読み込み ---
+整数: 100, 小数: 3.14, 真偽値: true
+```
+
 <span class="listing-number">**サンプルコード15-6**</span>
 
 ```java
@@ -181,6 +202,17 @@ public class TextFileReaderExample {
         }
     }
 }
+```
+
+実行結果：
+```
+--- 1行ずつ読み込み ---
+Line 1
+Line 2
+
+--- 全行を一度に読み込み ---
+Line 1
+Line 2
 ```
 
 ### テキストファイルの書き込み

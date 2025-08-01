@@ -194,6 +194,8 @@ public class PaymentProcessor {
 // 並行処理環境では、errorMessageフィールドの共有により問題が生じる可能性があります。
 ```
 
+これは決済処理の基底クラスで、テンプレートメソッドパターンを実装しています。processPayment()メソッドが決済処理の共通フローを定義し、子クラスで特定の処理をオーバーライドできるようになっています。
+
 #### テンプレートメソッドパターンの重要なポイント
 
 1. 共通フローの定義
@@ -302,6 +304,8 @@ public class PayPalPayment extends PaymentProcessor {
 }
 ```
 
+これらは決済処理基底クラスを継承した具体的な実装例です。CreditCardPaymentはクレジットカード特有の検証を、PayPalPaymentはPayPal特有の検証を実装し、それぞれの決済方法に応じたAPI呼び出しをシミュレートしています。
+
 このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは各決済手段に固有の検証ロジック（クレジットカードの番号検証、PayPalのアカウント認証、銀行口座の残高確認など）が必要な場合に、これらのメソッドをオーバーライドして独自の振る舞いを実装できます。
 
 #### 例外を使わない決済処理の使用例
@@ -345,6 +349,16 @@ public class PaymentExample {
     }
 }
 ```
+
+実行結果：
+```
+クレジットカード決済APIを呼び出し中...
+取引ID: TXN001 承認コード: CC-1707123456789
+決済成功: CC-1707123456789
+決済エラー[TXN002]: 無効なメールアドレスです
+決済失敗: 無効なメールアドレスです
+```
+（注：クレジットカード決済の成功/失敗は10%の確率でランダムに決まるため、実行ごとに結果が異なる場合があります）
 
 #### エラー処理の設計ポイント
 
@@ -416,6 +430,53 @@ public class PDFDocument {
 }
 ```
 
+これらのクラスを使用した例：
+
+```java
+public class DocumentTest {
+    public static void main(String[] args) {
+        // WordDocumentの操作
+        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
+        word.open();
+        word.save();
+        word.close();
+        
+        System.out.println();
+        
+        // PDFDocumentの操作  
+        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
+        pdf.open();
+        pdf.save();
+        pdf.generatePDF();
+        pdf.close();
+        
+        System.out.println();
+        
+        // ExcelDocumentの操作
+        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
+        excel.open();
+        excel.save();
+        excel.close();
+    }
+}
+```
+
+実行結果：
+```
+report.docx を開いています
+report.docx を保存しました: 18バイト
+report.docx を閉じました
+
+manual.pdf を開いています
+manual.pdf を保存しました: 17バイト
+PDF形式で 10 ページを生成
+manual.pdf を閉じました
+
+data.xlsx を開いています
+data.xlsx を保存しました: 19バイト
+data.xlsx を閉じました
+```
+
 #### 重複コードの分析
 
 - ①　共通フィールド
@@ -455,6 +516,8 @@ public class ExcelDocument {
     }
 }
 ```
+
+これは重複コードの問題を示す例です。3つのドキュメントクラスで同じメソッドが繰り返し実装されています。
 
 #### ステップ2：共通部分の抽出
 
@@ -552,6 +615,55 @@ public class ExcelDocument extends Document {
 }
 ```
 
+リファクタリング後の使用例：
+
+```java
+public class RefactoredDocumentTest {
+    public static void main(String[] args) {
+        // リファクタリング後の使用例
+        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
+        word.open();
+        word.save();
+        word.applyTemplate("ビジネスレポート");
+        word.close();
+        
+        System.out.println();
+        
+        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
+        pdf.open();
+        pdf.save();  // オーバーライドされたメソッド
+        pdf.generatePDF();
+        pdf.close();
+        
+        System.out.println();
+        
+        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
+        excel.open();
+        excel.save();  // オーバーライドされたメソッド
+        excel.createChart();
+        excel.close();
+    }
+}
+```
+
+実行結果：
+```
+report.docx を開いています
+report.docx を保存しました: 18バイト
+report.docx にテンプレート ビジネスレポート を適用
+report.docx を閉じました
+
+manual.pdf を開いています
+manual.pdf をPDF形式で保存: 8バイト
+PDF形式で 10 ページを生成
+manual.pdf を閉じました
+
+data.xlsx を開いています
+data.xlsx をExcel形式で保存: 38バイト（メタデータ含む）
+data.xlsx にグラフを作成
+data.xlsx を閉じました
+```
+
 #### オーバーライドと特化機能の実装
 
 - ①　親クラスのコンストラクタ呼び出し
@@ -601,6 +713,40 @@ public class Developer extends Employee {  // ③
         System.out.println(this.name + "が" + primaryLanguage + "でコーディング中");
     }
 }
+```
+
+使用例：
+
+```java
+public class EmployeeTest {
+    public static void main(String[] args) {
+        // Managerの使用例
+        Manager manager = new Manager();
+        manager.employeeId = "M001";
+        manager.name = "山田部長";
+        manager.work();  // 継承したメソッド
+        manager.conductMeeting();  // Manager固有のメソッド
+        
+        System.out.println();
+        
+        // Developerの使用例
+        Developer developer = new Developer();
+        developer.employeeId = "D001";
+        developer.name = "鈴木開発者";
+        developer.primaryLanguage = "Java";
+        developer.work();  // 継承したメソッド
+        developer.writeCode();  // Developer固有のメソッド
+    }
+}
+```
+
+実行結果：
+```
+山田部長が業務を実行中
+山田部長が会議を主宰
+
+鈴木開発者が業務を実行中
+鈴木開発者がJavaでコーディング中
 ```
 
 #### 継承の仕組みと効果
@@ -831,6 +977,57 @@ public class Square extends Rectangle {
         this.height = height;
     }
 }
+
+// 使用例でリスコフ置換原則違反を確認
+public class RectangleSquareTest {
+    // 長方形を扱う一般的なメソッド
+    public static void testRectangle(Rectangle rect) {
+        rect.setWidth(5);
+        rect.setHeight(10);
+        
+        // 期待される面積: 5 × 10 = 50
+        int expectedArea = 50;
+        int actualArea = rect.getArea();
+        
+        System.out.println("幅を5、高さを10に設定");
+        System.out.println("期待される面積: " + expectedArea);
+        System.out.println("実際の面積: " + actualArea);
+        
+        if (expectedArea == actualArea) {
+            System.out.println("✓ テスト成功");
+        } else {
+            System.out.println("✗ テスト失敗！");
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("=== 長方形のテスト ===");
+        Rectangle rectangle = new Rectangle(3, 4);
+        testRectangle(rectangle);
+        
+        System.out.println("\n=== 正方形のテスト ===");
+        Square square = new Square(5);
+        testRectangle(square);
+    }
+}
+```
+
+実行結果：
+```
+=== 長方形のテスト ===
+幅を5、高さを10に設定
+期待される面積: 50
+実際の面積: 50
+✓ テスト成功
+
+=== 正方形のテスト ===
+幅を5、高さを10に設定
+期待される面積: 50
+実際の面積: 100
+✗ テスト失敗！
+
+この例は、正方形が長方形の振る舞いを正しく実装できないことを示しています
+リスコフ置換原則の違反例です
 
 // 使用例で問題が明らかに
 public class GeometryTest {
@@ -1106,6 +1303,39 @@ public class Wizard extends Character {
     }
 }
 
+// 使用例
+public class CharacterOverrideTest {
+    public static void main(String[] args) {
+        // 通常のキャラクター
+        Character normalChar = new Character("戦士", 100);
+        normalChar.attack();
+        
+        System.out.println();
+        
+        // 魔法使い
+        Wizard wizard = new Wizard("魔法使い", 70, 10);
+        wizard.attack();  // オーバーライドされたメソッド
+        wizard.castSpell();
+        
+        System.out.println();
+        
+        // ポリモーフィズムの例
+        Character polymorphicWizard = new Wizard("賢者", 80, 20);
+        polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
+        // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
+    }
+}
+```
+
+実行結果：
+```
+戦士の攻撃！
+
+魔法使いは杖で殴った！
+魔法使いは魔法を唱えた！
+
+賢者は杖で殴った！
+
 // 子クラス
 public class Knight extends Character {
     public Knight(String name, int hp) {
@@ -1192,6 +1422,15 @@ public class UserManagementSystem {
 }
 ```
 
+実行結果：
+```
+ユーザー U001 が READ をリクエストしました
+管理者権限での処理: READ
+セキュリティチェックを実行中...
+ユーザー guest_session123 が READ をリクエストしました
+ゲストユーザーのため、一部機能が制限されています
+```
+
 この`for`ループのなかでは、`user`が`RegularUser`なのか`AdminUser`なのかを一切気にしません。ただ`processRequest()`を呼びだすだけで、各ユーザータイプに応じた処理が自動的に実行されます。
 
 もし将来、「プレミアムユーザー `PremiumUser`」という新しいユーザータイプを追加したくなっても、`UserManagementSystem`クラスのコードは一切変更しません。`PremiumUser`クラスを作成し、`User`を継承して`processRequest()`をオーバーライドし、`users`配列に追加するだけで、新しいユーザータイプも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
@@ -1248,6 +1487,21 @@ public class UserSystemBefore {
 }
 ```
 
+実行結果：
+```
+=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===
+ユーザー U001 が READ をリクエストしました
+管理者権限での処理: DELETE
+セキュリティチェックを実行中...
+ユーザー guest_session123 が WRITE をリクエストしました
+ゲストユーザーのため、一部機能が制限されています
+
+=== アクセス権限チェック ===
+Regular user READ権限: true
+Admin user DELETE権限: true
+Guest user WRITE権限: false
+```
+
 #### After：ポリモーフィズムを使った場合
 
 <span class="listing-number">**サンプルコード5-23**</span>
@@ -1298,7 +1552,31 @@ public class UserSystemAfter {
         }
     }
 }
+```
 
+実行結果：
+```
+=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===
+ユーザー U001 が READ をリクエストしました
+管理者権限での処理: READ
+セキュリティチェックを実行中...
+ユーザー guest_session123 が READ をリクエストしました
+ゲストユーザーのため、一部機能が制限されています
+
+=== DELETE権限のチェック ===
+U001 には DELETE 権限がありません
+guest_session123 には DELETE 権限がありません
+
+=== 通知の送信 ===
+U001 への通知: システムメンテナンスのお知らせ
+U001 に通知を送信しました
+A001 への通知: システムメンテナンスのお知らせ
+A001 に通知を送信しました
+guest_session123 への通知: システムメンテナンスのお知らせ
+guest_session123 に通知を送信しました
+```
+
+```java
 // 親クラスに共通インターフェイスを定義
 class User {
     protected String userId;
@@ -1416,6 +1694,16 @@ public class DrawingAppBefore {
         }
     }
 }
+```
+
+実行結果：
+```
+円を描画：半径 = 5.0
+面積: 78.53981633974483
+長方形を描画：幅 = 10.0, 高さ = 20.0
+面積: 200.0
+三角形を描画：底辺 = 15.0, 高さ = 8.0
+面積: 60.0
 ```
 
 #### After：ポリモーフィズムを使った場合
@@ -1536,6 +1824,20 @@ class Pentagon extends Shape {
 }
 ```
 
+実行結果：
+```
+円を描画：半径 = 5.0
+面積: 78.53981633974483
+長方形を描画：幅 = 10.0, 高さ = 20.0
+面積: 200.0
+三角形を描画：底辺 = 15.0, 高さ = 8.0
+面積: 60.0
+
+=== 新しい図形を追加 ===
+五角形を描画：一辺 = 5.0
+面積: 43.01193501472417
+```
+
 #### ポリモーフィズムがもたらす設計上の利点
 
 1. Open/Closed原則の実現
@@ -1598,6 +1900,18 @@ public class UserAccessControl {
         }
     }
 }
+```
+
+実行結果：
+```
+ユーザー U001 が READ をリクエストしました
+
+管理者権限での処理: READ
+セキュリティチェックを実行中...
+管理者タスクを実行: SuperAdmin レベルの権限で処理
+
+ユーザー guest_session123 が READ をリクエストしました
+ゲストユーザーのため、一部機能が制限されています
 ```
 
 注意： `instanceof`でチェックせずにいきなりキャストしようとすると、もしオブジェクトがその型でなかった場合に`ClassCastException`という実行時エラーが発生します。必ず`instanceof`で確認してからキャストするのが安全です。
@@ -1697,6 +2011,8 @@ class Child extends Parent {
 }
 ```
 
+これは例外処理におけるオーバーライドの制約を示す例です。子クラスは親クラスよりも広い例外（Exception > IOException）を投げることはできません。
+
 この基本的な例外処理の知識があれば、本書の残りの章でもより実践的なコードを理解できるでしょう。第14章では、例外処理の詳細な仕組みやベストプラクティスを学習します。
 
 ※ 本章の高度な内容については、付録B.04「仮想メソッドテーブル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`）を参照してください。
@@ -1723,6 +2039,8 @@ class Child extends Parent {
 }
 ```
 
+このエラーはParentクラスにデフォルトコンストラクタがないため、Childのコンストラクタから暗黙的にsuper()が呼ばれたときに発生します。
+
 解決策:
 
 <span class="listing-number">**サンプルコード5-31**</span>
@@ -1733,6 +2051,12 @@ class Child extends Parent {
         super("default");  // 明示的に親のコンストラクタを呼び出す
     }
 }
+```
+
+実行結果：
+```
+Parent30 コンストラクタ: default
+Child31 コンストラクタ
 ```
 
 重要なポイント:
@@ -1763,6 +2087,8 @@ class Child extends Parent {
 }
 ```
 
+このエラーは、子クラスが親クラスのメソッドよりも制限的なアクセス修飾子を使用しようとした場合や、戻り値型が一致しない場合に発生します。
+
 解決策:
 
 <span class="listing-number">**サンプルコード5-33**</span>
@@ -1776,6 +2102,8 @@ class Child extends Parent {
     public int getValue() { return 42; }  // 同じ戻り値型
 }
 ```
+
+これにより、親クラスでpublicメソッドとして公開されているものが、子クラスでも同じく公開されることが保証されます。
 
 重要なポイント:
 - アクセス修飾子は同じかより緩いものを使用
@@ -1793,6 +2121,8 @@ Parent p = new Parent();
 Child c = (Child) p;  // 実行時エラー：ParentはChildではない
 ```
 
+このコードを実行するとClassCastExceptionが発生します。Parentクラスのインスタンスを Childクラスにキャストできないからです。
+
 解決策:
 
 <span class="listing-number">**サンプルコード5-35**</span>
@@ -1807,6 +2137,13 @@ if (p instanceof Child) {
 if (p instanceof Child child) {
     child.childMethod();
 }
+```
+
+実行結果：
+```
+p1はChild34ではないため、キャストできません
+p2はChild34にキャスト可能
+Child34 固有メソッド
 ```
 
 重要なポイント:

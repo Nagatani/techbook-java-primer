@@ -67,6 +67,8 @@ public class ProblemDemo {
 }
 ```
 
+これはカプセル化を適用していない問題のある設計例です。
+
 #### このコードの問題点
 - カプセル化の欠如
     + すべてのフィールドがpublicで、外部から自由にアクセス・変更可能
@@ -134,6 +136,32 @@ public class BankAccount {
 }
 ```
 
+使用例と実行結果：
+```java
+// BankAccountTest.java
+public class BankAccountTest {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount();
+        
+        // フィールドは直接アクセスできない
+        // account.balance = 1000; // コンパイルエラー
+        
+        // publicメソッドを通じて操作
+        account.deposit(5000);
+        // getBalanceメソッドは実装されていないため、残高は表示できません
+        System.out.println("入金処理が完了しました");
+        
+        // privateメソッドは呼び出せない
+        // account.logTransaction(); // コンパイルエラー
+    }
+}
+```
+
+実行結果：
+```
+入金処理が完了しました
+```
+
 パッケージプライベート（デフォルト）の使用例。
 <span class="listing-number">**サンプルコード4-3**</span>
 
@@ -156,6 +184,8 @@ class ProcessorHelper {
     }
 }
 ```
+
+これはパッケージプライベート（デフォルトアクセス）の例です。
 
 `protected`の使用例。
 <span class="listing-number">**サンプルコード4-4**</span>
@@ -185,6 +215,25 @@ public class Car extends Vehicle {
 }
 ```
 
+使用例と実行結果：
+```java
+// VehicleTest.java
+public class VehicleTest {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.initialize();
+        
+        // protectedメンバーは別パッケージから直接アクセスできない
+        // System.out.println(car.engineType); // コンパイルエラー
+    }
+}
+```
+
+実行結果：
+```
+Engine started: V6
+```
+
 `public`の使用例。
 <span class="listing-number">**サンプルコード4-5**</span>
 
@@ -200,6 +249,34 @@ public class MathUtils {
         return number > 0;
     }
 }
+```
+
+使用例と実行結果：
+```java
+// MathUtilsTest.java
+public class MathUtilsTest {
+    public static void main(String[] args) {
+        // publicな定数へのアクセス
+        System.out.println("PI = " + MathUtils.PI);
+        
+        // publicなstaticメソッドの呼び出し
+        int sum = MathUtils.add(10, 20);
+        System.out.println("10 + 20 = " + sum);
+        
+        // publicなインスタンスメソッドの呼び出し
+        MathUtils utils = new MathUtils();
+        System.out.println("5は正の数？ " + utils.isPositive(5));
+        System.out.println("-3は正の数？ " + utils.isPositive(-3));
+    }
+}
+```
+
+実行結果：
+```
+PI = 3.14159
+10 + 20 = 30
+5は正の数？ true
+-3は正の数？ false
 ```
 
 ### getter/setterメソッドのベストプラクティス
@@ -241,6 +318,43 @@ public class Product {
 }
 ```
 
+使用例と実行結果：
+```java
+// ProductTest.java
+public class ProductTest {
+    public static void main(String[] args) {
+        Product product = new Product();
+        
+        try {
+            // 正常なデータ設定
+            product.setName("ノートPC");
+            product.setPrice(98000);
+            System.out.println("商品名: " + product.getName());
+            System.out.println("価格: " + product.getPrice() + "円");
+            
+            // 不正なデータの検証
+            product.setName("");  // 例外が発生
+        } catch (IllegalArgumentException e) {
+            System.out.println("エラー: " + e.getMessage());
+        }
+        
+        try {
+            product.setPrice(-1000);  // 例外が発生
+        } catch (IllegalArgumentException e) {
+            System.out.println("エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+実行結果：
+```
+商品名: ノートPC
+価格: 98000.0円
+エラー: 商品名は必須です
+エラー: 価格は負の値にできません
+```
+
 ### データ検証の重要性
 
 プログラミングにおいて、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。範囲チェック、nullチェック、ビジネスルールの検証を実装することで、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
@@ -268,6 +382,8 @@ public class Employee {
     }
 }
 ```
+
+これはデータ検証パターンの例です。
 
 ## 設計原則とソフトウェアアーキテクチャ
 
@@ -309,6 +425,36 @@ public class BankAccountV1 {
         return balance;
     }
 }
+```
+
+使用例と実行結果：
+```java
+// BankAccountV1Test.java
+public class BankAccountV1Test {
+    public static void main(String[] args) {
+        BankAccountV1 account = new BankAccountV1("123456", 10000);
+        
+        System.out.println("初期残高: " + account.getBalance());
+        
+        account.deposit(5000);
+        System.out.println("5000円入金後: " + account.getBalance());
+        
+        account.withdraw(3000);
+        System.out.println("3000円出金後: " + account.getBalance());
+        
+        // 問題：負の金額でも処理される
+        account.deposit(-1000);
+        System.out.println("負の金額入金後: " + account.getBalance());
+    }
+}
+```
+
+実行結果：
+```
+初期残高: 10000.0
+5000円入金後: 15000.0
+3000円出金後: 12000.0
+負の金額入金後: 11000.0
 ```
 
 #### 改善点
@@ -359,6 +505,47 @@ public class BankAccountV2 {
         return balance;
     }
 }
+```
+
+使用例と実行結果：
+```java
+// BankAccountV2Test.java
+public class BankAccountV2Test {
+    public static void main(String[] args) {
+        try {
+            BankAccountV2 account = new BankAccountV2("123456", 10000);
+            System.out.println("初期残高: " + account.getBalance());
+            
+            // 正常な入金
+            account.deposit(5000);
+            System.out.println("5000円入金後: " + account.getBalance());
+            
+            // 出金の成功
+            if (account.withdraw(3000)) {
+                System.out.println("3000円出金成功: " + account.getBalance());
+            }
+            
+            // 残高不足の出金
+            if (!account.withdraw(20000)) {
+                System.out.println("20000円出金失敗（残高不足）");
+            }
+            
+            // 不正な入金額
+            account.deposit(-1000);
+        } catch (IllegalArgumentException e) {
+            System.out.println("エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+実行結果：
+```
+初期残高: 10000.0
+5000円入金後: 15000.0
+3000円出金成功: 12000.0
+20000円出金失敗（残高不足）
+エラー: 入金額は正の値である必要です
 ```
 
 #### 改善点
@@ -432,6 +619,55 @@ public class BankAccountV3 {
         return new ArrayList<>(transactionHistory);
     }
 }
+```
+
+使用例と実行結果：
+```java
+// BankAccountV3Test.java
+public class BankAccountV3Test {
+    public static void main(String[] args) {
+        BankAccountV3 account = new BankAccountV3("123456", 10000);
+        
+        System.out.println("口座番号: " + account.getAccountNumber());
+        System.out.println("初期残高: " + account.getBalance());
+        
+        // 入金
+        account.deposit(5000);
+        System.out.println("\n5000円入金後の残高: " + account.getBalance());
+        
+        // 出金成功
+        if (account.withdraw(3000)) {
+            System.out.println("3000円出金成功後の残高: " + account.getBalance());
+        }
+        
+        // 出金失敗
+        if (!account.withdraw(20000)) {
+            System.out.println("20000円出金失敗（残高不足）");
+        }
+        
+        // 取引履歴の表示
+        System.out.println("\n取引履歴:");
+        for (String transaction : account.getTransactionHistory()) {
+            System.out.println("  " + transaction);
+        }
+    }
+}
+```
+
+実行結果：
+```
+口座番号: 123456
+初期残高: 10000.0
+
+5000円入金後の残高: 15000.0
+3000円出金成功後の残高: 12000.0
+20000円出金失敗（残高不足）
+
+取引履歴:
+  口座開設: 初期残高 10000.0円
+  入金: 5000.0円
+  出金: 3000.0円
+  出金失敗（残高不足）: 20000.0円
 ```
 
 #### 完成した設計の特徴
@@ -573,6 +809,8 @@ package com.example.myapp.service;
 package jp.ac.university.research;
 ```
 
+これはパッケージ名の命名規則の例です。
+
 #### 命名規則のポイント
 - すべて小文字を使用
 - ドメイン名を逆順に記述
@@ -615,6 +853,8 @@ import java.util.ArrayList;
 List<String> names = new ArrayList<>();
 ```
 
+これはimport文の使用例です。
+
 import文の種類。
 
 1. 単一型インポート。
@@ -624,12 +864,16 @@ import文の種類。
 import java.util.Scanner;  // Scannerクラスのみインポート
 ```
 
+これは単一型インポートの例です。
+
 2. オンデマンドインポート。
 <span class="listing-number">**サンプルコード4-25**</span>
 
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
 ```
+
+これはオンデマンドインポートの例です。
 
 3. 静的インポート。
 <span class="listing-number">**サンプルコード4-14**</span>
@@ -641,6 +885,8 @@ import static java.lang.Math.sqrt;
 double circumference = 2 * PI * radius;  // Math.PI と書く必要がない
 double result = sqrt(16);                 // Math.sqrt と書く必要がない
 ```
+
+これはstatic importの使用例です。
 
 ### import文の注意点
 
@@ -667,6 +913,8 @@ public class Example {
 }
 ```
 
+これは同名クラスの競合解決の例です。
+
 ### パッケージ構成のベストプラクティス
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます。
@@ -682,6 +930,8 @@ com.example.myapp/
 ├── util/          // ユーティリティクラス
 └── exception/     // カスタム例外
 ```
+
+これはパッケージ構造の例です。
 
 #### 設計原則
 - 機能的凝集性
@@ -736,6 +986,39 @@ public class User {
 }
 ```
 
+使用例と実行結果：
+```java
+// UserTest.java
+public class UserTest {
+    public static void main(String[] args) {
+        try {
+            // 正常なユーザー作成
+            User user1 = new User("user@example.com", "john_doe", 25);
+            System.out.println("ユーザー作成成功");
+            
+            // 不正なメールアドレス
+            User user2 = new User("invalid-email", "jane_doe", 30);
+        } catch (IllegalArgumentException e) {
+            System.out.println("エラー: " + e.getMessage());
+        }
+        
+        try {
+            // 短すぎるユーザー名
+            User user3 = new User("test@example.com", "ab", 20);
+        } catch (IllegalArgumentException e) {
+            System.out.println("エラー: " + e.getMessage());
+        }
+    }
+}
+```
+
+実行結果：
+```
+ユーザー作成成功
+エラー: 有効なメールアドレスが必要です
+エラー: ユーザー名は3文字以上である必要があります
+```
+
 #### 複数のコンストラクタ（オーバーロード）
 
 クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
@@ -768,6 +1051,8 @@ public class Book {
     }
 }
 ```
+
+これはコンストラクタオーバーロードの例です。
 
 ### thisキーワードの高度な活用
 
@@ -819,6 +1104,8 @@ Email email = new EmailBuilder()
     .asHtml()
     .build();
 ```
+
+これはビルダーパターンを使った流暢なインターフェイスの例です。
 
 #### 高度なコンストラクタチェーン
 
@@ -873,6 +1160,8 @@ public class DatabaseConfig {
 }
 ```
 
+これは複数のコンストラクタで検証ロジックを集約する例です。
+
 #### コールバックでのthis渡し
 
 イベント処理やコールバック関数において、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
@@ -900,6 +1189,9 @@ public class EventProcessor {
         System.out.println(name + " がイベントを処理: " + event);
     }
 }
+```
+
+これはコールバックでthisを渡す例です。
 
 class EventManager {
     private static List<EventProcessor> processors = new ArrayList<>();
@@ -947,6 +1239,9 @@ public class HttpClient {
         return get(url, 5000);  // 5秒のデフォルトタイムアウト
     }
 }
+```
+
+これはテレスコーピングコンストラクタの例です。
 ```
 
 #### 型安全性を高めるオーバーロード
