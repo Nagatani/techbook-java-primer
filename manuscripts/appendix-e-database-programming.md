@@ -29,7 +29,9 @@
 
 ### オンライン資料へのアクセス
 
-本付録の詳細な内容、サンプルコード、演習問題は以下のGitHubリポジトリで公開しています：
+本付録の詳細な内容、サンプルコード、演習問題はGitHubリポジトリで公開しています。
+
+詳細な情報は次のリンクから確認してください。
 
 **GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-database-programming/
 

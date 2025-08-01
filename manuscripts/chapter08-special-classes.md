@@ -28,6 +28,7 @@
 
 `enum`（列挙型）は、決まったいくつかの値だけを取りうる型を定義するための、特殊なクラスです。たとえば、「曜日（月、火、水、木、金、土、日）」や「信号の色（赤、青、黄）」のように、値の範囲が限定されているものを扱うのに最適です。
 
+
 ### なぜenumが必要なのか？
 
 `enum`がない場合、このような定数は`public static final int`フィールドとして定義することが一般的でした。しかし、この方法には以下のような問題点があります。
@@ -918,9 +919,184 @@ public record GameCharacter(
 }
 ```
 
+## Part 4: 内部クラス（Inner Classes）
+
+### 内部クラスとは？
+
+内部クラスは、他のクラスの内部に定義されるクラスです。Javaでは4種類の内部クラスがあり、それぞれ異なる特性と用途を持ちます。
+
+### 内部クラスの種類
+
+#### 1. メンバー内部クラス（Non-static Inner Class）
+
+外部クラスのインスタンスに関連付けられた内部クラスです。
+
+<span class="listing-number">**サンプルコード8-29**</span>
+
+```java
+public class OuterClass {
+    private String outerField = "外部フィールド";
+    
+    // メンバー内部クラス
+    public class InnerClass {
+        public void printOuterField() {
+            // 外部クラスのprivateメンバーにアクセス可能
+            System.out.println("外部クラスのフィールド: " + outerField);
+        }
+    }
+    
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        // 内部クラスのインスタンス化には外部クラスのインスタンスが必要
+        OuterClass.InnerClass inner = outer.new InnerClass();
+        inner.printOuterField();
+    }
+}
+```
+
+#### 2. 静的内部クラス（Static Nested Class）
+
+外部クラスのインスタンスに依存しない内部クラスです。
+
+<span class="listing-number">**サンプルコード8-30**</span>
+
+```java
+public class MathOperations {
+    // 静的内部クラス
+    public static class Vector2D {
+        private final double x, y;
+        
+        public Vector2D(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        public double magnitude() {
+            return Math.sqrt(x * x + y * y);
+        }
+    }
+    
+    public static void main(String[] args) {
+        // 外部クラスのインスタンスなしで生成可能
+        Vector2D vector = new Vector2D(3, 4);
+        System.out.println("大きさ: " + vector.magnitude()); // 5.0
+    }
+}
+```
+
+#### 3. ローカル内部クラス（Local Inner Class）
+
+メソッド内で定義される内部クラスです。
+
+<span class="listing-number">**サンプルコード8-31**</span>
+
+```java
+public class LocalClassExample {
+    public void processData(final String prefix) {
+        // ローカル内部クラス
+        class DataProcessor {
+            public String process(String data) {
+                // メソッドのfinalまたは実質的にfinalな変数にアクセス可能
+                return prefix + ": " + data.toUpperCase();
+            }
+        }
+        
+        DataProcessor processor = new DataProcessor();
+        System.out.println(processor.process("hello")); // PREFIX: HELLO
+    }
+}
+```
+
+#### 4. 匿名内部クラス（Anonymous Inner Class）
+
+名前を持たない内部クラスで、インターフェイスの実装や抽象クラスの継承に使用されます。
+
+<span class="listing-number">**サンプルコード8-32**</span>
+
+```java
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class AnonymousClassExample {
+    public static void main(String[] args) {
+        String[] names = {"Alice", "Bob", "Charlie"};
+        
+        // 匿名内部クラスでComparatorを実装
+        Arrays.sort(names, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s2.compareTo(s1); // 逆順ソート
+            }
+        });
+        
+        // Java 8以降はラムダ式で簡潔に記述可能
+        // Arrays.sort(names, (s1, s2) -> s2.compareTo(s1));
+        
+        System.out.println(Arrays.toString(names));
+    }
+}
+```
+
+### 実践的な使用例：イテレータパターン
+
+<span class="listing-number">**サンプルコード8-33**</span>
+
+```java
+import java.util.Iterator;
+
+public class MyList<T> implements Iterable<T> {
+    private Object[] elements;
+    private int size = 0;
+    
+    public MyList(int capacity) {
+        elements = new Object[capacity];
+    }
+    
+    public void add(T element) {
+        if (size < elements.length) {
+            elements[size++] = element;
+        }
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        // 匿名内部クラスでIteratorを実装
+        return new Iterator<T>() {
+            private int index = 0;
+            
+            @Override
+            public boolean hasNext() {
+                return index < size;
+            }
+            
+            @Override
+            @SuppressWarnings("unchecked")
+            public T next() {
+                return (T) elements[index++];
+            }
+        };
+    }
+}
+```
+
+### 内部クラスのベストプラクティス
+
+1. **適切な種類の選択**
+   - 外部クラスのインスタンスが必要：メンバー内部クラス
+   - 独立して使用：静的内部クラス
+   - 一時的な使用：ローカル/匿名内部クラス
+
+2. **メモリリークの回避**
+   - 長期間生存する内部クラスは静的にする
+   - 不要になった外部クラスへの参照を切る
+
+3. **Java 8以降の代替手段**
+   - 匿名内部クラスの多くはラムダ式で置き換え可能
+   - より簡潔で読みやすいコードに
+
 ## まとめ
 
-本章では、Javaの特殊なクラス形式であるEnumとRecordについて学習しました。
+本章では、Javaの特殊なクラス形式であるEnum、Record、内部クラスについて学習しました。
 
 ### Enumの重要ポイント
 - 型安全な定数定義を実現
@@ -933,6 +1109,12 @@ public record GameCharacter(
 - ボイラープレートコードを自動生成
 - パターンマッチングとの統合
 - DTOやValue Objectの実装に使用される
+
+### 内部クラスの重要ポイント
+- 4種類の内部クラスそれぞれの特性と用途
+- 外部クラスとの関係性とアクセス制御
+- メモリモデルとパフォーマンスへの影響
+- Java 8以降のラムダ式による代替
 
 ### 次のステップ
 これらの特殊なクラス形式を理解することで、より簡潔で保守性の高いコードを書けるようになります。次章では、コレクションフレームワークについて学習し、データの効率的な管理方法を習得します。

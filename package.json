@@ -10,7 +10,10 @@
     "lint": "npx textlint manuscripts/*.md",
     "lint:fix": "npx textlint --fix manuscripts/*.md",
     "lintadx": "npx textlint appendix/**/*.md",
-    "lintadx:fix": "npx textlint --fix appendix/**/*.md"
+    "lintadx:fix": "npx textlint --fix appendix/**/*.md",
+    "check:compliance": "node scripts/check-claude-md-compliance.js",
+    "fix:compliance": "node scripts/fix-claude-md-violations.js",
+    "pre-commit": "npm run check:compliance && npm run lint"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,7 @@
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.5.0",
     "@vivliostyle/cli": "^9.1.1",
     "@vivliostyle/theme-techbook": "^2.0.0",
+    "glob": "^11.0.3",
     "textlint": "^15.2.0",
     "textlint-rule-ja-hiraku": "^1.2.0",
     "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "^1.0.1",

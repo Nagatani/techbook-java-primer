@@ -866,7 +866,7 @@ public class OverloadResolution {
 }
 ```
 
-> **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。以下はコンパイルエラーになります：
+> **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。次のコードはコンパイルエラーになります。
 > ```java
 > public int calculate() { return 1; }
 > public double calculate() { return 1.0; }  // エラー：戻り値の型だけでは区別できない
