@@ -252,6 +252,16 @@ public class TextFileWriterExample {
     }
 }
 ```
+
+実行結果：
+```
+ファイルに書き込みました。
+
+書き込んだファイルの内容:
+最初の行。
+次の行。
+```
+
 // 追記モード。
 // StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追加できます。
 // ログファイルの作成や、既存データを保持しながら新しい情報を追加する場合に使用します。
@@ -312,6 +322,17 @@ public class CharacterEncodingExample {
 }
 ```
 
+実行結果：
+```
+--- Shift_JISで読み込み（文字化け） ---
+エラー: MalformedInputException - 文字エンコーディングの不一致
+
+--- UTF-8で正しく読み込み ---
+こんにちは、世界！
+
+デフォルトエンコーディング: UTF-8
+```
+
 ## バイナリファイルの高度な処理
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
@@ -361,6 +382,12 @@ public class DataStreamExample {
         }
     }
 }
+```
+
+実行結果：
+```
+データを書き込みました。
+読み込んだデータ: 12345, 9876543210, 3.14159, true, こんにちは、世界！
 ```
 
 大切な注意点。
@@ -439,6 +466,12 @@ public class SerializationExample {
 }
 ```
 
+実行結果：
+```
+保存されたオブジェクト: User[name=testuser, pw=secret123, date=2025-08-01T20:58:13.831566]
+復元されたオブジェクト: User[name=testuser, pw=null, date=2025-08-01T20:58:13.831566]
+```
+
 ## ファイルシステムの操作 (NIO.2)
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、よりモダンで高機能なファイル・ディレクトリ操作が可能です。
@@ -490,6 +523,14 @@ public class FileSystemExample {
         System.out.println("ファイルとディレクトリを削除しました。");
     }
 }
+```
+
+実行結果：
+```
+ディレクトリを作成しました: my_temp_dir
+ファイルを作成しました: my_temp_dir/my_file.txt
+ファイルをコピーしました: my_temp_dir/my_file_copy.txt
+ファイルとディレクトリを削除しました。
 ```
 
 ## 実践的なファイル処理例
@@ -571,6 +612,17 @@ public class CSVProcessingExample {
 }
 ```
 
+実行結果：
+```
+CSVファイルを書き込みました: sample.csv
+読み込んだCSVデータ:
+名前 | 年齢 | 職業
+田中太郎 | 30 | エンジニア
+佐藤花子 | 25 | デザイナー
+鈴木一郎 | 35 | マネージャー
+CSVファイルを書き込みました: output.csv
+```
+
 ## 日付時刻処理について
 
 ファイル操作でしばしば必要となる日付時刻処理については、Java 8で導入されたjava.time APIを使用することを強く推奨します。従来のjava.util.DateやCalendarクラスは多くの問題があるため、新しいAPIを使用してください。
@@ -618,6 +670,15 @@ public class FileChooserExample {
         }
     }
 }
+```
+
+実行結果：
+```
+（ユーザーがファイル選択ダイアログで「/Users/username/documents/report.txt」を選択した場合）
+選択されたファイル（開く）: /Users/username/documents/report.txt
+
+（ユーザーが保存ダイアログで「/Users/username/desktop/output.txt」を指定した場合）
+保存するファイル: /Users/username/desktop/output.txt
 ```
 
 ## Text Blocks - 複数行文字列の効率的な処理
@@ -669,6 +730,15 @@ public class TraditionalStringProblems {
 }
 ```
 
+実行結果：
+```
+=== 従来の方法の問題点 ===
+1. エスケープシーケンス（\n, \"）が多くて読みにくい
+2. 文字列連結（+）によるエラーが起きやすい
+3. インデントの管理が困難
+4. 引用符のエスケープが煩雑
+```
+
 ### Text Blocksの基本構文
 
 Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
@@ -708,6 +778,20 @@ public class TextBlockBasics {
         System.out.println("1行のText Block: " + singleLine);
     }
 }
+```
+
+実行結果：
+```
+=== Text Block の出力 ===
+これは Text Block の例です。
+複数行にわたる文字列を
+簡潔に記述できます。
+
+
+=== 従来の文字列との同等性 ===
+同じ内容？: true
+空のText Block: ''
+1行のText Block: 単一行のText Block
 ```
 
 ### インデントの自動処理
@@ -769,6 +853,39 @@ public class TextBlockIndentation {
 }
 ```
 
+実行結果：
+```
+=== インデント自動処理の例 ===
+public class Example {
+    public void method() {
+        System.out.println("Hello");
+        if (true) {
+            System.out.println("Nested");
+        }
+    }
+}
+
+
+=== カスタムインデント ===
+レベル1
+    レベル2
+        レベル3
+レベル1に戻る
+
+
+=== 混合インデント（もっとも浅い行が基準） ===
+        深いインデント
+    中程度のインデント
+浅いインデント
+        再び深いインデント
+
+
+=== 手動stripIndent() ===
+これは深いインデントです
+    さらに深いインデント
+元のレベル
+```
+
 ### エスケープシーケンスの簡略化
 
 Text Blocksでは多くのエスケープシーケンスが不要になります。
@@ -819,6 +936,32 @@ public class TextBlockEscaping {
         System.out.println("'" + trailingSpaces + "'");
     }
 }
+```
+
+実行結果：
+```
+=== 引用符のエスケープ不要 ===
+"こんにちは"と彼は言った。
+'時は金なり'という諺があります。
+"引用符をエスケープする必要がない"
+
+
+=== バックスラッシュの処理 ===
+Windowsのパス: C:\Users\Name\Documents
+正規表現: \d+\.\d+
+
+
+=== 三重引用符のエスケープ ===
+Text Blockの構文:
+String text = """
+    複数行文字列
+    """;
+
+
+=== 行末の制御 ===
+'この行の末尾にスペースがある    
+この行は普通の改行
+この行は改行なし'
 ```
 
 ### 実践例：構造化データの処理
@@ -1001,6 +1144,58 @@ public class TextBlockStructuredData {
                 });
     }
 }
+```
+
+実行結果：
+```
+=== JSON データを保存しました ===
+{
+  "user": {
+    "name": "田中太郎",
+    "age": 30,
+    "timestamp": "2025-08-01T21:02:54.993907",
+    "preferences": {
+      "language": "Japanese",
+      "theme": "dark",
+      "notifications": true
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-08-01T21:02:54.993907"
+  }
+}
+
+
+=== SQL クエリを保存しました ===
+SELECT
+    u.id,
+    u.name,
+    u.email,
+    u.created_at,
+    p.title AS latest_post,
+    COUNT(c.id) AS comment_count
+FROM users u
+LEFT JOIN posts p ON u.id = p.user_id
+    AND p.created_at = (
+        SELECT MAX(created_at)
+        FROM posts
+        WHERE user_id = u.id
+    )
+LEFT JOIN comments c ON p.id = c.post_id
+WHERE u.created_at > '2024-01-01'
+GROUP BY u.id, u.name, u.email, u.created_at, p.title
+ORDER BY u.created_at DESC
+LIMIT 100;
+
+
+=== HTML テンプレートを保存しました ===
+ファイル: /private/tmp/user_profile.html
+
+=== XML 設定ファイルを保存しました ===
+ファイル: /private/tmp/config.xml
+
+=== クリーンアップ完了 ===
 ```
 
 ### ファイルI/Oでの活用例
@@ -1242,6 +1437,18 @@ public class TextBlockFileIO {
         System.out.println("\n=== 一括ファイル処理完了 ===");
     }
 }
+```
+
+実行結果：
+```
+ログ設定ファイルを生成しました: log_config.properties
+デフォルト設定ファイルを作成しました
+HTMLレポートを生成しました: user_report.html
+生成しました: README.md
+生成しました: TODO.md
+生成しました: project.json
+
+=== 一括ファイル処理完了 ===
 ```
 
 ### Text Blocksのベストプラクティス

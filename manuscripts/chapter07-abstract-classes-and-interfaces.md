@@ -77,6 +77,15 @@ public abstract class Shape {
 }
 ```
 
+実行結果：
+```
+これは 円 です。
+面積は 78.53981633974483 です。
+
+これは 長方形 です。
+面積は 24.0 です。
+```
+
 `Shape`クラスは`getArea()`メソッドの具体的な計算方法を知らないため、このメソッドを抽象メソッドとして宣言します。
 
 ### 抽象クラスの継承
@@ -211,6 +220,14 @@ public class Document implements Exportable, Archivable {
         System.out.println(this.title + "を" + location + "にアーカイブします。");
     }
 }
+```
+
+実行結果：
+```
+技術仕様書をPDF形式でエクスポートします。
+技術仕様書をHTML形式でエクスポートします。
+技術仕様書をバックアップサーバーにアーカイブします。
+技術仕様書をクラウドストレージにアーカイブします。
 ```
 
 インターフェイスは、共通の機能（契約）を、継承関係にない異なるクラス間で実現したい場合に非常に強力です。たとえば、「エクスポート可能(`Exportable`)」という性質は、「ドキュメント」だけでなく「レポート」や「データセット」など、まったく異なるクラスも持つことができます。
@@ -469,6 +486,12 @@ List<User> users = List.of(new User("Alice"), new User("Bob"));
 String json = JsonSerializable.serializeList(users);
 ```
 
+実行結果：
+```
+Serialized users: [{"name":"Alice"},{"name":"Bob"}]
+Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
+```
+
 この設計により、JSONシリアライゼーション機能を実装するクラスは`toJson()`メソッドを実装するだけで、リスト全体のシリアライゼーションや文字列エスケープなどの便利な機能を自動的に利用できるようになります。
 
 ### 実践的な活用例：防御的プログラミング
@@ -509,6 +532,21 @@ interface DefensiveInterface {
         return true;
     }
 }
+```
+
+実行結果：
+```
+=== 安全でない実装のテスト ===
+getSafeItems(): []
+getFirstItem(): Optional.empty
+
+=== 安全な実装のテスト ===
+Items: [Item 1, Item 2]
+First item: Optional[Item 1]
+
+イテレータでのアクセス:
+  - Item 1
+  - Item 2
 ```
 
 このパターンにより、実装クラスが`null`を返したり、変更可能なリストを直接公開したりしても、呼び出し側は常に安全で一貫したAPIを使用できます。また、`Optional`やバリデーションを使用することで、現代的で安全なJavaコードの作法を推進できます。
@@ -592,6 +630,25 @@ class Document implements Timestamped, Identifiable, Versioned {
         }
     }
 }
+```
+
+実行結果：
+```
+=== Identifiableの機能 ===
+doc1: Document#DOC001
+doc2: Document#DOC002
+
+=== Timestampedの機能 ===
+doc1の経過時間: 19ms
+doc1は期限切れ？: false
+
+=== Versionedの機能 ===
+doc1のバージョン: 2
+doc2のバージョン: 1
+doc1はdoc2より新しい？: true
+
+=== 組み合わせた使用 ===
+Document#DOC001 (version 2, age: 23ms)
 ```
 
 ### トレイトパターン

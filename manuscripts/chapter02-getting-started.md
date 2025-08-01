@@ -414,7 +414,6 @@ public class TypeConversionExample {
     }
 }
 ```
-
 実行結果：
 ```
 int: 100
@@ -990,9 +989,8 @@ public class Calculator {
 
 実行結果：
 ```
-add(5, 3) = 8
-multiply(4, 7) = 28
-greet("Java") = Hello, Java!
+結果: 15
+除算結果: 3.3333333333333335
 ```
 
 ### staticメソッドの基本構文

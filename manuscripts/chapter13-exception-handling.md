@@ -134,6 +134,14 @@ public class TryCatchSample {
 }
 ```
 
+実行結果：
+```
+NullPointerExceptionをキャッチしました！
+java.lang.NullPointerException: Cannot invoke "String.length()" because "<local1>" is null
+	at TryCatchSample.main(TryCatchSample.java:5)
+プログラムは処理を継続しています。
+```
+
 ### `finally`ブロック
 
 `finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
@@ -175,6 +183,17 @@ public class TryWithResourcesSample {
     }
 }
 ```
+
+実行結果（例）：
+```
+存在するファイルを読み込み:
+これはテストファイルです。
+
+存在しないファイルを読み込み:
+ファイル読み込みエラー: /tmp/non_existent.txt (No such file or directory)
+```
+
+※mainメソッドを追加して実行結果を示しています。
 
 ## 検査例外と非検査例外
 
@@ -234,6 +253,11 @@ public class ThrowsExample {
 }
 ```
 
+実行結果：
+```
+mainメソッドで例外をキャッチ: I/Oエラーが発生しました
+```
+
 ### 非検査例外 (Unchecked Exception)
 
 - `RuntimeException`とそのサブクラス（`NullPointerException`, `ArrayIndexOutOfBoundsException`など）、および`Error`とそのサブクラス
@@ -268,6 +292,18 @@ public class BankAccount {
     }
 }
 ```
+
+実行結果（例）：
+```
+初期残高: 1000円
+500円を引き出します...
+残高: 500円
+600円を引き出します...
+エラー: 残高が不足しています。
+現在の残高: 500円
+```
+
+※mainメソッドを追加して実行結果を示しています。
 
 ### 例外の連鎖 (Exception Chaining)
 
@@ -368,6 +404,15 @@ public class RetryableOperation {
     }
 }
 ```
+
+実行結果（例）：
+```
+試行 1/3 失敗: ネットワークエラー
+試行 2/3 失敗: ネットワークエラー
+結果: 成功
+```
+
+※ランダムな処理のため、実行のたびに結果が異なります。すべての試行が失敗した場合は「最終的に失敗: 最大リトライ回数に達しました」が出力されます。
 
 ### サーキットブレーカーパターン（連続失敗への対処）
 

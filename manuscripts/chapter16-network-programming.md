@@ -95,6 +95,13 @@ public class SimpleTCPClient {
 }
 ```
 
+実行結果（例）：
+```
+サーバーからの応答: Echo: Hello, Server!
+```
+
+※実際の実行にはサーバーが起動している必要があります。
+
 ### 基本的なTCPサーバー
 
 TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、
@@ -147,6 +154,13 @@ public class SimpleTCPServer {
         }
     }
 }
+```
+
+実行結果（サーバー側）：
+```
+サーバーがポート 8080 で起動しました
+クライアントが接続しました: /127.0.0.1
+受信: Hello, Server!
 ```
 
 ## マルチスレッドサーバーの実装
@@ -327,6 +341,23 @@ public class SimpleHTTPClient {
 }
 ```
 
+実行結果（例）：
+```
+Header: HTTP/1.1 200 OK
+Header: Accept-Ranges: bytes
+Header: Content-Type: text/html
+Header: ETag: "84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134"
+Header: Last-Modified: Mon, 13 Jan 2025 20:11:20 GMT
+Header: Content-Length: 1256
+Header: 
+--- Body ---
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+...（以下省略）
+```
+
 ### HttpURLConnectionの使用
 
 Javaは、より高レベルなHTTP通信のためのAPIも提供しています。
@@ -381,6 +412,15 @@ public class HttpURLConnectionExample {
     }
 }
 ```
+
+実行結果（例）：
+```
+Response Code: 200
+Response:
+{"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","avatar_url":"https://avatars.githubusercontent.com/u/9919?v=4",...}
+```
+
+※JSONレスポンスの内容は実行時によって異なる場合があります。
 
 ### 非同期HTTPクライアント（Java 11+）
 
@@ -440,6 +480,19 @@ public class AsyncHttpClientExample {
 }
 ```
 
+実行結果：
+```
+Status Code: 200
+Response Body:
+{
+  "userId": 1,
+  "id": 1,
+  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+}
+Request completed!
+```
+
 非同期HTTPの利点。
 - ノンブロッキング処理により、レスポンスを待つ間も他の処理を継続できる
 - 複数のHTTPリクエストを並行して送信できる
@@ -493,6 +546,13 @@ public class UDPServer {
 }
 ```
 
+実行結果（サーバー側）：
+```
+UDPサーバーがポート 9999 で起動しました
+受信: Hello UDP Server! from /127.0.0.1
+レスポンス送信: Echo: Hello UDP Server!
+```
+
 ### UDP受信側
 
 以下のコードは、UDPクライアントの実装例です。このクライアントは、サーバーにメッセージを送信し、エコーレスポンスを受信します。UDP通信では、送信と受信の両方でDatagramPacketを使用し、パケット単位でデータをやり取りします。
@@ -534,6 +594,12 @@ public class UDPClient {
         }
     }
 }
+```
+
+実行結果（クライアント側）：
+```
+送信: Hello UDP Server!
+受信: Echo: Hello UDP Server!
 ```
 
 UDPの特徴と使用場面。
@@ -885,6 +951,18 @@ public class SSLClient {
         }
     }
 }
+```
+
+実行結果（例）：
+```
+SSL接続が確立されました
+使用しているプロトコル: TLSv1.3
+暗号スイート: TLS_AES_256_GCM_SHA384
+HTTP/1.1 200 OK
+Date: Fri, 01 Aug 2025 13:21:37 GMT
+Expires: -1
+Cache-Control: private, max-age=0
+Content-Type: text/html; charset=ISO-8859-1
 ```
 
 ## パフォーマンスの最適化

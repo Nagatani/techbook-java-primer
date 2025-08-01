@@ -67,6 +67,12 @@ public class CollectionProblem {
     }
 }
 ```
+実行結果：
+```
+JAVA
+PYTHON
+Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer cannot be cast to class java.lang.String
+```
 
 このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。これは実行時まで発見できないエラーです。
 
@@ -98,6 +104,11 @@ public class CollectionSolution {
         }
     }
 }
+```
+実行結果：
+```
+JAVA
+PYTHON
 ```
 
 #### ジェネリクスを使うことで
@@ -134,6 +145,14 @@ public class WithoutGenericsExample {
     }
 }
 ```
+
+実行結果：
+```
+ノート: WithoutGenericsExample.javaの操作は、未チェックまたは安全ではありません。
+ノート: 詳細は、-Xlint:uncheckedオプションを指定して再コンパイルしてください。
+取り出した文字列: Hello
+```
+
 このように、コンパイラは型の誤りをチェックできませんでした。バグが実行時まで発見されない危険な状態でした。
 
 この問題を解決するためにJava 5で導入されたのがジェネリクス（Generics）です。
@@ -171,6 +190,10 @@ public class WithGenericsExample {
         System.out.println(element);
     }
 }
+```
+実行結果：
+```
+Java
 ```
 
 ジェネリクスを使うことで、コンパイラが型の整合性をチェックしてくれるため、意図しない型のデータが混入するのを防ぎ、実行時のClassCastExceptionをコンパイル時点で検出できるようになります。
@@ -215,6 +238,11 @@ public class BoxExample {
     }
 }
 ```
+実行結果：
+```
+Hello Generics
+100
+```
 
 ### ダイヤモンド演算子
 
@@ -257,6 +285,11 @@ public class GenericMethodExample {
     }
 }
 ```
+実行結果：
+```
+Integer配列: 1 2 3 
+String配列: A B C 
+```
 
 ## 型制約（境界のある型パラメータ）
 
@@ -295,6 +328,11 @@ public class BoundedTypeExample {
     }
 }
 ```
+実行結果：
+```
+10.0
+3.14
+```
 
 ## ワイルドカード
 
@@ -328,6 +366,11 @@ public class WildcardExample {
         System.out.println("Doubleの合計: " + sum(doubleList));
     }
 }
+```
+実行結果：
+```
+Integerの合計: 6.0
+Doubleの合計: 6.6
 ```
 
 ## var型推論とジェネリクス
@@ -520,6 +563,12 @@ public class VarWithGenericsExample {
         public U getSecond() { return second; }
     }
 }
+```
+
+実行結果：
+```
+First: Hello
+Second: 42
 ```
 
 ### ベストプラクティスとアンチパターン

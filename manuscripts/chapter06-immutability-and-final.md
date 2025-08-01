@@ -85,6 +85,10 @@ public class ThreadSafetyProblem {
     }
 }
 ```
+実行結果（実行毎に異なる）：
+```
+X座標: 1328
+```
 
 #### 2. 意図しない副作用
 
@@ -419,6 +423,14 @@ public class ImmutableExample {
     }
 }
 ```
+実行結果：
+```
+[読書, 映画鑑賞]
+元の人: ImmutablePerson{name='田中太郎', age=25, hobbies=[読書, 映画鑑賞]}
+新しい人: ImmutablePerson{name='田中太郎', age=26, hobbies=[読書, 映画鑑賞]}
+元の趣味: [読書, 映画鑑賞]
+新しい趣味: [読書, 映画鑑賞, プログラミング]
+```
 
 #### 不変オブジェクトの重要な特性
 
@@ -615,6 +627,13 @@ public class BuilderExample {
     }
 }
 ```
+実行結果：
+```
+Book 1: Javaプログラミング入門 by 山田太郎
+Book 2: データベース設計 by Unknown
+Book 3: アルゴリズム入門 by 鈴木花子
+Textbook: オブジェクト指向設計 by 佐藤一郎
+```
 
 #### ビルダーパターンの利点
 1. 可読性
@@ -670,6 +689,11 @@ public record ImmutablePoint(int x, int y) {
 ImmutablePoint point = new ImmutablePoint(10, 20);
 System.out.println(point.x()); // 10
 System.out.println(point.y()); // 20
+```
+実行結果：
+```
+10
+20
 ```
 
 ## 章末演習
@@ -742,6 +766,11 @@ public class FinalCorrectExample {
         System.out.println("新しい値: " + newNumber);
     }
 }
+```
+実行結果：
+```
+元の値: 10
+新しい値: 20
 ```
 
 #### エラー例: final変数の未初期化
@@ -963,6 +992,10 @@ public class FinalArrayMisunderstanding {
     }
 }
 ```
+実行結果：
+```
+[10, 2, 3, 4, 5]
+```
 
 ##### 対処法（真の不変配列）
 
@@ -1016,6 +1049,12 @@ public class ListImmutabilityMisunderstanding {
         // immutableItems.add("item3"); // UnsupportedOperationException
     }
 }
+```
+実行結果：
+```
+可変リスト: [item1, item2]
+不変ビュー: [item1, item2]
+元のリスト変更後の不変ビュー: [item1, item2, item3]
 ```
 
 ### 5. 不変性の破綻パターン
