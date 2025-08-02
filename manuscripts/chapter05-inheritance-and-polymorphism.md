@@ -1031,10 +1031,12 @@ public class RectangleSquareTest {
 期待される面積: 50
 実際の面積: 100
 ✗ テスト失敗！
+```
 
 この例は、正方形が長方形の振る舞いを正しく実装できないことを示しています
 リスコフ置換原則の違反例です
 
+```java
 // 使用例で問題が明らかに
 public class GeometryTest {
     public static void main(String[] args) {
