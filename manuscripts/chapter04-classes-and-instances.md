@@ -121,7 +121,8 @@ Javaのアクセス制御は、カプセル化を実現するうえでもっと�
 
 #### 各アクセス修飾子の詳細と使用例
 
-`private`の使用例。
+##### `private`の使用例
+
 <span class="listing-number">**サンプルコード4-2**</span>
 
 ```java
@@ -140,12 +141,9 @@ public class BankAccount {
         // トランザクションログの記録
     }
 }
-```
 
-使用例と実行結果：
-```java
-// BankAccountTest.java
-public class BankAccountTest {
+// テスト用のクラス
+class BankAccountTest {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();
         
@@ -168,7 +166,8 @@ public class BankAccountTest {
 入金処理が完了しました
 ```
 
-パッケージプライベート（デフォルト）の使用例。
+##### パッケージプライベート（デフォルト）の使用例
+
 <span class="listing-number">**サンプルコード4-3**</span>
 
 ```java
@@ -240,7 +239,8 @@ public class VehicleTest {
 Engine started: V6
 ```
 
-`public`の使用例。
+##### `public`の使用例
+
 <span class="listing-number">**サンプルコード4-5**</span>
 
 ```java
@@ -255,12 +255,8 @@ public class MathUtils {
         return number > 0;
     }
 }
-```
 
-使用例と実行結果：
-```java
-// MathUtilsTest.java
-public class MathUtilsTest {
+class MathUtilsTest {
     public static void main(String[] args) {
         // publicな定数へのアクセス
         System.out.println("PI = " + MathUtils.PI);
@@ -322,12 +318,8 @@ public class Product {
         this.price = price;
     }
 }
-```
 
-使用例と実行結果：
-```java
-// ProductTest.java
-public class ProductTest {
+class ProductTest {
     public static void main(String[] args) {
         Product product = new Product();
         
