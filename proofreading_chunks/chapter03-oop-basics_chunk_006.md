@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter03-oop-basics.md
-チャンク: 6/12
-行範囲: 1143 - 1389
-作成日時: 2025-08-02 14:34:01
+チャンク: 6/15
+行範囲: 908 - 1103
+作成日時: 2025-08-02 22:58:07
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,258 +13,207 @@
 ================
 -->
 
-### 例1：図書管理システム
+### コンストラクタ（初期化メソッド）
 
-図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
+コンストラクタは、オブジェクトを作成するときに自動的に呼ばれる特別なメソッドです。
 
-<span class="listing-number">**サンプルコード3-13**</span>
+<span class="listing-number">**サンプルコード3-11**</span>
 
 ```java
 public class Book {
-    private String isbn;
     private String title;
     private String author;
-    private boolean isAvailable;
+    private int pages;
     
-    public Book(String isbn, String title, String author) {
-        this.isbn = isbn;
+    // コンストラクタ（クラス名と同じ名前）
+    public Book(String title, String author, int pages) {
         this.title = title;
         this.author = author;
-        this.isAvailable = true;
+        this.pages = pages;
     }
     
-    public boolean borrow() {
-        if (isAvailable) {
-            isAvailable = false;
-            return true;
-        }
-        return false;
+    // デフォルトコンストラクタ（引数なし）
+    public Book() {
+        this.title = "未設定";
+        this.author = "不明";
+        this.pages = 0;
     }
     
-    public void returnBook() {
-        isAvailable = true;
-    }
-    
-    public String getInfo() {
-        String status = isAvailable ? "貸出可能" : "貸出中";
-        return String.format("%s - %s (%s) [%s]", isbn, title, author, status);
+    public void displayInfo() {
+        System.out.println("タイトル: " + title);
+        System.out.println("著者: " + author);
+        System.out.println("ページ数: " + pages);
     }
 }
 ```
 
 使用例と実行結果：
 ```java
-// BookLibraryTest.java
-public class BookLibraryTest {
+// BookTest.java
+public class BookTest {
     public static void main(String[] args) {
-        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
+        // 引数ありコンストラクタで作成
+        Book book1 = new Book("Java入門", "田中太郎", 300);
+        book1.displayInfo();
         
-        System.out.println(book.getInfo());
+        System.out.println("---");
         
-        // 本を借りる
-        if (book.borrow()) {
-            System.out.println("貸出処理が完了しました");
-        }
-        System.out.println(book.getInfo());
-        
-        // もう一度借りようとする
-        if (!book.borrow()) {
-            System.out.println("この本は貸出中です");
-        }
-        
-        // 本を返却
-        book.returnBook();
-        System.out.println("返却処理が完了しました");
-        System.out.println(book.getInfo());
+        // デフォルトコンストラクタで作成
+        Book book2 = new Book();
+        book2.displayInfo();
     }
 }
 ```
 
 実行結果：
 ```
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
-貸出処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出中]
-この本は貸出中です
-返却処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+タイトル: Java入門
+著者: 田中太郎
+ページ数: 300
+---
+タイトル: 未設定
+著者: 不明
+ページ数: 0
 ```
 
-このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
-borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
+### メソッドオーバーロード（同じ名前のメソッド）
 
-### 例2：ショッピングカート
+Javaでは、同じ名前のメソッドを複数定義できます。これを「メソッドオーバーロード」と呼びます。
 
-ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
-
-<span class="listing-number">**サンプルコード3-14**</span>
+<span class="listing-number">**サンプルコード3-12**</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.List;
-
-public class ShoppingCart {
-    private List<Item> items;
-    private double taxRate;
-    
-    public ShoppingCart(double taxRate) {
-        this.items = new ArrayList<>();
-        this.taxRate = taxRate;
+public class PrintHelper {
+    // 文字列を出力
+    public void print(String message) {
+        System.out.println(message);
     }
     
-    public void addItem(String name, double price, int quantity) {
-        items.add(new Item(name, price, quantity));
+    // 整数を出力
+    public void print(int number) {
+        System.out.println("数値: " + number);
     }
     
-    public double calculateTotal() {
-        double subtotal = 0;
-        for (Item item : items) {
-            subtotal += item.getSubtotal();
-        }
-        return subtotal * (1 + taxRate);
-    }
-    
-    public void displayCart() {
-        System.out.println("=== ショッピングカート ===");
-        for (Item item : items) {
-            System.out.println(item);
-        }
-        System.out.printf("合計（税込）: %.2f円%n", calculateTotal());
-    }
-    
-    // 内部クラス
-    private class Item {
-        private String name;
-        private double price;
-        private int quantity;
-        
-        public Item(String name, double price, int quantity) {
-            this.name = name;
-            this.price = price;
-            this.quantity = quantity;
-        }
-        
-        public double getSubtotal() {
-            return price * quantity;
-        }
-        
-        @Override
-        public String toString() {
-            return String.format("%s - %.2f円 × %d = %.2f円", 
-                name, price, quantity, getSubtotal());
-        }
+    // 2つの値を出力
+    public void print(String label, int value) {
+        System.out.println(label + ": " + value);
     }
 }
-```
 
-使用例と実行結果：
-```java
-// ShoppingCartTest.java
-public class ShoppingCartTest {
+// 使用例
+public class OverloadExample {
     public static void main(String[] args) {
-        ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%
+        PrintHelper helper = new PrintHelper();
         
-        cart.addItem("ノートPC", 98000, 1);
-        cart.addItem("マウス", 3500, 2);
-        cart.addItem("キーボード", 8500, 1);
-        
-        cart.displayCart();
+        // 同じprintという名前だが、引数によって異なるメソッドが呼ばれる
+        helper.print("こんにちは");          // String版
+        helper.print(42);                   // int版
+        helper.print("年齢", 20);           // String, int版
     }
 }
 ```
 
 実行結果：
 ```
-=== ショッピングカート ===
-ノートPC - 98000.00円 × 1 = 98000.00円
-マウス - 3500.00円 × 2 = 7000.00円
-キーボード - 8500.00円 × 1 = 8500.00円
-合計（税込）: 125050.00円
+こんにちは
+数値: 42
+年齢: 20
 ```
 
-## まとめ
+#### メソッドオーバーロードの詳細
 
-このパートでは、オブジェクト指向の基本概念を実際のコードを通じて学習しました。重要なポイントは以下のとおりです。
+メソッドオーバーロードは、同じ名前で異なるパラメータを持つメソッドを複数定義できる強力な機能です。
+これにより、似た機能を持つメソッドに統一的な名前を付けることができ、コードの可読性と使いやすさが向上します。
 
-1. データと処理の一体化
-    + クラスは関連するデータと処理をまとめる
-2. カプセル化
-    + 内部実装を隠蔽し、必要なインターフェイスのみを公開
-3. オブジェクトの生成と操作
-    + `new`キーワードでインスタンスを生成し、メソッドを通じて操作
-4. 現実世界のモデリング
-    + 実世界の概念をクラスとして表現
+##### C言語との決定的な違い
 
+C言語では関数名は一意でなければならず、パラメータが違っても別の名前を付ける必要がありました。
+以下の例でこの制約を確認できます。
+```c
+// C言語では別々の名前が必要
+int add_int(int a, int b);
+double add_double(double a, double b);
+int add_three_ints(int a, int b, int c);
+```
 
+一方、Javaではすべて同じ名前で定義できます：
+<span class="listing-number">**サンプルコード3-33**</span>
 
+```java
+public int add(int a, int b) { return a + b; }
+public double add(double a, double b) { return a + b; }
+public int add(int a, int b, int c) { return a + b + c; }
+```
 
+これはメソッドオーバーロードの例です。
 
+##### オーバーロードのメリット
 
+1. 直感的なAPI設計
+   - 利用者は1つのメソッド名を覚えるだけで、さまざまな状況で使える
+   - `Math.max(int, int)`、`Math.max(double, double)`など、統一的な名前で提供
+2. 型安全性の向上
+   - コンパイル時に引数の型に基づいてもっとも適合するメソッドが選択される
+   - 型エラーが実行前に検出される
+3. 後方互換性の維持
+   - 既存のメソッドを変更せずに、新しいパラメータパターンを追加できる
+   - 機能拡張が容易
 
+##### オーバーロードの解決規則
 
+Javaコンパイラはメソッド選択の際に特定のルールに従います。
+以下の優先順位でメソッドを選択します。
 
+1. 完全一致（型変換なし）
+2. プリミティブ型の拡大変換（`int` → `long`、`float` → `double`など）
+3. オートボクシング（`int` → `Integer`など）
+4. 可変長引数
 
-## オブジェクト指向の重要な用語と概念
+<span class="listing-number">**サンプルコード3-34**</span>
 
-ここからは、オブジェクト指向プログラミングで使用される重要な用語と概念を、実践的な例を交えて説明します。
+```java
+public class OverloadResolution {
+    public static void test(int x) {
+        System.out.println("int: " + x);
+    }
+    
+    public static void test(long x) {
+        System.out.println("long: " + x);
+    }
+    
+    public static void test(Integer x) {
+        System.out.println("Integer: " + x);
+    }
+    
+    public static void test(int... x) {
+        System.out.println("可変長引数: " + Arrays.toString(x));
+    }
+    
+    public static void main(String[] args) {
+        byte b = 10;
+        test(b);      // int版が呼ばれる（自動拡大変換）
+        test(10);     // int版が呼ばれる（完全一致）
+        test(10L);    // long版が呼ばれる（完全一致）
+        test(Integer.valueOf(10)); // Integer版が呼ばれる
+        test(1, 2, 3); // 可変長引数版が呼ばれる
+    }
+}
+```
 
-### オブジェクトとは
-
-オブジェクトは、コンピュータのメモリ上に展開された、プログラム内の「状態」と「振る舞い」を統合した存在です。「状態」とは、オブジェクトが保持するデータを指し、変数やフィールドとして実装されます。一方、「振る舞い」は、オブジェクトが実行できる処理内容であり、メソッド（関数）として実装されます。
-
-重要なのは、これらの状態と振る舞いが別々に存在するのではなく、密接な関連を持って一体化される点です。たとえば、銀行口座オブジェクトであれば、残高（状態）と入金・出金操作（振る舞い）が1つのオブジェクトとして管理されることで、データの整合性を保ちやすくなります。
-
-### クラスとは
-
-オブジェクトはメモリ上に展開されて使用されます。
-そのオブジェクトは、どんな状態を持って、どんな振る舞いをするのかを定義するのがクラスです。
-
-よくある表現として、オブジェクトの設計図をクラスという言い方がされます。
-
-### インスタンス（実体）とは
-オブジェクトは、メモリ上に展開されて使用されます。
-その状態をインスタンスと呼び、メモリ上に展開して使用できるようにすることをインスタンス化（実体化）と言います。
-
-### クラス、インスタンス、オブジェクトの関係
-
-オブジェクト指向プログラミングでは、「クラス」「インスタンス」「オブジェクト」という用語が頻繁に登場し、初学者にとって混乱の原因となることがあります。これらの関係を明確に理解することが重要です。
-
-クラスは、オブジェクトの設計図です。建築にたとえれば、家の設計図にあたります。クラスは、どのようなデータ（フィールド）を持ち、どのような操作（メソッド）ができるかを定義します。
-
-インスタンスは、クラスをもとに実際に作成された具体的な実体です。設計図から実際に建てられた家に相当します。1つのクラスから複数のインスタンスを作成でき、それぞれが独立したデータを保持します。
-
-オブジェクトという用語は、文脈によって意味が変わることに注意が必要です。多くの場合、オブジェクトはインスタンスを指しますが、より幅広い概念を表す場合や、クラス自体を指す場合もあります。「オブジェクト指向」という場合のオブジェクトは、より抽象的な概念を表しています。
-
-※厳密には、インスタンス化をしなくても内部的に使用できる状態や振る舞いというのも存在します。それらは「静的（static）な○○」と呼ばれ、インスタンス化を明示的に行わなくても、プログラム実行時にJVMによってクラスがロードされ、メモリへ展開されて使用できるようになっています。対義語として「動的（dynamic）な○○」という言い方もあり、そちらはインスタンス化しないと使用できません。
-
-> 補足: JVMのクラスローディング機構により、staticメンバーはクラスがはじめて参照されたときに初期化されます。また、JITコンパイラによって実行時に最適化され、頻繁に使用されるstaticメソッドは高速に実行されます。
-
-### クラスはどのように書くか
-
-何らかのデータと、それに対する処理をまとめて書けるとよいです。
-
-「クラスは、C言語における構造体（struct）に、関数をつけられるようにしたもの」のようにイメージすると理解しやすいです。
-
-### 役割ごとに分割する利点
-
-役割ごとに分割することで、大規模なプログラムを作る際に管理しやすくなることがあります。
-ただし、これは1つのアプローチに過ぎません。
-WebアプリケーションではMVCパターン（Model-View-Controller）、マイクロサービスではドメイン分割など、システムの特性に応じた分割方法が用いられます。
-管理しやすいとは、複雑でなく、バグの発見・修正が容易なことを指します。
-
-### 手続き型 vs オブジェクト指向
-
-ここでは、手続き型プログラミングとオブジェクト指向プログラミングの根本的な違いを、学生情報を管理するプログラムの例を通じて理解します。この違いは、データの管理方法と責任の所在に関する重要な設計思想の違いを表しています。
-
-#### 手続き型プログラミングの特徴と課題
-
-手続き型プログラミングでは、データ構造と処理が分離されており、グローバルな関数がデータを操作します。この方式は単純で理解しやすい反面、大規模なシステムでは以下のような問題が生じます。
+実行結果：
+```
+int: 10
+int: 10
+long: 10
+Integer: 10
+可変長引数: [1, 2, 3]
+```
 
 
 
 <!-- 
 ================
-チャンク 6/12 の終了
+チャンク 6/15 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

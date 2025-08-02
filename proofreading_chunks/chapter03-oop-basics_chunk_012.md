@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter03-oop-basics.md
-チャンク: 12/12
-行範囲: 2592 - 2745
-作成日時: 2025-08-02 14:34:01
+チャンク: 12/15
+行範囲: 2078 - 2268
+作成日時: 2025-08-02 22:58:07
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,165 +13,202 @@
 ================
 -->
 
-### カスタムクラスでのequalsメソッドの実装
+#### 定数の定義
 
-独自のクラスで`equals`メソッドを適切に実装する方法を示します。
+<span class="listing-number">**サンプルコード3-39**</span>
 
-<span class="listing-number">**サンプルコード3-47**</span>
+   ```java
+   public class Constants {
+       public static final double PI = 3.14159265359;
+       public static final int MAX_RETRY_COUNT = 3;
+   }
+   ```
+
+   これは定数定義の例です。
+
+### staticの設計上の注意点
+
+1. 過度な使用を避ける
+   - staticメソッドはテストが困難になる場合がある
+   - オブジェクト指向の柔軟性が失われる
+2. 状態を持たせない
+   - staticフィールドは慎重に使用する
+   - 可変なstaticフィールドは避ける
+3. 適切な責任分担
+   - オブジェクトの振る舞いはインスタンスメソッドを使う
+   - ユーティリティ的な処理はstaticメソッドを使う
+
+### まとめ
+
+static修飾子は強力な機能ですが、オブジェクト指向プログラミングの基本原則と相反する場合があります。
+適切な場面で適切に使用することで、よりよい設計のプログラムを作成できます。
+第7章以降では、インターフェイスや抽象クラスと組み合わせた、より高度なstatic活用パターンを学習します。
+
+
+
+
+
+
+
+
+
+## オブジェクトの配列
+
+### オブジェクト配列の基本
+
+第2章で基本的な配列の使い方を学習しました。ここでは、オブジェクト指向プログラミングの文脈で重要な「オブジェクトの配列」について学習します。
+
+プリミティブ型の配列とは異なり、オブジェクトの配列は参照の配列として実装されます。これは、配列の各要素がオブジェクトそのものではなく、オブジェクトへの参照を保持することを意味します。
+
+### オブジェクト配列の宣言と初期化
+
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
-public class Student {
-    private String id;
+// オブジェクト配列の宣言
+Student[] students;  // Studentクラスの配列
+
+// 配列の初期化（参照の配列を作成）
+students = new Student[5];  // 5人分のStudent参照を保持できる配列
+
+// 各要素にオブジェクトを代入
+students[0] = new Student("田中太郎", 20, 3.5);
+students[1] = new Student("佐藤花子", 21, 3.8);
+// students[2]〜students[4]はnullのまま
+```
+
+これはオブジェクト配列の宣言と初期化の構文例です。
+
+#### 重要なポイント
+
+- `new Student[5]`はStudentオブジェクト5個を作るのではなく、Studentへの参照5個分の配列を作る
+- 初期化直後の各要素は`null`である
+- 各要素に対して個別に`new`でオブジェクトを作成して代入する必要がある
+
+### オブジェクト配列の操作
+
+<span class="listing-number">**サンプルコード3-23**</span>
+
+```java
+public class StudentArrayExample {
+    public static void main(String[] args) {
+        // オブジェクト配列の作成と初期化
+        Student[] students = new Student[3];
+        
+        // 各要素にオブジェクトを代入
+        students[0] = new Student("田中太郎", 20, 3.5);
+        students[1] = new Student("佐藤花子", 21, 3.8);
+        students[2] = new Student("鈴木一郎", 19, 3.2);
+        
+        // オブジェクト配列の反復処理
+        System.out.println("学生一覧:");
+        for (Student student : students) {
+            student.display();  // 各オブジェクトのメソッドを呼び出し
+        }
+        
+        // GPAの平均を計算
+        double totalGpa = 0;
+        for (Student student : students) {
+            totalGpa += student.getGpa();
+        }
+        double averageGpa = totalGpa / students.length;
+        System.out.println("\n平均GPA: " + averageGpa);
+    }
+}
+```
+
+#### Studentクラスの定義（簡略版）
+実行に必要なStudentクラスを以下に示します。
+```java
+class Student {
     private String name;
+    private int age;
+    private double gpa;
     
-    public Student(String id, String name) {
-        this.id = id;
+    public Student(String name, int age, double gpa) {
         this.name = name;
+        this.age = age;
+        this.gpa = gpa;
     }
     
-    @Override
-    public boolean equals(Object obj) {
-        // 同一オブジェクトの場合
-        if (this == obj) return true;
+    public void display() {
+        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+    }
+    
+    public double getGpa() {
+        return gpa;
+    }
+}
+```
+
+実行結果：
+```
+学生一覧:
+名前: 田中太郎, 年齢: 20, GPA: 3.5
+名前: 佐藤花子, 年齢: 21, GPA: 3.8
+名前: 鈴木一郎, 年齢: 19, GPA: 3.2
+
+平均GPA: 3.5
+```
+
+### オブジェクト配列のnullチェック
+
+オブジェクト配列を操作する際のもっとも重要な注意点は、nullチェックです。
+
+配列を`new`で初期化を行うと、配列の要素それぞれの初期値は`null`です。
+すべての要素に実体化されたオブジェクトが格納されているとは限らないので、配列の要素の中身を走査する場合は必ずnullチェックを行いましょう。
+
+
+<span class="listing-number">**サンプルコード3-24**</span>
+
+```java
+public class NullCheckExample {
+    public static void main(String[] args) {
+        Student[] students = new Student[5];
+        students[0] = new Student("田中", 20, 3.5);
+        students[1] = new Student("佐藤", 21, 3.8);
+        // students[2]〜[4]はnull
         
-        // nullまたは異なるクラスの場合
-        if (obj == null || getClass() != obj.getClass()) return false;
-        
-        // 型変換して比較
-        Student student = (Student) obj;
-        return id != null && id.equals(student.id);
-    }
-    
-    @Override
-    public int hashCode() {
-        // equalsで使用するフィールドと同じフィールドを使用
-        return id != null ? id.hashCode() : 0;
+        // nullチェックを忘れるとNullPointerExceptionが発生
+        for (int i = 0; i < students.length; i++) {
+            if (students[i] != null) {  // nullチェックが必須
+                students[i].display();
+            }
+        }
     }
 }
 ```
 
-### equals/hashCodeの契約
+実行結果：
+```
+名前: 田中, 年齢: 20, GPA: 3.5
+名前: 佐藤, 年齢: 21, GPA: 3.8
+```
 
-`equals`メソッドをオーバーライドする場合、必ず`hashCode`メソッドもオーバーライドしてください。これは以下の契約を満たすために必要です。
+### クラス型配列とプリミティブ型配列の違い
 
-1. `equals`で等しいと判定される2つのオブジェクトは、同じ`hashCode`を返す
-2. `hashCode`が同じでも、`equals`で等しいとは限らない（ハッシュ衝突）
-3. プログラムの実行中、同じオブジェクトの`hashCode`は一貫している
+クラス型の配列の初期値は`null`でしたが、プリミティブ型の配列の場合は、それぞれの型の初期値が代入されています。
+プリミティブ型を指定した配列には、`null`は入りません。
 
-## モダンJavaにおけるオブジェクト指向
-
-Java 21 LTSでは、オブジェクト指向プログラミングをより簡潔に記述できる新機能が追加されます。
-
-### Recordクラス（Java 14以降）
-
-不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
-
-<span class="listing-number">**サンプルコード3-48**</span>
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
-// 従来の方法
-import java.util.Objects;
+// プリミティブ型の配列
+int[] numbers = new int[5];     // 各要素は0で初期化される
+System.out.println(numbers[0]); // 0が表示される
 
-public class Point {
-    private final int x;
-    private final int y;
-    
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public int getX() { return x; }
-    public int getY() { return y; }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Point point = (Point) o;
-        return x == point.x && y == point.y;
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-    
-    @Override
-    public String toString() {
-        return "Point{x=" + x + ", y=" + y + '}';
-    }
-}
-
-// Record を使った方法（Java 14以降）
-public record Point(int x, int y) {
-    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
-}
+// オブジェクトの配列
+Student[] students = new Student[5]; // 各要素はnullで初期化される
+System.out.println(students[0]);     // nullが表示される
 ```
 
-### Pattern Matching（Java 16以降）
+これは配列の初期値の違いを示す構文例です。
 
-`instanceof`演算子と組み合わせたパターンマッチングにより、型チェックとキャストを簡潔に記述できます。
-
-<span class="listing-number">**サンプルコード3-49**</span>
-
-```java
-// 従来の方法
-public void processShape(Shape shape) {
-    if (shape instanceof Circle) {
-        Circle circle = (Circle) shape;
-        System.out.println("円の半径: " + circle.getRadius());
-    } else if (shape instanceof Rectangle) {
-        Rectangle rectangle = (Rectangle) shape;
-        System.out.println("長方形の面積: " + rectangle.getArea());
-    }
-}
-
-// Pattern Matching を使った方法（Java 16以降）
-public void processShape(Shape shape) {
-    if (shape instanceof Circle circle) {
-        System.out.println("円の半径: " + circle.getRadius());
-    } else if (shape instanceof Rectangle rectangle) {
-        System.out.println("長方形の面積: " + rectangle.getArea());
-    }
-}
-```
-
-### Sealed Classes（Java 17以降）
-
-クラス階層を制限し、より安全な継承を実現できます。
-
-<span class="listing-number">**サンプルコード3-50**</span>
-
-```java
-public sealed class Shape 
-    permits Circle, Rectangle, Triangle {
-    // Shapeクラスを継承できるのは、Circle、Rectangle、Triangleのみ
-}
-
-public final class Circle extends Shape {
-    private double radius;
-    // 実装
-}
-
-public final class Rectangle extends Shape {
-    private double width, height;
-    // 実装
-}
-
-public final class Triangle extends Shape {
-    private double base, height;
-    // 実装
-}
-```
-
-これらの新機能により、より安全で簡潔なオブジェクト指向プログラミングが可能になっています。
-ただし、基本的な概念の理解が前提となるため、本章で学んだ基礎をしっかりと理解してから活用しましょう。
 
 
 <!-- 
 ================
-チャンク 12/12 の終了
+チャンク 12/15 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

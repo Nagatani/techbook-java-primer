@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter03-oop-basics.md
-チャンク: 11/12
-行範囲: 2369 - 2591
-作成日時: 2025-08-02 14:34:01
+チャンク: 11/15
+行範囲: 1883 - 2077
+作成日時: 2025-08-02 22:58:07
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,234 +13,206 @@
 ================
 -->
 
-### よくある実装ミスと対策
-
-| ミスの種類 | 症状 | 対策 |
-|------------|------|------|
-| フィールドの初期化忘れ | NullPointerException | コンストラクタで確実に初期化 |
-| thisの使い忘れ | 引数とフィールドの混同 | 同名の場合は必ずthisを使用 |
-| staticの誤用 | "non-static variable" エラー | インスタンスメソッドではstaticを外す |
-| アクセス修飾子の誤り | privateフィールドに直接アクセス | ゲッターメソッドを使用 |
-
-### 段階的な実装アプローチ
-
-1. スケルトン作成（5分）
-   - クラスの枠組みだけ作成
-   - メソッドのシグネチャだけ定義
-   - コンパイルが通ることを確認
-
-2. 基本機能実装（15分）
-   - もっとも簡単なメソッドから実装
-   - 各メソッドごとに動作確認
-   - printlnでデバッグ出力
-
-3. 機能追加（10分）
-   - エラーチェック追加
-   - 出力の整形
-   - コメント追加
-
-4. テストと改善（10分）
-   - 境界値でのテスト
-   - エラーケースの確認
-   - コードの整理
-
-### 学習を深める追加実験
-
-基礎課題の完了後、以下の実験を試してみましょう。
-
-1. メモリ効率の実験
-   - 大量のオブジェクトを作成して挙動を観察
-   - staticメソッドとインスタンスメソッドの使い分け
-
-2. 設計の改善
-   - より使いやすいAPIを考える
-   - メソッドチェーンの実装に挑戦
-
-3. 実用的な拡張
-   - ファイルからデータを読み込む（次章の予習）
-   - 簡単な対話型プログラムの作成
-
-### デバッグのヒント
-
-#### オブジェクト指向特有のデバッグ方法
-1. `toString()`メソッドの活用
-   - オブジェクトの状態を文字列で確認
-   - デバッグ時の状態把握に便利
-2. 段階的なコンストラクタ実行
-   - 各フィールドの初期化を確認
-   - `this`の参照先を意識
-3. メソッド呼び出しの追跡
-   - どのオブジェクトのメソッドが呼ばれているか
-   - staticコンテキストとインスタンスコンテキストの区別
-
-次のステップ： 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
-
-> ※ 本章の高度な内容については、付録B.03「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`）を参照してください。
-
-## 次章への橋渡し
-
-本章では、オブジェクト指向プログラミングの基本的な考え方と、クラス・フィールド・メソッドの基本的な書き方を学びました。簡単なgetter/setterメソッドやpublic/privateの使い分けについても触れました。
-
-次章「第4章クラスとインスタンス」では、企業システム開発で必須のカプセル化技術について学びます。具体的には以下の内容を扱います。
-
-- アクセス修飾子（`public`、`private`、`protected`、パッケージプライベート）の詳細
-- 完全なカプセル化の実現方法（BankAccountの段階的改善例）
-- データ検証とバリデーション
-- 防御的プログラミング
-- パッケージシステムとクラスの組織化
-
-第3章で学んだ基礎をもとに、実践的で堅牢なクラス設計の技術を身につけていきましょう。
-
-
-
-
-
-
-
-## よくあるエラーと対処法
-
-本章では、オブジェクト指向プログラミングの基礎を学ぶ際にとくによく遭遇するエラーを扱います。
-
-### 本章特有のエラー
-
-#### 1. クラスとインスタンスの概念の混乱
-
-問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
-
-<span class="listing-number">**サンプルコード3-40**</span>
-
-```java
-// エラー例
-Student.setName("太郎");  // クラス名で呼び出している
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード3-41**</span>
-
-```java
-// 正しい例
-Student student = new Student();  // インスタンスを作成
-student.setName("太郎");          // インスタンスから呼び出し
-```
-
-重要なポイント:
-
-- クラスは設計図、インスタンスは実体
-- インスタンスメソッドはnewで作成したオブジェクトから呼び出す
-- IDEでのプログラミングの場合は自動補完機能を活用する
-
-#### 2. static vs non-staticの混乱
-問題: staticメソッドからインスタンスメンバーにアクセスしようとする
-
-<span class="listing-number">**サンプルコード3-42**</span>
-
-```java
-// エラー例
-public static void main(String[] args) {
-    int result = add(5, 3);  // インスタンスメソッドを直接呼び出し
-}
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-43**</span>
-
-```java
-// 正しい例
-public static void main(String[] args) {
-    Calculator calc = new Calculator();
-    int result = calc.add(5, 3);  // インスタンス経由で呼び出し
-}
-```
-
-##### 重要なポイント
-- staticメソッドはクラスに属し、インスタンスなしで呼び出せる
-- インスタンスメソッドはオブジェクトに属し、インスタンスが必要
-
-#### 3. 基本的な構文エラー
-問題: Javaの基本構文を間違えて記述する
-
-<span class="listing-number">**サンプルコード3-44**</span>
-
-```java
-// よくあるエラー例
-System.out.println("Hello")  // セミコロン忘れ
-Public class MyClass { }      // 大文字のP
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-45**</span>
-
-```java
-// 正しい例
-System.out.println("Hello");  // セミコロンを追加
-public class MyClass { }      // 小文字のp
-```
-
-##### 重要なポイント
-- すべての文の末尾にはセミコロンが必要
-- キーワードは小文字（public、class、void等）
-- クラス名は大文字で始める（慣例）
-
-### 関連する共通エラー
-
-以下のエラーも本章の内容に関連します。
-
-- 　`NullPointerException`（→ 付録A.1.1）
-    - とくに初期化されていないフィールドへのアクセスで発生しやすい
-- コンストラクタエラー（→ 第4章）
-    - 本章では基本概念のみ、詳細は第4章で学習
-- アクセス修飾子エラー（→ 付録A.2.3）
-    - `private`フィールドへの不正アクセス
-
-### デバッグのヒント
-
-#### エラーに遭遇した際の基本的な対処法
-
-1. エラーメッセージを読む
-    + 行番号とエラーの種類を確認
-2. クラスとインスタンスの区別
-    + staticかどうかを確認
-3. 初期化の確認
-    + すべてのフィールドが初期化されるか確認
-
-### さらに学ぶには
-
-- 付録H: Java共通エラーガイド（基本的なエラーパターン）
-- 第4章: より詳細なコンストラクタとフィールドの扱い
-- 第14章: 例外処理の体系的な学習
-
-## オブジェクトの等価性とhashCode
-
-オブジェクト指向プログラミングでは、オブジェクト同士が「等しい」かどうかを判定します。Javaでは、`==`演算子と`equals`メソッドの違いを理解することが重要です。
-
-### ==演算子とequalsメソッドの違い
-
-<span class="listing-number">**サンプルコード3-46**</span>
-
-```java
-public class StringComparison {
-    public static void main(String[] args) {
-        String str1 = new String("Hello");
-        String str2 = new String("Hello");
-        String str3 = str1;
-        
-        // ==演算子：参照の比較
-        System.out.println(str1 == str2);  // false（異なるオブジェクト）
-        System.out.println(str1 == str3);  // true（同じオブジェクトを参照）
-        
-        // equalsメソッド：値の比較
-        System.out.println(str1.equals(str2));  // true（同じ値）
-        System.out.println(str1.equals(str3));  // true（同じ値）
+        // 異常な操作（エラーが適切に処理される）
+        product.updatePrice(-500.0);
+        product.sell(20);
     }
 }
 ```
+
+実行結果：
+```
+価格を更新しました: 1800.0円
+在庫を追加しました。現在の在庫: 15
+販売しました。残り在庫: 12
+エラー: 価格は0円以上である必要です
+在庫が不足しています
+```
+
+
+## static修飾子の詳細な理解
+
+第2章では、mainメソッドから直接呼び出せるstaticメソッドの基本を学習しました。ここでは、オブジェクト指向プログラミングの文脈におけるstatic修飾子の意味と使い方を、より体系的に理解します。
+
+### staticとは何か
+
+static修飾子は、フィールドやメソッドが「クラスに属する」ことを示します。通常のフィールドやメソッド（インスタンスメンバー）が各オブジェクトごとに存在するのに対し、staticメンバーはクラス全体で1つだけ存在します。
+
+### staticメソッドの例
+
+<span class="listing-number">**サンプルコード3-20**</span>
+
+```java
+public class MathHelper {
+    // staticメソッド - オブジェクトを作らずに使える
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static double calculateCircleArea(double radius) {
+        return 3.14159 * radius * radius;
+    }
+}
+
+// 使用例
+public class StaticExample {
+    public static void main(String[] args) {
+        // newを使わずに直接呼び出し
+        int sum = MathHelper.add(5, 3);
+        System.out.println("合計: " + sum);
+        
+        double area = MathHelper.calculateCircleArea(10.0);
+        System.out.println("円の面積: " + area);
+    }
+}
+```
+
+実行結果：
+```
+合計: 8
+円の面積: 314.159
+```
+
+#### staticの特徴
+
+- `クラス名.メソッド名()`で呼び出す
+- オブジェクトを作る必要がない（インスタンス化して変数に入れる必要がない）
+- ユーティリティメソッドに便利
+
+> **ユーティリティメソッドとは**  
+> ユーティリティメソッドは、特定のオブジェクトの状態に依存せず、引数のみに基づいて処理を行うメソッドです。数学計算、文字列処理、データ変換など、汎用的な機能を提供します。Javaの標準ライブラリでは、`Math.max()`、`Math.sqrt()`、`Integer.parseInt()`などがユーティリティメソッドの典型例です。これらのメソッドは、オブジェクトを作成せずに直接呼び出せるため、staticメソッドとして実装されています。
+
+### staticフィールド（クラス共有変数）
+
+<span class="listing-number">**サンプルコード3-21**</span>
+
+```java
+// StaticMemberExample.java
+class Tool {
+    // インスタンスメンバー（各Toolインスタンスが個別に持つ）
+    String name;
+
+    // クラスメンバー（Toolクラス全体で共有される）
+    static int toolCount = 0;
+
+    // コンストラクタ
+    public Tool(String name) {
+        this.name = name;
+        toolCount++; // インスタンスが作られるたびに、共有カウンタを増やす
+        System.out.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
+    }
+
+    // インスタンスメソッド
+    public void showName() {
+        System.out.println("このツールの名前は " + this.name + " です。");
+    }
+
+    // クラスメソッド
+    public static void showToolCount() {
+        // System.out.println(this.name); // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        System.out.println("作成されたツールの総数は " + toolCount + " です。");
+    }
+}
+
+public class StaticMemberExample {
+    public static void main(String[] args) {
+        System.out.println("--- ツール作成前 ---");
+        // インスタンスがなくてもクラスメソッドは呼び出せる
+        Tool.showToolCount();
+
+        System.out.println("\n--- ツール作成 ---");
+        Tool hammer = new Tool("ハンマー");
+        Tool wrench = new Tool("レンチ");
+
+        System.out.println("\n--- 各ツールの情報表示 ---");
+        hammer.showName(); // インスタンスメソッドの呼び出し
+        wrench.showName();
+
+        System.out.println("\n--- ツール総数の再確認 ---");
+        // クラス名経由でのアクセスが推奨
+        Tool.showToolCount();
+    }
+}
+```
+
+#### 実行結果
+
+```
+--- ツール作成前 ---
+作成されたツールの総数は 0 です
+
+--- ツール作成 ---
+ハンマー が作成されました。現在のツール総数: 1
+レンチ が作成されました。現在のツール総数: 2
+
+--- 各ツールの情報表示 ---
+このツールの名前は ハンマー です。
+このツールの名前は レンチ です。
+
+--- ツール総数の再確認 ---
+作成されたツールの総数は 2 です。
+```
+
+### staticとインスタンスメンバーの違い
+
+#### インスタンスメンバー
+- 各オブジェクトが独自に持つ
+- `new`でオブジェクトを作成してから使用
+- `this`参照が使える
+- オブジェクトの状態を表現
+
+#### staticメンバー
+- クラス全体で1つだけ存在
+- クラス名経由で直接アクセス
+- `this`参照は使えない
+- クラス全体の共通情報を表現
+
+### staticを使う適切な場面
+
+#### ユーティリティメソッド
+
+<span class="listing-number">**サンプルコード3-37**</span>
+
+   ```java
+   public class MathUtils {
+       public static double calculateDistance(double x1, double y1, double x2, double y2) {
+           return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+       }
+   }
+   ```
+
+   これはユーティリティメソッドの例です。
+
+#### ファクトリーメソッド
+
+<span class="listing-number">**サンプルコード3-38**</span>
+
+   ```java
+   public class Student {
+       private String name;
+       private int age;
+       
+       private Student(String name, int age) {
+           this.name = name;
+           this.age = age;
+       }
+       
+       public static Student createStudent(String name, int age) {
+           if (age < 0 || age > 150) {
+               throw new IllegalArgumentException("Invalid age");
+           }
+           return new Student(name, age);
+       }
+   }
+   ```
+
+   これはファクトリーメソッドパターンの例です。
 
 
 
 <!-- 
 ================
-チャンク 11/12 の終了
+チャンク 11/15 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

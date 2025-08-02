@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter03-oop-basics.md
-チャンク: 4/12
-行範囲: 694 - 907
-作成日時: 2025-08-02 14:34:01
+チャンク: 4/15
+行範囲: 550 - 746
+作成日時: 2025-08-02 22:58:07
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -12,6 +12,150 @@
 - 校正が完了したらステータスを「completed」に変更してください
 ================
 -->
+
+#### フィールドのデフォルト値
+
+フィールドにプリミティブ型を指定する場合は、それぞれの型に合わせた初期値が代入されています。
+それに対して、`String`をはじめとしたクラス型のフィールドの場合、初期値として`null`が代入されます。
+
+これらは、メソッド内部で通常の変数として定義した際の「未初期化」の状態とは異なります。
+
+<span class="listing-number">**サンプルコード3-7**</span>
+
+```java
+public class DefaultValueDemo {
+    // 数値型のデフォルト値
+    int intValue;         // 0
+    double doubleValue;   // 0.0
+    
+    // その他の型のデフォルト値
+    boolean boolValue;    // false
+    char charValue;       // '\u0000' (空文字)
+    String stringValue;   // null
+    
+    public void showDefaults() {
+        System.out.println("int: " + intValue);        // 0
+        System.out.println("double: " + doubleValue);  // 0.0
+        System.out.println("boolean: " + boolValue);   // false
+        System.out.println("String: " + stringValue);  // null
+    }
+    
+    public static void main(String[] args) {
+        DefaultValueDemo demo = new DefaultValueDemo();
+        demo.showDefaults();
+    }
+}
+```
+
+実行結果：
+```
+int: 0
+double: 0.0
+boolean: false
+String: null
+```
+
+### フィールド（インスタンス変数）の詳細
+
+フィールドは、オブジェクトの状態を表現する変数です。クラス内で宣言され、そのクラスから生成される各オブジェクトが独自の値を保持します。
+
+#### フィールドの宣言構文
+
+<span class="listing-number">**サンプルコード3-27**</span>
+
+```java
+アクセス修飾子 データ型 フィールド名;
+アクセス修飾子 データ型 フィールド名 = 初期値;
+```
+
+これは構文の説明です。
+
+#### 実際の使用例
+
+<span class="listing-number">**サンプルコード3-8**</span>
+
+```java
+public class Product {
+    // フィールドの宣言
+    private String productId;  // 商品ID
+    private String name;       // 商品名  
+    private double price;      // 価格
+    private int stock;         // 在庫数
+    
+    // コンストラクタでフィールドを初期化
+    public Product(String productId, String name, double price) {
+        this.productId = productId;  // thisは現在のオブジェクトを指す
+        this.name = name;
+        this.price = price;
+        this.stock = 0;              // 初期在庫は0
+    }
+    
+    // フィールドを使った処理
+    public void addStock(int quantity) {
+        if (quantity > 0) {
+            stock += quantity;  // 在庫数を更新
+            System.out.println(quantity + "個入荷しました");
+        }
+    }
+    
+    // フィールドの値を表示
+    public void showInfo() {
+        System.out.println("商品ID: " + productId);
+        System.out.println("商品名: " + name);
+        System.out.println("価格: ¥" + price);
+        System.out.println("在庫数: " + stock + "個");
+    }
+}
+```
+
+使用例と実行結果：
+```java
+// ProductTest.java
+public class ProductTest {
+    public static void main(String[] args) {
+        Product product = new Product("P001", "ノートPC", 98000);
+        
+        product.showInfo();
+        System.out.println("---");
+        
+        product.addStock(10);
+        product.showInfo();
+    }
+}
+```
+
+実行結果：
+```
+商品ID: P001
+商品名: ノートPC
+価格: ¥98000.0
+在庫数: 0個
+---
+10個入荷しました
+商品ID: P001
+商品名: ノートPC
+価格: ¥98000.0
+在庫数: 10個
+```
+
+#### フィールドのデフォルト値
+
+フィールドに初期値を指定しない場合、以下のデフォルト値が自動的に設定されます。
+
+| データ型 | デフォルト値 |
+|---------|------------|
+| byte, short, int, long | 0 |
+| float, double | 0.0 |
+| char | '\u0000' |
+| boolean | false |
+| 参照型（クラス、配列など） | null |
+
+### メソッド（操作）の基礎
+
+メソッドは、オブジェクトが「できること」を定義します。
+C言語の関数と似ていますが、関数とデータ（フィールド）がそれぞれオブジェクトに属している点が異なります。
+
+これにより、データとそれに対してできることをまとめて管理できます。
 
 #### メソッドの宣言構文
 
@@ -66,173 +210,11 @@ public class Rectangle {
     }
 }
 
-// 使用例
-public class RectangleExample {
-    public static void main(String[] args) {
-        // オブジェクトの作成
-        Rectangle rect = new Rectangle(10.0, 5.0);
-        
-        // メソッドの呼び出し
-        rect.displayInfo();
-        
-        // メソッドの戻り値を使用
-        double area = rect.calculateArea();
-        System.out.println("面積は" + area + "です");
-        
-        // 引数付きメソッドの呼び出し
-        rect.resize(2.0);
-        rect.displayInfo();
-    }
-}
-```
-
-実行結果：
-```
-幅: 10.0
-高さ: 5.0
-面積: 50.0
-周囲: 30.0
-面積は50.0です
-2.0倍にリサイズしました
-幅: 20.0
-高さ: 10.0
-面積: 200.0
-周囲: 60.0
-```
-
-#### メソッドの種類
-
-##### 1. 戻り値がないメソッド（voidメソッド）
-
-<span class="listing-number">**サンプルコード3-29**</span>
-
-```java
-public void printMessage() {
-    System.out.println("こんにちは！");
-}
-```
-
-これは戻り値がないメソッドの構文例です。
-
-##### 2. 戻り値があるメソッド
-
-<span class="listing-number">**サンプルコード3-30**</span>
-
-```java
-public int add(int a, int b) {
-    return a + b;  // int型の値を返す
-}
-```
-
-これは戻り値があるメソッドの構文例です。
-
-##### 3. 引数がないメソッド
-
-<span class="listing-number">**サンプルコード3-31**</span>
-
-```java
-public void showTime() {
-    System.out.println("現在時刻: " + new Date());
-}
-```
-
-これは引数がないメソッドの構文例です。
-
-##### 4. 複数の引数を持つメソッド
-
-<span class="listing-number">**サンプルコード3-32**</span>
-
-```java
-public double calculateBMI(double weight, double height) {
-    return weight / (height * height);
-}
-```
-
-これは複数の引数を持つメソッドの構文例です。
-
-### getter/setterメソッドの基本
-
-オブジェクト指向プログラミングでは、フィールドを`private`にして直接アクセスを禁止し、`public`メソッドを通じてアクセスします。
-これをアクセサメソッド（getter/setter）パターンと呼びます。
-
-値の取得(getter)と設定(setter)をそれぞれ分割して作成することで、「取得はできるけど外部からは設定できないデータ」のような条件のデータを作成できます。
-
-<span class="listing-number">**サンプルコード3-10**</span>
-
-```java
-public class Person {
-    // privateフィールド
-    private String name;
-    private int age;
-    
-    // getter：フィールドの値を取得
-    public String getName() {
-        return name;
-    }
-    
-    // setter：フィールドの値を設定
-    public void setName(String name) {
-        this.name = name;  // thisは現在のオブジェクトを指す
-    }
-    
-    // 年齢のgetter
-    public int getAge() {
-        return age;
-    }
-    
-    // 年齢のsetter（簡単な検証付き）
-    public void setAge(int age) {
-        if (age >= 0 && age <= 150) {
-            this.age = age;
-        } else {
-            System.out.println("無効な年齢です");
-        }
-    }
-}
-```
-
-使用例と実行結果：
-```java
-// PersonTest.java
-public class PersonTest {
-    public static void main(String[] args) {
-        Person person = new Person();
-        
-        // setterを使ってデータを設定
-        person.setName("山田太郎");
-        person.setAge(25);
-        
-        // getterを使ってデータを取得
-        System.out.println("名前: " + person.getName());
-        System.out.println("年齢: " + person.getAge() + "歳");
-        
-        // 無効な年齢を設定してみる
-        person.setAge(200);
-    }
-}
-```
-
-実行結果：
-```
-名前: 山田太郎
-年齢: 25歳
-無効な年齢です
-```
-
-#### getter/setterを使う利点
-- フィールドへのアクセスを制御できる
-- 値の設定時に検証を行える
-- 将来的に実装を変更しても、外部インターフェイスは変わらない
-- デバッグ時にアクセスポイントを特定しやすい
-
-> 注意: すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。
-外部からアクセスが必要なフィールドにのみ提供し、オブジェクトの内部状態は隠蔽することがよい設計です。
-
 
 
 <!-- 
 ================
-チャンク 4/12 の終了
-校正ステータス: [ ] 未完了 / [x] 完了
+チャンク 4/15 の終了
+校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->
