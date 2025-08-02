@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 2/15
 行範囲: 192 - 374
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -66,7 +66,8 @@ public class ProceduralExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 田中太郎, 年齢: 20, GPA: 3.5
 ```
@@ -111,7 +112,8 @@ public class ObjectOrientedExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 田中太郎, 年齢: 20, GPA: 3.5
 ```
@@ -155,7 +157,8 @@ public class BankAccount {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountTest.java
 public class BankAccountTest {
@@ -172,7 +175,8 @@ public class BankAccountTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 0.0円
 10000円入金後: 10000.0円

@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 10/15
 行範囲: 1687 - 1882
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -84,7 +84,8 @@ public class Student {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // StudentAccessTest.java
 public class StudentAccessTest {
@@ -104,7 +105,8 @@ public class StudentAccessTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 私は山田太郎です。22歳です。
 成人です
@@ -197,7 +199,8 @@ public class Product {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // ImprovedProductTest.java
 public class ImprovedProductTest {

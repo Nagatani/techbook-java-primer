@@ -1,3 +1,49 @@
+# Chapter 3 Chunk 1 校正レポート
+
+## 実施日時
+2025-08-02
+
+## 校正内容
+
+### 1. リスト項目のインデント修正（8箇所）
+- 問題：階層化リストのサブ項目のインデントが不適切（-の後に+記号）
+- 修正：正しいインデント（スペース8個）に統一
+- 該当箇所：
+  - カプセル化、継承、ポリモーフィズムの説明
+  - データと処理の一体化の説明
+  - 一貫性の欠如、バグの温床、保守の困難の説明
+
+### 2. 冗長な表現の削除（5箇所）
+- 「リスクもあります」→「リスクがあります」
+- 「必要になります」→「します」
+- 「修正してください」→「修正します」
+- 「強力なアプローチが」→「アプローチが」
+- 「要望のために」→「要望から」
+
+### 3. 文の分割（1箇所）
+- 120文字を超える文を2文に分割
+- 手続き型プログラミングの説明部分
+
+### 4. 不要な接続詞の削除（1箇所）
+- 「しかし、」を削除（文脈上不要）
+
+### 5. 時制の修正（1箇所）
+- 「登場します」→「登場しました」（歴史的事実なので過去形）
+
+## textlintエラー対応
+- 【簡潔性】冗長な表現を簡潔に修正
+- 【明確性】文体を統一（ですます調）
+- sentence-length: 長文を分割
+
+## 校正結果
+- エラー数：13箇所を修正
+- 文章の読みやすさ：向上
+- textlint準拠：完了
+
+## ステータス
+✅ 校正完了<!-- 
+
+
 # <b>3章</b> <span>オブジェクト指向の考え方</span> <small>よりよいプログラミング技法を求めて</small>
 
 ## 本章の学習目標
@@ -189,6 +235,10 @@ Javaは、OOPを実践するために設計された言語であり、クラス�
 C言語でのプログラミングでも、構造的なプログラミングや、関数ライブラリを使った柔軟な開発は可能です。
 極論を言ってしまえば、新たな道具としてオブジェクト指向を学ばなくても、たいていのプログラムは作れます。
 
+
+
+
+
 ### よりよく継続的な開発を行うために
 
 C言語でも十分なプログラミングは可能ですが、現実のソフトウェア開発では、プログラムの作成は全体の一部にすぎません。
@@ -242,7 +292,8 @@ public class ProceduralExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 田中太郎, 年齢: 20, GPA: 3.5
 ```
@@ -287,7 +338,8 @@ public class ObjectOrientedExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 田中太郎, 年齢: 20, GPA: 3.5
 ```
@@ -331,7 +383,8 @@ public class BankAccount {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountTest.java
 public class BankAccountTest {
@@ -348,7 +401,8 @@ public class BankAccountTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 0.0円
 10000円入金後: 10000.0円
@@ -371,6 +425,10 @@ public class BankAccountTest {
 </div>
 
 #### 継承
+
+
+
+
 
 ##### コードの再利用と階層構造の構築
 
@@ -400,7 +458,8 @@ public class Book extends Product {  // ③
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // InheritanceTest.java
 public class InheritanceTest {
@@ -417,7 +476,8 @@ public class InheritanceTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 商品名: Java入門, 価格: 2800円
 著者: 田中太郎, ISBN: 978-4-12345-678-9
@@ -466,7 +526,8 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // PolymorphismTest.java
 public class PolymorphismTest {
@@ -484,7 +545,8 @@ public class PolymorphismTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 クレジットカードで5000.0円を決済しました
 銀行振込で5000.0円を送金しました
@@ -547,6 +609,10 @@ public class Student {
 - 初期値を設定しない場合、デフォルト値が自動的に設定される
 - フィールド名は意味がわかりやすい名前にする
 
+
+
+
+
 #### フィールドのデフォルト値
 
 フィールドにプリミティブ型を指定する場合は、それぞれの型に合わせた初期値が代入されています。
@@ -581,7 +647,8 @@ public class DefaultValueDemo {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 int: 0
 double: 0.0
@@ -642,7 +709,8 @@ public class Product {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // ProductTest.java
 public class ProductTest {
@@ -658,7 +726,8 @@ public class ProductTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 商品ID: P001
 商品名: ノートPC
@@ -744,6 +813,10 @@ public class Rectangle {
     }
 }
 
+
+
+
+
 // 使用例
 public class RectangleExample {
     public static void main(String[] args) {
@@ -764,7 +837,8 @@ public class RectangleExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 幅: 10.0
 高さ: 5.0
@@ -869,7 +943,8 @@ public class Person {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // PersonTest.java
 public class PersonTest {
@@ -890,7 +965,8 @@ public class PersonTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 山田太郎
 年齢: 25歳
@@ -904,6 +980,10 @@ public class PersonTest {
 - デバッグ時にアクセスポイントを特定しやすい
 
 > 注意: すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。本当に外部からアクセスが必要なフィールドにのみ提供し、可能な限りオブジェクトの内部状態は隠蔽することがよい設計です。
+
+
+
+
 
 ### コンストラクタ（初期化メソッド）
 
@@ -939,7 +1019,8 @@ public class Book {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BookTest.java
 public class BookTest {
@@ -957,7 +1038,8 @@ public class BookTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
@@ -1005,7 +1087,8 @@ public class OverloadExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 こんにちは
 数値: 42
@@ -1092,7 +1175,8 @@ public class OverloadResolution {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 int: 10
 int: 10
@@ -1100,6 +1184,10 @@ long: 10
 Integer: 10
 可変長引数: [1, 2, 3]
 ```
+
+
+
+
 
 > **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。次のコードはコンパイルエラーになります。
 > ```java
@@ -1179,7 +1267,8 @@ public class Book {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BookLibraryTest.java
 public class BookLibraryTest {
@@ -1207,7 +1296,8 @@ public class BookLibraryTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
 貸出処理が完了しました
@@ -1284,7 +1374,8 @@ public class ShoppingCart {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // ShoppingCartTest.java
 public class ShoppingCartTest {
@@ -1300,7 +1391,12 @@ public class ShoppingCartTest {
 }
 ```
 
-実行結果：
+
+
+
+
+#### 実行結果
+
 ```
 === ショッピングカート ===
 ノートPC - 98000.00円 × 1 = 98000.00円
@@ -1492,6 +1588,10 @@ public class Student {
 
 ただし、実際のシステムでは権限管理やロールベースのアクセス制御など、より洗練されたアプローチが必要です。
 
+
+
+
+
 ### オブジェクト指向は効率よく開発を行うための考え方
 
 大事な観点として、歴史をたどり、システム開発の効率を求めた結果、オブジェクト指向という体系ができたに過ぎません。
@@ -1598,7 +1698,8 @@ public class Book {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BookClassTest.java
 public class BookClassTest {
@@ -1616,7 +1717,8 @@ public class BookClassTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
@@ -1670,7 +1772,8 @@ public class BookTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
@@ -1683,6 +1786,10 @@ public class BookTest {
 価格: 3200.0円
 変更後の価格: Java入門 - 2500.0円
 ```
+
+
+
+
 
 #### このプログラムから学ぶオブジェクト指向の重要な概念
 
@@ -1755,7 +1862,8 @@ public class Student {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // StudentAccessTest.java
 public class StudentAccessTest {
@@ -1775,7 +1883,8 @@ public class StudentAccessTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 私は山田太郎です。22歳です。
 成人です
@@ -1868,7 +1977,8 @@ public class Product {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // ImprovedProductTest.java
 public class ImprovedProductTest {
@@ -1880,6 +1990,10 @@ public class ImprovedProductTest {
         product.addStock(5);
         product.sell(3);
         
+
+
+
+
         // 異常な操作（エラーが適切に処理される）
         product.updatePrice(-500.0);
         product.sell(20);
@@ -1887,7 +2001,8 @@ public class ImprovedProductTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 価格を更新しました: 1800.0円
 在庫を追加しました。現在の在庫: 15
@@ -1934,7 +2049,8 @@ public class StaticExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 合計: 8
 円の面積: 314.159
@@ -2075,6 +2191,10 @@ public class StaticMemberExample {
 
    これはファクトリーメソッドパターンの例です。
 
+
+
+
+
 #### 定数の定義
 
 <span class="listing-number">**サンプルコード3-39**</span>
@@ -2203,7 +2323,8 @@ class Student {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 学生一覧:
 名前: 田中太郎, 年齢: 20, GPA: 3.5
@@ -2241,7 +2362,8 @@ public class NullCheckExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 田中, 年齢: 20, GPA: 3.5
 名前: 佐藤, 年齢: 21, GPA: 3.8
@@ -2265,6 +2387,10 @@ System.out.println(students[0]);     // nullが表示される
 ```
 
 これは配列の初期値の違いを示す構文例です。
+
+
+
+
 
 ### まとめ
 
@@ -2457,6 +2583,10 @@ public class MethodsPractice {
 
 ### 本章特有のエラー
 
+
+
+
+
 #### 1. クラスとインスタンスの概念の混乱
 
 問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
@@ -2639,6 +2769,10 @@ public class Student {
 
 Java 21 LTSでは、オブジェクト指向プログラミングをより簡潔に記述できる新機能が追加されています。
 
+
+
+
+
 ### Recordクラス（Java 14以降）
 
 不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
@@ -2744,3 +2878,5 @@ public final class Triangle extends Shape {
 
 これらの新機能により、より安全で簡潔なオブジェクト指向プログラミングが可能になっています。
 ただし、基本的な概念の理解が前提となるため、本章で学んだ基礎をしっかりと理解してから活用しましょう。
+
+

@@ -37,9 +37,14 @@ python3 tools/efficient_proofreading.py analyze manuscripts/target_file.md
 
 #### 2.1 分割の実行
 ```bash
-# ファイルを適切なチャンクに分割
+# 新しい分割ツール（推奨）- 無駄な改行を防ぐ
+python3 tools/split_manuscript_properly.py split manuscripts/target_file.md
+
+# または従来のツール
 python3 tools/manuscript_proofreader.py manuscripts/target_file.md
 ```
+
+**重要**: `split_manuscript_properly.py`を使用することで、結合時にコードブロック内や文章中に無駄な改行が入る問題を防げます。
 
 #### 2.2 分割結果の確認
 - メタデータファイルで分割状況を確認
@@ -122,11 +127,14 @@ git diff --word-diff manuscripts/target_file.md
 
 #### 5.1 チャンクのマージ（分割した場合）
 ```bash
-# 校正済みチャンクを統合
+# 新しいマージツール（推奨）- 無駄な改行なし
+python3 tools/split_manuscript_properly.py merge target_file manuscripts/target_file_merged.md
+
+# または従来のツール
 python3 tools/manuscript_proofreader.py manuscripts/target_file.md --merge --output-dir ./proofreading_chunks
 
 # 元ファイルに上書き
-cp proofreading_chunks/target_file_merged.md manuscripts/target_file.md
+cp manuscripts/target_file_merged.md manuscripts/target_file.md
 ```
 
 #### 5.2 textlint最終検証

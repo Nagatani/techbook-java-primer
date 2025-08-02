@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 4/15
 行範囲: 550 - 746
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -47,7 +47,8 @@ public class DefaultValueDemo {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 int: 0
 double: 0.0
@@ -108,7 +109,8 @@ public class Product {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // ProductTest.java
 public class ProductTest {
@@ -124,7 +126,8 @@ public class ProductTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 商品ID: P001
 商品名: ノートPC

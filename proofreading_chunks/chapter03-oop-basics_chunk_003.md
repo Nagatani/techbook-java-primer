@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 3/15
 行範囲: 375 - 549
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -41,7 +41,8 @@ public class Book extends Product {  // ③
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // InheritanceTest.java
 public class InheritanceTest {
@@ -58,7 +59,8 @@ public class InheritanceTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 商品名: Java入門, 価格: 2800円
 著者: 田中太郎, ISBN: 978-4-12345-678-9
@@ -107,7 +109,8 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // PolymorphismTest.java
 public class PolymorphismTest {
@@ -125,7 +128,8 @@ public class PolymorphismTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 クレジットカードで5000.0円を決済しました
 銀行振込で5000.0円を送金しました

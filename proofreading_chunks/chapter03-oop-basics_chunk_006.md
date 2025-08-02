@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 6/15
 行範囲: 908 - 1103
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -47,7 +47,8 @@ public class Book {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BookTest.java
 public class BookTest {
@@ -65,7 +66,8 @@ public class BookTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
@@ -113,7 +115,8 @@ public class OverloadExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 こんにちは
 数値: 42
@@ -200,7 +203,8 @@ public class OverloadResolution {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 int: 10
 int: 10

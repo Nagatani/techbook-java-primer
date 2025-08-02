@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 5/15
 行範囲: 747 - 907
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -33,7 +33,8 @@ public class RectangleExample {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 幅: 10.0
 高さ: 5.0
@@ -138,7 +139,8 @@ public class Person {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // PersonTest.java
 public class PersonTest {
@@ -159,7 +161,8 @@ public class PersonTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 名前: 山田太郎
 年齢: 25歳

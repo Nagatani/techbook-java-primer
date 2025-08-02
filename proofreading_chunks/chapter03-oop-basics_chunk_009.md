@@ -4,7 +4,7 @@
 元ファイル: chapter03-oop-basics.md
 チャンク: 9/15
 行範囲: 1495 - 1686
-作成日時: 2025-08-02 22:58:07
+作成日時: 2025-08-03 01:46:20
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -119,7 +119,8 @@ public class Book {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BookClassTest.java
 public class BookClassTest {
@@ -137,7 +138,8 @@ public class BookClassTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
@@ -191,7 +193,8 @@ public class BookTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 タイトル: Java入門
 著者: 田中太郎
