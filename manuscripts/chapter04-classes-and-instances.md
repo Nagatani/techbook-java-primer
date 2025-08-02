@@ -1187,10 +1187,6 @@ public class EventProcessor {
         System.out.println(name + " がイベントを処理: " + event);
     }
 }
-```
-
-これはコールバックでthisを渡す例です。
-
 class EventManager {
     private static List<EventProcessor> processors = new ArrayList<>();
     
@@ -1237,9 +1233,6 @@ public class HttpClient {
         return get(url, 5000);  // 5秒のデフォルトタイムアウト
     }
 }
-```
-
-これはテレスコーピングコンストラクタの例です。
 ```
 
 #### 型安全性を高めるオーバーロード
