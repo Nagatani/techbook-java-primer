@@ -70,6 +70,22 @@ const VIOLATION_PATTERNS = [
         description: 'リスト項目末尾のコロンによる構造崩れ',
         severity: 'error',
         suggestion: 'コロンを削除するか階層化リストを使用してください'
+    },
+    {
+        id: 'excessive-bold-in-lists',
+        pattern: /^(\s*[-\*\+]|\d+\.)\s+\*\*[^*]+\*\*/gm,
+        description: 'リスト項目での過度な強調表示',
+        severity: 'warning',
+        suggestion: '強調表記は本文中で真に強調が必要な単語や短いフレーズにのみ限定してください',
+        customCheck: true
+    },
+    {
+        id: 'list-dash-structure',
+        pattern: /^(\s*[-\*\+]|\d+\.)\s+[^-\n]+ - [^\n]+$/gm,
+        description: 'リスト項目での「項目 - 説明」形式',
+        severity: 'warning',
+        suggestion: '階層化リストを使用してください（例: - 項目\\n    + 説明）',
+        customCheck: true
     }
 ];
 
@@ -153,6 +169,66 @@ class ComplianceChecker {
     }
 
     /**
+     * 過度な強調表示のチェック
+     */
+    customCheckExcessiveBold(content, rule) {
+        const violations = [];
+        const lines = content.split('\n');
+        let boldCountInSection = 0;
+        let sectionStartLine = 0;
+        
+        lines.forEach((line, index) => {
+            // セクションの開始をチェック
+            if (line.match(/^#/)) {
+                boldCountInSection = 0;
+                sectionStartLine = index;
+            }
+            
+            // リスト項目での強調表示をチェック
+            const listMatch = line.match(/^(\s*[-\*\+]|\d+\.)\s+\*\*([^*]+)\*\*/);
+            if (listMatch) {
+                boldCountInSection++;
+                // 同一セクション内で3つ以上の強調表示は過度とみなす
+                if (boldCountInSection >= 3) {
+                    violations.push({
+                        index: content.split('\n').slice(0, index).join('\n').length,
+                        match: listMatch[0],
+                        line: index + 1,
+                        lineContent: line
+                    });
+                }
+            }
+        });
+        
+        return violations;
+    }
+
+    /**
+     * リストのダッシュ構造チェック
+     */
+    customCheckListDashStructure(content, rule) {
+        const violations = [];
+        const lines = content.split('\n');
+        
+        lines.forEach((line, index) => {
+            const match = line.match(/^(\s*[-\*\+]|\d+\.)\s+([^-\n]+) - ([^\n]+)$/);
+            if (match) {
+                // 時刻表記（例: 9:00 - 17:00）は除外
+                if (!match[2].match(/\d+:\d+$/) && !match[3].match(/^\d+:\d+/)) {
+                    violations.push({
+                        index: content.split('\n').slice(0, index).join('\n').length,
+                        match: match[0],
+                        line: index + 1,
+                        lineContent: line
+                    });
+                }
+            }
+        });
+        
+        return violations;
+    }
+
+    /**
      * ファイルをチェックしてルール違反を検出
      */
     checkFile(filePath) {
@@ -163,9 +239,22 @@ class ComplianceChecker {
         this.checkedFiles.push(filePath);
 
         VIOLATION_PATTERNS.forEach(rule => {
-            if (rule.customCheck && rule.id === 'title-colon-list') {
+            if (rule.customCheck) {
                 // カスタムチェック関数を使用
-                const customViolations = this.customCheckTitleColonList(content, rule);
+                let customViolations = [];
+                
+                switch (rule.id) {
+                    case 'title-colon-list':
+                        customViolations = this.customCheckTitleColonList(content, rule);
+                        break;
+                    case 'excessive-bold-in-lists':
+                        customViolations = this.customCheckExcessiveBold(content, rule);
+                        break;
+                    case 'list-dash-structure':
+                        customViolations = this.customCheckListDashStructure(content, rule);
+                        break;
+                }
+                
                 customViolations.forEach(violation => {
                     this.violations.push({
                         file: filePath,
