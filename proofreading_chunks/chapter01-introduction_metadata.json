@@ -1,0 +1,61 @@
+{
+  "created_at": "2025-08-02T22:02:46.342831",
+  "chunks": [
+    {
+      "filename": "chapter01-introduction_chunk_001.md",
+      "chunk_number": 1,
+      "start_line": 1,
+      "end_line": 172,
+      "lines": 172,
+      "first_content": "# <b>1章</b> <span>Java入門と開発環境構築</span> <small>プログラ",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter01-introduction_chunk_002.md",
+      "chunk_number": 2,
+      "start_line": 173,
+      "end_line": 367,
+      "lines": 195,
+      "first_content": "#### Javaでのオブジェクト指向アプローチ",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter01-introduction_chunk_003.md",
+      "chunk_number": 3,
+      "start_line": 368,
+      "end_line": 564,
+      "lines": 197,
+      "first_content": "#### なぜこの書き方が必要なのか？",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter01-introduction_chunk_004.md",
+      "chunk_number": 4,
+      "start_line": 565,
+      "end_line": 748,
+      "lines": 184,
+      "first_content": "### 演習課題へのアクセス",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter01-introduction_chunk_005.md",
+      "chunk_number": 5,
+      "start_line": 749,
+      "end_line": 943,
+      "lines": 195,
+      "first_content": "##### 原因と対処",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter01-introduction_chunk_006.md",
+      "chunk_number": 6,
+      "start_line": 944,
+      "end_line": 983,
+      "lines": 40,
+      "first_content": ">",
+      "status": "completed"
+    }
+  ],
+  "original_file": "manuscripts/chapter01-introduction.md",
+  "total_lines": 983
+}
