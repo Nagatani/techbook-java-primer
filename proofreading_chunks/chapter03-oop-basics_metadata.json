@@ -1,0 +1,115 @@
+{
+  "created_at": "2025-08-02T14:34:01.847366",
+  "chunks": [
+    {
+      "filename": "chapter03-oop-basics_chunk_001.md",
+      "chunk_number": 1,
+      "start_line": 1,
+      "end_line": 249,
+      "lines": 249,
+      "first_content": "# <b>3章</b> <span>オブジェクト指向の考え方</span> <small>よりよいプ",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_002.md",
+      "chunk_number": 2,
+      "start_line": 250,
+      "end_line": 492,
+      "lines": 243,
+      "first_content": "#### 構造的問題の分析",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_003.md",
+      "chunk_number": 3,
+      "start_line": 493,
+      "end_line": 693,
+      "lines": 201,
+      "first_content": "##### ポリモーフィズムの仕組み",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_004.md",
+      "chunk_number": 4,
+      "start_line": 694,
+      "end_line": 907,
+      "lines": 214,
+      "first_content": "#### メソッドの宣言構文",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_005.md",
+      "chunk_number": 5,
+      "start_line": 908,
+      "end_line": 1142,
+      "lines": 235,
+      "first_content": "### コンストラクタ（初期化メソッド）",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_006.md",
+      "chunk_number": 6,
+      "start_line": 1143,
+      "end_line": 1389,
+      "lines": 247,
+      "first_content": "### 例1：図書管理システム",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_007.md",
+      "chunk_number": 7,
+      "start_line": 1390,
+      "end_line": 1632,
+      "lines": 243,
+      "first_content": "##### 手続き型プログラミング（C言語）",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_008.md",
+      "chunk_number": 8,
+      "start_line": 1633,
+      "end_line": 1877,
+      "lines": 245,
+      "first_content": "#### このクラス定義から学ぶ重要な概念",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_009.md",
+      "chunk_number": 9,
+      "start_line": 1878,
+      "end_line": 2124,
+      "lines": 247,
+      "first_content": "// 正常な操作",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_010.md",
+      "chunk_number": 10,
+      "start_line": 2125,
+      "end_line": 2368,
+      "lines": 244,
+      "first_content": "### オブジェクト配列の宣言と初期化",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_011.md",
+      "chunk_number": 11,
+      "start_line": 2369,
+      "end_line": 2591,
+      "lines": 223,
+      "first_content": "### よくある実装ミスと対策",
+      "status": "completed"
+    },
+    {
+      "filename": "chapter03-oop-basics_chunk_012.md",
+      "chunk_number": 12,
+      "start_line": 2592,
+      "end_line": 2745,
+      "lines": 154,
+      "first_content": "### カスタムクラスでのequalsメソッドの実装",
+      "status": "completed"
+    }
+  ],
+  "original_file": "manuscripts/chapter03-oop-basics.md",
+  "total_lines": 2745
+}

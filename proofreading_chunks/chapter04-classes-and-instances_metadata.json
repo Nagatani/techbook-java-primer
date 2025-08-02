@@ -1,0 +1,106 @@
+{
+  "created_at": "2025-08-02T21:08:55.266886",
+  "chunks": [
+    {
+      "filename": "chapter04-classes-and-instances_chunk_001.md",
+      "chunk_number": 1,
+      "start_line": 1,
+      "end_line": 168,
+      "lines": 168,
+      "first_content": "# <b>4章</b> <span>クラスとインスタンス</span> <small>オブジェクトの",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_002.md",
+      "chunk_number": 2,
+      "start_line": 169,
+      "end_line": 355,
+      "lines": 187,
+      "first_content": "##### パッケージプライベート（デフォルト）の使用例",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_003.md",
+      "chunk_number": 3,
+      "start_line": 356,
+      "end_line": 553,
+      "lines": 198,
+      "first_content": "### データ検証の重要性",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_004.md",
+      "chunk_number": 4,
+      "start_line": 554,
+      "end_line": 745,
+      "lines": 192,
+      "first_content": "#### 残る問題",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_005.md",
+      "chunk_number": 5,
+      "start_line": 746,
+      "end_line": 933,
+      "lines": 188,
+      "first_content": "// 口座の再アクティブ化",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_006.md",
+      "chunk_number": 6,
+      "start_line": 934,
+      "end_line": 1107,
+      "lines": 174,
+      "first_content": "#### 設計原則",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_007.md",
+      "chunk_number": 7,
+      "start_line": 1108,
+      "end_line": 1290,
+      "lines": 183,
+      "first_content": "#### 高度なコンストラクタチェーン",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_008.md",
+      "chunk_number": 8,
+      "start_line": 1291,
+      "end_line": 1487,
+      "lines": 197,
+      "first_content": "### 学習した重要概念",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_009.md",
+      "chunk_number": 9,
+      "start_line": 1488,
+      "end_line": 1680,
+      "lines": 193,
+      "first_content": "#### なぜこれが問題なのか",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_010.md",
+      "chunk_number": 10,
+      "start_line": 1681,
+      "end_line": 1876,
+      "lines": 196,
+      "first_content": "#### 防御的プログラミングのガイドライン",
+      "status": "pending"
+    },
+    {
+      "filename": "chapter04-classes-and-instances_chunk_011.md",
+      "chunk_number": 11,
+      "start_line": 1877,
+      "end_line": 1896,
+      "lines": 20,
+      "first_content": "### デバッグのヒント",
+      "status": "pending"
+    }
+  ],
+  "original_file": "manuscripts/chapter04-classes-and-instances.md",
+  "total_lines": 1896
+}
