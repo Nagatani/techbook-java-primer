@@ -694,6 +694,21 @@ figure.float-right {
   margin-inline: 2em 0;
 }
 
+/* 図表を横幅いっぱいに表示 */
+.figure {
+  margin: 2em 0;
+  text-align: center;
+}
+
+.figure img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 img {
   max-inline-size: 100%;
   border: solid 0.5mm #000;

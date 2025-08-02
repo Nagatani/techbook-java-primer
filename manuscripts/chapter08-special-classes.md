@@ -1003,6 +1003,13 @@ public record GameCharacter(
 
 内部クラスは、他のクラスの内部に定義されるクラスです。Javaでは4種類の内部クラスがあり、それぞれ異なる特性と用途を持ちます。
 
+<div class="figure">
+
+![図8-3: 内部クラスの種類と関係性](images/diagrams/figure08-03.png)
+
+<figcaption>図8-3: 内部クラスの種類と関係性</figcaption>
+</div>
+
 ### 内部クラスの種類
 
 #### 1. メンバー内部クラス（Non-static Inner Class）

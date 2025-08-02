@@ -1,0 +1,40 @@
+graph TD
+    subgraph "HashMap内部構造"
+        buckets["Node[] table<br/>capacity = 16"]
+        b0["[0] null"]
+        b1["[1] → Entry"]
+        b2["[2] null"]
+        b3["[3] → Entry → Entry"]
+        b4["[4] null"]
+        b5["[5] → Entry"]
+        b6["[6] null"]
+        b7["[7] null"]
+        dots["..."]
+        b15["[15] null"]
+        
+        entry1["key: 'name'<br/>value: 'Alice'<br/>hash: 0x1A2B"]
+        entry2["key: 'age'<br/>value: 25<br/>hash: 0x3C4D"]
+        entry3["key: 'city'<br/>value: 'Tokyo'<br/>hash: 0x5E6F"]
+        entry4["key: 'id'<br/>value: 1001<br/>hash: 0x3C4E"]
+        
+        buckets --> b0
+        buckets --> b1
+        buckets --> b2
+        buckets --> b3
+        buckets --> b4
+        buckets --> b5
+        buckets --> b6
+        buckets --> b7
+        buckets --> dots
+        buckets --> b15
+        
+        b1 --> entry1
+        b3 --> entry2
+        entry2 --> entry4
+        b5 --> entry3
+    end
+    
+    style entry1 fill:#ffa,stroke:#333,stroke-width:2px
+    style entry2 fill:#ffa,stroke:#333,stroke-width:2px
+    style entry3 fill:#ffa,stroke:#333,stroke-width:2px
+    style entry4 fill:#ffa,stroke:#333,stroke-width:2px

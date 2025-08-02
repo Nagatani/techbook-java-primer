@@ -1,0 +1,49 @@
+graph TD
+    subgraph "クラスの外部"
+        client["クライアントコード"]
+    end
+    
+    subgraph "Studentクラス"
+        subgraph "プライベート領域（カプセル化）"
+            private1["- String name"]
+            private2["- int age"] 
+            private3["- float score"]
+        end
+        
+        subgraph "パブリックインターフェイス"
+            public1["+ getName(): String"]
+            public2["+ setName(String): void"]
+            public3["+ getAge(): int"]
+            public4["+ setAge(int): void"]
+            public5["+ getScore(): float"]
+            public6["+ updateScore(float): void"]
+        end
+    end
+    
+    client -->|"アクセス可能"| public1
+    client -->|"アクセス可能"| public2
+    client -->|"アクセス可能"| public3
+    client -->|"アクセス可能"| public4
+    client -->|"アクセス可能"| public5
+    client -->|"アクセス可能"| public6
+    
+    client -.->|"直接アクセス不可"| private1
+    client -.->|"直接アクセス不可"| private2
+    client -.->|"直接アクセス不可"| private3
+    
+    public1 --> private1
+    public2 --> private1
+    public3 --> private2
+    public4 --> private2
+    public5 --> private3
+    public6 --> private3
+    
+    style private1 fill:#faa,stroke:#333,stroke-width:2px
+    style private2 fill:#faa,stroke:#333,stroke-width:2px
+    style private3 fill:#faa,stroke:#333,stroke-width:2px
+    style public1 fill:#afa,stroke:#333,stroke-width:2px
+    style public2 fill:#afa,stroke:#333,stroke-width:2px
+    style public3 fill:#afa,stroke:#333,stroke-width:2px
+    style public4 fill:#afa,stroke:#333,stroke-width:2px
+    style public5 fill:#afa,stroke:#333,stroke-width:2px
+    style public6 fill:#afa,stroke:#333,stroke-width:2px

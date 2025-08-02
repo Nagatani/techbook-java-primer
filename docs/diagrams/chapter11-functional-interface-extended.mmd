@@ -1,0 +1,57 @@
+classDiagram
+    class FunctionalInterface {
+        <<annotation>>
+        @FunctionalInterface
+    }
+    
+    class BinaryOperator~T~ {
+        <<interface>>
+        +apply(T t1, T t2) T
+    }
+    
+    class BiFunction~T,U,R~ {
+        <<interface>>
+        +apply(T t, U u) R
+    }
+    
+    class BiConsumer~T,U~ {
+        <<interface>>
+        +accept(T t, U u) void
+    }
+    
+    class BiPredicate~T,U~ {
+        <<interface>>
+        +test(T t, U u) boolean
+    }
+    
+    class Runnable {
+        <<interface>>
+        +run() void
+    }
+    
+    class Callable~V~ {
+        <<interface>>
+        +call() V
+    }
+    
+    class Comparator~T~ {
+        <<interface>>
+        +compare(T o1, T o2) int
+        +reversed() Comparator
+        +thenComparing(Function keyExtractor) Comparator
+    }
+    
+    BiFunction~T,U,R~ <|-- BinaryOperator~T~ : extends
+    
+    FunctionalInterface ..> BinaryOperator : annotates
+    FunctionalInterface ..> BiFunction : annotates
+    FunctionalInterface ..> BiConsumer : annotates
+    FunctionalInterface ..> BiPredicate : annotates
+    FunctionalInterface ..> Runnable : annotates
+    FunctionalInterface ..> Callable : annotates
+    FunctionalInterface ..> Comparator : annotates
+    
+    note for BiFunction "2つの引数を受け取る関数"
+    note for Runnable "引数も戻り値もなし"
+    note for Callable "引数なし、戻り値あり"
+    note for Comparator "2つの値を比較"

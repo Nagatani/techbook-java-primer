@@ -1,0 +1,75 @@
+graph TB
+    subgraph "ストリームの生成"
+        Collection["Collection\n.stream()"]
+        Array["Arrays.stream()\n配列から生成"]
+        Files["Files.lines()\nファイルから生成"]
+        Generate["Stream.generate()\n無限ストリーム"]
+        Iterate["Stream.iterate()\n繰り返し生成"]
+    end
+    
+    subgraph "中間操作（遅延評価）"
+        Filter["filter()\n要素の絞り込み"]
+        Map["map()\n要素の変換"]
+        FlatMap["flatMap()\nストリームの平坦化"]
+        Distinct["distinct()\n重複除去"]
+        Sorted["sorted()\nソート"]
+        Limit["limit()\n要素数制限"]
+        Skip["skip()\n要素のスキップ"]
+        Peek["peek()\nデバッグ用"]
+    end
+    
+    subgraph "終端操作（実行トリガー）"
+        Collect["collect()\nコレクション化"]
+        ForEach["forEach()\n各要素への処理"]
+        Reduce["reduce()\n集約処理"]
+        Count["count()\n要素数取得"]
+        AnyMatch["anyMatch()\n条件判定"]
+        FindFirst["findFirst()\n最初の要素"]
+        ToArray["toArray()\n配列化"]
+    end
+    
+    Collection --> Filter
+    Array --> Filter
+    Files --> Filter
+    Generate --> Filter
+    Iterate --> Filter
+    
+    Filter --> Map
+    Filter --> FlatMap
+    Map --> Distinct
+    FlatMap --> Distinct
+    Distinct --> Sorted
+    Sorted --> Limit
+    Limit --> Skip
+    Skip --> Peek
+    
+    Peek --> Collect
+    Peek --> ForEach
+    Peek --> Reduce
+    Peek --> Count
+    Peek --> AnyMatch
+    Peek --> FindFirst
+    Peek --> ToArray
+    
+    style Collection fill:#e1f5fe
+    style Array fill:#e1f5fe
+    style Files fill:#e1f5fe
+    style Generate fill:#e1f5fe
+    style Iterate fill:#e1f5fe
+    
+    style Filter fill:#fff3e0
+    style Map fill:#fff3e0
+    style FlatMap fill:#fff3e0
+    style Distinct fill:#fff3e0
+    style Sorted fill:#fff3e0
+    style Limit fill:#fff3e0
+    style Skip fill:#fff3e0
+    style Peek fill:#fff3e0
+    
+    style Collect fill:#e8f5e9
+    style ForEach fill:#e8f5e9
+    style Reduce fill:#e8f5e9
+    style Count fill:#e8f5e9
+    style AnyMatch fill:#e8f5e9
+    style FindFirst fill:#e8f5e9
+    style ToArray fill:#e8f5e9

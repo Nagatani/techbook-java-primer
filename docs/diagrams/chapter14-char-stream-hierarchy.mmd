@@ -1,0 +1,67 @@
+classDiagram
+    class Reader {
+        <<abstract>>
+        +read() int
+        +read(char[] cbuf) int
+        +close() void
+    }
+    
+    class FileReader {
+        +FileReader(String)
+        +FileReader(File)
+    }
+    
+    class BufferedReader {
+        +readLine() String
+        +BufferedReader(Reader)
+    }
+    
+    class InputStreamReader {
+        -String charsetName
+        +InputStreamReader(InputStream)
+        +InputStreamReader(InputStream, String)
+    }
+    
+    class Writer {
+        <<abstract>>
+        +write(int c) void
+        +write(String str) void
+        +flush() void
+        +close() void
+    }
+    
+    class FileWriter {
+        +FileWriter(String)
+        +FileWriter(File)
+    }
+    
+    class BufferedWriter {
+        +newLine() void
+        +BufferedWriter(Writer)
+    }
+    
+    class OutputStreamWriter {
+        -String charsetName
+        +OutputStreamWriter(OutputStream)
+        +OutputStreamWriter(OutputStream, String)
+    }
+    
+    class PrintWriter {
+        +println(String) void
+        +printf(String, Object...) void
+    }
+    
+    Reader <|-- FileReader
+    Reader <|-- BufferedReader
+    Reader <|-- InputStreamReader
+    
+    Writer <|-- FileWriter
+    Writer <|-- BufferedWriter
+    Writer <|-- OutputStreamWriter
+    Writer <|-- PrintWriter
+    
+    InputStreamReader <|-- FileReader : extends
+    OutputStreamWriter <|-- FileWriter : extends
+    
+    note for Reader "文字ストリームの\n読み込み基底クラス"
+    note for Writer "文字ストリームの\n書き込み基底クラス"

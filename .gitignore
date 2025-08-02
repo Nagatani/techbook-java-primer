@@ -3,7 +3,7 @@
 # vivliostyle
 output/
 
-backup/
+backup*/
 temp*/
 
 # Java Examples Class Files

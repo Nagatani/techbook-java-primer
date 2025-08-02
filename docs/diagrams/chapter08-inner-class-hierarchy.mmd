@@ -1,0 +1,51 @@
+classDiagram
+    class OuterClass {
+        -int outerField
+        +outerMethod() void
+    }
+    
+    class InnerClass {
+        <<非static内部クラス>>
+        -int innerField
+        +innerMethod() void
+        +accessOuter() void
+    }
+    
+    class StaticNestedClass {
+        <<static内部クラス>>
+        -int staticField
+        +staticMethod() void
+    }
+    
+    class LocalClass {
+        <<ローカルクラス>>
+        +localMethod() void
+        +accessEnclosing() void
+    }
+    
+    class AnonymousClass {
+        <<匿名クラス>>
+        +overriddenMethod() void
+    }
+    
+    class EventListener {
+        <<interface>>
+        +onEvent() void
+    }
+    
+    class Comparator {
+        <<interface>>
+        +compare(T o1, T o2) int
+    }
+    
+    OuterClass *-- InnerClass : contains
+    OuterClass *-- StaticNestedClass : contains
+    OuterClass ..> LocalClass : creates
+    OuterClass ..> AnonymousClass : creates
+    EventListener <|.. AnonymousClass : implements
+    Comparator <|.. AnonymousClass : implements
+    
+    note for InnerClass "外部クラスのインスタンスに\n紐付けられる\n外部クラスのメンバーに\nアクセス可能"
+    note for StaticNestedClass "外部クラスのインスタンスに\n依存しない\nstaticメンバーのみ\nアクセス可能"
+    note for LocalClass "メソッド内で定義\nメソッドのローカル変数\n（final/実質的final）に\nアクセス可能"
+    note for AnonymousClass "名前を持たない\nインターフェイスや\n抽象クラスの実装"

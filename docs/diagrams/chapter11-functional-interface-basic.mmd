@@ -1,0 +1,49 @@
+classDiagram
+    class FunctionalInterface {
+        <<annotation>>
+        @FunctionalInterface
+    }
+    
+    class Function~T,R~ {
+        <<interface>>
+        +apply(T t) R
+        +compose(Function before) Function
+        +andThen(Function after) Function
+    }
+    
+    class Consumer~T~ {
+        <<interface>>
+        +accept(T t) void
+        +andThen(Consumer after) Consumer
+    }
+    
+    class Supplier~T~ {
+        <<interface>>
+        +get() T
+    }
+    
+    class Predicate~T~ {
+        <<interface>>
+        +test(T t) boolean
+        +and(Predicate other) Predicate
+        +or(Predicate other) Predicate
+        +negate() Predicate
+    }
+    
+    class UnaryOperator~T~ {
+        <<interface>>
+        +apply(T t) T
+    }
+    
+    Function~T,R~ <|-- UnaryOperator~T~ : extends
+    
+    FunctionalInterface ..> Function : annotates
+    FunctionalInterface ..> Consumer : annotates
+    FunctionalInterface ..> Supplier : annotates
+    FunctionalInterface ..> Predicate : annotates
+    FunctionalInterface ..> UnaryOperator : annotates
+    
+    note for Function "T型を受け取り\nR型を返す関数"
+    note for Consumer "T型を受け取り\n何も返さない（副作用）"
+    note for Supplier "引数なしで\nT型を返す"
+    note for Predicate "T型を受け取り\nboolean値を返す"

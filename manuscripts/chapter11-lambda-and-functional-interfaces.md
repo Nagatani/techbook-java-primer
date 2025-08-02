@@ -706,6 +706,18 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、関数型インターフェイス（Functional Interface）として扱われます。
 
+<div class="figure">
+
+![基本的な関数型インターフェイス](images/diagrams/figure11-01a.png)
+
+</div>
+
+<div class="figure">
+
+![拡張関数型インターフェイス](images/diagrams/figure11-01b.png)
+
+</div>
+
 関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けることがあるとよいでしょう。
 
 Comparatorを使ったデータ並び替えの最適化。

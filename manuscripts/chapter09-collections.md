@@ -198,6 +198,12 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 2. Map: キーと値のペアを管理（Collectionとは独立）
 
+<div class="figure">
+
+![図10-1: コレクションフレームワークの階層構造](images/diagrams/figure09-01.png)
+
+</div>
+
 
 ### インターフェイス階層
 
@@ -249,6 +255,24 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 #### 使い分けの指針
 - ArrayList: ランダムアクセスが多い場合（get/set操作）
 - LinkedList: 先頭・末尾での追加・削除が多い場合
+
+<div class="figure">
+
+![ArrayList内部構造](images/diagrams/figure09-02a.png)
+
+</div>
+
+<div class="figure">
+
+![LinkedList内部構造](images/diagrams/figure09-02b.png)
+
+</div>
+
+<div class="figure">
+
+![HashMap内部構造](images/diagrams/figure09-02c.png)
+
+</div>
 
 ### 主な操作
 

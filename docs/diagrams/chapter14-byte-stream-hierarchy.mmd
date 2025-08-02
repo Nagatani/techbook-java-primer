@@ -1,0 +1,68 @@
+classDiagram
+    class InputStream {
+        <<abstract>>
+        +read() int
+        +read(byte[] b) int
+        +close() void
+    }
+    
+    class FileInputStream {
+        +FileInputStream(String)
+        +FileInputStream(File)
+    }
+    
+    class BufferedInputStream {
+        -byte[] buffer
+        +BufferedInputStream(InputStream)
+    }
+    
+    class DataInputStream {
+        +readInt() int
+        +readDouble() double
+        +readUTF() String
+    }
+    
+    class ObjectInputStream {
+        +readObject() Object
+    }
+    
+    class OutputStream {
+        <<abstract>>
+        +write(int b) void
+        +write(byte[] b) void
+        +flush() void
+        +close() void
+    }
+    
+    class FileOutputStream {
+        +FileOutputStream(String)
+        +FileOutputStream(File)
+    }
+    
+    class BufferedOutputStream {
+        -byte[] buffer
+        +BufferedOutputStream(OutputStream)
+    }
+    
+    class DataOutputStream {
+        +writeInt(int) void
+        +writeDouble(double) void
+        +writeUTF(String) void
+    }
+    
+    class ObjectOutputStream {
+        +writeObject(Object) void
+    }
+    
+    InputStream <|-- FileInputStream
+    InputStream <|-- BufferedInputStream
+    InputStream <|-- DataInputStream
+    InputStream <|-- ObjectInputStream
+    
+    OutputStream <|-- FileOutputStream
+    OutputStream <|-- BufferedOutputStream
+    OutputStream <|-- DataOutputStream
+    OutputStream <|-- ObjectOutputStream
+    
+    note for InputStream "バイトストリームの\n読み込み基底クラス"
+    note for OutputStream "バイトストリームの\n書き込み基底クラス"

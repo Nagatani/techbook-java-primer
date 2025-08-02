@@ -1,0 +1,91 @@
+classDiagram
+    class Iterable~T~ {
+        <<interface>>
+        +iterator() Iterator~T~
+    }
+    
+    class Collection~E~ {
+        <<interface>>
+        +size() int
+        +isEmpty() boolean
+        +contains(Object) boolean
+        +add(E) boolean
+        +remove(Object) boolean
+        +clear() void
+    }
+    
+    class List~E~ {
+        <<interface>>
+        +get(int) E
+        +set(int, E) E
+        +add(int, E) void
+        +remove(int) E
+        +indexOf(Object) int
+    }
+    
+    class Set~E~ {
+        <<interface>>
+        +特定の順序なし
+        +重複要素なし
+    }
+    
+    class Queue~E~ {
+        <<interface>>
+        +offer(E) boolean
+        +poll() E
+        +peek() E
+    }
+    
+    class Map~K,V~ {
+        <<interface>>
+        +put(K, V) V
+        +get(Object) V
+        +remove(Object) V
+        +containsKey(Object) boolean
+        +keySet() Set~K~
+        +values() Collection~V~
+    }
+    
+    class ArrayList~E~ {
+        +動的配列実装
+        +インデックスアクセス高速
+    }
+    
+    class LinkedList~E~ {
+        +双方向リンクリスト
+        +挿入・削除高速
+    }
+    
+    class HashSet~E~ {
+        +ハッシュテーブル実装
+        +検索高速 O(1)
+    }
+    
+    class TreeSet~E~ {
+        +赤黒木実装
+        +ソート済み
+    }
+    
+    class HashMap~K,V~ {
+        +ハッシュテーブル実装
+        +null許容
+    }
+    
+    class TreeMap~K,V~ {
+        +赤黒木実装
+        +キーでソート
+    }
+    
+    Iterable <|-- Collection
+    Collection <|-- List
+    Collection <|-- Set
+    Collection <|-- Queue
+    List <|.. ArrayList
+    List <|.. LinkedList
+    Set <|.. HashSet
+    Set <|.. TreeSet
+    Map <|.. HashMap
+    Map <|.. TreeMap
+    
+    note for Collection "すべてのコレクションの基底インターフェイス"
+    note for Map "キーと値のペアを格納\nCollectionとは独立した階層"

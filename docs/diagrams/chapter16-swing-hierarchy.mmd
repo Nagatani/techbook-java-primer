@@ -1,0 +1,87 @@
+classDiagram
+    class Component {
+        <<abstract>>
+        +paint(Graphics) void
+        +repaint() void
+        +setVisible(boolean) void
+        +setEnabled(boolean) void
+        +addMouseListener(MouseListener) void
+        +addKeyListener(KeyListener) void
+    }
+    
+    class Container {
+        <<abstract>>
+        +add(Component) Component
+        +remove(Component) void
+        +setLayout(LayoutManager) void
+        +getComponents() Component[]
+    }
+    
+    class JComponent {
+        <<abstract>>
+        +paintComponent(Graphics) void
+        +setBorder(Border) void
+        +setOpaque(boolean) void
+        +setToolTipText(String) void
+    }
+    
+    class JPanel {
+        +デフォルトFlowLayout
+        +軽量コンテナ
+    }
+    
+    class JLabel {
+        -String text
+        -Icon icon
+        +setText(String) void
+        +setIcon(Icon) void
+    }
+    
+    class JButton {
+        -String text
+        -Icon icon
+        +addActionListener(ActionListener) void
+        +doClick() void
+    }
+    
+    class JTextField {
+        -String text
+        -int columns
+        +getText() String
+        +setText(String) void
+        +addActionListener(ActionListener) void
+    }
+    
+    class JTextArea {
+        -int rows
+        -int columns
+        +append(String) void
+        +setLineWrap(boolean) void
+    }
+    
+    class JScrollPane {
+        -Component viewport
+        +setViewportView(Component) void
+        +setVerticalScrollBarPolicy(int) void
+    }
+    
+    class JFrame {
+        -String title
+        +setTitle(String) void
+        +setDefaultCloseOperation(int) void
+        +setSize(int, int) void
+        +pack() void
+    }
+    
+    Component <|-- Container
+    Container <|-- JComponent
+    Container <|-- JFrame
+    JComponent <|-- JPanel
+    JComponent <|-- JLabel
+    JComponent <|-- JButton
+    JComponent <|-- JTextField
+    JComponent <|-- JTextArea
+    JComponent <|-- JScrollPane
+    
+    note for JComponent "Swingコンポーネントの基底クラス\nダブルバッファリング対応"
+    note for JFrame "トップレベルコンテナ\nウィンドウを表す"

@@ -191,6 +191,12 @@ public class MultiThreadExample {
 - 共有リソースと同期制御
 - synchronizedキーワードによる排他制御
 
+<div class="figure">
+
+![スレッドのライフサイクルと状態遷移](images/diagrams/figure15-01.png)
+
+</div>
+
 ### [Part B: Executorフレームワーク](chapter16b-executor-framework.md)
 - ExecutorServiceとスレッドプール
 - FutureとCallableによる非同期処理
@@ -361,6 +367,12 @@ class UnsafeCounter {
 - synchronizedシンプルだが粒度が粗い
 - ReentrantLock柔軟だが複雑（tryLock、公平性制御）
 - ReadWriteLock読み込み多数の場合に高性能
+
+<div class="figure">
+
+![図16-2: synchronizedによる排他制御メカニズム](images/diagrams/figure15-02.png)
+
+</div>
 - Atomic変数CAS（Compare-And-Swap）による高速化
 
 実世界での同期化の例。

@@ -1,0 +1,35 @@
+sequenceDiagram
+    participant T1 as Thread-1
+    participant T2 as Thread-2
+    participant Lock as Monitor Lock
+    participant Obj as 共有オブジェクト
+    
+    Note over T1,T2: 両スレッドが同じオブジェクトに<br/>アクセスしようとする
+    
+    T1->>Lock: synchronizedブロック進入要求
+    Lock->>T1: ロック取得成功
+    Note over T1: Critical Section実行中
+    
+    T2->>Lock: synchronizedブロック進入要求
+    Lock-->>T2: ロック取得失敗（待機）
+    Note over T2: BLOCKED状態
+    
+    T1->>Obj: データ読み取り
+    Obj-->>T1: 現在の値を返す
+    T1->>Obj: データ更新
+    Note over Obj: 状態が変更される
+    
+    T1->>Lock: synchronizedブロック退出
+    Lock->>T1: ロック解放
+    
+    Lock->>T2: ロック取得成功
+    Note over T2: Critical Section実行開始
+    
+    T2->>Obj: データ読み取り
+    Obj-->>T2: 更新された値を返す
+    T2->>Obj: データ更新
+    
+    T2->>Lock: synchronizedブロック退出
+    Lock->>T2: ロック解放
+    
+    Note over T1,T2: 同期により一貫性のある<br/>データアクセスが保証される

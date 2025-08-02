@@ -1,0 +1,28 @@
+graph TB
+    subgraph "手続き型プログラミング（C言語）"
+        subgraph "データ（構造体）"
+            struct["struct Student {\n  char name[50]\n  int age\n  float score\n}"]
+        end
+        
+        subgraph "処理（関数）"
+            func1["void printStudent(Student* s)"]
+            func2["void updateScore(Student* s, float score)"]
+            func3["float getAverageScore(Student* arr, int size)"]
+        end
+        
+        struct -.->|"データを渡す"| func1
+        struct -.->|"データを渡す"| func2
+        struct -.->|"データを渡す"| func3
+    end
+    
+    subgraph "オブジェクト指向プログラミング（Java）"
+        subgraph "クラス（データ＋処理）"
+            javaClass["class Student {\n  private String name\n  private int age\n  private float score\n\n  public void print() {...}\n  public void updateScore(float score) {...}\n  public static float getAverage(List students) {...}\n}"]
+        end
+    end
+    
+    style struct fill:#f9f,stroke:#333,stroke-width:2px
+    style func1 fill:#bbf,stroke:#333,stroke-width:2px
+    style func2 fill:#bbf,stroke:#333,stroke-width:2px
+    style func3 fill:#bbf,stroke:#333,stroke-width:2px
+    style javaClass fill:#bfb,stroke:#333,stroke-width:2px

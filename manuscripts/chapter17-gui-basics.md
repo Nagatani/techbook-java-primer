@@ -162,6 +162,12 @@ public class WindowSettings {
 
 ### 基本的なコンポーネントの配置
 
+<div class="figure">
+
+![図18-1: Swingコンポーネントの継承階層](images/diagrams/figure17-01.png)
+
+</div>
+
 #### JLabelで文字を表示する
 
 ボタンとラベル。
@@ -889,6 +895,12 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 ```
 ユーザー操作 → イベントソース → イベントオブジェクト生成 → リスナーに通知 → 処理実行
 ```
+
+<div class="figure">
+
+![Swingのイベント処理モデル](images/diagrams/figure17-02.png)
+
+</div>
 
 ### ボタンクリックに反応するプログラム
 

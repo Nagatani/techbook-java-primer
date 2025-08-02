@@ -1,0 +1,81 @@
+classDiagram
+    class Comparable {
+        <<interface>>
+        +compareTo(T other) int
+    }
+    
+    class Cloneable {
+        <<interface>>
+    }
+    
+    class Serializable {
+        <<interface>>
+    }
+    
+    class List {
+        <<interface>>
+        +add(E element) boolean
+        +get(int index) E
+        +size() int
+        +remove(int index) E
+    }
+    
+    class Map {
+        <<interface>>
+        +put(K key, V value) V
+        +get(Object key) V
+        +remove(Object key) V
+        +size() int
+    }
+    
+    class ArrayList {
+        -Object[] elementData
+        -int size
+        +add(E element) boolean
+        +get(int index) E
+    }
+    
+    class LinkedList {
+        -Node~E~ first
+        -Node~E~ last
+        -int size
+        +add(E element) boolean
+        +get(int index) E
+    }
+    
+    class HashMap {
+        -Node~K,V~[] table
+        -int size
+        +put(K key, V value) V
+        +get(Object key) V
+    }
+    
+    class TreeMap {
+        -Entry~K,V~ root
+        -int size
+        +put(K key, V value) V
+        +get(Object key) V
+    }
+    
+    class String {
+        -char[] value
+        +compareTo(String other) int
+        +equals(Object obj) boolean
+    }
+    
+    class Student {
+        -String name
+        -int score
+        +compareTo(Student other) int
+        +clone() Object
+    }
+    
+    List <|.. ArrayList : implements
+    List <|.. LinkedList : implements
+    Map <|.. HashMap : implements
+    Map <|.. TreeMap : implements
+    Comparable <|.. String : implements
+    Comparable <|.. Student : implements
+    Cloneable <|.. Student : implements
+    Serializable <|.. ArrayList : implements
+    Serializable <|.. HashMap : implements

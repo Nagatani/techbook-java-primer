@@ -213,6 +213,13 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 `コレクション.stream().中間操作1().中間操作2()...終端操作()`。
 
+<div class="figure">
+
+![図12-1: Stream APIのパイプライン処理フロー](images/diagrams/figure12-01.png)
+
+<figcaption>図12-1: Stream APIのパイプライン処理フロー</figcaption>
+</div>
+
 #### ストリーム処理の3つのフェーズ
 
 1. ストリームの生成

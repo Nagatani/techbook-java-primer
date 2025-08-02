@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant Client as クライアントコード
+    participant PP as PaymentProcessor(参照)
+    participant CC as CreditCardPayment(実体)
+    participant DC as DebitCardPayment(実体)
+    
+    Note over Client: PaymentProcessor型の変数で<br/>異なる実装を扱う
+    
+    Client->>PP: PaymentProcessor payment = new CreditCardPayment()
+    PP->>CC: 実体はCreditCardPayment
+    
+    Client->>PP: payment.processPayment()
+    PP->>CC: 実行時に適切なメソッドを選択
+    CC-->>Client: CreditCardPaymentの処理を実行
+    
+    Note over Client: 同じ変数に別の実装を代入
+    
+    Client->>PP: payment = new DebitCardPayment()
+    PP->>DC: 実体はDebitCardPayment
+    
+    Client->>PP: payment.processPayment()
+    PP->>DC: 実行時に適切なメソッドを選択
+    DC-->>Client: DebitCardPaymentの処理を実行
+    
+    Note over Client: 呼び出しコードは変更不要<br/>実行時に適切な実装が選ばれる

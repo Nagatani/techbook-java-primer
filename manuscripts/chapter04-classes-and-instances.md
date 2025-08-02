@@ -102,6 +102,12 @@ Javaのアクセス制御は、カプセル化を実現するうえでもっと�
 
 ※ 修飾子を記述しない場合（デフォルトアクセス、package-privateとも呼ばれる）
 
+<div class="figure">
+
+![アクセス修飾子の可視性範囲](images/diagrams/figure04-01.png)
+
+</div>
+
 #### アクセス修飾子の使い分け原則
 
 1. `private`を基本とする

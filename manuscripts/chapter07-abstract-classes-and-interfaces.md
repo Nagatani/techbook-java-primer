@@ -171,6 +171,12 @@ public class Main {
 6.  クラスは複数のインターフェイスを同時に実装できる（`implements InterfaceA, InterfaceB`のようにカンマで区切る）。
     これはクラスの単一継承とは異なる大きな特徴です。
 
+<div class="figure">
+
+![Javaの主要なインターフェイスとその実装関係](images/diagrams/figure07-01.png)
+
+</div>
+
 ### 実践例：`Exportable`と`Archivable`インターフェイス
 
 以下のコードは、異なる機能を表す2つのインターフェイスの定義例です。Exportableインターフェイスはエクスポート機能を、Archivableインターフェイスはアーカイブ機能を契約として定義しています。これらのインターフェイスを実装するクラスは、それぞれの機能を提供することを保証します。

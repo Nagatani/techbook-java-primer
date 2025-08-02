@@ -1,0 +1,29 @@
+{
+  "theme": "default",
+  "themeVariables": {
+    "fontSize": "16px",
+    "fontFamily": "Arial, sans-serif"
+  },
+  "flowchart": {
+    "curve": "basis",
+    "padding": 15,
+    "nodeSpacing": 50,
+    "rankSpacing": 50
+  },
+  "sequence": {
+    "diagramMarginX": 50,
+    "diagramMarginY": 10,
+    "actorMargin": 50,
+    "width": 150,
+    "height": 65,
+    "boxMargin": 10,
+    "boxTextMargin": 5,
+    "noteMargin": 10,
+    "messageMargin": 35
+  },
+  "gantt": {
+    "fontSize": 14,
+    "barHeight": 20,
+    "barGap": 4
+  }
+}

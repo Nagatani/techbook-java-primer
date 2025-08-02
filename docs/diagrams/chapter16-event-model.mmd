@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant User as ユーザー
+    participant Comp as JButton
+    participant EDT as Event Dispatch Thread
+    participant Queue as EventQueue
+    participant Listener as ActionListener
+    participant App as アプリケーション
+    
+    User->>Comp: マウスクリック
+    Comp->>Queue: ActionEvent生成
+    Queue->>EDT: イベント取得
+    EDT->>Listener: actionPerformed(ActionEvent)
+    
+    Note over Listener: イベント処理実行
+    
+    Listener->>App: ビジネスロジック呼び出し
+    App-->>Listener: 処理結果
+    
+    Listener->>Comp: UIの更新
+    Comp->>EDT: repaint()要求
+    EDT->>Comp: paintComponent()
+    
+    Note over User,App: イベント処理は必ず<br/>EDT上で実行される
+    
+    alt 長時間処理の場合
+        Listener->>SwingWorker: バックグラウンド処理開始
+        SwingWorker-->>EDT: 進捗更新（EDT経由）
+        SwingWorker-->>EDT: 完了通知（EDT経由）
+    end

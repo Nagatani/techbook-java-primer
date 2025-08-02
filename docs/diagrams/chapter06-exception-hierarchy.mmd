@@ -1,0 +1,68 @@
+classDiagram
+    Throwable <|-- Error
+    Throwable <|-- Exception
+    Exception <|-- RuntimeException
+    Exception <|-- IOException
+    Exception <|-- SQLException
+    RuntimeException <|-- NullPointerException
+    RuntimeException <|-- ArrayIndexOutOfBoundsException
+    RuntimeException <|-- IllegalArgumentException
+    RuntimeException <|-- NumberFormatException
+    IllegalArgumentException <|-- NumberFormatException
+    
+    class Throwable {
+        <<abstract>>
+        +getMessage()
+        +printStackTrace()
+        +getCause()
+    }
+    
+    class Error {
+        <<エラー>>
+        システムレベルの問題
+        回復不可能
+    }
+    
+    class Exception {
+        <<チェック例外>>
+        回復可能な問題
+        明示的な処理が必要
+    }
+    
+    class RuntimeException {
+        <<非チェック例外>>
+        プログラミングエラー
+        実行時に発生
+    }
+    
+    class IOException {
+        <<チェック例外>>
+        入出力エラー
+        ファイル操作の失敗
+    }
+    
+    class SQLException {
+        <<チェック例外>>
+        データベースエラー
+        SQL実行の失敗
+    }
+    
+    class NullPointerException {
+        <<非チェック例外>>
+        null参照へのアクセス
+    }
+    
+    class ArrayIndexOutOfBoundsException {
+        <<非チェック例外>>
+        配列の範囲外アクセス
+    }
+    
+    class IllegalArgumentException {
+        <<非チェック例外>>
+        不正な引数
+    }
+    
+    class NumberFormatException {
+        <<非チェック例外>>
+        数値変換エラー
+    }

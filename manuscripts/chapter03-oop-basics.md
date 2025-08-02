@@ -141,6 +141,12 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 - 保守の困難
     + どの関数がどのデータを操作するか追跡が困難
 
+<div class="figure">
+
+![図3-1: 手続き型とオブジェクト指向の構造比較](images/diagrams/chapter03-paradigm-comparison.png)
+
+</div>
+
 ### オブジェクト指向による解決
 
 オブジェクト指向プログラミングは、これらの実務的な問題を解決するアプローチの1つです。
@@ -357,6 +363,12 @@ public class BankAccountTest {
     + 入金処理では金額の妥当性を検証してから残高を更新し、負の値の入金を防ぐ
 - ③　安全な読み取り
     + 残高の確認は可能だが、直接的な変更はできないため、データの整合性を保証
+
+<div class="figure">
+
+![図3-2: カプセル化によるデータ保護とアクセス制御](images/diagrams/figure03-02.png)
+
+</div>
 
 #### 継承
 

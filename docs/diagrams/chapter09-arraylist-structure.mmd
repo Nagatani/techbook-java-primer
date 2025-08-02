@@ -1,0 +1,32 @@
+graph TD
+    subgraph "ArrayList内部構造"
+        array["Object[] elementData<br/>size = 6<br/>capacity = 10"]
+        a0["[0] 'A'"]
+        a1["[1] 'B'"]
+        a2["[2] 'C'"]
+        a3["[3] 'D'"]
+        a4["[4] 'E'"]
+        a5["[5] 'F'"]
+        a6["[6] null"]
+        a7["[7] null"]
+        a8["[8] null"]
+        a9["[9] null"]
+        
+        array --> a0
+        array --> a1
+        array --> a2
+        array --> a3
+        array --> a4
+        array --> a5
+        array --> a6
+        array --> a7
+        array --> a8
+        array --> a9
+    end
+    
+    style a0 fill:#aff,stroke:#333,stroke-width:2px
+    style a1 fill:#aff,stroke:#333,stroke-width:2px
+    style a2 fill:#aff,stroke:#333,stroke-width:2px
+    style a3 fill:#aff,stroke:#333,stroke-width:2px
+    style a4 fill:#aff,stroke:#333,stroke-width:2px
+    style a5 fill:#aff,stroke:#333,stroke-width:2px

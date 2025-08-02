@@ -1,0 +1,46 @@
+classDiagram
+    class PaymentProcessor {
+        <<abstract>>
+        -String transactionId
+        -double amount
+        -LocalDateTime timestamp
+        +processPayment() void*
+        +validateAmount() boolean
+        +generateTransactionId() String
+    }
+    
+    class CreditCardPayment {
+        -String cardNumber
+        -String cvv
+        -String expiryDate
+        +processPayment() void
+        +validateCard() boolean
+    }
+    
+    class DebitCardPayment {
+        -String cardNumber
+        -String pin
+        +processPayment() void
+        +checkBalance() boolean
+    }
+    
+    class DigitalWalletPayment {
+        -String walletId
+        -String authToken
+        +processPayment() void
+        +authenticateWallet() boolean
+    }
+    
+    class BankTransferPayment {
+        -String accountNumber
+        -String routingNumber
+        +processPayment() void
+        +verifyAccount() boolean
+    }
+    
+    PaymentProcessor <|-- CreditCardPayment
+    PaymentProcessor <|-- DebitCardPayment
+    PaymentProcessor <|-- DigitalWalletPayment
+    PaymentProcessor <|-- BankTransferPayment
+    
+    note for PaymentProcessor "抽象基底クラス\n共通の処理とデータを定義"

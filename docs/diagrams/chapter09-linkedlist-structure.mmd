@@ -1,0 +1,24 @@
+graph LR
+    subgraph "LinkedList内部構造"
+        first["first"]
+        last["last"]
+        node1["Node<br/>prev: null<br/>data: 'A'<br/>next: →"]
+        node2["Node<br/>prev: ←<br/>data: 'B'<br/>next: →"]
+        node3["Node<br/>prev: ←<br/>data: 'C'<br/>next: →"]
+        node4["Node<br/>prev: ←<br/>data: 'D'<br/>next: null"]
+        
+        first --> node1
+        node1 --> node2
+        node2 --> node3
+        node3 --> node4
+        last --> node4
+        
+        node2 -.-> node1
+        node3 -.-> node2
+        node4 -.-> node3
+    end
+    
+    style node1 fill:#faf,stroke:#333,stroke-width:2px
+    style node2 fill:#faf,stroke:#333,stroke-width:2px
+    style node3 fill:#faf,stroke:#333,stroke-width:2px
+    style node4 fill:#faf,stroke:#333,stroke-width:2px
