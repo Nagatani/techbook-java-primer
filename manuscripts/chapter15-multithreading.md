@@ -370,7 +370,7 @@ class UnsafeCounter {
 
 <div class="figure">
 
-![図16-2: synchronizedによる排他制御メカニズム](images/diagrams/figure15-02.png)
+![synchronizedによる排他制御メカニズム](images/diagrams/figure15-02.png)
 
 </div>
 - Atomic変数CAS（Compare-And-Swap）による高速化

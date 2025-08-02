@@ -164,7 +164,7 @@ public class WindowSettings {
 
 <div class="figure">
 
-![図18-1: Swingコンポーネントの継承階層](images/diagrams/figure17-01.png)
+![Swingコンポーネントの継承階層](images/diagrams/figure17-01.png)
 
 </div>
 

@@ -87,7 +87,7 @@ DRY原則（Don't Repeat Yourself）を実現できます。共通コードを�
 
 <div class="figure">
 
-![図5-1: 決済システムの継承階層](images/diagrams/figure05-01.png)
+![決済システムの継承階層](images/diagrams/figure05-01.png)
 
 </div>
 
@@ -1621,7 +1621,7 @@ class User {
 
 <div class="figure">
 
-![図5-2: ポリモーフィズムによる動的バインディング](images/diagrams/figure05-02.png)
+![ポリモーフィズムによる動的バインディング](images/diagrams/figure05-02.png)
 
 </div>
 

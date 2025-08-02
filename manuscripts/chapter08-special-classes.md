@@ -1005,9 +1005,8 @@ public record GameCharacter(
 
 <div class="figure">
 
-![図8-3: 内部クラスの種類と関係性](images/diagrams/figure08-03.png)
+![内部クラスの種類と関係性](images/diagrams/figure08-03.png)
 
-<figcaption>図8-3: 内部クラスの種類と関係性</figcaption>
 </div>
 
 ### 内部クラスの種類

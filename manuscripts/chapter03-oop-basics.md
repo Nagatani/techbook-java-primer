@@ -143,7 +143,7 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 
 <div class="figure">
 
-![図3-1: 手続き型とオブジェクト指向の構造比較](images/diagrams/chapter03-paradigm-comparison.png)
+![手続き型とオブジェクト指向の構造比較](images/diagrams/chapter03-paradigm-comparison.png)
 
 </div>
 
@@ -366,7 +366,7 @@ public class BankAccountTest {
 
 <div class="figure">
 
-![図3-2: カプセル化によるデータ保護とアクセス制御](images/diagrams/figure03-02.png)
+![カプセル化によるデータ保護とアクセス制御](images/diagrams/figure03-02.png)
 
 </div>
 
