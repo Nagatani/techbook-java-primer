@@ -161,7 +161,8 @@ class BankAccountTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 入金処理が完了しました
 ```
@@ -220,7 +221,8 @@ public class Car extends Vehicle {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // VehicleTest.java
 public class VehicleTest {
@@ -234,7 +236,8 @@ public class VehicleTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 Engine started: V6
 ```
@@ -273,7 +276,8 @@ class MathUtilsTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 PI = 3.14159
 10 + 20 = 30
@@ -345,7 +349,8 @@ class ProductTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 商品名: ノートPC
 価格: 98000.0円
@@ -425,7 +430,8 @@ public class BankAccountV1 {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountV1Test.java
 public class BankAccountV1Test {
@@ -447,7 +453,8 @@ public class BankAccountV1Test {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 10000.0
 5000円入金後: 15000.0
@@ -505,7 +512,8 @@ public class BankAccountV2 {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountV2Test.java
 public class BankAccountV2Test {
@@ -537,7 +545,8 @@ public class BankAccountV2Test {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 10000.0
 5000円入金後: 15000.0
@@ -619,7 +628,8 @@ public class BankAccountV3 {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountV3Test.java
 public class BankAccountV3Test {
@@ -652,7 +662,8 @@ public class BankAccountV3Test {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 口座番号: 123456
 初期残高: 10000.0
@@ -850,7 +861,6 @@ import java.util.ArrayList;
 
 List<String> names = new ArrayList<>();
 ```
-
 これはimport文の使用例です。
 
 import文の種類。
@@ -984,7 +994,8 @@ public class User {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // UserTest.java
 public class UserTest {
@@ -1010,7 +1021,8 @@ public class UserTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 ユーザー作成成功
 エラー: 有効なメールアドレスが必要です
@@ -1187,10 +1199,6 @@ public class EventProcessor {
         System.out.println(name + " がイベントを処理: " + event);
     }
 }
-```
-
-これはコールバックでthisを渡す例です。
-
 class EventManager {
     private static List<EventProcessor> processors = new ArrayList<>();
     
@@ -1237,9 +1245,6 @@ public class HttpClient {
         return get(url, 5000);  // 5秒のデフォルトタイムアウト
     }
 }
-```
-
-これはテレスコーピングコンストラクタの例です。
 ```
 
 #### 型安全性を高めるオーバーロード

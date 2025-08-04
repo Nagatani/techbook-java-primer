@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 4/11
-行範囲: 554 - 745
-作成日時: 2025-08-02 23:30:11
+チャンク: 4/10
+行範囲: 654 - 853
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,108 +13,9 @@
 ================
 -->
 
-#### 残る問題
-- 口座番号が後から変更可能（getterがない）
-- 取引履歴が残らない
-- 口座番号の検証がない
 
-#### ステップ3: 完全なカプセル化（BankAccountV3）
+#### 実行結果
 
-<span class="listing-number">**サンプルコード4-10**</span>
-
-```java
-import java.util.*;
-
-public class BankAccountV3 {
-    private final String accountNumber;  // finalで不変にする
-    private double balance;
-    private List<String> transactionHistory;
-    
-    public BankAccountV3(String accountNumber, double initialBalance) {
-        // 口座番号の検証
-        if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("口座番号は必須です");
-        }
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要です");
-        }
-        
-        this.accountNumber = accountNumber;
-        this.balance = initialBalance;
-        this.transactionHistory = new ArrayList<>();
-        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance + "円");
-    }
-    
-    public void deposit(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要です");
-        }
-        balance += amount;
-        transactionHistory.add("入金: " + amount + "円");
-    }
-    
-    public boolean withdraw(double amount) {
-        if (amount <= 0) {
-            return false;
-        }
-        if (balance >= amount) {
-            balance -= amount;
-            transactionHistory.add("出金: " + amount + "円");
-            return true;
-        }
-        transactionHistory.add("出金失敗（残高不足）: " + amount + "円");
-        return false;
-    }
-    
-    public double getBalance() {
-        return balance;
-    }
-    
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-    
-    // 防御的コピーで履歴を返す
-    public List<String> getTransactionHistory() {
-        return new ArrayList<>(transactionHistory);
-    }
-}
-```
-
-使用例と実行結果：
-```java
-// BankAccountV3Test.java
-public class BankAccountV3Test {
-    public static void main(String[] args) {
-        BankAccountV3 account = new BankAccountV3("123456", 10000);
-        
-        System.out.println("口座番号: " + account.getAccountNumber());
-        System.out.println("初期残高: " + account.getBalance());
-        
-        // 入金
-        account.deposit(5000);
-        System.out.println("\n5000円入金後の残高: " + account.getBalance());
-        
-        // 出金成功
-        if (account.withdraw(3000)) {
-            System.out.println("3000円出金成功後の残高: " + account.getBalance());
-        }
-        
-        // 出金失敗
-        if (!account.withdraw(20000)) {
-            System.out.println("20000円出金失敗（残高不足）");
-        }
-        
-        // 取引履歴の表示
-        System.out.println("\n取引履歴:");
-        for (String transaction : account.getTransactionHistory()) {
-            System.out.println("  " + transaction);
-        }
-    }
-}
-```
-
-実行結果：
 ```
 口座番号: 123456
 初期残高: 10000.0
@@ -205,11 +106,119 @@ public class EnhancedBankAccount extends BankAccountV3 {
         this.lastActivityDate = LocalDateTime.now();
     }
     
+    // 口座の再アクティブ化
+    public void reactivateAccount() {
+        if (STATUS_SUSPENDED.equals(status)) {
+            status = STATUS_ACTIVE;
+            failedTransactionCount = 0;
+            System.out.println("口座が再アクティブ化されました。");
+        }
+    }
+}
+```
+
+この設計の要点。
+- 継承の活用
+-    + 第3章のBankAccountV3を基に機能を拡張
+- 定数による状態管理
+-    + 口座状態を文字列定数で管理
+- 状態管理
+-    + 失敗回数の追跡と自動停止機能
+- テンプレートメソッドパターン
+-    + 基本動作を保持しつつ拡張
+
+### クラス設計のベストプラクティス
+
+クラス設計は、ソフトウェアの品質向上に寄与する要素の1つです。オブジェクト指向設計の実践から生まれたベストプラクティスは、保守性、拡張性、信頼性の高いソフトウェアを構築するための指針を提供します。ただし、これらは唯一の解決策ではなく、バッチ処理やデータ変換処理では関数型プログラミングのイミュータブルなデータ構造、シンプルなスクリプトでは手続き型プログラミングの直接的な関数呼び出しが適している場合もあります。
+
+もっとも基本的な原則は単一責任の原則です。1つのクラスは1つの明確な責任のみを持つべきであり、これにより変更の理由が限定され、クラスの理解と保守が容易になります。次に重要なのはデータの隠蔽で、クラスの内部状態をprivateで保護し、必要な操作のみをパブリックメソッドとして公開します。これにより、実装の詳細を変更してもクライアントコードに影響を与えません。
+
+入力検証も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクタで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、意味のある名前を使用することで、コードの可読性と保守性が向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます。
+
+最後に、不変条件の維持は、オブジェクトの整合性を保証するうえできわめて重要です。オブジェクトの生成から破棄まで、常に満たされるべき条件（不変条件）を明確に定義し、すべての操作でこれを維持するよう設計します。
+
+これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
+
+## パッケージシステムとクラスの組織化
+
+### パッケージの概念と必要性
+
+Javaにおけるパッケージは、関連するクラスやインターフェイスをグループ化するための仕組みです。大規模なプロジェクトでは数百から数千のクラスが存在することがあり、フラットな構造ではクラス名の衝突や依存関係の把握が困難になります。パッケージは以下の重要な役割を果たします。
+
+1. 名前空間の提供
+    + 異なるパッケージに同じ名前のクラスを作成可能
+2. アクセス制御
+    + パッケージレベルでのアクセス制限を実現
+3. 論理的な構造化
+    + 機能や責任に基づいてクラスを整理
+4. クラスの再利用
+    + パッケージ単位での配布と利用
+
+### パッケージの命名規則
+
+Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています。
+
+<span class="listing-number">**サンプルコード4-12**</span>
+
+```java
+// ドメイン名: example.com
+// パッケージ名: com.example.プロジェクト名.モジュール名
+package com.example.myapp.service;
+
+// ドメイン名: ac.jp（教育機関）
+// パッケージ名: jp.ac.大学名.プロジェクト名
+package jp.ac.university.research;
+```
+
+これはパッケージ名の命名規則の例です。
+
+#### 命名規則のポイント
+- すべて小文字を使用
+- ドメイン名を逆順に記述
+- 意味のある階層構造を作成
+- Javaの予約語は使用しない
+
+### パッケージとディレクトリ構造
+
+パッケージ名はファイルシステムのディレクトリ構造と対応している必要があります。
+
+```
+src/
+└── com/
+    └── example/
+        └── myapp/
+            ├── model/
+            │   ├── User.java
+            │   └── Product.java
+            ├── service/
+            │   ├── UserService.java
+            │   └── ProductService.java
+            └── util/
+                └── DateUtils.java
+```
+
+### import文の使い方
+
+パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します。
+
+<span class="listing-number">**サンプルコード4-13**</span>
+
+```java
+// 完全限定名での使用
+java.util.List<String> names = new java.util.ArrayList<>();
+
+// import文を使用した場合
+import java.util.List;
+import java.util.ArrayList;
+
+List<String> names = new ArrayList<>();
+```
+
 
 
 <!-- 
 ================
-チャンク 4/11 の終了
+チャンク 4/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 3/11
-行範囲: 356 - 553
-作成日時: 2025-08-02 23:30:11
+チャンク: 3/10
+行範囲: 427 - 653
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,79 +13,9 @@
 ================
 -->
 
-### データ検証の重要性
 
-プログラミングで、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。範囲チェック、nullチェック、ビジネスルールの検証を実装すると、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
+#### 使用例と実行結果
 
-<span class="listing-number">**サンプルコード4-7**</span>
-
-```java
-public class Employee {
-    private String name;
-    private int age;
-    private double salary;
-    
-    public void setAge(int age) {
-        if (age < 18 || age > 100) {
-            throw new IllegalArgumentException("年齢は18歳以上100歳以下で入力してください");
-        }
-        this.age = age;
-    }
-    
-    public void setSalary(double salary) {
-        if (salary < 0) {
-            throw new IllegalArgumentException("給与は負の値にできません");
-        }
-        this.salary = salary;
-    }
-}
-```
-
-これはデータ検証パターンの例です。
-
-## 設計原則とソフトウェアアーキテクチャ
-
-ソフトウェア設計では、SOLID原則と呼ばれる5つの基本原則があります。これらはオブジェクト指向設計の文脈で生まれましたが、単一責任原則（モジュールは1つの責任のみを持つべき）や開放閉鎖原則（拡張に開かれ、修正に閉じているべき）などは、他のプログラミングパラダイムでも応用可能な普遍的な原則です。
-
-カプセル化は単にデータを隠す技術ではなく、変更の影響を局所化し、再利用性とテスト容易性を高める重要な設計技術です。
-
-## 実践的なクラス設計例
-
-### 銀行口座クラスの段階的な改善
-
-先ほどの問題のあるBankAccountV0を、カプセル化の原則にしたがって段階的に改善していきましょう。
-
-#### ステップ1: 基本的なカプセル化（BankAccountV1）
-
-まず、フィールドをprivateにして、publicメソッドを通じてのみアクセスできるようにします。
-
-<span class="listing-number">**サンプルコード4-8**</span>
-
-```java
-public class BankAccountV1 {
-    private String accountNumber;
-    private double balance;
-    
-    public BankAccountV1(String accountNumber, double initialBalance) {
-        this.accountNumber = accountNumber;
-        this.balance = initialBalance;
-    }
-    
-    public void deposit(double amount) {
-        balance += amount;
-    }
-    
-    public void withdraw(double amount) {
-        balance -= amount;
-    }
-    
-    public double getBalance() {
-        return balance;
-    }
-}
-```
-
-使用例と実行結果：
 ```java
 // BankAccountV1Test.java
 public class BankAccountV1Test {
@@ -107,7 +37,8 @@ public class BankAccountV1Test {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 10000.0
 5000円入金後: 15000.0
@@ -165,7 +96,8 @@ public class BankAccountV2 {
 }
 ```
 
-使用例と実行結果：
+#### 使用例と実行結果
+
 ```java
 // BankAccountV2Test.java
 public class BankAccountV2Test {
@@ -197,7 +129,8 @@ public class BankAccountV2Test {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 初期残高: 10000.0
 5000円入金後: 15000.0
@@ -211,11 +144,112 @@ public class BankAccountV2Test {
 - 入金時に金額を検証
 - 出金時に残高と金額を確認
 
+#### 残る問題
+- 口座番号が後から変更可能（getterがない）
+- 取引履歴が残らない
+- 口座番号の検証がない
+
+#### ステップ3: 完全なカプセル化（BankAccountV3）
+
+<span class="listing-number">**サンプルコード4-10**</span>
+
+```java
+import java.util.*;
+
+public class BankAccountV3 {
+    private final String accountNumber;  // finalで不変にする
+    private double balance;
+    private List<String> transactionHistory;
+    
+    public BankAccountV3(String accountNumber, double initialBalance) {
+        // 口座番号の検証
+        if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("口座番号は必須です");
+        }
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("初期残高は0以上である必要です");
+        }
+        
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+        this.transactionHistory = new ArrayList<>();
+        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance + "円");
+    }
+    
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は正の値である必要です");
+        }
+        balance += amount;
+        transactionHistory.add("入金: " + amount + "円");
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+        if (balance >= amount) {
+            balance -= amount;
+            transactionHistory.add("出金: " + amount + "円");
+            return true;
+        }
+        transactionHistory.add("出金失敗（残高不足）: " + amount + "円");
+        return false;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    // 防御的コピーで履歴を返す
+    public List<String> getTransactionHistory() {
+        return new ArrayList<>(transactionHistory);
+    }
+}
+```
+
+#### 使用例と実行結果
+
+```java
+// BankAccountV3Test.java
+public class BankAccountV3Test {
+    public static void main(String[] args) {
+        BankAccountV3 account = new BankAccountV3("123456", 10000);
+        
+        System.out.println("口座番号: " + account.getAccountNumber());
+        System.out.println("初期残高: " + account.getBalance());
+        
+        // 入金
+        account.deposit(5000);
+        System.out.println("\n5000円入金後の残高: " + account.getBalance());
+        
+        // 出金成功
+        if (account.withdraw(3000)) {
+            System.out.println("3000円出金成功後の残高: " + account.getBalance());
+        }
+        
+        // 出金失敗
+        if (!account.withdraw(20000)) {
+            System.out.println("20000円出金失敗（残高不足）");
+        }
+        
+        // 取引履歴の表示
+        System.out.println("\n取引履歴:");
+        for (String transaction : account.getTransactionHistory()) {
+            System.out.println("  " + transaction);
+        }
+    }
+}
+```
 
 
 <!-- 
 ================
-チャンク 3/11 の終了
+チャンク 3/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

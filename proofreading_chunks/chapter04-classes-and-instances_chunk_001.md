@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 1/11
-行範囲: 1 - 168
-作成日時: 2025-08-02 23:30:11
+チャンク: 1/10
+行範囲: 1 - 221
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -176,16 +176,70 @@ class BankAccountTest {
 }
 ```
 
-実行結果：
+#### 実行結果
+
 ```
 入金処理が完了しました
 ```
 
+##### パッケージプライベート（デフォルト）の使用例
+
+<span class="listing-number">**サンプルコード4-3**</span>
+
+```java
+package com.example.internal;
+
+public class DataProcessor {
+    String processId;     // 同じパッケージ内からアクセス可能
+    
+    void processInternal() {  // パッケージ内協調用メソッド
+        // 内部処理
+    }
+}
+
+// 同じパッケージ内の別クラス
+class ProcessorHelper {
+    void assist(DataProcessor processor) {
+        processor.processId = "PROC-001";     // OK: 同じパッケージ
+        processor.processInternal();           // OK: 同じパッケージ
+    }
+}
+```
+
+これはパッケージプライベート（デフォルトアクセス）の例です。
+
+`protected`の使用例。
+<span class="listing-number">**サンプルコード4-4**</span>
+
+```java
+package com.example.base;
+
+public class Vehicle {
+    protected String engineType;     // サブクラスからアクセス可能
+    protected int maxSpeed;
+    
+    protected void startEngine() {   // サブクラスで利用可能
+        System.out.println("Engine started: " + engineType);
+    }
+}
+
+// 別パッケージのサブクラス
+package com.example.cars;
+import com.example.base.Vehicle;
+
+public class Car extends Vehicle {
+    public void initialize() {
+        engineType = "V6";          // OK: protected継承
+        maxSpeed = 200;             // OK: protected継承
+        startEngine();              // OK: protectedメソッド
+    }
+}
+```
 
 
 <!-- 
 ================
-チャンク 1/11 の終了
+チャンク 1/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

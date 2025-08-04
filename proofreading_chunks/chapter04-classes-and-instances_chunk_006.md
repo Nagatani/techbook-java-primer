@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 6/11
-行範囲: 934 - 1107
-作成日時: 2025-08-02 23:30:11
+チャンク: 6/10
+行範囲: 1054 - 1272
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,126 +13,6 @@
 ================
 -->
 
-#### 設計原則
-- 機能的凝集性
--    + 関連する機能を同じパッケージに
-- 循環依存の回避
--    + AがBを使い、BがAを使うような相互依存を避ける
-- 推奨される粒度
--    + 1パッケージに5～20クラス程度を目安とする
-- 明確な責任
--    + 各パッケージがデータアクセス、ビジネスロジック、UIなどの役割を明確に持つ
-
-これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
-
-## コンストラクタとthisキーワード
-
-### 高度なコンストラクタ設計
-
-第3章ではコンストラクタの基本的な書き方を学びました。本章では、実践的なアプリケーション開発で必要となる、より高度なコンストラクタ設計パターンを学習します。
-
-#### コンストラクタでのバリデーション
-
-実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
-
-<span class="listing-number">**サンプルコード4-17**</span>
-
-```java
-public class User {
-    private final String email;
-    private final String username;
-    private final int age;
-    
-    public User(String email, String username, int age) {
-        // メールアドレスの検証
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("有効なメールアドレスが必要です");
-        }
-        
-        // ユーザー名の検証
-        if (username == null || username.trim().length() < 3) {
-            throw new IllegalArgumentException("ユーザー名は3文字以上である必要があります");
-        }
-        
-        // 年齢の検証
-        if (age < 0 || age > 150) {
-            throw new IllegalArgumentException("年齢は0歳以上150歳以下である必要があります");
-        }
-        
-        this.email = email;
-        this.username = username.trim();
-        this.age = age;
-    }
-}
-```
-
-使用例と実行結果：
-```java
-// UserTest.java
-public class UserTest {
-    public static void main(String[] args) {
-        try {
-            // 正常なユーザー作成
-            User user1 = new User("user@example.com", "john_doe", 25);
-            System.out.println("ユーザー作成成功");
-            
-            // 不正なメールアドレス
-            User user2 = new User("invalid-email", "jane_doe", 30);
-        } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
-        }
-        
-        try {
-            // 短すぎるユーザー名
-            User user3 = new User("test@example.com", "ab", 20);
-        } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
-        }
-    }
-}
-```
-
-実行結果：
-```
-ユーザー作成成功
-エラー: 有効なメールアドレスが必要です
-エラー: ユーザー名は3文字以上である必要があります
-```
-
-#### 複数のコンストラクタ（オーバーロード）
-
-クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
-
-<span class="listing-number">**サンプルコード4-18**</span>
-
-```java
-public class Book {
-    private String title;
-    private String author;
-    private int pages;
-    private double price;
-    
-    // コンストラクタ1：すべてのフィールドを初期化
-    public Book(String title, String author, int pages, double price) {
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
-        this.price = price;
-    }
-    
-    // コンストラクタ2：必須フィールドのみ
-    public Book(String title, String author) {
-        this(title, author, 0, 0.0);  // 他のコンストラクタを呼び出す
-    }
-    
-    // コンストラクタ3：タイトルのみ
-    public Book(String title) {
-        this(title, "Unknown", 0, 0.0);
-    }
-}
-```
-
-これはコンストラクタオーバーロードの例です。
 
 ### thisキーワードの高度な活用
 
@@ -187,11 +67,176 @@ Email email = new EmailBuilder()
 
 これはビルダーパターンを使った流暢なインターフェイスの例です。
 
+#### 高度なコンストラクタチェーン
+
+実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
+
+<span class="listing-number">**サンプルコード4-20**</span>
+
+```java
+public class DatabaseConfig {
+    private final String host;
+    private final int port;
+    private final String database;
+    private final String username;
+    private final String password;
+    private final int maxConnections;
+    private final int timeoutSeconds;
+    
+    // マスターコンストラクタ（すべての検証をここに集約）
+    public DatabaseConfig(String host, int port, String database, 
+                         String username, String password, 
+                         int maxConnections, int timeoutSeconds) {
+        // 詳細な検証ロジック
+        if (host == null || host.trim().isEmpty()) {
+            throw new IllegalArgumentException("ホスト名は必須です");
+        }
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("ポート番号は1-65535の範囲で指定してください");
+        }
+        if (maxConnections < 1) {
+            throw new IllegalArgumentException("最大接続数は1以上である必要があります");
+        }
+        
+        this.host = host.trim();
+        this.port = port;
+        this.database = database;
+        this.username = username;
+        this.password = password;
+        this.maxConnections = maxConnections;
+        this.timeoutSeconds = timeoutSeconds;
+    }
+    
+    // 開発環境用のコンストラクタ
+    public DatabaseConfig(String host, String database) {
+        this(host, 5432, database, "dev_user", "dev_password", 10, 30);
+    }
+    
+    // 本番環境用のコンストラクタ
+    public DatabaseConfig(String host, int port, String database, 
+                         String username, String password) {
+        this(host, port, database, username, password, 100, 60);
+    }
+}
+```
+
+これは複数のコンストラクタで検証ロジックを集約する例です。
+
+#### コールバックでのthis渡し
+
+イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
+
+<span class="listing-number">**サンプルコード4-21**</span>
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public class EventProcessor {
+    private String name;
+    
+    public EventProcessor(String name) {
+        this.name = name;
+    }
+    
+    public void startProcessing() {
+        // 自分自身をイベントハンドラーに登録
+        EventManager.register(this);
+        System.out.println(name + " が処理を開始しました");
+    }
+    
+    public void handleEvent(String event) {
+        System.out.println(name + " がイベントを処理: " + event);
+    }
+}
+class EventManager {
+    private static List<EventProcessor> processors = new ArrayList<>();
+    
+    public static void register(EventProcessor processor) {
+        processors.add(processor);
+    }
+    
+    public static void fireEvent(String event) {
+        for (EventProcessor processor : processors) {
+            processor.handleEvent(event);
+        }
+    }
+}
+```
+
+### 高度なメソッドオーバーロード設計
+
+第3章でメソッドオーバーロードの基本を学びました。ここでは、実用的なAPIデザインにおけるオーバーロードの活用パターンを学習します。
+
+#### デフォルト値を提供するオーバーロード
+
+オーバーロードを使って、使いやすいAPIを設計できます。
+
+<span class="listing-number">**サンプルコード4-22**</span>
+
+```java
+import java.util.Map;
+import java.util.HashMap;
+
+public class HttpClient {
+    // フルスペックのメソッド
+    public String get(String url, Map<String, String> headers, int timeoutMs) {
+        // HTTP GET実装
+        return "Response from " + url;
+    }
+    
+    // ヘッダーのデフォルト値を提供
+    public String get(String url, int timeoutMs) {
+        return get(url, new HashMap<>(), timeoutMs);
+    }
+    
+    // タイムアウトのデフォルト値も提供
+    public String get(String url) {
+        return get(url, 5000);  // 5秒のデフォルトタイムアウト
+    }
+}
+```
+
+#### 型安全性を高めるオーバーロード
+
+異なるデータ型に対応しながら、型安全性を維持します。
+
+<span class="listing-number">**サンプルコード4-23**</span>
+
+```java
+public class Logger {
+    // 文字列メッセージ
+    public void log(String message) {
+        System.out.println("[INFO] " + message);
+    }
+    
+    // 例外情報
+    public void log(String message, Exception e) {
+        System.out.println("[ERROR] " + message + ": " + e.getMessage());
+    }
+    
+    // レベル付きログ
+    public void log(String level, String message) {
+        System.out.println("[" + level + "] " + message);
+    }
+    
+    // フォーマット付きメッセージ
+    public void log(String format, Object... args) {
+        System.out.println("[INFO] " + String.format(format, args));
+    }
+    
+    // ログレベルを表す定数
+    public static final String LOG_DEBUG = "DEBUG";
+    public static final String LOG_INFO = "INFO";
+    public static final String LOG_WARN = "WARN";
+    public static final String LOG_ERROR = "ERROR";
+}
+```
 
 
 <!-- 
 ================
-チャンク 6/11 の終了
+チャンク 6/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

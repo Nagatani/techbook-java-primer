@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 8/11
-行範囲: 1291 - 1487
-作成日時: 2025-08-02 23:30:11
+チャンク: 8/10
+行範囲: 1480 - 1679
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,208 +13,211 @@
 ================
 -->
 
-### 学習した重要概念
-
-1. カプセル化
-   - データと処理を1つのクラスにまとめる
-   - privateフィールドとpublicメソッドによるアクセス制御
-   - データの整合性と安全性の確保
-
-2. アクセス修飾子
-   - `private`: 同じクラス内のみ
-   - パッケージプライベート（デフォルト）: 同じパッケージ内
-   - `protected`: 同じパッケージかサブクラス
-   - `public`: どこからでもアクセス可能
-
-3. 実践的なクラス設計
-   - BankAccountの段階的改善（V0→V1→V2→V3）
-   - getter/setterによる安全なデータアクセス
-   - バリデーションによるデータ検証
-   - 防御的コピーによる内部状態の保護
-
-4. コンストラクタとthisキーワード
-   - デフォルトコンストラクタとカスタムコンストラクタ
-   - コンストラクタオーバーロード
-   - thisキーワードの3つの用法
-   - メソッドオーバーロードによる柔軟なAPI設計
-
-5. パッケージシステム
-   - 機能別・層別によるクラスの組織化
-   - ドメイン名を逆にした一意な名前空間
-   - import文による明示的な依存関係の表現
-
-### 次章への展望
-
-第5章「継承とポリモーフィズム」では、本章で学んだクラス設計の技術をさらに発展させ、クラス間の関係性を表現する方法を学びます。継承により既存のクラスを拡張し、ポリモーフィズムにより柔軟で拡張性の高いプログラムを作成する技術を習得します。
-
-## 章末演習
-
-### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されます。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`
-
-### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
-
-詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
-
-## 設計上やってしまいやすい問題とその解決方法
-
-オブジェクト指向プログラミングを学び始めた開発者が陥りやすい設計上の問題と、その解決方法について詳しく説明します。これらは実行時エラーではなく、設計品質に関わる問題です。
-
-### 1. 神クラス（Godクラス）の問題
-
-#### 問題の概要
-神クラスとは、あまりにも多くの責任を持ち、多くの機能を詰め込んだ巨大なクラスのことです。
-初心者は「すべてを1つのクラスにまとめれば管理が楽」と考えがちですが、実際には逆効果となります。
-
-#### 問題のあるコード例
-
-<span class="listing-number">**サンプルコード4-26**</span>
-
-```java
-// 一つのクラスに責任を詰め込みすぎた例
-public class UserManager {
-    private String username;
-    private String password;
-    private String email;
-    
-    // データベース操作
-    public void saveToDatabase() { /* ... */ }
-    public void deleteFromDatabase() { /* ... */ }
-    
-    // メール送信
-    public void sendWelcomeEmail() { /* ... */ }
-    public void sendPasswordResetEmail() { /* ... */ }
-    
-    // ログイン処理
-    public boolean authenticate(String password) { /* ... */ }
-    public void generateSession() { /* ... */ }
-    
-    // レポート生成
-    public void generateUserReport() { /* ... */ }
-    public void exportToCSV() { /* ... */ }
-}
-```
 
 #### なぜこれが問題なのか
 
-1. 保守性の低下
-    + 1つのクラスが大きくなりすぎて、どこに何があるか把握が困難
-2. テストの困難さ
-    + 多くの依存関係があり、単体テストが書きにくい
-3. 再利用性の欠如
-    + 機能が密結合しているため、一部だけを再利用できない
-4. 変更の影響範囲
-    + 1つの変更が予期しない箇所に影響を与える可能性
-5. 並行開発の困難
-    + 複数の開発者が同じクラスを修正すると競合が発生
+1. ビジネスロジックの分散
+    + 残高操作のルールが使用側に散らばる
+2. 不正な状態の可能性
+    + 負の残高など、ビジネス的に不正な値を設定可能
+3. 変更の困難さ
+    + 残高操作のルールを変更する際、全使用箇所を修正必要
+4. トランザクション管理の欠如
+    + 操作履歴や監査ログを残せない
+5. 並行処理の問題
+    + 複数スレッドからの同時アクセスで不整合が発生
 
-#### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-27**</span>
-
-```java
-// 責任を分離したクラス設計
-public class User {
-    private String username;
-    private String password;
-    private String email;
-    
-    // コンストラクタ、getter、setter
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
-    
-    // 基本的なユーザー操作のみ
-    public boolean validatePassword(String password) {
-        return this.password.equals(password);
-    }
-}
-
-public class UserRepository {
-    public void save(User user) { /* データベース操作 */ }
-    public void delete(String username) { /* データベース操作 */ }
-}
-
-public class EmailService {
-    public void sendWelcomeEmail(User user) { /* メール送信 */ }
-    public void sendPasswordResetEmail(User user) { /* メール送信 */ }
-}
-
-public class AuthenticationService {
-    public boolean authenticate(User user, String password) { /* 認証処理 */ }
-    public String generateSession(User user) { /* セッション生成 */ }
-}
-```
-
-#### 解決策のメリット
-
-1. 高い保守性
-    + 各クラスの責任が明確で、修正箇所が特定しやすい
-2. テストの容易さ
-    + 各クラスを独立してテスト可能
-3. 再利用性の向上
-    + EmailServiceは他のエンティティでも利用可能
-4. 変更の局所化
-    + データベースの変更はUserRepositoryのみに影響
-5. 並行開発の促進
-    + 異なる開発者が異なるクラスを担当できる
-
-#### 解決策のデメリット
-
-1. クラス数の増加
-    + 管理すべきファイル数が増える
-2. 初期開発の複雑さ
-    + 最初の設計に時間がかかる
-3. 過度な分割のリスク
-    + 細かすぎる分割は逆に複雑性を増す
-4. パッケージ構成の必要性
-    + 明確なパッケージ分けが必要
-
-#### 最適なバランスの見つけ方
-
-- 凝集度を高く保つ
--    + 関連する機能は同じクラスに
-- 結合度を低く保つ
--    + クラス間の依存は最小限に
-- 将来の拡張性を考慮
--    + 新機能追加時の影響を予測
-- チームの規模に応じた設計
--    + 小規模なら適度な分割で十分
-
-### 2. 過度なgetter/setterの使用
-
-#### 問題の概要
-すべてのフィールドに機械的にgetterとsetterを作成することは、カプセル化の意味を失わせ、単なるデータ構造と変わらなくなってしまいます。
-
-#### 問題のあるコード例
-
-<span class="listing-number">**サンプルコード4-28**</span>
+#### 解決方法：意味のあるメソッドの提供
+<span class="listing-number">**サンプルコード4-29**</span>
 
 ```java
 public class BankAccount {
     private double balance;
     
+    public BankAccount(double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("初期残高は0以上である必要です");
+        }
+        this.balance = initialBalance;
+    }
+    
+    // 残高の取得は許可
     public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    
+    // 直接設定は不可、代わりにビジネスロジックメソッドを提供
+    public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("入金額は0より大きい必要があります");
+        }
+        this.balance += amount;
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("出金額は0より大きい必要があります");
+        }
+        if (this.balance < amount) {
+            return false;  // 残高不足
+        }
+        this.balance -= amount;
+        return true;
+    }
+}
+```
+
+#### 解決策のメリット
+
+1. ビジネスロジックの集約
+    + 残高操作のルールが1箇所に集中
+2. データ整合性の保証
+    + 不正な状態になることを防げる
+3. 変更の容易さ
+    + ルール変更時の修正箇所が限定的
+4. 拡張性
+    + 履歴記録や通知機能を簡単に追加可能
+5. テストの簡潔さ
+    + ビジネスロジックを集中的にテスト可能
+
+#### 解決策のデメリット
+
+1. 柔軟性の低下
+    + 特殊なケースへの対応が困難な場合がある
+2. メソッド数の増加
+    + 操作の種類が増えるとメソッドも増える
+3. 学習コスト
+    + 使用可能な操作を把握する必要がある
+4. 過度な制限のリスク
+    + 必要な操作まで制限してしまう可能性
+
+#### getter/setter設計のベストプラクティス
+
+1. getterの設計指針
+   - 内部状態を公開してもよいかを慎重に検討
+   - 必要なら防御的コピーを返す（コレクションなど）
+   - 計算結果を返すメソッドも検討（getTotal()など）
+
+2. setterの設計指針
+   - 本当に外部から変更可能にすべきか検討
+   - 検証ロジックを必ず含める
+   - イミュータブルオブジェクトの使用も検討
+
+3. 代替案の検討
+   - ビルダーパターンでの初期化
+   - ファクトリメソッドでの生成
+   - コンストラクタでの完全な初期化
+
+### 3. 防御的プログラミングの欠如
+
+#### 問題の概要
+外部から渡されたオブジェクトをそのまま保持したり、内部のオブジェクトをそのまま返したりすると、意図しない変更を許してしまう問題です。
+
+#### 問題のあるコード例
+
+<span class="listing-number">**サンプルコード4-30**</span>
+
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        this.members = members;  // 参照をそのまま保存
+    }
+    
+    public List<String> getMembers() {
+        return members;  // 内部リストを直接返す
+    }
 }
 
 // 使用例での問題
-BankAccount account = new BankAccount();
-account.setBalance(1000.0);
-double currentBalance = account.getBalance();
-account.setBalance(currentBalance - 100.0);  // 直接残高操作
+List<String> originalList = new ArrayList<>();
+originalList.add("Alice");
+Team team = new Team(originalList);
+originalList.add("Bob");  // Teamの内部状態が変更される！
+
+List<String> teamMembers = team.getMembers();
+teamMembers.clear();  // Teamの内部状態が破壊される！
 ```
 
+#### なぜこれが問題なのか
+
+1. カプセル化の破壊
+    + 外部から内部状態を直接操作可能
+2. 予期しない副作用
+    + 他の箇所での変更が影響する
+3. 不変条件の破壊
+    + クラスの整合性が保てない
+4. デバッグの困難さ
+    + 変更箇所の特定が困難
+5. 並行処理での問題
+    + スレッドセーフでない
+
+#### 解決方法：防御的コピー
+
+<span class="listing-number">**サンプルコード4-31**</span>
+
+```java
+public class Team {
+    private List<String> members;
+    
+    public Team(List<String> members) {
+        // 防御的コピー（コンストラクタ）
+        this.members = new ArrayList<>(members);
+    }
+    
+    public List<String> getMembers() {
+        // 防御的コピー（getter）
+        return new ArrayList<>(members);
+    }
+    
+    // 正しい方法でメンバーを追加
+    public void addMember(String member) {
+        if (member != null && !member.trim().isEmpty()) {
+            members.add(member);
+        }
+    }
+    
+    // 正しい方法でメンバーを削除
+    public boolean removeMember(String member) {
+        return members.remove(member);
+    }
+}
+```
+
+#### 解決策のメリット
+
+1. 完全なカプセル化
+    + 内部状態が外部から保護される
+2. 予測可能な動作
+    + 外部の変更に影響されない
+3. 不変条件の維持
+    + クラスの整合性が保証される
+4. デバッグの容易さ
+    + 変更箇所が限定的
+5. スレッドセーフ性の向上
+    + 明示的な同期化と組み合わせ可能
+
+#### 解決策のデメリット
+
+1. パフォーマンスコスト
+    + コピー処理のオーバーヘッド
+2. メモリ使用量の増加
+    + オブジェクトの複製によるメモリ消費
+3. 実装の複雑さ
+    + 深いコピーが必要な場合の実装が複雑
+4. 一貫性の確保
+    + すべての箇所で防御的コピーを忘れずに実装する必要
+
+#### 防御的プログラミングのガイドライン
+
+1. **コンストラクタでの防御**
+   - 可変オブジェクトは必ずコピー
+   - nullチェックと検証を実施
+   - 不変オブジェクトの使用を検討
 
 
 <!-- 
 ================
-チャンク 8/11 の終了
+チャンク 8/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 9/11
-行範囲: 1488 - 1680
-作成日時: 2025-08-02 23:30:11
+チャンク: 9/10
+行範囲: 1680 - 1879
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,204 +13,211 @@
 ================
 -->
 
-#### なぜこれが問題なのか
 
-1. ビジネスロジックの分散
-    + 残高操作のルールが使用側に散らばる
-2. 不正な状態の可能性
-    + 負の残高など、ビジネス的に不正な値を設定可能
-3. 変更の困難さ
-    + 残高操作のルールを変更する際、全使用箇所を修正必要
-4. トランザクション管理の欠如
-    + 操作履歴や監査ログを残せない
-5. 並行処理の問題
-    + 複数スレッドからの同時アクセスで不整合が発生
+2. getterでの防御
+   - コレクションは新しいインスタンスを返す
+   - 日付などの可変オブジェクトもコピー
+   - 読み取り専用ビューの提供も検討
 
-#### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-29**</span>
+3. パフォーマンスとのバランス
+   - 小さなコレクションなら防御的コピー
+   - 大きなデータは読み取り専用ビュー
+   - イミュータブルコレクションの活用
+
+## よくあるエラーと対処法
+
+本章では、クラスとインスタンスを扱う際にとくによく遭遇するエラーを扱います。
+
+### 本章特有のエラー
+
+#### 1. コンストラクタ関連のエラー（統合版）
+問題: コンストラクタの定義や使用方法を誤る
+
+<span class="listing-number">**サンプルコード4-32**</span>
 
 ```java
-public class BankAccount {
-    private double balance;
-    
-    public BankAccount(double initialBalance) {
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要です");
-        }
-        this.balance = initialBalance;
+// エラー例1：デフォルトコンストラクタが見つからない
+public class User {
+    public User(String name) { }  // カスタムコンストラクタのみ
+}
+User user = new User();  // エラー：引数なしコンストラクタがない
+
+// エラー例2：戻り値型を指定
+public void User() { }  // エラー：コンストラクタに戻り値型
+```
+
+解決策:
+<span class="listing-number">**サンプルコード4-33**</span>
+
+```java
+public class User {
+    // デフォルトコンストラクタを明示的に定義
+    public User() {
+        this("Unknown");
     }
     
-    // 残高の取得は許可
-    public double getBalance() { return balance; }
-    
-    // 直接設定は不可、代わりにビジネスロジックメソッドを提供
-    public void deposit(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は0より大きい必要があります");
-        }
-        this.balance += amount;
-    }
-    
-    public boolean withdraw(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("出金額は0より大きい必要があります");
-        }
-        if (this.balance < amount) {
-            return false;  // 残高不足
-        }
-        this.balance -= amount;
-        return true;
+    public User(String name) {  // 戻り値型なし
+        this.name = name;
     }
 }
 ```
 
-#### 解決策のメリット
+重要なポイント:
+- カスタムコンストラクタを定義すると、デフォルトコンストラクタは自動生成されない
+- コンストラクタには戻り値型を指定しない
+- this()でコンストラクタチェーンを活用
 
-1. ビジネスロジックの集約
-    + 残高操作のルールが1箇所に集中
-2. データ整合性の保証
-    + 不正な状態になることを防げる
-3. 変更の容易さ
-    + ルール変更時の修正箇所が限定的
-4. 拡張性
-    + 履歴記録や通知機能を簡単に追加可能
-5. テストの簡潔さ
-    + ビジネスロジックを集中的にテスト可能
+#### 2. NullPointerException完全ガイド
+問題: nullの参照にメソッド呼び出しやフィールドアクセスを行う
 
-#### 解決策のデメリット
-
-1. 柔軟性の低下
-    + 特殊なケースへの対応が困難な場合がある
-2. メソッド数の増加
-    + 操作の種類が増えるとメソッドも増える
-3. 学習コスト
-    + 使用可能な操作を把握する必要がある
-4. 過度な制限のリスク
-    + 必要な操作まで制限してしまう可能性
-
-#### getter/setter設計のベストプラクティス
-
-1. getterの設計指針
-   - 内部状態を公開してもよいかを慎重に検討
-   - 必要なら防御的コピーを返す（コレクションなど）
-   - 計算結果を返すメソッドも検討（getTotal()など）
-
-2. setterの設計指針
-   - 本当に外部から変更可能にすべきか検討
-   - 検証ロジックを必ず含める
-   - イミュータブルオブジェクトの使用も検討
-
-3. 代替案の検討
-   - ビルダーパターンでの初期化
-   - ファクトリメソッドでの生成
-   - コンストラクタでの完全な初期化
-
-### 3. 防御的プログラミングの欠如
-
-#### 問題の概要
-外部から渡されたオブジェクトをそのまま保持したり、内部のオブジェクトをそのまま返したりすると、意図しない変更を許してしまう問題です。
-
-#### 問題のあるコード例
-
-<span class="listing-number">**サンプルコード4-30**</span>
+<span class="listing-number">**サンプルコード4-34**</span>
 
 ```java
+// エラー例
+public class Product {
+    private String name;
+    
+    public Product(String name) {
+        this.name = name;  // nullチェックなし
+    }
+    
+    public int getNameLength() {
+        return name.length();  // nameがnullの場合エラー
+    }
+}
+```
+
+解決策:
+<span class="listing-number">**サンプルコード4-35**</span>
+
+```java
+public class Product {
+    private String name;
+    
+    public Product(String name) {
+        // コンストラクタでの検証
+        if (name == null) {
+            throw new IllegalArgumentException("商品名はnullにできません");
+        }
+        this.name = name;
+    }
+    
+    public int getNameLength() {
+        // 防御的プログラミング
+        return (name != null) ? name.length() : 0;
+    }
+}
+```
+
+重要なポイント:
+- コンストラクタで引数を検証する
+- メソッド内でnullチェックを行う
+- 有効なデフォルト値か例外処理を使用
+
+#### 3. メソッドオーバーロードの問題
+問題: 曖昧なオーバーロードや不正な定義
+
+<span class="listing-number">**サンプルコード4-36**</span>
+
+```java
+// エラー例1：曖昧な呼び出し
+public int calc(int a, double b) { }
+public double calc(double a, int b) { }
+calc(10, 20);  // どちらを呼ぶか不明
+
+// エラー例2：戻り値型のみ異なる
+public String process(String s) { }
+public int process(String s) { }  // エラー
+```
+
+解決策:
+<span class="listing-number">**サンプルコード4-37**</span>
+
+```java
+// 明確な引数型
+public int calc(int a, int b) { }
+public double calc(double a, double b) { }
+
+// 異なるメソッド名
+public String processToString(String s) { }
+public int processToLength(String s) { }
+```
+
+重要なポイント:
+- 引数の型は明確に区別できるようにする
+- 戻り値型だけでは区別できない
+- 必要に応じて異なるメソッド名を使用
+
+#### 4. オブジェクト参照と防御的コピー
+問題: 参照の共有により意図しない変更が発生
+
+<span class="listing-number">**サンプルコード4-38**</span>
+
+```java
+// エラー例
 public class Team {
     private List<String> members;
     
     public Team(List<String> members) {
-        this.members = members;  // 参照をそのまま保存
+        this.members = members;  // 参照を共有
     }
     
     public List<String> getMembers() {
-        return members;  // 内部リストを直接返す
+        return members;  // 内部状態を露出
     }
 }
-
-// 使用例での問題
-List<String> originalList = new ArrayList<>();
-originalList.add("Alice");
-Team team = new Team(originalList);
-originalList.add("Bob");  // Teamの内部状態が変更される！
-
-List<String> teamMembers = team.getMembers();
-teamMembers.clear();  // Teamの内部状態が破壊される！
 ```
 
-#### なぜこれが問題なのか
-
-1. カプセル化の破壊
-    + 外部から内部状態を直接操作可能
-2. 予期しない副作用
-    + 他の箇所での変更が影響する
-3. 不変条件の破壊
-    + クラスの整合性が保てない
-4. デバッグの困難さ
-    + 変更箇所の特定が困難
-5. 並行処理での問題
-    + スレッドセーフでない
-
-#### 解決方法：防御的コピー
-
-<span class="listing-number">**サンプルコード4-31**</span>
+解決策:
+<span class="listing-number">**サンプルコード4-39**</span>
 
 ```java
 public class Team {
     private List<String> members;
     
     public Team(List<String> members) {
-        // 防御的コピー（コンストラクタ）
+        // 防御的コピー
         this.members = new ArrayList<>(members);
     }
     
     public List<String> getMembers() {
-        // 防御的コピー（getter）
+        // 防御的コピーを返す
         return new ArrayList<>(members);
-    }
-    
-    // 正しい方法でメンバーを追加
-    public void addMember(String member) {
-        if (member != null && !member.trim().isEmpty()) {
-            members.add(member);
-        }
-    }
-    
-    // 正しい方法でメンバーを削除
-    public boolean removeMember(String member) {
-        return members.remove(member);
     }
 }
 ```
 
-#### 解決策のメリット
+重要なポイント:
+- コンストラクタで防御的コピーを作成
+- getterでも内部状態を直接返さない
+- 可変オブジェクトはとくに注意が必要
 
-1. 完全なカプセル化
-    + 内部状態が外部から保護される
-2. 予測可能な動作
-    + 外部の変更に影響されない
-3. 不変条件の維持
-    + クラスの整合性が保証される
-4. デバッグの容易さ
-    + 変更箇所が限定的
-5. スレッドセーフ性の向上
-    + 明示的な同期化と組み合わせ可能
+### 関連する共通エラー
 
-#### 解決策のデメリット
+以下のエラーも本章の内容に関連します。
 
-1. パフォーマンスコスト
-    + コピー処理のオーバーヘッド
-2. メモリ使用量の増加
-    + オブジェクトの複製によるメモリ消費
-3. 実装の複雑さ
-    + 深いコピーが必要な場合の実装が複雑
-4. 一貫性の確保
-    + すべての箇所で防御的コピーを忘れずに実装する必要
+- **ClassCastException**（→ 付録A.1.3）
+  - 型キャストの誤りで発生
+- **equals/hashCodeの契約違反**（→ 付録A.3）
+  - コレクションで使用する際に問題となる
+- **thisキーワードの使い忘れ**（→ 第3章）
+  - フィールドと引数の区別ができない
 
+### デバッグのヒント
+
+1. NullPointerExceptionが発生したら
+   - スタックトレースで発生箇所を特定
+   - 該当行の変数がnullでないか確認
+   - 初期化処理を見直す
+
+2. オーバーロードエラーの場合
+   - コンパイラのエラーメッセージを詳しく読む
+   - 引数の型を明示的にキャストして確認
 
 
 <!-- 
 ================
-チャンク 9/11 の終了
+チャンク 9/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->

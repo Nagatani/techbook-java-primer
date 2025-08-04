@@ -69,7 +69,7 @@ python3 tools/manuscript_proofreader.py manuscripts/target_file.md
 
 **高優先度（安全な修正）**
 2. textlintエラーの修正
-   - コロンパターン：「実行結果：」→ 見出し化
+   - コロンパターン：「実行結果：」→ 削除または太字強調（詳細はcolon_pattern_conversion_rules.md参照）
    - リスト文体：である調への統一
 
 **中優先度（文脈確認必要）**

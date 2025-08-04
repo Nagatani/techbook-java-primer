@@ -2,9 +2,9 @@
 校正チャンク情報
 ================
 元ファイル: chapter04-classes-and-instances.md
-チャンク: 7/11
-行範囲: 1108 - 1290
-作成日時: 2025-08-02 23:30:11
+チャンク: 7/10
+行範囲: 1273 - 1479
+作成日時: 2025-08-03 02:32:41
 
 校正時の注意事項:
 - 文章の流れは前後のチャンクを考慮してください
@@ -13,178 +13,6 @@
 ================
 -->
 
-#### 高度なコンストラクタチェーン
-
-実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
-
-<span class="listing-number">**サンプルコード4-20**</span>
-
-```java
-public class DatabaseConfig {
-    private final String host;
-    private final int port;
-    private final String database;
-    private final String username;
-    private final String password;
-    private final int maxConnections;
-    private final int timeoutSeconds;
-    
-    // マスターコンストラクタ（すべての検証をここに集約）
-    public DatabaseConfig(String host, int port, String database, 
-                         String username, String password, 
-                         int maxConnections, int timeoutSeconds) {
-        // 詳細な検証ロジック
-        if (host == null || host.trim().isEmpty()) {
-            throw new IllegalArgumentException("ホスト名は必須です");
-        }
-        if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("ポート番号は1-65535の範囲で指定してください");
-        }
-        if (maxConnections < 1) {
-            throw new IllegalArgumentException("最大接続数は1以上である必要があります");
-        }
-        
-        this.host = host.trim();
-        this.port = port;
-        this.database = database;
-        this.username = username;
-        this.password = password;
-        this.maxConnections = maxConnections;
-        this.timeoutSeconds = timeoutSeconds;
-    }
-    
-    // 開発環境用のコンストラクタ
-    public DatabaseConfig(String host, String database) {
-        this(host, 5432, database, "dev_user", "dev_password", 10, 30);
-    }
-    
-    // 本番環境用のコンストラクタ
-    public DatabaseConfig(String host, int port, String database, 
-                         String username, String password) {
-        this(host, port, database, username, password, 100, 60);
-    }
-}
-```
-
-これは複数のコンストラクタで検証ロジックを集約する例です。
-
-#### コールバックでのthis渡し
-
-イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
-
-<span class="listing-number">**サンプルコード4-21**</span>
-
-```java
-import java.util.List;
-import java.util.ArrayList;
-
-public class EventProcessor {
-    private String name;
-    
-    public EventProcessor(String name) {
-        this.name = name;
-    }
-    
-    public void startProcessing() {
-        // 自分自身をイベントハンドラーに登録
-        EventManager.register(this);
-        System.out.println(name + " が処理を開始しました");
-    }
-    
-    public void handleEvent(String event) {
-        System.out.println(name + " がイベントを処理: " + event);
-    }
-}
-```
-
-これはコールバックでthisを渡す例です。
-
-class EventManager {
-    private static List<EventProcessor> processors = new ArrayList<>();
-    
-    public static void register(EventProcessor processor) {
-        processors.add(processor);
-    }
-    
-    public static void fireEvent(String event) {
-        for (EventProcessor processor : processors) {
-            processor.handleEvent(event);
-        }
-    }
-}
-```
-
-### 高度なメソッドオーバーロード設計
-
-第3章でメソッドオーバーロードの基本を学びました。ここでは、実用的なAPIデザインにおけるオーバーロードの活用パターンを学習します。
-
-#### デフォルト値を提供するオーバーロード
-
-オーバーロードを使って、使いやすいAPIを設計できます。
-
-<span class="listing-number">**サンプルコード4-22**</span>
-
-```java
-import java.util.Map;
-import java.util.HashMap;
-
-public class HttpClient {
-    // フルスペックのメソッド
-    public String get(String url, Map<String, String> headers, int timeoutMs) {
-        // HTTP GET実装
-        return "Response from " + url;
-    }
-    
-    // ヘッダーのデフォルト値を提供
-    public String get(String url, int timeoutMs) {
-        return get(url, new HashMap<>(), timeoutMs);
-    }
-    
-    // タイムアウトのデフォルト値も提供
-    public String get(String url) {
-        return get(url, 5000);  // 5秒のデフォルトタイムアウト
-    }
-}
-```
-
-これはテレスコーピングコンストラクタの例です。
-```
-
-#### 型安全性を高めるオーバーロード
-
-異なるデータ型に対応しながら、型安全性を維持します。
-
-<span class="listing-number">**サンプルコード4-23**</span>
-
-```java
-public class Logger {
-    // 文字列メッセージ
-    public void log(String message) {
-        System.out.println("[INFO] " + message);
-    }
-    
-    // 例外情報
-    public void log(String message, Exception e) {
-        System.out.println("[ERROR] " + message + ": " + e.getMessage());
-    }
-    
-    // レベル付きログ
-    public void log(String level, String message) {
-        System.out.println("[" + level + "] " + message);
-    }
-    
-    // フォーマット付きメッセージ
-    public void log(String format, Object... args) {
-        System.out.println("[INFO] " + String.format(format, args));
-    }
-    
-    // ログレベルを表す定数
-    public static final String LOG_DEBUG = "DEBUG";
-    public static final String LOG_INFO = "INFO";
-    public static final String LOG_WARN = "WARN";
-    public static final String LOG_ERROR = "ERROR";
-}
-```
 
 実践的なオーバーロード設計原則。
 - もっとも多機能なメソッドを1つ定義し、他はそれを呼び出す
@@ -196,11 +24,207 @@ public class Logger {
 
 本章では、オブジェクト指向プログラミングの中核となるカプセル化とクラス設計について学習しました。
 
+### 学習した重要概念
+
+1. カプセル化
+   - データと処理を1つのクラスにまとめる
+   - privateフィールドとpublicメソッドによるアクセス制御
+   - データの整合性と安全性の確保
+
+2. アクセス修飾子
+   - `private`: 同じクラス内のみ
+   - パッケージプライベート（デフォルト）: 同じパッケージ内
+   - `protected`: 同じパッケージかサブクラス
+   - `public`: どこからでもアクセス可能
+
+3. 実践的なクラス設計
+   - BankAccountの段階的改善（V0→V1→V2→V3）
+   - getter/setterによる安全なデータアクセス
+   - バリデーションによるデータ検証
+   - 防御的コピーによる内部状態の保護
+
+4. コンストラクタとthisキーワード
+   - デフォルトコンストラクタとカスタムコンストラクタ
+   - コンストラクタオーバーロード
+   - thisキーワードの3つの用法
+   - メソッドオーバーロードによる柔軟なAPI設計
+
+5. パッケージシステム
+   - 機能別・層別によるクラスの組織化
+   - ドメイン名を逆にした一意な名前空間
+   - import文による明示的な依存関係の表現
+
+### 次章への展望
+
+第5章「継承とポリモーフィズム」では、本章で学んだクラス設計の技術をさらに発展させ、クラス間の関係性を表現する方法を学びます。継承により既存のクラスを拡張し、ポリモーフィズムにより柔軟で拡張性の高いプログラムを作成する技術を習得します。
+
+## 章末演習
+
+### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されます。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`
+
+### 課題構成
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
+
+詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
+
+## 設計上やってしまいやすい問題とその解決方法
+
+オブジェクト指向プログラミングを学び始めた開発者が陥りやすい設計上の問題と、その解決方法について詳しく説明します。これらは実行時エラーではなく、設計品質に関わる問題です。
+
+### 1. 神クラス（Godクラス）の問題
+
+#### 問題の概要
+神クラスとは、あまりにも多くの責任を持ち、多くの機能を詰め込んだ巨大なクラスのことです。
+初心者は「すべてを1つのクラスにまとめれば管理が楽」と考えがちですが、実際には逆効果となります。
+
+#### 問題のあるコード例
+
+<span class="listing-number">**サンプルコード4-26**</span>
+
+```java
+// 一つのクラスに責任を詰め込みすぎた例
+public class UserManager {
+    private String username;
+    private String password;
+    private String email;
+    
+    // データベース操作
+    public void saveToDatabase() { /* ... */ }
+    public void deleteFromDatabase() { /* ... */ }
+    
+    // メール送信
+    public void sendWelcomeEmail() { /* ... */ }
+    public void sendPasswordResetEmail() { /* ... */ }
+    
+    // ログイン処理
+    public boolean authenticate(String password) { /* ... */ }
+    public void generateSession() { /* ... */ }
+    
+    // レポート生成
+    public void generateUserReport() { /* ... */ }
+    public void exportToCSV() { /* ... */ }
+}
+```
+
+#### なぜこれが問題なのか
+
+1. 保守性の低下
+    + 1つのクラスが大きくなりすぎて、どこに何があるか把握が困難
+2. テストの困難さ
+    + 多くの依存関係があり、単体テストが書きにくい
+3. 再利用性の欠如
+    + 機能が密結合しているため、一部だけを再利用できない
+4. 変更の影響範囲
+    + 1つの変更が予期しない箇所に影響を与える可能性
+5. 並行開発の困難
+    + 複数の開発者が同じクラスを修正すると競合が発生
+
+#### 解決方法：責任の分離
+<span class="listing-number">**サンプルコード4-27**</span>
+
+```java
+// 責任を分離したクラス設計
+public class User {
+    private String username;
+    private String password;
+    private String email;
+    
+    // コンストラクタ、getter、setter
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+    
+    // 基本的なユーザー操作のみ
+    public boolean validatePassword(String password) {
+        return this.password.equals(password);
+    }
+}
+
+public class UserRepository {
+    public void save(User user) { /* データベース操作 */ }
+    public void delete(String username) { /* データベース操作 */ }
+}
+
+public class EmailService {
+    public void sendWelcomeEmail(User user) { /* メール送信 */ }
+    public void sendPasswordResetEmail(User user) { /* メール送信 */ }
+}
+
+public class AuthenticationService {
+    public boolean authenticate(User user, String password) { /* 認証処理 */ }
+    public String generateSession(User user) { /* セッション生成 */ }
+}
+```
+
+#### 解決策のメリット
+
+1. 高い保守性
+    + 各クラスの責任が明確で、修正箇所が特定しやすい
+2. テストの容易さ
+    + 各クラスを独立してテスト可能
+3. 再利用性の向上
+    + EmailServiceは他のエンティティでも利用可能
+4. 変更の局所化
+    + データベースの変更はUserRepositoryのみに影響
+5. 並行開発の促進
+    + 異なる開発者が異なるクラスを担当できる
+
+#### 解決策のデメリット
+
+1. クラス数の増加
+    + 管理すべきファイル数が増える
+2. 初期開発の複雑さ
+    + 最初の設計に時間がかかる
+3. 過度な分割のリスク
+    + 細かすぎる分割は逆に複雑性を増す
+4. パッケージ構成の必要性
+    + 明確なパッケージ分けが必要
+
+#### 最適なバランスの見つけ方
+
+- 凝集度を高く保つ
+-    + 関連する機能は同じクラスに
+- 結合度を低く保つ
+-    + クラス間の依存は最小限に
+- 将来の拡張性を考慮
+-    + 新機能追加時の影響を予測
+- チームの規模に応じた設計
+-    + 小規模なら適度な分割で十分
+
+### 2. 過度なgetter/setterの使用
+
+#### 問題の概要
+すべてのフィールドに機械的にgetterとsetterを作成することは、カプセル化の意味を失わせ、単なるデータ構造と変わらなくなってしまいます。
+
+#### 問題のあるコード例
+
+<span class="listing-number">**サンプルコード4-28**</span>
+
+```java
+public class BankAccount {
+    private double balance;
+    
+    public double getBalance() { return balance; }
+    public void setBalance(double balance) { this.balance = balance; }
+}
+
+// 使用例での問題
+BankAccount account = new BankAccount();
+account.setBalance(1000.0);
+double currentBalance = account.getBalance();
+account.setBalance(currentBalance - 100.0);  // 直接残高操作
+```
 
 
 <!-- 
 ================
-チャンク 7/11 の終了
+チャンク 7/10 の終了
 校正ステータス: [ ] 未完了 / [ ] 完了
 ================
 -->
