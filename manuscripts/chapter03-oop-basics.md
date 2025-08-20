@@ -109,6 +109,9 @@ int main() {
 
 ### より実践的な例：銀行口座システム
 
+構造体と関数を分離することにより発生する問題は、プロジェクトが大きくなるほど深刻になります。
+
+
 ```c
 // C言語での実装の問題点
 struct BankAccount {
@@ -130,8 +133,6 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 }
 ```
 
-
-このような問題は、プロジェクトが大きくなるほど深刻になります。
 データと処理が分離しているため、コードの大規模化に伴い以下の問題が発生します。
 
 - 一貫性の欠如
@@ -140,12 +141,6 @@ void withdraw_money(struct BankAccount* acc, double amount) {
     - データ検証の漏れが各所で発生
 - 保守の困難
     - どの関数がどのデータを操作するか追跡が困難
-
-<div class="figure">
-
-![手続き型とオブジェクト指向の構造比較](images/diagrams/chapter03-paradigm-comparison.png)
-
-</div>
 
 ### オブジェクト指向による解決
 
