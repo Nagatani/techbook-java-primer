@@ -282,13 +282,13 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 ```
 コマンドの各オプションの意味
 - `c`
--    + 新しいアーカイブを作成する（create）
+    + 新しいアーカイブを作成する（create）
 - `v`
--    + 詳細な情報を表示する（verbose）
+    + 詳細な情報を表示する（verbose）
 - `f`
--    + 作成するファイル名を指定する（file）
+    + 作成するファイル名を指定する（file）
 - `m`
--    + 指定されたマニフェストファイルを取り込む（manifest）
+    + 指定されたマニフェストファイルを取り込む（manifest）
 
 このコマンドを実行すると、`SimpleApp.jar`という実行可能なJARファイルが作成されます。
 
@@ -352,15 +352,15 @@ jpackage --type app-image \
 ```
 主なオプションの説明
 - `--type app-image`
--    + アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`（macOS）、`msi`（Windows）、`rpm`/`deb`（Linux）などを指定する
+    + アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`（macOS）、`msi`（Windows）、`rpm`/`deb`（Linux）などを指定する
 - `--name "SimpleApp"`
--    + アプリケーションの名前を指定する
+    + アプリケーションの名前を指定する
 - `--input ./input`
--    + パッケージ化の材料（JARファイル）が入っているディレクトリを指定する
+    + パッケージ化の材料（JARファイル）が入っているディレクトリを指定する
 - `--main-jar SimpleApp.jar`
--    + 入力ディレクトリ内の、メインとなるJARファイル名を指定する
+    + 入力ディレクトリ内の、メインとなるJARファイル名を指定する
 - `--dest ./output`
--    + 完成したアプリケーションを保存するディレクトリを指定する
+    + 完成したアプリケーションを保存するディレクトリを指定する
 
 ### 各OSに向けた基本的なパッケージング例
 
@@ -413,11 +413,16 @@ jpackage --type deb \
 
 主な高度な技術は次の通りです。
 
-1. **ビルド自動化ツール**: Maven、Gradleによる依存関係管理とビルドライフサイクルの標準化
-2. **Fat JAR（Uber JAR）**: 依存ライブラリを含む単一JARファイルの生成（Spring Boot、Shade Plugin）
-3. **ネイティブイメージ**: GraalVMによるAOT（Ahead-of-Time）コンパイルで起動時間とメモリ使用量を大幅に削減
-4. **コンテナ化**: DockerやKubernetesによるアプリケーションの標準化された配布
-5. **CI/CD統合**: GitHub ActionsやJenkinsによる自動ビルド・配布パイプライン
+1. ビルド自動化ツール
+    + Maven、Gradleによる依存関係管理とビルドライフサイクルの標準化
+2. Fat JAR（Uber JAR）
+    + 依存ライブラリを含む単一JARファイルの生成（Spring Boot、Shade Plugin）
+3. ネイティブイメージ
+    + GraalVMによるAOT（Ahead-of-Time）コンパイルで起動時間とメモリ使用量を大幅に削減
+4. コンテナ化
+    + DockerやKubernetesによるアプリケーションの標準化された配布
+5. CI/CD統合
+    + GitHub ActionsやJenkinsによる自動ビルド・配布パイプライン
 
 ### 今後の学習に向けて
 

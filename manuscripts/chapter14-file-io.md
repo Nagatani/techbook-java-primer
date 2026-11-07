@@ -274,10 +274,8 @@ public class TextFileWriterExample {
 次の行。
 ```
 
-// 追記モード。
-// StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追加できます。
-// ログファイルの作成や、既存データを保持しながら新しい情報を追加する場合に使用します。
-`StandardOpenOption.APPEND`を指定すると、ファイルの末尾に追記できます。
+`StandardOpenOption.APPEND`を指定すると、既存ファイルの内容を保持したまま末尾にデータを追記できます。
+ログファイルへの記録のように、既存データを残したまま新しい情報を追加する場合に使用します。
 
 ### 文字エンコーディングの指定
 
@@ -349,10 +347,8 @@ public class CharacterEncodingExample {
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
 
-// バイナリファイルの読み込み。
-// DataInputStream/DataOutputStreamは、プリミティブ型のデータを効率的にバイナリ形式で保存・読み込みするためのクラスです。
-// テキスト形式と比較してファイルサイズが小さく、読み書き速度も高速です。
-Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
+`DataInputStream`と`DataOutputStream`は、Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
+数値を文字列に変換せずに保存するため、テキスト形式と比べてファイルサイズが小さくなり、変換処理も不要になります。
 
 <span class="listing-number">**サンプルコード14-6**</span>
 
@@ -411,10 +407,6 @@ public class DataStreamExample {
     + `writeUTF()`は最大65535バイトまでの文字列しか扱えません
 
 ### BufferedInputStream/BufferedOutputStreamの活用
-
-// Filesクラスの使用。
-// NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
-// パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用するとよいAPIです。
 
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
@@ -549,10 +541,9 @@ public class FileSystemExample {
 
 ### CSV ファイルの処理
 
-// CSVファイルの処理。
-// CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
-// Javaでは標準ライブラリだけでも基本的なCSV処理が可能ですが、複雑な処理では専用ライブラリ（Apache Commons CSV等）の使用を推奨します。
-// 以下は基本的なCSV読み込み・書き込みの実装例です。
+CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
+基本的なCSV処理は標準ライブラリだけで実装できますが、値の中にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
+以下は、基本的なCSV読み込み・書き込みの実装例です。
 
 <span class="listing-number">**サンプルコード14-9**</span>
 

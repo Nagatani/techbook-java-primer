@@ -204,8 +204,9 @@ public class VideoRecommendationService {
 }
 ```
 
-<span class="footnote">※ このコードは高度なリアクティブプログラミングの概念例です。実際の動作にはReactor（Mono, Flux）やSpring WebFluxなどの追加ライブラリが必要です。Netflix等の大規模システムでの関数型アプローチの応用例として理解してください。</span>
+<span class="listing-number">**サンプルコード11-7**</span>
 
+```java
 // リアクティブ・関数型アプローチ（高スケーラビリティ）
 public class ReactiveVideoRecommendationService {
     public Mono<List<Video>> getRecommendations(String userId) {
@@ -231,17 +232,17 @@ public class ReactiveVideoRecommendationService {
 
 パフォーマンス比較。
 - レイテンシ
--    + 300ms → 50ms（83%削減）
+    + 300ms → 50ms（83%削減）
 - スループット
--    + 1000 req/s → 10000 req/s（10倍向上）
+    + 1000 req/s → 10000 req/s（10倍向上）
 - リソース使用率
--    + 80% → 30%（62%削減）
+    + 80% → 30%（62%削減）
 
 ### 関数型プログラミングの実装パターン集
 
 1. リトライとサーキットブレーカー
 
-<span class="listing-number">**サンプルコード11-7**</span>
+<span class="listing-number">**サンプルコード11-8**</span>
 
 ```java
 public class ResilientService {
@@ -285,7 +286,7 @@ public class ResilientService {
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
-<span class="listing-number">**サンプルコード11-8**</span>
+<span class="listing-number">**サンプルコード11-9**</span>
 
 ```java
 public class EventProcessor {
@@ -323,7 +324,7 @@ public class EventProcessor {
 
 2. 関数合成によるミドルウェアパターン
 
-<span class="listing-number">**サンプルコード11-9**</span>
+<span class="listing-number">**サンプルコード11-10**</span>
 
 ```java
 public class MiddlewareChain {
@@ -385,7 +386,7 @@ public class MiddlewareChain {
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
-<span class="listing-number">**サンプルコード11-10**</span>
+<span class="listing-number">**サンプルコード11-11**</span>
 
 ```java
 // データ処理の基本的なテンプレート
@@ -417,7 +418,7 @@ public class DataProcessingTemplate {
 
 3. イベントソーシングとCQRS
 
-<span class="listing-number">**サンプルコード11-11**</span>
+<span class="listing-number">**サンプルコード11-12**</span>
 
 ```java
 public class EventSourcedAccount {
@@ -464,7 +465,7 @@ public class EventSourcedAccount {
 従来のファクトリーパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。
 これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
 
-<span class="listing-number">**サンプルコード11-12**</span>
+<span class="listing-number">**サンプルコード11-13**</span>
 
 ```java
 // 関数型ファクトリパターン。
@@ -496,7 +497,7 @@ public class ProcessorFactory {
 
 #### ラムダ式の内部実装とメモリ使用
 
-<span class="listing-number">**サンプルコード11-13**</span>
+<span class="listing-number">**サンプルコード11-14**</span>
 
 ```java
 public class LambdaPerformance {
@@ -539,7 +540,7 @@ public class LambdaPerformance {
 
 ### 実践的なデザインパターン：関数型ビルダ
 
-<span class="listing-number">**サンプルコード11-14**</span>
+<span class="listing-number">**サンプルコード11-15**</span>
 
 ```java
 public class FunctionalBuilder {
@@ -600,7 +601,7 @@ public class FunctionalBuilder {
 
 設定やコンフィギュレーションを構築する際、関数型ビルダーパターンはとくに威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
 
-<span class="listing-number">**サンプルコード11-15**</span>
+<span class="listing-number">**サンプルコード11-16**</span>
 
 ```java
 public class ConfigurationBuilder {
@@ -633,7 +634,7 @@ public class ConfigurationBuilder {
 
 高頻度取引（HFT）システムでの関数型アプローチ。
 
-<span class="listing-number">**サンプルコード11-16**</span>
+<span class="listing-number">**サンプルコード11-17**</span>
 
 ```java
 public class TradingSystem {
@@ -670,7 +671,7 @@ public class TradingSystem {
 
 複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
 
-<span class="listing-number">**サンプルコード11-17**</span>
+<span class="listing-number">**サンプルコード11-18**</span>
 
 ```java
 public class BusinessLogicProcessor {
@@ -693,7 +694,7 @@ public class BusinessLogicProcessor {
 }
 ```
 
-<span class="listing-number">**サンプルコード11-18**</span>
+<span class="listing-number">**サンプルコード11-19**</span>
 
 ```java
 // ラムダ式を使った場合
@@ -724,7 +725,7 @@ Comparatorを使ったデータ並び替えの最適化。
 
 データ並び替え処理において、Comparatorインターフェイスは可読性と性能の両方を向上させる重要な機能です。従来の冗長なComparable実装に比べて、ラムダ式を使ったComparatorは処理の意図を明確にし、複雑な並び替え条件も直感的に表現できます。とくに、コレクションのソート処理でその威力を発揮し、ビジネスロジックに集中できる簡潔なコードを実現します。
 
-<span class="listing-number">**サンプルコード11-19**</span>
+<span class="listing-number">**サンプルコード11-20**</span>
 
 ```java
 public class SampleCode12_37 {
@@ -770,7 +771,7 @@ public class SampleCode12_37 {
 
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
-<span class="listing-number">**サンプルコード11-20**</span>
+<span class="listing-number">**サンプルコード11-21**</span>
 
 ```java
 @FunctionalInterface
@@ -809,7 +810,7 @@ public class SampleCode12_39 {
 
 実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
 
-<span class="listing-number">**サンプルコード11-21**</span>
+<span class="listing-number">**サンプルコード11-22**</span>
 
 ```java
 public class SampleCode12_41 {
@@ -888,7 +889,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `UnaryOperator<T>` | `T apply(T t)` | T型を受け取り、同じT型を返す（単項演算） |
 | `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（二項演算） |
 
-<span class="listing-number">**サンプルコード11-22**</span>
+<span class="listing-number">**サンプルコード11-23**</span>
 
 ```java
 import java.util.function.*;
@@ -948,7 +949,7 @@ public class SampleCode12_43 {
 | インスタンスメソッド参照<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | コンストラクタ参照 | `クラス名::new` | `() -> new ArrayList<>()` |
 
-<span class="listing-number">**サンプルコード11-23**</span>
+<span class="listing-number">**サンプルコード11-24**</span>
 
 ```java
 import java.util.*;
@@ -1010,7 +1011,7 @@ CHERRY
 
 並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。とくに、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 
-<span class="listing-number">**サンプルコード11-24**</span>
+<span class="listing-number">**サンプルコード11-25**</span>
 
 ```java
 import java.util.*;
@@ -1072,21 +1073,11 @@ Task 3 completed
 実行時間: 1511ms
 ```
 
-        // ラムダ: s -> System.out.println(s)
-        // メソッド参照: System.out::println
-        words.forEach(System.out::println);
-
-        // ラムダ: s -> s.toUpperCase()
-        // メソッド参照: String::toUpperCase
-        words.stream()
-             .map(String::toUpperCase)
-             .forEach(System.out::println);
-
 メソッド参照による可読性の向上
 
 メソッド参照は、既存のメソッドを呼び出すだけのラムダ式をより簡潔に表現する方法です。とくに、Streamのmap操作やcollect操作でよく使われ、コードの意図をより明確に示すことができます。
 
-<span class="listing-number">**サンプルコード11-25**</span>
+<span class="listing-number">**サンプルコード11-26**</span>
 
 ```java
 import java.util.*;
@@ -1161,7 +1152,7 @@ Person{name='Charlie'}
 
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 
-<span class="listing-number">**サンプルコード11-26**</span>
+<span class="listing-number">**サンプルコード11-27**</span>
 
 ```java
 public class SampleCode12_51 {
@@ -1266,7 +1257,7 @@ Thread t1 (Anonymous) finished
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-27**</span>
+<span class="listing-number">**サンプルコード11-28**</span>
 
 ```java
 public class ValidationFramework {
@@ -1342,7 +1333,7 @@ public class ValidationFramework {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-28**</span>
+<span class="listing-number">**サンプルコード11-29**</span>
 
 ```java
 // ❌ 不正なラムダ式の構文
@@ -1361,7 +1352,7 @@ error: ';' expected
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-29**</span>
+<span class="listing-number">**サンプルコード11-30**</span>
 
 ```java
 import java.util.Arrays;
@@ -1401,7 +1392,7 @@ Charlie
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-30**</span>
+<span class="listing-number">**サンプルコード11-31**</span>
 
 ```java
 // ❌ 型推論が曖昧な場合。
@@ -1417,7 +1408,7 @@ error: Cannot infer type arguments for method
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-31**</span>
+<span class="listing-number">**サンプルコード11-32**</span>
 
 ```java
 // ✅ 明示的な型指定。
@@ -1431,7 +1422,7 @@ Comparator<String> comp = Comparator.comparing(String::length);
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-32**</span>
+<span class="listing-number">**サンプルコード11-33**</span>
 
 ```java
 // ❌ チェック例外のハンドリング。
@@ -1448,7 +1439,7 @@ error: Unhandled exception type IOException
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-33**</span>
+<span class="listing-number">**サンプルコード11-34**</span>
 
 ```java
 // ✅ 例外をランタイム例外でラップ。
@@ -1480,7 +1471,7 @@ List<String> contents = files.stream()
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-34**</span>
+<span class="listing-number">**サンプルコード11-35**</span>
 
 ```java
 // ❌ 変数キャプチャの問題。
@@ -1501,7 +1492,7 @@ error: Variable used in lambda expression should be final or effectively final
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-35**</span>
+<span class="listing-number">**サンプルコード11-36**</span>
 
 ```java
 // ✅ 実質的にfinalな変数を使用。
@@ -1528,7 +1519,7 @@ public void processNumbers(List<Integer> numbers) {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-36**</span>
+<span class="listing-number">**サンプルコード11-37**</span>
 
 ```java
 // ❌ 関数型インターフェイスの誤用。
@@ -1546,7 +1537,7 @@ error: Multiple non-overriding abstract methods found in interface Calculator
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-37**</span>
+<span class="listing-number">**サンプルコード11-38**</span>
 
 ```java
 // ✅ 単一の抽象メソッドを持つ関数型インターフェイス。
@@ -1569,7 +1560,7 @@ Calculator multiplier = (a, b) -> a * b;
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード11-38**</span>
+<span class="listing-number">**サンプルコード11-39**</span>
 
 ```java
 // ❌ メソッド参照の型不一致。
@@ -1586,7 +1577,7 @@ error: Cannot infer type arguments for collect
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-39**</span>
+<span class="listing-number">**サンプルコード11-40**</span>
 
 ```java
 // ✅ オートボクシングによる自動変換。

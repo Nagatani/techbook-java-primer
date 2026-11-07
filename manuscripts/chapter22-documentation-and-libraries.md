@@ -305,10 +305,14 @@ Javaのオープンソースエコシステムは、1998年のApache Software Fo
 
 重要なマイルストーンは次の通りです。
 
-1. **1999年**: Apache Commons プロジェクト開始
-2. **2003年**: Maven Central Repository の設立
-3. **2004年**: Spring Framework 1.0 リリース
-4. **2009年**: GitHub の普及によるソーシャルコーディングの加速
+1. 1999年
+    + Apache Commons プロジェクト開始
+2. 2003年
+    + Maven Central Repository の設立
+3. 2004年
+    + Spring Framework 1.0 リリース
+4. 2009年
+    + GitHub の普及によるソーシャルコーディングの加速
 
 ### ライブラリ利用の技術的利点
 
@@ -316,11 +320,16 @@ Javaのオープンソースエコシステムは、1998年のApache Software Fo
 
 主なメリットは次の通りです。
 
-1. **コードの再利用性**: DRY原則（Don't Repeat Yourself）の実現
-2. **品質の向上**: 多くの開発者によるテストとレビュー
-3. **開発速度の向上**: 実装済み機能の即座の利用
-4. **標準化**: 業界標準のアプローチとパターンの採用
-5. **保守性の向上**: バグ修正とセキュリティパッチの自動適用
+1. コードの再利用性
+    + DRY原則（Don't Repeat Yourself）の実現
+2. 品質の向上
+    + 多くの開発者によるテストとレビュー
+3. 開発速度の向上
+    + 実装済み機能の即座の利用
+4. 標準化
+    + 業界標準のアプローチとパターンの採用
+5. 保守性の向上
+    + バグ修正とセキュリティパッチの自動適用
 
 ### クラスパスとは
 
@@ -338,10 +347,14 @@ Mavenは2002年にJason van Zylによって開発されました。その設計�
 
 設計原則は次の通りです。
 
-1. **Convention over Configuration**: 設定より規約を優先
-2. **Declarative Build**: 宣言的なビルド定義
-3. **Dependency Management**: 推移的依存関係の自動解決
-4. **Repository Pattern**: 中央集権的なアーティファクト管理
+1. Convention over Configuration
+    + 設定より規約を優先
+2. Declarative Build
+    + 宣言的なビルド定義
+3. Dependency Management
+    + 推移的依存関係の自動解決
+4. Repository Pattern
+    + 中央集権的なアーティファクト管理
 
 #### 依存関係解決のアルゴリズム
 
@@ -1269,6 +1282,9 @@ Product: Product(id=0, name=ノートPC, price=15000.0)
 </dependency>
 ```
 
+<span class="listing-number">**サンプルコード22-16**</span>
+
+```java
 // 個別のアノテーション使用例
 class Product {
     @Getter @Setter
@@ -1290,7 +1306,7 @@ class Product {
 
 GoogleのGuavaライブラリは、コレクション、キャッシュ、文字列処理などの高度な機能を提供します。
 
-<span class="listing-number">**サンプルコード22-16**</span>
+<span class="listing-number">**サンプルコード22-17**</span>
 
 ```xml
 <dependency>
@@ -1305,7 +1321,7 @@ GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多�
 実用的な機能が豊富に含まれています。
 以下の例では、これらの主要機能の使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-17**</span>
+<span class="listing-number">**サンプルコード22-18**</span>
 
 ```java
 import com.google.common.collect.*;
@@ -1452,13 +1468,13 @@ Value: Hello
 #### ライブラリの成熟度と信頼性
 - リリース履歴安定版がリリースされているか（1.0以上）
 - 更新頻度
--    + 定期的にメンテナンスされているか
+    + 定期的にメンテナンスされているか
 - コミュニティ活発なコミュニティが存在するか
 - 採用実績
--    + 大規模プロジェクトでの採用実績
+    + 大規模プロジェクトでの採用実績
 
 #### ライセンスの確認
-<span class="listing-number">**サンプルコード22-18**</span>
+<span class="listing-number">**サンプルコード22-19**</span>
 
 ```java
 // pom.xmlでライセンスを確認
@@ -1478,7 +1494,7 @@ Value: Hello
 
 #### 依存関係の管理
 
-<span class="listing-number">**サンプルコード22-19**</span>
+<span class="listing-number">**サンプルコード22-20**</span>
 
 ```xml
 <!-- バージョン管理のベストプラクティス -->
@@ -1508,7 +1524,7 @@ Value: Hello
 
 #### セキュリティの考慮事項
 
-<span class="listing-number">**サンプルコード22-20**</span>
+<span class="listing-number">**サンプルコード22-21**</span>
 
 ```xml
 <!-- 依存関係の脆弱性チェックプラグイン -->
@@ -1530,7 +1546,7 @@ Value: Hello
 
 実際のプロジェクトでよく使われる組み合わせ。
 
-<span class="listing-number">**サンプルコード22-21**</span>
+<span class="listing-number">**サンプルコード22-22**</span>
 
 ```xml
 <!-- Webアプリケーション開発 -->
@@ -1589,7 +1605,7 @@ Value: Hello
 
 ### 実践的な開発フロー
 
-<span class="listing-number">**サンプルコード22-22**</span>
+<span class="listing-number">**サンプルコード22-23**</span>
 
 ```java
 // 1. プロジェクトの初期化（Maven）
@@ -1612,7 +1628,7 @@ mvn versions:display-dependency-updates
 
 よくある問題と解決方法。
 
-<span class="listing-number">**サンプルコード22-23**</span>
+<span class="listing-number">**サンプルコード22-24**</span>
 
 ```java
 // 1. 依存関係の競合
@@ -1644,28 +1660,40 @@ mvn dependency:purge-local-repository
 
 ### 本章で学んだ技術の核心
 
-- **Javadoc**: ソースコード内のコメントからAPI仕様書を自動生成する標準ツール。文芸的プログラミングの思想に基づき、コードとドキュメントの一体化を実現
-- **外部ライブラリ**: DRY原則に基づく効率的な開発を可能にし、コミュニティによって検証された高品質なコードの再利用を促進
-- **依存関係管理**: Mavenの推移的依存関係解決アルゴリズムにより、複雑なライブラリ間の依存関係を自動的に管理
-- **エコシステム**: Maven Central Repositoryを中心とした巨大なJavaエコシステムが、40万以上のアーティファクトを提供
+- Javadoc
+    + ソースコード内のコメントからAPI仕様書を自動生成する標準ツール。文芸的プログラミングの思想に基づき、コードとドキュメントの一体化を実現
+- 外部ライブラリ
+    + DRY原則に基づく効率的な開発を可能にし、コミュニティによって検証された高品質なコードの再利用を促進
+- 依存関係管理
+    + Mavenの推移的依存関係解決アルゴリズムにより、複雑なライブラリ間の依存関係を自動的に管理
+- エコシステム
+    + Maven Central Repositoryを中心とした巨大なJavaエコシステムが、40万以上のアーティファクトを提供
 
 ### ドキュメント化の技術的価値
 
 研究によると、適切にドキュメント化されたコードは：
 
-1. **保守コストを40-60%削減**: 新規開発者の学習時間短縮
-2. **バグ率を25%低減**: APIの誤用による欠陥の防止
-3. **開発速度を2倍向上**: 既存コードの再利用促進
-4. **技術的負債を50%削減**: 明確な設計意図の保持
+1. 保守コストを40-60%削減
+    + 新規開発者の学習時間短縮
+2. バグ率を25%低減
+    + APIの誤用による欠陥の防止
+3. 開発速度を2倍向上
+    + 既存コードの再利用促進
+4. 技術的負債を50%削減
+    + 明確な設計意図の保持
 
 ### 依存関係管理の進化
 
 依存関係管理ツールの進化は続いています：
 
-1. **第1世代**: 手動でのJAR管理（1995-2002）
-2. **第2世代**: Maven/Ivy による自動化（2002-2009）
-3. **第3世代**: Gradle による柔軟な設定（2009-現在）
-4. **次世代**: モジュールシステム（JPMS）との統合
+1. 第1世代
+    + 手動でのJAR管理（1995-2002）
+2. 第2世代
+    + Maven/Ivy による自動化（2002-2009）
+3. 第3世代
+    + Gradle による柔軟な設定（2009-現在）
+4. 次世代
+    + モジュールシステム（JPMS）との統合
 
 ### セキュリティとコンプライアンス
 
@@ -1673,10 +1701,14 @@ mvn dependency:purge-local-repository
 
 特に重要な観点は次の通りです。
 
-1. **脆弱性管理**: OWASP Dependency Checkによる自動スキャン
-2. **ライセンス遵守**: 商用利用可能なライセンスの選択
-3. **サプライチェーンセキュリティ**: 依存関係の信頼性検証
-4. **コンプライアンス**: GDPR、SOC2などの規制への対応
+1. 脆弱性管理
+    + OWASP Dependency Checkによる自動スキャン
+2. ライセンス遵守
+    + 商用利用可能なライセンスの選択
+3. サプライチェーンセキュリティ
+    + 依存関係の信頼性検証
+4. コンプライアンス
+    + GDPR、SOC2などの規制への対応
 
 ## 章末演習
 
@@ -1715,7 +1747,7 @@ Javadocコメントの構文が正しくありません。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-24**</span>
+<span class="listing-number">**サンプルコード22-25**</span>
 
 ```java
 /**
@@ -1736,7 +1768,7 @@ warning: @return has no meaning in class documentation
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-25**</span>
+<span class="listing-number">**サンプルコード22-26**</span>
 
 ```java
 /**
@@ -1773,7 +1805,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-26**</span>
+<span class="listing-number">**サンプルコード22-27**</span>
 
 ```bash
 javadoc -d docs src/*.java
@@ -1782,7 +1814,7 @@ javadoc -d docs src/*.java
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-27**</span>
+<span class="listing-number">**サンプルコード22-28**</span>
 
 ```bash
 # 文字エンコーディングを明示的に指定
@@ -1799,7 +1831,7 @@ JavadocでHTMLタグを間違って使用。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-28**</span>
+<span class="listing-number">**サンプルコード22-29**</span>
 
 ```java
 /**
@@ -1823,7 +1855,7 @@ warning: unclosed tag: <li>
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-29**</span>
+<span class="listing-number">**サンプルコード22-30**</span>
 
 ```java
 /**
@@ -1849,7 +1881,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-30**</span>
+<span class="listing-number">**サンプルコード22-31**</span>
 
 ```xml
 <dependencies>
@@ -1873,7 +1905,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-31**</span>
+<span class="listing-number">**サンプルコード22-32**</span>
 
 ```xml
 <properties>
@@ -1901,7 +1933,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-32**</span>
+<span class="listing-number">**サンプルコード22-33**</span>
 
 ```bash
 mvn dependency:tree
@@ -1915,7 +1947,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-33**</span>
+<span class="listing-number">**サンプルコード22-34**</span>
 
 ```xml
 <dependency>
@@ -1947,7 +1979,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-34**</span>
+<span class="listing-number">**サンプルコード22-35**</span>
 
 ```xml
 <dependency>
@@ -1959,7 +1991,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-35**</span>
+<span class="listing-number">**サンプルコード22-36**</span>
 
 ```xml
 <!-- 脆弱性チェックプラグインを追加 -->
@@ -1987,7 +2019,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-36**</span>
+<span class="listing-number">**サンプルコード22-37**</span>
 
 ```xml
 <dependency>
@@ -1999,7 +2031,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-37**</span>
+<span class="listing-number">**サンプルコード22-38**</span>
 
 ```xml
 <dependency>
@@ -2018,7 +2050,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-38**</span>
+<span class="listing-number">**サンプルコード22-39**</span>
 
 ```java
 // 古いバージョン（1.x）
@@ -2035,7 +2067,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeVa
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-39**</span>
+<span class="listing-number">**サンプルコード22-40**</span>
 
 ```java
 // 新しいAPIに対応
@@ -2055,7 +2087,7 @@ try {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-40**</span>
+<span class="listing-number">**サンプルコード22-41**</span>
 
 ```java
 @SuppressWarnings("deprecation")
@@ -2064,7 +2096,7 @@ Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-41**</span>
+<span class="listing-number">**サンプルコード22-42**</span>
 
 ```java
 // 新しいAPIを使用
@@ -2081,7 +2113,7 @@ Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant(
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-42**</span>
+<span class="listing-number">**サンプルコード22-43**</span>
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -2128,7 +2160,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-43**</span>
+<span class="listing-number">**サンプルコード22-44**</span>
 
 ```xml
 <!-- 必要な依存関係を追加 -->
@@ -2146,7 +2178,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-44**</span>
+<span class="listing-number">**サンプルコード22-45**</span>
 
 ```bash
 # コンパイル時
@@ -2158,7 +2190,7 @@ java Example  # ClassNotFoundException
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-45**</span>
+<span class="listing-number">**サンプルコード22-46**</span>
 
 ```bash
 # 実行時にも必要なクラスパスを指定
@@ -2178,7 +2210,7 @@ java -jar target/myapp.jar
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-46**</span>
+<span class="listing-number">**サンプルコード22-47**</span>
 
 ```java
 // application.propertiesが見つからない
@@ -2193,7 +2225,7 @@ java.io.FileNotFoundException: application.properties (No such file or directory
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-47**</span>
+<span class="listing-number">**サンプルコード22-48**</span>
 
 ```java
 // クラスパスから読み込み
@@ -2214,14 +2246,14 @@ try (InputStream input = getClass().getClassLoader()
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-48**</span>
+<span class="listing-number">**サンプルコード22-49**</span>
 
 ```properties
 # application.properties
 server.port=8080abc  # 数値でない
 ```
 
-<span class="listing-number">**サンプルコード22-49**</span>
+<span class="listing-number">**サンプルコード22-50**</span>
 
 ```java
 int port = Integer.parseInt(props.getProperty("server.port"));
@@ -2234,7 +2266,7 @@ java.lang.NumberFormatException: For input string: "8080abc"
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-50**</span>
+<span class="listing-number">**サンプルコード22-51**</span>
 
 ```java
 public static int getIntProperty(Properties props, String key, int defaultValue) {
@@ -2271,7 +2303,7 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-51**</span>
+<span class="listing-number">**サンプルコード22-52**</span>
 
 ```xml
 <!-- 不要なログ実装を除外 -->
@@ -2302,7 +2334,7 @@ JacksonとGsonが混在してAPIが混乱します。
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-52**</span>
+<span class="listing-number">**サンプルコード22-53**</span>
 
 ```java
 // 使用するJSONライブラリを統一

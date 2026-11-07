@@ -378,7 +378,7 @@ class UnsafeCounter {
 実世界での同期化の例。
 - 銀行システム口座残高の一貫性保証
 - 在庫管理
--    + 同時注文による在庫のマイナス防止
+    + 同時注文による在庫のマイナス防止
 - チケット予約座席の二重予約防止
 - キャッシュ管理データの整合性維持
 
@@ -1301,9 +1301,9 @@ FutureとCallableの特徴。
 - Callable: 戻り値を持つタスクを定義（`Runnable`は戻り値なし）
 - Future: 非同期処理の結果を保持し、完了を待機できる
 - 例外処理
--    + `Callable`は検査例外をスローできる
+    + `Callable`は検査例外をスローできる
 - キャンセル機能
--    + 実行中のタスクをキャンセル可能
+    + 実行中のタスクをキャンセル可能
 
 <span class="listing-number">**サンプルコード15-16**</span>
 
@@ -1377,13 +1377,13 @@ public class FutureCallableExample {
 
 CompletableFutureの主な特徴。
 - 非同期処理の連鎖
--    + `thenApply`、`thenCompose`などで処理を連鎖
+    + `thenApply`、`thenCompose`などで処理を連鎖
 - 例外処理
--    + `exceptionally`、`handle`で例外を優雅に処理
+    + `exceptionally`、`handle`で例外を優雅に処理
 - 複数の非同期処理の組み合わせ
--    + `allOf`、`anyOf`で複数の処理を統合
+    + `allOf`、`anyOf`で複数の処理を統合
 - タイムアウト処理
--    + Java 9以降では`orTimeout`メソッドも利用可能
+    + Java 9以降では`orTimeout`メソッドも利用可能
 
 <span class="listing-number">**サンプルコード15-17**</span>
 
@@ -2170,9 +2170,9 @@ public class ResiliencePatterns {
 - パフォーマンス測定並列処理による性能向上の測定方法
 - ForkJoinPool: 分割統治法による並列処理
 - 並列ストリーム
--    + Java 8以降の並列処理API
+    + Java 8以降の並列処理API
 - スレッドセーフなパターン
--    + シングルトンパターンの実装方法
+    + シングルトンパターンの実装方法
 - 一般的な落とし穴
   - デッドロック
   - 誤ったvolatileの使用

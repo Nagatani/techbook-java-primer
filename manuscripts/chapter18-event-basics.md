@@ -35,15 +35,15 @@
 
 Swingのイベント処理は、以下の3つの要素で構成されます。
 
-1. **イベントソース（Event Source）**
+1. イベントソース（Event Source）
    - イベントを発生させる部品（JButton、JTextFieldなど）
    - ユーザーが操作するGUIコンポーネント
 
-2. **イベントオブジェクト（Event Object）**
+2. イベントオブジェクト（Event Object）
    - 発生したイベントの詳細情報を持つオブジェクト
    - ActionEvent、MouseEvent、KeyEventなど
 
-3. **イベントリスナ（Event Listener）**
+3. イベントリスナ（Event Listener）
    - イベントの発生を監視し、通知を受け取って処理を実行
    - ActionListener、MouseListener、KeyListenerなど
 
