@@ -38,8 +38,8 @@ Apache Commons Langなどのユーティリティライブラリの活用方法�
 とくに重要なのは以下の内容です。
 
 - 第4章のクラスとインスタンス（基本的なOOPの概念）
-- 第14章の例外処理（try-catch、例外の種類）
-- 第15章のファイル入出力（基本的なI/O操作）
+- 第13章の例外処理（try-catch、例外の種類）
+- 第14章のファイル入出力（基本的なI/O操作）
 - HTMLの基礎知識
 
 推奨される知識：
@@ -63,7 +63,7 @@ Javadocコメントは `/**` で始まり、`*/` で終わります。クラス�
 
 以下の例では、メソッドに対する完全なJavadocコメントの記述方法を示します。最初の行は概要説明、HTMLタグを使った詳細説明、そしてさまざまなJavadocタグによる構造化された情報が含まれています。
 
-<span class="listing-number">**サンプルコード22-2**</span>
+<span class="listing-number">**サンプルコード22-1**</span>
 
 ```java
 /**
@@ -104,7 +104,7 @@ public int add(int a, int b) {
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクタ、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード22-4**</span>
+<span class="listing-number">**サンプルコード22-2**</span>
 
 ```java
 /**
@@ -273,7 +273,7 @@ public class Task {
 
 #### コマンドライン (javac)
 
-<span class="listing-number">**サンプルコード22-5**</span>
+<span class="listing-number">**サンプルコード22-3**</span>
 
 ```bash
 # 基本的な使用方法
@@ -366,7 +366,7 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 たとえば、Googleが開発したJSONライブラリであるGsonを利用したい場合、`pom.xml`の`<dependencies>`セクションに以下のように記述します。
 
-<span class="listing-number">**サンプルコード22-6**</span>
+<span class="listing-number">**サンプルコード22-4**</span>
 
 ```xml
 <dependencies>
@@ -390,7 +390,7 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 @Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、
 実務でよく使われるパターンを網羅しています。
 
-<span class="listing-number">**サンプルコード22-8**</span>
+<span class="listing-number">**サンプルコード22-5**</span>
 
 ```java
 import com.google.gson.Gson;
@@ -525,7 +525,7 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。スト�
 
 #### Mavenの依存関係
 
-<span class="listing-number">**サンプルコード22-9**</span>
+<span class="listing-number">**サンプルコード22-6**</span>
 
 ```xml
 <dependency>
@@ -541,7 +541,7 @@ Jacksonはエンタープライズアプリケーションで広く使われて�
 以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
 TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-11**</span>
+<span class="listing-number">**サンプルコード22-7**</span>
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -701,7 +701,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 #### Commons Langの例
 
-<span class="listing-number">**サンプルコード22-12**</span>
+<span class="listing-number">**サンプルコード22-8**</span>
 
 ```xml
 <dependency>
@@ -713,7 +713,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード22-14**</span>
+<span class="listing-number">**サンプルコード22-9**</span>
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -841,7 +841,7 @@ HashCode same?: true
 
 #### Commons I/Oの例
 
-<span class="listing-number">**サンプルコード22-15**</span>
+<span class="listing-number">**サンプルコード22-10**</span>
 
 ```xml
 <dependency>
@@ -856,7 +856,7 @@ Java標準APIでは何行も必要なファイル操作が、1行で実装でき
 以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、
 実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-17**</span>
+<span class="listing-number">**サンプルコード22-11**</span>
 
 ```java
 import org.apache.commons.io.FileUtils;
@@ -977,7 +977,7 @@ Stream copy result: Stream processing example
 
 OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を備えたHTTP通信ライブラリです。
 
-<span class="listing-number">**サンプルコード22-18**</span>
+<span class="listing-number">**サンプルコード22-12**</span>
 
 ```xml
 <dependency>
@@ -991,7 +991,7 @@ OkHttpはSquare社が開発した高性能なHTTPクライアントライブラ�
 コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
 以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
-<span class="listing-number">**サンプルコード22-20**</span>
+<span class="listing-number">**サンプルコード22-13**</span>
 
 ```java
 import okhttp3.*;
@@ -1137,7 +1137,7 @@ Body: {
 
 Lombokは、アノテーションを使ってゲッタ、セッタ、コンストラクタなどを自動生成します。
 
-<span class="listing-number">**サンプルコード22-21**</span>
+<span class="listing-number">**サンプルコード22-14**</span>
 
 ```xml
 <dependency>
@@ -1153,7 +1153,7 @@ Lombokはコンパイル時にアノテーションを処理し、
 @Dataアノテーション1つでゲッタ、セッタ、equals、hashCode、toStringメソッドが自動生成されます。
 以下の例では、主要なアノテーションの使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-23**</span>
+<span class="listing-number">**サンプルコード22-15**</span>
 
 ```java
 import lombok.Data;
@@ -1290,7 +1290,7 @@ class Product {
 
 GoogleのGuavaライブラリは、コレクション、キャッシュ、文字列処理などの高度な機能を提供します。
 
-<span class="listing-number">**サンプルコード22-24**</span>
+<span class="listing-number">**サンプルコード22-16**</span>
 
 ```xml
 <dependency>
@@ -1305,7 +1305,7 @@ GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多�
 実用的な機能が豊富に含まれています。
 以下の例では、これらの主要機能の使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-26**</span>
+<span class="listing-number">**サンプルコード22-17**</span>
 
 ```java
 import com.google.common.collect.*;
@@ -1458,7 +1458,7 @@ Value: Hello
 -    + 大規模プロジェクトでの採用実績
 
 #### ライセンスの確認
-<span class="listing-number">**サンプルコード22-28**</span>
+<span class="listing-number">**サンプルコード22-18**</span>
 
 ```java
 // pom.xmlでライセンスを確認
@@ -1478,7 +1478,7 @@ Value: Hello
 
 #### 依存関係の管理
 
-<span class="listing-number">**サンプルコード22-29**</span>
+<span class="listing-number">**サンプルコード22-19**</span>
 
 ```xml
 <!-- バージョン管理のベストプラクティス -->
@@ -1508,7 +1508,7 @@ Value: Hello
 
 #### セキュリティの考慮事項
 
-<span class="listing-number">**サンプルコード22-30**</span>
+<span class="listing-number">**サンプルコード22-20**</span>
 
 ```xml
 <!-- 依存関係の脆弱性チェックプラグイン -->
@@ -1530,7 +1530,7 @@ Value: Hello
 
 実際のプロジェクトでよく使われる組み合わせ。
 
-<span class="listing-number">**サンプルコード22-31**</span>
+<span class="listing-number">**サンプルコード22-21**</span>
 
 ```xml
 <!-- Webアプリケーション開発 -->
@@ -1589,7 +1589,7 @@ Value: Hello
 
 ### 実践的な開発フロー
 
-<span class="listing-number">**サンプルコード22-33**</span>
+<span class="listing-number">**サンプルコード22-22**</span>
 
 ```java
 // 1. プロジェクトの初期化（Maven）
@@ -1612,7 +1612,7 @@ mvn versions:display-dependency-updates
 
 よくある問題と解決方法。
 
-<span class="listing-number">**サンプルコード22-35**</span>
+<span class="listing-number">**サンプルコード22-23**</span>
 
 ```java
 // 1. 依存関係の競合
@@ -1715,7 +1715,7 @@ Javadocコメントの構文が正しくありません。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-36**</span>
+<span class="listing-number">**サンプルコード22-24**</span>
 
 ```java
 /**
@@ -1736,7 +1736,7 @@ warning: @return has no meaning in class documentation
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-37**</span>
+<span class="listing-number">**サンプルコード22-25**</span>
 
 ```java
 /**
@@ -1773,7 +1773,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-38**</span>
+<span class="listing-number">**サンプルコード22-26**</span>
 
 ```bash
 javadoc -d docs src/*.java
@@ -1782,7 +1782,7 @@ javadoc -d docs src/*.java
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-39**</span>
+<span class="listing-number">**サンプルコード22-27**</span>
 
 ```bash
 # 文字エンコーディングを明示的に指定
@@ -1799,7 +1799,7 @@ JavadocでHTMLタグを間違って使用。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-40**</span>
+<span class="listing-number">**サンプルコード22-28**</span>
 
 ```java
 /**
@@ -1823,7 +1823,7 @@ warning: unclosed tag: <li>
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-41**</span>
+<span class="listing-number">**サンプルコード22-29**</span>
 
 ```java
 /**
@@ -1849,7 +1849,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-42**</span>
+<span class="listing-number">**サンプルコード22-30**</span>
 
 ```xml
 <dependencies>
@@ -1873,7 +1873,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-43**</span>
+<span class="listing-number">**サンプルコード22-31**</span>
 
 ```xml
 <properties>
@@ -1901,7 +1901,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-44**</span>
+<span class="listing-number">**サンプルコード22-32**</span>
 
 ```bash
 mvn dependency:tree
@@ -1915,7 +1915,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-45**</span>
+<span class="listing-number">**サンプルコード22-33**</span>
 
 ```xml
 <dependency>
@@ -1947,7 +1947,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-46**</span>
+<span class="listing-number">**サンプルコード22-34**</span>
 
 ```xml
 <dependency>
@@ -1959,7 +1959,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-47**</span>
+<span class="listing-number">**サンプルコード22-35**</span>
 
 ```xml
 <!-- 脆弱性チェックプラグインを追加 -->
@@ -1987,7 +1987,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-48**</span>
+<span class="listing-number">**サンプルコード22-36**</span>
 
 ```xml
 <dependency>
@@ -1999,7 +1999,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-49**</span>
+<span class="listing-number">**サンプルコード22-37**</span>
 
 ```xml
 <dependency>
@@ -2018,7 +2018,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-50**</span>
+<span class="listing-number">**サンプルコード22-38**</span>
 
 ```java
 // 古いバージョン（1.x）
@@ -2035,7 +2035,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeVa
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-51**</span>
+<span class="listing-number">**サンプルコード22-39**</span>
 
 ```java
 // 新しいAPIに対応
@@ -2055,7 +2055,7 @@ try {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-52**</span>
+<span class="listing-number">**サンプルコード22-40**</span>
 
 ```java
 @SuppressWarnings("deprecation")
@@ -2064,7 +2064,7 @@ Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-53**</span>
+<span class="listing-number">**サンプルコード22-41**</span>
 
 ```java
 // 新しいAPIを使用
@@ -2081,7 +2081,7 @@ Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant(
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-54**</span>
+<span class="listing-number">**サンプルコード22-42**</span>
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -2128,7 +2128,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-55**</span>
+<span class="listing-number">**サンプルコード22-43**</span>
 
 ```xml
 <!-- 必要な依存関係を追加 -->
@@ -2146,7 +2146,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-56**</span>
+<span class="listing-number">**サンプルコード22-44**</span>
 
 ```bash
 # コンパイル時
@@ -2158,7 +2158,7 @@ java Example  # ClassNotFoundException
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-57**</span>
+<span class="listing-number">**サンプルコード22-45**</span>
 
 ```bash
 # 実行時にも必要なクラスパスを指定
@@ -2178,7 +2178,7 @@ java -jar target/myapp.jar
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-58**</span>
+<span class="listing-number">**サンプルコード22-46**</span>
 
 ```java
 // application.propertiesが見つからない
@@ -2193,7 +2193,7 @@ java.io.FileNotFoundException: application.properties (No such file or directory
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-59**</span>
+<span class="listing-number">**サンプルコード22-47**</span>
 
 ```java
 // クラスパスから読み込み
@@ -2214,14 +2214,14 @@ try (InputStream input = getClass().getClassLoader()
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-60**</span>
+<span class="listing-number">**サンプルコード22-48**</span>
 
 ```properties
 # application.properties
 server.port=8080abc  # 数値でない
 ```
 
-<span class="listing-number">**サンプルコード22-61**</span>
+<span class="listing-number">**サンプルコード22-49**</span>
 
 ```java
 int port = Integer.parseInt(props.getProperty("server.port"));
@@ -2234,7 +2234,7 @@ java.lang.NumberFormatException: For input string: "8080abc"
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-62**</span>
+<span class="listing-number">**サンプルコード22-50**</span>
 
 ```java
 public static int getIntProperty(Properties props, String key, int defaultValue) {
@@ -2271,7 +2271,7 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-63**</span>
+<span class="listing-number">**サンプルコード22-51**</span>
 
 ```xml
 <!-- 不要なログ実装を除外 -->
@@ -2302,7 +2302,7 @@ JacksonとGsonが混在してAPIが混乱します。
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-64**</span>
+<span class="listing-number">**サンプルコード22-52**</span>
 
 ```java
 // 使用するJSONライブラリを統一

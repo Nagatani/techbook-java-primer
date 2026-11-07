@@ -33,10 +33,10 @@ JListは項目のリストを表示するコンポーネントで、選択可能
 
 推奨される知識：
 
-- 第12章のRecord（データ表現）
+- 第8章のRecord（データ表現）
 - MVCアーキテクチャパターンの基本概念
 - オブザーバーパターンの理解
-- 第16章のマルチスレッドプログラミング（SwingUtilities.invokeLater）
+- 第15章のマルチスレッドプログラミング（SwingUtilities.invokeLater）
 
 ## JTableの詳細な実装
 
@@ -1153,7 +1153,7 @@ public class IntegratedDataManagementApp extends JFrame {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第22章「ユニットテストと品質保証」に進みましょう。
+次のステップ： 基礎課題が完了したら、第21章「ユニットテストと品質保証」に進みましょう。
 
 ## よくあるエラーと対処法
 

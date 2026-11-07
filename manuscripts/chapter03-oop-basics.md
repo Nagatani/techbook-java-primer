@@ -597,7 +597,7 @@ String: null
 
 #### フィールドの宣言構文
 
-<span class="listing-number">**サンプルコード3-27**</span>
+<span class="listing-number">**サンプルコード3-8**</span>
 
 ```java
 アクセス修飾子 データ型 フィールド名;
@@ -608,7 +608,7 @@ String: null
 
 #### 実際の使用例
 
-<span class="listing-number">**サンプルコード3-8**</span>
+<span class="listing-number">**サンプルコード3-9**</span>
 
 ```java
 public class Product {
@@ -697,7 +697,7 @@ C言語の関数と似ていますが、関数とデータ（フィールド）�
 
 #### メソッドの宣言構文
 
-<span class="listing-number">**サンプルコード3-28**</span>
+<span class="listing-number">**サンプルコード3-10**</span>
 
 ```java
 アクセス修飾子 戻り値の型 メソッド名(引数リスト) {
@@ -706,7 +706,7 @@ C言語の関数と似ていますが、関数とデータ（フィールド）�
 }
 ```
 
-<span class="listing-number">**サンプルコード3-9**</span>
+<span class="listing-number">**サンプルコード3-11**</span>
 
 ```java
 public class Rectangle {
@@ -786,7 +786,7 @@ public class RectangleExample {
 
 ##### 1. 戻り値がないメソッド（voidメソッド）
 
-<span class="listing-number">**サンプルコード3-29**</span>
+<span class="listing-number">**サンプルコード3-12**</span>
 
 ```java
 public void printMessage() {
@@ -798,7 +798,7 @@ public void printMessage() {
 
 ##### 2. 戻り値があるメソッド
 
-<span class="listing-number">**サンプルコード3-30**</span>
+<span class="listing-number">**サンプルコード3-13**</span>
 
 ```java
 public int add(int a, int b) {
@@ -810,7 +810,7 @@ public int add(int a, int b) {
 
 ##### 3. 引数がないメソッド
 
-<span class="listing-number">**サンプルコード3-31**</span>
+<span class="listing-number">**サンプルコード3-14**</span>
 
 ```java
 public void showTime() {
@@ -822,7 +822,7 @@ public void showTime() {
 
 ##### 4. 複数の引数を持つメソッド
 
-<span class="listing-number">**サンプルコード3-32**</span>
+<span class="listing-number">**サンプルコード3-15**</span>
 
 ```java
 public double calculateBMI(double weight, double height) {
@@ -839,7 +839,7 @@ public double calculateBMI(double weight, double height) {
 
 値の取得(getter)と設定(setter)をそれぞれ分割して作成することは、「取得はできるけど外部からは設定できないデータ」のような条件のデータを作成できることになります。
 
-<span class="listing-number">**サンプルコード3-10**</span>
+<span class="listing-number">**サンプルコード3-16**</span>
 
 ```java
 public class Person {
@@ -914,7 +914,7 @@ public class PersonTest {
 
 コンストラクタは、オブジェクトを作成するときに自動的に呼ばれる特別なメソッドです。
 
-<span class="listing-number">**サンプルコード3-11**</span>
+<span class="listing-number">**サンプルコード3-17**</span>
 
 ```java
 public class Book {
@@ -979,7 +979,7 @@ public class BookTest {
 
 Javaでは、同じ名前のメソッドを複数定義できます。これを「メソッドオーバーロード」と呼びます。
 
-<span class="listing-number">**サンプルコード3-12**</span>
+<span class="listing-number">**サンプルコード3-18**</span>
 
 ```java
 public class PrintHelper {
@@ -1037,7 +1037,7 @@ int add_three_ints(int a, int b, int c);
 ```
 
 一方、Javaではすべて同じ名前で定義できます：
-<span class="listing-number">**サンプルコード3-33**</span>
+<span class="listing-number">**サンプルコード3-19**</span>
 
 ```java
 public int add(int a, int b) { return a + b; }
@@ -1069,7 +1069,7 @@ Javaコンパイラはメソッド選択の際に特定のルールに従いま�
 3. オートボクシング（`int` → `Integer`など）
 4. 可変長引数
 
-<span class="listing-number">**サンプルコード3-34**</span>
+<span class="listing-number">**サンプルコード3-20**</span>
 
 ```java
 public class OverloadResolution {
@@ -1119,7 +1119,7 @@ Integer: 10
 
 コンストラクタもメソッドと同様にオーバーロードできます。これにより、オブジェクトの作成時にさまざまな初期化方法を提供できます：
 
-<span class="listing-number">**サンプルコード3-35**</span>
+<span class="listing-number">**サンプルコード3-21**</span>
 
 ```java
 public class Person {
@@ -1152,7 +1152,7 @@ public class Person {
 
 図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
-<span class="listing-number">**サンプルコード3-13**</span>
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
 public class Book {
@@ -1234,7 +1234,7 @@ borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確�
 
 ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
 
-<span class="listing-number">**サンプルコード3-14**</span>
+<span class="listing-number">**サンプルコード3-23**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1427,7 +1427,7 @@ void printStudent(struct Student s) {
 
 ##### オブジェクト指向プログラミング（Java）
 
-<span class="listing-number">**サンプルコード3-15**</span>
+<span class="listing-number">**サンプルコード3-24**</span>
 
 ```java
 // データと処理が一体化している
@@ -1564,7 +1564,7 @@ public class Student {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です。
 
-<span class="listing-number">**サンプルコード3-16**</span>
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
 public class Book {
@@ -1661,7 +1661,7 @@ public class BookClassTest {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード3-17**</span>
+<span class="listing-number">**サンプルコード3-26**</span>
 
 ```java
 public class BookTest {
@@ -1730,7 +1730,7 @@ price変更後のbook1は新しい価格情報を保持し続け、オブジェ�
     - 外部から直接アクセスできない
     - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-18**</span>
+<span class="listing-number">**サンプルコード3-27**</span>
 
 ```java
 public class Student {
@@ -1799,7 +1799,7 @@ public class StudentAccessTest {
 
 フィールドをprivateにする理由を具体例で見てみましょう。
 
-<span class="listing-number">**サンプルコード3-19**</span>
+<span class="listing-number">**サンプルコード3-28**</span>
 
 ```java
 public class Product {
@@ -1829,7 +1829,7 @@ public class BadExample {
 
 #### privateを使った改善例
 
-<span class="listing-number">**サンプルコード3-36**</span>
+<span class="listing-number">**サンプルコード3-29**</span>
 
 ```java
 public class Product {
@@ -1922,7 +1922,7 @@ static修飾子は、フィールドやメソッドが「クラスに属する�
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-20**</span>
+<span class="listing-number">**サンプルコード3-30**</span>
 
 ```java
 public class MathHelper {
@@ -1967,7 +1967,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-21**</span>
+<span class="listing-number">**サンプルコード3-31**</span>
 
 ```java
 // StaticMemberExample.java
@@ -2054,7 +2054,7 @@ public class StaticMemberExample {
 
 #### ユーティリティメソッド
 
-<span class="listing-number">**サンプルコード3-37**</span>
+<span class="listing-number">**サンプルコード3-32**</span>
 
    ```java
    public class MathUtils {
@@ -2068,7 +2068,7 @@ public class StaticMemberExample {
 
 #### ファクトリーメソッド
 
-<span class="listing-number">**サンプルコード3-38**</span>
+<span class="listing-number">**サンプルコード3-33**</span>
 
    ```java
    public class Student {
@@ -2092,7 +2092,7 @@ public class StaticMemberExample {
    これはファクトリーメソッドパターンの例です。
 #### 定数の定義
 
-<span class="listing-number">**サンプルコード3-39**</span>
+<span class="listing-number">**サンプルコード3-34**</span>
 
    ```java
    public class Constants {
@@ -2139,7 +2139,7 @@ static修飾子は強力な機能ですが、オブジェクト指向プログ�
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-22**</span>
+<span class="listing-number">**サンプルコード3-35**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -2164,7 +2164,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-23**</span>
+<span class="listing-number">**サンプルコード3-36**</span>
 
 ```java
 public class StudentArrayExample {
@@ -2237,7 +2237,7 @@ class Student {
 すべての要素に実体化されたオブジェクトが格納されているとは限らないので、配列の要素の中身を走査する場合は必ずnullチェックを行いましょう。
 
 
-<span class="listing-number">**サンプルコード3-24**</span>
+<span class="listing-number">**サンプルコード3-37**</span>
 
 ```java
 public class NullCheckExample {
@@ -2269,7 +2269,7 @@ public class NullCheckExample {
 クラス型の配列の初期値は`null`でしたが、プリミティブ型の配列の場合は、それぞれの型の初期値が代入されています。
 プリミティブ型を指定した配列には、`null`は入りません。
 
-<span class="listing-number">**サンプルコード3-25**</span>
+<span class="listing-number">**サンプルコード3-38**</span>
 
 ```java
 // プリミティブ型の配列
@@ -2286,7 +2286,7 @@ System.out.println(students[0]);     // nullが表示される
 
 オブジェクト配列は、複数のオブジェクトを一括管理するための重要なデータ構造です。プリミティブ型の配列とは異なり、参照の配列であることを理解し、nullチェックを忘れずに行うことが重要です。
 
-より柔軟なオブジェクト管理が必要な場合は、第10章で学習するコレクションフレームワーク（`ArrayList`など）の使用を検討してください。
+より柔軟なオブジェクト管理が必要な場合は、第9章で学習するコレクションフレームワーク（`ArrayList`など）の使用を検討してください。
 
 
 
@@ -2326,7 +2326,7 @@ System.out.println(students[0]);     // nullが表示される
    - mainメソッドから各メソッドを呼び出して動作確認
 
 #### コード構造のヒント
-<span class="listing-number">**サンプルコード3-26**</span>
+<span class="listing-number">**サンプルコード3-39**</span>
 
 ```java
 public class MethodsPractice {
@@ -2577,7 +2577,7 @@ public class MyClass { }      // 小文字のp
 
 - 付録H: Java共通エラーガイド（基本的なエラーパターン）
 - 第4章: より詳細なコンストラクタとフィールドの扱い
-- 第14章: 例外処理の体系的な学習
+- 第13章: 例外処理の体系的な学習
 
 ## オブジェクトの等価性とhashCode
 

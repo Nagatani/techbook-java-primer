@@ -33,7 +33,7 @@ Java環境を持たないユーザー向けの配布方法を選択でき、ユ�
 とくに重要なのは以下の内容です。
 
 - 第1章のJava開発環境構築（javac、javaコマンド）
-- 第15章のファイル入出力（クラスパス、リソースファイル）
+- 第14章のファイル入出力（クラスパス、リソースファイル）
 - 第22章のドキュメントと外部ライブラリ（Maven、Gradle）
 - 基本的なコマンドライン操作
 
@@ -73,7 +73,7 @@ JAR（Java Archive）は、複数のJavaクラスファイルや画像・設定�
 
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
-<span class="listing-number">**サンプルコード23-2**</span>
+<span class="listing-number">**サンプルコード23-1**</span>
 
 ```java
 // SimpleApp.java
@@ -109,7 +109,7 @@ GUIウィンドウが表示されました
 
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、シンプルなTodoアプリケーションの例です。
 
-<span class="listing-number">**サンプルコード23-4**</span>
+<span class="listing-number">**サンプルコード23-2**</span>
 
 ```java
 // TodoApp.java
@@ -176,7 +176,7 @@ Todo Manager の準備が完了しました
 
 複数のクラスファイルを含む場合のJAR作成
 
-<span class="listing-number">**サンプルコード23-5**</span>
+<span class="listing-number">**サンプルコード23-3**</span>
 
 ```bash
 # すべてのJavaファイルをコンパイル
@@ -190,7 +190,7 @@ jar cvfm TodoApp.jar manifest.txt *.class
 
 まず、ソースコードをコンパイルしてクラスファイル (`.class`) を作成します。
 
-<span class="listing-number">**サンプルコード23-6**</span>
+<span class="listing-number">**サンプルコード23-4**</span>
 
 ```bash
 javac SimpleApp.java
@@ -201,7 +201,7 @@ javac SimpleApp.java
 
 次に、JARファイルに「メインクラスは何か」を教えるためのマニフェストファイルを作成します。`manifest.txt`という名前で、以下の内容を記述します。
 
-<span class="listing-number">**サンプルコード23-7**</span>
+<span class="listing-number">**サンプルコード23-5**</span>
 
 ```text
 Main-Class: SimpleApp
@@ -216,7 +216,7 @@ Main-Class: SimpleApp
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-9**</span>
+<span class="listing-number">**サンプルコード23-6**</span>
 
 ```java
 // ResourceApp.java
@@ -260,7 +260,7 @@ GUI コンポーネントを初期化中...
 
 リソースを含むJARの作成方法
 
-<span class="listing-number">**サンプルコード23-10**</span>
+<span class="listing-number">**サンプルコード23-7**</span>
 
 ```bash
 # コンパイル
@@ -274,7 +274,7 @@ jar cvfm ResourceApp.jar manifest.txt ResourceApp.class icon.png
 
 `jar`コマンドを使って、クラスファイルとマニフェストファイルを1つのJARファイルにまとめます。
 
-<span class="listing-number">**サンプルコード23-11**</span>
+<span class="listing-number">**サンプルコード23-8**</span>
 
 ```bash
 # 書式: jar cvfm [出力JARファイル名] [マニフェストファイル名] [含めるクラスファイル]
@@ -296,7 +296,7 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 
 作成したJARファイルは、`java -jar`コマンドで実行できます。
 
-<span class="listing-number">**サンプルコード23-12**</span>
+<span class="listing-number">**サンプルコード23-9**</span>
 
 ```bash
 java -jar SimpleApp.jar
@@ -341,7 +341,7 @@ Java 14から導入された`jpackage`ツールを使えば、アプリケーシ
 
 プロジェクトのルートディレクトリ (`/MyProject/`) で、以下のコマンドを実行します。
 
-<span class="listing-number">**サンプルコード23-13**</span>
+<span class="listing-number">**サンプルコード23-10**</span>
 
 ```bash
 jpackage --type app-image \
@@ -366,7 +366,7 @@ jpackage --type app-image \
 
 #### Windows向け（.exeまたは.msi）
 
-<span class="listing-number">**サンプルコード23-14**</span>
+<span class="listing-number">**サンプルコード23-11**</span>
 
 ```bash
 jpackage --type exe \
@@ -379,7 +379,7 @@ jpackage --type exe \
 
 #### macOS向け（.appまたは.dmg）
 
-<span class="listing-number">**サンプルコード23-15**</span>
+<span class="listing-number">**サンプルコード23-12**</span>
 
 ```bash
 jpackage --type dmg \
@@ -391,7 +391,7 @@ jpackage --type dmg \
 
 #### Linux向け（.debまたは.rpm）
 
-<span class="listing-number">**サンプルコード23-16**</span>
+<span class="listing-number">**サンプルコード23-13**</span>
 
 ```bash
 jpackage --type deb \

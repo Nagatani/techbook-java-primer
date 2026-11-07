@@ -275,7 +275,7 @@ x = x + 5;                     // 代入
 
 クラスやメソッドの宣言、ブロックの終わりなど、構造的な要素にはセミコロンは不要です。ブロック（{}）自体が文の区切りとして機能します。
 
-<span class="listing-number">**サンプルコード2-7**</span>
+<span class="listing-number">**サンプルコード2-1**</span>
 
 ```java
 public class Sample {          // クラス宣言
@@ -420,7 +420,7 @@ int truncated = pi;  // 警告は出るが、コンパイルは通る
 C言語では、上記のような危険な変換も警告レベルで許可されますが、Javaではコンパイルエラーになります。
 
 
-<span class="listing-number">**サンプルコード2-10**</span>
+<span class="listing-number">**サンプルコード2-2**</span>
 
 ```java
 public class TypeConversionExample {
@@ -543,7 +543,7 @@ printf("Hello, %s!\n", name);
 scanf("%d", &age);  // バッファオーバーフローの危険性
 ```
 
-<span class="listing-number">**サンプルコード2-11**</span>
+<span class="listing-number">**サンプルコード2-3**</span>
 
 ```java
 import java.util.Scanner;
@@ -829,7 +829,7 @@ while (count < 5) {
 
 switch文は、変数の値によって処理を分岐させる制御構造です。多数のif-else文を使用するよりも読みやすくなります。
 
-<span class="listing-number">**サンプルコード2-16**</span>
+<span class="listing-number">**サンプルコード2-4**</span>
 
 ```java
 // switch文の基本的な使い方
@@ -1007,7 +1007,7 @@ C言語の関数に相当しますが、Javaではすべてのメソッドはク
 
 この章では、mainメソッドから直接呼び出すことができる「staticメソッド」の基本的な使い方を学習します。
 
-<span class="listing-number">**サンプルコード2-22**</span>
+<span class="listing-number">**サンプルコード2-5**</span>
 
 ```java
 public class Calculator {
@@ -1290,7 +1290,7 @@ String result = sb.toString();
 
 外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
 
-<span class="listing-number">**サンプルコード2-28**</span>
+<span class="listing-number">**サンプルコード2-6**</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスを使用するための宣言

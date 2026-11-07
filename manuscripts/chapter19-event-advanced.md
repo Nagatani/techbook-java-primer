@@ -32,7 +32,7 @@
 
 以下のコードは、マウスイベントの完全な処理を実装した例です。クリック、ダブルクリック、ドラッグ、右クリックメニューなど、実際のアプリケーションで必要となるさまざまなマウス操作を処理しています。MouseAdapterを使用して必要なメソッドだけをオーバーライドし、イベントの詳細情報をログに記録します。
 
-<span class="listing-number">**サンプルコード19-9**</span>
+<span class="listing-number">**サンプルコード19-1**</span>
 
 ```java
 import javax.swing.*;
@@ -191,7 +191,7 @@ public class MouseEventCompleteExample extends JFrame {
 
 以下のコードは、高度なキーボードイベント処理の実装例です。単一キーの押下だけでなく、複数キーの同時押し検出、ショートカットキーの実装、InputMapとActionMapを使用したより洗練されたキーバインディングの設定方法を示しています。HashSetを使用して現在押されているキーを追跡し、複雑なキーコンビネーションを検出できます。
 
-<span class="listing-number">**サンプルコード19-10**</span>
+<span class="listing-number">**サンプルコード19-2**</span>
 
 ```java
 import javax.swing.*;
@@ -371,7 +371,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 
 以下のコードは、DocumentListenerを使用してテキスト入力のリアルタイムバリデーションを実装する例です。メールアドレスの形式チェック、パスワードの強度判定、確認パスワードの一致チェックなど、実際のフォーム入力で必要となる検証を、ユーザーが入力するたびに即座に実行します。これにより、優れたユーザーエクスペリエンスを提供できます。
 
-<span class="listing-number">**サンプルコード19-11**</span>
+<span class="listing-number">**サンプルコード19-3**</span>
 
 ```java
 import javax.swing.*;
@@ -573,7 +573,7 @@ public class DocumentListenerExample extends JFrame {
 
 以下のコードは、JavaのEventObjectを継承したカスタムイベントの実装例です。温度センサーの値が変化したときにイベントを発生させ、複数のリスナーに通知する仕組みを構築しています。このパターンを使用することで、モデル（センサー）とビュー（表示部分）を疎結合に保ち、メンテナンス性の高いアプリケーションを開発できます。
 
-<span class="listing-number">**サンプルコード19-12**</span>
+<span class="listing-number">**サンプルコード19-4**</span>
 
 ```java
 import java.util.*;
@@ -746,7 +746,7 @@ public class CustomEventExample extends JFrame {
 
 以下のコードは、JavaBeansのPropertyChangeSupportを使用した高度なイベント管理の実装例です。株価データの変更を自動的に複数のビューコンポーネントに通知し、リアルタイムで更新される株価モニターアプリケーションを実現しています。PropertyChangeSupportにより、プロパティごとに異なるリスナーを登録でき、より柔軟なイベント処理が可能になります。
 
-<span class="listing-number">**サンプルコード19-13**</span>
+<span class="listing-number">**サンプルコード19-5**</span>
 
 ```java
 import java.beans.*;
@@ -933,7 +933,7 @@ public class JavaBeansEventExample extends JFrame {
 
 以下のコードは、Swingのドラッグ&ドロップAPIを使用した実装例です。リスト間でのアイテムの移動と、外部からのファイルドロップの両方に対応しています。TransferHandlerとDropTargetを組み合わせることで、直感的なユーザーインターフェイスを実現できます。ファイルドロップ時にはファイル情報を表示し、実践的なアプリケーションでの活用例を示しています。
 
-<span class="listing-number">**サンプルコード19-14**</span>
+<span class="listing-number">**サンプルコード19-6**</span>
 
 ```java
 import javax.swing.*;
@@ -1114,7 +1114,7 @@ public class DragAndDropExample extends JFrame {
 
 以下のコードは、マウス移動のような高頻度イベントを効率的に処理するための最適化技術を示しています。デバウンス（一定時間イベントが発生しなくなってから処理）とスロットル（一定間隔でのみ処理）の両方を実装し、パフォーマンスを改善しています。これらの技術は、リアルタイム検索や自動保存などの機能でも活用できます。
 
-<span class="listing-number">**サンプルコード19-15**</span>
+<span class="listing-number">**サンプルコード19-7**</span>
 
 ```java
 import javax.swing.*;
@@ -1246,7 +1246,7 @@ public class EventOptimizationExample extends JFrame {
 
 以下のコードは、SwingWorkerを使用してUIをフリーズさせることなく長時間の処理を実行する実装例です。進捗状況のリアルタイム更新、処理のキャンセル機能、EDT上での安全なUI更新など、実践的なアプリケーションで必要となる機能を網羅しています。大量データの処理、ネットワーク通信、ファイル操作などで活用できます。
 
-<span class="listing-number">**サンプルコード19-16**</span>
+<span class="listing-number">**サンプルコード19-8**</span>
 
 ```java
 import javax.swing.*;
@@ -1421,7 +1421,7 @@ public class SwingWorkerExample extends JFrame {
 
 エラー症状
 
-<span class="listing-number">**サンプルコード19-8**</span>
+<span class="listing-number">**サンプルコード19-9**</span>
 
 ```java
 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -1442,7 +1442,7 @@ SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
 対処法
 
-<span class="listing-number">**サンプルコード19-9**</span>
+<span class="listing-number">**サンプルコード19-10**</span>
 
 ```java
 SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
@@ -1470,7 +1470,7 @@ SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 
 エラー症状
 
-<span class="listing-number">**サンプルコード19-10**</span>
+<span class="listing-number">**サンプルコード19-11**</span>
 
 ```java
 textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -1488,7 +1488,7 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 
 対処法
 
-<span class="listing-number">**サンプルコード19-11**</span>
+<span class="listing-number">**サンプルコード19-12**</span>
 
 ```java
 private boolean updating = false;
@@ -1520,7 +1520,7 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 
 エラー症状
 
-<span class="listing-number">**サンプルコード19-12**</span>
+<span class="listing-number">**サンプルコード19-13**</span>
 
 ```java
 public class EventSource {
@@ -1540,7 +1540,7 @@ public class EventSource {
 
 対処法
 
-<span class="listing-number">**サンプルコード19-13**</span>
+<span class="listing-number">**サンプルコード19-14**</span>
 
 ```java
 public class EventSource {
@@ -1575,7 +1575,7 @@ public class EventSource {
 
 エラー症状
 
-<span class="listing-number">**サンプルコード19-14**</span>
+<span class="listing-number">**サンプルコード19-15**</span>
 
 ```java
 new DropTarget(component, new DropTargetListener() {
@@ -1594,7 +1594,7 @@ new DropTarget(component, new DropTargetListener() {
 
 対処法
 
-<span class="listing-number">**サンプルコード19-15**</span>
+<span class="listing-number">**サンプルコード19-16**</span>
 
 ```java
 new DropTarget(component, new DropTargetListener() {
@@ -1635,7 +1635,7 @@ new DropTarget(component, new DropTargetListener() {
 
 #### 1. EDT違反の検出
 
-<span class="listing-number">**サンプルコード19-16**</span>
+<span class="listing-number">**サンプルコード19-17**</span>
 
 ```java
 // アプリケーション起動時に設定
@@ -1653,7 +1653,7 @@ RepaintManager.setCurrentManager(new RepaintManager() {
 
 #### 2. イベント処理のプロファイリング
 
-<span class="listing-number">**サンプルコード19-17**</span>
+<span class="listing-number">**サンプルコード19-18**</span>
 
 ```java
 button.addActionListener(e -> {
@@ -1672,7 +1672,7 @@ button.addActionListener(e -> {
 
 #### 3. WeakReferenceの使用状況確認
 
-<span class="listing-number">**サンプルコード19-18**</span>
+<span class="listing-number">**サンプルコード19-19**</span>
 
 ```java
 public class ListenerManager {
