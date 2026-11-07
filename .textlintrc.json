@@ -17,6 +17,9 @@
     "@textlint-ja/preset-ai-writing": {
       "ai-tech-writing-guideline": {
         "severity": "info"
+      },
+      "no-ai-list-formatting": {
+        "allows": ["/ - (第\\d+(-\\d+)?章|付録)/"]
       }
     },
     "ja-hiraku": true

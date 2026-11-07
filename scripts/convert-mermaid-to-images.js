@@ -32,6 +32,7 @@ mermaidFiles.forEach(mmdFile => {
     console.log(`変換中: ${basename}.mmd -> ${basename}.png`);
     
     // mermaid-cliを使用してPNGに変換（高解像度・大きめのサイズ）
+    // 注意: mermaid-cli v12は -w/-H を廃止し、レイアウトも縦長に変わるためv11に固定している
     execSync(`npx mmdc -i "${mmdFile}" -o "${outputFile}" -t default -b white -w 1200 -H 800 --scale 2`, {
       stdio: 'inherit'
     });
