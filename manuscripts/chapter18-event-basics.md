@@ -35,15 +35,15 @@
 
 Swingのイベント処理は、以下の3つの要素で構成されます。
 
-1. **イベントソース（Event Source）**
+1. イベントソース（Event Source）
    - イベントを発生させる部品（JButton、JTextFieldなど）
    - ユーザーが操作するGUIコンポーネント
 
-2. **イベントオブジェクト（Event Object）**
+2. イベントオブジェクト（Event Object）
    - 発生したイベントの詳細情報を持つオブジェクト
    - ActionEvent、MouseEvent、KeyEventなど
 
-3. **イベントリスナ（Event Listener）**
+3. イベントリスナ（Event Listener）
    - イベントの発生を監視し、通知を受け取って処理を実行
    - ActionListener、MouseListener、KeyListenerなど
 
@@ -408,7 +408,7 @@ public class BasicKeyEventExample extends JFrame {
 
 以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択がされたか解除されたかを判定し、現在の選択状態をリアルタイムで更新・表示します。
 
-<span class="listing-number">**サンプルコード18-9**</span>
+<span class="listing-number">**サンプルコード18-7**</span>
 
 ```java
 import javax.swing.*;
@@ -516,7 +516,7 @@ public class ItemListenerExample extends JFrame {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容の検証を行います。この仕組みを使用することで、ユーザーフレンドリーなフォーム入力インターフェイスを実装できます。
 
-<span class="listing-number">**サンプルコード18-10**</span>
+<span class="listing-number">**サンプルコード18-8**</span>
 
 ```java
 import javax.swing.*;
@@ -612,7 +612,7 @@ public class FocusListenerExample extends JFrame {
 
 以下のコードは、ChangeListenerを使用してスライダーとスピナーの値の変化を監視し、連動させる例です。getValueIsAdjusting()メソッドを使用することで、スライダーのドラッグ中とドラッグ終了時を区別し、パフォーマンスを最適化できます。
 
-<span class="listing-number">**サンプルコード18-11**</span>
+<span class="listing-number">**サンプルコード18-9**</span>
 
 ```java
 import javax.swing.*;
@@ -716,7 +716,7 @@ SwingのすべてのGUI操作はイベントディスパッチスレッド上で
 
 以下のコードは、SwingUtilities.invokeLater()を使用してGUIをEDT上で初期化する正しい方法を示しています。このパターンは、Swingアプリケーションを開発する際の基本であり、スレッドセーフティを保証します。
 
-<span class="listing-number">**サンプルコード18-12**</span>
+<span class="listing-number">**サンプルコード18-10**</span>
 
 ```java
 // メインメソッドからGUIを初期化する正しい方法
@@ -736,7 +736,7 @@ public static void main(String[] args) {
 
 以下のコードは、イベントハンドラ内で長時間の処理を実行した場合の問題と、SwingWorkerを使用した解決法を示しています。長時間の処理は別スレッドで実行し、UIの応答性を維持することが重要です。
 
-<span class="listing-number">**サンプルコード18-13**</span>
+<span class="listing-number">**サンプルコード18-11**</span>
 
 ```java
 // 悪い例：UIがフリーズする

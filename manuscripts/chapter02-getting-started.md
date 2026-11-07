@@ -275,7 +275,7 @@ x = x + 5;                     // 代入
 
 クラスやメソッドの宣言、ブロックの終わりなど、構造的な要素にはセミコロンは不要です。ブロック（{}）自体が文の区切りとして機能します。
 
-<span class="listing-number">**サンプルコード2-7**</span>
+<span class="listing-number">**サンプルコード2-1**</span>
 
 ```java
 public class Sample {          // クラス宣言
@@ -420,7 +420,7 @@ int truncated = pi;  // 警告は出るが、コンパイルは通る
 C言語では、上記のような危険な変換も警告レベルで許可されますが、Javaではコンパイルエラーになります。
 
 
-<span class="listing-number">**サンプルコード2-10**</span>
+<span class="listing-number">**サンプルコード2-2**</span>
 
 ```java
 public class TypeConversionExample {
@@ -516,11 +516,11 @@ Collections.shuffle(list, new Random(42L));  // long型のシード
 
 1. 標準入出力ストリーム
 - `System.out`
--    + 標準出力（画面への出力）
+    + 標準出力（画面への出力）
 - `System.in`
--    + 標準入力（キーボードからの入力）
+    + 標準入力（キーボードからの入力）
 - `System.err`
--    + 標準エラー出力
+    + 標準エラー出力
 
 2. 型安全性の重視。
 - `Scanner`クラスによる型別の入力メソッド
@@ -543,7 +543,7 @@ printf("Hello, %s!\n", name);
 scanf("%d", &age);  // バッファオーバーフローの危険性
 ```
 
-<span class="listing-number">**サンプルコード2-11**</span>
+<span class="listing-number">**サンプルコード2-3**</span>
 
 ```java
 import java.util.Scanner;
@@ -829,7 +829,7 @@ while (count < 5) {
 
 switch文は、変数の値によって処理を分岐させる制御構造です。多数のif-else文を使用するよりも読みやすくなります。
 
-<span class="listing-number">**サンプルコード2-16**</span>
+<span class="listing-number">**サンプルコード2-4**</span>
 
 ```java
 // switch文の基本的な使い方
@@ -1007,7 +1007,7 @@ C言語の関数に相当しますが、Javaではすべてのメソッドはク
 
 この章では、mainメソッドから直接呼び出すことができる「staticメソッド」の基本的な使い方を学習します。
 
-<span class="listing-number">**サンプルコード2-22**</span>
+<span class="listing-number">**サンプルコード2-5**</span>
 
 ```java
 public class Calculator {
@@ -1071,13 +1071,13 @@ public static 戻り値の型 メソッド名(引数リスト) {
 ### C言語との比較における学習ポイント
 
 - クラス内での定義
--    + Javaのメソッドは必ずクラス内に定義される必要があり、グローバル関数は存在しません
+    + Javaのメソッドは必ずクラス内に定義される必要があり、グローバル関数は存在しません
 - アクセス制御
--    + `public`、`private`などの修飾子により、メソッドの可視性を細かく制御できる
+    + `public`、`private`などの修飾子により、メソッドの可視性を細かく制御できる
 - static修飾子
--    + クラスのインスタンスを作成せずにメソッドを呼び出すことができる
+    + クラスのインスタンスを作成せずにメソッドを呼び出すことができる
 - 例外処理システム
--    + エラー処理がより構造化され、安全なプログラムの作成を支援する
+    + エラー処理がより構造化され、安全なプログラムの作成を支援する
 
 ### Javaのメソッドの基本まとめ
 
@@ -1290,7 +1290,7 @@ String result = sb.toString();
 
 外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
 
-<span class="listing-number">**サンプルコード2-28**</span>
+<span class="listing-number">**サンプルコード2-6**</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスを使用するための宣言
@@ -1398,7 +1398,7 @@ error: class HelloWorld is public, should be declared in a file named HelloWorld
 
 - 型安全性の一貫した実装`System.out.println`による自動型変換、明示的な変数宣言、メソッドのシグネチャ、配列の境界チェックなど、すべての機能が型の整合性を保証している
 - 次章への基盤構築
--    + staticメソッド、クラス内でのメソッド定義、String型の活用など、本章で学んだ要素はすべて次章以降の学習への準備となっている
+    + staticメソッド、クラス内でのメソッド定義、String型の活用など、本章で学んだ要素はすべて次章以降の学習への準備となっている
 - C言語からの進化の理解単なる機能追加ではなく、ソフトウェア開発の課題（メモリ管理、プラットフォーム依存性、保守性）を根本的に解決するための設計思想の変革を体験できました
 
 現代的なプログラミング手法への接続。

@@ -148,3 +148,7 @@ dist
 
 
 .vivliostyle
+# Gradle
+.gradle/
+**/gradle-project/build/
+exercises/**/build/

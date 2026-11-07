@@ -1,4 +1,4 @@
-# <b>15章</b> <span>ファイルI/O</span> <small>外部データとの安全な連携</small>
+# <b>14章</b> <span>ファイルI/O</span> <small>外部データとの安全な連携</small>
 
 ## 本章の学習目標
 
@@ -23,7 +23,7 @@
 
 ### この章を始める前に
 
-第14章の例外処理とtry-with-resources、第10章までのコレクションとStream APIを理解していれば準備完了です。
+第13章の例外処理とtry-with-resources、第12章までのコレクションとStream APIを理解していれば準備完了です。
 
 ## 完了確認チェックリスト
 
@@ -74,7 +74,7 @@
 
 以下のコードは、try-with-resources構文の基本的な使い方を示しています。try括弧内で宣言されたリソース（BufferedReader）は、tryブロックを抜ける際に自動的にclose()メソッドが呼ばれます。これにより、finallyブロックでの明示的なクローズ処理が不要になり、コードがより簡潔で安全になります。
 
-<span class="listing-number">**サンプルコード15-2**</span>
+<span class="listing-number">**サンプルコード14-1**</span>
 
 ```java
 // try()の括弧内でリソースを初期化する
@@ -96,7 +96,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
 
-<span class="listing-number">**サンプルコード15-4**</span>
+<span class="listing-number">**サンプルコード14-2**</span>
 
 ```java
 import java.io.IOException;
@@ -165,7 +165,7 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード15-6**</span>
+<span class="listing-number">**サンプルコード14-3**</span>
 
 ```java
 import java.io.BufferedReader;
@@ -231,7 +231,7 @@ Line 2
 
 同様に`Files`クラスと`BufferedWriter`を使います。
 
-<span class="listing-number">**サンプルコード15-8**</span>
+<span class="listing-number">**サンプルコード14-4**</span>
 
 ```java
 import java.io.BufferedWriter;
@@ -274,10 +274,8 @@ public class TextFileWriterExample {
 次の行。
 ```
 
-// 追記モード。
-// StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追加できます。
-// ログファイルの作成や、既存データを保持しながら新しい情報を追加する場合に使用します。
-`StandardOpenOption.APPEND`を指定すると、ファイルの末尾に追記できます。
+`StandardOpenOption.APPEND`を指定すると、既存ファイルの内容を保持したまま末尾にデータを追記できます。
+ログファイルへの記録のように、既存データを残したまま新しい情報を追加する場合に使用します。
 
 ### 文字エンコーディングの指定
 
@@ -288,7 +286,7 @@ public class TextFileWriterExample {
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
 
-<span class="listing-number">**サンプルコード15-10**</span>
+<span class="listing-number">**サンプルコード14-5**</span>
 
 ```java
 import java.io.BufferedReader;
@@ -349,12 +347,10 @@ public class CharacterEncodingExample {
 
 ### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
 
-// バイナリファイルの読み込み。
-// DataInputStream/DataOutputStreamは、プリミティブ型のデータを効率的にバイナリ形式で保存・読み込みするためのクラスです。
-// テキスト形式と比較してファイルサイズが小さく、読み書き速度も高速です。
-Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
+`DataInputStream`と`DataOutputStream`は、Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
+数値を文字列に変換せずに保存するため、テキスト形式と比べてファイルサイズが小さくなり、変換処理も不要になります。
 
-<span class="listing-number">**サンプルコード15-12**</span>
+<span class="listing-number">**サンプルコード14-6**</span>
 
 ```java
 import java.io.*;
@@ -412,10 +408,6 @@ public class DataStreamExample {
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
-// Filesクラスの使用。
-// NIO.2のFilesクラスは、従来のFileクラスよりも高機能で安全なファイル操作を提供します。
-// パフォーマンス向上のためのバッファリング機能も内蔵されており、現代的なJavaアプリケーションでは最優先で使用するとよいAPIです。
-
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
 ## オブジェクトの直列化（シリアライズ）
@@ -426,7 +418,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 - `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化する
 - `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）
 
-<span class="listing-number">**サンプルコード15-14**</span>
+<span class="listing-number">**サンプルコード14-7**</span>
 
 ```java
 import java.io.*;
@@ -492,7 +484,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 - `Path`オブジェクトを生成するためのユーティリティクラス
 - ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
 
-<span class="listing-number">**サンプルコード15-16**</span>
+<span class="listing-number">**サンプルコード14-8**</span>
 
 ```java
 import java.io.IOException;
@@ -549,12 +541,11 @@ public class FileSystemExample {
 
 ### CSV ファイルの処理
 
-// CSVファイルの処理。
-// CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
-// Javaでは標準ライブラリだけでも基本的なCSV処理が可能ですが、複雑な処理では専用ライブラリ（Apache Commons CSV等）の使用を推奨します。
-// 以下は基本的なCSV読み込み・書き込みの実装例です。
+CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
+基本的なCSV処理は標準ライブラリだけで実装できますが、値の中にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
+以下は、基本的なCSV読み込み・書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード15-18**</span>
+<span class="listing-number">**サンプルコード14-9**</span>
 
 ```java
 import java.io.*;
@@ -655,7 +646,7 @@ java.time APIの詳細な使い方については、付録F: java.time API完全
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 
-<span class="listing-number">**サンプルコード15-20**</span>
+<span class="listing-number">**サンプルコード14-10**</span>
 
 ```java
 import javax.swing.*;
@@ -701,7 +692,7 @@ Java 15で正式に導入されたText Blocksは、複数行にわたる文字�
 
 Text Blocksが導入される前は、複数行の文字列を作成するために文字列連結やエスケープシーケンスを多用する必要がありました。
 
-<span class="listing-number">**サンプルコード15-22**</span>
+<span class="listing-number">**サンプルコード14-11**</span>
 
 ```java
 public class TraditionalStringProblems {
@@ -755,7 +746,7 @@ public class TraditionalStringProblems {
 
 Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
 
-<span class="listing-number">**サンプルコード15-24**</span>
+<span class="listing-number">**サンプルコード14-12**</span>
 
 ```java
 public class TextBlockBasics {
@@ -810,7 +801,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です。
 
-<span class="listing-number">**サンプルコード15-26**</span>
+<span class="listing-number">**サンプルコード14-13**</span>
 
 ```java
 public class TextBlockIndentation {
@@ -902,7 +893,7 @@ public class Example {
 
 Text Blocksでは多くのエスケープシーケンスが不要になります。
 
-<span class="listing-number">**サンプルコード15-28**</span>
+<span class="listing-number">**サンプルコード14-14**</span>
 
 ```java
 public class TextBlockEscaping {
@@ -980,7 +971,7 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
-<span class="listing-number">**サンプルコード15-30**</span>
+<span class="listing-number">**サンプルコード14-15**</span>
 
 ```java
 import java.io.IOException;
@@ -1214,7 +1205,7 @@ LIMIT 100;
 
 Text Blocksをファイル読み書きと組み合わせた実践的な使用例。
 
-<span class="listing-number">**サンプルコード15-32**</span>
+<span class="listing-number">**サンプルコード14-16**</span>
 
 ```java
 import java.io.IOException;
@@ -1500,7 +1491,7 @@ JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生�
 ##### 問題
 相対パスや絶対パスの混在によるファイルが見つからないエラー。
 
-<span class="listing-number">**サンプルコード15-33**</span>
+<span class="listing-number">**サンプルコード14-17**</span>
 
 ```java
 // 悪い例
@@ -1515,7 +1506,7 @@ if (!file.exists()) {
 ##### 対処法
 確実なパス管理と存在チェックを実装します。
 
-<span class="listing-number">**サンプルコード15-34**</span>
+<span class="listing-number">**サンプルコード14-18**</span>
 
 ```java
 // 良い例
@@ -1543,7 +1534,7 @@ if (Files.exists(configPath)) {
 ##### 問題
 文字化けや不正な文字でのファイル読み書き。
 
-<span class="listing-number">**サンプルコード15-35**</span>
+<span class="listing-number">**サンプルコード14-19**</span>
 
 ```java
 // 悪い例
@@ -1556,7 +1547,7 @@ String line = br.readLine(); // 文字化けする可能性
 
 対処法： 明示的にエンコーディングを指定します。
 
-<span class="listing-number">**サンプルコード15-36**</span>
+<span class="listing-number">**サンプルコード14-20**</span>
 
 ```java
 // 良い例
@@ -1585,7 +1576,7 @@ try (BufferedWriter writer = Files.newBufferedWriter(
 ##### 問題
 ファイルが他のプロセスによって使用されている、または権限不足。
 
-<span class="listing-number">**サンプルコード15-37**</span>
+<span class="listing-number">**サンプルコード14-21**</span>
 
 ```java
 // 問題のあるコード
@@ -1600,7 +1591,7 @@ try {
 
 対処法： 事前の権限チェックとエラーハンドリングを実装します。
 
-<span class="listing-number">**サンプルコード15-38**</span>
+<span class="listing-number">**サンプルコード14-22**</span>
 
 ```java
 // 良い例
@@ -1641,7 +1632,7 @@ try {
 ##### 問題
 大きなファイルを一度にメモリに読み込む。
 
-<span class="listing-number">**サンプルコード15-39**</span>
+<span class="listing-number">**サンプルコード14-23**</span>
 
 ```java
 // 悪い例（大きなファイルでOutOfMemoryError）
@@ -1653,7 +1644,7 @@ String[] lines = content.split("\n");
 
 対処法： ストリーミング処理やBufferedReaderを使用します。
 
-<span class="listing-number">**サンプルコード15-40**</span>
+<span class="listing-number">**サンプルコード14-24**</span>
 
 ```java
 // 良い例1: ストリーミング処理
@@ -1691,7 +1682,7 @@ try (BufferedReader reader = Files.newBufferedReader(
 ##### 問題
 特定のOS固有のパス区切り文字やファイル名制限。
 
-<span class="listing-number">**サンプルコード15-41**</span>
+<span class="listing-number">**サンプルコード14-25**</span>
 
 ```java
 // 悪い例
@@ -1701,7 +1692,7 @@ String path = "/home/user/data.txt"; // Unix固有
 
 対処法： `java.nio.file.Path`とシステムプロパティを活用します。
 
-<span class="listing-number">**サンプルコード15-42**</span>
+<span class="listing-number">**サンプルコード14-26**</span>
 
 ```java
 // 良い例
@@ -1744,7 +1735,7 @@ private static boolean isValidFileName(String fileName) {
 ##### 問題
 複数のスレッドからの同時ファイルアクセス。
 
-<span class="listing-number">**サンプルコード15-43**</span>
+<span class="listing-number">**サンプルコード14-27**</span>
 
 ```java
 // 悪い例
@@ -1759,7 +1750,7 @@ public void appendLog(String message) {
 
 対処法： 必要な同期化とファイルロックを実装します。
 
-<span class="listing-number">**サンプルコード15-44**</span>
+<span class="listing-number">**サンプルコード14-28**</span>
 
 ```java
 // 良い例
@@ -1793,7 +1784,7 @@ public class ThreadSafeFileLogger {
 ##### 問題
 一時ファイルの削除忘れによるディスク容量の浪費。
 
-<span class="listing-number">**サンプルコード15-45**</span>
+<span class="listing-number">**サンプルコード14-29**</span>
 
 ```java
 // 悪い例
@@ -1803,7 +1794,7 @@ File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
 
 対処法： 体系的な一時ファイル管理を実装します。
 
-<span class="listing-number">**サンプルコード15-46**</span>
+<span class="listing-number">**サンプルコード14-30**</span>
 
 ```java
 // 良い例
@@ -1847,7 +1838,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
 1. ファイルパスの確認
 
-<span class="listing-number">**サンプルコード15-47**</span>
+<span class="listing-number">**サンプルコード14-31**</span>
 
    ```java
    Path path = Paths.get("config.txt");
@@ -1858,7 +1849,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
 2. ファイル属性の確認
 
-<span class="listing-number">**サンプルコード15-48**</span>
+<span class="listing-number">**サンプルコード14-32**</span>
 
    ```java
    if (Files.exists(path)) {
@@ -1871,7 +1862,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
 3. 例外の詳細情報の活用
 
-<span class="listing-number">**サンプルコード15-49**</span>
+<span class="listing-number">**サンプルコード14-33**</span>
 
    ```java
    try {

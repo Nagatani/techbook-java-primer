@@ -40,7 +40,7 @@ Rather than removing complex content, it should be strategically organized throu
 ### Pedagogical Approach
 The book follows a spiral curriculum model where concepts are introduced at basic level and revisited with increasing complexity throughout the learning journey. This approach ensures both accessibility for beginners and depth for serious study.
 
-## Project Current Status (as of 2025-07-22)
+## Project Current Status (as of 2025-07-22, 一部2026-11-07更新)
 
 ### Completed Work and Established Policies
 
@@ -60,9 +60,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 専門用語: 「インターフェイス」で統一（「インターフェース」ではない）
 
 4. **Code Listing Numbers**: 
-   - 現在887個のコードブロック中、422個に番号付与済み
-   - 形式: **サンプルコードX−Y** で統一
-   - 番号付けは継続的に実施中
+   - 全23章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
+   - 形式: **サンプルコードX-Y** で統一（Xはファイル名の章番号と一致させる）
 
 5. **Chapter Structure**:
    - 全23章構成
@@ -157,7 +156,7 @@ When performing any modifications to the book content, you must:
    - Never create analysis files in `manuscripts/` directory
    - Always use absolute paths when referencing files in analysis
 
-### Critical Project Issues (as of 2025-07-23)
+### Critical Project Issues (as of 2026-11-07)
 
 The following issues require ongoing attention and should be referenced during any work:
 
@@ -166,7 +165,15 @@ The following issues require ongoing attention and should be referenced during a
 3. ~~**High Priority**: Code listing numbering inconsistency~~ ✅ **Resolved** - 1,221個を「サンプルコードX-Y」形式に統一 (2025-07-23)
 4. ~~**Medium Priority**: Chapter 15 exercise format inconsistency~~ ✅ **Resolved** - 全章GitHubリンク形式で統一
 5. ~~**Medium Priority**: Chapter ordering optimization (Chapter 21 placement)~~ ✅ **Resolved** - 現状配置を維持する方針決定
-6. **Medium Priority**: textlint errors remaining (37件) - 複雑な手動修正が必要
+6. **Medium Priority**: textlint errors remaining (95件、2026-11-07時点) - 複雑な手動修正が必要
+7. **High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）
+8. **High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）
+9. **Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）
+
+### 章番号の注意（2026-11-07）
+- 章番号の正はファイル名（`chapterXX-*.md`）と`vivliostyle.config.js`の順序
+- 旧24章構成（第8章列挙型・第9章レコードが別章）の番号が文中に残っていることがあるため、「第N章」参照を書くときは必ず現行の章タイトルで確認する
+- mermaid-cliはv11に固定（v12は`-w/-H`オプション廃止とレイアウト変化で図が劣化する）
 
 ## Repository Information
 

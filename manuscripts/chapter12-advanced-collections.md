@@ -1,4 +1,4 @@
-# <b>13章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的なデータ処理技法を覚えよう</small>
+# <b>12章</b> <span>Stream APIと高度なコレクション操作</span> <small>宣言的なデータ処理技法を覚えよう</small>
 
 ## 本章の学習目標
 
@@ -15,11 +15,11 @@
 
 ### この章を始める前に
 
-第10章のコレクションフレームワーク、第11章のジェネリクス、第12章のラムダ式と関数型インターフェイスを理解していれば準備完了です。
+第9章のコレクションフレームワーク、第10章のジェネリクス、第11章のラムダ式と関数型インターフェイスを理解していれば準備完了です。
 
 ## データ構造の選択
 
-第10章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。
+第9章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。
 状況に応じて最適なものを選択することが、パフォーマンスのよいプログラムを書く鍵となります。
 
 ### `ArrayList` vs `LinkedList`
@@ -74,7 +74,7 @@ Java 8から導入されたラムダ式を使うと、この`Comparator`の実�
 
 ラムダ式が登場する前は、`Comparator`をその場で実装するために匿名クラスが使われていました。以下のコードは、古い書き方でComparatorを実装した例です。
 
-<span class="listing-number">**サンプルコード13-2**</span>
+<span class="listing-number">**サンプルコード12-1**</span>
 
 ```java
 import java.util.Comparator;
@@ -89,7 +89,7 @@ Comparator<Student> scoreComparator = new Comparator<Student>() {
 ```
 この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。ラムダ式を使った現代的な書き方です。
 
-<span class="listing-number">**サンプルコード13-3**</span>
+<span class="listing-number">**サンプルコード12-2**</span>
 
 ```java
 // ラムダ式を使ったComparatorの実装
@@ -116,7 +116,7 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 
 これらのメソッドを使った具体的な例を見てみましょう。
 
-<span class="listing-number">**サンプルコード13-5**</span>
+<span class="listing-number">**サンプルコード12-3**</span>
 
 ```java
 import java.util.ArrayList;
@@ -193,7 +193,7 @@ Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
 
 この遅延評価の動作を具体的なコードで見てみましょう。以下のコードは、遅延評価がどのタイミングで実行されるかを実際に確認できる例です。
 
-<span class="listing-number">**サンプルコード13-7**</span>
+<span class="listing-number">**サンプルコード12-4**</span>
 
 ```java
 // この時点ではまだフィルタリングは実行されない
@@ -251,7 +251,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。学生のリストから高得点者を抽出する例で確認してみましょう。以下のコードは、filter操作の基本的な使い方を示しています。
 
-<span class="listing-number">**サンプルコード13-9**</span>
+<span class="listing-number">**サンプルコード12-5**</span>
 
 ```java
 List<Student> list = ...;
@@ -265,7 +265,7 @@ List<Student> highScorers = list.stream()
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。学生オブジェクトから名前だけを抽出する例です。以下のコードは、map操作を使った型変換の実例を示しています。
 
-<span class="listing-number">**サンプルコード13-11**</span>
+<span class="listing-number">**サンプルコード12-6**</span>
 
 ```java
 // 生徒のリストから、名前のリストを生成
@@ -278,7 +278,7 @@ List<String> names = list.stream()
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する実用的な例です。このコードは、Stream APIの真価を発揮する複合的な処理パイプラインの例です。
 
-<span class="listing-number">**サンプルコード13-13**</span>
+<span class="listing-number">**サンプルコード12-7**</span>
 
 ```java
 import java.util.ArrayList;
@@ -329,7 +329,7 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
 
-<span class="listing-number">**サンプルコード13-15**</span>
+<span class="listing-number">**サンプルコード12-8**</span>
 
 ```java
 import java.util.Optional;
@@ -362,7 +362,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード13-17**</span>
+<span class="listing-number">**サンプルコード12-9**</span>
 
 ```java
 import java.util.Optional;
@@ -412,7 +412,7 @@ public class OptionalRetrievalExample {
 
 値の存在を確認し、存在する場合のみ処理を実行する方法。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
-<span class="listing-number">**サンプルコード13-19**</span>
+<span class="listing-number">**サンプルコード12-10**</span>
 
 ```java
 import java.util.Optional;
@@ -457,7 +457,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード13-21**</span>
+<span class="listing-number">**サンプルコード12-11**</span>
 
 ```java
 import java.util.Optional;
@@ -524,7 +524,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード13-23**</span>
+<span class="listing-number">**サンプルコード12-12**</span>
 
 ```java
 import java.util.Arrays;
@@ -601,7 +601,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード13-25**</span>
+<span class="listing-number">**サンプルコード12-13**</span>
 
 ```java
 import java.util.HashMap;
@@ -708,7 +708,7 @@ public class OptionalPracticalExample {
 
 Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
 
-<span class="listing-number">**サンプルコード13-27**</span>
+<span class="listing-number">**サンプルコード12-14**</span>
 
 ```java
 import java.util.Optional;
@@ -806,7 +806,7 @@ Optionalをメソッドの戻り値やチェイン操作で使用することで
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
 
-<span class="listing-number">**サンプルコード13-29**</span>
+<span class="listing-number">**サンプルコード12-15**</span>
 
 ```java
 // シーケンシャル（直列）処理
@@ -839,7 +839,7 @@ long sumParallel = numbers.parallelStream()
 3. 統合（Combine）
     + 各スレッドの結果を統合して最終結果を生成
 
-<span class="listing-number">**サンプルコード13-31**</span>
+<span class="listing-number">**サンプルコード12-16**</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -890,7 +890,7 @@ public class ParallelStreamExample {
 #### スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
-<span class="listing-number">**サンプルコード13-33**</span>
+<span class="listing-number">**サンプルコード12-17**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -926,7 +926,7 @@ List<Integer> results = numbers.parallelStream()
 
 `flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などにとくに有用です。
 
-<span class="listing-number">**サンプルコード13-35**</span>
+<span class="listing-number">**サンプルコード12-18**</span>
 
 ```java
 import java.util.Arrays;
@@ -980,7 +980,7 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード13-37**</span>
+<span class="listing-number">**サンプルコード12-19**</span>
 
 ```java
 import java.util.Arrays;
@@ -1039,7 +1039,7 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード13-39**</span>
+<span class="listing-number">**サンプルコード12-20**</span>
 
 ```java
 import java.util.Arrays;
@@ -1095,7 +1095,7 @@ public class CollectorsExample {
 
 `Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
 
-<span class="listing-number">**サンプルコード13-41**</span>
+<span class="listing-number">**サンプルコード12-21**</span>
 
 ```java
 import java.util.Arrays;
@@ -1139,7 +1139,7 @@ public class OptionalExample {
 
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
 
-<span class="listing-number">**サンプルコード13-43**</span>
+<span class="listing-number">**サンプルコード12-22**</span>
 
 ```java
 import java.util.Arrays;
@@ -1176,7 +1176,7 @@ public class OptionalChainingExample {
 
 実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理します。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
-<span class="listing-number">**サンプルコード13-45**</span>
+<span class="listing-number">**サンプルコード12-23**</span>
 
 ```java
 import java.util.Arrays;
@@ -1222,7 +1222,7 @@ public class NullSafeProcessingExample {
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 
-<span class="listing-number">**サンプルコード13-47**</span>
+<span class="listing-number">**サンプルコード12-24**</span>
 
 ```java
 import java.util.Arrays;
@@ -1268,7 +1268,7 @@ public class ShortCircuitExample {
 
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが重要です。
 
-<span class="listing-number">**サンプルコード13-49**</span>
+<span class="listing-number">**サンプルコード12-25**</span>
 
 ```java
 import java.util.Arrays;
@@ -1306,7 +1306,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード13-51**</span>
+<span class="listing-number">**サンプルコード12-26**</span>
 
 ```java
 import java.util.Arrays;
@@ -1374,15 +1374,15 @@ public class ComplexProcessingExample {
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
 - データ構造の選択
--    + `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが重要である
+    + `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが重要である
 - ラムダ式と`Comparator`: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できる
 - Stream API: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
 - Optional型
--    + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
+    + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
 - 並列ストリーム
--    + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
+    + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
 - 高度なStream操作
--    + `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できる
+    + `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できる
 
 これらの知識を身につけることで、簡潔で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。
 
@@ -1409,7 +1409,7 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 
 以下のコードは、Stream操作のチェーンでよくある間違いの例です。
 
-<span class="listing-number">**サンプルコード13-52**</span>
+<span class="listing-number">**サンプルコード12-27**</span>
 
 ```java
 // ❌ 非効率的なStream操作のチェーン
@@ -1428,7 +1428,7 @@ words.stream()
 
 以下のコードは、上記の問題を解決した正しいStream操作の例です。
 
-<span class="listing-number">**サンプルコード13-53**</span>
+<span class="listing-number">**サンプルコード12-28**</span>
 
 ```java
 // ✅ 効率的なStream操作のチェーン
@@ -1446,7 +1446,7 @@ words.stream()
 
 以下のコードは、終端操作を忘れてしまった場合の問題を示しています。
 
-<span class="listing-number">**サンプルコード13-54**</span>
+<span class="listing-number">**サンプルコード12-29**</span>
 
 ```java
 // ❌ 終端操作を忘れた場合
@@ -1464,7 +1464,7 @@ numbers.stream()
 
 以下のコードは、終端操作を追加して問題を解決した例です。
 
-<span class="listing-number">**サンプルコード13-55**</span>
+<span class="listing-number">**サンプルコード12-30**</span>
 
 ```java
 // ✅ 終端操作を追加
@@ -1481,7 +1481,7 @@ List<Integer> evenDoubled = numbers.stream()
 
 以下のコードは、並列処理でのスレッドセーフティの問題を示しています。
 
-<span class="listing-number">**サンプルコード13-56**</span>
+<span class="listing-number">**サンプルコード12-31**</span>
 
 ```java
 // ❌ 並列処理での共有状態の変更
@@ -1501,7 +1501,7 @@ numbers.parallelStream()
 
 以下のコードは、並列処理で安全にデータを収集する方法を示しています。
 
-<span class="listing-number">**サンプルコード13-57**</span>
+<span class="listing-number">**サンプルコード12-32**</span>
 
 ```java
 // ✅ 並列処理に適した方法
@@ -1526,7 +1526,7 @@ numbers.parallelStream()
 
 以下のコードは、Optionalの誤った使用方法の例です。
 
-<span class="listing-number">**サンプルコード13-58**</span>
+<span class="listing-number">**サンプルコード12-33**</span>
 
 ```java
 // ❌ Optionalの誤った使用
@@ -1550,7 +1550,7 @@ if (result.isPresent()) {
 
 以下のコードは、Optionalの正しい使用方法を示しています。
 
-<span class="listing-number">**サンプルコード13-59**</span>
+<span class="listing-number">**サンプルコード12-34**</span>
 
 ```java
 // ✅ Optionalの正しい使用
@@ -1576,7 +1576,7 @@ String result = names.stream()
 
 以下のコードは、非効率なStream操作の例です。
 
-<span class="listing-number">**サンプルコード13-60**</span>
+<span class="listing-number">**サンプルコード12-35**</span>
 
 ```java
 // ❌ 不効率なStream操作
@@ -1604,7 +1604,7 @@ int count = numbers.stream()
 
 以下のコードは、パフォーマンスを改善した効率的な処理の例です。
 
-<span class="listing-number">**サンプルコード13-61**</span>
+<span class="listing-number">**サンプルコード12-36**</span>
 
 ```java
 // ✅ 効率的なStream操作
@@ -1626,7 +1626,7 @@ System.out.println("Count: " + stats.getCount());
 
 以下のコードは、Stream内での例外処理の問題を示しています。
 
-<span class="listing-number">**サンプルコード13-62**</span>
+<span class="listing-number">**サンプルコード12-37**</span>
 
 ```java
 // ❌ Stream内での例外処理の問題
@@ -1647,7 +1647,7 @@ error: Unhandled exception type IOException
 
 以下のコードは、Stream内での例外を適切に処理する方法を示しています。
 
-<span class="listing-number">**サンプルコード13-63**</span>
+<span class="listing-number">**サンプルコード12-38**</span>
 
 ```java
 // ✅ Stream内での確実な例外処理
@@ -1702,10 +1702,10 @@ List<String> contents = files.stream()
 - ラムダ式と`Comparator`: ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できる
 - Stream API: `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
 - Optional型
--    + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
+    + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
 - 並列ストリーム
--    + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
+    + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
 - 高度なStream操作
--    + `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できる
+    + `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できる
 
 これらの知識を身につけることで、簡潔で、保守性が高く、そして読みやすいJavaコードを書くことが可能になります。

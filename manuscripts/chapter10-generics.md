@@ -1,4 +1,4 @@
-# <b>11章</b> <span>ジェネリクス</span> <small>型安全なプログラミングの実現</small>
+# <b>10章</b> <span>ジェネリクス</span> <small>型安全なプログラミングの実現</small>
 
 ## 本章の学習目標
 
@@ -15,15 +15,15 @@
 
 ### この章を始める前に
 
-第10章のコレクションフレームワークを理解していれば準備完了です。
+第9章のコレクションフレームワークを理解していれば準備完了です。
 
 ## なぜジェネリクスが必要なのか？
 
-### 第10章で見た不思議な記法
+### 第9章で見た不思議な記法
 
-第10章でコレクションフレームワークを学習したとき、以下のような記法を見たはずです。
+第9章でコレクションフレームワークを学習したとき、以下のような記法を見たはずです。
 
-<span class="listing-number">**サンプルコード11-1**</span>
+<span class="listing-number">**サンプルコード10-1**</span>
 
 ```java
 List<String> students = new ArrayList<String>();
@@ -37,7 +37,7 @@ Map<String, Integer> scores = new HashMap<String, Integer>();
 
 ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です。これにより、型安全性が保証されない場合の危険性を理解できます。
 
-<span class="listing-number">**サンプルコード11-2**</span>
+<span class="listing-number">**サンプルコード10-2**</span>
 
 ```java
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer
 
 同じプログラムをジェネリクスを使って書き直してみましょう。
 
-<span class="listing-number">**サンプルコード11-3**</span>
+<span class="listing-number">**サンプルコード10-3**</span>
 
 ```java
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ PYTHON
 
 Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
 
-<span class="listing-number">**サンプルコード11-4**</span>
+<span class="listing-number">**サンプルコード10-4**</span>
 
 ```java
 // ジェネリクスがなかった時代のコード（現在は非推奨）
@@ -171,7 +171,7 @@ public class WithoutGenericsExample {
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。これを型パラメータと呼びます。
 
-<span class="listing-number">**サンプルコード11-5**</span>
+<span class="listing-number">**サンプルコード10-5**</span>
 
 ```java
 import java.util.ArrayList;
@@ -206,7 +206,7 @@ Java
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-<span class="listing-number">**サンプルコード11-6**</span>
+<span class="listing-number">**サンプルコード10-6**</span>
 
 ```java
 // Tという型パラメータを持つジェネリッククラス
@@ -248,7 +248,7 @@ Hello Generics
 
 Java 7からは、右辺の型パラメータを省略できるダイヤモンド演算子 (`<>`)が導入され、より簡潔に記述できるようになりました。コンパイラが左辺の宣言から型を推論してくれます。
 
-<span class="listing-number">**サンプルコード11-7**</span>
+<span class="listing-number">**サンプルコード10-7**</span>
 
 ```java
 // Java 7以降の推奨される書き方
@@ -261,7 +261,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 以下のコードは、ジェネリックメソッドの実装例を示しています。ユーティリティクラスの静的メソッドとして、さまざまな型の配列を扱う場合に便利です。
 
-<span class="listing-number">**サンプルコード11-8**</span>
+<span class="listing-number">**サンプルコード10-8**</span>
 
 ```java
 public class GenericMethodExample {
@@ -297,7 +297,7 @@ String配列: A B C
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-<span class="listing-number">**サンプルコード11-9**</span>
+<span class="listing-number">**サンプルコード10-9**</span>
 
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
@@ -342,7 +342,7 @@ public class BoundedTypeExample {
 - `List<? extends Type>`: 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
 - `List<? super Type>`: 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
 
-<span class="listing-number">**サンプルコード11-10**</span>
+<span class="listing-number">**サンプルコード10-10**</span>
 
 ```java
 import java.util.List;
@@ -381,7 +381,7 @@ Java 10で導入されたvar型推論は、ジェネリクスと組み合わせ�
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード11-11**</span>
+<span class="listing-number">**サンプルコード10-11**</span>
 
 ```java
 import java.util.ArrayList;
@@ -420,7 +420,7 @@ var型推論は、以下の場面でのみ使用できます。
 
 一方、以下の場面では使用できません。具体的な例で確認してみましょう。
 
-<span class="listing-number">**サンプルコード11-23**</span>
+<span class="listing-number">**サンプルコード10-12**</span>
 
 ```java
 import java.util.List;
@@ -462,7 +462,7 @@ public class VarLimitations {
 
 var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります。以下の例でよい使用例と悪い使用例を比較してみましょう。
 
-<span class="listing-number">**サンプルコード11-25**</span>
+<span class="listing-number">**サンプルコード10-13**</span>
 
 ```java
 import java.util.List;
@@ -511,7 +511,7 @@ public class VarReadabilityExample {
 
 var型推論は、ジェネリクスと組み合わせることでとくに威力を発揮します。複雑なジェネリック型の宣言を簡潔にし、Stream APIやメソッドチェーンでの型推論を活用できます。
 
-<span class="listing-number">**サンプルコード11-27**</span>
+<span class="listing-number">**サンプルコード10-14**</span>
 
 ```java
 import java.util.*;
@@ -575,7 +575,7 @@ Second: 42
 
 var型推論を効果的に使用するためのガイドラインを、よい例と悪い例で紹介します。
 
-<span class="listing-number">**サンプルコード11-29**</span>
+<span class="listing-number">**サンプルコード10-15**</span>
 
 ```java
 import java.util.*;
@@ -644,7 +644,7 @@ public class VarBestPractices {
 
 既存のコードをvarを使ってリファクタリングする際の戦略を、具体的な例で示します。
 
-<span class="listing-number">**サンプルコード11-31**</span>
+<span class="listing-number">**サンプルコード10-16**</span>
 
 ```java
 import java.util.*;
@@ -734,7 +734,7 @@ var型推論は、Javaの表現力を高める強力な機能ですが、適切�
 
 ジェネリクスを使用せずにRaw typeでコレクションを使用した場合の問題を示しています。
 
-<span class="listing-number">**サンプルコード11-32**</span>
+<span class="listing-number">**サンプルコード10-17**</span>
 
 ```java
 // ❌ Raw typeの使用
@@ -753,7 +753,7 @@ Note: Recompile with -Xlint:unchecked for more details.
 
 正しいジェネリクスの使用方法です。
 
-<span class="listing-number">**サンプルコード11-33**</span>
+<span class="listing-number">**サンプルコード10-18**</span>
 
 ```java
 // ✅ ジェネリクスを使用
@@ -768,7 +768,7 @@ String str = list.get(0); // キャスト不要
 
 型パラメータを直接インスタンス化しようとした例です。
 
-<span class="listing-number">**サンプルコード11-34**</span>
+<span class="listing-number">**サンプルコード10-19**</span>
 
 ```java
 // ❌ 不適切な使用例
@@ -790,7 +790,7 @@ error: Cannot instantiate the type T
 
 ファクトリーメソッドを使用した正しい実装方法です。
 
-<span class="listing-number">**サンプルコード11-35**</span>
+<span class="listing-number">**サンプルコード10-20**</span>
 
 ```java
 // ✅ ファクトリーメソッドを使用
@@ -814,7 +814,7 @@ public class Container<T> {
 
 上限境界ワイルドカードで要素を追加しようとした例です。
 
-<span class="listing-number">**サンプルコード11-36**</span>
+<span class="listing-number">**サンプルコード10-21**</span>
 
 ```java
 // ❌ ワイルドカードの誤用
@@ -831,7 +831,7 @@ error: The method add(capture#1-of ? extends Number) is not applicable for the a
 
 ワイルドカードの正しい使用方法です。
 
-<span class="listing-number">**サンプルコード11-37**</span>
+<span class="listing-number">**サンプルコード10-22**</span>
 
 ```java
 // ✅ 適切な使用例
@@ -846,7 +846,7 @@ List<? extends Number> numbers = integers; // 読み取り専用として使用
 
 ジェネリクスで配列を作成しようとした際の問題です。
 
-<span class="listing-number">**サンプルコード11-38**</span>
+<span class="listing-number">**サンプルコード10-23**</span>
 
 ```java
 // ❌ 型消去による問題
@@ -868,7 +868,7 @@ error: Cannot create a generic array of T
 
 型消去を考慮した正しい実装方法です。
 
-<span class="listing-number">**サンプルコード11-39**</span>
+<span class="listing-number">**サンプルコード10-24**</span>
 
 ```java
 // ✅ 型消去を考慮した実装
@@ -888,7 +888,7 @@ public class GenericArray<T> {
 
 境界型パラメータで算術演算を直接実行しようとした例です。
 
-<span class="listing-number">**サンプルコード11-40**</span>
+<span class="listing-number">**サンプルコード10-25**</span>
 
 ```java
 // ❌ 境界型パラメータの誤用
@@ -910,7 +910,7 @@ error: The operator * is undefined for the argument type(s) T, T
 
 境界型パラメータの正しい使用方法です。
 
-<span class="listing-number">**サンプルコード11-41**</span>
+<span class="listing-number">**サンプルコード10-26**</span>
 
 ```java
 // ✅ 適切な境界型パラメータ
@@ -931,7 +931,7 @@ public class NumberContainer<T extends Number> {
 
 var型推論を不適切に使用した例です。
 
-<span class="listing-number">**サンプルコード11-42**</span>
+<span class="listing-number">**サンプルコード10-27**</span>
 
 ```java
 // ❌ var型推論の誤用
@@ -948,7 +948,7 @@ error: Cannot infer type for local variable value
 
 var型推論の正しい使用方法です。
 
-<span class="listing-number">**サンプルコード11-43**</span>
+<span class="listing-number">**サンプルコード10-28**</span>
 
 ```java
 // ✅ 適切なvar使用例
@@ -1004,4 +1004,4 @@ String value = null; // 明示的な型宣言
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第12章「高度なコレクション操作とStream API」に進みましょう。
+次のステップ： 基礎課題が完了したら、第11章「ラムダ式と関数インターフェイス」に進みましょう。

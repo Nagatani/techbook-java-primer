@@ -670,11 +670,11 @@ public class BankAccountV3Test {
 
 #### 完成した設計の特徴
 - 不変性
--    + 口座番号はfinalで変更不可
+    + 口座番号はfinalで変更不可
 - 完全な検証
--    + すべての入力を検証
+    + すべての入力を検証
 - 履歴管理
--    + すべての取引を記録
+    + すべての取引を記録
 - 防御的コピー: 内部リストの参照を外部に漏らさない
 
 ### 銀行口座クラスのさらなる発展
@@ -756,13 +756,13 @@ public class EnhancedBankAccount extends BankAccountV3 {
 
 この設計の要点。
 - 継承の活用
--    + 第3章のBankAccountV3を基に機能を拡張
+    + 第3章のBankAccountV3を基に機能を拡張
 - 定数による状態管理
--    + 口座状態を文字列定数で管理
+    + 口座状態を文字列定数で管理
 - 状態管理
--    + 失敗回数の追跡と自動停止機能
+    + 失敗回数の追跡と自動停止機能
 - テンプレートメソッドパターン
--    + 基本動作を保持しつつ拡張
+    + 基本動作を保持しつつ拡張
 
 ### クラス設計のベストプラクティス
 
@@ -856,7 +856,7 @@ List<String> names = new ArrayList<>();
 import文の種類。
 
 1. 単一型インポート。
-<span class="listing-number">**サンプルコード4-24**</span>
+<span class="listing-number">**サンプルコード4-14**</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスのみインポート
@@ -865,7 +865,7 @@ import java.util.Scanner;  // Scannerクラスのみインポート
 これは単一型インポートの例です。
 
 2. オンデマンドインポート。
-<span class="listing-number">**サンプルコード4-25**</span>
+<span class="listing-number">**サンプルコード4-15**</span>
 
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
@@ -874,7 +874,7 @@ import java.util.*;  // java.utilパッケージのすべてのクラスをイ�
 これはオンデマンドインポートの例です。
 
 3. 静的インポート。
-<span class="listing-number">**サンプルコード4-14**</span>
+<span class="listing-number">**サンプルコード4-16**</span>
 
 ```java
 import static java.lang.Math.PI;
@@ -890,7 +890,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です。
 
-<span class="listing-number">**サンプルコード4-15**</span>
+<span class="listing-number">**サンプルコード4-17**</span>
 
 ```java
 import java.util.*;
@@ -917,7 +917,7 @@ public class Example {
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます。
 
-<span class="listing-number">**サンプルコード4-16**</span>
+<span class="listing-number">**サンプルコード4-18**</span>
 
 ```java
 com.example.myapp/
@@ -933,13 +933,13 @@ com.example.myapp/
 
 #### 設計原則
 - 機能的凝集性
--    + 関連する機能を同じパッケージに
+    + 関連する機能を同じパッケージに
 - 循環依存の回避
--    + AがBを使い、BがAを使うような相互依存を避ける
+    + AがBを使い、BがAを使うような相互依存を避ける
 - 推奨される粒度
--    + 1パッケージに5～20クラス程度を目安とする
+    + 1パッケージに5～20クラス程度を目安とする
 - 明確な責任
--    + 各パッケージがデータアクセス、ビジネスロジック、UIなどの役割を明確に持つ
+    + 各パッケージがデータアクセス、ビジネスロジック、UIなどの役割を明確に持つ
 
 これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
 
@@ -953,7 +953,7 @@ com.example.myapp/
 
 実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
 
-<span class="listing-number">**サンプルコード4-17**</span>
+<span class="listing-number">**サンプルコード4-19**</span>
 
 ```java
 public class User {
@@ -1021,7 +1021,7 @@ public class UserTest {
 
 クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
 
-<span class="listing-number">**サンプルコード4-18**</span>
+<span class="listing-number">**サンプルコード4-20**</span>
 
 ```java
 public class Book {
@@ -1060,7 +1060,7 @@ public class Book {
 
 複雑なオブジェクト構築で、`this`を返すことで流暢なインターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード4-19**</span>
+<span class="listing-number">**サンプルコード4-21**</span>
 
 ```java
 public class EmailBuilder {
@@ -1109,7 +1109,7 @@ Email email = new EmailBuilder()
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-20**</span>
+<span class="listing-number">**サンプルコード4-22**</span>
 
 ```java
 public class DatabaseConfig {
@@ -1164,7 +1164,7 @@ public class DatabaseConfig {
 
 イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
 
-<span class="listing-number">**サンプルコード4-21**</span>
+<span class="listing-number">**サンプルコード4-23**</span>
 
 ```java
 import java.util.List;
@@ -1210,7 +1210,7 @@ class EventManager {
 
 オーバーロードを使って、使いやすいAPIを設計できます。
 
-<span class="listing-number">**サンプルコード4-22**</span>
+<span class="listing-number">**サンプルコード4-24**</span>
 
 ```java
 import java.util.Map;
@@ -1239,7 +1239,7 @@ public class HttpClient {
 
 異なるデータ型に対応しながら、型安全性を維持します。
 
-<span class="listing-number">**サンプルコード4-23**</span>
+<span class="listing-number">**サンプルコード4-25**</span>
 
 ```java
 public class Logger {
@@ -1446,13 +1446,13 @@ public class AuthenticationService {
 #### 最適なバランスの見つけ方
 
 - 凝集度を高く保つ
--    + 関連する機能は同じクラスに
+    + 関連する機能は同じクラスに
 - 結合度を低く保つ
--    + クラス間の依存は最小限に
+    + クラス間の依存は最小限に
 - 将来の拡張性を考慮
--    + 新機能追加時の影響を予測
+    + 新機能追加時の影響を予測
 - チームの規模に応じた設計
--    + 小規模なら適度な分割で十分
+    + 小規模なら適度な分割で十分
 
 ### 2. 過度なgetter/setterの使用
 
@@ -1673,7 +1673,7 @@ public class Team {
 
 #### 防御的プログラミングのガイドライン
 
-1. **コンストラクタでの防御**
+1. コンストラクタでの防御
    - 可変オブジェクトは必ずコピー
    - nullチェックと検証を実施
    - 不変オブジェクトの使用を検討
@@ -1886,4 +1886,4 @@ public class Team {
 
 - 付録H: Java共通エラーガイド（詳細なエラーパターン）
 - 第6章: 不変性とfinalによる安全なクラス設計
-- 第14章: 例外処理の体系的な学習
+- 第13章: 例外処理の体系的な学習
