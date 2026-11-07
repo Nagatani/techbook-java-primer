@@ -7,11 +7,11 @@
 1. コレクションの基本理解
     - 配列の限界とコレクションの必要性、List・Set・Mapの特徴と使い分け
 2. 主要な実装クラス
-    - ArrayList/LinkedList、HashSet/TreeSet、HashMap/TreeMapの使い分け
+    - ArrayList/LinkedList、HashSet/TreeSet/LinkedHashSet、HashMap/TreeMap/LinkedHashMapの使い分け
 3. コレクションの操作
-    - 基本操作（追加・削除・検索）、イテレータと拡張for文、Collectionsユーティリティ
+    - 基本操作（追加・削除・検索）、イテレータと拡張for文、配列とListの相互変換
 4. 実践的な活用
-    - パフォーマンスを考慮した選択、時間計算量、スレッドセーフティ
+    - 時間計算量を考慮した実装の選択、よくあるエラーへの対処
 
 ### この章を始める前に
 
@@ -111,7 +111,7 @@ students[students.length - 1] = null;
 
 #### 問題3: 便利な操作の不足
 
-よく使う操作も自分で実装してください。
+要素の検索や件数のカウントのようなよく使う操作も、配列ではすべて自分で実装することになります。
 
 <span class="listing-number">**サンプルコード9-5**</span>
 
@@ -185,6 +185,17 @@ public class StudentManagerImproved {
 
 このように、コレクションフレームワークを使うことで、データの管理が格段に簡単になります。
 
+コレクションフレームワークには、配列と比べて次のような利点があります。
+
+- 動的なサイズ
+    + 要素の数に応じて自動的にサイズが調整される
+- 豊富な機能
+    + 要素の追加、削除、検索、ソートなどのメソッドが標準で提供されている
+- ポリモーフィズム
+    + `List`、`Set`、`Map`といったインターフェイスを通じて実装を切り替えられる
+- 型安全
+    + ジェネリクスにより、格納するデータの型をコンパイル時に保証する（第10章で詳しく学ぶ）
+
 ## コレクションフレームワークの全体像
 
 Javaのコレクションフレームワークは、以下の主要なインターフェイスで構成されています。
@@ -233,11 +244,66 @@ Map
 Listは順序を保持し、インデックスによるアクセスが可能なコレクションです。
 
 
+### `ArrayList`の基本的な使い方
+
+まず、ArrayListの基本的な使い方を具体的なコード例で見てみましょう。
+
+<span class="listing-number">**サンプルコード9-7**</span>
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        // String型の要素を格納するArrayListを作成
+        // 変数の型はインターフェイス型で宣言するのが一般的
+        List<String> fruits = new ArrayList<>();
+
+        // 1. 要素の追加 (add)
+        fruits.add("りんご");
+        fruits.add("バナナ");
+        fruits.add("みかん");
+        fruits.add("りんご"); // 重複も許可される
+
+        System.out.println("現在のリスト: " + fruits);
+
+        // 2. 要素の取得 (get)
+        String secondFruit = fruits.get(1); // インデックスは0から始まる
+        System.out.println("2番目の果物: " + secondFruit);
+
+        // 3. 要素数の取得 (size)
+        System.out.println("果物の数: " + fruits.size());
+
+        // 4. 要素の削除 (remove)
+        fruits.remove("バナナ"); // 値で削除
+        fruits.remove(0);      // インデックスで削除
+        System.out.println("削除後のリスト: " + fruits);
+
+        // 5. 全要素の反復処理 (for-each)
+        System.out.println("残りの果物:");
+        for (String fruit : fruits) {
+            System.out.println("- " + fruit);
+        }
+    }
+}
+```
+実行結果：
+```
+現在のリスト: [りんご, バナナ, みかん, りんご]
+2番目の果物: バナナ
+果物の数: 4
+削除後のリスト: [みかん, りんご]
+残りの果物:
+- みかん
+- りんご
+```
+
 ### ArrayList vs LinkedList
 
 以下のコードは、ArrayListとLinkedListの基本的な使い方と、それぞれの特性を比較するための例です。同じ操作でも、内部構造の違いにより性能特性が異なることを理解しましょう。
 
-<span class="listing-number">**サンプルコード9-7**</span>
+<span class="listing-number">**サンプルコード9-8**</span>
 
 ```java
 // ArrayList: 内部的に配列を使用
@@ -252,9 +318,17 @@ linkedList.add("要素1");
 linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 ```
 
+| 特徴 | `ArrayList` (内部配列) | `LinkedList` (連結リスト) |
+| :--- | :--- | :--- |
+| 要素の取得(get) | 高速 | 遅い |
+| 要素の追加/削除(中間) | 遅い（後続要素のシフトが発生） | 高速 |
+| メモリ使用量 | 比較的少ない | やや多い（前後の要素への参照を持つため） |
+
 #### 使い分けの指針
-- ArrayList: ランダムアクセスが多い場合（get/set操作）
-- LinkedList: 先頭・末尾での追加・削除が多い場合
+- ArrayList
+    + ランダムアクセスが多い場合（get/set操作）
+- LinkedList
+    + 先頭・末尾での追加・削除が多い場合
 
 <div class="figure">
 
@@ -268,52 +342,73 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 
 </div>
 
-<div class="figure">
+### 配列とListの相互変換
 
-![HashMap内部構造](images/diagrams/figure09-02c.png)
+実際のアプリケーションでは、配列とListを相互に変換する場面が多々あります。以下のコードは、その方法を示しています。
 
-</div>
-
-### 主な操作
-
-これらの操作を実際に使ってみましょう。以下のコードは、Listインターフェイスの基本操作を示しています。
-
-<span class="listing-number">**サンプルコード9-8**</span>
+<span class="listing-number">**サンプルコード9-9**</span>
 
 ```java
-List<String> list = new ArrayList<>();
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-// 追加
-list.add("Java");
-list.add(0, "Hello");  // 指定位置に挿入
+// 配列からListへ
+String[] nameArray = {"Alice", "Bob"};
+List<String> nameList = new ArrayList<>(Arrays.asList(nameArray));
+nameList.add("Charlie"); // 変更可能
 
-// 取得
-String first = list.get(0);
-int size = list.size();
-
-// 削除
-list.remove("Java");
-list.remove(0);  // インデックスで削除
-
-// 検索
-boolean contains = list.contains("Hello");
-int index = list.indexOf("Java");
-
-// 繰り返し処理
-for (String item : list) {
-    System.out.println(item);
-}
+// Listから配列へ
+List<String> fruitList = new ArrayList<>();
+fruitList.add("Apple");
+fruitList.add("Banana");
+String[] fruitArray = fruitList.toArray(new String[0]);
 ```
+注意： `Arrays.asList()`が直接返す`List`はサイズが固定されており、`add`や`remove`ができないため、変更可能な`ArrayList`でラップするのが一般的です。
 
 ## Set インターフェイス
 
 Setは重複要素を許さないコレクションです。数学的な集合の概念に対応します。
 
+### `HashSet`の基本的な使い方
+
+HashSetの基本的な操作を実際のコード例で確認してみましょう。
+
+<span class="listing-number">**サンプルコード9-10**</span>
+
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        Set<String> tags = new HashSet<>();
+
+        // 1. 要素の追加 (add)
+        tags.add("Java");
+        tags.add("プログラミング");
+        boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
+
+        System.out.println("タグ一覧: " + tags); // 順序は保証されない
+
+        // 2. 要素の存在確認 (contains)
+        if (tags.contains("プログラミング")) {
+            System.out.println("「プログラミング」タグは存在します。");
+        }
+    }
+}
+```
+実行結果：
+```
+タグ一覧: [Java, プログラミング]
+「プログラミング」タグは存在します。
+```
+
 ### HashSet vs TreeSet vs LinkedHashSet
 
 Setの実装クラスは、内部構造の違いにより異なる特性を持ちます。データの順序が重要かどうか、検索や挿入の頻度、ソートが必要かどうかを考慮して選択します。
 
-<span class="listing-number">**サンプルコード9-9**</span>
+<span class="listing-number">**サンプルコード9-11**</span>
 
 ```java
 // HashSet: ハッシュテーブルを使用（順序は保証されない）
@@ -339,9 +434,12 @@ linkedHashSet.add(2);
 ```
 
 #### 使い分けの指針
-- HashSet: 平均的にO(1)の高速な性能が必要で、順序は重要でない場合。重複チェックや集合演算に最適
-- TreeSet: 常にソートされた状態を保ちたい場合。範囲検索や順序が大切な処理に適している
-- LinkedHashSet: 挿入順序を保持しつつ重複を排除したい場合。キャッシュやログ処理に有効
+- HashSet
+    + 平均的にO(1)の高速な性能が必要で、順序は重要でない場合。重複チェックや集合演算に最適
+- TreeSet
+    + 常にソートされた状態を保ちたい場合。範囲検索や順序が大切な処理に適している
+- LinkedHashSet
+    + 挿入順序を保持しつつ重複を排除したい場合。キャッシュやログ処理に有効
 
 ### 集合演算
 
@@ -349,7 +447,7 @@ Setは数学の集合論に基づく演算を簡単に実装できます。
 これらの演算は、データ分析、権限管理、フィルタリング処理などで頻繁に使用されます。
 たとえば、ユーザーの権限セットとアクセス要求権限セットの積集合を求めることで、実際にアクセス可能な機能を判定できます。
 
-<span class="listing-number">**サンプルコード9-10**</span>
+<span class="listing-number">**サンプルコード9-12**</span>
 
 ```java
 Set<String> set1 = new HashSet<>(Arrays.asList("A", "B", "C"));
@@ -374,13 +472,58 @@ difference.removeAll(set2);  // {A}
 
 Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます。
 
+### `HashMap`の基本的な使い方
+
+Mapの具体的な操作方法を、学生の点数管理を例にして見てみましょう。
+
+<span class="listing-number">**サンプルコード9-13**</span>
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        // 学生の点数を管理 (キー: 名前, 値: 点数)
+        Map<String, Integer> scores = new HashMap<>();
+
+        // 1. 要素の追加 (put)
+        scores.put("Alice", 85);
+        scores.put("Bob", 92);
+        scores.put("Alice", 95); // 同じキーでputすると、値が上書きされる
+
+        System.out.println("全員の点数: " + scores);
+
+        // 2. 要素の取得 (get)
+        int bobScore = scores.get("Bob");
+        System.out.println("Bobの点数: " + bobScore);
+
+        // 3. 全要素の反復処理 (entrySetとfor-each)
+        System.out.println("--- 点数一覧 ---");
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            String name = entry.getKey();
+            int score = entry.getValue();
+            System.out.println(name + ": " + score + "点");
+        }
+    }
+}
+```
+実行結果：
+```
+全員の点数: {Bob=92, Alice=95}
+Bobの点数: 92
+--- 点数一覧 ---
+Bob: 92点
+Alice: 95点
+```
+
 ### HashMap vs TreeMap vs LinkedHashMap
 
 Map実装の選択は、データ量、検索頻度、順序の重要性によって決まります。
 辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装します。
 一般的なデータ検索ではHashMapで最高速度を実現します。
 
-<span class="listing-number">**サンプルコード9-11**</span>
+<span class="listing-number">**サンプルコード9-14**</span>
 
 ```java
 // HashMap: 高速な検索・挿入（順序は保証されない）
@@ -401,15 +544,24 @@ linkedHashMap.putAll(hashMap);
 ```
 
 #### パフォーマンスと用途
-- HashMap: 平均的にO(1)の高速な検索性能。設定ファイルや一般的なデータ検索に最適
-- TreeMap: ソート済み処理（O(log n)）。辞書、ランキング、範囲検索が必要な場合
-- LinkedHashMap: 順序保持とLRU実装。キャッシュや履歴管理に適している
+- HashMap
+    + 平均的にO(1)の高速な検索性能。設定ファイルや一般的なデータ検索に最適
+- TreeMap
+    + ソート済み処理（O(log n)）。辞書、ランキング、範囲検索が必要な場合
+- LinkedHashMap
+    + 順序保持とLRU実装。キャッシュや履歴管理に適している
+
+<div class="figure">
+
+![HashMap内部構造](images/diagrams/figure09-02c.png)
+
+</div>
 
 ### 主な操作
 
 Mapは辞書的なデータ管理の核となる操作を提供します。基本的なCRUD操作（Create, Read, Update, Delete）に加え、キーや値の存在確認、全要素の走査など、実用的なメソッドが豊富に用意されています。
 
-<span class="listing-number">**サンプルコード9-12**</span>
+<span class="listing-number">**サンプルコード9-15**</span>
 
 ```java
 Map<String, String> map = new HashMap<>();
@@ -453,7 +605,7 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 for-each文は内部的にイテレータを使用しているため、理解しておくことで、より柔軟なコレクション操作が可能になります。
 とくに、走査中に要素を削除する必要がある場合には、イテレータが重要です。
 
-<span class="listing-number">**サンプルコード9-13**</span>
+<span class="listing-number">**サンプルコード9-16**</span>
 
 ```java
 List<String> list = Arrays.asList("A", "B", "C");
@@ -476,11 +628,12 @@ while (iter2.hasNext()) {
 ```
 
 #### イテレータの利点
-- 一貫性List、Set、Mapに関係なく同じパターンで要素走査が可能
-- 安全性走査中の削除でも`ConcurrentModificationException`が発生しない
+- 一貫性
+    + List、Set、Mapに関係なく同じパターンで要素を走査できる
+- 安全性
+    + 走査中に削除しても`ConcurrentModificationException`が発生しない
 - 柔軟性
     + 条件分岐を含む複雑な削除処理で威力を発揮
-- 効率性LinkedListなどで、for-each文より高速な場合がある
 
 ### 拡張for文（for-each）
 
@@ -488,7 +641,7 @@ while (iter2.hasNext()) {
 内部的にはイテレータを使用しているため、すべてのコレクション型で使用できます。
 日常的なコレクション処理の大部分は、この記法で十分カバーできます。
 
-<span class="listing-number">**サンプルコード9-14**</span>
+<span class="listing-number">**サンプルコード9-17**</span>
 
 ```java
 // より簡潔な記述：もっとも一般的なコレクション走査方法
@@ -505,10 +658,14 @@ for (String element : list) {
 ```
 
 #### 拡張for文の特徴
-- 簡潔性従来のインデックスループやイテレータより短く書ける
-- 安全性インデックス範囲外エラーが発生しない
-- 可読性コードの意図が明確で、保守しやすい
-- 制限走査中の削除操作はできない（イテレータが必要）
+- 簡潔性
+    + 従来のインデックスループやイテレータより短く書ける
+- 安全性
+    + インデックス範囲外エラーが発生しない
+- 可読性
+    + コードの意図が明確で、保守しやすい
+- 制限
+    + 走査中の削除操作はできない（イテレータが必要）
 
 #### 使い分けの指針
 - 拡張for文
@@ -517,6 +674,7 @@ for (String element : list) {
     + 走査中の削除、複雑な条件処理
 - 従来のforループ
     + インデックスが必要、逆順アクセス
+
 
 ## コレクションの選択指針
 
@@ -568,11 +726,17 @@ for (String element : list) {
    - 実例
        + ログファイルのタイムスタンプ管理、価格帯での商品検索
 
+
+※ 本章の高度な内容については、付録B.06「コレクションの内部実装」を参照してください。
+（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`）
+
 ## 今後の学習へ向けて
 
 ### Java 8以降の進化
 
 Java 8で導入されたStream APIは、コレクションの処理方法を革新しました。
+
+<span class="listing-number">**サンプルコード9-18**</span>
 
 ```java
 // 従来の方法
@@ -591,10 +755,13 @@ List<String> result = list.stream()
 ```
 
 Stream APIは関数型プログラミングのパラダイムを取り入れ、より宣言的で読みやすいコードを可能にします。
+ラムダ式は第11章、Stream APIは第12章で詳しく学びます。
 
 ### 不変コレクション
 
 Java 9以降、不変（Immutable）コレクションの作成が簡単になりました。
+
+<span class="listing-number">**サンプルコード9-19**</span>
 
 ```java
 List<String> list = List.of("A", "B", "C");  // 変更不可
@@ -604,323 +771,6 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 
 不変コレクションはスレッドセーフであり、予期しない変更から保護されるため、より堅牢なプログラムの作成に役立ちます。
 
-## 章末演習
-
-### 演習課題へのアクセス
-本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`
-
-### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
-
-詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
-
-1. 基礎課題
-    + 学生管理システム、単語カウンタ、重複除去システムなど、各コレクションの基本的な活用
-2. 発展課題
-    + 動的配列ベースのデータベース、複雑なソート処理の実装
-3. チャレンジ課題
-    + 簡易検索エンジン、図書館管理システムなど、実用的なアプリケーション開発
-
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
-
-次のステップ： 基礎課題が完了したら、第10章「ジェネリクス」に進みましょう。
-
-## 本章の学習目標
-
-### 前提知識
-
-本章を学習するためのポイントとなる前提として、第8章で学んだ列挙型とレコードの概念を理解していることがポイントです。とくに、データを効率的に管理する必要性と、配列の限界について体験的に理解していることが重要です。また、配列を使った基本的なプログラミング経験があり、複数のデータを扱う処理に慣れていることが求められます。さらに、Java 8以降で導入された関数型プログラミングスタイルの基本的な考え方、とくにラムダ式やメソッド参照について触れた経験があることで、本章の後半で扱う高度なコレクション操作をスムーズに理解できます。
-
-実践経験の前提としては、実際のデータ処理を含む実用的なプログラムを開発した経験があることがあるとよいです。たとえば、CSVファイルの読み込みや、データベースから取得した情報の加工など、現実的なデータ処理タスクに取り組んだ経験があれば、コレクションフレームワークの有用性をより深く理解できます。また、ループ処理を使ったデータ変換やフィルタリング、集計処理などを実装した経験があることで、コレクションAPIが提供する便利なメソッドの価値を実感できるでしょう。
-
-### 学習目標
-
-本章では、Javaのコレクションフレームワークを深く理解し、実践的に活用できるようになることを目指します。知識理解の面では、まずコレクションフレームワークの全体設計と階層構造を把握します。これは単なる便利なクラスの寄せ集めではなく、インターフェイスと実装を明確に分離し、共通の操作を統一的に提供する洗練された設計になっています。この設計思想を理解することで、なぜ複数のコレクション型が存在するのか、それぞれがどのような場面で有効なのかが明確になります。
-
-List、Set、Mapという3つの主要なインターフェイスの特徴と使い分けも重要な学習ポイントです。Listは順序を保持し重複を許可する、Setは重複を許可しない、Mapはキーと値のペアを管理するという基本的な違いから始まり、それぞれが解決しようとしている問題領域の違いを理解します。さらに、各インターフェイスの具体的な実装クラス（ArrayList、LinkedList、HashSet、TreeSet、HashMap、TreeMapなど）がどのような内部構造を持ち、どのような性能特性を示すのかを学びます。たとえば、ArrayListが配列ベースで高速なランダムアクセスを提供する一方、LinkedListが連結リストベースで高速な挿入・削除を可能にすることなど、実装の違いが性能に与える影響を理解します。
-
-技能習得の面では、データ特性に合ったコレクション型を選択し、正しく使用する能力を身につけます。単に動作するコードを書くだけでなく、データの特性や処理の要件に応じて最適なコレクション型を選択できるようになることが目標です。また、for-each文、イテレータ、Stream APIなど、コレクションを処理するさまざまな方法を理解し、状況に応じて使い分けられるようになります。コレクションのソートや検索といった一般的な操作についても、標準APIを活用した最小計算量での実装方法を習得します。
-
-アルゴリズム的思考の観点では、データ構造と処理効率の密接な関係を理解することが重要です。なぜハッシュテーブルが高速な検索を可能にするのか、なぜ二分探索木が順序付きデータの管理に適しているのかといった、アルゴリズムとデータ構造の基本原理を学びます。また、メモリ使用量と実行速度のトレードオフについても理解を深め、限られたリソースのなかで最適な選択ができる判断力を養います。
-
-最終的な到達レベルとしては、複雑なデータ処理要件に対して計算量特性を考慮したコレクションを選択し、100万件のデータでも1秒以内に処理可能なプログラムを実装できることを目指します。大量のデータを扱う場合でも、O(1)アクセスのHashMapやO(log n)検索のTreeMapなど、データ構造の選択により計算量を削減した処理が可能になることを実感し、実務レベルのプログラムが作成できるようになります。カスタムComparatorを使った複雑なソート処理の実装や、メモリ使用量と実行速度のバランスを考慮したプログラム設計など、高度な技術も習得します。さらに、拡張for文やイテレータを自在に使いこなし、配列とListの相互変換など、実践的なデータ操作技術も身につけます。
-
-## データ管理の進化：配列からコレクションへ
-
-Javaプログラミングの初期に学ぶ配列は、複数のデータをまとめて管理するための基本的な手段です。しかし、実用的なアプリケーションを開発するには、配列だけでは不十分な場面が多くあります。
-
-### 配列の限界
-
-配列には、主に2つの大きな制限があります。
-
-1. サイズが固定
-    + 配列は、一度作成するとそのサイズを変更できません。
-2. 機能が限定的
-    + 要素の追加や削除、検索といった一般的な操作を自前で実装する必要があり、手間がかかる。
-
-<span class="listing-number">**サンプルコード9-15**</span>
-
-```java
-// 配列の例：要素を追加するのも一苦労
-String[] users = new String[3];
-users[0] = "Alice";
-users[1] = "Bob";
-users[2] = "Charlie";
-// これ以上ユーザーを追加するには、より大きな新しい配列を作って、
-// 全ての要素をコピーし直す必要があります。
-```
-
-こうした配列の不便さを解消し、より柔軟で高機能なデータ管理を実現するのがコレクションフレームワークです。
-
-### コレクションフレームワークとは？
-
-Javaのコレクションフレームワークは、データを効率的に扱うためのさまざまな「データ構造」を、再利用可能なクラスやインターフェイスとして体系的にまとめたものです。
-
-- 動的なサイズ
-    + 要素の数に応じて自動的にサイズが調整される
-- 豊富な機能
-    + 要素の追加、削除、検索、ソートなどの便利なメソッドが標準で提供されている
-- ポリモーフィズム
-    + `List`, `Set`, `Map`といったインターフェイスを通じて実装を切り替え可能で、柔軟な設計ができる
-- 型安全
-    + ジェネリクスにより、コレクションに格納するデータの型をコンパイル時に保証しる
-
-## `List`インターフェイス：順序のあるデータ列
-
-`List`は、順序付けられた要素のコレクションで、重複を許可します。追加した順に要素が格納され、インデックス（添え字）によって各要素にアクセスできます。配列にもっとも近い感覚で使えます。
-
-### 代表的な実装クラス
-
-* `java.util.ArrayList`: 内部的に配列を使用。要素へのランダムアクセス（インデックス指定での取得）が非常に高速
-* `java.util.LinkedList`: 内部的に双方向連結リスト構造を使用。要素の追加や削除（とくにリストの先頭や中間）が高速
-
-### `ArrayList`の基本的な使い方
-
-まず、ArrayListの基本的な使い方を具体的なコード例で見てみましょう。
-
-<span class="listing-number">**サンプルコード9-16**</span>
-
-```java
-import java.util.ArrayList;
-import java.util.List;
-
-public class ArrayListExample {
-    public static void main(String[] args) {
-        // String型の要素を格納するArrayListを作成
-        // 変数の型はインターフェイス型で宣言するのが一般的
-        List<String> fruits = new ArrayList<>();
-
-        // 1. 要素の追加 (add)
-        fruits.add("りんご");
-        fruits.add("バナナ");
-        fruits.add("みかん");
-        fruits.add("りんご"); // 重複も許可される
-
-        System.out.println("現在のリスト: " + fruits);
-
-        // 2. 要素の取得 (get)
-        String secondFruit = fruits.get(1); // インデックスは0から始まる
-        System.out.println("2番目の果物: " + secondFruit);
-
-        // 3. 要素数の取得 (size)
-        System.out.println("果物の数: " + fruits.size());
-
-        // 4. 要素の削除 (remove)
-        fruits.remove("バナナ"); // 値で削除
-        fruits.remove(0);      // インデックスで削除
-        System.out.println("削除後のリスト: " + fruits);
-
-        // 5. 全要素の反復処理 (for-each)
-        System.out.println("残りの果物:");
-        for (String fruit : fruits) {
-            System.out.println("- " + fruit);
-        }
-    }
-}
-```
-実行結果：
-```
-現在のリスト: [りんご, バナナ, みかん, りんご]
-2番目の果物: バナナ
-果物の数: 4
-削除後のリスト: [みかん, りんご]
-残りの果物:
-- みかん
-- りんご
-```
-
-### `ArrayList` vs `LinkedList`
-
-| 特徴 | `ArrayList` (内部配列) | `LinkedList` (連結リスト) |
-| :--- | :--- | :--- |
-| 要素の取得(get) | 高速 | 遅い |
-| 要素の追加/削除(中間) | 遅い（後続要素のシフトが発生） | 高速 |
-| メモリ使用量 | 比較的少ない | やや多い（前後の要素への参照を持つため） |
-
-#### 使い分けの目安
-* `ArrayList` 要素の参照（読み取り）が多く、リストのサイズがあまり変化しない場合に最適
-* `LinkedList` 要素の追加や削除が頻繁に発生する場合（とくにリストの先頭や中間）に適している
-
-### Listの要素を順に処理する方法
-
-#### 拡張for文 (推奨)
-もっとも簡潔で一般的な方法です。
-
-以下のコードは、拡張for文を使用したコレクションの走査方法を示しています。この記法により、インデックスを意識することなく、すべての要素にアクセスできます。
-
-<span class="listing-number">**サンプルコード9-17**</span>
-
-```java
-for (String name : nameList) {
-    System.out.println(name);
-}
-```
-
-#### イテレータ (Iterator)
-ループ中にコレクションから要素を安全に削除したい場合に使います。
-
-以下のコードは、イテレータを使用してループ中に要素を安全に削除する方法を示しています。拡張for文では実現できない、動的な要素の削除が可能です。
-
-<span class="listing-number">**サンプルコード9-18**</span>
-
-```java
-Iterator<String> iterator = cityList.iterator();
-while (iterator.hasNext()) {
-    String city = iterator.next();
-    if (city.equals("Kyoto")) {
-        iterator.remove(); // 安全に削除
-    }
-}
-```
-
-### 配列とListの相互変換
-
-実際のアプリケーションでは、配列とListを相互に変換する場面が多々あります。以下のコードは、その方法を示しています。
-
-<span class="listing-number">**サンプルコード9-19**</span>
-
-```java
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-
-// 配列からListへ
-String[] nameArray = {"Alice", "Bob"};
-List<String> nameList = new ArrayList<>(Arrays.asList(nameArray));
-nameList.add("Charlie"); // 変更可能
-
-// Listから配列へ
-List<String> fruitList = new ArrayList<>();
-fruitList.add("Apple");
-fruitList.add("Banana");
-String[] fruitArray = fruitList.toArray(new String[0]);
-```
-注意： `Arrays.asList()`が直接返す`List`はサイズが固定されており、`add`や`remove`ができないため、変更可能な`ArrayList`でラップするのが一般的です。
-
-## `Set`インターフェイス：重複のないユニークな集合
-
-`Set`は、重複しない要素のコレクションです。「集合」という数学的な概念に対応します。ユーザーIDやメールアドレスなど、一意性を保証したいデータの管理に適しています。
-
-### 代表的な実装クラス
-
-* `java.util.HashSet`: もっとも一般的。順序は保証されないが、追加・検索が非常に高速
-* `java.util.LinkedHashSet`: 要素が挿入された順序を保持する
-* `java.util.TreeSet`: 要素を自然順序（ソート順）で保持する
-
-### `HashSet`の基本的な使い方
-
-HashSetの基本的な操作を実際のコード例で確認してみましょう。
-
-<span class="listing-number">**サンプルコード9-20**</span>
-
-```java
-import java.util.HashSet;
-import java.util.Set;
-
-public class HashSetExample {
-    public static void main(String[] args) {
-        Set<String> tags = new HashSet<>();
-
-        // 1. 要素の追加 (add)
-        tags.add("Java");
-        tags.add("プログラミング");
-        boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
-
-        System.out.println("タグ一覧: " + tags); // 順序は保証されない
-
-        // 2. 要素の存在確認 (contains)
-        if (tags.contains("プログラミング")) {
-            System.out.println("「プログラミング」タグは存在します。");
-        }
-    }
-}
-```
-実行結果：
-```
-タグ一覧: [Java, プログラミング]
-「プログラミング」タグは存在します。
-```
-
-## `Map`インターフェイス：キーと値のペア
-
-`Map`は、一意のキー（Key）と、それに対応する値（Value）のペアを格納するコレクションです。キーを使って高速に値を取得できます。辞書や連想配列とも呼ばれます。
-
-### 代表的な実装クラス
-
-* `java.util.HashMap`: もっとも一般的。キーの順序は保証されないが、非常に高速
-* `java.util.LinkedHashMap`: キーが挿入された順序を保持する
-* `java.util.TreeMap`: キーを自然順序（ソート順）で保持する
-
-### `HashMap`の基本的な使い方
-
-Mapの具体的な操作方法を、学生の点数管理を例にして見てみましょう。
-
-<span class="listing-number">**サンプルコード9-21**</span>
-
-```java
-import java.util.HashMap;
-import java.util.Map;
-
-public class HashMapExample {
-    public static void main(String[] args) {
-        // 学生の点数を管理 (キー: 名前, 値: 点数)
-        Map<String, Integer> scores = new HashMap<>();
-
-        // 1. 要素の追加 (put)
-        scores.put("Alice", 85);
-        scores.put("Bob", 92);
-        scores.put("Alice", 95); // 同じキーでputすると、値が上書きされる
-
-        System.out.println("全員の点数: " + scores);
-
-        // 2. 要素の取得 (get)
-        int bobScore = scores.get("Bob");
-        System.out.println("Bobの点数: " + bobScore);
-
-        // 3. 全要素の反復処理 (entrySetとfor-each)
-        System.out.println("--- 点数一覧 ---");
-        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
-            String name = entry.getKey();
-            int score = entry.getValue();
-            System.out.println(name + ": " + score + "点");
-        }
-    }
-}
-```
-実行結果：
-```
-全員の点数: {Bob=92, Alice=95}
-Bobの点数: 92
---- 点数一覧 ---
-Bob: 92点
-Alice: 95点
-```
-
-※ 本章の高度な内容については、付録B.06「コレクションの内部実装」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`）
 
 ## よくあるエラーと対処法
 
@@ -939,7 +789,7 @@ Exception in thread "main" java.lang.NullPointerException
 
 以下のコードは、コレクションを初期化せずに使用しようとした例です。
 
-<span class="listing-number">**サンプルコード9-22**</span>
+<span class="listing-number">**サンプルコード9-20**</span>
 
 ```java
 // エラー例
@@ -955,7 +805,7 @@ list.add("Hello");  // OK
 
 次のコードは、null要素を含むSetを扱う際の注意点を示しています。
 
-<span class="listing-number">**サンプルコード9-23**</span>
+<span class="listing-number">**サンプルコード9-21**</span>
 
 ```java
 // エラー例
@@ -991,7 +841,7 @@ Exception in thread "main" java.lang.ClassCastException: java.lang.Integer canno
 
 以下のコードは、ジェネリクスを使用しない場合の問題を示しています。
 
-<span class="listing-number">**サンプルコード9-24**</span>
+<span class="listing-number">**サンプルコード9-22**</span>
 
 ```java
 // エラー例（ジェネリクスなし）
@@ -1022,7 +872,7 @@ Exception in thread "main" java.lang.UnsupportedOperationException
 
 次のコードは、不変リストを変更しようとした場合の問題を示しています。
 
-<span class="listing-number">**サンプルコード9-25**</span>
+<span class="listing-number">**サンプルコード9-23**</span>
 
 ```java
 // エラー例
@@ -1052,7 +902,7 @@ Exception in thread "main" java.util.ConcurrentModificationException
 
 以下のコードは、反復処理中にコレクションを変更しようとした例です。
 
-<span class="listing-number">**サンプルコード9-26**</span>
+<span class="listing-number">**サンプルコード9-24**</span>
 
 ```java
 // エラー例
@@ -1100,7 +950,7 @@ Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 5 out of b
 
 次のコードは、配列の範囲外にアクセスしようとした例です。
 
-<span class="listing-number">**サンプルコード9-27**</span>
+<span class="listing-number">**サンプルコード9-25**</span>
 
 ```java
 // エラー例
@@ -1133,7 +983,7 @@ try {
 
 Mapで存在しないキーにアクセスする際の注意点を示すコード例です。
 
-<span class="listing-number">**サンプルコード9-28**</span>
+<span class="listing-number">**サンプルコード9-26**</span>
 
 ```java
 // 注意が必要な例
@@ -1170,7 +1020,7 @@ if (map.containsKey("key2")) {
 
 カスタムオブジェクトをHashSetやHashMapで使用する際の問題を示すコード例です。
 
-<span class="listing-number">**サンプルコード9-29**</span>
+<span class="listing-number">**サンプルコード9-27**</span>
 
 ```java
 // 問題のある例
@@ -1219,7 +1069,7 @@ class Person {
 
 型安全性を損なうRaw typeの使用例を示しています。
 
-<span class="listing-number">**サンプルコード9-30**</span>
+<span class="listing-number">**サンプルコード9-28**</span>
 
 ```java
 // 非推奨な例
@@ -1264,7 +1114,7 @@ String s = stringList.get(0);  // キャスト不要、型安全
 
 ## まとめ
 
-本章では、コレクションフレームワークの3つの基本インターフェイスと、その代表的な実装クラスを学びました
+本章では、コレクションフレームワークの3つの基本インターフェイスと、その代表的な実装クラスを学びました。
 
 | インターフェイス | 特徴 | 代表的な実装 | 主な用途 |
 | :--- | :--- | :--- | :--- |
@@ -1273,3 +1123,25 @@ String s = stringList.get(0);  // キャスト不要、型安全
 | `Map` | キーと値のペア | `HashMap`, `TreeMap` | IDと情報のように紐付けて管理したいとき |
 
 これらのコレクションを適切に使い分けることが、効率的で読みやすいプログラムを書くための第一歩です。次章では、これらのコレクションを安全かつ柔軟に扱うための「ジェネリクス」について詳しく学びます。
+
+## 章末演習
+
+### 演習課題へのアクセス
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`
+
+### 課題構成
+- 本章の基本概念の理解確認
+- 応用的な実装練習
+- 実践的な総合問題
+
+1. 基礎課題
+    + 学生管理システム、単語カウンタ、重複除去システムなど、各コレクションの基本的な活用
+2. 発展課題
+    + 動的配列ベースのデータベース、複雑なソート処理の実装
+3. チャレンジ課題
+    + 簡易検索エンジン、図書館管理システムなど、実用的なアプリケーション開発
+
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダ内のREADME.mdを参照してください。
+
+次のステップ： 基礎課題が完了したら、第10章「ジェネリクス」に進みましょう。
