@@ -793,7 +793,9 @@ public class Container<T> {
 
 ##### エラーメッセージ
 ```
-error: Cannot instantiate the type T
+error: unexpected type
+  required: class
+  found:    type parameter T
 ```
 
 ##### 対処法
@@ -834,7 +836,9 @@ numbers.add(1); // コンパイルエラー
 
 ##### エラーメッセージ
 ```
-error: The method add(capture#1-of ? extends Number) is not applicable for the arguments (int)
+error: incompatible types: int cannot be converted to CAP#1
+  where CAP#1 is a fresh type-variable:
+    CAP#1 extends Number from capture of ? extends Number
 ```
 
 ##### 対処法
@@ -871,7 +875,7 @@ public class GenericArray<T> {
 
 ##### エラーメッセージ
 ```
-error: Cannot create a generic array of T
+error: generic array creation
 ```
 
 ##### 対処法
@@ -913,7 +917,9 @@ public class NumberContainer<T extends Number> {
 
 ##### エラーメッセージ
 ```
-error: The operator * is undefined for the argument type(s) T, T
+error: bad operand types for binary operator '*'
+  first type:  T
+  second type: T
 ```
 
 ##### 対処法
@@ -951,7 +957,8 @@ var value = null; // コンパイルエラー
 
 ##### エラーメッセージ
 ```
-error: Cannot infer type for local variable value
+error: cannot infer type for local variable value
+  (variable initializer is 'null')
 ```
 
 ##### 対処法

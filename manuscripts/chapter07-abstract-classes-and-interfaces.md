@@ -1276,12 +1276,12 @@ abstract class DataProcessor {
 }
 
 // コンパイルエラーが発生
-DataProcessor processor = new DataProcessor();  // Cannot instantiate the type DataProcessor
+DataProcessor processor = new DataProcessor();  // 抽象クラスはnewできない
 ```
 
 エラーメッセージ：
 ```
-Cannot instantiate the type DataProcessor
+error: DataProcessor is abstract; cannot be instantiated
 ```
 
 対処法：
@@ -1335,7 +1335,7 @@ class Rectangle extends Shape {
 
 エラーメッセージ：
 ```
-The type Rectangle must implement the inherited abstract method Shape.draw()
+error: Rectangle is not abstract and does not override abstract method draw() in Shape
 ```
 
 対処法：
@@ -1396,7 +1396,7 @@ class Circle implements Drawable {
 
 エラーメッセージ：
 ```
-The type Circle must implement the inherited abstract method Drawable.setColor(String)
+error: Circle is not abstract and does not override abstract method setColor(String) in Drawable
 ```
 
 対処法：
@@ -1453,7 +1453,8 @@ class ReportDocument implements Exportable, Printable {
 
 エラーメッセージ：
 ```
-Duplicate default methods named move with the parameters () and () are inherited from the types Swimmable and Flyable
+error: types Exportable and Printable are incompatible;
+  class ReportDocument inherits unrelated defaults for export() from types Exportable and Printable
 ```
 
 対処法：
@@ -1480,7 +1481,8 @@ class ReportDocument implements Exportable, Printable {
 
 ### 5. defaultメソッドとstaticメソッドの混乱
 
-インターフェイスのstaticメソッドは継承されず、直接インターフェイス名で呼び出す必要があります。
+インターフェイスのstaticメソッドは実装クラスに継承されないため、実装クラスからはインターフェイス名を付けて呼び出す必要があります。
+インターフェイス自身のメソッド（defaultメソッドなど）からは、インターフェイス名を省略して呼び出せます。
 
 エラー例：
 
@@ -1495,14 +1497,14 @@ interface MathUtils {
     }
     
     default void printInfo() {
-        // staticメソッドの呼び出し方が間違っている
-        System.out.println("面積: " + calculateCircleArea(5.0));  // コンパイルエラー
+        // インターフェイスの中からは、インターフェイス名を省略して呼び出せる
+        System.out.println("面積: " + calculateCircleArea(5.0));
     }
 }
 
 class Calculator implements MathUtils {
     public void doCalculation() {
-        // staticメソッドの呼び出し方が間違っている
+        // staticメソッドは実装クラスに継承されない
         double area = calculateCircleArea(3.0);  // コンパイルエラー
     }
 }
@@ -1510,7 +1512,9 @@ class Calculator implements MathUtils {
 
 エラーメッセージ：
 ```
-Cannot make a static reference to the non-static method calculateCircleArea(double) from the type MathUtils
+error: cannot find symbol
+  symbol:   method calculateCircleArea(double)
+  location: class Calculator
 ```
 
 対処法：
@@ -1526,7 +1530,7 @@ interface MathUtils {
     }
     
     default void printInfo() {
-        // インターフェイス名を明示して呼び出し
+        // インターフェイス名を明示すると、staticメソッドであることがわかりやすい
         System.out.println("面積: " + MathUtils.calculateCircleArea(5.0));
     }
 }

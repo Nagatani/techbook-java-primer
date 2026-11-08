@@ -1353,27 +1353,29 @@ Charlie
 <span class="listing-number">**サンプルコード11-31**</span>
 
 ```java
-// ❌ 型推論が曖昧な場合
-Comparator<String> comp = (x, y) -> x.length() - y.length();
-// 以下のように使用すると型推論エラーが発生する場合があります
-var result = someMethod((x, y) -> x.length() - y.length());
+// ❌ ラムダ式をvarで受けると、どの関数型インターフェイスか決まらない
+var comp = (String x, String y) -> x.length() - y.length();
 ```
 
 ##### エラーメッセージ
 ```
-error: Cannot infer type arguments for method
+error: cannot infer type for local variable comp
+  (lambda expression needs an explicit target-type)
 ```
+
+ラムダ式は、代入先の型（ターゲット型）から、どの関数型インターフェイスを実装するのかが決まります。
+`var`では代入先の型が決まらないため、コンパイラはラムダ式の型を推論できません。
 
 ##### 対処法
 
 <span class="listing-number">**サンプルコード11-32**</span>
 
 ```java
-// ✅ 明示的な型指定
-Comparator<String> comp = (String x, String y) -> x.length() - y.length();
+// ✅ 代入先の関数型インターフェイスを明示する（引数の型は推論される）
+Comparator<String> comp = (x, y) -> x.length() - y.length();
 
 // またはメソッド参照を使用
-Comparator<String> comp = Comparator.comparing(String::length);
+Comparator<String> byLength = Comparator.comparing(String::length);
 ```
 
 ### 例外処理での問題
@@ -1392,7 +1394,7 @@ files.stream()
 
 ##### エラーメッセージ
 ```
-error: Unhandled exception type IOException
+error: unreported exception IOException; must be caught or declared to be thrown
 ```
 
 ##### 対処法
@@ -1445,7 +1447,7 @@ public void processNumbers(List<Integer> numbers) {
 
 ##### エラーメッセージ
 ```
-error: Variable used in lambda expression should be final or effectively final
+error: local variables referenced from a lambda expression must be final or effectively final
 ```
 
 ##### 対処法
@@ -1490,7 +1492,9 @@ interface Calculator {
 
 ##### エラーメッセージ
 ```
-error: Multiple non-overriding abstract methods found in interface Calculator
+error: Unexpected @FunctionalInterface annotation
+  Calculator is not a functional interface
+    multiple non-overriding abstract methods found in interface Calculator
 ```
 
 ##### 対処法
@@ -1521,31 +1525,36 @@ Calculator multiplier = (a, b) -> a * b;
 <span class="listing-number">**サンプルコード11-39**</span>
 
 ```java
-// ❌ メソッド参照の型不一致
+// ❌ プリミティブ型のストリーム（IntStream）をListに集めようとしている
 List<String> strings = Arrays.asList("1", "2", "3");
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // int返却だが、Integer期待
+    .mapToInt(Integer::parseInt)  // IntStreamになる
     .collect(Collectors.toList());
 ```
 
 ##### エラーメッセージ
 ```
-error: Cannot infer type arguments for collect
+error: method collect in interface IntStream cannot be applied to given types;
+  required: Supplier<R>,ObjIntConsumer<R>,BiConsumer<R,R>
+  found:    Collector<Object,CAP#1,List<Object>>
 ```
+
+`mapToInt`が返す`IntStream`は`int`をそのまま扱うストリームで、`Collector`を受け取る`collect`メソッドを持ちません。
 
 ##### 対処法
 
 <span class="listing-number">**サンプルコード11-40**</span>
 
 ```java
-// ✅ オートボクシングによる自動変換
+// ✅ mapを使えば、parseIntが返すintはIntegerへ自動変換（オートボクシング）される
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // intからIntegerへ自動変換
+    .map(Integer::parseInt)
     .collect(Collectors.toList());
 
-// または明示的な型指定
-List<Integer> numbers = strings.stream()
-    .map(Integer::valueOf)  // Integer返却
+// またはIntStreamのboxed()でStream<Integer>に戻す
+List<Integer> boxedNumbers = strings.stream()
+    .mapToInt(Integer::parseInt)
+    .boxed()
     .collect(Collectors.toList());
 ```
 
