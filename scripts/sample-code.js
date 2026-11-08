@@ -541,6 +541,7 @@ function setCommand([id, ...specs]) {
   }
   renderExcerpt(path.join(chapterDir(ch), e.dir), excerpt); // 範囲が不正なら保存前に止める
   e.excerpt = excerpt;
+  e.main = findMain(path.join(chapterDir(ch), e.dir), excerpt.map((x) => x.file));
   saveManifest(ch, manifest);
   const f = manuscriptFiles([`chapter${pad(ch)}`])[0];
   syncCommand([f]);
