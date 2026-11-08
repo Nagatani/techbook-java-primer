@@ -458,7 +458,7 @@ public class AsyncHttpClientExample {
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         
         // 非同期処理の連鎖
-        future
+        CompletableFuture<Void> done = future
             .thenApply(response -> {
                 System.out.println("Status: " + response.statusCode());
                 return response.body();
@@ -474,23 +474,22 @@ public class AsyncHttpClientExample {
         // 他の処理を並行して実行可能
         System.out.println("他の処理を継続中...");
         
-        // 結果を待つ（必要な場合）
-        future.join();
+        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが終了するため）
+        done.join();
     }
 }
 ```
 
 実行結果：
 ```
-Status Code: 200
-Response Body:
-{
+他の処理を継続中...
+Status: 200
+Response Body: {
   "userId": 1,
   "id": 1,
   "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
   "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
 }
-Request completed!
 ```
 
 非同期HTTPの利点。

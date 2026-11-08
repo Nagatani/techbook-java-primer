@@ -138,6 +138,7 @@ public class WithoutGenericsExample {
 
         // 取り出すときにキャストが必要
         String message = (String) list.get(0); // OK
+        System.out.println("取り出した文字列: " + message);
 
         // もし間違った型で取り出そうとすると...
         // コンパイルは通るが実行時にClassCastExceptionが発生
@@ -146,10 +147,16 @@ public class WithoutGenericsExample {
 }
 ```
 
-実行結果：
+コンパイルすると、次のような注意（ノート）が表示されます。
+これは警告であり、エラーではないため、クラスファイルは作成されます。
+
 ```
 ノート: WithoutGenericsExample.javaの操作は、未チェックまたは安全ではありません。
 ノート: 詳細は、-Xlint:uncheckedオプションを指定して再コンパイルしてください。
+```
+
+実行結果：
+```
 取り出した文字列: Hello
 ```
 

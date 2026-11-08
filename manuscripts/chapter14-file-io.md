@@ -270,8 +270,11 @@ public class TextFileWriterExample {
 実行結果：
 ```
 ファイルに書き込みました。
+```
 
-書き込んだファイルの内容:
+作成された`output.txt`の内容は次のとおりです。
+
+```
 最初の行。
 次の行。
 ```
@@ -294,6 +297,7 @@ public class TextFileWriterExample {
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -311,10 +315,13 @@ public class CharacterEncodingExample {
         }
         
         // Shift_JISで読み込み（文字化けの例）
+        // Files.newBufferedReaderは、解釈できないバイト列があると文字化けではなく例外を投げる
         System.out.println("--- Shift_JISで読み込み（文字化け） ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("Shift_JIS"))) {
-            System.out.println(reader.readLine());  // 文字化けが発生
+            System.out.println(reader.readLine());
+        } catch (MalformedInputException e) {
+            System.out.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1198,13 +1205,19 @@ LIMIT 100;
 
 
 === HTML テンプレートを保存しました ===
-ファイル: /private/tmp/user_profile.html
+ファイル: /home/user/work/user_profile.html
 
 === XML 設定ファイルを保存しました ===
-ファイル: /private/tmp/config.xml
 
-=== クリーンアップ完了 ===
+=== 生成されたファイル一覧 ===
+app_config.xml       (706 bytes)
+user_data.json       (305 bytes)
+user_profile.html    (1177 bytes)
+user_query.sql       (449 bytes)
 ```
+
+HTMLファイルのパスは、プログラムを実行したディレクトリによって変わります。
+ファイル一覧の順序は、OSやファイルシステムによって異なることがあります。
 
 ### ファイルI/Oでの活用例
 

@@ -1313,6 +1313,20 @@ public class Wizard extends Character {
     }
 }
 
+// 子クラス
+public class Knight extends Character {
+    public Knight(String name, int hp) {
+        super(name, hp);
+    }
+
+    // attackメソッドをオーバーライドし、親の処理も利用する
+    @Override
+    public void attack() {
+        super.attack(); // 親クラスのattack()を呼び出す
+        System.out.println("追加で剣を振るった！"); // 子クラス独自の処理を追加
+    }
+}
+
 // 使用例
 public class CharacterOverrideTest {
     public static void main(String[] args) {
@@ -1333,6 +1347,12 @@ public class CharacterOverrideTest {
         Character polymorphicWizard = new Wizard("賢者", 80, 20);
         polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
         // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
+
+        System.out.println();
+
+        // superで親クラスのメソッドを呼び出す例
+        Knight knight = new Knight("騎士", 120);
+        knight.attack();  // 親クラスのattack()に続けて、Knight独自の処理が実行される
     }
 }
 ```
@@ -1346,19 +1366,8 @@ public class CharacterOverrideTest {
 
 賢者は杖で殴った！
 
-// 子クラス
-public class Knight extends Character {
-    public Knight(String name, int hp) {
-        super(name, hp);
-    }
-
-    // attackメソッドをオーバーライドし、親の処理も利用する
-    @Override
-    public void attack() {
-        super.attack(); // 親クラスのattack()を呼び出す
-        System.out.println("追加で剣を振るった！"); // 子クラス独自の処理を追加
-    }
-}
+騎士の攻撃！
+追加で剣を振るった！
 ```
 
 ### コンストラクタと`super()`
@@ -1816,7 +1825,14 @@ public class DrawingAppAfter {
             System.out.println("面積: " + shape.calculateArea());
         }
         
-        // 新しい図形（五角形）を追加しても、このコードは変更不要
+        // 新しい図形（五角形）を追加しても、描画と面積計算のコードは変更不要
+        System.out.println();
+        System.out.println("=== 新しい図形を追加 ===");
+        Shape[] moreShapes = { new Pentagon(5.0) };
+        for (Shape shape : moreShapes) {
+            shape.draw();
+            System.out.println("面積: " + shape.calculateArea());
+        }
     }
 }
 
