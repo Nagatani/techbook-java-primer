@@ -12,6 +12,8 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [11-1](./11-01/) | LambdaIntroExample.java | `java -cp out LambdaIntroExample` |

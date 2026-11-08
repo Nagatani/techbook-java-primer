@@ -12,6 +12,8 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [13-1](./13-01/) | TryCatchSample.java | `java -cp out TryCatchSample` |
@@ -24,6 +26,10 @@ javac -d out *.java
 | [13-9](./13-09/) | ExceptionAggregator.java | （mainメソッドなし） |
 | [13-10](./13-10/) | MultiResourceExample.java | （mainメソッドなし） |
 | [13-11](./13-11/) | ResourcePool.java | （mainメソッドなし） |
+| [13-12](./13-12/) | ExceptionLogging.java<br>Exceptions.java | （mainメソッドなし） |
+| [13-13](./13-13/) | StructuredExceptionLogger.java | （mainメソッドなし） |
 | [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
+| [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>SystemException.java | （mainメソッドなし） |
+| [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferService.java<br>TransferSupport.java | （mainメソッドなし） |
 | [13-25](./13-25/) | CustomException.java | （mainメソッドなし） |
 | [13-26](./13-26/) | CustomException.java | （mainメソッドなし） |

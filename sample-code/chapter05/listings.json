@@ -9,6 +9,15 @@
       { "file": "PaymentProcessor.java", "from": 84, "to": 84 }
     ]
   },
+  "5-2": {
+    "dir": "05-02",
+    "main": null,
+    "excerpt": [
+      { "file": "CreditCardPayment.java", "from": 3, "to": 43 },
+      { "file": "PayPalPayment.java", "from": 3, "to": 4 },
+      { "file": "PayPalPayment.java", "from": 43, "to": 50 }
+    ]
+  },
   "5-4": {
     "dir": "05-04",
     "main": null,

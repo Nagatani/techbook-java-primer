@@ -77,6 +77,22 @@
       { "file": "ResourcePool.java", "from": 67, "to": 67 }
     ]
   },
+  "13-12": {
+    "dir": "13-12",
+    "main": null,
+    "excerpt": [
+      { "file": "ExceptionLogging.java", "from": 5, "to": 47 },
+      { "file": "ExceptionLogging.java", "from": 68, "to": 68 }
+    ]
+  },
+  "13-13": {
+    "dir": "13-13",
+    "main": null,
+    "excerpt": [
+      { "file": "StructuredExceptionLogger.java", "from": 5, "to": 21 },
+      { "file": "StructuredExceptionLogger.java", "from": 62, "to": 62 }
+    ]
+  },
   "13-14": {
     "dir": "13-14",
     "main": null,
@@ -87,6 +103,28 @@
       { "file": "InsufficientBalanceException.java", "from": 4, "to": 13 },
       { "file": "SystemException.java", "from": 4, "to": 13 },
       { "file": "SystemException.java", "from": 28, "to": 28 }
+    ]
+  },
+  "13-15": {
+    "dir": "13-15",
+    "main": null,
+    "excerpt": [
+      { "file": "ErrorCode.java", "from": 1, "to": 5 },
+      { "file": "ErrorCode.java", "from": 15, "to": 23 },
+      { "file": "ErrorCode.java", "from": 37, "to": 37 },
+      { "file": "ErrorResponse.java", "from": 4, "to": 18 },
+      { "file": "ErrorResponse.java", "from": 28, "to": 29 }
+    ]
+  },
+  "13-16": {
+    "dir": "13-16",
+    "main": null,
+    "excerpt": [
+      { "file": "TransferService.java", "from": 6, "to": 6 },
+      { "file": "TransferService.java", "from": 16, "to": 21 },
+      { "file": "TransferService.java", "from": 26, "to": 47 },
+      { "file": "TransferService.java", "from": 59, "to": 72 },
+      { "file": "TransferService.java", "from": 120, "to": 120 }
     ]
   },
   "13-25": {

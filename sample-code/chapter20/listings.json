@@ -6,6 +6,17 @@
       { "file": "BasicTableExample.java", "from": 1, "to": 37 }
     ]
   },
+  "20-2": {
+    "dir": "20-02",
+    "main": "SortableTableExample",
+    "excerpt": [
+      { "file": "SortableTableExample.java", "from": 5, "to": 5 },
+      { "file": "SortableTableExample.java", "from": 10, "to": 10 },
+      { "file": "SortableTableExample.java", "from": 14, "to": 36 },
+      { "file": "SortableTableExample.java", "from": 70, "to": 70 },
+      { "file": "SortableTableExample.java", "from": 77, "to": 77 }
+    ]
+  },
   "20-3": {
     "dir": "20-03",
     "main": "BasicTreeExample",
@@ -53,6 +64,30 @@
       { "file": "CustomEditorExample.java", "from": 111, "to": 118 },
       { "file": "CustomEditorExample.java", "from": 130, "to": 130 },
       { "file": "CustomEditorExample.java", "from": 137, "to": 137 }
+    ]
+  },
+  "20-7": {
+    "dir": "20-07",
+    "main": "IntegratedDataManagementApp",
+    "excerpt": [
+      { "file": "IntegratedDataManagementApp.java", "from": 32, "to": 32 },
+      { "file": "IntegratedDataManagementApp.java", "from": 41, "to": 41 },
+      { "file": "IntegratedDataManagementApp.java", "from": 45, "to": 57 },
+      { "file": "IntegratedDataManagementApp.java", "from": 61, "to": 61 },
+      { "file": "IntegratedDataManagementApp.java", "from": 85, "to": 85 },
+      { "file": "IntegratedDataManagementApp.java", "from": 108, "to": 125 },
+      { "file": "IntegratedDataManagementApp.java", "from": 163, "to": 178 },
+      { "file": "IntegratedDataManagementApp.java", "from": 222, "to": 231 },
+      { "file": "IntegratedDataManagementApp.java", "from": 239, "to": 239 },
+      { "file": "IntegratedDataManagementApp.java", "from": 294, "to": 294 }
+    ]
+  },
+  "20-13": {
+    "dir": "20-13",
+    "main": null,
+    "excerpt": [
+      { "file": "ImageManager.java", "from": 11, "to": 50 },
+      { "file": "ImageManager.java", "from": 68, "to": 68 }
     ]
   }
 }

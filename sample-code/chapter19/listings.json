@@ -61,6 +61,19 @@
       { "file": "JavaBeansEventExample.java", "from": 175, "to": 175 }
     ]
   },
+  "19-6": {
+    "dir": "19-06",
+    "main": "DragAndDropExample",
+    "excerpt": [
+      { "file": "DragAndDropExample.java", "from": 9, "to": 9 },
+      { "file": "DragAndDropExample.java", "from": 34, "to": 39 },
+      { "file": "DragAndDropExample.java", "from": 69, "to": 103 },
+      { "file": "DragAndDropExample.java", "from": 125, "to": 146 },
+      { "file": "DragAndDropExample.java", "from": 151, "to": 152 },
+      { "file": "DragAndDropExample.java", "from": 162, "to": 162 },
+      { "file": "DragAndDropExample.java", "from": 169, "to": 169 }
+    ]
+  },
   "19-7": {
     "dir": "19-07",
     "main": "EventOptimizationExample",

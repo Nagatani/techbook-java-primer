@@ -270,17 +270,9 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 @Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、
 実務でよく使われるパターンを網羅しています。
 
-<span class="listing-number">**サンプルコード22-5**</span>
+<span class="listing-number">**サンプルコード22-5**　Task.java（9〜20、32行目）、GsonAdvancedExample.java（9〜21、33〜46行目）</span>
 
 ```java
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.annotations.Expose;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Arrays;
-
 // Gsonの高度な使用例
 public class Task {
     @SerializedName("task_title")  // JSONのフィールド名を指定
@@ -293,17 +285,7 @@ public class Task {
     
     private LocalDateTime createdAt;
     private List<String> tags;
-    
-    public Task(String title, boolean completed) {
-        this.title = title;
-        this.completed = completed;
-        this.createdAt = LocalDateTime.now();
-        this.tags = Arrays.asList("work", "important");
-    }
-    
-    // ゲッター・セッター省略
-    public String getTitle() { return title; }
-    public boolean isCompleted() { return completed; }
+    // ...
 }
 
 public class GsonAdvancedExample {
@@ -319,17 +301,7 @@ public class GsonAdvancedExample {
         Task task = new Task("買い物", false);
         String json = gson.toJson(task);
         System.out.println("Pretty JSON:\n" + json);
-        
-        // 3. コレクションの処理
-        List<Task> tasks = Arrays.asList(
-            new Task("買い物", false),
-            new Task("勉強", true),
-            new Task("運動", false)
-        );
-        
-        String tasksJson = gson.toJson(tasks);
-        System.out.println("\nTasks JSON:\n" + tasksJson);
-        
+        // ...
         // 4. 複雑なデシリアライズ
         String complexJson = """
             {
@@ -421,15 +393,9 @@ Jacksonはエンタープライズアプリケーションで広く使われて�
 以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
 TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-7**</span>
+<span class="listing-number">**サンプルコード22-7**　JacksonExample.java（7〜21、35、37〜49、63〜64、79〜80行目）</span>
 
 ```java
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.*;
-
 public class JacksonExample {
     
     // データモデルクラス
@@ -445,21 +411,9 @@ public class JacksonExample {
         
         private Map<String, String> attributes;
         
-        // コンストラクタ、ゲッター、セッター
-        public Product() {}
-        
-        public Product(int id, String name, double price) {
-            this.id = id;
-            this.name = name;
-            this.price = price;
-            this.attributes = new HashMap<>();
-        }
-        
-        // ゲッター省略
-        public String getName() { return name; }
-        public double getPrice() { return price; }
+        // ...
     }
-    
+    // ...
     public static void main(String[] args) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         
@@ -473,35 +427,10 @@ public class JacksonExample {
             .writeValueAsString(product);
         System.out.println("\nPretty JSON:\n" + prettyJson);
         
-        // 3. JSONからオブジェクトへ
-        String jsonInput = """
-            {
-                "product_id": 2,
-                "name": "マウス",
-                "price": 2980.0,
-                "attributes": {
-                    "color": "black",
-                    "wireless": "true"
-                }
-            }
-            """;
-        
+        // ...
         Product loaded = mapper.readValue(jsonInput, Product.class);
         System.out.println("\nLoaded: " + loaded.getName());
-        
-        // 4. コレクションの処理
-        List<Product> products = Arrays.asList(
-            new Product(1, "キーボード", 5980.0),
-            new Product(2, "モニター", 25800.0)
-        );
-        
-        String productsJson = mapper.writeValueAsString(products);
-        
-        // TypeReferenceを使った複雑な型のデシリアライズ
-        List<Product> loadedProducts = mapper.readValue(productsJson, 
-            new TypeReference<List<Product>>() {});
-        
-        System.out.println("\nLoaded products count: " + loadedProducts.size());
+        // ...
     }
 }
 ```
@@ -593,45 +522,20 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード22-9**</span>
+<span class="listing-number">**サンプルコード22-9**　CommonsLangExample.java（11〜13、22〜25、36、38〜56、75〜76行目）</span>
 
 ```java
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import java.time.LocalDateTime;
-
 public class CommonsLangExample {
     
     static class Person {
-        private String name;
-        private int age;
-        
-        public Person(String name, int age) {
-            this.name = name;
-            this.age = age;
-        }
-        
+        // ...
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this);
         }
-        
-        @Override
-        public boolean equals(Object obj) {
-            return EqualsBuilder.reflectionEquals(this, obj);
-        }
-        
-        @Override
-        public int hashCode() {
-            return HashCodeBuilder.reflectionHashCode(this);
-        }
+        // ...
     }
-    
+    // ...
     public static void main(String[] args) {
         // 1. StringUtils - 文字列操作
         String text = "  Hello World  ";
@@ -651,24 +555,7 @@ public class CommonsLangExample {
         int[] reversed = ArrayUtils.clone(numbers);
         ArrayUtils.reverse(reversed);
         System.out.println("Reversed: " + ArrayUtils.toString(reversed));
-        
-        // 3. RandomStringUtils - ランダム文字列生成
-        System.out.println("\nRandom alphabetic: " + 
-            RandomStringUtils.randomAlphabetic(10));
-        System.out.println("Random numeric: " + 
-            RandomStringUtils.randomNumeric(6));
-        System.out.println("Random alphanumeric: " + 
-            RandomStringUtils.randomAlphanumeric(8));
-        
-        // 4. DateFormatUtils - 日付フォーマット
-        Date now = new Date();
-        System.out.println("\nDate formats:");
-        System.out.println("ISO: " + DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(now));
-        System.out.println("Custom: " + DateFormatUtils.format(now, "yyyy年MM月dd日 HH:mm:ss"));
-        
-        // 5. Builder utilities
-        Person person = new Person("田中太郎", 30);
-        System.out.println("\nPerson: " + person);
+        // ...
     }
 }
 ```
@@ -736,17 +623,9 @@ Java標準APIでは何行も必要なファイル操作が、1行で実装でき
 以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、
 実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-11**</span>
+<span class="listing-number">**サンプルコード22-11**　CommonsIOExample.java（9〜28、43〜48、64〜65行目）</span>
 
 ```java
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.FileDeleteStrategy;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 public class CommonsIOExample {
     public static void main(String[] args) throws IOException {
         // 1. FileUtils - ファイル操作の簡略化
@@ -767,41 +646,14 @@ public class CommonsIOExample {
         // 行単位での読み込み
         List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
         System.out.println("Lines count: " + lines.size());
-        
-        // 2. ファイルのコピー
-        File copyFile = new File("example_copy.txt");
-        FileUtils.copyFile(file, copyFile);
-        
-        // 3. ディレクトリ操作
-        File dir = new File("temp_dir");
-        FileUtils.forceMkdir(dir);  // 親ディレクトリも含めて作成
-        
-        // ディレクトリのサイズ取得
-        long dirSize = FileUtils.sizeOfDirectory(new File("."));
-        System.out.println("Current directory size: " + 
-            FileUtils.byteCountToDisplaySize(dirSize));
-        
+        // ...
         // 4. FilenameUtils - パス操作
         String filePath = "/home/user/documents/report.pdf";
         System.out.println("\nFile path analysis:");
         System.out.println("Base name: " + FilenameUtils.getBaseName(filePath));
         System.out.println("Extension: " + FilenameUtils.getExtension(filePath));
         System.out.println("Full path: " + FilenameUtils.getFullPath(filePath));
-        
-        // 5. IOUtils - ストリーム操作
-        String text = "Stream processing example";
-        try (InputStream is = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
-             ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            
-            IOUtils.copy(is, os);
-            String result = os.toString(StandardCharsets.UTF_8);
-            System.out.println("\nStream copy result: " + result);
-        }
-        
-        // クリーンアップ
-        FileUtils.deleteQuietly(file);
-        FileUtils.deleteQuietly(copyFile);
-        FileUtils.deleteQuietly(dir);
+        // ...
     }
 }
 ```
@@ -871,13 +723,9 @@ OkHttpはSquare社が開発した高性能なHTTPクライアントライブラ�
 コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
 以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
-<span class="listing-number">**サンプルコード22-13**</span>
+<span class="listing-number">**サンプルコード22-13**　OkHttpExample.java（5〜28、51〜72、80〜81行目）</span>
 
 ```java
-import okhttp3.*;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 public class OkHttpExample {
     public static void main(String[] args) throws IOException {
         // OkHttpClientの設定
@@ -902,28 +750,7 @@ public class OkHttpExample {
             System.out.println("Status: " + response.code());
             System.out.println("Body: " + response.body().string());
         }
-        
-        // 2. POSTリクエスト（JSONデータ送信）
-        MediaType JSON = MediaType.get("application/json; charset=utf-8");
-        String json = """
-            {
-                "name": "Test User",
-                "email": "test@example.com"
-            }
-            """;
-        
-        RequestBody body = RequestBody.create(json, JSON);
-        Request postRequest = new Request.Builder()
-            .url("https://httpbin.org/post")
-            .post(body)
-            .build();
-        
-        try (Response response = client.newCall(postRequest).execute()) {
-            System.out.println("\nPOST Response:");
-            System.out.println("Status: " + response.code());
-            System.out.println("Body: " + response.body().string());
-        }
-        
+        // ...
         // 3. 非同期リクエスト
         Request asyncRequest = new Request.Builder()
             .url("https://httpbin.org/delay/2")
@@ -946,13 +773,7 @@ public class OkHttpExample {
                 }
             }
         });
-        
-        // 非同期処理の完了を待つ
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        // ...
     }
 }
 ```
@@ -1188,15 +1009,9 @@ GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多�
 実用的な機能が豊富に含まれています。
 以下の例では、これらの主要機能の使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-18**</span>
+<span class="listing-number">**サンプルコード22-18**　GuavaExample.java（7〜28、48〜59、61〜71、82〜83行目）</span>
 
 ```java
-import com.google.common.collect.*;
-import com.google.common.base.*;
-import com.google.common.cache.*;
-import java.util.concurrent.TimeUnit;
-import java.util.List;
-
 public class GuavaExample {
     public static void main(String[] args) throws Exception {
         // 1. 不変コレクション
@@ -1219,25 +1034,7 @@ public class GuavaExample {
         
         System.out.println("\nMultimap:");
         System.out.println("Fruits: " + multimap.get("fruits"));
-        
-        // 3. BiMap - 双方向マップ
-        BiMap<String, Integer> biMap = HashBiMap.create();
-        biMap.put("one", 1);
-        biMap.put("two", 2);
-        
-        System.out.println("\nBiMap:");
-        System.out.println("Key for 2: " + biMap.inverse().get(2));
-        
-        // 4. Table - 2次元のマップ
-        Table<String, String, Integer> table = HashBasedTable.create();
-        table.put("Tokyo", "2023", 14000000);
-        table.put("Tokyo", "2024", 14100000);
-        table.put("Osaka", "2023", 2700000);
-        
-        System.out.println("\nTable:");
-        System.out.println("Tokyo 2024: " + table.get("Tokyo", "2024"));
-        System.out.println("All Tokyo data: " + table.row("Tokyo"));
-        
+        // ...
         // 5. 文字列処理
         String input = "  hello,  world,  java  ";
         List<String> parts = Splitter.on(',')
@@ -1250,7 +1047,7 @@ public class GuavaExample {
             .skipNulls()
             .join("A", null, "B", "C");
         System.out.println("Joined: " + joined);
-        
+        // ...
         // 6. キャッシュ
         LoadingCache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(100)
@@ -1262,16 +1059,7 @@ public class GuavaExample {
                     return "Value for " + key;
                 }
             });
-        
-        System.out.println("\nCache:");
-        System.out.println("First call: " + cache.get("key1"));
-        System.out.println("Second call (cached): " + cache.get("key1"));
-        
-        // 7. Optional（Java 8より前から利用可能）
-        Optional<String> optional = Optional.of("Hello");
-        System.out.println("\nOptional:");
-        System.out.println("Is present: " + optional.isPresent());
-        System.out.println("Value: " + optional.or("Default"));
+            // ...
     }
 }
 ```

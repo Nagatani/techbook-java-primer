@@ -12,6 +12,8 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [16-1](./16-01/) | SimpleTCPClient.java | `java -cp out SimpleTCPClient` |
@@ -24,4 +26,6 @@ javac -d out *.java
 | [16-8](./16-08/) | UDPClient.java | `java -cp out UDPClient` |
 | [16-9](./16-09/) | ChatServer.java | `java -cp out ChatServer` |
 | [16-10](./16-10/) | ChatClient.java | `java -cp out ChatClient` |
+| [16-11](./16-11/) | JsonApiClient.java | `java -cp out JsonApiClient`<br>外部ライブラリ: com.fasterxml.jackson.core:jackson-databind:2.15.2, com.fasterxml.jackson.core:jackson-core:2.15.2, com.fasterxml.jackson.core:jackson-annotations:2.15.2 |
 | [16-12](./16-12/) | SSLClient.java | `java -cp out SSLClient` |
+| [16-13](./16-13/) | NIOServer.java | `java -cp out NIOServer` |

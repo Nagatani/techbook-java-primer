@@ -12,6 +12,8 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [15-1](./15-01/) | SingleThreadExample.java | `java -cp out SingleThreadExample` |
@@ -22,9 +24,12 @@ javac -d out *.java
 | [15-12](./15-12/) | VolatileDemo.java | `java -cp out VolatileDemo` |
 | [15-13](./15-13/) | AtomicCounterExample.java | （mainメソッドなし） |
 | [15-14](./15-14/) | ExecutorExample.java | `java -cp out ExecutorExample` |
+| [15-15](./15-15/) | ProducerConsumerExample.java | `java -cp out ProducerConsumerExample` |
 | [15-16](./15-16/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
 | [15-17](./15-17/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
 | [15-19](./15-19/) | ParallelPerformanceExample.java | `java -cp out ParallelPerformanceExample` |
+| [15-20](./15-20/) | ThreadSafeSingletonExamples.java | `java -cp out ThreadSafeSingletonExamples` |
+| [15-21](./15-21/) | ConcurrencyPitfallsAndSolutions.java | `java -cp out ConcurrencyPitfallsAndSolutions` |
 | [15-22](./15-22/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
 | [15-23](./15-23/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |
 | [15-24](./15-24/) | Counter.java | （mainメソッドなし） |

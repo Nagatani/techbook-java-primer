@@ -10,6 +10,88 @@
       { "file": "Task.java", "from": 160, "to": 160 }
     ]
   },
+  "22-5": {
+    "dir": "22-05",
+    "main": "GsonAdvancedExample",
+    "excerpt": [
+      { "file": "Task.java", "from": 9, "to": 20 },
+      { "file": "Task.java", "from": 32, "to": 32 },
+      { "file": "GsonAdvancedExample.java", "from": 9, "to": 21 },
+      { "file": "GsonAdvancedExample.java", "from": 33, "to": 46 }
+    ],
+    "libs": [
+      "com.google.code.gson:gson:2.10.1"
+    ]
+  },
+  "22-7": {
+    "dir": "22-07",
+    "main": "JacksonExample",
+    "excerpt": [
+      { "file": "JacksonExample.java", "from": 7, "to": 21 },
+      { "file": "JacksonExample.java", "from": 35, "to": 35 },
+      { "file": "JacksonExample.java", "from": 37, "to": 49 },
+      { "file": "JacksonExample.java", "from": 63, "to": 64 },
+      { "file": "JacksonExample.java", "from": 79, "to": 80 }
+    ],
+    "libs": [
+      "com.fasterxml.jackson.core:jackson-databind:2.15.2",
+      "com.fasterxml.jackson.core:jackson-core:2.15.2",
+      "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
+    ]
+  },
+  "22-9": {
+    "dir": "22-09",
+    "main": "CommonsLangExample",
+    "excerpt": [
+      { "file": "CommonsLangExample.java", "from": 11, "to": 13 },
+      { "file": "CommonsLangExample.java", "from": 22, "to": 25 },
+      { "file": "CommonsLangExample.java", "from": 36, "to": 36 },
+      { "file": "CommonsLangExample.java", "from": 38, "to": 56 },
+      { "file": "CommonsLangExample.java", "from": 75, "to": 76 }
+    ],
+    "libs": [
+      "org.apache.commons:commons-lang3:3.12.0"
+    ]
+  },
+  "22-11": {
+    "dir": "22-11",
+    "main": "CommonsIOExample",
+    "excerpt": [
+      { "file": "CommonsIOExample.java", "from": 9, "to": 28 },
+      { "file": "CommonsIOExample.java", "from": 43, "to": 48 },
+      { "file": "CommonsIOExample.java", "from": 64, "to": 65 }
+    ],
+    "libs": [
+      "commons-io:commons-io:2.11.0"
+    ]
+  },
+  "22-13": {
+    "dir": "22-13",
+    "main": "OkHttpExample",
+    "excerpt": [
+      { "file": "OkHttpExample.java", "from": 5, "to": 28 },
+      { "file": "OkHttpExample.java", "from": 51, "to": 72 },
+      { "file": "OkHttpExample.java", "from": 80, "to": 81 }
+    ],
+    "libs": [
+      "com.squareup.okhttp3:okhttp:4.11.0",
+      "com.squareup.okio:okio-jvm:3.2.0",
+      "org.jetbrains.kotlin:kotlin-stdlib:1.8.21"
+    ]
+  },
+  "22-18": {
+    "dir": "22-18",
+    "main": "GuavaExample",
+    "excerpt": [
+      { "file": "GuavaExample.java", "from": 7, "to": 28 },
+      { "file": "GuavaExample.java", "from": 48, "to": 59 },
+      { "file": "GuavaExample.java", "from": 61, "to": 71 },
+      { "file": "GuavaExample.java", "from": 82, "to": 83 }
+    ],
+    "libs": [
+      "com.google.guava:guava:32.1.1-jre"
+    ]
+  },
   "22-25": {
     "dir": "22-25",
     "main": null,

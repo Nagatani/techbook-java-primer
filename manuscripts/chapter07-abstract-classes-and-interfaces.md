@@ -688,7 +688,7 @@ class Temperature implements ComparableTrait<Temperature> {
 
 インターフェイス分離原則は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
-<span class="listing-number">**サンプルコード7-14**</span>
+<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、49〜57、78行目）</span>
 
 ```java
 // 悪い例：肥大化したインターフェイス
@@ -717,26 +717,9 @@ interface UserNotificationService {
     default void sendWelcomeEmail(String userId) {
         sendEmail(userId, "ようこそ！サービスへの登録ありがとうございます。");
     }
-    
-    default void sendPasswordResetEmail(String userId, String resetLink) {
-        sendEmail(userId, "パスワードリセット: " + resetLink);
-    }
+    // ...
 }
-
-interface UserReportService {
-    void generateReport(String userId);
-    
-    default void generateMonthlyReport(String userId) {
-        System.out.println("月次レポートを生成中: " + userId);
-        generateReport(userId);
-    }
-    
-    default void generateYearlyReport(String userId) {
-        System.out.println("年次レポートを生成中: " + userId);
-        generateReport(userId);
-    }
-}
-
+// ...
 // 必要な機能だけを実装
 class BasicUserService implements UserRepository, UserNotificationService {
     private Map<String, User> users = new HashMap<>();
@@ -746,26 +729,7 @@ class BasicUserService implements UserRepository, UserNotificationService {
         users.put(user.getId(), user);
         sendWelcomeEmail(user.getId());  // defaultメソッドを活用
     }
-    
-    @Override
-    public void delete(String id) {
-        users.remove(id);
-    }
-    
-    @Override
-    public User findById(String id) {
-        return users.get(id);
-    }
-    
-    @Override
-    public List<User> findAll() {
-        return new ArrayList<>(users.values());
-    }
-    
-    @Override
-    public void sendEmail(String userId, String message) {
-        System.out.println("メール送信 to " + userId + ": " + message);
-    }
+    // ...
 }
 ```
 
@@ -773,61 +737,26 @@ class BasicUserService implements UserRepository, UserNotificationService {
 
 defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
 
-<span class="listing-number">**サンプルコード7-15**</span>
+<span class="listing-number">**サンプルコード7-15**　FunctionEnhancementDemo.java（5〜13、35〜40、53〜75行目）</span>
 
 ```java
-import java.util.function.*;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @FunctionalInterface
 interface EnhancedFunction<T, R> extends Function<T, R> {
     
     // Function<T, R>のapplyメソッドは抽象メソッド
     
     // 条件付き適用
-    default Function<T, R> when(Predicate<T> condition, R defaultValue) {
+    default EnhancedFunction<T, R> when(Predicate<T> condition, R defaultValue) {
         return t -> condition.test(t) ? this.apply(t) : defaultValue;
     }
-    
-    // リトライ機能
-    default Function<T, R> withRetry(int maxAttempts) {
-        return t -> {
-            Exception lastException = null;
-            for (int i = 0; i < maxAttempts; i++) {
-                try {
-                    return this.apply(t);
-                } catch (Exception e) {
-                    lastException = e;
-                    try {
-                        Thread.sleep(100 * (i + 1));  // 指数バックオフ
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            }
-            throw new RuntimeException("Failed after " + maxAttempts + " attempts", lastException);
-        };
-    }
+    // ...
     
     // メモ化（結果のキャッシュ）
-    default Function<T, R> memoized() {
+    default EnhancedFunction<T, R> memoized() {
         Map<T, R> cache = new ConcurrentHashMap<>();
         return t -> cache.computeIfAbsent(t, this::apply);
     }
-    
-    // 実行時間計測
-    default Function<T, R> timed(Consumer<Long> timeConsumer) {
-        return t -> {
-            long start = System.nanoTime();
-            try {
-                return this.apply(t);
-            } finally {
-                timeConsumer.accept(System.nanoTime() - start);
-            }
-        };
-    }
+    // ...
 }
 
 // 使用例
@@ -857,15 +786,9 @@ public class FunctionEnhancementDemo {
 
 APIの進化を管理するための戦略的なアプローチです。
 
-<span class="listing-number">**サンプルコード7-16**</span>
+<span class="listing-number">**サンプルコード7-16**　ServiceV1.java（7〜17、26〜32、40〜64行目）</span>
 
 ```java
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-
 // API進化の管理
 interface ServiceV1 {
     String process(String input);
@@ -877,14 +800,7 @@ interface ServiceV2 extends ServiceV1 {
         // デフォルトではオプションを無視して従来の処理
         return process(input);
     }
-    
-    // 型安全な設定オプション
-    default String processWithConfig(String input, ServiceConfig config) {
-        Map<String, String> options = new HashMap<>();
-        options.put("timeout", String.valueOf(config.getTimeout()));
-        options.put("retries", String.valueOf(config.getRetries()));
-        return processWithOptions(input, options);
-    }
+    // ...
 }
 
 interface ServiceV3 extends ServiceV2 {
@@ -892,13 +808,7 @@ interface ServiceV3 extends ServiceV2 {
     default CompletableFuture<String> processAsync(String input) {
         return CompletableFuture.supplyAsync(() -> process(input));
     }
-    
-    // バッチ処理のサポート
-    default List<String> processBatch(List<String> inputs) {
-        List<String> results = new ArrayList<>();
-        for (String input : inputs) {
-            results.add(process(input));
-        }
+        // ...
         return results;
     }
     
@@ -936,7 +846,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 もっとも基本的なFactoryパターンの実装例を見てみましょう。
 
-<span class="listing-number">**サンプルコード7-17**</span>
+<span class="listing-number">**サンプルコード7-17**　ShapeFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java（3〜20行目）</span>
 
 ```java
 // 共通のインターフェイス
@@ -947,63 +857,14 @@ interface Shape {
 
 // 具体的な実装クラス
 class Circle implements Shape {
-    private double radius;
-    
-    public Circle(double radius) {
-        this.radius = radius;
-    }
-    
+    // ...
     @Override
     public void draw() {
         System.out.println("○ 半径 " + radius + " の円を描画");
     }
-    
-    @Override
-    public double getArea() {
-        return Math.PI * radius * radius;
-    }
+    // ...
 }
-
-class Rectangle implements Shape {
-    private double width;
-    private double height;
-    
-    public Rectangle(double width, double height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    @Override
-    public void draw() {
-        System.out.println("□ " + width + " x " + height + " の長方形を描画");
-    }
-    
-    @Override
-    public double getArea() {
-        return width * height;
-    }
-}
-
-class Triangle implements Shape {
-    private double base;
-    private double height;
-    
-    public Triangle(double base, double height) {
-        this.base = base;
-        this.height = height;
-    }
-    
-    @Override
-    public void draw() {
-        System.out.println("△ 底辺 " + base + ", 高さ " + height + " の三角形を描画");
-    }
-    
-    @Override
-    public double getArea() {
-        return base * height / 2;
-    }
-}
-
+// ...
 // ファクトリークラス
 public class ShapeFactory {
     public static Shape createShape(String type, double... params) {
@@ -1014,18 +875,7 @@ public class ShapeFactory {
                 }
                 return new Circle(params[0]);
                 
-            case "rectangle":
-                if (params.length != 2) {
-                    throw new IllegalArgumentException("長方形には幅と高さが必要です");
-                }
-                return new Rectangle(params[0], params[1]);
-                
-            case "triangle":
-                if (params.length != 2) {
-                    throw new IllegalArgumentException("三角形には底辺と高さが必要です");
-                }
-                return new Triangle(params[0], params[1]);
-                
+                // ...
             default:
                 throw new IllegalArgumentException("不明な図形タイプ: " + type);
         }

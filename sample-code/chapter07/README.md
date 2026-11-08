@@ -12,6 +12,8 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [7-1](./07-01/) | Shape.java | （mainメソッドなし） |
@@ -26,6 +28,10 @@ javac -d out *.java
 | [7-11](./07-11/) | DefensiveInterface.java | （mainメソッドなし） |
 | [7-12](./07-12/) | Timestamped.java | （mainメソッドなし） |
 | [7-13](./07-13/) | ComparableTrait.java | （mainメソッドなし） |
+| [7-14](./07-14/) | BadUserService.java<br>User.java | （mainメソッドなし） |
+| [7-15](./07-15/) | FunctionEnhancementDemo.java | `java -cp out FunctionEnhancementDemo` |
+| [7-16](./07-16/) | ServiceConfig.java<br>ServiceV1.java | （mainメソッドなし） |
+| [7-17](./07-17/) | FactoryDemo.java<br>ShapeFactory.java | `java -cp out FactoryDemo` |
 | [7-18](./07-18/) | DocumentFactory.java | （mainメソッドなし） |
 | [7-19](./07-19/) | DatabaseConnectionFactory.java | （mainメソッドなし） |
 | [7-29](./07-29/) | MathUtils.java | （mainメソッドなし） |

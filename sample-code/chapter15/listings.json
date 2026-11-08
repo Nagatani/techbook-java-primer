@@ -55,6 +55,16 @@
       { "file": "ExecutorExample.java", "from": 1, "to": 33 }
     ]
   },
+  "15-15": {
+    "dir": "15-15",
+    "main": "ProducerConsumerExample",
+    "excerpt": [
+      { "file": "ProducerConsumerExample.java", "from": 8, "to": 18 },
+      { "file": "ProducerConsumerExample.java", "from": 27, "to": 44 },
+      { "file": "ProducerConsumerExample.java", "from": 53, "to": 80 },
+      { "file": "ProducerConsumerExample.java", "from": 87, "to": 87 }
+    ]
+  },
   "15-16": {
     "dir": "15-16",
     "main": "FutureCallableExample",
@@ -87,6 +97,28 @@
       { "file": "ParallelPerformanceExample.java", "from": 20, "to": 30 },
       { "file": "ParallelPerformanceExample.java", "from": 62, "to": 108 },
       { "file": "ParallelPerformanceExample.java", "from": 126, "to": 126 }
+    ]
+  },
+  "15-20": {
+    "dir": "15-20",
+    "main": "ThreadSafeSingletonExamples",
+    "excerpt": [
+      { "file": "ThreadSafeSingletonExamples.java", "from": 3, "to": 3 },
+      { "file": "ThreadSafeSingletonExamples.java", "from": 18, "to": 57 },
+      { "file": "ThreadSafeSingletonExamples.java", "from": 79, "to": 79 }
+    ]
+  },
+  "15-21": {
+    "dir": "15-21",
+    "main": "ConcurrencyPitfallsAndSolutions",
+    "excerpt": [
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 5, "to": 5 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 7, "to": 25 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 40, "to": 48 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 56, "to": 79 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 85, "to": 92 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 100, "to": 100 },
+      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 150, "to": 150 }
     ]
   },
   "15-22": {

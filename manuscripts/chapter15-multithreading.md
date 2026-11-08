@@ -1184,13 +1184,9 @@ public class ExecutorExample {
 両者の処理速度の違いをバッファ（キュー）で吸収します。
 このパターンは、ログ処理、メッセージキュー、パイプライン処理など、多くの実用的なシステムで使用されています。
 
-<span class="listing-number">**サンプルコード15-15**</span>
+<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜18、27〜44、53〜80、87行目）</span>
 
 ```java
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ProducerConsumerExample {
     // 共有キュー
     // BlockingQueueは、スレッド間でデータを安全に受け渡すための
@@ -1202,14 +1198,7 @@ public class ProducerConsumerExample {
     
     // プロデューサー（生産者）
     static class Producer implements Runnable {
-        private final String name;
-        private final int itemsToProduce;
-        
-        public Producer(String name, int itemsToProduce) {
-            this.name = name;
-            this.itemsToProduce = itemsToProduce;
-        }
-        
+        // ...
         @Override
         public void run() {
             try {
@@ -1228,14 +1217,7 @@ public class ProducerConsumerExample {
     
     // コンシューマー（消費者）
     static class Consumer implements Runnable {
-        private final String name;
-        private final int itemsToConsume;
-        
-        public Consumer(String name, int itemsToConsume) {
-            this.name = name;
-            this.itemsToConsume = itemsToConsume;
-        }
-        
+        // ...
         @Override
         public void run() {
             try {
@@ -1264,12 +1246,7 @@ public class ProducerConsumerExample {
         
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.SECONDS);
-        
-        System.out.println("\n=== 最終結果 ===");
-        System.out.println("生産された総数: " + producedCount.get());
-        System.out.println("消費された総数: " + consumedCount.get());
-        System.out.println("キューの残り: " + queue.size());
-    }
+        // ...
 }
 ```
 
@@ -1556,24 +1533,11 @@ public class ParallelPerformanceExample {
 
 ## スレッドセーフなシングルトンパターン
 
-<span class="listing-number">**サンプルコード15-20**</span>
+<span class="listing-number">**サンプルコード15-20**　ThreadSafeSingletonExamples.java（3、18〜57、79行目）</span>
 
 ```java
 public class ThreadSafeSingletonExamples {
-    
-    // 1. 同期化メソッドを使った実装（シンプルだが遅い）
-    static class SynchronizedSingleton {
-        private static SynchronizedSingleton instance;
-        
-        private SynchronizedSingleton() {}
-        
-        public static synchronized SynchronizedSingleton getInstance() {
-            if (instance == null) {
-                instance = new SynchronizedSingleton();
-            }
-            return instance;
-        }
-    }
+    // ...
     
     // 2. ダブルチェックロッキング（高速だが複雑）
     static class DoubleCheckedSingleton {
@@ -1614,40 +1578,17 @@ public class ThreadSafeSingletonExamples {
             System.out.println("Enum singleton method");
         }
     }
-    
-    public static void main(String[] args) throws InterruptedException {
-        // マルチスレッドでのシングルトンアクセステスト
-        ExecutorService executor = Executors.newFixedThreadPool(100);
-        CountDownLatch latch = new CountDownLatch(100);
-        
-        for (int i = 0; i < 100; i++) {
-            executor.execute(() -> {
-                // 各実装のインスタンスを取得
-                HolderSingleton singleton = HolderSingleton.getInstance();
-                System.out.println(Thread.currentThread().getName() + 
-                    ": " + singleton.hashCode());
-                latch.countDown();
-            });
-        }
-        
-        latch.await();
-        executor.shutdown();
-        
-        // すべて同じハッシュコードが出力されることを確認
-    }
+    // ...
 }
 ```
 
 ## 一般的な並行処理の落とし穴と解決策
 
-<span class="listing-number">**サンプルコード15-21**</span>
+<span class="listing-number">**サンプルコード15-21**　ConcurrencyPitfallsAndSolutions.java（5、7〜25、40〜48、56〜79、85〜92、100、150行目）</span>
 
 ```java
-import java.util.*;
-import java.util.concurrent.*;
-
 public class ConcurrencyPitfallsAndSolutions {
-    
+    // ...
     // 落とし穴1: 誤った同期によるデッドロック
     static class DeadlockExample {
         private final Object lock1 = new Object();
@@ -1667,20 +1608,7 @@ public class ConcurrencyPitfallsAndSolutions {
                 }
             }
         }
-        
-        public void method2() {
-            synchronized (lock2) {
-                System.out.println("Method2: lock2を取得");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                synchronized (lock1) {
-                    System.out.println("Method2: lock1を取得");
-                }
-            }
-        }
+        // ...
         
         // 解決策: ロック順序の統一
         public void safeMethod1() {
@@ -1690,13 +1618,7 @@ public class ConcurrencyPitfallsAndSolutions {
                 }
             }
         }
-        
-        public void safeMethod2() {
-            synchronized (lock1) {  // 同じ順序でロック
-                synchronized (lock2) {
-                    System.out.println("Safe method2 実行");
-                }
-            }
+        // ...
         }
     }
     
@@ -1721,11 +1643,7 @@ public class ConcurrencyPitfallsAndSolutions {
     static class CollectionMisuse {
         // 誤り: 通常のHashMapは並行アクセスに対して安全でない
         private final Map<String, Integer> unsafeMap = new HashMap<>();
-        
-        public void unsafeOperation() {
-            // 複数スレッドから同時に呼ばれると問題発生
-            unsafeMap.put("key", unsafeMap.getOrDefault("key", 0) + 1);
-        }
+        // ...
         
         // 解決策1: ConcurrentHashMapを使用
         private final ConcurrentHashMap<String, Integer> safeMap = 
@@ -1734,63 +1652,9 @@ public class ConcurrencyPitfallsAndSolutions {
         public void safeOperation1() {
             safeMap.merge("key", 1, Integer::sum);
         }
-        
-        // 解決策2: 同期化
-        private final Map<String, Integer> syncMap = new HashMap<>();
-        
-        public synchronized void safeOperation2() {
-            syncMap.put("key", syncMap.getOrDefault("key", 0) + 1);
-        }
+        // ...
     }
-    
-    // 落とし穴4: スレッドリーク
-    static class ThreadLeakExample {
-        // 誤り: ExecutorServiceを確実にシャットダウンしない
-        public void causeThreadLeak() {
-            ExecutorService executor = Executors.newFixedThreadPool(10);
-            executor.execute(() -> System.out.println("Task"));
-            // executorをシャットダウンしないとスレッドがリーク！
-        }
-        
-        // 解決策: try-finallyまたはtry-with-resourcesパターン
-        public void preventThreadLeak() {
-            ExecutorService executor = Executors.newFixedThreadPool(10);
-            try {
-                executor.execute(() -> System.out.println("Task"));
-            } finally {
-                executor.shutdown();
-                try {
-                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                        executor.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    executor.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-    
-    public static void main(String[] args) {
-        System.out.println("並行処理の一般的な落とし穴の例");
-        
-        // デッドロックの回避例
-        DeadlockExample example = new DeadlockExample();
-        Thread t1 = new Thread(example::safeMethod1);
-        Thread t2 = new Thread(example::safeMethod2);
-        t1.start();
-        t2.start();
-        
-        // アトミック操作の例
-        VolatileMisuse volatileExample = new VolatileMisuse();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        
-        for (int i = 0; i < 1000; i++) {
-            executor.execute(volatileExample::correctIncrement);
-        }
-        
-        executor.shutdown();
-    }
+    // ...
 }
 ```
 

@@ -77,11 +77,31 @@
       { "file": "ChatClient.java", "from": 1, "to": 44 }
     ]
   },
+  "16-11": {
+    "dir": "16-11",
+    "main": "JsonApiClient",
+    "excerpt": [
+      { "file": "JsonApiClient.java", "from": 7, "to": 34 },
+      { "file": "JsonApiClient.java", "from": 74, "to": 74 }
+    ],
+    "libs": [
+      "com.fasterxml.jackson.core:jackson-databind:2.15.2",
+      "com.fasterxml.jackson.core:jackson-core:2.15.2",
+      "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
+    ]
+  },
   "16-12": {
     "dir": "16-12",
     "main": "SSLClient",
     "excerpt": [
       { "file": "SSLClient.java", "from": 1, "to": 36 }
+    ]
+  },
+  "16-13": {
+    "dir": "16-13",
+    "main": "NIOServer",
+    "excerpt": [
+      { "file": "NIOServer.java", "from": 7, "to": 61 }
     ]
   }
 }

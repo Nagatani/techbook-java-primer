@@ -728,15 +728,9 @@ public class ChatClient {
 
 以下のコードは、汎用的なJSON APIクライアントの実装例です。Jackson ライブラリを使用してJSONのシリアライズ/デシリアライズを行い、Java 11のHttpClientでHTTPリクエストを送信します。このクライアントはGETとPOSTメソッドをサポートし、型安全な方法でJSONデータを扱うことができます。
 
-<span class="listing-number">**サンプルコード16-11**</span>
+<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜34、74行目）</span>
 
 ```java
-import java.net.URI;
-import java.net.http.*;
-import java.util.Map;
-import java.util.HashMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class JsonApiClient {
     private final HttpClient client;
     private final ObjectMapper mapper;
@@ -765,45 +759,7 @@ public class JsonApiClient {
             throw new RuntimeException("HTTP error: " + response.statusCode());
         }
     }
-    
-    // POSTリクエスト
-    public <T> T post(String url, Object data, Class<T> responseType) 
-            throws Exception {
-        String json = mapper.writeValueAsString(data);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header("Content-Type", "application/json")
-            .header("Accept", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-        
-        HttpResponse<String> response = client.send(request,
-            HttpResponse.BodyHandlers.ofString());
-        
-        return mapper.readValue(response.body(), responseType);
-    }
-    
-    public static void main(String[] args) throws Exception {
-        JsonApiClient apiClient = new JsonApiClient();
-        
-        // GET例：ユーザー情報の取得
-        Map<String, Object> user = apiClient.get(
-            "https://jsonplaceholder.typicode.com/users/1",
-            Map.class);
-        System.out.println("User: " + user);
-        
-        // POST例：新しい投稿の作成
-        Map<String, Object> newPost = new HashMap<>();
-        newPost.put("title", "New Post");
-        newPost.put("body", "This is a new post");
-        newPost.put("userId", 1);
-        
-        Map<String, Object> result = apiClient.post(
-            "https://jsonplaceholder.typicode.com/posts",
-            newPost, Map.class);
-        System.out.println("Created: " + result);
-    }
+    // ...
 }
 ```
 
@@ -922,14 +878,9 @@ Java NIOを使用すると、単一スレッドで複数の接続を管理でき
 
 以下のコードは、NIO（Non-blocking I/O）を使用したサーバーの実装例です。Selectorパターンを利用することで、単一のスレッドで複数のクライアント接続を効率的に管理できます。この方式は、従来のスレッドベースのサーバーと比較して、多数の同時接続を処理する際のリソース効率が格段に向上します。
 
-<span class="listing-number">**サンプルコード16-13**</span>
+<span class="listing-number">**サンプルコード16-13**　NIOServer.java（7〜61行目）</span>
 
 ```java
-import java.nio.*;
-import java.nio.channels.*;
-import java.net.*;
-import java.util.*;
-
 public class NIOServer {
     private static final int PORT = 8080;
     

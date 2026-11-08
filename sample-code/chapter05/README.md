@@ -12,9 +12,12 @@
 javac -d out *.java
 ```
 
+外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。
+
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [5-1](./05-01/) | PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
+| [5-2](./05-02/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
 | [5-4](./05-04/) | PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
 | [5-5](./05-05/) | ExcelDocument.java | （mainメソッドなし） |
 | [5-6](./05-06/) | Document.java | （mainメソッドなし） |
