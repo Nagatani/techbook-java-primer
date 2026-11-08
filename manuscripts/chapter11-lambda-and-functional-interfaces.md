@@ -468,7 +468,7 @@ public class EventSourcedAccount {
 <span class="listing-number">**サンプルコード11-13**</span>
 
 ```java
-// 関数型ファクトリパターン。
+// 関数型ファクトリパターン
 public class ProcessorFactory {
     private final Map<String, Supplier<DataProcessor>> processors = Map.of(
         "csv", CsvProcessor::new,
@@ -481,7 +481,7 @@ public class ProcessorFactory {
                       .map(Supplier::get);
     }
     
-    // さらに高度な例：パラメータ化されたファクトリ。
+    // さらに高度な例：パラメータ化されたファクトリ
     public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
         String type) {
         return config -> processors.get(type)
@@ -1222,19 +1222,19 @@ Thread t1 (Anonymous) finished
 
 ```java
 public class ValidationFramework {
-    // 基本的なバリデーション関数。
+    // 基本的なバリデーション関数
     public static Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
     public static Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
     public static Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
     public static Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
     
-    // 複合バリデーション。
+    // 複合バリデーション
     public static Predicate<User> validUser = user ->
         notEmpty.test(user.getName()) &&
         validEmail.test(user.getEmail()) &&
         minLength.apply(8).test(user.getPassword());
     
-    // エラーメッセージ付きバリデーション。
+    // エラーメッセージ付きバリデーション
     public static class ValidationResult {
         private final boolean valid;
         private final List<String> errors;
@@ -1353,9 +1353,9 @@ Charlie
 <span class="listing-number">**サンプルコード11-31**</span>
 
 ```java
-// ❌ 型推論が曖昧な場合。
+// ❌ 型推論が曖昧な場合
 Comparator<String> comp = (x, y) -> x.length() - y.length();
-// 以下のように使用すると型推論エラーが発生する場合があります。
+// 以下のように使用すると型推論エラーが発生する場合があります
 var result = someMethod((x, y) -> x.length() - y.length());
 ```
 
@@ -1369,10 +1369,10 @@ error: Cannot infer type arguments for method
 <span class="listing-number">**サンプルコード11-32**</span>
 
 ```java
-// ✅ 明示的な型指定。
+// ✅ 明示的な型指定
 Comparator<String> comp = (String x, String y) -> x.length() - y.length();
 
-// またはメソッド参照を使用。
+// またはメソッド参照を使用
 Comparator<String> comp = Comparator.comparing(String::length);
 ```
 
@@ -1383,10 +1383,10 @@ Comparator<String> comp = Comparator.comparing(String::length);
 <span class="listing-number">**サンプルコード11-33**</span>
 
 ```java
-// ❌ チェック例外のハンドリング。
+// ❌ チェック例外のハンドリング
 List<String> files = Arrays.asList("file1.txt", "file2.txt");
 files.stream()
-    .map(file -> Files.readString(Path.of(file)))  // IOException発生。
+    .map(file -> Files.readString(Path.of(file)))  // IOException発生
     .collect(Collectors.toList());
 ```
 
@@ -1400,7 +1400,7 @@ error: Unhandled exception type IOException
 <span class="listing-number">**サンプルコード11-34**</span>
 
 ```java
-// ✅ 例外をランタイム例外でラップ。
+// ✅ 例外をランタイム例外でラップ
 List<String> contents = files.stream()
     .map(file -> {
         try {
@@ -1411,7 +1411,7 @@ List<String> contents = files.stream()
     })
     .collect(Collectors.toList());
 
-// またはOptionalを使用した安全な処理。
+// またはOptionalを使用した安全な処理
 List<String> contents = files.stream()
     .map(file -> {
         try {
@@ -1432,13 +1432,13 @@ List<String> contents = files.stream()
 <span class="listing-number">**サンプルコード11-35**</span>
 
 ```java
-// ❌ 変数キャプチャの問題。
+// ❌ 変数キャプチャの問題
 public void processNumbers(List<Integer> numbers) {
     int threshold = 10;
-    threshold = 20;  // 変数の変更。
+    threshold = 20;  // 変数の変更
     
     List<Integer> filtered = numbers.stream()
-        .filter(n -> n > threshold)  // エラー: 実質的にfinalではありません。
+        .filter(n -> n > threshold)  // エラー: 実質的にfinalではありません
         .collect(Collectors.toList());
 }
 ```
@@ -1453,16 +1453,16 @@ error: Variable used in lambda expression should be final or effectively final
 <span class="listing-number">**サンプルコード11-36**</span>
 
 ```java
-// ✅ 実質的にfinalな変数を使用。
+// ✅ 実質的にfinalな変数を使用
 public void processNumbers(List<Integer> numbers) {
-    final int threshold = 20;  // finalキーワード。
+    final int threshold = 20;  // finalキーワード
     
     List<Integer> filtered = numbers.stream()
         .filter(n -> n > threshold)
         .collect(Collectors.toList());
 }
 
-// または異なる変数名を使用。
+// または異なる変数名を使用
 public void processNumbers(List<Integer> numbers) {
     int initialThreshold = 10;
     int finalThreshold = 20;
@@ -1480,11 +1480,11 @@ public void processNumbers(List<Integer> numbers) {
 <span class="listing-number">**サンプルコード11-37**</span>
 
 ```java
-// ❌ 関数型インターフェイスの誤用。
+// ❌ 関数型インターフェイスの誤用
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
-    int subtract(int a, int b);  // 複数の抽象メソッド。
+    int subtract(int a, int b);  // 複数の抽象メソッド
 }
 ```
 
@@ -1498,18 +1498,18 @@ error: Multiple non-overriding abstract methods found in interface Calculator
 <span class="listing-number">**サンプルコード11-38**</span>
 
 ```java
-// ✅ 単一の抽象メソッドを持つ関数型インターフェイス。
+// ✅ 単一の抽象メソッドを持つ関数型インターフェイス
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
     
-    // デフォルトメソッドまたは静的メソッドは許可される。
+    // デフォルトメソッドまたは静的メソッドは許可される
     default int subtract(int a, int b) {
         return a - b;
     }
 }
 
-// 使用例。
+// 使用例
 Calculator adder = (a, b) -> a + b;
 Calculator multiplier = (a, b) -> a * b;
 ```
@@ -1521,10 +1521,10 @@ Calculator multiplier = (a, b) -> a * b;
 <span class="listing-number">**サンプルコード11-39**</span>
 
 ```java
-// ❌ メソッド参照の型不一致。
+// ❌ メソッド参照の型不一致
 List<String> strings = Arrays.asList("1", "2", "3");
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // int返却だが、Integer期待。
+    .map(Integer::parseInt)  // int返却だが、Integer期待
     .collect(Collectors.toList());
 ```
 
@@ -1538,14 +1538,14 @@ error: Cannot infer type arguments for collect
 <span class="listing-number">**サンプルコード11-40**</span>
 
 ```java
-// ✅ オートボクシングによる自動変換。
+// ✅ オートボクシングによる自動変換
 List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)  // intからIntegerへ自動変換。
+    .map(Integer::parseInt)  // intからIntegerへ自動変換
     .collect(Collectors.toList());
 
-// または明示的な型指定。
+// または明示的な型指定
 List<Integer> numbers = strings.stream()
-    .map(Integer::valueOf)  // Integer返却。
+    .map(Integer::valueOf)  // Integer返却
     .collect(Collectors.toList());
 ```
 
