@@ -7,15 +7,15 @@ sections:
   - key: "単体テストの基礎"
     hash: 33080f1d
   - key: "テストの基本形（AAAパターン）"
-    hash: fa17cd2c
+    hash: 3c24fbb5
   - key: "テストを妨げる「依存関係」"
-    hash: 309e19c8
+    hash: b9294bb3
   - key: "疎結合設計（Dependency Injection）"
     hash: d659762e
   - key: "DIによるテスト容易性の向上"
-    hash: 6a790f3f
+    hash: d5fd9650
   - key: "テスト駆動開発（TDD）"
-    hash: c0369bf0
+    hash: e712cf86
   - key: "JUnitによる効率的なテスト"
     hash: f1a53168
   - key: "テストのベストプラクティス"

@@ -63,6 +63,13 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 全23章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
    - 形式: **サンプルコードX-Y** で統一（Xはファイル名の章番号と一致させる）
 
+6. **Sample Code Excerpts（2026-11-08〜）**: ページ数削減のため、サンプルコードは要点だけを本文に載せ、コンパイル・実行できる全文はGitHubの`sample-code/`へ誘導する
+   - 全文は`sample-code/chapterXX/XX-YY/`（サンプルコードX-Yに対応）。本文に載せる範囲は`sample-code/chapterXX/listings.json`にファイル名と行番号で記録する
+   - **本文のコードブロックとキャプション（「サンプルコード5-3　Shape.java（12〜30行目）」）は全文から生成する。本文のコードを直接編集せず、全文を編集してから`npm run samples:sync`する**
+   - 範囲のあいだを省いた箇所は`// ...`の行になる（詳細は`sample-code/README.md`）
+   - 本文で省いたimportや補助クラスは全文側に足してよい（本文に載らない範囲に置く）
+   - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
@@ -78,6 +85,9 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run lint`: Lint all manuscript files in the `manuscripts/` directory
 - `npm run check:java`: Compile the numbered Java samples with javac and report real compile errors
 - `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
+- `npm run check:samples`: For samples whose full source is in `sample-code/`, check that the manuscript code equals the recorded line ranges, the caption matches, the full source compiles, and its output matches 実行結果
+- `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
+- `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 
 ### Configuration
@@ -111,13 +121,14 @@ The build process converts Markdown files listed in the `entry` array (currently
    - 章の修正: `docs/summaries/chapterXX.md` で節構成をつかみ、`docs/book-index/` の行範囲で節ごとに読む
    - 章をまたぐ校閲: 章ごとにサブエージェントへ任せ、指摘事項だけを受け取る
 4. Write or edit manuscript files in `manuscripts/*.md`
-5. Sample code extracted from the book is maintained in `sample-code/` directory
+5. Sample code is maintained in `sample-code/` (full sources). Edit the full source there and run `npm run samples:sync` instead of editing the manuscript code block
 6. Run `npm run lint` to check for writing style issues
 7. Run `npm run lint:fix` to automatically format manuscript files
 8. Run `npm run build` to ensure the book builds successfully
 9. Run `npm run index` and `npm run index:check`; update stale summaries (rewrite the section summary and its hash)
    - Javaサンプルを変更したら `npm run check:java` でコンパイルを確認する（結果の一覧は `--report` で `docs/analysis/java-sample-check.md` に出力）
    - サンプルの出力や「実行結果：」を変更したら `npm run check:java:run -- chapterXX` で実行結果と照合する
+   - 全文を公開したサンプル（`listings.json`にあるもの）は `npm run check:samples -- chapterXX` で検査する（check:javaの対象外）
 10. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules

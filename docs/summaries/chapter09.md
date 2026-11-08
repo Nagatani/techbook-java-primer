@@ -1,19 +1,19 @@
 ---
 source: manuscripts/chapter09-collections.md
-summarized: 2026-11-07
+summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
     hash: db26e2d9
   - key: "なぜコレクションフレームワークが必要か"
-    hash: ba115956
+    hash: 307b6ab1
   - key: "コレクションフレームワークの全体像"
     hash: 4f53989e
   - key: "List インターフェイス"
-    hash: 0964a909
+    hash: f90e0143
   - key: "Set インターフェイス"
-    hash: fe846245
+    hash: 09dccbd3
   - key: "Map インターフェイス"
-    hash: 5e687e29
+    hash: 3b4f1e2c
   - key: "イテレータとfor-each文"
     hash: 7016fbd5
   - key: "コレクションの選択指針"

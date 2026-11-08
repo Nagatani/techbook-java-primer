@@ -7,19 +7,19 @@ sections:
   - key: "抽象化の必要性"
     hash: fd8c7646
   - key: "抽象クラスと抽象メソッド"
-    hash: dbb03250
+    hash: bcb5cbaa
   - key: "インターフェイス：振る舞いの契約"
-    hash: 638ff35e
+    hash: ccc3a55a
   - key: "抽象クラス vs インターフェイス"
     hash: 1d96f177
   - key: "Java 8以降のインターフェイス進化"
-    hash: a36fa719
+    hash: 5c0c228e
   - key: "高度な設計パターン"
-    hash: 2aae3bff
+    hash: 8cead0a9
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 094d2e35
+    hash: eeb99a03
   - key: "よくあるエラーと対処法"
-    hash: ad1f6c96
+    hash: cded37af
   - key: "まとめ"
     hash: ed873026
   - key: "章末演習"
@@ -79,26 +79,26 @@ sections:
     + ダイヤモンド問題と`X.super.method()`による解決（7-8）、「クラス優先」「より具体的なインターフェイス優先」「それでも曖昧ならコンパイルエラー」の優先順位規則（7-9）
     + staticメソッドによるユーティリティの提供（JSONシリアライズの例、7-10）
     + defaultメソッドで`Optional`や不変リストを返す防御的なラッパー（7-11）
-- 高度な設計パターン（L562–962）
+- 高度な設計パターン（L562–822）
     + Mixin: `Timestamped`・`Identifiable`・`Versioned`を組み合わせる`Document`（7-12）
     + トレイト: `Comparable`を拡張して比較メソッドを追加する`ComparableTrait`（7-13）
     + インターフェイス分離原則: 肥大化した`BadUserService`を役割ごとに分割する（7-14）
     + `Function`を拡張した`EnhancedFunction`で条件付き実行・メモ化・計測を追加する（7-15）
     + `ServiceV1`〜`ServiceV3`の継承とdefaultメソッドによるAPIのバージョニング（7-16）
-- Factoryパターン：オブジェクト生成の抽象化（L963–1265）
+- Factoryパターン：オブジェクト生成の抽象化（L823–1000）
     + Simple Factory: 文字列から`Circle`・`Rectangle`・`Triangle`を生成する`ShapeFactory`（7-17）
     + Factory Method: 抽象クラス`DocumentFactory`のサブクラスがWord/PDF文書を生成する（7-18）
     + 利点4項目（結合度の低減、拡張性、生成ロジックの隠蔽、一貫性）
     + MySQL/PostgreSQLの接続を切り替える`DatabaseConnectionFactory`（7-19）
-- よくあるエラーと対処法（L1266–1708）
+- よくあるエラーと対処法（L1001–1413）
     + 抽象クラスのインスタンス化（7-20、7-21）、抽象メソッドの実装忘れ（7-22、7-23）、インターフェイスの実装不備（7-24、7-25）
     + defaultメソッドの名前衝突（7-26、7-27）、インターフェイスのstaticメソッドは実装クラス経由で呼べない（7-28、7-29）
     + 2026-11-08に、エラーメッセージをEclipse形式からjavacの実際の出力に置き換えた。7-28は、インターフェイス内のdefaultメソッドからの呼び出しまでエラーとしていた誤りを直した
     + 抽象クラスとインターフェイスの選択ミス（7-30、7-31）、`@Override`の省略によるタイプミスの見逃し（7-32、7-33）
     + トラブルシューティングの心得5項目
-- まとめ（L1709–1726）
+- まとめ（L1414–1431）
     + 抽象クラス、インターフェイス、Java 8以降のインターフェイス、設計パターンの4項目と、第8章への導入（2026-11-08に新設）
-- 章末演習（L1727–1748）
+- 章末演習（L1432–1453）
     + 演習リンクは`exercises/chapter07/`で現行番号と一致している
     + 課題構成の後に、見出しを失った「DrawableインターフェイスでSVG出力機能を追加」という1行が残る（L1715）
     + PaymentSystem課題（Strategyパターン、defaultメソッドによる手数料計算）と、第8章への案内

@@ -5,11 +5,11 @@ sections:
   - key: "本章の学習目標"
     hash: e603fde1
   - key: "基本コンポーネントとレイアウト"
-    hash: ac53ac46
+    hash: e27b785c
   - key: "イベント処理入門"
-    hash: d1ab5696
+    hash: 9cfc2591
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"
-    hash: 3aa38aed
+    hash: 7530ded2
   - key: "カスタムコンポーネントの作成"
     hash: 76f93346
   - key: "よくあるエラーと対処法"
@@ -65,37 +65,37 @@ sections:
 - 本章の学習目標（L3–27）
     + GUIの基本概念（イベント駆動・Swingアーキテクチャ・EDT）、基本コンポーネント、3つのレイアウトマネージャー、イベント処理の基礎の4項目
     + MouseListener・KeyListener・ペイントシステムは本文で扱っていない
-- 基本コンポーネントとレイアウト（L28–825）
+- 基本コンポーネントとレイアウト（L28–722）
     + JFrameで最小のウィンドウを表示し、setSize・setDefaultCloseOperation・setLocationRelativeTo・setVisibleの役割を説明（17-1）。setResizableや絶対位置など詳細設定（17-2）
     + Swingコンポーネント継承階層の図（figure17-01）、JLabelの表示（17-3）、BorderLayoutの5領域（17-4）
     + JLabelのHTML表示（17-5）、JButtonの色・サイズ・無効化（17-6）
     + JTextField・JPasswordField・JTextArea・JSpinner・JSliderの入力系（17-7）、JCheckBox・ButtonGroup付きJRadioButton・JComboBox・JListの選択系（17-8）
     + BorderLayout（17-9）、GridLayout（17-10）、FlowLayout（17-11）の特徴と例
     + JPanelの用途とエディタ風画面（17-12）、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-13）
-- イベント処理入門（L826–1319）
+- イベント処理入門（L723–1106）
     + イベント駆動の考え方と、イベントソース・イベントオブジェクト・リスナーの3要素。イベント処理モデルの図（figure17-02）
     + 匿名クラスのActionListenerでボタンクリックを処理（17-14）、JTextFieldの入力をラベルに表示（17-15）
     + 匿名クラスとラムダ式の比較（17-16）、大文字・小文字変換アプリ（17-17）
     + カウンタアプリ（17-18）、isSelectedによる選択状態の処理（17-19）、複数の入力部品を組み合わせたフォーム（17-20）
     + 内容のほとんどが第18章前半と重複する
-- EDT（Event Dispatch Thread）とスレッド安全性（L1320–1879）
+- EDT（Event Dispatch Thread）とスレッド安全性（L1107–1533）
     + EDTの役割とSwingがスレッドセーフでないこと。invokeLaterによる初期化（17-21）、isEventDispatchThreadでの確認（17-22）
     + SwingWorkerのdoInBackground・process・done（17-23）、invokeLaterとinvokeAndWaitの違い（17-24）
     + Look&Feel設定を含む初期化パターン（17-25）、publishとsetProgressによる進捗表示（17-26）
     + javax.swing.Timerのデジタル時計（17-27）、volatileフラグと別スレッドからのUI更新（17-28）
-- カスタムコンポーネントの作成（L1880–1972）
+- カスタムコンポーネントの作成（L1534–1626）
     + 基底クラスの選択（JComponent・JButton・JPanel、17-29）
     + needsRepaintフラグとcontainsのオーバーライド（17-30）、フォーカスとAccessibleContext（17-31）、独自リスナーのadd/remove/fire（17-32）
     + いずれも断片コードで、基本の描画例がない
-- よくあるエラーと対処法（L1973–2300）
+- よくあるエラーと対処法（L1627–1954）
     + コンポーネントが表示されない（17-33）、BorderLayoutの位置指定漏れ（17-34、17-35）
     + JPanelの背景色（17-36、17-37）、JTextFieldが編集できない（17-38、17-39）
     + AWT-EventQueue-0の例外とinvokeLater（17-40）
     + JTextAreaのサイズ（17-41、17-42）、JButtonのsetSizeとsetPreferredSize（17-43、17-44）
     + 画面のちらつき（17-45、17-46）、デバッグ用の境界線表示・レイアウト確認・EDT確認（17-47〜17-49）
-- まとめ（L2301–2319）
+- まとめ（L1955–1973）
     + 画面の組み立て、イベント処理の入り口、EDTとスレッド安全性、カスタムコンポーネントの4項目（2026-11-08に新設）
-- 章末演習（L2320–2341）
+- 章末演習（L1974–1995）
     + 演習リンクが`exercises/chapter18/`を指している（Issue #010）
     + 「本章の基本概念の理解確認」などの汎用リストと、電卓・メモ帳・画像ビューアーの課題リストが並ぶ
 

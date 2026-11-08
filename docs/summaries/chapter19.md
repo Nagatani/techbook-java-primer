@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 304b4d51
   - key: "詳細なイベント処理の実装"
-    hash: 5dc69962
+    hash: eba21990
   - key: "カスタムイベントとObserverパターン"
-    hash: 0dd227e3
+    hash: f1310a3c
   - key: "ドラッグ&ドロップの実装"
-    hash: 86e320a4
+    hash: 8c96f44c
   - key: "パフォーマンスの最適化"
-    hash: 1569c461
+    hash: 3c8203f2
   - key: "よくあるエラーと対処法"
     hash: b1ac6f2f
   - key: "まとめ"
@@ -45,28 +45,28 @@ sections:
 - 本章の学習目標（L3–26）
     + 複雑なイベント処理、カスタムイベントとパターン、パフォーマンスの最適化の3本柱
     + 前提は第18章の知識とObserverパターンの概念的理解
-- 詳細なイベント処理の実装（L27–570）
+- 詳細なイベント処理の実装（L27–225）
     + マウスイベントの完全な処理: MouseAdapterでクリック回数・ボタン種別・押下/解放・出入り・ドラッグを処理し、ドラッグ中に線を描く。JPopupMenuとisPopupTriggerによる右クリックメニュー（19-1）
     + キーボードイベントの高度な処理: KeyListenerでCtrl+S・Ctrl+A・F1を検出し、HashSetで押下中のキーを追跡して同時押しを検出。InputMap/ActionMapによるキーバインディング（Ctrl+D、F5）を「より良いアプローチ」として併記（19-2）
     + DocumentListenerによるテキスト変更の監視: メール形式・パスワード長と強度・確認パスワード一致をリアルタイム検証し、送信ボタンの有効/無効を切り替える。GridBagLayoutとJPasswordField、getPasswordの後の配列クリア（19-3）
-- カスタムイベントとObserverパターン（L571–932）
+- カスタムイベントとObserverパターン（L226–370）
     + カスタムイベントの作成: EventObjectを継承したTemperatureChangeEvent、EventListenerを継承したリスナインターフェイス、リスナ一覧を持つセンサーモデル。JSliderで温度を変え、表示更新リスナと最高/最低記録リスナの2つに通知する（19-4）
     + JavaBeansイベントモデルの実装: PropertyChangeSupportとプロパティ名指定のリスナ登録で、株価モデルの変化を4つのパネルに通知する株価モニター。javax.swing.Timerで1秒ごとに価格を変動させる（19-5）
-- ドラッグ&ドロップの実装（L933–1116）
+- ドラッグ&ドロップの実装（L371–460）
     + TransferHandlerによるJList間のアイテム移動（canImport/importData/createTransferable/exportDone）と、DropTarget＋DropTargetAdapterによる外部ファイルのドロップ受け付け（19-6）
     + JList・DefaultListModelは第20章で扱う部品で、ここで説明なしに先に使っている（2026-11-08に、初出の箇所へ後の章で学ぶ旨と最小限の読み方の案内を加えた）
-- パフォーマンスの最適化（L1117–1406）
+- パフォーマンスの最適化（L461–613）
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
     + SwingWorkerによる非同期処理: SwingWorker<String, ProgressInfo>でpublish/processによる進捗表示、cancel(true)とisCancelledによる中断、doneでのget（19-8）
-- よくあるエラーと対処法（L1407–1686）
+- よくあるエラーと対処法（L614–893）
     + SwingWorkerのdoInBackgroundから直接UIを更新する誤りと、publish/processへの修正（19-9、19-10）
     + DocumentListener内でテキストを変更する誤りと、フラグとinvokeLaterによる回避（19-11、19-12）
     + リスナを削除しないことによるメモリリークと、WeakReferenceによる保持（19-13、19-14）
     + acceptDropを呼ばずドロップが受け入れられない誤りと修正（19-15、19-16）
     + デバッグのヒント: RepaintManagerによるEDT違反検出（19-17）、イベント処理時間の計測（19-18）、WeakReferenceの生存数確認（19-19）
-- まとめ（L1687–1701）
+- まとめ（L894–908）
     + 6項目の箇条書きと「長時間処理とUI更新の分離、イベント処理の最適化が実務で重要」という1段落。次章への導入はない
-- 章末演習（L1702–1719）
+- 章末演習（L909–926）
     + 演習リンクは`exercises/chapter19/`で章番号は一致している
     + ただし課題構成に挙げた4課題のうち「高度なメニューシステム（Actionパターンと動的メニュー）」は本章で扱っていない。また`exercises/chapter19/README.md`は「第19章: GUI基礎とイベント処理」としてMVC・レイアウトマネージャーの課題を並べていて、本文の課題構成と一致しない（Issue #010の関連）
 
