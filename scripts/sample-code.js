@@ -37,6 +37,8 @@
  *                                                     本文に載せる範囲を listings.json に書き、本文に反映する
  *   node scripts/sample-code.js add 20-7 [--libs=g:a:v,...]  コンパイルできない本文のコードも全文として登録する（このあと全文を直す）
  *   node scripts/sample-code.js relocate 20-7         全文を編集して行がずれたら、本文と同じ並びを探して範囲を直す
+ *   node scripts/sample-code.js number [chapterXX]    番号のないコードブロックに番号を付け、章ごとに出現順の連番へ振り直す
+ *                                                     （listings.json、ディレクトリ名、本文中の参照も直す。check でも番号を検査する）
  *   node scripts/sample-code.js extract [chapterXX]   本文のサンプルのうち、単体（または同じ章のサンプルと合わせて）
  *                                                     コンパイルできるもので、まだ listings.json にないものを全文として書き出す
  */
@@ -337,6 +339,7 @@ function checkCommand(filters, args) {
   const totals = { 掲載: 0, 一致: 0, 数値差: 0, 実行不可: 0, 照合なし: 0 };
   for (const f of manuscriptFiles(filters)) {
     const ch = chapterOf(f);
+    problems.push(...numberingProblems(f));
     const manifest = loadManifest(ch);
     if (!Object.keys(manifest).length) continue;
     const file = path.join(L.MANUSCRIPTS, f);
@@ -380,6 +383,123 @@ function checkCommand(filters, args) {
   fs.rmSync(work, { recursive: true, force: true });
   console.log(`全文を公開しているサンプル: ${totals.掲載}${runMode ? `（実行結果 一致 ${totals.一致}、数値差 ${totals.数値差}、実行不可 ${totals.実行不可}、照合なし ${totals.照合なし}）` : ''}`);
   if (problems.length) { console.log(`問題 ${problems.length}件:\n  ${problems.join('\n  ')}`); process.exitCode = 1; } else console.log('問題なし');
+}
+
+// ---------------------------------------------------------------- number
+
+// 番号を付けないコードブロック（コマンド操作、実行結果、図）。言語指定のないブロックも付けない
+const UNNUMBERED_LANGS = new Set(['', 'bash', 'sh', 'shell', 'console', 'mermaid', 'plaintext']);
+const CAPTION = /<span class="listing-number">\*\*サンプルコード(\d+)-(\d+)\*\*/;
+
+/**
+ * 原稿のコードブロックを列挙する。引用（> ）の中のブロックも対象にする。
+ * caption はブロックの直前（空行をはさんで3行以内）にあるキャプション行の位置
+ */
+function scanBlocks(lines) {
+  const blocks = [];
+  for (let i = 0; i < lines.length; i++) {
+    const open = lines[i].match(/^((?:\s*>)*\s*)```(\S*)\s*$/);
+    if (!open) continue;
+    const prefix = open[1];
+    let end = i + 1;
+    while (end < lines.length && !/^(?:\s*>)*\s*```\s*$/.test(lines[end])) end++;
+    let caption = null;
+    for (let k = i - 1; k >= 0 && k >= i - 3; k--) {
+      if (CAPTION.test(lines[k])) { caption = k; break; }
+      if (lines[k].replace(/^[\s>]*/, '')) break;
+    }
+    blocks.push({ open: i, end, lang: open[2], prefix, caption });
+    i = end;
+  }
+  return blocks;
+}
+
+/** 番号を付けるべきなのに付いていないブロック、番号の飛び・重複・章番号の誤りを返す */
+function numberingProblems(f) {
+  const ch = chapterOf(f);
+  const lines = fs.readFileSync(path.join(L.MANUSCRIPTS, f), 'utf8').split('\n');
+  const problems = [];
+  let expected = 1;
+  for (const b of scanBlocks(lines)) {
+    if (b.caption === null) {
+      if (!UNNUMBERED_LANGS.has(b.lang)) problems.push(`${f}:${b.open + 1}: \`\`\`${b.lang} のブロックに番号がない（number で付けられる）`);
+      continue;
+    }
+    const [, x, y] = lines[b.caption].match(CAPTION);
+    if (Number(x) !== ch || Number(y) !== expected) problems.push(`${f}:${b.caption + 1}: サンプルコード${x}-${y} は ${ch}-${expected} のはず（number で振り直せる）`);
+    expected++;
+  }
+  const captions = lines.filter((l) => CAPTION.test(l)).length;
+  if (captions !== expected - 1) problems.push(`${f}: コードブロックに続かないキャプションがある（${captions - expected + 1}件）`);
+  return problems;
+}
+
+/**
+ * 番号のないコードブロックに番号を付け、章ごとに出現順の連番に振り直す。
+ * listings.json のキー、sample-code/ のディレクトリ名、本文中の「サンプルコードX-Y」の参照も合わせて直す
+ */
+function numberCommand(filters) {
+  const all = manuscriptFiles([]);
+  const maps = new Map(); // ch -> Map(old id -> new id)
+  for (const f of manuscriptFiles(filters)) {
+    const ch = chapterOf(f);
+    const file = path.join(L.MANUSCRIPTS, f);
+    const lines = fs.readFileSync(file, 'utf8').split('\n');
+    // 1. 番号のないブロックにキャプションを入れる（後ろから入れて行番号をずらさない）
+    const blocks = scanBlocks(lines);
+    let added = 0;
+    for (const b of [...blocks].reverse()) {
+      if (b.caption !== null || UNNUMBERED_LANGS.has(b.lang)) continue;
+      const blank = b.prefix.replace(/\s+$/, '');
+      const before = b.open > 0 && lines[b.open - 1].replace(/^[\s>]*/, '') ? [blank] : [];
+      lines.splice(b.open, 0, ...before, `${b.prefix}<span class="listing-number">**サンプルコード${ch}-0**</span>`, blank);
+      added++;
+    }
+    // 2. 出現順に振り直す
+    const map = new Map();
+    let n = 0;
+    for (const b of scanBlocks(lines)) {
+      if (b.caption === null) continue;
+      const [, x, y] = lines[b.caption].match(CAPTION);
+      const id = `${ch}-${++n}`;
+      const old = `${x}-${y}`;
+      if (y !== '0') {
+        if (map.has(old)) throw new Error(`${f}: サンプルコード${old} が重複している`);
+        map.set(old, id);
+      }
+      lines[b.caption] = lines[b.caption].replace(CAPTION, `<span class="listing-number">**サンプルコード${id}**`);
+    }
+    fs.writeFileSync(file, lines.join('\n'));
+    maps.set(ch, map);
+    const moved = [...map].filter(([a, b]) => a !== b).length;
+    console.log(`${f}: 番号を付けた ${added}件、番号が変わった ${moved}件（全${n}件）`);
+    // 3. listings.json とディレクトリ
+    const manifest = loadManifest(ch);
+    if (!Object.keys(manifest).length) continue;
+    const next = {};
+    const renames = [];
+    for (const [id, e] of Object.entries(manifest)) {
+      const to = map.get(id);
+      if (!to) throw new Error(`${f}: listings.json の ${id} が本文にない`);
+      if (dirName(to) !== e.dir) renames.push([e.dir, dirName(to)]);
+      next[to] = { ...e, dir: dirName(to) };
+    }
+    for (const [a] of renames) fs.renameSync(path.join(chapterDir(ch), a), path.join(chapterDir(ch), `.renumber-${a}`));
+    for (const [a, b] of renames) fs.renameSync(path.join(chapterDir(ch), `.renumber-${a}`), path.join(chapterDir(ch), b));
+    saveManifest(ch, next);
+  }
+  // 4. 本文中の参照（キャプション以外の「サンプルコードX-Y」）
+  for (const f of all) {
+    const file = path.join(L.MANUSCRIPTS, f);
+    const text = fs.readFileSync(file, 'utf8');
+    const next = text.split('\n').map((line) => (CAPTION.test(line) ? line : line.replace(/サンプルコード(\d+)-(\d+)/g, (m, x, y) => {
+      const to = maps.get(Number(x))?.get(`${x}-${y}`);
+      return to ? `サンプルコード${to}` : m;
+    }))).join('\n');
+    if (next !== text) fs.writeFileSync(file, next);
+  }
+  syncCommand(filters);
+  console.log('本文中の「サンプルコードX-Y」の参照は直しました。「12-1と12-2」のように番号だけの参照は手で確かめてください');
 }
 
 /** 全文を行番号付きで表示する（抜粋の範囲を決めるため） */
@@ -498,6 +618,7 @@ function main() {
   else if (cmd === 'set') setCommand(filters);
   else if (cmd === 'add') addCommand(filters, rest);
   else if (cmd === 'relocate') relocateCommand(filters);
+  else if (cmd === 'number') numberCommand(filters);
   else { console.error('使い方: node scripts/sample-code.js check|sync|extract [chapterXX]'); process.exit(2); }
 }
 
