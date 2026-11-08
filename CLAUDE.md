@@ -71,6 +71,10 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 本文で省いたimportや補助クラスは全文側に足してよい（本文に載らない範囲に置く）
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
 
+7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/h-common-errors/chapters/chapterXX.md`で提供する
+   - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
+   - GitHub側のコードには番号を付けない。コンパイルできる全文は`chapters/chapterXX-code/`に置く
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
