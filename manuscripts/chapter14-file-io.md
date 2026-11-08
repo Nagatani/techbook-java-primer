@@ -1477,7 +1477,7 @@ JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生�
 
 - JavaのファイルI/Oはストリームベースである
 - リソース管理には`try-with-resources`を使い、安全性を高めましょう
-- テキストファイルはキャラクタストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱いる
+- テキストファイルはキャラクタストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱う
 - オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段である
 - NIO.2 (`java.nio.file`) を使うと、モダンで高機能なファイルシステム操作が可能である
 - GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させることができる
