@@ -51,7 +51,7 @@
 
 以下のコードは、図形を表す抽象クラスShapeの実装例です。すべての図形に共通する属性（名前）と振る舞い（表示メソッド）は具体的に実装し、個々の図形で異なる計算方法（面積計算）は抽象メソッドとして定義しています。これにより、共通部分のコード重複を避けながら、子クラスに必要な実装を強制できます。
 
-<span class="listing-number">**サンプルコード7-1**</span>
+<span class="listing-number">**サンプルコード7-1**　Shape.java</span>
 
 ```java
 // 抽象クラス Shape
@@ -92,7 +92,7 @@ public abstract class Shape {
 
 子クラスである`Circle`と`Rectangle`は、`Shape`クラスを継承し、それぞれの方法で`getArea()`メソッドを実装します。
 
-<span class="listing-number">**サンプルコード7-2**</span>
+<span class="listing-number">**サンプルコード7-2**　Circle.java、Rectangle.java</span>
 
 ```java
 // Circle.java
@@ -134,7 +134,7 @@ public class Rectangle extends Shape {
 
 抽象クラスはインスタンス化できませんが、親クラスとしてポリモーフィズムを活用することはできます。
 
-<span class="listing-number">**サンプルコード7-3**</span>
+<span class="listing-number">**サンプルコード7-3**　Main.java</span>
 
 ```java
 // Main.java
@@ -182,7 +182,7 @@ public class Main {
 
 以下のコードは、異なる機能を表す2つのインターフェイスの定義例です。Exportableインターフェイスはエクスポート機能を、Archivableインターフェイスはアーカイブ機能を契約として定義しています。これらのインターフェイスを実装するクラスは、それぞれの機能を提供することを保証します。
 
-<span class="listing-number">**サンプルコード7-4**</span>
+<span class="listing-number">**サンプルコード7-4**　Exportable.java、Archivable.java</span>
 
 ```java
 // Exportable.java
@@ -201,7 +201,7 @@ public interface Archivable {
 
 `implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
 
-<span class="listing-number">**サンプルコード7-5**</span>
+<span class="listing-number">**サンプルコード7-5**　Document.java</span>
 
 ```java
 // Document.java
@@ -269,7 +269,7 @@ Java 8以降、インターフェイスは大きく進化し、より柔軟な�
 
 defaultメソッドは、既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れないようにするための重要な機能です。
 
-<span class="listing-number">**サンプルコード7-6**</span>
+<span class="listing-number">**サンプルコード7-6**　Collection.java</span>
 
 ```java
 import java.util.Iterator;
@@ -326,7 +326,7 @@ Java 8のリリース時点で、`Collection`インターフェイスを実装�
 
 `default`メソッドの強力な応用例として、テンプレートメソッドパターンをインターフェイスで実現できるようになりました。従来このパターンは抽象クラスでしか実装できませんでしたが、インターフェイスでも実現可能になったことで、より柔軟な設計が可能になりました。このパターンは、処理の大枠（アルゴリズムの骨格）を定義しつつ、個別のステップを実装クラスに委ねる場合に非常に有効です。
 
-<span class="listing-number">**サンプルコード7-7**</span>
+<span class="listing-number">**サンプルコード7-7**　DataProcessor.java</span>
 
 ```java
 // インターフェイスでテンプレートメソッドパターン
@@ -369,7 +369,7 @@ public interface DataProcessor {
 
 複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します。
 
-<span class="listing-number">**サンプルコード7-8**</span>
+<span class="listing-number">**サンプルコード7-8**　A.java</span>
 
 ```java
 // ダイヤモンド継承の例
@@ -419,7 +419,7 @@ Javaは以下の規則で優先順位を決定します。
     + サブインターフェイスのメソッドが優先
 3. それでも不明な場合はコンパイルエラー: 明示的なオーバーライドが必要
 
-<span class="listing-number">**サンプルコード7-9**</span>
+<span class="listing-number">**サンプルコード7-9**　BaseClass.java</span>
 
 ```java
 // 規則1：クラスが常に優先
@@ -508,7 +508,7 @@ Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
 
 `default`メソッドは、防御的プログラミングの実装においても非常に有効です。実装クラスが不正な値や例外的な状態を返す可能性がある場合でも、インターフェイス側で安全なラッパーメソッドを提供することで、呼び出し側のコードをより安全で使いやすくできます。これはとくに、外部ライブラリとの境界や、信頼性の異なる複数の実装が存在する場合に大切です。
 
-<span class="listing-number">**サンプルコード7-11**</span>
+<span class="listing-number">**サンプルコード7-11**　DefensiveInterface.java</span>
 
 ```java
 import java.util.*;
@@ -567,7 +567,7 @@ First item: Optional[Item 1]
 
 Mixinは、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
-<span class="listing-number">**サンプルコード7-12**</span>
+<span class="listing-number">**サンプルコード7-12**　Timestamped.java</span>
 
 ```java
 import java.time.Duration;
@@ -663,7 +663,7 @@ Document#DOC001 (version 2, age: 23ms)
 
 トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
-<span class="listing-number">**サンプルコード7-13**</span>
+<span class="listing-number">**サンプルコード7-13**　ComparableTrait.java</span>
 
 ```java
 // 比較可能オブジェクトのトレイト
@@ -1090,7 +1090,7 @@ public class FactoryDemo {
 
 より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します。
 
-<span class="listing-number">**サンプルコード7-18**</span>
+<span class="listing-number">**サンプルコード7-18**　DocumentFactory.java</span>
 
 ```java
 // 抽象ファクトリークラス
@@ -1177,7 +1177,7 @@ class PdfDocument implements Document {
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-19**</span>
+<span class="listing-number">**サンプルコード7-19**　DatabaseConnectionFactory.java</span>
 
 ```java
 import java.util.Properties;
@@ -1524,7 +1524,7 @@ error: cannot find symbol
 
 対処法：
 
-<span class="listing-number">**サンプルコード7-29**</span>
+<span class="listing-number">**サンプルコード7-29**　MathUtils.java</span>
 
 ```java
 interface MathUtils {
@@ -1554,7 +1554,7 @@ class Calculator implements MathUtils {
 
 間違った選択例：
 
-<span class="listing-number">**サンプルコード7-30**</span>
+<span class="listing-number">**サンプルコード7-30**　Service.java</span>
 
 ```java
 // 状態を持つのに無理にインターフェイスを使用
@@ -1574,7 +1574,7 @@ interface Service {
 
 正しい選択：
 
-<span class="listing-number">**サンプルコード7-31**</span>
+<span class="listing-number">**サンプルコード7-31**　BaseService.java</span>
 
 ```java
 import java.time.LocalDateTime;

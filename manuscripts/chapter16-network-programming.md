@@ -62,7 +62,7 @@ TCPクライアントは、Socketクラスを使用してサーバーに接続�
 
 以下のコードは、TCPクライアントの基本的な実装例です。Socketオブジェクトを作成してサーバーに接続し、PrintWriterで文字列を送信、BufferedReaderで応答を受信します。try-with-resources文を使用することで、通信終了時に自動的にソケットとストリームがクローズされます。
 
-<span class="listing-number">**サンプルコード16-1**</span>
+<span class="listing-number">**サンプルコード16-1**　SimpleTCPClient.java</span>
 
 ```java
 import java.io.*;
@@ -110,7 +110,7 @@ TCPサーバーは、ServerSocketを使用してクライアントからの接�
 
 以下のコードは、基本的なTCPサーバーの実装例です。このサーバーは8080番ポートで待機し、クライアントから受信したメッセージをエコーバックします。accept()メソッドは新しい接続があるまでブロックし、接続が確立されると各クライアントとの通信を個別に処理します。
 
-<span class="listing-number">**サンプルコード16-2**</span>
+<span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java</span>
 
 ```java
 import java.io.*;
@@ -180,7 +180,7 @@ public class SimpleTCPServer {
 
 以下のコードは、マルチスレッドに対応したTCPサーバーの実装例です。ExecutorServiceを使用してスレッドプールを管理し、各クライアントの接続を独立したスレッドで処理します。このアプローチにより、複数のクライアントからの同時接続を効率的に処理できます。サーバーは簡単なプロトコルを実装しており、ECHO、TIME、QUITなどのコマンドに応答します。
 
-<span class="listing-number">**サンプルコード16-3**</span>
+<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java</span>
 
 ```java
 import java.io.*;
@@ -287,7 +287,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
-<span class="listing-number">**サンプルコード16-4**</span>
+<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java</span>
 
 ```java
 import java.io.*;
@@ -367,7 +367,7 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています。
 
-<span class="listing-number">**サンプルコード16-5**</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java</span>
 
 ```java
 import java.io.*;
@@ -430,7 +430,7 @@ Response:
 
 Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード16-6**</span>
+<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java</span>
 
 ```java
 import java.net.URI;
@@ -508,7 +508,7 @@ UDPは、コネクションレスで信頼性の低いプロトコルですが�
 
 以下のコードは、UDPサーバーの実装例です。DatagramSocketを使用してUDPパケットを受信し、クライアントにエコーレスポンスを送信します。UDPはコネクションレスのため、各パケットにはデータだけでなく送信元のアドレスとポート情報も含まれています。
 
-<span class="listing-number">**サンプルコード16-7**</span>
+<span class="listing-number">**サンプルコード16-7**　UDPServer.java</span>
 
 ```java
 import java.net.*;
@@ -561,7 +561,7 @@ UDPサーバーがポート 9999 で起動しました
 
 以下のコードは、UDPクライアントの実装例です。このクライアントは、サーバーにメッセージを送信し、エコーレスポンスを受信します。UDP通信では、送信と受信の両方でDatagramPacketを使用し、パケット単位でデータをやり取りします。
 
-<span class="listing-number">**サンプルコード16-8**</span>
+<span class="listing-number">**サンプルコード16-8**　UDPClient.java</span>
 
 ```java
 import java.net.*;
@@ -619,7 +619,7 @@ UDPの特徴と使用場面。
 
 以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。ConcurrentHashMapを使用してスレッドセーフにクライアントのリストを管理し、各クライアントとの通信は独立したスレッドで処理されます。
 
-<span class="listing-number">**サンプルコード16-9**</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java</span>
 
 ```java
 import java.io.*;
@@ -721,7 +721,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでユーザーからの入力を受け付けます。この設計により、メッセージの送受信を同時に行うことができます。
 
-<span class="listing-number">**サンプルコード16-10**</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java</span>
 
 ```java
 import java.io.*;
@@ -917,7 +917,7 @@ JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
 以下のコードは、SSLSocketを使用したセキュアなクライアント接続の実装例です。SSLSocketFactoryから生成されたSSLSocketは、通常のSocketと同様に使用できますが、内部的にはすべての通信がSSL/TLSプロトコルで暗号化されます。最新のTLSプロトコルバージョンを明示的に指定することで、より安全な通信を実現します。
 
-<span class="listing-number">**サンプルコード16-12**</span>
+<span class="listing-number">**サンプルコード16-12**　SSLClient.java</span>
 
 ```java
 import javax.net.ssl.*;

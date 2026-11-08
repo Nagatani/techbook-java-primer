@@ -84,7 +84,7 @@ public int add(int a, int b) {
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクタ、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード22-2**</span>
+<span class="listing-number">**サンプルコード22-2**　Task.java</span>
 
 ```java
 /**
@@ -1651,7 +1651,7 @@ Javadocコメントの構文が正しくありません。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-25**</span>
+<span class="listing-number">**サンプルコード22-25**　UserService.java</span>
 
 ```java
 /**
@@ -1735,7 +1735,7 @@ JavadocでHTMLタグを間違って使用。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-29**</span>
+<span class="listing-number">**サンプルコード22-29**　UserService.java</span>
 
 ```java
 /**
@@ -1759,7 +1759,7 @@ warning: unclosed tag: <li>
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-30**</span>
+<span class="listing-number">**サンプルコード22-30**　UserService.java</span>
 
 ```java
 /**

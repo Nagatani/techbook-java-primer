@@ -355,7 +355,7 @@ WebアプリケーションではMVCパターン（Model-View-Controller）、�
 
 手続き型プログラミングでは、データと処理が分離された構造となります。以下の例では、この分離がどのような問題を引き起こすかを示します。
 
-<span class="listing-number">**サンプルコード3-1**</span>
+<span class="listing-number">**サンプルコード3-1**　ProceduralExample.java</span>
 
 ```java
 public class ProceduralExample {
@@ -392,7 +392,7 @@ public class ProceduralExample {
 
 オブジェクト指向では、関連するデータと処理を1つのクラスに統合し、概念の一貫性と責任の明確化を実現します。
 
-<span class="listing-number">**サンプルコード3-2**</span>
+<span class="listing-number">**サンプルコード3-2**　Student.java、ObjectOrientedExample.java</span>
 
 ```java
 public class Student {
@@ -446,7 +446,7 @@ public class ObjectOrientedExample {
 
 カプセル化は、オブジェクトの内部データを外部から直接アクセスできないように保護し、入力値の検証やビジネスルールの適用を含むメソッドを通じてのみ操作を許可する仕組みです。
 
-<span class="listing-number">**サンプルコード3-3**</span>
+<span class="listing-number">**サンプルコード3-3**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -513,7 +513,7 @@ public class BankAccountTest {
 次のサンプルでは、全体像をつかむために、第5章「継承とポリモーフィズム」で学ぶ`extends`と`protected`を先取りして使います。
 ここでは文法の細部は気にせず、「BookはProductの属性とメソッドを引き継ぐ」という関係だけを読み取ってください。
 
-<span class="listing-number">**サンプルコード3-4**</span>
+<span class="listing-number">**サンプルコード3-4**　Product.java、Book.java</span>
 
 ```java
 public class Product {
@@ -584,7 +584,7 @@ public class InheritanceTest {
 次のサンプルの`interface`と`implements`は、第7章「抽象クラスとインターフェイス」で詳しく学びます。
 ここでは、`PaymentMethod`が「決済できる」というメソッドの約束だけを決め、各クラスがその中身を実装している、と読んでください。
 
-<span class="listing-number">**サンプルコード3-5**</span>
+<span class="listing-number">**サンプルコード3-5**　PaymentMethod.java、CreditCardPayment.java、BankTransferPayment.java</span>
 
 ```java
 public interface PaymentMethod {  // ①
@@ -664,7 +664,7 @@ public class PolymorphismTest {
 
 フィールドは、オブジェクトが持つデータを表現します。各オブジェクトは自分専用のフィールドの値を持ちます。
 
-<span class="listing-number">**サンプルコード3-6**</span>
+<span class="listing-number">**サンプルコード3-6**　Student.java</span>
 
 ```java
 public class Student {
@@ -694,7 +694,7 @@ public class Student {
 
 これらは、メソッド内部で通常の変数として定義した際の「未初期化」の状態とは異なります。
 
-<span class="listing-number">**サンプルコード3-7**</span>
+<span class="listing-number">**サンプルコード3-7**　DefaultValueDemo.java</span>
 
 ```java
 public class DefaultValueDemo {
@@ -747,7 +747,7 @@ String: null
 
 #### 実際の使用例
 
-<span class="listing-number">**サンプルコード3-9**</span>
+<span class="listing-number">**サンプルコード3-9**　Product.java</span>
 
 ```java
 public class Product {
@@ -845,7 +845,7 @@ C言語の関数と似ていますが、関数とデータ（フィールド）�
 }
 ```
 
-<span class="listing-number">**サンプルコード3-11**</span>
+<span class="listing-number">**サンプルコード3-11**　Rectangle.java、RectangleExample.java</span>
 
 ```java
 public class Rectangle {
@@ -886,6 +886,7 @@ public class Rectangle {
         }
     }
 }
+
 // 使用例
 public class RectangleExample {
     public static void main(String[] args) {
@@ -978,7 +979,7 @@ public double calculateBMI(double weight, double height) {
 
 値の取得(getter)と設定(setter)をそれぞれ分割して作成することは、「取得はできるけど外部からは設定できないデータ」のような条件のデータを作成できることになります。
 
-<span class="listing-number">**サンプルコード3-16**</span>
+<span class="listing-number">**サンプルコード3-16**　Person.java</span>
 
 ```java
 public class Person {
@@ -1053,7 +1054,7 @@ public class PersonTest {
 
 コンストラクタは、オブジェクトを作成するときに自動的に呼ばれる特別なメソッドです。
 
-<span class="listing-number">**サンプルコード3-17**</span>
+<span class="listing-number">**サンプルコード3-17**　Book.java</span>
 
 ```java
 public class Book {
@@ -1118,7 +1119,7 @@ public class BookTest {
 
 Javaでは、同じ名前のメソッドを複数定義できます。これを「メソッドオーバーロード」と呼びます。
 
-<span class="listing-number">**サンプルコード3-18**</span>
+<span class="listing-number">**サンプルコード3-18**　PrintHelper.java、OverloadExample.java</span>
 
 ```java
 public class PrintHelper {
@@ -1258,7 +1259,7 @@ Integer: 10
 
 コンストラクタもメソッドと同様にオーバーロードできます。これにより、オブジェクトの作成時にさまざまな初期化方法を提供できます：
 
-<span class="listing-number">**サンプルコード3-21**</span>
+<span class="listing-number">**サンプルコード3-21**　Person.java</span>
 
 ```java
 public class Person {
@@ -1293,7 +1294,7 @@ public class Person {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です。
 
-<span class="listing-number">**サンプルコード3-22**</span>
+<span class="listing-number">**サンプルコード3-22**　Book.java</span>
 
 ```java
 public class Book {
@@ -1459,7 +1460,7 @@ price変更後のbook1は新しい価格情報を保持し続け、オブジェ�
     - 外部から直接アクセスできない
     - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-24**</span>
+<span class="listing-number">**サンプルコード3-24**　Student.java</span>
 
 ```java
 public class Student {
@@ -1528,7 +1529,7 @@ public class StudentAccessTest {
 
 フィールドをprivateにする理由を具体例で見てみましょう。
 
-<span class="listing-number">**サンプルコード3-25**</span>
+<span class="listing-number">**サンプルコード3-25**　Product.java、BadExample.java</span>
 
 ```java
 public class Product {
@@ -1558,7 +1559,7 @@ public class BadExample {
 
 #### privateを使った改善例
 
-<span class="listing-number">**サンプルコード3-26**</span>
+<span class="listing-number">**サンプルコード3-26**　Product.java</span>
 
 ```java
 public class Product {
@@ -1650,7 +1651,7 @@ static修飾子は、フィールドやメソッドが「クラスに属する�
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-27**</span>
+<span class="listing-number">**サンプルコード3-27**　MathHelper.java、StaticExample.java</span>
 
 ```java
 public class MathHelper {
@@ -1695,7 +1696,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-28**</span>
+<span class="listing-number">**サンプルコード3-28**　StaticMemberExample.java</span>
 
 ```java
 // StaticMemberExample.java
@@ -1782,7 +1783,7 @@ public class StaticMemberExample {
 
 #### ユーティリティメソッド
 
-<span class="listing-number">**サンプルコード3-29**</span>
+<span class="listing-number">**サンプルコード3-29**　MathUtils.java</span>
 
    ```java
    public class MathUtils {
@@ -1796,7 +1797,7 @@ public class StaticMemberExample {
 
 #### ファクトリーメソッド
 
-<span class="listing-number">**サンプルコード3-30**</span>
+<span class="listing-number">**サンプルコード3-30**　Student.java</span>
 
    ```java
    public class Student {
@@ -1820,7 +1821,7 @@ public class StaticMemberExample {
    これはファクトリーメソッドパターンの例です。
 #### 定数の定義
 
-<span class="listing-number">**サンプルコード3-31**</span>
+<span class="listing-number">**サンプルコード3-31**　Constants.java</span>
 
    ```java
    public class Constants {
@@ -2013,7 +2014,7 @@ System.out.println(students[0]);     // nullが表示される
 
 図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
-<span class="listing-number">**サンプルコード3-36**</span>
+<span class="listing-number">**サンプルコード3-36**　Book.java</span>
 
 ```java
 public class Book {
@@ -2098,7 +2099,7 @@ ECサイトのショッピングカート機能を実装したクラスです。
 商品の一覧には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<Item>`は、`Item`型の要素を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード3-37**</span>
+<span class="listing-number">**サンプルコード3-37**　ShoppingCart.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -2190,7 +2191,7 @@ public class ShoppingCartTest {
 
 ### ==演算子とequalsメソッドの違い
 
-<span class="listing-number">**サンプルコード3-38**</span>
+<span class="listing-number">**サンプルコード3-38**　StringComparison.java</span>
 
 ```java
 public class StringComparison {
@@ -2214,7 +2215,7 @@ public class StringComparison {
 
 独自のクラスで`equals`メソッドを適切に実装する方法を示します。
 
-<span class="listing-number">**サンプルコード3-39**</span>
+<span class="listing-number">**サンプルコード3-39**　Student.java</span>
 
 ```java
 public class Student {
@@ -2533,7 +2534,7 @@ public class MyClass { }      // 小文字のp
    - mainメソッドから各メソッドを呼び出して動作確認
 
 #### コード構造のヒント
-<span class="listing-number">**サンプルコード3-49**</span>
+<span class="listing-number">**サンプルコード3-49**　MethodsPractice.java</span>
 
 ```java
 public class MethodsPractice {

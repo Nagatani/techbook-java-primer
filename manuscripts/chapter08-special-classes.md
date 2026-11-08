@@ -45,7 +45,7 @@
 
 以下のコードは、曜日を表す列挙型の最も基本的な定義例です。enumキーワードを使って7つの曜日を定義することで、DayOfWeek型はこれら7つの値のみを取ることができる型安全な定数となります。各列挙子（SUNDAY、MONDAYなど）は自動的にDayOfWeek型の唯一のインスタンスとして生成されます。
 
-<span class="listing-number">**サンプルコード8-1**</span>
+<span class="listing-number">**サンプルコード8-1**　DayOfWeek.java</span>
 
 ```java
 public enum DayOfWeek {
@@ -55,7 +55,7 @@ public enum DayOfWeek {
 
 これだけで、`DayOfWeek`という新しい型が作られ、その型が取りうる値は定義された7つの曜日に限定されます。
 
-<span class="listing-number">**サンプルコード8-2**</span>
+<span class="listing-number">**サンプルコード8-2**　EnumExample.java</span>
 
 ```java
 public class EnumExample {
@@ -85,7 +85,7 @@ Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、
 - `name()`: 列挙子の名前（定義した通りの文字列）を返す
 - `ordinal()`: 列挙子の定義順序（ゼロから始まる）を返す
 
-<span class="listing-number">**サンプルコード8-3**</span>
+<span class="listing-number">**サンプルコード8-3**　EnumMethodsExample.java</span>
 
 ```java
 public class EnumMethodsExample {
@@ -118,7 +118,7 @@ public class EnumMethodsExample {
 
 `enum`は単なる定数の集合ではなく、フィールドやメソッドを持つことができます。これにより、各列挙子に関連するデータや振る舞いを定義できます。
 
-<span class="listing-number">**サンプルコード8-4**</span>
+<span class="listing-number">**サンプルコード8-4**　Planet.java</span>
 
 ```java
 public enum Planet {
@@ -156,7 +156,7 @@ public enum Planet {
 
 `enum`と`switch`文は非常に相性がよく、読みやすいコードを書くことができます。
 
-<span class="listing-number">**サンプルコード8-5**</span>
+<span class="listing-number">**サンプルコード8-5**　TrafficLight.java</span>
 
 ```java
 public class TrafficLight {
@@ -193,7 +193,7 @@ public class TrafficLight {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。
 
-<span class="listing-number">**サンプルコード8-6**</span>
+<span class="listing-number">**サンプルコード8-6**　Operation.java</span>
 
 ```java
 public enum Operation {
@@ -267,7 +267,7 @@ public enum DatabaseConnection {
 
 #### Strategyパターン
 
-<span class="listing-number">**サンプルコード8-8**</span>
+<span class="listing-number">**サンプルコード8-8**　PaymentStrategy.java</span>
 
 ```java
 public enum PaymentStrategy {
@@ -307,7 +307,7 @@ public enum PaymentStrategy {
 
 `enum`はインターフェイスを実装することもできます。
 
-<span class="listing-number">**サンプルコード8-9**</span>
+<span class="listing-number">**サンプルコード8-9**　Printable.java、DocumentType.java</span>
 
 ```java
 public interface Printable {
@@ -340,7 +340,7 @@ public enum DocumentType implements Printable {
 
 Java標準ライブラリには、`enum`専用の高速なコレクションクラスが用意されています。
 
-<span class="listing-number">**サンプルコード8-10**</span>
+<span class="listing-number">**サンプルコード8-10**　EnumCollectionExample.java</span>
 
 ```java
 import java.util.EnumSet;
@@ -460,7 +460,7 @@ Recordは、Java 16で正式に導入された、不変（immutable）なデー�
 
 以下のコードは、Recordの最も簡潔な定義例です。recordキーワードを使って、名前と年齢を持つPersonクラスを1行で定義しています。この短い定義から、コンパイラは自動的にコンストラクタ、アクセサメソッド、equals()、hashCode()、toString()などの必要なメソッドをすべて生成します。
 
-<span class="listing-number">**サンプルコード8-13**</span>
+<span class="listing-number">**サンプルコード8-13**　Person.java</span>
 
 ```java
 public record Person(String name, int age) {}
@@ -564,7 +564,7 @@ true
 
 Recordでは、コンパクトコンストラクタを使用してバリデーションを追加できます。
 
-<span class="listing-number">**サンプルコード8-16**</span>
+<span class="listing-number">**サンプルコード8-16**　BankAccount.java</span>
 
 ```java
 public record BankAccount(String accountNumber, double balance) {
@@ -586,7 +586,7 @@ public record BankAccount(String accountNumber, double balance) {
 
 標準のコンストラクタ以外にも、追加のコンストラクタを定義できます。
 
-<span class="listing-number">**サンプルコード8-17**</span>
+<span class="listing-number">**サンプルコード8-17**　Rectangle.java</span>
 
 ```java
 public record Rectangle(double width, double height) {
@@ -611,7 +611,7 @@ public record Rectangle(double width, double height) {
 
 Recordでも静的ファクトリメソッドパターンを使用できます。
 
-<span class="listing-number">**サンプルコード8-18**</span>
+<span class="listing-number">**サンプルコード8-18**　Temperature.java</span>
 
 ```java
 public record Temperature(double value, String unit) {
@@ -676,7 +676,7 @@ public record Configuration(
 
 Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます。
 
-<span class="listing-number">**サンプルコード8-20**</span>
+<span class="listing-number">**サンプルコード8-20**　Point.java、PatternMatchingExample.java</span>
 
 ```java
 public record Point(int x, int y) {}
@@ -749,11 +749,13 @@ public class LocalRecordExample {
 
 Recordは他のRecordを含むことができ、複雑なデータ構造を表現できます。
 
-<span class="listing-number">**サンプルコード8-22**</span>
+<span class="listing-number">**サンプルコード8-22**　Address.java、Company.java、Employee.java</span>
 
 ```java
 public record Address(String street, String city, String country) {}
+
 public record Company(String name, Address headquarters) {}
+
 public record Employee(String name, String id, Company company) {
     // 従業員の完全な住所を取得
     public String getFullAddress() {
@@ -833,14 +835,16 @@ public record Money(BigDecimal amount, String currency) {
 
 sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
 
-<span class="listing-number">**サンプルコード8-25**</span>
+<span class="listing-number">**サンプルコード8-25**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
 
 ```java
 // 図形を表現する代数的データ型
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
 
 public record Circle(double radius) implements Shape {}
+
 public record Rectangle(double width, double height) implements Shape {}
+
 public record Triangle(double base, double height) implements Shape {}
 
 // パターンマッチングによる処理
@@ -1033,7 +1037,7 @@ public record GameCharacter(
 
 外部クラスのインスタンスに関連付けられた内部クラスです。
 
-<span class="listing-number">**サンプルコード8-29**</span>
+<span class="listing-number">**サンプルコード8-29**　OuterClass.java</span>
 
 ```java
 public class OuterClass {
@@ -1065,7 +1069,7 @@ public class OuterClass {
 
 外部クラスのインスタンスに依存しない内部クラスです。
 
-<span class="listing-number">**サンプルコード8-30**</span>
+<span class="listing-number">**サンプルコード8-30**　MathOperations.java</span>
 
 ```java
 public class MathOperations {
@@ -1100,7 +1104,7 @@ public class MathOperations {
 
 メソッド内で定義される内部クラスです。
 
-<span class="listing-number">**サンプルコード8-31**</span>
+<span class="listing-number">**サンプルコード8-31**　LocalClassExample.java</span>
 
 ```java
 public class LocalClassExample {
@@ -1123,7 +1127,7 @@ public class LocalClassExample {
 
 名前を持たない内部クラスで、インターフェイスの実装や抽象クラスの継承に使用されます。
 
-<span class="listing-number">**サンプルコード8-32**</span>
+<span class="listing-number">**サンプルコード8-32**　AnonymousClassExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1159,7 +1163,7 @@ public class AnonymousClassExample {
 次のサンプルは、型パラメータ`<T>`（第10章）と`Iterable`・`Iterator`（第9章）を使って、拡張for文で走査できる独自のリストを作ります。
 内部クラスがイテレータとして外側のクラスの配列を直接参照している点が、ここでの要点です。
 
-<span class="listing-number">**サンプルコード8-33**</span>
+<span class="listing-number">**サンプルコード8-33**　MyList.java</span>
 
 ```java
 import java.util.Iterator;

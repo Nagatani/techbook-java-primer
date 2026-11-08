@@ -73,7 +73,7 @@ ExecutorServiceを使った実用的な非同期処理の実装、デッドロ�
 
 以下のコードは、朝食の準備を順番に行うシングルスレッドのプログラムです。コーヒー（3秒）、トースト（2秒）、卵（5秒）を順番に処理するため、合計10秒かかります。各処理が完了するまで次の処理を開始できないため、待ち時間が無駄になっています。
 
-<span class="listing-number">**サンプルコード15-1**</span>
+<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java</span>
 
 ```java
 public class SingleThreadExample {
@@ -293,7 +293,7 @@ Thread-pool-1-thread-3: カウンタ 2
 
 以下の例は、マルチスレッド環境でデータ競合（レースコンディション）が発生する典型的なパターンです。一見単純に見える`count++`操作が、実際にはCPUレベルで3つの独立した処理（①現在値の読み込み、②値のインクリメント、③結果の書き込み）に分解されます。複数のスレッドが同時に実行すると、期待と異なる結果になります。
 
-<span class="listing-number">**サンプルコード15-4**</span>
+<span class="listing-number">**サンプルコード15-4**　UnsafeCounter.java</span>
 
 ```java
 class UnsafeCounter {
@@ -878,7 +878,7 @@ Javaでスレッドを作成するには、主に`Runnable`インターフェイ
 
 `Runnable`は、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。`run()`メソッドを1つだけ持ちます。
 
-<span class="listing-number">**サンプルコード15-9**</span>
+<span class="listing-number">**サンプルコード15-9**　Main.java</span>
 
 ```java
 // Runnableを実装したクラス
@@ -929,7 +929,7 @@ synchronizedメソッドの基本的な使い方。
 
 `synchronized`キーワードをメソッドに付けることで、そのメソッド全体が排他制御の対象となります。これにより、同時に1つのスレッドしかそのメソッドを実行できなくなり、データの整合性が保たれます。
 
-<span class="listing-number">**サンプルコード15-10**</span>
+<span class="listing-number">**サンプルコード15-10**　SynchronizedCounter.java</span>
 
 ```java
 class SynchronizedCounter {
@@ -957,7 +957,7 @@ synchronizedブロックによる細かい制御。
 
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
-<span class="listing-number">**サンプルコード15-11**</span>
+<span class="listing-number">**サンプルコード15-11**　BankAccount.java</span>
 
 ```java
 class BankAccount {
@@ -1005,7 +1005,7 @@ volatileの主な特徴。
 - 単純な読み書きのみをアトミックにする（複合操作は保証しない）
 - synchronizedより軽量だが、機能も限定的
 
-<span class="listing-number">**サンプルコード15-12**</span>
+<span class="listing-number">**サンプルコード15-12**　VolatileDemo.java</span>
 
 ```java
 class ThreadStopExample {
@@ -1061,7 +1061,7 @@ public class VolatileDemo {
 - `AtomicBoolean`: boolean値のアトミック操作
 - `AtomicReference<T>`: 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード15-13**</span>
+<span class="listing-number">**サンプルコード15-13**　AtomicCounterExample.java</span>
 
 ```java
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1137,7 +1137,7 @@ ExecutorServiceの利点。
 - `newSingleThreadExecutor()`: 単一スレッドで順次実行するプール
 - `newScheduledThreadPool(int)`: スケジュール実行が可能なプール
 
-<span class="listing-number">**サンプルコード15-14**</span>
+<span class="listing-number">**サンプルコード15-14**　ExecutorExample.java</span>
 
 ```java
 import java.util.concurrent.ExecutorService;
@@ -1287,7 +1287,7 @@ FutureとCallableの特徴。
 - キャンセル機能
     + 実行中のタスクをキャンセル可能
 
-<span class="listing-number">**サンプルコード15-16**</span>
+<span class="listing-number">**サンプルコード15-16**　FutureCallableExample.java</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1367,7 +1367,7 @@ CompletableFutureの主な特徴。
 - タイムアウト処理
     + Java 9以降では`orTimeout`メソッドも利用可能
 
-<span class="listing-number">**サンプルコード15-17**</span>
+<span class="listing-number">**サンプルコード15-17**　CompletableFutureExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1542,7 +1542,7 @@ public class AsyncChainingExample {
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
-<span class="listing-number">**サンプルコード15-19**</span>
+<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java</span>
 
 ```java
 import java.util.concurrent.*;
@@ -1917,7 +1917,7 @@ public class ConcurrencyPitfallsAndSolutions {
 
 ### 並列データ処理パイプライン
 
-<span class="listing-number">**サンプルコード15-22**</span>
+<span class="listing-number">**サンプルコード15-22**　ParallelDataPipeline.java</span>
 
 ```java
 import java.util.concurrent.*;
@@ -2007,7 +2007,7 @@ public class ParallelDataPipeline {
 
 ### リトライとサーキットブレーカーパターン
 
-<span class="listing-number">**サンプルコード15-23**</span>
+<span class="listing-number">**サンプルコード15-23**　ResiliencePatterns.java</span>
 
 ```java
 import java.util.concurrent.*;
@@ -2148,7 +2148,7 @@ public class ResiliencePatterns {
 #### 1. 基本的な競合状態
 問題: 複数スレッドが同じデータに同時アクセスして値が破損
 
-<span class="listing-number">**サンプルコード15-24**</span>
+<span class="listing-number">**サンプルコード15-24**　Counter.java</span>
 
 ```java
 // エラー例

@@ -50,7 +50,7 @@ JAR（Java Archive）は、複数のJavaクラスファイルや画像・設定�
 
 まずは、配布する簡単なSwingアプリケーションを用意します。
 
-<span class="listing-number">**サンプルコード23-1**</span>
+<span class="listing-number">**サンプルコード23-1**　SimpleApp.java</span>
 
 ```java
 // SimpleApp.java
@@ -86,7 +86,7 @@ GUIウィンドウが表示されました
 
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、シンプルなTodoアプリケーションの例です。
 
-<span class="listing-number">**サンプルコード23-2**</span>
+<span class="listing-number">**サンプルコード23-2**　TodoApp.java</span>
 
 ```java
 // TodoApp.java
@@ -193,7 +193,7 @@ Main-Class: SimpleApp
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-6**</span>
+<span class="listing-number">**サンプルコード23-6**　ResourceApp.java</span>
 
 ```java
 // ResourceApp.java

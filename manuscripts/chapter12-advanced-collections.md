@@ -112,7 +112,7 @@ Java 8以降、`Comparator`インターフェイスには、ラムダ式と組�
 
 これらのメソッドを使った具体的な例を見てみましょう。
 
-<span class="listing-number">**サンプルコード12-3**</span>
+<span class="listing-number">**サンプルコード12-3**　AdvancedSortExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -304,7 +304,7 @@ List<String> names = list.stream()
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する実用的な例です。このコードは、Stream APIの真価を発揮する複合的な処理パイプラインの例です。
 
-<span class="listing-number">**サンプルコード12-7**</span>
+<span class="listing-number">**サンプルコード12-7**　StreamExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -358,7 +358,7 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
 
-<span class="listing-number">**サンプルコード12-8**</span>
+<span class="listing-number">**サンプルコード12-8**　OptionalCreationExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -391,7 +391,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-9**</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalRetrievalExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -441,7 +441,7 @@ public class OptionalRetrievalExample {
 
 値の存在を確認し、存在する場合のみ処理を実行する方法。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
-<span class="listing-number">**サンプルコード12-10**</span>
+<span class="listing-number">**サンプルコード12-10**　OptionalPresenceExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -486,7 +486,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-11**</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalTransformationExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -553,7 +553,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-12**</span>
+<span class="listing-number">**サンプルコード12-12**　OptionalStreamExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -630,7 +630,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-13**</span>
+<span class="listing-number">**サンプルコード12-13**　OptionalPracticalExample.java</span>
 
 ```java
 import java.util.HashMap;
@@ -737,7 +737,7 @@ public class OptionalPracticalExample {
 
 Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
 
-<span class="listing-number">**サンプルコード12-14**</span>
+<span class="listing-number">**サンプルコード12-14**　OptionalAntiPatternsExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -875,7 +875,7 @@ System.out.println("並列処理の結果: " + sumParallel);
 3. 統合（Combine）
     + 各スレッドの結果を統合して最終結果を生成
 
-<span class="listing-number">**サンプルコード12-16**</span>
+<span class="listing-number">**サンプルコード12-16**　ParallelStreamExample.java</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -962,7 +962,7 @@ List<Integer> results = numbers.parallelStream()
 
 `flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などにとくに有用です。
 
-<span class="listing-number">**サンプルコード12-18**</span>
+<span class="listing-number">**サンプルコード12-18**　FlatMapExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1016,7 +1016,7 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-19**</span>
+<span class="listing-number">**サンプルコード12-19**　ReduceExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1075,7 +1075,7 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-20**</span>
+<span class="listing-number">**サンプルコード12-20**　CollectorsExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1131,7 +1131,7 @@ public class CollectorsExample {
 
 `Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
 
-<span class="listing-number">**サンプルコード12-21**</span>
+<span class="listing-number">**サンプルコード12-21**　OptionalExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1175,7 +1175,7 @@ public class OptionalExample {
 
 `Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
 
-<span class="listing-number">**サンプルコード12-22**</span>
+<span class="listing-number">**サンプルコード12-22**　OptionalChainingExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1212,7 +1212,7 @@ public class OptionalChainingExample {
 
 実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理します。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
 
-<span class="listing-number">**サンプルコード12-23**</span>
+<span class="listing-number">**サンプルコード12-23**　NullSafeProcessingExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1258,7 +1258,7 @@ public class NullSafeProcessingExample {
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 
-<span class="listing-number">**サンプルコード12-24**</span>
+<span class="listing-number">**サンプルコード12-24**　ShortCircuitExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1304,7 +1304,7 @@ public class ShortCircuitExample {
 
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが重要です。
 
-<span class="listing-number">**サンプルコード12-25**</span>
+<span class="listing-number">**サンプルコード12-25**　ToArrayExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1342,7 +1342,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-26**</span>
+<span class="listing-number">**サンプルコード12-26**　ComplexProcessingExample.java</span>
 
 ```java
 import java.util.Arrays;

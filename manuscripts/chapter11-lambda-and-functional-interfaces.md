@@ -31,7 +31,7 @@ Java 8でラムダ式が導入される前、その場限りのインターフ�
 
 以下のコードは、匿名クラスとラムダ式の記法を比較した例です。Runnableインターフェイスのrun()メソッドを実装する際、匿名クラスでは定型的な記述が必要でしたが、ラムダ式では本質的な処理内容だけを記述できます。これがラムダ式の最大の利点である簡潔性です。
 
-<span class="listing-number">**サンプルコード11-1**</span>
+<span class="listing-number">**サンプルコード11-1**　LambdaIntroExample.java</span>
 
 ```java
 public class LambdaIntroExample {
@@ -775,7 +775,7 @@ public class ComparatorLambdaExample {
 
 `ActionListener`や`Comparator`も、実装すべき抽象メソッドが実質的に1つだけですので、関数型インターフェイスです。そのため、ラムダ式で置き換えることができたのです。
 
-<span class="listing-number">**サンプルコード11-21**</span>
+<span class="listing-number">**サンプルコード11-21**　FunctionalInterfaceExample.java</span>
 
 ```java
 @FunctionalInterface
@@ -893,7 +893,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 | `UnaryOperator<T>` | `T apply(T t)` | T型を受け取り、同じT型を返す（単項演算） |
 | `BinaryOperator<T>` | `T apply(T t1, T t2)` | 同じT型を2つ受け取り、同じT型を返す（二項演算） |
 
-<span class="listing-number">**サンプルコード11-23**</span>
+<span class="listing-number">**サンプルコード11-23**　StandardFunctionalInterfaces.java</span>
 
 ```java
 import java.util.function.*;
@@ -953,7 +953,7 @@ public class StandardFunctionalInterfaces {
 | インスタンスメソッド参照<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | コンストラクタ参照 | `クラス名::new` | `() -> new ArrayList<>()` |
 
-<span class="listing-number">**サンプルコード11-24**</span>
+<span class="listing-number">**サンプルコード11-24**　MethodReferenceExample.java</span>
 
 ```java
 import java.util.*;
@@ -1015,7 +1015,7 @@ CHERRY
 
 並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。とくに、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 
-<span class="listing-number">**サンプルコード11-25**</span>
+<span class="listing-number">**サンプルコード11-25**　MethodReferenceConcurrencyExample.java</span>
 
 ```java
 import java.util.*;
@@ -1156,7 +1156,7 @@ Person{name='Charlie'}
 
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 
-<span class="listing-number">**サンプルコード11-27**</span>
+<span class="listing-number">**サンプルコード11-27**　RunnableLambdaExample.java</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -1314,7 +1314,7 @@ error: ';' expected
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード11-30**</span>
+<span class="listing-number">**サンプルコード11-30**　LambdaSyntaxFixExample.java</span>
 
 ```java
 import java.util.Arrays;

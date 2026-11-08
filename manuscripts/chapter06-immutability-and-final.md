@@ -34,7 +34,7 @@
 スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数インターフェイス」で詳しく学びます。
 ここでは、「2つの処理が同時に動き、同じオブジェクトを書き換えている」ことだけを読み取ってください。
 
-<span class="listing-number">**サンプルコード6-1**</span>
+<span class="listing-number">**サンプルコード6-1**　MutablePoint.java、ThreadSafetyProblem.java</span>
 
 ```java
 // 可変オブジェクトの問題例
@@ -122,7 +122,7 @@ loc.setX(100);  // Employeeの内部状態が外部から変更される！
 
 これらの問題を解決するのが、不変オブジェクトです。
 
-<span class="listing-number">**サンプルコード6-3**</span>
+<span class="listing-number">**サンプルコード6-3**　ImmutablePoint.java</span>
 
 ```java
 // 不変オブジェクトの実装
@@ -173,7 +173,7 @@ public final class ImmutablePoint {
 次のサンプルの`List<String>`は第9章「コレクションフレームワーク」で、`data.forEach(item -> { … })`は第11章「ラムダ式と関数インターフェイス」で学びます。
 ここでは、`forEach`はリストの要素を1つずつ取り出して`{ … }`の処理を行う、と読んでください。
 
-<span class="listing-number">**サンプルコード6-4**</span>
+<span class="listing-number">**サンプルコード6-4**　Constants.java</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -220,7 +220,7 @@ public class Constants {
 
 `final`をメソッドに付けると、サブクラスでそのメソッドをオーバーライドできなくなります。
 
-<span class="listing-number">**サンプルコード6-5**</span>
+<span class="listing-number">**サンプルコード6-5**　SecurityManager.java</span>
 
 ```java
 public class SecurityManager {
@@ -252,7 +252,7 @@ public class SecurityManager {
 
 `final`をクラスに付けると、そのクラスを継承できなくなります。
 
-<span class="listing-number">**サンプルコード6-6**</span>
+<span class="listing-number">**サンプルコード6-6**　String.java、ImmutablePerson.java</span>
 
 ```java
 // Stringクラスのfinalクラスの代表例
@@ -305,7 +305,7 @@ finalクラスの利点。
 
 ### 実践例：不変な`Person`クラス
 
-<span class="listing-number">**サンプルコード6-7**</span>
+<span class="listing-number">**サンプルコード6-7**　ImmutablePerson.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -385,7 +385,7 @@ public final class ImmutablePerson {
 
 ### 不変オブジェクトの使用例
 
-<span class="listing-number">**サンプルコード6-8**</span>
+<span class="listing-number">**サンプルコード6-8**　ImmutableExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -466,7 +466,7 @@ T2: 25
 
 不変オブジェクトを設計する際、可変オブジェクト（配列やコレクション）をフィールドに持つ場合はとくに注意が必要です。単に参照を保持するだけでは、外部から内容を変更される可能性があります。
 
-<span class="listing-number">**サンプルコード6-9**</span>
+<span class="listing-number">**サンプルコード6-9**　DateRange.java</span>
 
 ```java
 import java.time.LocalDate;
@@ -512,7 +512,7 @@ public final class DateRange {
 
 複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
 
-<span class="listing-number">**サンプルコード6-10**</span>
+<span class="listing-number">**サンプルコード6-10**　Book.java</span>
 
 ```java
 import java.time.LocalDate;
@@ -610,7 +610,7 @@ public final class Book {
 
 ### ビルダーパターンの使用例
 
-<span class="listing-number">**サンプルコード6-11**</span>
+<span class="listing-number">**サンプルコード6-11**　BuilderExample.java</span>
 
 ```java
 public class BuilderExample {
@@ -694,7 +694,7 @@ error: cannot assign a value to final variable number
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-14**</span>
+<span class="listing-number">**サンプルコード6-14**　FinalCorrectExample.java</span>
 
 ```java
 public class FinalCorrectExample {
@@ -736,7 +736,7 @@ error: variable name might not have been initialized
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-16**</span>
+<span class="listing-number">**サンプルコード6-16**　InitializedFinalExample.java</span>
 
 ```java
 public class InitializedFinalExample {
@@ -792,7 +792,7 @@ hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-19**</span>
+<span class="listing-number">**サンプルコード6-19**　ImmutablePerson.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -826,7 +826,7 @@ public final class ImmutablePerson {
 
 #### エラー例: 日付オブジェクトの防御的コピー漏れ
 
-<span class="listing-number">**サンプルコード6-20**</span>
+<span class="listing-number">**サンプルコード6-20**　BrokenImmutableEvent.java</span>
 
 ```java
 import java.util.Date;
@@ -861,7 +861,7 @@ event.getEventDate().setTime(0); // イベント日時が変更される
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-22**</span>
+<span class="listing-number">**サンプルコード6-22**　ImmutableEvent.java</span>
 
 ```java
 import java.util.Date;
@@ -889,7 +889,7 @@ public final class ImmutableEvent {
 
 ##### モダンなアプローチ（推奨）
 
-<span class="listing-number">**サンプルコード6-23**</span>
+<span class="listing-number">**サンプルコード6-23**　ModernImmutableEvent.java</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -917,7 +917,7 @@ public final class ModernImmutableEvent {
 
 #### エラー例: final配列の誤用
 
-<span class="listing-number">**サンプルコード6-24**</span>
+<span class="listing-number">**サンプルコード6-24**　FinalArrayMisunderstanding.java</span>
 
 ```java
 public class FinalArrayMisunderstanding {
@@ -941,7 +941,7 @@ public class FinalArrayMisunderstanding {
 
 ##### 対処法（真の不変配列）
 
-<span class="listing-number">**サンプルコード6-25**</span>
+<span class="listing-number">**サンプルコード6-25**　ImmutableArray.java</span>
 
 ```java
 import java.util.Arrays;
@@ -971,7 +971,7 @@ public final class ImmutableArray {
 
 #### エラー例: Listの不変性に関する誤解
 
-<span class="listing-number">**サンプルコード6-26**</span>
+<span class="listing-number">**サンプルコード6-26**　ListImmutabilityMisunderstanding.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -1009,7 +1009,7 @@ public class ListImmutabilityMisunderstanding {
 
 #### エラー例: 継承による不変性の破綻
 
-<span class="listing-number">**サンプルコード6-27**</span>
+<span class="listing-number">**サンプルコード6-27**　ImmutablePerson.java、MutableEmployee.java</span>
 
 ```java
 public class ImmutablePerson {
@@ -1044,7 +1044,7 @@ public class MutableEmployee extends ImmutablePerson {
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-28**</span>
+<span class="listing-number">**サンプルコード6-28**　ImmutablePerson.java</span>
 
 ```java
 public final class ImmutablePerson { // finalクラス
@@ -1070,7 +1070,7 @@ public final class ImmutablePerson { // finalクラス
 
 #### エラー例: 不必要な防御的コピー
 
-<span class="listing-number">**サンプルコード6-29**</span>
+<span class="listing-number">**サンプルコード6-29**　IneffientImmutableClass.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -1096,7 +1096,7 @@ public final class IneffientImmutableClass {
 
 ##### 対処法
 
-<span class="listing-number">**サンプルコード6-30**</span>
+<span class="listing-number">**サンプルコード6-30**　EfficientImmutableClass.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -1126,7 +1126,7 @@ public final class EfficientImmutableClass {
 
 ##### 大量データの場合の最適化
 
-<span class="listing-number">**サンプルコード6-31**</span>
+<span class="listing-number">**サンプルコード6-31**　OptimizedImmutableClass.java</span>
 
 ```java
 import java.util.ArrayList;

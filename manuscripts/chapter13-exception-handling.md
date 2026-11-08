@@ -57,7 +57,7 @@ Javaでは、プログラム実行中に発生する「例外的状況」を例�
 
 以下のコードは、NullPointerExceptionが発生する状況とその対処方法を示しています。null参照に対してメソッドを呼び出すと例外が発生しますが、catch句でその例外を捕捉し、プログラムのクラッシュを防いで処理を継続させています。
 
-<span class="listing-number">**サンプルコード13-1**</span>
+<span class="listing-number">**サンプルコード13-1**　TryCatchSample.java</span>
 
 ```java
 public class TryCatchSample {
@@ -107,7 +107,7 @@ try {
 
 `AutoCloseable`インターフェイスを実装したリソース（ファイルストリームなど）を扱う場合、`try-with-resources`文を使うことで、リソースの自動解放が保証されます。
 
-<span class="listing-number">**サンプルコード13-3**</span>
+<span class="listing-number">**サンプルコード13-3**　TryWithResourcesSample.java</span>
 
 ```java
 import java.io.BufferedReader;
@@ -182,7 +182,7 @@ Javaの例外は、コンパイラがその処理を強制するかどうかに�
 
 メソッド内で発生した検査例外を自身で処理せず、そのメソッドの呼び出し元に処理を任せたい場合、メソッドシグネチャに`throws`を記述します。
 
-<span class="listing-number">**サンプルコード13-4**</span>
+<span class="listing-number">**サンプルコード13-4**　ThrowsExample.java</span>
 
 ```java
 import java.io.IOException;
@@ -220,7 +220,7 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-5**</span>
+<span class="listing-number">**サンプルコード13-5**　BankAccount.java</span>
 
 ```java
 // 独自の検査例外クラス
@@ -260,7 +260,7 @@ public class BankAccount {
 
 ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
-<span class="listing-number">**サンプルコード13-6**</span>
+<span class="listing-number">**サンプルコード13-6**　UserService.java</span>
 
 ```java
 class DataAccessException extends Exception {
@@ -296,7 +296,7 @@ public class UserService {
 ネットワーク接続の一時的な問題やリソースの一時的な不足など、
 時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
-<span class="listing-number">**サンプルコード13-7**</span>
+<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java</span>
 
 ```java
 import java.util.concurrent.Callable;
@@ -370,7 +370,7 @@ public class RetryableOperation {
 
 連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです。マイクロサービスアーキテクチャでとくに重要です。
 
-<span class="listing-number">**サンプルコード13-8**</span>
+<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java</span>
 
 ```java
 import java.util.concurrent.Callable;
@@ -434,7 +434,7 @@ public class CircuitBreaker {
 
 複数の処理を並行実行する場合、発生した例外を集約して報告します。
 
-<span class="listing-number">**サンプルコード13-9**</span>
+<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java</span>
 
 ```java
 import java.util.*;
@@ -504,7 +504,7 @@ public class ExceptionAggregator {
 JDBCは本書の本文では扱わず、付録Eで紹介しています。
 ここでは、データベース接続も`close()`が必要なリソースであり、try-with-resourcesで確実に閉じられる点に注目してください。
 
-<span class="listing-number">**サンプルコード13-10**</span>
+<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java</span>
 
 ```java
 import java.io.*;
@@ -564,7 +564,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード13-11**</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java</span>
 
 ```java
 import java.util.*;
@@ -776,7 +776,7 @@ public class StructuredExceptionLogger {
 
 大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
 
-<span class="listing-number">**サンプルコード13-14**</span>
+<span class="listing-number">**サンプルコード13-14**　BusinessException.java、InsufficientBalanceException.java（4〜13行目）、SystemException.java（4〜28行目）</span>
 
 ```java
 import java.util.*;
@@ -1233,7 +1233,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 ##### 問題
 例外クラスに必要なコンストラクタがありません。
 
-<span class="listing-number">**サンプルコード13-25**</span>
+<span class="listing-number">**サンプルコード13-25**　CustomException.java</span>
 
 ```java
 // 悪い例
@@ -1247,7 +1247,7 @@ public class CustomException extends Exception {
 
 対処法： 標準的なコンストラクタを提供します。
 
-<span class="listing-number">**サンプルコード13-26**</span>
+<span class="listing-number">**サンプルコード13-26**　CustomException.java</span>
 
 ```java
 // 良い例

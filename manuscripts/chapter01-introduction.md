@@ -78,6 +78,18 @@ Javaを通じて学ぶ概念や考え方は、きっと他の言語を学ぶ際�
 - 付録G: 高度なビルドとデプロイメント技術
 - 付録H: Java共通エラーガイド
 
+### サンプルコードの全文について
+
+本文のサンプルコードの多くは、コンパイルして実行できる全文をリポジトリの`sample-code/`ディレクトリで公開しています。
+紙面には、全文のうち説明に必要な部分だけを抜き出して載せることがあります。
+
+全文を公開しているサンプルコードには、キャプションに全文のファイル名と、掲載した行の範囲を示しています。
+たとえば「サンプルコード5-3　Shape.java（12〜30行目）」は、`sample-code/chapter05/05-03/Shape.java`の12行目から30行目までを載せたものです。
+ファイル名だけのときは、そのファイル全体を載せています。
+抜き出した範囲のあいだを省いたところには、`// ...`という行を入れています。
+
+コンパイルと実行の方法は、章ごとの`README.md`にまとめています。
+
 ### 継続的なサポート
 
 リポジトリは本書の学習サポートとして継続的に更新します。
@@ -180,7 +192,7 @@ C言語では商品情報と処理を別々に管理していましたが、Java
 3. 再利用性
     + Productクラスは他の場所でも使用可能
 
-<span class="listing-number">**サンプルコード1-1**</span>
+<span class="listing-number">**サンプルコード1-1**　Product.java</span>
 
 ```java
 // Product.java
@@ -203,7 +215,7 @@ public class Product {
 }
 ```
 
-<span class="listing-number">**サンプルコード1-2**</span>
+<span class="listing-number">**サンプルコード1-2**　Main.java</span>
 
 ```java
 // Main.java
@@ -334,7 +346,7 @@ OpenJDKはオープンソース版のJava開発キットで、Oracle、Microsoft
 
 以下は、画面に「Hello, World!!」と表示するもっとも基本的なJavaプログラムです。
 
-<span class="listing-number">**サンプルコード1-3**</span>
+<span class="listing-number">**サンプルコード1-3**　HelloWorld.java</span>
 
 ```java
 public class HelloWorld {
@@ -440,7 +452,7 @@ C言語のprintfと同じような書き方で出力が可能です。
 
 ファイル名「`StandardOutput.java`」
 
-<span class="listing-number">**サンプルコード1-5**</span>
+<span class="listing-number">**サンプルコード1-5**　StandardOutput.java</span>
 
 ```java
 public class StandardOutput {
@@ -472,7 +484,7 @@ C言語のprintf関数のように出力したい場合は、「System.out.print
 
 ターミナルやコマンドプロンプトなど、黒い画面で動作するプログラムで、ユーザーからデータの入力ができるようになるためのサンプルコードを実行してみましょう。
 
-<span class="listing-number">**サンプルコード1-6**</span>
+<span class="listing-number">**サンプルコード1-6**　InputExample.java</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスを使用するための宣言

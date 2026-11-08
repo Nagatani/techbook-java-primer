@@ -46,7 +46,7 @@ JTableは、表形式のデータを表示・編集するための強力なコ�
 
 以下のコードは、JTableの最も基本的な使用例です。2次元配列でデータを定義し、列名を指定してテーブルを作成します。JScrollPaneでラップすることで、データが多い場合にスクロール可能になります。この方法は簡単ですが、データの動的な変更には向いていません。
 
-<span class="listing-number">**サンプルコード20-1**</span>
+<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -208,7 +208,7 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 
 以下のコードは、DefaultMutableTreeNodeを使用してツリー構造を構築する基本的な例です。ルートノードから子ノードを階層的に追加し、ファイルシステムのような構造を表現しています。setShowsRootHandles(true)により、展開・折りたたみのハンドルが表示されます。
 
-<span class="listing-number">**サンプルコード20-3**</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -270,7 +270,7 @@ public class BasicTreeExample extends JFrame {
 
 以下のコードは、右クリックメニューから動的にノードを追加・削除できる高度なツリー実装です。ポップアップメニュー、編集可能なノード、カスタムレンダラーなど、実践的なファイルエクスプローラーのような機能を持っています。TreeModelを使用することで、ツリー構造の変更をビューに通知できます。
 
-<span class="listing-number">**サンプルコード20-4**</span>
+<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -436,7 +436,7 @@ JListにカスタムレンダラーを適用して、リッチな表示を実現
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、それらを1つのリスト項目として美しく表示します。ダブルクリックでタスクの完了状態を切り替えるなど、インタラクティブな機能も実装しています。
 
-<span class="listing-number">**サンプルコード20-5**</span>
+<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -652,7 +652,7 @@ public class AdvancedListExample extends JFrame {
 
 以下のコードは、JTableにカスタムセルエディターとレンダラーを実装する例です。色選択用のカラーピッカー、優先度選択用のコンボボックス、チェックボックスなど、データ型に合った入力コンポーネントを提供します。これにより、ユーザーフレンドリーなデータ編集インターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード20-6**</span>
+<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java</span>
 
 ```java
 import javax.swing.*;

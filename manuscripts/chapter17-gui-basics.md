@@ -34,7 +34,7 @@
 まずはもっとも基本的なGUIプログラムから始めましょう。以下は、単純なウィンドウを表示するプログラムです。
 
 
-<span class="listing-number">**サンプルコード17-1**</span>
+<span class="listing-number">**サンプルコード17-1**　HelloSwing.java</span>
 
 ```java
 import javax.swing.JFrame;
@@ -95,7 +95,7 @@ JFrameは、タイトルバー、境界線、メニューバー、およびコ�
 
 ウィンドウの設定では、サイズ、位置、動作などをカスタマイズできます。とくに重要なのは、setDefaultCloseOperation()メソッドで、ウィンドウの閉じるボタンがクリックされたときの動作を定義します。
 
-<span class="listing-number">**サンプルコード17-2**</span>
+<span class="listing-number">**サンプルコード17-2**　WindowSettings.java</span>
 
 ```java
 import javax.swing.JFrame;
@@ -149,7 +149,7 @@ JLabelの特徴。
 
 以下のコードは、JLabelを使ってウィンドウにテキストを表示する例です。JLabelは最も基本的なGUIコンポーネントの1つで、静的なテキストやアイコンを表示するために使用されます。この例では、ラベルを中央揃えに設定し、JFrameのコンテンツペインに追加しています。
 
-<span class="listing-number">**サンプルコード17-3**</span>
+<span class="listing-number">**サンプルコード17-3**　HelloLabel.java</span>
 
 ```java
 import javax.swing.JFrame;
@@ -198,7 +198,7 @@ BorderLayoutによる5領域レイアウトの実装。
 
 BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャです。多くのアプリケーションで使用される基本的なレイアウトパターンです。
 
-<span class="listing-number">**サンプルコード17-4**</span>
+<span class="listing-number">**サンプルコード17-4**　MultipleComponents.java</span>
 
 ```java
 import javax.swing.*;
@@ -246,7 +246,7 @@ BorderLayoutの特徴と配置ルール。
 
 以下のコードは、JLabelの高度な機能を示す例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます。また、複数行のテキストもHTMLのbrタグを使用して簡単に実現できます。これらの機能により、単純なテキスト表示を超えた豊かな表現が可能になります。
 
-<span class="listing-number">**サンプルコード17-5**</span>
+<span class="listing-number">**サンプルコード17-5**　AdvancedLabel.java</span>
 
 ```java
 import javax.swing.*;
@@ -286,7 +286,7 @@ public class AdvancedLabel {
 
 以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と前景色の変更、サイズの調整、無効化状態の設定など、ユーザーインターフェイスの要求に応じた外観と動作のカスタマイズが可能です。これらの技術を組み合わせることで、アプリケーションの統一感のあるデザインを実現できます。
 
-<span class="listing-number">**サンプルコード17-6**</span>
+<span class="listing-number">**サンプルコード17-6**　AdvancedButton.java</span>
 
 ```java
 import javax.swing.*;
@@ -342,7 +342,7 @@ public class AdvancedButton {
 
 以下のコードは、Swingが提供するさまざまなテキスト入力コンポーネントの実装例です。JTextField、JPasswordField、JTextAreaなどの基本的なテキスト入力に加え、JSpinnerやJSliderなどの数値入力専用コンポーネントも示しています。各コンポーネントは特定の用途に最適化されており、適切に選択することでユーザビリティの高いインターフェイスを構築できます。
 
-<span class="listing-number">**サンプルコード17-7**</span>
+<span class="listing-number">**サンプルコード17-7**　TextInputComponents.java</span>
 
 ```java
 import javax.swing.*;
@@ -416,7 +416,7 @@ JListは、複数の項目を一度に表示し、単一または複数選択を
 
 以下のコードは、チェックボックス、ラジオボタン、コンボボックス、リストなどの選択系コンポーネントの実装例です。これらのコンポーネントは、ユーザーが選択肢から項目を選ぶための重要なインターフェイス要素です。とくにButtonGroupを使ったラジオボタンのグループ化は、相互排他的な選択を実現する標準的な手法です。
 
-<span class="listing-number">**サンプルコード17-8**</span>
+<span class="listing-number">**サンプルコード17-8**　SelectionComponents.java</span>
 
 ```java
 import javax.swing.*;
@@ -490,7 +490,7 @@ BorderLayoutの領域の特性。
 
 以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
 
-<span class="listing-number">**サンプルコード17-9**</span>
+<span class="listing-number">**サンプルコード17-9**　BorderLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -545,7 +545,7 @@ GridLayoutの特徴。
 
 以下のコードは、GridLayoutを使用してボタンを格子状に配置する例です。3行2列のグリッドを作成し、コンポーネント間の間隔を指定しています。GridLayoutは、電卓のボタン配置やカレンダーの日付表示など、規則的なレイアウトが必要な場面で非常に有効です。
 
-<span class="listing-number">**サンプルコード17-10**</span>
+<span class="listing-number">**サンプルコード17-10**　GridLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -591,7 +591,7 @@ FlowLayoutの特徴。
 
 以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。この性質は、ウィンドウサイズの変更に柔軟に対応できるため、ツールバーなどの実装に適しています。
 
-<span class="listing-number">**サンプルコード17-11**</span>
+<span class="listing-number">**サンプルコード17-11**　FlowLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -645,7 +645,7 @@ JPanelは、Swingでもっとも頻繁に使用されるコンテナコンポー
 
 以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディタ風のアプリケーションインターフェイスを構築する例です。ツールバー、サイドバー、メインエリア、ステータスバーといった一般的なアプリケーション構造を、BorderLayoutとFlowLayoutを巧みに組み合わせて実現しています。
 
-<span class="listing-number">**サンプルコード17-12**</span>
+<span class="listing-number">**サンプルコード17-12**　ComplexLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -717,7 +717,7 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-13**</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -865,7 +865,7 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 
 以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを使用して、ボタンがクリックされたときの処理を定義しています。このパターンは、Swingプログラミングにおいてもっとも頻繁に使用されるイベント処理の基本形です。
 
-<span class="listing-number">**サンプルコード17-14**</span>
+<span class="listing-number">**サンプルコード17-14**　ButtonEventExample.java</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -913,7 +913,7 @@ public class ButtonEventExample {
 
 以下のコードは、テキストフィールドとボタンを連携させたインタラクティブなアプリケーションの例です。ユーザーがテキストフィールドに名前を入力し、ボタンをクリックすると、その内容を取得してラベルに表示します。このパターンは、フォーム入力などで頻繁に使用される基本的なGUIプログラミング技術です。
 
-<span class="listing-number">**サンプルコード17-15**</span>
+<span class="listing-number">**サンプルコード17-15**　TextFieldEventExample.java</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -992,7 +992,7 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 以下のコードは、ラムダ式を使った実用的なテキスト変換アプリケーションの例です。複数のボタンにそれぞれ異なる処理を割り当て、入力されたテキストを大文字・小文字に変換したり、クリアしたりする機能を実装しています。ラムダ式により、各ボタンのイベント処理が非常に読みやすく表現されています。
 
-<span class="listing-number">**サンプルコード17-17**</span>
+<span class="listing-number">**サンプルコード17-17**　LambdaEventExample.java</span>
 
 ```java
 import java.awt.GridLayout;
@@ -1054,7 +1054,7 @@ public class LambdaEventExample {
 
 以下のコードは、増加、減少、リセット機能を持つシンプルなカウンタアプリケーションの実装例です。インスタンス変数としてカウント値を保持し、ラムダ式を使ったイベントハンドラで値を更新して表示をリフレッシュします。SwingUtilities.invokeLater()を使用して、GUIの作成をEvent Dispatch Thread上で実行している点にも注意してください。
 
-<span class="listing-number">**サンプルコード17-18**</span>
+<span class="listing-number">**サンプルコード17-18**　CounterApplication.java</span>
 
 ```java
 import java.awt.BorderLayout;
@@ -1199,7 +1199,7 @@ public class SelectionEventExample {
 
 以下のコードは、完全なフォーム入力アプリケーションの実装例です。テキストフィールド、スピナー、ラジオボタン、コンボボックス、チェックボックスなど、さまざまな入力コンポーネントを統合しています。送信ボタンをクリックすると、すべての入力値を収集して結果エリアに表示し、クリアボタンですべての入力をリセットできます。
 
-<span class="listing-number">**サンプルコード17-20**</span>
+<span class="listing-number">**サンプルコード17-20**　FormApplication.java</span>
 
 ```java
 import java.awt.*;
@@ -1341,7 +1341,7 @@ SwingのGUIコンポーネントへのアクセス（表示の更新、プロパ
 
 以下のコードは、EDTの正しい使用方法を示す基本的な例です。SwingUtilities.invokeLater()メソッドを使用して、GUIの作成をEDT上で実行しています。これは、Swingアプリケーションを開発する際の基本的なパターンであり、スレッドセーフティを保証するために必須の技術です。
 
-<span class="listing-number">**サンプルコード17-21**</span>
+<span class="listing-number">**サンプルコード17-21**　EDTBasicExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1382,7 +1382,7 @@ EDTは内部的にイベントキューを管理しており、すべてのユ�
 
 以下のコードは、現在のスレッドがEDTであるかを確認する方法を示しています。SwingUtilities.isEventDispatchThread()メソッドを使用して、イベントハンドラが正しくEDT上で実行されていることを検証します。このパターンは、デバッグ時やスレッドセーフティの確認に役立ちます。
 
-<span class="listing-number">**サンプルコード17-22**</span>
+<span class="listing-number">**サンプルコード17-22**　EventQueueExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1439,7 +1439,7 @@ EDT上での実行: true
 
 以下のコードは、SwingWorkerを使用した非同期処理の実装例です。doInBackground()メソッドで重い処理を実行し、process()メソッドで進捗を更新し、done()メソッドで完了処理を行います。このパターンにより、UIがフリーズすることなく、ユーザーに進捗状況を表示しながら長時間の処理を実行できます。
 
-<span class="listing-number">**サンプルコード17-23**</span>
+<span class="listing-number">**サンプルコード17-23**　SwingWorkerExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1518,7 +1518,7 @@ SwingUtilitiesクラスには、EDTを操作するための便利なメソッド
 
 以下のコードは、SwingUtilitiesが提供する主要なEDT関連メソッドの使用例を示しています。invokeLater()とinvokeAndWait()の違いと、それぞれを使う場面を押さえてください。とくにinvokeAndWait()は、EDT上から呼び出すとエラーになり、ロックを持ったまま呼び出すとデッドロックを起こすことがあるため、注意して使います。
 
-<span class="listing-number">**サンプルコード17-24**</span>
+<span class="listing-number">**サンプルコード17-24**　EDTUtilityExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1630,7 +1630,7 @@ EDT上では重い処理を避け、必要な場合はSwingWorkerを使用しま
 
 以下のコードは、重い処理をSwingWorkerで実行する実用的な例です。doInBackground()で重い処理を実行しながら、publish()で途中経過を報告し、setProgress()で進捗バーを更新します。このアプローチにより、UIの応答性を保ちながら、ユーザーに処理の進捗を伝えることができます。
 
-<span class="listing-number">**サンプルコード17-26**</span>
+<span class="listing-number">**サンプルコード17-26**　HeavyProcessingExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1726,7 +1726,7 @@ public class HeavyProcessingExample {
 
 以下のコードは、javax.swing.Timerを使用した定期的なUI更新の実装例です。TimerはEDT上で実行されるため、スレッドセーフティを気にせずにUIコンポーネントを更新できます。この例では、毎秒現在時刻を表示するデジタル時計を実装しています。
 
-<span class="listing-number">**サンプルコード17-27**</span>
+<span class="listing-number">**サンプルコード17-27**　TimerExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -1782,7 +1782,7 @@ public class TimerExample {
 
 以下のコードは、マルチスレッド環境でのスレッドセーフティを確保する実装例です。volatileキーワードの使用、EDT上でのボタン状態の更新、SwingUtilities.invokeLater()によるスレッド間通信など、デッドロックや競合状態を回避するためのベストプラクティスを示しています。
 
-<span class="listing-number">**サンプルコード17-28**</span>
+<span class="listing-number">**サンプルコード17-28**　ThreadSafetyExample.java</span>
 
 ```java
 import javax.swing.*;

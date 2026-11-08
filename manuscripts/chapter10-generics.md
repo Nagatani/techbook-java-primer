@@ -37,7 +37,7 @@ Map<String, Integer> scores = new HashMap<String, Integer>();
 
 ジェネリクスがない場合にどんな問題が起きるか、実際に体験してみましょう。以下のコードは、あえてジェネリクスを使わずに書いた例です。これにより、型安全性が保証されない場合の危険性を理解できます。
 
-<span class="listing-number">**サンプルコード10-2**</span>
+<span class="listing-number">**サンプルコード10-2**　CollectionProblem.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer
 
 同じプログラムをジェネリクスを使って書き直してみましょう。
 
-<span class="listing-number">**サンプルコード10-3**</span>
+<span class="listing-number">**サンプルコード10-3**　CollectionSolution.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ PYTHON
 
 Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
 
-<span class="listing-number">**サンプルコード10-4**</span>
+<span class="listing-number">**サンプルコード10-4**　WithoutGenericsExample.java</span>
 
 ```java
 // ジェネリクスがなかった時代のコード（現在は非推奨）
@@ -178,7 +178,7 @@ public class WithoutGenericsExample {
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。これを型パラメータと呼びます。
 
-<span class="listing-number">**サンプルコード10-5**</span>
+<span class="listing-number">**サンプルコード10-5**　WithGenericsExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -213,7 +213,7 @@ Java
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-<span class="listing-number">**サンプルコード10-6**</span>
+<span class="listing-number">**サンプルコード10-6**　Box.java、BoxExample.java</span>
 
 ```java
 // Tという型パラメータを持つジェネリッククラス
@@ -268,7 +268,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 以下のコードは、ジェネリックメソッドの実装例を示しています。ユーティリティクラスの静的メソッドとして、さまざまな型の配列を扱う場合に便利です。
 
-<span class="listing-number">**サンプルコード10-8**</span>
+<span class="listing-number">**サンプルコード10-8**　GenericMethodExample.java</span>
 
 ```java
 public class GenericMethodExample {
@@ -304,7 +304,7 @@ String配列: A B C
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-<span class="listing-number">**サンプルコード10-9**</span>
+<span class="listing-number">**サンプルコード10-9**　NumericBox.java、BoundedTypeExample.java</span>
 
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
@@ -349,7 +349,7 @@ public class BoundedTypeExample {
 - `List<? extends Type>`: 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
 - `List<? super Type>`: 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
 
-<span class="listing-number">**サンプルコード10-10**</span>
+<span class="listing-number">**サンプルコード10-10**　WildcardExample.java</span>
 
 ```java
 import java.util.List;
@@ -391,7 +391,7 @@ Java 10で導入されたvar型推論は、ジェネリクスと組み合わせ�
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード10-11**</span>
+<span class="listing-number">**サンプルコード10-11**　VarBasicExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -430,7 +430,7 @@ var型推論は、以下の場面でのみ使用できます。
 
 一方、以下の場面では使用できません。具体的な例で確認してみましょう。
 
-<span class="listing-number">**サンプルコード10-12**</span>
+<span class="listing-number">**サンプルコード10-12**　VarLimitations.java</span>
 
 ```java
 import java.util.List;
@@ -472,7 +472,7 @@ public class VarLimitations {
 
 var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります。以下の例でよい使用例と悪い使用例を比較してみましょう。
 
-<span class="listing-number">**サンプルコード10-13**</span>
+<span class="listing-number">**サンプルコード10-13**　VarReadabilityExample.java</span>
 
 ```java
 import java.util.List;
@@ -521,7 +521,7 @@ public class VarReadabilityExample {
 
 var型推論は、ジェネリクスと組み合わせることでとくに威力を発揮します。複雑なジェネリック型の宣言を簡潔にし、Stream APIやメソッドチェーンでの型推論を活用できます。
 
-<span class="listing-number">**サンプルコード10-14**</span>
+<span class="listing-number">**サンプルコード10-14**　VarWithGenericsExample.java</span>
 
 ```java
 import java.util.*;
@@ -585,7 +585,7 @@ Second: 42
 
 var型推論を効果的に使用するためのガイドラインを、よい例と悪い例で紹介します。
 
-<span class="listing-number">**サンプルコード10-15**</span>
+<span class="listing-number">**サンプルコード10-15**　VarBestPractices.java</span>
 
 ```java
 import java.util.*;
@@ -930,7 +930,7 @@ error: bad operand types for binary operator '*'
 
 境界型パラメータの正しい使用方法です。
 
-<span class="listing-number">**サンプルコード10-26**</span>
+<span class="listing-number">**サンプルコード10-26**　NumberContainer.java</span>
 
 ```java
 // ✅ 適切な境界型パラメータ

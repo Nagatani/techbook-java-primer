@@ -67,7 +67,7 @@ EDTの特徴
 
 以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを作成し、actionPerformed()メソッドでクリック時の処理を定義します。addActionListener()メソッドでリスナーをボタンに登録することで、クリックイベントとの関連付けが完了します。
 
-<span class="listing-number">**サンプルコード18-1**</span>
+<span class="listing-number">**サンプルコード18-1**　ButtonEventExample.java</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -147,7 +147,7 @@ button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンが
 
 以下のコードは、テキストフィールドとボタン、ラベルを組み合わせたインタラクティブな挨拶アプリケーションの例です。ラムダ式を使用して、ボタンクリック時にテキストフィールドから入力を取得し、ラベルに動的にメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-3**</span>
+<span class="listing-number">**サンプルコード18-3**　GreetingApp.java</span>
 
 ```java
 import java.awt.FlowLayout;
@@ -218,7 +218,7 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 以下のコードは、WindowAdapterを使用してウィンドウ閉じる際の終了確認を実装する例です。setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)でデフォルトの閉じる動作を無効化し、windowClosing()メソッドでカスタム処理を実行します。
 
-<span class="listing-number">**サンプルコード18-4**</span>
+<span class="listing-number">**サンプルコード18-4**　WindowEventExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -266,7 +266,7 @@ public class WindowEventExample {
 
 以下のコードは、MouseListenerとMouseMotionListenerを実装して、マウスのさまざまなイベントを処理する例です。マウスのクリック、パネルへの出入り、マウスの移動などを検出し、ステータスラベルに現在の状態を表示します。
 
-<span class="listing-number">**サンプルコード18-5**</span>
+<span class="listing-number">**サンプルコード18-5**　BasicMouseEventExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -350,7 +350,7 @@ public class BasicMouseEventExample extends JFrame {
 
 以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています。consume()メソッドを使用することで、デフォルトのキー動作をキャンセルできます。
 
-<span class="listing-number">**サンプルコード18-6**</span>
+<span class="listing-number">**サンプルコード18-6**　BasicKeyEventExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -412,7 +412,7 @@ public class BasicKeyEventExample extends JFrame {
 
 以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択がされたか解除されたかを判定し、現在の選択状態をリアルタイムで更新・表示します。
 
-<span class="listing-number">**サンプルコード18-7**</span>
+<span class="listing-number">**サンプルコード18-7**　ItemListenerExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -520,7 +520,7 @@ public class ItemListenerExample extends JFrame {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容の検証を行います。この仕組みを使用することで、ユーザーフレンドリーなフォーム入力インターフェイスを実装できます。
 
-<span class="listing-number">**サンプルコード18-8**</span>
+<span class="listing-number">**サンプルコード18-8**　FocusListenerExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -616,7 +616,7 @@ public class FocusListenerExample extends JFrame {
 
 以下のコードは、ChangeListenerを使用してスライダーとスピナーの値の変化を監視し、連動させる例です。getValueIsAdjusting()メソッドを使用することで、スライダーのドラッグ中とドラッグ終了時を区別し、パフォーマンスを最適化できます。
 
-<span class="listing-number">**サンプルコード18-9**</span>
+<span class="listing-number">**サンプルコード18-9**　ChangeListenerExample.java</span>
 
 ```java
 import javax.swing.*;

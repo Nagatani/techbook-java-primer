@@ -91,7 +91,7 @@ DRY原則（Don't Repeat Yourself）を実現できます。共通コードを�
 
 </div>
 
-<span class="listing-number">**サンプルコード5-1**</span>
+<span class="listing-number">**サンプルコード5-1**　PaymentResult.java、PaymentProcessor.java（3〜87行目）</span>
 
 ```java
 import java.math.BigDecimal;
@@ -387,7 +387,7 @@ public class PaymentExample {
 
 実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。WordDocumentクラスとPDFDocumentクラスで、同じようなフィールドとメソッドが重複して実装されています。このような重複は保守性を低下させ、バグの温床となるため、継承を使ってリファクタリングします。
 
-<span class="listing-number">**サンプルコード5-4**</span>
+<span class="listing-number">**サンプルコード5-4**　WordDocument.java、PDFDocument.java</span>
 
 ```java
 public class WordDocument {
@@ -498,7 +498,7 @@ data.xlsx を閉じました
 - ⑥　固有メソッド
     + generatePDF()はPDF特有の機能として実装
 
-<span class="listing-number">**サンプルコード5-5**</span>
+<span class="listing-number">**サンプルコード5-5**　ExcelDocument.java</span>
 
 ```java
 public class ExcelDocument {
@@ -527,7 +527,7 @@ public class ExcelDocument {
 
 #### ステップ2：共通部分の抽出
 
-<span class="listing-number">**サンプルコード5-6**</span>
+<span class="listing-number">**サンプルコード5-6**　Document.java</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -565,7 +565,7 @@ public class Document {
 
 #### ステップ3：子クラスの再実装
 
-<span class="listing-number">**サンプルコード5-7**</span>
+<span class="listing-number">**サンプルコード5-7**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -694,7 +694,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 #### 継承の基本構文と継承される要素
 
-<span class="listing-number">**サンプルコード5-8**</span>
+<span class="listing-number">**サンプルコード5-8**　Employee.java、Manager.java、Developer.java</span>
 
 ```java
 public class Employee {  // 親クラス（スーパークラス）
@@ -787,7 +787,7 @@ public class EmployeeTest {
 
 以下のコードは、継承の誤用の典型例です。スタック（後入れ先出しのデータ構造）を実装するためにArrayListを継承していますが、これによりArrayListの全メソッドが公開され、スタックの原則を破る操作が可能になってしまいます。この問題と解決策を見ていきましょう。
 
-<span class="listing-number">**サンプルコード5-9**</span>
+<span class="listing-number">**サンプルコード5-9**　MyStack.java、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -834,7 +834,7 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-10**</span>
+<span class="listing-number">**サンプルコード5-10**　MyStack.java</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -938,7 +938,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-12**</span>
+<span class="listing-number">**サンプルコード5-12**　Rectangle.java、Square.java、RectangleSquareTest.java</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -1061,7 +1061,7 @@ public class GeometryTest {
 
 たとえば以下のコードを見てください。
 
-<span class="listing-number">**サンプルコード5-13**</span>
+<span class="listing-number">**サンプルコード5-13**　Shape.java</span>
 
 ```java
 // 解決策の例：インターフェイスを使用
@@ -1145,7 +1145,7 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 #### 改善策：コンポジション（委譲）を使う
 
-<span class="listing-number">**サンプルコード5-15**</span>
+<span class="listing-number">**サンプルコード5-15**　MyStack.java</span>
 
 ```java
 // 良い例：ArrayListを内部で使用
@@ -1187,7 +1187,7 @@ public class MyStack<E> {
 
 Javaは多重継承をサポートしないため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
 
-<span class="listing-number">**サンプルコード5-16**</span>
+<span class="listing-number">**サンプルコード5-16**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
 
 ```java
 // 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
@@ -1274,7 +1274,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-18**</span>
+<span class="listing-number">**サンプルコード5-18**　Character.java、Wizard.java、Knight.java、CharacterOverrideTest.java</span>
 
 ```java
 // 親クラス
@@ -1644,7 +1644,7 @@ class User {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-24**</span>
+<span class="listing-number">**サンプルコード5-24**　DrawingAppBefore.java</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1733,7 +1733,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-25**</span>
+<span class="listing-number">**サンプルコード5-25**　DrawingAppAfter.java</span>
 
 ```java
 // 基底クラス

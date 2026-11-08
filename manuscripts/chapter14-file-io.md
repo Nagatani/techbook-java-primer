@@ -98,7 +98,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
 
-<span class="listing-number">**サンプルコード14-2**</span>
+<span class="listing-number">**サンプルコード14-2**　ScannerExample.java</span>
 
 ```java
 import java.io.IOException;
@@ -167,7 +167,7 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-3**</span>
+<span class="listing-number">**サンプルコード14-3**　TextFileReaderExample.java</span>
 
 ```java
 import java.io.BufferedReader;
@@ -233,7 +233,7 @@ Line 2
 
 同様に`Files`クラスと`BufferedWriter`を使います。
 
-<span class="listing-number">**サンプルコード14-4**</span>
+<span class="listing-number">**サンプルコード14-4**　TextFileWriterExample.java</span>
 
 ```java
 import java.io.BufferedWriter;
@@ -291,7 +291,7 @@ public class TextFileWriterExample {
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
 
-<span class="listing-number">**サンプルコード14-5**</span>
+<span class="listing-number">**サンプルコード14-5**　CharacterEncodingExample.java</span>
 
 ```java
 import java.io.BufferedReader;
@@ -359,7 +359,7 @@ public class CharacterEncodingExample {
 `DataInputStream`と`DataOutputStream`は、Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
 数値を文字列に変換せずに保存するため、テキスト形式と比べてファイルサイズが小さくなり、変換処理も不要になります。
 
-<span class="listing-number">**サンプルコード14-6**</span>
+<span class="listing-number">**サンプルコード14-6**　DataStreamExample.java</span>
 
 ```java
 import java.io.*;
@@ -427,7 +427,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 - `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化する
 - `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）
 
-<span class="listing-number">**サンプルコード14-7**</span>
+<span class="listing-number">**サンプルコード14-7**　SerializationExample.java</span>
 
 ```java
 import java.io.*;
@@ -496,7 +496,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 - `Files`
     + ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
 
-<span class="listing-number">**サンプルコード14-8**</span>
+<span class="listing-number">**サンプルコード14-8**　FileSystemExample.java</span>
 
 ```java
 import java.io.IOException;
@@ -557,7 +557,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 以下は、基本的なCSV読み込み・書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-9**</span>
+<span class="listing-number">**サンプルコード14-9**　CSVProcessingExample.java</span>
 
 ```java
 import java.io.*;
@@ -658,7 +658,7 @@ java.time APIの詳細な使い方については、付録F: java.time API完全
 
 Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
 
-<span class="listing-number">**サンプルコード14-10**</span>
+<span class="listing-number">**サンプルコード14-10**　FileChooserExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -704,7 +704,7 @@ Java 15で正式に導入されたText Blocksは、複数行にわたる文字�
 
 Text Blocksが導入される前は、複数行の文字列を作成するために文字列連結やエスケープシーケンスを多用する必要がありました。
 
-<span class="listing-number">**サンプルコード14-11**</span>
+<span class="listing-number">**サンプルコード14-11**　TraditionalStringProblems.java</span>
 
 ```java
 public class TraditionalStringProblems {
@@ -758,7 +758,7 @@ public class TraditionalStringProblems {
 
 Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
 
-<span class="listing-number">**サンプルコード14-12**</span>
+<span class="listing-number">**サンプルコード14-12**　TextBlockBasics.java</span>
 
 ```java
 public class TextBlockBasics {
@@ -813,7 +813,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です。
 
-<span class="listing-number">**サンプルコード14-13**</span>
+<span class="listing-number">**サンプルコード14-13**　TextBlockIndentation.java</span>
 
 ```java
 public class TextBlockIndentation {
@@ -905,7 +905,7 @@ public class Example {
 
 Text Blocksでは多くのエスケープシーケンスが不要になります。
 
-<span class="listing-number">**サンプルコード14-14**</span>
+<span class="listing-number">**サンプルコード14-14**　TextBlockEscaping.java</span>
 
 ```java
 public class TextBlockEscaping {
@@ -983,7 +983,7 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
-<span class="listing-number">**サンプルコード14-15**</span>
+<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java</span>
 
 ```java
 import java.io.IOException;
@@ -1223,7 +1223,7 @@ HTMLファイルのパスは、プログラムを実行したディレクトリ�
 
 Text Blocksをファイル読み書きと組み合わせた実践的な使用例。
 
-<span class="listing-number">**サンプルコード14-16**</span>
+<span class="listing-number">**サンプルコード14-16**　TextBlockFileIO.java</span>
 
 ```java
 import java.io.IOException;

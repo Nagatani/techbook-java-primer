@@ -91,7 +91,7 @@
 
 ### テスト対象のクラス
 
-<span class="listing-number">**サンプルコード21-2**</span>
+<span class="listing-number">**サンプルコード21-2**　Calculator.java</span>
 
 ```java
 // Calculator.java
@@ -114,7 +114,7 @@ public class Calculator {
 
 以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を明確に示します。各ステップが明確に分離され、テストの意図が一目で理解できるようになっています。
 
-<span class="listing-number">**サンプルコード21-3**</span>
+<span class="listing-number">**サンプルコード21-3**　CalculatorManualTest.java</span>
 
 ```java
 // CalculatorManualTest.java
@@ -154,7 +154,7 @@ public class CalculatorManualTest {
 
 以下の例では、密結合によってテストが困難になる典型的なケースを示します。UserServiceがUserRepositoryを内部で直接生成しているため、テスト時にデータベース接続が必要となってしまいます。
 
-<span class="listing-number">**サンプルコード21-4**</span>
+<span class="listing-number">**サンプルコード21-4**　UserRepository.java、UserService.java</span>
 
 ```java
 // UserRepository.java - DBからユーザー情報を取得するクラス
@@ -265,7 +265,7 @@ DIの核心は、依存関係を外部から制御できる点にあります。
 
 以下の例では、UserRepositoryをインターフェイスとして定義し、UserServiceが具体的な実装ではなく抽象に依存するように変更しています。これが疎結合設計の核心です。
 
-<span class="listing-number">**サンプルコード21-7**</span>
+<span class="listing-number">**サンプルコード21-7**　UserRepository.java、UserService.java</span>
 
 ```java
 // UserRepository.java - インターフェイス
@@ -292,7 +292,7 @@ public class UserService {
 
 スタブ（偽物オブジェクト）を使用することで、データベースに接続することなくUserServiceのロジックをテストできます。以下の例では、テスト用の偽物リポジトリを作成し、それを使ってUserServiceをテストしています。
 
-<span class="listing-number">**サンプルコード21-8**</span>
+<span class="listing-number">**サンプルコード21-8**　UserRepositoryStub.java、UserServiceManualTest.java</span>
 
 ```java
 // UserRepositoryStub.java - テスト用の偽物リポジトリ
@@ -367,7 +367,7 @@ public class StringCalculatorTest {
 
 次に、テストが通る最小限の実装を行います。この段階では、ハードコーディングでも構いません。重要なのは、テストを緑（成功）にすることです。
 
-<span class="listing-number">**サンプルコード21-10**</span>
+<span class="listing-number">**サンプルコード21-10**　StringCalculator.java</span>
 
 ```java
 public class StringCalculator {

@@ -36,7 +36,7 @@
 以下のコードは、カプセル化を適用していない銀行口座クラスの例です。
 このコードは一見動作しますが、実際のシステムでは深刻なセキュリティリスクとデータ整合性の問題を引き起こします。各問題点をコメントで示しています。
 
-<span class="listing-number">**サンプルコード4-1**</span>
+<span class="listing-number">**サンプルコード4-1**　BankAccountV0.java、ProblemDemo.java</span>
 
 ```java
 // 初期バージョン：カプセル化なし（問題のある設計）
@@ -123,7 +123,7 @@ Javaのアクセス制御は、カプセル化を実現する重要な機能で�
 
 ##### `private`の使用例
 
-<span class="listing-number">**サンプルコード4-2**</span>
+<span class="listing-number">**サンプルコード4-2**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -168,7 +168,7 @@ class BankAccountTest {
 
 ##### パッケージプライベート（デフォルト）の使用例
 
-<span class="listing-number">**サンプルコード4-3**</span>
+<span class="listing-number">**サンプルコード4-3**　DataProcessor.java</span>
 
 ```java
 package com.example.internal;
@@ -241,7 +241,7 @@ Engine started: V6
 
 ##### `public`の使用例
 
-<span class="listing-number">**サンプルコード4-5**</span>
+<span class="listing-number">**サンプルコード4-5**　MathUtils.java</span>
 
 ```java
 public class MathUtils {
@@ -291,7 +291,7 @@ getter/setterメソッド（アクセサメソッドとも呼ばれます）は�
 この例外のしくみは第13章「例外処理」で詳しく学びます。
 ここでは、「`throw`でエラーを知らせると、`catch`ブロックの処理に移る」という流れだけを押さえてください。
 
-<span class="listing-number">**サンプルコード4-6**</span>
+<span class="listing-number">**サンプルコード4-6**　Product.java</span>
 
 ```java
 public class Product {
@@ -361,7 +361,7 @@ class ProductTest {
 
 プログラミングで、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。範囲チェック、nullチェック、ビジネスルールの検証を実装すると、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
 
-<span class="listing-number">**サンプルコード4-7**</span>
+<span class="listing-number">**サンプルコード4-7**　Employee.java</span>
 
 ```java
 public class Employee {
@@ -403,7 +403,7 @@ public class Employee {
 
 まず、フィールドをprivateにして、publicメソッドを通じてのみアクセスできるようにします。
 
-<span class="listing-number">**サンプルコード4-8**</span>
+<span class="listing-number">**サンプルコード4-8**　BankAccountV1.java</span>
 
 ```java
 public class BankAccountV1 {
@@ -470,7 +470,7 @@ public class BankAccountV1Test {
 
 #### ステップ2: 基本的な検証を追加（BankAccountV2）
 
-<span class="listing-number">**サンプルコード4-9**</span>
+<span class="listing-number">**サンプルコード4-9**　BankAccountV2.java</span>
 
 ```java
 public class BankAccountV2 {
@@ -565,7 +565,7 @@ public class BankAccountV2Test {
 取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード4-10**</span>
+<span class="listing-number">**サンプルコード4-10**　BankAccountV3.java</span>
 
 ```java
 import java.util.*;
@@ -688,7 +688,7 @@ public class BankAccountV3Test {
 
 BankAccountV3の設計を基に、本章ではさらに高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です。
 
-<span class="listing-number">**サンプルコード4-11**</span>
+<span class="listing-number">**サンプルコード4-11**　EnhancedBankAccount.java</span>
 
 ```java
 import java.time.LocalDateTime;
@@ -897,7 +897,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です。
 
-<span class="listing-number">**サンプルコード4-17**</span>
+<span class="listing-number">**サンプルコード4-17**　Example.java</span>
 
 ```java
 import java.util.*;
@@ -960,7 +960,7 @@ com.example.myapp/
 
 実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
 
-<span class="listing-number">**サンプルコード4-19**</span>
+<span class="listing-number">**サンプルコード4-19**　User.java</span>
 
 ```java
 public class User {
@@ -1028,7 +1028,7 @@ public class UserTest {
 
 クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
 
-<span class="listing-number">**サンプルコード4-20**</span>
+<span class="listing-number">**サンプルコード4-20**　Book.java</span>
 
 ```java
 public class Book {
@@ -1116,7 +1116,7 @@ Email email = new EmailBuilder()
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-22**</span>
+<span class="listing-number">**サンプルコード4-22**　DatabaseConfig.java</span>
 
 ```java
 public class DatabaseConfig {
@@ -1171,7 +1171,7 @@ public class DatabaseConfig {
 
 イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
 
-<span class="listing-number">**サンプルコード4-23**</span>
+<span class="listing-number">**サンプルコード4-23**　EventProcessor.java</span>
 
 ```java
 import java.util.List;
@@ -1220,7 +1220,7 @@ class EventManager {
 次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
 ここでは、HTTPのヘッダー名と値の組をまとめて渡すための引数と考えてください。
 
-<span class="listing-number">**サンプルコード4-24**</span>
+<span class="listing-number">**サンプルコード4-24**　HttpClient.java</span>
 
 ```java
 import java.util.Map;
@@ -1249,7 +1249,7 @@ public class HttpClient {
 
 異なるデータ型に対応しながら、型安全性を維持します。
 
-<span class="listing-number">**サンプルコード4-25**</span>
+<span class="listing-number">**サンプルコード4-25**　Logger.java</span>
 
 ```java
 public class Logger {
@@ -1451,7 +1451,7 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
     + 複数スレッドからの同時アクセスで不整合が発生
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-29**</span>
+<span class="listing-number">**サンプルコード4-29**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -1693,7 +1693,7 @@ public class User {
 #### 2. NullPointerException完全ガイド
 問題: nullの参照にメソッド呼び出しやフィールドアクセスを行う
 
-<span class="listing-number">**サンプルコード4-34**</span>
+<span class="listing-number">**サンプルコード4-34**　Product.java</span>
 
 ```java
 // エラー例
@@ -1711,7 +1711,7 @@ public class Product {
 ```
 
 解決策:
-<span class="listing-number">**サンプルコード4-35**</span>
+<span class="listing-number">**サンプルコード4-35**　Product.java</span>
 
 ```java
 public class Product {

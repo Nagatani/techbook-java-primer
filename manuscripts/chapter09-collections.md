@@ -26,7 +26,7 @@
 
 まず、配列を使った簡単な例から始めましょう。
 
-<span class="listing-number">**サンプルコード9-1**</span>
+<span class="listing-number">**サンプルコード9-1**　StudentManager.java</span>
 
 ```java
 // 学生の名前を管理するプログラム
@@ -139,7 +139,7 @@ for (String student : students) {
 
 これらの問題を解決するために、Javaはコレクションフレームワークを提供しています。同じ学生管理プログラムをArrayListで書き直してみましょう。
 
-<span class="listing-number">**サンプルコード9-6**</span>
+<span class="listing-number">**サンプルコード9-6**　StudentManagerImproved.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -248,7 +248,7 @@ Listは順序を保持し、インデックスによるアクセスが可能な�
 
 まず、ArrayListの基本的な使い方を具体的なコード例で見てみましょう。
 
-<span class="listing-number">**サンプルコード9-7**</span>
+<span class="listing-number">**サンプルコード9-7**　ArrayListExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -374,7 +374,7 @@ Setは重複要素を許さないコレクションです。数学的な集合�
 
 HashSetの基本的な操作を実際のコード例で確認してみましょう。
 
-<span class="listing-number">**サンプルコード9-10**</span>
+<span class="listing-number">**サンプルコード9-10**　HashSetExample.java</span>
 
 ```java
 import java.util.HashSet;
@@ -476,7 +476,7 @@ Mapはキーと値のペアを管理するデータ構造です。辞書やハ�
 
 Mapの具体的な操作方法を、学生の点数管理を例にして見てみましょう。
 
-<span class="listing-number">**サンプルコード9-13**</span>
+<span class="listing-number">**サンプルコード9-13**　HashMapExample.java</span>
 
 ```java
 import java.util.HashMap;
