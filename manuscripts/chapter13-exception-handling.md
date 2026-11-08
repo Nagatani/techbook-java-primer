@@ -497,6 +497,10 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
 
+次のサンプルの後半では、データベースに接続するJDBC（`Connection`、`PreparedStatement`）を使います。
+JDBCは本書の本文では扱わず、付録Eで紹介しています。
+ここでは、データベース接続も`close()`が必要なリソースであり、try-with-resourcesで確実に閉じられる点に注目してください。
+
 <span class="listing-number">**サンプルコード13-10**</span>
 
 ```java
@@ -1293,6 +1297,9 @@ try {
 ```
 
 ### 7. 並行処理での例外処理
+
+この項のサンプルは、第15章「マルチスレッドプログラミング」で学ぶスレッドや`CompletableFuture`を使います。
+第15章を学んだあとに読み返すと理解しやすくなります。
 
 ##### 問題
 スレッドでの例外が正しく処理されません。

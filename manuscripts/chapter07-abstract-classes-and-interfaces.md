@@ -260,6 +260,10 @@ Java 8以降、インターフェイスは大きく進化し、より柔軟な�
 さまざまな設計パターンを実現できるようになりました。
 これは関数型プログラミングの影響を受けたJavaの進化の一例です。
 
+この節と次の「高度な設計パターン」のサンプルには、後の章で学ぶ機能が出てきます。
+主なものは、コレクション（`List`、`Map`。第9章）、ジェネリクス（`<E>`、`<T>`。第10章）、ラムダ式と`Function`・`Predicate`（第11章）、`Optional`（第12章）です。
+初めて読むときは、defaultメソッドやstaticメソッドといったインターフェイスの構造に注目し、これらの機能は各章を学んだあとに読み返してください。
+
 ### defaultメソッドの活用
 
 defaultメソッドは、既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れないようにするための重要な機能です。
@@ -279,7 +283,7 @@ public interface Collection<E> extends Iterable<E> {
     // ... 他の既存メソッド
     
     // Java 8で追加されたdefaultメソッドの例
-    // 注：Stream APIはChapter 12で詳しく学習します
+    // 注：Stream APIは第12章で詳しく学習します
     // ここでは別のdefaultメソッドの例を示します
     default boolean containsAll(Collection<?> c) {
         for (Object e : c) {

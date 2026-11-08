@@ -471,6 +471,10 @@ byte変換後: -126
 数値変換エラー: For input string: "abc"
 ```
 
+最後の`try { ... } catch (NumberFormatException e) { ... }`は、実行中に起きたエラー（例外）に対処するための構文です。
+`try`ブロックでエラーが起きると、処理が`catch`ブロックに移ります。
+例外処理は第13章「例外処理」で詳しく学ぶので、ここではこの動きだけを押さえておけば十分です。
+
 ### 型変換の実践的な利点
 
 #### 精度を考慮した計算
@@ -680,6 +684,7 @@ public class SafeInputExample {
 #### 2. リソース管理
 
 `Scanner`などのリソースは使用後に必ず`close()`メソッドで解放します。Java 7以降では`try-with-resources`構文も使用できます。
+この構文は第13章「例外処理」で詳しく説明します。
 
 ```java
 try (Scanner sc = new Scanner(System.in)) {

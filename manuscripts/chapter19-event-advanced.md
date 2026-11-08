@@ -935,6 +935,9 @@ public class JavaBeansEventExample extends JFrame {
 
 以下のコードは、Swingのドラッグ&ドロップAPIを使用した実装例です。リスト間でのアイテムの移動と、外部からのファイルドロップの両方に対応しています。TransferHandlerとDropTargetを組み合わせることで、直感的なユーザーインターフェイスを実現できます。ファイルドロップ時にはファイル情報を表示し、実践的なアプリケーションでの活用例を示しています。
 
+このサンプルで使う`JList`と`DefaultListModel`は、第20章「JTableとJListの基礎」で詳しく学びます。
+ここでは、`DefaultListModel`に要素を追加・削除すると`JList`の表示が更新される、という点だけを押さえてください。
+
 <span class="listing-number">**サンプルコード19-6**</span>
 
 ```java

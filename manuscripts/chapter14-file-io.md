@@ -1767,6 +1767,7 @@ public void appendLog(String message) {
 ```
 
 対処法： 必要な同期化とファイルロックを実装します。
+`synchronized`は、複数のスレッドが同じ処理を同時に実行しないようにするキーワードで、第15章「マルチスレッドプログラミング」で詳しく学びます。
 
 <span class="listing-number">**サンプルコード14-28**</span>
 
