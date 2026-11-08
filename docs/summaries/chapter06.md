@@ -3,7 +3,7 @@ source: manuscripts/chapter06-immutability-and-final.md
 summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
-    hash: 71744530
+    hash: 9d217965
   - key: "不変性の概念と重要性"
     hash: bbe9754f
   - key: "finalキーワードの3つの用途"

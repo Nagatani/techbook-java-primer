@@ -11,7 +11,7 @@ sections:
   - key: "jpackageによるネイティブアプリケーション化"
     hash: d31df8cd
   - key: "まとめ"
-    hash: 67a8b11c
+    hash: 97597efa
   - key: "章末演習"
     hash: a585e7ab
 ---

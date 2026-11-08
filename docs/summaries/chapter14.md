@@ -3,7 +3,7 @@ source: manuscripts/chapter14-file-io.md
 summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
-    hash: fc15c9bd
+    hash: 14f07a1e
   - key: "完了確認チェックリスト"
     hash: 863458c4
   - key: "ファイルI/Oの基礎とストリーム"
@@ -17,7 +17,7 @@ sections:
   - key: "ファイルシステムの操作 (NIO.2)"
     hash: 4236ae4c
   - key: "実践的なファイル処理例"
-    hash: 8f0921ec
+    hash: c37f41bc
   - key: "日付時刻処理について"
     hash: f33c1424
   - key: "GUIでのファイル選択: `JFileChooser`"

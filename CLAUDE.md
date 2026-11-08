@@ -174,7 +174,7 @@ The following issues require ongoing attention and should be referenced during a
 3. ~~**High Priority**: Code listing numbering inconsistency~~ ✅ **Resolved** - 1,221個を「サンプルコードX-Y」形式に統一 (2025-07-23)
 4. ~~**Medium Priority**: Chapter 15 exercise format inconsistency~~ ✅ **Resolved** - 全章GitHubリンク形式で統一
 5. ~~**Medium Priority**: Chapter ordering optimization (Chapter 21 placement)~~ ✅ **Resolved** - 現状配置を維持する方針決定
-6. **Medium Priority**: textlint errors remaining (95件、2026-11-07時点) - 複雑な手動修正が必要
+6. ~~**Medium Priority**: textlint errors remaining~~ ✅ **ほぼ解消** - 2026-11-08時点で6件（うち4件はリスト内の脚注をですます調で書く規約上の例外）
 7. **High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）
 8. **High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）
 9. **Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）

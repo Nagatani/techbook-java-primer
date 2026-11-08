@@ -3,7 +3,7 @@ source: manuscripts/chapter10-generics.md
 summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
-    hash: 05128962
+    hash: 35d59ace
   - key: "なぜジェネリクスが必要なのか？"
     hash: 0c8c0917
   - key: "ジェネリッククラスの作成"
@@ -19,7 +19,7 @@ sections:
   - key: "よくあるエラーと対処法"
     hash: 14069704
   - key: "まとめ"
-    hash: b5583263
+    hash: 40ab5a99
   - key: "章末演習"
     hash: 41819dbb
 ---
