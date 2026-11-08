@@ -716,14 +716,6 @@ if (score >= 90) {
 } else {
     System.out.println("不可");
 }
-
-// switch文（Java 14以降の新記法も利用可能）
-String grade = switch (score / 10) {
-    case 10, 9 -> "優";
-    case 8 -> "良";
-    case 7 -> "可";
-    default -> "不可";
-};
 ```
 
 ##### このコードで学習できる重要な概念
@@ -732,48 +724,70 @@ String grade = switch (score / 10) {
     + `else if`の連鎖により、複数の条件を順次評価できる。これは成績判定のような段階的評価に最適である
 - 論理的な条件設計
     + 条件を`score >= 90`から順番に書くことで、重複しない明確な判定ロジックを実現している
-- switch式の活用
-    + Java 14以降の新しいswitch式では、より簡潔で関数型プログラミングに近い記述が可能である
-- 複数ケースの同時処理
-    + `case 10, 9 ->`のように、複数の値に対して同じ処理を適用できる
 - 型安全な分岐
-    + 条件式は必ず`boolean`型である必要があり、C言語のような整数による条件分岐は許可されません
+    + 条件式は必ず`boolean`型である必要があり、C言語のような整数による条件分岐は許可されない
 
-##### 新旧switch文の比較による学習ポイント
+### switch文とswitch式
 
-###### 従来のswitch文
+switch文は、変数の値によって処理を分岐させる制御構造です。多数のif-else文を使用するよりも読みやすくなります。
+
+<span class="listing-number">**サンプルコード2-4**</span>
 
 ```java
-String grade;
-switch (score / 10) {
-    case 10:
-    case 9:
-        grade = "優";
-        break;
-    case 8:
-        grade = "良";
-        break;
-    case 7:
-        grade = "可";
-        break;
-    default:
-        grade = "不可";
-        break;
+// switch文の基本的な使い方
+public class SwitchExample {
+    public static void main(String[] args) {
+        int grade = 85;
+        String evaluation;
+        
+        switch (grade / 10) {
+            case 10:
+            case 9:
+                evaluation = "優秀";
+                break;
+            case 8:
+                evaluation = "良い";
+                break;
+            case 7:
+                evaluation = "普通";
+                break;
+            default:
+                evaluation = "要努力";
+                break;
+        }
+        
+        System.out.println("評価: " + evaluation);
+    }
 }
 ```
 
-###### 新しいswitch式
+実行結果：
+```
+評価: 良い
+```
+
+#### switch文の注意点
+
+- 各caseの最後には`break`文を書く（忘れると次のcaseも実行される）
+- `default`節で想定外の値に対応する
+- 同じ処理をする複数の値は連続して記述できる
+
+#### switch式（Java 14以降）
+
+Java 14からは、switchを値を返す「式」として書けるようになりました。
+サンプルコード2-4と同じ判定を、`->`（アロー）を使ったswitch式で書くと次のようになります。
 
 ```java
-String grade = switch (score / 10) {
-    case 10, 9 -> "優";
-    case 8 -> "良";
-    case 7 -> "可";
-    default -> "不可";
+String evaluation = switch (grade / 10) {
+    case 10, 9 -> "優秀";   // 複数の値はカンマで区切って並べる
+    case 8 -> "良い";
+    case 7 -> "普通";
+    default -> "要努力";
 };
 ```
 
-###### 学習できる進化のポイント
+switch式の利点は次のとおりです。
+
 - fall-through問題の解決
     + 新しいswitch式では`break`文が不要で、意図しないfall-throughバグを防げる
 - 式としての利用
@@ -833,51 +847,6 @@ while (count < 5) {
 - 拡張for文はC言語にはない、Javaの重要な改良点である
 - ループ変数のスコープがより厳密に管理されている
 - 配列アクセスの安全性がコンパイル時に保証される
-
-### switch文
-
-switch文は、変数の値によって処理を分岐させる制御構造です。多数のif-else文を使用するよりも読みやすくなります。
-
-<span class="listing-number">**サンプルコード2-4**</span>
-
-```java
-// switch文の基本的な使い方
-public class SwitchExample {
-    public static void main(String[] args) {
-        int grade = 85;
-        String evaluation;
-        
-        switch (grade / 10) {
-            case 10:
-            case 9:
-                evaluation = "優秀";
-                break;
-            case 8:
-                evaluation = "良い";
-                break;
-            case 7:
-                evaluation = "普通";
-                break;
-            default:
-                evaluation = "要努力";
-                break;
-        }
-        
-        System.out.println("評価: " + evaluation);
-    }
-}
-```
-
-実行結果：
-```
-評価: 良い
-```
-
-#### switch文の注意点
-
-- 各caseの最後には`break`文を書く（忘れると次のcaseも実行される）
-- `default`節で想定外の値に対応する
-- 同じ処理をする複数の値は連続して記述できる
 
 ## 配列
 
