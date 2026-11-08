@@ -1,0 +1,345 @@
+#!/usr/bin/env node
+/**
+ * 本文のサンプルコードと、GitHubで公開する全文（sample-code/）を対応づけるツール
+ *
+ * 全文は sample-code/chapterXX/XX-YY/ に置き、ディレクトリごとに javac でコンパイルできる。
+ * 本文に載せる範囲は sample-code/chapterXX/listings.json に、ファイルと行番号で記録する。
+ *
+ *   {
+ *     "5-3": {
+ *       "dir": "05-03",
+ *       "main": "ShapeDemo",                  mainメソッドを持つクラス（パッケージ付きの完全名、なければ null）
+ *       "excerpt": [                          本文に載せる範囲（上から順に連結したものが本文のコードと完全に一致する）
+ *         { "file": "Shape.java", "from": 1, "to": 12 },
+ *         { "file": "Shape.java", "from": 30, "to": 41 },
+ *         { "file": "ShapeDemo.java", "from": 3, "to": 15 }
+ *       ]
+ *     }
+ *   }
+ *
+ * 範囲と範囲のあいだには、本文では次の行が入る（"sep" で個別に指定もできる）。
+ *   同じファイルで行が続かない場合    省略を示す「// ...」の行（字下げは次の範囲の1行目に合わせる）  sep: "elision"
+ *   別のファイルに移る場合            空行1行                                                       sep: "blank"
+ *   何も入れない                                                                                    sep: "none"
+ *
+ * キャプションは listings.json から生成する。
+ *   **サンプルコード5-3**　Shape.java（1〜12行目、30〜41行目）、ShapeDemo.java（3〜15行目）
+ *   ファイル全体を載せた場合は行番号を付けない。
+ *
+ * 使い方:
+ *   node scripts/sample-code.js check [chapterXX]     本文と全文の一致、キャプション、コンパイル、実行結果を検査する
+ *   node scripts/sample-code.js check --no-run        実行結果の照合を省く
+ *   node scripts/sample-code.js sync [chapterXX]      listings.json から本文のキャプションと各章の README.md を作り直す
+ *   node scripts/sample-code.js extract [chapterXX]   本文のサンプルのうち、単体（または同じ章のサンプルと合わせて）
+ *                                                     コンパイルできるもので、まだ listings.json にないものを全文として書き出す
+ */
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { spawnSync } = require('child_process');
+const L = require('./check-java-samples.js');
+
+const SAMPLES = path.join(L.ROOT, 'sample-code');
+const REPO = 'https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code';
+const ELISION = '// ...';
+
+const pad = (n) => String(n).padStart(2, '0');
+const chapterOf = (file) => Number(file.match(/^chapter(\d+)/)[1]);
+const chapterDir = (ch) => path.join(SAMPLES, `chapter${pad(ch)}`);
+const dirName = (id) => id.split('-').map(pad).join('-');
+
+function manuscriptFiles(filters) {
+  return fs.readdirSync(L.MANUSCRIPTS).filter((f) => /^chapter\d+.*\.md$/.test(f)).sort()
+    .filter((f) => !filters.length || filters.some((x) => f.includes(x)));
+}
+
+function loadManifest(ch) {
+  const p = path.join(chapterDir(ch), 'listings.json');
+  return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : {};
+}
+
+function saveManifest(ch, manifest) {
+  const ids = Object.keys(manifest).sort((a, b) => Number(a.split('-')[1]) - Number(b.split('-')[1]));
+  const sorted = Object.fromEntries(ids.map((id) => [id, manifest[id]]));
+  fs.mkdirSync(chapterDir(ch), { recursive: true });
+  // excerpt の各範囲は1行にまとめて、差分を読みやすくする
+  const json = JSON.stringify(sorted, null, 2).replace(/\{\s+"file": ("[^"]+"),\s+"from": (\d+),\s+"to": (\d+)(,\s+"sep": ("\w+"))?\s+\}/g,
+    (m, f, a, b, s, sep) => `{ "file": ${f}, "from": ${a}, "to": ${b}${sep ? `, "sep": ${sep}` : ''} }`);
+  fs.writeFileSync(path.join(chapterDir(ch), 'listings.json'), json + '\n');
+}
+
+const readLines = (file) => fs.readFileSync(file, 'utf8').replace(/\n$/, '').split('\n');
+
+/** listings.json の excerpt から、本文に載るはずのコードを組み立てる */
+function renderExcerpt(dir, excerpt) {
+  const out = [];
+  excerpt.forEach((seg, i) => {
+    const lines = readLines(path.join(dir, seg.file));
+    if (seg.from < 1 || seg.to > lines.length || seg.from > seg.to) throw new Error(`${seg.file} に ${seg.from}〜${seg.to}行目はない（${lines.length}行）`);
+    const part = lines.slice(seg.from - 1, seg.to);
+    if (i > 0) {
+      const prev = excerpt[i - 1];
+      const sep = seg.sep || (prev.file !== seg.file ? 'blank' : prev.to + 1 === seg.from ? 'none' : 'elision');
+      if (sep === 'blank') out.push('');
+      else if (sep === 'elision') out.push(part[0].match(/^\s*/)[0] + ELISION);
+    }
+    out.push(...part);
+  });
+  return out.join('\n');
+}
+
+/** キャプション（サンプル番号のあとに続く部分） */
+function captionOf(dir, excerpt) {
+  const byFile = [];
+  for (const seg of excerpt) {
+    let f = byFile.find((x) => x.file === seg.file);
+    if (!f) byFile.push(f = { file: seg.file, ranges: [] });
+    f.ranges.push(seg);
+  }
+  return byFile.map(({ file, ranges }) => {
+    const total = readLines(path.join(dir, file)).length;
+    if (ranges.length === 1 && ranges[0].from === 1 && ranges[0].to === total) return file;
+    return `${file}（${ranges.map((r) => (r.from === r.to ? `${r.from}行目` : `${r.from}〜${r.to}行目`)).join('、')}）`;
+  }).join('、');
+}
+
+const captionLine = (id, caption) => `<span class="listing-number">**サンプルコード${id}**　${caption}</span>`;
+
+/** javac でディレクトリ内の .java をまとめてコンパイルする（出力は out へ） */
+function compileDir(dir, outDir) {
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.java'));
+  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', outDir, ...files], { cwd: dir, encoding: 'utf8' });
+  return { ok: r.status === 0, error: (r.stderr || '').split('\n').find((l) => / error: /.test(l)) || r.stderr };
+}
+
+/** mainメソッドを持つクラスの完全名 */
+function findMain(dir, prefer = []) {
+  const all = fs.readdirSync(dir).filter((x) => x.endsWith('.java')).sort();
+  for (const f of [...prefer.filter((x) => all.includes(x)), ...all.filter((x) => !prefer.includes(x))]) {
+    const code = fs.readFileSync(path.join(dir, f), 'utf8');
+    const m = L.mainClass(code);
+    if (!m) continue;
+    const pkg = code.match(/^package\s+([\w.]+)\s*;/m);
+    return pkg ? `${pkg[1]}.${m}` : m;
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------- extract
+
+/**
+ * 1つのコードブロックを、public な型ごとのファイルに分ける。
+ * 返り値は [{ file, content(lines), from, to }]。本文のブロックは各ファイルの from〜to を空行1行でつないだものになる
+ */
+function splitUnits(code) {
+  const lines = code.split('\n');
+  const decls = [];
+  let depth = 0;
+  lines.forEach((raw, i) => {
+    const line = raw.replace(/\/\/.*$/, '').replace(/"(?:\\.|[^"\\])*"/g, '""').replace(/'(?:\\.|[^'\\])'/g, "''");
+    if (depth === 0) {
+      const m = line.match(L.PUBLIC_DECL) || (/^\S/.test(line) && line.match(L.TYPE_DECL));
+      if (m && line.search(/\S/) === 0) decls.push({ i, name: m[m.length - 1], pub: /^public\s/.test(line) });
+    }
+    for (const ch of line) { if (ch === '{') depth++; else if (ch === '}') depth--; }
+  });
+  const publics = decls.filter((d) => d.pub);
+  const primary = publics[0] || decls.find((d) => L.mainClass(code)) || decls[0];
+  const firstName = publics.length ? publics[0].name : (L.mainClass(code) || primary.name);
+  if (publics.length <= 1) return [{ file: `${firstName}.java`, content: lines, from: 1, to: lines.length }];
+  // 2つ目以降の public 型の直前にあるコメント・アノテーションは、その型のファイルに含める
+  const starts = publics.slice(1).map((d) => {
+    let s = d.i;
+    while (s - 1 >= 0 && /^\s*(\/\/|\/\*|\*|@)/.test(lines[s - 1]) && lines[s - 1].trim()) s--;
+    return { s, name: d.name };
+  });
+  const header = [];
+  for (const l of lines) { if (/^(package|import)\s/.test(l) || (!l.trim() && header.length)) header.push(l); else if (l.trim()) break; }
+  while (header.length && !header[header.length - 1].trim()) header.pop();
+  const units = [];
+  const bounds = [{ s: 0, name: publics[0].name }, ...starts];
+  for (let k = 0; k < bounds.length; k++) {
+    let e = (k + 1 < bounds.length ? bounds[k + 1].s : lines.length) - 1;
+    // 次の型とのあいだの空行1行は区切り（sep: blank）として扱い、それ以外の空行はファイル末尾に残す
+    if (k + 1 < bounds.length) {
+      if (lines[e] !== undefined && !lines[e].trim()) e--; else return null;
+    }
+    const body = lines.slice(bounds[k].s, e + 1);
+    if (k === 0) units.push({ file: `${bounds[k].name}.java`, content: body, from: 1, to: body.length });
+    else {
+      const head = header.length ? [...header, ''] : [];
+      // 本文のブロック内の pkg/import は1つ目のファイルにだけあるため、2つ目以降はそれを補う
+      units.push({ file: `${bounds[k].name}.java`, content: [...head, ...body], from: head.length + 1, to: head.length + body.length });
+    }
+  }
+  return units;
+}
+
+function extractCommand(filters) {
+  if (spawnSync('javac', ['-version']).status !== 0) { console.error('javac が見つかりません'); process.exit(2); }
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'sample-code-'));
+  let added = 0;
+  const skipped = [];
+  for (const f of manuscriptFiles(filters)) {
+    const ch = chapterOf(f);
+    const manifest = loadManifest(ch);
+    const samples = L.extract(path.join(L.MANUSCRIPTS, f)).map((s, index) => ({ ...s, index }));
+    const units = samples.filter((s) => L.TYPE_DECL.test(s.code) && !L.isFragment(s.code) && !L.INTENDED.test(s.code));
+    const planned = new Map();
+    for (const s of samples) {
+      if (manifest[s.id] || !L.TYPE_DECL.test(s.code) || L.isFragment(s.code)) continue;
+      let r = L.compile(s, work);
+      if (r.status === '依存') { const c = L.compileWithProviders(s, units, work, r); if (c && c.status === '結合') r = c; }
+      if (!['OK', '結合'].includes(r.status)) continue;
+      const split = splitUnits(s.code);
+      if (!split) { skipped.push(`${s.id}（型の区切りに空行がない）`); continue; }
+      planned.set(s.id, { s, split, with: r.with || [] });
+    }
+    // 1回目: 各サンプル自身のファイル、2回目: 型を借りるサンプルのファイルを補う
+    const filesOf = (id) => {
+      if (planned.has(id)) return planned.get(id).split.map((u) => ({ file: u.file, text: u.content.join('\n') + '\n' }));
+      if (manifest[id]) {
+        const dir = path.join(chapterDir(ch), manifest[id].dir);
+        return fs.readdirSync(dir).filter((x) => x.endsWith('.java')).map((x) => ({ file: x, text: fs.readFileSync(path.join(dir, x), 'utf8') }));
+      }
+      return [];
+    };
+    for (const [id, p] of planned) {
+      const dir = path.join(chapterDir(ch), dirName(id));
+      fs.rmSync(dir, { recursive: true, force: true });
+      fs.mkdirSync(dir, { recursive: true });
+      const own = new Set();
+      for (const u of filesOf(id)) { fs.writeFileSync(path.join(dir, u.file), u.text); own.add(u.file); }
+      for (const pid of p.with) for (const u of filesOf(pid)) if (!own.has(u.file) && !fs.existsSync(path.join(dir, u.file))) fs.writeFileSync(path.join(dir, u.file), u.text);
+      const c = compileDir(dir, path.join(work, `c${id}`));
+      if (!c.ok) { skipped.push(`${id}（全文がコンパイルできない: ${c.error.trim()}）`); fs.rmSync(dir, { recursive: true, force: true }); continue; }
+      const entry = { dir: dirName(id), main: findMain(dir, p.split.map((u) => u.file)), excerpt: p.split.map((u) => ({ file: u.file, from: u.from, to: u.to })) };
+      if (p.with.length) entry.uses = p.with;
+      if (renderExcerpt(dir, entry.excerpt) !== p.s.code) { skipped.push(`${id}（本文と一致しない）`); fs.rmSync(dir, { recursive: true, force: true }); continue; }
+      manifest[id] = entry;
+      added++;
+    }
+    if (Object.keys(manifest).length) saveManifest(ch, manifest);
+  }
+  fs.rmSync(work, { recursive: true, force: true });
+  console.log(`書き出したサンプル: ${added}`);
+  if (skipped.length) console.log(`書き出さなかったもの:\n  ${skipped.join('\n  ')}`);
+  syncCommand(filters);
+}
+
+// ---------------------------------------------------------------- sync
+
+function syncCommand(filters) {
+  let changed = 0;
+  for (const f of manuscriptFiles(filters)) {
+    const ch = chapterOf(f);
+    const manifest = loadManifest(ch);
+    if (!Object.keys(manifest).length) continue;
+    const file = path.join(L.MANUSCRIPTS, f);
+    const text = fs.readFileSync(file, 'utf8');
+    const next = text.replace(/<span class="listing-number">\*\*サンプルコード(\d+-\d+)\*\*[^<]*<\/span>/g, (m, id) => {
+      const e = manifest[id];
+      return e ? captionLine(id, captionOf(path.join(chapterDir(ch), e.dir), e.excerpt)) : m;
+    });
+    if (next !== text) { fs.writeFileSync(file, next); changed++; }
+    writeReadme(ch, f, manifest);
+  }
+  console.log(`キャプションを更新した原稿: ${changed}`);
+}
+
+function writeReadme(ch, manuscript, manifest) {
+  const title = (fs.readFileSync(path.join(L.MANUSCRIPTS, manuscript), 'utf8').match(/^#\s+(.+)$/m) || [, `第${ch}章`])[1];
+  const rows = Object.entries(manifest).map(([id, e]) => {
+    const dir = path.join(chapterDir(ch), e.dir);
+    const files = fs.readdirSync(dir).filter((x) => x.endsWith('.java')).sort();
+    const run = e.main ? `\`java -cp out ${e.main}\`` : '（mainメソッドなし）';
+    return `| [${id}](./${e.dir}/) | ${files.join('<br>')} | ${run} |`;
+  });
+  const md = [
+    '<!-- このファイルは scripts/sample-code.js sync が生成します -->',
+    `# 第${ch}章のサンプルコード`,
+    '',
+    `「${title.replace(/<[^>]+>/g, '').replace(/^\d+章\s*/, '')}」の章のサンプルコードです。`,
+    '',
+    `本文の「サンプルコード${ch}-N」の全文です。ディレクトリ名がサンプルコードの番号に対応します。`,
+    '本文には全文の一部だけを載せていることがあります。本文のキャプションに、ファイル名と掲載した行の範囲を示しています。',
+    '',
+    '各ディレクトリで次のようにコンパイルし、表の「実行」のコマンドで実行します（Java 21以降）。',
+    '',
+    '```',
+    'javac -d out *.java',
+    '```',
+    '',
+    '| サンプルコード | ファイル | 実行 |',
+    '|---|---|---|',
+    ...rows,
+    '',
+  ];
+  fs.writeFileSync(path.join(chapterDir(ch), 'README.md'), md.join('\n'));
+}
+
+// ---------------------------------------------------------------- check
+
+function checkCommand(filters, args) {
+  const runMode = !args.includes('--no-run');
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'sample-code-check-'));
+  const problems = [];
+  const totals = { 掲載: 0, 一致: 0, 数値差: 0, 実行不可: 0, 照合なし: 0 };
+  for (const f of manuscriptFiles(filters)) {
+    const ch = chapterOf(f);
+    const manifest = loadManifest(ch);
+    if (!Object.keys(manifest).length) continue;
+    const file = path.join(L.MANUSCRIPTS, f);
+    const text = fs.readFileSync(file, 'utf8');
+    const samples = new Map(L.extract(file).map((s) => [s.id, s]));
+    const dirs = new Set(fs.readdirSync(chapterDir(ch)).filter((d) => fs.statSync(path.join(chapterDir(ch), d)).isDirectory()));
+    for (const [id, e] of Object.entries(manifest)) {
+      totals.掲載++;
+      const where = `${id}（${f}）`;
+      const dir = path.join(chapterDir(ch), e.dir);
+      dirs.delete(e.dir);
+      if (!fs.existsSync(dir)) { problems.push(`${where}: ディレクトリ ${e.dir} がない`); continue; }
+      const s = samples.get(id);
+      if (!s) { problems.push(`${where}: 本文にサンプルコードがない`); continue; }
+      let rendered;
+      try { rendered = renderExcerpt(dir, e.excerpt); } catch (err) { problems.push(`${where}: ${err.message}`); continue; }
+      if (rendered !== s.code) {
+        const a = rendered.split('\n');
+        const b = s.code.split('\n');
+        let n = 0;
+        while (n < a.length && n < b.length && a[n] === b[n]) n++;
+        problems.push(`${where}: 本文のコードが全文の範囲と一致しない（本文の${n + 1}行目: 本文「${b[n] ?? '（なし）'}」／全文「${a[n] ?? '（なし）'}」）`);
+      }
+      const want = captionLine(id, captionOf(dir, e.excerpt));
+      if (!text.includes(want)) problems.push(`${where}: キャプションが listings.json と合わない（sync で直せる）`);
+      const out = path.join(work, `${ch}-${e.dir}`);
+      fs.cpSync(dir, out, { recursive: true });
+      const c = compileDir(out, path.join(out, 'out'));
+      if (!c.ok) { problems.push(`${where}: 全文がコンパイルできない: ${c.error.trim()}`); continue; }
+      const found = findMain(dir, e.excerpt.map((x) => x.file));
+      if (e.main !== found) problems.push(`${where}: main が ${found} なのに listings.json は ${e.main}`);
+      if (!runMode) continue;
+      const x = L.run(s, { dir: out, main: e.main });
+      if (!x) { totals.照合なし++; continue; }
+      if (x.result === '一致' || x.result === '数値差' || x.result === '実行不可') totals[x.result]++;
+      else problems.push(`${where}: 実行結果が本文と異なる（${x.result}: ${x.detail}）`);
+    }
+    for (const d of dirs) problems.push(`chapter${pad(ch)}/${d}: listings.json にないディレクトリ`);
+  }
+  fs.rmSync(work, { recursive: true, force: true });
+  console.log(`全文を公開しているサンプル: ${totals.掲載}${runMode ? `（実行結果 一致 ${totals.一致}、数値差 ${totals.数値差}、実行不可 ${totals.実行不可}、照合なし ${totals.照合なし}）` : ''}`);
+  if (problems.length) { console.log(`問題 ${problems.length}件:\n  ${problems.join('\n  ')}`); process.exitCode = 1; } else console.log('問題なし');
+}
+
+function main() {
+  const [cmd, ...rest] = process.argv.slice(2);
+  const filters = rest.filter((a) => !a.startsWith('--'));
+  if (cmd === 'extract') extractCommand(filters);
+  else if (cmd === 'sync') syncCommand(filters);
+  else if (cmd === 'check') checkCommand(filters, rest);
+  else { console.error('使い方: node scripts/sample-code.js check|sync|extract [chapterXX]'); process.exit(2); }
+}
+
+if (require.main === module) main();
+
+module.exports = { renderExcerpt, captionOf, loadManifest, chapterDir, REPO };

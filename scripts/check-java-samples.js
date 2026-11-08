@@ -239,8 +239,14 @@ function main() {
   const runMode = args.includes('--run');
   const runTotals = { 一致: 0, 数値差: 0, 不一致: 0, 実行不可: 0, 打切: 0 };
   const runRows = [];
+  // 全文を sample-code/ に置いたサンプルは、scripts/sample-code.js check で全文を検査する
+  const { loadManifest } = require('./sample-code.js');
+  let published = 0;
   for (const f of files) {
-    const samples = extract(path.join(MANUSCRIPTS, f)).map((s, index) => ({ ...s, index }));
+    const manifest = loadManifest(Number(f.match(/^chapter(\d+)/)[1]));
+    const all = extract(path.join(MANUSCRIPTS, f)).map((s, index) => ({ ...s, index }));
+    const samples = all.filter((s) => !manifest[s.id]);
+    published += all.length - samples.length;
     // 単体のコンパイル単位で、意図的な誤りの例ではないもの（ほかのサンプルに型を貸せるもの）
     const units = samples.filter((s) => TYPE_DECL.test(s.code) && !isFragment(s.code) && !INTENDED.test(s.code));
     for (const s of samples) {
@@ -261,6 +267,7 @@ function main() {
   }
   fs.rmSync(workDir, { recursive: true, force: true });
   const out = [];
+  out.push(`全文を sample-code/ に置いたサンプル ${published}件は対象外（npm run check:samples で検査）`, '');
   out.push(`検査したサンプル: OK ${totals.OK}、結合 ${totals.結合}、依存 ${totals.依存}、意図 ${totals.意図}、省略 ${totals.省略}、エラー ${totals.エラー}（対象外の断片 ${totals.断片}）`, '');
   out.push('| 判定 | サンプル | 原稿の行 | 最初のエラー |', '|---|---|---|---|');
   const order = { エラー: 0, 省略: 1, 意図: 2, 依存: 3 };
@@ -299,4 +306,6 @@ function main() {
   process.exitCode = totals.エラー ? 1 : 0;
 }
 
-main();
+module.exports = { extract, isFragment, normalize, mainClass, compile, compileWithProviders, run, typesOf, norm, TYPE_DECL, PUBLIC_DECL, INTENDED, ROOT, MANUSCRIPTS };
+
+if (require.main === module) main();
