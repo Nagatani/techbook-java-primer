@@ -5,6 +5,7 @@
  * 使い方:
  *   node scripts/check-java-samples.js                 全章を検査し、結果を表示
  *   node scripts/check-java-samples.js chapter10       ファイル名に chapter10 を含む原稿だけ検査
+ *   node scripts/check-java-samples.js --run           コンパイルできたサンプルを実行し、直後の「実行結果：」と比べる
  *   node scripts/check-java-samples.js --report        結果を docs/analysis/java-sample-check.md にも書き出す
  *
  * 対象は「サンプルコードX-Y」の番号が付いた ```java ブロックのうち、
@@ -51,7 +52,7 @@ function extract(file) {
       const body = [];
       let j = i + 1;
       for (; j < lines.length && !/^\s*```\s*$/.test(lines[j]); j++) body.push(lines[j].slice(Math.min(indent, lines[j].search(/\S|$/))));
-      samples.push({ id: pending.id, line: i + 1, code: body.join('\n') });
+      samples.push({ id: pending.id, line: i + 1, code: body.join('\n'), expected: expectedOutput(lines, j + 1) });
       pending = null;
       i = j;
     } else if (lines[i].trim() && !open) {
@@ -59,6 +60,25 @@ function extract(file) {
     }
   }
   return samples;
+}
+
+/**
+ * コードブロックの直後（空行を除いて1行目）にある「実行結果：」の出力ブロックを返す。
+ * 「（例）」「（実行毎に異なる）」「（GUI表示）」など、実行して比べられないものは label だけ返す
+ */
+function expectedOutput(lines, from) {
+  let k = from;
+  while (k < lines.length && !lines[k].trim()) k++;
+  const label = (lines[k] || '').trim();
+  if (!/^(#{1,6}\s*)?(\*\*)?(使用例と)?実行結果/.test(label)) return null;
+  k++;
+  while (k < lines.length && !lines[k].trim()) k++;
+  const open = (lines[k] || '').match(/^(\s*)```\w*\s*$/);
+  if (!open) return null;
+  const out = [];
+  for (k++; k < lines.length && !/^\s*```\s*$/.test(lines[k]); k++) out.push(lines[k].slice(Math.min(open[1].length, lines[k].search(/\S|$/))));
+  const comparable = !/[（(].*[）)]/.test(label) && !/使用例/.test(label);
+  return { label, line: from + 1, text: out.join('\n'), comparable };
 }
 
 // 誤りの例であることを示すコメント
@@ -96,6 +116,48 @@ function normalize(code) {
   return out;
 }
 
+/** mainメソッドを持つトップレベルの型の名前（なければ null） */
+function mainClass(code) {
+  const m = code.match(/static\s+void\s+main\s*\(\s*(final\s+)?String/);
+  if (!m) return null;
+  const decls = [...code.slice(0, m.index).matchAll(new RegExp(TYPE_DECL.source, 'gm'))];
+  return decls.length ? decls[decls.length - 1][2] : null;
+}
+
+const norm = (t) => t.split('\n').map((l) => l.replace(/\s+$/, '')).join('\n').replace(/^\n+|\n+$/g, '');
+
+/**
+ * コンパイルできたサンプルを実行し、原稿の実行結果と比べる。
+ * 標準入力は空、GUIはheadless、20秒で打ち切る
+ */
+function run(sample, r) {
+  const exp = sample.expected;
+  if (!exp || !exp.comparable || !r.main) return null;
+  // 標準エラー出力（例外のスタックトレースなど）も原稿の実行結果に含まれるため、出力順を保ったまま合わせて受け取る
+  const p = spawnSync('sh', ['-c', 'exec java -Djava.awt.headless=true -Duser.language=ja -Duser.country=JP -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp out "$0" 2>&1', r.main],
+    { cwd: r.dir, encoding: 'utf8', input: '', timeout: 20000 });
+  if (p.error || p.signal) return { result: '打切', detail: '20秒以内に終わらない' };
+  const actual = norm(p.stdout || '');
+  const expected = norm(exp.text);
+  if (actual === expected) return { result: '一致' };
+  // 時刻・処理時間・乱数など、数字だけが違う
+  // 絶対パス（実行したディレクトリで変わる）はファイル名だけを比べる
+  const digits = (t) => t.replace(/(?<![\w.])\/(?:[^\s/]+\/)+/g, '/').replace(/\d+/g, '0');
+  if (digits(actual) === digits(expected)) return { result: '数値差', detail: '数字だけが異なる（時刻・処理時間・乱数など）' };
+  if (actual.includes('HeadlessException')) return { result: '実行不可', detail: 'GUIを表示する' };
+  if (/(NoSuchFileException|FileNotFoundException|Connection refused|UnknownHostException)/.test(actual)) return { result: '実行不可', detail: '外部のファイルやサーバーが必要' };
+  // スタックトレースの「at ...」行は原稿で省略することが多いので比べない
+  // 例外メッセージ末尾の「(… are in module java.base of loader 'bootstrap')」も省略されることが多い
+  const noTrace = (t) => t.split('\n').filter((l) => !/^\s+(at |\.\.\.)/.test(l)).map((l) => l.replace(/ \([^()]* (is|are) in (unnamed )?module .*\)$/, '')).join('\n');
+  if (digits(noTrace(actual)) === digits(noTrace(expected))) return { result: '数値差', detail: 'スタックトレースの省略と数字だけが異なる' };
+  if (process.env.SHOW_DIFF) console.error(`--- ${sample.id} 原稿\n${expected}\n--- ${sample.id} 実行\n${actual}\n`);
+  const a = actual.split('\n');
+  const e = expected.split('\n');
+  let n = 0;
+  while (n < a.length && n < e.length && a[n] === e[n]) n++;
+  return { result: '不一致', detail: `${n + 1}行目: 原稿「${e[n] ?? '（なし）'}」／実行「${a[n] ?? '（なし）'}」`, expectedLine: exp.line };
+}
+
 function compile(sample, workDir) {
   const code = normalize(sample.code);
   const decl = code.match(PUBLIC_DECL) || code.match(TYPE_DECL);
@@ -103,7 +165,7 @@ function compile(sample, workDir) {
   const dir = fs.mkdtempSync(path.join(workDir, 's'));
   fs.writeFileSync(path.join(dir, `${name}.java`), code);
   const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', path.join(dir, 'out'), `${name}.java`], { cwd: dir, encoding: 'utf8' });
-  if (r.status === 0) return { status: 'OK' };
+  if (r.status === 0) return { status: 'OK', dir, main: mainClass(code) };
   const errors = (r.stderr || '').split('\n').filter((l) => / error: /.test(l));
   const real = errors.filter((l) => !MISSING.test(l));
   const first = (real[0] || errors[0] || '').replace(/^.*?\.java:(\d+): error: /, 'L$1: ');
@@ -126,12 +188,19 @@ function main() {
   const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'java-samples-'));
   const rows = [];
   const totals = { OK: 0, 依存: 0, 意図: 0, 省略: 0, エラー: 0, 断片: 0 };
+  const runMode = args.includes('--run');
+  const runTotals = { 一致: 0, 数値差: 0, 不一致: 0, 実行不可: 0, 打切: 0 };
+  const runRows = [];
   for (const f of files) {
     for (const s of extract(path.join(MANUSCRIPTS, f))) {
       if (!TYPE_DECL.test(s.code) || isFragment(s.code)) { totals.断片++; continue; }
       const r = compile(s, workDir);
       totals[r.status]++;
       if (r.status !== 'OK') rows.push({ file: f, ...s, ...r });
+      else if (runMode) {
+        const x = run(s, r);
+        if (x) { runTotals[x.result]++; if (!['一致', '数値差'].includes(x.result)) runRows.push({ file: f, ...s, ...x }); }
+      }
     }
   }
   fs.rmSync(workDir, { recursive: true, force: true });
@@ -142,6 +211,12 @@ function main() {
   for (const r of rows.sort((a, b) => order[a.status] - order[b.status])) {
     out.push(`| ${r.status} | ${r.id} | ${r.file}:${r.line} | ${r.first.replace(/\|/g, '\\|').slice(0, 120)} |`);
   }
+  if (runMode) {
+    out.push('', '## 実行結果の照合', '');
+    out.push(`原稿の「実行結果：」と比べたサンプル: 一致 ${runTotals.一致}、数値差 ${runTotals.数値差}、不一致 ${runTotals.不一致}、実行不可 ${runTotals.実行不可}、打切 ${runTotals.打切}`, '');
+    out.push('| 判定 | サンプル | 実行結果の行 | 内容 |', '|---|---|---|---|');
+    for (const r of runRows) out.push(`| ${r.result} | ${r.id} | ${r.file}:${r.expected.line} | ${(r.detail || '').replace(/\|/g, '\\|').slice(0, 160)} |`);
+  }
   console.log(out.join('\n'));
   if (args.includes('--report')) {
     const head = [
@@ -150,6 +225,10 @@ function main() {
       '',
       `javac ${spawnSync('javac', ['-version'], { encoding: 'utf8' }).stdout.trim().replace(/^javac /, '')}（\`--release 21\`）で、番号付きのJavaサンプルのうち単体のコンパイル単位になっているものを1つずつコンパイルした結果。`,
       '「依存」は、同じ章の別のサンプルや外部ライブラリにある型が見つからないだけのもの。「意図」は、コード中のコメントで誤りの例と示しているもの。「省略」は、メソッドの本体を省略しているか、複数のファイルを1つに並べているもの。「エラー」は、それ以外のコンパイルエラーで、修正が必要な可能性が高い。',
+      '',
+      '`--run` を付けると、コンパイルできたサンプルのうち直後に「実行結果：」があるものを実行し、出力（標準エラー出力を含む）と比べる。',
+      '「（例）」「（GUI表示）」など括弧書きの付いた実行結果は比べない。「数値差」は時刻・処理時間・乱数など数字だけの違い（スタックトレースの省略、絶対パスの違いも含む）で、一覧には載せない。',
+      '「実行不可」はGUIを表示するもの、外部のファイルやサーバーが必要なもの。',
       '',
     ];
     fs.writeFileSync(REPORT, head.concat(out).join('\n') + '\n');

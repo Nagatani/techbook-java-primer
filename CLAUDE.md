@@ -77,6 +77,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 ### Linting
 - `npm run lint`: Lint all manuscript files in the `manuscripts/` directory
 - `npm run check:java`: Compile the numbered Java samples with javac and report real compile errors
+- `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 
 ### Configuration
@@ -116,6 +117,7 @@ The build process converts Markdown files listed in the `entry` array (currently
 8. Run `npm run build` to ensure the book builds successfully
 9. Run `npm run index` and `npm run index:check`; update stale summaries (rewrite the section summary and its hash)
    - Javaサンプルを変更したら `npm run check:java` でコンパイルを確認する（結果の一覧は `--report` で `docs/analysis/java-sample-check.md` に出力）
+   - サンプルの出力や「実行結果：」を変更したら `npm run check:java:run -- chapterXX` で実行結果と照合する
 10. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules

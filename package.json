@@ -11,6 +11,7 @@
     "index": "node scripts/build-book-index.js",
     "index:check": "node scripts/build-book-index.js --check",
     "check:java": "node scripts/check-java-samples.js",
+    "check:java:run": "node scripts/check-java-samples.js --run",
     "lint": "npx textlint manuscripts/*.md",
     "lint:fix": "npx textlint --fix manuscripts/*.md",
     "lintadx": "npx textlint appendix/**/*.md",
