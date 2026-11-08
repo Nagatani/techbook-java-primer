@@ -10,6 +10,7 @@
     "mermaid:convert": "node scripts/convert-mermaid-to-images.js",
     "index": "node scripts/build-book-index.js",
     "index:check": "node scripts/build-book-index.js --check",
+    "check:java": "node scripts/check-java-samples.js",
     "lint": "npx textlint manuscripts/*.md",
     "lint:fix": "npx textlint --fix manuscripts/*.md",
     "lintadx": "npx textlint appendix/**/*.md",
