@@ -20,7 +20,8 @@
       { "file": "KeyboardEventAdvancedExample.java", "from": 12, "to": 12 },
       { "file": "KeyboardEventAdvancedExample.java", "from": 26, "to": 50 },
       { "file": "KeyboardEventAdvancedExample.java", "from": 66, "to": 66 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 78, "to": 100 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 78, "to": 90 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 100, "to": 100 },
       { "file": "KeyboardEventAdvancedExample.java", "from": 155, "to": 155 }
     ]
   },
@@ -93,8 +94,11 @@
     "main": "SwingWorkerExample",
     "excerpt": [
       { "file": "SwingWorkerExample.java", "from": 7, "to": 7 },
-      { "file": "SwingWorkerExample.java", "from": 53, "to": 68 },
-      { "file": "SwingWorkerExample.java", "from": 70, "to": 127 },
+      { "file": "SwingWorkerExample.java", "from": 70, "to": 75 },
+      { "file": "SwingWorkerExample.java", "from": 79, "to": 82 },
+      { "file": "SwingWorkerExample.java", "from": 91, "to": 97 },
+      { "file": "SwingWorkerExample.java", "from": 99, "to": 115 },
+      { "file": "SwingWorkerExample.java", "from": 121, "to": 127 },
       { "file": "SwingWorkerExample.java", "from": 145, "to": 145 }
     ]
   }

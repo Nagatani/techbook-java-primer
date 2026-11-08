@@ -263,7 +263,7 @@ JListにカスタムレンダラーを適用して、リッチな表示を実現
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、それらを1つのリスト項目として美しく表示します。ダブルクリックでタスクの完了状態を切り替えるなど、インタラクティブな機能も実装しています。
 
-<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、101〜133、137、141〜145、196、203行目）</span>
+<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、101〜117、128〜130、133、137、141〜145、196、203行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -305,21 +305,11 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
         }
-        
-        // 完了タスクはグレーアウト
-        if (task.isCompleted()) {
-            titleLabel.setForeground(Color.GRAY);
-            descriptionLabel.setForeground(Color.GRAY);
-        } else {
-            titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-            descriptionLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-        }
-        
+        // ...
         return this;
     }
 }
-
-// メインアプリケーション
+// ...
 public class AdvancedListExample extends JFrame {
     // ...
     public AdvancedListExample() {
@@ -343,15 +333,13 @@ public class AdvancedListExample extends JFrame {
 
 以下のコードは、JTableにカスタムセルエディターとレンダラーを実装する例です。色選択用のカラーピッカー、優先度選択用のコンボボックス、チェックボックスなど、データ型に合った入力コンポーネントを提供します。これにより、ユーザーフレンドリーなデータ編集インターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（7〜43、76〜81、84〜85、111〜118、130、137行目）</span>
+<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（7〜41、74〜79、82〜83、109〜116、128、135行目）</span>
 
 ```java
 // カラーセルエディター
 class ColorCellEditor extends AbstractCellEditor implements TableCellEditor {
     private JButton button;
     private Color currentColor;
-    private JColorChooser colorChooser;
-    private JDialog dialog;
     
     public ColorCellEditor() {
         button = new JButton();
@@ -416,28 +404,10 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 
 以下のコードは、JTable、JTree、JListを組み合わせたプロジェクト管理システムの実装例です。JSplitPaneで画面を分割し、左側のツリーでプロジェクトを選択すると、右側のテーブルとリストにタスクとメンバー情報が表示されます。メニューバーやツールバーも実装し、実践的なデスクトップアプリケーションの構造を示しています。
 
-<span class="listing-number">**サンプルコード20-7**　IntegratedDataManagementApp.java（32、41、45〜57、61、85、108〜125、163〜178、222〜231、239、294行目）</span>
+<span class="listing-number">**サンプルコード20-7**　IntegratedDataManagementApp.java（32、85、108〜125、163〜177、222〜231、239、294行目）</span>
 
 ```java
 public class IntegratedDataManagementApp extends JFrame {
-    // ...
-    public IntegratedDataManagementApp() {
-        // ...
-        // プロジェクトデータの初期化
-        initializeData();
-        
-        // コンポーネントの作成
-        createProjectTree();
-        createTaskTable();
-        createMemberList();
-        
-        // レイアウトの設定
-        setupLayout();
-        
-        // メニューバーの作成
-        createMenuBar();
-        // ...
-    }
     // ...
     private void createProjectTree() {
         // ...
@@ -475,7 +445,6 @@ public class IntegratedDataManagementApp extends JFrame {
             }
         }
     }
-    
         // ...
         // 分割ペインの設定
         rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,

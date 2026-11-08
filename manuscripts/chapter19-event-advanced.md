@@ -93,7 +93,7 @@ public class MouseEventCompleteExample extends JFrame {
 
 以下のコードは、高度なキーボードイベント処理の実装例です。単一キーの押下だけでなく、複数キーの同時押し検出、ショートカットキーの実装、InputMapとActionMapを使用したより洗練されたキーバインディングの設定方法を示しています。HashSetを使用して現在押されているキーを追跡し、複雑なキーコンビネーションを検出できます。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66、78〜100、155行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66、78〜90、100、155行目）</span>
 
 ```java
 public class KeyboardEventAdvancedExample extends JFrame {
@@ -141,15 +141,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
                 deleteLine();
             }
         });
-        
-        // F5で更新
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), "refresh");
-        actionMap.put("refresh", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refresh();
-            }
-        });
+        // ...
     }
     // ...
 }
@@ -527,27 +519,10 @@ public class EventOptimizationExample extends JFrame {
 
 以下のコードは、SwingWorkerを使用してUIをフリーズさせることなく長時間の処理を実行する実装例です。進捗状況のリアルタイム更新、処理のキャンセル機能、EDT上での安全なUI更新など、実践的なアプリケーションで必要となる機能を網羅しています。大量データの処理、ネットワーク通信、ファイル操作などで活用できます。
 
-<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、53〜68、70〜127、145行目）</span>
+<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、70〜75、79〜82、91〜97、99〜115、121〜127、145行目）</span>
 
 ```java
 public class SwingWorkerExample extends JFrame {
-    // ...
-    private void startProcessing() {
-        startButton.setEnabled(false);
-        cancelButton.setEnabled(true);
-        resultArea.setText("処理を開始しています...\n");
-        progressBar.setValue(0);
-        
-        currentWorker = new DataProcessingWorker();
-        currentWorker.execute();
-    }
-    
-    private void cancelProcessing() {
-        if (currentWorker != null && !currentWorker.isDone()) {
-            currentWorker.cancel(true);
-            resultArea.append("処理がキャンセルされました。\n");
-        }
-    }
     // ...
     // SwingWorkerの実装
     class DataProcessingWorker extends SwingWorker<String, ProgressInfo> {
@@ -555,21 +530,12 @@ public class SwingWorkerExample extends JFrame {
         
         @Override
         protected String doInBackground() throws Exception {
-            Random random = new Random();
-            StringBuilder result = new StringBuilder();
-            
+            // ...
             for (int i = 0; i < TOTAL_ITEMS; i++) {
                 if (isCancelled()) {
                     return "処理がキャンセルされました";
                 }
-                
-                // 重い処理のシミュレーション
-                Thread.sleep(50);
-                
-                // 仮のデータ処理
-                int value = random.nextInt(1000);
-                result.append("Item ").append(i).append(": ").append(value).append("\n");
-                
+                // ...
                 // 進捗を公開
                 int progress = (i + 1) * 100 / TOTAL_ITEMS;
                 publish(new ProgressInfo(progress, "処理中: アイテム " + (i + 1) + "/" + TOTAL_ITEMS));
@@ -577,7 +543,7 @@ public class SwingWorkerExample extends JFrame {
             
             return result.toString();
         }
-        
+        // ...
         @Override
         protected void process(List<ProgressInfo> chunks) {
             // 最新の進捗情報を使用
@@ -595,11 +561,7 @@ public class SwingWorkerExample extends JFrame {
             try {
                 if (!isCancelled()) {
                     String result = get();
-                    resultArea.append("\n処理が完了しました。\n");
-                    resultArea.append("結果のサマリー:\n");
-                    resultArea.append("処理したアイテム数: " + TOTAL_ITEMS + "\n");
-                    progressBar.setValue(100);
-                    progressBar.setString("完了");
+                    // ...
                 }
             } catch (InterruptedException | ExecutionException e) {
                 resultArea.append("エラーが発生しました: " + e.getMessage() + "\n");

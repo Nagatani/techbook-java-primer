@@ -8,8 +8,6 @@ import java.util.EventObject;
 class ColorCellEditor extends AbstractCellEditor implements TableCellEditor {
     private JButton button;
     private Color currentColor;
-    private JColorChooser colorChooser;
-    private JDialog dialog;
     
     public ColorCellEditor() {
         button = new JButton();

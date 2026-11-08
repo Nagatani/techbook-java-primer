@@ -108,7 +108,9 @@
     "excerpt": [
       { "file": "ParallelPerformanceExample.java", "from": 5, "to": 5 },
       { "file": "ParallelPerformanceExample.java", "from": 20, "to": 30 },
-      { "file": "ParallelPerformanceExample.java", "from": 62, "to": 108 },
+      { "file": "ParallelPerformanceExample.java", "from": 62, "to": 68 },
+      { "file": "ParallelPerformanceExample.java", "from": 75, "to": 97 },
+      { "file": "ParallelPerformanceExample.java", "from": 99, "to": 108 },
       { "file": "ParallelPerformanceExample.java", "from": 126, "to": 126 }
     ]
   },

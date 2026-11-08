@@ -47,7 +47,9 @@
       { "file": "AdvancedListExample.java", "from": 29, "to": 29 },
       { "file": "AdvancedListExample.java", "from": 42, "to": 55 },
       { "file": "AdvancedListExample.java", "from": 67, "to": 70 },
-      { "file": "AdvancedListExample.java", "from": 101, "to": 133 },
+      { "file": "AdvancedListExample.java", "from": 101, "to": 117 },
+      { "file": "AdvancedListExample.java", "from": 128, "to": 130 },
+      { "file": "AdvancedListExample.java", "from": 133, "to": 133 },
       { "file": "AdvancedListExample.java", "from": 137, "to": 137 },
       { "file": "AdvancedListExample.java", "from": 141, "to": 145 },
       { "file": "AdvancedListExample.java", "from": 196, "to": 196 },
@@ -58,12 +60,12 @@
     "dir": "20-06",
     "main": "CustomEditorExample",
     "excerpt": [
-      { "file": "CustomEditorExample.java", "from": 7, "to": 43 },
-      { "file": "CustomEditorExample.java", "from": 76, "to": 81 },
-      { "file": "CustomEditorExample.java", "from": 84, "to": 85 },
-      { "file": "CustomEditorExample.java", "from": 111, "to": 118 },
-      { "file": "CustomEditorExample.java", "from": 130, "to": 130 },
-      { "file": "CustomEditorExample.java", "from": 137, "to": 137 }
+      { "file": "CustomEditorExample.java", "from": 7, "to": 41 },
+      { "file": "CustomEditorExample.java", "from": 74, "to": 79 },
+      { "file": "CustomEditorExample.java", "from": 82, "to": 83 },
+      { "file": "CustomEditorExample.java", "from": 109, "to": 116 },
+      { "file": "CustomEditorExample.java", "from": 128, "to": 128 },
+      { "file": "CustomEditorExample.java", "from": 135, "to": 135 }
     ]
   },
   "20-7": {
@@ -71,12 +73,9 @@
     "main": "IntegratedDataManagementApp",
     "excerpt": [
       { "file": "IntegratedDataManagementApp.java", "from": 32, "to": 32 },
-      { "file": "IntegratedDataManagementApp.java", "from": 41, "to": 41 },
-      { "file": "IntegratedDataManagementApp.java", "from": 45, "to": 57 },
-      { "file": "IntegratedDataManagementApp.java", "from": 61, "to": 61 },
       { "file": "IntegratedDataManagementApp.java", "from": 85, "to": 85 },
       { "file": "IntegratedDataManagementApp.java", "from": 108, "to": 125 },
-      { "file": "IntegratedDataManagementApp.java", "from": 163, "to": 178 },
+      { "file": "IntegratedDataManagementApp.java", "from": 163, "to": 177 },
       { "file": "IntegratedDataManagementApp.java", "from": 222, "to": 231 },
       { "file": "IntegratedDataManagementApp.java", "from": 239, "to": 239 },
       { "file": "IntegratedDataManagementApp.java", "from": 294, "to": 294 }

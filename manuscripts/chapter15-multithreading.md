@@ -1406,7 +1406,7 @@ public class AsyncChainingExample {
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
-<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java（5、20〜30、62〜108、126行目）</span>
+<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java（5、20〜30、62〜68、75〜97、99〜108、126行目）</span>
 
 ```java
 public class ParallelPerformanceExample {
@@ -1430,12 +1430,7 @@ public class ParallelPerformanceExample {
         private final long[] array;
         private final int start, end;
         
-        public RecursiveSum(long[] array, int start, int end) {
-            this.array = array;
-            this.start = start;
-            this.end = end;
-        }
-        
+        // ...
         @Override
         protected Long compute() {
             if (end - start <= THRESHOLD) {
@@ -1459,7 +1454,7 @@ public class ParallelPerformanceExample {
             }
         }
     }
-    
+    // ...
     public static void forkJoinExample() {
         int size = 100_000_000;
         long[] array = new long[size];
