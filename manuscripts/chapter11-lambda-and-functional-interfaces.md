@@ -21,6 +21,10 @@
 
 Java 8でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。これは名前を持たないクラスで、とくにGUIのイベントリスナなどで多用されていました。
 
+本章のサンプルには、ラムダ式と組み合わせて使う、後の章で学ぶ機能も出てきます。
+主なものは、Stream API（`list.stream().filter(…).map(…)`）と`Optional`（第12章）、`Thread`と`ExecutorService`（第15章）、GUIのイベントリスナ（第17章・第18章）です。
+これらは「ラムダ式をどこに渡しているか」に注目して読み、詳しい使い方は各章で確認してください。
+
 ### ラムダ式への第一歩：簡単な例から始める
 
 まず、もっとも簡単な例でラムダ式の基本を理解しましょう。Runnableインターフェイスを使った例を見てみます。
@@ -30,7 +34,7 @@ Java 8でラムダ式が導入される前、その場限りのインターフ�
 <span class="listing-number">**サンプルコード11-1**</span>
 
 ```java
-public class SampleCode12_2 {
+public class LambdaIntroExample {
     public static void main(String[] args) {
         // 従来の匿名クラスを使った方法
         Runnable task1 = new Runnable() {
@@ -82,7 +86,7 @@ button.addActionListener(new ActionListener() {
 <span class="listing-number">**サンプルコード11-3**</span>
 
 ```java
-public class SampleCode12_6 {
+public class HigherOrderFunctionExample {
     // 高階関数によるリスク管理の抽象化
     public <T, R> Function<T, R> withRiskManagement(
         Function<T, R> strategy,
@@ -121,7 +125,7 @@ public class SampleCode12_6 {
     }
     
     public static void main(String[] args) {
-        SampleCode12_6 example = new SampleCode12_6();
+        HigherOrderFunctionExample example = new HigherOrderFunctionExample();
         example.demonstrateHigherOrderFunction();
     }
 }
@@ -728,7 +732,7 @@ Comparatorを使ったデータ並び替えの最適化。
 <span class="listing-number">**サンプルコード11-20**</span>
 
 ```java
-public class SampleCode12_37 {
+public class ComparatorLambdaExample {
     public static void main(String[] args) {
         List<Student> students = Arrays.asList(
             new Student("Charlie"),
@@ -779,7 +783,7 @@ interface MyFunction {
     int calculate(int x, int y);
 }
 
-public class SampleCode12_39 {
+public class FunctionalInterfaceExample {
     public static void main(String[] args) {
         // ラムダ式を関数型インターフェイス型の変数に代入
         MyFunction addition = (a, b) -> a + b;
@@ -813,7 +817,7 @@ public class SampleCode12_39 {
 <span class="listing-number">**サンプルコード11-22**</span>
 
 ```java
-public class SampleCode12_41 {
+public class MultiConditionSortExample {
     public static void main(String[] args) {
         // 学生のサンプルデータ
         List<Student> students = Arrays.asList(
@@ -894,7 +898,7 @@ Javaには、`java.util.function`パッケージに、よく使われる汎用�
 ```java
 import java.util.function.*;
 
-public class SampleCode12_43 {
+public class StandardFunctionalInterfaces {
     public static void main(String[] args) {
         // Predicate: 文字列が空かどうかを判定
         Predicate<String> isEmpty = s -> s.isEmpty();
@@ -956,7 +960,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
-public class SampleCode12_45 {
+public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
         
@@ -1017,7 +1021,7 @@ CHERRY
 import java.util.*;
 import java.util.concurrent.*;
 
-public class SampleCode12_47 {
+public class MethodReferenceConcurrencyExample {
     public static void main(String[] args) {
         // ExecutorServiceとラムダ式の組み合わせ
         ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -1084,7 +1088,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class SampleCode12_49 {
+public class LambdaVsMethodReference {
     public static void main(String[] args) {
         // ラムダ式 vs メソッド参照の比較
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
@@ -1155,7 +1159,7 @@ Person{name='Charlie'}
 <span class="listing-number">**サンプルコード11-27**</span>
 
 ```java
-public class SampleCode12_51 {
+public class RunnableLambdaExample {
     public static void main(String[] args) {
         System.out.println("メインスレッド開始");
         
@@ -1316,7 +1320,7 @@ error: ';' expected
 import java.util.Arrays;
 import java.util.List;
 
-public class SampleCode12_55 {
+public class LambdaSyntaxFixExample {
     public static void main(String[] args) {
         // ✅ 正しいラムダ式の構文
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
