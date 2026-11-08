@@ -21,7 +21,7 @@ sections:
   - key: "今後の学習へ向けて"
     hash: 7e623039
   - key: "よくあるエラーと対処法"
-    hash: c500a502
+    hash: 2d4ef3a4
   - key: "まとめ"
     hash: e71965b3
   - key: "章末演習"
@@ -74,11 +74,12 @@ sections:
     + 6実装の計算量表と、実装ごとの使用場面・実例。付録B.06への参照
 - 今後の学習へ向けて（L733–774）
     + Stream API（9-18、第11・12章への参照あり）と`List.of`などの不変コレクション（9-19）を紹介する
-- よくあるエラーと対処法（L775–1114）
-    + NullPointerException、ClassCastException、UnsupportedOperationException、ConcurrentModificationException、IndexOutOfBoundsException、Mapの存在しないキー、equals/hashCode、Raw typeの8種（9-20〜9-28）とデバッグのコツ
-- まとめ（L1115–1126）
+- よくあるエラーと対処法（L775–796）
+    + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter09.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す
+    + 本文に挙げるエラー: NullPointerException、ClassCastException、UnsupportedOperationException、ConcurrentModificationException、IndexOutOfBoundsException、Mapで存在しないキーへのアクセス、equals()とhashCode()の不整合
+- まとめ（L797–808）
     + List・Set・Mapの比較表。次章のジェネリクスへの導入
-- 章末演習（L1127–1147）
+- 章末演習（L809–829）
     + 演習リンクが`exercises/chapter10/`を指している（Issue #010）
 
 ## 他章との関係

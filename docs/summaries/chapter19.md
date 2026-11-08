@@ -13,7 +13,7 @@ sections:
   - key: "パフォーマンスの最適化"
     hash: e89bcf49
   - key: "よくあるエラーと対処法"
-    hash: b1ac6f2f
+    hash: 0ae4b373
   - key: "まとめ"
     hash: 03e7e94a
   - key: "章末演習"
@@ -58,15 +58,12 @@ sections:
 - パフォーマンスの最適化（L453–575）
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
     + SwingWorkerによる非同期処理: SwingWorker<String, ProgressInfo>でpublish/processによる進捗表示、cancel(true)とisCancelledによる中断、doneでのget（19-8）
-- よくあるエラーと対処法（L576–855）
-    + SwingWorkerのdoInBackgroundから直接UIを更新する誤りと、publish/processへの修正（19-9、19-10）
-    + DocumentListener内でテキストを変更する誤りと、フラグとinvokeLaterによる回避（19-11、19-12）
-    + リスナを削除しないことによるメモリリークと、WeakReferenceによる保持（19-13、19-14）
-    + acceptDropを呼ばずドロップが受け入れられない誤りと修正（19-15、19-16）
-    + デバッグのヒント: RepaintManagerによるEDT違反検出（19-17）、イベント処理時間の計測（19-18）、WeakReferenceの生存数確認（19-19）
-- まとめ（L856–870）
+- よくあるエラーと対処法（L576–591）
+    + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter19.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す
+    + 本文に挙げるエラー: SwingWorkerから直接UIを更新する、DocumentListenerのなかでのテキストの変更、リスナーの削除忘れによるメモリリーク、ドロップが受け入れられない
+- まとめ（L592–606）
     + 6項目の箇条書きと「長時間処理とUI更新の分離、イベント処理の最適化が実務で重要」という1段落。次章への導入はない
-- 章末演習（L871–888）
+- 章末演習（L607–624）
     + 演習リンクは`exercises/chapter19/`で章番号は一致している
     + ただし課題構成に挙げた4課題のうち「高度なメニューシステム（Actionパターンと動的メニュー）」は本章で扱っていない。また`exercises/chapter19/README.md`は「第19章: GUI基礎とイベント処理」としてMVC・レイアウトマネージャーの課題を並べていて、本文の課題構成と一致しない（Issue #010の関連）
 
