@@ -62,6 +62,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 4. **Code Listing Numbers**: 
    - 全23章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
    - 形式: **サンプルコードX-Y** で統一（Xはファイル名の章番号と一致させる）
+   - 言語指定のあるコードブロック（bash・mermaidなどを除く）はすべて番号を付ける。コードブロックを足したら`node scripts/sample-code.js number`で番号を振り直す（2026-11-08に番号のない78件を解消）
 
 6. **Sample Code Excerpts（2026-11-08〜）**: ページ数削減のため、サンプルコードは要点だけを本文に載せ、コンパイル・実行できる全文はGitHubの`sample-code/`へ誘導する
    - 全文は`sample-code/chapterXX/XX-YY/`（サンプルコードX-Yに対応）。本文に載せる範囲は`sample-code/chapterXX/listings.json`にファイル名と行番号で記録する
@@ -87,6 +88,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
 - `npm run check:samples`: For samples whose full source is in `sample-code/`, check that the manuscript code equals the recorded line ranges, the caption matches, the full source compiles, and its output matches 実行結果
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
+- `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 
