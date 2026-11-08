@@ -18,6 +18,7 @@ h-common-errors/
 │   ├── type-mismatch.md
 │   ├── symbol-not-found.md
 │   └── access-control.md
+├── chapters/                    # 各章末の「よくあるエラーと対処法」の詳細
 ├── debugging/                   # デバッグ手法
 │   ├── stack-trace-reading.md
 │   └── debugging-techniques.md
@@ -27,6 +28,9 @@ h-common-errors/
 ```
 
 ## 内容
+
+### 0. 各章のよくあるエラー
+書籍の各章末にある「よくあるエラーと対処法」の詳しい内容（エラーメッセージの例、誤ったコードと修正したコード、デバッグのヒント）は[chapters/](chapters/README.md)にあります。
 
 ### 1. 実行時例外
 - NullPointerException
