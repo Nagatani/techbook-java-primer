@@ -2291,7 +2291,7 @@ public class Point {
     }
 }
 
-// Record を使った方法（Java 14以降）
+// Record を使った方法（Java 16以降）
 public record Point(int x, int y) {
     // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
 }

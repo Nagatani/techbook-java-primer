@@ -2108,7 +2108,7 @@ if (p instanceof Child) {
     Child c = (Child) p;
 }
 
-// パターンマッチング（Java 14+）
+// パターンマッチング（Java 16以降）
 if (p instanceof Child child) {
     child.childMethod();
 }

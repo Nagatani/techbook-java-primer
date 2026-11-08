@@ -458,7 +458,7 @@ public class EventSourcedAccount {
 }
 ```
 
-<span class="footnote">※ このコードはJava 17以降のsealed interface、record、switch式（パターンマッチング）を使用した高度な例です。実際の動作にはAccountState、Moneyクラスの実装が必要です。イベントソーシングの設計パターンを関数型で表現した概念例として理解してください。</span>
+<span class="footnote">※ このコードはJava 21以降のsealed interface、record、switch式のパターンマッチング（レコードパターン）を使用した高度な例です。実際の動作にはAccountState、Moneyクラスの実装が必要です。イベントソーシングの設計パターンを関数型で表現した概念例として理解してください。</span>
 
 #### ファクトリーパターンの関数型実装
 

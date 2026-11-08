@@ -665,9 +665,9 @@ public record Configuration(
 }
 ```
 
-### パターンマッチング（Java 19以降）
+### パターンマッチング（Java 21以降）
 
-Java 19以降では、Recordとパターンマッチングを組み合わせて使用できます。
+Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます。
 
 <span class="listing-number">**サンプルコード8-20**</span>
 

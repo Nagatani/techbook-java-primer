@@ -1167,14 +1167,14 @@ public final class OptimizedImmutableClass {
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。
 とくに並行プログラミングや大規模システムの開発において、その価値が発揮されます。
 
-### Java 14以降の不変性サポート
+### Java 16以降の不変性サポート
 
-Java 14以降では、Recordクラスにより不変データクラスの作成がより簡潔になりました。
+Java 16以降では、Recordクラスにより不変データクラスの作成がより簡潔になりました。
 
 <span class="listing-number">**サンプルコード6-12**</span>
 
 ```java
-// Java 14以降：Recordを使った不変クラス
+// Java 16以降：Recordを使った不変クラス
 public record ImmutablePoint(int x, int y) {
     // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
 }
