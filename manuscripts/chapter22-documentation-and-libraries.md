@@ -1019,68 +1019,22 @@ Value: Hello
 
 #### ライブラリの組み合わせ例
 
-実際のプロジェクトでよく使われる組み合わせ。
+Webアプリケーション開発でよく使われる組み合わせを、Mavenの座標（groupId:artifactId）で示します。
+pom.xmlには、それぞれを前述の`<dependency>`要素として書きます。
 
-<span class="listing-number">**サンプルコード22-22**</span>
-
-```xml
-<!-- Webアプリケーション開発 -->
-<dependencies>
-    <!-- Webフレームワーク -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        <version>3.1.0</version>
-    </dependency>
-    
-    <!-- JSON処理 -->
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.15.2</version>
-    </dependency>
-    
-    <!-- データベースアクセス -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-        <version>3.1.0</version>
-    </dependency>
-    
-    <!-- ユーティリティ -->
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.12.0</version>
-    </dependency>
-    
-    <!-- ログ -->
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.4.8</version>
-    </dependency>
-    
-    <!-- テスト -->
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>5.9.3</version>
-        <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>5.4.0</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
-```
+| 用途 | ライブラリ（groupId:artifactId） | バージョン |
+|------|------|------|
+| Webフレームワーク | org.springframework.boot:spring-boot-starter-web | 3.1.0 |
+| JSON処理 | com.fasterxml.jackson.core:jackson-databind | 2.15.2 |
+| データベースアクセス | org.springframework.boot:spring-boot-starter-data-jpa | 3.1.0 |
+| ユーティリティ | org.apache.commons:commons-lang3 | 3.12.0 |
+| ログ | ch.qos.logback:logback-classic | 1.4.8 |
+| テスト（scopeはtest） | org.junit.jupiter:junit-jupiter | 5.9.3 |
+| テスト（scopeはtest） | org.mockito:mockito-core | 5.4.0 |
 
 ### 実践的な開発フロー
 
-<span class="listing-number">**サンプルコード22-23**</span>
+<span class="listing-number">**サンプルコード22-22**</span>
 
 ```java
 // 1. プロジェクトの初期化（Maven）
@@ -1103,7 +1057,7 @@ mvn versions:display-dependency-updates
 
 よくある問題と解決方法。
 
-<span class="listing-number">**サンプルコード22-24**</span>
+<span class="listing-number">**サンプルコード22-23**</span>
 
 ```java
 // 1. 依存関係の競合
@@ -1144,7 +1098,7 @@ Javadocコメントの構文が正しくありません。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-25**　UserService.java</span>
+<span class="listing-number">**サンプルコード22-24**　UserService.java</span>
 
 ```java
 /**
@@ -1165,7 +1119,7 @@ warning: @return has no meaning in class documentation
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-26**</span>
+<span class="listing-number">**サンプルコード22-25**</span>
 
 ```java
 /**
@@ -1202,7 +1156,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-27**</span>
+<span class="listing-number">**サンプルコード22-26**</span>
 
 ```bash
 javadoc -d docs src/*.java
@@ -1211,7 +1165,7 @@ javadoc -d docs src/*.java
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-28**</span>
+<span class="listing-number">**サンプルコード22-27**</span>
 
 ```bash
 # 文字エンコーディングを明示的に指定
@@ -1228,7 +1182,7 @@ JavadocでHTMLタグを間違って使用。
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-29**　UserService.java</span>
+<span class="listing-number">**サンプルコード22-28**　UserService.java</span>
 
 ```java
 /**
@@ -1252,7 +1206,7 @@ warning: unclosed tag: <li>
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-30**　UserService.java</span>
+<span class="listing-number">**サンプルコード22-29**　UserService.java</span>
 
 ```java
 /**
@@ -1278,7 +1232,7 @@ public class UserService {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-31**</span>
+<span class="listing-number">**サンプルコード22-30**</span>
 
 ```xml
 <dependencies>
@@ -1302,7 +1256,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-32**</span>
+<span class="listing-number">**サンプルコード22-31**</span>
 
 ```xml
 <properties>
@@ -1330,7 +1284,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenera
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-33**</span>
+<span class="listing-number">**サンプルコード22-32**</span>
 
 ```bash
 mvn dependency:tree
@@ -1344,7 +1298,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-34**</span>
+<span class="listing-number">**サンプルコード22-33**</span>
 
 ```xml
 <dependency>
@@ -1376,7 +1330,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-35**</span>
+<span class="listing-number">**サンプルコード22-34**</span>
 
 ```xml
 <dependency>
@@ -1388,7 +1342,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-36**</span>
+<span class="listing-number">**サンプルコード22-35**</span>
 
 ```xml
 <!-- 脆弱性チェックプラグインを追加 -->
@@ -1416,7 +1370,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-37**</span>
+<span class="listing-number">**サンプルコード22-36**</span>
 
 ```xml
 <dependency>
@@ -1428,7 +1382,7 @@ mvn dependency:tree
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-38**</span>
+<span class="listing-number">**サンプルコード22-37**</span>
 
 ```xml
 <dependency>
@@ -1447,7 +1401,7 @@ mvn dependency:tree
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-39**</span>
+<span class="listing-number">**サンプルコード22-38**</span>
 
 ```java
 // 古いバージョン（1.x）
@@ -1464,7 +1418,7 @@ java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeVa
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-40**</span>
+<span class="listing-number">**サンプルコード22-39**</span>
 
 ```java
 // 新しいAPIに対応
@@ -1484,7 +1438,7 @@ try {
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-41**</span>
+<span class="listing-number">**サンプルコード22-40**</span>
 
 ```java
 @SuppressWarnings("deprecation")
@@ -1493,7 +1447,7 @@ Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-42**</span>
+<span class="listing-number">**サンプルコード22-41**</span>
 
 ```java
 // 新しいAPIを使用
@@ -1510,7 +1464,7 @@ Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant(
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-43**</span>
+<span class="listing-number">**サンプルコード22-42**</span>
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -1557,7 +1511,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-44**</span>
+<span class="listing-number">**サンプルコード22-43**</span>
 
 ```xml
 <!-- 必要な依存関係を追加 -->
@@ -1575,7 +1529,7 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-45**</span>
+<span class="listing-number">**サンプルコード22-44**</span>
 
 ```bash
 # コンパイル時
@@ -1587,7 +1541,7 @@ java Example  # ClassNotFoundException
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-46**</span>
+<span class="listing-number">**サンプルコード22-45**</span>
 
 ```bash
 # 実行時にも必要なクラスパスを指定
@@ -1607,7 +1561,7 @@ java -jar target/myapp.jar
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-47**</span>
+<span class="listing-number">**サンプルコード22-46**</span>
 
 ```java
 // application.propertiesが見つからない
@@ -1622,7 +1576,7 @@ java.io.FileNotFoundException: application.properties (No such file or directory
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-48**</span>
+<span class="listing-number">**サンプルコード22-47**</span>
 
 ```java
 // クラスパスから読み込み
@@ -1643,14 +1597,14 @@ try (InputStream input = getClass().getClassLoader()
 
 ##### エラー例
 
-<span class="listing-number">**サンプルコード22-49**</span>
+<span class="listing-number">**サンプルコード22-48**</span>
 
 ```properties
 # application.properties
 server.port=8080abc  # 数値でない
 ```
 
-<span class="listing-number">**サンプルコード22-50**</span>
+<span class="listing-number">**サンプルコード22-49**</span>
 
 ```java
 int port = Integer.parseInt(props.getProperty("server.port"));
@@ -1663,7 +1617,7 @@ java.lang.NumberFormatException: For input string: "8080abc"
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-51**</span>
+<span class="listing-number">**サンプルコード22-50**</span>
 
 ```java
 public static int getIntProperty(Properties props, String key, int defaultValue) {
@@ -1700,7 +1654,7 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-52**</span>
+<span class="listing-number">**サンプルコード22-51**</span>
 
 ```xml
 <!-- 不要なログ実装を除外 -->
@@ -1731,7 +1685,7 @@ JacksonとGsonが混在してAPIが混乱します。
 
 ##### 解決策
 
-<span class="listing-number">**サンプルコード22-53**</span>
+<span class="listing-number">**サンプルコード22-52**</span>
 
 ```java
 // 使用するJSONライブラリを統一
