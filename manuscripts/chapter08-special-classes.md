@@ -16,13 +16,15 @@
 3. 両者の使い分けと実践的な設計
     - それぞれの特徴を活かした設計上の選択
     - 実際のアプリケーションでの組み合わせ方
+4. 内部クラスの基本
+    - メンバー内部クラス、静的内部クラス、ローカル内部クラス、匿名内部クラスの違い
 
 ### この章を始める前に
 
 第6章のfinalキーワードとstatic final定数、第7章のインターフェイスを理解していれば準備完了です。
 これらの知識により、従来の定数定義やデータクラスの問題点と、EnumやRecordがもたらす改善を実感できます。
 
-## Part 1: 列挙型（Enum）
+## 列挙型（Enum）
 
 ### enumとは？
 
@@ -432,7 +434,7 @@ switch (status) {
 }
 ```
 
-## Part 2: レコード（Record）
+## レコード（Record）
 
 ### Recordとは？
 
@@ -866,7 +868,7 @@ public class OrderProcessor {
 }
 ```
 
-## Part 3: EnumとRecordの使い分けと組み合わせ
+## EnumとRecordの使い分けと組み合わせ
 
 ### 使い分けのガイドライン
 
@@ -997,7 +999,7 @@ public record GameCharacter(
 }
 ```
 
-## Part 4: 内部クラス（Inner Classes）
+## 内部クラス（Inner Classes）
 
 ### 内部クラスとは？
 
