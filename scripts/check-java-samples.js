@@ -71,14 +71,15 @@ function expectedOutput(lines, from) {
   let k = from;
   while (k < lines.length && !lines[k].trim()) k++;
   const label = (lines[k] || '').trim();
-  if (!/^(#{1,6}\s*)?(\*\*)?(使用例と)?実行結果/.test(label)) return null;
+  if (!/^(#{1,6}\s*)?(\*\*)?(使用例と)?実行結果|実行結果の一例|実行結果は次/.test(label)) return null;
   k++;
   while (k < lines.length && !lines[k].trim()) k++;
   const open = (lines[k] || '').match(/^(\s*)```\w*\s*$/);
   if (!open) return null;
   const out = [];
   for (k++; k < lines.length && !/^\s*```\s*$/.test(lines[k]); k++) out.push(lines[k].slice(Math.min(open[1].length, lines[k].search(/\S|$/))));
-  const comparable = !/[（(].*[）)]/.test(label) && !/使用例/.test(label);
+  // 比べるのは「実行結果：」「#### 実行結果」などの見出しそのものだけ（「（例）」付きや「一例」などは比べない）
+  const comparable = /^(#{1,6}\s*)?(\*\*)?実行結果[:：]?(\*\*)?[:：]?$/.test(label);
   return { label, line: from + 1, text: out.join('\n'), comparable };
 }
 
