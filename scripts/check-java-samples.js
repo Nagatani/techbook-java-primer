@@ -148,7 +148,7 @@ function main() {
       '<!-- このファイルは scripts/check-java-samples.js --report が生成します -->',
       '# Javaサンプルコードのコンパイル検査',
       '',
-      `javac ${spawnSync('javac', ['-version'], { encoding: 'utf8' }).stdout.trim().replace(/^javac /, '')}（`--release 21`）で、番号付きのJavaサンプルのうち単体のコンパイル単位になっているものを1つずつコンパイルした結果。`,
+      `javac ${spawnSync('javac', ['-version'], { encoding: 'utf8' }).stdout.trim().replace(/^javac /, '')}（\`--release 21\`）で、番号付きのJavaサンプルのうち単体のコンパイル単位になっているものを1つずつコンパイルした結果。`,
       '「依存」は、同じ章の別のサンプルや外部ライブラリにある型が見つからないだけのもの。「意図」は、コード中のコメントで誤りの例と示しているもの。「省略」は、メソッドの本体を省略しているか、複数のファイルを1つに並べているもの。「エラー」は、それ以外のコンパイルエラーで、修正が必要な可能性が高い。',
       '',
     ];
