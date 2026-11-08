@@ -171,7 +171,8 @@ public class MouseEventCompleteExample extends JFrame {
 }
 ```
 
-実行結果（GUI表示）：
+実行すると、次のように表示されます。
+
 ```
 ウィンドウが表示されます（タイトル: マウスイベント詳細）
 - グレーのドローパネル（400x300）が中央に配置されています
@@ -351,7 +352,8 @@ public class KeyboardEventAdvancedExample extends JFrame {
 }
 ```
 
-実行結果（GUI表示）：
+実行すると、次のように表示されます。
+
 ```
 ウィンドウが表示されます（タイトル: キーボードイベント高度な処理）
 - テキストエリアが中央に配置されています
@@ -554,7 +556,8 @@ public class DocumentListenerExample extends JFrame {
 }
 ```
 
-実行結果（GUI表示）：
+実行すると、次のように表示されます。
+
 ```
 ウィンドウが表示されます（タイトル: リアルタイムバリデーション）
 - メールアドレス、パスワード、パスワード確認の3つの入力フィールドがあります
@@ -1580,7 +1583,7 @@ new DropTarget(component, new DropTargetListener() {
 
 原因
 - acceptDrop()メソッドを呼び出していない
-- 適切なDataFlavorをサポートしていない
+- ドロップされたデータの形式（DataFlavor）に対応していない
 
 対処法
 
@@ -1679,7 +1682,7 @@ public class ListenerManager {
 }
 ```
 
-これらの対処法を参考に、堅牢で効率的な高度なイベント処理を実装してください。
+これらの対処法を参考に、不具合の起きにくいイベント処理を実装してください。
 
 ## まとめ
 

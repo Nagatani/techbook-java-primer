@@ -95,7 +95,8 @@ public class SimpleTCPClient {
 }
 ```
 
-実行結果（例）：
+次は実行結果の一例です。
+
 ```
 サーバーからの応答: Echo: Hello, Server!
 ```
@@ -156,7 +157,8 @@ public class SimpleTCPServer {
 }
 ```
 
-実行結果（サーバー側）：
+サーバー側の実行結果は次のとおりです。
+
 ```
 サーバーがポート 8080 で起動しました
 クライアントが接続しました: /127.0.0.1
@@ -341,7 +343,8 @@ public class SimpleHTTPClient {
 }
 ```
 
-実行結果（例）：
+次は実行結果の一例です。
+
 ```
 Header: HTTP/1.1 200 OK
 Header: Accept-Ranges: bytes
@@ -413,7 +416,8 @@ public class HttpURLConnectionExample {
 }
 ```
 
-実行結果（例）：
+次は実行結果の一例です。
+
 ```
 Response Code: 200
 Response:
@@ -545,7 +549,8 @@ public class UDPServer {
 }
 ```
 
-実行結果（サーバー側）：
+サーバー側の実行結果は次のとおりです。
+
 ```
 UDPサーバーがポート 9999 で起動しました
 受信: Hello UDP Server! from /127.0.0.1
@@ -595,7 +600,8 @@ public class UDPClient {
 }
 ```
 
-実行結果（クライアント側）：
+クライアント側の実行結果は次のとおりです。
+
 ```
 送信: Hello UDP Server!
 受信: Echo: Hello UDP Server!
@@ -764,14 +770,14 @@ public class ChatClient {
 }
 ```
 
-実行結果（サーバー接続時の例）：
+このプログラムはチャットサーバー（ポート5000）への接続を試みます。
+サーバーが起動していない場合は、次のような接続エラーが表示されます。
+
 ```
 接続エラー: Connection refused
 ```
 
-> このプログラムはチャットサーバー（ポート5000）への接続を試みます。
-> サーバーが起動していない場合は上記のような接続エラーが表示されます。
-> 正常に接続できた場合は、メッセージの送受信が可能になり、`/quit`コマンドで終了できます。
+正常に接続できた場合は、メッセージの送受信が可能になり、`/quit`コマンドで終了できます。
 
 ## JSON APIクライアントの実装
 
@@ -952,7 +958,8 @@ public class SSLClient {
 }
 ```
 
-実行結果（例）：
+次は実行結果の一例です。
+
 ```
 SSL接続が確立されました
 使用しているプロトコル: TLSv1.3
