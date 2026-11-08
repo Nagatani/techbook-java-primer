@@ -1,0 +1,124 @@
+{
+  "5-1": {
+    "dir": "05-01",
+    "main": null,
+    "excerpt": [
+      { "file": "PaymentResult.java", "from": 1, "to": 18 },
+      { "file": "PaymentProcessor.java", "from": 3, "to": 87 }
+    ]
+  },
+  "5-4": {
+    "dir": "05-04",
+    "main": null,
+    "excerpt": [
+      { "file": "WordDocument.java", "from": 1, "to": 19 },
+      { "file": "PDFDocument.java", "from": 1, "to": 24 }
+    ]
+  },
+  "5-5": {
+    "dir": "05-05",
+    "main": null,
+    "excerpt": [
+      { "file": "ExcelDocument.java", "from": 1, "to": 20 }
+    ]
+  },
+  "5-6": {
+    "dir": "05-06",
+    "main": null,
+    "excerpt": [
+      { "file": "Document.java", "from": 1, "to": 31 }
+    ]
+  },
+  "5-7": {
+    "dir": "05-07",
+    "main": null,
+    "excerpt": [
+      { "file": "WordDocument.java", "from": 1, "to": 11 },
+      { "file": "PDFDocument.java", "from": 1, "to": 23 },
+      { "file": "ExcelDocument.java", "from": 1, "to": 15 }
+    ],
+    "uses": [
+      "5-6"
+    ]
+  },
+  "5-8": {
+    "dir": "05-08",
+    "main": null,
+    "excerpt": [
+      { "file": "Employee.java", "from": 1, "to": 8 },
+      { "file": "Manager.java", "from": 1, "to": 5 },
+      { "file": "Developer.java", "from": 1, "to": 7 }
+    ]
+  },
+  "5-9": {
+    "dir": "05-09",
+    "main": "StackProblem",
+    "excerpt": [
+      { "file": "MyStack.java", "from": 1, "to": 23 },
+      { "file": "StackProblem.java", "from": 1, "to": 16 }
+    ]
+  },
+  "5-10": {
+    "dir": "05-10",
+    "main": null,
+    "excerpt": [
+      { "file": "MyStack.java", "from": 1, "to": 34 }
+    ]
+  },
+  "5-12": {
+    "dir": "05-12",
+    "main": "RectangleSquareTest",
+    "excerpt": [
+      { "file": "Rectangle.java", "from": 1, "to": 22 },
+      { "file": "Square.java", "from": 1, "to": 19 },
+      { "file": "RectangleSquareTest.java", "from": 1, "to": 32 }
+    ]
+  },
+  "5-13": {
+    "dir": "05-13",
+    "main": null,
+    "excerpt": [
+      { "file": "Shape.java", "from": 1, "to": 39 }
+    ]
+  },
+  "5-15": {
+    "dir": "05-15",
+    "main": null,
+    "excerpt": [
+      { "file": "MyStack.java", "from": 1, "to": 33 }
+    ]
+  },
+  "5-16": {
+    "dir": "05-16",
+    "main": null,
+    "excerpt": [
+      { "file": "Employee.java", "from": 1, "to": 5 },
+      { "file": "ReportingEmployee.java", "from": 1, "to": 3 },
+      { "file": "ApprovingEmployee.java", "from": 1, "to": 6 }
+    ]
+  },
+  "5-18": {
+    "dir": "05-18",
+    "main": "CharacterOverrideTest",
+    "excerpt": [
+      { "file": "Character.java", "from": 1, "to": 14 },
+      { "file": "Wizard.java", "from": 1, "to": 20 },
+      { "file": "Knight.java", "from": 1, "to": 13 },
+      { "file": "CharacterOverrideTest.java", "from": 1, "to": 28 }
+    ]
+  },
+  "5-24": {
+    "dir": "05-24",
+    "main": "DrawingAppBefore",
+    "excerpt": [
+      { "file": "DrawingAppBefore.java", "from": 1, "to": 72 }
+    ]
+  },
+  "5-25": {
+    "dir": "05-25",
+    "main": "DrawingAppAfter",
+    "excerpt": [
+      { "file": "DrawingAppAfter.java", "from": 1, "to": 118 }
+    ]
+  }
+}

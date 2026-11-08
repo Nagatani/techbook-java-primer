@@ -1,0 +1,53 @@
+{
+  "21-2": {
+    "dir": "21-02",
+    "main": null,
+    "excerpt": [
+      { "file": "Calculator.java", "from": 1, "to": 6 }
+    ]
+  },
+  "21-3": {
+    "dir": "21-03",
+    "main": "CalculatorManualTest",
+    "excerpt": [
+      { "file": "CalculatorManualTest.java", "from": 1, "to": 20 }
+    ],
+    "uses": [
+      "21-2"
+    ]
+  },
+  "21-4": {
+    "dir": "21-04",
+    "main": null,
+    "excerpt": [
+      { "file": "UserRepository.java", "from": 1, "to": 8 },
+      { "file": "UserService.java", "from": 1, "to": 10 }
+    ]
+  },
+  "21-7": {
+    "dir": "21-07",
+    "main": null,
+    "excerpt": [
+      { "file": "UserRepository.java", "from": 1, "to": 4 },
+      { "file": "UserService.java", "from": 1, "to": 13 }
+    ]
+  },
+  "21-8": {
+    "dir": "21-08",
+    "main": "UserServiceManualTest",
+    "excerpt": [
+      { "file": "UserRepositoryStub.java", "from": 1, "to": 8 },
+      { "file": "UserServiceManualTest.java", "from": 1, "to": 19 }
+    ],
+    "uses": [
+      "21-7"
+    ]
+  },
+  "21-10": {
+    "dir": "21-10",
+    "main": null,
+    "excerpt": [
+      { "file": "StringCalculator.java", "from": 1, "to": 5 }
+    ]
+  }
+}

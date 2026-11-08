@@ -1,0 +1,163 @@
+{
+  "8-1": {
+    "dir": "08-01",
+    "main": null,
+    "excerpt": [
+      { "file": "DayOfWeek.java", "from": 1, "to": 3 }
+    ]
+  },
+  "8-2": {
+    "dir": "08-02",
+    "main": "EnumExample",
+    "excerpt": [
+      { "file": "EnumExample.java", "from": 1, "to": 11 }
+    ],
+    "uses": [
+      "8-1"
+    ]
+  },
+  "8-3": {
+    "dir": "08-03",
+    "main": "EnumMethodsExample",
+    "excerpt": [
+      { "file": "EnumMethodsExample.java", "from": 1, "to": 12 }
+    ],
+    "uses": [
+      "8-1"
+    ]
+  },
+  "8-4": {
+    "dir": "08-04",
+    "main": null,
+    "excerpt": [
+      { "file": "Planet.java", "from": 1, "to": 29 }
+    ]
+  },
+  "8-5": {
+    "dir": "08-05",
+    "main": null,
+    "excerpt": [
+      { "file": "TrafficLight.java", "from": 1, "to": 19 }
+    ]
+  },
+  "8-6": {
+    "dir": "08-06",
+    "main": null,
+    "excerpt": [
+      { "file": "Operation.java", "from": 1, "to": 27 }
+    ]
+  },
+  "8-8": {
+    "dir": "08-08",
+    "main": null,
+    "excerpt": [
+      { "file": "PaymentStrategy.java", "from": 1, "to": 22 }
+    ]
+  },
+  "8-9": {
+    "dir": "08-09",
+    "main": null,
+    "excerpt": [
+      { "file": "Printable.java", "from": 1, "to": 3 },
+      { "file": "DocumentType.java", "from": 1, "to": 20 }
+    ]
+  },
+  "8-10": {
+    "dir": "08-10",
+    "main": "EnumCollectionExample",
+    "excerpt": [
+      { "file": "EnumCollectionExample.java", "from": 1, "to": 28 }
+    ]
+  },
+  "8-13": {
+    "dir": "08-13",
+    "main": null,
+    "excerpt": [
+      { "file": "Person.java", "from": 1, "to": 1 }
+    ]
+  },
+  "8-16": {
+    "dir": "08-16",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 13 }
+    ]
+  },
+  "8-17": {
+    "dir": "08-17",
+    "main": null,
+    "excerpt": [
+      { "file": "Rectangle.java", "from": 1, "to": 16 }
+    ]
+  },
+  "8-18": {
+    "dir": "08-18",
+    "main": null,
+    "excerpt": [
+      { "file": "Temperature.java", "from": 1, "to": 24 }
+    ]
+  },
+  "8-20": {
+    "dir": "08-20",
+    "main": "PatternMatchingExample",
+    "excerpt": [
+      { "file": "Point.java", "from": 1, "to": 1 },
+      { "file": "PatternMatchingExample.java", "from": 1, "to": 19 }
+    ]
+  },
+  "8-22": {
+    "dir": "08-22",
+    "main": null,
+    "excerpt": [
+      { "file": "Address.java", "from": 1, "to": 1 },
+      { "file": "Company.java", "from": 1, "to": 1 },
+      { "file": "Employee.java", "from": 1, "to": 12 }
+    ]
+  },
+  "8-25": {
+    "dir": "08-25",
+    "main": null,
+    "excerpt": [
+      { "file": "Shape.java", "from": 1, "to": 2 },
+      { "file": "Circle.java", "from": 1, "to": 1 },
+      { "file": "Rectangle.java", "from": 1, "to": 1 },
+      { "file": "Triangle.java", "from": 1, "to": 1 },
+      { "file": "ShapeCalculator.java", "from": 1, "to": 10 }
+    ]
+  },
+  "8-29": {
+    "dir": "08-29",
+    "main": "OuterClass",
+    "excerpt": [
+      { "file": "OuterClass.java", "from": 1, "to": 18 }
+    ]
+  },
+  "8-30": {
+    "dir": "08-30",
+    "main": "MathOperations",
+    "excerpt": [
+      { "file": "MathOperations.java", "from": 1, "to": 21 }
+    ]
+  },
+  "8-31": {
+    "dir": "08-31",
+    "main": null,
+    "excerpt": [
+      { "file": "LocalClassExample.java", "from": 1, "to": 14 }
+    ]
+  },
+  "8-32": {
+    "dir": "08-32",
+    "main": "AnonymousClassExample",
+    "excerpt": [
+      { "file": "AnonymousClassExample.java", "from": 1, "to": 21 }
+    ]
+  },
+  "8-33": {
+    "dir": "08-33",
+    "main": null,
+    "excerpt": [
+      { "file": "MyList.java", "from": 1, "to": 35 }
+    ]
+  }
+}

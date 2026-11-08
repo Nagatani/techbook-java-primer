@@ -1,0 +1,95 @@
+{
+  "13-1": {
+    "dir": "13-01",
+    "main": "TryCatchSample",
+    "excerpt": [
+      { "file": "TryCatchSample.java", "from": 1, "to": 15 }
+    ]
+  },
+  "13-3": {
+    "dir": "13-03",
+    "main": null,
+    "excerpt": [
+      { "file": "TryWithResourcesSample.java", "from": 1, "to": 15 }
+    ]
+  },
+  "13-4": {
+    "dir": "13-04",
+    "main": "ThrowsExample",
+    "excerpt": [
+      { "file": "ThrowsExample.java", "from": 1, "to": 16 }
+    ]
+  },
+  "13-5": {
+    "dir": "13-05",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 18 }
+    ]
+  },
+  "13-6": {
+    "dir": "13-06",
+    "main": null,
+    "excerpt": [
+      { "file": "UserService.java", "from": 1, "to": 18 }
+    ]
+  },
+  "13-7": {
+    "dir": "13-07",
+    "main": "RetryableOperation",
+    "excerpt": [
+      { "file": "RetryableOperation.java", "from": 1, "to": 55 }
+    ]
+  },
+  "13-8": {
+    "dir": "13-08",
+    "main": null,
+    "excerpt": [
+      { "file": "CircuitBreaker.java", "from": 1, "to": 55 }
+    ]
+  },
+  "13-9": {
+    "dir": "13-09",
+    "main": null,
+    "excerpt": [
+      { "file": "ExceptionAggregator.java", "from": 1, "to": 55 }
+    ]
+  },
+  "13-10": {
+    "dir": "13-10",
+    "main": null,
+    "excerpt": [
+      { "file": "MultiResourceExample.java", "from": 1, "to": 51 }
+    ]
+  },
+  "13-11": {
+    "dir": "13-11",
+    "main": null,
+    "excerpt": [
+      { "file": "ResourcePool.java", "from": 1, "to": 67 }
+    ]
+  },
+  "13-14": {
+    "dir": "13-14",
+    "main": null,
+    "excerpt": [
+      { "file": "BusinessException.java", "from": 1, "to": 33 },
+      { "file": "InsufficientBalanceException.java", "from": 4, "to": 13 },
+      { "file": "SystemException.java", "from": 4, "to": 28 }
+    ]
+  },
+  "13-25": {
+    "dir": "13-25",
+    "main": null,
+    "excerpt": [
+      { "file": "CustomException.java", "from": 1, "to": 7 }
+    ]
+  },
+  "13-26": {
+    "dir": "13-26",
+    "main": null,
+    "excerpt": [
+      { "file": "CustomException.java", "from": 1, "to": 14 }
+    ]
+  }
+}

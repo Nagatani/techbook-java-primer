@@ -1,0 +1,51 @@
+{
+  "11-1": {
+    "dir": "11-01",
+    "main": "LambdaIntroExample",
+    "excerpt": [
+      { "file": "LambdaIntroExample.java", "from": 1, "to": 18 }
+    ]
+  },
+  "11-21": {
+    "dir": "11-21",
+    "main": "FunctionalInterfaceExample",
+    "excerpt": [
+      { "file": "FunctionalInterfaceExample.java", "from": 1, "to": 15 }
+    ]
+  },
+  "11-23": {
+    "dir": "11-23",
+    "main": "StandardFunctionalInterfaces",
+    "excerpt": [
+      { "file": "StandardFunctionalInterfaces.java", "from": 1, "to": 32 }
+    ]
+  },
+  "11-24": {
+    "dir": "11-24",
+    "main": "MethodReferenceExample",
+    "excerpt": [
+      { "file": "MethodReferenceExample.java", "from": 1, "to": 35 }
+    ]
+  },
+  "11-25": {
+    "dir": "11-25",
+    "main": "MethodReferenceConcurrencyExample",
+    "excerpt": [
+      { "file": "MethodReferenceConcurrencyExample.java", "from": 1, "to": 47 }
+    ]
+  },
+  "11-27": {
+    "dir": "11-27",
+    "main": "RunnableLambdaExample",
+    "excerpt": [
+      { "file": "RunnableLambdaExample.java", "from": 1, "to": 46 }
+    ]
+  },
+  "11-30": {
+    "dir": "11-30",
+    "main": "LambdaSyntaxFixExample",
+    "excerpt": [
+      { "file": "LambdaSyntaxFixExample.java", "from": 1, "to": 18 }
+    ]
+  }
+}

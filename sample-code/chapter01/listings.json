@@ -1,0 +1,40 @@
+{
+  "1-1": {
+    "dir": "01-01",
+    "main": null,
+    "excerpt": [
+      { "file": "Product.java", "from": 1, "to": 18 }
+    ]
+  },
+  "1-2": {
+    "dir": "01-02",
+    "main": "Main",
+    "excerpt": [
+      { "file": "Main.java", "from": 1, "to": 7 }
+    ],
+    "uses": [
+      "1-1"
+    ]
+  },
+  "1-3": {
+    "dir": "01-03",
+    "main": "HelloWorld",
+    "excerpt": [
+      { "file": "HelloWorld.java", "from": 1, "to": 5 }
+    ]
+  },
+  "1-5": {
+    "dir": "01-05",
+    "main": "StandardOutput",
+    "excerpt": [
+      { "file": "StandardOutput.java", "from": 1, "to": 13 }
+    ]
+  },
+  "1-6": {
+    "dir": "01-06",
+    "main": "InputExample",
+    "excerpt": [
+      { "file": "InputExample.java", "from": 1, "to": 24 }
+    ]
+  }
+}

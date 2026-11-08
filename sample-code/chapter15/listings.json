@@ -1,0 +1,100 @@
+{
+  "15-1": {
+    "dir": "15-01",
+    "main": "SingleThreadExample",
+    "excerpt": [
+      { "file": "SingleThreadExample.java", "from": 1, "to": 43 }
+    ]
+  },
+  "15-4": {
+    "dir": "15-04",
+    "main": null,
+    "excerpt": [
+      { "file": "UnsafeCounter.java", "from": 1, "to": 7 }
+    ]
+  },
+  "15-9": {
+    "dir": "15-09",
+    "main": "Main",
+    "excerpt": [
+      { "file": "Main.java", "from": 1, "to": 20 }
+    ]
+  },
+  "15-10": {
+    "dir": "15-10",
+    "main": null,
+    "excerpt": [
+      { "file": "SynchronizedCounter.java", "from": 1, "to": 15 }
+    ]
+  },
+  "15-11": {
+    "dir": "15-11",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 34 }
+    ]
+  },
+  "15-12": {
+    "dir": "15-12",
+    "main": "VolatileDemo",
+    "excerpt": [
+      { "file": "VolatileDemo.java", "from": 1, "to": 39 }
+    ]
+  },
+  "15-13": {
+    "dir": "15-13",
+    "main": null,
+    "excerpt": [
+      { "file": "AtomicCounterExample.java", "from": 1, "to": 49 }
+    ]
+  },
+  "15-14": {
+    "dir": "15-14",
+    "main": "ExecutorExample",
+    "excerpt": [
+      { "file": "ExecutorExample.java", "from": 1, "to": 33 }
+    ]
+  },
+  "15-16": {
+    "dir": "15-16",
+    "main": "FutureCallableExample",
+    "excerpt": [
+      { "file": "FutureCallableExample.java", "from": 1, "to": 61 }
+    ]
+  },
+  "15-17": {
+    "dir": "15-17",
+    "main": "CompletableFutureExample",
+    "excerpt": [
+      { "file": "CompletableFutureExample.java", "from": 1, "to": 92 }
+    ]
+  },
+  "15-19": {
+    "dir": "15-19",
+    "main": "ParallelPerformanceExample",
+    "excerpt": [
+      { "file": "ParallelPerformanceExample.java", "from": 1, "to": 126 }
+    ]
+  },
+  "15-22": {
+    "dir": "15-22",
+    "main": "ParallelDataPipeline",
+    "excerpt": [
+      { "file": "ParallelDataPipeline.java", "from": 1, "to": 83 }
+    ]
+  },
+  "15-23": {
+    "dir": "15-23",
+    "main": "ResiliencePatterns",
+    "excerpt": [
+      { "file": "ResiliencePatterns.java", "from": 1, "to": 127 }
+    ]
+  },
+  "15-24": {
+    "dir": "15-24",
+    "main": null,
+    "excerpt": [
+      { "file": "Counter.java", "from": 1, "to": 8 }
+    ]
+  }
+}

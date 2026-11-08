@@ -1,0 +1,30 @@
+{
+  "22-2": {
+    "dir": "22-02",
+    "main": null,
+    "excerpt": [
+      { "file": "Task.java", "from": 1, "to": 160 }
+    ]
+  },
+  "22-25": {
+    "dir": "22-25",
+    "main": null,
+    "excerpt": [
+      { "file": "UserService.java", "from": 1, "to": 8 }
+    ]
+  },
+  "22-29": {
+    "dir": "22-29",
+    "main": null,
+    "excerpt": [
+      { "file": "UserService.java", "from": 1, "to": 11 }
+    ]
+  },
+  "22-30": {
+    "dir": "22-30",
+    "main": null,
+    "excerpt": [
+      { "file": "UserService.java", "from": 1, "to": 12 }
+    ]
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "4-1": {
+    "dir": "04-01",
+    "main": "ProblemDemo",
+    "excerpt": [
+      { "file": "BankAccountV0.java", "from": 1, "to": 10 },
+      { "file": "ProblemDemo.java", "from": 1, "to": 15 }
+    ]
+  },
+  "4-2": {
+    "dir": "04-02",
+    "main": "BankAccountTest",
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 33 }
+    ]
+  },
+  "4-3": {
+    "dir": "04-03",
+    "main": null,
+    "excerpt": [
+      { "file": "DataProcessor.java", "from": 1, "to": 17 }
+    ]
+  },
+  "4-5": {
+    "dir": "04-05",
+    "main": "MathUtilsTest",
+    "excerpt": [
+      { "file": "MathUtils.java", "from": 1, "to": 27 }
+    ]
+  },
+  "4-6": {
+    "dir": "04-06",
+    "main": "ProductTest",
+    "excerpt": [
+      { "file": "Product.java", "from": 1, "to": 53 }
+    ]
+  },
+  "4-7": {
+    "dir": "04-07",
+    "main": null,
+    "excerpt": [
+      { "file": "Employee.java", "from": 1, "to": 19 }
+    ]
+  },
+  "4-8": {
+    "dir": "04-08",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccountV1.java", "from": 1, "to": 21 }
+    ]
+  },
+  "4-9": {
+    "dir": "04-09",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccountV2.java", "from": 1, "to": 34 }
+    ]
+  },
+  "4-10": {
+    "dir": "04-10",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccountV3.java", "from": 1, "to": 56 }
+    ]
+  },
+  "4-11": {
+    "dir": "04-11",
+    "main": null,
+    "excerpt": [
+      { "file": "EnhancedBankAccount.java", "from": 1, "to": 68 }
+    ],
+    "uses": [
+      "4-10"
+    ]
+  },
+  "4-17": {
+    "dir": "04-17",
+    "main": null,
+    "excerpt": [
+      { "file": "Example.java", "from": 1, "to": 16 }
+    ]
+  },
+  "4-19": {
+    "dir": "04-19",
+    "main": null,
+    "excerpt": [
+      { "file": "User.java", "from": 1, "to": 26 }
+    ]
+  },
+  "4-20": {
+    "dir": "04-20",
+    "main": null,
+    "excerpt": [
+      { "file": "Book.java", "from": 1, "to": 24 }
+    ]
+  },
+  "4-22": {
+    "dir": "04-22",
+    "main": null,
+    "excerpt": [
+      { "file": "DatabaseConfig.java", "from": 1, "to": 44 }
+    ]
+  },
+  "4-23": {
+    "dir": "04-23",
+    "main": null,
+    "excerpt": [
+      { "file": "EventProcessor.java", "from": 1, "to": 33 }
+    ]
+  },
+  "4-24": {
+    "dir": "04-24",
+    "main": null,
+    "excerpt": [
+      { "file": "HttpClient.java", "from": 1, "to": 20 }
+    ]
+  },
+  "4-25": {
+    "dir": "04-25",
+    "main": null,
+    "excerpt": [
+      { "file": "Logger.java", "from": 1, "to": 27 }
+    ]
+  },
+  "4-29": {
+    "dir": "04-29",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 32 }
+    ]
+  },
+  "4-34": {
+    "dir": "04-34",
+    "main": null,
+    "excerpt": [
+      { "file": "Product.java", "from": 1, "to": 12 }
+    ]
+  },
+  "4-35": {
+    "dir": "04-35",
+    "main": null,
+    "excerpt": [
+      { "file": "Product.java", "from": 1, "to": 16 }
+    ]
+  }
+}

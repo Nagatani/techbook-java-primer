@@ -1,0 +1,177 @@
+{
+  "17-1": {
+    "dir": "17-01",
+    "main": "HelloSwing",
+    "excerpt": [
+      { "file": "HelloSwing.java", "from": 1, "to": 12 }
+    ]
+  },
+  "17-2": {
+    "dir": "17-02",
+    "main": "WindowSettings",
+    "excerpt": [
+      { "file": "WindowSettings.java", "from": 1, "to": 14 }
+    ]
+  },
+  "17-3": {
+    "dir": "17-03",
+    "main": "HelloLabel",
+    "excerpt": [
+      { "file": "HelloLabel.java", "from": 1, "to": 20 }
+    ]
+  },
+  "17-4": {
+    "dir": "17-04",
+    "main": "MultipleComponents",
+    "excerpt": [
+      { "file": "MultipleComponents.java", "from": 1, "to": 21 }
+    ]
+  },
+  "17-5": {
+    "dir": "17-05",
+    "main": "AdvancedLabel",
+    "excerpt": [
+      { "file": "AdvancedLabel.java", "from": 1, "to": 28 }
+    ]
+  },
+  "17-6": {
+    "dir": "17-06",
+    "main": "AdvancedButton",
+    "excerpt": [
+      { "file": "AdvancedButton.java", "from": 1, "to": 35 }
+    ]
+  },
+  "17-7": {
+    "dir": "17-07",
+    "main": "TextInputComponents",
+    "excerpt": [
+      { "file": "TextInputComponents.java", "from": 1, "to": 46 }
+    ]
+  },
+  "17-8": {
+    "dir": "17-08",
+    "main": "SelectionComponents",
+    "excerpt": [
+      { "file": "SelectionComponents.java", "from": 1, "to": 49 }
+    ]
+  },
+  "17-9": {
+    "dir": "17-09",
+    "main": "BorderLayoutExample",
+    "excerpt": [
+      { "file": "BorderLayoutExample.java", "from": 1, "to": 23 }
+    ]
+  },
+  "17-10": {
+    "dir": "17-10",
+    "main": "GridLayoutExample",
+    "excerpt": [
+      { "file": "GridLayoutExample.java", "from": 1, "to": 22 }
+    ]
+  },
+  "17-11": {
+    "dir": "17-11",
+    "main": "FlowLayoutExample",
+    "excerpt": [
+      { "file": "FlowLayoutExample.java", "from": 1, "to": 25 }
+    ]
+  },
+  "17-12": {
+    "dir": "17-12",
+    "main": "ComplexLayoutExample",
+    "excerpt": [
+      { "file": "ComplexLayoutExample.java", "from": 1, "to": 58 }
+    ]
+  },
+  "17-13": {
+    "dir": "17-13",
+    "main": "CombinedLayoutExample",
+    "excerpt": [
+      { "file": "CombinedLayoutExample.java", "from": 1, "to": 98 }
+    ]
+  },
+  "17-14": {
+    "dir": "17-14",
+    "main": "ButtonEventExample",
+    "excerpt": [
+      { "file": "ButtonEventExample.java", "from": 1, "to": 30 }
+    ]
+  },
+  "17-15": {
+    "dir": "17-15",
+    "main": "TextFieldEventExample",
+    "excerpt": [
+      { "file": "TextFieldEventExample.java", "from": 1, "to": 35 }
+    ]
+  },
+  "17-17": {
+    "dir": "17-17",
+    "main": "LambdaEventExample",
+    "excerpt": [
+      { "file": "LambdaEventExample.java", "from": 1, "to": 46 }
+    ]
+  },
+  "17-18": {
+    "dir": "17-18",
+    "main": "CounterApplication",
+    "excerpt": [
+      { "file": "CounterApplication.java", "from": 1, "to": 64 }
+    ]
+  },
+  "17-20": {
+    "dir": "17-20",
+    "main": "FormApplication",
+    "excerpt": [
+      { "file": "FormApplication.java", "from": 1, "to": 92 }
+    ]
+  },
+  "17-21": {
+    "dir": "17-21",
+    "main": "EDTBasicExample",
+    "excerpt": [
+      { "file": "EDTBasicExample.java", "from": 1, "to": 25 }
+    ]
+  },
+  "17-22": {
+    "dir": "17-22",
+    "main": "EventQueueExample",
+    "excerpt": [
+      { "file": "EventQueueExample.java", "from": 1, "to": 39 }
+    ]
+  },
+  "17-23": {
+    "dir": "17-23",
+    "main": "SwingWorkerExample",
+    "excerpt": [
+      { "file": "SwingWorkerExample.java", "from": 1, "to": 65 }
+    ]
+  },
+  "17-24": {
+    "dir": "17-24",
+    "main": "EDTUtilityExample",
+    "excerpt": [
+      { "file": "EDTUtilityExample.java", "from": 1, "to": 45 }
+    ]
+  },
+  "17-26": {
+    "dir": "17-26",
+    "main": "HeavyProcessingExample",
+    "excerpt": [
+      { "file": "HeavyProcessingExample.java", "from": 1, "to": 82 }
+    ]
+  },
+  "17-27": {
+    "dir": "17-27",
+    "main": "TimerExample",
+    "excerpt": [
+      { "file": "TimerExample.java", "from": 1, "to": 44 }
+    ]
+  },
+  "17-28": {
+    "dir": "17-28",
+    "main": "ThreadSafetyExample",
+    "excerpt": [
+      { "file": "ThreadSafetyExample.java", "from": 1, "to": 87 }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "20-1": {
+    "dir": "20-01",
+    "main": "BasicTableExample",
+    "excerpt": [
+      { "file": "BasicTableExample.java", "from": 1, "to": 37 }
+    ]
+  },
+  "20-3": {
+    "dir": "20-03",
+    "main": "BasicTreeExample",
+    "excerpt": [
+      { "file": "BasicTreeExample.java", "from": 1, "to": 51 }
+    ]
+  },
+  "20-4": {
+    "dir": "20-04",
+    "main": "DynamicTreeExample",
+    "excerpt": [
+      { "file": "DynamicTreeExample.java", "from": 1, "to": 153 }
+    ]
+  },
+  "20-5": {
+    "dir": "20-05",
+    "main": "AdvancedListExample",
+    "excerpt": [
+      { "file": "AdvancedListExample.java", "from": 1, "to": 203 }
+    ]
+  },
+  "20-6": {
+    "dir": "20-06",
+    "main": "CustomEditorExample",
+    "excerpt": [
+      { "file": "CustomEditorExample.java", "from": 1, "to": 137 }
+    ]
+  }
+}

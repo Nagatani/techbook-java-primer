@@ -1,0 +1,153 @@
+{
+  "12-3": {
+    "dir": "12-03",
+    "main": "AdvancedSortExample",
+    "excerpt": [
+      { "file": "AdvancedSortExample.java", "from": 1, "to": 33 }
+    ]
+  },
+  "12-7": {
+    "dir": "12-07",
+    "main": "StreamExample",
+    "excerpt": [
+      { "file": "StreamExample.java", "from": 1, "to": 24 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  },
+  "12-8": {
+    "dir": "12-08",
+    "main": "OptionalCreationExample",
+    "excerpt": [
+      { "file": "OptionalCreationExample.java", "from": 1, "to": 24 }
+    ]
+  },
+  "12-9": {
+    "dir": "12-09",
+    "main": "OptionalRetrievalExample",
+    "excerpt": [
+      { "file": "OptionalRetrievalExample.java", "from": 1, "to": 41 }
+    ]
+  },
+  "12-10": {
+    "dir": "12-10",
+    "main": "OptionalPresenceExample",
+    "excerpt": [
+      { "file": "OptionalPresenceExample.java", "from": 1, "to": 36 }
+    ]
+  },
+  "12-11": {
+    "dir": "12-11",
+    "main": "OptionalTransformationExample",
+    "excerpt": [
+      { "file": "OptionalTransformationExample.java", "from": 1, "to": 48 }
+    ]
+  },
+  "12-12": {
+    "dir": "12-12",
+    "main": "OptionalStreamExample",
+    "excerpt": [
+      { "file": "OptionalStreamExample.java", "from": 1, "to": 60 }
+    ]
+  },
+  "12-13": {
+    "dir": "12-13",
+    "main": "OptionalPracticalExample",
+    "excerpt": [
+      { "file": "OptionalPracticalExample.java", "from": 1, "to": 90 }
+    ]
+  },
+  "12-14": {
+    "dir": "12-14",
+    "main": "OptionalAntiPatternsExample",
+    "excerpt": [
+      { "file": "OptionalAntiPatternsExample.java", "from": 1, "to": 68 }
+    ]
+  },
+  "12-16": {
+    "dir": "12-16",
+    "main": "ParallelStreamExample",
+    "excerpt": [
+      { "file": "ParallelStreamExample.java", "from": 1, "to": 29 }
+    ]
+  },
+  "12-18": {
+    "dir": "12-18",
+    "main": "FlatMapExample",
+    "excerpt": [
+      { "file": "FlatMapExample.java", "from": 1, "to": 37 }
+    ]
+  },
+  "12-19": {
+    "dir": "12-19",
+    "main": "ReduceExample",
+    "excerpt": [
+      { "file": "ReduceExample.java", "from": 1, "to": 40 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  },
+  "12-20": {
+    "dir": "12-20",
+    "main": "CollectorsExample",
+    "excerpt": [
+      { "file": "CollectorsExample.java", "from": 1, "to": 37 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  },
+  "12-21": {
+    "dir": "12-21",
+    "main": "OptionalExample",
+    "excerpt": [
+      { "file": "OptionalExample.java", "from": 1, "to": 29 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  },
+  "12-22": {
+    "dir": "12-22",
+    "main": "OptionalChainingExample",
+    "excerpt": [
+      { "file": "OptionalChainingExample.java", "from": 1, "to": 23 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  },
+  "12-23": {
+    "dir": "12-23",
+    "main": "NullSafeProcessingExample",
+    "excerpt": [
+      { "file": "NullSafeProcessingExample.java", "from": 1, "to": 31 }
+    ]
+  },
+  "12-24": {
+    "dir": "12-24",
+    "main": "ShortCircuitExample",
+    "excerpt": [
+      { "file": "ShortCircuitExample.java", "from": 1, "to": 27 }
+    ]
+  },
+  "12-25": {
+    "dir": "12-25",
+    "main": "ToArrayExample",
+    "excerpt": [
+      { "file": "ToArrayExample.java", "from": 1, "to": 23 }
+    ]
+  },
+  "12-26": {
+    "dir": "12-26",
+    "main": "ComplexProcessingExample",
+    "excerpt": [
+      { "file": "ComplexProcessingExample.java", "from": 1, "to": 45 }
+    ],
+    "uses": [
+      "12-3"
+    ]
+  }
+}

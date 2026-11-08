@@ -1,0 +1,37 @@
+{
+  "9-1": {
+    "dir": "09-01",
+    "main": "StudentManager",
+    "excerpt": [
+      { "file": "StudentManager.java", "from": 1, "to": 17 }
+    ]
+  },
+  "9-6": {
+    "dir": "09-06",
+    "main": "StudentManagerImproved",
+    "excerpt": [
+      { "file": "StudentManagerImproved.java", "from": 1, "to": 29 }
+    ]
+  },
+  "9-7": {
+    "dir": "09-07",
+    "main": "ArrayListExample",
+    "excerpt": [
+      { "file": "ArrayListExample.java", "from": 1, "to": 36 }
+    ]
+  },
+  "9-10": {
+    "dir": "09-10",
+    "main": "HashSetExample",
+    "excerpt": [
+      { "file": "HashSetExample.java", "from": 1, "to": 20 }
+    ]
+  },
+  "9-13": {
+    "dir": "09-13",
+    "main": "HashMapExample",
+    "excerpt": [
+      { "file": "HashMapExample.java", "from": 1, "to": 28 }
+    ]
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "7-1": {
+    "dir": "07-01",
+    "main": null,
+    "excerpt": [
+      { "file": "Shape.java", "from": 1, "to": 21 }
+    ]
+  },
+  "7-2": {
+    "dir": "07-02",
+    "main": null,
+    "excerpt": [
+      { "file": "Circle.java", "from": 1, "to": 15 },
+      { "file": "Rectangle.java", "from": 1, "to": 17 }
+    ],
+    "uses": [
+      "7-1"
+    ]
+  },
+  "7-3": {
+    "dir": "07-03",
+    "main": "Main",
+    "excerpt": [
+      { "file": "Main.java", "from": 1, "to": 12 }
+    ],
+    "uses": [
+      "7-1",
+      "7-2"
+    ]
+  },
+  "7-4": {
+    "dir": "07-04",
+    "main": null,
+    "excerpt": [
+      { "file": "Exportable.java", "from": 1, "to": 5 },
+      { "file": "Archivable.java", "from": 1, "to": 4 }
+    ]
+  },
+  "7-5": {
+    "dir": "07-05",
+    "main": null,
+    "excerpt": [
+      { "file": "Document.java", "from": 1, "to": 23 }
+    ],
+    "uses": [
+      "7-4"
+    ]
+  },
+  "7-6": {
+    "dir": "07-06",
+    "main": null,
+    "excerpt": [
+      { "file": "Collection.java", "from": 1, "to": 41 }
+    ]
+  },
+  "7-7": {
+    "dir": "07-07",
+    "main": null,
+    "excerpt": [
+      { "file": "DataProcessor.java", "from": 1, "to": 30 }
+    ]
+  },
+  "7-8": {
+    "dir": "07-08",
+    "main": null,
+    "excerpt": [
+      { "file": "A.java", "from": 1, "to": 35 }
+    ]
+  },
+  "7-9": {
+    "dir": "07-09",
+    "main": null,
+    "excerpt": [
+      { "file": "BaseClass.java", "from": 1, "to": 34 }
+    ]
+  },
+  "7-11": {
+    "dir": "07-11",
+    "main": null,
+    "excerpt": [
+      { "file": "DefensiveInterface.java", "from": 1, "to": 29 }
+    ]
+  },
+  "7-12": {
+    "dir": "07-12",
+    "main": null,
+    "excerpt": [
+      { "file": "Timestamped.java", "from": 1, "to": 68 }
+    ]
+  },
+  "7-13": {
+    "dir": "07-13",
+    "main": null,
+    "excerpt": [
+      { "file": "ComparableTrait.java", "from": 1, "to": 50 }
+    ]
+  },
+  "7-18": {
+    "dir": "07-18",
+    "main": null,
+    "excerpt": [
+      { "file": "DocumentFactory.java", "from": 1, "to": 69 }
+    ]
+  },
+  "7-19": {
+    "dir": "07-19",
+    "main": null,
+    "excerpt": [
+      { "file": "DatabaseConnectionFactory.java", "from": 1, "to": 79 }
+    ]
+  },
+  "7-29": {
+    "dir": "07-29",
+    "main": null,
+    "excerpt": [
+      { "file": "MathUtils.java", "from": 1, "to": 19 }
+    ]
+  },
+  "7-30": {
+    "dir": "07-30",
+    "main": null,
+    "excerpt": [
+      { "file": "Service.java", "from": 1, "to": 13 }
+    ]
+  },
+  "7-31": {
+    "dir": "07-31",
+    "main": null,
+    "excerpt": [
+      { "file": "BaseService.java", "from": 1, "to": 77 }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "6-1": {
+    "dir": "06-01",
+    "main": "ThreadSafetyProblem",
+    "excerpt": [
+      { "file": "MutablePoint.java", "from": 1, "to": 15 },
+      { "file": "ThreadSafetyProblem.java", "from": 1, "to": 34 }
+    ]
+  },
+  "6-3": {
+    "dir": "06-03",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutablePoint.java", "from": 1, "to": 24 }
+    ]
+  },
+  "6-4": {
+    "dir": "06-04",
+    "main": null,
+    "excerpt": [
+      { "file": "Constants.java", "from": 1, "to": 28 }
+    ]
+  },
+  "6-5": {
+    "dir": "06-05",
+    "main": null,
+    "excerpt": [
+      { "file": "SecurityManager.java", "from": 1, "to": 23 }
+    ]
+  },
+  "6-6": {
+    "dir": "06-06",
+    "main": null,
+    "excerpt": [
+      { "file": "String.java", "from": 1, "to": 4 },
+      { "file": "ImmutablePerson.java", "from": 1, "to": 16 }
+    ]
+  },
+  "6-7": {
+    "dir": "06-07",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutablePerson.java", "from": 1, "to": 73 }
+    ]
+  },
+  "6-8": {
+    "dir": "06-08",
+    "main": "ImmutableExample",
+    "excerpt": [
+      { "file": "ImmutableExample.java", "from": 1, "to": 43 }
+    ],
+    "uses": [
+      "6-7"
+    ]
+  },
+  "6-9": {
+    "dir": "06-09",
+    "main": null,
+    "excerpt": [
+      { "file": "DateRange.java", "from": 1, "to": 38 }
+    ]
+  },
+  "6-10": {
+    "dir": "06-10",
+    "main": null,
+    "excerpt": [
+      { "file": "Book.java", "from": 1, "to": 91 }
+    ]
+  },
+  "6-11": {
+    "dir": "06-11",
+    "main": "BuilderExample",
+    "excerpt": [
+      { "file": "BuilderExample.java", "from": 1, "to": 36 }
+    ],
+    "uses": [
+      "6-10"
+    ]
+  },
+  "6-14": {
+    "dir": "06-14",
+    "main": "FinalCorrectExample",
+    "excerpt": [
+      { "file": "FinalCorrectExample.java", "from": 1, "to": 11 }
+    ]
+  },
+  "6-16": {
+    "dir": "06-16",
+    "main": null,
+    "excerpt": [
+      { "file": "InitializedFinalExample.java", "from": 1, "to": 14 }
+    ]
+  },
+  "6-19": {
+    "dir": "06-19",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutablePerson.java", "from": 1, "to": 25 }
+    ]
+  },
+  "6-20": {
+    "dir": "06-20",
+    "main": null,
+    "excerpt": [
+      { "file": "BrokenImmutableEvent.java", "from": 1, "to": 15 }
+    ]
+  },
+  "6-22": {
+    "dir": "06-22",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutableEvent.java", "from": 1, "to": 21 }
+    ]
+  },
+  "6-23": {
+    "dir": "06-23",
+    "main": null,
+    "excerpt": [
+      { "file": "ModernImmutableEvent.java", "from": 1, "to": 19 }
+    ]
+  },
+  "6-24": {
+    "dir": "06-24",
+    "main": "FinalArrayMisunderstanding",
+    "excerpt": [
+      { "file": "FinalArrayMisunderstanding.java", "from": 1, "to": 13 }
+    ]
+  },
+  "6-25": {
+    "dir": "06-25",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutableArray.java", "from": 1, "to": 23 }
+    ]
+  },
+  "6-26": {
+    "dir": "06-26",
+    "main": "ListImmutabilityMisunderstanding",
+    "excerpt": [
+      { "file": "ListImmutabilityMisunderstanding.java", "from": 1, "to": 23 }
+    ]
+  },
+  "6-27": {
+    "dir": "06-27",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutablePerson.java", "from": 1, "to": 12 },
+      { "file": "MutableEmployee.java", "from": 1, "to": 15 }
+    ]
+  },
+  "6-28": {
+    "dir": "06-28",
+    "main": null,
+    "excerpt": [
+      { "file": "ImmutablePerson.java", "from": 1, "to": 17 }
+    ]
+  },
+  "6-29": {
+    "dir": "06-29",
+    "main": null,
+    "excerpt": [
+      { "file": "IneffientImmutableClass.java", "from": 1, "to": 19 }
+    ]
+  },
+  "6-30": {
+    "dir": "06-30",
+    "main": null,
+    "excerpt": [
+      { "file": "EfficientImmutableClass.java", "from": 1, "to": 23 }
+    ]
+  },
+  "6-31": {
+    "dir": "06-31",
+    "main": null,
+    "excerpt": [
+      { "file": "OptimizedImmutableClass.java", "from": 1, "to": 24 }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "16-1": {
+    "dir": "16-01",
+    "main": "SimpleTCPClient",
+    "excerpt": [
+      { "file": "SimpleTCPClient.java", "from": 1, "to": 28 }
+    ]
+  },
+  "16-2": {
+    "dir": "16-02",
+    "main": "SimpleTCPServer",
+    "excerpt": [
+      { "file": "SimpleTCPServer.java", "from": 1, "to": 42 }
+    ]
+  },
+  "16-3": {
+    "dir": "16-03",
+    "main": "MultiThreadedServer",
+    "excerpt": [
+      { "file": "MultiThreadedServer.java", "from": 1, "to": 72 }
+    ]
+  },
+  "16-4": {
+    "dir": "16-04",
+    "main": "SimpleHTTPClient",
+    "excerpt": [
+      { "file": "SimpleHTTPClient.java", "from": 1, "to": 51 }
+    ]
+  },
+  "16-5": {
+    "dir": "16-05",
+    "main": "HttpURLConnectionExample",
+    "excerpt": [
+      { "file": "HttpURLConnectionExample.java", "from": 1, "to": 44 }
+    ]
+  },
+  "16-6": {
+    "dir": "16-06",
+    "main": "AsyncHttpClientExample",
+    "excerpt": [
+      { "file": "AsyncHttpClientExample.java", "from": 1, "to": 49 }
+    ]
+  },
+  "16-7": {
+    "dir": "16-07",
+    "main": "UDPServer",
+    "excerpt": [
+      { "file": "UDPServer.java", "from": 1, "to": 36 }
+    ]
+  },
+  "16-8": {
+    "dir": "16-08",
+    "main": "UDPClient",
+    "excerpt": [
+      { "file": "UDPClient.java", "from": 1, "to": 34 }
+    ]
+  },
+  "16-9": {
+    "dir": "16-09",
+    "main": "ChatServer",
+    "excerpt": [
+      { "file": "ChatServer.java", "from": 1, "to": 93 }
+    ]
+  },
+  "16-10": {
+    "dir": "16-10",
+    "main": "ChatClient",
+    "excerpt": [
+      { "file": "ChatClient.java", "from": 1, "to": 44 }
+    ]
+  },
+  "16-12": {
+    "dir": "16-12",
+    "main": "SSLClient",
+    "excerpt": [
+      { "file": "SSLClient.java", "from": 1, "to": 36 }
+    ]
+  }
+}

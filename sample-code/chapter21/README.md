@@ -1,0 +1,22 @@
+<!-- このファイルは scripts/sample-code.js sync が生成します -->
+# 第21章のサンプルコード
+
+「ユニットテストと品質保証 信頼性の高いソフトウェアを作る」の章のサンプルコードです。
+
+本文の「サンプルコード21-N」の全文です。ディレクトリ名がサンプルコードの番号に対応します。
+本文には全文の一部だけを載せていることがあります。本文のキャプションに、ファイル名と掲載した行の範囲を示しています。
+
+各ディレクトリで次のようにコンパイルし、表の「実行」のコマンドで実行します（Java 21以降）。
+
+```
+javac -d out *.java
+```
+
+| サンプルコード | ファイル | 実行 |
+|---|---|---|
+| [21-2](./21-02/) | Calculator.java | （mainメソッドなし） |
+| [21-3](./21-03/) | Calculator.java<br>CalculatorManualTest.java | `java -cp out CalculatorManualTest` |
+| [21-4](./21-04/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
+| [21-7](./21-07/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
+| [21-8](./21-08/) | UserRepository.java<br>UserRepositoryStub.java<br>UserService.java<br>UserServiceManualTest.java | `java -cp out UserServiceManualTest` |
+| [21-10](./21-10/) | StringCalculator.java | （mainメソッドなし） |
