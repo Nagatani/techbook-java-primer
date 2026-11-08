@@ -16,8 +16,10 @@ javac -d out *.java
 
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
-| [1-1](./01-01/) | Product.java | （mainメソッドなし） |
-| [1-2](./01-02/) | Main.java<br>Product.java | `java -cp out Main` |
-| [1-3](./01-03/) | HelloWorld.java | `java -cp out HelloWorld` |
-| [1-5](./01-05/) | StandardOutput.java | `java -cp out StandardOutput` |
-| [1-6](./01-06/) | InputExample.java | `java -cp out InputExample` |
+| [1-2](./01-02/) | Product.java | （mainメソッドなし） |
+| [1-3](./01-03/) | Main.java<br>Product.java | `java -cp out Main` |
+| [1-4](./01-04/) | HelloWorld.java | `java -cp out HelloWorld` |
+| [1-9](./01-09/) | StandardOutput.java | `java -cp out StandardOutput` |
+| [1-10](./01-10/) | InputExample.java | `java -cp out InputExample` |
+| [1-16](./01-16/) | DebugExample.java | `java -cp out DebugExample` |
+| [1-17](./01-17/) | StepByStepDebug.java | `java -cp out StepByStepDebug` |

@@ -1,4 +1,4 @@
-public final class ImmutablePerson { // finalクラス
+public class ImmutablePerson {
     private final String name;
     private final int age;
     
@@ -9,9 +9,4 @@ public final class ImmutablePerson { // finalクラス
     
     public String getName() { return name; }
     public int getAge() { return age; }
-    
-    // 状態変更が必要な場合は新しいオブジェクトを作成
-    public ImmutablePerson withAge(int newAge) {
-        return new ImmutablePerson(this.name, newAge);
-    }
 }

@@ -221,6 +221,9 @@ public class Car extends Vehicle {
 ```
 
 使用例と実行結果：
+
+<span class="listing-number">**サンプルコード4-5**</span>
+
 ```java
 // VehicleTest.java
 public class VehicleTest {
@@ -241,7 +244,7 @@ Engine started: V6
 
 ##### `public`の使用例
 
-<span class="listing-number">**サンプルコード4-5**　MathUtils.java</span>
+<span class="listing-number">**サンプルコード4-6**　MathUtils.java</span>
 
 ```java
 public class MathUtils {
@@ -291,7 +294,7 @@ getter/setterメソッド（アクセサメソッドとも呼ばれます）は�
 この例外のしくみは第13章「例外処理」で詳しく学びます。
 ここでは、「`throw`でエラーを知らせると、`catch`ブロックの処理に移る」という流れだけを押さえてください。
 
-<span class="listing-number">**サンプルコード4-6**　Product.java</span>
+<span class="listing-number">**サンプルコード4-7**　Product.java</span>
 
 ```java
 public class Product {
@@ -361,7 +364,7 @@ class ProductTest {
 
 プログラミングで、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。範囲チェック、nullチェック、ビジネスルールの検証を実装すると、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
 
-<span class="listing-number">**サンプルコード4-7**　Employee.java</span>
+<span class="listing-number">**サンプルコード4-8**　Employee.java</span>
 
 ```java
 public class Employee {
@@ -403,7 +406,7 @@ public class Employee {
 
 まず、フィールドをprivateにして、publicメソッドを通じてのみアクセスできるようにします。
 
-<span class="listing-number">**サンプルコード4-8**　BankAccountV1.java</span>
+<span class="listing-number">**サンプルコード4-9**　BankAccountV1.java</span>
 
 ```java
 public class BankAccountV1 {
@@ -430,6 +433,9 @@ public class BankAccountV1 {
 ```
 
 使用例と実行結果：
+
+<span class="listing-number">**サンプルコード4-10**　BankAccountV1Test.java</span>
+
 ```java
 // BankAccountV1Test.java
 public class BankAccountV1Test {
@@ -470,7 +476,7 @@ public class BankAccountV1Test {
 
 #### ステップ2: 基本的な検証を追加（BankAccountV2）
 
-<span class="listing-number">**サンプルコード4-9**　BankAccountV2.java</span>
+<span class="listing-number">**サンプルコード4-11**　BankAccountV2.java</span>
 
 ```java
 public class BankAccountV2 {
@@ -510,6 +516,9 @@ public class BankAccountV2 {
 ```
 
 使用例と実行結果：
+
+<span class="listing-number">**サンプルコード4-12**　BankAccountV2Test.java</span>
+
 ```java
 // BankAccountV2Test.java
 public class BankAccountV2Test {
@@ -565,7 +574,7 @@ public class BankAccountV2Test {
 取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード4-10**　BankAccountV3.java（3〜8、16〜42、52〜56行目）</span>
+<span class="listing-number">**サンプルコード4-13**　BankAccountV3.java（3〜8、16〜42、52〜56行目）</span>
 
 ```java
 public class BankAccountV3 {
@@ -611,6 +620,9 @@ public class BankAccountV3 {
 ```
 
 使用例と実行結果：
+
+<span class="listing-number">**サンプルコード4-14**</span>
+
 ```java
 // BankAccountV3Test.java
 public class BankAccountV3Test {
@@ -672,7 +684,7 @@ public class BankAccountV3Test {
 
 BankAccountV3の設計を基に、本章ではさらに高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です。
 
-<span class="listing-number">**サンプルコード4-11**　EnhancedBankAccount.java（3〜8、15〜21、23〜54、68行目）</span>
+<span class="listing-number">**サンプルコード4-15**　EnhancedBankAccount.java（3〜8、15〜21、23〜54、68行目）</span>
 
 ```java
 // BankAccountV3をさらに発展させた設計例
@@ -767,7 +779,7 @@ Javaにおけるパッケージは、関連するクラスやインターフェ�
 
 Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています。
 
-<span class="listing-number">**サンプルコード4-12**</span>
+<span class="listing-number">**サンプルコード4-16**</span>
 
 ```java
 // ドメイン名: example.com
@@ -810,7 +822,7 @@ src/
 
 パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します。
 
-<span class="listing-number">**サンプルコード4-13**</span>
+<span class="listing-number">**サンプルコード4-17**</span>
 
 ```java
 // 完全限定名での使用
@@ -828,7 +840,7 @@ List<String> names = new ArrayList<>();
 import文の種類。
 
 1. 単一型インポート。
-<span class="listing-number">**サンプルコード4-14**</span>
+<span class="listing-number">**サンプルコード4-18**</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスのみインポート
@@ -837,7 +849,7 @@ import java.util.Scanner;  // Scannerクラスのみインポート
 これは単一型インポートの例です。
 
 2. オンデマンドインポート。
-<span class="listing-number">**サンプルコード4-15**</span>
+<span class="listing-number">**サンプルコード4-19**</span>
 
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
@@ -846,7 +858,7 @@ import java.util.*;  // java.utilパッケージのすべてのクラスをイ�
 これはオンデマンドインポートの例です。
 
 3. 静的インポート。
-<span class="listing-number">**サンプルコード4-16**</span>
+<span class="listing-number">**サンプルコード4-20**</span>
 
 ```java
 import static java.lang.Math.PI;
@@ -862,7 +874,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です。
 
-<span class="listing-number">**サンプルコード4-17**　Example.java</span>
+<span class="listing-number">**サンプルコード4-21**　Example.java</span>
 
 ```java
 import java.util.*;
@@ -889,7 +901,7 @@ public class Example {
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます。
 
-<span class="listing-number">**サンプルコード4-18**</span>
+<span class="listing-number">**サンプルコード4-22**</span>
 
 ```java
 com.example.myapp/
@@ -925,7 +937,7 @@ com.example.myapp/
 
 実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
 
-<span class="listing-number">**サンプルコード4-19**　User.java</span>
+<span class="listing-number">**サンプルコード4-23**　User.java</span>
 
 ```java
 public class User {
@@ -957,6 +969,9 @@ public class User {
 ```
 
 使用例と実行結果：
+
+<span class="listing-number">**サンプルコード4-24**　UserTest.java</span>
+
 ```java
 // UserTest.java
 public class UserTest {
@@ -993,7 +1008,7 @@ public class UserTest {
 
 クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
 
-<span class="listing-number">**サンプルコード4-20**　Book.java</span>
+<span class="listing-number">**サンプルコード4-25**　Book.java</span>
 
 ```java
 public class Book {
@@ -1032,7 +1047,7 @@ public class Book {
 
 複雑なオブジェクト構築で、`this`を返すことで流暢なインターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード4-21**</span>
+<span class="listing-number">**サンプルコード4-26**</span>
 
 ```java
 public class EmailBuilder {
@@ -1081,7 +1096,7 @@ Email email = new EmailBuilder()
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-22**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
+<span class="listing-number">**サンプルコード4-27**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
 
 ```java
 public class DatabaseConfig {
@@ -1126,7 +1141,7 @@ public class DatabaseConfig {
 
 イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
 
-<span class="listing-number">**サンプルコード4-23**　EventProcessor.java</span>
+<span class="listing-number">**サンプルコード4-28**　EventProcessor.java</span>
 
 ```java
 import java.util.List;
@@ -1175,7 +1190,7 @@ class EventManager {
 次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
 ここでは、HTTPのヘッダー名と値の組をまとめて渡すための引数と考えてください。
 
-<span class="listing-number">**サンプルコード4-24**　HttpClient.java</span>
+<span class="listing-number">**サンプルコード4-29**　HttpClient.java</span>
 
 ```java
 import java.util.Map;
@@ -1204,7 +1219,7 @@ public class HttpClient {
 
 異なるデータ型に対応しながら、型安全性を維持します。
 
-<span class="listing-number">**サンプルコード4-25**　Logger.java</span>
+<span class="listing-number">**サンプルコード4-30**　Logger.java</span>
 
 ```java
 public class Logger {
@@ -1254,7 +1269,7 @@ public class Logger {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-26**</span>
+<span class="listing-number">**サンプルコード4-31**</span>
 
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
@@ -1295,7 +1310,7 @@ public class UserManager {
     + 複数の開発者が同じクラスを修正すると競合が発生
 
 #### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-27**</span>
+<span class="listing-number">**サンプルコード4-32**</span>
 
 ```java
 // 責任を分離したクラス設計
@@ -1375,7 +1390,7 @@ public class AuthenticationService {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-28**</span>
+<span class="listing-number">**サンプルコード4-33**</span>
 
 ```java
 public class BankAccount {
@@ -1406,7 +1421,7 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
     + 複数スレッドからの同時アクセスで不整合が発生
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-29**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード4-34**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -1491,7 +1506,7 @@ public class BankAccount {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-30**</span>
+<span class="listing-number">**サンプルコード4-35**</span>
 
 ```java
 public class Team {
@@ -1531,7 +1546,7 @@ teamMembers.clear();  // Teamの内部状態が破壊される！
 
 #### 解決方法：防御的コピー
 
-<span class="listing-number">**サンプルコード4-31**</span>
+<span class="listing-number">**サンプルコード4-36**</span>
 
 ```java
 public class Team {
@@ -1611,7 +1626,7 @@ public class Team {
 #### 1. コンストラクタ関連のエラー（統合版）
 問題: コンストラクタの定義や使用方法を誤る
 
-<span class="listing-number">**サンプルコード4-32**</span>
+<span class="listing-number">**サンプルコード4-37**</span>
 
 ```java
 // エラー例1：デフォルトコンストラクタが見つからない
@@ -1625,7 +1640,7 @@ public void User() { }  // エラー：コンストラクタに戻り値型
 ```
 
 解決策:
-<span class="listing-number">**サンプルコード4-33**</span>
+<span class="listing-number">**サンプルコード4-38**</span>
 
 ```java
 public class User {
@@ -1648,7 +1663,7 @@ public class User {
 #### 2. NullPointerException完全ガイド
 問題: nullの参照にメソッド呼び出しやフィールドアクセスを行う
 
-<span class="listing-number">**サンプルコード4-34**　Product.java</span>
+<span class="listing-number">**サンプルコード4-39**　Product.java</span>
 
 ```java
 // エラー例
@@ -1666,7 +1681,7 @@ public class Product {
 ```
 
 解決策:
-<span class="listing-number">**サンプルコード4-35**　Product.java</span>
+<span class="listing-number">**サンプルコード4-40**　Product.java</span>
 
 ```java
 public class Product {
@@ -1695,7 +1710,7 @@ public class Product {
 #### 3. メソッドオーバーロードの問題
 問題: 曖昧なオーバーロードや不正な定義
 
-<span class="listing-number">**サンプルコード4-36**</span>
+<span class="listing-number">**サンプルコード4-41**</span>
 
 ```java
 // エラー例1：曖昧な呼び出し
@@ -1709,7 +1724,7 @@ public int process(String s) { }  // エラー
 ```
 
 解決策:
-<span class="listing-number">**サンプルコード4-37**</span>
+<span class="listing-number">**サンプルコード4-42**</span>
 
 ```java
 // 明確な引数型
@@ -1729,7 +1744,7 @@ public int processToLength(String s) { }
 #### 4. オブジェクト参照と防御的コピー
 問題: 参照の共有により意図しない変更が発生
 
-<span class="listing-number">**サンプルコード4-38**</span>
+<span class="listing-number">**サンプルコード4-43**</span>
 
 ```java
 // エラー例
@@ -1747,7 +1762,7 @@ public class Team {
 ```
 
 解決策:
-<span class="listing-number">**サンプルコード4-39**</span>
+<span class="listing-number">**サンプルコード4-44**</span>
 
 ```java
 public class Team {

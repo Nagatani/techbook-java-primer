@@ -84,7 +84,7 @@ Javaを通じて学ぶ概念や考え方は、きっと他の言語を学ぶ際�
 紙面には、全文のうち説明に必要な部分だけを抜き出して載せることがあります。
 
 全文を公開しているサンプルコードには、キャプションに全文のファイル名と、掲載した行の範囲を示しています。
-たとえば「サンプルコード5-3　Shape.java（12〜30行目）」は、`sample-code/chapter05/05-03/Shape.java`の12行目から30行目までを載せたものです。
+たとえば「サンプルコード5-3　PaymentExample.java（1〜35行目）」は、`sample-code/chapter05/05-03/PaymentExample.java`の1行目から35行目までを載せたものです。
 ファイル名だけのときは、そのファイル全体を載せています。
 抜き出した範囲のあいだを省いたところには、`// ...`という行を入れています。
 
@@ -149,6 +149,8 @@ C言語の学習を終えた皆さんは、プログラミングの基礎固め�
 
 しかし、プログラムの規模が大きくなるにつれて、ある問題に直面します。C言語で書かれた以下のコードを見てください。
 
+<span class="listing-number">**サンプルコード1-1**</span>
+
 ```c
 #include <stdio.h>
 
@@ -192,7 +194,7 @@ C言語では商品情報と処理を別々に管理していましたが、Java
 3. 再利用性
     + Productクラスは他の場所でも使用可能
 
-<span class="listing-number">**サンプルコード1-1**　Product.java</span>
+<span class="listing-number">**サンプルコード1-2**　Product.java</span>
 
 ```java
 // Product.java
@@ -215,7 +217,7 @@ public class Product {
 }
 ```
 
-<span class="listing-number">**サンプルコード1-2**　Main.java</span>
+<span class="listing-number">**サンプルコード1-3**　Main.java</span>
 
 ```java
 // Main.java
@@ -346,7 +348,7 @@ OpenJDKはオープンソース版のJava開発キットで、Oracle、Microsoft
 
 以下は、画面に「Hello, World!!」と表示するもっとも基本的なJavaプログラムです。
 
-<span class="listing-number">**サンプルコード1-3**　HelloWorld.java</span>
+<span class="listing-number">**サンプルコード1-4**　HelloWorld.java</span>
 
 ```java
 public class HelloWorld {
@@ -378,7 +380,7 @@ Hello, World!!
 
 Javaでは、すべてのコードは「クラス」という単位で記述します。クラスは、関連するデータとそれを操作する処理をまとめたものです。
 
-<span class="listing-number">**サンプルコード1-4**</span>
+<span class="listing-number">**サンプルコード1-5**</span>
 
 ```java
 public class クラス名 {
@@ -397,6 +399,8 @@ public class クラス名 {
 - 1つのJavaファイルには1つのpublicクラスのみ定義可能
 
 #### mainメソッドの構成要素
+
+<span class="listing-number">**サンプルコード1-6**</span>
 
 ```java
 public static void main(String[] args)
@@ -429,11 +433,15 @@ Javaでは、画面に文字列を出力する方法がいくつかあります�
 #### 1.`System.out.println`
 この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
 
+<span class="listing-number">**サンプルコード1-7**</span>
+
 ```java
 System.out.println("Hello, World!!");
 ```
 
 これをC言語でたとえるなら、以下のようになるはずです。
+
+<span class="listing-number">**サンプルコード1-8**</span>
 
 ```c
 printf("%s\n" , "Hello, World!!");
@@ -452,7 +460,7 @@ C言語のprintfと同じような書き方で出力が可能です。
 
 ファイル名「`StandardOutput.java`」
 
-<span class="listing-number">**サンプルコード1-5**　StandardOutput.java</span>
+<span class="listing-number">**サンプルコード1-9**　StandardOutput.java</span>
 
 ```java
 public class StandardOutput {
@@ -484,7 +492,7 @@ C言語のprintf関数のように出力したい場合は、「System.out.print
 
 ターミナルやコマンドプロンプトなど、黒い画面で動作するプログラムで、ユーザーからデータの入力ができるようになるためのサンプルコードを実行してみましょう。
 
-<span class="listing-number">**サンプルコード1-6**　InputExample.java</span>
+<span class="listing-number">**サンプルコード1-10**　InputExample.java</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスを使用するための宣言
@@ -545,10 +553,12 @@ public class InputExample {
 > 
 > ### プログラミングにおけるエラーとの向き合い方
 > 
-> サンプルコード1-6でScannerを使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
+> サンプルコード1-10でScannerを使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
 > 
 > #### よくあるエラーの例
 > 
+> <span class="listing-number">**サンプルコード1-11**</span>
+>
 > ```java
 > String input = "";  // ユーザーが何も入力せずEnterを押した場合
 > int number = Integer.parseInt(input);  // ここでエラー発生！
@@ -592,6 +602,8 @@ public class InputExample {
 > 
 > 実際の開発では、以下のような対処をします（詳細は後の章で）。
 > 
+> <span class="listing-number">**サンプルコード1-12**</span>
+>
 > ```java
 > try {
 >     int number = Integer.parseInt(input);
@@ -635,6 +647,9 @@ error: class HelloWorld is public, should be declared in a file named HelloWorld
 ```
 
 ##### 原因と対処
+
+<span class="listing-number">**サンプルコード1-13**</span>
+
 ```java
 // エラー例：ファイル名が「Sample.java」だが、クラス名がHelloWorld
 public class HelloWorld {  // クラス名とファイル名が一致しない
@@ -660,6 +675,8 @@ Error: Main method not found in class HelloWorld
 ```
 
 ##### 原因と対処
+
+<span class="listing-number">**サンプルコード1-14**</span>
 
 ```java
 // エラー例：mainメソッドのシグネチャが間違っている
@@ -709,6 +726,9 @@ Exception in thread "main" java.lang.NumberFormatException: For input string: "a
 ```
 
 ##### 原因と対処
+
+<span class="listing-number">**サンプルコード1-15**</span>
+
 ```java
 // エラー例：数値以外の入力を数値に変換しようとした
 Scanner scanner = new Scanner(System.in);
@@ -781,6 +801,8 @@ java com.example.HelloWorld
 
 #### println()を使ったデバッグ
 
+<span class="listing-number">**サンプルコード1-16**　DebugExample.java</span>
+
 ```java
 public class DebugExample {
     public static void main(String[] args) {
@@ -803,6 +825,8 @@ sum = 30
 ```
 
 #### 段階的な実行確認
+
+<span class="listing-number">**サンプルコード1-17**　StepByStepDebug.java</span>
 
 ```java
 public class StepByStepDebug {

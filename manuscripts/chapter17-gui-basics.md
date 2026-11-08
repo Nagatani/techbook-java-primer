@@ -1633,7 +1633,10 @@ GUI基礎の学習において遭遇しやすい典型的なエラーとその�
 #### 問題：コンポーネントが表示されない
 
 エラー症状。
-```
+
+<span class="listing-number">**サンプルコード17-33**</span>
+
+```java
 JFrame frame = new JFrame("タイトル");
 frame.add(new JButton("ボタン"));
 frame.setVisible(true);
@@ -1646,7 +1649,7 @@ frame.setVisible(true);
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-33**</span>
+<span class="listing-number">**サンプルコード17-34**</span>
 
 ```java
 JFrame frame = new JFrame("タイトル");
@@ -1664,7 +1667,7 @@ frame.pack();  // 推奨サイズに自動調整
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-34**</span>
+<span class="listing-number">**サンプルコード17-35**</span>
 
 ```java
 frame.setLayout(new BorderLayout());
@@ -1681,7 +1684,7 @@ frame.add(new JButton("ボタン2"));
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-35**</span>
+<span class="listing-number">**サンプルコード17-36**</span>
 
 ```java
 frame.setLayout(new BorderLayout());
@@ -1697,7 +1700,7 @@ frame.add(new JButton("ボタン2"), BorderLayout.SOUTH);
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-36**</span>
+<span class="listing-number">**サンプルコード17-37**</span>
 
 ```java
 JPanel panel = new JPanel();
@@ -1713,7 +1716,7 @@ panel.setBackground(Color.RED);
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-37**</span>
+<span class="listing-number">**サンプルコード17-38**</span>
 
 ```java
 JPanel panel = new JPanel();
@@ -1727,7 +1730,7 @@ panel.setOpaque(true);  // 不透明に設定
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-38**</span>
+<span class="listing-number">**サンプルコード17-39**</span>
 
 ```java
 JTextField textField = new JTextField("初期値");
@@ -1742,7 +1745,7 @@ JTextField textField = new JTextField("初期値");
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-39**</span>
+<span class="listing-number">**サンプルコード17-40**</span>
 
 ```java
 JTextField textField = new JTextField("初期値");
@@ -1768,7 +1771,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-40**</span>
+<span class="listing-number">**サンプルコード17-41**</span>
 
 ```java
 // 別スレッドからGUIを更新する場合
@@ -1790,7 +1793,7 @@ if (label != null) {
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-41**</span>
+<span class="listing-number">**サンプルコード17-42**</span>
 
 ```java
 JTextArea textArea = new JTextArea();
@@ -1806,7 +1809,7 @@ textArea.setText("長いテキスト...");
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-42**</span>
+<span class="listing-number">**サンプルコード17-43**</span>
 
 ```java
 JTextArea textArea = new JTextArea(10, 30);  // 行数と列数を指定
@@ -1823,7 +1826,7 @@ frame.add(scrollPane);
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-43**</span>
+<span class="listing-number">**サンプルコード17-44**</span>
 
 ```java
 JButton button = new JButton("ボタン");
@@ -1839,7 +1842,7 @@ button.setSize(200, 100);
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-44**</span>
+<span class="listing-number">**サンプルコード17-45**</span>
 
 ```java
 JButton button = new JButton("ボタン");
@@ -1858,7 +1861,7 @@ button.setBounds(10, 10, 200, 100);
 
 エラー症状。
 
-<span class="listing-number">**サンプルコード17-45**</span>
+<span class="listing-number">**サンプルコード17-46**</span>
 
 ```java
 // 大量のコンポーネントを動的に追加・削除する際のちらつき
@@ -1878,7 +1881,7 @@ panel.repaint();
 
 対処法。
 
-<span class="listing-number">**サンプルコード17-46**</span>
+<span class="listing-number">**サンプルコード17-47**</span>
 
 ```java
 // 更新処理をバッチ化
@@ -1907,7 +1910,7 @@ SwingUtilities.invokeLater(() -> {
 
 #### 1. コンポーネントの境界を可視化する
 
-<span class="listing-number">**サンプルコード17-47**</span>
+<span class="listing-number">**サンプルコード17-48**</span>
 
 ```java
 // 境界線を追加してレイアウトを確認
@@ -1922,7 +1925,7 @@ component.setOpaque(true);
 
 #### 2. レイアウトマネージャーの確認
 
-<span class="listing-number">**サンプルコード17-48**</span>
+<span class="listing-number">**サンプルコード17-49**</span>
 
 ```java
 // 現在のレイアウトマネージャーを確認
@@ -1937,7 +1940,7 @@ System.out.println("Preferred Size: " + component.getPreferredSize());
 
 #### 3. イベントディスパッチスレッドの確認
 
-<span class="listing-number">**サンプルコード17-49**</span>
+<span class="listing-number">**サンプルコード17-50**</span>
 
 ```java
 // 現在のスレッドがEDTかどうかを確認

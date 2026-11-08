@@ -346,6 +346,8 @@ public class PDFDocument {
 
 これらのクラスを使用した例：
 
+<span class="listing-number">**サンプルコード5-5**</span>
+
 ```java
 public class DocumentTest {
     public static void main(String[] args) {
@@ -406,7 +408,7 @@ data.xlsx を閉じました
 - ⑥　固有メソッド
     + generatePDF()はPDF特有の機能として実装
 
-<span class="listing-number">**サンプルコード5-5**　ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-6**　ExcelDocument.java</span>
 
 ```java
 public class ExcelDocument {
@@ -435,7 +437,7 @@ public class ExcelDocument {
 
 #### ステップ2：共通部分の抽出
 
-<span class="listing-number">**サンプルコード5-6**　Document.java</span>
+<span class="listing-number">**サンプルコード5-7**　Document.java</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -473,7 +475,7 @@ public class Document {
 
 #### ステップ3：子クラスの再実装
 
-<span class="listing-number">**サンプルコード5-7**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-8**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -530,6 +532,8 @@ public class ExcelDocument extends Document {
 ```
 
 リファクタリング後の使用例：
+
+<span class="listing-number">**サンプルコード5-9**　RefactoredDocumentTest.java</span>
 
 ```java
 public class RefactoredDocumentTest {
@@ -602,7 +606,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 #### 継承の基本構文と継承される要素
 
-<span class="listing-number">**サンプルコード5-8**　Employee.java、Manager.java、Developer.java</span>
+<span class="listing-number">**サンプルコード5-10**　Employee.java、Manager.java、Developer.java</span>
 
 ```java
 public class Employee {  // 親クラス（スーパークラス）
@@ -630,6 +634,8 @@ public class Developer extends Employee {  // ③
 ```
 
 使用例：
+
+<span class="listing-number">**サンプルコード5-11**　EmployeeTest.java</span>
 
 ```java
 public class EmployeeTest {
@@ -695,7 +701,7 @@ public class EmployeeTest {
 
 以下のコードは、継承の誤用の典型例です。スタック（後入れ先出しのデータ構造）を実装するためにArrayListを継承していますが、これによりArrayListの全メソッドが公開され、スタックの原則を破る操作が可能になってしまいます。この問題と解決策を見ていきましょう。
 
-<span class="listing-number">**サンプルコード5-9**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
+<span class="listing-number">**サンプルコード5-12**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -735,7 +741,7 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-10**　MyStack.java</span>
+<span class="listing-number">**サンプルコード5-13**　MyStack.java</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -782,7 +788,7 @@ public class MyStack<E> {
 以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
 この設計はリスコフ置換原則に違反します。
 
-<span class="listing-number">**サンプルコード5-11**　Employee.java（3〜16行目）、SystemAdministrator.java（3〜8行目）、RegularEmployee.java（3〜13行目）、EmployeeManagementSystem.java（3〜10行目）</span>
+<span class="listing-number">**サンプルコード5-14**　Employee.java（3〜16行目）、SystemAdministrator.java（3〜8行目）、RegularEmployee.java（3〜13行目）、EmployeeManagementSystem.java（3〜10行目）</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
@@ -839,7 +845,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-12**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
+<span class="listing-number">**サンプルコード5-15**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -922,6 +928,8 @@ public class RectangleSquareTest {
 この例は、正方形が長方形の振る舞いを正しく実装できないことを示しています
 リスコフ置換原則の違反例です
 
+<span class="listing-number">**サンプルコード5-16**</span>
+
 ```java
 // 使用例で問題が明らかに
 public class GeometryTest {
@@ -947,7 +955,7 @@ public class GeometryTest {
 
 たとえば以下のコードを見てください。
 
-<span class="listing-number">**サンプルコード5-13**　Shape.java</span>
+<span class="listing-number">**サンプルコード5-17**　Shape.java</span>
 
 ```java
 // 解決策の例：インターフェイスを使用
@@ -1001,7 +1009,7 @@ class Square implements Shape {
 
 #### 誤用例1：実装の都合だけで継承を使う
 
-<span class="listing-number">**サンプルコード5-14**</span>
+<span class="listing-number">**サンプルコード5-18**</span>
 
 ```java
 // 悪い例：Stackを継承したMyStack
@@ -1031,7 +1039,7 @@ stack.remove(1);    // スタックの途中から削除できてしまう！
 
 #### 改善策：コンポジション（委譲）を使う
 
-<span class="listing-number">**サンプルコード5-15**　MyStack.java</span>
+<span class="listing-number">**サンプルコード5-19**　MyStack.java</span>
 
 ```java
 // 良い例：ArrayListを内部で使用
@@ -1073,7 +1081,7 @@ public class MyStack<E> {
 
 Javaは多重継承をサポートしないため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
 
-<span class="listing-number">**サンプルコード5-16**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
+<span class="listing-number">**サンプルコード5-20**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
 
 ```java
 // 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
@@ -1106,7 +1114,7 @@ public class ApprovingEmployee extends Employee {
 
 RPGゲームのキャラクターシステムを例に、継承を実際に使用した実装例です。親クラスのフィールドやメソッドを子クラスで活用し、独自の機能を追加する方法を示しています。
 
-<span class="listing-number">**サンプルコード5-17**</span>
+<span class="listing-number">**サンプルコード5-21**</span>
 
 ```java
 // Main.java
@@ -1160,7 +1168,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-18**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
+<span class="listing-number">**サンプルコード5-22**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
 
 ```java
 // 親クラス
@@ -1258,7 +1266,7 @@ public class CharacterOverrideTest {
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これをアップキャストと呼びます。
 
-<span class="listing-number">**サンプルコード5-19**</span>
+<span class="listing-number">**サンプルコード5-23**</span>
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
@@ -1273,7 +1281,7 @@ User user3 = new GuestUser("session123");
 
 ここからがポリモーフィズムの真骨頂です。これらの`User`型の変数に対して`processRequest()`メソッドを呼びだすと、何が起こるでしょうか。
 
-<span class="listing-number">**サンプルコード5-20**</span>
+<span class="listing-number">**サンプルコード5-24**</span>
 
 ```java
 user1.processRequest("READ"); // 実行結果: ユーザー U001 が READ をリクエストしました
@@ -1289,7 +1297,7 @@ user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 �
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
 
-<span class="listing-number">**サンプルコード5-21**</span>
+<span class="listing-number">**サンプルコード5-25**</span>
 
 ```java
 public class UserManagementSystem {
@@ -1329,7 +1337,7 @@ public class UserManagementSystem {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-22**　UserSystemBefore.java（1〜18、26〜47行目）</span>
+<span class="listing-number">**サンプルコード5-26**　UserSystemBefore.java（1〜18、26〜47行目）</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -1392,7 +1400,7 @@ Guest user WRITE権限: false
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-23**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
+<span class="listing-number">**サンプルコード5-27**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
 
 ```java
 // 親クラスに共通インターフェイスを定義
@@ -1508,7 +1516,7 @@ guest_session123 に通知を送信しました
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-24**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
+<span class="listing-number">**サンプルコード5-28**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1575,7 +1583,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-25**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
+<span class="listing-number">**サンプルコード5-29**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
 
 ```java
 // 基底クラス
@@ -1682,7 +1690,7 @@ class Pentagon extends Shape {
 
 たとえば、`User`型の変数`user`が、もし`AdminUser`だったら`performAdminTask()`メソッドを呼びたい、という場合です。
 
-<span class="listing-number">**サンプルコード5-26**</span>
+<span class="listing-number">**サンプルコード5-30**</span>
 
 ```java
 User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
@@ -1702,7 +1710,7 @@ User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
 
 `(変換したい型)変数` のように記述します。
 
-<span class="listing-number">**サンプルコード5-27**</span>
+<span class="listing-number">**サンプルコード5-31**</span>
 
 ```java
 public class UserAccessControl {
@@ -1745,7 +1753,7 @@ public class UserAccessControl {
 
 Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
 
-<span class="listing-number">**サンプルコード5-28**</span>
+<span class="listing-number">**サンプルコード5-32**</span>
 
 ```java
 // 従来の書き方
@@ -1773,7 +1781,7 @@ if (user instanceof AdminUser admin) {
 
 メソッドをオーバーライドする際、親クラスのメソッドが投げる例外より広い例外を投げることはできません。
 
-<span class="listing-number">**サンプルコード5-29**</span>
+<span class="listing-number">**サンプルコード5-33**</span>
 
 ```java
 class Parent {
@@ -1810,7 +1818,7 @@ class Child extends Parent {
 #### 1. super()呼び出しエラー
 問題: 親クラスのコンストラクタを正しく呼び出さない
 
-<span class="listing-number">**サンプルコード5-30**</span>
+<span class="listing-number">**サンプルコード5-34**</span>
 
 ```java
 // エラー例
@@ -1827,7 +1835,7 @@ class Child extends Parent {
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-31**</span>
+<span class="listing-number">**サンプルコード5-35**</span>
 
 ```java
 class Child extends Parent {
@@ -1851,7 +1859,7 @@ Child31 コンストラクタ
 #### 2. オーバーライドエラー
 問題: メソッドオーバーライド時の制約違反
 
-<span class="listing-number">**サンプルコード5-32**</span>
+<span class="listing-number">**サンプルコード5-36**</span>
 
 ```java
 // エラー例1：アクセス修飾子の制限強化
@@ -1875,7 +1883,7 @@ class Child extends Parent {
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-33**</span>
+<span class="listing-number">**サンプルコード5-37**</span>
 
 ```java
 class Child extends Parent {
@@ -1897,7 +1905,7 @@ class Child extends Parent {
 #### 3. キャストエラー
 問題: 互換性のない型へのキャストによるClassCastException
 
-<span class="listing-number">**サンプルコード5-34**</span>
+<span class="listing-number">**サンプルコード5-38**</span>
 
 ```java
 // エラー例
@@ -1909,7 +1917,7 @@ Child c = (Child) p;  // 実行時エラー：ParentはChildではない
 
 解決策:
 
-<span class="listing-number">**サンプルコード5-35**</span>
+<span class="listing-number">**サンプルコード5-39**</span>
 
 ```java
 // instanceof使用

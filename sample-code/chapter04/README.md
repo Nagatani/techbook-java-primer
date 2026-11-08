@@ -19,20 +19,23 @@ javac -d out *.java
 | [4-1](./04-01/) | BankAccountV0.java<br>ProblemDemo.java | `java -cp out ProblemDemo` |
 | [4-2](./04-02/) | BankAccount.java | `java -cp out BankAccountTest` |
 | [4-3](./04-03/) | DataProcessor.java | （mainメソッドなし） |
-| [4-5](./04-05/) | MathUtils.java | `java -cp out MathUtilsTest` |
-| [4-6](./04-06/) | Product.java | `java -cp out ProductTest` |
-| [4-7](./04-07/) | Employee.java | （mainメソッドなし） |
-| [4-8](./04-08/) | BankAccountV1.java | （mainメソッドなし） |
-| [4-9](./04-09/) | BankAccountV2.java | （mainメソッドなし） |
-| [4-10](./04-10/) | BankAccountV3.java | （mainメソッドなし） |
-| [4-11](./04-11/) | BankAccountV3.java<br>EnhancedBankAccount.java | （mainメソッドなし） |
-| [4-17](./04-17/) | Example.java | （mainメソッドなし） |
-| [4-19](./04-19/) | User.java | （mainメソッドなし） |
-| [4-20](./04-20/) | Book.java | （mainメソッドなし） |
-| [4-22](./04-22/) | DatabaseConfig.java | （mainメソッドなし） |
-| [4-23](./04-23/) | EventProcessor.java | （mainメソッドなし） |
-| [4-24](./04-24/) | HttpClient.java | （mainメソッドなし） |
-| [4-25](./04-25/) | Logger.java | （mainメソッドなし） |
-| [4-29](./04-29/) | BankAccount.java | （mainメソッドなし） |
-| [4-34](./04-34/) | Product.java | （mainメソッドなし） |
-| [4-35](./04-35/) | Product.java | （mainメソッドなし） |
+| [4-6](./04-06/) | MathUtils.java | `java -cp out MathUtilsTest` |
+| [4-7](./04-07/) | Product.java | `java -cp out ProductTest` |
+| [4-8](./04-08/) | Employee.java | （mainメソッドなし） |
+| [4-9](./04-09/) | BankAccountV1.java | （mainメソッドなし） |
+| [4-10](./04-10/) | BankAccountV1.java<br>BankAccountV1Test.java | `java -cp out BankAccountV1Test` |
+| [4-11](./04-11/) | BankAccountV2.java | （mainメソッドなし） |
+| [4-12](./04-12/) | BankAccountV2.java<br>BankAccountV2Test.java | `java -cp out BankAccountV2Test` |
+| [4-13](./04-13/) | BankAccountV3.java | （mainメソッドなし） |
+| [4-15](./04-15/) | BankAccountV3.java<br>EnhancedBankAccount.java | （mainメソッドなし） |
+| [4-21](./04-21/) | Example.java | （mainメソッドなし） |
+| [4-23](./04-23/) | User.java | （mainメソッドなし） |
+| [4-24](./04-24/) | User.java<br>UserTest.java | `java -cp out UserTest` |
+| [4-25](./04-25/) | Book.java | （mainメソッドなし） |
+| [4-27](./04-27/) | DatabaseConfig.java | （mainメソッドなし） |
+| [4-28](./04-28/) | EventProcessor.java | （mainメソッドなし） |
+| [4-29](./04-29/) | HttpClient.java | （mainメソッドなし） |
+| [4-30](./04-30/) | Logger.java | （mainメソッドなし） |
+| [4-34](./04-34/) | BankAccount.java | （mainメソッドなし） |
+| [4-39](./04-39/) | Product.java | （mainメソッドなし） |
+| [4-40](./04-40/) | Product.java | （mainメソッドなし） |

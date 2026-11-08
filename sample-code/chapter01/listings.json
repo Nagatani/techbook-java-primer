@@ -1,13 +1,13 @@
 {
-  "1-1": {
-    "dir": "01-01",
+  "1-2": {
+    "dir": "01-02",
     "main": null,
     "excerpt": [
       { "file": "Product.java", "from": 1, "to": 18 }
     ]
   },
-  "1-2": {
-    "dir": "01-02",
+  "1-3": {
+    "dir": "01-03",
     "main": "Main",
     "excerpt": [
       { "file": "Main.java", "from": 1, "to": 7 }
@@ -16,25 +16,39 @@
       "1-1"
     ]
   },
-  "1-3": {
-    "dir": "01-03",
+  "1-4": {
+    "dir": "01-04",
     "main": "HelloWorld",
     "excerpt": [
       { "file": "HelloWorld.java", "from": 1, "to": 5 }
     ]
   },
-  "1-5": {
-    "dir": "01-05",
+  "1-9": {
+    "dir": "01-09",
     "main": "StandardOutput",
     "excerpt": [
       { "file": "StandardOutput.java", "from": 1, "to": 13 }
     ]
   },
-  "1-6": {
-    "dir": "01-06",
+  "1-10": {
+    "dir": "01-10",
     "main": "InputExample",
     "excerpt": [
       { "file": "InputExample.java", "from": 1, "to": 24 }
+    ]
+  },
+  "1-16": {
+    "dir": "01-16",
+    "main": "DebugExample",
+    "excerpt": [
+      { "file": "DebugExample.java", "from": 1, "to": 12 }
+    ]
+  },
+  "1-17": {
+    "dir": "01-17",
+    "main": "StepByStepDebug",
+    "excerpt": [
+      { "file": "StepByStepDebug.java", "from": 1, "to": 13 }
     ]
   }
 }
