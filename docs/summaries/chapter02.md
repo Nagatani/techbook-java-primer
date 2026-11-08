@@ -13,9 +13,9 @@ sections:
   - key: "演算子"
     hash: f50e80b9
   - key: "型変換"
-    hash: 4deba4ab
+    hash: a54fd3ab
   - key: "コンソール入出力"
-    hash: 3843dc6a
+    hash: d67c7e71
   - key: "制御構造"
     hash: ec5c5853
   - key: "配列"
@@ -58,7 +58,7 @@ sections:
     + 学習目標の L11 は、L8–10 の3項目を1行に連結した重複
 - 説明前の先取り
     + import文の節（L1289）より前の 2-3（L549）で import を使っている
-    + 例外処理（try-catch、try-with-resources）を 2-2・2-3・入出力のベストプラクティスで説明なしに使っている（第13章の内容）
+    + 例外処理（try-catch、try-with-resources）を 2-2・2-3・入出力のベストプラクティスで説明なしに使っている（第13章の内容）（2026-11-08に、初出の箇所へ後の章で学ぶ旨と最小限の読み方の案内を加えた）
     + 型変換の「APIとの整合性」で`Collections.shuffle(list, …)`を使っている（第9章の内容。listも未定義）
 - 章末演習と本文の不一致
     + MethodExerciseでメソッドのオーバーロード、StringExerciseでパターンマッチングを求めるが、本文で扱っていない
@@ -83,39 +83,39 @@ sections:
 - 演算子（L288–388）
     + 算術、インクリメント、比較、論理（短絡評価）、ビット演算を丸数字で解説
     + 優先順位の表と実例（`x = 3 > 0`がコンパイルエラーになる例）。括弧の使用を推奨
-- 型変換（L389–509）
+- 型変換（L389–513）
     + 拡大変換と縮小変換、C言語では警告で済む変換がJavaではエラーになる点
     + 暗黙・明示の変換、byteへのオーバーフロー、parseIntとvalueOf、NumberFormatExceptionの捕捉（2-2）
     + 整数除算の落とし穴、byte配列によるメモリ効率、APIが要求する型、ベストプラクティス4点
-- コンソール入出力（L510–696）
+- コンソール入出力（L514–701）
     + System.out・in・err、Scannerの型別入力、国際化の特徴。Cのprintf/scanfとの比較
     + println・print・printfの書式（%-10sなど）と、InputMismatchExceptionで再入力させるScannerの例（2-3）
     + nextInt・nextDouble・next・nextLine、hasNextIntによる検証、useDelimiter
     + ベストプラクティスとしてエラー処理、try-with-resources、nextInt後の改行の残り、ロケール
-- 制御構造（L697–850）
+- 制御構造（L702–855）
     + 条件分岐: if-else ifの成績判定
     + switch文とswitch式: 従来形式の成績評価（2-4）と注意点3つ、同じ判定のswitch式（Java 14以降）とその利点（fall-throughの解消、式として使える）
     + 繰り返し処理: for、拡張for、whileと使い分け、ループ変数のスコープ。do-while、break・continueは扱わない
-- 配列（L851–977）
+- 配列（L856–982）
     + リテラルとnewによる初期化、length、多次元配列、境界チェックと自動初期化
     + インデックスと拡張forによる走査、C言語との違い（length、境界チェック、メモリ管理、初期化保証）
     + 検索・合計・コピー（System.arraycopy、Arrays.copyOf）の応用例、サイズ固定（ArrayListは後の章）、参照の代入、ジャグ配列
-- メソッド（staticメソッドの基本）（L978–1065）
+- メソッド（staticメソッドの基本）（L983–1070）
     + addとdivideを持つCalculator（2-5）、staticメソッドの構文と構成要素
     + mainから直接呼べる理由、再利用と構造化、C言語の関数との違い
-- 文字列処理（L1066–1266）
+- 文字列処理（L1071–1271）
     + C言語のchar配列とnull終端に対する、Stringの安全性・O(1)のlength・Unicodeを比較表とコード対比で示す
     + リテラルと文字列プール、`==`とequals、equalsIgnoreCase
     + trim、toUpperCase、substring、replace、split、indexOf、contains
     + 不変性（concatで元の文字列は変わらない）と、ループ内連結にはStringBuilderを使う理由
-- import文の使い方（L1267–1324）
+- import文の使い方（L1272–1329）
     + Scannerでの入力と整数変換（2-6）とコードのポイント5項目。java.langは自動インポート
-- よくあるコンパイルエラーとその対処法（L1325–1370）
+- よくあるコンパイルエラーとその対処法（L1330–1375）
     + セミコロン忘れ、大文字小文字の誤り（system）、クラス名とファイル名の不一致の3種
-- Java基本文法の総合的な理解（L1371–1412）
+- Java基本文法の総合的な理解（L1376–1417）
     + 安全性・保守性・可読性という3原則で章を総括し、Spring Bootなど実務への接続を述べる
     + 「まとめ」で型安全性、メソッドによる構造化、文字列処理の安全性の3点を挙げる。末尾に空行が10行続く
-- 章末演習（L1413–1525）
+- 章末演習（L1418–1530）
     + 演習リンクは`exercises/chapter02/`で正しい
     + 課題の実装ポイント（データ型、変数、制御構造、配列）、発展課題（メソッド、文字列）、つまずき表、デバッグのコツ、追加課題
     + 次のステップとして第3章を案内

@@ -9,7 +9,7 @@ sections:
   - key: "カスタムイベントとObserverパターン"
     hash: 0dd227e3
   - key: "ドラッグ&ドロップの実装"
-    hash: d4d1efd8
+    hash: 86e320a4
   - key: "パフォーマンスの最適化"
     hash: 1569c461
   - key: "よくあるエラーと対処法"
@@ -52,21 +52,21 @@ sections:
 - カスタムイベントとObserverパターン（L568–929）
     + カスタムイベントの作成: EventObjectを継承したTemperatureChangeEvent、EventListenerを継承したリスナインターフェイス、リスナ一覧を持つセンサーモデル。JSliderで温度を変え、表示更新リスナと最高/最低記録リスナの2つに通知する（19-4）
     + JavaBeansイベントモデルの実装: PropertyChangeSupportとプロパティ名指定のリスナ登録で、株価モデルの変化を4つのパネルに通知する株価モニター。javax.swing.Timerで1秒ごとに価格を変動させる（19-5）
-- ドラッグ&ドロップの実装（L930–1110）
+- ドラッグ&ドロップの実装（L930–1113）
     + TransferHandlerによるJList間のアイテム移動（canImport/importData/createTransferable/exportDone）と、DropTarget＋DropTargetAdapterによる外部ファイルのドロップ受け付け（19-6）
-    + JList・DefaultListModelは第20章で扱う部品で、ここで説明なしに先に使っている
-- パフォーマンスの最適化（L1111–1400）
+    + JList・DefaultListModelは第20章で扱う部品で、ここで説明なしに先に使っている（2026-11-08に、初出の箇所へ後の章で学ぶ旨と最小限の読み方の案内を加えた）
+- パフォーマンスの最適化（L1114–1403）
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
     + SwingWorkerによる非同期処理: SwingWorker<String, ProgressInfo>でpublish/processによる進捗表示、cancel(true)とisCancelledによる中断、doneでのget（19-8）
-- よくあるエラーと対処法（L1401–1680）
+- よくあるエラーと対処法（L1404–1683）
     + SwingWorkerのdoInBackgroundから直接UIを更新する誤りと、publish/processへの修正（19-9、19-10）
     + DocumentListener内でテキストを変更する誤りと、フラグとinvokeLaterによる回避（19-11、19-12）
     + リスナを削除しないことによるメモリリークと、WeakReferenceによる保持（19-13、19-14）
     + acceptDropを呼ばずドロップが受け入れられない誤りと修正（19-15、19-16）
     + デバッグのヒント: RepaintManagerによるEDT違反検出（19-17）、イベント処理時間の計測（19-18）、WeakReferenceの生存数確認（19-19）
-- まとめ（L1681–1695）
+- まとめ（L1684–1698）
     + 6項目の箇条書きと「長時間処理とUI更新の分離、イベント処理の最適化が実務で重要」という1段落。次章への導入はない
-- 章末演習（L1696–1713）
+- 章末演習（L1699–1716）
     + 演習リンクは`exercises/chapter19/`で章番号は一致している
     + ただし課題構成に挙げた4課題のうち「高度なメニューシステム（Actionパターンと動的メニュー）」は本章で扱っていない。また`exercises/chapter19/README.md`は「第19章: GUI基礎とイベント処理」としてMVC・レイアウトマネージャーの課題を並べていて、本文の課題構成と一致しない（Issue #010の関連）
 
