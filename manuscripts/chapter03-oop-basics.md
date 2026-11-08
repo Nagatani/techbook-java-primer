@@ -2369,115 +2369,18 @@ public final class Triangle extends Shape {
 
 ## よくあるエラーと対処法
 
-本章では、オブジェクト指向プログラミングの基礎を学ぶ際にとくによく遭遇するエラーを扱います。
+オブジェクト指向の考え方に慣れないうちは、クラスとインスタンスの区別や、`static`の有無による違いでエラーが起きやすくなります。
+本章の内容に関連して出会いやすいエラーは次のとおりです。
 
-### 本章特有のエラー
-#### 1. クラスとインスタンスの概念の混乱
+- クラスとインスタンスの混同
+    + インスタンスメソッドをクラス名から呼び出そうとすると、コンパイルエラーになる。`new`でインスタンスを作ってから呼び出す
+- staticとnon-staticの混同
+    + `static`メソッドからは、インスタンスを経由しないとインスタンスのフィールドやメソッドを使えない
+- 基本的な構文エラー
+    + セミコロンや波括弧の対応、メソッドの戻り値の型の書き忘れなど
 
-問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
-
-<span class="listing-number">**サンプルコード3-59**</span>
-
-```java
-// エラー例
-Student.setName("太郎");  // クラス名で呼び出している
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード3-60**</span>
-
-```java
-// 正しい例
-Student student = new Student();  // インスタンスを作成
-student.setName("太郎");          // インスタンスから呼び出し
-```
-
-重要なポイント:
-
-- クラスは設計図、インスタンスは実体
-- インスタンスメソッドはnewで作成したオブジェクトから呼び出す
-- IDEでのプログラミングの場合は自動補完機能を活用する
-
-#### 2. static vs non-staticの混乱
-問題: staticメソッドからインスタンスメンバーにアクセスしようとする
-
-<span class="listing-number">**サンプルコード3-61**</span>
-
-```java
-// エラー例
-public static void main(String[] args) {
-    int result = add(5, 3);  // インスタンスメソッドを直接呼び出し
-}
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-62**</span>
-
-```java
-// 正しい例
-public static void main(String[] args) {
-    Calculator calc = new Calculator();
-    int result = calc.add(5, 3);  // インスタンス経由で呼び出し
-}
-```
-
-##### 重要なポイント
-- staticメソッドはクラスに属し、インスタンスなしで呼び出せる
-- インスタンスメソッドはオブジェクトに属し、インスタンスが必要
-
-#### 3. 基本的な構文エラー
-問題: Javaの基本構文を間違えて記述する
-
-<span class="listing-number">**サンプルコード3-63**</span>
-
-```java
-// よくあるエラー例
-System.out.println("Hello")  // セミコロン忘れ
-Public class MyClass { }      // 大文字のP
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-64**</span>
-
-```java
-// 正しい例
-System.out.println("Hello");  // セミコロンを追加
-public class MyClass { }      // 小文字のp
-```
-
-##### 重要なポイント
-- すべての文の末尾にはセミコロンが必要
-- キーワードは小文字（public、class、void等）
-- クラス名は大文字で始める（慣例）
-
-### 関連する共通エラー
-
-以下のエラーも本章の内容に関連します。
-
-- `NullPointerException`（→ 付録H）
-    - とくに初期化されていないフィールドへのアクセスで発生しやすい
-- コンストラクタエラー（→ 第4章）
-    - 本章では基本概念のみ、詳細は第4章で学習
-- アクセス修飾子エラー（→ 付録H）
-    - `private`フィールドへの不正アクセス
-
-### デバッグのヒント
-
-#### エラーに遭遇した際の基本的な対処法
-
-1. エラーメッセージを読む
-    + 行番号とエラーの種類を確認
-2. クラスとインスタンスの区別
-    + staticかどうかを確認
-3. 初期化の確認
-    + すべてのフィールドが初期化されているか確認
-
-### さらに学ぶには
-
-- 付録H: Java共通エラーガイド（基本的なエラーパターン）
-- 第4章: より詳細なコンストラクタとフィールドの扱い
-- 第13章: 例外処理の体系的な学習
+誤ったコードと修正したコード、エラーに出会ったときの基本的な対処の手順は、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter03.md`
 
 ## まとめ
 
@@ -2535,7 +2438,7 @@ public class MyClass { }      // 小文字のp
    - mainメソッドから各メソッドを呼び出して動作確認
 
 #### コード構造のヒント
-<span class="listing-number">**サンプルコード3-65**　MethodsPractice.java</span>
+<span class="listing-number">**サンプルコード3-59**　MethodsPractice.java</span>
 
 ```java
 public class MethodsPractice {

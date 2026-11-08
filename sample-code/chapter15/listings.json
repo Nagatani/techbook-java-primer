@@ -157,12 +157,5 @@
       { "file": "ResiliencePatterns.java", "from": 58, "to": 89 },
       { "file": "ResiliencePatterns.java", "from": 127, "to": 127 }
     ]
-  },
-  "15-24": {
-    "dir": "15-24",
-    "main": null,
-    "excerpt": [
-      { "file": "Counter.java", "from": 1, "to": 8 }
-    ]
   }
 }

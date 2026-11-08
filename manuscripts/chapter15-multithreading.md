@@ -1725,186 +1725,20 @@ public class ResiliencePatterns {
 
 ## よくあるエラーと対処法
 
-本章では、マルチスレッドプログラミングに特有のエラーを扱います。
+マルチスレッドのエラーは、実行するたびに結果が変わったり、まれにしか発生しなかったりするため、再現と原因の特定が難しいのが特徴です。
+本章の内容に関連して出会いやすいエラーは次のとおりです。
 
-### 本章特有のエラー
+- 競合状態（レースコンディション）
+    + 複数のスレッドが同じデータを同時に更新すると、値が失われる
+- デッドロック
+    + 複数のスレッドが互いのロックの解放を待ち、処理が止まる。ロックを取得する順序をそろえて防ぐ
+- スレッドセーフでないコレクションの使用
+    + `ArrayList`や`HashMap`を複数のスレッドから更新すると、内容が壊れたり例外が発生したりする
+- `ExecutorService`のシャットダウン忘れ
+    + `shutdown()`を呼ばないと、スレッドプールが残ってプログラムが終了しない
 
-#### 1. 基本的な競合状態
-問題: 複数スレッドが同じデータに同時アクセスして値が破損
-
-<span class="listing-number">**サンプルコード15-24**　Counter.java</span>
-
-```java
-// エラー例
-public class Counter {
-    private int count = 0;
-    
-    public void increment() {
-        count++; // 非原子的操作
-    }
-}
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード15-25**</span>
-
-```java
-// synchronized使用
-public synchronized void increment() {
-    count++;
-}
-
-// Atomicクラス使用
-private final AtomicInteger count = new AtomicInteger(0);
-count.incrementAndGet();
-```
-
-重要なポイント:
-- 共有データへのアクセスは同期化が必要
-- 単純な演算でもAtomicクラスを検討
-- volatileは可視性のみ保証
-
-#### 2. デッドロックの基礎
-問題: 複数スレッドが相互にロックを待って停止
-
-<span class="listing-number">**サンプルコード15-26**</span>
-
-```java
-// エラー例：ロック順序の不一致
-method1: synchronized(lock1) → synchronized(lock2)
-method2: synchronized(lock2) → synchronized(lock1)
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード15-27**</span>
-
-```java
-// 常に同じ順序でロック取得
-public void method1() {
-    synchronized (lock1) {
-        synchronized (lock2) {
-            // 処理
-        }
-    }
-}
-
-public void method2() {
-    synchronized (lock1) {  // 同じ順序
-        synchronized (lock2) {
-            // 処理
-        }
-    }
-}
-```
-
-重要なポイント:
-- ロック順序を統一する
-- 必要最小限のロック範囲
-- tryLockでタイムアウト設定
-
-#### 3. スレッドセーフでないコレクション
-問題: 通常のコレクションをマルチスレッドで使用
-
-<span class="listing-number">**サンプルコード15-28**</span>
-
-```java
-// エラー例
-List<String> list = new ArrayList<>();
-// 複数スレッドから同時にadd/remove → ConcurrentModificationException
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード15-29**</span>
-
-```java
-// 並行コレクション使用
-List<String> list = new CopyOnWriteArrayList<>();
-Map<String, String> map = new ConcurrentHashMap<>();
-Queue<String> queue = new ConcurrentLinkedQueue<>();
-```
-
-重要なポイント:
-- java.util.concurrentパッケージを活用
-- 読み込み頻度が高い場合はCopyOnWriteを検討
-- Collections.synchronizedXXX()は性能に注意
-
-#### 4. ExecutorServiceのリソース管理
-問題: スレッドプールが正しくシャットダウンされない
-
-<span class="listing-number">**サンプルコード15-30**</span>
-
-```java
-// エラー例
-ExecutorService executor = Executors.newFixedThreadPool(5);
-executor.submit(task);
-// shutdownを呼ばない → リソースリーク
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード15-31**</span>
-
-```java
-ExecutorService executor = Executors.newFixedThreadPool(5);
-try {
-    executor.submit(task);
-} finally {
-    executor.shutdown();
-    try {
-        if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-            executor.shutdownNow();
-        }
-    } catch (InterruptedException e) {
-        executor.shutdownNow();
-    }
-}
-```
-
-重要なポイント:
-- 必ずfinallyでshutdown
-- awaitTerminationでタスク完了を待つ
-- タイムアウト時はshutdownNow
-
-### 関連する共通エラー
-
-以下のエラーも本章の内容に関連します。
-
-- **メモリ可視性の問題**（→ 付録B.14）
-  - volatileキーワードの正しい使用法
-- **InterruptedException**（→ 第13章）
-  - スレッドの割り込み処理
-- **ConcurrentModificationException**（→ 付録H）
-  - 反復処理中のコレクション変更
-
-### デバッグのヒント
-
-1. デッドロック検出
-
-<span class="listing-number">**サンプルコード15-32**</span>
-
-   ```java
-   ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-   long[] deadlocked = bean.findDeadlockedThreads();
-   if (deadlocked != null) {
-       // デッドロック発生
-   }
-   ```
-
-2. スレッドダンプ
-   - jstackコマンドでスレッド状態確認
-   - IDEのデバッガでブレークポイント設定
-
-3. 並行処理のテスト
-   - CountDownLatchで同期的にテスト
-   - 複数回実行して再現性確認
-
-### さらに学ぶには
-
-- 付録H: Java共通エラーガイド（並行処理の基本）
-- 付録B.14: Javaメモリモデル（高度な内容）
+エラーの例と修正したコード（コンパイルできる全文を含む）、デッドロックの検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter15.md`
 
 ## 本章のまとめ
 

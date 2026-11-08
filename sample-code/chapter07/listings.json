@@ -156,31 +156,5 @@
       { "file": "DatabaseConnectionFactory.java", "from": 57, "to": 68 },
       { "file": "DatabaseConnectionFactory.java", "from": 79, "to": 79 }
     ]
-  },
-  "7-29": {
-    "dir": "07-29",
-    "main": null,
-    "excerpt": [
-      { "file": "MathUtils.java", "from": 1, "to": 19 }
-    ]
-  },
-  "7-30": {
-    "dir": "07-30",
-    "main": null,
-    "excerpt": [
-      { "file": "Service.java", "from": 1, "to": 13 }
-    ]
-  },
-  "7-31": {
-    "dir": "07-31",
-    "main": null,
-    "excerpt": [
-      { "file": "BaseService.java", "from": 6, "to": 15 },
-      { "file": "BaseService.java", "from": 21, "to": 27 },
-      { "file": "BaseService.java", "from": 31, "to": 44 },
-      { "file": "BaseService.java", "from": 51, "to": 56 },
-      { "file": "BaseService.java", "from": 64, "to": 67 },
-      { "file": "BaseService.java", "from": 77, "to": 77 }
-    ]
   }
 }

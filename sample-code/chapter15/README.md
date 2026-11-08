@@ -33,4 +33,3 @@ javac -d out *.java
 | [15-21](./15-21/) | ConcurrencyPitfallsAndSolutions.java | `java -cp out ConcurrencyPitfallsAndSolutions` |
 | [15-22](./15-22/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
 | [15-23](./15-23/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |
-| [15-24](./15-24/) | Counter.java | （mainメソッドなし） |

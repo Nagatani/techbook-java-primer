@@ -30,4 +30,3 @@ javac -d out *.java
 | [10-14](./10-14/) | VarWithGenericsExample.java | `java -cp out VarWithGenericsExample` |
 | [10-15](./10-15/) | VarBestPractices.java | （mainメソッドなし） |
 | [10-16](./10-16/) | VarRefactoringExample.java | （mainメソッドなし） |
-| [10-26](./10-26/) | NumberContainer.java | （mainメソッドなし） |

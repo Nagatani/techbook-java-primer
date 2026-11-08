@@ -403,43 +403,11 @@ DELETE: 削除権限
 
 ### よくあるエラーと対処法
 
-#### enum定数の大文字小文字を間違える
+列挙型では、定数名の大文字・小文字の間違いや、`switch`文の`case`に型名を付けて書いてしまう誤りがよく起きます。
+`switch`文の`case`では、Java 20以前は`Status.ACTIVE`ではなく`ACTIVE`と定数名だけを書く必要がありました。
 
-<span class="listing-number">**サンプルコード8-11**</span>
-
-```java
-// 間違い
-if (status == Status.active) {  // コンパイルエラー
-    // 処理
-}
-
-// 正しい
-if (status == Status.ACTIVE) {
-    // 処理
-}
-```
-
-#### switch文でenum名を含めてしまう
-
-Java 20以前では、列挙型のswitchの`case`に`Status.ACTIVE`のような型名付きの定数を書くとコンパイルエラーになりました。
-Java 21からは型名付きでも書けますが、switchの対象が列挙型であることは明らかなので、定数名だけを書くのが一般的です。
-古いバージョンのJavaで動かすコードでは、定数名だけを書く必要があります。
-
-<span class="listing-number">**サンプルコード8-12**</span>
-
-```java
-// Java 20以前ではコンパイルエラー（Java 21以降は書けるが冗長）
-switch (status) {
-    case Status.ACTIVE:
-        break;
-}
-
-// 一般的な書き方（どのバージョンでも使える）
-switch (status) {
-    case ACTIVE:
-        break;
-}
-```
+エラーの例と修正したコードは、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter08.md`
 
 ## レコード（Record）
 
@@ -460,7 +428,7 @@ Recordは、Java 16で正式に導入された、不変（immutable）なデー�
 
 以下のコードは、Recordの最も簡潔な定義例です。recordキーワードを使って、名前と年齢を持つPersonクラスを1行で定義しています。この短い定義から、コンパイラは自動的にコンストラクタ、アクセサメソッド、equals()、hashCode()、toString()などの必要なメソッドをすべて生成します。
 
-<span class="listing-number">**サンプルコード8-13**　Person.java</span>
+<span class="listing-number">**サンプルコード8-11**　Person.java</span>
 
 ```java
 public record Person(String name, int age) {}
@@ -470,7 +438,7 @@ public record Person(String name, int age) {}
 
 #### 上記のRecord定義は、コンパイラによって以下のような完全なクラス定義に展開されます
 
-<span class="listing-number">**サンプルコード8-14**</span>
+<span class="listing-number">**サンプルコード8-12**</span>
 
 ```java
 public final class Person {
@@ -524,7 +492,7 @@ public final class Person {
 
 ### Recordの使い方
 
-<span class="listing-number">**サンプルコード8-15**</span>
+<span class="listing-number">**サンプルコード8-13**</span>
 
 ```java
 public class RecordExample {
@@ -564,7 +532,7 @@ true
 
 Recordでは、コンパクトコンストラクタを使用してバリデーションを追加できます。
 
-<span class="listing-number">**サンプルコード8-16**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード8-14**　BankAccount.java</span>
 
 ```java
 public record BankAccount(String accountNumber, double balance) {
@@ -586,7 +554,7 @@ public record BankAccount(String accountNumber, double balance) {
 
 標準のコンストラクタ以外にも、追加のコンストラクタを定義できます。
 
-<span class="listing-number">**サンプルコード8-17**　Rectangle.java</span>
+<span class="listing-number">**サンプルコード8-15**　Rectangle.java</span>
 
 ```java
 public record Rectangle(double width, double height) {
@@ -611,7 +579,7 @@ public record Rectangle(double width, double height) {
 
 Recordでも静的ファクトリメソッドパターンを使用できます。
 
-<span class="listing-number">**サンプルコード8-18**　Temperature.java</span>
+<span class="listing-number">**サンプルコード8-16**　Temperature.java</span>
 
 ```java
 public record Temperature(double value, String unit) {
@@ -644,7 +612,7 @@ public record Temperature(double value, String unit) {
 
 不変性を保ちながら部分的な更新を行うwithメソッドパターンは、Recordで頻繁に使用されます。
 
-<span class="listing-number">**サンプルコード8-19**</span>
+<span class="listing-number">**サンプルコード8-17**</span>
 
 ```java
 public record Configuration(
@@ -676,7 +644,7 @@ public record Configuration(
 
 Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます。
 
-<span class="listing-number">**サンプルコード8-20**　Point.java、PatternMatchingExample.java</span>
+<span class="listing-number">**サンプルコード8-18**　Point.java、PatternMatchingExample.java</span>
 
 ```java
 public record Point(int x, int y) {}
@@ -718,7 +686,7 @@ null値
 次のサンプルでは、第9章で学ぶ`List`と`Collections`、第11章・第12章で学ぶ`stream()`とメソッド参照（`Integer::intValue`）を使って平均・最大・最小を求めています。
 ここでは、計算した結果を1つのRecordにまとめて返している点に注目してください。
 
-<span class="listing-number">**サンプルコード8-21**</span>
+<span class="listing-number">**サンプルコード8-19**</span>
 
 ```java
 public class LocalRecordExample {
@@ -749,7 +717,7 @@ public class LocalRecordExample {
 
 Recordは他のRecordを含むことができ、複雑なデータ構造を表現できます。
 
-<span class="listing-number">**サンプルコード8-22**　Address.java、Company.java、Employee.java</span>
+<span class="listing-number">**サンプルコード8-20**　Address.java、Company.java、Employee.java</span>
 
 ```java
 public record Address(String street, String city, String country) {}
@@ -777,7 +745,7 @@ public record Employee(String name, String id, Company company) {
 次のサンプルの`ApiResponse<T>`の`<T>`は、第10章「ジェネリクス」で学ぶ型パラメータです。
 `T`には、利用するときに`ApiResponse<String>`のように具体的な型が入ります。
 
-<span class="listing-number">**サンプルコード8-23**</span>
+<span class="listing-number">**サンプルコード8-21**</span>
 
 ```java
 // APIレスポンス用のDTO
@@ -803,7 +771,7 @@ public record ApiResponse<T>(
 
 #### Value Objectパターン
 
-<span class="listing-number">**サンプルコード8-24**</span>
+<span class="listing-number">**サンプルコード8-22**</span>
 
 ```java
 public record Money(BigDecimal amount, String currency) {
@@ -835,7 +803,7 @@ public record Money(BigDecimal amount, String currency) {
 
 sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
 
-<span class="listing-number">**サンプルコード8-25**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
+<span class="listing-number">**サンプルコード8-23**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
 
 ```java
 // 図形を表現する代数的データ型
@@ -865,7 +833,7 @@ public class ShapeCalculator {
 
 次のサンプルの`order.items().stream()`以降は、第12章「Stream APIと高度なコレクション操作」で学ぶ書き方で、リストの全要素に対して計算や判定を行います。
 
-<span class="listing-number">**サンプルコード8-26**</span>
+<span class="listing-number">**サンプルコード8-24**</span>
 
 ```java
 // データの定義（Records）
@@ -906,7 +874,7 @@ public class OrderProcessor {
 
 ### EnumとRecordの組み合わせ
 
-<span class="listing-number">**サンプルコード8-27**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
+<span class="listing-number">**サンプルコード8-25**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -948,7 +916,7 @@ public record Order(
 
 ### 実践的なアプリケーション例
 
-<span class="listing-number">**サンプルコード8-28**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java</span>
+<span class="listing-number">**サンプルコード8-26**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java</span>
 
 ```java
 // ゲームのキャラクタークラス
@@ -1012,7 +980,7 @@ public record GameCharacter(
 
 外部クラスのインスタンスに関連付けられた内部クラスです。
 
-<span class="listing-number">**サンプルコード8-29**　OuterClass.java</span>
+<span class="listing-number">**サンプルコード8-27**　OuterClass.java</span>
 
 ```java
 public class OuterClass {
@@ -1044,7 +1012,7 @@ public class OuterClass {
 
 外部クラスのインスタンスに依存しない内部クラスです。
 
-<span class="listing-number">**サンプルコード8-30**　MathOperations.java</span>
+<span class="listing-number">**サンプルコード8-28**　MathOperations.java</span>
 
 ```java
 public class MathOperations {
@@ -1079,7 +1047,7 @@ public class MathOperations {
 
 メソッド内で定義される内部クラスです。
 
-<span class="listing-number">**サンプルコード8-31**　LocalClassExample.java</span>
+<span class="listing-number">**サンプルコード8-29**　LocalClassExample.java</span>
 
 ```java
 public class LocalClassExample {
@@ -1102,7 +1070,7 @@ public class LocalClassExample {
 
 名前を持たない内部クラスで、インターフェイスの実装や抽象クラスの継承に使用されます。
 
-<span class="listing-number">**サンプルコード8-32**　AnonymousClassExample.java</span>
+<span class="listing-number">**サンプルコード8-30**　AnonymousClassExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1138,7 +1106,7 @@ public class AnonymousClassExample {
 次のサンプルは、型パラメータ`<T>`（第10章）と`Iterable`・`Iterator`（第9章）を使って、拡張for文で走査できる独自のリストを作ります。
 内部クラスがイテレータとして外側のクラスの配列を直接参照している点が、ここでの要点です。
 
-<span class="listing-number">**サンプルコード8-33**　MyList.java</span>
+<span class="listing-number">**サンプルコード8-31**　MyList.java</span>
 
 ```java
 import java.util.Iterator;

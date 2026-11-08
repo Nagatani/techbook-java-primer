@@ -26,17 +26,3 @@ javac -d out *.java
 | [6-9](./06-09/) | DateRange.java | （mainメソッドなし） |
 | [6-10](./06-10/) | Book.java | （mainメソッドなし） |
 | [6-11](./06-11/) | Book.java<br>BuilderExample.java | `java -cp out BuilderExample` |
-| [6-13](./06-13/) | FinalCorrectExample.java | `java -cp out FinalCorrectExample` |
-| [6-15](./06-15/) | InitializedFinalExample.java | （mainメソッドなし） |
-| [6-18](./06-18/) | ImmutablePerson.java | （mainメソッドなし） |
-| [6-19](./06-19/) | BrokenImmutableEvent.java | （mainメソッドなし） |
-| [6-21](./06-21/) | ImmutableEvent.java | （mainメソッドなし） |
-| [6-22](./06-22/) | ModernImmutableEvent.java | （mainメソッドなし） |
-| [6-23](./06-23/) | FinalArrayMisunderstanding.java | `java -cp out FinalArrayMisunderstanding` |
-| [6-24](./06-24/) | ImmutableArray.java | （mainメソッドなし） |
-| [6-25](./06-25/) | ListImmutabilityMisunderstanding.java | `java -cp out ListImmutabilityMisunderstanding` |
-| [6-26](./06-26/) | ImmutablePerson.java<br>MutableEmployee.java | （mainメソッドなし） |
-| [6-27](./06-27/) | ImmutablePerson.java | （mainメソッドなし） |
-| [6-28](./06-28/) | IneffientImmutableClass.java | （mainメソッドなし） |
-| [6-29](./06-29/) | EfficientImmutableClass.java | （mainメソッドなし） |
-| [6-30](./06-30/) | OptimizedImmutableClass.java | （mainメソッドなし） |

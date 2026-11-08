@@ -1811,161 +1811,18 @@ class Child extends Parent {
 
 ## よくあるエラーと対処法
 
-本章では、継承とポリモーフィズムに特有のエラーを扱います。
+継承を使うと、親クラスと子クラスのあいだの約束事を守らないことによるエラーが起きます。
+本章の内容に関連して出会いやすいエラーは次のとおりです。
 
-### 本章特有のエラー
+- `super()`の呼び出しに関するエラー
+    + 親クラスに引数なしのコンストラクタがない場合、子クラスのコンストラクタで`super(...)`を明示的に呼び出す必要がある
+- オーバーライドの制約違反
+    + アクセス修飾子を狭めたり、戻り値の型を互換性のない型に変えたりするとコンパイルエラーになる
+- `ClassCastException`
+    + 実際の型と互換性のない型へキャストすると実行時に発生する。`instanceof`で型を確かめてからキャストする
 
-#### 1. super()呼び出しエラー
-問題: 親クラスのコンストラクタを正しく呼び出さない
-
-<span class="listing-number">**サンプルコード5-34**</span>
-
-```java
-// エラー例
-class Parent {
-    public Parent(String name) { }  // デフォルトコンストラクタなし
-}
-
-class Child extends Parent {
-    public Child() { }  // エラー：super()が暗黙的に呼ばれるがParent()は存在しない
-}
-```
-
-このエラーはParentクラスにデフォルトコンストラクタがないため、Childのコンストラクタから暗黙的にsuper()が呼ばれたときに発生します。
-
-解決策:
-
-<span class="listing-number">**サンプルコード5-35**</span>
-
-```java
-class Child extends Parent {
-    public Child() {
-        super("default");  // 明示的に親のコンストラクタを呼び出す
-    }
-}
-```
-
-実行結果：
-```
-Parent30 コンストラクタ: default
-Child31 コンストラクタ
-```
-
-重要なポイント:
-- 親クラスにパラメータ付きコンストラクタのみがある場合は明示的なsuper()が必要
-- super()は必ずコンストラクタの最初に記述
-- デフォルトコンストラクタは自動生成されない
-
-#### 2. オーバーライドエラー
-問題: メソッドオーバーライド時の制約違反
-
-<span class="listing-number">**サンプルコード5-36**</span>
-
-```java
-// エラー例1：アクセス修飾子の制限強化
-class Parent {
-    public void method() { }
-}
-class Child extends Parent {
-    private void method() { }  // エラー：publicからprivateへ
-}
-
-// エラー例2：戻り値型の不一致
-class Parent {
-    public int getValue() { return 0; }
-}
-class Child extends Parent {
-    public String getValue() { return ""; }  // エラー：戻り値型が異なる
-}
-```
-
-このエラーは、子クラスが親クラスのメソッドよりも制限的なアクセス修飾子を使用しようとした場合や、戻り値型が一致しない場合に発生します。
-
-解決策:
-
-<span class="listing-number">**サンプルコード5-37**</span>
-
-```java
-class Child extends Parent {
-    @Override
-    public void method() { }  // 同じかより緩いアクセス修飾子
-    
-    @Override
-    public int getValue() { return 42; }  // 同じ戻り値型
-}
-```
-
-これにより、親クラスでpublicメソッドとして公開されているものが、子クラスでも同じく公開されることが保証されます。
-
-重要なポイント:
-- アクセス修飾子は同じかより緩いものを使用
-- 戻り値型は同じか共変戻り値型（サブタイプ）
-- @Overrideアノテーションでミスを防ぐ
-
-#### 3. キャストエラー
-問題: 互換性のない型へのキャストによるClassCastException
-
-<span class="listing-number">**サンプルコード5-38**</span>
-
-```java
-// エラー例
-Parent p = new Parent();
-Child c = (Child) p;  // 実行時エラー：ParentはChildではない
-```
-
-このコードを実行するとClassCastExceptionが発生します。Parentクラスのインスタンスを Childクラスにキャストできないからです。
-
-解決策:
-
-<span class="listing-number">**サンプルコード5-39**</span>
-
-```java
-// instanceof使用
-if (p instanceof Child) {
-    Child c = (Child) p;
-}
-
-// パターンマッチング（Java 16以降）
-if (p instanceof Child child) {
-    child.childMethod();
-}
-```
-
-実行結果：
-```
-p1はChild34ではないため、キャストできません
-p2はChild34にキャスト可能
-Child34 固有メソッド
-```
-
-重要なポイント:
-- キャスト前にinstanceofで型チェック
-- ダウンキャストは慎重に行う
-- パターンマッチングで安全性と簡潔性を両立
-
-### 関連する共通エラー
-
-以下のエラーも本章の内容に関連します。
-
-- **NullPointerException**（→ 付録H）
-  - 継承階層でのnull参照に注意
-- **抽象メソッドの実装忘れ**（→ 第7章）
-  - 抽象クラス継承時の必須実装
-- **メソッドシグネチャの理解不足**（→ 第4章）
-  - オーバーライド条件の詳細
-
-### デバッグのヒント
-
-1. 継承階層の可視化
-   - クラス図を描いて関係を整理
-   - どのメソッドがどこで定義されているか確認
-
-2. @Overrideの活用
-   - 必ず付けることでコンパイル時チェック
-   - オーバーライドの意図を明確化
-
-3. 段階的なテスト
-   - 親クラス単体→子クラス単体→ポリモーフィズムの順
+エラーの例と修正したコード、継承階層を確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter05.md`
 
 ## まとめ
 

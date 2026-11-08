@@ -562,90 +562,20 @@ jacocoTestCoverageVerification {
 
 ## よくあるエラーと対処法
 
-単体テスト初学者がよく遭遇する基本的なエラーとその対処法を説明します。
+テストの誤りは、テストが成功しているのにバグを見逃している、という形で現れるため気づきにくいものです。
+本章の内容に関連して出会いやすい誤りは次のとおりです。
 
-### 1. テストケースが不十分
+- テストケースの不足
+    + 期待どおりの入力だけでなく、境界値や異常値もテストする
+- アサーションの使い方の誤り
+    + 浮動小数点数を比較するときは、誤差の許容範囲を指定する
+- モックの設定不足
+    + テストで呼ばれるメソッドの振る舞いを、モックにすべて設定する
+- テスト間の依存
+    + テストの実行順序に依存しないよう、各テストの前に状態を初期化する
 
-##### 問題
-テストケースが期待値のみをチェックし、境界値や異常値をテストしていません。
-
-##### 解決策
-
-<span class="listing-number">**サンプルコード21-16**</span>
-
-```java
-@Test
-void testAdd() {
-    Calculator calc = new Calculator();
-    
-    // 正常値のテスト
-    assertEquals(5, calc.add(2, 3));
-    
-    // 境界値のテスト
-    assertEquals(0, calc.add(0, 0));
-    
-    // 負数のテスト
-    assertEquals(-1, calc.add(-3, 2));
-}
-```
-
-### 2. アサーション使用ミス
-
-##### 問題
-浮動小数点の厳密な比較によるテスト失敗。
-
-##### 解決策
-
-<span class="listing-number">**サンプルコード21-17**</span>
-
-```java
-@Test
-void testDoubleCalculation() {
-    double result = 0.1 + 0.2;
-    assertEquals(0.3, result, 0.0001); // 許容誤差を指定
-}
-```
-
-### 3. モックの設定不足
-
-##### 問題
-モックオブジェクトの振る舞いが正しく設定されていません。
-
-##### 解決策
-
-<span class="listing-number">**サンプルコード21-18**</span>
-
-```java
-@Test
-void testUserService() {
-    UserRepository mockRepo = mock(UserRepository.class);
-    
-    // モックの振る舞いを設定
-    when(mockRepo.findById(1L)).thenReturn(new User(1L, "Test User"));
-    
-    UserService service = new UserService(mockRepo);
-    User user = service.findById(1L);
-    assertNotNull(user);
-}
-```
-
-### 4. テスト間の依存関係
-
-##### 問題
-テストの実行順序に依存したテストケース。
-
-##### 解決策
-
-<span class="listing-number">**サンプルコード21-19**</span>
-
-```java
-@Test
-void testIncrement() {
-    int counter = 0;  // 各テストで初期化
-    counter++;
-    assertEquals(1, counter);
-}
-```
+問題のあるテストと修正したテストは、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter21.md`
 
 ## まとめ
 

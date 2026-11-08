@@ -52,4 +52,4 @@ javac -d out *.java
 | [3-52](./03-52/) | ShoppingCart.java | （mainメソッドなし） |
 | [3-54](./03-54/) | StringComparison.java | `java -cp out StringComparison` |
 | [3-55](./03-55/) | Student.java | （mainメソッドなし） |
-| [3-65](./03-65/) | MethodsPractice.java | `java -cp out MethodsPractice` |
+| [3-59](./03-59/) | MethodsPractice.java | `java -cp out MethodsPractice` |

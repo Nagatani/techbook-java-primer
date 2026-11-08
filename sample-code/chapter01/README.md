@@ -21,5 +21,3 @@ javac -d out *.java
 | [1-4](./01-04/) | HelloWorld.java | `java -cp out HelloWorld` |
 | [1-9](./01-09/) | StandardOutput.java | `java -cp out StandardOutput` |
 | [1-10](./01-10/) | InputExample.java | `java -cp out InputExample` |
-| [1-16](./01-16/) | DebugExample.java | `java -cp out DebugExample` |
-| [1-17](./01-17/) | StepByStepDebug.java | `java -cp out StepByStepDebug` |

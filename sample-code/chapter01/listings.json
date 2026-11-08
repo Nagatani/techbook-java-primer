@@ -36,19 +36,5 @@
     "excerpt": [
       { "file": "InputExample.java", "from": 1, "to": 24 }
     ]
-  },
-  "1-16": {
-    "dir": "01-16",
-    "main": "DebugExample",
-    "excerpt": [
-      { "file": "DebugExample.java", "from": 1, "to": 12 }
-    ]
-  },
-  "1-17": {
-    "dir": "01-17",
-    "main": "StepByStepDebug",
-    "excerpt": [
-      { "file": "StepByStepDebug.java", "from": 1, "to": 13 }
-    ]
   }
 }

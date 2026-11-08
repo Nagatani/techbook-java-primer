@@ -126,19 +126,5 @@
       { "file": "TransferService.java", "from": 59, "to": 72 },
       { "file": "TransferService.java", "from": 120, "to": 120 }
     ]
-  },
-  "13-25": {
-    "dir": "13-25",
-    "main": null,
-    "excerpt": [
-      { "file": "CustomException.java", "from": 1, "to": 7 }
-    ]
-  },
-  "13-26": {
-    "dir": "13-26",
-    "main": null,
-    "excerpt": [
-      { "file": "CustomException.java", "from": 1, "to": 14 }
-    ]
   }
 }

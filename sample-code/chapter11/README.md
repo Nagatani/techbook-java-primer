@@ -30,4 +30,3 @@ javac -d out *.java
 | [11-26](./11-26/) | LambdaVsMethodReference.java<br>Person.java | `java -cp out LambdaVsMethodReference` |
 | [11-27](./11-27/) | RunnableLambdaExample.java | `java -cp out RunnableLambdaExample` |
 | [11-28](./11-28/) | User.java<br>ValidationFramework.java | `java -cp out ValidationFramework` |
-| [11-30](./11-30/) | LambdaSyntaxFixExample.java | `java -cp out LambdaSyntaxFixExample` |

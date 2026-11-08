@@ -31,5 +31,3 @@ javac -d out *.java
 | [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
 | [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>SystemException.java | （mainメソッドなし） |
 | [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferService.java<br>TransferSupport.java | （mainメソッドなし） |
-| [13-25](./13-25/) | CustomException.java | （mainメソッドなし） |
-| [13-26](./13-26/) | CustomException.java | （mainメソッドなし） |

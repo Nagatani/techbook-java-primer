@@ -1398,55 +1398,19 @@ public class InputExample {
 
 ## よくあるコンパイルエラーとその対処法
 
-### セミコロン忘れ
+基本文法を学び始めると、コンパイルエラーに出会う機会が増えます。
+コンパイラは誤りを見つけた行番号と内容を表示するので、表示された行とその直前の行を確認するのが近道です。
+特に多いのは次の3つです。
 
-#### エラーメッセージ
-```
-error: ';' expected
-```
+- セミコロン忘れ
+    + 文の末尾に`;`がないと`';'がありません`というエラーになる。エラーは次の行で報告されることもある
+- 大文字・小文字の間違い
+    + Javaは大文字と小文字を区別するため、`string`や`system.out`と書くとシンボルが見つからない
+- クラス名とファイル名の不一致
+    + `public class`の名前とファイル名が異なると、コンパイルできない
 
-#### 原因と対処
-
-<span class="listing-number">**サンプルコード2-49**</span>
-
-```java
-// エラー例
-int x = 10  // セミコロンがない
-
-// 修正版
-int x = 10; // セミコロンを追加
-```
-
-### 大文字・小文字の間違い
-
-#### エラーメッセージ
-```
-error: cannot find symbol
-```
-
-#### 原因と対処
-
-<span class="listing-number">**サンプルコード2-50**</span>
-
-```java
-// エラー例
-system.out.println("Hello");  // systemが小文字
-
-// 修正版
-System.out.println("Hello");  // Systemを大文字で開始
-```
-
-### クラス名とファイル名の不一致
-
-#### エラーメッセージ
-```
-error: class HelloWorld is public, should be declared in a file named HelloWorld.java
-```
-
-#### 原因と対処
-- ファイル名 `Sample.java`
-- クラス名 `public class HelloWorld`
-- → ファイル名を`HelloWorld.java`に変更、またはクラス名を`Sample`に変更
+エラーメッセージの例と修正の手順は、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter02.md`
 
 ## まとめ
 

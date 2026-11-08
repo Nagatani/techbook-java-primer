@@ -37,5 +37,3 @@ javac -d out *.java
 | [4-29](./04-29/) | HttpClient.java | （mainメソッドなし） |
 | [4-30](./04-30/) | Logger.java | （mainメソッドなし） |
 | [4-34](./04-34/) | BankAccount.java | （mainメソッドなし） |
-| [4-39](./04-39/) | Product.java | （mainメソッドなし） |
-| [4-40](./04-40/) | Product.java | （mainメソッドなし） |

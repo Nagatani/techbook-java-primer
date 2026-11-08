@@ -34,6 +34,3 @@ javac -d out *.java
 | [7-17](./07-17/) | FactoryDemo.java<br>ShapeFactory.java | `java -cp out FactoryDemo` |
 | [7-18](./07-18/) | DocumentFactory.java | （mainメソッドなし） |
 | [7-19](./07-19/) | DatabaseConnectionFactory.java | （mainメソッドなし） |
-| [7-29](./07-29/) | MathUtils.java | （mainメソッドなし） |
-| [7-30](./07-30/) | Service.java | （mainメソッドなし） |
-| [7-31](./07-31/) | BaseService.java | （mainメソッドなし） |

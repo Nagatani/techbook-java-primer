@@ -106,12 +106,5 @@
       { "file": "VarRefactoringExample.java", "from": 5, "to": 31 },
       { "file": "VarRefactoringExample.java", "from": 54, "to": 54 }
     ]
-  },
-  "10-26": {
-    "dir": "10-26",
-    "main": null,
-    "excerpt": [
-      { "file": "NumberContainer.java", "from": 1, "to": 10 }
-    ]
   }
 }

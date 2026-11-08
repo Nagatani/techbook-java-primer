@@ -107,12 +107,5 @@
       { "file": "ValidationFramework.java", "from": 6, "to": 22 },
       { "file": "ValidationFramework.java", "from": 36, "to": 67 }
     ]
-  },
-  "11-30": {
-    "dir": "11-30",
-    "main": "LambdaSyntaxFixExample",
-    "excerpt": [
-      { "file": "LambdaSyntaxFixExample.java", "from": 1, "to": 18 }
-    ]
   }
 }
