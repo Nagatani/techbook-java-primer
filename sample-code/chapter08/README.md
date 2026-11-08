@@ -32,6 +32,8 @@ javac -d out *.java
 | [8-20](./08-20/) | PatternMatchingExample.java<br>Point.java | `java -cp out PatternMatchingExample` |
 | [8-22](./08-22/) | Address.java<br>Company.java<br>Employee.java | （mainメソッドなし） |
 | [8-25](./08-25/) | Circle.java<br>Rectangle.java<br>Shape.java<br>ShapeCalculator.java<br>Triangle.java | （mainメソッドなし） |
+| [8-27](./08-27/) | Order.java<br>OrderDemo.java<br>OrderStatus.java | `java -cp out OrderDemo` |
+| [8-28](./08-28/) | CharacterClass.java<br>CharacterStats.java<br>GameCharacter.java<br>GameDemo.java | `java -cp out GameDemo` |
 | [8-29](./08-29/) | OuterClass.java | `java -cp out OuterClass` |
 | [8-30](./08-30/) | MathOperations.java | `java -cp out MathOperations` |
 | [8-31](./08-31/) | LocalClassExample.java | （mainメソッドなし） |

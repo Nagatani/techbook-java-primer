@@ -906,7 +906,7 @@ public class OrderProcessor {
 
 ### EnumとRecordの組み合わせ
 
-<span class="listing-number">**サンプルコード8-27**</span>
+<span class="listing-number">**サンプルコード8-27**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -915,19 +915,7 @@ public enum OrderStatus {
     SHIPPED("発送済み", false),
     DELIVERED("配達完了", true),
     CANCELLED("キャンセル", true);
-    
-    private final String description;
-    private final boolean isFinal;
-    
-    OrderStatus(String description, boolean isFinal) {
-        this.description = description;
-        this.isFinal = isFinal;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
+    // ...
     public boolean isFinal() {
         return isFinal;
     }
@@ -960,7 +948,7 @@ public record Order(
 
 ### 実践的なアプリケーション例
 
-<span class="listing-number">**サンプルコード8-28**</span>
+<span class="listing-number">**サンプルコード8-28**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java</span>
 
 ```java
 // ゲームのキャラクタークラス
@@ -968,20 +956,7 @@ public enum CharacterClass {
     WARRIOR("戦士", 100, 20, 10),
     MAGE("魔法使い", 60, 10, 30),
     ARCHER("弓使い", 80, 15, 15);
-    
-    private final String name;
-    private final int baseHealth;
-    private final int baseAttack;
-    private final int baseMagic;
-    
-    CharacterClass(String name, int baseHealth, int baseAttack, int baseMagic) {
-        this.name = name;
-        this.baseHealth = baseHealth;
-        this.baseAttack = baseAttack;
-        this.baseMagic = baseMagic;
-    }
-    
-    // ゲッターメソッド省略
+    // ...
 }
 
 public record CharacterStats(int level, int health, int attack, int magic) {

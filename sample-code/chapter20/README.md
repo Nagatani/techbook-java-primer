@@ -25,4 +25,5 @@ javac -d out *.java
 | [20-7](./20-07/) | IntegratedDataManagementApp.java<br>Task.java | `java -cp out IntegratedDataManagementApp` |
 | [20-11](./20-11/) | SmoothPanel.java | （mainメソッドなし） |
 | [20-13](./20-13/) | ImageManager.java | （mainメソッドなし） |
+| [20-15](./20-15/) | DataSource.java<br>LazyTableDemo.java<br>LazyTableModel.java | `java -cp out LazyTableDemo` |
 | [20-17](./20-17/) | DynamicPanel.java | （mainメソッドなし） |

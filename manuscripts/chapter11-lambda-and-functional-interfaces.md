@@ -83,7 +83,7 @@ button.addActionListener(new ActionListener() {
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-3**　HigherOrderFunctionExample.java</span>
+<span class="listing-number">**サンプルコード11-3**　HigherOrderFunctionExample.java（4〜46行目）</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -318,14 +318,15 @@ public class EventProcessor {
 
 2. 関数合成によるミドルウェアパターン
 
-<span class="listing-number">**サンプルコード11-10**　MiddlewareChain.java</span>
+<span class="listing-number">**サンプルコード11-10**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
 ```java
 public class MiddlewareChain {
+    // ...
     // HTTPリクエスト処理のミドルウェア
     @FunctionalInterface
     interface Middleware extends Function<Request, Response> {
-        default Middleware andThen(Middleware next) {
+        default Middleware then(Middleware next) {
             return request -> {
                 Response response = this.apply(request);
                 if (response.isSuccess()) {
@@ -346,35 +347,18 @@ public class MiddlewareChain {
         return Response.unauthorized();
     };
     
-    // ロギングミドルウェア
-    Middleware logging = request -> {
-        logger.info("Request: {} {}", request.getMethod(), request.getPath());
-        long start = System.currentTimeMillis();
-        
-        return Try.of(() -> Response.success())
-            .andFinally(() -> {
-                long duration = System.currentTimeMillis() - start;
-                logger.info("Response time: {}ms", duration);
-            })
-            .get();
-    };
-    
-    // レート制限ミドルウェア
-    Middleware rateLimiting = request -> {
-        String clientId = request.getClientId();
-        if (rateLimiter.tryAcquire(clientId)) {
-            return Response.success();
-        }
-        return Response.tooManyRequests();
-    };
-    
+    // ...
     // ミドルウェアチェーンの構築
     Middleware pipeline = logging
-        .andThen(rateLimiting)
-        .andThen(authenticate)
-        .andThen(request -> businessLogic.handle(request));
+        .then(rateLimiting)
+        .then(authenticate)
+        .then(request -> businessLogic.handle(request));
+        // ...
 }
 ```
+
+`Middleware`は`Function`を継承しているため、`andThen`という名前のメソッドをすでに持っています。
+同じ名前で合成メソッドを定義すると、ラムダ式を渡したときにどちらを呼ぶのかが決まらずコンパイルエラーになるので、ここでは`then`という名前にしています。
 
 #### テンプレートメソッドパターンの関数型実装
 

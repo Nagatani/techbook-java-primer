@@ -6,12 +6,29 @@
       { "file": "LambdaIntroExample.java", "from": 1, "to": 18 }
     ]
   },
+  "11-3": {
+    "dir": "11-03",
+    "main": "HigherOrderFunctionExample",
+    "excerpt": [
+      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 46 }
+    ]
+  },
   "11-8": {
     "dir": "11-08",
     "main": null,
     "excerpt": [
       { "file": "ResilientService.java", "from": 6, "to": 28 },
       { "file": "ResilientService.java", "from": 40, "to": 40 }
+    ]
+  },
+  "11-10": {
+    "dir": "11-10",
+    "main": "MiddlewareChain",
+    "excerpt": [
+      { "file": "MiddlewareChain.java", "from": 3, "to": 3 },
+      { "file": "MiddlewareChain.java", "from": 9, "to": 32 },
+      { "file": "MiddlewareChain.java", "from": 48, "to": 52 },
+      { "file": "MiddlewareChain.java", "from": 61, "to": 61 }
     ]
   },
   "11-12": {

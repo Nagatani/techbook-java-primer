@@ -97,6 +97,15 @@
       { "file": "ImageManager.java", "from": 68, "to": 68 }
     ]
   },
+  "20-15": {
+    "dir": "20-15",
+    "main": "LazyTableDemo",
+    "excerpt": [
+      { "file": "LazyTableModel.java", "from": 5, "to": 9 },
+      { "file": "LazyTableModel.java", "from": 25, "to": 49 },
+      { "file": "LazyTableDemo.java", "from": 29, "to": 36 }
+    ]
+  },
   "20-17": {
     "dir": "20-17",
     "main": null,

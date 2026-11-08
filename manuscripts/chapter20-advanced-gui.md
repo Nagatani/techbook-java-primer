@@ -754,7 +754,7 @@ table.setModel(model);
 
 対処法。
 
-<span class="listing-number">**サンプルコード20-15**</span>
+<span class="listing-number">**サンプルコード20-15**　LazyTableModel.java（5〜9、25〜49行目）、LazyTableDemo.java（29〜36行目）</span>
 
 ```java
 // 1. 遅延読み込み（Lazy Loading）の実装
@@ -762,21 +762,7 @@ public class LazyTableModel extends AbstractTableModel {
     private final List<Object[]> dataCache = new ArrayList<>();
     private final DataSource dataSource;
     private final int pageSize = 1000;
-    
-    public LazyTableModel(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    
-    @Override
-    public int getRowCount() {
-        return dataSource.getTotalRowCount();
-    }
-    
-    @Override
-    public int getColumnCount() {
-        return 3;
-    }
-    
+    // ...
     @Override
     public Object getValueAt(int row, int column) {
         // 必要に応じてデータを読み込み
@@ -785,13 +771,13 @@ public class LazyTableModel extends AbstractTableModel {
     }
     
     private void ensureDataLoaded(int row) {
-        if (row >= dataCache.size()) {
+        if (row >= dataCache.size() || dataCache.get(row) == null) {
             // ページ単位でデータを読み込み
             int startIndex = (row / pageSize) * pageSize;
             List<Object[]> pageData = dataSource.getData(startIndex, pageSize);
             
             // キャッシュを拡張
-            while (dataCache.size() <= row) {
+            while (dataCache.size() < startIndex + pageData.size()) {
                 dataCache.add(null);
             }
             
@@ -803,14 +789,14 @@ public class LazyTableModel extends AbstractTableModel {
     }
 }
 
-// 2. テーブルの最適化設定
-table.setAutoCreateRowSorter(true);
-table.setFillsViewportHeight(true);
-table.getTableHeader().setReorderingAllowed(false);
+            // 2. テーブルの最適化設定
+            table.setAutoCreateRowSorter(true);
+            table.setFillsViewportHeight(true);
+            table.getTableHeader().setReorderingAllowed(false);
 
-// 3. 不要な更新を避ける
-table.setUpdateSelectionOnSort(false);
-table.setRowHeight(20);  // 固定の行高さを設定
+            // 3. 不要な更新を避ける
+            table.setUpdateSelectionOnSort(false);
+            table.setRowHeight(20);  // 固定の行高さを設定
 ```
 
 ### 複雑なレイアウトの管理

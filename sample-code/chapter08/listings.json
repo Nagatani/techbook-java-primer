@@ -125,6 +125,25 @@
       { "file": "ShapeCalculator.java", "from": 1, "to": 10 }
     ]
   },
+  "8-27": {
+    "dir": "08-27",
+    "main": "OrderDemo",
+    "excerpt": [
+      { "file": "OrderStatus.java", "from": 1, "to": 6 },
+      { "file": "OrderStatus.java", "from": 20, "to": 23 },
+      { "file": "Order.java", "from": 4, "to": 26 }
+    ]
+  },
+  "8-28": {
+    "dir": "08-28",
+    "main": "GameDemo",
+    "excerpt": [
+      { "file": "CharacterClass.java", "from": 1, "to": 5 },
+      { "file": "CharacterClass.java", "from": 24, "to": 24 },
+      { "file": "CharacterStats.java", "from": 1, "to": 10 },
+      { "file": "GameCharacter.java", "from": 1, "to": 22 }
+    ]
+  },
   "8-29": {
     "dir": "08-29",
     "main": "OuterClass",

@@ -17,7 +17,9 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [11-1](./11-01/) | LambdaIntroExample.java | `java -cp out LambdaIntroExample` |
+| [11-3](./11-03/) | HigherOrderFunctionExample.java<br>TradingTypes.java | `java -cp out HigherOrderFunctionExample` |
 | [11-8](./11-08/) | ResilientService.java | （mainメソッドなし） |
+| [11-10](./11-10/) | MiddlewareChain.java<br>Support.java | `java -cp out MiddlewareChain` |
 | [11-12](./11-12/) | AccountState.java<br>EventSourcedAccount.java | （mainメソッドなし） |
 | [11-15](./11-15/) | FunctionalBuilder.java<br>Person.java | （mainメソッドなし） |
 | [11-21](./11-21/) | FunctionalInterfaceExample.java | `java -cp out FunctionalInterfaceExample` |
