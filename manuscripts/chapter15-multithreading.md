@@ -309,26 +309,33 @@ class UnsafeCounter {
 - CPU命令2: レジスタ内で値を1増加
 - CPU命令3: 増加後の値をメモリに書き戻し
 
-実際の実行結果10個のスレッドがそれぞれ1000回incrementを実行した場合、理論的には10,000になるはずですが、実際には8,000～9,800程度の値になってしまいます。これは、複数のスレッドが同じタイミングで同じ値を読み込み、同じ結果を書き込むことで、一部のインクリメント操作が失われるためです。
+実際の実行結果では、10個のスレッドがそれぞれ1000回incrementを実行した場合、理論的には10,000になるはずですが、実際には8,000～9,800程度の値になってしまいます。これは、複数のスレッドが同じタイミングで同じ値を読み込み、同じ結果を書き込むことで、一部のインクリメント操作が失われるためです。
 
 同期化メカニズムの比較。
-- synchronizedシンプルだが粒度が粗い
-- ReentrantLock柔軟だが複雑（tryLock、公平性制御）
-- ReadWriteLock読み込み多数の場合に高性能
+- synchronized
+    + シンプルだが粒度が粗い
+- ReentrantLock
+    + 柔軟だが複雑（tryLock、公平性制御）
+- ReadWriteLock
+    + 読み込み多数の場合に高性能
+- Atomic変数
+    + CAS（Compare-And-Swap）による高速化
 
 <div class="figure">
 
 ![synchronizedによる排他制御メカニズム](images/diagrams/figure15-02.png)
 
 </div>
-- Atomic変数CAS（Compare-And-Swap）による高速化
 
 実世界での同期化の例。
-- 銀行システム口座残高の一貫性保証
+- 銀行システム
+    + 口座残高の一貫性保証
 - 在庫管理
     + 同時注文による在庫のマイナス防止
-- チケット予約座席の二重予約防止
-- キャッシュ管理データの整合性維持
+- チケット予約
+    + 座席の二重予約防止
+- キャッシュ管理
+    + データの整合性維持
 
 デッドロックの4条件（Coffman条件）
 1. 相互排他
@@ -341,10 +348,14 @@ class UnsafeCounter {
     + 待機の循環グラフ形成
 
 パフォーマンスへの影響。
-- ロック競合スループット低下の主要因
-- コンテキストスイッチ1-10マイクロ秒のオーバーヘッド
-- メモリバリアCPUキャッシュの同期コスト
-- スケーラビリティコア数増加による性能向上の限界
+- ロック競合
+    + スループット低下の主要因
+- コンテキストスイッチ
+    + 1-10マイクロ秒のオーバーヘッド
+- メモリバリア
+    + CPUキャッシュの同期コスト
+- スケーラビリティ
+    + コア数増加による性能向上の限界
 
 この演習では、さまざまな同期化技術を実践し、パフォーマンス要件に応じた選択ができる能力を養います。
 
@@ -407,7 +418,7 @@ volatile変数テスト:
 
 並行処理専用のコレクションとExecutorServiceを活用してください。
 
-技術的背景スレッドプールとタスク管理の重要性。
+技術的背景：スレッドプールとタスク管理の重要性。
 
 Executorフレームワークは、Doug Leaによって設計された革新的な並行処理フレームワークです。
 
@@ -436,10 +447,14 @@ for (int i = 0; i < 10000; i++) {
     + OSのスケジューラーが正常に動作できなくなる
 
 #### Executorの利点
-- スレッドプール再利用によるオーバーヘッド削減
-- タスクキューバックプレッシャー制御
-- 統計情報監視とチューニング
-- 優雅な終了shutdown()による安全な停止
+- スレッドプール
+    + 再利用によるオーバーヘッド削減
+- タスクキュー
+    + バックプレッシャー制御
+- 統計情報
+    + 監視とチューニング
+- 優雅な終了
+    + shutdown()による安全な停止
 
 #### 並行コレクションの必要性とスレッドセーフティ
 
@@ -472,10 +487,14 @@ Map<String, Integer> safeMap = new ConcurrentHashMap<>();  // ②
     + putIfAbsent、replace、computeIfAbsentなどの複合操作が安全に実行可能
 
 ##### 実際のシステムでの使用例
-- Webサーバリクエスト処理用スレッドプール
-- データベース接続プールコネクション管理
-- メッセージキュー非同期処理の実装
-- バッチ処理並列データ処理
+- Webサーバ
+    + リクエスト処理用スレッドプール
+- データベース接続プール
+    + コネクション管理
+- メッセージキュー
+    + 非同期処理の実装
+- バッチ処理
+    + 並列データ処理
 
 ##### ExecutorServiceの種類と用途
 - FixedThreadPool
@@ -491,7 +510,8 @@ Map<String, Integer> safeMap = new ConcurrentHashMap<>();  // ②
 
 - 最適スレッド数
     + Little's Law → N = λ × W
-- キューサイズメモリとレイテンシのトレードオフ
+- キューサイズ
+    + メモリとレイテンシのトレードオフ
 - 拒否ポリシー
     + CallerRunsPolicy、AbortPolicy等
 
@@ -611,9 +631,12 @@ step3: 集計処理 → 30
 ```
 
 ##### BlockingQueueの種類と特性
-- ArrayBlockingQueue固定サイズ、公平性オプション
-- LinkedBlockingQueueオプショナル容量、高スループット
-- PriorityBlockingQueue優先度付きタスク処理
+- ArrayBlockingQueue
+    + 固定サイズ、公平性オプション
+- LinkedBlockingQueue
+    + オプショナル容量、高スループット
+- PriorityBlockingQueue
+    + 優先度付きタスク処理
 - SynchronousQueue: 容量0、直接受け渡し
 
 ##### 古典的wait/notifyの問題点と正しい実装パターン
@@ -1025,7 +1048,7 @@ public class VolatileDemo {
 }
 ```
 
-注意点volatileは複合操作（読み取り→計算→書き込み）をアトミックにしません。カウンターのインクリメントなどには使用できないため、そのような場合は`AtomicInteger`などのアトミッククラスを使用してください。
+注意点として、volatileは複合操作（読み取り→計算→書き込み）をアトミックにしません。カウンターのインクリメントなどには使用できないため、そのような場合は`AtomicInteger`などのアトミッククラスを使用してください。
 
 ### Atomicクラスによるロックフリーなアトミック操作
 
@@ -1254,8 +1277,10 @@ public class ProducerConsumerExample {
 `Future`インターフェイスは、非同期処理の結果を表現するオブジェクトです。`Callable`は`Runnable`と似ていますが、値を返すことができ、例外をスローすることも可能です。
 
 FutureとCallableの特徴。
-- Callable: 戻り値を持つタスクを定義（`Runnable`は戻り値なし）
-- Future: 非同期処理の結果を保持し、完了を待機できる
+- Callable
+    + 戻り値を持つタスクを定義（`Runnable`は戻り値なし）
+- Future
+    + 非同期処理の結果を保持し、完了を待機できる
 - 例外処理
     + `Callable`は検査例外をスローできる
 - キャンセル機能
@@ -1444,11 +1469,16 @@ public class CompletableFutureExample {
 `CompletableFuture`の真の力は、複数の非同期処理を優雅に連鎖・合成できる点にあります。これにより、複雑な非同期ワークフローを宣言的に記述できます。
 
 主な連鎖メソッド。
-- `thenApply()`: 結果を変換（同期的）
-- `thenApplyAsync()`: 結果を変換（非同期的）
-- `thenCompose()`: 別のCompletableFutureを返す関数を適用
-- `thenCombine()`: 2つのCompletableFutureの結果を結合
-- `thenAccept()`: 結果を消費（戻り値なし）
+- `thenApply()`
+    + 結果を変換（同期的）
+- `thenApplyAsync()`
+    + 結果を変換（非同期的）
+- `thenCompose()`
+    + 別のCompletableFutureを返す関数を適用
+- `thenCombine()`
+    + 2つのCompletableFutureの結果を結合
+- `thenAccept()`
+    + 結果を消費（戻り値なし）
 
 <span class="listing-number">**サンプルコード15-18**</span>
 

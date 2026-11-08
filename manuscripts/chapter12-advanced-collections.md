@@ -221,31 +221,57 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 #### ストリーム処理の3つのフェーズ
 
-1. ストリームの生成
-   - `list.stream()`コレクションからストリームを生成
-   - `Arrays.stream(array)`配列からストリームを生成
-   - `Stream.of(値1, 値2, ...)`個別の値からストリームを生成
-   - `Stream.generate()`や`Stream.iterate()`無限ストリームの生成
+ストリーム処理は、生成、中間操作、終端操作の3つのフェーズで構成されます。
 
-2. 中間操作（Intermediate Operations）: 
-##### 中間操作は新しいストリームを返すため、メソッドチェインで連結できる。主な中間操作
-   - `filter(Predicate)`条件に合う要素のみを通過させる
-   - `map(Function)`各要素を別の形に変換する
-   - `flatMap(Function)`ネストした構造を平坦化する
-   - `sorted()`要素をソートする
-   - `distinct()`重複を除去する
-   - `limit(n)`最初のn個の要素に制限する
-   - `skip(n)`最初のn個の要素をスキップする
+1つ目のフェーズはストリームの生成です。
+主な生成方法は次のとおりです。
 
-3. 終端操作（Terminal Operations）: 
-   終端操作はストリームを「消費」し、結果を生成する。終端操作が呼ばれてはじめて、すべての処理が実行される。
-   - `collect(Collector)`結果を収集する（もっとも柔軟な終端操作）
-   - `forEach(Consumer)`各要素に対して処理を実行
-   - `count()`要素数を返す
-   - `reduce(BinaryOperator)`要素を集約して単一の結果を生成
-   - `anyMatch(Predicate)`いずれかの要素が条件を満たすか
-   - `allMatch(Predicate)`すべての要素が条件を満たすか
-   - `findFirst()`/`findAny()`最初の要素/任意の要素を取得
+- `list.stream()`
+    + コレクションからストリームを生成する
+- `Arrays.stream(array)`
+    + 配列からストリームを生成する
+- `Stream.of(値1, 値2, ...)`
+    + 個別の値からストリームを生成する
+- `Stream.generate()`、`Stream.iterate()`
+    + 無限ストリームを生成する
+
+2つ目のフェーズは中間操作（Intermediate Operations）です。
+中間操作は新しいストリームを返すため、メソッドチェインで連結できます。
+主な中間操作は次のとおりです。
+
+- `filter(Predicate)`
+    + 条件に合う要素のみを通過させる
+- `map(Function)`
+    + 各要素を別の形に変換する
+- `flatMap(Function)`
+    + ネストした構造を平坦化する
+- `sorted()`
+    + 要素をソートする
+- `distinct()`
+    + 重複を除去する
+- `limit(n)`
+    + 最初のn個の要素に制限する
+- `skip(n)`
+    + 最初のn個の要素をスキップする
+
+3つ目のフェーズは終端操作（Terminal Operations）です。
+終端操作はストリームを「消費」し、結果を生成します。終端操作が呼ばれてはじめて、すべての処理が実行されます。
+主な終端操作は次のとおりです。
+
+- `collect(Collector)`
+    + 結果を収集する（もっとも柔軟な終端操作）
+- `forEach(Consumer)`
+    + 各要素に対して処理を実行する
+- `count()`
+    + 要素数を返す
+- `reduce(BinaryOperator)`
+    + 要素を集約して単一の結果を生成する
+- `anyMatch(Predicate)`
+    + いずれかの要素が条件を満たすかを判定する
+- `allMatch(Predicate)`
+    + すべての要素が条件を満たすかを判定する
+- `findFirst()`、`findAny()`
+    + 最初の要素、または任意の要素を取得する
 
 ### `filter`: 条件に合う要素だけを抽出
 
@@ -319,9 +345,12 @@ JavaプログラミングにおいてNullPointerException（NPE）はもっと�
 Java 8で導入されたOptionalクラスは、「値が存在する場合と存在しない場合がある」という概念を型レベルで表現します。これにより、nullの可能性を明示的に扱い、コンパイル時にnull安全性を強制できます。
 
 #### Optional型の主な利点
-- 明示的なnull可能性メソッドの戻り値がnullになる可能性を型で表現
-- 強制的なnullチェック値を取り出す前に存在確認を強制
-- 関数型スタイルの処理map、filter、flatMapなどの操作をチェインできる
+- 明示的なnull可能性
+    + メソッドの戻り値がnullになる可能性を型で表現
+- 強制的なnullチェック
+    + 値を取り出す前に存在確認を強制
+- 関数型スタイルの処理
+    + map、filter、flatMapなどの操作をチェインできる
 
 ### Optionalの作成
 
