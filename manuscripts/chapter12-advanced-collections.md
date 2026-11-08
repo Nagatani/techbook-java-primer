@@ -144,7 +144,7 @@ public class AdvancedSortExample {
         // 点数が高い順、同じ点数の場合は身長が高い順にソート
         Comparator<Student> comparator = Comparator
             .comparingInt(Student::getScore).reversed() // 点数で比較し、逆順（降順）に
-            .thenComparingInt(Student::getHeight).reversed(); // 次に身長で比較し、逆順（降順）に
+            .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()); // 次に身長で比較し、逆順（降順）に
 
         students.sort(comparator); // List.sort()に渡す
 
@@ -159,7 +159,11 @@ public class AdvancedSortExample {
 [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
 ```
 
-`Student::getScore`はメソッド参照とよい、`student -> student.getScore()`というラムダ式をさらに簡潔にした書き方です。
+`Student::getScore`はメソッド参照といい、`student -> student.getScore()`というラムダ式をさらに簡潔にした書き方です。
+
+`reversed()`は、それまでに組み立てた比較条件の全体を逆にします。
+`thenComparingInt(Student::getHeight).reversed()`と書くと、点数の降順まで逆になり、点数の昇順・身長の昇順に並んでしまいます。
+2つ目の条件だけを降順にしたいときは、サンプルコード12-3のように、逆順にした`Comparator`を`thenComparing`に渡します。
 
 ## Stream APIによる現代的なコレクション操作
 
@@ -167,7 +171,7 @@ Java 8で導入されたStream APIは、コレクションの要素の集まり�
 
 ### なぜStream APIが必要なのか？
 
-#### 従来のコレクション操作では、forループとif文を組み合わせた命令型のコードを書く必要がありました。このアプローチには以下のような課題がありました
+従来のコレクション操作では、forループとif文を組み合わせた命令型のコードを書く必要がありました。このアプローチには以下のような課題がありました
 
 1. 可読性の問題
     + ネストしたループや複雑な条件分岐により、コードの意図が読み取りにくい
@@ -729,7 +733,7 @@ public class OptionalPracticalExample {
 ```
 ユーザー 1 のメールドメイン: example.com
 ユーザーID 999 は存在しません
-アプリケーション名: Sample Application
+アプリケーション名: MyApp
 タイムアウト値: 30秒
 ```
 
