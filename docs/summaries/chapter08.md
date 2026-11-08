@@ -9,7 +9,7 @@ sections:
   - key: "レコード（Record）"
     hash: 8b729eed
   - key: "EnumとRecordの使い分けと組み合わせ"
-    hash: c495a6e7
+    hash: 77a0b4bd
   - key: "内部クラス（Inner Classes）"
     hash: 933981e9
   - key: "まとめ"
@@ -62,18 +62,18 @@ sections:
     + レコードパターンを使ったswitch（8-20）、ローカルRecord（8-21）、ネストしたRecord（8-22）
     + DTO（8-23）とValue Object（8-24）の実践例
     + sealed interfaceとRecordによる網羅的なswitch（8-25）、データとロジックを分けるデータ指向プログラミング（8-26）
-- EnumとRecordの使い分けと組み合わせ（L891–1021）
+- EnumとRecordの使い分けと組み合わせ（L891–996）
     + Enumを使う場面・Recordを使う場面のガイドライン
     + 終端状態を持つ`OrderStatus`と、状態遷移で新しいインスタンスを返す`Order`（8-27）
     + ゲームのキャラクター職業（Enum）とステータス（Record）の組み合わせ（8-28）
-- 内部クラス（Inner Classes）（L1022–1223）
+- 内部クラス（Inner Classes）（L997–1198）
     + 4種類の内部クラスの関係図（figure08-03）
     + メンバー内部クラスと`outer.new InnerClass()`（8-29）、静的ネストクラス（8-30）、ローカルクラスと実質的にfinalな変数（8-31）、匿名クラスによるComparator（8-32）
     + 匿名クラスでIteratorを返す`MyList<T>`（8-33）
     + 種類の選び方、メモリリークの回避、ラムダ式による代替のベストプラクティス
-- まとめ（L1224–1248）
+- まとめ（L1199–1223）
     + Enum・Record・内部クラスそれぞれの重要ポイントと、第9章への導入
-- 章末演習（L1249–1265）
+- 章末演習（L1224–1240）
     + `exercises/chapter08/`へのリンクと基礎・応用・発展の3レベル。他章と書式が異なる（太字ラベルと裸のURL）
 
 ## 他章との関係
@@ -89,8 +89,8 @@ sections:
 
 - L81–84、L507–514、L1236–1238: 「項目: 説明」形式のリスト項目で、階層化リストの規約に反する
 - L181、L225、L293: 「実行結果（テストコード付き）」とあるが、テストコードが示されていない。L696の「実行結果（拡張版）」も8-20のmainと出力が合わない
-- L246（8-7）: `Connection`のimportがなく、どのクラスか（java.sql）説明もない。ほかにも8-19の`Duration`、8-21の`List`/`Collections`、8-24の`BigDecimal`/`RoundingMode`、8-26・8-27の`LocalDateTime`などimportがない
-- L962、L987–989（8-28）: `CharacterClass`のゲッターを「省略」しているため、`GameCharacter.create`がそのままではコンパイルできない
+- L246（8-7）: `Connection`のimportがなく、どのクラスか（java.sql）説明もない。ほかにも8-19の`Duration`、8-21の`List`/`Collections`、8-24の`BigDecimal`/`RoundingMode`、8-26の`LocalDateTime`などimportがない（8-27は2026-11-08に全文を公開）
+- 8-28: `CharacterClass`のゲッターを「省略」していた。2026-11-08に全文（sample-code）へゲッターとmainを足し、本文は抜粋にした
 - L1099（8-31）: コメントの出力例「PREFIX: HELLO」は誤り。prefixは大文字化されないので「(prefixの値): HELLO」になる
 - L1230: 「**演習課題URL**:」が太字ラベルで、URLもコード表記でない。他章の「演習課題へのアクセス」の書式と揃っていない
 - L30: 見出しの後に空行が2つ続いている

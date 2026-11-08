@@ -7,9 +7,9 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 99979036
   - key: "外部ライブラリの利用"
-    hash: 32ed3c6d
+    hash: 31b3abe2
   - key: "よくあるエラーと対処法"
-    hash: b392f189
+    hash: c0a809de
   - key: "まとめ"
     hash: a6941e3c
   - key: "章末演習"
@@ -67,7 +67,7 @@ sections:
         * javadocコマンドのオプション（-d、-sourcepath、-encoding/-charset、-windowtitle）とIntelliJ IDEAの手順
         * 小見出しが「コマンドライン (javac)」で、実際のコマンド（javadoc）と食い違う
 
-- 外部ライブラリの利用（L165–1133、22-4〜22-23）
+- 外部ライブラリの利用（L165–1087、22-4〜22-23）
     + オープンソースエコシステムの歴史（L302–316）
         * Apache財団設立、Apache Commons、Maven Central、Spring、GitHubの年表
     + ライブラリ利用の技術的利点（L317–333）
@@ -90,14 +90,14 @@ sections:
     + Guava - Google製のコアライブラリ（L1305–1463、22-17、22-18）
         * 不変コレクション、Multimap、BiMap、Table、Splitter/Joiner、キャッシュ
     + 外部ライブラリ選定の指針（L1464–1605、22-19〜22-21）
-        * 成熟度と信頼性、ライセンス（Apache 2.0、MIT、GPL、LGPL）、propertiesによるバージョン一元管理とtestスコープ、OWASP Dependency Check、よく使われる組み合わせのpom.xml
+        * 成熟度と信頼性、ライセンス（Apache 2.0、MIT、GPL、LGPL）、propertiesによるバージョン一元管理とtestスコープ、OWASP Dependency Check、よく使われる組み合わせの表（2026-11-08にpom.xmlから表へ変更）
         * 冒頭で「機能性、信頼性、保守性、ライセンスの4つの観点」と述べるが、小見出しの構成と対応していない
     + 実践的な開発フロー（L1606–1626、22-22）
         * mvn archetype:generate、clean install、dependency:tree、dependency:analyze、versions:display-dependency-updates
     + トラブルシューティング（L1627–1658、22-23）
         * バージョンの明示指定、exclusionsによる除外、ローカルリポジトリのクリア
 
-- よくあるエラーと対処法（L1134–1760、22-24〜22-52）
+- よくあるエラーと対処法（L1088–1714、22-24〜22-52）
     + Javadocの生成エラー（L1741–1874、22-24〜22-29）
         * クラスコメントでの@param/@returnの誤用、日本語の文字化け（-encoding、Mavenの設定）、HTMLタグの誤用
     + 依存関係の競合（L1875–1972、22-30〜22-33）
@@ -113,7 +113,7 @@ sections:
     + ライブラリの組み合わせ問題（L2290–2362、22-51、22-52）
         * SLF4Jの複数バインディングとexclusionsでの解消、JSONライブラリをJsonUtilに集約して統一する方法
 
-- まとめ（L1761–1814）
+- まとめ（L1715–1768）
     + 本章で学んだ技術の核心（L1661–1671）
         * Javadoc、外部ライブラリ、依存関係管理、エコシステム。「文芸的プログラミング」は本文に出てこない用語
     + ドキュメント化の技術的価値（L1672–1684）
@@ -123,7 +123,7 @@ sections:
     + セキュリティとコンプライアンス（L1698–1712）
         * 脆弱性管理、ライセンス遵守、サプライチェーン、GDPR・SOC2
 
-- 章末演習（L1815–1835）
+- 章末演習（L1769–1789）
     + 演習課題へのアクセス（L1715–1718）
         * リンクは`exercises/chapter22/`で、章番号と一致している
     + 課題構成（L1719–1736）
