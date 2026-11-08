@@ -82,12 +82,29 @@
       { "file": "IntegratedDataManagementApp.java", "from": 294, "to": 294 }
     ]
   },
+  "20-11": {
+    "dir": "20-11",
+    "main": null,
+    "excerpt": [
+      { "file": "SmoothPanel.java", "from": 7, "to": 45 }
+    ]
+  },
   "20-13": {
     "dir": "20-13",
     "main": null,
     "excerpt": [
       { "file": "ImageManager.java", "from": 11, "to": 50 },
       { "file": "ImageManager.java", "from": 68, "to": 68 }
+    ]
+  },
+  "20-17": {
+    "dir": "20-17",
+    "main": null,
+    "excerpt": [
+      { "file": "DynamicPanel.java", "from": 6, "to": 8 },
+      { "file": "DynamicPanel.java", "from": 15, "to": 19 },
+      { "file": "DynamicPanel.java", "from": 28, "to": 44 },
+      { "file": "DynamicPanel.java", "from": 51, "to": 51 }
     ]
   }
 }

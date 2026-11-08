@@ -93,6 +93,15 @@
       { "file": "CompletableFutureExample.java", "from": 91, "to": 92 }
     ]
   },
+  "15-18": {
+    "dir": "15-18",
+    "main": "AsyncChainingExample",
+    "excerpt": [
+      { "file": "AsyncChainingExample.java", "from": 4, "to": 14 },
+      { "file": "AsyncChainingExample.java", "from": 35, "to": 48 },
+      { "file": "AsyncChainingExample.java", "from": 56, "to": 56 }
+    ]
+  },
   "15-19": {
     "dir": "15-19",
     "main": "ParallelPerformanceExample",

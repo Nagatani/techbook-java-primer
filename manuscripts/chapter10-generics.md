@@ -600,12 +600,9 @@ public class VarBestPractices {
 
 既存のコードをvarを使ってリファクタリングする際の戦略を、具体的な例で示します。
 
-<span class="listing-number">**サンプルコード10-16**</span>
+<span class="listing-number">**サンプルコード10-16**　VarRefactoringExample.java（5〜31、54行目）</span>
 
 ```java
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class VarRefactoringExample {
     
     // リファクタリング前
@@ -633,28 +630,7 @@ public class VarRefactoringExample {
             .map(n -> n * 2)
             .collect(Collectors.toList());
     }
-    
-    // 段階的リファクタリングの例
-    public static void gradualRefactoring() {
-        // ステップ1: もっとも冗長な部分から開始
-        var userCache = new ConcurrentHashMap<String, UserProfile>();
-        
-        // ステップ2: 型が明確なファクトリーメソッド
-        var emptyList = Collections.<String>emptyList();
-        
-        // ステップ3: Stream処理結果
-        var groupedUsers = getAllUsers()
-            .stream()
-            .collect(Collectors.groupingBy(UserProfile::getDepartment));
-    }
-    
-    private static List<UserProfile> getAllUsers() {
-        return List.of();
-    }
-    
-    static class UserProfile {
-        public String getDepartment() { return "Engineering"; }
-    }
+    // ...
 }
 ```
 

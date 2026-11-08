@@ -980,19 +980,12 @@ public class CounterApplication {
 
 以下のコードは、チェックボックスとラジオボタンの選択状態に応じたイベント処理の実装例です。isSelected()メソッドを使用して選択状態を確認し、それに応じてラベルのテキストを動的に更新します。ラジオボタンはButtonGroupによってグループ化されているため、常に1つだけが選択される状態が保証されます。
 
-<span class="listing-number">**サンプルコード17-19**</span>
+<span class="listing-number">**サンプルコード17-19**　SelectionEventExample.java（5〜6、12〜22、24〜40、53〜54行目）</span>
 
 ```java
-import java.awt.GridLayout;
-import javax.swing.*;
-
 public class SelectionEventExample {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("選択イベントの例");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(4, 1));
-
+        // ...
         // チェックボックス
         JCheckBox agreeCheckBox = new JCheckBox("利用規約に同意する");
         JLabel agreeLabel = new JLabel("同意状態: 未同意");
@@ -1004,7 +997,7 @@ public class SelectionEventExample {
                 agreeLabel.setText("同意状態: 未同意");
             }
         });
-
+        // ...
         // ラジオボタン
         JPanel radioPanel = new JPanel(new FlowLayout());
         ButtonGroup group = new ButtonGroup();
@@ -1022,18 +1015,7 @@ public class SelectionEventExample {
         beginnerRadio.addActionListener(e -> levelLabel.setText("レベル: 初心者"));
         intermediateRadio.addActionListener(e -> levelLabel.setText("レベル: 中級者"));
         advancedRadio.addActionListener(e -> levelLabel.setText("レベル: 上級者"));
-        
-        radioPanel.add(beginnerRadio);
-        radioPanel.add(intermediateRadio);
-        radioPanel.add(advancedRadio);
-
-        frame.add(agreeCheckBox);
-        frame.add(agreeLabel);
-        frame.add(radioPanel);
-        frame.add(levelLabel);
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```

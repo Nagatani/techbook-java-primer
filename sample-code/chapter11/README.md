@@ -17,9 +17,15 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [11-1](./11-01/) | LambdaIntroExample.java | `java -cp out LambdaIntroExample` |
+| [11-8](./11-08/) | ResilientService.java | （mainメソッドなし） |
+| [11-12](./11-12/) | AccountState.java<br>EventSourcedAccount.java | （mainメソッドなし） |
+| [11-15](./11-15/) | FunctionalBuilder.java<br>Person.java | （mainメソッドなし） |
 | [11-21](./11-21/) | FunctionalInterfaceExample.java | `java -cp out FunctionalInterfaceExample` |
+| [11-22](./11-22/) | Models.java<br>MultiConditionSortExample.java | `java -cp out MultiConditionSortExample` |
 | [11-23](./11-23/) | StandardFunctionalInterfaces.java | `java -cp out StandardFunctionalInterfaces` |
 | [11-24](./11-24/) | MethodReferenceExample.java | `java -cp out MethodReferenceExample` |
 | [11-25](./11-25/) | MethodReferenceConcurrencyExample.java | `java -cp out MethodReferenceConcurrencyExample` |
+| [11-26](./11-26/) | LambdaVsMethodReference.java<br>Person.java | `java -cp out LambdaVsMethodReference` |
 | [11-27](./11-27/) | RunnableLambdaExample.java | `java -cp out RunnableLambdaExample` |
+| [11-28](./11-28/) | User.java<br>ValidationFramework.java | `java -cp out ValidationFramework` |
 | [11-30](./11-30/) | LambdaSyntaxFixExample.java | `java -cp out LambdaSyntaxFixExample` |

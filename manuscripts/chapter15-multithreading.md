@@ -1369,7 +1369,7 @@ public class CompletableFutureExample {
 - `thenAccept()`
     + 結果を消費（戻り値なし）
 
-<span class="listing-number">**サンプルコード15-18**</span>
+<span class="listing-number">**サンプルコード15-18**　AsyncChainingExample.java（4〜14、35〜48、56行目）</span>
 
 ```java
 public class AsyncChainingExample {
@@ -1383,26 +1383,7 @@ public class AsyncChainingExample {
             return new User(userId, "User-" + userId);
         });
     }
-    
-    // ユーザーの注文履歴を取得
-    static CompletableFuture<List<Order>> fetchOrders(User user) {
-        return CompletableFuture.supplyAsync(() -> {
-            System.out.println("Fetching orders for: " + user.getName());
-            sleep(1500);
-            return List.of(
-                new Order("Order-1", 1000),
-                new Order("Order-2", 2000)
-            );
-        });
-    }
-    
-    // 注文の合計金額を計算
-    static int calculateTotal(List<Order> orders) {
-        System.out.println("Calculating total...");
-        return orders.stream()
-            .mapToInt(Order::getAmount)
-            .sum();
-    }
+    // ...
     
     public static void main(String[] args) throws Exception {
         // 非同期処理を連鎖させる
@@ -1417,13 +1398,7 @@ public class AsyncChainingExample {
         System.out.println("Total amount: " + totalFuture.get());
     }
     
-    private static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+    // ...
 }
 ```
 

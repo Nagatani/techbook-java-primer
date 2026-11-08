@@ -3,8 +3,10 @@
     "dir": "06-01",
     "main": "ThreadSafetyProblem",
     "excerpt": [
-      { "file": "MutablePoint.java", "from": 1, "to": 15 },
-      { "file": "ThreadSafetyProblem.java", "from": 1, "to": 34 }
+      { "file": "MutablePoint.java", "from": 1, "to": 3 },
+      { "file": "MutablePoint.java", "from": 11, "to": 15 },
+      { "file": "ThreadSafetyProblem.java", "from": 1, "to": 21 },
+      { "file": "ThreadSafetyProblem.java", "from": 30, "to": 34 }
     ]
   },
   "6-3": {

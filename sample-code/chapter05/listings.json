@@ -18,6 +18,13 @@
       { "file": "PayPalPayment.java", "from": 43, "to": 50 }
     ]
   },
+  "5-3": {
+    "dir": "05-03",
+    "main": "PaymentExample",
+    "excerpt": [
+      { "file": "PaymentExample.java", "from": 1, "to": 35 }
+    ]
+  },
   "5-4": {
     "dir": "05-04",
     "main": null,
@@ -65,7 +72,9 @@
     "dir": "05-09",
     "main": "StackProblem",
     "excerpt": [
-      { "file": "MyStack.java", "from": 1, "to": 23 },
+      { "file": "MyStack.java", "from": 1, "to": 1 },
+      { "file": "MyStack.java", "from": 5, "to": 16 },
+      { "file": "MyStack.java", "from": 23, "to": 23 },
       { "file": "StackProblem.java", "from": 1, "to": 16 }
     ]
   },
@@ -74,6 +83,16 @@
     "main": null,
     "excerpt": [
       { "file": "MyStack.java", "from": 1, "to": 34 }
+    ]
+  },
+  "5-11": {
+    "dir": "05-11",
+    "main": null,
+    "excerpt": [
+      { "file": "Employee.java", "from": 3, "to": 16 },
+      { "file": "SystemAdministrator.java", "from": 3, "to": 8 },
+      { "file": "RegularEmployee.java", "from": 3, "to": 13 },
+      { "file": "EmployeeManagementSystem.java", "from": 3, "to": 10 }
     ]
   },
   "5-12": {
@@ -122,6 +141,26 @@
       { "file": "CharacterOverrideTest.java", "from": 1, "to": 3 },
       { "file": "CharacterOverrideTest.java", "from": 17, "to": 20 },
       { "file": "CharacterOverrideTest.java", "from": 24, "to": 28 }
+    ]
+  },
+  "5-22": {
+    "dir": "05-22",
+    "main": "UserSystemBefore",
+    "excerpt": [
+      { "file": "UserSystemBefore.java", "from": 1, "to": 18 },
+      { "file": "UserSystemBefore.java", "from": 26, "to": 47 }
+    ]
+  },
+  "5-23": {
+    "dir": "05-23",
+    "main": "UserSystemAfter",
+    "excerpt": [
+      { "file": "User.java", "from": 1, "to": 4 },
+      { "file": "User.java", "from": 11, "to": 13 },
+      { "file": "User.java", "from": 15, "to": 31 },
+      { "file": "UserSystemAfter.java", "from": 1, "to": 18 },
+      { "file": "UserSystemAfter.java", "from": 27, "to": 42 },
+      { "file": "UserSystemAfter.java", "from": 53, "to": 53 }
     ]
   },
   "5-24": {

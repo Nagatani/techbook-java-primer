@@ -568,7 +568,7 @@ public void paintComponent(Graphics g) {
 
 対処法。
 
-<span class="listing-number">**サンプルコード20-11**</span>
+<span class="listing-number">**サンプルコード20-11**　SmoothPanel.java（7〜45行目）</span>
 
 ```java
 public class SmoothPanel extends JPanel {
@@ -843,31 +843,19 @@ panel.revalidate();
 
 対処法。
 
-<span class="listing-number">**サンプルコード20-17**</span>
+<span class="listing-number">**サンプルコード20-17**　DynamicPanel.java（6〜8、15〜19、28〜44、51行目）</span>
 
 ```java
 public class DynamicPanel extends JPanel {
     private final List<JComponent> components = new ArrayList<>();
     private final GridBagConstraints gbc = new GridBagConstraints();
-    
-    public DynamicPanel() {
-        setLayout(new GridBagLayout());
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(2, 2, 2, 2);
-    }
+    // ...
     
     public void addComponent(JComponent component) {
         components.add(component);
         refreshLayout();
     }
-    
-    public void removeComponent(int index) {
-        if (index >= 0 && index < components.size()) {
-            JComponent component = components.remove(index);
-            remove(component);
-            refreshLayout();
-        }
-    }
+    // ...
     
     private void refreshLayout() {
         // 全てのコンポーネントを一度削除
@@ -885,12 +873,7 @@ public class DynamicPanel extends JPanel {
         repaint();
     }
     
-    public void clear() {
-        components.clear();
-        removeAll();
-        revalidate();
-        repaint();
-    }
+    // ...
 }
 ```
 

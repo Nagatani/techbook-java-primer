@@ -225,9 +225,11 @@ public class PayPalPayment extends PaymentProcessor {
 
 #### 例外を使わない決済処理の使用例
 
-<span class="listing-number">**サンプルコード5-3**</span>
+<span class="listing-number">**サンプルコード5-3**　PaymentExample.java（1〜35行目）</span>
 
 ```java
+import java.math.BigDecimal;
+
 public class PaymentExample {
     public static void main(String[] args) {
         // クレジットカード決済の例
@@ -261,11 +263,9 @@ public class PaymentExample {
         } else {
             System.out.println("決済失敗: " + ppResult.getMessage());
         }
-    }
-}
 ```
 
-実行結果：
+次は実行結果の一例です。クレジットカード決済は10%の確率で拒否されるため、実行するたびに結果が変わることがあります。
 ```
 クレジットカード決済APIを呼び出し中...
 取引ID: TXN001 承認コード: CC-1707123456789
@@ -273,7 +273,6 @@ public class PaymentExample {
 決済エラー[TXN002]: 無効なメールアドレスです
 決済失敗: 無効なメールアドレスです
 ```
-（注：クレジットカード決済の成功/失敗は10%の確率でランダムに決まるため、実行ごとに結果が異なる場合があります）
 
 #### エラー処理の設計ポイント
 
@@ -696,13 +695,11 @@ public class EmployeeTest {
 
 以下のコードは、継承の誤用の典型例です。スタック（後入れ先出しのデータ構造）を実装するためにArrayListを継承していますが、これによりArrayListの全メソッドが公開され、スタックの原則を破る操作が可能になってしまいます。この問題と解決策を見ていきましょう。
 
-<span class="listing-number">**サンプルコード5-9**　MyStack.java、StackProblem.java</span>
+<span class="listing-number">**サンプルコード5-9**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-
+// ...
 public class MyStack<E> extends ArrayList<E> {
     public void push(E item) {
         add(item);
@@ -715,12 +712,7 @@ public class MyStack<E> extends ArrayList<E> {
         return remove(size() - 1);
     }
     
-    public E peek() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return get(size() - 1);
-    }
+    // ...
 }
 
 // 問題点が露呈する使用例
@@ -790,7 +782,7 @@ public class MyStack<E> {
 以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
 この設計はリスコフ置換原則に違反します。
 
-<span class="listing-number">**サンプルコード5-11**</span>
+<span class="listing-number">**サンプルコード5-11**　Employee.java（3〜16行目）、SystemAdministrator.java（3〜8行目）、RegularEmployee.java（3〜13行目）、EmployeeManagementSystem.java（3〜10行目）</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
@@ -1337,7 +1329,7 @@ public class UserManagementSystem {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-22**</span>
+<span class="listing-number">**サンプルコード5-22**　UserSystemBefore.java（1〜18、26〜47行目）</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -1358,7 +1350,7 @@ public class UserSystemBefore {
         
         // GuestUserの処理
         guest.processRequest("WRITE");
-        
+        // ...
         // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
         // PremiumUser premium = new PremiumUser("P001", "premium@example.com");
         // premium.processRequest("CREATE");
@@ -1400,9 +1392,36 @@ Guest user WRITE権限: false
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-23**</span>
+<span class="listing-number">**サンプルコード5-23**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
 
 ```java
+// 親クラスに共通インターフェイスを定義
+public class User {
+    protected String userId;
+    protected String email;
+    // ...
+    public void processRequest(String action) {
+        System.out.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+    }
+    // ...
+    public boolean hasPermission(String resource) {
+        // デフォルトでは読み取り権限のみ
+        return resource.equals("READ");
+    }
+    
+    public void notify(String message) {
+        // 通知を送信
+        System.out.println(userId + " への通知: " + message);
+    }
+    
+    public boolean isActive() {
+        return true; // デフォルトではアクティブ
+    }
+    
+    public String getUserId() { return userId; }
+    public String getEmail() { return email; }
+}
+
 // 統一的な処理で全ての型を扱える
 public class UserSystemAfter {
     public static void main(String[] args) {
@@ -1421,6 +1440,7 @@ public class UserSystemAfter {
         for (User user : users) {
             user.processRequest("READ"); // 実際の型に応じた処理が自動的に呼ばれる
         }
+        // ...
     }
     
     // アクセス権限チェックも拡張性が高い
@@ -1437,16 +1457,7 @@ public class UserSystemAfter {
         
         return hasPermission;
     }
-    
-    // 特定の条件での処理も簡潔に書ける
-    public static void sendNotification(User[] users, String message) {
-        for (User user : users) {
-            if (user.isActive()) {
-                user.notify(message);
-                System.out.println(user.getUserId() + " に通知を送信しました");
-            }
-        }
-    }
+    // ...
 }
 ```
 
@@ -1470,30 +1481,6 @@ A001 への通知: システムメンテナンスのお知らせ
 A001 に通知を送信しました
 guest_session123 への通知: システムメンテナンスのお知らせ
 guest_session123 に通知を送信しました
-```
-
-```java
-// 親クラスに共通インターフェイスを定義
-class User {
-    protected String userId;
-    protected String email;
-    
-    public boolean hasPermission(String resource) {
-        // デフォルトでは読み取り権限のみ
-        return resource.equals("READ");
-    }
-    
-    public void notify(String message) {
-        // 通知を送信
-    }
-    
-    public boolean isActive() {
-        return true; // デフォルトではアクティブ
-    }
-    
-    public String getUserId() { return userId; }
-    public String getEmail() { return email; }
-}
 ```
 
 #### ポリモーフィズムの利点まとめ

@@ -629,7 +629,7 @@ Document#DOC001 (version 2, age: 23ms)
 
 トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
-<span class="listing-number">**サンプルコード7-13**　ComparableTrait.java</span>
+<span class="listing-number">**サンプルコード7-13**　ComparableTrait.java（1〜14、27〜30、37〜50行目）</span>
 
 ```java
 // 比較可能オブジェクトのトレイト
@@ -646,28 +646,12 @@ interface ComparableTrait<T> extends Comparable<T> {
     default boolean isEqualTo(T other) {
         return compareTo(other) == 0;
     }
-    
-    default boolean isBetween(T lower, T upper) {
-        return isGreaterThan(lower) && isLessThan(upper);
-    }
-    
-    default T max(T other) {
-        return isGreaterThan(other) ? (T) this : other;
-    }
-    
-    default T min(T other) {
-        return isLessThan(other) ? (T) this : other;
-    }
+    // ...
 }
 
 // 使用例
 class Temperature implements ComparableTrait<Temperature> {
-    private final double celsius;
-    
-    public Temperature(double celsius) {
-        this.celsius = celsius;
-    }
-    
+    // ...
     @Override
     public int compareTo(Temperature other) {
         return Double.compare(this.celsius, other.celsius);

@@ -34,19 +34,13 @@
 スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数インターフェイス」で詳しく学びます。
 ここでは、「2つの処理が同時に動き、同じオブジェクトを書き換えている」ことだけを読み取ってください。
 
-<span class="listing-number">**サンプルコード6-1**　MutablePoint.java、ThreadSafetyProblem.java</span>
+<span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜3、11〜15行目）、ThreadSafetyProblem.java（1〜21、30〜34行目）</span>
 
 ```java
 // 可変オブジェクトの問題例
 public class MutablePoint {
     private int x;
-    private int y;
-    
-    public MutablePoint(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
+    // ...
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
     public int getX() { return x; }
@@ -74,14 +68,7 @@ public class ThreadSafetyProblem {
         t1.start();
         t2.start();
         
-        try {
-            t1.join();
-            t2.join();
-        } catch (InterruptedException e) {
-            // スレッドが中断された場合の処理
-            Thread.currentThread().interrupt();
-            System.err.println("スレッドの待機が中断されました");
-        }
+        // ...
         
         // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
         System.out.println("X座標: " + point.getX());

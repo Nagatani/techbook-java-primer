@@ -10,7 +10,11 @@
     "dir": "23-02",
     "main": "TodoApp",
     "excerpt": [
-      { "file": "TodoApp.java", "from": 1, "to": 47 }
+      { "file": "TodoApp.java", "from": 1, "to": 1 },
+      { "file": "TodoApp.java", "from": 5, "to": 6 },
+      { "file": "TodoApp.java", "from": 12, "to": 13 },
+      { "file": "TodoApp.java", "from": 27, "to": 33 },
+      { "file": "TodoApp.java", "from": 42, "to": 47 }
     ]
   },
   "23-6": {

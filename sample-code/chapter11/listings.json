@@ -6,11 +6,42 @@
       { "file": "LambdaIntroExample.java", "from": 1, "to": 18 }
     ]
   },
+  "11-8": {
+    "dir": "11-08",
+    "main": null,
+    "excerpt": [
+      { "file": "ResilientService.java", "from": 6, "to": 28 },
+      { "file": "ResilientService.java", "from": 40, "to": 40 }
+    ]
+  },
+  "11-12": {
+    "dir": "11-12",
+    "main": null,
+    "excerpt": [
+      { "file": "EventSourcedAccount.java", "from": 3, "to": 37 }
+    ]
+  },
+  "11-15": {
+    "dir": "11-15",
+    "main": null,
+    "excerpt": [
+      { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
+      { "file": "FunctionalBuilder.java", "from": 26, "to": 43 },
+      { "file": "FunctionalBuilder.java", "from": 45, "to": 56 }
+    ]
+  },
   "11-21": {
     "dir": "11-21",
     "main": "FunctionalInterfaceExample",
     "excerpt": [
       { "file": "FunctionalInterfaceExample.java", "from": 1, "to": 15 }
+    ]
+  },
+  "11-22": {
+    "dir": "11-22",
+    "main": "MultiConditionSortExample",
+    "excerpt": [
+      { "file": "MultiConditionSortExample.java", "from": 7, "to": 53 }
     ]
   },
   "11-23": {
@@ -35,6 +66,13 @@
       { "file": "MethodReferenceConcurrencyExample.java", "from": 23, "to": 47 }
     ]
   },
+  "11-26": {
+    "dir": "11-26",
+    "main": "LambdaVsMethodReference",
+    "excerpt": [
+      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 40 }
+    ]
+  },
   "11-27": {
     "dir": "11-27",
     "main": "RunnableLambdaExample",
@@ -43,6 +81,14 @@
       { "file": "RunnableLambdaExample.java", "from": 14, "to": 21 },
       { "file": "RunnableLambdaExample.java", "from": 27, "to": 33 },
       { "file": "RunnableLambdaExample.java", "from": 44, "to": 46 }
+    ]
+  },
+  "11-28": {
+    "dir": "11-28",
+    "main": "ValidationFramework",
+    "excerpt": [
+      { "file": "ValidationFramework.java", "from": 6, "to": 22 },
+      { "file": "ValidationFramework.java", "from": 36, "to": 67 }
     ]
   },
   "11-30": {

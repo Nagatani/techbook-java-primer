@@ -94,7 +94,9 @@
     "dir": "07-13",
     "main": null,
     "excerpt": [
-      { "file": "ComparableTrait.java", "from": 1, "to": 50 }
+      { "file": "ComparableTrait.java", "from": 1, "to": 14 },
+      { "file": "ComparableTrait.java", "from": 27, "to": 30 },
+      { "file": "ComparableTrait.java", "from": 37, "to": 50 }
     ]
   },
   "7-14": {

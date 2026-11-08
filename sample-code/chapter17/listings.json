@@ -133,6 +133,16 @@
       { "file": "CounterApplication.java", "from": 54, "to": 64 }
     ]
   },
+  "17-19": {
+    "dir": "17-19",
+    "main": "SelectionEventExample",
+    "excerpt": [
+      { "file": "SelectionEventExample.java", "from": 5, "to": 6 },
+      { "file": "SelectionEventExample.java", "from": 12, "to": 22 },
+      { "file": "SelectionEventExample.java", "from": 24, "to": 40 },
+      { "file": "SelectionEventExample.java", "from": 53, "to": 54 }
+    ]
+  },
   "17-20": {
     "dir": "17-20",
     "main": "FormApplication",

@@ -33,6 +33,7 @@ javac -d out *.java
 | [17-15](./17-15/) | TextFieldEventExample.java | `java -cp out TextFieldEventExample` |
 | [17-17](./17-17/) | LambdaEventExample.java | `java -cp out LambdaEventExample` |
 | [17-18](./17-18/) | CounterApplication.java | `java -cp out CounterApplication` |
+| [17-19](./17-19/) | SelectionEventExample.java | `java -cp out SelectionEventExample` |
 | [17-20](./17-20/) | FormApplication.java | `java -cp out FormApplication` |
 | [17-21](./17-21/) | EDTBasicExample.java | `java -cp out EDTBasicExample` |
 | [17-22](./17-22/) | EventQueueExample.java | `java -cp out EventQueueExample` |

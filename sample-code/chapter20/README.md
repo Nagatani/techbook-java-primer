@@ -23,4 +23,6 @@ javac -d out *.java
 | [20-5](./20-05/) | AdvancedListExample.java | `java -cp out AdvancedListExample` |
 | [20-6](./20-06/) | CustomEditorExample.java | `java -cp out CustomEditorExample` |
 | [20-7](./20-07/) | IntegratedDataManagementApp.java<br>Task.java | `java -cp out IntegratedDataManagementApp` |
+| [20-11](./20-11/) | SmoothPanel.java | （mainメソッドなし） |
 | [20-13](./20-13/) | ImageManager.java | （mainメソッドなし） |
+| [20-17](./20-17/) | DynamicPanel.java | （mainメソッドなし） |

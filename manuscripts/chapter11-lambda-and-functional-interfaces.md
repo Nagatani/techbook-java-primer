@@ -83,7 +83,7 @@ button.addActionListener(new ActionListener() {
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-3**</span>
+<span class="listing-number">**サンプルコード11-3**　HigherOrderFunctionExample.java</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -246,7 +246,7 @@ public class ReactiveVideoRecommendationService {
 
 1. リトライとサーキットブレーカー
 
-<span class="listing-number">**サンプルコード11-8**</span>
+<span class="listing-number">**サンプルコード11-8**　ResilientService.java（6〜28、40行目）</span>
 
 ```java
 public class ResilientService {
@@ -272,17 +272,7 @@ public class ResilientService {
             .orElseThrow();
         };
     }
-    
-    // 使用例
-    public String fetchDataWithRetry() {
-        Supplier<String> unreliableService = () -> {
-            if (Math.random() < 0.7) throw new RuntimeException("Service unavailable");
-            return "Success!";
-        };
-        
-        Supplier<String> resilientService = withRetry(unreliableService, 3);
-        return resilientService.get();
-    }
+    // ...
 }
 ```
 
@@ -328,7 +318,7 @@ public class EventProcessor {
 
 2. 関数合成によるミドルウェアパターン
 
-<span class="listing-number">**サンプルコード11-10**</span>
+<span class="listing-number">**サンプルコード11-10**　MiddlewareChain.java</span>
 
 ```java
 public class MiddlewareChain {
@@ -422,7 +412,7 @@ public class DataProcessingTemplate {
 
 3. イベントソーシングとCQRS
 
-<span class="listing-number">**サンプルコード11-12**</span>
+<span class="listing-number">**サンプルコード11-12**　EventSourcedAccount.java（3〜37行目）</span>
 
 ```java
 public class EventSourcedAccount {
@@ -544,30 +534,11 @@ public class LambdaPerformance {
 
 ### 実践的なデザインパターン：関数型ビルダ
 
-<span class="listing-number">**サンプルコード11-15**</span>
+<span class="listing-number">**サンプルコード11-15**　FunctionalBuilder.java（5、26〜43、45〜56行目）</span>
 
 ```java
 public class FunctionalBuilder {
-    // 従来のビルダーパターン
-    public static class TraditionalBuilder {
-        private String name;
-        private int age;
-        
-        public TraditionalBuilder withName(String name) {
-            this.name = name;
-            return this;
-        }
-        
-        public TraditionalBuilder withAge(int age) {
-            this.age = age;
-            return this;
-        }
-        
-        public Person build() {
-            return new Person(name, age);
-        }
-    }
-    
+    // ...
     // 関数型ビルダーパターン
     public static class FunctionalPersonBuilder {
         private final List<Consumer<Person>> operations = new ArrayList<>();
@@ -586,7 +557,7 @@ public class FunctionalBuilder {
     
     // 使用例
     public void demonstrateBuilders() {
-
+        // ...
         // 関数型ビルダーの利点：動的な構築ロジック
         Person person = new FunctionalPersonBuilder()
             .with(p -> p.setName("Alice"))
@@ -814,7 +785,7 @@ public class FunctionalInterfaceExample {
 
 実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
 
-<span class="listing-number">**サンプルコード11-22**</span>
+<span class="listing-number">**サンプルコード11-22**　MultiConditionSortExample.java（7〜53行目）</span>
 
 ```java
 public class MultiConditionSortExample {
@@ -835,6 +806,8 @@ public class MultiConditionSortExample {
                 .thenComparing(Student::getName)
                 .thenComparing(Student::getStudentId)
         );
+        System.out.println("学生ソート後（学年→名前→学生番号）:");
+        sortedStudents.forEach(System.out::println);
 
         // 降順ソートの組み合わせ
         List<Student> reversedStudents = new ArrayList<>(students);
@@ -842,6 +815,8 @@ public class MultiConditionSortExample {
             Comparator.comparing(Student::getGrade).reversed()
                 .thenComparing(Student::getName)
         );
+        System.out.println("\n降順ソート（学年降順→名前昇順）:");
+        reversedStudents.forEach(System.out::println);
 
         // 複雑な条件：優先度、作成日時、タイトルの順
         List<Task> tasks = Arrays.asList(
@@ -856,6 +831,8 @@ public class MultiConditionSortExample {
                 .thenComparing(Task::getCreatedAt)
                 .thenComparing(Task::getTitle)
         );
+        System.out.println("\nタスクソート後（優先度降順→作成日時→タイトル）:");
+        sortedTasks.forEach(System.out::println);
     }
 }
 ```
@@ -1075,7 +1052,7 @@ Task 3 completed
 
 メソッド参照は、既存のメソッドを呼び出すだけのラムダ式をより簡潔に表現する方法です。とくに、Streamのmap操作やcollect操作でよく使われ、コードの意図をより明確に示すことができます。
 
-<span class="listing-number">**サンプルコード11-26**</span>
+<span class="listing-number">**サンプルコード11-26**　LambdaVsMethodReference.java</span>
 
 ```java
 import java.util.*;
@@ -1199,7 +1176,7 @@ Thread t1 (Anonymous) finished
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-28**</span>
+<span class="listing-number">**サンプルコード11-28**　ValidationFramework.java（6〜22、36〜67行目）</span>
 
 ```java
 public class ValidationFramework {
@@ -1219,8 +1196,7 @@ public class ValidationFramework {
     public static class ValidationResult {
         private final boolean valid;
         private final List<String> errors;
-        
-        // コンストラクタとメソッド（省略）
+        // ...
     }
     
     public static Function<User, ValidationResult> validateUserWithErrors = user -> {
