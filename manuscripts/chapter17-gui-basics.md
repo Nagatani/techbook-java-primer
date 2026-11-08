@@ -342,19 +342,12 @@ public class AdvancedButton {
 
 以下のコードは、Swingが提供するさまざまなテキスト入力コンポーネントの実装例です。JTextField、JPasswordField、JTextAreaなどの基本的なテキスト入力に加え、JSpinnerやJSliderなどの数値入力専用コンポーネントも示しています。各コンポーネントは特定の用途に最適化されており、適切に選択することでユーザビリティの高いインターフェイスを構築できます。
 
-<span class="listing-number">**サンプルコード17-7**　TextInputComponents.java</span>
+<span class="listing-number">**サンプルコード17-7**　TextInputComponents.java（4〜5、11〜41、45〜46行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class TextInputComponents {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("テキスト入力コンポーネント");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(5, 2, 5, 5));
-        
+        // ...
         // 一行テキストフィールド
         frame.add(new JLabel("一行テキスト:"));
         JTextField textField = new JTextField("初期テキスト");
@@ -386,9 +379,7 @@ public class TextInputComponents {
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         frame.add(slider);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -416,19 +407,12 @@ JListは、複数の項目を一度に表示し、単一または複数選択を
 
 以下のコードは、チェックボックス、ラジオボタン、コンボボックス、リストなどの選択系コンポーネントの実装例です。これらのコンポーネントは、ユーザーが選択肢から項目を選ぶための重要なインターフェイス要素です。とくにButtonGroupを使ったラジオボタンのグループ化は、相互排他的な選択を実現する標準的な手法です。
 
-<span class="listing-number">**サンプルコード17-8**　SelectionComponents.java</span>
+<span class="listing-number">**サンプルコード17-8**　SelectionComponents.java（4〜5、11〜44、48〜49行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class SelectionComponents {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("選択コンポーネント");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(4, 2, 5, 5));
-        
+        // ...
         // チェックボックス
         frame.add(new JLabel("チェックボックス:"));
         JPanel checkBoxPanel = new JPanel(new FlowLayout());
@@ -463,9 +447,7 @@ public class SelectionComponents {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScrollPane = new JScrollPane(list);
         frame.add(listScrollPane);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -907,20 +889,12 @@ button.addActionListener(e -> System.out.println("ボタンがクリックされ
 
 以下のコードは、ラムダ式を使った実用的なテキスト変換アプリケーションの例です。複数のボタンにそれぞれ異なる処理を割り当て、入力されたテキストを大文字・小文字に変換したり、クリアしたりする機能を実装しています。ラムダ式により、各ボタンのイベント処理が非常に読みやすく表現されています。
 
-<span class="listing-number">**サンプルコード17-17**　LambdaEventExample.java</span>
+<span class="listing-number">**サンプルコード17-17**　LambdaEventExample.java（5〜6、12〜27、45〜46行目）</span>
 
 ```java
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import javax.swing.*;
-
 public class LambdaEventExample {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("ラムダ式イベント処理");
-        frame.setSize(300, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(3, 1));
-
+        // ...
         JTextField inputField = new JTextField();
         JLabel resultLabel = new JLabel("結果が表示されます", JLabel.CENTER);
         JPanel buttonPanel = new JPanel();
@@ -937,23 +911,7 @@ public class LambdaEventExample {
             String text = inputField.getText();
             resultLabel.setText(text.toLowerCase());
         });
-
-        JButton clearButton = new JButton("クリア");
-        clearButton.addActionListener(e -> {
-            inputField.setText("");
-            resultLabel.setText("結果が表示されます");
-        });
-
-        buttonPanel.add(upperButton);
-        buttonPanel.add(lowerButton);
-        buttonPanel.add(clearButton);
-
-        frame.add(inputField);
-        frame.add(resultLabel);
-        frame.add(buttonPanel);
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -1229,22 +1187,13 @@ EDTは内部的にイベントキューを管理しており、すべてのユ�
 
 以下のコードは、現在のスレッドがEDTであるかを確認する方法を示しています。SwingUtilities.isEventDispatchThread()メソッドを使用して、イベントハンドラが正しくEDT上で実行されていることを検証します。このパターンは、デバッグ時やスレッドセーフティの確認に役立ちます。
 
-<span class="listing-number">**サンプルコード17-22**　EventQueueExample.java</span>
+<span class="listing-number">**サンプルコード17-22**　EventQueueExample.java（6〜8、14〜31、37〜39行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class EventQueueExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("イベントキューの例");
-            frame.setSize(400, 200);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new FlowLayout());
-            
+            // ...
             JButton button = new JButton("イベント確認");
             JLabel statusLabel = new JLabel("準備完了");
             
@@ -1263,11 +1212,7 @@ public class EventQueueExample {
                     System.out.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
                 }
             });
-            
-            frame.add(button);
-            frame.add(statusLabel);
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            // ...
         });
     }
 }
@@ -1346,12 +1291,9 @@ SwingUtilitiesクラスには、EDTを操作するための便利なメソッド
 
 以下のコードは、SwingUtilitiesが提供する主要なEDT関連メソッドの使用例を示しています。invokeLater()とinvokeAndWait()の違いと、それぞれを使う場面を押さえてください。とくにinvokeAndWait()は、EDT上から呼び出すとエラーになり、ロックを持ったまま呼び出すとデッドロックを起こすことがあるため、注意して使います。
 
-<span class="listing-number">**サンプルコード17-24**　EDTUtilityExample.java</span>
+<span class="listing-number">**サンプルコード17-24**　EDTUtilityExample.java（4〜26、31〜39、44〜45行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class EDTUtilityExample {
     public static void main(String[] args) {
         // 1. SwingUtilities.invokeLater() - EDT上で後で実行
@@ -1375,10 +1317,7 @@ public class EDTUtilityExample {
     }
     
     private static void createGUI() {
-        JFrame frame = new JFrame("EDT ユーティリティの例");
-        frame.setSize(300, 150);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         JButton checkThreadButton = new JButton("スレッドを確認");
         checkThreadButton.addActionListener(e -> {
             String threadInfo = String.format(
@@ -1388,10 +1327,7 @@ public class EDTUtilityExample {
             );
             JOptionPane.showMessageDialog(frame, threadInfo);
         });
-        
-        frame.add(checkThreadButton);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -1522,22 +1458,13 @@ public class HeavyProcessingExample {
 
 以下のコードは、javax.swing.Timerを使用した定期的なUI更新の実装例です。TimerはEDT上で実行されるため、スレッドセーフティを気にせずにUIコンポーネントを更新できます。この例では、毎秒現在時刻を表示するデジタル時計を実装しています。
 
-<span class="listing-number">**サンプルコード17-27**　TimerExample.java</span>
+<span class="listing-number">**サンプルコード17-27**　TimerExample.java（6〜8、14〜35、42〜44行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 public class TimerExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("タイマーの例");
-            frame.setSize(300, 150);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new BorderLayout());
-            
+            // ...
             JLabel timeLabel = new JLabel("", JLabel.CENTER);
             timeLabel.setFont(new Font("Monospaced", Font.BOLD, 18));
             
@@ -1560,12 +1487,7 @@ public class TimerExample {
                     toggleButton.setText("停止");
                 }
             });
-            
-            frame.add(timeLabel, BorderLayout.CENTER);
-            frame.add(toggleButton, BorderLayout.SOUTH);
-            
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            // ...
         });
     }
 }

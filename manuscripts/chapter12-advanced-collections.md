@@ -391,27 +391,14 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalRetrievalExample.java</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalRetrievalExample.java（4〜7、19〜41行目）</span>
 
 ```java
-import java.util.Optional;
-import java.util.NoSuchElementException;
-
 public class OptionalRetrievalExample {
     public static void main(String[] args) {
         Optional<String> present = Optional.of("Hello");
         Optional<String> empty = Optional.empty();
-        
-        // 1. get() - 値が存在しない場合はNoSuchElementExceptionを投げる（非推奨）
-        try {
-            String value1 = present.get();
-            System.out.println("get() with value: " + value1);  // Hello
-            
-            String value2 = empty.get();  // 例外発生！
-        } catch (NoSuchElementException e) {
-            System.out.println("get() on empty: " + e.getMessage());
-        }
-        
+        // ...
         // 2. orElse() - 値が存在しない場合のデフォルト値を指定
         String value3 = present.orElse("Default");
         String value4 = empty.orElse("Default");
@@ -486,25 +473,16 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalTransformationExample.java</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalTransformationExample.java（3〜6、15、17〜37、47〜48行目）</span>
 
 ```java
-import java.util.Optional;
-
 public class OptionalTransformationExample {
     static class User {
         private String name;
         private Optional<String> email;
-        
-        public User(String name, String email) {
-            this.name = name;
-            this.email = Optional.ofNullable(email);
-        }
-        
-        public String getName() { return name; }
-        public Optional<String> getEmail() { return email; }
+        // ...
     }
-    
+    // ...
     public static void main(String[] args) {
         Optional<User> user = Optional.of(new User("Alice", "alice@example.com"));
         Optional<User> userWithoutEmail = Optional.of(new User("Bob", null));
@@ -526,15 +504,7 @@ public class OptionalTransformationExample {
         
         Optional<String> noEmail = userWithoutEmail.flatMap(u -> u.getEmail());
         System.out.println("flatMap (no email): " + noEmail);  // Optional.empty
-        
-        // 3. filter() - 条件を満たす場合のみ値を保持
-        Optional<User> longNameUser = user
-            .filter(u -> u.getName().length() > 3);
-        System.out.println("filter (passed): " + longNameUser.isPresent());  // true
-        
-        Optional<User> shortNameUser = user
-            .filter(u -> u.getName().length() > 10);
-        System.out.println("filter (failed): " + shortNameUser.isPresent());  // false
+        // ...
     }
 }
 ```
@@ -936,13 +906,9 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-19**　ReduceExample.java</span>
+<span class="listing-number">**サンプルコード12-19**　ReduceExample.java（5〜25、39〜40行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 public class ReduceExample {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
@@ -964,19 +930,7 @@ public class ReduceExample {
         String sentence = words.stream()
             .reduce("", (result, word) -> result.isEmpty() ? word : result + " " + word);
         System.out.println(sentence); // 出力: Java is awesome
-        
-        // 複雑な集約：学生の点数から統計情報を計算
-        List<Student> students = Arrays.asList(
-            new Student("Alice", 85, 165),
-            new Student("Bob", 92, 170),
-            new Student("Charlie", 78, 180)
-        );
-        
-        // 全学生の平均点を計算（reduceを使った方法）
-        double average = students.stream()
-            .mapToInt(Student::getScore)
-            .reduce(0, Integer::sum) / (double) students.size();
-        System.out.println("平均点: " + average); // 出力: 平均点: 85.0
+        // ...
     }
 }
 ```
@@ -1262,24 +1216,13 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-26**　ComplexProcessingExample.java</span>
+<span class="listing-number">**サンプルコード12-26**　ComplexProcessingExample.java（6〜8、16〜32、44〜45行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class ComplexProcessingExample {
     public static void main(String[] args) {
         List<Student> students = Arrays.asList(
-            new Student("Alice", 85, 165),
-            new Student("Bob", 92, 170),
-            new Student("Charlie", 78, 180),
-            new Student("David", 92, 175),
-            new Student("Eve", 88, 160),
-            new Student("Frank", 82, 178),
-            new Student("Grace", 95, 168)
+        // ...
         );
         
         // 複雑な処理：高得点者（85点以上）を身長でグループ化し、
@@ -1297,17 +1240,7 @@ public class ComplexProcessingExample {
         System.out.println("身長グループ別最高得点者:");
         heightGroupTopScorers.forEach((group, name) -> 
             System.out.println(group + ": " + name));
-        
-        // さらに複雑な例：統計情報の収集
-        Map<String, Double> heightGroupAverages = students.stream()
-            .collect(Collectors.groupingBy(
-                s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
-                Collectors.averagingInt(Student::getScore)
-            ));
-        
-        System.out.println("\n身長グループ別平均点:");
-        heightGroupAverages.forEach((group, avg) -> 
-            System.out.printf("%s: %.1f点%n", group, avg));
+            // ...
     }
 }
 ```

@@ -98,16 +98,9 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
 
-<span class="listing-number">**サンプルコード14-2**　ScannerExample.java</span>
+<span class="listing-number">**サンプルコード14-2**　ScannerExample.java（8〜31、42〜43行目）</span>
 
 ```java
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
-
 public class ScannerExample {
     public static void main(String[] args) {
         Path path = Paths.get("data.txt");
@@ -132,16 +125,7 @@ public class ScannerExample {
                 System.out.println(scanner.next());
             }
         }
-        
-        // 3. 型を指定した読み込み
-        String numbers = "100 3.14 true";
-        try (Scanner scanner = new Scanner(numbers)) {
-            int intValue = scanner.nextInt();
-            double doubleValue = scanner.nextDouble();
-            boolean boolValue = scanner.nextBoolean();
-            System.out.printf("整数: %d, 小数: %.2f, 真偽値: %b%n", 
-                            intValue, doubleValue, boolValue);
-        }
+        // ...
     }
 }
 ```
@@ -167,25 +151,13 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-3**　TextFileReaderExample.java</span>
+<span class="listing-number">**サンプルコード14-3**　TextFileReaderExample.java（9〜10、15〜28、31〜32、35〜43行目）</span>
 
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class TextFileReaderExample {
     public static void main(String[] args) {
-        Path filePath = Paths.get("sample.txt");
-        // 事前にファイルを作成
-        try { Files.writeString(filePath, "Line 1\nLine 2"); } catch (IOException e) {}
-
+        // ...
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
-        // テキストファイルの読み込み
         // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
         // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションではもっとも推奨される方法です。
         System.out.println("--- 1行ずつ読み込み ---");
@@ -199,14 +171,10 @@ public class TextFileReaderExample {
             e.printStackTrace();
         }
 
-        // 大きなファイルの効率的読み込み
-        // readAllLines()は小さなファイル（数MBまで）に適しています。
-        // 大容量ファイルではメモリ不足の原因となるため、上記の1行ずつ読み込み方式を使用してください。
+        // ...
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
         System.out.println("\n--- 全行を一度に読み込み ---");
-        // テキストファイルの一括読み込み
-        // readAllLines()は小容量ファイル専用の便利メソッドです。
-        // 設定ファイルや小さなデータファイルの処理に適していますが、大容量ファイルではOutOfMemoryErrorの原因となります。
+        // ...
         try {
             List<String> lines = Files.readAllLines(
                     filePath, StandardCharsets.UTF_8);
@@ -291,28 +259,13 @@ public class TextFileWriterExample {
 - Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
 - ISO-8859-1: 西欧言語用の1バイトエンコーディング
 
-<span class="listing-number">**サンプルコード14-5**　CharacterEncodingExample.java</span>
+<span class="listing-number">**サンプルコード14-5**　CharacterEncodingExample.java（10〜12、20〜41、44〜45行目）</span>
 
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.MalformedInputException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public class CharacterEncodingExample {
     public static void main(String[] args) {
         Path path = Paths.get("japanese.txt");
-        
-        // UTF-8で書き込み
-        try {
-            Files.writeString(path, "こんにちは、世界！", StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // ...
         
         // Shift_JISで読み込み（文字化けの例）
         // Files.newBufferedReaderは、解釈できないバイト列があると文字化けではなく例外を投げる
@@ -335,8 +288,7 @@ public class CharacterEncodingExample {
             e.printStackTrace();
         }
         
-        // システムデフォルトのエンコーディング確認
-        System.out.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
+        // ...
     }
 }
 ```
@@ -427,12 +379,9 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 - `ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化する
 - `transient`修飾子を付けたフィールドは直列化の対象外となります（パスワードなど）
 
-<span class="listing-number">**サンプルコード14-7**　SerializationExample.java</span>
+<span class="listing-number">**サンプルコード14-7**　SerializationExample.java（4〜45行目）</span>
 
 ```java
-import java.io.*;
-import java.time.LocalDateTime;
-
 // Serializableを実装したクラス
 class UserProfile implements Serializable {
     private static final long serialVersionUID = 1L; // クラスのバージョン管理用
@@ -455,7 +404,6 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // FileVisitor の実装
         // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式でファイルに保存します。
         // オブジェクトの構造や状態をそのまま保持できるため、データの永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
@@ -465,7 +413,6 @@ public class SerializationExample {
             System.out.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
-        // ストリーム API との統合
         // ObjectInputStreamでファイルからオブジェクトを復元します。
         // オブジェクトの状態が完全に復元され、保存時と同じ構造とデータを持つオブジェクトが復元されます。
         // 2. ファイルから非直列化して復元
@@ -496,18 +443,14 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 - `Files`
     + ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
 
-<span class="listing-number">**サンプルコード14-8**　FileSystemExample.java</span>
+<span class="listing-number">**サンプルコード14-8**　FileSystemExample.java（4〜37行目）</span>
 
 ```java
-import java.io.IOException;
-import java.nio.file.*;
-
 public class FileSystemExample {
     public static void main(String[] args) throws IOException {
         Path dir = Paths.get("my_temp_dir");
         Path file = dir.resolve("my_file.txt");
 
-        // ディレクトリ操作
         // Files.createDirectory()は指定されたディレクトリを作成します。
         // createDirectories()を使用すると、必要に応じて親ディレクトリも同時に作成されます。
         // ディレクトリ作成
@@ -516,14 +459,12 @@ public class FileSystemExample {
             System.out.println("ディレクトリを作成しました: " + dir);
         }
 
-        // テキストファイルの一括書き込み
         // writeString()は小容量のテキストデータを簡単にファイルに保存できる便利メソッドです。
         // 内部的にはBufferedWriterが使用されており、効率的な書き込みが行われます。
         // ファイル作成と書き込み
         Files.writeString(file, "Hello, NIO.2!");
         System.out.println("ファイルを作成しました: " + file);
 
-        // ファイル属性の取得
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
         // REPLACE_EXISTING: 同名ファイルがある場合は上書き
         // COPY_ATTRIBUTES: ファイルの属性（作成日時、アクセス権など）もコピー
@@ -786,7 +727,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です。
 
-<span class="listing-number">**サンプルコード14-13**　TextBlockIndentation.java</span>
+<span class="listing-number">**サンプルコード14-13**　TextBlockIndentation.java（1〜16、29〜38、49〜50行目）</span>
 
 ```java
 public class TextBlockIndentation {
@@ -805,18 +746,7 @@ public class TextBlockIndentation {
         
         System.out.println("=== インデント自動処理の例 ===");
         System.out.println(codeExample);
-        
-        // 手動でインデントを制御
-        String customIndent = """
-            レベル1
-                レベル2
-                    レベル3
-            レベル1に戻る
-            """;
-        
-        System.out.println("\n=== カスタムインデント ===");
-        System.out.println(customIndent);
-        
+        // ...
         // もっとも左にある行でインデントが決まる
         String mixedIndent = """
                     深いインデント
@@ -827,16 +757,7 @@ public class TextBlockIndentation {
         
         System.out.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
         System.out.println(mixedIndent);
-        
-        // stripIndent()メソッドでインデント除去を明示的に実行
-        String manualStrip = """
-                        これは深いインデントです
-                            さらに深いインデント
-                        元のレベル
-                        """.stripIndent();
-        
-        System.out.println("\n=== 手動stripIndent() ===");
-        System.out.println(manualStrip);
+        // ...
     }
 }
 ```
@@ -878,7 +799,7 @@ public class Example {
 
 Text Blocksでは多くのエスケープシーケンスが不要になります。
 
-<span class="listing-number">**サンプルコード14-14**　TextBlockEscaping.java</span>
+<span class="listing-number">**サンプルコード14-14**　TextBlockEscaping.java（1〜11、22〜31、42〜43行目）</span>
 
 ```java
 public class TextBlockEscaping {
@@ -892,16 +813,7 @@ public class TextBlockEscaping {
         
         System.out.println("=== 引用符のエスケープ不要 ===");
         System.out.println(dialogue);
-        
-        // バックスラッシュの処理
-        String windowsPath = """
-                Windowsのパス: C:\\Users\\Name\\Documents
-                正規表現: \\d+\\.\\d+
-                """;
-        
-        System.out.println("\n=== バックスラッシュの処理 ===");
-        System.out.println(windowsPath);
-        
+        // ...
         // 三重引用符を含む場合（エスケープが必要）
         String codeWithTripleQuotes = """
                 Text Blockの構文:
@@ -912,16 +824,7 @@ public class TextBlockEscaping {
         
         System.out.println("\n=== 三重引用符のエスケープ ===");
         System.out.println(codeWithTripleQuotes);
-        
-        // 行末の制御
-        String trailingSpaces = """
-                この行の末尾にスペースがある   \s
-                この行は普通の改行
-                この行は改行なし\
-                """;
-        
-        System.out.println("\n=== 行末の制御 ===");
-        System.out.println("'" + trailingSpaces + "'");
+        // ...
     }
 }
 ```

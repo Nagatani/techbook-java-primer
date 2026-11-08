@@ -23,7 +23,6 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // FileVisitor の実装
         // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式でファイルに保存します。
         // オブジェクトの構造や状態をそのまま保持できるため、データの永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
@@ -33,7 +32,6 @@ public class SerializationExample {
             System.out.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
-        // ストリーム API との統合
         // ObjectInputStreamでファイルからオブジェクトを復元します。
         // オブジェクトの状態が完全に復元され、保存時と同じ構造とデータを持つオブジェクトが復元されます。
         // 2. ファイルから非直列化して復元

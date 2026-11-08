@@ -73,7 +73,7 @@ ExecutorServiceを使った実用的な非同期処理の実装、デッドロ�
 
 以下のコードは、朝食の準備を順番に行うシングルスレッドのプログラムです。コーヒー（3秒）、トースト（2秒）、卵（5秒）を順番に処理するため、合計10秒かかります。各処理が完了するまで次の処理を開始できないため、待ち時間が無駄になっています。
 
-<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java</span>
+<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java（1〜24、28、35〜36、42〜43行目）</span>
 
 ```java
 public class SingleThreadExample {
@@ -100,23 +100,12 @@ public class SingleThreadExample {
     }
     
     private static void makeToast() {
-        System.out.println("トーストを焼いています...");
-        sleep(2000);
-        System.out.println("トーストができました");
+    // ...
     }
-    
-    private static void boilEgg() {
-        System.out.println("卵を茹でています...");
-        sleep(5000);
-        System.out.println("ゆで卵ができました");
-    }
+    // ...
     
     private static void sleep(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    // ...
     }
 }
 ```
@@ -1061,14 +1050,9 @@ public class VolatileDemo {
 - `AtomicBoolean`: boolean値のアトミック操作
 - `AtomicReference<T>`: 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード15-13**　AtomicCounterExample.java</span>
+<span class="listing-number">**サンプルコード15-13**　AtomicCounterExample.java（6〜31、49行目）</span>
 
 ```java
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 public class AtomicCounterExample {
     // スレッドセーフなカウンター
     private final AtomicInteger counter = new AtomicInteger(0);
@@ -1095,23 +1079,7 @@ public class AtomicCounterExample {
         System.out.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる
     }
-    
-    // その他の便利なアトミック操作
-    public void demonstrateAtomicOperations() {
-        AtomicInteger value = new AtomicInteger(10);
-        
-        // 現在値を取得して、新しい値を設定
-        int oldValue = value.getAndSet(20);
-        System.out.println("Old: " + oldValue + ", New: " + value.get());
-        
-        // 条件付き更新（CAS操作）
-        boolean updated = value.compareAndSet(20, 30);
-        System.out.println("Updated: " + updated + ", Value: " + value.get());
-        
-        // 加算操作
-        int result = value.addAndGet(5);
-        System.out.println("After adding 5: " + result);
-    }
+    // ...
 }
 ```
 

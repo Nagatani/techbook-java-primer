@@ -3,14 +3,18 @@
     "dir": "14-02",
     "main": "ScannerExample",
     "excerpt": [
-      { "file": "ScannerExample.java", "from": 1, "to": 43 }
+      { "file": "ScannerExample.java", "from": 8, "to": 31 },
+      { "file": "ScannerExample.java", "from": 42, "to": 43 }
     ]
   },
   "14-3": {
     "dir": "14-03",
     "main": "TextFileReaderExample",
     "excerpt": [
-      { "file": "TextFileReaderExample.java", "from": 1, "to": 46 }
+      { "file": "TextFileReaderExample.java", "from": 9, "to": 10 },
+      { "file": "TextFileReaderExample.java", "from": 15, "to": 28 },
+      { "file": "TextFileReaderExample.java", "from": 31, "to": 32 },
+      { "file": "TextFileReaderExample.java", "from": 35, "to": 43 }
     ]
   },
   "14-4": {
@@ -24,7 +28,9 @@
     "dir": "14-05",
     "main": "CharacterEncodingExample",
     "excerpt": [
-      { "file": "CharacterEncodingExample.java", "from": 1, "to": 45 }
+      { "file": "CharacterEncodingExample.java", "from": 10, "to": 12 },
+      { "file": "CharacterEncodingExample.java", "from": 20, "to": 41 },
+      { "file": "CharacterEncodingExample.java", "from": 44, "to": 45 }
     ]
   },
   "14-6": {
@@ -38,14 +44,14 @@
     "dir": "14-07",
     "main": "SerializationExample",
     "excerpt": [
-      { "file": "SerializationExample.java", "from": 1, "to": 47 }
+      { "file": "SerializationExample.java", "from": 4, "to": 45 }
     ]
   },
   "14-8": {
     "dir": "14-08",
     "main": "FileSystemExample",
     "excerpt": [
-      { "file": "FileSystemExample.java", "from": 1, "to": 40 }
+      { "file": "FileSystemExample.java", "from": 4, "to": 37 }
     ]
   },
   "14-9": {
@@ -82,14 +88,18 @@
     "dir": "14-13",
     "main": "TextBlockIndentation",
     "excerpt": [
-      { "file": "TextBlockIndentation.java", "from": 1, "to": 50 }
+      { "file": "TextBlockIndentation.java", "from": 1, "to": 16 },
+      { "file": "TextBlockIndentation.java", "from": 29, "to": 38 },
+      { "file": "TextBlockIndentation.java", "from": 49, "to": 50 }
     ]
   },
   "14-14": {
     "dir": "14-14",
     "main": "TextBlockEscaping",
     "excerpt": [
-      { "file": "TextBlockEscaping.java", "from": 1, "to": 43 }
+      { "file": "TextBlockEscaping.java", "from": 1, "to": 11 },
+      { "file": "TextBlockEscaping.java", "from": 22, "to": 31 },
+      { "file": "TextBlockEscaping.java", "from": 42, "to": 43 }
     ]
   },
   "14-15": {

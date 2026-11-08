@@ -27,7 +27,8 @@
     "dir": "12-09",
     "main": "OptionalRetrievalExample",
     "excerpt": [
-      { "file": "OptionalRetrievalExample.java", "from": 1, "to": 41 }
+      { "file": "OptionalRetrievalExample.java", "from": 4, "to": 7 },
+      { "file": "OptionalRetrievalExample.java", "from": 19, "to": 41 }
     ]
   },
   "12-10": {
@@ -41,7 +42,10 @@
     "dir": "12-11",
     "main": "OptionalTransformationExample",
     "excerpt": [
-      { "file": "OptionalTransformationExample.java", "from": 1, "to": 48 }
+      { "file": "OptionalTransformationExample.java", "from": 3, "to": 6 },
+      { "file": "OptionalTransformationExample.java", "from": 15, "to": 15 },
+      { "file": "OptionalTransformationExample.java", "from": 17, "to": 37 },
+      { "file": "OptionalTransformationExample.java", "from": 47, "to": 48 }
     ]
   },
   "12-12": {
@@ -94,7 +98,8 @@
     "dir": "12-19",
     "main": "ReduceExample",
     "excerpt": [
-      { "file": "ReduceExample.java", "from": 1, "to": 40 }
+      { "file": "ReduceExample.java", "from": 5, "to": 25 },
+      { "file": "ReduceExample.java", "from": 39, "to": 40 }
     ],
     "uses": [
       "12-3"
@@ -155,7 +160,9 @@
     "dir": "12-26",
     "main": "ComplexProcessingExample",
     "excerpt": [
-      { "file": "ComplexProcessingExample.java", "from": 1, "to": 45 }
+      { "file": "ComplexProcessingExample.java", "from": 6, "to": 8 },
+      { "file": "ComplexProcessingExample.java", "from": 16, "to": 32 },
+      { "file": "ComplexProcessingExample.java", "from": 44, "to": 45 }
     ],
     "uses": [
       "12-3"

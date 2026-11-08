@@ -110,12 +110,9 @@ TCPサーバーは、ServerSocketを使用してクライアントからの接�
 
 以下のコードは、基本的なTCPサーバーの実装例です。このサーバーは8080番ポートで待機し、クライアントから受信したメッセージをエコーバックします。accept()メソッドは新しい接続があるまでブロックし、接続が確立されると各クライアントとの通信を個別に処理します。
 
-<span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java</span>
+<span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java（4〜42行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-
 public class SimpleTCPServer {
     public static void main(String[] args) {
         int port = 8080;
@@ -341,25 +338,16 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています。
 
-<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜9、17〜37、43〜44行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-
 public class HttpURLConnectionExample {
     public static void main(String[] args) {
         try {
             URL url = new URL("https://api.github.com/users/github");
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
-            
-            // リクエストの設定
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            
+                // ...
             // レスポンスコードの確認
             int responseCode = conn.getResponseCode();
             System.out.println("Response Code: " + responseCode);
@@ -381,11 +369,7 @@ public class HttpURLConnectionExample {
                 }
             }
             
-            conn.disconnect();
-            
-        } catch (IOException e) {
-            System.err.println("エラー: " + e.getMessage());
-        }
+            // ...
     }
 }
 ```
@@ -404,25 +388,13 @@ Response:
 
 Java 11で導入された新しいHTTPクライアントAPIは、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java</span>
+<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜10、17〜49行目）</span>
 
 ```java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-
 public class AsyncHttpClientExample {
     
     public static void main(String[] args) throws Exception {
-        // HTTPクライアントの作成
-        HttpClient client = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .connectTimeout(Duration.ofSeconds(10))
-            .build();
-        
+        // ...
         // HTTPリクエストの作成
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
@@ -664,17 +636,11 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでユーザーからの入力を受け付けます。この設計により、メッセージの送受信を同時に行うことができます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java（5、9〜38、43〜44行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-import java.util.Scanner;
-
 public class ChatClient {
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 5000;
-    
+    // ...
     public static void main(String[] args) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              PrintWriter out = new PrintWriter(
@@ -705,10 +671,7 @@ public class ChatClient {
                     break;
                 }
             }
-            
-        } catch (IOException e) {
-            System.err.println("接続エラー: " + e.getMessage());
-        }
+            // ...
     }
 }
 ```

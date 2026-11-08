@@ -31,14 +31,18 @@
     "dir": "11-25",
     "main": "MethodReferenceConcurrencyExample",
     "excerpt": [
-      { "file": "MethodReferenceConcurrencyExample.java", "from": 1, "to": 47 }
+      { "file": "MethodReferenceConcurrencyExample.java", "from": 4, "to": 18 },
+      { "file": "MethodReferenceConcurrencyExample.java", "from": 23, "to": 47 }
     ]
   },
   "11-27": {
     "dir": "11-27",
     "main": "RunnableLambdaExample",
     "excerpt": [
-      { "file": "RunnableLambdaExample.java", "from": 1, "to": 46 }
+      { "file": "RunnableLambdaExample.java", "from": 1, "to": 8 },
+      { "file": "RunnableLambdaExample.java", "from": 14, "to": 21 },
+      { "file": "RunnableLambdaExample.java", "from": 27, "to": 33 },
+      { "file": "RunnableLambdaExample.java", "from": 44, "to": 46 }
     ]
   },
   "11-30": {

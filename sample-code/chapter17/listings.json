@@ -45,14 +45,18 @@
     "dir": "17-07",
     "main": "TextInputComponents",
     "excerpt": [
-      { "file": "TextInputComponents.java", "from": 1, "to": 46 }
+      { "file": "TextInputComponents.java", "from": 4, "to": 5 },
+      { "file": "TextInputComponents.java", "from": 11, "to": 41 },
+      { "file": "TextInputComponents.java", "from": 45, "to": 46 }
     ]
   },
   "17-8": {
     "dir": "17-08",
     "main": "SelectionComponents",
     "excerpt": [
-      { "file": "SelectionComponents.java", "from": 1, "to": 49 }
+      { "file": "SelectionComponents.java", "from": 4, "to": 5 },
+      { "file": "SelectionComponents.java", "from": 11, "to": 44 },
+      { "file": "SelectionComponents.java", "from": 48, "to": 49 }
     ]
   },
   "17-9": {
@@ -115,7 +119,9 @@
     "dir": "17-17",
     "main": "LambdaEventExample",
     "excerpt": [
-      { "file": "LambdaEventExample.java", "from": 1, "to": 46 }
+      { "file": "LambdaEventExample.java", "from": 5, "to": 6 },
+      { "file": "LambdaEventExample.java", "from": 12, "to": 27 },
+      { "file": "LambdaEventExample.java", "from": 45, "to": 46 }
     ]
   },
   "17-18": {
@@ -148,7 +154,9 @@
     "dir": "17-22",
     "main": "EventQueueExample",
     "excerpt": [
-      { "file": "EventQueueExample.java", "from": 1, "to": 39 }
+      { "file": "EventQueueExample.java", "from": 6, "to": 8 },
+      { "file": "EventQueueExample.java", "from": 14, "to": 31 },
+      { "file": "EventQueueExample.java", "from": 37, "to": 39 }
     ]
   },
   "17-23": {
@@ -164,7 +172,9 @@
     "dir": "17-24",
     "main": "EDTUtilityExample",
     "excerpt": [
-      { "file": "EDTUtilityExample.java", "from": 1, "to": 45 }
+      { "file": "EDTUtilityExample.java", "from": 4, "to": 26 },
+      { "file": "EDTUtilityExample.java", "from": 31, "to": 39 },
+      { "file": "EDTUtilityExample.java", "from": 44, "to": 45 }
     ]
   },
   "17-26": {
@@ -181,7 +191,9 @@
     "dir": "17-27",
     "main": "TimerExample",
     "excerpt": [
-      { "file": "TimerExample.java", "from": 1, "to": 44 }
+      { "file": "TimerExample.java", "from": 6, "to": 8 },
+      { "file": "TimerExample.java", "from": 14, "to": 35 },
+      { "file": "TimerExample.java", "from": 42, "to": 44 }
     ]
   },
   "17-28": {

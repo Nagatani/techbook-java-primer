@@ -75,14 +75,17 @@
     "dir": "10-13",
     "main": null,
     "excerpt": [
-      { "file": "VarReadabilityExample.java", "from": 1, "to": 40 }
+      { "file": "VarReadabilityExample.java", "from": 6, "to": 35 },
+      { "file": "VarReadabilityExample.java", "from": 40, "to": 40 }
     ]
   },
   "10-14": {
     "dir": "10-14",
     "main": "VarWithGenericsExample",
     "excerpt": [
-      { "file": "VarWithGenericsExample.java", "from": 1, "to": 49 }
+      { "file": "VarWithGenericsExample.java", "from": 4, "to": 25 },
+      { "file": "VarWithGenericsExample.java", "from": 33, "to": 36 },
+      { "file": "VarWithGenericsExample.java", "from": 49, "to": 49 }
     ]
   },
   "10-15": {

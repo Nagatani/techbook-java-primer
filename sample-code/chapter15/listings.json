@@ -3,7 +3,10 @@
     "dir": "15-01",
     "main": "SingleThreadExample",
     "excerpt": [
-      { "file": "SingleThreadExample.java", "from": 1, "to": 43 }
+      { "file": "SingleThreadExample.java", "from": 1, "to": 24 },
+      { "file": "SingleThreadExample.java", "from": 28, "to": 28 },
+      { "file": "SingleThreadExample.java", "from": 35, "to": 36 },
+      { "file": "SingleThreadExample.java", "from": 42, "to": 43 }
     ]
   },
   "15-4": {
@@ -45,7 +48,8 @@
     "dir": "15-13",
     "main": null,
     "excerpt": [
-      { "file": "AtomicCounterExample.java", "from": 1, "to": 49 }
+      { "file": "AtomicCounterExample.java", "from": 6, "to": 31 },
+      { "file": "AtomicCounterExample.java", "from": 49, "to": 49 }
     ]
   },
   "15-14": {

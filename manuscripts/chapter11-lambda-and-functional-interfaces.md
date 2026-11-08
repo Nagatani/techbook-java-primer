@@ -1015,12 +1015,9 @@ CHERRY
 
 並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。とくに、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 
-<span class="listing-number">**サンプルコード11-25**　MethodReferenceConcurrencyExample.java</span>
+<span class="listing-number">**サンプルコード11-25**　MethodReferenceConcurrencyExample.java（4〜18、23〜47行目）</span>
 
 ```java
-import java.util.*;
-import java.util.concurrent.*;
-
 public class MethodReferenceConcurrencyExample {
     public static void main(String[] args) {
         // ExecutorServiceとラムダ式の組み合わせ
@@ -1036,10 +1033,7 @@ public class MethodReferenceConcurrencyExample {
                 Thread.sleep(500);   // 0.5秒待機
                 return "Task 2 completed";
             }, 
-            () -> {
-                Thread.sleep(1500);  // 1.5秒待機
-                return "Task 3 completed";
-            }
+            // ...
         );
         
         System.out.println("タスク実行開始...");
@@ -1156,7 +1150,7 @@ Person{name='Charlie'}
 
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 
-<span class="listing-number">**サンプルコード11-27**　RunnableLambdaExample.java</span>
+<span class="listing-number">**サンプルコード11-27**　RunnableLambdaExample.java（1〜8、14〜21、27〜33、44〜46行目）</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -1167,11 +1161,7 @@ public class RunnableLambdaExample {
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 System.out.println("Thread t1 (Anonymous) is running...");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                // ...
                 System.out.println("Thread t1 (Anonymous) finished");
             }
         });
@@ -1180,11 +1170,7 @@ public class RunnableLambdaExample {
         // ラムダ式でのRunnable
         Thread t2 = new Thread(() -> {
             System.out.println("Thread t2 (Lambda) is running...");
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // ...
             System.out.println("Thread t2 (Lambda) finished");
         });
         t2.start();
@@ -1192,16 +1178,7 @@ public class RunnableLambdaExample {
         // より簡潔なラムダ式（単一ステートメント）
         Thread t3 = new Thread(() -> System.out.println("Thread t3 (Simple Lambda) executed"));
         t3.start();
-        
-        // すべてのスレッドの完了を待機
-        try {
-            t1.join();
-            t2.join();
-            t3.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
+        // ...
         System.out.println("メインスレッド終了");
     }
 }

@@ -10,7 +10,7 @@
     "dir": "16-02",
     "main": "SimpleTCPServer",
     "excerpt": [
-      { "file": "SimpleTCPServer.java", "from": 1, "to": 42 }
+      { "file": "SimpleTCPServer.java", "from": 4, "to": 42 }
     ]
   },
   "16-3": {
@@ -36,14 +36,17 @@
     "dir": "16-05",
     "main": "HttpURLConnectionExample",
     "excerpt": [
-      { "file": "HttpURLConnectionExample.java", "from": 1, "to": 44 }
+      { "file": "HttpURLConnectionExample.java", "from": 4, "to": 9 },
+      { "file": "HttpURLConnectionExample.java", "from": 17, "to": 37 },
+      { "file": "HttpURLConnectionExample.java", "from": 43, "to": 44 }
     ]
   },
   "16-6": {
     "dir": "16-06",
     "main": "AsyncHttpClientExample",
     "excerpt": [
-      { "file": "AsyncHttpClientExample.java", "from": 1, "to": 49 }
+      { "file": "AsyncHttpClientExample.java", "from": 8, "to": 10 },
+      { "file": "AsyncHttpClientExample.java", "from": 17, "to": 49 }
     ]
   },
   "16-7": {
@@ -74,7 +77,9 @@
     "dir": "16-10",
     "main": "ChatClient",
     "excerpt": [
-      { "file": "ChatClient.java", "from": 1, "to": 44 }
+      { "file": "ChatClient.java", "from": 5, "to": 5 },
+      { "file": "ChatClient.java", "from": 9, "to": 38 },
+      { "file": "ChatClient.java", "from": 43, "to": 44 }
     ]
   },
   "16-11": {

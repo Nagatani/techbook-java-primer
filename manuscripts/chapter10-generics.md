@@ -472,14 +472,9 @@ public class VarLimitations {
 
 var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります。以下の例でよい使用例と悪い使用例を比較してみましょう。
 
-<span class="listing-number">**サンプルコード10-13**　VarReadabilityExample.java</span>
+<span class="listing-number">**サンプルコード10-13**　VarReadabilityExample.java（6〜35、40行目）</span>
 
 ```java
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-
 public class VarReadabilityExample {
     public static void demonstrateGoodUsage() {
         // 良い使用例：型が明らかで、冗長性を減らす
@@ -510,10 +505,7 @@ public class VarReadabilityExample {
         int itemCount = 0;
         double successRate = 0.5;
     }
-    
-    private static Object getData() { return null; }
-    private static Object process(Object data) { return null; }
-    private static boolean checkCondition() { return true; }
+    // ...
 }
 ```
 
@@ -521,12 +513,9 @@ public class VarReadabilityExample {
 
 var型推論は、ジェネリクスと組み合わせることでとくに威力を発揮します。複雑なジェネリック型の宣言を簡潔にし、Stream APIやメソッドチェーンでの型推論を活用できます。
 
-<span class="listing-number">**サンプルコード10-14**　VarWithGenericsExample.java</span>
+<span class="listing-number">**サンプルコード10-14**　VarWithGenericsExample.java（4〜25、33〜36、49行目）</span>
 
 ```java
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class VarWithGenericsExample {
     public static void main(String[] args) {
         // 複雑なジェネリック型の簡略化
@@ -549,29 +538,12 @@ public class VarWithGenericsExample {
         System.out.println("First: " + pair.getFirst());
         System.out.println("Second: " + pair.getSecond());
     }
-    
-    public static double calculateSum(List<? extends Number> numbers) {
-        return numbers.stream()
-            .mapToDouble(Number::doubleValue)
-            .sum();
-    }
-    
+    // ...
     public static <T, U> Pair<T, U> createPair(T first, U second) {
         return new Pair<>(first, second);
     }
     
-    static class Pair<T, U> {
-        private final T first;
-        private final U second;
-        
-        public Pair(T first, U second) {
-            this.first = first;
-            this.second = second;
-        }
-        
-        public T getFirst() { return first; }
-        public U getSecond() { return second; }
-    }
+    // ...
 }
 ```
 
