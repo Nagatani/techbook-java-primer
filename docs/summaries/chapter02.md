@@ -17,7 +17,7 @@ sections:
   - key: "コンソール入出力"
     hash: 3843dc6a
   - key: "制御構造"
-    hash: 5262cea8
+    hash: ec5c5853
   - key: "配列"
     hash: 2dfde5b7
   - key: "メソッド（staticメソッドの基本）"
@@ -48,9 +48,9 @@ sections:
 
 ## 構成上の問題
 
-- switchの説明が章内で3回出てくる
-    + 「条件分岐」でif文と並べてswitch式を示し（L719–725）、続けて従来のswitch文と新しいswitch式を比較し（L736–776）、さらに独立した「switch文」の節（L828–871、2-4）で従来形式を一から説明し直す
-    + 2-4の節は、すでにアロー形式を紹介したあとで「breakを忘れると次のcaseも実行される」と基礎から説明しており、旧版の節が残ったものと考えられる
+- switchの説明が章内で3回出ていた問題は2026-11-08に解消した
+    + 「条件分岐」はif文だけにし、独立していた「switch文」の節を条件分岐の直後へ移して「switch文とswitch式」とした
+    + 従来のswitch文（2-4）のあとに、同じ判定をswitch式で書いた例と利点を続ける
 - まとめ相当の節が3つある
     + 「Javaのメソッドの基本まとめ」（L1082–1087）、「Java基本文法の総合的な理解」（L1393–1407）、その中の「まとめ」（L1408–1421）
     + 「総合的な理解」は Spring Boot、Servlet/JSP、マイクロサービスに言及しており、本書の範囲外
@@ -92,30 +92,30 @@ sections:
     + println・print・printfの書式（%-10sなど）と、InputMismatchExceptionで再入力させるScannerの例（2-3）
     + nextInt・nextDouble・next・nextLine、hasNextIntによる検証、useDelimiter
     + ベストプラクティスとしてエラー処理、try-with-resources、nextInt後の改行の残り、ロケール
-- 制御構造（L697–881）
-    + 条件分岐: if-else ifの成績判定とswitch式、従来のswitch文との比較（fall-throughの解消、式として使える）
+- 制御構造（L697–850）
+    + 条件分岐: if-else ifの成績判定
+    + switch文とswitch式: 従来形式の成績評価（2-4）と注意点3つ、同じ判定のswitch式（Java 14以降）とその利点（fall-throughの解消、式として使える）
     + 繰り返し処理: for、拡張for、whileと使い分け、ループ変数のスコープ。do-while、break・continueは扱わない
-    + switch文: 従来形式の成績評価（2-4）と注意点3つ
-- 配列（L882–1008）
+- 配列（L851–977）
     + リテラルとnewによる初期化、length、多次元配列、境界チェックと自動初期化
     + インデックスと拡張forによる走査、C言語との違い（length、境界チェック、メモリ管理、初期化保証）
     + 検索・合計・コピー（System.arraycopy、Arrays.copyOf）の応用例、サイズ固定（ArrayListは後の章）、参照の代入、ジャグ配列
-- メソッド（staticメソッドの基本）（L1009–1096）
+- メソッド（staticメソッドの基本）（L978–1065）
     + addとdivideを持つCalculator（2-5）、staticメソッドの構文と構成要素
     + mainから直接呼べる理由、再利用と構造化、C言語の関数との違い
-- 文字列処理（L1097–1297）
+- 文字列処理（L1066–1266）
     + C言語のchar配列とnull終端に対する、Stringの安全性・O(1)のlength・Unicodeを比較表とコード対比で示す
     + リテラルと文字列プール、`==`とequals、equalsIgnoreCase
     + trim、toUpperCase、substring、replace、split、indexOf、contains
     + 不変性（concatで元の文字列は変わらない）と、ループ内連結にはStringBuilderを使う理由
-- import文の使い方（L1298–1355）
+- import文の使い方（L1267–1324）
     + Scannerでの入力と整数変換（2-6）とコードのポイント5項目。java.langは自動インポート
-- よくあるコンパイルエラーとその対処法（L1356–1401）
+- よくあるコンパイルエラーとその対処法（L1325–1370）
     + セミコロン忘れ、大文字小文字の誤り（system）、クラス名とファイル名の不一致の3種
-- Java基本文法の総合的な理解（L1402–1443）
+- Java基本文法の総合的な理解（L1371–1412）
     + 安全性・保守性・可読性という3原則で章を総括し、Spring Bootなど実務への接続を述べる
     + 「まとめ」で型安全性、メソッドによる構造化、文字列処理の安全性の3点を挙げる。末尾に空行が10行続く
-- 章末演習（L1444–1556）
+- 章末演習（L1413–1525）
     + 演習リンクは`exercises/chapter02/`で正しい
     + 課題の実装ポイント（データ型、変数、制御構造、配列）、発展課題（メソッド、文字列）、つまずき表、デバッグのコツ、追加課題
     + 次のステップとして第3章を案内
