@@ -136,7 +136,7 @@ function run(sample, r) {
   const exp = sample.expected;
   if (!exp || !exp.comparable || !r.main) return null;
   // 標準エラー出力（例外のスタックトレースなど）も原稿の実行結果に含まれるため、出力順を保ったまま合わせて受け取る
-  const p = spawnSync('sh', ['-c', 'exec java -Djava.awt.headless=true -Duser.language=ja -Duser.country=JP -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp out "$0" 2>&1', r.main],
+  const p = spawnSync('sh', ['-c', 'exec java -Djava.awt.headless=true -Duser.language=ja -Duser.country=JP -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "$1" "$0" 2>&1', r.main, r.cp || 'out'],
     { cwd: r.dir, encoding: 'utf8', input: '', timeout: 20000 });
   if (p.error || p.signal) return { result: '打切', detail: '20秒以内に終わらない' };
   const actual = norm(p.stdout || '');

@@ -13,7 +13,8 @@
  *         { "file": "Shape.java", "from": 1, "to": 12 },
  *         { "file": "Shape.java", "from": 30, "to": 41 },
  *         { "file": "ShapeDemo.java", "from": 3, "to": 15 }
- *       ]
+ *       ],
+ *       "libs": ["com.google.code.gson:gson:2.11.0"]   外部ライブラリ（Maven Centralから取得してクラスパスに加える。省略可）
  *     }
  *   }
  *
@@ -34,6 +35,8 @@
  *   node scripts/sample-code.js show 5-3              全文を行番号付きで表示する
  *   node scripts/sample-code.js set 5-3 Shape.java:1-12,30-41 ShapeDemo.java:3-15
  *                                                     本文に載せる範囲を listings.json に書き、本文に反映する
+ *   node scripts/sample-code.js add 20-7 [--libs=g:a:v,...]  コンパイルできない本文のコードも全文として登録する（このあと全文を直す）
+ *   node scripts/sample-code.js relocate 20-7         全文を編集して行がずれたら、本文と同じ並びを探して範囲を直す
  *   node scripts/sample-code.js extract [chapterXX]   本文のサンプルのうち、単体（または同じ章のサンプルと合わせて）
  *                                                     コンパイルできるもので、まだ listings.json にないものを全文として書き出す
  */
@@ -114,10 +117,31 @@ function captionOf(dir, excerpt) {
 
 const captionLine = (id, caption) => `<span class="listing-number">**サンプルコード${id}**　${caption}</span>`;
 
+const LIB_CACHE = path.join(L.ROOT, '.cache', 'sample-code-libs');
+
+/** "group:artifact:version" の JAR を Maven Central から取得し、パスを返す */
+function libJars(libs = []) {
+  return libs.map((coord) => {
+    const [g, a, v] = coord.split(':');
+    const jar = path.join(LIB_CACHE, `${a}-${v}.jar`);
+    if (!fs.existsSync(jar)) {
+      fs.mkdirSync(LIB_CACHE, { recursive: true });
+      const url = `https://repo1.maven.org/maven2/${g.replace(/\./g, '/')}/${a}/${v}/${a}-${v}.jar`;
+      const r = spawnSync('curl', ['-sfL', '-o', jar, url]);
+      if (r.status !== 0) { fs.rmSync(jar, { force: true }); throw new Error(`${coord} を取得できない（${url}）`); }
+    }
+    return jar;
+  });
+}
+
 /** javac でディレクトリ内の .java をまとめてコンパイルする（出力は out へ） */
-function compileDir(dir, outDir) {
+function compileDir(dir, outDir, entry = {}) {
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.java'));
-  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', outDir, ...files], { cwd: dir, encoding: 'utf8' });
+  const jars = libJars(entry.libs);
+  const cp = jars.length ? ['-cp', jars.join(path.delimiter)] : [];
+  // アノテーションプロセッサ（Lombokなど）を使うサンプルだけ -proc:none を外す
+  const proc = entry.processor ? ['-proc:full'] : ['-proc:none'];
+  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', ...proc, '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', ...cp, '-d', outDir, ...files], { cwd: dir, encoding: 'utf8' });
   return { ok: r.status === 0, error: (r.stderr || '').split('\n').find((l) => / error: /.test(l)) || r.stderr };
 }
 
@@ -276,7 +300,8 @@ function writeReadme(ch, manuscript, manifest) {
     const dir = path.join(chapterDir(ch), e.dir);
     const files = fs.readdirSync(dir).filter((x) => x.endsWith('.java')).sort();
     const run = e.main ? `\`java -cp out ${e.main}\`` : '（mainメソッドなし）';
-    return `| [${id}](./${e.dir}/) | ${files.join('<br>')} | ${run} |`;
+    const libs = (e.libs || []).length ? `<br>外部ライブラリ: ${e.libs.join(', ')}` : '';
+    return `| [${id}](./${e.dir}/) | ${files.join('<br>')} | ${run}${libs} |`;
   });
   const md = [
     '<!-- このファイルは scripts/sample-code.js sync が生成します -->',
@@ -292,6 +317,8 @@ function writeReadme(ch, manuscript, manifest) {
     '```',
     'javac -d out *.java',
     '```',
+    '',
+    '外部ライブラリを使うサンプルは、表に示したライブラリ（Maven Centralの「グループ:名前:バージョン」）のJARを `-cp` に加えてコンパイル・実行します。',
     '',
     '| サンプルコード | ファイル | 実行 |',
     '|---|---|---|',
@@ -337,12 +364,13 @@ function checkCommand(filters, args) {
       if (!text.includes(want)) problems.push(`${where}: キャプションが listings.json と合わない（sync で直せる）`);
       const out = path.join(work, `${ch}-${e.dir}`);
       fs.cpSync(dir, out, { recursive: true });
-      const c = compileDir(out, path.join(out, 'out'));
+      let c;
+      try { c = compileDir(out, path.join(out, 'out'), e); } catch (err) { problems.push(`${where}: ${err.message}`); continue; }
       if (!c.ok) { problems.push(`${where}: 全文がコンパイルできない: ${c.error.trim()}`); continue; }
       const found = findMain(dir, e.excerpt.map((x) => x.file));
       if (e.main !== found) problems.push(`${where}: main が ${found} なのに listings.json は ${e.main}`);
       if (!runMode) continue;
-      const x = L.run(s, { dir: out, main: e.main });
+      const x = L.run(s, { dir: out, main: e.main, cp: ['out', ...libJars(e.libs)].join(path.delimiter) });
       if (!x) { totals.照合なし++; continue; }
       if (x.result === '一致' || x.result === '数値差' || x.result === '実行不可') totals[x.result]++;
       else problems.push(`${where}: 実行結果が本文と異なる（${x.result}: ${x.detail}）`);
@@ -391,11 +419,73 @@ function setCommand([id, ...specs]) {
       excerpt.push({ file, from: a, to: b || a });
     }
   }
+  renderExcerpt(path.join(chapterDir(ch), e.dir), excerpt); // 範囲が不正なら保存前に止める
   e.excerpt = excerpt;
   saveManifest(ch, manifest);
   const f = manuscriptFiles([`chapter${pad(ch)}`])[0];
   syncCommand([f]);
   console.log(`${id}: ${renderExcerpt(path.join(chapterDir(ch), e.dir), excerpt).split('\n').length}行`);
+}
+
+/**
+ * 本文のコードを、コンパイルできるかどうかにかかわらず全文として登録する。
+ * 登録後に全文へ import や足りないクラスを書き足し、relocate で範囲を合わせ直す
+ *   add 20-7 [--libs=group:artifact:version,...]
+ */
+function addCommand([id], args) {
+  const ch = Number(id.split('-')[0]);
+  const f = manuscriptFiles([`chapter${pad(ch)}`])[0];
+  const s = L.extract(path.join(L.MANUSCRIPTS, f)).find((x) => x.id === id);
+  if (!s) { console.error(`${id}: 本文にない`); process.exit(1); }
+  const manifest = loadManifest(ch);
+  if (manifest[id]) { console.error(`${id}: すでに listings.json にある`); process.exit(1); }
+  const split = splitUnits(s.code);
+  if (!split) { console.error(`${id}: 型の区切りに空行がない`); process.exit(1); }
+  const dir = path.join(chapterDir(ch), dirName(id));
+  fs.mkdirSync(dir, { recursive: true });
+  for (const u of split) fs.writeFileSync(path.join(dir, u.file), u.content.join('\n') + '\n');
+  const entry = { dir: dirName(id), main: findMain(dir, split.map((u) => u.file)), excerpt: split.map((u) => ({ file: u.file, from: u.from, to: u.to })) };
+  const libs = (args.find((a) => a.startsWith('--libs=')) || '').replace('--libs=', '');
+  if (libs) entry.libs = libs.split(',');
+  manifest[id] = entry;
+  saveManifest(ch, manifest);
+  console.log(`${id}: ${split.map((u) => u.file).join(', ')} を書き出した`);
+}
+
+/**
+ * 全文を編集して行がずれたあと、本文のコードと同じ並びを全文の中から探して from/to を更新する
+ */
+function relocateCommand(ids) {
+  for (const id of ids) {
+    const ch = Number(id.split('-')[0]);
+    const f = manuscriptFiles([`chapter${pad(ch)}`])[0];
+    const s = L.extract(path.join(L.MANUSCRIPTS, f)).find((x) => x.id === id);
+    const manifest = loadManifest(ch);
+    const e = manifest[id];
+    const book = s.code.split('\n');
+    let k = 0;
+    e.excerpt.forEach((seg, i) => {
+      if (i > 0) {
+        const prev = e.excerpt[i - 1];
+        const sep = seg.sep || (prev.file !== seg.file ? 'blank' : prev.to + 1 === seg.from ? 'none' : 'elision');
+        if (sep !== 'none') k++;
+      }
+      const n = seg.to - seg.from + 1;
+      const want = book.slice(k, k + n).join('\n');
+      const lines = readLines(path.join(chapterDir(ch), e.dir, seg.file));
+      const starts = [];
+      for (let a = 0; a + n <= lines.length; a++) if (lines.slice(a, a + n).join('\n') === want) starts.push(a + 1);
+      if (!starts.length) throw new Error(`${id}: ${seg.file} に本文の${k + 1}行目からの${n}行が見つからない`);
+      // 候補が複数あるときは、もとの位置にいちばん近いもの
+      const from = starts.reduce((best, x) => (Math.abs(x - seg.from) < Math.abs(best - seg.from) ? x : best));
+      seg.from = from;
+      seg.to = from + n - 1;
+      k += n;
+    });
+    e.main = findMain(path.join(chapterDir(ch), e.dir), e.excerpt.map((x) => x.file));
+    saveManifest(ch, manifest);
+    syncCommand([f]);
+  }
 }
 
 function main() {
@@ -406,6 +496,8 @@ function main() {
   else if (cmd === 'check') checkCommand(filters, rest);
   else if (cmd === 'show') showCommand(filters);
   else if (cmd === 'set') setCommand(filters);
+  else if (cmd === 'add') addCommand(filters, rest);
+  else if (cmd === 'relocate') relocateCommand(filters);
   else { console.error('使い方: node scripts/sample-code.js check|sync|extract [chapterXX]'); process.exit(2); }
 }
 
