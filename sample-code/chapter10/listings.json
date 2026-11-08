@@ -89,7 +89,11 @@
     "dir": "10-15",
     "main": null,
     "excerpt": [
-      { "file": "VarBestPractices.java", "from": 1, "to": 63 }
+      { "file": "VarBestPractices.java", "from": 6, "to": 12 },
+      { "file": "VarBestPractices.java", "from": 14, "to": 15 },
+      { "file": "VarBestPractices.java", "from": 26, "to": 44 },
+      { "file": "VarBestPractices.java", "from": 58, "to": 58 },
+      { "file": "VarBestPractices.java", "from": 63, "to": 63 }
     ]
   },
   "10-26": {

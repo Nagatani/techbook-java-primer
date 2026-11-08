@@ -48,21 +48,32 @@
     "dir": "12-12",
     "main": "OptionalStreamExample",
     "excerpt": [
-      { "file": "OptionalStreamExample.java", "from": 1, "to": 60 }
+      { "file": "OptionalStreamExample.java", "from": 7, "to": 8 },
+      { "file": "OptionalStreamExample.java", "from": 19, "to": 19 },
+      { "file": "OptionalStreamExample.java", "from": 21, "to": 22 },
+      { "file": "OptionalStreamExample.java", "from": 27, "to": 59 },
+      { "file": "OptionalStreamExample.java", "from": 60, "to": 60 }
     ]
   },
   "12-13": {
     "dir": "12-13",
     "main": "OptionalPracticalExample",
     "excerpt": [
-      { "file": "OptionalPracticalExample.java", "from": 1, "to": 90 }
+      { "file": "OptionalPracticalExample.java", "from": 5, "to": 5 },
+      { "file": "OptionalPracticalExample.java", "from": 15, "to": 18 },
+      { "file": "OptionalPracticalExample.java", "from": 34, "to": 36 },
+      { "file": "OptionalPracticalExample.java", "from": 53, "to": 58 },
+      { "file": "OptionalPracticalExample.java", "from": 61, "to": 61 },
+      { "file": "OptionalPracticalExample.java", "from": 65, "to": 80 },
+      { "file": "OptionalPracticalExample.java", "from": 89, "to": 90 }
     ]
   },
   "12-14": {
     "dir": "12-14",
     "main": "OptionalAntiPatternsExample",
     "excerpt": [
-      { "file": "OptionalAntiPatternsExample.java", "from": 1, "to": 68 }
+      { "file": "OptionalAntiPatternsExample.java", "from": 5, "to": 58 },
+      { "file": "OptionalAntiPatternsExample.java", "from": 67, "to": 68 }
     ]
   },
   "12-16": {

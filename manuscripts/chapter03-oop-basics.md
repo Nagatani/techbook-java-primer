@@ -1559,7 +1559,7 @@ public class BadExample {
 
 #### privateを使った改善例
 
-<span class="listing-number">**サンプルコード3-26**　Product.java</span>
+<span class="listing-number">**サンプルコード3-26**　Product.java（1〜7、20〜37、48行目）</span>
 
 ```java
 public class Product {
@@ -1569,18 +1569,7 @@ public class Product {
     
     // コンストラクタで初期値を設定
     public Product(double price, int stock) {
-        // 初期値の検証も可能
-        if (price < 0) {
-            this.price = 0;
-        } else {
-            this.price = price;
-        }
-        
-        if (stock < 0) {
-            this.stock = 0;
-        } else {
-            this.stock = stock;
-        }
+    // ...
     }
     
     // publicメソッドを通じて安全にアクセス
@@ -1599,16 +1588,7 @@ public class Product {
             System.out.println("在庫を追加しました。現在の在庫: " + stock);
         }
     }
-    
-    public boolean sell(int amount) {
-        if (amount > 0 && stock >= amount) {
-            stock -= amount;
-            System.out.println("販売しました。残り在庫: " + stock);
-            return true;
-        }
-        System.out.println("在庫が不足しています");
-        return false;
-    }
+    // ...
 }
 ```
 
@@ -2099,12 +2079,9 @@ ECサイトのショッピングカート機能を実装したクラスです。
 商品の一覧には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<Item>`は、`Item`型の要素を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード3-37**　ShoppingCart.java</span>
+<span class="listing-number">**サンプルコード3-37**　ShoppingCart.java（4〜23、32〜48、54〜55行目）</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.List;
-
 public class ShoppingCart {
     private List<Item> items;
     private double taxRate;
@@ -2125,14 +2102,7 @@ public class ShoppingCart {
         }
         return subtotal * (1 + taxRate);
     }
-    
-    public void displayCart() {
-        System.out.println("=== ショッピングカート ===");
-        for (Item item : items) {
-            System.out.println(item);
-        }
-        System.out.printf("合計（税込）: %.2f円%n", calculateTotal());
-    }
+    // ...
     
     // 内部クラス
     private class Item {
@@ -2150,11 +2120,7 @@ public class ShoppingCart {
             return price * quantity;
         }
         
-        @Override
-        public String toString() {
-            return String.format("%s - %.2f円 × %d = %.2f円", 
-                name, price, quantity, getSubtotal());
-        }
+        // ...
     }
 }
 ```

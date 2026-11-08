@@ -91,42 +91,12 @@ DRY原則（Don't Repeat Yourself）を実現できます。共通コードを�
 
 </div>
 
-<span class="listing-number">**サンプルコード5-1**　PaymentResult.java、PaymentProcessor.java（3〜87行目）</span>
+<span class="listing-number">**サンプルコード5-1**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
 
 ```java
-import java.math.BigDecimal;
-
-// 決済結果を保持するクラス
-public class PaymentResult {
-    private boolean success;
-    private String authorizationCode;
-    private String message;
-    
-    public PaymentResult(boolean success, String authorizationCode, String message) {
-        this.success = success;
-        this.authorizationCode = authorizationCode;
-        this.message = message;
-    }
-    
-    public boolean isSuccess() { return success; }
-    public String getAuthorizationCode() { return authorizationCode; }
-    public String getMessage() { return message; }
-}
-
 // 決済処理の基底クラス：テンプレートメソッドパターンの実装
 public class PaymentProcessor {
-    protected String transactionId;
-    protected BigDecimal amount;
-    protected String currency;
-    protected String errorMessage; // エラーメッセージを保持するフィールド
-    
-    public PaymentProcessor(String transactionId, BigDecimal amount, String currency) {
-        this.transactionId = transactionId;
-        this.amount = amount;
-        this.currency = currency;
-        this.errorMessage = null;
-    }
-    
+    // ...
     // テンプレートメソッド：決済処理の共通フロー
     public final PaymentResult processPayment() {
         // 1. 事前検証（共通処理）
@@ -153,20 +123,7 @@ public class PaymentProcessor {
         
         return new PaymentResult(true, authorizationCode, "決済完了");
     }
-    
-    // 共通の検証ロジック（boolean返却、エラーメッセージはフィールドに設定）
-    private boolean validateCommonParameters() {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            errorMessage = "金額は正の値である必要があります";
-            return false;
-        }
-        if (amount.compareTo(new BigDecimal("1000000")) > 0) {
-            errorMessage = "決済上限額を超えています";
-            return false;
-        }
-        return true;
-    }
-    
+    // ...
     // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
     protected boolean validatePaymentSpecific() {
         // デフォルトでは追加の検証なし
@@ -185,19 +142,8 @@ public class PaymentProcessor {
     protected void logTransaction(String authCode) {
         System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
     }
-    
-    protected void logError() {
-        System.err.println("決済エラー[" + transactionId + "]: " + errorMessage);
-    }
-    
-    // エラーメッセージを設定するヘルパーメソッド（子クラスから利用可能）
-    protected void setErrorMessage(String message) {
-        this.errorMessage = message;
-    }
+    // ...
 }
-
-// 注意：このエラー処理の設計は単一スレッド環境を想定しています。
-// 並行処理環境では、errorMessageフィールドの共有により問題が生じる可能性があります。
 ```
 
 これは決済処理の基底クラスで、テンプレートメソッドパターンを実装しています。processPayment()メソッドが決済処理の共通フローを定義し、子クラスで特定の処理をオーバーライドできるようになっています。
@@ -938,7 +884,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-12**　Rectangle.java、Square.java、RectangleSquareTest.java</span>
+<span class="listing-number">**サンプルコード5-12**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -946,11 +892,7 @@ public class Rectangle {
     protected int width;
     protected int height;
     
-    public Rectangle(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-    
+    // ...
     public void setWidth(int width) {
         this.width = width;
     }
@@ -958,10 +900,7 @@ public class Rectangle {
     public void setHeight(int height) {
         this.height = height;
     }
-    
-    public int getArea() {
-        return width * height;
-    }
+    // ...
 }
 
 // 正方形を長方形として継承すると問題が発生
@@ -995,15 +934,7 @@ public class RectangleSquareTest {
         int expectedArea = 50;
         int actualArea = rect.getArea();
         
-        System.out.println("幅を5、高さを10に設定");
-        System.out.println("期待される面積: " + expectedArea);
-        System.out.println("実際の面積: " + actualArea);
-        
-        if (expectedArea == actualArea) {
-            System.out.println("✓ テスト成功");
-        } else {
-            System.out.println("✗ テスト失敗！");
-        }
+        // ...
     }
     
     public static void main(String[] args) {
@@ -1274,7 +1205,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-18**　Character.java、Wizard.java、Knight.java、CharacterOverrideTest.java</span>
+<span class="listing-number">**サンプルコード5-18**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
 
 ```java
 // 親クラス
@@ -1307,10 +1238,7 @@ public class Wizard extends Character {
     public void attack() {
         System.out.println(this.name + "は杖で殴った！");
     }
-
-    public void castSpell() {
-        System.out.println(this.name + "は魔法を唱えた！");
-    }
+    // ...
 }
 
 // 子クラス
@@ -1330,26 +1258,12 @@ public class Knight extends Character {
 // 使用例
 public class CharacterOverrideTest {
     public static void main(String[] args) {
-        // 通常のキャラクター
-        Character normalChar = new Character("戦士", 100);
-        normalChar.attack();
-        
-        System.out.println();
-        
-        // 魔法使い
-        Wizard wizard = new Wizard("魔法使い", 70, 10);
-        wizard.attack();  // オーバーライドされたメソッド
-        wizard.castSpell();
-        
-        System.out.println();
-        
+        // ...
         // ポリモーフィズムの例
         Character polymorphicWizard = new Wizard("賢者", 80, 20);
         polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
         // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
-
-        System.out.println();
-
+        // ...
         // superで親クラスのメソッドを呼び出す例
         Knight knight = new Knight("騎士", 120);
         knight.attack();  // 親クラスのattack()に続けて、Knight独自の処理が実行される
@@ -1644,7 +1558,7 @@ class User {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-24**　DrawingAppBefore.java</span>
+<span class="listing-number">**サンプルコード5-24**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1675,19 +1589,7 @@ class ShapeData {
         }
     }
     
-    void draw() {
-        switch (type) {
-            case CIRCLE:
-                System.out.println("円を描画：半径 = " + radius);
-                break;
-            case RECTANGLE:
-                System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
-                break;
-            case TRIANGLE:
-                System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + triangleHeight);
-                break;
-        }
-    }
+    // ...
 }
 
 // 使用例
@@ -1700,17 +1602,7 @@ public class DrawingAppBefore {
         shapes[0].type = ShapeType.CIRCLE;
         shapes[0].radius = 5.0;
         
-        // 長方形を作成
-        shapes[1] = new ShapeData();
-        shapes[1].type = ShapeType.RECTANGLE;
-        shapes[1].width = 10.0;
-        shapes[1].height = 20.0;
-        
-        // 三角形を作成
-        shapes[2] = new ShapeData();
-        shapes[2].type = ShapeType.TRIANGLE;
-        shapes[2].base = 15.0;
-        shapes[2].triangleHeight = 8.0;
+        // ...
         
         // すべての図形を描画
         for (ShapeData shape : shapes) {
@@ -1733,7 +1625,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-25**　DrawingAppAfter.java</span>
+<span class="listing-number">**サンプルコード5-25**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
 
 ```java
 // 基底クラス
@@ -1767,49 +1659,7 @@ class Circle extends Shape {
         System.out.println("円を描画：半径 = " + radius);
     }
 }
-
-// 長方形クラス
-class Rectangle extends Shape {
-    private double width;
-    private double height;
-    
-    public Rectangle(double width, double height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    @Override
-    double calculateArea() {
-        return width * height;
-    }
-    
-    @Override
-    void draw() {
-        System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
-    }
-}
-
-// 三角形クラス
-class Triangle extends Shape {
-    private double base;
-    private double height;
-    
-    public Triangle(double base, double height) {
-        this.base = base;
-        this.height = height;
-    }
-    
-    @Override
-    double calculateArea() {
-        return 0.5 * base * height;
-    }
-    
-    @Override
-    void draw() {
-        System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + height);
-    }
-}
-
+// ...
 // 使用例
 public class DrawingAppAfter {
     public static void main(String[] args) {
@@ -1825,14 +1675,7 @@ public class DrawingAppAfter {
             System.out.println("面積: " + shape.calculateArea());
         }
         
-        // 新しい図形（五角形）を追加しても、描画と面積計算のコードは変更不要
-        System.out.println();
-        System.out.println("=== 新しい図形を追加 ===");
-        Shape[] moreShapes = { new Pentagon(5.0) };
-        for (Shape shape : moreShapes) {
-            shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
-        }
+        // ...
     }
 }
 

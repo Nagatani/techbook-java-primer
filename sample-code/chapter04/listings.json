@@ -60,14 +60,19 @@
     "dir": "04-10",
     "main": null,
     "excerpt": [
-      { "file": "BankAccountV3.java", "from": 1, "to": 56 }
+      { "file": "BankAccountV3.java", "from": 3, "to": 8 },
+      { "file": "BankAccountV3.java", "from": 16, "to": 42 },
+      { "file": "BankAccountV3.java", "from": 52, "to": 56 }
     ]
   },
   "4-11": {
     "dir": "04-11",
     "main": null,
     "excerpt": [
-      { "file": "EnhancedBankAccount.java", "from": 1, "to": 68 }
+      { "file": "EnhancedBankAccount.java", "from": 3, "to": 8 },
+      { "file": "EnhancedBankAccount.java", "from": 15, "to": 21 },
+      { "file": "EnhancedBankAccount.java", "from": 23, "to": 54 },
+      { "file": "EnhancedBankAccount.java", "from": 68, "to": 68 }
     ],
     "uses": [
       "4-10"

@@ -567,11 +567,9 @@ First item: Optional[Item 1]
 
 Mixinは、クラスに機能を「混ぜ込む」設計パターンです。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
-<span class="listing-number">**サンプルコード7-12**　Timestamped.java</span>
+<span class="listing-number">**サンプルコード7-12**　Timestamped.java（3〜22、36〜37、59〜68行目）</span>
 
 ```java
-import java.time.Duration;
-
 // 複数の機能を提供するMixin
 interface Timestamped {
     long getTimestamp();
@@ -592,42 +590,10 @@ interface Identifiable {
         return getClass().getSimpleName() + "#" + getId();
     }
 }
-
-interface Versioned {
-    int getVersion();
-    
-    default boolean isNewerThan(Versioned other) {
-        return this.getVersion() > other.getVersion();
-    }
-    
-    default boolean isOlderThan(Versioned other) {
-        return this.getVersion() < other.getVersion();
-    }
-}
-
+// ...
 // 複数のMixinを組み合わせ
 class Document implements Timestamped, Identifiable, Versioned {
-    private final String id;
-    private final long timestamp;
-    private int version;
-    private String content;
-    
-    public Document(String id, String content) {
-        this.id = id;
-        this.timestamp = System.currentTimeMillis();
-        this.version = 1;
-        this.content = content;
-    }
-    
-    @Override
-    public String getId() { return id; }
-    
-    @Override
-    public long getTimestamp() { return timestamp; }
-    
-    @Override
-    public int getVersion() { return version; }
-    
+    // ...
     public void update(String newContent) {
         this.content = newContent;
         this.version++;
@@ -1090,7 +1056,7 @@ public class FactoryDemo {
 
 より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します。
 
-<span class="listing-number">**サンプルコード7-18**　DocumentFactory.java</span>
+<span class="listing-number">**サンプルコード7-18**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
 
 ```java
 // 抽象ファクトリークラス
@@ -1114,13 +1080,7 @@ class WordDocumentFactory extends DocumentFactory {
     }
 }
 
-class PdfDocumentFactory extends DocumentFactory {
-    @Override
-    public Document createDocument() {
-        return new PdfDocument();
-    }
-}
-
+// ...
 // ドキュメントインターフェイス
 interface Document {
     void open();
@@ -1135,32 +1095,7 @@ class WordDocument implements Document {
         System.out.println("Word文書を開いています...");
     }
     
-    @Override
-    public void save() {
-        System.out.println("Word文書を保存しています...");
-    }
-    
-    @Override
-    public void close() {
-        System.out.println("Word文書を閉じています...");
-    }
-}
-
-class PdfDocument implements Document {
-    @Override
-    public void open() {
-        System.out.println("PDF文書を開いています...");
-    }
-    
-    @Override
-    public void save() {
-        System.out.println("PDF文書を保存しています...");
-    }
-    
-    @Override
-    public void close() {
-        System.out.println("PDF文書を閉じています...");
-    }
+    // ...
 }
 ```
 
@@ -1177,11 +1112,9 @@ class PdfDocument implements Document {
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-19**　DatabaseConnectionFactory.java</span>
+<span class="listing-number">**サンプルコード7-19**　DatabaseConnectionFactory.java（3〜32、57〜68、79行目）</span>
 
 ```java
-import java.util.Properties;
-
 // データベース接続インターフェイス
 interface DatabaseConnection {
     void connect();
@@ -1212,30 +1145,7 @@ class MySQLConnection implements DatabaseConnection {
         System.out.println("MySQL接続を閉じる");
     }
 }
-
-class PostgreSQLConnection implements DatabaseConnection {
-    private String connectionString;
-    
-    public PostgreSQLConnection(String host, int port, String database) {
-        this.connectionString = String.format("postgresql://%s:%d/%s", host, port, database);
-    }
-    
-    @Override
-    public void connect() {
-        System.out.println("PostgreSQLに接続: " + connectionString);
-    }
-    
-    @Override
-    public void executeQuery(String sql) {
-        System.out.println("PostgreSQLでクエリ実行: " + sql);
-    }
-    
-    @Override
-    public void close() {
-        System.out.println("PostgreSQL接続を閉じる");
-    }
-}
-
+// ...
 // データベース接続ファクトリー
 public class DatabaseConnectionFactory {
     public static DatabaseConnection createConnection(String type, String host, int port, String database) {
@@ -1248,16 +1158,7 @@ public class DatabaseConnectionFactory {
                 throw new IllegalArgumentException("サポートされていないデータベース: " + type);
         }
     }
-    
-    // 設定ファイルから接続を作成
-    public static DatabaseConnection createConnectionFromConfig(Properties config) {
-        String type = config.getProperty("db.type");
-        String host = config.getProperty("db.host", "localhost");
-        int port = Integer.parseInt(config.getProperty("db.port", "3306"));
-        String database = config.getProperty("db.database");
-        
-        return createConnection(type, host, port, database);
-    }
+    // ...
 }
 ```
 
@@ -1574,14 +1475,9 @@ interface Service {
 
 正しい選択：
 
-<span class="listing-number">**サンプルコード7-31**　BaseService.java</span>
+<span class="listing-number">**サンプルコード7-31**　BaseService.java（6〜15、21〜27、31〜44、51〜56、64〜67、77行目）</span>
 
 ```java
-import java.time.LocalDateTime;
-import java.time.Duration;
-import java.util.Map;
-import java.util.HashMap;
-
 // 共通の状態と実装を持つ場合は抽象クラス
 abstract class BaseService {
     protected String serviceId;
@@ -1592,11 +1488,7 @@ abstract class BaseService {
         this.serviceId = serviceId;
         this.isActive = false;
     }
-    
-    public String getServiceId() {
-        return serviceId;
-    }
-    
+    // ...
     public abstract void initialize();
     public abstract void shutdown();
     
@@ -1604,9 +1496,7 @@ abstract class BaseService {
         return isActive;
     }
     
-    public Duration getUptime() {
-        return isActive ? Duration.between(startTime, LocalDateTime.now()) : Duration.ZERO;
-    }
+    // ...
 }
 
 // 行動の契約のみを定義する場合はインターフェイス
@@ -1621,38 +1511,19 @@ interface Monitorable {
 
 class EmailService extends BaseService implements Monitorable {
     private int sentCount = 0;
-    private int failureCount = 0;
-    
-    public EmailService(String serviceId) {
-        super(serviceId);
-    }
-    
+    // ...
     @Override
     public void initialize() {
         isActive = true;
         startTime = LocalDateTime.now();
         System.out.println(serviceId + " メールサービスを起動");
     }
-    
-    @Override
-    public void shutdown() {
-        isActive = false;
-        System.out.println(serviceId + " メールサービスを停止");
-    }
-    
+    // ...
     @Override
     public void checkHealth() {
         System.out.println("メールサービスのヘルスチェック実行");
     }
-    
-    @Override
-    public Map<String, Object> getMetrics() {
-        Map<String, Object> metrics = new HashMap<>();
-        metrics.put("sent_count", sentCount);
-        metrics.put("failure_count", failureCount);
-        metrics.put("uptime_seconds", getUptime().getSeconds());
-        return metrics;
-    }
+    // ...
 }
 ```
 

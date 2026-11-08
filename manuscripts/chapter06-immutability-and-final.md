@@ -305,13 +305,9 @@ finalクラスの利点。
 
 ### 実践例：不変な`Person`クラス
 
-<span class="listing-number">**サンプルコード6-7**　ImmutablePerson.java</span>
+<span class="listing-number">**サンプルコード6-7**　ImmutablePerson.java（5〜12、19〜28、37〜51、73行目）</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 // 完全な不変クラスの例
 public final class ImmutablePerson {
     private final String name;
@@ -320,12 +316,7 @@ public final class ImmutablePerson {
     
     public ImmutablePerson(String name, int age, List<String> hobbies) {
         // パラメータの検証
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("名前は必須です");
-        }
-        if (age < 0 || age > 150) {
-            throw new IllegalArgumentException("年齢は0～150の範囲である必要があります");
-        }
+        // ...
         
         this.name = name.trim();
         this.age = age;
@@ -336,14 +327,7 @@ public final class ImmutablePerson {
     }
     
     // getterメソッドのみ提供（setterは存在しない）
-    public String getName() {
-        return name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-    
+    // ...
     public List<String> getHobbies() {
         // 防御的コピー：内部リストへの参照を返さない
         return new ArrayList<>(hobbies);
@@ -359,27 +343,7 @@ public final class ImmutablePerson {
         newHobbies.add(hobby);
         return new ImmutablePerson(this.name, this.age, newHobbies);
     }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        ImmutablePerson that = (ImmutablePerson) obj;
-        return age == that.age && 
-               Objects.equals(name, that.name) && 
-               Objects.equals(hobbies, that.hobbies);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, age, hobbies);
-    }
-    
-    @Override
-    public String toString() {
-        return "ImmutablePerson{name='" + name + "', age=" + age + 
-               ", hobbies=" + hobbies + "}";
-    }
+    // ...
 }
 ```
 
@@ -512,30 +476,21 @@ public final class DateRange {
 
 複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
 
-<span class="listing-number">**サンプルコード6-10**　Book.java</span>
+<span class="listing-number">**サンプルコード6-10**　Book.java（3〜7、13〜17、22〜31、37〜38、46〜53、81〜85、91行目）</span>
 
 ```java
-import java.time.LocalDate;
-
 // ビルダーパターンを使った不変オブジェクトの構築
 public final class Book {
     private final String isbn;
     private final String title;
     private final String author;
-    private final String publisher;
-    private final int publicationYear;
-    private final int pages;
-    private final String genre;
-    
+    // ...
     // プライベートコンストラクタ
     private Book(Builder builder) {
         this.isbn = builder.isbn;
         this.title = builder.title;
         this.author = builder.author;
-        this.publisher = builder.publisher;
-        this.publicationYear = builder.publicationYear;
-        this.pages = builder.pages;
-        this.genre = builder.genre;
+        // ...
     }
     
     // ビルダークラス
@@ -546,20 +501,10 @@ public final class Book {
         
         // オプションパラメータ（デフォルト値を設定）
         private String author = "Unknown";
-        private String publisher = "";
-        private int publicationYear = 0;
-        private int pages = 0;
-        private String genre = "General";
-        
+        // ...
         // 必須パラメータのコンストラクタ
         public Builder(String isbn, String title) {
-            if (isbn == null || isbn.trim().isEmpty()) {
-                throw new IllegalArgumentException("ISBNは必須です");
-            }
-            if (title == null || title.trim().isEmpty()) {
-                throw new IllegalArgumentException("タイトルは必須です");
-            }
-            this.isbn = isbn;
+            // ...
             this.title = title;
         }
         
@@ -568,43 +513,13 @@ public final class Book {
             this.author = author;
             return this;
         }
-        
-        public Builder publisher(String publisher) {
-            this.publisher = publisher;
-            return this;
-        }
-        
-        public Builder publicationYear(int year) {
-            if (year < 0 || year > LocalDate.now().getYear()) {
-                throw new IllegalArgumentException("無効な出版年です");
-            }
-            this.publicationYear = year;
-            return this;
-        }
-        
-        public Builder pages(int pages) {
-            if (pages < 0) {
-                throw new IllegalArgumentException("ページ数は正の値である必要があります");
-            }
-            this.pages = pages;
-            return this;
-        }
-        
-        public Builder genre(String genre) {
-            this.genre = genre;
-            return this;
-        }
-        
+        // ...
         // Bookオブジェクトの構築
         public Book build() {
             return new Book(this);
         }
     }
-    // getterメソッド（省略）
-    public String getIsbn() { return isbn; }
-    public String getTitle() { return title; }
-    public String getAuthor() { return author; }
-    // ... 他のgetterメソッド
+    // ...
 }
 ```
 

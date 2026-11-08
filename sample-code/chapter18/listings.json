@@ -24,35 +24,57 @@
     "dir": "18-05",
     "main": "BasicMouseEventExample",
     "excerpt": [
-      { "file": "BasicMouseEventExample.java", "from": 1, "to": 60 }
+      { "file": "BasicMouseEventExample.java", "from": 5, "to": 5 },
+      { "file": "BasicMouseEventExample.java", "from": 9, "to": 9 },
+      { "file": "BasicMouseEventExample.java", "from": 24, "to": 46 },
+      { "file": "BasicMouseEventExample.java", "from": 53, "to": 53 },
+      { "file": "BasicMouseEventExample.java", "from": 60, "to": 60 }
     ]
   },
   "18-6": {
     "dir": "18-06",
     "main": "BasicKeyEventExample",
     "excerpt": [
-      { "file": "BasicKeyEventExample.java", "from": 1, "to": 51 }
+      { "file": "BasicKeyEventExample.java", "from": 5, "to": 5 },
+      { "file": "BasicKeyEventExample.java", "from": 9, "to": 9 },
+      { "file": "BasicKeyEventExample.java", "from": 23, "to": 37 },
+      { "file": "BasicKeyEventExample.java", "from": 44, "to": 44 },
+      { "file": "BasicKeyEventExample.java", "from": 51, "to": 51 }
     ]
   },
   "18-7": {
     "dir": "18-07",
     "main": "ItemListenerExample",
     "excerpt": [
-      { "file": "ItemListenerExample.java", "from": 1, "to": 97 }
+      { "file": "ItemListenerExample.java", "from": 5, "to": 5 },
+      { "file": "ItemListenerExample.java", "from": 10, "to": 10 },
+      { "file": "ItemListenerExample.java", "from": 22, "to": 34 },
+      { "file": "ItemListenerExample.java", "from": 52, "to": 61 },
+      { "file": "ItemListenerExample.java", "from": 82, "to": 82 },
+      { "file": "ItemListenerExample.java", "from": 97, "to": 97 }
     ]
   },
   "18-8": {
     "dir": "18-08",
     "main": "FocusListenerExample",
     "excerpt": [
-      { "file": "FocusListenerExample.java", "from": 1, "to": 85 }
+      { "file": "FocusListenerExample.java", "from": 5, "to": 5 },
+      { "file": "FocusListenerExample.java", "from": 9, "to": 9 },
+      { "file": "FocusListenerExample.java", "from": 21, "to": 45 },
+      { "file": "FocusListenerExample.java", "from": 71, "to": 71 },
+      { "file": "FocusListenerExample.java", "from": 85, "to": 85 }
     ]
   },
   "18-9": {
     "dir": "18-09",
     "main": "ChangeListenerExample",
     "excerpt": [
-      { "file": "ChangeListenerExample.java", "from": 1, "to": 91 }
+      { "file": "ChangeListenerExample.java", "from": 5, "to": 5 },
+      { "file": "ChangeListenerExample.java", "from": 11, "to": 11 },
+      { "file": "ChangeListenerExample.java", "from": 28, "to": 40 },
+      { "file": "ChangeListenerExample.java", "from": 50, "to": 55 },
+      { "file": "ChangeListenerExample.java", "from": 84, "to": 84 },
+      { "file": "ChangeListenerExample.java", "from": 91, "to": 91 }
     ]
   }
 }

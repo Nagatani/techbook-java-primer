@@ -122,7 +122,9 @@
     "dir": "03-26",
     "main": null,
     "excerpt": [
-      { "file": "Product.java", "from": 1, "to": 48 }
+      { "file": "Product.java", "from": 1, "to": 7 },
+      { "file": "Product.java", "from": 20, "to": 37 },
+      { "file": "Product.java", "from": 48, "to": 48 }
     ]
   },
   "3-27": {
@@ -172,7 +174,9 @@
     "dir": "03-37",
     "main": null,
     "excerpt": [
-      { "file": "ShoppingCart.java", "from": 1, "to": 55 }
+      { "file": "ShoppingCart.java", "from": 4, "to": 23 },
+      { "file": "ShoppingCart.java", "from": 32, "to": 48 },
+      { "file": "ShoppingCart.java", "from": 54, "to": 55 }
     ]
   },
   "3-38": {

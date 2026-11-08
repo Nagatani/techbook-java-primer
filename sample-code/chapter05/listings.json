@@ -3,8 +3,10 @@
     "dir": "05-01",
     "main": null,
     "excerpt": [
-      { "file": "PaymentResult.java", "from": 1, "to": 18 },
-      { "file": "PaymentProcessor.java", "from": 3, "to": 87 }
+      { "file": "PaymentProcessor.java", "from": 3, "to": 4 },
+      { "file": "PaymentProcessor.java", "from": 17, "to": 42 },
+      { "file": "PaymentProcessor.java", "from": 57, "to": 74 },
+      { "file": "PaymentProcessor.java", "from": 84, "to": 84 }
     ]
   },
   "5-4": {
@@ -69,9 +71,12 @@
     "dir": "05-12",
     "main": "RectangleSquareTest",
     "excerpt": [
-      { "file": "Rectangle.java", "from": 1, "to": 22 },
+      { "file": "Rectangle.java", "from": 1, "to": 5 },
+      { "file": "Rectangle.java", "from": 11, "to": 17 },
+      { "file": "Rectangle.java", "from": 22, "to": 22 },
       { "file": "Square.java", "from": 1, "to": 19 },
-      { "file": "RectangleSquareTest.java", "from": 1, "to": 32 }
+      { "file": "RectangleSquareTest.java", "from": 1, "to": 11 },
+      { "file": "RectangleSquareTest.java", "from": 21, "to": 32 }
     ]
   },
   "5-13": {
@@ -102,23 +107,30 @@
     "main": "CharacterOverrideTest",
     "excerpt": [
       { "file": "Character.java", "from": 1, "to": 14 },
-      { "file": "Wizard.java", "from": 1, "to": 20 },
+      { "file": "Wizard.java", "from": 1, "to": 15 },
+      { "file": "Wizard.java", "from": 20, "to": 20 },
       { "file": "Knight.java", "from": 1, "to": 13 },
-      { "file": "CharacterOverrideTest.java", "from": 1, "to": 28 }
+      { "file": "CharacterOverrideTest.java", "from": 1, "to": 3 },
+      { "file": "CharacterOverrideTest.java", "from": 17, "to": 20 },
+      { "file": "CharacterOverrideTest.java", "from": 24, "to": 28 }
     ]
   },
   "5-24": {
     "dir": "05-24",
     "main": "DrawingAppBefore",
     "excerpt": [
-      { "file": "DrawingAppBefore.java", "from": 1, "to": 72 }
+      { "file": "DrawingAppBefore.java", "from": 1, "to": 28 },
+      { "file": "DrawingAppBefore.java", "from": 42, "to": 53 },
+      { "file": "DrawingAppBefore.java", "from": 65, "to": 72 }
     ]
   },
   "5-25": {
     "dir": "05-25",
     "main": "DrawingAppAfter",
     "excerpt": [
-      { "file": "DrawingAppAfter.java", "from": 1, "to": 118 }
+      { "file": "DrawingAppAfter.java", "from": 1, "to": 31 },
+      { "file": "DrawingAppAfter.java", "from": 75, "to": 89 },
+      { "file": "DrawingAppAfter.java", "from": 98, "to": 118 }
     ]
   }
 }

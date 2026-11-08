@@ -80,14 +80,21 @@
     "dir": "17-12",
     "main": "ComplexLayoutExample",
     "excerpt": [
-      { "file": "ComplexLayoutExample.java", "from": 1, "to": 58 }
+      { "file": "ComplexLayoutExample.java", "from": 4, "to": 9 },
+      { "file": "ComplexLayoutExample.java", "from": 23, "to": 45 },
+      { "file": "ComplexLayoutExample.java", "from": 55, "to": 58 }
     ]
   },
   "17-13": {
     "dir": "17-13",
     "main": "CombinedLayoutExample",
     "excerpt": [
-      { "file": "CombinedLayoutExample.java", "from": 1, "to": 98 }
+      { "file": "CombinedLayoutExample.java", "from": 4, "to": 12 },
+      { "file": "CombinedLayoutExample.java", "from": 37, "to": 42 },
+      { "file": "CombinedLayoutExample.java", "from": 59, "to": 62 },
+      { "file": "CombinedLayoutExample.java", "from": 76, "to": 84 },
+      { "file": "CombinedLayoutExample.java", "from": 93, "to": 93 },
+      { "file": "CombinedLayoutExample.java", "from": 97, "to": 98 }
     ]
   },
   "17-14": {
@@ -115,14 +122,19 @@
     "dir": "17-18",
     "main": "CounterApplication",
     "excerpt": [
-      { "file": "CounterApplication.java", "from": 1, "to": 64 }
+      { "file": "CounterApplication.java", "from": 6, "to": 10 },
+      { "file": "CounterApplication.java", "from": 17, "to": 37 },
+      { "file": "CounterApplication.java", "from": 54, "to": 64 }
     ]
   },
   "17-20": {
     "dir": "17-20",
     "main": "FormApplication",
     "excerpt": [
-      { "file": "FormApplication.java", "from": 1, "to": 92 }
+      { "file": "FormApplication.java", "from": 4, "to": 5 },
+      { "file": "FormApplication.java", "from": 11, "to": 35 },
+      { "file": "FormApplication.java", "from": 57, "to": 73 },
+      { "file": "FormApplication.java", "from": 91, "to": 92 }
     ]
   },
   "17-21": {
@@ -143,7 +155,9 @@
     "dir": "17-23",
     "main": "SwingWorkerExample",
     "excerpt": [
-      { "file": "SwingWorkerExample.java", "from": 1, "to": 65 }
+      { "file": "SwingWorkerExample.java", "from": 6, "to": 8 },
+      { "file": "SwingWorkerExample.java", "from": 18, "to": 55 },
+      { "file": "SwingWorkerExample.java", "from": 63, "to": 65 }
     ]
   },
   "17-24": {
@@ -157,7 +171,10 @@
     "dir": "17-26",
     "main": "HeavyProcessingExample",
     "excerpt": [
-      { "file": "HeavyProcessingExample.java", "from": 1, "to": 82 }
+      { "file": "HeavyProcessingExample.java", "from": 5, "to": 7 },
+      { "file": "HeavyProcessingExample.java", "from": 21, "to": 48 },
+      { "file": "HeavyProcessingExample.java", "from": 60, "to": 72 },
+      { "file": "HeavyProcessingExample.java", "from": 80, "to": 82 }
     ]
   },
   "17-27": {
@@ -171,7 +188,9 @@
     "dir": "17-28",
     "main": "ThreadSafetyExample",
     "excerpt": [
-      { "file": "ThreadSafetyExample.java", "from": 1, "to": 87 }
+      { "file": "ThreadSafetyExample.java", "from": 6, "to": 7 },
+      { "file": "ThreadSafetyExample.java", "from": 45, "to": 80 },
+      { "file": "ThreadSafetyExample.java", "from": 87, "to": 87 }
     ]
   }
 }

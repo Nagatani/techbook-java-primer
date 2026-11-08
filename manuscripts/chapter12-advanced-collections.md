@@ -553,35 +553,17 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-12**　OptionalStreamExample.java</span>
+<span class="listing-number">**サンプルコード12-12**　OptionalStreamExample.java（7〜8、19、21〜22、27〜59、60行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class OptionalStreamExample {
     static class Product {
-        private String name;
-        private double price;
-        
-        public Product(String name, double price) {
-            this.name = name;
-            this.price = price;
-        }
-        
-        public String getName() { return name; }
-        public double getPrice() { return price; }
+    // ...
     }
-    
+    // ...
     public static void main(String[] args) {
         List<Product> products = Arrays.asList(
-            new Product("Laptop", 1200.0),
-            new Product("Mouse", 25.0),
-            new Product("Keyboard", 75.0),
-            new Product("Monitor", 300.0)
+        // ...
         );
         
         // findFirst() - 最初の要素をOptionalで返す
@@ -630,73 +612,29 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-13**　OptionalPracticalExample.java</span>
+<span class="listing-number">**サンプルコード12-13**　OptionalPracticalExample.java（5、15〜18、34〜36、53〜58、61、65〜80、89〜90行目）</span>
 
 ```java
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 public class OptionalPracticalExample {
-    // データベースの代わりとなるメモリ内ストレージ
-    static class UserRepository {
-        private Map<Long, User> users = new HashMap<>();
-        
-        public UserRepository() {
-            users.put(1L, new User(1L, "Alice", "alice@example.com"));
-            users.put(2L, new User(2L, "Bob", null));  // メールアドレスなし
-        }
-        
+        // ...
         // Optionalを返すことで、ユーザーが見つからない可能性を明示
         public Optional<User> findById(Long id) {
             return Optional.ofNullable(users.get(id));
         }
-    }
-    
-    static class User {
-        private Long id;
-        private String name;
-        private String email;
-        
-        public User(Long id, String name, String email) {
-            this.id = id;
-            this.name = name;
-            this.email = email;
-        }
-        
-        public Long getId() { return id; }
-        public String getName() { return name; }
+        // ...
         public Optional<String> getEmail() { 
             return Optional.ofNullable(email); 
         }
-    }
-    
-    static class ConfigService {
-        private Map<String, String> config = new HashMap<>();
-        
-        public ConfigService() {
-            config.put("app.name", "MyApp");
-            config.put("app.version", "1.0.0");
-            // app.timeoutは設定されていない
-        }
-        
-        // 設定値の取得（存在しない可能性を考慮）
-        public Optional<String> getConfig(String key) {
-            return Optional.ofNullable(config.get(key));
-        }
-        
+        // ...
         // タイムアウト値の取得（デフォルト値付き）
         public int getTimeout() {
             return getConfig("app.timeout")
                 .map(Integer::parseInt)
                 .orElse(30);  // デフォルト30秒
         }
-    }
-    
+        // ...
     public static void main(String[] args) {
-        UserRepository repo = new UserRepository();
-        ConfigService config = new ConfigService();
-        
+        // ...
         // データベース検索の例
         Long userId = 1L;
         String emailDomain = repo.findById(userId)
@@ -713,14 +651,7 @@ public class OptionalPracticalExample {
                 user -> System.out.println("ユーザー名: " + user.getName()),
                 () -> System.out.println("ユーザーID " + nonExistentId + " は存在しません")
             );
-        
-        // 設定値の取得
-        String appName = config.getConfig("app.name")
-            .orElse("Unknown App");
-        System.out.println("アプリケーション名: " + appName);
-        
-        int timeout = config.getTimeout();
-        System.out.println("タイムアウト値: " + timeout + "秒");
+            // ...
     }
 }
 ```
@@ -737,13 +668,9 @@ public class OptionalPracticalExample {
 
 Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
 
-<span class="listing-number">**サンプルコード12-14**　OptionalAntiPatternsExample.java</span>
+<span class="listing-number">**サンプルコード12-14**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
 
 ```java
-import java.util.Optional;
-import java.util.List;
-import java.util.ArrayList;
-
 public class OptionalAntiPatternsExample {
     static class BadExample {
         // アンチパターン1: フィールドにOptionalを使用（避けるべき）
@@ -798,14 +725,7 @@ public class OptionalAntiPatternsExample {
         // 良い例：mapを使用
         optional.map(String::toUpperCase)
             .ifPresent(System.out::println);
-        
-        // アンチパターン5: Optional<Optional<T>>の作成
-        // これは避けて、flatMapを使用すべき
-        
-        // 注意点：Optionalは値の一時的なコンテナ
-        // - Serializableではない
-        // - 長期保存には適さない
-        // - APIの戻り値として使用し、フィールドには使わない
+            // ...
     }
 }
 ```

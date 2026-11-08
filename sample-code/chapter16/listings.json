@@ -17,14 +17,19 @@
     "dir": "16-03",
     "main": "MultiThreadedServer",
     "excerpt": [
-      { "file": "MultiThreadedServer.java", "from": 1, "to": 72 }
+      { "file": "MultiThreadedServer.java", "from": 5, "to": 27 },
+      { "file": "MultiThreadedServer.java", "from": 29, "to": 29 },
+      { "file": "MultiThreadedServer.java", "from": 36, "to": 61 },
+      { "file": "MultiThreadedServer.java", "from": 70, "to": 72 }
     ]
   },
   "16-4": {
     "dir": "16-04",
     "main": "SimpleHTTPClient",
     "excerpt": [
-      { "file": "SimpleHTTPClient.java", "from": 1, "to": 51 }
+      { "file": "SimpleHTTPClient.java", "from": 4, "to": 21 },
+      { "file": "SimpleHTTPClient.java", "from": 25, "to": 40 },
+      { "file": "SimpleHTTPClient.java", "from": 47, "to": 51 }
     ]
   },
   "16-5": {
@@ -59,7 +64,10 @@
     "dir": "16-09",
     "main": "ChatServer",
     "excerpt": [
-      { "file": "ChatServer.java", "from": 1, "to": 93 }
+      { "file": "ChatServer.java", "from": 6, "to": 35 },
+      { "file": "ChatServer.java", "from": 42, "to": 42 },
+      { "file": "ChatServer.java", "from": 52, "to": 72 },
+      { "file": "ChatServer.java", "from": 87, "to": 93 }
     ]
   },
   "16-10": {

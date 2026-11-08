@@ -52,7 +52,9 @@
     "dir": "14-09",
     "main": "CSVProcessingExample",
     "excerpt": [
-      { "file": "CSVProcessingExample.java", "from": 1, "to": 65 }
+      { "file": "CSVProcessingExample.java", "from": 6, "to": 6 },
+      { "file": "CSVProcessingExample.java", "from": 21, "to": 54 },
+      { "file": "CSVProcessingExample.java", "from": 65, "to": 65 }
     ]
   },
   "14-10": {
@@ -94,14 +96,17 @@
     "dir": "14-15",
     "main": "TextBlockStructuredData",
     "excerpt": [
-      { "file": "TextBlockStructuredData.java", "from": 1, "to": 173 }
+      { "file": "TextBlockStructuredData.java", "from": 8, "to": 40 },
+      { "file": "TextBlockStructuredData.java", "from": 172, "to": 173 }
     ]
   },
   "14-16": {
     "dir": "14-16",
     "main": "TextBlockFileIO",
     "excerpt": [
-      { "file": "TextBlockFileIO.java", "from": 1, "to": 232 }
+      { "file": "TextBlockFileIO.java", "from": 8, "to": 8 },
+      { "file": "TextBlockFileIO.java", "from": 23, "to": 50 },
+      { "file": "TextBlockFileIO.java", "from": 232, "to": 232 }
     ]
   }
 }

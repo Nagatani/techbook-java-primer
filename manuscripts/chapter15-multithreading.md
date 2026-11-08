@@ -1287,23 +1287,14 @@ FutureとCallableの特徴。
 - キャンセル機能
     + 実行中のタスクをキャンセル可能
 
-<span class="listing-number">**サンプルコード15-16**　FutureCallableExample.java</span>
+<span class="listing-number">**サンプルコード15-16**　FutureCallableExample.java（5、7〜8、15〜23、29〜60、61行目）</span>
 
 ```java
-import java.util.concurrent.*;
-import java.util.List;
-import java.util.ArrayList;
-
 public class FutureCallableExample {
-    
+    // ...
     // 計算に時間がかかるタスク
     static class CalculationTask implements Callable<Long> {
-        private final int n;
-        
-        public CalculationTask(int n) {
-            this.n = n;
-        }
-        
+        // ...
         @Override
         public Long call() throws Exception {
             System.out.println("計算開始: フィボナッチ数列の第" + n + "項");
@@ -1313,11 +1304,7 @@ public class FutureCallableExample {
             System.out.printf("計算完了: F(%d) = %d (所要時間: %dms)%n", n, result, time);
             return result;
         }
-        
-        private long fibonacci(int n) {
-            if (n <= 1) return n;
-            return fibonacci(n - 1) + fibonacci(n - 2);
-        }
+        // ...
     }
     
     public static void main(String[] args) throws Exception {
@@ -1367,20 +1354,13 @@ CompletableFutureの主な特徴。
 - タイムアウト処理
     + Java 9以降では`orTimeout`メソッドも利用可能
 
-<span class="listing-number">**サンプルコード15-17**　CompletableFutureExample.java</span>
+<span class="listing-number">**サンプルコード15-17**　CompletableFutureExample.java（6、9、12〜24、38、40、52〜75、91〜92行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.Random;
-
 public class CompletableFutureExample {
-    
-    // 外部APIを呼び出すシミュレーション
+    // ...
     static class WeatherService {
-        private static final Random random = new Random();
-        
+        // ...
         public static CompletableFuture<String> getTemperature(String city) {
             return CompletableFuture.supplyAsync(() -> {
                 System.out.println("気温取得中: " + city);
@@ -1394,33 +1374,11 @@ public class CompletableFutureExample {
                 return city + ": " + temp + "°C";
             });
         }
-        
-        public static CompletableFuture<String> getHumidity(String city) {
-            return CompletableFuture.supplyAsync(() -> {
-                System.out.println("湿度取得中: " + city);
-                try {
-                    Thread.sleep(1000 + random.nextInt(1000));
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                int humidity = 40 + random.nextInt(40);
-                return city + ": " + humidity + "%";
-            });
-        }
+        // ...
     }
-    
+    // ...
     public static void main(String[] args) throws Exception {
-        // 1. 単純な非同期処理
-        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("非同期タスク開始");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            return "処理完了";
-        });
-        
+        // ...
         // 2. チェーン処理
         CompletableFuture<String> chainedFuture = future1
             .thenApply(result -> result + " -> 変換処理")
@@ -1445,21 +1403,7 @@ public class CompletableFutureExample {
         
         // すべての処理が完了するまで待つ
         CompletableFuture.allOf(allWeatherData).get();
-        
-        // 4. タイムアウト処理
-        CompletableFuture<String> timeoutFuture = CompletableFuture
-            .supplyAsync(() -> {
-                try {
-                    Thread.sleep(5000); // 長時間かかる処理
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                return "遅い処理の結果";
-            })
-            .orTimeout(2, TimeUnit.SECONDS)
-            .exceptionally(e -> "タイムアウトしました");
-        
-        System.out.println("\nタイムアウト処理: " + timeoutFuture.get());
+        // ...
     }
 }
 ```
@@ -1542,28 +1486,11 @@ public class AsyncChainingExample {
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
-<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java</span>
+<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java（5、20〜30、62〜108、126行目）</span>
 
 ```java
-import java.util.concurrent.*;
-import java.util.Arrays;
-import java.util.Random;
-
 public class ParallelPerformanceExample {
-    
-    // 大規模配列の並列ソート
-    public static void parallelSortBenchmark() {
-        int size = 10_000_000;
-        int[] array1 = new int[size];
-        int[] array2 = new int[size];
-        Random random = new Random();
-        
-        // ランダムデータの生成
-        for (int i = 0; i < size; i++) {
-            int value = random.nextInt();
-            array1[i] = value;
-            array2[i] = value;
-        }
+        // ...
         
         // シングルスレッドソート
         long startTime = System.currentTimeMillis();
@@ -1575,37 +1502,7 @@ public class ParallelPerformanceExample {
         Arrays.parallelSort(array2);
         long parallelTime = System.currentTimeMillis() - startTime;
         
-        System.out.println("=== ソートベンチマーク ===");
-        System.out.println("配列サイズ: " + size);
-        System.out.println("シングルスレッド: " + singleThreadTime + "ms");
-        System.out.println("並列処理: " + parallelTime + "ms");
-        System.out.println("性能向上: " + 
-            String.format("%.2fx", (double)singleThreadTime / parallelTime));
-    }
-    
-    // 並列ストリーム処理
-    public static void parallelStreamExample() {
-        int size = 50_000_000;
-        long[] numbers = new long[size];
-        Arrays.fill(numbers, 1);
-        
-        // シーケンシャル処理
-        long startTime = System.currentTimeMillis();
-        long sum1 = Arrays.stream(numbers).sum();
-        long sequentialTime = System.currentTimeMillis() - startTime;
-        
-        // 並列処理
-        startTime = System.currentTimeMillis();
-        long sum2 = Arrays.stream(numbers).parallel().sum();
-        long parallelTime = System.currentTimeMillis() - startTime;
-        
-        System.out.println("\n=== ストリーム処理ベンチマーク ===");
-        System.out.println("要素数: " + size);
-        System.out.println("シーケンシャル: " + sequentialTime + "ms");
-        System.out.println("並列: " + parallelTime + "ms");
-        System.out.println("性能向上: " + 
-            String.format("%.2fx", (double)sequentialTime / parallelTime));
-    }
+        // ...
     
     // ForkJoinPoolを使った再帰的並列処理
     static class RecursiveSum extends RecursiveTask<Long> {
@@ -1653,23 +1550,7 @@ public class ParallelPerformanceExample {
         long startTime = System.currentTimeMillis();
         Long result = pool.invoke(new RecursiveSum(array, 0, size));
         long time = System.currentTimeMillis() - startTime;
-        
-        System.out.println("\n=== ForkJoinPool ベンチマーク ===");
-        System.out.println("要素数: " + size);
-        System.out.println("計算結果: " + result);
-        System.out.println("処理時間: " + time + "ms");
-        System.out.println("使用スレッド数: " + pool.getParallelism());
-    }
-    
-    public static void main(String[] args) {
-        // CPUコア数の確認
-        int processors = Runtime.getRuntime().availableProcessors();
-        System.out.println("利用可能なCPUコア数: " + processors);
-        
-        parallelSortBenchmark();
-        parallelStreamExample();
-        forkJoinExample();
-    }
+        // ...
 }
 ```
 
@@ -1917,13 +1798,9 @@ public class ConcurrencyPitfallsAndSolutions {
 
 ### 並列データ処理パイプライン
 
-<span class="listing-number">**サンプルコード15-22**　ParallelDataPipeline.java</span>
+<span class="listing-number">**サンプルコード15-22**　ParallelDataPipeline.java（5〜15、21〜37、41、43、70〜79、82〜83行目）</span>
 
 ```java
-import java.util.concurrent.*;
-import java.util.List;
-import java.util.ArrayList;
-
 public class ParallelDataPipeline {
     
     // データ処理のステージ
@@ -1935,11 +1812,7 @@ public class ParallelDataPipeline {
     static class Pipeline<T> {
         private final ExecutorService executor;
         private final List<Stage<?, ?>> stages;
-        
-        public Pipeline(int threadPoolSize) {
-            this.executor = Executors.newFixedThreadPool(threadPoolSize);
-            this.stages = new ArrayList<>();
-        }
+        // ...
         
         public <O> Pipeline<O> addStage(Stage<T, O> stage) {
             stages.add(stage);
@@ -1957,38 +1830,11 @@ public class ParallelDataPipeline {
             return (CompletableFuture<T>) result;
         }
         
-        public void shutdown() {
-            executor.shutdown();
-        }
+        // ...
     }
-    
+    // ...
     public static void main(String[] args) throws Exception {
-        // データ処理パイプラインの例
-        Pipeline<String> pipeline = new Pipeline<>(4);
-        
-        // ステージ1: データ取得
-        Stage<String, String> fetchStage = url -> {
-            System.out.println("Fetching data from: " + url);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            return "Raw data from " + url;
-        };
-        
-        // ステージ2: データ変換
-        Stage<String, String> transformStage = data -> {
-            System.out.println("Transforming: " + data);
-            return data.toUpperCase();
-        };
-        
-        // ステージ3: データ保存
-        Stage<String, String> saveStage = data -> {
-            System.out.println("Saving: " + data);
-            return "Saved: " + data;
-        };
-        
+        // ...
         // パイプライン構築
         CompletableFuture<String> future = pipeline
             .addStage(fetchStage)
@@ -1999,36 +1845,21 @@ public class ParallelDataPipeline {
         // 結果取得
         String result = future.get();
         System.out.println("Pipeline result: " + result);
-        
-        pipeline.shutdown();
+        // ...
     }
 }
 ```
 
 ### リトライとサーキットブレーカーパターン
 
-<span class="listing-number">**サンプルコード15-23**　ResiliencePatterns.java</span>
+<span class="listing-number">**サンプルコード15-23**　ResiliencePatterns.java（4〜7、20〜43、58〜89、127行目）</span>
 
 ```java
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
-
 public class ResiliencePatterns {
     
     // リトライパターン
     static class RetryExecutor {
-        private final int maxRetries;
-        private final long retryDelay;
-        
-        public RetryExecutor(int maxRetries, long retryDelay) {
-            this.maxRetries = maxRetries;
-            this.retryDelay = retryDelay;
-        }
-        
-        public <T> CompletableFuture<T> executeWithRetry(Callable<T> task) {
-            return executeWithRetry(task, 0);
-        }
-        
+        // ...
         private <T> CompletableFuture<T> executeWithRetry(Callable<T> task, int attempt) {
             return CompletableFuture.supplyAsync(() -> {
                 try {
@@ -2053,20 +1884,7 @@ public class ResiliencePatterns {
     // サーキットブレーカーパターン
     static class CircuitBreaker {
         enum State { CLOSED, OPEN, HALF_OPEN }
-        
-        private final AtomicReference<State> state = 
-            new AtomicReference<>(State.CLOSED);
-        private final AtomicInteger failureCount = new AtomicInteger(0);
-        private final AtomicLong lastFailureTime = new AtomicLong(0);
-        
-        private final int failureThreshold;
-        private final long timeout;
-        
-        public CircuitBreaker(int failureThreshold, long timeout) {
-            this.failureThreshold = failureThreshold;
-            this.timeout = timeout;
-        }
-        
+        // ...
         public <T> T execute(Callable<T> task) throws Exception {
             State currentState = state.get();
             
@@ -2099,43 +1917,7 @@ public class ResiliencePatterns {
             }
         }
     }
-    
-    public static void main(String[] args) throws Exception {
-        // リトライパターンの例
-        RetryExecutor retryExecutor = new RetryExecutor(3, 1000);
-        
-        CompletableFuture<String> retryFuture = retryExecutor.executeWithRetry(() -> {
-            if (Math.random() < 0.7) {
-                throw new RuntimeException("Random failure");
-            }
-            return "Success!";
-        });
-        
-        try {
-            System.out.println("Retry result: " + retryFuture.get());
-        } catch (Exception e) {
-            System.out.println("Failed after retries: " + e.getMessage());
-        }
-        
-        // サーキットブレーカーの例
-        CircuitBreaker circuitBreaker = new CircuitBreaker(3, 5000);
-        
-        for (int i = 0; i < 10; i++) {
-            try {
-                String result = circuitBreaker.execute(() -> {
-                    if (Math.random() < 0.6) {
-                        throw new RuntimeException("Service failure");
-                    }
-                    return "Service response";
-                });
-                System.out.println("Request " + i + ": " + result);
-            } catch (Exception e) {
-                System.out.println("Request " + i + " failed: " + e.getMessage());
-            }
-            
-            Thread.sleep(500);
-        }
-    }
+    // ...
 }
 ```
 

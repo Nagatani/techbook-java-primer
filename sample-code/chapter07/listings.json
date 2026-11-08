@@ -85,7 +85,9 @@
     "dir": "07-12",
     "main": null,
     "excerpt": [
-      { "file": "Timestamped.java", "from": 1, "to": 68 }
+      { "file": "Timestamped.java", "from": 3, "to": 22 },
+      { "file": "Timestamped.java", "from": 36, "to": 37 },
+      { "file": "Timestamped.java", "from": 59, "to": 68 }
     ]
   },
   "7-13": {
@@ -99,14 +101,18 @@
     "dir": "07-18",
     "main": null,
     "excerpt": [
-      { "file": "DocumentFactory.java", "from": 1, "to": 69 }
+      { "file": "DocumentFactory.java", "from": 1, "to": 21 },
+      { "file": "DocumentFactory.java", "from": 29, "to": 42 },
+      { "file": "DocumentFactory.java", "from": 52, "to": 52 }
     ]
   },
   "7-19": {
     "dir": "07-19",
     "main": null,
     "excerpt": [
-      { "file": "DatabaseConnectionFactory.java", "from": 1, "to": 79 }
+      { "file": "DatabaseConnectionFactory.java", "from": 3, "to": 32 },
+      { "file": "DatabaseConnectionFactory.java", "from": 57, "to": 68 },
+      { "file": "DatabaseConnectionFactory.java", "from": 79, "to": 79 }
     ]
   },
   "7-29": {
@@ -127,7 +133,12 @@
     "dir": "07-31",
     "main": null,
     "excerpt": [
-      { "file": "BaseService.java", "from": 1, "to": 77 }
+      { "file": "BaseService.java", "from": 6, "to": 15 },
+      { "file": "BaseService.java", "from": 21, "to": 27 },
+      { "file": "BaseService.java", "from": 31, "to": 44 },
+      { "file": "BaseService.java", "from": 51, "to": 56 },
+      { "file": "BaseService.java", "from": 64, "to": 67 },
+      { "file": "BaseService.java", "from": 77, "to": 77 }
     ]
   }
 }

@@ -3,7 +3,11 @@
     "dir": "22-02",
     "main": null,
     "excerpt": [
-      { "file": "Task.java", "from": 1, "to": 160 }
+      { "file": "Task.java", "from": 1, "to": 21 },
+      { "file": "Task.java", "from": 59, "to": 67 },
+      { "file": "Task.java", "from": 79, "to": 79 },
+      { "file": "Task.java", "from": 136, "to": 146 },
+      { "file": "Task.java", "from": 160, "to": 160 }
     ]
   },
   "22-25": {

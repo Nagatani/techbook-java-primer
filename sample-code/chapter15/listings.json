@@ -59,35 +59,56 @@
     "dir": "15-16",
     "main": "FutureCallableExample",
     "excerpt": [
-      { "file": "FutureCallableExample.java", "from": 1, "to": 61 }
+      { "file": "FutureCallableExample.java", "from": 5, "to": 5 },
+      { "file": "FutureCallableExample.java", "from": 7, "to": 8 },
+      { "file": "FutureCallableExample.java", "from": 15, "to": 23 },
+      { "file": "FutureCallableExample.java", "from": 29, "to": 60 },
+      { "file": "FutureCallableExample.java", "from": 61, "to": 61 }
     ]
   },
   "15-17": {
     "dir": "15-17",
     "main": "CompletableFutureExample",
     "excerpt": [
-      { "file": "CompletableFutureExample.java", "from": 1, "to": 92 }
+      { "file": "CompletableFutureExample.java", "from": 6, "to": 6 },
+      { "file": "CompletableFutureExample.java", "from": 9, "to": 9 },
+      { "file": "CompletableFutureExample.java", "from": 12, "to": 24 },
+      { "file": "CompletableFutureExample.java", "from": 38, "to": 38 },
+      { "file": "CompletableFutureExample.java", "from": 40, "to": 40 },
+      { "file": "CompletableFutureExample.java", "from": 52, "to": 75 },
+      { "file": "CompletableFutureExample.java", "from": 91, "to": 92 }
     ]
   },
   "15-19": {
     "dir": "15-19",
     "main": "ParallelPerformanceExample",
     "excerpt": [
-      { "file": "ParallelPerformanceExample.java", "from": 1, "to": 126 }
+      { "file": "ParallelPerformanceExample.java", "from": 5, "to": 5 },
+      { "file": "ParallelPerformanceExample.java", "from": 20, "to": 30 },
+      { "file": "ParallelPerformanceExample.java", "from": 62, "to": 108 },
+      { "file": "ParallelPerformanceExample.java", "from": 126, "to": 126 }
     ]
   },
   "15-22": {
     "dir": "15-22",
     "main": "ParallelDataPipeline",
     "excerpt": [
-      { "file": "ParallelDataPipeline.java", "from": 1, "to": 83 }
+      { "file": "ParallelDataPipeline.java", "from": 5, "to": 15 },
+      { "file": "ParallelDataPipeline.java", "from": 21, "to": 37 },
+      { "file": "ParallelDataPipeline.java", "from": 41, "to": 41 },
+      { "file": "ParallelDataPipeline.java", "from": 43, "to": 43 },
+      { "file": "ParallelDataPipeline.java", "from": 70, "to": 79 },
+      { "file": "ParallelDataPipeline.java", "from": 82, "to": 83 }
     ]
   },
   "15-23": {
     "dir": "15-23",
     "main": "ResiliencePatterns",
     "excerpt": [
-      { "file": "ResiliencePatterns.java", "from": 1, "to": 127 }
+      { "file": "ResiliencePatterns.java", "from": 4, "to": 7 },
+      { "file": "ResiliencePatterns.java", "from": 20, "to": 43 },
+      { "file": "ResiliencePatterns.java", "from": 58, "to": 89 },
+      { "file": "ResiliencePatterns.java", "from": 127, "to": 127 }
     ]
   },
   "15-24": {

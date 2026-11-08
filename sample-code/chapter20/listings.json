@@ -10,28 +10,49 @@
     "dir": "20-03",
     "main": "BasicTreeExample",
     "excerpt": [
-      { "file": "BasicTreeExample.java", "from": 1, "to": 51 }
+      { "file": "BasicTreeExample.java", "from": 6, "to": 7 },
+      { "file": "BasicTreeExample.java", "from": 11, "to": 28 },
+      { "file": "BasicTreeExample.java", "from": 34, "to": 36 },
+      { "file": "BasicTreeExample.java", "from": 44, "to": 44 },
+      { "file": "BasicTreeExample.java", "from": 51, "to": 51 }
     ]
   },
   "20-4": {
     "dir": "20-04",
     "main": "DynamicTreeExample",
     "excerpt": [
-      { "file": "DynamicTreeExample.java", "from": 1, "to": 153 }
+      { "file": "DynamicTreeExample.java", "from": 5, "to": 6 },
+      { "file": "DynamicTreeExample.java", "from": 9, "to": 9 },
+      { "file": "DynamicTreeExample.java", "from": 13, "to": 15 },
+      { "file": "DynamicTreeExample.java", "from": 26, "to": 30 },
+      { "file": "DynamicTreeExample.java", "from": 86, "to": 116 },
+      { "file": "DynamicTreeExample.java", "from": 153, "to": 153 }
     ]
   },
   "20-5": {
     "dir": "20-05",
     "main": "AdvancedListExample",
     "excerpt": [
-      { "file": "AdvancedListExample.java", "from": 1, "to": 203 }
+      { "file": "AdvancedListExample.java", "from": 29, "to": 29 },
+      { "file": "AdvancedListExample.java", "from": 42, "to": 55 },
+      { "file": "AdvancedListExample.java", "from": 67, "to": 70 },
+      { "file": "AdvancedListExample.java", "from": 101, "to": 133 },
+      { "file": "AdvancedListExample.java", "from": 137, "to": 137 },
+      { "file": "AdvancedListExample.java", "from": 141, "to": 145 },
+      { "file": "AdvancedListExample.java", "from": 196, "to": 196 },
+      { "file": "AdvancedListExample.java", "from": 203, "to": 203 }
     ]
   },
   "20-6": {
     "dir": "20-06",
     "main": "CustomEditorExample",
     "excerpt": [
-      { "file": "CustomEditorExample.java", "from": 1, "to": 137 }
+      { "file": "CustomEditorExample.java", "from": 7, "to": 43 },
+      { "file": "CustomEditorExample.java", "from": 76, "to": 81 },
+      { "file": "CustomEditorExample.java", "from": 84, "to": 85 },
+      { "file": "CustomEditorExample.java", "from": 111, "to": 118 },
+      { "file": "CustomEditorExample.java", "from": 130, "to": 130 },
+      { "file": "CustomEditorExample.java", "from": 137, "to": 137 }
     ]
   }
 }

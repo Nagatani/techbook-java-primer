@@ -40,7 +40,10 @@
     "dir": "06-07",
     "main": null,
     "excerpt": [
-      { "file": "ImmutablePerson.java", "from": 1, "to": 73 }
+      { "file": "ImmutablePerson.java", "from": 5, "to": 12 },
+      { "file": "ImmutablePerson.java", "from": 19, "to": 28 },
+      { "file": "ImmutablePerson.java", "from": 37, "to": 51 },
+      { "file": "ImmutablePerson.java", "from": 73, "to": 73 }
     ]
   },
   "6-8": {
@@ -64,7 +67,13 @@
     "dir": "06-10",
     "main": null,
     "excerpt": [
-      { "file": "Book.java", "from": 1, "to": 91 }
+      { "file": "Book.java", "from": 3, "to": 7 },
+      { "file": "Book.java", "from": 13, "to": 17 },
+      { "file": "Book.java", "from": 22, "to": 31 },
+      { "file": "Book.java", "from": 37, "to": 38 },
+      { "file": "Book.java", "from": 46, "to": 53 },
+      { "file": "Book.java", "from": 81, "to": 85 },
+      { "file": "Book.java", "from": 91, "to": 91 }
     ]
   },
   "6-11": {

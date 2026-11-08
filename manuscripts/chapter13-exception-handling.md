@@ -296,16 +296,13 @@ public class UserService {
 ネットワーク接続の一時的な問題やリソースの一時的な不足など、
 時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
-<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java</span>
+<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java（4〜6、8〜24、33〜37、55行目）</span>
 
 ```java
-import java.util.concurrent.Callable;
-import java.io.IOException;
-
 public class RetryableOperation {
     private static final int MAX_RETRY_COUNT = 3;
     private static final long RETRY_DELAY_MS = 1000;
-    
+    // ...
     public static <T> T executeWithRetry(Callable<T> operation, 
                                        Class<? extends Exception> retryableException) 
                                        throws Exception {
@@ -323,36 +320,13 @@ public class RetryableOperation {
                 System.out.printf("試行 %d/%d 失敗: %s%n", 
                     attempt, MAX_RETRY_COUNT, e.getMessage());
                 
-                if (attempt < MAX_RETRY_COUNT) {
-                    try {
-                        Thread.sleep(RETRY_DELAY_MS);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException("リトライ中に中断されました", ie);
-                    }
-                }
+                // ...
             }
         }
         
         throw new RuntimeException("最大リトライ回数に達しました", lastException);
     }
-    
-    // 使用例
-    public static void main(String[] args) {
-        try {
-            String result = executeWithRetry(() -> {
-                // 一時的に失敗する可能性のある処理
-                if (Math.random() < 0.7) {
-                    throw new IOException("ネットワークエラー");
-                }
-                return "成功";
-            }, IOException.class);
-            
-            System.out.println("結果: " + result);
-        } catch (Exception e) {
-            System.err.println("最終的に失敗: " + e.getMessage());
-        }
-    }
+    // ...
 }
 ```
 
@@ -370,11 +344,9 @@ public class RetryableOperation {
 
 連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです。マイクロサービスアーキテクチャでとくに重要です。
 
-<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java</span>
+<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java（3〜12、21〜55行目）</span>
 
 ```java
-import java.util.concurrent.Callable;
-
 public class CircuitBreaker {
     private enum State {
         CLOSED,    // 通常状態
@@ -385,14 +357,7 @@ public class CircuitBreaker {
     private State state = State.CLOSED;
     private int failureCount = 0;
     private long lastFailureTime = 0;
-    
-    private final int failureThreshold;
-    private final long timeout;
-    
-    public CircuitBreaker(int failureThreshold, long timeoutMs) {
-        this.failureThreshold = failureThreshold;
-        this.timeout = timeoutMs;
-    }
+    // ...
     
     public <T> T execute(Callable<T> operation) throws Exception {
         if (state == State.OPEN) {
@@ -434,11 +399,9 @@ public class CircuitBreaker {
 
 複数の処理を並行実行する場合、発生した例外を集約して報告します。
 
-<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java</span>
+<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜28、38〜55行目）</span>
 
 ```java
-import java.util.*;
-
 public class ExceptionAggregator {
     private final List<Exception> exceptions = new ArrayList<>();
     
@@ -465,15 +428,7 @@ public class ExceptionAggregator {
             return Collections.unmodifiableList(exceptions);
         }
         
-        @Override
-        public void printStackTrace() {
-            super.printStackTrace();
-            System.err.println("--- 内包する例外 ---");
-            for (int i = 0; i < exceptions.size(); i++) {
-                System.err.printf("例外 %d:%n", i + 1);
-                exceptions.get(i).printStackTrace();
-            }
-        }
+        // ...
     }
     
     // 使用例
@@ -500,16 +455,9 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
 
-次のサンプルの後半では、データベースに接続するJDBC（`Connection`、`PreparedStatement`）を使います。
-JDBCは本書の本文では扱わず、付録Eで紹介しています。
-ここでは、データベース接続も`close()`が必要なリソースであり、try-with-resourcesで確実に閉じられる点に注目してください。
-
-<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java</span>
+<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜22、51行目）</span>
 
 ```java
-import java.io.*;
-import java.sql.*;
-
 public class MultiResourceExample {
     public static void copyFile(String sourcePath, String destPath) 
             throws IOException {
@@ -529,34 +477,7 @@ public class MultiResourceExample {
         } // すべてのリソースが逆順（宣言と逆の順序）で自動的にクローズされる
     }
     
-    // データベース接続の例
-    public static void executeDatabaseTransaction() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/mydb";
-        
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement pstmt = conn.prepareStatement(
-                 "INSERT INTO users (name, email) VALUES (?, ?)");
-             Statement stmt = conn.createStatement()) {
-            
-            conn.setAutoCommit(false);
-            
-            try {
-                pstmt.setString(1, "山田太郎");
-                pstmt.setString(2, "yamada@example.com");
-                pstmt.executeUpdate();
-                
-                ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM users");
-                if (rs.next()) {
-                    System.out.println("ユーザー数: " + rs.getInt(1));
-                }
-                
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }
-        }
-    }
+    // ...
 }
 ```
 
@@ -564,21 +485,14 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード13-11**　ResourcePool.java</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜6、13〜53、67行目）</span>
 
 ```java
-import java.util.*;
-
 public class ResourcePool implements AutoCloseable {
     private final Queue<Resource> availableResources = new LinkedList<>();
     private final Set<Resource> usedResources = new HashSet<>();
     private boolean closed = false;
-    
-    public ResourcePool(int poolSize) {
-        for (int i = 0; i < poolSize; i++) {
-            availableResources.offer(new Resource(i));
-        }
-    }
+    // ...
     
     public Resource acquire() throws InterruptedException {
         synchronized (this) {
@@ -620,19 +534,7 @@ public class ResourcePool implements AutoCloseable {
             }
         }
     }
-    
-    // リソースクラス
-    static class Resource {
-        private final int id;
-        
-        Resource(int id) {
-            this.id = id;
-        }
-        
-        void cleanup() {
-            System.out.println("リソース " + id + " をクリーンアップしました");
-        }
-    }
+    // ...
 }
 ```
 
@@ -776,12 +678,9 @@ public class StructuredExceptionLogger {
 
 大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
 
-<span class="listing-number">**サンプルコード13-14**　BusinessException.java、InsufficientBalanceException.java（4〜13行目）、SystemException.java（4〜28行目）</span>
+<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（4〜13行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
-import java.util.*;
-import java.time.Instant;
-
 // ビジネス例外の基底クラス
 public abstract class BusinessException extends Exception {
     private final String errorCode;
@@ -792,22 +691,11 @@ public abstract class BusinessException extends Exception {
         this.errorCode = errorCode;
         this.details = new HashMap<>();
     }
-    
-    protected BusinessException(String errorCode, String message, 
-                              Map<String, Object> details) {
-        super(message);
-        this.errorCode = errorCode;
-        this.details = new HashMap<>(details);
-    }
-    
+    // ...
     public String getErrorCode() {
         return errorCode;
     }
-    
-    public Map<String, Object> getDetails() {
-        return Collections.unmodifiableMap(details);
-    }
-    
+    // ...
     public void addDetail(String key, Object value) {
         details.put(key, value);
     }
@@ -834,20 +722,7 @@ public abstract class SystemException extends RuntimeException {
         this.errorId = generateErrorId();
         this.occurredAt = Instant.now();
     }
-    
-    private String generateErrorId() {
-        return String.format("SYS-%s-%s", 
-            getClass().getSimpleName(), 
-            java.util.UUID.randomUUID().toString().substring(0, 8));
-    }
-    
-    public String getErrorId() {
-        return errorId;
-    }
-    
-    public Instant getOccurredAt() {
-        return occurredAt;
-    }
+    // ...
 }
 ```
 

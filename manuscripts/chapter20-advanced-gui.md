@@ -208,19 +208,12 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 
 以下のコードは、DefaultMutableTreeNodeを使用してツリー構造を構築する基本的な例です。ルートノードから子ノードを階層的に追加し、ファイルシステムのような構造を表現しています。setShowsRootHandles(true)により、展開・折りたたみのハンドルが表示されます。
 
-<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜28、34〜36、44、51行目）</span>
 
 ```java
-import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import java.awt.*;
-
 public class BasicTreeExample extends JFrame {
     public BasicTreeExample() {
-        setTitle("基本的なJTreeの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // ルートノードの作成
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("プロジェクト");
         
@@ -239,28 +232,13 @@ public class BasicTreeExample extends JFrame {
         src.add(main);
         src.add(test);
         
-        // mainフォルダの中身
-        main.add(new DefaultMutableTreeNode("App.java"));
-        main.add(new DefaultMutableTreeNode("Utils.java"));
-        main.add(new DefaultMutableTreeNode("Config.java"));
-        
+        // ...
         // JTreeの作成
         JTree tree = new JTree(root);
         tree.setShowsRootHandles(true);
-        
-        // スクロールペインに追加
-        JScrollPane scrollPane = new JScrollPane(tree);
-        add(scrollPane, BorderLayout.CENTER);
-        
-        setSize(400, 500);
-        setLocationRelativeTo(null);
+        // ...
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new BasicTreeExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -270,94 +248,24 @@ public class BasicTreeExample extends JFrame {
 
 以下のコードは、右クリックメニューから動的にノードを追加・削除できる高度なツリー実装です。ポップアップメニュー、編集可能なノード、カスタムレンダラーなど、実践的なファイルエクスプローラーのような機能を持っています。TreeModelを使用することで、ツリー構造の変更をビューに通知できます。
 
-<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java</span>
+<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java（5〜6、9、13〜15、26〜30、86〜116、153行目）</span>
 
 ```java
-import javax.swing.*;
-import javax.swing.tree.*;
-import java.awt.*;
-
 public class DynamicTreeExample extends JFrame {
     private DefaultTreeModel treeModel;
-    private JTree tree;
-    
+    // ...
     public DynamicTreeExample() {
-        setTitle("動的なツリー操作");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // ルートノードとモデルの作成
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("ファイルシステム");
         treeModel = new DefaultTreeModel(root);
-        
-        // 初期フォルダの追加
-        DefaultMutableTreeNode documents = new DefaultMutableTreeNode("Documents");
-        DefaultMutableTreeNode downloads = new DefaultMutableTreeNode("Downloads");
-        DefaultMutableTreeNode desktop = new DefaultMutableTreeNode("Desktop");
-        
-        root.add(documents);
-        root.add(downloads);
-        root.add(desktop);
-        
+        // ...
         // JTreeの作成
         tree = new JTree(treeModel);
         tree.setEditable(true); // ノード名の編集を許可
         tree.getSelectionModel().setSelectionMode(
             TreeSelectionModel.SINGLE_TREE_SELECTION);
-        
-        // ポップアップメニューの作成
-        JPopupMenu popup = new JPopupMenu();
-        JMenuItem addFolder = new JMenuItem("フォルダを追加");
-        JMenuItem addFile = new JMenuItem("ファイルを追加");
-        JMenuItem delete = new JMenuItem("削除");
-        JMenuItem rename = new JMenuItem("名前変更");
-        
-        popup.add(addFolder);
-        popup.add(addFile);
-        popup.addSeparator();
-        popup.add(rename);
-        popup.add(delete);
-        
-        // ポップアップメニューのアクション
-        addFolder.addActionListener(e -> addNode("新しいフォルダ", true));
-        addFile.addActionListener(e -> addNode("新しいファイル.txt", false));
-        delete.addActionListener(e -> deleteNode());
-        rename.addActionListener(e -> renameNode());
-        
-        // マウスリスナーでポップアップを表示
-        tree.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                if (e.isPopupTrigger()) showPopup(e);
-            }
-            
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-                if (e.isPopupTrigger()) showPopup(e);
-            }
-            
-            private void showPopup(java.awt.event.MouseEvent e) {
-                TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-                if (path != null) {
-                    tree.setSelectionPath(path);
-                    popup.show(tree, e.getX(), e.getY());
-                }
-            }
-        });
-        
-        // カスタムレンダラーの設定
-        tree.setCellRenderer(new FileSystemTreeCellRenderer());
-        
-        // レイアウト
-        add(new JScrollPane(tree), BorderLayout.CENTER);
-        
-        // 情報パネル
-        JPanel infoPanel = new JPanel();
-        JLabel infoLabel = new JLabel("右クリックでメニューを表示");
-        infoPanel.add(infoLabel);
-        add(infoPanel, BorderLayout.SOUTH);
-        
-        setSize(500, 600);
-        setLocationRelativeTo(null);
+            // ...
     }
     
     private void addNode(String name, boolean isFolder) {
@@ -389,42 +297,7 @@ public class DynamicTreeExample extends JFrame {
             }
         }
     }
-    
-    private void renameNode() {
-        TreePath path = tree.getSelectionPath();
-        if (path != null) {
-            tree.startEditingAtPath(path);
-        }
-    }
-    
-    // カスタムツリーセルレンダラー
-    class FileSystemTreeCellRenderer extends DefaultTreeCellRenderer {
-        private Icon folderIcon = UIManager.getIcon("Tree.closedIcon");
-        private Icon fileIcon = UIManager.getIcon("Tree.leafIcon");
-        
-        @Override
-        public Component getTreeCellRendererComponent(JTree tree, Object value,
-                boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-            
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            String nodeName = node.getUserObject().toString();
-            
-            if (node.getAllowsChildren()) {
-                setIcon(folderIcon);
-            } else {
-                setIcon(fileIcon);
-            }
-            
-            return this;
-        }
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new DynamicTreeExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -436,50 +309,11 @@ JListにカスタムレンダラーを適用して、リッチな表示を実現
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、それらを1つのリスト項目として美しく表示します。ダブルクリックでタスクの完了状態を切り替えるなど、インタラクティブな機能も実装しています。
 
-<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java</span>
+<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、101〜133、137、141〜145、196、203行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-// データモデルクラス
-class Task {
-    private String title;
-    private String description;
-    private LocalDateTime dueDate;
-    private boolean completed;
-    
-    public Task(String title, String description, LocalDateTime dueDate) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.completed = false;
-    }
-    
-    // getter/setter
-    public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public LocalDateTime getDueDate() { return dueDate; }
-    public boolean isCompleted() { return completed; }
-    public void setCompleted(boolean completed) { this.completed = completed; }
-}
-
-// カスタムリストモデル
 class TaskListModel extends AbstractListModel<Task> {
-    private java.util.List<Task> tasks = new java.util.ArrayList<>();
-    
-    public TaskListModel() {
-        // サンプルデータ
-        tasks.add(new Task("レポート作成", "月次レポートを作成する", 
-            LocalDateTime.now().plusDays(2)));
-        tasks.add(new Task("会議準備", "プレゼン資料を準備する", 
-            LocalDateTime.now().plusDays(1)));
-        tasks.add(new Task("コードレビュー", "新機能のコードをレビューする", 
-            LocalDateTime.now().plusHours(4)));
-    }
-    
+    // ...
     @Override
     public int getSize() {
         return tasks.size();
@@ -494,51 +328,12 @@ class TaskListModel extends AbstractListModel<Task> {
         tasks.add(task);
         fireIntervalAdded(this, tasks.size() - 1, tasks.size() - 1);
     }
-    
-    public void removeTask(int index) {
-        if (index >= 0 && index < tasks.size()) {
-            tasks.remove(index);
-            fireIntervalRemoved(this, index, index);
-        }
-    }
-    
-    public void updateTask(int index) {
-        fireContentsChanged(this, index, index);
-    }
+    // ...
 }
 
 // カスタムレンダラー
 class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
-    private JLabel titleLabel;
-    private JLabel descriptionLabel;
-    private JLabel dueDateLabel;
-    private JCheckBox completedCheckBox;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-    
-    public TaskListCellRenderer() {
-        setLayout(new BorderLayout(5, 5));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
-        // タイトルと説明のパネル
-        JPanel textPanel = new JPanel(new GridLayout(2, 1));
-        titleLabel = new JLabel();
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 14f));
-        descriptionLabel = new JLabel();
-        descriptionLabel.setFont(descriptionLabel.getFont().deriveFont(12f));
-        textPanel.add(titleLabel);
-        textPanel.add(descriptionLabel);
-        
-        // 期限とチェックボックスのパネル
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        dueDateLabel = new JLabel();
-        completedCheckBox = new JCheckBox("完了");
-        rightPanel.add(dueDateLabel);
-        rightPanel.add(completedCheckBox);
-        
-        add(textPanel, BorderLayout.CENTER);
-        add(rightPanel, BorderLayout.EAST);
-    }
-    
+    // ...
     @Override
     public Component getListCellRendererComponent(JList<? extends Task> list,
             Task task, int index, boolean isSelected, boolean cellHasFocus) {
@@ -572,75 +367,17 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
 
 // メインアプリケーション
 public class AdvancedListExample extends JFrame {
-    private TaskListModel model;
-    private JList<Task> taskList;
-    
+    // ...
     public AdvancedListExample() {
-        setTitle("タスク管理リスト");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // モデルとリストの作成
         model = new TaskListModel();
         taskList = new JList<>(model);
         taskList.setCellRenderer(new TaskListCellRenderer());
         taskList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        // リストのクリックイベント
-        taskList.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int index = taskList.locationToIndex(e.getPoint());
-                    if (index != -1) {
-                        Task task = model.getElementAt(index);
-                        task.setCompleted(!task.isCompleted());
-                        model.updateTask(index);
-                    }
-                }
-            }
-        });
-        
-        // ボタンパネル
-        JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("タスク追加");
-        JButton removeButton = new JButton("タスク削除");
-        
-        addButton.addActionListener(e -> {
-            String title = JOptionPane.showInputDialog(this, "タスクのタイトル:");
-            if (title != null && !title.trim().isEmpty()) {
-                model.addTask(new Task(title, "詳細な説明", 
-                    LocalDateTime.now().plusDays(3)));
-            }
-        });
-        
-        removeButton.addActionListener(e -> {
-            int selectedIndex = taskList.getSelectedIndex();
-            if (selectedIndex != -1) {
-                model.removeTask(selectedIndex);
-            }
-        });
-        
-        buttonPanel.add(addButton);
-        buttonPanel.add(removeButton);
-        
-        // レイアウト
-        add(new JScrollPane(taskList), BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-        
-        // 説明ラベル
-        JLabel infoLabel = new JLabel("ダブルクリックでタスクの完了/未完了を切り替え");
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(infoLabel, BorderLayout.NORTH);
-        
-        setSize(600, 400);
-        setLocationRelativeTo(null);
+        // ...
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new AdvancedListExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -652,15 +389,9 @@ public class AdvancedListExample extends JFrame {
 
 以下のコードは、JTableにカスタムセルエディターとレンダラーを実装する例です。色選択用のカラーピッカー、優先度選択用のコンボボックス、チェックボックスなど、データ型に合った入力コンポーネントを提供します。これにより、ユーザーフレンドリーなデータ編集インターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java</span>
+<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（7〜43、76〜81、84〜85、111〜118、130、137行目）</span>
 
 ```java
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.EventObject;
-
 // カラーセルエディター
 class ColorCellEditor extends AbstractCellEditor implements TableCellEditor {
     private JButton button;
@@ -698,73 +429,17 @@ class ColorCellEditor extends AbstractCellEditor implements TableCellEditor {
         return currentColor;
     }
 }
-
-// カラーセルレンダラー
-class ColorCellRenderer extends JLabel implements TableCellRenderer {
-    public ColorCellRenderer() {
-        setOpaque(true);
-    }
-    
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        Color color = (Color) value;
-        setBackground(color);
-        setText(String.format("RGB(%d,%d,%d)", 
-            color.getRed(), color.getGreen(), color.getBlue()));
-        setForeground(getContrastColor(color));
-        
-        if (isSelected) {
-            setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        } else {
-            setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        }
-        
-        return this;
-    }
-    
-    private Color getContrastColor(Color color) {
-        // 背景色に対してコントラストの高い文字色を返す
-        int gray = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
-        return gray > 128 ? Color.BLACK : Color.WHITE;
-    }
-}
-
+// ...
 // コンボボックスエディター
 class PriorityCellEditor extends DefaultCellEditor {
     public PriorityCellEditor() {
         super(new JComboBox<>(new String[]{"低", "中", "高", "緊急"}));
     }
 }
-
-// メインアプリケーション
+// ...
 public class CustomEditorExample extends JFrame {
     public CustomEditorExample() {
-        setTitle("カスタムエディターの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // テーブルモデルの作成
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{
-                {"タスク1", "高", Color.RED, false},
-                {"タスク2", "中", Color.YELLOW, true},
-                {"タスク3", "低", Color.GREEN, false},
-                {"タスク4", "緊急", Color.ORANGE, true}
-            },
-            new String[]{"タスク名", "優先度", "色", "完了"}
-        ) {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                switch (columnIndex) {
-                    case 0: return String.class;
-                    case 1: return String.class;
-                    case 2: return Color.class;
-                    case 3: return Boolean.class;
-                    default: return Object.class;
-                }
-            }
-        };
-        
+        // ...
         // テーブルの作成
         JTable table = new JTable(model);
         table.setRowHeight(30);
@@ -773,24 +448,9 @@ public class CustomEditorExample extends JFrame {
         table.getColumnModel().getColumn(1).setCellEditor(new PriorityCellEditor());
         table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
         table.getColumnModel().getColumn(2).setCellEditor(new ColorCellEditor());
-        
-        // スクロールペインに追加
-        add(new JScrollPane(table), BorderLayout.CENTER);
-        
-        // 説明パネル
-        JPanel infoPanel = new JPanel();
-        infoPanel.add(new JLabel("優先度はドロップダウン、色はクリックで変更できます"));
-        add(infoPanel, BorderLayout.SOUTH);
-        
-        setSize(600, 300);
-        setLocationRelativeTo(null);
+        // ...
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new CustomEditorExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 

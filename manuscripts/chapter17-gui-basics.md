@@ -645,31 +645,16 @@ JPanelは、Swingでもっとも頻繁に使用されるコンテナコンポー
 
 以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディタ風のアプリケーションインターフェイスを構築する例です。ツールバー、サイドバー、メインエリア、ステータスバーといった一般的なアプリケーション構造を、BorderLayoutとFlowLayoutを巧みに組み合わせて実現しています。
 
-<span class="listing-number">**サンプルコード17-12**　ComplexLayoutExample.java</span>
+<span class="listing-number">**サンプルコード17-12**　ComplexLayoutExample.java（4〜9、23〜45、55〜58行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class ComplexLayoutExample {
     public static void main(String[] args) {
         JFrame frame = new JFrame("複雑なレイアウトの例");
         frame.setSize(500, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
-        
-        // ツールバー（上部）
-        JPanel toolbarPanel = new JPanel(
-            new FlowLayout(FlowLayout.LEFT));
-        toolbarPanel.add(new JButton("新規"));
-        toolbarPanel.add(new JButton("開く"));
-        toolbarPanel.add(new JButton("保存"));
-        toolbarPanel.add(new JSeparator(SwingConstants.VERTICAL));
-        toolbarPanel.add(new JButton("切り取り"));
-        toolbarPanel.add(new JButton("コピー"));
-        toolbarPanel.add(new JButton("貼り付け"));
-        frame.add(toolbarPanel, BorderLayout.NORTH);
-        
+        // ...
         // メインエリア（中央）
         JPanel mainPanel = new JPanel(new BorderLayout());
         
@@ -693,15 +678,7 @@ public class ComplexLayoutExample {
         mainPanel.add(textScrollPane, BorderLayout.CENTER);
         
         frame.add(mainPanel, BorderLayout.CENTER);
-        
-        // ステータスバー（下部）
-        JPanel statusPanel = new JPanel(new BorderLayout());
-        statusPanel.setBorder(
-            BorderFactory.createLoweredBevelBorder());
-        statusPanel.add(new JLabel("準備完了"), BorderLayout.WEST);
-        statusPanel.add(new JLabel("行: 1, 列: 1"), BorderLayout.EAST);
-        frame.add(statusPanel, BorderLayout.SOUTH);
-        
+        // ...
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -717,12 +694,9 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4〜12、37〜42、59〜62、76〜84、93、97〜98行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class CombinedLayoutExample {
     public static void main(String[] args) {
         JFrame frame = new JFrame("レイアウト組み合わせの例");
@@ -732,69 +706,19 @@ public class CombinedLayoutExample {
         
         // 上部：メニューバーとツールバー
         JPanel topPanel = new JPanel(new BorderLayout());
-        
-        // メニューバー
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("ファイル");
-        fileMenu.add(new JMenuItem("新規"));
-        fileMenu.add(new JMenuItem("開く"));
-        fileMenu.add(new JMenuItem("保存"));
-        menuBar.add(fileMenu);
-        
-        JMenu editMenu = new JMenu("編集");
-        editMenu.add(new JMenuItem("切り取り"));
-        editMenu.add(new JMenuItem("コピー"));
-        editMenu.add(new JMenuItem("貼り付け"));
-        menuBar.add(editMenu);
-        
-        frame.setJMenuBar(menuBar);
-        
-        // ツールバー
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        toolbar.add(new JButton("新規"));
-        toolbar.add(new JButton("開く"));
-        toolbar.add(new JButton("保存"));
-        topPanel.add(toolbar, BorderLayout.NORTH);
-        
+        // ...
         frame.add(topPanel, BorderLayout.NORTH);
         
         // 中央：分割パネル
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(200);
-        
-        // 左側パネル
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBorder(
-            BorderFactory.createTitledBorder("プロジェクト"));
-        
-        // ツリー構造
-        JTree tree = new JTree();
-        leftPanel.add(new JScrollPane(tree), BorderLayout.CENTER);
-        
-        // 左下のボタンパネル
-        JPanel leftButtonPanel = new JPanel(new FlowLayout());
-        leftButtonPanel.add(new JButton("追加"));
-        leftButtonPanel.add(new JButton("削除"));
-        leftPanel.add(leftButtonPanel, BorderLayout.SOUTH);
-        
+        // ...
         splitPane.setLeftComponent(leftPanel);
         
         // 右側パネル（タブ付き）
         JTabbedPane tabbedPane = new JTabbedPane();
-        
-        // エディタタブ
-        JTextArea editor = new JTextArea();
-        editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        tabbedPane.addTab("エディタ", new JScrollPane(editor));
-        
-        // コンソールタブ
-        JTextArea console = new JTextArea();
-        console.setBackground(Color.BLACK);
-        console.setForeground(Color.WHITE);
-        console.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        tabbedPane.addTab("コンソール", new JScrollPane(console));
-        
+        // ...
         splitPane.setRightComponent(tabbedPane);
         
         frame.add(splitPane, BorderLayout.CENTER);
@@ -804,18 +728,9 @@ public class CombinedLayoutExample {
         statusBar.setBorder(
             BorderFactory.createLoweredBevelBorder());
         statusBar.add(new JLabel("準備完了"), BorderLayout.WEST);
-        
-        JPanel rightStatus = new JPanel(
-            new FlowLayout(FlowLayout.RIGHT));
-        rightStatus.add(new JLabel("行: 1"));
-        rightStatus.add(new JLabel("列: 1"));
-        rightStatus.add(new JLabel("エンコーディング: UTF-8"));
-        statusBar.add(rightStatus, BorderLayout.EAST);
-        
+        // ...
         frame.add(statusBar, BorderLayout.SOUTH);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -1054,25 +969,15 @@ public class LambdaEventExample {
 
 以下のコードは、増加、減少、リセット機能を持つシンプルなカウンタアプリケーションの実装例です。インスタンス変数としてカウント値を保持し、ラムダ式を使ったイベントハンドラで値を更新して表示をリフレッシュします。SwingUtilities.invokeLater()を使用して、GUIの作成をEvent Dispatch Thread上で実行している点にも注意してください。
 
-<span class="listing-number">**サンプルコード17-18**　CounterApplication.java</span>
+<span class="listing-number">**サンプルコード17-18**　CounterApplication.java（6〜10、17〜37、54〜64行目）</span>
 
 ```java
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import javax.swing.*;
-
 public class CounterApplication {
     private int count = 0;
     private JLabel countLabel;
     
     public CounterApplication() {
-        // フレームの初期設定
-        JFrame frame = new JFrame("カウンタアプリケーション");
-        frame.setSize(300, 150);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-        
+        // ...
         // カウント表示ラベル
         countLabel = new JLabel(String.valueOf(count), JLabel.CENTER);
         countLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -1094,22 +999,7 @@ public class CounterApplication {
             count--;
             updateDisplay();
         });
-        
-        // リセットボタン
-        JButton resetButton = new JButton("リセット");
-        resetButton.addActionListener(e -> {
-            count = 0;
-            updateDisplay();
-        });
-        
-        buttonPanel.add(decrementButton);
-        buttonPanel.add(resetButton);
-        buttonPanel.add(incrementButton);
-        
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
     
     private void updateDisplay() {
@@ -1199,19 +1089,12 @@ public class SelectionEventExample {
 
 以下のコードは、完全なフォーム入力アプリケーションの実装例です。テキストフィールド、スピナー、ラジオボタン、コンボボックス、チェックボックスなど、さまざまな入力コンポーネントを統合しています。送信ボタンをクリックすると、すべての入力値を収集して結果エリアに表示し、クリアボタンですべての入力をリセットできます。
 
-<span class="listing-number">**サンプルコード17-20**　FormApplication.java</span>
+<span class="listing-number">**サンプルコード17-20**　FormApplication.java（4〜5、11〜35、57〜73、91〜92行目）</span>
 
 ```java
-import java.awt.*;
-import javax.swing.*;
-
 public class FormApplication {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("フォーム入力アプリケーション");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-
+        // ...
         // 入力パネル
         JPanel inputPanel = new JPanel(new GridLayout(5, 2, 5, 5));
         inputPanel.setBorder(BorderFactory.createTitledBorder("個人情報入力"));
@@ -1237,27 +1120,7 @@ public class FormApplication {
         genderPanel.add(maleRadio);
         genderPanel.add(femaleRadio);
         inputPanel.add(genderPanel);
-
-        // 趣味選択
-        inputPanel.add(new JLabel("趣味:"));
-        String[] hobbies = {"読書", "映画鑑賞", "スポーツ", "音楽", "料理"};
-        JComboBox<String> hobbyCombo = new JComboBox<>(hobbies);
-        inputPanel.add(hobbyCombo);
-
-        // メルマガ購読
-        JCheckBox newsletterCheck = new JCheckBox("メールマガジンを購読する");
-        inputPanel.add(new JLabel()); // 空のラベル
-        inputPanel.add(newsletterCheck);
-
-        frame.add(inputPanel, BorderLayout.CENTER);
-
-        // 結果表示エリア
-        JTextArea resultArea = new JTextArea(8, 30);
-        resultArea.setEditable(false);
-        resultArea.setBorder(BorderFactory.createTitledBorder("入力結果"));
-        JScrollPane scrollPane = new JScrollPane(resultArea);
-        frame.add(scrollPane, BorderLayout.SOUTH);
-
+        // ...
         // ボタンパネル
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton submitButton = new JButton("送信");
@@ -1275,23 +1138,7 @@ public class FormApplication {
             
             resultArea.append(result.toString());
         });
-
-        clearButton.addActionListener(e -> {
-            nameField.setText("");
-            ageSpinner.setValue(20);
-            maleRadio.setSelected(true);
-            hobbyCombo.setSelectedIndex(0);
-            newsletterCheck.setSelected(false);
-            resultArea.setText("");
-        });
-
-        buttonPanel.add(submitButton);
-        buttonPanel.add(clearButton);
-
-        frame.add(buttonPanel, BorderLayout.NORTH);
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -1439,26 +1286,13 @@ EDT上での実行: true
 
 以下のコードは、SwingWorkerを使用した非同期処理の実装例です。doInBackground()メソッドで重い処理を実行し、process()メソッドで進捗を更新し、done()メソッドで完了処理を行います。このパターンにより、UIがフリーズすることなく、ユーザーに進捗状況を表示しながら長時間の処理を実行できます。
 
-<span class="listing-number">**サンプルコード17-23**　SwingWorkerExample.java</span>
+<span class="listing-number">**サンプルコード17-23**　SwingWorkerExample.java（6〜8、18〜55、63〜65行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class SwingWorkerExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("SwingWorkerの例");
-            frame.setSize(400, 200);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new BorderLayout());
-            
-            JProgressBar progressBar = new JProgressBar(0, 100);
-            JButton startButton = new JButton("長時間処理を開始");
-            JLabel statusLabel = new JLabel("準備完了", JLabel.CENTER);
-            
+            // ...
             startButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1497,13 +1331,7 @@ public class SwingWorkerExample {
                     worker.execute();
                 }
             });
-            
-            frame.add(progressBar, BorderLayout.NORTH);
-            frame.add(statusLabel, BorderLayout.CENTER);
-            frame.add(startButton, BorderLayout.SOUTH);
-            
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            // ...
         });
     }
 }
@@ -1630,29 +1458,13 @@ EDT上では重い処理を避け、必要な場合はSwingWorkerを使用しま
 
 以下のコードは、重い処理をSwingWorkerで実行する実用的な例です。doInBackground()で重い処理を実行しながら、publish()で途中経過を報告し、setProgress()で進捗バーを更新します。このアプローチにより、UIの応答性を保ちながら、ユーザーに処理の進捗を伝えることができます。
 
-<span class="listing-number">**サンプルコード17-26**　HeavyProcessingExample.java</span>
+<span class="listing-number">**サンプルコード17-26**　HeavyProcessingExample.java（5〜7、21〜48、60〜72、80〜82行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-
 public class HeavyProcessingExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("重い処理の例");
-            frame.setSize(400, 200);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new BorderLayout());
-            
-            JTextArea textArea = new JTextArea();
-            textArea.setEditable(false);
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            
-            JButton processButton = new JButton("データ処理開始");
-            JProgressBar progressBar = new JProgressBar();
-            progressBar.setStringPainted(true);
-            
+            // ...
             processButton.addActionListener(e -> {
                 processButton.setEnabled(false);
                 textArea.setText("");
@@ -1681,17 +1493,7 @@ public class HeavyProcessingExample {
                             textArea.append(chunk);
                         }
                     }
-                    
-                    @Override
-                    protected void done() {
-                        processButton.setEnabled(true);
-                        progressBar.setValue(0);
-                        try {
-                            textArea.append("\n=== 処理完了 ===\n" + get());
-                        } catch (Exception ex) {
-                            textArea.append("エラーが発生しました: " + ex.getMessage());
-                        }
-                    }
+                    // ...
                 };
                 
                 // 進捗バーとWorkerを連携
@@ -1705,13 +1507,7 @@ public class HeavyProcessingExample {
                 
                 worker.execute();
             });
-            
-            frame.add(scrollPane, BorderLayout.CENTER);
-            frame.add(processButton, BorderLayout.NORTH);
-            frame.add(progressBar, BorderLayout.SOUTH);
-            
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            // ...
         });
     }
 }
@@ -1782,53 +1578,12 @@ public class TimerExample {
 
 以下のコードは、マルチスレッド環境でのスレッドセーフティを確保する実装例です。volatileキーワードの使用、EDT上でのボタン状態の更新、SwingUtilities.invokeLater()によるスレッド間通信など、デッドロックや競合状態を回避するためのベストプラクティスを示しています。
 
-<span class="listing-number">**サンプルコード17-28**　ThreadSafetyExample.java</span>
+<span class="listing-number">**サンプルコード17-28**　ThreadSafetyExample.java（6〜7、45〜80、87行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class ThreadSafetyExample extends JFrame {
     private volatile boolean running = false;
-    private JLabel statusLabel;
-    private JButton startButton;
-    private JButton stopButton;
-    
-    public ThreadSafetyExample() {
-        setTitle("スレッドセーフティの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        statusLabel = new JLabel("停止中", JLabel.CENTER);
-        startButton = new JButton("開始");
-        stopButton = new JButton("停止");
-        stopButton.setEnabled(false);
-        
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startProcessing();
-            }
-        });
-        
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stopProcessing();
-            }
-        });
-        
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(startButton);
-        buttonPanel.add(stopButton);
-        
-        add(statusLabel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
+    // ...
     }
     
     private void startProcessing() {
@@ -1865,12 +1620,7 @@ public class ThreadSafetyExample extends JFrame {
     private void stopProcessing() {
         running = false;
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new ThreadSafetyExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 

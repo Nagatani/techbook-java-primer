@@ -557,29 +557,11 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 以下は、基本的なCSV読み込み・書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-9**　CSVProcessingExample.java</span>
+<span class="listing-number">**サンプルコード14-9**　CSVProcessingExample.java（6、21〜54、65行目）</span>
 
 ```java
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
-
 public class CSVProcessingExample {
-    public static void main(String[] args) {
-        Path csvFile = Paths.get("sample.csv");
-        
-        // CSVファイルの作成（サンプルデータ）
-        createSampleCSV(csvFile);
-        
-        // CSVファイルの読み込み
-        List<List<String>> csvData = readCSV(csvFile);
-        System.out.println("読み込んだCSVデータ:");
-        csvData.forEach(row -> System.out.println(String.join(" | ", row)));
-        
-        // CSVファイルの書き込み
-        writeCSV(Paths.get("output.csv"), csvData);
-    }
+    // ...
     
     // CSVファイルの読み込み
     public static List<List<String>> readCSV(Path filePath) {
@@ -614,16 +596,7 @@ public class CSVProcessingExample {
         }
     }
     
-    // サンプルCSVファイルの作成
-    private static void createSampleCSV(Path filePath) {
-        List<List<String>> sampleData = Arrays.asList(
-            Arrays.asList("名前", "年齢", "職業"),
-            Arrays.asList("田中太郎", "30", "エンジニア"),
-            Arrays.asList("佐藤花子", "25", "デザイナー"),
-            Arrays.asList("鈴木一郎", "35", "マネージャー")
-        );
-        writeCSV(filePath, sampleData);
-    }
+    // ...
 }
 ```
 
@@ -983,16 +956,9 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
-<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java</span>
+<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java（8〜40、172〜173行目）</span>
 
 ```java
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class TextBlockStructuredData {
     public static void main(String[] args) throws IOException {
         // 1. JSON データの生成
@@ -1026,137 +992,7 @@ public class TextBlockStructuredData {
         System.out.println("=== JSON データを保存しました ===");
         System.out.println(jsonData);
         
-        // 2. SQL クエリの生成
-        String tableName = "users";
-        String condition = "2024-01-01";
-        
-        String sqlQuery = """
-                SELECT
-                    u.id,
-                    u.name,
-                    u.email,
-                    u.created_at,
-                    p.title AS latest_post,
-                    COUNT(c.id) AS comment_count
-                FROM %s u
-                LEFT JOIN posts p ON u.id = p.user_id 
-                    AND p.created_at = (
-                        SELECT MAX(created_at) 
-                        FROM posts 
-                        WHERE user_id = u.id
-                    )
-                LEFT JOIN comments c ON p.id = c.post_id
-                WHERE u.created_at > '%s'
-                GROUP BY u.id, u.name, u.email, u.created_at, p.title
-                ORDER BY u.created_at DESC
-                LIMIT 100;
-                """.formatted(tableName, condition);
-        
-        Path sqlFile = Paths.get("user_query.sql");
-        Files.writeString(sqlFile, sqlQuery);
-        System.out.println("\n=== SQL クエリを保存しました ===");
-        System.out.println(sqlQuery);
-        
-        // 3. HTML テンプレートの生成
-        String pageTitle = "ユーザープロフィール";
-        
-        String htmlTemplate = """
-                <!DOCTYPE html>
-                <html lang="ja">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>%s</title>
-                    <style>
-                        body {
-                            font-family: 'Helvetica Neue', Arial, sans-serif;
-                            max-width: 800px;
-                            margin: 0 auto;
-                            padding: 20px;
-                            background-color: #f5f5f5;
-                        }
-                        .profile-card {
-                            background: white;
-                            border-radius: 8px;
-                            padding: 24px;
-                            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                        }
-                        .user-name {
-                            color: #333;
-                            font-size: 24px;
-                            margin-bottom: 8px;
-                        }
-                        .user-details {
-                            color: #666;
-                            line-height: 1.6;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="profile-card">
-                        <h1 class="user-name">%s</h1>
-                        <div class="user-details">
-                            <p><strong>年齢:</strong> %d歳</p>
-                            <p><strong>最終更新:</strong> %s</p>
-                            <p><strong>ステータス:</strong> アクティブ</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                """.formatted(pageTitle, userName, userAge, timestamp);
-        
-        Path htmlFile = Paths.get("user_profile.html");
-        Files.writeString(htmlFile, htmlTemplate);
-        System.out.println("\n=== HTML テンプレートを保存しました ===");
-        System.out.println("ファイル: " + htmlFile.toAbsolutePath());
-        
-        // 4. XML 設定ファイルの生成
-        String appName = "UserManager";
-        String version = "2.1.0";
-        
-        String xmlConfig = """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <configuration>
-                    <application>
-                        <name>%s</name>
-                        <version>%s</version>
-                        <environment>production</environment>
-                    </application>
-                    <database>
-                        <url>jdbc:postgresql://localhost:5432/userdb</url>
-                        <username>app_user</username>
-                        <pool>
-                            <min-connections>5</min-connections>
-                            <max-connections>20</max-connections>
-                            <timeout>30000</timeout>
-                        </pool>
-                    </database>
-                    <logging>
-                        <level>INFO</level>
-                        <file>logs/application.log</file>
-                        <pattern>%%d{yyyy-MM-dd HH:mm:ss} [%%thread] %%-5level %%logger{36} - %%msg%%n</pattern>
-                    </logging>
-                </configuration>
-                """.formatted(appName, version);
-        
-        Path xmlFile = Paths.get("app_config.xml");
-        Files.writeString(xmlFile, xmlConfig);
-        System.out.println("\n=== XML 設定ファイルを保存しました ===");
-        
-        // 生成されたファイルの一覧表示
-        System.out.println("\n=== 生成されたファイル一覧 ===");
-        Path currentDir = Paths.get(".");
-        Files.list(currentDir)
-                .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))
-                .forEach(p -> {
-                    try {
-                        long size = Files.size(p);
-                        System.out.printf("%-20s (%d bytes)%n", 
-                                p.getFileName(), size);
-                    } catch (IOException e) {
-                        System.out.println(p.getFileName() + " (サイズ取得エラー)");
-                    }
-                });
+        // ...
     }
 }
 ```
@@ -1223,31 +1059,11 @@ HTMLファイルのパスは、プログラムを実行したディレクトリ�
 
 Text Blocksをファイル読み書きと組み合わせた実践的な使用例。
 
-<span class="listing-number">**サンプルコード14-16**　TextBlockFileIO.java</span>
+<span class="listing-number">**サンプルコード14-16**　TextBlockFileIO.java（8、23〜50、232行目）</span>
 
 ```java
-import java.io.IOException;
-import java.nio.file.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.IntStream;
-
 public class TextBlockFileIO {
-    public static void main(String[] args) throws IOException {
-        // 1. ログファイルテンプレートの生成
-        generateLogTemplate();
-        
-        // 2. 設定ファイルの読み書き
-        handleConfigurationFile();
-        
-        // 3. レポート生成
-        generateReport();
-        
-        // 4. 複数ファイルの一括処理
-        batchProcessFiles();
-    }
-    
+    // ...
     private static void generateLogTemplate() throws IOException {
         String logTemplate = """
                 # アプリケーションログ設定
@@ -1276,187 +1092,7 @@ public class TextBlockFileIO {
         Files.writeString(logConfigPath, logTemplate);
         System.out.println("ログ設定ファイルを生成しました: " + logConfigPath);
     }
-    
-    private static void handleConfigurationFile() throws IOException {
-        // デフォルト設定の作成
-        String defaultConfig = """
-                # アプリケーション設定ファイル
-                app.name=Java Primer Sample
-                app.version=1.0.0
-                
-                # データベース設定
-                db.url=jdbc:h2:mem:testdb
-                db.username=sa
-                db.password=
-                db.pool.size=10
-                
-                # キャッシュ設定
-                cache.enabled=true
-                cache.size=1000
-                cache.ttl=300
-                
-                # ファイル設定
-                files.upload.dir=uploads
-                files.max.size=10485760
-                files.allowed.types=jpg,png,gif,pdf,doc,docx
-                """;
-        
-        Path configPath = Paths.get("application.properties");
-        
-        // 設定ファイルが存在しない場合のみ作成
-        if (Files.notExists(configPath)) {
-            Files.writeString(configPath, defaultConfig);
-            System.out.println("デフォルト設定ファイルを作成しました");
-        } else {
-            // 既存設定ファイルの読み込みと表示
-            String existingConfig = Files.readString(configPath);
-            System.out.println("既存の設定ファイルを読み込みました:");
-            System.out.println(existingConfig.substring(0, 
-                    Math.min(200, existingConfig.length())) + "...");
-        }
-    }
-    
-    private static void generateReport() throws IOException {
-        // サンプルデータ
-        String[][] userData = {
-                {"田中太郎", "30", "東京", "エンジニア"},
-                {"佐藤花子", "25", "大阪", "デザイナー"},
-                {"鈴木一郎", "35", "名古屋", "マネージャー"},
-                {"高橋美咲", "28", "福岡", "アナリスト"}
-        };
-        
-        // HTML レポートの生成
-        StringBuilder tableRows = new StringBuilder();
-        for (String[] user : userData) {
-            tableRows.append("""
-                    <tr>
-                        <td>%s</td>
-                        <td>%s歳</td>
-                        <td>%s</td>
-                        <td>%s</td>
-                    </tr>
-                    """.formatted(user[0], user[1], user[2], user[3]));
-        }
-        
-        String reportHtml = """
-                <!DOCTYPE html>
-                <html lang="ja">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>ユーザーレポート</title>
-                    <style>
-                        body { font-family: 'Yu Gothic', sans-serif; margin: 40px; }
-                        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-                        table { border-collapse: collapse; width: 100%%; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-                        th { background-color: #f2f2f2; font-weight: bold; }
-                        tr:nth-child(even) { background-color: #f9f9f9; }
-                        .meta { color: #666; font-size: 14px; margin-top: 20px; }
-                    </style>
-                </head>
-                <body>
-                    <h1>📊 ユーザー管理システム - 月次レポート</h1>
-                    <p>レポート生成日時: %s</p>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>名前</th>
-                                <th>年齢</th>
-                                <th>所在地</th>
-                                <th>職業</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                %s
-                        </tbody>
-                    </table>
-                    
-                    <div class="meta">
-                        <p>総ユーザー数: %d名</p>
-                        <p>平均年齢: %.1f歳</p>
-                    </div>
-                </body>
-                </html>
-                """.formatted(
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm")),
-                tableRows.toString(),
-                userData.length,
-                java.util.Arrays.stream(userData)
-                        .mapToInt(user -> Integer.parseInt(user[1]))
-                        .average().orElse(0.0));
-        
-        Path reportPath = Paths.get("user_report.html");
-        Files.writeString(reportPath, reportHtml);
-        System.out.println("HTMLレポートを生成しました: " + reportPath);
-    }
-    
-    private static void batchProcessFiles() throws IOException {
-        // 複数のサンプルファイルを一括生成
-        String[] fileContents = {
-                """
-                # README.md
-                
-                ## Java Primer Sample Project
-                
-                このプロジェクトはJava学習用のサンプルプロジェクトです。
-                
-                ### 機能
-                - ファイルI/O操作
-                - Text Blocks の活用
-                - 設定ファイルの管理
-                """,
-                
-                """
-                # TODO.md
-                
-                ## 開発タスク
-                
-                ### 優先度: 高
-                - ユーザー認証機能の実装
-                - データベース接続の設定
-                
-                ### 優先度: 中
-                - ログ機能の改善
-                - エラーハンドリングの強化
-                
-                ### 優先度: 低
-                - UI の改善
-                - パフォーマンス最適化
-                """,
-                
-                """
-                {
-                  "project": {
-                    "name": "Java Primer Sample",
-                    "version": "1.0.0",
-                    "description": "Text Blocks機能のデモンストレーション",
-                    "author": "Java学習者",
-                    "dependencies": [
-                      "java.base",
-                      "java.desktop"
-                    ],
-                    "features": [
-                      "ファイルI/O",
-                      "Text Blocks",
-                      "JSON処理",
-                      "HTML生成"
-                    ]
-                  }
-                }
-                """
-        };
-        
-        String[] fileNames = {"README.md", "TODO.md", "project.json"};
-        
-        for (int i = 0; i < fileNames.length; i++) {
-            Path filePath = Paths.get(fileNames[i]);
-            Files.writeString(filePath, fileContents[i]);
-            System.out.println("生成しました: " + filePath);
-        }
-        
-        System.out.println("\n=== 一括ファイル処理完了 ===");
-    }
+    // ...
 }
 ```
 

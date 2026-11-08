@@ -565,24 +565,16 @@ public class BankAccountV2Test {
 取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード4-10**　BankAccountV3.java</span>
+<span class="listing-number">**サンプルコード4-10**　BankAccountV3.java（3〜8、16〜42、52〜56行目）</span>
 
 ```java
-import java.util.*;
-
 public class BankAccountV3 {
     private final String accountNumber;  // finalで不変にする
     private double balance;
     private List<String> transactionHistory;
     
     public BankAccountV3(String accountNumber, double initialBalance) {
-        // 口座番号の検証
-        if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("口座番号は必須です");
-        }
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上にしてください");
-        }
+        // ...
         
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
@@ -610,15 +602,7 @@ public class BankAccountV3 {
         transactionHistory.add("出金失敗（残高不足）: " + amount + "円");
         return false;
     }
-    
-    public double getBalance() {
-        return balance;
-    }
-    
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-    
+    // ...
     // 防御的コピーで履歴を返す
     public List<String> getTransactionHistory() {
         return new ArrayList<>(transactionHistory);
@@ -688,23 +672,16 @@ public class BankAccountV3Test {
 
 BankAccountV3の設計を基に、本章ではさらに高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です。
 
-<span class="listing-number">**サンプルコード4-11**　EnhancedBankAccount.java</span>
+<span class="listing-number">**サンプルコード4-11**　EnhancedBankAccount.java（3〜8、15〜21、23〜54、68行目）</span>
 
 ```java
-import java.time.LocalDateTime;
-
 // BankAccountV3をさらに発展させた設計例
 public class EnhancedBankAccount extends BankAccountV3 {
     // 追加のフィールド：口座の状態管理
     private String status;
     private LocalDateTime lastActivityDate;
     private int failedTransactionCount;
-    
-    // 口座状態を表す定数
-    public static final String STATUS_ACTIVE = "ACTIVE";      // アクティブ
-    public static final String STATUS_SUSPENDED = "SUSPENDED"; // 一時停止
-    public static final String STATUS_CLOSED = "CLOSED";       // 閉鎖
-    
+    // ...
     // 拡張されたコンストラクタ
     public EnhancedBankAccount(String accountNumber, String accountHolder, double initialBalance) {
         super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
@@ -712,7 +689,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
         this.lastActivityDate = LocalDateTime.now();
         this.failedTransactionCount = 0;
     }
-    
+    // ...
     // オーバーライドされた入金メソッド：状態チェックを追加
     @Override
     public void deposit(double amount) {
@@ -745,19 +722,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
             throw new IllegalStateException("口座がアクティブではありません: " + status);
         }
     }
-    
-    private void updateLastActivity() {
-        this.lastActivityDate = LocalDateTime.now();
-    }
-    
-    // 口座の再アクティブ化
-    public void reactivateAccount() {
-        if (STATUS_SUSPENDED.equals(status)) {
-            status = STATUS_ACTIVE;
-            failedTransactionCount = 0;
-            System.out.println("口座が再アクティブ化されました。");
-        }
-    }
+    // ...
 }
 ```
 

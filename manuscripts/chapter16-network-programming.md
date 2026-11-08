@@ -180,13 +180,9 @@ public class SimpleTCPServer {
 
 以下のコードは、マルチスレッドに対応したTCPサーバーの実装例です。ExecutorServiceを使用してスレッドプールを管理し、各クライアントの接続を独立したスレッドで処理します。このアプローチにより、複数のクライアントからの同時接続を効率的に処理できます。サーバーは簡単なプロトコルを実装しており、ECHO、TIME、QUITなどのコマンドに応答します。
 
-<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java</span>
+<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜61、70〜72行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-import java.util.concurrent.*;
-
 public class MultiThreadedServer {
     private static final int PORT = 8080;
     private static final int THREAD_POOL_SIZE = 10;
@@ -210,14 +206,9 @@ public class MultiThreadedServer {
         }
     }
 }
-
+// ...
 class ClientHandler implements Runnable {
-    private final Socket clientSocket;
-    
-    public ClientHandler(Socket socket) {
-        this.clientSocket = socket;
-    }
-    
+    // ...
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(
@@ -244,14 +235,7 @@ class ClientHandler implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println(
-                "クライアント処理エラー: " + e.getMessage());
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                // ログに記録
-            }
+        // ...
         }
     }
 }
@@ -287,12 +271,9 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
-<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java</span>
+<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜21、25〜40、47〜51行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-
 public class SimpleHTTPClient {
     public static void main(String[] args) {
         String host = "www.example.com";
@@ -311,9 +292,7 @@ public class SimpleHTTPClient {
             out.println("Connection: close");
             out.println(); // 空行でヘッダー終了
             
-            // HTTPレスポンスの取得
-            // HTTPレスポンスは、ステータスライン、ヘッダー、空行、ボディの順で構成されています。
-            // ヘッダーとボディは空行で区切られているため、これを検出して処理を分けます。
+            // ...
             String line;
             boolean isHeader = true;
             StringBuilder headers = new StringBuilder();
@@ -330,12 +309,7 @@ public class SimpleHTTPClient {
                     body.append(line).append("\n");
                 }
             }
-            
-            System.out.println("=== Headers ===");
-            System.out.println(headers);
-            System.out.println("=== Body ===");
-            System.out.println(body);
-            
+            // ...
         } catch (IOException e) {
             System.err.println("エラー: " + e.getMessage());
         }
@@ -619,14 +593,9 @@ UDPの特徴と使用場面。
 
 以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。ConcurrentHashMapを使用してスレッドセーフにクライアントのリストを管理し、各クライアントとの通信は独立したスレッドで処理されます。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜35、42、52〜72、87〜93行目）</span>
 
 ```java
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.*;
-
 public class ChatServer {
     private static final int PORT = 5000;
     private static Set<ClientHandler> clients = 
@@ -657,22 +626,9 @@ public class ChatServer {
             }
         }
     }
-    
-    // クライアントを削除
-    public static void removeClient(ClientHandler client) {
-        clients.remove(client);
-    }
-    
+    // ...
     static class ClientHandler implements Runnable {
-        private Socket socket;
-        private PrintWriter out;
-        private BufferedReader in;
-        private String username;
-        
-        public ClientHandler(Socket socket) {
-            this.socket = socket;
-        }
-        
+        // ...
         @Override
         public void run() {
             try {
@@ -694,20 +650,7 @@ public class ChatServer {
                     broadcast(username + ": " + message, this);
                 }
             } catch (IOException e) {
-                System.err.println(
-                    "クライアントエラー: " + e.getMessage());
-            } finally {
-                // 退室処理
-                if (username != null) {
-                    broadcast(username + " が退室しました", this);
-                }
-                removeClient(this);
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    // ログに記録
-                }
-            }
+            // ...
         }
         
         public void sendMessage(String message) {

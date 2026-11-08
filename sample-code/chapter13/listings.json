@@ -38,44 +38,55 @@
     "dir": "13-07",
     "main": "RetryableOperation",
     "excerpt": [
-      { "file": "RetryableOperation.java", "from": 1, "to": 55 }
+      { "file": "RetryableOperation.java", "from": 4, "to": 6 },
+      { "file": "RetryableOperation.java", "from": 8, "to": 24 },
+      { "file": "RetryableOperation.java", "from": 33, "to": 37 },
+      { "file": "RetryableOperation.java", "from": 55, "to": 55 }
     ]
   },
   "13-8": {
     "dir": "13-08",
     "main": null,
     "excerpt": [
-      { "file": "CircuitBreaker.java", "from": 1, "to": 55 }
+      { "file": "CircuitBreaker.java", "from": 3, "to": 12 },
+      { "file": "CircuitBreaker.java", "from": 21, "to": 55 }
     ]
   },
   "13-9": {
     "dir": "13-09",
     "main": null,
     "excerpt": [
-      { "file": "ExceptionAggregator.java", "from": 1, "to": 55 }
+      { "file": "ExceptionAggregator.java", "from": 3, "to": 28 },
+      { "file": "ExceptionAggregator.java", "from": 38, "to": 55 }
     ]
   },
   "13-10": {
     "dir": "13-10",
     "main": null,
     "excerpt": [
-      { "file": "MultiResourceExample.java", "from": 1, "to": 51 }
+      { "file": "MultiResourceExample.java", "from": 4, "to": 22 },
+      { "file": "MultiResourceExample.java", "from": 51, "to": 51 }
     ]
   },
   "13-11": {
     "dir": "13-11",
     "main": null,
     "excerpt": [
-      { "file": "ResourcePool.java", "from": 1, "to": 67 }
+      { "file": "ResourcePool.java", "from": 3, "to": 6 },
+      { "file": "ResourcePool.java", "from": 13, "to": 53 },
+      { "file": "ResourcePool.java", "from": 67, "to": 67 }
     ]
   },
   "13-14": {
     "dir": "13-14",
     "main": null,
     "excerpt": [
-      { "file": "BusinessException.java", "from": 1, "to": 33 },
+      { "file": "BusinessException.java", "from": 4, "to": 13 },
+      { "file": "BusinessException.java", "from": 22, "to": 24 },
+      { "file": "BusinessException.java", "from": 30, "to": 33 },
       { "file": "InsufficientBalanceException.java", "from": 4, "to": 13 },
-      { "file": "SystemException.java", "from": 4, "to": 28 }
+      { "file": "SystemException.java", "from": 4, "to": 13 },
+      { "file": "SystemException.java", "from": 28, "to": 28 }
     ]
   },
   "13-25": {

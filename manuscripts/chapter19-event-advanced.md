@@ -32,44 +32,13 @@
 
 以下のコードは、マウスイベントの完全な処理を実装した例です。クリック、ダブルクリック、ドラッグ、右クリックメニューなど、実際のアプリケーションで必要となるさまざまなマウス操作を処理しています。MouseAdapterを使用して必要なメソッドだけをオーバーライドし、イベントの詳細情報をログに記録します。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜63、77〜82、97〜100、122、134行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-
 public class MouseEventCompleteExample extends JFrame {
-    private JTextArea logArea;
-    private JPanel drawPanel;
-    private Point startPoint;
-    private Point currentPoint;
-    
+    // ...
     public MouseEventCompleteExample() {
-        setTitle("マウスイベント完全例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        // 描画パネル
-        drawPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (startPoint != null && currentPoint != null) {
-                    g.setColor(Color.BLUE);
-                    g.drawLine(startPoint.x, startPoint.y, currentPoint.x, currentPoint.y);
-                }
-            }
-        };
-        drawPanel.setBackground(Color.WHITE);
-        drawPanel.setPreferredSize(new Dimension(400, 300));
-        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        // ログエリア
-        logArea = new JTextArea(10, 40);
-        logArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(logArea);
-        
+        // ...
         // マウスリスナーの追加
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
@@ -98,93 +67,25 @@ public class MouseEventCompleteExample extends JFrame {
                 currentPoint = null;
                 drawPanel.repaint();
             }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                drawPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                log("マウスがパネルに入りました");
-            }
-            
-            @Override
-            public void mouseExited(MouseEvent e) {
-                drawPanel.setCursor(Cursor.getDefaultCursor());
-                log("マウスがパネルから出ました");
-            }
-            
+            // ...
             @Override
             public void mouseDragged(MouseEvent e) {
                 currentPoint = e.getPoint();
                 drawPanel.repaint();
                 log("ドラッグ中: " + currentPoint);
             }
-            
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                // 頻繁に発生するので通常はログしない
-            }
-            
-            private String getButtonName(int button) {
-                return switch (button) {
-                    case MouseEvent.BUTTON1 -> "左ボタン";
-                    case MouseEvent.BUTTON2 -> "中央ボタン";
-                    case MouseEvent.BUTTON3 -> "右ボタン";
-                    default -> "不明なボタン";
-                };
-            }
+            // ...
         };
         
         drawPanel.addMouseListener(mouseHandler);
         drawPanel.addMouseMotionListener(mouseHandler);
-        
-        // コンテキストメニュー（右クリックメニュー）
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(new JMenuItem("切り取り"));
-        popupMenu.add(new JMenuItem("コピー"));
-        popupMenu.add(new JMenuItem("貼り付け"));
-        
-        drawPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
-        
-        add(drawPanel, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
+        // ...
     }
-    
-    private void log(String message) {
-        logArea.append(message + "\n");
-        logArea.setCaretPosition(logArea.getDocument().getLength());
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MouseEventCompleteExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
-実行すると、次のように表示されます。
-
-```
-ウィンドウが表示されます（タイトル: マウスイベント詳細）
-- グレーのドローパネル（400x300）が中央に配置されています
-- 下部にイベントログエリアがあります
-- マウス操作に応じて以下のような反応があります：
-  - マウス移動 → ログに「マウス移動: (x, y)」と記録
-  - 左クリック → 「左ボタンクリック: (x, y)」
-  - 右クリック → 「右ボタンクリック: (x, y)」
-  - ダブルクリック → 「ダブルクリック: (x, y)」
-  - ドラッグ → 「ドラッグ中: (x, y)」
-  - マウスホイール → 「ホイール: 回転量=XX」
-```
+実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルの上でクリック、ボタンの押下と解放、ドラッグをすると、下のログエリアにイベントの種類と座標が記録されます。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します。
 
 ### キーボードイベントの高度な処理
 
@@ -192,34 +93,13 @@ public class MouseEventCompleteExample extends JFrame {
 
 以下のコードは、高度なキーボードイベント処理の実装例です。単一キーの押下だけでなく、複数キーの同時押し検出、ショートカットキーの実装、InputMapとActionMapを使用したより洗練されたキーバインディングの設定方法を示しています。HashSetを使用して現在押されているキーを追跡し、複雑なキーコンビネーションを検出できます。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66、78〜100、155行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.HashSet;
-import java.util.Set;
-
 public class KeyboardEventAdvancedExample extends JFrame {
-    private JTextArea textArea;
-    private JLabel statusLabel;
-    private Set<Integer> pressedKeys = new HashSet<>();
-    
+    // ...
     public KeyboardEventAdvancedExample() {
-        setTitle("高度なキーボードイベント処理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        // テキストエリア
-        textArea = new JTextArea(10, 40);
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        
-        // ステータスラベル
-        statusLabel = new JLabel("キーを押してください");
-        statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
+        // ...
         // キーリスナーの追加
         textArea.addKeyListener(new KeyAdapter() {
             @Override
@@ -245,33 +125,9 @@ public class KeyboardEventAdvancedExample extends JFrame {
                     duplicateLine();
                 }
             }
-            
-            @Override
-            public void keyReleased(KeyEvent e) {
-                pressedKeys.remove(e.getKeyCode());
-                updateStatus(e, "解放");
-            }
-            
-            @Override
-            public void keyTyped(KeyEvent e) {
-                // 文字入力の検出
-                char ch = e.getKeyChar();
-                if (!Character.isISOControl(ch)) {
-                    statusLabel.setText("入力文字: '" + ch + "'");
-                }
-            }
+            // ...
         });
-        
-        // InputMapとActionMapを使ったより良いアプローチ
-        setupKeyBindings();
-        
-        add(scrollPane, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
-    }
-    
+        // ...
     private void setupKeyBindings() {
         InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap actionMap = textArea.getActionMap();
@@ -295,77 +151,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
             }
         });
     }
-    
-    private void updateStatus(KeyEvent e, String action) {
-        String modifiers = "";
-        if (e.isControlDown()) modifiers += "Ctrl+";
-        if (e.isShiftDown()) modifiers += "Shift+";
-        if (e.isAltDown()) modifiers += "Alt+";
-        
-        statusLabel.setText(action + ": " + modifiers + 
-            KeyEvent.getKeyText(e.getKeyCode()));
-    }
-    
-    private void saveDocument() {
-        JOptionPane.showMessageDialog(this, "ドキュメントを保存しました");
-    }
-    
-    private void showHelp() {
-        JOptionPane.showMessageDialog(this, "F1: ヘルプ\nCtrl+S: 保存\nCtrl+A: 全選択");
-    }
-    
-    private void duplicateLine() {
-        try {
-            int caretPosition = textArea.getCaretPosition();
-            int lineNumber = textArea.getLineOfOffset(caretPosition);
-            int lineStart = textArea.getLineStartOffset(lineNumber);
-            int lineEnd = textArea.getLineEndOffset(lineNumber);
-            String line = textArea.getText(lineStart, lineEnd - lineStart);
-            textArea.insert(line, lineEnd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    private void deleteLine() {
-        try {
-            int caretPosition = textArea.getCaretPosition();
-            int lineNumber = textArea.getLineOfOffset(caretPosition);
-            int lineStart = textArea.getLineStartOffset(lineNumber);
-            int lineEnd = textArea.getLineEndOffset(lineNumber);
-            textArea.replaceRange("", lineStart, lineEnd);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    private void refresh() {
-        textArea.setText("");
-        statusLabel.setText("内容をクリアしました");
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new KeyboardEventAdvancedExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
-実行すると、次のように表示されます。
-
-```
-ウィンドウが表示されます（タイトル: キーボードイベント高度な処理）
-- テキストエリアが中央に配置されています
-- 下部にステータスラベルがあります
-- キーボード操作に応じて以下のような反応があります：
-  - 通常のキー入力 → テキストエリアに文字が入力されます
-  - Ctrl+S → 「保存しました」とステータスに表示
-  - Ctrl+O → 「開きました」とステータスに表示
-  - Ctrl+R → テキストエリアの内容がクリアされ「内容をクリアしました」と表示
-  - Ctrl+D → 現在の行が削除されます
-  - Shift+矢印キー → 「複数キー同時押し: [Shift, 対応する矢印キー]」と表示
-```
+実行すると、「高度なキーボードイベント処理」というウィンドウが開きます。キーを押したり離したりするたびに、下のステータスラベルに修飾キーとキーの名前を表示します。Ctrl+Sで保存のダイアログ、F1でヘルプを表示し、Ctrl+Aで全選択、Ctrl+Dで現在の行の削除、F5で内容のクリアを行います。
 
 ### DocumentListenerによるテキスト変更の監視
 
@@ -373,74 +163,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
 
 以下のコードは、DocumentListenerを使用してテキスト入力のリアルタイムバリデーションを実装する例です。メールアドレスの形式チェック、パスワードの強度判定、確認パスワードの一致チェックなど、実際のフォーム入力で必要となる検証を、ユーザーが入力するたびに即座に実行します。これにより、優れたユーザーエクスペリエンスを提供できます。
 
-<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java</span>
+<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、66〜110、147〜149、178行目）</span>
 
 ```java
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import java.awt.*;
-import java.util.regex.*;
-
 public class DocumentListenerExample extends JFrame {
-    private JTextField emailField;
-    private JPasswordField passwordField;
-    private JPasswordField confirmField;
-    private JTextArea statusArea;
-    private JButton submitButton;
-    
-    public DocumentListenerExample() {
-        setTitle("DocumentListenerによるバリデーション");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        
-        // Email フィールド
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Email:"), gbc);
-        
-        emailField = new JTextField(20);
-        gbc.gridx = 1;
-        add(emailField, gbc);
-        
-        // パスワードフィールド
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("パスワード:"), gbc);
-        
-        passwordField = new JPasswordField(20);
-        gbc.gridx = 1;
-        add(passwordField, gbc);
-        
-        // 確認フィールド
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("確認:"), gbc);
-        
-        confirmField = new JPasswordField(20);
-        gbc.gridx = 1;
-        add(confirmField, gbc);
-        
-        // ステータスエリア
-        statusArea = new JTextArea(5, 30);
-        statusArea.setEditable(false);
-        statusArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        JScrollPane scrollPane = new JScrollPane(statusArea);
-        gbc.gridx = 0; gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        add(scrollPane, gbc);
-        
-        // 送信ボタン
-        submitButton = new JButton("送信");
-        submitButton.setEnabled(false);
-        gbc.gridy = 4;
-        add(submitButton, gbc);
-        
-        // DocumentListenerの追加
-        setupDocumentListeners();
-        
-        pack();
-        setLocationRelativeTo(null);
-    }
+    // ...
     
     private void setupDocumentListeners() {
         // Emailフィールドのリスナー
@@ -486,87 +213,15 @@ public class DocumentListenerExample extends JFrame {
             emailField.setBackground(Color.WHITE);
         }
         
-        // パスワードの検証
-        char[] password = passwordField.getPassword();
-        if (password.length == 0) {
-            status.append("❌ パスワードを入力してください\n");
-            passwordField.setBackground(Color.PINK);
-            isValid = false;
-        } else if (password.length < 8) {
-            status.append("❌ パスワードは8文字以上必要です\n");
-            passwordField.setBackground(Color.PINK);
-            isValid = false;
-        } else {
-            status.append("✓ パスワード: OK (");
-            status.append(getPasswordStrength(password));
-            status.append(")\n");
-            passwordField.setBackground(Color.WHITE);
-        }
-        
-        // 確認パスワードの検証
-        char[] confirm = confirmField.getPassword();
-        if (confirm.length == 0) {
-            status.append("❌ 確認パスワードを入力してください\n");
-            confirmField.setBackground(Color.PINK);
-            isValid = false;
-        } else if (!java.util.Arrays.equals(password, confirm)) {
-            status.append("❌ パスワードが一致しません\n");
-            confirmField.setBackground(Color.PINK);
-            isValid = false;
-        } else {
-            status.append("✓ 確認パスワード: 一致\n");
-            confirmField.setBackground(Color.WHITE);
-        }
-        
-        // クリーンアップ
-        java.util.Arrays.fill(password, ' ');
-        java.util.Arrays.fill(confirm, ' ');
-        
+        // ...
         statusArea.setText(status.toString());
         submitButton.setEnabled(isValid);
     }
-    
-    private boolean isValidEmail(String email) {
-        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        Pattern pattern = Pattern.compile(regex);
-        return pattern.matcher(email).matches();
-    }
-    
-    private String getPasswordStrength(char[] password) {
-        int score = 0;
-        if (password.length >= 12) score++;
-        if (String.valueOf(password).matches(".*[A-Z].*")) score++;
-        if (String.valueOf(password).matches(".*[a-z].*")) score++;
-        if (String.valueOf(password).matches(".*[0-9].*")) score++;
-        if (String.valueOf(password).matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) score++;
-        
-        return switch (score) {
-            case 0, 1 -> "弱い";
-            case 2, 3 -> "普通";
-            case 4, 5 -> "強い";
-            default -> "不明";
-        };
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new DocumentListenerExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
-実行すると、次のように表示されます。
-
-```
-ウィンドウが表示されます（タイトル: リアルタイムバリデーション）
-- メールアドレス、パスワード、パスワード確認の3つの入力フィールドがあります
-- 入力に応じてリアルタイムで以下のバリデーションが実行されます：
-  - メールアドレス: 「✓ 有効」または「✗ 無効」表示
-  - パスワード: 強度（弱い/普通/強い）と文字数が表示
-  - パスワード確認: 「✓ 一致」または「✗ 不一致」表示
-- すべての条件を満たすと「登録」ボタンが有効になります
-```
+実行すると、「DocumentListenerによるバリデーション」というウィンドウが開きます。Email、パスワード、確認の各欄に入力するたびに、下のステータスエリアに検証結果を表示し、条件を満たさない欄の背景をピンクにします。パスワードは8文字以上で強度（弱い・普通・強い）も表示し、すべての条件を満たすと「送信」ボタンが押せるようになります。
 
 ## カスタムイベントとObserverパターン
 
@@ -576,14 +231,9 @@ public class DocumentListenerExample extends JFrame {
 
 以下のコードは、JavaのEventObjectを継承したカスタムイベントの実装例です。温度センサーの値が変化したときにイベントを発生させ、複数のリスナーに通知する仕組みを構築しています。このパターンを使用することで、モデル（センサー）とビュー（表示部分）を疎結合に保ち、メンテナンス性の高いアプリケーションを開発できます。
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜33、43〜55、58、64、94〜102、128〜129、156、163行目）</span>
 
 ```java
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import java.awt.*;
-
 // カスタムイベントクラス
 class TemperatureChangeEvent extends EventObject {
     private final double oldTemperature;
@@ -612,15 +262,7 @@ class TemperatureSensor {
     public void addTemperatureChangeListener(TemperatureChangeListener listener) {
         listeners.add(listener);
     }
-    
-    public void removeTemperatureChangeListener(TemperatureChangeListener listener) {
-        listeners.remove(listener);
-    }
-    
-    public double getTemperature() {
-        return temperature;
-    }
-    
+    // ...
     public void setTemperature(double newTemperature) {
         double oldTemperature = this.temperature;
         this.temperature = newTemperature;
@@ -634,44 +276,11 @@ class TemperatureSensor {
         }
     }
 }
-
-// メインアプリケーション
+// ...
 public class CustomEventExample extends JFrame {
-    private TemperatureSensor sensor;
-    private JLabel temperatureLabel;
-    private JSlider temperatureSlider;
-    private JTextArea logArea;
-    
+    // ...
     public CustomEventExample() {
-        setTitle("カスタムイベントの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        sensor = new TemperatureSensor();
-        
-        // 温度表示パネル
-        JPanel displayPanel = new JPanel();
-        temperatureLabel = new JLabel(String.format("%.1f°C", sensor.getTemperature()));
-        temperatureLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        displayPanel.add(temperatureLabel);
-        
-        // 温度調整スライダー
-        temperatureSlider = new JSlider(-20, 50, (int)sensor.getTemperature());
-        temperatureSlider.setMajorTickSpacing(10);
-        temperatureSlider.setMinorTickSpacing(5);
-        temperatureSlider.setPaintTicks(true);
-        temperatureSlider.setPaintLabels(true);
-        temperatureSlider.addChangeListener(e -> {
-            if (!temperatureSlider.getValueIsAdjusting()) {
-                sensor.setTemperature(temperatureSlider.getValue());
-            }
-        });
-        
-        // ログエリア
-        logArea = new JTextArea(10, 40);
-        logArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(logArea);
-        
+        // ...
         // 温度変化リスナーを登録
         sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
             @Override
@@ -681,66 +290,12 @@ public class CustomEventExample extends JFrame {
                 
                 // 表示を更新
                 temperatureLabel.setText(String.format("%.1f°C", newTemp));
-                
-                // 温度に応じて背景色を変更
-                if (newTemp < 0) {
-                    displayPanel.setBackground(Color.CYAN);
-                } else if (newTemp < 20) {
-                    displayPanel.setBackground(Color.GREEN);
-                } else if (newTemp < 30) {
-                    displayPanel.setBackground(Color.YELLOW);
-                } else {
-                    displayPanel.setBackground(Color.RED);
-                }
-                
-                // ログに記録
-                String change = newTemp > oldTemp ? "上昇" : "下降";
-                logArea.append(String.format("温度%s: %.1f°C → %.1f°C\n", 
-                    change, oldTemp, newTemp));
-                
-                // 警告表示
-                if (newTemp > 40) {
-                    JOptionPane.showMessageDialog(CustomEventExample.this,
-                        "警告: 高温です！", "温度警告", JOptionPane.WARNING_MESSAGE);
-                } else if (newTemp < -10) {
-                    JOptionPane.showMessageDialog(CustomEventExample.this,
-                        "警告: 低温です！", "温度警告", JOptionPane.WARNING_MESSAGE);
-                }
+                // ...
             }
         });
-        
-        // 別のリスナー（統計情報の記録）
-        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
-            private double maxTemp = sensor.getTemperature();
-            private double minTemp = sensor.getTemperature();
-            
-            @Override
-            public void temperatureChanged(TemperatureChangeEvent e) {
-                double temp = e.getNewTemperature();
-                if (temp > maxTemp) {
-                    maxTemp = temp;
-                    logArea.append(String.format("新しい最高温度: %.1f°C\n", maxTemp));
-                }
-                if (temp < minTemp) {
-                    minTemp = temp;
-                    logArea.append(String.format("新しい最低温度: %.1f°C\n", minTemp));
-                }
-            }
-        });
-        
-        add(displayPanel, BorderLayout.NORTH);
-        add(temperatureSlider, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
+        // ...
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new CustomEventExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -750,42 +305,19 @@ public class CustomEventExample extends JFrame {
 
 以下のコードは、JavaBeansのPropertyChangeSupportを使用した高度なイベント管理の実装例です。株価データの変更を自動的に複数のビューコンポーネントに通知し、リアルタイムで更新される株価モニターアプリケーションを実現しています。PropertyChangeSupportにより、プロパティごとに異なるリスナーを登録でき、より柔軟なイベント処理が可能になります。
 
-<span class="listing-number">**サンプルコード19-5**　JavaBeansEventExample.java</span>
+<span class="listing-number">**サンプルコード19-5**　JavaBeansEventExample.java（7〜11、18〜20、34〜42、64〜79、95〜100、151〜162、175行目）</span>
 
 ```java
-import java.beans.*;
-import javax.swing.*;
-import javax.swing.Timer;
-import java.awt.*;
-import java.util.*;
-
 // モデルクラス（PropertyChangeSupport を使用）
 class StockPrice {
     private String symbol;
     private double price;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    
-    public StockPrice(String symbol, double initialPrice) {
-        this.symbol = symbol;
-        this.price = initialPrice;
-    }
-    
+    // ...
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
-    
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
-    }
-    
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(propertyName, listener);
-    }
-    
-    public String getSymbol() { return symbol; }
-    
-    public double getPrice() { return price; }
-    
+    // ...
     public void setPrice(double newPrice) {
         double oldPrice = this.price;
         this.price = newPrice;
@@ -795,27 +327,7 @@ class StockPrice {
 
 // 株価表示コンポーネント
 class StockPricePanel extends JPanel implements PropertyChangeListener {
-    private JLabel symbolLabel;
-    private JLabel priceLabel;
-    private JLabel changeLabel;
-    private double previousPrice;
-    
-    public StockPricePanel(StockPrice stock) {
-        setLayout(new GridLayout(3, 1));
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        symbolLabel = new JLabel(stock.getSymbol(), JLabel.CENTER);
-        symbolLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        
-        priceLabel = new JLabel(String.format("$%.2f", stock.getPrice()), JLabel.CENTER);
-        priceLabel.setFont(new Font("Arial", Font.PLAIN, 24));
-        
-        changeLabel = new JLabel("0.00 (0.00%)", JLabel.CENTER);
-        
-        add(symbolLabel);
-        add(priceLabel);
-        add(changeLabel);
-        
+        // ...
         previousPrice = stock.getPrice();
         stock.addPropertyChangeListener("price", this);
     }
@@ -832,77 +344,14 @@ class StockPricePanel extends JPanel implements PropertyChangeListener {
             double changePercent = (change / oldPrice) * 100;
             
             changeLabel.setText(String.format("%+.2f (%+.2f%%)", change, changePercent));
-            
-            // 色の変更
-            if (change > 0) {
-                priceLabel.setForeground(Color.GREEN);
-                changeLabel.setForeground(Color.GREEN);
-                setBackground(new Color(200, 255, 200));
-            } else if (change < 0) {
-                priceLabel.setForeground(Color.RED);
-                changeLabel.setForeground(Color.RED);
-                setBackground(new Color(255, 200, 200));
-            } else {
-                priceLabel.setForeground(Color.BLACK);
-                changeLabel.setForeground(Color.BLACK);
-                setBackground(Color.WHITE);
-            }
+            // ...
         }
     }
 }
 
 // メインアプリケーション
 public class JavaBeansEventExample extends JFrame {
-    private Map<String, StockPrice> stocks = new HashMap<>();
-    private JPanel stocksPanel;
-    private Timer updateTimer;
-    
-    public JavaBeansEventExample() {
-        setTitle("JavaBeansイベントモデルの例（株価モニター）");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // 株価データの初期化
-        stocks.put("AAPL", new StockPrice("AAPL", 150.00));
-        stocks.put("GOOGL", new StockPrice("GOOGL", 2800.00));
-        stocks.put("MSFT", new StockPrice("MSFT", 300.00));
-        stocks.put("AMZN", new StockPrice("AMZN", 3300.00));
-        
-        // 株価表示パネル
-        stocksPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        stocksPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
-        for (StockPrice stock : stocks.values()) {
-            stocksPanel.add(new StockPricePanel(stock));
-        }
-        
-        // コントロールパネル
-        JPanel controlPanel = new JPanel();
-        JButton startButton = new JButton("更新開始");
-        JButton stopButton = new JButton("更新停止");
-        stopButton.setEnabled(false);
-        
-        startButton.addActionListener(e -> {
-            startPriceUpdates();
-            startButton.setEnabled(false);
-            stopButton.setEnabled(true);
-        });
-        
-        stopButton.addActionListener(e -> {
-            stopPriceUpdates();
-            startButton.setEnabled(true);
-            stopButton.setEnabled(false);
-        });
-        
-        controlPanel.add(startButton);
-        controlPanel.add(stopButton);
-        
-        add(stocksPanel, BorderLayout.CENTER);
-        add(controlPanel, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
-    }
-    
+    // ...
     private void startPriceUpdates() {
         updateTimer = new Timer(1000, e -> {
             Random random = new Random();
@@ -915,18 +364,7 @@ public class JavaBeansEventExample extends JFrame {
         });
         updateTimer.start();
     }
-    
-    private void stopPriceUpdates() {
-        if (updateTimer != null) {
-            updateTimer.stop();
-        }
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new JavaBeansEventExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -1122,57 +560,20 @@ public class DragAndDropExample extends JFrame {
 
 以下のコードは、マウス移動のような高頻度イベントを効率的に処理するための最適化技術を示しています。デバウンス（一定時間イベントが発生しなくなってから処理）とスロットル（一定間隔でのみ処理）の両方を実装し、パフォーマンスを改善しています。これらの技術は、リアルタイム検索や自動保存などの機能でも活用できます。
 
-<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java</span>
+<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（6、11、13〜15、45〜46、49〜61、63〜67、85〜101、121行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.concurrent.*;
-
 public class EventOptimizationExample extends JFrame {
-    private JPanel drawPanel;
-    private JLabel statusLabel;
-    private JTextArea logArea;
-    private Point currentMousePos;
+    // ...
     private Timer debounceTimer;
-    private ScheduledExecutorService throttleExecutor;
+    // ...
     private long lastThrottleTime = 0;
     private static final int DEBOUNCE_DELAY = 300; // ミリ秒
     private static final int THROTTLE_DELAY = 100; // ミリ秒
-    
-    public EventOptimizationExample() {
-        setTitle("イベント処理の最適化");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        // 描画パネル
-        drawPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (currentMousePos != null) {
-                    g.setColor(Color.RED);
-                    g.fillOval(currentMousePos.x - 5, currentMousePos.y - 5, 10, 10);
-                }
-            }
-        };
-        drawPanel.setBackground(Color.WHITE);
-        drawPanel.setPreferredSize(new Dimension(400, 300));
-        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        // ステータスラベル
-        statusLabel = new JLabel("マウスを動かしてください");
-        
-        // ログエリア
-        logArea = new JTextArea(8, 40);
-        logArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(logArea);
-        
+        // ...
         // 通常のマウス移動イベント（最適化なし）
         drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
-            private int eventCount = 0;
-            
+            // ...
             @Override
             public void mouseMoved(MouseEvent e) {
                 eventCount++;
@@ -1186,29 +587,13 @@ public class EventOptimizationExample extends JFrame {
                 throttleMouseMove(e.getPoint());
             }
         });
-        
+        // ...
         // デバウンスタイマーの初期化
         debounceTimer = new Timer(DEBOUNCE_DELAY, e -> {
             log("デバウンス: マウス移動が停止しました - " + currentMousePos);
         });
         debounceTimer.setRepeats(false);
-        
-        // スロットル用のExecutor
-        throttleExecutor = Executors.newSingleThreadScheduledExecutor();
-        
-        // コントロールパネル
-        JPanel controlPanel = new JPanel();
-        JButton clearButton = new JButton("ログクリア");
-        clearButton.addActionListener(e -> logArea.setText(""));
-        controlPanel.add(clearButton);
-        
-        add(drawPanel, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.EAST);
-        add(controlPanel, BorderLayout.SOUTH);
-        
-        pack();
-        setLocationRelativeTo(null);
+        // ...
     }
     
     // デバウンス: 最後のイベントから一定時間後に処理
@@ -1226,25 +611,7 @@ public class EventOptimizationExample extends JFrame {
             log("スロットル: 描画更新 - " + point);
         }
     }
-    
-    private void log(String message) {
-        SwingUtilities.invokeLater(() -> {
-            logArea.append(message + "\n");
-            logArea.setCaretPosition(logArea.getDocument().getLength());
-        });
-    }
-    
-    @Override
-    public void dispose() {
-        super.dispose();
-        throttleExecutor.shutdown();
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new EventOptimizationExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
@@ -1254,61 +621,11 @@ public class EventOptimizationExample extends JFrame {
 
 以下のコードは、SwingWorkerを使用してUIをフリーズさせることなく長時間の処理を実行する実装例です。進捗状況のリアルタイム更新、処理のキャンセル機能、EDT上での安全なUI更新など、実践的なアプリケーションで必要となる機能を網羅しています。大量データの処理、ネットワーク通信、ファイル操作などで活用できます。
 
-<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java</span>
+<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、53〜68、70〜127、145行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-
 public class SwingWorkerExample extends JFrame {
-    private JProgressBar progressBar;
-    private JTextArea resultArea;
-    private JButton startButton;
-    private JButton cancelButton;
-    private DataProcessingWorker currentWorker;
-    
-    public SwingWorkerExample() {
-        setTitle("SwingWorkerによる非同期処理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        
-        // プログレスバー
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        
-        // 結果表示エリア
-        resultArea = new JTextArea(15, 50);
-        resultArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(resultArea);
-        
-        // ボタンパネル
-        JPanel buttonPanel = new JPanel();
-        startButton = new JButton("処理開始");
-        cancelButton = new JButton("キャンセル");
-        cancelButton.setEnabled(false);
-        
-        startButton.addActionListener(e -> startProcessing());
-        cancelButton.addActionListener(e -> cancelProcessing());
-        
-        buttonPanel.add(startButton);
-        buttonPanel.add(cancelButton);
-        
-        // レイアウト
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(progressBar, BorderLayout.CENTER);
-        topPanel.add(buttonPanel, BorderLayout.EAST);
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
-        add(topPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        
-        pack();
-        setLocationRelativeTo(null);
-    }
-    
+    // ...
     private void startProcessing() {
         startButton.setEnabled(false);
         cancelButton.setEnabled(true);
@@ -1325,7 +642,7 @@ public class SwingWorkerExample extends JFrame {
             resultArea.append("処理がキャンセルされました。\n");
         }
     }
-    
+    // ...
     // SwingWorkerの実装
     class DataProcessingWorker extends SwingWorker<String, ProgressInfo> {
         private static final int TOTAL_ITEMS = 100;
@@ -1384,23 +701,7 @@ public class SwingWorkerExample extends JFrame {
             }
         }
     }
-    
-    // 進捗情報クラス
-    class ProgressInfo {
-        final int progress;
-        final String message;
-        
-        ProgressInfo(int progress, String message) {
-            this.progress = progress;
-            this.message = message;
-        }
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new SwingWorkerExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
