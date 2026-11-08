@@ -7,7 +7,7 @@ sections:
   - key: "詳細なイベント処理の実装"
     hash: 75565636
   - key: "カスタムイベントとObserverパターン"
-    hash: 1a101fce
+    hash: 0dd227e3
   - key: "ドラッグ&ドロップの実装"
     hash: d4d1efd8
   - key: "パフォーマンスの最適化"
@@ -49,24 +49,24 @@ sections:
     + マウスイベントの完全な処理: MouseAdapterでクリック回数・ボタン種別・押下/解放・出入り・ドラッグを処理し、ドラッグ中に線を描く。JPopupMenuとisPopupTriggerによる右クリックメニュー（19-1）
     + キーボードイベントの高度な処理: KeyListenerでCtrl+S・Ctrl+A・F1を検出し、HashSetで押下中のキーを追跡して同時押しを検出。InputMap/ActionMapによるキーバインディング（Ctrl+D、F5）を「より良いアプローチ」として併記（19-2）
     + DocumentListenerによるテキスト変更の監視: メール形式・パスワード長と強度・確認パスワード一致をリアルタイム検証し、送信ボタンの有効/無効を切り替える。GridBagLayoutとJPasswordField、getPasswordの後の配列クリア（19-3）
-- カスタムイベントとObserverパターン（L568–927）
+- カスタムイベントとObserverパターン（L568–929）
     + カスタムイベントの作成: EventObjectを継承したTemperatureChangeEvent、EventListenerを継承したリスナインターフェイス、リスナ一覧を持つセンサーモデル。JSliderで温度を変え、表示更新リスナと最高/最低記録リスナの2つに通知する（19-4）
     + JavaBeansイベントモデルの実装: PropertyChangeSupportとプロパティ名指定のリスナ登録で、株価モデルの変化を4つのパネルに通知する株価モニター。javax.swing.Timerで1秒ごとに価格を変動させる（19-5）
-- ドラッグ&ドロップの実装（L928–1108）
+- ドラッグ&ドロップの実装（L930–1110）
     + TransferHandlerによるJList間のアイテム移動（canImport/importData/createTransferable/exportDone）と、DropTarget＋DropTargetAdapterによる外部ファイルのドロップ受け付け（19-6）
     + JList・DefaultListModelは第20章で扱う部品で、ここで説明なしに先に使っている
-- パフォーマンスの最適化（L1109–1398）
+- パフォーマンスの最適化（L1111–1400）
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
     + SwingWorkerによる非同期処理: SwingWorker<String, ProgressInfo>でpublish/processによる進捗表示、cancel(true)とisCancelledによる中断、doneでのget（19-8）
-- よくあるエラーと対処法（L1399–1678）
+- よくあるエラーと対処法（L1401–1680）
     + SwingWorkerのdoInBackgroundから直接UIを更新する誤りと、publish/processへの修正（19-9、19-10）
     + DocumentListener内でテキストを変更する誤りと、フラグとinvokeLaterによる回避（19-11、19-12）
     + リスナを削除しないことによるメモリリークと、WeakReferenceによる保持（19-13、19-14）
     + acceptDropを呼ばずドロップが受け入れられない誤りと修正（19-15、19-16）
     + デバッグのヒント: RepaintManagerによるEDT違反検出（19-17）、イベント処理時間の計測（19-18）、WeakReferenceの生存数確認（19-19）
-- まとめ（L1679–1693）
+- まとめ（L1681–1695）
     + 6項目の箇条書きと「長時間処理とUI更新の分離、イベント処理の最適化が実務で重要」という1段落。次章への導入はない
-- 章末演習（L1694–1711）
+- 章末演習（L1696–1713）
     + 演習リンクは`exercises/chapter19/`で章番号は一致している
     + ただし課題構成に挙げた4課題のうち「高度なメニューシステム（Actionパターンと動的メニュー）」は本章で扱っていない。また`exercises/chapter19/README.md`は「第19章: GUI基礎とイベント処理」としてMVC・レイアウトマネージャーの課題を並べていて、本文の課題構成と一致しない（Issue #010の関連）
 
@@ -88,7 +88,6 @@ sections:
 - L354–366: 19-2の実行結果がコードと合わない。Ctrl+O・Ctrl+R・Shift+矢印キーの同時押し表示は実装がなく、内容クリアはコードではF5。Ctrl+Sはステータス表示ではなくダイアログ
 - L557–566: 19-3の実行結果のタイトル（「リアルタイムバリデーション」）、ボタン名（「登録」とコードの「送信」）、表示記号（「✗ 無効」とコードの「❌」）が合わない
 - L475ほか（19-3のコード内）: 文字列リテラルに絵文字「❌」「✓」を使っている。コードブロック内のため修正は要判断
-- 19-5（L752–755）: `import java.util.*;`と`import javax.swing.*;`の両方があり、`Timer`が曖昧になってコンパイルエラーになる。`javax.swing.Timer`を明示する必要がある
 - 19-6（L1079）: `new Date(...)`を使っているが`java.util.Date`をimportしておらず、コンパイルエラーになる
 - 19-7: `ScheduledExecutorService throttleExecutor`を生成・shutdownしているが、スロットル処理には使っていない（時刻比較だけで間引いている）。L1164のコメント「通常のマウス移動イベント（最適化なし）」も、実際にはデバウンスとスロットルを呼んでいて内容と合わない
 - 19-11の説明（L1485–1487）: DocumentListener内で同じDocumentを変更すると、実際には無限ループではなく`IllegalStateException: Attempt to mutate in notification`が発生する。原因の説明が不正確で、本来の対処法であるDocumentFilterにも触れていない
