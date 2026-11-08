@@ -284,8 +284,12 @@ PI = 3.14159
 ### getter/setterメソッドのベストプラクティス
 
 getter/setterメソッド（アクセサメソッドとも呼ばれます）は、カプセル化の実装で中心的な役割を果たします。
-フィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軍性を提供します。
+フィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軟性を提供します。
 以下の例では、プライベートフィールドへの安全なアクセスを提供する標準パターンを示します。
+
+不正な値を受け取ったときは、`throw new IllegalArgumentException("…")`で処理を中断し、呼び出し側の`try { … } catch (IllegalArgumentException e) { … }`でエラーメッセージを受け取ります。
+この例外のしくみは第13章「例外処理」で詳しく学びます。
+ここでは、「`throw`でエラーを知らせると、`catch`ブロックの処理に移る」という流れだけを押さえてください。
 
 <span class="listing-number">**サンプルコード4-6**</span>
 
@@ -475,7 +479,7 @@ public class BankAccountV2 {
     
     public BankAccountV2(String accountNumber, double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要です");
+            throw new IllegalArgumentException("初期残高は0以上にしてください");
         }
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
@@ -483,7 +487,7 @@ public class BankAccountV2 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要です");
+            throw new IllegalArgumentException("入金額は正の値にしてください");
         }
         balance += amount;
     }
@@ -543,7 +547,7 @@ public class BankAccountV2Test {
 5000円入金後: 15000.0
 3000円出金成功: 12000.0
 20000円出金失敗（残高不足）
-エラー: 入金額は正の値である必要です
+エラー: 入金額は正の値にしてください
 ```
 
 #### 改善点
@@ -557,6 +561,9 @@ public class BankAccountV2Test {
 - 口座番号の検証がない
 
 #### ステップ3: 完全なカプセル化（BankAccountV3）
+
+取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
+`List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
 <span class="listing-number">**サンプルコード4-10**</span>
 
@@ -574,7 +581,7 @@ public class BankAccountV3 {
             throw new IllegalArgumentException("口座番号は必須です");
         }
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要です");
+            throw new IllegalArgumentException("初期残高は0以上にしてください");
         }
         
         this.accountNumber = accountNumber;
@@ -585,7 +592,7 @@ public class BankAccountV3 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値である必要です");
+            throw new IllegalArgumentException("入金額は正の値にしてください");
         }
         balance += amount;
         transactionHistory.add("入金: " + amount + "円");
@@ -1210,6 +1217,9 @@ class EventManager {
 
 オーバーロードを使って、使いやすいAPIを設計できます。
 
+次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
+ここでは、HTTPのヘッダー名と値の組をまとめて渡すための引数と考えてください。
+
 <span class="listing-number">**サンプルコード4-24**</span>
 
 ```java
@@ -1449,7 +1459,7 @@ public class BankAccount {
     
     public BankAccount(double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上である必要です");
+            throw new IllegalArgumentException("初期残高は0以上にしてください");
         }
         this.balance = initialBalance;
     }
