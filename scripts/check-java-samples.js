@@ -14,6 +14,7 @@
  *
  * 判定:
  *   OK        単体でコンパイルできる
+ *   結合      単体では型が足りないが、同じ章の別のサンプルにある型を補うとコンパイルできる
  *   依存      同じ章の別のサンプルや外部ライブラリにある型が見つからないだけ
  *   意図      コンパイルできないが、コード中のコメントで誤りの例と示している（「コンパイルエラー」「NG」「❌」など）
  *   省略      メソッドの本体を省略している、または複数のファイル（package）を1つに並べている
@@ -158,13 +159,26 @@ function run(sample, r) {
   return { result: '不一致', detail: `${n + 1}行目: 原稿「${e[n] ?? '（なし）'}」／実行「${a[n] ?? '（なし）'}」`, expectedLine: exp.line };
 }
 
-function compile(sample, workDir) {
+/** トップレベルに宣言された型の名前 */
+const typesOf = (code) => [...code.matchAll(new RegExp(TYPE_DECL.source, 'gm'))].map((m) => m[2]);
+
+/** 見つからなかったクラス名（javacの「symbol: class Foo」） */
+const missingClasses = (stderr) => [...new Set([...(stderr || '').matchAll(/symbol:\s+class (\w+)/g)].map((m) => m[1]))];
+
+/**
+ * サンプルをコンパイルする。extras には、同時にコンパイルする同じ章の別のサンプルを渡す
+ */
+function compile(sample, workDir, extras = []) {
   const code = normalize(sample.code);
-  const decl = code.match(PUBLIC_DECL) || code.match(TYPE_DECL);
-  const name = decl[decl.length - 1];
   const dir = fs.mkdtempSync(path.join(workDir, 's'));
-  fs.writeFileSync(path.join(dir, `${name}.java`), code);
-  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', path.join(dir, 'out'), `${name}.java`], { cwd: dir, encoding: 'utf8' });
+  const files = [];
+  for (const c of [code, ...extras.map((e) => normalize(e.code))]) {
+    const decl = c.match(PUBLIC_DECL) || c.match(TYPE_DECL);
+    const file = `${decl[decl.length - 1]}.java`;
+    fs.writeFileSync(path.join(dir, file), c);
+    files.push(file);
+  }
+  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', path.join(dir, 'out'), ...files], { cwd: dir, encoding: 'utf8' });
   if (r.status === 0) return { status: 'OK', dir, main: mainClass(code) };
   const errors = (r.stderr || '').split('\n').filter((l) => / error: /.test(l));
   const real = errors.filter((l) => !MISSING.test(l));
@@ -176,7 +190,39 @@ function compile(sample, workDir) {
   const status = (!real.length || cascade) ? '依存'
     : (INTENDED.test(sample.code) || real.every((l) => DUPLICATE.test(l))) ? '意図'
     : elided ? '省略' : 'エラー';
-  return { status, count: errors.length, first };
+  return { status, count: errors.length, first, missing: missingClasses(r.stderr) };
+}
+
+/**
+ * 見つからない型を、同じ章の別のサンプル（直前に定義されたものを優先）から補ってコンパイルし直す。
+ * 補っても型が足りない、または別のエラーになる場合は null
+ */
+function compileWithProviders(sample, units, workDir, first) {
+  const own = new Set(typesOf(sample.code));
+  const extras = [];
+  const provided = new Set(own);
+  let r = first;
+  for (let round = 0; round < 4 && r.status === '依存' && r.missing.length; round++) {
+    let added = false;
+    for (const name of r.missing) {
+      if (provided.has(name)) continue;
+      const before = units.filter((u) => u.index < sample.index).reverse();
+      const after = units.filter((u) => u.index > sample.index);
+      const p = [...before, ...after].find((u) => {
+        const t = typesOf(u.code);
+        return t.includes(name) && t.every((x) => !provided.has(x));
+      });
+      if (!p) continue;
+      extras.push(p);
+      typesOf(p.code).forEach((x) => provided.add(x));
+      added = true;
+    }
+    if (!added) break;
+    r = compile(sample, workDir, extras);
+  }
+  if (r.status === 'OK') return { ...r, status: '結合', with: extras.map((e) => e.id) };
+  if (extras.length && r.status !== '依存') return { status: '依存', combinedError: r.first, with: extras.map((e) => e.id) };
+  return null;
 }
 
 function main() {
@@ -187,16 +233,25 @@ function main() {
     .filter((f) => !filters.length || filters.some((x) => f.includes(x)));
   const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'java-samples-'));
   const rows = [];
-  const totals = { OK: 0, 依存: 0, 意図: 0, 省略: 0, エラー: 0, 断片: 0 };
+  const totals = { OK: 0, 結合: 0, 依存: 0, 意図: 0, 省略: 0, エラー: 0, 断片: 0 };
+  const combinedErrors = [];
   const runMode = args.includes('--run');
   const runTotals = { 一致: 0, 数値差: 0, 不一致: 0, 実行不可: 0, 打切: 0 };
   const runRows = [];
   for (const f of files) {
-    for (const s of extract(path.join(MANUSCRIPTS, f))) {
+    const samples = extract(path.join(MANUSCRIPTS, f)).map((s, index) => ({ ...s, index }));
+    // 単体のコンパイル単位で、意図的な誤りの例ではないもの（ほかのサンプルに型を貸せるもの）
+    const units = samples.filter((s) => TYPE_DECL.test(s.code) && !isFragment(s.code) && !INTENDED.test(s.code));
+    for (const s of samples) {
       if (!TYPE_DECL.test(s.code) || isFragment(s.code)) { totals.断片++; continue; }
-      const r = compile(s, workDir);
+      let r = compile(s, workDir);
+      if (r.status === '依存') {
+        const c = compileWithProviders(s, units, workDir, r);
+        if (c && c.status === '結合') r = c;
+        else if (c) combinedErrors.push({ file: f, ...s, ...c });
+      }
       totals[r.status]++;
-      if (r.status !== 'OK') rows.push({ file: f, ...s, ...r });
+      if (!['OK', '結合'].includes(r.status)) rows.push({ file: f, ...s, ...r });
       else if (runMode) {
         const x = run(s, r);
         if (x) { runTotals[x.result]++; if (!['一致', '数値差'].includes(x.result)) runRows.push({ file: f, ...s, ...x }); }
@@ -205,11 +260,17 @@ function main() {
   }
   fs.rmSync(workDir, { recursive: true, force: true });
   const out = [];
-  out.push(`検査したサンプル: OK ${totals.OK}、依存 ${totals.依存}、意図 ${totals.意図}、省略 ${totals.省略}、エラー ${totals.エラー}（対象外の断片 ${totals.断片}）`, '');
+  out.push(`検査したサンプル: OK ${totals.OK}、結合 ${totals.結合}、依存 ${totals.依存}、意図 ${totals.意図}、省略 ${totals.省略}、エラー ${totals.エラー}（対象外の断片 ${totals.断片}）`, '');
   out.push('| 判定 | サンプル | 原稿の行 | 最初のエラー |', '|---|---|---|---|');
   const order = { エラー: 0, 省略: 1, 意図: 2, 依存: 3 };
   for (const r of rows.sort((a, b) => order[a.status] - order[b.status])) {
     out.push(`| ${r.status} | ${r.id} | ${r.file}:${r.line} | ${r.first.replace(/\|/g, '\\|').slice(0, 120)} |`);
+  }
+  if (combinedErrors.length) {
+    out.push('', '## ほかのサンプルと結合するとエラーになるもの', '');
+    out.push('見つからない型を同じ章のサンプルから補うと、別のエラーになるもの。補ったサンプルの版が違うだけのこともある。', '');
+    out.push('| サンプル | 補ったサンプル | 原稿の行 | 最初のエラー |', '|---|---|---|---|');
+    for (const r of combinedErrors) out.push(`| ${r.id} | ${r.with.join('、')} | ${r.file}:${r.line} | ${r.combinedError.replace(/\|/g, '\\|').slice(0, 120)} |`);
   }
   if (runMode) {
     out.push('', '## 実行結果の照合', '');
@@ -224,7 +285,7 @@ function main() {
       '# Javaサンプルコードのコンパイル検査',
       '',
       `javac ${spawnSync('javac', ['-version'], { encoding: 'utf8' }).stdout.trim().replace(/^javac /, '')}（\`--release 21\`）で、番号付きのJavaサンプルのうち単体のコンパイル単位になっているものを1つずつコンパイルした結果。`,
-      '「依存」は、同じ章の別のサンプルや外部ライブラリにある型が見つからないだけのもの。「意図」は、コード中のコメントで誤りの例と示しているもの。「省略」は、メソッドの本体を省略しているか、複数のファイルを1つに並べているもの。「エラー」は、それ以外のコンパイルエラーで、修正が必要な可能性が高い。',
+      '「結合」は、単体では型が足りないが、同じ章の別のサンプルにある型を補うとコンパイルできたもの。「依存」は、補っても型が見つからないもの（外部ライブラリなど）。「意図」は、コード中のコメントで誤りの例と示しているもの。「省略」は、メソッドの本体を省略しているか、複数のファイルを1つに並べているもの。「エラー」は、それ以外のコンパイルエラーで、修正が必要な可能性が高い。',
       '',
       '`--run` を付けると、コンパイルできたサンプルのうち直後に「実行結果：」があるものを実行し、出力（標準エラー出力を含む）と比べる。',
       '「（例）」「（GUI表示）」など括弧書きの付いた実行結果は比べない。「数値差」は時刻・処理時間・乱数など数字だけの違い（スタックトレースの省略、絶対パスの違いも含む）で、一覧には載せない。',
