@@ -406,7 +406,7 @@ Javaランタイム（javaコマンド）は、指定されたクラスのなか
 
 一文字でも違うと認識されません。
 
-長くて面倒に感じる場合もありますが、すべてのキーワードに意味があり、どれも省くことができません。<span class="footnote">Java 21以降では、学習目的のために簡略化されたmainメソッドの記述が可能になりました。`void main() { ... }`のようにstaticやpublic、引数を省略できます。ただし執筆時点で、実務では従来の形式が望ましく、標準として使われています。</span>
+長くて面倒に感じる場合もありますが、すべてのキーワードに意味があり、どれも省くことができません。<span class="footnote">学習目的のために、mainメソッドを簡略化して書ける機能があります。`void main() { ... }`のようにstaticやpublic、引数を省略できます。この機能はJava 21でプレビュー機能（試験的な機能）として導入され、Java 25で正式な機能になりました。本書で使うJava 21では通常の方法では使えないため、従来の形式で書きます。</span>
 
 
 
@@ -676,13 +676,17 @@ Error: Could not find or load main class HelloWorld
 ##### 原因と対処
 
 ```
-# エラー例：コンパイルせずに実行しようとした
-java HelloWorld.java  # 間違い
+# エラー例：コンパイルせずに実行しようとした（HelloWorld.classがない）
+java HelloWorld
 
 # 修正版：コンパイルしてから実行
 javac HelloWorld.java  # コンパイル
 java HelloWorld        # 実行（.classは不要）
 ```
+
+`java HelloWorld.class`のように拡張子を付けて実行した場合も、クラスが見つからないというエラーになります。
+なお、Java 11以降では、`java HelloWorld.java`のようにソースファイルを指定して、コンパイルせずに直接実行することもできます。
+ただし、この方法が使えるのは1つのファイルで完結するプログラムに限られるため、本書では`javac`でコンパイルしてから`java`で実行する手順を基本とします。
 
 #### NumberFormatExceptionと入力処理
 
