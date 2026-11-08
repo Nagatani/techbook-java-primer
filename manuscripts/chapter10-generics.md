@@ -449,8 +449,8 @@ public class VarLimitations {
         // OK: 明示的な配列作成
         var validArray = new int[]{1, 2, 3};
         
-        // NG: ダイヤモンド演算子単体
-        // var diamond = new ArrayList<>(); // コンパイルエラー
+        // 注意: ダイヤモンド演算子単体はコンパイルできるが、ArrayList<Object>と推論される
+        var diamond = new ArrayList<>(); // ArrayList<Object>
         
         // OK: 型が推論可能
         var inferredList = new ArrayList<String>();
@@ -579,6 +579,8 @@ var型推論を効果的に使用するためのガイドラインを、よい�
 
 ```java
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class VarBestPractices {
@@ -627,11 +629,12 @@ public class VarBestPractices {
         List<String> stringList = new ArrayList<>();  // 明示的
         var numberList = new ArrayList<Integer>();     // 推論、型は明確
         
-        // メソッド参照で型が明確な場合
-        var upperCaseConverter = String::toUpperCase;
+        // メソッド参照やラムダ式は、代入先の型がないと型を決められない
+        // var upperCaseConverter = String::toUpperCase;  // コンパイルエラー
+        Function<String, String> upperCaseConverter = String::toUpperCase;
         
-        // ラムダ式では文脈から型が明確
-        var predicate = (String s) -> s.length() > 3;
+        // var predicate = (String s) -> s.length() > 3;  // コンパイルエラー
+        Predicate<String> predicate = s -> s.length() > 3;
     }
     
     private static Object processData() { return new Object(); }
