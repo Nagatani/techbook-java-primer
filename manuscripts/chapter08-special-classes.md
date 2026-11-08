@@ -418,16 +418,20 @@ if (status == Status.ACTIVE) {
 
 #### switch文でenum名を含めてしまう
 
+Java 20以前では、列挙型のswitchの`case`に`Status.ACTIVE`のような型名付きの定数を書くとコンパイルエラーになりました。
+Java 21からは型名付きでも書けますが、switchの対象が列挙型であることは明らかなので、定数名だけを書くのが一般的です。
+古いバージョンのJavaで動かすコードでは、定数名だけを書く必要があります。
+
 <span class="listing-number">**サンプルコード8-12**</span>
 
 ```java
-// 間違い
+// Java 20以前ではコンパイルエラー（Java 21以降は書けるが冗長）
 switch (status) {
-    case Status.ACTIVE:  // コンパイルエラー
+    case Status.ACTIVE:
         break;
 }
 
-// 正しい
+// 一般的な書き方（どのバージョンでも使える）
 switch (status) {
     case ACTIVE:
         break;
@@ -707,6 +711,9 @@ null値
 
 メソッド内でのみ使用する小さなデータ構造として、ローカルRecordを定義できます。
 
+次のサンプルでは、第9章で学ぶ`List`と`Collections`、第11章・第12章で学ぶ`stream()`とメソッド参照（`Integer::intValue`）を使って平均・最大・最小を求めています。
+ここでは、計算した結果を1つのRecordにまとめて返している点に注目してください。
+
 <span class="listing-number">**サンプルコード8-21**</span>
 
 ```java
@@ -760,6 +767,9 @@ public record Employee(String name, String id, Company company) {
 ### Recordの実践的な使用例
 
 #### DTOパターン
+
+次のサンプルの`ApiResponse<T>`の`<T>`は、第10章「ジェネリクス」で学ぶ型パラメータです。
+`T`には、利用するときに`ApiResponse<String>`のように具体的な型が入ります。
 
 <span class="listing-number">**サンプルコード8-23**</span>
 
@@ -844,6 +854,8 @@ public class ShapeCalculator {
 ### データ指向プログラミング（DOP）
 
 データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです。
+
+次のサンプルの`order.items().stream()`以降は、第12章「Stream APIと高度なコレクション操作」で学ぶ書き方で、リストの全要素に対して計算や判定を行います。
 
 <span class="listing-number">**サンプルコード8-26**</span>
 
@@ -1139,6 +1151,9 @@ public class AnonymousClassExample {
 ```
 
 ### 実践的な使用例：イテレータパターン
+
+次のサンプルは、型パラメータ`<T>`（第10章）と`Iterable`・`Iterator`（第9章）を使って、拡張for文で走査できる独自のリストを作ります。
+内部クラスがイテレータとして外側のクラスの配列を直接参照している点が、ここでの要点です。
 
 <span class="listing-number">**サンプルコード8-33**</span>
 
