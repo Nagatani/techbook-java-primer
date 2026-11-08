@@ -1538,13 +1538,6 @@ p:has(span.listing-number) + pre {
   page-break-before: avoid;
 }
 
-/* 図番号とコードブロックを1つのユニットとして扱う */
-p:has(span.listing-number) + pre,
-p:has(span.listing-number) {
-  /* コンテナとして改ページ制御 */
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
 
 /* 印刷時の調整 */
 @media print {
@@ -2019,8 +2012,6 @@ section:has(h1:contains("目次")) {
 /* 印刷時のコードブロック調整 */
 @media print {
   pre {
-    page-break-inside: avoid;
-    break-inside: avoid;
     border: 1px solid #666;
     background-color: #f9f9f9 !important;
     overflow: visible !important;
