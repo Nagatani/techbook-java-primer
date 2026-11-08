@@ -18,18 +18,22 @@
  *   }
  *
  * 範囲と範囲のあいだには、本文では次の行が入る（"sep" で個別に指定もできる）。
- *   同じファイルで行が続かない場合    省略を示す「// ...」の行（字下げは次の範囲の1行目に合わせる）  sep: "elision"
+ *   同じファイルで行が続かない場合    省略を示す「// ...」の行（字下げは前後の行の深いほうに合わせる）  sep: "elision"
  *   別のファイルに移る場合            空行1行                                                       sep: "blank"
  *   何も入れない                                                                                    sep: "none"
  *
  * キャプションは listings.json から生成する。
- *   **サンプルコード5-3**　Shape.java（1〜12行目、30〜41行目）、ShapeDemo.java（3〜15行目）
+ *   **サンプルコード5-3**　Shape.java（1〜12、30〜41行目）、ShapeDemo.java（3〜15行目）
  *   ファイル全体を載せた場合は行番号を付けない。
  *
  * 使い方:
  *   node scripts/sample-code.js check [chapterXX]     本文と全文の一致、キャプション、コンパイル、実行結果を検査する
  *   node scripts/sample-code.js check --no-run        実行結果の照合を省く
- *   node scripts/sample-code.js sync [chapterXX]      listings.json から本文のキャプションと各章の README.md を作り直す
+ *   node scripts/sample-code.js sync [chapterXX]      listings.json から本文のキャプションとコードブロック、各章の README.md を作り直す
+ *                                                     （本文のコードは全文から生成するので、コードを直すときは全文を編集して sync する）
+ *   node scripts/sample-code.js show 5-3              全文を行番号付きで表示する
+ *   node scripts/sample-code.js set 5-3 Shape.java:1-12,30-41 ShapeDemo.java:3-15
+ *                                                     本文に載せる範囲を listings.json に書き、本文に反映する
  *   node scripts/sample-code.js extract [chapterXX]   本文のサンプルのうち、単体（または同じ章のサンプルと合わせて）
  *                                                     コンパイルできるもので、まだ listings.json にないものを全文として書き出す
  */
@@ -81,7 +85,12 @@ function renderExcerpt(dir, excerpt) {
       const prev = excerpt[i - 1];
       const sep = seg.sep || (prev.file !== seg.file ? 'blank' : prev.to + 1 === seg.from ? 'none' : 'elision');
       if (sep === 'blank') out.push('');
-      else if (sep === 'elision') out.push(part[0].match(/^\s*/)[0] + ELISION);
+      else if (sep === 'elision') {
+        // 字下げは、省いた箇所の前後の行のうち深いほうに合わせる
+        const before = out[out.length - 1].match(/^\s*/)[0];
+        const after = part[0].match(/^\s*/)[0];
+        out.push((before.length > after.length ? before : after) + ELISION);
+      }
     }
     out.push(...part);
   });
@@ -99,7 +108,7 @@ function captionOf(dir, excerpt) {
   return byFile.map(({ file, ranges }) => {
     const total = readLines(path.join(dir, file)).length;
     if (ranges.length === 1 && ranges[0].from === 1 && ranges[0].to === total) return file;
-    return `${file}（${ranges.map((r) => (r.from === r.to ? `${r.from}行目` : `${r.from}〜${r.to}行目`)).join('、')}）`;
+    return `${file}（${ranges.map((r) => (r.from === r.to ? `${r.from}` : `${r.from}〜${r.to}`)).join('、')}行目）`;
   }).join('、');
 }
 
@@ -237,14 +246,28 @@ function syncCommand(filters) {
     if (!Object.keys(manifest).length) continue;
     const file = path.join(L.MANUSCRIPTS, f);
     const text = fs.readFileSync(file, 'utf8');
-    const next = text.replace(/<span class="listing-number">\*\*サンプルコード(\d+-\d+)\*\*[^<]*<\/span>/g, (m, id) => {
-      const e = manifest[id];
-      return e ? captionLine(id, captionOf(path.join(chapterDir(ch), e.dir), e.excerpt)) : m;
-    });
+    const lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/^(\s*)<span class="listing-number">\*\*サンプルコード(\d+-\d+)\*\*[^<]*<\/span>/);
+      const e = m && manifest[m[2]];
+      if (!e) continue;
+      const dir = path.join(chapterDir(ch), e.dir);
+      lines[i] = m[1] + captionLine(m[2], captionOf(dir, e.excerpt));
+      // キャプションの直後（3行以内）のコードブロックを、全文の範囲で置き換える
+      let k = i + 1;
+      while (k < lines.length && k <= i + 3 && !/^\s*```java\s*$/.test(lines[k])) k++;
+      if (k > i + 3 || k >= lines.length) continue;
+      const indent = lines[k].match(/^\s*/)[0];
+      let end = k + 1;
+      while (end < lines.length && !/^\s*```\s*$/.test(lines[end])) end++;
+      const body = renderExcerpt(dir, e.excerpt).split('\n').map((l) => (l ? indent + l : l));
+      lines.splice(k + 1, end - k - 1, ...body);
+    }
+    const next = lines.join('\n');
     if (next !== text) { fs.writeFileSync(file, next); changed++; }
     writeReadme(ch, f, manifest);
   }
-  console.log(`キャプションを更新した原稿: ${changed}`);
+  console.log(`キャプションとコードを更新した原稿: ${changed}`);
 }
 
 function writeReadme(ch, manuscript, manifest) {
@@ -331,12 +354,58 @@ function checkCommand(filters, args) {
   if (problems.length) { console.log(`問題 ${problems.length}件:\n  ${problems.join('\n  ')}`); process.exitCode = 1; } else console.log('問題なし');
 }
 
+/** 全文を行番号付きで表示する（抜粋の範囲を決めるため） */
+function showCommand(ids) {
+  for (const id of ids) {
+    const ch = Number(id.split('-')[0]);
+    const e = loadManifest(ch)[id];
+    if (!e) { console.log(`${id}: listings.json にない`); continue; }
+    const dir = path.join(chapterDir(ch), e.dir);
+    console.log(`=== ${id} main=${e.main} excerpt=${e.excerpt.map((x) => `${x.file}:${x.from}-${x.to}${x.sep ? `(${x.sep})` : ''}`).join(' ')}`);
+    const own = [...new Set(e.excerpt.map((x) => x.file))];
+    for (const f of own) {
+      console.log(`--- ${f}`);
+      readLines(path.join(dir, f)).forEach((l, n) => console.log(`${String(n + 1).padStart(3)}| ${l}`));
+    }
+    const others = fs.readdirSync(dir).filter((x) => x.endsWith('.java') && !own.includes(x));
+    if (others.length) console.log(`（ほかのファイル: ${others.join(', ')}）`);
+  }
+}
+
+/**
+ * 本文に載せる範囲を指定して listings.json を更新し、本文に反映する
+ *   set 5-1 PaymentProcessor.java:3-4,17-42,84 ShapeDemo.java:5-9
+ */
+function setCommand([id, ...specs]) {
+  const ch = Number(id.split('-')[0]);
+  const manifest = loadManifest(ch);
+  const e = manifest[id];
+  if (!e) { console.error(`${id}: listings.json にない`); process.exit(1); }
+  const excerpt = [];
+  for (const spec of specs) {
+    const [file, ranges] = spec.split(':');
+    if (!fs.existsSync(path.join(chapterDir(ch), e.dir, file))) { console.error(`${file} がない`); process.exit(1); }
+    const total = readLines(path.join(chapterDir(ch), e.dir, file)).length;
+    for (const r of (ranges || `1-${total}`).split(',')) {
+      const [a, b] = r.split('-').map(Number);
+      excerpt.push({ file, from: a, to: b || a });
+    }
+  }
+  e.excerpt = excerpt;
+  saveManifest(ch, manifest);
+  const f = manuscriptFiles([`chapter${pad(ch)}`])[0];
+  syncCommand([f]);
+  console.log(`${id}: ${renderExcerpt(path.join(chapterDir(ch), e.dir), excerpt).split('\n').length}行`);
+}
+
 function main() {
   const [cmd, ...rest] = process.argv.slice(2);
   const filters = rest.filter((a) => !a.startsWith('--'));
   if (cmd === 'extract') extractCommand(filters);
   else if (cmd === 'sync') syncCommand(filters);
   else if (cmd === 'check') checkCommand(filters, rest);
+  else if (cmd === 'show') showCommand(filters);
+  else if (cmd === 'set') setCommand(filters);
   else { console.error('使い方: node scripts/sample-code.js check|sync|extract [chapterXX]'); process.exit(2); }
 }
 
