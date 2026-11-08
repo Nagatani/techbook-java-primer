@@ -145,23 +145,7 @@ public class CalculatorManualTest {
 
 実行結果：
 ```
-=== Calculator Manual Test 実行中 ===
-AAA パターンに従ったテストを実行します
-
-1. Arrange（準備）フェーズ:
-Calculator インスタンスを作成しました
-テストデータ: a=2, b=3
-期待する結果: 5
-
-2. Act（実行）フェーズ:
-calculator.add(2, 3) を実行中...
-実際の結果: 5
-
-3. Assert（検証）フェーズ:
 ✅ テスト成功！
-期待値(5) == 実際の値(5)
-
-=== テスト完了 ===
 ```
 
 この`Calculator`のように、他に依存しない自己完結したクラスは非常にテストしやすいです。
@@ -347,25 +331,7 @@ public class UserServiceManualTest {
 
 実行結果：
 ```
-=== UserService Manual Test 実行中 ===
-依存性注入とスタブを使ったテストを実行します
-
-1. Arrange（準備）フェーズ:
-UserRepositoryStub（テスト用偽物）を作成しました
-UserService にスタブを注入しました
-
-2. Act（実行）フェーズ:
-userService.getUserProfile("123") を実行中...
-UserRepositoryStub: テスト用固定値を返しています (ID: 123)
-実際の結果: "【Profile】Test User"
-
-3. Assert（検証）フェーズ:
-期待する結果: "【Profile】Test User"
 ✅ テスト成功！
-依存性注入により、データベースを使わずにテストが実行できました
-
-=== テスト完了 ===
-※ 実際のデータベースには接続していないため、高速かつ安全にテストを実行できました
 ```
 
 `UserService`のコードを一切変更することなく、その振る舞いをDBから切り離してテストできました。

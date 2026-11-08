@@ -96,13 +96,9 @@ Comparator<Student> scoreComparator = new Comparator<Student>() {
 Comparator<Student> scoreComparator = (s1, s2) -> Integer.compare(s2.getScore(), s1.getScore());
 ```
 
-実行結果（両方とも同じ結果）：
-```
-山田: 92点
-鈴木: 88点
-田中: 85点
-佐藤: 78点
-```
+サンプルコード12-1と12-2は、どちらも点数の降順に並べる同じ`Comparator`です。
+`students.sort(scoreComparator)`のように`List`の`sort`メソッドへ渡すと、点数の高い順に並びます。
+`Student`クラスの定義と、実際に並べ替える例は、次のサンプルコード12-3で示します。
 
 `compare`メソッドの実装だけを抜き出したような形になり、非常にシンプルになりました。`->`の左側がメソッドの引数、右側が処理本体です。
 
@@ -842,17 +838,21 @@ Optionalをメソッドの戻り値やチェイン操作で使用することで
 <span class="listing-number">**サンプルコード12-15**</span>
 
 ```java
-// シーケンシャル（直列）処理
+List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// シーケンシャル（直列）処理: 偶数の2乗の合計
 long sum = numbers.stream()
     .filter(n -> n % 2 == 0)
     .mapToLong(n -> n * n)
     .sum();
+System.out.println("シーケンシャル処理の結果: " + sum);
 
 // 並列処理
 long sumParallel = numbers.parallelStream()
     .filter(n -> n % 2 == 0)
     .mapToLong(n -> n * n)
     .sum();
+System.out.println("並列処理の結果: " + sumParallel);
 ```
 
 実行結果：
@@ -1392,13 +1392,16 @@ public class ComplexProcessingExample {
 実行結果：
 ```
 身長グループ別最高得点者:
-高身長: Bob
 標準身長: Grace
+高身長: Bob
 
 身長グループ別平均点:
-高身長: 86.2点
-標準身長: 86.5点
+標準身長: 89.3点
+高身長: 86.0点
 ```
+
+`groupingBy`が返す`Map`は`HashMap`なので、グループの表示順は保証されません。
+順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します。
 
 このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
 
@@ -1415,17 +1418,18 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 <span class="listing-number">**サンプルコード12-27**</span>
 
 ```java
-// ❌ 非効率的なStream操作のチェーン
-List<String> words = Arrays.asList("apple", "banana", "cherry");
+// ❌ 操作の順序を誤ったStream操作のチェーン
+List<String> words = Arrays.asList("apple", "banana", "avocado", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
     .map(String::toUpperCase)
-    .filter(word -> word.startsWith("A"))  // 既にUPPERCASEに変換済み
+    .filter(word -> word.startsWith("a"))  // すでに大文字に変換済み
     .forEach(System.out::println);
 ```
 
 ###### 問題点
-- `map(String::toUpperCase)`後に`filter(word -> word.startsWith("A"))`を使用しているが、大文字変換後なので条件が一致しない
+- `map(String::toUpperCase)`で大文字に変換したあとに、小文字の`"a"`で始まるかを調べているため、条件に一致する要素がなく、何も出力されない
+- コンパイルエラーにも実行時エラーにもならないため、誤りに気付きにくい
 
 ##### 対処法
 
@@ -1434,14 +1438,21 @@ words.stream()
 <span class="listing-number">**サンプルコード12-28**</span>
 
 ```java
-// ✅ 効率的なStream操作のチェーン
-List<String> words = Arrays.asList("apple", "banana", "cherry");
+// ✅ 絞り込みを先に行うStream操作のチェーン
+List<String> words = Arrays.asList("apple", "banana", "avocado", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
     .filter(word -> word.startsWith("a"))  // 大文字変換前にフィルタ
     .map(String::toUpperCase)
     .forEach(System.out::println);
 ```
+
+実行結果：
+```
+AVOCADO
+```
+
+絞り込み（`filter`）を変換（`map`）より先に行うと、条件が書きやすくなるうえ、変換する要素の数も減らせます。
 
 ### 終端操作の忘れ
 
@@ -1643,7 +1654,7 @@ List<String> contents = files.stream()
 
 ###### エラーメッセージ
 ```
-error: Unhandled exception type IOException
+error: unreported exception IOException; must be caught or declared to be thrown
 ```
 
 ##### 対処法

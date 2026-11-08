@@ -85,7 +85,10 @@ public class ThreadSafetyProblem {
     }
 }
 ```
-実行結果（実行毎に異なる）：
+
+表示される値は実行するたびに変わります。
+次は実行結果の一例です。
+
 ```
 X座標: 1328
 ```
@@ -404,16 +407,16 @@ public class ImmutableExample {
         System.out.println("元の趣味: " + person.getHobbies());
         System.out.println("新しい趣味: " + personWithNewHobby.getHobbies());
         
-        // マルチスレッド環境での安全な共有
+        // マルチスレッド環境での安全な共有（スレッドは第15章で詳しく学ぶ）
         Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 3; i++) {
                 // 不変オブジェクトはスレッドセーフ
                 System.out.println("T1: " + person.getName());
             }
         });
         
         Thread t2 = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 3; i++) {
                 System.out.println("T2: " + person.getAge());
             }
         });
@@ -423,13 +426,21 @@ public class ImmutableExample {
     }
 }
 ```
-実行結果：
+T1とT2の行の順序は、実行するたびに変わります。
+次は実行結果の一例です。
+
 ```
 [読書, 映画鑑賞]
 元の人: ImmutablePerson{name='田中太郎', age=25, hobbies=[読書, 映画鑑賞]}
 新しい人: ImmutablePerson{name='田中太郎', age=26, hobbies=[読書, 映画鑑賞]}
 元の趣味: [読書, 映画鑑賞]
 新しい趣味: [読書, 映画鑑賞, プログラミング]
+T1: 田中太郎
+T1: 田中太郎
+T2: 25
+T1: 田中太郎
+T2: 25
+T2: 25
 ```
 
 #### 不変オブジェクトの重要な特性
@@ -586,6 +597,7 @@ public final class Book {
     // getterメソッド（省略）
     public String getIsbn() { return isbn; }
     public String getTitle() { return title; }
+    public String getAuthor() { return author; }
     // ... 他のgetterメソッド
 }
 ```
@@ -624,6 +636,11 @@ public class BuilderExample {
             .pages(450)
             .genre("ソフトウェア工学")
             .build();
+
+        System.out.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
+        System.out.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
+        System.out.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
+        System.out.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
     }
 }
 ```
@@ -666,7 +683,7 @@ public class FinalErrorExample {
 
 ##### エラーメッセージ
 ```
-Error: Cannot assign a value to final variable number
+error: cannot assign a value to final variable number
 ```
 
 ##### 対処法
@@ -708,7 +725,7 @@ public class UninitializedFinalExample {
 
 ##### エラーメッセージ
 ```
-Error: Variable name might not have been initialized
+error: variable name might not have been initialized
 ```
 
 ##### 対処法
@@ -763,7 +780,7 @@ List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
 BrokenImmutablePerson person = new BrokenImmutablePerson("太郎", hobbies);
 
 // 不変性が破られる
-person.getHobbies().add("ゲーム"); // RuntimeException
+person.getHobbies().add("ゲーム"); // UnsupportedOperationException（Arrays.asListは要素の追加ができない）
 hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
 ```
 
