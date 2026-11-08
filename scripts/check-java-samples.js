@@ -139,7 +139,8 @@ function run(sample, r) {
   const p = spawnSync('sh', ['-c', 'exec java -Djava.awt.headless=true -Duser.language=ja -Duser.country=JP -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -cp "$1" "$0" 2>&1', r.main, r.cp || 'out'],
     { cwd: r.dir, encoding: 'utf8', input: '', timeout: 20000 });
   if (p.error || p.signal) return { result: '打切', detail: '20秒以内に終わらない' };
-  const actual = norm(p.stdout || '');
+  // JDKやライブラリが標準エラーに出す警告（WARNING: ...）は実行環境によって変わるので比べない
+  const actual = norm((p.stdout || '').split('\n').filter((l) => !/^WARNING: /.test(l)).join('\n'));
   const expected = norm(exp.text);
   if (actual === expected) return { result: '一致' };
   // 時刻・処理時間・乱数など、数字だけが違う

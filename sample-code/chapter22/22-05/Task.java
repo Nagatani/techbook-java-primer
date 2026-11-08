@@ -1,8 +1,8 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
 
@@ -13,16 +13,16 @@ public class Task {
     
     private boolean completed;
     
-    @Expose(serialize = false)  // シリアライズ時に除外
-    private String internalId;
+    private transient String internalId;  // transientを付けたフィールドはJSONに含めない
     
-    private LocalDateTime createdAt;
+    private String createdAt;
     private List<String> tags;
     
     public Task(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.tags = Arrays.asList("work", "important");
     }
     

@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Arrays;
@@ -11,8 +10,6 @@ public class GsonAdvancedExample {
         // 1. カスタマイズされたGsonインスタンスの作成
         Gson gson = new GsonBuilder()
             .setPrettyPrinting()  // 整形された出力
-            .setDateFormat("yyyy-MM-dd HH:mm:ss")  // 日付フォーマット
-            .excludeFieldsWithoutExposeAnnotation()  // @Exposeのないフィールドを除外
             .create();
         
         // 2. オブジェクトのシリアライズ

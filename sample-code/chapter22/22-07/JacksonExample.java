@@ -32,6 +32,7 @@ public class JacksonExample {
         // ゲッター省略
         public String getName() { return name; }
         public double getPrice() { return price; }
+        public Map<String, String> getAttributes() { return attributes; }
     }
     
     public static void main(String[] args) throws Exception {

@@ -22,7 +22,7 @@ javac -d out *.java
 | [22-9](./22-09/) | CommonsLangExample.java | `java -cp out CommonsLangExample`<br>外部ライブラリ: org.apache.commons:commons-lang3:3.12.0 |
 | [22-11](./22-11/) | CommonsIOExample.java | `java -cp out CommonsIOExample`<br>外部ライブラリ: commons-io:commons-io:2.11.0 |
 | [22-13](./22-13/) | OkHttpExample.java | `java -cp out OkHttpExample`<br>外部ライブラリ: com.squareup.okhttp3:okhttp:4.11.0, com.squareup.okio:okio-jvm:3.2.0, org.jetbrains.kotlin:kotlin-stdlib:1.8.21 |
-| [22-18](./22-18/) | GuavaExample.java | `java -cp out GuavaExample`<br>外部ライブラリ: com.google.guava:guava:32.1.1-jre |
+| [22-18](./22-18/) | GuavaExample.java | `java -cp out GuavaExample`<br>外部ライブラリ: com.google.guava:guava:32.1.1-jre, com.google.guava:failureaccess:1.0.1 |
 | [22-25](./22-25/) | UserService.java | （mainメソッドなし） |
 | [22-29](./22-29/) | UserService.java | （mainメソッドなし） |
 | [22-30](./22-30/) | UserService.java | （mainメソッドなし） |

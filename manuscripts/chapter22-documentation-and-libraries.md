@@ -265,12 +265,9 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 `pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
-以下の例では、Gsonの高度な機能を示します。
-@SerializedNameアノテーションによるJSONフィールド名のカスタマイズ、
-@Exposeによるシリアライズ対象の制御、GsonBuilderを使った詳細な設定など、
-実務でよく使われるパターンを網羅しています。
+次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-5**　Task.java（9〜20、32行目）、GsonAdvancedExample.java（9〜21、33〜46行目）</span>
+<span class="listing-number">**サンプルコード22-5**　Task.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
 // Gsonの高度な使用例
@@ -280,10 +277,9 @@ public class Task {
     
     private boolean completed;
     
-    @Expose(serialize = false)  // シリアライズ時に除外
-    private String internalId;
+    private transient String internalId;  // transientを付けたフィールドはJSONに含めない
     
-    private LocalDateTime createdAt;
+    private String createdAt;
     private List<String> tags;
     // ...
 }
@@ -293,8 +289,6 @@ public class GsonAdvancedExample {
         // 1. カスタマイズされたGsonインスタンスの作成
         Gson gson = new GsonBuilder()
             .setPrettyPrinting()  // 整形された出力
-            .setDateFormat("yyyy-MM-dd HH:mm:ss")  // 日付フォーマット
-            .excludeFieldsWithoutExposeAnnotation()  // @Exposeのないフィールドを除外
             .create();
         
         // 2. オブジェクトのシリアライズ
@@ -320,55 +314,49 @@ public class GsonAdvancedExample {
 
 実行結果：
 ```
-=== Gson ライブラリ使用例（デモンストレーション） ===
-
-1. タスクオブジェクトの作成:
-Task created: 買い物 (completed: false)
-
-2. JSON形式への変換（Gson使用時のイメージ）:
 Pretty JSON:
 {
   "task_title": "買い物",
   "completed": false,
-  "createdAt": "2025-08-01 22:36:25",
-  "tags": [work, important]
+  "createdAt": "2026-11-08 19:58:50",
+  "tags": [
+    "work",
+    "important"
+  ]
 }
 
-3. 複数タスクのコレクション処理:
-Tasks JSON (配列形式):
+Tasks JSON:
 [
   {
     "task_title": "買い物",
     "completed": false,
-    "createdAt": "2025-08-01 22:36:25",
-    "tags": [work, important]
+    "createdAt": "2026-11-08 19:58:50",
+    "tags": [
+      "work",
+      "important"
+    ]
   },
   {
     "task_title": "勉強",
     "completed": true,
-    "createdAt": "2025-08-01 22:36:25",
-    "tags": [work, important]
+    "createdAt": "2026-11-08 19:58:50",
+    "tags": [
+      "work",
+      "important"
+    ]
   },
   {
     "task_title": "運動",
     "completed": false,
-    "createdAt": "2025-08-01 22:36:25",
-    "tags": [work, important]
+    "createdAt": "2026-11-08 19:58:50",
+    "tags": [
+      "work",
+      "important"
+    ]
   }
 ]
 
-4. Gsonの主な特徴:
-- @SerializedNameアノテーションでJSONフィールド名をカスタマイズ
-- @Exposeアノテーションでシリアライズ対象を制御  
-- GsonBuilderでフォーマットや設定をカスタマイズ
-- PrettyPrintingで読みやすいJSON出力
-
-※ 実際の使用には pom.xml に Gson の依存関係を追加する必要があります:
-<dependency>
-  <groupId>com.google.code.gson</groupId>
-  <artifactId>gson</artifactId>
-  <version>2.10.1</version>
-</dependency>
+Loaded Task: プログラミング
 ```
 
 ### Jackson - 高性能JSONライブラリ
@@ -393,7 +381,7 @@ Jacksonはエンタープライズアプリケーションで広く使われて�
 以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
 TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-7**　JacksonExample.java（7〜21、35、37〜49、63〜64、79〜80行目）</span>
+<span class="listing-number">**サンプルコード22-7**　JacksonExample.java（7〜21、36、38〜50、64〜65、80〜81行目）</span>
 
 ```java
 public class JacksonExample {
@@ -437,71 +425,19 @@ public class JacksonExample {
 
 実行結果：
 ```
-=== Jackson ライブラリ使用例（デモンストレーション） ===
+JSON: {"name":"ノートPC","price":98000.0,"attributes":{},"product_id":1}
 
-1. オブジェクトからJSONへの変換:
-JSON: {
-  "product_id": 1,
-  "name": "ノートPC",
-  "price": 98000.0,
-  "attributes": {}
-}
-
-2. 整形されたJSON出力:
 Pretty JSON:
 {
-  "product_id": 1,
-  "name": "ノートPC",
-  "price": 98000.0,
-  "attributes": {}
+  "name" : "ノートPC",
+  "price" : 98000.0,
+  "attributes" : { },
+  "product_id" : 1
 }
 
-3. JSONからオブジェクトへの変換例:
-入力JSON:
-{
-    "product_id": 2,
-    "name": "マウス",
-    "price": 2980.0,
-    "attributes": {
-        "color": "black",
-        "wireless": "true"
-    }
-}
-
-Loaded: マウス (価格: 2980.0円)
-
-4. コレクションの処理:
-Products JSON (配列形式):
-[
-  {
-    "product_id": 1,
-    "name": "キーボード",
-    "price": 5980.0,
-    "attributes": {}
-  },
-  {
-    "product_id": 2,
-    "name": "モニター",
-    "price": 25800.0,
-    "attributes": {}
-  }
-]
+Loaded: マウス
 
 Loaded products count: 2
-
-5. Jacksonの主な特徴:
-- @JsonPropertyアノテーションでフィールド名をカスタマイズ
-- @JsonIgnoreで特定フィールドをシリアライズから除外
-- TypeReferenceでジェネリック型のデシリアライズに対応
-- ストリーミングAPIでメモリ効率的な処理
-- 高性能でエンタープライズアプリケーションに最適
-
-※ 実際の使用には pom.xml に Jackson の依存関係を追加する必要があります:
-<dependency>
-  <groupId>com.fasterxml.jackson.core</groupId>
-  <artifactId>jackson-databind</artifactId>
-  <version>2.15.2</version>
-</dependency>
 ```
 
 ### Apache Commons - ユーティリティライブラリ集
@@ -560,11 +496,8 @@ public class CommonsLangExample {
 }
 ```
 
-実行結果：
+次は実行結果の一例です。ランダムな文字列と日時は実行するたびに変わります。
 ```
-=== Apache Commons Lang ライブラリ使用例（デモンストレーション） ===
-
-1. StringUtils - 文字列操作:
 Original: '  Hello World  '
 Trimmed: 'Hello World'
 Is blank?: true
@@ -572,38 +505,18 @@ Reverse: olleH
 Capitalize: Java
 Default: デフォルト値
 
-2. ArrayUtils - 配列操作:
 Array contains 3?: true
-Reversed: [5, 4, 3, 2, 1]
+Reversed: {5,4,3,2,1}
 
-3. RandomStringUtils - ランダム文字列生成:
-Random alphabetic: cgrqhjgdgh
-Random numeric: 342619
-Random alphanumeric: 9p9euu07
+Random alphabetic: KJqMGBribR
+Random numeric: 654594
+Random alphanumeric: qUPX37y9
 
-4. DateFormatUtils - 日付フォーマット:
 Date formats:
-ISO-like: 2025-08-01T22:38:24
-Custom: 2025年08月01日 22:38:24
+ISO: 2026-11-08T19:58:50
+Custom: 2026年11月08日 19:58:50
 
-5. Builder utilities:
-Person: Person[name=田中太郎,age=30]
-Equals: true
-HashCode same?: true
-
-6. Apache Commons Langの主な特徴:
-- StringUtilsでnull安全な文字列操作
-- ArrayUtilsで配列操作の簡略化
-- RandomStringUtilsでランダム文字列生成
-- DateFormatUtilsで日付フォーマット
-- Builder系でequals/hashCode/toStringの自動生成
-
-※ 実際の使用には pom.xml に Commons Lang の依存関係を追加する必要があります:
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-lang3</artifactId>
-  <version>3.12.0</version>
-</dependency>
+Person: CommonsLangExample$Person@b97c004[age=30,name=田中太郎]
 ```
 
 #### Commons I/Oの例
@@ -660,49 +573,19 @@ public class CommonsIOExample {
 
 実行結果：
 ```
-=== Apache Commons I/O ライブラリ使用例（デモンストレーション） ===
-
-1. FileUtils - ファイル操作の簡略化:
-ファイルに書き込み完了: example.txt
-ファイルに追記完了
 File content:
 Hello, Commons IO!
 追加のテキスト
 
 Lines count: 2
+Current directory size: 6 KB
 
-2. ファイルのコピー:
-ファイルコピー完了: example_copy.txt
-
-3. ディレクトリ操作:
-ディレクトリ作成完了: temp_dir
-Sample files size: 82 bytes
-
-4. FilenameUtils - パス操作:
 File path analysis:
 Base name: report
 Extension: pdf
 Full path: /home/user/documents/
 
-5. IOUtils - ストリーム操作:
 Stream copy result: Stream processing example
-
-6. Apache Commons I/Oの主な特徴:
-- FileUtilsでファイル操作を1行で実現
-- 文字エンコーディングの安全な処理
-- ディレクトリ操作の簡略化
-- FilenameUtilsでパス操作
-- IOUtilsでストリーム処理の簡略化
-
-7. クリーンアップ:
-テスト用ファイル・ディレクトリを削除しました
-
-※ 実際の使用には pom.xml に Commons I/O の依存関係を追加する必要があります:
-<dependency>
-  <groupId>commons-io</groupId>
-  <artifactId>commons-io</artifactId>
-  <version>2.11.0</version>
-</dependency>
 ```
 
 ### OkHttp - モダンなHTTPクライアント
@@ -778,60 +661,20 @@ public class OkHttpExample {
 }
 ```
 
-実行結果：
+次は実行結果の一例です。インターネットに接続できる環境で実行してください。レスポンスの本文は長いため一部を省略しています。
 ```
-=== OkHttp ライブラリ使用例（デモンストレーション） ===
-
-1. GETリクエスト:
-Executing GET request to: https://api.github.com/users/github
 GET Response:
 Status: 200
-Body: {
-  "login": "github",
-  "id": 9919,
-  "type": "Organization"
-}
-
-2. POSTリクエスト（JSONデータ送信）:
-Executing POST request to: https://httpbin.org/post
-JSON Data: {
-    "name": "Test User",
-    "email": "test@example.com"
-}
+Body: {"login":"github","id":9919,"type":"Organization", ...（以下省略）
 
 POST Response:
 Status: 200
 Body: {
-  "json": {
-    "name": "Test User",
-    "email": "test@example.com"
-}
-,
-  "origin": "127.0.0.1"
-}
+  "args": {},
+  ...（以下省略）
 
-3. 非同期リクエスト:
 Async Response received!
-Thread: ForkJoinPool.commonPool-worker-1
-Status: 200
-Body: {
-  "async": true,
-  "status": "completed"
-}
-
-4. OkHttpの主な特徴:
-- コネクションプーリングで効率的な接続管理
-- HTTP/2サポートによる高速通信
-- 自動リトライとフェイルオーバー
-- レスポンスキャッシュ機能
-- 同期・非同期両方のAPIを提供
-
-※ 実際の使用には pom.xml に OkHttp の依存関係を追加する必要があります:
-<dependency>
-  <groupId>com.squareup.okhttp3</groupId>
-  <artifactId>okhttp</artifactId>
-  <version>4.11.0</version>
-</dependency>
+Thread: OkHttp https://httpbin.org/...
 ```
 
 ### Lombok - ボイラープレートコードの削減
@@ -1066,54 +909,29 @@ public class GuavaExample {
 
 実行結果：
 ```
-=== Guava ライブラリ使用例（デモンストレーション） ===
-
-1. 不変コレクション:
 Immutable list: [A, B, C]
-Immutable map: {two=2, three=3, one=1}
+Immutable map: {one=1, two=2, three=3}
 
-2. Multimap - 1つのキーに複数の値:
 Multimap:
 Fruits: [apple, banana, orange]
 
-3. BiMap - 双方向マップ:
 BiMap:
 Key for 2: two
 
-4. Table - 2次元のマップ:
 Table:
 Tokyo 2024: 14100000
-All Tokyo data: {2024=14100000, 2023=14000000}
+All Tokyo data: {2023=14000000, 2024=14100000}
 
-5. 文字列処理:
 Split result: [hello, world, java]
 Joined: A | B | C
 
-6. キャッシュ:
 Cache:
-Loading data for key: key1
 First call: Value for key1
 Second call (cached): Value for key1
 
-7. Optional（Java 8より前から利用可能）:
 Optional:
 Is present: true
 Value: Hello
-
-8. Guavaの主な特徴:
-- 不変コレクション（ImmutableList, ImmutableMap, ImmutableSet）
-- 高度なコレクション（Multimap, BiMap, Table）
-- 文字列処理ユーティリティ（Splitter, Joiner）
-- 高性能なキャッシュ機能
-- Optional型（Java 8以前でも利用可能）
-- 関数型プログラミングサポート
-
-※ 実際の使用には pom.xml に Guava の依存関係を追加する必要があります:
-<dependency>
-  <groupId>com.google.guava</groupId>
-  <artifactId>guava</artifactId>
-  <version>32.1.1-jre</version>
-</dependency>
 ```
 
 ### 外部ライブラリ選定の指針
