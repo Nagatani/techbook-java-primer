@@ -104,12 +104,17 @@ The build process converts Markdown files listed in the `entry` array (currently
 
 1. Check `TODO.md` before starting any task to understand current priorities
 2. **MANDATORY**: Read `docs/writing-guidelines-textlint-compliance.md` before writing or editing any manuscript content
-3. Write or edit manuscript files in `manuscripts/*.md`
-4. Sample code extracted from the book is maintained in `sample-code/` directory
-5. Run `npm run lint` to check for writing style issues
-6. Run `npm run lint:fix` to automatically format manuscript files
-7. Run `npm run build` to ensure the book builds successfully
-8. Update `TODO.md` after completing tasks
+3. Use the book index and summaries to avoid loading whole chapters (see `docs/summaries/README.md`)
+   - 全体を見渡す作業: `docs/summaries/overview.md` → 各章の要約 → 必要な節だけ本文を読む
+   - 章の修正: `docs/summaries/chapterXX.md` で節構成をつかみ、`docs/book-index/` の行範囲で節ごとに読む
+   - 章をまたぐ校閲: 章ごとにサブエージェントへ任せ、指摘事項だけを受け取る
+4. Write or edit manuscript files in `manuscripts/*.md`
+5. Sample code extracted from the book is maintained in `sample-code/` directory
+6. Run `npm run lint` to check for writing style issues
+7. Run `npm run lint:fix` to automatically format manuscript files
+8. Run `npm run build` to ensure the book builds successfully
+9. Run `npm run index` and `npm run index:check`; update stale summaries (rewrite the section summary and its hash)
+10. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules
 

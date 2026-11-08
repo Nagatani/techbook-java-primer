@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const crypto = require('crypto');
 const glob = require('glob');
 
 // 設定
@@ -19,29 +20,58 @@ if (!fs.existsSync(MANUSCRIPTS_BACKUP_DIR)) {
   fs.mkdirSync(MANUSCRIPTS_BACKUP_DIR, { recursive: true });
 }
 
+// 変換オプション
+// 注意: mermaid-cli v12は -w/-H を廃止し、レイアウトも縦長に変わるためv11に固定している
+const MMDC_OPTIONS = '-t default -b white -w 1200 -H 800 --scale 2';
+
+// 変換済みの図の記録（.mmdの内容と変換オプションのハッシュ）
+// mmdcの出力はビルドのたびにわずかに変わるため、元の図が変わったときだけ変換する
+// すべて変換し直すときは --force を付ける
+const HASH_FILE = path.join(DIAGRAMS_DIR, '.converted-hashes.json');
+const force = process.argv.includes('--force');
+let convertedHashes = {};
+try {
+  convertedHashes = JSON.parse(fs.readFileSync(HASH_FILE, 'utf8'));
+} catch (e) {
+  convertedHashes = {};
+}
+const sourceHash = (text) => crypto.createHash('sha256').update(`${MMDC_OPTIONS}\n${text}`).digest('hex').slice(0, 16);
+
 console.log('Mermaid図の変換を開始します...');
 
 // 1. docs/diagrams/*.mmdファイルをPNG画像に変換
 const mermaidFiles = glob.sync(path.join(DIAGRAMS_DIR, '*.mmd'));
+let converted = 0;
+let skipped = 0;
 
 mermaidFiles.forEach(mmdFile => {
   const basename = path.basename(mmdFile, '.mmd');
   const outputFile = path.join(IMAGES_DIR, `${basename}.png`);
-  
+  const hash = sourceHash(fs.readFileSync(mmdFile, 'utf8'));
+
+  if (!force && convertedHashes[basename] === hash && fs.existsSync(outputFile)) {
+    skipped++;
+    return;
+  }
+
   try {
     console.log(`変換中: ${basename}.mmd -> ${basename}.png`);
-    
+
     // mermaid-cliを使用してPNGに変換（高解像度・大きめのサイズ）
-    // 注意: mermaid-cli v12は -w/-H を廃止し、レイアウトも縦長に変わるためv11に固定している
-    execSync(`npx mmdc -i "${mmdFile}" -o "${outputFile}" -t default -b white -w 1200 -H 800 --scale 2`, {
+    execSync(`npx mmdc -i "${mmdFile}" -o "${outputFile}" ${MMDC_OPTIONS}`, {
       stdio: 'inherit'
     });
-    
+
+    convertedHashes[basename] = hash;
+    converted++;
     console.log(`✓ 完了: ${basename}.png`);
   } catch (error) {
     console.error(`✗ エラー: ${basename}.mmd の変換に失敗しました`, error.message);
   }
 });
+
+fs.writeFileSync(HASH_FILE, JSON.stringify(convertedHashes, Object.keys(convertedHashes).sort(), 2) + '\n');
+console.log(`図の変換: ${converted}件を変換、${skipped}件は変更なしのため省略`);
 
 // 2. manuscripts/*.mdファイル内のMermaidブロックを画像参照に置換
 const markdownFiles = glob.sync(path.join(MANUSCRIPTS_DIR, '*.md'));
@@ -103,7 +133,7 @@ markdownFiles.forEach(mdFile => {
     // 画像に変換
     const outputImagePath = path.join(IMAGES_DIR, imageFileName);
     try {
-      execSync(`npx mmdc -i "${tempMmdFile}" -o "${outputImagePath}" -t default -b white -w 1200 -H 800 --scale 2`, {
+      execSync(`npx mmdc -i "${tempMmdFile}" -o "${outputImagePath}" ${MMDC_OPTIONS}`, {
         stdio: 'pipe'
       });
       

@@ -29,12 +29,10 @@
 第2章まででは、C言語などの手続き型プログラミングでの開発とそれほど違いがありませんでした。
 この章からは、新しい視点としてのオブジェクト指向を学びます。
 
-
-
 ## 章の構成
 
 本章では、オブジェクト指向プログラミングの基本的な考え方と実装方法を学習します。
-プログラミングパラダイムの歴史的な発展を理解したうえで、以下の内容を順に学びます。
+具体的には、以下の内容を順に学びます。
 
 1. オブジェクト指向の背景
     - ソフトウェア開発の課題と解決アプローチ
@@ -106,11 +104,9 @@ int main() {
 #### 3. 仕様変更時の影響範囲が大きい
 構造体のメンバーを変更すると、その構造体を使用しているすべての関数を修正します。たとえば、`name`を`first_name`と`last_name`に分割する場合、影響は広範囲に及びます。
 
-
 ### より実践的な例：銀行口座システム
 
 構造体と関数を分離することにより発生する問題は、プロジェクトが大きくなるほど深刻になります。
-
 
 ```c
 // C言語での実装の問題点
@@ -156,7 +152,6 @@ void withdraw_money(struct BankAccount* acc, double amount) {
 この章では、C言語での開発経験を活かしながら、オブジェクト指向がどのようにこれらの課題を解決するかを実践的に学びます。
 
 > 補足: プログラミングパラダイムの歴史的発展について詳しく知りたい人は、GitHubリポジトリの付録資料（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）を参照してください。そこでは、ソフトウェアクライシスからオブジェクト指向の誕生までの歴史的経緯を詳しく解説しています。
-
 
 ## オブジェクト指向とは
 
@@ -207,11 +202,152 @@ C言語でも十分なプログラミングは可能ですが、現実のソフ�
 関数型プログラミング、並行プログラミング、リアクティブプログラミングなども併用されます。
 オブジェクト指向は、これらのなかの1つのアプローチに過ぎません。
 
+## オブジェクト指向の重要な用語と概念
 
+ここからは、オブジェクト指向プログラミングで使用される重要な用語と概念を、実践的な例を交えて説明します。
+
+### オブジェクトとは
+
+オブジェクトは、コンピュータのメモリ上に展開された、プログラム内の「状態」と「振る舞い」を統合した存在です。「状態」とは、オブジェクトが保持するデータを指し、変数やフィールドとして実装されます。一方、「振る舞い」は、オブジェクトが実行できる処理内容であり、メソッド（関数）として実装されます。
+
+重要なのは、これらの状態と振る舞いが別々に存在するのではなく、密接な関連を持って一体化されている点です。たとえば、銀行口座オブジェクトであれば、残高（状態）と入金・出金操作（振る舞い）が1つのオブジェクトとして管理されることで、データの整合性を保ちやすくなります。
+
+### クラスとは
+
+オブジェクトはメモリ上に展開されて使用されます。
+そのオブジェクトは、どんな状態を持って、どんな振る舞いをするのかを定義するのがクラスです。
+
+よくある表現として、オブジェクトの設計図をクラスという言い方がされます。
+
+### インスタンス（実体）とは
+オブジェクトは、メモリ上に展開されて使用されます。
+その状態をインスタンスと呼び、メモリ上に展開して使用できるようにすることをインスタンス化（実体化）と言います。
+
+### クラス、インスタンス、オブジェクトの関係
+
+オブジェクト指向プログラミングでは、「クラス」「インスタンス」「オブジェクト」という用語が頻繁に登場し、初学者にとって混乱の原因となることがあります。これらの関係を明確に理解することが重要です。
+
+クラスは、オブジェクトの設計図です。建築にたとえれば、家の設計図にあたります。クラスは、どのようなデータ（フィールド）を持ち、どのような操作（メソッド）ができるかを定義します。
+
+インスタンスは、クラスをもとに実際に作成された具体的な実体です。設計図から実際に建てられた家に相当します。1つのクラスから複数のインスタンスを作成でき、それぞれが独立したデータを保持します。
+
+オブジェクトという用語は、文脈によって意味が変わることに注意が必要です。多くの場合、オブジェクトはインスタンスを指しますが、より幅広い概念を表す場合や、クラス自体を指す場合もあります。「オブジェクト指向」という場合のオブジェクトは、より抽象的な概念を表しています。
+
+※厳密には、インスタンス化をしなくても内部的に使用できる状態や振る舞いというのも存在します。それらは「静的（static）な○○」と呼ばれ、インスタンス化を明示的に行わなくても、プログラム実行時にJVMによってクラスがロードされ、メモリへ展開されて使用できるようになっています。対義語として「動的（dynamic）な○○」という言い方もあり、そちらはインスタンス化しないと使用できません。
+
+> 補足: JVMのクラスローディング機構により、staticメンバーはクラスがはじめて参照されたときに初期化されます。また、JITコンパイラによって実行時に最適化され、頻繁に使用されるstaticメソッドは高速に実行されます。
+
+### クラスはどのように書くか
+
+何らかのデータと、それに対する処理をまとめて書けるとよいです。
+
+「クラスは、C言語における構造体（struct）に、関数をつけられるようにしたもの」のようにイメージすると理解しやすいです。
+
+### 役割ごとに分割する利点
+
+役割ごとに分割することで、大規模なプログラムを作る際に管理しやすくなることがあります。
+ただし、これは1つのアプローチに過ぎません。
+WebアプリケーションではMVCパターン（Model-View-Controller）、マイクロサービスではドメイン分割など、システムの特性に応じた分割方法が用いられます。
+管理しやすいとは、複雑でなく、バグの発見・修正が容易なことを指します。
+
+### main関数に処理を突っ込むのではなく
+
+自分の作っているプログラムをよく分析して、どんな登場人物（データ）がいるか、それぞれどんな役割があるかで考え、クラスに分割しましょう。
+
+ここでは、小さい子ども（あなたはその子を世話する親とする）の着替えを例に考えてみましょう。
+小さい子どもに対して着替えの指示を出す場合、細かくすべてを指示する必要があるでしょうか。
+たとえば、対象の子どもが上着を着ているか確認し、近づいてボタンを外し、右腕から袖を通して脱がせるなど、毎回すべての手順を指示するのは手間がかかります。
+
+毎回、状態を確認しつつすべての行動を指示出しするのは面倒ではありませんか？
+子どもには、「あなたは、着替えてください（服を）」というような命令で指示を出せて、結果だけ受け取ることができたらよいですね。
+
+### 全部自分のプログラムでやろうとしない
+
+自分が作ったクラスから、役割を持つほかのオブジェクトに対して指示を出すことで、関心の分離が可能となります。
+大事なポイントとして、「処理をほかのオブジェクトにお任せする」ということが挙げられます。
+
+### 処理をお任せすることと、お任せされる側の配慮
+
+オブジェクトに処理をお任せする以上、そのオブジェクトの状態や振る舞いに外から干渉したくない（されたくもない）。
+
+- オブジェクトが持つ状態や、状態に対する変更処理を外部から直接触られると、予期せぬ不具合や、副作用が発生する
+    + 意図しない操作をされたくない部分を、外部から操作できないようにする
+
+これを**カプセル化（隠ぺい）**といいます。
+
+カプセル化を施すことで、内部実装の変更による影響を局所化し、バグの混入を防ぎ、APIの安定性を保つことができます。
+
+### 設計時に振る舞いの名前や入出力情報だけ決める
+昨今のオブジェクト指向言語には、インターフェイスという概念があります。
+インターフェイスにはクラスの振る舞いの名前や渡されるべきデータ型、振る舞いによる結果のデータ型だけを定義しておけます。
+
+- インターフェイスは、それ自体をデータ型として使える便利なもの
+- オブジェクト指向は、プログラミングだけでなく設計としての側面も強い
+
+### オブジェクト指向言語でつまずきやすい継承
+
+難しく考える必要はありません。
+同じ状態、同じ振る舞いを持つクラスをそれぞれコピー&ペーストで作ると、管理が煩雑になってしまいます。
+
+「似たデータ、似た処理をもつオブジェクトを、クラスの時点でまとめよう」として使用するのが継承という考え方になります。
+単にまとめるための手段だと知っておきましょう。
+
+### オブジェクト指向は効率よく開発を行うための考え方
+
+大事な観点として、歴史をたどり、システム開発の効率を求めた結果、オブジェクト指向という体系ができたに過ぎません。
+
+これは通過点であり、オブジェクト指向の考え方を学ぶことですべてのことが説明できる気になったりします<span class="footnote">これはプログラマの三大美徳の1つである「傲慢」ですね。</span>が、これですべてを賄えることはありません。
+本書では、オブジェクト指向という道具を学びますが、これはただのプログラミングテクニックの1つとして、システムの要求や規模に応じて使い分けられるよう、判断基準と実装方法を身に付けましょう。
+
+> **コラム：システム開発に「銀の弾丸などない」**{.column-section}
+> 
+> ### 「人月の神話」
+> 
+> フレッド・ブルックスが1975年に著した「人月の神話」で述べられているように、ソフトウェア開発の複雑性を一挙に解決する「銀の弾丸」は存在しません。
+> ここで言う「銀の弾丸」とは、システム開発におけるあらゆる問題を一挙に解決できるような、魔法のような特効薬や万能な解決策を指す比喩表現です。
+> 過去の文献ではオブジェクト指向プログラミングも万能の解決策かのように言われることもありますが、例外ではなく、万能の解決策ではありません。
+> 
+> オブジェクト指向を不適切に適用した場合、かえって問題を悪化させることがあります。
+> たとえば、100行未満のスクリプトや単機能のコマンドラインツールにオブジェクト指向を無理に取り入れた場合です。
+> シンプルな処理が複雑なクラス構造に埋もれてしまい、コードの記述量が数倍に膨れ上がることがあります。
+> また、バッチ処理やパイプライン処理のように、単機能の処理が連続して呼び出されるシステムでは問題が生じます。
+> オブジェクト指向のオーバーヘッドが大きくなり、手続き型のアプローチのほうがメモリ使用量を抑えられる場合があります。
+> さらに、過度な抽象化や継承の乱用は、コードの理解を困難にし、管理しきれない副作用を発生させる可能性があります。
+> 
+> 重要なのは、オブジェクト指向が有効な場面を見極め、適度に使用することです。
+> 一般的に、以下の場合にオブジェクト指向が有効です。
+> 
+> 1. 複数の開発者が長期間保守するシステム
+> 2. ドメインモデルが複雑なビジネスアプリケーション
+> 3. 再利用可能なコンポーネントを作る場合
+> 
+> #### なぜ「銀の弾丸」は存在しないのか？
+>
+> 少し内容は逸れますが、システム開発の難しさは、本質的に複雑な問題を扱っていることに起因します。
+> 「人月の神話」の著者ブルックスは、この困難さを以下の2つに分類しました。
+>
+> 1. 本質的な困難さ (Essence)
+>     - ソフトウェアが解決しようとする問題そのものの複雑さ、仕様の曖昧さ、満たすべき要求の多さなど、避けることのできない根源的な難しさ
+> 2. 偶有的な困難さ (Accident)
+>     - プログラミング言語の扱いにくさ、開発ツールの未熟さ、非効率な開発プロセスなど、技術や手法によって改善・解決できる副次的な難しさ
+> 
+> 過去数十年にわたり、プログラミング言語の進化、開発ツールの改善、新しい開発手法（アジャイルなど）の登場により、「偶有的な困難さ」は大幅に改善されてきました。しかし、「本質的な困難さ」は依然として残っています。
+> どのような画期的な技術や手法が登場したとしても、開発プロジェクトが直面する以下のような本質的な問題を完全に消し去ることはできません。
+> - 要件の複雑さと変化
+>     + 顧客の要求は複雑であり、開発の途中で変化することも少なくない
+> - コミュニケーションの問題
+>     + 関係者間の認識の齟齬や情報伝達の漏れ
+> - 設計の難しさ
+>     + 将来の変更を見越した、柔軟で堅牢なシステムを設計することの困難さ。
+> - 人間の思考の限界
+>     + 複雑なシステム全体を一度に正確に把握することの難しさ。
+> 
+> したがって、特定の1つの技術や方法論を導入すれば、すべての開発プロジェクトが必ず成功するという「銀の弾丸」は存在しないのです。
+> 成功のためには、地道なコミュニケーション、慎重な設計、継続的な改善といった日々の努力が不可欠となります。
 
 ## オブジェクト指向の基本概念を実際のコードで理解する
 
-理論的な説明の前に、実際のJavaコードを見てオブジェクト指向の基本概念を理解しましょう。
+ここまでに説明した考え方を、実際のJavaコードで確認しましょう。
 
 ### 手続き型とオブジェクト指向の違い
 
@@ -504,9 +640,6 @@ public class PolymorphismTest {
     + 銀行振込に特化した具体的な処理を実装
 
 この設計により、`PaymentMethod`型の変数で異なる決済方法を統一的に扱えるため、新しい決済方法（新しいカード会社の決済、決済サービス、仮想通貨決済など）を追加しても既存のコードに影響を与えません。
-
-
-
 
 ## クラスの作成
 
@@ -1109,7 +1242,7 @@ long: 10
 Integer: 10
 可変長引数: [1, 2, 3]
 ```
-> **重要**: 戻り値の型だけが異なるメソッドはオーバーロードできません。次のコードはコンパイルエラーになります。
+> 戻り値の型だけが異なるメソッドはオーバーロードできません。次のコードはコンパイルエラーになります。
 > ```java
 > public int calculate() { return 1; }
 > public double calculate() { return 1.0; }  // エラー：戻り値の型だけでは区別できない
@@ -1146,416 +1279,6 @@ public class Person {
 
 これはコンストラクタオーバーロードの例です。
 
-## 実用的なクラス設計例
-
-### 例1：図書管理システム
-
-図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
-
-<span class="listing-number">**サンプルコード3-22**</span>
-
-```java
-public class Book {
-    private String isbn;
-    private String title;
-    private String author;
-    private boolean isAvailable;
-    
-    public Book(String isbn, String title, String author) {
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.isAvailable = true;
-    }
-    
-    public boolean borrow() {
-        if (isAvailable) {
-            isAvailable = false;
-            return true;
-        }
-        return false;
-    }
-    
-    public void returnBook() {
-        isAvailable = true;
-    }
-    
-    public String getInfo() {
-        String status = isAvailable ? "貸出可能" : "貸出中";
-        return String.format("%s - %s (%s) [%s]", isbn, title, author, status);
-    }
-}
-```
-
-#### 使用例と実行結果
-
-```java
-// BookLibraryTest.java
-public class BookLibraryTest {
-    public static void main(String[] args) {
-        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
-        
-        System.out.println(book.getInfo());
-        
-        // 本を借りる
-        if (book.borrow()) {
-            System.out.println("貸出処理が完了しました");
-        }
-        System.out.println(book.getInfo());
-        
-        // もう一度借りようとする
-        if (!book.borrow()) {
-            System.out.println("この本は貸出中です");
-        }
-        
-        // 本を返却
-        book.returnBook();
-        System.out.println("返却処理が完了しました");
-        System.out.println(book.getInfo());
-    }
-}
-```
-
-#### 実行結果
-
-```
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
-貸出処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出中]
-この本は貸出中です
-返却処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
-```
-
-このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
-borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
-
-### 例2：ショッピングカート
-
-ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
-
-<span class="listing-number">**サンプルコード3-23**</span>
-
-```java
-import java.util.ArrayList;
-import java.util.List;
-
-public class ShoppingCart {
-    private List<Item> items;
-    private double taxRate;
-    
-    public ShoppingCart(double taxRate) {
-        this.items = new ArrayList<>();
-        this.taxRate = taxRate;
-    }
-    
-    public void addItem(String name, double price, int quantity) {
-        items.add(new Item(name, price, quantity));
-    }
-    
-    public double calculateTotal() {
-        double subtotal = 0;
-        for (Item item : items) {
-            subtotal += item.getSubtotal();
-        }
-        return subtotal * (1 + taxRate);
-    }
-    
-    public void displayCart() {
-        System.out.println("=== ショッピングカート ===");
-        for (Item item : items) {
-            System.out.println(item);
-        }
-        System.out.printf("合計（税込）: %.2f円%n", calculateTotal());
-    }
-    
-    // 内部クラス
-    private class Item {
-        private String name;
-        private double price;
-        private int quantity;
-        
-        public Item(String name, double price, int quantity) {
-            this.name = name;
-            this.price = price;
-            this.quantity = quantity;
-        }
-        
-        public double getSubtotal() {
-            return price * quantity;
-        }
-        
-        @Override
-        public String toString() {
-            return String.format("%s - %.2f円 × %d = %.2f円", 
-                name, price, quantity, getSubtotal());
-        }
-    }
-}
-```
-
-#### 使用例と実行結果
-
-```java
-// ShoppingCartTest.java
-public class ShoppingCartTest {
-    public static void main(String[] args) {
-        ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%
-        
-        cart.addItem("ノートPC", 98000, 1);
-        cart.addItem("マウス", 3500, 2);
-        cart.addItem("キーボード", 8500, 1);
-        
-        cart.displayCart();
-    }
-}
-```
-#### 実行結果
-
-```
-=== ショッピングカート ===
-ノートPC - 98000.00円 × 1 = 98000.00円
-マウス - 3500.00円 × 2 = 7000.00円
-キーボード - 8500.00円 × 1 = 8500.00円
-合計（税込）: 125050.00円
-```
-
-## まとめ
-
-このパートでは、オブジェクト指向の基本概念を実際のコードを通じて学習しました。重要なポイントは以下のとおりです。
-
-1. データと処理の一体化
-    + クラスは関連するデータと処理をまとめる
-2. カプセル化
-    + 内部実装を隠蔽し、必要なインターフェイスのみを公開
-3. オブジェクトの生成と操作
-    + `new`キーワードでインスタンスを生成し、メソッドを通じて操作
-4. 現実世界のモデリング
-    + 実世界の概念をクラスとして表現
-
-
-
-
-
-
-
-
-
-
-## オブジェクト指向の重要な用語と概念
-
-ここからは、オブジェクト指向プログラミングで使用される重要な用語と概念を、実践的な例を交えて説明します。
-
-### オブジェクトとは
-
-オブジェクトは、コンピュータのメモリ上に展開された、プログラム内の「状態」と「振る舞い」を統合した存在です。「状態」とは、オブジェクトが保持するデータを指し、変数やフィールドとして実装されます。一方、「振る舞い」は、オブジェクトが実行できる処理内容であり、メソッド（関数）として実装されます。
-
-重要なのは、これらの状態と振る舞いが別々に存在するのではなく、密接な関連を持って一体化されている点です。たとえば、銀行口座オブジェクトであれば、残高（状態）と入金・出金操作（振る舞い）が1つのオブジェクトとして管理されることで、データの整合性を保ちやすくなります。
-
-### クラスとは
-
-オブジェクトはメモリ上に展開されて使用されます。
-そのオブジェクトは、どんな状態を持って、どんな振る舞いをするのかを定義するのがクラスです。
-
-よくある表現として、オブジェクトの設計図をクラスという言い方がされます。
-
-### インスタンス（実体）とは
-オブジェクトは、メモリ上に展開されて使用されます。
-その状態をインスタンスと呼び、メモリ上に展開して使用できるようにすることをインスタンス化（実体化）と言います。
-
-### クラス、インスタンス、オブジェクトの関係
-
-オブジェクト指向プログラミングでは、「クラス」「インスタンス」「オブジェクト」という用語が頻繁に登場し、初学者にとって混乱の原因となることがあります。これらの関係を明確に理解することが重要です。
-
-クラスは、オブジェクトの設計図です。建築にたとえれば、家の設計図にあたります。クラスは、どのようなデータ（フィールド）を持ち、どのような操作（メソッド）ができるかを定義します。
-
-インスタンスは、クラスをもとに実際に作成された具体的な実体です。設計図から実際に建てられた家に相当します。1つのクラスから複数のインスタンスを作成でき、それぞれが独立したデータを保持します。
-
-オブジェクトという用語は、文脈によって意味が変わることに注意が必要です。多くの場合、オブジェクトはインスタンスを指しますが、より幅広い概念を表す場合や、クラス自体を指す場合もあります。「オブジェクト指向」という場合のオブジェクトは、より抽象的な概念を表しています。
-
-※厳密には、インスタンス化をしなくても内部的に使用できる状態や振る舞いというのも存在します。それらは「静的（static）な○○」と呼ばれ、インスタンス化を明示的に行わなくても、プログラム実行時にJVMによってクラスがロードされ、メモリへ展開されて使用できるようになっています。対義語として「動的（dynamic）な○○」という言い方もあり、そちらはインスタンス化しないと使用できません。
-
-> 補足: JVMのクラスローディング機構により、staticメンバーはクラスがはじめて参照されたときに初期化されます。また、JITコンパイラによって実行時に最適化され、頻繁に使用されるstaticメソッドは高速に実行されます。
-
-### クラスはどのように書くか
-
-何らかのデータと、それに対する処理をまとめて書けるとよいです。
-
-「クラスは、C言語における構造体（struct）に、関数をつけられるようにしたもの」のようにイメージすると理解しやすいです。
-
-### 役割ごとに分割する利点
-
-役割ごとに分割することで、大規模なプログラムを作る際に管理しやすくなることがあります。
-ただし、これは1つのアプローチに過ぎません。
-WebアプリケーションではMVCパターン（Model-View-Controller）、マイクロサービスではドメイン分割など、システムの特性に応じた分割方法が用いられます。
-管理しやすいとは、複雑でなく、バグの発見・修正が容易なことを指します。
-
-### 手続き型 vs オブジェクト指向
-
-ここでは、手続き型プログラミングとオブジェクト指向プログラミングの根本的な違いを、学生情報を管理するプログラムの例を通じて理解します。この違いは、データの管理方法と責任の所在に関する重要な設計思想の違いを表しています。
-
-#### 手続き型プログラミングの特徴と課題
-
-手続き型プログラミングでは、データ構造と処理が分離されており、グローバルな関数がデータを操作します。この方式は単純で理解しやすい反面、大規模なシステムでは以下のような問題が生じます。
-
-##### 手続き型プログラミング（C言語）
-
-```c
-// データと処理が分離している
-struct Student {
-    char name[50];
-    int age;
-    double gpa;
-};
-
-void printStudent(struct Student s) {
-    printf("名前: %s, 年齢: %d, GPA: %.2f\n", s.name, s.age, s.gpa);
-}
-```
-
-#### 手続き型プログラミングの根本的課題
-
-手続き型プログラミングでは、データと処理の分離によって複数の深刻な問題が生じます。まず、データの一貫性管理がきわめて困難になります。Studentデータを変更する関数が複数存在する場合、どの関数がどのタイミングでデータを変更するかを追跡することが困難で、データの整合性を保つためには開発者が常に全体の状況を把握してください。これは大規模なシステムになるほど現実的でなくなります。
-
-次に、変更の影響範囲が広範囲に拡大してしまう問題があります。たとえば、Student構造体に新しいフィールド（たとえば所属学部）を追加する場合、そのデータを使用するすべての関数を見つけ出して修正してください。これは、システムの規模が大きくなるほど見落としやバグの原因となり、保守性を著しく低下させます。
-
-さらに、責任の所在があいまいになることも重要な課題です。データの検証、初期化、出力、業務ロジックなど、学生に関する処理がシステム全体に散らばってしまうため、どの部分がどの機能を担当しているのかが不明確になります。これにより、バグの原因特定や機能追加が困難になり、開発効率が低下します。
-
-#### オブジェクト指向プログラミングによる解決
-
-オブジェクト指向では、関連するデータとそれを操作する処理を1つのクラスにまとめることで、上記の問題を解決します。
-
-##### オブジェクト指向プログラミング（Java）
-
-<span class="listing-number">**サンプルコード3-24**</span>
-
-```java
-// データと処理が一体化している
-public class Student {
-    private String name;
-    private int age;
-    private double gpa;
-    
-    // データを操作するメソッドも同じクラス内に定義
-    public void printInfo() {
-        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
-    }
-}
-```
-
-これは手続き型との比較のためのクラス構造の例です。
-
-#### オブジェクト指向プログラミングによる問題解決
-
-オブジェクト指向プログラミングは、手続き型プログラミングの課題を体系的に解決します。もっとも重要な改善点は責任の明確化です。学生に関するすべての操作がStudentクラス内に集約されることで、データの管理責任が明確になり、どこに何の機能があるかが一目瞭然になります。これにより、バグの原因特定や機能追加が劇的に簡単になります。
-
-カプセル化による保護機能も重要な利点です。privateキーワードを使用することで、外部からの不正なデータアクセスを防ぎ、データの整合性を確実に保護できます。これは、手続き型プログラミングでは実現困難だった、データの安全性を保証する仕組みです。
-
-変更の局所化も大きなメリットです。学生に関する処理の変更は、Studentクラス内のみで完結し、システム全体への影響を最小限に抑えることができます。たとえば、成績計算のロジックを変更する場合、Studentクラス内の該当メソッドのみを修正すれば済み、他のクラスに影響を与えません。
-
-さらに、現実世界のモデリングが可能になることで、プログラムの理解しやすさが向上します。「学生」という概念を直接的にプログラムの構造に反映させることで、直感的で理解しやすいコードになり、チーム開発での意思疎通も円滑になります。
-
-### main関数に処理を突っ込むのではなく
-
-自分の作っているプログラムをよく分析して、どんな登場人物（データ）がいるか、それぞれどんな役割があるかで考え、クラスに分割しましょう。
-
-ここでは、小さい子ども（あなたはその子を世話する親とする）の着替えを例に考えてみましょう。
-小さい子どもに対して着替えの指示を出す場合、細かくすべてを指示する必要があるでしょうか。
-たとえば、対象の子どもが上着を着ているか確認し、近づいてボタンを外し、右腕から袖を通して脱がせるなど、毎回すべての手順を指示するのは手間がかかります。
-
-毎回、状態を確認しつつすべての行動を指示出しするのは面倒でありませんか？
-子どもには、「あなたは、着替えてください（服を）」というような命令で指示を出せて、結果だけ受け取ることができたらよいですね。
-
-
-### 全部自分のプログラムでやろうとしない
-
-自分が作ったクラスから、役割を持つほかのオブジェクトに対して指示を出すことで、関心の分離が可能となります。
-大事なポイントとして、「処理をほかのオブジェクトにお任せする」ということが挙げられます。
-
-### 処理をお任せすることと、お任せされる側の配慮
-
-オブジェクトに処理をお任せする以上、そのオブジェクトの状態や振る舞いに外から干渉したくない（されたくもない）。
-
-- オブジェクトが持つ状態や、状態に対する変更処理を外部から直接触られると、予期せぬ不具合や、副作用が発生する
-    + 意図しない操作をされたくない部分を、外部から操作できないようにする
-
-これを**カプセル化（隠ぺい）**といいます。
-
-カプセル化を施すことで、内部実装の変更による影響を局所化し、バグの混入を防ぎ、APIの安定性を保つことができます。
-
-### 設計時に振る舞いの名前や入出力情報だけ決める
-昨今のオブジェクト指向言語には、インターフェイスという概念があります。
-インターフェイスにはクラスの振る舞いの名前や渡されるべきデータ型、振る舞いによる結果のデータ型だけを定義しておけます。
-
-- インターフェイスは、それ自体をデータ型として使える便利なもの
-- オブジェクト指向は、プログラミングだけでなく設計としての側面も強い
-
-### オブジェクト指向言語でつまずやすい継承
-
-難しく考える必要はありません。
-同じ状態、同じ振る舞いを持つクラスをそれぞれコピー&ペーストで作ると、管理が煩雑になってしまいます。
-
-「似たデータ、似た処理をもつオブジェクトを、クラスの時点でまとめよう」として使用するのが継承という考え方になります。
-単にまとめるための手段だと知っておきましょう。
-
-このような設計では、「従業員クラス」「マネージャークラス」がそれぞれ「人事管理可能」インターフェイスを実装する場合もあります。
-これにより、どちらも「人事評価機能」を持つことができます。
-
-ただし、実際のシステムでは権限管理やロールベースのアクセス制御など、より洗練されたアプローチが必要です。
-### オブジェクト指向は効率よく開発を行うための考え方
-
-大事な観点として、歴史をたどり、システム開発の効率を求めた結果、オブジェクト指向という体系ができたに過ぎません。
-
-これは通過点であり、オブジェクト指向の考え方を学ぶことですべてのことが説明できる気になったりします<span class="footnote">これはプログラマの三大美徳の1つである「傲慢」ですね。</span>が、これですべてを賄えることはありません。
-本書では、オブジェクト指向という道具を学びますが、これはただのプログラミングテクニックの1つとして、システムの要求や規模に応じて使い分けられるよう、判断基準と実装方法を身に付けましょう。
-
-
-> **コラム：システム開発に「銀の弾丸などない」**{.column-section}
-> 
-> ### 「人月の神話」
-> 
-> フレッド・ブルックスが1975年に著した「人月の神話」で述べられているように、ソフトウェア開発の複雑性を一挙に解決する「銀の弾丸」は存在しません。
-> ここで言う「銀の弾丸」とは、システム開発におけるあらゆる問題を一挙に解決できるような、魔法のような特効薬や万能な解決策を指す比喩表現です。
-> 過去の文献ではオブジェクト指向プログラミングも万能の解決策かのように言われることもありますが、例外ではなく、万能の解決策ではありません。
-> 
-> オブジェクト指向を不適切に適用した場合、かえって問題を悪化させることがあります。
-> たとえば、100行未満のスクリプトや単機能のコマンドラインツールにオブジェクト指向を無理に取り入れた場合です。
-> シンプルな処理が複雑なクラス構造に埋もれてしまい、コードの記述量が数倍に膨れ上がることがあります。
-> また、バッチ処理やパイプライン処理のように、単機能の処理が連続して呼び出されるシステムでは問題が生じます。
-> オブジェクト指向のオーバーヘッドが大きくなり、手続き型のアプローチのほうがメモリ使用量を抑えられる場合があります。
-> さらに、過度な抽象化や継承の乱用は、コードの理解を困難にし、管理しきれない副作用を発生させる可能性があります。
-> 
-> 重要なのは、オブジェクト指向が有効な場面を見極め、適度に使用することです。
-> 一般的に、以下の場合にオブジェクト指向が有効です。
-> 
-> 1. 複数の開発者が長期間保守するシステム
-> 2. ドメインモデルが複雑なビジネスアプリケーション
-> 3. 再利用可能なコンポーネントを作る場合
-> 
-> #### なぜ「銀の弾丸」は存在しないのか？
->
-> 少し内容は逸れますが、システム開発の難しさは、本質的に複雑な問題を扱っていることに起因します。
-> 「人月の神話」の著者ブルックスは、この困難さを以下の2つに分類しました。
->
-> 1. 本質的な困難さ (Essence)
->     - ソフトウェアが解決しようとする問題そのものの複雑さ、仕様の曖昧さ、満たすべき要求の多さなど、避けることのできない根源的な難しさ
-> 2. 偶有的な困難さ (Accident)
->     - プログラミング言語の扱いにくさ、開発ツールの未熟さ、非効率な開発プロセスなど、技術や手法によって改善・解決できる副次的な難しさ
-> 
-> 過去数十年にわたり、プログラミング言語の進化、開発ツールの改善、新しい開発手法（アジャイルなど）の登場により、「偶有的な困難さ」は大幅に改善されてきました。しかし、「本質的な困難さ」は依然として残っています。
-> どのような画期的な技術や手法が登場したとしても、開発プロジェクトが直面する以下のような本質的な問題を完全に消し去ることはできません。
-> - 要件の複雑さと変化
->     + 顧客の要求は複雑であり、開発の途中で変化することも少なくない
-> - コミュニケーションの問題
->     + 関係者間の認識の齟齬や情報伝達の漏れ
-> - 設計の難しさ
->     + 将来の変更を見越した、柔軟で堅牢なシステムを設計することの困難さ。
-> - 人間の思考の限界
->     + 複雑なシステム全体を一度に正確に把握することの難しさ。
-> 
-> したがって、特定の1つの技術や方法論を導入すれば、すべての開発プロジェクトが必ず成功するという「銀の弾丸」は存在しないのです。
-> 成功のためには、地道なコミュニケーション、慎重な設計、継続的な改善といった日々の努力が不可欠となります。
-
 ## クラスとオブジェクト
 
 ### クラスの定義
@@ -1564,7 +1287,7 @@ public class Student {
 
 以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です。
 
-<span class="listing-number">**サンプルコード3-25**</span>
+<span class="listing-number">**サンプルコード3-22**</span>
 
 ```java
 public class Book {
@@ -1661,7 +1384,7 @@ public class BookClassTest {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード3-26**</span>
+<span class="listing-number">**サンプルコード3-23**</span>
 
 ```java
 public class BookTest {
@@ -1719,7 +1442,7 @@ price変更後のbook1は新しい価格情報を保持し続け、オブジェ�
 
 ### アクセス修飾子の基本的な使い分け
 
-3章では、もっとも基本的な2つのアクセス修飾子について学習します。
+本章では、もっとも基本的な2つのアクセス修飾子について学習します。
 
 1. public修飾子
     - どこからでもアクセス可能
@@ -1730,7 +1453,7 @@ price変更後のbook1は新しい価格情報を保持し続け、オブジェ�
     - 外部から直接アクセスできない
     - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-27**</span>
+<span class="listing-number">**サンプルコード3-24**</span>
 
 ```java
 public class Student {
@@ -1799,7 +1522,7 @@ public class StudentAccessTest {
 
 フィールドをprivateにする理由を具体例で見てみましょう。
 
-<span class="listing-number">**サンプルコード3-28**</span>
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
 public class Product {
@@ -1829,7 +1552,7 @@ public class BadExample {
 
 #### privateを使った改善例
 
-<span class="listing-number">**サンプルコード3-29**</span>
+<span class="listing-number">**サンプルコード3-26**</span>
 
 ```java
 public class Product {
@@ -1911,7 +1634,6 @@ public class ImprovedProductTest {
 在庫が不足しています
 ```
 
-
 ## static修飾子の詳細な理解
 
 第2章では、mainメソッドから直接呼び出せるstaticメソッドの基本を学習しました。ここでは、オブジェクト指向プログラミングの文脈におけるstatic修飾子の意味と使い方を、より体系的に理解します。
@@ -1922,7 +1644,7 @@ static修飾子は、フィールドやメソッドが「クラスに属する�
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-30**</span>
+<span class="listing-number">**サンプルコード3-27**</span>
 
 ```java
 public class MathHelper {
@@ -1967,7 +1689,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-31**</span>
+<span class="listing-number">**サンプルコード3-28**</span>
 
 ```java
 // StaticMemberExample.java
@@ -2054,7 +1776,7 @@ public class StaticMemberExample {
 
 #### ユーティリティメソッド
 
-<span class="listing-number">**サンプルコード3-32**</span>
+<span class="listing-number">**サンプルコード3-29**</span>
 
    ```java
    public class MathUtils {
@@ -2068,7 +1790,7 @@ public class StaticMemberExample {
 
 #### ファクトリーメソッド
 
-<span class="listing-number">**サンプルコード3-33**</span>
+<span class="listing-number">**サンプルコード3-30**</span>
 
    ```java
    public class Student {
@@ -2092,7 +1814,7 @@ public class StaticMemberExample {
    これはファクトリーメソッドパターンの例です。
 #### 定数の定義
 
-<span class="listing-number">**サンプルコード3-34**</span>
+<span class="listing-number">**サンプルコード3-31**</span>
 
    ```java
    public class Constants {
@@ -2121,14 +1843,6 @@ static修飾子は強力な機能ですが、オブジェクト指向プログ�
 用途に応じて正しく使用することで、よりよい設計のプログラムを作成できます。
 第7章以降では、インターフェイスや抽象クラスと組み合わせた、より高度なstatic活用パターンを学習します。
 
-
-
-
-
-
-
-
-
 ## オブジェクトの配列
 
 ### オブジェクト配列の基本
@@ -2139,7 +1853,7 @@ static修飾子は強力な機能ですが、オブジェクト指向プログ�
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-35**</span>
+<span class="listing-number">**サンプルコード3-32**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -2164,7 +1878,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-36**</span>
+<span class="listing-number">**サンプルコード3-33**</span>
 
 ```java
 public class StudentArrayExample {
@@ -2236,8 +1950,7 @@ class Student {
 配列を`new`で初期化を行うと、配列の要素それぞれの初期値は`null`です。
 すべての要素に実体化されたオブジェクトが格納されているとは限らないので、配列の要素の中身を走査する場合は必ずnullチェックを行いましょう。
 
-
-<span class="listing-number">**サンプルコード3-37**</span>
+<span class="listing-number">**サンプルコード3-34**</span>
 
 ```java
 public class NullCheckExample {
@@ -2269,7 +1982,7 @@ public class NullCheckExample {
 クラス型の配列の初期値は`null`でしたが、プリミティブ型の配列の場合は、それぞれの型の初期値が代入されています。
 プリミティブ型を指定した配列には、`null`は入りません。
 
-<span class="listing-number">**サンプルコード3-38**</span>
+<span class="listing-number">**サンプルコード3-35**</span>
 
 ```java
 // プリミティブ型の配列
@@ -2288,13 +2001,498 @@ System.out.println(students[0]);     // nullが表示される
 
 より柔軟なオブジェクト管理が必要な場合は、第9章で学習するコレクションフレームワーク（`ArrayList`など）の使用を検討してください。
 
+## 実用的なクラス設計例
 
+### 例1：図書管理システム
 
+図書館の蔵書管理システムを想定したBookクラスの例です。このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行う仕組みを提供します。
 
+<span class="listing-number">**サンプルコード3-36**</span>
 
+```java
+public class Book {
+    private String isbn;
+    private String title;
+    private String author;
+    private boolean isAvailable;
+    
+    public Book(String isbn, String title, String author) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+    
+    public boolean borrow() {
+        if (isAvailable) {
+            isAvailable = false;
+            return true;
+        }
+        return false;
+    }
+    
+    public void returnBook() {
+        isAvailable = true;
+    }
+    
+    public String getInfo() {
+        String status = isAvailable ? "貸出可能" : "貸出中";
+        return String.format("%s - %s (%s) [%s]", isbn, title, author, status);
+    }
+}
+```
 
+#### 使用例と実行結果
 
+```java
+// BookLibraryTest.java
+public class BookLibraryTest {
+    public static void main(String[] args) {
+        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
+        
+        System.out.println(book.getInfo());
+        
+        // 本を借りる
+        if (book.borrow()) {
+            System.out.println("貸出処理が完了しました");
+        }
+        System.out.println(book.getInfo());
+        
+        // もう一度借りようとする
+        if (!book.borrow()) {
+            System.out.println("この本は貸出中です");
+        }
+        
+        // 本を返却
+        book.returnBook();
+        System.out.println("返却処理が完了しました");
+        System.out.println(book.getInfo());
+    }
+}
+```
 
+#### 実行結果
+
+```
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+貸出処理が完了しました
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出中]
+この本は貸出中です
+返却処理が完了しました
+978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+```
+
+このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
+borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
+
+### 例2：ショッピングカート
+
+ECサイトのショッピングカート機能を実装したクラスです。商品の追加、合計金額の計算（税込）、カート内容の表示など、ショッピングに必要な基本機能を提供します。
+
+<span class="listing-number">**サンプルコード3-37**</span>
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShoppingCart {
+    private List<Item> items;
+    private double taxRate;
+    
+    public ShoppingCart(double taxRate) {
+        this.items = new ArrayList<>();
+        this.taxRate = taxRate;
+    }
+    
+    public void addItem(String name, double price, int quantity) {
+        items.add(new Item(name, price, quantity));
+    }
+    
+    public double calculateTotal() {
+        double subtotal = 0;
+        for (Item item : items) {
+            subtotal += item.getSubtotal();
+        }
+        return subtotal * (1 + taxRate);
+    }
+    
+    public void displayCart() {
+        System.out.println("=== ショッピングカート ===");
+        for (Item item : items) {
+            System.out.println(item);
+        }
+        System.out.printf("合計（税込）: %.2f円%n", calculateTotal());
+    }
+    
+    // 内部クラス
+    private class Item {
+        private String name;
+        private double price;
+        private int quantity;
+        
+        public Item(String name, double price, int quantity) {
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+        
+        public double getSubtotal() {
+            return price * quantity;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("%s - %.2f円 × %d = %.2f円", 
+                name, price, quantity, getSubtotal());
+        }
+    }
+}
+```
+
+#### 使用例と実行結果
+
+```java
+// ShoppingCartTest.java
+public class ShoppingCartTest {
+    public static void main(String[] args) {
+        ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%
+        
+        cart.addItem("ノートPC", 98000, 1);
+        cart.addItem("マウス", 3500, 2);
+        cart.addItem("キーボード", 8500, 1);
+        
+        cart.displayCart();
+    }
+}
+```
+#### 実行結果
+
+```
+=== ショッピングカート ===
+ノートPC - 98000.00円 × 1 = 98000.00円
+マウス - 3500.00円 × 2 = 7000.00円
+キーボード - 8500.00円 × 1 = 8500.00円
+合計（税込）: 125050.00円
+```
+
+## オブジェクトの等価性とhashCode
+
+オブジェクト指向プログラミングでは、オブジェクト同士が「等しい」かどうかを判定します。Javaでは、`==`演算子と`equals`メソッドの違いを理解することが重要です。
+
+### ==演算子とequalsメソッドの違い
+
+<span class="listing-number">**サンプルコード3-38**</span>
+
+```java
+public class StringComparison {
+    public static void main(String[] args) {
+        String str1 = new String("Hello");
+        String str2 = new String("Hello");
+        String str3 = str1;
+        
+        // ==演算子：参照の比較
+        System.out.println(str1 == str2);  // false（異なるオブジェクト）
+        System.out.println(str1 == str3);  // true（同じオブジェクトを参照）
+        
+        // equalsメソッド：値の比較
+        System.out.println(str1.equals(str2));  // true（同じ値）
+        System.out.println(str1.equals(str3));  // true（同じ値）
+    }
+}
+```
+
+### カスタムクラスでのequalsメソッドの実装
+
+独自のクラスで`equals`メソッドを適切に実装する方法を示します。
+
+<span class="listing-number">**サンプルコード3-39**</span>
+
+```java
+public class Student {
+    private String id;
+    private String name;
+    
+    public Student(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        // 同一オブジェクトの場合
+        if (this == obj) return true;
+        
+        // nullまたは異なるクラスの場合
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        // 型変換して比較
+        Student student = (Student) obj;
+        return id != null && id.equals(student.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        // equalsで使用するフィールドと同じフィールドを使用
+        return id != null ? id.hashCode() : 0;
+    }
+}
+```
+
+### equals/hashCodeの契約
+
+`equals`メソッドをオーバーライドする場合、必ず`hashCode`メソッドもオーバーライドしてください。これは以下の契約を満たすために必要です。
+
+1. `equals`で等しいと判定される2つのオブジェクトは、同じ`hashCode`を返す
+2. `hashCode`が同じでも、`equals`で等しいとは限らない（ハッシュ衝突）
+3. プログラムの実行中、同じオブジェクトの`hashCode`は一貫している
+
+## モダンJavaにおけるオブジェクト指向
+
+Java 16以降では、オブジェクト指向プログラミングをより簡潔に記述できる機能が追加されています。
+
+### Recordクラス（Java 16以降）
+
+不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
+
+<span class="listing-number">**サンプルコード3-40**</span>
+
+```java
+// 従来の方法
+import java.util.Objects;
+
+public class Point {
+    private final int x;
+    private final int y;
+    
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return x == point.x && y == point.y;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+    
+    @Override
+    public String toString() {
+        return "Point{x=" + x + ", y=" + y + '}';
+    }
+}
+
+// Record を使った方法（Java 14以降）
+public record Point(int x, int y) {
+    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
+}
+```
+
+### Pattern Matching（Java 16以降）
+
+`instanceof`演算子と組み合わせたパターンマッチングにより、型チェックとキャストを簡潔に記述できます。
+
+<span class="listing-number">**サンプルコード3-41**</span>
+
+```java
+// 従来の方法
+public void processShape(Shape shape) {
+    if (shape instanceof Circle) {
+        Circle circle = (Circle) shape;
+        System.out.println("円の半径: " + circle.getRadius());
+    } else if (shape instanceof Rectangle) {
+        Rectangle rectangle = (Rectangle) shape;
+        System.out.println("長方形の面積: " + rectangle.getArea());
+    }
+}
+
+// Pattern Matching を使った方法（Java 16以降）
+public void processShape(Shape shape) {
+    if (shape instanceof Circle circle) {
+        System.out.println("円の半径: " + circle.getRadius());
+    } else if (shape instanceof Rectangle rectangle) {
+        System.out.println("長方形の面積: " + rectangle.getArea());
+    }
+}
+```
+
+### Sealed Classes（Java 17以降）
+
+クラス階層を制限し、より安全な継承を実現できます。
+
+<span class="listing-number">**サンプルコード3-42**</span>
+
+```java
+public sealed class Shape 
+    permits Circle, Rectangle, Triangle {
+    // Shapeクラスを継承できるのは、Circle、Rectangle、Triangleのみ
+}
+
+public final class Circle extends Shape {
+    private double radius;
+    // 実装
+}
+
+public final class Rectangle extends Shape {
+    private double width, height;
+    // 実装
+}
+
+public final class Triangle extends Shape {
+    private double base, height;
+    // 実装
+}
+```
+
+これらの新機能により、より安全で簡潔なオブジェクト指向プログラミングが可能になっています。
+ただし、基本的な概念の理解が前提となるため、本章で学んだ基礎をしっかりと理解してから活用しましょう。
+
+## よくあるエラーと対処法
+
+本章では、オブジェクト指向プログラミングの基礎を学ぶ際にとくによく遭遇するエラーを扱います。
+
+### 本章特有のエラー
+#### 1. クラスとインスタンスの概念の混乱
+
+問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
+
+<span class="listing-number">**サンプルコード3-43**</span>
+
+```java
+// エラー例
+Student.setName("太郎");  // クラス名で呼び出している
+```
+
+解決策:
+
+<span class="listing-number">**サンプルコード3-44**</span>
+
+```java
+// 正しい例
+Student student = new Student();  // インスタンスを作成
+student.setName("太郎");          // インスタンスから呼び出し
+```
+
+重要なポイント:
+
+- クラスは設計図、インスタンスは実体
+- インスタンスメソッドはnewで作成したオブジェクトから呼び出す
+- IDEでのプログラミングの場合は自動補完機能を活用する
+
+#### 2. static vs non-staticの混乱
+問題: staticメソッドからインスタンスメンバーにアクセスしようとする
+
+<span class="listing-number">**サンプルコード3-45**</span>
+
+```java
+// エラー例
+public static void main(String[] args) {
+    int result = add(5, 3);  // インスタンスメソッドを直接呼び出し
+}
+```
+
+解決策:
+<span class="listing-number">**サンプルコード3-46**</span>
+
+```java
+// 正しい例
+public static void main(String[] args) {
+    Calculator calc = new Calculator();
+    int result = calc.add(5, 3);  // インスタンス経由で呼び出し
+}
+```
+
+##### 重要なポイント
+- staticメソッドはクラスに属し、インスタンスなしで呼び出せる
+- インスタンスメソッドはオブジェクトに属し、インスタンスが必要
+
+#### 3. 基本的な構文エラー
+問題: Javaの基本構文を間違えて記述する
+
+<span class="listing-number">**サンプルコード3-47**</span>
+
+```java
+// よくあるエラー例
+System.out.println("Hello")  // セミコロン忘れ
+Public class MyClass { }      // 大文字のP
+```
+
+解決策:
+<span class="listing-number">**サンプルコード3-48**</span>
+
+```java
+// 正しい例
+System.out.println("Hello");  // セミコロンを追加
+public class MyClass { }      // 小文字のp
+```
+
+##### 重要なポイント
+- すべての文の末尾にはセミコロンが必要
+- キーワードは小文字（public、class、void等）
+- クラス名は大文字で始める（慣例）
+
+### 関連する共通エラー
+
+以下のエラーも本章の内容に関連します。
+
+- `NullPointerException`（→ 付録H）
+    - とくに初期化されていないフィールドへのアクセスで発生しやすい
+- コンストラクタエラー（→ 第4章）
+    - 本章では基本概念のみ、詳細は第4章で学習
+- アクセス修飾子エラー（→ 付録H）
+    - `private`フィールドへの不正アクセス
+
+### デバッグのヒント
+
+#### エラーに遭遇した際の基本的な対処法
+
+1. エラーメッセージを読む
+    + 行番号とエラーの種類を確認
+2. クラスとインスタンスの区別
+    + staticかどうかを確認
+3. 初期化の確認
+    + すべてのフィールドが初期化されているか確認
+
+### さらに学ぶには
+
+- 付録H: Java共通エラーガイド（基本的なエラーパターン）
+- 第4章: より詳細なコンストラクタとフィールドの扱い
+- 第13章: 例外処理の体系的な学習
+
+## まとめ
+
+本章では、オブジェクト指向プログラミングの基本的な考え方と、クラスを使った実装方法を学習しました。
+
+- オブジェクト指向の考え方
+    + データと処理を1つのクラスにまとめ、処理をオブジェクトにお任せする
+    + カプセル化・継承・ポリモーフィズムが3つの基本原則である
+    + オブジェクト指向は万能ではなく、問題に応じて使い分ける道具の1つである
+- クラスの構成要素
+    + フィールド、メソッド、コンストラクタでクラスを定義し、`new`でインスタンスを生成する
+    + getter/setterを通じてフィールドにアクセスし、メソッドオーバーロードで同じ名前の処理を使い分ける
+- アクセス制御とstatic
+    + `private`で内部のデータを隠し、`public`で必要な操作だけを公開する
+    + `static`なメンバーはインスタンスではなくクラスに属する
+- オブジェクトの配列
+    + オブジェクトの配列は参照の配列であり、要素ごとにインスタンスを生成する必要がある
+
+次章「クラスとインスタンス」では、本章で触れたカプセル化をさらに深めます。
+具体的には、次の内容を扱います。
+
+- アクセス修飾子（`public`、`private`、`protected`、パッケージプライベート）の詳細
+- 完全なカプセル化の実現方法（BankAccountの段階的改善例）
+- データ検証とバリデーション
+- 防御的プログラミング
+- パッケージシステムとクラスの組織化
 
 ## 章末演習
 
@@ -2326,7 +2524,7 @@ System.out.println(students[0]);     // nullが表示される
    - mainメソッドから各メソッドを呼び出して動作確認
 
 #### コード構造のヒント
-<span class="listing-number">**サンプルコード3-39**</span>
+<span class="listing-number">**サンプルコード3-49**</span>
 
 ```java
 public class MethodsPractice {
@@ -2427,7 +2625,7 @@ public class MethodsPractice {
    - メソッドチェーンの実装に挑戦
 
 3. 実用的な拡張
-   - ファイルからデータを読み込む（次章の予習）
+   - ファイルからデータを読み込む（第14章の予習）
    - 簡単な対話型プログラムの作成
 
 ### デバッグのヒント
@@ -2446,316 +2644,3 @@ public class MethodsPractice {
 次のステップ： 基礎課題が完了したら、第4章「クラスとインスタンス」に進みましょう。第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
 
 > ※ 本章の高度な内容については、付録B.03「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`）を参照してください。
-
-## 次章への橋渡し
-
-本章では、オブジェクト指向プログラミングの基本的な考え方と、クラス・フィールド・メソッドの基本的な書き方を学びました。簡単なgetter/setterメソッドやpublic/privateの使い分けについても触れました。
-
-次章「第4章クラスとインスタンス」では、企業システム開発で必須のカプセル化技術について学びます。具体的には以下の内容を扱います。
-
-- アクセス修飾子（`public`、`private`、`protected`、パッケージプライベート）の詳細
-- 完全なカプセル化の実現方法（BankAccountの段階的改善例）
-- データ検証とバリデーション
-- 防御的プログラミング
-- パッケージシステムとクラスの組織化
-
-第3章で学んだ基礎をもとに、実践的で堅牢なクラス設計の技術を身につけていきましょう。
-
-
-
-
-
-
-
-## よくあるエラーと対処法
-
-本章では、オブジェクト指向プログラミングの基礎を学ぶ際にとくによく遭遇するエラーを扱います。
-
-### 本章特有のエラー
-#### 1. クラスとインスタンスの概念の混乱
-
-問題: クラス名で直接インスタンスメソッドを呼び出そうとしてエラーになる
-
-<span class="listing-number">**サンプルコード3-40**</span>
-
-```java
-// エラー例
-Student.setName("太郎");  // クラス名で呼び出している
-```
-
-解決策:
-
-<span class="listing-number">**サンプルコード3-41**</span>
-
-```java
-// 正しい例
-Student student = new Student();  // インスタンスを作成
-student.setName("太郎");          // インスタンスから呼び出し
-```
-
-重要なポイント:
-
-- クラスは設計図、インスタンスは実体
-- インスタンスメソッドはnewで作成したオブジェクトから呼び出す
-- IDEでのプログラミングの場合は自動補完機能を活用する
-
-#### 2. static vs non-staticの混乱
-問題: staticメソッドからインスタンスメンバーにアクセスしようとする
-
-<span class="listing-number">**サンプルコード3-42**</span>
-
-```java
-// エラー例
-public static void main(String[] args) {
-    int result = add(5, 3);  // インスタンスメソッドを直接呼び出し
-}
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-43**</span>
-
-```java
-// 正しい例
-public static void main(String[] args) {
-    Calculator calc = new Calculator();
-    int result = calc.add(5, 3);  // インスタンス経由で呼び出し
-}
-```
-
-##### 重要なポイント
-- staticメソッドはクラスに属し、インスタンスなしで呼び出せる
-- インスタンスメソッドはオブジェクトに属し、インスタンスが必要
-
-#### 3. 基本的な構文エラー
-問題: Javaの基本構文を間違えて記述する
-
-<span class="listing-number">**サンプルコード3-44**</span>
-
-```java
-// よくあるエラー例
-System.out.println("Hello")  // セミコロン忘れ
-Public class MyClass { }      // 大文字のP
-```
-
-解決策:
-<span class="listing-number">**サンプルコード3-45**</span>
-
-```java
-// 正しい例
-System.out.println("Hello");  // セミコロンを追加
-public class MyClass { }      // 小文字のp
-```
-
-##### 重要なポイント
-- すべての文の末尾にはセミコロンが必要
-- キーワードは小文字（public、class、void等）
-- クラス名は大文字で始める（慣例）
-
-### 関連する共通エラー
-
-以下のエラーも本章の内容に関連します。
-
-- 　`NullPointerException`（→ 付録A.1.1）
-    - とくに初期化されていないフィールドへのアクセスで発生しやすい
-- コンストラクタエラー（→ 第4章）
-    - 本章では基本概念のみ、詳細は第4章で学習
-- アクセス修飾子エラー（→ 付録A.2.3）
-    - `private`フィールドへの不正アクセス
-
-### デバッグのヒント
-
-#### エラーに遭遇した際の基本的な対処法
-
-1. エラーメッセージを読む
-    + 行番号とエラーの種類を確認
-2. クラスとインスタンスの区別
-    + staticかどうかを確認
-3. 初期化の確認
-    + すべてのフィールドが初期化されているか確認
-
-### さらに学ぶには
-
-- 付録H: Java共通エラーガイド（基本的なエラーパターン）
-- 第4章: より詳細なコンストラクタとフィールドの扱い
-- 第13章: 例外処理の体系的な学習
-
-## オブジェクトの等価性とhashCode
-
-オブジェクト指向プログラミングでは、オブジェクト同士が「等しい」かどうかを判定します。Javaでは、`==`演算子と`equals`メソッドの違いを理解することが重要です。
-
-### ==演算子とequalsメソッドの違い
-
-<span class="listing-number">**サンプルコード3-46**</span>
-
-```java
-public class StringComparison {
-    public static void main(String[] args) {
-        String str1 = new String("Hello");
-        String str2 = new String("Hello");
-        String str3 = str1;
-        
-        // ==演算子：参照の比較
-        System.out.println(str1 == str2);  // false（異なるオブジェクト）
-        System.out.println(str1 == str3);  // true（同じオブジェクトを参照）
-        
-        // equalsメソッド：値の比較
-        System.out.println(str1.equals(str2));  // true（同じ値）
-        System.out.println(str1.equals(str3));  // true（同じ値）
-    }
-}
-```
-
-### カスタムクラスでのequalsメソッドの実装
-
-独自のクラスで`equals`メソッドを適切に実装する方法を示します。
-
-<span class="listing-number">**サンプルコード3-47**</span>
-
-```java
-public class Student {
-    private String id;
-    private String name;
-    
-    public Student(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        // 同一オブジェクトの場合
-        if (this == obj) return true;
-        
-        // nullまたは異なるクラスの場合
-        if (obj == null || getClass() != obj.getClass()) return false;
-        
-        // 型変換して比較
-        Student student = (Student) obj;
-        return id != null && id.equals(student.id);
-    }
-    
-    @Override
-    public int hashCode() {
-        // equalsで使用するフィールドと同じフィールドを使用
-        return id != null ? id.hashCode() : 0;
-    }
-}
-```
-
-### equals/hashCodeの契約
-
-`equals`メソッドをオーバーライドする場合、必ず`hashCode`メソッドもオーバーライドしてください。これは以下の契約を満たすために必要です。
-
-1. `equals`で等しいと判定される2つのオブジェクトは、同じ`hashCode`を返す
-2. `hashCode`が同じでも、`equals`で等しいとは限らない（ハッシュ衝突）
-3. プログラムの実行中、同じオブジェクトの`hashCode`は一貫している
-
-## モダンJavaにおけるオブジェクト指向
-
-Java 21 LTSでは、オブジェクト指向プログラミングをより簡潔に記述できる新機能が追加されています。
-
-### Recordクラス（Java 14以降）
-
-不変のデータクラスを簡潔に定義できる`record`は、多くのボイラープレートコードを削減します。
-
-<span class="listing-number">**サンプルコード3-48**</span>
-
-```java
-// 従来の方法
-import java.util.Objects;
-
-public class Point {
-    private final int x;
-    private final int y;
-    
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public int getX() { return x; }
-    public int getY() { return y; }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Point point = (Point) o;
-        return x == point.x && y == point.y;
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-    
-    @Override
-    public String toString() {
-        return "Point{x=" + x + ", y=" + y + '}';
-    }
-}
-
-// Record を使った方法（Java 14以降）
-public record Point(int x, int y) {
-    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
-}
-```
-
-### Pattern Matching（Java 16以降）
-
-`instanceof`演算子と組み合わせたパターンマッチングにより、型チェックとキャストを簡潔に記述できます。
-
-<span class="listing-number">**サンプルコード3-49**</span>
-
-```java
-// 従来の方法
-public void processShape(Shape shape) {
-    if (shape instanceof Circle) {
-        Circle circle = (Circle) shape;
-        System.out.println("円の半径: " + circle.getRadius());
-    } else if (shape instanceof Rectangle) {
-        Rectangle rectangle = (Rectangle) shape;
-        System.out.println("長方形の面積: " + rectangle.getArea());
-    }
-}
-
-// Pattern Matching を使った方法（Java 16以降）
-public void processShape(Shape shape) {
-    if (shape instanceof Circle circle) {
-        System.out.println("円の半径: " + circle.getRadius());
-    } else if (shape instanceof Rectangle rectangle) {
-        System.out.println("長方形の面積: " + rectangle.getArea());
-    }
-}
-```
-
-### Sealed Classes（Java 17以降）
-
-クラス階層を制限し、より安全な継承を実現できます。
-
-<span class="listing-number">**サンプルコード3-50**</span>
-
-```java
-public sealed class Shape 
-    permits Circle, Rectangle, Triangle {
-    // Shapeクラスを継承できるのは、Circle、Rectangle、Triangleのみ
-}
-
-public final class Circle extends Shape {
-    private double radius;
-    // 実装
-}
-
-public final class Rectangle extends Shape {
-    private double width, height;
-    // 実装
-}
-
-public final class Triangle extends Shape {
-    private double base, height;
-    // 実装
-}
-```
-
-これらの新機能により、より安全で簡潔なオブジェクト指向プログラミングが可能になっています。
-ただし、基本的な概念の理解が前提となるため、本章で学んだ基礎をしっかりと理解してから活用しましょう。

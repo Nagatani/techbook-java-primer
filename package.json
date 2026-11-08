@@ -8,6 +8,8 @@
     "build4web": "npm run mermaid:convert && npx vivliostyle build -o dist",
     "preview": "npm run mermaid:convert && npx vivliostyle preview",
     "mermaid:convert": "node scripts/convert-mermaid-to-images.js",
+    "index": "node scripts/build-book-index.js",
+    "index:check": "node scripts/build-book-index.js --check",
     "lint": "npx textlint manuscripts/*.md",
     "lint:fix": "npx textlint --fix manuscripts/*.md",
     "lintadx": "npx textlint appendix/**/*.md",
