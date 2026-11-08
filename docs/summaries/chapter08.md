@@ -7,7 +7,7 @@ sections:
   - key: "列挙型（Enum）"
     hash: 953d8955
   - key: "レコード（Record）"
-    hash: bd4243aa
+    hash: 24a71ebf
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: c495a6e7
   - key: "内部クラス（Inner Classes）"
@@ -91,7 +91,6 @@ sections:
 - L181、L225、L293: 「実行結果（テストコード付き）」とあるが、テストコードが示されていない。L696の「実行結果（拡張版）」も8-20のmainと出力が合わない
 - L246（8-7）: `Connection`のimportがなく、どのクラスか（java.sql）説明もない。ほかにも8-19の`Duration`、8-21の`List`/`Collections`、8-24の`BigDecimal`/`RoundingMode`、8-26・8-27の`LocalDateTime`などimportがない
 - L417–433（8-12）: `case Status.ACTIVE:`をコンパイルエラーとしているが、Java 21以降は修飾名のcaseラベルが許可されている。対象バージョンの注記が必要
-- L666–668: 「パターンマッチング（Java 19以降）」は不正確。レコードパターンとswitchのパターンマッチングが正式機能になったのはJava 21（19はプレビュー）
 - L962、L987–989（8-28）: `CharacterClass`のゲッターを「省略」しているため、`GameCharacter.create`がそのままではコンパイルできない
 - L1099（8-31）: コメントの出力例「PREFIX: HELLO」は誤り。prefixは大文字化されないので「(prefixの値): HELLO」になる
 - L1230: 「**演習課題URL**:」が太字ラベルで、URLもコード表記でない。他章の「演習課題へのアクセス」の書式と揃っていない
