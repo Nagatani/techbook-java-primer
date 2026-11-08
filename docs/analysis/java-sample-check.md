@@ -8,21 +8,22 @@ javac 25.0.2（`--release 21`）で、番号付きのJavaサンプルのうち�
 「（例）」「（GUI表示）」など括弧書きの付いた実行結果は比べない。「数値差」は時刻・処理時間・乱数など数字だけの違い（スタックトレースの省略、絶対パスの違いも含む）で、一覧には載せない。
 「実行不可」はGUIを表示するもの、外部のファイルやサーバーが必要なもの。
 
-全文を sample-code/ に置いたサンプル 330件は対象外（npm run check:samples で検査）
+全文を sample-code/ に置いたサンプル 348件は対象外（npm run check:samples で検査）
 
-検査したサンプル: OK 0、結合 0、依存 58、意図 13、省略 4、エラー 0（対象外の断片 227）
+検査したサンプル: OK 1、結合 0、依存 64、意図 14、省略 4、エラー 0（対象外の断片 268）
 
 | 判定 | サンプル | 原稿の行 | 最初のエラー |
 |---|---|---|---|
 | 省略 | 4-4 | chapter04-classes-and-instances.md:198 | L13: class, interface, enum, or record expected |
-| 省略 | 4-26 | chapter04-classes-and-instances.md:1259 | L16: missing return statement |
-| 省略 | 4-27 | chapter04-classes-and-instances.md:1300 | L31: missing return statement |
+| 省略 | 4-31 | chapter04-classes-and-instances.md:1274 | L16: missing return statement |
+| 省略 | 4-32 | chapter04-classes-and-instances.md:1315 | L31: missing return statement |
 | 省略 | 8-14 | chapter08-special-classes.md:475 | L14: missing return statement |
-| 意図 | 3-40 | chapter03-oop-basics.md:2235 | L36: duplicate class: Point |
-| 意図 | 5-30 | chapter05-inheritance-and-polymorphism.md:1815 | L7: constructor Parent in class Parent cannot be applied to given types; |
-| 意図 | 5-32 | chapter05-inheritance-and-polymorphism.md:1856 | L10: duplicate class: Parent |
-| 意図 | 6-13 | chapter06-immutability-and-final.md:583 | L4: cannot assign a value to final variable number |
-| 意図 | 6-15 | chapter06-immutability-and-final.md:624 | L6: variable name might not have been initialized |
+| 意図 | 1-14 | chapter01-introduction.md:681 | L8: duplicate class: HelloWorld |
+| 意図 | 3-56 | chapter03-oop-basics.md:2270 | L36: duplicate class: Point |
+| 意図 | 5-34 | chapter05-inheritance-and-polymorphism.md:1823 | L7: constructor Parent in class Parent cannot be applied to given types; |
+| 意図 | 5-36 | chapter05-inheritance-and-polymorphism.md:1864 | L10: duplicate class: Parent |
+| 意図 | 6-12 | chapter06-immutability-and-final.md:583 | L4: cannot assign a value to final variable number |
+| 意図 | 6-14 | chapter06-immutability-and-final.md:624 | L6: variable name might not have been initialized |
 | 意図 | 7-22 | chapter07-abstract-classes-and-interfaces.md:1052 | L7: Rectangle is not abstract and does not override abstract method draw() in Shape |
 | 意図 | 7-24 | chapter07-abstract-classes-and-interfaces.md:1114 | L7: Circle is not abstract and does not override abstract method setColor(String) in Drawable |
 | 意図 | 7-26 | chapter07-abstract-classes-and-interfaces.md:1175 | L14: types Exportable and Printable are incompatible; |
@@ -31,21 +32,27 @@ javac 25.0.2（`--release 21`）で、番号付きのJavaサンプルのうち�
 | 意図 | 10-23 | chapter10-generics.md:788 | L6: generic array creation |
 | 意図 | 10-25 | chapter10-generics.md:830 | L6: bad operand types for binary operator '*' |
 | 意図 | 11-37 | chapter11-lambda-and-functional-interfaces.md:1441 | L2: Unexpected @FunctionalInterface annotation |
-| 依存 | 3-20 | chapter03-oop-basics.md:1214 | L15: cannot find symbol |
-| 依存 | 3-23 | chapter03-oop-basics.md:1396 | L4: cannot find symbol |
-| 依存 | 3-33 | chapter03-oop-basics.md:1870 | L4: cannot find symbol |
-| 依存 | 3-34 | chapter03-oop-basics.md:1942 | L3: cannot find symbol |
-| 依存 | 4-31 | chapter04-classes-and-instances.md:1536 | L2: cannot find symbol |
-| 依存 | 4-33 | chapter04-classes-and-instances.md:1630 | L8: cannot find symbol |
-| 依存 | 4-38 | chapter04-classes-and-instances.md:1734 | L3: cannot find symbol |
-| 依存 | 4-39 | chapter04-classes-and-instances.md:1752 | L2: cannot find symbol |
-| 依存 | 5-17 | chapter05-inheritance-and-polymorphism.md:1111 | L4: cannot find symbol |
-| 依存 | 5-21 | chapter05-inheritance-and-polymorphism.md:1294 | L4: cannot find symbol |
-| 依存 | 5-27 | chapter05-inheritance-and-polymorphism.md:1707 | L3: cannot find symbol |
-| 依存 | 5-29 | chapter05-inheritance-and-polymorphism.md:1778 | L2: cannot find symbol |
-| 依存 | 5-31 | chapter05-inheritance-and-polymorphism.md:1832 | L1: cannot find symbol |
-| 依存 | 5-33 | chapter05-inheritance-and-polymorphism.md:1880 | L1: cannot find symbol |
-| 依存 | 6-17 | chapter06-immutability-and-final.md:666 | L3: cannot find symbol |
+| 依存 | 3-8 | chapter03-oop-basics.md:550 | L4: cannot find symbol |
+| 依存 | 3-29 | chapter03-oop-basics.md:1233 | L15: cannot find symbol |
+| 依存 | 3-34 | chapter03-oop-basics.md:1420 | L4: cannot find symbol |
+| 依存 | 3-39 | chapter03-oop-basics.md:1625 | L4: cannot find symbol |
+| 依存 | 3-46 | chapter03-oop-basics.md:1898 | L4: cannot find symbol |
+| 依存 | 3-53 | chapter03-oop-basics.md:2165 | L4: cannot find symbol |
+| 依存 | 4-5 | chapter04-classes-and-instances.md:227 | L4: cannot find symbol |
+| 依存 | 4-14 | chapter04-classes-and-instances.md:626 | L4: cannot find symbol |
+| 依存 | 4-36 | chapter04-classes-and-instances.md:1551 | L2: cannot find symbol |
+| 依存 | 4-38 | chapter04-classes-and-instances.md:1645 | L8: cannot find symbol |
+| 依存 | 4-43 | chapter04-classes-and-instances.md:1749 | L3: cannot find symbol |
+| 依存 | 4-44 | chapter04-classes-and-instances.md:1767 | L2: cannot find symbol |
+| 依存 | 5-5 | chapter05-inheritance-and-polymorphism.md:351 | L4: cannot find symbol |
+| 依存 | 5-16 | chapter05-inheritance-and-polymorphism.md:933 | L4: cannot find symbol |
+| 依存 | 5-21 | chapter05-inheritance-and-polymorphism.md:1119 | L4: cannot find symbol |
+| 依存 | 5-25 | chapter05-inheritance-and-polymorphism.md:1302 | L4: cannot find symbol |
+| 依存 | 5-31 | chapter05-inheritance-and-polymorphism.md:1715 | L3: cannot find symbol |
+| 依存 | 5-33 | chapter05-inheritance-and-polymorphism.md:1786 | L2: cannot find symbol |
+| 依存 | 5-35 | chapter05-inheritance-and-polymorphism.md:1840 | L1: cannot find symbol |
+| 依存 | 5-37 | chapter05-inheritance-and-polymorphism.md:1888 | L1: cannot find symbol |
+| 依存 | 6-16 | chapter06-immutability-and-final.md:666 | L3: cannot find symbol |
 | 依存 | 7-23 | chapter07-abstract-classes-and-interfaces.md:1085 | L1: cannot find symbol |
 | 依存 | 7-25 | chapter07-abstract-classes-and-interfaces.md:1146 | L1: cannot find symbol |
 | 依存 | 7-27 | chapter07-abstract-classes-and-interfaces.md:1204 | L1: cannot find symbol |
@@ -96,11 +103,5 @@ javac 25.0.2（`--release 21`）で、番号付きのJavaサンプルのうち�
 
 | サンプル | 補ったサンプル | 原稿の行 | 最初のエラー |
 |---|---|---|---|
+| 4-5 | 4-4 | chapter04-classes-and-instances.md:227 | L13: class, interface, enum, or record expected |
 | 8-15 | 8-14 | chapter08-special-classes.md:529 | L14: missing return statement |
-
-## 実行結果の照合
-
-原稿の「実行結果：」と比べたサンプル: 一致 0、数値差 0、不一致 0、実行不可 0、打切 0
-
-| 判定 | サンプル | 実行結果の行 | 内容 |
-|---|---|---|---|
