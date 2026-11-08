@@ -577,6 +577,7 @@ public class DocumentListenerExample extends JFrame {
 
 ```java
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
@@ -751,6 +752,7 @@ public class CustomEventExample extends JFrame {
 ```java
 import java.beans.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.util.*;
 

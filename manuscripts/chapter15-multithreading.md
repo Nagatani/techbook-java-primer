@@ -1369,6 +1369,7 @@ CompletableFutureの主な特徴。
 <span class="listing-number">**サンプルコード15-17**</span>
 
 ```java
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
@@ -1430,9 +1431,7 @@ public class CompletableFutureExample {
         String[] cities = {"東京", "大阪", "名古屋"};
         
         // 各都市の気温と湿度を並行して取得
-        CompletableFuture<Void> allWeatherData = CompletableFuture.allOf(
-            cities[0], cities[1], cities[2]
-        ).stream()
+        CompletableFuture<?>[] allWeatherData = Arrays.stream(cities)
         .map(city -> {
             CompletableFuture<String> temp = WeatherService.getTemperature(city);
             CompletableFuture<String> humidity = WeatherService.getHumidity(city);

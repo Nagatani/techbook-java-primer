@@ -271,7 +271,7 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 // 既存のインターフェイス（多くの実装クラスが存在）
-public interface Collection<E> {
+public interface Collection<E> extends Iterable<E> {
     int size();
     boolean isEmpty();
     boolean contains(Object o);
@@ -304,7 +304,8 @@ public interface Collection<E> {
 }
 
 // 既存の実装クラスは変更不要
-class MyCollection<E> implements Collection<E> {
+// （size()などの既存メソッドの実装は省略するため、ここではabstractにしている）
+abstract class MyCollection<E> implements Collection<E> {
     // defaultメソッドを実装しなくても、デフォルト実装が使われる
 }
 ```
