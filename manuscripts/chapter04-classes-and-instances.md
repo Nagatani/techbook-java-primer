@@ -1809,9 +1809,9 @@ public class Team {
 
 以下のエラーも本章の内容に関連します。
 
-- **ClassCastException**（→ 付録A.1.3）
+- **ClassCastException**（→ 付録H）
   - 型キャストの誤りで発生
-- **equals/hashCodeの契約違反**（→ 付録A.3）
+- **equals/hashCodeの契約違反**（→ 付録H）
   - コレクションで使用する際に問題となる
 - **thisキーワードの使い忘れ**（→ 第3章）
   - フィールドと引数の区別ができない
