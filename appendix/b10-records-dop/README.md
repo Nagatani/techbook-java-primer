@@ -1,4 +1,4 @@
-# Recordsとモダンなデータ指向プログラミング
+# 付録B.10 Recordsとモダンなデータ指向プログラミング
 
 Java 14で正式導入されたRecordsと、それを活用したデータ指向プログラミング（Data-Oriented Programming, DOP）について学習できるプロジェクトです。
 

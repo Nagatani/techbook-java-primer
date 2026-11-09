@@ -1,4 +1,4 @@
-# Java Memory ModelとHappens-Before関係
+# 付録B.14 Java Memory ModelとHappens-Before関係
 
 Java並行プログラミングにおける最も重要かつ難解な概念の1つである、Java Memory Model（JMM）とHappens-Before関係について学習できるプロジェクトです。
 
