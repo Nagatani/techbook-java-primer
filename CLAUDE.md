@@ -87,6 +87,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 章の扉は1ページ全体を使わず、章タイトルの帯にする（`min-height: 100vh`を使わない）
    - 本文の行送りは21Q、リストの行送りは20Q。段落の頭は字下げで示すので段落間は0.25行、リストの前後は0.5行程度、項目間は0.15行にとどめる（2026-11-10に詰めた）。ページ番号のグラデーションや文字の影などの装飾は使わない
    - 最初のページには柱を出さない（`@page:nth(1)`）
+   - 表はセルの余白を上下4px・左右10px、前後の余白を0.8emにする。セルは本文の両端揃えを引き継がず左寄せにし（Markdownで揃えを指定したセルは除く）、セル内のコードは折り返さない（2026-11-10〜）
    - 章の中のセクション見出し（h2）は「5章 - 3」「付録A - 1」の形で番号を出す（2026-11-10〜）。原稿ファイルごとに別文書になりCSSのカウンターでは章番号を受け渡せないため、ビルド時に`scripts/vfm-section-label.js`（`vivliostyle.config.js`の`documentProcessor`）が章タイトルの`<b>5章</b>`を読んでh2に`data-chapter`属性を付け、テーマの`h2[data-chapter]::before`で表示する。章番号のない文書（目次・奥付など）のh2には番号を出さない
    - テーマは`theme/my-theme/theme.css`。変更したら`npm run build`でPDFを確認する
 
