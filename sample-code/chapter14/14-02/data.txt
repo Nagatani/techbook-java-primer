@@ -1,0 +1,5 @@
+Line 1: This is the first line.
+Line 2: This is the second line.
+Line 3: Java programming is fun!
+100 200 300
+apple banana cherry

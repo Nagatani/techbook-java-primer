@@ -98,7 +98,9 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 `java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
 
-<span class="listing-number">**サンプルコード14-2**　ScannerExample.java（8〜31、42〜43行目）</span>
+次のプログラムは、実行したディレクトリにある`data.txt`を読み込みます。`data.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
+
+<span class="listing-number">**サンプルコード14-2**　ScannerExample.java（8〜32、44〜45行目）</span>
 
 ```java
 public class ScannerExample {
@@ -120,6 +122,7 @@ public class ScannerExample {
         // 2. デリミターを使った読み込み
         String csvData = "リンゴ,150,赤\nバナナ,100,黄";
         try (Scanner scanner = new Scanner(csvData)) {
+            System.out.println("\n--- デリミターを使った読み込み ---");
             scanner.useDelimiter(",|\\n");  // コンマまたは改行で区切る
             while (scanner.hasNext()) {
                 System.out.println(scanner.next());

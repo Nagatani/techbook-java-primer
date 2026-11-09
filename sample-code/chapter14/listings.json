@@ -3,8 +3,8 @@
     "dir": "14-02",
     "main": "ScannerExample",
     "excerpt": [
-      { "file": "ScannerExample.java", "from": 8, "to": 31 },
-      { "file": "ScannerExample.java", "from": 42, "to": 43 }
+      { "file": "ScannerExample.java", "from": 8, "to": 32 },
+      { "file": "ScannerExample.java", "from": 44, "to": 45 }
     ]
   },
   "14-3": {

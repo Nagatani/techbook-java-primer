@@ -24,6 +24,7 @@ public class ScannerExample {
         // 2. デリミターを使った読み込み
         String csvData = "リンゴ,150,赤\nバナナ,100,黄";
         try (Scanner scanner = new Scanner(csvData)) {
+            System.out.println("\n--- デリミターを使った読み込み ---");
             scanner.useDelimiter(",|\\n");  // コンマまたは改行で区切る
             while (scanner.hasNext()) {
                 System.out.println(scanner.next());
@@ -33,6 +34,7 @@ public class ScannerExample {
         // 3. 型を指定した読み込み
         String numbers = "100 3.14 true";
         try (Scanner scanner = new Scanner(numbers)) {
+            System.out.println("\n--- 型を指定した読み込み ---");
             int intValue = scanner.nextInt();
             double doubleValue = scanner.nextDouble();
             boolean boolValue = scanner.nextBoolean();
