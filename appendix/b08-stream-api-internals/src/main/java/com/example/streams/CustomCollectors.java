@@ -97,7 +97,7 @@ public class CustomCollectors {
         
         @Override
         public Function<ConcurrentHashMap<T, Long>, Map<T, Long>> finisher() {
-            return Function.identity();
+            return map -> map;  // IDENTITY_FINISHなので変換しない
         }
         
         @Override

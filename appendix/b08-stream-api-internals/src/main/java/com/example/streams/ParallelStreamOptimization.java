@@ -3,6 +3,8 @@ package com.example.streams;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -92,7 +94,7 @@ public class ParallelStreamOptimization {
                     data.parallelStream()
                         .filter(ParallelStreamOptimization::isPrime)
                         .count()
-                ).get();
+                ).join();  // join()は検査例外を投げないのでSupplierの中で使える
             });
             System.out.println("Custom pool (" + customPoolSize + " threads) time: " + customTime + "ms");
             
@@ -278,14 +280,5 @@ public class ParallelStreamOptimization {
         demonstrateSpliteratorCharacteristics();
         demonstrateBestPractices();
     }
-    
-    // Supplier のインポート
-    private static interface Supplier<T> {
-        T get();
-    }
-    
-    // Function のインポート
-    private static interface Function<T, R> {
-        R apply(T t);
-    }
+
 }
