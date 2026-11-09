@@ -194,7 +194,7 @@ The following issues require ongoing attention and should be referenced during a
 6. ~~**Medium Priority**: textlint errors remaining~~ ✅ **ほぼ解消** - 2026-11-08時点で6件（うち4件はリスト内の脚注をですます調で書く規約上の例外）
 7. **High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）
 8. **High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）
-9. **Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）
+9. ~~**Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）~~ ✅ **Resolved** - 不在語を削除し、章番号を現行構成に修正 (2026-11-09)
 
 ### 章番号の注意（2026-11-07）
 - 章番号の正はファイル名（`chapterXX-*.md`）と`vivliostyle.config.js`の順序
