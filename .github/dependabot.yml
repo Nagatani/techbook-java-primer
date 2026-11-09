@@ -1,0 +1,22 @@
+# Dependabotの設定
+# 方針はCLAUDE.mdの「依存関係の管理」を参照
+version: 2
+updates:
+  # npm（本のビルドに使う開発用ツール）
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # 定期的な版の更新のプルリクエストは作らず、セキュリティ更新だけを受け取る
+    # （ignoreの条件はセキュリティ更新にも適用される）
+    open-pull-requests-limit: 0
+    ignore:
+      # mermaid-cliはv11に固定する。v12は-w/-Hオプションの廃止とレイアウトの変化で図が劣化する
+      - dependency-name: "@mermaid-js/mermaid-cli"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actionsのアクションの版
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
