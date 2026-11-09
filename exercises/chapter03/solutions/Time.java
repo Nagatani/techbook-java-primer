@@ -47,10 +47,12 @@ public class Time {
         this(other.hour, other.minute, other.second);
     }
     
-    // 【応用解答】秒数からの変換コンストラクタ
-    public Time(int totalSeconds) {
-        this();
-        setFromTotalSeconds(totalSeconds);
+    // 【応用解答】秒数からの変換
+    // Time(int hour)と引数の型が同じになるため、コンストラクタではなく静的ファクトリメソッドにする
+    public static Time fromTotalSeconds(int totalSeconds) {
+        Time time = new Time();
+        time.setFromTotalSeconds(totalSeconds);
+        return time;
     }
     
     // 【基本解答】秒追加メソッド
@@ -255,7 +257,7 @@ public class Time {
     
     public Time getDifferenceAsTime(Time other) {
         int diffSeconds = getDifferenceInSeconds(other);
-        return new Time(diffSeconds);
+        return Time.fromTotalSeconds(diffSeconds);
     }
     
     // 【発展解答】時刻の経過時間計算
@@ -264,7 +266,7 @@ public class Time {
         if (elapsed < 0) {
             elapsed += 24 * 60 * 60;  // 日をまたいだ場合
         }
-        return new Time(elapsed);
+        return Time.fromTotalSeconds(elapsed);
     }
     
     // 【発展解答】時刻の丸め処理
@@ -348,6 +350,6 @@ public class Time {
         int total1 = time1.getTotalSeconds();
         int total2 = time2.getTotalSeconds();
         int middle = (total1 + total2) / 2;
-        return new Time(middle);
+        return Time.fromTotalSeconds(middle);
     }
 }

@@ -452,6 +452,39 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
     }
     
     /**
+     * 特殊能力（一定の間隔で、敵の種類ごとに異なる効果を発動する）
+     */
+    private void useSpecialAbility() {
+        switch (enemyType) {
+            case GOBLIN:
+                System.out.println(name + " calls for backup!");
+                break;
+            case ORC:
+                System.out.println(name + " goes berserk!");
+                target.takeDamage(attackPower);
+                break;
+            case SKELETON:
+                System.out.println(name + " reassembles its bones!");
+                heal(maxHealth / 10);
+                break;
+            case DRAGON:
+                System.out.println(name + " breathes fire!");
+                target.takeDamage(attackPower * 2);
+                break;
+            case SLIME:
+                System.out.println(name + " splits and regenerates!");
+                heal(maxHealth / 5);
+                break;
+            case BOSS:
+                System.out.println(name + " unleashes a devastating attack!");
+                target.takeDamage(attackPower * 3);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    /**
      * ゴブリンの攻撃
      */
     private void performGoblinAttack(GameCharacter target, int damage) {

@@ -290,11 +290,11 @@ public class ThreadSafeCounterTest {
         CountDownLatch latch = new CountDownLatch(threadCount);
         AtomicInteger successCount = new AtomicInteger(0);
         
+        // すべてのスレッドが同じ「0なら1にする」を同時に試みる
         for (int i = 0; i < threadCount; i++) {
-            final int expectedValue = i;
             executor.submit(() -> {
                 try {
-                    boolean success = counter.compareAndSet(expectedValue, expectedValue + 1);
+                    boolean success = counter.compareAndSet(0, 1);
                     if (success) {
                         successCount.incrementAndGet();
                     }

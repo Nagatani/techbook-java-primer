@@ -17,7 +17,8 @@ public class CompletableFutureExampleTest {
     @BeforeEach
     public void setUp() {
         executor = Executors.newFixedThreadPool(5);
-        dataService = new CompletableFutureExample.AsyncDataService(executor);
+        // 擬似的な通信エラーが起きるとテストの結果が偶然に左右されるため、失敗の確率を0にする
+        dataService = new CompletableFutureExample.AsyncDataService(executor, 0.0);
         asyncOps = new CompletableFutureExample.AsyncOperations(dataService);
     }
     

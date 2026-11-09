@@ -133,7 +133,9 @@ public class TypeSafeBuilder<T> {
         T build();
     }
     
-    public static class FluentPersonBuilder implements FluentBuilder<Person> {
+    // 名前→年齢→（メール）の順に呼ばせる段階的なビルダー
+    // build()を呼べるのは年齢を設定したあとの段階だけなので、FluentBuilderはその段階のクラスが実装する
+    public static class FluentPersonBuilder {
         private String name;
         private int age;
         private String email;
@@ -151,23 +153,25 @@ public class TypeSafeBuilder<T> {
             }
         }
         
-        public class AgeStep {
+        public class AgeStep implements FluentBuilder<Person> {
             public EmailStep email(String email) {
                 FluentPersonBuilder.this.email = email;
                 return new EmailStep();
             }
             
+            @Override
             public Person build() {
                 return new Person(name, age, null, hobbies);
             }
         }
         
-        public class EmailStep {
+        public class EmailStep implements FluentBuilder<Person> {
             public EmailStep hobby(String hobby) {
                 hobbies.add(hobby);
                 return this;
             }
             
+            @Override
             public Person build() {
                 return new Person(name, age, email, hobbies);
             }

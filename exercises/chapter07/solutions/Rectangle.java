@@ -173,8 +173,8 @@ public class Rectangle extends Shape {
      * @return 矩形自身
      */
     @Override
-    public Shape.Rectangle getBoundingBox() {
-        return new Shape.Rectangle(getX(), getY(), width, height);
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(getX(), getY(), width, height);
     }
     
     /**

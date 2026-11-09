@@ -59,7 +59,9 @@ class StudentGradeProcessorTest {
     @Test
     void testGradeDistribution() {
         Map<String, Long> distribution = processor.getGradeDistribution();
-        assertEquals(2, distribution.get("B").longValue());
+        // 田中の平均は(85+90+80)/3=85でB、佐藤の平均は(75+85+70)/3≒76.7でC
+        assertEquals(1, distribution.get("B").longValue());
+        assertEquals(1, distribution.get("C").longValue());
     }
     
     @Test

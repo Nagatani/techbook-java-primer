@@ -133,12 +133,12 @@ public class ValidationSystemTest {
         // allMatch
         List<Integer> positiveNumbers = Arrays.asList(1, 2, 3, 4, 5);
         List<Integer> mixedNumbers = Arrays.asList(1, -2, 3, 4, 5);
-        assertTrue(ValidationSystem.CollectionValidators.allMatch(n -> n > 0).test(positiveNumbers));
-        assertFalse(ValidationSystem.CollectionValidators.allMatch(n -> n > 0).test(mixedNumbers));
+        assertTrue(ValidationSystem.CollectionValidators.<Integer>allMatch(n -> n > 0).test(positiveNumbers));
+        assertFalse(ValidationSystem.CollectionValidators.<Integer>allMatch(n -> n > 0).test(mixedNumbers));
         
         // anyMatch
-        assertTrue(ValidationSystem.CollectionValidators.anyMatch(n -> n > 3).test(positiveNumbers));
-        assertFalse(ValidationSystem.CollectionValidators.anyMatch(n -> n > 10).test(positiveNumbers));
+        assertTrue(ValidationSystem.CollectionValidators.<Integer>anyMatch(n -> n > 3).test(positiveNumbers));
+        assertFalse(ValidationSystem.CollectionValidators.<Integer>anyMatch(n -> n > 10).test(positiveNumbers));
         
         // noDuplicates
         assertTrue(ValidationSystem.CollectionValidators.noDuplicates().test(multipleList));
@@ -152,7 +152,7 @@ public class ValidationSystemTest {
         assertFalse(ValidationSystem.CustomValidators.strongPassword().test("password"));
         assertFalse(ValidationSystem.CustomValidators.strongPassword().test("PASSWORD"));
         assertFalse(ValidationSystem.CustomValidators.strongPassword().test("Password"));
-        assertFalse(ValidationSystem.CustomValidators.strongPassword().test("Pass123!"));
+        assertFalse(ValidationSystem.CustomValidators.strongPassword().test("Pas123!"));  // 7文字（8文字未満）
         
         // validAge
         assertTrue(ValidationSystem.CustomValidators.validAge().test(25));

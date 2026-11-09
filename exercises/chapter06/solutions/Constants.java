@@ -115,7 +115,7 @@ public final class Constants {
         
         // カラー定数（RGB値）
         public static final int COLOR_PRIMARY = 0x2196F3;
-        public static final int COLOR_SECONDARY = 0x FFC107;
+        public static final int COLOR_SECONDARY = 0xFFC107;
         public static final int COLOR_ERROR = 0xF44336;
         public static final int COLOR_SUCCESS = 0x4CAF50;
     }

@@ -1,95 +1,91 @@
-package chapter07.solutions;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * GameCharacterクラスとその継承クラスのテストクラス
+ * GameCharacterクラスとその継承クラス（Player・Enemy）のテストクラス
  */
 class GameTest {
-    
+
     private Player player;
     private Enemy enemy;
-    
+
     @BeforeEach
     void setUp() {
-        player = new Player("勇者", 100, 20);
-        enemy = new Enemy("ゴブリン", 50, 15);
+        player = new Player("勇者", 0, 0);
+        enemy = new Enemy("ゴブリン", Enemy.EnemyType.GOBLIN, 10, 0);
     }
-    
+
     @Test
     void testGameCharacterInitialization() {
         assertEquals("勇者", player.getName());
-        assertEquals(100, player.getHp());
-        assertEquals(20, player.getAttack());
         assertTrue(player.isAlive());
-        
+        assertEquals(player.getMaxHealth(), player.getCurrentHealth());
+
         assertEquals("ゴブリン", enemy.getName());
-        assertEquals(50, enemy.getHp());
-        assertEquals(15, enemy.getAttack());
         assertTrue(enemy.isAlive());
+        assertEquals(enemy.getMaxHealth(), enemy.getCurrentHealth());
     }
-    
+
     @Test
-    void testPlayerSpecialMove() {
-        player.performSpecialMove();
-        // 特殊技の実行を確認（コンソール出力のため、実際の動作を確認）
+    void testPlayerSpecialSkill() {
+        assertDoesNotThrow(() -> player.useSpecialSkill());
         assertTrue(player.isAlive());
     }
-    
+
     @Test
-    void testEnemySpecialMove() {
-        enemy.performSpecialMove();
-        // 特殊技の実行を確認（コンソール出力のため、実際の動作を確認）
+    void testEnemySpecialSkill() {
+        assertDoesNotThrow(() -> enemy.useSpecialSkill());
         assertTrue(enemy.isAlive());
     }
-    
+
     @Test
     void testDamage() {
-        int originalHp = player.getHp();
-        player.takeDamage(30);
-        assertEquals(originalHp - 30, player.getHp());
+        int originalHealth = player.getCurrentHealth();
+        int damage = player.getDefense() + 10;  // 防御力を差し引いて10のダメージ
+        player.takeDamage(damage);
+        assertEquals(originalHealth - 10, player.getCurrentHealth());
         assertTrue(player.isAlive());
     }
-    
+
     @Test
     void testDeath() {
-        player.takeDamage(150); // HPを上回るダメージ
+        // 最大体力と防御力を上回るダメージ
+        player.takeDamage(player.getMaxHealth() + player.getDefense() + 1);
         assertFalse(player.isAlive());
-        assertEquals(0, player.getHp());
+        assertEquals(0, player.getCurrentHealth());
     }
-    
+
     @Test
     void testDrawable() {
         // プレイヤーとエネミーがDrawableインターフェイスを実装していることを確認
-        assertTrue(player instanceof Drawable);
-        assertTrue(enemy instanceof Drawable);
-        
+        assertInstanceOf(Drawable.class, player);
+        assertInstanceOf(Drawable.class, enemy);
+
         // draw()メソッドを呼び出しても例外が発生しないことを確認
         assertDoesNotThrow(() -> player.draw());
         assertDoesNotThrow(() -> enemy.draw());
     }
-    
+
     @Test
     void testPolymorphism() {
-        // 多態性のテスト
+        // 基底クラスの参照で派生クラスのメソッドを呼び出す
         GameCharacter[] characters = {player, enemy};
-        
+
         for (GameCharacter character : characters) {
-            // 基底クラスの参照で派生クラスのメソッドを呼び出し
-            assertDoesNotThrow(() -> character.performSpecialMove());
+            assertDoesNotThrow(character::useSpecialSkill);
             assertTrue(character.isAlive());
         }
     }
-    
+
     @Test
     void testDrawablePolymorphism() {
         // Drawableインターフェイスを通じた多態性のテスト
         Drawable[] drawables = {player, enemy};
-        
+
         for (Drawable drawable : drawables) {
-            assertDoesNotThrow(() -> drawable.draw());
+            assertDoesNotThrow(drawable::draw);
         }
     }
 }

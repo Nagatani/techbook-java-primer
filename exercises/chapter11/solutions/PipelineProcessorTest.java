@@ -93,7 +93,7 @@ public class PipelineProcessorTest {
             PipelineProcessor.NumberProcessor.processNumber(-5);
         
         assertTrue(result.isSuccess());
-        assertEquals(30, result.getResult()); // abs(-5) * 2 + 10 = 20, clamp(100) = 20
+        assertEquals(20, result.getResult()); // abs(-5) * 2 + 10 = 20, clamp(100) = 20
         assertEquals(Arrays.asList("abs", "double", "add10", "clamp100"), 
                      result.getExecutedSteps());
     }
@@ -127,22 +127,23 @@ public class PipelineProcessorTest {
     void testListProcessorFunctions() {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
         
-        List<Integer> filtered = PipelineProcessor.ListProcessor.filter(n -> n > 3).apply(numbers);
+        // メソッドチェーンの先頭の総称メソッドは型を推論できないため、<Integer>のように明示する
+        List<Integer> filtered = PipelineProcessor.ListProcessor.<Integer>filter(n -> n > 3).apply(numbers);
         assertEquals(Arrays.asList(4, 5), filtered);
         
-        List<String> mapped = PipelineProcessor.ListProcessor.map(Object::toString).apply(numbers);
+        List<String> mapped = PipelineProcessor.ListProcessor.<Integer, String>map(Object::toString).apply(numbers);
         assertEquals(Arrays.asList("1", "2", "3", "4", "5"), mapped);
         
-        List<Integer> sorted = PipelineProcessor.ListProcessor.sort().apply(Arrays.asList(3, 1, 4, 2, 5));
+        List<Integer> sorted = PipelineProcessor.ListProcessor.<Integer>sort().apply(Arrays.asList(3, 1, 4, 2, 5));
         assertEquals(Arrays.asList(1, 2, 3, 4, 5), sorted);
         
-        List<Integer> distinct = PipelineProcessor.ListProcessor.distinct().apply(Arrays.asList(1, 2, 2, 3, 3, 3));
+        List<Integer> distinct = PipelineProcessor.ListProcessor.<Integer>distinct().apply(Arrays.asList(1, 2, 2, 3, 3, 3));
         assertEquals(Arrays.asList(1, 2, 3), distinct);
         
-        List<Integer> taken = PipelineProcessor.ListProcessor.take(3).apply(numbers);
+        List<Integer> taken = PipelineProcessor.ListProcessor.<Integer>take(3).apply(numbers);
         assertEquals(Arrays.asList(1, 2, 3), taken);
         
-        Integer size = PipelineProcessor.ListProcessor.size().apply(numbers);
+        Integer size = PipelineProcessor.ListProcessor.<Integer>size().apply(numbers);
         assertEquals(5, size);
     }
     

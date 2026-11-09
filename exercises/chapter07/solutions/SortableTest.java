@@ -98,11 +98,12 @@ class SortableTest {
         
         students.sort((s1, s2) -> s1.compareTo(s2));
         
-        // 名前順: 佐藤花子, 鈴木次郎, 高橋美咲, 田中太郎
+        // String.compareToは読みではなく文字コード（Unicode）の順に比べる
+        // 佐(U+4F50) < 田(U+7530) < 鈴(U+9234) < 高(U+9AD8)
         assertEquals("佐藤花子", students.get(0).getName());
-        assertEquals("鈴木次郎", students.get(1).getName());
-        assertEquals("高橋美咲", students.get(2).getName());
-        assertEquals("田中太郎", students.get(3).getName());
+        assertEquals("田中太郎", students.get(1).getName());
+        assertEquals("鈴木次郎", students.get(2).getName());
+        assertEquals("高橋美咲", students.get(3).getName());
     }
     
     @Test

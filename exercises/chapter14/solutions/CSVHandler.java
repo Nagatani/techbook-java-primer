@@ -40,7 +40,7 @@ public class CSVHandler {
         }
         
         public static CSVConfig tsvConfig() {
-            return new CSVConfig('\\t', '"', '\\', System.lineSeparator(), true, "UTF-8");
+            return new CSVConfig('\t', '"', '\\', System.lineSeparator(), true, "UTF-8");
         }
         
         public char getDelimiter() { return delimiter; }

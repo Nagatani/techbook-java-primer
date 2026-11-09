@@ -188,7 +188,8 @@ public class Circle {
      * 円の簡潔な文字列表現を返すメソッド
      * @return 円の文字列表現
      */
-    String toString() {
+    @Override
+    public String toString() {
         return String.format("Circle(radius=%.2f, area=%.2f, circumference=%.2f)", 
                            radius, calculateArea(), calculateCircumference());
     }

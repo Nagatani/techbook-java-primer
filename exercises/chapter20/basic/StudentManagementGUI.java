@@ -49,6 +49,22 @@ public class StudentManagementGUI extends JFrame {
     private class StudentTableModel extends AbstractTableModel {
         // ここにテーブルモデルを実装してください
         // MVCパターンのModelの役割
+        // 以下の3つはAbstractTableModelで必須のメソッド。コンパイルできるよう仮の値を返している
+        
+        @Override
+        public int getRowCount() {
+            return 0;  // TODO: 学生の人数を返す
+        }
+        
+        @Override
+        public int getColumnCount() {
+            return 0;  // TODO: 列の数を返す
+        }
+        
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return null;  // TODO: 指定した行・列の値を返す
+        }
     }
     
     public StudentManagementGUI() {
@@ -104,7 +120,7 @@ public class StudentManagementGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

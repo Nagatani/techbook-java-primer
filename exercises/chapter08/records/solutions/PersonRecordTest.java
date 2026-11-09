@@ -42,7 +42,7 @@ public class PersonRecordTest {
             new PersonRecord("John", null, birthDate, "john@example.com"));
         
         assertThrows(NullPointerException.class, () -> 
-            new PersonRecord("John", "Doe", null, "john@example.com"));
+            new PersonRecord("John", "Doe", (LocalDate) null, "john@example.com"));  // String版のコンストラクタと区別するため型を明示
         
         assertThrows(NullPointerException.class, () -> 
             new PersonRecord("John", "Doe", birthDate, null));

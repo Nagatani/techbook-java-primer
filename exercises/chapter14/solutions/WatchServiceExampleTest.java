@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * WatchServiceExampleクラスのテストクラス
@@ -60,12 +61,17 @@ public class WatchServiceExampleTest {
         WatchServiceExample.WatchConfig config = WatchServiceExample.WatchConfig.defaultConfig();
         watcher = new WatchServiceExample.FileWatcher(tempDir, config);
         
-        Set<WatchServiceExample.FileEventType> observedEvents = new HashSet<>();
-        CountDownLatch latch = new CountDownLatch(3); // CREATE, MODIFY, DELETE
+        // 監視スレッドから書き込むので、スレッドセーフな集合を使う
+        Set<WatchServiceExample.FileEventType> observedEvents = ConcurrentHashMap.newKeySet();
+        // 作成時には作成と変更の2つ、書き込みのたびに変更のイベントが届くため、
+        // イベントの数ではなく、最後に起きる削除のイベントが届くまで待つ
+        CountDownLatch latch = new CountDownLatch(1);
         
         watcher.addEventHandler(event -> {
             observedEvents.add(event.getType());
-            latch.countDown();
+            if (event.getType() == WatchServiceExample.FileEventType.DELETED) {
+                latch.countDown();
+            }
         });
         
         watcher.start();
@@ -219,9 +225,14 @@ public class WatchServiceExampleTest {
         WatchServiceExample.WatchConfig config = WatchServiceExample.WatchConfig.defaultConfig();
         watcher = new WatchServiceExample.FileWatcher(tempDir, config);
         
-        CountDownLatch latch = new CountDownLatch(3);
+        // イベントの数ではなく、最後に起きる削除のイベントが届くまで待つ
+        CountDownLatch latch = new CountDownLatch(1);
         
-        watcher.addEventHandler(event -> latch.countDown());
+        watcher.addEventHandler(event -> {
+            if (event.getType() == WatchServiceExample.FileEventType.DELETED) {
+                latch.countDown();
+            }
+        });
         watcher.start();
         
         WatchServiceExample.WatchStatistics initialStats = watcher.getStatistics();
@@ -239,7 +250,7 @@ public class WatchServiceExampleTest {
         WatchServiceExample.WatchStatistics finalStats = watcher.getStatistics();
         assertTrue(finalStats.getTotalEvents() >= 3);
         assertTrue(finalStats.getUptime() > 0);
-        assertTrue(finalStats.getLastEventTime() > initialStats.getStartTime());
+        assertTrue(finalStats.getLastEventTime() >= initialStats.getStartTime());  // 同じミリ秒のこともある
         
         Map<WatchServiceExample.FileEventType, Long> eventCounts = finalStats.getEventCounts();
         assertTrue(eventCounts.containsKey(WatchServiceExample.FileEventType.CREATED));
@@ -291,7 +302,10 @@ public class WatchServiceExampleTest {
     
     @Test
     public void testMultipleEventHandlers() throws IOException, InterruptedException {
-        WatchServiceExample.WatchConfig config = WatchServiceExample.WatchConfig.defaultConfig();
+        // ファイルの書き込みでは作成と変更の両方が届くことがあるため、作成のイベントだけを監視する
+        WatchServiceExample.WatchConfig config = new WatchServiceExample.WatchConfig(
+            false, Set.of("*"), Set.of(),
+            EnumSet.of(WatchServiceExample.FileEventType.CREATED), true);
         watcher = new WatchServiceExample.FileWatcher(tempDir, config);
         
         AtomicInteger handler1Count = new AtomicInteger(0);

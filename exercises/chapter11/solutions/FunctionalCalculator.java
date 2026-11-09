@@ -98,7 +98,8 @@ public class FunctionalCalculator {
      * @return 最終結果
      */
     public double compose(double value, UnaryOperator<Double>... operations) {
-        UnaryOperator<Double> composed = UnaryOperator.identity();
+        // UnaryOperatorのcompose()はFunctionを返すため、合成結果はFunctionで受ける
+        Function<Double, Double> composed = Function.identity();
         
         // 関数合成：右から左への合成
         for (int i = operations.length - 1; i >= 0; i--) {

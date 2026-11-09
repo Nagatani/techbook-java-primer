@@ -197,53 +197,55 @@ public class ValidationSystem {
      * コレクションバリデーション
      */
     public static class CollectionValidators {
+        // 要素の型に関係しない検証は List<?> を受け取る（どんな型のリストにも使える）
+        // 要素に条件を当てる検証は、PECSの原則にしたがって List<? extends T> と Predicate<? super T> を使う
         
         /**
          * 空でないことを確認
          */
-        public static <T> Predicate<List<T>> notEmpty() {
+        public static Predicate<List<?>> notEmpty() {
             return list -> list != null && !list.isEmpty();
         }
         
         /**
          * サイズチェック
          */
-        public static <T> Predicate<List<T>> size(int expectedSize) {
+        public static Predicate<List<?>> size(int expectedSize) {
             return list -> list != null && list.size() == expectedSize;
         }
         
         /**
          * 最小サイズチェック
          */
-        public static <T> Predicate<List<T>> minSize(int minSize) {
+        public static Predicate<List<?>> minSize(int minSize) {
             return list -> list != null && list.size() >= minSize;
         }
         
         /**
          * 最大サイズチェック
          */
-        public static <T> Predicate<List<T>> maxSize(int maxSize) {
+        public static Predicate<List<?>> maxSize(int maxSize) {
             return list -> list != null && list.size() <= maxSize;
         }
         
         /**
          * すべての要素が条件を満たすかチェック
          */
-        public static <T> Predicate<List<T>> allMatch(Predicate<T> condition) {
+        public static <T> Predicate<List<? extends T>> allMatch(Predicate<? super T> condition) {
             return list -> list != null && list.stream().allMatch(condition);
         }
         
         /**
          * 少なくとも一つの要素が条件を満たすかチェック
          */
-        public static <T> Predicate<List<T>> anyMatch(Predicate<T> condition) {
+        public static <T> Predicate<List<? extends T>> anyMatch(Predicate<? super T> condition) {
             return list -> list != null && list.stream().anyMatch(condition);
         }
         
         /**
          * 重複がないかチェック
          */
-        public static <T> Predicate<List<T>> noDuplicates() {
+        public static Predicate<List<?>> noDuplicates() {
             return list -> list != null && list.stream().distinct().count() == list.size();
         }
     }

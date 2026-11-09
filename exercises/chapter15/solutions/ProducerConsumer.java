@@ -243,7 +243,8 @@ public class ProducerConsumer {
                 throw new IllegalStateException("既に実行中です");
             }
             
-            ExecutorService executor = Executors.newFixedThreadPool(producerThreads + consumerThreads);
+            // 一定時間後に停止させるため、schedule()を使えるScheduledExecutorServiceにする
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(producerThreads + consumerThreads + 1);
             long endTime = System.currentTimeMillis() + durationMs;
             
             // プロデューサー
@@ -356,7 +357,8 @@ public class ProducerConsumer {
                 throw new IllegalStateException("既に実行中です");
             }
             
-            ExecutorService executor = Executors.newFixedThreadPool(producerThreads + consumerThreads);
+            // 一定時間後に停止させるため、schedule()を使えるScheduledExecutorServiceにする
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(producerThreads + consumerThreads + 1);
             long endTime = System.currentTimeMillis() + durationMs;
             
             // プロデューサー

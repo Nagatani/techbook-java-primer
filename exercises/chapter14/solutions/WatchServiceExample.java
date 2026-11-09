@@ -143,6 +143,10 @@ public class WatchServiceExample {
             return lastEventTime;
         }
         
+        public long getStartTime() {
+            return startTime;
+        }
+        
         @Override
         public String toString() {
             return String.format("監視統計: 総イベント数=%d, 稼働時間=%dms, イベント詳細=%s",
@@ -375,9 +379,33 @@ public class WatchServiceExample {
                 } catch (IOException e) {
                     logger.log(Level.WARNING, "新しいディレクトリの監視登録に失敗: " + fullPath, e);
                 }
+                handleEvent(fileEvent);
+                // 監視を登録する前にディレクトリの中に作られたファイルは通知されないため、
+                // 登録した時点で中にあるものを作成イベントとして通知する
+                notifyExistingEntries(fullPath);
+                return;
             }
             
             handleEvent(fileEvent);
+        }
+        
+        /**
+         * ディレクトリの中にすでにあるファイル・ディレクトリを作成イベントとして通知する
+         */
+        private void notifyExistingEntries(Path directory) {
+            try (var entries = Files.walk(directory)) {
+                entries.filter(path -> !path.equals(directory))
+                    .filter(this::shouldProcessFile)
+                    .forEach(path -> {
+                        Map<String, Object> metadata = new HashMap<>();
+                        if (config.isMetadataEnabled()) {
+                            addFileMetadata(path, metadata);
+                        }
+                        handleEvent(new FileEvent(FileEventType.CREATED, path, metadata));
+                    });
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "既存のファイルの通知に失敗: " + directory, e);
+            }
         }
         
         /**

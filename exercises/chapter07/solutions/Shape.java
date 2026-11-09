@@ -1,239 +1,276 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+
 /**
  * 第7章 課題1: 図形クラスの継承と面積計算 - 解答例
- * 
- * 抽象クラスShapeの実装
- * 
+ *
+ * 抽象クラスShapeの実装（Circle・Rectangleの共通の親クラス）
+ *
  * 学習ポイント:
  * - 抽象クラスの定義と使用方法
- * - 抽象メソッドの実装強制
- * - 共通処理と個別処理の分離
+ * - 抽象メソッドによる実装の強制
+ * - 共通処理（名前・色・位置の管理、描画の手順）と個別処理（面積・描画内容）の分離
+ * - テンプレートメソッド（draw()の前後処理をフックメソッドで差し替える）
  */
 public abstract class Shape {
-    // 共通フィールド
-    protected String color;
-    protected double x, y;  // 位置座標
-    
-    // 解答例 1: 基本的な抽象クラス実装
-    
+    private final String name;
+    private final String color;
+    private final double x;
+    private final double y;
+
     /**
-     * コンストラクタ
-     * @param color 色
+     * @param name 図形の名前
+     * @param color 図形の色
+     * @param x 基準点のX座標
+     * @param y 基準点のY座標
      */
-    public Shape(String color) {
-        this.color = color;
-        this.x = 0.0;
-        this.y = 0.0;
-    }
-    
-    /**
-     * 位置指定コンストラクタ
-     * @param color 色
-     * @param x X座標
-     * @param y Y座標
-     */
-    public Shape(String color, double x, double y) {
-        this.color = color;
+    protected Shape(String name, String color, double x, double y) {
+        this.name = Objects.requireNonNull(name, "name");
+        this.color = Objects.requireNonNull(color, "color");
         this.x = x;
         this.y = y;
     }
-    
-    /**
-     * 面積を計算する抽象メソッド
-     * サブクラスで必ず実装する必要がある
-     * @return 面積
-     */
-    public abstract double calculateArea();
-    
-    /**
-     * 周囲の長さを計算する抽象メソッド
-     * @return 周囲の長さ
-     */
-    public abstract double calculatePerimeter();
-    
-    // 解答例 2: 共通メソッドの実装
-    
-    /**
-     * 図形の基本情報を表示（共通処理）
-     */
-    public void displayBasicInfo() {
-        System.out.println("図形の種類: " + getShapeType());
-        System.out.println("色: " + color);
-        System.out.println("位置: (" + x + ", " + y + ")");
-        System.out.println("面積: " + String.format("%.2f", calculateArea()));
-        System.out.println("周囲: " + String.format("%.2f", calculatePerimeter()));
-    }
-    
-    /**
-     * 図形の種類を返す（サブクラスでオーバーライド推奨）
-     * @return 図形の種類
-     */
-    public String getShapeType() {
-        return "図形";
-    }
-    
-    /**
-     * 図形を移動させる
-     * @param deltaX X方向の移動量
-     * @param deltaY Y方向の移動量
-     */
-    public void move(double deltaX, double deltaY) {
-        this.x += deltaX;
-        this.y += deltaY;
-        System.out.println(getShapeType() + "を移動しました: (" + x + ", " + y + ")");
-    }
-    
-    /**
-     * 色を変更する
-     * @param newColor 新しい色
-     */
-    public void changeColor(String newColor) {
-        String oldColor = this.color;
-        this.color = newColor;
-        System.out.println(getShapeType() + "の色を" + oldColor + "から" + newColor + "に変更しました");
-    }
-    
-    // 解答例 3: 比較・判定メソッド
-    
-    /**
-     * 他の図形と面積を比較
-     * @param other 比較対象の図形
-     * @return 面積差（この図形 - 他の図形）
-     */
-    public double compareAreaWith(Shape other) {
-        if (other != null) {
-            return this.calculateArea() - other.calculateArea();
-        }
-        return 0.0;
-    }
-    
-    /**
-     * より大きな面積を持つかを判定
-     * @param other 比較対象の図形
-     * @return より大きな面積の場合true
-     */
-    public boolean isLargerThan(Shape other) {
-        return other != null && this.calculateArea() > other.calculateArea();
-    }
-    
-    /**
-     * 同じ色かどうかを判定
-     * @param other 比較対象の図形
-     * @return 同じ色の場合true
-     */
-    public boolean isSameColor(Shape other) {
-        if (other != null && this.color != null && other.color != null) {
-            return this.color.equals(other.color);
-        }
-        return false;
-    }
-    
-    /**
-     * 指定した点が図形内に含まれるかを判定（抽象メソッド）
-     * @param pointX 点のX座標
-     * @param pointY 点のY座標
-     * @return 含まれる場合true
-     */
+
+    // === サブクラスが実装する抽象メソッド ===
+
+    /** 面積 */
+    public abstract double getArea();
+
+    /** 周囲の長さ */
+    public abstract double getPerimeter();
+
+    /** 図形を文字で描画する */
+    public abstract void draw();
+
+    /** 同じ内容の新しい図形を作る */
+    public abstract Shape copy();
+
+    /** factor倍に拡大・縮小した新しい図形を作る */
+    public abstract Shape scale(double factor);
+
+    /** 基準点を(newX, newY)に移動した新しい図形を作る */
+    public abstract Shape move(double newX, double newY);
+
+    /** 点(pointX, pointY)が図形に含まれるか */
     public abstract boolean contains(double pointX, double pointY);
-    
-    // 解答例 4: ユーティリティメソッド
-    
-    /**
-     * 図形の詳細情報を文字列で返す
-     * @return 詳細情報の文字列
-     */
-    @Override
-    public String toString() {
-        return String.format("%s(色=%s, 位置=(%.1f,%.1f), 面積=%.2f)", 
-                           getShapeType(), color, x, y, calculateArea());
+
+    /** 図形を囲む矩形 */
+    public abstract BoundingBox getBoundingBox();
+
+    /** 図形の中心 */
+    public abstract Point getCenter();
+
+    // === 共通処理 ===
+
+    public String getName() {
+        return name;
     }
-    
-    /**
-     * 面積密度を計算（面積/周囲の比率）
-     * @return 面積密度
-     */
-    public double calculateAreaDensity() {
-        double perimeter = calculatePerimeter();
-        return perimeter > 0 ? calculateArea() / perimeter : 0.0;
-    }
-    
-    /**
-     * 図形をスケール（拡大・縮小）する抽象メソッド
-     * @param factor 倍率
-     */
-    public abstract void scale(double factor);
-    
-    /**
-     * 図形を複製する抽象メソッド
-     * @return 複製された図形
-     */
-    public abstract Shape clone();
-    
-    // Getterメソッド
+
     public String getColor() {
         return color;
     }
-    
+
     public double getX() {
         return x;
     }
-    
+
     public double getY() {
         return y;
     }
-    
+
     /**
-     * 位置を設定する
-     * @param x X座標
-     * @param y Y座標
+     * 図形の情報を表示する（固有の情報はdisplaySpecificInfo()で表示）
      */
-    public void setPosition(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public void displayInfo() {
+        System.out.println("図形: " + name + "（" + getShapeType(this) + "）");
+        System.out.println("色: " + color);
+        System.out.printf("位置: (%.1f, %.1f)%n", x, y);
+        System.out.printf("面積: %.2f%n", getArea());
+        displaySpecificInfo();
+    }
+
+    /** 図形固有の情報を表示する（必要なサブクラスがオーバーライドする） */
+    protected void displaySpecificInfo() {
+    }
+
+    /** 描画の前処理（フックメソッド） */
+    protected void beforeDraw() {
+        System.out.println("--- " + name + " の描画開始 ---");
+    }
+
+    /** 描画の後処理（フックメソッド） */
+    protected void afterDraw() {
+        System.out.println("--- " + name + " の描画終了 ---");
+    }
+
+    /**
+     * 描画する（テンプレートメソッド）
+     * 手順は親クラスで固定し、前後処理と描画内容をサブクラスが差し替える
+     */
+    public final void render() {
+        beforeDraw();
+        draw();
+        afterDraw();
+    }
+
+    /**
+     * 面積を比較する
+     * @return 自分のほうが大きければ正、小さければ負、等しければ0
+     */
+    public int compareAreaWith(Shape other) {
+        return Double.compare(getArea(), other.getArea());
+    }
+
+    /** 面積が指定した値より大きいか */
+    public boolean isLargerThan(double area) {
+        return getArea() > area;
+    }
+
+    /** 名前・色・位置の1行の説明 */
+    public String getInfo() {
+        return String.format("%s（色: %s、位置: (%.1f, %.1f)）", name, color, x, y);
+    }
+
+    /** 種類・名前・色・面積・周囲の長さを含む説明 */
+    public String getDetailedDescription() {
+        return String.format("%s「%s」 色: %s、面積: %.2f、周囲の長さ: %.2f",
+                getShapeType(this), name, color, getArea(), getPerimeter());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s{name='%s', color='%s', position=(%.1f,%.1f)}",
+                getShapeType(this), name, color, x, y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Shape other = (Shape) obj;
+        return Double.compare(other.x, x) == 0
+                && Double.compare(other.y, y) == 0
+                && name.equals(other.name)
+                && color.equals(other.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color, x, y);
+    }
+
+    // === 静的ユーティリティメソッド ===
+
+    /** 面積の小さい順に並べた新しい配列を返す */
+    public static Shape[] sortByArea(Shape[] shapes) {
+        Shape[] sorted = shapes.clone();
+        Arrays.sort(sorted, Comparator.comparingDouble(Shape::getArea));
+        return sorted;
+    }
+
+    /** 面積が最大の図形（空の配列ならnull） */
+    public static Shape findLargestByArea(Shape[] shapes) {
+        if (shapes == null || shapes.length == 0) {
+            return null;
+        }
+        return Arrays.stream(shapes).max(Comparator.comparingDouble(Shape::getArea)).orElse(null);
+    }
+
+    /** 面積の合計（nullや空の配列なら0） */
+    public static double calculateTotalArea(Shape[] shapes) {
+        if (shapes == null) {
+            return 0;
+        }
+        return Arrays.stream(shapes).mapToDouble(Shape::getArea).sum();
+    }
+
+    /** 図形の種類（クラス名） */
+    public static String getShapeType(Shape shape) {
+        return shape.getClass().getSimpleName();
+    }
+
+    // === 図形で使う値のクラス ===
+
+    /**
+     * 点
+     */
+    public static class Point {
+        private final double x;
+        private final double y;
+
+        public Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public double getX() {
+            return x;
+        }
+
+        public double getY() {
+            return y;
+        }
+
+        /** 別の点までの距離 */
+        public double distanceTo(Point other) {
+            return Math.hypot(x - other.x, y - other.y);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof Point other)) return false;
+            return Double.compare(x, other.x) == 0 && Double.compare(y, other.y) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("(%.1f, %.1f)", x, y);
+        }
+    }
+
+    /**
+     * 図形を囲む矩形（左上の点と幅・高さ）
+     * Rectangleクラス（図形）と区別するため、名前をBoundingBoxにしている
+     */
+    public static class BoundingBox {
+        private final double x;
+        private final double y;
+        private final double width;
+        private final double height;
+
+        public BoundingBox(double x, double y, double width, double height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        public double getX() {
+            return x;
+        }
+
+        public double getY() {
+            return y;
+        }
+
+        public double getWidth() {
+            return width;
+        }
+
+        public double getHeight() {
+            return height;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("BoundingBox[(%.1f, %.1f), %.1f x %.1f]", x, y, width, height);
+        }
     }
 }
-
-/*
- * 抽象クラス設計のポイント:
- * 
- * 1. 抽象メソッドの定義
- *    - 必ずサブクラスで実装されるべきメソッド
- *    - calculateArea(), calculatePerimeter()など
- *    - 図形ごとに計算方法が異なる処理
- * 
- * 2. 共通処理の実装
- *    - すべてのサブクラスで共通する処理
- *    - displayBasicInfo(), move(), changeColor()など
- *    - コードの重複を避ける
- * 
- * 3. protectedフィールド
- *    - サブクラスからアクセス可能
- *    - 外部からは直接アクセス不可
- *    - カプセル化を保ちつつ継承を活用
- * 
- * 4. テンプレートメソッドパターン
- *    - displayBasicInfo()内でcalculateArea()を呼び出し
- *    - 共通の処理フローを定義
- *    - 具体的な実装はサブクラスに委譲
- * 
- * よくある設計上の注意点:
- * 
- * 1. 抽象クラス vs インターフェイス
- *    - 抽象クラス: 共通の実装とデータを持つ
- *    - インターフェイス: 契約（メソッドのシグネチャ）のみ
- * 
- * 2. 継承階層の設計
- *    - 「is-a」関係を表現
- *    - Circle is a Shape, Rectangle is a Shape
- *    - 過度に深い継承は避ける
- * 
- * 3. 抽象メソッドの粒度
- *    - 適切な抽象レベルを保つ
- *    - あまりに細かすぎると使いにくい
- *    - あまりに粗すぎると柔軟性がない
- * 
- * 実世界での応用:
- * - GUI部品の基底クラス
- * - ゲームキャラクターの基底クラス
- * - データベースDAO（Data Access Object）の基底クラス
- * - 計算エンジンの基底クラス
- */

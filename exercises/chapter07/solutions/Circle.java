@@ -145,8 +145,8 @@ public class Circle extends Shape {
      * @return 円を囲む矩形
      */
     @Override
-    public Rectangle getBoundingBox() {
-        return new Rectangle(
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(
             getX() - radius,  // 左上のX座標
             getY() - radius,  // 左上のY座標
             radius * 2,       // 幅

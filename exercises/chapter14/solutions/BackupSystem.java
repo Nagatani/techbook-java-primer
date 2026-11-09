@@ -4,6 +4,7 @@ import java.nio.file.attribute.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.zip.*;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
@@ -207,7 +208,7 @@ public class BackupSystem {
                 // ZIP圧縮バックアップ
                 compressedSize = createCompressedBackup(filesToBackup, config.getSourceDirectory(), 
                                                       backupPath.toString() + ".zip", backupIndex, config);
-                totalSize = filesToBackup.stream().mapToLong(this::getFileSize).sum();
+                totalSize = filesToBackup.stream().mapToLong(BackupSystem::getFileSize).sum();
             } else {
                 // 非圧縮バックアップ
                 totalSize = createUncompressedBackup(filesToBackup, config.getSourceDirectory(), 
@@ -279,7 +280,7 @@ public class BackupSystem {
             if (config.isCompressionEnabled()) {
                 compressedSize = createCompressedBackup(changedFiles, config.getSourceDirectory(), 
                                                       backupPath.toString() + ".zip", backupIndex, config);
-                totalSize = changedFiles.stream().mapToLong(this::getFileSize).sum();
+                totalSize = changedFiles.stream().mapToLong(BackupSystem::getFileSize).sum();
             } else {
                 totalSize = createUncompressedBackup(changedFiles, config.getSourceDirectory(), 
                                                    backupPath, backupIndex, config);
@@ -344,7 +345,9 @@ public class BackupSystem {
                 return true;
             }
             
-            Path indexPath = Paths.get(backupPath.toString() + ".index");
+            // インデックスは「バックアップ名.index」で保存しているので、拡張子.zipを除いて探す
+            String baseName = backupPath.toString().replaceFirst("\\.zip$", "");
+            Path indexPath = Paths.get(baseName + ".index");
             if (!Files.exists(indexPath)) {
                 logger.warning("インデックスファイルが見つかりません: " + indexPath);
                 return false;
@@ -509,7 +512,8 @@ public class BackupSystem {
         
         for (String filePath : index.getFilePaths()) {
             FileInfo info = index.getFile(filePath);
-            String key = "file." + filePath.replace('/', '.');
+            // パスはそのままキーにする（区切りを置き換えると、拡張子の「.」と区別できなくなる）
+            String key = "file." + filePath;
             String value = String.format("%d,%d,%s", info.getSize(), info.getLastModified(), info.getChecksum());
             props.setProperty(key, value);
         }
@@ -530,7 +534,7 @@ public class BackupSystem {
         
         for (String propName : props.stringPropertyNames()) {
             if (propName.startsWith("file.")) {
-                String filePath = propName.substring(5).replace('.', '/');
+                String filePath = propName.substring("file.".length());
                 String[] parts = props.getProperty(propName).split(",");
                 if (parts.length >= 3) {
                     long size = Long.parseLong(parts[0]);
@@ -567,23 +571,40 @@ public class BackupSystem {
             return;
         }
         
-        List<Path> backupFiles = Files.list(config.getBackupDirectory())
-            .filter(path -> path.getFileName().toString().startsWith("backup_"))
-            .sorted(Comparator.comparing(path -> {
-                try {
-                    return Files.getLastModifiedTime(path);
-                } catch (IOException e) {
-                    return FileTime.fromMillis(0);
-                }
-            }, Comparator.reverseOrder()))
-            .collect(Collectors.toList());
+        // バックアップ1つにつきインデックス（backup_*.index）が1つあるので、それを目印に数える
+        List<Path> indexFiles;
+        try (var files = Files.list(config.getBackupDirectory())) {
+            indexFiles = files
+                .filter(path -> path.getFileName().toString().startsWith("backup_")
+                        && path.getFileName().toString().endsWith(".index"))
+                .sorted(Comparator.comparing(path -> {
+                    try {
+                        return Files.getLastModifiedTime(path);
+                    } catch (IOException e) {
+                        return FileTime.fromMillis(0);
+                    }
+                }, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
+        }
         
-        if (backupFiles.size() > config.getMaxBackupCount()) {
-            for (int i = config.getMaxBackupCount(); i < backupFiles.size(); i++) {
-                Path backupFile = backupFiles.get(i);
-                Files.deleteIfExists(backupFile);
-                Files.deleteIfExists(Paths.get(backupFile.toString() + ".index"));
-                logger.info("古いバックアップを削除: " + backupFile.getFileName());
+        for (int i = config.getMaxBackupCount(); i < indexFiles.size(); i++) {
+            Path indexFile = indexFiles.get(i);
+            String baseName = indexFile.toString().replaceFirst("\\.index$", "");
+            // 本体（圧縮ならZIPファイル、非圧縮ならディレクトリ）とインデックスをまとめて削除する
+            Files.deleteIfExists(Paths.get(baseName + ".zip"));
+            deleteRecursively(Paths.get(baseName));
+            Files.deleteIfExists(indexFile);
+            logger.info("古いバックアップを削除: " + Paths.get(baseName).getFileName());
+        }
+    }
+    
+    private static void deleteRecursively(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+        try (var paths = Files.walk(path)) {
+            for (Path p : paths.sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {
+                Files.delete(p);
             }
         }
     }
@@ -645,7 +666,14 @@ public class BackupSystem {
                     return false;
                 }
                 
-                if (entry.getSize() != expectedInfo.getSize()) {
+                // ZipInputStreamでは項目のサイズが分からない（-1になる）ことがあるため、実際に読んで数える
+                long actualSize = 0;
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = zis.read(buffer)) != -1) {
+                    actualSize += read;
+                }
+                if (actualSize != expectedInfo.getSize()) {
                     logger.warning("ファイルサイズが一致しません: " + entry.getName());
                     return false;
                 }
@@ -681,7 +709,7 @@ public class BackupSystem {
         return true;
     }
     
-    private long getFileSize(Path file) {
+    private static long getFileSize(Path file) {  // インスタンスの状態を使わないのでstaticにする
         try {
             return Files.size(file);
         } catch (IOException e) {

@@ -56,9 +56,8 @@ public class BackupSystemTest {
         assertTrue(result.getProcessingTimeMs() >= 0);
         assertTrue(result.getErrors().isEmpty());
         
-        // 圧縮率をチェック
+        // 圧縮率をチェック（テストのファイルは数十バイトしかなく、ZIPの管理情報のぶん元より大きくなることがあるため、1以下とは限らない）
         assertTrue(result.getCompressionRatio() > 0);
-        assertTrue(result.getCompressionRatio() <= 1.0);
     }
     
     @Test
@@ -127,7 +126,8 @@ public class BackupSystemTest {
         
         // バックアップファイルを探す
         Path backupFile = Files.list(backupDir)
-                .filter(path -> path.getFileName().toString().startsWith("backup_full_"))
+                .filter(path -> path.getFileName().toString().startsWith("backup_full_")
+                        && path.getFileName().toString().endsWith(".zip"))  // .indexではなくバックアップ本体を選ぶ
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("バックアップファイルが見つかりません"));
         
@@ -147,14 +147,15 @@ public class BackupSystemTest {
     }
     
     @Test
-    public void testVerifyBackupIntegrity() {
+    public void testVerifyBackupIntegrity() throws IOException {
         // バックアップを実行
         BackupSystem.BackupResult result = BackupSystem.performFullBackup(config);
         assertTrue(result.isSuccess());
         
         // バックアップファイルを探す
         Path backupFile = Files.list(backupDir)
-                .filter(path -> path.getFileName().toString().startsWith("backup_full_"))
+                .filter(path -> path.getFileName().toString().startsWith("backup_full_")
+                        && path.getFileName().toString().endsWith(".zip"))  // .indexではなくバックアップ本体を選ぶ
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("バックアップファイルが見つかりません"));
         
@@ -192,7 +193,7 @@ public class BackupSystemTest {
         assertEquals(BackupSystem.BackupResult.BackupType.FULL, result.getBackupType());
         
         double compressionRatio = result.getCompressionRatio();
-        assertTrue(compressionRatio > 0 && compressionRatio <= 1.0);
+        assertTrue(compressionRatio > 0);  // 小さなファイルでは1を超えることがある
         
         String resultString = result.toString();
         assertNotNull(resultString);
@@ -240,7 +241,8 @@ public class BackupSystemTest {
         
         // バックアップファイルの数を確認
         long backupFileCount = Files.list(backupDir)
-                .filter(path -> path.getFileName().toString().startsWith("backup_full_"))
+                .filter(path -> path.getFileName().toString().startsWith("backup_full_")
+                        && path.getFileName().toString().endsWith(".zip"))  // .indexではなくバックアップ本体を選ぶ
                 .count();
         
         assertEquals(2, backupFileCount); // 最大2個まで保持
@@ -256,7 +258,7 @@ public class BackupSystemTest {
     }
     
     @Test
-    public void testVerifyIntegrityWithoutIntegrityCheck() {
+    public void testVerifyIntegrityWithoutIntegrityCheck() throws IOException {
         BackupSystem.BackupConfig noIntegrityConfig = new BackupSystem.BackupConfig(
             sourceDir, backupDir, true, true, false, Set.of("*.tmp"), 5);
         
@@ -264,7 +266,8 @@ public class BackupSystemTest {
         assertTrue(result.isSuccess());
         
         Path backupFile = Files.list(backupDir)
-                .filter(path -> path.getFileName().toString().startsWith("backup_full_"))
+                .filter(path -> path.getFileName().toString().startsWith("backup_full_")
+                        && path.getFileName().toString().endsWith(".zip"))  // .indexではなくバックアップ本体を選ぶ
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("バックアップファイルが見つかりません"));
         

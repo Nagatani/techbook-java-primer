@@ -71,9 +71,18 @@ public class CompletableFutureExample {
     public static class AsyncDataService {
         private final ExecutorService executor;
         private final Random random = new Random();
+        private final double failureRate;  // 擬似的な通信エラーを起こす確率
         
         public AsyncDataService(ExecutorService executor) {
+            this(executor, 0.1);
+        }
+        
+        /**
+         * @param failureRate ユーザー取得が失敗する確率（注文履歴はその半分）。テストでは0にすると結果が安定する
+         */
+        public AsyncDataService(ExecutorService executor, double failureRate) {
             this.executor = executor;
+            this.failureRate = failureRate;
         }
         
         /**
@@ -83,7 +92,7 @@ public class CompletableFutureExample {
             return CompletableFuture.supplyAsync(() -> {
                 simulateDelay(100, 300);
                 
-                if (random.nextDouble() < 0.1) { // 10%の確率で失敗
+                if (random.nextDouble() < failureRate) { // 既定では10%の確率で失敗
                     throw new RuntimeException("ユーザー取得エラー: " + userId);
                 }
                 
@@ -98,7 +107,7 @@ public class CompletableFutureExample {
             return CompletableFuture.supplyAsync(() -> {
                 simulateDelay(200, 500);
                 
-                if (random.nextDouble() < 0.05) { // 5%の確率で失敗
+                if (random.nextDouble() < failureRate / 2) { // 既定では5%の確率で失敗
                     throw new RuntimeException("注文履歴取得エラー: " + userId);
                 }
                 

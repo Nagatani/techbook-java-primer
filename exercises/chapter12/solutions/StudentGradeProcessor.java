@@ -127,9 +127,10 @@ public class StudentGradeProcessor {
      */
     public List<Student> filterBySubjectGrade(String subject, int minGrade) {
         return students.stream()
+            // OptionalIntにはmap()がないため、stream()でIntStreamにして判定する
             .filter(student -> student.getGrade(subject)
-                .map(grade -> grade >= minGrade)
-                .orElse(false))
+                .stream()
+                .anyMatch(grade -> grade >= minGrade))
             .collect(Collectors.toList());
     }
     

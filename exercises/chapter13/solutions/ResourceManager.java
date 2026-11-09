@@ -157,6 +157,11 @@ public class ResourceManager {
      * @return 処理結果
      */
     public static String useMultipleResources(String... resourceNames) {
+        // try-with-resourcesの資源の作成で起きた例外も同じtry文のcatchで捕まえてしまうため、
+        // 引数の不足はtry文に入る前に確かめて、呼び出し元に伝える
+        if (resourceNames.length < 2) {
+            throw new IllegalArgumentException("リソース名を2つ指定してください: " + resourceNames.length + "個");
+        }
         StringBuilder result = new StringBuilder();
         
         try (CustomResource res1 = new CustomResource(resourceNames[0]);
@@ -241,16 +246,21 @@ public class ResourceManager {
      * @param shouldFail 失敗させるか
      * @return 処理結果
      */
+    /**
+     * リソースを作成する（shouldFailがtrueなら、初期化に失敗したものとして例外を投げる）
+     */
+    private static CustomResource createResource(boolean shouldFail) {
+        if (shouldFail) {
+            throw new RuntimeException("リソース初期化に失敗しました");
+        }
+        return new CustomResource("normal-resource");
+    }
+    
     public static String handleResourceInitializationFailure(boolean shouldFail) {
+        // createResource()で例外が起きると、tryの本体は実行されずにcatchへ移る
         StringBuilder result = new StringBuilder();
         
-        try (CustomResource resource = shouldFail ? 
-                new CustomResource("failing-resource") {
-                    {
-                        throw new RuntimeException("リソース初期化に失敗しました");
-                    }
-                } : 
-                new CustomResource("normal-resource")) {
+        try (CustomResource resource = createResource(shouldFail)) {
             
             resource.doWork();
             result.append("リソース処理が完了しました");

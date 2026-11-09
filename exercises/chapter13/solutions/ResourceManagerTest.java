@@ -222,7 +222,7 @@ public class ResourceManagerTest {
     @Test
     public void testUseMultipleResourcesWithException() {
         // リソース名が不足している場合
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             ResourceManager.useMultipleResources("resource1");
         });
     }

@@ -78,6 +78,21 @@ public class ThreadPoolExample {
             this.taskCount = taskCount;
         }
         
+        /**
+         * ThreadPoolExecutor以外のプール（ForkJoinPoolなど）の統計を、値を直接指定して作る
+         */
+        public ThreadPoolStatistics(String poolType, int poolSize, long completedTaskCount,
+                                   long totalExecutionTime, int taskCount) {
+            this.poolType = poolType;
+            this.corePoolSize = poolSize;
+            this.maximumPoolSize = poolSize;
+            this.completedTaskCount = completedTaskCount;
+            this.activeCount = 0;
+            this.queueSize = 0;
+            this.totalExecutionTime = totalExecutionTime;
+            this.taskCount = taskCount;
+        }
+        
         public String getPoolType() { return poolType; }
         public int getCorePoolSize() { return corePoolSize; }
         public int getMaximumPoolSize() { return maximumPoolSize; }
@@ -200,7 +215,10 @@ public class ThreadPoolExample {
          * 単一スレッドプールのテスト
          */
         public static ThreadPoolStatistics testSingleThreadExecutor(int taskCount) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
+            // newSingleThreadExecutor()はThreadPoolExecutorを包んだ別のクラスを返し、統計を取れないため、
+            // スレッドが1つのThreadPoolExecutorを直接作る
+            ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+                    new LinkedBlockingQueue<>());
             return executeTasksAndGatherStatistics("SingleThreadExecutor", executor, taskCount);
         }
         
@@ -230,11 +248,9 @@ public class ThreadPoolExample {
                 
                 long endTime = System.currentTimeMillis();
                 
-                return new ThreadPoolStatistics("WorkStealingPool", 
-                    new ThreadPoolExecutor(parallelism, parallelism, 0L, TimeUnit.MILLISECONDS, 
-                                         new LinkedBlockingQueue<>()) {{
-                        setCompletedTaskCount(taskCount);
-                    }}, totalExecutionTime, taskCount);
+                // ForkJoinPoolはThreadPoolExecutorではないため、値を直接指定して統計を作る
+                return new ThreadPoolStatistics("WorkStealingPool", parallelism, taskCount,
+                    totalExecutionTime, taskCount);
                 
             } finally {
                 executor.shutdown();

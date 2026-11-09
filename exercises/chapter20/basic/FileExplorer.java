@@ -179,7 +179,7 @@ public class FileExplorer extends JFrame {
             this.loaded = false;
         }
         
-        public Path getPath() {
+        public Path getDirectoryPath() {
             return path;
         }
         
@@ -278,7 +278,7 @@ public class FileExplorer extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

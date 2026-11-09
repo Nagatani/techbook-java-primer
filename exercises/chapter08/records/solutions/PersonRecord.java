@@ -33,11 +33,16 @@ public record PersonRecord(
         Objects.requireNonNull(email, "Email cannot be null");
         Objects.requireNonNull(phoneNumbers, "Phone numbers cannot be null");
         
+        // 正規化処理（前後の空白などを取り除いてから検証する）
+        firstName = firstName.trim();
+        lastName = lastName.trim();
+        email = email.trim().toLowerCase();
+        
         // 値の検証
-        if (firstName.trim().isEmpty()) {
+        if (firstName.isEmpty()) {
             throw new IllegalArgumentException("First name cannot be empty");
         }
-        if (lastName.trim().isEmpty()) {
+        if (lastName.isEmpty()) {
             throw new IllegalArgumentException("Last name cannot be empty");
         }
         if (birthDate.isAfter(LocalDate.now())) {
@@ -46,11 +51,6 @@ public record PersonRecord(
         if (!isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email format");
         }
-        
-        // 正規化処理
-        firstName = firstName.trim();
-        lastName = lastName.trim();
-        email = email.trim().toLowerCase();
         
         // 不変性を保つためにコピーを作成
         phoneNumbers = List.copyOf(phoneNumbers);

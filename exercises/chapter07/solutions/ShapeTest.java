@@ -118,7 +118,7 @@ public class ShapeTest {
         @Test
         @DisplayName("円のバウンディングボックス")
         void testCircleBoundingBox() {
-            Shape.Rectangle bbox = circle.getBoundingBox();
+            Shape.BoundingBox bbox = circle.getBoundingBox();
             
             assertEquals(-5, bbox.getX());
             assertEquals(-5, bbox.getY());
@@ -596,11 +596,11 @@ public class ShapeTest {
         @DisplayName("円の交点計算")
         void testCircleIntersectionPoints() {
             Circle circle1 = new Circle(0, 0, 5);
-            Circle circle2 = new Circle(8, 0, 5);  // 外接
+            Circle circle2 = new Circle(10, 0, 5);  // 中心間の距離10 = 半径の和なので外接
             
             Shape.Point[] points = Circle.getIntersectionPoints(circle1, circle2);
             assertEquals(1, points.length);  // 外接なので1点
-            assertEquals(4, points[0].getX(), 0.001);
+            assertEquals(5, points[0].getX(), 0.001);
             assertEquals(0, points[0].getY(), 0.001);
         }
         

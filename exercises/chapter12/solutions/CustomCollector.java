@@ -14,7 +14,7 @@ public class CustomCollector {
      */
     public static Collector<String, ?, String> joining(String delimiter, String prefix, String suffix) {
         return Collector.of(
-            StringJoiner::new,
+            () -> new StringJoiner(delimiter),  // StringJoinerは区切り文字を指定して作る
             (joiner, str) -> joiner.add(str),
             StringJoiner::merge,
             joiner -> prefix + joiner.toString() + suffix
@@ -51,7 +51,8 @@ public class CustomCollector {
      */
     public static <T> Collector<T, ?, List<T>> topN(int n, Comparator<T> comparator) {
         return Collector.of(
-            () -> new PriorityQueue<>(comparator.reversed()),
+            // 先頭が最小になるヒープにして、件数を超えたら最小のものを捨てる（大きいN件が残る）
+            () -> new PriorityQueue<>(comparator),
             (queue, item) -> {
                 queue.offer(item);
                 if (queue.size() > n) {
@@ -113,7 +114,8 @@ public class CustomCollector {
      * ImmutableListを作成するCollector
      */
     public static <T> Collector<T, ?, List<T>> toImmutableList() {
-        return Collector.of(
+        // 途中の入れ物の型（List<T>）を推論できないため、型引数を明示する
+        return Collector.<T, List<T>, List<T>>of(
             ArrayList::new,
             List::add,
             (list1, list2) -> {
@@ -158,7 +160,8 @@ public class CustomCollector {
      * 最頻値（モード）を求めるCollector
      */
     public static <T> Collector<T, ?, Optional<T>> mode() {
-        return Collector.of(
+        // 途中の入れ物の型（Map<T, Long>）を推論できないため、型引数を明示する
+        return Collector.<T, Map<T, Long>, Optional<T>>of(
             HashMap::new,
             (map, item) -> map.merge(item, 1L, Long::sum),
             (map1, map2) -> {
