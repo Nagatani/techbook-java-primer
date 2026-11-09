@@ -383,14 +383,14 @@ h1 small::after {
 
 
 
-/* h2スタイル - サブタイトル対応の新デザイン */
+/* h2スタイル - セクション見出し */
 h2 {
-  font-size: 24Q;
-  line-height: 32Q;
+  font-size: 22Q;
+  line-height: 30Q;
   margin-block-start: 2em;
-  margin-block-end: 1.5em;
+  margin-block-end: 1.2em;
   margin-inline: 0;
-  padding: 2.5em 1em 1em 1em;
+  padding: 0.6em 0.9em 0.7em;
   position: relative;
   
   /* 改ページを防ぐ */
@@ -398,46 +398,40 @@ h2 {
   break-after: avoid;
   break-inside: avoid;
   
-  /* セクションカウンターを継続 */
+  /* 章の中でのセクション番号 */
   counter-increment: section-counter;
   
-  /* レスポンシブ対応 */
   width: 100%;
   box-sizing: border-box;
-  
-  /* 見出しの装飾 */
   display: block;
   
-  /* 背景グラデーション */
   background: #f8f9fa;
   border-left: 4px solid #3498db;
+  border-bottom: 1px solid #dee2e6;
   
   color: #2c3e50;
   font-weight: 700;
 }
 
-/* h2のセクション番号を左上に大きく表示 */
-body h2::before,
-article h2::before,
-section h2::before {
-  content: counter(section-counter, decimal-leading-zero) !important;
-  position: absolute !important;
-  left: 0.2em !important;
-  top: -0.3em !important;
-  font-size: 60Q !important;
-  font-weight: 900 !important;
-  color: rgb(52, 152, 219) !important;
-  z-index: 1 !important;
-  line-height: 1 !important;
-  letter-spacing: -0.05em !important;
-  display: block !important;
-  width: auto !important;
-  height: auto !important;
-  background: none !important;
-  border: none !important;
-  transform: none !important;
-  /* 文字の影はPDFで灰色の四角になるため付けない */
-  text-shadow: none !important;
+/*
+ * セクション番号は「5章 - 3」の形で見出しの上に小さく出す。
+ * data-chapter はビルド時に scripts/vfm-section-label.js が付ける。
+ * 章番号のない文書（目次・奥付など）のh2には番号を出さない。
+ * section.cssの「section > h2:first-child::before」（番号を隠す）より詳細度を上げる。
+ */
+h2[data-chapter]::before,
+section > h2[data-chapter]:first-child::before {
+  content: attr(data-chapter) " - " counter(section-counter);
+  display: table;
+  margin: 0 0 0.45em;
+  padding: 0.15em 0.7em;
+  font-size: 11Q;
+  line-height: 16Q;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  background: #3498db;
+  border-radius: 2px;
 }
 
 /* h2直後のsmallタグをサブタイトルとして装飾 */
@@ -469,16 +463,8 @@ h2 > span:first-child:not(small) {
 /* 印刷時のh2スタイル調整 */
 @media print {
   h2 {
-    background: #f0f0f0;
-    border-left-color: #333;
     page-break-before: auto;
     page-break-after: avoid;
-  }
-  
-  h2::before {
-    background: white;
-    border-color: #666;
-    color: #000;
   }
   
   h2 + small,

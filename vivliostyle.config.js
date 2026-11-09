@@ -38,7 +38,8 @@ const markdownFiles = [
   'colophon.md',
 ];
 
-
+// 章の中のセクション見出し（h2）に章番号を付ける（表示はテーマのh2::before）
+const { documentProcessor } = require('./scripts/vfm-section-label.js');
 
 module.exports = {
   title: '大学2年生のためのプログラミング入門 オブジェクト指向言語 Java',
@@ -67,6 +68,7 @@ module.exports = {
     })
   ],
   
+  documentProcessor,
   entryContext: './manuscripts',
   output: './output/techbook-java-primer.pdf'
 };
