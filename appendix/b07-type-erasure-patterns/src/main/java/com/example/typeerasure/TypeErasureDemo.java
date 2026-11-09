@@ -16,7 +16,7 @@ public class TypeErasureDemo {
         System.out.println("------------------------------");
         GenericBox.demonstrateTypeErasure();
         System.out.println();
-        GenericBox.demonstrateBoundedTypeErasure();
+        NumberBox.demonstrateBoundedTypeErasure();
         System.out.println("\n");
         
         // 2. ブリッジメソッドの確認
