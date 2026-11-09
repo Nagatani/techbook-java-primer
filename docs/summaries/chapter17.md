@@ -9,7 +9,7 @@ sections:
   - key: "イベント処理入門"
     hash: 9cfc2591
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"
-    hash: 7530ded2
+    hash: dafd15ee
   - key: "カスタムコンポーネントの作成"
     hash: 76f93346
   - key: "よくあるエラーと対処法"
@@ -81,7 +81,7 @@ sections:
 - EDT（Event Dispatch Thread）とスレッド安全性（L1107–1533）
     + EDTの役割とSwingがスレッドセーフでないこと。invokeLaterによる初期化（17-21）、isEventDispatchThreadでの確認（17-22）
     + SwingWorkerのdoInBackground・process・done（17-23）、invokeLaterとinvokeAndWaitの違い（17-24）
-    + Look&Feel設定を含む初期化パターン（17-25）、publishとsetProgressによる進捗表示（17-26）
+    + Look&Feel設定を含む初期化パターン（17-25。存在しないUIManager.getSystemLookAndFeel()を2026-11-09にgetSystemLookAndFeelClassName()へ直した）、publishとsetProgressによる進捗表示（17-26）
     + javax.swing.Timerのデジタル時計（17-27）、volatileフラグと別スレッドからのUI更新（17-28）
 - カスタムコンポーネントの作成（L1534–1626）
     + 基底クラスの選択（JComponent・JButton・JPanel、17-29）

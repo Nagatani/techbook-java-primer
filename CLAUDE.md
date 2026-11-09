@@ -70,6 +70,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 範囲のあいだを省いた箇所は`// ...`の行になる（詳細は`sample-code/README.md`）
    - 本文で省いたimportや補助クラスは全文側に足してよい（本文に載らない範囲に置く）
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
+   - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
+   - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
 
 7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/h-common-errors/chapters/chapterXX.md`で提供する
    - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
