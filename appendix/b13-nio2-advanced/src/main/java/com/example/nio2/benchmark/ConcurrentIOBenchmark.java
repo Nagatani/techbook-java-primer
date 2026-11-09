@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.nio.ByteBuffer;
 
 /**
  * Benchmarks comparing concurrent file processing approaches.
@@ -118,8 +119,9 @@ public class ConcurrentIOBenchmark {
         for (Path file : tempFiles) {
             CompletableFuture<Long> future = new CompletableFuture<>();
             
+            // ExecutorServiceを指定する版のopenは、オプションをSetで受け取る
             AsynchronousFileChannel channel = AsynchronousFileChannel.open(
-                file, StandardOpenOption.READ, executor
+                file, Set.of(StandardOpenOption.READ), executor
             );
             
             ByteBuffer buffer = ByteBuffer.allocate(fileSize);

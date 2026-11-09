@@ -25,6 +25,12 @@ public class SharedMemoryFile implements AutoCloseable {
     private final FileChannel channel;
     private final MappedByteBuffer buffer;
     
+    // FileLockはJVM単位で管理されるため、同じJVMの別スレッドが重なる範囲をロックすると
+    // 待たずにOverlappingFileLockExceptionになる。そこで、ファイルごとのモニターで
+    // JVM内のスレッドを先に直列化し、そのうえでFileLockによりプロセス間を排他する
+    private static final ConcurrentHashMap<Path, Object> JVM_LOCKS = new ConcurrentHashMap<>();
+    private final Object jvmLock;
+    
     // Header structure (first 16 bytes)
     private static final int HEADER_SIZE = 16;
     private static final int VERSION_OFFSET = 0;
@@ -34,6 +40,8 @@ public class SharedMemoryFile implements AutoCloseable {
     public SharedMemoryFile(Path filePath, int size) throws IOException {
         this.filePath = filePath;
         this.size = size + HEADER_SIZE;
+        this.jvmLock = JVM_LOCKS.computeIfAbsent(
+            filePath.toAbsolutePath().normalize(), p -> new Object());
         
         // Create or open the file
         boolean exists = Files.exists(filePath);
@@ -77,46 +85,69 @@ public class SharedMemoryFile implements AutoCloseable {
     }
     
     /**
+     * ロックを取ったうえで実行する処理
+     */
+    @FunctionalInterface
+    public interface LockedAction<T> {
+        T run() throws IOException;
+    }
+    
+    /**
+     * ファイル全体を排他ロックした状態で処理を実行する。
+     * 読み込みから書き込みまでを1つの不可分な操作にしたいときに使う。
+     */
+    public <T> T withExclusiveLock(LockedAction<T> action) throws IOException {
+        synchronized (jvmLock) {
+            try (FileLock lock = channel.lock(0, size, false)) {
+                return action.run();
+            }
+        }
+    }
+    
+    /**
      * Write data to shared memory at specified offset.
      */
     public void writeData(int offset, byte[] data) throws IOException {
-        if (offset < 0 || offset + data.length > size - HEADER_SIZE) {
-            throw new IllegalArgumentException("Invalid offset or data too large");
-        }
-        
-        try (FileLock lock = channel.lock(0, HEADER_SIZE, false)) {
-            // Update header
-            int writeCount = buffer.getInt(WRITE_COUNT_OFFSET);
-            buffer.putInt(WRITE_COUNT_OFFSET, writeCount + 1);
-            buffer.putLong(LAST_WRITE_OFFSET, System.currentTimeMillis());
-            
-            // Write data
-            buffer.position(HEADER_SIZE + offset);
-            buffer.put(data);
-            
-            // Force to disk
-            buffer.force();
-            
-            logger.debug("Wrote {} bytes at offset {}", data.length, offset);
-        }
+        withExclusiveLock(() -> {
+            writeDataUnlocked(offset, data);
+            return null;
+        });
     }
     
     /**
      * Read data from shared memory at specified offset.
      */
     public byte[] readData(int offset, int length) throws IOException {
+        return withExclusiveLock(() -> readDataUnlocked(offset, length));
+    }
+    
+    // ロックを取らずに書き込む（withExclusiveLockの中から呼ぶ）
+    private void writeDataUnlocked(int offset, byte[] data) {
+        if (offset < 0 || offset + data.length > size - HEADER_SIZE) {
+            throw new IllegalArgumentException("Invalid offset or data too large");
+        }
+        // Update header
+        int writeCount = buffer.getInt(WRITE_COUNT_OFFSET);
+        buffer.putInt(WRITE_COUNT_OFFSET, writeCount + 1);
+        buffer.putLong(LAST_WRITE_OFFSET, System.currentTimeMillis());
+        
+        // 位置（position）を共有しないよう、絶対位置を指定して書き込む
+        buffer.put(HEADER_SIZE + offset, data);
+        buffer.force();
+        
+        logger.debug("Wrote {} bytes at offset {}", data.length, offset);
+    }
+    
+    // ロックを取らずに読み込む（withExclusiveLockの中から呼ぶ）
+    private byte[] readDataUnlocked(int offset, int length) {
         if (offset < 0 || offset + length > size - HEADER_SIZE) {
             throw new IllegalArgumentException("Invalid offset or length");
         }
+        byte[] data = new byte[length];
+        buffer.get(HEADER_SIZE + offset, data);
         
-        try (FileLock lock = channel.lock(0, size, true)) {
-            byte[] data = new byte[length];
-            buffer.position(HEADER_SIZE + offset);
-            buffer.get(data);
-            
-            logger.debug("Read {} bytes from offset {}", length, offset);
-            return data;
-        }
+        logger.debug("Read {} bytes from offset {}", length, offset);
+        return data;
     }
     
     /**
@@ -127,7 +158,7 @@ public class SharedMemoryFile implements AutoCloseable {
             throw new IllegalArgumentException("Invalid offset");
         }
         
-        try (FileLock lock = channel.lock(HEADER_SIZE + offset, 4, false)) {
+        return withExclusiveLock(() -> {
             int current = buffer.getInt(HEADER_SIZE + offset);
             if (current == expected) {
                 buffer.putInt(HEADER_SIZE + offset, update);
@@ -135,7 +166,7 @@ public class SharedMemoryFile implements AutoCloseable {
                 return true;
             }
             return false;
-        }
+        });
     }
     
     /**
@@ -188,7 +219,7 @@ public class SharedMemoryFile implements AutoCloseable {
     /**
      * Simple message queue implementation using shared memory.
      */
-    public static class SharedMemoryQueue {
+    public static class SharedMemoryQueue implements AutoCloseable {
         private final SharedMemoryFile sharedMemory;
         private final int messageSize;
         private final int queueCapacity;
@@ -202,27 +233,26 @@ public class SharedMemoryFile implements AutoCloseable {
             int totalSize = METADATA_SIZE + (messageSize * queueCapacity);
             this.sharedMemory = new SharedMemoryFile(path, totalSize);
             
-            // Initialize if new
-            if (sharedMemory.getWriteCount() == 0) {
-                initializeQueue();
-            }
-        }
-        
-        private void initializeQueue() throws IOException {
-            byte[] metadata = new byte[METADATA_SIZE];
-            ByteBuffer metaBuffer = ByteBuffer.wrap(metadata);
-            metaBuffer.putInt(0); // head
-            metaBuffer.putInt(0); // tail
-            metaBuffer.putInt(0); // count
-            sharedMemory.writeData(0, metadata);
+            // Initialize if new（確認と初期化のあいだに割り込まれないようロックする）
+            sharedMemory.withExclusiveLock(() -> {
+                if (sharedMemory.getWriteCount() == 0) {
+                    byte[] metadata = new byte[METADATA_SIZE];  // head, tail, count = 0
+                    sharedMemory.writeDataUnlocked(0, metadata);
+                }
+                return null;
+            });
         }
         
         public boolean enqueue(byte[] message) throws IOException {
             if (message.length > messageSize) {
                 throw new IllegalArgumentException("Message too large");
             }
-            
-            byte[] metadata = sharedMemory.readData(0, METADATA_SIZE);
+            // 管理情報の読み込みから書き戻しまでを1つの操作にする
+            return sharedMemory.withExclusiveLock(() -> enqueueUnlocked(message));
+        }
+        
+        private boolean enqueueUnlocked(byte[] message) {
+            byte[] metadata = sharedMemory.readDataUnlocked(0, METADATA_SIZE);
             ByteBuffer metaBuffer = ByteBuffer.wrap(metadata);
             int head = metaBuffer.getInt();
             int tail = metaBuffer.getInt();
@@ -236,7 +266,7 @@ public class SharedMemoryFile implements AutoCloseable {
             int offset = METADATA_SIZE + (tail * messageSize);
             byte[] paddedMessage = new byte[messageSize];
             System.arraycopy(message, 0, paddedMessage, 0, message.length);
-            sharedMemory.writeData(offset, paddedMessage);
+            sharedMemory.writeDataUnlocked(offset, paddedMessage);
             
             // Update metadata
             tail = (tail + 1) % queueCapacity;
@@ -245,13 +275,17 @@ public class SharedMemoryFile implements AutoCloseable {
             metaBuffer.putInt(head);
             metaBuffer.putInt(tail);
             metaBuffer.putInt(count);
-            sharedMemory.writeData(0, metadata);
+            sharedMemory.writeDataUnlocked(0, metadata);
             
             return true;
         }
         
         public byte[] dequeue() throws IOException {
-            byte[] metadata = sharedMemory.readData(0, METADATA_SIZE);
+            return sharedMemory.withExclusiveLock(this::dequeueUnlocked);
+        }
+        
+        private byte[] dequeueUnlocked() {
+            byte[] metadata = sharedMemory.readDataUnlocked(0, METADATA_SIZE);
             ByteBuffer metaBuffer = ByteBuffer.wrap(metadata);
             int head = metaBuffer.getInt();
             int tail = metaBuffer.getInt();
@@ -263,7 +297,7 @@ public class SharedMemoryFile implements AutoCloseable {
             
             // Read message
             int offset = METADATA_SIZE + (head * messageSize);
-            byte[] message = sharedMemory.readData(offset, messageSize);
+            byte[] message = sharedMemory.readDataUnlocked(offset, messageSize);
             
             // Update metadata
             head = (head + 1) % queueCapacity;
@@ -272,7 +306,7 @@ public class SharedMemoryFile implements AutoCloseable {
             metaBuffer.putInt(head);
             metaBuffer.putInt(tail);
             metaBuffer.putInt(count);
-            sharedMemory.writeData(0, metadata);
+            sharedMemory.writeDataUnlocked(0, metadata);
             
             // Trim padding
             int actualLength = 0;

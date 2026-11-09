@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.time.Duration;
+import java.util.function.Consumer;
 
 /**
  * Utility methods for advanced file operations using NIO.2.
@@ -152,7 +156,7 @@ public class FileUtils {
                 long remaining = fileSize - position;
                 long currentChunkSize = Math.min(chunkSize, remaining);
                 
-                Path chunkFile = sourceFile.getParent().resolve(
+                Path chunkFile = sourceFile.resolveSibling(
                     sourceFile.getFileName() + ".chunk" + chunkNumber);
                 
                 try (FileChannel chunkChannel = FileChannel.open(chunkFile,

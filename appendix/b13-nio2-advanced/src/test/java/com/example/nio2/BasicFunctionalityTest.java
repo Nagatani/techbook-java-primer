@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.util.concurrent.*;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Basic functionality tests for NIO.2 advanced features.

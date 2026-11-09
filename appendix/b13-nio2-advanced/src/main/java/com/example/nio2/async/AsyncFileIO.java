@@ -157,6 +157,8 @@ public class AsyncFileIO {
             CompletionHandler<Integer, Void> handler = new CompletionHandler<Integer, Void>() {
                 @Override
                 public void completed(Integer bytesRead, Void attachment) {
+                    // 書き込み完了後に次の読み込みを始めるため、このハンドラ自身を参照できるようにする
+                    CompletionHandler<Integer, Void> readHandler = this;
                     if (bytesRead == -1) {
                         // Copy complete
                         future.complete(totalBytesTransferred.get());
@@ -191,7 +193,7 @@ public class AsyncFileIO {
                                     // Prepare for next read
                                     buffer.clear();
                                     readPosition.addAndGet(bytesRead);
-                                    sourceChannel.read(buffer, readPosition.get(), null, handler);
+                                    sourceChannel.read(buffer, readPosition.get(), null, readHandler);
                                 }
                             }
                             
@@ -229,21 +231,22 @@ public class AsyncFileIO {
         CompletableFuture<Void> future = new CompletableFuture<>();
         
         try {
+            // AsynchronousFileChannelはAPPENDを指定できないため、ファイルの末尾の位置から書き込む
             AsynchronousFileChannel channel = AsynchronousFileChannel.open(
                 path,
                 StandardOpenOption.WRITE,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND
+                StandardOpenOption.CREATE
             );
             
-            long position = Files.size(path);
+            long position = channel.size();
             ByteBuffer buffer = StandardCharsets.UTF_8.encode(content);
             
             channel.write(buffer, position, buffer, new CompletionHandler<Integer, ByteBuffer>() {
                 @Override
                 public void completed(Integer result, ByteBuffer attachment) {
                     if (attachment.hasRemaining()) {
-                        channel.write(attachment, position + result, attachment, this);
+                        // 書き込めたバイト数だけバッファの位置が進んでいるので、そこから続ける
+                        channel.write(attachment, position + attachment.position(), attachment, this);
                     } else {
                         future.complete(null);
                         closeQuietly(channel);

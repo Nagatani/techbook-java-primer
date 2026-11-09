@@ -95,7 +95,7 @@ public class MemoryMappedDemo {
         System.out.println("--- Writing with Memory-Mapped File ---");
         
         // Create a copy for writing
-        Path writePath = filePath.getParent().resolve(filePath.getFileName() + ".write");
+        Path writePath = filePath.resolveSibling(filePath.getFileName() + ".write");
         Files.copy(filePath, writePath, StandardCopyOption.REPLACE_EXISTING);
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(writePath, FileChannel.MapMode.READ_WRITE)) {
@@ -165,7 +165,7 @@ public class MemoryMappedDemo {
         System.out.println("--- In-Place Modification Demo ---");
         
         // Create a copy for modification
-        Path modPath = filePath.getParent().resolve(filePath.getFileName() + ".mod");
+        Path modPath = filePath.resolveSibling(filePath.getFileName() + ".mod");
         Files.copy(filePath, modPath, StandardCopyOption.REPLACE_EXISTING);
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(modPath, FileChannel.MapMode.READ_WRITE)) {

@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Demonstration of parallel file processing capabilities.
