@@ -1,0 +1,57 @@
+name: Check manuscript consistency
+
+# pushとプルリクエストのたびに、構成・索引・サンプルコードの食い違いを検査する。
+# 手元のpre-commitフック（scripts/git-hooks/）を有効にし忘れた環境や、--no-verifyで省いたコミットも拾う。
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ここから下の3つは、環境によらず同じ結果になる検査。失敗したらジョブを失敗にする
+      - name: 章・演習・付録B・用語集・相互参照ガイドの検査
+        run: npm run check:structure
+
+      - name: 索引と要約が最新か
+        run: npm run index:check
+
+      - name: サンプルコードの抜粋とコンパイル
+        run: npm run check:samples -- --no-run
+
+      # 実行結果の照合は、言語設定・タイムゾーン・画面の有無で出力が変わりうるため参考として流す
+      - name: サンプルコードの実行結果の照合（参考）
+        continue-on-error: true
+        env:
+          TZ: Asia/Tokyo
+          LANG: ja_JP.UTF-8
+        run: xvfb-run -a npm run check:samples
+
+      # textlintは規約上の例外が残っているため参考として流す
+      - name: textlint（参考）
+        continue-on-error: true
+        run: npm run lint
