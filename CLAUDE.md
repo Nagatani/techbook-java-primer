@@ -94,7 +94,9 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
 - `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
-- `npm run check:structure`: Check that chapters, exercises, appendix B, glossary, and cross references agree (exercise directories and links, `付録B.NN「題名」`, `第N章「題名」`, glossary chapter refs, generated cross-reference guide). Runs in the pre-commit hook
+- `npm run check:structure`: Check that chapters, exercises, appendix B, glossary, and cross references agree (exercise directories and links, `付録B.NN「題名」`, `第N章「題名」`, glossary chapter refs, generated cross-reference guide). Runs in the shared pre-commit hook and CI
+- Git hooks: the shared pre-commit hook is `scripts/git-hooks/pre-commit` (enable once per clone with `git config core.hooksPath scripts/git-hooks`). It runs `check:structure` and `check:compliance` (about 1 second) and blocks the commit on failure. Do not bypass it with `--no-verify`; fix the content or the check script instead. Changes to `scripts/git-hooks/` and `scripts/` run on every contributor's machine, so review them before merging
+- CI: `.github/workflows/check.yml` runs `check:structure`, `index:check`, and `check:samples -- --no-run` on push and pull requests (failing the job), plus the run-mode sample check and textlint as informational steps
 - `npm run crossref`: Regenerate `manuscripts/cross-reference-guide.md` from chapter titles and the appendix B index (do not edit that file by hand)
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 

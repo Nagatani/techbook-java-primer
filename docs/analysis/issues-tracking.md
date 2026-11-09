@@ -421,4 +421,4 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - 第2章の演習が基本文法ではなくクラスの作成を扱っている
 - 発展・チャレンジ課題に、実在しない技術を題材にした課題がある（「意識を持つ自律イベント処理システム」「量子的イベント重ね合わせ処理システム」など。第18・20・21章ほか）
 - 第17・19章と付録Eには演習がない
-
+- pre-commitフックを`scripts/git-hooks/pre-commit`として共有した。速い検査（check:structure、check:compliance。約0.7秒）だけでコミットを止め、textlintはフックから外した。GitHub Actionsの`check.yml`で、構成・索引・サンプルの抜粋とコンパイルを検査する（実行結果の照合とtextlintは参考扱い）
