@@ -2,6 +2,7 @@ package com.example.records;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -121,13 +122,13 @@ public class DataPipelineDemo {
              * イベントストリームからユーザースナップショットを構築
              */
             public static Map<String, UserSnapshot> buildSnapshots(Stream<UserEvent> events) {
-                return events.collect(
-                    Collectors.toMap(
-                        UserEvent::userId,
-                        EventProcessor::createInitialSnapshot,
-                        EventProcessor::updateSnapshot
-                    )
-                );
+                // ユーザーごとに、最初のイベントでスナップショットを作り、以降のイベントを順に適用する
+                Map<String, UserSnapshot> snapshots = new LinkedHashMap<>();
+                events.forEachOrdered(event -> snapshots.compute(event.userId(),
+                    (id, snapshot) -> snapshot == null
+                        ? createInitialSnapshot(event)
+                        : updateSnapshot(snapshot, event)));
+                return snapshots;
             }
             
             private static UserSnapshot createInitialSnapshot(UserEvent event) {

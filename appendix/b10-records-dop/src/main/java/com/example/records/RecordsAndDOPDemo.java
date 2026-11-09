@@ -255,7 +255,8 @@ public class RecordsAndDOPDemo {
         public static String getLocationInfo(Object entity) {
             return switch (entity) {
                 // ネストしたレコードの分解
-                case Person(var name, var age, Address(var street, var city, "Japan", _), _) ->
+                case Person(var name, var age, Address(var street, var city, var country, _), _)
+                        when country.equals("Japan") ->
                     name + " lives in " + city + ", Japan";
                 
                 case Person(var name, var age, Address(_, _, var country, _), _) ->
@@ -280,9 +281,9 @@ public class RecordsAndDOPDemo {
                     name + " is a minor";
                 case Person(var name, var age, _, _) when age >= 65 -> 
                     name + " is a senior citizen";
-                case Person(var name, var age, Address(_, _, "Japan", _), _) when age >= 20 ->
+                case Person(var name, var age, Address(_, _, var country, _), _) when country.equals("Japan") && age >= 20 ->
                     name + " is an adult in Japan (can drink)";
-                case Person(var name, var age, Address(_, _, "USA", _), _) when age >= 21 ->
+                case Person(var name, var age, Address(_, _, var country, _), _) when country.equals("USA") && age >= 21 ->
                     name + " is an adult in USA (can drink)";
                 case Person(var name, _, _, _) -> 
                     name + " is an adult";
@@ -325,12 +326,12 @@ public class RecordsAndDOPDemo {
                 case Neg(Const(var a)) -> new Const(-a);
                 
                 // 恒等式
-                case Add(Const(0), var e) -> simplify(e);
-                case Add(var e, Const(0)) -> simplify(e);
-                case Mul(Const(0), _) -> new Const(0);
-                case Mul(_, Const(0)) -> new Const(0);
-                case Mul(Const(1), var e) -> simplify(e);
-                case Mul(var e, Const(1)) -> simplify(e);
+                case Add(Const(var v), var e) when v == 0 -> simplify(e);
+                case Add(var e, Const(var v)) when v == 0 -> simplify(e);
+                case Mul(Const(var v), _) when v == 0 -> new Const(0);
+                case Mul(_, Const(var v)) when v == 0 -> new Const(0);
+                case Mul(Const(var v), var e) when v == 1 -> simplify(e);
+                case Mul(var e, Const(var v)) when v == 1 -> simplify(e);
                 case Neg(Neg(var e)) -> simplify(e);
                 
                 // 再帰的な簡約
