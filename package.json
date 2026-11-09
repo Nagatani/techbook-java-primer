@@ -23,7 +23,7 @@
     "lintadx:fix": "npx textlint --fix appendix/**/*.md",
     "check:compliance": "node scripts/check-claude-md-compliance.js",
     "fix:compliance": "node scripts/fix-claude-md-violations.js",
-    "pre-commit": "npm run check:compliance && npm run lint"
+    "pre-commit": "sh scripts/git-hooks/pre-commit"
   },
   "repository": {
     "type": "git",

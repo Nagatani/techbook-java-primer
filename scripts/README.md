@@ -1,69 +1,38 @@
 # 書籍プロジェクト作業用スクリプト
 
-このディレクトリには、Java入門書プロジェクトの校正・校閲作業で使用したPythonスクリプトが含まれています。
+いずれもリポジトリのルートで実行します。npmスクリプトがあるものは、そちらを使ってください。
 
-## スクリプト一覧
+## 検査
 
-### 分析用スクリプト
-- `analyze_book_structure.py` - 書籍全体の構造を分析（章数、コードブロック数、演習セクション等）
-- `find_dearu_usage.py` - である調の使用箇所を検出（リスト項目を除く）
-- `find_duplicate_listings.py` - コードリスト番号の重複を検出
-- `analyze_code_block_types.py` - コードブロックの言語タイプ別の番号付与状況を分析
-- `analyze_none_blocks.py` - 番号なしブロックの内容分類
-- `analyze_code_blocks_detailed.py` - コードブロックの詳細な分類と分析
+| スクリプト | npmスクリプト | 役割 |
+|---|---|---|
+| `check-structure.js` | `check:structure`、`crossref` | 章・演習・付録B・用語集・相互参照ガイドの食い違いを検査する。`crossref`で相互参照ガイドを生成する |
+| `check-claude-md-compliance.js` | `check:compliance` | CLAUDE.mdの表記ルール（リストのコロン、太字の見出し的使用など）への違反を検出する |
+| `check-java-samples.js` | `check:java`、`check:java:run` | 全文を公開していない番号付きサンプルをjavacでコンパイルし、実行結果を照合する |
+| `sample-code.js` | `check:samples`、`samples:sync`、`samples:extract` | `sample-code/`の全文と本文の抜粋を対応づける（検査、本文への反映、番号の振り直し） |
+| `build-book-index.js` | `index`、`index:check` | 節単位の索引（`docs/book-index/`）を作り、要約（`docs/summaries/`）の鮮度を検査する |
+| `git-hooks/pre-commit` | なし | 共有のpre-commitフック。`git config core.hooksPath scripts/git-hooks`で有効にする |
 
-### 修正用スクリプト
-- `fix_dearu_style.py` - である調をですます調に自動修正
-- `add_code_listing_numbers.py` - 番号なしコードブロックに番号を付与
-- `fix_chapter12_listings.py` - chapter12の誤った番号（13-X）を修正
-- `restore_sample_code_format.py` ⭐ - **正しい形式**：「サンプルコードX-Y」形式に統一
+## ビルド
 
-### 廃止されたスクリプト
-- `fix_duplicate_listings.py` ❌ - 誤って「リストX.Y」形式に変更してしまうため使用禁止
-- `fix_long_sentences.py` - 長文修正（未完成、手動対応が必要）
+| スクリプト | npmスクリプト | 役割 |
+|---|---|---|
+| `convert-mermaid-to-images.js` | `mermaid:convert`（`build`から呼ばれる） | 原稿のMermaid図を画像に変換する。元ファイルが変わったときだけ変換する |
 
-## 重要な注意事項
+## 修正の補助
 
-### コードリスト番号の形式
-**正しい形式**: `<span class="listing-number">**サンプルコードX-Y**</span>`
-- X: 章番号
-- Y: 章内の連番（1から始まる）
-- ハイフン（-）で区切る
-- **対象**: Javaコードおよびプログラミング言語のコードブロックのみ
+自動で書き換えるため、実行後は`git diff`で全変更箇所を確かめてください。
 
-**誤った形式**: ~~`**リストX.Y**`~~ （使用禁止）
+| スクリプト | npmスクリプト | 役割 |
+|---|---|---|
+| `fix-claude-md-violations.js` | `fix:compliance` | `check:compliance`の違反のうち、機械的に直せるもの（リスト導入文のコロンなど）を直す |
+| `fix-title-colon-lists.js` | なし | 「- 項目： 説明」形式のリストを階層化リストに変換する（`fix:compliance`の対象外のもの） |
 
-### 番号付与のルール
-#### 番号を付けるもの
-- Javaソースコード（.java）
-- XMLファイル（pom.xml, web.xml等）
-- プロパティファイル、設定ファイル
-- その他のプログラミング言語のコード（Python, JavaScript, C等）
+## 削除したスクリプト（2026-11-09）
 
-#### 番号を付けないもの
-- エラー出力、例外スタックトレース
-- プログラムの実行結果、コンソール出力
-- ディレクトリ構造、ASCII図表
-- コマンドライン操作の例（ターミナル表示）
+2025-07〜08に1回だけ使った変換・分析スクリプトと、`tools/`の分割校正ツールは削除しました。
+内容は`git log -- scripts tools`で確認できます。
 
-### 作業時の注意
-1. コードリスト番号は必ず「サンプルコード」形式を使用する
-2. 「リスト」形式は使用しない
-3. エラー出力や実行結果には番号を付けない
-4. 修正作業前に必ずCLAUDE.mdの最新ルールを確認する
-
-## 使用例
-
-```bash
-# である調の検出
-python3 scripts/find_dearu_usage.py
-
-# である調の自動修正
-python3 scripts/fix_dearu_style.py
-
-# コードリスト番号の付与
-python3 scripts/add_code_listing_numbers.py
-
-# サンプルコード形式への復元（必要な場合）
-python3 scripts/restore_sample_code_format.py
-```
+- 番号付け・番号の重複修正（`add_code_listing_numbers.py`ほか）は`sample-code.js number`と`check:samples`に置き換えた
+- 構造の分析（`analyze_*.py`）は`build-book-index.js`と`check-structure.js`に置き換えた
+- 文体・長文・コロンの一括変換（`fix_dearu_style.py`、`fix_long_sentences.py`、`tools/convert_colon_patterns*.py`ほか）は、文言の欠落（Issue #013）の原因になったため再利用しない。校正は`docs/proofreading-workflow.md`の手順で行う
