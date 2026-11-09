@@ -1,3 +1,5 @@
+package com.example.datetime;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -12,8 +14,9 @@ public class DateTimeFormatterExample {
             dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         
         // 2. ロケール対応フォーマッタ
+        // 時刻のFULL形式はタイムゾーン名を含み、LocalDateTimeには使えないため、時刻はMEDIUMにする
         DateTimeFormatter japaneseFormatter = DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.FULL)
+            .ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM)
             .withLocale(Locale.JAPANESE);
         System.out.println("日本語形式: " + dateTime.format(japaneseFormatter));
         

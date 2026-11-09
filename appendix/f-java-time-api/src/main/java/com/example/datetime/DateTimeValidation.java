@@ -1,3 +1,5 @@
+package com.example.datetime;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -124,6 +126,9 @@ public class DateTimeValidation {
         
         while (true) {
             System.out.print("日付を入力: ");
+            if (!scanner.hasNextLine()) {
+                break;  // 入力の終わり（Ctrl+DやCtrl+Z）でも終了する
+            }
             String input = scanner.nextLine().trim();
             
             if ("quit".equalsIgnoreCase(input)) {
