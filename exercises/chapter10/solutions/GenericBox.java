@@ -104,10 +104,11 @@ public class GenericBox<T> {
     /**
      * 別のボックスに内容をコピーする（反変性の例）
      * 
-     * @param other コピー先のボックス
-     * @param <U> コピー先の型（Tのスーパータイプ）
+     * 型パラメータには下限（super）を指定できないため、ワイルドカード「? super T」を使う
+     *
+     * @param other コピー先のボックス（中身の型はTかそのスーパータイプ）
      */
-    public <U super T> void copyTo(GenericBox<U> other) {
+    public void copyTo(GenericBox<? super T> other) {
         if (!isEmpty()) {
             other.setContent(getContent());
         }
@@ -190,4 +191,80 @@ public class GenericBox<T> {
      * @param content 設定する内容
      * @param <T> 設定する型
      */
-    public static <T> void setAll(List<? super GenericBox<T>> boxes, T content) {\n        // Note: この例では具体的な実装は困難ですが、概念を示しています\n        // 実際の用途では、より具体的な型関係がある場合に有効です\n    }\n    \n    /**\n     * ボックスの内容を交換する\n     * \n     * @param other 交換相手のボックス\n     */\n    public void swap(GenericBox<T> other) {\n        T temp = this.content;\n        this.content = other.content;\n        other.content = temp;\n    }\n    \n    /**\n     * ボックスの内容を文字列として取得する\n     * \n     * @return 内容の文字列表現\n     */\n    @Override\n    public String toString() {\n        return String.format(\"GenericBox<%s>{content=%s, historySize=%d}\",\n                           type.getSimpleName(), content, history.size());\n    }\n    \n    /**\n     * ボックスの等価性を判定する\n     * \n     * @param obj 比較対象\n     * @return 等しい場合true\n     */\n    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) return true;\n        if (obj == null || getClass() != obj.getClass()) return false;\n        GenericBox<?> that = (GenericBox<?>) obj;\n        return Objects.equals(content, that.content) && \n               Objects.equals(type, that.type);\n    }\n    \n    /**\n     * ハッシュコードを取得する\n     * \n     * @return ハッシュコード\n     */\n    @Override\n    public int hashCode() {\n        return Objects.hash(content, type);\n    }\n    \n    /**\n     * ファクトリーメソッド：値を持つボックスを作成する\n     * \n     * @param value 初期値\n     * @param type 型のClassオブジェクト\n     * @param <T> 型パラメータ\n     * @return 作成されたボックス\n     */\n    public static <T> GenericBox<T> of(T value, Class<T> type) {\n        GenericBox<T> box = new GenericBox<>(type);\n        box.setContent(value);\n        return box;\n    }\n    \n    /**\n     * ファクトリーメソッド：空のボックスを作成する\n     * \n     * @param type 型のClassオブジェクト\n     * @param <T> 型パラメータ\n     * @return 作成されたボックス\n     */\n    public static <T> GenericBox<T> empty(Class<T> type) {\n        return new GenericBox<>(type);\n    }\n}
+    public static <T> void setAll(List<? super GenericBox<T>> boxes, T content) {
+        // Note: この例では具体的な実装は困難ですが、概念を示しています
+        // 実際の用途では、より具体的な型関係がある場合に有効です
+    }
+    
+    /**
+     * ボックスの内容を交換する
+     * 
+     * @param other 交換相手のボックス
+     */
+    public void swap(GenericBox<T> other) {
+        T temp = this.content;
+        this.content = other.content;
+        other.content = temp;
+    }
+    
+    /**
+     * ボックスの内容を文字列として取得する
+     * 
+     * @return 内容の文字列表現
+     */
+    @Override
+    public String toString() {
+        return String.format("GenericBox<%s>{content=%s, historySize=%d}",
+                           type.getSimpleName(), content, history.size());
+    }
+    
+    /**
+     * ボックスの等価性を判定する
+     * 
+     * @param obj 比較対象
+     * @return 等しい場合true
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        GenericBox<?> that = (GenericBox<?>) obj;
+        return Objects.equals(content, that.content) && 
+               Objects.equals(type, that.type);
+    }
+    
+    /**
+     * ハッシュコードを取得する
+     * 
+     * @return ハッシュコード
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, type);
+    }
+    
+    /**
+     * ファクトリーメソッド：値を持つボックスを作成する
+     * 
+     * @param value 初期値
+     * @param type 型のClassオブジェクト
+     * @param <T> 型パラメータ
+     * @return 作成されたボックス
+     */
+    public static <T> GenericBox<T> of(T value, Class<T> type) {
+        GenericBox<T> box = new GenericBox<>(type);
+        box.setContent(value);
+        return box;
+    }
+    
+    /**
+     * ファクトリーメソッド：空のボックスを作成する
+     * 
+     * @param type 型のClassオブジェクト
+     * @param <T> 型パラメータ
+     * @return 作成されたボックス
+     */
+    public static <T> GenericBox<T> empty(Class<T> type) {
+        return new GenericBox<>(type);
+    }
+}

@@ -54,4 +54,648 @@
  * 8. 設定の永続化と復元機能の追加
  */
 
-import javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.*;\nimport java.io.*;\nimport java.util.*;\nimport java.util.List;\nimport java.util.prefs.Preferences;\n\npublic class MenuSystem extends JFrame {\n    // メニュー管理\n    private JMenuBar menuBar;\n    private Map<String, Action> actions;\n    private List<String> recentFiles;\n    private JMenu recentMenu;\n    private Properties menuConfig;\n    private Preferences preferences;\n    \n    // UI コンポーネント\n    private JToolBar toolBar;\n    private JTextArea contentArea;\n    private JLabel statusLabel;\n    private JPanel dynamicMenuPanel;\n    private DefaultListModel<String> menuHistoryModel;\n    private JList<String> menuHistoryList;\n    \n    // メニューカスタマイズ\n    private MenuCustomizer menuCustomizer;\n    private boolean menuBarVisible = true;\n    private boolean toolBarVisible = true;\n    \n    public MenuSystem() {\n        actions = new HashMap<>();\n        recentFiles = new ArrayList<>();\n        menuConfig = new Properties();\n        preferences = Preferences.userNodeForPackage(MenuSystem.class);\n        menuHistoryModel = new DefaultListModel<>();\n        \n        initializeActions();\n        initializeComponents();\n        setupMenuBar();\n        setupToolBar();\n        setupLayout();\n        setupContextMenus();\n        setupEventHandlers();\n        setupWindow();\n        \n        loadConfiguration();\n        loadRecentFiles();\n    }\n    \n    private void initializeActions() {\n        // ファイルアクション\n        actions.put(\"new\", new MenuAction(\"新規作成\", \"新しいドキュメントを作成\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"new.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                newFile();\n                addToHistory(\"新規作成\");\n            }\n        });\n        \n        actions.put(\"open\", new MenuAction(\"開く\", \"ファイルを開く\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"open.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                openFile();\n                addToHistory(\"ファイルを開く\");\n            }\n        });\n        \n        actions.put(\"save\", new MenuAction(\"保存\", \"ファイルを保存\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"save.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                saveFile();\n                addToHistory(\"ファイルを保存\");\n            }\n        });\n        \n        actions.put(\"exit\", new MenuAction(\"終了\", \"アプリケーションを終了\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK),\n            null) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                exitApplication();\n            }\n        });\n        \n        // 編集アクション\n        actions.put(\"cut\", new MenuAction(\"切り取り\", \"選択したテキストを切り取り\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"cut.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                if (contentArea.getSelectedText() != null) {\n                    contentArea.cut();\n                    addToHistory(\"切り取り\");\n                }\n            }\n        });\n        \n        actions.put(\"copy\", new MenuAction(\"コピー\", \"選択したテキストをコピー\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"copy.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                if (contentArea.getSelectedText() != null) {\n                    contentArea.copy();\n                    addToHistory(\"コピー\");\n                }\n            }\n        });\n        \n        actions.put(\"paste\", new MenuAction(\"貼り付け\", \"クリップボードから貼り付け\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK),\n            loadIcon(\"paste.png\")) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                contentArea.paste();\n                addToHistory(\"貼り付け\");\n            }\n        });\n        \n        // 表示アクション\n        actions.put(\"toggleMenuBar\", new MenuAction(\"メニューバー表示切替\", \"メニューバーの表示/非表示\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK),\n            null) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                toggleMenuBar();\n                addToHistory(\"メニューバー表示切替\");\n            }\n        });\n        \n        actions.put(\"toggleToolBar\", new MenuAction(\"ツールバー表示切替\", \"ツールバーの表示/非表示\", \n            KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK),\n            null) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                toggleToolBar();\n                addToHistory(\"ツールバー表示切替\");\n            }\n        });\n        \n        // カスタムアクション\n        actions.put(\"customize\", new MenuAction(\"メニューカスタマイズ\", \"メニューをカスタマイズ\", \n            null, null) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                showMenuCustomizer();\n                addToHistory(\"メニューカスタマイズ\");\n            }\n        });\n        \n        actions.put(\"addDynamicMenu\", new MenuAction(\"動的メニュー追加\", \"新しいメニュー項目を追加\", \n            null, null) {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                addDynamicMenuItem();\n                addToHistory(\"動的メニュー追加\");\n            }\n        });\n    }\n    \n    private void initializeComponents() {\n        contentArea = new JTextArea(20, 40);\n        contentArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));\n        contentArea.setLineWrap(true);\n        contentArea.setWrapStyleWord(true);\n        \n        statusLabel = new JLabel(\"準備完了\");\n        statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());\n        \n        dynamicMenuPanel = new JPanel(new FlowLayout());\n        dynamicMenuPanel.setBorder(BorderFactory.createTitledBorder(\"動的メニュー\"));\n        \n        menuHistoryList = new JList<>(menuHistoryModel);\n        menuHistoryList.setVisibleRowCount(10);\n        menuHistoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);\n        \n        menuCustomizer = new MenuCustomizer();\n    }\n    \n    private void setupMenuBar() {\n        menuBar = new JMenuBar();\n        \n        // ファイルメニュー\n        JMenu fileMenu = new JMenu(\"ファイル(F)\");\n        fileMenu.setMnemonic('F');\n        \n        fileMenu.add(actions.get(\"new\"));\n        fileMenu.add(actions.get(\"open\"));\n        fileMenu.addSeparator();\n        fileMenu.add(actions.get(\"save\"));\n        \n        // 最近使用したファイルメニュー\n        recentMenu = new JMenu(\"最近使用したファイル\");\n        fileMenu.add(recentMenu);\n        \n        fileMenu.addSeparator();\n        fileMenu.add(actions.get(\"exit\"));\n        \n        // 編集メニュー\n        JMenu editMenu = new JMenu(\"編集(E)\");\n        editMenu.setMnemonic('E');\n        \n        editMenu.add(actions.get(\"cut\"));\n        editMenu.add(actions.get(\"copy\"));\n        editMenu.add(actions.get(\"paste\"));\n        \n        // 表示メニュー\n        JMenu viewMenu = new JMenu(\"表示(V)\");\n        viewMenu.setMnemonic('V');\n        \n        viewMenu.add(actions.get(\"toggleMenuBar\"));\n        viewMenu.add(actions.get(\"toggleToolBar\"));\n        \n        // サブメニューの例\n        JMenu appearanceMenu = new JMenu(\"外観\");\n        appearanceMenu.add(new JMenuItem(\"フォント設定\"));\n        appearanceMenu.add(new JMenuItem(\"色設定\"));\n        \n        JMenu themesMenu = new JMenu(\"テーマ\");\n        themesMenu.add(new JRadioButtonMenuItem(\"デフォルト\", true));\n        themesMenu.add(new JRadioButtonMenuItem(\"ダーク\"));\n        themesMenu.add(new JRadioButtonMenuItem(\"ライト\"));\n        \n        appearanceMenu.add(themesMenu);\n        viewMenu.add(appearanceMenu);\n        \n        // ツールメニュー\n        JMenu toolsMenu = new JMenu(\"ツール(T)\");\n        toolsMenu.setMnemonic('T');\n        \n        toolsMenu.add(actions.get(\"addDynamicMenu\"));\n        toolsMenu.add(actions.get(\"customize\"));\n        \n        // 動的メニューセクション\n        JMenu dynamicMenu = new JMenu(\"動的メニュー\");\n        toolsMenu.add(dynamicMenu);\n        \n        // ヘルプメニュー\n        JMenu helpMenu = new JMenu(\"ヘルプ(H)\");\n        helpMenu.setMnemonic('H');\n        \n        helpMenu.add(new JMenuItem(\"使用方法\"));\n        helpMenu.add(new JMenuItem(\"キーボードショートカット\"));\n        helpMenu.addSeparator();\n        helpMenu.add(new JMenuItem(\"バージョン情報\"));\n        \n        menuBar.add(fileMenu);\n        menuBar.add(editMenu);\n        menuBar.add(viewMenu);\n        menuBar.add(toolsMenu);\n        menuBar.add(helpMenu);\n        \n        setJMenuBar(menuBar);\n        \n        // メニューイベントリスナー\n        setupMenuListeners();\n    }\n    \n    private void setupMenuListeners() {\n        for (int i = 0; i < menuBar.getMenuCount(); i++) {\n            JMenu menu = menuBar.getMenu(i);\n            menu.addMenuListener(new MenuListener() {\n                @Override\n                public void menuSelected(MenuEvent e) {\n                    updateMenuStates();\n                    statusLabel.setText(\"メニュー: \" + ((JMenu)e.getSource()).getText());\n                }\n                \n                @Override\n                public void menuDeselected(MenuEvent e) {\n                    statusLabel.setText(\"準備完了\");\n                }\n                \n                @Override\n                public void menuCanceled(MenuEvent e) {\n                    statusLabel.setText(\"準備完了\");\n                }\n            });\n        }\n    }\n    \n    private void setupToolBar() {\n        toolBar = new JToolBar(\"メインツールバー\");\n        toolBar.setFloatable(true);\n        \n        toolBar.add(actions.get(\"new\"));\n        toolBar.add(actions.get(\"open\"));\n        toolBar.add(actions.get(\"save\"));\n        toolBar.addSeparator();\n        toolBar.add(actions.get(\"cut\"));\n        toolBar.add(actions.get(\"copy\"));\n        toolBar.add(actions.get(\"paste\"));\n        toolBar.addSeparator();\n        \n        // カスタムコンポーネント\n        JComboBox<String> fontSizeCombo = new JComboBox<>(new String[]{\"10\", \"12\", \"14\", \"16\", \"18\", \"20\"});\n        fontSizeCombo.setSelectedItem(\"14\");\n        fontSizeCombo.addActionListener(e -> {\n            int size = Integer.parseInt((String)fontSizeCombo.getSelectedItem());\n            contentArea.setFont(contentArea.getFont().deriveFont((float)size));\n            addToHistory(\"フォントサイズ変更: \" + size);\n        });\n        \n        toolBar.add(new JLabel(\"サイズ:\"));\n        toolBar.add(fontSizeCombo);\n    }\n    \n    private void setupLayout() {\n        setLayout(new BorderLayout());\n        \n        // メインコンテンツエリア\n        JScrollPane scrollPane = new JScrollPane(contentArea);\n        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);\n        \n        // サイドパネル（メニュー履歴）\n        JPanel sidePanel = new JPanel(new BorderLayout());\n        sidePanel.setBorder(BorderFactory.createTitledBorder(\"メニュー履歴\"));\n        sidePanel.add(new JScrollPane(menuHistoryList), BorderLayout.CENTER);\n        \n        JButton clearHistoryButton = new JButton(\"履歴クリア\");\n        clearHistoryButton.addActionListener(e -> {\n            menuHistoryModel.clear();\n            addToHistory(\"履歴クリア\");\n        });\n        sidePanel.add(clearHistoryButton, BorderLayout.SOUTH);\n        sidePanel.setPreferredSize(new Dimension(200, 0));\n        \n        // レイアウト配置\n        add(toolBar, BorderLayout.NORTH);\n        add(scrollPane, BorderLayout.CENTER);\n        add(sidePanel, BorderLayout.EAST);\n        add(statusLabel, BorderLayout.SOUTH);\n    }\n    \n    private void setupContextMenus() {\n        // テキストエリア用コンテキストメニュー\n        JPopupMenu textContextMenu = new JPopupMenu();\n        textContextMenu.add(actions.get(\"cut\"));\n        textContextMenu.add(actions.get(\"copy\"));\n        textContextMenu.add(actions.get(\"paste\"));\n        textContextMenu.addSeparator();\n        textContextMenu.add(new JMenuItem(\"すべて選択\"));\n        textContextMenu.add(new JMenuItem(\"検索\"));\n        \n        contentArea.setComponentPopupMenu(textContextMenu);\n        \n        // メニューバー用コンテキストメニュー\n        JPopupMenu menuBarContextMenu = new JPopupMenu();\n        menuBarContextMenu.add(actions.get(\"customize\"));\n        menuBarContextMenu.add(actions.get(\"addDynamicMenu\"));\n        menuBarContextMenu.addSeparator();\n        menuBarContextMenu.add(new JMenuItem(\"メニューをリセット\"));\n        \n        menuBar.setComponentPopupMenu(menuBarContextMenu);\n    }\n    \n    private void setupEventHandlers() {\n        // ウィンドウクローズイベント\n        addWindowListener(new WindowAdapter() {\n            @Override\n            public void windowClosing(WindowEvent e) {\n                saveConfiguration();\n                saveRecentFiles();\n                System.exit(0);\n            }\n        });\n        \n        // テキストエリアの選択状態でメニューを更新\n        contentArea.addCaretListener(e -> updateMenuStates());\n    }\n    \n    private void setupWindow() {\n        setTitle(\"Advanced Menu System\");\n        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);\n        setSize(800, 600);\n        setLocationRelativeTo(null);\n    }\n    \n    private void updateMenuStates() {\n        boolean hasSelection = contentArea.getSelectedText() != null;\n        actions.get(\"cut\").setEnabled(hasSelection);\n        actions.get(\"copy\").setEnabled(hasSelection);\n        \n        // クリップボードの状態をチェック（簡略化）\n        actions.get(\"paste\").setEnabled(true);\n    }\n    \n    private void updateRecentFilesMenu() {\n        recentMenu.removeAll();\n        \n        for (int i = 0; i < Math.min(recentFiles.size(), 10); i++) {\n            String filePath = recentFiles.get(i);\n            String fileName = new File(filePath).getName();\n            \n            JMenuItem item = new JMenuItem((i + 1) + \". \" + fileName);\n            item.setToolTipText(filePath);\n            item.addActionListener(e -> {\n                openRecentFile(filePath);\n                addToHistory(\"最近のファイルを開く: \" + fileName);\n            });\n            \n            recentMenu.add(item);\n        }\n        \n        if (!recentFiles.isEmpty()) {\n            recentMenu.addSeparator();\n            JMenuItem clearItem = new JMenuItem(\"履歴をクリア\");\n            clearItem.addActionListener(e -> {\n                recentFiles.clear();\n                updateRecentFilesMenu();\n                addToHistory(\"最近のファイル履歴をクリア\");\n            });\n            recentMenu.add(clearItem);\n        }\n    }\n    \n    private void addToHistory(String action) {\n        String timestamp = new Date().toString();\n        String entry = timestamp + \" - \" + action;\n        \n        menuHistoryModel.insertElementAt(entry, 0);\n        \n        // 履歴の最大数を制限\n        if (menuHistoryModel.size() > 100) {\n            menuHistoryModel.remove(menuHistoryModel.size() - 1);\n        }\n    }\n    \n    private void addToRecentFiles(String filePath) {\n        recentFiles.remove(filePath); // 重複を削除\n        recentFiles.add(0, filePath);\n        \n        // 最大10ファイルまで\n        if (recentFiles.size() > 10) {\n            recentFiles.remove(recentFiles.size() - 1);\n        }\n        \n        updateRecentFilesMenu();\n    }\n    \n    // アクション実装メソッド\n    private void newFile() {\n        contentArea.setText(\"\");\n        statusLabel.setText(\"新しいドキュメントを作成しました\");\n    }\n    \n    private void openFile() {\n        JFileChooser fileChooser = new JFileChooser();\n        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {\n            File file = fileChooser.getSelectedFile();\n            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {\n                contentArea.read(reader, null);\n                addToRecentFiles(file.getAbsolutePath());\n                statusLabel.setText(\"ファイルを開きました: \" + file.getName());\n            } catch (IOException ex) {\n                JOptionPane.showMessageDialog(this, \"ファイルの読み込みに失敗しました: \" + ex.getMessage(),\n                    \"エラー\", JOptionPane.ERROR_MESSAGE);\n            }\n        }\n    }\n    \n    private void saveFile() {\n        JFileChooser fileChooser = new JFileChooser();\n        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {\n            File file = fileChooser.getSelectedFile();\n            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {\n                contentArea.write(writer);\n                addToRecentFiles(file.getAbsolutePath());\n                statusLabel.setText(\"ファイルを保存しました: \" + file.getName());\n            } catch (IOException ex) {\n                JOptionPane.showMessageDialog(this, \"ファイルの保存に失敗しました: \" + ex.getMessage(),\n                    \"エラー\", JOptionPane.ERROR_MESSAGE);\n            }\n        }\n    }\n    \n    private void openRecentFile(String filePath) {\n        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {\n            contentArea.read(reader, null);\n            statusLabel.setText(\"最近のファイルを開きました: \" + new File(filePath).getName());\n        } catch (IOException ex) {\n            JOptionPane.showMessageDialog(this, \"ファイルの読み込みに失敗しました: \" + ex.getMessage(),\n                \"エラー\", JOptionPane.ERROR_MESSAGE);\n            recentFiles.remove(filePath);\n            updateRecentFilesMenu();\n        }\n    }\n    \n    private void toggleMenuBar() {\n        menuBarVisible = !menuBarVisible;\n        setJMenuBar(menuBarVisible ? menuBar : null);\n        revalidate();\n        statusLabel.setText(\"メニューバー: \" + (menuBarVisible ? \"表示\" : \"非表示\"));\n    }\n    \n    private void toggleToolBar() {\n        toolBarVisible = !toolBarVisible;\n        toolBar.setVisible(toolBarVisible);\n        statusLabel.setText(\"ツールバー: \" + (toolBarVisible ? \"表示\" : \"非表示\"));\n    }\n    \n    private void addDynamicMenuItem() {\n        String itemName = JOptionPane.showInputDialog(this, \"新しいメニュー項目の名前:\", \"動的メニュー追加\", \n            JOptionPane.QUESTION_MESSAGE);\n        \n        if (itemName != null && !itemName.trim().isEmpty()) {\n            // ツールメニューに動的に追加\n            JMenu toolsMenu = menuBar.getMenu(3); // ツールメニュー\n            JMenu dynamicMenu = (JMenu) toolsMenu.getItem(toolsMenu.getItemCount() - 2); // 動的メニュー\n            \n            JMenuItem newItem = new JMenuItem(itemName);\n            newItem.addActionListener(e -> {\n                JOptionPane.showMessageDialog(this, \"動的メニュー '\" + itemName + \"' が実行されました\");\n                addToHistory(\"動的メニュー実行: \" + itemName);\n            });\n            \n            dynamicMenu.add(newItem);\n            statusLabel.setText(\"動的メニュー項目を追加しました: \" + itemName);\n        }\n    }\n    \n    private void showMenuCustomizer() {\n        menuCustomizer.showDialog(this);\n    }\n    \n    private void exitApplication() {\n        saveConfiguration();\n        saveRecentFiles();\n        System.exit(0);\n    }\n    \n    private void loadConfiguration() {\n        // 設定の読み込み（簡略化）\n        try {\n            String configPath = System.getProperty(\"user.home\") + \"/.menuconfig.properties\";\n            File configFile = new File(configPath);\n            if (configFile.exists()) {\n                menuConfig.load(new FileInputStream(configFile));\n            }\n        } catch (IOException e) {\n            // 設定ファイルが見つからない場合は無視\n        }\n    }\n    \n    private void saveConfiguration() {\n        try {\n            String configPath = System.getProperty(\"user.home\") + \"/.menuconfig.properties\";\n            menuConfig.setProperty(\"menuBarVisible\", String.valueOf(menuBarVisible));\n            menuConfig.setProperty(\"toolBarVisible\", String.valueOf(toolBarVisible));\n            menuConfig.store(new FileOutputStream(configPath), \"Menu System Configuration\");\n        } catch (IOException e) {\n            // 保存エラーは無視\n        }\n    }\n    \n    private void loadRecentFiles() {\n        String recentFilesStr = preferences.get(\"recentFiles\", \"\");\n        if (!recentFilesStr.isEmpty()) {\n            String[] files = recentFilesStr.split(\";\");\n            for (String file : files) {\n                if (!file.trim().isEmpty()) {\n                    recentFiles.add(file);\n                }\n            }\n            updateRecentFilesMenu();\n        }\n    }\n    \n    private void saveRecentFiles() {\n        String recentFilesStr = String.join(\";\", recentFiles);\n        preferences.put(\"recentFiles\", recentFilesStr);\n    }\n    \n    private Icon loadIcon(String iconName) {\n        // アイコンの読み込み（リソースファイルから）\n        try {\n            // 実際の実装では、リソースファイルからアイコンを読み込む\n            return UIManager.getIcon(\"FileView.fileIcon\"); // プレースホルダー\n        } catch (Exception e) {\n            return null;\n        }\n    }\n    \n    // カスタムアクションクラス\n    private abstract class MenuAction extends AbstractAction {\n        public MenuAction(String name, String description, KeyStroke accelerator, Icon icon) {\n            super(name, icon);\n            putValue(SHORT_DESCRIPTION, description);\n            if (accelerator != null) {\n                putValue(ACCELERATOR_KEY, accelerator);\n            }\n        }\n    }\n    \n    // メニューカスタマイザークラス\n    private class MenuCustomizer {\n        private JDialog dialog;\n        private JList<String> availableActions;\n        private JList<String> menuItems;\n        \n        public MenuCustomizer() {\n            initializeDialog();\n        }\n        \n        private void initializeDialog() {\n            dialog = new JDialog(MenuSystem.this, \"メニューカスタマイズ\", true);\n            dialog.setSize(500, 400);\n            dialog.setLocationRelativeTo(MenuSystem.this);\n            \n            // カスタマイズUI（簡略化）\n            JPanel panel = new JPanel(new BorderLayout());\n            panel.add(new JLabel(\"メニューカスタマイズ機能（実装例）\"), BorderLayout.CENTER);\n            \n            JButton closeButton = new JButton(\"閉じる\");\n            closeButton.addActionListener(e -> dialog.setVisible(false));\n            panel.add(closeButton, BorderLayout.SOUTH);\n            \n            dialog.add(panel);\n        }\n        \n        public void showDialog(Component parent) {\n            dialog.setVisible(true);\n        }\n    }\n    \n    public static void main(String[] args) {\n        SwingUtilities.invokeLater(() -> {\n            try {\n                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());\n            } catch (Exception e) {\n                e.printStackTrace();\n            }\n            \n            new MenuSystem().setVisible(true);\n        });\n    }\n}
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+import java.util.prefs.Preferences;
+
+public class MenuSystem extends JFrame {
+    // メニュー管理
+    private JMenuBar menuBar;
+    private Map<String, Action> actions;
+    private List<String> recentFiles;
+    private JMenu recentMenu;
+    private Properties menuConfig;
+    private Preferences preferences;
+    
+    // UI コンポーネント
+    private JToolBar toolBar;
+    private JTextArea contentArea;
+    private JLabel statusLabel;
+    private JPanel dynamicMenuPanel;
+    private DefaultListModel<String> menuHistoryModel;
+    private JList<String> menuHistoryList;
+    
+    // メニューカスタマイズ
+    private MenuCustomizer menuCustomizer;
+    private boolean menuBarVisible = true;
+    private boolean toolBarVisible = true;
+    
+    public MenuSystem() {
+        actions = new HashMap<>();
+        recentFiles = new ArrayList<>();
+        menuConfig = new Properties();
+        preferences = Preferences.userNodeForPackage(MenuSystem.class);
+        menuHistoryModel = new DefaultListModel<>();
+        
+        initializeActions();
+        initializeComponents();
+        setupMenuBar();
+        setupToolBar();
+        setupLayout();
+        setupContextMenus();
+        setupEventHandlers();
+        setupWindow();
+        
+        loadConfiguration();
+        loadRecentFiles();
+    }
+    
+    private void initializeActions() {
+        // ファイルアクション
+        actions.put("new", new MenuAction("新規作成", "新しいドキュメントを作成", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("new.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newFile();
+                addToHistory("新規作成");
+            }
+        });
+        
+        actions.put("open", new MenuAction("開く", "ファイルを開く", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("open.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openFile();
+                addToHistory("ファイルを開く");
+            }
+        });
+        
+        actions.put("save", new MenuAction("保存", "ファイルを保存", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("save.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveFile();
+                addToHistory("ファイルを保存");
+            }
+        });
+        
+        actions.put("exit", new MenuAction("終了", "アプリケーションを終了", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK),
+            null) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exitApplication();
+            }
+        });
+        
+        // 編集アクション
+        actions.put("cut", new MenuAction("切り取り", "選択したテキストを切り取り", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("cut.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (contentArea.getSelectedText() != null) {
+                    contentArea.cut();
+                    addToHistory("切り取り");
+                }
+            }
+        });
+        
+        actions.put("copy", new MenuAction("コピー", "選択したテキストをコピー", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("copy.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (contentArea.getSelectedText() != null) {
+                    contentArea.copy();
+                    addToHistory("コピー");
+                }
+            }
+        });
+        
+        actions.put("paste", new MenuAction("貼り付け", "クリップボードから貼り付け", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK),
+            loadIcon("paste.png")) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                contentArea.paste();
+                addToHistory("貼り付け");
+            }
+        });
+        
+        // 表示アクション
+        actions.put("toggleMenuBar", new MenuAction("メニューバー表示切替", "メニューバーの表示/非表示", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK),
+            null) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleMenuBar();
+                addToHistory("メニューバー表示切替");
+            }
+        });
+        
+        actions.put("toggleToolBar", new MenuAction("ツールバー表示切替", "ツールバーの表示/非表示", 
+            KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK),
+            null) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleToolBar();
+                addToHistory("ツールバー表示切替");
+            }
+        });
+        
+        // カスタムアクション
+        actions.put("customize", new MenuAction("メニューカスタマイズ", "メニューをカスタマイズ", 
+            null, null) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showMenuCustomizer();
+                addToHistory("メニューカスタマイズ");
+            }
+        });
+        
+        actions.put("addDynamicMenu", new MenuAction("動的メニュー追加", "新しいメニュー項目を追加", 
+            null, null) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addDynamicMenuItem();
+                addToHistory("動的メニュー追加");
+            }
+        });
+    }
+    
+    private void initializeComponents() {
+        contentArea = new JTextArea(20, 40);
+        contentArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        contentArea.setLineWrap(true);
+        contentArea.setWrapStyleWord(true);
+        
+        statusLabel = new JLabel("準備完了");
+        statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        
+        dynamicMenuPanel = new JPanel(new FlowLayout());
+        dynamicMenuPanel.setBorder(BorderFactory.createTitledBorder("動的メニュー"));
+        
+        menuHistoryList = new JList<>(menuHistoryModel);
+        menuHistoryList.setVisibleRowCount(10);
+        menuHistoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        menuCustomizer = new MenuCustomizer();
+    }
+    
+    private void setupMenuBar() {
+        menuBar = new JMenuBar();
+        
+        // ファイルメニュー
+        JMenu fileMenu = new JMenu("ファイル(F)");
+        fileMenu.setMnemonic('F');
+        
+        fileMenu.add(actions.get("new"));
+        fileMenu.add(actions.get("open"));
+        fileMenu.addSeparator();
+        fileMenu.add(actions.get("save"));
+        
+        // 最近使用したファイルメニュー
+        recentMenu = new JMenu("最近使用したファイル");
+        fileMenu.add(recentMenu);
+        
+        fileMenu.addSeparator();
+        fileMenu.add(actions.get("exit"));
+        
+        // 編集メニュー
+        JMenu editMenu = new JMenu("編集(E)");
+        editMenu.setMnemonic('E');
+        
+        editMenu.add(actions.get("cut"));
+        editMenu.add(actions.get("copy"));
+        editMenu.add(actions.get("paste"));
+        
+        // 表示メニュー
+        JMenu viewMenu = new JMenu("表示(V)");
+        viewMenu.setMnemonic('V');
+        
+        viewMenu.add(actions.get("toggleMenuBar"));
+        viewMenu.add(actions.get("toggleToolBar"));
+        
+        // サブメニューの例
+        JMenu appearanceMenu = new JMenu("外観");
+        appearanceMenu.add(new JMenuItem("フォント設定"));
+        appearanceMenu.add(new JMenuItem("色設定"));
+        
+        JMenu themesMenu = new JMenu("テーマ");
+        themesMenu.add(new JRadioButtonMenuItem("デフォルト", true));
+        themesMenu.add(new JRadioButtonMenuItem("ダーク"));
+        themesMenu.add(new JRadioButtonMenuItem("ライト"));
+        
+        appearanceMenu.add(themesMenu);
+        viewMenu.add(appearanceMenu);
+        
+        // ツールメニュー
+        JMenu toolsMenu = new JMenu("ツール(T)");
+        toolsMenu.setMnemonic('T');
+        
+        toolsMenu.add(actions.get("addDynamicMenu"));
+        toolsMenu.add(actions.get("customize"));
+        
+        // 動的メニューセクション
+        JMenu dynamicMenu = new JMenu("動的メニュー");
+        toolsMenu.add(dynamicMenu);
+        
+        // ヘルプメニュー
+        JMenu helpMenu = new JMenu("ヘルプ(H)");
+        helpMenu.setMnemonic('H');
+        
+        helpMenu.add(new JMenuItem("使用方法"));
+        helpMenu.add(new JMenuItem("キーボードショートカット"));
+        helpMenu.addSeparator();
+        helpMenu.add(new JMenuItem("バージョン情報"));
+        
+        menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+        menuBar.add(viewMenu);
+        menuBar.add(toolsMenu);
+        menuBar.add(helpMenu);
+        
+        setJMenuBar(menuBar);
+        
+        // メニューイベントリスナー
+        setupMenuListeners();
+    }
+    
+    private void setupMenuListeners() {
+        for (int i = 0; i < menuBar.getMenuCount(); i++) {
+            JMenu menu = menuBar.getMenu(i);
+            menu.addMenuListener(new MenuListener() {
+                @Override
+                public void menuSelected(MenuEvent e) {
+                    updateMenuStates();
+                    statusLabel.setText("メニュー: " + ((JMenu)e.getSource()).getText());
+                }
+                
+                @Override
+                public void menuDeselected(MenuEvent e) {
+                    statusLabel.setText("準備完了");
+                }
+                
+                @Override
+                public void menuCanceled(MenuEvent e) {
+                    statusLabel.setText("準備完了");
+                }
+            });
+        }
+    }
+    
+    private void setupToolBar() {
+        toolBar = new JToolBar("メインツールバー");
+        toolBar.setFloatable(true);
+        
+        toolBar.add(actions.get("new"));
+        toolBar.add(actions.get("open"));
+        toolBar.add(actions.get("save"));
+        toolBar.addSeparator();
+        toolBar.add(actions.get("cut"));
+        toolBar.add(actions.get("copy"));
+        toolBar.add(actions.get("paste"));
+        toolBar.addSeparator();
+        
+        // カスタムコンポーネント
+        JComboBox<String> fontSizeCombo = new JComboBox<>(new String[]{"10", "12", "14", "16", "18", "20"});
+        fontSizeCombo.setSelectedItem("14");
+        fontSizeCombo.addActionListener(e -> {
+            int size = Integer.parseInt((String)fontSizeCombo.getSelectedItem());
+            contentArea.setFont(contentArea.getFont().deriveFont((float)size));
+            addToHistory("フォントサイズ変更: " + size);
+        });
+        
+        toolBar.add(new JLabel("サイズ:"));
+        toolBar.add(fontSizeCombo);
+    }
+    
+    private void setupLayout() {
+        setLayout(new BorderLayout());
+        
+        // メインコンテンツエリア
+        JScrollPane scrollPane = new JScrollPane(contentArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        // サイドパネル（メニュー履歴）
+        JPanel sidePanel = new JPanel(new BorderLayout());
+        sidePanel.setBorder(BorderFactory.createTitledBorder("メニュー履歴"));
+        sidePanel.add(new JScrollPane(menuHistoryList), BorderLayout.CENTER);
+        
+        JButton clearHistoryButton = new JButton("履歴クリア");
+        clearHistoryButton.addActionListener(e -> {
+            menuHistoryModel.clear();
+            addToHistory("履歴クリア");
+        });
+        sidePanel.add(clearHistoryButton, BorderLayout.SOUTH);
+        sidePanel.setPreferredSize(new Dimension(200, 0));
+        
+        // レイアウト配置
+        add(toolBar, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(sidePanel, BorderLayout.EAST);
+        add(statusLabel, BorderLayout.SOUTH);
+    }
+    
+    private void setupContextMenus() {
+        // テキストエリア用コンテキストメニュー
+        JPopupMenu textContextMenu = new JPopupMenu();
+        textContextMenu.add(actions.get("cut"));
+        textContextMenu.add(actions.get("copy"));
+        textContextMenu.add(actions.get("paste"));
+        textContextMenu.addSeparator();
+        textContextMenu.add(new JMenuItem("すべて選択"));
+        textContextMenu.add(new JMenuItem("検索"));
+        
+        contentArea.setComponentPopupMenu(textContextMenu);
+        
+        // メニューバー用コンテキストメニュー
+        JPopupMenu menuBarContextMenu = new JPopupMenu();
+        menuBarContextMenu.add(actions.get("customize"));
+        menuBarContextMenu.add(actions.get("addDynamicMenu"));
+        menuBarContextMenu.addSeparator();
+        menuBarContextMenu.add(new JMenuItem("メニューをリセット"));
+        
+        menuBar.setComponentPopupMenu(menuBarContextMenu);
+    }
+    
+    private void setupEventHandlers() {
+        // ウィンドウクローズイベント
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveConfiguration();
+                saveRecentFiles();
+                System.exit(0);
+            }
+        });
+        
+        // テキストエリアの選択状態でメニューを更新
+        contentArea.addCaretListener(e -> updateMenuStates());
+    }
+    
+    private void setupWindow() {
+        setTitle("Advanced Menu System");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+    }
+    
+    private void updateMenuStates() {
+        boolean hasSelection = contentArea.getSelectedText() != null;
+        actions.get("cut").setEnabled(hasSelection);
+        actions.get("copy").setEnabled(hasSelection);
+        
+        // クリップボードの状態をチェック（簡略化）
+        actions.get("paste").setEnabled(true);
+    }
+    
+    private void updateRecentFilesMenu() {
+        recentMenu.removeAll();
+        
+        for (int i = 0; i < Math.min(recentFiles.size(), 10); i++) {
+            String filePath = recentFiles.get(i);
+            String fileName = new File(filePath).getName();
+            
+            JMenuItem item = new JMenuItem((i + 1) + ". " + fileName);
+            item.setToolTipText(filePath);
+            item.addActionListener(e -> {
+                openRecentFile(filePath);
+                addToHistory("最近のファイルを開く: " + fileName);
+            });
+            
+            recentMenu.add(item);
+        }
+        
+        if (!recentFiles.isEmpty()) {
+            recentMenu.addSeparator();
+            JMenuItem clearItem = new JMenuItem("履歴をクリア");
+            clearItem.addActionListener(e -> {
+                recentFiles.clear();
+                updateRecentFilesMenu();
+                addToHistory("最近のファイル履歴をクリア");
+            });
+            recentMenu.add(clearItem);
+        }
+    }
+    
+    private void addToHistory(String action) {
+        String timestamp = new Date().toString();
+        String entry = timestamp + " - " + action;
+        
+        menuHistoryModel.insertElementAt(entry, 0);
+        
+        // 履歴の最大数を制限
+        if (menuHistoryModel.size() > 100) {
+            menuHistoryModel.remove(menuHistoryModel.size() - 1);
+        }
+    }
+    
+    private void addToRecentFiles(String filePath) {
+        recentFiles.remove(filePath); // 重複を削除
+        recentFiles.add(0, filePath);
+        
+        // 最大10ファイルまで
+        if (recentFiles.size() > 10) {
+            recentFiles.remove(recentFiles.size() - 1);
+        }
+        
+        updateRecentFilesMenu();
+    }
+    
+    // アクション実装メソッド
+    private void newFile() {
+        contentArea.setText("");
+        statusLabel.setText("新しいドキュメントを作成しました");
+    }
+    
+    private void openFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                contentArea.read(reader, null);
+                addToRecentFiles(file.getAbsolutePath());
+                statusLabel.setText("ファイルを開きました: " + file.getName());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
+                    "エラー", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void saveFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                contentArea.write(writer);
+                addToRecentFiles(file.getAbsolutePath());
+                statusLabel.setText("ファイルを保存しました: " + file.getName());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "ファイルの保存に失敗しました: " + ex.getMessage(),
+                    "エラー", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void openRecentFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            contentArea.read(reader, null);
+            statusLabel.setText("最近のファイルを開きました: " + new File(filePath).getName());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
+                "エラー", JOptionPane.ERROR_MESSAGE);
+            recentFiles.remove(filePath);
+            updateRecentFilesMenu();
+        }
+    }
+    
+    private void toggleMenuBar() {
+        menuBarVisible = !menuBarVisible;
+        setJMenuBar(menuBarVisible ? menuBar : null);
+        revalidate();
+        statusLabel.setText("メニューバー: " + (menuBarVisible ? "表示" : "非表示"));
+    }
+    
+    private void toggleToolBar() {
+        toolBarVisible = !toolBarVisible;
+        toolBar.setVisible(toolBarVisible);
+        statusLabel.setText("ツールバー: " + (toolBarVisible ? "表示" : "非表示"));
+    }
+    
+    private void addDynamicMenuItem() {
+        String itemName = JOptionPane.showInputDialog(this, "新しいメニュー項目の名前:", "動的メニュー追加", 
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (itemName != null && !itemName.trim().isEmpty()) {
+            // ツールメニューに動的に追加
+            JMenu toolsMenu = menuBar.getMenu(3); // ツールメニュー
+            JMenu dynamicMenu = (JMenu) toolsMenu.getItem(toolsMenu.getItemCount() - 2); // 動的メニュー
+            
+            JMenuItem newItem = new JMenuItem(itemName);
+            newItem.addActionListener(e -> {
+                JOptionPane.showMessageDialog(this, "動的メニュー '" + itemName + "' が実行されました");
+                addToHistory("動的メニュー実行: " + itemName);
+            });
+            
+            dynamicMenu.add(newItem);
+            statusLabel.setText("動的メニュー項目を追加しました: " + itemName);
+        }
+    }
+    
+    private void showMenuCustomizer() {
+        menuCustomizer.showDialog(this);
+    }
+    
+    private void exitApplication() {
+        saveConfiguration();
+        saveRecentFiles();
+        System.exit(0);
+    }
+    
+    private void loadConfiguration() {
+        // 設定の読み込み（簡略化）
+        try {
+            String configPath = System.getProperty("user.home") + "/.menuconfig.properties";
+            File configFile = new File(configPath);
+            if (configFile.exists()) {
+                menuConfig.load(new FileInputStream(configFile));
+            }
+        } catch (IOException e) {
+            // 設定ファイルが見つからない場合は無視
+        }
+    }
+    
+    private void saveConfiguration() {
+        try {
+            String configPath = System.getProperty("user.home") + "/.menuconfig.properties";
+            menuConfig.setProperty("menuBarVisible", String.valueOf(menuBarVisible));
+            menuConfig.setProperty("toolBarVisible", String.valueOf(toolBarVisible));
+            menuConfig.store(new FileOutputStream(configPath), "Menu System Configuration");
+        } catch (IOException e) {
+            // 保存エラーは無視
+        }
+    }
+    
+    private void loadRecentFiles() {
+        String recentFilesStr = preferences.get("recentFiles", "");
+        if (!recentFilesStr.isEmpty()) {
+            String[] files = recentFilesStr.split(";");
+            for (String file : files) {
+                if (!file.trim().isEmpty()) {
+                    recentFiles.add(file);
+                }
+            }
+            updateRecentFilesMenu();
+        }
+    }
+    
+    private void saveRecentFiles() {
+        String recentFilesStr = String.join(";", recentFiles);
+        preferences.put("recentFiles", recentFilesStr);
+    }
+    
+    private Icon loadIcon(String iconName) {
+        // アイコンの読み込み（リソースファイルから）
+        try {
+            // 実際の実装では、リソースファイルからアイコンを読み込む
+            return UIManager.getIcon("FileView.fileIcon"); // プレースホルダー
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    // カスタムアクションクラス
+    private abstract class MenuAction extends AbstractAction {
+        public MenuAction(String name, String description, KeyStroke accelerator, Icon icon) {
+            super(name, icon);
+            putValue(SHORT_DESCRIPTION, description);
+            if (accelerator != null) {
+                putValue(ACCELERATOR_KEY, accelerator);
+            }
+        }
+    }
+    
+    // メニューカスタマイザークラス
+    private class MenuCustomizer {
+        private JDialog dialog;
+        private JList<String> availableActions;
+        private JList<String> menuItems;
+        
+        public MenuCustomizer() {
+            initializeDialog();
+        }
+        
+        private void initializeDialog() {
+            dialog = new JDialog(MenuSystem.this, "メニューカスタマイズ", true);
+            dialog.setSize(500, 400);
+            dialog.setLocationRelativeTo(MenuSystem.this);
+            
+            // カスタマイズUI（簡略化）
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JLabel("メニューカスタマイズ機能（実装例）"), BorderLayout.CENTER);
+            
+            JButton closeButton = new JButton("閉じる");
+            closeButton.addActionListener(e -> dialog.setVisible(false));
+            panel.add(closeButton, BorderLayout.SOUTH);
+            
+            dialog.add(panel);
+        }
+        
+        public void showDialog(Component parent) {
+            dialog.setVisible(true);
+        }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            new MenuSystem().setVisible(true);
+        });
+    }
+}

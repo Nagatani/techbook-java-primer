@@ -55,6 +55,7 @@
  */
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -393,7 +394,7 @@ public class FormValidator extends JFrame {
         validationTimer.restart();
     }
     
-    private void validateAllFields() {
+    private boolean validateAllFields() {
         boolean allValid = true;
         
         allValid &= nameField.validateField();
@@ -411,6 +412,7 @@ public class FormValidator extends JFrame {
             overallStatusLabel.setText("入力内容を確認してください");
             overallStatusLabel.setForeground(Color.RED);
         }
+        return allValid;
     }
     
     private void submitForm() {
@@ -638,7 +640,7 @@ public class FormValidator extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

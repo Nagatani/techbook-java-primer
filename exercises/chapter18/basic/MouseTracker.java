@@ -55,6 +55,7 @@
  */
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Path2D;
@@ -135,7 +136,698 @@ public class MouseTracker extends JFrame {
         // トラッキングパネル
         trackingPanel = new TrackingPanel();
         trackingPanel.setPreferredSize(new Dimension(600, 400));
-        trackingPanel.setBorder(BorderFactory.createTitledBorder(\"マウストラッキングエリア\"));
+        trackingPanel.setBorder(BorderFactory.createTitledBorder("マウストラッキングエリア"));
         
         // 情報表示ラベル
-        coordinateLabel = new JLabel(\"座標: (0, 0)\");\n        speedLabel = new JLabel(\"速度: 0.0 px/s\");\n        distanceLabel = new JLabel(\"総移動距離: 0.0 px\");\n        clickLabel = new JLabel(\"クリック数: 0\");\n        sessionLabel = new JLabel(\"セッション時間: 00:00:00\");\n        \n        // イベントログエリア\n        eventLogArea = new JTextArea(8, 30);\n        eventLogArea.setEditable(false);\n        eventLogArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));\n        \n        // コントロールパネル\n        trailLengthSlider = new JSlider(10, 5000, maxTrailLength);\n        trailLengthSlider.setMajorTickSpacing(1000);\n        trailLengthSlider.setMinorTickSpacing(100);\n        trailLengthSlider.setPaintTicks(true);\n        trailLengthSlider.setPaintLabels(true);\n        \n        showTrailCheckBox = new JCheckBox(\"軌跡表示\", showTrail);\n        showClicksCheckBox = new JCheckBox(\"クリック表示\", showClicks);\n        showSpeedCheckBox = new JCheckBox(\"速度表示\", showSpeed);\n        \n        clearButton = new JButton(\"クリア\");\n        saveButton = new JButton(\"保存\");\n        pauseButton = new JButton(\"一時停止\");\n    }\n    \n    private void setupLayout() {\n        setLayout(new BorderLayout());\n        \n        // メインパネル\n        add(trackingPanel, BorderLayout.CENTER);\n        \n        // 情報パネル（上部）\n        JPanel infoPanel = new JPanel(new GridLayout(1, 5, 10, 5));\n        infoPanel.setBorder(BorderFactory.createTitledBorder(\"リアルタイム情報\"));\n        infoPanel.add(coordinateLabel);\n        infoPanel.add(speedLabel);\n        infoPanel.add(distanceLabel);\n        infoPanel.add(clickLabel);\n        infoPanel.add(sessionLabel);\n        \n        add(infoPanel, BorderLayout.NORTH);\n        \n        // サイドパネル（右側）\n        JPanel sidePanel = createSidePanel();\n        add(sidePanel, BorderLayout.EAST);\n        \n        // コントロールパネル（下部）\n        JPanel controlPanel = createControlPanel();\n        add(controlPanel, BorderLayout.SOUTH);\n    }\n    \n    private JPanel createSidePanel() {\n        JPanel sidePanel = new JPanel(new BorderLayout());\n        sidePanel.setPreferredSize(new Dimension(300, 0));\n        \n        // 設定パネル\n        JPanel settingsPanel = new JPanel(new GridBagLayout());\n        settingsPanel.setBorder(BorderFactory.createTitledBorder(\"設定\"));\n        \n        GridBagConstraints gbc = new GridBagConstraints();\n        gbc.insets = new Insets(5, 5, 5, 5);\n        gbc.anchor = GridBagConstraints.WEST;\n        \n        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;\n        settingsPanel.add(new JLabel(\"軌跡長:\"), gbc);\n        gbc.gridy = 1;\n        settingsPanel.add(trailLengthSlider, gbc);\n        \n        gbc.gridy = 2; gbc.gridwidth = 1;\n        settingsPanel.add(showTrailCheckBox, gbc);\n        gbc.gridx = 1;\n        settingsPanel.add(showClicksCheckBox, gbc);\n        \n        gbc.gridx = 0; gbc.gridy = 3;\n        settingsPanel.add(showSpeedCheckBox, gbc);\n        \n        // 色選択ボタン\n        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;\n        JButton trailColorButton = new JButton(\"軌跡色\");\n        trailColorButton.setBackground(trailColor);\n        trailColorButton.setOpaque(true);\n        trailColorButton.addActionListener(e -> selectTrailColor());\n        settingsPanel.add(trailColorButton, gbc);\n        \n        // イベントログパネル\n        JPanel logPanel = new JPanel(new BorderLayout());\n        logPanel.setBorder(BorderFactory.createTitledBorder(\"イベントログ\"));\n        logPanel.add(new JScrollPane(eventLogArea), BorderLayout.CENTER);\n        \n        JButton clearLogButton = new JButton(\"ログクリア\");\n        clearLogButton.addActionListener(e -> eventLogArea.setText(\"\"));\n        logPanel.add(clearLogButton, BorderLayout.SOUTH);\n        \n        sidePanel.add(settingsPanel, BorderLayout.NORTH);\n        sidePanel.add(logPanel, BorderLayout.CENTER);\n        \n        return sidePanel;\n    }\n    \n    private JPanel createControlPanel() {\n        JPanel controlPanel = new JPanel(new FlowLayout());\n        \n        controlPanel.add(clearButton);\n        controlPanel.add(saveButton);\n        controlPanel.add(pauseButton);\n        \n        // ジェスチャーボタン\n        JButton gestureButton = new JButton(\"ジェスチャー設定\");\n        gestureButton.addActionListener(e -> showGestureSettings());\n        controlPanel.add(gestureButton);\n        \n        // 統計ボタン\n        JButton statsButton = new JButton(\"詳細統計\");\n        statsButton.addActionListener(e -> showDetailedStatistics());\n        controlPanel.add(statsButton);\n        \n        return controlPanel;\n    }\n    \n    private void setupEventHandlers() {\n        // トラッキングパネルのマウスイベント\n        MouseAdapter mouseHandler = new MouseAdapter() {\n            @Override\n            public void mouseMoved(MouseEvent e) {\n                if (isTracking) {\n                    handleMouseMove(e);\n                }\n            }\n            \n            @Override\n            public void mouseDragged(MouseEvent e) {\n                if (isTracking) {\n                    handleMouseMove(e);\n                }\n            }\n            \n            @Override\n            public void mouseClicked(MouseEvent e) {\n                if (isTracking) {\n                    handleMouseClick(e);\n                }\n            }\n            \n            @Override\n            public void mousePressed(MouseEvent e) {\n                if (isTracking) {\n                    logEvent(\"マウス押下: \" + getButtonName(e.getButton()) + \" at \" + e.getPoint());\n                }\n            }\n            \n            @Override\n            public void mouseReleased(MouseEvent e) {\n                if (isTracking) {\n                    logEvent(\"マウス離上: \" + getButtonName(e.getButton()) + \" at \" + e.getPoint());\n                }\n            }\n            \n            @Override\n            public void mouseEntered(MouseEvent e) {\n                hoverStart = e.getPoint();\n                hoverStartTime = System.currentTimeMillis();\n                logEvent(\"マウス領域進入: \" + e.getPoint());\n            }\n            \n            @Override\n            public void mouseExited(MouseEvent e) {\n                if (hoverStart != null) {\n                    long hoverTime = System.currentTimeMillis() - hoverStartTime;\n                    logEvent(\"マウス領域退出: \" + e.getPoint() + \" (滞在時間: \" + hoverTime + \"ms)\");\n                }\n                hoverStart = null;\n            }\n        };\n        \n        trackingPanel.addMouseListener(mouseHandler);\n        trackingPanel.addMouseMotionListener(mouseHandler);\n        \n        // マウスホイールイベント\n        trackingPanel.addMouseWheelListener(e -> {\n            if (isTracking) {\n                String direction = e.getWheelRotation() > 0 ? \"下\" : \"上\";\n                logEvent(\"マウスホイール: \" + direction + \" (\" + e.getWheelRotation() + \") at \" + e.getPoint());\n            }\n        });\n        \n        // コントロールイベント\n        trailLengthSlider.addChangeListener(e -> {\n            maxTrailLength = trailLengthSlider.getValue();\n            trimTrackPoints();\n        });\n        \n        showTrailCheckBox.addActionListener(e -> {\n            showTrail = showTrailCheckBox.isSelected();\n            trackingPanel.repaint();\n        });\n        \n        showClicksCheckBox.addActionListener(e -> {\n            showClicks = showClicksCheckBox.isSelected();\n            trackingPanel.repaint();\n        });\n        \n        showSpeedCheckBox.addActionListener(e -> {\n            showSpeed = showSpeedCheckBox.isSelected();\n        });\n        \n        clearButton.addActionListener(e -> clearAllData());\n        saveButton.addActionListener(e -> saveTrackingData());\n        pauseButton.addActionListener(e -> toggleTracking());\n    }\n    \n    private void setupTimers() {\n        // 統計更新タイマー\n        statisticsTimer = new Timer(100, e -> updateStatistics());\n        statisticsTimer.start();\n        \n        // ホバータイマー（ホバー時間の詳細監視用）\n        hoverTimer = new Timer(1000, e -> {\n            if (hoverStart != null) {\n                long hoverTime = System.currentTimeMillis() - hoverStartTime;\n                if (hoverTime > 5000) { // 5秒以上のホバー\n                    logEvent(\"長時間ホバー検出: \" + hoverStart + \" (\" + hoverTime + \"ms)\");\n                }\n            }\n        });\n        hoverTimer.start();\n    }\n    \n    private void setupWindow() {\n        setTitle(\"Advanced Mouse Tracker\");\n        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\n        setSize(1000, 700);\n        setLocationRelativeTo(null);\n    }\n    \n    private void handleMouseMove(MouseEvent e) {\n        Point currentPoint = e.getPoint();\n        long currentTime = System.currentTimeMillis();\n        \n        if (lastPosition != null) {\n            double distance = lastPosition.distance(currentPoint);\n            totalDistance += distance;\n            \n            // 速度計算\n            if (lastMoveTime > 0) {\n                double timeDiff = (currentTime - lastMoveTime) / 1000.0; // 秒\n                if (timeDiff > 0) {\n                    currentSpeed = distance / timeDiff; // ピクセル/秒\n                }\n            }\n            \n            // ジェスチャー認識\n            gestureRecognizer.addPoint(currentPoint, currentTime);\n        }\n        \n        // トラックポイントの追加\n        synchronized (trackPoints) {\n            trackPoints.add(new TrackPoint(currentPoint, currentTime, currentSpeed));\n            trimTrackPoints();\n        }\n        \n        lastPosition = currentPoint;\n        lastMoveTime = currentTime;\n        \n        // 座標表示の更新\n        updateCoordinateDisplay(currentPoint);\n        \n        // 描画更新\n        trackingPanel.repaint();\n    }\n    \n    private void handleMouseClick(MouseEvent e) {\n        totalClicks++;\n        int button = e.getButton();\n        int clickCount = e.getClickCount();\n        \n        ClickInfo clickInfo = new ClickInfo(e.getPoint(), System.currentTimeMillis(), \n                                          button, clickCount);\n        clickCounts.put(clickCounts.size(), clickInfo);\n        \n        String clickType = getClickType(clickCount);\n        String buttonName = getButtonName(button);\n        \n        logEvent(clickType + \" (\" + buttonName + \") at \" + e.getPoint());\n        \n        // 特殊クリックの検出\n        if (clickCount >= 3) {\n            logEvent(\"トリプルクリック以上検出!\");\n        }\n        \n        trackingPanel.repaint();\n    }\n    \n    private void updateStatistics() {\n        // セッション時間の更新\n        long sessionTime = System.currentTimeMillis() - sessionStartTime;\n        sessionLabel.setText(\"セッション時間: \" + formatTime(sessionTime));\n        \n        // 統計情報の更新\n        DecimalFormat df = new DecimalFormat(\"#0.0\");\n        speedLabel.setText(\"速度: \" + df.format(currentSpeed) + \" px/s\");\n        distanceLabel.setText(\"総移動距離: \" + df.format(totalDistance) + \" px\");\n        clickLabel.setText(\"クリック数: \" + totalClicks);\n    }\n    \n    private void updateCoordinateDisplay(Point point) {\n        coordinateLabel.setText(\"座標: (\" + point.x + \", \" + point.y + \")\");\n    }\n    \n    private void trimTrackPoints() {\n        synchronized (trackPoints) {\n            while (trackPoints.size() > maxTrailLength) {\n                trackPoints.remove(0);\n            }\n        }\n    }\n    \n    private void logEvent(String message) {\n        String timestamp = new Date().toString();\n        String logEntry = \"[\" + timestamp + \"] \" + message + \"\\n\";\n        \n        SwingUtilities.invokeLater(() -> {\n            eventLogArea.append(logEntry);\n            eventLogArea.setCaretPosition(eventLogArea.getDocument().getLength());\n        });\n        \n        // ログサイズの制限\n        if (eventLogArea.getLineCount() > 1000) {\n            SwingUtilities.invokeLater(() -> {\n                try {\n                    int endOffset = eventLogArea.getLineEndOffset(100);\n                    eventLogArea.replaceRange(\"\", 0, endOffset);\n                } catch (Exception ex) {\n                    // エラー時は全クリア\n                    eventLogArea.setText(\"\");\n                }\n            });\n        }\n    }\n    \n    private String getButtonName(int button) {\n        switch (button) {\n            case MouseEvent.BUTTON1: return \"左\";\n            case MouseEvent.BUTTON2: return \"中央\";\n            case MouseEvent.BUTTON3: return \"右\";\n            default: return \"不明(\" + button + \")\";\n        }\n    }\n    \n    private String getClickType(int clickCount) {\n        switch (clickCount) {\n            case 1: return \"シングルクリック\";\n            case 2: return \"ダブルクリック\";\n            case 3: return \"トリプルクリック\";\n            default: return clickCount + \"回クリック\";\n        }\n    }\n    \n    private String formatTime(long millis) {\n        long seconds = millis / 1000;\n        long minutes = seconds / 60;\n        long hours = minutes / 60;\n        \n        return String.format(\"%02d:%02d:%02d\", hours % 24, minutes % 60, seconds % 60);\n    }\n    \n    private void selectTrailColor() {\n        Color newColor = JColorChooser.showDialog(this, \"軌跡の色を選択\", trailColor);\n        if (newColor != null) {\n            trailColor = newColor;\n            trackingPanel.repaint();\n        }\n    }\n    \n    private void clearAllData() {\n        synchronized (trackPoints) {\n            trackPoints.clear();\n        }\n        clickCounts.clear();\n        resetStatistics();\n        eventLogArea.setText(\"\");\n        trackingPanel.repaint();\n        \n        logEvent(\"全データをクリアしました\");\n    }\n    \n    private void resetStatistics() {\n        totalDistance = 0;\n        totalClicks = 0;\n        currentSpeed = 0;\n        sessionStartTime = System.currentTimeMillis();\n        lastPosition = null;\n        lastMoveTime = 0;\n    }\n    \n    private void toggleTracking() {\n        isTracking = !isTracking;\n        pauseButton.setText(isTracking ? \"一時停止\" : \"再開\");\n        logEvent(isTracking ? \"トラッキング再開\" : \"トラッキング一時停止\");\n    }\n    \n    private void saveTrackingData() {\n        JFileChooser fileChooser = new JFileChooser();\n        fileChooser.setSelectedFile(new File(\"mouse_tracking_\" + System.currentTimeMillis() + \".csv\"));\n        \n        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {\n            File file = fileChooser.getSelectedFile();\n            try (FileWriter writer = new FileWriter(file)) {\n                writer.write(\"Timestamp,X,Y,Speed\\n\");\n                \n                synchronized (trackPoints) {\n                    for (TrackPoint point : trackPoints) {\n                        writer.write(point.timestamp + \",\" + point.point.x + \",\" + \n                                   point.point.y + \",\" + point.speed + \"\\n\");\n                    }\n                }\n                \n                JOptionPane.showMessageDialog(this, \"トラッキングデータを保存しました: \" + file.getName());\n                logEvent(\"データ保存: \" + file.getAbsolutePath());\n                \n            } catch (IOException ex) {\n                JOptionPane.showMessageDialog(this, \"保存に失敗しました: \" + ex.getMessage(),\n                    \"エラー\", JOptionPane.ERROR_MESSAGE);\n            }\n        }\n    }\n    \n    private void showGestureSettings() {\n        JDialog dialog = new JDialog(this, \"ジェスチャー設定\", true);\n        dialog.setSize(400, 300);\n        dialog.setLocationRelativeTo(this);\n        \n        JPanel panel = new JPanel(new BorderLayout());\n        panel.add(new JLabel(\"ジェスチャー認識設定（実装例）\"), BorderLayout.CENTER);\n        \n        JButton closeButton = new JButton(\"閉じる\");\n        closeButton.addActionListener(e -> dialog.setVisible(false));\n        panel.add(closeButton, BorderLayout.SOUTH);\n        \n        dialog.add(panel);\n        dialog.setVisible(true);\n    }\n    \n    private void showDetailedStatistics() {\n        JDialog dialog = new JDialog(this, \"詳細統計\", true);\n        dialog.setSize(500, 400);\n        dialog.setLocationRelativeTo(this);\n        \n        JTextArea statsArea = new JTextArea();\n        statsArea.setEditable(false);\n        statsArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));\n        \n        StringBuilder stats = new StringBuilder();\n        stats.append(\"=== マウストラッキング統計 ===\\n\\n\");\n        stats.append(\"セッション時間: \").append(formatTime(System.currentTimeMillis() - sessionStartTime)).append(\"\\n\");\n        stats.append(\"総移動距離: \").append(String.format(\"%.2f\", totalDistance)).append(\" ピクセル\\n\");\n        stats.append(\"総クリック数: \").append(totalClicks).append(\"\\n\");\n        stats.append(\"記録ポイント数: \").append(trackPoints.size()).append(\"\\n\");\n        stats.append(\"現在の速度: \").append(String.format(\"%.2f\", currentSpeed)).append(\" px/s\\n\\n\");\n        \n        // クリック統計\n        stats.append(\"=== クリック統計 ===\\n\");\n        Map<Integer, Integer> buttonCounts = new HashMap<>();\n        Map<Integer, Integer> clickTypeCounts = new HashMap<>();\n        \n        for (ClickInfo click : clickCounts.values()) {\n            buttonCounts.put(click.button, buttonCounts.getOrDefault(click.button, 0) + 1);\n            clickTypeCounts.put(click.clickCount, clickTypeCounts.getOrDefault(click.clickCount, 0) + 1);\n        }\n        \n        for (Map.Entry<Integer, Integer> entry : buttonCounts.entrySet()) {\n            stats.append(getButtonName(entry.getKey())).append(\"ボタン: \").append(entry.getValue()).append(\"回\\n\");\n        }\n        \n        stats.append(\"\\n\");\n        for (Map.Entry<Integer, Integer> entry : clickTypeCounts.entrySet()) {\n            stats.append(getClickType(entry.getKey())).append(\": \").append(entry.getValue()).append(\"回\\n\");\n        }\n        \n        statsArea.setText(stats.toString());\n        \n        JPanel panel = new JPanel(new BorderLayout());\n        panel.add(new JScrollPane(statsArea), BorderLayout.CENTER);\n        \n        JButton closeButton = new JButton(\"閉じる\");\n        closeButton.addActionListener(e -> dialog.setVisible(false));\n        panel.add(closeButton, BorderLayout.SOUTH);\n        \n        dialog.add(panel);\n        dialog.setVisible(true);\n    }\n    \n    // トラッキングパネルクラス\n    private class TrackingPanel extends JPanel {\n        @Override\n        protected void paintComponent(Graphics g) {\n            super.paintComponent(g);\n            Graphics2D g2d = (Graphics2D) g.create();\n            \n            // アンチエイリアス設定\n            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);\n            \n            // 背景グリッドの描画\n            drawGrid(g2d);\n            \n            // 軌跡の描画\n            if (showTrail && !trackPoints.isEmpty()) {\n                drawTrail(g2d);\n            }\n            \n            // クリック位置の描画\n            if (showClicks) {\n                drawClicks(g2d);\n            }\n            \n            // 速度情報の描画\n            if (showSpeed && lastPosition != null) {\n                drawSpeedInfo(g2d);\n            }\n            \n            g2d.dispose();\n        }\n        \n        private void drawGrid(Graphics2D g2d) {\n            g2d.setColor(Color.LIGHT_GRAY);\n            g2d.setStroke(new BasicStroke(0.5f));\n            \n            int gridSize = 50;\n            for (int x = 0; x < getWidth(); x += gridSize) {\n                g2d.drawLine(x, 0, x, getHeight());\n            }\n            for (int y = 0; y < getHeight(); y += gridSize) {\n                g2d.drawLine(0, y, getWidth(), y);\n            }\n        }\n        \n        private void drawTrail(Graphics2D g2d) {\n            synchronized (trackPoints) {\n                if (trackPoints.size() < 2) return;\n                \n                Path2D path = new Path2D.Double();\n                boolean first = true;\n                \n                for (TrackPoint tp : trackPoints) {\n                    if (first) {\n                        path.moveTo(tp.point.x, tp.point.y);\n                        first = false;\n                    } else {\n                        path.lineTo(tp.point.x, tp.point.y);\n                    }\n                }\n                \n                // グラデーション効果\n                g2d.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));\n                \n                for (int i = 1; i < trackPoints.size(); i++) {\n                    TrackPoint prev = trackPoints.get(i - 1);\n                    TrackPoint curr = trackPoints.get(i);\n                    \n                    // 透明度を距離に応じて調整\n                    float alpha = (float) i / trackPoints.size();\n                    Color segmentColor = new Color(trailColor.getRed(), trailColor.getGreen(), \n                                                 trailColor.getBlue(), (int) (255 * alpha));\n                    g2d.setColor(segmentColor);\n                    g2d.drawLine(prev.point.x, prev.point.y, curr.point.x, curr.point.y);\n                }\n            }\n        }\n        \n        private void drawClicks(Graphics2D g2d) {\n            for (ClickInfo click : clickCounts.values()) {\n                Color color = getClickColor(click.button);\n                g2d.setColor(color);\n                \n                int size = click.clickCount * 6 + 4;\n                g2d.fillOval(click.point.x - size / 2, click.point.y - size / 2, size, size);\n                \n                // クリック数の表示\n                if (click.clickCount > 1) {\n                    g2d.setColor(Color.WHITE);\n                    g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));\n                    String text = String.valueOf(click.clickCount);\n                    FontMetrics fm = g2d.getFontMetrics();\n                    int textX = click.point.x - fm.stringWidth(text) / 2;\n                    int textY = click.point.y + fm.getAscent() / 2;\n                    g2d.drawString(text, textX, textY);\n                }\n            }\n        }\n        \n        private void drawSpeedInfo(Graphics2D g2d) {\n            if (currentSpeed > 0) {\n                g2d.setColor(Color.BLACK);\n                g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));\n                String speedText = String.format(\"%.1f px/s\", currentSpeed);\n                g2d.drawString(speedText, lastPosition.x + 10, lastPosition.y - 10);\n            }\n        }\n        \n        private Color getClickColor(int button) {\n            switch (button) {\n                case MouseEvent.BUTTON1: return Color.RED;\n                case MouseEvent.BUTTON2: return Color.BLUE;\n                case MouseEvent.BUTTON3: return Color.GREEN;\n                default: return Color.GRAY;\n            }\n        }\n    }\n    \n    // データクラス\n    private static class TrackPoint {\n        final Point point;\n        final long timestamp;\n        final double speed;\n        \n        TrackPoint(Point point, long timestamp, double speed) {\n            this.point = new Point(point);\n            this.timestamp = timestamp;\n            this.speed = speed;\n        }\n    }\n    \n    private static class ClickInfo {\n        final Point point;\n        final long timestamp;\n        final int button;\n        final int clickCount;\n        \n        ClickInfo(Point point, long timestamp, int button, int clickCount) {\n            this.point = new Point(point);\n            this.timestamp = timestamp;\n            this.button = button;\n            this.clickCount = clickCount;\n        }\n    }\n    \n    // ジェスチャー認識クラス（簡略化）\n    private class GestureRecognizer {\n        private List<Point> gesturePoints = new ArrayList<>();\n        private long lastGestureTime = 0;\n        \n        public void addPoint(Point point, long timestamp) {\n            // 簡単なジェスチャー認識ロジック\n            gesturePoints.add(new Point(point));\n            \n            // 古いポイントを削除\n            if (timestamp - lastGestureTime > 2000) {\n                gesturePoints.clear();\n            }\n            \n            lastGestureTime = timestamp;\n            \n            // ジェスチャーパターンの検出（例：円、直線）\n            if (gesturePoints.size() > 20) {\n                analyzeGesture();\n                gesturePoints.clear();\n            }\n        }\n        \n        private void analyzeGesture() {\n            // 簡単なジェスチャー認識（実装例）\n            if (isCircularGesture()) {\n                logEvent(\"円形ジェスチャーを検出\");\n            } else if (isLinearGesture()) {\n                logEvent(\"直線ジェスチャーを検出\");\n            }\n        }\n        \n        private boolean isCircularGesture() {\n            // 円形ジェスチャーの簡単な検出ロジック\n            return gesturePoints.size() > 15;\n        }\n        \n        private boolean isLinearGesture() {\n            // 直線ジェスチャーの簡単な検出ロジック\n            return false;\n        }\n    }\n    \n    public static void main(String[] args) {\n        SwingUtilities.invokeLater(() -> {\n            try {\n                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());\n            } catch (Exception e) {\n                e.printStackTrace();\n            }\n            \n            new MouseTracker().setVisible(true);\n        });\n    }\n}
+        coordinateLabel = new JLabel("座標: (0, 0)");
+        speedLabel = new JLabel("速度: 0.0 px/s");
+        distanceLabel = new JLabel("総移動距離: 0.0 px");
+        clickLabel = new JLabel("クリック数: 0");
+        sessionLabel = new JLabel("セッション時間: 00:00:00");
+        
+        // イベントログエリア
+        eventLogArea = new JTextArea(8, 30);
+        eventLogArea.setEditable(false);
+        eventLogArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
+        
+        // コントロールパネル
+        trailLengthSlider = new JSlider(10, 5000, maxTrailLength);
+        trailLengthSlider.setMajorTickSpacing(1000);
+        trailLengthSlider.setMinorTickSpacing(100);
+        trailLengthSlider.setPaintTicks(true);
+        trailLengthSlider.setPaintLabels(true);
+        
+        showTrailCheckBox = new JCheckBox("軌跡表示", showTrail);
+        showClicksCheckBox = new JCheckBox("クリック表示", showClicks);
+        showSpeedCheckBox = new JCheckBox("速度表示", showSpeed);
+        
+        clearButton = new JButton("クリア");
+        saveButton = new JButton("保存");
+        pauseButton = new JButton("一時停止");
+    }
+    
+    private void setupLayout() {
+        setLayout(new BorderLayout());
+        
+        // メインパネル
+        add(trackingPanel, BorderLayout.CENTER);
+        
+        // 情報パネル（上部）
+        JPanel infoPanel = new JPanel(new GridLayout(1, 5, 10, 5));
+        infoPanel.setBorder(BorderFactory.createTitledBorder("リアルタイム情報"));
+        infoPanel.add(coordinateLabel);
+        infoPanel.add(speedLabel);
+        infoPanel.add(distanceLabel);
+        infoPanel.add(clickLabel);
+        infoPanel.add(sessionLabel);
+        
+        add(infoPanel, BorderLayout.NORTH);
+        
+        // サイドパネル（右側）
+        JPanel sidePanel = createSidePanel();
+        add(sidePanel, BorderLayout.EAST);
+        
+        // コントロールパネル（下部）
+        JPanel controlPanel = createControlPanel();
+        add(controlPanel, BorderLayout.SOUTH);
+    }
+    
+    private JPanel createSidePanel() {
+        JPanel sidePanel = new JPanel(new BorderLayout());
+        sidePanel.setPreferredSize(new Dimension(300, 0));
+        
+        // 設定パネル
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
+        settingsPanel.setBorder(BorderFactory.createTitledBorder("設定"));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        settingsPanel.add(new JLabel("軌跡長:"), gbc);
+        gbc.gridy = 1;
+        settingsPanel.add(trailLengthSlider, gbc);
+        
+        gbc.gridy = 2; gbc.gridwidth = 1;
+        settingsPanel.add(showTrailCheckBox, gbc);
+        gbc.gridx = 1;
+        settingsPanel.add(showClicksCheckBox, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 3;
+        settingsPanel.add(showSpeedCheckBox, gbc);
+        
+        // 色選択ボタン
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        JButton trailColorButton = new JButton("軌跡色");
+        trailColorButton.setBackground(trailColor);
+        trailColorButton.setOpaque(true);
+        trailColorButton.addActionListener(e -> selectTrailColor());
+        settingsPanel.add(trailColorButton, gbc);
+        
+        // イベントログパネル
+        JPanel logPanel = new JPanel(new BorderLayout());
+        logPanel.setBorder(BorderFactory.createTitledBorder("イベントログ"));
+        logPanel.add(new JScrollPane(eventLogArea), BorderLayout.CENTER);
+        
+        JButton clearLogButton = new JButton("ログクリア");
+        clearLogButton.addActionListener(e -> eventLogArea.setText(""));
+        logPanel.add(clearLogButton, BorderLayout.SOUTH);
+        
+        sidePanel.add(settingsPanel, BorderLayout.NORTH);
+        sidePanel.add(logPanel, BorderLayout.CENTER);
+        
+        return sidePanel;
+    }
+    
+    private JPanel createControlPanel() {
+        JPanel controlPanel = new JPanel(new FlowLayout());
+        
+        controlPanel.add(clearButton);
+        controlPanel.add(saveButton);
+        controlPanel.add(pauseButton);
+        
+        // ジェスチャーボタン
+        JButton gestureButton = new JButton("ジェスチャー設定");
+        gestureButton.addActionListener(e -> showGestureSettings());
+        controlPanel.add(gestureButton);
+        
+        // 統計ボタン
+        JButton statsButton = new JButton("詳細統計");
+        statsButton.addActionListener(e -> showDetailedStatistics());
+        controlPanel.add(statsButton);
+        
+        return controlPanel;
+    }
+    
+    private void setupEventHandlers() {
+        // トラッキングパネルのマウスイベント
+        MouseAdapter mouseHandler = new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (isTracking) {
+                    handleMouseMove(e);
+                }
+            }
+            
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (isTracking) {
+                    handleMouseMove(e);
+                }
+            }
+            
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (isTracking) {
+                    handleMouseClick(e);
+                }
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (isTracking) {
+                    logEvent("マウス押下: " + getButtonName(e.getButton()) + " at " + e.getPoint());
+                }
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (isTracking) {
+                    logEvent("マウス離上: " + getButtonName(e.getButton()) + " at " + e.getPoint());
+                }
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                hoverStart = e.getPoint();
+                hoverStartTime = System.currentTimeMillis();
+                logEvent("マウス領域進入: " + e.getPoint());
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (hoverStart != null) {
+                    long hoverTime = System.currentTimeMillis() - hoverStartTime;
+                    logEvent("マウス領域退出: " + e.getPoint() + " (滞在時間: " + hoverTime + "ms)");
+                }
+                hoverStart = null;
+            }
+        };
+        
+        trackingPanel.addMouseListener(mouseHandler);
+        trackingPanel.addMouseMotionListener(mouseHandler);
+        
+        // マウスホイールイベント
+        trackingPanel.addMouseWheelListener(e -> {
+            if (isTracking) {
+                String direction = e.getWheelRotation() > 0 ? "下" : "上";
+                logEvent("マウスホイール: " + direction + " (" + e.getWheelRotation() + ") at " + e.getPoint());
+            }
+        });
+        
+        // コントロールイベント
+        trailLengthSlider.addChangeListener(e -> {
+            maxTrailLength = trailLengthSlider.getValue();
+            trimTrackPoints();
+        });
+        
+        showTrailCheckBox.addActionListener(e -> {
+            showTrail = showTrailCheckBox.isSelected();
+            trackingPanel.repaint();
+        });
+        
+        showClicksCheckBox.addActionListener(e -> {
+            showClicks = showClicksCheckBox.isSelected();
+            trackingPanel.repaint();
+        });
+        
+        showSpeedCheckBox.addActionListener(e -> {
+            showSpeed = showSpeedCheckBox.isSelected();
+        });
+        
+        clearButton.addActionListener(e -> clearAllData());
+        saveButton.addActionListener(e -> saveTrackingData());
+        pauseButton.addActionListener(e -> toggleTracking());
+    }
+    
+    private void setupTimers() {
+        // 統計更新タイマー
+        statisticsTimer = new Timer(100, e -> updateStatistics());
+        statisticsTimer.start();
+        
+        // ホバータイマー（ホバー時間の詳細監視用）
+        hoverTimer = new Timer(1000, e -> {
+            if (hoverStart != null) {
+                long hoverTime = System.currentTimeMillis() - hoverStartTime;
+                if (hoverTime > 5000) { // 5秒以上のホバー
+                    logEvent("長時間ホバー検出: " + hoverStart + " (" + hoverTime + "ms)");
+                }
+            }
+        });
+        hoverTimer.start();
+    }
+    
+    private void setupWindow() {
+        setTitle("Advanced Mouse Tracker");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1000, 700);
+        setLocationRelativeTo(null);
+    }
+    
+    private void handleMouseMove(MouseEvent e) {
+        Point currentPoint = e.getPoint();
+        long currentTime = System.currentTimeMillis();
+        
+        if (lastPosition != null) {
+            double distance = lastPosition.distance(currentPoint);
+            totalDistance += distance;
+            
+            // 速度計算
+            if (lastMoveTime > 0) {
+                double timeDiff = (currentTime - lastMoveTime) / 1000.0; // 秒
+                if (timeDiff > 0) {
+                    currentSpeed = distance / timeDiff; // ピクセル/秒
+                }
+            }
+            
+            // ジェスチャー認識
+            gestureRecognizer.addPoint(currentPoint, currentTime);
+        }
+        
+        // トラックポイントの追加
+        synchronized (trackPoints) {
+            trackPoints.add(new TrackPoint(currentPoint, currentTime, currentSpeed));
+            trimTrackPoints();
+        }
+        
+        lastPosition = currentPoint;
+        lastMoveTime = currentTime;
+        
+        // 座標表示の更新
+        updateCoordinateDisplay(currentPoint);
+        
+        // 描画更新
+        trackingPanel.repaint();
+    }
+    
+    private void handleMouseClick(MouseEvent e) {
+        totalClicks++;
+        int button = e.getButton();
+        int clickCount = e.getClickCount();
+        
+        ClickInfo clickInfo = new ClickInfo(e.getPoint(), System.currentTimeMillis(), 
+                                          button, clickCount);
+        clickCounts.put(clickCounts.size(), clickInfo);
+        
+        String clickType = getClickType(clickCount);
+        String buttonName = getButtonName(button);
+        
+        logEvent(clickType + " (" + buttonName + ") at " + e.getPoint());
+        
+        // 特殊クリックの検出
+        if (clickCount >= 3) {
+            logEvent("トリプルクリック以上検出!");
+        }
+        
+        trackingPanel.repaint();
+    }
+    
+    private void updateStatistics() {
+        // セッション時間の更新
+        long sessionTime = System.currentTimeMillis() - sessionStartTime;
+        sessionLabel.setText("セッション時間: " + formatTime(sessionTime));
+        
+        // 統計情報の更新
+        DecimalFormat df = new DecimalFormat("#0.0");
+        speedLabel.setText("速度: " + df.format(currentSpeed) + " px/s");
+        distanceLabel.setText("総移動距離: " + df.format(totalDistance) + " px");
+        clickLabel.setText("クリック数: " + totalClicks);
+    }
+    
+    private void updateCoordinateDisplay(Point point) {
+        coordinateLabel.setText("座標: (" + point.x + ", " + point.y + ")");
+    }
+    
+    private void trimTrackPoints() {
+        synchronized (trackPoints) {
+            while (trackPoints.size() > maxTrailLength) {
+                trackPoints.remove(0);
+            }
+        }
+    }
+    
+    private void logEvent(String message) {
+        String timestamp = new Date().toString();
+        String logEntry = "[" + timestamp + "] " + message + "\n";
+        
+        SwingUtilities.invokeLater(() -> {
+            eventLogArea.append(logEntry);
+            eventLogArea.setCaretPosition(eventLogArea.getDocument().getLength());
+        });
+        
+        // ログサイズの制限
+        if (eventLogArea.getLineCount() > 1000) {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    int endOffset = eventLogArea.getLineEndOffset(100);
+                    eventLogArea.replaceRange("", 0, endOffset);
+                } catch (Exception ex) {
+                    // エラー時は全クリア
+                    eventLogArea.setText("");
+                }
+            });
+        }
+    }
+    
+    private String getButtonName(int button) {
+        switch (button) {
+            case MouseEvent.BUTTON1: return "左";
+            case MouseEvent.BUTTON2: return "中央";
+            case MouseEvent.BUTTON3: return "右";
+            default: return "不明(" + button + ")";
+        }
+    }
+    
+    private String getClickType(int clickCount) {
+        switch (clickCount) {
+            case 1: return "シングルクリック";
+            case 2: return "ダブルクリック";
+            case 3: return "トリプルクリック";
+            default: return clickCount + "回クリック";
+        }
+    }
+    
+    private String formatTime(long millis) {
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        
+        return String.format("%02d:%02d:%02d", hours % 24, minutes % 60, seconds % 60);
+    }
+    
+    private void selectTrailColor() {
+        Color newColor = JColorChooser.showDialog(this, "軌跡の色を選択", trailColor);
+        if (newColor != null) {
+            trailColor = newColor;
+            trackingPanel.repaint();
+        }
+    }
+    
+    private void clearAllData() {
+        synchronized (trackPoints) {
+            trackPoints.clear();
+        }
+        clickCounts.clear();
+        resetStatistics();
+        eventLogArea.setText("");
+        trackingPanel.repaint();
+        
+        logEvent("全データをクリアしました");
+    }
+    
+    private void resetStatistics() {
+        totalDistance = 0;
+        totalClicks = 0;
+        currentSpeed = 0;
+        sessionStartTime = System.currentTimeMillis();
+        lastPosition = null;
+        lastMoveTime = 0;
+    }
+    
+    private void toggleTracking() {
+        isTracking = !isTracking;
+        pauseButton.setText(isTracking ? "一時停止" : "再開");
+        logEvent(isTracking ? "トラッキング再開" : "トラッキング一時停止");
+    }
+    
+    private void saveTrackingData() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new File("mouse_tracking_" + System.currentTimeMillis() + ".csv"));
+        
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("Timestamp,X,Y,Speed\n");
+                
+                synchronized (trackPoints) {
+                    for (TrackPoint point : trackPoints) {
+                        writer.write(point.timestamp + "," + point.point.x + "," + 
+                                   point.point.y + "," + point.speed + "\n");
+                    }
+                }
+                
+                JOptionPane.showMessageDialog(this, "トラッキングデータを保存しました: " + file.getName());
+                logEvent("データ保存: " + file.getAbsolutePath());
+                
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "保存に失敗しました: " + ex.getMessage(),
+                    "エラー", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void showGestureSettings() {
+        JDialog dialog = new JDialog(this, "ジェスチャー設定", true);
+        dialog.setSize(400, 300);
+        dialog.setLocationRelativeTo(this);
+        
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel("ジェスチャー認識設定（実装例）"), BorderLayout.CENTER);
+        
+        JButton closeButton = new JButton("閉じる");
+        closeButton.addActionListener(e -> dialog.setVisible(false));
+        panel.add(closeButton, BorderLayout.SOUTH);
+        
+        dialog.add(panel);
+        dialog.setVisible(true);
+    }
+    
+    private void showDetailedStatistics() {
+        JDialog dialog = new JDialog(this, "詳細統計", true);
+        dialog.setSize(500, 400);
+        dialog.setLocationRelativeTo(this);
+        
+        JTextArea statsArea = new JTextArea();
+        statsArea.setEditable(false);
+        statsArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        
+        StringBuilder stats = new StringBuilder();
+        stats.append("=== マウストラッキング統計 ===\n\n");
+        stats.append("セッション時間: ").append(formatTime(System.currentTimeMillis() - sessionStartTime)).append("\n");
+        stats.append("総移動距離: ").append(String.format("%.2f", totalDistance)).append(" ピクセル\n");
+        stats.append("総クリック数: ").append(totalClicks).append("\n");
+        stats.append("記録ポイント数: ").append(trackPoints.size()).append("\n");
+        stats.append("現在の速度: ").append(String.format("%.2f", currentSpeed)).append(" px/s\n\n");
+        
+        // クリック統計
+        stats.append("=== クリック統計 ===\n");
+        Map<Integer, Integer> buttonCounts = new HashMap<>();
+        Map<Integer, Integer> clickTypeCounts = new HashMap<>();
+        
+        for (ClickInfo click : clickCounts.values()) {
+            buttonCounts.put(click.button, buttonCounts.getOrDefault(click.button, 0) + 1);
+            clickTypeCounts.put(click.clickCount, clickTypeCounts.getOrDefault(click.clickCount, 0) + 1);
+        }
+        
+        for (Map.Entry<Integer, Integer> entry : buttonCounts.entrySet()) {
+            stats.append(getButtonName(entry.getKey())).append("ボタン: ").append(entry.getValue()).append("回\n");
+        }
+        
+        stats.append("\n");
+        for (Map.Entry<Integer, Integer> entry : clickTypeCounts.entrySet()) {
+            stats.append(getClickType(entry.getKey())).append(": ").append(entry.getValue()).append("回\n");
+        }
+        
+        statsArea.setText(stats.toString());
+        
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JScrollPane(statsArea), BorderLayout.CENTER);
+        
+        JButton closeButton = new JButton("閉じる");
+        closeButton.addActionListener(e -> dialog.setVisible(false));
+        panel.add(closeButton, BorderLayout.SOUTH);
+        
+        dialog.add(panel);
+        dialog.setVisible(true);
+    }
+    
+    // トラッキングパネルクラス
+    private class TrackingPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create();
+            
+            // アンチエイリアス設定
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            // 背景グリッドの描画
+            drawGrid(g2d);
+            
+            // 軌跡の描画
+            if (showTrail && !trackPoints.isEmpty()) {
+                drawTrail(g2d);
+            }
+            
+            // クリック位置の描画
+            if (showClicks) {
+                drawClicks(g2d);
+            }
+            
+            // 速度情報の描画
+            if (showSpeed && lastPosition != null) {
+                drawSpeedInfo(g2d);
+            }
+            
+            g2d.dispose();
+        }
+        
+        private void drawGrid(Graphics2D g2d) {
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.setStroke(new BasicStroke(0.5f));
+            
+            int gridSize = 50;
+            for (int x = 0; x < getWidth(); x += gridSize) {
+                g2d.drawLine(x, 0, x, getHeight());
+            }
+            for (int y = 0; y < getHeight(); y += gridSize) {
+                g2d.drawLine(0, y, getWidth(), y);
+            }
+        }
+        
+        private void drawTrail(Graphics2D g2d) {
+            synchronized (trackPoints) {
+                if (trackPoints.size() < 2) return;
+                
+                Path2D path = new Path2D.Double();
+                boolean first = true;
+                
+                for (TrackPoint tp : trackPoints) {
+                    if (first) {
+                        path.moveTo(tp.point.x, tp.point.y);
+                        first = false;
+                    } else {
+                        path.lineTo(tp.point.x, tp.point.y);
+                    }
+                }
+                
+                // グラデーション効果
+                g2d.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                
+                for (int i = 1; i < trackPoints.size(); i++) {
+                    TrackPoint prev = trackPoints.get(i - 1);
+                    TrackPoint curr = trackPoints.get(i);
+                    
+                    // 透明度を距離に応じて調整
+                    float alpha = (float) i / trackPoints.size();
+                    Color segmentColor = new Color(trailColor.getRed(), trailColor.getGreen(), 
+                                                 trailColor.getBlue(), (int) (255 * alpha));
+                    g2d.setColor(segmentColor);
+                    g2d.drawLine(prev.point.x, prev.point.y, curr.point.x, curr.point.y);
+                }
+            }
+        }
+        
+        private void drawClicks(Graphics2D g2d) {
+            for (ClickInfo click : clickCounts.values()) {
+                Color color = getClickColor(click.button);
+                g2d.setColor(color);
+                
+                int size = click.clickCount * 6 + 4;
+                g2d.fillOval(click.point.x - size / 2, click.point.y - size / 2, size, size);
+                
+                // クリック数の表示
+                if (click.clickCount > 1) {
+                    g2d.setColor(Color.WHITE);
+                    g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
+                    String text = String.valueOf(click.clickCount);
+                    FontMetrics fm = g2d.getFontMetrics();
+                    int textX = click.point.x - fm.stringWidth(text) / 2;
+                    int textY = click.point.y + fm.getAscent() / 2;
+                    g2d.drawString(text, textX, textY);
+                }
+            }
+        }
+        
+        private void drawSpeedInfo(Graphics2D g2d) {
+            if (currentSpeed > 0) {
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+                String speedText = String.format("%.1f px/s", currentSpeed);
+                g2d.drawString(speedText, lastPosition.x + 10, lastPosition.y - 10);
+            }
+        }
+        
+        private Color getClickColor(int button) {
+            switch (button) {
+                case MouseEvent.BUTTON1: return Color.RED;
+                case MouseEvent.BUTTON2: return Color.BLUE;
+                case MouseEvent.BUTTON3: return Color.GREEN;
+                default: return Color.GRAY;
+            }
+        }
+    }
+    
+    // データクラス
+    private static class TrackPoint {
+        final Point point;
+        final long timestamp;
+        final double speed;
+        
+        TrackPoint(Point point, long timestamp, double speed) {
+            this.point = new Point(point);
+            this.timestamp = timestamp;
+            this.speed = speed;
+        }
+    }
+    
+    private static class ClickInfo {
+        final Point point;
+        final long timestamp;
+        final int button;
+        final int clickCount;
+        
+        ClickInfo(Point point, long timestamp, int button, int clickCount) {
+            this.point = new Point(point);
+            this.timestamp = timestamp;
+            this.button = button;
+            this.clickCount = clickCount;
+        }
+    }
+    
+    // ジェスチャー認識クラス（簡略化）
+    private class GestureRecognizer {
+        private List<Point> gesturePoints = new ArrayList<>();
+        private long lastGestureTime = 0;
+        
+        public void addPoint(Point point, long timestamp) {
+            // 簡単なジェスチャー認識ロジック
+            gesturePoints.add(new Point(point));
+            
+            // 古いポイントを削除
+            if (timestamp - lastGestureTime > 2000) {
+                gesturePoints.clear();
+            }
+            
+            lastGestureTime = timestamp;
+            
+            // ジェスチャーパターンの検出（例：円、直線）
+            if (gesturePoints.size() > 20) {
+                analyzeGesture();
+                gesturePoints.clear();
+            }
+        }
+        
+        private void analyzeGesture() {
+            // 簡単なジェスチャー認識（実装例）
+            if (isCircularGesture()) {
+                logEvent("円形ジェスチャーを検出");
+            } else if (isLinearGesture()) {
+                logEvent("直線ジェスチャーを検出");
+            }
+        }
+        
+        private boolean isCircularGesture() {
+            // 円形ジェスチャーの簡単な検出ロジック
+            return gesturePoints.size() > 15;
+        }
+        
+        private boolean isLinearGesture() {
+            // 直線ジェスチャーの簡単な検出ロジック
+            return false;
+        }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            new MouseTracker().setVisible(true);
+        });
+    }
+}

@@ -55,6 +55,7 @@
  */
 
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -393,7 +394,7 @@ public class FormValidator extends JFrame {
         validationTimer.restart();
     }
     
-    private void validateAllFields() {
+    private boolean validateAllFields() {
         boolean allValid = true;
         
         allValid &= nameField.validateField();
@@ -406,4 +407,245 @@ public class FormValidator extends JFrame {
         
         if (allValid) {
             overallStatusLabel.setText("✓ すべての入力が正しく完了しています");
-            overallStatusLabel.setForeground(new Color(0, 128, 0));\n        } else {\n            overallStatusLabel.setText(\"入力内容を確認してください\");\n            overallStatusLabel.setForeground(Color.RED);\n        }\n    }\n    \n    private void submitForm() {\n        if (validateAllFields()) {\n            saveFormData();\n            \n            String message = String.format(\n                \"フォームが送信されました:\\n\\n\" +\n                \"名前: %s\\n\" +\n                \"メール: %s\\n\" +\n                \"電話番号: %s\\n\" +\n                \"パスワード: %s\",\n                nameField.getText(),\n                emailField.getText(),\n                phoneField.getText(),\n                \"*\".repeat(passwordField.getPassword().length)\n            );\n            \n            JOptionPane.showMessageDialog(this, message, \"送信完了\", \n                JOptionPane.INFORMATION_MESSAGE);\n        }\n    }\n    \n    private void resetForm() {\n        nameField.setText(\"\");\n        emailField.setText(\"\");\n        phoneField.setText(\"\");\n        passwordField.setText(\"\");\n        confirmPasswordField.setText(\"\");\n        \n        overallStatusLabel.setText(\"入力を開始してください\");\n        overallStatusLabel.setForeground(Color.BLACK);\n        \n        nameField.requestFocus();\n    }\n    \n    private void saveFormData() {\n        preferences.put(\"name\", nameField.getText());\n        preferences.put(\"email\", emailField.getText());\n        preferences.put(\"phone\", phoneField.getText());\n    }\n    \n    private void loadFormData() {\n        nameField.setText(preferences.get(\"name\", \"\"));\n        emailField.setText(preferences.get(\"email\", \"\"));\n        phoneField.setText(preferences.get(\"phone\", \"\"));\n    }\n    \n    // バリデーション結果クラス\n    private static class ValidationResult {\n        private final boolean valid;\n        private final String message;\n        \n        public ValidationResult(boolean valid, String message) {\n            this.valid = valid;\n            this.message = message;\n        }\n        \n        public boolean isValid() { return valid; }\n        public String getMessage() { return message; }\n    }\n    \n    // バリデーション機能付きテキストフィールド\n    private static class ValidatedTextField extends JTextField {\n        private JLabel statusLabel;\n        private Validator validator;\n        private Border originalBorder;\n        private Border errorBorder;\n        private Border successBorder;\n        \n        public ValidatedTextField(String placeholder, int columns) {\n            super(columns);\n            initializeValidation();\n            setToolTipText(placeholder);\n        }\n        \n        private void initializeValidation() {\n            statusLabel = new JLabel();\n            statusLabel.setPreferredSize(new Dimension(20, 20));\n            \n            originalBorder = getBorder();\n            errorBorder = BorderFactory.createLineBorder(Color.RED, 2);\n            successBorder = BorderFactory.createLineBorder(new Color(0, 128, 0), 2);\n        }\n        \n        public void setValidator(Validator validator) {\n            this.validator = validator;\n        }\n        \n        public boolean validateField() {\n            if (validator == null) return true;\n            \n            ValidationResult result = validator.validate(getText());\n            updateVisualFeedback(result);\n            return result.isValid();\n        }\n        \n        private void updateVisualFeedback(ValidationResult result) {\n            if (getText().trim().isEmpty()) {\n                setBorder(originalBorder);\n                statusLabel.setIcon(null);\n                statusLabel.setToolTipText(null);\n            } else if (result.isValid()) {\n                setBorder(successBorder);\n                statusLabel.setIcon(createIcon(\"✓\", new Color(0, 128, 0)));\n                statusLabel.setToolTipText(\"入力内容は正しいです\");\n            } else {\n                setBorder(errorBorder);\n                statusLabel.setIcon(createIcon(\"✗\", Color.RED));\n                statusLabel.setToolTipText(result.getMessage());\n            }\n        }\n        \n        private Icon createIcon(String text, Color color) {\n            return new Icon() {\n                @Override\n                public void paintIcon(Component c, Graphics g, int x, int y) {\n                    g.setColor(color);\n                    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));\n                    FontMetrics fm = g.getFontMetrics();\n                    int textX = x + (getIconWidth() - fm.stringWidth(text)) / 2;\n                    int textY = y + (getIconHeight() + fm.getAscent()) / 2;\n                    g.drawString(text, textX, textY);\n                }\n                \n                @Override\n                public int getIconWidth() { return 16; }\n                \n                @Override\n                public int getIconHeight() { return 16; }\n            };\n        }\n        \n        public JLabel getStatusLabel() {\n            return statusLabel;\n        }\n    }\n    \n    // バリデーション機能付きパスワードフィールド\n    private static class ValidatedPasswordField extends JPasswordField {\n        private JLabel statusLabel;\n        private Validator validator;\n        private Border originalBorder;\n        private Border errorBorder;\n        private Border successBorder;\n        \n        public ValidatedPasswordField(String placeholder, int columns) {\n            super(columns);\n            initializeValidation();\n            setToolTipText(placeholder);\n        }\n        \n        private void initializeValidation() {\n            statusLabel = new JLabel();\n            statusLabel.setPreferredSize(new Dimension(20, 20));\n            \n            originalBorder = getBorder();\n            errorBorder = BorderFactory.createLineBorder(Color.RED, 2);\n            successBorder = BorderFactory.createLineBorder(new Color(0, 128, 0), 2);\n        }\n        \n        public void setValidator(Validator validator) {\n            this.validator = validator;\n        }\n        \n        public boolean validateField() {\n            if (validator == null) return true;\n            \n            ValidationResult result = validator.validate(new String(getPassword()));\n            updateVisualFeedback(result);\n            return result.isValid();\n        }\n        \n        private void updateVisualFeedback(ValidationResult result) {\n            if (getPassword().length == 0) {\n                setBorder(originalBorder);\n                statusLabel.setIcon(null);\n                statusLabel.setToolTipText(null);\n            } else if (result.isValid()) {\n                setBorder(successBorder);\n                statusLabel.setIcon(createIcon(\"✓\", new Color(0, 128, 0)));\n                statusLabel.setToolTipText(\"パスワードは有効です\");\n            } else {\n                setBorder(errorBorder);\n                statusLabel.setIcon(createIcon(\"✗\", Color.RED));\n                statusLabel.setToolTipText(result.getMessage());\n            }\n        }\n        \n        private Icon createIcon(String text, Color color) {\n            return new Icon() {\n                @Override\n                public void paintIcon(Component c, Graphics g, int x, int y) {\n                    g.setColor(color);\n                    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));\n                    FontMetrics fm = g.getFontMetrics();\n                    int textX = x + (getIconWidth() - fm.stringWidth(text)) / 2;\n                    int textY = y + (getIconHeight() + fm.getAscent()) / 2;\n                    g.drawString(text, textX, textY);\n                }\n                \n                @Override\n                public int getIconWidth() { return 16; }\n                \n                @Override\n                public int getIconHeight() { return 16; }\n            };\n        }\n        \n        public JLabel getStatusLabel() {\n            return statusLabel;\n        }\n        \n        public String getText() {\n            return new String(getPassword());\n        }\n    }\n    \n    // バリデーターインターフェイス\n    @FunctionalInterface\n    private interface Validator {\n        ValidationResult validate(String text);\n    }\n    \n    public static void main(String[] args) {\n        SwingUtilities.invokeLater(() -> {\n            try {\n                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());\n            } catch (Exception e) {\n                e.printStackTrace();\n            }\n            \n            new FormValidator().setVisible(true);\n        });\n    }\n}
+            overallStatusLabel.setForeground(new Color(0, 128, 0));
+        } else {
+            overallStatusLabel.setText("入力内容を確認してください");
+            overallStatusLabel.setForeground(Color.RED);
+        }
+        return allValid;
+    }
+    
+    private void submitForm() {
+        if (validateAllFields()) {
+            saveFormData();
+            
+            String message = String.format(
+                "フォームが送信されました:\n\n" +
+                "名前: %s\n" +
+                "メール: %s\n" +
+                "電話番号: %s\n" +
+                "パスワード: %s",
+                nameField.getText(),
+                emailField.getText(),
+                phoneField.getText(),
+                "*".repeat(passwordField.getPassword().length)
+            );
+            
+            JOptionPane.showMessageDialog(this, message, "送信完了", 
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void resetForm() {
+        nameField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+        passwordField.setText("");
+        confirmPasswordField.setText("");
+        
+        overallStatusLabel.setText("入力を開始してください");
+        overallStatusLabel.setForeground(Color.BLACK);
+        
+        nameField.requestFocus();
+    }
+    
+    private void saveFormData() {
+        preferences.put("name", nameField.getText());
+        preferences.put("email", emailField.getText());
+        preferences.put("phone", phoneField.getText());
+    }
+    
+    private void loadFormData() {
+        nameField.setText(preferences.get("name", ""));
+        emailField.setText(preferences.get("email", ""));
+        phoneField.setText(preferences.get("phone", ""));
+    }
+    
+    // バリデーション結果クラス
+    private static class ValidationResult {
+        private final boolean valid;
+        private final String message;
+        
+        public ValidationResult(boolean valid, String message) {
+            this.valid = valid;
+            this.message = message;
+        }
+        
+        public boolean isValid() { return valid; }
+        public String getMessage() { return message; }
+    }
+    
+    // バリデーション機能付きテキストフィールド
+    private static class ValidatedTextField extends JTextField {
+        private JLabel statusLabel;
+        private Validator validator;
+        private Border originalBorder;
+        private Border errorBorder;
+        private Border successBorder;
+        
+        public ValidatedTextField(String placeholder, int columns) {
+            super(columns);
+            initializeValidation();
+            setToolTipText(placeholder);
+        }
+        
+        private void initializeValidation() {
+            statusLabel = new JLabel();
+            statusLabel.setPreferredSize(new Dimension(20, 20));
+            
+            originalBorder = getBorder();
+            errorBorder = BorderFactory.createLineBorder(Color.RED, 2);
+            successBorder = BorderFactory.createLineBorder(new Color(0, 128, 0), 2);
+        }
+        
+        public void setValidator(Validator validator) {
+            this.validator = validator;
+        }
+        
+        public boolean validateField() {
+            if (validator == null) return true;
+            
+            ValidationResult result = validator.validate(getText());
+            updateVisualFeedback(result);
+            return result.isValid();
+        }
+        
+        private void updateVisualFeedback(ValidationResult result) {
+            if (getText().trim().isEmpty()) {
+                setBorder(originalBorder);
+                statusLabel.setIcon(null);
+                statusLabel.setToolTipText(null);
+            } else if (result.isValid()) {
+                setBorder(successBorder);
+                statusLabel.setIcon(createIcon("✓", new Color(0, 128, 0)));
+                statusLabel.setToolTipText("入力内容は正しいです");
+            } else {
+                setBorder(errorBorder);
+                statusLabel.setIcon(createIcon("✗", Color.RED));
+                statusLabel.setToolTipText(result.getMessage());
+            }
+        }
+        
+        private Icon createIcon(String text, Color color) {
+            return new Icon() {
+                @Override
+                public void paintIcon(Component c, Graphics g, int x, int y) {
+                    g.setColor(color);
+                    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+                    FontMetrics fm = g.getFontMetrics();
+                    int textX = x + (getIconWidth() - fm.stringWidth(text)) / 2;
+                    int textY = y + (getIconHeight() + fm.getAscent()) / 2;
+                    g.drawString(text, textX, textY);
+                }
+                
+                @Override
+                public int getIconWidth() { return 16; }
+                
+                @Override
+                public int getIconHeight() { return 16; }
+            };
+        }
+        
+        public JLabel getStatusLabel() {
+            return statusLabel;
+        }
+    }
+    
+    // バリデーション機能付きパスワードフィールド
+    private static class ValidatedPasswordField extends JPasswordField {
+        private JLabel statusLabel;
+        private Validator validator;
+        private Border originalBorder;
+        private Border errorBorder;
+        private Border successBorder;
+        
+        public ValidatedPasswordField(String placeholder, int columns) {
+            super(columns);
+            initializeValidation();
+            setToolTipText(placeholder);
+        }
+        
+        private void initializeValidation() {
+            statusLabel = new JLabel();
+            statusLabel.setPreferredSize(new Dimension(20, 20));
+            
+            originalBorder = getBorder();
+            errorBorder = BorderFactory.createLineBorder(Color.RED, 2);
+            successBorder = BorderFactory.createLineBorder(new Color(0, 128, 0), 2);
+        }
+        
+        public void setValidator(Validator validator) {
+            this.validator = validator;
+        }
+        
+        public boolean validateField() {
+            if (validator == null) return true;
+            
+            ValidationResult result = validator.validate(new String(getPassword()));
+            updateVisualFeedback(result);
+            return result.isValid();
+        }
+        
+        private void updateVisualFeedback(ValidationResult result) {
+            if (getPassword().length == 0) {
+                setBorder(originalBorder);
+                statusLabel.setIcon(null);
+                statusLabel.setToolTipText(null);
+            } else if (result.isValid()) {
+                setBorder(successBorder);
+                statusLabel.setIcon(createIcon("✓", new Color(0, 128, 0)));
+                statusLabel.setToolTipText("パスワードは有効です");
+            } else {
+                setBorder(errorBorder);
+                statusLabel.setIcon(createIcon("✗", Color.RED));
+                statusLabel.setToolTipText(result.getMessage());
+            }
+        }
+        
+        private Icon createIcon(String text, Color color) {
+            return new Icon() {
+                @Override
+                public void paintIcon(Component c, Graphics g, int x, int y) {
+                    g.setColor(color);
+                    g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+                    FontMetrics fm = g.getFontMetrics();
+                    int textX = x + (getIconWidth() - fm.stringWidth(text)) / 2;
+                    int textY = y + (getIconHeight() + fm.getAscent()) / 2;
+                    g.drawString(text, textX, textY);
+                }
+                
+                @Override
+                public int getIconWidth() { return 16; }
+                
+                @Override
+                public int getIconHeight() { return 16; }
+            };
+        }
+        
+        public JLabel getStatusLabel() {
+            return statusLabel;
+        }
+        
+        public String getText() {
+            return new String(getPassword());
+        }
+    }
+    
+    // バリデーターインターフェイス
+    @FunctionalInterface
+    private interface Validator {
+        ValidationResult validate(String text);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            new FormValidator().setVisible(true);
+        });
+    }
+}
