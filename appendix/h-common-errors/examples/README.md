@@ -23,20 +23,21 @@ examples/
 
 実行時エラーのサンプル：
 ```bash
-# コンパイル
-javac runtime-errors/NullPointerExceptionExample.java
+# コンパイル（パッケージに合わせたディレクトリ構成で out に出力する）
+javac -d out runtime-errors/*.java
 
 # 実行
-java -cp runtime-errors examples.runtime.NullPointerExceptionExample
+java -cp out examples.runtime.NullPointerExceptionExample
+java -cp out examples.runtime.ArrayIndexOutOfBoundsExceptionExample
 ```
 
 コンパイルエラーのサンプル：
 ```bash
 # コンパイル（一部のコードはコメントアウトされています）
-javac compile-errors/TypeMismatchExample.java
+javac -d out compile-errors/TypeMismatchExample.java
 
 # 実行
-java -cp compile-errors examples.compile.TypeMismatchExample
+java -cp out examples.compile.TypeMismatchExample
 ```
 
 ### 2. 統合開発環境（IDE）での実行

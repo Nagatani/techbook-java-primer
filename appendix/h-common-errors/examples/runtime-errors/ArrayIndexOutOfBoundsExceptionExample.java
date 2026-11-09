@@ -193,7 +193,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         // 各解決策の実行
         Solution1.demonstrate();
         Solution2.demonstrate();
-        Solution3.demonstrate();
+        SafeArray.demonstrate();
         
         // 二次元配列の例
         TwoDimensionalExample.demonstrateError();
