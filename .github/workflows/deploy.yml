@@ -27,7 +27,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # lockファイルどおりに入れる（不一致ならここで止まる）
 
       - name: Build Vivliostyle book
         # package.jsonのbuildスクリプトを実行
