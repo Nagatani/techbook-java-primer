@@ -176,7 +176,7 @@ public class FalseSharingDemo {
         
         private int getStripeIndex() {
             // スレッドIDベースの分散（簡易版）
-            return (int) (Thread.currentThread().getId() % STRIPE_COUNT);
+            return (int) (Thread.currentThread().threadId() % STRIPE_COUNT);
         }
         
         public void reset() {

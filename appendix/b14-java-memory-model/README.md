@@ -91,8 +91,8 @@ java com.example.memorymodel.FalseSharingDemo
 # @Contendedアノテーションを有効にする
 java -XX:-RestrictContended com.example.memorymodel.FalseSharingDemo
 
-# ガベージコレクションの詳細ログ
-java -XX:+PrintGC -XX:+PrintGCDetails com.example.memorymodel.VisibilityProblems
+# ガベージコレクションの詳細ログ（Java 9以降の統合ログ）
+java -Xlog:gc* com.example.memorymodel.VisibilityProblems
 
 # JITコンパイラの最適化を無効にしてテスト
 java -Xint com.example.memorymodel.HappensBeforeDemo
