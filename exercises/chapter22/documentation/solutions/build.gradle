@@ -26,11 +26,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     
     // Apache Commons Lang
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
     
     // SLF4J + Logback
     implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation 'ch.qos.logback:logback-classic:1.4.14'
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
 }
 
 application {

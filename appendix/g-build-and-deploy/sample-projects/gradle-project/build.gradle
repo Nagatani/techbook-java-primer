@@ -22,10 +22,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     
     // ユーティリティ
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
     
     // ロギング
-    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
     
     // テスト
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
