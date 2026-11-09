@@ -138,7 +138,7 @@ public enum ConfigKey {
         "Log file path"),
     
     // Security settings
-    SECURITY_JWT_SECRET("security.jwt.secret", "change-me-in-production", String.class,
+    SECURITY_JWT_SECRET("security.jwt.secret", "change-me-in-production-default-key", String.class,
         value -> value,
         value -> value.length() >= 32,
         "JWT secret key (minimum 32 characters)"),

@@ -173,7 +173,7 @@ registry.register(EnumSet.of(USER_CREATED, USER_UPDATED), handler);
 
 ### 前提条件
 
-- Java 17以上
+- Java 25以上
 - Mavenまたは好みのビルドツール
 
 ### クイックスタート

@@ -30,6 +30,9 @@ public class Main {
         while (true) {
             printMenu();
             System.out.print("\nEnter your choice (0-7): ");
+            if (!scanner.hasNextLine()) {
+                break;  // 入力の終わり（Ctrl+DやCtrl+Z）でも終了する
+            }
             
             String choice = scanner.nextLine().trim();
             
@@ -42,6 +45,9 @@ public class Main {
             runDemo(choice);
             
             System.out.println("\nPress Enter to continue...");
+            if (!scanner.hasNextLine()) {
+                break;
+            }
             scanner.nextLine();
         }
         
