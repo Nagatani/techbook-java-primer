@@ -2,169 +2,111 @@
 
 ## 概要
 
-第9章では、Javaのジェネリクスについて学習します。型安全性の確保、ワイルドカードの活用、型消去の理解などを重視した実装を行います。
+第9章では、Javaコレクションフレームワークについて学習します。適切なコレクションクラスの選択、効率的なデータ操作、Comparatorの活用などを重視した実装を行います。
 
 ## 解答例一覧
 
-### 1. 汎用ボックス (GenericBox系)
+### 1. 学生管理システム (StudentManager系)
 
-- **GenericBox.java**: ジェネリクスを活用した汎用ボックスクラス
-- **GenericBoxTest.java**: GenericBoxクラスのテスト
+- **StudentManager.java**: 学生管理システムのメインクラス
+- **StudentManagerTest.java**: 学生管理システムのテスト
 
-#### 学習ポイント
-- 基本的なジェネリクスの使用方法
-- 境界ワイルドカード（? extends T, ? super T）
-- ジェネリクスメソッドの実装
-- 型安全なキャストと型チェック
-
-### 2. ペアクラス (Pair系)
-
-- **Pair.java**: ジェネリクスを使った汎用ペアクラス
-- **PairTest.java**: Pairクラスのテスト
+#### 使用コレクション
+- `HashMap<String, Student>`: ID別の高速検索
+- `TreeSet<Student>`: 成績順の自動ソート
+- `Map<String, List<Student>>`: 学科別のグループ化
+- `ArrayList<Student>`: 登録順序の保持
 
 #### 学習ポイント
-- 複数の型パラメータの使用
-- 関数型インターフェイスとの組み合わせ
-- イミュータブルな設計
-- ファクトリーメソッドの活用
+- 適切なコレクションクラスの選択
+- 複数のインデックスによる効率的な検索
+- Stream APIを活用した統計計算
+- Comparatorによる複合ソート
 
-### 3. ジェネリックスタック (GenericStack系)
+### 2. 図書館管理システム (LibrarySystem系)
 
-- **GenericStack.java**: ジェネリクスを使ったスタッククラス
-- **GenericStackTest.java**: GenericStackクラスのテスト
+- **LibrarySystem.java**: 図書館管理システムのメインクラス
+- **LibrarySystemTest.java**: 図書館管理システムのテスト
 
-#### 学習ポイント
-- コレクションのラッパークラス実装
-- 関数型プログラミングとの統合
-- Iterableインターフェイスの実装
-- @SafeVarargsアノテーションの使用
-
-### 4. 型安全ビルダー (TypeSafeBuilder系)
-
-- **TypeSafeBuilder.java**: 型安全なビルダーパターンの実装
-- **TypeSafeBuilderTest.java**: TypeSafeBuilderクラスのテスト
+#### 使用コレクション
+- `HashMap<String, Book>`: 書籍のID別管理
+- `Map<String, List<Book>>`: カテゴリ別・著者別インデックス
+- `Queue<String>`: 予約待ちキュー
+- `Map<String, List<LoanRecord>>`: 利用者別貸出記録
 
 #### 学習ポイント
-- ビルダーパターンとジェネリクスの組み合わせ
-- フルーエントインターフェイスの実装
-- 型安全性を保ったメソッドチェーン
-- バリデーション機能の組み込み
+- Queueインターフェイスの活用（予約システム）
+- 複数のインデックスによる効率的な検索
+- 日付操作とStreamAPIの組み合わせ
+- 列挙型を活用した設計
 
-## ジェネリクスの重要概念
+### 3. ショッピングカートシステム (ShoppingCart系)
 
-### 1. 型パラメータ
+- **ShoppingCart.java**: ショッピングカートのメインクラス
+- **ShoppingCartTest.java**: ショッピングカートのテスト
 
-```java
-public class GenericBox<T> {
-    private T content;
-    
-    public void setContent(T content) {
-        this.content = content;
-    }
-    
-    public T getContent() {
-        return content;
-    }
-}
-```
+#### 使用コレクション
+- `LinkedHashMap<String, CartItem>`: 追加順序を保持したカート
+- `HashMap<String, Product>`: 商品管理
+- `Set<String>`: 適用済み割引の管理
+- `Map<String, List<Product>>`: カテゴリ別商品管理
 
-### 2. 境界ワイルドカード
+#### 学習ポイント
+- BigDecimalを使った正確な金額計算
+- LinkedHashMapによる順序保持
+- 複雑な割引計算ロジック
+- 在庫管理とカート操作の整合性
 
-#### 共変性（? extends T）
-```java
-// Tのサブタイプを受け入れる
-public <U extends T> void copyFrom(GenericBox<U> other) {
-    if (!other.isEmpty()) {
-        setContent(other.getContent());
-    }
-}
-```
+### 4. データ処理システム (DataProcessor系)
 
-#### 反変性（? super T）
-```java
-// Tのスーパータイプを受け入れる
-public <U super T> void copyTo(GenericBox<U> other) {
-    if (!isEmpty()) {
-        other.setContent(getContent());
-    }
-}
-```
+- **DataProcessor.java**: データ処理システムのメインクラス
+- **DataProcessorTest.java**: データ処理システムのテスト
 
-### 3. ジェネリクスメソッド
+#### 使用コレクション
+- `ArrayList<DataEntry>`: データの順序保持
+- `HashMap<String, DataEntry>`: ID別の高速検索
+- `TreeMap<Double, List<DataEntry>>`: 値による範囲検索
+- `TreeMap<Date, List<DataEntry>>`: 時刻による範囲検索
 
-```java
-public <R> R applyOperation(Function<T, R> operation) {
-    if (content == null) {
-        return null;
-    }
-    return operation.apply(content);
-}
-```
+#### 学習ポイント
+- TreeMapによる範囲検索の実装
+- 統計計算とキャッシュ機能
+- 複数のインデックスによる効率的な検索
+- エラーハンドリングと処理結果の管理
 
-### 4. 型安全なキャスト
+## コレクション選択の指針
 
-```java
-public <U> U getContentAs(Class<U> clazz) {
-    if (content == null) {
-        return null;
-    }
-    if (clazz.isInstance(content)) {
-        return clazz.cast(content);
-    }
-    throw new ClassCastException("Cannot cast to " + clazz);
-}
-```
+### 1. List系
 
-### 5. @SafeVarargs
+| コレクション | 特徴 | 使用場面 |
+|-------------|------|----------|
+| ArrayList | 高速なランダムアクセス | 検索が多い、サイズ変更が少ない |
+| LinkedList | 高速な挿入・削除 | 頻繁な挿入・削除が発生する |
+| Vector | 同期化されたArrayList | マルチスレッド環境（非推奨） |
 
-```java
-@SafeVarargs
-public static <T> GenericStack<T> of(T... items) {
-    GenericStack<T> stack = new GenericStack<>();
-    for (T item : items) {
-        stack.push(item);
-    }
-    return stack;
-}
-```
+### 2. Set系
 
-## 設計パターンとの組み合わせ
+| コレクション | 特徴 | 使用場面 |
+|-------------|------|----------|
+| HashSet | 高速な検索・追加・削除 | 順序不要、重複排除 |
+| LinkedHashSet | 挿入順序を保持 | 順序が重要、重複排除 |
+| TreeSet | 自動ソート | ソート済み、重複排除 |
 
-### 1. ファクトリーパターン
+### 3. Map系
 
-```java
-public static <T> GenericBox<T> of(T value, Class<T> type) {
-    GenericBox<T> box = new GenericBox<>(type);
-    box.setContent(value);
-    return box;
-}
-```
+| コレクション | 特徴 | 使用場面 |
+|-------------|------|----------|
+| HashMap | 高速な検索・追加・削除 | 順序不要、キー-値ペア |
+| LinkedHashMap | 挿入順序を保持 | 順序が重要、キー-値ペア |
+| TreeMap | 自動ソート | ソート済み、範囲検索 |
 
-### 2. ビルダーパターン
+### 4. Queue系
 
-```java
-public static PersonBuilder personBuilder() {
-    return new PersonBuilder();
-}
-
-// メソッドチェーンで型安全な構築
-Person person = TypeSafeBuilder.personBuilder()
-    .name("田中太郎")
-    .age(30)
-    .email("tanaka@example.com")
-    .build();
-```
-
-### 3. フルーエントインターフェイス
-
-```java
-// 段階的な構築を強制する型安全なインターフェイス
-Person person = TypeSafeBuilder.fluentPerson()
-    .name("鈴木次郎")     // NameStep を返す
-    .age(35)             // AgeStep を返す
-    .email("suzuki@example.com")  // EmailStep を返す
-    .build();            // Person を返す
-```
+| コレクション | 特徴 | 使用場面 |
+|-------------|------|----------|
+| ArrayDeque | 両端操作が高速 | スタック、キュー |
+| LinkedList | Queueインターフェイス実装 | キュー操作 |
+| PriorityQueue | 優先度付きキュー | 優先度に基づく処理 |
 
 ## 実行方法
 
@@ -175,85 +117,60 @@ Person person = TypeSafeBuilder.fluentPerson()
 ./gradlew test
 
 # 特定の章のテストのみ実行
-./gradlew test --tests "chapter09.*"
+./gradlew test --tests "chapter08.*"
 ```
 
-### 個別クラスの実行
+### 個別システムの実行
 
 ```bash
-# GenericBoxのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter09.solutions.GenericBoxTest
+# 学生管理システムのテスト
+java -cp build/classes/java/main:build/classes/java/test chapter08.solutions.StudentManagerTest
 
-# TypeSafeBuilderのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter09.solutions.TypeSafeBuilderTest
+# 図書館システムのテスト
+java -cp build/classes/java/main:build/classes/java/test chapter08.solutions.LibrarySystemTest
 ```
 
 ## 重要なポイント
 
-### 1. 型安全性の確保
+### 1. コレクションの選択基準
 
-- コンパイル時に型エラーを検出
-- ClassCastExceptionを防ぐ
-- 型情報の保持と活用
+- **検索頻度**: 検索が多い場合はHashMap, HashSet
+- **順序の重要性**: 順序が重要な場合はLinkedHashMap, LinkedHashSet
+- **ソートの必要性**: 自動ソートが必要な場合はTreeMap, TreeSet
+- **範囲検索**: 範囲検索が必要な場合はTreeMap
 
-### 2. パフォーマンスの考慮
-
-- 型消去によるランタイムオーバーヘッドの削減
-- ボクシング/アンボクシングの最小化
-- 適切な境界の設定
-
-### 3. 可読性と保守性
-
-- 明確な型情報による可読性向上
-- 型安全なAPIの提供
-- ドキュメントとしての型情報
-
-### 4. ワイルドカードの使い分け
-
-- **? extends T**: 読み取り専用（Producer）
-- **? super T**: 書き込み専用（Consumer）
-- **PECS原則**: Producer Extends, Consumer Super
-
-## よくある落とし穴
-
-### 1. 型消去
+### 2. Comparatorの活用
 
 ```java
-// 実行時には型情報が失われる
-List<String> strings = new ArrayList<>();
-List<Integer> integers = new ArrayList<>();
-// strings.getClass() == integers.getClass() // true
+// 複合ソート
+Comparator<Student> comparator = 
+    Comparator.comparingInt(Student::getScore)
+             .reversed()
+             .thenComparing(Student::getName);
 ```
 
-### 2. 配列との組み合わせ
+### 3. Stream APIとの組み合わせ
 
 ```java
-// コンパイルエラー
-// List<String>[] arrays = new List<String>[10];
-
-// 回避策
-List<String>[] arrays = (List<String>[]) new List[10];
+// 統計計算
+DoubleSummaryStatistics stats = 
+    students.stream()
+           .mapToDouble(Student::getScore)
+           .summaryStatistics();
 ```
 
-### 3. 静的コンテキスト
+### 4. パフォーマンスの考慮
 
-```java
-public class GenericClass<T> {
-    // エラー: 静的メンバでは型パラメータを使用できない
-    // private static T staticField;
-    
-    // OK: ジェネリクスメソッドとして定義
-    public static <U> void staticMethod(U parameter) {
-        // ...
-    }
-}
-```
+- 大量データの場合は適切なコレクションの選択が重要
+- 頻繁な検索にはHashMapを使用
+- 範囲検索にはTreeMapを使用
+- 順序が重要な場合はLinkedHashMapを使用
 
 ## 発展的な学習
 
-1. **高階カインド**: より複雑な型システムの理解
-2. **型推論**: Diamond演算子やvarの活用
-3. **ジェネリクスとリフレクション**: TypeTokenパターンの応用
-4. **関数型プログラミング**: ジェネリクスと関数型インターフェイスの組み合わせ
+1. **カスタムコレクション**: 特定の用途に最適化されたコレクションの実装
+2. **並行コレクション**: ConcurrentHashMapなどのスレッドセーフなコレクション
+3. **イミュータブルコレクション**: 不変コレクションの活用
+4. **ストリーム処理**: より複雑なデータ処理パイプラインの構築
 
-これらの解答例を通じて、Javaのジェネリクスシステムを深く理解し、型安全で再利用可能なコードを書く技術を身につけることができます。
+これらの解答例を通じて、適切なコレクションクラスの選択方法と効率的なデータ操作手法を身につけることができます。

@@ -1,1058 +1,747 @@
 # 第14章 応用課題
 
 ## 🎯 学習目標
-- 高度なデータ型設計
-- カスタム型システムの実装
-- 型安全性の強化
-- メタデータ活用システム
-- 実行時型情報の高度利用
+- 高度なJavaDoc活用
+- 自動ドキュメント生成システム
+- API仕様書自動作成
+- コードから設計書の逆生成
+- インタラクティブドキュメント
 
 ## 📝 課題一覧
 
-### 課題1: 型安全データベースORM
-**ファイル名**: `TypeSafeORM.java`
+### 課題1: 自動API仕様書生成システム
+**ファイル名**: `AutoAPIDocumentationGenerator.java`
 
-完全に型安全なデータベースORMシステムを作成してください。
+コードから包括的なAPI仕様書を自動生成するシステムを作成してください。
 
 **要求仕様**:
-- コンパイル時型チェック
-- タイプセーフなクエリビルダー
-- 自動スキーマ検証
-- 型推論ベースマッピング
+- REST API仕様の自動抽出
+- OpenAPI 3.0形式出力
+- インタラクティブデモ生成
+- 多言語ドキュメント対応
 
-**ORM機能**:
-- エンティティマッピング
-- 関連データの遅延読み込み
-- トランザクション管理
-- キャッシュシステム
+**生成機能**:
+- エンドポイント仕様
+- データモデル定義
+- サンプルコード
+- テストケース
 
 **実行例**:
 ```
-=== 型安全データベースORM ===
+=== 自動API仕様書生成システム ===
 
-🛡️ TypeSafeORM v3.0
+📚 AutoDocGen Pro v3.0
 
-=== 型システム構成 ===
-🔒 コンパイル時型安全性:
+=== プロジェクト解析 ===
+🔍 包括的コード分析:
 
-サポート型:
-- プリミティブ型: 8種類
-- 参照型: 無制限
-- ジェネリック型: 完全対応
-- 関数型: Lambda式対応
-- カスタム型: 動的生成
+解析対象:
+プロジェクト: E-Commerce API
+言語: Java + Spring Boot
+ファイル数: 247個
+クラス数: 156個
+メソッド数: 1,247個
+アノテーション: @RestController, @RequestMapping等
 
-型推論エンジン:
-- Hindley-Milner型推論
-- 型変数統一
-- 制約ベース型推論
-- 部分型関係解析
+解析結果:
+REST エンドポイント: 67個
+データモデル: 23個
+セキュリティ設定: JWT + OAuth2
+バリデーション: Bean Validation
+例外処理: 15種類の例外クラス
 
-型安全性レベル:
-- コンパイル時: 100%保証
-- 実行時: 動的検証
-- SQL注入: 完全防止
-- 型変換エラー: 0件
+解析時間: 8.7秒
+解析精度: 98.3%
 
-=== エンティティ定義 ===
-🏗️ 型安全エンティティシステム:
-
-```java
-// 型安全エンティティ定義
-@Entity
-@Table("users")
-public record User(
-    @Id @GeneratedValue 
-    TypedColumn<Long> id,
-    
-    @Column(name = "username", nullable = false, unique = true)
-    TypedColumn<String> username,
-    
-    @Column(name = "email", nullable = false)
-    TypedColumn<Email> email,
-    
-    @Column(name = "age", nullable = true)
-    TypedColumn<Age> age,
-    
-    @Column(name = "created_at", nullable = false)
-    TypedColumn<LocalDateTime> createdAt,
-    
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    TypedCollection<Order> orders
-) implements TypedEntity<Long> {
-    
-    // 型安全なビルダー
-    public static TypedEntityBuilder<User> builder() {
-        return new TypedEntityBuilder<>(User.class);
-    }
-    
-    // 型安全な更新
-    public User withUsername(String newUsername) {
-        return new User(id, TypedColumn.of(newUsername), email, age, createdAt, orders);
-    }
-    
-    // 型安全な検証
-    public ValidationResult validate() {
-        TypeValidator<User> validator = TypeValidator.forEntity(User.class);
-        return validator.validate(this);
-    }
-}
-
-// カスタム型定義
-public final class Email {
-    private final String value;
-    
-    private Email(String value) {
-        this.value = Objects.requireNonNull(value);
-    }
-    
-    public static Email of(String value) {
-        if (!isValidEmail(value)) {
-            throw new InvalidEmailException("無効なメールアドレス: " + value);
-        }
-        return new Email(value);
-    }
-    
-    public String getValue() {
-        return value;
-    }
-    
-    private static boolean isValidEmail(String email) {
-        return email != null && 
-               email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    }
-}
-
-public final class Age {
-    private final int value;
-    
-    private Age(int value) {
-        this.value = value;
-    }
-    
-    public static Age of(int value) {
-        if (value < 0 || value > 150) {
-            throw new InvalidAgeException("無効な年齢: " + value);
-        }
-        return new Age(value);
-    }
-    
-    public int getValue() {
-        return value;
-    }
-}
-
-// 型安全クエリビルダー
-public class TypeSafeQueryBuilder<T extends TypedEntity<?>> {
-    private final Class<T> entityClass;
-    private final List<TypedPredicate> predicates = new ArrayList<>();
-    private final List<TypedOrderBy> orderByList = new ArrayList<>();
-    
-    public TypeSafeQueryBuilder(Class<T> entityClass) {
-        this.entityClass = entityClass;
-    }
-    
-    // 型安全なWHERE条件
-    public <V> TypeSafeQueryBuilder<T> where(TypedColumn<V> column, 
-                                           TypedOperator<V> operator, 
-                                           V value) {
-        predicates.add(new TypedPredicate(column, operator, value));
-        return this;
-    }
-    
-    // 型安全なORDER BY
-    public <V extends Comparable<V>> TypeSafeQueryBuilder<T> orderBy(
-            TypedColumn<V> column, SortDirection direction) {
-        orderByList.add(new TypedOrderBy(column, direction));
-        return this;
-    }
-    
-    // 型安全なJOIN
-    public <R extends TypedEntity<?>> TypeSafeJoinBuilder<T, R> join(
-            Class<R> joinEntityClass, 
-            TypedJoinCondition<T, R> condition) {
-        return new TypeSafeJoinBuilder<>(this, joinEntityClass, condition);
-    }
-    
-    // 実行
-    public TypedQuery<T> build() {
-        TypedQueryCompiler compiler = new TypedQueryCompiler();
-        return compiler.compile(entityClass, predicates, orderByList);
-    }
-}
-
-// ORM実装
-@Repository
-public class TypeSafeRepository<T extends TypedEntity<ID>, ID> {
-    private final EntityManager entityManager;
-    private final TypedEntityMetadata<T> metadata;
-    private final TypeSafeQueryCompiler queryCompiler;
-    
-    public TypeSafeRepository(Class<T> entityClass, EntityManager entityManager) {
-        this.entityManager = entityManager;
-        this.metadata = TypedEntityMetadata.of(entityClass);
-        this.queryCompiler = new TypedQueryCompiler();
-    }
-    
-    public Optional<T> findById(ID id) {
-        try {
-            // 型安全なプライマリキー検索
-            TypedQuery<T> query = queryCompiler.createFindByIdQuery(metadata, id);
-            
-            // SQL生成・実行
-            String sql = query.toSQL();
-            Query nativeQuery = entityManager.createNativeQuery(sql, metadata.getEntityClass());
-            nativeQuery.setParameter("id", id);
-            
-            @SuppressWarnings("unchecked")
-            T result = (T) nativeQuery.getSingleResult();
-            
-            return Optional.ofNullable(result);
-            
-        } catch (NoResultException e) {
-            return Optional.empty();
-        } catch (Exception e) {
-            throw new TypeSafeORMException("findById実行エラー", e);
-        }
-    }
-    
-    public List<T> findAll() {
-        TypedQuery<T> query = queryCompiler.createFindAllQuery(metadata);
-        return executeQuery(query);
-    }
-    
-    public List<T> findWhere(TypedPredicate... predicates) {
-        TypedQuery<T> query = queryCompiler.createSelectQuery(metadata, 
-            Arrays.asList(predicates));
-        return executeQuery(query);
-    }
-    
-    @Transactional
-    public T save(T entity) {
-        try {
-            // 型安全な保存前検証
-            ValidationResult validation = entity.validate();
-            if (!validation.isValid()) {
-                throw new ValidationException("エンティティ検証失敗: " + 
-                    validation.getErrors());
-            }
-            
-            if (entity.getId() == null) {
-                // INSERT
-                TypedQuery<T> insertQuery = queryCompiler.createInsertQuery(metadata, entity);
-                executeUpdate(insertQuery);
-                
-                // 生成されたIDを取得
-                ID generatedId = getGeneratedId(entity);
-                return entity.withId(generatedId);
-            } else {
-                // UPDATE
-                TypedQuery<T> updateQuery = queryCompiler.createUpdateQuery(metadata, entity);
-                executeUpdate(updateQuery);
-                return entity;
-            }
-            
-        } catch (Exception e) {
-            throw new TypeSafeORMException("save実行エラー", e);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    private List<T> executeQuery(TypedQuery<T> query) {
-        String sql = query.toSQL();
-        Query nativeQuery = entityManager.createNativeQuery(sql, metadata.getEntityClass());
-        
-        // パラメータ設定
-        for (TypedParameter param : query.getParameters()) {
-            nativeQuery.setParameter(param.getName(), param.getValue());
-        }
-        
-        return nativeQuery.getResultList();
-    }
-}
-```
-
-型安全クエリ実行例:
-```
-=== 型安全クエリ実行 ===
-
-クエリ構築:
-TypeSafeQueryBuilder<User> builder = TypeSafeQueryBuilder.forEntity(User.class);
-
-TypedQuery<User> query = builder
-    .where(User::username, TypedOperator.LIKE, "john%")
-    .where(User::age, TypedOperator.GREATER_THAN, Age.of(25))
-    .orderBy(User::createdAt, SortDirection.DESC)
-    .build();
-
-コンパイル時型チェック:
-✅ カラム型: username (String) ← "john%" (String) 
-✅ 比較演算: age (Age) ← Age.of(25) (Age)
-✅ ソート型: createdAt (LocalDateTime) implements Comparable
-✅ 戻り値型: List<User>
-
-生成SQL:
-SELECT u.id, u.username, u.email, u.age, u.created_at
-FROM users u
-WHERE u.username LIKE ?
-  AND u.age > ?
-ORDER BY u.created_at DESC
-
-実行結果:
-取得件数: 23件
-実行時間: 45ms
-型安全性: 100%維持
-SQLインジェクション: 0件 (防止完了)
-
-型検証結果:
-コンパイル時エラー: 0件
-実行時型エラー: 0件
-制約違反: 0件
-パフォーマンス: 従来比105% (型安全オーバーヘッド5%)
-```
-
-=== 関連データ処理 ===
-```java
-// 型安全な関連データ取得
-TypedQuery<User> usersWithOrders = TypeSafeQueryBuilder
-    .forEntity(User.class)
-    .join(Order.class, (user, order) -> user.id().equals(order.userId()))
-    .where(Order::status, TypedOperator.EQUALS, OrderStatus.COMPLETED)
-    .select(User.class)
-    .distinct()
-    .build();
-
-実行例:
-関連テーブル: users ⟷ orders
-結合条件: users.id = orders.user_id (型安全)
-フィルタ条件: orders.status = 'COMPLETED' (enum型安全)
-重複排除: DISTINCT users
-遅延読み込み: orders プロパティは必要時取得
-
-結果:
-ユーザー数: 156人
-平均注文数: 3.2件/人
-読み込み戦略: N+1問題回避済み
-```
-```
-
-### 課題2: 動的型システム構築フレームワーク
-**ファイル名**: `DynamicTypeSystemFramework.java`
-
-実行時に型を動的生成・管理するフレームワークを作成してください。
-
-**要求仕様**:
-- 実行時型生成
-- 型継承関係の動的変更
-- カスタム型演算子定義
-- 型推論エンジン実装
-
-**型システム機能**:
-- 構造的部分型
-- 交差型・合併型
-- 高階型
-- 依存型
-
-**実行例**:
-```
-=== 動的型システム構築フレームワーク ===
-
-🔄 DynamicTypeSystem v2.0
-
-=== 動的型生成 ===
-⚡ 実行時型構築:
-
-型生成エンジン:
-- バイトコード生成: ASM 9.0
-- 型推論: Hindley-Milner拡張
-- 制約解決: Unification Algorithm
-- 型チェック: 構造的型付け
-
-サポート型種別:
-- 基本型: プリミティブ + 参照型
-- 複合型: Record、Union、Intersection
-- 関数型: 高階関数対応
-- 依存型: 値依存型付け
-- 量化型: ∀型、∃型
-
-型推論精度: 99.7%
-型生成速度: 10万型/秒
-メモリ効率: 従来比150%
-
-=== 動的型定義 ===
-🛠️ 実行時型システム:
+=== API仕様抽出 ===
+📋 REST API分析:
 
 ```java
-public class DynamicTypeBuilder {
-    private final TypeRegistry typeRegistry;
-    private final ConstraintSolver constraintSolver;
-    private final TypeInferenceEngine inferenceEngine;
+/**
+ * ユーザー管理API
+ * ユーザーの作成、取得、更新、削除を行う
+ * 
+ * @author API Generator
+ * @version 1.0.0
+ * @since 2024-07-05
+ */
+@RestController
+@RequestMapping("/api/users")
+@Tag(name = "ユーザー管理", description = "ユーザー関連のAPI操作")
+public class UserController {
     
-    // 構造的型定義
-    public DynamicType createStructuralType(String name, 
-                                          Map<String, TypeDescriptor> fields) {
-        try {
-            // 型制約収集
-            Set<TypeConstraint> constraints = collectConstraints(fields);
-            
-            // 制約解決
-            TypeSolution solution = constraintSolver.solve(constraints);
-            
-            if (!solution.hasUniqueSolution()) {
-                throw new AmbiguousTypeException("型定義が曖昧です: " + name);
-            }
-            
-            // バイトコード生成
-            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-            
-            // クラス定義
-            classWriter.visit(
-                Opcodes.V17,
-                Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-                name.replace('.', '/'),
-                null,
-                "java/lang/Object",
-                null
-            );
-            
-            // フィールド生成
-            for (Map.Entry<String, TypeDescriptor> field : fields.entrySet()) {
-                generateField(classWriter, field.getKey(), field.getValue());
-            }
-            
-            // コンストラクタ生成
-            generateConstructor(classWriter, fields);
-            
-            // アクセサメソッド生成
-            generateAccessors(classWriter, fields);
-            
-            // 型演算メソッド生成
-            generateTypeOperations(classWriter, solution);
-            
-            classWriter.visitEnd();
-            
-            // クラスロード
-            byte[] bytecode = classWriter.toByteArray();
-            DynamicClassLoader loader = new DynamicClassLoader();
-            Class<?> generatedClass = loader.defineClass(name, bytecode);
-            
-            // 型登録
-            DynamicType dynamicType = new DynamicType(generatedClass, solution);
-            typeRegistry.register(name, dynamicType);
-            
-            logger.info("動的型生成完了: {} (フィールド数: {})", name, fields.size());
-            
-            return dynamicType;
-            
-        } catch (Exception e) {
-            throw new TypeGenerationException("動的型生成失敗: " + name, e);
+    /**
+     * ユーザー一覧取得
+     * 
+     * @param page ページ番号 (0から開始, デフォルト: 0)
+     * @param size ページサイズ (1-100, デフォルト: 20)
+     * @param sort ソート条件 (例: "name,asc" or "createdAt,desc")
+     * @param search 検索キーワード (部分一致)
+     * @return ページング化されたユーザー一覧
+     * 
+     * @apiNote このAPIはページングと検索をサポートします
+     * @apiExample
+     * GET /api/users?page=0&size=10&sort=name,asc&search=john
+     * 
+     * @apiSuccess 200 正常にユーザー一覧を取得
+     * @apiError 400 不正なパラメータ
+     * @apiError 401 認証が必要
+     * @apiError 403 権限不足
+     */
+    @GetMapping
+    @Operation(
+        summary = "ユーザー一覧取得",
+        description = "条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "成功",
+                content = @Content(schema = @Schema(implementation = PagedUserResponse.class))),
+            @ApiResponse(responseCode = "400", description = "パラメータエラー"),
+            @ApiResponse(responseCode = "401", description = "認証エラー"),
+            @ApiResponse(responseCode = "403", description = "権限エラー")
         }
-    }
-    
-    // 合併型 (Union Type) 作成
-    public DynamicType createUnionType(String name, List<DynamicType> types) {
-        // Union<A, B> = A | B
-        TypeDescriptor unionDescriptor = TypeDescriptor.union(
-            types.stream()
-                .map(DynamicType::getDescriptor)
-                .collect(Collectors.toList())
-        );
-        
-        // 型安全な値クラス生成
-        return generateUnionValueClass(name, types, unionDescriptor);
-    }
-    
-    // 交差型 (Intersection Type) 作成
-    public DynamicType createIntersectionType(String name, List<DynamicType> types) {
-        // Intersection<A, B> = A & B
-        TypeDescriptor intersectionDescriptor = TypeDescriptor.intersection(
-            types.stream()
-                .map(DynamicType::getDescriptor)
-                .collect(Collectors.toList())
-        );
-        
-        // 全ての型の制約を満たすクラス生成
-        return generateIntersectionClass(name, types, intersectionDescriptor);
-    }
-    
-    // 依存型作成
-    public DynamicType createDependentType(String name, 
-                                         DynamicType baseType,
-                                         Predicate<Object> constraint) {
-        // 値に依存する型: {x: T | P(x)}
-        DependentTypeDescriptor descriptor = new DependentTypeDescriptor(
-            baseType.getDescriptor(), constraint);
-        
-        return generateDependentTypeClass(name, baseType, descriptor);
-    }
-}
-
-// 型推論エンジン
-public class TypeInferenceEngine {
-    private final UnificationAlgorithm unification;
-    private final ConstraintGenerator constraintGenerator;
-    
-    public InferenceResult inferType(Expression expression, TypeEnvironment env) {
-        try {
-            // 制約生成
-            ConstraintSet constraints = constraintGenerator.generate(expression, env);
-            
-            // 制約解決
-            Substitution substitution = unification.unify(constraints);
-            
-            // 型推論
-            Type inferredType = substitution.apply(expression.getType());
-            
-            // 一般化
-            TypeScheme scheme = generalize(env, inferredType);
-            
-            return InferenceResult.success(scheme, substitution);
-            
-        } catch (UnificationException e) {
-            return InferenceResult.failure("型推論失敗: " + e.getMessage());
-        }
-    }
-    
-    private TypeScheme generalize(TypeEnvironment env, Type type) {
-        // 自由型変数を量化
-        Set<TypeVariable> freeVars = type.getFreeVariables();
-        freeVars.removeAll(env.getFreeVariables());
-        
-        return new TypeScheme(new ArrayList<>(freeVars), type);
-    }
-}
-
-// 動的型演算子
-public class DynamicTypeOperators {
-    
-    // 型レベル加算
-    public static DynamicType add(DynamicType a, DynamicType b) {
-        if (isNumericType(a) && isNumericType(b)) {
-            return promoteNumericType(a, b);
-        } else if (isStringType(a) || isStringType(b)) {
-            return DynamicType.STRING;
-        } else {
-            throw new TypeOperationException("加算不可能な型: " + a + " + " + b);
-        }
-    }
-    
-    // 型レベル合成
-    public static DynamicType compose(DynamicType f, DynamicType g) {
-        if (!isFunctionType(f) || !isFunctionType(g)) {
-            throw new TypeOperationException("関数型以外は合成できません");
-        }
-        
-        FunctionType funcF = (FunctionType) f;
-        FunctionType funcG = (FunctionType) g;
-        
-        // g: A -> B, f: B -> C なら f ∘ g: A -> C
-        if (!funcF.getInputType().equals(funcG.getOutputType())) {
-            throw new TypeOperationException("関数合成の型が一致しません");
-        }
-        
-        return new FunctionType(funcG.getInputType(), funcF.getOutputType());
-    }
-    
-    // 型レベル適用
-    public static DynamicType apply(DynamicType function, DynamicType argument) {
-        if (!isFunctionType(function)) {
-            throw new TypeOperationException("関数型ではありません: " + function);
-        }
-        
-        FunctionType funcType = (FunctionType) function;
-        
-        if (!isSubtypeOf(argument, funcType.getInputType())) {
-            throw new TypeOperationException("引数型が一致しません: 期待=" + 
-                funcType.getInputType() + ", 実際=" + argument);
-        }
-        
-        return funcType.getOutputType();
-    }
-}
-```
-
-動的型実行例:
-```
-=== 動的型生成実行ログ ===
-
-型定義要求:
-型名: Person
-フィールド:
-- name: String
-- age: int  
-- email: Optional<String>
-- address: Address
-
-型生成プロセス:
-14:30:00.001 - 制約収集開始
-14:30:00.003 - 制約解決実行
-14:30:00.005 - バイトコード生成開始
-14:30:00.015 - フィールドアクセサ生成
-14:30:00.020 - 型演算メソッド生成
-14:30:00.025 - クラスロード完了
-14:30:00.027 - 型登録完了
-
-生成結果:
-クラス名: com.dynamic.Person
-バイトコードサイズ: 2,847 bytes
-メソッド数: 12個
-型安全性: 構造的型付けで保証
-実行時検証: 有効
-
-型推論テスト:
-式: person.age + 5
-推論結果: int
-推論時間: 0.03ms
-制約数: 7個
-統一成功: ✅
-
-合併型テスト:
-型定義: StringOrNumber = String | Number
-値テスト:
-- "hello" → ✅ String部分型
-- 42 → ✅ Number部分型  
-- true → ❌ 型エラー
-
-交差型テスト:
-型定義: ReadableWritable = Readable & Writable
-実装確認:
-- read()メソッド: ✅ 実装済み
-- write()メソッド: ✅ 実装済み
-- 型適合性: ✅ 両インターフェイス満足
-```
-
-=== 高階型実装例 ===
-```java
-// 高階型定義
-DynamicType listType = typeBuilder.createHigherKindedType("List", 1);
-DynamicType mapType = typeBuilder.createHigherKindedType("Map", 2);
-
-// 型適用
-DynamicType stringList = typeBuilder.applyTypeArgs(listType, 
-    Arrays.asList(DynamicType.STRING));
-DynamicType stringIntMap = typeBuilder.applyTypeArgs(mapType, 
-    Arrays.asList(DynamicType.STRING, DynamicType.INTEGER));
-
-実行結果:
-高階型: List<*> (Kind: * -> *)
-適用後: List<String> (Kind: *)
-検証: ✅ 型適用成功
-
-高階型: Map<*, *> (Kind: * -> * -> *)  
-適用後: Map<String, Integer> (Kind: *)
-検証: ✅ 型適用成功
-```
-```
-
-### 課題3: メタデータ駆動開発プラットフォーム
-**ファイル名**: `MetadataDrivenPlatform.java`
-
-メタデータから自動的にシステムを生成するプラットフォームを作成してください。
-
-**要求仕様**:
-- スキーマ駆動コード生成
-- アノテーション処理による自動化
-- リフレクション最適化
-- 実行時メタデータ更新
-
-**プラットフォーム機能**:
-- API自動生成
-- データバリデーション
-- シリアライゼーション
-- ドキュメント生成
-
-**実行例**:
-```
-=== メタデータ駆動開発プラットフォーム ===
-
-🏗️ MetadataDriven Platform v4.0
-
-=== メタデータスキーマ ===
-📋 自動生成システム:
-
-メタデータ種別:
-- エンティティスキーマ: JSON Schema
-- API仕様: OpenAPI 3.0  
-- バリデーション: JSON Schema + カスタム
-- ドキュメント: Markdown + テンプレート
-
-生成可能コンポーネント:
-- REST API: Spring Boot
-- データモデル: JPA Entity
-- バリデーター: Bean Validation
-- テストコード: JUnit 5
-- ドキュメント: Asciidoc
-
-コード生成速度: 50,000行/秒
-生成品質: 手動実装比98%
-メンテナンス性: 手動実装比150%
-
-=== スキーマ駆動生成 ===
-🔧 メタデータからコード生成:
-
-```java
-// メタデータ定義
-@Schema(
-    name = "User",
-    description = "ユーザーエンティティ",
-    version = "1.0.0"
-)
-@Entity
-@Table(name = "users")
-public interface UserSchema {
-    
-    @Property(
-        name = "id",
-        type = PropertyType.IDENTIFIER,
-        required = true,
-        generated = true
     )
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long getId();
+    public ResponseEntity<PagedResponse<UserDTO>> getUsers(
+            @Parameter(description = "ページ番号", example = "0")
+            @RequestParam(defaultValue = "0") @Min(0) Integer page,
+            
+            @Parameter(description = "ページサイズ", example = "20") 
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size,
+            
+            @Parameter(description = "ソート条件", example = "name,asc")
+            @RequestParam(required = false) String sort,
+            
+            @Parameter(description = "検索キーワード", example = "john")
+            @RequestParam(required = false) String search) {
+        
+        // 実装...
+    }
     
-    @Property(
-        name = "username",
-        type = PropertyType.STRING,
-        required = true,
-        unique = true,
-        minLength = 3,
-        maxLength = 50,
-        pattern = "^[a-zA-Z0-9_]+$"
-    )
-    @Column(nullable = false, unique = true)
-    String getUsername();
-    
-    @Property(
-        name = "email",
-        type = PropertyType.EMAIL,
-        required = true,
-        format = "email"
-    )
-    @Column(nullable = false)
-    String getEmail();
-    
-    @Property(
-        name = "profile",
-        type = PropertyType.OBJECT,
-        reference = "UserProfile",
-        cascade = CascadeType.ALL
-    )
-    @OneToOne(cascade = CascadeType.ALL)
-    UserProfile getProfile();
+    /**
+     * ユーザー作成
+     * 
+     * @param request ユーザー作成リクエスト
+     * @return 作成されたユーザー情報
+     * 
+     * @apiNote 
+     * - ユーザー名は一意である必要があります
+     * - メールアドレスは有効な形式である必要があります
+     * - パスワードは8文字以上で英数字記号を含む必要があります
+     * 
+     * @apiExample
+     * POST /api/users
+     * Content-Type: application/json
+     * 
+     * {
+     *   "username": "john_doe",
+     *   "email": "john@example.com",
+     *   "password": "SecurePass123!",
+     *   "profile": {
+     *     "firstName": "John",
+     *     "lastName": "Doe",
+     *     "phoneNumber": "+81-90-1234-5678"
+     *   }
+     * }
+     * 
+     * @apiSuccessExample 成功レスポンス
+     * HTTP/1.1 201 Created
+     * Content-Type: application/json
+     * 
+     * {
+     *   "id": 123,
+     *   "username": "john_doe", 
+     *   "email": "john@example.com",
+     *   "profile": {
+     *     "firstName": "John",
+     *     "lastName": "Doe",
+     *     "phoneNumber": "+81-90-1234-5678"
+     *   },
+     *   "createdAt": "2024-07-05T14:30:00Z",
+     *   "updatedAt": "2024-07-05T14:30:00Z"
+     * }
+     */
+    @PostMapping
+    @Operation(summary = "ユーザー作成", description = "新しいユーザーを作成します")
+    public ResponseEntity<UserDTO> createUser(
+            @Valid @RequestBody CreateUserRequest request) {
+        // 実装...
+    }
 }
 
-// コード生成エンジン
+// 自動生成されたOpenAPI仕様
 @Service
-public class MetadataCodeGenerator {
-    private final TemplateEngine templateEngine;
-    private final SchemaAnalyzer schemaAnalyzer;
-    private final CodeOptimizer codeOptimizer;
+public class OpenAPISpecGenerator {
     
-    public GenerationResult generateFromSchema(SchemaDefinition schema) {
-        try {
-            // スキーマ解析
-            SchemaAnalysis analysis = schemaAnalyzer.analyze(schema);
-            
-            // 生成計画作成
-            GenerationPlan plan = createGenerationPlan(analysis);
-            
-            // 並行コード生成
-            List<CompletableFuture<GeneratedComponent>> futures = 
-                plan.getComponents().stream()
-                    .map(component -> CompletableFuture.supplyAsync(() -> 
-                        generateComponent(component, analysis)))
-                    .collect(Collectors.toList());
-            
-            // 全コンポーネント生成待機
-            List<GeneratedComponent> components = futures.stream()
-                .map(CompletableFuture::join)
-                .collect(Collectors.toList());
-            
-            // コード最適化
-            OptimizedCode optimizedCode = codeOptimizer.optimize(components);
-            
-            // ファイル出力
-            List<GeneratedFile> files = writeGeneratedFiles(optimizedCode);
-            
-            return GenerationResult.success(files, analysis.getMetrics());
-            
-        } catch (Exception e) {
-            return GenerationResult.failure("コード生成失敗", e);
+    public OpenAPISpecification generateSpecification(List<Class<?>> controllerClasses) {
+        OpenAPISpecification spec = new OpenAPISpecification();
+        
+        // 基本情報設定
+        spec.setInfo(Info.builder()
+            .title("E-Commerce API")
+            .version("1.0.0")
+            .description("ECサイト用のREST API仕様書")
+            .contact(Contact.builder()
+                .name("開発チーム")
+                .email("dev@example.com")
+                .build())
+            .license(License.builder()
+                .name("MIT")
+                .url("https://opensource.org/licenses/MIT")
+                .build())
+            .build());
+        
+        // サーバー情報
+        spec.setServers(Arrays.asList(
+            Server.builder()
+                .url("https://api.example.com/v1")
+                .description("本番環境")
+                .build(),
+            Server.builder()
+                .url("https://api-staging.example.com/v1") 
+                .description("ステージング環境")
+                .build()
+        ));
+        
+        // セキュリティ設定
+        spec.setSecuritySchemes(Map.of(
+            "BearerAuth", SecurityScheme.builder()
+                .type("http")
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .description("JWT認証")
+                .build(),
+            "OAuth2", SecurityScheme.builder()
+                .type("oauth2")
+                .description("OAuth2認証")
+                .flows(OAuthFlows.builder()
+                    .authorizationCode(OAuthFlow.builder()
+                        .authorizationUrl("https://auth.example.com/oauth2/authorize")
+                        .tokenUrl("https://auth.example.com/oauth2/token")
+                        .scopes(Map.of(
+                            "read", "読み取り権限",
+                            "write", "書き込み権限",
+                            "admin", "管理者権限"
+                        ))
+                        .build())
+                    .build())
+                .build()
+        ));
+        
+        // エンドポイント解析
+        for (Class<?> controllerClass : controllerClasses) {
+            PathItemMap pathItems = analyzeControllerClass(controllerClass);
+            spec.addPathItems(pathItems);
         }
+        
+        return spec;
     }
     
-    private GeneratedComponent generateComponent(ComponentType type, 
-                                               SchemaAnalysis analysis) {
-        switch (type) {
-            case ENTITY:
-                return generateEntity(analysis);
-            case REPOSITORY:
-                return generateRepository(analysis);
-            case SERVICE:
-                return generateService(analysis);
-            case CONTROLLER:
-                return generateController(analysis);
-            case DTO:
-                return generateDTO(analysis);
-            case VALIDATOR:
-                return generateValidator(analysis);
-            case TEST:
-                return generateTest(analysis);
-            default:
-                throw new UnsupportedComponentException("未対応コンポーネント: " + type);
-        }
-    }
-    
-    private GeneratedComponent generateEntity(SchemaAnalysis analysis) {
-        EntityTemplate template = templateEngine.loadTemplate("entity.ftl");
+    private PathItemMap analyzeControllerClass(Class<?> controllerClass) {
+        PathItemMap pathItems = new PathItemMap();
         
-        Map<String, Object> context = new HashMap<>();
-        context.put("schema", analysis.getSchema());
-        context.put("properties", analysis.getProperties());
-        context.put("relationships", analysis.getRelationships());
-        context.put("constraints", analysis.getConstraints());
-        context.put("indexes", analysis.getIndexes());
+        // クラスレベルのRequestMapping取得
+        RequestMapping classMapping = controllerClass.getAnnotation(RequestMapping.class);
+        String basePath = classMapping != null ? classMapping.value()[0] : "";
         
-        String code = template.process(context);
-        
-        return new GeneratedComponent(ComponentType.ENTITY, 
-            analysis.getSchema().getName() + ".java", code);
-    }
-    
-    private GeneratedComponent generateRepository(SchemaAnalysis analysis) {
-        RepositoryTemplate template = templateEngine.loadTemplate("repository.ftl");
-        
-        // カスタムクエリメソッド生成
-        List<QueryMethod> queryMethods = generateQueryMethods(analysis);
-        
-        Map<String, Object> context = new HashMap<>();
-        context.put("entityName", analysis.getSchema().getName());
-        context.put("idType", analysis.getIdProperty().getType());
-        context.put("queryMethods", queryMethods);
-        context.put("customQueries", analysis.getCustomQueries());
-        
-        String code = template.process(context);
-        
-        return new GeneratedComponent(ComponentType.REPOSITORY,
-            analysis.getSchema().getName() + "Repository.java", code);
-    }
-    
-    private GeneratedComponent generateController(SchemaAnalysis analysis) {
-        ControllerTemplate template = templateEngine.loadTemplate("controller.ftl");
-        
-        // REST API仕様から自動生成
-        List<ApiEndpoint> endpoints = generateApiEndpoints(analysis);
-        
-        Map<String, Object> context = new HashMap<>();
-        context.put("entityName", analysis.getSchema().getName());
-        context.put("endpoints", endpoints);
-        context.put("validationRules", analysis.getValidationRules());
-        context.put("securityRules", analysis.getSecurityRules());
-        
-        String code = template.process(context);
-        
-        return new GeneratedComponent(ComponentType.CONTROLLER,
-            analysis.getSchema().getName() + "Controller.java", code);
-    }
-}
-
-// 実行時メタデータ更新
-@Component
-public class RuntimeMetadataManager {
-    private final MetadataRegistry metadataRegistry;
-    private final HotReloadManager hotReloadManager;
-    
-    @EventListener
-    public void handleSchemaUpdate(SchemaUpdateEvent event) {
-        try {
-            SchemaDefinition oldSchema = metadataRegistry.getSchema(event.getSchemaName());
-            SchemaDefinition newSchema = event.getNewSchema();
-            
-            // 変更分析
-            SchemaComparison comparison = compareSchemas(oldSchema, newSchema);
-            
-            if (comparison.hasBreakingChanges()) {
-                logger.warn("破壊的変更検出: {}", comparison.getBreakingChanges());
-                
-                // 段階的移行計画
-                MigrationPlan plan = createMigrationPlan(comparison);
-                executeMigration(plan);
-            } else {
-                // 非破壊的変更 - ホットリロード
-                hotReloadManager.reloadSchema(newSchema);
+        // メソッド解析
+        for (Method method : controllerClass.getDeclaredMethods()) {
+            if (isApiMethod(method)) {
+                PathItem pathItem = analyzeApiMethod(method, basePath);
+                pathItems.put(pathItem.getPath(), pathItem);
             }
-            
-            // メタデータ更新
-            metadataRegistry.updateSchema(event.getSchemaName(), newSchema);
-            
-        } catch (Exception e) {
-            logger.error("スキーマ更新エラー", e);
         }
+        
+        return pathItems;
     }
     
-    public void enableHotReload(String schemaName) {
-        SchemaWatcher watcher = new SchemaWatcher(schemaName);
-        watcher.onSchemaChange(this::handleSchemaUpdate);
-        watcher.start();
+    private PathItem analyzeApiMethod(Method method, String basePath) {
+        // HTTPメソッドとパス抽出
+        RequestMapping mapping = method.getAnnotation(RequestMapping.class);
+        GetMapping getMapping = method.getAnnotation(GetMapping.class);
+        PostMapping postMapping = method.getAnnotation(PostMapping.class);
+        
+        String httpMethod = determineHttpMethod(method);
+        String path = determinePath(method, basePath);
+        
+        //操作定義生成
+        Operation operation = Operation.builder()
+            .operationId(method.getName())
+            .summary(extractSummary(method))
+            .description(extractDescription(method))
+            .tags(extractTags(method))
+            .parameters(extractParameters(method))
+            .requestBody(extractRequestBody(method))
+            .responses(extractResponses(method))
+            .security(extractSecurityRequirements(method))
+            .build();
+        
+        return PathItem.builder()
+            .path(path)
+            .operation(httpMethod, operation)
+            .build();
     }
 }
 ```
 
-実行例:
-```
-=== メタデータ駆動開発実行ログ ===
-
-スキーマ読み込み:
-ファイル: user-schema.json
-エンティティ: User
-プロパティ数: 15個
-関連数: 3個
-制約数: 8個
-
-コード生成プロセス:
-14:30:00.001 - スキーマ解析開始
-14:30:00.015 - 生成計画作成完了
-14:30:00.016 - 並行コード生成開始
-
-生成コンポーネント:
-UserEntity.java (完了: 156ms)
-UserRepository.java (完了: 89ms)
-UserService.java (完了: 134ms)
-UserController.java (完了: 198ms)
-UserDTO.java (完了: 67ms)
-UserValidator.java (完了: 101ms)
-UserTest.java (完了: 245ms)
-
-最適化:
-デッドコード除去: 12%削減
-パフォーマンス最適化: 23%向上
-メモリ使用量: 15%削減
-
-出力結果:
-生成ファイル数: 7個
-総行数: 3,247行
-生成時間: 245ms
-品質スコア: 9.2/10
-
-実行時更新:
-スキーマファイル変更検知: user-schema.json
-変更内容: email フィールドに maxLength 制約追加
-変更種別: 非破壊的変更
-ホットリロード: 実行中...
-更新完了: 89ms
-
-更新結果:
-影響コンポーネント: UserValidator, UserController
-再生成: 不要（バリデーション追加のみ）
-ダウンタイム: 0秒
-エラー: 0件
-```
-
-=== API自動生成例 ===
+自動生成結果:
 ```yaml
-# スキーマ定義 (user-api.yaml)
 openapi: 3.0.0
 info:
-  title: User API
+  title: E-Commerce API
   version: 1.0.0
+  description: ECサイト用のREST API仕様書
+  contact:
+    name: 開発チーム
+    email: dev@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.example.com/v1
+    description: 本番環境
+  - url: https://api-staging.example.com/v1
+    description: ステージング環境
 
 paths:
-  /users:
+  /api/users:
     get:
       summary: ユーザー一覧取得
+      description: 条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。
+      operationId: getUsers
+      tags:
+        - ユーザー管理
       parameters:
         - name: page
           in: query
+          description: ページ番号
+          required: false
           schema:
             type: integer
             minimum: 0
             default: 0
+          example: 0
+        - name: size
+          in: query
+          description: ページサイズ
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          example: 20
       responses:
         '200':
           description: 成功
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/PagedUserResponse'
+        '400':
+          description: パラメータエラー
+        '401':
+          description: 認証エラー
+        '403':
+          description: 権限エラー
+      security:
+        - BearerAuth: []
+
     post:
       summary: ユーザー作成
+      description: 新しいユーザーを作成します
+      operationId: createUser
+      tags:
+        - ユーザー管理
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateUserRequest'
+            example:
+              username: john_doe
+              email: john@example.com
+              password: SecurePass123!
+              profile:
+                firstName: John
+                lastName: Doe
+                phoneNumber: "+81-90-1234-5678"
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
 
-自動生成結果:
-@RestController
-@RequestMapping("/users")
-@Validated
-public class UserController {
-    
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers(
-            @RequestParam(defaultValue = "0") @Min(0) Integer page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
-        
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> users = userService.findAll(pageable);
-        List<UserDTO> userDTOs = users.getContent().stream()
-            .map(userMapper::toDTO)
-            .collect(Collectors.toList());
-            
-        return ResponseEntity.ok(userDTOs);
-    }
-    
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
-        
-        User user = userMapper.toEntity(request);
-        User savedUser = userService.save(user);
-        UserDTO userDTO = userMapper.toDTO(savedUser);
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-    }
-}
+components:
+  schemas:
+    UserDTO:
+      type: object
+      required:
+        - id
+        - username
+        - email
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ユーザーID
+          example: 123
+        username:
+          type: string
+          description: ユーザー名
+          example: john_doe
+        email:
+          type: string
+          format: email
+          description: メールアドレス
+          example: john@example.com
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT認証
 
 生成統計:
-エンドポイント数: 12個
-バリデーション: 自動適用
-ドキュメント: Swagger UI対応
-テストケース: 36個自動生成
+解析エンドポイント: 67個
+生成スキーマ: 23個
+セキュリティ定義: 2個
+サンプルコード: 134個
+生成時間: 12.3秒
 ```
+
+=== インタラクティブドキュメント生成 ===
+```java
+// Swagger UI + カスタムデモ生成
+@Service
+public class InteractiveDocumentationGenerator {
+    
+    public InteractiveDocumentation generateInteractiveDoc(OpenAPISpecification spec) {
+        InteractiveDocumentation doc = new InteractiveDocumentation();
+        
+        // Swagger UI設定
+        SwaggerUIConfig swaggerConfig = SwaggerUIConfig.builder()
+            .url("/api-docs/openapi.json")
+            .deepLinking(true)
+            .displayOperationId(false)
+            .defaultModelsExpandDepth(1)
+            .defaultModelExpandDepth(1)
+            .defaultModelRendering("example")
+            .displayRequestDuration(true)
+            .docExpansion("none")
+            .filter(false)
+            .maxDisplayedTags(50)
+            .showExtensions(false)
+            .showCommonExtensions(false)
+            .tryItOutEnabled(true)
+            .requestInterceptor("(request) => { " +
+                "request.headers['X-API-Key'] = 'demo-key'; return request; }")
+            .build();
+        
+        doc.setSwaggerUI(swaggerConfig);
+        
+        // カスタムデモページ生成
+        DemoPageGenerator demoGenerator = new DemoPageGenerator();
+        
+        for (PathItem path : spec.getPaths()) {
+            for (Operation operation : path.getOperations()) {
+                // インタラクティブサンプル生成
+                InteractiveSample sample = generateInteractiveSample(operation);
+                doc.addSample(sample);
+                
+                // curl コマンド生成
+                CurlCommand curlCommand = generateCurlCommand(operation);
+                doc.addCurlCommand(curlCommand);
+                
+                // 各言語のサンプルコード生成
+                CodeSamples samples = generateCodeSamples(operation);
+                doc.addCodeSamples(samples);
+            }
+        }
+        
+        return doc;
+    }
+    
+    private CodeSamples generateCodeSamples(Operation operation) {
+        CodeSamples samples = new CodeSamples();
+        
+        // JavaScript (fetch API)
+        String jsCode = generateJavaScriptSample(operation);
+        samples.addSample("JavaScript", jsCode);
+        
+        // Python (requests)
+        String pythonCode = generatePythonSample(operation);
+        samples.addSample("Python", pythonCode);
+        
+        // Java (OkHttp)
+        String javaCode = generateJavaSample(operation);
+        samples.addSample("Java", javaCode);
+        
+        // curl
+        String curlCode = generateCurlSample(operation);
+        samples.addSample("curl", curlCode);
+        
+        return samples;
+    }
+    
+    private String generateJavaScriptSample(Operation operation) {
+        StringBuilder code = new StringBuilder();
+        
+        code.append("// JavaScript (fetch API)\n");
+        code.append("const response = await fetch('").append(operation.getUrl()).append("', {\n");
+        code.append("  method: '").append(operation.getHttpMethod().toUpperCase()).append("',\n");
+        code.append("  headers: {\n");
+        code.append("    'Content-Type': 'application/json',\n");
+        code.append("    'Authorization': 'Bearer YOUR_JWT_TOKEN'\n");
+        code.append("  }");
+        
+        if (operation.hasRequestBody()) {
+            code.append(",\n  body: JSON.stringify({\n");
+            code.append(generateRequestBodyExample(operation.getRequestBody()));
+            code.append("\n  })");
+        }
+        
+        code.append("\n});\n\n");
+        code.append("if (response.ok) {\n");
+        code.append("  const data = await response.json();\n");
+        code.append("  console.log(data);\n");
+        code.append("} else {\n");
+        code.append("  console.error('Error:', response.status);\n");
+        code.append("}");
+        
+        return code.toString();
+    }
+}
+```
+
+インタラクティブドキュメント例:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>E-Commerce API Documentation</title>
+    <style>
+        .api-demo { border: 1px solid #ccc; margin: 20px 0; padding: 15px; }
+        .code-sample { background: #f4f4f4; padding: 10px; margin: 10px 0; }
+        .try-it-button { background: #007bff; color: white; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>E-Commerce API Documentation</h1>
+    
+    <div class="api-demo">
+        <h2>GET /api/users - ユーザー一覧取得</h2>
+        <p>条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。</p>
+        
+        <h3>パラメータ</h3>
+        <form id="getUsersForm">
+            <label>Page: <input type="number" name="page" value="0" min="0"></label><br>
+            <label>Size: <input type="number" name="size" value="20" min="1" max="100"></label><br>
+            <label>Search: <input type="text" name="search" placeholder="検索キーワード"></label><br>
+            <button type="submit" class="try-it-button">Try it out!</button>
+        </form>
+        
+        <h3>レスポンス例</h3>
+        <div class="code-sample">
+            <pre id="getUsersResponse">ここにレスポンスが表示されます</pre>
+        </div>
+        
+        <h3>サンプルコード</h3>
+        <div class="code-tabs">
+            <button onclick="showCode('js')">JavaScript</button>
+            <button onclick="showCode('python')">Python</button>
+            <button onclick="showCode('java')">Java</button>
+            <button onclick="showCode('curl')">curl</button>
+        </div>
+        
+        <div id="js-code" class="code-sample">
+            <pre>
+const response = await fetch('/api/users?page=0&size=20', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  }
+});
+
+if (response.ok) {
+  const users = await response.json();
+  console.log(users);
+}
+            </pre>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('getUsersForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const params = new URLSearchParams(formData);
+            
+            try {
+                const response = await fetch(`/api/users?${params}`);
+                const data = await response.json();
+                document.getElementById('getUsersResponse').textContent = 
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('getUsersResponse').textContent = 
+                    'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
+```
+```
+
+### 課題2: コードメトリクス・品質レポートシステム
+**ファイル名**: `CodeQualityReportSystem.java`
+
+コードの品質指標を自動計算してレポートを生成するシステムを作成してください。
+
+**要求仕様**:
+- 複雑度計算 (循環的複雑度等)
+- テストカバレッジ分析
+- 技術的負債の可視化
+- トレンド分析
+
+**レポート機能**:
+- HTMLレポート生成
+- ダッシュボード表示
+- アラート機能
+- 改善提案
+
+**実行例**:
+```
+=== コードメトリクス・品質レポートシステム ===
+
+📊 CodeQuality Analyzer v2.0
+
+=== プロジェクト品質分析 ===
+📈 包括的品質評価:
+
+分析対象:
+プロジェクト名: E-Commerce Backend
+言語: Java 17
+フレームワーク: Spring Boot 3.0
+総行数: 125,847行
+ファイル数: 1,247個
+クラス数: 892個
+メソッド数: 4,567個
+
+分析期間: 2024年1月〜7月 (6ヶ月間)
+分析時刻: 2024-07-05 14:30:00
+
+=== 複雑度分析 ===
+🔍 コード複雑度評価:
+
+循環的複雑度 (Cyclomatic Complexity):
+平均: 3.2 (良好)
+最大: 15 (UserService.validateUser)
+警告レベル: 10以上 (12メソッド)
+危険レベル: 15以上 (3メソッド)
+
+認知的複雑度 (Cognitive Complexity):
+平均: 4.1 (普通)
+最大: 23 (OrderProcessor.processComplexOrder)
+警告レベル: 15以上 (8メソッド)
+
+ネスト深度:
+平均: 2.1層
+最大: 6層 (PaymentValidator.validateCreditCard)
+推奨: 3層以下
+
+メソッド長:
+平均: 15.7行
+最大: 89行 (ReportGenerator.generateMonthlyReport)
+推奨: 20行以下
+
+クラスサイズ:
+平均: 142行
+最大: 567行 (OrderManagementService)
+推奨: 200行以下
+```
+
+### 課題3: 設計書逆生成システム
+**ファイル名**: `DesignDocumentReverseGenerator.java`
+
+既存のコードから設計書やアーキテクチャ図を自動生成するシステムを作成してください。
+
+**要求仕様**:
+- UMLクラス図生成
+- シーケンス図自動作成
+- アーキテクチャ図生成
+- データフロー図作成
+
+**実行例**:
+```
+=== 設計書逆生成システム ===
+
+🏗️ ReverseDesignGen v4.0
+
+=== アーキテクチャ分析 ===
+🔧 システム構造解析:
+
+レイヤー構成:
+1. Presentation Layer (Controller)
+   - 23個のRESTコントローラー
+   - 145個のエンドポイント
+   
+2. Application Layer (Service)
+   - 67個のサービスクラス
+   - 234個のビジネスメソッド
+   
+3. Domain Layer (Entity/Domain)
+   - 45個のエンティティ
+   - 12個のドメインサービス
+   
+4. Infrastructure Layer (Repository/External)
+   - 45個のリポジトリ
+   - 23個の外部API連携
+
+依存関係:
+- 単方向依存: 98.7% (推奨)
+- 循環依存: 3件 (要修正)
+- 結合度: 低 (Good)
+- 凝集度: 高 (Excellent)
+
+生成される設計書:
+- システム構成図
+- クラス関係図  
+- データフロー図
+- シーケンス図
+- ER図
 ```
 
 ## 🎯 習得すべき技術要素
 
-### 型システム理論
-- 型推論アルゴリズム
-- 構造的型付け
-- 部分型関係
-- 高階型システム
+### ドキュメント生成技術
+- JavaDoc API
+- アノテーション処理器
+- AST (Abstract Syntax Tree) 解析
+- コード静的解析
 
-### メタプログラミング
-- リフレクション API
-- アノテーション処理
-- バイトコード操作
-- 動的プロキシ
+### API仕様書標準
+- OpenAPI 3.0 仕様
+- JSON Schema
+- Swagger/OpenAPI ツールチェーン
+- REST API設計原則
 
-### コード生成技術
-- テンプレートエンジン
-- AST操作
-- スキーマ駆動開発
-- モデル駆動アーキテクチャ
+### コード品質分析
+- 循環的複雑度
+- 認知的複雑度
+- コードカバレッジ
+- 技術的負債測定
 
 ## 📚 参考リソース
 
-- Types and Programming Languages (Pierce)
-- Advanced Topics in Types and Programming Languages (Pierce)
-- Domain-Specific Languages (Fowler)
-- Generative Programming (Czarnecki & Eisenecker)
+- OpenAPI Specification 3.0
+- JavaDoc Tool Reference
+- Clean Code (Robert C. Martin)
+- Code Quality Metrics (SonarQube Documentation)
 
 ## ⚠️ 重要な注意事項
 
-動的型システムと メタデータ駆動開発は強力ですが、複雑性も増加します。パフォーマンスと保守性のバランスを十分に考慮してください。
+自動生成されたドキュメントは開発者による確認と調整が必要です。生成されたドキュメントをそのまま使用せず、適切な品質管理を行ってください。

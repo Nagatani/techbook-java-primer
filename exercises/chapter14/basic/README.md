@@ -1,283 +1,329 @@
 # 第14章 基本課題
 
 ## 🎯 学習目標
-- 例外処理の基本概念（例外の種類、try-catch-finally）
-- 検査例外と非検査例外の理解と使い分け
-- カスタム例外クラスの設計と実装
-- try-with-resources によるリソース管理
-- 例外処理のベストプラクティス
-- 例外チェーン（Exception Chaining）による根本原因の追跡技法
+- ファイルI/Oの基本概念（InputStream、OutputStream、Reader、Writer）
+- NIO.2（java.nio.file）の活用方法
+- テキストファイルとバイナリファイルの読み書き
+- ディレクトリ操作とファイル検索
+- CSV・JSON等の構造化データ処理
+- ファイル監視（WatchService）による動的なファイルシステム管理
 
 ## 📝 課題一覧
 
-### 課題1: 基本的な例外処理
-**ファイル名**: `BasicExceptionHandling.java`, `BasicExceptionTest.java`
+### 課題1: 基本的なファイル読み書き
+**ファイル名**: `BasicFileIO.java`, `BasicFileIOTest.java`
 
-基本的な例外処理を実装し、try-catch-finallyの動作を理解してください。
+基本的なファイル読み書き操作を実装し、様々なI/O手法を理解してください。
 
 **要求仕様**:
-- 様々な種類の例外処理（ArithmeticException、NullPointerException等）
-- 複数catch文による例外の使い分け
-- finallyブロックの動作確認
-- 例外情報の取得と表示
-- 例外の再発生（re-throw）
+- テキストファイルの読み込み（Files.readAllLines、BufferedReader等）
+- テキストファイルの書き込み（Files.write、BufferedWriter等）
+- バイナリファイルの読み書き
+- 文字エンコーディングの指定
+- ファイル存在確認と基本情報取得
 
 **実行例**:
 ```
-=== 基本的な例外処理 ===
-ゼロ除算テスト:
-計算実行: 10 / 0
-例外発生: java.lang.ArithmeticException: / by zero
-finally実行: 計算処理を終了します
-
-null参照テスト:
-文字列操作: null.length()
-例外発生: java.lang.NullPointerException
-スタックトレース:
-  at BasicExceptionHandling.stringOperation(BasicExceptionHandling.java:25)
-  at BasicExceptionHandling.main(BasicExceptionHandling.java:15)
-
-配列範囲外テスト:
-配列アクセス: array[10] (配列サイズ: 5)
-例外発生: java.lang.ArrayIndexOutOfBoundsException: Index 10 out of bounds for length 5
-finally実行: 配列処理を終了します
-
-複数catch文テスト:
-入力値: "abc"
-NumberFormatException発生: 数値変換に失敗しました
-代替値を使用: 0
-
-例外の再発生テスト:
-内部メソッドで例外処理 → 外部メソッドで再処理
-最終的な例外処理: 処理を中断しました
-```
-
-**評価ポイント**:
-- try-catch-finallyの正しい使用
-- 例外の種類に応じた適切な処理
-- 例外情報の有効活用
-
-
-
-### 課題2: カスタム例外クラス設計
-**ファイル名**: `BankAccountException.java`, `InsufficientFundsException.java`, `InvalidAccountException.java`, `BankAccount.java`, `CustomExceptionTest.java`
-
-銀行口座システムのカスタム例外を設計し、ビジネスロジックに応じた例外処理を実装してください。
-
-**要求仕様**:
-- 銀行業務固有の例外クラス（残高不足、無効口座等）
-- 例外クラスの継承関係設計
-- 例外に詳細情報を含める仕組み
-- エラーコードとメッセージの管理
-- 業務的な例外処理フロー
-
-**実行例**:
-```
-=== カスタム例外クラス設計 ===
-銀行口座作成:
-口座1: 12345（残高: 100,000円）
-口座2: 67890（残高: 50,000円）
-
-通常取引テスト:
-口座12345から30,000円出金: 成功
-残高: 70,000円
-
-残高不足例外テスト:
-口座67890から80,000円出金:
-例外発生: InsufficientFundsException
-エラーコード: INSUFFICIENT_FUNDS
-メッセージ: 残高が不足しています
-詳細: 要求額: 80,000円, 現在残高: 50,000円, 不足額: 30,000円
-
-無効口座例外テスト:
-存在しない口座 99999 への振込:
-例外発生: InvalidAccountException
-エラーコード: ACCOUNT_NOT_FOUND
-メッセージ: 指定された口座が見つかりません
-詳細: 口座番号: 99999
-
-振込処理例外テスト:
-口座12345から口座67890へ80,000円振込:
-例外発生: InsufficientFundsException
-取引がロールバックされました
-口座12345残高: 70,000円（変更なし）
-口座67890残高: 50,000円（変更なし）
-
-例外チェーン:
-原因: InsufficientFundsException: 残高が不足しています
-結果: TransactionFailedException: 取引処理に失敗しました
-理由: 出金処理でエラーが発生
-```
-
-**評価ポイント**:
-- ビジネスドメイン固有の例外設計
-- 例外クラスの継承関係の理解
-- 詳細な例外情報の提供
-
-
-
-### 課題3: ファイル操作とリソース管理
-**ファイル名**: `FileProcessor.java`, `ResourceManagerTest.java`
-
-ファイル操作におけるリソース管理と例外処理を実装してください。
-
-**要求仕様**:
-- try-with-resources によるリソース管理
-- ファイル読み込み時の例外処理
-- ファイル書き込み時の例外処理
-- 複数リソースの同時管理
-- カスタムリソースクラスの実装
-
-**実行例**:
-```
-=== ファイル操作とリソース管理 ===
-ファイル読み込みテスト:
+=== 基本的なファイル読み書き ===
+テキストファイル読み込み:
 ファイル: sample.txt
 内容:
-Hello, World!
-Java Exception Handling
-Try-with-resources example
+1: Hello, World!
+2: Java File I/O
+3: ファイル操作の基本
+4: 日本語テキストの処理
 
-リソース自動クローズ確認:
-BufferedReader がクローズされました
+ファイル情報:
+サイズ: 1,234 バイト
+最終更新: 2024-07-04T10:30:00
+読み取り可能: true
+書き込み可能: true
 
-存在しないファイル読み込み:
-ファイル: nonexistent.txt
-例外発生: java.io.FileNotFoundException: nonexistent.txt (No such file or directory)
-処理を継続します
+エンコーディング指定読み込み:
+UTF-8: こんにちは、世界！
+Shift_JIS: こんにちは、世界！
 
-ファイル書き込みテスト:
+テキストファイル書き込み:
 出力ファイル: output.txt
-書き込み内容: "Hello from Java Exception Handling!"
-書き込み完了
-リソース自動クローズ確認:
-BufferedWriter がクローズされました
+書き込み完了: 5行
+内容確認:
+Line 1: Java File I/O Example
+Line 2: 現在時刻: 2024-07-04T10:30:00
+Line 3: ランダム値: 42
+Line 4: ユニコード: 🚀
+Line 5: 処理完了
 
-複数リソース管理テスト:
-入力ファイル: input.txt
-出力ファイル: copy.txt
-ファイルコピー処理開始
-コピー完了: 145バイト
-両方のリソースがクローズされました
+バイナリファイル処理:
+画像ファイル読み込み: image.jpg
+ファイルサイズ: 256,789 バイト
+ヘッダー: FF D8 FF E0 (JPEG形式)
+コピー作成: image_copy.jpg
+コピー完了: バイト完全一致確認
 
-カスタムリソーステスト:
-DatabaseConnection 作成
-SQL実行: SELECT * FROM users
-結果: 5件のレコードを取得
-DatabaseConnection 自動クローズ
-
-例外発生時のリソース管理:
-処理中に IOException が発生
-リソースは確実にクローズされました
-例外: java.io.IOException: ネットワークエラー
+大きなファイル処理:
+ファイル: largefile.txt (10MB)
+BufferedReader使用: 145ms
+Files.readAllLines使用: 89ms
+推奨: Files.readAllLines（小〜中サイズファイル）
 ```
 
 **評価ポイント**:
-- try-with-resources の適切な使用
-- リソースリークの防止
-- AutoCloseable インターフェイスの理解
+- 複数のI/O手法の理解と使い分け
+- エンコーディングの適切な処理
+- パフォーマンスを考慮したファイル操作
 
 
 
-### 課題4: 例外処理設計パターン
-**ファイル名**: `ValidationResult.java`, `UserService.java`, `ExceptionDesignTest.java`
+### 課題2: ディレクトリ操作とファイル検索
+**ファイル名**: `DirectoryOperations.java`, `DirectoryOperationsTest.java`
 
-例外処理の設計パターンを実装し、保守性の高い例外処理システムを構築してください。
+ディレクトリの操作とファイル検索機能を実装してください。
 
 **要求仕様**:
-- 例外 vs 戻り値による エラー表現の比較
-- Optional を活用した安全なプログラミング
-- バリデーション結果の集約
-- ログ出力との連携
-- 例外処理のパフォーマンス考慮
+- ディレクトリの作成・削除・移動
+- ファイル一覧の取得（フィルタリング付き）
+- 再帰的なディレクトリ走査
+- ファイル検索（名前、サイズ、更新日時等による条件）
+- ディレクトリサイズの計算
 
 **実行例**:
 ```
-=== 例外処理設計パターン ===
-バリデーション結果パターン:
-ユーザー作成: 田中太郎, tanaka@example.com, 25
-バリデーション結果: 成功
+=== ディレクトリ操作とファイル検索 ===
+ディレクトリ作成:
+作成: /tmp/java-io-test/
+作成: /tmp/java-io-test/subdir1/
+作成: /tmp/java-io-test/subdir2/
+作成完了
 
-ユーザー作成: , invalid-email, -5
-バリデーション結果: 失敗
-エラー詳細:
-- 名前が空です
-- メールアドレスの形式が正しくありません  
-- 年齢は0以上である必要があります
+ファイル作成:
+/tmp/java-io-test/file1.txt (100KB)
+/tmp/java-io-test/file2.log (50KB)
+/tmp/java-io-test/subdir1/data.csv (200KB)
+/tmp/java-io-test/subdir2/config.properties (5KB)
 
-Optional パターン:
-ユーザー検索: ID=1001
-結果: Optional[User{id=1001, name=田中太郎}]
+ディレクトリ一覧:
+/tmp/java-io-test/
+├── file1.txt (100KB)
+├── file2.log (50KB)
+├── subdir1/
+│   └── data.csv (200KB)
+└── subdir2/
+    └── config.properties (5KB)
 
-ユーザー検索: ID=9999
-結果: Optional.empty
-デフォルトユーザーを使用: Guest User
+ファイル検索:
+.txt ファイル: [file1.txt]
+100KB以上: [file1.txt, data.csv]
+今日更新: [file1.txt, file2.log, data.csv, config.properties]
+拡張子別統計:
+.txt: 1ファイル (100KB)
+.log: 1ファイル (50KB)
+.csv: 1ファイル (200KB)
+.properties: 1ファイル (5KB)
 
-例外 vs 戻り値の比較:
-例外パターン:
-  計算: 10 / 2 = 5.0
-  計算: 10 / 0 → ArithmeticException
+再帰的検索:
+全ファイル数: 4
+総サイズ: 355KB
+最大ファイル: data.csv (200KB)
+最小ファイル: config.properties (5KB)
 
-戻り値パターン:
-  計算: 10 / 2 → Result{success=true, value=5.0}
-  計算: 10 / 0 → Result{success=false, error="ゼロ除算"}
-
-パフォーマンステスト:
-正常処理（1,000,000回）:
-例外なし: 150ms
-例外あり: 2,450ms
-結論: 例外は通常フローに使うべきではない
-
-ログ連携:
-[INFO] ユーザー作成開始: 佐藤花子
-[ERROR] バリデーション失敗: メールアドレス不正
-[WARN] 処理を中断しました
-[INFO] 代替処理を実行
+ディレクトリ操作:
+移動: /tmp/java-io-test/subdir1/ → /tmp/java-io-test/renamed/
+コピー: /tmp/java-io-test/file1.txt → /tmp/java-io-test/backup/file1_backup.txt
+削除: /tmp/java-io-test/file2.log
+削除完了
 ```
 
 **評価ポイント**:
-- 例外処理の設計判断
-- パフォーマンスを考慮した実装
-- 保守性の高いエラーハンドリング
+- NIO.2 の Files クラス活用
+- 効率的なディレクトリ走査
+- 条件指定による柔軟な検索
+
+
+
+### 課題3: CSVデータ処理システム
+**ファイル名**: `CsvProcessor.java`, `Employee.java`, `CsvProcessorTest.java`
+
+CSVファイルの読み書きと集計処理を実装してください。
+
+**要求仕様**:
+- CSVファイルの読み込み（ヘッダー処理含む）
+- オブジェクトとCSVレコードの相互変換
+- データのフィルタリングと集計
+- CSVファイルの書き出し
+- エラーデータの処理
+
+**実行例**:
+```
+=== CSVデータ処理システム ===
+CSVファイル読み込み:
+ファイル: employees.csv
+ヘッダー: [ID, 名前, 部署, 年齢, 給与]
+
+従業員データ:
+1001, 田中太郎, 営業部, 30, 5000000
+1002, 佐藤花子, 開発部, 25, 4500000
+1003, 鈴木一郎, 開発部, 35, 6000000
+1004, 山田次郎, 総務部, 28, 4200000
+1005, 中村美咲, 営業部, 32, 5200000
+
+読み込み完了: 5件
+
+データ集計:
+部署別統計:
+営業部: 2名（平均給与: 5,100,000円）
+開発部: 2名（平均給与: 5,250,000円）  
+総務部: 1名（平均給与: 4,200,000円）
+
+年齢層別分析:
+20代: 2名（平均給与: 4,350,000円）
+30代: 3名（平均給与: 5,400,000円）
+
+データフィルタリング:
+開発部のみ:
+1002, 佐藤花子, 開発部, 25, 4500000
+1003, 鈴木一郎, 開発部, 35, 6000000
+
+給与500万円以上:
+1001, 田中太郎, 営業部, 30, 5000000
+1003, 鈴木一郎, 開発部, 35, 6000000
+1005, 中村美咲, 営業部, 32, 5200000
+
+CSVファイル出力:
+出力ファイル: filtered_employees.csv
+フィルタ条件: 開発部且つ給与450万円以上
+出力件数: 2件
+
+エラーデータ処理:
+不正なレコード: "1006,不完全データ,部署なし"
+エラー: 給与データが不正です
+スキップして処理続行
+
+処理結果:
+正常データ: 5件
+エラーデータ: 1件
+処理成功率: 83.3%
+```
+
+**評価ポイント**:
+- CSVパーサーの実装
+- データ変換とエラーハンドリング
+- 集計処理の効率的な実装
+
+
+
+### 課題4: ログファイル解析システム
+**ファイル名**: `LogAnalyzer.java`, `LogEntry.java`, `LogAnalyzerTest.java`
+
+ログファイルを解析し、統計情報を生成するシステムを実装してください。
+
+**要求仕様**:
+- ログファイルの解析（アクセスログ、エラーログ等）
+- 正規表現を使ったログパース
+- 時間範囲でのフィルタリング
+- 統計レポートの生成
+- 大容量ファイルの効率的処理
+
+**実行例**:
+```
+=== ログファイル解析システム ===
+ログファイル読み込み:
+ファイル: access.log (5.2MB, 50,000行)
+形式: Apache Common Log Format
+
+サンプルログエントリ:
+192.168.1.100 - - [04/Jul/2024:10:30:15 +0900] "GET /index.html HTTP/1.1" 200 1234
+192.168.1.101 - - [04/Jul/2024:10:30:16 +0900] "POST /api/login HTTP/1.1" 200 56
+192.168.1.102 - - [04/Jul/2024:10:30:17 +0900] "GET /css/style.css HTTP/1.1" 404 0
+
+解析結果:
+総リクエスト数: 50,000
+解析成功: 49,856（99.7%）
+解析失敗: 144（0.3%）
+
+HTTPステータス別統計:
+200 OK: 42,345件（84.7%）
+404 Not Found: 4,123件（8.2%）
+500 Internal Server Error: 1,234件（2.5%）
+403 Forbidden: 987件（2.0%）
+その他: 1,167件（2.3%）
+
+アクセス頻度分析:
+時間別アクセス数:
+10:00-11:00: 8,234件
+11:00-12:00: 9,567件
+12:00-13:00: 6,789件
+13:00-14:00: 7,456件
+
+人気ページランキング:
+1位: /index.html (5,678アクセス)
+2位: /api/users (3,456アクセス)
+3位: /login (2,234アクセス)
+4位: /dashboard (1,987アクセス)
+5位: /profile (1,567アクセス)
+
+IPアドレス分析:
+ユニークIP数: 2,456
+トップアクセスIP:
+192.168.1.100: 234アクセス
+192.168.1.101: 198アクセス
+192.168.1.102: 156アクセス
+
+エラー分析:
+エラーログ: error.log
+重要度別:
+ERROR: 123件
+WARN: 456件
+INFO: 12,345件
+
+パフォーマンス:
+処理時間: 1.23秒
+処理速度: 40,650行/秒
+メモリ使用量: 45MB（ストリーム処理）
+```
+
+**評価ポイント**:
+- 正規表現を使った効率的な解析
+- 大容量ファイルの処理最適化
+- 統計処理とレポート生成
 
 ## 💡 ヒント
 
 ### 課題1のヒント
-- 複数catch文は具体的な例外から記述
-- finally は必ず実行される（return があっても）
-- printStackTrace() でデバッグ情報取得
+- Files.readAllLines() で簡単読み込み
+- try-with-resources でリソース管理
+- Charset.forName() でエンコーディング指定
 
 ### 課題2のヒント
-- 検査例外は extends Exception
-- 非検査例外は extends RuntimeException
-- super(message, cause) で例外チェーン
+- Files.walk() で再帰的走査
+- Files.find() で条件検索
+- DirectoryStream でメモリ効率良く一覧取得
 
 ### 課題3のヒント
-- try-with-resources: try (Resource r = new Resource())
-- AutoCloseable インターフェイスを実装
-- 複数リソース: try (R1 r1 = ...; R2 r2 = ...)
+- String.split(",") でCSV解析（簡易版）
+- Stream API で集計処理
+- NumberFormatException をキャッチしてエラー処理
 
 ### 課題4のヒント
-- Optional.ofNullable() で null 安全性
-- Result パターンで成功/失敗を表現
-- バリデーションは早期リターンよりも集約
+- Pattern.compile() で正規表現をコンパイル
+- Stream<String> で行単位処理
+- Collectors.groupingBy() で集計
 
-## 🔍 例外処理のポイント
+## 🔍 ファイルI/Oのポイント
 
-1. **例外の種類**: 検査例外 vs 非検査例外
+1. **NIO.2 活用**: Files クラスで簡潔なファイル操作
 2. **リソース管理**: try-with-resources で確実なクローズ
-3. **例外設計**: ビジネスロジックに応じたカスタム例外
-4. **パフォーマンス**: 例外は例外的状況でのみ使用
-5. **保守性**: 適切なログ出力と例外情報
-6. **安全性**: null チェックと Optional の活用
+3. **エンコーディング**: 文字化けを防ぐ適切な指定
+4. **パフォーマンス**: ストリーム処理で大容量ファイル対応
+5. **例外処理**: IOException の適切なハンドリング
+6. **メモリ効率**: BufferedReader/Writer でバッファリング
 
 ## ✅ 完了チェックリスト
 
-- [ ] 課題1: 基本的な例外処理構文が正しく使えている
-- [ ] 課題2: ビジネスロジックに応じたカスタム例外が設計できている
-- [ ] 課題3: リソース管理と例外処理が適切に実装できている
-- [ ] 課題4: 例外処理の設計パターンが理解できている
-- [ ] 検査例外と非検査例外の使い分けができている
-- [ ] try-with-resources でリソース管理ができている
+- [ ] 課題1: 基本的なファイル読み書きができている
+- [ ] 課題2: ディレクトリ操作とファイル検索ができている
+- [ ] 課題3: CSVデータの処理ができている
+- [ ] 課題4: ログファイルの解析ができている
+- [ ] NIO.2 の Files クラスを適切に使用できている
+- [ ] 大容量ファイルの効率的な処理ができている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度な例外処理設計に挑戦しましょう！
+**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なファイル処理に挑戦しましょう！

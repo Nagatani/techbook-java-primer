@@ -1,271 +1,262 @@
 # 第12章 基本課題
 
 ## 🎯 学習目標
-- Record クラスの基本概念と利点の理解
-- 不変データ構造としての Record の活用
-- 従来のクラスと Record の使い分け
-- Record の制限事項と適用場面の理解
-- Record を使ったデータ中心設計の実践
-- データ転送オブジェクト（DTO）としてのRecordの効果的な活用
+- Stream APIの基本概念と利用方法の理解
+- 中間操作（filter、map、sorted等）と終端操作（collect、reduce等）の使い分け
+- データ処理パイプラインの構築
+- 並列ストリームによる性能向上
+- Optional クラスによる null 安全プログラミング
+- カスタムCollectorの実装による独自集約処理の開発
 
 ## 📝 課題一覧
 
-### 課題1: 基本的なRecord定義と活用
-**ファイル名**: `BasicRecord.java`, `BasicRecordTest.java`
+### 課題1: 社員データ分析システム
+**ファイル名**: `Employee.java`, `EmployeeAnalyzer.java`, `EmployeeAnalyzerTest.java`
 
-基本的なRecordクラスを定義し、その特性を理解してください。
+社員データを分析するシステムを作成し、Stream APIを活用してください。
 
 **要求仕様**:
-- シンプルなRecord定義（Point、Person等）
-- 自動生成されるメソッド（equals、hashCode、toString）の確認
-- Record のアクセサメソッドの使用
-- Record の不変性の確認
-- 従来のクラスとの比較
+- Employee クラス（名前、年齢、部署、給与）
+- Stream API による多様な分析処理
+- フィルタリング、ソート、グループ化、集約
+- 部署別・年齢層別の統計分析
 
 **実行例**:
 ```
-=== 基本的なRecord定義と活用 ===
-座標Record:
-point1: Point[x=3, y=4]
-point2: Point[x=3, y=4]
+=== 社員データ分析システム ===
+全社員データ（10名）:
+田中太郎（30歳・営業部・500万円）
+佐藤花子（25歳・開発部・450万円）
+...
 
-アクセサメソッド:
-X座標: 3
-Y座標: 4
+年齢フィルタ（30歳以上）:
+田中太郎（30歳・営業部・500万円）
+鈴木一郎（35歳・開発部・600万円）
+...
 
-equals比較:
-point1.equals(point2): true
-point1 == point2: false
+給与順ソート（上位3名）:
+1位: 鈴木一郎（600万円）
+2位: 田中太郎（500万円）
+3位: 佐藤花子（450万円）
 
-hashCode比較:
-point1.hashCode(): 128
-point2.hashCode(): 128
+部署別集計:
+営業部: 3名（平均給与: 480万円）
+開発部: 4名（平均給与: 520万円）
+総務部: 3名（平均給与: 420万円）
 
-人物Record:
-person: Person[name=田中太郎, age=30, email=tanaka@example.com]
+年齢層別分析:
+20代: 3名（平均給与: 430万円）
+30代: 5名（平均給与: 510万円）
+40代: 2名（平均給与: 580万円）
 
-不変性確認:
-// 以下はコンパイルエラー
-// person.name = "佐藤花子";  // フィールドは final
-
-Record vs 従来クラス比較:
-従来クラスの行数: 35行（getter、setter、equals、hashCode、toString）
-Recordの行数: 1行（record Person(String name, int age) {}）
+全体統計:
+総人数: 10名
+平均給与: 485万円
+最高給与: 600万円
+最低給与: 380万円
+給与合計: 4,850万円
 ```
 
 **評価ポイント**:
-- Record の基本構文理解
-- 自動生成メソッドの理解
-- 不変性の確認
+- Stream API の基本操作の理解
+- 複雑なデータ処理パイプラインの構築
+- Collectors クラスの活用
 
 
 
-### 課題2: Recordを使ったデータ転送オブジェクト（DTO）
-**ファイル名**: `UserDTO.java`, `OrderDTO.java`, `DTOTest.java`
+### 課題2: 商品売上分析システム
+**ファイル名**: `Sale.java`, `SalesAnalyzer.java`, `SalesAnalyzerTest.java`
 
-RecordをDTOとして活用し、データ転送の実装を行ってください。
+商品売上データを分析するシステムを作成し、高度なStream処理を実装してください。
 
 **要求仕様**:
-- ユーザー情報のRecord DTO
-- 注文情報のRecord DTO（ネストしたRecord含む）
-- JSON風データ構造の表現
-- Record のバリデーション機能
-- Record の変換メソッド
+- Sale クラス（商品名、カテゴリ、売上金額、売上日）
+- 期間別・カテゴリ別の売上分析
+- Stream API の高度な操作（flatMap、partition等）
+- Optional を活用した安全なデータアクセス
 
 **実行例**:
 ```
-=== Recordを使ったデータ転送オブジェクト ===
-ユーザーDTO:
-user: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true]
+=== 商品売上分析システム ===
+売上データ（15件）:
+2024-07-01: ノートPC（家電・150,000円）
+2024-07-01: Java入門（書籍・3,000円）
+...
 
-注文DTO（ネストしたRecord）:
-order: OrderDTO[
-  orderId=ORD-2024-001,
-  user=UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true],
-  items=[
-    OrderItem[productName=ノートPC, quantity=1, price=150000],
-    OrderItem[productName=マウス, quantity=2, price=3000]
-  ],
-  totalAmount=156000,
-  orderDate=2024-07-04T10:30:00
-]
+月別売上集計:
+2024年7月: 1,250,000円（8件）
+2024年8月: 980,000円（7件）
 
-データ変換:
-CSV形式: "1001,田中太郎,tanaka@example.com,true"
-Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
+カテゴリ別分析:
+家電: 750,000円（3件・平均250,000円）
+書籍: 45,000円（5件・平均9,000円）
+食品: 80,000円（4件・平均20,000円）
+衣料: 120,000円（3件・平均40,000円）
 
-バリデーション:
-有効なユーザー: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true] ✓
-無効なユーザー: UserDTO[id=0, name=, email=invalid-email, active=false] ✗
-エラー: [IDは1以上である必要があります, 名前は必須です, メールアドレスの形式が正しくありません]
+高額商品分析（10万円以上）:
+ノートPC: 150,000円
+デジタルカメラ: 120,000円
+タブレット: 80,000円
+
+売上トレンド:
+最高売上日: 2024-07-15（350,000円）
+最低売上日: 2024-08-05（15,000円）
+
+Optional活用例:
+最高額商品: Optional[ノートPC（150,000円）]
+該当なし検索: Optional.empty
 ```
 
 **評価ポイント**:
-- Record のネスト構造活用
-- DTO としての適切な設計
-- データ変換処理の実装
+- 複雑なデータ変換処理
+- flatMap による階層データの平坦化
+- Optional による null 安全処理
 
 
 
-### 課題3: Record と設定管理
-**ファイル名**: `AppConfig.java`, `DatabaseConfig.java`, `ConfigManager.java`, `ConfigTest.java`
+### 課題3: テキスト解析システム
+**ファイル名**: `TextAnalyzer.java`, `TextAnalyzerTest.java`
 
-Recordを使ったアプリケーション設定管理システムを実装してください。
+テキストデータを解析するシステムを作成し、文字列処理でのStream活用を実装してください。
 
 **要求仕様**:
-- 階層的な設定構造（Record内にRecord）
-- 設定の読み込みと保存
-- デフォルト値の提供
-- 設定の部分更新（新しいRecordインスタンス生成）
-- 設定の検証機能
+- テキストファイルの読み込みと単語分析
+- Stream API による文字列処理
+- 並列ストリームによる性能向上
+- 正規表現と組み合わせた高度な解析
 
 **実行例**:
 ```
-=== Record と設定管理 ===
-デフォルト設定:
-AppConfig[
-  appName=MyApplication,
-  version=1.0.0,
-  database=DatabaseConfig[
-    url=jdbc:h2:mem:testdb,
-    username=sa,
-    password=,
-    maxConnections=10,
-    timeout=30
-  ],
-  features=[logging, caching],
-  debug=true
-]
+=== テキスト解析システム ===
+入力テキスト:
+"Java is a programming language. Java is platform independent.
+Stream API makes Java programming more functional."
 
-設定更新（部分更新）:
-データベース接続数を20に変更:
-新しい設定: AppConfig[
-  appName=MyApplication,
-  version=1.0.0,
-  database=DatabaseConfig[
-    url=jdbc:h2:mem:testdb,
-    username=sa,
-    password=,
-    maxConnections=20,
-    timeout=30
-  ],
-  features=[logging, caching],
-  debug=true
-]
+基本統計:
+総文字数: 145文字
+総単語数: 23語
+総行数: 3行
+ユニーク単語数: 18語
 
-設定ファイル形式での出力:
-app.name=MyApplication
-app.version=1.0.0
-database.url=jdbc:h2:mem:testdb
-database.username=sa
-database.password=
-database.maxConnections=20
-database.timeout=30
-features=logging,caching
-debug=true
+単語頻度分析（上位5位）:
+1位: Java（3回）
+2位: is（2回）
+3位: programming（2回）
+4位: a（1回）
+5位: language（1回）
 
-設定検証:
-✓ アプリケーション名が設定されています
-✓ データベースURLが有効です
-✓ 接続数が適切な範囲内です
-✗ パスワードが設定されていません（警告）
+長さ別単語分析:
+1-3文字: 8語（35%）
+4-6文字: 7語（30%）
+7-9文字: 6語（26%）
+10文字以上: 2語（9%）
+
+特徴的な単語（6文字以上）:
+programming（2回）
+language（1回）
+platform（1回）
+independent（1回）
+functional（1回）
+
+並列処理性能テスト:
+シーケンシャル処理: 15ms
+並列処理: 8ms
+性能向上率: 46.7%
 ```
 
 **評価ポイント**:
-- 複雑なRecord構造の設計
-- 不変性を保った部分更新
-- 設定管理システムの実装
+- 文字列処理での Stream 活用
+- 並列ストリームの理解と適用
+- 正規表現との組み合わせ
 
 
 
-### 課題4: Record とパターンマッチング（Java 17+）
-**ファイル名**: `Shape.java`, `PatternMatching.java`, `PatternMatchingTest.java`
+### 課題4: データ変換パイプライン
+**ファイル名**: `DataProcessor.java`, `DataProcessorTest.java`
 
-Recordとパターンマッチングを組み合わせた処理を実装してください。
+複雑なデータ変換パイプラインを作成し、Stream APIの高度な機能を実装してください。
 
 **要求仕様**:
-- 図形を表すRecord（Circle、Rectangle、Triangle）
-- sealed interface との組み合わせ
-- パターンマッチング（switch式）の活用
-- Record のデコンストラクション
-- 型安全な処理の実装
+- 複数段階のデータ変換処理
+- カスタムコレクターの実装
+- ストリームの合成と分岐
+- 例外処理を含む安全なパイプライン
 
 **実行例**:
 ```
-=== Record とパターンマッチング ===
-図形Record定義:
-circle: Circle[radius=5.0]
-rectangle: Rectangle[width=4.0, height=3.0]
-triangle: Triangle[base=6.0, height=4.0]
+=== データ変換パイプライン ===
+入力データ: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-面積計算（パターンマッチング）:
-円の面積: 78.54
-長方形の面積: 12.0
-三角形の面積: 12.0
+パイプライン処理1（数値処理）:
+元データ → 偶数フィルタ → 二乗 → 文字列変換
+結果: ["4", "16", "36", "64", "100"]
 
-周囲計算（パターンマッチング）:
-円の周囲: 31.42
-長方形の周囲: 14.0
-三角形の周囲: （計算複雑）
+パイプライン処理2（分岐処理）:
+奇数グループ: [1, 3, 5, 7, 9]
+偶数グループ: [2, 4, 6, 8, 10]
+奇数合計: 25
+偶数合計: 30
 
-Record デコンストラクション:
-circle(5.0) → 半径: 5.0
-rectangle(4.0, 3.0) → 幅: 4.0, 高さ: 3.0
-triangle(6.0, 4.0) → 底辺: 6.0, 高さ: 4.0
+カスタムコレクター使用:
+統計情報: {count=10, sum=55, average=5.5, min=1, max=10}
 
-図形分類:
-小さい図形（面積20未満）: [circle, rectangle, triangle]
-中くらいの図形（面積20-100）: []
-大きい図形（面積100以上）: []
+並列パイプライン:
+大量データ処理（100万件）
+シーケンシャル: 245ms
+並列処理: 98ms
+性能向上: 60%
 
-型安全性確認:
-switch 文で全ケースを網羅
-コンパイル時に型安全性を保証
+例外安全パイプライン:
+"123" → 123 ✓
+"abc" → エラー（スキップ）
+"456" → 456 ✓
+"def" → エラー（スキップ）
+成功件数: 2件, エラー件数: 2件
 ```
 
 **評価ポイント**:
-- sealed interface と Record の組み合わせ
-- パターンマッチングの活用
-- 型安全性の確保
+- 複雑なパイプライン設計
+- カスタムコレクターの実装
+- 例外処理を含む実用的な実装
 
 ## 💡 ヒント
 
 ### 課題1のヒント
-- Record 定義: record Point(int x, int y) {}
-- アクセサメソッド: point.x(), point.y()
-- equals() と hashCode() は自動生成
+- Collectors.groupingBy() で部署別グループ化
+- Collectors.averagingDouble() で平均給与計算
+- Comparator.comparing() でソート条件指定
 
 ### 課題2のヒント
-- ネストしたRecord: record Order(User user, List<Item> items) {}
-- データ変換にはStream APIを活用
-- バリデーションは静的メソッドで実装
+- LocalDate.parse() で日付変換
+- Stream.flatMap() で入れ子構造の平坦化
+- Optional.map() でチェーン処理
 
 ### 課題3のヒント
-- with メソッドパターンで部分更新を実現
-- record.field() で値取得、新しいRecordで更新
-- Properties ファイル形式での出力
+- Files.lines() でファイル読み込み
+- String.split() と Pattern.compile() で単語分割
+- parallelStream() で並列処理
 
 ### 課題4のヒント
-- sealed interface で型を限定
-- switch式でパターンマッチング
-- var でRecord要素を取得
+- Collector.of() でカスタムコレクター作成
+- Stream.concat() でストリーム結合
+- try-catch と filter() で例外処理
 
-## 🔍 Record のポイント
+## 🔍 Stream APIのポイント
 
-1. **不変データ**: Record は本質的に不変
-2. **簡潔性**: boilerplate コードの大幅削減
-3. **透明性**: データの構造が明確
-4. **値ベース**: equals/hashCode が自動で正しく実装
-5. **制限事項**: 継承不可、追加フィールド不可
-6. **適用場面**: DTO、設定、値オブジェクト
+1. **中間操作**: filter、map、sorted、distinct等（遅延評価）
+2. **終端操作**: collect、reduce、forEach等（実際の処理実行）
+3. **並列処理**: parallelStream() で自動並列化
+4. **Optional**: null安全なプログラミング
+5. **Collectors**: 豊富な集約操作の提供
+6. **関数型インターフェイス**: Predicate、Function、Consumer等
 
 ## ✅ 完了チェックリスト
 
-- [ ] 課題1: 基本的なRecordの定義と特性が理解できている
-- [ ] 課題2: RecordをDTOとして適切に活用できている
-- [ ] 課題3: 複雑なRecord構造と設定管理ができている
-- [ ] 課題4: パターンマッチングと組み合わせて使えている
-- [ ] Record の利点と制限を理解している
-- [ ] 従来のクラスとの使い分けができている
+- [ ] 課題1: 社員データで基本的なStream操作ができている
+- [ ] 課題2: 売上データで高度なStream処理ができている
+- [ ] 課題3: テキスト処理で並列ストリームが活用されている
+- [ ] 課題4: 複雑なパイプラインとカスタムコレクターが実装されている
+- [ ] Stream APIの中間操作と終端操作を理解している
+- [ ] Optional による null 安全プログラミングができている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより複雑なRecord活用に挑戦しましょう！
+**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なデータ処理に挑戦しましょう！

@@ -1,747 +1,796 @@
 # 第15章 応用課題
 
 ## 🎯 学習目標
-- 高度なJavaDoc活用
-- 自動ドキュメント生成システム
-- API仕様書自動作成
-- コードから設計書の逆生成
-- インタラクティブドキュメント
+- 高度なJavaプログラミング技術統合
+- 企業レベルのアプリケーション開発
+- 複合的な技術要素の組み合わせ
+- 実務レベルの問題解決
+- アーキテクチャ設計の実践
 
 ## 📝 課題一覧
 
-### 課題1: 自動API仕様書生成システム
-**ファイル名**: `AutoAPIDocumentationGenerator.java`
+### 課題1: 統合ECプラットフォーム
+**ファイル名**: `IntegratedECommercePlatform.java`
 
-コードから包括的なAPI仕様書を自動生成するシステムを作成してください。
+複数の技術要素を統合したエンタープライズ級ECプラットフォームを作成してください。
 
 **要求仕様**:
-- REST API仕様の自動抽出
-- OpenAPI 3.0形式出力
-- インタラクティブデモ生成
-- 多言語ドキュメント対応
+- マイクロサービスアーキテクチャ
+- イベント駆動設計
+- CQRS + Event Sourcing
+- 分散トランザクション処理
 
-**生成機能**:
-- エンドポイント仕様
-- データモデル定義
-- サンプルコード
-- テストケース
+**システム構成**:
+- ユーザー管理サービス
+- 商品カタログサービス
+- 注文処理サービス
+- 在庫管理サービス
+- 決済サービス
+- 通知サービス
 
 **実行例**:
 ```
-=== 自動API仕様書生成システム ===
+=== 統合ECプラットフォーム ===
 
-📚 AutoDocGen Pro v3.0
+🛒 EnterpriseCommerce v3.0
 
-=== プロジェクト解析 ===
-🔍 包括的コード分析:
+=== システムアーキテクチャ ===
+🏗️ マイクロサービス構成:
 
-解析対象:
-プロジェクト: E-Commerce API
-言語: Java + Spring Boot
-ファイル数: 247個
-クラス数: 156個
-メソッド数: 1,247個
-アノテーション: @RestController, @RequestMapping等
+サービス一覧:
+1. user-service (ユーザー管理)
+   - Port: 8081
+   - Database: PostgreSQL
+   - Cache: Redis
+   
+2. catalog-service (商品カタログ)
+   - Port: 8082
+   - Database: MongoDB
+   - Search: Elasticsearch
+   
+3. order-service (注文処理)
+   - Port: 8083
+   - Database: PostgreSQL
+   - Event Store: EventStore DB
+   
+4. inventory-service (在庫管理)
+   - Port: 8084
+   - Database: PostgreSQL
+   - Cache: Redis
+   
+5. payment-service (決済処理)
+   - Port: 8085
+   - Database: PostgreSQL
+   - External: Stripe API
+   
+6. notification-service (通知)
+   - Port: 8086
+   - Queue: RabbitMQ
+   - Email: SendGrid
 
-解析結果:
-REST エンドポイント: 67個
-データモデル: 23個
-セキュリティ設定: JWT + OAuth2
-バリデーション: Bean Validation
-例外処理: 15種類の例外クラス
+インフラストラクチャ:
+- API Gateway: Kong
+- Service Mesh: Istio
+- Message Broker: Apache Kafka
+- Config Server: Spring Cloud Config
+- Service Discovery: Consul
+- Monitoring: Prometheus + Grafana
+- Tracing: Jaeger
 
-解析時間: 8.7秒
-解析精度: 98.3%
-
-=== API仕様抽出 ===
-📋 REST API分析:
+=== イベント駆動アーキテクチャ ===
+📨 非同期イベント処理:
 
 ```java
-/**
- * ユーザー管理API
- * ユーザーの作成、取得、更新、削除を行う
- * 
- * @author API Generator
- * @version 1.0.0
- * @since 2024-07-05
- */
-@RestController
-@RequestMapping("/api/users")
-@Tag(name = "ユーザー管理", description = "ユーザー関連のAPI操作")
-public class UserController {
+// ドメインイベント定義
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = UserRegisteredEvent.class, name = "USER_REGISTERED"),
+    @JsonSubTypes.Type(value = OrderPlacedEvent.class, name = "ORDER_PLACED"),
+    @JsonSubTypes.Type(value = PaymentProcessedEvent.class, name = "PAYMENT_PROCESSED"),
+    @JsonSubTypes.Type(value = InventoryUpdatedEvent.class, name = "INVENTORY_UPDATED")
+})
+public abstract class DomainEvent {
+    private final String eventId;
+    private final Instant timestamp;
+    private final String aggregateId;
+    private final Long version;
     
-    /**
-     * ユーザー一覧取得
-     * 
-     * @param page ページ番号 (0から開始, デフォルト: 0)
-     * @param size ページサイズ (1-100, デフォルト: 20)
-     * @param sort ソート条件 (例: "name,asc" or "createdAt,desc")
-     * @param search 検索キーワード (部分一致)
-     * @return ページング化されたユーザー一覧
-     * 
-     * @apiNote このAPIはページングと検索をサポートします
-     * @apiExample
-     * GET /api/users?page=0&size=10&sort=name,asc&search=john
-     * 
-     * @apiSuccess 200 正常にユーザー一覧を取得
-     * @apiError 400 不正なパラメータ
-     * @apiError 401 認証が必要
-     * @apiError 403 権限不足
-     */
-    @GetMapping
-    @Operation(
-        summary = "ユーザー一覧取得",
-        description = "条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "成功",
-                content = @Content(schema = @Schema(implementation = PagedUserResponse.class))),
-            @ApiResponse(responseCode = "400", description = "パラメータエラー"),
-            @ApiResponse(responseCode = "401", description = "認証エラー"),
-            @ApiResponse(responseCode = "403", description = "権限エラー")
-        }
-    )
-    public ResponseEntity<PagedResponse<UserDTO>> getUsers(
-            @Parameter(description = "ページ番号", example = "0")
-            @RequestParam(defaultValue = "0") @Min(0) Integer page,
-            
-            @Parameter(description = "ページサイズ", example = "20") 
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size,
-            
-            @Parameter(description = "ソート条件", example = "name,asc")
-            @RequestParam(required = false) String sort,
-            
-            @Parameter(description = "検索キーワード", example = "john")
-            @RequestParam(required = false) String search) {
-        
-        // 実装...
-    }
-    
-    /**
-     * ユーザー作成
-     * 
-     * @param request ユーザー作成リクエスト
-     * @return 作成されたユーザー情報
-     * 
-     * @apiNote 
-     * - ユーザー名は一意である必要があります
-     * - メールアドレスは有効な形式である必要があります
-     * - パスワードは8文字以上で英数字記号を含む必要があります
-     * 
-     * @apiExample
-     * POST /api/users
-     * Content-Type: application/json
-     * 
-     * {
-     *   "username": "john_doe",
-     *   "email": "john@example.com",
-     *   "password": "SecurePass123!",
-     *   "profile": {
-     *     "firstName": "John",
-     *     "lastName": "Doe",
-     *     "phoneNumber": "+81-90-1234-5678"
-     *   }
-     * }
-     * 
-     * @apiSuccessExample 成功レスポンス
-     * HTTP/1.1 201 Created
-     * Content-Type: application/json
-     * 
-     * {
-     *   "id": 123,
-     *   "username": "john_doe", 
-     *   "email": "john@example.com",
-     *   "profile": {
-     *     "firstName": "John",
-     *     "lastName": "Doe",
-     *     "phoneNumber": "+81-90-1234-5678"
-     *   },
-     *   "createdAt": "2024-07-05T14:30:00Z",
-     *   "updatedAt": "2024-07-05T14:30:00Z"
-     * }
-     */
-    @PostMapping
-    @Operation(summary = "ユーザー作成", description = "新しいユーザーを作成します")
-    public ResponseEntity<UserDTO> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
-        // 実装...
+    protected DomainEvent(String aggregateId, Long version) {
+        this.eventId = UUID.randomUUID().toString();
+        this.timestamp = Instant.now();
+        this.aggregateId = aggregateId;
+        this.version = version;
     }
 }
 
-// 自動生成されたOpenAPI仕様
+// 注文処理サービス
 @Service
-public class OpenAPISpecGenerator {
+@Transactional
+public class OrderService {
+    private final OrderRepository orderRepository;
+    private final EventStore eventStore;
+    private final EventPublisher eventPublisher;
+    private final SagaOrchestrator sagaOrchestrator;
     
-    public OpenAPISpecification generateSpecification(List<Class<?>> controllerClasses) {
-        OpenAPISpecification spec = new OpenAPISpecification();
-        
-        // 基本情報設定
-        spec.setInfo(Info.builder()
-            .title("E-Commerce API")
-            .version("1.0.0")
-            .description("ECサイト用のREST API仕様書")
-            .contact(Contact.builder()
-                .name("開発チーム")
-                .email("dev@example.com")
-                .build())
-            .license(License.builder()
-                .name("MIT")
-                .url("https://opensource.org/licenses/MIT")
-                .build())
-            .build());
-        
-        // サーバー情報
-        spec.setServers(Arrays.asList(
-            Server.builder()
-                .url("https://api.example.com/v1")
-                .description("本番環境")
-                .build(),
-            Server.builder()
-                .url("https://api-staging.example.com/v1") 
-                .description("ステージング環境")
-                .build()
-        ));
-        
-        // セキュリティ設定
-        spec.setSecuritySchemes(Map.of(
-            "BearerAuth", SecurityScheme.builder()
-                .type("http")
-                .scheme("bearer")
-                .bearerFormat("JWT")
-                .description("JWT認証")
-                .build(),
-            "OAuth2", SecurityScheme.builder()
-                .type("oauth2")
-                .description("OAuth2認証")
-                .flows(OAuthFlows.builder()
-                    .authorizationCode(OAuthFlow.builder()
-                        .authorizationUrl("https://auth.example.com/oauth2/authorize")
-                        .tokenUrl("https://auth.example.com/oauth2/token")
-                        .scopes(Map.of(
-                            "read", "読み取り権限",
-                            "write", "書き込み権限",
-                            "admin", "管理者権限"
-                        ))
-                        .build())
-                    .build())
-                .build()
-        ));
-        
-        // エンドポイント解析
-        for (Class<?> controllerClass : controllerClasses) {
-            PathItemMap pathItems = analyzeControllerClass(controllerClass);
-            spec.addPathItems(pathItems);
-        }
-        
-        return spec;
-    }
-    
-    private PathItemMap analyzeControllerClass(Class<?> controllerClass) {
-        PathItemMap pathItems = new PathItemMap();
-        
-        // クラスレベルのRequestMapping取得
-        RequestMapping classMapping = controllerClass.getAnnotation(RequestMapping.class);
-        String basePath = classMapping != null ? classMapping.value()[0] : "";
-        
-        // メソッド解析
-        for (Method method : controllerClass.getDeclaredMethods()) {
-            if (isApiMethod(method)) {
-                PathItem pathItem = analyzeApiMethod(method, basePath);
-                pathItems.put(pathItem.getPath(), pathItem);
+    public OrderResult placeOrder(PlaceOrderCommand command) {
+        try {
+            // 1. コマンド検証
+            CommandValidation validation = validateCommand(command);
+            if (!validation.isValid()) {
+                return OrderResult.failure(validation.getErrors());
             }
-        }
-        
-        return pathItems;
-    }
-    
-    private PathItem analyzeApiMethod(Method method, String basePath) {
-        // HTTPメソッドとパス抽出
-        RequestMapping mapping = method.getAnnotation(RequestMapping.class);
-        GetMapping getMapping = method.getAnnotation(GetMapping.class);
-        PostMapping postMapping = method.getAnnotation(PostMapping.class);
-        
-        String httpMethod = determineHttpMethod(method);
-        String path = determinePath(method, basePath);
-        
-        //操作定義生成
-        Operation operation = Operation.builder()
-            .operationId(method.getName())
-            .summary(extractSummary(method))
-            .description(extractDescription(method))
-            .tags(extractTags(method))
-            .parameters(extractParameters(method))
-            .requestBody(extractRequestBody(method))
-            .responses(extractResponses(method))
-            .security(extractSecurityRequirements(method))
-            .build();
-        
-        return PathItem.builder()
-            .path(path)
-            .operation(httpMethod, operation)
-            .build();
-    }
-}
-```
-
-自動生成結果:
-```yaml
-openapi: 3.0.0
-info:
-  title: E-Commerce API
-  version: 1.0.0
-  description: ECサイト用のREST API仕様書
-  contact:
-    name: 開発チーム
-    email: dev@example.com
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-
-servers:
-  - url: https://api.example.com/v1
-    description: 本番環境
-  - url: https://api-staging.example.com/v1
-    description: ステージング環境
-
-paths:
-  /api/users:
-    get:
-      summary: ユーザー一覧取得
-      description: 条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。
-      operationId: getUsers
-      tags:
-        - ユーザー管理
-      parameters:
-        - name: page
-          in: query
-          description: ページ番号
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-          example: 0
-        - name: size
-          in: query
-          description: ページサイズ
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
-          example: 20
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PagedUserResponse'
-        '400':
-          description: パラメータエラー
-        '401':
-          description: 認証エラー
-        '403':
-          description: 権限エラー
-      security:
-        - BearerAuth: []
-
-    post:
-      summary: ユーザー作成
-      description: 新しいユーザーを作成します
-      operationId: createUser
-      tags:
-        - ユーザー管理
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateUserRequest'
-            example:
-              username: john_doe
-              email: john@example.com
-              password: SecurePass123!
-              profile:
-                firstName: John
-                lastName: Doe
-                phoneNumber: "+81-90-1234-5678"
-      responses:
-        '201':
-          description: 作成成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserDTO'
-
-components:
-  schemas:
-    UserDTO:
-      type: object
-      required:
-        - id
-        - username
-        - email
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: ユーザーID
-          example: 123
-        username:
-          type: string
-          description: ユーザー名
-          example: john_doe
-        email:
-          type: string
-          format: email
-          description: メールアドレス
-          example: john@example.com
-
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT認証
-
-生成統計:
-解析エンドポイント: 67個
-生成スキーマ: 23個
-セキュリティ定義: 2個
-サンプルコード: 134個
-生成時間: 12.3秒
-```
-
-=== インタラクティブドキュメント生成 ===
-```java
-// Swagger UI + カスタムデモ生成
-@Service
-public class InteractiveDocumentationGenerator {
-    
-    public InteractiveDocumentation generateInteractiveDoc(OpenAPISpecification spec) {
-        InteractiveDocumentation doc = new InteractiveDocumentation();
-        
-        // Swagger UI設定
-        SwaggerUIConfig swaggerConfig = SwaggerUIConfig.builder()
-            .url("/api-docs/openapi.json")
-            .deepLinking(true)
-            .displayOperationId(false)
-            .defaultModelsExpandDepth(1)
-            .defaultModelExpandDepth(1)
-            .defaultModelRendering("example")
-            .displayRequestDuration(true)
-            .docExpansion("none")
-            .filter(false)
-            .maxDisplayedTags(50)
-            .showExtensions(false)
-            .showCommonExtensions(false)
-            .tryItOutEnabled(true)
-            .requestInterceptor("(request) => { " +
-                "request.headers['X-API-Key'] = 'demo-key'; return request; }")
-            .build();
-        
-        doc.setSwaggerUI(swaggerConfig);
-        
-        // カスタムデモページ生成
-        DemoPageGenerator demoGenerator = new DemoPageGenerator();
-        
-        for (PathItem path : spec.getPaths()) {
-            for (Operation operation : path.getOperations()) {
-                // インタラクティブサンプル生成
-                InteractiveSample sample = generateInteractiveSample(operation);
-                doc.addSample(sample);
-                
-                // curl コマンド生成
-                CurlCommand curlCommand = generateCurlCommand(operation);
-                doc.addCurlCommand(curlCommand);
-                
-                // 各言語のサンプルコード生成
-                CodeSamples samples = generateCodeSamples(operation);
-                doc.addCodeSamples(samples);
-            }
-        }
-        
-        return doc;
-    }
-    
-    private CodeSamples generateCodeSamples(Operation operation) {
-        CodeSamples samples = new CodeSamples();
-        
-        // JavaScript (fetch API)
-        String jsCode = generateJavaScriptSample(operation);
-        samples.addSample("JavaScript", jsCode);
-        
-        // Python (requests)
-        String pythonCode = generatePythonSample(operation);
-        samples.addSample("Python", pythonCode);
-        
-        // Java (OkHttp)
-        String javaCode = generateJavaSample(operation);
-        samples.addSample("Java", javaCode);
-        
-        // curl
-        String curlCode = generateCurlSample(operation);
-        samples.addSample("curl", curlCode);
-        
-        return samples;
-    }
-    
-    private String generateJavaScriptSample(Operation operation) {
-        StringBuilder code = new StringBuilder();
-        
-        code.append("// JavaScript (fetch API)\n");
-        code.append("const response = await fetch('").append(operation.getUrl()).append("', {\n");
-        code.append("  method: '").append(operation.getHttpMethod().toUpperCase()).append("',\n");
-        code.append("  headers: {\n");
-        code.append("    'Content-Type': 'application/json',\n");
-        code.append("    'Authorization': 'Bearer YOUR_JWT_TOKEN'\n");
-        code.append("  }");
-        
-        if (operation.hasRequestBody()) {
-            code.append(",\n  body: JSON.stringify({\n");
-            code.append(generateRequestBodyExample(operation.getRequestBody()));
-            code.append("\n  })");
-        }
-        
-        code.append("\n});\n\n");
-        code.append("if (response.ok) {\n");
-        code.append("  const data = await response.json();\n");
-        code.append("  console.log(data);\n");
-        code.append("} else {\n");
-        code.append("  console.error('Error:', response.status);\n");
-        code.append("}");
-        
-        return code.toString();
-    }
-}
-```
-
-インタラクティブドキュメント例:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>E-Commerce API Documentation</title>
-    <style>
-        .api-demo { border: 1px solid #ccc; margin: 20px 0; padding: 15px; }
-        .code-sample { background: #f4f4f4; padding: 10px; margin: 10px 0; }
-        .try-it-button { background: #007bff; color: white; padding: 10px 20px; }
-    </style>
-</head>
-<body>
-    <h1>E-Commerce API Documentation</h1>
-    
-    <div class="api-demo">
-        <h2>GET /api/users - ユーザー一覧取得</h2>
-        <p>条件に応じてユーザー一覧を取得します。ページング、ソート、検索に対応。</p>
-        
-        <h3>パラメータ</h3>
-        <form id="getUsersForm">
-            <label>Page: <input type="number" name="page" value="0" min="0"></label><br>
-            <label>Size: <input type="number" name="size" value="20" min="1" max="100"></label><br>
-            <label>Search: <input type="text" name="search" placeholder="検索キーワード"></label><br>
-            <button type="submit" class="try-it-button">Try it out!</button>
-        </form>
-        
-        <h3>レスポンス例</h3>
-        <div class="code-sample">
-            <pre id="getUsersResponse">ここにレスポンスが表示されます</pre>
-        </div>
-        
-        <h3>サンプルコード</h3>
-        <div class="code-tabs">
-            <button onclick="showCode('js')">JavaScript</button>
-            <button onclick="showCode('python')">Python</button>
-            <button onclick="showCode('java')">Java</button>
-            <button onclick="showCode('curl')">curl</button>
-        </div>
-        
-        <div id="js-code" class="code-sample">
-            <pre>
-const response = await fetch('/api/users?page=0&size=20', {
-  method: 'GET',
-  headers: {
-    'Authorization': 'Bearer YOUR_JWT_TOKEN'
-  }
-});
-
-if (response.ok) {
-  const users = await response.json();
-  console.log(users);
-}
-            </pre>
-        </div>
-    </div>
-    
-    <script>
-        document.getElementById('getUsersForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const params = new URLSearchParams(formData);
             
-            try {
-                const response = await fetch(`/api/users?${params}`);
-                const data = await response.json();
-                document.getElementById('getUsersResponse').textContent = 
-                    JSON.stringify(data, null, 2);
-            } catch (error) {
-                document.getElementById('getUsersResponse').textContent = 
-                    'Error: ' + error.message;
+            // 2. 注文アグリゲート作成
+            Order order = Order.create(
+                command.getCustomerId(),
+                command.getOrderItems(),
+                command.getShippingAddress()
+            );
+            
+            // 3. ビジネスルール適用
+            BusinessRuleEngine ruleEngine = new BusinessRuleEngine();
+            RuleValidationResult ruleResult = ruleEngine.validate(order);
+            
+            if (!ruleResult.isValid()) {
+                return OrderResult.failure(ruleResult.getViolations());
             }
+            
+            // 4. イベント生成
+            List<DomainEvent> events = order.getUncommittedEvents();
+            
+            // 5. Event Sourcing - イベント永続化
+            eventStore.saveEvents(order.getId(), events, order.getVersion());
+            
+            // 6. 読み取りモデル更新
+            updateReadModel(order);
+            
+            // 7. イベント発行
+            events.forEach(eventPublisher::publish);
+            
+            // 8. Saga開始 (分散トランザクション)
+            SagaDefinition orderSaga = createOrderProcessingSaga(order);
+            sagaOrchestrator.startSaga(orderSaga);
+            
+            logger.info("注文作成完了: orderId={}, customerId={}", 
+                order.getId(), command.getCustomerId());
+            
+            return OrderResult.success(order.getId());
+            
+        } catch (Exception e) {
+            logger.error("注文作成エラー", e);
+            return OrderResult.failure("注文処理中にエラーが発生しました: " + e.getMessage());
+        }
+    }
+    
+    private SagaDefinition createOrderProcessingSaga(Order order) {
+        return SagaDefinition.builder()
+            .sagaId(UUID.randomUUID().toString())
+            .sagaType("OrderProcessingSaga")
+            .step("ReserveInventory")
+                .invokeParticipant("inventory-service")
+                .withCommand(new ReserveInventoryCommand(order.getOrderItems()))
+                .withCompensation(new ReleaseInventoryCommand(order.getOrderItems()))
+            .step("ProcessPayment")
+                .invokeParticipant("payment-service")
+                .withCommand(new ProcessPaymentCommand(
+                    order.getCustomerId(), 
+                    order.getTotalAmount(),
+                    order.getPaymentMethod()))
+                .withCompensation(new RefundPaymentCommand(order.getId()))
+            .step("UpdateInventory")
+                .invokeParticipant("inventory-service")
+                .withCommand(new UpdateInventoryCommand(order.getOrderItems()))
+                .withCompensation(new RestoreInventoryCommand(order.getOrderItems()))
+            .step("SendNotification")
+                .invokeParticipant("notification-service")
+                .withCommand(new SendOrderConfirmationCommand(
+                    order.getCustomerId(), 
+                    order.getId()))
+            .build();
+    }
+}
+
+// CQRS実装 - コマンドハンドラー
+@Component
+public class OrderCommandHandler {
+    
+    @EventSourcingHandler
+    public void handle(PlaceOrderCommand command) {
+        Order order = Order.create(
+            command.getCustomerId(),
+            command.getOrderItems(),
+            command.getShippingAddress()
+        );
+        
+        repository.save(order);
+    }
+    
+    @EventSourcingHandler
+    public void handle(UpdateOrderStatusCommand command) {
+        Order order = repository.load(command.getOrderId());
+        order.updateStatus(command.getNewStatus());
+        repository.save(order);
+    }
+    
+    @EventSourcingHandler
+    public void handle(CancelOrderCommand command) {
+        Order order = repository.load(command.getOrderId());
+        order.cancel(command.getReason());
+        repository.save(order);
+    }
+}
+
+// CQRS実装 - クエリハンドラー
+@Component
+public class OrderQueryHandler {
+    private final OrderProjectionRepository projectionRepository;
+    
+    public OrderDetails getOrderDetails(String orderId) {
+        OrderProjection projection = projectionRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException(orderId));
+        
+        return OrderDetails.builder()
+            .orderId(projection.getOrderId())
+            .customerId(projection.getCustomerId())
+            .status(projection.getStatus())
+            .orderItems(projection.getOrderItems())
+            .totalAmount(projection.getTotalAmount())
+            .createdAt(projection.getCreatedAt())
+            .build();
+    }
+    
+    public PagedResult<OrderSummary> getCustomerOrders(String customerId, 
+                                                      Pageable pageable) {
+        Page<OrderProjection> projections = projectionRepository
+            .findByCustomerId(customerId, pageable);
+        
+        List<OrderSummary> summaries = projections.getContent().stream()
+            .map(this::toOrderSummary)
+            .collect(Collectors.toList());
+        
+        return new PagedResult<>(summaries, projections.getTotalElements());
+    }
+}
+
+// Event Sourcing - イベントストア
+@Repository
+public class EventStore {
+    private final JdbcTemplate jdbcTemplate;
+    private final EventSerializer eventSerializer;
+    
+    public void saveEvents(String aggregateId, List<DomainEvent> events, Long expectedVersion) {
+        try {
+            // 楽観的排他制御
+            Long currentVersion = getCurrentVersion(aggregateId);
+            if (!Objects.equals(currentVersion, expectedVersion)) {
+                throw new ConcurrencyException(
+                    "Expected version " + expectedVersion + 
+                    " but was " + currentVersion);
+            }
+            
+            // イベント保存
+            String sql = "INSERT INTO event_store (aggregate_id, event_type, event_data, version, timestamp) " +
+                        "VALUES (?, ?, ?, ?, ?)";
+            
+            List<Object[]> batchArgs = events.stream()
+                .map(event -> new Object[]{
+                    aggregateId,
+                    event.getClass().getSimpleName(),
+                    eventSerializer.serialize(event),
+                    event.getVersion(),
+                    event.getTimestamp()
+                })
+                .collect(Collectors.toList());
+            
+            jdbcTemplate.batchUpdate(sql, batchArgs);
+            
+            logger.debug("Saved {} events for aggregate {}", events.size(), aggregateId);
+            
+        } catch (DataAccessException e) {
+            throw new EventStoreException("Failed to save events", e);
+        }
+    }
+    
+    public List<DomainEvent> getEvents(String aggregateId) {
+        String sql = "SELECT event_type, event_data, version, timestamp " +
+                    "FROM event_store WHERE aggregate_id = ? ORDER BY version";
+        
+        return jdbcTemplate.query(sql, new Object[]{aggregateId}, (rs, rowNum) -> {
+            String eventType = rs.getString("event_type");
+            String eventData = rs.getString("event_data");
+            return eventSerializer.deserialize(eventData, eventType);
         });
-    </script>
-</body>
-</html>
+    }
+}
+
+// Saga Orchestrator
+@Service
+public class SagaOrchestrator {
+    private final SagaRepository sagaRepository;
+    private final MessageSender messageSender;
+    
+    public void startSaga(SagaDefinition sagaDefinition) {
+        try {
+            // Saga状態初期化
+            SagaInstance saga = new SagaInstance(
+                sagaDefinition.getSagaId(),
+                sagaDefinition.getSagaType(),
+                SagaStatus.STARTED
+            );
+            
+            sagaRepository.save(saga);
+            
+            // 最初のステップ実行
+            SagaStep firstStep = sagaDefinition.getSteps().get(0);
+            executeStep(saga, firstStep);
+            
+            logger.info("Saga started: sagaId={}, type={}", 
+                saga.getSagaId(), saga.getSagaType());
+            
+        } catch (Exception e) {
+            logger.error("Failed to start saga", e);
+            throw new SagaException("Saga start failed", e);
+        }
+    }
+    
+    private void executeStep(SagaInstance saga, SagaStep step) {
+        try {
+            // ステップ状態更新
+            saga.setCurrentStep(step.getName());
+            saga.setStatus(SagaStatus.STEP_EXECUTING);
+            sagaRepository.save(saga);
+            
+            // コマンド送信
+            Command command = step.getCommand();
+            String participant = step.getParticipant();
+            
+            messageSender.sendCommand(participant, command, 
+                new SagaReplyHandler(saga.getSagaId(), step.getName()));
+            
+            logger.debug("Executing saga step: sagaId={}, step={}", 
+                saga.getSagaId(), step.getName());
+            
+        } catch (Exception e) {
+            // ステップ失敗 - 補償処理開始
+            startCompensation(saga, step);
+        }
+    }
+    
+    private void startCompensation(SagaInstance saga, SagaStep failedStep) {
+        logger.warn("Starting compensation for saga: sagaId={}, failedStep={}", 
+            saga.getSagaId(), failedStep.getName());
+        
+        saga.setStatus(SagaStatus.COMPENSATING);
+        sagaRepository.save(saga);
+        
+        // 実行済みステップの逆順で補償処理実行
+        List<SagaStep> executedSteps = getExecutedSteps(saga);
+        Collections.reverse(executedSteps);
+        
+        for (SagaStep step : executedSteps) {
+            executeCompensation(saga, step);
+        }
+        
+        saga.setStatus(SagaStatus.COMPENSATED);
+        sagaRepository.save(saga);
+    }
+}
+```
+
+実行例:
+```
+=== 注文処理フロー実行ログ ===
+
+注文作成要求:
+顧客ID: CUST-12345
+商品: [
+  {id: "PROD-001", quantity: 2, price: 1200},
+  {id: "PROD-005", quantity: 1, price: 3500}
+]
+配送先: 東京都渋谷区...
+支払方法: クレジットカード
+
+14:30:00.001 - PlaceOrderCommand受信
+14:30:00.003 - コマンド検証開始
+14:30:00.005 - ビジネスルール検証
+14:30:00.007 - 注文アグリゲート作成
+14:30:00.010 - OrderPlacedEvent生成
+14:30:00.012 - Event Store保存
+14:30:00.015 - 読み取りモデル更新
+14:30:00.018 - イベント発行
+14:30:00.020 - Saga開始
+
+Saga実行ログ:
+SagaId: SAGA-20240705-001
+Type: OrderProcessingSaga
+
+Step 1: ReserveInventory
+14:30:00.025 - inventory-service呼び出し
+14:30:00.067 - 在庫引当成功 (42ms)
+
+Step 2: ProcessPayment  
+14:30:00.070 - payment-service呼び出し
+14:30:01.234 - 決済処理成功 (1.164s)
+
+Step 3: UpdateInventory
+14:30:01.237 - inventory-service呼び出し
+14:30:01.289 - 在庫更新成功 (52ms)
+
+Step 4: SendNotification
+14:30:01.292 - notification-service呼び出し
+14:30:01.456 - 通知送信成功 (164ms)
+
+Saga完了:
+14:30:01.460 - OrderProcessingSaga完了
+総実行時間: 1.459秒
+ステップ成功率: 100%
+```
+
+=== 分散トレーシング ===
+```
+Trace ID: 64b2c8f4a1e3d2b9
+Span情報:
+
+order-service [1.459s]
+├── validate-command [2ms]
+├── create-aggregate [3ms]
+├── save-events [5ms]
+├── publish-events [3ms]
+└── start-saga [1.446s]
+    ├── inventory-service::reserve [42ms]
+    ├── payment-service::process [1.164s]
+    ├── inventory-service::update [52ms]
+    └── notification-service::send [164ms]
+
+分散トレース統計:
+総リクエスト: 1
+成功: 1 (100%)
+平均レスポンス時間: 1.459s
+サービス間呼び出し: 4回
+エラー率: 0%
 ```
 ```
 
-### 課題2: コードメトリクス・品質レポートシステム
-**ファイル名**: `CodeQualityReportSystem.java`
+### 課題2: リアルタイム分析プラットフォーム
+**ファイル名**: `RealTimeAnalyticsPlatform.java`
 
-コードの品質指標を自動計算してレポートを生成するシステムを作成してください。
+大量データのリアルタイム分析を行うプラットフォームを作成してください。
 
 **要求仕様**:
-- 複雑度計算 (循環的複雑度等)
-- テストカバレッジ分析
-- 技術的負債の可視化
-- トレンド分析
+- ストリーミングデータ処理
+- 複雑イベント処理 (CEP)
+- 機械学習パイプライン
+- リアルタイムダッシュボード
 
-**レポート機能**:
-- HTMLレポート生成
-- ダッシュボード表示
-- アラート機能
-- 改善提案
+**システム機能**:
+- データ収集・前処理
+- ストリーム分析
+- 異常検知
+- 予測分析
 
 **実行例**:
 ```
-=== コードメトリクス・品質レポートシステム ===
+=== リアルタイム分析プラットフォーム ===
 
-📊 CodeQuality Analyzer v2.0
+📊 AnalyticsEngine Pro v4.0
 
-=== プロジェクト品質分析 ===
-📈 包括的品質評価:
+=== ストリーミングアーキテクチャ ===
+🌊 大容量データ処理:
 
-分析対象:
-プロジェクト名: E-Commerce Backend
-言語: Java 17
-フレームワーク: Spring Boot 3.0
-総行数: 125,847行
-ファイル数: 1,247個
-クラス数: 892個
-メソッド数: 4,567個
+データソース:
+- Webアクセスログ: 50,000 events/sec
+- IoTセンサー: 100,000 events/sec  
+- トランザクション: 5,000 events/sec
+- ソーシャルメディア: 20,000 events/sec
+総入力: 175,000 events/sec
 
-分析期間: 2024年1月〜7月 (6ヶ月間)
-分析時刻: 2024-07-05 14:30:00
+処理パイプライン:
+1. Data Ingestion (Apache Kafka)
+2. Stream Processing (Apache Flink)
+3. Complex Event Processing (Esper)
+4. Machine Learning (Apache Spark ML)
+5. Storage (ClickHouse + ElasticSearch)
+6. Visualization (Grafana + Custom Dashboard)
 
-=== 複雑度分析 ===
-🔍 コード複雑度評価:
+=== 複雑イベント処理 ===
+⚡ CEP実装:
 
-循環的複雑度 (Cyclomatic Complexity):
-平均: 3.2 (良好)
-最大: 15 (UserService.validateUser)
-警告レベル: 10以上 (12メソッド)
-危険レベル: 15以上 (3メソッド)
+```java
+@Component
+public class ComplexEventProcessor {
+    private final EPServiceProvider epService;
+    private final AnomalyDetector anomalyDetector;
+    private final PatternMatcher patternMatcher;
+    
+    @PostConstruct
+    public void initializeEPL() {
+        // 異常検知パターン
+        String anomalyQuery = 
+            "SELECT * FROM UserEvent.win:time(5 min) " +
+            "GROUP BY userId " +
+            "HAVING COUNT(*) > 1000"; // 5分間で1000回以上のアクセス
+        
+        epService.getEPAdministrator()
+            .createEPL(anomalyQuery)
+            .addListener(this::handleAnomalousActivity);
+        
+        // セキュリティ脅威検知
+        String securityQuery = 
+            "SELECT a.userId, a.ipAddress, COUNT(*) as attemptCount " +
+            "FROM LoginAttempt.win:time(1 min) a " +
+            "WHERE a.success = false " +
+            "GROUP BY a.userId, a.ipAddress " +
+            "HAVING COUNT(*) >= 5"; // 1分間で5回以上の失敗
+        
+        epService.getEPAdministrator()
+            .createEPL(securityQuery)
+            .addListener(this::handleSecurityThreat);
+        
+        // ビジネス機会検知
+        String opportunityQuery =
+            "SELECT p.productId, SUM(p.viewCount) as totalViews, " +
+            "       AVG(p.conversionRate) as avgConversion " +
+            "FROM ProductEvent.win:time(1 hour) p " +
+            "GROUP BY p.productId " +
+            "HAVING SUM(p.viewCount) > 10000 AND AVG(p.conversionRate) < 0.01"; // 高閲覧・低転換
+        
+        epService.getEPAdministrator()
+            .createEPL(opportunityQuery)
+            .addListener(this::handleBusinessOpportunity);
+        
+        // システムパフォーマンス監視
+        String performanceQuery =
+            "SELECT s.serviceId, AVG(s.responseTime) as avgResponse, " +
+            "       COUNT(*) as requestCount " +
+            "FROM ServiceCall.win:time(30 sec) s " +
+            "GROUP BY s.serviceId " +
+            "HAVING AVG(s.responseTime) > 1000"; // 30秒間の平均が1秒超
+        
+        epService.getEPAdministrator()
+            .createEPL(performanceQuery)
+            .addListener(this::handlePerformanceIssue);
+    }
+    
+    public void handleAnomalousActivity(EventBean[] newEvents, EventBean[] oldEvents) {
+        for (EventBean event : newEvents) {
+            String userId = (String) event.get("userId");
+            Long eventCount = (Long) event.get("count(*)");
+            
+            AnomalyAlert alert = AnomalyAlert.builder()
+                .alertId(UUID.randomUUID().toString())
+                .userId(userId)
+                .anomalyType(AnomalyType.HIGH_FREQUENCY_ACCESS)
+                .severity(Severity.HIGH)
+                .eventCount(eventCount)
+                .detectedAt(Instant.now())
+                .message(String.format("ユーザー %s が5分間で %d 回のアクセス", userId, eventCount))
+                .build();
+            
+            // 異常検知アルゴリズム実行
+            AnomalyScore score = anomalyDetector.calculateAnomalyScore(alert);
+            alert.setAnomalyScore(score);
+            
+            // アラート送信
+            alertService.sendAlert(alert);
+            
+            // 自動対応
+            if (score.getScore() > 0.8) {
+                // 高スコア異常 - 自動ブロック
+                securityService.temporaryBlock(userId, Duration.ofMinutes(30));
+            }
+            
+            logger.warn("異常活動検知: userId={}, count={}, score={}", 
+                userId, eventCount, score.getScore());
+        }
+    }
+    
+    public void handleSecurityThreat(EventBean[] newEvents, EventBean[] oldEvents) {
+        for (EventBean event : newEvents) {
+            String userId = (String) event.get("userId");
+            String ipAddress = (String) event.get("ipAddress");
+            Long attemptCount = (Long) event.get("attemptCount");
+            
+            SecurityThreat threat = SecurityThreat.builder()
+                .threatId(UUID.randomUUID().toString())
+                .userId(userId)
+                .ipAddress(ipAddress)
+                .threatType(ThreatType.BRUTE_FORCE_ATTACK)
+                .severity(Severity.CRITICAL)
+                .attemptCount(attemptCount)
+                .detectedAt(Instant.now())
+                .build();
+            
+            // 脅威インテリジェンス確認
+            ThreatIntelligence intel = threatIntelligenceService.analyze(threat);
+            threat.setThreatIntelligence(intel);
+            
+            // 即座にブロック
+            securityService.immediateBlock(ipAddress);
+            
+            // セキュリティチームに緊急通知
+            securityAlertService.sendCriticalAlert(threat);
+            
+            logger.error("セキュリティ脅威検知: userId={}, ip={}, attempts={}", 
+                userId, ipAddress, attemptCount);
+        }
+    }
+}
 
-認知的複雑度 (Cognitive Complexity):
-平均: 4.1 (普通)
-最大: 23 (OrderProcessor.processComplexOrder)
-警告レベル: 15以上 (8メソッド)
-
-ネスト深度:
-平均: 2.1層
-最大: 6層 (PaymentValidator.validateCreditCard)
-推奨: 3層以下
-
-メソッド長:
-平均: 15.7行
-最大: 89行 (ReportGenerator.generateMonthlyReport)
-推奨: 20行以下
-
-クラスサイズ:
-平均: 142行
-最大: 567行 (OrderManagementService)
-推奨: 200行以下
+// 機械学習パイプライン
+@Component
+public class MLPipeline {
+    private final SparkSession spark;
+    private final ModelRegistry modelRegistry;
+    
+    @Scheduled(fixedRate = 300000) // 5分毎
+    public void executeMLPipeline() {
+        try {
+            // データ読み込み
+            Dataset<Row> rawData = loadStreamingData();
+            
+            // 特徴量エンジニアリング
+            Dataset<Row> features = performFeatureEngineering(rawData);
+            
+            // 予測実行
+            List<MLPrediction> predictions = executePredictions(features);
+            
+            // 結果配信
+            distributeResults(predictions);
+            
+        } catch (Exception e) {
+            logger.error("ML pipeline execution failed", e);
+        }
+    }
+    
+    private List<MLPrediction> executePredictions(Dataset<Row> features) {
+        List<MLPrediction> predictions = new ArrayList<>();
+        
+        // ユーザー行動予測
+        Model userBehaviorModel = modelRegistry.getModel("user-behavior-v2.1");
+        Dataset<Row> behaviorPredictions = userBehaviorModel.transform(features);
+        predictions.addAll(extractPredictions(behaviorPredictions, "user_behavior"));
+        
+        // 売上予測
+        Model salesModel = modelRegistry.getModel("sales-forecast-v1.8");
+        Dataset<Row> salesPredictions = salesModel.transform(features);
+        predictions.addAll(extractPredictions(salesPredictions, "sales_forecast"));
+        
+        // 異常検知
+        Model anomalyModel = modelRegistry.getModel("anomaly-detection-v3.2");
+        Dataset<Row> anomalyPredictions = anomalyModel.transform(features);
+        predictions.addAll(extractPredictions(anomalyPredictions, "anomaly_detection"));
+        
+        // チャーン予測
+        Model churnModel = modelRegistry.getModel("churn-prediction-v2.0");
+        Dataset<Row> churnPredictions = churnModel.transform(features);
+        predictions.addAll(extractPredictions(churnPredictions, "churn_prediction"));
+        
+        return predictions;
+    }
+}
 ```
 
-### 課題3: 設計書逆生成システム
-**ファイル名**: `DesignDocumentReverseGenerator.java`
+実行例:
+```
+=== リアルタイム分析実行ログ ===
 
-既存のコードから設計書やアーキテクチャ図を自動生成するシステムを作成してください。
+データ処理統計:
+入力イベント数: 175,000 events/sec
+処理済みイベント数: 174,837 events/sec
+処理率: 99.91%
+遅延: 平均23ms, P99: 89ms
+スループット: 2.1GB/sec
+
+CEP検知結果:
+異常活動検知: 47件
+- 高頻度アクセス: 23件
+- 異常パターン: 12件  
+- 疑わしい行動: 12件
+
+セキュリティ脅威: 8件
+- ブルートフォース攻撃: 5件
+- DDoS攻撃の兆候: 2件
+- 不正アクセス試行: 1件
+
+ビジネス機会: 156件
+- 高関心商品: 89件
+- 価格最適化候補: 34件
+- クロスセル機会: 33件
+
+ML予測結果:
+ユーザー行動予測: 精度94.7%
+- 購入確率予測: 12,847件
+- 離脱リスク予測: 3,421件
+
+売上予測: 精度91.2%
+- 時間別売上: ¥12,450,000 (予測)
+- 商品別需要: 234商品分析
+
+異常検知: 精度97.8%
+- システム異常: 2件
+- データ品質問題: 1件
+
+処理パフォーマンス:
+Kafka消費: 175,000 msg/sec
+Flink処理: 平均23ms
+Spark ML: バッチあたり2.3秒
+ClickHouse書き込み: 89,000 rows/sec
+```
+```
+
+### 課題3: IoTデバイス管理プラットフォーム
+**ファイル名**: `IoTDeviceManagementPlatform.java`
+
+大規模IoTデバイスを管理するプラットフォームを作成してください。
 
 **要求仕様**:
-- UMLクラス図生成
-- シーケンス図自動作成
-- アーキテクチャ図生成
-- データフロー図作成
+- デバイス登録・管理
+- リアルタイムデータ収集
+- デバイス制御・設定更新
+- 異常検知・アラート
 
 **実行例**:
 ```
-=== 設計書逆生成システム ===
+=== IoTデバイス管理プラットフォーム ===
 
-🏗️ ReverseDesignGen v4.0
+🌐 IoTManager Enterprise v5.0
 
-=== アーキテクチャ分析 ===
-🔧 システム構造解析:
+=== デバイス群管理 ===
+📱 大規模IoT環境:
 
-レイヤー構成:
-1. Presentation Layer (Controller)
-   - 23個のRESTコントローラー
-   - 145個のエンドポイント
-   
-2. Application Layer (Service)
-   - 67個のサービスクラス
-   - 234個のビジネスメソッド
-   
-3. Domain Layer (Entity/Domain)
-   - 45個のエンティティ
-   - 12個のドメインサービス
-   
-4. Infrastructure Layer (Repository/External)
-   - 45個のリポジトリ
-   - 23個の外部API連携
+管理対象デバイス:
+総デバイス数: 2,500,000台
+オンライン: 2,487,352台 (99.49%)
+オフライン: 12,648台 (0.51%)
 
-依存関係:
-- 単方向依存: 98.7% (推奨)
-- 循環依存: 3件 (要修正)
-- 結合度: 低 (Good)
-- 凝集度: 高 (Excellent)
+デバイス種別:
+- 温度センサー: 890,000台
+- 湿度センサー: 654,000台  
+- 照度センサー: 432,000台
+- モーションセンサー: 298,000台
+- スマートメーター: 156,000台
+- カメラ: 70,000台
 
-生成される設計書:
-- システム構成図
-- クラス関係図  
-- データフロー図
-- シーケンス図
-- ER図
+地理的分布:
+- 日本: 1,200,000台
+- アジア太平洋: 800,000台
+- 北米: 300,000台
+- ヨーロッパ: 200,000台
+
+データ処理:
+受信データ: 125,000,000 points/hour
+処理データ: 124,876,234 points/hour
+処理率: 99.90%
+平均遅延: 45ms
 ```
 
 ## 🎯 習得すべき技術要素
 
-### ドキュメント生成技術
-- JavaDoc API
-- アノテーション処理器
-- AST (Abstract Syntax Tree) 解析
-- コード静的解析
+### アーキテクチャパターン
+- マイクロサービスアーキテクチャ
+- イベント駆動アーキテクチャ
+- CQRS + Event Sourcing
+- Saga パターン
 
-### API仕様書標準
-- OpenAPI 3.0 仕様
-- JSON Schema
-- Swagger/OpenAPI ツールチェーン
-- REST API設計原則
+### 分散システム技術
+- 分散トランザクション
+- 分散合意アルゴリズム
+- 分散キャッシュ
+- 分散監視・トレーシング
 
-### コード品質分析
-- 循環的複雑度
-- 認知的複雑度
-- コードカバレッジ
-- 技術的負債測定
+### ビッグデータ・ストリーミング
+- Apache Kafka
+- Apache Flink
+- Apache Spark
+- Complex Event Processing
 
 ## 📚 参考リソース
 
-- OpenAPI Specification 3.0
-- JavaDoc Tool Reference
-- Clean Code (Robert C. Martin)
-- Code Quality Metrics (SonarQube Documentation)
+- Microservices Patterns (Chris Richardson)
+- Building Event-Driven Microservices (Adam Bellemare)
+- Streaming Systems (Tyler Akidau)
+- Designing Data-Intensive Applications (Martin Kleppmann)
 
 ## ⚠️ 重要な注意事項
 
-自動生成されたドキュメントは開発者による確認と調整が必要です。生成されたドキュメントをそのまま使用せず、適切な品質管理を行ってください。
+これらの課題は企業レベルの複雑なシステムを扱います。実装時はセキュリティ、パフォーマンス、運用性を十分に考慮し、適切な監視とログ記録を実装してください。

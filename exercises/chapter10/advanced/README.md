@@ -1,1741 +1,1433 @@
 # 第10章 応用課題
 
 ## 🎯 学習目標
-- 例外処理の高度な活用
-- 堅牢なシステム設計
-- エラー回復メカニズム
-- フォールトトレラント設計
-- 信頼性の高いアプリケーション
+- Mapの高度な活用技術
+- 効率的なハッシュテーブル実装
+- 複雑なデータ関係の管理
+- アルゴリズムの最適化
+- 実用的なシステム設計
 
 ## 📝 課題一覧
 
-### 課題1: 高可用性銀行システム
-**ファイル名**: `HighAvailabilityBankingSystem.java`
+### 課題1: 多言語翻訳システム
+**ファイル名**: `MultilingualTranslationSystem.java`
 
-99.99%の可用性を保証する銀行システムを作成してください。
+HashMap/TreeMapを使用した高性能翻訳システムを作成してください。
 
 **要求仕様**:
-- 完全な例外処理とエラー回復
-- 自動フェイルオーバー機能
-- データ整合性の保証
-- 監査ログの完全性
+- 辞書ベース翻訳エンジン
+- 機械学習による翻訳品質向上
+- 多言語同時対応
+- リアルタイム翻訳
 
-**信頼性機能**:
-- 分散トランザクション処理
-- 自動バックアップ・復旧
-- リアルタイム監視
-- セキュリティ侵害検知
+**翻訳機能**:
+- 単語・フレーズ・文章翻訳
+- 文脈を考慮した翻訳
+- 専門用語辞書対応
+- 翻訳学習機能
 
 **実行例**:
 ```
-=== 高可用性銀行システム ===
-
-🏦 SecureBank Enterprise v8.0
-
-=== システム初期化 ===
-💾 高可用性アーキテクチャ:
-
-システム構成:
-プライマリDB: 東京データセンター
-セカンダリDB: 大阪データセンター (ホットスタンバイ)
-バックアップDB: クラウド (コールドスタンバイ)
-キャッシュ層: Redis Cluster (5ノード)
-
-可用性設計:
-目標稼働率: 99.99% (年間52分以内停止)
-RPO: 0秒 (データ損失許容なし)
-RTO: 30秒 (復旧時間目標)
-データ複製: 3拠点同期レプリケーション
-
-例外処理アーキテクチャ:
-階層化例外: ビジネス例外 → システム例外 → インフラ例外
-自動復旧: 可能な限り自動回復
-graceful degradation: 段階的機能縮退
-Circuit Breaker: 連鎖障害防止
-
-=== 口座操作 ===
-💰 堅牢な取引処理:
-
-取引例: 振込処理
-送金者: 山田太郎 (口座: 1234567890)
-受取者: 佐藤花子 (口座: 0987654321)  
-金額: ¥500,000
-取引ID: TXN20240705143000001
-
-分散トランザクション実行:
-```java
-try {
-    // Phase 1: 分散トランザクション開始
-    TransactionManager txManager = getTransactionManager();
-    DistributedTransaction dtx = txManager.begin();
-    
-    // 送金者口座からの出金
-    AccountService senderService = getAccountService("TOKYO");
-    senderService.withdraw("1234567890", 500000, dtx);
-    
-    // 受取者口座への入金
-    AccountService receiverService = getAccountService("OSAKA");  
-    receiverService.deposit("0987654321", 500000, dtx);
-    
-    // 手数料処理
-    FeeService feeService = getFeeService();
-    feeService.chargeFee("1234567890", 200, dtx);
-    
-    // 2PC Commit実行
-    dtx.prepare(); // 全サービスでprepare
-    dtx.commit();  // 全サービスでcommit
-    
-    log.info("振込取引完了: {}", "TXN20240705143000001");
-    
-} catch (InsufficientFundsException e) {
-    // ビジネス例外: 残高不足
-    dtx.rollback();
-    auditLogger.logFailedTransaction("TXN20240705143000001", 
-        "insufficient_funds", e);
-    notifyCustomer("1234567890", "振込失敗: 残高不足");
-    return TransactionResult.failed("残高不足のため振込できません");
-    
-} catch (AccountNotFoundException e) {
-    // ビジネス例外: 口座不存在
-    dtx.rollback();
-    auditLogger.logFailedTransaction("TXN20240705143000001", 
-        "account_not_found", e);
-    return TransactionResult.failed("指定口座が見つかりません");
-    
-} catch (NetworkTimeoutException e) {
-    // インフラ例外: ネットワーク問題
-    log.warn("ネットワークタイムアウト発生、自動復旧試行: {}", e.getMessage());
-    
-    // 自動復旧メカニズム
-    try {
-        // 代替ルートで再実行
-        AlternativeNetworkManager altNetwork = getAlternativeNetwork();
-        return retryTransactionWithAlternative(dtx, altNetwork);
-        
-    } catch (Exception retryException) {
-        // 復旧失敗、システム管理者に通知
-        dtx.rollback();
-        alertSystemAdministrator("CRITICAL", "振込取引復旧失敗", 
-            Arrays.asList(e, retryException));
-        return TransactionResult.failed("システム障害により取引を完了できません");
-    }
-    
-} catch (DatabaseConnectionException e) {
-    // インフラ例外: DB接続問題
-    log.error("データベース接続障害検出: {}", e.getMessage());
-    
-    // 自動フェイルオーバー
-    try {
-        DatabaseFailoverManager failover = getDatabaseFailover();
-        boolean failoverSuccess = failover.switchToSecondary();
-        
-        if (failoverSuccess) {
-            log.info("セカンダリDBへのフェイルオーバー成功");
-            return retryTransactionOnSecondary(dtx);
-        } else {
-            throw new SystemUnavailableException("フェイルオーバー失敗");
-        }
-        
-    } catch (SystemUnavailableException sue) {
-        // 完全システム障害
-        dtx.rollback();
-        activateDisasterRecoveryMode();
-        return TransactionResult.failed("システムメンテナンス中です");
-    }
-    
-} catch (SecurityException e) {
-    // セキュリティ例外: 不正アクセス検知
-    dtx.rollback();
-    securityIncidentManager.reportIncident(
-        SecurityIncident.builder()
-            .type("UNAUTHORIZED_TRANSACTION")
-            .severity("HIGH")
-            .sourceAccount("1234567890")
-            .details(e.getMessage())
-            .timestamp(Instant.now())
-            .build());
-    
-    // アカウント一時ロック
-    accountSecurityService.temporaryLock("1234567890", Duration.ofMinutes(30));
-    
-    return TransactionResult.failed("セキュリティ検証に失敗しました");
-    
-} catch (Exception e) {
-    // 予期しない例外
-    dtx.rollback();
-    UnexpectedErrorHandler errorHandler = getUnexpectedErrorHandler();
-    ErrorReport report = errorHandler.handleUnexpectedError(e);
-    
-    // 緊急システム診断
-    SystemDiagnostics diagnostics = performEmergencyDiagnostics();
-    
-    return TransactionResult.failed("予期しないエラーが発生しました");
-}
-```
-
-処理結果:
-✅ 振込取引完了
-実行時間: 1.23秒
-使用リソース: CPU 12%, Memory 145MB
-整合性チェック: 完全
-監査ログ: 記録完了
-
-=== 障害対応システム ===
-⚠️ 自動障害検知・回復:
-
-障害シナリオ1: データベース障害
-発生時刻: 14:30:45.123
-障害種別: プライマリDB接続タイムアウト
-影響範囲: 全取引システム
-
-自動対応シーケンス:
-```
-14:30:45.123 - DB接続タイムアウト検知
-14:30:45.145 - ヘルスチェック実行 → 応答なし
-14:30:45.167 - フェイルオーバー判定 → 実行決定
-14:30:45.234 - セカンダリDBアクティベート
-14:30:45.456 - アプリケーション接続切替
-14:30:45.678 - ロードバランサ設定更新
-14:30:45.789 - 監視システム状態更新
-14:30:45.890 - 運用チーム自動通知
-```
-
-フェイルオーバー結果:
-✅ セカンダリDBへの切替完了
-切替時間: 0.767秒 (目標30秒以内)
-データ損失: 0件 (同期レプリケーション)
-サービス継続: 中断なし
-
-障害シナリオ2: ネットワーク分断
-発生時刻: 16:22:33.567
-障害種別: 東京-大阪間ネットワーク切断
-影響範囲: 拠点間通信
-
-自動対応:
-```java
-try {
-    // 通常ルートでの通信試行
-    RemoteService osaka = getRemoteService("OSAKA");
-    TransactionResult result = osaka.processTransaction(transaction);
-    
-} catch (NetworkPartitionException e) {
-    log.warn("ネットワーク分断検出: {}", e.getMessage());
-    
-    // Split-brain防止メカニズム
-    ConsensusManager consensus = getConsensusManager();
-    boolean isMajorityPartition = consensus.checkMajorityPartition();
-    
-    if (isMajorityPartition) {
-        // 多数派パーティションとして動作継続
-        log.info("多数派パーティションとして動作継続");
-        
-        // 代替通信経路の確立
-        AlternativeRoute altRoute = findAlternativeRoute("OSAKA");
-        if (altRoute != null) {
-            RemoteService osakaAlt = getRemoteServiceViaAlternative(altRoute);
-            return osakaAlt.processTransaction(transaction);
-        }
-        
-        // 代替ルートなし、ローカル処理継続
-        return processLocallyWithEventualConsistency(transaction);
-        
-    } else {
-        // 少数派パーティション、読み取り専用モード
-        log.warn("少数派パーティション、読み取り専用モードに移行");
-        activateReadOnlyMode();
-        throw new ServiceDegradedException("現在、参照のみ利用可能です");
-    }
-}
-```
-
-=== セキュリティ侵害対応 ===
-🛡️ インシデント自動対応:
-
-侵害検知例:
-検知時刻: 18:45:12.789
-検知種別: 異常ログイン パターン
-詳細: 1分間に50回の失敗ログイン
-対象アカウント: 1234567890
-
-自動対応実行:
-```java
-@SecurityIncidentHandler
-public void handleSuspiciousActivity(SecurityIncident incident) {
-    try {
-        // インシデント重要度評価
-        SecuritySeverity severity = evaluateIncidentSeverity(incident);
-        
-        switch (severity) {
-            case CRITICAL:
-                // 即座の保護措置
-                securityService.emergencyLockAccount(incident.getAccountId());
-                
-                // 関連アカウントの調査
-                List<String> relatedAccounts = findRelatedAccounts(incident.getAccountId());
-                for (String account : relatedAccounts) {
-                    securityService.enhanceMonitoring(account);
-                }
-                
-                // 法執行機関通知
-                lawEnforcementNotifier.reportCriticalIncident(incident);
-                break;
-                
-            case HIGH:
-                // アカウント一時制限
-                securityService.temporaryRestriction(incident.getAccountId(), 
-                    Duration.ofHours(1));
-                
-                // 追加認証要求
-                authenticationService.requireStepUp(incident.getAccountId());
-                break;
-                
-            case MEDIUM:
-                // 監視強化
-                securityService.enhanceMonitoring(incident.getAccountId());
-                
-                // ユーザー通知
-                notificationService.sendSecurityAlert(incident.getAccountId());
-                break;
-        }
-        
-        // インシデントログ記録
-        auditLogger.logSecurityIncident(incident, severity);
-        
-    } catch (SecurityServiceException e) {
-        // セキュリティサービス障害
-        log.error("セキュリティ対応中にエラー発生: {}", e.getMessage());
-        
-        // 緊急時フォールバック
-        emergencySecurityProtocol.activate();
-        
-        // 全アカウント一時停止
-        securityService.emergencyFreezeAllAccounts();
-        
-        // 緊急対応チーム召集
-        emergencyResponseTeam.mobilize(incident, e);
-        
-    } catch (Exception e) {
-        // 予期しないエラー
-        log.error("セキュリティインシデント処理で予期しないエラー: {}", e.getMessage());
-        
-        // システム全体の緊急停止
-        systemShutdownManager.emergencyShutdown();
-    }
-}
-```
-
-=== バックアップ・復旧システム ===
-💾 データ保護・復旧:
-
-バックアップ戦略:
-リアルタイム同期: プライマリ ↔ セカンダリ
-増分バックアップ: 15分間隔
-フルバックアップ: 日次 (03:00 JST)
-オフサイトバックアップ: 週次 (クラウド)
-
-災害復旧訓練:
-シナリオ: データセンター完全停止
-実行日時: 2024-07-05 02:00-06:00
-
-復旧手順実行:
-```
-02:00:00 - 災害復旧訓練開始
-02:00:15 - プライマリシステム停止
-02:00:30 - 災害検知・判定
-02:00:45 - DR サイト起動指示
-02:02:30 - バックアップデータ復元開始
-02:45:00 - データ復元完了
-02:47:30 - アプリケーション起動
-02:50:00 - 整合性チェック実行
-02:55:00 - 動作確認テスト
-03:30:00 - サービス再開
-```
-
-復旧結果:
-目標復旧時間: 4時間以内
-実際復旧時間: 1時間30分 ✅
-データ損失: 0件 ✅
-整合性: 100% ✅
-
-復旧検証:
-```java
-@DisasterRecoveryTest
-public void validateSystemRecovery() {
-    try {
-        // データ整合性検証
-        DataIntegrityValidator validator = new DataIntegrityValidator();
-        IntegrityReport report = validator.validateAllAccounts();
-        
-        if (!report.isValid()) {
-            throw new DataCorruptionException("データ整合性エラー検出: " + 
-                report.getCorruptedAccounts());
-        }
-        
-        // 機能動作確認
-        FunctionalTester tester = new FunctionalTester();
-        TestResult testResult = tester.runCriticalPathTests();
-        
-        if (!testResult.allPassed()) {
-            throw new SystemValidationException("機能テスト失敗: " + 
-                testResult.getFailedTests());
-        }
-        
-        // パフォーマンス確認
-        PerformanceTester perfTester = new PerformanceTester();
-        PerformanceMetrics metrics = perfTester.measureSystemPerformance();
-        
-        if (metrics.getAverageResponseTime() > 2.0) {
-            log.warn("パフォーマンス劣化検出: {}秒", metrics.getAverageResponseTime());
-            performanceOptimizer.optimize();
-        }
-        
-        log.info("災害復旧システム検証完了");
-        
-    } catch (Exception e) {
-        log.error("災害復旧検証失敗: {}", e.getMessage());
-        // 再復旧プロセス開始
-        initiateSecondaryRecoveryProcess();
-    }
-}
-```
-
-=== 監視・アラートシステム ===
-📊 リアルタイム健全性監視:
-
-監視メトリクス:
-システム性能: CPU, メモリ, ディスク, ネットワーク
-アプリケーション: レスポンス時間, エラー率, スループット
-ビジネス: 取引成功率, 売上, 顧客満足度
-セキュリティ: 不正アクセス, 侵害試行, 異常行動
-
-アラート設定:
-Critical: 即座対応 (SMS + 電話)
-High: 15分以内対応 (Email + Slack)
-Medium: 1時間以内対応 (Email)
-Low: 日次レビュー (Dashboard)
-
-アラート例:
-```
-時刻: 2024-07-05 14:30:45
-重要度: CRITICAL
-メトリクス: 取引成功率
-現在値: 94.2%
-閾値: 95.0%
-継続時間: 5分
-影響範囲: 全システム
-
-自動対応:
-1. インシデント作成: INC-20240705-001
-2. オンコール担当者通知: 田中エンジニア
-3. エスカレーション設定: 15分無応答で上位者通知
-4. 一次対応指示: パフォーマンス最適化実行
-```
-
-=== システム性能統計 ===
-📈 可用性・信頼性指標:
-
-可用性実績 (過去12ヶ月):
-月次可用性: 99.98% (目標 99.99%)
-年間ダウンタイム: 87分 (目標 52分)
-計画停止: 60分 (メンテナンス)
-障害停止: 27分 (3件)
-
-障害分析:
-障害1: DB接続プール枯渇 (15分)
-障害2: ネットワーク機器故障 (8分)  
-障害3: アプリケーションメモリリーク (4分)
-
-復旧時間分析:
-平均復旧時間: 9分
-目標復旧時間: 30分
-復旧成功率: 100%
-
-データ整合性:
-整合性チェック: 日次実行
-検出エラー: 0件 (過去12ヶ月)
-自動修復: 対象外
-手動修復: 0件
-
-セキュリティ指標:
-セキュリティ侵害: 0件
-侵害試行: 125,678件 (すべてブロック)
-誤検知率: 0.02%
-検知精度: 99.98%
-
-顧客影響:
-影響顧客数: 0人 (障害時も継続サービス)
-苦情件数: 3件 (レスポンス遅延)
-満足度: 4.8/5.0
-NPS: +67
-```
-
-**評価ポイント**:
-- 例外処理の網羅的実装
-- 自動復旧メカニズムの設計
-- データ整合性の保証
-- 高可用性アーキテクチャ
-
-
-
-### 課題2: 自動運転車制御システム
-**ファイル名**: `AutonomousVehicleControlSystem.java`
-
-生命に関わる自動運転車の制御システムを作成してください。
-
-**要求仕様**:
-- リアルタイム安全制御
-- 多重化された安全機構
-- 緊急時自動対応
-- 完全な故障許容性
-
-**安全機能**:
-- 衝突回避システム
-- 冗長化制御システム
-- 安全停止機能
-- 遠隔監視・制御
-
-**実行例**:
-```
-=== 自動運転車制御システム ===
-
-🚗 SafeDrive Autonomous v12.0
-
-=== 安全システム初期化 ===
-🛡️ 多重安全アーキテクチャ:
-
-制御システム構成:
-プライマリECU: NVIDIA Drive PX (AI処理)
-セーフティECU: Intel Atom (安全監視)
-バックアップECU: ARM Cortex (緊急制御)
-ウォッチドッグ: 独立監視システム
-
-センサー冗長化:
-LiDAR: 4台 (360度カバー)
-カメラ: 8台 (ステレオビジョン)
-レーダー: 6台 (全方位)
-超音波: 12台 (近接)
-IMU: 3台 (姿勢検出)
-
-通信システム:
-V2V: 車車間通信
-V2I: 路側インフラ通信
-V2N: ネットワーク通信
-緊急通信: 専用チャネル
-
-=== リアルタイム制御 ===
-🎯 安全クリティカル制御:
-
-制御ループ実行:
-制御周期: 10ms (100Hz)
-安全監視: 1ms (1kHz)
-センサー融合: 20ms (50Hz)
-経路計画: 100ms (10Hz)
-
-走行シナリオ: 高速道路走行
-現在速度: 80km/h
-目標速度: 100km/h  
-車線: 中央車線
-前方車両: 120m先、同速度
-
-制御実行コード:
-```java
-@RealTimeController
-@SafetyCritical(level = SIL_D) // 最高安全レベル
-public class AutonomousVehicleController {
-    
-    private final MultipleECUManager ecuManager;
-    private final SensorFusionEngine sensorFusion;
-    private final SafetyMonitor safetyMonitor;
-    private final EmergencyBrakingSystem emergencyBraking;
-    
-    @ExecuteEvery(10, TimeUnit.MILLISECONDS)
-    public void controlLoop() {
-        try {
-            // センサーデータ取得
-            SensorData primarySensors = sensorFusion.getPrimarySensorData();
-            SensorData backupSensors = sensorFusion.getBackupSensorData();
-            
-            // センサー整合性チェック
-            validateSensorConsistency(primarySensors, backupSensors);
-            
-            // 環境認識
-            EnvironmentModel environment = perceiveEnvironment(primarySensors);
-            
-            // 安全性評価
-            SafetyAssessment safety = safetyMonitor.assessSituation(environment);
-            
-            if (safety.isSafe()) {
-                // 通常制御実行
-                executeNormalControl(environment);
-            } else {
-                // 安全制御実行
-                executeSafetyControl(safety);
-            }
-            
-        } catch (SensorFailureException e) {
-            handleSensorFailure(e);
-        } catch (ActuatorFailureException e) {
-            handleActuatorFailure(e);
-        } catch (CommunicationException e) {
-            handleCommunicationFailure(e);
-        } catch (Exception e) {
-            // 予期しない例外 → 緊急停止
-            executeEmergencyStop(e);
-        }
-    }
-    
-    private void handleSensorFailure(SensorFailureException e) {
-        log.error("センサー故障検出: {}", e.getFailedSensor());
-        
-        try {
-            // 冗長センサーでの継続動作判定
-            RedundancyManager redundancy = getRedundancyManager();
-            boolean canContinue = redundancy.canOperateWithFailedSensor(e.getFailedSensor());
-            
-            if (canContinue) {
-                // 冗長系での継続動作
-                sensorFusion.switchToRedundantSensor(e.getFailedSensor());
-                log.info("冗長センサーに切り替え、動作継続");
-                
-                // 性能低下モード
-                activatePerformanceDegradedMode();
-                
-            } else {
-                // 安全な場所への自動退避
-                log.warn("必要センサー不足、安全退避を実行");
-                executeSafeEvacuation();
-            }
-            
-        } catch (RedundancySystemException rse) {
-            // 冗長系も故障
-            log.error("冗長システム故障: {}", rse.getMessage());
-            executeEmergencyStop(rse);
-        }
-    }
-    
-    private void handleActuatorFailure(ActuatorFailureException e) {
-        log.error("アクチュエータ故障: {}", e.getFailedActuator());
-        
-        try {
-            switch (e.getFailedActuator()) {
-                case STEERING:
-                    // ステアリング故障
-                    if (hasBackupSteering()) {
-                        switchToBackupSteering();
-                        log.info("バックアップステアリングに切替");
-                    } else {
-                        // ステアリング不可、緊急停止
-                        executeControlledEmergencyStop();
-                    }
-                    break;
-                    
-                case BRAKING:
-                    // ブレーキ故障
-                    if (hasRegenerativeBraking() || hasEmergencyBraking()) {
-                        switchToAlternativeBraking();
-                        log.info("代替ブレーキシステムに切替");
-                    } else {
-                        // ブレーキ完全故障、エンジンブレーキ使用
-                        useEngineAndFrictionBraking();
-                    }
-                    break;
-                    
-                case ACCELERATION:
-                    // アクセル故障
-                    setConstantSpeed();
-                    findSafeStoppingLocation();
-                    log.info("定速走行で安全停止場所へ移動");
-                    break;
-            }
-            
-        } catch (BackupSystemException bse) {
-            // バックアップシステムも故障
-            log.error("バックアップシステム故障: {}", bse.getMessage());
-            executeEmergencyStop(bse);
-        }
-    }
-    
-    private void executeEmergencyStop(Exception cause) {
-        log.error("緊急停止実行: {}", cause.getMessage());
-        
-        try {
-            // 緊急灯・警告灯点灯
-            activateEmergencyLights();
-            
-            // 緊急ブレーキ作動
-            emergencyBraking.activate();
-            
-            // ハザード通信
-            broadcastEmergencySignal();
-            
-            // 緊急通報
-            callEmergencyServices();
-            
-            // ブラックボックス保存
-            saveBlackBoxData(cause);
-            
-            log.info("緊急停止処理完了");
-            
-        } catch (Exception e) {
-            // 緊急停止処理も失敗
-            log.fatal("緊急停止処理失敗: {}", e.getMessage());
-            // 物理的強制停止
-            physicalEmergencyShutdown();
-        }
-    }
-}
-```
-
-走行状況監視:
-```
-時刻: 14:30:15.123
-位置: 35.6895°N, 139.6917°E
-速度: 82.3 km/h
-加速度: +0.2 m/s²
-舵角: +2.3°
-ブレーキ: 0%
-
-前方車両検知:
-距離: 118.5m
-相対速度: -1.2 km/h (接近)
-衝突予測時間: 125.3秒 (安全)
-
-制御判定: 通常走行継続
-```
-
-=== 危険回避システム ===
-⚠️ 衝突回避制御:
-
-危険シナリオ: 前方急ブレーキ
-検知時刻: 14:35:22.456
-前方車両状況: 急減速 (-8.5 m/s²)
-相対距離: 45.2m
-衝突予測時間: 3.2秒
-
-自動回避制御:
-```java
-@EmergencyController
-public void handleCollisionThreat(CollisionThreat threat) {
-    try {
-        log.warn("衝突危険検知: TTC={}秒", threat.getTimeToCollision());
-        
-        // 回避戦略の選択
-        AvoidanceStrategy strategy = selectOptimalAvoidanceStrategy(threat);
-        
-        switch (strategy.getType()) {
-            case EMERGENCY_BRAKING:
-                // 緊急ブレーキ
-                emergencyBraking.fullBraking();
-                log.info("緊急ブレーキ実行");
-                break;
-                
-            case LANE_CHANGE:
-                // 緊急車線変更
-                if (isLaneChangeSafe(strategy.getTargetLane())) {
-                    executeEmergencyLaneChange(strategy.getTargetLane());
-                    log.info("緊急車線変更実行: {}", strategy.getTargetLane());
-                } else {
-                    // 車線変更不可、ブレーキにフォールバック
-                    emergencyBraking.fullBraking();
-                }
-                break;
-                
-            case SHOULDER_EVACUATION:
-                // 路肩退避
-                executeShoulderEvacuation();
-                log.info("路肩への緊急退避実行");
-                break;
-                
-            case CONTROLLED_COLLISION:
-                // 制御衝突（最後の手段）
-                prepareForControlledCollision();
-                log.warn("制御衝突準備実行");
-                break;
-        }
-        
-        // V2V通信で他車に警告
-        broadcastEmergencyWarning(threat);
-        
-    } catch (BrakingSystemFailureException e) {
-        // ブレーキ故障時の代替制御
-        try {
-            useRegenerativeBraking();
-            useEngineCompression();
-            log.error("主ブレーキ故障、代替制動使用: {}", e.getMessage());
-        } catch (Exception fallbackException) {
-            log.fatal("全制動システム故障: {}", fallbackException.getMessage());
-            // 物理的緊急措置
-            activatePhysicalEmergencyMeasures();
-        }
-        
-    } catch (SteeringFailureException e) {
-        // ステアリング故障時
-        try {
-            if (hasLimitedSteeringCapability()) {
-                // 制限的操舵で直進維持
-                maintainStraightPath();
-                emergencyBraking.fullBraking();
-            } else {
-                // 操舵不可、直進緊急停止
-                emergencyBraking.fullBraking();
-            }
-        } catch (Exception steeringFallback) {
-            log.fatal("操舵系完全故障: {}", steeringFallback.getMessage());
-            executeLastResortProcedures();
-        }
-        
-    } catch (Exception e) {
-        // その他の予期しない故障
-        log.fatal("回避制御中に予期しない故障: {}", e.getMessage());
-        executeFailsafeProtocol();
-    }
-}
-```
-
-回避結果:
-実行戦略: 緊急ブレーキ + 車線変更
-制動距離: 28.5m
-最終停止距離: 前方車両まで 16.7m
-結果: 衝突回避成功 ✅
-
-=== システム故障対応 ===
-🔧 多重故障対応:
-
-故障シナリオ: 複合故障
-1. メインECU故障 (CPU過熱)
-2. LiDAR#1故障 (レーザー出力低下)
-3. 通信システム遅延 (ネットワーク輻輳)
-
-故障対応シーケンス:
-```
-14:40:15.123 - メインECU温度異常検知 (85°C)
-14:40:15.145 - 処理能力低下開始
-14:40:15.234 - セーフティECUが制御権取得
-14:40:15.456 - LiDAR#1故障検知
-14:40:15.567 - 冗長LiDAR#2,#3,#4に切替
-14:40:15.678 - 通信遅延検知 (>100ms)
-14:40:15.789 - ローカル制御モードに移行
-14:40:16.000 - 安全確保後、路肩退避開始
-```
-
-フェイルセーフ制御:
-```java
-@FailsafeController
-public void handleMultipleFailures(List<SystemFailure> failures) {
-    try {
-        // 故障重要度評価
-        FailureSeverity overallSeverity = assessOverallSeverity(failures);
-        
-        // システム能力評価
-        SystemCapability remainingCapability = assessRemainingCapability(failures);
-        
-        if (remainingCapability.canSafelyOperate()) {
-            // 制限モードで継続
-            activateLimitedOperationMode(remainingCapability);
-            findNearestServiceStation();
-            
-        } else if (remainingCapability.canSafelyStop()) {
-            // 安全停止実行
-            executeSafeStoppingProcedure();
-            
-        } else {
-            // 即座停止必要
-            executeImmediateEmergencyStop();
-        }
-        
-        // 故障情報記録
-        logMultipleFailures(failures);
-        
-        // 遠隔監視センターに通報
-        notifyRemoteOperationsCenter(failures, remainingCapability);
-        
-    } catch (FailsafeSystemException e) {
-        // フェイルセーフシステム自体の故障
-        log.fatal("フェイルセーフシステム故障: {}", e.getMessage());
-        
-        // 最終安全措置
-        executeUltimateFailsafe();
-    }
-}
-
-private void executeUltimateFailsafe() {
-    // 全システム停止
-    shutdownAllNonEssentialSystems();
-    
-    // 機械的ブレーキ作動
-    activateMechanicalBrakes();
-    
-    // 乗員保護
-    activateOccupantProtection();
-    
-    // 緊急信号送信
-    sendDistressSignal();
-    
-    log.info("最終安全措置実行完了");
-}
-```
-
-=== 遠隔監視・介入 ===
-📡 リモートオペレーション:
-
-遠隔監視体制:
-監視センター: 24時間365日体制
-監視車両数: 10,000台同時
-オペレーター: 50名 (3交代制)
-平均応答時間: 2.3秒
-
-遠隔介入例:
-車両ID: AV-12345
-発生事象: センサー故障による判断困難
-位置: 首都高速湾岸線
-状況: 工事区間での複雑な交通状況
-
-遠隔介入実行:
-```java
-@RemoteOperation
-public void handleRemoteIntervention(RemoteInterventionRequest request) {
-    try {
-        // 車両状態の詳細取得
-        VehicleStatus status = getDetailedVehicleStatus(request.getVehicleId());
-        
-        // 遠隔監視画面への映像配信
-        VideoStream stream = activateHighResolutionCamera(request.getVehicleId());
-        remoteOperationCenter.displayVehicleView(stream);
-        
-        // オペレーター指示待機
-        while (!request.isCompleted()) {
-            OperatorCommand command = remoteOperationCenter.getNextCommand();
-            
-            switch (command.getType()) {
-                case TAKE_MANUAL_CONTROL:
-                    // 完全遠隔制御
-                    takeRemoteControl(request.getVehicleId());
-                    log.info("車両 {} の遠隔制御開始", request.getVehicleId());
-                    break;
-                    
-                case PROVIDE_GUIDANCE:
-                    // 自動運転への指示提供
-                    provideNavigationGuidance(command.getGuidance());
-                    break;
-                    
-                case SAFE_STOP:
-                    // 安全停止指示
-                    executeSafeStopUnderRemoteGuidance();
-                    break;
-                    
-                case TRANSFER_TO_LOCAL:
-                    // 地域オペレーターに転送
-                    transferToLocalOperator(command.getLocalOperatorId());
-                    break;
-            }
-        }
-        
-    } catch (RemoteConnectionException e) {
-        // 通信切断
-        log.error("遠隔通信切断: {}", e.getMessage());
-        
-        // 自律フォールバック
-        activateAutonomousFallback();
-        
-    } catch (RemoteControlSystemException e) {
-        // 遠隔制御システム故障
-        log.error("遠隔制御システム故障: {}", e.getMessage());
-        
-        // ローカル緊急制御
-        executeLocalEmergencyControl();
-    }
-}
-```
-
-=== 安全性統計 ===
-📊 安全性能指標:
-
-走行実績 (過去12ヶ月):
-総走行距離: 50億km
-総走行時間: 125万時間
-事故件数: 0件 ✅
-インシデント: 23件 (すべて安全に回避)
-
-故障対応実績:
-センサー故障: 145件 → 100%安全処理
-アクチュエータ故障: 67件 → 100%安全処理
-ECU故障: 23件 → 100%安全処理
-通信故障: 234件 → 100%自律制御継続
-
-緊急回避実績:
-衝突回避: 1,234件 → 100%成功
-緊急ブレーキ: 567件 → 100%効果的
-車線変更回避: 345件 → 100%成功
-路肩退避: 123件 → 100%安全実行
-
-人間運転比較:
-事故率: 1/100 (人間運転比)
-重大インシデント率: 1/1000 (人間運転比)
-燃費効率: +35% (最適化運転)
-交通流効率: +25% (協調運転)
-
-システム信頼性:
-MTBF (平均故障間隔): 100,000時間
-MTTR (平均修復時間): 0.5時間
-可用性: 99.999%
-安全度水準: SIL 4 (最高レベル)
-```
-
-**評価ポイント**:
-- 安全クリティカル例外処理
-- 多重故障対応能力
-- リアルタイム制御実装
-- フェイルセーフ設計
-
-
-
-### 課題3: 医療情報統合システム
-**ファイル名**: `MedicalInformationSystem.java`
-
-生命に関わる医療情報を管理するシステムを作成してください。
-
-**要求仕様**:
-- 患者安全優先の例外処理
-- 医療データの完全性保証
-- 緊急時即座アクセス
-- 法的コンプライアンス
-
-**医療機能**:
-- 電子カルテシステム
-- 薬剤投与管理
-- 緊急時情報提供
-- 医療品質管理
-
-**実行例**:
-```
-=== 医療情報統合システム ===
-
-🏥 MediCare Integrated System v15.0
-
-=== 患者安全システム ===
-💊 薬剤安全管理:
-
-患者情報: 田中太郎 (ID: P12345678)
-年齢: 45歳, 男性
-身長: 170cm, 体重: 70kg
-アレルギー: ペニシリン系, 造影剤
-既往歴: 高血圧, 糖尿病
-
-処方例: 感染症治療
-処方医: 山田内科医 (ID: D5678)
-診断: 急性気管支炎
-処方薬: セフェム系抗生物質
-
-薬剤安全チェック:
-```java
-@MedicalSafetySystem
-@CriticalPatientSafety
-public class DrugSafetyManager {
-    
-    public PrescriptionResult prescribeMedication(
-            Patient patient, 
-            Medication medication, 
-            Dosage dosage,
-            Doctor prescriber) {
-        
-        try {
-            // 基本安全性チェック
-            performBasicSafetyChecks(patient, medication, dosage);
-            
-            // アレルギーチェック
-            checkAllergyCompatibility(patient, medication);
-            
-            // 薬剤相互作用チェック  
-            checkDrugInteractions(patient, medication);
-            
-            // 用量適正性チェック
-            validateDosage(patient, medication, dosage);
-            
-            // 処方権限チェック
-            validatePrescriptionAuthority(prescriber, medication);
-            
-            // 保険適用チェック
-            checkInsuranceCoverage(patient, medication);
-            
-            // 処方実行
-            Prescription prescription = createPrescription(patient, medication, dosage, prescriber);
-            
-            // 服薬指導情報生成
-            MedicationGuidance guidance = generateMedicationGuidance(prescription);
-            
-            // 調剤システムに送信
-            pharmacySystem.sendPrescription(prescription);
-            
-            log.info("処方完了: Patient={}, Medication={}", 
-                patient.getId(), medication.getName());
-            
-            return PrescriptionResult.success(prescription, guidance);
-            
-        } catch (AllergyConflictException e) {
-            // アレルギー禁忌
-            log.error("アレルギー禁忌検出: Patient={}, Allergen={}", 
-                patient.getId(), e.getAllergen());
-            
-            // 代替薬検索
-            try {
-                List<Medication> alternatives = findAlternativeMedications(
-                    medication, patient.getAllergies());
-                    
-                if (!alternatives.isEmpty()) {
-                    MedicationRecommendation recommendation = 
-                        new MedicationRecommendation(alternatives, 
-                            "アレルギー回避のため代替薬を推奨");
-                    
-                    return PrescriptionResult.rejected(e.getMessage(), recommendation);
-                } else {
-                    // 代替薬なし、専門医紹介
-                    SpecialistReferral referral = createSpecialistReferral(
-                        patient, medication, "アレルギー専門医への紹介");
-                    
-                    return PrescriptionResult.requiresSpecialist(e.getMessage(), referral);
-                }
-                
-            } catch (DrugDatabaseException dbe) {
-                // 薬剤DB障害
-                emergencyDrugSafetyProtocol.activate(patient, medication, e);
-                return PrescriptionResult.systemError("薬剤安全性確認システム障害");
-            }
-            
-        } catch (DrugInteractionException e) {
-            // 薬剤相互作用
-            log.warn("薬剤相互作用検出: {}", e.getInteractionDetails());
-            
-            InteractionSeverity severity = e.getSeverity();
-            switch (severity) {
-                case CONTRAINDICATED:
-                    // 絶対禁忌
-                    return PrescriptionResult.rejected(
-                        "重篤な薬剤相互作用のため処方できません: " + e.getMessage());
-                    
-                case MAJOR:
-                    // 重要な相互作用、慎重投与必要
-                    CautiousMonitoring monitoring = createCautiousMonitoring(e);
-                    return PrescriptionResult.requiresMonitoring(
-                        "重要な薬剤相互作用あり。慎重な監視が必要", monitoring);
-                    
-                case MODERATE:
-                    // 中等度相互作用、注意深い観察
-                    PatientEducation education = createInteractionEducation(e);
-                    return PrescriptionResult.requiresEducation(
-                        "薬剤相互作用の可能性あり", education);
-                    
-                default:
-                    // 軽微な相互作用、情報提供のみ
-                    return PrescriptionResult.withWarning(
-                        "軽微な薬剤相互作用の可能性があります", 
-                        createPrescription(patient, medication, dosage, prescriber));
-            }
-            
-        } catch (DosageException e) {
-            // 用量エラー
-            log.error("用量エラー: {}", e.getMessage());
-            
-            DosageRecommendation correction = calculateCorrectDosage(
-                patient, medication, e.getProposedDosage());
-            
-            return PrescriptionResult.dosageCorrection(
-                "用量調整が必要: " + e.getMessage(), correction);
-                
-        } catch (PrescriptionAuthorityException e) {
-            // 処方権限なし
-            log.error("処方権限エラー: Doctor={}, Medication={}", 
-                prescriber.getId(), medication.getName());
-            
-            // 適切な処方権限を持つ医師の紹介
-            List<Doctor> authorizedDoctors = findAuthorizedDoctors(medication);
-            
-            return PrescriptionResult.requiresAuthorization(
-                "処方権限が必要: " + e.getMessage(), authorizedDoctors);
-                
-        } catch (PatientNotFoundException e) {
-            // 患者情報なし
-            log.error("患者情報不明: {}", e.getPatientId());
-            
-            // 緊急時処理判定
-            if (isEmergencyCase()) {
-                EmergencyTreatmentProtocol emergency = activateEmergencyProtocol();
-                return PrescriptionResult.emergencyTreatment(
-                    "緊急時処理として最小限の処方を実行", emergency);
-            } else {
-                return PrescriptionResult.failed("患者情報の確認が必要");
-            }
-            
-        } catch (SystemUnavailableException e) {
-            // システム障害
-            log.error("医療システム障害: {}", e.getMessage());
-            
-            // 緊急時フォールバック
-            try {
-                OfflineEmergencySystem offline = activateOfflineMode();
-                EmergencyPrescription emergencyRx = offline.createEmergencyPrescription(
-                    patient, medication, dosage, prescriber);
-                
-                // 手動での安全確認要求
-                ManualSafetyCheck manual = requestManualSafetyCheck(emergencyRx);
-                
-                return PrescriptionResult.manualVerificationRequired(
-                    "システム障害のため手動確認が必要", manual);
-                    
-            } catch (OfflineSystemException ose) {
-                // オフラインシステムも障害
-                log.fatal("全医療システム障害: {}", ose.getMessage());
-                
-                // 紙ベース緊急処方
-                PaperBasedPrescription paper = createPaperPrescription(
-                    patient, medication, dosage, prescriber);
-                
-                return PrescriptionResult.paperFallback(
-                    "システム完全障害、紙ベース処方に移行", paper);
-            }
-            
-        } catch (Exception e) {
-            // 予期しない例外
-            log.fatal("予期しない医療システムエラー: {}", e.getMessage());
-            
-            // 患者安全最優先の緊急対応
-            emergencyPatientSafetyProtocol.activate();
-            
-            // 医療安全委員会への緊急報告
-            medicalSafetyCommittee.reportCriticalIncident(patient, medication, e);
-            
-            return PrescriptionResult.criticalError(
-                "重大なシステムエラーのため医療安全委員会による確認が必要");
-        }
-    }
-}
-```
-
-処方結果:
-⚠️ 薬剤相互作用検出
-相互作用: セフェム系 ↔ ワルファリン
-重要度: MODERATE (中等度)
-対応: 患者教育 + 定期検査
-
-推奨事項:
-- PT-INR値監視 (週1回)
-- 出血症状の確認
-- 服薬間隔の調整 (2時間以上)
-
-=== 緊急医療対応 ===
-🚨 救急医療システム:
-
-緊急事例: 心筋梗塞疑い
-患者: 佐藤花子 (ID: P87654321)
-搬送時刻: 14:30:45
-症状: 胸痛、冷汗、呼吸困難
-
-緊急情報アクセス:
-```java
-@EmergencyMedicalSystem
-public class EmergencyResponseSystem {
-    
-    public EmergencyTreatmentPlan handleEmergencyPatient(
-            Patient patient, 
-            EmergencySymptoms symptoms, 
-            AmbulanceInfo ambulance) {
-        
-        try {
-            // 緊急度判定 (Triage)
-            TriageLevel triage = assessTriageLevel(symptoms);
-            
-            // 過去病歴の緊急取得
-            MedicalHistory history = getMedicalHistory(patient.getId());
-            
-            // 緊急治療計画策定
-            EmergencyTreatmentPlan plan = createEmergencyPlan(patient, symptoms, history, triage);
-            
-            // 医療チーム召集
-            MedicalTeam team = assembleMedicalTeam(triage, plan);
-            
-            // 医療リソース確保
-            MedicalResources resources = reserveEmergencyResources(plan);
-            
-            // 治療開始
-            initiateEmergencyTreatment(plan, team, resources);
-            
-            return plan;
-            
-        } catch (PatientHistoryUnavailableException e) {
-            // 病歴不明
-            log.warn("患者病歴不明、症状ベース治療: {}", e.getMessage());
-            
-            // 症状ベース緊急治療
-            SymptomBasedTreatment treatment = createSymptomBasedTreatment(symptoms);
-            
-            // 並行して病歴調査
-            initiateParallelHistoryInvestigation(patient);
-            
-            return EmergencyTreatmentPlan.fromSymptoms(treatment);
-            
-        } catch (MedicalTeamUnavailableException e) {
-            // 医療チーム不足
-            log.error("医療チーム不足: {}", e.getMessage());
-            
-            try {
-                // 他病院への転送検討
-                HospitalTransfer transfer = findAlternativeHospital(triage);
-                
-                if (transfer != null) {
-                    // 転送実行
-                    initiatePatientTransfer(patient, transfer);
-                    return EmergencyTreatmentPlan.transfer(transfer);
-                } else {
-                    // 転送先なし、限定的治療
-                    LimitedTreatment limited = createLimitedTreatment(symptoms);
-                    return EmergencyTreatmentPlan.limited(limited);
-                }
-                
-            } catch (TransferSystemException tse) {
-                // 転送システム障害
-                log.fatal("転送システム障害: {}", tse.getMessage());
-                
-                // 最小限の生命維持治療
-                LifeSupportTreatment lifeSupport = activateLifeSupport(patient);
-                return EmergencyTreatmentPlan.lifeSupport(lifeSupport);
-            }
-            
-        } catch (MedicalResourcesException e) {
-            // 医療リソース不足
-            log.error("医療リソース不足: {}", e.getMessage());
-            
-            // リソース優先度調整
-            ResourceReallocation reallocation = reallocateResources(e.getRequiredResources());
-            
-            if (reallocation.isSuccessful()) {
-                // リソース確保成功
-                return createEmergencyPlan(patient, symptoms, 
-                    getMedicalHistory(patient.getId()), triage);
-            } else {
-                // 代替治療法検討
-                AlternativeTreatment alternative = findAlternativeTreatment(symptoms);
-                return EmergencyTreatmentPlan.alternative(alternative);
-            }
-            
-        } catch (CriticalSystemFailureException e) {
-            // 重要システム障害
-            log.fatal("重要医療システム障害: {}", e.getMessage());
-            
-            // 完全手動モード
-            ManualEmergencyMode manual = activateManualEmergencyMode();
-            
-            // 経験豊富な医師による判断
-            SeniorPhysicianConsultation consultation = 
-                requestSeniorPhysicianEmergencyConsultation(patient, symptoms);
-            
-            return EmergencyTreatmentPlan.manual(consultation);
-            
-        } catch (Exception e) {
-            // その他予期しない例外
-            log.fatal("緊急医療システム予期しないエラー: {}", e.getMessage());
-            
-            // 最終安全措置
-            UltimateSafetyProtocol safety = activateUltimateSafetyProtocol();
-            
-            // 生命維持最優先
-            LifeMaintenanceProtocol lifeMaintenance = prioritizeLifeMaintenance(patient);
-            
-            return EmergencyTreatmentPlan.ultimateSafety(lifeMaintenance);
-        }
-    }
-}
-```
-
-緊急対応結果:
-トリアージ: レベル1 (最優先)
-対応時間: 3分12秒
-治療チーム: 循環器専門医、看護師4名
-使用リソース: CCU、心電図、血液検査
-
-=== 医療品質管理 ===
-📋 継続的品質改善:
-
-品質指標監視:
-患者安全: インシデント 0件/月
-医療過誤: 0件/年
-感染制御: 院内感染 0.02%
-患者満足: 4.8/5.0
-
-医療安全システム:
-```java
-@MedicalQualitySystem
-public class MedicalQualityManager {
-    
-    public void monitorMedicalQuality() {
-        try {
-            // 医療品質指標の収集
-            QualityMetrics metrics = collectQualityMetrics();
-            
-            // 異常値の検出
-            List<QualityAlert> alerts = detectQualityAnomalies(metrics);
-            
-            for (QualityAlert alert : alerts) {
-                handleQualityAlert(alert);
-            }
-            
-            // 品質改善提案の生成
-            List<QualityImprovement> improvements = generateImprovementSuggestions(metrics);
-            
-            // 医療安全委員会への報告
-            reportToMedicalSafetyCommittee(metrics, alerts, improvements);
-            
-        } catch (QualityDataException e) {
-            log.error("品質データ収集エラー: {}", e.getMessage());
-            
-            // 手動品質確認への切替
-            activateManualQualityAssurance();
-            
-        } catch (Exception e) {
-            log.fatal("品質管理システムエラー: {}", e.getMessage());
-            
-            // 緊急品質管理プロトコル
-            activateEmergencyQualityProtocol();
-        }
-    }
-    
-    private void handleQualityAlert(QualityAlert alert) {
-        switch (alert.getSeverity()) {
-            case CRITICAL:
-                // 即座の医療チーム通知
-                emergencyNotifyMedicalTeam(alert);
-                
-                // 関連患者の緊急チェック
-                performEmergencyPatientCheck(alert.getAffectedPatients());
-                break;
-                
-            case HIGH:
-                // 医療安全委員会通知
-                notifyMedicalSafetyCommittee(alert);
-                
-                // 改善計画の即座策定
-                createImmediateImprovementPlan(alert);
-                break;
-                
-            case MEDIUM:
-                // 部門責任者通知
-                notifyDepartmentHead(alert);
-                break;
-        }
-    }
-}
-```
+=== 多言語翻訳システム ===
+
+🌍 UniversalTranslator Pro v4.0
+
+=== 辞書システム ===
+📚 多言語辞書管理:
+
+対応言語: 25言語
+- 主要言語: 英語, 日本語, 中国語, 韓国語
+- ヨーロッパ: フランス語, ドイツ語, スペイン語, イタリア語
+- その他: アラビア語, ヒンディー語, ロシア語, ポルトガル語
+
+辞書統計:
+総エントリ数: 15,000,000語
+- 一般辞書: 8,500,000語
+- 専門辞書: 3,200,000語
+- 俗語辞書: 1,800,000語
+- 固有名詞: 1,500,000語
+
+データ構造:
+基本辞書: HashMap<String, TranslationEntry>
+文脈辞書: TreeMap<String, Map<String, Translation>>
+フレーズ辞書: HashMap<String, PhraseTranslation>
+専門用語: HashMap<Domain, HashMap<String, TermTranslation>>
+
+メモリ使用量:
+辞書データ: 2.4GB
+インデックス: 890MB
+キャッシュ: 512MB
+総使用量: 3.8GB
+
+=== 翻訳エンジン ===
+🔄 高精度翻訳処理:
+
+翻訳例1: 日本語 → 英語
+入力: "機械学習は人工知能の一分野です。"
+
+処理工程:
+1. 形態素解析:
+   機械/名詞 学習/名詞 は/助詞 人工/名詞 知能/名詞 の/助詞 一/数詞 分野/名詞 です/助動詞
+
+2. 構文解析:
+   主語: 機械学習
+   述語: です
+   目的語: 一分野
+   修飾語: 人工知能の
+
+3. 単語翻訳:
+   機械学習 → machine learning (技術用語辞書)
+   人工知能 → artificial intelligence (専門用語)
+   分野 → field (一般辞書)
+
+4. 文法変換:
+   SOV → SVO構造変換
+   助詞処理: の → of
+   語順調整: 修飾関係保持
+
+5. 最終翻訳:
+   "Machine learning is a field of artificial intelligence."
+
+翻訳精度:
+BLEU スコア: 0.847 (高精度)
+文法正確性: 96%
+語彙適切性: 94%
+自然さ: 89%
+
+=== 文脈考慮翻訳 ===
+🧠 コンテキスト解析:
+
+多義語翻訳例:
+入力: "銀行の近くの川の銀行で休憩した。"
+
+文脈解析:
+1. "銀行" 候補:
+   - bank (金融機関)
+   - bank (川岸)
+
+2. 文脈手がかり:
+   - "近く" → 地理的関係
+   - "川の" → 川に関連
+   - "休憩" → 場所としての機能
+
+3. 文脈スコア計算:
+   bank(金融) + 川: スコア 0.2
+   bank(川岸) + 川: スコア 0.9
+
+4. 最適選択:
+   1番目の"銀行" → bank (金融機関)
+   2番目の"銀行" → bank (river bank)
+
+最終翻訳:
+"I took a break on the bank of the river near the bank."
+
+文脈辞書活用:
+文脈パターン数: 2,500,000
+平均解決率: 87%
+曖昧性除去: 92%成功
+
+=== 専門分野翻訳 ===
+🔬 ドメイン特化翻訳:
+
+専門分野辞書:
+医学: 450,000用語
+法律: 320,000用語
+工学: 280,000用語
+IT: 380,000用語
+金融: 220,000用語
+
+医学翻訳例:
+入力: "患者は急性心筋梗塞の症状を示している。"
+
+専門用語解析:
+- 急性心筋梗塞: acute myocardial infarction (正確な医学用語)
+- 症状: symptoms (一般用語だが医学文脈で最適化)
+- 示している: showing/presenting (医学文脈でのより適切な表現選択)
+
+翻訳結果:
+"The patient is presenting symptoms of acute myocardial infarction."
+
+専門性評価:
+医学用語正確性: 98%
+専門表現適切性: 95%
+医学文献標準: 準拠
+
+IT翻訳例:
+入力: "このAPIはRESTfulアーキテクチャに基づいています。"
+
+技術用語処理:
+- API: API (借用語として維持)
+- RESTful: RESTful (技術用語)
+- アーキテクチャ: architecture (技術分野での標準翻訳)
+
+翻訳結果:
+"This API is based on RESTful architecture."
+
+=== フレーズ翻訳 ===
+💬 慣用表現・フレーズ処理:
+
+フレーズ辞書:
+慣用句: 45,000表現
+ことわざ: 12,000表現
+定型文: 78,000表現
+コロケーション: 230,000組み合わせ
+
+慣用句翻訳例:
+入力: "彼は猫の手も借りたいほど忙しい。"
+
+フレーズ検出:
+"猫の手も借りたい" → 慣用句として認識
+文字通り翻訳: "want to borrow even a cat's paws"
+慣用句翻訳: "extremely busy" または "swamped with work"
+
+文脈考慮選択:
+前後文脈: ビジネス状況
+適切な表現: "swamped with work"
+
+最終翻訳:
+"He is swamped with work."
+
+コロケーション例:
+入力: "強い雨が降っている。"
+- 強い + 雨: heavy rain (コロケーション辞書)
+- 降る: fall/pour (雨の文脈で pour が自然)
+
+翻訳: "It is pouring with heavy rain."
+
+=== リアルタイム翻訳 ===
+⚡ 高速翻訳処理:
+
+パフォーマンス最適化:
+キャッシュ戦略: LRU キャッシュ (100,000エントリ)
+ヒット率: 78% (よく使われる表現)
+並列処理: 文単位での並列翻訳
+前処理最適化: 形態素解析結果キャッシュ
+
+リアルタイム統計:
+処理速度: 2,340文/秒
+平均レスポンス: 0.15秒/文
+同時翻訳数: 500セッション
+キュー待機時間: 0.02秒
+
+チャット翻訳例:
+[09:30:15] 田中: "プロジェクトの進捗はいかがですか？"
+[09:30:15] Translation: "How is the project progress?"
+[09:30:18] Smith: "We're on track and should finish by Friday."
+[09:30:18] 翻訳: "順調に進んでおり、金曜日までに完了予定です。"
+
+ストリーミング翻訳:
+音声入力 → リアルタイム文字起こし → 即座翻訳
+遅延時間: 0.8秒 (音声→翻訳完了)
+正確性: 92% (音声認識95% × 翻訳97%)
+
+=== 機械学習強化 ===
+🤖 AI による翻訳品質向上:
+
+学習データ:
+並列コーパス: 50億文ペア
+ユーザー修正: 250万件
+専門文書: 180万文書
+Web クロール: 12億文
+
+ニューラル翻訳モデル:
+アーキテクチャ: Transformer (6層)
+パラメータ数: 2.1億個
+学習時間: 240時間 (GPU x 8)
+更新頻度: 週1回
+
+品質改善例:
+従来辞書翻訳:
+"彼は医者になりたがっている。"
+→ "He wants to become a doctor."
+
+ニューラル強化:
+文脈: 若い人について話している
+→ "He wants to become a doctor." (基本)
+→ "He aspires to be a doctor." (より自然)
+
+BLEU スコア改善:
+辞書ベース: 0.672
+ニューラル強化: 0.847
+改善率: +26%
+
+=== 翻訳学習機能 ===
+📈 適応型翻訳システム:
+
+ユーザー学習:
+修正フィードバック: 蓄積・学習
+専門用語追加: ユーザー辞書
+翻訳パターン: 個人最適化
+
+学習例:
+ユーザー修正:
+システム翻訳: "meeting"
+ユーザー修正: "会議" → "ミーティング"
+学習効果: 同ユーザーの今後の翻訳で "meeting" = "ミーティング" を優先
+
+ドメイン適応:
+ユーザー特定分野 (例: 医学)
+専門用語使用頻度学習
+文体傾向学習 (論文調 vs 会話調)
+
+企業用語集連携:
+社内用語: 自動学習・適用
+ブランド名: 固有の翻訳維持
+表記統一: 企業スタイルガイド準拠
+
+=== 多言語同時対応 ===
+🌐 マルチリンガル処理:
+
+言語検出:
+自動言語識別: 99.3%精度
+混在言語対応: 文単位で言語切り替え
+不明語処理: 音写・借用語として処理
+
+多言語翻訳例:
+入力 (日英混在): "このAPIのresponse timeは約100msです。"
+
+言語検出結果:
+"この": 日本語
+"API": 英語 (借用語)
+"の": 日本語
+"response time": 英語
+"は約": 日本語
+"100ms": 英語 (単位)
+"です": 日本語
+
+統合翻訳:
+→ "The response time of this API is approximately 100ms."
+
+言語ペア対応:
+直接翻訳: 25×24 = 600ペア
+間接翻訳: 英語経由での三角翻訳
+品質: 直接 > 間接 (平均-8% BLEU)
+
+=== 翻訳品質評価 ===
+📊 自動品質チェック:
+
+評価指標:
+BLEU スコア: 機械評価
+人手評価: クラウドワーカー評価
+流暢性: 1-5段階評価
+正確性: 意味保持度評価
+
+品質チェック例:
+翻訳: "彼は走っている。" → "He is running."
+BLEU: 1.0 (完全一致)
+流暢性: 5/5 (完全に自然)
+正確性: 5/5 (意味完全保持)
+
+低品質検出:
+翻訳: "複雑な文章..." → "Complex sentence..." (不完全)
+品質スコア: 2.1/5.0 (低品質)
+自動フラグ: 要人手確認
+
+改善提案:
+システム提案: "Complex sentences require..."
+代替翻訳: 3候補提示
+ユーザー選択: 最適翻訳採用
 
 === システム統計 ===
-📊 医療システム性能:
+📈 運用パフォーマンス:
 
-患者安全指標:
-医療過誤: 0件 (24ヶ月連続)
-薬剤事故: 0件 (システム導入後)
-アレルギー反応: 防止率 100%
-適切な処方: 99.97%
+処理統計 (過去1ヶ月):
+総翻訳数: 45,600,000文
+言語ペア: 78組み合わせ
+ユーザー数: 234,000人
+平均セッション: 15分
 
-システム可用性:
-稼働率: 99.999% (医療特化)
-平均応答時間: 0.8秒
-緊急時応答: 0.2秒
-データ整合性: 100%
+性能指標:
+平均応答時間: 0.15秒
+95%tile応答時間: 0.31秒
+99%tile応答時間: 0.58秒
+可用性: 99.97%
 
-法的コンプライアンス:
-HIPAA準拠: 完全対応
-個人情報保護: 違反 0件
-医療記録保持: 法定期間完全管理
-監査対応: 100%合格
+品質指標:
+平均BLEU: 0.847
+ユーザー満足度: 4.6/5.0
+修正率: 12% (修正が必要な翻訳)
+学習改善率: +15% (月間品質向上)
 
-医療効率:
-診療時間短縮: 35%
-薬剤処方効率: +45%
-検査重複削減: 28%
-医療コスト削減: 22%
+言語別性能:
+英↔日: BLEU 0.923 (最高)
+中↔英: BLEU 0.856
+韓↔日: BLEU 0.798
+独↔英: BLEU 0.834
 
-患者満足度:
-総合満足度: 4.8/5.0
-システム使いやすさ: 4.7/5.0
-情報アクセス性: 4.9/5.0
-安全性信頼度: 5.0/5.0
+リソース使用量:
+メモリ: 3.8GB (辞書) + 2.1GB (モデル)
+CPU: 45% (24コア)
+ストレージ: 450GB (全データ)
+ネットワーク: 1.2Gbps (ピーク時)
 ```
 
 **評価ポイント**:
-- 患者安全最優先の例外処理
-- 医療法規制対応
-- 緊急時システム継続性
-- 医療品質保証
+- Mapの効果的な活用
+- 自然言語処理の理解
+- 機械学習との統合
+- 実用的なシステム設計
+
+
+
+### 課題2: ソーシャルネットワーク分析システム
+**ファイル名**: `SocialNetworkAnalyzer.java`
+
+大規模ソーシャルネットワークを分析するシステムを作成してください。
+
+**要求仕様**:
+- グラフデータの効率的管理
+- 影響力分析アルゴリズム
+- コミュニティ検出
+- リアルタイム分析
+
+**分析機能**:
+- 中心性指標の計算
+- 情報拡散シミュレーション
+- トレンド分析
+- 異常検知
+
+**実行例**:
+```
+=== ソーシャルネットワーク分析システム ===
+
+📱 SocialGraph Analytics v5.0
+
+=== ネットワーク構成 ===
+🌐 大規模グラフ管理:
+
+ネットワーク統計:
+総ユーザー数: 50,000,000人
+総フォロー関係: 2,500,000,000関係
+平均次数: 50.0 (フォロー/フォロワー)
+最大次数: 125,000 (有名人アカウント)
+
+データ構造:
+ユーザー管理: HashMap<UserID, UserProfile>
+フォロー関係: HashMap<UserID, Set<UserID>>
+逆引きマップ: HashMap<UserID, Set<UserID>> (フォロワー)
+重み付きエッジ: HashMap<EdgeID, InteractionWeight>
+
+グラフ特性:
+直径: 6.2 (6次の隔たり理論)
+クラスタリング係数: 0.23
+密度: 0.000001 (スパースグラフ)
+コンポーネント数: 1 (巨大連結成分)
+
+メモリ最適化:
+ユーザーデータ: 4.2GB
+関係データ: 32.5GB (圧縮後)
+インデックス: 8.7GB
+総使用量: 45.4GB
+
+=== 中心性分析 ===
+📊 影響力指標計算:
+
+PageRank計算:
+アルゴリズム: 分散PageRank
+反復回数: 100回 (収束)
+ダンピング係数: 0.85
+計算時間: 45分 (並列処理)
+
+PageRank上位ランキング:
+1. @techguru (PR: 0.0045): テクノロジー評論家
+2. @newscaster (PR: 0.0041): ニュースアンカー  
+3. @popstar_jp (PR: 0.0038): ポップシンガー
+4. @comedian_a (PR: 0.0035): コメディアン
+5. @athlete_runner (PR: 0.0033): マラソン選手
+
+中心性指標比較:
+次数中心性 (単純フォロワー数):
+@popstar_jp: 125,000フォロワー (1位)
+
+PageRank (影響力):
+@techguru: 高エンゲージメント (1位)
+
+媒介中心性 (橋渡し役):
+@journalist_b: 異分野間の情報仲介 (1位)
+
+近接中心性 (情報到達速度):
+@news_bot: 自動投稿による高速拡散 (1位)
+
+固有ベクトル中心性:
+影響力のある人からのフォローを重視
+結果: PageRankと87%相関
+
+=== コミュニティ検出 ===
+👥 グループ分析:
+
+クラスタリングアルゴリズム:
+Louvain法: モジュラリティ最大化
+Leiden法: 高精度コミュニティ検出
+Label Propagation: 高速処理
+
+検出結果:
+総コミュニティ数: 15,847個
+最大コミュニティ: 2,340,000人 (一般ユーザー)
+平均サイズ: 3,156人
+モジュラリティ: 0.67 (良好な分離)
+
+主要コミュニティ:
+1. テクノロジー (1,890,000人):
+   - キーワード: AI, プログラミング, スタートアップ
+   - 中心人物: @techguru, @ai_researcher
+   - 特徴: 高エンゲージメント、情報共有活発
+
+2. エンターテイメント (2,340,000人):
+   - キーワード: 音楽, 映画, ドラマ
+   - 中心人物: @popstar_jp, @actor_famous
+   - 特徴: 拡散力強い、トレンド発信源
+
+3. スポーツ (1,567,000人):
+   - キーワード: サッカー, 野球, オリンピック
+   - 中心人物: @athlete_runner, @coach_pro
+   - 特徴: イベント連動、季節性あり
+
+コミュニティ重複:
+単一所属: 78% (明確な所属)
+複数所属: 22% (橋渡し役)
+最大重複数: 5コミュニティ
+
+=== 情報拡散分析 ===
+🔄 バイラル伝播モデル:
+
+拡散モデル:
+SIR モデル (感染症モデル応用):
+- S: Susceptible (感受性)
+- I: Infected (感染・共有済み)
+- R: Recovered (免疫・無関心)
+
+SIR パラメータ:
+感染率 β: 0.03 (3%が共有)
+回復率 γ: 0.1 (10日で関心失う)
+基本再生産数 R0: 1.8
+
+バイラル投稿例:
+投稿: "新技術発表！革命的なAIアルゴリズム"
+初期投稿者: @techguru (フォロワー 89,000)
+
+拡散シミュレーション:
+Day 0: 1投稿 (初期)
+Day 1: 267共有 (直接フォロワー)
+Day 2: 3,456共有 (2次拡散)
+Day 3: 45,678共有 (3次拡散)
+Day 7: 234,567共有 (ピーク)
+Day 14: 189,234共有 (収束)
+
+影響要因分析:
+コンテンツ要因: 技術性 (+30%)
+投稿者要因: 権威性 (+45%)
+タイミング要因: 平日昼間 (+15%)
+ネットワーク要因: コミュニティ密度 (+25%)
+
+拡散経路分析:
+主要経路1: テクノロジーコミュニティ (67%)
+主要経路2: ビジネスコミュニティ (23%)
+クロスオーバー: エンタメ→テック (10%)
+
+=== インフルエンサー分析 ===
+⭐ 影響力詳細分析:
+
+インフルエンサー分類:
+メガインフルエンサー: フォロワー100万+
+マクロインフルエンサー: フォロワー10-100万
+マイクロインフルエンサー: フォロワー1-10万
+ナノインフルエンサー: フォロワー1000-1万
+
+エンゲージメント分析:
+@techguru:
+- フォロワー数: 89,000
+- 平均いいね: 2,340 (エンゲージメント率: 2.6%)
+- 平均リツイート: 456
+- 平均コメント: 234
+- エンゲージメント品質: 高 (有意義な議論)
+
+@popstar_jp:
+- フォロワー数: 1,250,000
+- 平均いいね: 15,600 (エンゲージメント率: 1.2%)
+- 平均リツイート: 3,400
+- 平均コメント: 890
+- エンゲージメント品質: 中 (感情的反応多)
+
+影響力スコア算出:
+算出式: (フォロワー数 × 0.3) + (エンゲージメント率 × 0.4) + 
+        (拡散力 × 0.2) + (権威性 × 0.1)
+
+トップ影響力ランキング:
+1. @techguru: スコア 87.4
+2. @newscaster: スコア 85.1  
+3. @economist_dr: スコア 82.7
+4. @popstar_jp: スコア 78.9
+5. @athlete_runner: スコア 76.3
+
+=== トレンド分析 ===
+📈 リアルタイムトレンド検出:
+
+トレンド検出アルゴリズム:
+時系列分析: 投稿頻度の急激な変化
+異常検知: 統計的外れ値検出
+自然言語処理: キーワード抽出・分析
+感情分析: ポジティブ/ネガティブ判定
+
+現在のトレンド (リアルタイム):
+1. #新技術発表 (急上昇 +340%)
+   - 投稿数: 45,678件/時間
+   - 感情: ポジティブ 78%
+   - 主要コミュニティ: テクノロジー
+
+2. #映画レビュー (安定継続 +15%)
+   - 投稿数: 23,456件/時間
+   - 感情: 中立 45%, ポジティブ 35%
+   - 主要コミュニティ: エンターテイメント
+
+3. #経済ニュース (緊急上昇 +567%)
+   - 投稿数: 67,890件/時間
+   - 感情: ネガティブ 62%
+   - 主要コミュニティ: ビジネス, 政治
+
+トレンド予測:
+機械学習モデル: LSTM + Transformer
+予測精度: 76% (6時間先)
+特徴量: 投稿数, エンゲージメント, 外部イベント
+
+予測結果 (次6時間):
+#新技術発表: ピーク維持 → 緩やか減少
+#経済ニュース: 継続上昇 → 政府発表待ち
+#スポーツ結果: 新規上昇 → 今夜の試合
+
+=== 異常検知 ===
+🚨 不正・異常行動検出:
+
+異常パターン:
+1. ボットアカウント:
+   - 異常な投稿パターン (毎時正確に投稿)
+   - コンテンツ類似性 (99%一致投稿)
+   - フォロー行動異常 (1日1000フォロー)
+
+2. 情報操作:
+   - 協調的非真正行動
+   - 同時多数アカウントでの同一投稿
+   - 人工的なトレンド操作
+
+3. スパム行動:
+   - 無関係リプライ大量送信
+   - 商用リンク多数投稿
+   - ハッシュタグ乱用
+
+検出例:
+疑惑アカウント群: 1,234アカウント
+検出理由: 15分以内に同一投稿を共有
+内容: 特定製品の宣伝
+判定: 協調的スパム行動
+
+対応アクション:
+レベル1: 警告表示
+レベル2: 投稿制限
+レベル3: アカウント一時停止
+レベル4: 永久停止
+
+検出精度:
+真陽性率: 94% (実際の不正を正しく検出)
+偽陽性率: 3% (正常行動を誤検出)
+処理速度: 23,456アカウント/秒
+
+=== ネットワーク進化分析 ===
+📅 時系列ネットワーク分析:
+
+成長パターン:
+ユーザー増加: 指数関数的 → 線形 → 飽和
+関係増加: べき乗則 (優先的結合)
+コミュニティ: 分裂・統合の繰り返し
+
+時系列統計 (過去5年):
+2020: 5M ユーザー, 125M 関係
+2021: 12M ユーザー, 480M 関係  
+2022: 25M ユーザー, 1.2B 関係
+2023: 40M ユーザー, 2.0B 関係
+2024: 50M ユーザー, 2.5B 関係
+
+成長モデル:
+バラバシ・アルバート モデル:
+新ノード接続確率 ∝ 既存ノードの次数
+結果: スケールフリーネットワーク
+冪指数: -2.3 (理論値 -3 に近似)
+
+ネットワーク堅牢性:
+ランダム削除: 50%削除でも連結性維持
+標的攻撃: 上位1%削除で分裂
+臨界閾値: 2.4% (ハブノード削除)
+
+=== リアルタイム分析 ===
+⚡ ストリーミング分析:
+
+データストリーム:
+投稿ストリーム: 45,678投稿/秒
+フォローストリーム: 2,340フォロー/秒
+いいねストリーム: 234,567いいね/秒
+
+リアルタイム処理:
+ウィンドウサイズ: 5分間
+更新頻度: 30秒
+レイテンシ: 2.3秒 (データ受信→結果表示)
+
+ダッシュボード表示:
+現在のアクティブユーザー: 2,340,000人
+リアルタイム投稿数: 45,678/分
+トレンドワード: #新技術発表, #映画レビュー
+異常検知アラート: 0件
+
+ストリーム分析例:
+時刻: 14:30:00
+検出: 投稿急増 (+234% from baseline)
+キーワード: "地震", "安全確認"
+判定: 緊急事態発生の可能性
+アクション: 関連当局に自動通知
+
+=== システム性能 ===
+📊 分析性能統計:
+
+計算性能:
+PageRank計算: 45分 (5,000万ノード)
+コミュニティ検出: 1.2時間
+中心性指標: 15分 (並列計算)
+異常検知: リアルタイム (2.3秒)
+
+メモリ使用量:
+グラフデータ: 45.4GB
+計算バッファ: 32.1GB
+結果キャッシュ: 12.7GB
+総使用量: 90.2GB
+
+スケーラビリティ:
+最大ノード数: 1億ノード (検証済み)
+最大エッジ数: 100億エッジ
+処理時間: O(E log V) (効率的)
+メモリ要件: O(V + E) (線形)
+
+可用性:
+稼働率: 99.95%
+平均復旧時間: 3.2分
+バックアップ頻度: 1時間
+災害復旧: 15分
+```
+
+**評価ポイント**:
+- グラフアルゴリズムの実装
+- 大規模データの効率的処理
+- 社会ネットワーク理論の理解
+- リアルタイム分析の実現
+
+
+
+### 課題3: 推薦システムエンジン
+**ファイル名**: `RecommendationEngine.java`
+
+高度な推薦アルゴリズムを実装したシステムを作成してください。
+
+**要求仕様**:
+- 協調フィルタリング
+- コンテンツベース推薦
+- ハイブリッド推薦
+- リアルタイム学習
+
+**推薦機能**:
+- パーソナライゼーション
+- セレンディピティ確保
+- 多様性最適化
+- 説明可能性
+
+**実行例**:
+```
+=== 推薦システムエンジン ===
+
+🎯 SmartRecommender AI v6.0
+
+=== ユーザー・アイテム管理 ===
+📊 大規模データ管理:
+
+システム規模:
+ユーザー数: 25,000,000人
+アイテム数: 5,000,000個
+評価データ: 2.5億件
+行動ログ: 500億イベント
+
+データ構造:
+ユーザープロファイル: HashMap<UserID, UserProfile>
+アイテム特徴: HashMap<ItemID, ItemFeatures>
+評価マトリックス: SparseMatrix<UserID, ItemID, Rating>
+行動履歴: HashMap<UserID, List<UserAction>>
+
+スパース性:
+評価密度: 0.002% (非常にスパース)
+アクティブユーザー: 65% (月1回以上活動)
+ロングテール: 80%のアイテムが低頻度
+
+メモリ最適化:
+ユーザーデータ: 8.9GB
+アイテムデータ: 12.4GB
+評価データ: 45.7GB (圧縮後)
+総使用量: 67.0GB
+
+=== 協調フィルタリング ===
+🤝 ユーザー・アイテム協調:
+
+Matrix Factorization:
+アルゴリズム: Alternating Least Squares (ALS)
+潜在因子数: 128次元
+正則化パラメータ: λ = 0.01
+反復回数: 25回
+
+性能指標:
+RMSE: 0.847 (5段階評価)
+MAE: 0.623
+Precision@10: 0.234
+Recall@10: 0.156
+F1-Score: 0.189
+
+ユーザーベース協調フィルタリング:
+類似度計算: ピアソン相関係数
+近傍ユーザー数: 50人
+計算例:
+
+ユーザー12345の推薦:
+類似ユーザートップ5:
+1. ユーザー67890: 類似度 0.87
+2. ユーザー54321: 類似度 0.84
+3. ユーザー98765: 類似度 0.81
+4. ユーザー13579: 類似度 0.79
+5. ユーザー24680: 類似度 0.77
+
+推薦アイテム生成:
+未評価アイテムから、類似ユーザーが
+高評価したアイテムを重み付き平均
+
+推薦結果:
+1. アイテムA: 予測評価 4.3
+2. アイテムB: 予測評価 4.1  
+3. アイテムC: 予測評価 4.0
+4. アイテムD: 予測評価 3.9
+5. アイテムE: 予測評価 3.8
+
+アイテムベース協調フィルタリング:
+アイテム間類似度: コサイン類似度
+計算効率: 事前計算 + インクリメンタル更新
+更新頻度: 6時間毎
+
+=== コンテンツベース推薦 ===
+📝 特徴量ベース推薦:
+
+アイテム特徴量:
+映画の例:
+- ジャンル: アクション, コメディ, ドラマ (One-hot)
+- 出演者: 俳優ID (Multi-hot)
+- 監督: 監督ID
+- 公開年: 正規化数値
+- 評価: 平均評価, 評価数
+- キーワード: TF-IDF ベクトル (1000次元)
+
+ユーザープロファイル構築:
+視聴履歴から特徴量の重み付き平均
+重み: 評価値 × 時間減衰 × 視聴完了率
+
+例: ユーザー12345のプロファイル
+- アクション: 0.78 (高い嗜好)
+- コメディ: 0.45 (中程度)
+- ドラマ: 0.23 (低い嗜好)
+- 好きな俳優: [俳優A: 0.89, 俳優B: 0.67]
+- 好きな監督: [監督X: 0.76, 監督Y: 0.54]
+
+推薦計算:
+コサイン類似度(ユーザープロファイル, アイテム特徴)
+
+推薦結果:
+1. "アクション映画Z": 類似度 0.92
+2. "俳優Aの新作": 類似度 0.88
+3. "監督Xのコメディ": 類似度 0.84
+
+特徴重要度分析:
+ジャンル: 35%の影響力
+出演者: 28%の影響力
+監督: 22%の影響力
+その他: 15%の影響力
+
+=== ハイブリッド推薦 ===
+🔀 複数手法統合:
+
+統合戦略:
+1. 加重結合:
+   最終スコア = 0.4×協調 + 0.3×コンテンツ + 0.2×深層学習 + 0.1×人気度
+
+2. 切り替え:
+   新規ユーザー → コンテンツベース
+   十分なデータ → 協調フィルタリング
+   コールドスタート → 人気度ベース
+
+3. 混合:
+   各手法から独立に推薦生成 → 多様性確保
+
+推薦例 (ユーザー12345):
+協調フィルタリング推薦:
+1. 映画A (スコア: 4.3)
+2. 映画B (スコア: 4.1)
+3. 映画C (スコア: 4.0)
+
+コンテンツベース推薦:
+1. 映画D (スコア: 0.92)
+2. 映画E (スコア: 0.88)
+3. 映画A (スコア: 0.84)
+
+統合後最終推薦:
+1. 映画A: 統合スコア 8.94 (協調+コンテンツ高評価)
+2. 映画F: 統合スコア 7.23 (深層学習推薦)
+3. 映画B: 統合スコア 6.87
+4. 映画D: 統合スコア 6.45
+5. 映画G: 統合スコア 6.12
+
+=== 深層学習推薦 ===
+🧠 ニューラル協調フィルタリング:
+
+Neural Collaborative Filtering (NCF):
+アーキテクチャ:
+- 埋め込み層: ユーザー・アイテム埋め込み (128次元)
+- MLP: 4層全結合 [256, 128, 64, 32]
+- 出力層: sigmoid (0-1スコア)
+
+Wide & Deep モデル:
+Wide部分: 特徴量クロス (記憶)
+Deep部分: 深層ニューラル (汎化)
+
+AutoEncoder 推薦:
+入力: ユーザーの評価ベクトル (スパース)
+出力: 復元された評価ベクトル (欠損値予測)
+中間層: 256 → 128 → 64 → 128 → 256
+
+学習統計:
+訓練データ: 2億評価
+検証データ: 2500万評価
+エポック数: 50
+バッチサイズ: 1024
+学習時間: 48時間 (GPU × 8)
+
+性能改善:
+従来協調フィルタリング: RMSE 0.847
+深層学習モデル: RMSE 0.723
+改善率: 14.6%
+
+=== リアルタイム学習 ===
+⚡ オンライン学習システム:
+
+ストリーミング更新:
+新規評価: リアルタイム反映
+モデル更新: ミニバッチ学習
+更新頻度: 10分毎
+レイテンシ: 50ms (推薦生成)
+
+インクリメンタル学習:
+Matrix Factorization: 新規ユーザー/アイテム追加
+特徴量更新: 新規データでの重み調整
+モデル再学習: 週1回フル更新
+
+リアルタイム例:
+14:30:00 - ユーザー12345が映画Xを5つ星評価
+14:30:01 - ユーザープロファイル更新
+14:30:02 - 類似ユーザー再計算
+14:30:03 - 推薦リスト更新
+14:30:04 - 推薦表示 (4秒後に反映)
+
+行動学習:
+クリック: +0.1ポイント
+視聴開始: +0.3ポイント  
+視聴完了: +0.8ポイント
+評価入力: +1.0ポイント
+
+学習効果測定:
+新規推薦精度: 67% → 82% (1週間後)
+クリック率: 2.3% → 3.8%
+視聴完了率: 45% → 58%
+
+=== 多様性・セレンディピティ ===
+🌈 推薦多様性確保:
+
+多様性指標:
+ジャンル多様性: エントロピー計算
+類似度分散: アイテム間平均距離
+カバレッジ: 推薦されるアイテムの割合
+
+多様性最適化:
+MMR (Maximal Marginal Relevance):
+次のアイテム選択 = λ×関連度 - (1-λ)×既選択アイテムとの類似度
+
+推薦結果比較:
+精度重視推薦:
+1. アクション映画A (類似度: 0.95)
+2. アクション映画B (類似度: 0.93)
+3. アクション映画C (類似度: 0.91)
+→ ジャンル多様性: 低
+
+多様性重視推薦:
+1. アクション映画A (類似度: 0.95)
+2. コメディ映画D (類似度: 0.78)
+3. ドラマ映画E (類似度: 0.72)
+→ ジャンル多様性: 高
+
+セレンディピティ測定:
+予期しない発見度 = 1 - ユーザープロファイル類似度
+セレンディピティ推薦: 意図的に異なるジャンル提示
+
+バランス調整:
+精度: 70%
+多様性: 20%
+セレンディピティ: 10%
+
+=== 説明可能な推薦 ===
+💡 推薦理由説明:
+
+説明生成:
+協調フィルタリング:
+"あなたと似た嗜好のユーザーが高く評価しました"
+"この映画を好きな人は○○も好む傾向があります"
+
+コンテンツベース:
+"あなたが好きな俳優Aが出演しています"
+"あなたがよく見るアクション映画です"
+"監督Xの作品をよく視聴されています"
+
+説明例:
+推薦: "映画タイタニック"
+説明: "あなたと91%類似した嗜好のユーザーが★5評価しました。また、あなたが好きなロマンス映画で、これまで視聴した類似作品の平均評価は4.2です。"
+
+信頼度表示:
+推薦精度: 85%
+根拠の強さ: 強 (類似ユーザー多数)
+過去的中率: 78%
+
+ユーザー調査結果:
+説明ありの受入率: 73%
+説明なしの受入率: 45%
+満足度向上: +28%
+
+=== A/Bテスト・評価 ===
+📊 推薦性能評価:
+
+オフライン評価:
+Hold-out法: 80% 訓練, 20% テスト
+Cross-validation: 5-fold
+時系列分割: 過去データで未来予測
+
+評価指標:
+精度指標:
+- RMSE: 0.723 (予測誤差)
+- MAE: 0.534 (平均絶対誤差)
+- Precision@K: 0.245
+- Recall@K: 0.189
+- NDCG@K: 0.678
+
+多様性指標:
+- Intra-list Diversity: 0.456
+- Coverage: 0.234 (全アイテムの23.4%が推薦)
+- Gini Index: 0.345 (推薦分布の偏り)
+
+オンライン評価:
+A/Bテスト設定:
+コントロール群: 従来推薦システム (50%)
+実験群: 新推薦システム (50%)
+期間: 4週間
+対象ユーザー: 100万人
+
+結果:
+クリック率: +15.7% (2.3% → 2.7%)
+視聴率: +12.4% (45% → 51%)
+評価入力率: +8.9% (12% → 13%)
+ユーザー満足度: +11.2% (3.8 → 4.2/5.0)
+
+統計的有意性:
+p-value < 0.001 (高度に有意)
+信頼区間: 95%
+効果サイズ: 中程度 (Cohen's d = 0.42)
+
+=== システム性能 ===
+⚡ 処理性能統計:
+
+推薦生成性能:
+平均応答時間: 50ms
+95%tile応答時間: 120ms
+99%tile応答時間: 250ms
+スループット: 50,000 req/sec
+
+メモリ使用量:
+推薦モデル: 67GB
+キャッシュ: 32GB
+インデックス: 24GB
+総使用量: 123GB
+
+スケーラビリティ:
+最大ユーザー数: 1億人 (検証済み)
+最大アイテム数: 1000万個
+最大同時リクエスト: 100,000
+レスポンス時間: 対数的増加
+
+可用性:
+稼働率: 99.99%
+平均復旧時間: 1.2分
+フェイルオーバー: 30秒
+データ損失: 0件
+```
+
+**評価ポイント**:
+- 推薦アルゴリズムの深い理解
+- 機械学習の効果的統合
+- 大規模システムの設計
+- ユーザーエクスペリエンスの考慮
 
 ## 💡 実装のヒント
 
 ### 課題1のヒント
 ```java
-class BankingTransactionManager {
-    @Transactional
-    public TransactionResult executeTransfer(TransferRequest request) {
-        TransactionContext context = createTransactionContext(request);
+class MultilingualTranslationSystem {
+    private Map<LanguagePair, HashMap<String, TranslationEntry>> dictionaries;
+    private Map<String, TreeMap<String, ContextTranslation>> contextDictionaries;
+    private NeuralTranslationModel neuralModel;
+    
+    public Translation translate(String text, Language source, Language target) {
+        // 文分割
+        List<String> sentences = splitSentences(text);
+        List<Translation> translations = new ArrayList<>();
         
-        try (DistributedTransaction dtx = transactionManager.begin()) {
-            // Phase 1: Validation
-            validateTransferRequest(request);
-            
-            // Phase 2: Account Operations
-            debitAccount(request.getFromAccount(), request.getAmount(), dtx);
-            creditAccount(request.getToAccount(), request.getAmount(), dtx);
-            
-            // Phase 3: Fee Processing
-            processTransferFee(request.getFromAccount(), request.getFee(), dtx);
-            
-            // Phase 4: Audit Logging
-            auditLogger.logTransaction(context, TransactionStatus.PENDING);
-            
-            // Phase 5: Commit
-            dtx.commit();
-            
-            auditLogger.logTransaction(context, TransactionStatus.COMPLETED);
-            return TransactionResult.success(context.getTransactionId());
-            
-        } catch (BusinessException e) {
-            return handleBusinessException(e, context);
-        } catch (SystemException e) {
-            return handleSystemException(e, context);
-        } catch (Exception e) {
-            return handleUnexpectedException(e, context);
+        for (String sentence : sentences) {
+            Translation sentenceTranslation = translateSentence(sentence, source, target);
+            translations.add(sentenceTranslation);
         }
+        
+        return combineTranslations(translations);
     }
     
-    private TransactionResult handleBusinessException(BusinessException e, TransactionContext context) {
-        auditLogger.logFailedTransaction(context, e);
+    private Translation translateSentence(String sentence, Language source, Language target) {
+        // 形態素解析
+        List<Morpheme> morphemes = morphologicalAnalysis(sentence, source);
         
-        if (e instanceof InsufficientFundsException) {
-            notificationService.sendInsufficientFundsNotification(context.getFromAccount());
-            return TransactionResult.businessFailure("残高が不足しています");
-        } else if (e instanceof AccountNotFoundException) {
-            securityService.logSuspiciousActivity(context);
-            return TransactionResult.businessFailure("指定された口座が見つかりません");
+        // 文脈解析
+        Context context = analyzeContext(morphemes);
+        
+        // 単語翻訳
+        List<WordTranslation> wordTranslations = new ArrayList<>();
+        for (Morpheme morpheme : morphemes) {
+            WordTranslation translation = translateWord(morpheme, context, source, target);
+            wordTranslations.add(translation);
         }
         
-        return TransactionResult.businessFailure(e.getMessage());
+        // 文法変換
+        List<WordTranslation> reordered = reorderWords(wordTranslations, source, target);
+        
+        // 文生成
+        String result = generateSentence(reordered, target);
+        
+        return new Translation(result, calculateConfidence(wordTranslations));
     }
     
-    private TransactionResult handleSystemException(SystemException e, TransactionContext context) {
-        log.error("System error during transaction: {}", e.getMessage(), e);
+    private WordTranslation translateWord(Morpheme morpheme, Context context, 
+                                        Language source, Language target) {
+        LanguagePair pair = new LanguagePair(source, target);
+        HashMap<String, TranslationEntry> dictionary = dictionaries.get(pair);
         
-        if (e instanceof DatabaseConnectionException) {
-            boolean failoverSuccess = databaseFailoverManager.attemptFailover();
-            if (failoverSuccess) {
-                return retryTransaction(context);
-            }
-        } else if (e instanceof NetworkTimeoutException) {
-            CircuitBreaker circuitBreaker = circuitBreakerManager.getCircuitBreaker("network");
-            if (circuitBreaker.getState() == CircuitBreaker.State.CLOSED) {
-                return retryWithBackoff(context);
+        // 基本辞書検索
+        TranslationEntry entry = dictionary.get(morpheme.getSurface());
+        if (entry == null) {
+            // 語幹検索
+            entry = dictionary.get(morpheme.getBase());
+        }
+        
+        if (entry != null && entry.hasMultipleMeanings()) {
+            // 文脈考慮翻訳
+            return resolveAmbiguity(entry, context);
+        }
+        
+        // ニューラル翻訳にフォールバック
+        return neuralModel.translate(morpheme, context);
+    }
+    
+    private WordTranslation resolveAmbiguity(TranslationEntry entry, Context context) {
+        TreeMap<String, ContextTranslation> contextMap = 
+            contextDictionaries.get(entry.getWord());
+        
+        double bestScore = 0;
+        ContextTranslation bestTranslation = null;
+        
+        for (ContextTranslation candidate : contextMap.values()) {
+            double score = calculateContextSimilarity(candidate.getContext(), context);
+            if (score > bestScore) {
+                bestScore = score;
+                bestTranslation = candidate;
             }
         }
         
-        return TransactionResult.systemFailure("システム障害により処理できません");
+        return new WordTranslation(bestTranslation.getTranslation(), bestScore);
     }
 }
 ```
 
 ### 課題2のヒント
 ```java
-class AutonomousVehicleSafetySystem {
-    @RealTimeExecution(deadline = "10ms")
-    public SafetyDecision makeSafetyDecision(VehicleState currentState, EnvironmentData environment) {
-        try {
-            // Sensor validation
-            validateSensorData(environment.getSensorData());
-            
-            // Threat assessment
-            List<Threat> threats = threatDetector.assessThreats(currentState, environment);
-            
-            // Safety decision
-            if (threats.isEmpty()) {
-                return SafetyDecision.CONTINUE_NORMAL_OPERATION;
+class SocialNetworkAnalyzer {
+    private HashMap<Integer, Set<Integer>> adjacencyList;
+    private HashMap<Integer, UserProfile> users;
+    private HashMap<Integer, Double> pageRankScores;
+    
+    public Map<Integer, Double> calculatePageRank(double dampingFactor, int maxIterations) {
+        int numNodes = adjacencyList.size();
+        Map<Integer, Double> currentScores = new HashMap<>();
+        Map<Integer, Double> newScores = new HashMap<>();
+        
+        // 初期化
+        for (Integer nodeId : adjacencyList.keySet()) {
+            currentScores.put(nodeId, 1.0 / numNodes);
+        }
+        
+        for (int iter = 0; iter < maxIterations; iter++) {
+            // 新しいスコア計算
+            for (Integer nodeId : adjacencyList.keySet()) {
+                double score = (1.0 - dampingFactor) / numNodes;
+                
+                // 入次リンクからのスコア計算
+                for (Integer neighbor : getIncomingNeighbors(nodeId)) {
+                    Set<Integer> outgoing = adjacencyList.get(neighbor);
+                    score += dampingFactor * currentScores.get(neighbor) / outgoing.size();
+                }
+                
+                newScores.put(nodeId, score);
             }
             
-            // Select optimal avoidance strategy
-            AvoidanceStrategy strategy = selectOptimalAvoidanceStrategy(threats, currentState);
+            // 収束判定
+            if (hasConverged(currentScores, newScores)) {
+                break;
+            }
             
-            return SafetyDecision.EXECUTE_AVOIDANCE(strategy);
-            
-        } catch (SensorFailureException e) {
-            return handleSensorFailure(e, currentState);
-        } catch (ActuatorFailureException e) {
-            return handleActuatorFailure(e, currentState);
-        } catch (SystemFailureException e) {
-            return handleSystemFailure(e, currentState);
-        } catch (Exception e) {
-            // Ultimate failsafe
-            log.fatal("Critical system error: {}", e.getMessage());
-            return SafetyDecision.EMERGENCY_STOP;
+            currentScores.clear();
+            currentScores.putAll(newScores);
+            newScores.clear();
         }
+        
+        return currentScores;
     }
     
-    private SafetyDecision handleSensorFailure(SensorFailureException e, VehicleState state) {
-        SensorType failedSensor = e.getFailedSensorType();
+    public List<Community> detectCommunities() {
+        // Louvain法によるコミュニティ検出
+        Map<Integer, Integer> nodeToComm = new HashMap<>();
+        Map<Integer, Set<Integer>> communities = new HashMap<>();
         
-        // Check redundancy availability
-        boolean hasRedundancy = redundancyManager.hasWorkingRedundancy(failedSensor);
-        
-        if (hasRedundancy) {
-            redundancyManager.switchToBackupSensor(failedSensor);
-            return SafetyDecision.CONTINUE_WITH_REDUCED_CAPABILITY;
+        // 初期化: 各ノードが独自のコミュニティ
+        for (Integer nodeId : adjacencyList.keySet()) {
+            nodeToComm.put(nodeId, nodeId);
+            communities.put(nodeId, new HashSet<>(Arrays.asList(nodeId)));
         }
         
-        // Determine if safe operation is possible
-        MinimumSensorRequirements minReq = getMinimumSensorRequirements();
-        List<SensorType> remainingSensors = getCurrentWorkingSensors();
-        
-        if (minReq.isSatisfiedBy(remainingSensors)) {
-            activateDegradedMode();
-            return SafetyDecision.CONTINUE_DEGRADED_MODE;
-        } else {
-            return SafetyDecision.SAFE_STOP_REQUIRED;
+        boolean improved = true;
+        while (improved) {
+            improved = false;
+            
+            for (Integer nodeId : adjacencyList.keySet()) {
+                int currentComm = nodeToComm.get(nodeId);
+                int bestComm = currentComm;
+                double bestGain = 0;
+                
+                // 近隣コミュニティでのモジュラリティ計算
+                Set<Integer> neighborComms = getNeighborCommunities(nodeId, nodeToComm);
+                for (Integer commId : neighborComms) {
+                    double gain = calculateModularityGain(nodeId, commId, nodeToComm);
+                    if (gain > bestGain) {
+                        bestGain = gain;
+                        bestComm = commId;
+                    }
+                }
+                
+                // コミュニティ移動
+                if (bestComm != currentComm) {
+                    communities.get(currentComm).remove(nodeId);
+                    communities.get(bestComm).add(nodeId);
+                    nodeToComm.put(nodeId, bestComm);
+                    improved = true;
+                }
+            }
         }
+        
+        return convertToCommunitiesList(communities);
     }
     
-    private SafetyDecision handleActuatorFailure(ActuatorFailureException e, VehicleState state) {
-        ActuatorType failedActuator = e.getFailedActuatorType();
+    private double calculateModularityGain(Integer nodeId, Integer commId, 
+                                         Map<Integer, Integer> nodeToComm) {
+        double ki = adjacencyList.get(nodeId).size(); // ノードの次数
+        double sumIn = 0, sumTot = 0;
         
-        switch (failedActuator) {
-            case STEERING:
-                if (hasBackupSteering()) {
-                    switchToBackupSteering();
-                    return SafetyDecision.CONTINUE_WITH_BACKUP_STEERING;
-                } else {
-                    return SafetyDecision.EMERGENCY_STOP;
+        // コミュニティ内エッジ数とコミュニティの総次数
+        for (Integer member : getCommunityMembers(commId, nodeToComm)) {
+            sumTot += adjacencyList.get(member).size();
+            for (Integer neighbor : adjacencyList.get(member)) {
+                if (nodeToComm.get(neighbor).equals(commId)) {
+                    sumIn += 1;
                 }
-                
-            case PRIMARY_BRAKING:
-                if (hasSecondaryBraking()) {
-                    switchToSecondaryBraking();
-                    return SafetyDecision.CONTINUE_WITH_SECONDARY_BRAKING;
-                } else {
-                    return SafetyDecision.CONTROLLED_EMERGENCY_STOP;
-                }
-                
-            case THROTTLE:
-                // Can continue with reduced capability
-                return SafetyDecision.CONTINUE_COASTING_MODE;
-                
-            default:
-                return evaluateRemainingCapabilities(failedActuator, state);
+            }
         }
+        sumIn /= 2; // 無向グラフなので2で割る
+        
+        double m = getTotalEdges() / 2.0;
+        return (sumIn + getEdgesBetween(nodeId, commId)) / (2 * m) - 
+               Math.pow((sumTot + ki) / (2 * m), 2);
     }
 }
 ```
 
 ### 課題3のヒント
 ```java
-class MedicalSafetySystem {
-    @MedicalSafety(level = CRITICAL)
-    public PrescriptionResult validatePrescription(Patient patient, Medication medication, Dosage dosage) {
-        PrescriptionContext context = createPrescriptionContext(patient, medication, dosage);
+class RecommendationEngine {
+    private Map<Integer, Map<Integer, Double>> userItemRatings;
+    private Map<Integer, UserProfile> userProfiles;
+    private Map<Integer, ItemFeatures> itemFeatures;
+    private MatrixFactorizationModel mfModel;
+    
+    public List<Recommendation> recommend(int userId, int numRecommendations) {
+        // ハイブリッド推薦
+        List<Recommendation> collaborative = collaborativeFiltering(userId, numRecommendations * 2);
+        List<Recommendation> contentBased = contentBasedFiltering(userId, numRecommendations * 2);
+        List<Recommendation> deepLearning = deepLearningRecommendation(userId, numRecommendations * 2);
         
-        try {
-            // Multi-layer safety validation
-            performAllergyCheck(patient, medication);
-            performDrugInteractionCheck(patient, medication);
-            performDosageValidation(patient, medication, dosage);
-            performContraindicationCheck(patient, medication);
-            
-            // Create safe prescription
-            Prescription prescription = createPrescription(context);
-            
-            // Generate safety monitoring plan
-            SafetyMonitoringPlan monitoring = createMonitoringPlan(prescription);
-            
-            return PrescriptionResult.approved(prescription, monitoring);
-            
-        } catch (AllergyConflictException e) {
-            return handleAllergyConflict(e, context);
-        } catch (DrugInteractionException e) {
-            return handleDrugInteraction(e, context);
-        } catch (DosageException e) {
-            return handleDosageError(e, context);
-        } catch (ContraindicationException e) {
-            return handleContraindication(e, context);
-        } catch (SystemUnavailableException e) {
-            return handleSystemUnavailable(e, context);
-        } catch (Exception e) {
-            return handleCriticalMedicalError(e, context);
+        // スコア統合
+        Map<Integer, Double> combinedScores = new HashMap<>();
+        
+        for (Recommendation rec : collaborative) {
+            combinedScores.put(rec.getItemId(), 
+                combinedScores.getOrDefault(rec.getItemId(), 0.0) + 0.4 * rec.getScore());
         }
+        
+        for (Recommendation rec : contentBased) {
+            combinedScores.put(rec.getItemId(), 
+                combinedScores.getOrDefault(rec.getItemId(), 0.0) + 0.3 * rec.getScore());
+        }
+        
+        for (Recommendation rec : deepLearning) {
+            combinedScores.put(rec.getItemId(), 
+                combinedScores.getOrDefault(rec.getItemId(), 0.0) + 0.3 * rec.getScore());
+        }
+        
+        // 多様性考慮
+        return diversifyRecommendations(combinedScores, userId, numRecommendations);
     }
     
-    private PrescriptionResult handleAllergyConflict(AllergyConflictException e, PrescriptionContext context) {
-        // Log critical safety event
-        medicalSafetyLogger.logCriticalEvent(context, e);
+    private List<Recommendation> collaborativeFiltering(int userId, int numRecs) {
+        // ユーザー類似度計算
+        Map<Integer, Double> userSimilarities = calculateUserSimilarities(userId);
         
-        // Find alternative medications
-        AlternativeMedicationFinder finder = new AlternativeMedicationFinder();
-        List<Medication> alternatives = finder.findAlternatives(
-            context.getMedication(), 
-            context.getPatient().getAllergies()
-        );
+        // 近隣ユーザーの選択
+        List<Integer> neighbors = userSimilarities.entrySet().stream()
+            .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
+            .limit(50)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
         
-        if (!alternatives.isEmpty()) {
-            SafetyRecommendation recommendation = createSafetyRecommendation(
-                "Allergy conflict detected", alternatives);
-            return PrescriptionResult.alternativeRequired(recommendation);
-        } else {
-            // No alternatives, require specialist consultation
-            SpecialistConsultation consultation = requestSpecialistConsultation(
-                context, "Allergy specialist consultation required");
-            return PrescriptionResult.specialistRequired(consultation);
+        // 推薦スコア計算
+        Map<Integer, Double> scores = new HashMap<>();
+        Map<Integer, Double> userRatings = userItemRatings.get(userId);
+        
+        for (Integer neighborId : neighbors) {
+            Map<Integer, Double> neighborRatings = userItemRatings.get(neighborId);
+            double similarity = userSimilarities.get(neighborId);
+            
+            for (Map.Entry<Integer, Double> entry : neighborRatings.entrySet()) {
+                Integer itemId = entry.getKey();
+                Double rating = entry.getValue();
+                
+                // 未評価アイテムのみ
+                if (!userRatings.containsKey(itemId)) {
+                    scores.put(itemId, scores.getOrDefault(itemId, 0.0) + 
+                              similarity * rating);
+                }
+            }
         }
+        
+        return scores.entrySet().stream()
+            .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
+            .limit(numRecs)
+            .map(entry -> new Recommendation(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
     
-    private PrescriptionResult handleSystemUnavailable(SystemUnavailableException e, PrescriptionContext context) {
-        // In medical systems, patient safety is paramount
-        if (isEmergencyCase(context)) {
-            // Emergency protocols allow limited override
-            EmergencyProtocol emergency = activateEmergencyProtocol(context);
+    private double calculatePearsonCorrelation(int user1, int user2) {
+        Map<Integer, Double> ratings1 = userItemRatings.get(user1);
+        Map<Integer, Double> ratings2 = userItemRatings.get(user2);
+        
+        // 共通評価アイテム
+        Set<Integer> commonItems = new HashSet<>(ratings1.keySet());
+        commonItems.retainAll(ratings2.keySet());
+        
+        if (commonItems.size() < 2) return 0;
+        
+        double sum1 = 0, sum2 = 0, sum1Sq = 0, sum2Sq = 0, pSum = 0;
+        
+        for (Integer itemId : commonItems) {
+            double rating1 = ratings1.get(itemId);
+            double rating2 = ratings2.get(itemId);
             
-            // Minimal safe prescription based on standard protocols
-            MinimalSafePrescription minimal = createMinimalSafePrescription(context);
-            
-            // Require immediate physician review
-            PhysicianReview review = scheduleImmediatePhysicianReview(context);
-            
-            return PrescriptionResult.emergencyApproval(minimal, review);
-        } else {
-            // Non-emergency: defer until system available
-            return PrescriptionResult.defer("System unavailable, please retry when system is restored");
+            sum1 += rating1;
+            sum2 += rating2;
+            sum1Sq += rating1 * rating1;
+            sum2Sq += rating2 * rating2;
+            pSum += rating1 * rating2;
         }
+        
+        double num = pSum - (sum1 * sum2 / commonItems.size());
+        double den = Math.sqrt((sum1Sq - sum1 * sum1 / commonItems.size()) *
+                              (sum2Sq - sum2 * sum2 / commonItems.size()));
+        
+        return den == 0 ? 0 : num / den;
     }
     
-    private PrescriptionResult handleCriticalMedicalError(Exception e, PrescriptionContext context) {
-        // Critical medical errors require immediate escalation
-        medicalSafetyCommittee.reportCriticalIncident(context, e);
+    private List<Recommendation> diversifyRecommendations(Map<Integer, Double> scores, 
+                                                         int userId, int numRecs) {
+        List<Recommendation> result = new ArrayList<>();
+        Set<Integer> selectedItems = new HashSet<>();
         
-        // Activate medical emergency protocol
-        MedicalEmergencyProtocol protocol = activateMedicalEmergencyProtocol();
+        while (result.size() < numRecs && selectedItems.size() < scores.size()) {
+            double bestScore = Double.NEGATIVE_INFINITY;
+            Integer bestItem = null;
+            
+            for (Map.Entry<Integer, Double> entry : scores.entrySet()) {
+                Integer itemId = entry.getKey();
+                if (selectedItems.contains(itemId)) continue;
+                
+                // MMR スコア計算
+                double relevance = entry.getValue();
+                double diversity = calculateDiversityScore(itemId, selectedItems);
+                double mmrScore = 0.7 * relevance + 0.3 * diversity;
+                
+                if (mmrScore > bestScore) {
+                    bestScore = mmrScore;
+                    bestItem = itemId;
+                }
+            }
+            
+            if (bestItem != null) {
+                result.add(new Recommendation(bestItem, scores.get(bestItem)));
+                selectedItems.add(bestItem);
+            }
+        }
         
-        // Immediate physician notification
-        emergencyNotificationSystem.notifyAttendingPhysician(context, e);
-        
-        // Fail safe - no prescription without explicit physician override
-        return PrescriptionResult.criticalFailure(
-            "Critical system error - immediate physician review required");
+        return result;
     }
 }
 ```
 
 ## 🔍 応用のポイント
 
-1. **安全性優先**: 例外処理において安全性を最優先に考慮
-2. **多層防御**: 複数の例外処理層による堅牢性確保
-3. **自動復旧**: 可能な限り自動的な回復メカニズム
-4. **graceful degradation**: 段階的な機能縮退による継続性
-5. **監査と追跡**: 完全な例外ログとトレーサビリティ
+1. **Map構造の最適活用**: HashMap/TreeMapの特性を活かしたデータ構造設計
+2. **アルゴリズムの効率化**: 大規模データに対する高速アルゴリズムの実装
+3. **機械学習統合**: 実用的な機械学習アルゴリズムとの統合
+4. **リアルタイム処理**: ストリーミングデータの効率的な処理
+5. **システム設計**: スケーラブルで保守性の高いアーキテクチャ
 
 ## ✅ 完了チェックリスト
 
-- [ ] 課題1: 高可用性銀行システムが正常に動作する
-- [ ] 課題2: 自動運転車制御システムが実装できた
-- [ ] 課題3: 医療情報統合システムが動作する
-- [ ] 例外処理が包括的に実装されている
-- [ ] 安全性が十分に考慮されている
-- [ ] システムの継続性が保証されている
+- [ ] 課題1: 多言語翻訳システムが正常に動作する
+- [ ] 課題2: ソーシャルネットワーク分析システムが実装できた
+- [ ] 課題3: 推薦システムエンジンが動作する
+- [ ] Mapが効果的に活用されている
+- [ ] アルゴリズムが正しく実装されている
+- [ ] パフォーマンスが最適化されている
 
 **次のステップ**: 応用課題が完了したら、challenge/のチャレンジ課題に挑戦してみましょう！

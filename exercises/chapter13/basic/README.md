@@ -1,279 +1,283 @@
 # 第13章 基本課題
 
 ## 🎯 学習目標
-- Enum（列挙型）の基本概念と利点の理解
-- 定数としてのEnumの適切な使用
-- Enumのメソッドとフィールドの活用
-- 状態マシンパターンの実装
-- EnumとSwitch文の効果的な組み合わせ
-- EnumSetとEnumMapを活用した高性能なコレクション操作
+- 例外処理の基本概念（例外の種類、try-catch-finally）
+- 検査例外と非検査例外の理解と使い分け
+- カスタム例外クラスの設計と実装
+- try-with-resources によるリソース管理
+- 例外処理のベストプラクティス
+- 例外チェーン（Exception Chaining）による根本原因の追跡技法
 
 ## 📝 課題一覧
 
-### 課題1: 基本的なEnum定義と活用
-**ファイル名**: `DayOfWeek.java`, `Priority.java`, `BasicEnumTest.java`
+### 課題1: 基本的な例外処理
+**ファイル名**: `BasicExceptionHandling.java`, `BasicExceptionTest.java`
 
-基本的なEnumクラスを定義し、その特性を理解してください。
+基本的な例外処理を実装し、try-catch-finallyの動作を理解してください。
 
 **要求仕様**:
-- 曜日を表すEnum（メソッド付き）
-- 優先度を表すEnum（数値付き）
-- Enumの基本メソッド（values、valueOf、ordinal等）
-- Switch文でのEnum活用
-- Enumの比較とソート
+- 様々な種類の例外処理（ArithmeticException、NullPointerException等）
+- 複数catch文による例外の使い分け
+- finallyブロックの動作確認
+- 例外情報の取得と表示
+- 例外の再発生（re-throw）
 
 **実行例**:
 ```
-=== 基本的なEnum定義と活用 ===
-曜日Enum:
-今日: MONDAY
-明日: TUESDAY
-今日は平日です: true
-今日は週末です: false
+=== 基本的な例外処理 ===
+ゼロ除算テスト:
+計算実行: 10 / 0
+例外発生: java.lang.ArithmeticException: / by zero
+finally実行: 計算処理を終了します
 
-全曜日の表示:
-MONDAY: 月曜日（平日）
-TUESDAY: 火曜日（平日）
-WEDNESDAY: 水曜日（平日）
-THURSDAY: 木曜日（平日）
-FRIDAY: 金曜日（平日）
-SATURDAY: 土曜日（週末）
-SUNDAY: 日曜日（週末）
+null参照テスト:
+文字列操作: null.length()
+例外発生: java.lang.NullPointerException
+スタックトレース:
+  at BasicExceptionHandling.stringOperation(BasicExceptionHandling.java:25)
+  at BasicExceptionHandling.main(BasicExceptionHandling.java:15)
 
-優先度Enum:
-緊急: URGENT（レベル: 1）
-高: HIGH（レベル: 2）
-中: MEDIUM（レベル: 3）
-低: LOW（レベル: 4）
+配列範囲外テスト:
+配列アクセス: array[10] (配列サイズ: 5)
+例外発生: java.lang.ArrayIndexOutOfBoundsException: Index 10 out of bounds for length 5
+finally実行: 配列処理を終了します
 
-優先度ソート:
-[URGENT(1), HIGH(2), MEDIUM(3), LOW(4)]
+複数catch文テスト:
+入力値: "abc"
+NumberFormatException発生: 数値変換に失敗しました
+代替値を使用: 0
 
-Switch文での活用:
-URGENT → 即座に対応が必要です
-HIGH → 今日中に対応してください
-MEDIUM → 今週中に対応してください
-LOW → 時間があるときに対応してください
-
-Enum比較:
-URGENT.compareTo(LOW): -3
-URGENT < LOW: true（数値が小さいほう が優先度高）
+例外の再発生テスト:
+内部メソッドで例外処理 → 外部メソッドで再処理
+最終的な例外処理: 処理を中断しました
 ```
 
 **評価ポイント**:
-- Enumの基本構文理解
-- メソッドとフィールドの追加
-- Switch文での適切な使用
+- try-catch-finallyの正しい使用
+- 例外の種類に応じた適切な処理
+- 例外情報の有効活用
 
 
 
-### 課題2: 注文状態管理システム
-**ファイル名**: `OrderStatus.java`, `Order.java`, `OrderStatusTest.java`
+### 課題2: カスタム例外クラス設計
+**ファイル名**: `BankAccountException.java`, `InsufficientFundsException.java`, `InvalidAccountException.java`, `BankAccount.java`, `CustomExceptionTest.java`
 
-注文の状態をEnumで管理し、状態遷移を実装してください。
+銀行口座システムのカスタム例外を設計し、ビジネスロジックに応じた例外処理を実装してください。
 
 **要求仕様**:
-- 注文状態を表すEnum（状態遷移メソッド付き）
-- 各状態での可能なアクション定義
-- 状態遷移の検証機能
-- 状態履歴の管理
-- ビジネスロジックの実装
+- 銀行業務固有の例外クラス（残高不足、無効口座等）
+- 例外クラスの継承関係設計
+- 例外に詳細情報を含める仕組み
+- エラーコードとメッセージの管理
+- 業務的な例外処理フロー
 
 **実行例**:
 ```
-=== 注文状態管理システム ===
-注文作成:
-注文ID: ORD-001
-初期状態: PENDING（注文受付中）
+=== カスタム例外クラス設計 ===
+銀行口座作成:
+口座1: 12345（残高: 100,000円）
+口座2: 67890（残高: 50,000円）
 
-状態遷移テスト:
-PENDING → CONFIRMED（注文確認済み）
-CONFIRMED → PREPARING（準備中）
-PREPARING → SHIPPED（発送済み）
-SHIPPED → DELIVERED（配達完了）
+通常取引テスト:
+口座12345から30,000円出金: 成功
+残高: 70,000円
 
-各状態での可能なアクション:
-PENDING: [確認, キャンセル]
-CONFIRMED: [準備開始, キャンセル]
-PREPARING: [発送, キャンセル]
-SHIPPED: [配達完了]
-DELIVERED: [返品受付]
+残高不足例外テスト:
+口座67890から80,000円出金:
+例外発生: InsufficientFundsException
+エラーコード: INSUFFICIENT_FUNDS
+メッセージ: 残高が不足しています
+詳細: 要求額: 80,000円, 現在残高: 50,000円, 不足額: 30,000円
 
-無効な状態遷移テスト:
-PENDING → SHIPPED: ✗ 無効な遷移です
-DELIVERED → PENDING: ✗ 無効な遷移です
+無効口座例外テスト:
+存在しない口座 99999 への振込:
+例外発生: InvalidAccountException
+エラーコード: ACCOUNT_NOT_FOUND
+メッセージ: 指定された口座が見つかりません
+詳細: 口座番号: 99999
 
-状態履歴:
-2024-07-04 10:00:00 - PENDING
-2024-07-04 10:30:00 - CONFIRMED
-2024-07-04 14:00:00 - PREPARING
-2024-07-04 17:00:00 - SHIPPED
-2024-07-05 09:00:00 - DELIVERED
+振込処理例外テスト:
+口座12345から口座67890へ80,000円振込:
+例外発生: InsufficientFundsException
+取引がロールバックされました
+口座12345残高: 70,000円（変更なし）
+口座67890残高: 50,000円（変更なし）
 
-ビジネスルール:
-キャンセル可能期間: PENDING, CONFIRMED, PREPARING
-返品可能状態: DELIVERED
-追跡可能状態: SHIPPED, DELIVERED
+例外チェーン:
+原因: InsufficientFundsException: 残高が不足しています
+結果: TransactionFailedException: 取引処理に失敗しました
+理由: 出金処理でエラーが発生
 ```
 
 **評価ポイント**:
-- 状態パターンの実装
-- ビジネスロジックのEnum内実装
-- 状態遷移の検証
+- ビジネスドメイン固有の例外設計
+- 例外クラスの継承関係の理解
+- 詳細な例外情報の提供
 
 
 
-### 課題3: 計算機の演算子Enum
-**ファイル名**: `Operation.java`, `Calculator.java`, `OperationTest.java`
+### 課題3: ファイル操作とリソース管理
+**ファイル名**: `FileProcessor.java`, `ResourceManagerTest.java`
 
-計算機の演算子をEnumで実装し、関数型インターフェイスと組み合わせてください。
+ファイル操作におけるリソース管理と例外処理を実装してください。
 
 **要求仕様**:
-- 四則演算を表すEnum（関数実装付き）
-- 関数型インターフェイスとの組み合わせ
-- 演算子の優先度実装
-- 複雑な計算式の処理
-- 演算履歴の管理
+- try-with-resources によるリソース管理
+- ファイル読み込み時の例外処理
+- ファイル書き込み時の例外処理
+- 複数リソースの同時管理
+- カスタムリソースクラスの実装
 
 **実行例**:
 ```
-=== 計算機の演算子Enum ===
-基本演算テスト:
-10 + 5 = 15.0
-10 - 5 = 5.0
-10 * 5 = 50.0
-10 / 5 = 2.0
+=== ファイル操作とリソース管理 ===
+ファイル読み込みテスト:
+ファイル: sample.txt
+内容:
+Hello, World!
+Java Exception Handling
+Try-with-resources example
 
-演算子の優先度:
-MULTIPLY: 2
-DIVIDE: 2
-ADD: 1
-SUBTRACT: 1
+リソース自動クローズ確認:
+BufferedReader がクローズされました
 
-複雑な計算（優先度考慮）:
-式: 2 + 3 * 4
-解析順序: [3 * 4 = 12, 2 + 12 = 14]
-結果: 14.0
+存在しないファイル読み込み:
+ファイル: nonexistent.txt
+例外発生: java.io.FileNotFoundException: nonexistent.txt (No such file or directory)
+処理を継続します
 
-連続計算:
-初期値: 10
-+5 = 15.0
-*2 = 30.0
--8 = 22.0
-/2 = 11.0
+ファイル書き込みテスト:
+出力ファイル: output.txt
+書き込み内容: "Hello from Java Exception Handling!"
+書き込み完了
+リソース自動クローズ確認:
+BufferedWriter がクローズされました
 
-演算履歴:
-10.0 + 5.0 = 15.0
-15.0 * 2.0 = 30.0
-30.0 - 8.0 = 22.0
-22.0 / 2.0 = 11.0
+複数リソース管理テスト:
+入力ファイル: input.txt
+出力ファイル: copy.txt
+ファイルコピー処理開始
+コピー完了: 145バイト
+両方のリソースがクローズされました
 
-特殊ケース処理:
-10 / 0 = エラー: ゼロ除算は実行できません
-√-1 = エラー: 負の数の平方根は計算できません
+カスタムリソーステスト:
+DatabaseConnection 作成
+SQL実行: SELECT * FROM users
+結果: 5件のレコードを取得
+DatabaseConnection 自動クローズ
+
+例外発生時のリソース管理:
+処理中に IOException が発生
+リソースは確実にクローズされました
+例外: java.io.IOException: ネットワークエラー
 ```
 
 **評価ポイント**:
-- 関数型インターフェイスとの統合
-- 複雑なビジネスロジックの実装
-- エラーハンドリング
+- try-with-resources の適切な使用
+- リソースリークの防止
+- AutoCloseable インターフェイスの理解
 
 
 
-### 課題4: ゲーム設定のEnum活用
-**ファイル名**: `Difficulty.java`, `GameMode.java`, `PowerUp.java`, `GameConfig.java`, `GameConfigTest.java`
+### 課題4: 例外処理設計パターン
+**ファイル名**: `ValidationResult.java`, `UserService.java`, `ExceptionDesignTest.java`
 
-ゲーム設定を管理するEnumシステムを実装してください。
+例外処理の設計パターンを実装し、保守性の高い例外処理システムを構築してください。
 
 **要求仕様**:
-- 難易度レベルを表すEnum（パラメータ付き）
-- ゲームモードを表すEnum（機能設定付き）
-- パワーアップアイテムのEnum（効果実装付き）
-- 設定の組み合わせ検証
-- 動的な設定変更システム
+- 例外 vs 戻り値による エラー表現の比較
+- Optional を活用した安全なプログラミング
+- バリデーション結果の集約
+- ログ出力との連携
+- 例外処理のパフォーマンス考慮
 
 **実行例**:
 ```
-=== ゲーム設定のEnum活用 ===
-難易度設定:
-EASY: 敵HP×0.5, プレイヤーHP×2.0, 経験値×1.0
-NORMAL: 敵HP×1.0, プレイヤーHP×1.0, 経験値×1.0
-HARD: 敵HP×1.5, プレイヤーHP×0.7, 経験値×1.5
-EXTREME: 敵HP×2.0, プレイヤーHP×0.5, 経験値×2.0
+=== 例外処理設計パターン ===
+バリデーション結果パターン:
+ユーザー作成: 田中太郎, tanaka@example.com, 25
+バリデーション結果: 成功
 
-ゲームモード:
-STORY: ストーリーモード（セーブ可能、チェックポイント有り）
-SURVIVAL: サバイバルモード（セーブ不可、連続プレイ）
-CHALLENGE: チャレンジモード（特殊ルール、リーダーボード）
-MULTIPLAYER: マルチプレイヤー（オンライン、最大4人）
+ユーザー作成: , invalid-email, -5
+バリデーション結果: 失敗
+エラー詳細:
+- 名前が空です
+- メールアドレスの形式が正しくありません  
+- 年齢は0以上である必要があります
 
-パワーアップアイテム:
-SPEED_BOOST: 速度アップ（効果時間: 30秒）
-DOUBLE_DAMAGE: ダメージ2倍（効果時間: 20秒）
-INVINCIBLE: 無敵状態（効果時間: 10秒）
-HEALTH_REGEN: HP回復（効果時間: 60秒）
+Optional パターン:
+ユーザー検索: ID=1001
+結果: Optional[User{id=1001, name=田中太郎}]
 
-設定組み合わせ検証:
-✓ EASY + STORY: 初心者向け設定
-✓ HARD + SURVIVAL: 上級者向け設定
-✗ EXTREME + MULTIPLAYER: 不適切な組み合わせ
-理由: EXTREMEは単人プレイ専用です
+ユーザー検索: ID=9999
+結果: Optional.empty
+デフォルトユーザーを使用: Guest User
 
-現在の設定:
-難易度: NORMAL
-モード: STORY
-有効なパワーアップ: [SPEED_BOOST, HEALTH_REGEN]
-設定スコア: 100点（バランス良好）
+例外 vs 戻り値の比較:
+例外パターン:
+  計算: 10 / 2 = 5.0
+  計算: 10 / 0 → ArithmeticException
 
-設定推奨:
-初心者: EASY + STORY
-経験者: NORMAL + CHALLENGE
-エキスパート: HARD + SURVIVAL
+戻り値パターン:
+  計算: 10 / 2 → Result{success=true, value=5.0}
+  計算: 10 / 0 → Result{success=false, error="ゼロ除算"}
+
+パフォーマンステスト:
+正常処理（1,000,000回）:
+例外なし: 150ms
+例外あり: 2,450ms
+結論: 例外は通常フローに使うべきではない
+
+ログ連携:
+[INFO] ユーザー作成開始: 佐藤花子
+[ERROR] バリデーション失敗: メールアドレス不正
+[WARN] 処理を中断しました
+[INFO] 代替処理を実行
 ```
 
 **評価ポイント**:
-- 複数Enumの組み合わせ設計
-- 動的な設定システム
-- ビジネスルールの検証
+- 例外処理の設計判断
+- パフォーマンスを考慮した実装
+- 保守性の高いエラーハンドリング
 
 ## 💡 ヒント
 
 ### 課題1のヒント
-- Enum定義: enum Day { MONDAY, TUESDAY, ... }
-- メソッド追加: public boolean isWeekend() { ... }
-- ordinal()で定義順序を取得
+- 複数catch文は具体的な例外から記述
+- finally は必ず実行される（return があっても）
+- printStackTrace() でデバッグ情報取得
 
 ### 課題2のヒント
-- 状態遷移メソッド: public OrderStatus nextStatus() { ... }
-- Set<OrderStatus>で許可する遷移先を定義
-- EnumMap で状態別の動作を管理
+- 検査例外は extends Exception
+- 非検査例外は extends RuntimeException
+- super(message, cause) で例外チェーン
 
 ### 課題3のヒント
-- 関数型フィールド: private final BinaryOperator<Double> operation
-- コンストラクタで関数を受け取り
-- apply()メソッドで計算実行
+- try-with-resources: try (Resource r = new Resource())
+- AutoCloseable インターフェイスを実装
+- 複数リソース: try (R1 r1 = ...; R2 r2 = ...)
 
 ### 課題4のヒント
-- 複数のパラメータをEnum要素に持たせる
-- EnumSet で組み合わせ管理
-- 設定の妥当性をstaticメソッドで検証
+- Optional.ofNullable() で null 安全性
+- Result パターンで成功/失敗を表現
+- バリデーションは早期リターンよりも集約
 
-## 🔍 Enumのポイント
+## 🔍 例外処理のポイント
 
-1. **型安全性**: コンパイル時の値チェック
-2. **メソッド追加**: Enumに独自メソッドを実装可能
-3. **シングルトン**: 各Enum要素は唯一のインスタンス
-4. **比較**: ==での比較が安全
-5. **Switch文**: 網羅性チェックの恩恵
-6. **継承不可**: Enumは拡張できない（設計上の制約）
+1. **例外の種類**: 検査例外 vs 非検査例外
+2. **リソース管理**: try-with-resources で確実なクローズ
+3. **例外設計**: ビジネスロジックに応じたカスタム例外
+4. **パフォーマンス**: 例外は例外的状況でのみ使用
+5. **保守性**: 適切なログ出力と例外情報
+6. **安全性**: null チェックと Optional の活用
 
 ## ✅ 完了チェックリスト
 
-- [ ] 課題1: 基本的なEnumの定義と使用ができている
-- [ ] 課題2: 状態管理パターンが実装できている
-- [ ] 課題3: 関数型インターフェイスとの組み合わせができている
-- [ ] 課題4: 複雑なEnum設計システムが構築できている
-- [ ] Enumの利点と制限を理解している
-- [ ] 適切な設計パターンでEnumを活用できている
+- [ ] 課題1: 基本的な例外処理構文が正しく使えている
+- [ ] 課題2: ビジネスロジックに応じたカスタム例外が設計できている
+- [ ] 課題3: リソース管理と例外処理が適切に実装できている
+- [ ] 課題4: 例外処理の設計パターンが理解できている
+- [ ] 検査例外と非検査例外の使い分けができている
+- [ ] try-with-resources でリソース管理ができている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なEnum活用に挑戦しましょう！
+**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度な例外処理設計に挑戦しましょう！

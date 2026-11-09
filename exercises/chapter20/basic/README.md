@@ -1,850 +1,624 @@
 # 第20章 基本課題
 
 ## 🎯 学習目標
-- JUnit5を使った単体テストの作成
-- テスト駆動開発（TDD）の実践
-- モックオブジェクトとスタブの活用
-- テストカバレッジの理解と向上
-- 継続的インテグレーション（CI）の基本
-- 境界値分析とエラー推測による効果的なテストケース設計
+- 高度なGUIコンポーネント（JTable、JTree、JList等）の活用
+- MVC（Model-View-Controller）パターンの実装
+- カスタムレンダラーとエディターの作成
+- 複雑なレイアウト管理とGUIアーキテクチャ
+- データバインディングとGUIの同期
+- オブザーバーパターンによるリアルタイムなデータ更新システム
 
 ## 📝 課題一覧
 
-### 課題1: 基本的な単体テスト作成
-**ファイル名**: `Calculator.java`, `CalculatorTest.java`, `StringUtils.java`, `StringUtilsTest.java`
+### 課題1: 高度なテーブル操作システム
+**ファイル名**: `AdvancedTableSystem.java`, `CustomTableModel.java`, `TableCellRenderer.java`, `AdvancedTableTest.java`
 
-基本的なクラスに対する包括的な単体テストを作成してください。
+高機能なテーブルシステムを作成し、データの表示・編集・ソート・フィルタリングを実装してください。
 
 **要求仕様**:
-- JUnit5のアノテーション活用（@Test、@BeforeEach等）
-- アサーションメソッドの適切な使用
-- 境界値テストと例外テスト
-- パラメータ化テスト
-- テストデータの管理
+- カスタムTableModelの実装
+- セルレンダラーとエディターのカスタマイズ
+- 複数列ソート機能
+- 動的フィルタリング機能
+- データの検証とエラー表示
 
 **実行例**:
 ```
-=== 基本的な単体テスト作成 ===
+=== 高度なテーブル操作システム ===
+ウィンドウ表示: "Advanced Table System"
+サイズ: 900x700ピクセル
 
-Calculator クラステスト実行:
-✅ testAdd_正の数の加算
-✅ testAdd_負の数の加算  
-✅ testAdd_ゼロの加算
-✅ testSubtract_正の数の減算
-✅ testSubtract_負の数の減算
-✅ testMultiply_正の数の乗算
-✅ testMultiply_ゼロの乗算
-✅ testDivide_正常な除算
-❌ testDivide_ゼロ除算例外
-✅ testSqrt_正の数の平方根
-❌ testSqrt_負の数例外
+社員管理テーブル:
+┌─────────────────────────────┐
+│ [追加] [編集] [削除] [更新]   │ (ツールバー)
+├─────────────────────────────┤
+│ フィルタ: [部署▼][年齢▼][給与▼]│ (フィルター行)
+└─────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│ID │名前    │部署  │年齢│給与      │入社日    │評価│アクティブ│
+├─────────────────────────────────────────────────────────┤
+│001│田中太郎│営業部│ 30│¥5,000,000│2020-04-01│★★★★☆│    ✓    │
+│002│佐藤花子│開発部│ 25│¥4,500,000│2022-07-15│★★★★★│    ✓    │
+│003│鈴木一郎│開発部│ 35│¥6,000,000│2018-03-10│★★★★☆│    ✓    │
+│004│山田次郎│総務部│ 28│¥4,200,000│2021-09-01│★★★☆☆│    ✓    │
+│005│中村美咲│営業部│ 32│¥5,200,000│2019-11-20│★★★★☆│    ✗    │
+└─────────────────────────────────────────────────────────┘
 
-テスト結果: 9/11 成功 (81.8%)
+カスタムレンダラー機能:
+1. 給与列: 
+   - 金額表示形式: ¥5,000,000
+   - 色分け: 600万以上(緑), 500万以上(青), 400万未満(赤)
 
-StringUtils クラステスト実行:
-✅ testIsEmpty_空文字列
-✅ testIsEmpty_null文字列
-✅ testIsEmpty_空白文字列
-✅ testReverse_通常文字列
-✅ testReverse_空文字列
-✅ testReverse_一文字
-✅ testCapitalize_通常文字列
-✅ testCapitalize_空文字列
-✅ testCapitalize_null文字列
+2. 評価列:
+   - 星形アイコン表示: ★★★★☆
+   - ツールチップ: "評価: 4/5"
 
-テスト結果: 9/9 成功 (100%)
+3. アクティブ列:
+   - チェックボックス: ✓/✗
+   - 背景色: アクティブ(白), 非アクティブ(灰色)
 
-詳細テストケース:
+4. 入社日列:
+   - 日付形式: yyyy-MM-dd
+   - 勤続年数表示: "4年2ヶ月"
 
-Calculator.add() テスト:
-@Test
-void testAdd_正の数() {
-    Calculator calc = new Calculator();
-    assertEquals(5, calc.add(2, 3));
-}
+ソート機能:
+単一列ソート:
+- 名前列クリック: あいうえお順
+- 給与列クリック: 金額順（高い→低い）
+- 入社日列クリック: 新しい→古い
 
-@Test  
-void testAdd_負の数() {
-    Calculator calc = new Calculator();
-    assertEquals(-1, calc.add(-3, 2));
-}
+複数列ソート:
+1次ソート: 部署（昇順）
+2次ソート: 給与（降順）
+結果: 部署内で給与順にソート
 
-@ParameterizedTest
-@CsvSource({
-    "1, 1, 2",
-    "2, 3, 5", 
-    "-1, 1, 0",
-    "0, 0, 0"
-})
-void testAdd_パラメータ化(int a, int b, int expected) {
-    Calculator calc = new Calculator();
-    assertEquals(expected, calc.add(a, b));
-}
+フィルタリング機能:
+部署フィルタ: "開発部" 選択
+→ 佐藤花子、鈴木一郎のみ表示
 
-例外テスト:
-@Test
-void testDivide_ゼロ除算() {
-    Calculator calc = new Calculator();
-    assertThrows(ArithmeticException.class, 
-        () -> calc.divide(10, 0));
-}
+年齢フィルタ: "30歳以上" 選択
+→ 田中太郎、鈴木一郎、中村美咲
 
-@Test
-void testSqrt_負の数() {
-    Calculator calc = new Calculator();
-    IllegalArgumentException exception = 
-        assertThrows(IllegalArgumentException.class,
-            () -> calc.sqrt(-4));
-    assertEquals("負の数の平方根は計算できません", 
-        exception.getMessage());
-}
+給与フィルタ: "500万円以上" 選択
+→ 田中太郎、鈴木一郎、中村美咲
 
-境界値テスト:
-@Test
-void testAdd_最大値境界() {
-    Calculator calc = new Calculator();
-    // Integer.MAX_VALUE の境界テスト
-    assertThrows(ArithmeticException.class,
-        () -> calc.add(Integer.MAX_VALUE, 1));
-}
+複合フィルタ: "開発部 AND 500万円以上"
+→ 鈴木一郎のみ表示
 
-@Test
-void testDivide_小数点精度() {
-    Calculator calc = new Calculator();
-    assertEquals(0.333333, calc.divide(1, 3), 0.000001);
-}
+編集機能:
+セル編集:
+- ダブルクリック: インプレース編集開始
+- Enter: 編集確定
+- Esc: 編集キャンセル
 
-テストライフサイクル:
-@BeforeEach
-void setUp() {
-    calculator = new Calculator();
-    System.out.println("テスト準備完了");
-}
+データ検証:
+名前: 必須入力、50文字以内
+年齢: 18-70の範囲
+給与: 正の数値のみ
+入社日: 有効な日付形式
 
-@AfterEach  
-void tearDown() {
-    calculator = null;
-    System.out.println("テスト後処理完了");
-}
+エラー表示:
+不正データ: セル背景を赤色表示
+ツールチップ: "年齢は18-70の範囲で入力してください"
 
-@BeforeAll
-static void setUpClass() {
-    System.out.println("テストクラス初期化");
-}
+統計情報表示:
+┌─────────────────────────────┐
+│ 統計情報                     │
+│ 総従業員数: 5名              │
+│ アクティブ: 4名              │
+│ 平均年齢: 30.0歳             │
+│ 平均給与: ¥4,980,000         │
+│ 最新入社: 佐藤花子(2022-07)  │
+└─────────────────────────────┘
 
-@AfterAll
-static void tearDownClass() {
-    System.out.println("テストクラス終了処理");
-}
+パフォーマンス最適化:
+- 大量データ対応: 仮想化による高速表示
+- 遅延読み込み: 必要な時にデータ取得
+- キャッシュ機能: フィルタ結果のキャッシュ
 
-テスト実行ログ:
-[INFO] テストクラス初期化
-[INFO] テスト準備完了
-[INFO] testAdd_正の数の加算 - 成功
-[INFO] テスト後処理完了
-[INFO] テスト準備完了
-[INFO] testAdd_負の数の加算 - 成功
-[INFO] テスト後処理完了
-...
-[INFO] テストクラス終了処理
+データ同期:
+- 自動更新: 5秒間隔でデータ更新チェック
+- 競合解決: 他ユーザーの変更を検出
+- ロック機能: 編集中の行をロック
 
-カバレッジレポート:
-Calculator.java:
-- 行カバレッジ: 85% (17/20行)
-- 分岐カバレッジ: 75% (6/8分岐)
-- 未テストコード: エラーハンドリング部分
-
-StringUtils.java:
-- 行カバレッジ: 100% (25/25行)
-- 分岐カバレッジ: 100% (12/12分岐)
+エクスポート機能:
+- CSV出力: 現在の表示データ
+- Excel出力: 書式付きエクスポート
+- PDF出力: レポート形式
 ```
 
 **評価ポイント**:
-- JUnit5の基本機能の理解
-- 包括的なテストケースの作成
-- 適切なアサーションの使用
+- TableModelの高度な実装
+- カスタムレンダラーの効果的活用
+- 複雑なデータ操作機能
 
 
 
-### 課題2: テスト駆動開発（TDD）実践
-**ファイル名**: `BankAccount.java`, `BankAccountTest.java`, `PasswordValidator.java`, `PasswordValidatorTest.java`
+### 課題2: ツリー構造データブラウザ
+**ファイル名**: `TreeDataBrowser.java`, `CustomTreeModel.java`, `TreeCellRenderer.java`, `TreeBrowserTest.java`
 
-TDDのサイクル（Red-Green-Refactor）を実践し、テストファーストでクラスを作成してください。
+階層データを管理するツリーブラウザを作成し、ファイルシステムやXMLデータの表示を実装してください。
 
 **要求仕様**:
-- 失敗するテストの作成（Red）
-- 最小限の実装で成功させる（Green）
-- リファクタリングによる改善（Refactor）
-- 段階的な機能追加
-- テストケースの充実
+- カスタムTreeModelの実装
+- ノードの動的読み込み（遅延読み込み）
+- ツリーセルレンダラーのカスタマイズ
+- 編集可能なツリーノード
+- ドラッグ&ドロップによるノード移動
 
 **実行例**:
 ```
-=== テスト駆動開発（TDD）実践 ===
+=== ツリー構造データブラウザ ===
+ウィンドウ表示: "Tree Data Browser"
+サイズ: 800x600ピクセル
 
-TDDサイクル1: BankAccount基本機能
+ファイルシステムブラウザ:
+┌─────────────────────────────┐
+│ [更新] [新規フォルダ] [削除]  │ (ツールバー)
+├─────────────────────────────┤
+│ ┌─ファイルツリー─┐ ┌─詳細─┐  │
+│ │├📁 C:\        │ │名前:   │  │
+│ ││├📁 Program.. │ │Documents│  │
+│ ││├📁 Users     │ │種類:   │  │
+│ │││├📁 Public  │ │フォルダ │  │
+│ │││└📁 Admin   │ │サイズ: │  │
+│ ││└📁 Windows   │ │125 MB  │  │
+│ │├📁 D:\        │ │更新日: │  │
+│ ││├📄 file1.txt │ │2024-07 │  │
+│ ││├📄 file2.doc │ │-04     │  │
+│ ││└📷 image.jpg │ └───────┘  │
+│ │└🔌 E:\ (USB)  │            │
+│ └──────────────┘            │
+└─────────────────────────────┘
 
-Red フェーズ:
-❌ testCreateAccount_初期残高ゼロ
-❌ testDeposit_正常入金
-❌ testWithdraw_正常出金
-❌ testWithdraw_残高不足例外
+XMLデータブラウザ:
+┌─────────────────────────────┐
+│ [XML読み込み] [検証] [保存]   │
+├─────────────────────────────┤
+│ ├📋 configuration.xml        │
+│ │├📂 database               │ 
+│ ││├🔗 host: localhost       │
+│ ││├🔗 port: 3306           │
+│ ││└🔗 name: myapp          │
+│ │├📂 logging                │
+│ ││├🔗 level: DEBUG         │
+│ ││└🔗 file: app.log        │
+│ │└📂 features               │
+│ │ ├☑️ feature1: enabled    │
+│ │ └☐ feature2: disabled    │
+│ └📋 users.xml              │
+│  ├👤 user[id=1]           │
+│  │├📝 name: 田中太郎       │
+│  │├📧 email: tanaka@...   │
+│  │└📅 created: 2024-01   │
+│  └👤 user[id=2]           │
+│   └📝 name: 佐藤花子       │
+└─────────────────────────────┘
 
-実装前テスト実行:
-コンパイルエラー: BankAccountクラスが存在しません
+ツリー操作機能:
+1. ノード展開/折りたたみ:
+   クリック: 📁 → 📂 (展開)
+   ダブルクリック: 深い階層まで展開
+   Shift+クリック: 同レベル全展開
 
-Green フェーズ:
-最小限実装:
-public class BankAccount {
-    private double balance = 0;
-    
-    public double getBalance() { return balance; }
-    public void deposit(double amount) { balance += amount; }
-    public void withdraw(double amount) throws InsufficientFundsException {
-        if (amount > balance) throw new InsufficientFundsException();
-        balance -= amount;
-    }
-}
+2. 動的読み込み:
+   大きなディレクトリ: 必要時に子ノード読み込み
+   プログレス表示: "読み込み中... 45%"
+   キャンセル機能: 長時間処理の中断
 
-テスト実行結果:
-✅ testCreateAccount_初期残高ゼロ
-✅ testDeposit_正常入金
-✅ testWithdraw_正常出金
-✅ testWithdraw_残高不足例外
+3. 検索機能:
+   検索ボックス: "*.java"
+   結果ハイライト: 一致ノードを黄色表示
+   階層表示: 検索結果の親ノードも表示
 
-Refactor フェーズ:
-リファクタリング:
-- 入力値検証の追加
-- メソッドの分割
-- 定数の抽出
+カスタムレンダラー機能:
+アイコン表示:
+- フォルダ: 📁/📂 (閉じた/開いた)
+- ファイル: 拡張子別アイコン
+  - .txt: 📄, .doc: 📃, .jpg: 📷
+  - .exe: ⚙️, .zip: 📦
+- 特殊: 🔌(USBドライブ), 🌐(ネットワーク)
 
-TDDサイクル2: 入金制限機能追加
+状態表示:
+- 読み取り専用: 🔒 アイコン
+- 隠しファイル: 半透明表示
+- 最近更新: ✨ マーク
+- エラー: ❌ アイコン
 
-Red フェーズ:
-❌ testDeposit_負の金額例外
-❌ testDeposit_ゼロ金額例外
-❌ testDeposit_上限額チェック
+編集機能:
+名前変更:
+- F2キー または 右クリック→名前変更
+- インプレース編集: テキストフィールド表示
+- 検証: 不正文字チェック
+- 確定: Enter または フォーカス喪失
 
-実装前テスト実行:
-3件のテストが失敗
+新規作成:
+- 右クリック→新規フォルダ
+- デフォルト名: "新しいフォルダ"
+- 即座に編集モード
 
-Green フェーズ:
-機能追加:
-public void deposit(double amount) throws InvalidAmountException {
-    if (amount <= 0) throw new InvalidAmountException("入金額は正の数である必要があります");
-    if (balance + amount > MAX_BALANCE) throw new InvalidAmountException("残高上限を超えます");
-    balance += amount;
-}
+削除:
+- Delete キーまたは右クリック→削除
+- 確認ダイアログ: "3個のアイテムを削除しますか？"
+- ゴミ箱移動: システム標準動作
 
-テスト実行結果:
-✅ testDeposit_負の金額例外
-✅ testDeposit_ゼロ金額例外
-✅ testDeposit_上限額チェック
+ドラッグ&ドロップ:
+ノード移動:
+- ドラッグ開始: ノードを選択してドラッグ
+- ドロップ先表示: 青色ハイライト
+- 移動実行: ファイルシステム操作
 
-Refactor フェーズ:
-- バリデーション処理の共通化
-- エラーメッセージの定数化
+コピー操作:
+- Ctrl+ドラッグ: コピー操作
+- カーソル表示: + アイコン付き
+- 確認: "ファイルをコピーしますか？"
 
-TDDサイクル3: パスワード検証機能
+制約チェック:
+- 移動先の権限チェック
+- 循環参照防止
+- ディスク容量チェック
 
-Red フェーズ:
-❌ testValidatePassword_8文字以上
-❌ testValidatePassword_大文字含む
-❌ testValidatePassword_小文字含む
-❌ testValidatePassword_数字含む
-❌ testValidatePassword_特殊文字含む
+パフォーマンス最適化:
+遅延読み込み:
+- 子ノードの動的生成
+- メモリ効率: 表示中のノードのみ保持
+- キャッシュ: 一度読み込んだデータは保持
 
-テスト駆動でのPasswordValidator実装:
+バックグラウンド処理:
+- 大きなディレクトリの非同期読み込み
+- プログレス表示: 進行状況バー
+- キャンセル: ユーザーによる中断可能
 
-@Test
-void testValidatePassword_8文字以上() {
-    assertFalse(PasswordValidator.isValid("1234567")); // 7文字
-    assertTrue(PasswordValidator.isValid("12345678"));  // 8文字
-}
+統計情報:
+┌─────────────────────────────┐
+│ 選択フォルダ: C:\Users\Admin │
+│ ファイル数: 1,247           │
+│ フォルダ数: 89              │
+│ 総サイズ: 2.4 GB            │
+│ 最新更新: 2024-07-04        │
+└─────────────────────────────┘
 
-@Test
-void testValidatePassword_大文字含む() {
-    assertFalse(PasswordValidator.isValid("password123"));
-    assertTrue(PasswordValidator.isValid("Password123"));
-}
-
-Green フェーズ段階実装:
-public class PasswordValidator {
-    public static boolean isValid(String password) {
-        return password.length() >= 8 &&
-               hasUpperCase(password) &&
-               hasLowerCase(password) &&
-               hasDigit(password) &&
-               hasSpecialChar(password);
-    }
-    
-    private static boolean hasUpperCase(String password) {
-        return password.chars().anyMatch(Character::isUpperCase);
-    }
-    
-    // 他のヘルパーメソッド...
-}
-
-全テスト実行結果:
-✅ testValidatePassword_8文字以上
-✅ testValidatePassword_大文字含む
-✅ testValidatePassword_小文字含む
-✅ testValidatePassword_数字含む
-✅ testValidatePassword_特殊文字含む
-
-TDD統計:
-総サイクル数: 5
-実装時間: 45分
-テスト作成時間: 30分
-リファクタリング時間: 15分
-
-コードメトリクス:
-生産性: 15行/分
-テストコード比率: 65%
-リファクタリング回数: 8回
-
-TDDの利点確認:
-✅ 要件の明確化
-✅ デバッグ時間の短縮
-✅ リグレッション防止
-✅ 設計の改善
-✅ 仕様の文書化
-
-ベストプラクティス:
-1. 一度に一つの機能をテスト
-2. 最小限の実装で成功させる
-3. テストコードもリファクタリング対象
-4. 意味のあるテスト名を付ける
-5. AAA（Arrange-Act-Assert）パターン使用
-
-失敗パターンの学習:
-❌ 複雑すぎるテスト → 分割する
-❌ 実装に依存したテスト → 振る舞いをテスト
-❌ テストの重複 → DRY原則適用
-❌ あいまいなアサーション → 具体的な期待値
+イベント処理:
+ツリー選択: 詳細情報更新
+ノード展開: 子ノード読み込み
+右クリック: コンテキストメニュー
+ダブルクリック: デフォルトアクション実行
 ```
 
 **評価ポイント**:
-- TDDサイクルの正しい実践
-- 段階的な機能開発
-- 効果的なリファクタリング
+- TreeModelの柔軟な実装
+- 大量データの効率的な処理
+- 階層データの直感的な操作
 
 
 
-### 課題3: モックとスタブを使ったテスト
-**ファイル名**: `UserService.java`, `UserServiceTest.java`, `EmailService.java`, `EmailServiceTest.java`
+### 課題3: データバインディングシステム
+**ファイル名**: `DataBindingSystem.java`, `BindableModel.java`, `PropertyChangeManager.java`, `DataBindingTest.java`
 
-モックフレームワーク（Mockito）を使用し、依存関係を持つクラスのテストを作成してください。
+データモデルとGUIコンポーネントを自動同期するバインディングシステムを実装してください。
 
 **要求仕様**:
-- Mockitoによるモックオブジェクト作成
-- スタブによる戻り値の制御
-- メソッド呼び出しの検証
-- 例外のモック
-- スパイオブジェクトの活用
+- PropertyChangeListenerによる双方向バインディング
+- データ検証とエラー表示の自動化
+- 計算プロパティとリアルタイム更新
+- バインディング式の実装
+- 依存関係の管理
 
 **実行例**:
 ```
-=== モックとスタブを使ったテスト ===
+=== データバインディングシステム ===
+ウィンドウ表示: "Data Binding System"
+サイズ: 700x500ピクセル
 
-UserService テストセットアップ:
-依存関係:
-UserService → UserRepository (データアクセス)
-UserService → EmailService (メール送信)
-UserService → AuditLogger (監査ログ)
+個人情報フォーム:
+┌─────────────────────────────┐
+│ 基本情報                     │
+│ 名前: [田中太郎_____________] │
+│ 年齢: [30] 歳               │
+│ 給与: [5000000] 円          │ 
+├─────────────────────────────┤
+│ 自動計算項目                 │
+│ 月給: [416,667] 円          │ ← 給与÷12 (自動計算)
+│ 税額: [1,000,000] 円        │ ← 給与×0.2 (自動計算)  
+│ 手取: [4,000,000] 円        │ ← 給与-税額 (自動計算)
+├─────────────────────────────┤
+│ 年齢グループ: [30代]         │ ← 年齢による自動分類
+│ 給与ランク: [中級]           │ ← 給与による自動分類
+└─────────────────────────────┘
 
-モック作成:
-@Mock UserRepository mockRepository;
-@Mock EmailService mockEmailService;
-@Mock AuditLogger mockAuditLogger;
+リアルタイム同期デモ:
+給与フィールド変更: 5000000 → 6000000
+即座に更新:
+- 月給: 416,667 → 500,000
+- 税額: 1,000,000 → 1,200,000  
+- 手取: 4,000,000 → 4,800,000
+- 給与ランク: 中級 → 上級
 
-@InjectMocks UserService userService;
+年齢フィールド変更: 30 → 25
+即座に更新:
+- 年齢グループ: 30代 → 20代
 
-スタブテスト例:
+データ検証:
+名前フィールド:
+- 空文字: ❌ "名前は必須です"
+- 長すぎ: ❌ "名前は50文字以内です"
+- 正常: ✅ 緑色枠線
 
-@Test
-void testFindUser_存在するユーザー() {
-    // Arrange (準備)
-    User expectedUser = new User(1L, "田中太郎", "tanaka@example.com");
-    when(mockRepository.findById(1L)).thenReturn(expectedUser);
-    
-    // Act (実行)
-    User actualUser = userService.findUser(1L);
-    
-    // Assert (検証)
-    assertEquals(expectedUser, actualUser);
-    verify(mockRepository).findById(1L);
-}
+年齢フィールド:
+- 負の値: ❌ "年齢は0以上です"
+- 範囲外: ❌ "年齢は150以下です"
+- 正常: ✅ 緑色枠線
 
-@Test
-void testFindUser_存在しないユーザー() {
-    // Arrange
-    when(mockRepository.findById(999L)).thenReturn(null);
-    
-    // Act & Assert
-    assertThrows(UserNotFoundException.class, 
-        () -> userService.findUser(999L));
-    
-    verify(mockRepository).findById(999L);
-}
+給与フィールド:
+- 文字列: ❌ "数値を入力してください"
+- 負の値: ❌ "給与は0以上です"
+- 正常: ✅ 緑色枠線
 
-複雑なスタブパターン:
+複数コンポーネント同期:
+┌─────────────────────────────┐
+│ 給与設定                     │
+│ スライダー: ├──●───┤ 600万   │
+│ スピナー: [6000000] ↑↓      │
+│ テキスト: [6,000,000円]      │
+│ プログレス: ████████░░ 60%   │ ← 1000万を満点とした割合
+└─────────────────────────────┘
+※すべて連動して同じ値を表示・編集
 
-@Test
-void testCreateUser_メール送信成功() {
-    // Arrange
-    User newUser = new User("佐藤花子", "sato@example.com");
-    User savedUser = new User(2L, "佐藤花子", "sato@example.com");
-    
-    when(mockRepository.save(any(User.class))).thenReturn(savedUser);
-    when(mockEmailService.sendWelcomeEmail(any(String.class)))
-        .thenReturn(true);
-    
-    // Act
-    User result = userService.createUser(newUser);
-    
-    // Assert
-    assertEquals(savedUser, result);
-    
-    // メソッド呼び出し検証
-    verify(mockRepository).save(newUser);
-    verify(mockEmailService).sendWelcomeEmail("sato@example.com");
-    verify(mockAuditLogger).logUserCreation(savedUser);
-}
+バインディング式:
+式定義:
+monthlyPay = salary / 12
+tax = salary * 0.2
+netPay = salary - tax
+ageGroup = age < 30 ? "20代" : age < 40 ? "30代" : "40代以上"
+salaryRank = salary < 400万 ? "初級" : salary < 600万 ? "中級" : "上級"
 
-@Test
-void testCreateUser_メール送信失敗() {
-    // Arrange
-    User newUser = new User("鈴木一郎", "suzuki@example.com");
-    
-    when(mockRepository.save(any(User.class)))
-        .thenReturn(new User(3L, "鈴木一郎", "suzuki@example.com"));
-    when(mockEmailService.sendWelcomeEmail("suzuki@example.com"))
-        .thenThrow(new EmailSendException("SMTP server unavailable"));
-    
-    // Act & Assert
-    assertThrows(UserCreationException.class, 
-        () -> userService.createUser(newUser));
-    
-    // ロールバック確認
-    verify(mockRepository).delete(any(User.class));
-    verify(mockAuditLogger).logError(any(String.class));
-}
+依存関係グラフ:
+salary → monthlyPay
+salary → tax
+salary, tax → netPay
+age → ageGroup
+salary → salaryRank
 
-引数マッチャー使用例:
+変更伝播:
+salary変更 → [monthlyPay, tax, salaryRank] 更新
+tax変更 → [netPay] 更新
 
-@Test
-void testUpdateUser_部分更新() {
-    // Arrange
-    Long userId = 1L;
-    User existingUser = new User(1L, "田中太郎", "tanaka@example.com");
-    User updateData = new User(null, "田中二郎", null);
-    
-    when(mockRepository.findById(userId)).thenReturn(existingUser);
-    when(mockRepository.save(argThat(user -> 
-        user.getName().equals("田中二郎") && 
-        user.getEmail().equals("tanaka@example.com")
-    ))).thenReturn(existingUser);
-    
-    // Act
-    userService.updateUser(userId, updateData);
-    
-    // Assert
-    verify(mockRepository).save(argThat(user -> 
-        user.getName().equals("田中二郎")));
-}
+バインディングAPI使用例:
+// 双方向バインディング
+binder.bind(nameField).to(person, "name");
+binder.bind(ageField).to(person, "age");
 
-モック呼び出し回数検証:
+// 一方向バインディング（読み取り専用）
+binder.bind(ageGroupLabel).toExpression(
+    () -> person.getAge() < 30 ? "20代" : "30代以上"
+);
 
-@Test
-void testBulkUserCreation() {
-    // Arrange
-    List<User> users = Arrays.asList(
-        new User("ユーザー1", "user1@example.com"),
-        new User("ユーザー2", "user2@example.com"),
-        new User("ユーザー3", "user3@example.com")
-    );
-    
-    when(mockRepository.save(any(User.class)))
-        .thenReturn(new User(1L, "dummy", "dummy"));
-    when(mockEmailService.sendWelcomeEmail(any(String.class)))
-        .thenReturn(true);
-    
-    // Act
-    userService.createUsers(users);
-    
-    // Assert
-    verify(mockRepository, times(3)).save(any(User.class));
-    verify(mockEmailService, times(3)).sendWelcomeEmail(any(String.class));
-    verify(mockAuditLogger, atLeast(1)).logBulkOperation(any(String.class));
-}
+// 計算プロパティ
+binder.bind(monthlyPayField).toCalculation(
+    () -> person.getSalary() / 12
+).dependsOn(person, "salary");
 
-スパイオブジェクト使用例:
+// 検証ルール
+binder.bind(nameField)
+    .validate(name -> !name.isEmpty(), "名前は必須です")
+    .validate(name -> name.length() <= 50, "50文字以内です");
 
-@Test
-void testEmailService_実際のオブジェクトの一部をスパイ() {
-    // Arrange
-    EmailService realEmailService = new EmailService();
-    EmailService spyEmailService = spy(realEmailService);
-    
-    // 特定のメソッドのみスタブ
-    doReturn(true).when(spyEmailService).isServerAvailable();
-    
-    // Act
-    boolean result = spyEmailService.sendEmail("test@example.com", "件名", "本文");
-    
-    // Assert
-    assertTrue(result);
-    
-    // 実際のメソッドが呼ばれたか確認
-    verify(spyEmailService).validateEmailAddress("test@example.com");
-    verify(spyEmailService).formatMessage("件名", "本文");
-}
+イベント追跡:
+┌─────────────────────────────┐
+│ バインディングログ           │
+│ 10:30:15 salary changed: 5000000 → 6000000
+│ 10:30:15 monthlyPay updated: 416667 → 500000
+│ 10:30:15 tax updated: 1000000 → 1200000
+│ 10:30:15 netPay updated: 4000000 → 4800000
+│ 10:30:15 salaryRank updated: 中級 → 上級
+│ 10:30:20 age changed: 30 → 25
+│ 10:30:20 ageGroup updated: 30代 → 20代
+└─────────────────────────────┘
 
-カスタムアンサー:
-
-@Test
-void testAsyncOperation_カスタム動作() {
-    // Arrange
-    when(mockEmailService.sendEmailAsync(any(String.class), any(String.class)))
-        .thenAnswer(invocation -> {
-            String email = invocation.getArgument(0);
-            String message = invocation.getArgument(1);
-            
-            // カスタムロジック
-            if (email.contains("@invalid.com")) {
-                throw new IllegalArgumentException("Invalid domain");
-            }
-            
-            return CompletableFuture.completedFuture("送信完了: " + email);
-        });
-    
-    // Act & Assert
-    CompletableFuture<String> result = userService.sendNotificationAsync(
-        "user@example.com", "通知メッセージ");
-    
-    assertEquals("送信完了: user@example.com", result.get());
-}
-
-モック検証統計:
-実行テスト数: 15
-モック作成数: 45
-スタブ設定数: 38
-検証実行数: 52
-例外モック数: 8
-
-テスト実行時間:
-スタブ使用: 0.05秒/テスト
-実際の依存関係: 2.3秒/テスト
-効果: 46倍高速化
-
-カバレッジ向上:
-モック使用前: 45%
-モック使用後: 92%
-テスト困難部分をモック化により検証
+パフォーマンス統計:
+バインディング数: 15
+プロパティ変更: 127回
+更新処理時間: 平均 0.5ms
+メモリ使用量: 2.3MB
+リスナー登録数: 45
 ```
 
 **評価ポイント**:
-- Mockitoの効果的な活用
-- 依存関係の適切な分離
-- 複雑なシナリオのテスト実装
+- 双方向バインディングの実装
+- 複雑な依存関係の管理
+- リアルタイム更新の最適化
 
 
 
-### 課題4: テストスイートと継続的インテグレーション
-**ファイル名**: `TestSuite.java`, `IntegrationTest.java`, `PerformanceTest.java`, `CITest.java`
+### 課題4: ダッシュボードアプリケーション
+**ファイル名**: `Dashboard.java`, `WidgetManager.java`, `ChartComponent.java`, `DashboardTest.java`
 
-包括的なテストスイートを作成し、継続的インテグレーションの基盤を構築してください。
+複数のウィジェットを配置できるダッシュボードシステムを作成してください。
 
 **要求仕様**:
-- JUnit5のテストスイート機能
-- 統合テストとパフォーマンステスト
-- テストカテゴリの分類
-- Maven/Gradleとの連携
-- CI/CDパイプラインの基本設計
+- 動的なウィジェット配置システム
+- リサイズ可能なパネル
+- チャート・グラフコンポーネント
+- ウィジェットの設定とカスタマイズ
+- レイアウトの保存・読み込み
 
 **実行例**:
 ```
-=== テストスイートと継続的インテグレーション ===
+=== ダッシュボードアプリケーション ===
+ウィンドウ表示: "Executive Dashboard"
+サイズ: 1200x800ピクセル
 
-テストスイート構成:
-@Suite
-@SelectClasses({
-    CalculatorTest.class,
-    StringUtilsTest.class,
-    BankAccountTest.class,
-    UserServiceTest.class
-})
-class AllUnitTests { }
+ダッシュボードレイアウト:
+┌─────────────────────────────────────────────────────────┐
+│ [+ ウィジェット追加] [レイアウト保存] [設定] [フルスクリーン] │
+├─────────────────────────────────────────────────────────┤
+│ ┌─売上グラフ────────┐ ┌─KPI指標─┐ ┌─タスク状況─┐   │
+│ │     📊           │ │💰 月間売上│ │📋 完了: 85%│   │
+│ │   /\    /\       │ │ ¥12.5M   │ │🔄 進行: 12%│   │
+│ │  /  \  /  \      │ │          │ │⏸️ 保留: 3% │   │
+│ │ /    \/    \     │ │👥 顧客数 │ └───────────┘   │
+│ │/            \    │ │  1,247   │                 │
+│ └─────────────────┘ │          │ ┌─通知センター─┐   │
+│                     │📈 成長率  │ │🔔 新着: 5件 │   │
+│ ┌─地域別売上────────┐ │ +15.3%   │ │📧 未読: 12件│   │
+│ │🌏 地域マップ      │ └─────────┘ │⚠️ 警告: 2件 │   │
+│ │ 北海道: 8%       │             │🎯 締切: 3件 │   │
+│ │ 関東: 45%        │ ┌─株価情報─┐ └───────────┘   │
+│ │ 関西: 25%        │ │📈 NIKKEI │                 │
+│ │ 九州: 12%        │ │ 28,450   │ ┌─天気予報───┐   │
+│ │ その他: 10%      │ │ +245 ↗️  │ │☀️ 東京      │   │
+│ └─────────────────┘ └─────────┘ │ 25°C 晴れ   │   │
+│                                   │ 湿度: 60%   │   │
+│ ┌─システム状況──────────────────────┐ │ 風速: 3m/s  │   │
+│ │💻 CPU: ████░░░░░░ 40%         │ └───────────┘   │
+│ │💾 メモリ: ██████░░ 60%       │                 │
+│ │💿 ディスク: ███░░░░ 30%      │                 │
+│ │🌐 ネットワーク: ██████████ 100%│                 │
+│ └─────────────────────────────────┘                 │
+└─────────────────────────────────────────────────────────┘
 
-@Suite  
-@SelectPackages("com.example.integration")
-class IntegrationTestSuite { }
+ウィジェット操作:
+1. 追加:
+   [+ ウィジェット追加] → ウィジェットギャラリー表示
+   ┌─ウィジェットギャラリー─┐
+   │ 📊 チャート          │
+   │ 📈 ラインチャート    │
+   │ 🥧 円グラフ          │
+   │ 📋 リスト            │
+   │ 🗓️ カレンダー        │
+   │ 🌡️ メーター          │
+   │ 📰 ニュースフィード  │
+   │ ⏰ 時計              │
+   └─────────────────────┘
 
-@Suite
-@SelectClasspathResource("performance-tests")
-class PerformanceTestSuite { }
+2. サイズ変更:
+   ウィジェット端をドラッグ → リサイズ
+   スナップ機能: グリッドに自動整列
+   最小サイズ: 200x150px
 
-テストカテゴリ分類:
+3. 移動:
+   ウィジェットをドラッグ → 位置変更
+   他のウィジェットを自動押し下げ
+   磁石効果: 近くのウィジェットに吸着
 
-単体テスト (Unit Tests):
-@Tag("unit")
-class CalculatorTest {
-    @Test
-    @Tag("fast")
-    void testBasicOperations() { ... }
-    
-    @Test  
-    @Tag("edge-case")
-    void testBoundaryValues() { ... }
-}
+4. 設定:
+   右クリック → 設定メニュー
+   ├── 設定
+   ├── 複製
+   ├── 最前面に移動
+   ├── 最背面に移動
+   ├── ─────────
+   └── 削除
 
-統合テスト (Integration Tests):
-@Tag("integration")
-class DatabaseIntegrationTest {
-    @Test
-    @Tag("database")
-    void testUserRepository() { ... }
-    
-    @Test
-    @Tag("api")
-    void testRestApiEndpoint() { ... }
-}
+チャートウィジェット詳細:
+データソース設定:
+- ファイル: CSV, Excel, JSON
+- データベース: MySQL, PostgreSQL
+- API: REST, GraphQL
+- リアルタイム: WebSocket
 
-パフォーマンステスト:
-@Tag("performance")
-class PerformanceTest {
-    @Test
-    @Timeout(value = 2, unit = TimeUnit.SECONDS)
-    void testLargeDataProcessing() {
-        // 大量データ処理のテスト
-        List<Integer> data = generateLargeDataSet(100000);
-        long startTime = System.currentTimeMillis();
-        
-        List<Integer> result = dataProcessor.process(data);
-        
-        long endTime = System.currentTimeMillis();
-        assertTrue((endTime - startTime) < 2000, 
-            "処理時間が2秒を超えました");
-        assertEquals(100000, result.size());
-    }
-    
-    @RepeatedTest(10)
-    @Tag("stress")
-    void testConcurrentAccess() {
-        // 並行アクセステスト
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        List<Future<String>> futures = new ArrayList<>();
-        
-        for (int i = 0; i < 100; i++) {
-            futures.add(executor.submit(() -> 
-                userService.processRequest("concurrent-test")));
-        }
-        
-        // 全ての処理が完了することを確認
-        futures.forEach(future -> {
-            assertDoesNotThrow(() -> future.get(5, TimeUnit.SECONDS));
-        });
-    }
-}
+グラフタイプ:
+- 線グラフ: 時系列データ
+- 棒グラフ: カテゴリ比較
+- 円グラフ: 構成比
+- 散布図: 相関関係
+- ヒートマップ: 2次元データ
 
-Maven pom.xml設定:
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.0.0-M7</version>
-            <configuration>
-                <groups>unit,integration</groups>
-                <excludedGroups>performance</excludedGroups>
-                <parallel>methods</parallel>
-                <threadCount>4</threadCount>
-            </configuration>
-        </plugin>
-        
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.7</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>report</id>
-                    <phase>test</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
+カスタマイズ:
+色設定: カラーパレット選択
+軸設定: 最小値、最大値、目盛り
+凡例: 位置、表示/非表示
+アニメーション: 有効/無効
 
-CI/CDパイプライン (.github/workflows/ci.yml):
-name: CI Pipeline
+データ更新:
+自動更新: 1分、5分、15分、1時間
+手動更新: 更新ボタンクリック
+リアルタイム: データソース変更時
 
-on: [push, pull_request]
+レイアウト管理:
+保存機能:
+- レイアウト名: "役員ダッシュボード"
+- ウィジェット配置情報
+- 各ウィジェットの設定
+- ファイル形式: JSON
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-    
-    - name: Run unit tests
-      run: mvn test -Dgroups="unit"
-    
-    - name: Run integration tests  
-      run: mvn test -Dgroups="integration"
-    
-    - name: Generate test report
-      run: mvn jacoco:report
-    
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+読み込み機能:
+- 保存済みレイアウト一覧
+- プリセットレイアウト
+- インポート/エクスポート
 
-テスト実行結果:
+テンプレート:
+- 営業ダッシュボード
+- 開発チームダッシュボード
+- システム監視ダッシュボード
+- 財務ダッシュボード
 
-Phase 1: Unit Tests
-===================
-[INFO] Running com.example.CalculatorTest
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.example.StringUtilsTest  
-[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.example.BankAccountTest
-[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
+パフォーマンス最適化:
+仮想化: 画面外ウィジェットの描画停止
+キャッシュ: データの一時保存
+圧縮: レイアウトファイルの最適化
+遅延読み込み: 必要時にウィジェット作成
 
-Unit Tests Summary:
-総テスト数: 47
-成功: 47
-失敗: 0
-スキップ: 0
-実行時間: 1.23秒
+アクセシビリティ:
+キーボード操作: Tab移動、Space選択
+スクリーンリーダー対応: ARIA属性
+ハイコントラスト: 視認性向上
+拡大機能: ズームイン/アウト
 
-Phase 2: Integration Tests  
-=========================
-[INFO] Running com.example.DatabaseIntegrationTest
-[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
-[INFO] Running com.example.ApiIntegrationTest
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
-
-Integration Tests Summary:
-総テスト数: 13
-成功: 13  
-失敗: 0
-スキップ: 0
-実行時間: 8.45秒
-
-Phase 3: Performance Tests
-=========================
-[INFO] Running com.example.PerformanceTest
-[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
-
-Performance Metrics:
-大量データ処理: 1.45秒 (閾値: 2秒) ✅
-並行アクセス: 100リクエスト/3.2秒 ✅
-メモリ使用量: 245MB (上限: 512MB) ✅
-
-テストカバレッジレポート:
-======================
-全体カバレッジ: 89.2%
-
-パッケージ別詳細:
-com.example.model: 95.5% (21/22 lines)
-com.example.service: 87.3% (127/145 lines)  
-com.example.repository: 92.1% (58/63 lines)
-com.example.util: 100% (34/34 lines)
-
-未カバー行:
-- ErrorHandler.java:45 (例外処理)
-- DataValidator.java:78-82 (エッジケース)
-
-品質ゲート:
-✅ 単体テスト成功率: 100% (100%以上必要)
-✅ 統合テスト成功率: 100% (100%以上必要)  
-✅ コードカバレッジ: 89.2% (80%以上必要)
-✅ パフォーマンス: 全て基準内
-❌ 技術的負債: 2件 (0件必要)
-
-CI/CD統計:
-ビルド時間: 4分23秒
-テスト実行時間: 2分15秒
-デプロイ時間: 1分30秒
-総実行時間: 8分8秒
-
-改善提案:
-1. 並列テスト実行でテスト時間短縮
-2. テストデータのキャッシュ活用
-3. 軽量なDockerイメージ使用
-4. 差分テスト実行の導入
-
-自動化レポート生成:
-- HTML形式レポート: target/site/jacoco/index.html
-- XML形式レポート: target/site/jacoco/jacoco.xml
-- トレンド分析: 過去30日のカバレッジ推移
-- 品質メトリクス: 循環的複雑度、重複コード率
+統計情報:
+┌─────────────────────────────┐
+│ ダッシュボード統計           │
+│ 総ウィジェット数: 12        │
+│ データ更新回数: 1,547       │
+│ 平均応答時間: 125ms         │
+│ エラー発生数: 0             │
+│ 最終更新: 2024-07-04 10:30  │
+└─────────────────────────────┘
 ```
 
 **評価ポイント**:
-- 包括的なテストスイートの構築
-- CI/CDパイプラインの理解
-- テスト自動化の実装
+- 複雑なレイアウトシステムの構築
+- 動的なコンポーネント管理
+- 高度な視覚化機能の実装
 
 ## 💡 ヒント
 
 ### 課題1のヒント
-- @DisplayName でテスト名を日本語化
-- @ParameterizedTest で複数パターンを効率的にテスト
-- assertAll() で複数のアサーションをまとめて実行
+- AbstractTableModel を継承して fireTableDataChanged() で更新通知
+- TableCellRenderer.getTableCellRendererComponent() で描画カスタマイズ
+- RowSorter でソート機能、RowFilter でフィルタリング
 
 ### 課題2のヒント
-- 小さなテストから始めて段階的に機能を追加
-- リファクタリング後は全テストを実行して回帰を防ぐ
-- テストコード自体も可読性を重視
+- DefaultMutableTreeNode でノード作成
+- TreeWillExpandListener で遅延読み込み
+- DefaultTreeCellRenderer を継承してアイコンと表示をカスタマイズ
 
 ### 課題3のヒント
-- @Mock でモック作成、@InjectMocks で依存注入
-- verify() でメソッド呼び出しを検証
-- ArgumentCaptor で引数の内容を詳細に検証
+- PropertyChangeSupport でイベント通知
+- DocumentListener でテキストフィールドの変更検出
+- WeakReference で循環参照を防止
 
 ### 課題4のヒント
-- @Tag でテストを分類し、maven-surefire-plugin で実行制御
-- TestContainers で統合テスト用のインフラ環境
-- JaCoCo でコードカバレッジ測定
+- JLayeredPane で重なり順管理
+- ComponentListener でリサイズ検出
+- Graphics2D で高品質なチャート描画
 
-## 🔍 単体テストのポイント
+## 🔍 高度なGUIのポイント
 
-1. **テストピラミッド**: 単体テスト > 統合テスト > E2Eテスト
-2. **FIRST原則**: Fast, Independent, Repeatable, Self-validating, Timely
-3. **AAAパターン**: Arrange(準備) - Act(実行) - Assert(検証)
-4. **境界値テスト**: 正常値、境界値、異常値の網羅
-5. **モック活用**: 依存関係の分離とテスト高速化
-6. **継続的改善**: カバレッジとメトリクスによる品質向上
+1. **MVCパターン**: モデル、ビュー、コントローラーの分離
+2. **カスタムレンダリング**: 独自の描画ロジック実装
+3. **データバインディング**: モデルとビューの自動同期
+4. **パフォーマンス**: 大量データの効率的な処理
+5. **ユーザビリティ**: 直感的で使いやすいインターフェイス
+6. **拡張性**: プラグイン機能やカスタマイズ対応
 
 ## ✅ 完了チェックリスト
 
-- [ ] 課題1: JUnit5を使った基本的な単体テストが作成できている
-- [ ] 課題2: TDDサイクルを実践してクラスを開発できている
-- [ ] 課題3: モックを使って依存関係のあるクラスをテストできている
-- [ ] 課題4: テストスイートとCI/CDパイプラインが構築できている
-- [ ] テストカバレッジを理解して品質向上に活用できている
-- [ ] 効果的なテスト戦略を立てることができている
+- [ ] 課題1: 高度なテーブル操作システムが実装できている
+- [ ] 課題2: ツリー構造データブラウザが作成できている
+- [ ] 課題3: データバインディングシステムが構築できている
+- [ ] 課題4: ダッシュボードアプリケーションが開発できている
+- [ ] MVCパターンを理解して実装できている
+- [ ] カスタムレンダラーとエディターが作成できている
 
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なテスト技法に挑戦しましょう！
+**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なGUIアーキテクチャに挑戦しましょう！
