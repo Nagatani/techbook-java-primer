@@ -950,8 +950,8 @@ LIMIT 100;
 
 === 生成されたファイル一覧 ===
 app_config.xml       (706 bytes)
-user_data.json       (305 bytes)
-user_profile.html    (1177 bytes)
+user_data.json       (291 bytes)
+user_profile.html    (1170 bytes)
 user_query.sql       (449 bytes)
 ```
 

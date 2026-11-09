@@ -158,7 +158,7 @@ public class TextBlockStructuredData {
         // 生成されたファイルの一覧表示
         System.out.println("\n=== 生成されたファイル一覧 ===");
         Path currentDir = Paths.get(".");
-        Files.list(currentDir)
+        Files.list(currentDir).sorted()  // 並び順はOSによって異なるため名前順にする
                 .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))
                 .forEach(p -> {
                     try {
