@@ -13,6 +13,8 @@
     "check:java": "node scripts/check-java-samples.js",
     "check:java:run": "node scripts/check-java-samples.js --run",
     "check:samples": "node scripts/sample-code.js check",
+    "check:structure": "node scripts/check-structure.js",
+    "crossref": "node scripts/check-structure.js crossref",
     "samples:sync": "node scripts/sample-code.js sync",
     "samples:extract": "node scripts/sample-code.js extract",
     "lint": "npx textlint manuscripts/*.md",
