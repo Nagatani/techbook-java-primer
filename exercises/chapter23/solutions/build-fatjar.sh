@@ -99,20 +99,20 @@ for jar in ../"$LIB_DIR"/*.jar; do
     jar xf "$jar"
 done
 
-# METAINFの競合を解決
-rm -rf META-INF/*.SF META-INF/*.DSA META-INF/*.RSA
+# METAINFの競合を解決（署名ファイルと、各ライブラリのマニフェストを取り除く）
+rm -rf META-INF/*.SF META-INF/*.DSA META-INF/*.RSA META-INF/MANIFEST.MF
 
-# マニフェストファイルを作成
-cat > META-INF/MANIFEST.MF << EOF
+# マニフェストファイルを作成（jarコマンドのmオプションで取り込む）
+cat > ../manifest-fat.txt << EOF
 Manifest-Version: 1.0
 Main-Class: $MAIN_CLASS
-Created-By: JSON Tool Build Script
 Implementation-Title: JSON Tool
 Implementation-Version: 1.0
 EOF
 
 # JARファイルを作成
-jar cf ../"$DIST_DIR"/"$JAR_NAME" *
+# jar cf だとjarコマンドが既定のマニフェストを作り、Main-Classが入らないため、mオプションで指定する
+jar cfm ../"$DIST_DIR"/"$JAR_NAME" ../manifest-fat.txt *
 cd ..
 
 if [ $? -eq 0 ]; then

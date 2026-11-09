@@ -146,14 +146,11 @@ cd temp
 cp -r ../build/* .
 jar xf ../lib/gson.jar
 jar xf ../lib/commons-cli.jar
-rm -rf META-INF/*.SF META-INF/*.DSA META-INF/*.RSA
+rm -rf META-INF/*.SF META-INF/*.DSA META-INF/*.RSA META-INF/MANIFEST.MF
 
-# 4. マニフェストを作成
-echo "Manifest-Version: 1.0" > META-INF/MANIFEST.MF
-echo "Main-Class: chapter23.solutions.JsonTool" >> META-INF/MANIFEST.MF
-
-# 5. JARファイルを作成
-jar cf ../json-tool.jar *
+# 4. Main-Classを指定してJARファイルを作成（eオプションでエントリポイントを指定する）
+# jar cf では既定のマニフェストが作られ、Main-Classが入らない
+jar cfe ../json-tool.jar chapter23.solutions.JsonTool *
 cd ..
 rm -rf temp
 ```

@@ -1,7 +1,9 @@
 package chapter23.solutions;
 
 import javax.swing.*;
+import javax.swing.Timer;  // java.util.Timerと区別するため明示する
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -86,7 +88,7 @@ public class MessageApp extends JFrame {
      */
     private void loadMessagesForLanguage(String language) {
         try {
-            Locale locale = new Locale(language);
+            Locale locale = Locale.of(language);  // new Locale(String)はJava 19から非推奨
             messages = ResourceBundle.getBundle("resources.messages", locale);
         } catch (MissingResourceException e) {
             System.err.println("警告: " + language + "のメッセージリソースが見つかりません。");
