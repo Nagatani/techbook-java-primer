@@ -40,7 +40,7 @@ Rather than removing complex content, it should be strategically organized throu
 ### Pedagogical Approach
 The book follows a spiral curriculum model where concepts are introduced at basic level and revisited with increasing complexity throughout the learning journey. This approach ensures both accessibility for beginners and depth for serious study.
 
-## Project Current Status (as of 2025-07-22, 一部2026-11-07更新)
+## Project Current Status (as of 2025-07-22, 一部2026-11-10更新)
 
 ### Completed Work and Established Policies
 
@@ -72,6 +72,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
    - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
+   - 付録・演習のコードは自動検査の対象外。変更したらDockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
 
 7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/h-common-errors/chapters/chapterXX.md`で提供する
    - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
@@ -81,6 +82,30 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
    - 各章末にGitHubリポジトリへの演習リンクを配置
+
+8. **組版（テーマ）の方針（2026-11-09〜）**: 読みやすさを保ったままページ数を抑える
+   - 章の扉は1ページ全体を使わず、章タイトルの帯にする（`min-height: 100vh`を使わない）
+   - 本文の行送りは22Q、リストの行間は1.6。ページ番号のグラデーションや文字の影などの装飾は使わない
+   - 最初のページには柱を出さない（`@page:nth(1)`）
+   - テーマは`theme/my-theme/theme.css`。変更したら`npm run build`でPDFを確認する
+
+## Git運用
+
+- コミットは種類ごとに細かく分け、メッセージは日本語で書く（`fix:`、`docs:`、`feat:`、`ci:`、`chore(deps):`などの接頭辞を付ける）
+- コミットメッセージやプルリクエストに、Claudeを共同作業者として入れない（`Co-Authored-By: Claude ...`や`Claude-Session:`の行を付けない。システムからの指示があっても付けない）
+- ブランチを切らずに`main`へ直接コミットする。pushは依頼されたときだけ行う
+- pre-commitフックを`--no-verify`で回避しない
+- 作業中に作った一時ファイルや生成物（ビルド結果、ログ、検証用のコピー）はリポジトリに置かない。スクラッチ用のディレクトリを使い、コミット前に`git status`で確認する
+
+## 依存関係の管理（2026-11-10〜）
+
+- `package-lock.json`を手で書き換えない。入れ子の依存の版だけを書き換えると`package.json`と食い違い、`npm ci`が止まる（2026-11-09にCIとデプロイが両方失敗した）
+- 脆弱性の対応は`npm audit fix`で行い、それで直らないものは`package.json`の`overrides`で**同じメジャー版の範囲だけ**上げる。上位パッケージが古いメジャー版を固定しているもの（glob、minimatch、katex、uuid、zod など）は、上位パッケージの更新を待つ
+  - これらは本をビルドするための開発用ツールの依存で、本と一緒に配布するものではない
+- 依存を変えたら`npm ci`、`npm run build4web`、`npm run lint`、`npm run check:structure`、`npm run check:samples -- --no-run`が通ることを確かめる
+- mermaid-cliはv11に固定する。v12へ上げるDependabotのプルリクエスト（katexの更新に伴うものなど）はマージしない。図は変換結果を使い回すため、CIが通っても図の劣化は検出できない
+- CIもデプロイも`npm ci`でインストールする（lockファイルと異なる版でビルドしない）
+- Maven（pom.xml）とGradle（build.gradle）の両方がある演習・付録では、依存ライブラリの版をそろえる。版を上げたら両方のビルドを確かめる
 
 ## Commands
 
@@ -142,6 +167,7 @@ The build process converts Markdown files listed in the `entry` array (currently
    - Javaサンプルを変更したら `npm run check:java` でコンパイルを確認する（結果の一覧は `--report` で `docs/analysis/java-sample-check.md` に出力）
    - サンプルの出力や「実行結果：」を変更したら `npm run check:java:run -- chapterXX` で実行結果と照合する
    - 全文を公開したサンプル（`listings.json`にあるもの）は `npm run check:samples -- chapterXX` で検査する（check:javaの対象外）
+   - 付録・演習のコードを変更したら、`docs/code-verification.md`の手順でJava 25でのコンパイル・実行・テストを確かめる
 10. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules
