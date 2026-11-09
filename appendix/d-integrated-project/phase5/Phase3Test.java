@@ -1,6 +1,6 @@
 // Phase3Test.java - フェーズ3のテスト
 public class Phase3Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DuplicateStudentException {
         System.out.println("=== フェーズ3: コレクションとジェネリクスのテスト ===\n");
         
         StudentService service = new StudentService();
