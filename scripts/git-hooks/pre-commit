@@ -1,0 +1,29 @@
+#!/bin/sh
+# 共有のpre-commitフック（有効にする: git config core.hooksPath scripts/git-hooks）
+# 速く誤検出の少ない検査だけを行う。textlintやサンプルの検査はCI（.github/workflows/check.yml）で行う。
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if ! command -v node >/dev/null 2>&1; then
+    echo "pre-commit: nodeが見つからないため検査を省略しました"
+    exit 0
+fi
+
+# 1. 章・演習・付録B・用語集・相互参照ガイドの食い違い（あればコミットを止める）
+if ! node scripts/check-structure.js; then
+    echo ""
+    echo "pre-commit: 構成の食い違いがあるためコミットを中止しました（npm run check:structure）"
+    exit 1
+fi
+
+# 2. CLAUDE.mdのルール（エラーがあればコミットを止める。報告は失敗したときだけ表示）
+out=$(node scripts/check-claude-md-compliance.js 2>&1)
+if [ $? -ne 0 ]; then
+    echo "$out" | tail -40
+    echo ""
+    echo "pre-commit: CLAUDE.mdのルール違反があるためコミットを中止しました（npm run check:compliance）"
+    exit 1
+fi
+echo "CLAUDE.mdのルール: エラーなし"
+
+exit 0
