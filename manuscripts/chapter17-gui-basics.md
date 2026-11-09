@@ -1338,7 +1338,7 @@ public class ProperGUIInitialization {
     public static void main(String[] args) {
         // システムのLook&Feelを設定（EDT外でも可）
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
