@@ -887,7 +887,6 @@ public class BatchProcessingExample {
 }
 ```
 
-※ 本章の高度な内容については、付録B.20「データベース高度機能」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b20-database-advanced/`）を参照してください。
 
 ## まとめ
 

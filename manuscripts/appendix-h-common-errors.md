@@ -42,7 +42,7 @@ https://github.com/Nagatani/techbook-java-primer/issues
 
 ### 関連する章
 
-- 第3章「オブジェクト指向プログラミングの基礎」 - NullPointerExceptionの基礎
+- 第3章「オブジェクト指向の考え方」 - NullPointerExceptionの基礎
 - 第4章「クラスとインスタンス」 - オブジェクトの初期化とnullチェック
 - 第9章「コレクションフレームワーク」 - ConcurrentModificationException
 - 第10章「ジェネリクス」 - ClassCastException

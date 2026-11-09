@@ -135,10 +135,6 @@ try (ServerSocket server = new ServerSocket(8080)) {
 
 - **IOExceptionの詳細**（→ 第13章）
   - ネットワークI/Oでの例外処理
-- **タイムアウト設定**（→ 付録B.15）
-  - 詳細なタイムアウト戦略
-- **セキュリティ考慧**（→ 付録B.16）
-  - SSL/TLSの詳細設定
 
 ## デバッグのヒント
 
