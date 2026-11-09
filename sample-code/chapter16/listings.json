@@ -69,8 +69,8 @@
     "excerpt": [
       { "file": "ChatServer.java", "from": 6, "to": 35 },
       { "file": "ChatServer.java", "from": 42, "to": 42 },
-      { "file": "ChatServer.java", "from": 52, "to": 72 },
-      { "file": "ChatServer.java", "from": 87, "to": 93 }
+      { "file": "ChatServer.java", "from": 52, "to": 74 },
+      { "file": "ChatServer.java", "from": 90, "to": 96 }
     ]
   },
   "16-10": {
@@ -78,8 +78,8 @@
     "main": "ChatClient",
     "excerpt": [
       { "file": "ChatClient.java", "from": 5, "to": 5 },
-      { "file": "ChatClient.java", "from": 9, "to": 38 },
-      { "file": "ChatClient.java", "from": 43, "to": 44 }
+      { "file": "ChatClient.java", "from": 9, "to": 42 },
+      { "file": "ChatClient.java", "from": 49, "to": 50 }
     ]
   },
   "16-11": {

@@ -344,7 +344,7 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 public class HttpURLConnectionExample {
     public static void main(String[] args) {
         try {
-            URL url = new URL("https://api.github.com/users/github");
+            URL url = URI.create("https://api.github.com/users/github").toURL();
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
                 // ...
@@ -563,9 +563,9 @@ UDPの特徴と使用場面。
 
 ### チャットサーバー
 
-以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。ConcurrentHashMapを使用してスレッドセーフにクライアントのリストを管理し、各クライアントとの通信は独立したスレッドで処理されます。
+以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。`Collections.synchronizedSet`でスレッドセーフにクライアントの集合を管理し、各クライアントとの通信は独立したスレッドで処理されます。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜35、42、52〜72、87〜93行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜35、42、52〜74、90〜96行目）</span>
 
 ```java
 public class ChatServer {
@@ -619,10 +619,12 @@ public class ChatServer {
                 // メッセージを受信してブロードキャスト
                 String message;
                 while ((message = in.readLine()) != null) {
+                    if (message.equalsIgnoreCase("/quit")) {
+                        break;
+                    }
                     broadcast(username + ": " + message, this);
                 }
-            } catch (IOException e) {
-            // ...
+                // ...
         }
         
         public void sendMessage(String message) {
@@ -636,7 +638,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでユーザーからの入力を受け付けます。この設計により、メッセージの送受信を同時に行うことができます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java（5、9〜38、43〜44行目）</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java（5、9〜42、49〜50行目）</span>
 
 ```java
 public class ChatClient {
@@ -663,14 +665,18 @@ public class ChatClient {
             receiveThread.start();
             
             // メッセージ送信ループ
-            String userInput;
-            while ((userInput = scanner.nextLine()) != null) {
+            while (scanner.hasNextLine()) {
+                String userInput = scanner.nextLine();
                 out.println(userInput);
                 
                 if (userInput.equalsIgnoreCase("/quit")) {
                     break;
                 }
             }
+            
+            // 受信側を閉じて受信スレッドのreadLine()を終わらせてから、資源を閉じる
+            socket.shutdownInput();
+            receiveThread.join();
             // ...
     }
 }
@@ -684,6 +690,12 @@ public class ChatClient {
 ```
 
 正常に接続できた場合は、メッセージの送受信が可能になり、`/quit`コマンドで終了できます。
+サーバーは`/quit`を受け取ると、その接続を閉じて退室を知らせます。
+
+終了するときは、try-with-resources文が資源を閉じる前に、`socket.shutdownInput()`で受信側を閉じ、受信スレッドの終了を`join()`で待っています。
+受信スレッドは`in.readLine()`で読み込みを待っているあいだ`BufferedReader`のロックを持っています。
+そのまま`BufferedReader`を閉じようとすると、メインスレッドがそのロックを待ち続けて終わらなくなります。
+受信側を閉じると`readLine()`が`null`を返して受信スレッドが終わるため、そのあとで資源を閉じられます。
 
 ## JSON APIクライアントの実装
 

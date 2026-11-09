@@ -67,6 +67,9 @@ public class ChatServer {
                 // メッセージを受信してブロードキャスト
                 String message;
                 while ((message = in.readLine()) != null) {
+                    if (message.equalsIgnoreCase("/quit")) {
+                        break;
+                    }
                     broadcast(username + ": " + message, this);
                 }
             } catch (IOException e) {

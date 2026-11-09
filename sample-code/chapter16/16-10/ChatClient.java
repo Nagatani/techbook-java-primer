@@ -28,8 +28,8 @@ public class ChatClient {
             receiveThread.start();
             
             // メッセージ送信ループ
-            String userInput;
-            while ((userInput = scanner.nextLine()) != null) {
+            while (scanner.hasNextLine()) {
+                String userInput = scanner.nextLine();
                 out.println(userInput);
                 
                 if (userInput.equalsIgnoreCase("/quit")) {
@@ -37,8 +37,14 @@ public class ChatClient {
                 }
             }
             
+            // 受信側を閉じて受信スレッドのreadLine()を終わらせてから、資源を閉じる
+            socket.shutdownInput();
+            receiveThread.join();
+            
         } catch (IOException e) {
             System.err.println("接続エラー: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
