@@ -50,5 +50,12 @@
     "textlint-rule-preset-jtf-style": "^3.0.3",
     "textlint-rule-prh": "^6.1.1",
     "textlint-rule-spellcheck-tech-word": "^5.0.0"
+  },
+  "overrides": {
+    "dompurify": "^3.4.17",
+    "valibot": "^1.4.2",
+    "vite": "~8.1.7",
+    "prismjs": "^1.30.0",
+    "trim": "0.0.3"
   }
 }
