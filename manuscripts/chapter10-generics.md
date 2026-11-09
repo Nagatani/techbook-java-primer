@@ -693,7 +693,7 @@ var型推論は、Javaの表現力を高める強力な機能ですが、適切�
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`
 
 ### 課題構成
 - 本章の基本概念の理解確認

@@ -802,7 +802,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
 
 ```
-exercises/chapter16/
+exercises/chapter15/
 ├── basic/          # 基礎レベル課題
 │   ├── README.md   # 詳細な課題説明
 │   ├── BasicThreading.java
@@ -1766,7 +1766,7 @@ public class ResiliencePatterns {
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter16/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`
 
 ### 課題構成
 - 本章の基本概念の理解確認

@@ -606,19 +606,9 @@ public class SwingWorkerExample extends JFrame {
 
 ## 章末演習
 
-### 演習課題へのアクセス
+本章の演習課題は準備中です。準備ができしだい、GitHubリポジトリの次の場所で提供します。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/`
 
-本章の理解を深めるための演習課題を用意しています。以下のGitHubリポジトリで、実践的な問題に挑戦してください。
+それまでは、本文のサンプルコードを動かし、値や部品を変えて動きの違いを確かめてください。コンパイルできる全文はGitHubリポジトリの`sample-code/chapter19/`にあります。
 
-**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/
-
-### 課題構成
-
-演習は以下の実践的な課題で構成されています。
-
-- インタラクティブ描画アプリケーション（高度なマウスイベント処理）
-- フォームバリデータ（DocumentListenerを活用したリアルタイム検証）
-- 高度なメニューシステム（Actionパターンと動的メニュー）
-- マウストラッカー（詳細なマウス動作の分析）
-
-各演習には、本章で学んだ技術を実践的に活用するための詳細な要件が含まれています。
+本章の内容を理解できたら、第20章「JTableとJListの基礎」に進みましょう。

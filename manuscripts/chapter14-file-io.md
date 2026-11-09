@@ -1065,7 +1065,7 @@ JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生�
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`
 
 ### 課題構成
 - 本章の基本概念の理解確認

@@ -834,7 +834,7 @@ public class TransferService {
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`
 
 ### 課題構成
 - 本章の基本概念の理解確認
@@ -855,7 +855,7 @@ public class TransferService {
 演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
 
 ```
-exercises/chapter14/
+exercises/chapter13/
 ├── basic/          # 基礎レベル課題
 │   ├── README.md   # 詳細な課題説明
 │   ├── BasicExceptionHandling.java

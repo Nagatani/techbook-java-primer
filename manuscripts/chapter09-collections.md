@@ -810,7 +810,7 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`
 
 ### 課題構成
 - 本章の基本概念の理解確認

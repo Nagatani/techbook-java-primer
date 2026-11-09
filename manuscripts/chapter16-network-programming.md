@@ -929,7 +929,7 @@ public class NIOServer {
 
 ### 演習課題へのアクセス
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter17/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter16/`
 
 ### 課題構成
 - 本章の基本概念の理解確認
