@@ -253,7 +253,8 @@ public class FormValidator extends JFrame {
             if (text.isEmpty()) {
                 return new ValidationResult(false, "パスワード確認を入力してください");
             }
-            if (!text.equals(passwordField.getText())) {
+            // getText()は非推奨（パスワードを文字列として残さないため）。getPassword()で文字の配列を取り出す
+            if (!text.equals(new String(passwordField.getPassword()))) {
                 return new ValidationResult(false, "パスワードが一致しません");
             }
             return new ValidationResult(true, "");
@@ -625,10 +626,7 @@ public class FormValidator extends JFrame {
         public JLabel getStatusLabel() {
             return statusLabel;
         }
-        
-        public String getText() {
-            return new String(getPassword());
-        }
+
     }
     
     // バリデーターインターフェイス

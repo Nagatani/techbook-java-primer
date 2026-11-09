@@ -21,6 +21,9 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -31,7 +34,19 @@ public class MVCExample {
     /**
      * Model: タスクデータとビジネスロジックを管理
      */
-    public static class TaskModel extends Observable {
+    public static class TaskModel {
+        // 変更の通知（java.util.ObservableはJava 9で非推奨になったため、PropertyChangeSupportを使う）
+        private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
+        
+        /** モデルの変更を受け取るリスナーを登録する */
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            changes.addPropertyChangeListener(listener);
+        }
+        
+        /** 変更の種類（TASK_ADDEDなど）をリスナーに通知する */
+        private void fireChange(String eventName) {
+            changes.firePropertyChange("model", null, eventName);
+        }
         
         // タスクの状態を表す列挙型
         public enum TaskStatus {
@@ -184,23 +199,20 @@ public class MVCExample {
         // タスク操作メソッド
         public void addTask(Task task) {
             tasks.add(task);
-            setChanged();
-            notifyObservers("TASK_ADDED");
+            fireChange("TASK_ADDED");
         }
         
         public void updateTask(Task task) {
             int index = tasks.indexOf(task);
             if (index != -1) {
                 tasks.set(index, task);
-                setChanged();
-                notifyObservers("TASK_UPDATED");
+                fireChange("TASK_UPDATED");
             }
         }
         
         public void deleteTask(Task task) {
             if (tasks.remove(task)) {
-                setChanged();
-                notifyObservers("TASK_DELETED");
+                fireChange("TASK_DELETED");
             }
         }
         
@@ -258,20 +270,17 @@ public class MVCExample {
         // フィルタ設定
         public void setStatusFilter(TaskStatus status) {
             this.filterStatus = status;
-            setChanged();
-            notifyObservers("FILTER_CHANGED");
+            fireChange("FILTER_CHANGED");
         }
         
         public void setPriorityFilter(TaskPriority priority) {
             this.filterPriority = priority;
-            setChanged();
-            notifyObservers("FILTER_CHANGED");
+            fireChange("FILTER_CHANGED");
         }
         
         public void setSearchText(String searchText) {
             this.searchText = searchText != null ? searchText : "";
-            setChanged();
-            notifyObservers("FILTER_CHANGED");
+            fireChange("FILTER_CHANGED");
         }
         
         // 統計情報
@@ -320,7 +329,7 @@ public class MVCExample {
     /**
      * View: ユーザーインターフェイスを管理
      */
-    public static class TaskView extends JFrame implements Observer {
+    public static class TaskView extends JFrame implements PropertyChangeListener {
         
         private TaskModel model;
         private TaskController controller;
@@ -338,7 +347,7 @@ public class MVCExample {
         
         public TaskView(TaskModel model) {
             this.model = model;
-            this.model.addObserver(this);
+            this.model.addPropertyChangeListener(this);
             
             initializeComponents();
             setupLayout();
@@ -539,13 +548,13 @@ public class MVCExample {
             setJMenuBar(menuBar);
         }
         
-        // Observerインターフェイスの実装
+        // モデルの変更通知を受け取る（Observerパターン）
         @Override
-        public void update(Observable o, Object arg) {
+        public void propertyChange(PropertyChangeEvent evt) {
             SwingUtilities.invokeLater(() -> {
                 refreshTable();
                 updateStatistics();
-                updateStatusLabel((String) arg);
+                updateStatusLabel((String) evt.getNewValue());
             });
         }
         

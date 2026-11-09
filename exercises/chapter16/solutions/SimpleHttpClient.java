@@ -100,7 +100,7 @@ public class SimpleHttpClient {
             throw new IOException("リダイレクト回数が上限を超えました");
         }
         
-        URL url = new URL(urlString);
+        URL url = URI.create(urlString).toURL();  // new URL(String)はJava 20から非推奨
         
         // HTTPSはサポートしない（簡易実装のため）
         if ("https".equalsIgnoreCase(url.getProtocol())) {
