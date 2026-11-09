@@ -39,7 +39,7 @@ class ResultTest {
     @Test
     @DisplayName("Map should transform success value")
     void mapShouldTransformSuccessValue() {
-        Result<Integer, String> result = Result.success(10)
+        Result<Integer, String> result = Result.<Integer, String>success(10)
             .map(x -> x * 2)
             .map(x -> x + 5);
         
@@ -60,7 +60,7 @@ class ResultTest {
     @Test
     @DisplayName("FlatMap should chain results")
     void flatMapShouldChainResults() {
-        Result<Integer, String> result = Result.success(10)
+        Result<Integer, String> result = Result.<Integer, String>success(10)
             .flatMap(x -> Result.success(x * 2))
             .flatMap(x -> x > 15 ? Result.success(x) : Result.failure("Too small"));
         
@@ -70,7 +70,7 @@ class ResultTest {
     @Test
     @DisplayName("Filter should create failure for non-matching predicate")
     void filterShouldCreateFailureForNonMatchingPredicate() {
-        Result<Integer, String> result = Result.success(10)
+        Result<Integer, String> result = Result.<Integer, String>success(10)
             .filter(x -> x > 20, "Value too small");
         
         assertTrue(result.isFailure());

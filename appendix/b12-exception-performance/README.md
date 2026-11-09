@@ -60,7 +60,7 @@ src/main/java/com/example/exception/
 
 ### 前提条件
 
-- Java 17以上
+- Java 25以上
 - Maven 3.6+
 
 ### ビルドと実行
