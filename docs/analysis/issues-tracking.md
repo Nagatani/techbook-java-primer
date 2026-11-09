@@ -422,3 +422,6 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - 発展・チャレンジ課題に、実在しない技術を題材にした課題がある（「意識を持つ自律イベント処理システム」「量子的イベント重ね合わせ処理システム」など。第18・20・21章ほか）
 - 第17・19章と付録Eには演習がない
 - pre-commitフックを`scripts/git-hooks/pre-commit`として共有した。速い検査（check:structure、check:compliance。約0.7秒）だけでコミットを止め、textlintはフックから外した。GitHub Actionsの`check.yml`で、構成・索引・サンプルの抜粋とコンパイルを検査する（実行結果の照合とtextlintは参考扱い）
+- 役割を終えたツールを削除した: `tools/`の分割校正ツール一式（22ファイル）、`scripts/`の単発の変換・分析スクリプト（21ファイル）、ルートの古い構造分析JSON（2件）。校正の心得は`docs/proofreading-workflow.md`に移した。残したスクリプトは`scripts/README.md`に一覧がある
+- `prh-rules.yml`は2025-07に削除されており、CLAUDE.mdの記載と食い違っていた（記載を直した）。「インターフェース」が第19章のサンプルのコメントに1か所残っていたため直した
+

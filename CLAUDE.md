@@ -104,7 +104,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - Book configuration is in `vivliostyle.config.js`
 - Markdown sources are in `manuscripts/` directory
 - PDF output goes to `output/techbook-java-primer.pdf`
-- textlint configuration is in `.textlintrc.json` and `prh-rules.yml`
+- textlint configuration is in `.textlintrc.json` (`prh-rules.yml` was removed in 2025-07; the 「インターフェイス」 spelling is not checked automatically)
 
 ## Architecture
 
@@ -130,6 +130,7 @@ The build process converts Markdown files listed in the `entry` array (currently
    - 全体を見渡す作業: `docs/summaries/overview.md` → 各章の要約 → 必要な節だけ本文を読む
    - 章の修正: `docs/summaries/chapterXX.md` で節構成をつかみ、`docs/book-index/` の行範囲で節ごとに読む
    - 章をまたぐ校閲: 章ごとにサブエージェントへ任せ、指摘事項だけを受け取る
+   - 校正の手順と注意点（正規表現による一括置換をしない等）は`docs/proofreading-workflow.md`
 4. Write or edit manuscript files in `manuscripts/*.md`
 5. Sample code is maintained in `sample-code/` (full sources). Edit the full source there and run `npm run samples:sync` instead of editing the manuscript code block
 6. Run `npm run lint` to check for writing style issues
