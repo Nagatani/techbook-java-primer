@@ -104,6 +104,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
   - これらは本をビルドするための開発用ツールの依存で、本と一緒に配布するものではない
 - 依存を変えたら`npm ci`、`npm run build4web`、`npm run lint`、`npm run check:structure`、`npm run check:samples -- --no-run`が通ることを確かめる
 - mermaid-cliはv11に固定する。v12へ上げるDependabotのプルリクエスト（katexの更新に伴うものなど）はマージしない。図は変換結果を使い回すため、CIが通っても図の劣化は検出できない
+- Dependabotの設定は`.github/dependabot.yml`。npmは定期的な版の更新を止め（`open-pull-requests-limit: 0`）、セキュリティ更新だけを受け取る。mermaid-cliのメジャー版更新は`ignore`で対象外にしている。GitHub Actionsのアクションは月1回更新を確認する
 - CIもデプロイも`npm ci`でインストールする（lockファイルと異なる版でビルドしない）
 - Maven（pom.xml）とGradle（build.gradle）の両方がある演習・付録では、依存ライブラリの版をそろえる。版を上げたら両方のビルドを確かめる
 
