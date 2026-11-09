@@ -1888,6 +1888,13 @@ section:has(h1:contains("目次")) {
   @right-middle {
     content: none;
   }
+  /* 章の最初のページは章タイトルの帯があるので、上部の柱を出さない */
+  @top-right {
+    content: none;
+  }
+  @top-left {
+    content: none;
+  }
 }
 
 /* 柱 */
