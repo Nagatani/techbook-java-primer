@@ -868,7 +868,7 @@ public class TextBlockStructuredData {
         String userName = "田中太郎";
         int userAge = 30;
         String timestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         
         String jsonData = """
                 {
@@ -907,7 +907,7 @@ public class TextBlockStructuredData {
   "user": {
     "name": "田中太郎",
     "age": 30,
-    "timestamp": "2025-08-01T21:02:54.993907",
+    "timestamp": "2025-08-01T21:02:54",
     "preferences": {
       "language": "Japanese",
       "theme": "dark",
@@ -916,7 +916,7 @@ public class TextBlockStructuredData {
   },
   "metadata": {
     "version": "1.0",
-    "created": "2025-08-01T21:02:54.993907"
+    "created": "2025-08-01T21:02:54"
   }
 }
 
