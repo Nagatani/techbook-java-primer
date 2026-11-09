@@ -1561,7 +1561,7 @@ blockquote:has(strong.column-section) li {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5em 0;
+  margin: 0.8em 0;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
@@ -1577,10 +1577,11 @@ table thead {
 }
 
 table thead th {
-  padding: 12px 16px;
+  padding: 5px 10px;
   text-align: left;
+  vertical-align: bottom;
   font-weight: 600;
-  font-size: 13Q;
+  font-size: 12Q;
   border: none;
   position: relative;
 }
@@ -1610,9 +1611,25 @@ table tbody tr:last-child {
 /* テーブルセル */
 table td,
 table th {
-  padding: 10px 16px;
+  /* 行の区切りが分かる程度の上下の余白にとどめる */
+  padding: 4px 10px;
+  line-height: 1.45;
   vertical-align: top;
   border-left: 1px solid #dee2e6;
+}
+
+/* 本文の両端揃えを引き継ぐと、狭いセルで「32 ビ ッ ト」のように字間が空くので左寄せにする
+   （Markdownで揃えを指定したセルはその指定に従う） */
+table td:not([align]),
+table th:not([align]) {
+  text-align: start;
+  text-justify: auto;
+}
+
+/* セル内のコードは途中で折り返さない（列幅の計算にも反映される） */
+table td code,
+table th code {
+  white-space: nowrap;
 }
 
 table td:first-child,
@@ -1770,7 +1787,7 @@ table .priority-low {
 /* 大きなテーブルのためのスクロール対応 */
 .table-container {
   overflow-x: auto;
-  margin: 1.5em 0;
+  margin: 0.8em 0;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -1784,7 +1801,7 @@ table .priority-low {
 /* テーブルキャプション */
 table caption {
   caption-side: top;
-  padding: 12px 16px;
+  padding: 5px 10px;
   font-weight: 600;
   font-size: 14Q;
   color: #495057;
