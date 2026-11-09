@@ -102,7 +102,7 @@ java com.example.immutability.FunctionalPatternsDemo
 ### JVMフラグを使用した並行性テスト
 ```bash
 # 並行アクセステスト
-java -XX:+PrintGCDetails -Xms256m -Xmx512m \
+java -Xlog:gc* -Xms256m -Xmx512m \
      com.example.immutability.ImmutabilityPatternsDemo
 
 # 大量データでのメモリ効率テスト

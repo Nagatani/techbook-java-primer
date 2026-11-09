@@ -96,7 +96,7 @@ java com.example.records.RecordOptimizationDemo
 java -XX:+PrintCompilation com.example.records.RecordOptimizationDemo
 
 # メモリ使用量の詳細
-java -XX:+PrintGCDetails -Xms256m -Xmx512m com.example.records.RecordsAndDOPDemo
+java -Xlog:gc* -Xms256m -Xmx512m com.example.records.RecordsAndDOPDemo
 ```
 
 ## 学習ポイント

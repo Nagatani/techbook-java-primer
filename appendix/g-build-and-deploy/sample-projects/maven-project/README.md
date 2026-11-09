@@ -73,7 +73,7 @@ mvn dependency:copy-dependencies -DoutputDirectory=target/lib
 ### メモリ不足の場合
 
 ```bash
-export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=512m"
+export MAVEN_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m"
 mvn clean package
 ```
 

@@ -92,10 +92,10 @@ java -XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining \
      com.example.jvm.BytecodeAnalysisDemo
 
 # ガベージコレクション情報を表示
-java -XX:+PrintGC -XX:+PrintGCDetails com.example.jvm.JVMArchitectureDemo
+java -Xlog:gc* com.example.jvm.JVMArchitectureDemo
 
 # クラスローディング情報を表示
-java -XX:+TraceClassLoading com.example.jvm.JVMArchitectureDemo
+java -Xlog:class+load com.example.jvm.JVMArchitectureDemo
 
 # メモリ使用量の詳細
 java -Xms256m -Xmx512m -XX:NewRatio=3 com.example.jvm.JVMArchitectureDemo
@@ -324,10 +324,10 @@ if (Math.random() > 0.5) { // ランダムな分岐
 #### JVMフラグによる分析
 ```bash
 # 本番環境での継続監視
--XX:+PrintGC -XX:+PrintGCTimeStamps -Xloggc:gc.log
+-Xlog:gc*:file=gc.log:time,uptime
 
 # 開発時の詳細分析
--XX:+PrintCompilation -XX:+PrintInlining -XX:+LogCompilation
+-XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintInlining -XX:+LogCompilation
 
 # メモリダンプの取得
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/
@@ -358,10 +358,10 @@ jmap -dump:format=b,file=heap.hprof <pid>
 ##### 性能問題
 ```bash
 # JITコンパイル情報の確認
--XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+TraceClassLoading
+-XX:+PrintCompilation -Xlog:class+load
 
 # GCログの分析
--XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime
+-Xlog:gc*,safepoint:file=gc.log:time,uptime
 ```
 
 ##### スレッドダンプ分析
@@ -418,8 +418,8 @@ public class NativeDemo {
 # G1GCの使用
 -XX:+UseG1GC -XX:MaxGCPauseMillis=200
 
-# 並行GCの設定
--XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled
+# 低遅延GCの設定（CMSはJava 14で削除されたため、ZGCを使う）
+-XX:+UseZGC
 
 # 世代別サイズの調整
 -XX:NewRatio=3 -XX:SurvivorRatio=8

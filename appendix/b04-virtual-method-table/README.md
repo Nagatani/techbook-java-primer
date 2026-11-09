@@ -83,7 +83,7 @@ java -XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining \
      com.example.vtable.MethodInliningDemo
 
 # より詳細なコンパイル情報
-java -XX:+PrintCompilation -XX:+PrintCompilationMethod \
+java -XX:+PrintCompilation \
      -XX:CompileThreshold=1000 com.example.vtable.VirtualMethodTableDemo
 ```
 

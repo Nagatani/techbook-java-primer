@@ -93,5 +93,5 @@ systemProp.https.proxyPort=8080
 
 ```properties
 # gradle.properties
-org.gradle.jvmargs=-Xmx4g -XX:MaxPermSize=512m -XX:+UseG1GC
+org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
 ```

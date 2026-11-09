@@ -8,10 +8,10 @@
 
 ```bash
 # Linux/macOS
-export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=256m"
+export MAVEN_OPTS="-Xmx2g -XX:MaxMetaspaceSize=256m"
 
 # Windows
-set MAVEN_OPTS=-Xmx2g -XX:MaxPermSize=256m
+set MAVEN_OPTS=-Xmx2g -XX:MaxMetaspaceSize=256m
 ```
 
 ### 2. プロジェクトごとの設定
@@ -20,7 +20,7 @@ set MAVEN_OPTS=-Xmx2g -XX:MaxPermSize=256m
 
 ```
 -Xmx2g
--XX:MaxPermSize=256m
+-XX:MaxMetaspaceSize=256m
 -XX:+UseG1GC
 ```
 
@@ -34,7 +34,7 @@ set MAVEN_OPTS=-Xmx2g -XX:MaxPermSize=256m
     <artifactId>maven-surefire-plugin</artifactId>
     <version>2.22.2</version>
     <configuration>
-        <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+        <argLine>-Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
         <forkCount>1</forkCount>
         <reuseForks>false</reuseForks>
     </configuration>
