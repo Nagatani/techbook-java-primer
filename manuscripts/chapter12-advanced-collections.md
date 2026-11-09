@@ -151,6 +151,7 @@ public class AdvancedSortExample {
 ```
 
 実行結果：
+
 ```
 [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
 ```
@@ -510,6 +511,7 @@ public class OptionalTransformationExample {
 ```
 
 実行結果：
+
 ```
 map: Optional[Alice]
 Nested map: Optional[5]
@@ -571,6 +573,7 @@ public class OptionalStreamExample {
 ```
 
 実行結果：
+
 ```
 最初の高額商品: Laptop
 安価な商品: Mouse
@@ -627,6 +630,7 @@ public class OptionalPracticalExample {
 ```
 
 実行結果：
+
 ```
 ユーザー 1 のメールドメイン: example.com
 ユーザーID 999 は存在しません
@@ -749,6 +753,7 @@ System.out.println("並列処理の結果: " + sumParallel);
 ```
 
 実行結果：
+
 ```
 シーケンシャル処理の結果: 220
 並列処理の結果: 220
@@ -800,6 +805,7 @@ public class ParallelStreamExample {
 ```
 
 実行結果：
+
 ```
 シーケンシャル: 304ms
 並列: 62ms
@@ -895,6 +901,7 @@ public class FlatMapExample {
 ```
 
 実行結果：
+
 ```
 [Java, Python, JavaScript, Go, Rust, C++]
 [Hello, world, Java, programming, Stream, API]
@@ -936,6 +943,7 @@ public class ReduceExample {
 ```
 
 実行結果：
+
 ```
 合計: 15
 最大値: 5
@@ -992,6 +1000,7 @@ public class CollectorsExample {
 ```
 
 実行結果：
+
 ```
 高得点者: [Alice, Bob, David, Eve]
 点数別グループ: {85=[Alice(score:85, height:165)], 88=[Eve(score:88, height:160)], 92=[Bob(score:92, height:170), David(score:92, height:175)], 78=[Charlie(score:78, height:180)]}
@@ -1040,6 +1049,7 @@ public class OptionalExample {
 ```
 
 実行結果：
+
 ```
 最初の高得点者: Bob
 トップスコアラー: Bob
@@ -1078,6 +1088,7 @@ public class OptionalChainingExample {
 ```
 
 実行結果：
+
 ```
 最高得点者（大文字）: BOB
 ```
@@ -1123,6 +1134,7 @@ public class NullSafeProcessingExample {
 ```
 
 実行結果：
+
 ```
 有効な名前: [ALICE, BOB, CHARLIE]
 安全な名前処理: UNKNOWN
@@ -1165,6 +1177,7 @@ public class ShortCircuitExample {
 ```
 
 実行結果：
+
 ```
 チェック中: 1
 すべて偶数: false
@@ -1207,6 +1220,7 @@ public class ToArrayExample {
 ```
 
 実行結果：
+
 ```
 結果配列: [ALICE, CHARLIE, DAVID]
 サイズ指定配列: [Alice, Bob, Charlie, David]
@@ -1246,6 +1260,7 @@ public class ComplexProcessingExample {
 ```
 
 実行結果：
+
 ```
 身長グループ別最高得点者:
 標準身長: Grace

@@ -72,6 +72,7 @@ public class EnumExample {
 ```
 
 実行結果：
+
 ```
 今日は WEDNESDAY です。
 ```
@@ -103,6 +104,7 @@ public class EnumMethodsExample {
 ```
 
 実行結果：
+
 ```
 0: SUNDAY
 1: MONDAY
@@ -374,6 +376,7 @@ public class EnumCollectionExample {
 ```
 
 実行結果：
+
 ```
 管理者権限: [READ, WRITE, EXECUTE, DELETE]
 ユーザー権限: [READ, WRITE]
@@ -519,6 +522,7 @@ public class RecordExample {
 ```
 
 実行結果：
+
 ```
 名前: 山田太郎
 年齢: 25
@@ -1004,6 +1008,7 @@ public class OuterClass {
 ```
 
 実行結果：
+
 ```
 外部クラスのフィールド: 外部フィールド
 ```
@@ -1039,6 +1044,7 @@ public class MathOperations {
 ```
 
 実行結果：
+
 ```
 大きさ: 5.0
 ```
@@ -1097,6 +1103,7 @@ public class AnonymousClassExample {
 ```
 
 実行結果：
+
 ```
 [Charlie, Bob, Alice]
 ```

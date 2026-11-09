@@ -78,6 +78,7 @@ public abstract class Shape {
 ```
 
 実行結果：
+
 ```
 これは 円 です。
 面積は 78.53981633974483 です。
@@ -230,6 +231,7 @@ public class Document implements Exportable, Archivable {
 ```
 
 実行結果：
+
 ```
 技術仕様書をPDF形式でエクスポートします。
 技術仕様書をHTML形式でエクスポートします。
@@ -497,6 +499,7 @@ String json = JsonSerializable.serializeList(users);
 ```
 
 実行結果：
+
 ```
 Serialized users: [{"name":"Alice"},{"name":"Bob"}]
 Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
@@ -543,6 +546,7 @@ interface DefensiveInterface {
 ```
 
 実行結果：
+
 ```
 === 安全でない実装のテスト ===
 getSafeItems(): []
@@ -607,6 +611,7 @@ class Document implements Timestamped, Identifiable, Versioned {
 ```
 
 実行結果：
+
 ```
 === Identifiableの機能 ===
 doc1: Document#DOC001

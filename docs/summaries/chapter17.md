@@ -7,9 +7,9 @@ sections:
   - key: "基本コンポーネントとレイアウト"
     hash: e27b785c
   - key: "イベント処理入門"
-    hash: 9cfc2591
+    hash: 61207b81
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"
-    hash: dafd15ee
+    hash: 6c20a996
   - key: "カスタムコンポーネントの作成"
     hash: 76f93346
   - key: "よくあるエラーと対処法"

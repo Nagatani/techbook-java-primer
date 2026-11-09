@@ -13,17 +13,17 @@ sections:
   - key: "C言語、Java、そして現代的ソフトウェア開発のしくみ"
     hash: 58b2f1c9
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
-    hash: ff0e978b
+    hash: c6c28cbe
   - key: "Javaの特徴"
     hash: 2494026d
   - key: "開発環境の準備"
     hash: b6d0e75f
   - key: "最初のJavaプログラム"
-    hash: a16dde01
+    hash: 2ff49d7d
   - key: "Javaプログラムの基本構文"
-    hash: ec1cc07d
+    hash: 730c6445
   - key: "標準入出力を扱うサンプルを動かしてみよう"
-    hash: 6be26139
+    hash: e295be19
   - key: "よくあるエラーと対処法"
     hash: 4f517f0e
   - key: "まとめ"

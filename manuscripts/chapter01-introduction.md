@@ -230,6 +230,7 @@ public class Main {
 ```
 
 #### 実行結果
+
 ```
 鉛筆: 110円（税込）
 ```
@@ -359,6 +360,7 @@ public class HelloWorld {
 ```
 
 #### 実行結果
+
 ```
 Hello, World!!
 ```
@@ -478,6 +480,7 @@ public class StandardOutput {
 }
 ```
 #### 実行結果
+
 ```
 標準出力は、「System.out.printlnメソッド」を使用します。
 「System.out.println」は末尾に改行コードも併せて出力します。
@@ -523,6 +526,7 @@ public class InputExample {
 
 #### 実行結果
 入力例として「123」を入力した場合の結果を示します。
+
 ```
 整数値を入力: 123
 入力された値: 123

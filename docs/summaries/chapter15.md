@@ -5,9 +5,9 @@ sections:
   - key: "本章の学習目標"
     hash: ea621fb4
   - key: "並行処理の世界への招待"
-    hash: afaeb383
+    hash: fbd366fb
   - key: "基礎レベル課題（ポイント）"
-    hash: 988aa2ed
+    hash: 005d074b
   - key: "実装のヒント"
     hash: 70907122
   - key: "実装環境"

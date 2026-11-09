@@ -13,7 +13,7 @@ sections:
   - key: "マルチスレッドサーバーの実装"
     hash: 1a5d9275
   - key: "HTTPクライアントの実装"
-    hash: 4a28e3b1
+    hash: aa479c9c
   - key: "UDP通信の実装"
     hash: 6baf054d
   - key: "実践的な例：チャットアプリケーション"

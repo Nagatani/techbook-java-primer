@@ -459,6 +459,7 @@ public class TypeConversionExample {
 }
 ```
 実行結果：
+
 ```
 int: 100
 long: 100
@@ -607,6 +608,7 @@ public class IOExample {
 
 #### 実行結果
 名前に「田中太郎」、年齢に「abc」（エラー）→「25」を入力した場合の実行例を示します。
+
 ```
 Hello, World!
 改行なし出力
@@ -789,6 +791,7 @@ public class SwitchExample {
 ```
 
 実行結果：
+
 ```
 評価: 良い
 ```
@@ -1054,6 +1057,7 @@ public class Calculator {
 ```
 
 実行結果：
+
 ```
 結果: 15
 除算結果: 3.3333333333333335

@@ -48,6 +48,7 @@ public class StudentManager {
 }
 ```
 実行結果：
+
 ```
 学生1: 田中
 学生2: 佐藤
@@ -173,6 +174,7 @@ public class StudentManagerImproved {
 }
 ```
 実行結果：
+
 ```
 学生数: 5
 田中さんは在籍？ true
@@ -289,6 +291,7 @@ public class ArrayListExample {
 }
 ```
 実行結果：
+
 ```
 現在のリスト: [りんご, バナナ, みかん, りんご]
 2番目の果物: バナナ
@@ -399,6 +402,7 @@ public class HashSetExample {
 }
 ```
 実行結果：
+
 ```
 タグ一覧: [Java, プログラミング]
 「プログラミング」タグは存在します。
@@ -509,6 +513,7 @@ public class HashMapExample {
 }
 ```
 実行結果：
+
 ```
 全員の点数: {Bob=92, Alice=95}
 Bobの点数: 92

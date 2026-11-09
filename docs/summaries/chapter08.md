@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 713ec8aa
   - key: "列挙型（Enum）"
-    hash: 0d3cba05
+    hash: 07911195
   - key: "レコード（Record）"
-    hash: aeb725e7
+    hash: f9e7639d
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 034b1298
   - key: "内部クラス（Inner Classes）"
-    hash: 35c7b0d9
+    hash: fbdeed0e
   - key: "まとめ"
     hash: 648e3d3d
   - key: "章末演習"

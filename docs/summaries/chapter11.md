@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 7c65c633
   - key: "匿名クラスからラムダ式へ"
-    hash: 620841ea
+    hash: e9c74397
   - key: "関数型インターフェイス"
-    hash: a83bbd14
+    hash: 6ebe9e35
   - key: "メソッド参照"
-    hash: c18ac26c
+    hash: 738aca45
   - key: "ラムダ式の応用例"
-    hash: e23f1348
+    hash: 71bb081f
   - key: "よくあるエラーと対処法"
     hash: 4eb6d5cc
   - key: "まとめ"

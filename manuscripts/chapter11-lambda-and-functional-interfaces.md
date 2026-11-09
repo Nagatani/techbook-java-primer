@@ -55,6 +55,7 @@ public class LambdaIntroExample {
 ```
 
 **実行結果:**
+
 ```
 Hello from anonymous class!
 Hello from lambda!
@@ -132,6 +133,7 @@ public class HigherOrderFunctionExample {
 ```
 
 **実行結果:**
+
 ```
 安全な取引決定: TradingDecision{BUY}
 高リスク時の決定: TradingDecision{HOLD}
@@ -721,6 +723,7 @@ public class ComparatorLambdaExample {
 ```
 
 **実行結果:**
+
 ```
 ソート前: [Charlie, Alice, Bob]
 従来の方法: [Alice, Bob, Charlie]
@@ -751,6 +754,7 @@ public class FunctionalInterfaceExample {
 ```
 
 **実行結果:**
+
 ```
 足し算: 15
 引き算: 5
@@ -822,6 +826,7 @@ public class MultiConditionSortExample {
 ```
 
 **実行結果:**
+
 ```
 学生ソート後（学年→名前→学生番号）:
 Student{name='Alice', grade=1, id='S004'}
@@ -892,6 +897,7 @@ public class StandardFunctionalInterfaces {
 ```
 
 **実行結果:**
+
 ```
 ''は空？: true
 'Java'は空？: false
@@ -955,6 +961,7 @@ public class MethodReferenceExample {
 ```
 
 **実行結果:**
+
 ```
 元のリスト: [apple, banana, cherry]
 文字列から整数への変換: [123, 456, 789]
@@ -1023,6 +1030,7 @@ public class MethodReferenceConcurrencyExample {
 ```
 
 **実行結果:**
+
 ```
 タスク実行開始...
 実行結果:
@@ -1082,6 +1090,7 @@ public class LambdaVsMethodReference {
 ```
 
 **実行結果:**
+
 ```
 元のリスト: [Alice, Bob, Charlie]
 
@@ -1146,6 +1155,7 @@ public class RunnableLambdaExample {
 ```
 
 **実行結果:**
+
 ```
 メインスレッド開始
 Thread t1 (Anonymous) is running...
@@ -1216,6 +1226,7 @@ public class ValidationFramework {
 ```
 
 **実行結果:**
+
 ```
 有効なユーザーのバリデーション:
 有効

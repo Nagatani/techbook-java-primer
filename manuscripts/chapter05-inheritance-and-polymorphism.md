@@ -266,6 +266,7 @@ public class PaymentExample {
 ```
 
 次は実行結果の一例です。クレジットカード決済は10%の確率で拒否されるため、実行するたびに結果が変わることがあります。
+
 ```
 クレジットカード決済APIを呼び出し中...
 取引ID: TXN001 承認コード: CC-1707123456789
@@ -378,6 +379,7 @@ public class DocumentTest {
 ```
 
 実行結果：
+
 ```
 report.docx を開いています
 report.docx を保存しました: 18バイト
@@ -565,6 +567,7 @@ public class RefactoredDocumentTest {
 ```
 
 実行結果：
+
 ```
 report.docx を開いています
 report.docx を保存しました: 18バイト
@@ -661,6 +664,7 @@ public class EmployeeTest {
 ```
 
 実行結果：
+
 ```
 山田部長が業務を実行中
 山田部長が会議を主宰
@@ -911,6 +915,7 @@ public class RectangleSquareTest {
 ```
 
 実行結果：
+
 ```
 === 長方形のテスト ===
 幅を5、高さを10に設定
@@ -1235,6 +1240,7 @@ public class CharacterOverrideTest {
 ```
 
 実行結果：
+
 ```
 戦士の攻撃！
 
@@ -1319,6 +1325,7 @@ public class UserManagementSystem {
 ```
 
 実行結果：
+
 ```
 ユーザー U001 が READ をリクエストしました
 管理者権限での処理: READ
@@ -1384,6 +1391,7 @@ public class UserSystemBefore {
 ```
 
 実行結果：
+
 ```
 === 全ユーザーのリクエスト処理（ポリモーフィズムなし）===
 ユーザー U001 が READ をリクエストしました
@@ -1470,6 +1478,7 @@ public class UserSystemAfter {
 ```
 
 実行結果：
+
 ```
 === 全ユーザーのリクエスト処理（ポリモーフィズムあり）===
 ユーザー U001 が READ をリクエストしました
@@ -1572,6 +1581,7 @@ public class DrawingAppBefore {
 ```
 
 実行結果：
+
 ```
 円を描画：半径 = 5.0
 面積: 78.53981633974483
@@ -1658,6 +1668,7 @@ class Pentagon extends Shape {
 ```
 
 実行結果：
+
 ```
 円を描画：半径 = 5.0
 面積: 78.53981633974483
@@ -1736,6 +1747,7 @@ public class UserAccessControl {
 ```
 
 実行結果：
+
 ```
 ユーザー U001 が READ をリクエストしました
 

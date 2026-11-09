@@ -78,6 +78,7 @@ public class TryCatchSample {
 ```
 
 実行結果：
+
 ```
 NullPointerExceptionをキャッチしました！
 java.lang.NullPointerException: Cannot invoke "String.length()" because "<local1>" is null
@@ -204,6 +205,7 @@ public class ThrowsExample {
 ```
 
 実行結果：
+
 ```
 mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 ```

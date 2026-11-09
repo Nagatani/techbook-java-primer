@@ -71,6 +71,7 @@ public class SimpleApp {
 ```
 
 実行結果：
+
 ```
 === Simple App 起動中 ===
 メインメソッドの実行が完了しました
@@ -114,6 +115,7 @@ public class TodoApp {
 ```
 
 実行結果：
+
 ```
 === Todo Manager 起動中 ===
 GUIアプリケーションを初期化しています...

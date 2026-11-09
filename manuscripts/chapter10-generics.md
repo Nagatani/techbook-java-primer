@@ -68,6 +68,7 @@ public class CollectionProblem {
 }
 ```
 実行結果：
+
 ```
 JAVA
 PYTHON
@@ -106,6 +107,7 @@ public class CollectionSolution {
 }
 ```
 実行結果：
+
 ```
 JAVA
 PYTHON
@@ -156,6 +158,7 @@ public class WithoutGenericsExample {
 ```
 
 実行結果：
+
 ```
 取り出した文字列: Hello
 ```
@@ -199,6 +202,7 @@ public class WithGenericsExample {
 }
 ```
 実行結果：
+
 ```
 Java
 ```
@@ -246,6 +250,7 @@ public class BoxExample {
 }
 ```
 実行結果：
+
 ```
 Hello Generics
 100
@@ -293,6 +298,7 @@ public class GenericMethodExample {
 }
 ```
 実行結果：
+
 ```
 Integer配列: 1 2 3 
 String配列: A B C 
@@ -336,6 +342,7 @@ public class BoundedTypeExample {
 }
 ```
 実行結果：
+
 ```
 10.0
 3.14
@@ -375,6 +382,7 @@ public class WildcardExample {
 }
 ```
 実行結果：
+
 ```
 Integerの合計: 6.0
 Doubleの合計: 6.6
@@ -548,6 +556,7 @@ public class VarWithGenericsExample {
 ```
 
 実行結果：
+
 ```
 First: Hello
 Second: 42

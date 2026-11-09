@@ -245,6 +245,7 @@ class ClientHandler implements Runnable {
 HTTPは、Webでもっとも広く使用されているアプリケーション層プロトコルです。
 
 HTTPリクエストの構造。
+
 ```
 GET /index.html HTTP/1.1
 Host: www.example.com
@@ -255,6 +256,7 @@ Accept: text/html
 ```
 
 HTTPレスポンスの構造。
+
 ```
 HTTP/1.1 200 OK
 Content-Type: text/html
@@ -431,6 +433,7 @@ public class AsyncHttpClientExample {
 ```
 
 実行結果：
+
 ```
 他の処理を継続中...
 Status: 200

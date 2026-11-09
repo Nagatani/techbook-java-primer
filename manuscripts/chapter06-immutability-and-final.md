@@ -553,6 +553,7 @@ public class BuilderExample {
 }
 ```
 実行結果：
+
 ```
 Book 1: Javaプログラミング入門 by 山田太郎
 Book 2: データベース設計 by Unknown
@@ -636,6 +637,7 @@ System.out.println(point.x()); // 10
 System.out.println(point.y()); // 20
 ```
 実行結果：
+
 ```
 10
 20
