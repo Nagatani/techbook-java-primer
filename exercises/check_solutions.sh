@@ -19,9 +19,9 @@ echo "Java入門書 - 解答例コンパイルチェック"
 echo "================================================"
 
 # 各章のsolutionsディレクトリをチェック
-for chapter in {01..23}; do
-    chapter_dir="chapter${chapter}"
-    solutions_dir="${chapter_dir}/solutions"
+# 第8章・第22章のように題材ごとに分かれた章（chapter08/records/solutions など）も対象にする
+for solutions_dir in $(find chapter* -type d -name solutions | sort); do
+    chapter="${solutions_dir%/solutions}"
     
     if [ ! -d "$solutions_dir" ]; then
         echo -e "${YELLOW}[警告] ${solutions_dir} が存在しません${NC}"
@@ -38,10 +38,10 @@ for chapter in {01..23}; do
         continue
     fi
     
-    echo "第${chapter}章の解答例をチェック中..."
+    echo "${chapter} の解答例をチェック中..."
     
     # 一時ディレクトリを作成
-    temp_dir="temp_compile_${chapter}"
+    temp_dir="temp_compile_${chapter//\//_}"
     mkdir -p "$temp_dir"
     
     # Javaファイルをコンパイル
@@ -80,17 +80,17 @@ echo "================================================"
 
 echo -e "${GREEN}成功: ${#success_chapters[@]}章${NC}"
 if [ ${#success_chapters[@]} -gt 0 ]; then
-    echo "  第${success_chapters[*]}章"
+    echo "  ${success_chapters[*]}"
 fi
 
 echo -e "${RED}失敗: ${#failed_chapters[@]}章${NC}"
 if [ ${#failed_chapters[@]} -gt 0 ]; then
-    echo "  第${failed_chapters[*]}章"
+    echo "  ${failed_chapters[*]}"
 fi
 
 echo -e "${YELLOW}警告: ${#warning_chapters[@]}章${NC}"
 if [ ${#warning_chapters[@]} -gt 0 ]; then
-    echo "  第${warning_chapters[*]}章"
+    echo "  ${warning_chapters[*]}"
 fi
 
 echo ""
@@ -105,7 +105,7 @@ if [ ${#failed_chapters[@]} -gt 0 ] || [ ${#warning_chapters[@]} -gt 0 ]; then
         echo ""
         echo "コンパイルエラーが発生した章:"
         for chapter in "${failed_chapters[@]}"; do
-            echo "  - 第${chapter}章: exercises/chapter${chapter}/solutions/"
+            echo "  - exercises/${chapter}/solutions/"
         done
     fi
     
@@ -114,7 +114,7 @@ if [ ${#failed_chapters[@]} -gt 0 ] || [ ${#warning_chapters[@]} -gt 0 ]; then
         echo ""
         echo "解答例が不足している章:"
         for chapter in "${warning_chapters[@]}"; do
-            echo "  - 第${chapter}章: exercises/chapter${chapter}/solutions/"
+            echo "  - exercises/${chapter}/solutions/"
         done
     fi
 fi
