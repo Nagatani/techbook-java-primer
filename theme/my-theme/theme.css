@@ -246,7 +246,7 @@ nav[role='doc-toc'] {
 
 body {
   font-size: 13Q;
-  line-height: 22Q;
+  line-height: 21Q;
   font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
   font-weight: 400;
   text-spacing: auto;
@@ -387,8 +387,8 @@ h1 small::after {
 h2 {
   font-size: 22Q;
   line-height: 30Q;
-  margin-block-start: 2em;
-  margin-block-end: 1.2em;
+  margin-block-start: 1.6em;
+  margin-block-end: 0.8em;
   margin-inline: 0;
   padding: 0.6em 0.9em 0.7em;
   position: relative;
@@ -477,8 +477,8 @@ h2 > span:first-child:not(small) {
 h3 {
   font-size: 18Q;
   line-height: 24Q;
-  margin-block-start: 2em;
-  margin-block-end: 0.8em;
+  margin-block-start: 1.4em;
+  margin-block-end: 0.5em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 600;
@@ -514,8 +514,8 @@ h3::after {
 h4 {
   font-size: 16Q;
   line-height: 22Q;
-  margin-block-start: 1.5em;
-  margin-block-end: 0.6em;
+  margin-block-start: 1.2em;
+  margin-block-end: 0.4em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 600;
@@ -586,11 +586,12 @@ h6::before {
 
 p {
   font-size: 13Q;
-  line-height: 22Q;
+  line-height: 21Q;
   text-indent: 1em;
   text-align: justify;
-  margin-block-start: 0.5lh;
-  margin-block-end: 0.5lh;
+  /* 段落の頭は字下げで示すので、段落間の余白は小さくする */
+  margin-block-start: 0.25lh;
+  margin-block-end: 0.25lh;
   hyphens: auto;
 }
 
@@ -602,20 +603,20 @@ h4 + p,
 h5 + p,
 h6 + p {
   text-indent: 0;
-  margin-block-start: 0.3lh;
+  margin-block-start: 0.2lh;
 }
 
 ul,
 ol {
-  margin-block: 1lh;
+  margin-block: 0.5lh;
   margin-inline: 0 1.5em;
   padding-left: 1.5em !important;
-  line-height: 1.6;
+  line-height: 20Q;
 }
 
-/* リスト項目の間隔 */
+/* リスト項目の間隔（項目の切れ目が分かる程度） */
 li {
-  margin-block: 0.3lh;
+  margin-block: 0.15lh;
 }
 
 /* ネストしたリスト */
@@ -623,7 +624,7 @@ ul ul,
 ul ol,
 ol ul,
 ol ol {
-  margin-block: 0.5lh !important;
+  margin-block: 0.1lh !important;
   margin-inline: 0 1em;
   padding-left: 1.5em !important;
 }
@@ -631,12 +632,12 @@ ol ol {
 /* リストの前後の余白 */
 p + ul,
 p + ol {
-  margin-block-start: 0.8lh;
+  margin-block-start: 0.4lh;
 }
 
 ul + p,
 ol + p {
-  margin-block-start: 0.8lh;
+  margin-block-start: 0.5lh;
 }
 
 
@@ -690,7 +691,7 @@ pre {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 0;
-  margin: 1em 0;
+  margin: 0.8em 0;
   position: relative;
   /* 横スクロールを防ぐ */
   overflow-x: visible;
