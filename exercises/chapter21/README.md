@@ -41,7 +41,7 @@
 - **TestDrivenCalculator.java** - TDD手法で実装された計算機クラス
 - **TestDrivenCalculatorTest.java** - JUnit 5を使用した包括的なテストスイート
 - **MockExample.java** - モッキングフレームワークを使用したテスト実装
-- **ParameterizedTest.java** - パラメータ化テストの効率的な活用例
+- **ParameterizedTestExamples.java** - パラメータ化テストの効率的な活用例
 - **TestSuite.java** - テストスイートによる体系的なテスト管理
 
 ## 🚀 課題の進め方
@@ -268,18 +268,27 @@ void shouldReturnCorrectSumWhenAddingPositiveNumbers() { }
 ## 🔧 開発環境とツール
 
 ### 必要な依存関係
+
+Java 25で動作を確認した版です（Mockito 4系とJaCoCo 0.8.13以前はJava 25に対応していません）。
 ```xml
 <!-- pom.xml (Maven) -->
 <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter</artifactId>
-    <version>5.8.2</version>
+    <version>5.14.4</version>
     <scope>test</scope>
 </dependency>
 <dependency>
     <groupId>org.mockito</groupId>
-    <artifactId>mockito-core</artifactId>
-    <version>4.6.1</version>
+    <artifactId>mockito-junit-jupiter</artifactId>
+    <version>5.24.0</version>
+    <scope>test</scope>
+</dependency>
+<!-- TestSuite.java（@Suite）を使う場合 -->
+<dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-suite</artifactId>
+    <version>1.14.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -311,7 +320,7 @@ mvn test -Dgroups=fast
 <plugin>
     <groupId>org.jacoco</groupId>
     <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.7</version>
+    <version>0.8.16</version>
 </plugin>
 ```
 

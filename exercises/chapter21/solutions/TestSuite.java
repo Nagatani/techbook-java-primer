@@ -285,7 +285,8 @@ public class TestSuite {
             long finalMemory = runtime.totalMemory() - runtime.freeMemory();
             long memoryUsed = finalMemory - initialMemory;
             
-            assertTrue(memoryUsed > 0, "メモリが使用されているはずです");
+            // 途中でガベージコレクションが動くと差が0以下になることがあるため、増えたことは確かめず上限だけを確かめる
+            assertEquals(10_000, stringList.size());
             assertTrue(memoryUsed < 50_000_000, "メモリ使用量が多すぎます"); // 50MB未満
         }
     }

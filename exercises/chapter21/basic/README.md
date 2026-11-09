@@ -654,7 +654,7 @@ Maven pom.xml設定:
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.0.0-M7</version>
+            <version>3.6.1</version>
             <configuration>
                 <groups>unit,integration</groups>
                 <excludedGroups>performance</excludedGroups>
@@ -666,7 +666,7 @@ Maven pom.xml設定:
         <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.7</version>
+            <version>0.8.16</version>
             <executions>
                 <execution>
                     <goals>

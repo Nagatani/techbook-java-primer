@@ -28,7 +28,7 @@ import java.time.format.DateTimeParseException;
 /**
  * パラメータ化テストのデモンストレーション用クラス群
  */
-public class ParameterizedTest {
+public class ParameterizedTestExamples {
     
     /**
      * 文字列操作ユーティリティクラス
@@ -217,7 +217,7 @@ public class ParameterizedTest {
      */
     public static class StringToArrayConverter implements ArgumentConverter {
         @Override
-        public Object convert(Object source, org.junit.jupiter.params.converter.ConversionContext context) {
+        public Object convert(Object source, org.junit.jupiter.api.extension.ParameterContext context) {
             if (source instanceof String) {
                 return ((String) source).split(",");
             }
@@ -242,7 +242,7 @@ class ParameterizedTestExample {
         boolean expected = input.toLowerCase().replaceAll("[^a-zA-Z0-9]", "")
                 .equals(new StringBuilder(input.toLowerCase().replaceAll("[^a-zA-Z0-9]", "")).reverse().toString());
         
-        assertEquals(expected, ParameterizedTest.StringUtils.isPalindrome(input),
+        assertEquals(expected, ParameterizedTestExamples.StringUtils.isPalindrome(input),
                 "回文判定が正しくありません: " + input);
     }
     
@@ -250,7 +250,7 @@ class ParameterizedTestExample {
     @ValueSource(ints = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29})
     @DisplayName("素数判定テスト - 既知の素数")
     void testIsPrime_KnownPrimes(int number) {
-        assertTrue(ParameterizedTest.MathUtils.isPrime(number),
+        assertTrue(ParameterizedTestExamples.MathUtils.isPrime(number),
                 number + " は素数であるべきです");
     }
     
@@ -258,7 +258,7 @@ class ParameterizedTestExample {
     @ValueSource(ints = {4, 6, 8, 9, 10, 12, 14, 15, 16, 18})
     @DisplayName("素数判定テスト - 合成数")
     void testIsPrime_CompositeNumbers(int number) {
-        assertFalse(ParameterizedTest.MathUtils.isPrime(number),
+        assertFalse(ParameterizedTestExamples.MathUtils.isPrime(number),
                 number + " は合成数であるべきです");
     }
     
@@ -266,7 +266,7 @@ class ParameterizedTestExample {
     @ValueSource(ints = {2000, 2004, 2008, 2012, 2016, 2020, 2024})
     @DisplayName("閏年判定テスト - 閏年")
     void testIsLeapYear_LeapYears(int year) {
-        assertTrue(ParameterizedTest.DateUtils.isLeapYear(year),
+        assertTrue(ParameterizedTestExamples.DateUtils.isLeapYear(year),
                 year + " は閏年であるべきです");
     }
     
@@ -283,7 +283,7 @@ class ParameterizedTestExample {
     })
     @DisplayName("最大公約数計算テスト")
     void testGcd(int a, int b, int expected) {
-        assertEquals(expected, ParameterizedTest.MathUtils.gcd(a, b),
+        assertEquals(expected, ParameterizedTestExamples.MathUtils.gcd(a, b),
                 String.format("gcd(%d, %d) = %d であるべきです", a, b, expected));
     }
     
@@ -299,7 +299,7 @@ class ParameterizedTestExample {
     })
     @DisplayName("パスワード強度テスト")
     void testPasswordStrength(String password, int expectedStrength) {
-        assertEquals(expectedStrength, ParameterizedTest.StringUtils.getPasswordStrength(password),
+        assertEquals(expectedStrength, ParameterizedTestExamples.StringUtils.getPasswordStrength(password),
                 String.format("パスワード '%s' の強度は %d であるべきです", password, expectedStrength));
     }
     
@@ -315,7 +315,7 @@ class ParameterizedTestExample {
     })
     @DisplayName("月の日数計算テスト")
     void testGetDaysInMonth(int year, int month, int expectedDays) {
-        assertEquals(expectedDays, ParameterizedTest.DateUtils.getDaysInMonth(year, month),
+        assertEquals(expectedDays, ParameterizedTestExamples.DateUtils.getDaysInMonth(year, month),
                 String.format("%d年%d月の日数は%d日であるべきです", year, month, expectedDays));
     }
     
@@ -327,7 +327,7 @@ class ParameterizedTestExample {
     void testWithCsvFile(String input, String expected) {
         // 注意: このテストを実行するには resources/test-data.csv が必要
         // 実際の実装では適切なテストデータファイルを用意する
-        assertEquals(expected, ParameterizedTest.StringUtils.toKebabCase(input));
+        assertEquals(expected, ParameterizedTestExamples.StringUtils.toKebabCase(input));
     }
     
     // === @MethodSource を使用した複雑なテストデータ ===
@@ -336,7 +336,7 @@ class ParameterizedTestExample {
     @MethodSource("fibonacciTestData")
     @DisplayName("フィボナッチ数列テスト")
     void testFibonacci(int n, long expected) {
-        assertEquals(expected, ParameterizedTest.MathUtils.fibonacci(n),
+        assertEquals(expected, ParameterizedTestExamples.MathUtils.fibonacci(n),
                 String.format("fibonacci(%d) = %d であるべきです", n, expected));
     }
     
@@ -357,7 +357,7 @@ class ParameterizedTestExample {
     @MethodSource("factorialTestData")
     @DisplayName("階乗計算テスト")
     void testFactorial(int n, long expected) {
-        assertEquals(expected, ParameterizedTest.MathUtils.factorial(n),
+        assertEquals(expected, ParameterizedTestExamples.MathUtils.factorial(n),
                 String.format("%d! = %d であるべきです", n, expected));
     }
     
@@ -377,7 +377,7 @@ class ParameterizedTestExample {
     @MethodSource("stringConversionTestData")
     @DisplayName("文字列変換テスト")
     void testToKebabCase(String input, String expected) {
-        assertEquals(expected, ParameterizedTest.StringUtils.toKebabCase(input),
+        assertEquals(expected, ParameterizedTestExamples.StringUtils.toKebabCase(input),
                 String.format("'%s' のケバブケース変換結果は '%s' であるべきです", input, expected));
     }
     
@@ -426,7 +426,7 @@ class ParameterizedTestExample {
     @DisplayName("月の日数テスト - 平年")
     void testMonthDays_NonLeapYear(TestMonth month) {
         int expectedDays = month.getDays();
-        int actualDays = ParameterizedTest.DateUtils.getDaysInMonth(2023, month.getNumber());
+        int actualDays = ParameterizedTestExamples.DateUtils.getDaysInMonth(2023, month.getNumber());
         
         assertEquals(expectedDays, actualDays,
                 String.format("%s の日数は %d 日であるべきです", month.name(), expectedDays));
@@ -436,7 +436,7 @@ class ParameterizedTestExample {
     @EnumSource(value = TestMonth.class, names = {"FEBRUARY"})
     @DisplayName("2月の日数テスト - 閏年")
     void testFebruaryDays_LeapYear(TestMonth month) {
-        assertEquals(29, ParameterizedTest.DateUtils.getDaysInMonth(2020, month.getNumber()),
+        assertEquals(29, ParameterizedTestExamples.DateUtils.getDaysInMonth(2020, month.getNumber()),
                 "閏年の2月は29日であるべきです");
     }
     
@@ -445,7 +445,7 @@ class ParameterizedTestExample {
     public static class InvalidDateProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends org.junit.jupiter.params.provider.Arguments> provideArguments(
-                org.junit.jupiter.params.extension.ExtensionContext context) {
+                org.junit.jupiter.api.extension.ExtensionContext context) {
             return Stream.of(
                 org.junit.jupiter.params.provider.Arguments.of("2023-13-01"), // 無効な月
                 org.junit.jupiter.params.provider.Arguments.of("2023-02-30"), // 無効な日
@@ -461,7 +461,7 @@ class ParameterizedTestExample {
     @ArgumentsSource(InvalidDateProvider.class)
     @DisplayName("無効な日付文字列のテスト")
     void testInvalidDates(String invalidDate) {
-        assertFalse(ParameterizedTest.DateUtils.isValidDate(invalidDate),
+        assertFalse(ParameterizedTestExamples.DateUtils.isValidDate(invalidDate),
                 String.format("'%s' は無効な日付として判定されるべきです", invalidDate));
     }
     
@@ -470,7 +470,7 @@ class ParameterizedTestExample {
     @ParameterizedTest
     @ValueSource(strings = {"apple,banana,cherry", "red,green,blue", "one,two,three"})
     @DisplayName("カスタムコンバーターテスト")
-    void testWithCustomConverter(@ConvertWith(ParameterizedTest.StringToArrayConverter.class) String[] array) {
+    void testWithCustomConverter(@ConvertWith(ParameterizedTestExamples.StringToArrayConverter.class) String[] array) {
         assertNotNull(array);
         assertTrue(array.length > 0);
         
@@ -494,7 +494,7 @@ class ParameterizedTestExample {
     })
     @DisplayName("素数判定テスト - カスタム名前")
     void testIsPrimeWithCustomName(int number, boolean expected) {
-        assertEquals(expected, ParameterizedTest.MathUtils.isPrime(number));
+        assertEquals(expected, ParameterizedTestExamples.MathUtils.isPrime(number));
     }
     
     @ParameterizedTest(name = "年 {0} は閏年: {1}")
@@ -507,7 +507,7 @@ class ParameterizedTestExample {
     })
     @DisplayName("閏年判定テスト - 日本語名前")
     void testLeapYearWithJapaneseName(int year, boolean expected) {
-        assertEquals(expected, ParameterizedTest.DateUtils.isLeapYear(year));
+        assertEquals(expected, ParameterizedTestExamples.DateUtils.isLeapYear(year));
     }
     
     // === 境界値とエラーケースのテスト ===
@@ -517,7 +517,7 @@ class ParameterizedTestExample {
     @DisplayName("フィボナッチ数列 - 負の値での例外テスト")
     void testFibonacci_NegativeValues(int n) {
         assertThrows(IllegalArgumentException.class, 
-                () -> ParameterizedTest.MathUtils.fibonacci(n),
+                () -> ParameterizedTestExamples.MathUtils.fibonacci(n),
                 "負の値では IllegalArgumentException が発生するべきです");
     }
     
@@ -526,7 +526,7 @@ class ParameterizedTestExample {
     @DisplayName("階乗計算 - 負の値での例外テスト")
     void testFactorial_NegativeValues(int n) {
         assertThrows(IllegalArgumentException.class,
-                () -> ParameterizedTest.MathUtils.factorial(n),
+                () -> ParameterizedTestExamples.MathUtils.factorial(n),
                 "負の値では IllegalArgumentException が発生するべきです");
     }
     
@@ -536,7 +536,7 @@ class ParameterizedTestExample {
     void testGetDaysInMonth_InvalidMonth(int month) {
         if (month < 1 || month > 12) {
             assertThrows(IllegalArgumentException.class,
-                    () -> ParameterizedTest.DateUtils.getDaysInMonth(2023, month),
+                    () -> ParameterizedTestExamples.DateUtils.getDaysInMonth(2023, month),
                     "無効な月では IllegalArgumentException が発生するべきです");
         }
     }
@@ -548,7 +548,7 @@ class ParameterizedTestExample {
     @DisplayName("素数判定 - パフォーマンステスト")
     void testIsPrime_Performance(int number) {
         long startTime = System.nanoTime();
-        ParameterizedTest.MathUtils.isPrime(number);
+        ParameterizedTestExamples.MathUtils.isPrime(number);
         long endTime = System.nanoTime();
         
         long executionTime = endTime - startTime;

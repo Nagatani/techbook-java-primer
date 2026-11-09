@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 
@@ -568,7 +568,8 @@ class MockExampleTest {
     void testMultipleMethodCalls() {
         // Arrange
         when(userRepository.findById("USR123")).thenReturn(sampleUser);
-        when(emailService.isEmailServiceAvailable()).thenReturn(true);
+        // メールアドレスはnull（変更しない）なので、メールサービスは呼ばれない。
+        // 使われないスタブを設定すると、Mockitoの厳格モードがUnnecessaryStubbingExceptionにする
         
         // Act - 同じメソッドを複数回呼び出し
         userService.updateUser("USR123", "名前1", null);

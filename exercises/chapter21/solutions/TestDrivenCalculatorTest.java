@@ -206,9 +206,9 @@ class TestDrivenCalculatorTest {
                   .power(3.0)      // 8
                   .sqrt()          // 2.828...
                   .multiply(3.0)   // 8.485...
-                  .add(1.515);     // 10.0
+                  .add(1.515);     // 10.000281...
         
-        assertEquals(10.0, calculator.getCurrentValue(), 1e-10);
+        assertEquals(3 * Math.sqrt(8) + 1.515, calculator.getCurrentValue(), 1e-10);
         assertFalse(calculator.hasError());
     }
     

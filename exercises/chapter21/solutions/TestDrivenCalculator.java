@@ -48,14 +48,15 @@ public class TestDrivenCalculator {
      * 値をセット
      * @param value セットする値
      */
-    public void setValue(double value) {
+    public TestDrivenCalculator setValue(double value) {  // ほかの計算と同じくメソッドをつなげて書けるよう自分自身を返す
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             setError();
-            return;
+            return this;
         }
         this.currentValue = value;
         this.hasError = false;
         addToHistory("設定: " + formatNumber(value));
+        return this;
     }
     
     /**
