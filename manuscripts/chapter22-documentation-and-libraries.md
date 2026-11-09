@@ -606,7 +606,7 @@ OkHttpはSquare社が開発した高性能なHTTPクライアントライブラ�
 コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
 以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
-<span class="listing-number">**サンプルコード22-13**　OkHttpExample.java（5〜28、51〜72、80〜81行目）</span>
+<span class="listing-number">**サンプルコード22-13**　OkHttpExample.java（5〜28、51〜72、84〜85行目）</span>
 
 ```java
 public class OkHttpExample {

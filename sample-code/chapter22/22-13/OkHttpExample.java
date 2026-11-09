@@ -77,5 +77,9 @@ public class OkHttpExample {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
+        // OkHttpが内部で使うスレッドを止め、プログラムがすぐ終わるようにする
+        client.dispatcher().executorService().shutdown();
+        client.connectionPool().evictAll();
     }
 }
