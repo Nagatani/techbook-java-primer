@@ -7,7 +7,7 @@ sections:
   - key: "詳細なイベント処理の実装"
     hash: 23b719bb
   - key: "カスタムイベントとObserverパターン"
-    hash: f1310a3c
+    hash: f3926815
   - key: "ドラッグ&ドロップの実装"
     hash: 8c96f44c
   - key: "パフォーマンスの最適化"

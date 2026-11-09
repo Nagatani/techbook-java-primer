@@ -18,7 +18,7 @@ class TemperatureChangeEvent extends EventObject {
     public double getNewTemperature() { return newTemperature; }
 }
 
-// カスタムリスナーインターフェース
+// カスタムリスナーインターフェイス
 interface TemperatureChangeListener extends EventListener {
     void temperatureChanged(TemperatureChangeEvent e);
 }
