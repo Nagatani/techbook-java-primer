@@ -3,7 +3,7 @@ source: manuscripts/appendix-h-common-errors.md
 summarized: 2026-11-09
 sections:
   - key: "付録Hについて"
-    hash: 41f0dfc2
+    hash: 0b498142
 ---
 
 # 付録H Java共通エラーガイド 要約

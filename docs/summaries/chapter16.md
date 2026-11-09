@@ -31,7 +31,7 @@ sections:
   - key: "まとめ"
     hash: 3d5e1a61
   - key: "章末演習"
-    hash: 0e43e3c3
+    hash: 652189ae
   - key: "よくあるエラーと対処法"
     hash: 59e9cab0
 ---
@@ -104,7 +104,7 @@ sections:
     + 重要なポイント5点と次のステップ（REST、WebSocket、gRPC、マイクロサービス）
     + 「NIOを使用した非同期I/Oによる応答時間の短縮」は不正確（NIOのSelectorはノンブロッキングI/Oで、利点は応答時間より接続数に対するスケーラビリティ）
 - 章末演習（L928–951）
-    + 演習リンクが`exercises/chapter17/`を指している（Issue #010。現行の`exercises/chapter17/README.md`の見出しは「第17章 ネットワークプログラミング」で、旧番号のまま）
+    + 演習リンクは`exercises/chapter16/`（2026-11-09に演習ディレクトリを現行の章番号に組み替え、リンクを直した。Issue #010）
     + 「詳細な課題内容と実装のヒントは…」が2回ある（L1076、L1085）
 - よくあるエラーと対処法（L952–966）
     + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter16.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す

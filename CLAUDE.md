@@ -94,6 +94,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
 - `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
+- `npm run check:structure`: Check that chapters, exercises, appendix B, glossary, and cross references agree (exercise directories and links, `付録B.NN「題名」`, `第N章「題名」`, glossary chapter refs, generated cross-reference guide). Runs in the pre-commit hook
+- `npm run crossref`: Regenerate `manuscripts/cross-reference-guide.md` from chapter titles and the appendix B index (do not edit that file by hand)
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 
 ### Configuration
@@ -192,12 +194,15 @@ The following issues require ongoing attention and should be referenced during a
 4. ~~**Medium Priority**: Chapter 15 exercise format inconsistency~~ ✅ **Resolved** - 全章GitHubリンク形式で統一
 5. ~~**Medium Priority**: Chapter ordering optimization (Chapter 21 placement)~~ ✅ **Resolved** - 現状配置を維持する方針決定
 6. ~~**Medium Priority**: textlint errors remaining~~ ✅ **ほぼ解消** - 2026-11-08時点で6件（うち4件はリスト内の脚注をですます調で書く規約上の例外）
-7. **High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）
-8. **High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）
+7. ~~**High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）~~ ✅ **Resolved** - 演習ディレクトリを現行の章番号に組み替え (2026-11-09)
+8. ~~**High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）~~ ✅ **Resolved** - ディレクトリ番号に統一し、相互参照ガイドを生成方式にした (2026-11-09)
 9. ~~**Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）~~ ✅ **Resolved** - 不在語を削除し、章番号を現行構成に修正 (2026-11-09)
 
 ### 章番号の注意（2026-11-07）
-- 章番号の正はファイル名（`chapterXX-*.md`）と`vivliostyle.config.js`の順序
+- 章番号の正はファイル名（`chapterXX-*.md`）と`vivliostyle.config.js`の順序。章タイトルの正は各章ファイルの1行目
+- 演習ディレクトリ`exercises/chapterXX`は章番号と一致させる（READMEの見出しは「# 第N章 章タイトル - 演習課題」）。章を追加・削除・並べ替えたら、演習ディレクトリも同時に組み替える
+- 付録Bの節番号の正は`appendix/bXX-*`のディレクトリ番号。原稿の一覧（appendix-b-index-revised.md）とREADMEの見出しをこれに合わせる
+- 章・付録の番号や題名を変えたら`npm run check:structure`で食い違いを確かめ、`npm run crossref`で相互参照ガイドを作り直す
 - 旧24章構成（第8章列挙型・第9章レコードが別章）の番号が文中に残っていることがあるため、「第N章」参照を書くときは必ず現行の章タイトルで確認する
 - mermaid-cliはv11に固定（v12は`-w/-H`オプション廃止とレイアウト変化で図が劣化する）
 
