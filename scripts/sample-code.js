@@ -137,14 +137,19 @@ function libJars(libs = []) {
 }
 
 /** javac でディレクトリ内の .java をまとめてコンパイルする（出力は out へ） */
+const JAVA_RELEASE = '25';
+
 function compileDir(dir, outDir, entry = {}) {
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.java'));
   const jars = libJars(entry.libs);
   const cp = jars.length ? ['-cp', jars.join(path.delimiter)] : [];
   // アノテーションプロセッサ（Lombokなど）を使うサンプルだけ -proc:none を外す
   const proc = entry.processor ? ['-proc:full'] : ['-proc:none'];
-  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', ...proc, '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', ...cp, '-d', outDir, ...files], { cwd: dir, encoding: 'utf8' });
-  return { ok: r.status === 0, error: (r.stderr || '').split('\n').find((l) => / error: /.test(l)) || r.stderr };
+  // 本書はJava 25を対象にする。非推奨・削除予定のAPIの警告だけを出して問題として報告する
+  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', JAVA_RELEASE, ...proc, '-Xlint:-options,deprecation,removal', '-encoding', 'UTF-8', ...cp, '-d', outDir, ...files], { cwd: dir, encoding: 'utf8' });
+  const stderr = r.stderr || '';
+  const deprecations = stderr.split('\n').filter((l) => /warning: \[(deprecation|removal)\]/.test(l)).map((l) => l.replace(/^.*?([^/]+\.java:\d+)/, '$1'));
+  return { ok: r.status === 0, error: stderr.split('\n').find((l) => / error: /.test(l)) || stderr, deprecations };
 }
 
 /** mainメソッドを持つクラスの完全名 */
@@ -370,6 +375,7 @@ function checkCommand(filters, args) {
       let c;
       try { c = compileDir(out, path.join(out, 'out'), e); } catch (err) { problems.push(`${where}: ${err.message}`); continue; }
       if (!c.ok) { problems.push(`${where}: 全文がコンパイルできない: ${c.error.trim()}`); continue; }
+      for (const d of c.deprecations) problems.push(`${where}: 非推奨・削除予定のAPIを使っている: ${d}`);
       const found = findMain(dir, e.excerpt.map((x) => x.file));
       if (e.main !== found) problems.push(`${where}: main が ${found} なのに listings.json は ${e.main}`);
       if (!runMode) continue;

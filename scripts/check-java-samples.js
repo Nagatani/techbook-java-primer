@@ -180,7 +180,7 @@ function compile(sample, workDir, extras = []) {
     fs.writeFileSync(path.join(dir, file), c);
     files.push(file);
   }
-  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '21', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', path.join(dir, 'out'), ...files], { cwd: dir, encoding: 'utf8' });
+  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', '25', '-proc:none', '-nowarn', '-Xlint:none', '-encoding', 'UTF-8', '-d', path.join(dir, 'out'), ...files], { cwd: dir, encoding: 'utf8' });
   if (r.status === 0) return { status: 'OK', dir, main: mainClass(code) };
   const errors = (r.stderr || '').split('\n').filter((l) => / error: /.test(l));
   const real = errors.filter((l) => !MISSING.test(l));
