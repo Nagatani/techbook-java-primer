@@ -1,440 +1,360 @@
-# 第21章: APIドキュメントとライブラリ設計
+# 第21章 ユニットテストと品質保証 - 演習課題
 
 ## 📋 章の概要
 
-この章では、保守性と拡張性に優れたライブラリの設計と、Javadocを使用した包括的なAPIドキュメンテーションの作成について学習します。実務レベルの開発で必要となる技術文書作成スキルを習得します。
+この章では、テスト駆動開発（TDD）の手法とJUnit 5を使用した効果的なテスト作成について学習します。単体テストから統合テスト、モックの活用まで、品質の高いソフトウェア開発に必要なテスト技術を習得します。
 
 ## 🎯 学習目標
 
-- Javadocによる包括的なAPIドキュメントが作成できる
-- 再利用可能なライブラリを設計できる
-- APIの使いやすさと拡張性を考慮した設計ができる
-- 技術文書の作成と保守ができる
-- オープンソースプロジェクトでの貢献ができる
+- テスト駆動開発（TDD）の概念と手法を理解する
+- JUnit 5の機能を効果的に活用できる
+- モックオブジェクトを使用したテストができる
+- パラメータ化テストによる効率的なテストが書ける
+- テストスイートによる体系的なテスト管理ができる
 
 ## 📁 課題構成
 
 ### basic/
-APIドキュメンテーションの基礎スキルを習得するための課題です。
+テスト作成の基礎スキルを習得するための課題です。
 
-- **SimpleLibrary.java** - 基本的なJavadoc作成
-- **UtilityClass.java** - ユーティリティクラスの文書化
-- **ConfigurationAPI.java** - 設定APIの設計と文書化
+- **SimpleCalculatorTest.java** - 基本的な単体テストの作成
+- **StringUtilsTest.java** - 文字列処理のテスト
+- **ValidationTest.java** - バリデーション機能のテスト
 
 ### advanced/
-より高度なライブラリ設計とドキュメンテーション技法を学習する課題です。
+より高度なテスト技法を学習する課題です。
 
-- **FrameworkAPI.java** - フレームワーク設計の実践
-- **PluginSystem.java** - プラグインシステムの設計
-- **VersioningStrategy.java** - バージョニング戦略の実装
+- **MockObjectTest.java** - モックオブジェクトの活用
+- **ParameterizedTestDemo.java** - パラメータ化テストの実装
+- **IntegrationTest.java** - 統合テストの作成
 
 ### challenge/
-実践的で包括的なライブラリ設計スキルが求められる挑戦課題です。
+実践的で包括的なテストスキルが求められる挑戦課題です。
 
-- **EnterpiseLibrary.java** - 企業レベルのライブラリ設計
-- **DomainSpecificLanguage.java** - DSL（ドメイン固有言語）の設計
-- **CrossPlatformAPI.java** - クロスプラットフォーム対応API
+- **TDDWorkflow.java** - 完全なTDDサイクルの実践
+- **TestSuiteDesign.java** - 大規模テストスイートの設計
+- **PerformanceTest.java** - パフォーマンステストの実装
 
 ### solutions/
 各課題の完全な解答例と詳細な解説です。
 
-- **APIDocumentation.java** - 包括的なJavadocドキュメンテーションの実装例
-- **AdvancedAPIDocumentation.java** - 実務レベルの高度なAPI文書化例
+- **TestDrivenCalculator.java** - TDD手法で実装された計算機クラス
+- **TestDrivenCalculatorTest.java** - JUnit 5を使用した包括的なテストスイート
+- **MockExample.java** - モッキングフレームワークを使用したテスト実装
+- **ParameterizedTest.java** - パラメータ化テストの効率的な活用例
+- **TestSuite.java** - テストスイートによる体系的なテスト管理
 
 ## 🚀 課題の進め方
 
-### 1. Javadocの基礎から開始
+### 1. テストの基礎から開始
 ```bash
-# 基本的なドキュメンテーション技法を理解
+# JUnit 5の基本機能を理解
 cd basic/
-# SimpleLibrary.java から始めることを推奨
+# SimpleCalculatorTest.java から始めることを推奨
 ```
 
-### 2. 実践的なライブラリ設計
+### 2. TDDサイクルの実践
 ```bash
-# より複雑なAPIの設計と文書化
+# Red-Green-Refactorサイクルを体験
 cd advanced/
-# 実際のライブラリ開発フローを体験
+# 実際にTDDでコードを作成してみる
 ```
 
-### 3. 企業レベルの設計技法
+### 3. 高度なテスト技法の習得
 ```bash
-# 大規模プロジェクトでの設計原則
+# モックやパラメータ化テストを活用
 cd challenge/
-# 実務で求められる品質基準を習得
+# 実務レベルのテスト設計を実践
 ```
 
-## 📚 Javadocの基本構文
+## 🔄 TDDサイクル
 
-### クラスレベルドキュメント
+### 1. Red（失敗するテストを書く）
 ```java
-/**
- * ユーティリティクラスの説明
- * 
- * <p>このクラスは数学計算に関する便利なメソッドを提供します。
- * すべてのメソッドはスタティックで、スレッドセーフです。</p>
- * 
- * <h2>使用例</h2>
- * <pre>{@code
- * double result = MathUtils.calculateAverage(1.0, 2.0, 3.0);
- * System.out.println("平均: " + result);
- * }</pre>
- * 
- * @author 開発者名
- * @version 1.2.0
- * @since 1.0
- * @see java.lang.Math
- */
-public class MathUtils {
-    // クラス実装
+@Test
+void testAddition() {
+    Calculator calc = new Calculator();
+    // まだ実装されていないメソッドをテスト
+    assertEquals(5, calc.add(2, 3));
 }
 ```
 
-### メソッドレベルドキュメント
+### 2. Green（テストを通す最小実装）
 ```java
-/**
- * 配列の平均値を計算します。
- * 
- * <p>このメソッドは与えられた数値配列から算術平均を計算します。
- * 空の配列や null が渡された場合は例外が発生します。</p>
- * 
- * @param values 平均を計算する数値の配列（null不可、空不可）
- * @return 配列の算術平均値
- * @throws IllegalArgumentException 配列がnullまたは空の場合
- * @throws ArithmeticException 計算結果が無限大やNaNの場合
- * 
- * @since 1.0
- * @see #calculateMedian(double[]) 中央値計算メソッド
- * 
- * @example
- * <pre>{@code
- * double[] numbers = {1.0, 2.0, 3.0, 4.0, 5.0};
- * double avg = calculateAverage(numbers);
- * assert avg == 3.0;
- * }</pre>
- */
-public static double calculateAverage(double[] values) {
-    // メソッド実装
-}
-```
-
-## 🏗️ ライブラリ設計の原則
-
-### 1. SOLID原則の適用
-```java
-// S: Single Responsibility Principle
-public class EmailValidator {
-    public boolean isValid(String email) { /* 実装 */ }
-}
-
-// O: Open/Closed Principle
-public abstract class MessageProcessor {
-    public abstract void process(Message message);
-}
-
-// L: Liskov Substitution Principle
-public interface PaymentProcessor {
-    PaymentResult process(Payment payment);
-}
-
-// I: Interface Segregation Principle
-public interface Readable {
-    String read();
-}
-public interface Writable {
-    void write(String data);
-}
-
-// D: Dependency Inversion Principle
-public class OrderService {
-    private final PaymentProcessor processor;
-    public OrderService(PaymentProcessor processor) {
-        this.processor = processor;
+public class Calculator {
+    public int add(int a, int b) {
+        return 5; // とりあえずテストを通すだけ
     }
 }
 ```
 
-### 2. APIの使いやすさ
+### 3. Refactor（コードを改善）
 ```java
-// ✅ 良い例: 流暢なインターフェイス
-QueryBuilder query = new QueryBuilder()
-    .select("name", "email")
-    .from("users")
-    .where("age").greaterThan(18)
-    .orderBy("name")
-    .limit(10);
-
-// ✅ 良い例: ビルダーパターン
-User user = User.builder()
-    .name("山田太郎")
-    .email("yamada@example.com")
-    .age(30)
-    .build();
-```
-
-### 3. エラーハンドリング
-```java
-/**
- * カスタム例外クラス
- * 
- * <p>このライブラリ固有のエラー状況を表現するために使用されます。</p>
- */
-public class LibraryException extends Exception {
-    
-    /**
-     * エラーコード
-     */
-    private final ErrorCode errorCode;
-    
-    /**
-     * 例外を構築します。
-     * 
-     * @param errorCode エラーの種類を示すコード
-     * @param message 詳細なエラーメッセージ
-     * @param cause 原因となった例外（任意）
-     */
-    public LibraryException(ErrorCode errorCode, String message, Throwable cause) {
-        super(message, cause);
-        this.errorCode = errorCode;
-    }
-    
-    public ErrorCode getErrorCode() {
-        return errorCode;
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b; // 適切な実装に改善
     }
 }
 ```
 
-## 📖 高度なJavadoc技法
+## 🧪 JUnit 5の主要機能
 
-### HTMLタグの活用
+### 基本的なアノテーション
 ```java
-/**
- * データベース接続プールの管理クラス
- * 
- * <h2>機能概要</h2>
- * <ul>
- *   <li>接続プールの作成と管理</li>
- *   <li>接続の自動リサイクル</li>
- *   <li>パフォーマンス監視</li>
- * </ul>
- * 
- * <h2>設定パラメータ</h2>
- * <table border="1">
- * <caption>接続プール設定</caption>
- * <tr><th>パラメータ</th><th>デフォルト値</th><th>説明</th></tr>
- * <tr><td>minPoolSize</td><td>5</td><td>最小接続数</td></tr>
- * <tr><td>maxPoolSize</td><td>20</td><td>最大接続数</td></tr>
- * <tr><td>timeout</td><td>30秒</td><td>接続タイムアウト</td></tr>
- * </table>
- */
-public class ConnectionPool {
-    // 実装
+@Test                    // テストメソッド
+@BeforeEach             // 各テスト前に実行
+@AfterEach              // 各テスト後に実行
+@BeforeAll              // クラス実行前に1回実行
+@AfterAll               // クラス実行後に1回実行
+@DisplayName("テスト名")  // テストの表示名
+@Disabled               // テストを無効化
+```
+
+### アサーション
+```java
+// 基本的なアサーション
+assertEquals(expected, actual);
+assertNotEquals(unexpected, actual);
+assertTrue(condition);
+assertFalse(condition);
+assertNull(object);
+assertNotNull(object);
+
+// 例外のアサーション
+assertThrows(IllegalArgumentException.class, () -> {
+    someMethod();
+});
+
+// 複数条件のアサーション
+assertAll(
+    () -> assertEquals(expected1, actual1),
+    () -> assertEquals(expected2, actual2)
+);
+```
+
+### パラメータ化テスト
+```java
+@ParameterizedTest
+@ValueSource(ints = {1, 2, 3, 4, 5})
+void testIsPositive(int number) {
+    assertTrue(number > 0);
+}
+
+@ParameterizedTest
+@CsvSource({
+    "1, 1, 2",
+    "2, 3, 5",
+    "3, 5, 8"
+})
+void testAddition(int a, int b, int expected) {
+    assertEquals(expected, calculator.add(a, b));
 }
 ```
 
-### カスタムタグの使用
+## 🎭 モックオブジェクトの活用
+
+### Mockitoの基本使用法
 ```java
-/**
- * ユーザー認証サービス
- * 
- * @apiNote このAPIは認証情報を扱うため、セキュリティ要件に注意してください
- * @implNote 内部的にはBCryptを使用してパスワードをハッシュ化します
- * @performance 1秒間に約1000回の認証リクエストを処理可能
- * @threadsafety このクラスはスレッドセーフです
- */
-public class AuthenticationService {
-    // 実装
+@ExtendWith(MockitoExtension.class)
+class ServiceTest {
+    
+    @Mock
+    private Repository repository;
+    
+    @InjectMocks
+    private Service service;
+    
+    @Test
+    void testServiceMethod() {
+        // モックの振る舞いを定義
+        when(repository.findById(1)).thenReturn(userData);
+        
+        // テスト実行
+        User result = service.getUser(1);
+        
+        // 検証
+        assertEquals(expectedUser, result);
+        verify(repository).findById(1);
+    }
 }
 ```
 
-### {@code} と {@literal} の使い分け
+### スタブとモックの違い
 ```java
-/**
- * JSONパーサーのユーティリティ
- * 
- * <p>JSON文字列を解析して {@code Map<String, Object>} として返します。</p>
- * 
- * <p>サポートされる形式の例:</p>
- * <pre>{@code
- * {
- *   "name": "田中太郎",
- *   "age": 30,
- *   "active": true
- * }
- * }</pre>
- * 
- * <p>特殊文字の扱い: {@literal <tag>} のような文字列も正しく処理されます。</p>
- */
-public class JSONParser {
-    // 実装
+// スタブ: 決まった値を返す
+when(service.getData()).thenReturn(testData);
+
+// モック: 呼び出しを検証
+verify(service).saveData(any());
+verify(service, times(2)).processData();
+verify(service, never()).deleteData();
+```
+
+## 📊 テストの分類と戦略
+
+### テストピラミッド
+```
+    /\
+   /  \     E2E Tests (少数)
+  /    \
+ /      \   Integration Tests (中程度)
+/        \
+----------  Unit Tests (大多数)
+```
+
+### テストの種類
+- **単体テスト (Unit Test)** - 個別のクラス・メソッドのテスト
+- **統合テスト (Integration Test)** - コンポーネント間の連携テスト
+- **システムテスト (System Test)** - システム全体の動作テスト
+- **受入テスト (Acceptance Test)** - ユーザー要件の確認テスト
+
+## 🏗️ テストスイートの設計
+
+### タグによる分類
+```java
+@Tag("fast")      // 高速テスト
+@Tag("slow")      // 時間のかかるテスト
+@Tag("integration") // 統合テスト
+@Tag("unit")      // 単体テスト
+```
+
+### 条件付きテスト実行
+```java
+@EnabledOnOs(OS.WINDOWS)        // Windows でのみ実行
+@EnabledOnJre(JRE.JAVA_11)      // Java 11 でのみ実行
+@EnabledIfSystemProperty(       // システムプロパティ条件
+    named = "os.arch", 
+    matches = ".*64.*"
+)
+```
+
+## 💡 テスト設計のベストプラクティス
+
+### 1. FIRST原則
+- **Fast** - 高速に実行される
+- **Independent** - 他のテストに依存しない
+- **Repeatable** - 繰り返し実行可能
+- **Self-Validating** - 成功/失敗が明確
+- **Timely** - 適切なタイミングで作成
+
+### 2. AAA パターン
+```java
+@Test
+void testCalculation() {
+    // Arrange（準備）
+    Calculator calculator = new Calculator();
+    int a = 5, b = 3;
+    
+    // Act（実行）
+    int result = calculator.add(a, b);
+    
+    // Assert（検証）
+    assertEquals(8, result);
 }
 ```
 
-## 🔧 ドキュメント生成ツール
+### 3. 適切なテスト名
+```java
+// ❌ 悪い例
+@Test
+void test1() { }
 
-### Maven での Javadoc 生成
+// ✅ 良い例
+@Test
+@DisplayName("正の数を加算した場合、正しい合計が返される")
+void shouldReturnCorrectSumWhenAddingPositiveNumbers() { }
+```
+
+## 🔧 開発環境とツール
+
+### 必要な依存関係
+```xml
+<!-- pom.xml (Maven) -->
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>5.8.2</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>4.6.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### IDEでの実行
+```bash
+# Maven でテスト実行
+mvn test
+
+# Gradle でテスト実行
+gradle test
+
+# 特定のテストクラスのみ実行
+mvn test -Dtest=CalculatorTest
+
+# タグ別実行
+mvn test -Dgroups=fast
+```
+
+## 📊 テストカバレッジ
+
+### カバレッジの種類
+- **行カバレッジ** - 実行された行の割合
+- **分岐カバレッジ** - 実行された分岐の割合
+- **条件カバレッジ** - 実行された条件の割合
+
+### JaCoCo の活用
 ```xml
 <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-javadoc-plugin</artifactId>
-    <version>3.4.1</version>
-    <configuration>
-        <source>11</source>
-        <target>11</target>
-        <encoding>UTF-8</encoding>
-        <docencoding>UTF-8</docencoding>
-        <charset>UTF-8</charset>
-        <locale>ja_JP</locale>
-        <windowTitle>My Library API</windowTitle>
-        <doctitle>My Library API Documentation</doctitle>
-    </configuration>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.7</version>
 </plugin>
-```
-
-### Gradle での設定
-```gradle
-javadoc {
-    options.encoding = 'UTF-8'
-    options.charSet = 'UTF-8'
-    options.locale = 'ja_JP'
-    options.windowTitle = 'My Library API'
-    options.docTitle = 'My Library API Documentation'
-    
-    // Java 11+ での警告抑制
-    if(JavaVersion.current().isJava11Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
-}
-```
-
-## 📊 API設計のベストプラクティス
-
-### 1. 一貫性のある命名
-```java
-// ✅ 一貫した命名規則
-public interface UserRepository {
-    void createUser(User user);      // create + 名詞
-    User findUserById(Long id);      // find + 名詞 + By + 条件
-    void updateUser(User user);      // update + 名詞
-    void deleteUser(Long id);        // delete + 名詞
-}
-```
-
-### 2. 適切な抽象化レベル
-```java
-// ✅ 適切な抽象化
-public interface EmailService {
-    void sendEmail(String to, String subject, String body);
-    void sendEmailWithAttachment(String to, String subject, String body, Attachment attachment);
-}
-
-// ❌ 低レベルすぎる抽象化
-public interface EmailService {
-    void openConnection();
-    void authenticate(String username, String password);
-    void setRecipient(String to);
-    void setSubject(String subject);
-    void setBody(String body);
-    void send();
-    void closeConnection();
-}
-```
-
-### 3. 型安全性の確保
-```java
-// ✅ 型安全なAPI設計
-public class Configuration<T> {
-    private final Class<T> type;
-    private final T defaultValue;
-    
-    public Configuration(Class<T> type, T defaultValue) {
-        this.type = type;
-        this.defaultValue = defaultValue;
-    }
-    
-    public T getValue(String key) {
-        // 型安全な値の取得
-        return type.cast(getValueInternal(key));
-    }
-    
-    private Object getValueInternal(String key) {
-        // 内部実装
-        return defaultValue;
-    }
-}
-```
-
-## 🎯 バージョニングとメンテナンス
-
-### セマンティックバージョニング
-```java
-/**
- * ライブラリのバージョン情報
- * 
- * <p>このライブラリはセマンティックバージョニング（SemVer）に従います:</p>
- * <ul>
- *   <li><strong>MAJOR</strong>: 互換性のない変更</li>
- *   <li><strong>MINOR</strong>: 後方互換性のある機能追加</li>
- *   <li><strong>PATCH</strong>: 後方互換性のあるバグ修正</li>
- * </ul>
- * 
- * @since 1.0.0
- */
-public final class Version {
-    public static final String CURRENT = "2.1.0";
-    public static final int MAJOR = 2;
-    public static final int MINOR = 1;
-    public static final int PATCH = 0;
-}
-```
-
-### 非推奨APIの管理
-```java
-/**
- * 旧バージョンとの互換性のためのメソッド
- * 
- * @param input 入力文字列
- * @return 処理結果
- * @deprecated バージョン 2.0.0 以降は {@link #processString(String, Options)} を使用してください。
- *             このメソッドは 3.0.0 で削除予定です。
- */
-@Deprecated(since = "2.0.0", forRemoval = true)
-public String processString(String input) {
-    return processString(input, Options.getDefault());
-}
 ```
 
 ## ✅ 評価基準
 
 ### 基本レベル (60-70点)
-- [ ] 基本的なJavadocコメントが書ける
-- [ ] クラスとメソッドの目的が明確に説明されている
-- [ ] パラメータと戻り値が適切に文書化されている
+- [ ] 基本的な単体テストが書ける
+- [ ] JUnit 5のアノテーションが使用できる
+- [ ] アサーションが適切に使用できる
 
 ### 応用レベル (70-85点)
-- [ ] HTMLタグを使用した構造化された文書が作成できる
-- [ ] 使用例とサンプルコードが含まれている
-- [ ] 例外処理が適切に文書化されている
-- [ ] APIの一貫性と使いやすさが考慮されている
+- [ ] TDDサイクルが実践できる
+- [ ] パラメータ化テストが活用できる
+- [ ] 例外処理のテストが書ける
+- [ ] テストの可読性と保守性が考慮されている
 
 ### 発展レベル (85-100点)
-- [ ] 包括的で実務レベルのAPIドキュメントが作成できる
-- [ ] ライブラリ設計の原則が適用されている
-- [ ] バージョニング戦略が適切に実装されている
-- [ ] 拡張性と保守性が考慮された設計になっている
+- [ ] モックオブジェクトが効果的に活用されている
+- [ ] テストスイートが体系的に設計されている
+- [ ] パフォーマンステストが実装されている
+- [ ] CI/CD での活用が考慮されている
 
 ## 🎯 実務での応用
 
-### オープンソースプロジェクト
-- **GitHub Pages** での API ドキュメント公開
-- **コントリビューション** ガイドラインの作成
-- **Issue テンプレート** と **PR テンプレート** の整備
+### 継続的インテグレーション
+```yaml
+# GitHub Actions の例
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: mvn test
+```
 
-### 企業でのライブラリ開発
-- **社内標準** に準拠したAPIガイドライン
-- **レビュープロセス** でのドキュメント品質確認
-- **自動生成** されるドキュメントのCI/CD統合
+### 品質管理
+- **コードレビュー** でのテスト確認
+- **品質ゲート** でのカバレッジ基準
+- **リグレッションテスト** での変更影響確認
 
 
 
-💡 **ヒント**: 良いAPIドキュメントは、使用者が迷わずに目的を達成できることを目指します。サンプルコードは実際に動作するものを提供し、エラーケースも含めて説明することが重要です。
+💡 **ヒント**: TDDは最初は時間がかかるように感じますが、バグの早期発見とコード品質の向上により、長期的には開発効率が向上します。小さなステップで確実に進めることが重要です。

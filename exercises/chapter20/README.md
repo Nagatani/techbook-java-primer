@@ -1,360 +1,212 @@
-# 第20章: テスト駆動開発とJUnit
+# 第20章 JTableとJListの基礎 - 演習課題
 
 ## 📋 章の概要
 
-この章では、テスト駆動開発（TDD）の手法とJUnit 5を使用した効果的なテスト作成について学習します。単体テストから統合テスト、モックの活用まで、品質の高いソフトウェア開発に必要なテスト技術を習得します。
+この章では、JavaのSwingライブラリを使用したGUIアプリケーション開発の基礎を学習します。基本的なコンポーネントの使用から高度なMVCパターンの実装まで、実践的なスキルを身につけます。
 
 ## 🎯 学習目標
 
-- テスト駆動開発（TDD）の概念と手法を理解する
-- JUnit 5の機能を効果的に活用できる
-- モックオブジェクトを使用したテストができる
-- パラメータ化テストによる効率的なテストが書ける
-- テストスイートによる体系的なテスト管理ができる
+- Swingコンポーネントの基本的な使用方法を理解する
+- レイアウトマネージャーの適切な選択と使用ができる
+- イベント駆動プログラミングの概念を理解する
+- MVCパターンによる設計ができる
+- 実用的なGUIアプリケーションを構築できる
 
 ## 📁 課題構成
 
 ### basic/
-テスト作成の基礎スキルを習得するための課題です。
+基本的なGUI開発スキルを習得するための課題です。
 
-- **SimpleCalculatorTest.java** - 基本的な単体テストの作成
-- **StringUtilsTest.java** - 文字列処理のテスト
-- **ValidationTest.java** - バリデーション機能のテスト
+- **SimpleCalculator.java** - 基本的な電卓GUIの作成
+- **StudentRegistrationForm.java** - フォーム作成とバリデーション
+- **BasicFileManager.java** - ファイル操作GUIの基礎
 
 ### advanced/
-より高度なテスト技法を学習する課題です。
+より高度なGUI機能とパターンを学習する課題です。
 
-- **MockObjectTest.java** - モックオブジェクトの活用
-- **ParameterizedTestDemo.java** - パラメータ化テストの実装
-- **IntegrationTest.java** - 統合テストの作成
+- **MVCPatternDemo.java** - MVCパターンの実装
+- **CustomComponents.java** - カスタムコンポーネントの作成
+- **ResponsiveGUI.java** - レスポンシブデザインの実装
 
 ### challenge/
-実践的で包括的なテストスキルが求められる挑戦課題です。
+実践的で複合的なスキルが求められる挑戦課題です。
 
-- **TDDWorkflow.java** - 完全なTDDサイクルの実践
-- **TestSuiteDesign.java** - 大規模テストスイートの設計
-- **PerformanceTest.java** - パフォーマンステストの実装
+- **DataVisualizationTool.java** - データ可視化アプリケーション
+- **MultiWindowApp.java** - 複数ウィンドウの管理
+- **PluginArchitecture.java** - プラグイン式アーキテクチャ
 
 ### solutions/
 各課題の完全な解答例と詳細な解説です。
 
-- **TestDrivenCalculator.java** - TDD手法で実装された計算機クラス
-- **TestDrivenCalculatorTest.java** - JUnit 5を使用した包括的なテストスイート
-- **MockExample.java** - モッキングフレームワークを使用したテスト実装
-- **ParameterizedTest.java** - パラメータ化テストの効率的な活用例
-- **TestSuite.java** - テストスイートによる体系的なテスト管理
+- **Calculator.java** - 基本GUI電卓の完全実装
+- **StudentManagementGUI.java** - JTable + MVC学生管理システム
+- **FileExplorer.java** - 高機能ファイルエクスプローラー
+- **DataVisualization.java** - Graphics2D可視化システム
+- **MVCExample.java** - 完全MVCアーキテクチャ実装
 
 ## 🚀 課題の進め方
 
-### 1. テストの基礎から開始
+### 1. 基本課題から開始
 ```bash
-# JUnit 5の基本機能を理解
+# 基本的なSwingコンポーネントの理解
 cd basic/
-# SimpleCalculatorTest.java から始めることを推奨
+# SimpleCalculator.java から始めることを推奨
 ```
 
-### 2. TDDサイクルの実践
+### 2. 実際のアプリケーション開発
 ```bash
-# Red-Green-Refactorサイクルを体験
+# より実践的な課題に挑戦
 cd advanced/
-# 実際にTDDでコードを作成してみる
+# MVCパターンの理解を深める
 ```
 
-### 3. 高度なテスト技法の習得
+### 3. 統合的なスキル習得
 ```bash
-# モックやパラメータ化テストを活用
+# 複合的なスキルが必要な課題
 cd challenge/
-# 実務レベルのテスト設計を実践
+# 実務レベルのアプリケーション開発
 ```
 
-## 🔄 TDDサイクル
+## 🎨 主要な技術要素
 
-### 1. Red（失敗するテストを書く）
+### Swingコンポーネント
+- **JFrame, JPanel** - ウィンドウとコンテナ
+- **JButton, JLabel, JTextField** - 基本コンポーネント
+- **JTable, JTree, JList** - データ表示コンポーネント
+- **JMenuBar, JToolBar** - メニューとツールバー
+
+### レイアウトマネージャー
+- **BorderLayout** - 方向別レイアウト
+- **GridLayout** - グリッド配置
+- **FlowLayout** - 流動的配置
+- **GridBagLayout** - 柔軟なグリッド配置
+
+### イベント処理
+- **ActionListener** - ボタンクリックなど
+- **DocumentListener** - テキスト変更の監視
+- **ListSelectionListener** - リスト選択の処理
+- **MouseListener** - マウスイベント
+
+### 設計パターン
+- **MVC (Model-View-Controller)** - アーキテクチャパターン
+- **Observer** - 状態変更の通知
+- **Strategy** - アルゴリズムの切り替え
+
+## 💡 実装のポイント
+
+### 1. コンポーネント設計
 ```java
-@Test
-void testAddition() {
-    Calculator calc = new Calculator();
-    // まだ実装されていないメソッドをテスト
-    assertEquals(5, calc.add(2, 3));
-}
-```
-
-### 2. Green（テストを通す最小実装）
-```java
-public class Calculator {
-    public int add(int a, int b) {
-        return 5; // とりあえずテストを通すだけ
-    }
-}
-```
-
-### 3. Refactor（コードを改善）
-```java
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b; // 適切な実装に改善
-    }
-}
-```
-
-## 🧪 JUnit 5の主要機能
-
-### 基本的なアノテーション
-```java
-@Test                    // テストメソッド
-@BeforeEach             // 各テスト前に実行
-@AfterEach              // 各テスト後に実行
-@BeforeAll              // クラス実行前に1回実行
-@AfterAll               // クラス実行後に1回実行
-@DisplayName("テスト名")  // テストの表示名
-@Disabled               // テストを無効化
-```
-
-### アサーション
-```java
-// 基本的なアサーション
-assertEquals(expected, actual);
-assertNotEquals(unexpected, actual);
-assertTrue(condition);
-assertFalse(condition);
-assertNull(object);
-assertNotNull(object);
-
-// 例外のアサーション
-assertThrows(IllegalArgumentException.class, () -> {
-    someMethod();
-});
-
-// 複数条件のアサーション
-assertAll(
-    () -> assertEquals(expected1, actual1),
-    () -> assertEquals(expected2, actual2)
-);
-```
-
-### パラメータ化テスト
-```java
-@ParameterizedTest
-@ValueSource(ints = {1, 2, 3, 4, 5})
-void testIsPositive(int number) {
-    assertTrue(number > 0);
-}
-
-@ParameterizedTest
-@CsvSource({
-    "1, 1, 2",
-    "2, 3, 5",
-    "3, 5, 8"
-})
-void testAddition(int a, int b, int expected) {
-    assertEquals(expected, calculator.add(a, b));
-}
-```
-
-## 🎭 モックオブジェクトの活用
-
-### Mockitoの基本使用法
-```java
-@ExtendWith(MockitoExtension.class)
-class ServiceTest {
+// 適切な責任分離
+public class UserInterface extends JFrame {
+    private BusinessLogic logic;
+    private DataModel model;
     
-    @Mock
-    private Repository repository;
+    // UIコンポーネントの初期化
+    private void initializeComponents() { }
     
-    @InjectMocks
-    private Service service;
+    // レイアウト設定
+    private void setupLayout() { }
     
-    @Test
-    void testServiceMethod() {
-        // モックの振る舞いを定義
-        when(repository.findById(1)).thenReturn(userData);
-        
-        // テスト実行
-        User result = service.getUser(1);
-        
-        // 検証
-        assertEquals(expectedUser, result);
-        verify(repository).findById(1);
-    }
+    // イベントハンドラーの設定
+    private void setupEventListeners() { }
 }
 ```
 
-### スタブとモックの違い
+### 2. MVCパターンの実装
 ```java
-// スタブ: 決まった値を返す
-when(service.getData()).thenReturn(testData);
+// Model: データとビジネスロジック
+public class Model extends Observable {
+    // データ変更時にオブザーバーに通知
+}
 
-// モック: 呼び出しを検証
-verify(service).saveData(any());
-verify(service, times(2)).processData();
-verify(service, never()).deleteData();
-```
+// View: ユーザーインターフェイス
+public class View implements Observer {
+    // モデルの変更を受けてUI更新
+}
 
-## 📊 テストの分類と戦略
-
-### テストピラミッド
-```
-    /\
-   /  \     E2E Tests (少数)
-  /    \
- /      \   Integration Tests (中程度)
-/        \
-----------  Unit Tests (大多数)
-```
-
-### テストの種類
-- **単体テスト (Unit Test)** - 個別のクラス・メソッドのテスト
-- **統合テスト (Integration Test)** - コンポーネント間の連携テスト
-- **システムテスト (System Test)** - システム全体の動作テスト
-- **受入テスト (Acceptance Test)** - ユーザー要件の確認テスト
-
-## 🏗️ テストスイートの設計
-
-### タグによる分類
-```java
-@Tag("fast")      // 高速テスト
-@Tag("slow")      // 時間のかかるテスト
-@Tag("integration") // 統合テスト
-@Tag("unit")      // 単体テスト
-```
-
-### 条件付きテスト実行
-```java
-@EnabledOnOs(OS.WINDOWS)        // Windows でのみ実行
-@EnabledOnJre(JRE.JAVA_11)      // Java 11 でのみ実行
-@EnabledIfSystemProperty(       // システムプロパティ条件
-    named = "os.arch", 
-    matches = ".*64.*"
-)
-```
-
-## 💡 テスト設計のベストプラクティス
-
-### 1. FIRST原則
-- **Fast** - 高速に実行される
-- **Independent** - 他のテストに依存しない
-- **Repeatable** - 繰り返し実行可能
-- **Self-Validating** - 成功/失敗が明確
-- **Timely** - 適切なタイミングで作成
-
-### 2. AAA パターン
-```java
-@Test
-void testCalculation() {
-    // Arrange（準備）
-    Calculator calculator = new Calculator();
-    int a = 5, b = 3;
-    
-    // Act（実行）
-    int result = calculator.add(a, b);
-    
-    // Assert（検証）
-    assertEquals(8, result);
+// Controller: ユーザー入力の処理
+public class Controller {
+    // ModelとViewの橋渡し
 }
 ```
 
-### 3. 適切なテスト名
+### 3. エラーハンドリング
 ```java
-// ❌ 悪い例
-@Test
-void test1() { }
-
-// ✅ 良い例
-@Test
-@DisplayName("正の数を加算した場合、正しい合計が返される")
-void shouldReturnCorrectSumWhenAddingPositiveNumbers() { }
+try {
+    // GUI操作
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(this, 
+        "エラーが発生しました: " + e.getMessage(),
+        "エラー", JOptionPane.ERROR_MESSAGE);
+}
 ```
 
 ## 🔧 開発環境とツール
 
-### 必要な依存関係
-```xml
-<!-- pom.xml (Maven) -->
-<dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <version>5.8.2</version>
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.mockito</groupId>
-    <artifactId>mockito-core</artifactId>
-    <version>4.6.1</version>
-    <scope>test</scope>
-</dependency>
+### 必要なライブラリ
+- **Java Swing** - 標準GUI ライブラリ
+- **Java AWT** - 低レベルGUI機能
+
+### 推奨ツール
+- **Scene Builder** - FXML設計（JavaFX用）
+- **WindowBuilder** - Eclipse GUI エディタ
+- **IntelliJ IDEA** - 内蔵GUI デザイナー
+
+### デバッグとテスト
+```java
+// GUIコンポーネントのテスト
+@Test
+public void testButtonClick() {
+    JButton button = new JButton("Test");
+    ActionListener listener = mock(ActionListener.class);
+    button.addActionListener(listener);
+    
+    button.doClick();
+    verify(listener).actionPerformed(any(ActionEvent.class));
+}
 ```
 
-### IDEでの実行
-```bash
-# Maven でテスト実行
-mvn test
+## 📚 学習リソース
 
-# Gradle でテスト実行
-gradle test
+### 公式ドキュメント
+- [Oracle Swing Tutorial](https://docs.oracle.com/javase/tutorial/uiswing/)
+- [Java AWT Reference](https://docs.oracle.com/javase/8/docs/api/java/awt/package-summary.html)
 
-# 特定のテストクラスのみ実行
-mvn test -Dtest=CalculatorTest
-
-# タグ別実行
-mvn test -Dgroups=fast
-```
-
-## 📊 テストカバレッジ
-
-### カバレッジの種類
-- **行カバレッジ** - 実行された行の割合
-- **分岐カバレッジ** - 実行された分岐の割合
-- **条件カバレッジ** - 実行された条件の割合
-
-### JaCoCo の活用
-```xml
-<plugin>
-    <groupId>org.jacoco</groupId>
-    <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.7</version>
-</plugin>
-```
+### 推奨書籍
+- "Java Swing" by Matthew Robinson
+- "Swing Hacks" by Joshua Marinacci
 
 ## ✅ 評価基準
 
 ### 基本レベル (60-70点)
-- [ ] 基本的な単体テストが書ける
-- [ ] JUnit 5のアノテーションが使用できる
-- [ ] アサーションが適切に使用できる
+- [ ] 基本的なSwingコンポーネントが使用できる
+- [ ] 簡単なレイアウトが実装できる
+- [ ] イベントハンドラーが実装できる
 
 ### 応用レベル (70-85点)
-- [ ] TDDサイクルが実践できる
-- [ ] パラメータ化テストが活用できる
-- [ ] 例外処理のテストが書ける
-- [ ] テストの可読性と保守性が考慮されている
+- [ ] 複数のコンポーネントを組み合わせたGUIが作成できる
+- [ ] 適切なレイアウトマネージャーが選択できる
+- [ ] エラーハンドリングが実装されている
+- [ ] ユーザビリティが考慮されている
 
 ### 発展レベル (85-100点)
-- [ ] モックオブジェクトが効果的に活用されている
-- [ ] テストスイートが体系的に設計されている
-- [ ] パフォーマンステストが実装されている
-- [ ] CI/CD での活用が考慮されている
+- [ ] MVCパターンが適切に実装されている
+- [ ] カスタムコンポーネントが作成できる
+- [ ] 拡張性のある設計になっている
+- [ ] 実務レベルの品質と機能を持つ
 
 ## 🎯 実務での応用
 
-### 継続的インテグレーション
-```yaml
-# GitHub Actions の例
-name: CI
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: mvn test
-```
+### デスクトップアプリケーション開発
+- **業務システム** - 社内ツールや管理システム
+- **データ分析ツール** - レポート生成やデータ可視化
+- **設定ツール** - システム設定やコンフィグ管理
 
-### 品質管理
-- **コードレビュー** でのテスト確認
-- **品質ゲート** でのカバレッジ基準
-- **リグレッションテスト** での変更影響確認
+### プロトタイピング
+- **UI/UX検証** - インターフェイス設計の検証
+- **機能デモ** - ステークホルダーへの提案
+- **ユーザビリティテスト** - 使いやすさの評価
 
 
 
-💡 **ヒント**: TDDは最初は時間がかかるように感じますが、バグの早期発見とコード品質の向上により、長期的には開発効率が向上します。小さなステップで確実に進めることが重要です。
+💡 **ヒント**: GUI開発では、まず紙やワイヤーフレームツールで画面設計を行ってからコーディングを始めると効率的です。ユーザーの使いやすさを常に考慮して設計しましょう。
