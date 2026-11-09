@@ -1,15 +1,15 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '9.6.1'  // 旧com.github.johnrengelman.shadowの後継（Gradle 9対応）
 }
 
 group = 'com.example.chapter22'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 repositories {
@@ -20,6 +20,7 @@ dependencies {
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // Gradle 9以降は明示が必要
     
     // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -33,7 +34,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'chapter22.solutions.StudentManager'
+    mainClass = 'chapter22.documentation.solutions.StudentManager'
 }
 
 tasks.named('test') {
@@ -57,31 +58,25 @@ shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('')
     manifest {
-        attributes 'Main-Class': 'chapter22.solutions.StudentManager'
+        attributes 'Main-Class': 'chapter22.documentation.solutions.StudentManager'
     }
 }
 
 // カスタムタスク: すべての例を実行
-task runAllExamples {
-    doLast {
-        println '=== Library Example ==='
-        javaexec {
-            mainClass = 'chapter22.solutions.Library'
-            classpath = sourceSets.main.runtimeClasspath
-        }
-        
-        println '\n=== StudentManager Example ==='
-        javaexec {
-            mainClass = 'chapter22.solutions.StudentManager'
-            classpath = sourceSets.main.runtimeClasspath
-        }
-        
-        println '\n=== TextProcessor Example ==='
-        javaexec {
-            mainClass = 'chapter22.solutions.TextProcessor'
-            classpath = sourceSets.main.runtimeClasspath
-        }
+// mainメソッドを持つクラスごとにJavaExecタスクを作り、runAllExamplesでまとめて実行する
+['StudentManager', 'TextProcessor'].each { name ->
+    tasks.register("run${name}", JavaExec) {
+        group = 'examples'
+        description = "${name}の例を実行します"
+        mainClass = "chapter22.documentation.solutions.${name}"
+        classpath = sourceSets.main.runtimeClasspath
     }
+}
+
+tasks.register('runAllExamples') {
+    group = 'examples'
+    description = 'すべての例を実行します'
+    dependsOn 'runStudentManager', 'runTextProcessor'
 }
 
 // ソースJARの生成
@@ -96,16 +91,15 @@ task javadocJar(type: Jar) {
     archiveClassifier.set('javadoc')
 }
 
-// ビルド時にすべてのJARを生成
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+// ビルド時にすべてのJARを生成（assembleタスクの依存に加える）
+tasks.named('assemble') {
+    dependsOn sourcesJar, javadocJar
 }
 
 // プロジェクト情報の表示
-task projectInfo {
-    doLast {
-        println """
+tasks.register('projectInfo') {
+    // 実行時にprojectを参照しないよう、表示する値は設定時に取り出しておく
+    def info = """
 プロジェクト情報:
 - グループ: ${project.group}
 - 名前: ${project.name}
@@ -114,8 +108,11 @@ task projectInfo {
 
 依存関係:
 """
-        configurations.implementation.dependencies.each {
-            println "- ${it.group}:${it.name}:${it.version}"
-        }
+    def dependencyList = configurations.implementation.dependencies.collect {
+        "- ${it.group}:${it.name}:${it.version}"
+    }
+    doLast {
+        println info
+        dependencyList.each { println it }
     }
 }

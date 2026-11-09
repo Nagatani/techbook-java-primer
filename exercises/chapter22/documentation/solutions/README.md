@@ -60,9 +60,9 @@ javadoc -d docs -encoding UTF-8 -charset UTF-8 -author -version \
 
 ### 実行方法
 ```bash
-# コンパイルと実行（Gson JARが必要）
-javac -cp gson-2.10.1.jar StudentManager.java Student.java Course.java
-java -cp .:gson-2.10.1.jar chapter22.solutions.StudentManager
+# コンパイルと実行（Gson JARが必要。クラスはchapter22.documentation.solutionsパッケージに属する）
+javac -d out -cp gson-2.10.1.jar StudentManager.java Student.java Course.java
+java -cp out:gson-2.10.1.jar chapter22.documentation.solutions.StudentManager
 ```
 
 ### 出力例

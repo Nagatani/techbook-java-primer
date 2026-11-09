@@ -21,10 +21,7 @@ public class TextProcessor {
     /**
      * 文字列が空（null、空文字、空白のみ）かチェックします。
      * 
-     * @param text チェックする文字列
-     * @return 空の場合true、それ以外はfalse
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * TextProcessor processor = new TextProcessor();
      * processor.isBlank(null);      // true
@@ -33,6 +30,9 @@ public class TextProcessor {
      * processor.isBlank("abc");     // false
      * processor.isBlank("  abc  "); // false
      * }</pre>
+     *
+     * @param text チェックする文字列
+     * @return 空の場合true、それ以外はfalse
      */
     public boolean isBlank(String text) {
         return StringUtils.isBlank(text);
@@ -41,17 +41,17 @@ public class TextProcessor {
     /**
      * 文字列を指定文字数で省略し、省略記号（...）を追加します。
      * 
-     * @param text 省略する文字列
-     * @param maxLength 最大文字数（省略記号を含む）
-     * @return 省略された文字列
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * TextProcessor processor = new TextProcessor();
      * processor.abbreviate("Hello World", 10);  // "Hello W..."
      * processor.abbreviate("Hello", 10);        // "Hello"
      * processor.abbreviate(null, 10);           // null
      * }</pre>
+     *
+     * @param text 省略する文字列
+     * @param maxLength 最大文字数（省略記号を含む）
+     * @return 省略された文字列
      */
     public String abbreviate(String text, int maxLength) {
         return StringUtils.abbreviate(text, maxLength);
@@ -60,10 +60,7 @@ public class TextProcessor {
     /**
      * 文字列の最初の文字を大文字に変換します。
      * 
-     * @param text 変換する文字列
-     * @return 最初の文字が大文字になった文字列
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * TextProcessor processor = new TextProcessor();
      * processor.capitalize("hello");     // "Hello"
@@ -72,6 +69,9 @@ public class TextProcessor {
      * processor.capitalize("");          // ""
      * processor.capitalize(null);        // null
      * }</pre>
+     *
+     * @param text 変換する文字列
+     * @return 最初の文字が大文字になった文字列
      */
     public String capitalize(String text) {
         return StringUtils.capitalize(text);
@@ -80,11 +80,7 @@ public class TextProcessor {
     /**
      * 配列を指定された区切り文字で結合します。
      * 
-     * @param array 結合する文字列配列
-     * @param separator 区切り文字
-     * @return 結合された文字列
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * TextProcessor processor = new TextProcessor();
      * String[] array = {"apple", "banana", "orange"};
@@ -92,6 +88,10 @@ public class TextProcessor {
      * processor.joinArray(array, "-");      // "apple-banana-orange"
      * processor.joinArray(null, ", ");      // null
      * }</pre>
+     *
+     * @param array 結合する文字列配列
+     * @param separator 区切り文字
+     * @return 結合された文字列
      */
     public String joinArray(String[] array, String separator) {
         return StringUtils.join(array, separator);
@@ -100,10 +100,7 @@ public class TextProcessor {
     /**
      * 文字列から数字のみを抽出します。
      * 
-     * @param text 抽出元の文字列
-     * @return 数字のみを含む文字列
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * TextProcessor processor = new TextProcessor();
      * processor.extractDigits("abc123def456");   // "123456"
@@ -111,6 +108,9 @@ public class TextProcessor {
      * processor.extractDigits("2024年1月1日");    // "202411"
      * processor.extractDigits(null);              // null
      * }</pre>
+     *
+     * @param text 抽出元の文字列
+     * @return 数字のみを含む文字列
      */
     public String extractDigits(String text) {
         return StringUtils.getDigits(text);

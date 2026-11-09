@@ -71,14 +71,14 @@ public class Library {
      * 同じISBNの本がすでに存在する場合は、新しい本で上書きされます。
      * </p>
      * 
-     * @param book 追加する本（null不可）
-     * @throws NullPointerException bookがnullの場合
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * Book newBook = new Book("978-4-7741-9308-7", "Java入門", "著者名", 2023);
      * library.addBook(newBook);
      * }</pre>
+     *
+     * @param book 追加する本（null不可）
+     * @throws NullPointerException bookがnullの場合
      */
     public void addBook(Book book) {
         Objects.requireNonNull(book, "追加する本はnullにできません");
@@ -101,17 +101,17 @@ public class Library {
     /**
      * ISBNを使用して本を検索します。
      * 
-     * @param isbn 検索する本のISBN（null不可）
-     * @return 見つかった本、存在しない場合はnull
-     * @throws NullPointerException isbnがnullの場合
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * Book book = library.findBookByIsbn("978-4-7741-9308-7");
      * if (book != null) {
      *     System.out.println("見つかりました: " + book.getTitle());
      * }
      * }</pre>
+     *
+     * @param isbn 検索する本のISBN（null不可）
+     * @return 見つかった本、存在しない場合はnull
+     * @throws NullPointerException isbnがnullの場合
      */
     public Book findBookByIsbn(String isbn) {
         Objects.requireNonNull(isbn, "ISBNはnullにできません");
@@ -124,15 +124,15 @@ public class Library {
      * 大文字小文字を区別せず、部分一致で検索します。
      * </p>
      * 
-     * @param author 検索する著者名（null不可）
-     * @return 著者名が一致する本のリスト（見つからない場合は空のリスト）
-     * @throws NullPointerException authorがnullの場合
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * List<Book> books = library.findBooksByAuthor("山田");
      * books.forEach(book -> System.out.println(book.getTitle()));
      * }</pre>
+     *
+     * @param author 検索する著者名（null不可）
+     * @return 著者名が一致する本のリスト（見つからない場合は空のリスト）
+     * @throws NullPointerException authorがnullの場合
      */
     public List<Book> findBooksByAuthor(String author) {
         Objects.requireNonNull(author, "著者名はnullにできません");
@@ -170,13 +170,7 @@ public class Library {
      * ユーザーIDは自動的に管理され、初めてのユーザーでも使用できます。
      * </p>
      * 
-     * @param userId 借りるユーザーのID（null不可、空文字列不可）
-     * @param isbn 借りる本のISBN（null不可）
-     * @throws BookNotAvailableException 本が貸出中または存在しない場合
-     * @throws IllegalArgumentException userIdが空文字列の場合
-     * @throws NullPointerException 引数がnullの場合
-     * 
-     * <h3>使用例:</h3>
+     * <h4>使用例:</h4>
      * <pre>{@code
      * try {
      *     library.borrowBook("user123", "978-4-7741-9308-7");
@@ -185,6 +179,12 @@ public class Library {
      *     System.err.println("貸出失敗: " + e.getMessage());
      * }
      * }</pre>
+     *
+     * @param userId 借りるユーザーのID（null不可、空文字列不可）
+     * @param isbn 借りる本のISBN（null不可）
+     * @throws BookNotAvailableException 本が貸出中または存在しない場合
+     * @throws IllegalArgumentException userIdが空文字列の場合
+     * @throws NullPointerException 引数がnullの場合
      */
     public void borrowBook(String userId, String isbn) throws BookNotAvailableException {
         Objects.requireNonNull(userId, "ユーザーIDはnullにできません");
@@ -219,17 +219,17 @@ public class Library {
      * 返却後、本は再び貸出可能になります。
      * </p>
      * 
+     * <h4>使用例:</h4>
+     * <pre>{@code
+     * library.returnBook("user123", "978-4-7741-9308-7");
+     * System.out.println("返却完了");
+     * }</pre>
+     *
      * @param userId 返却するユーザーのID（null不可）
      * @param isbn 返却する本のISBN（null不可）
      * @throws IllegalStateException ユーザーがその本を借りていない場合
      * @throws IllegalArgumentException 本が存在しない場合
      * @throws NullPointerException 引数がnullの場合
-     * 
-     * <h3>使用例:</h3>
-     * <pre>{@code
-     * library.returnBook("user123", "978-4-7741-9308-7");
-     * System.out.println("返却完了");
-     * }</pre>
      */
     public void returnBook(String userId, String isbn) {
         Objects.requireNonNull(userId, "ユーザーIDはnullにできません");
