@@ -234,16 +234,16 @@ public class FunctionalPatternsDemo {
             personAddressLens.compose(addressZipCodeLens);
         
         public static void demonstrateLenses() {
-            System.out.println("=== Lens Pattern Demo ===");
+            IO.println("=== Lens Pattern Demo ===");
             
             Address address = new Address("123 Main St", "Tokyo", "100-0001", "Japan");
             Person person = new Person("Alice", 30, address, Arrays.asList("reading", "swimming"));
             
-            System.out.println("Original person: " + person);
+            IO.println("Original person: " + person);
             
             // 深くネストしたフィールドの更新
             Person updatedCity = personCityLens.set(person, "Osaka");
-            System.out.println("Updated city: " + updatedCity);
+            IO.println("Updated city: " + updatedCity);
             
             // 複数のフィールドを連鎖的に更新
             Person multiUpdated = personNameLens.set(
@@ -253,7 +253,7 @@ public class FunctionalPatternsDemo {
                 ), 
                 "Bob"
             );
-            System.out.println("Multi-updated: " + multiUpdated);
+            IO.println("Multi-updated: " + multiUpdated);
             
             // 条件付き更新
             Person conditionalUpdate = personAgeLens.modifyIf(
@@ -261,7 +261,7 @@ public class FunctionalPatternsDemo {
                 age -> age >= 30, 
                 age -> age + 1
             );
-            System.out.println("Conditional update (age >= 30): " + conditionalUpdate);
+            IO.println("Conditional update (age >= 30): " + conditionalUpdate);
             
             // 関数型更新
             Person functionalUpdate = personHobbiesLens.modify(
@@ -272,7 +272,7 @@ public class FunctionalPatternsDemo {
                     return newHobbies;
                 }
             );
-            System.out.println("Added hobby: " + functionalUpdate);
+            IO.println("Added hobby: " + functionalUpdate);
         }
     }
     
@@ -512,7 +512,7 @@ public class FunctionalPatternsDemo {
         }
         
         public static void demonstrateFunctionComposition() {
-            System.out.println("\n=== Function Composition Demo ===");
+            IO.println("\n=== Function Composition Demo ===");
             
             // 基本的な関数
             Function<String, String> trim = String::trim;
@@ -525,27 +525,27 @@ public class FunctionalPatternsDemo {
             String input = "  hello world  ";
             String result = processText.apply(input);
             
-            System.out.println("Input: '" + input + "'");
-            System.out.println("Result: '" + result + "'");
+            IO.println("Input: '" + input + "'");
+            IO.println("Result: '" + result + "'");
             
             // 安全な関数
             Function<String, Integer> unsafeParse = Integer::parseInt;
             Function<String, Optional<Integer>> safeParse = safe(unsafeParse);
             
-            System.out.println("Safe parse '123': " + safeParse.apply("123"));
-            System.out.println("Safe parse 'abc': " + safeParse.apply("abc"));
+            IO.println("Safe parse '123': " + safeParse.apply("123"));
+            IO.println("Safe parse 'abc': " + safeParse.apply("abc"));
             
             // メモ化
             Function<Integer, Integer> expensiveFunction = n -> {
-                System.out.println("Computing for: " + n);
+                IO.println("Computing for: " + n);
                 return n * n;
             };
             
             Function<Integer, Integer> memoizedFunction = memoize(expensiveFunction);
             
-            System.out.println("First call: " + memoizedFunction.apply(5));
-            System.out.println("Second call: " + memoizedFunction.apply(5)); // キャッシュから
-            System.out.println("Third call: " + memoizedFunction.apply(3));
+            IO.println("First call: " + memoizedFunction.apply(5));
+            IO.println("Second call: " + memoizedFunction.apply(5)); // キャッシュから
+            IO.println("Third call: " + memoizedFunction.apply(3));
         }
     }
     
@@ -586,8 +586,8 @@ public class FunctionalPatternsDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Functional Programming with Immutability Patterns Demo");
-        System.out.println("=====================================================");
+        IO.println("Functional Programming with Immutability Patterns Demo");
+        IO.println("=====================================================");
         
         // レンズパターンのデモ
         LensExample.demonstrateLenses();
@@ -604,84 +604,84 @@ public class FunctionalPatternsDemo {
         // 非同期状態管理
         demonstrateAsyncStateManagement();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Lens pattern enables clean nested data updates");
-        System.out.println("✓ Immutable state management prevents unexpected mutations");
-        System.out.println("✓ Redux pattern provides predictable state transitions");
-        System.out.println("✓ Function composition creates reusable transformations");
-        System.out.println("✓ Async state management maintains consistency under concurrency");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Lens pattern enables clean nested data updates");
+        IO.println("✓ Immutable state management prevents unexpected mutations");
+        IO.println("✓ Redux pattern provides predictable state transitions");
+        IO.println("✓ Function composition creates reusable transformations");
+        IO.println("✓ Async state management maintains consistency under concurrency");
         
-        System.out.println("\n⚡ Best Practices:");
-        System.out.println("• Use lenses for deep object updates");
-        System.out.println("• Implement proper action typing for type safety");
-        System.out.println("• Compose small, pure functions for complex operations");
-        System.out.println("• Subscribe to state changes for reactive programming");
-        System.out.println("• Handle async operations with immutable state patterns");
+        IO.println("\n⚡ Best Practices:");
+        IO.println("• Use lenses for deep object updates");
+        IO.println("• Implement proper action typing for type safety");
+        IO.println("• Compose small, pure functions for complex operations");
+        IO.println("• Subscribe to state changes for reactive programming");
+        IO.println("• Handle async operations with immutable state patterns");
     }
     
     private static void demonstrateStateManagement() {
-        System.out.println("\n=== State Management Demo ===");
+        IO.println("\n=== State Management Demo ===");
         
         // 初期状態の作成
         State<Integer> counter = State.of(0);
         
         // 状態の変更
         counter = counter.update(value -> value + 1);
-        System.out.println("After increment: " + counter.getValue());
+        IO.println("After increment: " + counter.getValue());
         
         counter = counter.update(value -> value * 2);
-        System.out.println("After doubling: " + counter.getValue());
+        IO.println("After doubling: " + counter.getValue());
         
         // リスナーの追加
         State<String> message = State.of("Hello");
         message = message.subscribe(newValue -> 
-            System.out.println("State changed to: " + newValue));
+            IO.println("State changed to: " + newValue));
         
         message = message.update(value -> value + " World");
         message = message.update(String::toUpperCase);
         
         // 状態の変換
         State<Integer> length = message.map(String::length);
-        System.out.println("Message length: " + length.getValue());
+        IO.println("Message length: " + length.getValue());
     }
     
     private static void demonstrateReduxPattern() {
-        System.out.println("\n=== Redux Pattern Demo ===");
+        IO.println("\n=== Redux Pattern Demo ===");
         
         // ストアの作成
         Store<AppState> store = new Store<>(AppState.initial(), AppReducer::reduce);
         
         // 状態変更の監視
-        store.subscribe(state -> System.out.println("State updated: " + state));
+        store.subscribe(state -> IO.println("State updated: " + state));
         
         // アクションのディスパッチ
-        System.out.println("Initial state: " + store.getState());
+        IO.println("Initial state: " + store.getState());
         
         store.dispatch(new SetLoading(true));
         store.dispatch(new AddTodo("Learn functional programming"));
         store.dispatch(new AddTodo("Implement immutable patterns"));
         store.dispatch(new SetLoading(false));
         
-        System.out.println("After adding todos: " + store.getState());
+        IO.println("After adding todos: " + store.getState());
         
         store.dispatch(new RemoveTodo(0));
-        System.out.println("After removing first todo: " + store.getState());
+        IO.println("After removing first todo: " + store.getState());
         
         store.dispatch(new SetError("Network error"));
-        System.out.println("After setting error: " + store.getState());
+        IO.println("After setting error: " + store.getState());
         
         store.dispatch(new ClearError());
-        System.out.println("After clearing error: " + store.getState());
+        IO.println("After clearing error: " + store.getState());
     }
     
     private static void demonstrateAsyncStateManagement() {
-        System.out.println("\n=== Async State Management Demo ===");
+        IO.println("\n=== Async State Management Demo ===");
         
         AsyncStateManager<List<String>> asyncManager = new AsyncStateManager<>(new ArrayList<>());
         
         // 非同期状態変更の監視
         asyncManager.subscribe(state -> 
-            System.out.println("Async state updated: " + state));
+            IO.println("Async state updated: " + state));
         
         // 複数の非同期更新
         CompletableFuture<List<String>> future1 = asyncManager.updateAsync(list -> {
@@ -705,8 +705,8 @@ public class FunctionalPatternsDemo {
         // すべての更新の完了を待つ
         CompletableFuture.allOf(future1, future2, future3)
             .thenRun(() -> {
-                System.out.println("All async updates completed");
-                System.out.println("Final state: " + asyncManager.getCurrentState());
+                IO.println("All async updates completed");
+                IO.println("Final state: " + asyncManager.getCurrentState());
             })
             .join();
     }

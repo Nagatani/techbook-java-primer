@@ -562,7 +562,7 @@ public class PersistentDataStructuresDemo {
     public static class PerformanceComparison {
         
         public static void compareDataStructures() {
-            System.out.println("=== Data Structure Performance Comparison ===");
+            IO.println("=== Data Structure Performance Comparison ===");
             
             int iterations = 10_000;
             
@@ -577,7 +577,7 @@ public class PersistentDataStructuresDemo {
         }
         
         private static void compareArrayLists(int iterations) {
-            System.out.println("\n--- ArrayList vs ImmutableArrayList ---");
+            IO.println("\n--- ArrayList vs ImmutableArrayList ---");
             
             // ArrayList
             long mutableTime = measureTime(() -> {
@@ -597,13 +597,13 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            System.out.printf("ArrayList:          %d ms%n", mutableTime);
-            System.out.printf("ImmutableArrayList: %d ms%n", immutableTime);
-            System.out.printf("Ratio: %.2fx%n", (double) immutableTime / mutableTime);
+            IO.println("ArrayList:          %d ms".formatted(mutableTime));
+            IO.println("ImmutableArrayList: %d ms".formatted(immutableTime));
+            IO.println("Ratio: %.2fx".formatted((double) immutableTime / mutableTime));
         }
         
         private static void compareMaps(int iterations) {
-            System.out.println("\n--- HashMap vs CopyOnWriteMap ---");
+            IO.println("\n--- HashMap vs CopyOnWriteMap ---");
             
             // HashMap
             long hashMapTime = measureTime(() -> {
@@ -623,13 +623,13 @@ public class PersistentDataStructuresDemo {
                 return map;
             });
             
-            System.out.printf("HashMap:        %d ms%n", hashMapTime);
-            System.out.printf("CopyOnWriteMap: %d ms%n", cowMapTime);
-            System.out.printf("Ratio: %.2fx%n", (double) cowMapTime / hashMapTime);
+            IO.println("HashMap:        %d ms".formatted(hashMapTime));
+            IO.println("CopyOnWriteMap: %d ms".formatted(cowMapTime));
+            IO.println("Ratio: %.2fx".formatted((double) cowMapTime / hashMapTime));
         }
         
         private static void compareLists(int iterations) {
-            System.out.println("\n--- LinkedList vs PersistentList ---");
+            IO.println("\n--- LinkedList vs PersistentList ---");
             
             // LinkedList
             long linkedListTime = measureTime(() -> {
@@ -649,9 +649,9 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            System.out.printf("LinkedList:     %d ms%n", linkedListTime);
-            System.out.printf("PersistentList: %d ms%n", persistentListTime);
-            System.out.printf("Ratio: %.2fx%n", (double) persistentListTime / linkedListTime);
+            IO.println("LinkedList:     %d ms".formatted(linkedListTime));
+            IO.println("PersistentList: %d ms".formatted(persistentListTime));
+            IO.println("Ratio: %.2fx".formatted((double) persistentListTime / linkedListTime));
         }
         
         private static long measureTime(Supplier<Object> task) {
@@ -670,8 +670,8 @@ public class PersistentDataStructuresDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Persistent Data Structures and Copy-on-Write Demo");
-        System.out.println("=================================================");
+        IO.println("Persistent Data Structures and Copy-on-Write Demo");
+        IO.println("=================================================");
         
         // Copy-on-Writeマップのデモ
         demonstrateCopyOnWriteMap();
@@ -688,23 +688,23 @@ public class PersistentDataStructuresDemo {
         // パフォーマンス比較
         PerformanceComparison.compareDataStructures();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Copy-on-Write provides thread-safe updates with fast reads");
-        System.out.println("✓ Persistent data structures enable efficient immutable operations");
-        System.out.println("✓ Structural sharing minimizes memory overhead");
-        System.out.println("✓ Trade-off between update performance and immutability benefits");
-        System.out.println("✓ Choose data structure based on usage patterns");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Copy-on-Write provides thread-safe updates with fast reads");
+        IO.println("✓ Persistent data structures enable efficient immutable operations");
+        IO.println("✓ Structural sharing minimizes memory overhead");
+        IO.println("✓ Trade-off between update performance and immutability benefits");
+        IO.println("✓ Choose data structure based on usage patterns");
         
-        System.out.println("\n⚡ Use Cases:");
-        System.out.println("• Copy-on-Write: Read-heavy concurrent scenarios");
-        System.out.println("• Persistent Lists: Functional programming, undo operations");
-        System.out.println("• Persistent Maps: Configuration management, versioning");
-        System.out.println("• Immutable Arrays: Mathematical computations, caching");
-        System.out.println("• All: When thread safety and immutability are priorities");
+        IO.println("\n⚡ Use Cases:");
+        IO.println("• Copy-on-Write: Read-heavy concurrent scenarios");
+        IO.println("• Persistent Lists: Functional programming, undo operations");
+        IO.println("• Persistent Maps: Configuration management, versioning");
+        IO.println("• Immutable Arrays: Mathematical computations, caching");
+        IO.println("• All: When thread safety and immutability are priorities");
     }
     
     private static void demonstrateCopyOnWriteMap() {
-        System.out.println("\n=== Copy-on-Write Map Demo ===");
+        IO.println("\n=== Copy-on-Write Map Demo ===");
         
         CopyOnWriteMap<String, Integer> cowMap = new CopyOnWriteMap<>();
         
@@ -713,7 +713,7 @@ public class PersistentDataStructuresDemo {
         cowMap.put("banana", 3);
         cowMap.put("orange", 8);
         
-        System.out.println("Initial map: " + cowMap);
+        IO.println("Initial map: " + cowMap);
         
         // スナップショットの取得
         Map<String, Integer> snapshot1 = cowMap.snapshot();
@@ -722,58 +722,58 @@ public class PersistentDataStructuresDemo {
         cowMap.put("apple", 10); // 既存キーの更新
         cowMap.put("grape", 12); // 新しいキー
         
-        System.out.println("Updated map: " + cowMap);
-        System.out.println("Snapshot remains unchanged: " + snapshot1);
+        IO.println("Updated map: " + cowMap);
+        IO.println("Snapshot remains unchanged: " + snapshot1);
         
         // 読み込み性能（並行アクセス安全）
-        System.out.println("Concurrent read access:");
+        IO.println("Concurrent read access:");
         cowMap.keySet().parallelStream()
-            .forEach(key -> System.out.println("  " + key + " = " + cowMap.get(key)));
+            .forEach(key -> IO.println("  " + key + " = " + cowMap.get(key)));
     }
     
     private static void demonstratePersistentList() {
-        System.out.println("\n=== Persistent List Demo ===");
+        IO.println("\n=== Persistent List Demo ===");
         
         // 空のリストから開始
         PersistentList<String> list1 = PersistentList.empty();
-        System.out.println("Empty list: " + list1);
+        IO.println("Empty list: " + list1);
         
         // 要素の追加（新しいリストが返される）
         PersistentList<String> list2 = list1.prepend("C").prepend("B").prepend("A");
-        System.out.println("List2 (A,B,C): " + list2);
-        System.out.println("List1 still empty: " + list1);
+        IO.println("List2 (A,B,C): " + list2);
+        IO.println("List1 still empty: " + list1);
         
         // 構造共有のデモ
         PersistentList<String> list3 = list2.prepend("X");
         PersistentList<String> list4 = list2.prepend("Y");
         
-        System.out.println("List3 (X,A,B,C): " + list3);
-        System.out.println("List4 (Y,A,B,C): " + list4);
-        System.out.println("List2 unchanged: " + list2);
+        IO.println("List3 (X,A,B,C): " + list3);
+        IO.println("List4 (Y,A,B,C): " + list4);
+        IO.println("List2 unchanged: " + list2);
         
         // 関数型操作
         PersistentList<String> uppercased = list2.map(String::toUpperCase);
-        System.out.println("Uppercased: " + uppercased);
+        IO.println("Uppercased: " + uppercased);
         
         PersistentList<String> filtered = list2.filter(s -> s.compareTo("B") >= 0);
-        System.out.println("Filtered (>= B): " + filtered);
+        IO.println("Filtered (>= B): " + filtered);
         
         // ファクトリメソッド
         PersistentList<Integer> numbers = PersistentList.of(1, 2, 3, 4, 5);
-        System.out.println("Numbers: " + numbers);
+        IO.println("Numbers: " + numbers);
         
         // Stream API との統合
         List<Integer> doubled = numbers.stream()
             .map(n -> n * 2)
             .collect(Collectors.toList());
-        System.out.println("Doubled (as ArrayList): " + doubled);
+        IO.println("Doubled (as ArrayList): " + doubled);
     }
     
     private static void demonstratePersistentHashMap() {
-        System.out.println("\n=== Persistent Hash Map Demo ===");
+        IO.println("\n=== Persistent Hash Map Demo ===");
         
         PersistentHashMap<String, Integer> map1 = PersistentHashMap.empty();
-        System.out.println("Empty map: " + map1);
+        IO.println("Empty map: " + map1);
         
         // 要素の追加
         PersistentHashMap<String, Integer> map2 = map1
@@ -781,70 +781,70 @@ public class PersistentDataStructuresDemo {
             .put("second", 2)
             .put("third", 3);
         
-        System.out.println("Map2 size: " + map2.size());
-        System.out.println("Get 'second': " + map2.get("second"));
-        System.out.println("Contains 'first': " + map2.containsKey("first"));
+        IO.println("Map2 size: " + map2.size());
+        IO.println("Get 'second': " + map2.get("second"));
+        IO.println("Contains 'first': " + map2.containsKey("first"));
         
         // 更新（新しいマップが返される）
         PersistentHashMap<String, Integer> map3 = map2.put("second", 20);
         
-        System.out.println("Map2 'second': " + map2.get("second")); // 元の値
-        System.out.println("Map3 'second': " + map3.get("second")); // 更新された値
+        IO.println("Map2 'second': " + map2.get("second")); // 元の値
+        IO.println("Map3 'second': " + map3.get("second")); // 更新された値
         
         // 削除
         PersistentHashMap<String, Integer> map4 = map3.remove("first");
-        System.out.println("Map3 size: " + map3.size()); // 削除前
-        System.out.println("Map4 size: " + map4.size()); // 削除後
+        IO.println("Map3 size: " + map3.size()); // 削除前
+        IO.println("Map4 size: " + map4.size()); // 削除後
         
         // 大量データでのテスト
         PersistentHashMap<Integer, String> largeMap = PersistentHashMap.empty();
         for (int i = 0; i < 1000; i++) {
             largeMap = largeMap.put(i, "value" + i);
         }
-        System.out.println("Large map size: " + largeMap.size());
-        System.out.println("Random access test: " + largeMap.get(500));
+        IO.println("Large map size: " + largeMap.size());
+        IO.println("Random access test: " + largeMap.get(500));
     }
     
     private static void demonstrateImmutableArrayList() {
-        System.out.println("\n=== Immutable ArrayList Demo ===");
+        IO.println("\n=== Immutable ArrayList Demo ===");
         
         // 初期化
         ImmutableArrayList<String> list1 = new ImmutableArrayList<>("A", "B", "C");
-        System.out.println("Initial list: " + list1);
+        IO.println("Initial list: " + list1);
         
         // 要素の更新
         ImmutableArrayList<String> list2 = list1.with(1, "X");
-        System.out.println("Updated list: " + list2);
-        System.out.println("Original unchanged: " + list1);
+        IO.println("Updated list: " + list2);
+        IO.println("Original unchanged: " + list1);
         
         // 要素の追加
         ImmutableArrayList<String> list3 = list2.append("D");
-        System.out.println("Appended list: " + list3);
+        IO.println("Appended list: " + list3);
         
         // 要素の削除
         ImmutableArrayList<String> list4 = list3.removeAt(0);
-        System.out.println("After removing index 0: " + list4);
+        IO.println("After removing index 0: " + list4);
         
         // 部分リスト
         ImmutableArrayList<String> subList = list3.subList(1, 3);
-        System.out.println("Sublist [1,3): " + subList);
+        IO.println("Sublist [1,3): " + subList);
         
         // 通常のList操作
-        System.out.println("Size: " + list3.size());
-        System.out.println("Get index 2: " + list3.get(2));
-        System.out.println("Contains 'X': " + list3.contains("X"));
+        IO.println("Size: " + list3.size());
+        IO.println("Get index 2: " + list3.get(2));
+        IO.println("Contains 'X': " + list3.contains("X"));
         
         // Stream API
         String joined = list3.stream()
             .map(s -> s.toLowerCase())
             .collect(Collectors.joining("-"));
-        System.out.println("Joined lowercase: " + joined);
+        IO.println("Joined lowercase: " + joined);
         
         // 変更操作は例外
         try {
             list3.set(0, "Y");
         } catch (UnsupportedOperationException e) {
-            System.out.println("Expected exception: " + e.getMessage());
+            IO.println("Expected exception: " + e.getMessage());
         }
     }
 }

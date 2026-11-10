@@ -431,7 +431,7 @@ public class ImmutabilityPatternsDemo {
     public static class PerformanceTest {
         
         public static void compareImmutableVsMutable() {
-            System.out.println("=== Performance Comparison: Immutable vs Mutable ===");
+            IO.println("=== Performance Comparison: Immutable vs Mutable ===");
             
             int iterations = 10_000;
             
@@ -453,11 +453,11 @@ public class ImmutabilityPatternsDemo {
                 return point;
             });
             
-            System.out.printf("Immutable operations: %d ms%n", immutableTime);
-            System.out.printf("Mutable operations:   %d ms%n", mutableTime);
-            System.out.printf("Immutable is %.2fx %s%n", 
+            IO.println("Immutable operations: %d ms".formatted(immutableTime));
+            IO.println("Mutable operations:   %d ms".formatted(mutableTime));
+            IO.println("Immutable is %.2fx %s".formatted(
                             (double) Math.max(immutableTime, mutableTime) / Math.min(immutableTime, mutableTime),
-                            immutableTime > mutableTime ? "slower" : "faster");
+                            immutableTime > mutableTime ? "slower" : "faster"));
         }
         
         private static long measureTime(Supplier<Object> task) {
@@ -494,8 +494,8 @@ public class ImmutabilityPatternsDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Immutability Patterns and Implementation Techniques Demo");
-        System.out.println("======================================================");
+        IO.println("Immutability Patterns and Implementation Techniques Demo");
+        IO.println("======================================================");
         
         // 不変Personオブジェクトのデモ
         demonstrateImmutablePerson();
@@ -515,23 +515,23 @@ public class ImmutabilityPatternsDemo {
         // パフォーマンステスト
         PerformanceTest.compareImmutableVsMutable();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Immutable objects are inherently thread-safe");
-        System.out.println("✓ Builder pattern provides flexible object construction");
-        System.out.println("✓ Object pooling can optimize memory usage for common values");
-        System.out.println("✓ Lazy evaluation defers expensive computations");
-        System.out.println("✓ 'with' methods enable functional-style updates");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Immutable objects are inherently thread-safe");
+        IO.println("✓ Builder pattern provides flexible object construction");
+        IO.println("✓ Object pooling can optimize memory usage for common values");
+        IO.println("✓ Lazy evaluation defers expensive computations");
+        IO.println("✓ 'with' methods enable functional-style updates");
         
-        System.out.println("\n⚡ Best Practices:");
-        System.out.println("• Use defensive copying in constructors and getters");
-        System.out.println("• Implement proper equals(), hashCode(), and toString()");
-        System.out.println("• Consider object pooling for frequently used values");
-        System.out.println("• Use builder pattern for complex object construction");
-        System.out.println("• Leverage immutability for better concurrency performance");
+        IO.println("\n⚡ Best Practices:");
+        IO.println("• Use defensive copying in constructors and getters");
+        IO.println("• Implement proper equals(), hashCode(), and toString()");
+        IO.println("• Consider object pooling for frequently used values");
+        IO.println("• Use builder pattern for complex object construction");
+        IO.println("• Leverage immutability for better concurrency performance");
     }
     
     private static void demonstrateImmutablePerson() {
-        System.out.println("\n=== Immutable Person Demo ===");
+        IO.println("\n=== Immutable Person Demo ===");
         
         List<String> nicknames = Arrays.asList("John", "Johnny");
         Map<String, String> attributes = new HashMap<>();
@@ -545,7 +545,7 @@ public class ImmutabilityPatternsDemo {
             attributes
         );
         
-        System.out.println("Original person: " + person);
+        IO.println("Original person: " + person);
         
         // withメソッドで新しいインスタンスを作成
         ImmutablePerson updatedPerson = person
@@ -553,26 +553,26 @@ public class ImmutabilityPatternsDemo {
             .withNickname("Janie")
             .withAttribute("city", "Osaka");
         
-        System.out.println("Updated person:  " + updatedPerson);
-        System.out.println("Original unchanged: " + person.getName());
+        IO.println("Updated person:  " + updatedPerson);
+        IO.println("Original unchanged: " + person.getName());
         
         // 元のコレクションを変更しても影響なし（変更は失敗するが、不変オブジェクトに影響なし）
         try {
             nicknames.add("Hack"); // 元のリストを変更しようとする
         } catch (UnsupportedOperationException e) {
-            System.out.println("Expected: Cannot modify original list");
+            IO.println("Expected: Cannot modify original list");
         }
         try {
             attributes.put("city", "Kyoto"); // 元のマップを変更しようとする  
         } catch (UnsupportedOperationException e) {
-            System.out.println("Expected: Cannot modify original map");
+            IO.println("Expected: Cannot modify original map");
         }
         
-        System.out.println("After external modification: " + person);
+        IO.println("After external modification: " + person);
     }
     
     private static void demonstrateBuilderPattern() {
-        System.out.println("\n=== Builder Pattern Demo ===");
+        IO.println("\n=== Builder Pattern Demo ===");
         
         OrderItem item1 = new OrderItem("P001", "Laptop", 1, new BigDecimal("1500.00"));
         OrderItem item2 = new OrderItem("P002", "Mouse", 2, new BigDecimal("25.00"));
@@ -585,69 +585,69 @@ public class ImmutabilityPatternsDemo {
             .status(OrderStatus.CONFIRMED)
             .build();
         
-        System.out.println("Created order: " + order);
-        System.out.println("Total amount: " + order.getTotalAmount());
+        IO.println("Created order: " + order);
+        IO.println("Total amount: " + order.getTotalAmount());
         
         // 既存の注文から新しい注文を作成
         ImmutableOrder shippedOrder = order.toBuilder()
             .status(OrderStatus.SHIPPED)
             .build();
         
-        System.out.println("Shipped order: " + shippedOrder);
+        IO.println("Shipped order: " + shippedOrder);
     }
     
     private static void demonstrateObjectPooling() {
-        System.out.println("\n=== Object Pooling Demo ===");
+        IO.println("\n=== Object Pooling Demo ===");
         
-        System.out.println("Initial pool size: " + ImmutablePoint.getPoolSize());
+        IO.println("Initial pool size: " + ImmutablePoint.getPoolSize());
         
         // プールされる範囲の座標
         ImmutablePoint p1 = ImmutablePoint.of(10, 20);
         ImmutablePoint p2 = ImmutablePoint.of(10, 20); // 同じインスタンスが返される
         
-        System.out.println("p1 == p2: " + (p1 == p2)); // true（同じインスタンス）
-        System.out.println("Pool size after creating pooled points: " + ImmutablePoint.getPoolSize());
+        IO.println("p1 == p2: " + (p1 == p2)); // true（同じインスタンス）
+        IO.println("Pool size after creating pooled points: " + ImmutablePoint.getPoolSize());
         
         // プール範囲外の座標
         ImmutablePoint p3 = ImmutablePoint.of(1000, 2000);
         ImmutablePoint p4 = ImmutablePoint.of(1000, 2000); // 新しいインスタンス
         
-        System.out.println("p3 == p4: " + (p3 == p4)); // false（異なるインスタンス）
-        System.out.println("p3.equals(p4): " + p3.equals(p4)); // true（値は同じ）
+        IO.println("p3 == p4: " + (p3 == p4)); // false（異なるインスタンス）
+        IO.println("p3.equals(p4): " + p3.equals(p4)); // true（値は同じ）
         
         // 移動操作
         ImmutablePoint moved = p1.move(5, 5);
-        System.out.println("Original: " + p1 + ", Moved: " + moved);
-        System.out.println("Distance: " + p1.distanceTo(moved));
+        IO.println("Original: " + p1 + ", Moved: " + moved);
+        IO.println("Distance: " + p1.distanceTo(moved));
         
         ImmutablePoint.clearPool();
-        System.out.println("Pool size after clear: " + ImmutablePoint.getPoolSize());
+        IO.println("Pool size after clear: " + ImmutablePoint.getPoolSize());
     }
     
     private static void demonstrateLazyEvaluation() {
-        System.out.println("\n=== Lazy Evaluation Demo ===");
+        IO.println("\n=== Lazy Evaluation Demo ===");
         
         LazyImmutable lazy = new LazyImmutable("Example");
-        System.out.println("Before accessing expensive field: " + lazy);
+        IO.println("Before accessing expensive field: " + lazy);
         
         long start = System.currentTimeMillis();
         String expensive = lazy.getExpensiveField();
         long firstAccess = System.currentTimeMillis() - start;
         
-        System.out.println("First access (computed): " + expensive);
-        System.out.println("First access time: " + firstAccess + " ms");
+        IO.println("First access (computed): " + expensive);
+        IO.println("First access time: " + firstAccess + " ms");
         
         start = System.currentTimeMillis();
         expensive = lazy.getExpensiveField();
         long secondAccess = System.currentTimeMillis() - start;
         
-        System.out.println("Second access (cached): " + expensive);
-        System.out.println("Second access time: " + secondAccess + " ms");
-        System.out.println("After accessing expensive field: " + lazy);
+        IO.println("Second access (cached): " + expensive);
+        IO.println("Second access time: " + secondAccess + " ms");
+        IO.println("After accessing expensive field: " + lazy);
     }
     
     private static void demonstrateConcurrencySafety() {
-        System.out.println("\n=== Concurrency Safety Demo ===");
+        IO.println("\n=== Concurrency Safety Demo ===");
         
         ConcurrencySafetyDemo demo = new ConcurrencySafetyDemo();
         
@@ -659,14 +659,14 @@ public class ImmutabilityPatternsDemo {
             .build();
         
         demo.updateOrder(initialOrder);
-        System.out.println("Initial order: " + demo.getCurrentOrder());
+        IO.println("Initial order: " + demo.getCurrentOrder());
         
         // 複数スレッドから安全にアクセス
         OrderItem newItem = new OrderItem("P002", "Pen", 3, new BigDecimal("5.00"));
         ImmutableOrder updatedOrder = demo.addItemToCurrentOrder(newItem);
         
-        System.out.println("Updated order: " + updatedOrder);
-        System.out.println("Original order unchanged: " + initialOrder.getItems().size() + " items");
-        System.out.println("Updated order has: " + updatedOrder.getItems().size() + " items");
+        IO.println("Updated order: " + updatedOrder);
+        IO.println("Original order unchanged: " + initialOrder.getItems().size() + " items");
+        IO.println("Updated order has: " + updatedOrder.getItems().size() + " items");
     }
 }

@@ -422,9 +422,9 @@ public class ImmutableActor {
 MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
 
-System.out.printf("Heap usage: %d MB / %d MB%n",
+IO.println("Heap usage: %d MB / %d MB".formatted(
     heapUsage.getUsed() / (1024 * 1024),
-    heapUsage.getMax() / (1024 * 1024));
+    heapUsage.getMax() / (1024 * 1024)));
 ```
 
 #### ガベージコレクションの最適化
