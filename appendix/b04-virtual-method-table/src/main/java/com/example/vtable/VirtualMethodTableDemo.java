@@ -186,11 +186,11 @@ public class VirtualMethodTableDemo {
             }
             
             public void printVTable() {
-                System.out.println("=== " + ownerClass.getSimpleName() + " vtable ===");
+                IO.println("=== " + ownerClass.getSimpleName() + " vtable ===");
                 for (VTableEntry entry : entries) {
-                    System.out.println("  " + entry);
+                    IO.println("  " + entry);
                 }
-                System.out.println();
+                IO.println();
             }
         }
         
@@ -238,36 +238,36 @@ public class VirtualMethodTableDemo {
          * 仮想メソッド呼び出しのシミュレーション
          */
         public static void simulateVirtualCall(Shape shape, String methodName) {
-            System.out.println("=== Virtual Method Call Simulation ===");
-            System.out.println("Object: " + shape.toString());
-            System.out.println("Calling method: " + methodName);
+            IO.println("=== Virtual Method Call Simulation ===");
+            IO.println("Object: " + shape.toString());
+            IO.println("Calling method: " + methodName);
             
             // 1. オブジェクトの実際の型を取得
             Class<?> actualType = shape.getClass();
-            System.out.println("Step 1: Actual type = " + actualType.getSimpleName());
+            IO.println("Step 1: Actual type = " + actualType.getSimpleName());
             
             // 2. その型のvtableを取得
             VTableSimulator.VTable vtable = VTableSimulator.buildVTable(actualType);
-            System.out.println("Step 2: Retrieved vtable for " + actualType.getSimpleName());
+            IO.println("Step 2: Retrieved vtable for " + actualType.getSimpleName());
             
             // 3. メソッドのインデックスを取得（簡略化）
             int methodIndex = findMethodIndex(methodName);
-            System.out.println("Step 3: Method index = " + methodIndex);
+            IO.println("Step 3: Method index = " + methodIndex);
             
             // 4. vtableからメソッドを取得
             if (methodIndex >= 0 && methodIndex < vtable.size()) {
                 VTableSimulator.VTableEntry entry = vtable.getEntry(methodIndex);
-                System.out.println("Step 4: Found method = " + entry);
+                IO.println("Step 4: Found method = " + entry);
                 
                 // 5. 実際にメソッドを呼び出し
-                System.out.println("Step 5: Invoking method...");
+                IO.println("Step 5: Invoking method...");
                 double result = callMethod(shape, methodName);
-                System.out.println("Result: " + result);
+                IO.println("Result: " + result);
             } else {
-                System.out.println("Step 4: Method not found in vtable");
+                IO.println("Step 4: Method not found in vtable");
             }
             
-            System.out.println();
+            IO.println();
         }
         
         private static int findMethodIndex(String methodName) {
@@ -301,8 +301,8 @@ public class VirtualMethodTableDemo {
          * モノモーフィック呼び出し（1つの型のみ）
          */
         public static void monomorphicCalls() {
-            System.out.println("=== Monomorphic Calls (Single Type) ===");
-            System.out.println("Only Circle objects - JVM can inline and optimize");
+            IO.println("=== Monomorphic Calls (Single Type) ===");
+            IO.println("Only Circle objects - JVM can inline and optimize");
             
             List<Circle> circles = Arrays.asList(
                 new Circle(0, 0, 5),
@@ -322,18 +322,18 @@ public class VirtualMethodTableDemo {
             
             long endTime = System.nanoTime();
             
-            System.out.println("Total area: " + String.format("%.2f", totalArea));
-            System.out.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            System.out.println("Optimization: Direct call, likely inlined");
-            System.out.println();
+            IO.println("Total area: " + String.format("%.2f", totalArea));
+            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
+            IO.println("Optimization: Direct call, likely inlined");
+            IO.println();
         }
         
         /**
          * バイモーフィック呼び出し（2つの型）
          */
         public static void bimorphicCalls() {
-            System.out.println("=== Bimorphic Calls (Two Types) ===");
-            System.out.println("Circle and Rectangle - JVM can still optimize with branch prediction");
+            IO.println("=== Bimorphic Calls (Two Types) ===");
+            IO.println("Circle and Rectangle - JVM can still optimize with branch prediction");
             
             List<Shape> shapes = Arrays.asList(
                 new Circle(0, 0, 5),
@@ -354,18 +354,18 @@ public class VirtualMethodTableDemo {
             
             long endTime = System.nanoTime();
             
-            System.out.println("Total area: " + String.format("%.2f", totalArea));
-            System.out.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            System.out.println("Optimization: Conditional branch optimization");
-            System.out.println();
+            IO.println("Total area: " + String.format("%.2f", totalArea));
+            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
+            IO.println("Optimization: Conditional branch optimization");
+            IO.println();
         }
         
         /**
          * メガモーフィック呼び出し（多くの型）
          */
         public static void megamorphicCalls() {
-            System.out.println("=== Megamorphic Calls (Many Types) ===");
-            System.out.println("Circle, Rectangle, Triangle - JVM optimization is limited");
+            IO.println("=== Megamorphic Calls (Many Types) ===");
+            IO.println("Circle, Rectangle, Triangle - JVM optimization is limited");
             
             List<Shape> shapes = createMixedShapes(100);
             
@@ -381,10 +381,10 @@ public class VirtualMethodTableDemo {
             
             long endTime = System.nanoTime();
             
-            System.out.println("Total area: " + String.format("%.2f", totalArea));
-            System.out.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            System.out.println("Optimization: vtable lookup, limited optimization");
-            System.out.println();
+            IO.println("Total area: " + String.format("%.2f", totalArea));
+            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
+            IO.println("Optimization: vtable lookup, limited optimization");
+            IO.println();
         }
         
         private static List<Shape> createMixedShapes(int count) {
@@ -462,7 +462,7 @@ public class VirtualMethodTableDemo {
         }
         
         public static void demonstrateFinalOptimization() {
-            System.out.println("=== Final Modifier Optimization Demo ===");
+            IO.println("=== Final Modifier Optimization Demo ===");
             
             Calculator calc = new Calculator();
             FastCalculator fastCalc = new FastCalculator();
@@ -494,17 +494,17 @@ public class VirtualMethodTableDemo {
             }
             long finalMethodTime = System.nanoTime() - startTime;
             
-            System.out.println("Results (all should be equal): " + sum1 + ", " + sum2 + ", " + sum3);
-            System.out.println("Normal class:      " + normalTime / 1_000_000 + " ms");
-            System.out.println("Final class:       " + finalTime / 1_000_000 + " ms");
-            System.out.println("Final method:      " + finalMethodTime / 1_000_000 + " ms");
+            IO.println("Results (all should be equal): " + sum1 + ", " + sum2 + ", " + sum3);
+            IO.println("Normal class:      " + normalTime / 1_000_000 + " ms");
+            IO.println("Final class:       " + finalTime / 1_000_000 + " ms");
+            IO.println("Final method:      " + finalMethodTime / 1_000_000 + " ms");
             
             double speedup1 = (double) normalTime / finalTime;
             double speedup2 = (double) normalTime / finalMethodTime;
             
-            System.out.println("Final class speedup:   " + String.format("%.2fx", speedup1));
-            System.out.println("Final method speedup:  " + String.format("%.2fx", speedup2));
-            System.out.println();
+            IO.println("Final class speedup:   " + String.format("%.2fx", speedup1));
+            IO.println("Final method speedup:  " + String.format("%.2fx", speedup2));
+            IO.println();
         }
     }
     
@@ -537,7 +537,7 @@ public class VirtualMethodTableDemo {
         }
         
         public static void demonstrateInterfaceOverhead() {
-            System.out.println("=== Interface vs Class Call Overhead ===");
+            IO.println("=== Interface vs Class Call Overhead ===");
             
             DrawableCircle circle = new DrawableCircle(5.0);
             Drawable drawable = circle;
@@ -560,13 +560,13 @@ public class VirtualMethodTableDemo {
             }
             long interfaceTime = System.nanoTime() - startTime;
             
-            System.out.println("Results (should be equal): " + sum1 + ", " + sum2);
-            System.out.println("Class call:       " + classTime / 1_000_000 + " ms");
-            System.out.println("Interface call:   " + interfaceTime / 1_000_000 + " ms");
+            IO.println("Results (should be equal): " + sum1 + ", " + sum2);
+            IO.println("Class call:       " + classTime / 1_000_000 + " ms");
+            IO.println("Interface call:   " + interfaceTime / 1_000_000 + " ms");
             
             double overhead = (double) interfaceTime / classTime;
-            System.out.println("Interface overhead: " + String.format("%.2fx", overhead));
-            System.out.println();
+            IO.println("Interface overhead: " + String.format("%.2fx", overhead));
+            IO.println();
         }
     }
     
@@ -574,7 +574,7 @@ public class VirtualMethodTableDemo {
      * vtable構造の可視化
      */
     public static void demonstrateVTableStructure() {
-        System.out.println("=== Virtual Method Table Structure ===");
+        IO.println("=== Virtual Method Table Structure ===");
         
         // 各クラスのvtableを構築・表示
         VTableSimulator.VTable circleVTable = VTableSimulator.buildVTable(Circle.class);
@@ -590,7 +590,7 @@ public class VirtualMethodTableDemo {
      * 動的ディスパッチのシミュレーション
      */
     public static void demonstrateDynamicDispatch() {
-        System.out.println("=== Dynamic Dispatch Simulation ===");
+        IO.println("=== Dynamic Dispatch Simulation ===");
         
         Shape[] shapes = {
             new Circle(0, 0, 5),
@@ -607,8 +607,8 @@ public class VirtualMethodTableDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Virtual Method Table and Dynamic Dispatch Demonstration");
-        System.out.println("=======================================================");
+        IO.println("Virtual Method Table and Dynamic Dispatch Demonstration");
+        IO.println("=======================================================");
         
         demonstrateVTableStructure();
         demonstrateDynamicDispatch();
@@ -620,18 +620,18 @@ public class VirtualMethodTableDemo {
         FinalOptimizationDemo.demonstrateFinalOptimization();
         InterfaceVsClassDemo.demonstrateInterfaceOverhead();
         
-        System.out.println("=== Performance Optimization Guidelines ===");
-        System.out.println("1. Use 'final' for classes and methods when inheritance is not needed");
-        System.out.println("2. Keep method implementations small to enable inlining");
-        System.out.println("3. Minimize polymorphic call sites in hot paths");
-        System.out.println("4. Consider type stability in performance-critical loops");
-        System.out.println("5. Profile before optimizing - JVM is very good at optimization");
+        IO.println("=== Performance Optimization Guidelines ===");
+        IO.println("1. Use 'final' for classes and methods when inheritance is not needed");
+        IO.println("2. Keep method implementations small to enable inlining");
+        IO.println("3. Minimize polymorphic call sites in hot paths");
+        IO.println("4. Consider type stability in performance-critical loops");
+        IO.println("5. Profile before optimizing - JVM is very good at optimization");
         
-        System.out.println("\n🎯 Key Takeaways:");
-        System.out.println("✓ JVM uses vtables for dynamic method dispatch");
-        System.out.println("✓ Monomorphic calls are fastest (direct/inlined)");
-        System.out.println("✓ Megamorphic calls require vtable lookups");
-        System.out.println("✓ 'final' enables significant optimizations");
-        System.out.println("✓ Interface calls have slight overhead vs class calls");
+        IO.println("\n🎯 Key Takeaways:");
+        IO.println("✓ JVM uses vtables for dynamic method dispatch");
+        IO.println("✓ Monomorphic calls are fastest (direct/inlined)");
+        IO.println("✓ Megamorphic calls require vtable lookups");
+        IO.println("✓ 'final' enables significant optimizations");
+        IO.println("✓ Interface calls have slight overhead vs class calls");
     }
 }

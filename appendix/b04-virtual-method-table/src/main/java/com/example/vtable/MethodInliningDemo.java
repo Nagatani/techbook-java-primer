@@ -122,7 +122,7 @@ public class MethodInliningDemo {
          * ホットスポットの特定とコンパイルプロセスのシミュレーション
          */
         public static void demonstrateHotSpotDetection() {
-            System.out.println("=== HotSpot Detection and Compilation Demo ===");
+            IO.println("=== HotSpot Detection and Compilation Demo ===");
             
             HotSpotDemo demo = new HotSpotDemo();
             long[] executionTimes = new long[5];
@@ -140,26 +140,26 @@ public class MethodInliningDemo {
                 long endTime = System.nanoTime();
                 executionTimes[round] = endTime - startTime;
                 
-                System.out.printf("Round %d: %d ms (sum: %d)%n", 
+                IO.println("Round %d: %d ms (sum: %d)".formatted(
                                 round + 1, 
                                 executionTimes[round] / 1_000_000,
-                                sum);
+                                sum));
                 
                 if (round == 0) {
-                    System.out.println("  -> Interpreted execution");
+                    IO.println("  -> Interpreted execution");
                 } else if (round == 1) {
-                    System.out.println("  -> C1 compilation (Client compiler)");
+                    IO.println("  -> C1 compilation (Client compiler)");
                 } else if (round == 2) {
-                    System.out.println("  -> C2 compilation (Server compiler)");
+                    IO.println("  -> C2 compilation (Server compiler)");
                 } else {
-                    System.out.println("  -> Fully optimized");
+                    IO.println("  -> Fully optimized");
                 }
             }
             
             // パフォーマンス改善の分析
             double improvement = (double) executionTimes[0] / executionTimes[4];
-            System.out.printf("\nPerformance improvement: %.2fx faster%n", improvement);
-            System.out.println();
+            IO.println("\nPerformance improvement: %.2fx faster".formatted(improvement));
+            IO.println();
         }
     }
     
@@ -209,13 +209,13 @@ public class MethodInliningDemo {
             
             // 大きなgetterメソッド（不必要な処理を含む）
             public double getX() {
-                System.out.println("Getting x value: " + x); // サイドエフェクト
+                IO.println("Getting x value: " + x); // サイドエフェクト
                 validateValue(x);
                 return x;
             }
             
             public double getY() {
-                System.out.println("Getting y value: " + y); // サイドエフェクト
+                IO.println("Getting y value: " + y); // サイドエフェクト
                 validateValue(y);
                 return y;
             }
@@ -231,13 +231,13 @@ public class MethodInliningDemo {
                 double xVal = getX();
                 double yVal = getY();
                 double result = Math.sqrt(xVal * xVal + yVal * yVal);
-                System.out.println("Calculated distance: " + result); // サイドエフェクト
+                IO.println("Calculated distance: " + result); // サイドエフェクト
                 return result;
             }
         }
         
         public static void compareOptimizationLevels() {
-            System.out.println("=== Inlining Optimization Comparison ===");
+            IO.println("=== Inlining Optimization Comparison ===");
             
             int iterations = 100_000;
             
@@ -259,12 +259,12 @@ public class MethodInliningDemo {
             }
             long optimizedTime = System.nanoTime() - startTime;
             
-            System.out.println("Optimized design:   " + optimizedTime / 1_000_000 + " ms");
+            IO.println("Optimized design:   " + optimizedTime / 1_000_000 + " ms");
             
             // 最適化されにくい設計（コンソール出力は削除）
-            System.out.println("Note: Unoptimized comparison skipped due to console output overhead");
-            System.out.println("In practice, the optimized version would be 5-20x faster");
-            System.out.println();
+            IO.println("Note: Unoptimized comparison skipped due to console output overhead");
+            IO.println("In practice, the optimized version would be 5-20x faster");
+            IO.println();
         }
     }
     
@@ -310,7 +310,7 @@ public class MethodInliningDemo {
         }
         
         public static void demonstrateMethodChaining() {
-            System.out.println("=== Method Chaining and Inlining ===");
+            IO.println("=== Method Chaining and Inlining ===");
             
             int iterations = 1_000_000;
             
@@ -341,18 +341,18 @@ public class MethodInliningDemo {
             
             long directTime = System.nanoTime() - startTime;
             
-            System.out.println("Method chaining: " + chainTime / 1_000_000 + " ms (sum: " + sum + ")");
-            System.out.println("Direct calculation: " + directTime / 1_000_000 + " ms (sum: " + sum2 + ")");
+            IO.println("Method chaining: " + chainTime / 1_000_000 + " ms (sum: " + sum + ")");
+            IO.println("Direct calculation: " + directTime / 1_000_000 + " ms (sum: " + sum2 + ")");
             
             double overhead = (double) chainTime / directTime;
-            System.out.println("Overhead ratio: " + String.format("%.2fx", overhead));
+            IO.println("Overhead ratio: " + String.format("%.2fx", overhead));
             
             if (overhead < 1.5) {
-                System.out.println("✓ Good inlining - minimal overhead");
+                IO.println("✓ Good inlining - minimal overhead");
             } else {
-                System.out.println("⚠ Poor inlining - significant overhead");
+                IO.println("⚠ Poor inlining - significant overhead");
             }
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -365,14 +365,14 @@ public class MethodInliningDemo {
          * インライン化閾値のシミュレーション
          */
         public static void simulateInliningThresholds() {
-            System.out.println("=== Inlining Threshold Simulation ===");
-            System.out.println("JVM Flags for Inlining Control:");
-            System.out.println("  -XX:MaxInlineSize=35        # Default bytecode size limit");
-            System.out.println("  -XX:FreqInlineSize=325      # Hot method size limit");
-            System.out.println("  -XX:InlineSmallCode=1000    # Small compiled method limit");
-            System.out.println("  -XX:MaxInlineLevel=9        # Maximum inlining depth");
-            System.out.println("  -XX:+PrintInlining          # Print inlining decisions");
-            System.out.println();
+            IO.println("=== Inlining Threshold Simulation ===");
+            IO.println("JVM Flags for Inlining Control:");
+            IO.println("  -XX:MaxInlineSize=35        # Default bytecode size limit");
+            IO.println("  -XX:FreqInlineSize=325      # Hot method size limit");
+            IO.println("  -XX:InlineSmallCode=1000    # Small compiled method limit");
+            IO.println("  -XX:MaxInlineLevel=9        # Maximum inlining depth");
+            IO.println("  -XX:+PrintInlining          # Print inlining decisions");
+            IO.println();
             
             // 異なるサイズのメソッドによるインライン化可能性
             int[] methodSizes = {10, 35, 100, 325, 1000};
@@ -385,10 +385,10 @@ public class MethodInliningDemo {
             };
             
             for (int i = 0; i < methodSizes.length; i++) {
-                System.out.printf("Method size %4d bytes: %s%n", 
-                                methodSizes[i], descriptions[i]);
+                IO.println("Method size %4d bytes: %s".formatted(
+                                methodSizes[i], descriptions[i]));
             }
-            System.out.println();
+            IO.println();
         }
         
         /**
@@ -422,8 +422,8 @@ public class MethodInliningDemo {
         }
         
         public static void demonstrateInlineDepth() {
-            System.out.println("=== Inline Depth Limitation ===");
-            System.out.println("Deep call chain: method1 -> method2 -> ... -> method5");
+            IO.println("=== Inline Depth Limitation ===");
+            IO.println("Deep call chain: method1 -> method2 -> ... -> method5");
             
             InlineDepthDemo demo = new InlineDepthDemo();
             int iterations = 1_000_000;
@@ -435,10 +435,10 @@ public class MethodInliningDemo {
             }
             long endTime = System.nanoTime();
             
-            System.out.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            System.out.println("With deep inlining, this would be equivalent to: x + 5 + 4 + 3 + 2 + 1");
-            System.out.println("JVM may limit inlining depth to prevent code explosion");
-            System.out.println();
+            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
+            IO.println("With deep inlining, this would be equivalent to: x + 5 + 4 + 3 + 2 + 1");
+            IO.println("JVM may limit inlining depth to prevent code explosion");
+            IO.println();
         }
     }
     
@@ -446,39 +446,39 @@ public class MethodInliningDemo {
      * 実践的なインライン化ガイドライン
      */
     public static void printOptimizationGuidelines() {
-        System.out.println("=== Practical Inlining Guidelines ===");
-        System.out.println();
+        IO.println("=== Practical Inlining Guidelines ===");
+        IO.println();
         
-        System.out.println("✅ DO - Promote Inlining:");
-        System.out.println("  • Keep methods small (< 35 bytecodes)");
-        System.out.println("  • Use final for classes/methods when inheritance isn't needed");
-        System.out.println("  • Minimize method call overhead in hot paths");
-        System.out.println("  • Prefer composition over deep inheritance");
-        System.out.println("  • Use static methods for utility functions");
-        System.out.println();
+        IO.println("✅ DO - Promote Inlining:");
+        IO.println("  • Keep methods small (< 35 bytecodes)");
+        IO.println("  • Use final for classes/methods when inheritance isn't needed");
+        IO.println("  • Minimize method call overhead in hot paths");
+        IO.println("  • Prefer composition over deep inheritance");
+        IO.println("  • Use static methods for utility functions");
+        IO.println();
         
-        System.out.println("❌ DON'T - Inhibit Inlining:");
-        System.out.println("  • Create large methods with complex logic");
-        System.out.println("  • Use unnecessary synchronization");
-        System.out.println("  • Add side effects to simple getters");
-        System.out.println("  • Create deep call chains unnecessarily");
-        System.out.println("  • Premature optimization without profiling");
-        System.out.println();
+        IO.println("❌ DON'T - Inhibit Inlining:");
+        IO.println("  • Create large methods with complex logic");
+        IO.println("  • Use unnecessary synchronization");
+        IO.println("  • Add side effects to simple getters");
+        IO.println("  • Create deep call chains unnecessarily");
+        IO.println("  • Premature optimization without profiling");
+        IO.println();
         
-        System.out.println("🔍 Profiling and Monitoring:");
-        System.out.println("  • Use -XX:+PrintCompilation to see compilation");
-        System.out.println("  • Use -XX:+PrintInlining to see inlining decisions");
-        System.out.println("  • Profile with JProfiler, async-profiler, or JFR");
-        System.out.println("  • Focus on hot methods (>10% of execution time)");
-        System.out.println();
+        IO.println("🔍 Profiling and Monitoring:");
+        IO.println("  • Use -XX:+PrintCompilation to see compilation");
+        IO.println("  • Use -XX:+PrintInlining to see inlining decisions");
+        IO.println("  • Profile with JProfiler, async-profiler, or JFR");
+        IO.println("  • Focus on hot methods (>10% of execution time)");
+        IO.println();
     }
     
     /**
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Method Inlining and JIT Optimization Demonstration");
-        System.out.println("==================================================");
+        IO.println("Method Inlining and JIT Optimization Demonstration");
+        IO.println("==================================================");
         
         HotSpotDemo.demonstrateHotSpotDetection();
         InliningOptimizationDemo.compareOptimizationLevels();
@@ -487,17 +487,17 @@ public class MethodInliningDemo {
         InliningControlDemo.demonstrateInlineDepth();
         printOptimizationGuidelines();
         
-        System.out.println("🎯 Key Insights:");
-        System.out.println("✓ JVM automatically detects and optimizes hot spots");
-        System.out.println("✓ Small methods are prime candidates for inlining");
-        System.out.println("✓ Method chaining can be as fast as direct calculation");
-        System.out.println("✓ Inlining depth is limited to prevent code explosion");
-        System.out.println("✓ Profile before optimizing - JVM is very sophisticated");
+        IO.println("🎯 Key Insights:");
+        IO.println("✓ JVM automatically detects and optimizes hot spots");
+        IO.println("✓ Small methods are prime candidates for inlining");
+        IO.println("✓ Method chaining can be as fast as direct calculation");
+        IO.println("✓ Inlining depth is limited to prevent code explosion");
+        IO.println("✓ Profile before optimizing - JVM is very sophisticated");
         
-        System.out.println("\n⚡ Performance Tips:");
-        System.out.println("• Trust the JVM - it's often smarter than manual optimization");
-        System.out.println("• Measure with realistic workloads and data");
-        System.out.println("• Focus on algorithm improvements over micro-optimizations");
-        System.out.println("• Consider readability and maintainability first");
+        IO.println("\n⚡ Performance Tips:");
+        IO.println("• Trust the JVM - it's often smarter than manual optimization");
+        IO.println("• Measure with realistic workloads and data");
+        IO.println("• Focus on algorithm improvements over micro-optimizations");
+        IO.println("• Consider readability and maintainability first");
     }
 }
