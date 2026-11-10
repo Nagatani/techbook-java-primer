@@ -44,6 +44,12 @@ JListは項目のリストを表示するコンポーネントで、選択可能
 
 JTableは、表形式のデータを表示・編集するための強力なコンポーネントです。まず、基本的な使い方から見ていきましょう。
 
+<div class="figure">
+
+![JTableと関連する部品の役割分担](images/diagrams/chapter20-jtable-roles.svg)
+
+</div>
+
 以下のコードは、JTableの最も基本的な使用例です。2次元配列でデータを定義し、列名を指定してテーブルを作成します。JScrollPaneでラップすることで、データが多い場合にスクロール可能になります。この方法は簡単ですが、データの動的な変更には向いていません。
 
 <span class="listing-number">**サンプルコード20-1**　BasicTableExample.java</span>

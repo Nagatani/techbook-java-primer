@@ -1,0 +1,19 @@
+flowchart LR
+    data[("データ<br/>（配列、リスト）")]
+    model["TableModel<br/>（DefaultTableModel、<br/>PersonTableModelなど）<br/>行数・列数・各セルの値を返す"]
+    table["JTable<br/>モデルの値を表として表示する"]
+    sorter["TableRowSorter<br/>並べ替え・絞り込み"]
+    renderer["TableCellRenderer<br/>セルの見た目を描く"]
+    editor["TableCellEditor<br/>セルを編集する部品を出す"]
+    scroll["JScrollPane<br/>スクロールさせる"]
+
+    data --> model
+    model -->|"値を問い合わせる"| table
+    table -->|"編集した値を書き戻す"| model
+    sorter --> table
+    renderer --> table
+    editor --> table
+    table --> scroll
+
+    style model fill:#e8f5e9,stroke:#2e7d32
+    style table fill:#e3f2fd,stroke:#1565c0
