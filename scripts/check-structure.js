@@ -6,6 +6,7 @@
  * 付録Bの節番号の正は appendix/bXX-* のディレクトリ名とする。
  * ほかの場所（演習ディレクトリ、本文中の「第N章「…」」、付録Bへの参照、用語集、相互参照ガイド）は
  * これに合っているかを検査するか、ここから生成する。
+ * あわせて、本文・付録・演習・サンプルコードに絵文字がないことも検査する（CLAUDE.mdの表記ルール）。
  *
  *   node scripts/check-structure.js            検査する（問題があれば終了コード1）
  *   node scripts/check-structure.js crossref   相互参照ガイド（manuscripts/cross-reference-guide.md）を生成し直す
@@ -186,6 +187,18 @@ function check() {
   // 5. 相互参照ガイドが最新か
   if (read('manuscripts/cross-reference-guide.md') !== crossrefGuide()) {
     problems.push('manuscripts/cross-reference-guide.md: 章や付録の一覧と合っていない（node scripts/check-structure.js crossref で作り直す）');
+  }
+
+  // 6. 絵文字を使わない（本文・付録・演習・サンプルコード）。✓✗★☆や⌘などの記号は使ってよい
+  const EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/u;
+  const ALLOWED = new Set([...'✓✗★☆✔✘']);
+  for (const dir of ['manuscripts', 'appendix', 'exercises', 'sample-code']) {
+    for (const f of walk(dir, (p) => /\.(md|java|txt|html|properties|xml|gradle|json)$/.test(p))) {
+      read(f).split('\n').forEach((line, i) => {
+        const hit = [...line].find((ch) => EMOJI.test(ch) && !ALLOWED.has(ch));
+        if (hit) problems.push(`${f}:${i + 1}: 絵文字「${hit}」を使っている（消すか、○・×・「注意:」などの文字にする）`);
+      });
+    }
   }
 
   if (problems.length) {
