@@ -1,47 +1,18 @@
-classDiagram
-    direction LR
+---
+config:
+  flowchart:
+    wrappingWidth: 320
+---
+flowchart LR
+    outer["OuterClass<br/>（外側のクラス）"]
+    inner["非static内部クラス<br/>InnerClass<br/>―――――――――<br/>外側のインスタンスに紐付き<br/>外側のメンバーを使える"]
+    nested["static内部クラス<br/>StaticNestedClass<br/>―――――――――<br/>外側のインスタンスに依存せず<br/>外側のstaticメンバーだけ使える"]
+    local["ローカルクラス<br/>LocalClass<br/>―――――――――<br/>メソッドの中で定義し<br/>ローカル変数を使える"]
+    anon["匿名クラス<br/>―――――――――<br/>名前がなく、その場で<br/>インターフェイスなどを実装する<br/>（例: Comparatorの実装）"]
 
-    class OuterClass {
-        -int outerField
-        +outerMethod() void
-    }
+    outer -->|"メンバーとして持つ"| inner
+    outer -->|"メンバーとして持つ"| nested
+    outer -->|"メソッドの中で作る"| local
+    outer -->|"メソッドの中で作る"| anon
 
-    class InnerClass {
-        <<非static内部クラス>>
-        -int innerField
-        +innerMethod() void
-        +accessOuter() void
-    }
-
-    class StaticNestedClass {
-        <<static内部クラス>>
-        -int staticField
-        +staticMethod() void
-    }
-
-    class LocalClass {
-        <<ローカルクラス>>
-        +localMethod() void
-        +accessEnclosing() void
-    }
-
-    class AnonymousClass {
-        <<匿名クラス>>
-        +compare(T o1, T o2) int
-    }
-
-    class Comparator~T~ {
-        <<interface>>
-        +compare(T o1, T o2) int
-    }
-
-    OuterClass *-- InnerClass : contains
-    OuterClass *-- StaticNestedClass : contains
-    OuterClass ..> LocalClass : creates
-    OuterClass ..> AnonymousClass : creates
-    AnonymousClass ..|> Comparator : implements
-
-    note for InnerClass "外部クラスのインスタンスに紐付き<br/>外部クラスのメンバーにアクセスできる"
-    note for StaticNestedClass "外部クラスのインスタンスに依存せず<br/>外部クラスのstaticメンバーだけを使える"
-    note for LocalClass "メソッドの中で定義し、メソッドの<br/>ローカル変数（実質的final）を使える"
-    note for AnonymousClass "名前を持たず、インターフェイスや<br/>抽象クラスをその場で実装する"
+    style outer fill:#e3f2fd,stroke:#1565c0
