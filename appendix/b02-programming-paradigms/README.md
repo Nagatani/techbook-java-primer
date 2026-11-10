@@ -177,8 +177,8 @@ Function<Integer, Integer> multiplyThenAddOne =
     multiplyByTwo.compose(addOne);
 
 // 実行
-System.out.println(addOneThenMultiply.apply(3));    // (3 + 1) * 2 = 8
-System.out.println(multiplyThenAddOne.apply(3));    // (3 * 2) + 1 = 7
+IO.println(addOneThenMultiply.apply(3));    // (3 + 1) * 2 = 8
+IO.println(multiplyThenAddOne.apply(3));    // (3 * 2) + 1 = 7
 ```
 
 ---
@@ -228,7 +228,7 @@ Function<Integer, Function<Integer, Integer>> curriedAdd = a -> b -> a + b;
 
 // 部分適用の例
 Function<Integer, Integer> add5 = curriedAdd.apply(5);
-System.out.println(add5.apply(3)); // 8
+IO.println(add5.apply(3)); // 8
 
 // 汎用的なカリー化ユーティリティ
 public class CurryingUtils {
@@ -250,7 +250,7 @@ Function<Double, Function<Double, Double>> curriedMultiply =
 
 // 税率計算の部分適用
 Function<Double, Double> withTax = curriedMultiply.apply(1.1);
-System.out.println(withTax.apply(100.0)); // 110.0
+IO.println(withTax.apply(100.0)); // 110.0
 ```
 
 ### 3.3 ベータ簡約
@@ -338,9 +338,9 @@ int toInt(ChurchNumeral n) {
 }
 
 // 使用例
-System.out.println(toInt(zero));        // 0
-System.out.println(toInt(one));         // 1
-System.out.println(toInt(succ(two)));   // 3
+IO.println(toInt(zero));        // 0
+IO.println(toInt(one));         // 1
+IO.println(toInt(succ(two)));   // 3
 ```
 
 ---
@@ -400,17 +400,17 @@ Function<Integer, Integer> composition1 = f.andThen(g).andThen(h);
 Function<Integer, Integer> composition2 = f.andThen(g.andThen(h));
 
 // 両者は同じ結果を生成
-System.out.println(composition1.apply(3)); // ((3 + 1) * 2)² = 64
-System.out.println(composition2.apply(3)); // ((3 + 1) * 2)² = 64
+IO.println(composition1.apply(3)); // ((3 + 1) * 2)² = 64
+IO.println(composition2.apply(3)); // ((3 + 1) * 2)² = 64
 
 // 単位法則の検証
 Function<Integer, Integer> identity = Function.identity();
 Function<Integer, Integer> fWithId1 = f.andThen(identity);
 Function<Integer, Integer> fWithId2 = identity.andThen(f);
 
-System.out.println(f.apply(5));        // 6
-System.out.println(fWithId1.apply(5)); // 6
-System.out.println(fWithId2.apply(5)); // 6
+IO.println(f.apply(5));        // 6
+IO.println(fWithId1.apply(5)); // 6
+IO.println(fWithId2.apply(5)); // 6
 ```
 
 ---
@@ -458,13 +458,13 @@ Optional<String> result = Optional.of(5)
 Function<Integer, Optional<String>> f = x -> Optional.of("Value: " + x);
 Optional<String> left1 = Optional.of(10).flatMap(f);
 Optional<String> left2 = f.apply(10);
-System.out.println(left1.equals(left2)); // true
+IO.println(left1.equals(left2)); // true
 
 // 2. 右単位元則
 Optional<Integer> m = Optional.of(20);
 Optional<Integer> right1 = m.flatMap(Optional::of);
 Optional<Integer> right2 = m;
-System.out.println(right1.equals(right2)); // true
+IO.println(right1.equals(right2)); // true
 
 // 3. 結合則
 Function<Integer, Optional<Integer>> addOne = x -> Optional.of(x + 1);
@@ -477,7 +477,7 @@ Optional<Integer> assoc1 = Optional.of(5)
 Optional<Integer> assoc2 = Optional.of(5)
     .flatMap(x -> addOne.apply(x).flatMap(multiplyTwo));
 
-System.out.println(assoc1.equals(assoc2)); // true
+IO.println(assoc1.equals(assoc2)); // true
 ```
 
 ### 5.4 カスタムモナドの実装
@@ -576,9 +576,9 @@ public class ResultMonadExample {
         // パターンマッチングで結果を処理
         switch (result) {
             case Result.Success<Double> s -> 
-                System.out.println("Result: " + s.value);
+                IO.println("Result: " + s.value);
             case Result.Failure<Double> f -> 
-                System.out.println("Error: " + f.error);
+                IO.println("Error: " + f.error);
         }
     }
 }
@@ -607,7 +607,7 @@ List<Integer> result = Stream.of(1, 2, 3, 4, 5)
     .map(x -> x * 10)                   // 10倍
     .collect(Collectors.toList());
 
-System.out.println(result); // [20, 40, 160]
+IO.println(result); // [20, 40, 160]
 
 // モナド則の活用例
 Function<String, Stream<Character>> toChars = 
@@ -621,7 +621,7 @@ Stream<String> asciiCodes = Stream.of("AB")
     .flatMap(toChars)
     .flatMap(toAscii);
 
-asciiCodes.forEach(System.out::println); // 65, 66
+asciiCodes.forEach(IO::println); // 65, 66
 ```
 
 ---
@@ -698,7 +698,7 @@ public class FunctorLawsTest {
         // 恒等則のテスト
         ListFunctor<Integer> numbers = new ListFunctor<>(List.of(1, 2, 3));
         ListFunctor<Integer> identity = numbers.map(Function.identity());
-        System.out.println(numbers.get().equals(identity.get())); // true
+        IO.println(numbers.get().equals(identity.get())); // true
         
         // 合成則のテスト
         Function<Integer, Integer> addOne = x -> x + 1;
@@ -711,7 +711,7 @@ public class FunctorLawsTest {
         ListFunctor<Integer> composed2 = numbers
             .map(addOne.andThen(multiplyTwo));
             
-        System.out.println(composed1.get().equals(composed2.get())); // true
+        IO.println(composed1.get().equals(composed2.get())); // true
     }
 }
 ```
@@ -768,7 +768,7 @@ List<Optional<Integer>> maybeNumbers = List.of(
 );
 
 Optional<List<Integer>> allNumbers = BiFunctor.sequence(maybeNumbers);
-System.out.println(allNumbers); // Optional[[1, 2, 3]]
+IO.println(allNumbers); // Optional[[1, 2, 3]]
 
 // 一つでもemptyがあれば全体がempty
 List<Optional<Integer>> withEmpty = List.of(
@@ -778,7 +778,7 @@ List<Optional<Integer>> withEmpty = List.of(
 );
 
 Optional<List<Integer>> result = BiFunctor.sequence(withEmpty);
-System.out.println(result); // Optional.empty
+IO.println(result); // Optional.empty
 ```
 
 ---
@@ -829,21 +829,21 @@ public class HigherOrderFunctions {
     public static void main(String[] args) {
         // 使用例
         Function<Integer, Integer> times3 = multiplier(3);
-        System.out.println(times3.apply(5)); // 15
+        IO.println(times3.apply(5)); // 15
         
         List<Integer> evens = filter(List.of(1, 2, 3, 4, 5), x -> x % 2 == 0);
-        System.out.println(evens); // [2, 4]
+        IO.println(evens); // [2, 4]
         
         // 高価な計算のメモ化
         Function<Integer, Integer> expensiveFunction = x -> {
-            System.out.println("Computing for " + x);
+            IO.println("Computing for " + x);
             return x * x * x;
         };
         
         Function<Integer, Integer> memoized = memoize(expensiveFunction);
         
-        System.out.println(memoized.apply(5)); // Computing for 5 → 125
-        System.out.println(memoized.apply(5)); // 125 (キャッシュから)
+        IO.println(memoized.apply(5)); // Computing for 5 → 125
+        IO.println(memoized.apply(5)); // 125 (キャッシュから)
     }
 }
 ```
@@ -924,25 +924,25 @@ public class LazyEvaluation {
     public static void main(String[] args) {
         // 遅延評価の例
         Lazy<Integer> lazyValue = new Lazy<>(() -> {
-            System.out.println("Computing expensive value...");
+            IO.println("Computing expensive value...");
             return 42;
         });
         
-        System.out.println("Lazy value created");
-        System.out.println("Value: " + lazyValue.get()); // ここで初めて計算
-        System.out.println("Value: " + lazyValue.get()); // 2回目はキャッシュ
+        IO.println("Lazy value created");
+        IO.println("Value: " + lazyValue.get()); // ここで初めて計算
+        IO.println("Value: " + lazyValue.get()); // 2回目はキャッシュ
         
         // 無限リストの使用
         LazyList.naturals(1)
             .stream()
             .limit(10)
-            .forEach(System.out::println); // 1, 2, 3, ..., 10
+            .forEach(IO::println); // 1, 2, 3, ..., 10
             
         // フィボナッチ数列
         LazyList.fibonacci()
             .stream()
             .limit(10)
-            .forEach(System.out::println); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+            .forEach(IO::println); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
     }
 }
 ```
@@ -1064,18 +1064,18 @@ public class ParserCombinator {
         Parser<Character> bParser = charParser('b');
         Parser<Character> aOrB = or(aParser, bParser);
         
-        System.out.println(aOrB.parse("abc")); // Optional[(a, bc)]
-        System.out.println(aOrB.parse("bcd")); // Optional[(b, cd)]
-        System.out.println(aOrB.parse("xyz")); // Optional.empty
+        IO.println(aOrB.parse("abc")); // Optional[(a, bc)]
+        IO.println(aOrB.parse("bcd")); // Optional[(b, cd)]
+        IO.println(aOrB.parse("xyz")); // Optional.empty
         
         // 数値のパース
         Parser<Integer> num = number();
-        System.out.println(num.parse("123abc")); // Optional[(123, abc)]
+        IO.println(num.parse("123abc")); // Optional[(123, abc)]
         
         // 複雑なパーサーの組み合わせ
         Parser<Pair<String, Integer>> assignment = 
             and(stringParser("x="), number());
-        System.out.println(assignment.parse("x=42")); // Optional[((x=, 42), )]
+        IO.println(assignment.parse("x=42")); // Optional[((x=, 42), )]
     }
 }
 ```
@@ -1165,10 +1165,10 @@ public class AlgebraicDataTypeExample {
             )
         );
         
-        System.out.println("Expression: " + expr.show());
+        IO.println("Expression: " + expr.show());
         
         Map<String, Double> env = Map.of("x", 5.0, "y", 7.0);
-        System.out.println("Evaluation: " + expr.evaluate(env)); // 70.0
+        IO.println("Evaluation: " + expr.evaluate(env)); // 70.0
         
         // 簡約の例
         Expression toSimplify = new Expression.Add(
@@ -1179,8 +1179,8 @@ public class AlgebraicDataTypeExample {
             )
         );
         
-        System.out.println("Before: " + toSimplify.show());
-        System.out.println("After: " + toSimplify.simplify().show());
+        IO.println("Before: " + toSimplify.show());
+        IO.println("After: " + toSimplify.simplify().show());
     }
 }
 ```
@@ -1191,6 +1191,8 @@ public class AlgebraicDataTypeExample {
 
 ```java
 // IOモナドの簡易実装
+// このクラス名はjava.lang.IO（標準入出力）と重なる。同じパッケージのクラスが優先されるため、
+// クラスの中で標準入出力を使うときはjava.lang.IOと完全修飾名で書く
 public abstract class IO<T> {
     
     // 実行
@@ -1227,7 +1229,7 @@ public abstract class IO<T> {
         return new IO<String>() {
             @Override
             public String unsafeRun() {
-                return new Scanner(System.in).nextLine();
+                return java.lang.IO.readln();
             }
         };
     }
@@ -1236,7 +1238,7 @@ public abstract class IO<T> {
         return new IO<Void>() {
             @Override
             public Void unsafeRun() {
-                System.out.println(s);
+                java.lang.IO.println(s);
                 return null;
             }
         };
