@@ -1980,10 +1980,13 @@ h2:not([data-chapter]) {
 
 /* 奥付の連絡先URLは脚注にしない（本文と同じページに載っているため） */
 .colophon-page a[href^='http'] {
+  color: inherit;
+  text-decoration: none;
   counter-increment: none;
 }
 
-.colophon-page a[href^='http']::before {
+.colophon-page a[href^='http']::before,
+.colophon-page a[href^='http']::after {
   content: none;
   float: none;
 }

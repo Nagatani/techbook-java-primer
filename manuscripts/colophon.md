@@ -10,7 +10,7 @@
 <dt>著者</dt>
 <dd>Hidehiro Nagatani</dd>
 <dt>連絡先</dt>
-<dd>https://github.com/Nagatani/techbook-java-primer/</dd>
+<dd><a href="https://github.com/Nagatani/techbook-java-primer/">https://github.com/Nagatani/techbook-java-primer/</a></dd>
 </dl>
 
 <p class="colophon-footer">© 2025 Hidehiro Nagatani</p>
