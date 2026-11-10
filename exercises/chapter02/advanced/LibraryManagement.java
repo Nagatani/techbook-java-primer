@@ -71,13 +71,13 @@ class Book {
      * 書籍情報を表示します
      */
     public void displayInfo() {
-        System.out.printf("[%s] %s - %s (ISBN: %s) [%s]%n", 
+        IO.println("[%s] %s - %s (ISBN: %s) [%s]".formatted(
             isRented ? "貸出中" : "利用可能", 
-            title, author, isbn, category);
+            title, author, isbn, category));
         
         if (isRented) {
-            System.out.printf("    貸出者: %s, 貸出日: %s%n", 
-                renterName, rentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+            IO.println("    貸出者: %s, 貸出日: %s".formatted(
+                renterName, rentDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))));
         }
     }
     
@@ -85,19 +85,19 @@ class Book {
      * 書籍の詳細情報を表示します
      */
     public void displayDetailedInfo() {
-        System.out.println("=== 書籍詳細情報 ===");
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("ISBN: " + isbn);
-        System.out.println("カテゴリ: " + category);
-        System.out.println("状態: " + (isRented ? "貸出中" : "利用可能"));
+        IO.println("=== 書籍詳細情報 ===");
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("ISBN: " + isbn);
+        IO.println("カテゴリ: " + category);
+        IO.println("状態: " + (isRented ? "貸出中" : "利用可能"));
         
         if (isRented) {
-            System.out.println("貸出者: " + renterName);
-            System.out.println("貸出日: " + rentDate.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")));
-            System.out.println("経過日数: " + java.time.Period.between(rentDate, LocalDate.now()).getDays() + "日");
+            IO.println("貸出者: " + renterName);
+            IO.println("貸出日: " + rentDate.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")));
+            IO.println("経過日数: " + java.time.Period.between(rentDate, LocalDate.now()).getDays() + "日");
         }
-        System.out.println();
+        IO.println();
     }
     
     // ゲッターメソッド
@@ -134,7 +134,7 @@ class Library {
      */
     public void addBook(Book book) {
         books.add(book);
-        System.out.println("✓ 「" + book.getTitle() + "」- " + book.getAuthor() + 
+        IO.println("✓ 「" + book.getTitle() + "」- " + book.getAuthor() + 
                           " (ISBN: " + book.getIsbn() + ") を追加");
     }
     
@@ -142,11 +142,11 @@ class Library {
      * 複数の書籍を一括追加します
      */
     public void addBooks(Book[] newBooks) {
-        System.out.println("書籍を追加しています...");
+        IO.println("書籍を追加しています...");
         for (Book book : newBooks) {
             addBook(book);
         }
-        System.out.println();
+        IO.println();
     }
     
     /**
@@ -200,16 +200,16 @@ class Library {
         Book book = findBookByIsbn(isbn);
         
         if (book == null) {
-            System.out.println("✗ 指定されたISBNの書籍が見つかりません: " + isbn);
+            IO.println("✗ 指定されたISBNの書籍が見つかりません: " + isbn);
             return false;
         }
         
         if (book.rent(renterName)) {
             totalRents++;
-            System.out.println("✓ 「" + book.getTitle() + "」を" + renterName + "さんに貸出完了");
+            IO.println("✓ 「" + book.getTitle() + "」を" + renterName + "さんに貸出完了");
             return true;
         } else {
-            System.out.println("✗ 「" + book.getTitle() + "」は既に貸出中です");
+            IO.println("✗ 「" + book.getTitle() + "」は既に貸出中です");
             return false;
         }
     }
@@ -221,16 +221,16 @@ class Library {
         Book book = findBookByIsbn(isbn);
         
         if (book == null) {
-            System.out.println("✗ 指定されたISBNの書籍が見つかりません: " + isbn);
+            IO.println("✗ 指定されたISBNの書籍が見つかりません: " + isbn);
             return false;
         }
         
         if (book.returnBook()) {
             totalReturns++;
-            System.out.println("✓ 「" + book.getTitle() + "」の返却完了");
+            IO.println("✓ 「" + book.getTitle() + "」の返却完了");
             return true;
         } else {
-            System.out.println("✗ 「" + book.getTitle() + "」は貸出されていません");
+            IO.println("✗ 「" + book.getTitle() + "」は貸出されていません");
             return false;
         }
     }
@@ -250,41 +250,41 @@ class Library {
             }
         }
         
-        System.out.println("=== " + libraryName + "の状況 ===");
-        System.out.println("登録書籍数: " + books.size() + "冊");
-        System.out.println("貸出中: " + rentedBooks + "冊");
-        System.out.println("利用可能: " + availableBooks + "冊");
-        System.out.println();
+        IO.println("=== " + libraryName + "の状況 ===");
+        IO.println("登録書籍数: " + books.size() + "冊");
+        IO.println("貸出中: " + rentedBooks + "冊");
+        IO.println("利用可能: " + availableBooks + "冊");
+        IO.println();
     }
     
     /**
      * 貸出中の書籍一覧を表示します
      */
     public void displayRentedBooks() {
-        System.out.println("=== 貸出中の書籍 ===");
+        IO.println("=== 貸出中の書籍 ===");
         boolean hasRentedBooks = false;
         
         for (Book book : books) {
             if (book.isRented()) {
-                System.out.printf("- %s (貸出者: %s, 貸出日: %s)%n", 
+                IO.println("- %s (貸出者: %s, 貸出日: %s)".formatted(
                     book.getTitle(), 
                     book.getRenterName(),
-                    book.getRentDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                    book.getRentDate().format(DateTimeFormatter.ofPattern("MM/dd"))));
                 hasRentedBooks = true;
             }
         }
         
         if (!hasRentedBooks) {
-            System.out.println("現在貸出中の書籍はありません。");
+            IO.println("現在貸出中の書籍はありません。");
         }
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 利用可能な書籍一覧を表示します
      */
     public void displayAvailableBooks() {
-        System.out.println("=== 利用可能な書籍 ===");
+        IO.println("=== 利用可能な書籍 ===");
         boolean hasAvailableBooks = false;
         
         for (Book book : books) {
@@ -295,16 +295,16 @@ class Library {
         }
         
         if (!hasAvailableBooks) {
-            System.out.println("現在利用可能な書籍はありません。");
+            IO.println("現在利用可能な書籍はありません。");
         }
-        System.out.println();
+        IO.println();
     }
     
     /**
      * カテゴリ別統計を表示します
      */
     public void displayCategoryStatistics() {
-        System.out.println("=== カテゴリ別統計 ===");
+        IO.println("=== カテゴリ別統計 ===");
         
         // カテゴリごとの冊数を集計
         java.util.Map<String, Integer> categoryCount = new java.util.HashMap<>();
@@ -324,10 +324,10 @@ class Library {
             int rented = categoryRented.getOrDefault(category, 0);
             int available = total - rented;
             
-            System.out.printf("%s: %d冊 (貸出中: %d, 利用可能: %d)%n", 
-                category, total, rented, available);
+            IO.println("%s: %d冊 (貸出中: %d, 利用可能: %d)".formatted(
+                category, total, rented, available));
         }
-        System.out.println();
+        IO.println();
     }
     
     /**
@@ -336,17 +336,17 @@ class Library {
     public void displayStatistics() {
         displayStatus();
         
-        System.out.println("=== 利用統計 ===");
-        System.out.println("総貸出回数: " + totalRents + "回");
-        System.out.println("総返却回数: " + totalReturns + "回");
-        System.out.println("現在の貸出中書籍: " + (totalRents - totalReturns) + "冊");
+        IO.println("=== 利用統計 ===");
+        IO.println("総貸出回数: " + totalRents + "回");
+        IO.println("総返却回数: " + totalReturns + "回");
+        IO.println("現在の貸出中書籍: " + (totalRents - totalReturns) + "冊");
         
         if (books.size() > 0) {
             double utilizationRate = (double) (totalRents - totalReturns) / books.size() * 100;
-            System.out.printf("利用率: %.1f%%%n", utilizationRate);
+            IO.println("利用率: %.1f%%".formatted(utilizationRate));
         }
         
-        System.out.println();
+        IO.println();
         displayCategoryStatistics();
     }
     
@@ -365,10 +365,10 @@ public class LibraryManagement {
         // 図書館を作成
         Library library = new Library("中央図書館");
         
-        System.out.println("=== 図書管理システム ===");
-        System.out.println();
-        System.out.println(library.getLibraryName() + "にようこそ！");
-        System.out.println();
+        IO.println("=== 図書管理システム ===");
+        IO.println();
+        IO.println(library.getLibraryName() + "にようこそ！");
+        IO.println();
         
         // 初期書籍データの準備
         Book[] initialBooks = {
@@ -387,37 +387,37 @@ public class LibraryManagement {
         library.displayStatus();
         
         // 書籍検索のデモンストレーション
-        System.out.println("=== 書籍検索 ===");
-        System.out.println("「Java」で検索:");
+        IO.println("=== 書籍検索 ===");
+        IO.println("「Java」で検索:");
         ArrayList<Book> searchResults = library.searchBooks("Java");
         for (Book book : searchResults) {
             book.displayInfo();
         }
-        System.out.println();
+        IO.println();
         
         // カテゴリ検索のデモンストレーション
-        System.out.println("カテゴリ「プログラミング」で検索:");
+        IO.println("カテゴリ「プログラミング」で検索:");
         ArrayList<Book> categoryResults = library.searchByCategory("プログラミング");
         for (Book book : categoryResults) {
             book.displayInfo();
         }
-        System.out.println();
+        IO.println();
         
         // 貸出処理のデモンストレーション
-        System.out.println("=== 貸出処理 ===");
+        IO.println("=== 貸出処理 ===");
         library.rentBook("978-1234567890", "田中さん");
         library.rentBook("978-0987654321", "佐藤さん");
         library.rentBook("978-2233445566", "山田さん");
-        System.out.println();
+        IO.println();
         
         // 現在の状況表示
         library.displayStatus();
         library.displayRentedBooks();
         
         // 返却処理のデモンストレーション
-        System.out.println("=== 返却処理 ===");
+        IO.println("=== 返却処理 ===");
         library.returnBook("978-1234567890");
-        System.out.println();
+        IO.println();
         
         // 利用可能書籍の表示
         library.displayAvailableBooks();
@@ -426,13 +426,13 @@ public class LibraryManagement {
         library.displayStatistics();
         
         // 書籍詳細情報の表示例
-        System.out.println("=== 書籍詳細情報 ===");
+        IO.println("=== 書籍詳細情報 ===");
         Book javaBook = library.findBookByIsbn("978-1234567890");
         if (javaBook != null) {
             javaBook.displayDetailedInfo();
         }
         
-        System.out.println("図書管理システムのデモンストレーションを終了します。");
+        IO.println("図書管理システムのデモンストレーションを終了します。");
     }
 }
 

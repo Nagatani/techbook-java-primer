@@ -20,12 +20,12 @@ public class Person {
     
     // TODO: 自己紹介メソッドを実装してください
     // void introduce() {
-    //     System.out.println("私の名前は" + name + "です。年齢は" + age + "歳です。");
+    //     IO.println("私の名前は" + name + "です。年齢は" + age + "歳です。");
     // }
     
     // TODO: 誕生日メソッドを実装してください（年齢を1つ増やす）
     // void birthday() {
     //     age++;
-    //     System.out.println("誕生日おめでとう！");
+    //     IO.println("誕生日おめでとう！");
     // }
 }

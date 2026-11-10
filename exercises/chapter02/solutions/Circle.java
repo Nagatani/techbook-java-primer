@@ -34,10 +34,10 @@ public class Circle {
      * 円の情報を表示するメソッド
      */
     void displayInfo() {
-        System.out.println("円の情報:");
-        System.out.println("半径: " + radius + "cm");
-        System.out.println("面積: " + String.format("%.2f", calculateArea()) + "cm²");
-        System.out.println("円周: " + String.format("%.2f", calculateCircumference()) + "cm");
+        IO.println("円の情報:");
+        IO.println("半径: " + radius + "cm");
+        IO.println("面積: " + String.format("%.2f", calculateArea()) + "cm²");
+        IO.println("円周: " + String.format("%.2f", calculateCircumference()) + "cm");
     }
     
     // 解答例 2: より詳細な実装
@@ -46,23 +46,23 @@ public class Circle {
      * 詳細な円の情報を表示するメソッド
      */
     void displayDetailedInfo() {
-        System.out.println("=== 円の詳細情報 ===");
-        System.out.println("半径: " + radius + "cm");
+        IO.println("=== 円の詳細情報 ===");
+        IO.println("半径: " + radius + "cm");
         
         double area = calculateArea();
         double circumference = calculateCircumference();
         double diameter = calculateDiameter();
         
-        System.out.println("直径: " + String.format("%.2f", diameter) + "cm");
-        System.out.println("面積: " + String.format("%.2f", area) + "cm²");
-        System.out.println("円周: " + String.format("%.2f", circumference) + "cm");
+        IO.println("直径: " + String.format("%.2f", diameter) + "cm");
+        IO.println("面積: " + String.format("%.2f", area) + "cm²");
+        IO.println("円周: " + String.format("%.2f", circumference) + "cm");
         
         // 追加情報
-        System.out.println("面積/円周比: " + String.format("%.2f", area / circumference));
+        IO.println("面積/円周比: " + String.format("%.2f", area / circumference));
         
         // 円のカテゴリ
         String category = getCircleCategory();
-        System.out.println("サイズ分類: " + category);
+        IO.println("サイズ分類: " + category);
     }
     
     /**
@@ -129,9 +129,9 @@ public class Circle {
     void setRadius(double newRadius) {
         if (newRadius > 0) {
             this.radius = newRadius;
-            System.out.println("半径を " + newRadius + "cm に設定しました。");
+            IO.println("半径を " + newRadius + "cm に設定しました。");
         } else {
-            System.out.println("半径は正の値である必要があります。");
+            IO.println("半径は正の値である必要があります。");
         }
     }
     
@@ -143,11 +143,11 @@ public class Circle {
         if (factor > 0) {
             double oldRadius = this.radius;
             this.radius *= factor;
-            System.out.println("半径を " + String.format("%.2f", oldRadius) + 
+            IO.println("半径を " + String.format("%.2f", oldRadius) + 
                              "cm から " + String.format("%.2f", this.radius) + 
                              "cm に変更しました（" + factor + "倍）");
         } else {
-            System.out.println("倍率は正の値である必要があります。");
+            IO.println("倍率は正の値である必要があります。");
         }
     }
     
@@ -159,12 +159,12 @@ public class Circle {
         if (targetArea > 0) {
             double oldRadius = this.radius;
             this.radius = Math.sqrt(targetArea / Math.PI);
-            System.out.println("面積 " + String.format("%.2f", targetArea) + 
+            IO.println("面積 " + String.format("%.2f", targetArea) + 
                              "cm² になるように半径を " + String.format("%.2f", oldRadius) + 
                              "cm から " + String.format("%.2f", this.radius) + 
                              "cm に調整しました。");
         } else {
-            System.out.println("面積は正の値である必要があります。");
+            IO.println("面積は正の値である必要があります。");
         }
     }
     

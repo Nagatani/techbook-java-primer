@@ -20,10 +20,10 @@ public class Book {
      * 書籍情報を表示するメソッド
      */
     void displayInfo() {
-        System.out.println("書籍情報:");
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("価格: " + String.format("%,d", price) + "円");
+        IO.println("書籍情報:");
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("価格: " + String.format("%,d", price) + "円");
     }
     
     /**
@@ -39,7 +39,7 @@ public class Book {
      */
     void displayTaxIncludedPrice() {
         int taxIncludedPrice = calculateTaxIncludedPrice();
-        System.out.println("税込価格: " + String.format("%,d", taxIncludedPrice) + "円");
+        IO.println("税込価格: " + String.format("%,d", taxIncludedPrice) + "円");
     }
     
     // 解答例 2: より詳細な実装
@@ -48,19 +48,19 @@ public class Book {
      * 詳細な書籍情報を表示するメソッド
      */
     void displayDetailedInfo() {
-        System.out.println("=== 書籍詳細情報 ===");
-        System.out.println("タイトル: " + (title != null ? title : "未設定"));
-        System.out.println("著者: " + (author != null ? author : "未設定"));
-        System.out.println("価格: " + String.format("%,d", price) + "円");
+        IO.println("=== 書籍詳細情報 ===");
+        IO.println("タイトル: " + (title != null ? title : "未設定"));
+        IO.println("著者: " + (author != null ? author : "未設定"));
+        IO.println("価格: " + String.format("%,d", price) + "円");
         
         int taxIncludedPrice = calculateTaxIncludedPrice();
         int tax = taxIncludedPrice - price;
-        System.out.println("税額: " + String.format("%,d", tax) + "円");
-        System.out.println("税込価格: " + String.format("%,d", taxIncludedPrice) + "円");
+        IO.println("税額: " + String.format("%,d", tax) + "円");
+        IO.println("税込価格: " + String.format("%,d", taxIncludedPrice) + "円");
         
         // 価格帯による分類
         String priceCategory = getPriceCategory();
-        System.out.println("価格帯: " + priceCategory);
+        IO.println("価格帯: " + priceCategory);
     }
     
     /**
@@ -84,7 +84,7 @@ public class Book {
      */
     int calculateDiscountedPrice(double discountRate) {
         if (discountRate < 0.0 || discountRate > 1.0) {
-            System.out.println("無効な割引率です（0.0-1.0の範囲で指定してください）");
+            IO.println("無効な割引率です（0.0-1.0の範囲で指定してください）");
             return price;
         }
         return (int)(price * (1.0 - discountRate));
@@ -136,9 +136,9 @@ public class Book {
             this.title = title.trim();
             this.author = author.trim();
             this.price = price;
-            System.out.println("書籍情報を設定しました: " + this.title);
+            IO.println("書籍情報を設定しました: " + this.title);
         } else {
-            System.out.println("無効な書籍情報です。設定できませんでした。");
+            IO.println("無効な書籍情報です。設定できませんでした。");
         }
     }
     

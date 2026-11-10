@@ -10,7 +10,7 @@
  */
 public class BookTest {
     public static void main(String[] args) {
-        System.out.println("=== 図書管理システム ===");
+        IO.println("=== 図書管理システム ===");
         
         // 解答例 1: 基本的な使用方法
         Book book1 = new Book();
@@ -21,7 +21,7 @@ public class BookTest {
         book1.displayInfo();
         book1.displayTaxIncludedPrice();
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         Book book2 = new Book();
         book2.title = "Python基礎";
@@ -31,23 +31,23 @@ public class BookTest {
         book2.displayInfo();
         book2.displayTaxIncludedPrice();
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 2: 価格比較
-        System.out.println("=== 価格比較 ===");
+        IO.println("=== 価格比較 ===");
         int priceDifference = book1.comparePriceWith(book2);
         if (priceDifference > 0) {
-            System.out.println(book1.title + "の方が" + priceDifference + "円高いです");
+            IO.println(book1.title + "の方が" + priceDifference + "円高いです");
         } else if (priceDifference < 0) {
-            System.out.println(book1.title + "の方が" + Math.abs(priceDifference) + "円安いです");
+            IO.println(book1.title + "の方が" + Math.abs(priceDifference) + "円安いです");
         } else {
-            System.out.println("両方とも同じ価格です");
+            IO.println("両方とも同じ価格です");
         }
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 3: より詳細な機能テスト
-        System.out.println("=== 詳細機能テスト ===");
+        IO.println("=== 詳細機能テスト ===");
         
         // 3冊目の本を作成
         Book book3 = new Book();
@@ -55,26 +55,26 @@ public class BookTest {
         
         // 詳細情報表示
         book3.displayDetailedInfo();
-        System.out.println();
+        IO.println();
         
         // 割引計算テスト
-        System.out.println("=== 割引計算テスト ===");
+        IO.println("=== 割引計算テスト ===");
         int originalPrice = book3.price;
         int discounted20 = book3.calculateDiscountedPrice(0.2);  // 20%割引
         int discounted50 = book3.calculateDiscountedPrice(0.5);  // 50%割引
         
-        System.out.println("元の価格: " + String.format("%,d", originalPrice) + "円");
-        System.out.println("20%割引: " + String.format("%,d", discounted20) + "円");
-        System.out.println("50%割引: " + String.format("%,d", discounted50) + "円");
+        IO.println("元の価格: " + String.format("%,d", originalPrice) + "円");
+        IO.println("20%割引: " + String.format("%,d", discounted20) + "円");
+        IO.println("50%割引: " + String.format("%,d", discounted50) + "円");
         
         // 無効な割引率のテスト
         book3.calculateDiscountedPrice(-0.1);  // 無効な割引率
         book3.calculateDiscountedPrice(1.5);   // 無効な割引率
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 4: 複数の本の管理
-        System.out.println("=== 書籍コレクション管理 ===");
+        IO.println("=== 書籍コレクション管理 ===");
         
         // 同じ著者の本を追加
         Book book4 = new Book();
@@ -83,11 +83,11 @@ public class BookTest {
         Book[] books = {book1, book2, book3, book4};
         
         // 全書籍の情報表示
-        System.out.println("全書籍一覧:");
+        IO.println("全書籍一覧:");
         for (int i = 0; i < books.length; i++) {
-            System.out.println((i + 1) + ". " + books[i].toShortString());
+            IO.println((i + 1) + ". " + books[i].toShortString());
         }
-        System.out.println();
+        IO.println();
         
         // 最高価格と最低価格の本を見つける
         Book mostExpensive = books[0];
@@ -102,22 +102,22 @@ public class BookTest {
             }
         }
         
-        System.out.println("最高価格の本: " + mostExpensive.toShortString());
-        System.out.println("最低価格の本: " + cheapest.toShortString());
-        System.out.println();
+        IO.println("最高価格の本: " + mostExpensive.toShortString());
+        IO.println("最低価格の本: " + cheapest.toShortString());
+        IO.println();
         
         // 同じ著者の本を検索
-        System.out.println("=== 著者別検索 ===");
-        System.out.println(book1.author + " の著作:");
+        IO.println("=== 著者別検索 ===");
+        IO.println(book1.author + " の著作:");
         for (Book book : books) {
             if (book1.isSameAuthor(book)) {
-                System.out.println("- " + book.title);
+                IO.println("- " + book.title);
             }
         }
-        System.out.println();
+        IO.println();
         
         // 解答例 5: 統計情報の計算
-        System.out.println("=== 統計情報 ===");
+        IO.println("=== 統計情報 ===");
         
         // 合計価格と平均価格
         int totalPrice = 0;
@@ -131,15 +131,15 @@ public class BookTest {
         double averagePrice = (double) totalPrice / books.length;
         double averageTaxIncluded = (double) totalTaxIncluded / books.length;
         
-        System.out.println("総書籍数: " + books.length + "冊");
-        System.out.println("合計価格: " + String.format("%,d", totalPrice) + "円");
-        System.out.println("合計税込価格: " + String.format("%,d", totalTaxIncluded) + "円");
-        System.out.println("平均価格: " + String.format("%.0f", averagePrice) + "円");
-        System.out.println("平均税込価格: " + String.format("%.0f", averageTaxIncluded) + "円");
+        IO.println("総書籍数: " + books.length + "冊");
+        IO.println("合計価格: " + String.format("%,d", totalPrice) + "円");
+        IO.println("合計税込価格: " + String.format("%,d", totalTaxIncluded) + "円");
+        IO.println("平均価格: " + String.format("%.0f", averagePrice) + "円");
+        IO.println("平均税込価格: " + String.format("%.0f", averageTaxIncluded) + "円");
         
         // 価格帯別分類
-        System.out.println();
-        System.out.println("価格帯別分類:");
+        IO.println();
+        IO.println("価格帯別分類:");
         int lowCount = 0, midCount = 0, highCount = 0;
         
         for (Book book : books) {
@@ -157,20 +157,20 @@ public class BookTest {
             }
         }
         
-        System.out.println("低価格帯（1000円未満）: " + lowCount + "冊");
-        System.out.println("中価格帯（1000-3000円）: " + midCount + "冊");
-        System.out.println("高価格帯（3000円以上）: " + highCount + "冊");
+        IO.println("低価格帯（1000円未満）: " + lowCount + "冊");
+        IO.println("中価格帯（1000-3000円）: " + midCount + "冊");
+        IO.println("高価格帯（3000円以上）: " + highCount + "冊");
         
         // 解答例 6: ISBN生成テスト
-        System.out.println();
-        System.out.println("=== ISBN生成テスト ===");
+        IO.println();
+        IO.println("=== ISBN生成テスト ===");
         for (Book book : books) {
-            System.out.println(book.title + ": " + book.generateSimpleISBN());
+            IO.println(book.title + ": " + book.generateSimpleISBN());
         }
         
         // 解答例 7: エラーケースのテスト
-        System.out.println();
-        System.out.println("=== エラーケーステスト ===");
+        IO.println();
+        IO.println("=== エラーケーステスト ===");
         
         Book invalidBook = new Book();
         invalidBook.setBookInfo("", "", -100);     // 無効な情報
@@ -179,11 +179,11 @@ public class BookTest {
         
         // 未初期化の本との比較
         Book uninitializedBook = new Book();
-        System.out.println("未初期化の本の情報:");
+        IO.println("未初期化の本の情報:");
         uninitializedBook.displayInfo();
         
         boolean sameAuthor = book1.isSameAuthor(uninitializedBook);
-        System.out.println("著者比較結果: " + sameAuthor);
+        IO.println("著者比較結果: " + sameAuthor);
     }
 }
 

@@ -43,7 +43,7 @@ class Student {
             scores.put(subject, score);
             updateGPA();
         } else {
-            System.out.println("エラー: 成績は0-100の範囲で入力してください");
+            IO.println("エラー: 成績は0-100の範囲で入力してください");
         }
     }
     
@@ -52,7 +52,7 @@ class Student {
      */
     public void addScores(String[] subjects, int[] scoreValues) {
         if (subjects.length != scoreValues.length) {
-            System.out.println("エラー: 科目数と成績数が一致しません");
+            IO.println("エラー: 科目数と成績数が一致しません");
             return;
         }
         
@@ -187,28 +187,28 @@ class Student {
      * 学生の成績レポートを表示します
      */
     public void displayReport() {
-        System.out.println("学生: " + name + " (" + studentId + ")");
-        System.out.println("科目別成績:");
+        IO.println("学生: " + name + " (" + studentId + ")");
+        IO.println("科目別成績:");
         
         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
             String subject = entry.getKey();
             int score = entry.getValue();
             String grade = getGradeFromScore(score);
-            System.out.printf("- %s: %d点 (%s)%n", subject, score, grade);
+            IO.println("- %s: %d点 (%s)".formatted(subject, score, grade));
         }
         
-        System.out.printf("平均点: %.1f点 (%s)%n", getAverage(), getGrade());
-        System.out.printf("GPA: %.2f%n", gpa);
-        System.out.printf("履修科目: %d科目 (合格: %d科目)%n", 
-                         getSubjectCount(), getPassedSubjectCount());
-        System.out.println();
+        IO.println("平均点: %.1f点 (%s)".formatted(getAverage(), getGrade()));
+        IO.println("GPA: %.2f".formatted(gpa));
+        IO.println("履修科目: %d科目 (合格: %d科目)".formatted(
+                         getSubjectCount(), getPassedSubjectCount()));
+        IO.println();
     }
     
     /**
      * 詳細な学習分析を表示します
      */
     public void displayDetailedAnalysis() {
-        System.out.println("=== 詳細学習分析: " + name + " ===");
+        IO.println("=== 詳細学習分析: " + name + " ===");
         
         // 成績分布
         int[] gradeDistribution = new int[5]; // A, B, C, D, F
@@ -223,25 +223,25 @@ class Student {
             }
         }
         
-        System.out.println("成績分布:");
+        IO.println("成績分布:");
         String[] gradeLabels = {"A", "B", "C", "D", "F"};
         for (int i = 0; i < gradeLabels.length; i++) {
             if (gradeDistribution[i] > 0) {
-                System.out.printf("  %s: %d科目%n", gradeLabels[i], gradeDistribution[i]);
+                IO.println("  %s: %d科目".formatted(gradeLabels[i], gradeDistribution[i]));
             }
         }
         
         // 強み・弱み分析
-        System.out.println("\n学習分析:");
+        IO.println("\n学習分析:");
         double avg = getAverage();
         if (avg >= 85) {
-            System.out.println("  優秀な成績です！この調子で頑張ってください。");
+            IO.println("  優秀な成績です！この調子で頑張ってください。");
         } else if (avg >= 75) {
-            System.out.println("  良好な成績です。更なる向上を目指しましょう。");
+            IO.println("  良好な成績です。更なる向上を目指しましょう。");
         } else if (avg >= 65) {
-            System.out.println("  平均的な成績です。苦手分野の克服に取り組みましょう。");
+            IO.println("  平均的な成績です。苦手分野の克服に取り組みましょう。");
         } else {
-            System.out.println("  成績向上が必要です。計画的な学習をお勧めします。");
+            IO.println("  成績向上が必要です。計画的な学習をお勧めします。");
         }
         
         // 最高・最低科目
@@ -262,11 +262,11 @@ class Student {
         }
         
         if (!bestSubject.isEmpty()) {
-            System.out.printf("  得意科目: %s (%d点)%n", bestSubject, maxScore);
-            System.out.printf("  要改善科目: %s (%d点)%n", worstSubject, minScore);
+            IO.println("  得意科目: %s (%d点)".formatted(bestSubject, maxScore));
+            IO.println("  要改善科目: %s (%d点)".formatted(worstSubject, minScore));
         }
         
-        System.out.println();
+        IO.println();
     }
     
     // ゲッターメソッド
@@ -305,18 +305,18 @@ class GradeBook {
      */
     public void addStudent(Student student) {
         students.add(student);
-        System.out.println("✓ 学生ID: " + student.getStudentId() + ", 名前: " + student.getName());
+        IO.println("✓ 学生ID: " + student.getStudentId() + ", 名前: " + student.getName());
     }
     
     /**
      * 複数の学生を一括追加します
      */
     public void addStudents(Student[] newStudents) {
-        System.out.println("学生を登録しています...");
+        IO.println("学生を登録しています...");
         for (Student student : newStudents) {
             addStudent(student);
         }
-        System.out.println();
+        IO.println();
     }
     
     /**
@@ -424,8 +424,8 @@ class GradeBook {
      * 個人成績レポートを表示します
      */
     public void displayIndividualReports() {
-        System.out.println("=== 個人成績レポート ===");
-        System.out.println();
+        IO.println("=== 個人成績レポート ===");
+        IO.println();
         
         for (Student student : students) {
             student.displayReport();
@@ -436,41 +436,41 @@ class GradeBook {
      * クラス統計を表示します
      */
     public void displayClassStatistics() {
-        System.out.println("=== クラス統計 ===");
-        System.out.println("クラス名: " + className);
-        System.out.println("登録学生数: " + students.size() + "名");
-        System.out.printf("クラス平均: %.1f点%n", getClassAverage());
+        IO.println("=== クラス統計 ===");
+        IO.println("クラス名: " + className);
+        IO.println("登録学生数: " + students.size() + "名");
+        IO.println("クラス平均: %.1f点".formatted(getClassAverage()));
         
         // 科目別平均
-        System.out.println("\n科目別平均:");
+        IO.println("\n科目別平均:");
         for (String subject : subjects) {
             double avg = getSubjectAverage(subject);
-            System.out.printf("- %s: %.1f点%n", subject, avg);
+            IO.println("- %s: %.1f点".formatted(subject, avg));
         }
         
-        System.out.println("\n最優秀者: " + getTopPerformer());
+        IO.println("\n最優秀者: " + getTopPerformer());
         
         // 成績分布
         Map<String, Integer> distribution = getGradeDistribution();
-        System.out.println("\n成績分布:");
+        IO.println("\n成績分布:");
         for (Map.Entry<String, Integer> entry : distribution.entrySet()) {
             String grade = entry.getKey();
             int count = entry.getValue();
             double percentage = students.size() > 0 ? (double) count / students.size() * 100 : 0;
-            System.out.printf("%s: %d名 (%.1f%%)%n", grade, count, percentage);
+            IO.println("%s: %d名 (%.1f%%)".formatted(grade, count, percentage));
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 詳細なクラス分析レポートを表示します
      */
     public void displayDetailedAnalysis() {
-        System.out.println("=== 詳細クラス分析 ===");
+        IO.println("=== 詳細クラス分析 ===");
         
         // 科目別統計
-        System.out.println("科目別詳細統計:");
+        IO.println("科目別詳細統計:");
         for (String subject : subjects) {
             int max = 0, min = 100, sum = 0, count = 0;
             
@@ -486,8 +486,8 @@ class GradeBook {
             
             if (count > 0) {
                 double avg = (double) sum / count;
-                System.out.printf("  %s: 平均%.1f点 (最高%d点, 最低%d点)%n", 
-                                 subject, avg, max, min);
+                IO.println("  %s: 平均%.1f点 (最高%d点, 最低%d点)".formatted(
+                                 subject, avg, max, min));
             }
         }
         
@@ -497,7 +497,7 @@ class GradeBook {
             totalGPA += student.getGPA();
         }
         double avgGPA = students.size() > 0 ? totalGPA / students.size() : 0.0;
-        System.out.printf("\nクラス平均GPA: %.2f%n", avgGPA);
+        IO.println("\nクラス平均GPA: %.2f".formatted(avgGPA));
         
         // 履修状況
         int totalSubjects = 0;
@@ -509,9 +509,9 @@ class GradeBook {
         }
         
         double passRate = totalSubjects > 0 ? (double) passedSubjects / totalSubjects * 100 : 0;
-        System.out.printf("総合合格率: %.1f%% (%d/%d科目)%n", passRate, passedSubjects, totalSubjects);
+        IO.println("総合合格率: %.1f%% (%d/%d科目)".formatted(passRate, passedSubjects, totalSubjects));
         
-        System.out.println();
+        IO.println();
     }
     
     // ゲッターメソッド
@@ -528,10 +528,10 @@ public class GradeManagement {
         // 成績簿を作成
         GradeBook gradeBook = new GradeBook("プログラミング基礎クラス");
         
-        System.out.println("=== 成績管理システム ===");
-        System.out.println();
-        System.out.println(gradeBook.getClassName());
-        System.out.println();
+        IO.println("=== 成績管理システム ===");
+        IO.println();
+        IO.println(gradeBook.getClassName());
+        IO.println();
         
         // 学生を作成して追加
         Student[] students = {
@@ -545,19 +545,19 @@ public class GradeManagement {
         gradeBook.addStudents(students);
         
         // 成績を登録
-        System.out.println("成績を登録しています...");
+        IO.println("成績を登録しています...");
         students[0].addScores(new String[]{"数学", "英語", "理科"}, new int[]{85, 78, 92});
         students[1].addScores(new String[]{"数学", "英語", "理科"}, new int[]{94, 89, 87});
         students[2].addScores(new String[]{"数学", "英語", "理科"}, new int[]{76, 82, 79});
         students[3].addScores(new String[]{"数学", "英語", "理科"}, new int[]{88, 91, 85});
         students[4].addScores(new String[]{"数学", "英語", "理科"}, new int[]{72, 68, 74});
         
-        System.out.println("山田太郎: 数学=85, 英語=78, 理科=92");
-        System.out.println("佐藤花子: 数学=94, 英語=89, 理科=87");
-        System.out.println("田中次郎: 数学=76, 英語=82, 理科=79");
-        System.out.println("鈴木美咲: 数学=88, 英語=91, 理科=85");
-        System.out.println("高橋研二: 数学=72, 英語=68, 理科=74");
-        System.out.println();
+        IO.println("山田太郎: 数学=85, 英語=78, 理科=92");
+        IO.println("佐藤花子: 数学=94, 英語=89, 理科=87");
+        IO.println("田中次郎: 数学=76, 英語=82, 理科=79");
+        IO.println("鈴木美咲: 数学=88, 英語=91, 理科=85");
+        IO.println("高橋研二: 数学=72, 英語=68, 理科=74");
+        IO.println();
         
         // 個人成績レポート表示
         gradeBook.displayIndividualReports();
@@ -569,13 +569,13 @@ public class GradeManagement {
         gradeBook.displayDetailedAnalysis();
         
         // 個別の詳細分析例
-        System.out.println("=== 個別詳細分析例 ===");
+        IO.println("=== 個別詳細分析例 ===");
         Student topStudent = gradeBook.findStudentByName("佐藤花子");
         if (topStudent != null) {
             topStudent.displayDetailedAnalysis();
         }
         
-        System.out.println("成績管理システムのデモンストレーションを終了します。");
+        IO.println("成績管理システムのデモンストレーションを終了します。");
     }
 }
 

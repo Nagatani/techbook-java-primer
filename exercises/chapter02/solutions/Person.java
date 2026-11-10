@@ -19,7 +19,7 @@ public class Person {
      * 自己紹介を行うメソッド
      */
     void introduce() {
-        System.out.println("私の名前は" + name + "です。年齢は" + age + "歳です。");
+        IO.println("私の名前は" + name + "です。年齢は" + age + "歳です。");
     }
     
     /**
@@ -27,7 +27,7 @@ public class Person {
      */
     void birthday() {
         age++;
-        System.out.println("誕生日おめでとう！");
+        IO.println("誕生日おめでとう！");
     }
     
     // 解答例 2: より詳細な実装
@@ -36,17 +36,17 @@ public class Person {
      * 詳細な自己紹介を行うメソッド
      */
     void detailedIntroduce() {
-        System.out.println("=== 自己紹介 ===");
-        System.out.println("名前: " + name);
-        System.out.println("年齢: " + age + "歳");
+        IO.println("=== 自己紹介 ===");
+        IO.println("名前: " + name);
+        IO.println("年齢: " + age + "歳");
         
         // 年齢による分類
         if (age < 20) {
-            System.out.println("分類: 未成年");
+            IO.println("分類: 未成年");
         } else if (age < 65) {
-            System.out.println("分類: 成人");
+            IO.println("分類: 成人");
         } else {
-            System.out.println("分類: 高齢者");
+            IO.println("分類: 高齢者");
         }
     }
     
@@ -57,9 +57,9 @@ public class Person {
     void ageYears(int years) {
         if (years > 0) {
             age += years;
-            System.out.println(years + "年経過しました。現在" + age + "歳です。");
+            IO.println(years + "年経過しました。現在" + age + "歳です。");
         } else {
-            System.out.println("正の年数を指定してください。");
+            IO.println("正の年数を指定してください。");
         }
     }
     
@@ -67,7 +67,7 @@ public class Person {
      * 挨拶をするメソッド
      */
     void greet() {
-        System.out.println("こんにちは！" + name + "です。よろしくお願いします。");
+        IO.println("こんにちは！" + name + "です。よろしくお願いします。");
     }
     
     /**
@@ -79,9 +79,9 @@ public class Person {
         if (newName != null && !newName.isEmpty() && newAge >= 0) {
             name = newName;
             age = newAge;
-            System.out.println("情報を更新しました: " + name + ", " + age + "歳");
+            IO.println("情報を更新しました: " + name + ", " + age + "歳");
         } else {
-            System.out.println("無効な情報です。更新できませんでした。");
+            IO.println("無効な情報です。更新できませんでした。");
         }
     }
     
@@ -89,8 +89,8 @@ public class Person {
      * 現在の情報を表示するメソッド
      */
     void displayInfo() {
-        System.out.println("名前: " + (name != null ? name : "未設定"));
-        System.out.println("年齢: " + age + "歳");
+        IO.println("名前: " + (name != null ? name : "未設定"));
+        IO.println("年齢: " + age + "歳");
     }
     
     /**

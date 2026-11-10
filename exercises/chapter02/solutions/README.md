@@ -173,7 +173,7 @@ double calculateArea() {
 
 // 2. 表示メソッド（戻り値なし）
 void displayInfo() {
-    System.out.println("半径: " + radius);
+    IO.println("半径: " + radius);
 }
 
 // 3. 判定メソッド（boolean戻り値）
@@ -197,7 +197,7 @@ void setAge(int newAge) {
     if (newAge >= 0 && newAge <= 150) {
         this.age = newAge;
     } else {
-        System.out.println("年齢は0から150の範囲で入力してください");
+        IO.println("年齢は0から150の範囲で入力してください");
     }
 }
 ```
@@ -209,7 +209,7 @@ void setAge(int newAge) {
 ```java
 // デバッグ用メソッドを追加
 void debugInfo() {
-    System.out.println("Debug: name=" + name + ", age=" + age);
+    IO.println("Debug: name=" + name + ", age=" + age);
 }
 ```
 

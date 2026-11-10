@@ -10,7 +10,7 @@
  */
 public class PersonTest {
     public static void main(String[] args) {
-        System.out.println("=== Person クラステスト ===");
+        IO.println("=== Person クラステスト ===");
         
         // 解答例 1: 基本的な使用方法
         Person person1 = new Person();
@@ -21,7 +21,7 @@ public class PersonTest {
         person1.birthday();
         person1.introduce();
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 2: 複数のオブジェクトを作成
         Person person2 = new Person();
@@ -32,86 +32,86 @@ public class PersonTest {
         person3.name = "鈴木一郎";
         person3.age = 30;
         
-        System.out.println("=== 複数人の情報 ===");
+        IO.println("=== 複数人の情報 ===");
         person1.detailedIntroduce();
-        System.out.println();
+        IO.println();
         
         person2.detailedIntroduce();
-        System.out.println();
+        IO.println();
         
         person3.detailedIntroduce();
-        System.out.println();
+        IO.println();
         
         // 解答例 3: メソッドの様々な使い方
-        System.out.println("=== メソッドの活用例 ===");
+        IO.println("=== メソッドの活用例 ===");
         
         // 挨拶
         person1.greet();
         person2.greet();
         person3.greet();
-        System.out.println();
+        IO.println();
         
         // 年齢比較
-        System.out.println("=== 年齢比較 ===");
+        IO.println("=== 年齢比較 ===");
         if (person1.isSameAge(person2)) {
-            System.out.println(person1.name + "と" + person2.name + "は同い年です。");
+            IO.println(person1.name + "と" + person2.name + "は同い年です。");
         } else {
-            System.out.println(person1.name + "と" + person2.name + "は年齢が違います。");
+            IO.println(person1.name + "と" + person2.name + "は年齢が違います。");
         }
         
         if (person3.isOlder(person1)) {
-            System.out.println(person3.name + "は" + person1.name + "より年上です。");
+            IO.println(person3.name + "は" + person1.name + "より年上です。");
         }
         
         if (person2.isOlder(person3)) {
-            System.out.println(person2.name + "は" + person3.name + "より年上です。");
+            IO.println(person2.name + "は" + person3.name + "より年上です。");
         } else {
-            System.out.println(person2.name + "は" + person3.name + "より年下です。");
+            IO.println(person2.name + "は" + person3.name + "より年下です。");
         }
-        System.out.println();
+        IO.println();
         
         // 解答例 4: 情報の更新
-        System.out.println("=== 情報更新テスト ===");
+        IO.println("=== 情報更新テスト ===");
         person1.displayInfo();
         person1.setInfo("田中二郎", 21);
         person1.displayInfo();
-        System.out.println();
+        IO.println();
         
         // 無効な情報での更新テスト
         person1.setInfo("", -5);  // 無効な情報
         person1.setInfo(null, 100);  // 無効な情報
-        System.out.println();
+        IO.println();
         
         // 解答例 5: 年数経過のテスト
-        System.out.println("=== 年数経過テスト ===");
+        IO.println("=== 年数経過テスト ===");
         person2.displayInfo();
         person2.ageYears(5);
         person2.displayInfo();
         person2.ageYears(-3);  // 無効な年数
-        System.out.println();
+        IO.println();
         
         // 解答例 6: 未初期化オブジェクトのテスト
-        System.out.println("=== 未初期化オブジェクトのテスト ===");
+        IO.println("=== 未初期化オブジェクトのテスト ===");
         Person person4 = new Person();
         person4.displayInfo();  // nameはnull、ageは0
         person4.introduce();    // nullが表示される
-        System.out.println();
+        IO.println();
         
         // 部分的に初期化
         person4.name = "山田次郎";
         person4.displayInfo();
         person4.introduce();
-        System.out.println();
+        IO.println();
         
         // 解答例 7: 配列を使った複数オブジェクトの管理
-        System.out.println("=== 配列による複数オブジェクト管理 ===");
+        IO.println("=== 配列による複数オブジェクト管理 ===");
         Person[] people = {person1, person2, person3, person4};
         
-        System.out.println("全員の情報:");
+        IO.println("全員の情報:");
         for (int i = 0; i < people.length; i++) {
-            System.out.println((i + 1) + "番目の人:");
+            IO.println((i + 1) + "番目の人:");
             people[i].displayInfo();
-            System.out.println();
+            IO.println();
         }
         
         // 最年長者を見つける
@@ -121,7 +121,7 @@ public class PersonTest {
                 oldest = people[i];
             }
         }
-        System.out.println("最年長者は " + oldest.name + " さん（" + oldest.age + "歳）です。");
+        IO.println("最年長者は " + oldest.name + " さん（" + oldest.age + "歳）です。");
         
         // 平均年齢を計算
         int totalAge = 0;
@@ -135,7 +135,7 @@ public class PersonTest {
         
         if (validCount > 0) {
             double averageAge = (double) totalAge / validCount;
-            System.out.println("平均年齢: " + String.format("%.1f", averageAge) + "歳");
+            IO.println("平均年齢: " + String.format("%.1f", averageAge) + "歳");
         }
     }
 }

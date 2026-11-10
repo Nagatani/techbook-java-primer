@@ -12,7 +12,7 @@
  */
 public class PersonTest {
     public static void main(String[] args) {
-        System.out.println("=== Person クラステスト ===");
+        IO.println("=== Person クラステスト ===");
         
         // TODO: Personオブジェクトを作成してください
         // Person person = new Person();
