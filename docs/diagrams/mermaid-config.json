@@ -1,6 +1,26 @@
 {
-  "flowchart": { "useMaxWidth": false, "nodeSpacing": 25, "rankSpacing": 35, "padding": 8 },
-  "class": { "useMaxWidth": false, "nodeSpacing": 20, "rankSpacing": 35, "padding": 5 },
-  "sequence": { "useMaxWidth": false, "actorMargin": 20, "width": 120, "diagramMarginX": 10 },
-  "state": { "useMaxWidth": false, "nodeSpacing": 25, "rankSpacing": 35 }
+  "flowchart": {
+    "useMaxWidth": false,
+    "nodeSpacing": 25,
+    "rankSpacing": 35,
+    "padding": 8
+  },
+  "class": {
+    "useMaxWidth": false,
+    "nodeSpacing": 20,
+    "rankSpacing": 35,
+    "padding": 5
+  },
+  "sequence": {
+    "useMaxWidth": false,
+    "actorMargin": 20,
+    "width": 120,
+    "diagramMarginX": 10
+  },
+  "state": {
+    "useMaxWidth": false,
+    "nodeSpacing": 25,
+    "rankSpacing": 35
+  },
+  "themeCSS": ".messageText, .loopText, .labelText, .edgeLabel text, .relationshipLabel, .tick text { paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }"
 }
