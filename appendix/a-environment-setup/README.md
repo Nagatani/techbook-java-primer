@@ -46,9 +46,12 @@ Javaでの開発を始める前に、開発を行う企業やコミュニティ�
 
 本書で使用するJavaのバージョンは、OpenJDKと呼ばれるオープン版のJDKを使用し、以下の開発バージョンを使います。
 
-- `OpenJDK 21.0.6 (Microsoft)`
+- `OpenJDK 25（Microsoft Build of OpenJDK）`
 
 ※本書執筆時点のLTS版（長期サポート対応バージョン）のなかで最も新しいものを使用しています。
+
+本書のサンプルコードは、Java 25で正式に加わった標準入出力の`IO`クラス（`IO.println`、`IO.readln`など）を使います。
+Java 21以前のJDKではコンパイルできないため、必ずJava 25以降のJDKをインストールしてください。
 
 
 ## A.2 SDKMANを使用したバージョン管理
@@ -73,7 +76,7 @@ Javaでの開発を始める前に、開発を行う企業やコミュニティ�
 2. 環境変数の手動設定
    ```bash
    # 毎回手動で変更が必要
-   export JAVA_HOME=/usr/local/java/jdk-21.0.6
+   export JAVA_HOME=/usr/local/java/jdk-25
    export PATH=$JAVA_HOME/bin:$PATH
    ```
 
@@ -88,10 +91,10 @@ SDKMAN!（The Software Development Kit Manager）は、JVM系言語のSDKを管�
 #### 1. 統一されたコマンドインターフェイス
 ```bash
 # JDKのインストールが1コマンドで完了
-sdk install java 21.0.6-ms
+sdk install java 25.0.5.0+2-ms
 
 # バージョン切り替えも簡単
-sdk use java 17.0.9-tem
+sdk use java 21.0.13.0+9-tem
 ```
 
 #### 2. 複数バージョンの共存管理
@@ -159,7 +162,7 @@ SDKMANは次のようなしくみで動作します。
     - $ `source "$HOME/.sdkman/bin/sdkman-init.sh"`
 4. 以下のコマンドで正しくインストールされたかを確認する
     - $ `sdk version`
-    - ```SDKMAN!```<br>```script: 5.19.0```<br>```native: 0.7.4 (macos aarch64)```のようなバージョン情報が出力されていればOKである
+    - ```SDKMAN!```<br>```core:   5.24.0```<br>```native: 0.8.0 (macos aarch64)```のようなバージョン情報が出力されていればOKである（数字はインストールした時期によって異なる）
 5. 使用しているターミナルソフトウェアに合わせて環境変数を設定する
 
 macOSのターミナルソフトウェアとして、zshを使用している場合は以下のコマンドを使用します（`$`は入力しません）
@@ -190,60 +193,75 @@ $ sdk selfupdate force
 $ sdk list java
 ```
 
-このコマンドを実行すると、次のような一覧が表示されます。
+このコマンドを実行すると、次のような一覧が表示されます（2026年11月時点の表示から一部を抜粋）。
 
 ```
 ================================================================================
 Available Java Versions for macOS ARM 64bit
 ================================================================================
- Vendor        | Use | Version      | Dist    | Status     | Identifier
+ Vendor         | Use | Version            | Identifier
 --------------------------------------------------------------------------------
- Corretto      |     | 21.0.5       | amzn    |            | 21.0.5-amzn
- Corretto      |     | 17.0.13      | amzn    |            | 17.0.13-amzn
- Corretto      |     | 11.0.25      | amzn    |            | 11.0.25-amzn
- Gluon         |     | 22.1.0.1.r17 | gln     |            | 22.1.0.1.r17-gln
- GraalVM CE    |     | 21.0.5       | graalce |            | 21.0.5-graalce
- Java.net      |     | 24.ea.2      | open    |            | 24.ea.2-open
- Java.net      |     | 23           | open    |            | 23-open
- Microsoft     |     | 21.0.6       | ms      |            | 21.0.6-ms      
- Microsoft     |     | 17.0.13      | ms      |            | 17.0.13-ms
- Oracle        |     | 23           | oracle  |            | 23-oracle
- Oracle        |     | 21.0.5       | oracle  |            | 21.0.5-oracle
- Temurin       |     | 21.0.5       | tem     |            | 21.0.5-tem
+ Corretto       |     | 27.0.1.0+10        | 27.0.1.0+10-amzn
+                |     | 25.0.5.0+9         | 25.0.5.0+9-amzn
+                |     | 21.0.13.0+10       | 21.0.13.0+10-amzn
+ Microsoft      |     | 25.0.5.0+2         | 25.0.5.0+2-ms
+                |     | 21.0.13.0+2        | 21.0.13.0+2-ms
+                |     | 17.0.21.0+2        | 17.0.21.0+2-ms
+                |     | 11.0.33.0          | 11.0.33.0-ms
+ Oracle         |     | 27.0.0             | 27.0.0-oracle
+                |     | 25.0.5.0           | 25.0.5.0-oracle
+ Temurin        |     | 27.0.0.0+35        | 27.0.0.0+35-tem
+                |     | 25.0.5.0+8         | 25.0.5.0+8-tem
+                |     | 21.0.13.0+9        | 21.0.13.0+9-tem
+================================================================================
+ > in use   * installed   + local only
+--------------------------------------------------------------------------------
+ $ sdk install java <Identifier>    install a specific version
+ $ sdk install java                 install the default: 25.0.5.0+8-tem
+ $ sdk install java [TAB]           complete an available identifier
 ================================================================================
 ```
 
 #### 一覧の見方
 
-- Vendor: JDKの提供元（Microsoft、Oracle、Amazon等）
-- Use: 現在使用中のバージョン（`>>>`マークが付く）
+- Vendor: JDKの提供元（Microsoft、Oracle、Amazon等）。同じ提供元の2行目以降は空欄になる
+- Use: 使用状況を表す記号
+    + `>`は現在使用中、`*`はインストール済み、`+`はSDKMANの外から登録したもの
 - Version: JDKのバージョン番号
-- Dist: ディストリビューションの略称
-- Status: インストール状態（installedが表示される）
 - Identifier: インストール時に使用する識別子
 
 #### JDKのインストール
 
-本書で使用するMicrosoft版のOpenJDK 21.0.6をインストールします。
+本書で使用するMicrosoft版のOpenJDK 25をインストールします。
+一覧のMicrosoftの行から、`25.`で始まる識別子を選びます（2026年11月時点では`25.0.5.0+2-ms`）。
 
 ```bash
-$ sdk install java 21.0.6-ms
+$ sdk install java 25.0.5.0+2-ms
 ```
+
+識別子の後半（`25.0.5.0+2`の部分）は、セキュリティ修正などの更新があるたびに変わります。
+一覧に表示される識別子が本書と異なる場合は、Microsoftの行にある`25.`で始まる最新のものを指定してください。
+以降の説明の`25.0.5.0+2-ms`も、インストールした識別子に読み替えてください。
 
 ##### インストール中の表示例
 ```
-Downloading: java 21.0.6-ms
+Downloading: java 25.0.5.0+2-ms
 
 In progress...
-############################# 100.0%
+######################################################################## 100.0%
 
-Installing: java 21.0.6-ms
+Repackaging Java 25.0.5.0+2-ms...
+
+Done repackaging...
+
+Installing: java 25.0.5.0+2-ms
 Done installing!
 
-Do you want java 21.0.6-ms to be set as default? (Y/n): Y
-
-Setting java 21.0.6-ms as default.
+Setting java 25.0.5.0+2-ms as default.
 ```
+
+すでにほかのJDKをインストールしている場合は、デフォルトにするかどうかを聞かれます。
+本書の内容を学習するあいだは`Y`を入力して、Java 25をデフォルトにしてください。
 
 #### インストールの確認
 
@@ -256,10 +274,13 @@ $ java -version
 次のようなバージョン情報が出力されていればOKです。
 
 ```
-openjdk 21.0.6 2025-01-21 LTS
-OpenJDK Runtime Environment Microsoft-10800196 (build 21.0.6+7-LTS)
-OpenJDK 64-Bit Server VM Microsoft-10800196 (build 21.0.6+7-LTS, mixed mode, sharing)
+openjdk version "25.0.5.0.2" 2026-10-22 LTS
+OpenJDK Runtime Environment Microsoft-15804666 (build 25.0.5.0.2+1-LTS)
+OpenJDK 64-Bit Server VM Microsoft-15804666 (build 25.0.5.0.2+1-LTS, mixed mode, sharing)
 ```
+
+1行目の`"25.`で始まるバージョン番号が表示されていることを確認します。
+`21`などほかのバージョンが表示される場合は、「バージョンの切り替え」の`sdk default`でJava 25をデフォルトにしてください。
 
 ### SDKMANの実践的な使い方
 
@@ -269,46 +290,49 @@ OpenJDK 64-Bit Server VM Microsoft-10800196 (build 21.0.6+7-LTS, mixed mode, sha
 
 ```bash
 # 別のバージョンをインストール
-$ sdk install java 17.0.13-ms
+$ sdk install java 21.0.13.0+2-ms
 
-# インストール済みのバージョンを確認
-$ sdk list java installed
+# インストール済みのバージョンを確認（Use欄に*が付く）
+$ sdk list java
 ```
 
 #### バージョンの切り替え
 
 ```bash
 # 一時的な切り替え（現在のターミナルセッションのみ）
-$ sdk use java 17.0.13-ms
-Using java version 17.0.13-ms in this shell.
+$ sdk use java 21.0.13.0+2-ms
+Using java version 21.0.13.0+2-ms in this shell.
 
 # デフォルトバージョンの変更（永続的）
-$ sdk default java 21.0.6-ms
-Default java version set to 21.0.6-ms
+$ sdk default java 25.0.5.0+2-ms
+✓ Set java 25.0.5.0+2-ms as the default version
 
 # 現在のバージョンを確認
 $ sdk current java
-Using java version 21.0.6-ms
+25.0.5.0+2-ms
 ```
 
 #### プロジェクトごとの自動切り替え
 
-##### プロジェクトのルートディレクトリに`.sdkmanrc`ファイルを作成すると、ディレクトリ移動時に自動的にバージョンが切り替わります
+プロジェクトのルートディレクトリに`.sdkmanrc`ファイルを作成し、`sdk env`を実行すると、そのファイルに書いたバージョンに切り替わります。
+`~/.sdkman/etc/config`に`sdkman_auto_env=true`を書いておくと、ディレクトリに移動したときに自動で切り替わります。
 
 ```bash
 # .sdkmanrcファイルの作成
-$ echo "java=17.0.13-ms" > .sdkmanrc
-
-# ディレクトリに入ると自動切り替え
 $ cd my-project
-Using java version 17.0.13-ms in this shell.
+$ echo "java=21.0.13.0+2-ms" > .sdkmanrc
+
+# .sdkmanrcに書いたバージョンに切り替える
+$ sdk env
+Using java version 21.0.13.0+2-ms in this shell.
 ```
 
 #### SDKMANのそのほかの便利なコマンド
 
 ```bash
 # 古いバージョンの削除
-$ sdk uninstall java 11.0.25-amzn
+$ sdk uninstall java 21.0.13.0+2-ms
+✓ Uninstalled java 21.0.13.0+2-ms
 
 # SDKMANのアップデート
 $ sdk selfupdate
@@ -355,7 +379,9 @@ IDEの利用に関しては、IntelliJ IDEA Community Editionがお勧めです�
 1. [JetBrains公式サイト](https://www.jetbrains.com/idea/download/)にアクセス
 2. Community Editionを選択してダウンロード
 3. ダウンロードしたインストーラを実行
-4. 初回起動時の設定で、インストール済みのJDKを指定
+4. 初回起動時の設定で、インストール済みのJDK（Java 25）を指定
+
+Java 25の文法と`IO`クラスを扱うには、Java 25に対応した版（2025.2以降）のIntelliJ IDEAを使ってください。
 
 ### Visual Studio Codeでの開発環境構築
 
@@ -542,15 +568,15 @@ IntelliJ IDEAを起動後、以下の手順でJDKを設定：
 
 1. File → Project Structure → Project
 2. Project SDKで「Add SDK」→「JDK」を選択
-3. `~/.sdkman/candidates/java/21.0.6-ms`を選択
+3. `~/.sdkman/candidates/java/25.0.5.0+2-ms`を選択
 
 ## A.6 環境構築チェックリスト
 
 ### 環境構築が正しく完了したことを確認するためのチェックリストです
 
 - [ ] JDKがインストールされている
-  - `java -version`でバージョンが表示される
-  - `javac -version`でバージョンが表示される
+  - `java -version`で25で始まるバージョンが表示される
+  - `javac -version`で25で始まるバージョンが表示される
 - [ ] SDKMANが正しく動作している
   - `sdk version`でSDKMANのバージョンが表示される
 - [ ] IDEがインストールされている
@@ -664,13 +690,14 @@ Windows環境では、WSL2を使用することで、Linux環境と同様の開�
 WSL2を使用しない場合は、以下の手順で環境を構築します。
 
 1. **JDKの直接インストール**
-   - [Microsoft Build of OpenJDK](https://www.microsoft.com/openjdk)からダウンロード
-   - インストーラを実行
+   - [Microsoft Build of OpenJDK](https://www.microsoft.com/openjdk)から、OpenJDK 25のWindows用インストーラ（.msi）をダウンロード
+   - インストーラを実行し、機能の選択で「Set JAVA_HOME variable」と「Add to PATH」を有効にする
 
-2. **環境変数の設定**
-   - システムの詳細設定 → 環境変数
-   - JAVA_HOMEを設定: `C:\Program Files\Microsoft\jdk-21.0.6`
+2. **環境変数の確認**
+   - インストーラで環境変数を設定しなかった場合は、システムの詳細設定 → 環境変数で設定する
+   - JAVA_HOMEを設定: `C:\Program Files\Microsoft\`の下にある`jdk-25`で始まるフォルダ
    - Pathに追加: `%JAVA_HOME%\bin`
+   - 新しく開いたコマンドプロンプトで`java -version`を実行し、25で始まるバージョンが表示されることを確かめる
 
 3. **Git Bashの使用（オプション）**
    - [Git for Windows](https://gitforwindows.org/)をインストール
@@ -690,7 +717,7 @@ curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # JDKのインストール
-sdk install java 21.0.6-ms
+sdk install java 25.0.5.0+2-ms
 ```
 
 #### Red Hat/CentOS/Fedora系
@@ -704,7 +731,7 @@ curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # JDKのインストール
-sdk install java 21.0.6-ms
+sdk install java 25.0.5.0+2-ms
 ```
 
 ### macOS固有の設定
@@ -736,17 +763,17 @@ xcode-select --install
 
 ```bash
 # 複数バージョンのインストール
-sdk install java 21.0.6-ms
-sdk install java 17.0.13-ms
-sdk install java 11.0.25-amzn
+sdk install java 25.0.5.0+2-ms
+sdk install java 21.0.13.0+2-ms
+sdk install java 17.0.21.0+10-amzn
 
 # プロジェクトAで使用
 cd project-a
-sdk use java 17.0.13-ms
+sdk use java 21.0.13.0+2-ms
 
 # プロジェクトBで使用
 cd project-b
-sdk use java 21.0.6-ms
+sdk use java 25.0.5.0+2-ms
 ```
 
 ### Q2: IDEとコマンドラインで異なるJDKバージョンが使用される
@@ -810,7 +837,7 @@ sdkman_proxy_password=mypass  # 認証が必要な場合
 ### Dockerfileの例
 
 ```dockerfile
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:25-jdk
 
 # 作業ディレクトリの設定
 WORKDIR /app
@@ -825,8 +852,8 @@ RUN apt-get update && apt-get install -y \
 # アプリケーションのコピー
 COPY . /app
 
-# コンパイル
-RUN javac -d bin src/**/*.java
+# コンパイル（src以下のすべての.javaファイル）
+RUN javac -d bin $(find src -name "*.java")
 
 # 実行
 CMD ["java", "-cp", "bin", "com.example.Main"]
@@ -882,8 +909,8 @@ else
 fi
 
 # JDKのインストール
-echo "JDK 21.0.6 (Microsoft)をインストールしています..."
-sdk install java 21.0.6-ms
+echo "JDK 25 (Microsoft)をインストールしています..."
+sdk install java 25.0.5.0+2-ms
 
 # 環境変数の設定
 if [ -f "$HOME/.zshrc" ]; then
@@ -909,21 +936,16 @@ echo "source $SHELL_RC"
 ```powershell
 Write-Host "Java開発環境のセットアップを開始します..." -ForegroundColor Green
 
-# JDKのダウンロードとインストール
-$jdkUrl = "https://aka.ms/download-jdk/microsoft-jdk-21.0.6-windows-x64.msi"
-$jdkInstaller = "$env:TEMP\microsoft-jdk-21.0.6.msi"
+# JDKのダウンロードとインストール（OpenJDK 25の最新の更新版）
+$jdkUrl = "https://aka.ms/download-jdk/microsoft-jdk-25-windows-x64.msi"
+$jdkInstaller = "$env:TEMP\microsoft-jdk-25.msi"
 
 Write-Host "JDKをダウンロードしています..."
 Invoke-WebRequest -Uri $jdkUrl -OutFile $jdkInstaller
 
+# FeatureEnvironmentでPathに、FeatureJavaHomeでJAVA_HOMEに設定する（管理者権限で実行する）
 Write-Host "JDKをインストールしています..."
-Start-Process -FilePath msiexec.exe -ArgumentList "/i $jdkInstaller /quiet" -Wait
-
-# 環境変数の設定
-$javaHome = "C:\Program Files\Microsoft\jdk-21.0.6"
-[Environment]::SetEnvironmentVariable("JAVA_HOME", $javaHome, "User")
-$path = [Environment]::GetEnvironmentVariable("Path", "User")
-[Environment]::SetEnvironmentVariable("Path", "$path;$javaHome\bin", "User")
+Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$jdkInstaller`" ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJavaHome /quiet" -Wait
 
 Write-Host "セットアップが完了しました！" -ForegroundColor Green
 Write-Host "新しいコマンドプロンプトまたはPowerShellを開いて、java -versionを実行してください。"
