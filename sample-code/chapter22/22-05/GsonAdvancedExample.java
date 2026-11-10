@@ -15,7 +15,7 @@ public class GsonAdvancedExample {
         // 2. オブジェクトのシリアライズ
         Task task = new Task("買い物", false);
         String json = gson.toJson(task);
-        System.out.println("Pretty JSON:\n" + json);
+        IO.println("Pretty JSON:\n" + json);
         
         // 3. コレクションの処理
         List<Task> tasks = Arrays.asList(
@@ -25,7 +25,7 @@ public class GsonAdvancedExample {
         );
         
         String tasksJson = gson.toJson(tasks);
-        System.out.println("\nTasks JSON:\n" + tasksJson);
+        IO.println("\nTasks JSON:\n" + tasksJson);
         
         // 4. 複雑なデシリアライズ
         String complexJson = """
@@ -38,6 +38,6 @@ public class GsonAdvancedExample {
             """;
         
         Task loadedTask = gson.fromJson(complexJson, Task.class);
-        System.out.println("\nLoaded Task: " + loadedTask.getTitle());
+        IO.println("\nLoaded Task: " + loadedTask.getTitle());
     }
 }

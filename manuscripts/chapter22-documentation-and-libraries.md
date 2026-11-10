@@ -294,7 +294,7 @@ public class GsonAdvancedExample {
         // 2. オブジェクトのシリアライズ
         Task task = new Task("買い物", false);
         String json = gson.toJson(task);
-        System.out.println("Pretty JSON:\n" + json);
+        IO.println("Pretty JSON:\n" + json);
         // ...
         // 4. 複雑なデシリアライズ
         String complexJson = """
@@ -307,7 +307,7 @@ public class GsonAdvancedExample {
             """;
         
         Task loadedTask = gson.fromJson(complexJson, Task.class);
-        System.out.println("\nLoaded Task: " + loadedTask.getTitle());
+        IO.println("\nLoaded Task: " + loadedTask.getTitle());
     }
 }
 ```
@@ -409,16 +409,16 @@ public class JacksonExample {
         // 1. オブジェクトからJSONへ
         Product product = new Product(1, "ノートPC", 98000.0);
         String json = mapper.writeValueAsString(product);
-        System.out.println("JSON: " + json);
+        IO.println("JSON: " + json);
         
         // 2. 整形されたJSON出力
         String prettyJson = mapper.writerWithDefaultPrettyPrinter()
             .writeValueAsString(product);
-        System.out.println("\nPretty JSON:\n" + prettyJson);
+        IO.println("\nPretty JSON:\n" + prettyJson);
         
         // ...
         Product loaded = mapper.readValue(jsonInput, Product.class);
-        System.out.println("\nLoaded: " + loaded.getName());
+        IO.println("\nLoaded: " + loaded.getName());
         // ...
     }
 }
@@ -477,22 +477,22 @@ public class CommonsLangExample {
     public static void main(String[] args) {
         // 1. StringUtils - 文字列操作
         String text = "  Hello World  ";
-        System.out.println("Original: '" + text + "'");
-        System.out.println("Trimmed: '" + StringUtils.trim(text) + "'");
-        System.out.println("Is blank?: " + StringUtils.isBlank("   "));
-        System.out.println("Reverse: " + StringUtils.reverse("Hello"));
-        System.out.println("Capitalize: " + StringUtils.capitalize("java"));
+        IO.println("Original: '" + text + "'");
+        IO.println("Trimmed: '" + StringUtils.trim(text) + "'");
+        IO.println("Is blank?: " + StringUtils.isBlank("   "));
+        IO.println("Reverse: " + StringUtils.reverse("Hello"));
+        IO.println("Capitalize: " + StringUtils.capitalize("java"));
         
         // 空文字列の安全な処理
         String nullStr = null;
-        System.out.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
+        IO.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
-        System.out.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
+        IO.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
         int[] reversed = ArrayUtils.clone(numbers);
         ArrayUtils.reverse(reversed);
-        System.out.println("Reversed: " + ArrayUtils.toString(reversed));
+        IO.println("Reversed: " + ArrayUtils.toString(reversed));
         // ...
     }
 }
@@ -557,18 +557,18 @@ public class CommonsIOExample {
         
         // ファイルの読み込み（1行で完了）
         String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        System.out.println("File content:\n" + content);
+        IO.println("File content:\n" + content);
         
         // 行単位での読み込み
         List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
-        System.out.println("Lines count: " + lines.size());
+        IO.println("Lines count: " + lines.size());
         // ...
         // 4. FilenameUtils - パス操作
         String filePath = "/home/user/documents/report.pdf";
-        System.out.println("\nFile path analysis:");
-        System.out.println("Base name: " + FilenameUtils.getBaseName(filePath));
-        System.out.println("Extension: " + FilenameUtils.getExtension(filePath));
-        System.out.println("Full path: " + FilenameUtils.getFullPath(filePath));
+        IO.println("\nFile path analysis:");
+        IO.println("Base name: " + FilenameUtils.getBaseName(filePath));
+        IO.println("Extension: " + FilenameUtils.getExtension(filePath));
+        IO.println("Full path: " + FilenameUtils.getFullPath(filePath));
         // ...
     }
 }
@@ -582,7 +582,7 @@ Hello, Commons IO!
 追加のテキスト
 
 Lines count: 2
-Current directory size: 6 KB
+Current directory size: 5 KB
 
 File path analysis:
 Base name: report
@@ -633,9 +633,9 @@ public class OkHttpExample {
                 throw new IOException("Unexpected code " + response);
             }
             
-            System.out.println("GET Response:");
-            System.out.println("Status: " + response.code());
-            System.out.println("Body: " + response.body().string());
+            IO.println("GET Response:");
+            IO.println("Status: " + response.code());
+            IO.println("Body: " + response.body().string());
         }
         // ...
         // 3. 非同期リクエスト
@@ -655,8 +655,8 @@ public class OkHttpExample {
                     if (!response.isSuccessful()) {
                         throw new IOException("Unexpected code " + response);
                     }
-                    System.out.println("\nAsync Response received!");
-                    System.out.println("Thread: " + Thread.currentThread().getName());
+                    IO.println("\nAsync Response received!");
+                    IO.println("Thread: " + Thread.currentThread().getName());
                 }
             }
         });
@@ -746,8 +746,8 @@ public class LombokExample {
             .build();
         
         // 2. 自動生成されたメソッドの使用
-        System.out.println("User: " + user);  // toStringが自動生成
-        System.out.println("Username: " + user.getUsername());  // getterが自動生成
+        IO.println("User: " + user);  // toStringが自動生成
+        IO.println("Username: " + user.getUsername());  // getterが自動生成
         
         user.setAge(26);  // setterが自動生成
         
@@ -759,7 +759,7 @@ public class LombokExample {
             .password("different")
             .build();
         
-        System.out.println("Equals: " + user.equals(sameUser));
+        IO.println("Equals: " + user.equals(sameUser));
         
         // 4. ログ出力（SLF4J）
         log.info("User created: {}", user.getUsername());
@@ -871,8 +871,8 @@ public class GuavaExample {
             "three", 3
         );
         
-        System.out.println("Immutable list: " + immutableList);
-        System.out.println("Immutable map: " + immutableMap);
+        IO.println("Immutable list: " + immutableList);
+        IO.println("Immutable map: " + immutableMap);
         
         // 2. Multimap - 1つのキーに複数の値
         Multimap<String, String> multimap = ArrayListMultimap.create();
@@ -881,8 +881,8 @@ public class GuavaExample {
         multimap.put("fruits", "orange");
         multimap.put("vegetables", "carrot");
         
-        System.out.println("\nMultimap:");
-        System.out.println("Fruits: " + multimap.get("fruits"));
+        IO.println("\nMultimap:");
+        IO.println("Fruits: " + multimap.get("fruits"));
         // ...
         // 5. 文字列処理
         String input = "  hello,  world,  java  ";
@@ -890,12 +890,12 @@ public class GuavaExample {
             .trimResults()
             .omitEmptyStrings()
             .splitToList(input);
-        System.out.println("\nSplit result: " + parts);
+        IO.println("\nSplit result: " + parts);
         
         String joined = Joiner.on(" | ")
             .skipNulls()
             .join("A", null, "B", "C");
-        System.out.println("Joined: " + joined);
+        IO.println("Joined: " + joined);
         // ...
         // 6. キャッシュ
         LoadingCache<String, String> cache = CacheBuilder.newBuilder()

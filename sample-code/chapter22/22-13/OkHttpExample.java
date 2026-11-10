@@ -22,9 +22,9 @@ public class OkHttpExample {
                 throw new IOException("Unexpected code " + response);
             }
             
-            System.out.println("GET Response:");
-            System.out.println("Status: " + response.code());
-            System.out.println("Body: " + response.body().string());
+            IO.println("GET Response:");
+            IO.println("Status: " + response.code());
+            IO.println("Body: " + response.body().string());
         }
         
         // 2. POSTリクエスト（JSONデータ送信）
@@ -43,9 +43,9 @@ public class OkHttpExample {
             .build();
         
         try (Response response = client.newCall(postRequest).execute()) {
-            System.out.println("\nPOST Response:");
-            System.out.println("Status: " + response.code());
-            System.out.println("Body: " + response.body().string());
+            IO.println("\nPOST Response:");
+            IO.println("Status: " + response.code());
+            IO.println("Body: " + response.body().string());
         }
         
         // 3. 非同期リクエスト
@@ -65,8 +65,8 @@ public class OkHttpExample {
                     if (!response.isSuccessful()) {
                         throw new IOException("Unexpected code " + response);
                     }
-                    System.out.println("\nAsync Response received!");
-                    System.out.println("Thread: " + Thread.currentThread().getName());
+                    IO.println("\nAsync Response received!");
+                    IO.println("Thread: " + Thread.currentThread().getName());
                 }
             }
         });

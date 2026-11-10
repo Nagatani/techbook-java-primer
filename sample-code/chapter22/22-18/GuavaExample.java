@@ -14,8 +14,8 @@ public class GuavaExample {
             "three", 3
         );
         
-        System.out.println("Immutable list: " + immutableList);
-        System.out.println("Immutable map: " + immutableMap);
+        IO.println("Immutable list: " + immutableList);
+        IO.println("Immutable map: " + immutableMap);
         
         // 2. Multimap - 1つのキーに複数の値
         Multimap<String, String> multimap = ArrayListMultimap.create();
@@ -24,16 +24,16 @@ public class GuavaExample {
         multimap.put("fruits", "orange");
         multimap.put("vegetables", "carrot");
         
-        System.out.println("\nMultimap:");
-        System.out.println("Fruits: " + multimap.get("fruits"));
+        IO.println("\nMultimap:");
+        IO.println("Fruits: " + multimap.get("fruits"));
         
         // 3. BiMap - 双方向マップ
         BiMap<String, Integer> biMap = HashBiMap.create();
         biMap.put("one", 1);
         biMap.put("two", 2);
         
-        System.out.println("\nBiMap:");
-        System.out.println("Key for 2: " + biMap.inverse().get(2));
+        IO.println("\nBiMap:");
+        IO.println("Key for 2: " + biMap.inverse().get(2));
         
         // 4. Table - 2次元のマップ
         Table<String, String, Integer> table = HashBasedTable.create();
@@ -41,9 +41,9 @@ public class GuavaExample {
         table.put("Tokyo", "2024", 14100000);
         table.put("Osaka", "2023", 2700000);
         
-        System.out.println("\nTable:");
-        System.out.println("Tokyo 2024: " + table.get("Tokyo", "2024"));
-        System.out.println("All Tokyo data: " + table.row("Tokyo"));
+        IO.println("\nTable:");
+        IO.println("Tokyo 2024: " + table.get("Tokyo", "2024"));
+        IO.println("All Tokyo data: " + table.row("Tokyo"));
         
         // 5. 文字列処理
         String input = "  hello,  world,  java  ";
@@ -51,12 +51,12 @@ public class GuavaExample {
             .trimResults()
             .omitEmptyStrings()
             .splitToList(input);
-        System.out.println("\nSplit result: " + parts);
+        IO.println("\nSplit result: " + parts);
         
         String joined = Joiner.on(" | ")
             .skipNulls()
             .join("A", null, "B", "C");
-        System.out.println("Joined: " + joined);
+        IO.println("Joined: " + joined);
         
         // 6. キャッシュ
         LoadingCache<String, String> cache = CacheBuilder.newBuilder()
@@ -70,14 +70,14 @@ public class GuavaExample {
                 }
             });
         
-        System.out.println("\nCache:");
-        System.out.println("First call: " + cache.get("key1"));
-        System.out.println("Second call (cached): " + cache.get("key1"));
+        IO.println("\nCache:");
+        IO.println("First call: " + cache.get("key1"));
+        IO.println("Second call (cached): " + cache.get("key1"));
         
         // 7. Optional（Java 8より前から利用可能）
         Optional<String> optional = Optional.of("Hello");
-        System.out.println("\nOptional:");
-        System.out.println("Is present: " + optional.isPresent());
-        System.out.println("Value: " + optional.or("Default"));
+        IO.println("\nOptional:");
+        IO.println("Is present: " + optional.isPresent());
+        IO.println("Value: " + optional.or("Default"));
     }
 }

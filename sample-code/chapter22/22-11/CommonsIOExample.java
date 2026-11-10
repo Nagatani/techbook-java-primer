@@ -21,11 +21,11 @@ public class CommonsIOExample {
         
         // ファイルの読み込み（1行で完了）
         String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        System.out.println("File content:\n" + content);
+        IO.println("File content:\n" + content);
         
         // 行単位での読み込み
         List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
-        System.out.println("Lines count: " + lines.size());
+        IO.println("Lines count: " + lines.size());
         
         // 2. ファイルのコピー
         File copyFile = new File("example_copy.txt");
@@ -37,15 +37,15 @@ public class CommonsIOExample {
         
         // ディレクトリのサイズ取得
         long dirSize = FileUtils.sizeOfDirectory(new File("."));
-        System.out.println("Current directory size: " + 
+        IO.println("Current directory size: " + 
             FileUtils.byteCountToDisplaySize(dirSize));
         
         // 4. FilenameUtils - パス操作
         String filePath = "/home/user/documents/report.pdf";
-        System.out.println("\nFile path analysis:");
-        System.out.println("Base name: " + FilenameUtils.getBaseName(filePath));
-        System.out.println("Extension: " + FilenameUtils.getExtension(filePath));
-        System.out.println("Full path: " + FilenameUtils.getFullPath(filePath));
+        IO.println("\nFile path analysis:");
+        IO.println("Base name: " + FilenameUtils.getBaseName(filePath));
+        IO.println("Extension: " + FilenameUtils.getExtension(filePath));
+        IO.println("Full path: " + FilenameUtils.getFullPath(filePath));
         
         // 5. IOUtils - ストリーム操作
         String text = "Stream processing example";
@@ -54,7 +54,7 @@ public class CommonsIOExample {
             
             IOUtils.copy(is, os);
             String result = os.toString(StandardCharsets.UTF_8);
-            System.out.println("\nStream copy result: " + result);
+            IO.println("\nStream copy result: " + result);
         }
         
         // クリーンアップ

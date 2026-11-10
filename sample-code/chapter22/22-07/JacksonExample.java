@@ -41,12 +41,12 @@ public class JacksonExample {
         // 1. オブジェクトからJSONへ
         Product product = new Product(1, "ノートPC", 98000.0);
         String json = mapper.writeValueAsString(product);
-        System.out.println("JSON: " + json);
+        IO.println("JSON: " + json);
         
         // 2. 整形されたJSON出力
         String prettyJson = mapper.writerWithDefaultPrettyPrinter()
             .writeValueAsString(product);
-        System.out.println("\nPretty JSON:\n" + prettyJson);
+        IO.println("\nPretty JSON:\n" + prettyJson);
         
         // 3. JSONからオブジェクトへ
         String jsonInput = """
@@ -62,7 +62,7 @@ public class JacksonExample {
             """;
         
         Product loaded = mapper.readValue(jsonInput, Product.class);
-        System.out.println("\nLoaded: " + loaded.getName());
+        IO.println("\nLoaded: " + loaded.getName());
         
         // 4. コレクションの処理
         List<Product> products = Arrays.asList(
@@ -76,6 +76,6 @@ public class JacksonExample {
         List<Product> loadedProducts = mapper.readValue(productsJson, 
             new TypeReference<List<Product>>() {});
         
-        System.out.println("\nLoaded products count: " + loadedProducts.size());
+        IO.println("\nLoaded products count: " + loadedProducts.size());
     }
 }

@@ -38,39 +38,39 @@ public class CommonsLangExample {
     public static void main(String[] args) {
         // 1. StringUtils - 文字列操作
         String text = "  Hello World  ";
-        System.out.println("Original: '" + text + "'");
-        System.out.println("Trimmed: '" + StringUtils.trim(text) + "'");
-        System.out.println("Is blank?: " + StringUtils.isBlank("   "));
-        System.out.println("Reverse: " + StringUtils.reverse("Hello"));
-        System.out.println("Capitalize: " + StringUtils.capitalize("java"));
+        IO.println("Original: '" + text + "'");
+        IO.println("Trimmed: '" + StringUtils.trim(text) + "'");
+        IO.println("Is blank?: " + StringUtils.isBlank("   "));
+        IO.println("Reverse: " + StringUtils.reverse("Hello"));
+        IO.println("Capitalize: " + StringUtils.capitalize("java"));
         
         // 空文字列の安全な処理
         String nullStr = null;
-        System.out.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
+        IO.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
-        System.out.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
+        IO.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
         int[] reversed = ArrayUtils.clone(numbers);
         ArrayUtils.reverse(reversed);
-        System.out.println("Reversed: " + ArrayUtils.toString(reversed));
+        IO.println("Reversed: " + ArrayUtils.toString(reversed));
         
         // 3. RandomStringUtils - ランダム文字列生成
-        System.out.println("\nRandom alphabetic: " + 
+        IO.println("\nRandom alphabetic: " + 
             RandomStringUtils.randomAlphabetic(10));
-        System.out.println("Random numeric: " + 
+        IO.println("Random numeric: " + 
             RandomStringUtils.randomNumeric(6));
-        System.out.println("Random alphanumeric: " + 
+        IO.println("Random alphanumeric: " + 
             RandomStringUtils.randomAlphanumeric(8));
         
         // 4. DateFormatUtils - 日付フォーマット
         Date now = new Date();
-        System.out.println("\nDate formats:");
-        System.out.println("ISO: " + DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(now));
-        System.out.println("Custom: " + DateFormatUtils.format(now, "yyyy年MM月dd日 HH:mm:ss"));
+        IO.println("\nDate formats:");
+        IO.println("ISO: " + DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(now));
+        IO.println("Custom: " + DateFormatUtils.format(now, "yyyy年MM月dd日 HH:mm:ss"));
         
         // 5. Builder utilities
         Person person = new Person("田中太郎", 30);
-        System.out.println("\nPerson: " + person);
+        IO.println("\nPerson: " + person);
     }
 }
