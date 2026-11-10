@@ -208,6 +208,14 @@ Stream<Integer> stream = numbers.stream()
 List<Integer> result = stream.collect(Collectors.toList());
 ```
 
+次の図は、`numbers`が`[5, 15, 20]`のときに`filter`と`map`をつないだ場合の動きです。終端操作の`collect`を呼ぶまで何も実行されず、呼んだあとは要素が1つずつ、すべての操作を通っていきます。
+
+<div class="figure">
+
+![遅延評価による要素ごとの処理の流れ](images/diagrams/chapter12-lazy-evaluation.svg)
+
+</div>
+
 ラムダ式と組み合わせることで、コレクション操作を非常に宣言的（「何をするか」を記述するスタイル）で、かつ簡潔に書くことができます。
 
 ### Stream操作の基本パターン

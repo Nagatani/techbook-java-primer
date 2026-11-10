@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant Code as 呼び出し側
+    participant F as filter(n > 10)
+    participant M as map(n * 2)
+    participant C as collect()
+
+    Code->>F: numbers.stream().filter(...).map(...)
+    Note over Code,M: 処理の手順を組み立てるだけで<br/>まだ何も実行されない
+
+    Code->>C: collect(...) を呼ぶ（終端操作）
+    Note over F,C: ここではじめて、要素を1つずつ流す
+
+    C->>F: 要素 5 を要求
+    F-->>C: 5 > 10 ではないので捨てる
+    C->>F: 要素 15 を要求
+    F->>M: 15 を渡す
+    M->>C: 30 を渡す（リストに追加）
+    C->>F: 要素 20 を要求
+    F->>M: 20 を渡す
+    M->>C: 40 を渡す（リストに追加）
+    C-->>Code: [30, 40] を返す
