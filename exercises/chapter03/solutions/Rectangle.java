@@ -115,20 +115,20 @@ public class Rectangle {
     
     // 情報表示メソッド
     public void displayInfo() {
-        System.out.println("幅: " + width + ", 高さ: " + height);
-        System.out.println("面積: " + getArea() + ", 周囲: " + getPerimeter());
+        IO.println("幅: " + width + ", 高さ: " + height);
+        IO.println("面積: " + getArea() + ", 周囲: " + getPerimeter());
     }
     
     // 【発展解答】詳細情報表示メソッド
     public void displayDetailedInfo() {
-        System.out.printf("長方形情報:%n");
-        System.out.printf("  幅: %.2f%n", width);
-        System.out.printf("  高さ: %.2f%n", height);
-        System.out.printf("  面積: %.2f%n", getArea());
-        System.out.printf("  周囲: %.2f%n", getPerimeter());
-        System.out.printf("  対角線: %.2f%n", getDiagonal());
-        System.out.printf("  形状: %s%n", isSquare() ? "正方形" : 
-                         isPortrait() ? "縦長" : "横長");
+        IO.println("長方形情報:");
+        IO.println("  幅: %.2f".formatted(width));
+        IO.println("  高さ: %.2f".formatted(height));
+        IO.println("  面積: %.2f".formatted(getArea()));
+        IO.println("  周囲: %.2f".formatted(getPerimeter()));
+        IO.println("  対角線: %.2f".formatted(getDiagonal()));
+        IO.println("  形状: %s".formatted(isSquare() ? "正方形" : 
+                         isPortrait() ? "縦長" : "横長"));
     }
     
     // getter メソッド

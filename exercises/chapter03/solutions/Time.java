@@ -164,15 +164,15 @@ public class Time {
     
     // 時刻表示メソッド
     public void displayTime() {
-        System.out.printf("%02d:%02d:%02d%n", hour, minute, second);
+        IO.println("%02d:%02d:%02d".formatted(hour, minute, second));
     }
     
     // 【発展解答】詳細表示メソッド
     public void displayDetailedTime() {
-        System.out.printf("時刻: %02d:%02d:%02d%n", hour, minute, second);
-        System.out.printf("総秒数: %d秒%n", getTotalSeconds());
-        System.out.printf("午前/午後: %s%n", isAM() ? "午前" : "午後");
-        System.out.printf("12時間制: %s%n", to12HourFormat());
+        IO.println("時刻: %02d:%02d:%02d".formatted(hour, minute, second));
+        IO.println("総秒数: %d秒".formatted(getTotalSeconds()));
+        IO.println("午前/午後: %s".formatted(isAM() ? "午前" : "午後"));
+        IO.println("12時間制: %s".formatted(to12HourFormat()));
     }
     
     // getter/setterメソッド
@@ -333,7 +333,7 @@ public class Time {
                 return new Time(h, m, s);
             }
         } catch (NumberFormatException e) {
-            System.out.println("時刻の形式が正しくありません: " + timeString);
+            IO.println("時刻の形式が正しくありません: " + timeString);
         }
         return new Time();  // デフォルト値
     }

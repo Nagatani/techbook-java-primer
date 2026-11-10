@@ -84,6 +84,6 @@ public class Time {
     
     // TODO: 時刻表示メソッドを実装してください
     // public void showTime() {
-    //     System.out.printf("%02d:%02d:%02d%n", hour, minute, second);
+    //     IO.println("%02d:%02d:%02d".formatted(hour, minute, second));
     // }
 }

@@ -51,9 +51,9 @@ public class BankAccount {
     public void deposit(double amount) {
         if (amount > 0) {
             this.balance += amount;
-            System.out.println(amount + "円を入金しました。");
+            IO.println(amount + "円を入金しました。");
         } else {
-            System.out.println("入金額は正の値である必要があります。");
+            IO.println("入金額は正の値である必要があります。");
         }
     }
     
@@ -61,25 +61,25 @@ public class BankAccount {
     public void deposit(double amount, String message) {
         if (amount > 0) {
             this.balance += amount;
-            System.out.println(amount + "円を入金しました。（" + message + "）");
+            IO.println(amount + "円を入金しました。（" + message + "）");
         } else {
-            System.out.println("入金額は正の値である必要があります。");
+            IO.println("入金額は正の値である必要があります。");
         }
     }
     
     // 【基本解答】出金メソッド（基本）
     public boolean withdraw(double amount) {
         if (amount <= 0) {
-            System.out.println("出金額は正の値である必要があります。");
+            IO.println("出金額は正の値である必要があります。");
             return false;
         }
         
         if (this.balance >= amount) {
             this.balance -= amount;
-            System.out.println(amount + "円を出金しました。");
+            IO.println(amount + "円を出金しました。");
             return true;
         } else {
-            System.out.println("残高不足です。（残高: " + this.balance + "円）");
+            IO.println("残高不足です。（残高: " + this.balance + "円）");
             return false;
         }
     }
@@ -89,16 +89,16 @@ public class BankAccount {
         double totalAmount = amount + fee;
         
         if (amount <= 0 || fee < 0) {
-            System.out.println("出金額は正の値、手数料は0以上である必要があります。");
+            IO.println("出金額は正の値、手数料は0以上である必要があります。");
             return false;
         }
         
         if (this.balance >= totalAmount) {
             this.balance -= totalAmount;
-            System.out.println(amount + "円を出金しました。（手数料: " + fee + "円）");
+            IO.println(amount + "円を出金しました。（手数料: " + fee + "円）");
             return true;
         } else {
-            System.out.println("残高不足です。（必要額: " + totalAmount + "円, 残高: " + this.balance + "円）");
+            IO.println("残高不足です。（必要額: " + totalAmount + "円, 残高: " + this.balance + "円）");
             return false;
         }
     }
@@ -107,7 +107,7 @@ public class BankAccount {
     public boolean transfer(BankAccount toAccount, double amount) {
         if (this.withdraw(amount)) {
             toAccount.deposit(amount, "振込");
-            System.out.println("口座" + toAccount.getAccountNumber() + "に" + amount + "円を振り込みました。");
+            IO.println("口座" + toAccount.getAccountNumber() + "に" + amount + "円を振り込みました。");
             return true;
         }
         return false;
@@ -117,7 +117,7 @@ public class BankAccount {
     public boolean transfer(BankAccount toAccount, double amount, double transferFee) {
         if (this.withdraw(amount, transferFee)) {
             toAccount.deposit(amount, "振込");
-            System.out.println("口座" + toAccount.getAccountNumber() + "に" + amount + "円を振り込みました。（手数料: " + transferFee + "円）");
+            IO.println("口座" + toAccount.getAccountNumber() + "に" + amount + "円を振り込みました。（手数料: " + transferFee + "円）");
             return true;
         }
         return false;
@@ -125,17 +125,17 @@ public class BankAccount {
     
     // 口座情報表示メソッド
     public void displayAccountInfo() {
-        System.out.println("口座番号: " + accountNumber + ", 残高: " + balance + "円, 名義: " + ownerName);
+        IO.println("口座番号: " + accountNumber + ", 残高: " + balance + "円, 名義: " + ownerName);
     }
     
     // 【発展解答】詳細な口座情報表示
     public void displayDetailedAccountInfo() {
-        System.out.println("=== 口座情報 ===");
-        System.out.println("口座番号: " + accountNumber);
-        System.out.println("名義人: " + ownerName);
-        System.out.printf("残高: %.2f円%n", balance);
-        System.out.println("口座状態: " + (balance > 0 ? "正常" : "残高不足"));
-        System.out.println("===============");
+        IO.println("=== 口座情報 ===");
+        IO.println("口座番号: " + accountNumber);
+        IO.println("名義人: " + ownerName);
+        IO.println("残高: %.2f円".formatted(balance));
+        IO.println("口座状態: " + (balance > 0 ? "正常" : "残高不足"));
+        IO.println("===============");
     }
     
     // getter/setterメソッド
@@ -180,7 +180,7 @@ public class BankAccount {
         if (rate > 0 && balance > 0) {
             double interest = balance * rate / 100;
             this.balance += interest;
-            System.out.printf("利息 %.2f円が追加されました。（利率: %.2f%%）%n", interest, rate);
+            IO.println("利息 %.2f円が追加されました。（利率: %.2f%%）".formatted(interest, rate));
         }
     }
     

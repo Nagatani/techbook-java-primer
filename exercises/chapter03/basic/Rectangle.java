@@ -54,7 +54,7 @@ public class Rectangle {
     
     // TODO: 情報表示メソッドを実装してください
     // public void showInfo() {
-    //     System.out.println("幅: " + width + ", 高さ: " + height);
-    //     System.out.println("面積: " + getArea() + ", 周囲: " + getPerimeter());
+    //     IO.println("幅: " + width + ", 高さ: " + height);
+    //     IO.println("面積: " + getArea() + ", 周囲: " + getPerimeter());
     // }
 }

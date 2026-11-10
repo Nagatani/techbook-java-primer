@@ -12,21 +12,21 @@
  */
 public class StudentTest {
     public static void main(String[] args) {
-        System.out.println("=== 学生管理システム ===");
+        IO.println("=== 学生管理システム ===");
         
         // TODO: デフォルトコンストラクタを使って学生オブジェクトを作成してください
         // Student student1 = new Student();
-        // System.out.print("学生1: ");
+        // IO.print("学生1: ");
         // student1.showInfo();
         
         // TODO: 名前のみを設定するコンストラクタを使って学生オブジェクトを作成してください
         // Student student2 = new Student("田中太郎");
-        // System.out.print("学生2: ");
+        // IO.print("学生2: ");
         // student2.showInfo();
         
         // TODO: 全ての項目を設定するコンストラクタを使って学生オブジェクトを作成してください
         // Student student3 = new Student("佐藤花子", 20, "S2024001");
-        // System.out.print("学生3: ");
+        // IO.print("学生3: ");
         // student3.showInfo();
     }
 }

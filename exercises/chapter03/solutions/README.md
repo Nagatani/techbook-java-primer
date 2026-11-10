@@ -106,7 +106,7 @@ public void deposit(double amount) {
 public void deposit(double amount, String message) {
     if (amount > 0) {
         this.balance += amount;
-        System.out.println(amount + "円を入金しました。（" + message + "）");
+        IO.println(amount + "円を入金しました。（" + message + "）");
     }
 }
 ```

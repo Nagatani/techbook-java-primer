@@ -41,7 +41,7 @@ public class BankAccount {
     // public void deposit(double amount) {
     //     if (amount > 0) {
     //         this.balance += amount;
-    //         System.out.println(amount + "円を入金しました。");
+    //         IO.println(amount + "円を入金しました。");
     //     }
     // }
     
@@ -49,9 +49,9 @@ public class BankAccount {
     // public void withdraw(double amount) {
     //     if (amount > 0 && this.balance >= amount) {
     //         this.balance -= amount;
-    //         System.out.println(amount + "円を出金しました。");
+    //         IO.println(amount + "円を出金しました。");
     //     } else {
-    //         System.out.println("出金できません。");
+    //         IO.println("出金できません。");
     //     }
     // }
     
@@ -60,14 +60,14 @@ public class BankAccount {
     //     double total = amount + fee;
     //     if (total > 0 && this.balance >= total) {
     //         this.balance -= total;
-    //         System.out.println(amount + "円を出金しました。（手数料: " + fee + "円）");
+    //         IO.println(amount + "円を出金しました。（手数料: " + fee + "円）");
     //     } else {
-    //         System.out.println("出金できません。");
+    //         IO.println("出金できません。");
     //     }
     // }
     
     // TODO: 口座情報表示メソッドを実装してください
     // public void showAccountInfo() {
-    //     System.out.println("口座番号: " + accountNumber + ", 残高: " + balance + "円, 名義: " + ownerName);
+    //     IO.println("口座番号: " + accountNumber + ", 残高: " + balance + "円, 名義: " + ownerName);
     // }
 }

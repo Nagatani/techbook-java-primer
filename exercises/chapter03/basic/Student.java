@@ -39,6 +39,6 @@ public class Student {
     
     // TODO: 情報表示メソッドを実装してください
     // public void showInfo() {
-    //     System.out.println("名前: " + name + ", 年齢: " + age + ", 学籍番号: " + studentId);
+    //     IO.println("名前: " + name + ", 年齢: " + age + ", 学籍番号: " + studentId);
     // }
 }

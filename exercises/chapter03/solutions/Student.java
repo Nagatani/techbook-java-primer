@@ -57,13 +57,13 @@ public class Student {
     
     // 情報表示メソッド
     public void displayInfo() {
-        System.out.println("名前: " + name + ", 年齢: " + age + ", 学籍番号: " + studentId);
+        IO.println("名前: " + name + ", 年齢: " + age + ", 学籍番号: " + studentId);
     }
     
     // 【発展解答】フォーマット付き情報表示
     public void displayFormattedInfo() {
-        System.out.printf("学生情報 - 名前: %s, 年齢: %d歳, 学籍番号: %s%n", 
-                         name, age, studentId);
+        IO.println("学生情報 - 名前: %s, 年齢: %d歳, 学籍番号: %s".formatted(
+                         name, age, studentId));
     }
     
     // getter/setterメソッド（カプセル化の準備）
@@ -84,7 +84,7 @@ public class Student {
         if (age >= 0) {
             this.age = age;
         } else {
-            System.out.println("警告: 年齢は0以上である必要があります。");
+            IO.println("警告: 年齢は0以上である必要があります。");
         }
     }
     

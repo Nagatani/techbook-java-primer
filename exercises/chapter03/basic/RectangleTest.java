@@ -18,24 +18,24 @@
  */
 public class RectangleTest {
     public static void main(String[] args) {
-        System.out.println("=== 長方形計算プログラム ===");
+        IO.println("=== 長方形計算プログラム ===");
         
         // TODO: 正方形のRectangleオブジェクトを作成してください
         // Rectangle square = new Rectangle(5.0);
-        // System.out.print("正方形: ");
+        // IO.print("正方形: ");
         // square.showInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: 長方形のRectangleオブジェクトを作成してください
         // Rectangle rectangle = new Rectangle(8.0, 3.0);
-        // System.out.print("長方形: ");
+        // IO.print("長方形: ");
         // rectangle.showInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: setSizeメソッドを使ってサイズを変更してください
         // rectangle.setSize(10.0);
-        // System.out.println("サイズ変更後:");
-        // System.out.print("長方形: ");
+        // IO.println("サイズ変更後:");
+        // IO.print("長方形: ");
         // rectangle.showInfo();
     }
 }
