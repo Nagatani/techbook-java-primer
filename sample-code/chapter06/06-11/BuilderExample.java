@@ -28,9 +28,9 @@ public class BuilderExample {
             .genre("ソフトウェア工学")
             .build();
 
-        System.out.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
-        System.out.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
-        System.out.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
-        System.out.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
+        IO.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
+        IO.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
+        IO.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
+        IO.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
     }
 }

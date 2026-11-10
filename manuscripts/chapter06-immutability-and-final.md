@@ -71,7 +71,7 @@ public class ThreadSafetyProblem {
         // ...
         
         // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
-        System.out.println("X座標: " + point.getX());
+        IO.println("X座標: " + point.getX());
     }
 }
 ```
@@ -187,7 +187,7 @@ public class Constants {
         
         data.forEach(item -> {
             // ラムダ式内でローカル変数を使う場合、実質的にfinalである必要がある
-            System.out.println(item + " (total: " + size + ")");
+            IO.println(item + " (total: " + size + ")");
         });
     }
 }
@@ -352,29 +352,29 @@ public class ImmutableExample {
         // 元のリストを変更してもオブジェクトには影響しない
         hobbies = new ArrayList<>(hobbies);
         hobbies.add("スポーツ");
-        System.out.println(person.getHobbies()); // [読書, 映画鑑賞]
+        IO.println(person.getHobbies()); // [読書, 映画鑑賞]
         
         // 値を変更したい場合は新しいオブジェクトを作成
         ImmutablePerson olderPerson = person.withAge(26);
-        System.out.println("元の人: " + person); // age=25
-        System.out.println("新しい人: " + olderPerson); // age=26
+        IO.println("元の人: " + person); // age=25
+        IO.println("新しい人: " + olderPerson); // age=26
         
         // 趣味を追加
         ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
-        System.out.println("元の趣味: " + person.getHobbies());
-        System.out.println("新しい趣味: " + personWithNewHobby.getHobbies());
+        IO.println("元の趣味: " + person.getHobbies());
+        IO.println("新しい趣味: " + personWithNewHobby.getHobbies());
         
         // マルチスレッド環境での安全な共有（スレッドは第15章で詳しく学ぶ）
         Thread t1 = new Thread(() -> {
             for (int i = 0; i < 3; i++) {
                 // 不変オブジェクトはスレッドセーフ
-                System.out.println("T1: " + person.getName());
+                IO.println("T1: " + person.getName());
             }
         });
         
         Thread t2 = new Thread(() -> {
             for (int i = 0; i < 3; i++) {
-                System.out.println("T2: " + person.getAge());
+                IO.println("T2: " + person.getAge());
             }
         });
         
@@ -545,10 +545,10 @@ public class BuilderExample {
             .genre("ソフトウェア工学")
             .build();
 
-        System.out.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
-        System.out.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
-        System.out.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
-        System.out.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
+        IO.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
+        IO.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
+        IO.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
+        IO.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
     }
 }
 ```
@@ -633,8 +633,8 @@ public record ImmutablePoint(int x, int y) {
 
 // 使用例
 ImmutablePoint point = new ImmutablePoint(10, 20);
-System.out.println(point.x()); // 10
-System.out.println(point.y()); // 20
+IO.println(point.x()); // 10
+IO.println(point.y()); // 20
 ```
 実行結果：
 

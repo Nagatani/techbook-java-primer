@@ -22,7 +22,7 @@ public class Constants {
         
         data.forEach(item -> {
             // ラムダ式内でローカル変数を使う場合、実質的にfinalである必要がある
-            System.out.println(item + " (total: " + size + ")");
+            IO.println(item + " (total: " + size + ")");
         });
     }
 }

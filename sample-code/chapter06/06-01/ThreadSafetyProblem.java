@@ -29,6 +29,6 @@ public class ThreadSafetyProblem {
         }
         
         // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
-        System.out.println("X座標: " + point.getX());
+        IO.println("X座標: " + point.getX());
     }
 }
