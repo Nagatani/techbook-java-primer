@@ -70,9 +70,9 @@ public class GenericArrayWorkarounds<T> {
      * 配列の内容を表示
      */
     public void printArray() {
-        System.out.println("Array contents:");
+        IO.println("Array contents:");
         for (int i = 0; i < safeArray.length; i++) {
-            System.out.println("  [" + i + "] = " + safeArray[i]);
+            IO.println("  [" + i + "] = " + safeArray[i]);
         }
     }
     
@@ -95,9 +95,9 @@ public class GenericArrayWorkarounds<T> {
         }
         
         public void printList() {
-            System.out.println("List contents:");
+            IO.println("List contents:");
             for (int i = 0; i < list.size(); i++) {
-                System.out.println("  [" + i + "] = " + list.get(i));
+                IO.println("  [" + i + "] = " + list.get(i));
             }
         }
     }
@@ -123,7 +123,7 @@ public class GenericArrayWorkarounds<T> {
      * デモンストレーション
      */
     public static void demonstrateGenericArrayWorkarounds() {
-        System.out.println("=== Generic Array Workarounds Demo ===");
+        IO.println("=== Generic Array Workarounds Demo ===");
         
         // 回避策2: Class<T>を使用
         GenericArrayWorkarounds<String> stringArray = new GenericArrayWorkarounds<>(String.class, 5);
@@ -131,7 +131,7 @@ public class GenericArrayWorkarounds<T> {
         stringArray.setElement(1, "World");
         stringArray.setElement(2, "Java");
         
-        System.out.println("\nString array (using Class<T>):");
+        IO.println("\nString array (using Class<T>):");
         stringArray.printArray();
         
         // 回避策3: List使用
@@ -140,7 +140,7 @@ public class GenericArrayWorkarounds<T> {
         intList.add(20);
         intList.add(30);
         
-        System.out.println("\nInteger list (recommended approach):");
+        IO.println("\nInteger list (recommended approach):");
         intList.printList();
         
         // 回避策4: ファクトリメソッド
@@ -149,16 +149,16 @@ public class GenericArrayWorkarounds<T> {
         stringArrayFromFactory[1] = "Created";
         stringArrayFromFactory[2] = "Array";
         
-        System.out.println("\nFactory created array:");
+        IO.println("\nFactory created array:");
         for (int i = 0; i < stringArrayFromFactory.length; i++) {
-            System.out.println("  [" + i + "] = " + stringArrayFromFactory[i]);
+            IO.println("  [" + i + "] = " + stringArrayFromFactory[i]);
         }
         
         // 可変長引数を使用
         Integer[] intArray = createArrayFromElements(1, 2, 3, 4, 5);
-        System.out.println("\nVarargs created array:");
+        IO.println("\nVarargs created array:");
         for (int i = 0; i < intArray.length; i++) {
-            System.out.println("  [" + i + "] = " + intArray[i]);
+            IO.println("  [" + i + "] = " + intArray[i]);
         }
     }
 }

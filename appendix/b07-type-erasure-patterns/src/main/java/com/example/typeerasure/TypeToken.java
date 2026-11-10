@@ -71,16 +71,16 @@ public abstract class TypeToken<T> {
         TypeToken<java.util.List<String>> listStringToken = new TypeToken<java.util.List<String>>() {};
         TypeToken<java.util.Map<String, Integer>> mapToken = new TypeToken<java.util.Map<String, Integer>>() {};
         
-        System.out.println("String token: " + stringToken);
-        System.out.println("List<String> token: " + listStringToken);
-        System.out.println("Map<String, Integer> token: " + mapToken);
+        IO.println("String token: " + stringToken);
+        IO.println("List<String> token: " + listStringToken);
+        IO.println("Map<String, Integer> token: " + mapToken);
         
         // Raw型の取得
-        System.out.println("Raw type of List<String>: " + listStringToken.getRawType());
+        IO.println("Raw type of List<String>: " + listStringToken.getRawType());
         
         // 型の比較
         TypeToken<String> anotherStringToken = new TypeToken<String>() {};
-        System.out.println("String tokens equal: " + stringToken.equals(anotherStringToken));
+        IO.println("String tokens equal: " + stringToken.equals(anotherStringToken));
     }
 }
 
@@ -111,7 +111,7 @@ abstract class TypeReference<T> {
         TypeReference<java.util.List<String>> typeRef = new TypeReference<java.util.List<String>>() {};
         Type type = typeRef.getType();
         
-        System.out.println("TypeReference result: " + type);
-        System.out.println("Type name: " + type.getTypeName());
+        IO.println("TypeReference result: " + type);
+        IO.println("Type name: " + type.getTypeName());
     }
 }

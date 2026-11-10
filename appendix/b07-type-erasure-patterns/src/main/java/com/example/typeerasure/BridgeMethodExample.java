@@ -51,13 +51,13 @@ public class BridgeMethodExample<T> implements Comparable<BridgeMethodExample<T>
         BridgeMethodExample<String> example1 = new BridgeMethodExample<>("Hello", "A");
         BridgeMethodExample<String> example2 = new BridgeMethodExample<>("World", "B");
         
-        System.out.println("Comparison result: " + example1.compareTo(example2));
+        IO.println("Comparison result: " + example1.compareTo(example2));
         
         // リフレクションでブリッジメソッドの存在を確認
         var methods = BridgeMethodExample.class.getDeclaredMethods();
-        System.out.println("\nMethods in BridgeMethodExample:");
+        IO.println("\nMethods in BridgeMethodExample:");
         for (var method : methods) {
-            System.out.println("- " + method.getName() + 
+            IO.println("- " + method.getName() + 
                 " (parameters: " + java.util.Arrays.toString(method.getParameterTypes()) + 
                 ", bridge: " + method.isBridge() + ")");
         }
@@ -72,7 +72,7 @@ abstract class AbstractProcessor<T> {
     
     public void execute(String input) {
         T result = process(input);
-        System.out.println("Processed: " + result);
+        IO.println("Processed: " + result);
     }
 }
 

@@ -19,10 +19,10 @@ public class GenericBox<T> {
      * 型消去により、実行時には型パラメータ情報が失われることを示すメソッド
      */
     public void printTypeInfo() {
-        System.out.println("Runtime class: " + this.getClass().getName());
+        IO.println("Runtime class: " + this.getClass().getName());
         if (value != null) {
-            System.out.println("Value class: " + value.getClass().getName());
-            System.out.println("Value: " + value);
+            IO.println("Value class: " + value.getClass().getName());
+            IO.println("Value: " + value);
         }
     }
     
@@ -37,13 +37,13 @@ public class GenericBox<T> {
         intBox.set(42);
         
         // 型消去により、実行時には同じクラス
-        System.out.println("Same class at runtime: " + 
+        IO.println("Same class at runtime: " + 
             (stringBox.getClass() == intBox.getClass())); // true
         
-        System.out.println("\nString box:");
+        IO.println("\nString box:");
         stringBox.printTypeInfo();
         
-        System.out.println("\nInteger box:");
+        IO.println("\nInteger box:");
         intBox.printTypeInfo();
     }
 }
@@ -77,7 +77,7 @@ class NumberBox<T extends Number> {
         intBox.set(100);
         doubleBox.set(3.14);
         
-        System.out.println("Integer as double: " + intBox.getDoubleValue());
-        System.out.println("Double as double: " + doubleBox.getDoubleValue());
+        IO.println("Integer as double: " + intBox.getDoubleValue());
+        IO.println("Double as double: " + doubleBox.getDoubleValue());
     }
 }
