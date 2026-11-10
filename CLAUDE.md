@@ -96,8 +96,10 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 11. **図（2026-11-11〜）**: 図はMermaidで書き、元データを`docs/diagrams/chapterXX-内容.mmd`（XXは載せる章の番号）に置く。`npm run mermaid:convert`（`build`から呼ばれる）が`manuscripts/images/diagrams/同じ名前.svg`を作り、原稿からはそのSVGを`<div class="figure">`の中で参照する
    - 原稿に```mermaidのブロックを直接書かない（変換スクリプトがエラーにする）。以前は原稿の中のブロックを画像に置き換えて原稿を書き換えていたため、元データが残らなかった。本で使わない図の元データは`docs/diagrams/unused/`に置く
    - Mermaidの設定は`docs/diagrams/mermaid-config.json`。`useMaxWidth: false`で図を描く幅に合わせて縮めないようにし、図形どうしの間隔を詰めている
-   - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。どの図も文字が9Qになる倍率で載せ、本文の幅（130mm）とページに収まる高さ（150mm）を超える図だけを縮める。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
-   - `npm run check:diagrams`（CI）が元データ・画像・原稿の対応を検査し、縮めた結果、文字が7Q未満になる図を「注意」として示す。注意の出た図は、図を分ける、並べる向きを変える、メンバーを減らすなど、書き方を見直す
+   - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。図の中でいちばん小さい文字が本文と同じ10Qになる倍率で載せ、本文の幅（130mm）とページに収まる高さ（150mm）を超える図だけを縮める（2026-11-11に9Qから10Qへ）。いちばん小さい文字の大きさは`scripts/diagram-metrics.js`がブラウザで測り、`docs/diagrams/.diagram-metrics.json`に書く（`mermaid:convert`が変換のあとに呼ぶ）。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
+   - `npm run check:diagrams`（CI）が元データ・画像・原稿の対応を検査し、次のものを「注意」として示す。注意が出たら図を直す: 縮めた結果、文字が9Q未満になる図、線が文字の上を通る箇所、文字が箱からはみ出す箇所、ラベルどうしが重なる・接する箇所（8px未満）。検査で拾えない読みにくさ（線どうしの交差など）は、PDFで目で確かめる
+   - シーケンス図のメッセージなど、複数の要素をまたぐ文字には白い縁取り（`mermaid-config.json`の`themeCSS`、`paint-order: stroke`）を付けて、下を通る線を隠している。注釈（note）は背景があるので縁取りしない。2人の参加者にまたがる注釈は箱がその間の幅にしか広がらないので、長い注釈は全員にまたがらせるか短くする
+   - 同じ2つのノードの間に行きと帰りの線を引くとラベルがぶつかる。帰りの線はラベルなしにして、条件をノードの中に書く（chapter15-thread-lifecycle）。状態遷移図（stateDiagram）はラベルが重なりやすいので、フローチャートで描く
    - クラス図の注釈（`note for`）の改行は`<br/>`で書く（`\n`はそのまま表示される）
    - 横に広くなる図の直し方（2026-11-11に12枚で使った）: 階層図は`direction LR`で兄弟を縦に積む。図の目的に要らないメンバーは省く。1つのノードから多数へ引く線は、サブグラフへの1本や注釈にまとめる。図ごとの設定はファイル先頭のfrontmatter（`---\nconfig:\n  flowchart:\n    rankSpacing: 20\n---`）で上書きできる。サブグラフの中のつながっていないノードを縦に並べるには、見えない線（`A ~~~ B`）でつなぐ
    - 版型はISOのB5（176×250mm）。本文の幅は132mm
