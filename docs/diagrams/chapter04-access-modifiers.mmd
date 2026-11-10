@@ -1,42 +1,18 @@
-graph TB
-    subgraph "アクセス修飾子の可視性"
-        Class["クラス内"]
-        Package["同一パッケージ内"]
-        Subclass["サブクラス<br/>（異なるパッケージ）"]
-        External["外部<br/>（異なるパッケージ）"]
-        
-        subgraph "private"
-            Private["private<br/>✓ クラス内<br/>✗ パッケージ内<br/>✗ サブクラス<br/>✗ 外部"]
+flowchart TB
+    subgraph pub["public：どこからでも使える"]
+        subgraph prot["protected：同じパッケージと、別パッケージのサブクラスから"]
+            subgraph pkg["修飾子なし：同じパッケージの中から"]
+                subgraph cls["private：同じクラスの中だけ"]
+                    c["クラス自身"]
+                end
+                p["同じパッケージの<br/>ほかのクラス"]
+            end
+            s["別パッケージの<br/>サブクラス"]
         end
-        
-        subgraph "package-private"
-            Default["(修飾子なし)<br/>✓ クラス内<br/>✓ パッケージ内<br/>✗ サブクラス<br/>✗ 外部"]
-        end
-        
-        subgraph "protected"
-            Protected["protected<br/>✓ クラス内<br/>✓ パッケージ内<br/>✓ サブクラス<br/>✗ 外部"]
-        end
-        
-        subgraph "public"
-            Public["public<br/>✓ クラス内<br/>✓ パッケージ内<br/>✓ サブクラス<br/>✓ 外部"]
-        end
+        o["別パッケージの<br/>ほかのクラス"]
     end
-    
-    Class --> Private
-    Class --> Default
-    Class --> Protected
-    Class --> Public
-    
-    Package --> Default
-    Package --> Protected
-    Package --> Public
-    
-    Subclass --> Protected
-    Subclass --> Public
-    
-    External --> Public
-    
-    style Private fill:#ffebee,stroke:#c62828
-    style Default fill:#fff3e0,stroke:#f57c00
-    style Protected fill:#e8f5e9,stroke:#388e3c
-    style Public fill:#e3f2fd,stroke:#1976d2
+
+    style cls fill:#ffebee,stroke:#c62828
+    style pkg fill:#fff3e0,stroke:#ef6c00
+    style prot fill:#e8f5e9,stroke:#2e7d32
+    style pub fill:#e3f2fd,stroke:#1565c0
