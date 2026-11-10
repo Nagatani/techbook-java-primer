@@ -167,7 +167,7 @@ public class TreeMapInternals {
                 r.left = p;
                 p.parent = r;
                 
-                System.out.println("Left rotation on node: " + p.key);
+                IO.println("Left rotation on node: " + p.key);
             }
         }
         
@@ -192,7 +192,7 @@ public class TreeMapInternals {
                 l.right = p;
                 p.parent = l;
                 
-                System.out.println("Right rotation on node: " + p.key);
+                IO.println("Right rotation on node: " + p.key);
             }
         }
         
@@ -221,15 +221,15 @@ public class TreeMapInternals {
          * 中順走査（ソートされた順序で出力）
          */
         public void inorderTraversal() {
-            System.out.print("Inorder: ");
+            IO.print("Inorder: ");
             inorderTraversal(root);
-            System.out.println();
+            IO.println();
         }
         
         private void inorderTraversal(Node node) {
             if (node != null) {
                 inorderTraversal(node.left);
-                System.out.print(node + " ");
+                IO.print(node + " ");
                 inorderTraversal(node.right);
             }
         }
@@ -238,13 +238,13 @@ public class TreeMapInternals {
          * 木の構造を視覚化
          */
         public void printTree() {
-            System.out.println("Tree structure:");
+            IO.println("Tree structure:");
             printTree(root, "", true);
         }
         
         private void printTree(Node node, String prefix, boolean isLast) {
             if (node != null) {
-                System.out.println(prefix + (isLast ? "└── " : "├── ") + node);
+                IO.println(prefix + (isLast ? "└── " : "├── ") + node);
                 
                 List<Node> children = new ArrayList<>();
                 if (node.left != null) children.add(node.left);
@@ -444,7 +444,7 @@ public class TreeMapInternals {
      * 赤黒木の構築過程をデモンストレーション
      */
     public static void demonstrateRedBlackTreeConstruction() {
-        System.out.println("=== Red-Black Tree Construction Demo ===");
+        IO.println("=== Red-Black Tree Construction Demo ===");
         
         SimpleRedBlackTree<Integer, String> tree = new SimpleRedBlackTree<>();
         
@@ -452,25 +452,25 @@ public class TreeMapInternals {
         int[] keys = {10, 5, 15, 3, 7, 12, 17, 1, 4, 6, 8, 11, 13, 16, 18};
         
         for (int key : keys) {
-            System.out.println("\n--- Inserting " + key + " ---");
+            IO.println("\n--- Inserting " + key + " ---");
             tree.put(key, "Value" + key);
             
-            System.out.println("Tree after insertion:");
+            IO.println("Tree after insertion:");
             tree.printTree();
             
             TreeStats stats = tree.getStats();
-            System.out.println(stats);
+            IO.println(stats);
             
             boolean isValid = tree.isValidRedBlackTree();
-            System.out.println("Valid red-black tree: " + isValid);
+            IO.println("Valid red-black tree: " + isValid);
             
             if (key == 8 || key == 13 || key == 18) {
-                System.out.println("\nPress Enter to continue...");
-                try { System.in.read(); } catch (Exception ignored) {}
+                IO.println("\nPress Enter to continue...");
+                IO.readln();
             }
         }
         
-        System.out.println("\nFinal inorder traversal:");
+        IO.println("\nFinal inorder traversal:");
         tree.inorderTraversal();
     }
     
@@ -478,7 +478,7 @@ public class TreeMapInternals {
      * 平衡木 vs 非平衡木のパフォーマンス比較
      */
     public static void compareBalancedVsUnbalanced() {
-        System.out.println("\n=== Balanced vs Unbalanced Tree Performance ===");
+        IO.println("\n=== Balanced vs Unbalanced Tree Performance ===");
         
         // 最悪ケース：昇順データ
         int[] sortedData = new int[1000];
@@ -515,21 +515,21 @@ public class TreeMapInternals {
         }
         long bstSearchTime = System.nanoTime() - startTime;
         
-        System.out.println("Data: 1000 sorted integers (worst case for BST)");
-        System.out.println("\nRed-Black Tree:");
-        System.out.println("  Height: " + rbTree.getHeight());
-        System.out.println("  Insert time: " + rbInsertTime / 1_000_000 + "ms");
-        System.out.println("  Search time: " + rbSearchTime / 1_000_000 + "ms");
+        IO.println("Data: 1000 sorted integers (worst case for BST)");
+        IO.println("\nRed-Black Tree:");
+        IO.println("  Height: " + rbTree.getHeight());
+        IO.println("  Insert time: " + rbInsertTime / 1_000_000 + "ms");
+        IO.println("  Search time: " + rbSearchTime / 1_000_000 + "ms");
         
-        System.out.println("\nSimple BST:");
-        System.out.println("  Height: " + bst.getHeight());
-        System.out.println("  Insert time: " + bstInsertTime / 1_000_000 + "ms");
-        System.out.println("  Search time: " + bstSearchTime / 1_000_000 + "ms");
+        IO.println("\nSimple BST:");
+        IO.println("  Height: " + bst.getHeight());
+        IO.println("  Insert time: " + bstInsertTime / 1_000_000 + "ms");
+        IO.println("  Search time: " + bstSearchTime / 1_000_000 + "ms");
         
-        System.out.println("\nPerformance improvement:");
-        System.out.println("  Height reduction: " + String.format("%.1fx", 
+        IO.println("\nPerformance improvement:");
+        IO.println("  Height reduction: " + String.format("%.1fx", 
                          (double) bst.getHeight() / rbTree.getHeight()));
-        System.out.println("  Search speedup: " + String.format("%.1fx", 
+        IO.println("  Search speedup: " + String.format("%.1fx", 
                          (double) bstSearchTime / rbSearchTime));
     }
     
@@ -537,7 +537,7 @@ public class TreeMapInternals {
      * TreeMapとHashMapの比較
      */
     public static void compareTreeMapVsHashMap() {
-        System.out.println("\n=== TreeMap vs HashMap Performance Comparison ===");
+        IO.println("\n=== TreeMap vs HashMap Performance Comparison ===");
         
         int itemCount = 100_000;
         
@@ -582,22 +582,22 @@ public class TreeMapInternals {
         }
         long hashMapIterationTime = System.nanoTime() - startTime;
         
-        System.out.println("Test with " + itemCount + " integer keys:");
+        IO.println("Test with " + itemCount + " integer keys:");
         
-        System.out.println("\nTreeMap (Red-Black Tree):");
-        System.out.println("  Insert: " + treeMapInsertTime / 1_000_000 + "ms");
-        System.out.println("  Search: " + treeMapSearchTime / 1_000_000 + "ms");
-        System.out.println("  Iteration: " + treeMapIterationTime / 1_000_000 + "ms (sorted)");
+        IO.println("\nTreeMap (Red-Black Tree):");
+        IO.println("  Insert: " + treeMapInsertTime / 1_000_000 + "ms");
+        IO.println("  Search: " + treeMapSearchTime / 1_000_000 + "ms");
+        IO.println("  Iteration: " + treeMapIterationTime / 1_000_000 + "ms (sorted)");
         
-        System.out.println("\nHashMap:");
-        System.out.println("  Insert: " + hashMapInsertTime / 1_000_000 + "ms");
-        System.out.println("  Search: " + hashMapSearchTime / 1_000_000 + "ms");
-        System.out.println("  Iteration: " + hashMapIterationTime / 1_000_000 + "ms (unsorted)");
+        IO.println("\nHashMap:");
+        IO.println("  Insert: " + hashMapInsertTime / 1_000_000 + "ms");
+        IO.println("  Search: " + hashMapSearchTime / 1_000_000 + "ms");
+        IO.println("  Iteration: " + hashMapIterationTime / 1_000_000 + "ms (unsorted)");
         
-        System.out.println("\nHashMap advantage:");
-        System.out.println("  Insert speedup: " + String.format("%.1fx", 
+        IO.println("\nHashMap advantage:");
+        IO.println("  Insert speedup: " + String.format("%.1fx", 
                          (double) treeMapInsertTime / hashMapInsertTime));
-        System.out.println("  Search speedup: " + String.format("%.1fx", 
+        IO.println("  Search speedup: " + String.format("%.1fx", 
                          (double) treeMapSearchTime / hashMapSearchTime));
         
         // 範囲検索のテスト（TreeMapの利点）
@@ -606,16 +606,16 @@ public class TreeMapInternals {
         int count = subMap.size();
         long rangeSearchTime = System.nanoTime() - startTime;
         
-        System.out.println("\nTreeMap advantage (range operations):");
-        System.out.println("  Range search (1000-2000): " + rangeSearchTime / 1_000_000 + "ms (" + count + " items)");
-        System.out.println("  HashMap equivalent: O(n) scan through all items");
+        IO.println("\nTreeMap advantage (range operations):");
+        IO.println("  Range search (1000-2000): " + rangeSearchTime / 1_000_000 + "ms (" + count + " items)");
+        IO.println("  HashMap equivalent: O(n) scan through all items");
     }
     
     /**
      * メモリ使用量の比較
      */
     public static void compareMemoryUsage() {
-        System.out.println("\n=== Memory Usage Comparison ===");
+        IO.println("\n=== Memory Usage Comparison ===");
         
         Runtime runtime = Runtime.getRuntime();
         int itemCount = 100_000;
@@ -647,16 +647,16 @@ public class TreeMapInternals {
         long afterTreeMap = runtime.totalMemory() - runtime.freeMemory();
         long treeMapMemory = afterTreeMap - beforeTreeMap;
         
-        System.out.println("Memory usage for " + itemCount + " entries:");
-        System.out.println("HashMap: " + hashMapMemory / 1024 + " KB");
-        System.out.println("TreeMap: " + treeMapMemory / 1024 + " KB");
-        System.out.println("TreeMap overhead: " + String.format("%.1fx", 
+        IO.println("Memory usage for " + itemCount + " entries:");
+        IO.println("HashMap: " + hashMapMemory / 1024 + " KB");
+        IO.println("TreeMap: " + treeMapMemory / 1024 + " KB");
+        IO.println("TreeMap overhead: " + String.format("%.1fx", 
                          (double) treeMapMemory / hashMapMemory));
         
         // エントリあたりのメモリ使用量
-        System.out.println("\nPer-entry memory usage:");
-        System.out.println("HashMap: " + hashMapMemory / itemCount + " bytes/entry");
-        System.out.println("TreeMap: " + treeMapMemory / itemCount + " bytes/entry");
+        IO.println("\nPer-entry memory usage:");
+        IO.println("HashMap: " + hashMapMemory / itemCount + " bytes/entry");
+        IO.println("TreeMap: " + treeMapMemory / itemCount + " bytes/entry");
     }
     
     /**
@@ -668,11 +668,11 @@ public class TreeMapInternals {
         compareTreeMapVsHashMap();
         compareMemoryUsage();
         
-        System.out.println("\n=== TreeMap Internals Summary ===");
-        System.out.println("1. Red-black tree maintains O(log n) performance");
-        System.out.println("2. Self-balancing prevents worst-case O(n) degradation");
-        System.out.println("3. Automatic sorting enables efficient range operations");
-        System.out.println("4. Higher memory overhead compared to HashMap");
-        System.out.println("5. Slower than HashMap but provides ordering guarantees");
+        IO.println("\n=== TreeMap Internals Summary ===");
+        IO.println("1. Red-black tree maintains O(log n) performance");
+        IO.println("2. Self-balancing prevents worst-case O(n) degradation");
+        IO.println("3. Automatic sorting enables efficient range operations");
+        IO.println("4. Higher memory overhead compared to HashMap");
+        IO.println("5. Slower than HashMap but provides ordering guarantees");
     }
 }

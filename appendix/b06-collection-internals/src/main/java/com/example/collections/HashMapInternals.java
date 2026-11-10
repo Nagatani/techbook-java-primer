@@ -134,7 +134,7 @@ public class HashMapInternals {
                 }
             }
             
-            System.out.println("Resized from " + oldCapacity + " to " + newCapacity);
+            IO.println("Resized from " + oldCapacity + " to " + newCapacity);
         }
         
         /**
@@ -148,17 +148,17 @@ public class HashMapInternals {
          * 内部状態の表示（デバッグ用）
          */
         public void printInternalState() {
-            System.out.println("=== HashMap Internal State ===");
-            System.out.println("Size: " + size);
-            System.out.println("Capacity: " + table.length);
-            System.out.println("Load Factor: " + loadFactor);
-            System.out.println("Threshold: " + threshold);
-            System.out.println("Current Load: " + String.format("%.2f", (double) size / table.length));
+            IO.println("=== HashMap Internal State ===");
+            IO.println("Size: " + size);
+            IO.println("Capacity: " + table.length);
+            IO.println("Load Factor: " + loadFactor);
+            IO.println("Threshold: " + threshold);
+            IO.println("Current Load: " + String.format("%.2f", (double) size / table.length));
             
             for (int i = 0; i < table.length; i++) {
                 if (table[i] != null) {
                     int chainLength = getChainLength(table[i]);
-                    System.out.println("Bucket " + i + ": " + table[i] + " (chain length: " + chainLength + ")");
+                    IO.println("Bucket " + i + ": " + table[i] + " (chain length: " + chainLength + ")");
                 }
             }
         }
@@ -301,13 +301,13 @@ public class HashMapInternals {
      * 負荷係数の影響をデモンストレーション
      */
     public static void demonstrateLoadFactorImpact() {
-        System.out.println("=== Load Factor Impact Demo ===");
+        IO.println("=== Load Factor Impact Demo ===");
         
         double[] loadFactors = {0.5, 0.75, 1.0, 1.5};
         int itemCount = 1000;
         
         for (double loadFactor : loadFactors) {
-            System.out.println("\n--- Load Factor: " + loadFactor + " ---");
+            IO.println("\n--- Load Factor: " + loadFactor + " ---");
             
             SimpleHashMap<Integer, String> map = new SimpleHashMap<>(16, loadFactor);
             
@@ -325,9 +325,9 @@ public class HashMapInternals {
             
             CollisionStats stats = map.getCollisionStats();
             
-            System.out.println("Insert time: " + insertTime / 1_000_000 + "ms");
-            System.out.println("Retrieve time: " + retrieveTime / 1_000_000 + "ms");
-            System.out.println(stats);
+            IO.println("Insert time: " + insertTime / 1_000_000 + "ms");
+            IO.println("Retrieve time: " + retrieveTime / 1_000_000 + "ms");
+            IO.println(stats);
         }
     }
     
@@ -335,12 +335,12 @@ public class HashMapInternals {
      * hashCode実装の影響をデモンストレーション
      */
     public static void demonstrateHashCodeImpact() {
-        System.out.println("\n=== HashCode Implementation Impact Demo ===");
+        IO.println("\n=== HashCode Implementation Impact Demo ===");
         
         int itemCount = 100;
         
         // 悪いhashCode実装
-        System.out.println("\n--- Bad HashCode Implementation ---");
+        IO.println("\n--- Bad HashCode Implementation ---");
         SimpleHashMap<BadHashCodeExample, String> badMap = new SimpleHashMap<>();
         
         long startTime = System.nanoTime();
@@ -351,14 +351,14 @@ public class HashMapInternals {
         long badInsertTime = System.nanoTime() - startTime;
         
         CollisionStats badStats = badMap.getCollisionStats();
-        System.out.println("Insert time: " + badInsertTime / 1_000_000 + "ms");
-        System.out.println(badStats);
+        IO.println("Insert time: " + badInsertTime / 1_000_000 + "ms");
+        IO.println(badStats);
         if (itemCount <= 20) {
             badMap.printInternalState();
         }
         
         // 良いhashCode実装
-        System.out.println("\n--- Good HashCode Implementation ---");
+        IO.println("\n--- Good HashCode Implementation ---");
         SimpleHashMap<GoodHashCodeExample, String> goodMap = new SimpleHashMap<>();
         
         startTime = System.nanoTime();
@@ -369,13 +369,13 @@ public class HashMapInternals {
         long goodInsertTime = System.nanoTime() - startTime;
         
         CollisionStats goodStats = goodMap.getCollisionStats();
-        System.out.println("Insert time: " + goodInsertTime / 1_000_000 + "ms");
-        System.out.println(goodStats);
+        IO.println("Insert time: " + goodInsertTime / 1_000_000 + "ms");
+        IO.println(goodStats);
         if (itemCount <= 20) {
             goodMap.printInternalState();
         }
         
-        System.out.println("\nPerformance difference: " + 
+        IO.println("\nPerformance difference: " + 
                          String.format("%.1fx", (double) badInsertTime / goodInsertTime));
     }
     
@@ -383,25 +383,25 @@ public class HashMapInternals {
      * リサイズ動作のデモンストレーション
      */
     public static void demonstrateResizing() {
-        System.out.println("\n=== Resizing Behavior Demo ===");
+        IO.println("\n=== Resizing Behavior Demo ===");
         
         SimpleHashMap<Integer, String> map = new SimpleHashMap<>(4, 0.75);
         
-        System.out.println("Initial state:");
+        IO.println("Initial state:");
         map.printInternalState();
         
         // 閾値を超えるまで要素を追加
         for (int i = 0; i < 10; i++) {
-            System.out.println("\nAdding item " + i);
+            IO.println("\nAdding item " + i);
             map.put(i, "Value" + i);
             
             if ((i + 1) % 3 == 0 || i >= 6) { // リサイズ前後の状態を表示
                 CollisionStats stats = map.getCollisionStats();
-                System.out.println("Size: " + map.size() + ", " + stats);
+                IO.println("Size: " + map.size() + ", " + stats);
             }
         }
         
-        System.out.println("\nFinal state:");
+        IO.println("\nFinal state:");
         map.printInternalState();
     }
     
@@ -409,7 +409,7 @@ public class HashMapInternals {
      * 標準HashMap vs カスタム実装の比較
      */
     public static void compareWithStandardHashMap() {
-        System.out.println("\n=== Standard HashMap vs Custom Implementation ===");
+        IO.println("\n=== Standard HashMap vs Custom Implementation ===");
         
         int itemCount = 100_000;
         
@@ -441,21 +441,21 @@ public class HashMapInternals {
         }
         long customRetrieveTime = System.nanoTime() - startTime;
         
-        System.out.println("Standard HashMap:");
-        System.out.println("  Insert: " + standardInsertTime / 1_000_000 + "ms");
-        System.out.println("  Retrieve: " + standardRetrieveTime / 1_000_000 + "ms");
+        IO.println("Standard HashMap:");
+        IO.println("  Insert: " + standardInsertTime / 1_000_000 + "ms");
+        IO.println("  Retrieve: " + standardRetrieveTime / 1_000_000 + "ms");
         
-        System.out.println("Custom HashMap:");
-        System.out.println("  Insert: " + customInsertTime / 1_000_000 + "ms");
-        System.out.println("  Retrieve: " + customRetrieveTime / 1_000_000 + "ms");
+        IO.println("Custom HashMap:");
+        IO.println("  Insert: " + customInsertTime / 1_000_000 + "ms");
+        IO.println("  Retrieve: " + customRetrieveTime / 1_000_000 + "ms");
         
         CollisionStats stats = customMap.getCollisionStats();
-        System.out.println("Custom HashMap Stats: " + stats);
+        IO.println("Custom HashMap Stats: " + stats);
         
-        System.out.println("Performance ratio (Standard/Custom):");
-        System.out.println("  Insert: " + String.format("%.2f", 
+        IO.println("Performance ratio (Standard/Custom):");
+        IO.println("  Insert: " + String.format("%.2f", 
                          (double) standardInsertTime / customInsertTime));
-        System.out.println("  Retrieve: " + String.format("%.2f", 
+        IO.println("  Retrieve: " + String.format("%.2f", 
                          (double) standardRetrieveTime / customRetrieveTime));
     }
     
@@ -463,7 +463,7 @@ public class HashMapInternals {
      * ハッシュ分散の可視化
      */
     public static void visualizeHashDistribution() {
-        System.out.println("\n=== Hash Distribution Visualization ===");
+        IO.println("\n=== Hash Distribution Visualization ===");
         
         int bucketCount = 16;
         int itemCount = 64;
@@ -477,10 +477,10 @@ public class HashMapInternals {
             distribution[bucket]++;
         }
         
-        System.out.println("Hash distribution for " + itemCount + " random string keys:");
+        IO.println("Hash distribution for " + itemCount + " random string keys:");
         for (int i = 0; i < bucketCount; i++) {
-            System.out.printf("Bucket %2d: %s (%d items)\n", 
-                            i, "█".repeat(distribution[i]), distribution[i]);
+            IO.println("Bucket %2d: %s (%d items)".formatted(
+                            i, "█".repeat(distribution[i]), distribution[i]));
         }
         
         // 統計
@@ -492,10 +492,10 @@ public class HashMapInternals {
         variance /= bucketCount;
         double stdDev = Math.sqrt(variance);
         
-        System.out.println("\nDistribution Statistics:");
-        System.out.println("Average items per bucket: " + String.format("%.1f", average));
-        System.out.println("Standard deviation: " + String.format("%.2f", stdDev));
-        System.out.println("Ideal standard deviation: " + String.format("%.2f", Math.sqrt(average)));
+        IO.println("\nDistribution Statistics:");
+        IO.println("Average items per bucket: " + String.format("%.1f", average));
+        IO.println("Standard deviation: " + String.format("%.2f", stdDev));
+        IO.println("Ideal standard deviation: " + String.format("%.2f", Math.sqrt(average)));
     }
     
     /**
@@ -508,11 +508,11 @@ public class HashMapInternals {
         compareWithStandardHashMap();
         visualizeHashDistribution();
         
-        System.out.println("\n=== HashMap Internals Summary ===");
-        System.out.println("1. Hash function quality directly affects performance");
-        System.out.println("2. Load factor balances space vs time efficiency");
-        System.out.println("3. Resizing redistributes elements for better performance");
-        System.out.println("4. Good hash distribution minimizes collisions");
-        System.out.println("5. Java 8+ uses red-black trees for long collision chains");
+        IO.println("\n=== HashMap Internals Summary ===");
+        IO.println("1. Hash function quality directly affects performance");
+        IO.println("2. Load factor balances space vs time efficiency");
+        IO.println("3. Resizing redistributes elements for better performance");
+        IO.println("4. Good hash distribution minimizes collisions");
+        IO.println("5. Java 8+ uses red-black trees for long collision chains");
     }
 }
