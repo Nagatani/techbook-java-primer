@@ -2,29 +2,21 @@
 
 ## 奥付
 
-### 大学2年生のためのプログラミング入門 オブジェクト指向言語 Java
+<p class="colophon-title">大学2年生のためのプログラミング入門<br>オブジェクト指向言語 Java</p>
 
-<div class="colophon-info">
+<dl>
+<dt>著者</dt>
+<dd>Hidehiro Nagatani</dd>
+<dt>連絡先</dt>
+<dd>https://github.com/Nagatani/techbook-java-primer/</dd>
+</dl>
 
-**著者**: Hidehiro Nagatani
+<p class="colophon-note">本書の内容は著作権法により保護されています。サンプルコードは学習・研究目的での利用を許可します。</p>
 
-**ライセンス**:  
-本書の内容は著作権法により保護されています。
-サンプルコードは学習・研究目的での利用を許可します。
+<p class="colophon-note">本書の執筆にあたり、多くの方々にご協力いただきました。とくに、Javaコミュニティと技術書執筆者の皆様に感謝します。</p>
 
-**連絡先**:  
-GitHub: https://github.com/Nagatani/techbook-java-primer/
+<p class="colophon-note">本書の内容については細心の注意を払っていますが、内容の正確性について保証するものではありません。本書の利用により生じた損害について、著者は責任を負いかねます。</p>
 
-**謝辞**:  
-本書の執筆にあたり、多くの方々にご協力いただきました。  
-とくに、Javaコミュニティと技術書執筆者の皆様に感謝します。
-
-**免責事項**:  
-本書の内容については細心の注意を払っていますが、内容の正確性について保証するものではありません。  
-本書の利用により生じた損害について、著者は責任を負いかねます。
-
-</div>
-
-  <div class="colophon-footer">© 2025 Hidehiro Nagatani. All rights reserved.</div>
+<p class="colophon-footer">© 2025 Hidehiro Nagatani. All rights reserved.</p>
 
 </div>

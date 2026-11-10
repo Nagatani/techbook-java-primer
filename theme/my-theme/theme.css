@@ -1952,3 +1952,86 @@ h2 {
 h2:not([data-chapter]) {
   string-set: section content(), section-number "";
 }
+
+/* 奥付 - 見出しの帯や番号を付けず、書名・項目・注記を罫線で区切るだけの組みにして、ページの下端に寄せる */
+.colophon-page {
+  float: block-end;
+  float-reference: page;
+  width: 100%;
+  font-size: 11Q;
+  line-height: 18Q;
+}
+
+.colophon-page h2 {
+  margin: 0 0 3mm;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 13Q;
+  line-height: 18Q;
+  letter-spacing: 0.3em;
+  color: var(--text-primary, #2c3e50);
+}
+
+.colophon-page h2::before {
+  content: none !important;
+  display: none !important;
+}
+
+.colophon-page .colophon-title {
+  margin: 0 0 2mm;
+  padding: 0 0 2mm;
+  text-indent: 0;
+  font-size: 15Q;
+  line-height: 22Q;
+  font-weight: 700;
+  border-bottom: 1px solid #333;
+}
+
+.colophon-page dl {
+  margin: 0 0 2mm;
+}
+
+.colophon-page dt {
+  float: left;
+  clear: left;
+  width: 6em;
+  font-weight: 700;
+}
+
+.colophon-page dd {
+  margin: 0 0 0 6em;
+}
+
+.colophon-page .colophon-note {
+  margin: 0;
+  padding: 2mm 0 0;
+  text-indent: 0;
+  font-size: 10Q;
+  line-height: 16Q;
+  color: #495057;
+  border-top: 1px solid #ccc;
+}
+
+.colophon-page .colophon-note + .colophon-note {
+  padding-top: 1mm;
+  border-top: none;
+}
+
+.colophon-page .colophon-footer {
+  margin: 2mm 0 0;
+  padding-top: 2mm;
+  text-indent: 0;
+  font-size: 10Q;
+  border-top: 1px solid #333;
+}
+
+/* 奥付の連絡先URLは脚注にしない（本文と同じページに載っているため） */
+.colophon-page a[href^='http'] {
+  counter-increment: none;
+}
+
+.colophon-page a[href^='http']::before {
+  content: none;
+  float: none;
+}
