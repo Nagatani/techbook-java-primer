@@ -34,7 +34,7 @@ public class ChangeListenerExample extends JFrame {
                 
                 // ドラッグ終了時のみ処理
                 if (!slider.getValueIsAdjusting()) {
-                    System.out.println("最終値: " + value);
+                    IO.println("最終値: " + value);
                 }
             }
         });

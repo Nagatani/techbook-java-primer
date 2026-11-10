@@ -11,7 +11,7 @@ sections:
   - key: "ラムダ式による簡潔な記述"
     hash: 40610145
   - key: "代表的なイベントの種類"
-    hash: b4540dd0
+    hash: f10f57c2
   - key: "イベント処理のベストプラクティス"
     hash: c6f967c6
   - key: "まとめ"

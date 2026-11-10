@@ -86,7 +86,7 @@ public class ItemListenerExample extends JFrame {
         if (checkBox1.isSelected()) selected.append("オプション1 ");
         if (checkBox2.isSelected()) selected.append("オプション2 ");
         if (checkBox3.isSelected()) selected.append("オプション3 ");
-        System.out.println(selected.toString());
+        IO.println(selected.toString());
     }
     
     public static void main(String[] args) {
