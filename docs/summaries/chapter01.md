@@ -15,7 +15,7 @@ sections:
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
     hash: 4c1a912e
   - key: "Javaの特徴"
-    hash: 2494026d
+    hash: 679c43e9
   - key: "開発環境の準備"
     hash: a946f039
   - key: "最初のJavaプログラム"
@@ -84,7 +84,7 @@ sections:
     + 1ファイル1publicクラスの注意、C言語との対比表現
     + 巻末の「Deep Dive: 抽象構文木（AST）とコンパイラの仕組み」を案内するが、付録Bにその項目は存在しない
 - Javaの特徴（L271–328）
-    + Write Once, Run Anywhere、JVMとバイトコード、GC、サンドボックス、JIT。JVMアーキテクチャの図（figure01-01）
+    + Write Once, Run Anywhere、JVMとバイトコード、GC、サンドボックス、JIT。JVMアーキテクチャの図（chapter01-jvm-architecture）
     + 参照とポインタの違い、強い型付け、Maven/Gradleを含むエコシステム。GCの表記についての脚注
     + 「なぜJavaを学ぶのか」で企業システム、Spring Boot/Jakarta EE、Android、Hadoop/Sparkを挙げる
 - 開発環境の準備（L329–342）

@@ -5,9 +5,9 @@ sections:
   - key: "本章の学習目標"
     hash: e603fde1
   - key: "基本コンポーネントとレイアウト"
-    hash: e27b785c
+    hash: ebff6b23
   - key: "イベント処理入門"
-    hash: 20c05d21
+    hash: 9dbc5827
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"
     hash: e77907bd
   - key: "カスタムコンポーネントの作成"
@@ -67,13 +67,13 @@ sections:
     + MouseListener・KeyListener・ペイントシステムは本文で扱っていない
 - 基本コンポーネントとレイアウト（L28–722）
     + JFrameで最小のウィンドウを表示し、setSize・setDefaultCloseOperation・setLocationRelativeTo・setVisibleの役割を説明（17-1）。setResizableや絶対位置など詳細設定（17-2）
-    + Swingコンポーネント継承階層の図（figure17-01）、JLabelの表示（17-3）、BorderLayoutの5領域（17-4）
+    + Swingコンポーネント継承階層の図（chapter17-swing-hierarchy）、JLabelの表示（17-3）、BorderLayoutの5領域（17-4）
     + JLabelのHTML表示（17-5）、JButtonの色・サイズ・無効化（17-6）
     + JTextField・JPasswordField・JTextArea・JSpinner・JSliderの入力系（17-7）、JCheckBox・ButtonGroup付きJRadioButton・JComboBox・JListの選択系（17-8）
     + BorderLayout（17-9）、GridLayout（17-10）、FlowLayout（17-11）の特徴と例
     + JPanelの用途とエディタ風画面（17-12）、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-13）
 - イベント処理入門（L723–1106）
-    + イベント駆動の考え方と、イベントソース・イベントオブジェクト・リスナーの3要素。イベント処理モデルの図（figure17-02）
+    + イベント駆動の考え方と、イベントソース・イベントオブジェクト・リスナーの3要素。イベント処理モデルの図（chapter17-event-model）
     + 匿名クラスのActionListenerでボタンクリックを処理（17-14）、JTextFieldの入力をラベルに表示（17-15）
     + 匿名クラスとラムダ式の比較（17-16）、大文字・小文字変換アプリ（17-17）
     + カウンタアプリ（17-18）、isSelectedによる選択状態の処理（17-19）、複数の入力部品を組み合わせたフォーム（17-20）

@@ -7,11 +7,11 @@ sections:
   - key: "なぜ継承とポリモーフィズムが必要なのか"
     hash: d8559dc0
   - key: "実践的な継承設計パターン"
-    hash: cfc11521
+    hash: 8dc3f660
   - key: "メソッドのオーバーライド"
     hash: 792d69ee
   - key: "ポリモーフィズム（多態性）"
-    hash: a7d71a07
+    hash: 12d972c1
   - key: "`instanceof`演算子とキャスト"
     hash: 67e6789b
   - key: "例外処理の基礎（補足）"
@@ -66,7 +66,7 @@ sections:
     + 給与計算の雇用形態を例にコード重複の問題（保守性・バグ・拡張性）を示す
     + 継承によるDRY原則と変更の局所化、ポリモーフィズムによる開放閉鎖原則・依存性逆転の原則を名前だけ紹介する
 - 実践的な継承設計パターン（L61–1140）
-    + 決済システム: 具象クラスPaymentProcessorのfinalなprocessPaymentでテンプレートメソッドパターンを実装し、CreditCardPayment/PayPalPaymentが検証やAPI呼び出しをオーバーライドする。例外を使わずboolean戻り値とerrorMessageで失敗を扱う（5-1〜5-3、figure05-01）
+    + 決済システム: 具象クラスPaymentProcessorのfinalなprocessPaymentでテンプレートメソッドパターンを実装し、CreditCardPayment/PayPalPaymentが検証やAPI呼び出しをオーバーライドする。例外を使わずboolean戻り値とerrorMessageで失敗を扱う（5-1〜5-3、chapter05-inheritance-hierarchy）
     + 段階的リファクタリング: WordDocumentとPDFDocumentの重複（5-4、5-6）から親クラスDocumentを抽出し（5-7）、子クラスを再実装する（5-8）。継承階層は3層以上を避けるべきとの注意
     + 継承の書き方: Employeeを継承するManager/Developerで、フィールド・メソッドの継承と固有メンバの追加を示す（5-10）
     + is-a関係とhas-a関係（コンポジション）の区別
@@ -81,7 +81,7 @@ sections:
 - ポリモーフィズム（多態性）（L1257–1686）
     + 親クラス型の変数への子クラスインスタンスの代入（アップキャスト、5-23）と、同じ呼び出しで異なる振る舞い（5-24）
     + User配列をループで処理し、PremiumUser追加時にも呼び出し側を変えなくてよいことを示す（5-25）
-    + ユーザー通知のBefore/After比較（5-26、5-27。2026-11-08に、実行結果に合うよう全文のmainに処理を足し、番号なしのUserクラスは5-27の抜粋に含めた）と利点のまとめ、動的バインディングの図（figure05-02）
+    + ユーザー通知のBefore/After比較（5-26、5-27。2026-11-08に、実行結果に合うよう全文のmainに処理を足し、番号なしのUserクラスは5-27の抜粋に含めた）と利点のまとめ、動的バインディングの図（chapter05-polymorphism）
     + 図形描画システムのBefore/After比較（5-28、5-29）と、OCP・SRP・DIP・テスト容易性・並列開発の利点
 - `instanceof`演算子とキャスト（L1687–1772）
     + 親クラス型では子クラス固有メソッドを呼べないこと（5-30）

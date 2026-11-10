@@ -11,7 +11,7 @@ sections:
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 034b1298
   - key: "内部クラス（Inner Classes）"
-    hash: c00d8116
+    hash: e20b7eab
   - key: "まとめ"
     hash: 648e3d3d
   - key: "章末演習"
@@ -67,7 +67,7 @@ sections:
     + 終端状態を持つ`OrderStatus`と、状態遷移で新しいインスタンスを返す`Order`（8-25）
     + ゲームのキャラクター職業（Enum）とステータス（Record）の組み合わせ（8-26）
 - 内部クラス（Inner Classes）（L965–1166）
-    + 4種類の内部クラスの関係図（figure08-03）
+    + 4種類の内部クラスの関係図（chapter08-inner-class-hierarchy）
     + メンバー内部クラスと`outer.new InnerClass()`（8-27）、静的ネストクラス（8-28）、ローカルクラスと実質的にfinalな変数（8-29）、匿名クラスによるComparator（8-30）
     + 匿名クラスでIteratorを返す`MyList<T>`（8-31）
     + 種類の選び方、メモリリークの回避、ラムダ式による代替のベストプラクティス

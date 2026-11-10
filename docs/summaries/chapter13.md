@@ -9,7 +9,7 @@ sections:
   - key: "例外処理の基本: `try-catch-finally`"
     hash: 83b9b782
   - key: "検査例外と非検査例外"
-    hash: 7db094f2
+    hash: df7dd85d
   - key: "独自例外と例外の連鎖"
     hash: 6657752e
   - key: "実践的な例外処理パターン"
