@@ -93,6 +93,9 @@ Gradleは`--warning-mode all`で、Gradle 10で使えなくなる書き方の警
   - `import javax.swing.*`と`import java.util.*`を両方使うと`Timer`があいまいになる。`import javax.swing.Timer;`を明示する
   - クラス名をJUnitのアノテーション名（`ParameterizedTest`など）と同じにしない
 - 入出力・並行処理
+  - 標準入出力は`IO`クラス（`IO.println`・`IO.print`・`IO.readln`）で書く。`IO.println`の引数は`Object`なので、`char[]`は`new String(配列)`にして渡す
+  - `IO.readln`は最初に使った`System.in`の読み取り器を持ち続ける。`System.setIn`で入力を差し替えても2回目以降は読めない（`null`が返る）ので、テストで入力を差し替えるコードには使わない
+  - `IO`という名前のクラスを自作すると、そちらが`java.lang.IO`より優先される。その中で標準入出力を使うときは`java.lang.IO`と書く
   - 同じJVMの中で`FileLock`を重ねて取ると`OverlappingFileLockException`になる。スレッド間はJVMのモニター（`synchronized`など）で先に直列化する
   - `AsynchronousFileChannel`は`APPEND`を使えない
   - ソケットのチャットなどは`shutdownInput()`と`join()`で終了させ、デッドロックしないようにする
