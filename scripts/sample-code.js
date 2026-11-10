@@ -157,7 +157,8 @@ function findMain(dir, prefer = []) {
   const all = fs.readdirSync(dir).filter((x) => x.endsWith('.java')).sort();
   for (const f of [...prefer.filter((x) => all.includes(x)), ...all.filter((x) => !prefer.includes(x))]) {
     const code = fs.readFileSync(path.join(dir, f), 'utf8');
-    const m = L.mainClass(code);
+    // クラス宣言のないファイル（コンパクトソースファイル）は、ファイル名がクラス名になる
+    const m = L.mainClass(code) || (L.isCompactSource(code) ? path.basename(f, '.java') : null);
     if (!m) continue;
     const pkg = code.match(/^package\s+([\w.]+)\s*;/m);
     return pkg ? `${pkg[1]}.${m}` : m;

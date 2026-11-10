@@ -119,11 +119,35 @@ function normalize(code) {
 }
 
 /** mainメソッドを持つトップレベルの型の名前（なければ null） */
+// Java 25の起動の規則で main になりうるメソッド（static でも引数なしでもよい）
+const MAIN_METHOD = /^\s*(?:public\s+|protected\s+)?(?:static\s+)?void\s+main\s*\(\s*(?:(?:final\s+)?String\s*(?:\[\]|\.\.\.)\s*\w+\s*)?\)/m;
+
+/** code の先頭から pos までの波かっこの深さ（文字列・文字・コメントの中は数えない） */
+function braceDepth(code, pos) {
+  let depth = 0;
+  for (let i = 0; i < pos; i++) {
+    const c = code[i];
+    if (c === '/' && code[i + 1] === '/') { i = code.indexOf('\n', i); if (i < 0) break; continue; }
+    if (c === '/' && code[i + 1] === '*') { i = code.indexOf('*/', i + 2) + 1; if (i <= 0) break; continue; }
+    if (c === '"' || c === "'") { for (i++; i < pos && code[i] !== c; i++) if (code[i] === '\\') i++; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') depth--;
+  }
+  return depth;
+}
+
 function mainClass(code) {
-  const m = code.match(/static\s+void\s+main\s*\(\s*(final\s+)?String/);
-  if (!m) return null;
+  // 従来の public static void main(String[] args) を優先する
+  const m = code.match(/static\s+void\s+main\s*\(\s*(final\s+)?String/) || code.match(MAIN_METHOD);
+  if (!m || braceDepth(code, m.index) === 0) return null;
   const decls = [...code.slice(0, m.index).matchAll(new RegExp(TYPE_DECL.source, 'gm'))];
   return decls.length ? decls[decls.length - 1][2] : null;
+}
+
+/** クラス宣言のない main だけのファイル（Java 25のコンパクトソースファイル）か */
+function isCompactSource(code) {
+  const m = code.match(MAIN_METHOD);
+  return Boolean(m) && braceDepth(code, m.index) === 0;
 }
 
 const norm = (t) => t.split('\n').map((l) => l.replace(/\s+$/, '')).join('\n').replace(/^\n+|\n+$/g, '');
@@ -307,6 +331,6 @@ function main() {
   process.exitCode = totals.エラー ? 1 : 0;
 }
 
-module.exports = { extract, isFragment, normalize, mainClass, compile, compileWithProviders, run, typesOf, norm, TYPE_DECL, PUBLIC_DECL, INTENDED, ROOT, MANUSCRIPTS };
+module.exports = { extract, isFragment, normalize, mainClass, isCompactSource, compile, compileWithProviders, run, typesOf, norm, TYPE_DECL, PUBLIC_DECL, INTENDED, ROOT, MANUSCRIPTS };
 
 if (require.main === module) main();
