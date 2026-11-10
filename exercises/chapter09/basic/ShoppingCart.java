@@ -67,7 +67,7 @@ public class ShoppingCart {
      * TODO: カート内の全商品と合計金額を表示してください
      */
     public void displayCart() {
-        System.out.println("=== ショッピングカート (" + customerName + ") ===");
+        IO.println("=== ショッピングカート (" + customerName + ") ===");
         // TODO: 実装してください
         // 各商品の情報と最後に合計金額を表示
     }

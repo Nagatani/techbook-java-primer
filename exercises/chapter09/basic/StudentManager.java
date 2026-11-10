@@ -47,7 +47,7 @@ public class StudentManager {
      * TODO: リストを使用して全学生を表示してください
      */
     public void displayAllStudents() {
-        System.out.println("=== 学生一覧 ===");
+        IO.println("=== 学生一覧 ===");
         // TODO: 実装してください
     }
     
@@ -56,7 +56,7 @@ public class StudentManager {
      * TODO: Comparatorを使用して成績の降順でソートしてください
      */
     public void displayStudentsByScore() {
-        System.out.println("=== 成績順学生一覧 ===");
+        IO.println("=== 成績順学生一覧 ===");
         // TODO: 実装してください
         // ヒント: Collections.sort()またはList.sort()を使用
     }
