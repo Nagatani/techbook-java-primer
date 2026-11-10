@@ -467,6 +467,12 @@ Response Body: {
 
 UDPは、コネクションレスで信頼性の低いプロトコルですが、低遅延で高速な通信が可能です。リアルタイムゲーム、ストリーミング、DNSなどで使用されます。
 
+<div class="figure">
+
+![TCPとUDPの通信の違い](images/diagrams/chapter16-tcp-vs-udp.svg)
+
+</div>
+
 以下のコードは、UDPサーバーの実装例です。DatagramSocketを使用してUDPパケットを受信し、クライアントにエコーレスポンスを送信します。UDPはコネクションレスのため、各パケットにはデータだけでなく送信元のアドレスとポート情報も含まれています。
 
 <span class="listing-number">**サンプルコード16-7**　UDPServer.java</span>

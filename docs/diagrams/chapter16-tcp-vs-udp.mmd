@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant C as 送信側
+    participant S as 受信側
+
+    Note over C,S: TCP（Socket）：接続してから送る
+    C->>S: 接続を要求
+    S-->>C: 接続を受け入れる
+    C->>S: データ1
+    S-->>C: 受け取ったことを知らせる
+    C->>S: データ2（届かなければ送り直す）
+    S-->>C: 受け取ったことを知らせる
+    C->>S: 切断
+
+    Note over C,S: UDP（DatagramSocket）：接続せずに送る
+    C-)S: パケット1
+    C-)S: パケット2（届かなくても送り直さない）
+    C-)S: パケット3（届く順番も保証されない）
