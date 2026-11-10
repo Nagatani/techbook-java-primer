@@ -99,6 +99,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。どの図も文字が9Qになる倍率で載せ、本文の幅（130mm）とページに収まる高さ（150mm）を超える図だけを縮める。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
    - `npm run check:diagrams`（CI）が元データ・画像・原稿の対応を検査し、縮めた結果、文字が7Q未満になる図を「注意」として示す。注意の出た図は、図を分ける、並べる向きを変える、メンバーを減らすなど、書き方を見直す
    - クラス図の注釈（`note for`）の改行は`<br/>`で書く（`\n`はそのまま表示される）
+   - 横に広くなる図の直し方（2026-11-11に12枚で使った）: 階層図は`direction LR`で兄弟を縦に積む。図の目的に要らないメンバーは省く。1つのノードから多数へ引く線は、サブグラフへの1本や注釈にまとめる。図ごとの設定はファイル先頭のfrontmatter（`---\nconfig:\n  flowchart:\n    rankSpacing: 20\n---`）で上書きできる。サブグラフの中のつながっていないノードを縦に並べるには、見えない線（`A ~~~ B`）でつなぐ
    - 版型はISOのB5（176×250mm）。本文の幅は132mm
 
 5. **Chapter Structure**:
