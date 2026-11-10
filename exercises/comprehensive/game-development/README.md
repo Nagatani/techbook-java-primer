@@ -133,7 +133,7 @@ public class GameEngine implements Runnable {
             
             // FPS計測
             if (System.currentTimeMillis() - timer > 1000) {
-                System.out.println("FPS: " + frames + ", UPS: " + updates);
+                IO.println("FPS: " + frames + ", UPS: " + updates);
                 frames = 0;
                 updates = 0;
                 timer += 1000;
