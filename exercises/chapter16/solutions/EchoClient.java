@@ -2,7 +2,6 @@ package chapter16.solutions;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 import java.util.logging.*;
 
 /**
@@ -101,29 +100,29 @@ public class EchoClient {
      * 対話的にメッセージを送受信する
      */
     public void interactiveSession() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("エコークライアントを起動しました。");
-            System.out.println("メッセージを入力してください（'quit'で終了）:");
+        IO.println("エコークライアントを起動しました。");
+        IO.println("メッセージを入力してください（'quit'で終了）:");
+        
+        while (true) {
+            String input = IO.readln("> ");
+            if (input == null) {
+                break;  // 入力の終わり（Ctrl+DやCtrl+Z）
+            }
             
-            while (true) {
-                System.out.print("> ");
-                String input = scanner.nextLine();
+            if (input.trim().isEmpty()) {
+                continue;
+            }
+            
+            try {
+                String response = sendMessage(input);
+                IO.println("< " + response);
                 
-                if (input.trim().isEmpty()) {
-                    continue;
-                }
-                
-                try {
-                    String response = sendMessage(input);
-                    System.out.println("< " + response);
-                    
-                    if ("quit".equalsIgnoreCase(input)) {
-                        break;
-                    }
-                } catch (IOException e) {
-                    System.err.println("通信エラー: " + e.getMessage());
+                if ("quit".equalsIgnoreCase(input)) {
                     break;
                 }
+            } catch (IOException e) {
+                System.err.println("通信エラー: " + e.getMessage());
+                break;
             }
         }
     }

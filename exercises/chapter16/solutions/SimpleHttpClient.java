@@ -297,13 +297,13 @@ public class SimpleHttpClient {
         try {
             HttpResponse response = client.get(args[0]);
             
-            System.out.println("ステータスコード: " + response.getStatusCode());
-            System.out.println("ステータスメッセージ: " + response.getStatusMessage());
-            System.out.println("\n--- ヘッダー ---");
+            IO.println("ステータスコード: " + response.getStatusCode());
+            IO.println("ステータスメッセージ: " + response.getStatusMessage());
+            IO.println("\n--- ヘッダー ---");
             response.getHeaders().forEach((k, v) -> 
-                System.out.println(k + ": " + v));
-            System.out.println("\n--- ボディ ---");
-            System.out.println(response.getBody());
+                IO.println(k + ": " + v));
+            IO.println("\n--- ボディ ---");
+            IO.println(response.getBody());
             
         } catch (MalformedURLException e) {
             System.err.println("不正なURL: " + e.getMessage());

@@ -2,7 +2,6 @@ package chapter16.solutions;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.logging.*;
 
@@ -104,26 +103,25 @@ public class ChatClient {
      * 対話的なチャットセッションを開始する
      */
     public void startChatSession() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("\n=== チャットクライアント ===");
-            System.out.println("メッセージを入力してください（/help でヘルプ、/quit で終了）:");
-            System.out.println();
+        IO.println("\n=== チャットクライアント ===");
+        IO.println("メッセージを入力してください（/help でヘルプ、/quit で終了）:");
+        IO.println();
+        
+        while (connected) {
+            // プロンプトを表示せず、ユーザー入力を待つ
+            String input = IO.readln();
+            if (input == null) {
+                break;  // 入力の終わり（Ctrl+DやCtrl+Z）
+            }
             
-            while (connected) {
-                // プロンプトを表示せず、ユーザー入力を待つ
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    
-                    if (input.trim().isEmpty()) {
-                        continue;
-                    }
-                    
-                    sendMessage(input);
-                    
-                    if ("/quit".equalsIgnoreCase(input.trim())) {
-                        break;
-                    }
-                }
+            if (input.trim().isEmpty()) {
+                continue;
+            }
+            
+            sendMessage(input);
+            
+            if ("/quit".equalsIgnoreCase(input.trim())) {
+                break;
             }
         }
     }
@@ -138,7 +136,7 @@ public class ChatClient {
                 String message;
                 while (connected && (message = in.readLine()) != null) {
                     // 受信メッセージを表示
-                    System.out.println(message);
+                    IO.println(message);
                     
                     // サーバーからの切断メッセージをチェック
                     if (message.contains("Disconnecting...")) {
