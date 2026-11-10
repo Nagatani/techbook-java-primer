@@ -1,51 +1,47 @@
 classDiagram
+    direction LR
+
     class OuterClass {
         -int outerField
         +outerMethod() void
     }
-    
+
     class InnerClass {
         <<非static内部クラス>>
         -int innerField
         +innerMethod() void
         +accessOuter() void
     }
-    
+
     class StaticNestedClass {
         <<static内部クラス>>
         -int staticField
         +staticMethod() void
     }
-    
+
     class LocalClass {
         <<ローカルクラス>>
         +localMethod() void
         +accessEnclosing() void
     }
-    
+
     class AnonymousClass {
         <<匿名クラス>>
-        +overriddenMethod() void
+        +compare(T o1, T o2) int
     }
-    
-    class EventListener {
-        <<interface>>
-        +onEvent() void
-    }
-    
-    class Comparator {
+
+    class Comparator~T~ {
         <<interface>>
         +compare(T o1, T o2) int
     }
-    
+
     OuterClass *-- InnerClass : contains
     OuterClass *-- StaticNestedClass : contains
     OuterClass ..> LocalClass : creates
     OuterClass ..> AnonymousClass : creates
-    EventListener <|.. AnonymousClass : implements
-    Comparator <|.. AnonymousClass : implements
-    
-    note for InnerClass "外部クラスのインスタンスに<br/>紐付けられる<br/>外部クラスのメンバーに<br/>アクセス可能"
-    note for StaticNestedClass "外部クラスのインスタンスに<br/>依存しない<br/>staticメンバーのみ<br/>アクセス可能"
-    note for LocalClass "メソッド内で定義<br/>メソッドのローカル変数<br/>（final/実質的final）に<br/>アクセス可能"
-    note for AnonymousClass "名前を持たない<br/>インターフェイスや<br/>抽象クラスの実装"
+    AnonymousClass ..|> Comparator : implements
+
+    note for InnerClass "外部クラスのインスタンスに紐付き<br/>外部クラスのメンバーにアクセスできる"
+    note for StaticNestedClass "外部クラスのインスタンスに依存せず<br/>外部クラスのstaticメンバーだけを使える"
+    note for LocalClass "メソッドの中で定義し、メソッドの<br/>ローカル変数（実質的final）を使える"
+    note for AnonymousClass "名前を持たず、インターフェイスや<br/>抽象クラスをその場で実装する"
