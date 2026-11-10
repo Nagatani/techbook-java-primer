@@ -22,8 +22,8 @@ public class MultiConditionSortExample {
                 .thenComparing(Student::getName)
                 .thenComparing(Student::getStudentId)
         );
-        System.out.println("学生ソート後（学年→名前→学生番号）:");
-        sortedStudents.forEach(System.out::println);
+        IO.println("学生ソート後（学年→名前→学生番号）:");
+        sortedStudents.forEach(IO::println);
 
         // 降順ソートの組み合わせ
         List<Student> reversedStudents = new ArrayList<>(students);
@@ -31,8 +31,8 @@ public class MultiConditionSortExample {
             Comparator.comparing(Student::getGrade).reversed()
                 .thenComparing(Student::getName)
         );
-        System.out.println("\n降順ソート（学年降順→名前昇順）:");
-        reversedStudents.forEach(System.out::println);
+        IO.println("\n降順ソート（学年降順→名前昇順）:");
+        reversedStudents.forEach(IO::println);
 
         // 複雑な条件：優先度、作成日時、タイトルの順
         List<Task> tasks = Arrays.asList(
@@ -47,7 +47,7 @@ public class MultiConditionSortExample {
                 .thenComparing(Task::getCreatedAt)
                 .thenComparing(Task::getTitle)
         );
-        System.out.println("\nタスクソート後（優先度降順→作成日時→タイトル）:");
-        sortedTasks.forEach(System.out::println);
+        IO.println("\nタスクソート後（優先度降順→作成日時→タイトル）:");
+        sortedTasks.forEach(IO::println);
     }
 }

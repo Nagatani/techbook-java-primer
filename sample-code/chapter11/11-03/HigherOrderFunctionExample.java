@@ -31,12 +31,12 @@ public class HigherOrderFunctionExample {
         // 実際の取引実行
         MarketData currentMarketData = new MarketData(120.0, 0.3);
         TradingDecision decision = safeStrategy.apply(currentMarketData);
-        System.out.println("安全な取引決定: " + decision);
+        IO.println("安全な取引決定: " + decision);
         
         // 高リスクの場合
         MarketData highRiskData = new MarketData(90.0, 0.8);
         TradingDecision highRiskDecision = safeStrategy.apply(highRiskData);
-        System.out.println("高リスク時の決定: " + highRiskDecision);
+        IO.println("高リスク時の決定: " + highRiskDecision);
     }
     
     public static void main(String[] args) {

@@ -4,12 +4,12 @@ public class LambdaIntroExample {
         Runnable task1 = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Hello from anonymous class!");
+                IO.println("Hello from anonymous class!");
             }
         };
 
         // ラムダ式を使った方法（同じ動作）
-        Runnable task2 = () -> System.out.println("Hello from lambda!");
+        Runnable task2 = () -> IO.println("Hello from lambda!");
 
         // 実行（どちらも同じ結果）
         task1.run();  // Hello from anonymous class!

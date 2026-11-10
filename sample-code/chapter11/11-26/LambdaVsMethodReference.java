@@ -7,27 +7,27 @@ public class LambdaVsMethodReference {
         // ラムダ式 vs メソッド参照の比較
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
         
-        System.out.println("元のリスト: " + names);
+        IO.println("元のリスト: " + names);
         
         // ラムダ式：やや冗長
-        System.out.println("\nラムダ式を使用:");
+        IO.println("\nラムダ式を使用:");
         names.stream()
              .map(name -> name.toUpperCase())
-             .forEach(name -> System.out.println(name));
+             .forEach(name -> IO.println(name));
 
         // メソッド参照：簡潔で意図が明確
-        System.out.println("\nメソッド参照を使用:");
+        IO.println("\nメソッド参照を使用:");
         names.stream()
              .map(String::toUpperCase)
-             .forEach(System.out::println);
+             .forEach(IO::println);
 
         // コンストラクタ参照の活用
         List<Person> people = names.stream()
             .map(Person::new)  // name -> new Person(name) と同じ
             .collect(Collectors.toList());
         
-        System.out.println("\nPersonオブジェクトのリスト:");
-        people.forEach(System.out::println);
+        IO.println("\nPersonオブジェクトのリスト:");
+        people.forEach(IO::println);
 
         // ラムダ: () -> new ArrayList<>()
         // メソッド参照: ArrayList::new
@@ -35,6 +35,6 @@ public class LambdaVsMethodReference {
         List<String> newList = listFactory.get();
         newList.add("Hello");
         newList.add("Method Reference");
-        System.out.println("\n新しいリスト: " + newList);
+        IO.println("\n新しいリスト: " + newList);
     }
 }

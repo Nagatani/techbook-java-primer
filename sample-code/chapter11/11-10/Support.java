@@ -52,7 +52,7 @@ class Logger {
         for (Object arg : args) {
             message = message.replaceFirst("\\{\\}", String.valueOf(arg));
         }
-        System.out.println("[INFO] " + message);
+        IO.println("[INFO] " + message);
     }
 }
 

@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 7c65c633
   - key: "匿名クラスからラムダ式へ"
-    hash: e9c74397
+    hash: 0573b246
   - key: "関数型インターフェイス"
-    hash: 6ebe9e35
+    hash: 260c4bc0
   - key: "メソッド参照"
-    hash: 738aca45
+    hash: ddbb9bc1
   - key: "ラムダ式の応用例"
-    hash: 71bb081f
+    hash: f2c01ff0
   - key: "よくあるエラーと対処法"
     hash: 4eb6d5cc
   - key: "まとめ"
@@ -69,7 +69,7 @@ sections:
     + `thenComparing`と`reversed`による複数条件の並び替え（11-22）
     + Predicate・Function・Consumer・Supplier・UnaryOperator・BinaryOperatorの表と使用例（11-23）
 - メソッド参照（L906–1105）
-    + 静的・特定インスタンス・不特定インスタンス・コンストラクタの4種類の表と例（11-24）
+    + 静的・特定インスタンス・不特定インスタンス・コンストラクタの4種類の表と例（11-24）。`IO::println`は静的メソッド参照、`System.out::println`は特定インスタンスの参照と補足し、特定インスタンスの例は`prefix::concat`（2026-11-10）
     + ExecutorServiceとCallableによる並行実行（11-25）。メソッド参照とは関係がなく、配置が不適切
     + ラムダ式とメソッド参照の比較、`Person::new`と`ArrayList::new`（11-26）。11-24とコンストラクタ参照の例が重複
 - ラムダ式の応用例（L1106–1226）

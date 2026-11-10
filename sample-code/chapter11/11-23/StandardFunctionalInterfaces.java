@@ -4,29 +4,29 @@ public class StandardFunctionalInterfaces {
     public static void main(String[] args) {
         // Predicate: 文字列が空かどうかを判定
         Predicate<String> isEmpty = s -> s.isEmpty();
-        System.out.println("''は空？: " + isEmpty.test("")); // true
-        System.out.println("'Java'は空？: " + isEmpty.test("Java")); // false
+        IO.println("''は空？: " + isEmpty.test("")); // true
+        IO.println("'Java'は空？: " + isEmpty.test("Java")); // false
 
         // Function: 文字列を長さに変換
         Function<String, Integer> getLength = s -> s.length();
-        System.out.println("'Java'の長さ: " + getLength.apply("Java")); // 4
-        System.out.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
+        IO.println("'Java'の長さ: " + getLength.apply("Java")); // 4
+        IO.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
 
         // Consumer: 文字列を大文字で出力
-        Consumer<String> printUpper = s -> System.out.println(s.toUpperCase());
-        System.out.print("'hello'を大文字で出力: ");
+        Consumer<String> printUpper = s -> IO.println(s.toUpperCase());
+        IO.print("'hello'を大文字で出力: ");
         printUpper.accept("hello"); // HELLO
 
         // Supplier: 現在時刻を供給
         Supplier<Long> currentTime = () -> System.currentTimeMillis();
-        System.out.println("現在時刻: " + currentTime.get());
+        IO.println("現在時刻: " + currentTime.get());
         
         // UnaryOperator: 同じ型の変換
         UnaryOperator<String> addPrefix = s -> "Hello, " + s;
-        System.out.println("挨拶付き: " + addPrefix.apply("Java"));
+        IO.println("挨拶付き: " + addPrefix.apply("Java"));
         
         // BinaryOperator: 同じ型の2つの値から1つの値を生成
         BinaryOperator<Integer> multiply = (a, b) -> a * b;
-        System.out.println("5 × 7 = " + multiply.apply(5, 7));
+        IO.println("5 × 7 = " + multiply.apply(5, 7));
     }
 }

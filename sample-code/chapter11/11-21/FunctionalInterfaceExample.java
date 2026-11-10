@@ -9,7 +9,7 @@ public class FunctionalInterfaceExample {
         MyFunction addition = (a, b) -> a + b;
         MyFunction subtraction = (a, b) -> a - b;
 
-        System.out.println("足し算: " + addition.calculate(10, 5)); // 15
-        System.out.println("引き算: " + subtraction.calculate(10, 5)); // 5
+        IO.println("足し算: " + addition.calculate(10, 5)); // 15
+        IO.println("引き算: " + subtraction.calculate(10, 5)); // 5
     }
 }

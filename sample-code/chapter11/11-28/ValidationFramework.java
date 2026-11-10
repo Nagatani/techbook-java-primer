@@ -56,12 +56,12 @@ public class ValidationFramework {
         User validUser = new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
         
-        System.out.println("有効なユーザーのバリデーション:");
+        IO.println("有効なユーザーのバリデーション:");
         ValidationResult result1 = validateUserWithErrors.apply(validUser);
-        System.out.println(result1);
+        IO.println(result1);
         
-        System.out.println("\n無効なユーザーのバリデーション:");
+        IO.println("\n無効なユーザーのバリデーション:");
         ValidationResult result2 = validateUserWithErrors.apply(invalidUser);
-        System.out.println(result2);
+        IO.println(result2);
     }
 }

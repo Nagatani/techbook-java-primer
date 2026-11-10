@@ -53,9 +53,9 @@ public class MiddlewareChain {
 
     public static void main(String[] args) {
         MiddlewareChain chain = new MiddlewareChain();
-        System.out.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
-        System.out.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "bad-token")));
-        System.out.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
-        System.out.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
+        IO.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
+        IO.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "bad-token")));
+        IO.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
+        IO.println(chain.pipeline.apply(new Request("GET", "/orders", "client1", "valid-token")));
     }
 }

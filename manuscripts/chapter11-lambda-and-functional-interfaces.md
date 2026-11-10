@@ -40,12 +40,12 @@ public class LambdaIntroExample {
         Runnable task1 = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Hello from anonymous class!");
+                IO.println("Hello from anonymous class!");
             }
         };
 
         // ラムダ式を使った方法（同じ動作）
-        Runnable task2 = () -> System.out.println("Hello from lambda!");
+        Runnable task2 = () -> IO.println("Hello from lambda!");
 
         // 実行（どちらも同じ結果）
         task1.run();  // Hello from anonymous class!
@@ -70,7 +70,7 @@ Hello from lambda!
 button.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("ボタンがクリックされました！");
+        IO.println("ボタンがクリックされました！");
     }
 });
 ```
@@ -117,12 +117,12 @@ public class HigherOrderFunctionExample {
         // 実際の取引実行
         MarketData currentMarketData = new MarketData(120.0, 0.3);
         TradingDecision decision = safeStrategy.apply(currentMarketData);
-        System.out.println("安全な取引決定: " + decision);
+        IO.println("安全な取引決定: " + decision);
         
         // 高リスクの場合
         MarketData highRiskData = new MarketData(90.0, 0.8);
         TradingDecision highRiskDecision = safeStrategy.apply(highRiskData);
-        System.out.println("高リスク時の決定: " + highRiskDecision);
+        IO.println("高リスク時の決定: " + highRiskDecision);
     }
     
     public static void main(String[] args) {
@@ -504,9 +504,9 @@ public class LambdaPerformance {
             .sum();
         long methodRefTime = System.nanoTime() - start;
         
-        System.out.printf("Inline: %dms, Method ref: %dms%n",
+        IO.println("Inline: %dms, Method ref: %dms".formatted(
             inlineTime / 1_000_000, 
-            methodRefTime / 1_000_000);
+            methodRefTime / 1_000_000));
     }
 }
 ```
@@ -659,7 +659,7 @@ public class BusinessLogicProcessor {
 
 ```java
 // ラムダ式を使った場合
-button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
+button.addActionListener(e -> IO.println("ボタンがクリックされました！"));
 ```
 
 <span class="footnote">※ このコードはサンプルコード11-2の匿名クラス版をラムダ式で簡潔に書き直した例です。buttonオブジェクトは事前にJButtonとして定義されている前提です。</span>
@@ -697,7 +697,7 @@ public class ComparatorLambdaExample {
             new Student("Bob")
         );
         
-        System.out.println("ソート前: " + students);
+        IO.println("ソート前: " + students);
         
         // 従来の方法：冗長で理解しにくい
         List<Student> students1 = new ArrayList<>(students);
@@ -707,17 +707,17 @@ public class ComparatorLambdaExample {
                 return s1.getName().compareTo(s2.getName());
             }
         });
-        System.out.println("従来の方法: " + students1);
+        IO.println("従来の方法: " + students1);
 
         // ラムダ式：簡潔で意図が明確
         List<Student> students2 = new ArrayList<>(students);
         students2.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
-        System.out.println("ラムダ式: " + students2);
+        IO.println("ラムダ式: " + students2);
 
         // メソッド参照：さらに簡潔
         List<Student> students3 = new ArrayList<>(students);
         students3.sort(Comparator.comparing(Student::getName));
-        System.out.println("メソッド参照: " + students3);
+        IO.println("メソッド参照: " + students3);
     }
 }
 ```
@@ -747,8 +747,8 @@ public class FunctionalInterfaceExample {
         MyFunction addition = (a, b) -> a + b;
         MyFunction subtraction = (a, b) -> a - b;
 
-        System.out.println("足し算: " + addition.calculate(10, 5)); // 15
-        System.out.println("引き算: " + subtraction.calculate(10, 5)); // 5
+        IO.println("足し算: " + addition.calculate(10, 5)); // 15
+        IO.println("引き算: " + subtraction.calculate(10, 5)); // 5
     }
 }
 ```
@@ -767,7 +767,7 @@ public class FunctionalInterfaceExample {
 - `(int a, int b) -> ...` は `(a, b) -> ...` と書ける
 - `(a) -> ...` は `a -> ...` と書ける
 - `a -> { return a * 2; }` は `a -> a * 2` と書ける
-- `() -> System.out.println("Hello");` のように括弧だけを書く
+- `() -> IO.println("Hello");` のように括弧だけを書く
 
 複数条件でのComparator組み合わせ。
 
@@ -794,8 +794,8 @@ public class MultiConditionSortExample {
                 .thenComparing(Student::getName)
                 .thenComparing(Student::getStudentId)
         );
-        System.out.println("学生ソート後（学年→名前→学生番号）:");
-        sortedStudents.forEach(System.out::println);
+        IO.println("学生ソート後（学年→名前→学生番号）:");
+        sortedStudents.forEach(IO::println);
 
         // 降順ソートの組み合わせ
         List<Student> reversedStudents = new ArrayList<>(students);
@@ -803,8 +803,8 @@ public class MultiConditionSortExample {
             Comparator.comparing(Student::getGrade).reversed()
                 .thenComparing(Student::getName)
         );
-        System.out.println("\n降順ソート（学年降順→名前昇順）:");
-        reversedStudents.forEach(System.out::println);
+        IO.println("\n降順ソート（学年降順→名前昇順）:");
+        reversedStudents.forEach(IO::println);
 
         // 複雑な条件：優先度、作成日時、タイトルの順
         List<Task> tasks = Arrays.asList(
@@ -819,8 +819,8 @@ public class MultiConditionSortExample {
                 .thenComparing(Task::getCreatedAt)
                 .thenComparing(Task::getTitle)
         );
-        System.out.println("\nタスクソート後（優先度降順→作成日時→タイトル）:");
-        sortedTasks.forEach(System.out::println);
+        IO.println("\nタスクソート後（優先度降順→作成日時→タイトル）:");
+        sortedTasks.forEach(IO::println);
     }
 }
 ```
@@ -868,30 +868,30 @@ public class StandardFunctionalInterfaces {
     public static void main(String[] args) {
         // Predicate: 文字列が空かどうかを判定
         Predicate<String> isEmpty = s -> s.isEmpty();
-        System.out.println("''は空？: " + isEmpty.test("")); // true
-        System.out.println("'Java'は空？: " + isEmpty.test("Java")); // false
+        IO.println("''は空？: " + isEmpty.test("")); // true
+        IO.println("'Java'は空？: " + isEmpty.test("Java")); // false
 
         // Function: 文字列を長さに変換
         Function<String, Integer> getLength = s -> s.length();
-        System.out.println("'Java'の長さ: " + getLength.apply("Java")); // 4
-        System.out.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
+        IO.println("'Java'の長さ: " + getLength.apply("Java")); // 4
+        IO.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
 
         // Consumer: 文字列を大文字で出力
-        Consumer<String> printUpper = s -> System.out.println(s.toUpperCase());
-        System.out.print("'hello'を大文字で出力: ");
+        Consumer<String> printUpper = s -> IO.println(s.toUpperCase());
+        IO.print("'hello'を大文字で出力: ");
         printUpper.accept("hello"); // HELLO
 
         // Supplier: 現在時刻を供給
         Supplier<Long> currentTime = () -> System.currentTimeMillis();
-        System.out.println("現在時刻: " + currentTime.get());
+        IO.println("現在時刻: " + currentTime.get());
         
         // UnaryOperator: 同じ型の変換
         UnaryOperator<String> addPrefix = s -> "Hello, " + s;
-        System.out.println("挨拶付き: " + addPrefix.apply("Java"));
+        IO.println("挨拶付き: " + addPrefix.apply("Java"));
         
         // BinaryOperator: 同じ型の2つの値から1つの値を生成
         BinaryOperator<Integer> multiply = (a, b) -> a * b;
-        System.out.println("5 × 7 = " + multiply.apply(5, 7));
+        IO.println("5 × 7 = " + multiply.apply(5, 7));
     }
 }
 ```
@@ -916,9 +916,11 @@ public class StandardFunctionalInterfaces {
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
 | 静的メソッド参照 | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
-| インスタンスメソッド参照<br>(特定のインスタンス) | `インスタンス変数::メソッド名` | `s -> System.out.println(s)` |
+| インスタンスメソッド参照<br>(特定のインスタンス) | `インスタンス変数::メソッド名` | `s -> prefix.concat(s)` |
 | インスタンスメソッド参照<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | コンストラクタ参照 | `クラス名::new` | `() -> new ArrayList<>()` |
+
+本書でよく使う`IO::println`は、`IO`クラスの静的メソッドへの参照なので、静的メソッド参照にあたります。ほかの資料でよく見かける`System.out::println`は、`System.out`というオブジェクト（特定のインスタンス）のメソッドへの参照です。
 
 <span class="listing-number">**サンプルコード11-24**　MethodReferenceExample.java</span>
 
@@ -931,31 +933,38 @@ public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
         
-        System.out.println("元のリスト: " + words);
+        IO.println("元のリスト: " + words);
 
         // 静的メソッド参照の例
         List<String> numbers = Arrays.asList("123", "456", "789");
         List<Integer> integers = numbers.stream()
             .map(Integer::parseInt)  // s -> Integer.parseInt(s)
             .collect(Collectors.toList());
-        System.out.println("文字列から整数への変換: " + integers);
+        IO.println("文字列から整数への変換: " + integers);
+
+        // 静的メソッド参照（IO.printlnは静的メソッド）
+        IO.println("\n各単語を出力:");
+        words.forEach(IO::println);  // s -> IO.println(s)
 
         // インスタンスメソッド参照（特定のインスタンス）
-        System.out.println("\n各単語を出力:");
-        words.forEach(System.out::println);  // s -> System.out.println(s)
+        String prefix = "fruit: ";
+        IO.println("\n接頭辞を付ける:");
+        words.stream()
+             .map(prefix::concat)  // s -> prefix.concat(s)
+             .forEach(IO::println);
 
         // インスタンスメソッド参照（不特定のインスタンス）
-        System.out.println("\n大文字変換:");
+        IO.println("\n大文字変換:");
         words.stream()
              .map(String::toUpperCase)  // s -> s.toUpperCase()
-             .forEach(System.out::println);
+             .forEach(IO::println);
 
         // コンストラクタ参照
         Supplier<List<String>> listFactory = ArrayList::new;  // () -> new ArrayList<>()
         List<String> newList = listFactory.get();
         newList.add("Hello");
         newList.add("World");
-        System.out.println("\n新しいリスト: " + newList);
+        IO.println("\n新しいリスト: " + newList);
     }
 }
 ```
@@ -970,6 +979,11 @@ public class MethodReferenceExample {
 apple
 banana
 cherry
+
+接頭辞を付ける:
+fruit: apple
+fruit: banana
+fruit: cherry
 
 大文字変換:
 APPLE
@@ -1004,15 +1018,15 @@ public class MethodReferenceConcurrencyExample {
             // ...
         );
         
-        System.out.println("タスク実行開始...");
+        IO.println("タスク実行開始...");
         long startTime = System.currentTimeMillis();
         
         try {
             List<Future<String>> results = executor.invokeAll(tasks);
-            System.out.println("実行結果:");
+            IO.println("実行結果:");
             results.forEach(future -> {
                 try {
-                    System.out.println(future.get());
+                    IO.println(future.get());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1024,7 +1038,7 @@ public class MethodReferenceConcurrencyExample {
         }
         
         long endTime = System.currentTimeMillis();
-        System.out.println("実行時間: " + (endTime - startTime) + "ms");
+        IO.println("実行時間: " + (endTime - startTime) + "ms");
     }
 }
 ```
@@ -1056,27 +1070,27 @@ public class LambdaVsMethodReference {
         // ラムダ式 vs メソッド参照の比較
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
         
-        System.out.println("元のリスト: " + names);
+        IO.println("元のリスト: " + names);
         
         // ラムダ式：やや冗長
-        System.out.println("\nラムダ式を使用:");
+        IO.println("\nラムダ式を使用:");
         names.stream()
              .map(name -> name.toUpperCase())
-             .forEach(name -> System.out.println(name));
+             .forEach(name -> IO.println(name));
 
         // メソッド参照：簡潔で意図が明確
-        System.out.println("\nメソッド参照を使用:");
+        IO.println("\nメソッド参照を使用:");
         names.stream()
              .map(String::toUpperCase)
-             .forEach(System.out::println);
+             .forEach(IO::println);
 
         // コンストラクタ参照の活用
         List<Person> people = names.stream()
             .map(Person::new)  // name -> new Person(name) と同じ
             .collect(Collectors.toList());
         
-        System.out.println("\nPersonオブジェクトのリスト:");
-        people.forEach(System.out::println);
+        IO.println("\nPersonオブジェクトのリスト:");
+        people.forEach(IO::println);
 
         // ラムダ: () -> new ArrayList<>()
         // メソッド参照: ArrayList::new
@@ -1084,7 +1098,7 @@ public class LambdaVsMethodReference {
         List<String> newList = listFactory.get();
         newList.add("Hello");
         newList.add("Method Reference");
-        System.out.println("\n新しいリスト: " + newList);
+        IO.println("\n新しいリスト: " + newList);
     }
 }
 ```
@@ -1125,31 +1139,31 @@ Person{name='Charlie'}
 ```java
 public class RunnableLambdaExample {
     public static void main(String[] args) {
-        System.out.println("メインスレッド開始");
+        IO.println("メインスレッド開始");
         
         // 匿名クラスでのRunnable
         Thread t1 = new Thread(new Runnable() {
             public void run() {
-                System.out.println("Thread t1 (Anonymous) is running...");
+                IO.println("Thread t1 (Anonymous) is running...");
                 // ...
-                System.out.println("Thread t1 (Anonymous) finished");
+                IO.println("Thread t1 (Anonymous) finished");
             }
         });
         t1.start();
 
         // ラムダ式でのRunnable
         Thread t2 = new Thread(() -> {
-            System.out.println("Thread t2 (Lambda) is running...");
+            IO.println("Thread t2 (Lambda) is running...");
             // ...
-            System.out.println("Thread t2 (Lambda) finished");
+            IO.println("Thread t2 (Lambda) finished");
         });
         t2.start();
         
         // より簡潔なラムダ式（単一ステートメント）
-        Thread t3 = new Thread(() -> System.out.println("Thread t3 (Simple Lambda) executed"));
+        Thread t3 = new Thread(() -> IO.println("Thread t3 (Simple Lambda) executed"));
         t3.start();
         // ...
-        System.out.println("メインスレッド終了");
+        IO.println("メインスレッド終了");
     }
 }
 ```
@@ -1214,13 +1228,13 @@ public class ValidationFramework {
         User validUser = new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
         
-        System.out.println("有効なユーザーのバリデーション:");
+        IO.println("有効なユーザーのバリデーション:");
         ValidationResult result1 = validateUserWithErrors.apply(validUser);
-        System.out.println(result1);
+        IO.println(result1);
         
-        System.out.println("\n無効なユーザーのバリデーション:");
+        IO.println("\n無効なユーザーのバリデーション:");
         ValidationResult result2 = validateUserWithErrors.apply(invalidUser);
-        System.out.println(result2);
+        IO.println(result2);
     }
 }
 ```

@@ -22,15 +22,15 @@ public class MethodReferenceConcurrencyExample {
             }
         );
         
-        System.out.println("タスク実行開始...");
+        IO.println("タスク実行開始...");
         long startTime = System.currentTimeMillis();
         
         try {
             List<Future<String>> results = executor.invokeAll(tasks);
-            System.out.println("実行結果:");
+            IO.println("実行結果:");
             results.forEach(future -> {
                 try {
-                    System.out.println(future.get());
+                    IO.println(future.get());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -42,6 +42,6 @@ public class MethodReferenceConcurrencyExample {
         }
         
         long endTime = System.currentTimeMillis();
-        System.out.println("実行時間: " + (endTime - startTime) + "ms");
+        IO.println("実行時間: " + (endTime - startTime) + "ms");
     }
 }
