@@ -23,8 +23,8 @@ public class Rectangle extends Shape {
     
     @Override
     public void displayInfo() {
-        System.out.println("長方形:");
-        System.out.println("幅: " + width + ", 高さ: " + height);
+        IO.println("長方形:");
+        IO.println("幅: " + width + ", 高さ: " + height);
         super.displayInfo();
     }
     

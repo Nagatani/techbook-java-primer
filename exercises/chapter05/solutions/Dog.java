@@ -16,22 +16,22 @@ public class Dog extends Animal {
     
     @Override
     public void makeSound() {
-        System.out.println(name + "は「ワンワン」と鳴きます。");
+        IO.println(name + "は「ワンワン」と鳴きます。");
     }
     
     // Dog固有のメソッド
     public void wagTail() {
-        System.out.println(name + "は尻尾を振っています。");
+        IO.println(name + "は尻尾を振っています。");
     }
     
     public void fetch() {
-        System.out.println(name + "はボールを取ってきました。");
+        IO.println(name + "はボールを取ってきました。");
     }
     
     @Override
     public void displayInfo() {
         super.displayInfo();
-        System.out.println("犬種: " + breed);
+        IO.println("犬種: " + breed);
     }
     
     public String getBreed() { return breed; }

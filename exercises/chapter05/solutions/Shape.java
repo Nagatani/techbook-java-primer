@@ -12,9 +12,9 @@ public abstract class Shape {
     public abstract double getPerimeter();
     
     public void displayInfo() {
-        System.out.println("色: " + color);
-        System.out.println("面積: " + String.format("%.2f", getArea()));
-        System.out.println("周囲: " + String.format("%.2f", getPerimeter()));
+        IO.println("色: " + color);
+        IO.println("面積: " + String.format("%.2f", getArea()));
+        IO.println("周囲: " + String.format("%.2f", getPerimeter()));
     }
     
     public String getColor() { return color; }

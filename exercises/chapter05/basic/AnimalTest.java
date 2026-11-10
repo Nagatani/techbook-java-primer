@@ -23,43 +23,43 @@
  */
 public class AnimalTest {
     public static void main(String[] args) {
-        System.out.println("=== 動物管理システム ===");
+        IO.println("=== 動物管理システム ===");
         
         // TODO: Dogオブジェクトを作成してください
         // Dog dog = new Dog("ポチ", 3);
         // dog.showInfo();
         // dog.makeSound();
         // dog.wagTail();
-        // System.out.println();
+        // IO.println();
         
         // TODO: Catオブジェクトを作成してください
         // Cat cat = new Cat("ミケ", 2);
         // cat.showInfo();
         // cat.makeSound();
         // cat.groom();
-        // System.out.println();
+        // IO.println();
         
         // TODO: ポリモーフィズムを試してください（Animal型の配列に格納）
         // Animal[] animals = {dog, cat};
-        // System.out.println("ポリモーフィズムのテスト:");
+        // IO.println("ポリモーフィズムのテスト:");
         // for (Animal animal : animals) {
         //     animal.showInfo();
         //     animal.makeSound();
-        //     System.out.println();
+        //     IO.println();
         // }
         
         // TODO: 年齢を更新してください
         // dog.setAge(4);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 犬と猫の固有行動をテストしてください
-        // System.out.println("固有行動のテスト:");
+        // IO.println("固有行動のテスト:");
         // dog.fetch();
         // cat.climb();
-        // System.out.println();
+        // IO.println();
         
         // TODO: 共通の行動をテストしてください
-        // System.out.println("共通行動のテスト:");
+        // IO.println("共通行動のテスト:");
         // dog.eat();
         // cat.sleep();
     }

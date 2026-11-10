@@ -33,28 +33,28 @@ public class Animal {
     // TODO: 年齢のsetterメソッドを実装してください
     // public void setAge(int age) {
     //     this.age = age;
-    //     System.out.println("動物の年齢を更新しました。");
-    //     System.out.println("更新後の年齢: " + age + "歳");
+    //     IO.println("動物の年齢を更新しました。");
+    //     IO.println("更新後の年齢: " + age + "歳");
     // }
     
     // TODO: 鳴き声メソッドを実装してください（派生クラスでオーバーライド予定）
     // public void makeSound() {
-    //     System.out.println(name + "は鳴いています。");
+    //     IO.println(name + "は鳴いています。");
     // }
     
     // TODO: 動物の基本情報を表示するメソッドを実装してください
     // public void showInfo() {
-    //     System.out.println("動物の名前: " + name);
-    //     System.out.println("動物の年齢: " + age + "歳");
+    //     IO.println("動物の名前: " + name);
+    //     IO.println("動物の年齢: " + age + "歳");
     // }
     
     // TODO: 動物の一般的な行動メソッドを実装してください
     // public void sleep() {
-    //     System.out.println(name + "は眠っています。");
+    //     IO.println(name + "は眠っています。");
     // }
     
     // TODO: 動物の一般的な行動メソッドを実装してください
     // public void eat() {
-    //     System.out.println(name + "は食事をしています。");
+    //     IO.println(name + "は食事をしています。");
     // }
 }

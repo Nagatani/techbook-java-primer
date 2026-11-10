@@ -348,11 +348,11 @@ abstract class Animal {
     
     // 共通メソッド
     public void eat(String food, double amount) {
-        System.out.println(name + "が" + food + "を" + amount + "kg食べています");
+        IO.println(name + "が" + food + "を" + amount + "kg食べています");
     }
     
     public void sleep() {
-        System.out.println(name + "が休息しています");
+        IO.println(name + "が休息しています");
     }
 }
 
@@ -361,12 +361,12 @@ class Lion extends Mammal {
     
     @Override
     public void makeSound() {
-        System.out.println("🦁 ガオー！威嚇の鳴き声");
+        IO.println("🦁 ガオー！威嚇の鳴き声");
     }
     
     @Override
     public void move() {
-        System.out.println("🏃 草原を時速50kmで駆ける");
+        IO.println("🏃 草原を時速50kmで駆ける");
     }
     
     @Override
@@ -405,7 +405,7 @@ class Car extends LandVehicle {
     
     @Override
     public void startEngine() {
-        System.out.println("🚗 エンジン始動 → " + 
+        IO.println("🚗 エンジン始動 → " + 
             (isHybrid ? "電気モード" : "ガソリンエンジン"));
     }
     
@@ -453,7 +453,7 @@ class Knight extends Warrior {
             mp -= 35;
             int damage = (int)(attack * 2.0); // 天空剣
             target.takeDamage(damage);
-            System.out.println(name + "の天空剣！ダメージ: " + damage);
+            IO.println(name + "の天空剣！ダメージ: " + damage);
         }
     }
 }

@@ -3,7 +3,7 @@
  */
 public class AnimalTest {
     public static void main(String[] args) {
-        System.out.println("=== Animal クラスのテスト ===");
+        IO.println("=== Animal クラスのテスト ===");
         
         // ポリモーフィズムのデモ
         Animal[] animals = {
@@ -22,7 +22,7 @@ public class AnimalTest {
             } else if (animal instanceof Cat) {
                 ((Cat) animal).groom();
             }
-            System.out.println();
+            IO.println();
         }
     }
 }

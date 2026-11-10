@@ -19,23 +19,23 @@ public class Dog extends Animal {
     // TODO: makeSoundメソッドをオーバーライドしてください
     // @Override
     // public void makeSound() {
-    //     System.out.println(name + "は「ワンワン」と鳴きます。");
+    //     IO.println(name + "は「ワンワン」と鳴きます。");
     // }
     
     // TODO: 犬固有の行動メソッドを実装してください
     // public void wagTail() {
-    //     System.out.println(name + "は尻尾を振っています。");
+    //     IO.println(name + "は尻尾を振っています。");
     // }
     
     // TODO: 犬固有の行動メソッドを実装してください
     // public void fetch() {
-    //     System.out.println(name + "はボールを取ってきました。");
+    //     IO.println(name + "はボールを取ってきました。");
     // }
     
     // TODO: showInfoメソッドをオーバーライドして犬の情報を表示してください
     // @Override
     // public void showInfo() {
     //     super.showInfo(); // 親クラスの基本情報を表示
-    //     System.out.println("種類: 犬");
+    //     IO.println("種類: 犬");
     // }
 }

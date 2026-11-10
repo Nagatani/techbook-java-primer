@@ -21,8 +21,8 @@ public class Circle extends Shape {
     
     @Override
     public void displayInfo() {
-        System.out.println("円:");
-        System.out.println("半径: " + radius);
+        IO.println("円:");
+        IO.println("半径: " + radius);
         super.displayInfo();
     }
     

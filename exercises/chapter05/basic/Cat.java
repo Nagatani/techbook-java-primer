@@ -19,23 +19,23 @@ public class Cat extends Animal {
     // TODO: makeSoundメソッドをオーバーライドしてください
     // @Override
     // public void makeSound() {
-    //     System.out.println(name + "は「ニャーニャー」と鳴きます。");
+    //     IO.println(name + "は「ニャーニャー」と鳴きます。");
     // }
     
     // TODO: 猫固有の行動メソッドを実装してください
     // public void groom() {
-    //     System.out.println(name + "は毛づくろいをしています。");
+    //     IO.println(name + "は毛づくろいをしています。");
     // }
     
     // TODO: 猫固有の行動メソッドを実装してください
     // public void climb() {
-    //     System.out.println(name + "は木に登っています。");
+    //     IO.println(name + "は木に登っています。");
     // }
     
     // TODO: showInfoメソッドをオーバーライドして猫の情報を表示してください
     // @Override
     // public void showInfo() {
     //     super.showInfo(); // 親クラスの基本情報を表示
-    //     System.out.println("種類: 猫");
+    //     IO.println("種類: 猫");
     // }
 }

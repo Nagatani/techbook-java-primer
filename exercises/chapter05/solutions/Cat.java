@@ -16,22 +16,22 @@ public class Cat extends Animal {
     
     @Override
     public void makeSound() {
-        System.out.println(name + "は「ニャーニャー」と鳴きます。");
+        IO.println(name + "は「ニャーニャー」と鳴きます。");
     }
     
     // Cat固有のメソッド
     public void groom() {
-        System.out.println(name + "は毛づくろいをしています。");
+        IO.println(name + "は毛づくろいをしています。");
     }
     
     public void purr() {
-        System.out.println(name + "はゴロゴロとのどを鳴らしています。");
+        IO.println(name + "はゴロゴロとのどを鳴らしています。");
     }
     
     @Override
     public void displayInfo() {
         super.displayInfo();
-        System.out.println("毛色: " + color);
+        IO.println("毛色: " + color);
     }
     
     public String getColor() { return color; }

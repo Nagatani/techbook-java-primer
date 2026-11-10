@@ -3,7 +3,7 @@
  */
 public class ShapeTest {
     public static void main(String[] args) {
-        System.out.println("=== Shape クラスのテスト ===");
+        IO.println("=== Shape クラスのテスト ===");
         
         Shape[] shapes = {
             new Rectangle("赤", 6.0, 4.0),
@@ -13,12 +13,12 @@ public class ShapeTest {
         
         double totalArea = 0;
         for (int i = 0; i < shapes.length; i++) {
-            System.out.println("図形" + (i + 1) + ":");
+            IO.println("図形" + (i + 1) + ":");
             shapes[i].displayInfo();
             totalArea += shapes[i].getArea();
-            System.out.println();
+            IO.println();
         }
         
-        System.out.println("全図形の合計面積: " + String.format("%.2f", totalArea));
+        IO.println("全図形の合計面積: " + String.format("%.2f", totalArea));
     }
 }

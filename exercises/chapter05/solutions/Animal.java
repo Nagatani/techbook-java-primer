@@ -20,16 +20,16 @@ public abstract class Animal {
     
     // 共通メソッド
     public void displayInfo() {
-        System.out.println("動物の名前: " + name);
-        System.out.println("動物の年齢: " + age + "歳");
+        IO.println("動物の名前: " + name);
+        IO.println("動物の年齢: " + age + "歳");
     }
     
     public void sleep() {
-        System.out.println(name + "は眠っています。");
+        IO.println(name + "は眠っています。");
     }
     
     public void eat() {
-        System.out.println(name + "は食べています。");
+        IO.println(name + "は食べています。");
     }
     
     // getter/setter
