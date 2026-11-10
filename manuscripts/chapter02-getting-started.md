@@ -398,6 +398,12 @@ Javaの型変換システムは、プログラムの安全性を保証するた�
     + `byte → short → int → long → float → double`の順に、左の型から右の型へ変換できる
     + `char`も`int`以上の型へ変換できる
 
+<div class="figure">
+
+![拡大変換の順序](images/diagrams/chapter02-widening-conversion.svg)
+
+</div>
+
 #### 縮小変換の特徴
 - データ損失の可能性がある
 - 明示的なキャストが必要
@@ -1301,6 +1307,12 @@ IO.println(str);  // "Hello World"
 ```
 
 このコードは、`concat()`メソッドを呼び出しても元の文字列オブジェクトが変更されないことを示しています。これは、C言語の`strcat()`関数とは根本的に異なる動作です。Javaでは、文字列操作メソッドは常に新しい文字列オブジェクトを返し、元のオブジェクトはそのまま保持されます。この設計により、文字列を辞書のキーやハッシュマップのキーとして安全に使用でき、文字列プールによる最適化も可能になっています。
+
+<div class="figure">
+
+![文字列の不変性とconcat()](images/diagrams/chapter02-string-immutability.svg)
+
+</div>
 
 ### StringBuilderによる高速な文字列操作
 

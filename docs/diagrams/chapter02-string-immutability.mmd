@@ -1,0 +1,17 @@
+flowchart LR
+    subgraph s1["1. str.concat(&quot; World&quot;) だけを呼んだとき"]
+        direction LR
+        v1["String str"] --> h1["&quot;Hello&quot;"]
+        w1["&quot;Hello World&quot;<br/>（新しく作られるが<br/>どこからも参照されない）"]
+    end
+
+    subgraph s2["2. str = str.concat(&quot; World&quot;) としたとき"]
+        direction LR
+        v2["String str"] --> w2["&quot;Hello World&quot;<br/>（新しいオブジェクト）"]
+        h2["&quot;Hello&quot;<br/>（元のオブジェクトは<br/>変わらない）"]
+    end
+
+    s1 ~~~ s2
+
+    style w1 fill:#f5f5f5,stroke:#bdbdbd,color:#757575
+    style h2 fill:#f5f5f5,stroke:#bdbdbd,color:#757575
