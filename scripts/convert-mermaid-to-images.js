@@ -22,7 +22,10 @@ if (!fs.existsSync(MANUSCRIPTS_BACKUP_DIR)) {
 
 // 変換オプション
 // 注意: mermaid-cli v12は -w/-H を廃止し、レイアウトも縦長に変わるためv11に固定している
-const MMDC_OPTIONS = '-t default -b white -w 1200 -H 800 --scale 2';
+// 図を描く幅（-w）より広い図をMermaidが縮めないようにする（useMaxWidth: false）。
+// 図の文字はどれも同じ大きさで描かれ、紙面での大きさは scripts/diagram-size.js が決める
+const CONFIG_FILE = path.join(DIAGRAMS_DIR, 'mermaid-config.json');
+const MMDC_OPTIONS = `-t default -b white -w 1200 -H 800 --scale 2 -c "${CONFIG_FILE}"`;
 
 // 変換済みの図の記録（.mmdの内容と変換オプションのハッシュ）
 // mmdcの出力はビルドのたびにわずかに変わるため、元の図が変わったときだけ変換する
@@ -35,7 +38,8 @@ try {
 } catch (e) {
   convertedHashes = {};
 }
-const sourceHash = (text) => crypto.createHash('sha256').update(`${MMDC_OPTIONS}\n${text}`).digest('hex').slice(0, 16);
+const configText = fs.readFileSync(CONFIG_FILE, 'utf8');
+const sourceHash = (text) => crypto.createHash('sha256').update(`${MMDC_OPTIONS.replace(CONFIG_FILE, '')}\n${configText}\n${text}`).digest('hex').slice(0, 16);
 
 console.log('Mermaid図の変換を開始します...');
 
