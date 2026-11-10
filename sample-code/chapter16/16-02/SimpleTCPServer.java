@@ -6,12 +6,12 @@ public class SimpleTCPServer {
         int port = 8080;
         
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("サーバーがポート " + port + " で起動しました");
+            IO.println("サーバーがポート " + port + " で起動しました");
             
             while (true) {
                 // クライアントからの接続を待機
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("クライアントが接続しました: " + 
+                IO.println("クライアントが接続しました: " + 
                     clientSocket.getInetAddress());
                 
                 // クライアントとの通信を処理
@@ -30,7 +30,7 @@ public class SimpleTCPServer {
             
             // クライアントからのメッセージを受信
             String message = in.readLine();
-            System.out.println("受信: " + message);
+            IO.println("受信: " + message);
             
             // 応答を送信
             out.println("Echo: " + message);

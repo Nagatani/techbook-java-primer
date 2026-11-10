@@ -15,7 +15,7 @@ public class NIOServer {
         serverChannel.configureBlocking(false);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
         
-        System.out.println("NIOサーバーが起動しました");
+        IO.println("NIOサーバーが起動しました");
         
         while (true) {
             selector.select();

@@ -39,10 +39,10 @@ public class SimpleHTTPClient {
                 }
             }
             
-            System.out.println("=== Headers ===");
-            System.out.println(headers);
-            System.out.println("=== Body ===");
-            System.out.println(body);
+            IO.println("=== Headers ===");
+            IO.println(headers);
+            IO.println("=== Body ===");
+            IO.println(body);
             
         } catch (IOException e) {
             System.err.println("エラー: " + e.getMessage());

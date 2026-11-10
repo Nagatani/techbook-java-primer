@@ -58,7 +58,7 @@ public class JsonApiClient {
         Map<String, Object> user = apiClient.get(
             "https://jsonplaceholder.typicode.com/users/1",
             Map.class);
-        System.out.println("User: " + user);
+        IO.println("User: " + user);
         
         // POST例：新しい投稿の作成
         Map<String, Object> newPost = new HashMap<>();
@@ -69,6 +69,6 @@ public class JsonApiClient {
         Map<String, Object> result = apiClient.post(
             "https://jsonplaceholder.typicode.com/posts",
             newPost, Map.class);
-        System.out.println("Created: " + result);
+        IO.println("Created: " + result);
     }
 }

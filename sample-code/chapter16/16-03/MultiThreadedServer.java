@@ -11,7 +11,7 @@ public class MultiThreadedServer {
             Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("マルチスレッドサーバーが起動しました");
+            IO.println("マルチスレッドサーバーが起動しました");
             
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -42,7 +42,7 @@ class ClientHandler implements Runnable {
             
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                System.out.println(
+                IO.println(
                     Thread.currentThread().getName() + 
                     " - 受信: " + inputLine);
                 

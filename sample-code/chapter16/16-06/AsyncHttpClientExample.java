@@ -29,11 +29,11 @@ public class AsyncHttpClientExample {
         // 非同期処理の連鎖
         CompletableFuture<Void> done = future
             .thenApply(response -> {
-                System.out.println("Status: " + response.statusCode());
+                IO.println("Status: " + response.statusCode());
                 return response.body();
             })
             .thenAccept(body -> {
-                System.out.println("Response Body: " + body);
+                IO.println("Response Body: " + body);
             })
             .exceptionally(e -> {
                 System.err.println("Error: " + e.getMessage());
@@ -41,7 +41,7 @@ public class AsyncHttpClientExample {
             });
         
         // 他の処理を並行して実行可能
-        System.out.println("他の処理を継続中...");
+        IO.println("他の処理を継続中...");
         
         // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが終了するため）
         done.join();

@@ -84,7 +84,7 @@ public class SimpleTCPClient {
             
             // サーバーからの応答を受信
             String response = in.readLine();
-            System.out.println("サーバーからの応答: " + response);
+            IO.println("サーバーからの応答: " + response);
             
         } catch (UnknownHostException e) {
             System.err.println("ホストが見つかりません: " + serverAddress);
@@ -118,12 +118,12 @@ public class SimpleTCPServer {
         int port = 8080;
         
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("サーバーがポート " + port + " で起動しました");
+            IO.println("サーバーがポート " + port + " で起動しました");
             
             while (true) {
                 // クライアントからの接続を待機
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("クライアントが接続しました: " + 
+                IO.println("クライアントが接続しました: " + 
                     clientSocket.getInetAddress());
                 
                 // クライアントとの通信を処理
@@ -142,7 +142,7 @@ public class SimpleTCPServer {
             
             // クライアントからのメッセージを受信
             String message = in.readLine();
-            System.out.println("受信: " + message);
+            IO.println("受信: " + message);
             
             // 応答を送信
             out.println("Echo: " + message);
@@ -189,7 +189,7 @@ public class MultiThreadedServer {
             Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("マルチスレッドサーバーが起動しました");
+            IO.println("マルチスレッドサーバーが起動しました");
             
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -215,7 +215,7 @@ class ClientHandler implements Runnable {
             
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                System.out.println(
+                IO.println(
                     Thread.currentThread().getName() + 
                     " - 受信: " + inputLine);
                 
@@ -352,7 +352,7 @@ public class HttpURLConnectionExample {
                 // ...
             // レスポンスコードの確認
             int responseCode = conn.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
+            IO.println("Response Code: " + responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 // レスポンスの読み取り
@@ -366,7 +366,7 @@ public class HttpURLConnectionExample {
                         response.append(line);
                     }
                     
-                    System.out.println(
+                    IO.println(
                         "Response: " + response.toString());
                 }
             }
@@ -412,11 +412,11 @@ public class AsyncHttpClientExample {
         // 非同期処理の連鎖
         CompletableFuture<Void> done = future
             .thenApply(response -> {
-                System.out.println("Status: " + response.statusCode());
+                IO.println("Status: " + response.statusCode());
                 return response.body();
             })
             .thenAccept(body -> {
-                System.out.println("Response Body: " + body);
+                IO.println("Response Body: " + body);
             })
             .exceptionally(e -> {
                 System.err.println("Error: " + e.getMessage());
@@ -424,7 +424,7 @@ public class AsyncHttpClientExample {
             });
         
         // 他の処理を並行して実行可能
-        System.out.println("他の処理を継続中...");
+        IO.println("他の処理を継続中...");
         
         // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが終了するため）
         done.join();
@@ -468,7 +468,7 @@ public class UDPServer {
     
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket(PORT)) {
-            System.out.println("UDPサーバーがポート " + PORT + " で起動しました");
+            IO.println("UDPサーバーがポート " + PORT + " で起動しました");
             
             byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -479,7 +479,7 @@ public class UDPServer {
                 
                 String received = new String(packet.getData(), 0, 
                     packet.getLength(), StandardCharsets.UTF_8);
-                System.out.println("受信: " + received + " from " + 
+                IO.println("受信: " + received + " from " + 
                     packet.getAddress());
                 
                 // エコーレスポンスを送信
@@ -529,7 +529,7 @@ public class UDPClient {
                 buffer, buffer.length, serverAddress, serverPort);
             
             socket.send(packet);
-            System.out.println("送信: " + message);
+            IO.println("送信: " + message);
             
             // レスポンスを受信
             byte[] responseBuffer = new byte[1024];
@@ -540,7 +540,7 @@ public class UDPClient {
             
             String response = new String(responsePacket.getData(), 0,
                 responsePacket.getLength(), StandardCharsets.UTF_8);
-            System.out.println("受信: " + response);
+            IO.println("受信: " + response);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -580,7 +580,7 @@ public class ChatServer {
         ExecutorService executor = Executors.newCachedThreadPool();
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("チャットサーバーが起動しました");
+            IO.println("チャットサーバーが起動しました");
             
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -641,7 +641,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでユーザーからの入力を受け付けます。この設計により、メッセージの送受信を同時に行うことができます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java（5、9〜42、49〜50行目）</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜40、47〜48行目）</span>
 
 ```java
 public class ChatClient {
@@ -651,15 +651,14 @@ public class ChatClient {
              PrintWriter out = new PrintWriter(
                  socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
-                 new InputStreamReader(socket.getInputStream()));
-             Scanner scanner = new Scanner(System.in)) {
+                 new InputStreamReader(socket.getInputStream()))) {
             
             // 受信スレッドを開始
             Thread receiveThread = new Thread(() -> {
                 try {
                     String message;
                     while ((message = in.readLine()) != null) {
-                        System.out.println(message);
+                        IO.println(message);
                     }
                 } catch (IOException e) {
                     System.err.println("受信エラー: " + e.getMessage());
@@ -667,9 +666,9 @@ public class ChatClient {
             });
             receiveThread.start();
             
-            // メッセージ送信ループ
-            while (scanner.hasNextLine()) {
-                String userInput = scanner.nextLine();
+            // メッセージ送信ループ（入力の終わりでIO.readlnはnullを返す）
+            String userInput;
+            while ((userInput = IO.readln()) != null) {
                 out.println(userInput);
                 
                 if (userInput.equalsIgnoreCase("/quit")) {
@@ -870,7 +869,7 @@ public class NIOServer {
         serverChannel.configureBlocking(false);
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
         
-        System.out.println("NIOサーバーが起動しました");
+        IO.println("NIOサーバーが起動しました");
         
         while (true) {
             selector.select();

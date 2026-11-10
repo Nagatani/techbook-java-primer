@@ -12,7 +12,7 @@ public class ChatServer {
         ExecutorService executor = Executors.newCachedThreadPool();
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("チャットサーバーが起動しました");
+            IO.println("チャットサーバーが起動しました");
             
             while (true) {
                 Socket clientSocket = serverSocket.accept();

@@ -16,7 +16,7 @@ public class HttpURLConnectionExample {
             
             // レスポンスコードの確認
             int responseCode = conn.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
+            IO.println("Response Code: " + responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 // レスポンスの読み取り
@@ -30,7 +30,7 @@ public class HttpURLConnectionExample {
                         response.append(line);
                     }
                     
-                    System.out.println(
+                    IO.println(
                         "Response: " + response.toString());
                 }
             }

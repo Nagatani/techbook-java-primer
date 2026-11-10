@@ -14,7 +14,7 @@ public class UDPClient {
                 buffer, buffer.length, serverAddress, serverPort);
             
             socket.send(packet);
-            System.out.println("送信: " + message);
+            IO.println("送信: " + message);
             
             // レスポンスを受信
             byte[] responseBuffer = new byte[1024];
@@ -25,7 +25,7 @@ public class UDPClient {
             
             String response = new String(responsePacket.getData(), 0,
                 responsePacket.getLength(), StandardCharsets.UTF_8);
-            System.out.println("受信: " + response);
+            IO.println("受信: " + response);
             
         } catch (Exception e) {
             e.printStackTrace();

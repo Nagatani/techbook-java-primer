@@ -17,7 +17,7 @@ public class SimpleTCPClient {
             
             // サーバーからの応答を受信
             String response = in.readLine();
-            System.out.println("サーバーからの応答: " + response);
+            IO.println("サーバーからの応答: " + response);
             
         } catch (UnknownHostException e) {
             System.err.println("ホストが見つかりません: " + serverAddress);

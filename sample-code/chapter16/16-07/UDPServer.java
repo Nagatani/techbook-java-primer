@@ -6,7 +6,7 @@ public class UDPServer {
     
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket(PORT)) {
-            System.out.println("UDPサーバーがポート " + PORT + " で起動しました");
+            IO.println("UDPサーバーがポート " + PORT + " で起動しました");
             
             byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -17,7 +17,7 @@ public class UDPServer {
                 
                 String received = new String(packet.getData(), 0, 
                     packet.getLength(), StandardCharsets.UTF_8);
-                System.out.println("受信: " + received + " from " + 
+                IO.println("受信: " + received + " from " + 
                     packet.getAddress());
                 
                 // エコーレスポンスを送信
