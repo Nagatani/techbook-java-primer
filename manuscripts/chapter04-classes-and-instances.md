@@ -153,7 +153,7 @@ class BankAccountTest {
         // publicメソッドを通じて操作
         account.deposit(5000);
         // getBalanceメソッドは未実装のため、残高は表示できません
-        System.out.println("入金処理が完了しました");
+        IO.println("入金処理が完了しました");
         
         // privateメソッドは呼び出せない
         // account.logTransaction(); // コンパイルエラー
@@ -204,7 +204,7 @@ public class Vehicle {
     protected int maxSpeed;
     
     protected void startEngine() {   // サブクラスで利用可能
-        System.out.println("Engine started: " + engineType);
+        IO.println("Engine started: " + engineType);
     }
 }
 
@@ -233,7 +233,7 @@ public class VehicleTest {
         car.initialize();
         
         // protectedメンバーは別パッケージから直接アクセスできない
-        // System.out.println(car.engineType); // コンパイルエラー
+        // IO.println(car.engineType); // コンパイルエラー
     }
 }
 ```
@@ -264,16 +264,16 @@ public class MathUtils {
 class MathUtilsTest {
     public static void main(String[] args) {
         // publicな定数へのアクセス
-        System.out.println("PI = " + MathUtils.PI);
+        IO.println("PI = " + MathUtils.PI);
         
         // publicなstaticメソッドの呼び出し
         int sum = MathUtils.add(10, 20);
-        System.out.println("10 + 20 = " + sum);
+        IO.println("10 + 20 = " + sum);
         
         // publicなインスタンスメソッドの呼び出し
         MathUtils utils = new MathUtils();
-        System.out.println("5は正の数？ " + utils.isPositive(5));
-        System.out.println("-3は正の数？ " + utils.isPositive(-3));
+        IO.println("5は正の数？ " + utils.isPositive(5));
+        IO.println("-3は正の数？ " + utils.isPositive(-3));
     }
 }
 ```
@@ -337,19 +337,19 @@ class ProductTest {
             // 正常なデータ設定
             product.setName("ノートPC");
             product.setPrice(98000);
-            System.out.println("商品名: " + product.getName());
-            System.out.println("価格: " + product.getPrice() + "円");
+            IO.println("商品名: " + product.getName());
+            IO.println("価格: " + product.getPrice() + "円");
             
             // 不正なデータの検証
             product.setName("");  // 例外が発生
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
         
         try {
             product.setPrice(-1000);  // 例外が発生
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
     }
 }
@@ -446,17 +446,17 @@ public class BankAccountV1Test {
     public static void main(String[] args) {
         BankAccountV1 account = new BankAccountV1("123456", 10000);
         
-        System.out.println("初期残高: " + account.getBalance());
+        IO.println("初期残高: " + account.getBalance());
         
         account.deposit(5000);
-        System.out.println("5000円入金後: " + account.getBalance());
+        IO.println("5000円入金後: " + account.getBalance());
         
         account.withdraw(3000);
-        System.out.println("3000円出金後: " + account.getBalance());
+        IO.println("3000円出金後: " + account.getBalance());
         
         // 問題：負の金額でも処理される
         account.deposit(-1000);
-        System.out.println("負の金額入金後: " + account.getBalance());
+        IO.println("負の金額入金後: " + account.getBalance());
     }
 }
 ```
@@ -530,26 +530,26 @@ public class BankAccountV2Test {
     public static void main(String[] args) {
         try {
             BankAccountV2 account = new BankAccountV2("123456", 10000);
-            System.out.println("初期残高: " + account.getBalance());
+            IO.println("初期残高: " + account.getBalance());
             
             // 正常な入金
             account.deposit(5000);
-            System.out.println("5000円入金後: " + account.getBalance());
+            IO.println("5000円入金後: " + account.getBalance());
             
             // 出金の成功
             if (account.withdraw(3000)) {
-                System.out.println("3000円出金成功: " + account.getBalance());
+                IO.println("3000円出金成功: " + account.getBalance());
             }
             
             // 残高不足の出金
             if (!account.withdraw(20000)) {
-                System.out.println("20000円出金失敗（残高不足）");
+                IO.println("20000円出金失敗（残高不足）");
             }
             
             // 不正な入金額
             account.deposit(-1000);
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
     }
 }
@@ -635,27 +635,27 @@ public class BankAccountV3Test {
     public static void main(String[] args) {
         BankAccountV3 account = new BankAccountV3("123456", 10000);
         
-        System.out.println("口座番号: " + account.getAccountNumber());
-        System.out.println("初期残高: " + account.getBalance());
+        IO.println("口座番号: " + account.getAccountNumber());
+        IO.println("初期残高: " + account.getBalance());
         
         // 入金
         account.deposit(5000);
-        System.out.println("\n5000円入金後の残高: " + account.getBalance());
+        IO.println("\n5000円入金後の残高: " + account.getBalance());
         
         // 出金成功
         if (account.withdraw(3000)) {
-            System.out.println("3000円出金成功後の残高: " + account.getBalance());
+            IO.println("3000円出金成功後の残高: " + account.getBalance());
         }
         
         // 出金失敗
         if (!account.withdraw(20000)) {
-            System.out.println("20000円出金失敗（残高不足）");
+            IO.println("20000円出金失敗（残高不足）");
         }
         
         // 取引履歴の表示
-        System.out.println("\n取引履歴:");
+        IO.println("\n取引履歴:");
         for (String transaction : account.getTransactionHistory()) {
-            System.out.println("  " + transaction);
+            IO.println("  " + transaction);
         }
     }
 }
@@ -726,7 +726,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
             failedTransactionCount++;
             if (failedTransactionCount >= 3) {
                 status = STATUS_SUSPENDED;
-                System.out.println("連続した取引失敗により、口座が一時停止されました。");
+                IO.println("連続した取引失敗により、口座が一時停止されました。");
             }
         } else {
             failedTransactionCount = 0;  // 成功したらリセット
@@ -986,19 +986,19 @@ public class UserTest {
         try {
             // 正常なユーザー作成
             User user1 = new User("user@example.com", "john_doe", 25);
-            System.out.println("ユーザー作成成功");
+            IO.println("ユーザー作成成功");
             
             // 不正なメールアドレス
             User user2 = new User("invalid-email", "jane_doe", 30);
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
         
         try {
             // 短すぎるユーザー名
             User user3 = new User("test@example.com", "ab", 20);
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
     }
 }
@@ -1165,11 +1165,11 @@ public class EventProcessor {
     public void startProcessing() {
         // 自分自身をイベントハンドラーに登録
         EventManager.register(this);
-        System.out.println(name + " が処理を開始しました");
+        IO.println(name + " が処理を開始しました");
     }
     
     public void handleEvent(String event) {
-        System.out.println(name + " がイベントを処理: " + event);
+        IO.println(name + " がイベントを処理: " + event);
     }
 }
 class EventManager {
@@ -1233,22 +1233,22 @@ public class HttpClient {
 public class Logger {
     // 文字列メッセージ
     public void log(String message) {
-        System.out.println("[INFO] " + message);
+        IO.println("[INFO] " + message);
     }
     
     // 例外情報
     public void log(String message, Exception e) {
-        System.out.println("[ERROR] " + message + ": " + e.getMessage());
+        IO.println("[ERROR] " + message + ": " + e.getMessage());
     }
     
     // レベル付きログ
     public void log(String level, String message) {
-        System.out.println("[" + level + "] " + message);
+        IO.println("[" + level + "] " + message);
     }
     
     // フォーマット付きメッセージ
     public void log(String format, Object... args) {
-        System.out.println("[INFO] " + String.format(format, args));
+        IO.println("[INFO] " + String.format(format, args));
     }
     
     // ログレベルを表す定数

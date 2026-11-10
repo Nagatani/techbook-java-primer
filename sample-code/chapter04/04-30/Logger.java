@@ -1,22 +1,22 @@
 public class Logger {
     // 文字列メッセージ
     public void log(String message) {
-        System.out.println("[INFO] " + message);
+        IO.println("[INFO] " + message);
     }
     
     // 例外情報
     public void log(String message, Exception e) {
-        System.out.println("[ERROR] " + message + ": " + e.getMessage());
+        IO.println("[ERROR] " + message + ": " + e.getMessage());
     }
     
     // レベル付きログ
     public void log(String level, String message) {
-        System.out.println("[" + level + "] " + message);
+        IO.println("[" + level + "] " + message);
     }
     
     // フォーマット付きメッセージ
     public void log(String format, Object... args) {
-        System.out.println("[INFO] " + String.format(format, args));
+        IO.println("[INFO] " + String.format(format, args));
     }
     
     // ログレベルを表す定数

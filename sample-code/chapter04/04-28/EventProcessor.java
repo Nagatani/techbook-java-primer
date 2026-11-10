@@ -11,11 +11,11 @@ public class EventProcessor {
     public void startProcessing() {
         // 自分自身をイベントハンドラーに登録
         EventManager.register(this);
-        System.out.println(name + " が処理を開始しました");
+        IO.println(name + " が処理を開始しました");
     }
     
     public void handleEvent(String event) {
-        System.out.println(name + " がイベントを処理: " + event);
+        IO.println(name + " がイベントを処理: " + event);
     }
 }
 class EventManager {

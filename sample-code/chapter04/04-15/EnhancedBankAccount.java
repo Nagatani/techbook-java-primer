@@ -37,7 +37,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
             failedTransactionCount++;
             if (failedTransactionCount >= 3) {
                 status = STATUS_SUSPENDED;
-                System.out.println("連続した取引失敗により、口座が一時停止されました。");
+                IO.println("連続した取引失敗により、口座が一時停止されました。");
             }
         } else {
             failedTransactionCount = 0;  // 成功したらリセット
@@ -62,7 +62,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
         if (STATUS_SUSPENDED.equals(status)) {
             status = STATUS_ACTIVE;
             failedTransactionCount = 0;
-            System.out.println("口座が再アクティブ化されました。");
+            IO.println("口座が再アクティブ化されました。");
         }
     }
 }

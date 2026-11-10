@@ -4,19 +4,19 @@ public class UserTest {
         try {
             // 正常なユーザー作成
             User user1 = new User("user@example.com", "john_doe", 25);
-            System.out.println("ユーザー作成成功");
+            IO.println("ユーザー作成成功");
             
             // 不正なメールアドレス
             User user2 = new User("invalid-email", "jane_doe", 30);
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
         
         try {
             // 短すぎるユーザー名
             User user3 = new User("test@example.com", "ab", 20);
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
     }
 }

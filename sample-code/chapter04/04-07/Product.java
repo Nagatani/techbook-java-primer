@@ -35,19 +35,19 @@ class ProductTest {
             // 正常なデータ設定
             product.setName("ノートPC");
             product.setPrice(98000);
-            System.out.println("商品名: " + product.getName());
-            System.out.println("価格: " + product.getPrice() + "円");
+            IO.println("商品名: " + product.getName());
+            IO.println("価格: " + product.getPrice() + "円");
             
             // 不正なデータの検証
             product.setName("");  // 例外が発生
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
         
         try {
             product.setPrice(-1000);  // 例外が発生
         } catch (IllegalArgumentException e) {
-            System.out.println("エラー: " + e.getMessage());
+            IO.println("エラー: " + e.getMessage());
         }
     }
 }

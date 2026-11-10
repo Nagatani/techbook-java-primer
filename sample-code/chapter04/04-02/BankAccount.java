@@ -25,7 +25,7 @@ class BankAccountTest {
         // publicメソッドを通じて操作
         account.deposit(5000);
         // getBalanceメソッドは未実装のため、残高は表示できません
-        System.out.println("入金処理が完了しました");
+        IO.println("入金処理が完了しました");
         
         // privateメソッドは呼び出せない
         // account.logTransaction(); // コンパイルエラー
