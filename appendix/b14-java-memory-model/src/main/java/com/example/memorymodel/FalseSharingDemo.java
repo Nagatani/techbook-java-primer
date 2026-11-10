@@ -80,14 +80,14 @@ public class FalseSharingDemo {
         }
         
         public void printCounters() {
-            System.out.print("Counters: [");
+            IO.print("Counters: [");
             for (int i = 0; i < counters.length; i++) {
-                System.out.print(counters[i]);
+                IO.print(counters[i]);
                 if (i < counters.length - 1) {
-                    System.out.print(", ");
+                    IO.print(", ");
                 }
             }
-            System.out.println("]");
+            IO.println("]");
         }
     }
     
@@ -121,14 +121,14 @@ public class FalseSharingDemo {
         }
         
         public void printCounters() {
-            System.out.print("Padded Counters: [");
+            IO.print("Padded Counters: [");
             for (int i = 0; i < counters.length; i++) {
-                System.out.print(counters[i].value);
+                IO.print(counters[i].value);
                 if (i < counters.length - 1) {
-                    System.out.print(", ");
+                    IO.print(", ");
                 }
             }
-            System.out.println("]");
+            IO.println("]");
         }
     }
     
@@ -194,13 +194,13 @@ public class FalseSharingDemo {
      * False Sharingのパフォーマンステスト
      */
     public static void testFalseSharingPerformance() {
-        System.out.println("=== False Sharing Performance Test ===");
+        IO.println("=== False Sharing Performance Test ===");
         
         final int threadCount = 4;
         final int iterations = 10_000_000;
         
         // False Sharingが発生するケース
-        System.out.println("\n--- Test 1: False Sharing (Bad) ---");
+        IO.println("\n--- Test 1: False Sharing (Bad) ---");
         FalseSharingCounters falseSharingCounters = new FalseSharingCounters();
         
         long startTime = System.nanoTime();
@@ -235,15 +235,15 @@ public class FalseSharingDemo {
         
         long falseSharingTime = System.nanoTime() - startTime;
         
-        System.out.println("Results: " + 
+        IO.println("Results: " + 
                          falseSharingCounters.counter1 + ", " +
                          falseSharingCounters.counter2 + ", " +
                          falseSharingCounters.counter3 + ", " +
                          falseSharingCounters.counter4);
-        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(falseSharingTime) + "ms");
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(falseSharingTime) + "ms");
         
         // パディングでFalse Sharingを回避するケース
-        System.out.println("\n--- Test 2: Padded (Good) ---");
+        IO.println("\n--- Test 2: Padded (Good) ---");
         PaddedCounters paddedCounters = new PaddedCounters();
         
         startTime = System.nanoTime();
@@ -278,28 +278,28 @@ public class FalseSharingDemo {
         
         long paddedTime = System.nanoTime() - startTime;
         
-        System.out.println("Results: " + 
+        IO.println("Results: " + 
                          paddedCounters.counter1 + ", " +
                          paddedCounters.counter2 + ", " +
                          paddedCounters.counter3 + ", " +
                          paddedCounters.counter4);
-        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(paddedTime) + "ms");
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(paddedTime) + "ms");
         
         double improvement = (double) falseSharingTime / paddedTime;
-        System.out.println("\nPerformance improvement: " + String.format("%.2fx", improvement));
+        IO.println("\nPerformance improvement: " + String.format("%.2fx", improvement));
     }
     
     /**
      * 配列でのFalse Sharingテスト
      */
     public static void testArrayFalseSharing() {
-        System.out.println("\n=== Array False Sharing Test ===");
+        IO.println("\n=== Array False Sharing Test ===");
         
         final int threadCount = 4;
         final int iterations = 5_000_000;
         
         // 通常の配列（False Sharingあり）
-        System.out.println("\n--- Normal Array (False Sharing) ---");
+        IO.println("\n--- Normal Array (False Sharing) ---");
         ArrayFalseSharingDemo normalArray = new ArrayFalseSharingDemo();
         
         long startTime = System.nanoTime();
@@ -329,10 +329,10 @@ public class FalseSharingDemo {
         
         long normalTime = System.nanoTime() - startTime;
         normalArray.printCounters();
-        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(normalTime) + "ms");
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(normalTime) + "ms");
         
         // パディングされた配列（False Sharingなし）
-        System.out.println("\n--- Padded Array (No False Sharing) ---");
+        IO.println("\n--- Padded Array (No False Sharing) ---");
         PaddedArrayDemo paddedArray = new PaddedArrayDemo();
         
         startTime = System.nanoTime();
@@ -362,25 +362,25 @@ public class FalseSharingDemo {
         
         long paddedTime = System.nanoTime() - startTime;
         paddedArray.printCounters();
-        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(paddedTime) + "ms");
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(paddedTime) + "ms");
         
         double improvement = (double) normalTime / paddedTime;
-        System.out.println("\nArray performance improvement: " + String.format("%.2fx", improvement));
+        IO.println("\nArray performance improvement: " + String.format("%.2fx", improvement));
     }
     
     /**
      * スケーラブルカウンターのテスト
      */
     public static void testStripedCounter() {
-        System.out.println("\n=== Striped Counter Test ===");
+        IO.println("\n=== Striped Counter Test ===");
         
         StripedCounter counter = new StripedCounter();
         final int threadCount = 8;
         final int incrementsPerThread = 1_000_000;
         
-        System.out.println("Stripe count: " + counter.getStripeCount());
-        System.out.println("Thread count: " + threadCount);
-        System.out.println("Increments per thread: " + incrementsPerThread);
+        IO.println("Stripe count: " + counter.getStripeCount());
+        IO.println("Thread count: " + threadCount);
+        IO.println("Increments per thread: " + incrementsPerThread);
         
         long startTime = System.nanoTime();
         Thread[] threads = new Thread[threadCount];
@@ -410,10 +410,10 @@ public class FalseSharingDemo {
         long expectedSum = (long) threadCount * incrementsPerThread;
         long actualSum = counter.sum();
         
-        System.out.println("Expected sum: " + expectedSum);
-        System.out.println("Actual sum: " + actualSum);
-        System.out.println("Time: " + TimeUnit.NANOSECONDS.toMillis(elapsedTime) + "ms");
-        System.out.println("Operations per second: " + 
+        IO.println("Expected sum: " + expectedSum);
+        IO.println("Actual sum: " + actualSum);
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(elapsedTime) + "ms");
+        IO.println("Operations per second: " + 
                          String.format("%.0f", expectedSum / (elapsedTime / 1_000_000_000.0)));
     }
     
@@ -421,34 +421,34 @@ public class FalseSharingDemo {
      * キャッシュライン情報の表示
      */
     public static void displayCacheLineInfo() {
-        System.out.println("\n=== Cache Line Information ===");
+        IO.println("\n=== Cache Line Information ===");
         
         // Javaオブジェクトのメモリレイアウト情報
-        System.out.println("Typical cache line size: 64 bytes");
-        System.out.println("long size: 8 bytes");
-        System.out.println("Object header size: ~12-16 bytes (platform dependent)");
-        System.out.println("Array header size: ~12-16 bytes + 4 bytes (length)");
+        IO.println("Typical cache line size: 64 bytes");
+        IO.println("long size: 8 bytes");
+        IO.println("Object header size: ~12-16 bytes (platform dependent)");
+        IO.println("Array header size: ~12-16 bytes + 4 bytes (length)");
         
         // メモリアクセスパターンの説明
-        System.out.println("\nMemory access patterns:");
-        System.out.println("- Sequential access: Good cache performance");
-        System.out.println("- Random access: Poor cache performance");
-        System.out.println("- False sharing: Multiple threads writing to same cache line");
-        System.out.println("- Solution: Padding to separate frequently accessed variables");
+        IO.println("\nMemory access patterns:");
+        IO.println("- Sequential access: Good cache performance");
+        IO.println("- Random access: Poor cache performance");
+        IO.println("- False sharing: Multiple threads writing to same cache line");
+        IO.println("- Solution: Padding to separate frequently accessed variables");
         
         // パフォーマンスの考慮事項
-        System.out.println("\nPerformance considerations:");
-        System.out.println("- Cache miss penalty: 100-300 cycles");
-        System.out.println("- Cache hit: 1-4 cycles");
-        System.out.println("- False sharing can reduce performance by 10-100x");
-        System.out.println("- Padding increases memory usage but improves performance");
+        IO.println("\nPerformance considerations:");
+        IO.println("- Cache miss penalty: 100-300 cycles");
+        IO.println("- Cache hit: 1-4 cycles");
+        IO.println("- False sharing can reduce performance by 10-100x");
+        IO.println("- Padding increases memory usage but improves performance");
     }
     
     /**
      * メモリアクセスパターンのデモ
      */
     public static void demonstrateAccessPatterns() {
-        System.out.println("\n=== Memory Access Pattern Demo ===");
+        IO.println("\n=== Memory Access Pattern Demo ===");
         
         final int arraySize = 1024 * 1024; // 1M elements
         final int iterations = 10;
@@ -484,11 +484,11 @@ public class FalseSharingDemo {
         }
         long randomTime = System.nanoTime() - startTime;
         
-        System.out.println("Array size: " + arraySize + " elements");
-        System.out.println("Iterations: " + iterations);
-        System.out.println("Sequential access time: " + TimeUnit.NANOSECONDS.toMillis(sequentialTime) + "ms");
-        System.out.println("Random access time: " + TimeUnit.NANOSECONDS.toMillis(randomTime) + "ms");
-        System.out.println("Random/Sequential ratio: " + String.format("%.2fx", (double) randomTime / sequentialTime));
+        IO.println("Array size: " + arraySize + " elements");
+        IO.println("Iterations: " + iterations);
+        IO.println("Sequential access time: " + TimeUnit.NANOSECONDS.toMillis(sequentialTime) + "ms");
+        IO.println("Random access time: " + TimeUnit.NANOSECONDS.toMillis(randomTime) + "ms");
+        IO.println("Random/Sequential ratio: " + String.format("%.2fx", (double) randomTime / sequentialTime));
     }
     
     /**
@@ -501,12 +501,12 @@ public class FalseSharingDemo {
         testArrayFalseSharing();
         testStripedCounter();
         
-        System.out.println("\n=== False Sharing Summary ===");
-        System.out.println("1. False sharing occurs when multiple threads access different variables in the same cache line");
-        System.out.println("2. It causes unnecessary cache coherency traffic and performance degradation");
-        System.out.println("3. Solutions include padding, @Contended annotation, or data structure redesign");
-        System.out.println("4. Trade-off between memory usage and performance");
-        System.out.println("5. Modern concurrent libraries like LongAdder use these techniques internally");
-        System.out.println("6. Understanding cache behavior is crucial for high-performance concurrent programming");
+        IO.println("\n=== False Sharing Summary ===");
+        IO.println("1. False sharing occurs when multiple threads access different variables in the same cache line");
+        IO.println("2. It causes unnecessary cache coherency traffic and performance degradation");
+        IO.println("3. Solutions include padding, @Contended annotation, or data structure redesign");
+        IO.println("4. Trade-off between memory usage and performance");
+        IO.println("5. Modern concurrent libraries like LongAdder use these techniques internally");
+        IO.println("6. Understanding cache behavior is crucial for high-performance concurrent programming");
     }
 }

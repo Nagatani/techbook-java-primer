@@ -85,15 +85,15 @@ public class LockFreeAlgorithms {
          */
         public void printStack() {
             Node<T> current = top.get();
-            System.out.print("Stack: [");
+            IO.print("Stack: [");
             while (current != null) {
-                System.out.print(current.item);
+                IO.print(current.item);
                 current = current.next;
                 if (current != null) {
-                    System.out.print(", ");
+                    IO.print(", ");
                 }
             }
-            System.out.println("]");
+            IO.println("]");
         }
     }
     
@@ -150,46 +150,46 @@ public class LockFreeAlgorithms {
             push((T) "B");
             push((T) "A");
             
-            System.out.println("Initial state:");
+            IO.println("Initial state:");
             printStack();
             
             // スレッド1がpopを開始（A を取得）
             Node<T> thread1Head = top.get();
-            System.out.println("Thread1 sees head: " + thread1Head.item);
+            IO.println("Thread1 sees head: " + thread1Head.item);
             
             // スレッド2がA, BをpopしてからAをpush（A -> C）
             pop(); // A を pop
             pop(); // B を pop
             push((T) "A"); // A を push
             
-            System.out.println("After thread2 operations:");
+            IO.println("After thread2 operations:");
             printStack();
             
             // スレッド1がCASを実行（成功してしまう問題）
             Node<T> newHead = thread1Head.next; // これはBを指している（解放済み）
             boolean casResult = top.compareAndSet(thread1Head, newHead);
             
-            System.out.println("Thread1 CAS result: " + casResult);
-            System.out.println("Final state (problematic):");
+            IO.println("Thread1 CAS result: " + casResult);
+            IO.println("Final state (problematic):");
             printStack();
         }
         
         private void printStack() {
             Node<T> current = top.get();
-            System.out.print("Stack: [");
+            IO.print("Stack: [");
             int count = 0;
             while (current != null && count < 10) { // 無限ループ防止
-                System.out.print(current.item);
+                IO.print(current.item);
                 current = current.next;
                 count++;
                 if (current != null && count < 10) {
-                    System.out.print(", ");
+                    IO.print(", ");
                 }
             }
             if (count >= 10) {
-                System.out.print("...");
+                IO.print("...");
             }
-            System.out.println("]");
+            IO.println("]");
         }
     }
     
@@ -256,15 +256,15 @@ public class LockFreeAlgorithms {
             Node<T> current = top.get(stampHolder);
             int stamp = stampHolder[0];
             
-            System.out.print("Stack (stamp=" + stamp + "): [");
+            IO.print("Stack (stamp=" + stamp + "): [");
             while (current != null) {
-                System.out.print(current.item);
+                IO.print(current.item);
                 current = current.next;
                 if (current != null) {
-                    System.out.print(", ");
+                    IO.print(", ");
                 }
             }
-            System.out.println("]");
+            IO.println("]");
         }
     }
     
@@ -336,7 +336,7 @@ public class LockFreeAlgorithms {
      * ロックフリースタックのパフォーマンステスト
      */
     public static void testLockFreeStackPerformance() {
-        System.out.println("=== Lock-Free Stack Performance Test ===");
+        IO.println("=== Lock-Free Stack Performance Test ===");
         
         LockFreeStack<Integer> stack = new LockFreeStack<>();
         final int threadCount = 4;
@@ -377,11 +377,11 @@ public class LockFreeAlgorithms {
         long endTime = System.nanoTime();
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
         
-        System.out.println("Threads: " + threadCount);
-        System.out.println("Operations per thread: " + operationsPerThread);
-        System.out.println("Total operations: " + stack.getOperationCount());
-        System.out.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
-        System.out.println("Operations per second: " + 
+        IO.println("Threads: " + threadCount);
+        IO.println("Operations per thread: " + operationsPerThread);
+        IO.println("Total operations: " + stack.getOperationCount());
+        IO.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
+        IO.println("Operations per second: " + 
                          String.format("%.0f", stack.getOperationCount() / elapsedMs * 1000));
         
         // 最終的なスタックの状態
@@ -390,19 +390,19 @@ public class LockFreeAlgorithms {
             stack.pop();
             remainingItems++;
         }
-        System.out.println("Remaining items in stack: " + remainingItems);
+        IO.println("Remaining items in stack: " + remainingItems);
     }
     
     /**
      * ABA問題のデモンストレーション
      */
     public static void demonstrateABAProblem() {
-        System.out.println("\n=== ABA Problem Demonstration ===");
+        IO.println("\n=== ABA Problem Demonstration ===");
         
         ABAProblematicStack<String> problematicStack = new ABAProblematicStack<>();
         problematicStack.simulateABAProblem();
         
-        System.out.println("\n--- ABA-Safe Stack ---");
+        IO.println("\n--- ABA-Safe Stack ---");
         ABASafeStack<String> safeStack = new ABASafeStack<>();
         
         // 同じ操作をABA-safeスタックで実行
@@ -410,16 +410,16 @@ public class LockFreeAlgorithms {
         safeStack.push("B");
         safeStack.push("A");
         
-        System.out.println("Initial state:");
+        IO.println("Initial state:");
         safeStack.printStack();
         
         // 通常の操作
         String item = safeStack.pop();
-        System.out.println("Popped: " + item);
+        IO.println("Popped: " + item);
         safeStack.printStack();
         
         safeStack.push("D");
-        System.out.println("Pushed: D");
+        IO.println("Pushed: D");
         safeStack.printStack();
     }
     
@@ -427,7 +427,7 @@ public class LockFreeAlgorithms {
      * ロックフリーカウンターのテスト
      */
     public static void testLockFreeCounter() {
-        System.out.println("\n=== Lock-Free Counter Test ===");
+        IO.println("\n=== Lock-Free Counter Test ===");
         
         LockFreeCounter counter = new LockFreeCounter();
         final int threadCount = 8;
@@ -467,17 +467,17 @@ public class LockFreeAlgorithms {
         long endTime = System.nanoTime();
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
         
-        System.out.println("Threads: " + threadCount);
-        System.out.println("Increments per thread: " + incrementsPerThread);
-        System.out.println("Final counter value: " + counter.get());
-        System.out.println("CAS failures: " + counter.getCasFailures());
-        System.out.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
+        IO.println("Threads: " + threadCount);
+        IO.println("Increments per thread: " + incrementsPerThread);
+        IO.println("Final counter value: " + counter.get());
+        IO.println("CAS failures: " + counter.getCasFailures());
+        IO.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
         
         int totalOperations = threadCount * incrementsPerThread;
-        System.out.println("Total operations: " + totalOperations);
-        System.out.println("Operations per second: " + 
+        IO.println("Total operations: " + totalOperations);
+        IO.println("Operations per second: " + 
                          String.format("%.0f", totalOperations / elapsedMs * 1000));
-        System.out.println("CAS failure rate: " + 
+        IO.println("CAS failure rate: " + 
                          String.format("%.2f", counter.getCasFailures() / (double) totalOperations * 100) + "%");
     }
     
@@ -485,32 +485,32 @@ public class LockFreeAlgorithms {
      * CAS操作の基本デモ
      */
     public static void demonstrateBasicCAS() {
-        System.out.println("\n=== Basic CAS Operation Demo ===");
+        IO.println("\n=== Basic CAS Operation Demo ===");
         
         AtomicInteger atomicInt = new AtomicInteger(10);
         
-        System.out.println("Initial value: " + atomicInt.get());
+        IO.println("Initial value: " + atomicInt.get());
         
         // 成功するCAS
         boolean success1 = atomicInt.compareAndSet(10, 20);
-        System.out.println("CAS(10, 20): " + success1 + ", new value: " + atomicInt.get());
+        IO.println("CAS(10, 20): " + success1 + ", new value: " + atomicInt.get());
         
         // 失敗するCAS
         boolean success2 = atomicInt.compareAndSet(10, 30);
-        System.out.println("CAS(10, 30): " + success2 + ", value: " + atomicInt.get());
+        IO.println("CAS(10, 30): " + success2 + ", value: " + atomicInt.get());
         
         // 成功するCAS
         boolean success3 = atomicInt.compareAndSet(20, 30);
-        System.out.println("CAS(20, 30): " + success3 + ", new value: " + atomicInt.get());
+        IO.println("CAS(20, 30): " + success3 + ", new value: " + atomicInt.get());
         
         // getAndXXX操作の実装例
-        System.out.println("\ngetAndIncrement implementation:");
+        IO.println("\ngetAndIncrement implementation:");
         int oldValue = atomicInt.get();
         while (!atomicInt.compareAndSet(oldValue, oldValue + 1)) {
             oldValue = atomicInt.get();
-            System.out.println("  CAS retry with old value: " + oldValue);
+            IO.println("  CAS retry with old value: " + oldValue);
         }
-        System.out.println("Final value: " + atomicInt.get());
+        IO.println("Final value: " + atomicInt.get());
     }
     
     /**
@@ -522,12 +522,12 @@ public class LockFreeAlgorithms {
         demonstrateABAProblem();
         testLockFreeCounter();
         
-        System.out.println("\n=== Lock-Free Programming Summary ===");
-        System.out.println("1. CAS (Compare-And-Swap) enables lock-free atomic operations");
-        System.out.println("2. ABA problem can occur when memory is reused");
-        System.out.println("3. Stamped references or hazard pointers can solve ABA problem");
-        System.out.println("4. Lock-free algorithms provide better scalability and avoid deadlocks");
-        System.out.println("5. Implementation complexity is higher than lock-based approaches");
-        System.out.println("6. Performance benefits are most apparent under high contention");
+        IO.println("\n=== Lock-Free Programming Summary ===");
+        IO.println("1. CAS (Compare-And-Swap) enables lock-free atomic operations");
+        IO.println("2. ABA problem can occur when memory is reused");
+        IO.println("3. Stamped references or hazard pointers can solve ABA problem");
+        IO.println("4. Lock-free algorithms provide better scalability and avoid deadlocks");
+        IO.println("5. Implementation complexity is higher than lock-based approaches");
+        IO.println("6. Performance benefits are most apparent under high contention");
     }
 }

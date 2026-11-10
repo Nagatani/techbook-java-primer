@@ -16,19 +16,19 @@ public class VisibilityProblems {
         private int counter = 0;
         
         public void backgroundWork() {
-            System.out.println("Background work started...");
+            IO.println("Background work started...");
             while (!stopRequested) {
                 counter++;
                 // 軽い処理をシミュレート
                 if (counter % 100_000_000 == 0) {
-                    System.out.println("Working... counter: " + counter);
+                    IO.println("Working... counter: " + counter);
                 }
             }
-            System.out.println("Background work stopped. Final counter: " + counter);
+            IO.println("Background work stopped. Final counter: " + counter);
         }
         
         public void requestStop() {
-            System.out.println("Stop requested!");
+            IO.println("Stop requested!");
             stopRequested = true;
         }
         
@@ -49,19 +49,19 @@ public class VisibilityProblems {
         private volatile int counter = 0; // counterもvolatileに
         
         public void backgroundWork() {
-            System.out.println("Background work started (with volatile)...");
+            IO.println("Background work started (with volatile)...");
             while (!stopRequested) {
                 counter++;
                 // 軽い処理をシミュレート
                 if (counter % 100_000_000 == 0) {
-                    System.out.println("Working... counter: " + counter);
+                    IO.println("Working... counter: " + counter);
                 }
             }
-            System.out.println("Background work stopped. Final counter: " + counter);
+            IO.println("Background work stopped. Final counter: " + counter);
         }
         
         public void requestStop() {
-            System.out.println("Stop requested (volatile version)!");
+            IO.println("Stop requested (volatile version)!");
             stopRequested = true;
         }
         
@@ -117,7 +117,7 @@ public class VisibilityProblems {
         private final String name;
         
         public ExpensiveObject() {
-            System.out.println("Creating expensive object...");
+            IO.println("Creating expensive object...");
             // 重い初期化をシミュレート
             try {
                 Thread.sleep(100);
@@ -130,7 +130,7 @@ public class VisibilityProblems {
                 data[i] = i * i;
             }
             this.name = "ExpensiveObject-" + System.nanoTime();
-            System.out.println("Expensive object created: " + name);
+            IO.println("Expensive object created: " + name);
         }
         
         public int[] getData() {
@@ -146,10 +146,10 @@ public class VisibilityProblems {
      * 可視性問題のデモンストレーション
      */
     public static void demonstrateVisibilityProblem() {
-        System.out.println("=== Visibility Problem Demonstration ===");
+        IO.println("=== Visibility Problem Demonstration ===");
         
         // 問題のあるバージョン
-        System.out.println("\n--- Testing Broken Version (may hang) ---");
+        IO.println("\n--- Testing Broken Version (may hang) ---");
         BrokenStopFlag broken = new BrokenStopFlag();
         
         Thread workerThread = new Thread(broken::backgroundWork);
@@ -164,17 +164,17 @@ public class VisibilityProblems {
             workerThread.join(5000);
             
             if (workerThread.isAlive()) {
-                System.out.println("Worker thread did not stop - visibility problem occurred!");
+                IO.println("Worker thread did not stop - visibility problem occurred!");
                 workerThread.interrupt();
             } else {
-                System.out.println("Worker thread stopped properly");
+                IO.println("Worker thread stopped properly");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
         
         // 正しいバージョン
-        System.out.println("\n--- Testing Correct Version (with volatile) ---");
+        IO.println("\n--- Testing Correct Version (with volatile) ---");
         CorrectStopFlag correct = new CorrectStopFlag();
         
         Thread correctWorkerThread = new Thread(correct::backgroundWork);
@@ -189,10 +189,10 @@ public class VisibilityProblems {
             correctWorkerThread.join(1000);
             
             if (correctWorkerThread.isAlive()) {
-                System.out.println("Unexpected: Correct version did not stop");
+                IO.println("Unexpected: Correct version did not stop");
                 correctWorkerThread.interrupt();
             } else {
-                System.out.println("Correct version stopped properly");
+                IO.println("Correct version stopped properly");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -203,10 +203,10 @@ public class VisibilityProblems {
      * 初期化問題のデモンストレーション
      */
     public static void demonstrateInitializationProblem() {
-        System.out.println("\n=== Initialization Problem Demonstration ===");
+        IO.println("\n=== Initialization Problem Demonstration ===");
         
         // 安全でない初期化
-        System.out.println("\n--- Unsafe Initialization ---");
+        IO.println("\n--- Unsafe Initialization ---");
         UnsafeInitialization unsafe = new UnsafeInitialization();
         
         // 複数スレッドが同時にアクセス
@@ -214,7 +214,7 @@ public class VisibilityProblems {
             final int threadId = i;
             new Thread(() -> {
                 ExpensiveObject obj = unsafe.getInstance();
-                System.out.println("Thread " + threadId + " got: " + obj.getName());
+                IO.println("Thread " + threadId + " got: " + obj.getName());
             }).start();
         }
         
@@ -225,7 +225,7 @@ public class VisibilityProblems {
         }
         
         // 安全な初期化
-        System.out.println("\n--- Safe Initialization ---");
+        IO.println("\n--- Safe Initialization ---");
         SafeInitialization safe = new SafeInitialization();
         
         // 複数スレッドが同時にアクセス
@@ -233,7 +233,7 @@ public class VisibilityProblems {
             final int threadId = i;
             new Thread(() -> {
                 ExpensiveObject obj = safe.getInstance();
-                System.out.println("Thread " + threadId + " got: " + obj.getName());
+                IO.println("Thread " + threadId + " got: " + obj.getName());
             }).start();
         }
         
@@ -279,7 +279,7 @@ public class VisibilityProblems {
      * volatileとsynchronizedの違いをデモ
      */
     public static void demonstrateVolatileVsSynchronized() {
-        System.out.println("\n=== Volatile vs Synchronized Demonstration ===");
+        IO.println("\n=== Volatile vs Synchronized Demonstration ===");
         
         VolatileVsSynchronized demo = new VolatileVsSynchronized();
         final int threadCount = 10;
@@ -312,11 +312,11 @@ public class VisibilityProblems {
         int expectedCount = threadCount * incrementsPerThread;
         int actualVolatileCount = demo.getVolatileCounter();
         
-        System.out.println("Volatile counter:");
-        System.out.println("  Expected: " + expectedCount);
-        System.out.println("  Actual: " + actualVolatileCount);
-        System.out.println("  Lost updates: " + (expectedCount - actualVolatileCount));
-        System.out.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(volatileTime) + "ms");
+        IO.println("Volatile counter:");
+        IO.println("  Expected: " + expectedCount);
+        IO.println("  Actual: " + actualVolatileCount);
+        IO.println("  Lost updates: " + (expectedCount - actualVolatileCount));
+        IO.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(volatileTime) + "ms");
         
         // カウンターをリセット
         demo.reset();
@@ -347,16 +347,16 @@ public class VisibilityProblems {
         
         int actualSyncCount = demo.getSynchronizedCounter();
         
-        System.out.println("\nSynchronized counter:");
-        System.out.println("  Expected: " + expectedCount);
-        System.out.println("  Actual: " + actualSyncCount);
-        System.out.println("  Lost updates: " + (expectedCount - actualSyncCount));
-        System.out.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(syncTime) + "ms");
+        IO.println("\nSynchronized counter:");
+        IO.println("  Expected: " + expectedCount);
+        IO.println("  Actual: " + actualSyncCount);
+        IO.println("  Lost updates: " + (expectedCount - actualSyncCount));
+        IO.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(syncTime) + "ms");
         
-        System.out.println("\nConclusion:");
-        System.out.println("  Volatile provides visibility but not atomicity");
-        System.out.println("  Synchronized provides both visibility and atomicity");
-        System.out.println("  Performance cost: " + (syncTime / (double) volatileTime) + "x slower");
+        IO.println("\nConclusion:");
+        IO.println("  Volatile provides visibility but not atomicity");
+        IO.println("  Synchronized provides both visibility and atomicity");
+        IO.println("  Performance cost: " + (syncTime / (double) volatileTime) + "x slower");
     }
     
     /**
@@ -367,11 +367,11 @@ public class VisibilityProblems {
         demonstrateInitializationProblem();
         demonstrateVolatileVsSynchronized();
         
-        System.out.println("\n=== Summary ===");
-        System.out.println("1. volatile ensures visibility of changes across threads");
-        System.out.println("2. volatile does NOT ensure atomicity of compound operations");
-        System.out.println("3. synchronized ensures both visibility and atomicity");
-        System.out.println("4. Proper initialization requires careful synchronization");
-        System.out.println("5. Memory model understanding is crucial for concurrent programming");
+        IO.println("\n=== Summary ===");
+        IO.println("1. volatile ensures visibility of changes across threads");
+        IO.println("2. volatile does NOT ensure atomicity of compound operations");
+        IO.println("3. synchronized ensures both visibility and atomicity");
+        IO.println("4. Proper initialization requires careful synchronization");
+        IO.println("5. Memory model understanding is crucial for concurrent programming");
     }
 }

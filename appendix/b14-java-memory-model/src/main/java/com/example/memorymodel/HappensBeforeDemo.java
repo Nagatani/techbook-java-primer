@@ -26,7 +26,7 @@ public class HappensBeforeDemo {
         
         public void reader() {
             int r = result;     // result が設定されていれば
-            System.out.println("Result: " + r + ", a: " + a + ", b: " + b);
+            IO.println("Result: " + r + ", a: " + a + ", b: " + b);
             // プログラム順序により、aとbも設定済みのはず
         }
     }
@@ -43,7 +43,7 @@ public class HappensBeforeDemo {
             synchronized (lock) {
                 sharedData = 42;        // 1
                 dataReady = true;       // 2
-                System.out.println("Data written: " + sharedData);
+                IO.println("Data written: " + sharedData);
             } // unlock HB 次のlock
         }
         
@@ -51,7 +51,7 @@ public class HappensBeforeDemo {
             synchronized (lock) {     // 前のunlock HB このlock
                 if (dataReady) {      // 3
                     int data = sharedData; // 4
-                    System.out.println("Data read: " + data);
+                    IO.println("Data read: " + data);
                     // 1,2 HB 3,4 が保証される
                 }
             }
@@ -71,7 +71,7 @@ public class HappensBeforeDemo {
             counter = 100;                // 2
             timestamp = System.nanoTime(); // 3: volatile write
             // 1,2 HB 3
-            System.out.println("Published: " + message + ", counter: " + counter);
+            IO.println("Published: " + message + ", counter: " + counter);
         }
         
         public void consume() {
@@ -80,7 +80,7 @@ public class HappensBeforeDemo {
                 String m = message;       // 5
                 int c = counter;          // 6
                 // 3 HB 4, therefore 1,2 HB 5,6
-                System.out.println("Consumed: " + m + ", counter: " + c + ", time: " + t);
+                IO.println("Consumed: " + m + ", counter: " + c + ", time: " + t);
             }
         }
     }
@@ -99,7 +99,7 @@ public class HappensBeforeDemo {
             Thread worker = new Thread(() -> {
                 int d = data;             // 4
                 String m = message;       // 5
-                System.out.println("Worker sees: data=" + d + ", message=" + m);
+                IO.println("Worker sees: data=" + d + ", message=" + m);
                 // 1,2 HB 3 HB 4,5 が保証される
             });
             
@@ -123,7 +123,7 @@ public class HappensBeforeDemo {
                     result += i;
                 }
                 status = "Completed";     // 1
-                System.out.println("Worker completed with result: " + result);
+                IO.println("Worker completed with result: " + result);
             }
             
             public int getResult() {
@@ -144,7 +144,7 @@ public class HappensBeforeDemo {
             int r = worker.getResult();   // 3
             String s = worker.getStatus(); // 4
             // 1 HB 2 HB 3,4
-            System.out.println("Main thread sees: result=" + r + ", status=" + s);
+            IO.println("Main thread sees: result=" + r + ", status=" + s);
         }
     }
     
@@ -161,7 +161,7 @@ public class HappensBeforeDemo {
             data1 = 1;              // A
             data2 = 2;              // B
             control = 1;            // C (volatile write)
-            System.out.println("Thread1: set control to 1");
+            IO.println("Thread1: set control to 1");
         }
         
         public void thread2() {
@@ -170,7 +170,7 @@ public class HappensBeforeDemo {
             }
             data3 = data1 + data2;  // E
             control = 2;            // F (volatile write)
-            System.out.println("Thread2: computed data3 = " + data3 + ", set control to 2");
+            IO.println("Thread2: computed data3 = " + data3 + ", set control to 2");
         }
         
         public void thread3() {
@@ -178,7 +178,7 @@ public class HappensBeforeDemo {
                 Thread.yield();
             }
             int result = data1 + data2 + data3; // H
-            System.out.println("Thread3: final result = " + result);
+            IO.println("Thread3: final result = " + result);
             // 推移性により A,B HB C HB D HB E HB F HB G HB H
         }
     }
@@ -201,7 +201,7 @@ public class HappensBeforeDemo {
                 phase1Data[i] = i * i;
             }
             phase1Complete = true; // volatile write
-            System.out.println("Phase 1 completed");
+            IO.println("Phase 1 completed");
         }
         
         public void phase2Worker() {
@@ -215,7 +215,7 @@ public class HappensBeforeDemo {
                 phase2Data[i] = phase1Data[i] * 2; // phase1Data は可視
             }
             phase2Complete = true; // volatile write
-            System.out.println("Phase 2 completed");
+            IO.println("Phase 2 completed");
         }
         
         public void phase3Worker() {
@@ -230,14 +230,14 @@ public class HappensBeforeDemo {
                     phase3Data[i] = phase1Data[i] + phase2Data[i]; // 両方とも可視
                 }
             }
-            System.out.println("Phase 3 completed");
+            IO.println("Phase 3 completed");
             
             // 結果の一部を表示
-            System.out.print("Sample results: ");
+            IO.print("Sample results: ");
             for (int i = 0; i < 5; i++) {
-                System.out.print(phase3Data[i] + " ");
+                IO.print(phase3Data[i] + " ");
             }
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -265,7 +265,7 @@ public class HappensBeforeDemo {
                         }
                         results[workerId] = result;
                         
-                        System.out.println("Worker " + workerId + " completed with result: " + result);
+                        IO.println("Worker " + workerId + " completed with result: " + result);
                         doneSignal.countDown(); // 完了を通知
                         
                     } catch (InterruptedException e) {
@@ -274,7 +274,7 @@ public class HappensBeforeDemo {
                 }).start();
             }
             
-            System.out.println("All workers started, releasing start signal...");
+            IO.println("All workers started, releasing start signal...");
             startSignal.countDown(); // すべてのワーカーを開始
             
             doneSignal.await(); // すべてのワーカーの完了を待つ
@@ -283,9 +283,9 @@ public class HappensBeforeDemo {
             int totalResult = 0;
             for (int i = 0; i < results.length; i++) {
                 totalResult += results[i];
-                System.out.println("Result[" + i + "]: " + results[i]);
+                IO.println("Result[" + i + "]: " + results[i]);
             }
-            System.out.println("Total result: " + totalResult);
+            IO.println("Total result: " + totalResult);
         }
     }
     
@@ -293,7 +293,7 @@ public class HappensBeforeDemo {
      * プログラム順序規則のデモンストレーション
      */
     public static void demonstrateProgramOrder() {
-        System.out.println("=== Program Order Rule Demo ===");
+        IO.println("=== Program Order Rule Demo ===");
         
         ProgramOrderRule demo = new ProgramOrderRule();
         demo.writer();
@@ -304,7 +304,7 @@ public class HappensBeforeDemo {
      * モニターロック規則のデモンストレーション
      */
     public static void demonstrateMonitorLock() throws InterruptedException {
-        System.out.println("\n=== Monitor Lock Rule Demo ===");
+        IO.println("\n=== Monitor Lock Rule Demo ===");
         
         MonitorLockRule demo = new MonitorLockRule();
         
@@ -329,7 +329,7 @@ public class HappensBeforeDemo {
      * volatile規則のデモンストレーション
      */
     public static void demonstrateVolatileRule() throws InterruptedException {
-        System.out.println("\n=== Volatile Rule Demo ===");
+        IO.println("\n=== Volatile Rule Demo ===");
         
         VolatileRule demo = new VolatileRule();
         
@@ -354,7 +354,7 @@ public class HappensBeforeDemo {
      * スレッド開始規則のデモンストレーション
      */
     public static void demonstrateThreadStart() throws InterruptedException {
-        System.out.println("\n=== Thread Start Rule Demo ===");
+        IO.println("\n=== Thread Start Rule Demo ===");
         
         ThreadStartRule demo = new ThreadStartRule();
         demo.demonstrate();
@@ -366,7 +366,7 @@ public class HappensBeforeDemo {
      * スレッド終了規則のデモンストレーション
      */
     public static void demonstrateThreadJoin() throws InterruptedException {
-        System.out.println("\n=== Thread Join Rule Demo ===");
+        IO.println("\n=== Thread Join Rule Demo ===");
         
         ThreadJoinRule demo = new ThreadJoinRule();
         demo.demonstrate();
@@ -376,7 +376,7 @@ public class HappensBeforeDemo {
      * 推移性のデモンストレーション
      */
     public static void demonstrateTransitivity() throws InterruptedException {
-        System.out.println("\n=== Transitivity Demo ===");
+        IO.println("\n=== Transitivity Demo ===");
         
         TransitivityDemo demo = new TransitivityDemo();
         
@@ -397,7 +397,7 @@ public class HappensBeforeDemo {
      * 複雑なHappens-Before関係のデモンストレーション
      */
     public static void demonstrateComplexHappensBefore() throws InterruptedException {
-        System.out.println("\n=== Complex Happens-Before Demo ===");
+        IO.println("\n=== Complex Happens-Before Demo ===");
         
         ComplexHappensBeforeDemo demo = new ComplexHappensBeforeDemo();
         
@@ -418,7 +418,7 @@ public class HappensBeforeDemo {
      * CountDownLatchのデモンストレーション
      */
     public static void demonstrateCountDownLatch() throws InterruptedException {
-        System.out.println("\n=== CountDownLatch Demo ===");
+        IO.println("\n=== CountDownLatch Demo ===");
         
         CountDownLatchDemo demo = new CountDownLatchDemo();
         demo.demonstrate();
@@ -438,13 +438,13 @@ public class HappensBeforeDemo {
             demonstrateComplexHappensBefore();
             demonstrateCountDownLatch();
             
-            System.out.println("\n=== Happens-Before Rules Summary ===");
-            System.out.println("1. Program Order: Actions in a thread happen-before later actions in the same thread");
-            System.out.println("2. Monitor Lock: Unlock of a monitor happens-before every subsequent lock of that monitor");
-            System.out.println("3. Volatile: Write to a volatile field happens-before every subsequent read of that field");
-            System.out.println("4. Thread Start: Call to Thread.start() happens-before any action in the started thread");
-            System.out.println("5. Thread Join: Any action in a thread happens-before any other thread returns from join()");
-            System.out.println("6. Transitivity: If A happens-before B and B happens-before C, then A happens-before C");
+            IO.println("\n=== Happens-Before Rules Summary ===");
+            IO.println("1. Program Order: Actions in a thread happen-before later actions in the same thread");
+            IO.println("2. Monitor Lock: Unlock of a monitor happens-before every subsequent lock of that monitor");
+            IO.println("3. Volatile: Write to a volatile field happens-before every subsequent read of that field");
+            IO.println("4. Thread Start: Call to Thread.start() happens-before any action in the started thread");
+            IO.println("5. Thread Join: Any action in a thread happens-before any other thread returns from join()");
+            IO.println("6. Transitivity: If A happens-before B and B happens-before C, then A happens-before C");
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
