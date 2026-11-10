@@ -19,6 +19,6 @@ public interface Payable {
      * デフォルト実装を提供していますが、必要に応じてオーバーライドできます
      */
     default void displayPaymentInfo() {
-        System.out.println("支払い金額: " + calculatePayment() + "円");
+        IO.println("支払い金額: " + calculatePayment() + "円");
     }
 }

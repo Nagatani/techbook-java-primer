@@ -7,7 +7,7 @@ package chapter07.basic;
  */
 public class PayableDemo {
     public static void main(String[] args) {
-        System.out.println("=== 支払いシステムデモ ===\n");
+        IO.println("=== 支払いシステムデモ ===\n");
         
         // TODO: Employee（名前、ID、基本給、ボーナス率）のインスタンスを作成してください
         // Payable employee1 = new Employee("山田太郎", "E001", 300000, 0.2);
@@ -17,7 +17,7 @@ public class PayableDemo {
         
         // TODO: 各オブジェクトの支払い情報を表示してください
         
-        System.out.println("\n=== ポリモーフィズムを使った処理 ===");
+        IO.println("\n=== ポリモーフィズムを使った処理 ===");
         
         // TODO: Payable型の配列を作成し、複数の支払い可能オブジェクトを格納してください
         // Payable[] payables = { ... };
@@ -26,10 +26,10 @@ public class PayableDemo {
         double totalPayment = 0;
         // 計算処理を実装
         
-        System.out.println("\n総支払い金額: " + totalPayment + "円");
+        IO.println("\n総支払い金額: " + totalPayment + "円");
         
         // TODO: 従業員と請求書を分けて処理する例を実装してください
-        System.out.println("\n=== タイプ別処理 ===");
+        IO.println("\n=== タイプ別処理 ===");
         // instanceof演算子を使って、EmployeeとInvoiceを区別して処理
     }
 }

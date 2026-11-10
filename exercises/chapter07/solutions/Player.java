@@ -84,15 +84,15 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     
     @Override
     public void draw() {
-        System.out.println("=== Player Drawing ===");
-        System.out.println("Name: " + name);
-        System.out.println("Position: (" + x + ", " + y + ")");
-        System.out.println("Level: " + level + " (EXP: " + experience + "/" + experienceToNextLevel + ")");
-        System.out.println("HP: " + currentHealth + "/" + maxHealth);
-        System.out.println("MP: " + mana + "/" + maxMana);
-        System.out.println("Equipment: " + equippedWeapon + " / " + equippedArmor);
-        System.out.println("Direction: " + direction);
-        System.out.println("Rotation: " + String.format("%.1f", rotation) + "°");
+        IO.println("=== Player Drawing ===");
+        IO.println("Name: " + name);
+        IO.println("Position: (" + x + ", " + y + ")");
+        IO.println("Level: " + level + " (EXP: " + experience + "/" + experienceToNextLevel + ")");
+        IO.println("HP: " + currentHealth + "/" + maxHealth);
+        IO.println("MP: " + mana + "/" + maxMana);
+        IO.println("Equipment: " + equippedWeapon + " / " + equippedArmor);
+        IO.println("Direction: " + direction);
+        IO.println("Rotation: " + String.format("%.1f", rotation) + "°");
         
         // プレイヤーのASCII表現
         drawPlayerSprite();
@@ -107,10 +107,10 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      * プレイヤーのスプライトを描画
      */
     private void drawPlayerSprite() {
-        System.out.println("Player Sprite:");
+        IO.println("Player Sprite:");
         String[] sprite = getPlayerSprite();
         for (String line : sprite) {
-            System.out.println(line);
+            IO.println(line);
         }
     }
     
@@ -161,12 +161,12 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      * シールド効果を描画
      */
     private void drawShieldEffect() {
-        System.out.println("Shield Effect:");
-        System.out.println("  +++  ");
-        System.out.println(" +   + ");
-        System.out.println("+  O  +");
-        System.out.println(" + | + ");
-        System.out.println("  +++  ");
+        IO.println("Shield Effect:");
+        IO.println("  +++  ");
+        IO.println(" +   + ");
+        IO.println("+  O  +");
+        IO.println(" + | + ");
+        IO.println("  +++  ");
     }
     
     @Override
@@ -251,7 +251,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         
         // 攻撃範囲チェック
         if (!isInAttackRange(target)) {
-            System.out.println(name + " is too far to attack " + target.getName());
+            IO.println(name + " is too far to attack " + target.getName());
             return;
         }
         
@@ -265,7 +265,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         // コンボボーナス
         if (comboCount > 1) {
             damage += comboCount * 2;
-            System.out.println("Combo x" + comboCount + "! Bonus damage!");
+            IO.println("Combo x" + comboCount + "! Bonus damage!");
         }
         
         // 武器ボーナス
@@ -274,10 +274,10 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         // クリティカルヒット判定
         if (Math.random() < 0.1) {  // 10%の確率
             damage *= 2;
-            System.out.println("Critical Hit!");
+            IO.println("Critical Hit!");
         }
         
-        System.out.println(name + " attacks " + target.getName() + " for " + damage + " damage!");
+        IO.println(name + " attacks " + target.getName() + " for " + damage + " damage!");
         target.takeDamage(damage);
         
         // 経験値獲得
@@ -312,7 +312,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         // 防御スキル
         if (hasShield && state == CharacterState.DEFENDING) {
             damage = damage / 2;
-            System.out.println(name + " blocks with shield! Damage reduced!");
+            IO.println(name + " blocks with shield! Damage reduced!");
         }
         
         return Math.max(1, damage);
@@ -343,7 +343,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     
     @Override
     public void useSpecialSkill() {
-        System.out.println("=== Special Skill ===");
+        IO.println("=== Special Skill ===");
         
         // レベルに応じてスキルを変更
         if (level >= 5 && hasFireball && mana >= 20) {
@@ -360,20 +360,20 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     private void castFireball() {
         if (mana < 20) {
-            System.out.println("Not enough mana!");
+            IO.println("Not enough mana!");
             return;
         }
         
         mana -= 20;
         setState(CharacterState.CASTING);
         
-        System.out.println(name + " casts Fireball!");
+        IO.println(name + " casts Fireball!");
         
         // 範囲内の敵すべてにダメージ
-        System.out.println("Fireball explodes in a 3x3 area!");
+        IO.println("Fireball explodes in a 3x3 area!");
         
         // 実際のゲームでは、範囲内の敵を取得してダメージを与える
-        System.out.println("Fireball deals " + (attackPower * 2) + " magic damage!");
+        IO.println("Fireball deals " + (attackPower * 2) + " magic damage!");
         
         setState(CharacterState.IDLE);
     }
@@ -382,14 +382,14 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      * ダブルジャンプ
      */
     private void performDoubleJump() {
-        System.out.println(name + " performs a double jump!");
+        IO.println(name + " performs a double jump!");
         
         // 一時的に移動速度を向上
         double oldSpeed = moveSpeed;
         moveSpeed *= 1.5;
         
         // 1秒後に元に戻す（実際のゲームではタイマーを使用）
-        System.out.println("Movement speed temporarily increased!");
+        IO.println("Movement speed temporarily increased!");
         
         // ここでは即座に元に戻す
         moveSpeed = oldSpeed;
@@ -399,11 +399,11 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      * 基本スキル
      */
     private void performBasicSkill() {
-        System.out.println(name + " performs a basic skill attack!");
+        IO.println(name + " performs a basic skill attack!");
         
         // 基本攻撃の1.5倍のダメージ
         int skillDamage = (int)(attackPower * 1.5);
-        System.out.println("Skill damage: " + skillDamage);
+        IO.println("Skill damage: " + skillDamage);
     }
     
     // === アイテム使用 ===
@@ -416,9 +416,9 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
             int healAmount = 30;
             heal(healAmount);
             inventory.remove("Health Potion");
-            System.out.println(name + " uses Health Potion and recovers " + healAmount + " HP!");
+            IO.println(name + " uses Health Potion and recovers " + healAmount + " HP!");
         } else {
-            System.out.println("No Health Potion available!");
+            IO.println("No Health Potion available!");
         }
     }
     
@@ -430,9 +430,9 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
             int manaAmount = 25;
             mana = Math.min(maxMana, mana + manaAmount);
             inventory.remove("Mana Potion");
-            System.out.println(name + " uses Mana Potion and recovers " + manaAmount + " MP!");
+            IO.println(name + " uses Mana Potion and recovers " + manaAmount + " MP!");
         } else {
-            System.out.println("No Mana Potion available!");
+            IO.println("No Mana Potion available!");
         }
     }
     
@@ -443,7 +443,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     public void gainExperience(int exp) {
         experience += exp;
-        System.out.println(name + " gains " + exp + " experience points!");
+        IO.println(name + " gains " + exp + " experience points!");
         
         checkLevelUp();
     }
@@ -474,13 +474,13 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         defense += 2;
         skillPoints += 2;
         
-        System.out.println("*** LEVEL UP! ***");
-        System.out.println(name + " reached level " + level + "!");
-        System.out.println("Health: " + maxHealth + " (+10)");
-        System.out.println("Mana: " + maxMana + " (+5)");
-        System.out.println("Attack: " + attackPower + " (+3)");
-        System.out.println("Defense: " + defense + " (+2)");
-        System.out.println("Skill Points: " + skillPoints + " (+2)");
+        IO.println("*** LEVEL UP! ***");
+        IO.println(name + " reached level " + level + "!");
+        IO.println("Health: " + maxHealth + " (+10)");
+        IO.println("Mana: " + maxMana + " (+5)");
+        IO.println("Attack: " + attackPower + " (+3)");
+        IO.println("Defense: " + defense + " (+2)");
+        IO.println("Skill Points: " + skillPoints + " (+2)");
         
         // 新しいスキル獲得
         unlockNewSkills();
@@ -492,15 +492,15 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     private void unlockNewSkills() {
         if (level == 3 && !hasDoubleJump) {
             hasDoubleJump = true;
-            System.out.println("New skill unlocked: Double Jump!");
+            IO.println("New skill unlocked: Double Jump!");
         }
         if (level == 5 && !hasFireball) {
             hasFireball = true;
-            System.out.println("New skill unlocked: Fireball!");
+            IO.println("New skill unlocked: Fireball!");
         }
         if (level == 7 && !hasShield) {
             hasShield = true;
-            System.out.println("New skill unlocked: Shield Block!");
+            IO.println("New skill unlocked: Shield Block!");
         }
     }
     
@@ -511,7 +511,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     public void equipWeapon(String weapon) {
         this.equippedWeapon = weapon;
-        System.out.println(name + " equipped " + weapon);
+        IO.println(name + " equipped " + weapon);
         
         // 攻撃力の再計算
         updateStats();
@@ -522,7 +522,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     public void equipArmor(String armor) {
         this.equippedArmor = armor;
-        System.out.println(name + " equipped " + armor);
+        IO.println(name + " equipped " + armor);
         
         // 防御力の再計算
         updateStats();
@@ -534,7 +534,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     private void updateStats() {
         // 基本攻撃力に装備ボーナスを適用
         // 実際のゲームでは、基本値と装備ボーナスを分けて管理
-        System.out.println("Stats updated based on equipment");
+        IO.println("Stats updated based on equipment");
     }
     
     // === インベントリ管理 ===
@@ -544,7 +544,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     public void addItem(String item) {
         inventory.add(item);
-        System.out.println(name + " obtained " + item);
+        IO.println(name + " obtained " + item);
     }
     
     /**
@@ -553,7 +553,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     public boolean useItem(String item) {
         if (inventory.contains(item)) {
             inventory.remove(item);
-            System.out.println(name + " used " + item);
+            IO.println(name + " used " + item);
             return true;
         }
         return false;
@@ -563,16 +563,16 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      * インベントリを表示
      */
     public void showInventory() {
-        System.out.println("=== " + name + "'s Inventory ===");
+        IO.println("=== " + name + "'s Inventory ===");
         if (inventory.isEmpty()) {
-            System.out.println("Empty");
+            IO.println("Empty");
         } else {
             for (int i = 0; i < inventory.size(); i++) {
-                System.out.println((i + 1) + ". " + inventory.get(i));
+                IO.println((i + 1) + ". " + inventory.get(i));
             }
         }
-        System.out.println("Weapon: " + equippedWeapon);
-        System.out.println("Armor: " + equippedArmor);
+        IO.println("Weapon: " + equippedWeapon);
+        IO.println("Armor: " + equippedArmor);
     }
     
     // === Resizable インターフェイスの実装 ===
@@ -581,7 +581,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     public void resize(double width, double height) {
         this.width = width;
         this.height = height;
-        System.out.println(name + " resized to " + width + "x" + height);
+        IO.println(name + " resized to " + width + "x" + height);
     }
     
     // === Rotatable インターフェイスの実装 ===
@@ -606,7 +606,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
      */
     public void defend() {
         setState(CharacterState.DEFENDING);
-        System.out.println(name + " enters defensive stance!");
+        IO.println(name + " enters defensive stance!");
     }
     
     /**
@@ -615,7 +615,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     public void stopDefending() {
         if (state == CharacterState.DEFENDING) {
             setState(CharacterState.IDLE);
-            System.out.println(name + " exits defensive stance!");
+            IO.println(name + " exits defensive stance!");
         }
     }
     
@@ -625,7 +625,7 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
     public void flee() {
         setState(CharacterState.MOVING);
         moveSpeed *= 1.5;  // 一時的に移動速度向上
-        System.out.println(name + " flees from battle!");
+        IO.println(name + " flees from battle!");
         
         // 一定時間後に元に戻す（実際のゲームではタイマーを使用）
         moveSpeed /= 1.5;
@@ -645,21 +645,21 @@ public class Player extends GameCharacter implements Drawable.Resizable, Drawabl
         
         // 重傷時の警告
         if (isCriticallyInjured()) {
-            System.out.println("*** WARNING: " + name + " is critically injured! ***");
+            IO.println("*** WARNING: " + name + " is critically injured! ***");
         }
     }
     
     @Override
     protected void onHeal(int amount) {
         super.onHeal(amount);
-        System.out.println(name + " feels better!");
+        IO.println(name + " feels better!");
     }
     
     @Override
     protected void onDeath() {
         super.onDeath();
-        System.out.println("*** GAME OVER ***");
-        System.out.println(name + " has fallen in battle...");
+        IO.println("*** GAME OVER ***");
+        IO.println(name + " has fallen in battle...");
         
         // 死亡時の処理
         comboCount = 0;

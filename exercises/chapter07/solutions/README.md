@@ -117,7 +117,7 @@ java -cp build/classes/java/main:build/classes/java/test chapter07.solutions.Gam
 // 型の統一による処理
 Payable[] payables = {employee, invoice};
 for (Payable payable : payables) {
-    System.out.println(payable.getPaymentDescription());
+    IO.println(payable.getPaymentDescription());
 }
 ```
 

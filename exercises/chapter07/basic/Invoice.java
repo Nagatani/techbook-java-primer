@@ -46,7 +46,7 @@ public class Invoice implements Payable {
      */
     public void displayInvoiceInfo() {
         // TODO: 実装してください
-        System.out.println("請求書情報:");
+        IO.println("請求書情報:");
         // 請求書番号、商品説明、数量、単価、合計金額を表示
     }
     

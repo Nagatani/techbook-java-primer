@@ -74,10 +74,10 @@ public class Circle extends Shape {
      */
     @Override
     public void draw() {
-        System.out.println("円を描画中...");
-        System.out.println("  中心: (" + getX() + ", " + getY() + ")");
-        System.out.println("  半径: " + radius);
-        System.out.println("  色: " + getColor());
+        IO.println("円を描画中...");
+        IO.println("  中心: (" + getX() + ", " + getY() + ")");
+        IO.println("  半径: " + radius);
+        IO.println("  色: " + getColor());
         
         // ASCII アートで円を表現（簡単な例）
         drawAsciiCircle();
@@ -87,7 +87,7 @@ public class Circle extends Shape {
      * ASCII アートで円を描画
      */
     private void drawAsciiCircle() {
-        System.out.println("ASCII 円:");
+        IO.println("ASCII 円:");
         int size = Math.min(10, (int)(radius * 2));
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -96,12 +96,12 @@ public class Circle extends Shape {
                 double distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (Math.abs(distance - size / 2.0) < 0.5) {
-                    System.out.print("* ");
+                    IO.print("* ");
                 } else {
-                    System.out.print("  ");
+                    IO.print("  ");
                 }
             }
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -260,9 +260,9 @@ public class Circle extends Shape {
      */
     @Override
     protected void displaySpecificInfo() {
-        System.out.println("半径: " + radius);
-        System.out.println("直径: " + getDiameter());
-        System.out.println("円周: " + String.format("%.2f", getPerimeter()));
+        IO.println("半径: " + radius);
+        IO.println("直径: " + getDiameter());
+        IO.println("円周: " + String.format("%.2f", getPerimeter()));
     }
     
     /**
@@ -282,7 +282,7 @@ public class Circle extends Shape {
     @Override
     protected void beforeDraw() {
         super.beforeDraw();
-        System.out.println("円描画の準備: 半径 " + radius + " の円");
+        IO.println("円描画の準備: 半径 " + radius + " の円");
     }
     
     /**
@@ -291,7 +291,7 @@ public class Circle extends Shape {
     @Override
     protected void afterDraw() {
         super.afterDraw();
-        System.out.println("円描画完了: 面積 " + String.format("%.2f", getArea()));
+        IO.println("円描画完了: 面積 " + String.format("%.2f", getArea()));
     }
     
     // === 静的ユーティリティメソッド ===

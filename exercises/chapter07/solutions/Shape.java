@@ -83,10 +83,10 @@ public abstract class Shape {
      * 図形の情報を表示する（固有の情報はdisplaySpecificInfo()で表示）
      */
     public void displayInfo() {
-        System.out.println("図形: " + name + "（" + getShapeType(this) + "）");
-        System.out.println("色: " + color);
-        System.out.printf("位置: (%.1f, %.1f)%n", x, y);
-        System.out.printf("面積: %.2f%n", getArea());
+        IO.println("図形: " + name + "（" + getShapeType(this) + "）");
+        IO.println("色: " + color);
+        IO.println("位置: (%.1f, %.1f)".formatted(x, y));
+        IO.println("面積: %.2f".formatted(getArea()));
         displaySpecificInfo();
     }
 
@@ -96,12 +96,12 @@ public abstract class Shape {
 
     /** 描画の前処理（フックメソッド） */
     protected void beforeDraw() {
-        System.out.println("--- " + name + " の描画開始 ---");
+        IO.println("--- " + name + " の描画開始 ---");
     }
 
     /** 描画の後処理（フックメソッド） */
     protected void afterDraw() {
-        System.out.println("--- " + name + " の描画終了 ---");
+        IO.println("--- " + name + " の描画終了 ---");
     }
 
     /**

@@ -44,7 +44,7 @@ public class Employee implements Payable {
      */
     public void displayEmployeeInfo() {
         // TODO: 実装してください
-        System.out.println("従業員情報:");
+        IO.println("従業員情報:");
         // 名前、ID、基本給、ボーナス率、総支給額を表示
     }
     

@@ -278,18 +278,18 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
     
     @Override
     public void draw() {
-        System.out.println("=== Enemy Drawing ===");
-        System.out.println("Type: " + enemyType);
-        System.out.println("Name: " + name);
-        System.out.println("Position: (" + x + ", " + y + ")");
-        System.out.println("HP: " + currentHealth + "/" + maxHealth);
-        System.out.println("State: " + state);
-        System.out.println("AI State: " + aiState);
-        System.out.println("Alpha: " + String.format("%.2f", alpha));
+        IO.println("=== Enemy Drawing ===");
+        IO.println("Type: " + enemyType);
+        IO.println("Name: " + name);
+        IO.println("Position: (" + x + ", " + y + ")");
+        IO.println("HP: " + currentHealth + "/" + maxHealth);
+        IO.println("State: " + state);
+        IO.println("AI State: " + aiState);
+        IO.println("Alpha: " + String.format("%.2f", alpha));
         
         if (target != null) {
-            System.out.println("Target: " + target.getName());
-            System.out.println("Distance to target: " + String.format("%.1f", getDistanceTo(target)));
+            IO.println("Target: " + target.getName());
+            IO.println("Distance to target: " + String.format("%.1f", getDistanceTo(target)));
         }
         
         // 敵のASCII表現
@@ -297,10 +297,10 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
         
         // 特殊効果の表示
         if (canFly && Math.random() < 0.3) {
-            System.out.println("(Flying)");
+            IO.println("(Flying)");
         }
         if (alpha < 1.0) {
-            System.out.println("(Translucent)");
+            IO.println("(Translucent)");
         }
     }
     
@@ -308,10 +308,10 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      * 敵のスプライトを描画
      */
     private void drawEnemySprite() {
-        System.out.println(enemyType + " Sprite:");
+        IO.println(enemyType + " Sprite:");
         String[] sprite = getEnemySprite();
         for (String line : sprite) {
-            System.out.println(line);
+            IO.println(line);
         }
     }
     
@@ -457,26 +457,26 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
     private void useSpecialAbility() {
         switch (enemyType) {
             case GOBLIN:
-                System.out.println(name + " calls for backup!");
+                IO.println(name + " calls for backup!");
                 break;
             case ORC:
-                System.out.println(name + " goes berserk!");
+                IO.println(name + " goes berserk!");
                 target.takeDamage(attackPower);
                 break;
             case SKELETON:
-                System.out.println(name + " reassembles its bones!");
+                IO.println(name + " reassembles its bones!");
                 heal(maxHealth / 10);
                 break;
             case DRAGON:
-                System.out.println(name + " breathes fire!");
+                IO.println(name + " breathes fire!");
                 target.takeDamage(attackPower * 2);
                 break;
             case SLIME:
-                System.out.println(name + " splits and regenerates!");
+                IO.println(name + " splits and regenerates!");
                 heal(maxHealth / 5);
                 break;
             case BOSS:
-                System.out.println(name + " unleashes a devastating attack!");
+                IO.println(name + " unleashes a devastating attack!");
                 target.takeDamage(attackPower * 3);
                 break;
             default:
@@ -488,7 +488,7 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      * ゴブリンの攻撃
      */
     private void performGoblinAttack(GameCharacter target, int damage) {
-        System.out.println(name + " slashes " + target.getName() + " with claws!");
+        IO.println(name + " slashes " + target.getName() + " with claws!");
         target.takeDamage(damage);
     }
     
@@ -496,11 +496,11 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      * オークの攻撃
      */
     private void performOrcAttack(GameCharacter target, int damage) {
-        System.out.println(name + " smashes " + target.getName() + " with a club!");
+        IO.println(name + " smashes " + target.getName() + " with a club!");
         
         // エリア攻撃の場合
         if (hasAreaAttack && Math.random() < 0.3) {
-            System.out.println("Area attack! Shockwave spreads!");
+            IO.println("Area attack! Shockwave spreads!");
             damage = (int)(damage * 1.2);
         }
         
@@ -512,9 +512,9 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      */
     private void performSkeletonAttack(GameCharacter target, int damage) {
         if (hasRangedAttack && getDistanceTo(target) > 40) {
-            System.out.println(name + " shoots a bone arrow at " + target.getName() + "!");
+            IO.println(name + " shoots a bone arrow at " + target.getName() + "!");
         } else {
-            System.out.println(name + " strikes " + target.getName() + " with a bone sword!");
+            IO.println(name + " strikes " + target.getName() + " with a bone sword!");
         }
         target.takeDamage(damage);
     }
@@ -526,12 +526,12 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
         double random = Math.random();
         
         if (random < 0.4) {
-            System.out.println(name + " breathes fire at " + target.getName() + "!");
+            IO.println(name + " breathes fire at " + target.getName() + "!");
             damage = (int)(damage * 1.5);
         } else if (random < 0.7) {
-            System.out.println(name + " claws " + target.getName() + "!");
+            IO.println(name + " claws " + target.getName() + "!");
         } else {
-            System.out.println(name + " tail whips " + target.getName() + "!");
+            IO.println(name + " tail whips " + target.getName() + "!");
             damage = (int)(damage * 0.8);
         }
         
@@ -542,11 +542,11 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      * スライムの攻撃
      */
     private void performSlimeAttack(GameCharacter target, int damage) {
-        System.out.println(name + " bounces into " + target.getName() + "!");
+        IO.println(name + " bounces into " + target.getName() + "!");
         
         // スライムは分裂する場合がある
         if (Math.random() < 0.1) {
-            System.out.println(name + " splits after the attack!");
+            IO.println(name + " splits after the attack!");
         }
         
         target.takeDamage(damage);
@@ -559,16 +559,16 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
         double random = Math.random();
         
         if (random < 0.2) {
-            System.out.println(name + " uses ULTIMATE ATTACK on " + target.getName() + "!");
+            IO.println(name + " uses ULTIMATE ATTACK on " + target.getName() + "!");
             damage *= 3;
         } else if (random < 0.4) {
-            System.out.println(name + " casts a powerful spell at " + target.getName() + "!");
+            IO.println(name + " casts a powerful spell at " + target.getName() + "!");
             damage = (int)(damage * 2);
         } else if (random < 0.6) {
-            System.out.println(name + " performs an area devastation attack!");
+            IO.println(name + " performs an area devastation attack!");
             damage = (int)(damage * 1.5);
         } else {
-            System.out.println(name + " strikes " + target.getName() + " with massive force!");
+            IO.println(name + " strikes " + target.getName() + " with massive force!");
         }
         
         target.takeDamage(damage);
@@ -578,7 +578,7 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
      * 基本攻撃
      */
     private void performBasicAttack(GameCharacter target, int damage) {
-        System.out.println(name + " attacks " + target.getName() + "!");
+        IO.println(name + " attacks " + target.getName() + "!");
         target.takeDamage(damage);
     }
     
@@ -592,19 +592,19 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
                 // スケルトンは物理攻撃に強い
                 if (Math.random() < 0.2) {
                     damage /= 2;
-                    System.out.println(name + " resists physical damage!");
+                    IO.println(name + " resists physical damage!");
                 }
                 break;
             case SLIME:
                 // スライムは攻撃を吸収することがある
                 if (Math.random() < 0.1) {
                     heal(damage / 4);
-                    System.out.println(name + " absorbs some damage!");
+                    IO.println(name + " absorbs some damage!");
                 }
                 break;
             case DRAGON:
                 // ドラゴンは火属性攻撃に免疫
-                System.out.println(name + " has thick scales!");
+                IO.println(name + " has thick scales!");
                 break;
         }
         
@@ -683,7 +683,7 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
         // ここではシミュレーション
         if (Math.random() < 0.01) {  // 1%の確率でターゲット発見
             // ダミーターゲットの設定
-            System.out.println(name + " detects an enemy!");
+            IO.println(name + " detects an enemy!");
             aiState = AIState.CHASE;
         }
     }
@@ -779,42 +779,42 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
     
     @Override
     public void useSpecialSkill() {
-        System.out.println(name + " uses special ability!");
+        IO.println(name + " uses special ability!");
         
         switch (enemyType) {
             case GOBLIN:
                 // 素早い連続攻撃
-                System.out.println(name + " performs rapid strikes!");
+                IO.println(name + " performs rapid strikes!");
                 break;
                 
             case ORC:
                 // 怒り状態（攻撃力上昇）
-                System.out.println(name + " enters rage mode!");
+                IO.println(name + " enters rage mode!");
                 attackPower = (int)(attackPower * 1.5);
                 break;
                 
             case SKELETON:
                 // 骨を召喚
-                System.out.println(name + " summons bone minions!");
+                IO.println(name + " summons bone minions!");
                 break;
                 
             case DRAGON:
                 // 飛行状態
                 if (canFly) {
-                    System.out.println(name + " takes flight!");
+                    IO.println(name + " takes flight!");
                     moveSpeed *= 1.5;
                 }
                 break;
                 
             case SLIME:
                 // 分裂
-                System.out.println(name + " splits into smaller slimes!");
+                IO.println(name + " splits into smaller slimes!");
                 break;
                 
             case BOSS:
                 // テレポート
                 if (canTeleport) {
-                    System.out.println(name + " teleports!");
+                    IO.println(name + " teleports!");
                     teleport();
                 }
                 break;
@@ -889,17 +889,17 @@ public class Enemy extends GameCharacter implements Drawable.Transparent {
     protected void onDeath() {
         super.onDeath();
         
-        System.out.println(name + " has been defeated!");
+        IO.println(name + " has been defeated!");
         
         // アイテムドロップ
         java.util.List<String> dropped = dropItems();
         if (!dropped.isEmpty()) {
-            System.out.println("Items dropped: " + dropped);
+            IO.println("Items dropped: " + dropped);
         }
         
         // 経験値の報告（実際のゲームではプレイヤーに経験値を与える）
         int expReward = maxHealth / 2;
-        System.out.println("Experience reward: " + expReward);
+        IO.println("Experience reward: " + expReward);
     }
     
     // === セッター ===

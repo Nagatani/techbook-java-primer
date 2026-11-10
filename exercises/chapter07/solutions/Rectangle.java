@@ -101,13 +101,13 @@ public class Rectangle extends Shape {
      */
     @Override
     public void draw() {
-        System.out.println("矩形を描画中...");
-        System.out.println("  左上: (" + getX() + ", " + getY() + ")");
-        System.out.println("  幅: " + width + ", 高さ: " + height);
-        System.out.println("  色: " + getColor());
+        IO.println("矩形を描画中...");
+        IO.println("  左上: (" + getX() + ", " + getY() + ")");
+        IO.println("  幅: " + width + ", 高さ: " + height);
+        IO.println("  色: " + getColor());
         
         if (isSquare()) {
-            System.out.println("  (正方形)");
+            IO.println("  (正方形)");
         }
         
         // ASCII アートで矩形を表現
@@ -118,19 +118,19 @@ public class Rectangle extends Shape {
      * ASCII アートで矩形を描画
      */
     private void drawAsciiRectangle() {
-        System.out.println("ASCII 矩形:");
+        IO.println("ASCII 矩形:");
         int w = Math.min(15, (int)width);
         int h = Math.min(10, (int)height);
         
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 if (i == 0 || i == h - 1 || j == 0 || j == w - 1) {
-                    System.out.print("*");
+                    IO.print("*");
                 } else {
-                    System.out.print(" ");
+                    IO.print(" ");
                 }
             }
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -342,14 +342,14 @@ public class Rectangle extends Shape {
      */
     @Override
     protected void displaySpecificInfo() {
-        System.out.println("幅: " + width);
-        System.out.println("高さ: " + height);
-        System.out.println("対角線: " + String.format("%.2f", getDiagonal()));
-        System.out.println("縦横比: " + String.format("%.2f", getAspectRatio()));
+        IO.println("幅: " + width);
+        IO.println("高さ: " + height);
+        IO.println("対角線: " + String.format("%.2f", getDiagonal()));
+        IO.println("縦横比: " + String.format("%.2f", getAspectRatio()));
         if (isSquare()) {
-            System.out.println("形状: 正方形");
+            IO.println("形状: 正方形");
         } else {
-            System.out.println("形状: 矩形");
+            IO.println("形状: 矩形");
         }
     }
     
@@ -370,7 +370,7 @@ public class Rectangle extends Shape {
     @Override
     protected void beforeDraw() {
         super.beforeDraw();
-        System.out.println("矩形描画の準備: " + width + "×" + height + " の" + 
+        IO.println("矩形描画の準備: " + width + "×" + height + " の" + 
                          (isSquare() ? "正方形" : "矩形"));
     }
     
@@ -380,7 +380,7 @@ public class Rectangle extends Shape {
     @Override
     protected void afterDraw() {
         super.afterDraw();
-        System.out.println("矩形描画完了: 面積 " + String.format("%.2f", getArea()) + 
+        IO.println("矩形描画完了: 面積 " + String.format("%.2f", getArea()) + 
                          ", 周囲 " + String.format("%.2f", getPerimeter()));
     }
     

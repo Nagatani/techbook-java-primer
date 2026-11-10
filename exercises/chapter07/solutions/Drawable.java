@@ -436,7 +436,7 @@ public interface Drawable {
             
             @Override
             public void draw() {
-                System.out.println("Drawing " + name + " at " + position + " with size " + size);
+                IO.println("Drawing " + name + " at " + position + " with size " + size);
             }
             
             @Override

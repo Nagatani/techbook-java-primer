@@ -37,9 +37,9 @@ public abstract class Shape {
      * TODO: 必要に応じてオーバーライドしてください
      */
     public void displayInfo() {
-        System.out.println("図形: " + name);
-        System.out.println("面積: " + calculateArea());
-        System.out.println("周囲の長さ: " + calculatePerimeter());
+        IO.println("図形: " + name);
+        IO.println("面積: " + calculateArea());
+        IO.println("周囲の長さ: " + calculatePerimeter());
     }
     
     /**

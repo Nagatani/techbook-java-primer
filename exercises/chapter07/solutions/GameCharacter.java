@@ -335,12 +335,12 @@ public abstract class GameCharacter implements Drawable, Drawable.Movable, Drawa
         double barY = y - 10;
         
         // 背景（赤）
-        System.out.println("Health Bar Background: (" + barX + ", " + barY + ") " + 
+        IO.println("Health Bar Background: (" + barX + ", " + barY + ") " + 
                           barWidth + "x" + barHeight);
         
         // 現在の体力（緑）
         double healthWidth = barWidth * getHealthPercentage();
-        System.out.println("Health Bar Foreground: (" + barX + ", " + barY + ") " + 
+        IO.println("Health Bar Foreground: (" + barX + ", " + barY + ") " + 
                           healthWidth + "x" + barHeight);
     }
     
@@ -351,7 +351,7 @@ public abstract class GameCharacter implements Drawable, Drawable.Movable, Drawa
         if (!isAlive || !visible) return;
         
         String stateText = state.toString();
-        System.out.println("State Indicator: " + stateText + " at (" + (x + width/2) + ", " + (y - 15) + ")");
+        IO.println("State Indicator: " + stateText + " at (" + (x + width/2) + ", " + (y - 15) + ")");
     }
     
     // === 列挙型定義 ===
