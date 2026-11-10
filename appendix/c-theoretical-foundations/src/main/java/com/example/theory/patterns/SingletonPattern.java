@@ -15,7 +15,7 @@ public class SingletonPattern {
         
         private DatabaseConnection() {
             // 初期化処理
-            System.out.println("DatabaseConnection initialized");
+            IO.println("DatabaseConnection initialized");
         }
         
         public static DatabaseConnection getInstance() {
@@ -30,7 +30,7 @@ public class SingletonPattern {
         }
         
         public void executeQuery(String sql) {
-            System.out.println("Executing query: " + sql);
+            IO.println("Executing query: " + sql);
         }
     }
     
@@ -42,12 +42,12 @@ public class SingletonPattern {
         
         DatabaseConnectionEnum() {
             // 初期化処理
-            System.out.println("DatabaseConnectionEnum initialized");
+            IO.println("DatabaseConnectionEnum initialized");
         }
         
         public void executeQuery(String sql) {
             // クエリ実行
-            System.out.println("Executing query via enum: " + sql);
+            IO.println("Executing query via enum: " + sql);
         }
     }
     
@@ -56,7 +56,7 @@ public class SingletonPattern {
      */
     public static class BillPughSingleton {
         private BillPughSingleton() {
-            System.out.println("BillPughSingleton initialized");
+            IO.println("BillPughSingleton initialized");
         }
         
         private static class SingletonHelper {
@@ -68,7 +68,7 @@ public class SingletonPattern {
         }
         
         public void doSomething() {
-            System.out.println("Doing something in BillPughSingleton");
+            IO.println("Doing something in BillPughSingleton");
         }
     }
     
@@ -79,7 +79,7 @@ public class SingletonPattern {
         private static UnsafeSingleton instance;
         
         private UnsafeSingleton() {
-            System.out.println("UnsafeSingleton initialized");
+            IO.println("UnsafeSingleton initialized");
         }
         
         // 複数のスレッドが同時にアクセスした場合、複数のインスタンスが作成される可能性

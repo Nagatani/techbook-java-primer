@@ -114,35 +114,35 @@ public class BankAccountWithInvariants {
      * 不変条件のデモンストレーション
      */
     public static void demonstrateInvariants() {
-        System.out.println("=== Demonstrating Class Invariants ===");
+        IO.println("=== Demonstrating Class Invariants ===");
         
         try {
             // 正常なケース
             BankAccountWithInvariants account = new BankAccountWithInvariants(1000.0);
-            System.out.println("Initial balance: $" + account.getBalance());
+            IO.println("Initial balance: $" + account.getBalance());
             
             account.deposit(500.0);
-            System.out.println("After deposit $500: $" + account.getBalance());
+            IO.println("After deposit $500: $" + account.getBalance());
             
             account.withdraw(200.0);
-            System.out.println("After withdrawal $200: $" + account.getBalance());
+            IO.println("After withdrawal $200: $" + account.getBalance());
             
             // トランザクション履歴の確認
-            System.out.println("\nTransaction history:");
-            account.getTransactionHistory().forEach(System.out::println);
+            IO.println("\nTransaction history:");
+            account.getTransactionHistory().forEach(IO::println);
             
             // 事前条件違反のテスト
-            System.out.println("\n=== Testing precondition violations ===");
+            IO.println("\n=== Testing precondition violations ===");
             try {
                 account.deposit(-100);
             } catch (IllegalArgumentException e) {
-                System.out.println("Caught expected exception: " + e.getMessage());
+                IO.println("Caught expected exception: " + e.getMessage());
             }
             
             try {
                 account.withdraw(2000);
             } catch (InsufficientFundsException e) {
-                System.out.println("Caught expected exception: " + e.getMessage());
+                IO.println("Caught expected exception: " + e.getMessage());
             }
             
         } catch (Exception e) {

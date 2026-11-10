@@ -24,7 +24,7 @@ public class MemoryModelExample {
         while (!ready) { // 3
             Thread.yield();
         }
-        System.out.println(value); // 4: 0 が出力される可能性
+        IO.println(value); // 4: 0 が出力される可能性
     }
     
     /**
@@ -43,7 +43,7 @@ public class MemoryModelExample {
         while (!readyVolatile) { // 3: volatile read
             Thread.yield();
         }
-        System.out.println(valueVolatile); // 4: 必ず 42 が出力
+        IO.println(valueVolatile); // 4: 必ず 42 が出力
         // happens-before 関係により 2 は 3 より先、3 は 4 より先
     }
     
@@ -72,7 +72,7 @@ public class MemoryModelExample {
             }
         }
         synchronized (lock) {
-            System.out.println(valueSync); // 必ず 42 が出力
+            IO.println(valueSync); // 必ず 42 が出力
         }
     }
     
@@ -81,7 +81,7 @@ public class MemoryModelExample {
      */
     public static void demonstrateMemoryModel() throws InterruptedException {
         // 問題のある実装のデモ
-        System.out.println("=== Demonstrating potential memory visibility issue ===");
+        IO.println("=== Demonstrating potential memory visibility issue ===");
         MemoryModelExample example1 = new MemoryModelExample();
         
         Thread writer1 = new Thread(example1::writer);
@@ -95,12 +95,12 @@ public class MemoryModelExample {
         reader1.join(1000);
         
         if (reader1.isAlive()) {
-            System.out.println("Reader thread may be stuck due to visibility issue!");
+            IO.println("Reader thread may be stuck due to visibility issue!");
             reader1.interrupt();
         }
         
         // volatile を使った安全な実装のデモ
-        System.out.println("\n=== Demonstrating volatile solution ===");
+        IO.println("\n=== Demonstrating volatile solution ===");
         MemoryModelExample example2 = new MemoryModelExample();
         
         Thread writer2 = new Thread(example2::writerVolatile);
@@ -114,7 +114,7 @@ public class MemoryModelExample {
         reader2.join();
         
         // synchronized を使った安全な実装のデモ
-        System.out.println("\n=== Demonstrating synchronized solution ===");
+        IO.println("\n=== Demonstrating synchronized solution ===");
         MemoryModelExample example3 = new MemoryModelExample();
         
         Thread writer3 = new Thread(example3::writerSync);

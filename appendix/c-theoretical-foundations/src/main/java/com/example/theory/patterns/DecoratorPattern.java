@@ -103,15 +103,15 @@ public class DecoratorPattern {
     public static void demonstrateDecoratorPattern() {
         // 基本のコーヒー
         Coffee coffee = new SimpleCoffee();
-        System.out.println(coffee.getDescription() + " : $" + coffee.getCost());
+        IO.println(coffee.getDescription() + " : $" + coffee.getCost());
         
         // ミルク入りコーヒー
         coffee = new MilkDecorator(coffee);
-        System.out.println(coffee.getDescription() + " : $" + coffee.getCost());
+        IO.println(coffee.getDescription() + " : $" + coffee.getCost());
         
         // ミルクと砂糖入りコーヒー
         coffee = new SugarDecorator(coffee);
-        System.out.println(coffee.getDescription() + " : $" + coffee.getCost());
+        IO.println(coffee.getDescription() + " : $" + coffee.getCost());
         
         // 関数合成の例: h(g(f(x)))
         Coffee complexCoffee = new WhipDecorator(
@@ -121,8 +121,8 @@ public class DecoratorPattern {
                 )
             )
         );
-        System.out.println("\nComplex coffee (function composition):");
-        System.out.println(complexCoffee.getDescription() + " : $" + complexCoffee.getCost());
+        IO.println("\nComplex coffee (function composition):");
+        IO.println(complexCoffee.getDescription() + " : $" + complexCoffee.getCost());
         
         // 数学的に: cost = 1.0 + 0.3 + 0.5 + 0.7 = 2.5
     }

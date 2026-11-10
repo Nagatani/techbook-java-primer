@@ -69,7 +69,7 @@ public class ObserverPattern {
         
         @Override
         public void update(Stock stock) {
-            System.out.println(name + " - Stock price updated: " + 
+            IO.println(name + " - Stock price updated: " + 
                              stock.getSymbol() + " = $" + stock.getPrice());
         }
     }
@@ -89,7 +89,7 @@ public class ObserverPattern {
         @Override
         public void update(Stock stock) {
             if (stock.getPrice() > threshold) {
-                System.out.println(name + " - ALERT: " + stock.getSymbol() + 
+                IO.println(name + " - ALERT: " + stock.getSymbol() + 
                                  " exceeded threshold of $" + threshold + 
                                  " (current: $" + stock.getPrice() + ")");
             }
@@ -106,7 +106,7 @@ public class ObserverPattern {
         public void update(Stock stock) {
             String logEntry = "Log: " + stock.getSymbol() + " = $" + stock.getPrice();
             log.add(logEntry);
-            System.out.println(logEntry);
+            IO.println(logEntry);
         }
         
         public List<String> getLog() {
@@ -133,19 +133,19 @@ public class ObserverPattern {
         appleStock.addObserver(logger);
         
         // 価格変更とイベント通知
-        System.out.println("=== Price Update 1 ===");
+        IO.println("=== Price Update 1 ===");
         appleStock.setPrice(152.0);
         
-        System.out.println("\n=== Price Update 2 ===");
+        IO.println("\n=== Price Update 2 ===");
         appleStock.setPrice(156.0);
         
         // Observerの削除
-        System.out.println("\n=== After removing Display 1 ===");
+        IO.println("\n=== After removing Display 1 ===");
         appleStock.removeObserver(display1);
         appleStock.setPrice(154.0);
         
         // ログの確認
-        System.out.println("\n=== Log History ===");
-        logger.getLog().forEach(System.out::println);
+        IO.println("\n=== Log History ===");
+        logger.getLog().forEach(IO::println);
     }
 }

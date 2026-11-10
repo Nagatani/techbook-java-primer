@@ -69,7 +69,7 @@ public class RaceConditionExample {
             t.join();
         }
         
-        System.out.println("Unsafe counter (expected " + (THREAD_COUNT * INCREMENT_COUNT) + "): " + 
+        IO.println("Unsafe counter (expected " + (THREAD_COUNT * INCREMENT_COUNT) + "): " + 
                          example.getCounter());
         
         // atomicIncrementのテスト
@@ -87,7 +87,7 @@ public class RaceConditionExample {
             t.join();
         }
         
-        System.out.println("Atomic counter (expected " + (THREAD_COUNT * INCREMENT_COUNT) + "): " + 
+        IO.println("Atomic counter (expected " + (THREAD_COUNT * INCREMENT_COUNT) + "): " + 
                          example.getAtomicCounter());
     }
 }

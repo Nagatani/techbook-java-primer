@@ -66,10 +66,10 @@ public class DynamicArray<T> {
             totalCost++; // 要素追加のコスト
         }
         
-        System.out.println("n = " + n);
-        System.out.println("Total cost: " + totalCost);
-        System.out.println("Resize count: " + resizeCount);
-        System.out.println("Amortized cost per operation: " + (double) totalCost / n);
+        IO.println("n = " + n);
+        IO.println("Total cost: " + totalCost);
+        IO.println("Resize count: " + resizeCount);
+        IO.println("Amortized cost per operation: " + (double) totalCost / n);
         
         // 理論的な期待値
         // 総コスト: n + (1 + 2 + 4 + ... + n) < n + 2n = 3n

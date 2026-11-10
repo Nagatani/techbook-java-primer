@@ -14,28 +14,28 @@ public class DeadlockExample {
      */
     public void method1() {
         synchronized (lock1) {
-            System.out.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
+            IO.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
             
             try { Thread.sleep(100); } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             
             synchronized (lock2) { // 循環待機の原因
-                System.out.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
+                IO.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
             }
         }
     }
     
     public void method2() {
         synchronized (lock2) {
-            System.out.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
+            IO.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
             
             try { Thread.sleep(100); } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             
             synchronized (lock1) { // 循環待機の原因
-                System.out.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
+                IO.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
             }
         }
     }
@@ -46,7 +46,7 @@ public class DeadlockExample {
     public void safeMethod1() {
         synchronized (lock1) { // 常に lock1 を先に取得
             synchronized (lock2) {
-                System.out.println("Thread " + Thread.currentThread().getId() + 
+                IO.println("Thread " + Thread.currentThread().getId() + 
                                  " safely acquired both locks (method1)");
             }
         }
@@ -55,7 +55,7 @@ public class DeadlockExample {
     public void safeMethod2() {
         synchronized (lock1) { // 常に lock1 を先に取得
             synchronized (lock2) {
-                System.out.println("Thread " + Thread.currentThread().getId() + 
+                IO.println("Thread " + Thread.currentThread().getId() + 
                                  " safely acquired both locks (method2)");
             }
         }
@@ -80,8 +80,8 @@ public class DeadlockExample {
             }
         });
         
-        System.out.println("=== Demonstrating potential deadlock ===");
-        System.out.println("Starting threads that may deadlock...");
+        IO.println("=== Demonstrating potential deadlock ===");
+        IO.println("Starting threads that may deadlock...");
         thread1.start();
         thread2.start();
         
@@ -91,7 +91,7 @@ public class DeadlockExample {
             thread2.join(5000);
             
             if (thread1.isAlive() || thread2.isAlive()) {
-                System.out.println("Threads appear to be deadlocked!");
+                IO.println("Threads appear to be deadlocked!");
                 thread1.interrupt();
                 thread2.interrupt();
             }
@@ -112,14 +112,14 @@ public class DeadlockExample {
             }
         });
         
-        System.out.println("\n=== Demonstrating safe implementation ===");
+        IO.println("\n=== Demonstrating safe implementation ===");
         safeThread1.start();
         safeThread2.start();
         
         try {
             safeThread1.join();
             safeThread2.join();
-            System.out.println("Safe threads completed successfully!");
+            IO.println("Safe threads completed successfully!");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

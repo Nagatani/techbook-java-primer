@@ -106,10 +106,10 @@ public class HashTable<K, V> {
      * ハッシュテーブルの性能分析
      */
     public void performanceAnalysis() {
-        System.out.println("Hash Table Performance Analysis:");
-        System.out.println("Size: " + size);
-        System.out.println("Capacity: " + capacity);
-        System.out.println("Load Factor: " + getLoadFactor());
+        IO.println("Hash Table Performance Analysis:");
+        IO.println("Size: " + size);
+        IO.println("Capacity: " + capacity);
+        IO.println("Load Factor: " + getLoadFactor());
         
         // チェインの長さの分析
         int maxChainLength = 0;
@@ -127,8 +127,8 @@ public class HashTable<K, V> {
             }
         }
         
-        System.out.println("Non-empty buckets: " + nonEmptyBuckets);
-        System.out.println("Max chain length: " + maxChainLength);
-        System.out.println("Average chain length: " + (nonEmptyBuckets > 0 ? (double) size / nonEmptyBuckets : 0));
+        IO.println("Non-empty buckets: " + nonEmptyBuckets);
+        IO.println("Max chain length: " + maxChainLength);
+        IO.println("Average chain length: " + (nonEmptyBuckets > 0 ? (double) size / nonEmptyBuckets : 0));
     }
 }

@@ -60,10 +60,10 @@ public class CouplingExamples {
     public void processDataBad(Data data, int mode) {
         if (mode == 1) {
             // 処理A
-            System.out.println("Processing mode 1: " + data.getContent());
+            IO.println("Processing mode 1: " + data.getContent());
         } else if (mode == 2) {
             // 処理B
-            System.out.println("Processing mode 2: " + data.getContent());
+            IO.println("Processing mode 2: " + data.getContent());
         }
     }
     
@@ -75,14 +75,14 @@ public class CouplingExamples {
     public static class ProcessorA implements DataProcessor {
         @Override
         public void process(Data data) {
-            System.out.println("Processor A: " + data.getContent());
+            IO.println("Processor A: " + data.getContent());
         }
     }
     
     public static class ProcessorB implements DataProcessor {
         @Override
         public void process(Data data) {
-            System.out.println("Processor B: " + data.getContent());
+            IO.println("Processor B: " + data.getContent());
         }
     }
     

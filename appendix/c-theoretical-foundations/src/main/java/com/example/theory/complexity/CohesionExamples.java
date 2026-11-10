@@ -120,7 +120,7 @@ public class CohesionExamples {
         
         public void sendEmail(String to, String subject) {
             // メール送信処理
-            System.out.println("Sending email to " + to + " with subject: " + subject);
+            IO.println("Sending email to " + to + " with subject: " + subject);
         }
         
         public int[] sortArray(int[] array) {

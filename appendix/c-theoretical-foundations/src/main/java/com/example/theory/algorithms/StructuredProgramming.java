@@ -16,7 +16,7 @@ public class StructuredProgramming {
         int statement2 = 2;  // statement2;
         int statement3 = 3;  // statement3;
         
-        System.out.println("Sequential execution: " + statement1 + ", " + statement2 + ", " + statement3);
+        IO.println("Sequential execution: " + statement1 + ", " + statement2 + ", " + statement3);
     }
     
     /**
@@ -26,10 +26,10 @@ public class StructuredProgramming {
     public void selectionExample(boolean condition) {
         if (condition) {
             // statementA;
-            System.out.println("Statement A executed");
+            IO.println("Statement A executed");
         } else {
             // statementB;
-            System.out.println("Statement B executed");
+            IO.println("Statement B executed");
         }
     }
     
@@ -41,7 +41,7 @@ public class StructuredProgramming {
         int i = 0;
         while (i < count) {
             // statements;
-            System.out.println("Iteration " + (i + 1));
+            IO.println("Iteration " + (i + 1));
             i++;
         }
     }
