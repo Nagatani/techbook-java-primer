@@ -120,6 +120,12 @@ public class EnumMethodsExample {
 
 `enum`は単なる定数の集合ではなく、フィールドやメソッドを持つことができます。これにより、各列挙子に関連するデータや振る舞いを定義できます。
 
+<div class="figure">
+
+![列挙子はそれぞれ1つだけ作られるインスタンス（サンプルコード8-4）](images/diagrams/chapter08-enum-instances.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード8-4**　Planet.java</span>
 
 ```java
@@ -806,6 +812,12 @@ public record Money(BigDecimal amount, String currency) {
 ### sealed interfaceとRecordの組み合わせ
 
 sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
+
+<div class="figure">
+
+![sealed interfaceとRecordの組み合わせ（サンプルコード8-23）](images/diagrams/chapter08-sealed-record.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード8-23**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
 

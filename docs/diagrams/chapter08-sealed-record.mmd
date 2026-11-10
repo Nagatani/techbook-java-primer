@@ -1,0 +1,22 @@
+classDiagram
+    class Shape {
+        <<sealed interface>>
+    }
+    class Circle {
+        <<record>>
+        double radius
+    }
+    class Rectangle {
+        <<record>>
+        double width
+        double height
+    }
+    class Triangle {
+        <<record>>
+        double base
+        double height
+    }
+    Shape <|.. Circle
+    Shape <|.. Rectangle
+    Shape <|.. Triangle
+    note for Shape "permits Circle, Rectangle, Triangle<br/>この3つ以外は実装できない"

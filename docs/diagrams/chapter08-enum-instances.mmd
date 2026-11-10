@@ -1,0 +1,13 @@
+flowchart LR
+    cls["enum Planet<br/>（クラスの一種）<br/>コンストラクタはprivate"]
+    m["MERCURY<br/>mass = 3.303e+23<br/>radius = 2.4397e6"]
+    v["VENUS<br/>mass = 4.869e+24<br/>radius = 6.0518e6"]
+    e["EARTH<br/>mass = 5.976e+24<br/>radius = 6.37814e6"]
+    r["MARS<br/>mass = 6.421e+23<br/>radius = 3.3972e6"]
+
+    cls -->|"クラスを読み込むときに<br/>1つずつだけ作られる"| m
+    cls --> v
+    cls --> e
+    cls --> r
+
+    style cls fill:#e3f2fd,stroke:#1565c0
