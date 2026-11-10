@@ -132,7 +132,7 @@ public class CalculatorManualTest {
 
         // Assert（検証）
         if (actual == expected) {
-            System.out.println("✅ テスト成功！");
+            IO.println("✅ テスト成功！");
         } else {
             System.err.println("❌ テスト失敗！");
         }
@@ -163,7 +163,7 @@ public class CalculatorManualTest {
 public class UserRepository {
     public String findById(String id) {
         // データベースへの接続と検索処理が行われます
-        System.out.println("...データベースに接続中...");
+        IO.println("...データベースに接続中...");
         return "Taro Yamada";
     }
 }
@@ -319,7 +319,7 @@ public class UserServiceManualTest {
         // Assert（検証）
         String expected = "【Profile】Test User";
         if (expected.equals(actual)) {
-            System.out.println("✅ テスト成功！");
+            IO.println("✅ テスト成功！");
         } else {
             System.err.println("❌ テスト失敗！");
         }

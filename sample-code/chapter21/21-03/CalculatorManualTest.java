@@ -12,7 +12,7 @@ public class CalculatorManualTest {
 
         // Assert（検証）
         if (actual == expected) {
-            System.out.println("✅ テスト成功！");
+            IO.println("✅ テスト成功！");
         } else {
             System.err.println("❌ テスト失敗！");
         }

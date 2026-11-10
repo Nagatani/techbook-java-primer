@@ -11,7 +11,7 @@ public class UserServiceManualTest {
         // Assert（検証）
         String expected = "【Profile】Test User";
         if (expected.equals(actual)) {
-            System.out.println("✅ テスト成功！");
+            IO.println("✅ テスト成功！");
         } else {
             System.err.println("❌ テスト失敗！");
         }
