@@ -66,20 +66,20 @@ public class MixinPatternDemo {
         // toString()は既存のメソッドを活用
         
         default void print() {
-            System.out.println(toString());
+            IO.println(toString());
         }
         
         default void printToFile(String filename) {
             try (PrintWriter writer = new PrintWriter(filename)) {
                 writer.println(toString());
-                System.out.println("Printed to file: " + filename);
+                IO.println("Printed to file: " + filename);
             } catch (Exception e) {
                 System.err.println("Failed to print to file: " + e.getMessage());
             }
         }
         
         default void printWithPrefix(String prefix) {
-            System.out.println(prefix + ": " + toString());
+            IO.println(prefix + ": " + toString());
         }
     }
     
@@ -105,7 +105,7 @@ public class MixinPatternDemo {
         
         default void clearCache() {
             getCache().clear();
-            System.out.println("Cache cleared for " + getClass().getSimpleName());
+            IO.println("Cache cleared for " + getClass().getSimpleName());
         }
         
         default boolean hasCache(String key) {
@@ -197,7 +197,7 @@ public class MixinPatternDemo {
             
             // Mixinの機能を活用
             if (isExpired(3600000)) { // 1時間
-                System.out.println("Document " + getFullIdentifier() + " has expired");
+                IO.println("Document " + getFullIdentifier() + " has expired");
             }
             
             // キャッシュに統計情報を保存
@@ -272,39 +272,39 @@ public class MixinPatternDemo {
      * Mixinパターンの活用例
      */
     public static void demonstrateMixinPattern() {
-        System.out.println("=== Mixin Pattern Demonstration ===");
+        IO.println("=== Mixin Pattern Demonstration ===");
         
         // 文書オブジェクトの作成と操作
         Document doc1 = new Document("doc001", "Important document content");
         Document doc2 = new Document("doc002", "Another document");
         
-        System.out.println("\n--- Document Operations ---");
+        IO.println("\n--- Document Operations ---");
         
         // 各Mixinの機能を使用
-        System.out.println("Document 1: " + doc1.getFullIdentifier());
-        System.out.println("Time: " + doc1.getTimeString());
-        System.out.println("Version: " + doc1.getVersionString());
-        System.out.println("Validation: " + doc1.getValidationStatus());
+        IO.println("Document 1: " + doc1.getFullIdentifier());
+        IO.println("Time: " + doc1.getTimeString());
+        IO.println("Version: " + doc1.getVersionString());
+        IO.println("Validation: " + doc1.getValidationStatus());
         
         // 印刷機能
         doc1.printWithPrefix("DOCUMENT");
         
         // 文書の更新
         doc1.update();
-        System.out.println("After update - Version: " + doc1.getVersionString());
+        IO.println("After update - Version: " + doc1.getVersionString());
         
         // バージョン比較
         doc2.update();
         doc2.update();
-        System.out.println("Doc2 is newer than Doc1: " + doc2.isNewerThan(doc1));
+        IO.println("Doc2 is newer than Doc1: " + doc2.isNewerThan(doc1));
         
         // キャッシュ機能
-        System.out.println("\n--- Cache Operations ---");
-        System.out.println("Update count: " + doc1.getCache("updateCount", Integer.class));
-        System.out.println("Last update: " + doc1.getCache("lastUpdate", Long.class));
+        IO.println("\n--- Cache Operations ---");
+        IO.println("Update count: " + doc1.getCache("updateCount", Integer.class));
+        IO.println("Last update: " + doc1.getCache("lastUpdate", Long.class));
         
         // ユーザーオブジェクトの操作
-        System.out.println("\n--- User Operations ---");
+        IO.println("\n--- User Operations ---");
         User user1 = new User("user001", "Alice", "alice@example.com");
         User user2 = new User("user002", "Bob", "invalid-email");
         
@@ -312,28 +312,28 @@ public class MixinPatternDemo {
         user2.print();
         
         // 検証
-        System.out.println("User1 validation: " + user1.getValidationStatus());
-        System.out.println("User2 validation: " + user2.getValidationStatus());
+        IO.println("User1 validation: " + user1.getValidationStatus());
+        IO.println("User2 validation: " + user2.getValidationStatus());
         
         try {
             user1.assertValid();
-            System.out.println("User1 is valid");
+            IO.println("User1 is valid");
         } catch (IllegalStateException e) {
-            System.out.println("User1 validation failed: " + e.getMessage());
+            IO.println("User1 validation failed: " + e.getMessage());
         }
         
         try {
             user2.assertValid();
-            System.out.println("User2 is valid");
+            IO.println("User2 is valid");
         } catch (IllegalStateException e) {
-            System.out.println("User2 validation failed: " + e.getMessage());
+            IO.println("User2 validation failed: " + e.getMessage());
         }
         
         // 識別機能
-        System.out.println("\n--- Identity Operations ---");
-        System.out.println("User1 full ID: " + user1.getFullIdentifier());
-        System.out.println("User2 full ID: " + user2.getFullIdentifier());
-        System.out.println("Are they the same? " + user1.isSameAs(user2));
+        IO.println("\n--- Identity Operations ---");
+        IO.println("User1 full ID: " + user1.getFullIdentifier());
+        IO.println("User2 full ID: " + user2.getFullIdentifier());
+        IO.println("Are they the same? " + user1.isSameAs(user2));
     }
     
     /**

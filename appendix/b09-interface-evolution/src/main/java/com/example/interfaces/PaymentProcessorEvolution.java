@@ -25,7 +25,7 @@ public class PaymentProcessorEvolution {
         
         // 新機能をdefaultメソッドで追加（後方互換性を維持）
         default void processRefund(BigDecimal amount) {
-            System.out.println("Processing refund: " + amount);
+            IO.println("Processing refund: " + amount);
             // デフォルト実装では基本的な処理のみ
         }
         
@@ -36,7 +36,7 @@ public class PaymentProcessorEvolution {
         
         // 共通のロギング処理
         default void logTransaction(BigDecimal amount, String type) {
-            System.out.println(LocalDateTime.now() + " - " + type + ": " + amount);
+            IO.println(LocalDateTime.now() + " - " + type + ": " + amount);
         }
         
         // テンプレートメソッドパターンの実装
@@ -110,7 +110,7 @@ public class PaymentProcessorEvolution {
         @Override
         public void processPayment(BigDecimal amount) {
             // クレジットカード固有の処理
-            System.out.println("Processing credit card payment: " + amount);
+            IO.println("Processing credit card payment: " + amount);
             // 実際の処理をシミュレート
             boolean success = amount.compareTo(new BigDecimal("10000")) <= 0;
             String message = success ? "Payment successful" : "Payment failed - amount too large";
@@ -127,7 +127,7 @@ public class PaymentProcessorEvolution {
         // 必要に応じてdefaultメソッドをオーバーライド
         @Override
         public void processRefund(BigDecimal amount) {
-            System.out.println("Processing credit card refund: " + amount);
+            IO.println("Processing credit card refund: " + amount);
             // クレジットカード固有のリファンド処理
         }
     }
@@ -141,7 +141,7 @@ public class PaymentProcessorEvolution {
         @Override
         public void processPayment(BigDecimal amount) {
             // 銀行振込固有の処理
-            System.out.println("Processing bank transfer payment: " + amount);
+            IO.println("Processing bank transfer payment: " + amount);
             // 実際の処理をシミュレート
             boolean success = amount.compareTo(new BigDecimal("1000000")) <= 0;
             String message = success ? "Transfer successful" : "Transfer failed - daily limit exceeded";
@@ -167,7 +167,7 @@ public class PaymentProcessorEvolution {
      * デモンストレーション用のメインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("=== Payment Processor Evolution Demo ===");
+        IO.println("=== Payment Processor Evolution Demo ===");
         
         // 異なる実装を統一的に扱う
         PaymentProcessorV3[] processors = {
@@ -182,26 +182,26 @@ public class PaymentProcessorEvolution {
         };
         
         for (PaymentProcessorV3 processor : processors) {
-            System.out.println("\n--- " + processor.getClass().getSimpleName() + " ---");
+            IO.println("\n--- " + processor.getClass().getSimpleName() + " ---");
             
             for (BigDecimal amount : amounts) {
                 try {
                     // defaultメソッドを活用した統一的な処理
                     processor.processPaymentWithLogging(amount);
-                    System.out.println("Result: " + processor.getResult());
+                    IO.println("Result: " + processor.getResult());
                 } catch (Exception e) {
-                    System.out.println("Error: " + e.getMessage());
+                    IO.println("Error: " + e.getMessage());
                 }
             }
             
             // 非同期処理のデモ
-            System.out.println("\nAsync processing demo:");
+            IO.println("\nAsync processing demo:");
             CompletableFuture<PaymentResult> future = processor.processPaymentAsync(new BigDecimal("1000"));
             try {
                 PaymentResult result = future.get();
-                System.out.println("Async result: " + result);
+                IO.println("Async result: " + result);
             } catch (Exception e) {
-                System.out.println("Async error: " + e.getMessage());
+                IO.println("Async error: " + e.getMessage());
             }
         }
     }

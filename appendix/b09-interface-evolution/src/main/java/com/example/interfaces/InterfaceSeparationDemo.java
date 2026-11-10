@@ -97,12 +97,12 @@ public class InterfaceSeparationDemo {
         
         // レポート生成のdefaultメソッド
         default void generateMonthlyReport(String userId) {
-            System.out.println("Generating monthly report for user: " + userId);
+            IO.println("Generating monthly report for user: " + userId);
             generateReport(userId);
         }
         
         default void generateAnnualReport(String userId) {
-            System.out.println("Generating annual report for user: " + userId);
+            IO.println("Generating annual report for user: " + userId);
             generateReport(userId);
         }
         
@@ -119,17 +119,17 @@ public class InterfaceSeparationDemo {
         
         // バックアップ関連のdefaultメソッド
         default void scheduleBackup(String userId, Duration interval) {
-            System.out.println("Scheduling backup for user " + userId + " every " + interval);
+            IO.println("Scheduling backup for user " + userId + " every " + interval);
             // 実装はスケジューラーに依存
         }
         
         default void backupAllActiveUsers() {
-            System.out.println("Starting backup for all active users");
+            IO.println("Starting backup for all active users");
             // UserRepositoryとの協調が必要（実装クラスで対応）
         }
         
         default boolean verifyBackup(String userId) {
-            System.out.println("Verifying backup for user: " + userId);
+            IO.println("Verifying backup for user: " + userId);
             // バックアップの整合性チェック
             return true; // 簡略化
         }
@@ -149,12 +149,12 @@ public class InterfaceSeparationDemo {
         }
         
         default void lockAccount(String userId) {
-            System.out.println("Locking account for user: " + userId);
+            IO.println("Locking account for user: " + userId);
             // アカウントロック処理
         }
         
         default void unlockAccount(String userId) {
-            System.out.println("Unlocking account for user: " + userId);
+            IO.println("Unlocking account for user: " + userId);
             // アカウントロック解除処理
         }
     }
@@ -194,13 +194,13 @@ public class InterfaceSeparationDemo {
                 users.remove(existing);
             }
             users.add(user);
-            System.out.println("Saved user: " + user);
+            IO.println("Saved user: " + user);
         }
         
         @Override
         public void delete(String id) {
             users.removeIf(user -> user.getId().equals(id));
-            System.out.println("Deleted user: " + id);
+            IO.println("Deleted user: " + id);
         }
         
         @Override
@@ -221,10 +221,10 @@ public class InterfaceSeparationDemo {
         public void sendEmail(String userId, String subject, String message) {
             User user = findById(userId);
             if (user != null) {
-                System.out.println("Email sent to " + user.getEmail() + 
+                IO.println("Email sent to " + user.getEmail() + 
                                  " - Subject: " + subject + ", Message: " + message);
             } else {
-                System.out.println("User not found: " + userId);
+                IO.println("User not found: " + userId);
             }
         }
     }
@@ -273,7 +273,7 @@ public class InterfaceSeparationDemo {
         public void sendEmail(String userId, String subject, String message) {
             User user = findById(userId);
             if (user != null) {
-                System.out.println("Email sent to " + user.getEmail() + 
+                IO.println("Email sent to " + user.getEmail() + 
                                  " - Subject: " + subject);
                 trackUserActivity(userId, "EMAIL_SENT");
             }
@@ -284,7 +284,7 @@ public class InterfaceSeparationDemo {
         public void generateReport(String userId) {
             User user = findById(userId);
             if (user != null) {
-                System.out.println("Generating report for: " + user.getName());
+                IO.println("Generating report for: " + user.getName());
                 trackUserActivity(userId, "REPORT_GENERATED");
             }
         }
@@ -294,7 +294,7 @@ public class InterfaceSeparationDemo {
         public void backupUserData(String userId) {
             User user = findById(userId);
             if (user != null) {
-                System.out.println("Backing up data for: " + user.getName());
+                IO.println("Backing up data for: " + user.getName());
                 trackUserActivity(userId, "BACKUP_CREATED");
             }
         }
@@ -302,7 +302,7 @@ public class InterfaceSeparationDemo {
         @Override
         public void backupAllActiveUsers() {
             List<User> activeUsers = findActiveUsers();
-            System.out.println("Backing up " + activeUsers.size() + " active users");
+            IO.println("Backing up " + activeUsers.size() + " active users");
             activeUsers.forEach(user -> backupUserData(user.getId()));
         }
         
@@ -319,14 +319,14 @@ public class InterfaceSeparationDemo {
         
         @Override
         public void invalidateSession(String userId) {
-            System.out.println("Invalidating session for: " + userId);
+            IO.println("Invalidating session for: " + userId);
             trackLogout(userId);
         }
         
         // UserAnalyticsService implementation
         @Override
         public void trackUserActivity(String userId, String activity) {
-            System.out.println("Analytics: User " + userId + " performed " + activity);
+            IO.println("Analytics: User " + userId + " performed " + activity);
         }
     }
     
@@ -368,7 +368,7 @@ public class InterfaceSeparationDemo {
         // UserAnalyticsService implementation
         @Override
         public void trackUserActivity(String userId, String activity) {
-            System.out.println("Read-only Analytics: " + userId + " -> " + activity);
+            IO.println("Read-only Analytics: " + userId + " -> " + activity);
         }
     }
     
@@ -376,10 +376,10 @@ public class InterfaceSeparationDemo {
      * デモンストレーション
      */
     public static void demonstrateInterfaceSeparation() {
-        System.out.println("=== Interface Separation Principle Demo ===");
+        IO.println("=== Interface Separation Principle Demo ===");
         
         // 基本サービスの使用
-        System.out.println("\n--- Basic User Service ---");
+        IO.println("\n--- Basic User Service ---");
         BasicUserService basicService = new BasicUserService();
         
         User user1 = new User("user001", "Alice", "alice@example.com");
@@ -389,15 +389,15 @@ public class InterfaceSeparationDemo {
         basicService.save(user2);
         
         // UserRepositoryの機能
-        System.out.println("Total users: " + basicService.count());
-        System.out.println("User exists: " + basicService.exists("user001"));
+        IO.println("Total users: " + basicService.count());
+        IO.println("User exists: " + basicService.exists("user001"));
         
         // UserNotificationServiceの機能
         basicService.sendWelcomeEmail("user001");
         basicService.sendPasswordResetEmail("user002", "reset123");
         
         // フルサービスの使用
-        System.out.println("\n--- Full User Service ---");
+        IO.println("\n--- Full User Service ---");
         FullUserService fullService = new FullUserService();
         
         fullService.save(user1);
@@ -405,7 +405,7 @@ public class InterfaceSeparationDemo {
         
         // 認証機能
         boolean authenticated = fullService.authenticate("user001", "password");
-        System.out.println("Authentication result: " + authenticated);
+        IO.println("Authentication result: " + authenticated);
         
         // レポート機能
         fullService.generateMonthlyReport("user001");
@@ -418,21 +418,21 @@ public class InterfaceSeparationDemo {
         fullService.trackFeatureUsage("user001", "SEARCH");
         
         // 読み取り専用サービス
-        System.out.println("\n--- Read-Only Service ---");
+        IO.println("\n--- Read-Only Service ---");
         List<User> existingUsers = fullService.findAll();
         ReadOnlyUserService readOnlyService = new ReadOnlyUserService(existingUsers);
         
-        System.out.println("Read-only user count: " + readOnlyService.count());
+        IO.println("Read-only user count: " + readOnlyService.count());
         readOnlyService.trackUserActivity("user001", "READ_OPERATION");
         
         try {
             readOnlyService.save(new User("user003", "Charlie", "charlie@example.com"));
         } catch (UnsupportedOperationException e) {
-            System.out.println("Expected error: " + e.getMessage());
+            IO.println("Expected error: " + e.getMessage());
         }
         
         // 機能の組み合わせ
-        System.out.println("\n--- Service Combination ---");
+        IO.println("\n--- Service Combination ---");
         demonstrateServiceCombination(fullService);
     }
     
@@ -453,18 +453,18 @@ public class InterfaceSeparationDemo {
         
         // 3. 認証テスト
         boolean auth = service.authenticate(newUser.getId(), "password");
-        System.out.println("New user authentication: " + auth);
+        IO.println("New user authentication: " + auth);
         
         // 4. 活動追跡
         service.trackFeatureUsage(newUser.getId(), "PROFILE_UPDATE");
         
         // 5. レポート生成（非同期）
         service.generateReportAsync(newUser.getId())
-            .thenRun(() -> System.out.println("Async report generation completed"));
+            .thenRun(() -> IO.println("Async report generation completed"));
         
         // 6. バックアップ検証
         boolean backupValid = service.verifyBackup(newUser.getId());
-        System.out.println("Backup verification: " + backupValid);
+        IO.println("Backup verification: " + backupValid);
         
         // 7. セッション管理
         service.invalidateSession(newUser.getId());
