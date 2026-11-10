@@ -1,0 +1,15 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 330
+---
+flowchart LR
+    sql["SQLException<br/>「DB接続エラー」<br/>（データベースの層で発生）"]
+    dae["DataAccessException<br/>「ユーザー情報の取得に失敗しました」<br/>getCause() → SQLException"]
+    caller["呼び出し側<br/>DataAccessExceptionを受け取り<br/>getCause()で元の原因をたどれる"]
+
+    sql -->|"catchして<br/>原因として渡して包む"| dae
+    dae -->|throw| caller
+
+    style sql fill:#ffebee,stroke:#c62828
+    style dae fill:#fff3e0,stroke:#ef6c00

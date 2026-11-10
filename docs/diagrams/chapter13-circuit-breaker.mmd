@@ -1,0 +1,21 @@
+---
+config:
+  flowchart:
+    rankSpacing: 50
+    nodeSpacing: 60
+    wrappingWidth: 300
+---
+flowchart TB
+    start(("開始")) --> C
+    C["CLOSED（通常）<br/>呼び出しを通す<br/>成功すると失敗回数を0に戻す"]
+    O["OPEN（遮断）<br/>timeoutの間は呼び出さずに<br/>すぐ例外を投げる"]
+    H["HALF_OPEN（試行）<br/>試しに1回呼び出す"]
+
+    C -->|"失敗回数が<br/>しきい値に達する"| O
+    O -->|"timeoutを過ぎて<br/>次の呼び出しが来る"| H
+    H -->|"成功"| C
+    H -->|"失敗"| O
+
+    style C fill:#e8f5e9,stroke:#2e7d32
+    style O fill:#ffebee,stroke:#c62828
+    style H fill:#fff8e1,stroke:#f9a825

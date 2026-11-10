@@ -152,23 +152,6 @@ public class TryWithResourcesSample {
 
 Javaの例外クラスは、`Throwable`クラスをルートとした階層構造を持っています。
 
-```
-Throwable
-├── Error（システムエラー：通常は回復不可能）
-│   ├── OutOfMemoryError
-│   ├── StackOverflowError
-│   └── ...
-└── Exception
-    ├── RuntimeException（非検査例外）
-    │   ├── NullPointerException
-    │   ├── ArrayIndexOutOfBoundsException
-    │   └── ...
-    └── その他のException（検査例外）
-        ├── IOException
-        ├── SQLException
-        └── ...
-```
-
 <div class="figure">
 
 ![Java例外クラスの階層構造](images/diagrams/chapter13-exception-hierarchy.svg)
@@ -274,6 +257,12 @@ public class BankAccount {
 
 ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
+<div class="figure">
+
+![例外の連鎖（サンプルコード13-6）](images/diagrams/chapter13-exception-chaining.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード13-6**　UserService.java</span>
 
 ```java
@@ -357,6 +346,12 @@ public class RetryableOperation {
 ### サーキットブレーカーパターン（連続失敗への対処）
 
 連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです。マイクロサービスアーキテクチャでとくに重要です。
+
+<div class="figure">
+
+![サーキットブレーカーの3つの状態](images/diagrams/chapter13-circuit-breaker.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java（3〜12、21〜55行目）</span>
 

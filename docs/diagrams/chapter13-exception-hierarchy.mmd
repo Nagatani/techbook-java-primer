@@ -1,5 +1,7 @@
 classDiagram
     Throwable <|-- Error
+    Error <|-- OutOfMemoryError
+    Error <|-- StackOverflowError
     Throwable <|-- Exception
     Exception <|-- RuntimeException
     Exception <|-- IOException
@@ -7,11 +9,9 @@ classDiagram
     RuntimeException <|-- NullPointerException
     RuntimeException <|-- ArrayIndexOutOfBoundsException
     RuntimeException <|-- IllegalArgumentException
-    RuntimeException <|-- NumberFormatException
     IllegalArgumentException <|-- NumberFormatException
     
     class Throwable {
-        <<abstract>>
         +getMessage()
         +printStackTrace()
         +getCause()
@@ -65,4 +65,14 @@ classDiagram
     class NumberFormatException {
         <<非チェック例外>>
         数値変換エラー
+    }
+
+    class OutOfMemoryError {
+        <<エラー>>
+        メモリ不足
+    }
+
+    class StackOverflowError {
+        <<エラー>>
+        再帰が深すぎる
     }
