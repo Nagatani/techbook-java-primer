@@ -86,7 +86,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - `IO::println`は静的メソッド参照になる（`System.out::println`は特定のインスタンスのメソッド参照）。第11章のメソッド参照の表はこれに合わせてある
    - 付録・演習のコードも移行済み。`IO.readln`は最初に使った`System.in`の読み取り器を持ち続けるため、テストで`System.setIn`を何度も差し替える処理とは組み合わせない（いまの演習・付録にはない）
    - `IO`という名前のクラスを自作した例（付録B.02のIOモナド）では、自作のクラスが優先される。その中で標準入出力を使うときは`java.lang.IO`と書く
-   - 付録Aの環境構築手順（JDK 21.0.6のインストール）は未更新（`docs/analysis/issues-tracking.md`のIssue #015）
+   - 付録Aの環境構築手順もJDK 25（SDKMANの識別子`25.0.5.0+2-ms`、2026-11時点）に書き直した。SDKMANの識別子は更新のたびに変わるので、手順を見直すときは`sdk list java`の実際の表示で確かめる
 
 5. **Chapter Structure**:
    - 全23章構成

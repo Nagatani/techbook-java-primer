@@ -445,9 +445,10 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
     + 付録Hのエラー例は、Scannerのimport忘れを題材にしたものだけScannerのまま残し、スペルミス・大文字小文字・静的インポートの例とエラーメッセージを`IO`クラスに合わせた
     + 確認: 100のまとまりをjavac（--release 25）でコンパイルし、テストのあるものはJUnitで実行して、移行前とコンパイル結果・テスト結果が同じことを確かめた（第9章の解答例のテスト1件は移行前から実行ごとに結果が変わる）。pom.xml・build.gradleのある5プロジェクトはDockerのMaven・Gradle（Java 25）でビルドとテストが通った
 
-#### Issue #015: 付録Aの環境構築手順がJDK 21のまま（重要度：高）
+#### Issue #015: ~~付録Aの環境構築手順がJDK 21のまま~~ ✅ **解決済み（2026-11-10）**
 - **発見日**: 2026年11月10日
 - `appendix/a-environment-setup/README.md`のインストール手順（SDKMANの`21.0.6-ms`、Windowsのインストーラー、Dockerfileの`eclipse-temurin:21-jdk`など）がOpenJDK 21.0.6のまま
 - 本文とすべての公開コードは`IO`クラスを使うためJava 25が必要で、この手順どおりに入れたJDKでは動かない
 - SDKMANの`sdk list java`の表示形式と識別子が執筆時から変わっている（2026-11時点ではMicrosoftが`25.0.5.0+2-ms`のような識別子）。一覧の例や出力例は、実際に実行した結果で書き直す
+- 2026-11-10: JDK 25の手順に書き直した。SDKMAN 5.24の一覧・インストール・切り替えの表示は、Docker（Ubuntu 24.04）で実際に実行した結果を使った。setup.shとDockerfileはDockerで動作を確かめた（Dockerfileは`src/**/*.java`が展開されずビルドできなかったのも直した）。Windowsのsetup.ps1とインストーラの手順は、ダウンロードのリンクがOpenJDK 25.0.5を指すことだけを確かめた（Windowsでの実行は未確認）
 
