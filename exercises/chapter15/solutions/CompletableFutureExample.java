@@ -372,7 +372,7 @@ public class CompletableFutureExample {
     public static class PerformanceBenchmark {
         
         public static void compareAsyncVsSync(AsyncDataService dataService) {
-            System.out.println("=== 非同期 vs 同期処理のパフォーマンス比較 ===");
+            IO.println("=== 非同期 vs 同期処理のパフォーマンス比較 ===");
             
             List<String> userIds = Arrays.asList("user1", "user2", "user3", "user4", "user5");
             AsyncOperations asyncOps = new AsyncOperations(dataService);
@@ -396,9 +396,9 @@ public class CompletableFutureExample {
                 List<UserProfile> asyncResults = asyncOps.getMultipleUserProfilesAsync(userIds).get();
                 long asyncTime = System.currentTimeMillis() - asyncStart;
                 
-                System.out.println("同期処理時間: " + syncTime + "ms (" + syncResults.size() + " 件)");
-                System.out.println("非同期処理時間: " + asyncTime + "ms (" + asyncResults.size() + " 件)");
-                System.out.println("性能向上: " + String.format("%.1fx", (double) syncTime / asyncTime));
+                IO.println("同期処理時間: " + syncTime + "ms (" + syncResults.size() + " 件)");
+                IO.println("非同期処理時間: " + asyncTime + "ms (" + asyncResults.size() + " 件)");
+                IO.println("性能向上: " + String.format("%.1fx", (double) syncTime / asyncTime));
                 
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "非同期処理エラー", e);
@@ -416,26 +416,26 @@ public class CompletableFutureExample {
         
         try {
             // 基本的な非同期処理のデモ
-            System.out.println("=== 基本的な非同期処理 ===");
+            IO.println("=== 基本的な非同期処理 ===");
             CompletableFuture<UserProfile> profileFuture = asyncOps.getUserProfileAsync("demo-user");
             UserProfile profile = profileFuture.get(2, TimeUnit.SECONDS);
-            System.out.println("取得したプロフィール: " + profile);
-            System.out.println();
+            IO.println("取得したプロフィール: " + profile);
+            IO.println();
             
             // 複数商品情報の並列取得
-            System.out.println("=== 複数商品情報の並列取得 ===");
+            IO.println("=== 複数商品情報の並列取得 ===");
             List<String> itemIds = Arrays.asList("item1", "item2", "item3");
             CompletableFuture<List<ProductInfo>> productsFuture = asyncOps.getMultipleProductInfoAsync(itemIds);
             List<ProductInfo> products = productsFuture.get(3, TimeUnit.SECONDS);
-            products.forEach(System.out::println);
-            System.out.println();
+            products.forEach(IO::println);
+            IO.println();
             
             // エラーハンドリング
-            System.out.println("=== エラーハンドリング ===");
+            IO.println("=== エラーハンドリング ===");
             CompletableFuture<UserProfile> fallbackFuture = asyncOps.getUserProfileWithFallbackAsync("error-user");
             UserProfile fallbackProfile = fallbackFuture.get(2, TimeUnit.SECONDS);
-            System.out.println("フォールバック結果: " + fallbackProfile);
-            System.out.println();
+            IO.println("フォールバック結果: " + fallbackProfile);
+            IO.println();
             
             // パフォーマンス比較
             PerformanceBenchmark.compareAsyncVsSync(dataService);

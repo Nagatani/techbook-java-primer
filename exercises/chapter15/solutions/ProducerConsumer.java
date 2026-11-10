@@ -418,7 +418,7 @@ public class ProducerConsumer {
     public static class Benchmark {
         
         public static void compareImplementations() {
-            System.out.println("=== 生産者・消費者パターン パフォーマンス比較 ===");
+            IO.println("=== 生産者・消費者パターン パフォーマンス比較 ===");
             
             Supplier<Task> taskProducer = () -> 
                 new Task("task-" + System.nanoTime(), "データ: " + Math.random());
@@ -434,15 +434,15 @@ public class ProducerConsumer {
             long duration = 5000; // 5秒
             
             // BlockingQueue実装
-            System.out.println("--- BlockingQueue実装 ---");
+            IO.println("--- BlockingQueue実装 ---");
             runBlockingQueueBenchmark(taskProducer, taskConsumer, duration);
             
             // wait/notify実装
-            System.out.println("\n--- wait/notify実装 ---");
+            IO.println("\n--- wait/notify実装 ---");
             runWaitNotifyBenchmark(taskProducer, taskConsumer, duration);
             
             // Semaphore実装
-            System.out.println("\n--- Semaphore実装 ---");
+            IO.println("\n--- Semaphore実装 ---");
             runSemaphoreBenchmark(taskProducer, taskConsumer, duration);
         }
         
@@ -459,7 +459,7 @@ public class ProducerConsumer {
             }
             
             pc.stop();
-            System.out.println("結果: " + pc.getStatistics());
+            IO.println("結果: " + pc.getStatistics());
         }
         
         private static void runWaitNotifyBenchmark(Supplier<Task> producer, 
@@ -475,7 +475,7 @@ public class ProducerConsumer {
             }
             
             pc.stop();
-            System.out.println("結果: " + pc.getStatistics());
+            IO.println("結果: " + pc.getStatistics());
         }
         
         private static void runSemaphoreBenchmark(Supplier<Task> producer, 
@@ -491,7 +491,7 @@ public class ProducerConsumer {
             }
             
             pc.stop();
-            System.out.println("結果: " + pc.getStatistics());
+            IO.println("結果: " + pc.getStatistics());
         }
     }
     
@@ -500,13 +500,13 @@ public class ProducerConsumer {
      */
     public static void main(String[] args) {
         // 基本的な動作確認
-        System.out.println("=== 基本動作確認 ===");
+        IO.println("=== 基本動作確認 ===");
         
         Supplier<Task> simpleProducer = () -> 
             new Task("demo-" + System.currentTimeMillis(), "デモデータ");
         
         Consumer<Task> simpleConsumer = task -> {
-            System.out.println("処理中: " + task);
+            IO.println("処理中: " + task);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -524,8 +524,8 @@ public class ProducerConsumer {
         }
         
         demo.stop();
-        System.out.println("デモ結果: " + demo.getStatistics());
-        System.out.println();
+        IO.println("デモ結果: " + demo.getStatistics());
+        IO.println();
         
         // パフォーマンス比較
         Benchmark.compareImplementations();

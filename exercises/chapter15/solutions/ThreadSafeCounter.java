@@ -410,9 +410,9 @@ public class ThreadSafeCounter {
      * すべてのカウンター実装のパフォーマンス比較
      */
     public static void comparePerformance(int threadCount, int operationsPerThread) {
-        System.out.println("=== カウンターパフォーマンス比較 ===");
-        System.out.println("スレッド数: " + threadCount + ", 操作数/スレッド: " + operationsPerThread);
-        System.out.println();
+        IO.println("=== カウンターパフォーマンス比較 ===");
+        IO.println("スレッド数: " + threadCount + ", 操作数/スレッド: " + operationsPerThread);
+        IO.println();
         
         CounterBenchmark.Counter[] counters = {
             new CounterBenchmark.SynchronizedCounterWrapper(),
@@ -424,7 +424,7 @@ public class ThreadSafeCounter {
         for (CounterBenchmark.Counter counter : counters) {
             CounterBenchmark.BenchmarkResult result = 
                 CounterBenchmark.runBenchmark(counter, threadCount, operationsPerThread);
-            System.out.println(result);
+            IO.println(result);
         }
     }
     
@@ -433,7 +433,7 @@ public class ThreadSafeCounter {
      */
     public static void main(String[] args) {
         // 基本的な動作確認
-        System.out.println("=== 基本動作確認 ===");
+        IO.println("=== 基本動作確認 ===");
         
         SynchronizedCounter syncCounter = new SynchronizedCounter();
         AtomicCounter atomicCounter = new AtomicCounter();
@@ -448,15 +448,15 @@ public class ThreadSafeCounter {
             stampedCounter.increment();
         }
         
-        System.out.println("Synchronized: " + syncCounter.get());
-        System.out.println("Atomic: " + atomicCounter.get());
-        System.out.println("ReadWriteLock: " + rwLockCounter.get());
-        System.out.println("StampedLock: " + stampedCounter.get());
-        System.out.println();
+        IO.println("Synchronized: " + syncCounter.get());
+        IO.println("Atomic: " + atomicCounter.get());
+        IO.println("ReadWriteLock: " + rwLockCounter.get());
+        IO.println("StampedLock: " + stampedCounter.get());
+        IO.println();
         
         // パフォーマンス比較
         comparePerformance(10, 100000);
-        System.out.println();
+        IO.println();
         comparePerformance(50, 100000);
     }
 }

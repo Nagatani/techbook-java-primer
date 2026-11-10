@@ -423,34 +423,34 @@ public class ThreadPoolExample {
     public static class PerformanceTest {
         
         public static void compareThreadPools() {
-            System.out.println("=== スレッドプール性能比較 ===");
+            IO.println("=== スレッドプール性能比較 ===");
             
             int taskCount = 100;
             
-            System.out.println("タスク数: " + taskCount);
-            System.out.println();
+            IO.println("タスク数: " + taskCount);
+            IO.println();
             
             // 各種スレッドプールの性能測定
             ThreadPoolStatistics fixed = ThreadPoolComparison.testFixedThreadPool(5, taskCount);
-            System.out.println("固定サイズプール(5): " + fixed);
+            IO.println("固定サイズプール(5): " + fixed);
             
             ThreadPoolStatistics cached = ThreadPoolComparison.testCachedThreadPool(taskCount);
-            System.out.println("キャッシュプール: " + cached);
+            IO.println("キャッシュプール: " + cached);
             
             ThreadPoolStatistics single = ThreadPoolComparison.testSingleThreadExecutor(taskCount);
-            System.out.println("単一スレッド: " + single);
+            IO.println("単一スレッド: " + single);
             
             ThreadPoolStatistics workStealing = ThreadPoolComparison.testWorkStealingPool(
                 Runtime.getRuntime().availableProcessors(), taskCount);
-            System.out.println("ワークスティーリング: " + workStealing);
+            IO.println("ワークスティーリング: " + workStealing);
             
             ThreadPoolStatistics custom = ThreadPoolComparison.testCustomThreadPool(
                 3, 10, 50, taskCount);
-            System.out.println("カスタムプール: " + custom);
+            IO.println("カスタムプール: " + custom);
         }
         
         public static void testIOvsComputeTasks() {
-            System.out.println("\n=== I/O vs CPU集約タスクの比較 ===");
+            IO.println("\n=== I/O vs CPU集約タスクの比較 ===");
             
             // I/O集約タスク用（多くのスレッド）
             ExecutorService ioPool = Executors.newFixedThreadPool(20);
@@ -484,8 +484,8 @@ public class ThreadPoolExample {
                 }
                 long cpuTime = System.currentTimeMillis() - cpuStart;
                 
-                System.out.println("I/Oタスク実行時間: " + ioTime + "ms (20スレッド)");
-                System.out.println("CPUタスク実行時間: " + cpuTime + "ms (" + 
+                IO.println("I/Oタスク実行時間: " + ioTime + "ms (20スレッド)");
+                IO.println("CPUタスク実行時間: " + cpuTime + "ms (" + 
                     Runtime.getRuntime().availableProcessors() + "スレッド)");
                 
             } catch (Exception e) {
@@ -502,7 +502,7 @@ public class ThreadPoolExample {
      */
     public static void main(String[] args) {
         // 基本的なスレッドプール使用例
-        System.out.println("=== 基本的なスレッドプール使用例 ===");
+        IO.println("=== 基本的なスレッドプール使用例 ===");
         
         ExecutorService executor = Executors.newFixedThreadPool(3);
         
@@ -516,9 +516,9 @@ public class ThreadPoolExample {
             for (Future<TaskResult> future : futures) {
                 try {
                     TaskResult result = future.get();
-                    System.out.println(result);
+                    IO.println(result);
                 } catch (Exception e) {
-                    System.out.println("タスク実行エラー: " + e.getMessage());
+                    IO.println("タスク実行エラー: " + e.getMessage());
                 }
             }
             
@@ -534,10 +534,10 @@ public class ThreadPoolExample {
             }
         }
         
-        System.out.println();
+        IO.println();
         
         // スケジュールタスクの例
-        System.out.println("=== スケジュールタスクの例 ===");
+        IO.println("=== スケジュールタスクの例 ===");
         ScheduledTaskExample scheduledExample = new ScheduledTaskExample(2);
         
         try {
@@ -557,14 +557,14 @@ public class ThreadPoolExample {
             fixedRateFuture.cancel(false);
             fixedDelayFuture.cancel(false);
             
-            System.out.println("総実行回数: " + scheduledExample.getTotalExecutions());
+            IO.println("総実行回数: " + scheduledExample.getTotalExecutions());
             
             // 一回実行タスクの結果を取得
             try {
                 TaskResult onceResult = onceFuture.get();
-                System.out.println("一回実行タスク結果: " + onceResult);
+                IO.println("一回実行タスク結果: " + onceResult);
             } catch (Exception e) {
-                System.out.println("一回実行タスクエラー: " + e.getMessage());
+                IO.println("一回実行タスクエラー: " + e.getMessage());
             }
             
         } catch (InterruptedException e) {
@@ -573,7 +573,7 @@ public class ThreadPoolExample {
             scheduledExample.shutdown();
         }
         
-        System.out.println();
+        IO.println();
         
         // パフォーマンス比較
         PerformanceTest.compareThreadPools();
