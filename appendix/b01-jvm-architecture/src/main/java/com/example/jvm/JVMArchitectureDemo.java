@@ -16,26 +16,26 @@ public class JVMArchitectureDemo {
     public static class ClassLoaderHierarchyDemo {
         
         public static void demonstrateClassLoaderHierarchy() {
-            System.out.println("=== ClassLoader Hierarchy Investigation ===");
+            IO.println("=== ClassLoader Hierarchy Investigation ===");
             
             // システムクラスローダー（アプリケーションクラスローダー）
             ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
-            System.out.println("System ClassLoader: " + systemLoader);
-            System.out.println("  Class: " + systemLoader.getClass().getName());
+            IO.println("System ClassLoader: " + systemLoader);
+            IO.println("  Class: " + systemLoader.getClass().getName());
             
             // 拡張クラスローダー（プラットフォームクラスローダー）
             ClassLoader platformLoader = systemLoader.getParent();
-            System.out.println("\nPlatform ClassLoader: " + platformLoader);
+            IO.println("\nPlatform ClassLoader: " + platformLoader);
             if (platformLoader != null) {
-                System.out.println("  Class: " + platformLoader.getClass().getName());
+                IO.println("  Class: " + platformLoader.getClass().getName());
             }
             
             // ブートストラップクラスローダー（nullで表される）
             ClassLoader bootstrapLoader = platformLoader != null ? platformLoader.getParent() : null;
-            System.out.println("\nBootstrap ClassLoader: " + bootstrapLoader);
-            System.out.println("  (null means Bootstrap ClassLoader - implemented in native code)");
+            IO.println("\nBootstrap ClassLoader: " + bootstrapLoader);
+            IO.println("  (null means Bootstrap ClassLoader - implemented in native code)");
             
-            System.out.println("\n--- Class Loader Investigation for Different Classes ---");
+            IO.println("\n--- Class Loader Investigation for Different Classes ---");
             
             // 各種クラスのクラスローダーを確認
             investigateClassLoader("java.lang.String", String.class);
@@ -45,14 +45,14 @@ public class JVMArchitectureDemo {
             investigateClassLoader("com.example.jvm.JVMArchitectureDemo", 
                                  JVMArchitectureDemo.class);
             
-            System.out.println();
+            IO.println();
         }
         
         private static void investigateClassLoader(String className, Class<?> clazz) {
             ClassLoader loader = clazz.getClassLoader();
-            System.out.printf("%-45s -> %s%n", 
+            IO.println("%-45s -> %s".formatted(
                             className, 
-                            loader == null ? "Bootstrap ClassLoader" : loader.getClass().getSimpleName());
+                            loader == null ? "Bootstrap ClassLoader" : loader.getClass().getSimpleName()));
         }
         
         /**
@@ -68,7 +68,7 @@ public class JVMArchitectureDemo {
             
             @Override
             protected Class<?> findClass(String name) throws ClassNotFoundException {
-                System.out.println("Custom ClassLoader: Attempting to load " + name);
+                IO.println("Custom ClassLoader: Attempting to load " + name);
                 classLoadCount++;
                 
                 // 実際のクラスロードはスキップし、統計のみ収集
@@ -79,20 +79,20 @@ public class JVMArchitectureDemo {
             protected Class<?> loadClass(String name, boolean resolve) 
                     throws ClassNotFoundException {
                 
-                System.out.println("Custom ClassLoader: loadClass called for " + name);
+                IO.println("Custom ClassLoader: loadClass called for " + name);
                 
                 // 親委譲モデルに従う
                 return super.loadClass(name, resolve);
             }
             
             public void printStatistics() {
-                System.out.println("Custom ClassLoader Statistics:");
-                System.out.println("  Classes attempted to load: " + classLoadCount);
-                System.out.println("  Actually loaded classes: " + loadedClasses.size());
+                IO.println("Custom ClassLoader Statistics:");
+                IO.println("  Classes attempted to load: " + classLoadCount);
+                IO.println("  Actually loaded classes: " + loadedClasses.size());
             }
             
             public static void demonstrateCustomClassLoader() {
-                System.out.println("\n--- Custom ClassLoader Demo ---");
+                IO.println("\n--- Custom ClassLoader Demo ---");
                 
                 CustomClassLoaderDemo customLoader = new CustomClassLoaderDemo(
                     ClassLoader.getSystemClassLoader());
@@ -100,13 +100,13 @@ public class JVMArchitectureDemo {
                 try {
                     // 既存クラスのロード（親に委譲される）
                     Class<?> stringClass = customLoader.loadClass("java.lang.String");
-                    System.out.println("Successfully loaded: " + stringClass.getName());
+                    IO.println("Successfully loaded: " + stringClass.getName());
                     
                     // 存在しないクラスのロード
                     customLoader.loadClass("com.nonexistent.TestClass");
                     
                 } catch (ClassNotFoundException e) {
-                    System.out.println("Expected exception: " + e.getMessage());
+                    IO.println("Expected exception: " + e.getMessage());
                 }
                 
                 customLoader.printStatistics();
@@ -123,7 +123,7 @@ public class JVMArchitectureDemo {
          * ヒープメモリの分析
          */
         public static void analyzeHeapMemory() {
-            System.out.println("=== Heap Memory Analysis ===");
+            IO.println("=== Heap Memory Analysis ===");
             
             // メモリ管理Beanの取得
             MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
@@ -137,26 +137,26 @@ public class JVMArchitectureDemo {
             MemoryUsage nonHeapUsage = memoryBean.getNonHeapMemoryUsage();
             printMemoryUsage("Non-Heap Memory", nonHeapUsage);
             
-            System.out.println("\n--- Memory Pool Details ---");
+            IO.println("\n--- Memory Pool Details ---");
             for (MemoryPoolMXBean pool : memoryPools) {
                 MemoryUsage usage = pool.getUsage();
                 if (usage != null) {
-                    System.out.printf("%-25s: %s%n", 
+                    IO.println("%-25s: %s".formatted(
                                     pool.getName(), 
                                     formatMemorySize(usage.getUsed()) + " / " + 
-                                    formatMemorySize(usage.getMax()));
+                                    formatMemorySize(usage.getMax())));
                 }
             }
             
-            System.out.println();
+            IO.println();
         }
         
         private static void printMemoryUsage(String name, MemoryUsage usage) {
-            System.out.println(name + ":");
-            System.out.println("  Init:      " + formatMemorySize(usage.getInit()));
-            System.out.println("  Used:      " + formatMemorySize(usage.getUsed()));
-            System.out.println("  Committed: " + formatMemorySize(usage.getCommitted()));
-            System.out.println("  Max:       " + formatMemorySize(usage.getMax()));
+            IO.println(name + ":");
+            IO.println("  Init:      " + formatMemorySize(usage.getInit()));
+            IO.println("  Used:      " + formatMemorySize(usage.getUsed()));
+            IO.println("  Committed: " + formatMemorySize(usage.getCommitted()));
+            IO.println("  Max:       " + formatMemorySize(usage.getMax()));
         }
         
         private static String formatMemorySize(long bytes) {
@@ -170,7 +170,7 @@ public class JVMArchitectureDemo {
          * スタックフレームの調査
          */
         public static void analyzeStackFrames() {
-            System.out.println("=== Stack Frame Analysis ===");
+            IO.println("=== Stack Frame Analysis ===");
             
             // メソッド呼び出しチェーンの作成
             recursiveMethod(5);
@@ -187,37 +187,37 @@ public class JVMArchitectureDemo {
         }
         
         private static void printCurrentStackTrace() {
-            System.out.println("Current Stack Trace:");
+            IO.println("Current Stack Trace:");
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             
             for (int i = 0; i < Math.min(stackTrace.length, 8); i++) {
                 StackTraceElement element = stackTrace[i];
-                System.out.printf("  [%d] %s.%s(%s:%d)%n",
+                IO.println("  [%d] %s.%s(%s:%d)".formatted(
                                 i,
                                 element.getClassName(),
                                 element.getMethodName(),
                                 element.getFileName(),
-                                element.getLineNumber());
+                                element.getLineNumber()));
             }
-            System.out.println();
+            IO.println();
         }
         
         /**
          * ガベージコレクション情報の表示
          */
         public static void analyzeGarbageCollection() {
-            System.out.println("=== Garbage Collection Analysis ===");
+            IO.println("=== Garbage Collection Analysis ===");
             
             List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
             
             for (GarbageCollectorMXBean gcBean : gcBeans) {
-                System.out.println("GC: " + gcBean.getName());
-                System.out.println("  Collection Count: " + gcBean.getCollectionCount());
-                System.out.println("  Collection Time:  " + gcBean.getCollectionTime() + " ms");
+                IO.println("GC: " + gcBean.getName());
+                IO.println("  Collection Count: " + gcBean.getCollectionCount());
+                IO.println("  Collection Time:  " + gcBean.getCollectionTime() + " ms");
                 
                 String[] memoryPoolNames = gcBean.getMemoryPoolNames();
-                System.out.println("  Memory Pools: " + Arrays.toString(memoryPoolNames));
-                System.out.println();
+                IO.println("  Memory Pools: " + Arrays.toString(memoryPoolNames));
+                IO.println();
             }
         }
     }
@@ -229,15 +229,15 @@ public class JVMArchitectureDemo {
         private static final List<Object> longLivedObjects = new ArrayList<>();
         
         public static void demonstrateObjectLifecycle() {
-            System.out.println("=== Object Lifecycle and Memory Generations ===");
+            IO.println("=== Object Lifecycle and Memory Generations ===");
             
             // ガベージコレクション前の状態
             RuntimeDataAreasDemo.analyzeHeapMemory();
             
-            System.out.println("Creating short-lived objects (Eden space)...");
+            IO.println("Creating short-lived objects (Eden space)...");
             createShortLivedObjects();
             
-            System.out.println("\nForcing garbage collection...");
+            IO.println("\nForcing garbage collection...");
             System.gc();
             
             try {
@@ -246,10 +246,10 @@ public class JVMArchitectureDemo {
                 Thread.currentThread().interrupt();
             }
             
-            System.out.println("Creating long-lived objects (will promote to Old generation)...");
+            IO.println("Creating long-lived objects (will promote to Old generation)...");
             createLongLivedObjects();
             
-            System.out.println("\nFinal memory state:");
+            IO.println("\nFinal memory state:");
             RuntimeDataAreasDemo.analyzeHeapMemory();
             RuntimeDataAreasDemo.analyzeGarbageCollection();
         }
@@ -283,8 +283,8 @@ public class JVMArchitectureDemo {
             private static final Map<Integer, byte[]> memoryHog = new HashMap<>();
             
             public static void simulateMemoryLeak() {
-                System.out.println("\n--- Memory Leak Simulation ---");
-                System.out.println("WARNING: This will consume memory - use small heap for demo");
+                IO.println("\n--- Memory Leak Simulation ---");
+                IO.println("WARNING: This will consume memory - use small heap for demo");
                 
                 try {
                     for (int i = 0; i < 1000; i++) {
@@ -294,16 +294,16 @@ public class JVMArchitectureDemo {
                         if (i % 100 == 0) {
                             MemoryUsage heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
                             double usedPercent = (double) heapUsage.getUsed() / heapUsage.getMax() * 100;
-                            System.out.printf("Iteration %d: Heap usage %.1f%%\n", i, usedPercent);
+                            IO.println("Iteration %d: Heap usage %.1f%%".formatted(i, usedPercent));
                             
                             if (usedPercent > 80) {
-                                System.out.println("Heap usage high - stopping simulation");
+                                IO.println("Heap usage high - stopping simulation");
                                 break;
                             }
                         }
                     }
                 } catch (OutOfMemoryError e) {
-                    System.out.println("OutOfMemoryError caught: " + e.getMessage());
+                    IO.println("OutOfMemoryError caught: " + e.getMessage());
                 } finally {
                     // メモリを解放
                     memoryHog.clear();
@@ -319,12 +319,12 @@ public class JVMArchitectureDemo {
     public static class ThreadStackDemo {
         
         public static void demonstrateThreadStacks() {
-            System.out.println("=== Thread Stack Demonstration ===");
+            IO.println("=== Thread Stack Demonstration ===");
             
             // メインスレッドのスタック情報
             Thread mainThread = Thread.currentThread();
-            System.out.println("Main Thread: " + mainThread.getName());
-            System.out.println("Stack Size: " + getApproximateStackSize());
+            IO.println("Main Thread: " + mainThread.getName());
+            IO.println("Stack Size: " + getApproximateStackSize());
             
             // 複数スレッドでのスタック使用
             List<Thread> threads = new ArrayList<>();
@@ -348,13 +348,13 @@ public class JVMArchitectureDemo {
                 }
             }
             
-            System.out.println("All threads completed\n");
+            IO.println("All threads completed\n");
         }
         
         private static void recursiveStackConsumer(int threadId, int depth) {
             if (depth <= 0) {
-                System.out.printf("Thread %d reached max depth, stack size: %d\n", 
-                                threadId, getApproximateStackSize());
+                IO.println("Thread %d reached max depth, stack size: %d".formatted(
+                                threadId, getApproximateStackSize()));
                 return;
             }
             
@@ -384,13 +384,13 @@ public class JVMArchitectureDemo {
          * スタックオーバーフローのシミュレーション
          */
         public static void simulateStackOverflow() {
-            System.out.println("--- Stack Overflow Simulation ---");
-            System.out.println("WARNING: This will cause StackOverflowError");
+            IO.println("--- Stack Overflow Simulation ---");
+            IO.println("WARNING: This will cause StackOverflowError");
             
             try {
                 infiniteRecursion(0);
             } catch (StackOverflowError e) {
-                System.out.println("StackOverflowError caught at depth: " + e.getMessage());
+                IO.println("StackOverflowError caught at depth: " + e.getMessage());
             }
         }
         
@@ -401,7 +401,7 @@ public class JVMArchitectureDemo {
             
             // 一定間隔で深度を報告
             if (depth % 1000 == 0) {
-                System.out.println("Recursion depth: " + depth);
+                IO.println("Recursion depth: " + depth);
             }
             
             infiniteRecursion(depth + 1);
@@ -414,40 +414,40 @@ public class JVMArchitectureDemo {
     public static class JVMRuntimeInfo {
         
         public static void displayJVMInformation() {
-            System.out.println("=== JVM Runtime Information ===");
+            IO.println("=== JVM Runtime Information ===");
             
             // 基本的なJVM情報
             RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
-            System.out.println("JVM Information:");
-            System.out.println("  Name:    " + runtimeBean.getVmName());
-            System.out.println("  Version: " + runtimeBean.getVmVersion());
-            System.out.println("  Vendor:  " + runtimeBean.getVmVendor());
-            System.out.println("  Uptime:  " + runtimeBean.getUptime() + " ms");
+            IO.println("JVM Information:");
+            IO.println("  Name:    " + runtimeBean.getVmName());
+            IO.println("  Version: " + runtimeBean.getVmVersion());
+            IO.println("  Vendor:  " + runtimeBean.getVmVendor());
+            IO.println("  Uptime:  " + runtimeBean.getUptime() + " ms");
             
             // システム情報
             OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-            System.out.println("\nOperating System:");
-            System.out.println("  Name:         " + osBean.getName());
-            System.out.println("  Version:      " + osBean.getVersion());
-            System.out.println("  Architecture: " + osBean.getArch());
-            System.out.println("  Processors:   " + osBean.getAvailableProcessors());
+            IO.println("\nOperating System:");
+            IO.println("  Name:         " + osBean.getName());
+            IO.println("  Version:      " + osBean.getVersion());
+            IO.println("  Architecture: " + osBean.getArch());
+            IO.println("  Processors:   " + osBean.getAvailableProcessors());
             
             // JVM引数
             List<String> arguments = runtimeBean.getInputArguments();
-            System.out.println("\nJVM Arguments:");
+            IO.println("\nJVM Arguments:");
             if (arguments.isEmpty()) {
-                System.out.println("  (No custom arguments)");
+                IO.println("  (No custom arguments)");
             } else {
-                arguments.forEach(arg -> System.out.println("  " + arg));
+                arguments.forEach(arg -> IO.println("  " + arg));
             }
             
             // クラスパス情報
-            System.out.println("\nClasspath Information:");
-            System.out.println("  Classpath: " + runtimeBean.getClassPath());
-            System.out.println("  Library Path: " + runtimeBean.getLibraryPath());
+            IO.println("\nClasspath Information:");
+            IO.println("  Classpath: " + runtimeBean.getClassPath());
+            IO.println("  Library Path: " + runtimeBean.getLibraryPath());
             
             // 重要なシステムプロパティ
-            System.out.println("\nKey System Properties:");
+            IO.println("\nKey System Properties:");
             String[] importantProps = {
                 "java.version", "java.vendor", "java.home",
                 "user.dir", "java.io.tmpdir", "file.separator",
@@ -456,37 +456,37 @@ public class JVMArchitectureDemo {
             
             for (String prop : importantProps) {
                 String value = System.getProperty(prop);
-                System.out.printf("  %-20s: %s%n", prop, value);
+                IO.println("  %-20s: %s".formatted(prop, value));
             }
             
-            System.out.println();
+            IO.println();
         }
         
         public static void displayThreadInformation() {
-            System.out.println("=== Thread Information ===");
+            IO.println("=== Thread Information ===");
             
             ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-            System.out.println("Thread Statistics:");
-            System.out.println("  Live Threads:   " + threadBean.getThreadCount());
-            System.out.println("  Daemon Threads: " + threadBean.getDaemonThreadCount());
-            System.out.println("  Peak Threads:   " + threadBean.getPeakThreadCount());
-            System.out.println("  Total Started:  " + threadBean.getTotalStartedThreadCount());
+            IO.println("Thread Statistics:");
+            IO.println("  Live Threads:   " + threadBean.getThreadCount());
+            IO.println("  Daemon Threads: " + threadBean.getDaemonThreadCount());
+            IO.println("  Peak Threads:   " + threadBean.getPeakThreadCount());
+            IO.println("  Total Started:  " + threadBean.getTotalStartedThreadCount());
             
             // スレッド詳細情報
             long[] threadIds = threadBean.getAllThreadIds();
             ThreadInfo[] threadInfos = threadBean.getThreadInfo(threadIds);
             
-            System.out.println("\nThread Details:");
+            IO.println("\nThread Details:");
             for (ThreadInfo info : threadInfos) {
                 if (info != null) {
-                    System.out.printf("  [%d] %s (%s)%n", 
+                    IO.println("  [%d] %s (%s)".formatted(
                                     info.getThreadId(),
                                     info.getThreadName(),
-                                    info.getThreadState());
+                                    info.getThreadState()));
                 }
             }
             
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -494,11 +494,11 @@ public class JVMArchitectureDemo {
      * メモリ使用パターンの分析
      */
     public static void analyzeMemoryPatterns() {
-        System.out.println("=== Memory Usage Pattern Analysis ===");
+        IO.println("=== Memory Usage Pattern Analysis ===");
         
         // 初期状態の記録
         MemoryUsage initialHeap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        System.out.println("Initial heap usage: " + 
+        IO.println("Initial heap usage: " + 
                          RuntimeDataAreasDemo.formatMemorySize(initialHeap.getUsed()));
         
         // 異なるオブジェクト作成パターンのテスト
@@ -516,19 +516,19 @@ public class JVMArchitectureDemo {
         }
         
         MemoryUsage finalHeap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        System.out.println("Final heap usage: " + 
+        IO.println("Final heap usage: " + 
                          RuntimeDataAreasDemo.formatMemorySize(finalHeap.getUsed()));
         
         long memoryDelta = finalHeap.getUsed() - initialHeap.getUsed();
-        System.out.println("Memory delta: " + 
+        IO.println("Memory delta: " + 
                          RuntimeDataAreasDemo.formatMemorySize(Math.abs(memoryDelta)) +
                          (memoryDelta >= 0 ? " (increased)" : " (decreased)"));
         
-        System.out.println();
+        IO.println();
     }
     
     private static void testArrayCreation() {
-        System.out.println("Testing array creation...");
+        IO.println("Testing array creation...");
         long start = System.nanoTime();
         
         int[][] arrays = new int[1000][];
@@ -538,11 +538,11 @@ public class JVMArchitectureDemo {
         }
         
         long end = System.nanoTime();
-        System.out.printf("  Array creation: %.2f ms\n", (end - start) / 1_000_000.0);
+        IO.println("  Array creation: %.2f ms".formatted((end - start) / 1_000_000.0));
     }
     
     private static void testObjectCreation() {
-        System.out.println("Testing object creation...");
+        IO.println("Testing object creation...");
         long start = System.nanoTime();
         
         List<Map<String, Integer>> objects = new ArrayList<>();
@@ -554,11 +554,11 @@ public class JVMArchitectureDemo {
         }
         
         long end = System.nanoTime();
-        System.out.printf("  Object creation: %.2f ms\n", (end - start) / 1_000_000.0);
+        IO.println("  Object creation: %.2f ms".formatted((end - start) / 1_000_000.0));
     }
     
     private static void testStringCreation() {
-        System.out.println("Testing string creation...");
+        IO.println("Testing string creation...");
         long start = System.nanoTime();
         
         List<String> strings = new ArrayList<>();
@@ -569,15 +569,15 @@ public class JVMArchitectureDemo {
         }
         
         long end = System.nanoTime();
-        System.out.printf("  String creation: %.2f ms\n", (end - start) / 1_000_000.0);
+        IO.println("  String creation: %.2f ms".formatted((end - start) / 1_000_000.0));
     }
     
     /**
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("JVM Architecture and Runtime Data Areas Demonstration");
-        System.out.println("====================================================");
+        IO.println("JVM Architecture and Runtime Data Areas Demonstration");
+        IO.println("====================================================");
         
         JVMRuntimeInfo.displayJVMInformation();
         JVMRuntimeInfo.displayThreadInformation();
@@ -599,18 +599,18 @@ public class JVMArchitectureDemo {
         // MemoryGenerationDemo.MemoryLeakDemo.simulateMemoryLeak();
         // ThreadStackDemo.simulateStackOverflow();
         
-        System.out.println("🎯 Key Insights:");
-        System.out.println("✓ JVM manages multiple memory areas with different purposes");
-        System.out.println("✓ ClassLoader hierarchy provides security and modularity");
-        System.out.println("✓ Stack memory is thread-local, heap memory is shared");
-        System.out.println("✓ Garbage collection automatically manages heap memory");
-        System.out.println("✓ Understanding memory layout helps optimize applications");
+        IO.println("🎯 Key Insights:");
+        IO.println("✓ JVM manages multiple memory areas with different purposes");
+        IO.println("✓ ClassLoader hierarchy provides security and modularity");
+        IO.println("✓ Stack memory is thread-local, heap memory is shared");
+        IO.println("✓ Garbage collection automatically manages heap memory");
+        IO.println("✓ Understanding memory layout helps optimize applications");
         
-        System.out.println("\n⚡ Performance Tips:");
-        System.out.println("• Monitor heap usage to prevent OutOfMemoryError");
-        System.out.println("• Avoid creating unnecessary objects in loops");
-        System.out.println("• Use appropriate data structures for your use case");
-        System.out.println("• Consider object pooling for expensive objects");
-        System.out.println("• Profile memory usage in production-like environments");
+        IO.println("\n⚡ Performance Tips:");
+        IO.println("• Monitor heap usage to prevent OutOfMemoryError");
+        IO.println("• Avoid creating unnecessary objects in loops");
+        IO.println("• Use appropriate data structures for your use case");
+        IO.println("• Consider object pooling for expensive objects");
+        IO.println("• Profile memory usage in production-like environments");
     }
 }

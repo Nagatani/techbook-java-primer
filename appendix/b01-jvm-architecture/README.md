@@ -196,7 +196,7 @@ list.add("item")                  // invokeinterface
 new Object()                      // invokespecial
 
 // ラムダ式・メソッド参照
-() -> System.out.println("hi")    // invokedynamic
+() -> IO.println("hi")    // invokedynamic
 ```
 
 ### 4. JITコンパイレーションの最適化階層
@@ -407,7 +407,7 @@ public class NativeDemo {
     public static void main(String[] args) {
         NativeDemo demo = new NativeDemo();
         int result = demo.nativeCalculation(10, 20);
-        System.out.println("Native result: " + result);
+        IO.println("Native result: " + result);
     }
 }
 ```

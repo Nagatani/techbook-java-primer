@@ -81,7 +81,7 @@ public class BytecodeAnalysisDemo {
             float floatValue = value;   // i2f
             double doubleValue = value; // i2d
             
-            System.out.println("Conversions: " + longValue + ", " + floatValue + ", " + doubleValue);
+            IO.println("Conversions: " + longValue + ", " + floatValue + ", " + doubleValue);
         }
         
         // メソッド呼び出し（invokestatic, invokevirtual, invokeinterface）
@@ -96,7 +96,7 @@ public class BytecodeAnalysisDemo {
             List<String> list = new ArrayList<>();
             list.add(result);                   // invokeinterface
             
-            System.out.println("Method invocations: " + length + ", " + list.size());
+            IO.println("Method invocations: " + length + ", " + list.size());
         }
     }
     
@@ -109,25 +109,25 @@ public class BytecodeAnalysisDemo {
          * メソッドのバイトコード情報を表示（簡略版）
          */
         public static void analyzeMethod(Class<?> clazz, String methodName) {
-            System.out.println("=== Bytecode Analysis for " + clazz.getSimpleName() + "." + methodName + " ===");
+            IO.println("=== Bytecode Analysis for " + clazz.getSimpleName() + "." + methodName + " ===");
             
             try {
                 Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {
                     if (method.getName().equals(methodName)) {
-                        System.out.println("Method: " + method);
-                        System.out.println("Return Type: " + method.getReturnType());
-                        System.out.println("Parameter Types: " + Arrays.toString(method.getParameterTypes()));
-                        System.out.println("Modifiers: " + Modifier.toString(method.getModifiers()));
+                        IO.println("Method: " + method);
+                        IO.println("Return Type: " + method.getReturnType());
+                        IO.println("Parameter Types: " + Arrays.toString(method.getParameterTypes()));
+                        IO.println("Modifiers: " + Modifier.toString(method.getModifiers()));
                         
                         // 実際のバイトコード表示は javap -c コマンドを推奨
-                        System.out.println("\nTo see actual bytecode, run:");
-                        System.out.println("javap -c " + clazz.getName());
-                        System.out.println();
+                        IO.println("\nTo see actual bytecode, run:");
+                        IO.println("javap -c " + clazz.getName());
+                        IO.println();
                         return;
                     }
                 }
-                System.out.println("Method not found: " + methodName);
+                IO.println("Method not found: " + methodName);
             } catch (Exception e) {
                 System.err.println("Error analyzing method: " + e.getMessage());
             }
@@ -137,38 +137,38 @@ public class BytecodeAnalysisDemo {
          * クラスファイルの基本情報を表示
          */
         public static void analyzeClassFile(Class<?> clazz) {
-            System.out.println("=== Class File Analysis for " + clazz.getName() + " ===");
+            IO.println("=== Class File Analysis for " + clazz.getName() + " ===");
             
             // クラス基本情報
-            System.out.println("Class Name: " + clazz.getName());
-            System.out.println("Simple Name: " + clazz.getSimpleName());
-            System.out.println("Package: " + clazz.getPackage());
-            System.out.println("Modifiers: " + Modifier.toString(clazz.getModifiers()));
-            System.out.println("Superclass: " + clazz.getSuperclass());
-            System.out.println("Interfaces: " + Arrays.toString(clazz.getInterfaces()));
+            IO.println("Class Name: " + clazz.getName());
+            IO.println("Simple Name: " + clazz.getSimpleName());
+            IO.println("Package: " + clazz.getPackage());
+            IO.println("Modifiers: " + Modifier.toString(clazz.getModifiers()));
+            IO.println("Superclass: " + clazz.getSuperclass());
+            IO.println("Interfaces: " + Arrays.toString(clazz.getInterfaces()));
             
             // フィールド情報
             Field[] fields = clazz.getDeclaredFields();
-            System.out.println("\nFields (" + fields.length + "):");
+            IO.println("\nFields (" + fields.length + "):");
             for (Field field : fields) {
-                System.out.printf("  %s %s %s%n", 
+                IO.println("  %s %s %s".formatted(
                                 Modifier.toString(field.getModifiers()),
                                 field.getType().getSimpleName(),
-                                field.getName());
+                                field.getName()));
             }
             
             // メソッド情報
             Method[] methods = clazz.getDeclaredMethods();
-            System.out.println("\nMethods (" + methods.length + "):");
+            IO.println("\nMethods (" + methods.length + "):");
             for (Method method : methods) {
-                System.out.printf("  %s %s %s(%s)%n",
+                IO.println("  %s %s %s(%s)".formatted(
                                 Modifier.toString(method.getModifiers()),
                                 method.getReturnType().getSimpleName(),
                                 method.getName(),
-                                formatParameterTypes(method.getParameterTypes()));
+                                formatParameterTypes(method.getParameterTypes())));
             }
             
-            System.out.println();
+            IO.println();
         }
         
         private static String formatParameterTypes(Class<?>[] paramTypes) {
@@ -194,8 +194,8 @@ public class BytecodeAnalysisDemo {
          * JITコンパイレーションの効果を測定
          */
         public static void demonstrateJITEffect() {
-            System.out.println("=== JIT Compilation Effect Demonstration ===");
-            System.out.println("Note: Run with -XX:+PrintCompilation to see JIT compilation events");
+            IO.println("=== JIT Compilation Effect Demonstration ===");
+            IO.println("Note: Run with -XX:+PrintCompilation to see JIT compilation events");
             
             // ホットメソッドの準備
             SimpleCalculation calc = new SimpleCalculation();
@@ -210,7 +210,7 @@ public class BytecodeAnalysisDemo {
             });
             
             // ウォームアップ: JITコンパイルを促進
-            System.out.println("Warming up... (triggering JIT compilation)");
+            IO.println("Warming up... (triggering JIT compilation)");
             for (int i = 0; i < WARMUP_ITERATIONS; i++) {
                 calc.complexCalculation(i % 100);
             }
@@ -224,10 +224,10 @@ public class BytecodeAnalysisDemo {
                 return sum;
             });
             
-            System.out.printf("Cold execution time: %d μs%n", coldTime / 1000);
-            System.out.printf("Hot execution time:  %d μs%n", hotTime / 1000);
-            System.out.printf("Speedup: %.2fx%n", (double) coldTime / hotTime);
-            System.out.println();
+            IO.println("Cold execution time: %d μs".formatted(coldTime / 1000));
+            IO.println("Hot execution time:  %d μs".formatted(hotTime / 1000));
+            IO.println("Speedup: %.2fx".formatted((double) coldTime / hotTime));
+            IO.println();
         }
         
         private static long measurePerformance(Supplier<Integer> task) {
@@ -281,23 +281,23 @@ public class BytecodeAnalysisDemo {
          * 分岐予測とプロファイルガイド最適化のデモ
          */
         public static void demonstrateBranchPrediction() {
-            System.out.println("=== Branch Prediction and Profile-Guided Optimization ===");
+            IO.println("=== Branch Prediction and Profile-Guided Optimization ===");
             
             SimpleCalculation calc = new SimpleCalculation();
             
             // 予測可能な分岐パターン（偶数が90%）
-            System.out.println("Testing predictable branching (90% even numbers)...");
+            IO.println("Testing predictable branching (90% even numbers)...");
             long predictableTime = measureBranchPerformance(calc, true);
             
             // 予測不可能な分岐パターン（ランダム）
-            System.out.println("Testing unpredictable branching (random)...");
+            IO.println("Testing unpredictable branching (random)...");
             long unpredictableTime = measureBranchPerformance(calc, false);
             
-            System.out.printf("Predictable branching time:   %d μs%n", predictableTime / 1000);
-            System.out.printf("Unpredictable branching time: %d μs%n", unpredictableTime / 1000);
-            System.out.printf("Predictable is %.2fx faster%n", 
-                            (double) unpredictableTime / predictableTime);
-            System.out.println();
+            IO.println("Predictable branching time:   %d μs".formatted(predictableTime / 1000));
+            IO.println("Unpredictable branching time: %d μs".formatted(unpredictableTime / 1000));
+            IO.println("Predictable is %.2fx faster".formatted(
+                            (double) unpredictableTime / predictableTime));
+            IO.println();
         }
         
         private static long measureBranchPerformance(SimpleCalculation calc, boolean predictable) {
@@ -406,7 +406,7 @@ public class BytecodeAnalysisDemo {
         }
         
         public static void demonstrateInlining() {
-            System.out.println("=== Method Inlining Analysis ===");
+            IO.println("=== Method Inlining Analysis ===");
             
             InlineCandidate inlinable = new InlineCandidate();
             NonInlineCandidate nonInlinable = new NonInlineCandidate();
@@ -427,14 +427,14 @@ public class BytecodeAnalysisDemo {
             // インライン化されにくいメソッドのパフォーマンス測定
             long nonInlineTime = measureNonInlinablePerformance(nonInlinable);
             
-            System.out.printf("Inlinable methods time:     %d μs%n", inlineTime / 1000);
-            System.out.printf("Non-inlinable methods time: %d μs%n", nonInlineTime / 1000);
-            System.out.printf("Inlinable is %.2fx faster%n", 
-                            (double) nonInlineTime / inlineTime);
+            IO.println("Inlinable methods time:     %d μs".formatted(inlineTime / 1000));
+            IO.println("Non-inlinable methods time: %d μs".formatted(nonInlineTime / 1000));
+            IO.println("Inlinable is %.2fx faster".formatted(
+                            (double) nonInlineTime / inlineTime));
             
-            System.out.println("\nTo see inlining decisions, run with:");
-            System.out.println("-XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining");
-            System.out.println();
+            IO.println("\nTo see inlining decisions, run with:");
+            IO.println("-XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining");
+            IO.println();
         }
         
         private static long measureInlinablePerformance(InlineCandidate candidate) {
@@ -451,7 +451,7 @@ public class BytecodeAnalysisDemo {
             long end = System.nanoTime();
             
             // 結果を使用（デッドコード除去を防ぐ）
-            if (sum < 0) System.out.println("Unexpected result");
+            if (sum < 0) IO.println("Unexpected result");
             
             return end - start;
         }
@@ -469,7 +469,7 @@ public class BytecodeAnalysisDemo {
             long end = System.nanoTime();
             
             // 結果を使用（デッドコード除去を防ぐ）
-            if (sum < 0) System.out.println("Unexpected result");
+            if (sum < 0) IO.println("Unexpected result");
             
             return (end - start) * 10; // 正規化
         }
@@ -481,43 +481,43 @@ public class BytecodeAnalysisDemo {
     public static class BytecodeInstructionDemo {
         
         public static void demonstrateInstructionTypes() {
-            System.out.println("=== Bytecode Instruction Types Demo ===");
+            IO.println("=== Bytecode Instruction Types Demo ===");
             
             BasicBytecodeDemo demo = new BasicBytecodeDemo();
             
             // 各種バイトコード命令のデモ実行
-            System.out.println("1. Arithmetic Operations:");
+            IO.println("1. Arithmetic Operations:");
             int arithmetic = demo.arithmeticOperations(10, 3);
-            System.out.println("   Result: " + arithmetic);
+            IO.println("   Result: " + arithmetic);
             
-            System.out.println("\n2. Load/Store Operations:");
+            IO.println("\n2. Load/Store Operations:");
             String loadStore = demo.loadStoreOperations("Hello Bytecode");
-            System.out.println("   Result: " + loadStore);
+            IO.println("   Result: " + loadStore);
             
-            System.out.println("\n3. Control Flow:");
-            System.out.println("   controlFlow(5): " + demo.controlFlow(5));
-            System.out.println("   controlFlow(-3): " + demo.controlFlow(-3));
-            System.out.println("   controlFlow(0): " + demo.controlFlow(0));
+            IO.println("\n3. Control Flow:");
+            IO.println("   controlFlow(5): " + demo.controlFlow(5));
+            IO.println("   controlFlow(-3): " + demo.controlFlow(-3));
+            IO.println("   controlFlow(0): " + demo.controlFlow(0));
             
-            System.out.println("\n4. Loop Construct:");
+            IO.println("\n4. Loop Construct:");
             int loopResult = demo.loopConstruct(10);
-            System.out.println("   Sum 0 to 9: " + loopResult);
+            IO.println("   Sum 0 to 9: " + loopResult);
             
-            System.out.println("\n5. Object Operations:");
+            IO.println("\n5. Object Operations:");
             List<String> objects = demo.objectOperations();
-            System.out.println("   Created list: " + objects);
+            IO.println("   Created list: " + objects);
             
-            System.out.println("\n6. Array Operations:");
+            IO.println("\n6. Array Operations:");
             int[] array = demo.arrayOperations(5);
-            System.out.println("   Created array: " + Arrays.toString(array));
+            IO.println("   Created array: " + Arrays.toString(array));
             
-            System.out.println("\n7. Type Conversions:");
+            IO.println("\n7. Type Conversions:");
             demo.typeConversions(42);
             
-            System.out.println("\n8. Method Invocations:");
+            IO.println("\n8. Method Invocations:");
             demo.methodInvocations();
             
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -525,8 +525,8 @@ public class BytecodeAnalysisDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Bytecode Analysis and JIT Compilation Demonstration");
-        System.out.println("===================================================");
+        IO.println("Bytecode Analysis and JIT Compilation Demonstration");
+        IO.println("===================================================");
         
         // バイトコード命令のデモ
         BytecodeInstructionDemo.demonstrateInstructionTypes();
@@ -546,24 +546,24 @@ public class BytecodeAnalysisDemo {
         // インライン化分析
         InliningAnalysisDemo.demonstrateInlining();
         
-        System.out.println("🎯 Key Insights:");
-        System.out.println("✓ Java source code compiles to platform-independent bytecode");
-        System.out.println("✓ JIT compiler optimizes hot methods at runtime");
-        System.out.println("✓ Branch prediction significantly affects performance");
-        System.out.println("✓ Method inlining eliminates call overhead");
-        System.out.println("✓ Understanding bytecode helps write efficient code");
+        IO.println("🎯 Key Insights:");
+        IO.println("✓ Java source code compiles to platform-independent bytecode");
+        IO.println("✓ JIT compiler optimizes hot methods at runtime");
+        IO.println("✓ Branch prediction significantly affects performance");
+        IO.println("✓ Method inlining eliminates call overhead");
+        IO.println("✓ Understanding bytecode helps write efficient code");
         
-        System.out.println("\n⚡ Optimization Tips:");
-        System.out.println("• Keep frequently called methods small for inlining");
-        System.out.println("• Avoid unpredictable branching in hot paths");
-        System.out.println("• Use final classes/methods when inheritance isn't needed");
-        System.out.println("• Profile your application to identify hot spots");
-        System.out.println("• Trust JIT compiler - it's very sophisticated!");
+        IO.println("\n⚡ Optimization Tips:");
+        IO.println("• Keep frequently called methods small for inlining");
+        IO.println("• Avoid unpredictable branching in hot paths");
+        IO.println("• Use final classes/methods when inheritance isn't needed");
+        IO.println("• Profile your application to identify hot spots");
+        IO.println("• Trust JIT compiler - it's very sophisticated!");
         
-        System.out.println("\n🔧 Useful JVM Flags for Analysis:");
-        System.out.println("• -XX:+PrintCompilation : Show JIT compilation events");
-        System.out.println("• -XX:+PrintInlining : Show inlining decisions");
-        System.out.println("• -XX:+PrintAssembly : Show generated assembly code (requires hsdis)");
-        System.out.println("• -XX:CompileThreshold=1000 : Lower compilation threshold");
+        IO.println("\n🔧 Useful JVM Flags for Analysis:");
+        IO.println("• -XX:+PrintCompilation : Show JIT compilation events");
+        IO.println("• -XX:+PrintInlining : Show inlining decisions");
+        IO.println("• -XX:+PrintAssembly : Show generated assembly code (requires hsdis)");
+        IO.println("• -XX:CompileThreshold=1000 : Lower compilation threshold");
     }
 }
