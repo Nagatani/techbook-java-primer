@@ -46,8 +46,8 @@ public class MemoryMappedDemo {
     }
     
     private static void demonstrateAll(Path filePath) throws IOException {
-        System.out.println("=== Memory-Mapped File Demo ===");
-        System.out.println("File: " + filePath.toAbsolutePath());
+        IO.println("=== Memory-Mapped File Demo ===");
+        IO.println("File: " + filePath.toAbsolutePath());
         
         // Create a test file if it doesn't exist
         if (!Files.exists(filePath)) {
@@ -55,7 +55,7 @@ public class MemoryMappedDemo {
         }
         
         long fileSize = Files.size(filePath);
-        System.out.printf("File size: %s%n%n", formatSize(fileSize));
+        IO.println("File size: %s%n".formatted(formatSize(fileSize)));
         
         // Demonstrate various operations
         demonstrateRead(filePath);
@@ -65,7 +65,7 @@ public class MemoryMappedDemo {
     }
     
     private static void demonstrateRead(Path filePath) throws IOException {
-        System.out.println("--- Reading with Memory-Mapped File ---");
+        IO.println("--- Reading with Memory-Mapped File ---");
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(filePath, FileChannel.MapMode.READ_ONLY)) {
             MappedByteBuffer buffer = mmf.mapEntireFile();
@@ -75,24 +75,24 @@ public class MemoryMappedDemo {
             byte[] bytes = new byte[readLength];
             buffer.get(bytes);
             
-            System.out.println("First " + readLength + " bytes:");
-            System.out.println(new String(bytes, StandardCharsets.UTF_8));
-            System.out.println("...\n");
+            IO.println("First " + readLength + " bytes:");
+            IO.println(new String(bytes, StandardCharsets.UTF_8));
+            IO.println("...\n");
             
             // Random access demonstration
             if (buffer.capacity() > 1000) {
                 buffer.position(1000);
                 byte[] middleBytes = new byte[Math.min(50, buffer.remaining())];
                 buffer.get(middleBytes);
-                System.out.println("Bytes from position 1000:");
-                System.out.println(new String(middleBytes, StandardCharsets.UTF_8));
-                System.out.println("...\n");
+                IO.println("Bytes from position 1000:");
+                IO.println(new String(middleBytes, StandardCharsets.UTF_8));
+                IO.println("...\n");
             }
         }
     }
     
     private static void demonstrateWrite(Path filePath) throws IOException {
-        System.out.println("--- Writing with Memory-Mapped File ---");
+        IO.println("--- Writing with Memory-Mapped File ---");
         
         // Create a copy for writing
         Path writePath = filePath.resolveSibling(filePath.getFileName() + ".write");
@@ -111,13 +111,13 @@ public class MemoryMappedDemo {
             // Force changes to disk
             mmf.force();
             
-            System.out.println("Modified file created: " + writePath);
-            System.out.println("Wrote " + bytes.length + " bytes at position 0\n");
+            IO.println("Modified file created: " + writePath);
+            IO.println("Wrote " + bytes.length + " bytes at position 0\n");
         }
     }
     
     private static void demonstrateSearch(Path filePath) throws IOException {
-        System.out.println("--- Pattern Search with Memory-Mapped File ---");
+        IO.println("--- Pattern Search with Memory-Mapped File ---");
         
         String searchPattern = "the";
         byte[] pattern = searchPattern.getBytes(StandardCharsets.UTF_8);
@@ -127,7 +127,7 @@ public class MemoryMappedDemo {
         long duration = System.currentTimeMillis() - startTime;
         
         if (position >= 0) {
-            System.out.printf("Pattern '%s' found at position %d%n", searchPattern, position);
+            IO.println("Pattern '%s' found at position %d".formatted(searchPattern, position));
             
             // Show context
             try (MemoryMappedFile mmf = new MemoryMappedFile(filePath, FileChannel.MapMode.READ_ONLY)) {
@@ -137,32 +137,32 @@ public class MemoryMappedDemo {
                 
                 byte[] context = new byte[(int) contextSize];
                 buffer.get(context);
-                System.out.println("Context: ..." + new String(context, StandardCharsets.UTF_8) + "...");
+                IO.println("Context: ..." + new String(context, StandardCharsets.UTF_8) + "...");
             }
         } else {
-            System.out.printf("Pattern '%s' not found%n", searchPattern);
+            IO.println("Pattern '%s' not found".formatted(searchPattern));
         }
         
-        System.out.printf("Search completed in %dms%n%n", duration);
+        IO.println("Search completed in %dms%n".formatted(duration));
     }
     
     private static void demonstrateLineCount(Path filePath) throws IOException {
-        System.out.println("--- Line Counting with Memory-Mapped File ---");
+        IO.println("--- Line Counting with Memory-Mapped File ---");
         
         long startTime = System.currentTimeMillis();
         long lineCount = MemoryMappedFile.countLines(filePath);
         long duration = System.currentTimeMillis() - startTime;
         
-        System.out.printf("Total lines: %,d%n", lineCount);
-        System.out.printf("Counting completed in %dms%n", duration);
+        IO.println("Total lines: %,d".formatted(lineCount));
+        IO.println("Counting completed in %dms".formatted(duration));
         
         long fileSize = Files.size(filePath);
         double throughput = (double) fileSize / duration * 1000 / (1024 * 1024);
-        System.out.printf("Throughput: %.2f MB/s%n%n", throughput);
+        IO.println("Throughput: %.2f MB/s%n".formatted(throughput));
     }
     
     private static void demonstrateModification(Path filePath) throws IOException {
-        System.out.println("--- In-Place Modification Demo ---");
+        IO.println("--- In-Place Modification Demo ---");
         
         // Create a copy for modification
         Path modPath = filePath.resolveSibling(filePath.getFileName() + ".mod");
@@ -182,12 +182,12 @@ public class MemoryMappedDemo {
             }
             
             mmf.force();
-            System.out.printf("Modified %d characters in file: %s%n%n", modifications, modPath);
+            IO.println("Modified %d characters in file: %s%n".formatted(modifications, modPath));
         }
     }
     
     private static void createTestFile(Path filePath) throws IOException {
-        System.out.println("Creating test file...");
+        IO.println("Creating test file...");
         
         StringBuilder content = new StringBuilder();
         content.append("This is a test file for demonstrating memory-mapped file operations.\n");
@@ -208,8 +208,8 @@ public class MemoryMappedDemo {
         }
         
         Files.writeString(filePath, content.toString());
-        System.out.println("Test file created: " + filePath);
-        System.out.println("Size: " + formatSize(Files.size(filePath)) + "\n");
+        IO.println("Test file created: " + filePath);
+        IO.println("Size: " + formatSize(Files.size(filePath)) + "\n");
     }
     
     private static String formatSize(long bytes) {

@@ -15,11 +15,11 @@ public class SharedMemoryDemo {
     
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Usage: java SharedMemoryDemo <mode>");
-            System.out.println("Modes:");
-            System.out.println("  producer - Write messages to shared memory");
-            System.out.println("  consumer - Read messages from shared memory");
-            System.out.println("  demo     - Run both producer and consumer");
+            IO.println("Usage: java SharedMemoryDemo <mode>");
+            IO.println("Modes:");
+            IO.println("  producer - Write messages to shared memory");
+            IO.println("  consumer - Read messages from shared memory");
+            IO.println("  demo     - Run both producer and consumer");
             System.exit(1);
         }
         
@@ -46,11 +46,11 @@ public class SharedMemoryDemo {
     }
     
     private static void runDemo() throws Exception {
-        System.out.println("=== Shared Memory Demo ===");
-        System.out.println("Running producer and consumer in same process\n");
+        IO.println("=== Shared Memory Demo ===");
+        IO.println("Running producer and consumer in same process\n");
         
         Path sharedFile = Files.createTempFile("shared-memory", ".dat");
-        System.out.println("Shared memory file: " + sharedFile);
+        IO.println("Shared memory file: " + sharedFile);
         
         // Create shared memory queue
         int messageSize = 256;
@@ -67,7 +67,7 @@ public class SharedMemoryDemo {
                 startLatch.countDown();
                 startLatch.await(); // Wait for consumer to start
                 
-                System.out.println("\n[Producer] Started");
+                IO.println("\n[Producer] Started");
                 
                 for (int i = 1; running.get() && i <= 20; i++) {
                     String message = String.format("Message #%d from producer at %tT", 
@@ -76,15 +76,15 @@ public class SharedMemoryDemo {
                     byte[] data = message.getBytes(StandardCharsets.UTF_8);
                     
                     while (!queue.enqueue(data)) {
-                        System.out.println("[Producer] Queue full, waiting...");
+                        IO.println("[Producer] Queue full, waiting...");
                         Thread.sleep(100);
                     }
                     
-                    System.out.println("[Producer] Sent: " + message);
+                    IO.println("[Producer] Sent: " + message);
                     Thread.sleep(500); // Simulate work
                 }
                 
-                System.out.println("[Producer] Finished");
+                IO.println("[Producer] Finished");
                 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -99,7 +99,7 @@ public class SharedMemoryDemo {
                 startLatch.countDown();
                 startLatch.await(); // Wait for producer to start
                 
-                System.out.println("[Consumer] Started");
+                IO.println("[Consumer] Started");
                 
                 int emptyCount = 0;
                 while (running.get() || emptyCount < 10) {
@@ -107,7 +107,7 @@ public class SharedMemoryDemo {
                     
                     if (data != null) {
                         String message = new String(data, StandardCharsets.UTF_8);
-                        System.out.println("[Consumer] Received: " + message);
+                        IO.println("[Consumer] Received: " + message);
                         emptyCount = 0;
                         Thread.sleep(750); // Simulate slow processing
                     } else {
@@ -116,7 +116,7 @@ public class SharedMemoryDemo {
                     }
                 }
                 
-                System.out.println("[Consumer] Finished");
+                IO.println("[Consumer] Finished");
                 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -136,11 +136,11 @@ public class SharedMemoryDemo {
         
         // Cleanup
         Files.deleteIfExists(sharedFile);
-        System.out.println("\nDemo completed");
+        IO.println("\nDemo completed");
     }
     
     private static void runProducer() throws Exception {
-        System.out.println("=== Shared Memory Producer ===");
+        IO.println("=== Shared Memory Producer ===");
         
         Path sharedFile = Paths.get("shared-queue.dat");
         int messageSize = 256;
@@ -149,8 +149,8 @@ public class SharedMemoryDemo {
         try (SharedMemoryFile.SharedMemoryQueue queue = 
                 new SharedMemoryFile.SharedMemoryQueue(sharedFile, messageSize, queueCapacity)) {
             
-            System.out.println("Producer started. Press Ctrl+C to stop.");
-            System.out.println("Shared file: " + sharedFile.toAbsolutePath());
+            IO.println("Producer started. Press Ctrl+C to stop.");
+            IO.println("Shared file: " + sharedFile.toAbsolutePath());
             
             int messageCount = 0;
             while (true) {
@@ -162,9 +162,9 @@ public class SharedMemoryDemo {
                 byte[] data = message.getBytes(StandardCharsets.UTF_8);
                 
                 if (queue.enqueue(data)) {
-                    System.out.println("Sent: " + message);
+                    IO.println("Sent: " + message);
                 } else {
-                    System.out.println("Queue full, waiting...");
+                    IO.println("Queue full, waiting...");
                     Thread.sleep(1000);
                 }
                 
@@ -174,7 +174,7 @@ public class SharedMemoryDemo {
     }
     
     private static void runConsumer() throws Exception {
-        System.out.println("=== Shared Memory Consumer ===");
+        IO.println("=== Shared Memory Consumer ===");
         
         Path sharedFile = Paths.get("shared-queue.dat");
         
@@ -190,15 +190,15 @@ public class SharedMemoryDemo {
         try (SharedMemoryFile.SharedMemoryQueue queue = 
                 new SharedMemoryFile.SharedMemoryQueue(sharedFile, messageSize, queueCapacity)) {
             
-            System.out.println("Consumer started. Press Ctrl+C to stop.");
-            System.out.println("Shared file: " + sharedFile.toAbsolutePath());
+            IO.println("Consumer started. Press Ctrl+C to stop.");
+            IO.println("Shared file: " + sharedFile.toAbsolutePath());
             
             while (true) {
                 byte[] data = queue.dequeue();
                 
                 if (data != null) {
                     String message = new String(data, StandardCharsets.UTF_8);
-                    System.out.println("Received: " + message);
+                    IO.println("Received: " + message);
                 } else {
                     // No messages available
                     Thread.sleep(100);

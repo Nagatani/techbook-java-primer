@@ -26,10 +26,10 @@ public class ReactiveFileDemo {
         }
         
         try {
-            System.out.println("=== Reactive File Processing Demo ===");
-            System.out.printf("File: %s%n", filePath.toAbsolutePath());
-            System.out.printf("Size: %s%n", formatSize(Files.size(filePath)));
-            System.out.printf("Buffer size: %d bytes%n%n", bufferSize);
+            IO.println("=== Reactive File Processing Demo ===");
+            IO.println("File: %s".formatted(filePath.toAbsolutePath()));
+            IO.println("Size: %s".formatted(formatSize(Files.size(filePath))));
+            IO.println("Buffer size: %d bytes%n".formatted(bufferSize));
             
             // Demo 1: Simple reactive reading
             demonstrateSimpleReading(filePath, bufferSize);
@@ -50,7 +50,7 @@ public class ReactiveFileDemo {
     
     private static void demonstrateSimpleReading(Path filePath, int bufferSize) 
             throws InterruptedException {
-        System.out.println("--- Demo 1: Simple Reactive Reading ---");
+        IO.println("--- Demo 1: Simple Reactive Reading ---");
         
         CountDownLatch latch = new CountDownLatch(1);
         AtomicLong totalBytes = new AtomicLong(0);
@@ -64,7 +64,7 @@ public class ReactiveFileDemo {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 this.subscription = subscription;
-                System.out.println("Subscribed to file reader");
+                IO.println("Subscribed to file reader");
                 subscription.request(Long.MAX_VALUE); // Request all data
             }
             
@@ -75,8 +75,8 @@ public class ReactiveFileDemo {
                 int chunks = chunkCount.incrementAndGet();
                 
                 if (chunks % 100 == 0) {
-                    System.out.printf("Progress: %d chunks, %s total%n", 
-                        chunks, formatSize(totalBytes.get()));
+                    IO.println("Progress: %d chunks, %s total".formatted(
+                        chunks, formatSize(totalBytes.get())));
                 }
             }
             
@@ -88,8 +88,8 @@ public class ReactiveFileDemo {
             
             @Override
             public void onComplete() {
-                System.out.printf("Complete: %d chunks, %s total%n%n", 
-                    chunkCount.get(), formatSize(totalBytes.get()));
+                IO.println("Complete: %d chunks, %s total%n".formatted(
+                    chunkCount.get(), formatSize(totalBytes.get())));
                 latch.countDown();
             }
         });
@@ -99,7 +99,7 @@ public class ReactiveFileDemo {
     
     private static void demonstrateBackpressure(Path filePath, int bufferSize) 
             throws InterruptedException {
-        System.out.println("--- Demo 2: Backpressure Handling ---");
+        IO.println("--- Demo 2: Backpressure Handling ---");
         
         CountDownLatch latch = new CountDownLatch(1);
         AtomicInteger processedChunks = new AtomicInteger(0);
@@ -114,7 +114,7 @@ public class ReactiveFileDemo {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 this.subscription = subscription;
-                System.out.println("Subscribed with backpressure control");
+                IO.println("Subscribed with backpressure control");
                 subscription.request(maxBuffer); // Request limited amount
             }
             
@@ -129,8 +129,8 @@ public class ReactiveFileDemo {
                         int processed = processedChunks.incrementAndGet();
                         
                         if (processed % 10 == 0) {
-                            System.out.printf("Processed %d chunks (buffer: %d/%d)%n", 
-                                processed, inProgress.get(), maxBuffer);
+                            IO.println("Processed %d chunks (buffer: %d/%d)".formatted(
+                                processed, inProgress.get(), maxBuffer));
                         }
                         
                         // Request more when buffer has space
@@ -160,7 +160,7 @@ public class ReactiveFileDemo {
                     }
                 }
                 
-                System.out.printf("Complete: Processed %d chunks%n%n", processedChunks.get());
+                IO.println("Complete: Processed %d chunks%n".formatted(processedChunks.get()));
                 latch.countDown();
             }
         });
@@ -170,7 +170,7 @@ public class ReactiveFileDemo {
     
     private static void demonstrateLineProcessing(Path filePath) 
             throws InterruptedException {
-        System.out.println("--- Demo 3: Line-by-Line Processing ---");
+        IO.println("--- Demo 3: Line-by-Line Processing ---");
         
         CountDownLatch latch = new CountDownLatch(1);
         AtomicInteger lineCount = new AtomicInteger(0);
@@ -201,7 +201,7 @@ public class ReactiveFileDemo {
                 
                 // Show first few lines
                 if (processedLines <= 5) {
-                    System.out.println("Line " + processedLines + ": " + 
+                    IO.println("Line " + processedLines + ": " + 
                         line.substring(0, Math.min(50, line.length())) + "...");
                 }
                 
@@ -219,9 +219,9 @@ public class ReactiveFileDemo {
             
             @Override
             public void onComplete() {
-                System.out.printf("Processed %d lines, average length: %.1f%n%n", 
+                IO.println("Processed %d lines, average length: %.1f%n".formatted(
                     lineCount.get(), 
-                    lineCount.get() > 0 ? (double) totalLength.get() / lineCount.get() : 0);
+                    lineCount.get() > 0 ? (double) totalLength.get() / lineCount.get() : 0));
                 latch.countDown();
             }
         });
@@ -237,11 +237,11 @@ public class ReactiveFileDemo {
     
     private static void demonstrateTransformAndAggregate(Path filePath) 
             throws InterruptedException, IOException {
-        System.out.println("--- Demo 4: Transform and Aggregate ---");
+        IO.println("--- Demo 4: Transform and Aggregate ---");
         
         // Create a test file if needed
         if (Files.size(filePath) > 1_000_000) {
-            System.out.println("File too large for aggregation demo, skipping...\n");
+            IO.println("File too large for aggregation demo, skipping...\n");
             return;
         }
         
@@ -262,7 +262,7 @@ public class ReactiveFileDemo {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 this.subscription = subscription;
-                System.out.println("Starting word count...");
+                IO.println("Starting word count...");
                 subscription.request(Long.MAX_VALUE);
             }
             
@@ -272,8 +272,8 @@ public class ReactiveFileDemo {
                 chunkCount++;
                 
                 if (chunkCount % 10 == 0) {
-                    System.out.printf("Chunks processed: %d, words so far: %d%n", 
-                        chunkCount, totalWords);
+                    IO.println("Chunks processed: %d, words so far: %d".formatted(
+                        chunkCount, totalWords));
                 }
             }
             
@@ -285,8 +285,8 @@ public class ReactiveFileDemo {
             
             @Override
             public void onComplete() {
-                System.out.printf("Total word count: %d (from %d chunks)%n%n", 
-                    totalWords, chunkCount);
+                IO.println("Total word count: %d (from %d chunks)%n".formatted(
+                    totalWords, chunkCount));
                 latch.countDown();
             }
         });

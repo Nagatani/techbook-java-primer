@@ -39,20 +39,20 @@ public class AsyncFileProcessorDemo {
     }
     
     private static void processFiles(List<Path> files) throws Exception {
-        System.out.println("=== Async File Processing Demo ===");
-        System.out.println("Processing " + files.size() + " files...\n");
+        IO.println("=== Async File Processing Demo ===");
+        IO.println("Processing " + files.size() + " files...\n");
         
         ParallelFileProcessor processor = new ParallelFileProcessor();
         
         try {
             // Example 1: Read all files in parallel
-            System.out.println("1. Reading files in parallel:");
+            IO.println("1. Reading files in parallel:");
             long startTime = System.currentTimeMillis();
             
             CompletableFuture<Map<Path, String>> readFuture = processor.processFiles(files, file -> {
                 try {
                     String content = Files.readString(file);
-                    System.out.printf("  Read %s (%d bytes)%n", file.getFileName(), content.length());
+                    IO.println("  Read %s (%d bytes)".formatted(file.getFileName(), content.length()));
                     return content;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -61,19 +61,19 @@ public class AsyncFileProcessorDemo {
             
             Map<Path, String> contents = readFuture.get();
             long readTime = System.currentTimeMillis() - startTime;
-            System.out.printf("Read %d files in %dms%n%n", contents.size(), readTime);
+            IO.println("Read %d files in %dms%n".formatted(contents.size(), readTime));
             
             // Example 2: Calculate statistics
-            System.out.println("2. Calculating file statistics:");
+            IO.println("2. Calculating file statistics:");
             CompletableFuture<ParallelFileProcessor.FileStatistics> statsFuture = 
                 processor.calculateStatistics(files);
             
             ParallelFileProcessor.FileStatistics stats = statsFuture.get();
-            System.out.println("Statistics: " + stats);
-            System.out.println();
+            IO.println("Statistics: " + stats);
+            IO.println();
             
             // Example 3: Process with timeout
-            System.out.println("3. Processing with timeout (5 seconds):");
+            IO.println("3. Processing with timeout (5 seconds):");
             CompletableFuture<Map<Path, Integer>> timeoutFuture = 
                 processor.processFilesWithTimeout(files, file -> {
                     try {
@@ -87,7 +87,7 @@ public class AsyncFileProcessorDemo {
             
             Map<Path, Integer> lineCounts = timeoutFuture.get();
             lineCounts.forEach((file, count) -> 
-                System.out.printf("  %s: %d lines%n", file.getFileName(), count)
+                IO.println("  %s: %d lines".formatted(file.getFileName(), count))
             );
             
         } finally {
@@ -96,9 +96,9 @@ public class AsyncFileProcessorDemo {
     }
     
     private static void processDirectory(Path directory, String pattern) throws Exception {
-        System.out.println("=== Directory Processing Demo ===");
-        System.out.printf("Directory: %s%n", directory);
-        System.out.printf("Pattern: %s%n%n", pattern);
+        IO.println("=== Directory Processing Demo ===");
+        IO.println("Directory: %s".formatted(directory));
+        IO.println("Pattern: %s%n".formatted(pattern));
         
         ParallelFileProcessor processor = new ParallelFileProcessor();
         
@@ -118,14 +118,14 @@ public class AsyncFileProcessorDemo {
             
             Map<Path, String> results = future.get();
             
-            System.out.printf("Found %d files:%n", results.size());
+            IO.println("Found %d files:".formatted(results.size()));
             results.forEach((file, info) -> 
-                System.out.printf("  %s - %s%n", file.getFileName(), info)
+                IO.println("  %s - %s".formatted(file.getFileName(), info))
             );
             
             // Aggregate contents
             if (!results.isEmpty()) {
-                System.out.println("\nAggregating file contents...");
+                IO.println("\nAggregating file contents...");
                 List<Path> matchingFiles = new ArrayList<>(results.keySet());
                 
                 CompletableFuture<String> aggregateFuture = 
@@ -135,7 +135,7 @@ public class AsyncFileProcessorDemo {
                     );
                 
                 String aggregated = aggregateFuture.get();
-                System.out.printf("Aggregated content length: %d characters%n", aggregated.length());
+                IO.println("Aggregated content length: %d characters".formatted(aggregated.length()));
             }
             
         } finally {

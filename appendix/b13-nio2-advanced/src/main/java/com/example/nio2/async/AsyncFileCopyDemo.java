@@ -33,12 +33,12 @@ public class AsyncFileCopyDemo {
     }
     
     private static void demonstrateAsyncCopy(Path source, Path destination) throws Exception {
-        System.out.println("=== Async File Copy Demo ===");
-        System.out.printf("Source: %s%n", source.toAbsolutePath());
-        System.out.printf("Destination: %s%n", destination.toAbsolutePath());
+        IO.println("=== Async File Copy Demo ===");
+        IO.println("Source: %s".formatted(source.toAbsolutePath()));
+        IO.println("Destination: %s".formatted(destination.toAbsolutePath()));
         
         long fileSize = Files.size(source);
-        System.out.printf("File size: %s%n%n", formatSize(fileSize));
+        IO.println("File size: %s%n".formatted(formatSize(fileSize)));
         
         AsyncFileIO asyncIO = new AsyncFileIO();
         
@@ -57,7 +57,7 @@ public class AsyncFileCopyDemo {
             @Override
             public void onComplete(long totalBytes) {
                 printProgress(totalBytes, totalBytes, 1.0);
-                System.out.println("\nCopy completed successfully!");
+                IO.println("\nCopy completed successfully!");
             }
         };
         
@@ -70,14 +70,14 @@ public class AsyncFileCopyDemo {
         long duration = System.currentTimeMillis() - startTime;
         
         double throughput = (double) bytesCopied / duration * 1000 / (1024 * 1024); // MB/s
-        System.out.printf("Copied %s in %dms (%.2f MB/s)%n", 
-            formatSize(bytesCopied), duration, throughput);
+        IO.println("Copied %s in %dms (%.2f MB/s)".formatted(
+            formatSize(bytesCopied), duration, throughput));
         
         // Verify copy
         if (Files.exists(destination)) {
             long destSize = Files.size(destination);
             if (destSize == fileSize) {
-                System.out.println("Verification: SUCCESS - File sizes match");
+                IO.println("Verification: SUCCESS - File sizes match");
             } else {
                 System.err.printf("Verification: FAILED - Size mismatch (expected %d, got %d)%n", 
                     fileSize, destSize);
@@ -86,7 +86,7 @@ public class AsyncFileCopyDemo {
     }
     
     private static void demonstrateAsyncReadWrite() throws Exception {
-        System.out.println("\n=== Async Read/Write Demo ===");
+        IO.println("\n=== Async Read/Write Demo ===");
         
         AsyncFileIO asyncIO = new AsyncFileIO();
         Path tempFile = Files.createTempFile("async-demo", ".txt");
@@ -97,35 +97,35 @@ public class AsyncFileCopyDemo {
                            "Multiple lines of text are being written.\n" +
                            "This demonstrates non-blocking file operations.";
             
-            System.out.println("Writing content asynchronously...");
+            IO.println("Writing content asynchronously...");
             CompletableFuture<Void> writeFuture = asyncIO.writeFileAsync(tempFile, content);
             writeFuture.get(); // Wait for write to complete
-            System.out.println("Write completed");
+            IO.println("Write completed");
             
             // Read content asynchronously
-            System.out.println("Reading content asynchronously...");
+            IO.println("Reading content asynchronously...");
             CompletableFuture<String> readFuture = asyncIO.readFileAsync(tempFile);
             String readContent = readFuture.get();
-            System.out.println("Read completed");
+            IO.println("Read completed");
             
             // Verify content
             if (content.equals(readContent)) {
-                System.out.println("Verification: SUCCESS - Content matches");
+                IO.println("Verification: SUCCESS - Content matches");
             } else {
                 System.err.println("Verification: FAILED - Content mismatch");
             }
             
             // Append content asynchronously
             String appendContent = "\nThis line was appended asynchronously.";
-            System.out.println("Appending content asynchronously...");
+            IO.println("Appending content asynchronously...");
             CompletableFuture<Void> appendFuture = asyncIO.appendFileAsync(tempFile, appendContent);
             appendFuture.get();
-            System.out.println("Append completed");
+            IO.println("Append completed");
             
             // Read again to verify append
             String finalContent = asyncIO.readFileAsync(tempFile).get();
             if (finalContent.equals(content + appendContent)) {
-                System.out.println("Append verification: SUCCESS");
+                IO.println("Append verification: SUCCESS");
             } else {
                 System.err.println("Append verification: FAILED");
             }
@@ -151,12 +151,12 @@ public class AsyncFileCopyDemo {
         }
         bar.append("]");
         
-        System.out.printf("\r%s %3d%% (%s / %s)", 
+        IO.print("\r%s %3d%% (%s / %s)".formatted(
             bar.toString(), 
             (int) (percentage * 100),
             formatSize(current),
             formatSize(total)
-        );
+        ));
     }
     
     private static String formatSize(long bytes) {

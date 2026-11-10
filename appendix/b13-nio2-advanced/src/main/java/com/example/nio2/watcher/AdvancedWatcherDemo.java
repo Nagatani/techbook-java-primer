@@ -37,10 +37,10 @@ public class AdvancedWatcherDemo {
     }
     
     private static void demonstrateAdvancedWatcher(Path directory) throws IOException, InterruptedException {
-        System.out.println("=== Advanced File Watcher Demo ===");
-        System.out.println("Watching directory: " + directory.toAbsolutePath());
-        System.out.println("Features: Debouncing, File type processors, Statistics");
-        System.out.println("Press Ctrl+C to stop...\n");
+        IO.println("=== Advanced File Watcher Demo ===");
+        IO.println("Watching directory: " + directory.toAbsolutePath());
+        IO.println("Features: Debouncing, File type processors, Statistics");
+        IO.println("Press Ctrl+C to stop...\n");
         
         // Statistics tracking
         AtomicInteger totalEvents = new AtomicInteger();
@@ -58,12 +58,12 @@ public class AdvancedWatcherDemo {
                 public void process(Path file, WatchEvent.Kind<?> eventType) {
                     logEvents.incrementAndGet();
                     totalEvents.incrementAndGet();
-                    System.out.printf("[%s] LOG FILE %s: %s (size: %s)%n",
+                    IO.println("[%s] LOG FILE %s: %s (size: %s)".formatted(
                         getCurrentTime(),
                         getEventName(eventType),
                         file.getFileName(),
                         getFileSize(file)
-                    );
+                    ));
                     
                     // Simulate log parsing
                     if (eventType == StandardWatchEventKinds.ENTRY_MODIFY) {
@@ -77,12 +77,12 @@ public class AdvancedWatcherDemo {
                 public void process(Path file, WatchEvent.Kind<?> eventType) {
                     csvEvents.incrementAndGet();
                     totalEvents.incrementAndGet();
-                    System.out.printf("[%s] CSV FILE %s: %s (rows: ~%d)%n",
+                    IO.println("[%s] CSV FILE %s: %s (rows: ~%d)".formatted(
                         getCurrentTime(),
                         getEventName(eventType),
                         file.getFileName(),
                         estimateCsvRows(file)
-                    );
+                    ));
                 }
             });
             
@@ -91,11 +91,11 @@ public class AdvancedWatcherDemo {
                 public void process(Path file, WatchEvent.Kind<?> eventType) {
                     jsonEvents.incrementAndGet();
                     totalEvents.incrementAndGet();
-                    System.out.printf("[%s] JSON FILE %s: %s%n",
+                    IO.println("[%s] JSON FILE %s: %s".formatted(
                         getCurrentTime(),
                         getEventName(eventType),
                         file.getFileName()
-                    );
+                    ));
                 }
             });
             
@@ -104,7 +104,7 @@ public class AdvancedWatcherDemo {
                 String filename = path.getFileName().toString();
                 if (!filename.endsWith(".log") && !filename.endsWith(".csv") && !filename.endsWith(".json")) {
                     totalEvents.incrementAndGet();
-                    System.out.printf("[%s] OTHER FILE: %s%n", getCurrentTime(), filename);
+                    IO.println("[%s] OTHER FILE: %s".formatted(getCurrentTime(), filename));
                 }
             });
             
@@ -135,7 +135,7 @@ public class AdvancedWatcherDemo {
         try {
             // Simulate reading last few lines
             Thread.sleep(100);
-            System.out.printf("  -> Parsed log file: Found 3 ERROR, 5 WARN, 12 INFO messages%n");
+            IO.println("  -> Parsed log file: Found 3 ERROR, 5 WARN, 12 INFO messages");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -174,11 +174,11 @@ public class AdvancedWatcherDemo {
     
     private static void printStatistics(AtomicInteger total, AtomicInteger logs, 
                                        AtomicInteger csvs, AtomicInteger jsons) {
-        System.out.println("\n--- Statistics ---");
-        System.out.printf("Total events: %d%n", total.get());
-        System.out.printf("Log files: %d%n", logs.get());
-        System.out.printf("CSV files: %d%n", csvs.get());
-        System.out.printf("JSON files: %d%n", jsons.get());
-        System.out.println("------------------\n");
+        IO.println("\n--- Statistics ---");
+        IO.println("Total events: %d".formatted(total.get()));
+        IO.println("Log files: %d".formatted(logs.get()));
+        IO.println("CSV files: %d".formatted(csvs.get()));
+        IO.println("JSON files: %d".formatted(jsons.get()));
+        IO.println("------------------\n");
     }
 }

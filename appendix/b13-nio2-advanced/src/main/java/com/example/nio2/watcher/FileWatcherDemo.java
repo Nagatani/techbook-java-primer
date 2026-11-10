@@ -37,10 +37,10 @@ public class FileWatcherDemo {
     }
     
     private static void demonstrateBasicWatcher(Path directory, boolean recursive) throws IOException, InterruptedException {
-        System.out.println("=== Basic File Watcher Demo ===");
-        System.out.println("Watching directory: " + directory.toAbsolutePath());
-        System.out.println("Recursive: " + recursive);
-        System.out.println("Press Ctrl+C to stop...\n");
+        IO.println("=== Basic File Watcher Demo ===");
+        IO.println("Watching directory: " + directory.toAbsolutePath());
+        IO.println("Recursive: " + recursive);
+        IO.println("Press Ctrl+C to stop...\n");
         
         try (CustomFileWatcher watcher = new CustomFileWatcher()) {
             watcher.watchDirectory(directory, recursive);
@@ -65,12 +65,12 @@ public class FileWatcherDemo {
             String eventType = formatEventType(kind);
             String fileType = getFileType(path);
             
-            System.out.printf("[%s] %s %s: %s%n", 
+            IO.println("[%s] %s %s: %s".formatted(
                 time, 
                 eventType, 
                 fileType,
                 path.toAbsolutePath()
-            );
+            ));
         }
         
         private String formatEventType(WatchEvent.Kind<?> kind) {
