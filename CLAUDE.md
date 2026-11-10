@@ -78,6 +78,16 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
    - GitHub側のコードには番号を付けない。コンパイルできる全文は`chapters/chapterXX-code/`に置く
 
+9. **標準入出力はIOクラス（2026-11-10〜）**: Javaのコードの標準入出力は、Java 25の`java.lang.IO`（`IO.println`・`IO.print`・`IO.readln`）で書く
+   - 本書で使う旨は第1章「画面に文字列を出力する方法」とコラム「System.out.printlnとIOクラス」に書いた。本書が使うJDKはOpenJDK 25
+   - `System.out.printf(書式, 値)`は`IO.println("書式".formatted(値))`（末尾の`%n`は取る）にする。キーボードからの入力は`Scanner(System.in)`ではなく、`IO.readln(メッセージ)`で1行を読み`Integer.parseInt`などで変換する。入力の終わりでは`IO.readln`が`null`を返す
+   - `System.err`（IOクラスにない）と、出力先を`PrintStream`として受け渡す処理は`System`クラスのまま。文字列やファイルを区切って読む`Scanner`は使ってよい
+   - `IO.println`の引数は`Object`なので、`char[]`を渡すと中身ではなく参照が出る（`new String(配列)`にする）
+   - `IO::println`は静的メソッド参照になる（`System.out::println`は特定のインスタンスのメソッド参照）。第11章のメソッド参照の表はこれに合わせてある
+   - 付録・演習のコードも移行済み。`IO.readln`は最初に使った`System.in`の読み取り器を持ち続けるため、テストで`System.setIn`を何度も差し替える処理とは組み合わせない（いまの演習・付録にはない）
+   - `IO`という名前のクラスを自作した例（付録B.02のIOモナド）では、自作のクラスが優先される。その中で標準入出力を使うときは`java.lang.IO`と書く
+   - 付録Aの環境構築手順（JDK 21.0.6のインストール）は未更新（`docs/analysis/issues-tracking.md`のIssue #015）
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
