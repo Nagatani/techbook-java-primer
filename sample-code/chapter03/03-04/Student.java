@@ -10,6 +10,6 @@ public class Student {
     }
     
     public void printInfo() {  // ③
-        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+        IO.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
 }

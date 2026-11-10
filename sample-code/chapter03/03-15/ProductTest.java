@@ -4,7 +4,7 @@ public class ProductTest {
         Product product = new Product("P001", "ノートPC", 98000);
         
         product.showInfo();
-        System.out.println("---");
+        IO.println("---");
         
         product.addStock(10);
         product.showInfo();

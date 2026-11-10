@@ -9,7 +9,7 @@ public class RectangleExample {
         
         // メソッドの戻り値を使用
         double area = rect.calculateArea();
-        System.out.println("面積は" + area + "です");
+        IO.println("面積は" + area + "です");
         
         // 引数付きメソッドの呼び出し
         rect.resize(2.0);

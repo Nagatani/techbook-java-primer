@@ -23,26 +23,26 @@ public class Product {
     public void updatePrice(double newPrice) {
         if (newPrice >= 0) {
             price = newPrice;
-            System.out.println("価格を更新しました: " + price + "円");
+            IO.println("価格を更新しました: " + price + "円");
         } else {
-            System.out.println("エラー: 価格は0円以上にしてください");
+            IO.println("エラー: 価格は0円以上にしてください");
         }
     }
     
     public void addStock(int amount) {
         if (amount > 0) {
             stock += amount;
-            System.out.println("在庫を追加しました。現在の在庫: " + stock);
+            IO.println("在庫を追加しました。現在の在庫: " + stock);
         }
     }
     
     public boolean sell(int amount) {
         if (amount > 0 && stock >= amount) {
             stock -= amount;
-            System.out.println("販売しました。残り在庫: " + stock);
+            IO.println("販売しました。残り在庫: " + stock);
             return true;
         }
-        System.out.println("在庫が不足しています");
+        IO.println("在庫が不足しています");
         return false;
     }
 }

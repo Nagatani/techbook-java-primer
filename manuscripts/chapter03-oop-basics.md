@@ -372,7 +372,7 @@ public class ProceduralExample {
     }
     
     public static void printStudent(String name, int age, double gpa) {  // ③
-        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+        IO.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
 }
 ```
@@ -411,7 +411,7 @@ public class Student {
     }
     
     public void printInfo() {  // ③
-        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+        IO.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
 }
 
@@ -477,13 +477,13 @@ public class BankAccount {
 public class BankAccountTest {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();
-        System.out.println("初期残高: " + account.getBalance() + "円");
+        IO.println("初期残高: " + account.getBalance() + "円");
         
         account.deposit(10000);
-        System.out.println("10000円入金後: " + account.getBalance() + "円");
+        IO.println("10000円入金後: " + account.getBalance() + "円");
         
         account.deposit(-5000);  // 負の値は無視される
-        System.out.println("負の値入金後: " + account.getBalance() + "円");
+        IO.println("負の値入金後: " + account.getBalance() + "円");
     }
 }
 ```
@@ -528,7 +528,7 @@ public class Product {
     protected int price;         // ①
     
     public void displayInfo() {  // ②
-        System.out.println("商品名: " + name + ", 価格: " + price + "円");
+        IO.println("商品名: " + name + ", 価格: " + price + "円");
     }
 }
 
@@ -538,7 +538,7 @@ public class Book extends Product {  // ③
     
     public void displayBookInfo() {  // ⑤
         displayInfo();  // ②を呼び出し
-        System.out.println("著者: " + author + ", ISBN: " + isbn);
+        IO.println("著者: " + author + ", ISBN: " + isbn);
     }
 }
 ```
@@ -603,7 +603,7 @@ public class CreditCardPayment implements PaymentMethod {  // ②
     private String cardNumber;
     
     public void processPayment(double amount) {  // ③
-        System.out.println("クレジットカードで" + amount + "円を決済しました");
+        IO.println("クレジットカードで" + amount + "円を決済しました");
     }
 }
 
@@ -611,7 +611,7 @@ public class BankTransferPayment implements PaymentMethod {  // ②
     private String accountNumber;
     
     public void processPayment(double amount) {  // ④
-        System.out.println("銀行振込で" + amount + "円を送金しました");
+        IO.println("銀行振込で" + amount + "円を送金しました");
     }
 }
 ```
@@ -718,10 +718,10 @@ public class DefaultValueDemo {
     String stringValue;   // null
     
     public void showDefaults() {
-        System.out.println("int: " + intValue);        // 0
-        System.out.println("double: " + doubleValue);  // 0.0
-        System.out.println("boolean: " + boolValue);   // false
-        System.out.println("String: " + stringValue);  // null
+        IO.println("int: " + intValue);        // 0
+        IO.println("double: " + doubleValue);  // 0.0
+        IO.println("boolean: " + boolValue);   // false
+        IO.println("String: " + stringValue);  // null
     }
     
     public static void main(String[] args) {
@@ -779,16 +779,16 @@ public class Product {
     public void addStock(int quantity) {
         if (quantity > 0) {
             stock += quantity;  // 在庫数を更新
-            System.out.println(quantity + "個入荷しました");
+            IO.println(quantity + "個入荷しました");
         }
     }
     
     // フィールドの値を表示
     public void showInfo() {
-        System.out.println("商品ID: " + productId);
-        System.out.println("商品名: " + name);
-        System.out.println("価格: ¥" + price);
-        System.out.println("在庫数: " + stock + "個");
+        IO.println("商品ID: " + productId);
+        IO.println("商品名: " + name);
+        IO.println("価格: ¥" + price);
+        IO.println("在庫数: " + stock + "個");
     }
 }
 ```
@@ -804,7 +804,7 @@ public class ProductTest {
         Product product = new Product("P001", "ノートPC", 98000);
         
         product.showInfo();
-        System.out.println("---");
+        IO.println("---");
         
         product.addStock(10);
         product.showInfo();
@@ -883,10 +883,10 @@ public class Rectangle {
     
     // 戻り値がないメソッド（void）
     public void displayInfo() {
-        System.out.println("幅: " + width);
-        System.out.println("高さ: " + height);
-        System.out.println("面積: " + calculateArea());
-        System.out.println("周囲: " + calculatePerimeter());
+        IO.println("幅: " + width);
+        IO.println("高さ: " + height);
+        IO.println("面積: " + calculateArea());
+        IO.println("周囲: " + calculatePerimeter());
     }
     
     // 引数を受け取るメソッド
@@ -894,7 +894,7 @@ public class Rectangle {
         if (factor > 0) {
             width *= factor;
             height *= factor;
-            System.out.println(factor + "倍にリサイズしました");
+            IO.println(factor + "倍にリサイズしました");
         }
     }
 }
@@ -910,7 +910,7 @@ public class RectangleExample {
         
         // メソッドの戻り値を使用
         double area = rect.calculateArea();
-        System.out.println("面積は" + area + "です");
+        IO.println("面積は" + area + "です");
         
         // 引数付きメソッドの呼び出し
         rect.resize(2.0);
@@ -942,7 +942,7 @@ public class RectangleExample {
 
 ```java
 public void printMessage() {
-    System.out.println("こんにちは！");
+    IO.println("こんにちは！");
 }
 ```
 
@@ -966,7 +966,7 @@ public int add(int a, int b) {
 
 ```java
 public void showTime() {
-    System.out.println("現在時刻: " + new Date());
+    IO.println("現在時刻: " + new Date());
 }
 ```
 
@@ -1019,7 +1019,7 @@ public class Person {
         if (age >= 0 && age <= 150) {
             this.age = age;
         } else {
-            System.out.println("無効な年齢です");
+            IO.println("無効な年齢です");
         }
     }
 }
@@ -1040,8 +1040,8 @@ public class PersonTest {
         person.setAge(25);
         
         // getterを使ってデータを取得
-        System.out.println("名前: " + person.getName());
-        System.out.println("年齢: " + person.getAge() + "歳");
+        IO.println("名前: " + person.getName());
+        IO.println("年齢: " + person.getAge() + "歳");
         
         // 無効な年齢を設定してみる
         person.setAge(200);
@@ -1091,9 +1091,9 @@ public class Book {
     }
     
     public void displayInfo() {
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("ページ数: " + pages);
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("ページ数: " + pages);
     }
 }
 ```
@@ -1110,7 +1110,7 @@ public class BookTest {
         Book book1 = new Book("Java入門", "田中太郎", 300);
         book1.displayInfo();
         
-        System.out.println("---");
+        IO.println("---");
         
         // デフォルトコンストラクタで作成
         Book book2 = new Book();
@@ -1141,17 +1141,17 @@ Javaでは、同じ名前のメソッドを複数定義できます。これを�
 public class PrintHelper {
     // 文字列を出力
     public void print(String message) {
-        System.out.println(message);
+        IO.println(message);
     }
     
     // 整数を出力
     public void print(int number) {
-        System.out.println("数値: " + number);
+        IO.println("数値: " + number);
     }
     
     // 2つの値を出力
     public void print(String label, int value) {
-        System.out.println(label + ": " + value);
+        IO.println(label + ": " + value);
     }
 }
 
@@ -1233,19 +1233,19 @@ Javaコンパイラはメソッド選択の際に特定のルールに従いま�
 ```java
 public class OverloadResolution {
     public static void test(int x) {
-        System.out.println("int: " + x);
+        IO.println("int: " + x);
     }
     
     public static void test(long x) {
-        System.out.println("long: " + x);
+        IO.println("long: " + x);
     }
     
     public static void test(Integer x) {
-        System.out.println("Integer: " + x);
+        IO.println("Integer: " + x);
     }
     
     public static void test(int... x) {
-        System.out.println("可変長引数: " + Arrays.toString(x));
+        IO.println("可変長引数: " + Arrays.toString(x));
     }
     
     public static void main(String[] args) {
@@ -1336,10 +1336,10 @@ public class Book {
     
     // メソッド（操作）
     public void displayInfo() {
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("ページ数: " + pages);
-        System.out.println("価格: " + price + "円");
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("ページ数: " + pages);
+        IO.println("価格: " + price + "円");
     }
     
     // ゲッターメソッド
@@ -1371,11 +1371,11 @@ public class BookClassTest {
         Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
         
         book.displayInfo();
-        System.out.println("---");
+        IO.println("---");
         
         // 価格変更
         book.setPrice(2500.0);
-        System.out.println("価格変更後:");
+        IO.println("価格変更後:");
         book.displayInfo();
     }
 }
@@ -1426,12 +1426,12 @@ public class BookTest {
         
         // メソッドの呼び出し
         book1.displayInfo();
-        System.out.println("---");
+        IO.println("---");
         book2.displayInfo();
         
         // 価格の変更
         book1.setPrice(2500.0);
-        System.out.println("変更後の価格: " + book1.getTitle() + " - " + book1.getPrice() + "円");
+        IO.println("変更後の価格: " + book1.getTitle() + " - " + book1.getPrice() + "円");
     }
 }
 ```
@@ -1502,7 +1502,7 @@ public class Student {
     
     // publicメソッド - 外部から呼び出し可能
     public void introduce() {
-        System.out.println("私は" + name + "です。" + age + "歳です。");
+        IO.println("私は" + name + "です。" + age + "歳です。");
     }
     
     // privateメソッド - クラス内部でのみ使用
@@ -1513,9 +1513,9 @@ public class Student {
     // publicメソッドからprivateメソッドを呼び出す
     public void checkStatus() {
         if (isAdult()) {
-            System.out.println("成人です");
+            IO.println("成人です");
         } else {
-            System.out.println("未成年です");
+            IO.println("未成年です");
         }
     }
 }
@@ -1536,7 +1536,7 @@ public class StudentAccessTest {
         student.checkStatus();
         
         // privateフィールドには直接アクセスできない
-        // System.out.println(student.name); // コンパイルエラー
+        // IO.println(student.name); // コンパイルエラー
         
         // privateメソッドも直接呼び出せない
         // student.isAdult(); // コンパイルエラー
@@ -1602,16 +1602,16 @@ public class Product {
     public void updatePrice(double newPrice) {
         if (newPrice >= 0) {
             price = newPrice;
-            System.out.println("価格を更新しました: " + price + "円");
+            IO.println("価格を更新しました: " + price + "円");
         } else {
-            System.out.println("エラー: 価格は0円以上にしてください");
+            IO.println("エラー: 価格は0円以上にしてください");
         }
     }
     
     public void addStock(int amount) {
         if (amount > 0) {
             stock += amount;
-            System.out.println("在庫を追加しました。現在の在庫: " + stock);
+            IO.println("在庫を追加しました。現在の在庫: " + stock);
         }
     }
     // ...
@@ -1678,10 +1678,10 @@ public class StaticExample {
     public static void main(String[] args) {
         // newを使わずに直接呼び出し
         int sum = MathHelper.add(5, 3);
-        System.out.println("合計: " + sum);
+        IO.println("合計: " + sum);
         
         double area = MathHelper.calculateCircleArea(10.0);
-        System.out.println("円の面積: " + area);
+        IO.println("円の面積: " + area);
     }
 }
 ```
@@ -1719,36 +1719,36 @@ class Tool {
     public Tool(String name) {
         this.name = name;
         toolCount++; // インスタンスが作られるたびに、共有カウンタを増やす
-        System.out.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
+        IO.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
     }
 
     // インスタンスメソッド
     public void showName() {
-        System.out.println("このツールの名前は " + this.name + " です。");
+        IO.println("このツールの名前は " + this.name + " です。");
     }
 
     // クラスメソッド
     public static void showToolCount() {
-        // System.out.println(this.name); // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
-        System.out.println("作成されたツールの総数は " + toolCount + " です。");
+        // IO.println(this.name); // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        IO.println("作成されたツールの総数は " + toolCount + " です。");
     }
 }
 
 public class StaticMemberExample {
     public static void main(String[] args) {
-        System.out.println("--- ツール作成前 ---");
+        IO.println("--- ツール作成前 ---");
         // インスタンスがなくてもクラスメソッドは呼び出せる
         Tool.showToolCount();
 
-        System.out.println("\n--- ツール作成 ---");
+        IO.println("\n--- ツール作成 ---");
         Tool hammer = new Tool("ハンマー");
         Tool wrench = new Tool("レンチ");
 
-        System.out.println("\n--- 各ツールの情報表示 ---");
+        IO.println("\n--- 各ツールの情報表示 ---");
         hammer.showName(); // インスタンスメソッドの呼び出し
         wrench.showName();
 
-        System.out.println("\n--- ツール総数の再確認 ---");
+        IO.println("\n--- ツール総数の再確認 ---");
         // クラス名経由でのアクセスが推奨
         Tool.showToolCount();
     }
@@ -1907,7 +1907,7 @@ public class StudentArrayExample {
         students[2] = new Student("鈴木一郎", 19, 3.2);
         
         // オブジェクト配列の反復処理
-        System.out.println("学生一覧:");
+        IO.println("学生一覧:");
         for (Student student : students) {
             student.display();  // 各オブジェクトのメソッドを呼び出し
         }
@@ -1918,7 +1918,7 @@ public class StudentArrayExample {
             totalGpa += student.getGpa();
         }
         double averageGpa = totalGpa / students.length;
-        System.out.println("\n平均GPA: " + averageGpa);
+        IO.println("\n平均GPA: " + averageGpa);
     }
 }
 ```
@@ -1941,7 +1941,7 @@ class Student {
     }
     
     public void display() {
-        System.out.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+        IO.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
     }
     
     public double getGpa() {
@@ -2005,11 +2005,11 @@ public class NullCheckExample {
 ```java
 // プリミティブ型の配列
 int[] numbers = new int[5];     // 各要素は0で初期化される
-System.out.println(numbers[0]); // 0が表示される
+IO.println(numbers[0]); // 0が表示される
 
 // オブジェクトの配列
 Student[] students = new Student[5]; // 各要素はnullで初期化される
-System.out.println(students[0]);     // nullが表示される
+IO.println(students[0]);     // nullが表示される
 ```
 
 これは配列の初期値の違いを示す構文例です。
@@ -2070,23 +2070,23 @@ public class BookLibraryTest {
     public static void main(String[] args) {
         Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
         
-        System.out.println(book.getInfo());
+        IO.println(book.getInfo());
         
         // 本を借りる
         if (book.borrow()) {
-            System.out.println("貸出処理が完了しました");
+            IO.println("貸出処理が完了しました");
         }
-        System.out.println(book.getInfo());
+        IO.println(book.getInfo());
         
         // もう一度借りようとする
         if (!book.borrow()) {
-            System.out.println("この本は貸出中です");
+            IO.println("この本は貸出中です");
         }
         
         // 本を返却
         book.returnBook();
-        System.out.println("返却処理が完了しました");
-        System.out.println(book.getInfo());
+        IO.println("返却処理が完了しました");
+        IO.println(book.getInfo());
     }
 }
 ```
@@ -2202,12 +2202,12 @@ public class StringComparison {
         String str3 = str1;
         
         // ==演算子：参照の比較
-        System.out.println(str1 == str2);  // false（異なるオブジェクト）
-        System.out.println(str1 == str3);  // true（同じオブジェクトを参照）
+        IO.println(str1 == str2);  // false（異なるオブジェクト）
+        IO.println(str1 == str3);  // true（同じオブジェクトを参照）
         
         // equalsメソッド：値の比較
-        System.out.println(str1.equals(str2));  // true（同じ値）
-        System.out.println(str1.equals(str3));  // true（同じ値）
+        IO.println(str1.equals(str2));  // true（同じ値）
+        IO.println(str1.equals(str3));  // true（同じ値）
     }
 }
 ```
@@ -2319,19 +2319,19 @@ public record Point(int x, int y) {
 public void processShape(Shape shape) {
     if (shape instanceof Circle) {
         Circle circle = (Circle) shape;
-        System.out.println("円の半径: " + circle.getRadius());
+        IO.println("円の半径: " + circle.getRadius());
     } else if (shape instanceof Rectangle) {
         Rectangle rectangle = (Rectangle) shape;
-        System.out.println("長方形の面積: " + rectangle.getArea());
+        IO.println("長方形の面積: " + rectangle.getArea());
     }
 }
 
 // Pattern Matching を使った方法（Java 16以降）
 public void processShape(Shape shape) {
     if (shape instanceof Circle circle) {
-        System.out.println("円の半径: " + circle.getRadius());
+        IO.println("円の半径: " + circle.getRadius());
     } else if (shape instanceof Rectangle rectangle) {
-        System.out.println("長方形の面積: " + rectangle.getArea());
+        IO.println("長方形の面積: " + rectangle.getArea());
     }
 }
 ```

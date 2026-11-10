@@ -5,7 +5,7 @@ public class BookTest {
         Book book1 = new Book("Java入門", "田中太郎", 300);
         book1.displayInfo();
         
-        System.out.println("---");
+        IO.println("---");
         
         // デフォルトコンストラクタで作成
         Book book2 = new Book();

@@ -17,15 +17,15 @@ public class Product {
     public void addStock(int quantity) {
         if (quantity > 0) {
             stock += quantity;  // 在庫数を更新
-            System.out.println(quantity + "個入荷しました");
+            IO.println(quantity + "個入荷しました");
         }
     }
     
     // フィールドの値を表示
     public void showInfo() {
-        System.out.println("商品ID: " + productId);
-        System.out.println("商品名: " + name);
-        System.out.println("価格: ¥" + price);
-        System.out.println("在庫数: " + stock + "個");
+        IO.println("商品ID: " + productId);
+        IO.println("商品名: " + name);
+        IO.println("価格: ¥" + price);
+        IO.println("在庫数: " + stock + "個");
     }
 }

@@ -23,7 +23,7 @@ public class Person {
         if (age >= 0 && age <= 150) {
             this.age = age;
         } else {
-            System.out.println("無効な年齢です");
+            IO.println("無効な年齢です");
         }
     }
 }

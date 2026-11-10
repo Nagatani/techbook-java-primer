@@ -8,7 +8,7 @@ public class StudentAccessTest {
         student.checkStatus();
         
         // privateフィールドには直接アクセスできない
-        // System.out.println(student.name); // コンパイルエラー
+        // IO.println(student.name); // コンパイルエラー
         
         // privateメソッドも直接呼び出せない
         // student.isAdult(); // コンパイルエラー

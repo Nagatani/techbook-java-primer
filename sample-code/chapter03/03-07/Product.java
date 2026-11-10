@@ -4,6 +4,6 @@ public class Product {
     protected int price;         // ①
     
     public void displayInfo() {  // ②
-        System.out.println("商品名: " + name + ", 価格: " + price + "円");
+        IO.println("商品名: " + name + ", 価格: " + price + "円");
     }
 }

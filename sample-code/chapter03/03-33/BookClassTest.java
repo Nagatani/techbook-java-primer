@@ -4,11 +4,11 @@ public class BookClassTest {
         Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
         
         book.displayInfo();
-        System.out.println("---");
+        IO.println("---");
         
         // 価格変更
         book.setPrice(2500.0);
-        System.out.println("価格変更後:");
+        IO.println("価格変更後:");
         book.displayInfo();
     }
 }

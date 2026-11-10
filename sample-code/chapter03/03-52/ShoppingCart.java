@@ -23,11 +23,11 @@ public class ShoppingCart {
     }
     
     public void displayCart() {
-        System.out.println("=== ショッピングカート ===");
+        IO.println("=== ショッピングカート ===");
         for (Item item : items) {
-            System.out.println(item);
+            IO.println(item);
         }
-        System.out.printf("合計（税込）: %.2f円%n", calculateTotal());
+        IO.println("合計（税込）: %.2f円".formatted(calculateTotal()));
     }
     
     // 内部クラス

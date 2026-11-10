@@ -21,10 +21,10 @@ public class Rectangle {
     
     // 戻り値がないメソッド（void）
     public void displayInfo() {
-        System.out.println("幅: " + width);
-        System.out.println("高さ: " + height);
-        System.out.println("面積: " + calculateArea());
-        System.out.println("周囲: " + calculatePerimeter());
+        IO.println("幅: " + width);
+        IO.println("高さ: " + height);
+        IO.println("面積: " + calculateArea());
+        IO.println("周囲: " + calculatePerimeter());
     }
     
     // 引数を受け取るメソッド
@@ -32,7 +32,7 @@ public class Rectangle {
         if (factor > 0) {
             width *= factor;
             height *= factor;
-            System.out.println(factor + "倍にリサイズしました");
+            IO.println(factor + "倍にリサイズしました");
         }
     }
 }

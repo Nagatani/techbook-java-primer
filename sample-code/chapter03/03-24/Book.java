@@ -18,8 +18,8 @@ public class Book {
     }
     
     public void displayInfo() {
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("ページ数: " + pages);
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("ページ数: " + pages);
     }
 }

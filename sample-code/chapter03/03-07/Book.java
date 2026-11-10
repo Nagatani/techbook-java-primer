@@ -4,6 +4,6 @@ public class Book extends Product {  // ③
     
     public void displayBookInfo() {  // ⑤
         displayInfo();  // ②を呼び出し
-        System.out.println("著者: " + author + ", ISBN: " + isbn);
+        IO.println("著者: " + author + ", ISBN: " + isbn);
     }
 }

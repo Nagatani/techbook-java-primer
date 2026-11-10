@@ -13,7 +13,7 @@ public class Student {
     
     // publicメソッド - 外部から呼び出し可能
     public void introduce() {
-        System.out.println("私は" + name + "です。" + age + "歳です。");
+        IO.println("私は" + name + "です。" + age + "歳です。");
     }
     
     // privateメソッド - クラス内部でのみ使用
@@ -24,9 +24,9 @@ public class Student {
     // publicメソッドからprivateメソッドを呼び出す
     public void checkStatus() {
         if (isAdult()) {
-            System.out.println("成人です");
+            IO.println("成人です");
         } else {
-            System.out.println("未成年です");
+            IO.println("未成年です");
         }
     }
 }

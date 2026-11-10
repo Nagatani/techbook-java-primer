@@ -15,10 +15,10 @@ public class Book {
     
     // メソッド（操作）
     public void displayInfo() {
-        System.out.println("タイトル: " + title);
-        System.out.println("著者: " + author);
-        System.out.println("ページ数: " + pages);
-        System.out.println("価格: " + price + "円");
+        IO.println("タイトル: " + title);
+        IO.println("著者: " + author);
+        IO.println("ページ数: " + pages);
+        IO.println("価格: " + price + "円");
     }
     
     // ゲッターメソッド

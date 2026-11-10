@@ -9,10 +9,10 @@ public class DefaultValueDemo {
     String stringValue;   // null
     
     public void showDefaults() {
-        System.out.println("int: " + intValue);        // 0
-        System.out.println("double: " + doubleValue);  // 0.0
-        System.out.println("boolean: " + boolValue);   // false
-        System.out.println("String: " + stringValue);  // null
+        IO.println("int: " + intValue);        // 0
+        IO.println("double: " + doubleValue);  // 0.0
+        IO.println("boolean: " + boolValue);   // false
+        IO.println("String: " + stringValue);  // null
     }
     
     public static void main(String[] args) {
