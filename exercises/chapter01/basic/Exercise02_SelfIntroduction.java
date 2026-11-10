@@ -32,7 +32,7 @@ public class Exercise02_SelfIntroduction {
         
         // TODO: 上記の変数を使って自己紹介を出力してください
         // ヒント: 文字列と変数の連結は + を使います
-        // 例: System.out.println("名前: " + name);
+        // 例: IO.println("名前: " + name);
         
     }
 }

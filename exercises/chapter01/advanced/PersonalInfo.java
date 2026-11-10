@@ -25,8 +25,8 @@ public class PersonalInfo {
         String gender = "男性";
         
         // プログラムのタイトル表示
-        System.out.println("=== 個人情報管理システム ===");
-        System.out.println();
+        IO.println("=== 個人情報管理システム ===");
+        IO.println();
         
         // 基本情報の表示
         displayBasicInfo(fullName, firstName, lastName, age, height, weight, bloodType, gender);
@@ -50,144 +50,144 @@ public class PersonalInfo {
     private static void displayBasicInfo(String fullName, String firstName, String lastName, 
                                        int age, double height, double weight, 
                                        String bloodType, String gender) {
-        System.out.println("基本情報:");
-        System.out.println("氏名: " + fullName + " (" + fullName.length() + "文字)");
-        System.out.println("姓: " + lastName + " (" + lastName.length() + "文字)");
-        System.out.println("名: " + firstName + " (" + firstName.length() + "文字)");
+        IO.println("基本情報:");
+        IO.println("氏名: " + fullName + " (" + fullName.length() + "文字)");
+        IO.println("姓: " + lastName + " (" + lastName.length() + "文字)");
+        IO.println("名: " + firstName + " (" + firstName.length() + "文字)");
         
         // イニシャルの生成
         String initials = getInitials(firstName, lastName);
-        System.out.println("イニシャル: " + initials);
+        IO.println("イニシャル: " + initials);
         
-        System.out.println("年齢: " + age + "歳");
-        System.out.println("身長: " + height + "cm");
-        System.out.println("体重: " + weight + "kg");
-        System.out.println("血液型: " + bloodType + "型");
-        System.out.println("性別: " + gender);
-        System.out.println();
+        IO.println("年齢: " + age + "歳");
+        IO.println("身長: " + height + "cm");
+        IO.println("体重: " + weight + "kg");
+        IO.println("血液型: " + bloodType + "型");
+        IO.println("性別: " + gender);
+        IO.println();
     }
     
     /**
      * 健康指標を計算して表示します
      */
     private static void displayHealthIndicators(double height, double weight, int age, String gender) {
-        System.out.println("健康指標:");
+        IO.println("健康指標:");
         
         // BMI計算
         double heightInMeters = height / 100.0;
         double bmi = weight / (heightInMeters * heightInMeters);
         String bmiCategory = getBMICategory(bmi);
-        System.out.println("BMI: " + String.format("%.1f", bmi) + " (" + bmiCategory + ")");
+        IO.println("BMI: " + String.format("%.1f", bmi) + " (" + bmiCategory + ")");
         
         // 理想体重計算（複数の方式）
         double idealWeight1 = (height - 100) * 0.9; // 簡易式
         double idealWeight2 = heightInMeters * heightInMeters * 22; // BMI 22基準
-        System.out.println("理想体重 (簡易式): " + String.format("%.1f", idealWeight1) + "kg");
-        System.out.println("理想体重 (BMI22): " + String.format("%.1f", idealWeight2) + "kg");
+        IO.println("理想体重 (簡易式): " + String.format("%.1f", idealWeight1) + "kg");
+        IO.println("理想体重 (BMI22): " + String.format("%.1f", idealWeight2) + "kg");
         
         // 体重差
         double weightDiff1 = weight - idealWeight1;
         double weightDiff2 = weight - idealWeight2;
-        System.out.println("理想体重との差 (簡易式): " + 
+        IO.println("理想体重との差 (簡易式): " + 
                           (weightDiff1 >= 0 ? "+" : "") + String.format("%.1f", weightDiff1) + "kg");
-        System.out.println("理想体重との差 (BMI22): " + 
+        IO.println("理想体重との差 (BMI22): " + 
                           (weightDiff2 >= 0 ? "+" : "") + String.format("%.1f", weightDiff2) + "kg");
         
         // 成人判定
         String adultStatus = getAdultStatus(age);
-        System.out.println("成人判定: " + adultStatus);
+        IO.println("成人判定: " + adultStatus);
         
         // 基礎代謝計算（Harris-Benedict式）
         double bmr = calculateBMR(weight, height, age, gender);
-        System.out.println("基礎代謝: " + String.format("%.0f", bmr) + " kcal/日");
+        IO.println("基礎代謝: " + String.format("%.0f", bmr) + " kcal/日");
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 文字列解析結果を表示します
      */
     private static void displayStringAnalysis(String fullName, String firstName, String lastName) {
-        System.out.println("文字列解析:");
+        IO.println("文字列解析:");
         
         // 文字数分析
         int totalChars = fullName.length();
         int firstNameChars = firstName.length();
         int lastNameChars = lastName.length();
         
-        System.out.println("総文字数: " + totalChars + "文字");
-        System.out.println("姓の文字数: " + lastNameChars + "文字");
-        System.out.println("名の文字数: " + firstNameChars + "文字");
+        IO.println("総文字数: " + totalChars + "文字");
+        IO.println("姓の文字数: " + lastNameChars + "文字");
+        IO.println("名の文字数: " + firstNameChars + "文字");
         
         // 文字数比率
         double firstNameRatio = (double) firstNameChars / totalChars * 100;
         double lastNameRatio = (double) lastNameChars / totalChars * 100;
-        System.out.println("名の比率: " + String.format("%.1f", firstNameRatio) + "%");
-        System.out.println("姓の比率: " + String.format("%.1f", lastNameRatio) + "%");
+        IO.println("名の比率: " + String.format("%.1f", firstNameRatio) + "%");
+        IO.println("姓の比率: " + String.format("%.1f", lastNameRatio) + "%");
         
         // 名前の特徴
         if (firstNameChars == lastNameChars) {
-            System.out.println("特徴: 姓と名の文字数が同じです");
+            IO.println("特徴: 姓と名の文字数が同じです");
         } else if (firstNameChars > lastNameChars) {
-            System.out.println("特徴: 名の方が長いです");
+            IO.println("特徴: 名の方が長いです");
         } else {
-            System.out.println("特徴: 姓の方が長いです");
+            IO.println("特徴: 姓の方が長いです");
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 年齢関連の計算を表示します
      */
     private static void displayAgeCalculations(int age) {
-        System.out.println("年齢関連計算:");
+        IO.println("年齢関連計算:");
         
         // 日数計算（概算）
         int daysLived = age * 365; // うるう年は考慮しない簡易計算
-        System.out.println(age + "歳 = 約" + String.format("%,d", daysLived) + "日");
+        IO.println(age + "歳 = 約" + String.format("%,d", daysLived) + "日");
         
         // 時間計算
         long hoursLived = daysLived * 24L;
-        System.out.println("生まれてから約" + String.format("%,d", hoursLived) + "時間");
+        IO.println("生まれてから約" + String.format("%,d", hoursLived) + "時間");
         
         // 分計算
         long minutesLived = hoursLived * 60L;
-        System.out.println("生まれてから約" + String.format("%,d", minutesLived) + "分");
+        IO.println("生まれてから約" + String.format("%,d", minutesLived) + "分");
         
         // 世代分析
         String generation = getGeneration(age);
-        System.out.println("世代: " + generation);
+        IO.println("世代: " + generation);
         
         // 人生の段階
         String lifeStage = getLifeStage(age);
-        System.out.println("人生段階: " + lifeStage);
+        IO.println("人生段階: " + lifeStage);
         
         // 年齢グループ
         String ageGroup = getAgeGroup(age);
-        System.out.println("年齢グループ: " + ageGroup);
+        IO.println("年齢グループ: " + ageGroup);
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 身体的特徴の分析を表示します
      */
     private static void displayPhysicalAnalysis(double height, double weight, String gender) {
-        System.out.println("身体的特徴分析:");
+        IO.println("身体的特徴分析:");
         
         // 身長カテゴリ
         String heightCategory = getHeightCategory(height, gender);
-        System.out.println("身長カテゴリ: " + heightCategory);
+        IO.println("身長カテゴリ: " + heightCategory);
         
         // 体重カテゴリ
         String weightCategory = getWeightCategory(weight);
-        System.out.println("体重カテゴリ: " + weightCategory);
+        IO.println("体重カテゴリ: " + weightCategory);
         
         // 体格指数（ローレル指数）
         double rohrer = weight / Math.pow(height, 3) * 10000000;
         String rohrerCategory = getRohrerCategory(rohrer);
-        System.out.println("ローレル指数: " + String.format("%.2f", rohrer) + " (" + rohrerCategory + ")");
+        IO.println("ローレル指数: " + String.format("%.2f", rohrer) + " (" + rohrerCategory + ")");
         
         // 平均との比較（仮想データ）
         double avgHeight = gender.equals("男性") ? 171.0 : 158.0;
@@ -196,12 +196,12 @@ public class PersonalInfo {
         double heightDiff = height - avgHeight;
         double weightDiff = weight - avgWeight;
         
-        System.out.println("平均身長との差: " + 
+        IO.println("平均身長との差: " + 
                           (heightDiff >= 0 ? "+" : "") + String.format("%.1f", heightDiff) + "cm");
-        System.out.println("平均体重との差: " + 
+        IO.println("平均体重との差: " + 
                           (weightDiff >= 0 ? "+" : "") + String.format("%.1f", weightDiff) + "kg");
         
-        System.out.println();
+        IO.println();
     }
     
     // ===== ユーティリティメソッド =====

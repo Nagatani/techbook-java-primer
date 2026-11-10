@@ -21,32 +21,32 @@ public class Exercise04_DataTypes {
         boolean booleanValue = true;
         String stringValue = "Hello Java!";
         
-        System.out.println("=== データ型の確認 ===");
-        System.out.println("byte値: " + byteValue);
-        System.out.println("short値: " + shortValue);
-        System.out.println("int値: " + intValue);
-        System.out.println("long値: " + longValue);
-        System.out.println("float値: " + floatValue);
-        System.out.println("double値: " + doubleValue);
-        System.out.println("char値: " + charValue);
-        System.out.println("boolean値: " + booleanValue);
-        System.out.println("String値: " + stringValue);
+        IO.println("=== データ型の確認 ===");
+        IO.println("byte値: " + byteValue);
+        IO.println("short値: " + shortValue);
+        IO.println("int値: " + intValue);
+        IO.println("long値: " + longValue);
+        IO.println("float値: " + floatValue);
+        IO.println("double値: " + doubleValue);
+        IO.println("char値: " + charValue);
+        IO.println("boolean値: " + booleanValue);
+        IO.println("String値: " + stringValue);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 2: 各型の範囲と特徴の確認
-        System.out.println("=== 各データ型の範囲 ===");
-        System.out.println("byte範囲: " + Byte.MIN_VALUE + " ～ " + Byte.MAX_VALUE);
-        System.out.println("short範囲: " + Short.MIN_VALUE + " ～ " + Short.MAX_VALUE);
-        System.out.println("int範囲: " + Integer.MIN_VALUE + " ～ " + Integer.MAX_VALUE);
-        System.out.println("long範囲: " + Long.MIN_VALUE + " ～ " + Long.MAX_VALUE);
-        System.out.println("float範囲: " + Float.MIN_VALUE + " ～ " + Float.MAX_VALUE);
-        System.out.println("double範囲: " + Double.MIN_VALUE + " ～ " + Double.MAX_VALUE);
+        IO.println("=== 各データ型の範囲 ===");
+        IO.println("byte範囲: " + Byte.MIN_VALUE + " ～ " + Byte.MAX_VALUE);
+        IO.println("short範囲: " + Short.MIN_VALUE + " ～ " + Short.MAX_VALUE);
+        IO.println("int範囲: " + Integer.MIN_VALUE + " ～ " + Integer.MAX_VALUE);
+        IO.println("long範囲: " + Long.MIN_VALUE + " ～ " + Long.MAX_VALUE);
+        IO.println("float範囲: " + Float.MIN_VALUE + " ～ " + Float.MAX_VALUE);
+        IO.println("double範囲: " + Double.MIN_VALUE + " ～ " + Double.MAX_VALUE);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 3: 様々なリテラルの記述方法
-        System.out.println("=== リテラルの記述方法 ===");
+        IO.println("=== リテラルの記述方法 ===");
         
         // 整数リテラル
         int decimal = 42;           // 10進数
@@ -54,19 +54,19 @@ public class Exercise04_DataTypes {
         int octal = 052;            // 8進数
         int hexadecimal = 0x2A;     // 16進数
         
-        System.out.println("10進数: " + decimal);
-        System.out.println("2進数: " + binary);
-        System.out.println("8進数: " + octal);
-        System.out.println("16進数: " + hexadecimal);
+        IO.println("10進数: " + decimal);
+        IO.println("2進数: " + binary);
+        IO.println("8進数: " + octal);
+        IO.println("16進数: " + hexadecimal);
         
         // 浮動小数点リテラル
         double d1 = 123.456;        // 通常の記述
         double d2 = 1.23456e2;      // 指数表記 (123.456)
         double d3 = 1.23456E2;      // 指数表記（大文字E）
         
-        System.out.println("通常: " + d1);
-        System.out.println("指数表記(e): " + d2);
-        System.out.println("指数表記(E): " + d3);
+        IO.println("通常: " + d1);
+        IO.println("指数表記(e): " + d2);
+        IO.println("指数表記(E): " + d3);
         
         // 文字リテラル
         char ch1 = 'J';             // 通常の文字
@@ -74,38 +74,38 @@ public class Exercise04_DataTypes {
         char ch3 = '\u0041';        // Unicode（A）
         char ch4 = 65;              // ASCII値（A）
         
-        System.out.println("通常文字: " + ch1);
-        System.out.print("改行文字: Hello");
-        System.out.print(ch2);
-        System.out.println("World");
-        System.out.println("Unicode: " + ch3);
-        System.out.println("ASCII値: " + ch4);
+        IO.println("通常文字: " + ch1);
+        IO.print("改行文字: Hello");
+        IO.print(ch2);
+        IO.println("World");
+        IO.println("Unicode: " + ch3);
+        IO.println("ASCII値: " + ch4);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 4: 型変換の例
-        System.out.println("=== 型変換の例 ===");
+        IO.println("=== 型変換の例 ===");
         
         // 暗黙的型変換（拡大変換）
         byte b = 10;
         int i = b;              // byte → int（自動変換）
         double d = i;           // int → double（自動変換）
         
-        System.out.println("byte → int: " + b + " → " + i);
-        System.out.println("int → double: " + i + " → " + d);
+        IO.println("byte → int: " + b + " → " + i);
+        IO.println("int → double: " + i + " → " + d);
         
         // 明示的型変換（縮小変換）
         double largeDouble = 123.456;
         int convertedInt = (int)largeDouble;    // double → int（キャスト）
         byte convertedByte = (byte)convertedInt; // int → byte（キャスト）
         
-        System.out.println("double → int: " + largeDouble + " → " + convertedInt);
-        System.out.println("int → byte: " + convertedInt + " → " + convertedByte);
+        IO.println("double → int: " + largeDouble + " → " + convertedInt);
+        IO.println("int → byte: " + convertedInt + " → " + convertedByte);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 5: 実用的な例
-        System.out.println("=== 実用例 ===");
+        IO.println("=== 実用例 ===");
         
         // 学生情報の表現
         String studentName = "山田太郎";
@@ -118,13 +118,13 @@ public class Exercise04_DataTypes {
         // BMI計算
         double bmi = weight / ((height / 100) * (height / 100));
         
-        System.out.println("学生名: " + studentName);
-        System.out.println("年齢: " + studentAge + "歳");
-        System.out.println("身長: " + height + "cm");
-        System.out.println("体重: " + weight + "kg");
-        System.out.println("成績: " + grade + "ランク");
-        System.out.println("卒業済み: " + isGraduated);
-        System.out.println("BMI: " + String.format("%.2f", bmi));
+        IO.println("学生名: " + studentName);
+        IO.println("年齢: " + studentAge + "歳");
+        IO.println("身長: " + height + "cm");
+        IO.println("体重: " + weight + "kg");
+        IO.println("成績: " + grade + "ランク");
+        IO.println("卒業済み: " + isGraduated);
+        IO.println("BMI: " + String.format("%.2f", bmi));
         
         // 条件による判定
         String bmiCategory;
@@ -135,7 +135,7 @@ public class Exercise04_DataTypes {
         } else {
             bmiCategory = "肥満";
         }
-        System.out.println("BMI分類: " + bmiCategory);
+        IO.println("BMI分類: " + bmiCategory);
     }
 }
 

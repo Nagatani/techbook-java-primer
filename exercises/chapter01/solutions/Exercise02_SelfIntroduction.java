@@ -16,13 +16,13 @@ public class Exercise02_SelfIntroduction {
         double height = 170.5;
         String favoriteSubject = "数学";
         
-        System.out.println("=== 自己紹介 ===");
-        System.out.println("名前: " + name);
-        System.out.println("年齢: " + age + "歳");
-        System.out.println("身長: " + height + "cm");
-        System.out.println("好きな科目: " + favoriteSubject);
+        IO.println("=== 自己紹介 ===");
+        IO.println("名前: " + name);
+        IO.println("年齢: " + age + "歳");
+        IO.println("身長: " + height + "cm");
+        IO.println("好きな科目: " + favoriteSubject);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 2: 別の書き方（変数宣言と代入を分離）
         String name2;
@@ -35,13 +35,13 @@ public class Exercise02_SelfIntroduction {
         height2 = 165.0;
         favoriteSubject2 = "物理学";
         
-        System.out.println("=== 自己紹介（その2）===");
-        System.out.println("名前: " + name2);
-        System.out.println("年齢: " + age2 + "歳");
-        System.out.println("身長: " + height2 + "cm");
-        System.out.println("好きな科目: " + favoriteSubject2);
+        IO.println("=== 自己紹介（その2）===");
+        IO.println("名前: " + name2);
+        IO.println("年齢: " + age2 + "歳");
+        IO.println("身長: " + height2 + "cm");
+        IO.println("好きな科目: " + favoriteSubject2);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 3: より多くの情報を含む実装
         String firstName = "鈴木";
@@ -55,16 +55,16 @@ public class Exercise02_SelfIntroduction {
         // 計算して年齢を求める
         int calculatedAge = currentYear - birthYear;
         
-        System.out.println("=== 詳細な自己紹介 ===");
-        System.out.println("氏名: " + firstName + " " + lastName);
-        System.out.println("年齢: " + calculatedAge + "歳（" + birthYear + "年生まれ）");
-        System.out.println("体重: " + weight + "kg");
-        System.out.println("血液型: " + bloodType + "型");
-        System.out.println("眼鏡着用: " + (hasGlasses ? "あり" : "なし"));
+        IO.println("=== 詳細な自己紹介 ===");
+        IO.println("氏名: " + firstName + " " + lastName);
+        IO.println("年齢: " + calculatedAge + "歳（" + birthYear + "年生まれ）");
+        IO.println("体重: " + weight + "kg");
+        IO.println("血液型: " + bloodType + "型");
+        IO.println("眼鏡着用: " + (hasGlasses ? "あり" : "なし"));
         
         // BMI計算（応用例）
         double bmi = weight / ((height / 100) * (height / 100));
-        System.out.println("BMI: " + String.format("%.1f", bmi));
+        IO.println("BMI: " + String.format("%.1f", bmi));
     }
 }
 
@@ -104,9 +104,9 @@ public class Exercise02_SelfIntroduction {
  * 
  * 3. 初期化忘れ
  *    × int age;
- *      System.out.println(age); // 初期化されていない変数を使用
+ *      IO.println(age); // 初期化されていない変数を使用
  *    ○ int age = 20;
- *      System.out.println(age); // 使用前に初期化
+ *      IO.println(age); // 使用前に初期化
  * 
  * プログラミングのコツ:
  * - 変数名は意味のある名前にする

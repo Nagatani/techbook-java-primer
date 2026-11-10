@@ -16,7 +16,7 @@
 ### 課題1: Hello World の拡張
 
 **学習ポイント**:
-- `System.out.println()` の使い方
+- `IO.println()` の使い方
 - 文字列リテラルの基本
 - 複数行の出力方法
 
@@ -68,10 +68,10 @@
 ### 1. セミコロン忘れ
 ```java
 // ❌ 間違い
-System.out.println("Hello")  // セミコロンがない
+IO.println("Hello")  // セミコロンがない
 
 // ✅ 正解
-System.out.println("Hello"); // セミコロンが必要
+IO.println("Hello"); // セミコロンが必要
 ```
 
 ### 2. 文字と文字列の混同

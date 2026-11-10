@@ -47,8 +47,8 @@ public class Exercise04_DataTypes {
         String stringValue = "Hello";   // 文字列（"で囲む）
         
         // TODO: 上記の変数を使って以下の形式で出力してください
-        System.out.println("=== データ型の確認 ===");
-        // System.out.println("byte値: " + byteValue);
+        IO.println("=== データ型の確認 ===");
+        // IO.println("byte値: " + byteValue);
         // ... 他の変数も同様に出力
         
     }

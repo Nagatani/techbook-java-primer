@@ -15,8 +15,8 @@
 public class TimeCalculation {
     public static void main(String[] args) {
         // プログラムのタイトル表示
-        System.out.println("=== 時間計算プログラム ===");
-        System.out.println();
+        IO.println("=== 時間計算プログラム ===");
+        IO.println();
         
         // 各種時間計算のデモンストレーション
         demonstrateSecondConversion();
@@ -30,42 +30,42 @@ public class TimeCalculation {
      * 秒数変換のデモンストレーション
      */
     private static void demonstrateSecondConversion() {
-        System.out.println("秒数変換:");
+        IO.println("秒数変換:");
         
         // 様々な秒数での変換例
         int[] secondsExamples = {7265, 3661, 86400, 90061, 172800};
         
         for (int seconds : secondsExamples) {
             String timeString = convertSecondsToTimeString(seconds);
-            System.out.println(seconds + "秒 = " + timeString);
+            IO.println(seconds + "秒 = " + timeString);
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 時刻の差計算のデモンストレーション
      */
     private static void demonstrateTimeDifference() {
-        System.out.println("時刻の差:");
+        IO.println("時刻の差:");
         
         // 勤務時間の例
         int startHour = 9, startMinute = 30;
         int endHour = 17, endMinute = 45;
         
-        System.out.println("開始時刻: " + startHour + "時" + startMinute + "分");
-        System.out.println("終了時刻: " + endHour + "時" + endMinute + "分");
+        IO.println("開始時刻: " + startHour + "時" + startMinute + "分");
+        IO.println("終了時刻: " + endHour + "時" + endMinute + "分");
         
         int[] workTime = calculateTimeDifference(startHour, startMinute, endHour, endMinute);
         int workHours = workTime[0];
         int workMinutes = workTime[1];
         int totalMinutes = workHours * 60 + workMinutes;
         
-        System.out.println("作業時間: " + workHours + "時間" + workMinutes + "分 (" + totalMinutes + "分)");
+        IO.println("作業時間: " + workHours + "時間" + workMinutes + "分 (" + totalMinutes + "分)");
         
         // 他の時刻例も計算
-        System.out.println();
-        System.out.println("その他の時刻計算例:");
+        IO.println();
+        IO.println("その他の時刻計算例:");
         
         // 深夜勤務の例
         calculateAndDisplayTimeDiff("深夜勤務", 22, 0, 6, 0);
@@ -76,20 +76,20 @@ public class TimeCalculation {
         // 長時間の例
         calculateAndDisplayTimeDiff("長時間作業", 8, 30, 20, 15);
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 年齢計算のデモンストレーション
      */
     private static void demonstrateAgeCalculation() {
-        System.out.println("年齢計算:");
+        IO.println("年齢計算:");
         
         int[] ages = {22, 35, 50, 65, 80};
         
         for (int age : ages) {
             displayAgeInDifferentUnits(age);
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -97,61 +97,61 @@ public class TimeCalculation {
      * 時間フォーマットのデモンストレーション
      */
     private static void demonstrateTimeFormatting() {
-        System.out.println("時間フォーマット変換:");
+        IO.println("時間フォーマット変換:");
         
         // 24時間制と12時間制の変換
         int[] hours24 = {0, 6, 12, 15, 23};
         
         for (int hour : hours24) {
             String time12 = convertTo12HourFormat(hour, 30);
-            System.out.println(hour + ":30 (24時間制) = " + time12 + " (12時間制)");
+            IO.println(hour + ":30 (24時間制) = " + time12 + " (12時間制)");
         }
         
-        System.out.println();
+        IO.println();
         
         // 経過時間の表示
-        System.out.println("経過時間の表現:");
+        IO.println("経過時間の表現:");
         int[] elapsedSeconds = {45, 125, 3725, 86500, 90061};
         
         for (int elapsed : elapsedSeconds) {
             String humanReadable = formatElapsedTime(elapsed);
-            System.out.println(elapsed + "秒経過 = " + humanReadable);
+            IO.println(elapsed + "秒経過 = " + humanReadable);
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 高度な時間計算のデモンストレーション
      */
     private static void demonstrateAdvancedTimeCalculations() {
-        System.out.println("高度な時間計算:");
+        IO.println("高度な時間計算:");
         
         // うるう年の計算
         int[] years = {2020, 2021, 2024, 2100, 2000};
-        System.out.println("うるう年判定:");
+        IO.println("うるう年判定:");
         for (int year : years) {
             boolean isLeap = isLeapYear(year);
-            System.out.println(year + "年: " + (isLeap ? "うるう年" : "平年"));
+            IO.println(year + "年: " + (isLeap ? "うるう年" : "平年"));
         }
-        System.out.println();
+        IO.println();
         
         // 月の日数計算
-        System.out.println("月の日数:");
+        IO.println("月の日数:");
         for (int month = 1; month <= 12; month++) {
             int days2024 = getDaysInMonth(month, 2024); // うるう年
             int days2023 = getDaysInMonth(month, 2023); // 平年
-            System.out.println(month + "月: " + days2023 + "日 (平年), " + days2024 + "日 (うるう年)");
+            IO.println(month + "月: " + days2023 + "日 (平年), " + days2024 + "日 (うるう年)");
         }
-        System.out.println();
+        IO.println();
         
         // 生産性計算の例
-        System.out.println("作業効率計算:");
+        IO.println("作業効率計算:");
         calculateProductivity(8, 30, 150); // 8.5時間で150タスク
         calculateProductivity(6, 0, 90);   // 6時間で90タスク
         calculateProductivity(10, 45, 200); // 10.75時間で200タスク
         
-        System.out.println();
+        IO.println();
     }
     
     // ===== ユーティリティメソッド =====
@@ -200,7 +200,7 @@ public class TimeCalculation {
     private static void calculateAndDisplayTimeDiff(String label, int startH, int startM, 
                                                    int endH, int endM) {
         int[] diff = calculateTimeDifference(startH, startM, endH, endM);
-        System.out.println(label + ": " + startH + ":" + String.format("%02d", startM) + 
+        IO.println(label + ": " + startH + ":" + String.format("%02d", startM) + 
                           " ～ " + endH + ":" + String.format("%02d", endM) + 
                           " = " + diff[0] + "時間" + diff[1] + "分");
     }
@@ -222,18 +222,18 @@ public class TimeCalculation {
         // 秒計算
         long seconds = minutes * 60L;
         
-        System.out.println(age + "歳の詳細:");
-        System.out.println("  約" + String.format("%,d", daysApprox) + "日 (365日/年)");
-        System.out.println("  約" + String.format("%,d", daysAccurate) + "日 (うるう年考慮)");
-        System.out.println("  約" + String.format("%,d", hours) + "時間");
-        System.out.println("  約" + String.format("%,d", minutes) + "分");
-        System.out.println("  約" + String.format("%,d", seconds) + "秒");
+        IO.println(age + "歳の詳細:");
+        IO.println("  約" + String.format("%,d", daysApprox) + "日 (365日/年)");
+        IO.println("  約" + String.format("%,d", daysAccurate) + "日 (うるう年考慮)");
+        IO.println("  約" + String.format("%,d", hours) + "時間");
+        IO.println("  約" + String.format("%,d", minutes) + "分");
+        IO.println("  約" + String.format("%,d", seconds) + "秒");
         
         // 人生の残り時間（平均寿命を80歳として）
         if (age < 80) {
             int remainingYears = 80 - age;
             int remainingDays = remainingYears * 365;
-            System.out.println("  残り約" + remainingYears + "年 (" + 
+            IO.println("  残り約" + remainingYears + "年 (" + 
                               String.format("%,d", remainingDays) + "日)");
         }
     }
@@ -314,9 +314,9 @@ public class TimeCalculation {
         double tasksPerHour = tasks / totalHours;
         double minutesPerTask = (totalHours * 60) / tasks;
         
-        System.out.println(hours + "時間" + minutes + "分で" + tasks + "タスク:");
-        System.out.println("  時間あたり: " + String.format("%.1f", tasksPerHour) + "タスク");
-        System.out.println("  1タスクあたり: " + String.format("%.1f", minutesPerTask) + "分");
+        IO.println(hours + "時間" + minutes + "分で" + tasks + "タスク:");
+        IO.println("  時間あたり: " + String.format("%.1f", tasksPerHour) + "タスク");
+        IO.println("  1タスクあたり: " + String.format("%.1f", minutesPerTask) + "分");
     }
 }
 

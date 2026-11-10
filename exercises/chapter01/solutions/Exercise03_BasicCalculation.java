@@ -14,10 +14,10 @@ public class Exercise03_BasicCalculation {
         int num1 = 15;
         int num2 = 4;
         
-        System.out.println("=== 計算結果 ===");
-        System.out.println("数値1: " + num1);
-        System.out.println("数値2: " + num2);
-        System.out.println();
+        IO.println("=== 計算結果 ===");
+        IO.println("数値1: " + num1);
+        IO.println("数値2: " + num2);
+        IO.println();
         
         // 四則演算の実行
         int addition = num1 + num2;
@@ -26,22 +26,22 @@ public class Exercise03_BasicCalculation {
         int division = num1 / num2;
         int remainder = num1 % num2;
         
-        System.out.println(num1 + " + " + num2 + " = " + addition);
-        System.out.println(num1 + " - " + num2 + " = " + subtraction);
-        System.out.println(num1 + " × " + num2 + " = " + multiplication);
-        System.out.println(num1 + " ÷ " + num2 + " = " + division);
-        System.out.println(num1 + " % " + num2 + " = " + remainder);
+        IO.println(num1 + " + " + num2 + " = " + addition);
+        IO.println(num1 + " - " + num2 + " = " + subtraction);
+        IO.println(num1 + " × " + num2 + " = " + multiplication);
+        IO.println(num1 + " ÷ " + num2 + " = " + division);
+        IO.println(num1 + " % " + num2 + " = " + remainder);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 2: 小数点の計算も含む実装
         double num3 = 15.0;
         double num4 = 4.0;
         
-        System.out.println("=== 小数点を含む計算結果 ===");
-        System.out.println("数値1: " + num3);
-        System.out.println("数値2: " + num4);
-        System.out.println();
+        IO.println("=== 小数点を含む計算結果 ===");
+        IO.println("数値1: " + num3);
+        IO.println("数値2: " + num4);
+        IO.println();
         
         double doubleAddition = num3 + num4;
         double doubleSubtraction = num3 - num4;
@@ -49,30 +49,30 @@ public class Exercise03_BasicCalculation {
         double doubleDivision = num3 / num4;
         double doubleRemainder = num3 % num4;
         
-        System.out.println(num3 + " + " + num4 + " = " + doubleAddition);
-        System.out.println(num3 + " - " + num4 + " = " + doubleSubtraction);
-        System.out.println(num3 + " × " + num4 + " = " + doubleMultiplication);
-        System.out.println(num3 + " ÷ " + num4 + " = " + doubleDivision);
-        System.out.println(num3 + " % " + num4 + " = " + doubleRemainder);
+        IO.println(num3 + " + " + num4 + " = " + doubleAddition);
+        IO.println(num3 + " - " + num4 + " = " + doubleSubtraction);
+        IO.println(num3 + " × " + num4 + " = " + doubleMultiplication);
+        IO.println(num3 + " ÷ " + num4 + " = " + doubleDivision);
+        IO.println(num3 + " % " + num4 + " = " + doubleRemainder);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 3: 整数除算と小数除算の比較
-        System.out.println("=== 整数除算 vs 小数除算 ===");
+        IO.println("=== 整数除算 vs 小数除算 ===");
         int intResult = num1 / num2;                    // 整数除算
         double doubleResult1 = (double)num1 / num2;     // キャスト使用
         double doubleResult2 = num1 / (double)num2;     // キャスト使用
         double doubleResult3 = 1.0 * num1 / num2;       // 暗黙の型変換
         
-        System.out.println("整数除算: " + num1 + " ÷ " + num2 + " = " + intResult);
-        System.out.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult1);
-        System.out.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult2);
-        System.out.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult3);
+        IO.println("整数除算: " + num1 + " ÷ " + num2 + " = " + intResult);
+        IO.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult1);
+        IO.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult2);
+        IO.println("小数除算: " + num1 + " ÷ " + num2 + " = " + doubleResult3);
         
-        System.out.println(); // 空行
+        IO.println(); // 空行
         
         // 解答例 4: より複雑な計算例
-        System.out.println("=== 応用計算例 ===");
+        IO.println("=== 応用計算例 ===");
         int a = 10;
         int b = 3;
         int c = 2;
@@ -82,14 +82,14 @@ public class Exercise03_BasicCalculation {
         int result2 = (a + b) * c;      // 括弧による優先順位変更
         int result3 = a * a + b * b;    // 二乗の計算
         
-        System.out.println(a + " + " + b + " × " + c + " = " + result1);
-        System.out.println("(" + a + " + " + b + ") × " + c + " = " + result2);
-        System.out.println(a + "² + " + b + "² = " + result3);
+        IO.println(a + " + " + b + " × " + c + " = " + result1);
+        IO.println("(" + a + " + " + b + ") × " + c + " = " + result2);
+        IO.println(a + "² + " + b + "² = " + result3);
         
         // 平均の計算
         int sum = a + b + c;
         double average = (double)sum / 3;
-        System.out.println("(" + a + " + " + b + " + " + c + ") ÷ 3 = " + average);
+        IO.println("(" + a + " + " + b + " + " + c + ") ÷ 3 = " + average);
     }
 }
 

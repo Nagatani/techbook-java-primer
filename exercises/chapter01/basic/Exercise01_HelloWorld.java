@@ -17,8 +17,8 @@ public class Exercise01_HelloWorld {
     public static void main(String[] args) {
         // TODO: ここに自分の名前と年を使ったメッセージを出力するコードを書いてください
         
-        // ヒント: System.out.println()を使って複数行出力できます
-        // 例: System.out.println("こんにちは！私の名前は[あなたの名前]です。");
+        // ヒント: IO.println()を使って複数行出力できます
+        // 例: IO.println("こんにちは！私の名前は[あなたの名前]です。");
         
     }
 }

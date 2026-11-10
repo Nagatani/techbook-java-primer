@@ -34,7 +34,7 @@ public class Exercise03_BasicCalculation {
         
         // 加算の例:
         // int sum = num1 + num2;
-        // System.out.println(num1 + " + " + num2 + " = " + sum);
+        // IO.println(num1 + " + " + num2 + " = " + sum);
         
         // ヒント: 演算子は +, -, *, /, % です
         

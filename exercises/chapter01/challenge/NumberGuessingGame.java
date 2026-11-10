@@ -38,18 +38,18 @@ public class NumberGuessingGame {
         }
         
         displayFinalStatistics();
-        System.out.println("ゲームを終了します。ありがとうございました！");
+        IO.println("ゲームを終了します。ありがとうございました！");
     }
     
     /**
      * ウェルカムメッセージを表示します
      */
     private static void displayWelcomeMessage() {
-        System.out.println("=== 数値推測ゲーム ===");
-        System.out.println();
-        System.out.println("コンピューターが考えた数値を当ててください！");
-        System.out.println("ヒントを参考に、少ない回数で正解を目指しましょう。");
-        System.out.println();
+        IO.println("=== 数値推測ゲーム ===");
+        IO.println();
+        IO.println("コンピューターが考えた数値を当ててください！");
+        IO.println("ヒントを参考に、少ない回数で正解を目指しましょう。");
+        IO.println();
     }
     
     /**
@@ -62,10 +62,10 @@ public class NumberGuessingGame {
         
         int targetNumber = generateRandomNumber(maxNumber);
         
-        System.out.println();
-        System.out.println("コンピューターが1から" + maxNumber + "の数値を考えました！");
-        System.out.println(maxTries + "回以内に当ててください。");
-        System.out.println();
+        IO.println();
+        IO.println("コンピューターが1から" + maxNumber + "の数値を考えました！");
+        IO.println(maxTries + "回以内に当ててください。");
+        IO.println();
         
         int tries = 0;
         boolean hasWon = false;
@@ -94,26 +94,26 @@ public class NumberGuessingGame {
      * 難易度選択
      */
     private static int selectDifficulty() {
-        System.out.println("難易度を選択してください:");
+        IO.println("難易度を選択してください:");
         
         for (int i = 0; i < DIFFICULTY_NAMES.length; i++) {
             int maxNum = DIFFICULTY_SETTINGS[i][0];
             int maxTries = DIFFICULTY_SETTINGS[i][1];
-            System.out.println((i + 1) + ". " + DIFFICULTY_NAMES[i] + 
+            IO.println((i + 1) + ". " + DIFFICULTY_NAMES[i] + 
                               " (1-" + maxNum + ", " + maxTries + "回)");
         }
         
-        System.out.print("選択 (1-3): ");
+        IO.print("選択 (1-3): ");
         
         // 簡単な入力処理（実際のプログラムでは Scanner を使用）
         // ここでは難易度1（普通）を自動選択
         int choice = 2; // デフォルトで普通を選択
-        System.out.println(choice);
+        IO.println(choice);
         
         if (choice >= 1 && choice <= 3) {
             return choice - 1; // 0ベースのインデックスに変換
         } else {
-            System.out.println("無効な選択です。普通を選択します。");
+            IO.println("無効な選択です。普通を選択します。");
             return 1; // 普通をデフォルト
         }
     }
@@ -129,12 +129,12 @@ public class NumberGuessingGame {
      * プレイヤーの推測を取得します
      */
     private static int getPlayerGuess(int tryNumber, int remainingTries) {
-        System.out.print(tryNumber + "回目の推測 (残り" + (remainingTries - 1) + "回): ");
+        IO.print(tryNumber + "回目の推測 (残り" + (remainingTries - 1) + "回): ");
         
         // 実際のプログラムでは Scanner を使用して入力を受け取る
         // ここではデモ用に自動的に値を生成
         int guess = generateDemoGuess(tryNumber);
-        System.out.println(guess);
+        IO.println(guess);
         
         return guess;
     }
@@ -184,40 +184,40 @@ public class NumberGuessingGame {
             encouragement = " (かなり離れています)";
         }
         
-        System.out.println("ヒント: " + hint + encouragement + 
+        IO.println("ヒント: " + hint + encouragement + 
                           " (残り" + remainingTries + "回)");
         
         // 特別なヒント
         if (remainingTries == 1) {
-            System.out.println("最後のチャンスです！慎重に考えてください。");
+            IO.println("最後のチャンスです！慎重に考えてください。");
         } else if (remainingTries == 2) {
             provideSpecialHint(target);
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 特別なヒントを提供します
      */
     private static void provideSpecialHint(int target) {
-        System.out.print("特別ヒント: ");
+        IO.print("特別ヒント: ");
         
         if (target % 2 == 0) {
-            System.out.println("答えは偶数です");
+            IO.println("答えは偶数です");
         } else {
-            System.out.println("答えは奇数です");
+            IO.println("答えは奇数です");
         }
         
         // 範囲ヒント
         if (target <= 25) {
-            System.out.println("追加ヒント: 答えは25以下です");
+            IO.println("追加ヒント: 答えは25以下です");
         } else if (target <= 50) {
-            System.out.println("追加ヒント: 答えは26-50の範囲です");
+            IO.println("追加ヒント: 答えは26-50の範囲です");
         } else if (target <= 75) {
-            System.out.println("追加ヒント: 答えは51-75の範囲です");
+            IO.println("追加ヒント: 答えは51-75の範囲です");
         } else {
-            System.out.println("追加ヒント: 答えは76以上です");
+            IO.println("追加ヒント: 答えは76以上です");
         }
     }
     
@@ -225,29 +225,29 @@ public class NumberGuessingGame {
      * 勝利メッセージを表示します
      */
     private static void displayWinMessage(int tries, int difficulty, int maxTries) {
-        System.out.println("🎉 正解です！ " + tries + "回で当てました！");
+        IO.println("🎉 正解です！ " + tries + "回で当てました！");
         
         // スコア計算
         int baseScore = (difficulty + 1) * 100; // 難易度による基本スコア
         int bonusScore = (maxTries - tries) * 50; // 早く当てたボーナス
         int totalScore = baseScore + bonusScore;
         
-        System.out.println();
-        System.out.println("=== スコア詳細 ===");
-        System.out.println("基本スコア: " + baseScore + "点 (難易度: " + DIFFICULTY_NAMES[difficulty] + ")");
-        System.out.println("ボーナス: " + bonusScore + "点 (残り回数: " + (maxTries - tries) + "回)");
-        System.out.println("総合スコア: " + totalScore + "点");
+        IO.println();
+        IO.println("=== スコア詳細 ===");
+        IO.println("基本スコア: " + baseScore + "点 (難易度: " + DIFFICULTY_NAMES[difficulty] + ")");
+        IO.println("ボーナス: " + bonusScore + "点 (残り回数: " + (maxTries - tries) + "回)");
+        IO.println("総合スコア: " + totalScore + "点");
         
         // ベストスコア更新チェック
         if (totalScore > bestScore) {
             bestScore = totalScore;
-            System.out.println("🏆 ベストスコア更新！");
+            IO.println("🏆 ベストスコア更新！");
         }
         
         // パフォーマンス評価
         displayPerformanceEvaluation(tries, maxTries);
         
-        System.out.println();
+        IO.println();
     }
     
     /**
@@ -256,17 +256,17 @@ public class NumberGuessingGame {
     private static void displayPerformanceEvaluation(int tries, int maxTries) {
         double performance = (double) tries / maxTries;
         
-        System.out.print("評価: ");
+        IO.print("評価: ");
         if (performance <= 0.3) {
-            System.out.println("🌟 素晴らしい！天才的な推測力です");
+            IO.println("🌟 素晴らしい！天才的な推測力です");
         } else if (performance <= 0.5) {
-            System.out.println("⭐ とても良い！優秀な成績です");
+            IO.println("⭐ とても良い！優秀な成績です");
         } else if (performance <= 0.7) {
-            System.out.println("👍 良い！平均以上の成績です");
+            IO.println("👍 良い！平均以上の成績です");
         } else if (performance <= 0.85) {
-            System.out.println("📚 普通！もう少し効率的な推測を心がけましょう");
+            IO.println("📚 普通！もう少し効率的な推測を心がけましょう");
         } else {
-            System.out.println("💪 惜しい！次回はもっと戦略的に攻めましょう");
+            IO.println("💪 惜しい！次回はもっと戦略的に攻めましょう");
         }
     }
     
@@ -274,9 +274,9 @@ public class NumberGuessingGame {
      * 敗北メッセージを表示します
      */
     private static void displayLoseMessage(int target) {
-        System.out.println("😢 残念！正解は " + target + " でした。");
-        System.out.println("次回は頑張ってください！");
-        System.out.println();
+        IO.println("😢 残念！正解は " + target + " でした。");
+        IO.println("次回は頑張ってください！");
+        IO.println();
     }
     
     /**
@@ -306,16 +306,16 @@ public class NumberGuessingGame {
         if (totalGames > 0) {
             double averageTries = (double) totalTries / totalGames;
             
-            System.out.println("=== 現在の統計 ===");
-            System.out.println("総プレイ回数: " + totalGames + "回");
-            System.out.println("平均試行回数: " + String.format("%.1f", averageTries) + "回");
-            System.out.println("ベストスコア: " + bestScore + "点");
+            IO.println("=== 現在の統計 ===");
+            IO.println("総プレイ回数: " + totalGames + "回");
+            IO.println("平均試行回数: " + String.format("%.1f", averageTries) + "回");
+            IO.println("ベストスコア: " + bestScore + "点");
             
             if (bestAverage != Double.MAX_VALUE) {
-                System.out.println("ベスト平均: " + String.format("%.1f", bestAverage) + "回");
+                IO.println("ベスト平均: " + String.format("%.1f", bestAverage) + "回");
             }
             
-            System.out.println();
+            IO.println();
         }
     }
     
@@ -323,54 +323,54 @@ public class NumberGuessingGame {
      * 最終統計を表示します
      */
     private static void displayFinalStatistics() {
-        System.out.println("=== 最終統計 ===");
+        IO.println("=== 最終統計 ===");
         
         if (totalGames == 0) {
-            System.out.println("プレイ記録がありません。");
+            IO.println("プレイ記録がありません。");
             return;
         }
         
         double averageTries = (double) totalTries / totalGames;
         
-        System.out.println("総プレイ回数: " + totalGames + "回");
-        System.out.println("総試行回数: " + totalTries + "回");
-        System.out.println("平均試行回数: " + String.format("%.2f", averageTries) + "回");
-        System.out.println("ベストスコア: " + bestScore + "点");
+        IO.println("総プレイ回数: " + totalGames + "回");
+        IO.println("総試行回数: " + totalTries + "回");
+        IO.println("平均試行回数: " + String.format("%.2f", averageTries) + "回");
+        IO.println("ベストスコア: " + bestScore + "点");
         
         if (bestAverage != Double.MAX_VALUE) {
-            System.out.println("ベスト平均試行回数: " + String.format("%.2f", bestAverage) + "回");
+            IO.println("ベスト平均試行回数: " + String.format("%.2f", bestAverage) + "回");
         }
         
         // 総合評価
-        System.out.println();
-        System.out.print("総合評価: ");
+        IO.println();
+        IO.print("総合評価: ");
         if (averageTries <= 3.0) {
-            System.out.println("🏆 マスター級！数値推測の達人です");
+            IO.println("🏆 マスター級！数値推測の達人です");
         } else if (averageTries <= 4.0) {
-            System.out.println("🥇 エキスパート！とても優秀です");
+            IO.println("🥇 エキスパート！とても優秀です");
         } else if (averageTries <= 5.0) {
-            System.out.println("🥈 上級者！良い成績です");
+            IO.println("🥈 上級者！良い成績です");
         } else if (averageTries <= 6.0) {
-            System.out.println("🥉 中級者！平均的な成績です");
+            IO.println("🥉 中級者！平均的な成績です");
         } else {
-            System.out.println("📚 初心者！練習すればもっと上達できます");
+            IO.println("📚 初心者！練習すればもっと上達できます");
         }
         
-        System.out.println();
+        IO.println();
     }
     
     /**
      * 再プレイするかを確認します
      */
     private static boolean askPlayAgain() {
-        System.out.print("もう一度プレイしますか？ (y/n): ");
+        IO.print("もう一度プレイしますか？ (y/n): ");
         
         // 実際のプログラムでは Scanner を使用
         // ここではデモ用に自動で判定
         boolean playAgain = totalGames < 3; // 3回まで自動プレイ
         
-        System.out.println(playAgain ? "y" : "n");
-        System.out.println();
+        IO.println(playAgain ? "y" : "n");
+        IO.println();
         
         return playAgain;
     }
