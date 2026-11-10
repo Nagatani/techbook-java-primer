@@ -1,7 +1,7 @@
 // Phase3Test.java - フェーズ3のテスト
 public class Phase3Test {
     public static void main(String[] args) {
-        System.out.println("=== フェーズ3: コレクションとジェネリクスのテスト ===\n");
+        IO.println("=== フェーズ3: コレクションとジェネリクスのテスト ===\n");
         
         StudentService service = new StudentService();
         
@@ -30,28 +30,28 @@ public class Phase3Test {
         service.registerStudent(student4);
         
         // 個別の成績レポート
-        System.out.println(service.generateGradeReport("S001"));
-        System.out.println();
+        IO.println(service.generateGradeReport("S001"));
+        IO.println();
         
         // 統計情報
-        System.out.println(service.getStatisticsReport());
+        IO.println(service.getStatisticsReport());
         
         // 条件検索のテスト
-        System.out.println("\n=== 条件検索のテスト ===");
+        IO.println("\n=== 条件検索のテスト ===");
         
-        System.out.println("\n工学部の学生:");
+        IO.println("\n工学部の学生:");
         service.findStudentsWithConditions("工学部", null, null)
-            .forEach(s -> System.out.println("  " + s.getName() + " (GPA: " + 
+            .forEach(s -> IO.println("  " + s.getName() + " (GPA: " + 
                 String.format("%.2f", s.getGpa()) + ")"));
         
-        System.out.println("\nGPA 3.5以上の学生:");
+        IO.println("\nGPA 3.5以上の学生:");
         service.findStudentsWithConditions(null, 3.5, null)
-            .forEach(s -> System.out.println("  " + s.getName() + " (" + 
+            .forEach(s -> IO.println("  " + s.getName() + " (" + 
                 s.getDepartment() + ", GPA: " + String.format("%.2f", s.getGpa()) + ")"));
         
-        System.out.println("\n20歳以上の工学部学生:");
+        IO.println("\n20歳以上の工学部学生:");
         service.findStudentsWithConditions("工学部", null, 20)
-            .forEach(s -> System.out.println("  " + s.getName() + " (" + 
+            .forEach(s -> IO.println("  " + s.getName() + " (" + 
                 s.getAge() + "歳)"));
     }
 }

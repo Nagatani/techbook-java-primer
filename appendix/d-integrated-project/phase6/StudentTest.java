@@ -4,7 +4,7 @@
 public class StudentTest {
     
     public static void main(String[] args) {
-        System.out.println("=== 単体テストのデモンストレーション ===\n");
+        IO.println("=== 単体テストのデモンストレーション ===\n");
         
         // テスト1: 学生の基本情報が正しく設定される
         testStudentCreation();
@@ -18,11 +18,11 @@ public class StudentTest {
         // テスト4: GPAの範囲チェックが機能する
         testGPARange();
         
-        System.out.println("\n✓ すべてのテストが完了しました");
+        IO.println("\n✓ すべてのテストが完了しました");
     }
     
     private static void testStudentCreation() {
-        System.out.println("テスト1: 学生の基本情報が正しく設定される");
+        IO.println("テスト1: 学生の基本情報が正しく設定される");
         
         GradeableStudent student = new GradeableStudent("S001", "田中太郎", 20, "工学部");
         
@@ -32,11 +32,11 @@ public class StudentTest {
         assert "工学部".equals(student.getDepartment()) : "学部が正しくない";
         assert student.getGpa() == 0.0 : "初期GPAが0.0でない";
         
-        System.out.println("  ✓ 学生情報が正しく設定されました");
+        IO.println("  ✓ 学生情報が正しく設定されました");
     }
     
     private static void testGradeAdditionAndGPACalculation() {
-        System.out.println("\nテスト2: 成績追加とGPA計算が正しく動作する");
+        IO.println("\nテスト2: 成績追加とGPA計算が正しく動作する");
         
         GradeableStudent student = new GradeableStudent("S001", "田中太郎", 20, "工学部");
         student.addGrade("数学", 3.5);
@@ -47,12 +47,12 @@ public class StudentTest {
         assert Math.abs(student.calculateGPA() - expectedGPA) < 0.01 : "GPA計算が正しくない";
         assert student.getGrades().size() == 3 : "成績数が正しくない";
         
-        System.out.println("  ✓ 成績追加とGPA計算が正しく動作しました");
-        System.out.println("    計算されたGPA: " + student.getGpa());
+        IO.println("  ✓ 成績追加とGPA計算が正しく動作しました");
+        IO.println("    計算されたGPA: " + student.getGpa());
     }
     
     private static void testInvalidAge() {
-        System.out.println("\nテスト3: 年齢の不正な値は設定されない");
+        IO.println("\nテスト3: 年齢の不正な値は設定されない");
         
         GradeableStudent student = new GradeableStudent("S001", "田中太郎", 20, "工学部");
         
@@ -62,11 +62,11 @@ public class StudentTest {
         student.setAge(25);
         assert student.getAge() == 25 : "正常な年齢が設定されない";
         
-        System.out.println("  ✓ 年齢の検証が正しく動作しました");
+        IO.println("  ✓ 年齢の検証が正しく動作しました");
     }
     
     private static void testGPARange() {
-        System.out.println("\nテスト4: GPAの範囲チェックが機能する");
+        IO.println("\nテスト4: GPAの範囲チェックが機能する");
         
         GradeableStudent student = new GradeableStudent("S001", "田中太郎", 20, "工学部");
         
@@ -76,6 +76,6 @@ public class StudentTest {
         student.setGpa(3.5); // 正常範囲
         assert student.getGpa() == 3.5 : "正常なGPAが設定されない";
         
-        System.out.println("  ✓ GPAの範囲チェックが正しく動作しました");
+        IO.println("  ✓ GPAの範囲チェックが正しく動作しました");
     }
 }
