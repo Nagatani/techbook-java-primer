@@ -99,13 +99,16 @@ blockquote {
   background-color: var(--vs-theme--blockquote-color-bg);
   border-radius: var(--vs-prism--block-code-border-radius);
   color: var(--vs-theme--blockquote-color-body);
-  padding: var(--vs-prism--block-code-padding);
+  padding: 0.6em 1em;
+  margin-block: 0.8em;
 }
 
+/* 段落ごとに余白を付けると間延びするので、余白は枠（blockquote）側だけに付ける */
 blockquote > p {
   text-indent: 0;
   line-height: var(--vs-line-height);
-  padding: 1em 2em;
+  padding: 0;
+  margin-block: 0.3lh;
 }
 
 blockquote > p:first-child {
@@ -595,6 +598,18 @@ p {
   hyphens: auto;
 }
 
+/* 脚注は段落の字下げを引き継がない（URLから自動で作る脚注も含む） */
+.footnote,
+a[href^='http']::before {
+  text-indent: 0;
+}
+
+/* 段落を含むリスト項目（空行で区切ったリスト）は、段落の字下げと余白を付けない */
+li > p {
+  text-indent: 0;
+  margin-block: 0;
+}
+
 /* 見出し直後の段落はインデントなし */
 h1 + p,
 h2 + p,
@@ -702,7 +717,9 @@ pre {
 /* コード部分 */
 pre code {
   display: block;
-  padding: calc(1.5em - 2px) 1em;
+  /* 上下の余白は半行分。縞模様は内容の上端から数えて行とそろえる */
+  padding: 0.75em 1em;
+  background-origin: content-box;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 8pt;
   line-height: 1.5;
@@ -872,18 +889,15 @@ pre[data-lang="shell"] code {
 /* 文字列 */
 .token.string,
 .hljs-string {
-  color: #ce9178;
-  background-color: rgba(206, 145, 120, 0.05);
-  padding: 0 2px;
-  border-radius: 2px;
+  color: #a31515;
+  /* 背景や余白を付けると等幅のそろいが崩れるので、色だけで示す（白地で読める濃さにする） */
 }
 
 /* コメント */
 .token.comment,
 .hljs-comment {
-  color: #6a9955;
+  color: #4f7f3a;
   font-style: italic;
-  opacity: 0.8;
 }
 
 /* 数値 */
@@ -1482,48 +1496,60 @@ p:has(span.listing-number) + pre {
 blockquote:has(strong.column-section) {
   position: relative;
   background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-left: 2px solid #e9ecef; /* blockquoteのデフォルトborder-leftを上書き */
-}
-
-/* コラムタイトルの装飾 */
-blockquote:has(strong.column-section) > p:first-child > strong.column-section {
-  background-color: #fff;
-  padding: 0.2rem 0.8rem;
-  margin: -2rem 0 1rem 0;
-  font-size: 0.95rem;
-  color: #495057;
-  border: 2px solid #e9ecef;
+  border: 1px solid #dee2e6;
+  border-top: 3px solid #3498db;
   border-radius: 4px;
-  display: block;
+  padding: 0.7em 1.2em 0.8em;
+  margin: 1.2em 0;
+  box-shadow: none;
 }
 
-/* blockquoteコラム内の見出し */
-blockquote:has(strong.column-section) h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  color: #343a40;
+/* コラムの題（枠の上端に題の行を置く） */
+blockquote:has(strong.column-section) > p:first-child {
+  margin-block: 0 0.4em;
+}
+
+blockquote:has(strong.column-section) > p:first-child > strong.column-section {
+  display: block;
+  background: none;
+  border: none;
   border-bottom: 1px solid #dee2e6;
-  padding-bottom: 0.5rem;
+  padding: 0 0 0.3em;
+  margin: 0;
+  font-size: 13Q;
+  color: #2c7fb8;
+}
+
+/* コラム内の見出し（本文の見出しの装飾は付けず、縦線だけにする） */
+blockquote:has(strong.column-section) h3 {
+  margin-top: 0.8em;
+  margin-bottom: 0.3em;
+  padding-left: 0.7em;
+  font-size: 15Q;
+  line-height: 21Q;
+  color: #343a40;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+blockquote:has(strong.column-section) h3::after {
+  content: none;
 }
 
 blockquote:has(strong.column-section) h4 {
-  margin-top: 1.2rem;
-  margin-bottom: 0.8rem;
-  font-size: 1rem;
+  margin-top: 0.7em;
+  margin-bottom: 0.3em;
+  font-size: 13Q;
   color: #495057;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 /* blockquoteコラム内のコードブロック */
 blockquote:has(strong.column-section) pre {
   background-color: #fff;
   border: 1px solid #dee2e6;
-  margin: 0.8rem 0;
+  margin: 0.6em 0;
 }
 
 /* blockquoteコラム内の強調表示（タイトル以外） */
@@ -1535,25 +1561,25 @@ blockquote:has(strong.column-section) p:not(:first-child) strong {
 /* blockquoteコラム内のリスト */
 blockquote:has(strong.column-section) ul,
 blockquote:has(strong.column-section) ol {
-  margin: 0.5rem 0;
+  margin: 0.3lh 0;
   padding-left: 1.5rem;
 }
 
 blockquote:has(strong.column-section) li {
-  margin: 0.3rem 0;
+  margin: 0.1lh 0;
 }
 
 /* 印刷時のblockquoteコラム調整 */
 @media print {
   blockquote:has(strong.column-section) {
-    background-color: #fafafa;
-    border-color: #ccc;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    border-top-color: #3498db;
     box-shadow: none;
   }
   
   blockquote:has(strong.column-section) > p:first-child > strong.column-section {
-    background-color: #fff;
-    border-color: #ccc;
+    border-color: #dee2e6;
   }
 }
 
@@ -1909,4 +1935,9 @@ h1 {
 
 h2 {
   string-set: section content(), section-number content(before);
+}
+
+/* 章番号のない文書（目次など）では、テーマ標準の節番号（1.2など）を柱に出さない */
+h2:not([data-chapter]) {
+  string-set: section content(), section-number "";
 }
