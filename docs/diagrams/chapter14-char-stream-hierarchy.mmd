@@ -18,9 +18,7 @@ classDiagram
     }
     
     class InputStreamReader {
-        -String charsetName
         +InputStreamReader(InputStream)
-        +InputStreamReader(InputStream, String)
     }
     
     class Writer {
@@ -42,9 +40,7 @@ classDiagram
     }
     
     class OutputStreamWriter {
-        -String charsetName
         +OutputStreamWriter(OutputStream)
-        +OutputStreamWriter(OutputStream, String)
     }
     
     class PrintWriter {
@@ -62,5 +58,3 @@ classDiagram
     InputStreamReader <|-- FileReader
     OutputStreamWriter <|-- FileWriter
     
-    note for Reader "文字ストリームの<br/>読み込み基底クラス"
-    note for Writer "文字ストリームの<br/>書き込み基底クラス"
