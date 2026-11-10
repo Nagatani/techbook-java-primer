@@ -66,7 +66,7 @@ public class CustomSpliterator {
          * 分割過程を可視化するメソッド
          */
         public void printSplitInfo() {
-            System.out.println("Spliterator[" + origin + ", " + fence + ") size=" + estimateSize());
+            IO.println("Spliterator[" + origin + ", " + fence + ") size=" + estimateSize());
         }
     }
     
@@ -185,7 +185,7 @@ public class CustomSpliterator {
      * Spliteratorの分割動作をデモンストレーション
      */
     public static void demonstrateSplitBehavior() {
-        System.out.println("=== Spliterator Split Behavior Demo ===");
+        IO.println("=== Spliterator Split Behavior Demo ===");
         
         // テストデータの準備
         List<Integer> numbers = new ArrayList<>();
@@ -195,20 +195,20 @@ public class CustomSpliterator {
         
         ArrayListSpliterator<Integer> spliterator = new ArrayListSpliterator<>(numbers);
         
-        System.out.println("Original:");
+        IO.println("Original:");
         spliterator.printSplitInfo();
         
         // 分割のデモンストレーション
         Spliterator<Integer> split1 = spliterator.trySplit();
         if (split1 instanceof ArrayListSpliterator) {
-            System.out.println("After first split:");
+            IO.println("After first split:");
             ((ArrayListSpliterator<Integer>) split1).printSplitInfo();
             spliterator.printSplitInfo();
             
             // さらに分割
             Spliterator<Integer> split2 = split1.trySplit();
             if (split2 instanceof ArrayListSpliterator) {
-                System.out.println("After second split:");
+                IO.println("After second split:");
                 ((ArrayListSpliterator<Integer>) split2).printSplitInfo();
                 ((ArrayListSpliterator<Integer>) split1).printSplitInfo();
                 spliterator.printSplitInfo();
@@ -220,7 +220,7 @@ public class CustomSpliterator {
      * 範囲生成器Spliteratorのデモ
      */
     public static void demonstrateRangeSpliterator() {
-        System.out.println("\n=== Range Spliterator Demo ===");
+        IO.println("\n=== Range Spliterator Demo ===");
         
         RangeSpliterator rangeSpliterator = new RangeSpliterator(0, 100, 1);
         
@@ -232,7 +232,7 @@ public class CustomSpliterator {
             .mapToInt(Integer::intValue)
             .sum();
         
-        System.out.println("Sum of even numbers 0-99: " + sum);
+        IO.println("Sum of even numbers 0-99: " + sum);
         
         // 並列処理での使用
         RangeSpliterator parallelRange = new RangeSpliterator(0, 1000000, 1);
@@ -244,8 +244,8 @@ public class CustomSpliterator {
             .sum();
         long endTime = System.currentTimeMillis();
         
-        System.out.println("Parallel sum of squares: " + parallelSum);
-        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+        IO.println("Parallel sum of squares: " + parallelSum);
+        IO.println("Execution time: " + (endTime - startTime) + "ms");
     }
     
     /**

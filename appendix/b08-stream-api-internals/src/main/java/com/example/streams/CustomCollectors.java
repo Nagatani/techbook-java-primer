@@ -224,7 +224,7 @@ public class CustomCollectors {
      * カスタムコレクターのデモンストレーション
      */
     public static void demonstrateCustomCollectors() {
-        System.out.println("=== Custom Collectors Demo ===");
+        IO.println("=== Custom Collectors Demo ===");
         
         // テストデータ
         List<String> words = Arrays.asList(
@@ -233,49 +233,49 @@ public class CustomCollectors {
         );
         
         // 1. 効率的な文字列結合
-        System.out.println("1. Efficient String Joining:");
+        IO.println("1. Efficient String Joining:");
         String joined = words.stream()
             .collect(new EfficientStringJoiner(", ", "[", "]"));
-        System.out.println("Joined: " + joined);
+        IO.println("Joined: " + joined);
         
         // 2. ヒストグラム（文字列長の分布）
-        System.out.println("\n2. Word Length Histogram:");
+        IO.println("\n2. Word Length Histogram:");
         Map<Integer, Long> lengthHistogram = words.stream()
             .map(String::length)
             .collect(new ConcurrentHistogramCollector<>());
         lengthHistogram.forEach((length, count) -> 
-            System.out.println("Length " + length + ": " + count + " words"));
+            IO.println("Length " + length + ": " + count + " words"));
         
         // 3. 数値統計
-        System.out.println("\n3. Statistics Collection:");
+        IO.println("\n3. Statistics Collection:");
         List<Integer> numbers = IntStream.rangeClosed(1, 1000)
             .boxed()
             .collect(Collectors.toList());
         
         StatisticsCollector.Stats stats = numbers.stream()
             .collect(new StatisticsCollector());
-        System.out.println("Sequential: " + stats);
+        IO.println("Sequential: " + stats);
         
         StatisticsCollector.Stats parallelStats = numbers.parallelStream()
             .collect(new StatisticsCollector());
-        System.out.println("Parallel: " + parallelStats);
+        IO.println("Parallel: " + parallelStats);
         
         // 4. Top-K 要素
-        System.out.println("\n4. Top-K Elements:");
+        IO.println("\n4. Top-K Elements:");
         List<Integer> topNumbers = numbers.stream()
             .collect(topK(5, Integer::compareTo));
-        System.out.println("Top 5 numbers: " + topNumbers);
+        IO.println("Top 5 numbers: " + topNumbers);
         
         List<String> longestWords = words.stream()
             .collect(topK(3, Comparator.comparing(String::length)));
-        System.out.println("Top 3 longest words: " + longestWords);
+        IO.println("Top 3 longest words: " + longestWords);
     }
     
     /**
      * パフォーマンス比較
      */
     public static void performanceComparison() {
-        System.out.println("\n=== Performance Comparison ===");
+        IO.println("\n=== Performance Comparison ===");
         
         List<String> largeDataset = IntStream.range(0, 100000)
             .mapToObj(i -> "item_" + i)
@@ -286,16 +286,16 @@ public class CustomCollectors {
         String result1 = largeDataset.stream()
             .collect(Collectors.joining(", "));
         long endTime = System.nanoTime();
-        System.out.println("Standard joining: " + (endTime - startTime) / 1_000_000 + "ms");
+        IO.println("Standard joining: " + (endTime - startTime) / 1_000_000 + "ms");
         
         startTime = System.nanoTime();
         String result2 = largeDataset.stream()
             .collect(new EfficientStringJoiner(", "));
         endTime = System.nanoTime();
-        System.out.println("Custom joining: " + (endTime - startTime) / 1_000_000 + "ms");
+        IO.println("Custom joining: " + (endTime - startTime) / 1_000_000 + "ms");
         
         // 結果の一致確認
-        System.out.println("Results match: " + result1.equals(result2));
+        IO.println("Results match: " + result1.equals(result2));
     }
     
     public static void main(String[] args) {

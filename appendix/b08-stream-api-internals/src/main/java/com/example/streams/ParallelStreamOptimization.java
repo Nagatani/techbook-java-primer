@@ -19,7 +19,7 @@ public class ParallelStreamOptimization {
      * データサイズ別の並列化効果を測定
      */
     public static void measureParallelEffectiveness() {
-        System.out.println("=== Parallel Stream Effectiveness by Data Size ===");
+        IO.println("=== Parallel Stream Effectiveness by Data Size ===");
         
         int[] dataSizes = {100, 1_000, 10_000, 100_000, 1_000_000};
         
@@ -44,8 +44,8 @@ public class ParallelStreamOptimization {
             });
             
             double speedup = (double) sequentialTime / parallelTime;
-            System.out.printf("Size: %7d | Sequential: %4dms | Parallel: %4dms | Speedup: %.2fx%n",
-                size, sequentialTime, parallelTime, speedup);
+            IO.println("Size: %7d | Sequential: %4dms | Parallel: %4dms | Speedup: %.2fx".formatted(
+                size, sequentialTime, parallelTime, speedup));
         }
     }
     
@@ -67,7 +67,7 @@ public class ParallelStreamOptimization {
      * Fork/Join Pool のカスタマイズ
      */
     public static void demonstrateCustomForkJoinPool() {
-        System.out.println("\n=== Custom ForkJoinPool Configuration ===");
+        IO.println("\n=== Custom ForkJoinPool Configuration ===");
         
         List<Integer> data = IntStream.range(0, 10000)
             .boxed()
@@ -75,14 +75,14 @@ public class ParallelStreamOptimization {
         
         // デフォルトプール（通常はCPUコア数）
         int defaultPoolSize = ForkJoinPool.commonPool().getParallelism();
-        System.out.println("Default pool parallelism: " + defaultPoolSize);
+        IO.println("Default pool parallelism: " + defaultPoolSize);
         
         long defaultTime = measureTime(() -> {
             return data.parallelStream()
                 .filter(ParallelStreamOptimization::isPrime)
                 .count();
         });
-        System.out.println("Default pool time: " + defaultTime + "ms");
+        IO.println("Default pool time: " + defaultTime + "ms");
         
         // カスタムプール（コア数の2倍）
         int customPoolSize = Math.max(2, defaultPoolSize * 2);
@@ -96,7 +96,7 @@ public class ParallelStreamOptimization {
                         .count()
                 ).join();  // join()は検査例外を投げないのでSupplierの中で使える
             });
-            System.out.println("Custom pool (" + customPoolSize + " threads) time: " + customTime + "ms");
+            IO.println("Custom pool (" + customPoolSize + " threads) time: " + customTime + "ms");
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +109,7 @@ public class ParallelStreamOptimization {
      * 並列化に適さないケースの例
      */
     public static void demonstrateInappropriateParallelization() {
-        System.out.println("\n=== Inappropriate Parallelization Examples ===");
+        IO.println("\n=== Inappropriate Parallelization Examples ===");
         
         // 1. 小さなデータセット
         List<Integer> smallData = Arrays.asList(1, 2, 3, 4, 5);
@@ -126,10 +126,10 @@ public class ParallelStreamOptimization {
                 .collect(Collectors.toList());
         });
         
-        System.out.println("Small dataset (5 elements):");
-        System.out.println("  Sequential: " + smallSeqTime + "ms");
-        System.out.println("  Parallel: " + smallParTime + "ms");
-        System.out.println("  Parallel overhead: " + (smallParTime > smallSeqTime ? "Yes" : "No"));
+        IO.println("Small dataset (5 elements):");
+        IO.println("  Sequential: " + smallSeqTime + "ms");
+        IO.println("  Parallel: " + smallParTime + "ms");
+        IO.println("  Parallel overhead: " + (smallParTime > smallSeqTime ? "Yes" : "No"));
         
         // 2. 順序依存の処理
         List<Integer> numbers = IntStream.range(0, 1000).boxed().collect(Collectors.toList());
@@ -142,8 +142,8 @@ public class ParallelStreamOptimization {
             .limit(100)
             .collect(Collectors.toList());
         
-        System.out.println("\nOrder-dependent operations:");
-        System.out.println("  Sequential and parallel results equal: " + 
+        IO.println("\nOrder-dependent operations:");
+        IO.println("  Sequential and parallel results equal: " + 
             sequentialResult.equals(parallelResult));
         
         // 3. I/O集約的なタスク（シミュレーション）
@@ -179,17 +179,17 @@ public class ParallelStreamOptimization {
                 .collect(Collectors.toList());
         });
         
-        System.out.println("I/O-bound task simulation:");
-        System.out.println("  Sequential: " + ioSeqTime + "ms");
-        System.out.println("  Parallel: " + ioParTime + "ms");
-        System.out.println("  Speedup: " + String.format("%.2f", (double) ioSeqTime / ioParTime) + "x");
+        IO.println("I/O-bound task simulation:");
+        IO.println("  Sequential: " + ioSeqTime + "ms");
+        IO.println("  Parallel: " + ioParTime + "ms");
+        IO.println("  Speedup: " + String.format("%.2f", (double) ioSeqTime / ioParTime) + "x");
     }
     
     /**
      * ストリームの分割特性による性能への影響
      */
     public static void demonstrateSpliteratorCharacteristics() {
-        System.out.println("\n=== Spliterator Characteristics Impact ===");
+        IO.println("\n=== Spliterator Characteristics Impact ===");
         
         // ArrayList（良い分割特性）
         List<Integer> arrayList = IntStream.range(0, 100000)
@@ -217,7 +217,7 @@ public class ParallelStreamOptimization {
                 .mapToLong(Integer::longValue)
                 .sum();
         });
-        System.out.println(collectionType + " parallel processing: " + time + "ms");
+        IO.println(collectionType + " parallel processing: " + time + "ms");
     }
     
     /**
@@ -233,32 +233,32 @@ public class ParallelStreamOptimization {
      * 並列ストリームのベストプラクティス例
      */
     public static void demonstrateBestPractices() {
-        System.out.println("\n=== Parallel Stream Best Practices ===");
+        IO.println("\n=== Parallel Stream Best Practices ===");
         
         List<Integer> data = IntStream.range(0, 1_000_000)
             .boxed()
             .collect(Collectors.toList());
         
         // 1. 状態を共有しない処理
-        System.out.println("1. Stateless operations:");
+        IO.println("1. Stateless operations:");
         long sum = data.parallelStream()
             .filter(x -> x % 2 == 0)
             .mapToLong(Integer::longValue)
             .sum();
-        System.out.println("   Sum of even numbers: " + sum);
+        IO.println("   Sum of even numbers: " + sum);
         
         // 2. 適切なコレクター使用
-        System.out.println("2. Appropriate collectors:");
+        IO.println("2. Appropriate collectors:");
         Map<Boolean, Long> partitioned = data.parallelStream()
             .collect(Collectors.partitioningBy(
                 x -> x % 2 == 0,
                 Collectors.counting()
             ));
-        System.out.println("   Even: " + partitioned.get(true) + 
+        IO.println("   Even: " + partitioned.get(true) + 
                          ", Odd: " + partitioned.get(false));
         
         // 3. 副作用を避ける
-        System.out.println("3. Avoiding side effects:");
+        IO.println("3. Avoiding side effects:");
         // 悪い例（コメントアウト）
         // List<Integer> badResults = new ArrayList<>(); // スレッドセーフでない
         // data.parallelStream().forEach(badResults::add); // 危険
@@ -267,7 +267,7 @@ public class ParallelStreamOptimization {
         List<Integer> goodResults = data.parallelStream()
             .filter(x -> x < 100)
             .collect(Collectors.toList()); // スレッドセーフ
-        System.out.println("   Collected " + goodResults.size() + " elements safely");
+        IO.println("   Collected " + goodResults.size() + " elements safely");
     }
     
     /**
