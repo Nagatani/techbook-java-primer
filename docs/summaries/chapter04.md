@@ -7,7 +7,7 @@ sections:
   - key: "なぜカプセル化が重要なのか"
     hash: 11686a0e
   - key: "カプセル化とアクセス制御"
-    hash: dd29389d
+    hash: 62faadc3
   - key: "設計原則とソフトウェアアーキテクチャ"
     hash: 9e3f3506
   - key: "実践的なクラス設計例"

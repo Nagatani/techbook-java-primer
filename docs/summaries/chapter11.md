@@ -7,7 +7,7 @@ sections:
   - key: "匿名クラスからラムダ式へ"
     hash: 0573b246
   - key: "関数型インターフェイス"
-    hash: 617bfef0
+    hash: 31356c2c
   - key: "メソッド参照"
     hash: ddbb9bc1
   - key: "ラムダ式の応用例"

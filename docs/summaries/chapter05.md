@@ -7,11 +7,11 @@ sections:
   - key: "なぜ継承とポリモーフィズムが必要なのか"
     hash: d8559dc0
   - key: "実践的な継承設計パターン"
-    hash: 8dc3f660
+    hash: 84479aac
   - key: "メソッドのオーバーライド"
     hash: 792d69ee
   - key: "ポリモーフィズム（多態性）"
-    hash: 12d972c1
+    hash: 0dcf5e09
   - key: "`instanceof`演算子とキャスト"
     hash: 67e6789b
   - key: "例外処理の基礎（補足）"

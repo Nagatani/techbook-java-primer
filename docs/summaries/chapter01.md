@@ -15,7 +15,7 @@ sections:
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
     hash: 4c1a912e
   - key: "Javaの特徴"
-    hash: 679c43e9
+    hash: 64507654
   - key: "開発環境の準備"
     hash: a946f039
   - key: "最初のJavaプログラム"

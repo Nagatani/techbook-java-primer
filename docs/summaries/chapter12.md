@@ -9,7 +9,7 @@ sections:
   - key: "ラムダ式によるカスタムソート"
     hash: a4251141
   - key: "Stream APIによる現代的なコレクション操作"
-    hash: e30e4115
+    hash: 2467d0fd
   - key: "Optional型による安全なnull処理"
     hash: 9b4d477b
   - key: "並列ストリームによるパフォーマンス向上"

@@ -9,7 +9,7 @@ sections:
   - key: "抽象クラスと抽象メソッド"
     hash: 949ccf9c
   - key: "インターフェイス：振る舞いの契約"
-    hash: a5cbdabb
+    hash: d215269e
   - key: "抽象クラス vs インターフェイス"
     hash: 1d96f177
   - key: "Java 8以降のインターフェイス進化"
