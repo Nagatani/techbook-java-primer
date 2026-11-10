@@ -9,7 +9,7 @@ class RegularUser {
     }
 
     void processRequest(String action) {
-        System.out.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+        IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
     }
 }
 
@@ -25,8 +25,8 @@ class AdminUser {
     }
 
     void processRequest(String action) {
-        System.out.println("管理者権限での処理: " + action);
-        System.out.println("セキュリティチェックを実行中...");
+        IO.println("管理者権限での処理: " + action);
+        IO.println("セキュリティチェックを実行中...");
     }
 }
 
@@ -38,7 +38,7 @@ class GuestUser {
     }
 
     void processRequest(String action) {
-        System.out.println("ユーザー guest_" + sessionId + " が " + action + " をリクエストしました");
-        System.out.println("ゲストユーザーのため、一部機能が制限されています");
+        IO.println("ユーザー guest_" + sessionId + " が " + action + " をリクエストしました");
+        IO.println("ゲストユーザーのため、一部機能が制限されています");
     }
 }

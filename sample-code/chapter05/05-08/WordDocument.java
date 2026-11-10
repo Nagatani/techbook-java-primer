@@ -6,6 +6,6 @@ public class WordDocument extends Document {
     
     // WordDocument固有の機能があれば追加
     public void applyTemplate(String templateName) {
-        System.out.println(filename + " にテンプレート " + templateName + " を適用");
+        IO.println(filename + " にテンプレート " + templateName + " を適用");
     }
 }

@@ -7,7 +7,7 @@ public class RefactoredDocumentTest {
         word.applyTemplate("ビジネスレポート");
         word.close();
         
-        System.out.println();
+        IO.println();
         
         PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
         pdf.open();
@@ -15,7 +15,7 @@ public class RefactoredDocumentTest {
         pdf.generatePDF();
         pdf.close();
         
-        System.out.println();
+        IO.println();
         
         ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
         excel.open();

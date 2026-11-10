@@ -20,8 +20,8 @@ class AdminUser extends User {
 
     @Override
     public void processRequest(String action) {
-        System.out.println("管理者権限での処理: " + action);
-        System.out.println("セキュリティチェックを実行中...");
+        IO.println("管理者権限での処理: " + action);
+        IO.println("セキュリティチェックを実行中...");
     }
 
     @Override
@@ -38,6 +38,6 @@ class GuestUser extends User {
     @Override
     public void processRequest(String action) {
         super.processRequest(action);
-        System.out.println("ゲストユーザーのため、一部機能が制限されています");
+        IO.println("ゲストユーザーのため、一部機能が制限されています");
     }
 }

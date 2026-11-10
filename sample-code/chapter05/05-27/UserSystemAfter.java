@@ -10,19 +10,19 @@ public class UserSystemAfter {
             // new PremiumUser("P001", "premium@example.com")
         };
         
-        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===");
+        IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===");
         
         // 統一的な処理で全員を扱える
         for (User user : users) {
             user.processRequest("READ"); // 実際の型に応じた処理が自動的に呼ばれる
         }
         
-        System.out.println();
-        System.out.println("=== DELETE権限のチェック ===");
+        IO.println();
+        IO.println("=== DELETE権限のチェック ===");
         checkAccessPermission(users, "DELETE");
         
-        System.out.println();
-        System.out.println("=== 通知の送信 ===");
+        IO.println();
+        IO.println("=== 通知の送信 ===");
         sendNotification(users, "システムメンテナンスのお知らせ");
     }
     
@@ -34,7 +34,7 @@ public class UserSystemAfter {
         for (User user : users) {
             if (!user.hasPermission(resource)) {
                 hasPermission = false;
-                System.out.println(user.getUserId() + " には " + resource + " 権限がありません");
+                IO.println(user.getUserId() + " には " + resource + " 権限がありません");
             }
         }
         
@@ -46,7 +46,7 @@ public class UserSystemAfter {
         for (User user : users) {
             if (user.isActive()) {
                 user.notify(message);
-                System.out.println(user.getUserId() + " に通知を送信しました");
+                IO.println(user.getUserId() + " に通知を送信しました");
             }
         }
     }

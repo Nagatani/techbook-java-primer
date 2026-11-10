@@ -5,21 +5,21 @@ public class CharacterOverrideTest {
         Character normalChar = new Character("戦士", 100);
         normalChar.attack();
         
-        System.out.println();
+        IO.println();
         
         // 魔法使い
         Wizard wizard = new Wizard("魔法使い", 70, 10);
         wizard.attack();  // オーバーライドされたメソッド
         wizard.castSpell();
         
-        System.out.println();
+        IO.println();
         
         // ポリモーフィズムの例
         Character polymorphicWizard = new Wizard("賢者", 80, 20);
         polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
         // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
 
-        System.out.println();
+        IO.println();
 
         // superで親クラスのメソッドを呼び出す例
         Knight knight = new Knight("騎士", 120);

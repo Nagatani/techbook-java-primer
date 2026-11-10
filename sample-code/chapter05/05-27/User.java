@@ -9,7 +9,7 @@ public class User {
     }
     
     public void processRequest(String action) {
-        System.out.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+        IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
     }
     
     public boolean hasPermission(String resource) {
@@ -19,7 +19,7 @@ public class User {
     
     public void notify(String message) {
         // 通知を送信
-        System.out.println(userId + " への通知: " + message);
+        IO.println(userId + " への通知: " + message);
     }
     
     public boolean isActive() {

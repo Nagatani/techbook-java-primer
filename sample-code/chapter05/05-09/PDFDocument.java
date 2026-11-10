@@ -10,14 +10,14 @@ public class PDFDocument extends Document {
     @Override
     public void save() {
         fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
-        System.out.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
+        IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
     public void generatePDF() {
         if (pageCount > 0) {
-            System.out.println("PDF形式で " + pageCount + " ページを生成");
+            IO.println("PDF形式で " + pageCount + " ページを生成");
         } else {
-            System.out.println("ページ数が指定されていません");
+            IO.println("ページ数が指定されていません");
         }
     }
 }

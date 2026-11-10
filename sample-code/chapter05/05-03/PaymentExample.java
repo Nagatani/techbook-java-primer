@@ -13,9 +13,9 @@ public class PaymentExample {
         
         PaymentResult ccResult = ccPayment.processPayment();
         if (ccResult.isSuccess()) {
-            System.out.println("決済成功: " + ccResult.getAuthorizationCode());
+            IO.println("決済成功: " + ccResult.getAuthorizationCode());
         } else {
-            System.out.println("決済失敗: " + ccResult.getMessage());
+            IO.println("決済失敗: " + ccResult.getMessage());
         }
         
         // PayPal決済の例（エラーケース）
@@ -29,9 +29,9 @@ public class PaymentExample {
         
         PaymentResult ppResult = ppPayment.processPayment();
         if (ppResult.isSuccess()) {
-            System.out.println("決済成功: " + ppResult.getAuthorizationCode());
+            IO.println("決済成功: " + ppResult.getAuthorizationCode());
         } else {
-            System.out.println("決済失敗: " + ppResult.getMessage());
+            IO.println("決済失敗: " + ppResult.getMessage());
         }
     }
 }

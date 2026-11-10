@@ -5,16 +5,16 @@ public class ExcelDocument {
     
     // また同じメソッドの重複！
     public void open() {
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
 }

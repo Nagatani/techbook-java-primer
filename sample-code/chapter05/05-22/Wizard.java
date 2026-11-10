@@ -11,10 +11,10 @@ public class Wizard extends Character {
     // attackメソッドをオーバーライド
     @Override
     public void attack() {
-        System.out.println(this.name + "は杖で殴った！");
+        IO.println(this.name + "は杖で殴った！");
     }
 
     public void castSpell() {
-        System.out.println(this.name + "は魔法を唱えた！");
+        IO.println(this.name + "は魔法を唱えた！");
     }
 }

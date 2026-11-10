@@ -9,6 +9,6 @@ public class Character {
     }
 
     public void attack() {
-        System.out.println(this.name + "の攻撃！");
+        IO.println(this.name + "の攻撃！");
     }
 }

@@ -7,7 +7,7 @@ public class EmployeeTest {
         manager.work();  // 継承したメソッド
         manager.conductMeeting();  // Manager固有のメソッド
         
-        System.out.println();
+        IO.println();
         
         // Developerの使用例
         Developer developer = new Developer();

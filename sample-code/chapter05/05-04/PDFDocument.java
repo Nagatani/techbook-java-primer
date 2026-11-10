@@ -5,20 +5,20 @@ public class PDFDocument {
     private int pageCount;       // ⑤
     
     public void open() {         // ②と完全重複
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {         // ③と完全重複
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {        // ④と完全重複
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
     
     public void generatePDF() {  // ⑥
-        System.out.println("PDF形式で " + pageCount + " ページを生成");
+        IO.println("PDF形式で " + pageCount + " ページを生成");
     }
 }

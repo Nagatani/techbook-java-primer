@@ -29,13 +29,13 @@ class ShapeData {
     void draw() {
         switch (type) {
             case CIRCLE:
-                System.out.println("円を描画：半径 = " + radius);
+                IO.println("円を描画：半径 = " + radius);
                 break;
             case RECTANGLE:
-                System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
+                IO.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
                 break;
             case TRIANGLE:
-                System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + triangleHeight);
+                IO.println("三角形を描画：底辺 = " + base + ", 高さ = " + triangleHeight);
                 break;
         }
     }
@@ -66,7 +66,7 @@ public class DrawingAppBefore {
         // すべての図形を描画
         for (ShapeData shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
+            IO.println("面積: " + shape.calculateArea());
         }
     }
 }

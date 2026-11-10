@@ -11,6 +11,6 @@ public class Employee {
     }
     
     public void modifySystemSettings() {
-        System.out.println(name + " がシステム設定を変更しました");
+        IO.println(name + " がシステム設定を変更しました");
     }
 }

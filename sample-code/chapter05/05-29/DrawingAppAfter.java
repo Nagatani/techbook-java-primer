@@ -7,7 +7,7 @@ class Shape {
     
     void draw() {
         // デフォルトの実装
-        System.out.println("基本的な図形を描画");
+        IO.println("基本的な図形を描画");
     }
 }
 
@@ -26,7 +26,7 @@ class Circle extends Shape {
     
     @Override
     void draw() {
-        System.out.println("円を描画：半径 = " + radius);
+        IO.println("円を描画：半径 = " + radius);
     }
 }
 
@@ -47,7 +47,7 @@ class Rectangle extends Shape {
     
     @Override
     void draw() {
-        System.out.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
+        IO.println("長方形を描画：幅 = " + width + ", 高さ = " + height);
     }
 }
 
@@ -68,7 +68,7 @@ class Triangle extends Shape {
     
     @Override
     void draw() {
-        System.out.println("三角形を描画：底辺 = " + base + ", 高さ = " + height);
+        IO.println("三角形を描画：底辺 = " + base + ", 高さ = " + height);
     }
 }
 
@@ -84,16 +84,16 @@ public class DrawingAppAfter {
         // すべての図形を描画（型を意識しない）
         for (Shape shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
+            IO.println("面積: " + shape.calculateArea());
         }
         
         // 新しい図形（五角形）を追加しても、描画と面積計算のコードは変更不要
-        System.out.println();
-        System.out.println("=== 新しい図形を追加 ===");
+        IO.println();
+        IO.println("=== 新しい図形を追加 ===");
         Shape[] moreShapes = { new Pentagon(5.0) };
         for (Shape shape : moreShapes) {
             shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
+            IO.println("面積: " + shape.calculateArea());
         }
     }
 }
@@ -113,6 +113,6 @@ class Pentagon extends Shape {
     
     @Override
     void draw() {
-        System.out.println("五角形を描画：一辺 = " + side);
+        IO.println("五角形を描画：一辺 = " + side);
     }
 }

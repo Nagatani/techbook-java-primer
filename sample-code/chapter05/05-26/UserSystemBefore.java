@@ -6,7 +6,7 @@ public class UserSystemBefore {
         GuestUser guest = new GuestUser("session123");
         
         // それぞれの型に応じたリクエスト処理
-        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
+        IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
         
         // RegularUserの処理
         regular.processRequest("READ");
@@ -17,11 +17,11 @@ public class UserSystemBefore {
         // GuestUserの処理
         guest.processRequest("WRITE");
         
-        System.out.println();
-        System.out.println("=== アクセス権限チェック ===");
-        System.out.println("Regular user READ権限: " + checkAccessPermission(regular, null, null, "READ"));
-        System.out.println("Admin user DELETE権限: " + checkAccessPermission(null, admin, null, "DELETE"));
-        System.out.println("Guest user WRITE権限: " + checkAccessPermission(null, null, guest, "WRITE"));
+        IO.println();
+        IO.println("=== アクセス権限チェック ===");
+        IO.println("Regular user READ権限: " + checkAccessPermission(regular, null, null, "READ"));
+        IO.println("Admin user DELETE権限: " + checkAccessPermission(null, admin, null, "DELETE"));
+        IO.println("Guest user WRITE権限: " + checkAccessPermission(null, null, guest, "WRITE"));
         
         // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
         // PremiumUser premium = new PremiumUser("P001", "premium@example.com");

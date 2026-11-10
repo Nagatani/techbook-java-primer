@@ -29,7 +29,7 @@ public class CreditCardPayment extends PaymentProcessor {
     @Override
     protected String callExternalAPI() {
         // クレジットカード決済API呼び出しのシミュレーション
-        System.out.println("クレジットカード決済APIを呼び出し中...");
+        IO.println("クレジットカード決済APIを呼び出し中...");
         
         // 実際の実装では外部APIを呼び出す
         // ここではシミュレーションとして、まれにエラーが発生する例を示す

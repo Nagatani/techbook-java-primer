@@ -70,7 +70,7 @@ public class PaymentProcessor {
     
     // フックメソッド：子クラスでオーバーライド可能
     protected void logTransaction(String authCode) {
-        System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
+        IO.println("取引ID: " + transactionId + " 承認コード: " + authCode);
     }
     
     protected void logError() {

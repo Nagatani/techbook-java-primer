@@ -4,16 +4,16 @@ public class WordDocument {
     private long fileSize;       // ①
     
     public void open() {         // ②
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {         // ③
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {        // ④
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
 }

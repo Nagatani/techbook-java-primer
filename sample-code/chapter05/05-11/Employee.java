@@ -3,6 +3,6 @@ public class Employee {  // 親クラス（スーパークラス）
     String name;         // ①
 
     void work() {        // ②
-        System.out.println(this.name + "が業務を実行中");
+        IO.println(this.name + "が業務を実行中");
     }
 }

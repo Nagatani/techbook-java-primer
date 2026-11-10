@@ -140,7 +140,7 @@ public class PaymentProcessor {
     
     // フックメソッド：子クラスでオーバーライド可能
     protected void logTransaction(String authCode) {
-        System.out.println("取引ID: " + transactionId + " 承認コード: " + authCode);
+        IO.println("取引ID: " + transactionId + " 承認コード: " + authCode);
     }
     // ...
 }
@@ -193,7 +193,7 @@ public class CreditCardPayment extends PaymentProcessor {
     @Override
     protected String callExternalAPI() {
         // クレジットカード決済API呼び出しのシミュレーション
-        System.out.println("クレジットカード決済APIを呼び出し中...");
+        IO.println("クレジットカード決済APIを呼び出し中...");
         
         // 実際の実装では外部APIを呼び出す
         // ここではシミュレーションとして、まれにエラーが発生する例を示す
@@ -214,7 +214,7 @@ public class PayPalPayment extends PaymentProcessor {
     protected void logTransaction(String authCode) {
         // PayPalでは詳細なログを記録
         super.logTransaction(authCode);
-        System.out.println("PayPalアカウント: " + email);
+        IO.println("PayPalアカウント: " + email);
     }
 }
 ```
@@ -243,9 +243,9 @@ public class PaymentExample {
         
         PaymentResult ccResult = ccPayment.processPayment();
         if (ccResult.isSuccess()) {
-            System.out.println("決済成功: " + ccResult.getAuthorizationCode());
+            IO.println("決済成功: " + ccResult.getAuthorizationCode());
         } else {
-            System.out.println("決済失敗: " + ccResult.getMessage());
+            IO.println("決済失敗: " + ccResult.getMessage());
         }
         
         // PayPal決済の例（エラーケース）
@@ -259,9 +259,9 @@ public class PaymentExample {
         
         PaymentResult ppResult = ppPayment.processPayment();
         if (ppResult.isSuccess()) {
-            System.out.println("決済成功: " + ppResult.getAuthorizationCode());
+            IO.println("決済成功: " + ppResult.getAuthorizationCode());
         } else {
-            System.out.println("決済失敗: " + ppResult.getMessage());
+            IO.println("決済失敗: " + ppResult.getMessage());
         }
 ```
 
@@ -305,17 +305,17 @@ public class WordDocument {
     private long fileSize;       // ①
     
     public void open() {         // ②
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {         // ③
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {        // ④
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
 }
 
@@ -326,21 +326,21 @@ public class PDFDocument {
     private int pageCount;       // ⑤
     
     public void open() {         // ②と完全重複
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {         // ③と完全重複
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {        // ④と完全重複
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
     
     public void generatePDF() {  // ⑥
-        System.out.println("PDF形式で " + pageCount + " ページを生成");
+        IO.println("PDF形式で " + pageCount + " ページを生成");
     }
 }
 ```
@@ -358,7 +358,7 @@ public class DocumentTest {
         word.save();
         word.close();
         
-        System.out.println();
+        IO.println();
         
         // PDFDocumentの操作  
         PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
@@ -367,7 +367,7 @@ public class DocumentTest {
         pdf.generatePDF();
         pdf.close();
         
-        System.out.println();
+        IO.println();
         
         // ExcelDocumentの操作
         ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
@@ -420,17 +420,17 @@ public class ExcelDocument {
     
     // また同じメソッドの重複！
     public void open() {
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {
         fileSize = content.length();
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
 }
 ```
@@ -456,17 +456,17 @@ public class Document {
     
     // 共通メソッドを親クラスに移動
     public void open() {
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {
         fileSize = content != null ? content.length() : 0;
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
     
     // ゲッターとセッター
@@ -488,7 +488,7 @@ public class WordDocument extends Document {
     
     // WordDocument固有の機能があれば追加
     public void applyTemplate(String templateName) {
-        System.out.println(filename + " にテンプレート " + templateName + " を適用");
+        IO.println(filename + " にテンプレート " + templateName + " を適用");
     }
 }
 
@@ -504,14 +504,14 @@ public class PDFDocument extends Document {
     @Override
     public void save() {
         fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
-        System.out.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
+        IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
     public void generatePDF() {
         if (pageCount > 0) {
-            System.out.println("PDF形式で " + pageCount + " ページを生成");
+            IO.println("PDF形式で " + pageCount + " ページを生成");
         } else {
-            System.out.println("ページ数が指定されていません");
+            IO.println("ページ数が指定されていません");
         }
     }
 }
@@ -524,11 +524,11 @@ public class ExcelDocument extends Document {
     @Override  // ②
     public void save() {
         fileSize = content != null ? content.length() * 2 : 0;  // ③
-        System.out.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
+        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
     }
     
     public void createChart() {  // ④
-        System.out.println(filename + " にグラフを作成");
+        IO.println(filename + " にグラフを作成");
     }
 }
 ```
@@ -547,7 +547,7 @@ public class RefactoredDocumentTest {
         word.applyTemplate("ビジネスレポート");
         word.close();
         
-        System.out.println();
+        IO.println();
         
         PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
         pdf.open();
@@ -555,7 +555,7 @@ public class RefactoredDocumentTest {
         pdf.generatePDF();
         pdf.close();
         
-        System.out.println();
+        IO.println();
         
         ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
         excel.open();
@@ -617,13 +617,13 @@ public class Employee {  // 親クラス（スーパークラス）
     String name;         // ①
 
     void work() {        // ②
-        System.out.println(this.name + "が業務を実行中");
+        IO.println(this.name + "が業務を実行中");
     }
 }
 
 public class Manager extends Employee {  // ③
     void conductMeeting() {  // ④
-        System.out.println(this.name + "が会議を主宰");
+        IO.println(this.name + "が会議を主宰");
     }
 }
 
@@ -631,7 +631,7 @@ public class Developer extends Employee {  // ③
     String primaryLanguage;  // ⑤
 
     void writeCode() {  // ④
-        System.out.println(this.name + "が" + primaryLanguage + "でコーディング中");
+        IO.println(this.name + "が" + primaryLanguage + "でコーディング中");
     }
 }
 ```
@@ -650,7 +650,7 @@ public class EmployeeTest {
         manager.work();  // 継承したメソッド
         manager.conductMeeting();  // Manager固有のメソッド
         
-        System.out.println();
+        IO.println();
         
         // Developerの使用例
         Developer developer = new Developer();
@@ -806,7 +806,7 @@ public class Employee {
     }
     
     public void modifySystemSettings() {
-        System.out.println(name + " がシステム設定を変更しました");
+        IO.println(name + " がシステム設定を変更しました");
     }
 }
 
@@ -903,11 +903,11 @@ public class RectangleSquareTest {
     }
     
     public static void main(String[] args) {
-        System.out.println("=== 長方形のテスト ===");
+        IO.println("=== 長方形のテスト ===");
         Rectangle rectangle = new Rectangle(3, 4);
         testRectangle(rectangle);
         
-        System.out.println("\n=== 正方形のテスト ===");
+        IO.println("\n=== 正方形のテスト ===");
         Square square = new Square(5);
         testRectangle(square);
     }
@@ -947,7 +947,7 @@ public class GeometryTest {
         
         // 期待値：10 × 5 = 50
         // 実際の結果：5 × 5 = 25（最後のsetHeightで幅も5になってしまう）
-        System.out.println("面積: " + rect.getArea()); // 25が出力される
+        IO.println("面積: " + rect.getArea()); // 25が出力される
     }
 }
 ```
@@ -1187,7 +1187,7 @@ public class Character {
     }
 
     public void attack() {
-        System.out.println(this.name + "の攻撃！");
+        IO.println(this.name + "の攻撃！");
     }
 }
 
@@ -1204,7 +1204,7 @@ public class Wizard extends Character {
     // attackメソッドをオーバーライド
     @Override
     public void attack() {
-        System.out.println(this.name + "は杖で殴った！");
+        IO.println(this.name + "は杖で殴った！");
     }
     // ...
 }
@@ -1219,7 +1219,7 @@ public class Knight extends Character {
     @Override
     public void attack() {
         super.attack(); // 親クラスのattack()を呼び出す
-        System.out.println("追加で剣を振るった！"); // 子クラス独自の処理を追加
+        IO.println("追加で剣を振るった！"); // 子クラス独自の処理を追加
     }
 }
 
@@ -1355,7 +1355,7 @@ public class UserSystemBefore {
         GuestUser guest = new GuestUser("session123");
         
         // それぞれの型に応じたリクエスト処理
-        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
+        IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
         
         // RegularUserの処理
         regular.processRequest("READ");
@@ -1417,7 +1417,7 @@ public class User {
     protected String email;
     // ...
     public void processRequest(String action) {
-        System.out.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+        IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
     }
     // ...
     public boolean hasPermission(String resource) {
@@ -1427,7 +1427,7 @@ public class User {
     
     public void notify(String message) {
         // 通知を送信
-        System.out.println(userId + " への通知: " + message);
+        IO.println(userId + " への通知: " + message);
     }
     
     public boolean isActive() {
@@ -1450,7 +1450,7 @@ public class UserSystemAfter {
             // new PremiumUser("P001", "premium@example.com")
         };
         
-        System.out.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===");
+        IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムあり）===");
         
         // 統一的な処理で全員を扱える
         for (User user : users) {
@@ -1467,7 +1467,7 @@ public class UserSystemAfter {
         for (User user : users) {
             if (!user.hasPermission(resource)) {
                 hasPermission = false;
-                System.out.println(user.getUserId() + " には " + resource + " 権限がありません");
+                IO.println(user.getUserId() + " には " + resource + " 権限がありません");
             }
         }
         
@@ -1574,7 +1574,7 @@ public class DrawingAppBefore {
         // すべての図形を描画
         for (ShapeData shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
+            IO.println("面積: " + shape.calculateArea());
         }
     }
 }
@@ -1605,7 +1605,7 @@ class Shape {
     
     void draw() {
         // デフォルトの実装
-        System.out.println("基本的な図形を描画");
+        IO.println("基本的な図形を描画");
     }
 }
 
@@ -1624,7 +1624,7 @@ class Circle extends Shape {
     
     @Override
     void draw() {
-        System.out.println("円を描画：半径 = " + radius);
+        IO.println("円を描画：半径 = " + radius);
     }
 }
 // ...
@@ -1640,7 +1640,7 @@ public class DrawingAppAfter {
         // すべての図形を描画（型を意識しない）
         for (Shape shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.calculateArea());
+            IO.println("面積: " + shape.calculateArea());
         }
         
         // ...
@@ -1662,7 +1662,7 @@ class Pentagon extends Shape {
     
     @Override
     void draw() {
-        System.out.println("五角形を描画：一辺 = " + side);
+        IO.println("五角形を描画：一辺 = " + side);
     }
 }
 ```

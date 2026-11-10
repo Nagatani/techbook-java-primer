@@ -29,7 +29,7 @@ public class PayPalPayment extends PaymentProcessor {
     @Override
     protected String callExternalAPI() {
         // PayPal API呼び出しのシミュレーション
-        System.out.println("PayPal APIを呼び出し中...");
+        IO.println("PayPal APIを呼び出し中...");
         
         // 実際の実装では外部APIを呼び出す
         // エラーが発生した場合はnullを返す
@@ -45,6 +45,6 @@ public class PayPalPayment extends PaymentProcessor {
     protected void logTransaction(String authCode) {
         // PayPalでは詳細なログを記録
         super.logTransaction(authCode);
-        System.out.println("PayPalアカウント: " + email);
+        IO.println("PayPalアカウント: " + email);
     }
 }

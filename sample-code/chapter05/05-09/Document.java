@@ -12,17 +12,17 @@ public class Document {
     
     // 共通メソッドを親クラスに移動
     public void open() {
-        System.out.println(filename + " を開いています");
+        IO.println(filename + " を開いています");
     }
     
     public void save() {
         fileSize = content != null ? content.length() : 0;
-        System.out.println(filename + " を保存しました: " + fileSize + "バイト");
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
     }
     
     public void close() {
         content = null;
-        System.out.println(filename + " を閉じました");
+        IO.println(filename + " を閉じました");
     }
     
     // ゲッターとセッター
