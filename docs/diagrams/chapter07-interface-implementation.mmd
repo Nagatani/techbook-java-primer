@@ -5,43 +5,39 @@ classDiagram
         <<interface>>
         +compareTo(T other) int
     }
-
     class Cloneable {
         <<interface>>
     }
-
-    class Serializable {
-        <<interface>>
-    }
-
     class List~E~ {
         <<interface>>
         +add(E element) boolean
         +get(int index) E
     }
-
+    class Serializable {
+        <<interface>>
+    }
     class Map~K,V~ {
         <<interface>>
         +put(K key, V value) V
         +get(Object key) V
     }
 
-    class ArrayList~E~
-    class LinkedList~E~
-    class HashMap~K,V~
-    class TreeMap~K,V~
     class String
     class Student {
         +compareTo(Student other) int
         +clone() Object
     }
+    class LinkedList~E~
+    class ArrayList~E~
+    class HashMap~K,V~
+    class TreeMap~K,V~
 
-    List <|.. ArrayList
-    List <|.. LinkedList
-    Map <|.. HashMap
-    Map <|.. TreeMap
     Comparable <|.. String
     Comparable <|.. Student
     Cloneable <|.. Student
+    List <|.. LinkedList
+    List <|.. ArrayList
     Serializable <|.. ArrayList
     Serializable <|.. HashMap
+    Map <|.. HashMap
+    Map <|.. TreeMap
