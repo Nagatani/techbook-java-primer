@@ -74,7 +74,7 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstrateMemoryUsage() {
-            System.out.println("=== Memory Layout Optimization ===");
+            IO.println("=== Memory Layout Optimization ===");
             
             // メモリ使用量の推定
             Runtime runtime = Runtime.getRuntime();
@@ -105,12 +105,12 @@ public class RecordOptimizationDemo {
             long memAfterEfficient = runtime.totalMemory() - runtime.freeMemory();
             long efficientUsage = memAfterEfficient - memBefore;
             
-            System.out.printf("Inefficient layout memory: %,d bytes%n", inefficientUsage);
-            System.out.printf("Efficient layout memory: %,d bytes%n", efficientUsage);
-            System.out.printf("Memory saved: %,d bytes (%.2f%%)%n", 
+            IO.println("Inefficient layout memory: %,d bytes".formatted(inefficientUsage));
+            IO.println("Efficient layout memory: %,d bytes".formatted(efficientUsage));
+            IO.println("Memory saved: %,d bytes (%.2f%%)".formatted(
                 inefficientUsage - efficientUsage,
                 (inefficientUsage - efficientUsage) * 100.0 / inefficientUsage
-            );
+            ));
             
             // Point3Dの配列効率
             var pointArray = new Point3D[10_000];
@@ -118,11 +118,11 @@ public class RecordOptimizationDemo {
                 pointArray[i] = new Point3D(i, i * 2, i * 3);
             }
             
-            System.out.println("\nPoint3D operations:");
+            IO.println("\nPoint3D operations:");
             var p1 = new Point3D(1, 2, 3);
             var p2 = new Point3D(4, 5, 6);
-            System.out.println("Cross product: " + p1.cross(p2));
-            System.out.println("Dot product: " + p1.dot(p2));
+            IO.println("Cross product: " + p1.cross(p2));
+            IO.println("Dot product: " + p1.dot(p2));
         }
     }
     
@@ -168,7 +168,7 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstratePooling() {
-            System.out.println("\n=== Record Object Pooling ===");
+            IO.println("\n=== Record Object Pooling ===");
             
             // プーリングなし
             long startTime = System.nanoTime();
@@ -195,17 +195,17 @@ public class RecordOptimizationDemo {
             }
             long pooledTime = System.nanoTime() - startTime;
             
-            System.out.printf("Unpooled creation time: %.2f ms%n", unpooledTime / 1_000_000.0);
-            System.out.printf("Pooled creation time: %.2f ms%n", pooledTime / 1_000_000.0);
-            System.out.printf("Speedup: %.2fx%n", (double) unpooledTime / pooledTime);
-            System.out.println("Pool size: " + PooledRecords.getPoolSize());
+            IO.println("Unpooled creation time: %.2f ms".formatted(unpooledTime / 1_000_000.0));
+            IO.println("Pooled creation time: %.2f ms".formatted(pooledTime / 1_000_000.0));
+            IO.println("Speedup: %.2fx".formatted((double) unpooledTime / pooledTime));
+            IO.println("Pool size: " + PooledRecords.getPoolSize());
             
             // メモリ使用量の違い
             long uniqueUnpooled = unpooledKeys.stream().distinct().count();
             long uniquePooled = pooledKeys.stream().distinct().count();
             
-            System.out.println("Unique objects (unpooled): " + uniqueUnpooled);
-            System.out.println("Unique objects (pooled): " + uniquePooled);
+            IO.println("Unique objects (unpooled): " + uniqueUnpooled);
+            IO.println("Unique objects (pooled): " + uniquePooled);
         }
     }
     
@@ -281,7 +281,7 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstrateSerialization() {
-            System.out.println("\n=== Serialization Performance ===");
+            IO.println("\n=== Serialization Performance ===");
             
             var testData = new SerializableData(
                 UUID.randomUUID().toString(),
@@ -315,9 +315,9 @@ public class RecordOptimizationDemo {
                 }
             });
             
-            System.out.printf("Standard serialization: %.2f ms%n", standardTime / 1_000_000.0);
-            System.out.printf("Fast serialization: %.2f ms%n", fastTime / 1_000_000.0);
-            System.out.printf("Speedup: %.2fx%n", (double) standardTime / fastTime);
+            IO.println("Standard serialization: %.2f ms".formatted(standardTime / 1_000_000.0));
+            IO.println("Fast serialization: %.2f ms".formatted(fastTime / 1_000_000.0));
+            IO.println("Speedup: %.2fx".formatted((double) standardTime / fastTime));
             
             // サイズ比較
             try {
@@ -329,10 +329,10 @@ public class RecordOptimizationDemo {
                 byte[] fastBytes = FastSerializer.serialize(testData);
                 int fastSize = fastBytes.length;
                 
-                System.out.printf("Standard size: %d bytes%n", standardSize);
-                System.out.printf("Fast size: %d bytes%n", fastSize);
-                System.out.printf("Size reduction: %.2f%%%n", 
-                    (standardSize - fastSize) * 100.0 / standardSize);
+                IO.println("Standard size: %d bytes".formatted(standardSize));
+                IO.println("Fast size: %d bytes".formatted(fastSize));
+                IO.println("Size reduction: %.2f%%".formatted(
+                    (standardSize - fastSize) * 100.0 / standardSize));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -399,7 +399,7 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstrateReflection() {
-            System.out.println("\n=== Reflection Performance ===");
+            IO.println("\n=== Reflection Performance ===");
             
             var sampleRecord = new SampleRecord("Alice", 30, 95.5, true);
             int iterations = 100_000;
@@ -424,12 +424,12 @@ public class RecordOptimizationDemo {
                 }
             });
             
-            System.out.printf("Normal reflection: %.2f ms%n", normalTime / 1_000_000.0);
-            System.out.printf("MethodHandles: %.2f ms%n", fastTime / 1_000_000.0);
-            System.out.printf("Speedup: %.2fx%n", (double) normalTime / fastTime);
+            IO.println("Normal reflection: %.2f ms".formatted(normalTime / 1_000_000.0));
+            IO.println("MethodHandles: %.2f ms".formatted(fastTime / 1_000_000.0));
+            IO.println("Speedup: %.2fx".formatted((double) normalTime / fastTime));
             
             // 結果の確認
-            System.out.println("Record as map: " + recordToMapFast(sampleRecord));
+            IO.println("Record as map: " + recordToMapFast(sampleRecord));
         }
     }
     
@@ -498,7 +498,7 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstrateConcurrency() {
-            System.out.println("\n=== Concurrency Optimization ===");
+            IO.println("\n=== Concurrency Optimization ===");
             
             var cache = new HighPerformanceCache<String, String>(Duration.ofSeconds(2));
             var executor = Executors.newFixedThreadPool(10);
@@ -528,7 +528,7 @@ public class RecordOptimizationDemo {
                 latch.await();
                 Thread.sleep(100); // 統計の安定化
                 
-                System.out.printf("Cache hit rate: %.2f%%%n", cache.getHitRate() * 100);
+                IO.println("Cache hit rate: %.2f%%".formatted(cache.getHitRate() * 100));
                 
                 // パフォーマンス測定
                 long startTime = System.nanoTime();
@@ -537,8 +537,8 @@ public class RecordOptimizationDemo {
                 }
                 long readTime = System.nanoTime() - startTime;
                 
-                System.out.printf("Read performance: %.2f ops/ms%n", 
-                    100_000.0 / (readTime / 1_000_000.0));
+                IO.println("Read performance: %.2f ops/ms".formatted(
+                    100_000.0 / (readTime / 1_000_000.0)));
                 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -560,8 +560,8 @@ public class RecordOptimizationDemo {
     // ========== メインメソッド ==========
     
     public static void main(String[] args) {
-        System.out.println("Record Optimization and Performance Demo");
-        System.out.println("=======================================");
+        IO.println("Record Optimization and Performance Demo");
+        IO.println("=======================================");
         
         // メモリレイアウト最適化
         MemoryOptimization.demonstrateMemoryUsage();
@@ -578,18 +578,18 @@ public class RecordOptimizationDemo {
         // 並行処理最適化
         ConcurrencyOptimization.demonstrateConcurrency();
         
-        System.out.println("\n🎯 Key Optimization Insights:");
-        System.out.println("✓ Proper field ordering reduces memory padding");
-        System.out.println("✓ Object pooling works well with immutable records");
-        System.out.println("✓ Custom serialization can be much faster than default");
-        System.out.println("✓ MethodHandles provide faster reflection access");
-        System.out.println("✓ Records are naturally thread-safe for concurrent use");
+        IO.println("\n🎯 Key Optimization Insights:");
+        IO.println("✓ Proper field ordering reduces memory padding");
+        IO.println("✓ Object pooling works well with immutable records");
+        IO.println("✓ Custom serialization can be much faster than default");
+        IO.println("✓ MethodHandles provide faster reflection access");
+        IO.println("✓ Records are naturally thread-safe for concurrent use");
         
-        System.out.println("\n⚡ Performance Tips:");
-        System.out.println("• Order fields by size (largest to smallest)");
-        System.out.println("• Use string interning for frequently used values");
-        System.out.println("• Cache reflection metadata for repeated access");
-        System.out.println("• Leverage record immutability in concurrent scenarios");
-        System.out.println("• Consider custom serialization for hot paths");
+        IO.println("\n⚡ Performance Tips:");
+        IO.println("• Order fields by size (largest to smallest)");
+        IO.println("• Use string interning for frequently used values");
+        IO.println("• Cache reflection metadata for repeated access");
+        IO.println("• Leverage record immutability in concurrent scenarios");
+        IO.println("• Consider custom serialization for hot paths");
     }
 }

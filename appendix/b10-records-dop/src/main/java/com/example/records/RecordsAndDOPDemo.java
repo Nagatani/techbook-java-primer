@@ -506,7 +506,7 @@ public class RecordsAndDOPDemo {
         public record RecordPoint(int x, int y) {}
         
         public static void comparePerformance() {
-            System.out.println("=== Record vs Traditional Class Performance ===");
+            IO.println("=== Record vs Traditional Class Performance ===");
             
             int iterations = 1_000_000;
             
@@ -523,8 +523,8 @@ public class RecordsAndDOPDemo {
                 }
             });
             
-            System.out.printf("Creation - Traditional: %d ms, Record: %d ms%n", 
-                            traditionalCreate, recordCreate);
+            IO.println("Creation - Traditional: %d ms, Record: %d ms".formatted(
+                            traditionalCreate, recordCreate));
             
             // equals パフォーマンス
             var tp1 = new TraditionalPoint(42, 100);
@@ -544,8 +544,8 @@ public class RecordsAndDOPDemo {
                 }
             });
             
-            System.out.printf("Equals - Traditional: %d ms, Record: %d ms%n", 
-                            traditionalEquals, recordEquals);
+            IO.println("Equals - Traditional: %d ms, Record: %d ms".formatted(
+                            traditionalEquals, recordEquals));
             
             // toString パフォーマンス
             long traditionalToString = measureTime(() -> {
@@ -560,8 +560,8 @@ public class RecordsAndDOPDemo {
                 }
             });
             
-            System.out.printf("ToString - Traditional: %d ms, Record: %d ms%n", 
-                            traditionalToString, recordToString);
+            IO.println("ToString - Traditional: %d ms, Record: %d ms".formatted(
+                            traditionalToString, recordToString));
         }
         
         private static long measureTime(Runnable task) {
@@ -574,8 +574,8 @@ public class RecordsAndDOPDemo {
     // ========== メインメソッド ==========
     
     public static void main(String[] args) {
-        System.out.println("Records and Data-Oriented Programming Demo");
-        System.out.println("==========================================");
+        IO.println("Records and Data-Oriented Programming Demo");
+        IO.println("==========================================");
         
         // 基本的なRecordのデモ
         demonstrateBasicRecords();
@@ -598,23 +598,23 @@ public class RecordsAndDOPDemo {
         // パフォーマンス比較
         PerformanceComparison.comparePerformance();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Records eliminate boilerplate code (70-90% reduction)");
-        System.out.println("✓ Data-Oriented Programming separates data from logic");
-        System.out.println("✓ Pattern matching enables powerful data transformations");
-        System.out.println("✓ Sealed hierarchies provide exhaustive type checking");
-        System.out.println("✓ Records are immutable by default, promoting thread safety");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Records eliminate boilerplate code (70-90% reduction)");
+        IO.println("✓ Data-Oriented Programming separates data from logic");
+        IO.println("✓ Pattern matching enables powerful data transformations");
+        IO.println("✓ Sealed hierarchies provide exhaustive type checking");
+        IO.println("✓ Records are immutable by default, promoting thread safety");
         
-        System.out.println("\n⚡ Best Practices:");
-        System.out.println("• Use compact constructors for validation");
-        System.out.println("• Leverage pattern matching for data processing");
-        System.out.println("• Keep business logic in separate service classes");
-        System.out.println("• Use sealed hierarchies for algebraic data types");
-        System.out.println("• Implement 'with' methods for immutable updates");
+        IO.println("\n⚡ Best Practices:");
+        IO.println("• Use compact constructors for validation");
+        IO.println("• Leverage pattern matching for data processing");
+        IO.println("• Keep business logic in separate service classes");
+        IO.println("• Use sealed hierarchies for algebraic data types");
+        IO.println("• Implement 'with' methods for immutable updates");
     }
     
     private static void demonstrateBasicRecords() {
-        System.out.println("\n=== Basic Records Demo ===");
+        IO.println("\n=== Basic Records Demo ===");
         
         var user = new User(
             UUID.randomUUID().toString(),
@@ -623,22 +623,22 @@ public class RecordsAndDOPDemo {
             LocalDateTime.now()
         );
         
-        System.out.println("User: " + user);
-        System.out.println("Display name: " + user.displayName());
-        System.out.println("Is new user: " + user.isNewUser());
+        IO.println("User: " + user);
+        IO.println("Display name: " + user.displayName());
+        IO.println("Is new user: " + user.isNewUser());
         
         // アクセサメソッド
-        System.out.println("ID: " + user.id());
-        System.out.println("Name: " + user.name());
+        IO.println("ID: " + user.id());
+        IO.println("Name: " + user.name());
         
         // equals/hashCode は自動生成
         var sameUser = new User(user.id(), user.name(), user.email(), user.createdAt());
-        System.out.println("Equals: " + user.equals(sameUser));
-        System.out.println("HashCode same: " + (user.hashCode() == sameUser.hashCode()));
+        IO.println("Equals: " + user.equals(sameUser));
+        IO.println("HashCode same: " + (user.hashCode() == sameUser.hashCode()));
     }
     
     private static void demonstrateShapeProcessing() {
-        System.out.println("\n=== Shape Processing (DOP) Demo ===");
+        IO.println("\n=== Shape Processing (DOP) Demo ===");
         
         var shapes = List.of(
             new ShapeProcessing.Circle(5),
@@ -647,17 +647,17 @@ public class RecordsAndDOPDemo {
         );
         
         for (var shape : shapes) {
-            System.out.println("\n" + ShapeProcessing.describe(shape));
-            System.out.printf("Area: %.2f%n", ShapeProcessing.area(shape));
-            System.out.printf("Perimeter: %.2f%n", ShapeProcessing.perimeter(shape));
+            IO.println("\n" + ShapeProcessing.describe(shape));
+            IO.println("Area: %.2f".formatted(ShapeProcessing.area(shape)));
+            IO.println("Perimeter: %.2f".formatted(ShapeProcessing.perimeter(shape)));
             
             var scaled = ShapeProcessing.scale(shape, 2.0);
-            System.out.println("Scaled 2x: " + ShapeProcessing.describe(scaled));
+            IO.println("Scaled 2x: " + ShapeProcessing.describe(scaled));
         }
     }
     
     private static void demonstrateECommerce() {
-        System.out.println("\n=== E-Commerce Domain Model Demo ===");
+        IO.println("\n=== E-Commerce Domain Model Demo ===");
         
         // 商品在庫
         var inventory = Map.of(
@@ -686,30 +686,30 @@ public class RecordsAndDOPDemo {
             LocalDateTime.now()
         );
         
-        System.out.println("Order: " + order.orderId());
-        System.out.println("Customer: " + customer.name() + " (" + customer.type() + ")");
+        IO.println("Order: " + order.orderId());
+        IO.println("Customer: " + customer.name() + " (" + customer.type() + ")");
         
         // ビジネスロジックの実行
         var total = ECommerceDomain.OrderService.calculateTotal(order);
-        System.out.println("Total: $" + total);
+        IO.println("Total: $" + total);
         
         var discountedTotal = ECommerceDomain.OrderService.applyDiscount(order, customer);
-        System.out.println("After discount: $" + discountedTotal);
+        IO.println("After discount: $" + discountedTotal);
         
         // 注文検証
         var validation = ECommerceDomain.OrderService.validateOrder(order, inventory);
-        System.out.println("Validation: " + (validation.valid() ? "PASS" : "FAIL"));
+        IO.println("Validation: " + (validation.valid() ? "PASS" : "FAIL"));
         if (!validation.valid()) {
-            validation.errors().forEach(error -> System.out.println("  - " + error));
+            validation.errors().forEach(error -> IO.println("  - " + error));
         }
         
         // ステータス更新
         var confirmedOrder = ECommerceDomain.OrderService.updateStatus(order, ECommerceDomain.OrderStatus.CONFIRMED);
-        System.out.println("Updated status: " + confirmedOrder.status());
+        IO.println("Updated status: " + confirmedOrder.status());
     }
     
     private static void demonstrateAdvancedPatternMatching() {
-        System.out.println("\n=== Advanced Pattern Matching Demo ===");
+        IO.println("\n=== Advanced Pattern Matching Demo ===");
         
         var tokyoAddress = new AdvancedPatternMatching.Address("1-1 Shibuya", "Tokyo", "Japan", "150-0002");
         var nyAddress = new AdvancedPatternMatching.Address("5th Avenue", "New York", "USA", "10001");
@@ -728,18 +728,18 @@ public class RecordsAndDOPDemo {
         );
         
         // 深いパターンマッチング
-        System.out.println(AdvancedPatternMatching.getLocationInfo(alice));
-        System.out.println(AdvancedPatternMatching.getLocationInfo(bob));
-        System.out.println(AdvancedPatternMatching.getLocationInfo(techCorp));
+        IO.println(AdvancedPatternMatching.getLocationInfo(alice));
+        IO.println(AdvancedPatternMatching.getLocationInfo(bob));
+        IO.println(AdvancedPatternMatching.getLocationInfo(techCorp));
         
         // 年齢カテゴリ判定
-        System.out.println(AdvancedPatternMatching.categorizeByAge(alice));
-        System.out.println(AdvancedPatternMatching.categorizeByAge(bob));
-        System.out.println(AdvancedPatternMatching.categorizeByAge(charlie));
+        IO.println(AdvancedPatternMatching.categorizeByAge(alice));
+        IO.println(AdvancedPatternMatching.categorizeByAge(bob));
+        IO.println(AdvancedPatternMatching.categorizeByAge(charlie));
     }
     
     private static void demonstrateAlgebraicExpressions() {
-        System.out.println("\n=== Algebraic Expressions Demo ===");
+        IO.println("\n=== Algebraic Expressions Demo ===");
         
         // 式の構築: (x * 2) + (y + 3)
         var expr = new AlgebraicExpressions.Add(
@@ -753,12 +753,12 @@ public class RecordsAndDOPDemo {
             )
         );
         
-        System.out.println("Expression: " + AlgebraicExpressions.format(expr));
+        IO.println("Expression: " + AlgebraicExpressions.format(expr));
         
         // 評価
         var env = Map.of("x", 5.0, "y", 7.0);
         var result = AlgebraicExpressions.eval(expr, env);
-        System.out.println("Evaluation with x=5, y=7: " + result);
+        IO.println("Evaluation with x=5, y=7: " + result);
         
         // 簡約
         var expr2 = new AlgebraicExpressions.Add(
@@ -772,26 +772,26 @@ public class RecordsAndDOPDemo {
             )
         );
         
-        System.out.println("\nOriginal: " + AlgebraicExpressions.format(expr2));
+        IO.println("\nOriginal: " + AlgebraicExpressions.format(expr2));
         var simplified = AlgebraicExpressions.simplify(expr2);
-        System.out.println("Simplified: " + AlgebraicExpressions.format(simplified));
+        IO.println("Simplified: " + AlgebraicExpressions.format(simplified));
     }
     
     private static void demonstrateValidatedRecords() {
-        System.out.println("\n=== Validated Records Demo ===");
+        IO.println("\n=== Validated Records Demo ===");
         
         // ValidatedEmail
         try {
             var email = new ValidatedEmail("Alice.Smith@Example.COM");
-            System.out.println("Email: " + email.value());
-            System.out.println("Domain: " + email.domain());
-            System.out.println("Local part: " + email.localPart());
-            System.out.println("Is business email: " + email.isBusinessEmail());
+            IO.println("Email: " + email.value());
+            IO.println("Domain: " + email.domain());
+            IO.println("Local part: " + email.localPart());
+            IO.println("Is business email: " + email.isBusinessEmail());
             
             // 無効なメール
             new ValidatedEmail("invalid-email");
         } catch (IllegalArgumentException e) {
-            System.out.println("Expected error: " + e.getMessage());
+            IO.println("Expected error: " + e.getMessage());
         }
         
         // Configuration
@@ -803,7 +803,7 @@ public class RecordsAndDOPDemo {
             .withProperty("api.key", "secret123")
             .withProperty("api.version", "v2");
         
-        System.out.println("\nConfiguration URL: " + config.getUrl());
-        System.out.println("Properties: " + config.properties());
+        IO.println("\nConfiguration URL: " + config.getUrl());
+        IO.println("Properties: " + config.properties());
     }
 }

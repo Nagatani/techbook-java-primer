@@ -368,7 +368,7 @@ public class RecordsAndDOPSimple {
         public record RecordPoint(int x, int y) {}
         
         public static void comparePerformance() {
-            System.out.println("=== Record vs Traditional Class Performance ===");
+            IO.println("=== Record vs Traditional Class Performance ===");
             
             int iterations = 1_000_000;
             
@@ -385,8 +385,8 @@ public class RecordsAndDOPSimple {
                 }
             });
             
-            System.out.printf("Creation - Traditional: %d ms, Record: %d ms%n", 
-                            traditionalCreate, recordCreate);
+            IO.println("Creation - Traditional: %d ms, Record: %d ms".formatted(
+                            traditionalCreate, recordCreate));
             
             // equals パフォーマンス
             var tp1 = new TraditionalPoint(42, 100);
@@ -406,8 +406,8 @@ public class RecordsAndDOPSimple {
                 }
             });
             
-            System.out.printf("Equals - Traditional: %d ms, Record: %d ms%n", 
-                            traditionalEquals, recordEquals);
+            IO.println("Equals - Traditional: %d ms, Record: %d ms".formatted(
+                            traditionalEquals, recordEquals));
         }
         
         private static long measureTime(Runnable task) {
@@ -420,8 +420,8 @@ public class RecordsAndDOPSimple {
     // ========== メインメソッド ==========
     
     public static void main(String[] args) {
-        System.out.println("Records and Data-Oriented Programming Demo (Java 14 Compatible)");
-        System.out.println("=============================================================");
+        IO.println("Records and Data-Oriented Programming Demo (Java 14 Compatible)");
+        IO.println("=============================================================");
         
         // 基本的なRecordのデモ
         demonstrateBasicRecords();
@@ -438,23 +438,23 @@ public class RecordsAndDOPSimple {
         // パフォーマンス比較
         PerformanceComparison.comparePerformance();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Records eliminate boilerplate code (70-90% reduction)");
-        System.out.println("✓ Data-Oriented Programming separates data from logic");
-        System.out.println("✓ Records are immutable by default, promoting thread safety");
-        System.out.println("✓ Compact constructors enable validation");
-        System.out.println("✓ 'with' methods provide functional-style updates");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Records eliminate boilerplate code (70-90% reduction)");
+        IO.println("✓ Data-Oriented Programming separates data from logic");
+        IO.println("✓ Records are immutable by default, promoting thread safety");
+        IO.println("✓ Compact constructors enable validation");
+        IO.println("✓ 'with' methods provide functional-style updates");
         
-        System.out.println("\n⚡ Best Practices:");
-        System.out.println("• Use compact constructors for validation");
-        System.out.println("• Keep business logic in separate service classes");
-        System.out.println("• Implement 'with' methods for immutable updates");
-        System.out.println("• Use factory methods for complex creation logic");
-        System.out.println("• Leverage record immutability for concurrent scenarios");
+        IO.println("\n⚡ Best Practices:");
+        IO.println("• Use compact constructors for validation");
+        IO.println("• Keep business logic in separate service classes");
+        IO.println("• Implement 'with' methods for immutable updates");
+        IO.println("• Use factory methods for complex creation logic");
+        IO.println("• Leverage record immutability for concurrent scenarios");
     }
     
     private static void demonstrateBasicRecords() {
-        System.out.println("\n=== Basic Records Demo ===");
+        IO.println("\n=== Basic Records Demo ===");
         
         var user = new User(
             UUID.randomUUID().toString(),
@@ -463,22 +463,22 @@ public class RecordsAndDOPSimple {
             LocalDateTime.now()
         );
         
-        System.out.println("User: " + user);
-        System.out.println("Display name: " + user.displayName());
-        System.out.println("Is new user: " + user.isNewUser());
+        IO.println("User: " + user);
+        IO.println("Display name: " + user.displayName());
+        IO.println("Is new user: " + user.isNewUser());
         
         // アクセサメソッド
-        System.out.println("ID: " + user.id());
-        System.out.println("Name: " + user.name());
+        IO.println("ID: " + user.id());
+        IO.println("Name: " + user.name());
         
         // equals/hashCode は自動生成
         var sameUser = new User(user.id(), user.name(), user.email(), user.createdAt());
-        System.out.println("Equals: " + user.equals(sameUser));
-        System.out.println("HashCode same: " + (user.hashCode() == sameUser.hashCode()));
+        IO.println("Equals: " + user.equals(sameUser));
+        IO.println("HashCode same: " + (user.hashCode() == sameUser.hashCode()));
     }
     
     private static void demonstrateShapeProcessing() {
-        System.out.println("\n=== Shape Processing (DOP) Demo ===");
+        IO.println("\n=== Shape Processing (DOP) Demo ===");
         
         var shapes = List.of(
             new ShapeProcessing.Circle(5),
@@ -487,14 +487,14 @@ public class RecordsAndDOPSimple {
         );
         
         for (var shape : shapes) {
-            System.out.println("\n" + ShapeProcessing.describe(shape));
-            System.out.printf("Area: %.2f%n", ShapeProcessing.area(shape));
-            System.out.printf("Perimeter: %.2f%n", ShapeProcessing.perimeter(shape));
+            IO.println("\n" + ShapeProcessing.describe(shape));
+            IO.println("Area: %.2f".formatted(ShapeProcessing.area(shape)));
+            IO.println("Perimeter: %.2f".formatted(ShapeProcessing.perimeter(shape)));
         }
     }
     
     private static void demonstrateECommerce() {
-        System.out.println("\n=== E-Commerce Domain Model Demo ===");
+        IO.println("\n=== E-Commerce Domain Model Demo ===");
         
         // 商品在庫
         var inventory = Map.of(
@@ -523,43 +523,43 @@ public class RecordsAndDOPSimple {
             LocalDateTime.now()
         );
         
-        System.out.println("Order: " + order.orderId());
-        System.out.println("Customer: " + customer.name() + " (" + customer.type() + ")");
+        IO.println("Order: " + order.orderId());
+        IO.println("Customer: " + customer.name() + " (" + customer.type() + ")");
         
         // ビジネスロジックの実行
         var total = ECommerceDomain.OrderService.calculateTotal(order);
-        System.out.println("Total: $" + total);
+        IO.println("Total: $" + total);
         
         var discountedTotal = ECommerceDomain.OrderService.applyDiscount(order, customer);
-        System.out.println("After discount: $" + discountedTotal);
+        IO.println("After discount: $" + discountedTotal);
         
         // 注文検証
         var validation = ECommerceDomain.OrderService.validateOrder(order, inventory);
-        System.out.println("Validation: " + (validation.valid() ? "PASS" : "FAIL"));
+        IO.println("Validation: " + (validation.valid() ? "PASS" : "FAIL"));
         if (!validation.valid()) {
-            validation.errors().forEach(error -> System.out.println("  - " + error));
+            validation.errors().forEach(error -> IO.println("  - " + error));
         }
         
         // ステータス更新
         var confirmedOrder = ECommerceDomain.OrderService.updateStatus(order, ECommerceDomain.OrderStatus.CONFIRMED);
-        System.out.println("Updated status: " + confirmedOrder.status());
+        IO.println("Updated status: " + confirmedOrder.status());
     }
     
     private static void demonstrateValidatedRecords() {
-        System.out.println("\n=== Validated Records Demo ===");
+        IO.println("\n=== Validated Records Demo ===");
         
         // ValidatedEmail
         try {
             var email = new ValidatedEmail("Alice.Smith@Example.COM");
-            System.out.println("Email: " + email.value());
-            System.out.println("Domain: " + email.domain());
-            System.out.println("Local part: " + email.localPart());
-            System.out.println("Is business email: " + email.isBusinessEmail());
+            IO.println("Email: " + email.value());
+            IO.println("Domain: " + email.domain());
+            IO.println("Local part: " + email.localPart());
+            IO.println("Is business email: " + email.isBusinessEmail());
             
             // 無効なメール
             new ValidatedEmail("invalid-email");
         } catch (IllegalArgumentException e) {
-            System.out.println("Expected error: " + e.getMessage());
+            IO.println("Expected error: " + e.getMessage());
         }
         
         // Configuration
@@ -571,7 +571,7 @@ public class RecordsAndDOPSimple {
             .withProperty("api.key", "secret123")
             .withProperty("api.version", "v2");
         
-        System.out.println("\nConfiguration URL: " + config.getUrl());
-        System.out.println("Properties: " + config.properties());
+        IO.println("\nConfiguration URL: " + config.getUrl());
+        IO.println("Properties: " + config.properties());
     }
 }

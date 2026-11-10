@@ -630,8 +630,8 @@ public class DataPipelineDemo {
     // ========== メインメソッド ==========
     
     public static void main(String[] args) {
-        System.out.println("Data Pipeline and Stream Processing Demo");
-        System.out.println("=======================================");
+        IO.println("Data Pipeline and Stream Processing Demo");
+        IO.println("=======================================");
         
         // イベントソーシングデモ
         demonstrateEventSourcing();
@@ -645,16 +645,16 @@ public class DataPipelineDemo {
         // API変換デモ
         demonstrateApiTransformation();
         
-        System.out.println("\n🎯 Key Insights:");
-        System.out.println("✓ Records enable clean event sourcing patterns");
-        System.out.println("✓ Stream processing with records is concise and type-safe");
-        System.out.println("✓ Pattern matching simplifies event handling");
-        System.out.println("✓ Immutable data structures ensure thread safety");
-        System.out.println("✓ Functional transformations are easy with records");
+        IO.println("\n🎯 Key Insights:");
+        IO.println("✓ Records enable clean event sourcing patterns");
+        IO.println("✓ Stream processing with records is concise and type-safe");
+        IO.println("✓ Pattern matching simplifies event handling");
+        IO.println("✓ Immutable data structures ensure thread safety");
+        IO.println("✓ Functional transformations are easy with records");
     }
     
     private static void demonstrateEventSourcing() {
-        System.out.println("\n=== Event Sourcing Demo ===");
+        IO.println("\n=== Event Sourcing Demo ===");
         
         var eventStore = new EventSourcing.InMemoryEventStore();
         
@@ -692,13 +692,13 @@ public class DataPipelineDemo {
         var snapshots = EventSourcing.EventProcessor.buildSnapshots(eventStore.getAllEvents());
         var userSnapshot = snapshots.get(userId);
         
-        System.out.println("Current snapshot:");
-        System.out.println("  User ID: " + userSnapshot.userId());
-        System.out.println("  Username: " + userSnapshot.username());
-        System.out.println("  Email: " + userSnapshot.email());
-        System.out.println("  Active: " + userSnapshot.active());
-        System.out.println("  Version: " + userSnapshot.version());
-        System.out.println("  Attributes: " + userSnapshot.attributes());
+        IO.println("Current snapshot:");
+        IO.println("  User ID: " + userSnapshot.userId());
+        IO.println("  Username: " + userSnapshot.username());
+        IO.println("  Email: " + userSnapshot.email());
+        IO.println("  Active: " + userSnapshot.active());
+        IO.println("  Version: " + userSnapshot.version());
+        IO.println("  Attributes: " + userSnapshot.attributes());
         
         // 特定時点でのスナップショット
         var pointInTime = Instant.now().minusMillis(150);
@@ -709,15 +709,15 @@ public class DataPipelineDemo {
         );
         
         historicalSnapshot.ifPresent(snapshot -> {
-            System.out.println("\nHistorical snapshot (150ms ago):");
-            System.out.println("  Email: " + snapshot.email());
-            System.out.println("  Active: " + snapshot.active());
-            System.out.println("  Version: " + snapshot.version());
+            IO.println("\nHistorical snapshot (150ms ago):");
+            IO.println("  Email: " + snapshot.email());
+            IO.println("  Active: " + snapshot.active());
+            IO.println("  Version: " + snapshot.version());
         });
     }
     
     private static void demonstrateSalesPipeline() {
-        System.out.println("\n=== Sales Data Pipeline Demo ===");
+        IO.println("\n=== Sales Data Pipeline Demo ===");
         
         // 生の売上データを生成
         var rawSales = Stream.of(
@@ -746,14 +746,14 @@ public class DataPipelineDemo {
         // データ正規化
         var normalizedSales = SalesDataPipeline.Pipeline.normalize(rawSales).toList();
         
-        System.out.println("Normalized sales:");
+        IO.println("Normalized sales:");
         normalizedSales.forEach(sale -> 
-            System.out.printf("  %s: $%.2f USD (%s - %s)%n",
+            IO.println("  %s: $%.2f USD (%s - %s)".formatted(
                 sale.transactionId(),
                 sale.amountUSD(),
                 sale.category(),
                 sale.region()
-            )
+            ))
         );
         
         // カテゴリ別集計
@@ -763,14 +763,14 @@ public class DataPipelineDemo {
             "Category"
         ).toList();
         
-        System.out.println("\nSales by category:");
+        IO.println("\nSales by category:");
         categoryAggregates.forEach(agg ->
-            System.out.printf("  %s: %d sales, Total: $%.2f, Avg: $%.2f%n",
+            IO.println("  %s: %d sales, Total: $%.2f, Avg: $%.2f".formatted(
                 agg.value(),
                 agg.count(),
                 agg.totalAmount(),
                 agg.avgAmount()
-            )
+            ))
         );
         
         // 地域別集計
@@ -780,18 +780,18 @@ public class DataPipelineDemo {
             "Region"
         ).toList();
         
-        System.out.println("\nSales by region:");
+        IO.println("\nSales by region:");
         regionAggregates.forEach(agg ->
-            System.out.printf("  %s: %d sales, Total: $%.2f%n",
+            IO.println("  %s: %d sales, Total: $%.2f".formatted(
                 agg.value(),
                 agg.count(),
                 agg.totalAmount()
-            )
+            ))
         );
     }
     
     private static void demonstrateRealTimeMetrics() {
-        System.out.println("\n=== Real-Time Metrics Demo ===");
+        IO.println("\n=== Real-Time Metrics Demo ===");
         
         var aggregator = new RealTimeMetrics.WindowAggregator(Duration.ofSeconds(5));
         
@@ -821,21 +821,21 @@ public class DataPipelineDemo {
         // 集計結果を表示
         var aggregates = aggregator.getAggregates().toList();
         
-        System.out.println("Window aggregates:");
+        IO.println("Window aggregates:");
         aggregates.forEach(agg ->
-            System.out.printf("  %s: Count=%d, Avg=%.2f, Min=%.2f, Max=%.2f, StdDev=%.2f%n",
+            IO.println("  %s: Count=%d, Avg=%.2f, Min=%.2f, Max=%.2f, StdDev=%.2f".formatted(
                 agg.metricName(),
                 agg.count(),
                 agg.avg(),
                 agg.min(),
                 agg.max(),
                 agg.stdDev()
-            )
+            ))
         );
     }
     
     private static void demonstrateApiTransformation() {
-        System.out.println("\n=== API Transformation Demo ===");
+        IO.println("\n=== API Transformation Demo ===");
         
         // 成功レスポンス
         var users = List.of(
@@ -853,20 +853,20 @@ public class DataPipelineDemo {
             Map.of("endpoint", "/api/users", "method", "GET")
         );
         
-        System.out.println("Success response:");
-        System.out.println("  Success: " + successResponse.success());
-        System.out.println("  Page: " + pagedUsers.pageInfo().page());
-        System.out.println("  Total pages: " + pagedUsers.pageInfo().totalPages());
-        System.out.println("  Content: " + pagedUsers.content().size() + " items");
+        IO.println("Success response:");
+        IO.println("  Success: " + successResponse.success());
+        IO.println("  Page: " + pagedUsers.pageInfo().page());
+        IO.println("  Total pages: " + pagedUsers.pageInfo().totalPages());
+        IO.println("  Content: " + pagedUsers.content().size() + " items");
         
         // エラーレスポンス
         var errorResponse = ApiTransformation.ResponseTransformer.handleException(
             new IllegalArgumentException("Invalid user ID format")
         );
         
-        System.out.println("\nError response:");
-        System.out.println("  Success: " + errorResponse.success());
-        System.out.println("  Errors: " + errorResponse.errors());
+        IO.println("\nError response:");
+        IO.println("  Success: " + errorResponse.success());
+        IO.println("  Errors: " + errorResponse.errors());
     }
     
     // 簡単なUserレコード
