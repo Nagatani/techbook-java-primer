@@ -101,6 +101,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - クラス図の注釈（`note for`）の改行は`<br/>`で書く（`\n`はそのまま表示される）
    - 横に広くなる図の直し方（2026-11-11に12枚で使った）: 階層図は`direction LR`で兄弟を縦に積む。図の目的に要らないメンバーは省く。1つのノードから多数へ引く線は、サブグラフへの1本や注釈にまとめる。図ごとの設定はファイル先頭のfrontmatter（`---\nconfig:\n  flowchart:\n    rankSpacing: 20\n---`）で上書きできる。サブグラフの中のつながっていないノードを縦に並べるには、見えない線（`A ~~~ B`）でつなぐ
    - 版型はISOのB5（176×250mm）。本文の幅は132mm
+   - ガントチャートは文字の既定が約11pxで、`check:diagrams`の前提（16px）と合わない。frontmatterで`gantt: { fontSize: 16, sectionFontSize: 16, useWidth: 900 }`を指定する（目盛りは`themeCSS`で大きくする。chapter15-chef-timeline）。ブロック図（`block-beta`）は格子の配置（BorderLayoutなど）に使える
+   - 枠（subgraph）の外へ線を引くと、枠の中の`direction`が効かず、枠どうしが重なることがある。そのときは枠をやめるか、線を枠そのものに引く
 
 5. **Chapter Structure**:
    - 全23章構成
@@ -312,7 +314,7 @@ All chapter exercise sections reference this repository URL. The structure is:
     - プロパティファイル、設定ファイル
     - その他のプログラミング言語のコード（Python, JavaScript等）
 - **リスト表記ルール**: 
-  - 絵文字を使用しない
+  - 絵文字を使用しない（本文・付録・演習・サンプルコードの絵文字は`check:structure`が問題にする。✓✗★☆などの記号は使ってよい。2026-11-11に約1,500か所を消した）
   - リスト項目の末尾にコロン（：）を使用しない
   - 文字強調（**太字**）を必要以上に使用しない
   - 文末に句読点（。）を付けない
