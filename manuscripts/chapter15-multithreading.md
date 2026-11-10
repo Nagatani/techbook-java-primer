@@ -916,6 +916,12 @@ public class Main {
 5. 結果
     + 16,000円が引き出されてしまう
 
+<div class="figure">
+
+![同期制御がないときの競合状態](images/diagrams/chapter15-race-condition.svg)
+
+</div>
+
 ### `synchronized`による排他制御
 
 この問題を解決するために、Javaは`synchronized`キーワードによる排他制御のしくみを提供します。`synchronized`で保護されたコードブロックは、一度に1つのスレッドしか実行できないことが保証されます。

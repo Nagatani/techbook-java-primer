@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant A1 as ATM1（スレッド1）
+    participant Acc as 口座の残高
+    participant A2 as ATM2（スレッド2）
+
+    Note over Acc: 残高 10,000円
+    A1->>Acc: 1. 残高を読む
+    Acc-->>A1: 10,000円
+    A2->>Acc: 2. 残高を読む（ATM1の更新前）
+    Acc-->>A2: 10,000円
+    A1->>Acc: 3. 10,000 - 8,000 = 2,000円 を書き込む
+    A2->>Acc: 4. 10,000 - 8,000 = 2,000円 を書き込む
+    Note over A1,A2: 8,000円ずつ、合計16,000円が引き出されたのに<br/>残高は2,000円になっている（ATM1の更新が失われた）
