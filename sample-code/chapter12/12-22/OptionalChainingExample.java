@@ -18,6 +18,6 @@ public class OptionalChainingExample {
             .map(String::toUpperCase)       // 名前を大文字に変換
             .orElse("N/A");                 // 見つからない場合のデフォルト値
         
-        System.out.println("最高得点者（大文字）: " + result);
+        IO.println("最高得点者（大文字）: " + result);
     }
 }

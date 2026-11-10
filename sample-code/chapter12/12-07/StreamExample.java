@@ -18,7 +18,7 @@ public class StreamExample {
             .sorted()                            // 5. アルファベット順にソート
             .collect(Collectors.toList());       // 6. 結果をリストに集約
 
-        System.out.println(result);
+        IO.println(result);
         // 出力: [Bob, Charlie]
     }
 }

@@ -144,7 +144,7 @@ public class AdvancedSortExample {
 
         students.sort(comparator); // List.sort()に渡す
 
-        System.out.println(students);
+        IO.println(students);
         // 出力: [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
     }
 }
@@ -200,7 +200,7 @@ Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
 // この時点ではまだフィルタリングは実行されない
 Stream<Integer> stream = numbers.stream()
     .filter(n -> {
-        System.out.println("Filtering: " + n);
+        IO.println("Filtering: " + n);
         return n > 10;
     });
 
@@ -328,7 +328,7 @@ public class StreamExample {
             .sorted()                            // 5. アルファベット順にソート
             .collect(Collectors.toList());       // 6. 結果をリストに集約
 
-        System.out.println(result);
+        IO.println(result);
         // 出力: [Bob, Charlie]
     }
 }
@@ -369,21 +369,21 @@ public class OptionalCreationExample {
         // 1. of() - null以外の値を持つOptionalを作成
         // nullを渡すとNullPointerExceptionが発生する
         Optional<String> presentValue = Optional.of("Hello");
-        System.out.println("of(): " + presentValue);  // Optional[Hello]
+        IO.println("of(): " + presentValue);  // Optional[Hello]
         
         // 2. ofNullable() - nullの可能性がある値をラップ
         // nullの場合は空のOptionalを返す
         String nullableString = null;
         Optional<String> nullableValue = Optional.ofNullable(nullableString);
-        System.out.println("ofNullable(null): " + nullableValue);  // Optional.empty
+        IO.println("ofNullable(null): " + nullableValue);  // Optional.empty
         
         String nonNullString = "World";
         Optional<String> nonNullValue = Optional.ofNullable(nonNullString);
-        System.out.println("ofNullable(\"World\"): " + nonNullValue);  // Optional[World]
+        IO.println("ofNullable(\"World\"): " + nonNullValue);  // Optional[World]
         
         // 3. empty() - 空のOptionalを作成
         Optional<String> emptyValue = Optional.empty();
-        System.out.println("empty(): " + emptyValue);  // Optional.empty
+        IO.println("empty(): " + emptyValue);  // Optional.empty
     }
 }
 ```
@@ -403,23 +403,23 @@ public class OptionalRetrievalExample {
         // 2. orElse() - 値が存在しない場合のデフォルト値を指定
         String value3 = present.orElse("Default");
         String value4 = empty.orElse("Default");
-        System.out.println("orElse() with value: " + value3);     // Hello
-        System.out.println("orElse() on empty: " + value4);       // Default
+        IO.println("orElse() with value: " + value3);     // Hello
+        IO.println("orElse() on empty: " + value4);       // Default
         
         // 3. orElseGet() - 値が存在しない場合にSupplierから値を生成
         // orElseよりコストが低い（デフォルト値の生成コストが高い場合）
         String value5 = empty.orElseGet(() -> {
-            System.out.println("Generating default value...");
+            IO.println("Generating default value...");
             return "Generated Default";
         });
-        System.out.println("orElseGet(): " + value5);  // Generated Default
+        IO.println("orElseGet(): " + value5);  // Generated Default
         
         // 4. orElseThrow() - 値が存在しない場合に指定した例外を投げる
         try {
             String value6 = empty.orElseThrow(() -> 
                 new IllegalStateException("値が存在しません"));
         } catch (IllegalStateException e) {
-            System.out.println("orElseThrow(): " + e.getMessage());
+            IO.println("orElseThrow(): " + e.getMessage());
         }
     }
 }
@@ -441,30 +441,30 @@ public class OptionalPresenceExample {
         
         // 1. isPresent() - 値が存在するかをboolean値で返す
         if (present.isPresent()) {
-            System.out.println("isPresent: " + present.get());
+            IO.println("isPresent: " + present.get());
         }
         
         // 2. isEmpty() - 値が存在しないかをboolean値で返す（Java 11以降）
         if (empty.isEmpty()) {
-            System.out.println("isEmpty: 値が存在しません");
+            IO.println("isEmpty: 値が存在しません");
         }
         
         // 3. ifPresent() - 値が存在する場合のみ処理を実行（関数型スタイル）
         present.ifPresent(value -> 
-            System.out.println("ifPresent: " + value));
+            IO.println("ifPresent: " + value));
         
         empty.ifPresent(value -> 
-            System.out.println("この行は実行されません"));
+            IO.println("この行は実行されません"));
         
         // 4. ifPresentOrElse() - 値の有無で処理を分岐（Java 9以降）
         present.ifPresentOrElse(
-            value -> System.out.println("値あり: " + value),
-            () -> System.out.println("値なし")
+            value -> IO.println("値あり: " + value),
+            () -> IO.println("値なし")
         );
         
         empty.ifPresentOrElse(
-            value -> System.out.println("この行は実行されません"),
-            () -> System.out.println("空のOptional")
+            value -> IO.println("この行は実行されません"),
+            () -> IO.println("空のOptional")
         );
     }
 }
@@ -490,21 +490,21 @@ public class OptionalTransformationExample {
         
         // 1. map() - 値が存在する場合に変換を適用
         Optional<String> userName = user.map(User::getName);
-        System.out.println("map: " + userName);  // Optional[Alice]
+        IO.println("map: " + userName);  // Optional[Alice]
         
         // ネストしたmapの例
         Optional<Integer> nameLength = user
             .map(User::getName)
             .map(String::length);
-        System.out.println("Nested map: " + nameLength);  // Optional[5]
+        IO.println("Nested map: " + nameLength);  // Optional[5]
         
         // 2. flatMap() - Optional<Optional<T>>を平坦化
         // getUserはOptional<User>を返し、getEmailもOptional<String>を返す
         Optional<String> email = user.flatMap(u -> u.getEmail());
-        System.out.println("flatMap: " + email);  // Optional[alice@example.com]
+        IO.println("flatMap: " + email);  // Optional[alice@example.com]
         
         Optional<String> noEmail = userWithoutEmail.flatMap(u -> u.getEmail());
-        System.out.println("flatMap (no email): " + noEmail);  // Optional.empty
+        IO.println("flatMap (no email): " + noEmail);  // Optional.empty
         // ...
     }
 }
@@ -544,14 +544,14 @@ public class OptionalStreamExample {
             .findFirst();
         
         firstExpensive.ifPresent(p -> 
-            System.out.println("最初の高額商品: " + p.getName()));
+            IO.println("最初の高額商品: " + p.getName()));
         
         // findAny() - 任意の要素をOptionalで返す（並列処理に最適）
         Optional<Product> anyProduct = products.parallelStream()
             .filter(p -> p.getPrice() < 50)
             .findAny();
         
-        System.out.println("安価な商品: " + 
+        IO.println("安価な商品: " + 
             anyProduct.map(Product::getName).orElse("なし"));
         
         // max/min - 最大値・最小値をOptionalで返す
@@ -559,7 +559,7 @@ public class OptionalStreamExample {
             .max((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
         
         mostExpensive.ifPresent(p -> 
-            System.out.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
+            IO.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
         
         // OptionalをStreamに変換（Java 9以降）
         List<String> expensiveProductNames = products.stream()
@@ -567,7 +567,7 @@ public class OptionalStreamExample {
             .flatMap(Optional::stream)  // Optional -> Stream変換
             .collect(Collectors.toList());
         
-        System.out.println("高額商品リスト: " + expensiveProductNames);
+        IO.println("高額商品リスト: " + expensiveProductNames);
     }
 }
 ```
@@ -615,14 +615,14 @@ public class OptionalPracticalExample {
             .map(email -> email.substring(email.indexOf("@") + 1))
             .orElse("ドメインなし");
         
-        System.out.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
+        IO.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
         
         // 存在しないユーザーの処理
         Long nonExistentId = 999L;
         repo.findById(nonExistentId)
             .ifPresentOrElse(
-                user -> System.out.println("ユーザー名: " + user.getName()),
-                () -> System.out.println("ユーザーID " + nonExistentId + " は存在しません")
+                user -> IO.println("ユーザー名: " + user.getName()),
+                () -> IO.println("ユーザーID " + nonExistentId + " は存在しません")
             );
             // ...
     }
@@ -674,7 +674,7 @@ public class OptionalAntiPatternsExample {
         public void processUser(String userName) {
             Optional.ofNullable(userName)
                 .filter(name -> !name.isEmpty())
-                .ifPresent(name -> System.out.println("Processing: " + name));
+                .ifPresent(name -> IO.println("Processing: " + name));
         }
         
         // 良い例3: コレクションは空のコレクションを返す
@@ -693,12 +693,12 @@ public class OptionalAntiPatternsExample {
         // 悪い例：isPresentとgetの組み合わせ
         if (optional.isPresent()) {
             String value = optional.get();
-            System.out.println(value.toUpperCase());
+            IO.println(value.toUpperCase());
         }
         
         // 良い例：mapを使用
         optional.map(String::toUpperCase)
-            .ifPresent(System.out::println);
+            .ifPresent(IO::println);
             // ...
     }
 }
@@ -742,14 +742,14 @@ long sum = numbers.stream()
     .filter(n -> n % 2 == 0)
     .mapToLong(n -> n * n)
     .sum();
-System.out.println("シーケンシャル処理の結果: " + sum);
+IO.println("シーケンシャル処理の結果: " + sum);
 
 // 並列処理
 long sumParallel = numbers.parallelStream()
     .filter(n -> n % 2 == 0)
     .mapToLong(n -> n * n)
     .sum();
-System.out.println("並列処理の結果: " + sumParallel);
+IO.println("並列処理の結果: " + sumParallel);
 ```
 
 実行結果：
@@ -796,9 +796,9 @@ public class ParallelStreamExample {
             .sum();
         Duration parTime = Duration.between(start, Instant.now());
         
-        System.out.println("シーケンシャル: " + seqTime.toMillis() + "ms");
-        System.out.println("並列: " + parTime.toMillis() + "ms");
-        System.out.println("高速化率: " + 
+        IO.println("シーケンシャル: " + seqTime.toMillis() + "ms");
+        IO.println("並列: " + parTime.toMillis() + "ms");
+        IO.println("高速化率: " + 
             (double)seqTime.toMillis() / parTime.toMillis() + "倍");
     }
 }
@@ -879,7 +879,7 @@ public class FlatMapExample {
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
             .collect(Collectors.toList());
         
-        System.out.println(flatList);
+        IO.println(flatList);
         // 出力: [Java, Python, JavaScript, Go, Rust, C++]
         
         // 文字列を単語に分割する例
@@ -894,7 +894,7 @@ public class FlatMapExample {
             .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
             .collect(Collectors.toList());
         
-        System.out.println(words);
+        IO.println(words);
         // 出力: [Hello, world, Java, programming, Stream, API]
     }
 }
@@ -924,19 +924,19 @@ public class ReduceExample {
         // reduce(初期値, 二項演算子)の形式
         int sum = numbers.stream()
             .reduce(0, (a, b) -> a + b);  // 初期値0から開始し、各要素を加算
-        System.out.println("合計: " + sum); // 出力: 合計: 15
+        IO.println("合計: " + sum); // 出力: 合計: 15
         
         // より複雑な例：最大値を求める（初期値なし）
         // この場合、空のストリームの可能性があるためOptionalが返される
         Optional<Integer> max = numbers.stream()
             .reduce((a, b) -> a > b ? a : b);
-        max.ifPresent(value -> System.out.println("最大値: " + value)); // 出力: 最大値: 5
+        max.ifPresent(value -> IO.println("最大値: " + value)); // 出力: 最大値: 5
         
         // 文字列の結合例
         List<String> words = Arrays.asList("Java", "is", "awesome");
         String sentence = words.stream()
             .reduce("", (result, word) -> result.isEmpty() ? word : result + " " + word);
-        System.out.println(sentence); // 出力: Java is awesome
+        IO.println(sentence); // 出力: Java is awesome
         // ...
     }
 }
@@ -981,20 +981,20 @@ public class CollectorsExample {
             .filter(s -> s.getScore() >= 85)
             .map(Student::getName)
             .collect(Collectors.toList());
-        System.out.println("高得点者: " + highScorers);
+        IO.println("高得点者: " + highScorers);
         
         // グループ化の例：点数でグループ分け
         // 同じ点数の学生をグループ化する実用的な例
         Map<Integer, List<Student>> scoreGroups = students.stream()
             .collect(Collectors.groupingBy(Student::getScore));
-        System.out.println("点数別グループ: " + scoreGroups);
+        IO.println("点数別グループ: " + scoreGroups);
         
         // より複雑な変換：条件による分類
         // 80点以上かどうかで学生を分類
         Map<Boolean, List<Student>> passFail = students.stream()
             .collect(Collectors.partitioningBy(s -> s.getScore() >= 80));
-        System.out.println("合格者: " + passFail.get(true).size() + "人");
-        System.out.println("不合格者: " + passFail.get(false).size() + "人");
+        IO.println("合格者: " + passFail.get(true).size() + "人");
+        IO.println("不合格者: " + passFail.get(false).size() + "人");
     }
 }
 ```
@@ -1037,13 +1037,13 @@ public class OptionalExample {
         
         // 値が存在する場合のみ処理を実行
         firstHighScorer.ifPresent(student -> 
-            System.out.println("最初の高得点者: " + student.getName()));
+            IO.println("最初の高得点者: " + student.getName()));
         
         // デフォルト値を使用した安全な処理
         String topScorerName = firstHighScorer
             .map(Student::getName)
             .orElse("該当者なし");
-        System.out.println("トップスコアラー: " + topScorerName);
+        IO.println("トップスコアラー: " + topScorerName);
     }
 }
 ```
@@ -1082,7 +1082,7 @@ public class OptionalChainingExample {
             .map(String::toUpperCase)       // 名前を大文字に変換
             .orElse("N/A");                 // 見つからない場合のデフォルト値
         
-        System.out.println("最高得点者（大文字）: " + result);
+        IO.println("最高得点者（大文字）: " + result);
     }
 }
 ```
@@ -1118,7 +1118,7 @@ public class NullSafeProcessingExample {
             .map(String::toUpperCase)           // 大文字に変換
             .collect(Collectors.toList());
         
-        System.out.println("有効な名前: " + validNames);
+        IO.println("有効な名前: " + validNames);
         // 出力: 有効な名前: [ALICE, BOB, CHARLIE]
         
         // Optionalでnullをラップしてnullセーフ処理
@@ -1128,7 +1128,7 @@ public class NullSafeProcessingExample {
             .map(String::toUpperCase)
             .orElse("UNKNOWN");
         
-        System.out.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
+        IO.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
     }
 }
 ```
@@ -1158,20 +1158,20 @@ public class ShortCircuitExample {
         // 早期終了操作：条件を満たす要素が見つかれば処理を停止
         // すべての要素が偶数かチェック（1つでも奇数があればfalse）
         boolean allEven = numbers.stream()
-            .peek(n -> System.out.println("チェック中: " + n)) // 処理の流れを観察
+            .peek(n -> IO.println("チェック中: " + n)) // 処理の流れを観察
             .allMatch(n -> n % 2 == 0);
-        System.out.println("すべて偶数: " + allEven);
+        IO.println("すべて偶数: " + allEven);
         
         // いずれかの要素が条件を満たすかチェック
         boolean hasLargeNumber = numbers.stream()
             .anyMatch(n -> n > 7);
-        System.out.println("7より大きい数あり: " + hasLargeNumber);
+        IO.println("7より大きい数あり: " + hasLargeNumber);
         
         // 最初のn個に制限して処理
         List<Integer> firstThree = numbers.stream()
             .limit(3)  // 最初の3要素のみ処理
             .collect(Collectors.toList());
-        System.out.println("最初の3つ: " + firstThree);
+        IO.println("最初の3つ: " + firstThree);
     }
 }
 ```
@@ -1208,13 +1208,13 @@ public class ToArrayExample {
             .map(String::toUpperCase)           // 大文字に変換
             .toArray(String[]::new);            // String配列として取得
         
-        System.out.println("結果配列: " + Arrays.toString(nameArray));
+        IO.println("結果配列: " + Arrays.toString(nameArray));
         // 出力: 結果配列: [ALICE, CHARLIE, DAVID]
         
         // サイズを指定した配列生成も可能
         String[] sizedArray = names.stream()
             .toArray(size -> new String[size]);
-        System.out.println("サイズ指定配列: " + Arrays.toString(sizedArray));
+        IO.println("サイズ指定配列: " + Arrays.toString(sizedArray));
     }
 }
 ```
@@ -1251,9 +1251,9 @@ public class ComplexProcessingExample {
                 )
             ));
         
-        System.out.println("身長グループ別最高得点者:");
+        IO.println("身長グループ別最高得点者:");
         heightGroupTopScorers.forEach((group, name) -> 
-            System.out.println(group + ": " + name));
+            IO.println(group + ": " + name));
             // ...
     }
 }

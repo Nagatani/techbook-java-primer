@@ -27,9 +27,9 @@ public class ComplexProcessingExample {
                 )
             ));
         
-        System.out.println("身長グループ別最高得点者:");
+        IO.println("身長グループ別最高得点者:");
         heightGroupTopScorers.forEach((group, name) -> 
-            System.out.println(group + ": " + name));
+            IO.println(group + ": " + name));
         
         // さらに複雑な例：統計情報の収集
         Map<String, Double> heightGroupAverages = students.stream()
@@ -38,8 +38,8 @@ public class ComplexProcessingExample {
                 Collectors.averagingInt(Student::getScore)
             ));
         
-        System.out.println("\n身長グループ別平均点:");
+        IO.println("\n身長グループ別平均点:");
         heightGroupAverages.forEach((group, avg) -> 
-            System.out.printf("%s: %.1f点%n", group, avg));
+            IO.println("%s: %.1f点".formatted(group, avg)));
     }
 }

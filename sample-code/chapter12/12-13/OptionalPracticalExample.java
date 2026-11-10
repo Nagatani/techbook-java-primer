@@ -69,22 +69,22 @@ public class OptionalPracticalExample {
             .map(email -> email.substring(email.indexOf("@") + 1))
             .orElse("ドメインなし");
         
-        System.out.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
+        IO.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
         
         // 存在しないユーザーの処理
         Long nonExistentId = 999L;
         repo.findById(nonExistentId)
             .ifPresentOrElse(
-                user -> System.out.println("ユーザー名: " + user.getName()),
-                () -> System.out.println("ユーザーID " + nonExistentId + " は存在しません")
+                user -> IO.println("ユーザー名: " + user.getName()),
+                () -> IO.println("ユーザーID " + nonExistentId + " は存在しません")
             );
         
         // 設定値の取得
         String appName = config.getConfig("app.name")
             .orElse("Unknown App");
-        System.out.println("アプリケーション名: " + appName);
+        IO.println("アプリケーション名: " + appName);
         
         int timeout = config.getTimeout();
-        System.out.println("タイムアウト値: " + timeout + "秒");
+        IO.println("タイムアウト値: " + timeout + "秒");
     }
 }

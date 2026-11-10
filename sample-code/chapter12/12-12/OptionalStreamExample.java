@@ -32,14 +32,14 @@ public class OptionalStreamExample {
             .findFirst();
         
         firstExpensive.ifPresent(p -> 
-            System.out.println("最初の高額商品: " + p.getName()));
+            IO.println("最初の高額商品: " + p.getName()));
         
         // findAny() - 任意の要素をOptionalで返す（並列処理に最適）
         Optional<Product> anyProduct = products.parallelStream()
             .filter(p -> p.getPrice() < 50)
             .findAny();
         
-        System.out.println("安価な商品: " + 
+        IO.println("安価な商品: " + 
             anyProduct.map(Product::getName).orElse("なし"));
         
         // max/min - 最大値・最小値をOptionalで返す
@@ -47,7 +47,7 @@ public class OptionalStreamExample {
             .max((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
         
         mostExpensive.ifPresent(p -> 
-            System.out.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
+            IO.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
         
         // OptionalをStreamに変換（Java 9以降）
         List<String> expensiveProductNames = products.stream()
@@ -55,6 +55,6 @@ public class OptionalStreamExample {
             .flatMap(Optional::stream)  // Optional -> Stream変換
             .collect(Collectors.toList());
         
-        System.out.println("高額商品リスト: " + expensiveProductNames);
+        IO.println("高額商品リスト: " + expensiveProductNames);
     }
 }

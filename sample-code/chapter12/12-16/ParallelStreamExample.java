@@ -21,9 +21,9 @@ public class ParallelStreamExample {
             .sum();
         Duration parTime = Duration.between(start, Instant.now());
         
-        System.out.println("シーケンシャル: " + seqTime.toMillis() + "ms");
-        System.out.println("並列: " + parTime.toMillis() + "ms");
-        System.out.println("高速化率: " + 
+        IO.println("シーケンシャル: " + seqTime.toMillis() + "ms");
+        IO.println("並列: " + parTime.toMillis() + "ms");
+        IO.println("高速化率: " + 
             (double)seqTime.toMillis() / parTime.toMillis() + "倍");
     }
 }

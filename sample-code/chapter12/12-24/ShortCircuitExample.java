@@ -9,19 +9,19 @@ public class ShortCircuitExample {
         // 早期終了操作：条件を満たす要素が見つかれば処理を停止
         // すべての要素が偶数かチェック（1つでも奇数があればfalse）
         boolean allEven = numbers.stream()
-            .peek(n -> System.out.println("チェック中: " + n)) // 処理の流れを観察
+            .peek(n -> IO.println("チェック中: " + n)) // 処理の流れを観察
             .allMatch(n -> n % 2 == 0);
-        System.out.println("すべて偶数: " + allEven);
+        IO.println("すべて偶数: " + allEven);
         
         // いずれかの要素が条件を満たすかチェック
         boolean hasLargeNumber = numbers.stream()
             .anyMatch(n -> n > 7);
-        System.out.println("7より大きい数あり: " + hasLargeNumber);
+        IO.println("7より大きい数あり: " + hasLargeNumber);
         
         // 最初のn個に制限して処理
         List<Integer> firstThree = numbers.stream()
             .limit(3)  // 最初の3要素のみ処理
             .collect(Collectors.toList());
-        System.out.println("最初の3つ: " + firstThree);
+        IO.println("最初の3つ: " + firstThree);
     }
 }

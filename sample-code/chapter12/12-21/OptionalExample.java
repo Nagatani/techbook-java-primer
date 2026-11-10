@@ -18,12 +18,12 @@ public class OptionalExample {
         
         // 値が存在する場合のみ処理を実行
         firstHighScorer.ifPresent(student -> 
-            System.out.println("最初の高得点者: " + student.getName()));
+            IO.println("最初の高得点者: " + student.getName()));
         
         // デフォルト値を使用した安全な処理
         String topScorerName = firstHighScorer
             .map(Student::getName)
             .orElse("該当者なし");
-        System.out.println("トップスコアラー: " + topScorerName);
+        IO.println("トップスコアラー: " + topScorerName);
     }
 }

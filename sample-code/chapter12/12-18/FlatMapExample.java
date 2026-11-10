@@ -16,7 +16,7 @@ public class FlatMapExample {
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
             .collect(Collectors.toList());
         
-        System.out.println(flatList);
+        IO.println(flatList);
         // 出力: [Java, Python, JavaScript, Go, Rust, C++]
         
         // 文字列を単語に分割する例
@@ -31,7 +31,7 @@ public class FlatMapExample {
             .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
             .collect(Collectors.toList());
         
-        System.out.println(words);
+        IO.println(words);
         // 出力: [Hello, world, Java, programming, Stream, API]
     }
 }

@@ -12,12 +12,12 @@ public class ToArrayExample {
             .map(String::toUpperCase)           // 大文字に変換
             .toArray(String[]::new);            // String配列として取得
         
-        System.out.println("結果配列: " + Arrays.toString(nameArray));
+        IO.println("結果配列: " + Arrays.toString(nameArray));
         // 出力: 結果配列: [ALICE, CHARLIE, DAVID]
         
         // サイズを指定した配列生成も可能
         String[] sizedArray = names.stream()
             .toArray(size -> new String[size]);
-        System.out.println("サイズ指定配列: " + Arrays.toString(sizedArray));
+        IO.println("サイズ指定配列: " + Arrays.toString(sizedArray));
     }
 }

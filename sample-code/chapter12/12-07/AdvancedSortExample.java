@@ -27,7 +27,7 @@ public class AdvancedSortExample {
 
         students.sort(comparator); // List.sort()に渡す
 
-        System.out.println(students);
+        IO.println(students);
         // 出力: [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
     }
 }

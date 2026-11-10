@@ -16,7 +16,7 @@ public class NullSafeProcessingExample {
             .map(String::toUpperCase)           // 大文字に変換
             .collect(Collectors.toList());
         
-        System.out.println("有効な名前: " + validNames);
+        IO.println("有効な名前: " + validNames);
         // 出力: 有効な名前: [ALICE, BOB, CHARLIE]
         
         // Optionalでnullをラップしてnullセーフ処理
@@ -26,6 +26,6 @@ public class NullSafeProcessingExample {
             .map(String::toUpperCase)
             .orElse("UNKNOWN");
         
-        System.out.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
+        IO.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
     }
 }

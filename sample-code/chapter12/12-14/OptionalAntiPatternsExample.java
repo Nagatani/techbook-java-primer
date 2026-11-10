@@ -31,7 +31,7 @@ public class OptionalAntiPatternsExample {
         public void processUser(String userName) {
             Optional.ofNullable(userName)
                 .filter(name -> !name.isEmpty())
-                .ifPresent(name -> System.out.println("Processing: " + name));
+                .ifPresent(name -> IO.println("Processing: " + name));
         }
         
         // 良い例3: コレクションは空のコレクションを返す
@@ -50,12 +50,12 @@ public class OptionalAntiPatternsExample {
         // 悪い例：isPresentとgetの組み合わせ
         if (optional.isPresent()) {
             String value = optional.get();
-            System.out.println(value.toUpperCase());
+            IO.println(value.toUpperCase());
         }
         
         // 良い例：mapを使用
         optional.map(String::toUpperCase)
-            .ifPresent(System.out::println);
+            .ifPresent(IO::println);
         
         // アンチパターン5: Optional<Optional<T>>の作成
         // これは避けて、flatMapを使用すべき
