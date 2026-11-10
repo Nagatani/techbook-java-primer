@@ -717,9 +717,8 @@ pre {
 /* コード部分 */
 pre code {
   display: block;
-  /* 上下の余白は半行分。縞模様は内容の上端から数えて行とそろえる */
+  /* 上下の余白は半行分 */
   padding: 0.75em 1em;
-  background-origin: content-box;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 8pt;
   line-height: 1.5;
@@ -735,14 +734,25 @@ pre code {
   box-sizing: border-box;
   overflow-x: visible;
   
-  /* ゼブラストライプ背景 - 改行対応版 */
-  background-image: repeating-linear-gradient(
-    transparent,
-    transparent 1.5em,
-    rgba(0, 0, 0, 0.025) 1.5em,
-    rgba(0, 0, 0, 0.025) 3em
-  );
-  background-attachment: local;
+}
+
+/*
+ * コードの1行（scripts/vfm-code-lines.js がビルド時に分ける）
+ * - 折り返した続きの行は、その行の字下げ＋4文字の位置から始まる（字下げ幅は行ごとのstyleで指定）
+ * - 縞模様は行ごとに付ける（折り返した行も同じ色のまま）
+ */
+pre code .code-line {
+  display: block;
+  min-height: 1lh;
+}
+
+pre code .code-line:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+pre[class*="language-bash"] code .code-line:nth-child(even),
+pre[class*="language-shell"] code .code-line:nth-child(even) {
+  background-color: transparent;
 }
 
 /* 既存のprismクラスがある場合のスタイル */
@@ -1874,13 +1884,6 @@ section:has(h1:contains("目次")) {
     white-space: pre-wrap !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-    /* ゼブラストライプの印刷対応 */
-    background-image: repeating-linear-gradient(
-      transparent,
-      transparent 1.3em,
-      rgba(0, 0, 0, 0.05) 1.3em,
-      rgba(0, 0, 0, 0.05) 2.6em
-    ) !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

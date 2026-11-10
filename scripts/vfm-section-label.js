@@ -6,8 +6,11 @@
  * <b>5章</b>・<b>付録A</b> から番号を読み取り、h2に書き込む。
  * 表示はテーマ側で attr(data-chapter) とセクションのカウンターを組み合わせて行う
  * （例: 「5章 - 3」）。章番号のない文書（目次・用語集など）のh2には何も付けない。
+ *
+ * あわせて、コードブロックを1行ずつに分ける処理（vfm-code-lines.js）も組み込む。
  */
 const { VFM } = require('@vivliostyle/vfm');
+const { rehypeCodeLines } = require('./vfm-code-lines.js');
 
 const LABEL_PATTERN = /^(\d+章|付録[A-Z])$/;
 
@@ -40,7 +43,7 @@ function rehypeSectionLabel() {
 /** vivliostyle.config.js の documentProcessor に渡す */
 function documentProcessor(options, metadata) {
   // VFMの処理系は凍結されているため、呼び出して複製してからプラグインを足す
-  return VFM(options, metadata)().use(rehypeSectionLabel);
+  return VFM(options, metadata)().use(rehypeSectionLabel).use(rehypeCodeLines);
 }
 
 module.exports = { documentProcessor, rehypeSectionLabel };
