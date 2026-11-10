@@ -476,115 +476,72 @@ h2 > span:first-child:not(small) {
   }
 }
 
-/* h3 スタイル - 節見出し */
-h3 {
-  font-size: 18Q;
-  line-height: 24Q;
-  margin-block-start: 1.4em;
-  margin-block-end: 0.5em;
-  break-inside: avoid;
-  break-after: avoid;
-  font-weight: 600;
-  color: #2c3e50;
-  padding-left: 2.5em;
-  position: relative;
-}
-
-/* h3の左側装飾線 */
-h3::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  bottom: 0.2em;
-  width: 4px;
-  background: linear-gradient(to bottom, #3498db, #2980b9);
-  border-radius: 2px;
-}
-
-/* h3の装飾的な記号 */
-h3::after {
-  content: "▶";
-  position: absolute;
-  left: 0.7em;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #3498db;
-  font-size: 14px;
-}
-
-/* h4 スタイル - 小節見出し */
-h4 {
-  font-size: 16Q;
-  line-height: 22Q;
-  margin-block-start: 1.2em;
-  margin-block-end: 0.4em;
-  break-inside: avoid;
-  break-after: avoid;
-  font-weight: 600;
-  color: #34495e;
-  border-bottom: 2px solid #ecf0f1;
-  padding-bottom: 0.2em;
-}
-
-/* h5 スタイル - 項見出し */
-h5 {
-  font-size: 14Q;
-  line-height: 20Q;
-  margin-block-start: 1.2em;
-  margin-block-end: 0.5em;
-  break-inside: avoid;
-  break-after: avoid;
-  font-weight: 600;
-  color: #34495e;
-  background-color: #f8f9fa;
-  padding: 0.3em 0.8em 0.3em 2em;
-  border-radius: 4px;
-  position: relative;
-  border-left: 3px solid #3498db;
-}
-
-/* h5の装飾的なドット */
-h5::before {
-  content: "";
-  position: absolute;
-  left: 0.7em;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: #3498db;
-  border-radius: 50%;
-}
-
-/* h6 スタイル - 小項見出し */
+/*
+ * 見出し（h3〜h6）
+ * - 見出しの文字は本文と同じ左端から始める（記号や字下げで文字の位置をずらさない）
+ * - 階層は装飾の強さで示す: h3 縦線 → h4 青の太字 → h5 本文大の太字 → h6 灰色の太字
+ * - 見出し直後で改ページしない
+ */
+h3,
+h4,
+h5,
 h6 {
-  font-size: 13Q;
-  line-height: 20Q;
-  margin-block-start: 1em;
-  margin-block-end: 0.4em;
   break-inside: avoid;
   break-after: avoid;
   font-weight: 700;
-  color: #495057;
-  font-style: italic;
-  padding-left: 1.5em;
+  font-style: normal;
   position: relative;
+  text-indent: 0;
 }
 
-/* h6の前に記号を追加 */
+/* h3 - 節見出し: 左の縦線だけ。文字は縦線のすぐ右から始める */
+h3 {
+  font-size: 17Q;
+  line-height: 24Q;
+  margin-block-start: 1.4em;
+  margin-block-end: 0.5em;
+  padding: 0 0 0 0.5em;
+  border-left: 4px solid #3498db;
+  color: #2c3e50;
+}
+
+/* h4 - 小見出し: 青の太字 */
+h4 {
+  font-size: 15Q;
+  line-height: 22Q;
+  margin-block-start: 1.2em;
+  margin-block-end: 0.35em;
+  padding: 0;
+  color: #2c7fb8;
+}
+
+/* h5 - 項見出し: 本文と同じ大きさの太字 */
+h5 {
+  font-size: 13.5Q;
+  line-height: 21Q;
+  margin-block-start: 1em;
+  margin-block-end: 0.25em;
+  padding: 0;
+  color: #2c3e50;
+}
+
+/* h6 - 小項目: 本文と同じ大きさの灰色の太字 */
+h6 {
+  font-size: 13Q;
+  line-height: 21Q;
+  margin-block-start: 0.8em;
+  margin-block-end: 0.2em;
+  padding: 0;
+  color: #495057;
+}
+
+/* テーマ標準の節番号（section.css の ::before）や旧デザインの記号を出さない */
+h3::before,
+h3::after,
+h4::after,
+h5::before,
 h6::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 4px 0 4px 6px;
-  border-color: transparent transparent transparent #3498db;
-  margin-right: 0.5em;
+  content: none;
 }
 
 p {
@@ -1542,25 +1499,15 @@ blockquote:has(strong.column-section) > p:first-child > strong.column-section {
 blockquote:has(strong.column-section) h3 {
   margin-top: 0.8em;
   margin-bottom: 0.3em;
-  padding-left: 0.7em;
   font-size: 15Q;
   line-height: 21Q;
   color: #343a40;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-blockquote:has(strong.column-section) h3::after {
-  content: none;
 }
 
 blockquote:has(strong.column-section) h4 {
   margin-top: 0.7em;
   margin-bottom: 0.3em;
-  font-size: 13Q;
-  color: #495057;
-  border-bottom: none;
-  padding-bottom: 0;
+  font-size: 13.5Q;
 }
 
 /* blockquoteコラム内のコードブロック */
