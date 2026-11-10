@@ -204,12 +204,11 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 ### 主要インターフェイス
 
-1. Collection: すべてのコレクションの基底インターフェイス
-   - List: 順序付きコレクション（重複可）
-   - Set: 重複を許さないコレクション
-   - Queue: FIFO（先入れ先出し）のコレクション
-
-2. Map: キーと値のペアを管理（Collectionとは独立）
+1. Collection
+    + すべてのコレクションの基底インターフェイス
+    + List（順序付きのコレクション。重複できる）、Set（重複を許さないコレクション）、Queue（FIFO、先入れ先出しのコレクション）がこれを継承する
+2. Map
+    + キーと値のペアを管理する（Collectionとは独立した階層）
 
 <div class="figure">
 
@@ -218,7 +217,9 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 </div>
 
 
-### インターフェイス階層
+### 主な実装クラスの一覧
+
+図に描いていないものも含めて、主な実装クラスを一覧にすると次のようになります。`Vector`と`Hashtable`は古いクラスで、新しく書くコードでは`ArrayList`と`HashMap`を使います。
 
 ```
 Collection
@@ -436,6 +437,12 @@ linkedHashSet.add(1);
 linkedHashSet.add(2);
 // 出力: 3, 1, 2（挿入順）
 ```
+
+<div class="figure">
+
+![Setの実装による取り出し順の違い](images/diagrams/chapter09-set-order.svg)
+
+</div>
 
 #### 使い分けの指針
 - HashSet

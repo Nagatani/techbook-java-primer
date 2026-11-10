@@ -1,0 +1,9 @@
+flowchart LR
+    input["add(3)、add(1)、add(2)<br/>の順に追加"]
+    hs["HashSet<br/>取り出す順は<br/>決まっていない"]
+    lhs["LinkedHashSet<br/>3, 1, 2（追加した順）"]
+    ts["TreeSet<br/>1, 2, 3（昇順）"]
+
+    input --> hs
+    input --> lhs
+    input --> ts
