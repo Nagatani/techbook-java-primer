@@ -201,6 +201,12 @@ Dependency Injection (DI)は、疎結合を実現するための具体的な設�
 
 この考え方は、制御の反転 (Inversion of Control - IoC)という、より大きな設計原則にもとづいています。
 
+<div class="figure">
+
+![密結合とDIを使った疎結合](images/diagrams/chapter21-dependency-injection.svg)
+
+</div>
+
 ### DIの主な種類
 
 依存性を注入するには、主に3つの方法があります。
@@ -343,9 +349,18 @@ public class UserServiceManualTest {
 
 TDDでは、以下の短いサイクルを繰り返します。
 
-1. Red: まず、これから実装する機能に対する失敗するテストコードを書く
-2. Green: そのテストを成功させるための最小限のコードを実装する
-3. Refactoring: テストが成功する状態を保ったまま、コードをより綺麗に、効率的に書き直す
+1. Red
+    + これから実装する機能に対する、失敗するテストコードを書く
+2. Green
+    + そのテストを成功させるための最小限のコードを実装する
+3. Refactoring
+    + テストが成功する状態を保ったまま、コードをより綺麗に、効率的に書き直す
+
+<div class="figure">
+
+![TDDのサイクル](images/diagrams/chapter21-tdd-cycle.svg)
+
+</div>
 
 ### TDDの実践例
 

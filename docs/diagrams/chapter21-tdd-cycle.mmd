@@ -1,0 +1,10 @@
+flowchart LR
+    red["Red<br/>失敗するテストを書く"]
+    green["Green<br/>テストが通る最小限の<br/>コードを書く"]
+    refactor["Refactoring<br/>テストが通るまま<br/>コードを整える"]
+
+    red --> green --> refactor --> red
+
+    style red fill:#ffebee,stroke:#c62828
+    style green fill:#e8f5e9,stroke:#2e7d32
+    style refactor fill:#e3f2fd,stroke:#1565c0

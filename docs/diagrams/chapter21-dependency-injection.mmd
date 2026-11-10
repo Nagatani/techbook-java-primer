@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph before["密結合（サンプルコード21-4）"]
+        direction LR
+        us1["UserService"] -->|"new UserRepository()<br/>で自分で作る"| ur1["UserRepository<br/>（データベースに接続）"]
+    end
+
+    subgraph after["DIを使った疎結合（サンプルコード21-7・21-8）"]
+        direction LR
+        caller["呼び出し側<br/>（本番のmain、テスト）"] -->|"コンストラクタで渡す"| us2["UserService"]
+        us2 -->|"依存する"| iface["≪interface≫<br/>UserRepository"]
+        real["本番用の実装<br/>（データベースに接続）"] -.->|implements| iface
+        stub["UserRepositoryStub<br/>（テスト用の偽物）"] -.->|implements| iface
+    end
+
+    before ~~~ after
+
+    style ur1 fill:#ffebee,stroke:#c62828
+    style iface fill:#e3f2fd,stroke:#1565c0
+    style stub fill:#fff8e1,stroke:#f9a825
