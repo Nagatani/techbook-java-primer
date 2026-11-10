@@ -379,6 +379,14 @@ public class DataStreamExample {
 
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
+サンプルコード14-6では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
+
+<div class="figure">
+
+![ストリームを重ねて機能を組み合わせる（サンプルコード14-6）](images/diagrams/chapter14-stream-layers.svg)
+
+</div>
+
 ## オブジェクトの直列化（シリアライズ）
 
 Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを直列化（シリアライズ）、バイト列からオブジェクトを復元することを非直列化（デシリアライズ）と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です。

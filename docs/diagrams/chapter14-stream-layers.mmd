@@ -1,0 +1,8 @@
+flowchart LR
+    file[("ファイル<br/>（data.bin）")]
+    fis["FileInputStream<br/>ファイルからバイトを読む"]
+    bis["BufferedInputStream<br/>まとめて読んで<br/>バッファーにためる"]
+    dis["DataInputStream<br/>バイトをint・doubleなどに<br/>組み立てる"]
+    prog["プログラム<br/>dis.readInt() など"]
+
+    file --> fis --> bis --> dis --> prog
