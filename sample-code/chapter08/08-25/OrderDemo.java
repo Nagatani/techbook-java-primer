@@ -7,11 +7,11 @@ public class OrderDemo {
                 OrderStatus.PENDING, new BigDecimal("1980"));
         Order shipped = order.updateStatus(OrderStatus.PROCESSING).updateStatus(OrderStatus.SHIPPED);
         Order delivered = shipped.updateStatus(OrderStatus.DELIVERED);
-        System.out.println(delivered.status().getDescription());
+        IO.println(delivered.status().getDescription());
         try {
             delivered.updateStatus(OrderStatus.CANCELLED);
         } catch (IllegalStateException e) {
-            System.out.println(e.getMessage());
+            IO.println(e.getMessage());
         }
     }
 }

@@ -62,7 +62,7 @@ public class EnumExample {
     public static void main(String[] args) {
         DayOfWeek today = DayOfWeek.WEDNESDAY;
         
-        System.out.println("今日は " + today + " です。");
+        IO.println("今日は " + today + " です。");
         // toString()がオーバーライドされており、"WEDNESDAY"と表示される
         
         // 型安全なので、不正な値はコンパイルエラーになる
@@ -93,12 +93,12 @@ public class EnumMethodsExample {
     public static void main(String[] args) {
         // すべての曜日を出力
         for (DayOfWeek day : DayOfWeek.values()) {
-            System.out.println(day.ordinal() + ": " + day.name());
+            IO.println(day.ordinal() + ": " + day.name());
         }
         
         // 文字列からenumへの変換
         DayOfWeek friday = DayOfWeek.valueOf("FRIDAY");
-        System.out.println("金曜日: " + friday);
+        IO.println("金曜日: " + friday);
     }
 }
 ```
@@ -169,13 +169,13 @@ public class TrafficLight {
     public void handleSignal(Color color) {
         switch (color) {
             case RED:
-                System.out.println("停止してください");
+                IO.println("停止してください");
                 break;
             case YELLOW:
-                System.out.println("注意して進んでください");
+                IO.println("注意して進んでください");
                 break;
             case GREEN:
-                System.out.println("進んでください");
+                IO.println("進んでください");
                 break;
         }
     }
@@ -276,19 +276,19 @@ public enum PaymentStrategy {
     CREDIT_CARD {
         @Override
         public void pay(double amount) {
-            System.out.println("クレジットカードで" + amount + "円を支払いました");
+            IO.println("クレジットカードで" + amount + "円を支払いました");
         }
     },
     BANK_TRANSFER {
         @Override
         public void pay(double amount) {
-            System.out.println("銀行振込で" + amount + "円を支払いました");
+            IO.println("銀行振込で" + amount + "円を支払いました");
         }
     },
     CASH {
         @Override
         public void pay(double amount) {
-            System.out.println("現金で" + amount + "円を支払いました");
+            IO.println("現金で" + amount + "円を支払いました");
         }
     };
     
@@ -320,19 +320,19 @@ public enum DocumentType implements Printable {
     PDF {
         @Override
         public void print() {
-            System.out.println("PDFドキュメントを印刷します");
+            IO.println("PDFドキュメントを印刷します");
         }
     },
     WORD {
         @Override
         public void print() {
-            System.out.println("Wordドキュメントを印刷します");
+            IO.println("Wordドキュメントを印刷します");
         }
     },
     TEXT {
         @Override
         public void print() {
-            System.out.println("テキストファイルを印刷します");
+            IO.println("テキストファイルを印刷します");
         }
     }
 }
@@ -358,8 +358,8 @@ public class EnumCollectionExample {
         EnumSet<Permission> adminPermissions = EnumSet.allOf(Permission.class);
         EnumSet<Permission> userPermissions = EnumSet.of(Permission.READ, Permission.WRITE);
         
-        System.out.println("管理者権限: " + adminPermissions);
-        System.out.println("ユーザー権限: " + userPermissions);
+        IO.println("管理者権限: " + adminPermissions);
+        IO.println("ユーザー権限: " + userPermissions);
         
         // EnumMap: enumをキーとする高速なMap実装
         EnumMap<Permission, String> permissionDescriptions = new EnumMap<>(Permission.class);
@@ -369,7 +369,7 @@ public class EnumCollectionExample {
         permissionDescriptions.put(Permission.DELETE, "削除権限");
         
         for (Permission p : Permission.values()) {
-            System.out.println(p + ": " + permissionDescriptions.get(p));
+            IO.println(p + ": " + permissionDescriptions.get(p));
         }
     }
 }
@@ -505,18 +505,18 @@ public class RecordExample {
         Person person3 = new Person("鈴木花子", 30);
         
         // アクセサメソッドの使用
-        System.out.println("名前: " + person1.name());
-        System.out.println("年齢: " + person1.age());
+        IO.println("名前: " + person1.name());
+        IO.println("年齢: " + person1.age());
         
         // toString()の自動実装
-        System.out.println(person1);  // Person[name=山田太郎, age=25]
+        IO.println(person1);  // Person[name=山田太郎, age=25]
         
         // equals()の自動実装
-        System.out.println(person1.equals(person2));  // true
-        System.out.println(person1.equals(person3));  // false
+        IO.println(person1.equals(person2));  // true
+        IO.println(person1.equals(person3));  // false
         
         // hashCode()の自動実装
-        System.out.println(person1.hashCode() == person2.hashCode());  // true
+        IO.println(person1.hashCode() == person2.hashCode());  // true
     }
 }
 ```
@@ -669,7 +669,7 @@ public class PatternMatchingExample {
     
     public static void main(String[] args) {
         Point p = new Point(10, 20);
-        System.out.println(describe(p));  // 座標(10, 20)の点
+        IO.println(describe(p));  // 座標(10, 20)の点
     }
 }
 ```
@@ -699,7 +699,7 @@ public class LocalRecordExample {
         record Statistics(int count, double average, int max, int min) {}
         
         if (numbers.isEmpty()) {
-            System.out.println("データがありません");
+            IO.println("データがありません");
             return;
         }
         
@@ -712,7 +712,7 @@ public class LocalRecordExample {
         int min = Collections.min(numbers);
         
         Statistics stats = new Statistics(count, average, max, min);
-        System.out.println("統計情報: " + stats);
+        IO.println("統計情報: " + stats);
     }
 }
 ```
@@ -994,7 +994,7 @@ public class OuterClass {
     public class InnerClass {
         public void printOuterField() {
             // 外部クラスのprivateメンバーにアクセス可能
-            System.out.println("外部クラスのフィールド: " + outerField);
+            IO.println("外部クラスのフィールド: " + outerField);
         }
     }
     
@@ -1038,7 +1038,7 @@ public class MathOperations {
     public static void main(String[] args) {
         // 外部クラスのインスタンスなしで生成可能
         Vector2D vector = new Vector2D(3, 4);
-        System.out.println("大きさ: " + vector.magnitude()); // 5.0
+        IO.println("大きさ: " + vector.magnitude()); // 5.0
     }
 }
 ```
@@ -1067,7 +1067,7 @@ public class LocalClassExample {
         }
         
         DataProcessor processor = new DataProcessor();
-        System.out.println(processor.process("hello")); // PREFIX: HELLO
+        IO.println(processor.process("hello")); // PREFIX: HELLO
     }
 }
 ```
@@ -1097,7 +1097,7 @@ public class AnonymousClassExample {
         // Java 8以降はラムダ式で簡潔に記述可能
         // Arrays.sort(names, (s1, s2) -> s2.compareTo(s1));
         
-        System.out.println(Arrays.toString(names));
+        IO.println(Arrays.toString(names));
     }
 }
 ```

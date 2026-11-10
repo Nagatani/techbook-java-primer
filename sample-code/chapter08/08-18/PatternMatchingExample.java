@@ -14,6 +14,6 @@ public class PatternMatchingExample {
     
     public static void main(String[] args) {
         Point p = new Point(10, 20);
-        System.out.println(describe(p));  // 座標(10, 20)の点
+        IO.println(describe(p));  // 座標(10, 20)の点
     }
 }

@@ -11,8 +11,8 @@ public class EnumCollectionExample {
         EnumSet<Permission> adminPermissions = EnumSet.allOf(Permission.class);
         EnumSet<Permission> userPermissions = EnumSet.of(Permission.READ, Permission.WRITE);
         
-        System.out.println("管理者権限: " + adminPermissions);
-        System.out.println("ユーザー権限: " + userPermissions);
+        IO.println("管理者権限: " + adminPermissions);
+        IO.println("ユーザー権限: " + userPermissions);
         
         // EnumMap: enumをキーとする高速なMap実装
         EnumMap<Permission, String> permissionDescriptions = new EnumMap<>(Permission.class);
@@ -22,7 +22,7 @@ public class EnumCollectionExample {
         permissionDescriptions.put(Permission.DELETE, "削除権限");
         
         for (Permission p : Permission.values()) {
-            System.out.println(p + ": " + permissionDescriptions.get(p));
+            IO.println(p + ": " + permissionDescriptions.get(p));
         }
     }
 }

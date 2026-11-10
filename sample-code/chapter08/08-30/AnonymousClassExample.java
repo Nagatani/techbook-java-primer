@@ -16,6 +16,6 @@ public class AnonymousClassExample {
         // Java 8以降はラムダ式で簡潔に記述可能
         // Arrays.sort(names, (s1, s2) -> s2.compareTo(s1));
         
-        System.out.println(Arrays.toString(names));
+        IO.println(Arrays.toString(names));
     }
 }

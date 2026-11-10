@@ -5,7 +5,7 @@ public class OuterClass {
     public class InnerClass {
         public void printOuterField() {
             // 外部クラスのprivateメンバーにアクセス可能
-            System.out.println("外部クラスのフィールド: " + outerField);
+            IO.println("外部クラスのフィールド: " + outerField);
         }
     }
     

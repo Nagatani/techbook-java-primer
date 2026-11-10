@@ -9,6 +9,6 @@ public class LocalClassExample {
         }
         
         DataProcessor processor = new DataProcessor();
-        System.out.println(processor.process("hello")); // PREFIX: HELLO
+        IO.println(processor.process("hello")); // PREFIX: HELLO
     }
 }

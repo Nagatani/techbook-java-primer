@@ -16,6 +16,6 @@ public class MathOperations {
     public static void main(String[] args) {
         // 外部クラスのインスタンスなしで生成可能
         Vector2D vector = new Vector2D(3, 4);
-        System.out.println("大きさ: " + vector.magnitude()); // 5.0
+        IO.println("大きさ: " + vector.magnitude()); // 5.0
     }
 }

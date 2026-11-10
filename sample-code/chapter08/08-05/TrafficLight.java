@@ -6,13 +6,13 @@ public class TrafficLight {
     public void handleSignal(Color color) {
         switch (color) {
             case RED:
-                System.out.println("停止してください");
+                IO.println("停止してください");
                 break;
             case YELLOW:
-                System.out.println("注意して進んでください");
+                IO.println("注意して進んでください");
                 break;
             case GREEN:
-                System.out.println("進んでください");
+                IO.println("進んでください");
                 break;
         }
     }
