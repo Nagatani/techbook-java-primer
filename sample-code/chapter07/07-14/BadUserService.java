@@ -36,12 +36,12 @@ interface UserReportService {
     void generateReport(String userId);
     
     default void generateMonthlyReport(String userId) {
-        System.out.println("月次レポートを生成中: " + userId);
+        IO.println("月次レポートを生成中: " + userId);
         generateReport(userId);
     }
     
     default void generateYearlyReport(String userId) {
-        System.out.println("年次レポートを生成中: " + userId);
+        IO.println("年次レポートを生成中: " + userId);
         generateReport(userId);
     }
 }
@@ -73,6 +73,6 @@ class BasicUserService implements UserRepository, UserNotificationService {
     
     @Override
     public void sendEmail(String userId, String message) {
-        System.out.println("メール送信 to " + userId + ": " + message);
+        IO.println("メール送信 to " + userId + ": " + message);
     }
 }

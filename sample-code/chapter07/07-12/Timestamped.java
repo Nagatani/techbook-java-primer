@@ -62,7 +62,7 @@ class Document implements Timestamped, Identifiable, Versioned {
         
         // デフォルトメソッドを活用
         if (isExpired(3600000)) {  // 1時間
-            System.out.println("Document " + getFullIdentifier() + " has expired");
+            IO.println("Document " + getFullIdentifier() + " has expired");
         }
     }
 }

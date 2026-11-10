@@ -21,7 +21,7 @@ public interface DataProcessor {
     
     // フックメソッド（オプション）
     default void onSuccess() {
-        System.out.println("Processing completed successfully");
+        IO.println("Processing completed successfully");
     }
     
     default void onError(String message) {

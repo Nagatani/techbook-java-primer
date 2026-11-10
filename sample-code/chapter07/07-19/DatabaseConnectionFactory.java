@@ -17,17 +17,17 @@ class MySQLConnection implements DatabaseConnection {
     
     @Override
     public void connect() {
-        System.out.println("MySQLに接続: " + connectionString);
+        IO.println("MySQLに接続: " + connectionString);
     }
     
     @Override
     public void executeQuery(String sql) {
-        System.out.println("MySQLでクエリ実行: " + sql);
+        IO.println("MySQLでクエリ実行: " + sql);
     }
     
     @Override
     public void close() {
-        System.out.println("MySQL接続を閉じる");
+        IO.println("MySQL接続を閉じる");
     }
 }
 
@@ -40,17 +40,17 @@ class PostgreSQLConnection implements DatabaseConnection {
     
     @Override
     public void connect() {
-        System.out.println("PostgreSQLに接続: " + connectionString);
+        IO.println("PostgreSQLに接続: " + connectionString);
     }
     
     @Override
     public void executeQuery(String sql) {
-        System.out.println("PostgreSQLでクエリ実行: " + sql);
+        IO.println("PostgreSQLでクエリ実行: " + sql);
     }
     
     @Override
     public void close() {
-        System.out.println("PostgreSQL接続を閉じる");
+        IO.println("PostgreSQL接続を閉じる");
     }
 }
 

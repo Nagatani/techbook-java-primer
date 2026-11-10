@@ -15,7 +15,7 @@ public abstract class Shape {
 
     // 通常のメソッドも持てる
     public void display() {
-        System.out.println("これは " + getName() + " です。");
-        System.out.println("面積は " + getArea() + " です。");
+        IO.println("これは " + getName() + " です。");
+        IO.println("面積は " + getArea() + " です。");
     }
 }

@@ -71,8 +71,8 @@ public abstract class Shape {
 
     // 通常のメソッドも持てる
     public void display() {
-        System.out.println("これは " + getName() + " です。");
-        System.out.println("面積は " + getArea() + " です。");
+        IO.println("これは " + getName() + " です。");
+        IO.println("面積は " + getArea() + " です。");
     }
 }
 ```
@@ -219,13 +219,13 @@ public class Document implements Exportable, Archivable {
     // Exportableインターフェイスのメソッドの実装
     @Override
     public void exportToFormat(String format) {
-        System.out.println(this.title + "を" + format + "形式でエクスポートします。");
+        IO.println(this.title + "を" + format + "形式でエクスポートします。");
     }
 
     // Archivableインターフェイスのメソッドの実装
     @Override
     public void archiveToStorage(String location) {
-        System.out.println(this.title + "を" + location + "にアーカイブします。");
+        IO.println(this.title + "を" + location + "にアーカイブします。");
     }
 }
 ```
@@ -354,7 +354,7 @@ public interface DataProcessor {
     
     // フックメソッド（オプション）
     default void onSuccess() {
-        System.out.println("Processing completed successfully");
+        IO.println("Processing completed successfully");
     }
     
     default void onError(String message) {
@@ -377,21 +377,21 @@ public interface DataProcessor {
 // ダイヤモンド継承の例
 interface A {
     default void method() {
-        System.out.println("A");
+        IO.println("A");
     }
 }
 
 interface B extends A {
     @Override
     default void method() {
-        System.out.println("B");
+        IO.println("B");
     }
 }
 
 interface C extends A {
     @Override
     default void method() {
-        System.out.println("C");
+        IO.println("C");
     }
 }
 
@@ -427,13 +427,13 @@ Javaは以下の規則で優先順位を決定します。
 // 規則1：クラスが常に優先
 class BaseClass {
     public void method() {
-        System.out.println("BaseClass");
+        IO.println("BaseClass");
     }
 }
 
 interface BaseInterface {
     default void method() {
-        System.out.println("BaseInterface");
+        IO.println("BaseInterface");
     }
 }
 
@@ -444,14 +444,14 @@ class Derived extends BaseClass implements BaseInterface {
 // 規則2：より具体的なインターフェイスが優先
 interface Parent {
     default void method() {
-        System.out.println("Parent");
+        IO.println("Parent");
     }
 }
 
 interface Child extends Parent {
     @Override
     default void method() {
-        System.out.println("Child");
+        IO.println("Child");
     }
 }
 
@@ -604,7 +604,7 @@ class Document implements Timestamped, Identifiable, Versioned {
         
         // デフォルトメソッドを活用
         if (isExpired(3600000)) {  // 1時間
-            System.out.println("Document " + getFullIdentifier() + " has expired");
+            IO.println("Document " + getFullIdentifier() + " has expired");
         }
     }
 }
@@ -667,7 +667,7 @@ class Temperature implements ComparableTrait<Temperature> {
         Temperature boiling = new Temperature(100);
         
         if (this.isBetween(freezing, boiling)) {
-            System.out.println("水は液体状態です");
+            IO.println("水は液体状態です");
         }
     }
 }
@@ -753,7 +753,7 @@ public class FunctionEnhancementDemo {
     public static void main(String[] args) {
         // 高価な計算を行う関数
         EnhancedFunction<Integer, Double> expensiveComputation = n -> {
-            System.out.println("計算中: " + n);
+            IO.println("計算中: " + n);
             return Math.sqrt(n) * Math.PI;
         };
         
@@ -761,12 +761,12 @@ public class FunctionEnhancementDemo {
         Function<Integer, Double> optimizedFunction = expensiveComputation
             .when(n -> n > 0, -1.0)  // 正の数のみ計算
             .memoized()              // 結果をキャッシュ
-            .timed(time -> System.out.println("実行時間: " + time + "ns"));
+            .timed(time -> IO.println("実行時間: " + time + "ns"));
         
         // 同じ値で複数回呼び出し
-        System.out.println(optimizedFunction.apply(16));  // 計算実行
-        System.out.println(optimizedFunction.apply(16));  // キャッシュから取得
-        System.out.println(optimizedFunction.apply(-5));  // デフォルト値を返す
+        IO.println(optimizedFunction.apply(16));  // 計算実行
+        IO.println(optimizedFunction.apply(16));  // キャッシュから取得
+        IO.println(optimizedFunction.apply(-5));  // デフォルト値を返す
     }
 }
 ```
@@ -849,7 +849,7 @@ class Circle implements Shape {
     // ...
     @Override
     public void draw() {
-        System.out.println("○ 半径 " + radius + " の円を描画");
+        IO.println("○ 半径 " + radius + " の円を描画");
     }
     // ...
 }
@@ -884,8 +884,8 @@ public class FactoryDemo {
         
         for (Shape shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.getArea());
-            System.out.println();
+            IO.println("面積: " + shape.getArea());
+            IO.println();
         }
     }
 }
@@ -931,7 +931,7 @@ interface Document {
 class WordDocument implements Document {
     @Override
     public void open() {
-        System.out.println("Word文書を開いています...");
+        IO.println("Word文書を開いています...");
     }
     
     // ...
@@ -971,17 +971,17 @@ class MySQLConnection implements DatabaseConnection {
     
     @Override
     public void connect() {
-        System.out.println("MySQLに接続: " + connectionString);
+        IO.println("MySQLに接続: " + connectionString);
     }
     
     @Override
     public void executeQuery(String sql) {
-        System.out.println("MySQLでクエリ実行: " + sql);
+        IO.println("MySQLでクエリ実行: " + sql);
     }
     
     @Override
     public void close() {
-        System.out.println("MySQL接続を閉じる");
+        IO.println("MySQL接続を閉じる");
     }
 }
 // ...

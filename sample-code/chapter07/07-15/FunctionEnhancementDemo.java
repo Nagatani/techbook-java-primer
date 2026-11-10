@@ -57,7 +57,7 @@ public class FunctionEnhancementDemo {
     public static void main(String[] args) {
         // 高価な計算を行う関数
         EnhancedFunction<Integer, Double> expensiveComputation = n -> {
-            System.out.println("計算中: " + n);
+            IO.println("計算中: " + n);
             return Math.sqrt(n) * Math.PI;
         };
         
@@ -65,11 +65,11 @@ public class FunctionEnhancementDemo {
         Function<Integer, Double> optimizedFunction = expensiveComputation
             .when(n -> n > 0, -1.0)  // 正の数のみ計算
             .memoized()              // 結果をキャッシュ
-            .timed(time -> System.out.println("実行時間: " + time + "ns"));
+            .timed(time -> IO.println("実行時間: " + time + "ns"));
         
         // 同じ値で複数回呼び出し
-        System.out.println(optimizedFunction.apply(16));  // 計算実行
-        System.out.println(optimizedFunction.apply(16));  // キャッシュから取得
-        System.out.println(optimizedFunction.apply(-5));  // デフォルト値を返す
+        IO.println(optimizedFunction.apply(16));  // 計算実行
+        IO.println(optimizedFunction.apply(16));  // キャッシュから取得
+        IO.println(optimizedFunction.apply(-5));  // デフォルト値を返す
     }
 }

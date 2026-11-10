@@ -44,7 +44,7 @@ class Temperature implements ComparableTrait<Temperature> {
         Temperature boiling = new Temperature(100);
         
         if (this.isBetween(freezing, boiling)) {
-            System.out.println("水は液体状態です");
+            IO.println("水は液体状態です");
         }
     }
 }

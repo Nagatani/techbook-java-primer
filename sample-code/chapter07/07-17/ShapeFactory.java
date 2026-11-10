@@ -16,7 +16,7 @@ class Circle implements Shape {
     
     @Override
     public void draw() {
-        System.out.println("○ 半径 " + radius + " の円を描画");
+        IO.println("○ 半径 " + radius + " の円を描画");
     }
     
     @Override
@@ -36,7 +36,7 @@ class Rectangle implements Shape {
     
     @Override
     public void draw() {
-        System.out.println("□ " + width + " x " + height + " の長方形を描画");
+        IO.println("□ " + width + " x " + height + " の長方形を描画");
     }
     
     @Override
@@ -56,7 +56,7 @@ class Triangle implements Shape {
     
     @Override
     public void draw() {
-        System.out.println("△ 底辺 " + base + ", 高さ " + height + " の三角形を描画");
+        IO.println("△ 底辺 " + base + ", 高さ " + height + " の三角形を描画");
     }
     
     @Override

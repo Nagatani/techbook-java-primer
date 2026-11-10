@@ -37,33 +37,33 @@ interface Document {
 class WordDocument implements Document {
     @Override
     public void open() {
-        System.out.println("Word文書を開いています...");
+        IO.println("Word文書を開いています...");
     }
     
     @Override
     public void save() {
-        System.out.println("Word文書を保存しています...");
+        IO.println("Word文書を保存しています...");
     }
     
     @Override
     public void close() {
-        System.out.println("Word文書を閉じています...");
+        IO.println("Word文書を閉じています...");
     }
 }
 
 class PdfDocument implements Document {
     @Override
     public void open() {
-        System.out.println("PDF文書を開いています...");
+        IO.println("PDF文書を開いています...");
     }
     
     @Override
     public void save() {
-        System.out.println("PDF文書を保存しています...");
+        IO.println("PDF文書を保存しています...");
     }
     
     @Override
     public void close() {
-        System.out.println("PDF文書を閉じています...");
+        IO.println("PDF文書を閉じています...");
     }
 }

@@ -12,12 +12,12 @@ public class Document implements Exportable, Archivable {
     // Exportableインターフェイスのメソッドの実装
     @Override
     public void exportToFormat(String format) {
-        System.out.println(this.title + "を" + format + "形式でエクスポートします。");
+        IO.println(this.title + "を" + format + "形式でエクスポートします。");
     }
 
     // Archivableインターフェイスのメソッドの実装
     @Override
     public void archiveToStorage(String location) {
-        System.out.println(this.title + "を" + location + "にアーカイブします。");
+        IO.println(this.title + "を" + location + "にアーカイブします。");
     }
 }

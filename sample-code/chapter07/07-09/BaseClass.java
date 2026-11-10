@@ -1,13 +1,13 @@
 // 規則1：クラスが常に優先
 class BaseClass {
     public void method() {
-        System.out.println("BaseClass");
+        IO.println("BaseClass");
     }
 }
 
 interface BaseInterface {
     default void method() {
-        System.out.println("BaseInterface");
+        IO.println("BaseInterface");
     }
 }
 
@@ -18,14 +18,14 @@ class Derived extends BaseClass implements BaseInterface {
 // 規則2：より具体的なインターフェイスが優先
 interface Parent {
     default void method() {
-        System.out.println("Parent");
+        IO.println("Parent");
     }
 }
 
 interface Child extends Parent {
     @Override
     default void method() {
-        System.out.println("Child");
+        IO.println("Child");
     }
 }
 

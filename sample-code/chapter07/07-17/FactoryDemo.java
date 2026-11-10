@@ -13,8 +13,8 @@ public class FactoryDemo {
         
         for (Shape shape : shapes) {
             shape.draw();
-            System.out.println("面積: " + shape.getArea());
-            System.out.println();
+            IO.println("面積: " + shape.getArea());
+            IO.println();
         }
     }
 }

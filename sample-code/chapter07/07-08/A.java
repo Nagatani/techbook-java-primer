@@ -1,21 +1,21 @@
 // ダイヤモンド継承の例
 interface A {
     default void method() {
-        System.out.println("A");
+        IO.println("A");
     }
 }
 
 interface B extends A {
     @Override
     default void method() {
-        System.out.println("B");
+        IO.println("B");
     }
 }
 
 interface C extends A {
     @Override
     default void method() {
-        System.out.println("C");
+        IO.println("C");
     }
 }
 
