@@ -1,186 +1,155 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
-/* メインタイトル */
 
+/*
+ * 索引・用語集（manuscripts/glossary.md）のテーマ
+ * 市販の書籍の索引にならい、色の帯を使わず、小さめの文字を2段に組む。
+ * 項目は scripts/vfm-index-entries.js が「用語（.index-term）」と「参照先（.index-refs）」に分ける。
+ */
+
+/* ページ（本文のテーマと同じ版面・ノンブル。柱は「索引」） */
 @page {
   size: B5;
-}
-@media print {
-  body {
-    margin: 0;
-    padding: 0;
+  @bottom-center {
+    content: none;
   }
 }
+
+@page :left {
+  margin-block: 20mm 25mm;
+  margin-inline: 20mm 22mm;
+  @top-left {
+    content: "索引";
+    font-size: 10Q;
+    color: #6c757d;
+  }
+  @bottom-left {
+    content: counter(page);
+    font-size: 12Q;
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+@page :right {
+  margin-block: 20mm 25mm;
+  margin-inline: 22mm 20mm;
+  @top-right {
+    content: "索引";
+    font-size: 10Q;
+    color: #6c757d;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-size: 12Q;
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+/* 最初のページは題があるので柱を出さない */
+@page :nth(1) {
+  @top-left {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+}
+
 body {
-  font-family: "Noto Sans JP", sans-serif;
+  margin: 0;
+  font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+  font-size: 11.5Q;
+  line-height: 16.5Q;
+  color: #212529;
 }
+
+/* 題 */
 h1 {
-  font-size: 28pt;
-  color: #2c3e50;
-  text-align: center;
-  margin: 0.5em 0 1em 0;
-  padding-bottom: 0.4em;
-  border-bottom: 3px solid #3498db;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  margin: 0 0 6mm;
+  padding: 0 0 2.5mm;
+  font-size: 24Q;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #212529;
+  border-bottom: 2px solid #212529;
 }
 
-/* アルファベット・五十音見出し */
-h2, h3 {
-  font-size: 12pt;
-  line-height: 1.4;
-  color: #fff;
-  background: #3498db;
-  margin: 0.9em 0 0.3em 0;
-  padding: 0.15em 0.6em;
-  text-align: left;
-  border-radius: 3px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  break-after: avoid;
-}
-
-/* 2カラムレイアウト（タイトル以外の見出しと用語を2段に流す） */
+/* 2段組み */
 .index-page {
   column-count: 2;
-  column-fill: auto;
-  column-gap: 2em;
-  column-rule: 1px solid #ecf0f1;
+  column-gap: 8mm;
+  column-rule: 0.5pt solid #ced4da;
 }
 
 .index-page h1 {
   column-span: all;
 }
 
-.content-wrapper {
-  column-count: 2;
-  column-gap: 2em;
-  column-rule: 1px solid #ecf0f1;
+/* 「A」「あ行」などの見出し: 太字と細い罫線だけ */
+h3 {
+  margin: 4mm 0 1.2mm;
+  padding: 0 0 0.6mm;
+  font-size: 13Q;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #2c7fb8;
+  border-bottom: 0.5pt solid #adb5bd;
+  break-after: avoid;
 }
 
-/* 用語リスト */
+/* 「付録関連項目」の区切り */
+h2 {
+  margin: 7mm 0 1mm;
+  padding: 1.5mm 0 0;
+  font-size: 14Q;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #212529;
+  border-top: 1.5pt solid #212529;
+  break-after: avoid;
+}
+
+h2 + h3 {
+  margin-top: 2.5mm;
+}
+
+/* 項目 */
 ul {
   list-style: none;
-  padding: 0;
-  margin: 0.5em 0;
-}
-
-li {
-  padding: 0.1em 0;
-  line-height: 1.5;
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-/* 用語（太字部分） */
-strong {
-  color: #2c3e50;
-  font-weight: 600;
-  margin-right: 0.5em;
-}
-
-/* ページ参照 */
-li::after {
-  content: "";
-}
-
-/* 章番号リンク */
-a {
-  color: #3498db;
-  text-decoration: none;
-  font-size: 0.9em;
-  margin-left: 0.3em;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* 定義リスト版（dl/dt/dd）対応 */
-dl {
   margin: 0;
   padding: 0;
 }
 
-dt {
-  font-weight: 600;
-  color: #2c3e50;
-  margin-top: 0.8em;
-  padding: 0.3em 0 0.2em 0;
-  border-bottom: 1px solid #ecf0f1;
-  break-after: avoid;
-  page-break-after: avoid;
+li {
+  margin: 0;
+  /* 折り返した行は1字下げる（ぶら下げ） */
+  padding: 0 0 0 1em;
+  text-indent: -1em;
+  break-inside: avoid;
 }
 
-dd {
-  margin: 0.3em 0 0.8em 1.5em;
-  color: #555;
-  line-height: 1.6;
-  break-before: avoid;
-  page-break-before: avoid;
+.index-term {
+  font-weight: 400;
+  color: #212529;
 }
 
-/* ルビ（読み仮名）対応 */
-ruby {
-  ruby-align: start;
+/* 参照先は用語のあとに全角1字分あけて続ける */
+.index-refs {
+  margin-left: 1em;
+  font-size: 10.5Q;
+  color: #495057;
+  white-space: normal;
 }
 
-rt {
-  font-size: 0.6em;
-  color: #7f8c8d;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* 相互参照 */
-.see-also {
-  font-style: italic;
-  color: #7f8c8d;
-  font-size: 0.9em;
-}
-
-.see-also::before {
-  content: "→ ";
-}
-
-/* ページ番号表示（将来の実装用） */
-.page-ref {
-  float: right;
-  color: #95a5a6;
-  font-size: 0.85em;
-  font-style: normal;
-}
-
-/* セクション間のスペース */
-h2 + ul,
-h3 + ul,
-h2 + dl,
-h3 + dl {
-  margin-top: 0.5em;
-}
-
-/* 印刷時の最適化 */
-@media print {
-  h2, h3 {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-  
-  dt {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-  
-  /* カラムの境界で項目が分断されないように */
-  li, dl {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-}
-
-/* 特殊文字の強調 */
 code {
   font-family: "Consolas", "Monaco", "Courier New", monospace;
-  background-color: #f4f4f4;
-  padding: 0.1em 0.3em;
-  border-radius: 3px;
-  font-size: 0.9em;
+  font-size: 0.95em;
 }
