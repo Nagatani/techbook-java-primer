@@ -1,0 +1,23 @@
+classDiagram
+    class TemperatureSensor {
+        -List~TemperatureChangeListener~ listeners
+        +addTemperatureChangeListener(listener) void
+        +removeTemperatureChangeListener(listener) void
+        +setTemperature(double newTemperature) void
+        #fireTemperatureChanged(double oldTemp, double newTemp) void
+    }
+    class TemperatureChangeListener {
+        <<interface>>
+        +temperatureChanged(TemperatureChangeEvent e) void
+    }
+    class TemperatureChangeEvent {
+        -double oldTemperature
+        -double newTemperature
+    }
+    class 温度を表示するリスナー
+    class 最高最低を記録するリスナー
+
+    TemperatureSensor o--> "*" TemperatureChangeListener : 登録されたリスナーに通知
+    TemperatureChangeListener <|.. 温度を表示するリスナー
+    TemperatureChangeListener <|.. 最高最低を記録するリスナー
+    TemperatureSensor ..> TemperatureChangeEvent : 作って渡す

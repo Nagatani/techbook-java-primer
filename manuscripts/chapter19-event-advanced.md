@@ -223,6 +223,12 @@ public class DocumentListenerExample extends JFrame {
 
 以下のコードは、JavaのEventObjectを継承したカスタムイベントの実装例です。温度センサーの値が変化したときにイベントを発生させ、複数のリスナーに通知する仕組みを構築しています。このパターンを使用することで、モデル（センサー）とビュー（表示部分）を疎結合に保ち、メンテナンス性の高いアプリケーションを開発できます。
 
+<div class="figure">
+
+![カスタムイベントによるObserverパターン（サンプルコード19-4）](images/diagrams/chapter19-observer.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜33、43〜55、58、64、94〜102、128〜129、156、163行目）</span>
 
 ```java
@@ -518,6 +524,12 @@ public class EventOptimizationExample extends JFrame {
 長時間かかる処理をバックグラウンドで実行する例です。
 
 以下のコードは、SwingWorkerを使用してUIをフリーズさせることなく長時間の処理を実行する実装例です。進捗状況のリアルタイム更新、処理のキャンセル機能、EDT上での安全なUI更新など、実践的なアプリケーションで必要となる機能を網羅しています。大量データの処理、ネットワーク通信、ファイル操作などで活用できます。
+
+<div class="figure">
+
+![SwingWorkerによる処理の流れ（サンプルコード19-8）](images/diagrams/chapter19-swingworker.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、70〜75、79〜82、91〜97、99〜115、121〜127、145行目）</span>
 
