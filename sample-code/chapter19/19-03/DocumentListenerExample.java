@@ -96,11 +96,11 @@ public class DocumentListenerExample extends JFrame {
         // Emailの検証
         String email = emailField.getText();
         if (email.isEmpty()) {
-            status.append("❌ Emailを入力してください\n");
+            status.append("× Emailを入力してください\n");
             emailField.setBackground(Color.PINK);
             isValid = false;
         } else if (!isValidEmail(email)) {
-            status.append("❌ 有効なEmailアドレスを入力してください\n");
+            status.append("× 有効なEmailアドレスを入力してください\n");
             emailField.setBackground(Color.PINK);
             isValid = false;
         } else {
@@ -111,11 +111,11 @@ public class DocumentListenerExample extends JFrame {
         // パスワードの検証
         char[] password = passwordField.getPassword();
         if (password.length == 0) {
-            status.append("❌ パスワードを入力してください\n");
+            status.append("× パスワードを入力してください\n");
             passwordField.setBackground(Color.PINK);
             isValid = false;
         } else if (password.length < 8) {
-            status.append("❌ パスワードは8文字以上必要です\n");
+            status.append("× パスワードは8文字以上必要です\n");
             passwordField.setBackground(Color.PINK);
             isValid = false;
         } else {
@@ -128,11 +128,11 @@ public class DocumentListenerExample extends JFrame {
         // 確認パスワードの検証
         char[] confirm = confirmField.getPassword();
         if (confirm.length == 0) {
-            status.append("❌ 確認パスワードを入力してください\n");
+            status.append("× 確認パスワードを入力してください\n");
             confirmField.setBackground(Color.PINK);
             isValid = false;
         } else if (!java.util.Arrays.equals(password, confirm)) {
-            status.append("❌ パスワードが一致しません\n");
+            status.append("× パスワードが一致しません\n");
             confirmField.setBackground(Color.PINK);
             isValid = false;
         } else {

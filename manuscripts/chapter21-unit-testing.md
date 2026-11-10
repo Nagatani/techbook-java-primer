@@ -132,9 +132,9 @@ public class CalculatorManualTest {
 
         // Assert（検証）
         if (actual == expected) {
-            IO.println("✅ テスト成功！");
+            IO.println("○ テスト成功！");
         } else {
-            System.err.println("❌ テスト失敗！");
+            System.err.println("× テスト失敗！");
         }
     }
 }
@@ -143,7 +143,7 @@ public class CalculatorManualTest {
 実行結果：
 
 ```
-✅ テスト成功！
+○ テスト成功！
 ```
 
 この`Calculator`のように、他に依存しない自己完結したクラスは非常にテストしやすいです。
@@ -319,9 +319,9 @@ public class UserServiceManualTest {
         // Assert（検証）
         String expected = "【Profile】Test User";
         if (expected.equals(actual)) {
-            IO.println("✅ テスト成功！");
+            IO.println("○ テスト成功！");
         } else {
-            System.err.println("❌ テスト失敗！");
+            System.err.println("× テスト失敗！");
         }
     }
 }
@@ -330,7 +330,7 @@ public class UserServiceManualTest {
 実行結果：
 
 ```
-✅ テスト成功！
+○ テスト成功！
 ```
 
 `UserService`のコードを一切変更することなく、その振る舞いをDBから切り離してテストできました。
@@ -343,9 +343,9 @@ public class UserServiceManualTest {
 
 TDDでは、以下の短いサイクルを繰り返します。
 
-1. 🔴 Red: まず、これから実装する機能に対する失敗するテストコードを書く
-2. 🟢 Green: そのテストを成功させるための最小限のコードを実装する
-3. 🔵 Refactoring: テストが成功する状態を保ったまま、コードをより綺麗に、効率的に書き直す
+1. Red: まず、これから実装する機能に対する失敗するテストコードを書く
+2. Green: そのテストを成功させるための最小限のコードを実装する
+3. Refactoring: テストが成功する状態を保ったまま、コードをより綺麗に、効率的に書き直す
 
 ### TDDの実践例
 

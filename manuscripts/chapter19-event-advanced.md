@@ -193,11 +193,11 @@ public class DocumentListenerExample extends JFrame {
         // Emailの検証
         String email = emailField.getText();
         if (email.isEmpty()) {
-            status.append("❌ Emailを入力してください\n");
+            status.append("× Emailを入力してください\n");
             emailField.setBackground(Color.PINK);
             isValid = false;
         } else if (!isValidEmail(email)) {
-            status.append("❌ 有効なEmailアドレスを入力してください\n");
+            status.append("× 有効なEmailアドレスを入力してください\n");
             emailField.setBackground(Color.PINK);
             isValid = false;
         } else {

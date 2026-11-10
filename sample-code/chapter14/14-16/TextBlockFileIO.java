@@ -127,7 +127,7 @@ public class TextBlockFileIO {
                     </style>
                 </head>
                 <body>
-                    <h1>📊 ユーザー管理システム - 月次レポート</h1>
+                    <h1>ユーザー管理システム - 月次レポート</h1>
                     <p>レポート生成日時: %s</p>
                     
                     <table>
