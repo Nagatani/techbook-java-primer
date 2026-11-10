@@ -778,6 +778,12 @@ IO.println("並列処理の結果: " + sumParallel);
 3. 統合（Combine）
     + 各スレッドの結果を統合して最終結果を生成
 
+<div class="figure">
+
+![並列ストリームの分割・処理・統合](images/diagrams/chapter12-parallel-stream.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード12-16**　ParallelStreamExample.java</span>
 
 ```java
@@ -865,6 +871,12 @@ List<Integer> results = numbers.parallelStream()
 ### flatMapによる複雑なデータ変換
 
 `flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などにとくに有用です。
+
+<div class="figure">
+
+![flatMapによる平坦化](images/diagrams/chapter12-flatmap.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード12-18**　FlatMapExample.java</span>
 

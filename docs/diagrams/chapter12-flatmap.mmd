@@ -1,0 +1,4 @@
+flowchart LR
+    nested["List&lt;List&lt;String&gt;&gt;<br/>[Java, Python]<br/>[JavaScript, Go]<br/>[Rust, C++]"]
+    flat["List&lt;String&gt;<br/>[Java, Python, JavaScript,<br/>Go, Rust, C++]"]
+    nested -->|"flatMap(List::stream)<br/>内側のリストを1本につなぐ"| flat
