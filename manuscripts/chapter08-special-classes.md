@@ -974,7 +974,7 @@ public record GameCharacter(
 
 <div class="figure">
 
-![内部クラスの種類と関係性](images/diagrams/chapter08-inner-class-hierarchy.png)
+![内部クラスの種類と関係性](images/diagrams/chapter08-inner-class-hierarchy.svg)
 
 </div>
 

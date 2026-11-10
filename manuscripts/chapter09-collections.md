@@ -213,7 +213,7 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 <div class="figure">
 
-![コレクションフレームワークの階層構造](images/diagrams/chapter09-collection-hierarchy.png)
+![コレクションフレームワークの階層構造](images/diagrams/chapter09-collection-hierarchy.svg)
 
 </div>
 
@@ -335,13 +335,13 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 
 <div class="figure">
 
-![ArrayList内部構造](images/diagrams/chapter09-arraylist-structure.png)
+![ArrayList内部構造](images/diagrams/chapter09-arraylist-structure.svg)
 
 </div>
 
 <div class="figure">
 
-![LinkedList内部構造](images/diagrams/chapter09-linkedlist-structure.png)
+![LinkedList内部構造](images/diagrams/chapter09-linkedlist-structure.svg)
 
 </div>
 
@@ -558,7 +558,7 @@ linkedHashMap.putAll(hashMap);
 
 <div class="figure">
 
-![HashMap内部構造](images/diagrams/chapter09-hashmap-structure.png)
+![HashMap内部構造](images/diagrams/chapter09-hashmap-structure.svg)
 
 </div>
 

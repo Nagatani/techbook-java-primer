@@ -287,7 +287,7 @@ Javaではガベージコレクションというしくみにより、使用さ�
 
 <div class="figure">
 
-![JVMアーキテクチャとプラットフォーム独立性](images/diagrams/chapter01-jvm-architecture.png)
+![JVMアーキテクチャとプラットフォーム独立性](images/diagrams/chapter01-jvm-architecture.svg)
 
 </div>
 

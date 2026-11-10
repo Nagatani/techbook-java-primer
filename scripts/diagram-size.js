@@ -18,7 +18,8 @@ const MANUSCRIPTS = path.join(ROOT, 'manuscripts');
 const IMAGES_DIR = path.join(MANUSCRIPTS, 'images', 'diagrams');
 const DIAGRAMS_DIR = path.join(ROOT, 'docs', 'diagrams');
 
-// mermaid-cli の --scale（PNGは図の1pxを2pxで描く）と、図の文字の大きさ（px）
+// PNGの場合の mermaid-cli の --scale（図の1pxを2pxで描く）と、図の文字の大きさ（px）
+// いまはSVGで出力している（SVGの大きさは viewBox から読む）
 const PNG_SCALE = 2;
 const DIAGRAM_FONT_PX = 16;
 

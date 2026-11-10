@@ -670,13 +670,13 @@ button.addActionListener(e -> IO.println("ボタンがクリックされまし�
 
 <div class="figure">
 
-![基本的な関数型インターフェイス](images/diagrams/chapter11-functional-interface-basic.png)
+![基本的な関数型インターフェイス](images/diagrams/chapter11-functional-interface-basic.svg)
 
 </div>
 
 <div class="figure">
 
-![拡張関数型インターフェイス](images/diagrams/chapter11-functional-interface-extended.png)
+![拡張関数型インターフェイス](images/diagrams/chapter11-functional-interface-extended.svg)
 
 </div>
 

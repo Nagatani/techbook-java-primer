@@ -165,7 +165,7 @@ Throwable
 
 <div class="figure">
 
-![Java例外クラスの階層構造](images/diagrams/chapter13-exception-hierarchy.png)
+![Java例外クラスの階層構造](images/diagrams/chapter13-exception-hierarchy.svg)
 
 </div>
 

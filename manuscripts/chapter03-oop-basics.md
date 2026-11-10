@@ -507,7 +507,7 @@ public class BankAccountTest {
 
 <div class="figure">
 
-![カプセル化によるデータ保護とアクセス制御](images/diagrams/chapter03-encapsulation.png)
+![カプセル化によるデータ保護とアクセス制御](images/diagrams/chapter03-encapsulation.svg)
 
 </div>
 

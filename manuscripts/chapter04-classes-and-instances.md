@@ -104,7 +104,7 @@ Javaのアクセス制御は、カプセル化を実現する重要な機能で�
 
 <div class="figure">
 
-![アクセス修飾子の可視性範囲](images/diagrams/chapter04-access-modifiers.png)
+![アクセス修飾子の可視性範囲](images/diagrams/chapter04-access-modifiers.svg)
 
 </div>
 

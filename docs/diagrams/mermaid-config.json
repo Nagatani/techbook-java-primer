@@ -1,6 +1,6 @@
 {
-  "flowchart": { "useMaxWidth": false },
-  "class": { "useMaxWidth": false },
-  "sequence": { "useMaxWidth": false },
-  "state": { "useMaxWidth": false }
+  "flowchart": { "useMaxWidth": false, "nodeSpacing": 25, "rankSpacing": 35, "padding": 8 },
+  "class": { "useMaxWidth": false, "nodeSpacing": 20, "rankSpacing": 35, "padding": 5 },
+  "sequence": { "useMaxWidth": false, "actorMargin": 20, "width": 120, "diagramMarginX": 10 },
+  "state": { "useMaxWidth": false, "nodeSpacing": 25, "rankSpacing": 35 }
 }
