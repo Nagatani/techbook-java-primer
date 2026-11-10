@@ -13,7 +13,7 @@
 3. 配列とメソッド
     - 配列の操作方法、staticメソッドの定義と呼び出し、コードの構造化
 4. 文字列処理とコンソール入出力
-    - Stringクラスの基本、Scannerクラスによる入力、StringBuilderの活用
+    - Stringクラスの基本、IOクラスによる入出力、StringBuilderの活用
 
 ### この章を始める前に
 
@@ -258,7 +258,7 @@ Javaでは、ほとんどの文の終わりにセミコロン（`;`）が必要�
 
 ```java
 int x = 10;                    // 変数宣言
-System.out.println("Hello");  // メソッド呼び出し
+IO.println("Hello");  // メソッド呼び出し
 x = x + 5;                     // 代入
 ```
 
@@ -429,9 +429,9 @@ public class TypeConversionExample {
         long l = i;        // OK: int → long（32ビット → 64ビット）
         double d = i;      // OK: int → double（整数 → 浮動小数点）
         
-        System.out.println("int: " + i);     // 100
-        System.out.println("long: " + l);    // 100
-        System.out.println("double: " + d);  // 100.0
+        IO.println("int: " + i);     // 100
+        IO.println("long: " + l);    // 100
+        IO.println("double: " + d);  // 100.0
         
         // 明示的な型変換（縮小変換）
         double pi = 3.14159;
@@ -441,8 +441,8 @@ public class TypeConversionExample {
         int largeInt = 130;
         byte smallByte = (byte) largeInt;  // -126（オーバーフロー）
         
-        System.out.println("元の値: " + largeInt);
-        System.out.println("byte変換後: " + smallByte);
+        IO.println("元の値: " + largeInt);
+        IO.println("byte変換後: " + smallByte);
         
         // 文字列との変換
         String str = "123";
@@ -454,7 +454,7 @@ public class TypeConversionExample {
             String invalidStr = "abc";
             int invalid = Integer.parseInt(invalidStr);  // NumberFormatException
         } catch (NumberFormatException e) {
-            System.out.println("数値変換エラー: " + e.getMessage());
+            IO.println("数値変換エラー: " + e.getMessage());
         }
     }
 }
@@ -523,21 +523,23 @@ Collections.shuffle(list, new Random(42L));  // long型のシード
 
 ### 標準入出力の設計思想
 
-プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージと`java.util`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を提供しています。
+プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を提供しています。
+
+第1章で説明したとおり、本書では標準入出力にJava 25の`IO`クラス（`IO.println`、`IO.print`、`IO.readln`）を使います。
 
 ### Javaの入出力設計の特徴
 
 1. 標準入出力ストリーム
-- `System.out`
-    + 標準出力（画面への出力）
-- `System.in`
-    + 標準入力（キーボードからの入力）
-- `System.err`
-    + 標準エラー出力
+- 標準出力（画面への出力）
+    + `IO.println`と`IO.print`で書く。どちらも内部では`System.out`に出力する
+- 標準入力（キーボードからの入力）
+    + `IO.readln`で1行ずつ読む。内部では`System.in`から読み取る
+- 標準エラー出力
+    + エラーメッセージの出力に使う。`IO`クラスにはないため`System.err.println`で書く
 
 2. 型安全性の重視。
-- `Scanner`クラスによる型別の入力メソッド
-- 入力値の検証機能
+- `IO.readln`はつねに文字列を返し、数値への変換は`Integer.parseInt`などで明示的に書く
+- 変換できない入力は例外（`NumberFormatException`）として検出できる
 - 例外処理による安全な入力処理
 
 3. 国際化対応。
@@ -562,47 +564,36 @@ scanf("%d", &age);  // バッファオーバーフローの危険性
 <span class="listing-number">**サンプルコード2-18**　IOExample.java</span>
 
 ```java
-import java.util.Scanner;
-import java.util.InputMismatchException;
-
 public class IOExample {
     public static void main(String[] args) {
         // === 出力メソッドの使い分け ===
-        System.out.println("Hello, World!");      // 改行付き出力
-        System.out.print("改行なし");             // 改行なし出力
-        System.out.print("出力\n");               // 手動で改行を追加
-        
-        // printf による書式付き出力（C言語風）
-        System.out.printf("整数: %d, 浮動小数点: %.2f%n", 10, 3.14159);
-        System.out.printf("文字列: %-10s | 右寄せ: %10s%n", "左寄せ", "右寄せ");
-        
-        // === Scanner による安全な入力処理 ===
-        Scanner scanner = new Scanner(System.in);
-        
-        // 文字列入力
-        System.out.print("名前を入力してください: ");
-        String name = scanner.nextLine();
-        
+        IO.println("Hello, World!");      // 改行付き出力
+        IO.print("改行なし");             // 改行なし出力
+        IO.print("出力\n");               // 手動で改行を追加
+
+        // formatted による書式付き出力（C言語のprintf風）
+        IO.println("整数: %d, 浮動小数点: %.2f".formatted(10, 3.14159));
+        IO.println("文字列: %-10s | 右寄せ: %10s".formatted("左寄せ", "右寄せ"));
+
+        // === IO.readln による入力処理 ===
+        // 文字列入力（メッセージを表示してから1行を読み取る）
+        String name = IO.readln("名前を入力してください: ");
+
         // 整数入力（エラー処理付き）
         int age = 0;
         boolean validInput = false;
         while (!validInput) {
-            System.out.print("年齢を入力してください: ");
+            String input = IO.readln("年齢を入力してください: ");
             try {
-                age = scanner.nextInt();
-                scanner.nextLine(); // 改行文字を消費
+                age = Integer.parseInt(input);
                 validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println("エラー: 整数を入力してください");
-                scanner.nextLine(); // 不正な入力をクリア
+            } catch (NumberFormatException e) {
+                IO.println("エラー: 整数を入力してください");
             }
         }
-        
+
         // 入力値の確認出力
-        System.out.printf("%sさん（%d歳）、こんにちは！%n", name, age);
-        
-        // リソースの解放
-        scanner.close();
+        IO.println("%sさん（%d歳）、こんにちは！".formatted(name, age));
     }
 }
 ```
@@ -622,21 +613,21 @@ Hello, World!
 田中太郎さん（25歳）、こんにちは！
 ```
 
-### Scanner クラスの高度な使い方
+C言語の`scanf("%d", &age)`は、入力を読むことと整数に変換することを1回で行います。Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`で整数に変換するというように、2つの手順に分けて書きます。変換できない文字列が入力されると`NumberFormatException`が発生するので、`try-catch`で捕まえて入力をやり直してもらえます（例外処理は第13章で詳しく学習します）。
 
-#### 1. 型別の入力メソッド
+### 入力した文字列の変換
+
+#### 1. 型ごとの変換メソッド
 
 <span class="listing-number">**サンプルコード2-19**</span>
 
 ```java
-Scanner sc = new Scanner(System.in);
-
-// 各種データ型の入力
-int intValue = sc.nextInt();           // 整数
-double doubleValue = sc.nextDouble();  // 浮動小数点
-boolean boolValue = sc.nextBoolean();  // 真偽値
-String word = sc.next();               // 空白までの単語
-String line = sc.nextLine();           // 行全体
+// 各種データ型の入力（IO.readlnの戻り値はつねにString型）
+int intValue = Integer.parseInt(IO.readln());           // 整数
+double doubleValue = Double.parseDouble(IO.readln());   // 浮動小数点
+boolean boolValue = Boolean.parseBoolean(IO.readln());  // 真偽値
+String[] words = IO.readln().split(" ");                // 空白で区切った単語
+String line = IO.readln();                              // 行全体
 ```
 
 #### 2. 入力検証機能
@@ -644,19 +635,20 @@ String line = sc.nextLine();           // 行全体
 <span class="listing-number">**サンプルコード2-20**</span>
 
 ```java
-Scanner sc = new Scanner(System.in);
+String input = IO.readln("整数を入力: ");
 
-// 入力可能かチェック
-if (sc.hasNextInt()) {
-    int value = sc.nextInt();
-    System.out.println("入力値: " + value);
-} else {
-    System.out.println("整数ではありません");
-    sc.next(); // 不正な入力をスキップ
+// 整数に変換できるかどうかを例外で判定する
+try {
+    int value = Integer.parseInt(input);
+    IO.println("入力値: " + value);
+} catch (NumberFormatException e) {
+    IO.println("整数ではありません");
 }
 ```
 
-#### 3. 区切り文字の変更
+#### 3. 区切り文字で分ける
+
+1行にまとめて入力された値は、`java.util.Scanner`クラスで区切り文字ごとに取り出せます。`Scanner`は文字列やファイルの中身を、区切り文字で分けながら読むためのクラスです（ファイルからの読み込みは第14章で扱います）。
 
 <span class="listing-number">**サンプルコード2-21**</span>
 
@@ -665,7 +657,7 @@ Scanner sc = new Scanner("apple,banana,orange");
 sc.useDelimiter(",");  // カンマ区切りに変更
 
 while (sc.hasNext()) {
-    System.out.println(sc.next());
+    IO.println(sc.next());
 }
 // 出力: apple, banana, orange（各行）
 ```
@@ -673,50 +665,44 @@ while (sc.hasNext()) {
 ### 入出力のベストプラクティス
 
 #### 1. エラー処理の重要性
-入力処理では必ず例外処理を実装し、ユーザーの誤入力に対して適切に対応することが重要です。
+入力処理では必ず例外処理を実装し、ユーザーの誤入力に対して適切に対応することが重要です。次の例では、整数に変換できるまで入力を繰り返します。`strip()`で前後の空白を取り除いてから変換するので、「 42 」のような入力も受け付けます。
 
 <span class="listing-number">**サンプルコード2-22**　SafeInputExample.java</span>
 
 ```java
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
 public class SafeInputExample {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        
         while (true) {
-            System.out.print("整数を入力してください: ");
+            String input = IO.readln("整数を入力してください: ");
             try {
-                int number = scanner.nextInt();
-                System.out.println("入力された数値: " + number);
+                int number = Integer.parseInt(input.strip());
+                IO.println("入力された数値: " + number);
                 break;
-            } catch (InputMismatchException e) {
-                System.out.println("エラー: 整数を入力してください");
-                scanner.nextLine(); // 不正な入力をクリア
+            } catch (NumberFormatException e) {
+                IO.println("エラー: 整数を入力してください");
             }
         }
-        
-        scanner.close();
     }
 }
 ```
 
-#### 2. リソース管理
+#### 2. 入力の終わりの扱い
 
-`Scanner`などのリソースは使用後に必ず`close()`メソッドで解放します。Java 7以降では`try-with-resources`構文も使用できます。
-この構文は第13章「例外処理」で詳しく説明します。
+`IO.readln`は、入力がもう残っていないとき（ファイルを標準入力にリダイレクトして最後まで読んだときや、キーボードでCtrl+D、WindowsではCtrl+Zを押したとき）に`null`を返します。行数が決まっていない入力は、`null`が返るまで読み続けます。
 
 <span class="listing-number">**サンプルコード2-23**</span>
 
 ```java
-try (Scanner sc = new Scanner(System.in)) {
-    // Scannerの使用
-} // 自動的にcloseされる
+String line;
+int count = 0;
+while ((line = IO.readln()) != null) {  // 入力の終わりでnullが返る
+    count++;
+}
+IO.println(count + "行読みました");
 ```
 
-#### 3. バッファリングの理解
-`nextInt()`などの後に`nextLine()`を使う場合、改行文字が残ることに注意が必要です。
+#### 3. 1行単位の読み取り
+`IO.readln`はEnterキーまでの1行をまとめて読み、行末の改行文字を含まない文字列を返します。そのため、C言語の`scanf`のように改行文字が入力に残って次の読み取りに影響することはありません。
 
 #### 4. ロケールへの配慮
 数値の書式は地域によって異なる（ドイツやフランスでは小数点がカンマ、千の位の区切りがピリオド）ため、国際化を考慮する場合はLocale.USやLocale.GERMANYなどのロケール設定が必要です。
@@ -738,13 +724,13 @@ try (Scanner sc = new Scanner(System.in)) {
 // if文（C言語と同じ）
 int score = 85;
 if (score >= 90) {
-    System.out.println("優");
+    IO.println("優");
 } else if (score >= 80) {
-    System.out.println("良");
+    IO.println("良");
 } else if (score >= 70) {
-    System.out.println("可");
+    IO.println("可");
 } else {
-    System.out.println("不可");
+    IO.println("不可");
 }
 ```
 
@@ -786,7 +772,7 @@ public class SwitchExample {
                 break;
         }
         
-        System.out.println("評価: " + evaluation);
+        IO.println("評価: " + evaluation);
     }
 }
 ```
@@ -838,19 +824,19 @@ switch式の利点は次のとおりです。
 ```java
 // for文
 for (int i = 0; i < 10; i++) {
-    System.out.println("i = " + i);
+    IO.println("i = " + i);
 }
 
 // 拡張for文（foreach）
 int[] numbers = {1, 2, 3, 4, 5};
 for (int num : numbers) {
-    System.out.println(num);
+    IO.println(num);
 }
 
 // while文
 int count = 0;
 while (count < 5) {
-    System.out.println("count = " + count);
+    IO.println("count = " + count);
     count++;
 }
 ```
@@ -900,7 +886,7 @@ scores[0] = 100;
 scores[1] = 95;
 
 // 配列の長さ
-System.out.println("配列の長さ: " + numbers.length);
+IO.println("配列の長さ: " + numbers.length);
 
 // 多次元配列
 int[][] matrix = {
@@ -933,12 +919,12 @@ int[] data = {10, 20, 30, 40, 50};
 
 // インデックスを使用した従来の方法
 for (int i = 0; i < data.length; i++) {
-    System.out.println("data[" + i + "] = " + data[i]);
+    IO.println("data[" + i + "] = " + data[i]);
 }
 
 // 拡張for文を使用した推奨方法
 for (int value : data) {
-    System.out.println("値: " + value);
+    IO.println("値: " + value);
 }
 ```
 
@@ -1041,7 +1027,7 @@ public class Calculator {
     
     public static double divide(double a, double b) {
         if (b == 0) {
-            System.out.println("ゼロ除算エラー");
+            IO.println("ゼロ除算エラー");
             return 0;
         }
         return a / b;
@@ -1049,10 +1035,10 @@ public class Calculator {
     
     public static void main(String[] args) {
         int result = add(10, 5);
-        System.out.println("結果: " + result);
+        IO.println("結果: " + result);
         
         double divResult = divide(10.0, 3.0);
-        System.out.println("除算結果: " + divResult);
+        IO.println("除算結果: " + divResult);
     }
 }
 ```
@@ -1307,11 +1293,11 @@ Javaの文字列設計におけるもっとも重要な特徴の1つが不変性
 ```java
 String str = "Hello";
 str.concat(" World");  // str自体は変更されない
-System.out.println(str);  // "Hello"
+IO.println(str);  // "Hello"
 
 // 新しい文字列を作成して代入する必要がある
 str = str.concat(" World");
-System.out.println(str);  // "Hello World"
+IO.println(str);  // "Hello World"
 ```
 
 このコードは、`concat()`メソッドを呼び出しても元の文字列オブジェクトが変更されないことを示しています。これは、C言語の`strcat()`関数とは根本的に異なる動作です。Javaでは、文字列操作メソッドは常に新しい文字列オブジェクトを返し、元のオブジェクトはそのまま保持されます。この設計により、文字列を辞書のキーやハッシュマップのキーとして安全に使用でき、文字列プールによる最適化も可能になっています。
@@ -1347,59 +1333,51 @@ String result = sb.toString();
 
 外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
 
-<span class="listing-number">**サンプルコード2-48**　InputExample.java</span>
+<span class="listing-number">**サンプルコード2-48**　ImportExample.java</span>
 
 ```java
-import java.util.Scanner;  // Scannerクラスを使用するための宣言
+import java.util.Arrays;  // Arraysクラスを使用するための宣言
 
-public class InputExample {
+public class ImportExample {
     public static void main(String[] args) {
-        // Scannerオブジェクトの作成（標準入力から読み取る）
-        Scanner scanner = new Scanner(System.in);
-        
-        // ユーザーへの入力促進メッセージ
-        System.out.print("整数値を入力してください: ");
-        
-        // 文字列として入力を受け取る
-        String input = scanner.nextLine();
-        
-        // 文字列を整数に変換
-        int number = Integer.parseInt(input);
-        
-        // 変換した値を使った処理の例
-        System.out.println("入力された値: " + number);
-        System.out.println("2倍の値: " + (number * 2));
-        
-        // Scannerを閉じる（リソースの解放）
-        scanner.close();
+        // 空白で区切った整数を1行で入力してもらう
+        String input = IO.readln("整数を空白で区切って入力してください: ");
+        String[] items = input.split(" ");
+
+        // 文字列の配列を整数の配列に変換
+        int[] numbers = new int[items.length];
+        for (int i = 0; i < items.length; i++) {
+            numbers[i] = Integer.parseInt(items[i]);
+        }
+
+        // java.util.Arraysのメソッドで並べ替えて表示
+        Arrays.sort(numbers);
+        IO.println("並べ替えた結果: " + Arrays.toString(numbers));
     }
 }
 ```
 
-#### 実行結果（入力例：「42」を入力）
+#### 実行結果（入力例：「42 7 19」を入力）
 
 ```
-整数値を入力してください: 42
-入力された値: 42
-2倍の値: 84
+整数を空白で区切って入力してください: 42 7 19
+並べ替えた結果: [7, 19, 42]
 ```
 
 #### このコードのポイント
 1. import文
-    + `java.util.Scanner`をインポートして入力機能を使用
-2. Scanner作成
-    + `new Scanner(System.in)`で標準入力から読み取るScannerを作成
-3. 入力の受け取り
-    + `scanner.nextLine()`で1行分の文字列を取得
-4. 型変換
+    + `java.util.Arrays`をインポートして、配列を操作するメソッドを使えるようにする
+2. 入力の受け取り
+    + `IO.readln()`で1行分の文字列を取得し、`split(" ")`で空白ごとに分ける
+3. 型変換
     + `Integer.parseInt()`で文字列を整数に変換
-5. リソース管理
-    + 使い終わったら`scanner.close()`でリソースを解放
+4. importしたクラスの利用
+    + `Arrays.sort()`で並べ替え、`Arrays.toString()`で配列を文字列にする
 
 基本パッケージは自動的にimport済みです。
 
-- `java.lang`パッケージ（`String`, `System`, `Integer`など）は自動的に利用可能
-- そのため`System.out.println()`や`Integer.parseInt()`にはimport文は不要
+- `java.lang`パッケージ（`String`, `System`, `Integer`, `IO`など）は自動的に利用可能
+- そのため`IO.readln()`や`Integer.parseInt()`にはimport文は不要
 
 ## よくあるコンパイルエラーとその対処法
 

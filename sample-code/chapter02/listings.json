@@ -17,14 +17,14 @@
     "dir": "02-18",
     "main": "IOExample",
     "excerpt": [
-      { "file": "IOExample.java", "from": 1, "to": 43 }
+      { "file": "IOExample.java", "from": 1, "to": 32 }
     ]
   },
   "2-22": {
     "dir": "02-22",
     "main": "SafeInputExample",
     "excerpt": [
-      { "file": "SafeInputExample.java", "from": 1, "to": 22 }
+      { "file": "SafeInputExample.java", "from": 1, "to": 14 }
     ]
   },
   "2-25": {
@@ -43,9 +43,9 @@
   },
   "2-48": {
     "dir": "02-48",
-    "main": "InputExample",
+    "main": "ImportExample",
     "excerpt": [
-      { "file": "InputExample.java", "from": 1, "to": 24 }
+      { "file": "ImportExample.java", "from": 1, "to": 19 }
     ]
   }
 }

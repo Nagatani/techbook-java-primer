@@ -6,7 +6,7 @@ public class Calculator {
     
     public static double divide(double a, double b) {
         if (b == 0) {
-            System.out.println("ゼロ除算エラー");
+            IO.println("ゼロ除算エラー");
             return 0;
         }
         return a / b;
@@ -14,9 +14,9 @@ public class Calculator {
     
     public static void main(String[] args) {
         int result = add(10, 5);
-        System.out.println("結果: " + result);
+        IO.println("結果: " + result);
         
         double divResult = divide(10.0, 3.0);
-        System.out.println("除算結果: " + divResult);
+        IO.println("除算結果: " + divResult);
     }
 }

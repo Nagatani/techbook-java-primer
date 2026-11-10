@@ -3,27 +3,27 @@ source: manuscripts/chapter02-getting-started.md
 summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
-    hash: 3137ce4d
+    hash: 0cb94cb6
   - key: "基本データ型"
     hash: c07c7000
   - key: "変数の宣言と初期化"
-    hash: 6198e7e4
+    hash: ea66ee08
   - key: "演算子"
     hash: 5a4dfffc
   - key: "型変換"
-    hash: a7532bd9
+    hash: cd2597be
   - key: "コンソール入出力"
-    hash: c3d7f210
+    hash: a9c9b131
   - key: "制御構造"
-    hash: b4e5f338
+    hash: 6ecd6314
   - key: "配列"
-    hash: 8cf54566
+    hash: f3efa6fa
   - key: "メソッド（staticメソッドの基本）"
-    hash: 05d33281
+    hash: 65d227d7
   - key: "文字列処理"
-    hash: 619293db
+    hash: 20de19be
   - key: "import文の使い方"
-    hash: d7f617d5
+    hash: a100b735
   - key: "よくあるコンパイルエラーとその対処法"
     hash: 83eeecfa
   - key: "まとめ"
@@ -83,10 +83,10 @@ sections:
     + 暗黙・明示の変換、byteへのオーバーフロー、parseIntとvalueOf、NumberFormatExceptionの捕捉（2-13）
     + 整数除算の落とし穴、byte配列によるメモリ効率、APIが要求する型、ベストプラクティス4点
 - コンソール入出力（L520–721）
-    + System.out・in・err、Scannerの型別入力、国際化の特徴。Cのprintf/scanfとの比較
-    + println・print・printfの書式（%-10sなど）と、InputMismatchExceptionで再入力させるScannerの例（2-18）
-    + nextInt・nextDouble・next・nextLine、hasNextIntによる検証、useDelimiter
-    + ベストプラクティスとしてエラー処理、try-with-resources、nextInt後の改行の残り、ロケール
+    + 標準出力・標準入力・標準エラー出力とIOクラスの対応（System.errだけはIOにない）、国際化の特徴。Cのprintf/scanfとの比較（2026-11-10にIOクラスへ移行）
+    + IO.println・IO.print・formattedの書式（%-10sなど）と、NumberFormatExceptionで再入力させるIO.readlnの例（2-18）
+    + parseInt・parseDouble・parseBoolean・splitによる変換、例外による検証、Scannerによる文字列の区切り（useDelimiter）
+    + ベストプラクティスとしてエラー処理（2-22）、IO.readlnが入力の終わりでnullを返すこと（2-23）、1行単位の読み取り、ロケール
 - 制御構造（L722–881）
     + 条件分岐: if-else ifの成績判定
     + switch文とswitch式: 従来形式の成績評価（2-25）と注意点3つ、同じ判定のswitch式（Java 14以降）とその利点（fall-throughの解消、式として使える）
@@ -104,7 +104,7 @@ sections:
     + trim、toUpperCase、substring、replace、split、indexOf、contains
     + 不変性（concatで元の文字列は変わらない）と、ループ内連結にはStringBuilderを使う理由
 - import文の使い方（L1341–1398）
-    + Scannerでの入力と整数変換（2-48）とコードのポイント5項目。java.langは自動インポート
+    + java.util.Arraysをimportし、IO.readlnで読んだ整数を並べ替える例（2-48）とコードのポイント4項目。java.langは自動インポート
 - よくあるコンパイルエラーとその対処法（L1399–1412）
     + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter02.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す
     + 本文に挙げるエラー: セミコロン忘れ、大文字・小文字の間違い、クラス名とファイル名の不一致
@@ -118,8 +118,8 @@ sections:
 ## 他章との関係
 
 - 第1章との重複
-    + 2-48は1-6とプロンプト文以外ほぼ同一で、「このコードのポイント」とjava.langの説明も同文
-    + println・print・printfの説明、コンパイルエラー3種（第1章「よくあるエラー」と章末のトラブル表）が重なる
+    + java.langの自動インポートの説明が1-10の後と同文
+    + IO.println・IO.print・formattedの説明、コンパイルエラー3種（第1章「よくあるエラー」と章末のトラブル表）が重なる
 - 第3章・第4章: staticでないメソッドにはインスタンス化が必要と予告する。L1086 は「次章でインスタンスメソッドやコンストラクタを学ぶ」とするが、それらは第4章の内容
 - 第6章（不変性とfinal）: finalによる定数とStringの不変性を先取りしている
 - 第9章（コレクション）: ArrayListを後の章として予告し、Collections.shuffleを使っている

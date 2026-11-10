@@ -5,9 +5,9 @@ public class TypeConversionExample {
         long l = i;        // OK: int → long（32ビット → 64ビット）
         double d = i;      // OK: int → double（整数 → 浮動小数点）
         
-        System.out.println("int: " + i);     // 100
-        System.out.println("long: " + l);    // 100
-        System.out.println("double: " + d);  // 100.0
+        IO.println("int: " + i);     // 100
+        IO.println("long: " + l);    // 100
+        IO.println("double: " + d);  // 100.0
         
         // 明示的な型変換（縮小変換）
         double pi = 3.14159;
@@ -17,8 +17,8 @@ public class TypeConversionExample {
         int largeInt = 130;
         byte smallByte = (byte) largeInt;  // -126（オーバーフロー）
         
-        System.out.println("元の値: " + largeInt);
-        System.out.println("byte変換後: " + smallByte);
+        IO.println("元の値: " + largeInt);
+        IO.println("byte変換後: " + smallByte);
         
         // 文字列との変換
         String str = "123";
@@ -30,7 +30,7 @@ public class TypeConversionExample {
             String invalidStr = "abc";
             int invalid = Integer.parseInt(invalidStr);  // NumberFormatException
         } catch (NumberFormatException e) {
-            System.out.println("数値変換エラー: " + e.getMessage());
+            IO.println("数値変換エラー: " + e.getMessage());
         }
     }
 }

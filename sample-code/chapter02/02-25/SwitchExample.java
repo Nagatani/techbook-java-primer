@@ -20,6 +20,6 @@ public class SwitchExample {
                 break;
         }
         
-        System.out.println("評価: " + evaluation);
+        IO.println("評価: " + evaluation);
     }
 }
