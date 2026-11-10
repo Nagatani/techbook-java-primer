@@ -89,7 +89,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 最初のページには柱を出さない（`@page:nth(1)`）
    - 表はセルの余白を上下4px・左右10px、前後の余白を0.8emにする。セルは本文の両端揃えを引き継がず左寄せにし（Markdownで揃えを指定したセルは除く）、セル内のコードは折り返さない（2026-11-10〜）
    - 章の中のセクション見出し（h2）は「5章 - 3」「付録A - 1」の形で番号を出す（2026-11-10〜）。原稿ファイルごとに別文書になりCSSのカウンターでは章番号を受け渡せないため、ビルド時に`scripts/vfm-section-label.js`（`vivliostyle.config.js`の`documentProcessor`）が章タイトルの`<b>5章</b>`を読んでh2に`data-chapter`属性を付け、テーマの`h2[data-chapter]::before`で表示する。章番号のない文書（目次・奥付など）のh2には番号を出さない
-   - 引用とコラム（`> **コラム：…**{.column-section}`）の余白は枠の側だけに付け、中の段落には付けない。コードブロックの上下の余白は半行で、縞模様は`background-origin: content-box`で行とそろえる。コードの色分けでは背景や余白を付けない（等幅のそろいが崩れる）
+   - 本の中へのリンク（目次など）は下線を引かない。リスト項目は左寄せ。奥付（`manuscripts/colophon.md`の`.colophon-page`）は見出しの装飾を付けず、罫線で区切ってページの下端に寄せる
+   - 引用とコラム（`> **コラム：…**{.column-section}`）の余白は枠の側だけに付け、中の段落には付けない。コードブロックの上下の余白は半行。ビルド時に`scripts/vfm-code-lines.js`（`documentProcessor`に組み込み）がコードを1行ずつの`span.code-line`に分け、折り返した続きの行をその行の字下げ＋4文字の位置から始め、縞模様も行ごとに付ける。コードの色分けでは背景や余白を付けない（等幅のそろいが崩れる）
    - コードブロックは前に空行を入れる。VFMでは空行なしで段落に続く```がコードブロックにならず、段落に吸収される（2026-11-10に123か所を修正）
    - テーマは`theme/my-theme/theme.css`。変更したら`npm run build`でPDFを確認する
 
