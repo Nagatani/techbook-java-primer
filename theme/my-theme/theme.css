@@ -1995,9 +1995,16 @@ h2:not([data-chapter]) {
   line-height: 28Q;
 }
 
+/* 発行日（未定のあいだは「○月○日」のままにする） */
+.colophon-page .colophon-date {
+  margin: 0;
+  padding: 3mm 0 0;
+  text-indent: 0;
+}
+
 .colophon-page dl {
   margin: 0;
-  padding: 3mm 0 3mm;
+  padding: 2mm 0 3mm;
   border-bottom: 0.5pt solid #212529;
 }
 

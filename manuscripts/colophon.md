@@ -4,6 +4,8 @@
 
 <p class="colophon-title">大学2年生のための実践的プログラミング入門<br><span class="colophon-subtitle">オブジェクト指向言語 Java</span></p>
 
+<p class="colophon-date">2025年○月○日　初版第1刷発行</p>
+
 <dl>
 <dt>著者</dt>
 <dd>Hidehiro Nagatani</dd>
