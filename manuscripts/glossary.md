@@ -81,6 +81,7 @@
 - **int** - 第2章、第9章
 - **Interface (インターフェイス)** - 第7章、付録B.09
 - **InterruptedException** - 第15章
+- **IO クラス** - 第1章、第2章
 - **IOException** - 第13章、第14章、第16章
 
 ### J
@@ -147,7 +148,7 @@
 - **RuntimeException** - 第13章
 
 ### S
-- **Scanner クラス** - 第2章、第14章
+- **Scanner クラス** - 第1章、第2章、第14章
 - **sealed interface** - 第8章、付録B.10
 - **Semaphore** - 第15章
 - **Serializable インターフェイス** - 第14章
