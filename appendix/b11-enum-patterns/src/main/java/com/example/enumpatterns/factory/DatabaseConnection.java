@@ -45,7 +45,7 @@ public enum DatabaseConnection {
                 connectionPool.offer(conn);
             }
             initialized = true;
-            System.out.println("Database connection pool initialized with " + poolSize + " connections");
+            IO.println("Database connection pool initialized with " + poolSize + " connections");
         } catch (SQLException e) {
             throw new RuntimeException("Failed to initialize database connection pool", e);
         }
@@ -132,7 +132,7 @@ public enum DatabaseConnection {
         }
         
         initialized = false;
-        System.out.println("Database connection pool shut down");
+        IO.println("Database connection pool shut down");
     }
     
     /**

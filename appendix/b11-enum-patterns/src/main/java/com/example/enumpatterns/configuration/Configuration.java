@@ -305,15 +305,15 @@ public class Configuration {
     ) {
         public void print() {
             if (isValid) {
-                System.out.println("Configuration is valid.");
+                IO.println("Configuration is valid.");
             } else {
-                System.out.println("Configuration has errors:");
+                IO.println("Configuration has errors:");
                 errors.forEach(error -> System.err.println("  ERROR: " + error));
             }
             
             if (!warnings.isEmpty()) {
-                System.out.println("\nWarnings:");
-                warnings.forEach(warning -> System.out.println("  WARNING: " + warning));
+                IO.println("\nWarnings:");
+                warnings.forEach(warning -> IO.println("  WARNING: " + warning));
             }
         }
     }

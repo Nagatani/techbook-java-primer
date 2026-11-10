@@ -9,26 +9,26 @@ import com.example.enumpatterns.statemachine.*;
 public class StateMachineDemo {
     
     public static void main(String[] args) {
-        System.out.println("=== Enum State Machine Demo ===\n");
+        IO.println("=== Enum State Machine Demo ===\n");
         
         // Demo 1: Normal order flow
-        System.out.println("Demo 1: Normal Order Processing Flow");
-        System.out.println("------------------------------------");
+        IO.println("Demo 1: Normal Order Processing Flow");
+        IO.println("------------------------------------");
         demoNormalOrderFlow();
         
         // Demo 2: Order cancellation
-        System.out.println("\nDemo 2: Order Cancellation Flow");
-        System.out.println("--------------------------------");
+        IO.println("\nDemo 2: Order Cancellation Flow");
+        IO.println("--------------------------------");
         demoCancellationFlow();
         
         // Demo 3: Invalid transitions
-        System.out.println("\nDemo 3: Invalid State Transitions");
-        System.out.println("----------------------------------");
+        IO.println("\nDemo 3: Invalid State Transitions");
+        IO.println("----------------------------------");
         demoInvalidTransitions();
         
         // Demo 4: State validation and queries
-        System.out.println("\nDemo 4: State Validation and Queries");
-        System.out.println("-------------------------------------");
+        IO.println("\nDemo 4: State Validation and Queries");
+        IO.println("-------------------------------------");
         demoStateQueries();
     }
     
@@ -37,28 +37,28 @@ public class StateMachineDemo {
         
         try {
             // Show initial state
-            System.out.println("Initial state: " + order.getState());
-            System.out.println("Can modify: " + order.getState().canModify());
+            IO.println("Initial state: " + order.getState());
+            IO.println("Can modify: " + order.getState().canModify());
             
             // Update shipping address while still pending
             order.updateShippingAddress("456 Oak St, Anytown, USA");
-            System.out.println("Updated shipping address while in PENDING state");
+            IO.println("Updated shipping address while in PENDING state");
             
             // Confirm the order
             order.confirm("PAY-12345");
-            System.out.println("State after confirmation: " + order.getState());
+            IO.println("State after confirmation: " + order.getState());
             
             // Ship the order
             order.ship("TRACK-98765");
-            System.out.println("State after shipping: " + order.getState());
+            IO.println("State after shipping: " + order.getState());
             
             // Deliver the order
             order.deliver("John Doe");
-            System.out.println("State after delivery: " + order.getState());
-            System.out.println("Is terminal state: " + order.getState().isTerminal());
+            IO.println("State after delivery: " + order.getState());
+            IO.println("Is terminal state: " + order.getState().isTerminal());
             
             // Print order summary
-            System.out.println("\n" + order.getSummary());
+            IO.println("\n" + order.getSummary());
             
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -69,18 +69,18 @@ public class StateMachineDemo {
         Order order = new Order("Jane Smith", 199.99, "789 Elm St, Othertown, USA");
         
         try {
-            System.out.println("Initial state: " + order.getState());
+            IO.println("Initial state: " + order.getState());
             
             // Cancel from pending state
             order.cancel("Customer requested cancellation");
-            System.out.println("State after cancellation: " + order.getState());
-            System.out.println("Is terminal state: " + order.getState().isTerminal());
+            IO.println("State after cancellation: " + order.getState());
+            IO.println("Is terminal state: " + order.getState().isTerminal());
             
             // Try to perform actions on cancelled order
             try {
                 order.confirm("PAY-99999");
             } catch (IllegalStateException e) {
-                System.out.println("Expected error: " + e.getMessage());
+                IO.println("Expected error: " + e.getMessage());
             }
             
         } catch (Exception e) {
@@ -92,11 +92,11 @@ public class StateMachineDemo {
         
         try {
             order2.confirm("PAY-55555");
-            System.out.println("\nConfirmed order state: " + order2.getState());
+            IO.println("\nConfirmed order state: " + order2.getState());
             
             order2.cancel("Payment issue");
-            System.out.println("Successfully cancelled confirmed order");
-            System.out.println("Final state: " + order2.getState());
+            IO.println("Successfully cancelled confirmed order");
+            IO.println("Final state: " + order2.getState());
             
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -110,7 +110,7 @@ public class StateMachineDemo {
         try {
             order.ship("INVALID-TRACK");
         } catch (IllegalStateException e) {
-            System.out.println("Expected error when shipping unconfirmed order: " + e.getMessage());
+            IO.println("Expected error when shipping unconfirmed order: " + e.getMessage());
         }
         
         // Try to modify after confirmation
@@ -118,14 +118,14 @@ public class StateMachineDemo {
             order.confirm("PAY-77777");
             order.updateShippingAddress("New address");
         } catch (IllegalStateException e) {
-            System.out.println("Expected error when modifying confirmed order: " + e.getMessage());
+            IO.println("Expected error when modifying confirmed order: " + e.getMessage());
         }
         
         // Try to deliver without shipping
         try {
             order.deliver("Someone");
         } catch (IllegalStateException e) {
-            System.out.println("Expected error when delivering unshipped order: " + e.getMessage());
+            IO.println("Expected error when delivering unshipped order: " + e.getMessage());
         }
         
         // Complete the order properly then try invalid transitions
@@ -136,31 +136,31 @@ public class StateMachineDemo {
             // Try to cancel delivered order
             order.cancel("Too late");
         } catch (IllegalStateException e) {
-            System.out.println("Expected error when cancelling delivered order: " + e.getMessage());
+            IO.println("Expected error when cancelling delivered order: " + e.getMessage());
         }
     }
     
     private static void demoStateQueries() {
         // Show available transitions from each state
         for (OrderState state : OrderState.values()) {
-            System.out.println("\nState: " + state);
-            System.out.println("  Description: " + state.getDescription());
-            System.out.println("  Can modify: " + state.canModify());
-            System.out.println("  Is terminal: " + state.isTerminal());
-            System.out.println("  Valid transitions: " + state.getValidTransitions());
-            System.out.println("  Valid actions: " + state.getValidActions());
+            IO.println("\nState: " + state);
+            IO.println("  Description: " + state.getDescription());
+            IO.println("  Can modify: " + state.canModify());
+            IO.println("  Is terminal: " + state.isTerminal());
+            IO.println("  Valid transitions: " + state.getValidTransitions());
+            IO.println("  Valid actions: " + state.getValidActions());
         }
         
         // Demonstrate state checking
-        System.out.println("\nState Transition Validation:");
+        IO.println("\nState Transition Validation:");
         OrderState pending = OrderState.PENDING;
-        System.out.println("Can transition from PENDING to CONFIRMED: " + 
+        IO.println("Can transition from PENDING to CONFIRMED: " + 
             pending.canTransitionTo(OrderState.CONFIRMED));
-        System.out.println("Can transition from PENDING to DELIVERED: " + 
+        IO.println("Can transition from PENDING to DELIVERED: " + 
             pending.canTransitionTo(OrderState.DELIVERED));
         
         // Show return flow
-        System.out.println("\nReturn Flow Demo:");
+        IO.println("\nReturn Flow Demo:");
         Order returnOrder = new Order("Return Customer", 99.99, "999 Return St");
         
         try {
@@ -168,11 +168,11 @@ public class StateMachineDemo {
             returnOrder.ship("TRACK-RETURN");
             returnOrder.deliver("Customer");
             
-            System.out.println("Order delivered, state: " + returnOrder.getState());
+            IO.println("Order delivered, state: " + returnOrder.getState());
             
             returnOrder.returnOrder("Defective product");
-            System.out.println("Order returned, state: " + returnOrder.getState());
-            System.out.println("Is terminal: " + returnOrder.getState().isTerminal());
+            IO.println("Order returned, state: " + returnOrder.getState());
+            IO.println("Is terminal: " + returnOrder.getState().isTerminal());
             
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

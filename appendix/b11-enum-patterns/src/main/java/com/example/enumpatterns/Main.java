@@ -2,7 +2,6 @@ package com.example.enumpatterns;
 
 import com.example.enumpatterns.examples.*;
 import com.example.enumpatterns.performance.PerformanceComparison;
-import java.util.Scanner;
 
 /**
  * Main entry point for the Enum Patterns demonstration.
@@ -11,9 +10,9 @@ import java.util.Scanner;
 public class Main {
     
     public static void main(String[] args) {
-        System.out.println("=====================================");
-        System.out.println("  Java Enum Patterns Demonstration");
-        System.out.println("=====================================\n");
+        IO.println("=====================================");
+        IO.println("  Java Enum Patterns Demonstration");
+        IO.println("=====================================\n");
         
         if (args.length > 0) {
             // Run specific demo if provided as argument
@@ -25,93 +24,88 @@ public class Main {
     }
     
     private static void showInteractiveMenu() {
-        Scanner scanner = new Scanner(System.in);
-        
         while (true) {
             printMenu();
-            System.out.print("\nEnter your choice (0-7): ");
-            if (!scanner.hasNextLine()) {
+            String line = IO.readln("\nEnter your choice (0-7): ");
+            if (line == null) {
                 break;  // 入力の終わり（Ctrl+DやCtrl+Z）でも終了する
             }
             
-            String choice = scanner.nextLine().trim();
+            String choice = line.trim();
             
             if ("0".equals(choice)) {
-                System.out.println("\nThank you for exploring Enum Patterns!");
+                IO.println("\nThank you for exploring Enum Patterns!");
                 break;
             }
             
-            System.out.println("\n" + "=".repeat(60) + "\n");
+            IO.println("\n" + "=".repeat(60) + "\n");
             runDemo(choice);
             
-            System.out.println("\nPress Enter to continue...");
-            if (!scanner.hasNextLine()) {
+            IO.println("\nPress Enter to continue...");
+            if (IO.readln() == null) {
                 break;
             }
-            scanner.nextLine();
         }
-        
-        scanner.close();
     }
     
     private static void printMenu() {
-        System.out.println("\nAvailable Demonstrations:");
-        System.out.println("-------------------------");
-        System.out.println("1. State Machine Pattern     - Order processing workflow");
-        System.out.println("2. Strategy Pattern          - Flexible pricing strategies");
-        System.out.println("3. Permission System         - Role-based access control");
-        System.out.println("4. Configuration Management  - Type-safe configuration");
-        System.out.println("5. Comprehensive Example     - E-commerce system");
-        System.out.println("6. Performance Comparison    - Benchmarks and analysis");
-        System.out.println("7. Run All Demos            - Execute all demonstrations");
-        System.out.println("0. Exit");
+        IO.println("\nAvailable Demonstrations:");
+        IO.println("-------------------------");
+        IO.println("1. State Machine Pattern     - Order processing workflow");
+        IO.println("2. Strategy Pattern          - Flexible pricing strategies");
+        IO.println("3. Permission System         - Role-based access control");
+        IO.println("4. Configuration Management  - Type-safe configuration");
+        IO.println("5. Comprehensive Example     - E-commerce system");
+        IO.println("6. Performance Comparison    - Benchmarks and analysis");
+        IO.println("7. Run All Demos            - Execute all demonstrations");
+        IO.println("0. Exit");
     }
     
     private static void runDemo(String choice) {
         try {
             switch (choice) {
                 case "1", "state" -> {
-                    System.out.println("Running State Machine Demo...\n");
+                    IO.println("Running State Machine Demo...\n");
                     StateMachineDemo.main(new String[0]);
                 }
                 
                 case "2", "strategy" -> {
-                    System.out.println("Running Strategy Pattern Demo...\n");
+                    IO.println("Running Strategy Pattern Demo...\n");
                     StrategyPatternDemo.main(new String[0]);
                 }
                 
                 case "3", "permission" -> {
-                    System.out.println("Running Permission System Demo...\n");
+                    IO.println("Running Permission System Demo...\n");
                     PermissionDemo.main(new String[0]);
                 }
                 
                 case "4", "config" -> {
-                    System.out.println("Running Configuration Management Demo...\n");
+                    IO.println("Running Configuration Management Demo...\n");
                     ConfigurationDemo.main(new String[0]);
                 }
                 
                 case "5", "comprehensive" -> {
-                    System.out.println("Running Comprehensive Example...\n");
+                    IO.println("Running Comprehensive Example...\n");
                     ComprehensiveExample.main(new String[0]);
                 }
                 
                 case "6", "performance" -> {
-                    System.out.println("Running Performance Comparison...\n");
+                    IO.println("Running Performance Comparison...\n");
                     PerformanceComparison.main(new String[0]);
                 }
                 
                 case "7", "all" -> {
-                    System.out.println("Running All Demonstrations...\n");
+                    IO.println("Running All Demonstrations...\n");
                     
                     String[] demos = {"1", "2", "3", "4", "5", "6"};
                     for (String demo : demos) {
-                        System.out.println("\n" + "=".repeat(60) + "\n");
+                        IO.println("\n" + "=".repeat(60) + "\n");
                         runDemo(demo);
-                        System.out.println("\n" + "=".repeat(60));
+                        IO.println("\n" + "=".repeat(60));
                     }
                 }
                 
-                default -> System.out.println("Invalid choice. Please try again.");
+                default -> IO.println("Invalid choice. Please try again.");
             }
         } catch (Exception e) {
             System.err.println("Error running demo: " + e.getMessage());
@@ -123,15 +117,15 @@ public class Main {
      * Quick start guide printed when running without arguments
      */
     static {
-        System.out.println("This project demonstrates advanced enum patterns in Java.\n");
-        System.out.println("Quick Start:");
-        System.out.println("  java Main              - Interactive menu");
-        System.out.println("  java Main state        - Run state machine demo");
-        System.out.println("  java Main strategy     - Run strategy pattern demo");
-        System.out.println("  java Main permission   - Run permission system demo");
-        System.out.println("  java Main config       - Run configuration demo");
-        System.out.println("  java Main comprehensive- Run comprehensive example");
-        System.out.println("  java Main performance  - Run performance benchmarks");
-        System.out.println("  java Main all          - Run all demos\n");
+        IO.println("This project demonstrates advanced enum patterns in Java.\n");
+        IO.println("Quick Start:");
+        IO.println("  java Main              - Interactive menu");
+        IO.println("  java Main state        - Run state machine demo");
+        IO.println("  java Main strategy     - Run strategy pattern demo");
+        IO.println("  java Main permission   - Run permission system demo");
+        IO.println("  java Main config       - Run configuration demo");
+        IO.println("  java Main comprehensive- Run comprehensive example");
+        IO.println("  java Main performance  - Run performance benchmarks");
+        IO.println("  java Main all          - Run all demos\n");
     }
 }

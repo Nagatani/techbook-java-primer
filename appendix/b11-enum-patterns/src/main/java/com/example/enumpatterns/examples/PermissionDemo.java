@@ -10,31 +10,31 @@ import java.util.*;
 public class PermissionDemo {
     
     public static void main(String[] args) {
-        System.out.println("=== Enum Permission System Demo ===\n");
+        IO.println("=== Enum Permission System Demo ===\n");
         
         // Demo 1: Basic permission operations
-        System.out.println("Demo 1: Basic Permission Operations");
-        System.out.println("-----------------------------------");
+        IO.println("Demo 1: Basic Permission Operations");
+        IO.println("-----------------------------------");
         demoBasicPermissions();
         
         // Demo 2: Role-based permissions
-        System.out.println("\nDemo 2: Role-Based Access Control");
-        System.out.println("----------------------------------");
+        IO.println("\nDemo 2: Role-Based Access Control");
+        IO.println("----------------------------------");
         demoRoleBasedPermissions();
         
         // Demo 3: Permission inheritance
-        System.out.println("\nDemo 3: Composite Permission Inheritance");
-        System.out.println("-----------------------------------------");
+        IO.println("\nDemo 3: Composite Permission Inheritance");
+        IO.println("-----------------------------------------");
         demoPermissionInheritance();
         
         // Demo 4: Performance comparison
-        System.out.println("\nDemo 4: EnumSet vs HashSet Performance");
-        System.out.println("---------------------------------------");
+        IO.println("\nDemo 4: EnumSet vs HashSet Performance");
+        IO.println("---------------------------------------");
         demoPerformanceComparison();
         
         // Demo 5: Real-world scenario
-        System.out.println("\nDemo 5: Real-World Access Control Scenario");
-        System.out.println("-------------------------------------------");
+        IO.println("\nDemo 5: Real-World Access Control Scenario");
+        IO.println("-------------------------------------------");
         demoRealWorldScenario();
     }
     
@@ -42,30 +42,30 @@ public class PermissionDemo {
         // Create user permissions using EnumSet
         EnumSet<Permission> userPerms = EnumSet.of(Permission.READ, Permission.WRITE);
         
-        System.out.println("User permissions: " + userPerms);
-        System.out.println("Has READ: " + userPerms.contains(Permission.READ));
-        System.out.println("Has DELETE: " + userPerms.contains(Permission.DELETE));
+        IO.println("User permissions: " + userPerms);
+        IO.println("Has READ: " + userPerms.contains(Permission.READ));
+        IO.println("Has DELETE: " + userPerms.contains(Permission.DELETE));
         
         // Add permission
         userPerms.add(Permission.EXECUTE);
-        System.out.println("After adding EXECUTE: " + userPerms);
+        IO.println("After adding EXECUTE: " + userPerms);
         
         // Remove permission
         userPerms.remove(Permission.WRITE);
-        System.out.println("After removing WRITE: " + userPerms);
+        IO.println("After removing WRITE: " + userPerms);
         
         // Set operations
         EnumSet<Permission> adminPerms = EnumSet.of(Permission.USER_MANAGE, Permission.ROLE_MANAGE);
         EnumSet<Permission> combined = EnumSet.copyOf(userPerms);
         combined.addAll(adminPerms);
-        System.out.println("Combined permissions: " + combined);
+        IO.println("Combined permissions: " + combined);
     }
     
     private static void demoRoleBasedPermissions() {
         // Use predefined system roles
-        System.out.println("System Roles:");
+        IO.println("System Roles:");
         for (Role role : Role.SystemRoles.getAllRoles()) {
-            System.out.println("  " + role);
+            IO.println("  " + role);
         }
         
         // Check permissions for different roles
@@ -73,11 +73,11 @@ public class PermissionDemo {
         Role user = Role.SystemRoles.USER;
         Role admin = Role.SystemRoles.ADMIN;
         
-        System.out.println("\nPermission Checks:");
-        System.out.println("Guest can READ: " + guest.hasPermission(Permission.READ));
-        System.out.println("Guest can WRITE: " + guest.hasPermission(Permission.WRITE));
-        System.out.println("User can DELETE: " + user.hasPermission(Permission.DELETE));
-        System.out.println("Admin can USER_MANAGE: " + admin.hasPermission(Permission.USER_MANAGE));
+        IO.println("\nPermission Checks:");
+        IO.println("Guest can READ: " + guest.hasPermission(Permission.READ));
+        IO.println("Guest can WRITE: " + guest.hasPermission(Permission.WRITE));
+        IO.println("User can DELETE: " + user.hasPermission(Permission.DELETE));
+        IO.println("Admin can USER_MANAGE: " + admin.hasPermission(Permission.USER_MANAGE));
         
         // Create custom role
         Role customRole = new Role(
@@ -85,29 +85,29 @@ public class PermissionDemo {
             "Can manage content but not users",
             Permission.READ, Permission.WRITE, Permission.DELETE
         );
-        System.out.println("\nCustom role: " + customRole);
-        System.out.println("Custom role effective permissions: " + customRole.getEffectivePermissions());
+        IO.println("\nCustom role: " + customRole);
+        IO.println("Custom role effective permissions: " + customRole.getEffectivePermissions());
     }
     
     private static void demoPermissionInheritance() {
         // Show composite permissions
         Permission fullCrud = Permission.FULL_CRUD;
-        System.out.println("FULL_CRUD permission mask: " + fullCrud.getMask());
-        System.out.println("FULL_CRUD includes READ: " + fullCrud.includes(Permission.READ));
-        System.out.println("FULL_CRUD includes WRITE: " + fullCrud.includes(Permission.WRITE));
-        System.out.println("FULL_CRUD includes USER_MANAGE: " + fullCrud.includes(Permission.USER_MANAGE));
+        IO.println("FULL_CRUD permission mask: " + fullCrud.getMask());
+        IO.println("FULL_CRUD includes READ: " + fullCrud.includes(Permission.READ));
+        IO.println("FULL_CRUD includes WRITE: " + fullCrud.includes(Permission.WRITE));
+        IO.println("FULL_CRUD includes USER_MANAGE: " + fullCrud.includes(Permission.USER_MANAGE));
         
         // Get included permissions
-        System.out.println("\nPermissions included in FULL_CRUD:");
+        IO.println("\nPermissions included in FULL_CRUD:");
         for (Permission perm : fullCrud.getIncludedPermissions()) {
-            System.out.println("  - " + perm + ": " + perm.getDescription());
+            IO.println("  - " + perm + ": " + perm.getDescription());
         }
         
         // Admin composite permission
         Permission adminPerm = Permission.ADMIN;
-        System.out.println("\nPermissions included in ADMIN:");
+        IO.println("\nPermissions included in ADMIN:");
         for (Permission perm : adminPerm.getIncludedPermissions()) {
-            System.out.println("  - " + perm + ": " + perm.getDescription());
+            IO.println("  - " + perm + ": " + perm.getDescription());
         }
     }
     
@@ -139,18 +139,18 @@ public class PermissionDemo {
         long hashSetTime = System.nanoTime() - startTime;
         
         // Results
-        System.out.println("Performance for " + iterations + " operations:");
-        System.out.println("EnumSet: " + enumSetTime / 1_000_000 + " ms");
-        System.out.println("HashSet: " + hashSetTime / 1_000_000 + " ms");
-        System.out.println("EnumSet is " + (hashSetTime / enumSetTime) + "x faster");
+        IO.println("Performance for " + iterations + " operations:");
+        IO.println("EnumSet: " + enumSetTime / 1_000_000 + " ms");
+        IO.println("HashSet: " + hashSetTime / 1_000_000 + " ms");
+        IO.println("EnumSet is " + (hashSetTime / enumSetTime) + "x faster");
         
         // Memory comparison
-        System.out.println("\nMemory efficiency:");
-        System.out.println("EnumSet uses bit vector (1 bit per enum value)");
-        System.out.println("HashSet uses hash table with object references");
-        System.out.println("For " + Permission.values().length + " permissions:");
-        System.out.println("  EnumSet: ~8 bytes (64-bit long)");
-        System.out.println("  HashSet: ~" + (Permission.values().length * 32) + " bytes (estimate)");
+        IO.println("\nMemory efficiency:");
+        IO.println("EnumSet uses bit vector (1 bit per enum value)");
+        IO.println("HashSet uses hash table with object references");
+        IO.println("For " + Permission.values().length + " permissions:");
+        IO.println("  EnumSet: ~8 bytes (64-bit long)");
+        IO.println("  HashSet: ~" + (Permission.values().length * 32) + " bytes (estimate)");
     }
     
     private static void demoRealWorldScenario() {
@@ -172,34 +172,34 @@ public class PermissionDemo {
         resources.put("/api/system/config", Permission.SYSTEM_CONFIG);
         
         // Check access
-        System.out.println("Access Control Matrix:");
-        System.out.println("User     | Role       | " + String.join(" | ", resources.keySet()));
-        System.out.println("---------+------------+" + "-".repeat(resources.size() * 25));
+        IO.println("Access Control Matrix:");
+        IO.println("User     | Role       | " + String.join(" | ", resources.keySet()));
+        IO.println("---------+------------+" + "-".repeat(resources.size() * 25));
         
         for (Map.Entry<String, Role> userEntry : users.entrySet()) {
             String userName = userEntry.getKey();
             Role userRole = userEntry.getValue();
             
-            System.out.printf("%-8s | %-10s |", userName, userRole.getName());
+            IO.print("%-8s | %-10s |".formatted(userName, userRole.getName()));
             
             for (Map.Entry<String, Permission> resourceEntry : resources.entrySet()) {
                 Permission required = resourceEntry.getValue();
                 boolean hasAccess = userRole.hasPermission(required);
-                System.out.printf(" %-23s |", hasAccess ? "✓ Allowed" : "✗ Denied");
+                IO.print(" %-23s |".formatted(hasAccess ? "✓ Allowed" : "✗ Denied"));
             }
-            System.out.println();
+            IO.println();
         }
         
         // Dynamic permission granting
-        System.out.println("\nDynamic Permission Management:");
+        IO.println("\nDynamic Permission Management:");
         Role bobRole = users.get("bob");
-        System.out.println("Bob's current permissions: " + bobRole.getPermissions());
+        IO.println("Bob's current permissions: " + bobRole.getPermissions());
         
         // Grant DELETE permission to Bob
         Role bobWithDelete = bobRole.withPermission(Permission.DELETE);
         users.put("bob", bobWithDelete);
-        System.out.println("Bob's new permissions: " + bobWithDelete.getPermissions());
-        System.out.println("Bob can now delete content: " + bobWithDelete.hasPermission(Permission.DELETE));
+        IO.println("Bob's new permissions: " + bobWithDelete.getPermissions());
+        IO.println("Bob can now delete content: " + bobWithDelete.hasPermission(Permission.DELETE));
         
         // Create a new role with specific permissions
         Role contentManager = new Role(
@@ -210,10 +210,10 @@ public class PermissionDemo {
         );
         
         users.put("frank", contentManager);
-        System.out.println("\nNew user Frank with ContentManager role:");
-        System.out.println("Permissions: " + contentManager.getEffectivePermissions());
-        System.out.println("Can manage content: " + contentManager.hasAllPermissions(
+        IO.println("\nNew user Frank with ContentManager role:");
+        IO.println("Permissions: " + contentManager.getEffectivePermissions());
+        IO.println("Can manage content: " + contentManager.hasAllPermissions(
             Permission.READ, Permission.WRITE, Permission.DELETE));
-        System.out.println("Can manage users: " + contentManager.hasPermission(Permission.USER_MANAGE));
+        IO.println("Can manage users: " + contentManager.hasPermission(Permission.USER_MANAGE));
     }
 }

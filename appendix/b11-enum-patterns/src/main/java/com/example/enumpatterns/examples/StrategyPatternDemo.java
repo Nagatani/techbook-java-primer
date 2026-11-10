@@ -11,31 +11,31 @@ import java.util.*;
 public class StrategyPatternDemo {
     
     public static void main(String[] args) {
-        System.out.println("=== Enum Strategy Pattern Demo ===\n");
+        IO.println("=== Enum Strategy Pattern Demo ===\n");
         
         // Demo 1: Basic pricing strategies
-        System.out.println("Demo 1: Basic Pricing Strategies");
-        System.out.println("---------------------------------");
+        IO.println("Demo 1: Basic Pricing Strategies");
+        IO.println("---------------------------------");
         demoBasicPricing();
         
         // Demo 2: Progressive taxation
-        System.out.println("\nDemo 2: Progressive Taxation");
-        System.out.println("-----------------------------");
+        IO.println("\nDemo 2: Progressive Taxation");
+        IO.println("-----------------------------");
         demoProgressiveTaxation();
         
         // Demo 3: Member pricing with tiers
-        System.out.println("\nDemo 3: Member Pricing with Tiers");
-        System.out.println("----------------------------------");
+        IO.println("\nDemo 3: Member Pricing with Tiers");
+        IO.println("----------------------------------");
         demoMemberPricing();
         
         // Demo 4: Seasonal pricing
-        System.out.println("\nDemo 4: Seasonal Pricing");
-        System.out.println("-------------------------");
+        IO.println("\nDemo 4: Seasonal Pricing");
+        IO.println("-------------------------");
         demoSeasonalPricing();
         
         // Demo 5: Strategy comparison
-        System.out.println("\nDemo 5: Strategy Comparison");
-        System.out.println("----------------------------");
+        IO.println("\nDemo 5: Strategy Comparison");
+        IO.println("----------------------------");
         compareStrategies();
     }
     
@@ -46,13 +46,13 @@ public class StrategyPatternDemo {
         
         // Standard pricing
         PricingStrategy.PriceCalculation standard = PricingStrategy.STANDARD.calculate(amount, taxContext, discountContext);
-        System.out.println("Standard Pricing:");
-        System.out.println(standard.getBreakdown());
+        IO.println("Standard Pricing:");
+        IO.println(standard.getBreakdown());
         
         // Promotional pricing
         PricingStrategy.PriceCalculation promotional = PricingStrategy.PROMOTIONAL.calculate(amount, taxContext, discountContext);
-        System.out.println("\nPromotional Pricing:");
-        System.out.println(promotional.getBreakdown());
+        IO.println("\nPromotional Pricing:");
+        IO.println(promotional.getBreakdown());
     }
     
     private static void demoProgressiveTaxation() {
@@ -75,9 +75,9 @@ public class StrategyPatternDemo {
         
         for (BigDecimal amount : amounts) {
             PricingStrategy.PriceCalculation calc = PricingStrategy.PROGRESSIVE.calculate(amount, progressiveTax, discount);
-            System.out.println("\nAmount: $" + amount);
-            System.out.println("Progressive tax: $" + calc.tax());
-            System.out.println("Total: $" + calc.total());
+            IO.println("\nAmount: $" + amount);
+            IO.println("Progressive tax: $" + calc.tax());
+            IO.println("Total: $" + calc.total());
         }
     }
     
@@ -93,10 +93,10 @@ public class StrategyPatternDemo {
             PricingStrategy.PriceCalculation calc = 
                 PricingStrategy.MEMBER.calculate(amount, tax, memberDiscount);
             
-            System.out.println("\n" + tier + " Member:");
-            System.out.println("Base Amount: $" + calc.baseAmount());
-            System.out.println("Discount: $" + calc.discount());
-            System.out.println("Final Price: $" + calc.total());
+            IO.println("\n" + tier + " Member:");
+            IO.println("Base Amount: $" + calc.baseAmount());
+            IO.println("Discount: $" + calc.discount());
+            IO.println("Final Price: $" + calc.total());
         }
     }
     
@@ -108,12 +108,12 @@ public class StrategyPatternDemo {
         PricingStrategy.PriceCalculation seasonal = 
             PricingStrategy.SEASONAL.calculate(amount, tax, discount);
         
-        System.out.println("Seasonal Pricing (current date):");
-        System.out.println(seasonal.getBreakdown());
-        System.out.println("\nNote: Seasonal multipliers:");
-        System.out.println("- November/December: 1.5x discount (holiday season)");
-        System.out.println("- June/July: 1.3x discount (summer sale)");
-        System.out.println("- Other months: 1.0x discount (regular)");
+        IO.println("Seasonal Pricing (current date):");
+        IO.println(seasonal.getBreakdown());
+        IO.println("\nNote: Seasonal multipliers:");
+        IO.println("- November/December: 1.5x discount (holiday season)");
+        IO.println("- June/July: 1.3x discount (summer sale)");
+        IO.println("- Other months: 1.0x discount (regular)");
     }
     
     private static void compareStrategies() {
@@ -138,43 +138,43 @@ public class StrategyPatternDemo {
         );
         
         // Compare all strategies
-        System.out.println("Strategy Comparison Table:");
-        System.out.println("Amount   | Standard | Progressive | Promotional | Member (Platinum) | Seasonal");
-        System.out.println("---------|----------|-------------|-------------|-------------------|----------");
+        IO.println("Strategy Comparison Table:");
+        IO.println("Amount   | Standard | Progressive | Promotional | Member (Platinum) | Seasonal");
+        IO.println("---------|----------|-------------|-------------|-------------------|----------");
         
         for (BigDecimal amount : amounts) {
-            System.out.printf("$%,7.0f |", amount);
+            IO.print("$%,7.0f |".formatted(amount));
             
             // Standard
             BigDecimal standardTotal = PricingStrategy.STANDARD
                 .calculate(amount, standardTax, standardDiscount).total();
-            System.out.printf(" $%,7.2f |", standardTotal);
+            IO.print(" $%,7.2f |".formatted(standardTotal));
             
             // Progressive
             BigDecimal progressiveTotal = PricingStrategy.PROGRESSIVE
                 .calculate(amount, progressiveTax, standardDiscount).total();
-            System.out.printf(" $%,9.2f |", progressiveTotal);
+            IO.print(" $%,9.2f |".formatted(progressiveTotal));
             
             // Promotional
             BigDecimal promotionalTotal = PricingStrategy.PROMOTIONAL
                 .calculate(amount, standardTax, standardDiscount).total();
-            System.out.printf(" $%,9.2f |", promotionalTotal);
+            IO.print(" $%,9.2f |".formatted(promotionalTotal));
             
             // Member
             BigDecimal memberTotal = PricingStrategy.MEMBER
                 .calculate(amount, standardTax, platinumDiscount).total();
-            System.out.printf(" $%,15.2f |", memberTotal);
+            IO.print(" $%,15.2f |".formatted(memberTotal));
             
             // Seasonal
             BigDecimal seasonalTotal = PricingStrategy.SEASONAL
                 .calculate(amount, standardTax, standardDiscount).total();
-            System.out.printf(" $%,7.2f", seasonalTotal);
+            IO.print(" $%,7.2f".formatted(seasonalTotal));
             
-            System.out.println();
+            IO.println();
         }
         
         // Show savings analysis
-        System.out.println("\nSavings Analysis for $1000 purchase:");
+        IO.println("\nSavings Analysis for $1000 purchase:");
         BigDecimal baseAmount = new BigDecimal("1000");
         BigDecimal standardPrice = PricingStrategy.STANDARD
             .calculate(baseAmount, standardTax, standardDiscount).total();
@@ -194,11 +194,11 @@ public class StrategyPatternDemo {
         ));
         
         for (Map.Entry<String, BigDecimal> entry : savings.entrySet()) {
-            System.out.printf("%s: Save $%.2f (%.1f%%)%n", 
+            IO.println("%s: Save $%.2f (%.1f%%)".formatted(
                 entry.getKey(), 
                 entry.getValue(),
                 entry.getValue().multiply(new BigDecimal("100")).divide(standardPrice, 1, java.math.RoundingMode.HALF_UP)
-            );
+            ));
         }
     }
 }

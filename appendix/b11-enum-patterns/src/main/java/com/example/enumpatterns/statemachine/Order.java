@@ -54,8 +54,8 @@ public class Order {
         transitionHistory.add(new StateTransition(oldState, newState, reason, lastModifiedAt));
         
         // Log the transition
-        System.out.printf("Order %s: %s -> %s (%s)%n", 
-            orderId.substring(0, 8), oldState, newState, reason);
+        IO.println("Order %s: %s -> %s (%s)".formatted(
+            orderId.substring(0, 8), oldState, newState, reason));
     }
     
     /**

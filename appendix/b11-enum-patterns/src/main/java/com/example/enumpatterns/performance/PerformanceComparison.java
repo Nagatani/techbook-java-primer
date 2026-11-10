@@ -21,7 +21,7 @@ public class PerformanceComparison {
     }
     
     public static void main(String[] args) {
-        System.out.println("=== Enum Pattern Performance Comparison ===\n");
+        IO.println("=== Enum Pattern Performance Comparison ===\n");
         
         // Warm up JVM
         warmUp();
@@ -35,18 +35,18 @@ public class PerformanceComparison {
     }
     
     private static void warmUp() {
-        System.out.println("Warming up JVM...");
+        IO.println("Warming up JVM...");
         for (int i = 0; i < 10000; i++) {
             EnumSet<Operation> set = EnumSet.allOf(Operation.class);
             set.contains(Operation.READ);
             set.add(Operation.UPDATE);
         }
-        System.out.println("Warm-up complete.\n");
+        IO.println("Warm-up complete.\n");
     }
     
     private static void benchmarkEnumSetVsHashSet() {
-        System.out.println("Benchmark 1: EnumSet vs HashSet");
-        System.out.println("================================");
+        IO.println("Benchmark 1: EnumSet vs HashSet");
+        IO.println("================================");
         
         int iterations = 10_000_000;
         
@@ -90,15 +90,15 @@ public class PerformanceComparison {
         long treeSetTime = System.nanoTime() - start;
         
         // Results
-        System.out.printf("Operations: %,d%n", iterations);
-        System.out.printf("EnumSet:  %,d ms%n", enumSetTime / 1_000_000);
-        System.out.printf("HashSet:  %,d ms (%.1fx slower)%n", 
-            hashSetTime / 1_000_000, (double) hashSetTime / enumSetTime);
-        System.out.printf("TreeSet:  %,d ms (%.1fx slower)%n", 
-            treeSetTime / 1_000_000, (double) treeSetTime / enumSetTime);
+        IO.println("Operations: %,d".formatted(iterations));
+        IO.println("EnumSet:  %,d ms".formatted(enumSetTime / 1_000_000));
+        IO.println("HashSet:  %,d ms (%.1fx slower)".formatted(
+            hashSetTime / 1_000_000, (double) hashSetTime / enumSetTime));
+        IO.println("TreeSet:  %,d ms (%.1fx slower)".formatted(
+            treeSetTime / 1_000_000, (double) treeSetTime / enumSetTime));
         
         // Set operations benchmark
-        System.out.println("\nSet Operations Performance:");
+        IO.println("\nSet Operations Performance:");
         benchmarkSetOperations();
     }
     
@@ -142,17 +142,17 @@ public class PerformanceComparison {
         }
         long hashIntersectionTime = System.nanoTime() - start;
         
-        System.out.printf("Union    - EnumSet: %,d ms, HashSet: %,d ms (%.1fx slower)%n",
+        IO.println("Union    - EnumSet: %,d ms, HashSet: %,d ms (%.1fx slower)".formatted(
             enumUnionTime / 1_000_000, hashUnionTime / 1_000_000,
-            (double) hashUnionTime / enumUnionTime);
-        System.out.printf("Intersect- EnumSet: %,d ms, HashSet: %,d ms (%.1fx slower)%n",
+            (double) hashUnionTime / enumUnionTime));
+        IO.println("Intersect- EnumSet: %,d ms, HashSet: %,d ms (%.1fx slower)".formatted(
             enumIntersectionTime / 1_000_000, hashIntersectionTime / 1_000_000,
-            (double) hashIntersectionTime / enumIntersectionTime);
+            (double) hashIntersectionTime / enumIntersectionTime));
     }
     
     private static void benchmarkEnumMapVsHashMap() {
-        System.out.println("\n\nBenchmark 2: EnumMap vs HashMap");
-        System.out.println("================================");
+        IO.println("\n\nBenchmark 2: EnumMap vs HashMap");
+        IO.println("================================");
         
         int iterations = 10_000_000;
         
@@ -199,17 +199,17 @@ public class PerformanceComparison {
         long treeMapTime = System.nanoTime() - start;
         
         // Results
-        System.out.printf("Operations: %,d%n", iterations);
-        System.out.printf("EnumMap:  %,d ms%n", enumMapTime / 1_000_000);
-        System.out.printf("HashMap:  %,d ms (%.1fx slower)%n", 
-            hashMapTime / 1_000_000, (double) hashMapTime / enumMapTime);
-        System.out.printf("TreeMap:  %,d ms (%.1fx slower)%n", 
-            treeMapTime / 1_000_000, (double) treeMapTime / enumMapTime);
+        IO.println("Operations: %,d".formatted(iterations));
+        IO.println("EnumMap:  %,d ms".formatted(enumMapTime / 1_000_000));
+        IO.println("HashMap:  %,d ms (%.1fx slower)".formatted(
+            hashMapTime / 1_000_000, (double) hashMapTime / enumMapTime));
+        IO.println("TreeMap:  %,d ms (%.1fx slower)".formatted(
+            treeMapTime / 1_000_000, (double) treeMapTime / enumMapTime));
     }
     
     private static void benchmarkEnumSwitchVsIfElse() {
-        System.out.println("\n\nBenchmark 3: Enum Switch vs If-Else Chain");
-        System.out.println("==========================================");
+        IO.println("\n\nBenchmark 3: Enum Switch vs If-Else Chain");
+        IO.println("==========================================");
         
         int iterations = 50_000_000;
         Operation[] operations = Operation.values();
@@ -288,21 +288,21 @@ public class PerformanceComparison {
         long stringTime = System.nanoTime() - start;
         
         // Results
-        System.out.printf("Operations: %,d%n", iterations);
-        System.out.printf("Switch:      %,d ms%n", switchTime / 1_000_000);
-        System.out.printf("If-Else:     %,d ms (%.1fx slower)%n", 
-            ifElseTime / 1_000_000, (double) ifElseTime / switchTime);
-        System.out.printf("String cmp:  %,d ms (%.1fx slower)%n", 
-            stringTime / 1_000_000, (double) stringTime / switchTime);
+        IO.println("Operations: %,d".formatted(iterations));
+        IO.println("Switch:      %,d ms".formatted(switchTime / 1_000_000));
+        IO.println("If-Else:     %,d ms (%.1fx slower)".formatted(
+            ifElseTime / 1_000_000, (double) ifElseTime / switchTime));
+        IO.println("String cmp:  %,d ms (%.1fx slower)".formatted(
+            stringTime / 1_000_000, (double) stringTime / switchTime));
         
         // Verify results are the same
-        System.out.printf("Results match: %b%n", 
-            switchResult == ifElseResult && ifElseResult == stringResult);
+        IO.println("Results match: %b".formatted(
+            switchResult == ifElseResult && ifElseResult == stringResult));
     }
     
     private static void benchmarkStateTransitions() {
-        System.out.println("\n\nBenchmark 4: State Machine Performance");
-        System.out.println("======================================");
+        IO.println("\n\nBenchmark 4: State Machine Performance");
+        IO.println("======================================");
         
         // Simple state machine enum
         enum State {
@@ -358,19 +358,19 @@ public class PerformanceComparison {
         long intTime = System.nanoTime() - start;
         
         // Results
-        System.out.printf("Transitions: %,d%n", iterations);
-        System.out.printf("Enum:     %,d ms%n", enumTime / 1_000_000);
-        System.out.printf("String:   %,d ms (%.1fx slower)%n", 
-            stringTime / 1_000_000, (double) stringTime / enumTime);
-        System.out.printf("Integer:  %,d ms (%.1fx %s)%n", 
+        IO.println("Transitions: %,d".formatted(iterations));
+        IO.println("Enum:     %,d ms".formatted(enumTime / 1_000_000));
+        IO.println("String:   %,d ms (%.1fx slower)".formatted(
+            stringTime / 1_000_000, (double) stringTime / enumTime));
+        IO.println("Integer:  %,d ms (%.1fx %s)".formatted(
             intTime / 1_000_000, 
             intTime > enumTime ? (double) intTime / enumTime : (double) enumTime / intTime,
-            intTime > enumTime ? "slower" : "faster");
+            intTime > enumTime ? "slower" : "faster"));
     }
     
     private static void benchmarkMemoryUsage() {
-        System.out.println("\n\nBenchmark 5: Memory Usage Comparison");
-        System.out.println("====================================");
+        IO.println("\n\nBenchmark 5: Memory Usage Comparison");
+        IO.println("====================================");
         
         int size = 1000;
         
@@ -401,21 +401,21 @@ public class PerformanceComparison {
         long hashSetMem = runtime.totalMemory() - runtime.freeMemory() - memBefore;
         
         // Results
-        System.out.printf("Creating %,d sets with %d elements each:%n", size, Operation.values().length);
-        System.out.printf("EnumSet memory:  ~%,d bytes (%d bytes per set)%n", 
-            enumSetMem, enumSetMem / size);
-        System.out.printf("HashSet memory:  ~%,d bytes (%d bytes per set)%n", 
-            hashSetMem, hashSetMem / size);
-        System.out.printf("Memory savings:  %.1f%%%n", 
-            (1 - (double) enumSetMem / hashSetMem) * 100);
+        IO.println("Creating %,d sets with %d elements each:".formatted(size, Operation.values().length));
+        IO.println("EnumSet memory:  ~%,d bytes (%d bytes per set)".formatted(
+            enumSetMem, enumSetMem / size));
+        IO.println("HashSet memory:  ~%,d bytes (%d bytes per set)".formatted(
+            hashSetMem, hashSetMem / size));
+        IO.println("Memory savings:  %.1f%%".formatted(
+            (1 - (double) enumSetMem / hashSetMem) * 100));
         
-        System.out.println("\nTheoretical Memory Usage:");
-        System.out.println("EnumSet: Uses bit vector (1 bit per enum constant)");
-        System.out.printf("  %d enums = %d bits = %d bytes%n", 
+        IO.println("\nTheoretical Memory Usage:");
+        IO.println("EnumSet: Uses bit vector (1 bit per enum constant)");
+        IO.println("  %d enums = %d bits = %d bytes".formatted(
             Operation.values().length, Operation.values().length, 
-            (Operation.values().length + 7) / 8);
-        System.out.println("HashSet: Uses hash table with object references");
-        System.out.printf("  ~%d bytes per entry × %d entries = ~%d bytes%n",
-            32, Operation.values().length, 32 * Operation.values().length);
+            (Operation.values().length + 7) / 8));
+        IO.println("HashSet: Uses hash table with object references");
+        IO.println("  ~%d bytes per entry × %d entries = ~%d bytes".formatted(
+            32, Operation.values().length, 32 * Operation.values().length));
     }
 }
