@@ -170,7 +170,7 @@ Result<Integer, String> result = parseNumber(input)
     .map(n -> n * 2)
     .filter(n -> n > 0, "Must be positive");
 
-result.ifSuccess(System.out::println)
+result.ifSuccess(IO::println)
       .ifFailure(error -> log.warn("Error: {}", error));
 ```
 
@@ -266,7 +266,7 @@ ExceptionHandler handler = new ExceptionHandler(metrics);
 handler.monitor(() -> riskyOperation());
 
 // 詳細レポートを取得
-System.out.println(metrics.generateReport());
+IO.println(metrics.generateReport());
 ```
 
 出力:

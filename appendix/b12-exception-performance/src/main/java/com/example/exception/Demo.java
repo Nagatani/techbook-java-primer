@@ -18,22 +18,22 @@ import java.util.concurrent.TimeUnit;
 public class Demo {
     
     public static void main(String[] args) {
-        System.out.println("=== Exception Performance Optimization Demo ===\n");
+        IO.println("=== Exception Performance Optimization Demo ===\n");
         
         demonstrateBasicPerformance();
-        System.out.println();
+        IO.println();
         
         demonstrateExceptionPooling();
-        System.out.println();
+        IO.println();
         
         demonstrateResultPattern();
-        System.out.println();
+        IO.println();
         
         demonstrateNullObjectPattern();
-        System.out.println();
+        IO.println();
         
         demonstrateConditionalStackTrace();
-        System.out.println();
+        IO.println();
         
         demonstrateExceptionMonitoring();
     }
@@ -42,8 +42,8 @@ public class Demo {
      * Demonstrate basic exception performance comparison.
      */
     private static void demonstrateBasicPerformance() {
-        System.out.println("1. Basic Exception Performance Comparison");
-        System.out.println("-----------------------------------------");
+        IO.println("1. Basic Exception Performance Comparison");
+        IO.println("-----------------------------------------");
         
         final int iterations = 100_000;
         
@@ -65,18 +65,18 @@ public class Demo {
         }
         long exceptionTime = System.nanoTime() - start;
         
-        System.out.printf("Normal flow: %d ms%n", TimeUnit.NANOSECONDS.toMillis(normalTime));
-        System.out.printf("Exception flow: %d ms%n", TimeUnit.NANOSECONDS.toMillis(exceptionTime));
-        System.out.printf("Exception overhead: %.2fx slower%n", 
-            (double) exceptionTime / normalTime);
+        IO.println("Normal flow: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(normalTime)));
+        IO.println("Exception flow: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(exceptionTime)));
+        IO.println("Exception overhead: %.2fx slower".formatted(
+            (double) exceptionTime / normalTime));
     }
     
     /**
      * Demonstrate exception pooling for high-frequency scenarios.
      */
     private static void demonstrateExceptionPooling() {
-        System.out.println("2. Exception Pooling Demonstration");
-        System.out.println("----------------------------------");
+        IO.println("2. Exception Pooling Demonstration");
+        IO.println("----------------------------------");
         
         ExceptionPool<ValidationException> pool = new ExceptionPool<>(
             ValidationException::create, 10
@@ -109,27 +109,27 @@ public class Demo {
         }
         long withPooling = System.nanoTime() - start;
         
-        System.out.printf("Without pooling: %d ms%n", TimeUnit.NANOSECONDS.toMillis(withoutPooling));
-        System.out.printf("With pooling: %d ms%n", TimeUnit.NANOSECONDS.toMillis(withPooling));
-        System.out.printf("Improvement: %.2fx faster%n", 
-            (double) withoutPooling / withPooling);
+        IO.println("Without pooling: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(withoutPooling)));
+        IO.println("With pooling: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(withPooling)));
+        IO.println("Improvement: %.2fx faster".formatted(
+            (double) withoutPooling / withPooling));
         
-        System.out.println("Pool statistics: " + pool.getStatistics());
+        IO.println("Pool statistics: " + pool.getStatistics());
     }
     
     /**
      * Demonstrate Result pattern as exception alternative.
      */
     private static void demonstrateResultPattern() {
-        System.out.println("3. Result Pattern Demonstration");
-        System.out.println("-------------------------------");
+        IO.println("3. Result Pattern Demonstration");
+        IO.println("-------------------------------");
         
         // Traditional exception-based approach
         try {
             int result = parseIntWithException("not-a-number");
-            System.out.println("Parsed: " + result);
+            IO.println("Parsed: " + result);
         } catch (NumberFormatException e) {
-            System.out.println("Error: " + e.getMessage());
+            IO.println("Error: " + e.getMessage());
         }
         
         // Result-based approach
@@ -138,8 +138,8 @@ public class Demo {
         parseResult
             .map(n -> n * 2)
             .map(n -> "Double value: " + n)
-            .ifSuccess(System.out::println)
-            .ifFailure(error -> System.out.println("Parse error: " + error));
+            .ifSuccess(IO::println)
+            .ifFailure(error -> IO.println("Parse error: " + error));
         
         // Chaining multiple operations
         Result<Integer, String> calculation = 
@@ -148,7 +148,7 @@ public class Demo {
                 .map(n -> n + 10)
                 .filter(n -> n > 0, "Result must be positive");
         
-        System.out.println("Calculation result: " + 
+        IO.println("Calculation result: " + 
             calculation.fold(
                 success -> "Success: " + success,
                 error -> "Error: " + error
@@ -159,31 +159,31 @@ public class Demo {
      * Demonstrate Null Object pattern.
      */
     private static void demonstrateNullObjectPattern() {
-        System.out.println("4. Null Object Pattern Demonstration");
-        System.out.println("-----------------------------------");
+        IO.println("4. Null Object Pattern Demonstration");
+        IO.println("-----------------------------------");
         
         NullObject.UserService userService = new NullObject.UserService();
         
         // Valid user
         NullObject.User user1 = userService.findById("user1");
-        System.out.println("User1 display: " + userService.getUserDisplayName("user1"));
-        System.out.println("User1 has write permission: " + 
+        IO.println("User1 display: " + userService.getUserDisplayName("user1"));
+        IO.println("User1 has write permission: " + 
             userService.hasPermission("user1", "write"));
         
         // Invalid user - no null checks or exceptions needed
         NullObject.User unknownUser = userService.findById("unknown");
-        System.out.println("Unknown user display: " + userService.getUserDisplayName("unknown"));
-        System.out.println("Unknown user has write permission: " + 
+        IO.println("Unknown user display: " + userService.getUserDisplayName("unknown"));
+        IO.println("Unknown user has write permission: " + 
             userService.hasPermission("unknown", "write"));
-        System.out.println("Unknown user is valid: " + unknownUser.isValid());
+        IO.println("Unknown user is valid: " + unknownUser.isValid());
     }
     
     /**
      * Demonstrate conditional stack trace generation.
      */
     private static void demonstrateConditionalStackTrace() {
-        System.out.println("5. Conditional Stack Trace Demonstration");
-        System.out.println("---------------------------------------");
+        IO.println("5. Conditional Stack Trace Demonstration");
+        IO.println("---------------------------------------");
         
         // Rate-limited exceptions
         for (int i = 0; i < 5; i++) {
@@ -191,7 +191,7 @@ public class Demo {
                 throw new ConditionalStackTraceException.RateLimitedException(
                     "Rate limited exception #" + i);
             } catch (Exception e) {
-                System.out.println("Exception " + i + " has stack trace: " + 
+                IO.println("Exception " + i + " has stack trace: " + 
                     (e.getStackTrace().length > 0));
             }
         }
@@ -208,21 +208,21 @@ public class Demo {
                 }
             }
         }
-        System.out.println("Sampling: " + withStackTrace + " out of 200 had stack traces");
+        IO.println("Sampling: " + withStackTrace + " out of 200 had stack traces");
         
         // Debug mode exceptions
         ConditionalStackTraceException.DebugModeException.setDebugMode(false);
         try {
             throw new ConditionalStackTraceException.DebugModeException("Production error");
         } catch (Exception e) {
-            System.out.println("Production mode stack trace elements: " + e.getStackTrace().length);
+            IO.println("Production mode stack trace elements: " + e.getStackTrace().length);
         }
         
         ConditionalStackTraceException.DebugModeException.setDebugMode(true);
         try {
             throw new ConditionalStackTraceException.DebugModeException("Debug error");
         } catch (Exception e) {
-            System.out.println("Debug mode stack trace elements: " + e.getStackTrace().length);
+            IO.println("Debug mode stack trace elements: " + e.getStackTrace().length);
         }
     }
     
@@ -230,8 +230,8 @@ public class Demo {
      * Demonstrate exception monitoring and metrics.
      */
     private static void demonstrateExceptionMonitoring() {
-        System.out.println("6. Exception Monitoring Demonstration");
-        System.out.println("------------------------------------");
+        IO.println("6. Exception Monitoring Demonstration");
+        IO.println("------------------------------------");
         
         ExceptionMetrics metrics = new ExceptionMetrics(true);
         ExceptionHandler handler = new ExceptionHandler(metrics, 
@@ -272,7 +272,7 @@ public class Demo {
         );
         
         // Print metrics report
-        System.out.println(metrics.generateReport());
+        IO.println(metrics.generateReport());
     }
     
     // Helper methods
