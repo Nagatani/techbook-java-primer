@@ -88,6 +88,11 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - `IO`という名前のクラスを自作した例（付録B.02のIOモナド）では、自作のクラスが優先される。その中で標準入出力を使うときは`java.lang.IO`と書く
    - 付録Aの環境構築手順もJDK 25（SDKMANの識別子`25.0.5.0+2-ms`、2026-11時点）に書き直した。SDKMANの識別子は更新のたびに変わるので、手順を見直すときは`sdk list java`の実際の表示で確かめる
 
+10. **プログラムはクラスを宣言して書く（2026-11-10〜）**: Java 25のコンパクトソースファイル（クラス宣言なしで`void main()`だけを書く）とインスタンスmainメソッドは、第1章「Java 25の新しい書き方：クラス宣言を省いたプログラム」（サンプルコード1-7〜1-9）で紹介するだけにする
+   - 同じ節の「本書での書き方」に、本書はクラスを宣言してプログラムを組み立てる旨と理由を書いた。サンプル・付録・演習のコードは、クラスを宣言し`public static void main(String[] args)`から実行する形で書く
+   - モジュールのimport宣言（`import module java.base;`）も紹介だけにとどめ、コードではクラスごとにimport文を書く
+   - `check:samples`と`check:java`は、クラス宣言のないファイル（ファイル名がクラス名になる）と`void main()`も実行の対象として見つける
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
