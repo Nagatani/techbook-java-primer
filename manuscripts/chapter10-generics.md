@@ -352,9 +352,20 @@ public class BoundedTypeExample {
 
 ジェネリクスを使ったメソッドの引数などで、より柔軟にさまざまな型を受け入れたい場合にワイルドカード (`?`) を使います。
 
-- `List<?>`: 未知の型のリスト。どんな型のリストでも受け取れるが、安全のため`null`以外の要素を追加することはできない
-- `List<? extends Type>`: 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
-- `List<? super Type>`: 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
+- `List<?>`
+    + 未知の型のリスト。どんな型のリストでも受け取れるが、安全のため`null`以外の要素を追加することはできない
+- `List<? extends Type>`
+    + 上限境界ワイルドカード。`Type`またはそのサブクラスのリストを受け取れる。主にデータの読み取り（Producer）に使う
+- `List<? super Type>`
+    + 下限境界ワイルドカード。`Type`またはそのスーパークラスのリストを受け取れる。主にデータの書き込み（Consumer）に使う
+
+たとえば`List<? extends Number>`は、要素の型が`Number`・`Integer`・`Double`のリストを受け取れます。`List<? super Integer>`は、要素の型が`Integer`・`Number`・`Object`のリストを受け取れます。次の図の緑の型が、それぞれ当てはまる型です。
+
+<div class="figure">
+
+![上限境界と下限境界のワイルドカードに当てはまる型](images/diagrams/chapter10-wildcard-bounds.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード10-10**　WildcardExample.java</span>
 
