@@ -1,0 +1,15 @@
+classDiagram
+    direction LR
+    class ShapeFactory {
+        +createShape(String type, double... params)$ Shape
+    }
+    class Shape {
+        <<interface>>
+    }
+    class Circle
+    class Rectangle
+    class Triangle
+    ShapeFactory ..> Shape : 作って返す
+    Shape <|.. Circle
+    Shape <|.. Rectangle
+    Shape <|.. Triangle

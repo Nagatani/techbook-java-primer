@@ -1,0 +1,26 @@
+classDiagram
+    class DocumentFactory {
+        <<abstract>>
+        +createDocument()* Document
+        +newDocument() Document
+    }
+    class WordDocumentFactory {
+        +createDocument() Document
+    }
+    class PdfDocumentFactory {
+        +createDocument() Document
+    }
+    class Document {
+        <<interface>>
+        +open() void
+        +save() void
+        +close() void
+    }
+    class WordDocument
+    class PdfDocument
+    DocumentFactory <|-- WordDocumentFactory
+    DocumentFactory <|-- PdfDocumentFactory
+    Document <|.. WordDocument
+    Document <|.. PdfDocument
+    WordDocumentFactory ..> WordDocument : 作る
+    PdfDocumentFactory ..> PdfDocument : 作る

@@ -411,6 +411,12 @@ class D implements B, C {
 }
 ```
 
+<div class="figure">
+
+![defaultメソッドのダイヤモンド問題](images/diagrams/chapter07-diamond-problem.svg)
+
+</div>
+
 #### 継承の優先順位規則
 
 Javaは以下の規則で優先順位を決定します。
@@ -835,6 +841,12 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 もっとも基本的なFactoryパターンの実装例を見てみましょう。
 
+<div class="figure">
+
+![Simple Factoryパターンの構造](images/diagrams/chapter07-factory-pattern.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード7-17**　ShapeFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java（3〜20行目）</span>
 
 ```java
@@ -894,6 +906,12 @@ public class FactoryDemo {
 ### Factory Method パターン
 
 より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します。
+
+<div class="figure">
+
+![Factory Methodパターンの構造](images/diagrams/chapter07-factory-method.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード7-18**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
 
