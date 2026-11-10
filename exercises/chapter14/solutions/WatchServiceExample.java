@@ -490,21 +490,21 @@ public class WatchServiceExample {
         
         // コンソール出力ハンドラー
         watcher.addEventHandler(event -> {
-            System.out.println("ファイルイベント: " + event);
+            IO.println("ファイルイベント: " + event);
         });
         
         // 統計出力ハンドラー
         watcher.addEventHandler(event -> {
             WatchStatistics stats = watcher.getStatistics();
             if (stats.getTotalEvents() % 10 == 0) {
-                System.out.println("統計: " + stats);
+                IO.println("統計: " + stats);
             }
         });
         
         watcher.start();
         
-        System.out.println("ファイル監視開始: " + directory);
-        System.out.println("Ctrl+Cで停止");
+        IO.println("ファイル監視開始: " + directory);
+        IO.println("Ctrl+Cで停止");
         
         // シャットダウンフック
         Runtime.getRuntime().addShutdownHook(new Thread(watcher::stop));
@@ -538,7 +538,7 @@ public class WatchServiceExample {
             if (event.getType() == FileEventType.MODIFIED) {
                 Object size = event.getMetadata().get("size");
                 if (size instanceof Long && (Long) size > 1024 * 1024) { // 1MB以上
-                    System.out.println("大きなファイルが変更されました: " + event.getPath() + 
+                    IO.println("大きなファイルが変更されました: " + event.getPath() + 
                                      " (" + size + " bytes)");
                 }
             }
