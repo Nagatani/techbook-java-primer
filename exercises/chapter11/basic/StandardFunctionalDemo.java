@@ -16,7 +16,7 @@ public class StandardFunctionalDemo {
         Function<String, Integer> stringLength = null;
         
         // テスト
-        System.out.println("Length of 'Hello': " + stringLength.apply("Hello"));
+        IO.println("Length of 'Hello': " + stringLength.apply("Hello"));
     }
     
     /**
@@ -28,8 +28,8 @@ public class StandardFunctionalDemo {
         Predicate<Integer> isEven = null;
         
         // テスト
-        System.out.println("Is 4 even? " + isEven.test(4));
-        System.out.println("Is 5 even? " + isEven.test(5));
+        IO.println("Is 4 even? " + isEven.test(4));
+        IO.println("Is 5 even? " + isEven.test(5));
     }
     
     /**
@@ -55,7 +55,7 @@ public class StandardFunctionalDemo {
         Supplier<String> uuidGenerator = null;
         
         // テスト
-        System.out.println("Generated UUID: " + uuidGenerator.get());
+        IO.println("Generated UUID: " + uuidGenerator.get());
     }
     
     /**
@@ -67,7 +67,7 @@ public class StandardFunctionalDemo {
         BiFunction<Integer, Integer, Integer> max = null;
         
         // テスト
-        System.out.println("Max of 10 and 20: " + max.apply(10, 20));
+        IO.println("Max of 10 and 20: " + max.apply(10, 20));
     }
     
     /**
@@ -79,28 +79,28 @@ public class StandardFunctionalDemo {
         UnaryOperator<String> toUpperCase = null;
         
         // テスト
-        System.out.println("Uppercase: " + toUpperCase.apply("hello world"));
+        IO.println("Uppercase: " + toUpperCase.apply("hello world"));
     }
     
     public static void main(String[] args) {
-        System.out.println("=== 標準関数型インターフェイスのデモ ===");
+        IO.println("=== 標準関数型インターフェイスのデモ ===");
         
-        System.out.println("\n1. Function<T,R>:");
+        IO.println("\n1. Function<T,R>:");
         demonstrateFunction();
         
-        System.out.println("\n2. Predicate<T>:");
+        IO.println("\n2. Predicate<T>:");
         demonstratePredicate();
         
-        System.out.println("\n3. Consumer<T>:");
+        IO.println("\n3. Consumer<T>:");
         demonstrateConsumer();
         
-        System.out.println("\n4. Supplier<T>:");
+        IO.println("\n4. Supplier<T>:");
         demonstrateSupplier();
         
-        System.out.println("\n5. BiFunction<T,U,R>:");
+        IO.println("\n5. BiFunction<T,U,R>:");
         demonstrateBiFunction();
         
-        System.out.println("\n6. UnaryOperator<T>:");
+        IO.println("\n6. UnaryOperator<T>:");
         demonstrateUnaryOperator();
     }
 }

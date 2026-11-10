@@ -146,11 +146,11 @@ public class EventProcessor {
      * 統計情報を取得
      */
     public void printStatistics() {
-        System.out.println("Event Statistics:");
-        System.out.println("  Total events: " + eventLog.size());
-        System.out.println("  Processed: " + processedCount);
-        System.out.println("  Errors: " + errorCount);
-        System.out.println("  Active listeners: " + listeners.size());
+        IO.println("Event Statistics:");
+        IO.println("  Total events: " + eventLog.size());
+        IO.println("  Processed: " + processedCount);
+        IO.println("  Errors: " + errorCount);
+        IO.println("  Active listeners: " + listeners.size());
     }
     
     /**
@@ -265,7 +265,7 @@ public class EventProcessor {
          * コンソールにログを出力するリスナー
          */
         public static Consumer<Event> createConsoleLogger() {
-            return event -> System.out.println("[LOG] " + event);
+            return event -> IO.println("[LOG] " + event);
         }
         
         /**
@@ -285,7 +285,7 @@ public class EventProcessor {
         public static Consumer<Event> createStatisticsCollector() {
             return event -> {
                 // 統計情報の更新ロジック
-                System.out.println("[STATS] Event processed: " + event.getType());
+                IO.println("[STATS] Event processed: " + event.getType());
             };
         }
         
@@ -295,7 +295,7 @@ public class EventProcessor {
         public static Consumer<Event> createDebugLogger() {
             return event -> {
                 if ("DEBUG".equals(event.getType())) {
-                    System.out.println("[DEBUG] " + event.getData() + " at " + event.getTimestamp());
+                    IO.println("[DEBUG] " + event.getData() + " at " + event.getTimestamp());
                 }
             };
         }

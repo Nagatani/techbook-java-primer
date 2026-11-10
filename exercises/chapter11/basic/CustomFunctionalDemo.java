@@ -23,18 +23,18 @@ public class CustomFunctionalDemo {
         
         // テスト
         String input = "  hello world  ";
-        System.out.println("元の文字列: '" + input + "'");
+        IO.println("元の文字列: '" + input + "'");
         
         // withTrim()を使用
         if (toUpper != null) {
             StringProcessor trimmedUpper = toUpper.withTrim();
-            System.out.println("トリム後大文字: '" + trimmedUpper.process(input) + "'");
+            IO.println("トリム後大文字: '" + trimmedUpper.process(input) + "'");
         }
         
         // andThen()を使用
         if (toUpper != null && reverse != null) {
             StringProcessor combined = toUpper.andThen(reverse).andThen(addPrefix);
-            System.out.println("複合処理: '" + combined.process("hello") + "'");
+            IO.println("複合処理: '" + combined.process("hello") + "'");
         }
     }
     
@@ -51,33 +51,33 @@ public class CustomFunctionalDemo {
         double a = 10.0;
         double b = 5.0;
         
-        System.out.println("\n=== 計算器のデモ ===");
+        IO.println("\n=== 計算器のデモ ===");
         if (add != null) {
-            System.out.println(a + " + " + b + " = " + add.calculate(a, b));
+            IO.println(a + " + " + b + " = " + add.calculate(a, b));
         }
         if (subtract != null) {
-            System.out.println(a + " - " + b + " = " + subtract.calculate(a, b));
+            IO.println(a + " - " + b + " = " + subtract.calculate(a, b));
         }
         if (multiply != null) {
-            System.out.println(a + " * " + b + " = " + multiply.calculate(a, b));
+            IO.println(a + " * " + b + " = " + multiply.calculate(a, b));
         }
         if (divide != null) {
-            System.out.println(a + " / " + b + " = " + divide.calculate(a, b));
-            System.out.println(a + " / 0 = " + divide.calculate(a, 0));
+            IO.println(a + " / " + b + " = " + divide.calculate(a, b));
+            IO.println(a + " / 0 = " + divide.calculate(a, 0));
         }
         
         // TODO: カスタム計算器の作成（べき乗）
         Calculator power = null; // Math.powを使用
         if (power != null) {
-            System.out.println(a + " ^ " + b + " = " + power.calculate(a, b));
+            IO.println(a + " ^ " + b + " = " + power.calculate(a, b));
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("=== StringProcessorのデモ ===");
+        IO.println("=== StringProcessorのデモ ===");
         demonstrateStringProcessor();
         
-        System.out.println("\n=== Calculatorのデモ ===");
+        IO.println("\n=== Calculatorのデモ ===");
         demonstrateCalculator();
     }
 }
