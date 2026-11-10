@@ -17,7 +17,9 @@
 
 | スクリプト | npmスクリプト | 役割 |
 |---|---|---|
-| `convert-mermaid-to-images.js` | `mermaid:convert`（`build`から呼ばれる） | 原稿のMermaid図を画像に変換する。元ファイルが変わったときだけ変換する |
+| `convert-mermaid-to-images.js` | `mermaid:convert`（`build`から呼ばれる） | `docs/diagrams/*.mmd`を`manuscripts/images/diagrams/`のSVGに変換する。元ファイルか設定が変わったときだけ変換する |
+| `diagram-size.js` | `check:diagrams`（CI） | 図を紙面に載せる大きさ（文字が9Qにそろう倍率、本文の幅と高さ150mmが上限）を決める。直接実行すると、元データ・画像・原稿の対応と、図ごとの文字の大きさを検査する |
+| `vfm-figure-size.js` | `build`（`documentProcessor`） | 図の`<img>`に`diagram-size.js`で決めた幅と高さを書き込む |
 
 ## 修正の補助
 

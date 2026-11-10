@@ -93,6 +93,14 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - モジュールのimport宣言（`import module java.base;`）も紹介だけにとどめ、コードではクラスごとにimport文を書く
    - `check:samples`と`check:java`は、クラス宣言のないファイル（ファイル名がクラス名になる）と`void main()`も実行の対象として見つける
 
+11. **図（2026-11-11〜）**: 図はMermaidで書き、元データを`docs/diagrams/chapterXX-内容.mmd`（XXは載せる章の番号）に置く。`npm run mermaid:convert`（`build`から呼ばれる）が`manuscripts/images/diagrams/同じ名前.svg`を作り、原稿からはそのSVGを`<div class="figure">`の中で参照する
+   - 原稿に```mermaidのブロックを直接書かない（変換スクリプトがエラーにする）。以前は原稿の中のブロックを画像に置き換えて原稿を書き換えていたため、元データが残らなかった。本で使わない図の元データは`docs/diagrams/unused/`に置く
+   - Mermaidの設定は`docs/diagrams/mermaid-config.json`。`useMaxWidth: false`で図を描く幅に合わせて縮めないようにし、図形どうしの間隔を詰めている
+   - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。どの図も文字が9Qになる倍率で載せ、本文の幅（130mm）とページに収まる高さ（150mm）を超える図だけを縮める。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
+   - `npm run check:diagrams`（CI）が元データ・画像・原稿の対応を検査し、縮めた結果、文字が7Q未満になる図を「注意」として示す。注意の出た図は、図を分ける、並べる向きを変える、メンバーを減らすなど、書き方を見直す
+   - クラス図の注釈（`note for`）の改行は`<br/>`で書く（`\n`はそのまま表示される）
+   - 版型はISOのB5（176×250mm）。本文の幅は132mm
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
