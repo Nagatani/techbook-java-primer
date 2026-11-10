@@ -1,25 +1,17 @@
 sequenceDiagram
     participant Client as クライアントコード
-    participant PP as PaymentProcessor(参照)
-    participant CC as CreditCardPayment(実体)
-    participant PY as PayPalPayment(実体)
-    
-    Note over Client: PaymentProcessor型の変数で<br/>異なる実装を扱う
-    
-    Client->>PP: PaymentProcessor payment = new CreditCardPayment()
-    PP->>CC: 実体はCreditCardPayment
-    
-    Client->>PP: payment.processPayment()
-    PP->>CC: オーバーライドしたメソッド<br/>（validatePaymentSpecific()など）を呼ぶ
-    CC-->>Client: CreditCardPaymentの処理を実行
-    
-    Note over Client: 同じ変数に別の実装を代入
-    
-    Client->>PP: payment = new PayPalPayment()
-    PP->>PY: 実体はPayPalPayment
-    
-    Client->>PP: payment.processPayment()
-    PP->>PY: オーバーライドしたメソッド<br/>（validatePaymentSpecific()など）を呼ぶ
-    PY-->>Client: PayPalPaymentの処理を実行
-    
-    Note over Client: 呼び出しコードは変更不要<br/>実行時に適切な実装が選ばれる
+    participant CC as CreditCardPayment<br/>オブジェクト
+    participant PY as PayPalPayment<br/>オブジェクト
+
+    Note over Client: 変数paymentの型は<br/>PaymentProcessor
+    Client->>CC: payment = new CreditCardPayment(...)
+    Client->>CC: payment.processPayment()
+    Note over CC: オーバーライドした<br/>validatePaymentSpecific()<br/>などが呼ばれる
+    CC-->>Client: カード決済の結果
+
+    Client->>PY: payment = new PayPalPayment(...)
+    Client->>PY: payment.processPayment()
+    Note over PY: オーバーライドした<br/>validatePaymentSpecific()<br/>などが呼ばれる
+    PY-->>Client: PayPal決済の結果
+
+    Note over Client: 呼び出すコードは同じでも<br/>実体に応じた処理が選ばれる
