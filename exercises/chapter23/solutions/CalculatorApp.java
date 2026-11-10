@@ -38,7 +38,7 @@ public class CalculatorApp {
             BigDecimal result = calculate(operation, num1, num2);
             
             // 結果の表示
-            System.out.println(formatResult(operation, num1, num2, result));
+            IO.println(formatResult(operation, num1, num2, result));
             
         } catch (NumberFormatException e) {
             System.err.println("エラー: 無効な数値形式です。");
@@ -141,25 +141,25 @@ public class CalculatorApp {
      * 使用方法を表示します。
      */
     private static void printUsage() {
-        System.out.println("使用方法: java -jar calculator.jar [操作] [数値1] [数値2]");
-        System.out.println();
-        System.out.println("操作:");
-        System.out.println("  add, +      : 加算");
-        System.out.println("  subtract, - : 減算");
-        System.out.println("  multiply, * : 乗算");
-        System.out.println("  divide, /   : 除算");
-        System.out.println();
-        System.out.println("例:");
-        System.out.println("  java -jar calculator.jar add 10 20");
-        System.out.println("  java -jar calculator.jar multiply 5.5 3.2");
-        System.out.println("  java -jar calculator.jar divide 100 3");
+        IO.println("使用方法: java -jar calculator.jar [操作] [数値1] [数値2]");
+        IO.println();
+        IO.println("操作:");
+        IO.println("  add, +      : 加算");
+        IO.println("  subtract, - : 減算");
+        IO.println("  multiply, * : 乗算");
+        IO.println("  divide, /   : 除算");
+        IO.println();
+        IO.println("例:");
+        IO.println("  java -jar calculator.jar add 10 20");
+        IO.println("  java -jar calculator.jar multiply 5.5 3.2");
+        IO.println("  java -jar calculator.jar divide 100 3");
     }
     
     /**
      * バージョン情報を表示します（オプション機能）
      */
     private static void printVersion() {
-        System.out.println("Calculator App v1.0");
-        System.out.println("(c) 2024 Hidehiro Nagatani");
+        IO.println("Calculator App v1.0");
+        IO.println("(c) 2024 Hidehiro Nagatani");
     }
 }

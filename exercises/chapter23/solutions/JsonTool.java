@@ -40,7 +40,7 @@ public class JsonTool {
             }
             
             if (cmd.hasOption("version")) {
-                System.out.println("JSON Tool v" + VERSION);
+                IO.println("JSON Tool v" + VERSION);
                 return;
             }
             
@@ -121,7 +121,7 @@ public class JsonTool {
             // ファイルに書き込む
             Files.writeString(Paths.get(outputFile), formatted, StandardCharsets.UTF_8);
             
-            System.out.println("JSONファイルを整形しました: " + outputFile);
+            IO.println("JSONファイルを整形しました: " + outputFile);
         } catch (JsonSyntaxException e) {
             System.err.println("エラー: 無効なJSON形式です - " + e.getMessage());
             System.exit(1);
@@ -146,23 +146,23 @@ public class JsonTool {
             JsonElement element = JsonParser.parseString(jsonContent);
             
             // 検証結果を表示
-            System.out.println("✓ 有効なJSONファイルです: " + inputFile);
+            IO.println("✓ 有効なJSONファイルです: " + inputFile);
             
             // 詳細情報を表示
             if (element.isJsonObject()) {
                 JsonObject obj = element.getAsJsonObject();
-                System.out.println("  タイプ: オブジェクト");
-                System.out.println("  プロパティ数: " + obj.size());
-                System.out.println("  プロパティ: " + obj.keySet());
+                IO.println("  タイプ: オブジェクト");
+                IO.println("  プロパティ数: " + obj.size());
+                IO.println("  プロパティ: " + obj.keySet());
             } else if (element.isJsonArray()) {
                 JsonArray arr = element.getAsJsonArray();
-                System.out.println("  タイプ: 配列");
-                System.out.println("  要素数: " + arr.size());
+                IO.println("  タイプ: 配列");
+                IO.println("  要素数: " + arr.size());
             } else if (element.isJsonPrimitive()) {
-                System.out.println("  タイプ: プリミティブ");
-                System.out.println("  値: " + element.getAsJsonPrimitive());
+                IO.println("  タイプ: プリミティブ");
+                IO.println("  値: " + element.getAsJsonPrimitive());
             } else if (element.isJsonNull()) {
-                System.out.println("  タイプ: null");
+                IO.println("  タイプ: null");
             }
             
         } catch (JsonSyntaxException e) {
@@ -263,7 +263,7 @@ public class JsonTool {
             }
         }
         
-        System.out.println("JSONをCSVに変換しました: " + outputFile);
+        IO.println("JSONをCSVに変換しました: " + outputFile);
     }
     
     /**
@@ -313,7 +313,7 @@ public class JsonTool {
         String json = GSON.toJson(array);
         Files.writeString(Paths.get(outputFile), json, StandardCharsets.UTF_8);
         
-        System.out.println("CSVをJSONに変換しました: " + outputFile);
+        IO.println("CSVをJSONに変換しました: " + outputFile);
     }
     
     /**
