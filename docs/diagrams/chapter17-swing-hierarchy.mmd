@@ -1,87 +1,42 @@
 classDiagram
+
     class Component {
         <<abstract>>
-        +paint(Graphics) void
-        +repaint() void
-        +setVisible(boolean) void
-        +setEnabled(boolean) void
-        +addMouseListener(MouseListener) void
-        +addKeyListener(KeyListener) void
     }
-    
-    class Container {
-        <<abstract>>
-        +add(Component) Component
-        +remove(Component) void
-        +setLayout(LayoutManager) void
-        +getComponents() Component[]
-    }
-    
+    class Container
     class JComponent {
         <<abstract>>
-        +paintComponent(Graphics) void
-        +setBorder(Border) void
-        +setOpaque(boolean) void
-        +setToolTipText(String) void
     }
-    
-    class JPanel {
-        +デフォルトFlowLayout
-        +軽量コンテナ
+    class Window
+    class Frame
+    class JFrame
+    class JPanel
+    class JLabel
+    class AbstractButton {
+        <<abstract>>
     }
-    
-    class JLabel {
-        -String text
-        -Icon icon
-        +setText(String) void
-        +setIcon(Icon) void
+    class JButton
+    class JTextComponent {
+        <<abstract>>
     }
-    
-    class JButton {
-        -String text
-        -Icon icon
-        +addActionListener(ActionListener) void
-        +doClick() void
-    }
-    
-    class JTextField {
-        -String text
-        -int columns
-        +getText() String
-        +setText(String) void
-        +addActionListener(ActionListener) void
-    }
-    
-    class JTextArea {
-        -int rows
-        -int columns
-        +append(String) void
-        +setLineWrap(boolean) void
-    }
-    
-    class JScrollPane {
-        -Component viewport
-        +setViewportView(Component) void
-        +setVerticalScrollBarPolicy(int) void
-    }
-    
-    class JFrame {
-        -String title
-        +setTitle(String) void
-        +setDefaultCloseOperation(int) void
-        +setSize(int, int) void
-        +pack() void
-    }
-    
+    class JTextField
+    class JTextArea
+    class JScrollPane
+
     Component <|-- Container
     Container <|-- JComponent
-    Container <|-- JFrame
+    Container <|-- Window
+    Window <|-- Frame
+    Frame <|-- JFrame
     JComponent <|-- JPanel
     JComponent <|-- JLabel
-    JComponent <|-- JButton
-    JComponent <|-- JTextField
-    JComponent <|-- JTextArea
+    JComponent <|-- AbstractButton
+    AbstractButton <|-- JButton
+    JComponent <|-- JTextComponent
+    JTextComponent <|-- JTextField
+    JTextComponent <|-- JTextArea
     JComponent <|-- JScrollPane
-    
-    note for JComponent "Swingコンポーネントの基底クラス<br/>ダブルバッファリング対応"
-    note for JFrame "トップレベルコンテナ<br/>ウィンドウを表す"
+
+    note for Component "AWT（java.awt）"
+    note for JComponent "Swingの部品の基底クラス<br/>（javax.swing）"
+    note for JFrame "トップレベルコンテナ<br/>（ウィンドウ）"
