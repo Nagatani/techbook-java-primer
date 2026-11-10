@@ -604,14 +604,14 @@ public class FunctionalPatternsDemo {
         // 非同期状態管理
         demonstrateAsyncStateManagement();
         
-        IO.println("\n🎯 Key Insights:");
+        IO.println("\nKey Insights:");
         IO.println("✓ Lens pattern enables clean nested data updates");
         IO.println("✓ Immutable state management prevents unexpected mutations");
         IO.println("✓ Redux pattern provides predictable state transitions");
         IO.println("✓ Function composition creates reusable transformations");
         IO.println("✓ Async state management maintains consistency under concurrency");
         
-        IO.println("\n⚡ Best Practices:");
+        IO.println("\nBest Practices:");
         IO.println("• Use lenses for deep object updates");
         IO.println("• Implement proper action typing for type safety");
         IO.println("• Compose small, pure functions for complex operations");

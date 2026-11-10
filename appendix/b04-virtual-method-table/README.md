@@ -226,15 +226,15 @@ Round 4 (Fully optimized):   187ms  (15.2x speedup)
 
 #### 適切なfinal使用
 ```java
-// ✅ 継承不要なクラスはfinalにする
+// ○ 継承不要なクラスはfinalにする
 public final class ConfigurationManager {
-    // ✅ オーバーライド不要なメソッドはfinalにする
+    // ○ オーバーライド不要なメソッドはfinalにする
     public final String getValue(String key) {
         return properties.getProperty(key);
     }
 }
 
-// ✅ ユーティリティメソッドはstaticにする
+// ○ ユーティリティメソッドはstaticにする
 public static double calculateDistance(double x1, double y1, double x2, double y2) {
     return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
@@ -242,12 +242,12 @@ public static double calculateDistance(double x1, double y1, double x2, double y
 
 #### 小さなメソッドの作成
 ```java
-// ✅ インライン化しやすい小さなメソッド
+// ○ インライン化しやすい小さなメソッド
 public int getValue() { return value; }
 public boolean isEmpty() { return size == 0; }
 public void reset() { index = 0; }
 
-// ❌ 大きなメソッド（インライン化困難）
+// × 大きなメソッド（インライン化困難）
 public int complexCalculation() {
     // 50行以上の処理...
     return result;
@@ -256,7 +256,7 @@ public int complexCalculation() {
 
 #### ホットパスでの型安定性
 ```java
-// ✅ 型が安定したループ
+// ○ 型が安定したループ
 List<Customer> customers = getCustomers();
 for (Customer customer : customers) {
     customer.updateScore();  // モノモーフィック

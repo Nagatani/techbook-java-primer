@@ -259,25 +259,25 @@ Memory delta: +66.6 MB (increased)
 
 #### ヒープメモリ最適化
 ```java
-// ✅ 適切な初期容量設定
+// ○ 適切な初期容量設定
 List<String> list = new ArrayList<>(1000); // 事前にサイズを指定
 
-// ✅ 不要な参照の削除
+// ○ 不要な参照の削除
 list.clear(); // 明示的なクリア
 list = null;  // 参照の削除
 
-// ❌ メモリリークの原因
+// × メモリリークの原因
 static final Map<String, Object> cache = new HashMap<>(); // 永続的な参照
 ```
 
 #### GCフレンドリーなコード
 ```java
-// ✅ 短命オブジェクトの使用
+// ○ 短命オブジェクトの使用
 StringBuilder sb = new StringBuilder();
 sb.append("Hello").append(" World");
 return sb.toString(); // sbはすぐにGC対象
 
-// ❌ 不要な長寿命オブジェクト
+// × 不要な長寿命オブジェクト
 static List<String> results = new ArrayList<>(); // 静的参照で長寿命化
 ```
 
@@ -285,16 +285,16 @@ static List<String> results = new ArrayList<>(); // 静的参照で長寿命化
 
 #### インライン化しやすいコード
 ```java
-// ✅ 小さなメソッド（インライン化候補）
+// ○ 小さなメソッド（インライン化候補）
 public int getValue() { return value; }
 public boolean isEmpty() { return size == 0; }
 
-// ✅ final修飾子の使用
+// ○ final修飾子の使用
 public final class ImmutableData {
     public final int getValue() { return value; }
 }
 
-// ❌ 大きなメソッド（インライン化困難）
+// × 大きなメソッド（インライン化困難）
 public int complexMethod() {
     // 50行以上の処理...
     return result;
@@ -303,7 +303,7 @@ public int complexMethod() {
 
 #### 分岐予測フレンドリーなコード
 ```java
-// ✅ 予測可能な分岐
+// ○ 予測可能な分岐
 if (condition_that_is_usually_true) {
     // 90%のケースでこちら
     commonPath();
@@ -311,7 +311,7 @@ if (condition_that_is_usually_true) {
     rareCase();
 }
 
-// ❌ 予測困難な分岐
+// × 予測困難な分岐
 if (Math.random() > 0.5) { // ランダムな分岐
     pathA();
 } else {

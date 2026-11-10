@@ -627,7 +627,7 @@ public class VirtualMethodTableDemo {
         IO.println("4. Consider type stability in performance-critical loops");
         IO.println("5. Profile before optimizing - JVM is very good at optimization");
         
-        IO.println("\n🎯 Key Takeaways:");
+        IO.println("\nKey Takeaways:");
         IO.println("✓ JVM uses vtables for dynamic method dispatch");
         IO.println("✓ Monomorphic calls are fastest (direct/inlined)");
         IO.println("✓ Megamorphic calls require vtable lookups");

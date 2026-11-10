@@ -350,7 +350,7 @@ public class MethodInliningDemo {
             if (overhead < 1.5) {
                 IO.println("✓ Good inlining - minimal overhead");
             } else {
-                IO.println("⚠ Poor inlining - significant overhead");
+                IO.println("Poor inlining - significant overhead");
             }
             IO.println();
         }
@@ -449,7 +449,7 @@ public class MethodInliningDemo {
         IO.println("=== Practical Inlining Guidelines ===");
         IO.println();
         
-        IO.println("✅ DO - Promote Inlining:");
+        IO.println("DO - Promote Inlining:");
         IO.println("  • Keep methods small (< 35 bytecodes)");
         IO.println("  • Use final for classes/methods when inheritance isn't needed");
         IO.println("  • Minimize method call overhead in hot paths");
@@ -457,7 +457,7 @@ public class MethodInliningDemo {
         IO.println("  • Use static methods for utility functions");
         IO.println();
         
-        IO.println("❌ DON'T - Inhibit Inlining:");
+        IO.println("DON'T - Inhibit Inlining:");
         IO.println("  • Create large methods with complex logic");
         IO.println("  • Use unnecessary synchronization");
         IO.println("  • Add side effects to simple getters");
@@ -465,7 +465,7 @@ public class MethodInliningDemo {
         IO.println("  • Premature optimization without profiling");
         IO.println();
         
-        IO.println("🔍 Profiling and Monitoring:");
+        IO.println("Profiling and Monitoring:");
         IO.println("  • Use -XX:+PrintCompilation to see compilation");
         IO.println("  • Use -XX:+PrintInlining to see inlining decisions");
         IO.println("  • Profile with JProfiler, async-profiler, or JFR");
@@ -487,14 +487,14 @@ public class MethodInliningDemo {
         InliningControlDemo.demonstrateInlineDepth();
         printOptimizationGuidelines();
         
-        IO.println("🎯 Key Insights:");
+        IO.println("Key Insights:");
         IO.println("✓ JVM automatically detects and optimizes hot spots");
         IO.println("✓ Small methods are prime candidates for inlining");
         IO.println("✓ Method chaining can be as fast as direct calculation");
         IO.println("✓ Inlining depth is limited to prevent code explosion");
         IO.println("✓ Profile before optimizing - JVM is very sophisticated");
         
-        IO.println("\n⚡ Performance Tips:");
+        IO.println("\nPerformance Tips:");
         IO.println("• Trust the JVM - it's often smarter than manual optimization");
         IO.println("• Measure with realistic workloads and data");
         IO.println("• Focus on algorithm improvements over micro-optimizations");

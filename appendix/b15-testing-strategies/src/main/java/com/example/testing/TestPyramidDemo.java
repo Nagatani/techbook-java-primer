@@ -805,15 +805,15 @@ public class TestPyramidDemo {
             E2ETestLevel.testErrorScenarios();
             
             IO.println("\n" + "=".repeat(50));
-            IO.println("🎉 All tests passed! Test pyramid executed successfully.");
+            IO.println("All tests passed! Test pyramid executed successfully.");
             IO.println("\nTest Pyramid Summary:");
-            IO.println("📊 Unit Tests: Fast, numerous, focused on individual components");
-            IO.println("🔗 Integration Tests: Medium speed, testing component interactions");
-            IO.println("🌐 E2E Tests: Slow, few, but testing complete user scenarios");
+            IO.println("Unit Tests: Fast, numerous, focused on individual components");
+            IO.println("Integration Tests: Medium speed, testing component interactions");
+            IO.println("E2E Tests: Slow, few, but testing complete user scenarios");
             IO.println("\nEach level serves a specific purpose in ensuring code quality!");
             
         } catch (Exception e) {
-            System.err.println("❌ Test failed: " + e.getMessage());
+            System.err.println("× Test failed: " + e.getMessage());
             e.printStackTrace();
         }
     }

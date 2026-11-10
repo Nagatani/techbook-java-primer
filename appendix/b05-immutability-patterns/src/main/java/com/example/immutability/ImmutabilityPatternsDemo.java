@@ -515,14 +515,14 @@ public class ImmutabilityPatternsDemo {
         // パフォーマンステスト
         PerformanceTest.compareImmutableVsMutable();
         
-        IO.println("\n🎯 Key Insights:");
+        IO.println("\nKey Insights:");
         IO.println("✓ Immutable objects are inherently thread-safe");
         IO.println("✓ Builder pattern provides flexible object construction");
         IO.println("✓ Object pooling can optimize memory usage for common values");
         IO.println("✓ Lazy evaluation defers expensive computations");
         IO.println("✓ 'with' methods enable functional-style updates");
         
-        IO.println("\n⚡ Best Practices:");
+        IO.println("\nBest Practices:");
         IO.println("• Use defensive copying in constructors and getters");
         IO.println("• Implement proper equals(), hashCode(), and toString()");
         IO.println("• Consider object pooling for frequently used values");

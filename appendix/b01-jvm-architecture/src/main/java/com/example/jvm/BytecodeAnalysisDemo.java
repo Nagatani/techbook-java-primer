@@ -546,21 +546,21 @@ public class BytecodeAnalysisDemo {
         // インライン化分析
         InliningAnalysisDemo.demonstrateInlining();
         
-        IO.println("🎯 Key Insights:");
+        IO.println("Key Insights:");
         IO.println("✓ Java source code compiles to platform-independent bytecode");
         IO.println("✓ JIT compiler optimizes hot methods at runtime");
         IO.println("✓ Branch prediction significantly affects performance");
         IO.println("✓ Method inlining eliminates call overhead");
         IO.println("✓ Understanding bytecode helps write efficient code");
         
-        IO.println("\n⚡ Optimization Tips:");
+        IO.println("\nOptimization Tips:");
         IO.println("• Keep frequently called methods small for inlining");
         IO.println("• Avoid unpredictable branching in hot paths");
         IO.println("• Use final classes/methods when inheritance isn't needed");
         IO.println("• Profile your application to identify hot spots");
         IO.println("• Trust JIT compiler - it's very sophisticated!");
         
-        IO.println("\n🔧 Useful JVM Flags for Analysis:");
+        IO.println("\nUseful JVM Flags for Analysis:");
         IO.println("• -XX:+PrintCompilation : Show JIT compilation events");
         IO.println("• -XX:+PrintInlining : Show inlining decisions");
         IO.println("• -XX:+PrintAssembly : Show generated assembly code (requires hsdis)");

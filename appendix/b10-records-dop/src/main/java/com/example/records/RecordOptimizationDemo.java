@@ -578,14 +578,14 @@ public class RecordOptimizationDemo {
         // 並行処理最適化
         ConcurrencyOptimization.demonstrateConcurrency();
         
-        IO.println("\n🎯 Key Optimization Insights:");
+        IO.println("\nKey Optimization Insights:");
         IO.println("✓ Proper field ordering reduces memory padding");
         IO.println("✓ Object pooling works well with immutable records");
         IO.println("✓ Custom serialization can be much faster than default");
         IO.println("✓ MethodHandles provide faster reflection access");
         IO.println("✓ Records are naturally thread-safe for concurrent use");
         
-        IO.println("\n⚡ Performance Tips:");
+        IO.println("\nPerformance Tips:");
         IO.println("• Order fields by size (largest to smallest)");
         IO.println("• Use string interning for frequently used values");
         IO.println("• Cache reflection metadata for repeated access");

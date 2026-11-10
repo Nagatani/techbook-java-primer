@@ -604,16 +604,16 @@ public class TestContainersDemo {
             test.testPerformance();
             
             IO.println("\n" + "=".repeat(50));
-            IO.println("🎉 All integration tests passed!");
+            IO.println("All integration tests passed!");
             
-            IO.println("\n📊 Testcontainers Benefits:");
+            IO.println("\nTestcontainers Benefits:");
             IO.println("✓ Real database behavior - no mocking limitations");
             IO.println("✓ Isolated test environment - no shared state issues");
             IO.println("✓ Multiple database engines - test with production DB");
             IO.println("✓ Automatic cleanup - containers removed after tests");
             IO.println("✓ Version consistency - same DB version as production");
             
-            IO.println("\n🔧 Testcontainers in Practice:");
+            IO.println("\nTestcontainers in Practice:");
             IO.println("- Use for repository layer testing");
             IO.println("- Test complex SQL queries and transactions");
             IO.println("- Validate database migrations");
@@ -621,7 +621,7 @@ public class TestContainersDemo {
             IO.println("- End-to-end testing with external services");
             
         } catch (Exception e) {
-            System.err.println("❌ Integration test failed: " + e.getMessage());
+            System.err.println("× Integration test failed: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {

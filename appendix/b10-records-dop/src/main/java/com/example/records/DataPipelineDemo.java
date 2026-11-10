@@ -645,7 +645,7 @@ public class DataPipelineDemo {
         // API変換デモ
         demonstrateApiTransformation();
         
-        IO.println("\n🎯 Key Insights:");
+        IO.println("\nKey Insights:");
         IO.println("✓ Records enable clean event sourcing patterns");
         IO.println("✓ Stream processing with records is concise and type-safe");
         IO.println("✓ Pattern matching simplifies event handling");

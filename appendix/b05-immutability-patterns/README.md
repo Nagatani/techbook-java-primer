@@ -269,7 +269,7 @@ Ratio: 2.33x
 
 #### 不変オブジェクトを使用すべき場合
 ```java
-// ✅ 適切な使用例
+// ○ 適切な使用例
 public final class ConfigurationData {
     private final Map<String, String> properties;
     private final List<String> allowedHosts;
@@ -277,7 +277,7 @@ public final class ConfigurationData {
     // 設定データは変更頻度が低く、安全性が重要
 }
 
-// ❌ 不適切な使用例  
+// × 不適切な使用例  
 public final class PerformanceCounter {
     private final long value;
     
@@ -290,7 +290,7 @@ public final class PerformanceCounter {
 
 #### Copy-on-Writeを使用すべき場合
 ```java
-// ✅ 読み込み重視のシナリオ
+// ○ 読み込み重視のシナリオ
 public class EventSubscribers {
     private final CopyOnWriteMap<String, List<EventListener>> subscribers;
     
@@ -452,12 +452,12 @@ ImmutablePoint.of(x, y); // キャッシュされた値を再利用
 
 #### 問題2: 更新性能の劣化
 ```java
-// ❌ 問題のあるコード
+// 問題のあるコード
 for (int i = 0; i < 10000; i++) {
     list = list.append(i); // 毎回O(n)コピー
 }
 
-// ✅ 改善されたコード
+// 改善されたコード
 List<Integer> mutableList = new ArrayList<>();
 for (int i = 0; i < 10000; i++) {
     mutableList.add(i);
@@ -467,14 +467,14 @@ ImmutableList<Integer> list = ImmutableList.copyOf(mutableList);
 
 #### 問題3: 深いネスト構造の更新
 ```java
-// ❌ 複雑なネスト更新
+// × 複雑なネスト更新
 Person updated = person.withAddress(
     person.getAddress().withCity(
         person.getAddress().getCity().toUpperCase()
     )
 );
 
-// ✅ レンズパターンの活用
+// ○ レンズパターンの活用
 Person updated = personCityLens.modify(person, String::toUpperCase);
 ```
 

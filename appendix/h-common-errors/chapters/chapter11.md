@@ -9,7 +9,7 @@
 #### エラー例
 
 ```java
-// ❌ 不正なラムダ式の構文
+// × 不正なラムダ式の構文
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.forEach(name -> {
     IO.println(name)  // セミコロン忘れ
@@ -33,7 +33,7 @@ import java.util.List;
 
 public class LambdaSyntaxFixExample {
     public static void main(String[] args) {
-        // ✅ 正しいラムダ式の構文
+        // 正しいラムダ式の構文
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
         
         IO.println("波括弧を使用した形式:");
@@ -66,7 +66,7 @@ Charlie
 #### エラー例
 
 ```java
-// ❌ ラムダ式をvarで受けると、どの関数型インターフェイスか決まらない
+// × ラムダ式をvarで受けると、どの関数型インターフェイスか決まらない
 var comp = (String x, String y) -> x.length() - y.length();
 ```
 
@@ -82,7 +82,7 @@ error: cannot infer type for local variable comp
 #### 対処法
 
 ```java
-// ✅ 代入先の関数型インターフェイスを明示する（引数の型は推論される）
+// ○ 代入先の関数型インターフェイスを明示する（引数の型は推論される）
 Comparator<String> comp = (x, y) -> x.length() - y.length();
 
 // またはメソッド参照を使用
@@ -94,7 +94,7 @@ Comparator<String> byLength = Comparator.comparing(String::length);
 #### エラー例
 
 ```java
-// ❌ チェック例外のハンドリング
+// × チェック例外のハンドリング
 List<String> files = Arrays.asList("file1.txt", "file2.txt");
 files.stream()
     .map(file -> Files.readString(Path.of(file)))  // IOException発生
@@ -109,7 +109,7 @@ error: unreported exception IOException; must be caught or declared to be thrown
 #### 対処法
 
 ```java
-// ✅ 例外をランタイム例外でラップ
+// ○ 例外をランタイム例外でラップ
 List<String> contents = files.stream()
     .map(file -> {
         try {
@@ -139,7 +139,7 @@ List<String> contents = files.stream()
 #### エラー例
 
 ```java
-// ❌ 変数キャプチャの問題
+// × 変数キャプチャの問題
 public void processNumbers(List<Integer> numbers) {
     int threshold = 10;
     threshold = 20;  // 変数の変更
@@ -158,7 +158,7 @@ error: local variables referenced from a lambda expression must be final or effe
 #### 対処法
 
 ```java
-// ✅ 実質的にfinalな変数を使用
+// ○ 実質的にfinalな変数を使用
 public void processNumbers(List<Integer> numbers) {
     final int threshold = 20;  // finalキーワード
     
@@ -183,7 +183,7 @@ public void processNumbers(List<Integer> numbers) {
 #### エラー例
 
 ```java
-// ❌ 関数型インターフェイスの誤用
+// × 関数型インターフェイスの誤用
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
@@ -201,7 +201,7 @@ error: Unexpected @FunctionalInterface annotation
 #### 対処法
 
 ```java
-// ✅ 単一の抽象メソッドを持つ関数型インターフェイス
+// ○ 単一の抽象メソッドを持つ関数型インターフェイス
 @FunctionalInterface
 interface Calculator {
     int calculate(int a, int b);
@@ -222,7 +222,7 @@ Calculator multiplier = (a, b) -> a * b;
 #### エラー例
 
 ```java
-// ❌ プリミティブ型のストリーム（IntStream）をListに集めようとしている
+// × プリミティブ型のストリーム（IntStream）をListに集めようとしている
 List<String> strings = Arrays.asList("1", "2", "3");
 List<Integer> numbers = strings.stream()
     .mapToInt(Integer::parseInt)  // IntStreamになる
@@ -241,7 +241,7 @@ error: method collect in interface IntStream cannot be applied to given types;
 #### 対処法
 
 ```java
-// ✅ mapを使えば、parseIntが返すintはIntegerへ自動変換（オートボクシング）される
+// ○ mapを使えば、parseIntが返すintはIntegerへ自動変換（オートボクシング）される
 List<Integer> numbers = strings.stream()
     .map(Integer::parseInt)
     .collect(Collectors.toList());

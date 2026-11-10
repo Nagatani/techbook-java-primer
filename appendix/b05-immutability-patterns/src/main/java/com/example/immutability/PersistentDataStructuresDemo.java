@@ -688,14 +688,14 @@ public class PersistentDataStructuresDemo {
         // パフォーマンス比較
         PerformanceComparison.compareDataStructures();
         
-        IO.println("\n🎯 Key Insights:");
+        IO.println("\nKey Insights:");
         IO.println("✓ Copy-on-Write provides thread-safe updates with fast reads");
         IO.println("✓ Persistent data structures enable efficient immutable operations");
         IO.println("✓ Structural sharing minimizes memory overhead");
         IO.println("✓ Trade-off between update performance and immutability benefits");
         IO.println("✓ Choose data structure based on usage patterns");
         
-        IO.println("\n⚡ Use Cases:");
+        IO.println("\nUse Cases:");
         IO.println("• Copy-on-Write: Read-heavy concurrent scenarios");
         IO.println("• Persistent Lists: Functional programming, undo operations");
         IO.println("• Persistent Maps: Configuration management, versioning");

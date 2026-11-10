@@ -128,7 +128,7 @@ Step 2: Adding items to cart
 Cart total: $1479.97
 ...
 
-🎉 All tests passed! Test pyramid executed successfully.
+All tests passed! Test pyramid executed successfully.
 ```
 
 ## 学習ポイント

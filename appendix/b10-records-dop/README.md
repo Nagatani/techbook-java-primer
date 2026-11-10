@@ -257,23 +257,23 @@ Speedup: 3.70x
 ### 1. いつRecordsを使うべきか
 
 #### 適している場合
-✅ **データ転送オブジェクト（DTO）**
+○ **データ転送オブジェクト（DTO）**
 ```java
 public record UserDTO(String id, String name, String email) {}
 ```
 
-✅ **イミュータブルな値オブジェクト**
+○ **イミュータブルな値オブジェクト**
 ```java
 public record Money(BigDecimal amount, Currency currency) {}
 ```
 
-✅ **設定値やパラメータ群**
+○ **設定値やパラメータ群**
 ```java
 public record DatabaseConfig(String url, String username, int poolSize) {}
 ```
 
 #### 適さない場合
-❌ **可変状態を持つエンティティ**
+× **可変状態を持つエンティティ**
 ```java
 // Recordsは不変なので、頻繁に状態が変わるものには不適切
 public class MutableShoppingCart { // Recordではなくクラスを使用
@@ -282,7 +282,7 @@ public class MutableShoppingCart { // Recordではなくクラスを使用
 }
 ```
 
-❌ **継承階層を持つクラス**
+× **継承階層を持つクラス**
 ```java
 // Recordsは他のクラスを継承できない
 public abstract class Animal { } // Recordは使えない
@@ -390,10 +390,10 @@ public value record ComplexNumber(double real, double imaginary) {
 
 #### 問題1: NullPointerException
 ```java
-// ❌ 問題: nullを含むコレクション
+// 問題: nullを含むコレクション
 public record Data(List<String> items) {}
 
-// ✅ 解決: コンパクトコンストラクタで防御的コピー
+// ○ 解決: コンパクトコンストラクタで防御的コピー
 public record Data(List<String> items) {
     public Data {
         items = items == null ? List.of() : List.copyOf(items);
@@ -403,10 +403,10 @@ public record Data(List<String> items) {
 
 #### 問題2: 循環参照
 ```java
-// ❌ 問題: toString/hashCodeで無限ループ
+// 問題: toString/hashCodeで無限ループ
 public record Node(String value, Node parent) {}
 
-// ✅ 解決: カスタムtoString/hashCode
+// ○ 解決: カスタムtoString/hashCode
 public record Node(String value, Node parent) {
     @Override
     public String toString() {
@@ -418,7 +418,7 @@ public record Node(String value, Node parent) {
 
 #### 問題3: シリアライゼーション互換性
 ```java
-// ✅ 明示的なserialVersionUID
+// ○ 明示的なserialVersionUID
 public record VersionedData(String id, int version) 
     implements Serializable {
     private static final long serialVersionUID = 1L;

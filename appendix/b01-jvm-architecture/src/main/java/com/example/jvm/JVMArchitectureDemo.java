@@ -599,14 +599,14 @@ public class JVMArchitectureDemo {
         // MemoryGenerationDemo.MemoryLeakDemo.simulateMemoryLeak();
         // ThreadStackDemo.simulateStackOverflow();
         
-        IO.println("🎯 Key Insights:");
+        IO.println("Key Insights:");
         IO.println("✓ JVM manages multiple memory areas with different purposes");
         IO.println("✓ ClassLoader hierarchy provides security and modularity");
         IO.println("✓ Stack memory is thread-local, heap memory is shared");
         IO.println("✓ Garbage collection automatically manages heap memory");
         IO.println("✓ Understanding memory layout helps optimize applications");
         
-        IO.println("\n⚡ Performance Tips:");
+        IO.println("\nPerformance Tips:");
         IO.println("• Monitor heap usage to prevent OutOfMemoryError");
         IO.println("• Avoid creating unnecessary objects in loops");
         IO.println("• Use appropriate data structures for your use case");

@@ -1,4 +1,4 @@
-// ✅ 適切な境界型パラメータ
+// ○ 適切な境界型パラメータ
 public class NumberContainer<T extends Number> {
     private T value;
     

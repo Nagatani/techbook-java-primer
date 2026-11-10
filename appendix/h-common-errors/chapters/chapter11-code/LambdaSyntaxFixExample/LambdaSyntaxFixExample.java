@@ -3,7 +3,7 @@ import java.util.List;
 
 public class LambdaSyntaxFixExample {
     public static void main(String[] args) {
-        // ✅ 正しいラムダ式の構文
+        // 正しいラムダ式の構文
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
         
         IO.println("波括弧を使用した形式:");

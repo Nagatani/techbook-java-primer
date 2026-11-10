@@ -11,7 +11,7 @@ Stream APIと高度なコレクション操作の学習で遭遇する典型的�
 以下のコードは、Stream操作のチェーンでよくある間違いの例です。
 
 ```java
-// ❌ 操作の順序を誤ったStream操作のチェーン
+// × 操作の順序を誤ったStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "avocado", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
@@ -29,7 +29,7 @@ words.stream()
 以下のコードは、上記の問題を解決した正しいStream操作の例です。
 
 ```java
-// ✅ 絞り込みを先に行うStream操作のチェーン
+// ○ 絞り込みを先に行うStream操作のチェーン
 List<String> words = Arrays.asList("apple", "banana", "avocado", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
@@ -52,7 +52,7 @@ AVOCADO
 以下のコードは、終端操作を忘れてしまった場合の問題を示しています。
 
 ```java
-// ❌ 終端操作を忘れた場合
+// × 終端操作を忘れた場合
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 numbers.stream()
     .filter(n -> n % 2 == 0)
@@ -68,7 +68,7 @@ numbers.stream()
 以下のコードは、終端操作を追加して問題を解決した例です。
 
 ```java
-// ✅ 終端操作を追加
+// ○ 終端操作を追加
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 List<Integer> evenDoubled = numbers.stream()
     .filter(n -> n % 2 == 0)
@@ -83,7 +83,7 @@ List<Integer> evenDoubled = numbers.stream()
 以下のコードは、並列処理でのスレッドセーフティの問題を示しています。
 
 ```java
-// ❌ 並列処理での共有状態の変更
+// × 並列処理での共有状態の変更
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 List<Integer> results = new ArrayList<>(); // 非同期安全でない
 
@@ -101,7 +101,7 @@ numbers.parallelStream()
 以下のコードは、並列処理で安全にデータを収集する方法を示しています。
 
 ```java
-// ✅ 並列処理に適した方法
+// ○ 並列処理に適した方法
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
 // 方法1: collectを使用
@@ -124,7 +124,7 @@ numbers.parallelStream()
 以下のコードは、Optionalの誤った使用方法の例です。
 
 ```java
-// ❌ Optionalの誤った使用
+// × Optionalの誤った使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 Optional<String> result = names.stream()
     .filter(name -> name.startsWith("D"))
@@ -146,7 +146,7 @@ if (result.isPresent()) {
 以下のコードは、Optionalの正しい使用方法を示しています。
 
 ```java
-// ✅ Optionalの正しい使用
+// ○ Optionalの正しい使用
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
 names.stream()
     .filter(name -> name.startsWith("D"))
@@ -170,7 +170,7 @@ String result = names.stream()
 以下のコードは、非効率なStream操作の例です。
 
 ```java
-// ❌ 不効率なStream操作
+// × 不効率なStream操作
 List<Integer> numbers = IntStream.range(1, 1000000)
     .boxed()
     .collect(Collectors.toList());
@@ -196,7 +196,7 @@ int count = numbers.stream()
 以下のコードは、パフォーマンスを改善した処理の例です。
 
 ```java
-// ✅ 効率的なStream操作
+// ○ 効率的なStream操作
 // 最初からIntStreamを使用
 IntStream numbers = IntStream.range(1, 1000000);
 
@@ -219,7 +219,7 @@ IO.println("Count: " + stats.getCount());
 以下のコードは、Stream内での例外処理の問題を示しています。
 
 ```java
-// ❌ Stream内での例外処理の問題
+// × Stream内での例外処理の問題
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");
 List<String> contents = files.stream()
     .map(file -> {
@@ -238,7 +238,7 @@ error: unreported exception IOException; must be caught or declared to be thrown
 以下のコードは、Stream内での例外を適切に処理する方法を示しています。
 
 ```java
-// ✅ Stream内での確実な例外処理
+// ○ Stream内での確実な例外処理
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");
 
 // 方法1: 例外を無視してフィルタ

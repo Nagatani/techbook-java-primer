@@ -510,7 +510,7 @@ public class PropertyBasedTestDemo {
             testStatefulProperties();
             
             IO.println("\n" + "=".repeat(50));
-            IO.println("🎉 All property-based tests passed!");
+            IO.println("All property-based tests passed!");
             IO.println("\nProperty-based Testing Benefits:");
             IO.println("✓ Discovers edge cases that manual tests might miss");
             IO.println("✓ Tests fundamental properties rather than specific examples");
@@ -519,7 +519,7 @@ public class PropertyBasedTestDemo {
             IO.println("✓ Documents system behavior through properties");
             
         } catch (PropertyViolationException e) {
-            System.err.println("❌ Property-based test failed: " + e.getMessage());
+            System.err.println("× Property-based test failed: " + e.getMessage());
             if (e.getCause() != null) {
                 e.getCause().printStackTrace();
             }

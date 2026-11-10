@@ -564,14 +564,14 @@ public class MutationTestDemo {
         explainMutationTestingBestPractices();
         
         IO.println("\n" + "=".repeat(50));
-        IO.println("🎯 Mutation Testing Insights:");
+        IO.println("Mutation Testing Insights:");
         IO.println("✓ Tests the tests - validates test suite quality");
         IO.println("✓ Reveals hidden test gaps that coverage metrics miss");
         IO.println("✓ Drives creation of more robust test cases");
         IO.println("✓ Higher mutation scores = better bug detection");
         IO.println("✓ Essential for critical software where bugs are costly");
         
-        IO.println("\n🛠️  Recommended Tools:");
+        IO.println("\nRecommended Tools:");
         IO.println("- PIT (Java): Most popular Java mutation testing tool");
         IO.println("- Stryker (JavaScript/TypeScript): Modern mutation testing");
         IO.println("- mutmut (Python): Simple Python mutation testing");

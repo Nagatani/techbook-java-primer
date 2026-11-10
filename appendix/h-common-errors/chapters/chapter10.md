@@ -11,7 +11,7 @@
 ジェネリクスを使用せずにRaw typeでコレクションを使用した場合の問題を示しています。
 
 ```java
-// ❌ Raw typeの使用
+// × Raw typeの使用
 List list = new ArrayList();
 list.add("Hello");
 String str = (String) list.get(0); // キャストが必要
@@ -28,7 +28,7 @@ Note: Recompile with -Xlint:unchecked for more details.
 正しいジェネリクスの使用方法です。
 
 ```java
-// ✅ ジェネリクスを使用
+// ○ ジェネリクスを使用
 List<String> list = new ArrayList<>();
 list.add("Hello");
 String str = list.get(0); // キャスト不要
@@ -41,7 +41,7 @@ String str = list.get(0); // キャスト不要
 型パラメータを直接インスタンス化しようとした例です。
 
 ```java
-// ❌ 不適切な使用例
+// × 不適切な使用例
 public class Container<T> {
     private T value;
     
@@ -64,7 +64,7 @@ error: unexpected type
 `Supplier<T>`は「`T`型の値を1つ作って返す」処理を表すインターフェイスで、第11章で学ぶラムダ式と組み合わせて`new Container<>(() -> new StringBuilder())`のように使います。
 
 ```java
-// ✅ ファクトリーメソッドを使用
+// ○ ファクトリーメソッドを使用
 public class Container<T> {
     private T value;
     private Supplier<T> factory;
@@ -86,7 +86,7 @@ public class Container<T> {
 上限境界ワイルドカードで要素を追加しようとした例です。
 
 ```java
-// ❌ ワイルドカードの誤用
+// × ワイルドカードの誤用
 List<? extends Number> numbers = new ArrayList<Integer>();
 numbers.add(1); // コンパイルエラー
 ```
@@ -103,7 +103,7 @@ error: incompatible types: int cannot be converted to CAP#1
 ワイルドカードの正しい使用方法です。
 
 ```java
-// ✅ 適切な使用例
+// ○ 適切な使用例
 List<Integer> integers = new ArrayList<>();
 integers.add(1);
 List<? extends Number> numbers = integers; // 読み取り専用として使用
@@ -116,7 +116,7 @@ List<? extends Number> numbers = integers; // 読み取り専用として使用
 ジェネリクスで配列を作成しようとした際の問題です。
 
 ```java
-// ❌ 型消去による問題
+// × 型消去による問題
 public class GenericArray<T> {
     private T[] array;
     
@@ -136,7 +136,7 @@ error: generic array creation
 型消去を考慮した正しい実装方法です。
 
 ```java
-// ✅ 型消去を考慮した実装
+// ○ 型消去を考慮した実装
 public class GenericArray<T> {
     private T[] array;
     
@@ -154,7 +154,7 @@ public class GenericArray<T> {
 境界型パラメータで算術演算を直接実行しようとした例です。
 
 ```java
-// ❌ 境界型パラメータの誤用
+// × 境界型パラメータの誤用
 public class NumberContainer<T extends Number> {
     private T value;
     
@@ -178,7 +178,7 @@ error: bad operand types for binary operator '*'
 コンパイルできる全文：[chapter10-code/NumberContainer/](chapter10-code/NumberContainer/)
 
 ```java
-// ✅ 適切な境界型パラメータ
+// ○ 適切な境界型パラメータ
 public class NumberContainer<T extends Number> {
     private T value;
     
@@ -197,7 +197,7 @@ public class NumberContainer<T extends Number> {
 var型推論を不適切に使用した例です。
 
 ```java
-// ❌ var型推論の誤用
+// × var型推論の誤用
 var list = new ArrayList(); // Raw typeになる
 var value = null; // コンパイルエラー
 ```
@@ -213,7 +213,7 @@ error: cannot infer type for local variable value
 var型推論の正しい使用方法です。
 
 ```java
-// ✅ 適切なvar使用例
+// ○ 適切なvar使用例
 var list = new ArrayList<String>(); // 型パラメータを明示
 String value = null; // 明示的な型宣言
 ```

@@ -438,14 +438,14 @@ public class RecordsAndDOPSimple {
         // パフォーマンス比較
         PerformanceComparison.comparePerformance();
         
-        IO.println("\n🎯 Key Insights:");
+        IO.println("\nKey Insights:");
         IO.println("✓ Records eliminate boilerplate code (70-90% reduction)");
         IO.println("✓ Data-Oriented Programming separates data from logic");
         IO.println("✓ Records are immutable by default, promoting thread safety");
         IO.println("✓ Compact constructors enable validation");
         IO.println("✓ 'with' methods provide functional-style updates");
         
-        IO.println("\n⚡ Best Practices:");
+        IO.println("\nBest Practices:");
         IO.println("• Use compact constructors for validation");
         IO.println("• Keep business logic in separate service classes");
         IO.println("• Implement 'with' methods for immutable updates");
