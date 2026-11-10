@@ -1,15 +1,11 @@
 classDiagram
     direction LR
 
-    class Iterable~T~ {
-        <<interface>>
-        +iterator() Iterator~T~
-    }
 
     class Collection~E~ {
         <<interface>>
+        +iterator() Iterator
         +size() int
-        +contains(Object) boolean
         +add(E) boolean
         +remove(Object) boolean
     }
@@ -37,7 +33,6 @@ classDiagram
         +put(K, V) V
         +get(Object) V
         +keySet() Set~K~
-        +values() Collection~V~
     }
 
     class ArrayList~E~ {
@@ -59,7 +54,6 @@ classDiagram
         赤黒木（キーでソート）
     }
 
-    Iterable <|-- Collection
     Collection <|-- List
     Collection <|-- Set
     Collection <|-- Queue
@@ -71,4 +65,4 @@ classDiagram
     Map <|.. HashMap
     Map <|.. TreeMap
 
-    note for Map "キーと値のペアを格納<br/>Collectionとは独立した階層"
+    note for Map "Collectionとは<br/>別の階層"
