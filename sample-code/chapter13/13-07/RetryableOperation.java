@@ -19,8 +19,8 @@ public class RetryableOperation {
                 }
                 
                 lastException = e;
-                System.out.printf("試行 %d/%d 失敗: %s%n", 
-                    attempt, MAX_RETRY_COUNT, e.getMessage());
+                IO.println("試行 %d/%d 失敗: %s".formatted(
+                    attempt, MAX_RETRY_COUNT, e.getMessage()));
                 
                 if (attempt < MAX_RETRY_COUNT) {
                     try {
@@ -47,7 +47,7 @@ public class RetryableOperation {
                 return "成功";
             }, IOException.class);
             
-            System.out.println("結果: " + result);
+            IO.println("結果: " + result);
         } catch (Exception e) {
             System.err.println("最終的に失敗: " + e.getMessage());
         }

@@ -38,7 +38,7 @@ public class MultiResourceExample {
                 
                 ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM users");
                 if (rs.next()) {
-                    System.out.println("ユーザー数: " + rs.getInt(1));
+                    IO.println("ユーザー数: " + rs.getInt(1));
                 }
                 
                 conn.commit();

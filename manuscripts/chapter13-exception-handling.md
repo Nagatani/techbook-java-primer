@@ -64,15 +64,15 @@ public class TryCatchSample {
     public static void main(String[] args) {
         try {
             String str = null;
-            System.out.println(str.length()); // ここでNullPointerExceptionが発生
-            System.out.println("この行は実行されません。");
+            IO.println(str.length()); // ここでNullPointerExceptionが発生
+            IO.println("この行は実行されません。");
         } catch (NullPointerException e) {
             System.err.println("NullPointerExceptionをキャッチしました！");
             e.printStackTrace(); // 開発中はスタックトレースを出力するとデバッグに役立つ
         } catch (Exception e) {
             System.err.println("その他の予期せぬ例外をキャッチしました。");
         }
-        System.out.println("プログラムは処理を継続しています。");
+        IO.println("プログラムは処理を継続しています。");
     }
 }
 ```
@@ -100,7 +100,7 @@ try {
     // 例外発生時の処理
 } finally {
     // 例外の有無にかかわらず、必ず実行される後片付け処理
-    System.out.println("finallyブロックが実行されました。");
+    IO.println("finallyブロックが実行されました。");
 }
 ```
 
@@ -119,7 +119,7 @@ public class TryWithResourcesSample {
     public static void readFile(String path) {
         // try()の括弧内でリソースを初期化する
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            System.out.println(br.readLine());
+            IO.println(br.readLine());
         } catch (IOException e) {
             System.err.println("ファイル読み込みエラー: " + e.getMessage());
         }
@@ -319,8 +319,8 @@ public class RetryableOperation {
                 }
                 
                 lastException = e;
-                System.out.printf("試行 %d/%d 失敗: %s%n", 
-                    attempt, MAX_RETRY_COUNT, e.getMessage());
+                IO.println("試行 %d/%d 失敗: %s".formatted(
+                    attempt, MAX_RETRY_COUNT, e.getMessage()));
                 
                 // ...
             }

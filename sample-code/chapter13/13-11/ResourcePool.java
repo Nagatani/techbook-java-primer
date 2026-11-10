@@ -61,7 +61,7 @@ public class ResourcePool implements AutoCloseable {
         }
         
         void cleanup() {
-            System.out.println("リソース " + id + " をクリーンアップしました");
+            IO.println("リソース " + id + " をクリーンアップしました");
         }
     }
 }

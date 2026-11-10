@@ -21,7 +21,7 @@ public class TransferService {
         
         // logger.info("送金処理開始: {} -> {}, 金額: {}", 
         //     fromAccountId, toAccountId, amount);
-        System.out.println("送金処理開始: " + fromAccountId + " -> " + toAccountId + ", 金額: " + amount);
+        IO.println("送金処理開始: " + fromAccountId + " -> " + toAccountId + ", 金額: " + amount);
         
         try {
             // 入力検証
@@ -53,7 +53,7 @@ public class TransferService {
                 toAccount.getBalance());
             
             // logger.info("送金処理完了: {}", result);
-            System.out.println("送金処理完了: " + result);
+            IO.println("送金処理完了: " + result);
             return result;
             
         } catch (BusinessException e) {

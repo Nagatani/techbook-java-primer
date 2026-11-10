@@ -63,6 +63,6 @@ public class ExceptionLogging {
     }
     
     private void performBusinessLogic(User user) throws ValidationException {
-        System.out.println(user.id() + " の処理を実行しました");
+        IO.println(user.id() + " の処理を実行しました");
     }
 }
