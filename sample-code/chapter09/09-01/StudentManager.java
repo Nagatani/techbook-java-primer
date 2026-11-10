@@ -10,7 +10,7 @@ public class StudentManager {
         // 配列の内容を表示
         for (int i = 0; i < students.length; i++) {
             if (students[i] != null) {
-                System.out.println("学生" + (i + 1) + ": " + students[i]);
+                IO.println("学生" + (i + 1) + ": " + students[i]);
             }
         }
     }

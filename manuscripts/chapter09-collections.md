@@ -41,7 +41,7 @@ public class StudentManager {
         // 配列の内容を表示
         for (int i = 0; i < students.length; i++) {
             if (students[i] != null) {
-                System.out.println("学生" + (i + 1) + ": " + students[i]);
+                IO.println("学生" + (i + 1) + ": " + students[i]);
             }
         }
     }
@@ -163,12 +163,12 @@ public class StudentManagerImproved {
         students.remove("鈴木");  // 簡単に削除
         
         // 便利なメソッド
-        System.out.println("学生数: " + students.size());
-        System.out.println("田中さんは在籍？ " + students.contains("田中"));
+        IO.println("学生数: " + students.size());
+        IO.println("田中さんは在籍？ " + students.contains("田中"));
         
         // 拡張for文もそのまま使える
         for (String student : students) {
-            System.out.println(student);
+            IO.println(student);
         }
     }
 }
@@ -268,24 +268,24 @@ public class ArrayListExample {
         fruits.add("みかん");
         fruits.add("りんご"); // 重複も許可される
 
-        System.out.println("現在のリスト: " + fruits);
+        IO.println("現在のリスト: " + fruits);
 
         // 2. 要素の取得 (get)
         String secondFruit = fruits.get(1); // インデックスは0から始まる
-        System.out.println("2番目の果物: " + secondFruit);
+        IO.println("2番目の果物: " + secondFruit);
 
         // 3. 要素数の取得 (size)
-        System.out.println("果物の数: " + fruits.size());
+        IO.println("果物の数: " + fruits.size());
 
         // 4. 要素の削除 (remove)
         fruits.remove("バナナ"); // 値で削除
         fruits.remove(0);      // インデックスで削除
-        System.out.println("削除後のリスト: " + fruits);
+        IO.println("削除後のリスト: " + fruits);
 
         // 5. 全要素の反復処理 (for-each)
-        System.out.println("残りの果物:");
+        IO.println("残りの果物:");
         for (String fruit : fruits) {
-            System.out.println("- " + fruit);
+            IO.println("- " + fruit);
         }
     }
 }
@@ -392,11 +392,11 @@ public class HashSetExample {
         tags.add("プログラミング");
         boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
 
-        System.out.println("タグ一覧: " + tags); // 順序は保証されない
+        IO.println("タグ一覧: " + tags); // 順序は保証されない
 
         // 2. 要素の存在確認 (contains)
         if (tags.contains("プログラミング")) {
-            System.out.println("「プログラミング」タグは存在します。");
+            IO.println("「プログラミング」タグは存在します。");
         }
     }
 }
@@ -496,18 +496,18 @@ public class HashMapExample {
         scores.put("Bob", 92);
         scores.put("Alice", 95); // 同じキーでputすると、値が上書きされる
 
-        System.out.println("全員の点数: " + scores);
+        IO.println("全員の点数: " + scores);
 
         // 2. 要素の取得 (get)
         int bobScore = scores.get("Bob");
-        System.out.println("Bobの点数: " + bobScore);
+        IO.println("Bobの点数: " + bobScore);
 
         // 3. 全要素の反復処理 (entrySetとfor-each)
-        System.out.println("--- 点数一覧 ---");
+        IO.println("--- 点数一覧 ---");
         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
             String name = entry.getKey();
             int score = entry.getValue();
-            System.out.println(name + ": " + score + "点");
+            IO.println(name + ": " + score + "点");
         }
     }
 }
@@ -588,12 +588,12 @@ boolean hasValue = map.containsValue("日本");
 
 // すべてのキー・値を処理：キーセットでの走査
 for (String key : map.keySet()) {
-    System.out.println(key + ": " + map.get(key));
+    IO.println(key + ": " + map.get(key));
 }
 
 // エントリーセットで処理（より効率的）：キーと値を同時取得
 for (Map.Entry<String, String> entry : map.entrySet()) {
-    System.out.println(entry.getKey() + ": " + entry.getValue());
+    IO.println(entry.getKey() + ": " + entry.getValue());
 }
 ```
 
@@ -619,7 +619,7 @@ List<String> list = Arrays.asList("A", "B", "C");
 Iterator<String> iter = list.iterator();
 while (iter.hasNext()) {
     String element = iter.next();
-    System.out.println(element);
+    IO.println(element);
 }
 
 // 走査中の安全な削除：ConcurrentModificationExceptionを回避
@@ -651,7 +651,7 @@ while (iter2.hasNext()) {
 ```java
 // より簡潔な記述：もっとも一般的なコレクション走査方法
 for (String element : list) {
-    System.out.println(element);
+    IO.println(element);
 }
 
 // ただし、走査中の削除はできない

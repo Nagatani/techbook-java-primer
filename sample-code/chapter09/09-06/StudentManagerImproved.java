@@ -18,12 +18,12 @@ public class StudentManagerImproved {
         students.remove("鈴木");  // 簡単に削除
         
         // 便利なメソッド
-        System.out.println("学生数: " + students.size());
-        System.out.println("田中さんは在籍？ " + students.contains("田中"));
+        IO.println("学生数: " + students.size());
+        IO.println("田中さんは在籍？ " + students.contains("田中"));
         
         // 拡張for文もそのまま使える
         for (String student : students) {
-            System.out.println(student);
+            IO.println(student);
         }
     }
 }

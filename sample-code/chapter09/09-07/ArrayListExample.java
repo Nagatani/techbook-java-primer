@@ -13,24 +13,24 @@ public class ArrayListExample {
         fruits.add("みかん");
         fruits.add("りんご"); // 重複も許可される
 
-        System.out.println("現在のリスト: " + fruits);
+        IO.println("現在のリスト: " + fruits);
 
         // 2. 要素の取得 (get)
         String secondFruit = fruits.get(1); // インデックスは0から始まる
-        System.out.println("2番目の果物: " + secondFruit);
+        IO.println("2番目の果物: " + secondFruit);
 
         // 3. 要素数の取得 (size)
-        System.out.println("果物の数: " + fruits.size());
+        IO.println("果物の数: " + fruits.size());
 
         // 4. 要素の削除 (remove)
         fruits.remove("バナナ"); // 値で削除
         fruits.remove(0);      // インデックスで削除
-        System.out.println("削除後のリスト: " + fruits);
+        IO.println("削除後のリスト: " + fruits);
 
         // 5. 全要素の反復処理 (for-each)
-        System.out.println("残りの果物:");
+        IO.println("残りの果物:");
         for (String fruit : fruits) {
-            System.out.println("- " + fruit);
+            IO.println("- " + fruit);
         }
     }
 }

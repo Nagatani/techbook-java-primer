@@ -10,11 +10,11 @@ public class HashSetExample {
         tags.add("プログラミング");
         boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
 
-        System.out.println("タグ一覧: " + tags); // 順序は保証されない
+        IO.println("タグ一覧: " + tags); // 順序は保証されない
 
         // 2. 要素の存在確認 (contains)
         if (tags.contains("プログラミング")) {
-            System.out.println("「プログラミング」タグは存在します。");
+            IO.println("「プログラミング」タグは存在します。");
         }
     }
 }
