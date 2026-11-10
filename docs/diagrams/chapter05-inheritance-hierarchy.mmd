@@ -1,46 +1,26 @@
 classDiagram
     class PaymentProcessor {
-        <<abstract>>
-        -String transactionId
-        -double amount
-        -LocalDateTime timestamp
-        +processPayment() void*
-        +validateAmount() boolean
-        +generateTransactionId() String
+        #String transactionId
+        #BigDecimal amount
+        #String currency
+        +processPayment() PaymentResult
+        #validatePaymentSpecific() boolean
+        #callExternalAPI() String
+        #logTransaction(String authCode) void
     }
-    
     class CreditCardPayment {
         -String cardNumber
         -String cvv
-        -String expiryDate
-        +processPayment() void
-        +validateCard() boolean
+        #validatePaymentSpecific() boolean
+        #callExternalAPI() String
     }
-    
-    class DebitCardPayment {
-        -String cardNumber
-        -String pin
-        +processPayment() void
-        +checkBalance() boolean
+    class PayPalPayment {
+        -String email
+        -String password
+        #validatePaymentSpecific() boolean
+        #callExternalAPI() String
+        #logTransaction(String authCode) void
     }
-    
-    class DigitalWalletPayment {
-        -String walletId
-        -String authToken
-        +processPayment() void
-        +authenticateWallet() boolean
-    }
-    
-    class BankTransferPayment {
-        -String accountNumber
-        -String routingNumber
-        +processPayment() void
-        +verifyAccount() boolean
-    }
-    
     PaymentProcessor <|-- CreditCardPayment
-    PaymentProcessor <|-- DebitCardPayment
-    PaymentProcessor <|-- DigitalWalletPayment
-    PaymentProcessor <|-- BankTransferPayment
-    
-    note for PaymentProcessor "抽象基底クラス<br/>共通の処理とデータを定義"
+    PaymentProcessor <|-- PayPalPayment
+    note for PaymentProcessor "具象クラス（abstractではない）<br/>processPayment()はfinalで<br/>処理の流れを固定する"
