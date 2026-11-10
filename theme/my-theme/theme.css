@@ -598,6 +598,12 @@ p {
   hyphens: auto;
 }
 
+/* 本の中へのリンク（目次など）は下線を引かない。外部URLは脚注に出るのでそのまま */
+a:not([href^='http']) {
+  color: inherit;
+  text-decoration: none;
+}
+
 /* 脚注は段落の字下げを引き継がない（URLから自動で作る脚注も含む） */
 .footnote,
 a[href^='http']::before {
@@ -629,9 +635,11 @@ ol {
   line-height: 20Q;
 }
 
-/* リスト項目の間隔（項目の切れ目が分かる程度） */
+/* リスト項目の間隔（項目の切れ目が分かる程度）
+   項目は左寄せにする（両端揃えだと、ページ境界で分かれた行や短い行でコードの空白が引き伸ばされる） */
 li {
   margin-block: 0.15lh;
+  text-align: start;
 }
 
 /* ネストしたリスト */
