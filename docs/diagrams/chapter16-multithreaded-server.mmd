@@ -1,0 +1,20 @@
+flowchart LR
+    c1["クライアント1"]
+    c2["クライアント2"]
+    c3["クライアント3"]
+
+    subgraph server["MultiThreadedServer"]
+        acc["メインスレッド<br/>accept() で接続を待つ"]
+        pool["スレッドプール<br/>（ExecutorService）"]
+        h1["スレッド: ClientHandler<br/>クライアント1と通信"]
+        h2["スレッド: ClientHandler<br/>クライアント2と通信"]
+        h3["スレッド: ClientHandler<br/>クライアント3と通信"]
+    end
+
+    c1 --> acc
+    c2 --> acc
+    c3 --> acc
+    acc -->|"接続ごとに<br/>処理を渡す"| pool
+    pool --> h1
+    pool --> h2
+    pool --> h3

@@ -54,7 +54,13 @@
 
 ## ソケットプログラミングの基礎
 
+TCPの通信では、サーバーが`ServerSocket`で接続を待ち、クライアントが`Socket`で接続します。接続が確立すると、両者はそれぞれの`Socket`から得たストリームでデータを送り合います。この節のクライアント（サンプルコード16-1）とサーバー（サンプルコード16-2）のやりとりは、次の図の順に進みます。
 
+<div class="figure">
+
+![TCPのクライアントとサーバーのやりとり](images/diagrams/chapter16-tcp-socket.svg)
+
+</div>
 
 ### 基本的なTCPクライアント
 
@@ -176,6 +182,12 @@ public class SimpleTCPServer {
 ### スレッドベースのサーバー
 
 以下のコードは、マルチスレッドに対応したTCPサーバーの実装例です。ExecutorServiceを使用してスレッドプールを管理し、各クライアントの接続を独立したスレッドで処理します。このアプローチにより、複数のクライアントからの同時接続を効率的に処理できます。サーバーは簡単なプロトコルを実装しており、ECHO、TIME、QUITなどのコマンドに応答します。
+
+<div class="figure">
+
+![接続ごとにスレッドで処理するサーバーの構成](images/diagrams/chapter16-multithreaded-server.svg)
+
+</div>
 
 <span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜61、70〜72行目）</span>
 

@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant C as クライアント<br/>（SimpleTCPClient）
+    participant S as サーバー<br/>（SimpleTCPServer）
+
+    Note over S: new ServerSocket(8080)<br/>accept() で接続を待つ
+    C->>S: new Socket("localhost", 8080) で接続を要求
+    Note over C,S: 接続が確立する<br/>accept() がクライアント用のSocketを返す
+    C->>S: out.println("Hello, Server!")
+    Note over S: in.readLine() で受け取る
+    S->>C: out.println("Echo: Hello, Server!")
+    Note over C: in.readLine() で受け取る
+    C->>S: close()（try-with-resourcesで閉じる）
+    Note over S: 次のクライアントを accept() で待つ
