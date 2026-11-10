@@ -42,7 +42,7 @@ const markdownFiles = [
 const { documentProcessor } = require('./scripts/vfm-section-label.js');
 
 module.exports = {
-  title: '大学2年生のためのプログラミング入門 オブジェクト指向言語 Java',
+  title: '大学2年生のための実践的プログラミング入門 オブジェクト指向言語 Java',
   author: 'Hidehiro Nagatani',
   language: 'ja',
   theme: './theme/my-theme',

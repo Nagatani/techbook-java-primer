@@ -2,7 +2,7 @@
 
 ## 奥付
 
-<p class="colophon-title">大学2年生のためのプログラミング入門<br>オブジェクト指向言語 Java</p>
+<p class="colophon-title">大学2年生のための実践的プログラミング入門<br>オブジェクト指向言語 Java</p>
 
 <dl>
 <dt>著者</dt>

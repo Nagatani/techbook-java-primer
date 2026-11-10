@@ -1,7 +1,7 @@
 # Techbook Java Primer プロジェクト概要
 
 ## プロジェクト名
-大学2年生のためのプログラミング入門 オブジェクト指向言語 Java
+大学2年生のための実践的プログラミング入門 オブジェクト指向言語 Java
 
 ## 著者
 Hidehiro Nagatani
