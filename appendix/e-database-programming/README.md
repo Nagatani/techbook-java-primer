@@ -233,12 +233,12 @@ public class BasicJDBCExample {
         
         // try-with-resourcesで自動的にリソースをクローズ
         try (Connection conn = DriverManager.getConnection(url, username, password)) {
-            System.out.println("データベースに接続しました");
+            IO.println("データベースに接続しました");
             
             // データベースのメタデータを取得
             DatabaseMetaData metaData = conn.getMetaData();
-            System.out.println("データベース製品: " + metaData.getDatabaseProductName());
-            System.out.println("バージョン: " + metaData.getDatabaseProductVersion());
+            IO.println("データベース製品: " + metaData.getDatabaseProductName());
+            IO.println("バージョン: " + metaData.getDatabaseProductVersion());
             
         } catch (SQLException e) {
             System.err.println("データベース接続エラー: " + e.getMessage());
@@ -269,7 +269,7 @@ public class CreateTableExample {
     public static void createTable(Connection conn) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(CREATE_TABLE_SQL);
-            System.out.println("テーブルを作成しました");
+            IO.println("テーブルを作成しました");
         }
     }
 }
@@ -291,7 +291,7 @@ public class InsertExample {
             pstmt.setString(2, email);
             
             int rowsAffected = pstmt.executeUpdate();
-            System.out.println(rowsAffected + "行を挿入しました");
+            IO.println(rowsAffected + "行を挿入しました");
         }
     }
 }
@@ -316,8 +316,8 @@ public class SelectExample {
                 String email = rs.getString("email");
                 Timestamp createdAt = rs.getTimestamp("created_at");
                 
-                System.out.printf("ID: %d, Username: %s, Email: %s, Created: %s%n",
-                    id, username, email, createdAt);
+                IO.println("ID: %d, Username: %s, Email: %s, Created: %s".formatted(
+                    id, username, email, createdAt));
             }
         }
     }
@@ -359,9 +359,9 @@ public class UpdateExample {
             
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("ユーザー情報を更新しました");
+                IO.println("ユーザー情報を更新しました");
             } else {
-                System.out.println("該当するユーザーが見つかりませんでした");
+                IO.println("該当するユーザーが見つかりませんでした");
             }
         }
     }
@@ -382,9 +382,9 @@ public class DeleteExample {
             
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("ユーザーを削除しました");
+                IO.println("ユーザーを削除しました");
             } else {
-                System.out.println("該当するユーザーが見つかりませんでした");
+                IO.println("該当するユーザーが見つかりませんでした");
             }
         }
     }
@@ -411,9 +411,9 @@ public class VulnerableExample {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
-                System.out.println("ログイン成功");
+                IO.println("ログイン成功");
             } else {
-                System.out.println("ログイン失敗");
+                IO.println("ログイン失敗");
             }
         }
     }
@@ -470,7 +470,7 @@ public class TransactionExample {
             
             // すべて成功したらコミット
             conn.commit();
-            System.out.println("送金が完了しました");
+            IO.println("送金が完了しました");
             
         } catch (SQLException e) {
             // エラーが発生したらロールバック
@@ -738,23 +738,23 @@ public class DaoExample {
             // ユーザーを作成
             User newUser = new User("tanaka", "tanaka@example.com");
             User createdUser = userDao.create(newUser);
-            System.out.println("作成されたユーザー: " + createdUser);
+            IO.println("作成されたユーザー: " + createdUser);
             
             // ユーザーを検索
             Optional<User> foundUser = userDao.findById(createdUser.getId());
             foundUser.ifPresent(user -> 
-                System.out.println("検索結果: " + user));
+                IO.println("検索結果: " + user));
             
             // ユーザー情報を更新
             createdUser.setEmail("tanaka.new@example.com");
             if (userDao.update(createdUser)) {
-                System.out.println("ユーザー情報を更新しました");
+                IO.println("ユーザー情報を更新しました");
             }
             
             // すべてのユーザーを表示
-            System.out.println("\nすべてのユーザー:");
+            IO.println("\nすべてのユーザー:");
             List<User> allUsers = userDao.findAll();
-            allUsers.forEach(System.out::println);
+            allUsers.forEach(IO::println);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -829,7 +829,7 @@ public class PooledDaoExample {
                     userDao.create(user);
                 }
                 
-                System.out.println("100人のユーザーを作成しました");
+                IO.println("100人のユーザーを作成しました");
             }
             
         } catch (SQLException e) {
@@ -875,7 +875,7 @@ public class BatchProcessingExample {
             pstmt.executeBatch();
             conn.commit();
             
-            System.out.println(users.size() + "件のデータを挿入しました");
+            IO.println(users.size() + "件のデータを挿入しました");
             
         } catch (SQLException e) {
             conn.rollback();
