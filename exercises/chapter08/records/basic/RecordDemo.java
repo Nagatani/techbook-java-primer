@@ -11,7 +11,7 @@ public class RecordDemo {
      * Pointレコードのデモ
      */
     public static void demonstratePoint() {
-        System.out.println("=== Pointレコードのデモ ===");
+        IO.println("=== Pointレコードのデモ ===");
         
         // TODO: Pointのインスタンスを作成してテスト
         // - 原点からの距離
@@ -24,7 +24,7 @@ public class RecordDemo {
      * Personレコードのデモ
      */
     public static void demonstratePerson() {
-        System.out.println("\n=== Personレコードのデモ ===");
+        IO.println("\n=== Personレコードのデモ ===");
         
         // TODO: Personのインスタンスを作成してテスト
         // - 年齢計算
@@ -37,7 +37,7 @@ public class RecordDemo {
      * DTOパターンのデモ
      */
     public static void demonstrateDTO() {
-        System.out.println("\n=== DTOパターンのデモ ===");
+        IO.println("\n=== DTOパターンのデモ ===");
         
         // エンティティからDTOへの変換
         ProductEntity entity = new ProductEntity(1L, "Laptop", 120000.0, "Electronics");
@@ -52,7 +52,7 @@ public class RecordDemo {
      * ネストされたRecordのデモ
      */
     public static void demonstrateNestedRecords() {
-        System.out.println("\n=== ネストされたRecordのデモ ===");
+        IO.println("\n=== ネストされたRecordのデモ ===");
         
         // TODO: AddressとCustomerのインスタンスを作成
         // - ビルダーパターンの使用
@@ -64,7 +64,7 @@ public class RecordDemo {
      * Recordのコレクション操作のデモ
      */
     public static void demonstrateRecordCollections() {
-        System.out.println("\n=== Recordのコレクション操作 ===");
+        IO.println("\n=== Recordのコレクション操作 ===");
         
         // TODO: 複数のPointを作成してコレクション操作
         // - 原点からの距離でソート
