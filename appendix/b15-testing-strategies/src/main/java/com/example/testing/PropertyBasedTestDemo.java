@@ -42,7 +42,7 @@ public class PropertyBasedTestDemo {
                     );
                 }
             }
-            System.out.println("✓ Property verified over " + iterations + " test cases");
+            IO.println("✓ Property verified over " + iterations + " test cases");
         }
     }
     
@@ -101,12 +101,12 @@ public class PropertyBasedTestDemo {
      * ソートアルゴリズムのProperty-based testing
      */
     public static void testSortingProperties() {
-        System.out.println("=== Sorting Algorithm Property-based Testing ===");
+        IO.println("=== Sorting Algorithm Property-based Testing ===");
         
         PropertyTester tester = new PropertyTester().withIterations(1000);
         
         // 性質1: ソート後の長さは変わらない
-        System.out.println("\nProperty 1: Sorting preserves length");
+        IO.println("\nProperty 1: Sorting preserves length");
         tester.forAll(
             Generators.lists(Generators.integers(1, 1000), 100),
             list -> {
@@ -117,7 +117,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質2: ソートは冪等性を持つ（何度ソートしても結果は同じ）
-        System.out.println("\nProperty 2: Sorting is idempotent");
+        IO.println("\nProperty 2: Sorting is idempotent");
         tester.forAll(
             Generators.lists(Generators.integers(1, 1000), 50),
             list -> {
@@ -132,7 +132,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質3: ソート結果は順序が正しい
-        System.out.println("\nProperty 3: Sorted list is in order");
+        IO.println("\nProperty 3: Sorted list is in order");
         tester.forAll(
             Generators.lists(Generators.integers(1, 1000), 50),
             list -> {
@@ -149,7 +149,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質4: ソート前後で要素は保存される（並び替えのみ）
-        System.out.println("\nProperty 4: Sorting preserves elements");
+        IO.println("\nProperty 4: Sorting preserves elements");
         tester.forAll(
             Generators.lists(Generators.integers(1, 100), 30),
             list -> {
@@ -170,12 +170,12 @@ public class PropertyBasedTestDemo {
      * 文字列操作のProperty-based testing
      */
     public static void testStringProperties() {
-        System.out.println("\n=== String Operation Property-based Testing ===");
+        IO.println("\n=== String Operation Property-based Testing ===");
         
         PropertyTester tester = new PropertyTester().withIterations(500);
         
         // 性質1: reverse(reverse(s)) = s（逆転の逆転は元に戻る）
-        System.out.println("\nProperty 1: Reverse is involution");
+        IO.println("\nProperty 1: Reverse is involution");
         tester.forAll(
             Generators.strings(0, 50),
             str -> {
@@ -186,7 +186,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質2: concat(s1, s2).length = s1.length + s2.length
-        System.out.println("\nProperty 2: Concatenation preserves total length");
+        IO.println("\nProperty 2: Concatenation preserves total length");
         tester.forAll(
             random -> Arrays.asList(
                 Generators.strings(0, 25).generate(random),
@@ -201,7 +201,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質3: substring操作の一貫性
-        System.out.println("\nProperty 3: Substring consistency");
+        IO.println("\nProperty 3: Substring consistency");
         tester.forAll(
             random -> {
                 String str = Generators.strings(1, 20).generate(random);
@@ -237,12 +237,12 @@ public class PropertyBasedTestDemo {
      * データ構造の不変条件をテスト
      */
     public static void testDataStructureInvariants() {
-        System.out.println("\n=== Data Structure Invariant Testing ===");
+        IO.println("\n=== Data Structure Invariant Testing ===");
         
         PropertyTester tester = new PropertyTester().withIterations(200);
         
         // 性質1: Stack操作の一貫性
-        System.out.println("\nProperty 1: Stack LIFO behavior");
+        IO.println("\nProperty 1: Stack LIFO behavior");
         tester.forAll(
             Generators.lists(Generators.integers(1, 1000), 20),
             items -> {
@@ -266,7 +266,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質2: Set操作の一意性
-        System.out.println("\nProperty 2: Set uniqueness invariant");
+        IO.println("\nProperty 2: Set uniqueness invariant");
         tester.forAll(
             Generators.lists(Generators.integers(1, 100), 50),
             items -> {
@@ -278,7 +278,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質3: Map操作の一貫性
-        System.out.println("\nProperty 3: Map key-value consistency");
+        IO.println("\nProperty 3: Map key-value consistency");
         tester.forAll(
             Generators.lists(
                 random -> new AbstractMap.SimpleEntry<>(
@@ -308,12 +308,12 @@ public class PropertyBasedTestDemo {
      * 算術演算の性質をテスト
      */
     public static void testArithmeticProperties() {
-        System.out.println("\n=== Arithmetic Operation Property-based Testing ===");
+        IO.println("\n=== Arithmetic Operation Property-based Testing ===");
         
         PropertyTester tester = new PropertyTester().withIterations(1000);
         
         // 性質1: 加法の交換法則
-        System.out.println("\nProperty 1: Addition is commutative");
+        IO.println("\nProperty 1: Addition is commutative");
         tester.forAll(
             random -> Arrays.asList(
                 Generators.integers(-1000, 1000).generate(random),
@@ -327,7 +327,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質2: 加法の結合法則
-        System.out.println("\nProperty 2: Addition is associative");
+        IO.println("\nProperty 2: Addition is associative");
         tester.forAll(
             random -> Arrays.asList(
                 Generators.integers(-300, 300).generate(random),
@@ -343,7 +343,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質3: 乗法の分配法則
-        System.out.println("\nProperty 3: Multiplication distributes over addition");
+        IO.println("\nProperty 3: Multiplication distributes over addition");
         tester.forAll(
             random -> Arrays.asList(
                 Generators.integers(-100, 100).generate(random),
@@ -359,7 +359,7 @@ public class PropertyBasedTestDemo {
         );
         
         // 性質4: 除算と乗算の逆関係（ゼロ除算を除く）
-        System.out.println("\nProperty 4: Division is inverse of multiplication");
+        IO.println("\nProperty 4: Division is inverse of multiplication");
         tester.forAll(
             random -> {
                 double a = Generators.doubles(-1000.0, 1000.0).generate(random);
@@ -384,11 +384,11 @@ public class PropertyBasedTestDemo {
      * 状態ベースのProperty Testing
      */
     public static void testStatefulProperties() {
-        System.out.println("\n=== Stateful Property-based Testing ===");
+        IO.println("\n=== Stateful Property-based Testing ===");
         
         PropertyTester tester = new PropertyTester().withIterations(100);
         
-        System.out.println("\nProperty: Bank account balance consistency");
+        IO.println("\nProperty: Bank account balance consistency");
         tester.forAll(
             random -> {
                 // ランダムな操作シーケンスを生成
@@ -499,8 +499,8 @@ public class PropertyBasedTestDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Property-based Testing Demonstration");
-        System.out.println("====================================");
+        IO.println("Property-based Testing Demonstration");
+        IO.println("====================================");
         
         try {
             testSortingProperties();
@@ -509,14 +509,14 @@ public class PropertyBasedTestDemo {
             testArithmeticProperties();
             testStatefulProperties();
             
-            System.out.println("\n" + "=".repeat(50));
-            System.out.println("🎉 All property-based tests passed!");
-            System.out.println("\nProperty-based Testing Benefits:");
-            System.out.println("✓ Discovers edge cases that manual tests might miss");
-            System.out.println("✓ Tests fundamental properties rather than specific examples");
-            System.out.println("✓ Provides higher confidence through many test cases");
-            System.out.println("✓ Finds bugs that traditional unit tests overlook");
-            System.out.println("✓ Documents system behavior through properties");
+            IO.println("\n" + "=".repeat(50));
+            IO.println("🎉 All property-based tests passed!");
+            IO.println("\nProperty-based Testing Benefits:");
+            IO.println("✓ Discovers edge cases that manual tests might miss");
+            IO.println("✓ Tests fundamental properties rather than specific examples");
+            IO.println("✓ Provides higher confidence through many test cases");
+            IO.println("✓ Finds bugs that traditional unit tests overlook");
+            IO.println("✓ Documents system behavior through properties");
             
         } catch (PropertyViolationException e) {
             System.err.println("❌ Property-based test failed: " + e.getMessage());

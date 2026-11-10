@@ -305,21 +305,21 @@ public class TestContainersDemo {
             );
             
             userRepository = new UserRepository(connection);
-            System.out.println("✓ Test database initialized");
+            IO.println("✓ Test database initialized");
         }
         
         public void tearDown() throws SQLException {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
-            System.out.println("✓ Test database cleaned up");
+            IO.println("✓ Test database cleaned up");
         }
         
         /**
          * 基本的なCRUD操作のテスト
          */
         public void testBasicCrudOperations() {
-            System.out.println("\n=== Basic CRUD Operations Test ===");
+            IO.println("\n=== Basic CRUD Operations Test ===");
             
             // Create
             User user = new User("johndoe", "john@example.com", "John", "Doe");
@@ -327,19 +327,19 @@ public class TestContainersDemo {
             
             assertNotNull(savedUser.getId(), "User ID should be generated");
             assertEquals("johndoe", savedUser.getUsername(), "Username should match");
-            System.out.println("✓ User created: " + savedUser);
+            IO.println("✓ User created: " + savedUser);
             
             // Read
             Optional<User> foundUser = userRepository.findById(savedUser.getId());
             assertTrue(foundUser.isPresent(), "User should be found by ID");
             assertEquals("john@example.com", foundUser.get().getEmail(), "Email should match");
-            System.out.println("✓ User found by ID: " + foundUser.get());
+            IO.println("✓ User found by ID: " + foundUser.get());
             
             // Update
             foundUser.get().setEmail("john.doe@example.com");
             User updatedUser = userRepository.save(foundUser.get());
             assertEquals("john.doe@example.com", updatedUser.getEmail(), "Email should be updated");
-            System.out.println("✓ User updated: " + updatedUser);
+            IO.println("✓ User updated: " + updatedUser);
             
             // Delete
             boolean deleted = userRepository.deleteById(savedUser.getId());
@@ -347,19 +347,19 @@ public class TestContainersDemo {
             
             Optional<User> deletedUser = userRepository.findById(savedUser.getId());
             assertFalse(deletedUser.isPresent(), "User should not be found after deletion");
-            System.out.println("✓ User deleted successfully");
+            IO.println("✓ User deleted successfully");
         }
         
         /**
          * 一意制約のテスト
          */
         public void testUniqueConstraints() {
-            System.out.println("\n=== Unique Constraints Test ===");
+            IO.println("\n=== Unique Constraints Test ===");
             
             // 最初のユーザーを作成
             User user1 = new User("uniqueuser", "unique@example.com", "Unique", "User");
             userRepository.save(user1);
-            System.out.println("✓ First user created: " + user1.getUsername());
+            IO.println("✓ First user created: " + user1.getUsername());
             
             // 同じユーザー名で作成を試行
             try {
@@ -367,7 +367,7 @@ public class TestContainersDemo {
                 userRepository.save(user2);
                 fail("Should have thrown exception for duplicate username");
             } catch (RuntimeException e) {
-                System.out.println("✓ Duplicate username rejected: " + e.getMessage());
+                IO.println("✓ Duplicate username rejected: " + e.getMessage());
             }
             
             // 同じメールアドレスで作成を試行
@@ -376,7 +376,7 @@ public class TestContainersDemo {
                 userRepository.save(user3);
                 fail("Should have thrown exception for duplicate email");
             } catch (RuntimeException e) {
-                System.out.println("✓ Duplicate email rejected: " + e.getMessage());
+                IO.println("✓ Duplicate email rejected: " + e.getMessage());
             }
         }
         
@@ -384,7 +384,7 @@ public class TestContainersDemo {
          * 複雑なクエリのテスト
          */
         public void testComplexQueries() {
-            System.out.println("\n=== Complex Queries Test ===");
+            IO.println("\n=== Complex Queries Test ===");
             
             // テストデータの作成
             List<User> testUsers = Arrays.asList(
@@ -397,21 +397,21 @@ public class TestContainersDemo {
             for (User user : testUsers) {
                 userRepository.save(user);
             }
-            System.out.println("✓ Test data created: " + testUsers.size() + " users");
+            IO.println("✓ Test data created: " + testUsers.size() + " users");
             
             // ドメイン別検索のテスト
             List<User> companyUsers = userRepository.findByEmailDomain("company.com");
             assertEquals(3, companyUsers.size(), "Should find 3 company.com users");
-            System.out.println("✓ Found " + companyUsers.size() + " users from company.com domain");
+            IO.println("✓ Found " + companyUsers.size() + " users from company.com domain");
             
             List<User> externalUsers = userRepository.findByEmailDomain("external.org");
             assertEquals(1, externalUsers.size(), "Should find 1 external.org user");
-            System.out.println("✓ Found " + externalUsers.size() + " users from external.org domain");
+            IO.println("✓ Found " + externalUsers.size() + " users from external.org domain");
             
             // アクティブユーザーのテスト
             long activeCount = userRepository.countActiveUsers();
             assertEquals(4, activeCount, "Should have 4 active users");
-            System.out.println("✓ Active users count: " + activeCount);
+            IO.println("✓ Active users count: " + activeCount);
             
             // ユーザーの非アクティブ化
             User alice = userRepository.findByUsername("alice").orElseThrow();
@@ -419,20 +419,20 @@ public class TestContainersDemo {
             
             long activeCountAfterDeactivation = userRepository.countActiveUsers();
             assertEquals(3, activeCountAfterDeactivation, "Should have 3 active users after deactivation");
-            System.out.println("✓ Active users after deactivation: " + activeCountAfterDeactivation);
+            IO.println("✓ Active users after deactivation: " + activeCountAfterDeactivation);
             
             List<User> activeUsers = userRepository.findActiveUsers();
             assertEquals(3, activeUsers.size(), "Should find 3 active users");
             assertFalse(activeUsers.stream().anyMatch(u -> "alice".equals(u.getUsername())),
                        "Alice should not be in active users list");
-            System.out.println("✓ Active users query excludes deactivated user");
+            IO.println("✓ Active users query excludes deactivated user");
         }
         
         /**
          * トランザクションのテスト
          */
         public void testTransactionBehavior() {
-            System.out.println("\n=== Transaction Behavior Test ===");
+            IO.println("\n=== Transaction Behavior Test ===");
             
             try {
                 connection.setAutoCommit(false);
@@ -446,36 +446,36 @@ public class TestContainersDemo {
                 
                 // コミット前の確認（まだ見えるはず - 同一トランザクション内）
                 long countBeforeCommit = userRepository.countActiveUsers();
-                System.out.println("✓ Users in transaction before commit: " + countBeforeCommit);
+                IO.println("✓ Users in transaction before commit: " + countBeforeCommit);
                 
                 // コミット
                 connection.commit();
-                System.out.println("✓ Transaction committed");
+                IO.println("✓ Transaction committed");
                 
                 // コミット後の確認
                 long countAfterCommit = userRepository.countActiveUsers();
-                System.out.println("✓ Users after commit: " + countAfterCommit);
+                IO.println("✓ Users after commit: " + countAfterCommit);
                 
                 // ロールバックのテスト
                 User user3 = new User("tx_user3", "tx3@example.com", "TX", "User3");
                 userRepository.save(user3);
                 
                 long countBeforeRollback = userRepository.countActiveUsers();
-                System.out.println("✓ Users before rollback: " + countBeforeRollback);
+                IO.println("✓ Users before rollback: " + countBeforeRollback);
                 
                 // ロールバック
                 connection.rollback();
-                System.out.println("✓ Transaction rolled back");
+                IO.println("✓ Transaction rolled back");
                 
                 long countAfterRollback = userRepository.countActiveUsers();
                 assertEquals(countAfterCommit, countAfterRollback, 
                            "Count should be same as before the rolled back transaction");
-                System.out.println("✓ Users after rollback: " + countAfterRollback);
+                IO.println("✓ Users after rollback: " + countAfterRollback);
                 
                 // user3は存在しないはず
                 Optional<User> rolledBackUser = userRepository.findByUsername("tx_user3");
                 assertFalse(rolledBackUser.isPresent(), "Rolled back user should not exist");
-                System.out.println("✓ Rolled back user does not exist");
+                IO.println("✓ Rolled back user does not exist");
                 
             } catch (SQLException e) {
                 throw new RuntimeException("Transaction test failed", e);
@@ -492,7 +492,7 @@ public class TestContainersDemo {
          * パフォーマンステスト
          */
         public void testPerformance() {
-            System.out.println("\n=== Performance Test ===");
+            IO.println("\n=== Performance Test ===");
             
             int userCount = 1000;
             List<User> users = new ArrayList<>();
@@ -532,7 +532,7 @@ public class TestContainersDemo {
             }
             
             long insertTime = System.currentTimeMillis() - startTime;
-            System.out.println("✓ Inserted " + userCount + " users in " + insertTime + "ms");
+            IO.println("✓ Inserted " + userCount + " users in " + insertTime + "ms");
             
             // 検索パフォーマンステスト
             startTime = System.currentTimeMillis();
@@ -543,14 +543,14 @@ public class TestContainersDemo {
             }
             
             long searchTime = System.currentTimeMillis() - startTime;
-            System.out.println("✓ Performed 100 searches in " + searchTime + "ms");
+            IO.println("✓ Performed 100 searches in " + searchTime + "ms");
             
             // カウントクエリのパフォーマンス
             startTime = System.currentTimeMillis();
             long totalCount = userRepository.countActiveUsers();
             long countTime = System.currentTimeMillis() - startTime;
             
-            System.out.println("✓ Counted " + totalCount + " users in " + countTime + "ms");
+            IO.println("✓ Counted " + totalCount + " users in " + countTime + "ms");
         }
     }
     
@@ -589,8 +589,8 @@ public class TestContainersDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Testcontainers Integration Testing Demonstration");
-        System.out.println("================================================");
+        IO.println("Testcontainers Integration Testing Demonstration");
+        IO.println("================================================");
         
         DatabaseIntegrationTest test = new DatabaseIntegrationTest();
         
@@ -603,22 +603,22 @@ public class TestContainersDemo {
             test.testTransactionBehavior();
             test.testPerformance();
             
-            System.out.println("\n" + "=".repeat(50));
-            System.out.println("🎉 All integration tests passed!");
+            IO.println("\n" + "=".repeat(50));
+            IO.println("🎉 All integration tests passed!");
             
-            System.out.println("\n📊 Testcontainers Benefits:");
-            System.out.println("✓ Real database behavior - no mocking limitations");
-            System.out.println("✓ Isolated test environment - no shared state issues");
-            System.out.println("✓ Multiple database engines - test with production DB");
-            System.out.println("✓ Automatic cleanup - containers removed after tests");
-            System.out.println("✓ Version consistency - same DB version as production");
+            IO.println("\n📊 Testcontainers Benefits:");
+            IO.println("✓ Real database behavior - no mocking limitations");
+            IO.println("✓ Isolated test environment - no shared state issues");
+            IO.println("✓ Multiple database engines - test with production DB");
+            IO.println("✓ Automatic cleanup - containers removed after tests");
+            IO.println("✓ Version consistency - same DB version as production");
             
-            System.out.println("\n🔧 Testcontainers in Practice:");
-            System.out.println("- Use for repository layer testing");
-            System.out.println("- Test complex SQL queries and transactions");
-            System.out.println("- Validate database migrations");
-            System.out.println("- Integration testing with message queues");
-            System.out.println("- End-to-end testing with external services");
+            IO.println("\n🔧 Testcontainers in Practice:");
+            IO.println("- Use for repository layer testing");
+            IO.println("- Test complex SQL queries and transactions");
+            IO.println("- Validate database migrations");
+            IO.println("- Integration testing with message queues");
+            IO.println("- End-to-end testing with external services");
             
         } catch (Exception e) {
             System.err.println("❌ Integration test failed: " + e.getMessage());

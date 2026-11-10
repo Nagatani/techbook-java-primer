@@ -333,7 +333,7 @@ public class TestPyramidDemo {
         public void sendOrderConfirmation(String customerId, Order order) {
             String email = "Order confirmation for " + order.getId() + " sent to " + customerId;
             sentEmails.add(email);
-            System.out.println("Email sent: " + email);
+            IO.println("Email sent: " + email);
         }
         
         public List<String> getSentEmails() {
@@ -354,10 +354,10 @@ public class TestPyramidDemo {
          * エンティティクラスの単体テスト例
          */
         public static void testOrderEntity() {
-            System.out.println("=== Unit Test Level: Order Entity ===");
+            IO.println("=== Unit Test Level: Order Entity ===");
             
             // テスト1: 正常なケース
-            System.out.println("Test 1: Normal order creation and item addition");
+            IO.println("Test 1: Normal order creation and item addition");
             Order order = new Order("ORD-001", "CUST-001");
             
             assertEquals("ORD-001", order.getId());
@@ -378,46 +378,46 @@ public class TestPyramidDemo {
             assertEquals(35.0, order.getTotalAmount());
             assertEquals(2, order.getItems().size());
             
-            System.out.println("✓ Order total correctly calculated: " + order.getTotalAmount());
+            IO.println("✓ Order total correctly calculated: " + order.getTotalAmount());
             
             // テスト2: 境界値テスト
-            System.out.println("\nTest 2: Edge cases");
+            IO.println("\nTest 2: Edge cases");
             
             try {
                 new OrderItem("PROD-003", "Product 3", 0, 10.0); // 数量0
-                System.out.println("✗ Should have thrown exception for quantity 0");
+                IO.println("✗ Should have thrown exception for quantity 0");
             } catch (IllegalArgumentException e) {
-                System.out.println("✓ Correctly rejected quantity 0: " + e.getMessage());
+                IO.println("✓ Correctly rejected quantity 0: " + e.getMessage());
             }
             
             try {
                 new OrderItem("PROD-004", "Product 4", 1, -5.0); // 負の価格
-                System.out.println("✗ Should have thrown exception for negative price");
+                IO.println("✗ Should have thrown exception for negative price");
             } catch (IllegalArgumentException e) {
-                System.out.println("✓ Correctly rejected negative price: " + e.getMessage());
+                IO.println("✓ Correctly rejected negative price: " + e.getMessage());
             }
             
             // テスト3: 状態遷移テスト
-            System.out.println("\nTest 3: State transition");
+            IO.println("\nTest 3: State transition");
             
             try {
                 Order emptyOrder = new Order("ORD-002", "CUST-002");
                 emptyOrder.confirm(); // 空の注文を確定
-                System.out.println("✗ Should have thrown exception for empty order confirmation");
+                IO.println("✗ Should have thrown exception for empty order confirmation");
             } catch (IllegalStateException e) {
-                System.out.println("✓ Correctly rejected empty order confirmation: " + e.getMessage());
+                IO.println("✓ Correctly rejected empty order confirmation: " + e.getMessage());
             }
             
             order.confirm();
             assertEquals(OrderStatus.CONFIRMED, order.getStatus());
-            System.out.println("✓ Order status correctly updated to CONFIRMED");
+            IO.println("✓ Order status correctly updated to CONFIRMED");
         }
         
         /**
          * ビジネスロジックの単体テスト例
          */
         public static void testOrderServiceUnit() {
-            System.out.println("\n=== Unit Test Level: Order Service (with mocks) ===");
+            IO.println("\n=== Unit Test Level: Order Service (with mocks) ===");
             
             // モックの準備
             InMemoryOrderRepository mockRepo = new InMemoryOrderRepository();
@@ -428,7 +428,7 @@ public class TestPyramidDemo {
             OrderService orderService = new OrderService(mockRepo, mockPayment, mockInventory, mockEmail);
             
             // テスト1: 注文作成
-            System.out.println("\nTest 1: Order creation");
+            IO.println("\nTest 1: Order creation");
             Order order = orderService.createOrder("CUST-001");
             
             assertNotNull(order);
@@ -441,10 +441,10 @@ public class TestPyramidDemo {
             assertNotNull(savedOrder);
             assertEquals(order.getId(), savedOrder.getId());
             
-            System.out.println("✓ Order created and saved: " + order.getId());
+            IO.println("✓ Order created and saved: " + order.getId());
             
             // テスト2: アイテム追加（正常ケース）
-            System.out.println("\nTest 2: Add item to order (success case)");
+            IO.println("\nTest 2: Add item to order (success case)");
             mockInventory.setInventory("PROD-001", 10);
             
             orderService.addItemToOrder(order.getId(), "PROD-001", "Product 1", 2, 10.0);
@@ -453,21 +453,21 @@ public class TestPyramidDemo {
             assertEquals(1, updatedOrder.getItems().size());
             assertEquals(20.0, updatedOrder.getTotalAmount());
             
-            System.out.println("✓ Item added successfully, total: " + updatedOrder.getTotalAmount());
+            IO.println("✓ Item added successfully, total: " + updatedOrder.getTotalAmount());
             
             // テスト3: 在庫不足エラー
-            System.out.println("\nTest 3: Add item with insufficient inventory");
+            IO.println("\nTest 3: Add item with insufficient inventory");
             mockInventory.setInventory("PROD-002", 1);
             
             try {
                 orderService.addItemToOrder(order.getId(), "PROD-002", "Product 2", 5, 15.0);
-                System.out.println("✗ Should have thrown exception for insufficient inventory");
+                IO.println("✗ Should have thrown exception for insufficient inventory");
             } catch (IllegalStateException e) {
-                System.out.println("✓ Correctly rejected insufficient inventory: " + e.getMessage());
+                IO.println("✓ Correctly rejected insufficient inventory: " + e.getMessage());
             }
             
             // テスト4: 注文処理（成功ケース）
-            System.out.println("\nTest 4: Process order (success case)");
+            IO.println("\nTest 4: Process order (success case)");
             mockPayment.setSuccessMode();
             mockInventory.setInventory("PROD-001", 10);
             
@@ -476,11 +476,11 @@ public class TestPyramidDemo {
             assertEquals(OrderStatus.PAID, processedOrder.getStatus());
             assertEquals(1, mockEmail.getSentEmails().size());
             
-            System.out.println("✓ Order processed successfully");
-            System.out.println("✓ Confirmation email sent: " + mockEmail.getSentEmails().get(0));
+            IO.println("✓ Order processed successfully");
+            IO.println("✓ Confirmation email sent: " + mockEmail.getSentEmails().get(0));
             
             // テスト5: 決済失敗ケース
-            System.out.println("\nTest 5: Process order (payment failure)");
+            IO.println("\nTest 5: Process order (payment failure)");
             Order failOrder = orderService.createOrder("CUST-002");
             orderService.addItemToOrder(failOrder.getId(), "PROD-001", "Product 1", 1, 10.0);
             
@@ -488,9 +488,9 @@ public class TestPyramidDemo {
             
             try {
                 orderService.processOrder(failOrder.getId());
-                System.out.println("✗ Should have thrown PaymentFailedException");
+                IO.println("✗ Should have thrown PaymentFailedException");
             } catch (PaymentFailedException e) {
-                System.out.println("✓ Correctly handled payment failure: " + e.getMessage());
+                IO.println("✓ Correctly handled payment failure: " + e.getMessage());
             }
         }
     }
@@ -504,7 +504,7 @@ public class TestPyramidDemo {
          * サービス層の統合テスト例
          */
         public static void testOrderServiceIntegration() {
-            System.out.println("\n=== Integration Test Level: Service Layer ===");
+            IO.println("\n=== Integration Test Level: Service Layer ===");
             
             // より現実的な実装を使用（ただし外部依存は除く）
             InMemoryOrderRepository repository = new InMemoryOrderRepository();
@@ -515,7 +515,7 @@ public class TestPyramidDemo {
             OrderService orderService = new OrderService(repository, paymentService, inventoryService, emailService);
             
             // テスト1: エンドツーエンドのワークフロー
-            System.out.println("\nTest 1: End-to-end order workflow");
+            IO.println("\nTest 1: End-to-end order workflow");
             
             // 在庫設定
             inventoryService.setInventory("PROD-001", 10);
@@ -523,7 +523,7 @@ public class TestPyramidDemo {
             
             // 注文作成
             Order order = orderService.createOrder("CUST-001");
-            System.out.println("Step 1: Order created - " + order.getId());
+            IO.println("Step 1: Order created - " + order.getId());
             
             // アイテム追加
             orderService.addItemToOrder(order.getId(), "PROD-001", "Product 1", 2, 25.0);
@@ -531,25 +531,25 @@ public class TestPyramidDemo {
             
             Order orderWithItems = repository.findById(order.getId());
             assertEquals(65.0, orderWithItems.getTotalAmount());
-            System.out.println("Step 2: Items added, total: " + orderWithItems.getTotalAmount());
+            IO.println("Step 2: Items added, total: " + orderWithItems.getTotalAmount());
             
             // 注文処理
             paymentService.setSuccessMode();
             Order processedOrder = orderService.processOrder(order.getId());
             
             assertEquals(OrderStatus.PAID, processedOrder.getStatus());
-            System.out.println("Step 3: Order processed, status: " + processedOrder.getStatus());
+            IO.println("Step 3: Order processed, status: " + processedOrder.getStatus());
             
             // メール送信確認
             List<String> emails = emailService.getSentEmails();
             assertEquals(1, emails.size());
             assertTrue(emails.get(0).contains(order.getId()));
-            System.out.println("Step 4: Email sent - " + emails.get(0));
+            IO.println("Step 4: Email sent - " + emails.get(0));
             
-            System.out.println("✓ Complete workflow executed successfully");
+            IO.println("✓ Complete workflow executed successfully");
             
             // テスト2: トランザクション的な動作（失敗時のロールバック）
-            System.out.println("\nTest 2: Transaction rollback on failure");
+            IO.println("\nTest 2: Transaction rollback on failure");
             
             repository.clear();
             emailService.clear();
@@ -562,20 +562,20 @@ public class TestPyramidDemo {
             
             try {
                 orderService.processOrder(failOrder.getId());
-                System.out.println("✗ Should have thrown PaymentFailedException");
+                IO.println("✗ Should have thrown PaymentFailedException");
             } catch (PaymentFailedException e) {
                 // 失敗後の状態確認
                 Order failedOrder = repository.findById(failOrder.getId());
                 assertEquals(OrderStatus.DRAFT, failedOrder.getStatus()); // 状態は変更されていない
                 assertEquals(0, emailService.getSentEmails().size()); // メールは送信されていない
                 
-                System.out.println("✓ Transaction correctly rolled back on payment failure");
-                System.out.println("✓ Order status remains: " + failedOrder.getStatus());
-                System.out.println("✓ No confirmation email sent");
+                IO.println("✓ Transaction correctly rolled back on payment failure");
+                IO.println("✓ Order status remains: " + failedOrder.getStatus());
+                IO.println("✓ No confirmation email sent");
             }
             
             // テスト3: 複数顧客の注文履歴
-            System.out.println("\nTest 3: Multiple customer order history");
+            IO.println("\nTest 3: Multiple customer order history");
             
             repository.clear();
             paymentService.setSuccessMode();
@@ -601,14 +601,14 @@ public class TestPyramidDemo {
             assertEquals(2, cust1History.size());
             assertEquals(1, cust2History.size());
             
-            System.out.println("✓ Customer 1 has " + cust1History.size() + " orders");
-            System.out.println("✓ Customer 2 has " + cust2History.size() + " orders");
+            IO.println("✓ Customer 1 has " + cust1History.size() + " orders");
+            IO.println("✓ Customer 2 has " + cust2History.size() + " orders");
             
             // 各顧客の注文が正しく分離されていることを確認
             assertTrue(cust1History.stream().allMatch(o -> o.getCustomerId().equals("CUST-001")));
             assertTrue(cust2History.stream().allMatch(o -> o.getCustomerId().equals("CUST-002")));
             
-            System.out.println("✓ Order history correctly isolated by customer");
+            IO.println("✓ Order history correctly isolated by customer");
         }
     }
     
@@ -621,7 +621,7 @@ public class TestPyramidDemo {
          * エンドツーエンドのシナリオテスト
          */
         public static void testCompleteOrderScenario() {
-            System.out.println("\n=== E2E Test Level: Complete Order Scenario ===");
+            IO.println("\n=== E2E Test Level: Complete Order Scenario ===");
             
             // 実際のシステムに近い設定
             InMemoryOrderRepository repository = new InMemoryOrderRepository();
@@ -632,7 +632,7 @@ public class TestPyramidDemo {
             OrderService orderService = new OrderService(repository, paymentService, inventoryService, emailService);
             
             // シナリオ: オンラインショッピングの完全なフロー
-            System.out.println("\nScenario: Complete online shopping flow");
+            IO.println("\nScenario: Complete online shopping flow");
             
             // 初期データ設定
             inventoryService.setInventory("LAPTOP-001", 5);
@@ -640,31 +640,31 @@ public class TestPyramidDemo {
             inventoryService.setInventory("KEYBOARD-001", 10);
             
             // ユーザーがサイトにアクセスし、ショッピングを開始
-            System.out.println("Step 1: Customer starts shopping");
+            IO.println("Step 1: Customer starts shopping");
             Order order = orderService.createOrder("CUSTOMER-12345");
-            System.out.println("Created order: " + order.getId());
+            IO.println("Created order: " + order.getId());
             
             // 商品をカートに追加
-            System.out.println("\nStep 2: Adding items to cart");
+            IO.println("\nStep 2: Adding items to cart");
             orderService.addItemToOrder(order.getId(), "LAPTOP-001", "Gaming Laptop", 1, 1299.99);
             orderService.addItemToOrder(order.getId(), "MOUSE-001", "Wireless Mouse", 1, 49.99);
             orderService.addItemToOrder(order.getId(), "KEYBOARD-001", "Mechanical Keyboard", 1, 129.99);
             
             Order cartOrder = repository.findById(order.getId());
-            System.out.println("Cart total: $" + cartOrder.getTotalAmount());
-            System.out.println("Items in cart: " + cartOrder.getItems().size());
+            IO.println("Cart total: $" + cartOrder.getTotalAmount());
+            IO.println("Items in cart: " + cartOrder.getItems().size());
             
             // 商品を一つ削除
-            System.out.println("\nStep 3: Removing an item from cart");
+            IO.println("\nStep 3: Removing an item from cart");
             cartOrder.removeItem("KEYBOARD-001");
             repository.save(cartOrder);
             
             Order updatedCart = repository.findById(order.getId());
-            System.out.println("Updated cart total: $" + updatedCart.getTotalAmount());
-            System.out.println("Items remaining: " + updatedCart.getItems().size());
+            IO.println("Updated cart total: $" + updatedCart.getTotalAmount());
+            IO.println("Items remaining: " + updatedCart.getItems().size());
             
             // チェックアウト処理
-            System.out.println("\nStep 4: Checkout process");
+            IO.println("\nStep 4: Checkout process");
             paymentService.setSuccessMode();
             
             Order finalOrder = orderService.processOrder(order.getId());
@@ -676,26 +676,26 @@ public class TestPyramidDemo {
             List<String> confirmationEmails = emailService.getSentEmails();
             assertEquals(1, confirmationEmails.size());
             
-            System.out.println("✓ Order successfully processed");
-            System.out.println("✓ Final status: " + finalOrder.getStatus());
-            System.out.println("✓ Final amount: $" + finalOrder.getTotalAmount());
-            System.out.println("✓ Confirmation sent: " + confirmationEmails.get(0));
+            IO.println("✓ Order successfully processed");
+            IO.println("✓ Final status: " + finalOrder.getStatus());
+            IO.println("✓ Final amount: $" + finalOrder.getTotalAmount());
+            IO.println("✓ Confirmation sent: " + confirmationEmails.get(0));
             
             // 顧客が注文履歴を確認
-            System.out.println("\nStep 5: Customer checks order history");
+            IO.println("\nStep 5: Customer checks order history");
             List<Order> orderHistory = orderService.getOrderHistory("CUSTOMER-12345");
             assertEquals(1, orderHistory.size());
             assertEquals(finalOrder.getId(), orderHistory.get(0).getId());
             
-            System.out.println("✓ Order appears in customer history");
-            System.out.println("✓ E2E scenario completed successfully");
+            IO.println("✓ Order appears in customer history");
+            IO.println("✓ E2E scenario completed successfully");
         }
         
         /**
          * 異常系のE2Eテスト
          */
         public static void testErrorScenarios() {
-            System.out.println("\n=== E2E Error Scenarios ===");
+            IO.println("\n=== E2E Error Scenarios ===");
             
             InMemoryOrderRepository repository = new InMemoryOrderRepository();
             MockPaymentService paymentService = new MockPaymentService();
@@ -705,7 +705,7 @@ public class TestPyramidDemo {
             OrderService orderService = new OrderService(repository, paymentService, inventoryService, emailService);
             
             // シナリオ1: 在庫切れでの購入試行
-            System.out.println("\nScenario 1: Out of stock purchase attempt");
+            IO.println("\nScenario 1: Out of stock purchase attempt");
             
             inventoryService.setInventory("LIMITED-ITEM", 1);
             
@@ -723,13 +723,13 @@ public class TestPyramidDemo {
             
             try {
                 orderService.processOrder(order1.getId());
-                System.out.println("✗ Should have failed due to out of stock");
+                IO.println("✗ Should have failed due to out of stock");
             } catch (Exception e) {
-                System.out.println("✓ Correctly failed due to inventory shortage: " + e.getMessage());
+                IO.println("✓ Correctly failed due to inventory shortage: " + e.getMessage());
             }
             
             // シナリオ2: 決済失敗後の復旧
-            System.out.println("\nScenario 2: Payment failure and recovery");
+            IO.println("\nScenario 2: Payment failure and recovery");
             
             repository.clear();
             emailService.clear();
@@ -743,9 +743,9 @@ public class TestPyramidDemo {
             
             try {
                 orderService.processOrder(order.getId());
-                System.out.println("✗ Should have failed due to payment issue");
+                IO.println("✗ Should have failed due to payment issue");
             } catch (PaymentFailedException e) {
-                System.out.println("✓ First payment attempt failed: " + e.getMessage());
+                IO.println("✓ First payment attempt failed: " + e.getMessage());
             }
             
             // 決済方法を変更して再試行（成功）
@@ -755,8 +755,8 @@ public class TestPyramidDemo {
             assertEquals(OrderStatus.PAID, recoveredOrder.getStatus());
             assertEquals(1, emailService.getSentEmails().size());
             
-            System.out.println("✓ Second payment attempt succeeded");
-            System.out.println("✓ Order recovered and completed");
+            IO.println("✓ Second payment attempt succeeded");
+            IO.println("✓ Order recovered and completed");
         }
     }
     
@@ -789,8 +789,8 @@ public class TestPyramidDemo {
      * メインメソッド - テストピラミッドの各レベルを実行
      */
     public static void main(String[] args) {
-        System.out.println("Testing Pyramid Demonstration");
-        System.out.println("==============================");
+        IO.println("Testing Pyramid Demonstration");
+        IO.println("==============================");
         
         try {
             // レベル1: 単体テスト（高速、大量）
@@ -804,13 +804,13 @@ public class TestPyramidDemo {
             E2ETestLevel.testCompleteOrderScenario();
             E2ETestLevel.testErrorScenarios();
             
-            System.out.println("\n" + "=".repeat(50));
-            System.out.println("🎉 All tests passed! Test pyramid executed successfully.");
-            System.out.println("\nTest Pyramid Summary:");
-            System.out.println("📊 Unit Tests: Fast, numerous, focused on individual components");
-            System.out.println("🔗 Integration Tests: Medium speed, testing component interactions");
-            System.out.println("🌐 E2E Tests: Slow, few, but testing complete user scenarios");
-            System.out.println("\nEach level serves a specific purpose in ensuring code quality!");
+            IO.println("\n" + "=".repeat(50));
+            IO.println("🎉 All tests passed! Test pyramid executed successfully.");
+            IO.println("\nTest Pyramid Summary:");
+            IO.println("📊 Unit Tests: Fast, numerous, focused on individual components");
+            IO.println("🔗 Integration Tests: Medium speed, testing component interactions");
+            IO.println("🌐 E2E Tests: Slow, few, but testing complete user scenarios");
+            IO.println("\nEach level serves a specific purpose in ensuring code quality!");
             
         } catch (Exception e) {
             System.err.println("❌ Test failed: " + e.getMessage());

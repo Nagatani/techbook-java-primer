@@ -234,7 +234,7 @@ public class MutationTestDemo {
          * 模擬的なミューテーションテスト実行
          */
         public static MutationResult simulateMutationTest(String className, Function<String, Boolean> testRunner) {
-            System.out.println("Running mutation test for: " + className);
+            IO.println("Running mutation test for: " + className);
             
             // 実際のミューテーションテストツールでは、バイトコードレベルで変更を加える
             // ここでは教育目的で結果をシミュレート
@@ -259,7 +259,7 @@ public class MutationTestDemo {
             Random random = ThreadLocalRandom.current();
             
             for (String mutation : potentialMutations) {
-                System.out.println("  Testing mutation: " + mutation);
+                IO.println("  Testing mutation: " + mutation);
                 
                 // テストがミューテーションを検出できるかシミュレート
                 // 実際のツールではミューテーションを適用したコードでテストを実行
@@ -268,10 +268,10 @@ public class MutationTestDemo {
                 if (!testPassed) {
                     // テストが失敗 = ミューテーションが検出された（killed）
                     killedMutations++;
-                    System.out.println("    ✓ Mutation killed by tests");
+                    IO.println("    ✓ Mutation killed by tests");
                 } else {
                     // テストが成功 = ミューテーションが検出されなかった（survived）
-                    System.out.println("    ✗ Mutation survived - test gap detected!");
+                    IO.println("    ✗ Mutation survived - test gap detected!");
                     result.addSurvivedMutation(mutation);
                 }
             }
@@ -462,60 +462,60 @@ public class MutationTestDemo {
      * ミューテーションテストの実行とレポート
      */
     public static void runMutationTestDemo() {
-        System.out.println("=== Mutation Testing Demonstration ===");
+        IO.println("=== Mutation Testing Demonstration ===");
         
         // 1. 弱いテストスイートの例
-        System.out.println("\n--- Weak Test Suite Example ---");
+        IO.println("\n--- Weak Test Suite Example ---");
         SimpleMutationTester.MutationResult weakResult = 
             SimpleMutationTester.simulateMutationTest(
                 "TemperatureConverter (Weak Tests)", 
                 TemperatureConverterTests.WeakTests::runTests
             );
         
-        System.out.println("Result: " + weakResult);
-        System.out.println("Mutation Score: " + String.format("%.1f%%", weakResult.getMutationScore() * 100));
+        IO.println("Result: " + weakResult);
+        IO.println("Mutation Score: " + String.format("%.1f%%", weakResult.getMutationScore() * 100));
         
         if (!weakResult.survivedMutationDetails.isEmpty()) {
-            System.out.println("Survived mutations indicate test gaps:");
+            IO.println("Survived mutations indicate test gaps:");
             for (String detail : weakResult.survivedMutationDetails) {
-                System.out.println("  - " + detail);
+                IO.println("  - " + detail);
             }
         }
         
         // 2. 強いテストスイートの例
-        System.out.println("\n--- Strong Test Suite Example ---");
+        IO.println("\n--- Strong Test Suite Example ---");
         SimpleMutationTester.MutationResult strongResult = 
             SimpleMutationTester.simulateMutationTest(
                 "TemperatureConverter (Strong Tests)", 
                 TemperatureConverterTests.StrongTests::runTests
             );
         
-        System.out.println("Result: " + strongResult);
-        System.out.println("Mutation Score: " + String.format("%.1f%%", strongResult.getMutationScore() * 100));
+        IO.println("Result: " + strongResult);
+        IO.println("Mutation Score: " + String.format("%.1f%%", strongResult.getMutationScore() * 100));
         
         // 3. その他のクラスのテスト
-        System.out.println("\n--- Calculator Tests ---");
+        IO.println("\n--- Calculator Tests ---");
         SimpleMutationTester.MutationResult calcResult = 
             SimpleMutationTester.simulateMutationTest(
                 "Calculator", 
                 CalculatorTests::runTests
             );
-        System.out.println("Result: " + calcResult);
+        IO.println("Result: " + calcResult);
         
-        System.out.println("\n--- UserValidator Tests ---");
+        IO.println("\n--- UserValidator Tests ---");
         SimpleMutationTester.MutationResult validatorResult = 
             SimpleMutationTester.simulateMutationTest(
                 "UserValidator", 
                 UserValidatorTests::runTests
             );
-        System.out.println("Result: " + validatorResult);
+        IO.println("Result: " + validatorResult);
         
         // 4. 結果の分析
-        System.out.println("\n--- Mutation Testing Analysis ---");
-        System.out.println("Test Suite Quality Comparison:");
-        System.out.println("  Weak Tests:   " + String.format("%.1f%%", weakResult.getMutationScore() * 100) + " mutation score");
-        System.out.println("  Strong Tests: " + String.format("%.1f%%", strongResult.getMutationScore() * 100) + " mutation score");
-        System.out.println("  Improvement:  " + String.format("%.1f", 
+        IO.println("\n--- Mutation Testing Analysis ---");
+        IO.println("Test Suite Quality Comparison:");
+        IO.println("  Weak Tests:   " + String.format("%.1f%%", weakResult.getMutationScore() * 100) + " mutation score");
+        IO.println("  Strong Tests: " + String.format("%.1f%%", strongResult.getMutationScore() * 100) + " mutation score");
+        IO.println("  Improvement:  " + String.format("%.1f", 
             (strongResult.getMutationScore() - weakResult.getMutationScore()) * 100) + " percentage points");
     }
     
@@ -523,58 +523,58 @@ public class MutationTestDemo {
      * ミューテーションテストのベストプラクティス解説
      */
     public static void explainMutationTestingBestPractices() {
-        System.out.println("\n=== Mutation Testing Best Practices ===");
+        IO.println("\n=== Mutation Testing Best Practices ===");
         
-        System.out.println("\n1. ミューテーションテストの目的:");
-        System.out.println("   - テストスイートの品質評価");
-        System.out.println("   - テストカバレッジの盲点発見");
-        System.out.println("   - より効果的なテストケースの作成指針");
+        IO.println("\n1. ミューテーションテストの目的:");
+        IO.println("   - テストスイートの品質評価");
+        IO.println("   - テストカバレッジの盲点発見");
+        IO.println("   - より効果的なテストケースの作成指針");
         
-        System.out.println("\n2. 高いミューテーションスコアを得るためのポイント:");
-        System.out.println("   - 境界値を徹底的にテスト");
-        System.out.println("   - 条件分岐のすべてのパスをカバー");
-        System.out.println("   - エラーケースも含めて網羅");
-        System.out.println("   - 戻り値の検証を厳密に行う");
+        IO.println("\n2. 高いミューテーションスコアを得るためのポイント:");
+        IO.println("   - 境界値を徹底的にテスト");
+        IO.println("   - 条件分岐のすべてのパスをカバー");
+        IO.println("   - エラーケースも含めて網羅");
+        IO.println("   - 戻り値の検証を厳密に行う");
         
-        System.out.println("\n3. よくあるミューテーション例:");
+        IO.println("\n3. よくあるミューテーション例:");
         for (SimpleMutationTester.MutationType type : SimpleMutationTester.MutationType.values()) {
-            System.out.println("   - " + type);
+            IO.println("   - " + type);
         }
         
-        System.out.println("\n4. ミューテーションスコアの目安:");
-        System.out.println("   - 80%以上: 非常に良いテストスイート");
-        System.out.println("   - 60-79%: 改善の余地あり");
-        System.out.println("   - 60%未満: テストスイートの大幅改善が必要");
+        IO.println("\n4. ミューテーションスコアの目安:");
+        IO.println("   - 80%以上: 非常に良いテストスイート");
+        IO.println("   - 60-79%: 改善の余地あり");
+        IO.println("   - 60%未満: テストスイートの大幅改善が必要");
         
-        System.out.println("\n5. 実践での活用:");
-        System.out.println("   - CI/CDパイプラインに組み込み");
-        System.out.println("   - コードレビューでの品質指標として使用");
-        System.out.println("   - リファクタリング時の安全性確認");
-        System.out.println("   - 新人教育でのテスト作成指導");
+        IO.println("\n5. 実践での活用:");
+        IO.println("   - CI/CDパイプラインに組み込み");
+        IO.println("   - コードレビューでの品質指標として使用");
+        IO.println("   - リファクタリング時の安全性確認");
+        IO.println("   - 新人教育でのテスト作成指導");
     }
     
     /**
      * メインメソッド
      */
     public static void main(String[] args) {
-        System.out.println("Mutation Testing Demonstration");
-        System.out.println("==============================");
+        IO.println("Mutation Testing Demonstration");
+        IO.println("==============================");
         
         runMutationTestDemo();
         explainMutationTestingBestPractices();
         
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("🎯 Mutation Testing Insights:");
-        System.out.println("✓ Tests the tests - validates test suite quality");
-        System.out.println("✓ Reveals hidden test gaps that coverage metrics miss");
-        System.out.println("✓ Drives creation of more robust test cases");
-        System.out.println("✓ Higher mutation scores = better bug detection");
-        System.out.println("✓ Essential for critical software where bugs are costly");
+        IO.println("\n" + "=".repeat(50));
+        IO.println("🎯 Mutation Testing Insights:");
+        IO.println("✓ Tests the tests - validates test suite quality");
+        IO.println("✓ Reveals hidden test gaps that coverage metrics miss");
+        IO.println("✓ Drives creation of more robust test cases");
+        IO.println("✓ Higher mutation scores = better bug detection");
+        IO.println("✓ Essential for critical software where bugs are costly");
         
-        System.out.println("\n🛠️  Recommended Tools:");
-        System.out.println("- PIT (Java): Most popular Java mutation testing tool");
-        System.out.println("- Stryker (JavaScript/TypeScript): Modern mutation testing");
-        System.out.println("- mutmut (Python): Simple Python mutation testing");
-        System.out.println("- Cosmic Ray (Python): Advanced mutation testing features");
+        IO.println("\n🛠️  Recommended Tools:");
+        IO.println("- PIT (Java): Most popular Java mutation testing tool");
+        IO.println("- Stryker (JavaScript/TypeScript): Modern mutation testing");
+        IO.println("- mutmut (Python): Simple Python mutation testing");
+        IO.println("- Cosmic Ray (Python): Advanced mutation testing features");
     }
 }
