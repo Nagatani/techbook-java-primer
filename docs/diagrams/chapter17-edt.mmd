@@ -1,0 +1,13 @@
+flowchart LR
+    ops["ユーザーの操作<br/>（クリック、キー入力）<br/>再描画の要求<br/>invokeLater(...)"]
+    queue["イベントキュー<br/>（届いた順に並ぶ）"]
+    edt["EDT<br/>（1本のスレッド）"]
+    work["リスナーの処理<br/>画面の部品の更新<br/>描画"]
+
+    ops --> queue -->|"1つずつ取り出す"| edt --> work
+
+    note["EDTが長い処理で止まると<br/>次のイベントを処理できず<br/>画面が固まる"]
+    edt ~~~ note
+
+    style edt fill:#e3f2fd,stroke:#1565c0
+    style note fill:#fffde7,stroke:#fbc02d

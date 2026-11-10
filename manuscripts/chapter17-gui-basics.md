@@ -468,6 +468,12 @@ BorderLayoutの領域の特性。
 - EAST/WEST: 残った高さを使用し、幅はコンポーネントの優先サイズに応じて決定
 - CENTER: 残ったすべての領域を使用（伸縮可能）
 
+<div class="figure">
+
+![BorderLayoutの5つの領域](images/diagrams/chapter17-borderlayout.svg)
+
+</div>
+
 `BorderLayout`は、ウィンドウを5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置します。
 
 以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
@@ -522,6 +528,12 @@ GridLayoutの特徴。
 - コンポーネントは左から右、上から下へ順番に配置
 - ウィンドウサイズに応じてセルサイズが自動調整
 - セル間の間隔をピクセル単位で指定可能
+
+<div class="figure">
+
+![GridLayout（2行3列の例）](images/diagrams/chapter17-gridlayout.svg)
+
+</div>
 
 `GridLayout`は、コンポーネントを格子状（行と列）に配置します。
 
@@ -742,11 +754,7 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 3. イベントリスナー
     + イベントを監視し、イベントが発生したときに実行される処理を記述したオブジェクト（例： `ActionListener`）
 
-処理の流れは以下の通りです。
-
-```
-ユーザー操作 → イベントソース → イベントオブジェクト生成 → リスナーに通知 → 処理実行
-```
+処理の流れは、次の図の通りです。
 
 <div class="figure">
 
@@ -1167,6 +1175,12 @@ public class EDTBasicExample {
 ##### イベントキューの管理
 
 EDTは内部的にイベントキューを管理しており、すべてのユーザー操作（マウスクリック、キー入力など）とプログラム的なイベントを順次処理します。
+
+<div class="figure">
+
+![イベントキューとEDT](images/diagrams/chapter17-edt.svg)
+
+</div>
 
 以下のコードは、現在のスレッドがEDTであるかを確認する方法を示しています。SwingUtilities.isEventDispatchThread()メソッドを使用して、イベントハンドラが正しくEDT上で実行されていることを検証します。このパターンは、デバッグ時やスレッドセーフティの確認に役立ちます。
 
