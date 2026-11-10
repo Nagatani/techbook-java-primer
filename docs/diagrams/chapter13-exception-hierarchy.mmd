@@ -1,78 +1,28 @@
-classDiagram
-    Throwable <|-- Error
-    Error <|-- OutOfMemoryError
-    Error <|-- StackOverflowError
-    Throwable <|-- Exception
-    Exception <|-- RuntimeException
-    Exception <|-- IOException
-    Exception <|-- SQLException
-    RuntimeException <|-- NullPointerException
-    RuntimeException <|-- ArrayIndexOutOfBoundsException
-    RuntimeException <|-- IllegalArgumentException
-    IllegalArgumentException <|-- NumberFormatException
-    
-    class Throwable {
-        +getMessage()
-        +printStackTrace()
-        +getCause()
-    }
-    
-    class Error {
-        <<エラー>>
-        システムレベルの問題
-        回復不可能
-    }
-    
-    class Exception {
-        <<チェック例外>>
-        回復可能な問題
-        明示的な処理が必要
-    }
-    
-    class RuntimeException {
-        <<非チェック例外>>
-        プログラミングエラー
-        実行時に発生
-    }
-    
-    class IOException {
-        <<チェック例外>>
-        入出力エラー
-        ファイル操作の失敗
-    }
-    
-    class SQLException {
-        <<チェック例外>>
-        データベースエラー
-        SQL実行の失敗
-    }
-    
-    class NullPointerException {
-        <<非チェック例外>>
-        null参照へのアクセス
-    }
-    
-    class ArrayIndexOutOfBoundsException {
-        <<非チェック例外>>
-        配列の範囲外アクセス
-    }
-    
-    class IllegalArgumentException {
-        <<非チェック例外>>
-        不正な引数
-    }
-    
-    class NumberFormatException {
-        <<非チェック例外>>
-        数値変換エラー
-    }
+flowchart TB
+    T["Throwable<br/>getMessage()、getCause()<br/>printStackTrace()"]
+    E["Error（エラー）<br/>回復できない問題<br/>例: OutOfMemoryError、<br/>StackOverflowError"]
+    X["Exception<br/>回復できる問題"]
+    R["RuntimeException<br/>（非検査例外）<br/>プログラムの誤り"]
+    IO["IOException<br/>（検査例外）<br/>入出力の失敗"]
+    SQL["SQLException<br/>（検査例外）<br/>SQLの実行の失敗"]
+    NPE["NullPointer<br/>Exception"]
+    AIOOBE["ArrayIndexOutOf<br/>BoundsException"]
+    IAE["IllegalArgument<br/>Exception"]
+    NFE["NumberFormat<br/>Exception"]
 
-    class OutOfMemoryError {
-        <<エラー>>
-        メモリ不足
-    }
+    T --> E
+    T --> X
+    X --> R
+    X --> IO
+    X --> SQL
+    R --> NPE
+    R --> AIOOBE
+    R --> IAE
+    IAE --> NFE
 
-    class StackOverflowError {
-        <<エラー>>
-        再帰が深すぎる
-    }
+    classDef error fill:#ffebee,stroke:#c62828
+    classDef checked fill:#fff8e1,stroke:#f9a825
+    classDef unchecked fill:#e3f2fd,stroke:#1565c0
+    class E error
+    class X,IO,SQL checked
+    class R,NPE,AIOOBE,IAE,NFE unchecked
