@@ -36,7 +36,7 @@ interface Monitorable {
     Map<String, Object> getMetrics();
     
     default void scheduleHealthCheck() {
-        System.out.println("ヘルスチェックをスケジュール");
+        IO.println("ヘルスチェックをスケジュール");
     }
 }
 
@@ -52,18 +52,18 @@ class EmailService extends BaseService implements Monitorable {
     public void initialize() {
         isActive = true;
         startTime = LocalDateTime.now();
-        System.out.println(serviceId + " メールサービスを起動");
+        IO.println(serviceId + " メールサービスを起動");
     }
     
     @Override
     public void shutdown() {
         isActive = false;
-        System.out.println(serviceId + " メールサービスを停止");
+        IO.println(serviceId + " メールサービスを停止");
     }
     
     @Override
     public void checkHealth() {
-        System.out.println("メールサービスのヘルスチェック実行");
+        IO.println("メールサービスのヘルスチェック実行");
     }
     
     @Override

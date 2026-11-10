@@ -17,7 +17,7 @@ words.stream()
     .filter(word -> word.length() > 5)
     .map(String::toUpperCase)
     .filter(word -> word.startsWith("a"))  // すでに大文字に変換済み
-    .forEach(System.out::println);
+    .forEach(IO::println);
 ```
 
 ##### 問題点
@@ -35,7 +35,7 @@ words.stream()
     .filter(word -> word.length() > 5)
     .filter(word -> word.startsWith("a"))  // 大文字変換前にフィルタ
     .map(String::toUpperCase)
-    .forEach(System.out::println);
+    .forEach(IO::println);
 ```
 
 実行結果：
@@ -131,9 +131,9 @@ Optional<String> result = names.stream()
     .findFirst();
 
 if (result.isPresent()) {
-    System.out.println(result.get());
+    IO.println(result.get());
 } else {
-    System.out.println("Not found");
+    IO.println("Not found");
 }
 ```
 
@@ -152,8 +152,8 @@ names.stream()
     .filter(name -> name.startsWith("D"))
     .findFirst()
     .ifPresentOrElse(
-        System.out::println,
-        () -> System.out.println("Not found")
+        IO::println,
+        () -> IO.println("Not found")
     );
 
 // またはデフォルト値を使用
@@ -205,8 +205,8 @@ IntSummaryStatistics stats = numbers
     .filter(n -> n % 2 == 0)
     .summaryStatistics();
 
-System.out.println("Sum: " + stats.getSum());
-System.out.println("Count: " + stats.getCount());
+IO.println("Sum: " + stats.getSum());
+IO.println("Count: " + stats.getCount());
 ```
 
 ## 例外処理の問題

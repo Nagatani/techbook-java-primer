@@ -28,7 +28,7 @@ for (int i = 0; i <= numbers.length; i++) {  // i <= lengthが問題
 int[] scores = {90, 85, 78, 92, 88};
 // 1から始めてしまい、最後の要素を見逃す
 for (int i = 1; i <= scores.length; i++) {
-    System.out.println("Score " + i + ": " + scores[i]);  // i=5でエラー
+    IO.println("Score " + i + ": " + scores[i]);  // i=5でエラー
 }
 ```
 
@@ -60,7 +60,7 @@ for (int i = 0; i < numbers.length; i++) {
 
 // 正しい方法2：拡張for文
 for (int number : numbers) {
-    System.out.println(number);
+    IO.println(number);
 }
 ```
 
@@ -215,14 +215,14 @@ Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: 5
 
 ```java
 public void debugArray(int[] array, int index) {
-    System.out.println("配列長: " + array.length);
-    System.out.println("アクセスしようとしたインデックス: " + index);
-    System.out.println("有効な範囲: 0 〜 " + (array.length - 1));
+    IO.println("配列長: " + array.length);
+    IO.println("アクセスしようとしたインデックス: " + index);
+    IO.println("有効な範囲: 0 〜 " + (array.length - 1));
     
     if (index >= 0 && index < array.length) {
-        System.out.println("値: " + array[index]);
+        IO.println("値: " + array[index]);
     } else {
-        System.out.println("インデックスが範囲外です！");
+        IO.println("インデックスが範囲外です！");
     }
 }
 ```

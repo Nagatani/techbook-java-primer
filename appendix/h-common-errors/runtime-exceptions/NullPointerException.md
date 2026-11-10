@@ -21,7 +21,7 @@ public class Student {
     
     public void printName() {
         // nameがnullのため、NullPointerExceptionが発生
-        System.out.println(name.length());
+        IO.println(name.length());
     }
 }
 ```
@@ -41,7 +41,7 @@ public class UserService {
 
 // 使用例
 User user = userService.findUser("unknown");
-System.out.println(user.getName());  // NullPointerException
+IO.println(user.getName());  // NullPointerException
 ```
 
 ### パターン3：配列要素
@@ -49,7 +49,7 @@ System.out.println(user.getName());  // NullPointerException
 ```java
 String[] names = new String[5];
 // 配列は作成されたが、要素は初期化されていない
-System.out.println(names[0].toUpperCase());  // NullPointerException
+IO.println(names[0].toUpperCase());  // NullPointerException
 ```
 
 ### パターン4：チェーンメソッド呼び出し
@@ -72,9 +72,9 @@ public class Order {
 ```java
 public void printName() {
     if (name != null) {
-        System.out.println(name.length());
+        IO.println(name.length());
     } else {
-        System.out.println("名前が設定されていません");
+        IO.println("名前が設定されていません");
     }
 }
 ```
@@ -104,7 +104,7 @@ public Optional<User> findUser(String id) {
 
 // 使用例
 userService.findUser("unknown")
-    .ifPresent(user -> System.out.println(user.getName()));
+    .ifPresent(user -> IO.println(user.getName()));
 ```
 
 ### 4. Objects.requireNonNull()の使用

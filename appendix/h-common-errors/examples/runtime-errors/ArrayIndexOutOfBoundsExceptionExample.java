@@ -10,7 +10,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
     // エラーを発生させる例
     static class ErrorExample {
         public static void demonstrateError() {
-            System.out.println("=== ArrayIndexOutOfBoundsException発生例 ===");
+            IO.println("=== ArrayIndexOutOfBoundsException発生例 ===");
             
             int[] numbers = new int[5];  // インデックスは0〜4
             
@@ -18,7 +18,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
                 // エラー: i <= lengthなので、i=5でエラー
                 for (int i = 0; i <= numbers.length; i++) {
                     numbers[i] = i * 10;
-                    System.out.println("numbers[" + i + "] = " + numbers[i]);
+                    IO.println("numbers[" + i + "] = " + numbers[i]);
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("\nエラー発生: " + e.getMessage());
@@ -27,14 +27,14 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         }
         
         public static void demonstrateNegativeIndex() {
-            System.out.println("\n=== 負のインデックスによるエラー ===");
+            IO.println("\n=== 負のインデックスによるエラー ===");
             
             int[] array = {10, 20, 30, 40, 50};
             
             try {
                 int offset = 10;  // 配列の長さより大きい
                 int value = array[array.length - offset];  // 負のインデックス
-                System.out.println("値: " + value);
+                IO.println("値: " + value);
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("負のインデックスエラー: " + e.getMessage());
             }
@@ -44,21 +44,21 @@ public class ArrayIndexOutOfBoundsExceptionExample {
     // 解決策1: 正しいループ条件
     static class Solution1 {
         public static void demonstrate() {
-            System.out.println("\n=== 解決策1: 正しいループ条件 ===");
+            IO.println("\n=== 解決策1: 正しいループ条件 ===");
             
             int[] numbers = new int[5];
             
             // 正しい: i < length
-            System.out.println("通常のforループ:");
+            IO.println("通常のforループ:");
             for (int i = 0; i < numbers.length; i++) {
                 numbers[i] = i * 10;
-                System.out.println("numbers[" + i + "] = " + numbers[i]);
+                IO.println("numbers[" + i + "] = " + numbers[i]);
             }
             
             // 拡張for文を使用（インデックスエラーを防ぐ）
-            System.out.println("\n拡張for文:");
+            IO.println("\n拡張for文:");
             for (int number : numbers) {
-                System.out.println("値: " + number);
+                IO.println("値: " + number);
             }
         }
     }
@@ -67,7 +67,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
     static class Solution2 {
         public static void safeArrayAccess(int[] array, int index) {
             if (index >= 0 && index < array.length) {
-                System.out.println("array[" + index + "] = " + array[index]);
+                IO.println("array[" + index + "] = " + array[index]);
             } else {
                 System.err.println("インデックス " + index + 
                     " は範囲外です（有効範囲: 0〜" + (array.length - 1) + "）");
@@ -75,7 +75,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== 解決策2: 境界チェック ===");
+            IO.println("\n=== 解決策2: 境界チェック ===");
             
             int[] array = {10, 20, 30, 40, 50};
             
@@ -125,29 +125,29 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== 解決策3: 安全なアクセスメソッド ===");
+            IO.println("\n=== 解決策3: 安全なアクセスメソッド ===");
             
             int[] array = {10, 20, 30, 40, 50};
             SafeArray safeArray = new SafeArray(array);
             
-            System.out.println("通常のアクセス:");
-            System.out.println("index=2: " + safeArray.getOrDefault(2, -1));
-            System.out.println("index=10: " + safeArray.getOrDefault(10, -1));
+            IO.println("通常のアクセス:");
+            IO.println("index=2: " + safeArray.getOrDefault(2, -1));
+            IO.println("index=10: " + safeArray.getOrDefault(10, -1));
             
-            System.out.println("\n循環インデックス:");
-            System.out.println("index=7: " + safeArray.getCircular(7));  // 7 % 5 = 2
-            System.out.println("index=-1: " + safeArray.getCircular(-1)); // 最後の要素
+            IO.println("\n循環インデックス:");
+            IO.println("index=7: " + safeArray.getCircular(7));  // 7 % 5 = 2
+            IO.println("index=-1: " + safeArray.getCircular(-1)); // 最後の要素
             
-            System.out.println("\nクランプインデックス:");
-            System.out.println("index=-5: " + safeArray.getClamped(-5)); // 0にクランプ
-            System.out.println("index=10: " + safeArray.getClamped(10)); // 4にクランプ
+            IO.println("\nクランプインデックス:");
+            IO.println("index=-5: " + safeArray.getClamped(-5)); // 0にクランプ
+            IO.println("index=10: " + safeArray.getClamped(10)); // 4にクランプ
         }
     }
     
     // 二次元配列での例
     static class TwoDimensionalExample {
         public static void demonstrateError() {
-            System.out.println("\n=== 二次元配列でのエラー ===");
+            IO.println("\n=== 二次元配列でのエラー ===");
             
             int[][] matrix = new int[3][4];  // 3行4列
             
@@ -164,7 +164,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         }
         
         public static void demonstrateSolution() {
-            System.out.println("\n=== 二次元配列の正しい処理 ===");
+            IO.println("\n=== 二次元配列の正しい処理 ===");
             
             int[][] matrix = new int[3][4];  // 3行4列
             
@@ -177,14 +177,14 @@ public class ArrayIndexOutOfBoundsExceptionExample {
             
             // 結果を表示
             for (int i = 0; i < matrix.length; i++) {
-                System.out.println("行 " + i + ": " + Arrays.toString(matrix[i]));
+                IO.println("行 " + i + ": " + Arrays.toString(matrix[i]));
             }
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("ArrayIndexOutOfBoundsException サンプルプログラム");
-        System.out.println("===============================================");
+        IO.println("ArrayIndexOutOfBoundsException サンプルプログラム");
+        IO.println("===============================================");
         
         // エラー例の実行
         ErrorExample.demonstrateError();

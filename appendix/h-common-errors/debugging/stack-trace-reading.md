@@ -61,7 +61,7 @@ public class DataHandler {
     
     public void handleData(String data) {
         int length = processor.processString(data);  // 42行目
-        System.out.println("Length: " + length);
+        IO.println("Length: " + length);
     }
 }
 
@@ -159,7 +159,7 @@ public void debugMethod() {
     // または
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     for (StackTraceElement element : stackTrace) {
-        System.out.println(element);
+        IO.println(element);
     }
 }
 ```

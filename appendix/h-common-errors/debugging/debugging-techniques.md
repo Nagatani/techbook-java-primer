@@ -13,15 +13,15 @@
 ```java
 public class Calculator {
     public int divide(int a, int b) {
-        System.out.println("divide開始: a=" + a + ", b=" + b);
+        IO.println("divide開始: a=" + a + ", b=" + b);
         
         if (b == 0) {
-            System.out.println("エラー: ゼロ除算");
+            IO.println("エラー: ゼロ除算");
             throw new ArithmeticException("ゼロで除算はできません");
         }
         
         int result = a / b;
-        System.out.println("計算結果: " + result);
+        IO.println("計算結果: " + result);
         
         return result;
     }
@@ -36,7 +36,7 @@ public class DebugHelper {
     
     public static void debug(String message) {
         if (DEBUG) {
-            System.out.println("[DEBUG] " + 
+            IO.println("[DEBUG] " + 
                 Thread.currentThread().getName() + " - " + 
                 new Date() + ": " + message);
         }
@@ -217,7 +217,7 @@ public class BinarySearchDebug {
     }
     
     private void debugCheckpoint(String label, List<Data> data) {
-        System.out.println(label + ": " + validateData(data));
+        IO.println(label + ": " + validateData(data));
     }
 }
 ```
@@ -294,10 +294,10 @@ public class ThreadDebug {
             Thread thread = entry.getKey();
             StackTraceElement[] stack = entry.getValue();
             
-            System.out.println("\nThread: " + thread.getName() + 
+            IO.println("\nThread: " + thread.getName() + 
                 " [" + thread.getState() + "]");
             for (StackTraceElement element : stack) {
-                System.out.println("\t" + element);
+                IO.println("\t" + element);
             }
         }
     }
@@ -316,17 +316,17 @@ public class ConcurrencyDebug {
     public void increment() {
         // デバッグ情報付き同期
         long threadId = Thread.currentThread().getId();
-        System.out.println("Thread " + threadId + " waiting for lock");
+        IO.println("Thread " + threadId + " waiting for lock");
         
         synchronized (lock) {
-            System.out.println("Thread " + threadId + " acquired lock");
+            IO.println("Thread " + threadId + " acquired lock");
             int oldValue = counter;
             counter++;
-            System.out.println("Thread " + threadId + 
+            IO.println("Thread " + threadId + 
                 ": " + oldValue + " -> " + counter);
         }
         
-        System.out.println("Thread " + threadId + " released lock");
+        IO.println("Thread " + threadId + " released lock");
     }
 }
 ```
@@ -346,8 +346,8 @@ public class PerformanceDebug {
             long fromStart = (current - startTime) / 1_000_000;
             long fromLast = (current - lastCheckpoint) / 1_000_000;
             
-            System.out.printf("%s: %dms (累計: %dms)%n", 
-                label, fromLast, fromStart);
+            IO.println("%s: %dms (累計: %dms)".formatted(
+                label, fromLast, fromStart));
             lastCheckpoint = current;
         }
     }
@@ -378,11 +378,11 @@ public class MemoryMonitor {
         long freeMemory = runtime.freeMemory();
         long usedMemory = totalMemory - freeMemory;
         
-        System.out.printf("%s - メモリ使用量: %.2f MB / %.2f MB%n",
+        IO.println("%s - メモリ使用量: %.2f MB / %.2f MB".formatted(
             label,
             usedMemory / 1024.0 / 1024.0,
             totalMemory / 1024.0 / 1024.0
-        );
+        ));
     }
     
     public void memoryIntensiveOperation() {
@@ -476,7 +476,7 @@ public class DebugReport {
             "メモリ", Runtime.getRuntime().maxMemory() / 1024 / 1024 + "MB"
         );
         
-        System.out.println(report.toString());
+        IO.println(report.toString());
     }
 }
 ```

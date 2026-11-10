@@ -5,7 +5,7 @@ public class FinalCorrectExample {
         
         // 新しい値が必要な場合は新しい変数を作成
         final int newNumber = 20;
-        System.out.println("元の値: " + number);
-        System.out.println("新しい値: " + newNumber);
+        IO.println("元の値: " + number);
+        IO.println("新しい値: " + newNumber);
     }
 }

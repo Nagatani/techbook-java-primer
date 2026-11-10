@@ -119,10 +119,10 @@ public void processObject(Object obj) {
     // 型チェック後にキャスト
     if (obj instanceof String) {
         String str = (String) obj;
-        System.out.println(str.toUpperCase());
+        IO.println(str.toUpperCase());
     } else if (obj instanceof Integer) {
         Integer num = (Integer) obj;
-        System.out.println(num * 2);
+        IO.println(num * 2);
     }
 }
 ```
@@ -248,15 +248,15 @@ int rounded = (int) pi;  // 3になる（小数部切り捨て）
 
 ```java
 public void debugType(Object obj) {
-    System.out.println("値: " + obj);
-    System.out.println("型: " + obj.getClass().getName());
-    System.out.println("型階層:");
+    IO.println("値: " + obj);
+    IO.println("型: " + obj.getClass().getName());
+    IO.println("型階層:");
     
     Class<?> clazz = obj.getClass();
     while (clazz != null) {
-        System.out.println("  " + clazz.getName());
+        IO.println("  " + clazz.getName());
         for (Class<?> iface : clazz.getInterfaces()) {
-            System.out.println("    implements " + iface.getName());
+            IO.println("    implements " + iface.getName());
         }
         clazz = clazz.getSuperclass();
     }

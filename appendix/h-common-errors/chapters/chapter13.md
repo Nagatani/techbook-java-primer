@@ -16,9 +16,9 @@ try {
     BufferedReader br = new BufferedReader(reader);
     String line = br.readLine();
     int number = Integer.parseInt(line);
-    System.out.println(number);
+    IO.println(number);
 } catch (Exception e) {
-    System.out.println("エラーが発生しました");
+    IO.println("エラーが発生しました");
 }
 ```
 
@@ -36,7 +36,7 @@ try (FileReader reader = new FileReader("file.txt");
     if (line != null) {
         try {
             int number = Integer.parseInt(line);
-            System.out.println(number);
+            IO.println(number);
         } catch (NumberFormatException e) {
             System.err.println("数値変換エラー: " + line);
         }

@@ -8,6 +8,6 @@ public class FinalArrayMisunderstanding {
         // これはエラー（配列参照の変更は不可）
         // numbers = new int[]{6, 7, 8}; // コンパイルエラー
         
-        System.out.println(java.util.Arrays.toString(numbers)); // [10, 2, 3, 4, 5]
+        IO.println(java.util.Arrays.toString(numbers)); // [10, 2, 3, 4, 5]
     }
 }

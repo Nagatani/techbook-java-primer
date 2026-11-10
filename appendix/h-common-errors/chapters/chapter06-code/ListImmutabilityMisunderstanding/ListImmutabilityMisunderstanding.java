@@ -13,11 +13,11 @@ public class ListImmutabilityMisunderstanding {
         // 本当に不変にしたい場合
         final List<String> immutableItems = Collections.unmodifiableList(items);
         // immutableItems.add("item3"); // UnsupportedOperationException
-        System.out.println("可変リスト: " + items);
-        System.out.println("不変ビュー: " + immutableItems);
+        IO.println("可変リスト: " + items);
+        IO.println("不変ビュー: " + immutableItems);
 
         // unmodifiableListは元のリストの「ビュー」なので、元のリストの変更は見えてしまう
         items.add("item3");
-        System.out.println("元のリスト変更後の不変ビュー: " + immutableItems);
+        IO.println("元のリスト変更後の不変ビュー: " + immutableItems);
     }
 }

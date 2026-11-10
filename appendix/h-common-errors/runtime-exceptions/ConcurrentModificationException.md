@@ -218,13 +218,13 @@ public void demonstrateFailFast() {
     Iterator<String> iter = list.iterator();
     
     // modCountの変更を監視
-    System.out.println("要素を追加前");
+    IO.println("要素を追加前");
     list.add("D");  // modCountが増加
     
     try {
         iter.next();  // modCountの不一致を検出
     } catch (ConcurrentModificationException e) {
-        System.out.println("期待通りの例外: " + e);
+        IO.println("期待通りの例外: " + e);
     }
 }
 ```
@@ -270,7 +270,7 @@ public class ThreadSafetyChecker {
         Thread iterator = new Thread(() -> {
             try {
                 for (String item : list) {
-                    System.out.println(item);
+                    IO.println(item);
                     Thread.sleep(1);
                 }
             } catch (Exception e) {

@@ -11,11 +11,11 @@ public class NullPointerExceptionExample {
         
         public void printMessage() {
             // messageが初期化されていないためNullPointerException
-            System.out.println(message.length());
+            IO.println(message.length());
         }
         
         public static void demonstrateError() {
-            System.out.println("=== NullPointerException発生例 ===");
+            IO.println("=== NullPointerException発生例 ===");
             try {
                 ErrorExample example = new ErrorExample();
                 example.printMessage();
@@ -31,11 +31,11 @@ public class NullPointerExceptionExample {
         private String message = "";  // 空文字列で初期化
         
         public void printMessage() {
-            System.out.println("メッセージの長さ: " + message.length());
+            IO.println("メッセージの長さ: " + message.length());
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== 解決策1: デフォルト値で初期化 ===");
+            IO.println("\n=== 解決策1: デフォルト値で初期化 ===");
             Solution1 example = new Solution1();
             example.printMessage();
         }
@@ -47,9 +47,9 @@ public class NullPointerExceptionExample {
         
         public void printMessage() {
             if (message != null) {
-                System.out.println("メッセージの長さ: " + message.length());
+                IO.println("メッセージの長さ: " + message.length());
             } else {
-                System.out.println("メッセージが設定されていません");
+                IO.println("メッセージが設定されていません");
             }
         }
         
@@ -58,7 +58,7 @@ public class NullPointerExceptionExample {
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== 解決策2: nullチェック ===");
+            IO.println("\n=== 解決策2: nullチェック ===");
             Solution2 example = new Solution2();
             example.printMessage();  // nullの場合
             
@@ -73,8 +73,8 @@ public class NullPointerExceptionExample {
         
         public void printMessage() {
             message.ifPresentOrElse(
-                msg -> System.out.println("メッセージの長さ: " + msg.length()),
-                () -> System.out.println("メッセージが設定されていません")
+                msg -> IO.println("メッセージの長さ: " + msg.length()),
+                () -> IO.println("メッセージが設定されていません")
             );
         }
         
@@ -83,7 +83,7 @@ public class NullPointerExceptionExample {
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== 解決策3: Optionalの使用 ===");
+            IO.println("\n=== 解決策3: Optionalの使用 ===");
             Solution3 example = new Solution3();
             example.printMessage();  // 空のOptional
             
@@ -122,12 +122,12 @@ public class NullPointerExceptionExample {
         }
         
         public static void demonstrateChainError() {
-            System.out.println("\n=== メソッドチェーンでのエラー ===");
+            IO.println("\n=== メソッドチェーンでのエラー ===");
             try {
                 Person person = new Person();
                 // addressがnullなのでNullPointerException
                 String city = person.getAddress().getCity();
-                System.out.println("都市: " + city);
+                IO.println("都市: " + city);
             } catch (NullPointerException e) {
                 System.err.println("チェーン中でエラー発生");
                 e.printStackTrace();
@@ -135,14 +135,14 @@ public class NullPointerExceptionExample {
         }
         
         public static void demonstrateChainSolution() {
-            System.out.println("\n=== メソッドチェーンの安全な処理 ===");
+            IO.println("\n=== メソッドチェーンの安全な処理 ===");
             Person person = new Person();
             
             // 段階的なnullチェック
             if (person.getAddress() != null && person.getAddress().getCity() != null) {
-                System.out.println("都市: " + person.getAddress().getCity());
+                IO.println("都市: " + person.getAddress().getCity());
             } else {
-                System.out.println("住所情報が不完全です");
+                IO.println("住所情報が不完全です");
             }
             
             // Optionalを使った方法
@@ -150,15 +150,15 @@ public class NullPointerExceptionExample {
                 .map(Person::getAddress)
                 .map(Address::getCity)
                 .ifPresentOrElse(
-                    city -> System.out.println("都市（Optional）: " + city),
-                    () -> System.out.println("住所情報が不完全です（Optional）")
+                    city -> IO.println("都市（Optional）: " + city),
+                    () -> IO.println("住所情報が不完全です（Optional）")
                 );
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("NullPointerException サンプルプログラム");
-        System.out.println("=====================================");
+        IO.println("NullPointerException サンプルプログラム");
+        IO.println("=====================================");
         
         // エラー例の実行
         ErrorExample.demonstrateError();

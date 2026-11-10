@@ -7,7 +7,7 @@ interface MathUtils {
     
     default void printInfo() {
         // インターフェイス名を明示すると、staticメソッドであることがわかりやすい
-        System.out.println("面積: " + MathUtils.calculateCircleArea(5.0));
+        IO.println("面積: " + MathUtils.calculateCircleArea(5.0));
     }
 }
 

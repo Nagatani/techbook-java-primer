@@ -47,7 +47,7 @@ set.add("World");
 
 for (String s : set) {
     if (s != null) {  // null チェック
-        System.out.println(s.length());
+        IO.println(s.length());
     }
 }
 ```
@@ -181,15 +181,15 @@ String item = list.get(5);  // IndexOutOfBoundsException
 if (index >= 0 && index < list.size()) {
     String item = list.get(index);  // 安全なアクセス
 } else {
-    System.out.println("無効なインデックス: " + index);
+    IO.println("無効なインデックス: " + index);
 }
 
 // 修正版2：try-catchで例外処理
 try {
     String item = list.get(index);
-    System.out.println(item);
+    IO.println(item);
 } catch (IndexOutOfBoundsException e) {
-    System.out.println("リストの範囲外です: " + e.getMessage());
+    IO.println("リストの範囲外です: " + e.getMessage());
 }
 ```
 
@@ -212,7 +212,7 @@ Integer value = map.get("key2");
 if (value != null) {
     int result = value + 10;
 } else {
-    System.out.println("キーが存在しません");
+    IO.println("キーが存在しません");
 }
 
 // 修正版2：getOrDefaultメソッドを使用
@@ -224,7 +224,7 @@ if (map.containsKey("key2")) {
     int value = map.get("key2");
     int result = value + 10;
 } else {
-    System.out.println("キーが存在しません");
+    IO.println("キーが存在しません");
 }
 ```
 
@@ -250,7 +250,7 @@ Set<Person> persons = new HashSet<>();
 persons.add(new Person("Alice"));
 persons.add(new Person("Alice"));  // 同じ名前だが別のオブジェクト
 
-System.out.println(persons.size());  // 2（重複削除されない）
+IO.println(persons.size());  // 2（重複削除されない）
 
 // 修正版：equals()とhashCode()を適切に実装
 class Person {

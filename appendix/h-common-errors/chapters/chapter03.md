@@ -56,14 +56,14 @@ public static void main(String[] args) {
 
 ```java
 // よくあるエラー例
-System.out.println("Hello")  // セミコロン忘れ
+IO.println("Hello")  // セミコロン忘れ
 Public class MyClass { }      // 大文字のP
 ```
 
 解決策:
 ```java
 // 正しい例
-System.out.println("Hello");  // セミコロンを追加
+IO.println("Hello");  // セミコロンを追加
 public class MyClass { }      // 小文字のp
 ```
 

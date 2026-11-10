@@ -31,7 +31,7 @@ error: DataProcessor is abstract; cannot be instantiated
 class CsvDataProcessor extends DataProcessor {
     @Override
     public void processData() {
-        System.out.println("CSVデータを処理中");
+        IO.println("CSVデータを処理中");
     }
 }
 
@@ -92,7 +92,7 @@ class Rectangle extends Shape {
     
     @Override
     public void draw() {
-        System.out.println("長方形を描画");
+        IO.println("長方形を描画");
     }
 }
 ```
@@ -119,7 +119,7 @@ class Circle implements Drawable {
     
     @Override
     public void draw() {
-        System.out.println("円を描画");
+        IO.println("円を描画");
     }
     
     // setColor()メソッドの実装が不足
@@ -144,7 +144,7 @@ class Circle implements Drawable {
     
     @Override
     public void draw() {
-        System.out.println(color + "の円を描画");
+        IO.println(color + "の円を描画");
     }
     
     @Override
@@ -163,13 +163,13 @@ Javaでは複数の抽象クラスを継承できませんが、インターフ�
 ```java
 interface Exportable {
     default void export() {
-        System.out.println("データをエクスポート");
+        IO.println("データをエクスポート");
     }
 }
 
 interface Printable {
     default void export() {
-        System.out.println("印刷用にエクスポート");
+        IO.println("印刷用にエクスポート");
     }
 }
 
@@ -192,15 +192,15 @@ class ReportDocument implements Exportable, Printable {
     @Override
     public void export() {
         // 明示的にどちらのメソッドを使用するか指定
-        System.out.println("レポートのエクスポート:");
+        IO.println("レポートのエクスポート:");
         Exportable.super.export();  // データエクスポートを選択
-        System.out.println("および");
+        IO.println("および");
         Printable.super.export();  // 印刷エクスポートを選択
     }
     
     // または独自の実装を提供
     public void exportToPdf() {
-        System.out.println("PDFファイルにエクスポート");
+        IO.println("PDFファイルにエクスポート");
     }
 }
 ```
@@ -222,7 +222,7 @@ interface MathUtils {
     
     default void printInfo() {
         // インターフェイスの中からは、インターフェイス名を省略して呼び出せる
-        System.out.println("面積: " + calculateCircleArea(5.0));
+        IO.println("面積: " + calculateCircleArea(5.0));
     }
 }
 
@@ -255,7 +255,7 @@ interface MathUtils {
     
     default void printInfo() {
         // インターフェイス名を明示すると、staticメソッドであることがわかりやすい
-        System.out.println("面積: " + MathUtils.calculateCircleArea(5.0));
+        IO.println("面積: " + MathUtils.calculateCircleArea(5.0));
     }
 }
 
@@ -323,7 +323,7 @@ interface Monitorable {
     Map<String, Object> getMetrics();
     
     default void scheduleHealthCheck() {
-        System.out.println("ヘルスチェックをスケジュール");
+        IO.println("ヘルスチェックをスケジュール");
     }
 }
 
@@ -334,12 +334,12 @@ class EmailService extends BaseService implements Monitorable {
     public void initialize() {
         isActive = true;
         startTime = LocalDateTime.now();
-        System.out.println(serviceId + " メールサービスを起動");
+        IO.println(serviceId + " メールサービスを起動");
     }
     // ...
     @Override
     public void checkHealth() {
-        System.out.println("メールサービスのヘルスチェック実行");
+        IO.println("メールサービスのヘルスチェック実行");
     }
     // ...
 }
@@ -359,7 +359,7 @@ abstract class ReportGenerator {
 class PdfReportGenerator extends ReportGenerator {
     // @Overrideアノテーションがない
     public void generatereport() {  // メソッド名のタイプミス
-        System.out.println("PDFレポートを生成中");
+        IO.println("PDFレポートを生成中");
     }
 }
 ```
@@ -372,7 +372,7 @@ class PdfReportGenerator extends ReportGenerator {
 class PdfReportGenerator extends ReportGenerator {
     @Override
     public void generateReport() {  // 正しいメソッド名
-        System.out.println("PDFレポートを生成中");
+        IO.println("PDFレポートを生成中");
     }
 }
 ```

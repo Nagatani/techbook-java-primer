@@ -443,7 +443,7 @@ public void paintComponent(Graphics g) {
 long startTime = System.nanoTime();
 // 処理
 long endTime = System.nanoTime();
-System.out.println("処理時間: " + (endTime - startTime) / 1_000_000 + "ms");
+IO.println("処理時間: " + (endTime - startTime) / 1_000_000 + "ms");
 ```
 
 ### 3. メモリ使用量の監視
@@ -451,7 +451,7 @@ System.out.println("処理時間: " + (endTime - startTime) / 1_000_000 + "ms");
 ```java
 Runtime runtime = Runtime.getRuntime();
 long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-System.out.println("使用メモリ: " + usedMemory / 1024 / 1024 + "MB");
+IO.println("使用メモリ: " + usedMemory / 1024 / 1024 + "MB");
 ```
 
 これらの対処法を参考に、高度なGUIアプリケーションの開発を進めてください。複雑な問題に直面した場合は、問題を小さく分割し、段階的に解決することが重要です。

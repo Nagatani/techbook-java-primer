@@ -30,10 +30,10 @@ error: cannot find symbol
 
 ```java
 // エラー例
-system.out.println("Hello");  // systemが小文字
+io.println("Hello");  // ioが小文字
 
 // 修正版
-System.out.println("Hello");  // Systemを大文字で開始
+IO.println("Hello");  // IOを大文字で書く
 ```
 
 ## クラス名とファイル名の不一致

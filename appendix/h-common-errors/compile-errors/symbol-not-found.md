@@ -13,7 +13,7 @@ error: cannot find symbol
 
 error: cannot find symbol
     symbol: method prinln(String)
-    location: variable out of type PrintStream
+    location: class IO
 
 error: cannot find symbol
     symbol: class Scanner
@@ -28,7 +28,7 @@ error: cannot find symbol
 public class Example {
     public void method() {
         // エラー：messageが宣言されていない
-        System.out.println(message);
+        IO.println(message);
         
         // エラー：宣言前に使用
         count = 10;
@@ -45,10 +45,10 @@ public class Calculator {
     
     public void calculate() {
         // エラー：resutlは存在しない（resultのスペルミス）
-        System.out.println(resutl);
+        IO.println(resutl);
         
         // エラー：prinlnは存在しない（printlnのスペルミス）
-        System.out.prinln("計算結果");
+        IO.prinln("計算結果");
     }
 }
 ```
@@ -63,7 +63,7 @@ public class ScopeExample {
     
     public void method2() {
         // エラー：localVarはmethod1のスコープ内
-        System.out.println(localVar);
+        IO.println(localVar);
     }
     
     public void blockScope() {
@@ -71,7 +71,7 @@ public class ScopeExample {
             int blockVar = 20;
         }
         // エラー：blockVarはifブロック内のスコープ
-        System.out.println(blockVar);
+        IO.println(blockVar);
     }
 }
 ```
@@ -97,7 +97,7 @@ public class CaseSensitive {
     
     public void printName() {
         // エラー：nameは存在しない（Nameが正しい）
-        System.out.println(name);
+        IO.println(name);
     }
 }
 ```
@@ -115,8 +115,8 @@ public class Example {
         // ローカル変数として宣言
         int count = 10;
         
-        System.out.println(message);
-        System.out.println(count);
+        IO.println(message);
+        IO.println(count);
     }
 }
 ```
@@ -154,7 +154,7 @@ public class ScopeFixed {
             int loopVar = i * 10;
             
             // すべてのスコープの変数にアクセス可能
-            System.out.println(classVar + methodVar + loopVar);
+            IO.println(classVar + methodVar + loopVar);
         }
         
         // loopVarはここではアクセス不可
@@ -186,15 +186,15 @@ public class IDEHelper {
 ```java
 // 静的メソッドを直接インポート
 import static java.lang.Math.*;
-import static java.lang.System.out;
+import static java.lang.IO.println;
 
 public class StaticImportExample {
     public void calculate() {
         // Mathクラスの接頭辞不要
         double result = sqrt(pow(3, 2) + pow(4, 2));
         
-        // System.out の代わりに out を直接使用
-        out.println("結果: " + result);
+        // IO.println の代わりに println を直接使用
+        println("結果: " + result);
     }
 }
 ```
@@ -206,7 +206,7 @@ public class FullyQualified {
     public void useWithoutImport() {
         // インポートせずに完全修飾名を使用
         java.util.List<String> list = new java.util.ArrayList<>();
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        java.util.Scanner scanner = new java.util.Scanner("a,b,c");
         
         // 名前の衝突を避ける場合に有用
         java.sql.Date sqlDate = new java.sql.Date(System.currentTimeMillis());
@@ -226,17 +226,17 @@ public class OuterClass {
         
         public void accessFields() {
             // 外部クラスのフィールドにアクセス
-            System.out.println(outerField);
+            IO.println(outerField);
             
             // 明示的な参照
-            System.out.println(OuterClass.this.outerField);
+            IO.println(OuterClass.this.outerField);
         }
     }
     
     public static class StaticInnerClass {
         public void method() {
             // エラー：静的内部クラスから非静的フィールドにアクセス不可
-            // System.out.println(outerField);
+            // IO.println(outerField);
         }
     }
 }
@@ -252,7 +252,7 @@ error: cannot find symbol
     location: class com.example.MyClass
              ^
 MyClass.java:25: error: cannot find symbol
-        System.out.println(count);
+        IO.println(count);
                           ^
 ```
 
@@ -279,7 +279,7 @@ javac -g MyClass.java
 // 1. まず基本的な構造をコンパイル
 public class Step1 {
     public static void main(String[] args) {
-        System.out.println("基本構造OK");
+        IO.println("基本構造OK");
     }
 }
 
@@ -289,7 +289,7 @@ public class Step2 {
     
     public static void main(String[] args) {
         Step2 step = new Step2();
-        System.out.println(step.message);
+        IO.println(step.message);
     }
 }
 ```

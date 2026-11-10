@@ -11,25 +11,25 @@ public class TypeMismatchExample {
     // 基本型の不一致の例
     static class BasicTypeMismatch {
         public static void demonstrateErrors() {
-            System.out.println("=== 基本型の不一致 ===");
+            IO.println("=== 基本型の不一致 ===");
             
             // エラー例1: 文字列を数値型に代入
             // int number = "123";  // コンパイルエラー
             
             // 解決策1: 型変換
             int number1 = Integer.parseInt("123");
-            System.out.println("文字列から数値への変換: " + number1);
+            IO.println("文字列から数値への変換: " + number1);
             
             // エラー例2: 小数を整数型に代入
             // int count = 3.14;  // コンパイルエラー
             
             // 解決策2: 明示的キャスト
             int count = (int) 3.14;  // 小数部分は切り捨て
-            System.out.println("小数から整数への変換: " + count);
+            IO.println("小数から整数への変換: " + count);
             
             // 解決策3: 適切な型を使用
             double pi = 3.14;
-            System.out.println("適切な型の使用: " + pi);
+            IO.println("適切な型の使用: " + pi);
             
             // エラー例3: 大きな数値を小さな型に代入
             // byte small = 1000;  // コンパイルエラー（byteの範囲は-128〜127）
@@ -37,14 +37,14 @@ public class TypeMismatchExample {
             // 解決策4: 適切な型またはキャスト
             byte small = (byte) 100;  // 範囲内の値
             short medium = 1000;      // より大きな型を使用
-            System.out.println("byte値: " + small + ", short値: " + medium);
+            IO.println("byte値: " + small + ", short値: " + medium);
         }
     }
     
     // 参照型の不一致の例
     static class ReferenceTypeMismatch {
         public static void demonstrateErrors() {
-            System.out.println("\n=== 参照型の不一致 ===");
+            IO.println("\n=== 参照型の不一致 ===");
             
             // エラー例1: 異なるクラス間の代入
             // String text = new Integer(42);  // コンパイルエラー
@@ -53,7 +53,7 @@ public class TypeMismatchExample {
             String text1 = String.valueOf(42);
             String text2 = Integer.toString(42);
             String text3 = "" + 42;  // 文字列連結による変換
-            System.out.println("数値から文字列: " + text1 + ", " + text2 + ", " + text3);
+            IO.println("数値から文字列: " + text1 + ", " + text2 + ", " + text3);
             
             // エラー例2: 配列型の不一致
             // int[] numbers = new String[5];  // コンパイルエラー
@@ -74,7 +74,7 @@ public class TypeMismatchExample {
     // ジェネリクスの型不一致の例
     static class GenericTypeMismatch {
         public static void demonstrateErrors() {
-            System.out.println("\n=== ジェネリクスの型不一致 ===");
+            IO.println("\n=== ジェネリクスの型不一致 ===");
             
             // エラー例1: ジェネリック型パラメータの不一致
             // List<String> strings = new ArrayList<Integer>();  // コンパイルエラー
@@ -97,16 +97,16 @@ public class TypeMismatchExample {
             // 型安全な処理
             for (Object obj : mixedList) {
                 if (obj instanceof String) {
-                    System.out.println("文字列: " + obj);
+                    IO.println("文字列: " + obj);
                 } else if (obj instanceof Integer) {
-                    System.out.println("整数: " + obj);
+                    IO.println("整数: " + obj);
                 }
             }
         }
         
         // ワイルドカードの使用例
         public static void wildcardExample() {
-            System.out.println("\n=== ワイルドカードの使用 ===");
+            IO.println("\n=== ワイルドカードの使用 ===");
             
             List<Integer> integers = Arrays.asList(1, 2, 3);
             List<Double> doubles = Arrays.asList(1.1, 2.2, 3.3);
@@ -120,7 +120,7 @@ public class TypeMismatchExample {
             
             // 読み取り専用として使用
             for (Number num : numbers) {
-                System.out.println("数値: " + num);
+                IO.println("数値: " + num);
             }
         }
     }
@@ -158,26 +158,26 @@ public class TypeMismatchExample {
         }
         
         public static void demonstrate() {
-            System.out.println("\n=== メソッドの戻り値型 ===");
+            IO.println("\n=== メソッドの戻り値型 ===");
             
             MethodReturnTypeMismatch example = new MethodReturnTypeMismatch();
-            System.out.println("計算結果: " + example.calculate());
-            System.out.println(example.calculateAsString());
+            IO.println("計算結果: " + example.calculate());
+            IO.println(example.calculateAsString());
         }
     }
     
     // 実用的な型変換の例
     static class PracticalConversions {
         public static void demonstrate() {
-            System.out.println("\n=== 実用的な型変換 ===");
+            IO.println("\n=== 実用的な型変換 ===");
             
             // 文字列と数値の相互変換
             String strNum = "456";
             int intNum = Integer.parseInt(strNum);
             double doubleNum = Double.parseDouble("3.14159");
             
-            System.out.println("文字列→整数: " + intNum);
-            System.out.println("文字列→小数: " + doubleNum);
+            IO.println("文字列→整数: " + intNum);
+            IO.println("文字列→小数: " + doubleNum);
             
             // プリミティブ型とラッパークラス（オートボクシング/アンボクシング）
             Integer boxed = 100;  // オートボクシング
@@ -187,22 +187,22 @@ public class TypeMismatchExample {
             Integer nullableInt = null;
             // int value = nullableInt;  // 実行時にNullPointerException
             int safeValue = (nullableInt != null) ? nullableInt : 0;
-            System.out.println("null安全な値: " + safeValue);
+            IO.println("null安全な値: " + safeValue);
             
             // コレクション間の変換
             List<String> list = Arrays.asList("A", "B", "C");
             Set<String> set = new HashSet<>(list);
             String[] array = list.toArray(new String[0]);
             
-            System.out.println("List: " + list);
-            System.out.println("Set: " + set);
-            System.out.println("Array: " + Arrays.toString(array));
+            IO.println("List: " + list);
+            IO.println("Set: " + set);
+            IO.println("Array: " + Arrays.toString(array));
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("型の不一致エラー サンプルプログラム");
-        System.out.println("===================================");
+        IO.println("型の不一致エラー サンプルプログラム");
+        IO.println("===================================");
         
         BasicTypeMismatch.demonstrateErrors();
         ReferenceTypeMismatch.demonstrateErrors();

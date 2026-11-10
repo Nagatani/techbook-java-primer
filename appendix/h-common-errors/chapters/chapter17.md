@@ -271,11 +271,11 @@ component.setOpaque(true);
 
 ```java
 // 現在のレイアウトマネージャーを確認
-System.out.println("Layout: " + container.getLayout());
+IO.println("Layout: " + container.getLayout());
 
 // コンポーネントのサイズ情報を確認
-System.out.println("Size: " + component.getSize());
-System.out.println("Preferred Size: " + component.getPreferredSize());
+IO.println("Size: " + component.getSize());
+IO.println("Preferred Size: " + component.getPreferredSize());
 ```
 
 これはレイアウト情報を確認するデバッグコードです。コンソールに現在のレイアウトマネージャーとコンポーネントのサイズ情報が出力されます。
@@ -285,9 +285,9 @@ System.out.println("Preferred Size: " + component.getPreferredSize());
 ```java
 // 現在のスレッドがEDTかどうかを確認
 if (SwingUtilities.isEventDispatchThread()) {
-    System.out.println("EDTで実行中");
+    IO.println("EDTで実行中");
 } else {
-    System.out.println("EDTではないスレッドで実行中");
+    IO.println("EDTではないスレッドで実行中");
 }
 ```
 

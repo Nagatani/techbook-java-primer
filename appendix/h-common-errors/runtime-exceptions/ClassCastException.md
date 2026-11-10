@@ -18,19 +18,19 @@
 ```java
 class Animal {
     void makeSound() {
-        System.out.println("動物の鳴き声");
+        IO.println("動物の鳴き声");
     }
 }
 
 class Dog extends Animal {
     void wagTail() {
-        System.out.println("しっぽを振る");
+        IO.println("しっぽを振る");
     }
 }
 
 class Cat extends Animal {
     void scratch() {
-        System.out.println("ひっかく");
+        IO.println("ひっかく");
     }
 }
 
@@ -55,7 +55,7 @@ list.add(123);
 
 for (Object item : list) {
     String str = (String) item;  // 2番目の要素でClassCastException
-    System.out.println(str.toUpperCase());
+    IO.println(str.toUpperCase());
 }
 ```
 
@@ -68,13 +68,13 @@ interface Flyable {
 
 class Bird implements Flyable {
     public void fly() {
-        System.out.println("飛ぶ");
+        IO.println("飛ぶ");
     }
 }
 
 class Fish {
     void swim() {
-        System.out.println("泳ぐ");
+        IO.println("泳ぐ");
     }
 }
 
@@ -137,7 +137,7 @@ strings.add("文字列2");
 
 // 型安全な反復処理
 for (String str : strings) {
-    System.out.println(str.toUpperCase());  // キャスト不要
+    IO.println(str.toUpperCase());  // キャスト不要
 }
 ```
 
@@ -261,15 +261,15 @@ Exception in thread "main" java.lang.ClassCastException:
 
 ```java
 public void debugCast(Object obj) {
-    System.out.println("オブジェクトの型: " + obj.getClass().getName());
-    System.out.println("Dogのインスタンス? " + (obj instanceof Dog));
-    System.out.println("Catのインスタンス? " + (obj instanceof Cat));
+    IO.println("オブジェクトの型: " + obj.getClass().getName());
+    IO.println("Dogのインスタンス? " + (obj instanceof Dog));
+    IO.println("Catのインスタンス? " + (obj instanceof Cat));
     
     // 継承階層の確認
     Class<?> clazz = obj.getClass();
-    System.out.println("継承階層:");
+    IO.println("継承階層:");
     while (clazz != null) {
-        System.out.println("  " + clazz.getName());
+        IO.println("  " + clazz.getName());
         clazz = clazz.getSuperclass();
     }
 }

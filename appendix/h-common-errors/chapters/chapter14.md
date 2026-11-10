@@ -13,7 +13,7 @@
 // 悪い例
 File file = new File("data/config.txt");
 if (!file.exists()) {
-    System.out.println("ファイルが見つかりません");
+    IO.println("ファイルが見つかりません");
 }
 ```
 
@@ -27,12 +27,12 @@ if (!file.exists()) {
 Path configPath = Paths.get("data", "config.txt");
 Path absolutePath = configPath.toAbsolutePath();
 
-System.out.println("検索パス: " + absolutePath);
+IO.println("検索パス: " + absolutePath);
 
 if (Files.exists(configPath)) {
     try {
         String content = Files.readString(configPath);
-        System.out.println("設定を読み込みました");
+        IO.println("設定を読み込みました");
     } catch (IOException e) {
         System.err.println("ファイル読み込みエラー: " + e.getMessage());
     }
@@ -66,7 +66,7 @@ try (BufferedReader reader = Files.newBufferedReader(
     
     String line;
     while ((line = reader.readLine()) != null) {
-        System.out.println(line);
+        IO.println(line);
     }
 } catch (IOException e) {
     System.err.println("ファイル読み込みエラー: " + e.getMessage());
@@ -152,7 +152,7 @@ String[] lines = content.split("\n");
 // 良い例1: ストリーミング処理
 try (Stream<String> lines = Files.lines(Paths.get("large_file.txt"))) {
     lines.filter(line -> line.contains("ERROR"))
-         .forEach(System.out::println);
+         .forEach(IO::println);
 } catch (IOException e) {
     System.err.println("ファイル読み込みエラー: " + e.getMessage());
 }
@@ -165,13 +165,13 @@ try (BufferedReader reader = Files.newBufferedReader(
     int lineCount = 0;
     while ((line = reader.readLine()) != null) {
         if (line.contains("ERROR")) {
-            System.out.println("Line " + lineCount + ": " + line);
+            IO.println("Line " + lineCount + ": " + line);
         }
         lineCount++;
         
         // 進捗表示（10000行ごと）
         if (lineCount % 10000 == 0) {
-            System.out.println("処理済み: " + lineCount + "行");
+            IO.println("処理済み: " + lineCount + "行");
         }
     }
 } catch (IOException e) {
@@ -202,7 +202,7 @@ try {
     Files.createDirectories(dataDir);
     
     // プラットフォーム固有の区切り文字を自動処理
-    System.out.println("設定ファイル: " + configFile.toAbsolutePath());
+    IO.println("設定ファイル: " + configFile.toAbsolutePath());
     
     // 無効な文字のチェック
     if (isValidFileName(configFile.getFileName().toString())) {
@@ -292,7 +292,7 @@ File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
 Path tempFile = null;
 try {
     tempFile = Files.createTempFile("myapp_", ".tmp");
-    System.out.println("一時ファイル: " + tempFile);
+    IO.println("一時ファイル: " + tempFile);
     
     // 一時ファイルでの処理
     Files.writeString(tempFile, "一時的なデータ");
@@ -307,7 +307,7 @@ try {
     if (tempFile != null) {
         try {
             Files.deleteIfExists(tempFile);
-            System.out.println("一時ファイルを削除しました");
+            IO.println("一時ファイルを削除しました");
         } catch (IOException e) {
             System.err.println("一時ファイル削除エラー: " + e.getMessage());
         }
@@ -331,19 +331,19 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
    ```java
    Path path = Paths.get("config.txt");
-   System.out.println("現在のディレクトリ: " + System.getProperty("user.dir"));
-   System.out.println("絶対パス: " + path.toAbsolutePath());
-   System.out.println("ファイル存在: " + Files.exists(path));
+   IO.println("現在のディレクトリ: " + System.getProperty("user.dir"));
+   IO.println("絶対パス: " + path.toAbsolutePath());
+   IO.println("ファイル存在: " + Files.exists(path));
    ```
 
 2. ファイル属性の確認
 
    ```java
    if (Files.exists(path)) {
-       System.out.println("読み取り可能: " + Files.isReadable(path));
-       System.out.println("書き込み可能: " + Files.isWritable(path));
-       System.out.println("ファイルサイズ: " + Files.size(path));
-       System.out.println("最終更新: " + Files.getLastModifiedTime(path));
+       IO.println("読み取り可能: " + Files.isReadable(path));
+       IO.println("書き込み可能: " + Files.isWritable(path));
+       IO.println("ファイルサイズ: " + Files.size(path));
+       IO.println("最終更新: " + Files.getLastModifiedTime(path));
    }
    ```
 

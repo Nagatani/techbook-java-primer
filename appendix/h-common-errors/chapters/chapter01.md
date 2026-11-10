@@ -37,14 +37,14 @@ error: class HelloWorld is public, should be declared in a file named HelloWorld
 // エラー例：ファイル名が「Sample.java」だが、クラス名がHelloWorld
 public class HelloWorld {  // クラス名とファイル名が一致しない
     public static void main(String[] args) {
-        System.out.println("Hello");
+        IO.println("Hello");
     }
 }
 // 修正版1：ファイル名をHelloWorld.javaに変更
 // 修正版2：クラス名をSampleに変更
 public class Sample {
     public static void main(String[] args) {
-        System.out.println("Hello");
+        IO.println("Hello");
     }
 }
 ```
@@ -63,13 +63,13 @@ Error: Main method not found in class HelloWorld
 // エラー例：mainメソッドのシグネチャが間違っている
 public class HelloWorld {
     public void main(String[] args) {  // staticが抜けている
-        System.out.println("Hello");
+        IO.println("Hello");
     }
 }
 // 修正版：正しいmainメソッドのシグネチャ
 public class HelloWorld {
     public static void main(String[] args) {  // staticを追加
-        System.out.println("Hello");
+        IO.println("Hello");
     }
 }
 ```
@@ -110,22 +110,18 @@ Exception in thread "main" java.lang.NumberFormatException: For input string: "a
 
 ```java
 // エラー例：数値以外の入力を数値に変換しようとした
-Scanner scanner = new Scanner(System.in);
-System.out.print("数値を入力: ");
-String input = scanner.nextLine();
+String input = IO.readln("数値を入力: ");
 int number = Integer.parseInt(input);  // "abc"を入力するとエラー
 
 // 修正版：入力値の検証（第1章レベルでの対処）
-Scanner scanner = new Scanner(System.in);
-System.out.print("数値を入力: ");
-String input = scanner.nextLine();
+String input = IO.readln("数値を入力: ");
 
 // 簡単な数値チェック
 if (input.matches("\\d+")) {  // 数字のみの場合
     int number = Integer.parseInt(input);
-    System.out.println("入力された数値: " + number);
+    IO.println("入力された数値: " + number);
 } else {
-    System.out.println("数値を入力してください");
+    IO.println("数値を入力してください");
 }
 ```
 
@@ -188,11 +184,11 @@ public class DebugExample {
         int a = 10;
         int b = 20;
         
-        System.out.println("a = " + a);  // デバッグ出力
-        System.out.println("b = " + b);  // デバッグ出力
+        IO.println("a = " + a);  // デバッグ出力
+        IO.println("b = " + b);  // デバッグ出力
         
         int sum = a + b;
-        System.out.println("sum = " + sum);  // 計算結果を確認
+        IO.println("sum = " + sum);  // 計算結果を確認
     }
 }
 ```
@@ -210,15 +206,15 @@ sum = 30
 ```java
 public class StepByStepDebug {
     public static void main(String[] args) {
-        System.out.println("プログラム開始");
+        IO.println("プログラム開始");
         
         int x = 5;
-        System.out.println("x に 5 を代入しました");
+        IO.println("x に 5 を代入しました");
         
         int y = x * 2;
-        System.out.println("y に x * 2 の結果を代入しました: " + y);
+        IO.println("y に x * 2 の結果を代入しました: " + y);
         
-        System.out.println("プログラム終了");
+        IO.println("プログラム終了");
     }
 }
 ```

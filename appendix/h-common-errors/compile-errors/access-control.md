@@ -45,7 +45,7 @@ public class Main {
         Person person = new Person("太郎", 20);
         
         // エラー：privateフィールドへの直接アクセス
-        System.out.println(person.name);  // error: name has private access
+        IO.println(person.name);  // error: name has private access
         person.age = 21;  // error: age has private access
     }
 }
@@ -59,7 +59,7 @@ package com.example.base;
 
 public class BaseClass {
     protected void doSomething() {
-        System.out.println("処理実行");
+        IO.println("処理実行");
     }
 }
 
@@ -86,7 +86,7 @@ package com.example.internal;
 // パッケージプライベートクラス（publicなし）
 class InternalHelper {
     public static void help() {
-        System.out.println("内部ヘルパー");
+        IO.println("内部ヘルパー");
     }
 }
 
@@ -108,7 +108,7 @@ public class Application {
 public class Outer {
     private class PrivateInner {
         void method() {
-            System.out.println("内部メソッド");
+            IO.println("内部メソッド");
         }
     }
     
@@ -162,7 +162,7 @@ public class Person {
 // 使用例
 Person person = new Person();
 person.setName("太郎");
-System.out.println(person.getName());
+IO.println(person.getName());
 ```
 
 ### 2. 適切なアクセス修飾子の選択
@@ -239,7 +239,7 @@ class ServiceImpl implements Service {
     
     @Override
     public void execute() {
-        System.out.println("サービス実行");
+        IO.println("サービス実行");
         status = "実行中";
     }
     
@@ -316,13 +316,13 @@ package com.example.core;
 public class Engine {
     // パッケージ内のみアクセス可能
     void internalStart() {
-        System.out.println("エンジン内部始動");
+        IO.println("エンジン内部始動");
     }
     
     // 公開API
     public void start() {
         internalStart();
-        System.out.println("エンジン始動完了");
+        IO.println("エンジン始動完了");
     }
 }
 
@@ -351,7 +351,7 @@ public class ReflectionAccess {
         nameField.setAccessible(true);  // アクセス制御を無効化
         
         String name = (String) nameField.get(person);
-        System.out.println("取得した名前: " + name);
+        IO.println("取得した名前: " + name);
         
         // 値の変更も可能（危険！）
         nameField.set(person, "次郎");
@@ -422,18 +422,18 @@ public class Service {
 ```java
 public class AccessDebugger {
     public static void printAccessInfo(Class<?> clazz) {
-        System.out.println("クラス: " + clazz.getName());
-        System.out.println("修飾子: " + Modifier.toString(clazz.getModifiers()));
+        IO.println("クラス: " + clazz.getName());
+        IO.println("修飾子: " + Modifier.toString(clazz.getModifiers()));
         
         // フィールド情報
         for (Field field : clazz.getDeclaredFields()) {
-            System.out.println("フィールド: " + field.getName() + 
+            IO.println("フィールド: " + field.getName() + 
                 " - " + Modifier.toString(field.getModifiers()));
         }
         
         // メソッド情報
         for (Method method : clazz.getDeclaredMethods()) {
-            System.out.println("メソッド: " + method.getName() + 
+            IO.println("メソッド: " + method.getName() + 
                 " - " + Modifier.toString(method.getModifiers()));
         }
     }

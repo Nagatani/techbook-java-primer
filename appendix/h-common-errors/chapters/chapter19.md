@@ -251,7 +251,7 @@ public class ListenerManager {
         for (WeakReference<EventListener> ref : listeners) {
             if (ref.get() != null) alive++;
         }
-        System.out.println("リスナー状況: " + alive + "/" + total + " 生存");
+        IO.println("リスナー状況: " + alive + "/" + total + " 生存");
     }
 }
 ```
