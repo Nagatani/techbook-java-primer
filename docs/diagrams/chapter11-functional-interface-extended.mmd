@@ -35,15 +35,15 @@ classDiagram
         <<interface>>
         +compare(T o1, T o2) int
         +reversed() Comparator
-        +thenComparing(Function) Comparator
+        +thenComparing(...) Comparator
     }
 
     BiFunction~T,U,R~ <|-- BinaryOperator~T~ : extends
 
-    note "どれも@FunctionalInterfaceが付いた<br/>関数型インターフェイス"
-    note for BiFunction "2つの引数を受け取り<br/>結果を返す"
-    note for BiConsumer "2つの引数を受け取り<br/>何も返さない"
-    note for BiPredicate "2つの引数を受け取り<br/>booleanを返す"
+    note "どれも@Functional<br/>Interfaceが付いている"
+    note for BiFunction "引数2つ<br/>結果を返す"
+    note for BiConsumer "引数2つ<br/>何も返さない"
+    note for BiPredicate "引数2つ<br/>booleanを返す"
     note for Runnable "引数も戻り値もなし"
-    note for Callable "引数なし、戻り値あり<br/>（例外を投げられる）"
+    note for Callable "引数なし、戻り値あり<br/>例外を投げられる"
     note for Comparator "2つの値を比較"
