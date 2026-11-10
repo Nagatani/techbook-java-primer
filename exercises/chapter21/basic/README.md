@@ -118,23 +118,23 @@ void testDivide_小数点精度() {
 @BeforeEach
 void setUp() {
     calculator = new Calculator();
-    System.out.println("テスト準備完了");
+    IO.println("テスト準備完了");
 }
 
 @AfterEach  
 void tearDown() {
     calculator = null;
-    System.out.println("テスト後処理完了");
+    IO.println("テスト後処理完了");
 }
 
 @BeforeAll
 static void setUpClass() {
-    System.out.println("テストクラス初期化");
+    IO.println("テストクラス初期化");
 }
 
 @AfterAll
 static void tearDownClass() {
-    System.out.println("テストクラス終了処理");
+    IO.println("テストクラス終了処理");
 }
 
 テスト実行ログ:
