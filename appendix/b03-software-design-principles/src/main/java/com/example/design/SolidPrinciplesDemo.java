@@ -22,7 +22,7 @@ public class SolidPrinciplesDemo {
         // ユーザー管理の責任
         public void addUser(User user) {
             users.put(user.getId(), user);
-            System.out.println("User added to database: " + user.getName());
+            IO.println("User added to database: " + user.getName());
         }
         
         // レポート生成の責任
@@ -40,9 +40,9 @@ public class SolidPrinciplesDemo {
         public void sendWelcomeEmail(String userId) {
             User user = users.get(userId);
             if (user != null) {
-                System.out.println("Sending welcome email to: " + user.getEmail());
-                System.out.println("Subject: Welcome!");
-                System.out.println("Body: Welcome to our service, " + user.getName());
+                IO.println("Sending welcome email to: " + user.getEmail());
+                IO.println("Subject: Welcome!");
+                IO.println("Body: Welcome to our service, " + user.getName());
             }
         }
         
@@ -63,7 +63,7 @@ public class SolidPrinciplesDemo {
         
         public void save(User user) {
             users.put(user.getId(), user);
-            System.out.println("User saved: " + user.getName());
+            IO.println("User saved: " + user.getName());
         }
         
         public User findById(String id) {
@@ -98,16 +98,16 @@ public class SolidPrinciplesDemo {
     static class EmailService {
         public void sendWelcomeEmail(User user) {
             if (user != null) {
-                System.out.println("Sending welcome email to: " + user.getEmail());
-                System.out.println("Subject: Welcome!");
-                System.out.println("Body: Welcome to our service, " + user.getName());
+                IO.println("Sending welcome email to: " + user.getEmail());
+                IO.println("Subject: Welcome!");
+                IO.println("Body: Welcome to our service, " + user.getName());
             }
         }
         
         public void sendEmail(String to, String subject, String body) {
-            System.out.println("Email sent to: " + to);
-            System.out.println("Subject: " + subject);
-            System.out.println("Body: " + body);
+            IO.println("Email sent to: " + to);
+            IO.println("Subject: " + subject);
+            IO.println("Body: " + body);
         }
     }
     
@@ -233,7 +233,7 @@ public class SolidPrinciplesDemo {
         }
         
         public void printShapeInfo(Shape shape) {
-            System.out.println(shape.getShapeType() + " area: " + shape.calculateArea());
+            IO.println(shape.getShapeType() + " area: " + shape.calculateArea());
         }
     }
     
@@ -341,7 +341,7 @@ public class SolidPrinciplesDemo {
     static class Robot implements BadWorker {
         @Override
         public void work() {
-            System.out.println("Robot is working");
+            IO.println("Robot is working");
         }
         
         @Override
@@ -391,22 +391,22 @@ public class SolidPrinciplesDemo {
         
         @Override
         public void work() {
-            System.out.println(name + " is working");
+            IO.println(name + " is working");
         }
         
         @Override
         public void eat() {
-            System.out.println(name + " is eating");
+            IO.println(name + " is eating");
         }
         
         @Override
         public void sleep() {
-            System.out.println(name + " is sleeping");
+            IO.println(name + " is sleeping");
         }
         
         @Override
         public void takeBreak() {
-            System.out.println(name + " is taking a break");
+            IO.println(name + " is taking a break");
         }
     }
     
@@ -419,7 +419,7 @@ public class SolidPrinciplesDemo {
         
         @Override
         public void work() {
-            System.out.println("Robot " + model + " is working");
+            IO.println("Robot " + model + " is working");
         }
         
         // 不要なメソッドの実装は強制されない
@@ -432,7 +432,7 @@ public class SolidPrinciplesDemo {
      */
     static class MySQLDatabase {
         public void save(String data) {
-            System.out.println("Saving to MySQL: " + data);
+            IO.println("Saving to MySQL: " + data);
         }
     }
     
@@ -441,7 +441,7 @@ public class SolidPrinciplesDemo {
         
         public void processOrder(String orderData) {
             // ビジネスロジック
-            System.out.println("Processing order: " + orderData);
+            IO.println("Processing order: " + orderData);
             
             // データ保存
             database.save(orderData); // MySQL に強く依存
@@ -459,7 +459,7 @@ public class SolidPrinciplesDemo {
     static class MySQLDatabaseImpl implements Database {
         @Override
         public void save(String data) {
-            System.out.println("Saving to MySQL: " + data);
+            IO.println("Saving to MySQL: " + data);
         }
         
         @Override
@@ -471,7 +471,7 @@ public class SolidPrinciplesDemo {
     static class MongoDatabase implements Database {
         @Override
         public void save(String data) {
-            System.out.println("Saving to MongoDB: " + data);
+            IO.println("Saving to MongoDB: " + data);
         }
         
         @Override
@@ -489,7 +489,7 @@ public class SolidPrinciplesDemo {
         
         public void processOrder(String orderData) {
             // ビジネスロジック
-            System.out.println("Processing order: " + orderData);
+            IO.println("Processing order: " + orderData);
             
             // データ保存（どのデータベース実装でも動作）
             database.save(orderData);
@@ -529,18 +529,18 @@ public class SolidPrinciplesDemo {
      * 単一責任原則のデモ
      */
     public static void demonstrateSingleResponsibility() {
-        System.out.println("=== Single Responsibility Principle Demo ===");
+        IO.println("=== Single Responsibility Principle Demo ===");
         
         User user = new User("1", "Alice", "alice@example.com");
         
-        System.out.println("\n--- Bad Design (Multiple Responsibilities) ---");
+        IO.println("\n--- Bad Design (Multiple Responsibilities) ---");
         BadUserManager badManager = new BadUserManager();
         badManager.addUser(user);
-        System.out.println(badManager.generateUserReport("1"));
+        IO.println(badManager.generateUserReport("1"));
         badManager.sendWelcomeEmail("1");
-        System.out.println("Valid user: " + badManager.validateUser(user));
+        IO.println("Valid user: " + badManager.validateUser(user));
         
-        System.out.println("\n--- Good Design (Separated Responsibilities) ---");
+        IO.println("\n--- Good Design (Separated Responsibilities) ---");
         UserRepository repository = new UserRepository();
         UserReportGenerator reportGenerator = new UserReportGenerator(repository);
         EmailService emailService = new EmailService();
@@ -549,10 +549,10 @@ public class SolidPrinciplesDemo {
         // 各責任が分離されている
         if (validator.validate(user)) {
             repository.save(user);
-            System.out.println(reportGenerator.generateReport("1"));
+            IO.println(reportGenerator.generateReport("1"));
             emailService.sendWelcomeEmail(user);
         } else {
-            System.out.println("Validation errors: " + validator.getValidationErrors(user));
+            IO.println("Validation errors: " + validator.getValidationErrors(user));
         }
     }
     
@@ -560,7 +560,7 @@ public class SolidPrinciplesDemo {
      * 開放閉鎖原則のデモ
      */
     public static void demonstrateOpenClosed() {
-        System.out.println("\n=== Open/Closed Principle Demo ===");
+        IO.println("\n=== Open/Closed Principle Demo ===");
         
         List<Shape> shapes = new ArrayList<>();
         shapes.add(new Rectangle(5, 3));
@@ -569,38 +569,38 @@ public class SolidPrinciplesDemo {
         
         GoodShapeCalculator calculator = new GoodShapeCalculator();
         
-        System.out.println("Shape information:");
+        IO.println("Shape information:");
         for (Shape shape : shapes) {
             calculator.printShapeInfo(shape);
         }
         
-        System.out.println("Total area: " + calculator.calculateTotalArea(shapes));
+        IO.println("Total area: " + calculator.calculateTotalArea(shapes));
         
         // 新しい図形を追加しても既存コードを変更する必要がない
-        System.out.println("\nAdding new shapes without modifying existing code...");
+        IO.println("\nAdding new shapes without modifying existing code...");
     }
     
     /**
      * リスコフ置換原則のデモ
      */
     public static void demonstrateLiskovSubstitution() {
-        System.out.println("\n=== Liskov Substitution Principle Demo ===");
+        IO.println("\n=== Liskov Substitution Principle Demo ===");
         
-        System.out.println("--- Bad Design (LSP Violation) ---");
+        IO.println("--- Bad Design (LSP Violation) ---");
         // 長方形として扱っているが正方形の振る舞いで期待が破られる
         BadRectangle rect = new BadSquare();
         rect.setWidth(5);
         rect.setHeight(3);
-        System.out.println("Expected area: 15, Actual area: " + rect.getArea());
+        IO.println("Expected area: 15, Actual area: " + rect.getArea());
         // 期待される結果と異なる！
         
-        System.out.println("\n--- Good Design (LSP Compliant) ---");
+        IO.println("\n--- Good Design (LSP Compliant) ---");
         List<GoodShape> shapes = new ArrayList<>();
         shapes.add(new GoodRectangle(5, 3));
         shapes.add(new GoodSquare(4));
         
         for (GoodShape shape : shapes) {
-            System.out.println("Shape area: " + shape.getArea() + 
+            IO.println("Shape area: " + shape.getArea() + 
                              ", perimeter: " + shape.getPerimeter());
         }
         // どの実装でも期待通りに動作する
@@ -610,9 +610,9 @@ public class SolidPrinciplesDemo {
      * インターフェイス分離原則のデモ
      */
     public static void demonstrateInterfaceSegregation() {
-        System.out.println("\n=== Interface Segregation Principle Demo ===");
+        IO.println("\n=== Interface Segregation Principle Demo ===");
         
-        System.out.println("--- Good Design (Segregated Interfaces) ---");
+        IO.println("--- Good Design (Segregated Interfaces) ---");
         Human human = new Human("Alice");
         GoodRobot robot = new GoodRobot("R2D2");
         
@@ -626,21 +626,21 @@ public class SolidPrinciplesDemo {
         robot.work();
         // robot.eat(); // コンパイルエラー - ロボットは食事インターフェイスを実装していない
         
-        System.out.println("Robots don't need to implement unnecessary methods!");
+        IO.println("Robots don't need to implement unnecessary methods!");
     }
     
     /**
      * 依存関係逆転原則のデモ
      */
     public static void demonstrateDependencyInversion() {
-        System.out.println("\n=== Dependency Inversion Principle Demo ===");
+        IO.println("\n=== Dependency Inversion Principle Demo ===");
         
-        System.out.println("--- Bad Design (Concrete Dependency) ---");
+        IO.println("--- Bad Design (Concrete Dependency) ---");
         BadOrderService badService = new BadOrderService();
         badService.processOrder("Order #123");
         // MySQL にロックインされている
         
-        System.out.println("\n--- Good Design (Abstract Dependency) ---");
+        IO.println("\n--- Good Design (Abstract Dependency) ---");
         
         // 異なるデータベース実装を注入可能
         Database mysqlDb = new MySQLDatabaseImpl();
@@ -649,27 +649,27 @@ public class SolidPrinciplesDemo {
         GoodOrderService mysqlService = new GoodOrderService(mysqlDb);
         GoodOrderService mongoService = new GoodOrderService(mongoDb);
         
-        System.out.println("Using MySQL:");
+        IO.println("Using MySQL:");
         mysqlService.processOrder("Order #456");
         
-        System.out.println("Using MongoDB:");
+        IO.println("Using MongoDB:");
         mongoService.processOrder("Order #789");
         
         // 同じビジネスロジックが異なる実装で動作
-        System.out.println("Same business logic works with different implementations!");
+        IO.println("Same business logic works with different implementations!");
     }
     
     /**
      * SOLID原則の利点をまとめて表示
      */
     public static void summarizeSOLIDBenefits() {
-        System.out.println("\n=== SOLID Principles Benefits ===");
-        System.out.println("1. Single Responsibility: Changes affect only one class");
-        System.out.println("2. Open/Closed: Add new features without modifying existing code");
-        System.out.println("3. Liskov Substitution: Subtypes can replace base types safely");
-        System.out.println("4. Interface Segregation: Classes depend only on methods they use");
-        System.out.println("5. Dependency Inversion: High-level modules don't depend on low-level details");
-        System.out.println("\nResult: Maintainable, testable, and extensible code!");
+        IO.println("\n=== SOLID Principles Benefits ===");
+        IO.println("1. Single Responsibility: Changes affect only one class");
+        IO.println("2. Open/Closed: Add new features without modifying existing code");
+        IO.println("3. Liskov Substitution: Subtypes can replace base types safely");
+        IO.println("4. Interface Segregation: Classes depend only on methods they use");
+        IO.println("5. Dependency Inversion: High-level modules don't depend on low-level details");
+        IO.println("\nResult: Maintainable, testable, and extensible code!");
     }
     
     /**

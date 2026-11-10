@@ -24,7 +24,7 @@ public class DesignPatternsDemo {
         private DatabaseConnection() {
             // 初期化処理
             this.connectionString = "jdbc:mysql://localhost:3306/mydb";
-            System.out.println("Database connection created: " + connectionString);
+            IO.println("Database connection created: " + connectionString);
         }
         
         public static DatabaseConnection getInstance() {
@@ -39,7 +39,7 @@ public class DesignPatternsDemo {
         }
         
         public void executeQuery(String query) {
-            System.out.println("Executing query: " + query);
+            IO.println("Executing query: " + query);
         }
         
         public String getConnectionString() {
@@ -60,7 +60,7 @@ public class DesignPatternsDemo {
             config.put("app.name", "MyApplication");
             config.put("app.version", "1.0.0");
             config.put("debug.enabled", "true");
-            System.out.println("Configuration loaded");
+            IO.println("Configuration loaded");
         }
         
         public String getProperty(String key) {
@@ -91,26 +91,26 @@ public class DesignPatternsDemo {
     static class WordDocument extends Document {
         @Override
         public void create() {
-            System.out.println("Creating Word document");
+            IO.println("Creating Word document");
             this.content = "Word Document Content";
         }
         
         @Override
         public void save() {
-            System.out.println("Saving Word document: " + content);
+            IO.println("Saving Word document: " + content);
         }
     }
     
     static class PDFDocument extends Document {
         @Override
         public void create() {
-            System.out.println("Creating PDF document");
+            IO.println("Creating PDF document");
             this.content = "PDF Document Content";
         }
         
         @Override
         public void save() {
-            System.out.println("Saving PDF document: " + content);
+            IO.println("Saving PDF document: " + content);
         }
     }
     
@@ -147,12 +147,12 @@ public class DesignPatternsDemo {
     static class WindowsButton implements Button {
         @Override
         public void render() {
-            System.out.println("Rendering Windows-style button");
+            IO.println("Rendering Windows-style button");
         }
         
         @Override
         public void onClick() {
-            System.out.println("Windows button clicked");
+            IO.println("Windows button clicked");
         }
     }
     
@@ -161,7 +161,7 @@ public class DesignPatternsDemo {
         
         @Override
         public void render() {
-            System.out.println("Rendering Windows-style text field");
+            IO.println("Rendering Windows-style text field");
         }
         
         @Override
@@ -174,12 +174,12 @@ public class DesignPatternsDemo {
     static class MacButton implements Button {
         @Override
         public void render() {
-            System.out.println("Rendering Mac-style button");
+            IO.println("Rendering Mac-style button");
         }
         
         @Override
         public void onClick() {
-            System.out.println("Mac button clicked");
+            IO.println("Mac button clicked");
         }
     }
     
@@ -188,7 +188,7 @@ public class DesignPatternsDemo {
         
         @Override
         public void render() {
-            System.out.println("Rendering Mac-style text field");
+            IO.println("Rendering Mac-style text field");
         }
         
         @Override
@@ -258,7 +258,7 @@ public class DesignPatternsDemo {
     // 既存のクラス（変更不可）
     static class LegacyPrinter {
         public void printOldFormat(String text) {
-            System.out.println("Legacy Printer: " + text.toUpperCase());
+            IO.println("Legacy Printer: " + text.toUpperCase());
         }
     }
     
@@ -280,7 +280,7 @@ public class DesignPatternsDemo {
             if ("legacy".equals(format)) {
                 legacyPrinter.printOldFormat(text);
             } else {
-                System.out.println("Modern format: " + text);
+                IO.println("Modern format: " + text);
             }
         }
     }
@@ -426,7 +426,7 @@ public class DesignPatternsDemo {
         
         @Override
         public void update(String message) {
-            System.out.println(name + " received: " + message);
+            IO.println(name + " received: " + message);
         }
     }
     
@@ -452,8 +452,8 @@ public class DesignPatternsDemo {
         
         @Override
         public void pay(double amount) {
-            System.out.println("Paid $" + amount + " using Credit Card");
-            System.out.println("Card: " + maskCardNumber(cardNumber) + " (" + holderName + ")");
+            IO.println("Paid $" + amount + " using Credit Card");
+            IO.println("Card: " + maskCardNumber(cardNumber) + " (" + holderName + ")");
         }
         
         @Override
@@ -475,8 +475,8 @@ public class DesignPatternsDemo {
         
         @Override
         public void pay(double amount) {
-            System.out.println("Paid $" + amount + " using PayPal");
-            System.out.println("Account: " + email);
+            IO.println("Paid $" + amount + " using PayPal");
+            IO.println("Account: " + email);
         }
         
         @Override
@@ -494,8 +494,8 @@ public class DesignPatternsDemo {
         
         @Override
         public void pay(double amount) {
-            System.out.println("Paid $" + amount + " using Bank Transfer");
-            System.out.println("Account: " + maskAccountNumber(accountNumber));
+            IO.println("Paid $" + amount + " using Bank Transfer");
+            IO.println("Account: " + maskAccountNumber(accountNumber));
         }
         
         @Override
@@ -517,29 +517,29 @@ public class DesignPatternsDemo {
         public void addItem(String item, double price) {
             items.add(item);
             totalAmount += price;
-            System.out.println("Added " + item + " ($" + price + ") to cart");
+            IO.println("Added " + item + " ($" + price + ") to cart");
         }
         
         public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
             this.paymentStrategy = paymentStrategy;
-            System.out.println("Payment method set to: " + paymentStrategy.getPaymentType());
+            IO.println("Payment method set to: " + paymentStrategy.getPaymentType());
         }
         
         public void checkout() {
             if (paymentStrategy == null) {
-                System.out.println("Please select a payment method");
+                IO.println("Please select a payment method");
                 return;
             }
             
-            System.out.println("\n--- Checkout Summary ---");
-            System.out.println("Items: " + items);
-            System.out.println("Total: $" + totalAmount);
+            IO.println("\n--- Checkout Summary ---");
+            IO.println("Items: " + items);
+            IO.println("Total: $" + totalAmount);
             paymentStrategy.pay(totalAmount);
             
             // カートをクリア
             items.clear();
             totalAmount = 0.0;
-            System.out.println("Order completed successfully!\n");
+            IO.println("Order completed successfully!\n");
         }
     }
     
@@ -646,7 +646,7 @@ public class DesignPatternsDemo {
             history.add(command);
             currentPosition++;
             
-            System.out.println("Executed: " + command.getDescription());
+            IO.println("Executed: " + command.getDescription());
         }
         
         public void undo() {
@@ -654,9 +654,9 @@ public class DesignPatternsDemo {
                 Command command = history.get(currentPosition);
                 command.undo();
                 currentPosition--;
-                System.out.println("Undone: " + command.getDescription());
+                IO.println("Undone: " + command.getDescription());
             } else {
-                System.out.println("Nothing to undo");
+                IO.println("Nothing to undo");
             }
         }
         
@@ -665,17 +665,17 @@ public class DesignPatternsDemo {
                 currentPosition++;
                 Command command = history.get(currentPosition);
                 command.execute();
-                System.out.println("Redone: " + command.getDescription());
+                IO.println("Redone: " + command.getDescription());
             } else {
-                System.out.println("Nothing to redo");
+                IO.println("Nothing to redo");
             }
         }
         
         public void showHistory() {
-            System.out.println("Command History:");
+            IO.println("Command History:");
             for (int i = 0; i < history.size(); i++) {
                 String prefix = (i == currentPosition) ? "-> " : "   ";
-                System.out.println(prefix + (i + 1) + ". " + history.get(i).getDescription());
+                IO.println(prefix + (i + 1) + ". " + history.get(i).getDescription());
             }
         }
     }
@@ -686,22 +686,22 @@ public class DesignPatternsDemo {
      * 生成パターンのデモ
      */
     public static void demonstrateCreationalPatterns() {
-        System.out.println("=== Creational Patterns Demo ===");
+        IO.println("=== Creational Patterns Demo ===");
         
         // シングルトンパターン
-        System.out.println("\n--- Singleton Pattern ---");
+        IO.println("\n--- Singleton Pattern ---");
         DatabaseConnection db1 = DatabaseConnection.getInstance();
         DatabaseConnection db2 = DatabaseConnection.getInstance();
-        System.out.println("Same instance: " + (db1 == db2));
+        IO.println("Same instance: " + (db1 == db2));
         db1.executeQuery("SELECT * FROM users");
         
         // Enum Singleton
         ConfigurationManager config = ConfigurationManager.INSTANCE;
-        System.out.println("App name: " + config.getProperty("app.name"));
+        IO.println("App name: " + config.getProperty("app.name"));
         config.setProperty("debug.enabled", "false");
         
         // ファクトリーパターン
-        System.out.println("\n--- Factory Pattern ---");
+        IO.println("\n--- Factory Pattern ---");
         Document wordDoc = DocumentFactory.createDocument("word");
         Document pdfDoc = DocumentFactory.createDocument("pdf");
         
@@ -711,7 +711,7 @@ public class DesignPatternsDemo {
         pdfDoc.save();
         
         // 抽象ファクトリーパターン
-        System.out.println("\n--- Abstract Factory Pattern ---");
+        IO.println("\n--- Abstract Factory Pattern ---");
         UIFactory windowsFactory = new WindowsUIFactory();
         Application winApp = new Application(windowsFactory);
         winApp.createUI();
@@ -727,10 +727,10 @@ public class DesignPatternsDemo {
      * 構造パターンのデモ
      */
     public static void demonstrateStructuralPatterns() {
-        System.out.println("\n=== Structural Patterns Demo ===");
+        IO.println("\n=== Structural Patterns Demo ===");
         
         // アダプターパターン
-        System.out.println("\n--- Adapter Pattern ---");
+        IO.println("\n--- Adapter Pattern ---");
         LegacyPrinter legacyPrinter = new LegacyPrinter();
         ModernPrinter adapter = new PrinterAdapter(legacyPrinter);
         
@@ -738,28 +738,28 @@ public class DesignPatternsDemo {
         adapter.print("Hello World", "modern");
         
         // デコレーターパターン
-        System.out.println("\n--- Decorator Pattern ---");
+        IO.println("\n--- Decorator Pattern ---");
         Coffee coffee = new SimpleCoffee();
-        System.out.println(coffee.description() + " costs $" + coffee.cost());
+        IO.println(coffee.description() + " costs $" + coffee.cost());
         
         coffee = new MilkDecorator(coffee);
-        System.out.println(coffee.description() + " costs $" + coffee.cost());
+        IO.println(coffee.description() + " costs $" + coffee.cost());
         
         coffee = new SugarDecorator(coffee);
-        System.out.println(coffee.description() + " costs $" + coffee.cost());
+        IO.println(coffee.description() + " costs $" + coffee.cost());
         
         coffee = new WhippedCreamDecorator(coffee);
-        System.out.println(coffee.description() + " costs $" + coffee.cost());
+        IO.println(coffee.description() + " costs $" + coffee.cost());
     }
     
     /**
      * 振る舞いパターンのデモ
      */
     public static void demonstrateBehavioralPatterns() {
-        System.out.println("\n=== Behavioral Patterns Demo ===");
+        IO.println("\n=== Behavioral Patterns Demo ===");
         
         // オブザーバーパターン
-        System.out.println("\n--- Observer Pattern ---");
+        IO.println("\n--- Observer Pattern ---");
         NewsAgency agency = new NewsAgency();
         NewsChannel cnn = new NewsChannel("CNN");
         NewsChannel bbc = new NewsChannel("BBC");
@@ -773,7 +773,7 @@ public class DesignPatternsDemo {
         agency.setNews("New COVID variant discovered");
         
         // ストラテジーパターン
-        System.out.println("\n--- Strategy Pattern ---");
+        IO.println("\n--- Strategy Pattern ---");
         ShoppingCart cart = new ShoppingCart();
         cart.addItem("Laptop", 999.99);
         cart.addItem("Mouse", 29.99);
@@ -791,28 +791,28 @@ public class DesignPatternsDemo {
         cart.checkout();
         
         // コマンドパターン
-        System.out.println("\n--- Command Pattern ---");
+        IO.println("\n--- Command Pattern ---");
         TextEditor editor = new TextEditor();
         EditorInvoker invoker = new EditorInvoker();
         
         invoker.execute(new AddTextCommand(editor, "Hello "));
         invoker.execute(new AddTextCommand(editor, "World!"));
-        System.out.println("Content: '" + editor.getContent() + "'");
+        IO.println("Content: '" + editor.getContent() + "'");
         
         invoker.execute(new AddTextCommand(editor, " How are you?"));
-        System.out.println("Content: '" + editor.getContent() + "'");
+        IO.println("Content: '" + editor.getContent() + "'");
         
         invoker.undo();
-        System.out.println("After undo: '" + editor.getContent() + "'");
+        IO.println("After undo: '" + editor.getContent() + "'");
         
         invoker.redo();
-        System.out.println("After redo: '" + editor.getContent() + "'");
+        IO.println("After redo: '" + editor.getContent() + "'");
         
         invoker.execute(new ClearCommand(editor));
-        System.out.println("After clear: '" + editor.getContent() + "'");
+        IO.println("After clear: '" + editor.getContent() + "'");
         
         invoker.undo();
-        System.out.println("After undo clear: '" + editor.getContent() + "'");
+        IO.println("After undo clear: '" + editor.getContent() + "'");
         
         invoker.showHistory();
     }
@@ -821,26 +821,26 @@ public class DesignPatternsDemo {
      * デザインパターンの利点をまとめて表示
      */
     public static void summarizePatternBenefits() {
-        System.out.println("\n=== Design Patterns Benefits ===");
-        System.out.println("Creational Patterns:");
-        System.out.println("  - Singleton: Ensures single instance and global access");
-        System.out.println("  - Factory: Encapsulates object creation logic");
-        System.out.println("  - Abstract Factory: Creates families of related objects");
+        IO.println("\n=== Design Patterns Benefits ===");
+        IO.println("Creational Patterns:");
+        IO.println("  - Singleton: Ensures single instance and global access");
+        IO.println("  - Factory: Encapsulates object creation logic");
+        IO.println("  - Abstract Factory: Creates families of related objects");
         
-        System.out.println("\nStructural Patterns:");
-        System.out.println("  - Adapter: Allows incompatible interfaces to work together");
-        System.out.println("  - Decorator: Adds behavior to objects dynamically");
+        IO.println("\nStructural Patterns:");
+        IO.println("  - Adapter: Allows incompatible interfaces to work together");
+        IO.println("  - Decorator: Adds behavior to objects dynamically");
         
-        System.out.println("\nBehavioral Patterns:");
-        System.out.println("  - Observer: Defines one-to-many dependency between objects");
-        System.out.println("  - Strategy: Encapsulates algorithms and makes them interchangeable");
-        System.out.println("  - Command: Encapsulates requests as objects");
+        IO.println("\nBehavioral Patterns:");
+        IO.println("  - Observer: Defines one-to-many dependency between objects");
+        IO.println("  - Strategy: Encapsulates algorithms and makes them interchangeable");
+        IO.println("  - Command: Encapsulates requests as objects");
         
-        System.out.println("\nOverall Benefits:");
-        System.out.println("  - Reusable solutions to common problems");
-        System.out.println("  - Improved code organization and maintainability");
-        System.out.println("  - Better communication among developers");
-        System.out.println("  - Tested and proven design approaches");
+        IO.println("\nOverall Benefits:");
+        IO.println("  - Reusable solutions to common problems");
+        IO.println("  - Improved code organization and maintainability");
+        IO.println("  - Better communication among developers");
+        IO.println("  - Tested and proven design approaches");
     }
     
     /**
