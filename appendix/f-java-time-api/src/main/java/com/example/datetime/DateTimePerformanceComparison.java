@@ -12,10 +12,10 @@ public class DateTimePerformanceComparison {
     private static final int THREAD_COUNT = 10;
     
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("性能比較: レガシーAPI vs java.time API");
-        System.out.println("反復回数: " + ITERATIONS);
-        System.out.println("スレッド数: " + THREAD_COUNT);
-        System.out.println();
+        IO.println("性能比較: レガシーAPI vs java.time API");
+        IO.println("反復回数: " + ITERATIONS);
+        IO.println("スレッド数: " + THREAD_COUNT);
+        IO.println();
         
         // 1. オブジェクト生成の性能比較
         compareObjectCreation();
@@ -34,7 +34,7 @@ public class DateTimePerformanceComparison {
     }
     
     private static void compareObjectCreation() {
-        System.out.println("=== オブジェクト生成の性能比較 ===");
+        IO.println("=== オブジェクト生成の性能比較 ===");
         
         // レガシーAPI
         long startLegacy = System.nanoTime();
@@ -57,7 +57,7 @@ public class DateTimePerformanceComparison {
     }
     
     private static void compareFormatting() {
-        System.out.println("\n=== フォーマット処理の性能比較 ===");
+        IO.println("\n=== フォーマット処理の性能比較 ===");
         
         Date legacyDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -83,7 +83,7 @@ public class DateTimePerformanceComparison {
     }
     
     private static void compareParsing() {
-        System.out.println("\n=== パース処理の性能比較 ===");
+        IO.println("\n=== パース処理の性能比較 ===");
         
         String dateString = "2024-12-25 14:30:45";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -111,7 +111,7 @@ public class DateTimePerformanceComparison {
     }
     
     private static void compareDateCalculation() {
-        System.out.println("\n=== 日付計算の性能比較 ===");
+        IO.println("\n=== 日付計算の性能比較 ===");
         
         // レガシーAPI
         Calendar calendar = Calendar.getInstance();
@@ -139,7 +139,7 @@ public class DateTimePerformanceComparison {
     }
     
     private static void compareMultithreadedFormatting() throws InterruptedException {
-        System.out.println("\n=== マルチスレッド環境でのフォーマット性能比較 ===");
+        IO.println("\n=== マルチスレッド環境でのフォーマット性能比較 ===");
         
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
         CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
@@ -197,25 +197,25 @@ public class DateTimePerformanceComparison {
         
         executor.shutdown();
         
-        System.out.println("レガシーAPI: " + formatTime(legacyTime) + 
+        IO.println("レガシーAPI: " + formatTime(legacyTime) + 
                           " (エラー数: " + legacyErrors.get() + ")");
-        System.out.println("java.time API: " + formatTime(modernTime) + 
+        IO.println("java.time API: " + formatTime(modernTime) + 
                           " (エラー数: " + modernErrors.get() + ")");
         
         double improvement = ((double) legacyTime / modernTime - 1) * 100;
-        System.out.println("改善率: " + String.format("%.1f%%", improvement));
+        IO.println("改善率: " + String.format("%.1f%%", improvement));
         
         if (legacyErrors.get() > 0) {
-            System.out.println("警告: レガシーAPIでスレッドセーフ性の問題が発生しました！");
+            IO.println("警告: レガシーAPIでスレッドセーフ性の問題が発生しました！");
         }
     }
     
     private static void printResults(String operation, long legacyTime, long modernTime) {
-        System.out.println("レガシーAPI: " + formatTime(legacyTime));
-        System.out.println("java.time API: " + formatTime(modernTime));
+        IO.println("レガシーAPI: " + formatTime(legacyTime));
+        IO.println("java.time API: " + formatTime(modernTime));
         
         double improvement = ((double) legacyTime / modernTime - 1) * 100;
-        System.out.println("改善率: " + String.format("%.1f%%", improvement));
+        IO.println("改善率: " + String.format("%.1f%%", improvement));
     }
     
     private static String formatTime(long nanos) {

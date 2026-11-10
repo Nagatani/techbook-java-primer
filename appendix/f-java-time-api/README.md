@@ -31,30 +31,30 @@ public class JavaTimeBasicExample {
         // 1. LocalDate - 日付のみ（タイムゾーンなし）
         LocalDate today = LocalDate.now();
         LocalDate birthday = LocalDate.of(2000, 1, 15);
-        System.out.println("今日: " + today);
-        System.out.println("誕生日: " + birthday);
+        IO.println("今日: " + today);
+        IO.println("誕生日: " + birthday);
         
         // 2. LocalTime - 時刻のみ（タイムゾーンなし）
         LocalTime now = LocalTime.now();
         LocalTime meetingTime = LocalTime.of(14, 30);
-        System.out.println("現在時刻: " + now);
-        System.out.println("会議時刻: " + meetingTime);
+        IO.println("現在時刻: " + now);
+        IO.println("会議時刻: " + meetingTime);
         
         // 3. LocalDateTime - 日付と時刻（タイムゾーンなし）
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime appointment = LocalDateTime.of(2024, 12, 25, 18, 0);
-        System.out.println("現在の日時: " + currentDateTime);
-        System.out.println("予定: " + appointment);
+        IO.println("現在の日時: " + currentDateTime);
+        IO.println("予定: " + appointment);
         
         // 4. ZonedDateTime - タイムゾーン付き日時
         ZonedDateTime tokyoTime = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
         ZonedDateTime newYorkTime = ZonedDateTime.now(ZoneId.of("America/New_York"));
-        System.out.println("東京: " + tokyoTime);
-        System.out.println("ニューヨーク: " + newYorkTime);
+        IO.println("東京: " + tokyoTime);
+        IO.println("ニューヨーク: " + newYorkTime);
         
         // 5. Instant - エポック秒（UTC基準のタイムスタンプ）
         Instant timestamp = Instant.now();
-        System.out.println("タイムスタンプ: " + timestamp);
+        IO.println("タイムスタンプ: " + timestamp);
     }
 }
 ```
@@ -77,19 +77,19 @@ public class DateTimeManipulationExample {
         LocalDate lastMonth = date.minusMonths(1);
         LocalDate nextYear = date.plusYears(1);
         
-        System.out.println("元の日付: " + date);
-        System.out.println("1週間後: " + nextWeek);
-        System.out.println("1ヶ月前: " + lastMonth);
-        System.out.println("1年後: " + nextYear);
+        IO.println("元の日付: " + date);
+        IO.println("1週間後: " + nextWeek);
+        IO.println("1ヶ月前: " + lastMonth);
+        IO.println("1年後: " + nextYear);
         
         // 時刻の操作
         LocalTime time = LocalTime.of(10, 30);
         LocalTime after2Hours = time.plusHours(2);
         LocalTime before30Min = time.minusMinutes(30);
         
-        System.out.println("\n元の時刻: " + time);
-        System.out.println("2時間後: " + after2Hours);
-        System.out.println("30分前: " + before30Min);
+        IO.println("\n元の時刻: " + time);
+        IO.println("2時間後: " + after2Hours);
+        IO.println("30分前: " + before30Min);
         
         // より柔軟な操作
         LocalDateTime dateTime = LocalDateTime.now();
@@ -101,17 +101,17 @@ public class DateTimeManipulationExample {
             .withMinute(0)
             .withSecond(0);
         
-        System.out.println("\n現在: " + dateTime);
-        System.out.println("変更後: " + modified);
+        IO.println("\n現在: " + dateTime);
+        IO.println("変更後: " + modified);
         
         // 日付の比較
         LocalDate date1 = LocalDate.of(2024, 1, 1);
         LocalDate date2 = LocalDate.of(2024, 6, 1);
         
-        System.out.println("\n日付の比較:");
-        System.out.println("date1 < date2: " + date1.isBefore(date2));
-        System.out.println("date1 > date2: " + date1.isAfter(date2));
-        System.out.println("date1 == date2: " + date1.isEqual(date2));
+        IO.println("\n日付の比較:");
+        IO.println("date1 < date2: " + date1.isBefore(date2));
+        IO.println("date1 > date2: " + date1.isAfter(date2));
+        IO.println("date1 == date2: " + date1.isEqual(date2));
     }
 }
 ```
@@ -133,19 +133,19 @@ public class DateTimeFormatterExample {
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 25, 14, 30, 45);
         
         // 1. 定義済みフォーマッタ
-        System.out.println("ISO_LOCAL_DATE_TIME: " + 
+        IO.println("ISO_LOCAL_DATE_TIME: " + 
             dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         
         // 2. ロケール対応フォーマッタ
         DateTimeFormatter japaneseFormatter = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.FULL)
             .withLocale(Locale.JAPANESE);
-        System.out.println("日本語形式: " + dateTime.format(japaneseFormatter));
+        IO.println("日本語形式: " + dateTime.format(japaneseFormatter));
         
         // 3. カスタムパターン
         DateTimeFormatter customFormatter = 
             DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH時mm分ss秒");
-        System.out.println("カスタム形式: " + dateTime.format(customFormatter));
+        IO.println("カスタム形式: " + dateTime.format(customFormatter));
         
         // 4. よく使われるパターン
         DateTimeFormatter[] formatters = {
@@ -155,9 +155,9 @@ public class DateTimeFormatterExample {
             DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss", Locale.ENGLISH)
         };
         
-        System.out.println("\nさまざまな形式:");
+        IO.println("\nさまざまな形式:");
         for (DateTimeFormatter formatter : formatters) {
-            System.out.println(dateTime.format(formatter));
+            IO.println(dateTime.format(formatter));
         }
         
         // 5. 文字列からのパース
@@ -165,7 +165,7 @@ public class DateTimeFormatterExample {
         DateTimeFormatter parseFormatter = 
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime parsed = LocalDateTime.parse(dateStr, parseFormatter);
-        System.out.println("\nパース結果: " + parsed);
+        IO.println("\nパース結果: " + parsed);
     }
 }
 ```
@@ -187,28 +187,28 @@ public class PeriodDurationExample {
         LocalDate endDate = LocalDate.of(2025, 3, 15);
         
         Period period = Period.between(startDate, endDate);
-        System.out.println("期間: " + period); // P1Y2M14D
-        System.out.println("詳細: " + period.getYears() + "年 " + 
+        IO.println("期間: " + period); // P1Y2M14D
+        IO.println("詳細: " + period.getYears() + "年 " + 
                           period.getMonths() + "ヶ月 " + 
                           period.getDays() + "日");
         
         // Periodを使った日付の計算
         LocalDate futureDate = LocalDate.now().plus(Period.ofMonths(6));
-        System.out.println("6ヶ月後: " + futureDate);
+        IO.println("6ヶ月後: " + futureDate);
         
         // Duration - 時間ベースの期間
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(17, 30);
         
         Duration duration = Duration.between(startTime, endTime);
-        System.out.println("\n勤務時間: " + duration); // PT8H30M
-        System.out.println("詳細: " + duration.toHours() + "時間 " + 
+        IO.println("\n勤務時間: " + duration); // PT8H30M
+        IO.println("詳細: " + duration.toHours() + "時間 " + 
                           duration.toMinutesPart() + "分");
         
         // 日時間の日数計算
         LocalDate birth = LocalDate.of(2000, 1, 1);
         long daysAlive = ChronoUnit.DAYS.between(birth, LocalDate.now());
-        System.out.println("\n生まれてから " + daysAlive + " 日経過");
+        IO.println("\n生まれてから " + daysAlive + " 日経過");
         
         // インスタント間の経過時間
         Instant start = Instant.now();
@@ -217,7 +217,7 @@ public class PeriodDurationExample {
         Instant end = Instant.now();
         
         Duration elapsed = Duration.between(start, end);
-        System.out.println("処理時間: " + elapsed.toMillis() + "ミリ秒");
+        IO.println("処理時間: " + elapsed.toMillis() + "ミリ秒");
     }
 }
 ```
@@ -237,12 +237,12 @@ public class TimeZoneExample {
     public static void main(String[] args) {
         // 利用可能なタイムゾーン一覧（一部）
         Set<String> zones = ZoneId.getAvailableZoneIds();
-        System.out.println("利用可能なタイムゾーン数: " + zones.size());
+        IO.println("利用可能なタイムゾーン数: " + zones.size());
         zones.stream()
              .filter(z -> z.startsWith("Asia/"))
              .sorted()
              .limit(5)
-             .forEach(System.out::println);
+             .forEach(IO::println);
         
         // タイムゾーン付き日時の作成
         ZonedDateTime tokyoTime = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
@@ -254,14 +254,14 @@ public class TimeZoneExample {
         DateTimeFormatter formatter = 
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
         
-        System.out.println("\n同一時刻の各地表示:");
-        System.out.println("東京: " + tokyoTime.format(formatter));
-        System.out.println("ロンドン: " + londonTime.format(formatter));
-        System.out.println("ニューヨーク: " + newYorkTime.format(formatter));
+        IO.println("\n同一時刻の各地表示:");
+        IO.println("東京: " + tokyoTime.format(formatter));
+        IO.println("ロンドン: " + londonTime.format(formatter));
+        IO.println("ニューヨーク: " + newYorkTime.format(formatter));
         
         // オフセット付き日時
         OffsetDateTime offsetDateTime = OffsetDateTime.now();
-        System.out.println("\nオフセット付き日時: " + offsetDateTime);
+        IO.println("\nオフセット付き日時: " + offsetDateTime);
         
         // 夏時間（DST）の考慮
         ZoneId nyZone = ZoneId.of("America/New_York");
@@ -270,10 +270,10 @@ public class TimeZoneExample {
         ZonedDateTime summerTime = ZonedDateTime.of(
             2024, 7, 15, 12, 0, 0, 0, nyZone);
         
-        System.out.println("\n夏時間の影響:");
-        System.out.println("冬時間: " + winterTime);
-        System.out.println("夏時間: " + summerTime);
-        System.out.println("オフセット差: " + 
+        IO.println("\n夏時間の影響:");
+        IO.println("冬時間: " + winterTime);
+        IO.println("夏時間: " + summerTime);
+        IO.println("オフセット差: " + 
             (winterTime.getOffset().getTotalSeconds() - 
              summerTime.getOffset().getTotalSeconds()) / 3600 + "時間");
     }
@@ -319,7 +319,7 @@ public class FileTimeExample {
         }
         
         Files.write(logFile, logEntries);
-        System.out.println("ログファイル作成: " + logFile);
+        IO.println("ログファイル作成: " + logFile);
         
         // 2. ファイルの更新日時を取得
         BasicFileAttributes attrs = Files.readAttributes(
@@ -329,21 +329,21 @@ public class FileTimeExample {
         FileTime lastModified = attrs.lastModifiedTime();
         FileTime lastAccess = attrs.lastAccessTime();
         
-        System.out.println("\nファイル時刻情報:");
-        System.out.println("作成日時: " + 
+        IO.println("\nファイル時刻情報:");
+        IO.println("作成日時: " + 
             LocalDateTime.ofInstant(creationTime.toInstant(), 
                                   ZoneId.systemDefault()));
-        System.out.println("最終更新: " + 
+        IO.println("最終更新: " + 
             LocalDateTime.ofInstant(lastModified.toInstant(), 
                                   ZoneId.systemDefault()));
-        System.out.println("最終アクセス: " + 
+        IO.println("最終アクセス: " + 
             LocalDateTime.ofInstant(lastAccess.toInstant(), 
                                   ZoneId.systemDefault()));
         
         // 3. 古いログファイルの検索と削除
         LocalDateTime cutoffTime = LocalDateTime.now().minusDays(7);
         
-        System.out.println("\n7日以上前のログファイルを検索...");
+        IO.println("\n7日以上前のログファイルを検索...");
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(
                 logDir, "*.log")) {
             for (Path file : stream) {
@@ -352,7 +352,7 @@ public class FileTimeExample {
                     fileTime.toInstant(), ZoneId.systemDefault());
                 
                 if (fileDateTime.isBefore(cutoffTime)) {
-                    System.out.println("古いファイル発見: " + file);
+                    IO.println("古いファイル発見: " + file);
                     // Files.delete(file); // 実際の削除はコメントアウト
                 }
             }
@@ -363,7 +363,7 @@ public class FileTimeExample {
         FileTime newFileTime = FileTime.from(
             newDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Files.setLastModifiedTime(logFile, newFileTime);
-        System.out.println("\n更新日時を3時間前に変更しました");
+        IO.println("\n更新日時を3時間前に変更しました");
     }
 }
 ```
@@ -388,20 +388,20 @@ public class LegacyConversionExample {
         Instant instant = legacyDate.toInstant();
         Date convertedDate = Date.from(instant);
         
-        System.out.println("Legacy Date: " + legacyDate);
-        System.out.println("Instant: " + instant);
-        System.out.println("Converted Date: " + convertedDate);
+        IO.println("Legacy Date: " + legacyDate);
+        IO.println("Instant: " + instant);
+        IO.println("Converted Date: " + convertedDate);
         
         // 2. Date → LocalDateTime
         LocalDateTime localDateTime = LocalDateTime.ofInstant(
             legacyDate.toInstant(), ZoneId.systemDefault());
-        System.out.println("\nLocalDateTime: " + localDateTime);
+        IO.println("\nLocalDateTime: " + localDateTime);
         
         // 3. LocalDateTime → Date
         ZonedDateTime zonedDateTime = localDateTime.atZone(
             ZoneId.systemDefault());
         Date fromLocalDateTime = Date.from(zonedDateTime.toInstant());
-        System.out.println("Date from LocalDateTime: " + fromLocalDateTime);
+        IO.println("Date from LocalDateTime: " + fromLocalDateTime);
         
         // 4. Calendar ←→ ZonedDateTime
         Calendar calendar = Calendar.getInstance();
@@ -409,11 +409,11 @@ public class LegacyConversionExample {
         
         ZonedDateTime fromCalendar = ((GregorianCalendar) calendar)
             .toZonedDateTime();
-        System.out.println("\nCalendar → ZonedDateTime: " + fromCalendar);
+        IO.println("\nCalendar → ZonedDateTime: " + fromCalendar);
         
         GregorianCalendar newCalendar = GregorianCalendar.from(
             ZonedDateTime.now());
-        System.out.println("ZonedDateTime → Calendar: " + 
+        IO.println("ZonedDateTime → Calendar: " + 
             newCalendar.getTime());
         
         // 5. java.sql.Date との変換
@@ -422,18 +422,18 @@ public class LegacyConversionExample {
         LocalDate localDate = sqlDate.toLocalDate();
         java.sql.Date convertedSqlDate = java.sql.Date.valueOf(localDate);
         
-        System.out.println("\nSQL Date: " + sqlDate);
-        System.out.println("LocalDate: " + localDate);
-        System.out.println("Converted SQL Date: " + convertedSqlDate);
+        IO.println("\nSQL Date: " + sqlDate);
+        IO.println("LocalDate: " + localDate);
+        IO.println("Converted SQL Date: " + convertedSqlDate);
         
         // 6. タイムゾーンの変換
         TimeZone legacyTimeZone = TimeZone.getTimeZone("Asia/Tokyo");
         ZoneId zoneId = legacyTimeZone.toZoneId();
         TimeZone convertedTimeZone = TimeZone.getTimeZone(zoneId);
         
-        System.out.println("\nLegacy TimeZone: " + legacyTimeZone.getID());
-        System.out.println("ZoneId: " + zoneId);
-        System.out.println("Converted TimeZone: " + 
+        IO.println("\nLegacy TimeZone: " + legacyTimeZone.getID());
+        IO.println("ZoneId: " + zoneId);
+        IO.println("Converted TimeZone: " + 
             convertedTimeZone.getID());
     }
 }

@@ -32,7 +32,7 @@ public class FileTimeExample {
         }
         
         Files.write(logFile, logEntries);
-        System.out.println("ログファイル作成: " + logFile);
+        IO.println("ログファイル作成: " + logFile);
         
         // 2. ファイルの更新日時を取得
         BasicFileAttributes attrs = Files.readAttributes(
@@ -42,21 +42,21 @@ public class FileTimeExample {
         FileTime lastModified = attrs.lastModifiedTime();
         FileTime lastAccess = attrs.lastAccessTime();
         
-        System.out.println("\nファイル時刻情報:");
-        System.out.println("作成日時: " + 
+        IO.println("\nファイル時刻情報:");
+        IO.println("作成日時: " + 
             LocalDateTime.ofInstant(creationTime.toInstant(), 
                                   ZoneId.systemDefault()));
-        System.out.println("最終更新: " + 
+        IO.println("最終更新: " + 
             LocalDateTime.ofInstant(lastModified.toInstant(), 
                                   ZoneId.systemDefault()));
-        System.out.println("最終アクセス: " + 
+        IO.println("最終アクセス: " + 
             LocalDateTime.ofInstant(lastAccess.toInstant(), 
                                   ZoneId.systemDefault()));
         
         // 3. 古いログファイルの検索と削除
         LocalDateTime cutoffTime = LocalDateTime.now().minusDays(7);
         
-        System.out.println("\n7日以上前のログファイルを検索...");
+        IO.println("\n7日以上前のログファイルを検索...");
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(
                 logDir, "*.log")) {
             for (Path file : stream) {
@@ -65,7 +65,7 @@ public class FileTimeExample {
                     fileTime.toInstant(), ZoneId.systemDefault());
                 
                 if (fileDateTime.isBefore(cutoffTime)) {
-                    System.out.println("古いファイル発見: " + file);
+                    IO.println("古いファイル発見: " + file);
                     // Files.delete(file); // 実際の削除はコメントアウト
                 }
             }
@@ -76,6 +76,6 @@ public class FileTimeExample {
         FileTime newFileTime = FileTime.from(
             newDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Files.setLastModifiedTime(logFile, newFileTime);
-        System.out.println("\n更新日時を3時間前に変更しました");
+        IO.println("\n更新日時を3時間前に変更しました");
     }
 }

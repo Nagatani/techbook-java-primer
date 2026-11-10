@@ -21,7 +21,7 @@ public class DateTimeUtilities {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     
     public static void main(String[] args) {
-        System.out.println("=== java.time ユーティリティメソッド集 ===\n");
+        IO.println("=== java.time ユーティリティメソッド集 ===\n");
         
         // 1. 日付範囲の生成
         demonstrateDateRanges();
@@ -40,123 +40,123 @@ public class DateTimeUtilities {
     }
     
     private static void demonstrateDateRanges() {
-        System.out.println("1. 日付範囲の生成");
-        System.out.println("-".repeat(40));
+        IO.println("1. 日付範囲の生成");
+        IO.println("-".repeat(40));
         
         LocalDate start = LocalDate.of(2024, 1, 1);
         LocalDate end = LocalDate.of(2024, 1, 7);
         
         // 日付のリストを生成
         List<LocalDate> dateRange = getDateRange(start, end);
-        System.out.println("日付範囲: " + dateRange);
+        IO.println("日付範囲: " + dateRange);
         
         // 月初・月末
         LocalDate today = LocalDate.now();
-        System.out.println("\n現在: " + today);
-        System.out.println("月初: " + getFirstDayOfMonth(today));
-        System.out.println("月末: " + getLastDayOfMonth(today));
-        System.out.println("四半期初: " + getFirstDayOfQuarter(today));
-        System.out.println("四半期末: " + getLastDayOfQuarter(today));
+        IO.println("\n現在: " + today);
+        IO.println("月初: " + getFirstDayOfMonth(today));
+        IO.println("月末: " + getLastDayOfMonth(today));
+        IO.println("四半期初: " + getFirstDayOfQuarter(today));
+        IO.println("四半期末: " + getLastDayOfQuarter(today));
         
         // 週の範囲
         LocalDate weekStart = getWeekStart(today);
         LocalDate weekEnd = getWeekEnd(today);
-        System.out.println("\n週の範囲: " + weekStart + " ～ " + weekEnd);
-        System.out.println();
+        IO.println("\n週の範囲: " + weekStart + " ～ " + weekEnd);
+        IO.println();
     }
     
     private static void demonstrateTimeRounding() {
-        System.out.println("2. 時刻の丸め処理");
-        System.out.println("-".repeat(40));
+        IO.println("2. 時刻の丸め処理");
+        IO.println("-".repeat(40));
         
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("現在時刻: " + now);
-        System.out.println("分単位: " + roundToMinute(now));
-        System.out.println("5分単位: " + roundToMinutes(now, 5));
-        System.out.println("15分単位: " + roundToMinutes(now, 15));
-        System.out.println("時間単位: " + roundToHour(now));
-        System.out.println("日単位: " + roundToDay(now));
+        IO.println("現在時刻: " + now);
+        IO.println("分単位: " + roundToMinute(now));
+        IO.println("5分単位: " + roundToMinutes(now, 5));
+        IO.println("15分単位: " + roundToMinutes(now, 15));
+        IO.println("時間単位: " + roundToHour(now));
+        IO.println("日単位: " + roundToDay(now));
         
         // 切り捨て・切り上げ
-        System.out.println("\n切り捨て（分）: " + truncateToMinute(now));
-        System.out.println("切り上げ（分）: " + ceilToMinute(now));
-        System.out.println();
+        IO.println("\n切り捨て（分）: " + truncateToMinute(now));
+        IO.println("切り上げ（分）: " + ceilToMinute(now));
+        IO.println();
     }
     
     private static void demonstratePeriodCalculations() {
-        System.out.println("3. 期間の計算");
-        System.out.println("-".repeat(40));
+        IO.println("3. 期間の計算");
+        IO.println("-".repeat(40));
         
         LocalDate birthDate = LocalDate.of(2000, 1, 15);
         LocalDate today = LocalDate.now();
         
         // 年齢計算
         AgeInfo age = calculateAge(birthDate, today);
-        System.out.println("生年月日: " + birthDate);
-        System.out.println("年齢: " + age);
+        IO.println("生年月日: " + birthDate);
+        IO.println("年齢: " + age);
         
         // 作業時間の計算
         LocalDateTime workStart = LocalDateTime.of(2024, 1, 15, 9, 0);
         LocalDateTime workEnd = LocalDateTime.of(2024, 1, 15, 17, 30);
         
         WorkDuration workDuration = calculateWorkDuration(workStart, workEnd);
-        System.out.println("\n勤務時間: " + workDuration);
+        IO.println("\n勤務時間: " + workDuration);
         
         // 日付の差分（わかりやすい形式）
         LocalDate date1 = LocalDate.of(2024, 1, 1);
         LocalDate date2 = LocalDate.of(2025, 3, 15);
         String diff = getReadableDateDifference(date1, date2);
-        System.out.println("\n" + date1 + " から " + date2 + " まで: " + diff);
-        System.out.println();
+        IO.println("\n" + date1 + " から " + date2 + " まで: " + diff);
+        IO.println();
     }
     
     private static void demonstrateTimeZoneConversions() {
-        System.out.println("4. タイムゾーン変換");
-        System.out.println("-".repeat(40));
+        IO.println("4. タイムゾーン変換");
+        IO.println("-".repeat(40));
         
         LocalDateTime localTime = LocalDateTime.of(2024, 6, 15, 14, 30);
         
         // 各地の時刻に変換
         Map<String, ZonedDateTime> worldTimes = getWorldTimes(localTime);
         worldTimes.forEach((city, time) -> 
-            System.out.println(city + ": " + 
+            IO.println(city + ": " + 
                 time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z"))));
         
         // UTC変換
         Instant utcTime = toUTC(localTime, ZoneId.of("Asia/Tokyo"));
-        System.out.println("\nUTC時刻: " + utcTime);
+        IO.println("\nUTC時刻: " + utcTime);
         
         // エポック秒
         long epochSeconds = toEpochSeconds(localTime, ZoneId.systemDefault());
-        System.out.println("エポック秒: " + epochSeconds);
-        System.out.println();
+        IO.println("エポック秒: " + epochSeconds);
+        IO.println();
     }
     
     private static void demonstrateUtilityMethods() {
-        System.out.println("5. 便利なユーティリティ");
-        System.out.println("-".repeat(40));
+        IO.println("5. 便利なユーティリティ");
+        IO.println("-".repeat(40));
         
         // 日付の判定
         LocalDate testDate = LocalDate.of(2024, 2, 29);
-        System.out.println(testDate + " はうるう年？ " + isLeapYear(testDate));
-        System.out.println(testDate + " は月末？ " + isLastDayOfMonth(testDate));
+        IO.println(testDate + " はうるう年？ " + isLeapYear(testDate));
+        IO.println(testDate + " は月末？ " + isLastDayOfMonth(testDate));
         
         // 次の特定曜日
         LocalDate today = LocalDate.now();
-        System.out.println("\n今日: " + today + " (" + today.getDayOfWeek() + ")");
-        System.out.println("次の月曜日: " + getNext(today, DayOfWeek.MONDAY));
-        System.out.println("次の金曜日: " + getNext(today, DayOfWeek.FRIDAY));
+        IO.println("\n今日: " + today + " (" + today.getDayOfWeek() + ")");
+        IO.println("次の月曜日: " + getNext(today, DayOfWeek.MONDAY));
+        IO.println("次の金曜日: " + getNext(today, DayOfWeek.FRIDAY));
         
         // SQL互換フォーマット
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("\nSQL Timestamp形式: " + toSqlTimestamp(now));
-        System.out.println("SQL Date形式: " + toSqlDate(now.toLocalDate()));
+        IO.println("\nSQL Timestamp形式: " + toSqlTimestamp(now));
+        IO.println("SQL Date形式: " + toSqlDate(now.toLocalDate()));
         
         // ミリ秒精度の処理
         LocalDateTime timeWithNanos = LocalDateTime.now();
         LocalDateTime timeWithoutNanos = removeNanos(timeWithNanos);
-        System.out.println("\nナノ秒あり: " + timeWithNanos);
-        System.out.println("ナノ秒なし: " + timeWithoutNanos);
+        IO.println("\nナノ秒あり: " + timeWithNanos);
+        IO.println("ナノ秒なし: " + timeWithoutNanos);
     }
     
     // ===== ユーティリティメソッドの実装 =====

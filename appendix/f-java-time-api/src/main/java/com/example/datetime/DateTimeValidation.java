@@ -4,11 +4,10 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.Scanner;
 
 public class DateTimeValidation {
     public static void main(String[] args) {
-        System.out.println("=== 日付時刻の妥当性検証デモ ===\n");
+        IO.println("=== 日付時刻の妥当性検証デモ ===\n");
         
         // 1. 基本的な日付妥当性チェック
         demonstrateBasicValidation();
@@ -24,8 +23,8 @@ public class DateTimeValidation {
     }
     
     private static void demonstrateBasicValidation() {
-        System.out.println("1. 基本的な日付妥当性チェック");
-        System.out.println("-".repeat(40));
+        IO.println("1. 基本的な日付妥当性チェック");
+        IO.println("-".repeat(40));
         
         String[] testDates = {
             "2024-02-29",  // うるう年の2月29日
@@ -41,18 +40,18 @@ public class DateTimeValidation {
         for (String dateStr : testDates) {
             try {
                 LocalDate date = LocalDate.parse(dateStr, formatter);
-                System.out.println(dateStr + " → 有効 (" + date + ")");
+                IO.println(dateStr + " → 有効 (" + date + ")");
             } catch (DateTimeParseException e) {
-                System.out.println(dateStr + " → 無効 (理由: " + 
+                IO.println(dateStr + " → 無効 (理由: " + 
                     e.getMessage().split("\n")[0] + ")");
             }
         }
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateStrictValidation() {
-        System.out.println("2. 厳密な日付検証（ResolverStyle.STRICT使用）");
-        System.out.println("-".repeat(40));
+        IO.println("2. 厳密な日付検証（ResolverStyle.STRICT使用）");
+        IO.println("-".repeat(40));
         
         // 厳密なフォーマッタ（日付の妥当性を厳格にチェック）
         DateTimeFormatter strictFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd")
@@ -69,30 +68,30 @@ public class DateTimeValidation {
         };
         
         for (String dateStr : testCases) {
-            System.out.println("\n入力: " + dateStr);
+            IO.println("\n入力: " + dateStr);
             
             // 厳密な検証
             try {
                 LocalDate strictDate = LocalDate.parse(dateStr, strictFormatter);
-                System.out.println("  STRICT: 有効 (" + strictDate + ")");
+                IO.println("  STRICT: 有効 (" + strictDate + ")");
             } catch (DateTimeParseException e) {
-                System.out.println("  STRICT: 無効");
+                IO.println("  STRICT: 無効");
             }
             
             // 寛容な検証
             try {
                 LocalDate lenientDate = LocalDate.parse(dateStr, lenientFormatter);
-                System.out.println("  LENIENT: 補正されて有効 (" + lenientDate + ")");
+                IO.println("  LENIENT: 補正されて有効 (" + lenientDate + ")");
             } catch (DateTimeParseException e) {
-                System.out.println("  LENIENT: 無効");
+                IO.println("  LENIENT: 無効");
             }
         }
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateCustomValidation() {
-        System.out.println("3. カスタム検証ロジック");
-        System.out.println("-".repeat(40));
+        IO.println("3. カスタム検証ロジック");
+        IO.println("-".repeat(40));
         
         // テストケース
         LocalDate[] dates = {
@@ -105,31 +104,30 @@ public class DateTimeValidation {
         };
         
         for (LocalDate date : dates) {
-            System.out.println("\n日付: " + date + " (" + 
+            IO.println("\n日付: " + date + " (" + 
                 date.getDayOfWeek() + ")");
-            System.out.println("  営業日？ " + isBusinessDay(date));
-            System.out.println("  予約可能？ " + isReservationAvailable(date));
-            System.out.println("  有効範囲内？ " + isWithinValidRange(date));
+            IO.println("  営業日？ " + isBusinessDay(date));
+            IO.println("  予約可能？ " + isReservationAvailable(date));
+            IO.println("  有効範囲内？ " + isWithinValidRange(date));
         }
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateInteractiveValidation() {
-        System.out.println("4. 対話的な日付入力検証");
-        System.out.println("-".repeat(40));
-        System.out.println("日付を入力してください（形式: yyyy-MM-dd）");
-        System.out.println("終了するには 'quit' と入力してください。\n");
+        IO.println("4. 対話的な日付入力検証");
+        IO.println("-".repeat(40));
+        IO.println("日付を入力してください（形式: yyyy-MM-dd）");
+        IO.println("終了するには 'quit' と入力してください。\n");
         
-        Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE
             .withResolverStyle(ResolverStyle.STRICT);
         
         while (true) {
-            System.out.print("日付を入力: ");
-            if (!scanner.hasNextLine()) {
+            String line = IO.readln("日付を入力: ");
+            if (line == null) {
                 break;  // 入力の終わり（Ctrl+DやCtrl+Z）でも終了する
             }
-            String input = scanner.nextLine().trim();
+            String input = line.trim();
             
             if ("quit".equalsIgnoreCase(input)) {
                 break;
@@ -139,19 +137,17 @@ public class DateTimeValidation {
             
             if (result.isValid()) {
                 LocalDate date = result.getDate();
-                System.out.println("✓ 有効な日付です: " + date);
-                System.out.println("  曜日: " + date.getDayOfWeek());
-                System.out.println("  今日から: " + 
+                IO.println("✓ 有効な日付です: " + date);
+                IO.println("  曜日: " + date.getDayOfWeek());
+                IO.println("  今日から: " + 
                     Period.between(LocalDate.now(), date));
-                System.out.println("  年齢計算: " + 
+                IO.println("  年齢計算: " + 
                     calculateAge(date) + "歳");
             } else {
-                System.out.println("✗ 無効な日付です: " + result.getErrorMessage());
+                IO.println("✗ 無効な日付です: " + result.getErrorMessage());
             }
-            System.out.println();
+            IO.println();
         }
-        
-        scanner.close();
     }
     
     // カスタム検証メソッド

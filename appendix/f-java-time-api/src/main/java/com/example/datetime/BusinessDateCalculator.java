@@ -31,7 +31,7 @@ public class BusinessDateCalculator {
     );
     
     public static void main(String[] args) {
-        System.out.println("=== 営業日計算デモ ===\n");
+        IO.println("=== 営業日計算デモ ===\n");
         
         LocalDate startDate = LocalDate.of(2024, 1, 1);
         LocalDate endDate = LocalDate.of(2024, 12, 31);
@@ -53,27 +53,27 @@ public class BusinessDateCalculator {
     }
     
     private static void demonstrateBusinessDayCount(LocalDate start, LocalDate end) {
-        System.out.println("1. 営業日数の計算");
-        System.out.println("-".repeat(40));
+        IO.println("1. 営業日数の計算");
+        IO.println("-".repeat(40));
         
         long totalDays = ChronoUnit.DAYS.between(start, end) + 1;
         long businessDays = countBusinessDays(start, end);
         long weekends = countWeekends(start, end);
         long holidays = countHolidays(start, end);
         
-        System.out.println("期間: " + start + " ～ " + end);
-        System.out.println("総日数: " + totalDays + "日");
-        System.out.println("営業日数: " + businessDays + "日");
-        System.out.println("週末日数: " + weekends + "日");
-        System.out.println("祝日数: " + holidays + "日");
-        System.out.println("営業日率: " + 
+        IO.println("期間: " + start + " ～ " + end);
+        IO.println("総日数: " + totalDays + "日");
+        IO.println("営業日数: " + businessDays + "日");
+        IO.println("週末日数: " + weekends + "日");
+        IO.println("祝日数: " + holidays + "日");
+        IO.println("営業日率: " + 
             String.format("%.1f%%", (double) businessDays / totalDays * 100));
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateNextBusinessDay() {
-        System.out.println("2. 次の営業日を求める");
-        System.out.println("-".repeat(40));
+        IO.println("2. 次の営業日を求める");
+        IO.println("-".repeat(40));
         
         LocalDate[] testDates = {
             LocalDate.of(2024, 1, 5),   // 金曜日
@@ -85,36 +85,36 @@ public class BusinessDateCalculator {
         
         for (LocalDate date : testDates) {
             LocalDate nextBizDay = getNextBusinessDay(date);
-            System.out.println(date + " (" + date.getDayOfWeek() + ") → " +
+            IO.println(date + " (" + date.getDayOfWeek() + ") → " +
                              "次の営業日: " + nextBizDay + 
                              " (" + nextBizDay.getDayOfWeek() + ")");
         }
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateAddBusinessDays() {
-        System.out.println("3. N営業日後を計算");
-        System.out.println("-".repeat(40));
+        IO.println("3. N営業日後を計算");
+        IO.println("-".repeat(40));
         
         LocalDate baseDate = LocalDate.of(2024, 1, 1);
         int[] daysToAdd = {1, 5, 10, 20, 30};
         
-        System.out.println("基準日: " + baseDate + " (" + baseDate.getDayOfWeek() + ")");
-        System.out.println();
+        IO.println("基準日: " + baseDate + " (" + baseDate.getDayOfWeek() + ")");
+        IO.println();
         
         for (int days : daysToAdd) {
             LocalDate resultDate = addBusinessDays(baseDate, days);
             long calendarDays = ChronoUnit.DAYS.between(baseDate, resultDate);
-            System.out.println(days + "営業日後: " + resultDate + 
+            IO.println(days + "営業日後: " + resultDate + 
                              " (" + resultDate.getDayOfWeek() + ")" +
                              " [暦日数: " + calendarDays + "日]");
         }
-        System.out.println();
+        IO.println();
     }
     
     private static void demonstrateMonthlyBusinessCalendar() {
-        System.out.println("4. 月間営業日カレンダー（2024年5月）");
-        System.out.println("-".repeat(40));
+        IO.println("4. 月間営業日カレンダー（2024年5月）");
+        IO.println("-".repeat(40));
         
         YearMonth yearMonth = YearMonth.of(2024, 5);
         printBusinessCalendar(yearMonth);
@@ -124,30 +124,30 @@ public class BusinessDateCalculator {
         LocalDate monthEnd = yearMonth.atEndOfMonth();
         long businessDays = countBusinessDays(monthStart, monthEnd);
         
-        System.out.println("\n月間統計:");
-        System.out.println("営業日数: " + businessDays + "日");
-        System.out.println("非営業日数: " + (yearMonth.lengthOfMonth() - businessDays) + "日");
-        System.out.println();
+        IO.println("\n月間統計:");
+        IO.println("営業日数: " + businessDays + "日");
+        IO.println("非営業日数: " + (yearMonth.lengthOfMonth() - businessDays) + "日");
+        IO.println();
     }
     
     private static void demonstrateProjectDeadline() {
-        System.out.println("5. プロジェクト期限計算");
-        System.out.println("-".repeat(40));
+        IO.println("5. プロジェクト期限計算");
+        IO.println("-".repeat(40));
         
         LocalDate projectStart = LocalDate.of(2024, 1, 10);
         int[] workDaysRequired = {10, 20, 45, 60};
         
-        System.out.println("プロジェクト開始日: " + projectStart);
-        System.out.println();
+        IO.println("プロジェクト開始日: " + projectStart);
+        IO.println();
         
         for (int workDays : workDaysRequired) {
             ProjectSchedule schedule = calculateProjectSchedule(projectStart, workDays);
-            System.out.println("必要営業日数: " + workDays + "日");
-            System.out.println("  期限: " + schedule.deadline);
-            System.out.println("  経過暦日数: " + schedule.calendarDays + "日");
-            System.out.println("  含まれる週末: " + schedule.weekends + "日");
-            System.out.println("  含まれる祝日: " + schedule.holidays + "日");
-            System.out.println();
+            IO.println("必要営業日数: " + workDays + "日");
+            IO.println("  期限: " + schedule.deadline);
+            IO.println("  経過暦日数: " + schedule.calendarDays + "日");
+            IO.println("  含まれる週末: " + schedule.weekends + "日");
+            IO.println("  含まれる祝日: " + schedule.holidays + "日");
+            IO.println();
         }
     }
     
@@ -231,14 +231,14 @@ public class BusinessDateCalculator {
     }
     
     private static void printBusinessCalendar(YearMonth yearMonth) {
-        System.out.println("\n日 月 火 水 木 金 土");
+        IO.println("\n日 月 火 水 木 金 土");
         
         LocalDate firstDay = yearMonth.atDay(1);
         int dayOfWeekValue = firstDay.getDayOfWeek().getValue();
         
         // 月初までの空白
         for (int i = 0; i < dayOfWeekValue % 7; i++) {
-            System.out.print("   ");
+            IO.print("   ");
         }
         
         // 各日を出力
@@ -246,18 +246,18 @@ public class BusinessDateCalculator {
             LocalDate date = yearMonth.atDay(day);
             
             if (isHoliday(date)) {
-                System.out.printf("*%2d", day);  // 祝日
+                IO.print("*%2d".formatted(day));  // 祝日
             } else if (isWeekend(date)) {
-                System.out.printf("-%2d", day);  // 週末
+                IO.print("-%2d".formatted(day));  // 週末
             } else {
-                System.out.printf("%3d", day);   // 営業日
+                IO.print("%3d".formatted(day));   // 営業日
             }
             
             if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                System.out.println();
+                IO.println();
             }
         }
-        System.out.println("\n\n凡例: * 祝日, - 週末");
+        IO.println("\n\n凡例: * 祝日, - 週末");
     }
     
     private static ProjectSchedule calculateProjectSchedule(LocalDate start, 
