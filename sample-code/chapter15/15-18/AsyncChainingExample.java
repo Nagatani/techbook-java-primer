@@ -6,7 +6,7 @@ public class AsyncChainingExample {
     // ユーザー情報を取得
     static CompletableFuture<User> fetchUser(String userId) {
         return CompletableFuture.supplyAsync(() -> {
-            System.out.println("Fetching user: " + userId);
+            IO.println("Fetching user: " + userId);
             // データベースアクセスをシミュレート
             sleep(1000);
             return new User(userId, "User-" + userId);
@@ -16,7 +16,7 @@ public class AsyncChainingExample {
     // ユーザーの注文履歴を取得
     static CompletableFuture<List<Order>> fetchOrders(User user) {
         return CompletableFuture.supplyAsync(() -> {
-            System.out.println("Fetching orders for: " + user.getName());
+            IO.println("Fetching orders for: " + user.getName());
             sleep(1500);
             return List.of(
                 new Order("Order-1", 1000),
@@ -27,7 +27,7 @@ public class AsyncChainingExample {
     
     // 注文の合計金額を計算
     static int calculateTotal(List<Order> orders) {
-        System.out.println("Calculating total...");
+        IO.println("Calculating total...");
         return orders.stream()
             .mapToInt(Order::getAmount)
             .sum();
@@ -43,7 +43,7 @@ public class AsyncChainingExample {
                 return 0;  // デフォルト値を返す
             });
         
-        System.out.println("Total amount: " + totalFuture.get());
+        IO.println("Total amount: " + totalFuture.get());
     }
     
     private static void sleep(long millis) {

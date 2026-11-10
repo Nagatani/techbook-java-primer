@@ -10,9 +10,9 @@ class BankAccount {
         
         // 残高の更新部分だけを同期化
         synchronized (lock) {
-            System.out.println("入金前残高: " + balance);
+            IO.println("入金前残高: " + balance);
             balance += amount;
-            System.out.println("入金後残高: " + balance);
+            IO.println("入金後残高: " + balance);
         }
     }
     
@@ -23,9 +23,9 @@ class BankAccount {
         
         synchronized (lock) {
             if (balance >= amount) {
-                System.out.println("引き出し前残高: " + balance);
+                IO.println("引き出し前残高: " + balance);
                 balance -= amount;
-                System.out.println("引き出し後残高: " + balance);
+                IO.println("引き出し後残高: " + balance);
                 return true;
             }
             return false;

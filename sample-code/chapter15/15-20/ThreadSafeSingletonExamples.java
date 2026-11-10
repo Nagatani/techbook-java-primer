@@ -52,7 +52,7 @@ public class ThreadSafeSingletonExamples {
         INSTANCE;
         
         public void doSomething() {
-            System.out.println("Enum singleton method");
+            IO.println("Enum singleton method");
         }
     }
     
@@ -65,7 +65,7 @@ public class ThreadSafeSingletonExamples {
             executor.execute(() -> {
                 // 各実装のインスタンスを取得
                 HolderSingleton singleton = HolderSingleton.getInstance();
-                System.out.println(Thread.currentThread().getName() + 
+                IO.println(Thread.currentThread().getName() + 
                     ": " + singleton.hashCode());
                 latch.countDown();
             });

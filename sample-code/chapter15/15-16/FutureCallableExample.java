@@ -14,11 +14,11 @@ public class FutureCallableExample {
         
         @Override
         public Long call() throws Exception {
-            System.out.println("計算開始: フィボナッチ数列の第" + n + "項");
+            IO.println("計算開始: フィボナッチ数列の第" + n + "項");
             long start = System.currentTimeMillis();
             long result = fibonacci(n);
             long time = System.currentTimeMillis() - start;
-            System.out.printf("計算完了: F(%d) = %d (所要時間: %dms)%n", n, result, time);
+            IO.println("計算完了: F(%d) = %d (所要時間: %dms)".formatted(n, result, time));
             return result;
         }
         
@@ -40,18 +40,18 @@ public class FutureCallableExample {
         }
         
         // 他の処理を実行できる
-        System.out.println("計算中に他の処理を実行...");
+        IO.println("計算中に他の処理を実行...");
         Thread.sleep(100);
         
         // 結果を取得（必要になったタイミングで）
-        System.out.println("\n=== 計算結果 ===");
+        IO.println("\n=== 計算結果 ===");
         for (int i = 0; i < futures.size(); i++) {
             try {
                 // get()は結果が得られるまでブロック
                 Long result = futures.get(i).get(10, TimeUnit.SECONDS);
-                System.out.println("F(" + numbers[i] + ") = " + result);
+                IO.println("F(" + numbers[i] + ") = " + result);
             } catch (TimeoutException e) {
-                System.out.println("F(" + numbers[i] + ") = タイムアウト");
+                IO.println("F(" + numbers[i] + ") = タイムアウト");
                 futures.get(i).cancel(true); // タスクをキャンセル
             }
         }

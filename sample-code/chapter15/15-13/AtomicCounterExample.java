@@ -17,7 +17,7 @@ public class AtomicCounterExample {
                     // アトミックなインクリメント操作
                     int newValue = counter.incrementAndGet();
                     if (newValue % 1000 == 0) {
-                        System.out.println("Counter reached: " + newValue);
+                        IO.println("Counter reached: " + newValue);
                     }
                 }
             });
@@ -26,7 +26,7 @@ public class AtomicCounterExample {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
         
-        System.out.println("Final counter value: " + counter.get());
+        IO.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる
     }
     
@@ -36,14 +36,14 @@ public class AtomicCounterExample {
         
         // 現在値を取得して、新しい値を設定
         int oldValue = value.getAndSet(20);
-        System.out.println("Old: " + oldValue + ", New: " + value.get());
+        IO.println("Old: " + oldValue + ", New: " + value.get());
         
         // 条件付き更新（CAS操作）
         boolean updated = value.compareAndSet(20, 30);
-        System.out.println("Updated: " + updated + ", Value: " + value.get());
+        IO.println("Updated: " + updated + ", Value: " + value.get());
         
         // 加算操作
         int result = value.addAndGet(5);
-        System.out.println("After adding 5: " + result);
+        IO.println("After adding 5: " + result);
     }
 }

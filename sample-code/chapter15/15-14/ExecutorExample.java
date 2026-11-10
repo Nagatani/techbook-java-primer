@@ -10,7 +10,7 @@ public class ExecutorExample {
         for (int i = 0; i < 10; i++) {
             final int taskId = i;
             executor.execute(() -> {
-                System.out.println("Task " + taskId + " is being executed by " + 
+                IO.println("Task " + taskId + " is being executed by " + 
                     Thread.currentThread().getName());
                 try {
                     Thread.sleep(1000); // 1秒の処理をシミュレート

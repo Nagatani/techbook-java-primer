@@ -80,7 +80,7 @@ ExecutorServiceを使った実用的な非同期処理の実装、デッドロ�
 ```java
 public class SingleThreadExample {
     public static void main(String[] args) {
-        System.out.println("朝食の準備を開始");
+        IO.println("朝食の準備を開始");
         
         // コーヒーを淹れる（3秒かかる）
         makeCoffee();
@@ -91,14 +91,14 @@ public class SingleThreadExample {
         // 卵を茹でる（5秒かかる）
         boilEgg();
         
-        System.out.println("朝食の準備完了！");
+        IO.println("朝食の準備完了！");
         // 合計: 10秒かかる
     }
     
     private static void makeCoffee() {
-        System.out.println("コーヒーを淹れています...");
+        IO.println("コーヒーを淹れています...");
         sleep(3000);
-        System.out.println("コーヒーができました");
+        IO.println("コーヒーができました");
     }
     
     private static void makeToast() {
@@ -134,7 +134,7 @@ public class SingleThreadExample {
 ```java
 public class MultiThreadExample {
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("朝食の準備を開始");
+        IO.println("朝食の準備を開始");
         
         // それぞれ別々のスレッドで同時に実行
         Thread coffeeThread = new Thread(() -> makeCoffee());
@@ -151,7 +151,7 @@ public class MultiThreadExample {
         toastThread.join();
         eggThread.join();
         
-        System.out.println("朝食の準備完了！");
+        IO.println("朝食の準備完了！");
         // 合計: 約5秒（もっとも時間のかかる卵の時間）で完了
     }
     
@@ -190,7 +190,7 @@ public class MultiThreadExample {
 class MyThread extends Thread {
     @Override
     public void run() {
-        System.out.println("Thread継承方式で実行");
+        IO.println("Thread継承方式で実行");
     }
 }
 
@@ -198,7 +198,7 @@ class MyThread extends Thread {
 class MyTask implements Runnable {
     @Override
     public void run() {
-        System.out.println("Runnable実装方式で実行");
+        IO.println("Runnable実装方式で実行");
     }
 }
 
@@ -207,7 +207,7 @@ class MyTask implements Runnable {
 // この方式は一度だけ実行する短時間のタスクに最適で、無名クラスの冗長さを排除できます。
 // 関数型プログラミングのパラダイムに従い、実行される処理（タスク）を明確に表現できます。
 new Thread(() -> {
-    System.out.println("ラムダ式方式で実行");
+    IO.println("ラムダ式方式で実行");
 }).start();
 ```
 
@@ -880,7 +880,7 @@ Javaでスレッドを作成するには、主に`Runnable`インターフェイ
 class MyTask implements Runnable {
     @Override
     public void run() {
-        System.out.println("タスク実行中: " + Thread.currentThread().getName());
+        IO.println("タスク実行中: " + Thread.currentThread().getName());
     }
 }
 
@@ -892,7 +892,7 @@ public class Main {
 
         // ラムダ式を使えばさらに簡潔
         new Thread(() -> {
-            System.out.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
+            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
         }).start();
     }
 }
@@ -967,9 +967,9 @@ class BankAccount {
         
         // 残高の更新部分だけを同期化
         synchronized (lock) {
-            System.out.println("入金前残高: " + balance);
+            IO.println("入金前残高: " + balance);
             balance += amount;
-            System.out.println("入金後残高: " + balance);
+            IO.println("入金後残高: " + balance);
         }
     }
     
@@ -980,9 +980,9 @@ class BankAccount {
         
         synchronized (lock) {
             if (balance >= amount) {
-                System.out.println("引き出し前残高: " + balance);
+                IO.println("引き出し前残高: " + balance);
                 balance -= amount;
-                System.out.println("引き出し後残高: " + balance);
+                IO.println("引き出し後残高: " + balance);
                 return true;
             }
             return false;
@@ -1014,10 +1014,10 @@ class ThreadStopExample {
             while (!stopRequested) {
                 count++;
                 if (count % 1000000 == 0) {
-                    System.out.println("Working... count: " + count);
+                    IO.println("Working... count: " + count);
                 }
             }
-            System.out.println("Worker stopped at count: " + count);
+            IO.println("Worker stopped at count: " + count);
         });
         worker.start();
     }
@@ -1025,7 +1025,7 @@ class ThreadStopExample {
     public void stopWorker() {
         // volatileにより、この変更は即座に他のスレッドから見える
         stopRequested = true;
-        System.out.println("Stop requested");
+        IO.println("Stop requested");
     }
 }
 
@@ -1073,7 +1073,7 @@ public class AtomicCounterExample {
                     // アトミックなインクリメント操作
                     int newValue = counter.incrementAndGet();
                     if (newValue % 1000 == 0) {
-                        System.out.println("Counter reached: " + newValue);
+                        IO.println("Counter reached: " + newValue);
                     }
                 }
             });
@@ -1082,7 +1082,7 @@ public class AtomicCounterExample {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
         
-        System.out.println("Final counter value: " + counter.get());
+        IO.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる
     }
     // ...
@@ -1126,7 +1126,7 @@ public class ExecutorExample {
         for (int i = 0; i < 10; i++) {
             final int taskId = i;
             executor.execute(() -> {
-                System.out.println("Task " + taskId + " is being executed by " + 
+                IO.println("Task " + taskId + " is being executed by " + 
                     Thread.currentThread().getName());
                 try {
                     Thread.sleep(1000); // 1秒の処理をシミュレート
@@ -1179,8 +1179,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToProduce; i++) {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
-                    System.out.printf("%s produced: %d (queue size: %d)%n", 
-                        name, item, queue.size());
+                    IO.println("%s produced: %d (queue size: %d)".formatted(
+                        name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -1198,8 +1198,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToConsume; i++) {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
-                    System.out.printf("%s consumed: %d (queue size: %d)%n", 
-                        name, item, queue.size());
+                    IO.println("%s consumed: %d (queue size: %d)".formatted(
+                        name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -1248,11 +1248,11 @@ public class FutureCallableExample {
         // ...
         @Override
         public Long call() throws Exception {
-            System.out.println("計算開始: フィボナッチ数列の第" + n + "項");
+            IO.println("計算開始: フィボナッチ数列の第" + n + "項");
             long start = System.currentTimeMillis();
             long result = fibonacci(n);
             long time = System.currentTimeMillis() - start;
-            System.out.printf("計算完了: F(%d) = %d (所要時間: %dms)%n", n, result, time);
+            IO.println("計算完了: F(%d) = %d (所要時間: %dms)".formatted(n, result, time));
             return result;
         }
         // ...
@@ -1270,18 +1270,18 @@ public class FutureCallableExample {
         }
         
         // 他の処理を実行できる
-        System.out.println("計算中に他の処理を実行...");
+        IO.println("計算中に他の処理を実行...");
         Thread.sleep(100);
         
         // 結果を取得（必要になったタイミングで）
-        System.out.println("\n=== 計算結果 ===");
+        IO.println("\n=== 計算結果 ===");
         for (int i = 0; i < futures.size(); i++) {
             try {
                 // get()は結果が得られるまでブロック
                 Long result = futures.get(i).get(10, TimeUnit.SECONDS);
-                System.out.println("F(" + numbers[i] + ") = " + result);
+                IO.println("F(" + numbers[i] + ") = " + result);
             } catch (TimeoutException e) {
-                System.out.println("F(" + numbers[i] + ") = タイムアウト");
+                IO.println("F(" + numbers[i] + ") = タイムアウト");
                 futures.get(i).cancel(true); // タスクをキャンセル
             }
         }
@@ -1314,7 +1314,7 @@ public class CompletableFutureExample {
         // ...
         public static CompletableFuture<String> getTemperature(String city) {
             return CompletableFuture.supplyAsync(() -> {
-                System.out.println("気温取得中: " + city);
+                IO.println("気温取得中: " + city);
                 // APIコールをシミュレート
                 try {
                     Thread.sleep(1000 + random.nextInt(1000));
@@ -1335,7 +1335,7 @@ public class CompletableFutureExample {
             .thenApply(result -> result + " -> 変換処理")
             .thenApply(result -> result + " -> 最終処理");
         
-        System.out.println("チェーン結果: " + chainedFuture.get());
+        IO.println("チェーン結果: " + chainedFuture.get());
         
         // 3. 複数の非同期処理を組み合わせる
         String[] cities = {"東京", "大阪", "名古屋"};
@@ -1349,7 +1349,7 @@ public class CompletableFutureExample {
             // 気温と湿度を組み合わせる
             return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
         })
-        .map(future -> future.thenAccept(System.out::println))
+        .map(future -> future.thenAccept(IO::println))
         .toArray(CompletableFuture[]::new);
         
         // すべての処理が完了するまで待つ
@@ -1383,7 +1383,7 @@ public class AsyncChainingExample {
     // ユーザー情報を取得
     static CompletableFuture<User> fetchUser(String userId) {
         return CompletableFuture.supplyAsync(() -> {
-            System.out.println("Fetching user: " + userId);
+            IO.println("Fetching user: " + userId);
             // データベースアクセスをシミュレート
             sleep(1000);
             return new User(userId, "User-" + userId);
@@ -1401,7 +1401,7 @@ public class AsyncChainingExample {
                 return 0;  // デフォルト値を返す
             });
         
-        System.out.println("Total amount: " + totalFuture.get());
+        IO.println("Total amount: " + totalFuture.get());
     }
     
     // ...
@@ -1519,7 +1519,7 @@ public class ThreadSafeSingletonExamples {
         INSTANCE;
         
         public void doSomething() {
-            System.out.println("Enum singleton method");
+            IO.println("Enum singleton method");
         }
     }
     // ...
@@ -1541,14 +1541,14 @@ public class ConcurrencyPitfallsAndSolutions {
         // デッドロックが発生する可能性のあるコード
         public void method1() {
             synchronized (lock1) {
-                System.out.println("Method1: lock1を取得");
+                IO.println("Method1: lock1を取得");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
                 synchronized (lock2) {
-                    System.out.println("Method1: lock2を取得");
+                    IO.println("Method1: lock2を取得");
                 }
             }
         }
@@ -1558,7 +1558,7 @@ public class ConcurrencyPitfallsAndSolutions {
         public void safeMethod1() {
             synchronized (lock1) {
                 synchronized (lock2) {
-                    System.out.println("Safe method1 実行");
+                    IO.println("Safe method1 実行");
                 }
             }
         }
@@ -1652,7 +1652,7 @@ public class ParallelDataPipeline {
         
         // 結果取得
         String result = future.get();
-        System.out.println("Pipeline result: " + result);
+        IO.println("Pipeline result: " + result);
         // ...
     }
 }
@@ -1674,7 +1674,7 @@ public class ResiliencePatterns {
                     return task.call();
                 } catch (Exception e) {
                     if (attempt < maxRetries) {
-                        System.out.println("Retry attempt " + (attempt + 1) + 
+                        IO.println("Retry attempt " + (attempt + 1) + 
                             " after " + retryDelay + "ms");
                         try {
                             Thread.sleep(retryDelay);
@@ -1699,7 +1699,7 @@ public class ResiliencePatterns {
             if (currentState == State.OPEN) {
                 if (System.currentTimeMillis() - lastFailureTime.get() > timeout) {
                     state.set(State.HALF_OPEN);
-                    System.out.println("Circuit breaker: HALF_OPEN");
+                    IO.println("Circuit breaker: HALF_OPEN");
                 } else {
                     throw new RuntimeException("Circuit breaker is OPEN");
                 }
@@ -1710,7 +1710,7 @@ public class ResiliencePatterns {
                 if (currentState == State.HALF_OPEN) {
                     state.set(State.CLOSED);
                     failureCount.set(0);
-                    System.out.println("Circuit breaker: CLOSED");
+                    IO.println("Circuit breaker: CLOSED");
                 }
                 return result;
             } catch (Exception e) {
@@ -1719,7 +1719,7 @@ public class ResiliencePatterns {
                 
                 if (failureCount.get() >= failureThreshold) {
                     state.set(State.OPEN);
-                    System.out.println("Circuit breaker: OPEN");
+                    IO.println("Circuit breaker: OPEN");
                 }
                 throw e;
             }

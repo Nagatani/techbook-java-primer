@@ -28,11 +28,11 @@ public class ParallelPerformanceExample {
         Arrays.parallelSort(array2);
         long parallelTime = System.currentTimeMillis() - startTime;
         
-        System.out.println("=== ソートベンチマーク ===");
-        System.out.println("配列サイズ: " + size);
-        System.out.println("シングルスレッド: " + singleThreadTime + "ms");
-        System.out.println("並列処理: " + parallelTime + "ms");
-        System.out.println("性能向上: " + 
+        IO.println("=== ソートベンチマーク ===");
+        IO.println("配列サイズ: " + size);
+        IO.println("シングルスレッド: " + singleThreadTime + "ms");
+        IO.println("並列処理: " + parallelTime + "ms");
+        IO.println("性能向上: " + 
             String.format("%.2fx", (double)singleThreadTime / parallelTime));
     }
     
@@ -52,11 +52,11 @@ public class ParallelPerformanceExample {
         long sum2 = Arrays.stream(numbers).parallel().sum();
         long parallelTime = System.currentTimeMillis() - startTime;
         
-        System.out.println("\n=== ストリーム処理ベンチマーク ===");
-        System.out.println("要素数: " + size);
-        System.out.println("シーケンシャル: " + sequentialTime + "ms");
-        System.out.println("並列: " + parallelTime + "ms");
-        System.out.println("性能向上: " + 
+        IO.println("\n=== ストリーム処理ベンチマーク ===");
+        IO.println("要素数: " + size);
+        IO.println("シーケンシャル: " + sequentialTime + "ms");
+        IO.println("並列: " + parallelTime + "ms");
+        IO.println("性能向上: " + 
             String.format("%.2fx", (double)sequentialTime / parallelTime));
     }
     
@@ -107,17 +107,17 @@ public class ParallelPerformanceExample {
         Long result = pool.invoke(new RecursiveSum(array, 0, size));
         long time = System.currentTimeMillis() - startTime;
         
-        System.out.println("\n=== ForkJoinPool ベンチマーク ===");
-        System.out.println("要素数: " + size);
-        System.out.println("計算結果: " + result);
-        System.out.println("処理時間: " + time + "ms");
-        System.out.println("使用スレッド数: " + pool.getParallelism());
+        IO.println("\n=== ForkJoinPool ベンチマーク ===");
+        IO.println("要素数: " + size);
+        IO.println("計算結果: " + result);
+        IO.println("処理時間: " + time + "ms");
+        IO.println("使用スレッド数: " + pool.getParallelism());
     }
     
     public static void main(String[] args) {
         // CPUコア数の確認
         int processors = Runtime.getRuntime().availableProcessors();
-        System.out.println("利用可能なCPUコア数: " + processors);
+        IO.println("利用可能なCPUコア数: " + processors);
         
         parallelSortBenchmark();
         parallelStreamExample();

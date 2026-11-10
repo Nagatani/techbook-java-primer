@@ -2,7 +2,7 @@
 class MyTask implements Runnable {
     @Override
     public void run() {
-        System.out.println("タスク実行中: " + Thread.currentThread().getName());
+        IO.println("タスク実行中: " + Thread.currentThread().getName());
     }
 }
 
@@ -14,7 +14,7 @@ public class Main {
 
         // ラムダ式を使えばさらに簡潔
         new Thread(() -> {
-            System.out.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
+            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
         }).start();
     }
 }

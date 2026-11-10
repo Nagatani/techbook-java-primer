@@ -23,7 +23,7 @@ public class ResiliencePatterns {
                     return task.call();
                 } catch (Exception e) {
                     if (attempt < maxRetries) {
-                        System.out.println("Retry attempt " + (attempt + 1) + 
+                        IO.println("Retry attempt " + (attempt + 1) + 
                             " after " + retryDelay + "ms");
                         try {
                             Thread.sleep(retryDelay);
@@ -61,7 +61,7 @@ public class ResiliencePatterns {
             if (currentState == State.OPEN) {
                 if (System.currentTimeMillis() - lastFailureTime.get() > timeout) {
                     state.set(State.HALF_OPEN);
-                    System.out.println("Circuit breaker: HALF_OPEN");
+                    IO.println("Circuit breaker: HALF_OPEN");
                 } else {
                     throw new RuntimeException("Circuit breaker is OPEN");
                 }
@@ -72,7 +72,7 @@ public class ResiliencePatterns {
                 if (currentState == State.HALF_OPEN) {
                     state.set(State.CLOSED);
                     failureCount.set(0);
-                    System.out.println("Circuit breaker: CLOSED");
+                    IO.println("Circuit breaker: CLOSED");
                 }
                 return result;
             } catch (Exception e) {
@@ -81,7 +81,7 @@ public class ResiliencePatterns {
                 
                 if (failureCount.get() >= failureThreshold) {
                     state.set(State.OPEN);
-                    System.out.println("Circuit breaker: OPEN");
+                    IO.println("Circuit breaker: OPEN");
                 }
                 throw e;
             }
@@ -100,9 +100,9 @@ public class ResiliencePatterns {
         });
         
         try {
-            System.out.println("Retry result: " + retryFuture.get());
+            IO.println("Retry result: " + retryFuture.get());
         } catch (Exception e) {
-            System.out.println("Failed after retries: " + e.getMessage());
+            IO.println("Failed after retries: " + e.getMessage());
         }
         
         // サーキットブレーカーの例
@@ -116,9 +116,9 @@ public class ResiliencePatterns {
                     }
                     return "Service response";
                 });
-                System.out.println("Request " + i + ": " + result);
+                IO.println("Request " + i + ": " + result);
             } catch (Exception e) {
-                System.out.println("Request " + i + " failed: " + e.getMessage());
+                IO.println("Request " + i + " failed: " + e.getMessage());
             }
             
             Thread.sleep(500);

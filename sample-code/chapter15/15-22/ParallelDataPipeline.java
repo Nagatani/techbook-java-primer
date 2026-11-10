@@ -46,7 +46,7 @@ public class ParallelDataPipeline {
         
         // ステージ1: データ取得
         Stage<String, String> fetchStage = url -> {
-            System.out.println("Fetching data from: " + url);
+            IO.println("Fetching data from: " + url);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -57,13 +57,13 @@ public class ParallelDataPipeline {
         
         // ステージ2: データ変換
         Stage<String, String> transformStage = data -> {
-            System.out.println("Transforming: " + data);
+            IO.println("Transforming: " + data);
             return data.toUpperCase();
         };
         
         // ステージ3: データ保存
         Stage<String, String> saveStage = data -> {
-            System.out.println("Saving: " + data);
+            IO.println("Saving: " + data);
             return "Saved: " + data;
         };
         
@@ -76,7 +76,7 @@ public class ParallelDataPipeline {
         
         // 結果取得
         String result = future.get();
-        System.out.println("Pipeline result: " + result);
+        IO.println("Pipeline result: " + result);
         
         pipeline.shutdown();
     }

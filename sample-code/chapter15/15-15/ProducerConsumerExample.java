@@ -30,8 +30,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToProduce; i++) {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
-                    System.out.printf("%s produced: %d (queue size: %d)%n", 
-                        name, item, queue.size());
+                    IO.println("%s produced: %d (queue size: %d)".formatted(
+                        name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -56,8 +56,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToConsume; i++) {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
-                    System.out.printf("%s consumed: %d (queue size: %d)%n", 
-                        name, item, queue.size());
+                    IO.println("%s consumed: %d (queue size: %d)".formatted(
+                        name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -79,9 +79,9 @@ public class ProducerConsumerExample {
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.SECONDS);
         
-        System.out.println("\n=== 最終結果 ===");
-        System.out.println("生産された総数: " + producedCount.get());
-        System.out.println("消費された総数: " + consumedCount.get());
-        System.out.println("キューの残り: " + queue.size());
+        IO.println("\n=== 最終結果 ===");
+        IO.println("生産された総数: " + producedCount.get());
+        IO.println("消費された総数: " + consumedCount.get());
+        IO.println("キューの残り: " + queue.size());
     }
 }

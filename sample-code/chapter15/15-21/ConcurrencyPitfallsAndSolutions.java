@@ -12,28 +12,28 @@ public class ConcurrencyPitfallsAndSolutions {
         // デッドロックが発生する可能性のあるコード
         public void method1() {
             synchronized (lock1) {
-                System.out.println("Method1: lock1を取得");
+                IO.println("Method1: lock1を取得");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
                 synchronized (lock2) {
-                    System.out.println("Method1: lock2を取得");
+                    IO.println("Method1: lock2を取得");
                 }
             }
         }
         
         public void method2() {
             synchronized (lock2) {
-                System.out.println("Method2: lock2を取得");
+                IO.println("Method2: lock2を取得");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
                 synchronized (lock1) {
-                    System.out.println("Method2: lock1を取得");
+                    IO.println("Method2: lock1を取得");
                 }
             }
         }
@@ -42,7 +42,7 @@ public class ConcurrencyPitfallsAndSolutions {
         public void safeMethod1() {
             synchronized (lock1) {
                 synchronized (lock2) {
-                    System.out.println("Safe method1 実行");
+                    IO.println("Safe method1 実行");
                 }
             }
         }
@@ -50,7 +50,7 @@ public class ConcurrencyPitfallsAndSolutions {
         public void safeMethod2() {
             synchronized (lock1) {  // 同じ順序でロック
                 synchronized (lock2) {
-                    System.out.println("Safe method2 実行");
+                    IO.println("Safe method2 実行");
                 }
             }
         }
@@ -104,7 +104,7 @@ public class ConcurrencyPitfallsAndSolutions {
         // 誤り: ExecutorServiceを確実にシャットダウンしない
         public void causeThreadLeak() {
             ExecutorService executor = Executors.newFixedThreadPool(10);
-            executor.execute(() -> System.out.println("Task"));
+            executor.execute(() -> IO.println("Task"));
             // executorをシャットダウンしないとスレッドがリーク！
         }
         
@@ -112,7 +112,7 @@ public class ConcurrencyPitfallsAndSolutions {
         public void preventThreadLeak() {
             ExecutorService executor = Executors.newFixedThreadPool(10);
             try {
-                executor.execute(() -> System.out.println("Task"));
+                executor.execute(() -> IO.println("Task"));
             } finally {
                 executor.shutdown();
                 try {
@@ -128,7 +128,7 @@ public class ConcurrencyPitfallsAndSolutions {
     }
     
     public static void main(String[] args) {
-        System.out.println("並行処理の一般的な落とし穴の例");
+        IO.println("並行処理の一般的な落とし穴の例");
         
         // デッドロックの回避例
         DeadlockExample example = new DeadlockExample();

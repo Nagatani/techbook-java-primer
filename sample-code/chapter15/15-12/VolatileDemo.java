@@ -9,10 +9,10 @@ class ThreadStopExample {
             while (!stopRequested) {
                 count++;
                 if (count % 1000000 == 0) {
-                    System.out.println("Working... count: " + count);
+                    IO.println("Working... count: " + count);
                 }
             }
-            System.out.println("Worker stopped at count: " + count);
+            IO.println("Worker stopped at count: " + count);
         });
         worker.start();
     }
@@ -20,7 +20,7 @@ class ThreadStopExample {
     public void stopWorker() {
         // volatileにより、この変更は即座に他のスレッドから見える
         stopRequested = true;
-        System.out.println("Stop requested");
+        IO.println("Stop requested");
     }
 }
 

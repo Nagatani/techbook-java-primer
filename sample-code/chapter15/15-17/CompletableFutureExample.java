@@ -11,7 +11,7 @@ public class CompletableFutureExample {
         
         public static CompletableFuture<String> getTemperature(String city) {
             return CompletableFuture.supplyAsync(() -> {
-                System.out.println("気温取得中: " + city);
+                IO.println("気温取得中: " + city);
                 // APIコールをシミュレート
                 try {
                     Thread.sleep(1000 + random.nextInt(1000));
@@ -25,7 +25,7 @@ public class CompletableFutureExample {
         
         public static CompletableFuture<String> getHumidity(String city) {
             return CompletableFuture.supplyAsync(() -> {
-                System.out.println("湿度取得中: " + city);
+                IO.println("湿度取得中: " + city);
                 try {
                     Thread.sleep(1000 + random.nextInt(1000));
                 } catch (InterruptedException e) {
@@ -40,7 +40,7 @@ public class CompletableFutureExample {
     public static void main(String[] args) throws Exception {
         // 1. 単純な非同期処理
         CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("非同期タスク開始");
+            IO.println("非同期タスク開始");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -54,7 +54,7 @@ public class CompletableFutureExample {
             .thenApply(result -> result + " -> 変換処理")
             .thenApply(result -> result + " -> 最終処理");
         
-        System.out.println("チェーン結果: " + chainedFuture.get());
+        IO.println("チェーン結果: " + chainedFuture.get());
         
         // 3. 複数の非同期処理を組み合わせる
         String[] cities = {"東京", "大阪", "名古屋"};
@@ -68,7 +68,7 @@ public class CompletableFutureExample {
             // 気温と湿度を組み合わせる
             return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
         })
-        .map(future -> future.thenAccept(System.out::println))
+        .map(future -> future.thenAccept(IO::println))
         .toArray(CompletableFuture[]::new);
         
         // すべての処理が完了するまで待つ
@@ -87,6 +87,6 @@ public class CompletableFutureExample {
             .orTimeout(2, TimeUnit.SECONDS)
             .exceptionally(e -> "タイムアウトしました");
         
-        System.out.println("\nタイムアウト処理: " + timeoutFuture.get());
+        IO.println("\nタイムアウト処理: " + timeoutFuture.get());
     }
 }

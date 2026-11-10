@@ -1,6 +1,6 @@
 public class SingleThreadExample {
     public static void main(String[] args) {
-        System.out.println("朝食の準備を開始");
+        IO.println("朝食の準備を開始");
         
         // コーヒーを淹れる（3秒かかる）
         makeCoffee();
@@ -11,26 +11,26 @@ public class SingleThreadExample {
         // 卵を茹でる（5秒かかる）
         boilEgg();
         
-        System.out.println("朝食の準備完了！");
+        IO.println("朝食の準備完了！");
         // 合計: 10秒かかる
     }
     
     private static void makeCoffee() {
-        System.out.println("コーヒーを淹れています...");
+        IO.println("コーヒーを淹れています...");
         sleep(3000);
-        System.out.println("コーヒーができました");
+        IO.println("コーヒーができました");
     }
     
     private static void makeToast() {
-        System.out.println("トーストを焼いています...");
+        IO.println("トーストを焼いています...");
         sleep(2000);
-        System.out.println("トーストができました");
+        IO.println("トーストができました");
     }
     
     private static void boilEgg() {
-        System.out.println("卵を茹でています...");
+        IO.println("卵を茹でています...");
         sleep(5000);
-        System.out.println("ゆで卵ができました");
+        IO.println("ゆで卵ができました");
     }
     
     private static void sleep(int milliseconds) {
