@@ -1,6 +1,6 @@
 # <b>付録B</b> <span>技術的な詳細解説（Deep Dive）インデックス</span> <small>上級者向け技術解説</small>
 
-この付録では、本書の各章で扱った技術的概念について、より深い理解を提供します。各付録は、GitHubリポジトリのhttps://github.com/Nagatani/techbook-java-primer/tree/main/appendix/ディレクトリに実装例とともに提供されています。
+この付録では、本書の各章で扱った技術的概念について、より深い理解を提供します。各付録は、GitHubリポジトリの`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/`ディレクトリに実装例とともに提供されています。
 
 ## 付録リソース一覧
 
