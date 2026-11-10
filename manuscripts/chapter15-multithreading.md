@@ -318,7 +318,7 @@ class UnsafeCounter {
 
 <div class="figure">
 
-![synchronizedによる排他制御メカニズム](images/diagrams/figure15-02.png)
+![synchronizedによる排他制御メカニズム](images/diagrams/chapter15-synchronization.png)
 
 </div>
 
@@ -865,7 +865,7 @@ Javaでスレッドを作成するには、主に`Runnable`インターフェイ
 
 <div class="figure">
 
-![スレッドのライフサイクルと状態遷移](images/diagrams/figure15-01.png)
+![スレッドのライフサイクルと状態遷移](images/diagrams/chapter15-thread-lifecycle.png)
 
 </div>
 

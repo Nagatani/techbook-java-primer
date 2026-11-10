@@ -129,7 +129,7 @@ public class WindowSettings {
 
 <div class="figure">
 
-![Swingコンポーネントの継承階層](images/diagrams/figure17-01.png)
+![Swingコンポーネントの継承階層](images/diagrams/chapter17-swing-hierarchy.png)
 
 </div>
 
@@ -750,7 +750,7 @@ Swingのイベント処理は、以下の3つの要素で構成されます。
 
 <div class="figure">
 
-![Swingのイベント処理モデル](images/diagrams/figure17-02.png)
+![Swingのイベント処理モデル](images/diagrams/chapter17-event-model.png)
 
 </div>
 

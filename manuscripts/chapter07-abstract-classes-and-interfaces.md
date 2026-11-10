@@ -175,7 +175,7 @@ public class Main {
 
 <div class="figure">
 
-![Javaの主要なインターフェイスとその実装関係](images/diagrams/figure07-01.png)
+![Javaの主要なインターフェイスとその実装関係](images/diagrams/chapter07-interface-implementation.png)
 
 </div>
 

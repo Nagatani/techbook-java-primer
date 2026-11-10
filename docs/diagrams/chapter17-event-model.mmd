@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as ユーザー
+    participant Source as コンポーネント<br/>(イベントソース)
+    participant Swing as Swingシステム
+    participant Event as イベントオブジェクト
+    participant Listener as イベントリスナー
+    participant Handler as イベントハンドラ
+
+    User->>Source: 操作（クリック、入力など）
+    Source->>Swing: イベント発生を通知
+    Swing->>Event: イベントオブジェクト生成
+    Swing->>Listener: イベント通知
+    Listener->>Handler: 処理メソッド呼び出し
+    Handler->>Handler: 具体的な処理を実行
+    Handler-->>Source: 必要に応じて更新

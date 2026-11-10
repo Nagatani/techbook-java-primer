@@ -216,7 +216,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 <div class="figure">
 
-![Stream APIのパイプライン処理フロー](images/diagrams/figure12-01.png)
+![Stream APIのパイプライン処理フロー](images/diagrams/chapter12-stream-api-pipeline.png)
 
 </div>
 

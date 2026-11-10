@@ -231,12 +231,12 @@
 ### 第14章：マルチスレッドプログラミング
 
 #### 14-1. スレッドライフサイクル
-- **ファイル**: `chapter14-thread-lifecycle.mmd`
+- **ファイル**: `chapter15-thread-lifecycle.mmd`
 - **推奨図**：状態遷移図
 - **説明**：NEW→RUNNABLE→BLOCKED/WAITING→TERMINATEDの状態遷移
 
 #### 14-2. 同期制御メカニズム
-- **ファイル**: `chapter14-synchronization.mmd`
+- **ファイル**: `chapter15-synchronization.mmd`
 - **推奨図**：ロック取得図・待機キュー図
 - **説明**：synchronizedブロックでのモニターロック取得・解放
 
@@ -270,12 +270,12 @@
 ### 第16章：GUIプログラミング
 
 #### 16-1. Swingコンポーネント階層
-- **ファイル**: `chapter16-swing-hierarchy.mmd`
+- **ファイル**: `chapter17-swing-hierarchy.mmd`
 - **推奨図**：コンポーネント継承図・包含関係図
 - **説明**：JComponent→各種UIコンポーネントの継承関係
 
 #### 16-2. イベント処理モデル
-- **ファイル**: `chapter16-event-model.mmd`
+- **ファイル**: `chapter17-event-model.mmd`
 - **推奨図**：イベントフロー図・リスナー登録図
 - **説明**：ユーザー操作→イベント生成→リスナー通知の流れ
 

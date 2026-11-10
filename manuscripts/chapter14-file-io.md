@@ -60,13 +60,13 @@
 
 <div class="figure">
 
-![バイトストリームクラスの階層構造](images/diagrams/figure14-01a.png)
+![バイトストリームクラスの階層構造](images/diagrams/chapter14-byte-stream-hierarchy.png)
 
 </div>
 
 <div class="figure">
 
-![文字ストリームクラスの階層構造](images/diagrams/figure14-01b.png)
+![文字ストリームクラスの階層構造](images/diagrams/chapter14-char-stream-hierarchy.png)
 
 </div>
 

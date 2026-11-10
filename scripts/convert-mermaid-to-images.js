@@ -70,6 +70,11 @@ mermaidFiles.forEach(mmdFile => {
   }
 });
 
+// 元の.mmdがなくなった図の記録は消す
+const existing = new Set(mermaidFiles.map((f) => path.basename(f, '.mmd')));
+for (const name of Object.keys(convertedHashes)) {
+  if (!existing.has(name)) delete convertedHashes[name];
+}
 fs.writeFileSync(HASH_FILE, JSON.stringify(convertedHashes, Object.keys(convertedHashes).sort(), 2) + '\n');
 console.log(`図の変換: ${converted}件を変換、${skipped}件は変更なしのため省略`);
 
