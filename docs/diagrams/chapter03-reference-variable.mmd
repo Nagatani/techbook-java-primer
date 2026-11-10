@@ -1,0 +1,13 @@
+flowchart LR
+    pages["int pages<br/>値 300 をそのまま持つ"]
+    book1["Book book1<br/>参照を持つ"]
+    book2["Book book2<br/>参照を持つ"]
+    o1["Bookオブジェクト<br/>title = Java入門<br/>price = 2800.0"]
+    o2["Bookオブジェクト<br/>title = データ構造<br/>price = 3200.0"]
+
+    book1 --> o1
+    book2 --> o2
+
+    style pages fill:#f1f8e9,stroke:#558b2f
+    style book1 fill:#e3f2fd,stroke:#1565c0
+    style book2 fill:#e3f2fd,stroke:#1565c0

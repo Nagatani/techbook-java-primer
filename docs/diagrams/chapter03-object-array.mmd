@@ -1,0 +1,14 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 400
+---
+flowchart LR
+    nums["int[] numbers = new int[5]<br/>┃ 0 ┃ 0 ┃ 0 ┃ 0 ┃ 0 ┃<br/>要素は値（初期値は0）"]
+    studs["Student[] students = new Student[5]<br/>┃ 参照 ┃ null ┃ null ┃ null ┃ null ┃<br/>要素は参照（初期値はnull）"]
+    st["Studentオブジェクト"]
+
+    studs -->|"students[0] = new Student(...)"| st
+
+    style nums fill:#f1f8e9,stroke:#558b2f
+    style studs fill:#e3f2fd,stroke:#1565c0

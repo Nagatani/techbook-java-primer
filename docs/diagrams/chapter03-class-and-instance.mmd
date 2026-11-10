@@ -1,0 +1,12 @@
+flowchart LR
+    cls["Bookクラス（設計図）<br/>―――――――――<br/>フィールド: title, author, pages, price<br/>メソッド: displayInfo(), setPrice()"]
+
+    b1["インスタンス1<br/>―――――――――<br/>title = Java入門<br/>author = 田中太郎<br/>price = 2800.0"]
+    b2["インスタンス2<br/>―――――――――<br/>title = データ構造<br/>author = 佐藤花子<br/>price = 3200.0"]
+
+    cls -->|"new Book(...)"| b1
+    cls -->|"new Book(...)"| b2
+
+    style cls fill:#e3f2fd,stroke:#1565c0
+    style b1 fill:#fff8e1,stroke:#f9a825
+    style b2 fill:#fff8e1,stroke:#f9a825

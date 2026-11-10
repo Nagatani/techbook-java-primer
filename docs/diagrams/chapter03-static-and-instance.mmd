@@ -1,0 +1,11 @@
+flowchart LR
+    t1["インスタンス hammer<br/>name = ハンマー"]
+    t2["インスタンス wrench<br/>name = レンチ"]
+    cls["Toolクラス<br/>static int toolCount = 2<br/>（クラスに1つだけ）"]
+
+    t1 -.->|共有する| cls
+    t2 -.->|共有する| cls
+
+    style cls fill:#e3f2fd,stroke:#1565c0
+    style t1 fill:#fff8e1,stroke:#f9a825
+    style t2 fill:#fff8e1,stroke:#f9a825
