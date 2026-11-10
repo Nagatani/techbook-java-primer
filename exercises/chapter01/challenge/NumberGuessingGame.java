@@ -225,7 +225,7 @@ public class NumberGuessingGame {
      * 勝利メッセージを表示します
      */
     private static void displayWinMessage(int tries, int difficulty, int maxTries) {
-        IO.println("🎉 正解です！ " + tries + "回で当てました！");
+        IO.println("正解です！ " + tries + "回で当てました！");
         
         // スコア計算
         int baseScore = (difficulty + 1) * 100; // 難易度による基本スコア
@@ -241,7 +241,7 @@ public class NumberGuessingGame {
         // ベストスコア更新チェック
         if (totalScore > bestScore) {
             bestScore = totalScore;
-            IO.println("🏆 ベストスコア更新！");
+            IO.println("ベストスコア更新！");
         }
         
         // パフォーマンス評価
@@ -258,15 +258,15 @@ public class NumberGuessingGame {
         
         IO.print("評価: ");
         if (performance <= 0.3) {
-            IO.println("🌟 素晴らしい！天才的な推測力です");
+            IO.println("素晴らしい！天才的な推測力です");
         } else if (performance <= 0.5) {
-            IO.println("⭐ とても良い！優秀な成績です");
+            IO.println("とても良い！優秀な成績です");
         } else if (performance <= 0.7) {
-            IO.println("👍 良い！平均以上の成績です");
+            IO.println("良い！平均以上の成績です");
         } else if (performance <= 0.85) {
-            IO.println("📚 普通！もう少し効率的な推測を心がけましょう");
+            IO.println("普通！もう少し効率的な推測を心がけましょう");
         } else {
-            IO.println("💪 惜しい！次回はもっと戦略的に攻めましょう");
+            IO.println("惜しい！次回はもっと戦略的に攻めましょう");
         }
     }
     
@@ -274,7 +274,7 @@ public class NumberGuessingGame {
      * 敗北メッセージを表示します
      */
     private static void displayLoseMessage(int target) {
-        IO.println("😢 残念！正解は " + target + " でした。");
+        IO.println("残念！正解は " + target + " でした。");
         IO.println("次回は頑張ってください！");
         IO.println();
     }
@@ -345,15 +345,15 @@ public class NumberGuessingGame {
         IO.println();
         IO.print("総合評価: ");
         if (averageTries <= 3.0) {
-            IO.println("🏆 マスター級！数値推測の達人です");
+            IO.println("マスター級！数値推測の達人です");
         } else if (averageTries <= 4.0) {
-            IO.println("🥇 エキスパート！とても優秀です");
+            IO.println("エキスパート！とても優秀です");
         } else if (averageTries <= 5.0) {
-            IO.println("🥈 上級者！良い成績です");
+            IO.println("上級者！良い成績です");
         } else if (averageTries <= 6.0) {
-            IO.println("🥉 中級者！平均的な成績です");
+            IO.println("中級者！平均的な成績です");
         } else {
-            IO.println("📚 初心者！練習すればもっと上達できます");
+            IO.println("初心者！練習すればもっと上達できます");
         }
         
         IO.println();
@@ -380,30 +380,30 @@ public class NumberGuessingGame {
  * このゲームの特徴:
  * 
  * 1. 難易度システム:
- *    - 簡単: 1-50, 10回チャンス
- *    - 普通: 1-100, 7回チャンス  
- *    - 難しい: 1-200, 5回チャンス
+ * - 簡単: 1-50, 10回チャンス
+ * - 普通: 1-100, 7回チャンス  
+ * - 難しい: 1-200, 5回チャンス
  * 
  * 2. ヒントシステム:
- *    - 大小の方向指示
- *    - 距離による詳細ヒント
- *    - 特別ヒント（偶数/奇数、範囲）
+ * - 大小の方向指示
+ * - 距離による詳細ヒント
+ * - 特別ヒント（偶数/奇数、範囲）
  * 
  * 3. スコアシステム:
- *    - 基本スコア（難易度による）
- *    - ボーナススコア（早く当てた場合）
- *    - ベストスコア記録
+ * - 基本スコア（難易度による）
+ * - ボーナススコア（早く当てた場合）
+ * - ベストスコア記録
  * 
  * 4. 統計機能:
- *    - 総プレイ回数
- *    - 平均試行回数
- *    - ベストスコア・ベスト平均
- *    - 総合評価
+ * - 総プレイ回数
+ * - 平均試行回数
+ * - ベストスコア・ベスト平均
+ * - 総合評価
  * 
  * 5. ユーザビリティ:
- *    - 分かりやすいメッセージ
- *    - 励ましとヒント
- *    - パフォーマンス評価
+ * - 分かりやすいメッセージ
+ * - 励ましとヒント
+ * - パフォーマンス評価
  * 
  * 学習効果:
  * - Math.random() の使い方

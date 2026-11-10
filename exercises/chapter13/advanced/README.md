@@ -1,13 +1,13 @@
 # 第13章 応用課題
 
-## 🎯 学習目標
+## 学習目標
 - 高度なデータ型設計
 - カスタム型システムの実装
 - 型安全性の強化
 - メタデータ活用システム
 - 実行時型情報の高度利用
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 型安全データベースORM
 **ファイル名**: `TypeSafeORM.java`
@@ -30,10 +30,10 @@
 ```
 === 型安全データベースORM ===
 
-🛡️ TypeSafeORM v3.0
+TypeSafeORM v3.0
 
 === 型システム構成 ===
-🔒 コンパイル時型安全性:
+コンパイル時型安全性:
 
 サポート型:
 - プリミティブ型: 8種類
@@ -55,7 +55,7 @@
 - 型変換エラー: 0件
 
 === エンティティ定義 ===
-🏗️ 型安全エンティティシステム:
+型安全エンティティシステム:
 
 ```java
 // 型安全エンティティ定義
@@ -286,10 +286,10 @@ TypedQuery<User> query = builder
     .build();
 
 コンパイル時型チェック:
-✅ カラム型: username (String) ← "john%" (String) 
-✅ 比較演算: age (Age) ← Age.of(25) (Age)
-✅ ソート型: createdAt (LocalDateTime) implements Comparable
-✅ 戻り値型: List<User>
+○ カラム型: username (String) ← "john%" (String) 
+○ 比較演算: age (Age) ← Age.of(25) (Age)
+○ ソート型: createdAt (LocalDateTime) implements Comparable
+○ 戻り値型: List<User>
 
 生成SQL:
 SELECT u.id, u.username, u.email, u.age, u.created_at
@@ -357,10 +357,10 @@ TypedQuery<User> usersWithOrders = TypeSafeQueryBuilder
 ```
 === 動的型システム構築フレームワーク ===
 
-🔄 DynamicTypeSystem v2.0
+DynamicTypeSystem v2.0
 
 === 動的型生成 ===
-⚡ 実行時型構築:
+実行時型構築:
 
 型生成エンジン:
 - バイトコード生成: ASM 9.0
@@ -380,7 +380,7 @@ TypedQuery<User> usersWithOrders = TypeSafeQueryBuilder
 メモリ効率: 従来比150%
 
 === 動的型定義 ===
-🛠️ 実行時型システム:
+実行時型システム:
 
 ```java
 public class DynamicTypeBuilder {
@@ -604,21 +604,21 @@ public class DynamicTypeOperators {
 推論結果: int
 推論時間: 0.03ms
 制約数: 7個
-統一成功: ✅
+統一成功: ○
 
 合併型テスト:
 型定義: StringOrNumber = String | Number
 値テスト:
-- "hello" → ✅ String部分型
-- 42 → ✅ Number部分型  
-- true → ❌ 型エラー
+- "hello" → ○ String部分型
+- 42 → ○ Number部分型  
+- true → × 型エラー
 
 交差型テスト:
 型定義: ReadableWritable = Readable & Writable
 実装確認:
-- read()メソッド: ✅ 実装済み
-- write()メソッド: ✅ 実装済み
-- 型適合性: ✅ 両インターフェイス満足
+- read()メソッド: ○ 実装済み
+- write()メソッド: ○ 実装済み
+- 型適合性: ○ 両インターフェイス満足
 ```
 
 === 高階型実装例 ===
@@ -636,11 +636,11 @@ DynamicType stringIntMap = typeBuilder.applyTypeArgs(mapType,
 実行結果:
 高階型: List<*> (Kind: * -> *)
 適用後: List<String> (Kind: *)
-検証: ✅ 型適用成功
+検証: ○ 型適用成功
 
 高階型: Map<*, *> (Kind: * -> * -> *)  
 適用後: Map<String, Integer> (Kind: *)
-検証: ✅ 型適用成功
+検証: ○ 型適用成功
 ```
 ```
 
@@ -665,10 +665,10 @@ DynamicType stringIntMap = typeBuilder.applyTypeArgs(mapType,
 ```
 === メタデータ駆動開発プラットフォーム ===
 
-🏗️ MetadataDriven Platform v4.0
+MetadataDriven Platform v4.0
 
 === メタデータスキーマ ===
-📋 自動生成システム:
+自動生成システム:
 
 メタデータ種別:
 - エンティティスキーマ: JSON Schema
@@ -688,7 +688,7 @@ DynamicType stringIntMap = typeBuilder.applyTypeArgs(mapType,
 メンテナンス性: 手動実装比150%
 
 === スキーマ駆動生成 ===
-🔧 メタデータからコード生成:
+メタデータからコード生成:
 
 ```java
 // メタデータ定義
@@ -1026,7 +1026,7 @@ public class UserController {
 ```
 ```
 
-## 🎯 習得すべき技術要素
+## 習得すべき技術要素
 
 ### 型システム理論
 - 型推論アルゴリズム
@@ -1046,13 +1046,13 @@ public class UserController {
 - スキーマ駆動開発
 - モデル駆動アーキテクチャ
 
-## 📚 参考リソース
+## 参考リソース
 
 - Types and Programming Languages (Pierce)
 - Advanced Topics in Types and Programming Languages (Pierce)
 - Domain-Specific Languages (Fowler)
 - Generative Programming (Czarnecki & Eisenecker)
 
-## ⚠️ 重要な注意事項
+## 重要な注意事項
 
 動的型システムと メタデータ駆動開発は強力ですが、複雑性も増加します。パフォーマンスと保守性のバランスを十分に考慮してください。

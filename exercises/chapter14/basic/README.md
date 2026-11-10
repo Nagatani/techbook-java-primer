@@ -1,6 +1,6 @@
 # 第14章 基本課題
 
-## 🎯 学習目標
+## 学習目標
 - ファイルI/Oの基本概念（InputStream、OutputStream、Reader、Writer）
 - NIO.2（java.nio.file）の活用方法
 - テキストファイルとバイナリファイルの読み書き
@@ -8,7 +8,7 @@
 - CSV・JSON等の構造化データ処理
 - ファイル監視（WatchService）による動的なファイルシステム管理
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 基本的なファイル読み書き
 **ファイル名**: `BasicFileIO.java`, `BasicFileIOTest.java`
@@ -50,7 +50,7 @@ Shift_JIS: こんにちは、世界！
 Line 1: Java File I/O Example
 Line 2: 現在時刻: 2024-07-04T10:30:00
 Line 3: ランダム値: 42
-Line 4: ユニコード: 🚀
+Line 4: ユニコード:
 Line 5: 処理完了
 
 バイナリファイル処理:
@@ -286,7 +286,7 @@ INFO: 12,345件
 - 大容量ファイルの処理最適化
 - 統計処理とレポート生成
 
-## 💡 ヒント
+## ヒント
 
 ### 課題1のヒント
 - Files.readAllLines() で簡単読み込み
@@ -308,7 +308,7 @@ INFO: 12,345件
 - Stream<String> で行単位処理
 - Collectors.groupingBy() で集計
 
-## 🔍 ファイルI/Oのポイント
+## ファイルI/Oのポイント
 
 1. **NIO.2 活用**: Files クラスで簡潔なファイル操作
 2. **リソース管理**: try-with-resources で確実なクローズ
@@ -317,7 +317,7 @@ INFO: 12,345件
 5. **例外処理**: IOException の適切なハンドリング
 6. **メモリ効率**: BufferedReader/Writer でバッファリング
 
-## ✅ 完了チェックリスト
+## ○ 完了チェックリスト
 
 - [ ] 課題1: 基本的なファイル読み書きができている
 - [ ] 課題2: ディレクトリ操作とファイル検索ができている

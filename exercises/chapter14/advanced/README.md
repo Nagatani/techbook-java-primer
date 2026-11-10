@@ -1,13 +1,13 @@
 # 第14章 応用課題
 
-## 🎯 学習目標
+## 学習目標
 - 高度なJavaDoc活用
 - 自動ドキュメント生成システム
 - API仕様書自動作成
 - コードから設計書の逆生成
 - インタラクティブドキュメント
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 自動API仕様書生成システム
 **ファイル名**: `AutoAPIDocumentationGenerator.java`
@@ -30,10 +30,10 @@
 ```
 === 自動API仕様書生成システム ===
 
-📚 AutoDocGen Pro v3.0
+AutoDocGen Pro v3.0
 
 === プロジェクト解析 ===
-🔍 包括的コード分析:
+包括的コード分析:
 
 解析対象:
 プロジェクト: E-Commerce API
@@ -54,7 +54,7 @@ REST エンドポイント: 67個
 解析精度: 98.3%
 
 === API仕様抽出 ===
-📋 REST API分析:
+REST API分析:
 
 ```java
 /**
@@ -132,14 +132,14 @@ public class UserController {
      * Content-Type: application/json
      * 
      * {
-     *   "username": "john_doe",
-     *   "email": "john@example.com",
-     *   "password": "SecurePass123!",
-     *   "profile": {
-     *     "firstName": "John",
-     *     "lastName": "Doe",
-     *     "phoneNumber": "+81-90-1234-5678"
-     *   }
+     * "username": "john_doe",
+     * "email": "john@example.com",
+     * "password": "SecurePass123!",
+     * "profile": {
+     * "firstName": "John",
+     * "lastName": "Doe",
+     * "phoneNumber": "+81-90-1234-5678"
+     * }
      * }
      * 
      * @apiSuccessExample 成功レスポンス
@@ -147,16 +147,16 @@ public class UserController {
      * Content-Type: application/json
      * 
      * {
-     *   "id": 123,
-     *   "username": "john_doe", 
-     *   "email": "john@example.com",
-     *   "profile": {
-     *     "firstName": "John",
-     *     "lastName": "Doe",
-     *     "phoneNumber": "+81-90-1234-5678"
-     *   },
-     *   "createdAt": "2024-07-05T14:30:00Z",
-     *   "updatedAt": "2024-07-05T14:30:00Z"
+     * "id": 123,
+     * "username": "john_doe", 
+     * "email": "john@example.com",
+     * "profile": {
+     * "firstName": "John",
+     * "lastName": "Doe",
+     * "phoneNumber": "+81-90-1234-5678"
+     * },
+     * "createdAt": "2024-07-05T14:30:00Z",
+     * "updatedAt": "2024-07-05T14:30:00Z"
      * }
      */
     @PostMapping
@@ -617,10 +617,10 @@ if (response.ok) {
 ```
 === コードメトリクス・品質レポートシステム ===
 
-📊 CodeQuality Analyzer v2.0
+CodeQuality Analyzer v2.0
 
 === プロジェクト品質分析 ===
-📈 包括的品質評価:
+包括的品質評価:
 
 分析対象:
 プロジェクト名: E-Commerce Backend
@@ -635,7 +635,7 @@ if (response.ok) {
 分析時刻: 2024-07-05 14:30:00
 
 === 複雑度分析 ===
-🔍 コード複雑度評価:
+コード複雑度評価:
 
 循環的複雑度 (Cyclomatic Complexity):
 平均: 3.2 (良好)
@@ -679,10 +679,10 @@ if (response.ok) {
 ```
 === 設計書逆生成システム ===
 
-🏗️ ReverseDesignGen v4.0
+ReverseDesignGen v4.0
 
 === アーキテクチャ分析 ===
-🔧 システム構造解析:
+システム構造解析:
 
 レイヤー構成:
 1. Presentation Layer (Controller)
@@ -715,7 +715,7 @@ if (response.ok) {
 - ER図
 ```
 
-## 🎯 習得すべき技術要素
+## 習得すべき技術要素
 
 ### ドキュメント生成技術
 - JavaDoc API
@@ -735,13 +735,13 @@ if (response.ok) {
 - コードカバレッジ
 - 技術的負債測定
 
-## 📚 参考リソース
+## 参考リソース
 
 - OpenAPI Specification 3.0
 - JavaDoc Tool Reference
 - Clean Code (Robert C. Martin)
 - Code Quality Metrics (SonarQube Documentation)
 
-## ⚠️ 重要な注意事項
+## 重要な注意事項
 
 自動生成されたドキュメントは開発者による確認と調整が必要です。生成されたドキュメントをそのまま使用せず、適切な品質管理を行ってください。

@@ -1,6 +1,6 @@
 # 第9章 基本課題
 
-## 🎯 学習目標
+## 学習目標
 - コレクションフレームワークの基本概念と階層構造の理解
 - List、Set、Mapの特性と使い分け
 - ArrayList、LinkedList、HashSet、TreeSet、HashMap、TreeMapの実装の違い
@@ -8,7 +8,7 @@
 - Iteratorを使った安全な要素操作
 - カスタムComparatorとComparableの実装による高度なソート機能
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 学生管理システム（List活用）
 **ファイル名**: `Student.java`, `StudentManager.java`, `StudentManagerTest.java`
@@ -202,7 +202,7 @@ Python基礎（2,500円）
 - ネストしたコレクション構造の設計
 - 効率的な検索・集計処理の実装
 
-## 💡 ヒント
+## ヒント
 
 ### 課題1のヒント
 - Comparator.comparing() でソート条件を指定
@@ -224,7 +224,7 @@ Python基礎（2,500円）
 - TreeMap で価格帯をキーとした自動ソート
 - Stream API でフィルタリングと集計を効率化
 
-## 🔍 コレクションフレームワークのポイント
+## コレクションフレームワークのポイント
 
 1. **List**: 順序付き、重複許可、インデックスアクセス
 2. **Set**: 重複なし、数学的集合演算
@@ -233,7 +233,7 @@ Python基礎（2,500円）
 5. **時間計算量**: O(1), O(log n), O(n) の理解
 6. **Iterator**: 安全な要素操作、ConcurrentModificationException回避
 
-## ✅ 完了チェックリスト
+## ○ 完了チェックリスト
 
 - [ ] 課題1: List の特性を活かした学生管理ができている
 - [ ] 課題2: Map を使った効率的な単語集計ができている

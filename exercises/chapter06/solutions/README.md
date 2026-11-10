@@ -56,12 +56,12 @@ public static class Builder {
 
 **よくある間違いと対策**:
 ```java
-// ❌ 間違い：ミュータブルなフィールドをそのまま返す
+// 間違い：ミュータブルなフィールドをそのまま返す
 public List<String> getHobbies() {
     return hobbies;  // 外部から変更可能
 }
 
-// ✅ 正解：不変ビューを返す
+// ○ 正解：不変ビューを返す
 public List<String> getHobbies() {
     return Collections.unmodifiableList(hobbies);
 }

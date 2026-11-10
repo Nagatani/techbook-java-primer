@@ -1,13 +1,13 @@
 # 第18章 応用課題
 
-## 🎯 学習目標
+## 学習目標
 - 高度なイベント処理アーキテクチャ
 - 非同期・並行イベント処理
 - カスタムイベントシステム設計
 - リアルタイムイベント分析
 - エンタープライズイベント駆動設計
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 企業級イベント駆動アーキテクチャ
 **ファイル名**: `EnterpriseEventDrivenArchitecture.java`
@@ -30,10 +30,10 @@
 ```
 === 企業級イベント駆動アーキテクチャ ===
 
-🏗️ EventDriven Enterprise v3.0
+EventDriven Enterprise v3.0
 
 === イベントソーシングシステム ===
-📨 大容量イベント処理:
+大容量イベント処理:
 
 システム構成:
 イベントストア: PostgreSQL + EventStore
@@ -48,7 +48,7 @@
 平均処理時間: 3.2ms
 
 === CQRS実装 ===
-🔄 コマンド・クエリ分離:
+コマンド・クエリ分離:
 
 ```java
 public class EnterpriseEventDrivenSystem {
@@ -498,10 +498,10 @@ public class ProjectionManager {
 ```
 === リアルタイムイベント分析システム ===
 
-📊 EventAnalytics Pro v2.0
+EventAnalytics Pro v2.0
 
 === ストリーミング分析エンジン ===
-🌊 高速イベント処理:
+高速イベント処理:
 
 処理統計:
 入力レート: 50,000 events/sec
@@ -515,7 +515,7 @@ public class ProjectionManager {
 - 1時間ウィンドウ: 180,000,000イベント
 
 === 異常検知結果 ===
-⚠️ 検知された異常:
+注意: 検知された異常:
 
 14:30:15 - ログイン失敗率異常
 通常: 2.3% → 現在: 15.7% (6.8倍)
@@ -533,7 +533,7 @@ public class ProjectionManager {
 対応: 処理能力拡張完了
 
 === 予測分析 ===
-📈 次1時間の予測:
+次1時間の予測:
 
 ユーザーアクセス: 
 現在: 12,500人 → 予測: 18,700人 (+49.6%)
@@ -569,10 +569,10 @@ public class ProjectionManager {
 ```
 === イベント駆動マイクロサービス統合 ===
 
-🔗 MicroserviceHub v3.0
+MicroserviceHub v3.0
 
 === サービス統合マップ ===
-🌐 分散システム構成:
+分散システム構成:
 
 接続サービス: 12個
 - user-service (Port: 8081)
@@ -608,7 +608,7 @@ Fraud Detected → [Payment, Notification, Support]
 - recommendation-service: OPEN (障害中)
 ```
 
-## 🎯 習得すべき技術要素
+## 習得すべき技術要素
 
 ### イベント駆動アーキテクチャ
 - イベントソーシング
@@ -628,13 +628,13 @@ Fraud Detected → [Payment, Notification, Support]
 - 時系列データ分析
 - 機械学習統合
 
-## 📚 参考リソース
+## 参考リソース
 
 - Building Event-Driven Microservices (Adam Bellemare)
 - Microservices Patterns (Chris Richardson)  
 - Streaming Systems (Tyler Akidau)
 - Designing Event-Driven Systems (Ben Stopford)
 
-## ⚠️ 重要な注意事項
+## 重要な注意事項
 
 イベント駆動システムは複雑性が高いため、適切な監視、ログ記録、テスト戦略が重要です。分散システムの特性を理解して実装してください。

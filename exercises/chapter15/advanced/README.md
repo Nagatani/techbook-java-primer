@@ -1,13 +1,13 @@
 # 第15章 応用課題
 
-## 🎯 学習目標
+## 学習目標
 - 高度なJavaプログラミング技術統合
 - 企業レベルのアプリケーション開発
 - 複合的な技術要素の組み合わせ
 - 実務レベルの問題解決
 - アーキテクチャ設計の実践
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 統合ECプラットフォーム
 **ファイル名**: `IntegratedECommercePlatform.java`
@@ -32,10 +32,10 @@
 ```
 === 統合ECプラットフォーム ===
 
-🛒 EnterpriseCommerce v3.0
+EnterpriseCommerce v3.0
 
 === システムアーキテクチャ ===
-🏗️ マイクロサービス構成:
+マイクロサービス構成:
 
 サービス一覧:
 1. user-service (ユーザー管理)
@@ -78,7 +78,7 @@
 - Tracing: Jaeger
 
 === イベント駆動アーキテクチャ ===
-📨 非同期イベント処理:
+非同期イベント処理:
 
 ```java
 // ドメインイベント定義
@@ -472,10 +472,10 @@ order-service [1.459s]
 ```
 === リアルタイム分析プラットフォーム ===
 
-📊 AnalyticsEngine Pro v4.0
+AnalyticsEngine Pro v4.0
 
 === ストリーミングアーキテクチャ ===
-🌊 大容量データ処理:
+大容量データ処理:
 
 データソース:
 - Webアクセスログ: 50,000 events/sec
@@ -493,7 +493,7 @@ order-service [1.459s]
 6. Visualization (Grafana + Custom Dashboard)
 
 === 複雑イベント処理 ===
-⚡ CEP実装:
+CEP実装:
 
 ```java
 @Component
@@ -733,10 +733,10 @@ ClickHouse書き込み: 89,000 rows/sec
 ```
 === IoTデバイス管理プラットフォーム ===
 
-🌐 IoTManager Enterprise v5.0
+IoTManager Enterprise v5.0
 
 === デバイス群管理 ===
-📱 大規模IoT環境:
+大規模IoT環境:
 
 管理対象デバイス:
 総デバイス数: 2,500,000台
@@ -764,7 +764,7 @@ ClickHouse書き込み: 89,000 rows/sec
 平均遅延: 45ms
 ```
 
-## 🎯 習得すべき技術要素
+## 習得すべき技術要素
 
 ### アーキテクチャパターン
 - マイクロサービスアーキテクチャ
@@ -784,13 +784,13 @@ ClickHouse書き込み: 89,000 rows/sec
 - Apache Spark
 - Complex Event Processing
 
-## 📚 参考リソース
+## 参考リソース
 
 - Microservices Patterns (Chris Richardson)
 - Building Event-Driven Microservices (Adam Bellemare)
 - Streaming Systems (Tyler Akidau)
 - Designing Data-Intensive Applications (Martin Kleppmann)
 
-## ⚠️ 重要な注意事項
+## 重要な注意事項
 
 これらの課題は企業レベルの複雑なシステムを扱います。実装時はセキュリティ、パフォーマンス、運用性を十分に考慮し、適切な監視とログ記録を実装してください。

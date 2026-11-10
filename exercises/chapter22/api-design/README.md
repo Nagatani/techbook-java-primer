@@ -1,10 +1,10 @@
 # 第22章: APIドキュメントとライブラリ設計
 
-## 📋 章の概要
+## 章の概要
 
 この章では、保守性と拡張性に優れたライブラリの設計と、Javadocを使用した包括的なAPIドキュメンテーションの作成について学習します。実務レベルの開発で必要となる技術文書作成スキルを習得します。
 
-## 🎯 学習目標
+## 学習目標
 
 - Javadocによる包括的なAPIドキュメントが作成できる
 - 再利用可能なライブラリを設計できる
@@ -12,7 +12,7 @@
 - 技術文書の作成と保守ができる
 - オープンソースプロジェクトでの貢献ができる
 
-## 📁 課題構成
+## 課題構成
 
 ### basic/
 APIドキュメンテーションの基礎スキルを習得するための課題です。
@@ -41,7 +41,7 @@ APIドキュメンテーションの基礎スキルを習得するための課�
 - **APIDocumentation.java** - 包括的なJavadocドキュメンテーションの実装例
 - **AdvancedAPIDocumentation.java** - 実務レベルの高度なAPI文書化例
 
-## 🚀 課題の進め方
+## 課題の進め方
 
 ### 1. Javadocの基礎から開始
 ```bash
@@ -64,7 +64,7 @@ cd challenge/
 # 実務で求められる品質基準を習得
 ```
 
-## 📚 Javadocの基本構文
+## Javadocの基本構文
 
 ### クラスレベルドキュメント
 ```java
@@ -118,7 +118,7 @@ public static double calculateAverage(double[] values) {
 }
 ```
 
-## 🏗️ ライブラリ設計の原則
+## ライブラリ設計の原則
 
 ### 1. SOLID原則の適用
 ```java
@@ -156,7 +156,7 @@ public class OrderService {
 
 ### 2. APIの使いやすさ
 ```java
-// ✅ 良い例: 流暢なインターフェイス
+// 良い例: 流暢なインターフェイス
 QueryBuilder query = new QueryBuilder()
     .select("name", "email")
     .from("users")
@@ -164,7 +164,7 @@ QueryBuilder query = new QueryBuilder()
     .orderBy("name")
     .limit(10);
 
-// ✅ 良い例: ビルダーパターン
+// 良い例: ビルダーパターン
 User user = User.builder()
     .name("山田太郎")
     .email("yamada@example.com")
@@ -204,7 +204,7 @@ public class LibraryException extends Exception {
 }
 ```
 
-## 📖 高度なJavadoc技法
+## 高度なJavadoc技法
 
 ### HTMLタグの活用
 ```java
@@ -213,9 +213,9 @@ public class LibraryException extends Exception {
  * 
  * <h2>機能概要</h2>
  * <ul>
- *   <li>接続プールの作成と管理</li>
- *   <li>接続の自動リサイクル</li>
- *   <li>パフォーマンス監視</li>
+ * <li>接続プールの作成と管理</li>
+ * <li>接続の自動リサイクル</li>
+ * <li>パフォーマンス監視</li>
  * </ul>
  * 
  * <h2>設定パラメータ</h2>
@@ -257,9 +257,9 @@ public class AuthenticationService {
  * <p>サポートされる形式の例:</p>
  * <pre>{@code
  * {
- *   "name": "田中太郎",
- *   "age": 30,
- *   "active": true
+ * "name": "田中太郎",
+ * "age": 30,
+ * "active": true
  * }
  * }</pre>
  * 
@@ -270,7 +270,7 @@ public class JSONParser {
 }
 ```
 
-## 🔧 ドキュメント生成ツール
+## ドキュメント生成ツール
 
 ### Maven での Javadoc 生成
 ```xml
@@ -307,11 +307,11 @@ javadoc {
 }
 ```
 
-## 📊 API設計のベストプラクティス
+## API設計のベストプラクティス
 
 ### 1. 一貫性のある命名
 ```java
-// ✅ 一貫した命名規則
+// ○ 一貫した命名規則
 public interface UserRepository {
     void createUser(User user);      // create + 名詞
     User findUserById(Long id);      // find + 名詞 + By + 条件
@@ -322,13 +322,13 @@ public interface UserRepository {
 
 ### 2. 適切な抽象化レベル
 ```java
-// ✅ 適切な抽象化
+// ○ 適切な抽象化
 public interface EmailService {
     void sendEmail(String to, String subject, String body);
     void sendEmailWithAttachment(String to, String subject, String body, Attachment attachment);
 }
 
-// ❌ 低レベルすぎる抽象化
+// × 低レベルすぎる抽象化
 public interface EmailService {
     void openConnection();
     void authenticate(String username, String password);
@@ -342,7 +342,7 @@ public interface EmailService {
 
 ### 3. 型安全性の確保
 ```java
-// ✅ 型安全なAPI設計
+// ○ 型安全なAPI設計
 public class Configuration<T> {
     private final Class<T> type;
     private final T defaultValue;
@@ -364,7 +364,7 @@ public class Configuration<T> {
 }
 ```
 
-## 🎯 バージョニングとメンテナンス
+## バージョニングとメンテナンス
 
 ### セマンティックバージョニング
 ```java
@@ -373,9 +373,9 @@ public class Configuration<T> {
  * 
  * <p>このライブラリはセマンティックバージョニング（SemVer）に従います:</p>
  * <ul>
- *   <li><strong>MAJOR</strong>: 互換性のない変更</li>
- *   <li><strong>MINOR</strong>: 後方互換性のある機能追加</li>
- *   <li><strong>PATCH</strong>: 後方互換性のあるバグ修正</li>
+ * <li><strong>MAJOR</strong>: 互換性のない変更</li>
+ * <li><strong>MINOR</strong>: 後方互換性のある機能追加</li>
+ * <li><strong>PATCH</strong>: 後方互換性のあるバグ修正</li>
  * </ul>
  * 
  * @since 1.0.0
@@ -396,7 +396,7 @@ public final class Version {
  * @param input 入力文字列
  * @return 処理結果
  * @deprecated バージョン 2.0.0 以降は {@link #processString(String, Options)} を使用してください。
- *             このメソッドは 3.0.0 で削除予定です。
+ * このメソッドは 3.0.0 で削除予定です。
  */
 @Deprecated(since = "2.0.0", forRemoval = true)
 public String processString(String input) {
@@ -404,7 +404,7 @@ public String processString(String input) {
 }
 ```
 
-## ✅ 評価基準
+## ○ 評価基準
 
 ### 基本レベル (60-70点)
 - [ ] 基本的なJavadocコメントが書ける
@@ -423,7 +423,7 @@ public String processString(String input) {
 - [ ] バージョニング戦略が適切に実装されている
 - [ ] 拡張性と保守性が考慮された設計になっている
 
-## 🎯 実務での応用
+## 実務での応用
 
 ### オープンソースプロジェクト
 - **GitHub Pages** での API ドキュメント公開
@@ -437,4 +437,4 @@ public String processString(String input) {
 
 
 
-💡 **ヒント**: 良いAPIドキュメントは、使用者が迷わずに目的を達成できることを目指します。サンプルコードは実際に動作するものを提供し、エラーケースも含めて説明することが重要です。
+**ヒント**: 良いAPIドキュメントは、使用者が迷わずに目的を達成できることを目指します。サンプルコードは実際に動作するものを提供し、エラーケースも含めて説明することが重要です。

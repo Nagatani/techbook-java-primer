@@ -1,6 +1,6 @@
 # 第12章 基本課題
 
-## 🎯 学習目標
+## 学習目標
 - Stream APIの基本概念と利用方法の理解
 - 中間操作（filter、map、sorted等）と終端操作（collect、reduce等）の使い分け
 - データ処理パイプラインの構築
@@ -8,7 +8,7 @@
 - Optional クラスによる null 安全プログラミング
 - カスタムCollectorの実装による独自集約処理の開発
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 社員データ分析システム
 **ファイル名**: `Employee.java`, `EmployeeAnalyzer.java`, `EmployeeAnalyzerTest.java`
@@ -219,7 +219,7 @@ functional（1回）
 - カスタムコレクターの実装
 - 例外処理を含む実用的な実装
 
-## 💡 ヒント
+## ヒント
 
 ### 課題1のヒント
 - Collectors.groupingBy() で部署別グループ化
@@ -241,7 +241,7 @@ functional（1回）
 - Stream.concat() でストリーム結合
 - try-catch と filter() で例外処理
 
-## 🔍 Stream APIのポイント
+## Stream APIのポイント
 
 1. **中間操作**: filter、map、sorted、distinct等（遅延評価）
 2. **終端操作**: collect、reduce、forEach等（実際の処理実行）
@@ -250,7 +250,7 @@ functional（1回）
 5. **Collectors**: 豊富な集約操作の提供
 6. **関数型インターフェイス**: Predicate、Function、Consumer等
 
-## ✅ 完了チェックリスト
+## ○ 完了チェックリスト
 
 - [ ] 課題1: 社員データで基本的なStream操作ができている
 - [ ] 課題2: 売上データで高度なStream処理ができている

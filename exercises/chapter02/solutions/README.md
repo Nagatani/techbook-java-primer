@@ -1,17 +1,17 @@
 # 第2章 解答例とポイント解説
 
-## 📚 この章で学ぶこと
+## この章で学ぶこと
 
 第2章では、Javaプログラミングの核心であるクラスとオブジェクトについて学習します。変数だけでなく、データと処理を組み合わせた構造化されたプログラミングの基礎を身につけます。
 
-## 🎯 学習の目標
+## 学習の目標
 
 - **クラスの概念**: データ（フィールド）と処理（メソッド）をまとめる仕組みを理解する
 - **オブジェクトの生成**: クラスからインスタンスを作成し、それぞれが独立したデータを持つことを理解する
 - **メソッドの実装**: オブジェクトに対する操作を関数として定義する方法を学ぶ
 - **オブジェクト指向の基礎**: 現実世界の概念をプログラムで表現する方法を習得する
 
-## 📝 課題と解答例
+## 課題と解答例
 
 ### 課題1: Personクラスの作成
 
@@ -70,7 +70,7 @@ public class Person {
 - 状態変更を伴うメソッド
 - 現実世界の概念のモデル化
 
-## 🏗️ オブジェクト指向の基本概念
+## オブジェクト指向の基本概念
 
 ### クラスとオブジェクトの関係
 
@@ -98,16 +98,16 @@ public class Circle {
 }
 ```
 
-## ⚠️ よくある間違いと対策
+## よくある間違いと対策
 
 ### 1. オブジェクトの独立性の誤解
 
 ```java
-// ❌ 間違った理解
+// × 間違った理解
 Person person1 = new Person();
 Person person2 = person1;  // 同じオブジェクトを参照
 
-// ✅ 正しい理解
+// 正しい理解
 Person person1 = new Person();
 Person person2 = new Person();  // 別々のオブジェクトを作成
 ```
@@ -115,11 +115,11 @@ Person person2 = new Person();  // 別々のオブジェクトを作成
 ### 2. フィールドの初期化忘れ
 
 ```java
-// ❌ 問題のあるコード
+// 問題のあるコード
 Person person = new Person();
 person.introduce();  // nameがnullで表示される
 
-// ✅ 適切なコード
+// ○ 適切なコード
 Person person = new Person();
 person.name = "田中太郎";  // 使用前に初期化
 person.age = 20;
@@ -129,12 +129,12 @@ person.introduce();
 ### 3. nullチェックの忘れ
 
 ```java
-// ❌ null安全でないコード
+// × null安全でないコード
 boolean isSameAuthor(Book other) {
     return this.author.equals(other.author);  // NullPointerException の可能性
 }
 
-// ✅ null安全なコード
+// ○ null安全なコード
 boolean isSameAuthor(Book other) {
     if (other != null && this.author != null && other.author != null) {
         return this.author.equals(other.author);
@@ -146,15 +146,15 @@ boolean isSameAuthor(Book other) {
 ### 4. 計算精度の問題
 
 ```java
-// ❌ 精度の低い計算
+// × 精度の低い計算
 double pi = 3.14;
 double area = pi * radius * radius;
 
-// ✅ 正確な計算
+// ○ 正確な計算
 double area = Math.PI * radius * radius;
 ```
 
-## 💡 設計のベストプラクティス
+## 設計のベストプラクティス
 
 ### クラス設計の原則
 
@@ -202,7 +202,7 @@ void setAge(int newAge) {
 }
 ```
 
-## 🔧 デバッグのコツ
+## デバッグのコツ
 
 ### オブジェクトの状態確認
 
@@ -220,7 +220,7 @@ void debugInfo() {
 3. **メソッド呼び出し**: 期待した結果が得られるか
 4. **エラーケース**: 不正な値での動作確認
 
-## 🚀 発展的な内容
+## 発展的な内容
 
 ### オブジェクトの配列管理
 
@@ -257,7 +257,7 @@ double calculateAverageAge(Person[] people) {
 }
 ```
 
-## 🎯 次のステップ
+## 次のステップ
 
 第2章をマスターしたら、第3章「オブジェクト指向の考え方」に進みましょう。
 

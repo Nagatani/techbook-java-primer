@@ -1,6 +1,6 @@
 # 第21章 基本課題
 
-## 🎯 学習目標
+## 学習目標
 - JUnit5を使った単体テストの作成
 - テスト駆動開発（TDD）の実践
 - モックオブジェクトとスタブの活用
@@ -8,7 +8,7 @@
 - 継続的インテグレーション（CI）の基本
 - 境界値分析とエラー推測による効果的なテストケース設計
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: 基本的な単体テスト作成
 **ファイル名**: `Calculator.java`, `CalculatorTest.java`, `StringUtils.java`, `StringUtilsTest.java`
@@ -27,30 +27,30 @@
 === 基本的な単体テスト作成 ===
 
 Calculator クラステスト実行:
-✅ testAdd_正の数の加算
-✅ testAdd_負の数の加算  
-✅ testAdd_ゼロの加算
-✅ testSubtract_正の数の減算
-✅ testSubtract_負の数の減算
-✅ testMultiply_正の数の乗算
-✅ testMultiply_ゼロの乗算
-✅ testDivide_正常な除算
-❌ testDivide_ゼロ除算例外
-✅ testSqrt_正の数の平方根
-❌ testSqrt_負の数例外
+○ testAdd_正の数の加算
+○ testAdd_負の数の加算  
+○ testAdd_ゼロの加算
+○ testSubtract_正の数の減算
+○ testSubtract_負の数の減算
+○ testMultiply_正の数の乗算
+○ testMultiply_ゼロの乗算
+○ testDivide_正常な除算
+× testDivide_ゼロ除算例外
+○ testSqrt_正の数の平方根
+× testSqrt_負の数例外
 
 テスト結果: 9/11 成功 (81.8%)
 
 StringUtils クラステスト実行:
-✅ testIsEmpty_空文字列
-✅ testIsEmpty_null文字列
-✅ testIsEmpty_空白文字列
-✅ testReverse_通常文字列
-✅ testReverse_空文字列
-✅ testReverse_一文字
-✅ testCapitalize_通常文字列
-✅ testCapitalize_空文字列
-✅ testCapitalize_null文字列
+○ testIsEmpty_空文字列
+○ testIsEmpty_null文字列
+○ testIsEmpty_空白文字列
+○ testReverse_通常文字列
+○ testReverse_空文字列
+○ testReverse_一文字
+○ testCapitalize_通常文字列
+○ testCapitalize_空文字列
+○ testCapitalize_null文字列
 
 テスト結果: 9/9 成功 (100%)
 
@@ -185,10 +185,10 @@ TDDのサイクル（Red-Green-Refactor）を実践し、テストファース�
 TDDサイクル1: BankAccount基本機能
 
 Red フェーズ:
-❌ testCreateAccount_初期残高ゼロ
-❌ testDeposit_正常入金
-❌ testWithdraw_正常出金
-❌ testWithdraw_残高不足例外
+× testCreateAccount_初期残高ゼロ
+× testDeposit_正常入金
+× testWithdraw_正常出金
+× testWithdraw_残高不足例外
 
 実装前テスト実行:
 コンパイルエラー: BankAccountクラスが存在しません
@@ -207,10 +207,10 @@ public class BankAccount {
 }
 
 テスト実行結果:
-✅ testCreateAccount_初期残高ゼロ
-✅ testDeposit_正常入金
-✅ testWithdraw_正常出金
-✅ testWithdraw_残高不足例外
+○ testCreateAccount_初期残高ゼロ
+○ testDeposit_正常入金
+○ testWithdraw_正常出金
+○ testWithdraw_残高不足例外
 
 Refactor フェーズ:
 リファクタリング:
@@ -221,9 +221,9 @@ Refactor フェーズ:
 TDDサイクル2: 入金制限機能追加
 
 Red フェーズ:
-❌ testDeposit_負の金額例外
-❌ testDeposit_ゼロ金額例外
-❌ testDeposit_上限額チェック
+× testDeposit_負の金額例外
+× testDeposit_ゼロ金額例外
+× testDeposit_上限額チェック
 
 実装前テスト実行:
 3件のテストが失敗
@@ -237,9 +237,9 @@ public void deposit(double amount) throws InvalidAmountException {
 }
 
 テスト実行結果:
-✅ testDeposit_負の金額例外
-✅ testDeposit_ゼロ金額例外
-✅ testDeposit_上限額チェック
+○ testDeposit_負の金額例外
+○ testDeposit_ゼロ金額例外
+○ testDeposit_上限額チェック
 
 Refactor フェーズ:
 - バリデーション処理の共通化
@@ -248,11 +248,11 @@ Refactor フェーズ:
 TDDサイクル3: パスワード検証機能
 
 Red フェーズ:
-❌ testValidatePassword_8文字以上
-❌ testValidatePassword_大文字含む
-❌ testValidatePassword_小文字含む
-❌ testValidatePassword_数字含む
-❌ testValidatePassword_特殊文字含む
+× testValidatePassword_8文字以上
+× testValidatePassword_大文字含む
+× testValidatePassword_小文字含む
+× testValidatePassword_数字含む
+× testValidatePassword_特殊文字含む
 
 テスト駆動でのPasswordValidator実装:
 
@@ -286,11 +286,11 @@ public class PasswordValidator {
 }
 
 全テスト実行結果:
-✅ testValidatePassword_8文字以上
-✅ testValidatePassword_大文字含む
-✅ testValidatePassword_小文字含む
-✅ testValidatePassword_数字含む
-✅ testValidatePassword_特殊文字含む
+○ testValidatePassword_8文字以上
+○ testValidatePassword_大文字含む
+○ testValidatePassword_小文字含む
+○ testValidatePassword_数字含む
+○ testValidatePassword_特殊文字含む
 
 TDD統計:
 総サイクル数: 5
@@ -304,11 +304,11 @@ TDD統計:
 リファクタリング回数: 8回
 
 TDDの利点確認:
-✅ 要件の明確化
-✅ デバッグ時間の短縮
-✅ リグレッション防止
-✅ 設計の改善
-✅ 仕様の文書化
+○ 要件の明確化
+○ デバッグ時間の短縮
+○ リグレッション防止
+○ 設計の改善
+○ 仕様の文書化
 
 ベストプラクティス:
 1. 一度に一つの機能をテスト
@@ -318,10 +318,10 @@ TDDの利点確認:
 5. AAA（Arrange-Act-Assert）パターン使用
 
 失敗パターンの学習:
-❌ 複雑すぎるテスト → 分割する
-❌ 実装に依存したテスト → 振る舞いをテスト
-❌ テストの重複 → DRY原則適用
-❌ あいまいなアサーション → 具体的な期待値
+× 複雑すぎるテスト → 分割する
+× 実装に依存したテスト → 振る舞いをテスト
+× テストの重複 → DRY原則適用
+× あいまいなアサーション → 具体的な期待値
 ```
 
 **評価ポイント**:
@@ -758,9 +758,9 @@ Phase 3: Performance Tests
 [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
 
 Performance Metrics:
-大量データ処理: 1.45秒 (閾値: 2秒) ✅
-並行アクセス: 100リクエスト/3.2秒 ✅
-メモリ使用量: 245MB (上限: 512MB) ✅
+大量データ処理: 1.45秒 (閾値: 2秒) ○
+並行アクセス: 100リクエスト/3.2秒 ○
+メモリ使用量: 245MB (上限: 512MB) ○
 
 テストカバレッジレポート:
 ======================
@@ -777,11 +777,11 @@ com.example.util: 100% (34/34 lines)
 - DataValidator.java:78-82 (エッジケース)
 
 品質ゲート:
-✅ 単体テスト成功率: 100% (100%以上必要)
-✅ 統合テスト成功率: 100% (100%以上必要)  
-✅ コードカバレッジ: 89.2% (80%以上必要)
-✅ パフォーマンス: 全て基準内
-❌ 技術的負債: 2件 (0件必要)
+○ 単体テスト成功率: 100% (100%以上必要)
+○ 統合テスト成功率: 100% (100%以上必要)  
+○ コードカバレッジ: 89.2% (80%以上必要)
+○ パフォーマンス: 全て基準内
+× 技術的負債: 2件 (0件必要)
 
 CI/CD統計:
 ビルド時間: 4分23秒
@@ -807,7 +807,7 @@ CI/CD統計:
 - CI/CDパイプラインの理解
 - テスト自動化の実装
 
-## 💡 ヒント
+## ヒント
 
 ### 課題1のヒント
 - @DisplayName でテスト名を日本語化
@@ -829,7 +829,7 @@ CI/CD統計:
 - TestContainers で統合テスト用のインフラ環境
 - JaCoCo でコードカバレッジ測定
 
-## 🔍 単体テストのポイント
+## 単体テストのポイント
 
 1. **テストピラミッド**: 単体テスト > 統合テスト > E2Eテスト
 2. **FIRST原則**: Fast, Independent, Repeatable, Self-validating, Timely
@@ -838,7 +838,7 @@ CI/CD統計:
 5. **モック活用**: 依存関係の分離とテスト高速化
 6. **継続的改善**: カバレッジとメトリクスによる品質向上
 
-## ✅ 完了チェックリスト
+## ○ 完了チェックリスト
 
 - [ ] 課題1: JUnit5を使った基本的な単体テストが作成できている
 - [ ] 課題2: TDDサイクルを実践してクラスを開発できている

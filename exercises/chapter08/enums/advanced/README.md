@@ -1,13 +1,13 @@
 # 第8章 応用課題
 
-## 🎯 学習目標
+## 学習目標
 - パッケージ設計の高度な実践
 - モジュールシステムの活用
 - アーキテクチャレベルの依存管理
 - 大規模システムの構造化
 - レイヤードアーキテクチャ実装
 
-## 📝 課題一覧
+## 課題一覧
 
 ### 課題1: マルチモジュール企業システム
 **ファイル名**: `MultiModuleEnterpriseSystem.java`
@@ -31,10 +31,10 @@
 ```
 === マルチモジュール企業システム ===
 
-🏢 EnterpriseCore v4.0
+EnterpriseCore v4.0
 
 === モジュール構成 ===
-📦 システムアーキテクチャ:
+システムアーキテクチャ:
 
 モジュール一覧:
 1. com.enterprise.core.api (基盤API)
@@ -64,7 +64,7 @@ integration → business, auth
 - 総計: 591 classes, 154 interfaces
 
 === Core APIモジュール ===
-🔧 基盤インターフェイス定義:
+基盤インターフェイス定義:
 
 ```java
 // module-info.java (Core API)
@@ -132,7 +132,7 @@ public interface SecuredResource {
 ```
 
 === 認証・認可モジュール ===
-🔐 セキュリティシステム:
+セキュリティシステム:
 
 ```java
 // module-info.java (Auth)
@@ -358,7 +358,7 @@ IPアドレス: 192.168.1.100
 ```
 
 === データアクセスモジュール ===
-💾 高性能データ層:
+高性能データ層:
 
 ```java
 // module-info.java (Data)
@@ -600,10 +600,10 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 ```
 === プラグイン対応設計フレームワーク ===
 
-🔌 ExtensibleFramework v3.0
+ExtensibleFramework v3.0
 
 === プラグインシステム ===
-⚙️ 動的拡張アーキテクチャ:
+動的拡張アーキテクチャ:
 
 フレームワーク構成:
 コアフレームワーク: com.framework.core
@@ -625,7 +625,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 カスタム: 23個
 
 === プラグインAPI設計 ===
-🛠️ 拡張ポイント定義:
+拡張ポイント定義:
 
 ```java
 // module-info.java (Plugin API)
@@ -940,10 +940,10 @@ CPU使用率: 76% (平均)
 ```
 === レイヤードアーキテクチャ実装システム ===
 
-🏗️ ArchitectureGuard v2.0
+ArchitectureGuard v2.0
 
 === アーキテクチャ構成 ===
-📐 4層アーキテクチャ:
+4層アーキテクチャ:
 
 レイヤー依存関係:
 ```
@@ -959,12 +959,12 @@ Presentation → Application → Domain
 - com.system.infrastructure (インフラ層)
 
 依存ルール:
-✅ Presentation → Application (OK)
-✅ Application → Domain (OK)  
-✅ Application → Infrastructure (OK)
-❌ Domain → Infrastructure (NG)
-❌ Domain → Application (NG)
-❌ Infrastructure → Domain (NG)
+○ Presentation → Application (OK)
+○ Application → Domain (OK)  
+○ Application → Infrastructure (OK)
+× Domain → Infrastructure (NG)
+× Domain → Application (NG)
+× Infrastructure → Domain (NG)
 
 アーキテクチャ制約:
 自動検証: 有効
@@ -973,7 +973,7 @@ Presentation → Application → Domain
 修正提案: AI支援
 
 === アーキテクチャ実装 ===
-🔧 厳密なレイヤー分離:
+厳密なレイヤー分離:
 
 ```java
 // ドメイン層 - ビジネスロジック
@@ -1296,10 +1296,10 @@ public class ExternalPaymentService implements PaymentService {
 14:40:00.089 - [Application] 注文作成完了
 
 アーキテクチャ制約チェック:
-✅ レイヤー依存関係: 違反なし
-✅ 循環依存: 検出なし
-✅ ドメイン純粋性: 維持
-✅ インフラ分離: 適切
+○ レイヤー依存関係: 違反なし
+○ 循環依存: 検出なし
+○ ドメイン純粋性: 維持
+○ インフラ分離: 適切
 
 処理パフォーマンス:
 総処理時間: 88ms
@@ -1315,7 +1315,7 @@ public class ExternalPaymentService implements PaymentService {
 ```
 ```
 
-## 🎯 習得すべき技術要素
+## 習得すべき技術要素
 
 ### モジュールシステム
 - JPMS (Java Platform Module System)
@@ -1335,13 +1335,13 @@ public class ExternalPaymentService implements PaymentService {
 - セキュリティマネージャー
 - プラグインライフサイクル
 
-## 📚 参考リソース
+## 参考リソース
 
 - Java Platform Module System (JPMS) Specification
 - Clean Architecture (Robert C. Martin)
 - Building Modular Cloud Apps with OSGi (Siebenrock)
 - Enterprise Integration Patterns (Hohpe & Woolf)
 
-## ⚠️ 重要な注意事項
+## 重要な注意事項
 
 モジュールシステムとアーキテクチャ設計では、将来の拡張性と保守性を十分に考慮してください。早期の最適化よりも、明確な構造と責任分離を優先することが重要です。
