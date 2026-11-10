@@ -336,36 +336,36 @@ final class ReadWriteLockCounter {
 class CounterDemo {
     
     public static void demonstrateUsage() {
-        System.out.println("=== ThreadSafeCounter使用例 ===");
+        IO.println("=== ThreadSafeCounter使用例 ===");
         
         ThreadSafeCounter counter = new ThreadSafeCounter();
         
         // 基本操作
-        System.out.println("初期値: " + counter.get());
-        System.out.println("インクリメント: " + counter.increment());
-        System.out.println("インクリメント: " + counter.increment());
-        System.out.println("デクリメント: " + counter.decrement());
-        System.out.println("5を加算: " + counter.addAndGet(5));
-        System.out.println("現在値: " + counter.get());
-        System.out.println("統計: " + counter.getStats());
+        IO.println("初期値: " + counter.get());
+        IO.println("インクリメント: " + counter.increment());
+        IO.println("インクリメント: " + counter.increment());
+        IO.println("デクリメント: " + counter.decrement());
+        IO.println("5を加算: " + counter.addAndGet(5));
+        IO.println("現在値: " + counter.get());
+        IO.println("統計: " + counter.getStats());
         
         // Compare and Set
-        System.out.println("\n=== Compare and Set ===");
+        IO.println("\n=== Compare and Set ===");
         boolean result1 = counter.compareAndSet(7, 10);
-        System.out.println("7を10に変更: " + result1 + ", 現在値: " + counter.get());
+        IO.println("7を10に変更: " + result1 + ", 現在値: " + counter.get());
         
         boolean result2 = counter.compareAndSet(5, 15);
-        System.out.println("5を15に変更: " + result2 + ", 現在値: " + counter.get());
+        IO.println("5を15に変更: " + result2 + ", 現在値: " + counter.get());
         
         counter.reset();
-        System.out.println("リセット後: " + counter.get());
+        IO.println("リセット後: " + counter.get());
     }
     
     /**
      * マルチスレッドテスト
      */
     public static void multiThreadTest() {
-        System.out.println("\n=== マルチスレッドテスト ===");
+        IO.println("\n=== マルチスレッドテスト ===");
         
         ThreadSafeCounter counter = new ThreadSafeCounter();
         final int THREAD_COUNT = 10;
@@ -397,15 +397,15 @@ class CounterDemo {
             }
         }
         
-        System.out.println("最終結果: " + counter.getStats());
-        System.out.println("期待値: 0 (インクリメント数とデクリメント数が同じ)");
+        IO.println("最終結果: " + counter.getStats());
+        IO.println("期待値: 0 (インクリメント数とデクリメント数が同じ)");
     }
     
     /**
      * パフォーマンス比較テスト
      */
     public static void performanceTest() {
-        System.out.println("\n=== パフォーマンス比較テスト ===");
+        IO.println("\n=== パフォーマンス比較テスト ===");
         
         final int OPERATIONS = 1000000;
         
@@ -425,9 +425,9 @@ class CounterDemo {
         }
         long syncTime = System.nanoTime() - startTime;
         
-        System.out.println("AtomicInteger: " + atomicTime / 1_000_000 + " ms");
-        System.out.println("Synchronized: " + syncTime / 1_000_000 + " ms");
-        System.out.println("性能比率: " + (double)syncTime / atomicTime + " 倍");
+        IO.println("AtomicInteger: " + atomicTime / 1_000_000 + " ms");
+        IO.println("Synchronized: " + syncTime / 1_000_000 + " ms");
+        IO.println("性能比率: " + (double)syncTime / atomicTime + " 倍");
     }
     
     public static void main(String[] args) {

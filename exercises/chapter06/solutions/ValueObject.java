@@ -445,15 +445,15 @@ public final class ValueObject {
      * 使用例を示すメソッド
      */
     public static void demonstrateUsage() {
-        System.out.println("=== 値オブジェクトの使用例 ===");
+        IO.println("=== 値オブジェクトの使用例 ===");
         
         // 値オブジェクトの作成
         Money price1 = new Money(1000);
         Money price2 = new Money(2000);
         
-        System.out.println("価格1: " + price1);
-        System.out.println("価格2: " + price2);
-        System.out.println("合計: " + price1.add(price2));
+        IO.println("価格1: " + price1);
+        IO.println("価格2: " + price2);
+        IO.println("合計: " + price1.add(price2));
         
         // 顧客情報の作成
         Age age = new Age(25);
@@ -463,21 +463,21 @@ public final class ValueObject {
         Address address = new Address(postalCode, "東京都", "渋谷区", "1-1-1");
         
         Customer customer = new Customer("田中太郎", age, email, phone, address);
-        System.out.println("\n顧客情報: " + customer);
+        IO.println("\n顧客情報: " + customer);
         
         // 注文の作成
         Order order = new Order("ORD-001", customer, new Money(5000));
-        System.out.println("\n注文情報: " + order);
-        System.out.println("小計: " + order.getSubtotalAmount());
-        System.out.println("税額: " + order.getTaxAmount());
-        System.out.println("最終金額: " + order.getFinalAmount());
+        IO.println("\n注文情報: " + order);
+        IO.println("小計: " + order.getSubtotalAmount());
+        IO.println("税額: " + order.getTaxAmount());
+        IO.println("最終金額: " + order.getFinalAmount());
         
         // 値オブジェクトの比較
         Money money1 = new Money(1000);
         Money money2 = new Money(1000);
-        System.out.println("\n値オブジェクトの比較:");
-        System.out.println("money1.equals(money2): " + money1.equals(money2));
-        System.out.println("money1 == money2: " + (money1 == money2));
+        IO.println("\n値オブジェクトの比較:");
+        IO.println("money1.equals(money2): " + money1.equals(money2));
+        IO.println("money1 == money2: " + (money1 == money2));
     }
     
     public static void main(String[] args) {

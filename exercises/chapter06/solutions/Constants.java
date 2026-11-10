@@ -239,20 +239,20 @@ public final class Constants {
      */
     public static void demonstrateUsage() {
         // 基本定数の使用
-        System.out.println("アプリケーション名: " + APPLICATION_NAME);
-        System.out.println("最大リトライ回数: " + MAX_RETRY_COUNT);
+        IO.println("アプリケーション名: " + APPLICATION_NAME);
+        IO.println("最大リトライ回数: " + MAX_RETRY_COUNT);
         
         // コレクション定数の使用
-        System.out.println("サポート言語: " + SUPPORTED_LANGUAGES);
-        System.out.println("有効なファイル拡張子: " + VALID_FILE_EXTENSIONS);
+        IO.println("サポート言語: " + SUPPORTED_LANGUAGES);
+        IO.println("有効なファイル拡張子: " + VALID_FILE_EXTENSIONS);
         
         // 入れ子定数の使用
-        System.out.println("データベースポート: " + Database.DEFAULT_PORT);
-        System.out.println("バッファサイズ: " + Files.BUFFER_SIZE);
+        IO.println("データベースポート: " + Database.DEFAULT_PORT);
+        IO.println("バッファサイズ: " + Files.BUFFER_SIZE);
         
         // 優先度定数の使用
         int priority = Priority.HIGH;
-        System.out.println("優先度: " + Priority.getName(priority));
-        System.out.println("有効な優先度: " + Priority.isValid(priority));
+        IO.println("優先度: " + Priority.getName(priority));
+        IO.println("有効な優先度: " + Priority.isValid(priority));
     }
 }
