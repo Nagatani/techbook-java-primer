@@ -479,7 +479,7 @@ h2 > span:first-child:not(small) {
 /*
  * 見出し（h3〜h6）
  * - 見出しの文字は本文と同じ左端から始める（記号や字下げで文字の位置をずらさない）
- * - 階層は装飾の強さで示す: h3 縦線 → h4 青の太字 → h5 本文大の太字 → h6 灰色の太字
+ * - 階層は装飾の強さで示す: h3 縦線 → h4 青の太字 → h5 本文大の太字（h6は使わず、h5と同じ見た目にする）
  * - 見出し直後で改ページしない
  */
 h3,
@@ -515,24 +515,15 @@ h4 {
   color: #2c7fb8;
 }
 
-/* h5 - 項見出し: 本文と同じ大きさの太字 */
-h5 {
+/* h5 - 項見出し: 本文と同じ大きさの太字。原稿ではh6を使わないが、書かれた場合もh5と同じにする */
+h5,
+h6 {
   font-size: 13.5Q;
   line-height: 21Q;
   margin-block-start: 1em;
   margin-block-end: 0.25em;
   padding: 0;
   color: #2c3e50;
-}
-
-/* h6 - 小項目: 本文と同じ大きさの灰色の太字 */
-h6 {
-  font-size: 13Q;
-  line-height: 21Q;
-  margin-block-start: 0.8em;
-  margin-block-end: 0.2em;
-  padding: 0;
-  color: #495057;
 }
 
 /* テーマ標準の節番号（section.css の ::before）や旧デザインの記号を出さない */
