@@ -20,7 +20,7 @@ public class CollectionProblem {
             
             // 文字列として使いたい場合は型変換が必要
             String language = (String) item;  // 3番目の要素で実行時エラー！
-            System.out.println(language.toUpperCase());
+            IO.println(language.toUpperCase());
         }
     }
 }

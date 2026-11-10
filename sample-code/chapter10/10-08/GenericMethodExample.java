@@ -2,19 +2,19 @@ public class GenericMethodExample {
     // Tという型パラメータを持つジェネリックメソッド
     public static <T> void printArray(T[] inputArray) {
         for (T element : inputArray) {
-            System.out.printf("%s ", element);
+            IO.print(element + " ");
         }
-        System.out.println();
+        IO.println();
     }
 
     public static void main(String[] args) {
         Integer[] intArray = { 1, 2, 3 };
         String[] stringArray = { "A", "B", "C" };
 
-        System.out.print("Integer配列: ");
+        IO.print("Integer配列: ");
         printArray(intArray); // TはIntegerと推論される
 
-        System.out.print("String配列: ");
+        IO.print("String配列: ");
         printArray(stringArray); // TはStringと推論される
     }
 }

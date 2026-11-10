@@ -62,7 +62,7 @@ public class CollectionProblem {
             
             // 文字列として使いたい場合は型変換が必要
             String language = (String) item;  // 3番目の要素で実行時エラー！
-            System.out.println(language.toUpperCase());
+            IO.println(language.toUpperCase());
         }
     }
 }
@@ -101,7 +101,7 @@ public class CollectionSolution {
         
         // 取り出すときも型変換不要
         for (String language : list) {
-            System.out.println(language.toUpperCase());
+            IO.println(language.toUpperCase());
         }
     }
 }
@@ -140,7 +140,7 @@ public class WithoutGenericsExample {
 
         // 取り出すときにキャストが必要
         String message = (String) list.get(0); // OK
-        System.out.println("取り出した文字列: " + message);
+        IO.println("取り出した文字列: " + message);
 
         // もし間違った型で取り出そうとすると...
         // コンパイルは通るが実行時にClassCastExceptionが発生
@@ -197,7 +197,7 @@ public class WithGenericsExample {
 
         // 取り出すときも、キャストは不要
         String element = stringList.get(0); // 安全！
-        System.out.println(element);
+        IO.println(element);
     }
 }
 ```
@@ -239,13 +239,13 @@ public class BoxExample {
         Box<String> stringBox = new Box<>();
         stringBox.setContent("Hello Generics");
         String str = stringBox.getContent();
-        System.out.println(str);
+        IO.println(str);
 
         // Integerを扱うBox
         Box<Integer> integerBox = new Box<>();
         integerBox.setContent(100);
         int num = integerBox.getContent();
-        System.out.println(num);
+        IO.println(num);
     }
 }
 ```
@@ -280,19 +280,19 @@ public class GenericMethodExample {
     // Tという型パラメータを持つジェネリックメソッド
     public static <T> void printArray(T[] inputArray) {
         for (T element : inputArray) {
-            System.out.printf("%s ", element);
+            IO.print(element + " ");
         }
-        System.out.println();
+        IO.println();
     }
 
     public static void main(String[] args) {
         Integer[] intArray = { 1, 2, 3 };
         String[] stringArray = { "A", "B", "C" };
 
-        System.out.print("Integer配列: ");
+        IO.print("Integer配列: ");
         printArray(intArray); // TはIntegerと推論される
 
-        System.out.print("String配列: ");
+        IO.print("String配列: ");
         printArray(stringArray); // TはStringと推論される
     }
 }
@@ -331,11 +331,11 @@ public class BoundedTypeExample {
     public static void main(String[] args) {
         NumericBox<Integer> intBox = new NumericBox<>();
         intBox.setNumber(10);
-        System.out.println(intBox.getDoubleValue()); // 10.0
+        IO.println(intBox.getDoubleValue()); // 10.0
 
         NumericBox<Double> doubleBox = new NumericBox<>();
         doubleBox.setNumber(3.14);
-        System.out.println(doubleBox.getDoubleValue()); // 3.14
+        IO.println(doubleBox.getDoubleValue()); // 3.14
 
         // NumericBox<String> stringBox = new NumericBox<>(); // コンパイルエラー！
     }
@@ -376,8 +376,8 @@ public class WildcardExample {
         List<Integer> intList = List.of(1, 2, 3);
         List<Double> doubleList = List.of(1.1, 2.2, 3.3);
 
-        System.out.println("Integerの合計: " + sum(intList));
-        System.out.println("Doubleの合計: " + sum(doubleList));
+        IO.println("Integerの合計: " + sum(intList));
+        IO.println("Doubleの合計: " + sum(doubleList));
     }
 }
 ```
@@ -422,8 +422,8 @@ public class VarBasicExample {
         var scoresVar = new HashMap<String, Integer>();
 
         // いずれも同じ型になる
-        System.out.println("languages: " + languages.getClass());
-        System.out.println("languagesVar: " + languagesVar.getClass());
+        IO.println("languages: " + languages.getClass());
+        IO.println("languagesVar: " + languagesVar.getClass());
     }
 }
 ```
@@ -543,8 +543,8 @@ public class VarWithGenericsExample {
         
         // ジェネリックメソッドの戻り値
         var pair = createPair("Hello", 42);
-        System.out.println("First: " + pair.getFirst());
-        System.out.println("Second: " + pair.getSecond());
+        IO.println("First: " + pair.getFirst());
+        IO.println("Second: " + pair.getSecond());
     }
     // ...
     public static <T, U> Pair<T, U> createPair(T first, U second) {

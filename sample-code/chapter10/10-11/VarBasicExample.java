@@ -18,7 +18,7 @@ public class VarBasicExample {
         var scoresVar = new HashMap<String, Integer>();
 
         // いずれも同じ型になる
-        System.out.println("languages: " + languages.getClass());
-        System.out.println("languagesVar: " + languagesVar.getClass());
+        IO.println("languages: " + languages.getClass());
+        IO.println("languagesVar: " + languagesVar.getClass());
     }
 }

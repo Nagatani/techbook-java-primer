@@ -15,7 +15,7 @@ public class WildcardExample {
         List<Integer> intList = List.of(1, 2, 3);
         List<Double> doubleList = List.of(1.1, 2.2, 3.3);
 
-        System.out.println("Integerの合計: " + sum(intList));
-        System.out.println("Doubleの合計: " + sum(doubleList));
+        IO.println("Integerの合計: " + sum(intList));
+        IO.println("Doubleの合計: " + sum(doubleList));
     }
 }

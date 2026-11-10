@@ -15,7 +15,7 @@ public class CollectionSolution {
         
         // 取り出すときも型変換不要
         for (String language : list) {
-            System.out.println(language.toUpperCase());
+            IO.println(language.toUpperCase());
         }
     }
 }

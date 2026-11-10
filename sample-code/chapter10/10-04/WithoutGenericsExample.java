@@ -10,7 +10,7 @@ public class WithoutGenericsExample {
 
         // 取り出すときにキャストが必要
         String message = (String) list.get(0); // OK
-        System.out.println("取り出した文字列: " + message);
+        IO.println("取り出した文字列: " + message);
 
         // もし間違った型で取り出そうとすると...
         // コンパイルは通るが実行時にClassCastExceptionが発生

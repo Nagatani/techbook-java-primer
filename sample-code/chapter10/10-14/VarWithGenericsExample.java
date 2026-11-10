@@ -20,8 +20,8 @@ public class VarWithGenericsExample {
         
         // ジェネリックメソッドの戻り値
         var pair = createPair("Hello", 42);
-        System.out.println("First: " + pair.getFirst());
-        System.out.println("Second: " + pair.getSecond());
+        IO.println("First: " + pair.getFirst());
+        IO.println("Second: " + pair.getSecond());
     }
     
     public static double calculateSum(List<? extends Number> numbers) {

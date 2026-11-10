@@ -11,6 +11,6 @@ public class WithGenericsExample {
 
         // 取り出すときも、キャストは不要
         String element = stringList.get(0); // 安全！
-        System.out.println(element);
+        IO.println(element);
     }
 }
