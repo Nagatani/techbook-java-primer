@@ -459,6 +459,13 @@ public final class DateRange {
     }
 }
 ```
+
+<div class="figure">
+
+![防御的コピーの有無による違い](images/diagrams/chapter06-defensive-copy.svg)
+
+</div>
+
 ### ビルダーパターンによる不変オブジェクトの構築
 
 複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。

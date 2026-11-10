@@ -1,0 +1,17 @@
+flowchart LR
+    subgraph bad["参照をそのまま保持した場合"]
+        direction LR
+        ext1["呼び出し側の<br/>List holidays"] --> list1["リスト<br/>[1/1, 5/5]"]
+        f1["DateRangeの<br/>holidaysフィールド"] --> list1
+    end
+
+    subgraph good["防御的コピーをした場合（サンプルコード6-9）"]
+        direction LR
+        ext2["呼び出し側の<br/>List holidays"] --> list2["リスト<br/>[1/1, 5/5]"]
+        f2["DateRangeの<br/>holidaysフィールド"] --> copy2["コピーしたリスト<br/>[1/1, 5/5]"]
+    end
+
+    bad ~~~ good
+
+    style list1 fill:#ffebee,stroke:#c62828
+    style copy2 fill:#e8f5e9,stroke:#2e7d32
