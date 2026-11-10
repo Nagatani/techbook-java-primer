@@ -1,0 +1,14 @@
+flowchart LR
+    src["ソースコード<br/>（.java）"]
+    cls["クラスファイル<br/>（.class）"]
+    res["画像・設定ファイル<br/>MANIFEST.MF<br/>（Main-Class）"]
+    jar["実行可能JAR<br/>java -jar で実行"]
+    native["ネイティブアプリ<br/>（.dmg、.msi、.debなど）<br/>Javaの実行環境を同梱"]
+
+    src -->|"javac"| cls
+    cls -->|"jar"| jar
+    res --> jar
+    jar -->|"jpackage"| native
+
+    style jar fill:#e3f2fd,stroke:#1565c0
+    style native fill:#e8f5e9,stroke:#2e7d32
