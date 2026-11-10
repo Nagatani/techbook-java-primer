@@ -17,7 +17,7 @@ public class StreamDemo {
         
         StudentAnalyzer analyzer = new StudentAnalyzer(students);
         
-        System.out.println("=== 学生データ分析 ===");
+        IO.println("=== 学生データ分析 ===");
         
         // TODO: StudentAnalyzerの各メソッドをテスト
         
@@ -32,7 +32,7 @@ public class StreamDemo {
         
         SalesAnalyzer salesAnalyzer = new SalesAnalyzer(products);
         
-        System.out.println("\n=== 売上分析 ===");
+        IO.println("\n=== 売上分析 ===");
         
         // TODO: SalesAnalyzerの各メソッドをテスト
     }
