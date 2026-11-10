@@ -10,6 +10,7 @@
     "mermaid:convert": "node scripts/convert-mermaid-to-images.js",
     "index": "node scripts/build-book-index.js",
     "index:check": "node scripts/build-book-index.js --check",
+    "check:diagrams": "node scripts/diagram-size.js",
     "check:java": "node scripts/check-java-samples.js",
     "check:java:run": "node scripts/check-java-samples.js --run",
     "check:samples": "node scripts/sample-code.js check",

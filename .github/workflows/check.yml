@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ここから下の3つは、環境によらず同じ結果になる検査。失敗したらジョブを失敗にする
+      # ここから下の4つは、環境によらず同じ結果になる検査。失敗したらジョブを失敗にする
       - name: 章・演習・付録B・用語集・相互参照ガイドの検査
         run: npm run check:structure
 
@@ -42,6 +42,10 @@ jobs:
 
       - name: サンプルコードの抜粋とコンパイル
         run: npm run check:samples -- --no-run
+
+      # 図の元データ（docs/diagrams/*.mmd）・画像・原稿の対応。文字が小さすぎる図は注意として表示するだけ
+      - name: 図の元データと画像の対応
+        run: npm run check:diagrams
 
       # 実行結果の照合は、言語設定・タイムゾーン・画面の有無で出力が変わりうるため参考として流す
       - name: サンプルコードの実行結果の照合（参考）
