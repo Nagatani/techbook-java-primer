@@ -5,14 +5,14 @@ public class EDTUtilityExample {
     public static void main(String[] args) {
         // 1. SwingUtilities.invokeLater() - EDT上で後で実行
         SwingUtilities.invokeLater(() -> {
-            System.out.println("invokeLater: " + Thread.currentThread().getName());
+            IO.println("invokeLater: " + Thread.currentThread().getName());
             createGUI();
         });
         
         // 2. SwingUtilities.invokeAndWait() - EDT上で実行し、完了まで待機
         try {
             SwingUtilities.invokeAndWait(() -> {
-                System.out.println("invokeAndWait: " + Thread.currentThread().getName());
+                IO.println("invokeAndWait: " + Thread.currentThread().getName());
                 JOptionPane.showMessageDialog(null, "EDT上で実行され、完了まで待機しました");
             });
         } catch (Exception e) {
@@ -20,7 +20,7 @@ public class EDTUtilityExample {
         }
         
         // 3. SwingUtilities.isEventDispatchThread() - 現在のスレッドがEDTかチェック
-        System.out.println("メインスレッドはEDT？: " + SwingUtilities.isEventDispatchThread());
+        IO.println("メインスレッドはEDT？: " + SwingUtilities.isEventDispatchThread());
     }
     
     private static void createGUI() {

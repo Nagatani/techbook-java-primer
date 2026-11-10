@@ -19,7 +19,7 @@ public class ButtonEventExample {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // ボタンがクリックされたときの処理
-                System.out.println("ボタンがクリックされました！");
+                IO.println("ボタンがクリックされました！");
             }
         });
 

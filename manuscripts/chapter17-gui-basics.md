@@ -786,7 +786,7 @@ public class ButtonEventExample {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // ボタンがクリックされたときの処理
-                System.out.println("ボタンがクリックされました！");
+                IO.println("ボタンがクリックされました！");
             }
         });
 
@@ -870,17 +870,17 @@ public class TextFieldEventExample {
 button.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("ボタンがクリックされました！");
+        IO.println("ボタンがクリックされました！");
     }
 });
 
 // ラムダ式のバージョン
 button.addActionListener(e -> {
-    System.out.println("ボタンがクリックされました！");
+    IO.println("ボタンがクリックされました！");
 });
 
 // 処理が1行の場合はさらに簡潔に
-button.addActionListener(e -> System.out.println("ボタンがクリックされました！"));
+button.addActionListener(e -> IO.println("ボタンがクリックされました！"));
 ```
 
 これらは構文の比較例です。すべて同じ動作をし、ボタンがクリックされると「ボタンがクリックされました！」とコンソールに出力されます。
@@ -1191,8 +1191,8 @@ public class EventQueueExample {
                     }
                     
                     // イベントキューの状況を表示
-                    System.out.println("現在のスレッド: " + Thread.currentThread().getName());
-                    System.out.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
+                    IO.println("現在のスレッド: " + Thread.currentThread().getName());
+                    IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
                 }
             });
             // ...
@@ -1282,14 +1282,14 @@ public class EDTUtilityExample {
     public static void main(String[] args) {
         // 1. SwingUtilities.invokeLater() - EDT上で後で実行
         SwingUtilities.invokeLater(() -> {
-            System.out.println("invokeLater: " + Thread.currentThread().getName());
+            IO.println("invokeLater: " + Thread.currentThread().getName());
             createGUI();
         });
         
         // 2. SwingUtilities.invokeAndWait() - EDT上で実行し、完了まで待機
         try {
             SwingUtilities.invokeAndWait(() -> {
-                System.out.println("invokeAndWait: " + Thread.currentThread().getName());
+                IO.println("invokeAndWait: " + Thread.currentThread().getName());
                 JOptionPane.showMessageDialog(null, "EDT上で実行され、完了まで待機しました");
             });
         } catch (Exception e) {
@@ -1297,7 +1297,7 @@ public class EDTUtilityExample {
         }
         
         // 3. SwingUtilities.isEventDispatchThread() - 現在のスレッドがEDTかチェック
-        System.out.println("メインスレッドはEDT？: " + SwingUtilities.isEventDispatchThread());
+        IO.println("メインスレッドはEDT？: " + SwingUtilities.isEventDispatchThread());
     }
     
     private static void createGUI() {

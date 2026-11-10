@@ -25,8 +25,8 @@ public class EventQueueExample {
                     }
                     
                     // イベントキューの状況を表示
-                    System.out.println("現在のスレッド: " + Thread.currentThread().getName());
-                    System.out.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
+                    IO.println("現在のスレッド: " + Thread.currentThread().getName());
+                    IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
                 }
             });
             
