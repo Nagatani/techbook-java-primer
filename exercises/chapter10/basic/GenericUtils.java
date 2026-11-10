@@ -82,7 +82,7 @@ public class GenericUtils {
      */
     public static <T> void printArray(T[] array) {
         // TODO: 実装してください
-        System.out.print("配列: ");
+        IO.print("配列: ");
     }
     
     /**

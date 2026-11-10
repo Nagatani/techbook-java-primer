@@ -7,42 +7,42 @@ package chapter10.basic;
  */
 public class GenericBoxDemo {
     public static void main(String[] args) {
-        System.out.println("=== GenericBoxデモ ===\n");
+        IO.println("=== GenericBoxデモ ===\n");
         
         // TODO: String型のGenericBoxを作成
-        System.out.println("--- String型のBox ---");
+        IO.println("--- String型のBox ---");
         // GenericBox<String> stringBox = new GenericBox<>();
         // stringBox.put("Hello, Generics!");
         // stringBox.displayInfo();
-        // System.out.println("取得: " + stringBox.get());
+        // IO.println("取得: " + stringBox.get());
         
         // TODO: Integer型のGenericBoxを作成
-        System.out.println("\n--- Integer型のBox ---");
+        IO.println("\n--- Integer型のBox ---");
         // GenericBox<Integer> intBox = new GenericBox<>(42);
         // intBox.displayInfo();
         
         // TODO: 独自クラス（Student）型のGenericBoxを作成
-        System.out.println("\n--- Student型のBox ---");
+        IO.println("\n--- Student型のBox ---");
         // 注意: Studentクラスは第9章で作成したものを使用
         // GenericBox<Student> studentBox = new GenericBox<>();
         // studentBox.put(new Student("S001", "山田太郎", 2, 85.5));
         // studentBox.displayInfo();
         
         // TODO: Boxの操作デモ
-        System.out.println("\n--- Box操作デモ ---");
+        IO.println("\n--- Box操作デモ ---");
         // GenericBox<Double> doubleBox = new GenericBox<>(3.14);
-        // System.out.println("空？: " + doubleBox.isEmpty());
+        // IO.println("空？: " + doubleBox.isEmpty());
         // doubleBox.clear();
-        // System.out.println("クリア後、空？: " + doubleBox.isEmpty());
+        // IO.println("クリア後、空？: " + doubleBox.isEmpty());
         
         // TODO: 型安全性のデモ
-        System.out.println("\n--- 型安全性 ---");
+        IO.println("\n--- 型安全性 ---");
         // GenericBox<String> safeBox = new GenericBox<>("型安全");
         // String value = safeBox.get(); // キャスト不要
-        // System.out.println("取得した値: " + value);
+        // IO.println("取得した値: " + value);
         
         // TODO: ワイルドカードの使用例
-        System.out.println("\n--- ワイルドカード ---");
+        IO.println("\n--- ワイルドカード ---");
         // displayBoxContent(stringBox);
         // displayBoxContent(intBox);
     }
@@ -53,6 +53,6 @@ public class GenericBoxDemo {
      */
     private static void displayBoxContent(GenericBox<?> box) {
         // TODO: 実装してください
-        System.out.println("Boxの内容: " + box.get());
+        IO.println("Boxの内容: " + box.get());
     }
 }

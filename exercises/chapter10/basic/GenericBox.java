@@ -74,7 +74,7 @@ public class GenericBox<T> {
     public void displayInfo() {
         // TODO: 実装してください
         // ヒント: getClass().getSimpleName()で型名を取得できます
-        System.out.println("GenericBox情報:");
+        IO.println("GenericBox情報:");
     }
     
     /**

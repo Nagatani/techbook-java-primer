@@ -89,7 +89,7 @@ public class NumberBox<T extends Number> {
      */
     public void displayInfo() {
         // TODO: 実装してください
-        System.out.println("NumberBox情報:");
+        IO.println("NumberBox情報:");
         // 例: "型: Integer"
         //     "値: 42"
         //     "double値: 42.0"

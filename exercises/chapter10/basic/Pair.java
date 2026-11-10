@@ -81,7 +81,7 @@ public class Pair<F, S> {
      */
     public void displayInfo() {
         // TODO: 実装してください
-        System.out.println("Pair情報:");
+        IO.println("Pair情報:");
         // 例: "First (String): Hello"
         //     "Second (Integer): 123"
     }
