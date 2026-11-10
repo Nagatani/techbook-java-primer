@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: ea621fb4
   - key: "並行処理の世界への招待"
-    hash: 23ff6a23
+    hash: feb7879c
   - key: "基礎レベル課題（ポイント）"
     hash: d8ee41e2
   - key: "実装のヒント"
@@ -15,7 +15,7 @@ sections:
   - key: "完了確認チェックリスト"
     hash: 3e251a9a
   - key: "マルチスレッドプログラミングの基礎"
-    hash: e6414231
+    hash: f9b65ddc
   - key: "実践的なパフォーマンス測定とベンチマーク"
     hash: e899b017
   - key: "スレッドセーフなシングルトンパターン"

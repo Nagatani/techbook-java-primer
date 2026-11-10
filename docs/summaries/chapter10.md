@@ -13,9 +13,9 @@ sections:
   - key: "型制約（境界のある型パラメータ）"
     hash: 6acf2648
   - key: "ワイルドカード"
-    hash: 30184a64
+    hash: 9b900074
   - key: "var型推論とジェネリクス"
-    hash: 559fbaa6
+    hash: 976f6ac5
   - key: "よくあるエラーと対処法"
     hash: cf91d99f
   - key: "まとめ"

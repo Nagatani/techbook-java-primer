@@ -13,11 +13,11 @@ sections:
   - key: "抽象クラス vs インターフェイス"
     hash: 1d96f177
   - key: "Java 8以降のインターフェイス進化"
-    hash: ade89feb
+    hash: 031c4eca
   - key: "高度な設計パターン"
     hash: 62d1cbdf
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: d45c39d2
+    hash: 3d39de19
   - key: "よくあるエラーと対処法"
     hash: d79631ad
   - key: "まとめ"

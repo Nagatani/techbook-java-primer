@@ -11,7 +11,7 @@ sections:
   - key: "不変オブジェクトの設計パターン"
     hash: b48ba650
   - key: "防御的コピーとビルダーパターン"
-    hash: fbefc3fb
+    hash: 820fc62a
   - key: "よくあるエラーと対処法"
     hash: 95a640c5
   - key: "まとめ"

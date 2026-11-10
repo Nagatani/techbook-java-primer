@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 80f3ca55
   - key: "なぜビルドと配布が必要か"
-    hash: 762932a0
+    hash: 43aceae4
   - key: "実行可能JARファイルの作成"
     hash: 474cd845
   - key: "jpackageによるネイティブアプリケーション化"

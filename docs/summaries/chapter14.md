@@ -11,7 +11,7 @@ sections:
   - key: "テキストファイルの読み書き"
     hash: da14856f
   - key: "バイナリファイルの高度な処理"
-    hash: 61adbf35
+    hash: 3cb7a518
   - key: "オブジェクトの直列化（シリアライズ）"
     hash: 8cf4a1b2
   - key: "ファイルシステムの操作 (NIO.2)"

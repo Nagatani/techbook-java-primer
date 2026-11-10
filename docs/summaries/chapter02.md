@@ -11,7 +11,7 @@ sections:
   - key: "演算子"
     hash: 5a4dfffc
   - key: "型変換"
-    hash: cd2597be
+    hash: 93f6a6ab
   - key: "コンソール入出力"
     hash: a9c9b131
   - key: "制御構造"
@@ -21,7 +21,7 @@ sections:
   - key: "メソッド（staticメソッドの基本）"
     hash: 65d227d7
   - key: "文字列処理"
-    hash: 20de19be
+    hash: b791c8e6
   - key: "import文の使い方"
     hash: a100b735
   - key: "よくあるコンパイルエラーとその対処法"

@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 304b4d51
   - key: "詳細なイベント処理の実装"
-    hash: 23b719bb
+    hash: e71d86a8
   - key: "カスタムイベントとObserverパターン"
-    hash: f3926815
+    hash: 64337882
   - key: "ドラッグ&ドロップの実装"
     hash: 8c96f44c
   - key: "パフォーマンスの最適化"
-    hash: e89bcf49
+    hash: d3678e5e
   - key: "よくあるエラーと対処法"
     hash: 0ae4b373
   - key: "まとめ"
