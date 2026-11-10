@@ -632,14 +632,18 @@ figure.float-right {
   margin-inline: 2em 0;
 }
 
-/* 図表を横幅いっぱいに表示 */
+/* 図 */
 .figure {
   margin: 2em 0;
   text-align: center;
+  /* basic.css が図の中の画像の左右に付ける余白（既定は2ch）をなくす。
+     box-sizing: border-box のため、余白があると画像がその分だけ小さく描かれる */
+  --vs--figure-item-padding-inline: 0;
 }
 
+/* 図の幅はビルド時に scripts/vfm-figure-size.js が書き込む（文字の大きさを図どうしでそろえる）。
+   横幅いっぱいには広げない */
 .figure img {
-  width: 100%;
   max-width: 100%;
   height: auto;
   object-fit: contain;
