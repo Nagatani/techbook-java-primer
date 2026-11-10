@@ -212,7 +212,7 @@ public class Product {
     }
     
     public void display() {                  // ⑤
-        System.out.println(name + ": " + getPriceWithTax() + "円（税込）");
+        IO.println(name + ": " + getPriceWithTax() + "円（税込）");
     }
 }
 ```
@@ -332,7 +332,7 @@ Apache HadoopやApache Sparkといった分散処理フレームワークの多�
 Javaプログラミングを始めるには、まず開発環境を整える必要です。
 C言語では主にコンパイラとテキストエディタがあれば開発を始められましたが、現代のJava開発では、より統合された開発環境を使用することが一般的です。
 
-本書では、JDK（Java Development Kit）として、OpenJDK 21（LTS版）を使用します。
+本書では、JDK（Java Development Kit）として、OpenJDK 25（LTS版）を使用します。本書のサンプルコードは、Java 25で加わった標準入出力の`IO`クラスを使うため、Java 25以降のJDKで動かしてください。
 OpenJDKはオープンソース版のJava開発キットで、Oracle、Microsoft、Amazon、Red Hatなど複数のベンダーから提供されます。JDKにはJavaコンパイラ（javac）、Java仮想マシン（JVM）、標準ライブラリ、開発に必要な各種ツールが含まれており、Javaプログラムの開発と実行に必要なすべてがそろっています。
 
 開発効率を向上させるため、IDE（統合開発環境）としてIntelliJ IDEA Community Editionを使用します。IDEは単なるテキストエディタではなく、コード補完、リファクタリング支援、デバッガ、ビルドツール統合など、現代的なソフトウェア開発に必要な機能が統合されたパワフルな開発環境です。とくにIntelliJ IDEAは、Javaに特化した高度な支援機能により、初学者でもスムーズにコードを書くことができます。
@@ -354,7 +354,7 @@ OpenJDKはオープンソース版のJava開発キットで、Oracle、Microsoft
 ```java
 public class HelloWorld {
     public static void main(String[] args) {
-        System.out.println("Hello, World!!");
+        IO.println("Hello, World!!");
     }
 }
 ```
@@ -369,7 +369,7 @@ Hello, World!!
 
 プログラムの実行は `public static void main(String[] args)` から始まります。これはJavaプログラムのエントリポイント（開始点）となる特別なメソッドで、Javaランタイムはこのシグネチャ（署名）を持つメソッドを探して実行を開始します。C言語のmain関数と同じ役割を果たしますが、必ずクラスのなかに定義する必要がある点が異なります。
 
-実際の処理を行っているのは `System.out.println("Hello, World!!")` です。これは標準出力（通常は画面）に文字列を出力し、最後に改行を加えるメソッドです。Systemクラスのoutフィールド（標準出力ストリーム）に対してprintlnメソッドを呼びだすという、オブジェクト指向的な記述方法になっています。
+実際の処理を行っているのは `IO.println("Hello, World!!")` です。これは標準出力（通常は画面）に文字列を出力し、最後に改行を加えるメソッドです。`IO`クラスの`println`メソッドを呼びだしています。本書では、標準入出力にこの`IO`クラスを使います（本章の「画面に文字列を出力する方法」で詳しく説明します）。
 
 
 > コンパイルと実行の方法や、標準入力の扱い方については、 `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/` を参照してください。
@@ -424,21 +424,29 @@ Javaランタイム（javaコマンド）は、指定されたクラスのなか
 
 一文字でも違うと認識されません。
 
-長くて面倒に感じる場合もありますが、すべてのキーワードに意味があり、どれも省くことができません。<span class="footnote">学習目的のために、mainメソッドを簡略化して書ける機能があります。`void main() { ... }`のようにstaticやpublic、引数を省略できます。この機能はJava 21でプレビュー機能（試験的な機能）として導入され、Java 25で正式な機能になりました。本書で使うJava 21では通常の方法では使えないため、従来の形式で書きます。</span>
+長くて面倒に感じる場合もありますが、すべてのキーワードに意味があり、どれも省くことができません。<span class="footnote">学習目的のために、mainメソッドを簡略化して書ける機能があります。`void main() { ... }`のようにstaticやpublic、引数を省略できます。この機能はJava 21でプレビュー機能（試験的な機能）として導入され、Java 25で正式な機能になりました。本書では、クラスとmainメソッドのしくみを理解するため、従来の形式で書きます。</span>
 
 
 
 ### 画面に文字列を出力する方法
 
-Javaでは、画面に文字列を出力する方法がいくつかあります。
+Javaで画面（標準出力）に文字列を出力する方法はいくつかあります。本書では、Java 25で標準ライブラリに加わった`IO`クラスのメソッドを使います。`IO`クラスは`java.lang`パッケージにあるため、import文を書かずに使えます。
 
-#### 1.`System.out.println`
+本書で使う標準入出力のメソッドは次の3つです。
+
+| メソッド | 働き |
+|------|------|
+| `IO.println(値)` | 値を出力し、最後に改行する。引数を省くと改行だけを出力する |
+| `IO.print(値)` | 値を出力する。改行はしない |
+| `IO.readln(メッセージ)` | メッセージを表示し、キーボードから1行分の文字列を読み取る |
+
+#### `IO.println`
 この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
 
 <span class="listing-number">**サンプルコード1-7**</span>
 
 ```java
-System.out.println("Hello, World!!");
+IO.println("Hello, World!!");
 ```
 
 これをC言語でたとえるなら、以下のようになるはずです。
@@ -451,12 +459,12 @@ printf("%s\n" , "Hello, World!!");
 
 `\n`が自動的に追加されるイメージでよいでしょう。
 
-#### `System.out.print`
-これは、`System.out.println`で改行コードを末尾に追加しないバージョンです。
+#### `IO.print`
+これは、`IO.println`で改行コードを末尾に追加しないバージョンです。
 
-#### `System.out.printf`
-C言語ライクに書きたい場合は、printfを使用します。
-C言語のprintfと同じような書き方で出力が可能です。
+#### 書式を指定した出力
+C言語のprintfのように書式を指定して出力したい場合は、文字列の`formatted`メソッドで書式どおりの文字列を作り、それを`IO.println`に渡します。
+`%d`、`%f`、`%s`といった書式指定子は、C言語のprintfとほぼ同じように使えます。
 
 ##### サンプルソース
 
@@ -467,29 +475,43 @@ C言語のprintfと同じような書き方で出力が可能です。
 ```java
 public class StandardOutput {
     public static void main(String[] args) {
-        System.out.println("標準出力は、「System.out.printlnメソッド」を使用します。");
-        System.out.println("「System.out.println」は末尾に改行コードも併せて出力します。");
-        System.out.println(); // 引数なしで改行のみ出力されます。
-        System.out.print("「System.out.print」を使うと、末尾に改行は出力されません。");
-        System.out.print("改行は\\nで出力できます。\n");
-        System.out.print("\n");
-        String message = "C言語のprintf関数のように出力したい場合は、「System.out.printf」を使います。";
-        System.out.printf("%s\n", message);
-        System.out.printf("整数値: %d, 実数値: %f\n", 10, 3.142592654d);
+        IO.println("画面への出力には、「IO.printlnメソッド」を使用します。");
+        IO.println("「IO.println」は末尾に改行コードも併せて出力します。");
+        IO.println(); // 引数なしで改行のみ出力されます。
+        IO.print("「IO.print」を使うと、末尾に改行は出力されません。");
+        IO.print("改行は\\nで出力できます。\n");
+        IO.print("\n");
+        String message = "C言語のprintf関数のように書式を指定したい場合は、「formatted」を使います。";
+        IO.println(message);
+        IO.println("整数値: %d, 実数値: %f".formatted(10, 3.142592654d));
     }
 }
 ```
 #### 実行結果
 
 ```
-標準出力は、「System.out.printlnメソッド」を使用します。
-「System.out.println」は末尾に改行コードも併せて出力します。
+画面への出力には、「IO.printlnメソッド」を使用します。
+「IO.println」は末尾に改行コードも併せて出力します。
 
-「System.out.print」を使うと、末尾に改行は出力されません。改行は\nで出力できます。
+「IO.print」を使うと、末尾に改行は出力されません。改行は\nで出力できます。
 
-C言語のprintf関数のように出力したい場合は、「System.out.printf」を使います。
+C言語のprintf関数のように書式を指定したい場合は、「formatted」を使います。
 整数値: 10, 実数値: 3.142593
 ```
+
+> **コラム：System.out.printlnとIOクラス**{.column-section}
+>
+> Javaの解説書やWeb上の記事の多くは、画面への出力に`System.out.println`を使っています。これはJavaの最初の版からある書き方で、`System`クラスの`out`フィールド（標準出力を表すオブジェクト）が持つ`println`メソッドを呼びだしています。キーボードからの入力には、`java.util.Scanner`クラスに`System.in`（標準入力）を渡す方法が長く使われてきました。
+>
+> Java 25で加わった`IO`クラスは、こうした入出力を短く書くためのクラスです。`IO.println`は内部で`System.out`に出力するため、どちらで書いても出力結果は同じです。本書では、`System`クラスの`out`フィールドやストリームといったしくみを学ぶ前でも入出力を書けるよう、`IO`クラスを使います。
+>
+> ただし、次の場面では本書でも`System`クラスを使います。
+>
+> - エラーメッセージを標準エラー出力へ書く場面（`System.err.println`）
+>     + `IO`クラスには標準エラー出力へ書くメソッドがない
+> - 出力先を`PrintStream`のオブジェクトとして受け渡す場面
+>
+> ほかの資料で`System.out.println(x)`を見かけたら`IO.println(x)`と、`System.out.printf(書式, 値)`は`IO.print(書式.formatted(値))`と読み替えてください。
 
 ## 標準入出力を扱うサンプルを動かしてみよう
 
@@ -498,28 +520,17 @@ C言語のprintf関数のように出力したい場合は、「System.out.print
 <span class="listing-number">**サンプルコード1-10**　InputExample.java</span>
 
 ```java
-import java.util.Scanner;  // Scannerクラスを使用するための宣言
-
 public class InputExample {
     public static void main(String[] args) {
-        // Scannerオブジェクトの作成（標準入力から読み取る）
-        Scanner scanner = new Scanner(System.in);
-        
-        // ユーザーへの入力促進メッセージ
-        System.out.print("整数値を入力: ");
-        
-        // 文字列として入力を受け取る
-        String input = scanner.nextLine();
-        
+        // メッセージを表示して、1行分の文字列を入力してもらう
+        String input = IO.readln("整数値を入力: ");
+
         // 文字列を整数に変換
         int number = Integer.parseInt(input);
-        
+
         // 変換した値を使った処理の例
-        System.out.println("入力された値: " + number);
-        System.out.println("2倍の値: " + (number * 2));
-        
-        // Scannerを閉じる（リソースの解放）
-        scanner.close();
+        IO.println("入力された値: " + number);
+        IO.println("2倍の値: " + (number * 2));
     }
 }
 ```
@@ -535,21 +546,15 @@ public class InputExample {
 
 #### このコードのポイント
 
-1. import文
-    + `java.util.Scanner`をインポートして入力機能を使用
-2. Scanner
-    + `new Scanner(System.in)`で標準入力から読み取るScannerを作成
-3. 入力の受け取り
-    + `scanner.nextLine()`で1行分の文字列を取得
-4. 型変換
-    + `Integer.parseInt()`で文字列を整数に変換
-5. リソース管理
-    + 使い終わったら`scanner.close()`でリソースを解放
+1. 入力の受け取り
+    + `IO.readln("整数値を入力: ")`でメッセージを表示し、Enterキーまでの1行分の文字列を受け取る
+2. 型変換
+    + `IO.readln`の戻り値はつねにString型なので、`Integer.parseInt()`で文字列を整数に変換する
 
 基本的な構文やクラスなどはimportで書かなくても、自動でimport済みです。
 
-- `java.lang`パッケージ（`String`, `System`, `Integer`など）は自動的に利用可能
-    - `System.out.println()`や`Integer.parseInt()`にはimport文は不要
+- `java.lang`パッケージ（`String`, `System`, `Integer`, `IO`など）は自動的に利用可能
+    - `IO.readln()`や`Integer.parseInt()`にはimport文は不要
 
 
 
@@ -557,7 +562,7 @@ public class InputExample {
 > 
 > ### プログラミングにおけるエラーとの向き合い方
 > 
-> サンプルコード1-10でScannerを使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
+> サンプルコード1-10で`IO.readln`を使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
 > 
 > #### よくあるエラーの例
 > 
@@ -613,7 +618,7 @@ public class InputExample {
 >     int number = Integer.parseInt(input);
 >     // 正常処理
 > } catch (NumberFormatException e) {
->     System.out.println("数値を入力してください");
+>     IO.println("数値を入力してください");
 > }
 > ```
 > 
@@ -739,7 +744,7 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
     + プログラムはクラスとして書き、`main`メソッドから実行が始まる
     + `javac`でコンパイルし、`java`で実行する
 - 標準入出力
-    + `System.out.println`で画面に出力し、`Scanner`でキーボードからの入力を受け取る
+    + `IO.println`で画面に出力し、`IO.readln`でキーボードからの入力を受け取る
 
 次章では、C言語と比較しながらJavaの基本文法を学習します。
 
@@ -759,7 +764,7 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
 #### 実装のポイント
 - クラス名とファイル名を一致させる
 - mainメソッドのシグネチャを正確に記述
-- System.out.println()で文字列を出力
+- IO.println()で文字列を出力
 
 #### Exercise02_SelfIntroduction.java  
 
@@ -818,7 +823,7 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
 
 基礎課題を完了したら、発展課題に挑戦してみましょう。発展課題では、
 - 複数の変数を組み合わせた処理
-- ユーザー入力の受け取り（Scanner使用）
+- ユーザー入力の受け取り（IO.readln使用）
 - より実用的なプログラムの作成
 
 を学習します。難易度は上がりますが、基礎課題の知識を応用すれば解決できます。

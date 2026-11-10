@@ -34,7 +34,7 @@
     "dir": "01-10",
     "main": "InputExample",
     "excerpt": [
-      { "file": "InputExample.java", "from": 1, "to": 24 }
+      { "file": "InputExample.java", "from": 1, "to": 13 }
     ]
   }
 }

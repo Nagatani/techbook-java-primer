@@ -13,6 +13,6 @@ public class Product {
     }
     
     public void display() {                  // ⑤
-        System.out.println(name + ": " + getPriceWithTax() + "円（税込）");
+        IO.println(name + ": " + getPriceWithTax() + "円（税込）");
     }
 }

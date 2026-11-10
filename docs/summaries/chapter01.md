@@ -13,23 +13,23 @@ sections:
   - key: "C言語、Java、そして現代的ソフトウェア開発のしくみ"
     hash: 58b2f1c9
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
-    hash: c6c28cbe
+    hash: 4c1a912e
   - key: "Javaの特徴"
     hash: 2494026d
   - key: "開発環境の準備"
-    hash: b6d0e75f
+    hash: a946f039
   - key: "最初のJavaプログラム"
-    hash: 2ff49d7d
+    hash: 23b58e29
   - key: "Javaプログラムの基本構文"
-    hash: 730c6445
+    hash: c7500830
   - key: "標準入出力を扱うサンプルを動かしてみよう"
-    hash: e295be19
+    hash: e1d7acaa
   - key: "よくあるエラーと対処法"
     hash: 4f517f0e
   - key: "まとめ"
-    hash: 356a7ba3
+    hash: 6684018e
   - key: "章末演習"
-    hash: fecd5098
+    hash: 29d2db9a
 ---
 
 # 第1章 Java入門と開発環境構築 要約
@@ -38,7 +38,7 @@ sections:
 
 ## 章の概要
 
-- 書籍全体の導入（本書の考え方、GitHubリポジトリ、対象読者、本書で学べること）と、Javaの最初の一歩（Hello World、標準出力、Scannerによる標準入力）を1章にまとめている
+- 書籍全体の導入（本書の考え方、GitHubリポジトリ、対象読者、本書で学べること）と、Javaの最初の一歩（Hello World、IOクラスによる標準入出力）を1章にまとめている
 - C言語のグローバル変数による「データと手続きの分離」を動機に、Productクラスでオブジェクト指向の考え方を先取りして見せる
 - Javaの特徴としてプラットフォーム独立性（JVM・バイトコード）、GC、JIT、強い型付け、ライブラリエコシステムを紹介する
 - 開発環境はOpenJDK 21とIntelliJ IDEA Community Editionを指定し、手順そのものは付録A（GitHub）へ委ねる
@@ -88,15 +88,16 @@ sections:
     + 参照とポインタの違い、強い型付け、Maven/Gradleを含むエコシステム。GCの表記についての脚注
     + 「なぜJavaを学ぶのか」で企業システム、Spring Boot/Jakarta EE、Android、Hadoop/Sparkを挙げる
 - 開発環境の準備（L329–342）
-    + OpenJDK 21（LTS）とIntelliJ IDEA Community Editionを使う。構築手順は付録A（GitHub）を参照
+    + OpenJDK 25（LTS）とIntelliJ IDEA Community Editionを使う。構築手順は付録A（GitHub）を参照
 - 最初のJavaプログラム（L343–374）
-    + HelloWorld（1-4）。クラス名とファイル名の一致、mainメソッドがエントリポイント、System.out.printlnを散文で説明
+    + HelloWorld（1-4）。クラス名とファイル名の一致、mainメソッドがエントリポイント、IO.printlnを散文で説明し、標準入出力にIOクラスを使うと述べる
     + コンパイル・実行と標準入力は付録Aへ委ねる
 - Javaプログラムの基本構文（L375–490）
-    + クラスとmainの骨格（1-5）、ルール3点、mainシグネチャの各要素の表。簡略mainを脚注で紹介（Java 21でプレビュー、Java 25で正式化）
-    + println・print・printfの違いとCのprintfとの対応（1-9）
+    + クラスとmainの骨格（1-5）、ルール3点、mainシグネチャの各要素の表。簡略mainを脚注で紹介（Java 21でプレビュー、Java 25で正式化。本書は従来の形式で書く）
+    + 本書の標準入出力の方針（2026-11-10〜）: IO.println・IO.print・IO.readln（Java 25のjava.lang.IO）を表で示し、書式はString.formattedで作る（1-9）
+    + コラム「System.out.printlnとIOクラス」で、従来のSystem.out・Scanner(System.in)との関係、System.errは引き続き使うこと、読み替え方を説明
 - 標準入出力を扱うサンプルを動かしてみよう（L491–617）
-    + Scannerで1行読み、Integer.parseIntで整数化して2倍を表示（1-10）。java.langは自動インポート
+    + IO.readlnで1行読み、Integer.parseIntで整数化して2倍を表示（1-10）。java.langは自動インポート
     + コラム「Integer.parseIntのエラーから学ぶ」で、NumberFormatExceptionの読み方を説明し、例外処理は第13章で学ぶと予告。try-catchの参考例あり
 - よくあるエラーと対処法（L618–725）
     + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter01.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す
@@ -112,8 +113,8 @@ sections:
 ## 他章との関係
 
 - 第2章（Java基本文法）との重複
-    + Scannerのサンプル1-10と2-6はプロンプト文以外ほぼ同一で、「このコードのポイント」の5項目とjava.langの自動インポートの説明も同文
-    + println・print・printf（1-9）は第2章のコンソール入出力（2-3）と重なる
+    + 入力のサンプル1-10は第2章のコンソール入出力のサンプルと重なる
+    + IO.println・IO.print・formatted（1-9）は第2章のコンソール入出力（2-3）と重なる
     + クラス名とファイル名の不一致、セミコロン忘れ、大文字小文字の誤りは第2章「よくあるコンパイルエラー」と重なる
 - 第3章・第4章: Productクラス（1-2）でカプセル化、コンストラクタ、newを先取りしている
 - 第13章（例外処理）: コラムで予告。章参照は正しい
