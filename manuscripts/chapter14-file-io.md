@@ -96,7 +96,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 ### Scannerクラスによる柔軟な入力処理
 
-`java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルだけでなく、標準入力や文字列からもデータを読み取れます。
+`java.util.Scanner`クラスは、テキスト入力を解析するための便利なクラスです。ファイルや文字列からデータを読み取り、区切り文字や型ごとに解析できます。標準入力からも読み取れますが、本書ではキーボードからの1行の入力には`IO.readln`を使います。
 
 次のプログラムは、実行したディレクトリにある`data.txt`を読み込みます。`data.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
 
@@ -110,10 +110,10 @@ public class ScannerExample {
         // 1. 行単位の読み込み
         try (Scanner scanner = new Scanner(
                 Files.newBufferedReader(path, StandardCharsets.UTF_8))) {
-            System.out.println("--- Scannerによる行単位の読み込み ---");
+            IO.println("--- Scannerによる行単位の読み込み ---");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                System.out.println(line);
+                IO.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,10 +122,10 @@ public class ScannerExample {
         // 2. デリミターを使った読み込み
         String csvData = "リンゴ,150,赤\nバナナ,100,黄";
         try (Scanner scanner = new Scanner(csvData)) {
-            System.out.println("\n--- デリミターを使った読み込み ---");
+            IO.println("\n--- デリミターを使った読み込み ---");
             scanner.useDelimiter(",|\\n");  // コンマまたは改行で区切る
             while (scanner.hasNext()) {
-                System.out.println(scanner.next());
+                IO.println(scanner.next());
             }
         }
         // ...
@@ -164,12 +164,12 @@ public class TextFileReaderExample {
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
         // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
         // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションではもっとも推奨される方法です。
-        System.out.println("--- 1行ずつ読み込み ---");
+        IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                IO.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -177,12 +177,12 @@ public class TextFileReaderExample {
 
         // ...
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
-        System.out.println("\n--- 全行を一度に読み込み ---");
+        IO.println("\n--- 全行を一度に読み込み ---");
         // ...
         try {
             List<String> lines = Files.readAllLines(
                     filePath, StandardCharsets.UTF_8);
-            lines.forEach(System.out::println);
+            lines.forEach(IO::println);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -232,7 +232,7 @@ public class TextFileWriterExample {
             writer.write("最初の行。");
             writer.newLine(); // 改行
             writer.write("次の行。");
-            System.out.println("ファイルに書き込みました。");
+            IO.println("ファイルに書き込みました。");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -275,21 +275,21 @@ public class CharacterEncodingExample {
         
         // Shift_JISで読み込み（文字化けの例）
         // Files.newBufferedReaderは、解釈できないバイト列があると文字化けではなく例外を投げる
-        System.out.println("--- Shift_JISで読み込み（文字化け） ---");
+        IO.println("--- Shift_JISで読み込み（文字化け） ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("Shift_JIS"))) {
-            System.out.println(reader.readLine());
+            IO.println(reader.readLine());
         } catch (MalformedInputException e) {
-            System.out.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
+            IO.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         // UTF-8で正しく読み込み
-        System.out.println("\n--- UTF-8で正しく読み込み ---");
+        IO.println("\n--- UTF-8で正しく読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, StandardCharsets.UTF_8)) {
-            System.out.println(reader.readLine());
+            IO.println(reader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -340,7 +340,7 @@ public class DataStreamExample {
             dos.writeBoolean(true);
             dos.writeUTF("こんにちは、世界！");  // 修正UTF-8形式
             
-            System.out.println("データを書き込みました。");
+            IO.println("データを書き込みました。");
         }
         
         // データの読み込み（書き込んだ順序と同じ順序で読む）
@@ -352,9 +352,9 @@ public class DataStreamExample {
             boolean boolValue = dis.readBoolean();
             String strValue = dis.readUTF();
             
-            System.out.printf("読み込んだデータ: %d, %d, %.5f, %b, %s%n",
+            IO.println("読み込んだデータ: %d, %d, %.5f, %b, %s".formatted(
                     intValue, longValue, doubleValue, 
-                    boolValue, strValue);
+                    boolValue, strValue));
         }
     }
 }
@@ -418,7 +418,7 @@ public class SerializationExample {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
             oos.writeObject(user);
-            System.out.println("保存されたオブジェクト: " + user);
+            IO.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
         // ObjectInputStreamでファイルからオブジェクトを復元します。
@@ -427,7 +427,7 @@ public class SerializationExample {
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {
             UserProfile loadedUser = (UserProfile) ois.readObject();
-            System.out.println("復元されたオブジェクト: " + loadedUser); 
+            IO.println("復元されたオブジェクト: " + loadedUser); 
             // passwordはnullになる
         } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
@@ -465,14 +465,14 @@ public class FileSystemExample {
         // ディレクトリ作成
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
-            System.out.println("ディレクトリを作成しました: " + dir);
+            IO.println("ディレクトリを作成しました: " + dir);
         }
 
         // writeString()は小容量のテキストデータを簡単にファイルに保存できる便利メソッドです。
         // 内部的にはBufferedWriterが使用されており、効率的な書き込みが行われます。
         // ファイル作成と書き込み
         Files.writeString(file, "Hello, NIO.2!");
-        System.out.println("ファイルを作成しました: " + file);
+        IO.println("ファイルを作成しました: " + file);
 
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
         // REPLACE_EXISTING: 同名ファイルがある場合は上書き
@@ -480,13 +480,13 @@ public class FileSystemExample {
         // ファイルのコピー
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile, StandardCopyOption.REPLACE_EXISTING);
-        System.out.println("ファイルをコピーしました: " + copiedFile);
+        IO.println("ファイルをコピーしました: " + copiedFile);
 
         // ファイルの削除
         Files.delete(copiedFile);
         Files.delete(file);
         Files.delete(dir);
-        System.out.println("ファイルとディレクトリを削除しました。");
+        IO.println("ファイルとディレクトリを削除しました。");
     }
 }
 ```
@@ -541,7 +541,7 @@ public class CSVProcessingExample {
                 writer.write(String.join(",", row));
                 writer.newLine();
             }
-            System.out.println("CSVファイルを書き込みました: " + filePath);
+            IO.println("CSVファイルを書き込みました: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -597,7 +597,7 @@ public class FileChooserExample {
         int openResult = fileChooser.showOpenDialog(null);
         if (openResult == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println("選択されたファイル（開く）: " + 
+            IO.println("選択されたファイル（開く）: " + 
                     selectedFile.getAbsolutePath());
         }
 
@@ -605,7 +605,7 @@ public class FileChooserExample {
         int saveResult = fileChooser.showSaveDialog(null);
         if (saveResult == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("保存するファイル: " + 
+            IO.println("保存するファイル: " + 
                     fileToSave.getAbsolutePath());
         }
     }
@@ -662,11 +662,11 @@ public class TraditionalStringProblems {
                 "</body>\n" +
                 "</html>";
         
-        System.out.println("=== 従来の方法の問題点 ===");
-        System.out.println("1. エスケープシーケンス（\\n, \\\"）が多くて読みにくい");
-        System.out.println("2. 文字列連結（+）によるエラーが起きやすい");
-        System.out.println("3. インデントの管理が困難");
-        System.out.println("4. 引用符のエスケープが煩雑");
+        IO.println("=== 従来の方法の問題点 ===");
+        IO.println("1. エスケープシーケンス（\\n, \\\"）が多くて読みにくい");
+        IO.println("2. 文字列連結（+）によるエラーが起きやすい");
+        IO.println("3. インデントの管理が困難");
+        IO.println("4. 引用符のエスケープが煩雑");
     }
 }
 ```
@@ -697,27 +697,27 @@ public class TextBlockBasics {
                 簡潔に記述できます。
                 """;
         
-        System.out.println("=== Text Block の出力 ===");
-        System.out.println(textBlock);
+        IO.println("=== Text Block の出力 ===");
+        IO.println(textBlock);
         
         // 従来の文字列との比較
         String traditional = "これは Text Block の例です。\n" +
                 "複数行にわたる文字列を\n" +
                 "簡潔に記述できます。\n";
         
-        System.out.println("\n=== 従来の文字列との同等性 ===");
-        System.out.println("同じ内容？: " + textBlock.equals(traditional));
+        IO.println("\n=== 従来の文字列との同等性 ===");
+        IO.println("同じ内容？: " + textBlock.equals(traditional));
         
         // 空のText Block
         String empty = """
                 """;
-        System.out.println("空のText Block: '" + empty + "'");
+        IO.println("空のText Block: '" + empty + "'");
         
         // 1行のText Block
         String singleLine = """
                 単一行のText Block
                 """;
-        System.out.println("1行のText Block: " + singleLine);
+        IO.println("1行のText Block: " + singleLine);
     }
 }
 ```
@@ -750,16 +750,16 @@ public class TextBlockIndentation {
         String codeExample = """
                 public class Example {
                     public void method() {
-                        System.out.println("Hello");
+                        IO.println("Hello");
                         if (true) {
-                            System.out.println("Nested");
+                            IO.println("Nested");
                         }
                     }
                 }
                 """;
         
-        System.out.println("=== インデント自動処理の例 ===");
-        System.out.println(codeExample);
+        IO.println("=== インデント自動処理の例 ===");
+        IO.println(codeExample);
         // ...
         // もっとも左にある行でインデントが決まる
         String mixedIndent = """
@@ -769,8 +769,8 @@ public class TextBlockIndentation {
                     再び深いインデント
             """;
         
-        System.out.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
-        System.out.println(mixedIndent);
+        IO.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
+        IO.println(mixedIndent);
         // ...
     }
 }
@@ -782,9 +782,9 @@ public class TextBlockIndentation {
 === インデント自動処理の例 ===
 public class Example {
     public void method() {
-        System.out.println("Hello");
+        IO.println("Hello");
         if (true) {
-            System.out.println("Nested");
+            IO.println("Nested");
         }
     }
 }
@@ -826,8 +826,8 @@ public class TextBlockEscaping {
                 "引用符をエスケープする必要がない"
                 """;
         
-        System.out.println("=== 引用符のエスケープ不要 ===");
-        System.out.println(dialogue);
+        IO.println("=== 引用符のエスケープ不要 ===");
+        IO.println(dialogue);
         // ...
         // 三重引用符を含む場合（エスケープが必要）
         String codeWithTripleQuotes = """
@@ -837,8 +837,8 @@ public class TextBlockEscaping {
                     \""";
                 """;
         
-        System.out.println("\n=== 三重引用符のエスケープ ===");
-        System.out.println(codeWithTripleQuotes);
+        IO.println("\n=== 三重引用符のエスケープ ===");
+        IO.println(codeWithTripleQuotes);
         // ...
     }
 }
@@ -908,8 +908,8 @@ public class TextBlockStructuredData {
         // JSONファイルとして保存
         Path jsonFile = Paths.get("user_data.json");
         Files.writeString(jsonFile, jsonData);
-        System.out.println("=== JSON データを保存しました ===");
-        System.out.println(jsonData);
+        IO.println("=== JSON データを保存しました ===");
+        IO.println(jsonData);
         
         // ...
     }
@@ -1010,7 +1010,7 @@ public class TextBlockFileIO {
         
         Path logConfigPath = Paths.get("log_config.properties");
         Files.writeString(logConfigPath, logTemplate);
-        System.out.println("ログ設定ファイルを生成しました: " + logConfigPath);
+        IO.println("ログ設定ファイルを生成しました: " + logConfigPath);
     }
     // ...
 }

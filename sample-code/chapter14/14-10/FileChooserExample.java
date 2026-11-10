@@ -9,7 +9,7 @@ public class FileChooserExample {
         int openResult = fileChooser.showOpenDialog(null);
         if (openResult == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println("選択されたファイル（開く）: " + 
+            IO.println("選択されたファイル（開く）: " + 
                     selectedFile.getAbsolutePath());
         }
 
@@ -17,7 +17,7 @@ public class FileChooserExample {
         int saveResult = fileChooser.showSaveDialog(null);
         if (saveResult == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("保存するファイル: " + 
+            IO.println("保存するファイル: " + 
                     fileToSave.getAbsolutePath());
         }
     }

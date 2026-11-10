@@ -21,7 +21,7 @@ public class TextFileWriterExample {
             writer.write("最初の行。");
             writer.newLine(); // 改行
             writer.write("次の行。");
-            System.out.println("ファイルに書き込みました。");
+            IO.println("ファイルに書き込みました。");
         } catch (IOException e) {
             e.printStackTrace();
         }

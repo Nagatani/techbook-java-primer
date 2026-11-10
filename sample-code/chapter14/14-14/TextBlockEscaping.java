@@ -7,8 +7,8 @@ public class TextBlockEscaping {
                 "引用符をエスケープする必要がない"
                 """;
         
-        System.out.println("=== 引用符のエスケープ不要 ===");
-        System.out.println(dialogue);
+        IO.println("=== 引用符のエスケープ不要 ===");
+        IO.println(dialogue);
         
         // バックスラッシュの処理
         String windowsPath = """
@@ -16,8 +16,8 @@ public class TextBlockEscaping {
                 正規表現: \\d+\\.\\d+
                 """;
         
-        System.out.println("\n=== バックスラッシュの処理 ===");
-        System.out.println(windowsPath);
+        IO.println("\n=== バックスラッシュの処理 ===");
+        IO.println(windowsPath);
         
         // 三重引用符を含む場合（エスケープが必要）
         String codeWithTripleQuotes = """
@@ -27,8 +27,8 @@ public class TextBlockEscaping {
                     \""";
                 """;
         
-        System.out.println("\n=== 三重引用符のエスケープ ===");
-        System.out.println(codeWithTripleQuotes);
+        IO.println("\n=== 三重引用符のエスケープ ===");
+        IO.println(codeWithTripleQuotes);
         
         // 行末の制御
         String trailingSpaces = """
@@ -37,7 +37,7 @@ public class TextBlockEscaping {
                 この行は改行なし\
                 """;
         
-        System.out.println("\n=== 行末の制御 ===");
-        System.out.println("'" + trailingSpaces + "'");
+        IO.println("\n=== 行末の制御 ===");
+        IO.println("'" + trailingSpaces + "'");
     }
 }

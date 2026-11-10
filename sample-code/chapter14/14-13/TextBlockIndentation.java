@@ -4,16 +4,16 @@ public class TextBlockIndentation {
         String codeExample = """
                 public class Example {
                     public void method() {
-                        System.out.println("Hello");
+                        IO.println("Hello");
                         if (true) {
-                            System.out.println("Nested");
+                            IO.println("Nested");
                         }
                     }
                 }
                 """;
         
-        System.out.println("=== インデント自動処理の例 ===");
-        System.out.println(codeExample);
+        IO.println("=== インデント自動処理の例 ===");
+        IO.println(codeExample);
         
         // 手動でインデントを制御
         String customIndent = """
@@ -23,8 +23,8 @@ public class TextBlockIndentation {
             レベル1に戻る
             """;
         
-        System.out.println("\n=== カスタムインデント ===");
-        System.out.println(customIndent);
+        IO.println("\n=== カスタムインデント ===");
+        IO.println(customIndent);
         
         // もっとも左にある行でインデントが決まる
         String mixedIndent = """
@@ -34,8 +34,8 @@ public class TextBlockIndentation {
                     再び深いインデント
             """;
         
-        System.out.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
-        System.out.println(mixedIndent);
+        IO.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
+        IO.println(mixedIndent);
         
         // stripIndent()メソッドでインデント除去を明示的に実行
         String manualStrip = """
@@ -44,7 +44,7 @@ public class TextBlockIndentation {
                         元のレベル
                         """.stripIndent();
         
-        System.out.println("\n=== 手動stripIndent() ===");
-        System.out.println(manualStrip);
+        IO.println("\n=== 手動stripIndent() ===");
+        IO.println(manualStrip);
     }
 }

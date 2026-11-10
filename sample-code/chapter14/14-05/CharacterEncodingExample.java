@@ -20,26 +20,26 @@ public class CharacterEncodingExample {
         
         // Shift_JISで読み込み（文字化けの例）
         // Files.newBufferedReaderは、解釈できないバイト列があると文字化けではなく例外を投げる
-        System.out.println("--- Shift_JISで読み込み（文字化け） ---");
+        IO.println("--- Shift_JISで読み込み（文字化け） ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("Shift_JIS"))) {
-            System.out.println(reader.readLine());
+            IO.println(reader.readLine());
         } catch (MalformedInputException e) {
-            System.out.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
+            IO.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         // UTF-8で正しく読み込み
-        System.out.println("\n--- UTF-8で正しく読み込み ---");
+        IO.println("\n--- UTF-8で正しく読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, StandardCharsets.UTF_8)) {
-            System.out.println(reader.readLine());
+            IO.println(reader.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         // システムデフォルトのエンコーディング確認
-        System.out.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
+        IO.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
     }
 }

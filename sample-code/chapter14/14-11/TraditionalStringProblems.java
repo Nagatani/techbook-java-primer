@@ -27,10 +27,10 @@ public class TraditionalStringProblems {
                 "</body>\n" +
                 "</html>";
         
-        System.out.println("=== 従来の方法の問題点 ===");
-        System.out.println("1. エスケープシーケンス（\\n, \\\"）が多くて読みにくい");
-        System.out.println("2. 文字列連結（+）によるエラーが起きやすい");
-        System.out.println("3. インデントの管理が困難");
-        System.out.println("4. 引用符のエスケープが煩雑");
+        IO.println("=== 従来の方法の問題点 ===");
+        IO.println("1. エスケープシーケンス（\\n, \\\"）が多くて読みにくい");
+        IO.println("2. 文字列連結（+）によるエラーが起きやすい");
+        IO.println("3. インデントの管理が困難");
+        IO.println("4. 引用符のエスケープが煩雑");
     }
 }

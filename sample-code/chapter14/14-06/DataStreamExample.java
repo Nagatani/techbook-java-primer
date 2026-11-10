@@ -17,7 +17,7 @@ public class DataStreamExample {
             dos.writeBoolean(true);
             dos.writeUTF("こんにちは、世界！");  // 修正UTF-8形式
             
-            System.out.println("データを書き込みました。");
+            IO.println("データを書き込みました。");
         }
         
         // データの読み込み（書き込んだ順序と同じ順序で読む）
@@ -29,9 +29,9 @@ public class DataStreamExample {
             boolean boolValue = dis.readBoolean();
             String strValue = dis.readUTF();
             
-            System.out.printf("読み込んだデータ: %d, %d, %.5f, %b, %s%n",
+            IO.println("読み込んだデータ: %d, %d, %.5f, %b, %s".formatted(
                     intValue, longValue, doubleValue, 
-                    boolValue, strValue);
+                    boolValue, strValue));
         }
     }
 }

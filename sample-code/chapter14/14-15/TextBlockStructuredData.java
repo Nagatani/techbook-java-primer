@@ -35,8 +35,8 @@ public class TextBlockStructuredData {
         // JSONファイルとして保存
         Path jsonFile = Paths.get("user_data.json");
         Files.writeString(jsonFile, jsonData);
-        System.out.println("=== JSON データを保存しました ===");
-        System.out.println(jsonData);
+        IO.println("=== JSON データを保存しました ===");
+        IO.println(jsonData);
         
         // 2. SQL クエリの生成
         String tableName = "users";
@@ -66,8 +66,8 @@ public class TextBlockStructuredData {
         
         Path sqlFile = Paths.get("user_query.sql");
         Files.writeString(sqlFile, sqlQuery);
-        System.out.println("\n=== SQL クエリを保存しました ===");
-        System.out.println(sqlQuery);
+        IO.println("\n=== SQL クエリを保存しました ===");
+        IO.println(sqlQuery);
         
         // 3. HTML テンプレートの生成
         String pageTitle = "ユーザープロフィール";
@@ -119,8 +119,8 @@ public class TextBlockStructuredData {
         
         Path htmlFile = Paths.get("user_profile.html");
         Files.writeString(htmlFile, htmlTemplate);
-        System.out.println("\n=== HTML テンプレートを保存しました ===");
-        System.out.println("ファイル: " + htmlFile.toAbsolutePath());
+        IO.println("\n=== HTML テンプレートを保存しました ===");
+        IO.println("ファイル: " + htmlFile.toAbsolutePath());
         
         // 4. XML 設定ファイルの生成
         String appName = "UserManager";
@@ -153,20 +153,20 @@ public class TextBlockStructuredData {
         
         Path xmlFile = Paths.get("app_config.xml");
         Files.writeString(xmlFile, xmlConfig);
-        System.out.println("\n=== XML 設定ファイルを保存しました ===");
+        IO.println("\n=== XML 設定ファイルを保存しました ===");
         
         // 生成されたファイルの一覧表示
-        System.out.println("\n=== 生成されたファイル一覧 ===");
+        IO.println("\n=== 生成されたファイル一覧 ===");
         Path currentDir = Paths.get(".");
         Files.list(currentDir).sorted()  // 並び順はOSによって異なるため名前順にする
                 .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))
                 .forEach(p -> {
                     try {
                         long size = Files.size(p);
-                        System.out.printf("%-20s (%d bytes)%n", 
-                                p.getFileName(), size);
+                        IO.println("%-20s (%d bytes)".formatted(
+                                p.getFileName(), size));
                     } catch (IOException e) {
-                        System.out.println(p.getFileName() + " (サイズ取得エラー)");
+                        IO.println(p.getFileName() + " (サイズ取得エラー)");
                     }
                 });
     }

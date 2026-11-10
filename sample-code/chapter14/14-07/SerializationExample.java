@@ -29,7 +29,7 @@ public class SerializationExample {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
             oos.writeObject(user);
-            System.out.println("保存されたオブジェクト: " + user);
+            IO.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
         // ObjectInputStreamでファイルからオブジェクトを復元します。
@@ -38,7 +38,7 @@ public class SerializationExample {
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {
             UserProfile loadedUser = (UserProfile) ois.readObject();
-            System.out.println("復元されたオブジェクト: " + loadedUser); 
+            IO.println("復元されたオブジェクト: " + loadedUser); 
             // passwordはnullになる
         } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }

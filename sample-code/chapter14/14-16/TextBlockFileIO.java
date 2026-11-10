@@ -46,7 +46,7 @@ public class TextBlockFileIO {
         
         Path logConfigPath = Paths.get("log_config.properties");
         Files.writeString(logConfigPath, logTemplate);
-        System.out.println("ログ設定ファイルを生成しました: " + logConfigPath);
+        IO.println("ログ設定ファイルを生成しました: " + logConfigPath);
     }
     
     private static void handleConfigurationFile() throws IOException {
@@ -78,12 +78,12 @@ public class TextBlockFileIO {
         // 設定ファイルが存在しない場合のみ作成
         if (Files.notExists(configPath)) {
             Files.writeString(configPath, defaultConfig);
-            System.out.println("デフォルト設定ファイルを作成しました");
+            IO.println("デフォルト設定ファイルを作成しました");
         } else {
             // 既存設定ファイルの読み込みと表示
             String existingConfig = Files.readString(configPath);
-            System.out.println("既存の設定ファイルを読み込みました:");
-            System.out.println(existingConfig.substring(0, 
+            IO.println("既存の設定ファイルを読み込みました:");
+            IO.println(existingConfig.substring(0, 
                     Math.min(200, existingConfig.length())) + "...");
         }
     }
@@ -160,7 +160,7 @@ public class TextBlockFileIO {
         
         Path reportPath = Paths.get("user_report.html");
         Files.writeString(reportPath, reportHtml);
-        System.out.println("HTMLレポートを生成しました: " + reportPath);
+        IO.println("HTMLレポートを生成しました: " + reportPath);
     }
     
     private static void batchProcessFiles() throws IOException {
@@ -224,9 +224,9 @@ public class TextBlockFileIO {
         for (int i = 0; i < fileNames.length; i++) {
             Path filePath = Paths.get(fileNames[i]);
             Files.writeString(filePath, fileContents[i]);
-            System.out.println("生成しました: " + filePath);
+            IO.println("生成しました: " + filePath);
         }
         
-        System.out.println("\n=== 一括ファイル処理完了 ===");
+        IO.println("\n=== 一括ファイル処理完了 ===");
     }
 }

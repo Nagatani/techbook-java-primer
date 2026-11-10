@@ -12,8 +12,8 @@ public class CSVProcessingExample {
         
         // CSVファイルの読み込み
         List<List<String>> csvData = readCSV(csvFile);
-        System.out.println("読み込んだCSVデータ:");
-        csvData.forEach(row -> System.out.println(String.join(" | ", row)));
+        IO.println("読み込んだCSVデータ:");
+        csvData.forEach(row -> IO.println(String.join(" | ", row)));
         
         // CSVファイルの書き込み
         writeCSV(Paths.get("output.csv"), csvData);
@@ -46,7 +46,7 @@ public class CSVProcessingExample {
                 writer.write(String.join(",", row));
                 writer.newLine();
             }
-            System.out.println("CSVファイルを書き込みました: " + filePath);
+            IO.println("CSVファイルを書き込みました: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
