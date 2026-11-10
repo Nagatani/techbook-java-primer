@@ -242,6 +242,12 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 必要なJARファイルはMaven Central Repositoryなどのリポジトリから自動的にダウンロードされ、
 クラスパスの設定も自動で行ってくれます。
 
+<div class="figure">
+
+![Mavenが依存ライブラリを用意する流れ](images/diagrams/chapter22-maven-dependency.svg)
+
+</div>
+
 #### `pom.xml`での依存関係の記述
 
 たとえば、Googleが開発したJSONライブラリであるGsonを利用したい場合、`pom.xml`の`<dependencies>`セクションに以下のように記述します。

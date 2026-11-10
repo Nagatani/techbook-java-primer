@@ -1,0 +1,12 @@
+flowchart TB
+    pom["pom.xml<br/>使いたいライブラリと<br/>バージョンを書く"]
+    mvn["Maven<br/>（mvn compile など）"]
+    local[("ローカルリポジトリ<br/>~/.m2/repository")]
+    central[("Maven Central<br/>Repository")]
+    cp["クラスパス<br/>コンパイル・実行に使う"]
+
+    pom --> mvn
+    mvn -->|"1. まず探す"| local
+    mvn -->|"2. なければ取得する<br/>（依存の依存もたどる）"| central
+    central -->|"保存する"| local
+    local -->|"3. JARを渡す"| cp
