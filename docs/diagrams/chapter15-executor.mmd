@@ -1,0 +1,12 @@
+flowchart LR
+    main["呼び出し側<br/>executor.submit(タスク)"]
+    subgraph es["ExecutorService（スレッドプール）"]
+        queue["タスクのキュー<br/>（実行待ち）"]
+        w1["スレッド1"]
+        w2["スレッド2"]
+        w3["スレッド3"]
+        queue -->|"空いたスレッドが<br/>次のタスクを取る"| w2
+        queue --> w1
+        queue --> w3
+    end
+    main --> queue

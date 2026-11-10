@@ -1,0 +1,13 @@
+flowchart LR
+    t1["スレッド1<br/>method1()"]
+    l2[("lock2")]
+    t2["スレッド2<br/>method2()"]
+    l1[("lock1")]
+
+    t1 -.->|"取得を待つ"| l2
+    l2 ==>|"持っている"| t2
+    t2 -.->|"取得を待つ"| l1
+    l1 ==>|"持っている"| t1
+
+    style l1 fill:#e3f2fd,stroke:#1565c0
+    style l2 fill:#e3f2fd,stroke:#1565c0
