@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant Main as 呼び出し側
+    participant W as WordDocumentの<br/>コンストラクタ
+    participant D as Documentの<br/>コンストラクタ
+    participant O as Objectの<br/>コンストラクタ
+
+    Main->>W: new WordDocument(filename, content)
+    W->>D: 最初に super(filename, content)
+    D->>O: 最初に super()（コンパイラが挿入）
+    O-->>D: 戻る
+    Note over D: filename・contentを初期化
+    D-->>W: 戻る
+    Note over W: WordDocument自身の初期化
+    W-->>Main: 初期化済みのオブジェクト
