@@ -1,0 +1,380 @@
+{
+  "chapter01-jvm-architecture": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter02-string-immutability": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter02-widening-conversion": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-class-and-instance": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-encapsulation": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-equals-vs-identity": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-object-array": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-reference-variable": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter03-static-and-instance": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter04-access-modifiers": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter05-constructor-chain": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter05-inheritance-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter05-polymorphism": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter05-up-down-cast": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter06-defensive-copy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter07-diamond-problem": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter07-factory-method": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter07-factory-pattern": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter07-interface-implementation": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter08-enum-instances": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter08-inner-class-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter08-sealed-record": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter09-arraylist-structure": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter09-collection-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter09-hashmap-structure": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter09-linkedlist-structure": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter09-set-order": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter10-wildcard-bounds": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter11-functional-interface-basic": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter11-functional-interface-extended": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter12-flatmap": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter12-lazy-evaluation": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter12-parallel-stream": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter12-stream-api-pipeline": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter13-circuit-breaker": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter13-exception-chaining": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter13-exception-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter13-exception-propagation": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter13-try-catch-finally-flow": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter14-byte-stream-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter14-char-stream-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter14-stream-layers": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-chef-timeline": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-deadlock": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-executor": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-race-condition": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-synchronization": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter15-thread-lifecycle": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter16-multithreaded-server": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter16-tcp-socket": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter16-tcp-vs-udp": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter17-borderlayout": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter17-edt": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter17-event-model": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter17-gridlayout": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter17-swing-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter19-observer": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter19-swingworker": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter20-jtable-roles": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter21-dependency-injection": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter21-tdd-cycle": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter22-maven-dependency": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter23-build-flow": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  }
+}

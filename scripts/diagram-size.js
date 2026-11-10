@@ -2,7 +2,7 @@
  * 図（manuscripts/images/diagrams/）を紙面に載せる大きさを決める。
  *
  * 図は横幅いっぱいに合わせず、元の大きさに一定の倍率を掛けて載せる。こうすると、
- * どの図も中の文字が同じ大きさ（本文より少し小さい9Q程度）になる。ただし本文の幅と、
+ * どの図も中のいちばん小さい文字が本文と同じ10Qになる（文字の大きさは diagram-metrics.js が測る）。ただし本文の幅と、
  * ページに収まる高さを上限にし、それを超える図だけを縮める。縮めた結果、文字が
  * 小さくなりすぎる図は、図の書き方（分割、向きの変更など）を見直す対象になる。
  *
@@ -24,8 +24,13 @@ const PNG_SCALE = 2;
 const DIAGRAM_FONT_PX = 16;
 
 // 紙面での大きさ（mm）。本文の文字は10Q（2.5mm）
-const TARGET_FONT_MM = 2.25; // 図の文字の大きさ（9Q）
-const MIN_FONT_MM = 1.75; // これより小さくなる図は見直しの対象（7Q）
+const TARGET_FONT_MM = 2.5; // 図の中でいちばん小さい文字の大きさの目安（10Q、本文と同じ）
+const MIN_FONT_MM = 2.25; // これより小さくなる図は見直しの対象（9Q）
+
+// 図ごとの測定結果（scripts/diagram-metrics.js が書く）。いちばん小さい文字の大きさと、線が文字の上を通る箇所
+const METRICS_FILE = path.join(DIAGRAMS_DIR, '.diagram-metrics.json');
+let metrics = {};
+try { metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8')); } catch (e) { metrics = {}; }
 const MAX_WIDTH_MM = 130; // 本文の幅（版型はISOのB5で幅176mm、左右の余白22mmずつ）
 const MAX_HEIGHT_MM = 150; // 見出しやキャプションと同じページに収まる高さ
 
@@ -44,14 +49,14 @@ function naturalSize(file) {
   return null;
 }
 
-/** 紙面での幅・高さ（mm）と、図の文字の大きさ（mm）を返す */
-function layout({ width, height }) {
-  const mmPerPx = TARGET_FONT_MM / DIAGRAM_FONT_PX;
+/** 紙面での幅・高さ（mm）と、図の中でいちばん小さい文字の大きさ（mm）を返す */
+function layout({ width, height, fontPx = DIAGRAM_FONT_PX }) {
+  const mmPerPx = TARGET_FONT_MM / fontPx;
   let w = width * mmPerPx;
   let limitedBy = null;
   if (w > MAX_WIDTH_MM) { w = MAX_WIDTH_MM; limitedBy = 'width'; }
   if (w * (height / width) > MAX_HEIGHT_MM) { w = MAX_HEIGHT_MM * (width / height); limitedBy = 'height'; }
-  const fontMm = (w / width) * DIAGRAM_FONT_PX;
+  const fontMm = (w / width) * fontPx;
   return { widthMm: w, heightMm: w * (height / width), fontMm, limitedBy, tooSmall: fontMm < MIN_FONT_MM - 1e-9 };
 }
 
@@ -60,7 +65,10 @@ function layoutForSrc(src) {
   const file = path.join(MANUSCRIPTS, src);
   if (!fs.existsSync(file)) return null;
   const size = naturalSize(file);
-  return size && { ...layout(size), ...size };
+  if (!size) return null;
+  const m = metrics[path.basename(src).replace(/\.(png|svg)$/, '')] || {};
+  const fontPx = m.minFont || DIAGRAM_FONT_PX;
+  return { ...layout({ ...size, fontPx }), ...size, fontPx, overlaps: m.overlaps || [], overflows: m.overflows || [], collisions: m.collisions || [] };
 }
 
 module.exports = { layout, layoutForSrc, naturalSize, IMAGES_DIR, DIAGRAMS_DIR, MANUSCRIPTS, MIN_FONT_MM, TARGET_FONT_MM };
@@ -102,13 +110,22 @@ if (require.main === module) {
     const q = (mm) => (mm * 4).toFixed(1); // 1Q = 0.25mm
     const note = l.limitedBy === 'height' ? '高さに合わせて縮小' : l.limitedBy === 'width' ? '幅に合わせて縮小' : '';
     rows.push(`  ${img.padEnd(40)} ${l.widthMm.toFixed(0).padStart(4)}×${l.heightMm.toFixed(0).padStart(3)}mm  文字${q(l.fontMm).padStart(5)}Q  ${note}`);
+    if (l.overlaps.length) {
+      (strict ? problems : warnings).push(`${where}: ${img} は線が文字の上を通っている（${l.overlaps.slice(0, 3).join('、')}${l.overlaps.length > 3 ? ' など' : ''}）`);
+    }
+    if (l.overflows.length) {
+      (strict ? problems : warnings).push(`${where}: ${img} は文字が箱からはみ出している（${l.overflows.slice(0, 3).join('、')}${l.overflows.length > 3 ? ' など' : ''}）`);
+    }
+    if (l.collisions.length) {
+      (strict ? problems : warnings).push(`${where}: ${img} はラベルの文字どうしが重なっている（${l.collisions.slice(0, 2).join('、')}${l.collisions.length > 2 ? ' など' : ''}）`);
+    }
     if (l.tooSmall) {
       (strict ? problems : warnings).push(
         `${where}: ${img} は${note}で文字が${q(l.fontMm)}Qになる（${q(MIN_FONT_MM)}Q未満）。図を分ける・並べる向きを変えるなどを検討する`);
     }
   }
 
-  console.log(`図の大きさ（文字の目安は${(TARGET_FONT_MM * 4).toFixed(0)}Q、本文は10Q）`);
+  console.log(`図の大きさ（図の中でいちばん小さい文字の目安は${(TARGET_FONT_MM * 4).toFixed(0)}Q、本文は10Q、下限は${(MIN_FONT_MM * 4).toFixed(0)}Q）`);
   console.log(rows.join('\n'));
   for (const w of warnings) console.log(`注意: ${w}`);
   for (const p of problems) console.log(`問題: ${p}`);

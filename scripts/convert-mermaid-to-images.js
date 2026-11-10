@@ -56,6 +56,7 @@ console.log('Mermaid図の変換を開始します...');
 
 const mermaidFiles = glob.sync(path.join(DIAGRAMS_DIR, '*.mmd'));
 let converted = 0;
+const convertedNames = [];
 let skipped = 0;
 let failed = 0;
 
@@ -74,6 +75,7 @@ for (const mmdFile of mermaidFiles) {
     execSync(`npx mmdc -i "${mmdFile}" -o "${outputFile}" ${MMDC_OPTIONS}`, { stdio: 'inherit' });
     convertedHashes[basename] = hash;
     converted++;
+    convertedNames.push(basename);
   } catch (error) {
     failed++;
     console.error(`✗ エラー: ${basename}.mmd の変換に失敗しました`, error.message);
@@ -88,3 +90,13 @@ for (const name of Object.keys(convertedHashes)) {
 fs.writeFileSync(HASH_FILE, JSON.stringify(convertedHashes, Object.keys(convertedHashes).sort(), 2) + '\n');
 console.log(`図の変換: ${converted}件を変換、${skipped}件は変更なしのため省略${failed ? `、${failed}件は失敗` : ''}`);
 if (failed) process.exit(1);
+
+// 変換した図の文字の大きさと、線と文字の重なりを測る（結果は check:diagrams と紙面の大きさの計算に使う）
+const metricsFile = path.join(DIAGRAMS_DIR, '.diagram-metrics.json');
+let measured = {};
+try { measured = JSON.parse(fs.readFileSync(metricsFile, 'utf8')); } catch (e) { measured = {}; }
+const toMeasure = mermaidFiles.map((f) => path.basename(f, '.mmd'))
+  .filter((name) => force || converted && convertedNames.includes(name) || !measured[name]);
+if (toMeasure.length) {
+  execSync(`node "${path.join(__dirname, 'diagram-metrics.js')}" ${toMeasure.join(' ')}`, { stdio: 'inherit' });
+}
