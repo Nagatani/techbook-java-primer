@@ -21,40 +21,40 @@
  */
 public class ProductTest {
     public static void main(String[] args) {
-        System.out.println("=== 商品管理システム ===");
+        IO.println("=== 商品管理システム ===");
         
         // TODO: Productオブジェクトを作成してください
         // Product product = new Product(1, "ノートPC", 80000, 10);
         // product.showProductInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: 入荷処理を行ってください
         // product.restock(5);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 出荷処理を行ってください
         // product.ship(3);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 在庫不足のエラーを確認してください
         // product.ship(20);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 価格変更を行ってください
         // product.setPrice(85000);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 更新後の商品情報を表示してください
-        // System.out.println("更新後の商品情報:");
+        // IO.println("更新後の商品情報:");
         // product.showProductInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: getterメソッドを使ってデータを取得してください
-        // System.out.println("getterメソッドでの取得:");
-        // System.out.println("商品ID: " + product.getId());
-        // System.out.println("商品名: " + product.getName());
-        // System.out.println("価格: " + product.getPrice() + "円");
-        // System.out.println("在庫数: " + product.getStock() + "個");
-        // System.out.println("税込価格: " + String.format("%.0f", product.getTaxIncludedPrice()) + "円");
+        // IO.println("getterメソッドでの取得:");
+        // IO.println("商品ID: " + product.getId());
+        // IO.println("商品名: " + product.getName());
+        // IO.println("価格: " + product.getPrice() + "円");
+        // IO.println("在庫数: " + product.getStock() + "個");
+        // IO.println("税込価格: " + String.format("%.0f", product.getTaxIncludedPrice()) + "円");
     }
 }

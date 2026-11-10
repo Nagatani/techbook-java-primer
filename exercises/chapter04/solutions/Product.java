@@ -44,7 +44,7 @@ public class Product {
     
     public void setPrice(double price) {
         if (price < 0) {
-            System.out.println("エラー: 価格は0円以上である必要があります。");
+            IO.println("エラー: 価格は0円以上である必要があります。");
             return;
         }
         this.price = price;
@@ -56,7 +56,7 @@ public class Product {
     
     public void setStock(int stock) {
         if (stock < 0) {
-            System.out.println("エラー: 在庫数は0個以上である必要があります。");
+            IO.println("エラー: 在庫数は0個以上である必要があります。");
             return;
         }
         this.stock = stock;
@@ -70,37 +70,37 @@ public class Product {
     // 入荷処理
     public void addStock(int quantity) {
         if (quantity <= 0) {
-            System.out.println("エラー: 入荷数は正の値である必要があります。");
+            IO.println("エラー: 入荷数は正の値である必要があります。");
             return;
         }
         
         stock += quantity;
-        System.out.println(quantity + "個を入荷しました。現在の在庫: " + stock + "個");
+        IO.println(quantity + "個を入荷しました。現在の在庫: " + stock + "個");
     }
     
     // 出荷処理
     public boolean removeStock(int quantity) {
         if (quantity <= 0) {
-            System.out.println("エラー: 出荷数は正の値である必要があります。");
+            IO.println("エラー: 出荷数は正の値である必要があります。");
             return false;
         }
         
         if (stock < quantity) {
-            System.out.println("エラー: 在庫が不足しています。（要求: " + quantity + "個, 在庫: " + stock + "個）");
+            IO.println("エラー: 在庫が不足しています。（要求: " + quantity + "個, 在庫: " + stock + "個）");
             return false;
         }
         
         stock -= quantity;
-        System.out.println(quantity + "個を出荷しました。現在の在庫: " + stock + "個");
+        IO.println(quantity + "個を出荷しました。現在の在庫: " + stock + "個");
         return true;
     }
     
     // 商品情報の表示
     public void displayInfo() {
-        System.out.println("商品ID: " + String.format("%03d", id));
-        System.out.println("商品名: " + name);
-        System.out.printf("価格: %.0f円（税込: %.0f円）%n", price, getTaxIncludedPrice());
-        System.out.println("在庫数: " + stock + "個");
+        IO.println("商品ID: " + String.format("%03d", id));
+        IO.println("商品名: " + name);
+        IO.println("価格: %.0f円（税込: %.0f円）".formatted(price, getTaxIncludedPrice()));
+        IO.println("在庫数: " + stock + "個");
     }
     
     // 在庫の状態判定

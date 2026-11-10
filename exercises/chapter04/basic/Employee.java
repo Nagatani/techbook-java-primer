@@ -45,11 +45,11 @@ public class Employee {
     // TODO: ageのsetterメソッドを実装してください（妥当性検証付き）
     // public void setAge(int age) {
     //     if (age < 0) {
-    //         System.out.println("エラー: 年齢は0歳以上である必要があります。");
+    //         IO.println("エラー: 年齢は0歳以上である必要があります。");
     //         return;
     //     }
     //     this.age = age;
-    //     System.out.println("年齢を" + age + "歳に変更しました。");
+    //     IO.println("年齢を" + age + "歳に変更しました。");
     // }
     
     // TODO: salaryのgetterメソッドを実装してください
@@ -60,18 +60,18 @@ public class Employee {
     // TODO: salaryのsetterメソッドを実装してください（妥当性検証付き）
     // public void setSalary(double salary) {
     //     if (salary < 0) {
-    //         System.out.println("エラー: 給与は0円以上である必要があります。");
+    //         IO.println("エラー: 給与は0円以上である必要があります。");
     //         return;
     //     }
     //     this.salary = salary;
-    //     System.out.println("給与を" + String.format("%.0f", salary) + "円に変更しました。");
+    //     IO.println("給与を" + String.format("%.0f", salary) + "円に変更しました。");
     // }
     
     // TODO: 従業員情報を表示するメソッドを実装してください
     // public void showEmployeeInfo() {
-    //     System.out.println("従業員情報:");
-    //     System.out.println("名前: " + name);
-    //     System.out.println("年齢: " + age + "歳");
-    //     System.out.println("給与: " + String.format("%.0f", salary) + "円");
+    //     IO.println("従業員情報:");
+    //     IO.println("名前: " + name);
+    //     IO.println("年齢: " + age + "歳");
+    //     IO.println("給与: " + String.format("%.0f", salary) + "円");
     // }
 }

@@ -24,29 +24,29 @@
  */
 public class EmployeeTest {
     public static void main(String[] args) {
-        System.out.println("=== 従業員管理システム ===");
+        IO.println("=== 従業員管理システム ===");
         
         // TODO: Employeeオブジェクトを作成してください
         // Employee employee = new Employee("田中太郎", 30, 400000);
         // employee.showEmployeeInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: getterメソッドを使って値を取得してください
-        // System.out.println("取得したデータ:");
-        // System.out.println("名前: " + employee.getName());
-        // System.out.println("年齢: " + employee.getAge());
-        // System.out.println("給与: " + employee.getSalary());
-        // System.out.println();
+        // IO.println("取得したデータ:");
+        // IO.println("名前: " + employee.getName());
+        // IO.println("年齢: " + employee.getAge());
+        // IO.println("給与: " + employee.getSalary());
+        // IO.println();
         
         // TODO: setterメソッドを使って値を変更してください
         // employee.setAge(35);
         // employee.setSalary(450000);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 更新後の情報を表示してください
-        // System.out.println("更新後の従業員情報:");
+        // IO.println("更新後の従業員情報:");
         // employee.showEmployeeInfo();
-        // System.out.println();
+        // IO.println();
         
         // TODO: 不正な値を設定してエラーを確認してください
         // employee.setAge(-5);

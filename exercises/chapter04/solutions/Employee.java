@@ -57,14 +57,14 @@ public class Employee {
     
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            System.out.println("エラー: 名前は空にできません。");
+            IO.println("エラー: 名前は空にできません。");
             this.name = "未設定";
             return;
         }
         
         // 【応用解答】名前の長さチェック
         if (name.length() > 50) {
-            System.out.println("警告: 名前が長すぎます。50文字以内にしてください。");
+            IO.println("警告: 名前が長すぎます。50文字以内にしてください。");
             this.name = name.substring(0, 50);
             return;
         }
@@ -79,18 +79,18 @@ public class Employee {
     
     public void setAge(int age) {
         if (age < 0) {
-            System.out.println("エラー: 年齢は0歳以上である必要があります。");
+            IO.println("エラー: 年齢は0歳以上である必要があります。");
             return;
         }
         
         // 【応用解答】現実的な年齢制限
         if (age > 120) {
-            System.out.println("警告: 年齢が現実的ではありません。確認してください。");
+            IO.println("警告: 年齢が現実的ではありません。確認してください。");
         }
         
         // 【発展解答】就労年齢の確認
         if (age < 18) {
-            System.out.println("注意: 18歳未満の従業員です。労働基準法を確認してください。");
+            IO.println("注意: 18歳未満の従業員です。労働基準法を確認してください。");
         }
         
         this.age = age;
@@ -103,19 +103,19 @@ public class Employee {
     
     public void setSalary(double salary) {
         if (salary < 0) {
-            System.out.println("エラー: 給与は0円以上である必要があります。");
+            IO.println("エラー: 給与は0円以上である必要があります。");
             return;
         }
         
         // 【応用解答】最低賃金のチェック（例：時給1000円×8時間×20日）
         double minimumMonthlySalary = 160000.0;
         if (salary > 0 && salary < minimumMonthlySalary) {
-            System.out.println("警告: 給与が最低賃金を下回る可能性があります。");
+            IO.println("警告: 給与が最低賃金を下回る可能性があります。");
         }
         
         // 【発展解答】異常に高い給与のチェック
         if (salary > 10000000.0) {
-            System.out.println("注意: 給与が非常に高額です。確認してください。");
+            IO.println("注意: 給与が非常に高額です。確認してください。");
         }
         
         this.salary = salary;
@@ -146,13 +146,13 @@ public class Employee {
     
     public void setHireDate(java.time.LocalDate hireDate) {
         if (hireDate == null) {
-            System.out.println("エラー: 入社日を設定してください。");
+            IO.println("エラー: 入社日を設定してください。");
             return;
         }
         
         // 【発展解答】未来の日付チェック
         if (hireDate.isAfter(java.time.LocalDate.now())) {
-            System.out.println("警告: 入社日が未来の日付です。");
+            IO.println("警告: 入社日が未来の日付です。");
         }
         
         this.hireDate = hireDate;
@@ -160,22 +160,22 @@ public class Employee {
     
     // 【基本解答】情報表示メソッド
     public void displayInfo() {
-        System.out.println("名前: " + name);
-        System.out.println("年齢: " + age + "歳");
-        System.out.printf("給与: %.0f円%n", salary);
+        IO.println("名前: " + name);
+        IO.println("年齢: " + age + "歳");
+        IO.println("給与: %.0f円".formatted(salary));
     }
     
     // 【応用解答】詳細情報表示メソッド
     public void displayDetailedInfo() {
-        System.out.println("=== 従業員情報 ===");
-        System.out.println("従業員ID: " + employeeId);
-        System.out.println("名前: " + name);
-        System.out.println("年齢: " + age + "歳");
-        System.out.printf("給与: %,.0f円%n", salary);
-        System.out.println("部署: " + department);
-        System.out.println("入社日: " + hireDate);
-        System.out.println("勤続年数: " + getYearsOfService() + "年");
-        System.out.println("================");
+        IO.println("=== 従業員情報 ===");
+        IO.println("従業員ID: " + employeeId);
+        IO.println("名前: " + name);
+        IO.println("年齢: " + age + "歳");
+        IO.println("給与: %,.0f円".formatted(salary));
+        IO.println("部署: " + department);
+        IO.println("入社日: " + hireDate);
+        IO.println("勤続年数: " + getYearsOfService() + "年");
+        IO.println("================");
     }
     
     // 【発展解答】勤続年数の計算
@@ -192,7 +192,7 @@ public class Employee {
     // 【発展解答】昇給メソッド
     public void giveRaise(double amount) {
         if (amount <= 0) {
-            System.out.println("エラー: 昇給額は正の値である必要があります。");
+            IO.println("エラー: 昇給額は正の値である必要があります。");
             return;
         }
         
@@ -200,8 +200,8 @@ public class Employee {
         setSalary(this.salary + amount);
         
         if (this.salary > oldSalary) {
-            System.out.printf("昇給しました: %.0f円 → %.0f円 (+%.0f円)%n", 
-                            oldSalary, this.salary, amount);
+            IO.println("昇給しました: %.0f円 → %.0f円 (+%.0f円)".formatted(
+                            oldSalary, this.salary, amount));
         }
     }
     
@@ -213,7 +213,7 @@ public class Employee {
         }
         
         if (percentage <= 0) {
-            System.out.println("エラー: 昇給率は正の値である必要があります。");
+            IO.println("エラー: 昇給率は正の値である必要があります。");
             return;
         }
         

@@ -49,14 +49,14 @@ public class Game {
     // TODO: スコア加算メソッドを実装してください
     // public void addScore(int points) {
     //     if (isGameOver) {
-    //         System.out.println("ゲームオーバー中です。スコアを追加できません。");
+    //         IO.println("ゲームオーバー中です。スコアを追加できません。");
     //         return;
     //     }
     //     
     //     if (points > 0) {
     //         score += points;
-    //         System.out.println(points + "点を獲得しました！");
-    //         System.out.println("現在のスコア: " + score + "点");
+    //         IO.println(points + "点を獲得しました！");
+    //         IO.println("現在のスコア: " + score + "点");
     //         
     //         // レベルアップ判定（100点ごとにレベルアップ）
     //         checkLevelUp();
@@ -68,17 +68,17 @@ public class Game {
     //     int newLevel = (score / 100) + 1;
     //     if (newLevel > level) {
     //         level = newLevel;
-    //         System.out.println("レベルアップ！レベル" + level + "になりました。");
-    //         System.out.println("現在のレベル: " + level);
+    //         IO.println("レベルアップ！レベル" + level + "になりました。");
+    //         IO.println("現在のレベル: " + level);
     //     }
     // }
     
     // TODO: ゲームオーバーメソッドを実装してください
     // public void gameOver() {
     //     isGameOver = true;
-    //     System.out.println("ゲームオーバー！");
-    //     System.out.println("最終スコア: " + score + "点");
-    //     System.out.println("最終レベル: " + level);
+    //     IO.println("ゲームオーバー！");
+    //     IO.println("最終スコア: " + score + "点");
+    //     IO.println("最終レベル: " + level);
     // }
     
     // TODO: ゲーム再開メソッドを実装してください
@@ -86,18 +86,18 @@ public class Game {
     //     level = 1;
     //     score = 0;
     //     isGameOver = false;
-    //     System.out.println("ゲームを再開しました。");
+    //     IO.println("ゲームを再開しました。");
     // }
     
     // TODO: ゲーム状態表示メソッドを実装してください
     // public void showGameStatus() {
-    //     System.out.println("プレイヤー: " + playerName);
-    //     System.out.println("レベル: " + level);
-    //     System.out.println("スコア: " + score + "点");
+    //     IO.println("プレイヤー: " + playerName);
+    //     IO.println("レベル: " + level);
+    //     IO.println("スコア: " + score + "点");
     //     if (isGameOver) {
-    //         System.out.println("ゲーム状態: ゲームオーバー");
+    //         IO.println("ゲーム状態: ゲームオーバー");
     //     } else {
-    //         System.out.println("ゲーム状態: プレイ中");
+    //         IO.println("ゲーム状態: プレイ中");
     //     }
     // }
 }

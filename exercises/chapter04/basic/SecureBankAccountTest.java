@@ -22,38 +22,38 @@
  */
 public class SecureBankAccountTest {
     public static void main(String[] args) {
-        System.out.println("=== セキュア銀行口座システム ===");
+        IO.println("=== セキュア銀行口座システム ===");
         
         // TODO: SecureBankAccountオブジェクトを作成してください
         // SecureBankAccount account = new SecureBankAccount("123456", 100000, "1234");
-        // System.out.println();
+        // IO.println();
         
         // TODO: 正しいPINで入金を行ってください
         // account.deposit(10000, "1234");
-        // System.out.println();
+        // IO.println();
         
         // TODO: 間違ったPINで出金を試行してください
         // account.withdraw(5000, "9999");
-        // System.out.println();
+        // IO.println();
         
         // TODO: 正しいPINで出金を行ってください
         // account.withdraw(50000, "1234");
-        // System.out.println();
+        // IO.println();
         
         // TODO: 口座情報を表示してください
         // account.showAccountInfo("1234");
-        // System.out.println();
+        // IO.println();
         
         // TODO: 残高照会を行ってください
         // double balance = account.getBalance("1234");
         // if (balance >= 0) {
-        //     System.out.println("照会結果: " + String.format("%.0f", balance) + "円");
+        //     IO.println("照会結果: " + String.format("%.0f", balance) + "円");
         // }
         
         // TODO: 間違ったPINで残高照会を試行してください
         // double failedBalance = account.getBalance("0000");
         // if (failedBalance < 0) {
-        //     System.out.println("残高照会に失敗しました。");
+        //     IO.println("残高照会に失敗しました。");
         // }
     }
 }

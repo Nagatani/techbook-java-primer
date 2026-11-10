@@ -22,48 +22,48 @@
  */
 public class GameTest {
     public static void main(String[] args) {
-        System.out.println("=== ゲーム管理システム ===");
+        IO.println("=== ゲーム管理システム ===");
         
         // TODO: Gameオブジェクトを作成してください
         // Game game = new Game("太郎");
         // game.showGameStatus();
-        // System.out.println();
+        // IO.println();
         
         // TODO: スコアを追加してレベルアップを確認してください
         // game.addScore(100);
-        // System.out.println();
+        // IO.println();
         
         // TODO: さらにスコアを追加してください
         // game.addScore(150);
-        // System.out.println();
+        // IO.println();
         
         // TODO: さらにスコアを追加してレベルアップを確認してください
         // game.addScore(100);
-        // System.out.println();
+        // IO.println();
         
         // TODO: 現在のゲーム状態を表示してください
-        // System.out.println("現在のゲーム状態:");
+        // IO.println("現在のゲーム状態:");
         // game.showGameStatus();
-        // System.out.println();
+        // IO.println();
         
         // TODO: ゲームオーバーにしてください
         // game.gameOver();
-        // System.out.println();
+        // IO.println();
         
         // TODO: ゲームオーバー後にスコア追加を試行してください
         // game.addScore(50);
-        // System.out.println();
+        // IO.println();
         
         // TODO: ゲームを再開してください
         // game.restart();
         // game.showGameStatus();
-        // System.out.println();
+        // IO.println();
         
         // TODO: getterメソッドを使ってデータを取得してください
-        // System.out.println("getterメソッドでの取得:");
-        // System.out.println("プレイヤー名: " + game.getPlayerName());
-        // System.out.println("レベル: " + game.getLevel());
-        // System.out.println("スコア: " + game.getScore());
-        // System.out.println("ゲームオーバー: " + game.isGameOver());
+        // IO.println("getterメソッドでの取得:");
+        // IO.println("プレイヤー名: " + game.getPlayerName());
+        // IO.println("レベル: " + game.getLevel());
+        // IO.println("スコア: " + game.getScore());
+        // IO.println("ゲームオーバー: " + game.isGameOver());
     }
 }

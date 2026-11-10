@@ -29,7 +29,7 @@ public class SecureBankAccount {
     
     public boolean authenticate(String inputPin) {
         if (isLocked) {
-            System.out.println("口座がロックされています。管理者にお問い合わせください。");
+            IO.println("口座がロックされています。管理者にお問い合わせください。");
             return false;
         }
         
@@ -38,11 +38,11 @@ public class SecureBankAccount {
             return true;
         } else {
             failedAttempts++;
-            System.out.println("PIN認証に失敗しました。試行回数: " + failedAttempts + "/3");
+            IO.println("PIN認証に失敗しました。試行回数: " + failedAttempts + "/3");
             
             if (failedAttempts >= 3) {
                 isLocked = true;
-                System.out.println("口座がロックされました。");
+                IO.println("口座がロックされました。");
                 addTransaction("口座ロック", 0);
             }
             return false;
@@ -55,14 +55,14 @@ public class SecureBankAccount {
         }
         
         if (amount <= 0) {
-            System.out.println("入金額は正の値である必要があります。");
+            IO.println("入金額は正の値である必要があります。");
             return false;
         }
         
         balance += amount;
         addTransaction("入金", amount);
         lastTransaction = java.time.LocalDateTime.now();
-        System.out.println(amount + "円を入金しました。残高: " + balance + "円");
+        IO.println(amount + "円を入金しました。残高: " + balance + "円");
         return true;
     }
     
@@ -72,12 +72,12 @@ public class SecureBankAccount {
         }
         
         if (amount <= 0) {
-            System.out.println("出金額は正の値である必要があります。");
+            IO.println("出金額は正の値である必要があります。");
             return false;
         }
         
         if (balance < amount) {
-            System.out.println("残高が不足しています。残高: " + balance + "円");
+            IO.println("残高が不足しています。残高: " + balance + "円");
             addTransaction("出金失敗（残高不足）", amount);
             return false;
         }
@@ -85,7 +85,7 @@ public class SecureBankAccount {
         balance -= amount;
         addTransaction("出金", amount);
         lastTransaction = java.time.LocalDateTime.now();
-        System.out.println(amount + "円を出金しました。残高: " + balance + "円");
+        IO.println(amount + "円を出金しました。残高: " + balance + "円");
         return true;
     }
     
@@ -101,9 +101,9 @@ public class SecureBankAccount {
             return;
         }
         
-        System.out.println("=== 取引履歴 ===");
+        IO.println("=== 取引履歴 ===");
         for (String transaction : transactionHistory) {
-            System.out.println(transaction);
+            IO.println(transaction);
         }
     }
     
@@ -129,9 +129,9 @@ public class SecureBankAccount {
             isLocked = false;
             failedAttempts = 0;
             addTransaction("口座ロック解除", 0);
-            System.out.println("口座のロックが解除されました。");
+            IO.println("口座のロックが解除されました。");
         } else {
-            System.out.println("管理者コードが正しくありません。");
+            IO.println("管理者コードが正しくありません。");
         }
     }
 }
