@@ -433,7 +433,7 @@ $ nano HelloWorld.java
 ```java
 public class HelloWorld {
     public static void main(String[] args) {
-        System.out.println("Hello, World!!");
+        IO.println("Hello, World!!");
     }
 }
 ```
@@ -491,7 +491,7 @@ $ source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 ```
 HelloWorld.java:3: error: ';' expected
-        System.out.println("Hello, World!!")
+        IO.println("Hello, World!!")
                                             ^
 1 error
 ```
@@ -576,18 +576,15 @@ Javaプログラムでのプログラムへのデータの受け渡し方法は�
 <span class="listing-number">**リストAA-2**</span>
 
 ```java
-import java.util.Scanner;  // このライブラリをStandardInputクラスで使う宣言。
-
 public class StandardInput {
     public static void main(String[] args) {
-        // 標準入力をScannerで取得する。
-        Scanner in = new Scanner(System.in);
-        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す。
-        String inputLine = in.nextLine();
+        // IO.readln()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す。
+        // IOクラスはjava.langパッケージにあるため、import文は不要。
+        String inputLine = IO.readln();
         // ↑inputLineという変数には、入力された文字列データが設定されています。
 
         // 入力された文字列データをそのまま出力。
-        System.out.println(inputLine);
+        IO.println(inputLine);
     }
 }
 ```
@@ -601,14 +598,11 @@ public class StandardInput {
 <span class="listing-number">**リストAA-3**</span>
 
 ```java
-import java.util.Scanner;  // このライブラリをParseIntクラスで使う宣言
-
 public class ParseInt {
     public static void main(String[] args) {
-        // 標準入力をScannerで取得する
-        Scanner in = new Scanner(System.in);
-        // nextLine()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す
-        String inputLine = in.nextLine();
+        // IO.readln()メソッドは、キーボードからReturnキーの入力があるまで待ち、入力された1行を返す
+        // 引数に文字列を渡すと、入力の前にその文字列を表示する
+        String inputLine = IO.readln("整数を入力してください: ");
         // ↑inputLineという変数には、入力された文字列データが格納されます
 
         // 変数numに文字列データを整数値に変換して格納
@@ -617,7 +611,7 @@ public class ParseInt {
         int ans = num + 10;
 
         // 変数ansを出力
-        System.out.println(ans);
+        IO.println(ans);
     }
 }
 ```
@@ -628,11 +622,11 @@ public class ParseInt {
 
 以下のエラーメッセージがでます。
 ```
-Exception in thread "main" java.lang.NumberFormatException: For input string: "aa"
-	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
-	at java.lang.Integer.parseInt(Integer.java:580)
-	at java.lang.Integer.parseInt(Integer.java:615)
-	at ParseInt.main(ParseInt.java:14)
+整数を入力してください: Exception in thread "main" java.lang.NumberFormatException: For input string: "aa"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:565)
+	at java.base/java.lang.Integer.parseInt(Integer.java:662)
+	at ParseInt.main(ParseInt.java:9)
 ```
 
 これは、実行時例外と呼ばれるエラーです。
