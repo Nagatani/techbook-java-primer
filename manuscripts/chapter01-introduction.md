@@ -10,6 +10,8 @@
     - コンパイルと実行の方法、エラーが出たときの対処方法を覚える
 3. Java言語の特徴
     - C言語との違いや、Javaならではの便利な機能を理解する
+4. Java 25の簡潔な書き方
+    - クラス宣言を省いて`main`メソッドだけを書く方法を知り、本書がクラスを書いてプログラムを組み立てる理由を理解する
 
 ### この章を始める前に
 
@@ -420,11 +422,156 @@ public static void main(String[] args)
 
 #### なぜこの書き方が必要なのか？
 
-Javaランタイム（javaコマンド）は、指定されたクラスのなかからこの正確なシグネチャを持つ`main`メソッドを探して、プログラムの実行を開始します。
+Javaランタイム（javaコマンド）は、指定されたクラスのなかから決まった形の`main`メソッドを探して、プログラムの実行を開始します。
+`mian`のように名前を間違えたり、戻り値の型を`int`にしたりすると、プログラムの開始点として認識されません。
 
-一文字でも違うと認識されません。
+長くて面倒に感じる場合もありますが、どのキーワードにも意味があります。
+なお、Java 25からは、`public`や`static`、`String[] args`を省いた書き方や、クラスの宣言そのものを省いた書き方もできるようになりました。次の節で紹介します。
 
-長くて面倒に感じる場合もありますが、すべてのキーワードに意味があり、どれも省くことができません。<span class="footnote">学習目的のために、mainメソッドを簡略化して書ける機能があります。`void main() { ... }`のようにstaticやpublic、引数を省略できます。この機能はJava 21でプレビュー機能（試験的な機能）として導入され、Java 25で正式な機能になりました。本書では、クラスとmainメソッドのしくみを理解するため、従来の形式で書きます。</span>
+### Java 25の新しい書き方：クラス宣言を省いたプログラム
+
+ここまで見てきたように、従来のJavaでは、1行の文字列を表示するだけのプログラムでも、クラスの宣言と`public static void main(String[] args)`を書く必要がありました。
+初めてプログラムを書く人にとっては、まだ学んでいないキーワードがいくつも並ぶことになります。
+
+そこでJava 25では、小さなプログラムを短く書くための機能が正式に加わりました（JEP 512「Compact Source Files and Instance Main Methods」）。
+この機能は大きく2つに分けられます。
+
+- インスタンスmainメソッド
+    + `public`と`static`、引数の`String[] args`を省いて、`void main()`と書ける
+- コンパクトソースファイル
+    + クラスの宣言を書かずに、メソッドやフィールドをファイルに直接書ける
+
+#### クラス宣言を省いたHello World
+
+次のプログラムは、サンプルコード1-4のHello Worldを、Java 25の書き方で書き直したものです。
+
+<span class="listing-number">**サンプルコード1-7**　Hello.java</span>
+
+```java
+void main() {
+    IO.println("Hello, World!!");
+}
+```
+
+#### 実行結果
+
+```
+Hello, World!!
+```
+
+このファイルには`class`も`public static`も出てきません。ファイルに書いた`main`メソッドから実行が始まります。
+
+実行するには、`javac`でコンパイルしてから`java`で実行する従来の手順のほかに、`java`コマンドにソースファイルを直接渡す方法も使えます。
+ソースファイルを直接渡す方法はJava 11から使えるもので、コンパイルと実行を1回のコマンドで行います。
+
+```bash
+$ java Hello.java
+Hello, World!!
+```
+
+#### フィールドやほかのメソッドも書ける
+
+コンパクトソースファイルには、`main`以外のメソッドやフィールドも書けます。
+また、`java.base`モジュールのクラスは、import文を書かずに使えます。`java.base`モジュールは、`java.lang`や`java.util`、`java.io`など、Javaの基本的なパッケージをまとめたものです。
+次の例では、`java.util`パッケージの`List`と`ArrayList`をimportせずに使っています。
+
+<span class="listing-number">**サンプルコード1-8**　Greeting.java</span>
+
+```java
+String name = "Java 25";
+
+void main() {
+    List<String> words = new ArrayList<>(List.of("compact", "source", "file"));
+    IO.println(greet(name));
+    IO.println(words);
+}
+
+String greet(String who) {
+    return "Hello, " + who + "!";
+}
+```
+
+#### 実行結果
+
+```
+Hello, Java 25!
+[compact, source, file]
+```
+
+クラスを宣言したプログラムで同じようにimportを省きたいときは、Java 25で加わった`import module java.base;`という書き方（モジュールのimport宣言）を使います。
+本書のサンプルコードでは、どのクラスを使っているかがわかるように、従来どおりクラスごとにimport文を書きます。
+
+#### 実際にはクラスが作られている
+
+クラスの宣言を省いても、「Javaのコードはすべてクラスのなかに書く」という規則がなくなったわけではありません。
+コンパイラが、ファイル名と同じ名前のクラス（この例では`Hello`）を自動で用意し、ファイルに書いたメソッドやフィールドをそのクラスのメンバーにします。
+コンパイルしてできた`Hello.class`の中身を`javap`コマンドで表示すると、`Hello`というクラスと`main`メソッドが確認できます。
+
+```
+$ javac Hello.java
+$ javap Hello.class
+Compiled from "Hello.java"
+final class Hello {
+  Hello();
+  void main();
+}
+```
+
+コンパクトソースファイルには、次のような制限があります。
+
+- パッケージの宣言を書けない
+    + 書くと`compact source file should not have package declaration`というコンパイルエラーになる
+- 自動で作られるクラスを、ほかのクラスから使うことは想定されていない
+    + 1つのファイルで完結する小さなプログラムのための書き方である
+
+#### クラスを宣言したプログラムでのインスタンスmainメソッド
+
+`void main()`という短い形は、クラスを宣言したプログラムでも使えます。
+
+<span class="listing-number">**サンプルコード1-9**　InstanceMain.java</span>
+
+```java
+public class InstanceMain {
+    void main() {
+        IO.println("staticを付けないmainメソッドから実行しました");
+    }
+}
+```
+
+#### 実行結果
+
+```
+staticを付けないmainメソッドから実行しました
+```
+
+`static`を付けていない`main`メソッドを実行するとき、`java`コマンドはまずそのクラスのオブジェクトを作り、そのオブジェクトの`main`メソッドを呼び出します。
+オブジェクトとstaticの意味は、第3章と第4章で詳しく学習します。
+
+従来の書き方とJava 25で加わった書き方を比べると、次のようになります。
+
+| 項目 | 従来の書き方 | Java 25で加わった書き方 |
+|------|------|------|
+| クラスの宣言 | 必要 | 省略できる（コンパクトソースファイル） |
+| mainメソッド | `public static void main(String[] args)` | `void main()`とも書ける |
+| `java.util`などのimport | 使うクラスごとに必要 | コンパクトソースファイルでは不要 |
+| 向いている用途 | 複数のクラスからなるプログラム全般 | 1ファイルで完結する小さなプログラム、文法の試し書き |
+
+#### 本書での書き方
+
+本書では、この新しい書き方を知識として紹介しますが、プログラムは基本的にクラスを宣言して組み立てます。
+サンプルコードも、クラスを宣言し、`public static void main(String[] args)`から実行を始める従来の形式で書きます。
+その理由は次の3つです。
+
+- 本書の主題がオブジェクト指向プログラミングであること
+    + 第3章以降では、複数のクラスを定義し、それらを組み合わせてプログラムを構築する。最初からクラスを書くことに慣れておくと、その後の学習につながりやすい
+- 実際の開発で書くプログラムがクラスで構成されていること
+    + パッケージ、ユニットテスト（第21章）、ビルドとデプロイ（第23章）といったしくみも、クラスを単位にしている
+- これまでに書かれたJavaのコードを読めるようになること
+    + 書籍やWeb上の記事、ライブラリのコードの大部分は、クラスを宣言する従来の形式で書かれている
+
+一方で、コンパクトソースファイルは、文法の動きを少し試したいときや、計算の結果を手早く確かめたいときに便利です。
+本文を読みながら自分で動作を試すときには、使ってかまいません。
+ただし、演習課題の解答や複数のクラスを使うプログラムは、本書と同じくクラスを宣言した形で書いてください。
 
 
 
@@ -443,7 +590,7 @@ Javaで画面（標準出力）に文字列を出力する方法はいくつか�
 #### `IO.println`
 この出力方法は、指定された文字列（String型の変数や式でもOK）を改行コードを末尾につけて出力する方法です。
 
-<span class="listing-number">**サンプルコード1-7**</span>
+<span class="listing-number">**サンプルコード1-10**</span>
 
 ```java
 IO.println("Hello, World!!");
@@ -451,7 +598,7 @@ IO.println("Hello, World!!");
 
 これをC言語でたとえるなら、以下のようになるはずです。
 
-<span class="listing-number">**サンプルコード1-8**</span>
+<span class="listing-number">**サンプルコード1-11**</span>
 
 ```c
 printf("%s\n" , "Hello, World!!");
@@ -470,7 +617,7 @@ C言語のprintfのように書式を指定して出力したい場合は、文�
 
 ファイル名「`StandardOutput.java`」
 
-<span class="listing-number">**サンプルコード1-9**　StandardOutput.java</span>
+<span class="listing-number">**サンプルコード1-12**　StandardOutput.java</span>
 
 ```java
 public class StandardOutput {
@@ -517,7 +664,7 @@ C言語のprintf関数のように書式を指定したい場合は、「formatt
 
 ターミナルやコマンドプロンプトなど、黒い画面で動作するプログラムで、ユーザーからデータの入力ができるようになるためのサンプルコードを実行してみましょう。
 
-<span class="listing-number">**サンプルコード1-10**　InputExample.java</span>
+<span class="listing-number">**サンプルコード1-13**　InputExample.java</span>
 
 ```java
 public class InputExample {
@@ -562,11 +709,11 @@ public class InputExample {
 > 
 > ### プログラミングにおけるエラーとの向き合い方
 > 
-> サンプルコード1-10で`IO.readln`を使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
+> サンプルコード1-13で`IO.readln`を使った入力処理を学習しました。ここで気になるのは、`Integer.parseInt()`で文字列を整数に変換する際のエラーです。数値以外の文字列を入力してEnterキーを押すと、ずらずらとエラーが出て、実行していたプログラムは停止します。これは正しい動作です。
 > 
 > #### よくあるエラーの例
 > 
-> <span class="listing-number">**サンプルコード1-11**</span>
+> <span class="listing-number">**サンプルコード1-14**</span>
 >
 > ```java
 > String input = "";  // ユーザーが何も入力せずEnterを押した場合
@@ -611,7 +758,7 @@ public class InputExample {
 > 
 > 実際の開発では、以下のような対処をします（詳細は後の章で）。
 > 
-> <span class="listing-number">**サンプルコード1-12**</span>
+> <span class="listing-number">**サンプルコード1-15**</span>
 >
 > ```java
 > try {
@@ -743,6 +890,7 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
 - Javaプログラムの基本
     + プログラムはクラスとして書き、`main`メソッドから実行が始まる
     + `javac`でコンパイルし、`java`で実行する
+    + Java 25では、クラスの宣言を省いたコンパクトソースファイルや`void main()`も書けるが、本書ではクラスを宣言してプログラムを組み立てる
 - 標準入出力
     + `IO.println`で画面に出力し、`IO.readln`でキーボードからの入力を受け取る
 

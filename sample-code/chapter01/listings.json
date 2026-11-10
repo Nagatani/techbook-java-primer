@@ -23,15 +23,36 @@
       { "file": "HelloWorld.java", "from": 1, "to": 5 }
     ]
   },
+  "1-7": {
+    "dir": "01-07",
+    "main": "Hello",
+    "excerpt": [
+      { "file": "Hello.java", "from": 1, "to": 3 }
+    ]
+  },
+  "1-8": {
+    "dir": "01-08",
+    "main": "Greeting",
+    "excerpt": [
+      { "file": "Greeting.java", "from": 1, "to": 11 }
+    ]
+  },
   "1-9": {
     "dir": "01-09",
+    "main": "InstanceMain",
+    "excerpt": [
+      { "file": "InstanceMain.java", "from": 1, "to": 5 }
+    ]
+  },
+  "1-12": {
+    "dir": "01-12",
     "main": "StandardOutput",
     "excerpt": [
       { "file": "StandardOutput.java", "from": 1, "to": 13 }
     ]
   },
-  "1-10": {
-    "dir": "01-10",
+  "1-13": {
+    "dir": "01-13",
     "main": "InputExample",
     "excerpt": [
       { "file": "InputExample.java", "from": 1, "to": 13 }

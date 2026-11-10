@@ -19,5 +19,8 @@ javac -d out *.java
 | [1-2](./01-02/) | Product.java | （mainメソッドなし） |
 | [1-3](./01-03/) | Main.java<br>Product.java | `java -cp out Main` |
 | [1-4](./01-04/) | HelloWorld.java | `java -cp out HelloWorld` |
-| [1-9](./01-09/) | StandardOutput.java | `java -cp out StandardOutput` |
-| [1-10](./01-10/) | InputExample.java | `java -cp out InputExample` |
+| [1-7](./01-07/) | Hello.java | `java -cp out Hello` |
+| [1-8](./01-08/) | Greeting.java | `java -cp out Greeting` |
+| [1-9](./01-09/) | InstanceMain.java | `java -cp out InstanceMain` |
+| [1-12](./01-12/) | StandardOutput.java | `java -cp out StandardOutput` |
+| [1-13](./01-13/) | InputExample.java | `java -cp out InputExample` |

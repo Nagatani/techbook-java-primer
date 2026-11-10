@@ -3,7 +3,7 @@ source: manuscripts/chapter01-introduction.md
 summarized: 2026-11-08
 sections:
   - key: "本章の学習目標"
-    hash: 242b4ffe
+    hash: 380de221
   - key: "本書のGitHubリポジトリについて"
     hash: 936065e8
   - key: "本書の対象読者"
@@ -21,13 +21,13 @@ sections:
   - key: "最初のJavaプログラム"
     hash: 23b58e29
   - key: "Javaプログラムの基本構文"
-    hash: c7500830
+    hash: b6b19202
   - key: "標準入出力を扱うサンプルを動かしてみよう"
-    hash: e1d7acaa
+    hash: c76b92df
   - key: "よくあるエラーと対処法"
     hash: 4f517f0e
   - key: "まとめ"
-    hash: 6684018e
+    hash: ea4a3cb2
   - key: "章末演習"
     hash: 29d2db9a
 ---
@@ -67,7 +67,7 @@ sections:
 ## 節ごとの要約
 
 - 本章の学習目標（L3–37）
-    + 学ぶこと3点（Javaプログラムの書き方、コンパイルと実行、Javaの特徴）と前提（C言語の基礎）
+    + 学ぶこと4点（Javaプログラムの書き方、コンパイルと実行、Javaの特徴、Java 25の簡潔な書き方）と前提（C言語の基礎）
     + 「本書の考え方」として、OOPは歴史の中の1手法であり、Javaは他言語学習の礎になると述べる（豊富な機能、厳密な型システム、実用性）。Androidの現状を脚注で補足
 - 本書のGitHubリポジトリについて（L38–107）
     + リポジトリURLと、演習・サンプル・解答例・付録A〜Hの一覧。付録Bは15セクションを列挙する
@@ -93,18 +93,20 @@ sections:
     + HelloWorld（1-4）。クラス名とファイル名の一致、mainメソッドがエントリポイント、IO.printlnを散文で説明し、標準入出力にIOクラスを使うと述べる
     + コンパイル・実行と標準入力は付録Aへ委ねる
 - Javaプログラムの基本構文（L375–490）
-    + クラスとmainの骨格（1-5）、ルール3点、mainシグネチャの各要素の表。簡略mainを脚注で紹介（Java 21でプレビュー、Java 25で正式化。本書は従来の形式で書く）
-    + 本書の標準入出力の方針（2026-11-10〜）: IO.println・IO.print・IO.readln（Java 25のjava.lang.IO）を表で示し、書式はString.formattedで作る（1-9）
+    + クラスとmainの骨格（1-5）、ルール3点、mainシグネチャの各要素の表
+    + 「Java 25の新しい書き方：クラス宣言を省いたプログラム」（2026-11-10〜）: JEP 512のコンパクトソースファイル（1-7 Hello、1-8 フィールド・メソッドとjava.baseの自動import）、`java Hello.java`での直接実行、javapで見える暗黙のクラス、パッケージ宣言不可などの制限、クラス内のインスタンスmainメソッド（1-9）、従来との比較表、`import module java.base;`の紹介
+    + 「本書での書き方」: 本書はクラスを宣言し`public static void main(String[] args)`で書く。理由はOOPが主題、実務のコードがクラス単位、既存のコードを読むため。試し書きにはコンパクトソースファイルを使ってよい
+    + 本書の標準入出力の方針（2026-11-10〜）: IO.println・IO.print・IO.readln（Java 25のjava.lang.IO）を表で示し、書式はString.formattedで作る（1-12）
     + コラム「System.out.printlnとIOクラス」で、従来のSystem.out・Scanner(System.in)との関係、System.errは引き続き使うこと、読み替え方を説明
 - 標準入出力を扱うサンプルを動かしてみよう（L491–617）
-    + IO.readlnで1行読み、Integer.parseIntで整数化して2倍を表示（1-10）。java.langは自動インポート
+    + IO.readlnで1行読み、Integer.parseIntで整数化して2倍を表示（1-13）。java.langは自動インポート
     + コラム「Integer.parseIntのエラーから学ぶ」で、NumberFormatExceptionの読み方を説明し、例外処理は第13章で学ぶと予告。try-catchの参考例あり
 - よくあるエラーと対処法（L618–725）
     + 2026-11-09に、エラーメッセージの例・修正コード・デバッグのヒントを`appendix/h-common-errors/chapters/chapter01.md`へ移した。本文には出会いやすいエラーと原因の要点のリストとGitHubのURLだけを残す
     + 本文に挙げるエラー: JDKが見つからない（javacが認識されない）、クラス名とファイル名の不一致、mainメソッドのシグネチャの誤り、クラスファイルが見つからない、NumberFormatException
     + 節の末尾にコラム「生成AIと初学者のプログラミング学習」がある（本文に残した）
 - まとめ（L726–741）
-    + Javaの特徴、Javaプログラムの基本、標準入出力の3項目と、第2章への導入（2026-11-08に新設）
+    + Javaの特徴、Javaプログラムの基本（コンパクトソースファイルは書けるが本書はクラスを宣言して書く、を含む）、標準入出力の3項目と、第2章への導入（2026-11-08に新設）
 - 章末演習（L742–825）
     + 演習リンクは`exercises/chapter01/`で正しい
     + Exercise02〜04の目的と実装のポイント、学習の進め方、トラブル表、発展課題
@@ -114,7 +116,7 @@ sections:
 
 - 第2章（Java基本文法）との重複
     + 入力のサンプル1-10は第2章のコンソール入出力のサンプルと重なる
-    + IO.println・IO.print・formatted（1-9）は第2章のコンソール入出力（2-3）と重なる
+    + IO.println・IO.print・formatted（1-12）は第2章のコンソール入出力（2-3）と重なる
     + クラス名とファイル名の不一致、セミコロン忘れ、大文字小文字の誤りは第2章「よくあるコンパイルエラー」と重なる
 - 第3章・第4章: Productクラス（1-2）でカプセル化、コンストラクタ、newを先取りしている
 - 第13章（例外処理）: コラムで予告。章参照は正しい
