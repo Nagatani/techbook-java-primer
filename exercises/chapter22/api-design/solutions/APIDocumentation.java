@@ -15,7 +15,7 @@
  * // 配列を使った統計計算
  * double[] data = {10.5, 20.3, 15.7, 8.9, 12.1};
  * Statistics stats = MathUtils.calculateStatistics(data);
- * System.out.println("平均: " + stats.getMean());
+ * IO.println("平均: " + stats.getMean());
  * 
  * // 範囲チェック
  * boolean inRange = MathUtils.isInRange(5.0, 1.0, 10.0);
@@ -514,9 +514,9 @@ public final class APIDocumentation {
      * <pre>
      * double[] data = {1.0, 2.0, 3.0, 4.0, 5.0};
      * Statistics stats = calculateStatistics(data);
-     * System.out.println("平均: " + stats.getMean());      // 3.0
-     * System.out.println("中央値: " + stats.getMedian());   // 3.0
-     * System.out.println("標準偏差: " + stats.getStandardDeviation());
+     * IO.println("平均: " + stats.getMean());      // 3.0
+     * IO.println("中央値: " + stats.getMedian());   // 3.0
+     * IO.println("標準偏差: " + stats.getStandardDeviation());
      * </pre>
      */
     public static Statistics calculateStatistics(double[] data) {
@@ -575,61 +575,61 @@ public final class APIDocumentation {
      * @since 1.0
      */
     public static void main(String[] args) {
-        System.out.println("=== 数学ユーティリティクラス デモンストレーション ===");
-        System.out.println();
+        IO.println("=== 数学ユーティリティクラス デモンストレーション ===");
+        IO.println();
         
         // 定数の表示
-        System.out.println("数学定数:");
-        System.out.printf("黄金比: %.15f%n", GOLDEN_RATIO);
-        System.out.printf("オイラー数: %.15f%n", EULER_NUMBER);
-        System.out.printf("許容誤差: %.2e%n", EPSILON);
-        System.out.println();
+        IO.println("数学定数:");
+        IO.println("黄金比: %.15f".formatted(GOLDEN_RATIO));
+        IO.println("オイラー数: %.15f".formatted(EULER_NUMBER));
+        IO.println("許容誤差: %.2e".formatted(EPSILON));
+        IO.println();
         
         // 基本計算のデモ
-        System.out.println("基本計算:");
+        IO.println("基本計算:");
         double[] testData = {10.5, 20.3, 15.7, 8.9, 12.1, 18.6, 9.4};
         
         double avg = average(testData);
-        System.out.printf("平均値: %.2f%n", avg);
+        IO.println("平均値: %.2f".formatted(avg));
         
         double med = median(testData);
-        System.out.printf("中央値: %.2f%n", med);
-        System.out.println();
+        IO.println("中央値: %.2f".formatted(med));
+        IO.println();
         
         // 範囲チェックのデモ
-        System.out.println("範囲チェック:");
+        IO.println("範囲チェック:");
         double testValue = 15.0;
         boolean inRange = isInRange(testValue, 10.0, 20.0);
-        System.out.printf("%.1f は [10.0, 20.0] の範囲内: %b%n", testValue, inRange);
+        IO.println("%.1f は [10.0, 20.0] の範囲内: %b".formatted(testValue, inRange));
         
         double clamped = clamp(25.0, 10.0, 20.0);
-        System.out.printf("25.0 を [10.0, 20.0] にクランプ: %.1f%n", clamped);
-        System.out.println();
+        IO.println("25.0 を [10.0, 20.0] にクランプ: %.1f".formatted(clamped));
+        IO.println();
         
         // 浮動小数点比較のデモ
-        System.out.println("浮動小数点比較:");
+        IO.println("浮動小数点比較:");
         double a = 0.1 + 0.2;
         double b = 0.3;
         boolean isEqual = equals(a, b);
-        System.out.printf("0.1 + 0.2 = %.17f%n", a);
-        System.out.printf("0.3       = %.17f%n", b);
-        System.out.printf("許容誤差内で等しい: %b%n", isEqual);
-        System.out.println();
+        IO.println("0.1 + 0.2 = %.17f".formatted(a));
+        IO.println("0.3       = %.17f".formatted(b));
+        IO.println("許容誤差内で等しい: %b".formatted(isEqual));
+        IO.println();
         
         // 階乗のデモ
-        System.out.println("階乗計算:");
+        IO.println("階乗計算:");
         for (int i = 0; i <= 10; i++) {
-            System.out.printf("%d! = %.0f%n", i, factorial(i));
+            IO.println("%d! = %.0f".formatted(i, factorial(i)));
         }
-        System.out.println();
+        IO.println();
         
         // 統計計算のデモ
-        System.out.println("統計計算:");
+        IO.println("統計計算:");
         Statistics stats = calculateStatistics(testData);
-        System.out.println(stats);
-        System.out.println();
+        IO.println(stats);
+        IO.println();
         
-        System.out.println("=== デモンストレーション完了 ===");
+        IO.println("=== デモンストレーション完了 ===");
     }
 }
 

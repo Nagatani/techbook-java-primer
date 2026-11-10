@@ -44,11 +44,11 @@ MathUtils.java - 完全なJavadocコメント:
  * // 平均値の計算
  * double[] data = {1.0, 2.0, 3.0, 4.0, 5.0};
  * double average = MathUtils.average(data);
- * System.out.println("平均値: " + average); // 出力: 平均値: 3.0
+ * IO.println("平均値: " + average); // 出力: 平均値: 3.0
  * 
  * // 標準偏差の計算
  * double stdDev = MathUtils.standardDeviation(data);
- * System.out.println("標準偏差: " + stdDev);
+ * IO.println("標準偏差: " + stdDev);
  * }</pre>
  * 
  * @author 開発チーム
@@ -447,9 +447,9 @@ public class CommonsDemo {
         String randomNumeric = RandomStringUtils.randomNumeric(8);           // "12345678"
         String randomAlphanumeric = RandomStringUtils.randomAlphanumeric(12); // "Kj3HgF8SaQ2w"
         
-        System.out.println("元の文字列: '" + text + "'");
-        System.out.println("トリム後: '" + trimmed + "'");
-        System.out.println("ランダム文字列: " + randomAlphabetic);
+        IO.println("元の文字列: '" + text + "'");
+        IO.println("トリム後: '" + trimmed + "'");
+        IO.println("ランダム文字列: " + randomAlphabetic);
     }
 }
 
@@ -480,11 +480,11 @@ public class JacksonDemo {
             LocalDateTime.now(), Arrays.asList("VIP", "Premium"));
         
         String json = objectMapper.writeValueAsString(user);
-        System.out.println("JSON: " + json);
+        IO.println("JSON: " + json);
         
         // JSON → オブジェクト
         User deserializedUser = objectMapper.readValue(json, User.class);
-        System.out.println("復元されたユーザー: " + deserializedUser);
+        IO.println("復元されたユーザー: " + deserializedUser);
         
         // ファイルからの読み書き
         objectMapper.writeValue(new File("user.json"), user);

@@ -212,46 +212,46 @@ public class TextProcessor {
     public static void main(String[] args) {
         TextProcessor processor = new TextProcessor();
         
-        System.out.println("=== TextProcessor デモ ===\n");
+        IO.println("=== TextProcessor デモ ===\n");
         
         // isBlank のテスト
-        System.out.println("--- isBlank ---");
-        System.out.println("null: " + processor.isBlank(null));
-        System.out.println("空文字列: " + processor.isBlank(""));
-        System.out.println("空白のみ: " + processor.isBlank("   "));
-        System.out.println("テキスト: " + processor.isBlank("Hello"));
+        IO.println("--- isBlank ---");
+        IO.println("null: " + processor.isBlank(null));
+        IO.println("空文字列: " + processor.isBlank(""));
+        IO.println("空白のみ: " + processor.isBlank("   "));
+        IO.println("テキスト: " + processor.isBlank("Hello"));
         
         // abbreviate のテスト
-        System.out.println("\n--- abbreviate ---");
-        System.out.println("長い文字列: " + processor.abbreviate("Hello World, this is a long text", 20));
-        System.out.println("短い文字列: " + processor.abbreviate("Short", 20));
+        IO.println("\n--- abbreviate ---");
+        IO.println("長い文字列: " + processor.abbreviate("Hello World, this is a long text", 20));
+        IO.println("短い文字列: " + processor.abbreviate("Short", 20));
         
         // capitalize のテスト
-        System.out.println("\n--- capitalize ---");
-        System.out.println("hello: " + processor.capitalize("hello"));
-        System.out.println("HELLO: " + processor.capitalize("HELLO"));
-        System.out.println("hELLO: " + processor.capitalize("hELLO"));
+        IO.println("\n--- capitalize ---");
+        IO.println("hello: " + processor.capitalize("hello"));
+        IO.println("HELLO: " + processor.capitalize("HELLO"));
+        IO.println("hELLO: " + processor.capitalize("hELLO"));
         
         // joinArray のテスト
-        System.out.println("\n--- joinArray ---");
+        IO.println("\n--- joinArray ---");
         String[] fruits = {"apple", "banana", "orange", "grape"};
-        System.out.println("カンマ区切り: " + processor.joinArray(fruits, ", "));
-        System.out.println("ハイフン区切り: " + processor.joinArray(fruits, "-"));
+        IO.println("カンマ区切り: " + processor.joinArray(fruits, ", "));
+        IO.println("ハイフン区切り: " + processor.joinArray(fruits, "-"));
         
         // extractDigits のテスト
-        System.out.println("\n--- extractDigits ---");
-        System.out.println("abc123def456: " + processor.extractDigits("abc123def456"));
-        System.out.println("電話番号03-1234-5678: " + processor.extractDigits("03-1234-5678"));
-        System.out.println("2024年1月15日: " + processor.extractDigits("2024年1月15日"));
+        IO.println("\n--- extractDigits ---");
+        IO.println("abc123def456: " + processor.extractDigits("abc123def456"));
+        IO.println("電話番号03-1234-5678: " + processor.extractDigits("03-1234-5678"));
+        IO.println("2024年1月15日: " + processor.extractDigits("2024年1月15日"));
         
         // 追加機能のテスト
-        System.out.println("\n--- 追加機能 ---");
-        System.out.println("左パディング: " + processor.leftPad("123", 10, '0'));
-        System.out.println("右パディング: " + processor.rightPad("Hello", 10, '*'));
-        System.out.println("文字列逆順: " + processor.reverse("Hello World"));
-        System.out.println("出現回数: " + processor.countMatches("Hello Hello World", "Hello"));
-        System.out.println("数値チェック: " + processor.isNumeric("12345"));
-        System.out.println("スネーク→キャメル: " + processor.snakeToCamel("hello_world_example"));
-        System.out.println("キャメル→スネーク: " + processor.camelToSnake("helloWorldExample"));
+        IO.println("\n--- 追加機能 ---");
+        IO.println("左パディング: " + processor.leftPad("123", 10, '0'));
+        IO.println("右パディング: " + processor.rightPad("Hello", 10, '*'));
+        IO.println("文字列逆順: " + processor.reverse("Hello World"));
+        IO.println("出現回数: " + processor.countMatches("Hello Hello World", "Hello"));
+        IO.println("数値チェック: " + processor.isNumeric("12345"));
+        IO.println("スネーク→キャメル: " + processor.snakeToCamel("hello_world_example"));
+        IO.println("キャメル→スネーク: " + processor.camelToSnake("helloWorldExample"));
     }
 }

@@ -25,7 +25,7 @@ Javadocとドキュメンテーションの基礎を学ぶための課題です�
  * <p>使用例:</p>
  * <pre>{@code
  * int result = MathUtils.factorial(5);
- * System.out.println(result); // 120
+ * IO.println(result); // 120
  * }</pre>
  * 
  * @author Your Name

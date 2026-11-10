@@ -14,7 +14,7 @@ import java.util.Objects;
  * Book book = new Book("978-4-7741-9308-7", "Javaプログラミング入門", "山田太郎", 2023);
  * if (book.isAvailable()) {
  *     book.borrowBook();
- *     System.out.println("本を借りました: " + book.getTitle());
+ *     IO.println("本を借りました: " + book.getTitle());
  * }
  * }</pre>
  * 

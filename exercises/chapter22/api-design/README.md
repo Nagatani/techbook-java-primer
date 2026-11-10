@@ -77,7 +77,7 @@ cd challenge/
  * <h2>使用例</h2>
  * <pre>{@code
  * double result = MathUtils.calculateAverage(1.0, 2.0, 3.0);
- * System.out.println("平均: " + result);
+ * IO.println("平均: " + result);
  * }</pre>
  * 
  * @author 開発者名

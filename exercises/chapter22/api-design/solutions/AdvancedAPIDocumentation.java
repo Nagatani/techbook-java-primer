@@ -23,8 +23,8 @@
  * 
  * // 基本統計量の計算
  * DescriptiveStatistics stats = StatisticsCalculator.calculateDescriptiveStatistics(salesData);
- * System.out.printf("平均売上: %.2f%n", stats.getMean());
- * System.out.printf("標準偏差: %.2f%n", stats.getStandardDeviation());
+ * IO.println("平均売上: %.2f".formatted(stats.getMean()));
+ * IO.println("標準偏差: %.2f".formatted(stats.getStandardDeviation()));
  * 
  * // 移動平均の計算
  * double[] movingAvg = TimeSeriesAnalyzer.calculateMovingAverage(salesData, 3);
@@ -32,7 +32,7 @@
  * // 線形回帰分析
  * double[] timePoints = {1, 2, 3, 4, 5};
  * LinearRegression regression = RegressionAnalyzer.performLinearRegression(timePoints, salesData);
- * System.out.printf("売上トレンド: %.2f per period%n", regression.getSlope());
+ * IO.println("売上トレンド: %.2f per period".formatted(regression.getSlope()));
  * }</pre>
  * 
  * <h2>パフォーマンス特性</h2>
@@ -460,11 +460,11 @@ public final class AdvancedAPIDocumentation {
          * double[] monthlySales = {150.5, 160.2, 145.8, 170.1, 155.9};
          * DescriptiveStatistics stats = StatisticsCalculator.calculateDescriptiveStatistics(monthlySales);
          * 
-         * System.out.printf("月平均売上: %.2f万円%n", stats.getMean());
-         * System.out.printf("売上の標準偏差: %.2f万円%n", stats.getStandardDeviation());
+         * IO.println("月平均売上: %.2f万円".formatted(stats.getMean()));
+         * IO.println("売上の標準偏差: %.2f万円".formatted(stats.getStandardDeviation()));
          * 
          * if (stats.getSkewness() > 0.5) {
-         *     System.out.println("売上分布は右に偏っています（高額月が少数）");
+         *     IO.println("売上分布は右に偏っています（高額月が少数）");
          * }
          * }</pre>
          */
@@ -578,10 +578,10 @@ public final class AdvancedAPIDocumentation {
          * double[] sales = {100, 180, 290, 380, 500};
          * 
          * double correlation = StatisticsCalculator.calculateCorrelation(adSpend, sales);
-         * System.out.printf("広告費と売上の相関係数: %.3f%n", correlation);
+         * IO.println("広告費と売上の相関係数: %.3f".formatted(correlation));
          * 
          * if (correlation > 0.7) {
-         *     System.out.println("広告費と売上には強い正の相関があります");
+         *     IO.println("広告費と売上には強い正の相関があります");
          * }
          * }</pre>
          */
@@ -638,8 +638,8 @@ public final class AdvancedAPIDocumentation {
      * @since 1.0
      */
     public static void main(String[] args) {
-        System.out.println("=== 高度統計計算ライブラリ v" + VERSION + " デモ ===");
-        System.out.println();
+        IO.println("=== 高度統計計算ライブラリ v" + VERSION + " デモ ===");
+        IO.println();
         
         // サンプルデータ: 月別売上データ（万円）
         double[] monthlySales = {
@@ -647,40 +647,40 @@ public final class AdvancedAPIDocumentation {
             156.8, 142.3, 159.6, 138.4, 147.2
         };
         
-        System.out.println("【分析対象】月別売上データ:");
+        IO.println("【分析対象】月別売上データ:");
         for (int i = 0; i < monthlySales.length; i++) {
-            System.out.printf("%d月: %.1f万円%n", i + 1, monthlySales[i]);
+            IO.println("%d月: %.1f万円".formatted(i + 1, monthlySales[i]));
         }
-        System.out.println();
+        IO.println();
         
         // 記述統計量の計算
         DescriptiveStatistics stats = StatisticsCalculator.calculateDescriptiveStatistics(monthlySales);
         
-        System.out.println("【記述統計量】");
-        System.out.println(stats.toDetailedReport());
+        IO.println("【記述統計量】");
+        IO.println(stats.toDetailedReport());
         
         // 相関分析の例
         double[] monthNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         try {
             double correlation = StatisticsCalculator.calculateCorrelation(monthNumbers, monthlySales);
-            System.out.println("【トレンド分析】");
-            System.out.printf("月と売上の相関係数: %.3f%n", correlation);
+            IO.println("【トレンド分析】");
+            IO.println("月と売上の相関係数: %.3f".formatted(correlation));
             
             if (Math.abs(correlation) > 0.3) {
                 if (correlation > 0) {
-                    System.out.println("→ 売上に上昇トレンドが見られます");
+                    IO.println("→ 売上に上昇トレンドが見られます");
                 } else {
-                    System.out.println("→ 売上に下降トレンドが見られます");
+                    IO.println("→ 売上に下降トレンドが見られます");
                 }
             } else {
-                System.out.println("→ 明確なトレンドは見られません");
+                IO.println("→ 明確なトレンドは見られません");
             }
         } catch (Exception e) {
             System.err.println("相関分析でエラーが発生しました: " + e.getMessage());
         }
         
-        System.out.println();
-        System.out.println("=== デモ完了 ===");
+        IO.println();
+        IO.println("=== デモ完了 ===");
     }
 }
 

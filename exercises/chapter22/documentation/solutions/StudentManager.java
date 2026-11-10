@@ -292,17 +292,17 @@ public class StudentManager {
             manager.saveAllStudentsToJson("output/all_students.json");
             
             // JSON形式で出力
-            System.out.println("=== 単一の学生（JSON形式） ===");
-            System.out.println(manager.toJsonString(student1));
+            IO.println("=== 単一の学生（JSON形式） ===");
+            IO.println(manager.toJsonString(student1));
             
-            System.out.println("\n=== すべての学生（JSON形式） ===");
-            System.out.println(manager.toJsonString(manager.getAllStudents()));
+            IO.println("\n=== すべての学生（JSON形式） ===");
+            IO.println(manager.toJsonString(manager.getAllStudents()));
             
             // JSONファイルから読み込み
-            System.out.println("\n=== JSONファイルから読み込み ===");
+            IO.println("\n=== JSONファイルから読み込み ===");
             List<Student> loadedStudents = manager.loadStudentsFromJson("output/all_students.json");
             for (Student s : loadedStudents) {
-                System.out.println(s);
+                IO.println(s);
             }
             
         } catch (IOException e) {

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * // 本を借りる
  * try {
  *     library.borrowBook("user123", "978-4-7741-9308-7");
- *     System.out.println("本を借りました");
+ *     IO.println("本を借りました");
  * } catch (BookNotAvailableException e) {
  *     System.err.println("本は貸出中です: " + e.getMessage());
  * }
@@ -105,7 +105,7 @@ public class Library {
      * <pre>{@code
      * Book book = library.findBookByIsbn("978-4-7741-9308-7");
      * if (book != null) {
-     *     System.out.println("見つかりました: " + book.getTitle());
+     *     IO.println("見つかりました: " + book.getTitle());
      * }
      * }</pre>
      *
@@ -127,7 +127,7 @@ public class Library {
      * <h4>使用例:</h4>
      * <pre>{@code
      * List<Book> books = library.findBooksByAuthor("山田");
-     * books.forEach(book -> System.out.println(book.getTitle()));
+     * books.forEach(book -> IO.println(book.getTitle()));
      * }</pre>
      *
      * @param author 検索する著者名（null不可）
@@ -174,7 +174,7 @@ public class Library {
      * <pre>{@code
      * try {
      *     library.borrowBook("user123", "978-4-7741-9308-7");
-     *     System.out.println("貸出成功");
+     *     IO.println("貸出成功");
      * } catch (BookNotAvailableException e) {
      *     System.err.println("貸出失敗: " + e.getMessage());
      * }
@@ -222,7 +222,7 @@ public class Library {
      * <h4>使用例:</h4>
      * <pre>{@code
      * library.returnBook("user123", "978-4-7741-9308-7");
-     * System.out.println("返却完了");
+     * IO.println("返却完了");
      * }</pre>
      *
      * @param userId 返却するユーザーのID（null不可）

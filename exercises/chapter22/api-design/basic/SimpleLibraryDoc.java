@@ -145,23 +145,23 @@ public class SimpleLibraryDoc {
         SimpleLibraryDoc library = new SimpleLibraryDoc();
         
         // 使用例のデモンストレーション
-        System.out.println("=== " + LIBRARY_NAME + " v" + VERSION + " デモ ===");
+        IO.println("=== " + LIBRARY_NAME + " v" + VERSION + " デモ ===");
         
         // メッセージフォーマットのテスト
         String formatted = library.formatMessage("こんにちは、{0}さん！今日は{1}です。", "田中", "晴れ");
-        System.out.println("フォーマット結果: " + formatted);
+        IO.println("フォーマット結果: " + formatted);
         
         // メールアドレス検証のテスト
         boolean isValid = library.isValidEmail("test@example.com");
-        System.out.println("メール検証: " + isValid);
+        IO.println("メール検証: " + isValid);
         
         // パーセンテージ計算のテスト
         double percentage = library.calculatePercentage(25, 100);
-        System.out.println("パーセンテージ: " + percentage + "%");
+        IO.println("パーセンテージ: " + percentage + "%");
         
         // 入力検証のテスト
         Result result = library.validateInput("有効な入力");
-        System.out.println("検証結果: " + result.isSuccess() + " - " + result.getMessage());
+        IO.println("検証結果: " + result.isSuccess() + " - " + result.getMessage());
     }
 }
 
