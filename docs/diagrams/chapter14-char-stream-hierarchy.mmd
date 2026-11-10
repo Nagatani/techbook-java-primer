@@ -1,4 +1,5 @@
 classDiagram
+    direction LR
     class Reader {
         <<abstract>>
         +read() int
@@ -51,17 +52,15 @@ classDiagram
         +printf(String, Object...) void
     }
     
-    Reader <|-- FileReader
     Reader <|-- BufferedReader
     Reader <|-- InputStreamReader
     
-    Writer <|-- FileWriter
     Writer <|-- BufferedWriter
     Writer <|-- OutputStreamWriter
     Writer <|-- PrintWriter
     
-    InputStreamReader <|-- FileReader : extends
-    OutputStreamWriter <|-- FileWriter : extends
+    InputStreamReader <|-- FileReader
+    OutputStreamWriter <|-- FileWriter
     
     note for Reader "文字ストリームの<br/>読み込み基底クラス"
     note for Writer "文字ストリームの<br/>書き込み基底クラス"
