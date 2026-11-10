@@ -1,0 +1,21 @@
+flowchart TB
+    start(["tryブロックの処理を始める"])
+    q{"例外が<br/>発生した？"}
+    rest["tryブロックの残りを実行"]
+    match{"例外の型に合う<br/>catchがある？"}
+    katch["catchブロックを実行<br/>（tryの残りは飛ばす）"]
+    fin1["finallyブロックを実行"]
+    fin2["finallyブロックを実行"]
+    next(["try文の後ろへ進む"])
+    up(["例外が呼び出し元へ伝わる"])
+
+    start --> q
+    q -->|いいえ| rest --> fin1
+    q -->|はい| match
+    match -->|はい| katch --> fin1
+    match -->|いいえ| fin2 --> up
+    fin1 --> next
+
+    style fin1 fill:#e8f5e9,stroke:#2e7d32
+    style fin2 fill:#e8f5e9,stroke:#2e7d32
+    style up fill:#ffebee,stroke:#c62828

@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant Main as main()
+    participant Risky as riskyMethod()<br/>throws IOException
+
+    Main->>Risky: tryブロックの中で呼び出す
+    Note over Risky: throw new IOException(...)<br/>自分では処理しない
+    Risky--xMain: IOExceptionが呼び出し元へ伝わる<br/>（riskyMethodの残りは実行されない）
+    Note over Main: catch (IOException e) で受け取って処理する

@@ -90,6 +90,12 @@ java.lang.NullPointerException: Cannot invoke "String.length()" because "<local1
 
 `finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
 
+<div class="figure">
+
+![try-catch-finallyの処理の流れ](images/diagrams/chapter13-try-catch-finally-flow.svg)
+
+</div>
+
 <span class="listing-number">**サンプルコード13-2**</span>
 
 ```java
@@ -209,6 +215,12 @@ public class ThrowsExample {
 ```
 mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 ```
+
+<div class="figure">
+
+![throwsで宣言した例外が呼び出し元へ伝わる流れ](images/diagrams/chapter13-exception-propagation.svg)
+
+</div>
 
 ### 非検査例外 (Unchecked Exception)
 
