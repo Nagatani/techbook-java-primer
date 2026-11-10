@@ -1,31 +1,28 @@
-stateDiagram-v2
-    direction TB
-    
-    [*] --> NEW: new Thread()
-    
-    NEW --> RUNNABLE: start()
-    
-    RUNNABLE --> BLOCKED: synchronized<br/>待機
-    BLOCKED --> RUNNABLE: ロック取得
-    
-    RUNNABLE --> WAITING: wait()<br/>join()<br/>park()
-    WAITING --> RUNNABLE: notify()<br/>notifyAll()<br/>unpark()
-    
-    RUNNABLE --> TIMED_WAITING: sleep(millis)<br/>wait(millis)<br/>join(millis)
-    TIMED_WAITING --> RUNNABLE: 時間経過<br/>割り込み
-    
-    RUNNABLE --> TERMINATED: run()完了<br/>例外で終了
-    TERMINATED --> [*]
-    
-    NEW: スレッドオブジェクトが作成されたが、まだ開始されていない
-    RUNNABLE: 実行可能状態<br/>（実行可能/実行中）
-    BLOCKED: synchronizedブロックへの進入を待っている
-    WAITING: 他のスレッドからの通知を無期限に待機
-    TIMED_WAITING: 指定時間だけ待機
-    TERMINATED: スレッドの実行が完了した状態
-    
-    classDef whiteBackground fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000
-    classDef defaultState fill:#f9f9f9,stroke:#333,stroke-width:2px
-    
-    class RUNNABLE whiteBackground
-    class NEW,BLOCKED,WAITING,TIMED_WAITING,TERMINATED defaultState
+---
+config:
+  flowchart:
+    nodeSpacing: 45
+    rankSpacing: 100
+    wrappingWidth: 300
+---
+flowchart TB
+    start(("開始"))
+    NEW["NEW<br/>作成されたが、まだ開始していない"]
+    R["RUNNABLE<br/>実行できる・実行中"]
+    B["BLOCKED<br/>ロックを待っている<br/>―――――――<br/>ロックを取得すると戻る"]
+    W["WAITING<br/>通知を待っている<br/>―――――――<br/>notify()、notifyAll()、<br/>unpark()で戻る"]
+    TW["TIMED_WAITING<br/>指定した時間だけ待つ<br/>―――――――<br/>時間の経過、<br/>割り込みで戻る"]
+    T["TERMINATED<br/>実行が終わった"]
+
+    start -->|"new Thread()"| NEW
+    NEW -->|"start()"| R
+    R -->|"synchronized"| B
+    R -->|"wait()、join()、park()"| W
+    R -->|"sleep(millis)など"| TW
+    R -->|"run()の終了、例外"| T
+    B -.-> R
+    W -.-> R
+    TW -.-> R
+
+    style R fill:#e3f2fd,stroke:#1565c0
+    style T fill:#f5f5f5,stroke:#9e9e9e
