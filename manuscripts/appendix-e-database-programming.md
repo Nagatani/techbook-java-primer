@@ -33,7 +33,8 @@
 
 詳細な情報は次のリンクから確認してください。
 
-**GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-database-programming/
+本付録の内容は、GitHubリポジトリで提供されています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-database-programming/`
 
 リポジトリには、データベースプログラミングを学ぶための完全なリソースが含まれています。
 具体的な内容は以下の通りです。

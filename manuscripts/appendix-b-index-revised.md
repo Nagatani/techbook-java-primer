@@ -10,7 +10,7 @@
 
 #### B.01 JVMアーキテクチャとバイトコード
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`
 - 内容
     + JVMの内部構造、クラスローディング、バイトコード命令、JITコンパイレーション
 - 関連章
@@ -18,7 +18,7 @@
 
 #### B.02 プログラミングパラダイム
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`
 - 内容
     + 手続き型、オブジェクト指向、関数型プログラミングのパラダイム比較
 - 関連章
@@ -26,7 +26,7 @@
 
 #### B.03 ソフトウェア設計原則
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`
 - 内容
     + SOLID原則、デザインパターン、アーキテクチャパターン
 - 関連章
@@ -36,7 +36,7 @@
 
 #### B.04 仮想メソッドテーブル
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`
 - 内容
     + ポリモーフィズムの内部実装、動的ディスパッチ
 - 関連章
@@ -44,7 +44,7 @@
 
 #### B.05 不変性の設計パターン
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/`
 - 内容
     + 不変オブジェクトの高度な実装テクニック
 - 関連章
@@ -54,7 +54,7 @@
 
 #### B.06 コレクションの内部実装
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`
 - 内容
     + HashMap、TreeMapの内部構造、パフォーマンス特性
 - 関連章
@@ -62,7 +62,7 @@
 
 #### B.07 型消去とジェネリクス
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`
 - 内容
     + 型消去のメカニズム、ブリッジメソッド、ジェネリクスの制限
 - 関連章
@@ -70,7 +70,7 @@
 
 #### B.08 Stream APIの内部実装
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b08-stream-api-internals/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b08-stream-api-internals/`
 - 内容
     + Spliterator、並列処理、パフォーマンス最適化
 - 関連章
@@ -80,7 +80,7 @@
 
 #### B.09 インターフェイスの進化
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b09-interface-evolution/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b09-interface-evolution/`
 - 内容
     + Java 8以降のインターフェイス機能、defaultメソッド、privateメソッド
 - 関連章
@@ -88,7 +88,7 @@
 
 #### B.10 レコードとデータ指向プログラミング
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-records-dop/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-records-dop/`
 - 内容
     + レコードの最適化、データ指向設計パターン
 - 関連章
@@ -96,7 +96,7 @@
 
 #### B.11 Enumの高度な活用
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b11-enum-patterns/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b11-enum-patterns/`
 - 内容
     + Enumを使った高度な設計パターン、状態機械
 - 関連章
@@ -104,7 +104,7 @@
 
 #### B.12 例外処理のパフォーマンス
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`
 - 内容
     + 例外処理のコスト、最適化テクニック
 - 関連章
@@ -114,7 +114,7 @@
 
 #### B.13 NIO.2の高度な機能
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`
 - 内容
     + WatchService、非同期I/O、メモリマップドファイル
 - 関連章
@@ -122,7 +122,7 @@
 
 #### B.14 Javaメモリモデル
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`
 - 内容
     + スレッド間の可視性、happens-before関係、並行処理の正確性
 - 関連章
@@ -132,7 +132,7 @@
 
 #### B.15 テスト戦略
 - 場所
-    + https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-testing-strategies/
+    + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-testing-strategies/`
 - 内容
     + テストピラミッド、統合テスト、モックの活用
 - 関連章

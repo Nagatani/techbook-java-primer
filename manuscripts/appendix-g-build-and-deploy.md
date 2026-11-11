@@ -23,7 +23,8 @@
 
 ### オンライン資料へのアクセス
 
-**GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/
+本付録の内容は、GitHubリポジトリで提供されています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`
 
 リポジトリには、アプリケーション配布に必要なすべてのリソースが含まれています。
 具体的な内容は以下の通りです。
@@ -36,8 +37,8 @@
 
 ### 問題や質問がある場合
 
-本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：<br>
-https://github.com/Nagatani/techbook-java-primer/issues
+本付録の内容に関する問題や質問がある場合は、次のURLからGitHubのIssueを作成してください。<br>
+`https://github.com/Nagatani/techbook-java-primer/issues`
 
 ### 関連する付録と章
 

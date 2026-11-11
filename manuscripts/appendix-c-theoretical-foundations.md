@@ -32,7 +32,8 @@
 
 ### オンライン資料へのアクセス
 
-**GitHub リポジトリ**: https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/c-theoretical-foundations/
+本付録の内容は、GitHubリポジトリで提供されています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/c-theoretical-foundations/`
 
 リポジトリには、ソフトウェア工学の理論を学ぶための豊富なリソースが含まれています。
 具体的には、以下のようなファイルやドキュメントを提供しています。
@@ -45,8 +46,8 @@
 
 ### 問題や質問がある場合
 
-本付録の内容に関する問題や質問がある場合は、GitHubのIssueを作成してください：<br>
-https://github.com/Nagatani/techbook-java-primer/issues
+本付録の内容に関する問題や質問がある場合は、次のURLからGitHubのIssueを作成してください。<br>
+`https://github.com/Nagatani/techbook-java-primer/issues`
 
 ### 関連する付録
 
