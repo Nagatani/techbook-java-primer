@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class RegularEmployee extends Employee {
     public RegularEmployee(String employeeId, String name) {
         super(employeeId, name);

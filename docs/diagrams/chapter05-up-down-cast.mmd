@@ -15,7 +15,7 @@ flowchart LR
         user --- guest
     end
 
-    subgraph code["サンプルコード5-31の変数"]
+    subgraph code["サンプルコード5-13の変数"]
         direction TB
         up["User user = new AdminUser(...)<br/>アップキャスト（自動）<br/>Userのメソッドだけ呼べる"]
         down["AdminUser admin = (AdminUser) user<br/>ダウンキャスト（明示が必要）<br/>instanceofで確かめてから行う"]

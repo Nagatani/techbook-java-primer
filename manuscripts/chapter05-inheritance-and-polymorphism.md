@@ -12,6 +12,7 @@
     - @Overrideアノテーションの活用
     - 親クラスの機能の特殊化
     - コンストラクタ連鎖（super()の呼び出し）
+    - Objectクラスのメソッド（toString・equals・hashCode）のオーバーライド
 3. ポリモーフィズムの実践
     - 親クラス型での子クラスインスタンスの扱い
     - 動的バインディングによる柔軟な設計
@@ -54,552 +55,10 @@ DRY原則（Don't Repeat Yourself）を実現できます。共通コードを�
 
 依存性逆転の原則も重要です。具体的な実装ではなく、抽象に依存する設計が可能になります。また、プラグイン可能なアーキテクチャにより、実行時に振る舞いを切り替えることができます。
 
-## 実践的な継承設計パターン
+## 継承の基本
 
-第3章でオブジェクト指向の基本概念として継承を学び、第4章では実際のクラス設計で継承を活用しました。本章では、これらの基礎知識を発展させ、より高度で実践的な継承設計パターンと、ポリモーフィズムを活用した柔軟なプログラム構造について学習します。
-
-継承は単なるコードの再利用手段ではなく、システムの拡張性と保守性を向上させる設計技法です。本章では、現実的なビジネス要件に対応できる継承階層の設計方法と、それを支えるポリモーフィズムの実践的な活用法を習得します。
-
-### 高度な継承設計における共通課題
-
-実践的なソフトウェア開発では、単純な継承から複雑なドメインモデルまで、さまざまなレベルの継承設計が求められます。とくに企業システムやWebアプリケーションでは、ビジネスルールの変化に対応できる柔軟な継承階層の設計が大切です。
-
-本章では、これまで学んだ基礎知識を活用して、実践的な設計課題に取り組みます。
-具体的には次のような課題を扱います。
-
-- テンプレートメソッドパターン
-    + 共通アルゴリズムの骨格を定義し、詳細を子クラスに委ねる設計
-- 戦略パターンとの組み合わせ
-    + 継承と委譲を適切に使い分ける設計判断
-- リスコフ置換原則の実践
-    + 安全で予測可能な継承階層の構築
-- 拡張性を考慮した設計
-    + 将来の要件変更に対応できる柔軟な構造
-
-### 継承設計の実践例：決済システム
-
-実際のビジネスシステムでよく見られる決済処理を例に、段階的な継承設計の改善プロセスを見ていきましょう。ここでは、抽象クラスを使わずに、具象クラスの継承とメソッドのオーバーライドによってテンプレートメソッドパターンを実現する方法を示します。
-
-<div class="figure">
-
-![決済システムの継承階層](images/diagrams/chapter05-inheritance-hierarchy.svg)
-
-</div>
-
-<span class="listing-number">**サンプルコード5-1**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
-
-```java
-// 決済処理の基底クラス：テンプレートメソッドパターンの実装
-public class PaymentProcessor {
-    // ...
-    // テンプレートメソッド：決済処理の共通フロー
-    public final PaymentResult processPayment() {
-        // 1. 事前検証（共通処理）
-        if (!validateCommonParameters()) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
-        if (!validatePaymentSpecific()) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 3. 外部API呼び出し（子クラスでオーバーライド可能）
-        String authorizationCode = callExternalAPI();
-        if (authorizationCode == null) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 4. 処理結果の記録（共通処理）
-        logTransaction(authorizationCode);
-        
-        return new PaymentResult(true, authorizationCode, "決済完了");
-    }
-    // ...
-    // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
-    protected boolean validatePaymentSpecific() {
-        // デフォルトでは追加の検証なし
-        // 子クラスでオーバーライド可能
-        return true;
-    }
-    
-    protected String callExternalAPI() {
-        // デフォルトでは基本的な決済処理を実行
-        // 実際の実装では外部決済サービスのAPIを呼び出す
-        // エラーの場合はnullを返し、errorMessageを設定
-        return "DEFAULT-" + System.currentTimeMillis();
-    }
-    
-    // フックメソッド：子クラスでオーバーライド可能
-    protected void logTransaction(String authCode) {
-        IO.println("取引ID: " + transactionId + " 承認コード: " + authCode);
-    }
-    // ...
-}
-```
-
-これは決済処理の基底クラスで、テンプレートメソッドパターンを実装しています。processPayment()メソッドが決済処理の共通フローを定義し、子クラスで特定の処理をオーバーライドできるようになっています。
-
-#### テンプレートメソッドパターンの重要なポイント
-
-このパターンでは、まず`processPayment()`メソッドが決済処理の標準的な流れを決めます。
-検証、外部APIの呼び出し、結果の記録という順序は、すべての決済手段で共通です。
-そのうえで、`validatePaymentSpecific()`や`callExternalAPI()`のように、子クラスがオーバーライドしてよいメソッドを用意します。
-これらのメソッドが、決済手段ごとに処理を変えられる場所（拡張ポイント）になります。
-
-一方、`processPayment()`には`final`を付けています。
-`final`を付けたメソッドは子クラスでオーバーライドできないため、処理の流れそのものを子クラスが書き換えることはありません。
-
-また、拡張ポイントのメソッドには親クラスが基本的な動作（デフォルト実装）を用意しています。
-子クラスは、カードの検証やAPIの認証など、決済手段に特有の処理が必要な場合だけオーバーライドすれば済みます。
-
-#### 具体的な決済処理の実装例
-
-<span class="listing-number">**サンプルコード5-2**　CreditCardPayment.java（3〜43行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
-
-```java
-// クレジットカード決済の実装
-public class CreditCardPayment extends PaymentProcessor {
-    private String cardNumber;
-    private String cvv;
-    
-    public CreditCardPayment(String transactionId, BigDecimal amount, 
-                           String currency, String cardNumber, String cvv) {
-        super(transactionId, amount, currency);
-        this.cardNumber = cardNumber;
-        this.cvv = cvv;
-    }
-    
-    @Override
-    protected boolean validatePaymentSpecific() {
-        // クレジットカード固有の検証
-        if (cardNumber == null || cardNumber.length() != 16) {
-            setErrorMessage("無効なカード番号です");
-            return false;
-        }
-        if (cvv == null || cvv.length() != 3) {
-            setErrorMessage("無効なCVVです");
-            return false;
-        }
-        return true;
-    }
-    
-    @Override
-    protected String callExternalAPI() {
-        // クレジットカード決済API呼び出しのシミュレーション
-        IO.println("クレジットカード決済APIを呼び出し中...");
-        
-        // 実際の実装では外部APIを呼び出す
-        // ここではシミュレーションとして、まれにエラーが発生する例を示す
-        if (Math.random() < 0.1) {  // 10%の確率でエラー
-            setErrorMessage("クレジットカード決済が拒否されました");
-            return null;
-        }
-        
-        return "CC-" + System.currentTimeMillis();
-    }
-}
-
-// PayPal決済の実装
-public class PayPalPayment extends PaymentProcessor {
-    // ...
-    
-    @Override
-    protected void logTransaction(String authCode) {
-        // PayPalでは詳細なログを記録
-        super.logTransaction(authCode);
-        IO.println("PayPalアカウント: " + email);
-    }
-}
-```
-
-これらは決済処理基底クラスを継承した具体的な実装例です。CreditCardPaymentはクレジットカード特有の検証を、PayPalPaymentはPayPal特有の検証を実装し、それぞれの決済方法に応じたAPI呼び出しをシミュレートしています。
-
-このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは各決済手段に固有の検証ロジック（クレジットカードの番号検証、PayPalのアカウント認証、銀行口座の残高確認など）が必要な場合に、これらのメソッドをオーバーライドして独自の振る舞いを実装できます。
-
-#### 例外を使わない決済処理の使用例
-
-<span class="listing-number">**サンプルコード5-3**　PaymentExample.java（1〜35行目）</span>
-
-```java
-import java.math.BigDecimal;
-
-public class PaymentExample {
-    public static void main(String[] args) {
-        // クレジットカード決済の例
-        CreditCardPayment ccPayment = new CreditCardPayment(
-            "TXN001", 
-            new BigDecimal("5000"), 
-            "JPY",
-            "1234567890123456",
-            "123"
-        );
-        
-        PaymentResult ccResult = ccPayment.processPayment();
-        if (ccResult.isSuccess()) {
-            IO.println("決済成功: " + ccResult.getAuthorizationCode());
-        } else {
-            IO.println("決済失敗: " + ccResult.getMessage());
-        }
-        
-        // PayPal決済の例（エラーケース）
-        PayPalPayment ppPayment = new PayPalPayment(
-            "TXN002",
-            new BigDecimal("10000"),
-            "JPY",
-            "invalid-email",  // 無効なメールアドレス
-            "pass123"
-        );
-        
-        PaymentResult ppResult = ppPayment.processPayment();
-        if (ppResult.isSuccess()) {
-            IO.println("決済成功: " + ppResult.getAuthorizationCode());
-        } else {
-            IO.println("決済失敗: " + ppResult.getMessage());
-        }
-```
-
-次は実行結果の一例です。クレジットカード決済は10%の確率で拒否されるため、実行するたびに結果が変わることがあります。
-
-```
-クレジットカード決済APIを呼び出し中...
-取引ID: TXN001 承認コード: CC-1707123456789
-決済成功: CC-1707123456789
-決済エラー[TXN002]: 無効なメールアドレスです
-決済失敗: 無効なメールアドレスです
-```
-
-#### エラー処理の設計ポイント
-
-この決済処理では、例外を使わずにエラーを扱っています。
-検証メソッドは、成功したか失敗したかを`boolean`の戻り値で返します。
-失敗したときは、その理由を`errorMessage`フィールドに入れておきます。
-外部APIの呼び出しは、失敗すると`null`を返すので、呼び出し側は結果が`null`かどうかを調べてエラーと判断します。
-最後に、成功か失敗か、承認コード、メッセージをまとめて`PaymentResult`クラスのオブジェクトに入れて返します。
-
-このように設計すれば、例外処理を学ぶ前でも、エラーの状態を呼び出し側へ伝えるテンプレートメソッドパターンを実装できます。
-
-### 段階的リファクタリング：重複コードから継承へ
-
-実際の開発では、最初から理想的な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
-
-#### ステップ1：重複コードの発見
-
-実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。WordDocumentクラスとPDFDocumentクラスで、同じようなフィールドとメソッドが重複して実装されています。このような重複は保守性を低下させ、バグの温床となるため、継承を使ってリファクタリングします。
-
-<span class="listing-number">**サンプルコード5-4**　WordDocument.java、PDFDocument.java</span>
-
-```java
-public class WordDocument {
-    private String filename;     // ①
-    private String content;      // ①
-    private long fileSize;       // ①
-    
-    public WordDocument(String filename, String content) {
-        this.filename = filename;
-        this.content = content;
-    }
-    
-    public void open() {         // ②
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {         // ③
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {        // ④
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-}
-
-public class PDFDocument {
-    private String filename;     // ①と重複
-    private String content;      // ①と重複
-    private long fileSize;       // ①と重複
-    private int pageCount;       // ⑤
-    
-    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
-        this.filename = filename;
-        this.content = content;
-        this.pageCount = pageCount;
-    }
-    
-    public void open() {         // ②と完全重複
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {         // ③と完全重複
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {        // ④と完全重複
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-    
-    public void generatePDF() {  // ⑥
-        IO.println("PDF形式で " + pageCount + " ページを生成");
-    }
-}
-```
-
-これらのクラスを使用した例：
-
-<span class="listing-number">**サンプルコード5-5**　DocumentTest.java</span>
-
-```java
-public class DocumentTest {
-    public static void main(String[] args) {
-        // WordDocumentの操作
-        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
-        word.open();
-        word.save();
-        word.close();
-        
-        IO.println();
-        
-        // PDFDocumentの操作  
-        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
-        pdf.open();
-        pdf.save();
-        pdf.generatePDF();
-        pdf.close();
-    }
-}
-```
-
-実行結果：
-
-```
-report.docx を開いています
-report.docx を保存しました: 18バイト
-report.docx を閉じました
-
-manual.pdf を開いています
-manual.pdf を保存しました: 17バイト
-PDF形式で 10 ページを生成
-manual.pdf を閉じました
-```
-
-#### 重複コードの分析
-
-- ①　共通フィールド
-    + filename、content、fileSizeというドキュメントの基本属性がWordDocumentとPDFDocumentで重複して定義されている
-- ②　ファイルオープン処理
-    + open()メソッドの実装が両クラスで同一
-- ③　保存処理
-    + save()メソッドでfileSizeを計算し、メッセージ出力する処理が重複
-- ④　クローズ処理
-    + close()メソッドでcontentをnullにし、メッセージを出力するロジックが重複
-- ⑤　固有フィールド
-    + pageCount（ページ数）はPDF特有の属性として追加
-- ⑥　固有メソッド
-    + generatePDF()はPDF特有の機能として実装
-
-<span class="listing-number">**サンプルコード5-6**　ExcelDocument.java</span>
-
-```java
-public class ExcelDocument {
-    private String filename;
-    private String content;
-    private long fileSize;
-    
-    public ExcelDocument(String filename, String content) {
-        this.filename = filename;
-        this.content = content;
-    }
-    
-    // また同じメソッドの重複！
-    public void open() {
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-}
-```
-
-これは重複コードの問題を示す例です。3つのドキュメントクラスで同じメソッドが繰り返し実装されています。
-
-#### ステップ2：共通部分の抽出
-
-<span class="listing-number">**サンプルコード5-7**　Document.java</span>
-
-```java
-// 共通部分を親クラスとして抽出
-public class Document {
-    protected String filename;
-    protected String content;
-    protected long fileSize;
-    
-    public Document(String filename, String content) {
-        this.filename = filename;
-        this.content = content;
-        this.fileSize = content != null ? content.length() : 0;
-    }
-    
-    // 共通メソッドを親クラスに移動
-    public void open() {
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {
-        fileSize = content != null ? content.length() : 0;
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-    
-    // ゲッターとセッター
-    public String getFilename() { return filename; }
-    public long getFileSize() { return fileSize; }
-}
-```
-
-#### ステップ3：子クラスの再実装
-
-<span class="listing-number">**サンプルコード5-8**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
-
-```java
-// リファクタリング後：重複が除去された
-public class WordDocument extends Document {
-    public WordDocument(String filename, String content) {
-        super(filename, content);
-    }
-    
-    // WordDocument固有の機能があれば追加
-    public void applyTemplate(String templateName) {
-        IO.println(filename + " にテンプレート " + templateName + " を適用");
-    }
-}
-
-public class PDFDocument extends Document {
-    private int pageCount;
-    
-    public PDFDocument(String filename, String content, int pageCount) {
-        super(filename, content);
-        this.pageCount = pageCount;
-    }
-    
-    // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
-    @Override
-    public void save() {
-        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
-        IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
-    }
-    
-    public void generatePDF() {
-        if (pageCount > 0) {
-            IO.println("PDF形式で " + pageCount + " ページを生成");
-        } else {
-            IO.println("ページ数が指定されていません");
-        }
-    }
-}
-
-public class ExcelDocument extends Document {
-    public ExcelDocument(String filename, String content) {
-        super(filename, content);  // ①
-    }
-    
-    @Override  // ②
-    public void save() {
-        fileSize = content != null ? content.length() * 2 : 0;  // ③
-        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
-    }
-    
-    public void createChart() {  // ④
-        IO.println(filename + " にグラフを作成");
-    }
-}
-```
-
-リファクタリング後の使用例：
-
-<span class="listing-number">**サンプルコード5-9**　RefactoredDocumentTest.java</span>
-
-```java
-public class RefactoredDocumentTest {
-    public static void main(String[] args) {
-        // リファクタリング後の使用例
-        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
-        word.open();
-        word.save();
-        word.applyTemplate("ビジネスレポート");
-        word.close();
-        
-        IO.println();
-        
-        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
-        pdf.open();
-        pdf.save();  // オーバーライドされたメソッド
-        pdf.generatePDF();
-        pdf.close();
-        
-        IO.println();
-        
-        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
-        excel.open();
-        excel.save();  // オーバーライドされたメソッド
-        excel.createChart();
-        excel.close();
-    }
-}
-```
-
-実行結果：
-
-```
-report.docx を開いています
-report.docx を保存しました: 18バイト
-report.docx にテンプレート ビジネスレポート を適用
-report.docx を閉じました
-
-manual.pdf を開いています
-manual.pdf をPDF形式で保存: 8バイト
-PDF形式で 10 ページを生成
-manual.pdf を閉じました
-
-data.xlsx を開いています
-data.xlsx をExcel形式で保存: 38バイト（メタデータ含む）
-data.xlsx にグラフを作成
-data.xlsx を閉じました
-```
-
-#### オーバーライドと特化機能の実装
-
-- ①　親クラスのコンストラクタ呼び出し
-    + super()により、親クラスの初期化処理を適切に実行
-- ②　オーバーライドアノテーション
-    + @Overrideによりコンパイラが親クラスのメソッドを正しくオーバーライドしていることを検証
-- ③　特化した振る舞い
-    + Excelファイルはメタデータを含むため、ファイルサイズが大きくなるよう設定
-- ④　固有メソッドの追加
-    + createChart()はExcel特有の機能として、親クラスには存在しないメソッドを追加
-
-
-#### リファクタリングの効果
-
-継承を導入したリファクタリングによって、コードの重複を削減できます。まず、コードの重複が除去されることで、保守性が向上します。同じコードを複数の場所に書く必要がなくなるため、バグの発生率が減り、修正も簡単になります。共通機能の変更が1箇所で済むことも大きな利点です。親クラスを修正するだけで、すべての子クラスに変更が反映されます。
-
-また、各ドキュメントタイプの特性をオーバーライドで表現できることで、柔軟な設計が可能になります。共通のインターフェイスを保ちながら、各子クラスが独自の実装を持つことができます。さらに、新しいドキュメントタイプの追加が容易になります。親クラスを継承し、必要な部分だけをカスタマイズすることで、短時間で新しい機能を実装できます。このように、継承はソフトウェアの拡張性と保守性に寄与する技術の1つです。ただし、継承階層が3層以上になるとコードの理解が難しくなるため、コンポジションやインターフェイスの活用も検討すべきです。
+第3章では、継承を「既存のクラスの機能を新しいクラスが引き継ぐ仕組み」として紹介しました。
+ここでは、継承の書き方と、継承を使ってよい関係について学びます。
 
 ### 継承の書き方：`extends`
 
@@ -607,7 +66,7 @@ Javaで継承を行うには、子クラスの宣言時に`extends`キーワー�
 
 #### 継承の基本構文と継承される要素
 
-<span class="listing-number">**サンプルコード5-10**　Employee.java、Manager.java、Developer.java</span>
+<span class="listing-number">**サンプルコード5-1**　Employee.java、Manager.java、Developer.java</span>
 
 ```java
 public class Employee {  // 親クラス（スーパークラス）
@@ -636,7 +95,7 @@ public class Developer extends Employee {  // ③
 
 使用例：
 
-<span class="listing-number">**サンプルコード5-11**　EmployeeTest.java</span>
+<span class="listing-number">**サンプルコード5-2**　EmployeeTest.java</span>
 
 ```java
 public class EmployeeTest {
@@ -695,431 +154,11 @@ public class EmployeeTest {
 
 
 
-### 継承の誤用例：よくある間違い
-
-継承を誤用すると、論理的に破綻したコードになってしまいます。実際の開発現場でよく見られる誤用パターンをいくつか見てみましょう。
-
-#### 誤用例1：スタックがArrayListを継承
-
-以下のコードは、継承の誤用の典型例です。スタック（後入れ先出しのデータ構造）を実装するためにArrayListを継承していますが、これによりArrayListの全メソッドが公開され、スタックの原則を破る操作が可能になってしまいます。この問題と解決策を見ていきましょう。
-
-<span class="listing-number">**サンプルコード5-12**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
-
-```java
-// 悪い例：実装の詳細を継承してしまう
-// ...
-public class MyStack<E> extends ArrayList<E> {
-    public void push(E item) {
-        add(item);
-    }
-    
-    public E pop() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return remove(size() - 1);
-    }
-    
-    // ...
-}
-
-// 問題点が露呈する使用例
-public class StackProblem {
-    public static void main(String[] args) {
-        MyStack<String> stack = new MyStack<>();
-        stack.push("first");
-        stack.push("second");
-        stack.push("third");
-        
-        // ArrayListのメソッドが露出してしまう
-        stack.add(1, "WRONG!"); // スタックの途中に要素を挿入できてしまう
-        stack.remove(0); // スタックの底から要素を削除できてしまう
-        stack.clear(); // スタック全体をクリアできてしまう
-        
-        // スタックの約束（LIFO）が破られる
-    }
-}
-```
-
-#### 解決策：コンポジションを使用
-
-<span class="listing-number">**サンプルコード5-13**　MyStack.java</span>
-
-```java
-// 良い例：内部実装を隠蔽
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-
-public class MyStack<E> {
-    private final ArrayList<E> elements = new ArrayList<>(); // privateで隠蔽
-    
-    public void push(E item) {
-        elements.add(item);
-    }
-    
-    public E pop() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return elements.remove(elements.size() - 1);
-    }
-    
-    public E peek() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return elements.get(elements.size() - 1);
-    }
-    
-    public boolean isEmpty() {
-        return elements.isEmpty();
-    }
-    
-    public int size() {
-        return elements.size();
-    }
-    // ArrayListの他のメソッドは公開されない
-}
-```
-
-このMyStackクラスは、コンポジションを使用してArrayListを内部に保持し、スタックに必要な機能のみを公開しています。
-これにより、ArrayListのスタック操作に不要なメソッド（add、removeなど）が外部に公開されることを防いでいます。
-
-#### 誤用例2：従業員の権限階層での問題
-
-以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
-この設計はリスコフ置換原則に違反します。
-
-<span class="listing-number">**サンプルコード5-14**　Employee.java（3〜16行目）、SystemAdministrator.java（3〜8行目）、RegularEmployee.java（3〜13行目）、EmployeeManagementSystem.java（3〜10行目）</span>
-
-```java
-// 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
-public class Employee {
-    protected String employeeId;
-    protected String name;
-    
-    public Employee(String employeeId, String name) {
-        this.employeeId = employeeId;
-        this.name = name;
-    }
-    
-    public void modifySystemSettings() {
-        IO.println(name + " がシステム設定を変更しました");
-    }
-}
-
-public class SystemAdministrator extends Employee {
-    public SystemAdministrator(String employeeId, String name) {
-        super(employeeId, name);
-    }
-    // modifySystemSettingsメソッドを適切に継承
-}
-
-public class RegularEmployee extends Employee {
-    public RegularEmployee(String employeeId, String name) {
-        super(employeeId, name);
-    }
-    
-    @Override
-    public void modifySystemSettings() {
-        // 一般従業員にはシステム管理権限がない！
-        throw new UnsupportedOperationException("権限がありません");
-    }
-}
-
-// 使用時の問題
-public class EmployeeManagementSystem {
-    public static void performSystemMaintenance(List<Employee> employees) {
-        for (Employee employee : employees) {
-            employee.modifySystemSettings(); // 一般従業員で例外が発生！
-        }
-    }
-}
-```
-
-この問題は、すべての従業員がシステム管理権限を持つという誤った仮定に基づいた継承設計の典型的な例です。一般従業員は従業員ですがシステム管理権限を持たないため、`modifySystemSettings()`メソッドで例外を投げることになり、リスコフの置換原則に違反しています。
-
-この問題を適切に解決するためには、継承階層を見直し、共通の振る舞いのみを親クラスに定義してください。よりよい解決策として、インターフェイスを使用した設計がありますが、これについては第7章「抽象クラスとインターフェイス」で詳しく説明します。
-
-> 注意: 継承を使用する際は、「is-a」の関係だけでなく、すべての子クラスが親クラスの振る舞いを適切に実装できるかを慎重に検討してください。
-
-#### 誤用例3：正方形と長方形の問題
-
-有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
-
-<span class="listing-number">**サンプルコード5-15**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
-
-```java
-// 問題のあるコード：数学的には正方形は長方形の一種だが...
-public class Rectangle {
-    protected int width;
-    protected int height;
-    
-    // ...
-    public void setWidth(int width) {
-        this.width = width;
-    }
-    
-    public void setHeight(int height) {
-        this.height = height;
-    }
-    // ...
-}
-
-// 正方形を長方形として継承すると問題が発生
-public class Square extends Rectangle {
-    public Square(int size) {
-        super(size, size);
-    }
-    
-    // 正方形では幅と高さは常に同じでなければならない
-    @Override
-    public void setWidth(int width) {
-        this.width = width;
-        this.height = width; // 高さも同じ値に！
-    }
-    
-    @Override
-    public void setHeight(int height) {
-        this.width = height; // 幅も同じ値に！
-        this.height = height;
-    }
-}
-
-// 使用例でリスコフ置換原則違反を確認
-public class RectangleSquareTest {
-    // 長方形を扱う一般的なメソッド
-    public static void testRectangle(Rectangle rect) {
-        rect.setWidth(5);
-        rect.setHeight(10);
-        
-        // 期待される面積: 5 × 10 = 50
-        int expectedArea = 50;
-        int actualArea = rect.getArea();
-        
-        // ...
-    }
-    
-    public static void main(String[] args) {
-        IO.println("=== 長方形のテスト ===");
-        Rectangle rectangle = new Rectangle(3, 4);
-        testRectangle(rectangle);
-        
-        IO.println("\n=== 正方形のテスト ===");
-        Square square = new Square(5);
-        testRectangle(square);
-    }
-}
-```
-
-実行結果：
-
-```
-=== 長方形のテスト ===
-幅を5、高さを10に設定
-期待される面積: 50
-実際の面積: 50
-✓ テスト成功
-
-=== 正方形のテスト ===
-幅を5、高さを10に設定
-期待される面積: 50
-実際の面積: 100
-✗ テスト失敗！
-```
-
-この例は、正方形が長方形の振る舞いを正しく実装できないことを示しています
-リスコフ置換原則の違反例です
-
-<span class="listing-number">**サンプルコード5-16**</span>
-
-```java
-// 使用例で問題が明らかに
-public class GeometryTest {
-    public static void main(String[] args) {
-        Rectangle rect = new Square(5);
-        
-        // 長方形として扱うコード
-        rect.setWidth(10);  // 幅を10に
-        rect.setHeight(5);  // 高さを5に
-        
-        // 期待値：10 × 5 = 50
-        // 実際の結果：5 × 5 = 25（最後のsetHeightで幅も5になってしまう）
-        IO.println("面積: " + rect.getArea()); // 25が出力される
-    }
-}
-```
-
-この例はリスコフの置換原則に違反しています。子クラスは親クラスと置き換え可能であることが大切ですが、`Square`は`Rectangle`の期待される振る舞いを破壊してしまっています。
-
-この問題の根本的な原因は、数学的な関係（正方形は長方形の一種）とオブジェクト指向の継承関係が必ずしも一致しないことにあります。継承は「振る舞いの継承」であり、単なる概念的な関係ではありません。
-
-この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。
-
-たとえば以下のコードを見てください。
-
-<span class="listing-number">**サンプルコード5-17**　Shape.java</span>
-
-```java
-// 解決策の例：インターフェイスを使用
-interface Shape {
-    double getArea();
-}
-
-class Rectangle implements Shape {
-    private int width;
-    private int height;
-    
-    public Rectangle(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-    
-    @Override
-    public double getArea() {
-        return width * height;
-    }
-    
-    // setterは矩形の特性に従う
-    public void setWidth(int width) { this.width = width; }
-    public void setHeight(int height) { this.height = height; }
-}
-
-class Square implements Shape {
-    private int side;
-    
-    public Square(int side) {
-        this.side = side;
-    }
-    
-    @Override
-    public double getArea() {
-        return side * side;
-    }
-    
-    // 正方形固有のsetter
-    public void setSide(int side) { this.side = side; }
-}
-```
-
-これらの高度な設計手法については、第7章「抽象クラスとインターフェイス」で詳しく解説します。
-
-> 重要: 継承を使用する際は、親クラスの契約（期待される振る舞い）を子クラスが満たせるかを確認することが重要です。
-
-### そのほかの継承の誤用パターン
-
-継承の誤用は「正方形と長方形」以外にも多くのパターンがあります。以下によくある間違いを示します。
-
-#### 誤用例1：実装の都合だけで継承を使う
-
-<span class="listing-number">**サンプルコード5-18**</span>
-
-```java
-import java.util.ArrayList;
-
-// 悪い例：ArrayListを継承したMyStack
-public class MyStack<E> extends ArrayList<E> {
-    public void push(E item) {
-        add(item);
-    }
-    
-    public E pop() {
-        return remove(size() - 1);
-    }
-    
-    public E peek() {
-        return get(size() - 1);
-    }
-}
-
-// 問題：ArrayListのすべてのメソッドが公開されてしまう
-MyStack<String> stack = new MyStack<>();
-stack.push("A");
-stack.push("B");
-stack.add(0, "C");  // スタックの途中に挿入できてしまう！
-stack.remove(1);    // スタックの途中から削除できてしまう！
-```
-
-この例では、継承を使用したためにMyStackがArrayListのすべてのメソッドを継承し、スタックの原則を破る不正な操作が可能になってしまいます。
-
-#### 改善策：コンポジション（委譲）を使う
-
-<span class="listing-number">**サンプルコード5-19**　MyStack.java</span>
-
-```java
-// 良い例：ArrayListを内部で使用
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-
-public class MyStack<E> {
-    private ArrayList<E> list = new ArrayList<>();
-    
-    public void push(E item) {
-        list.add(item);
-    }
-    
-    public E pop() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return list.remove(list.size() - 1);
-    }
-    
-    public E peek() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return list.get(list.size() - 1);
-    }
-    
-    public boolean isEmpty() {
-        return list.isEmpty();
-    }
-    
-    public int size() {
-        return list.size();
-    }
-}
-```
-
-#### 誤用例2：多重継承の代替として無理な継承
-
-Javaは多重継承をサポートしないため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
-
-<span class="listing-number">**サンプルコード5-20**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
-
-```java
-// 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
-public class Employee {
-    public void work() { /* ... */ }
-    public void attendMeeting() { /* ... */ }
-}
-
-public class ReportingEmployee extends Employee {
-    public void generateReport() { /* ... */ }
-}
-
-public class ApprovingEmployee extends Employee {
-    public void approveRequest() { /* ... */ }
-}
-
-// 問題：マネージャーはレポート作成も承認もできる、アナリストはレポート作成のみ
-// どちらを継承すればよい？
-```
-
-この問題は、Javaが単一継承しかサポートしないことによる制約を示しています。複数の能力を持つオブジェクトを表現しようとすると、継承階層が複雑になり、設計の柔軟性が失われます。
-
-たとえば、マネージャー（Manager）はレポートを作成することもできるし承認権限も持っていますが、`ReportingEmployee`と`ApprovingEmployee`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
-
-この問題を解決するもっとも効果的な方法は、インターフェイスを使用して能力を表現することです。インターフェイスを使えば、クラスは必要な能力を選択的に実装でき、継承階層をシンプルに保つことができます。この設計手法については、第7章「抽象クラスとインターフェイス」で詳しく説明します。
-
-> ポイント: 継承は強力な機能ですが、すべての問題を解決できるわけではありません。とくに複数の異なる能力を持つオブジェクトを表現する場合は、継承以外の設計手法を検討してください。
-
 ### 継承の実践例
 
 RPGゲームのキャラクターシステムを例に、継承を実際に使用した実装例です。親クラスのフィールドやメソッドを子クラスで活用し、独自の機能を追加する方法を示しています。
 
-<span class="listing-number">**サンプルコード5-21**　Character.java、Hero.java、Wizard.java、Main.java</span>
+<span class="listing-number">**サンプルコード5-3**　Character.java、Hero.java、Wizard.java、Main.java</span>
 
 ```java
 // 親クラス
@@ -1209,7 +248,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-22**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
+<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
 
 ```java
 // 親クラス
@@ -1299,7 +338,7 @@ Java 25からは、引数の検査のように作成中のオブジェクト（`
 ただし、親クラスに引数なしのコンストラクタがない場合は、自動で挿入した`super()`の呼び出し先がありません。
 そのため、子クラスのコンストラクタで`super(...)`を明示的に書いて引数を渡さないと、コンパイルエラーになります。
 
-コンストラクタは、子から親へ順に呼ばれ、親の初期化が終わってから子の初期化が進みます。次の図は、サンプルコード5-8の`WordDocument`を作るときの流れです。
+コンストラクタは、子から親へ順に呼ばれ、親の初期化が終わってから子の初期化が進みます。次の図は、サンプルコード5-4の`Wizard`を作るときの流れです。
 
 <div class="figure">
 
@@ -1319,7 +358,7 @@ Java 25からは、引数の検査のように作成中のオブジェクト（`
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これをアップキャストと呼びます。
 
-<span class="listing-number">**サンプルコード5-23**</span>
+<span class="listing-number">**サンプルコード5-5**</span>
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
@@ -1334,7 +373,7 @@ User user3 = new GuestUser("session123");
 
 ここからがポリモーフィズムの真骨頂です。これらの`User`型の変数に対して`processRequest()`メソッドを呼びだすと、何が起こるでしょうか。
 
-<span class="listing-number">**サンプルコード5-24**</span>
+<span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
 user1.processRequest("READ"); // 実行結果: ユーザー U001 が READ をリクエストしました
@@ -1350,7 +389,7 @@ user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 �
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
 
-<span class="listing-number">**サンプルコード5-25**</span>
+<span class="listing-number">**サンプルコード5-7**</span>
 
 ```java
 public class UserManagementSystem {
@@ -1391,7 +430,7 @@ public class UserManagementSystem {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-26**　UserSystemBefore.java（1〜18、26〜47行目）</span>
+<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java（1〜18、26〜47行目）</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -1455,7 +494,7 @@ Guest user WRITE権限: false
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-27**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
+<span class="listing-number">**サンプルコード5-9**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
 
 ```java
 // 親クラスに共通インターフェイスを定義
@@ -1571,7 +610,10 @@ Afterでは、型ごとの条件分岐がなくなり、`User`型の配列を1�
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-28**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
+次のサンプルの`enum ShapeType`は、図形の種類を表す定数をまとめたもので、C言語の列挙型と同じように使えます。
+Javaの列挙型は第8章「Javaの特殊なクラス形式」で詳しく学びます。
+
+<span class="listing-number">**サンプルコード5-10**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -1639,7 +681,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-29**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
+<span class="listing-number">**サンプルコード5-11**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
 
 ```java
 // 基底クラス
@@ -1748,7 +790,7 @@ Beforeでは、図形を1種類増やすたびに`ShapeData`の`switch`文に`ca
 
 たとえば、`User`型の変数`user`が、もし`AdminUser`だったら`performAdminTask()`メソッドを呼びたい、という場合です。
 
-<span class="listing-number">**サンプルコード5-30**</span>
+<span class="listing-number">**サンプルコード5-12**</span>
 
 ```java
 User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
@@ -1768,7 +810,7 @@ User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
 
 `(変換したい型)変数` のように記述します。
 
-<span class="listing-number">**サンプルコード5-31**</span>
+<span class="listing-number">**サンプルコード5-13**</span>
 
 ```java
 public class UserAccessControl {
@@ -1818,7 +860,7 @@ public class UserAccessControl {
 
 Java 16から、`instanceof`とキャストをより簡潔に書ける「`instanceof`のパターンマッチング」が導入されました。
 
-<span class="listing-number">**サンプルコード5-32**</span>
+<span class="listing-number">**サンプルコード5-14**</span>
 
 ```java
 // 従来の書き方
@@ -1834,6 +876,1034 @@ if (user instanceof AdminUser admin) {
 }
 ```
 この新しい書き方を使うと、より安全で読みやすいコードになります。
+
+## `Object`クラスのメソッド（toString・equals・hashCode）
+
+### すべてのクラスの親になる`Object`クラス
+
+`extends`を書かずに宣言したクラスは、自動的に`java.lang.Object`クラスを継承します。
+そのため、Javaのすべてのクラスは、直接または間接に`Object`の子クラスです。
+コンストラクタの呼び出し順の図で、最後に`Object`のコンストラクタが呼ばれていたのはこのためです。
+
+`Object`クラスには、すべてのオブジェクトが持つ基本的なメソッドが定義されています。
+本書でよく使うのは次の3つです。
+
+- `toString()`
+    + オブジェクトを表す文字列を返す
+- `equals(Object obj)`
+    + 引数のオブジェクトと等しいかどうかを返す
+- `hashCode()`
+    + オブジェクトから計算した整数（ハッシュ値）を返す
+
+`Object`クラスでのこれらの実装は、どのクラスにも当てはまる最低限のものです。
+自分で作ったクラスでは、これらをオーバーライドして、そのクラスに合った振る舞いにします。
+
+<span class="listing-number">**サンプルコード5-15**　Student.java</span>
+
+```java
+import java.util.Objects;
+
+public class Student {
+    private String id;    // 学籍番号
+    private String name;  // 名前
+    
+    public Student(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    
+    @Override
+    public String toString() {
+        return "Student[id=" + id + ", name=" + name + "]";
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {  // ①
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {  // ②
+            return false;
+        }
+        Student other = (Student) obj;  // ③
+        return Objects.equals(id, other.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);  // ④
+    }
+}
+```
+
+### `toString`：オブジェクトを文字列にする
+
+`IO.println`にオブジェクトを渡したり、文字列と`+`で連結したりすると、そのオブジェクトの`toString()`が呼ばれます。
+`Object`クラスの`toString()`は、`Student@1b6d3586`のように「クラス名@ハッシュ値の16進数」を返すだけで、中身はわかりません。
+サンプルコード5-15のようにオーバーライドしてフィールドの値を含む文字列を返すと、表示やデバッグのときに中身を確かめやすくなります。
+
+### `equals`：中身が等しいかを判定する
+
+第3章の節「`==`と`equals`の違い」で、文字列の中身は`equals`で比べることを学びました。
+`String`クラスは`equals`をオーバーライドして、文字の並びを比べるようにしています。
+一方、`Object`クラスの`equals`は`==`と同じく参照を比べます。
+そのため、`equals`をオーバーライドしていないクラスでは、中身が同じでも別のオブジェクトなら`false`になります。
+
+サンプルコード5-15の`equals`は、学籍番号が同じなら等しいと判定します。
+
+- ①　同じオブジェクトとの比較
+    + 自分自身と比べている場合は、すぐに`true`を返す
+- ②　`null`や別のクラスとの比較
+    + 引数が`null`の場合や、別のクラスのオブジェクトの場合は`false`を返す（`getClass()`は、オブジェクトの実際のクラスを返す`Object`クラスのメソッド）
+- ③　フィールドの比較
+    + 引数を`Student`型にダウンキャストして学籍番号を比べる（②で同じクラスだと確かめたので、キャストは失敗しない）
+
+`Objects.equals(a, b)`は、どちらかが`null`でも例外を起こさずに比べられる、標準ライブラリのメソッドです。
+引数の型は`Object`にします。
+`equals(Student obj)`と書くと、オーバーライドではなくオーバーロードになり、`@Override`を付けていればコンパイルエラーで気づけます。
+
+### `hashCode`：`equals`と組でオーバーライドする
+
+`hashCode()`は、オブジェクトから計算した`int`の値（ハッシュ値）を返します。
+第9章で学ぶ`HashSet`や`HashMap`は、要素をハッシュ値で振り分けて保存し、同じハッシュ値を持つ要素どうしを`equals`で比べて目的の要素を探します。
+そのため、`equals`をオーバーライドしたら、必ず`hashCode`もオーバーライドして、次の決まり（契約）を守ります。
+
+1. `equals`で等しいと判定される2つのオブジェクトは、同じ`hashCode`を返す
+2. `hashCode`が同じでも、`equals`で等しいとは限らない（ハッシュ値の衝突）
+3. プログラムの実行中、`equals`で使うフィールドが変わらない限り、同じオブジェクトの`hashCode`は同じ値を返す
+
+サンプルコード5-15の④では、`equals`で比べている学籍番号だけからハッシュ値を計算しています。
+`Objects.hashCode(id)`は、`id`が`null`なら0を、そうでなければ`id.hashCode()`を返します。
+`equals`で比べない名前をハッシュ値の計算に混ぜると、学籍番号が同じで名前が違う2つのオブジェクトが別のハッシュ値になり、契約の1つめを守れません。
+
+次のプログラムで、3つのメソッドの動きを確かめます。
+
+<span class="listing-number">**サンプルコード5-16**　ObjectMethodsDemo.java</span>
+
+```java
+public class ObjectMethodsDemo {
+    public static void main(String[] args) {
+        Student s1 = new Student("S001", "田中太郎");
+        Student s2 = new Student("S001", "田中太郎");
+        Student s3 = new Student("S002", "佐藤花子");
+        
+        IO.println(s1);                 // toString()が呼ばれる
+        IO.println("s1 == s2: " + (s1 == s2));
+        IO.println("s1.equals(s2): " + s1.equals(s2));
+        IO.println("s1.equals(s3): " + s1.equals(s3));
+        IO.println("ハッシュ値が同じ: " + (s1.hashCode() == s2.hashCode()));
+    }
+}
+```
+
+実行結果：
+
+```
+Student[id=S001, name=田中太郎]
+s1 == s2: false
+s1.equals(s2): true
+s1.equals(s3): false
+ハッシュ値が同じ: true
+```
+
+`s1`と`s2`は別々に`new`したオブジェクトなので`==`では`false`ですが、学籍番号が同じなので`equals`は`true`を返し、ハッシュ値も一致します。
+なお、第8章で学ぶレコードでは、この3つのメソッドをコンパイラが自動で用意します。
+
+## 実践的な継承設計パターン
+
+ここまでで、継承の書き方、オーバーライド、ポリモーフィズム、型の判定とキャストを学びました。
+この節では、これらを組み合わせた実践的な継承設計のパターンと、継承を使うべきでない場面を見ていきます。
+
+継承は単なるコードの再利用手段ではなく、システムの拡張性と保守性を向上させる設計技法です。本章では、現実的なビジネス要件に対応できる継承階層の設計方法と、それを支えるポリモーフィズムの実践的な活用法を習得します。
+
+### 高度な継承設計における共通課題
+
+実践的なソフトウェア開発では、単純な継承から複雑なドメインモデルまで、さまざまなレベルの継承設計が求められます。とくに企業システムやWebアプリケーションでは、ビジネスルールの変化に対応できる柔軟な継承階層の設計が大切です。
+
+本章では、これまで学んだ基礎知識を活用して、実践的な設計課題に取り組みます。
+具体的には次のような課題を扱います。
+
+- テンプレートメソッドパターン
+    + 共通アルゴリズムの骨格を定義し、詳細を子クラスに委ねる設計
+- 戦略パターンとの組み合わせ
+    + 継承と委譲を適切に使い分ける設計判断
+- リスコフ置換原則の実践
+    + 安全で予測可能な継承階層の構築
+- 拡張性を考慮した設計
+    + 将来の要件変更に対応できる柔軟な構造
+
+### 継承設計の実践例：決済システム
+
+実際のビジネスシステムでよく見られる決済処理を例に、段階的な継承設計の改善プロセスを見ていきましょう。ここでは、抽象クラスを使わずに、具象クラスの継承とメソッドのオーバーライドによってテンプレートメソッドパターンを実現する方法を示します。
+
+<div class="figure">
+
+![決済システムの継承階層](images/diagrams/chapter05-inheritance-hierarchy.svg)
+
+</div>
+
+<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
+
+```java
+// 決済処理の基底クラス：テンプレートメソッドパターンの実装
+public class PaymentProcessor {
+    // ...
+    // テンプレートメソッド：決済処理の共通フロー
+    public final PaymentResult processPayment() {
+        // 1. 事前検証（共通処理）
+        if (!validateCommonParameters()) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
+        }
+        
+        // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
+        if (!validatePaymentSpecific()) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
+        }
+        
+        // 3. 外部API呼び出し（子クラスでオーバーライド可能）
+        String authorizationCode = callExternalAPI();
+        if (authorizationCode == null) {
+            logError();
+            return new PaymentResult(false, null, errorMessage);
+        }
+        
+        // 4. 処理結果の記録（共通処理）
+        logTransaction(authorizationCode);
+        
+        return new PaymentResult(true, authorizationCode, "決済完了");
+    }
+    // ...
+    // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
+    protected boolean validatePaymentSpecific() {
+        // デフォルトでは追加の検証なし
+        // 子クラスでオーバーライド可能
+        return true;
+    }
+    
+    protected String callExternalAPI() {
+        // デフォルトでは基本的な決済処理を実行
+        // 実際の実装では外部決済サービスのAPIを呼び出す
+        // エラーの場合はnullを返し、errorMessageを設定
+        return "DEFAULT-" + System.currentTimeMillis();
+    }
+    
+    // フックメソッド：子クラスでオーバーライド可能
+    protected void logTransaction(String authCode) {
+        IO.println("取引ID: " + transactionId + " 承認コード: " + authCode);
+    }
+    // ...
+}
+```
+
+これは決済処理の基底クラスで、テンプレートメソッドパターンを実装しています。processPayment()メソッドが決済処理の共通フローを定義し、子クラスで特定の処理をオーバーライドできるようになっています。
+
+#### テンプレートメソッドパターンの重要なポイント
+
+このパターンでは、まず`processPayment()`メソッドが決済処理の標準的な流れを決めます。
+検証、外部APIの呼び出し、結果の記録という順序は、すべての決済手段で共通です。
+そのうえで、`validatePaymentSpecific()`や`callExternalAPI()`のように、子クラスがオーバーライドしてよいメソッドを用意します。
+これらのメソッドが、決済手段ごとに処理を変えられる場所（拡張ポイント）になります。
+
+一方、`processPayment()`には`final`を付けています。
+`final`を付けたメソッドは子クラスでオーバーライドできないため、処理の流れそのものを子クラスが書き換えることはありません。
+`final`の使い方は、第6章「不変性とfinalキーワード」で詳しく学びます。
+
+また、拡張ポイントのメソッドには親クラスが基本的な動作（デフォルト実装）を用意しています。
+子クラスは、カードの検証やAPIの認証など、決済手段に特有の処理が必要な場合だけオーバーライドすれば済みます。
+
+#### 具体的な決済処理の実装例
+
+<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜43行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
+
+```java
+// クレジットカード決済の実装
+public class CreditCardPayment extends PaymentProcessor {
+    private String cardNumber;
+    private String cvv;
+    
+    public CreditCardPayment(String transactionId, BigDecimal amount, 
+                           String currency, String cardNumber, String cvv) {
+        super(transactionId, amount, currency);
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+    }
+    
+    @Override
+    protected boolean validatePaymentSpecific() {
+        // クレジットカード固有の検証
+        if (cardNumber == null || cardNumber.length() != 16) {
+            setErrorMessage("無効なカード番号です");
+            return false;
+        }
+        if (cvv == null || cvv.length() != 3) {
+            setErrorMessage("無効なCVVです");
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    protected String callExternalAPI() {
+        // クレジットカード決済API呼び出しのシミュレーション
+        IO.println("クレジットカード決済APIを呼び出し中...");
+        
+        // 実際の実装では外部APIを呼び出す
+        // ここではシミュレーションとして、まれにエラーが発生する例を示す
+        if (Math.random() < 0.1) {  // 10%の確率でエラー
+            setErrorMessage("クレジットカード決済が拒否されました");
+            return null;
+        }
+        
+        return "CC-" + System.currentTimeMillis();
+    }
+}
+
+// PayPal決済の実装
+public class PayPalPayment extends PaymentProcessor {
+    // ...
+    
+    @Override
+    protected void logTransaction(String authCode) {
+        // PayPalでは詳細なログを記録
+        super.logTransaction(authCode);
+        IO.println("PayPalアカウント: " + email);
+    }
+}
+```
+
+これらは決済処理基底クラスを継承した具体的な実装例です。CreditCardPaymentはクレジットカード特有の検証を、PayPalPaymentはPayPal特有の検証を実装し、それぞれの決済方法に応じたAPI呼び出しをシミュレートしています。
+
+このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは各決済手段に固有の検証ロジック（クレジットカードの番号検証、PayPalのアカウント認証、銀行口座の残高確認など）が必要な場合に、これらのメソッドをオーバーライドして独自の振る舞いを実装できます。
+
+#### 例外を使わない決済処理の使用例
+
+<span class="listing-number">**サンプルコード5-19**　PaymentExample.java（1〜35行目）</span>
+
+```java
+import java.math.BigDecimal;
+
+public class PaymentExample {
+    public static void main(String[] args) {
+        // クレジットカード決済の例
+        CreditCardPayment ccPayment = new CreditCardPayment(
+            "TXN001", 
+            new BigDecimal("5000"), 
+            "JPY",
+            "1234567890123456",
+            "123"
+        );
+        
+        PaymentResult ccResult = ccPayment.processPayment();
+        if (ccResult.isSuccess()) {
+            IO.println("決済成功: " + ccResult.getAuthorizationCode());
+        } else {
+            IO.println("決済失敗: " + ccResult.getMessage());
+        }
+        
+        // PayPal決済の例（エラーケース）
+        PayPalPayment ppPayment = new PayPalPayment(
+            "TXN002",
+            new BigDecimal("10000"),
+            "JPY",
+            "invalid-email",  // 無効なメールアドレス
+            "pass123"
+        );
+        
+        PaymentResult ppResult = ppPayment.processPayment();
+        if (ppResult.isSuccess()) {
+            IO.println("決済成功: " + ppResult.getAuthorizationCode());
+        } else {
+            IO.println("決済失敗: " + ppResult.getMessage());
+        }
+```
+
+次は実行結果の一例です。クレジットカード決済は10%の確率で拒否されるため、実行するたびに結果が変わることがあります。
+
+```
+クレジットカード決済APIを呼び出し中...
+取引ID: TXN001 承認コード: CC-1707123456789
+決済成功: CC-1707123456789
+決済エラー[TXN002]: 無効なメールアドレスです
+決済失敗: 無効なメールアドレスです
+```
+
+#### エラー処理の設計ポイント
+
+この決済処理では、例外を使わずにエラーを扱っています。
+検証メソッドは、成功したか失敗したかを`boolean`の戻り値で返します。
+失敗したときは、その理由を`errorMessage`フィールドに入れておきます。
+外部APIの呼び出しは、失敗すると`null`を返すので、呼び出し側は結果が`null`かどうかを調べてエラーと判断します。
+最後に、成功か失敗か、承認コード、メッセージをまとめて`PaymentResult`クラスのオブジェクトに入れて返します。
+
+このように設計すれば、例外処理を学ぶ前でも、エラーの状態を呼び出し側へ伝えるテンプレートメソッドパターンを実装できます。
+
+### 段階的リファクタリング：重複コードから継承へ
+
+実際の開発では、最初から理想的な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
+
+#### ステップ1：重複コードの発見
+
+実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。WordDocumentクラスとPDFDocumentクラスで、同じようなフィールドとメソッドが重複して実装されています。このような重複は保守性を低下させ、バグの温床となるため、継承を使ってリファクタリングします。
+
+<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java</span>
+
+```java
+public class WordDocument {
+    private String filename;     // ①
+    private String content;      // ①
+    private long fileSize;       // ①
+    
+    public WordDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
+    
+    public void open() {         // ②
+        IO.println(filename + " を開いています");
+    }
+    
+    public void save() {         // ③
+        fileSize = content.length();
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
+    }
+    
+    public void close() {        // ④
+        content = null;
+        IO.println(filename + " を閉じました");
+    }
+}
+
+public class PDFDocument {
+    private String filename;     // ①と重複
+    private String content;      // ①と重複
+    private long fileSize;       // ①と重複
+    private int pageCount;       // ⑤
+    
+    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
+        this.filename = filename;
+        this.content = content;
+        this.pageCount = pageCount;
+    }
+    
+    public void open() {         // ②と完全重複
+        IO.println(filename + " を開いています");
+    }
+    
+    public void save() {         // ③と完全重複
+        fileSize = content.length();
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
+    }
+    
+    public void close() {        // ④と完全重複
+        content = null;
+        IO.println(filename + " を閉じました");
+    }
+    
+    public void generatePDF() {  // ⑥
+        IO.println("PDF形式で " + pageCount + " ページを生成");
+    }
+}
+```
+
+これらのクラスを使用した例：
+
+<span class="listing-number">**サンプルコード5-21**　DocumentTest.java</span>
+
+```java
+public class DocumentTest {
+    public static void main(String[] args) {
+        // WordDocumentの操作
+        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
+        word.open();
+        word.save();
+        word.close();
+        
+        IO.println();
+        
+        // PDFDocumentの操作  
+        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
+        pdf.open();
+        pdf.save();
+        pdf.generatePDF();
+        pdf.close();
+    }
+}
+```
+
+実行結果：
+
+```
+report.docx を開いています
+report.docx を保存しました: 18バイト
+report.docx を閉じました
+
+manual.pdf を開いています
+manual.pdf を保存しました: 17バイト
+PDF形式で 10 ページを生成
+manual.pdf を閉じました
+```
+
+#### 重複コードの分析
+
+- ①　共通フィールド
+    + filename、content、fileSizeというドキュメントの基本属性がWordDocumentとPDFDocumentで重複して定義されている
+- ②　ファイルオープン処理
+    + open()メソッドの実装が両クラスで同一
+- ③　保存処理
+    + save()メソッドでfileSizeを計算し、メッセージ出力する処理が重複
+- ④　クローズ処理
+    + close()メソッドでcontentをnullにし、メッセージを出力するロジックが重複
+- ⑤　固有フィールド
+    + pageCount（ページ数）はPDF特有の属性として追加
+- ⑥　固有メソッド
+    + generatePDF()はPDF特有の機能として実装
+
+<span class="listing-number">**サンプルコード5-22**　ExcelDocument.java</span>
+
+```java
+public class ExcelDocument {
+    private String filename;
+    private String content;
+    private long fileSize;
+    
+    public ExcelDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
+    
+    // また同じメソッドの重複！
+    public void open() {
+        IO.println(filename + " を開いています");
+    }
+    
+    public void save() {
+        fileSize = content.length();
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
+    }
+    
+    public void close() {
+        content = null;
+        IO.println(filename + " を閉じました");
+    }
+}
+```
+
+これは重複コードの問題を示す例です。3つのドキュメントクラスで同じメソッドが繰り返し実装されています。
+
+#### ステップ2：共通部分の抽出
+
+<span class="listing-number">**サンプルコード5-23**　Document.java</span>
+
+```java
+// 共通部分を親クラスとして抽出
+public class Document {
+    protected String filename;
+    protected String content;
+    protected long fileSize;
+    
+    public Document(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+        this.fileSize = content != null ? content.length() : 0;
+    }
+    
+    // 共通メソッドを親クラスに移動
+    public void open() {
+        IO.println(filename + " を開いています");
+    }
+    
+    public void save() {
+        fileSize = content != null ? content.length() : 0;
+        IO.println(filename + " を保存しました: " + fileSize + "バイト");
+    }
+    
+    public void close() {
+        content = null;
+        IO.println(filename + " を閉じました");
+    }
+    
+    // ゲッターとセッター
+    public String getFilename() { return filename; }
+    public long getFileSize() { return fileSize; }
+}
+```
+
+#### ステップ3：子クラスの再実装
+
+<span class="listing-number">**サンプルコード5-24**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
+
+```java
+// リファクタリング後：重複が除去された
+public class WordDocument extends Document {
+    public WordDocument(String filename, String content) {
+        super(filename, content);
+    }
+    
+    // WordDocument固有の機能があれば追加
+    public void applyTemplate(String templateName) {
+        IO.println(filename + " にテンプレート " + templateName + " を適用");
+    }
+}
+
+public class PDFDocument extends Document {
+    private int pageCount;
+    
+    public PDFDocument(String filename, String content, int pageCount) {
+        super(filename, content);
+        this.pageCount = pageCount;
+    }
+    
+    // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
+    @Override
+    public void save() {
+        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
+        IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
+    }
+    
+    public void generatePDF() {
+        if (pageCount > 0) {
+            IO.println("PDF形式で " + pageCount + " ページを生成");
+        } else {
+            IO.println("ページ数が指定されていません");
+        }
+    }
+}
+
+public class ExcelDocument extends Document {
+    public ExcelDocument(String filename, String content) {
+        super(filename, content);  // ①
+    }
+    
+    @Override  // ②
+    public void save() {
+        fileSize = content != null ? content.length() * 2 : 0;  // ③
+        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
+    }
+    
+    public void createChart() {  // ④
+        IO.println(filename + " にグラフを作成");
+    }
+}
+```
+
+リファクタリング後の使用例：
+
+<span class="listing-number">**サンプルコード5-25**　RefactoredDocumentTest.java</span>
+
+```java
+public class RefactoredDocumentTest {
+    public static void main(String[] args) {
+        // リファクタリング後の使用例
+        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
+        word.open();
+        word.save();
+        word.applyTemplate("ビジネスレポート");
+        word.close();
+        
+        IO.println();
+        
+        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
+        pdf.open();
+        pdf.save();  // オーバーライドされたメソッド
+        pdf.generatePDF();
+        pdf.close();
+        
+        IO.println();
+        
+        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
+        excel.open();
+        excel.save();  // オーバーライドされたメソッド
+        excel.createChart();
+        excel.close();
+    }
+}
+```
+
+実行結果：
+
+```
+report.docx を開いています
+report.docx を保存しました: 18バイト
+report.docx にテンプレート ビジネスレポート を適用
+report.docx を閉じました
+
+manual.pdf を開いています
+manual.pdf をPDF形式で保存: 8バイト
+PDF形式で 10 ページを生成
+manual.pdf を閉じました
+
+data.xlsx を開いています
+data.xlsx をExcel形式で保存: 38バイト（メタデータ含む）
+data.xlsx にグラフを作成
+data.xlsx を閉じました
+```
+
+#### オーバーライドと特化機能の実装
+
+- ①　親クラスのコンストラクタ呼び出し
+    + super()により、親クラスの初期化処理を適切に実行
+- ②　オーバーライドアノテーション
+    + @Overrideによりコンパイラが親クラスのメソッドを正しくオーバーライドしていることを検証
+- ③　特化した振る舞い
+    + Excelファイルはメタデータを含むため、ファイルサイズが大きくなるよう設定
+- ④　固有メソッドの追加
+    + createChart()はExcel特有の機能として、親クラスには存在しないメソッドを追加
+
+
+#### リファクタリングの効果
+
+継承を導入したリファクタリングによって、コードの重複を削減できます。まず、コードの重複が除去されることで、保守性が向上します。同じコードを複数の場所に書く必要がなくなるため、バグの発生率が減り、修正も簡単になります。共通機能の変更が1箇所で済むことも大きな利点です。親クラスを修正するだけで、すべての子クラスに変更が反映されます。
+
+また、各ドキュメントタイプの特性をオーバーライドで表現できることで、柔軟な設計が可能になります。共通のインターフェイスを保ちながら、各子クラスが独自の実装を持つことができます。さらに、新しいドキュメントタイプの追加が容易になります。親クラスを継承し、必要な部分だけをカスタマイズすることで、短時間で新しい機能を実装できます。このように、継承はソフトウェアの拡張性と保守性に寄与する技術の1つです。ただし、継承階層が3層以上になるとコードの理解が難しくなるため、コンポジションやインターフェイスの活用も検討すべきです。
+
+### 継承の誤用例：よくある間違い
+
+継承を誤用すると、論理的に破綻したコードになってしまいます。実際の開発現場でよく見られる誤用パターンをいくつか見てみましょう。
+
+#### 誤用例1：スタックがArrayListを継承
+
+以下のコードは、継承の誤用の典型例です。スタック（後入れ先出しのデータ構造）を実装するためにArrayListを継承していますが、これによりArrayListの全メソッドが公開され、スタックの原則を破る操作が可能になってしまいます。この問題と解決策を見ていきましょう。
+
+`ArrayList<String>`は、第4章でも使った、文字列を必要なだけ追加できる入れ物です（第9章「コレクションフレームワーク」で学びます）。
+`pop`と`peek`の`throw new EmptyStackException()`は、スタックが空のときに処理を中断してエラーを知らせる書き方です（第13章「例外処理」で学びます）。
+
+<span class="listing-number">**サンプルコード5-26**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
+
+```java
+// 悪い例：実装の詳細を継承してしまう
+// ...
+public class MyStack extends ArrayList<String> {
+    public void push(String item) {
+        add(item);
+    }
+    
+    public String pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return remove(size() - 1);
+    }
+    
+    // ...
+}
+
+// 問題点が露呈する使用例
+public class StackProblem {
+    public static void main(String[] args) {
+        MyStack stack = new MyStack();
+        stack.push("first");
+        stack.push("second");
+        stack.push("third");
+        
+        // ArrayListのメソッドが露出してしまう
+        stack.add(1, "WRONG!"); // スタックの途中に要素を挿入できてしまう
+        stack.remove(0); // スタックの底から要素を削除できてしまう
+        stack.clear(); // スタック全体をクリアできてしまう
+        
+        // スタックの約束（LIFO）が破られる
+    }
+}
+```
+
+#### 解決策：コンポジションを使用
+
+<span class="listing-number">**サンプルコード5-27**　MyStack.java</span>
+
+```java
+// 良い例：内部実装を隠蔽
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
+public class MyStack {
+    private final ArrayList<String> elements = new ArrayList<>(); // privateで隠蔽
+    
+    public void push(String item) {
+        elements.add(item);
+    }
+    
+    public String pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return elements.remove(elements.size() - 1);
+    }
+    
+    public String peek() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return elements.get(elements.size() - 1);
+    }
+    
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
+    
+    public int size() {
+        return elements.size();
+    }
+    // ArrayListの他のメソッドは公開されない
+}
+```
+
+このMyStackクラスは、コンポジションを使用してArrayListを内部に保持し、スタックに必要な機能のみを公開しています。
+これにより、ArrayListのスタック操作に不要なメソッド（add、removeなど）が外部に公開されることを防いでいます。
+
+#### 誤用例2：従業員の権限階層での問題
+
+以下の例は、継承設計の一般的な落とし穴である「すべてのサブクラスが親クラスの振る舞いを持つ」という誤った仮定を示しています。
+この設計はリスコフ置換原則に違反します。
+
+<span class="listing-number">**サンプルコード5-28**　Employee.java、SystemAdministrator.java、RegularEmployee.java、EmployeeManagementSystem.java</span>
+
+```java
+// 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
+public class Employee {
+    protected String employeeId;
+    protected String name;
+    
+    public Employee(String employeeId, String name) {
+        this.employeeId = employeeId;
+        this.name = name;
+    }
+    
+    public void modifySystemSettings() {
+        IO.println(name + " がシステム設定を変更しました");
+    }
+}
+
+public class SystemAdministrator extends Employee {
+    public SystemAdministrator(String employeeId, String name) {
+        super(employeeId, name);
+    }
+    // modifySystemSettingsメソッドを適切に継承
+}
+
+public class RegularEmployee extends Employee {
+    public RegularEmployee(String employeeId, String name) {
+        super(employeeId, name);
+    }
+    
+    @Override
+    public void modifySystemSettings() {
+        // 一般従業員にはシステム管理権限がない！
+        throw new UnsupportedOperationException("権限がありません");
+    }
+}
+
+// 使用時の問題
+public class EmployeeManagementSystem {
+    public static void performSystemMaintenance(Employee[] employees) {
+        for (Employee employee : employees) {
+            employee.modifySystemSettings(); // 一般従業員で例外が発生！
+        }
+    }
+}
+```
+
+この問題は、すべての従業員がシステム管理権限を持つという誤った仮定に基づいた継承設計の典型的な例です。一般従業員は従業員ですがシステム管理権限を持たないため、`modifySystemSettings()`メソッドで例外を投げることになり、リスコフの置換原則に違反しています。
+
+この問題を適切に解決するためには、継承階層を見直し、共通の振る舞いのみを親クラスに定義してください。よりよい解決策として、インターフェイスを使用した設計がありますが、これについては第7章「抽象クラスとインターフェイス」で詳しく説明します。
+
+> 注意: 継承を使用する際は、「is-a」の関係だけでなく、すべての子クラスが親クラスの振る舞いを適切に実装できるかを慎重に検討してください。
+
+#### 誤用例3：正方形と長方形の問題
+
+有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
+
+<span class="listing-number">**サンプルコード5-29**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
+
+```java
+// 問題のあるコード：数学的には正方形は長方形の一種だが...
+public class Rectangle {
+    protected int width;
+    protected int height;
+    
+    // ...
+    public void setWidth(int width) {
+        this.width = width;
+    }
+    
+    public void setHeight(int height) {
+        this.height = height;
+    }
+    // ...
+}
+
+// 正方形を長方形として継承すると問題が発生
+public class Square extends Rectangle {
+    public Square(int size) {
+        super(size, size);
+    }
+    
+    // 正方形では幅と高さは常に同じでなければならない
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+        this.height = width; // 高さも同じ値に！
+    }
+    
+    @Override
+    public void setHeight(int height) {
+        this.width = height; // 幅も同じ値に！
+        this.height = height;
+    }
+}
+
+// 使用例でリスコフ置換原則違反を確認
+public class RectangleSquareTest {
+    // 長方形を扱う一般的なメソッド
+    public static void testRectangle(Rectangle rect) {
+        rect.setWidth(5);
+        rect.setHeight(10);
+        
+        // 期待される面積: 5 × 10 = 50
+        int expectedArea = 50;
+        int actualArea = rect.getArea();
+        
+        // ...
+    }
+    
+    public static void main(String[] args) {
+        IO.println("=== 長方形のテスト ===");
+        Rectangle rectangle = new Rectangle(3, 4);
+        testRectangle(rectangle);
+        
+        IO.println("\n=== 正方形のテスト ===");
+        Square square = new Square(5);
+        testRectangle(square);
+    }
+}
+```
+
+実行結果：
+
+```
+=== 長方形のテスト ===
+幅を5、高さを10に設定
+期待される面積: 50
+実際の面積: 50
+✓ テスト成功
+
+=== 正方形のテスト ===
+幅を5、高さを10に設定
+期待される面積: 50
+実際の面積: 100
+✗ テスト失敗！
+```
+
+この例は、正方形が長方形の振る舞いを正しく実装できないことを示しています
+リスコフ置換原則の違反例です
+
+<span class="listing-number">**サンプルコード5-30**</span>
+
+```java
+// 使用例で問題が明らかに
+public class GeometryTest {
+    public static void main(String[] args) {
+        Rectangle rect = new Square(5);
+        
+        // 長方形として扱うコード
+        rect.setWidth(10);  // 幅を10に
+        rect.setHeight(5);  // 高さを5に
+        
+        // 期待値：10 × 5 = 50
+        // 実際の結果：5 × 5 = 25（最後のsetHeightで幅も5になってしまう）
+        IO.println("面積: " + rect.getArea()); // 25が出力される
+    }
+}
+```
+
+この例はリスコフの置換原則に違反しています。子クラスは親クラスと置き換え可能であることが大切ですが、`Square`は`Rectangle`の期待される振る舞いを破壊してしまっています。
+
+この問題の根本的な原因は、数学的な関係（正方形は長方形の一種）とオブジェクト指向の継承関係が必ずしも一致しないことにあります。継承は「振る舞いの継承」であり、単なる概念的な関係ではありません。
+
+この問題を解決する方法として、継承ではなくインターフェイスやコンポジションを使用する設計があります。
+
+たとえば以下のコードを見てください。
+
+<span class="listing-number">**サンプルコード5-31**　Shape.java</span>
+
+```java
+// 解決策の例：インターフェイスを使用
+interface Shape {
+    double getArea();
+}
+
+class Rectangle implements Shape {
+    private int width;
+    private int height;
+    
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    public double getArea() {
+        return width * height;
+    }
+    
+    // setterは矩形の特性に従う
+    public void setWidth(int width) { this.width = width; }
+    public void setHeight(int height) { this.height = height; }
+}
+
+class Square implements Shape {
+    private int side;
+    
+    public Square(int side) {
+        this.side = side;
+    }
+    
+    @Override
+    public double getArea() {
+        return side * side;
+    }
+    
+    // 正方形固有のsetter
+    public void setSide(int side) { this.side = side; }
+}
+```
+
+これらの高度な設計手法については、第7章「抽象クラスとインターフェイス」で詳しく解説します。
+
+> 重要: 継承を使用する際は、親クラスの契約（期待される振る舞い）を子クラスが満たせるかを確認することが重要です。
+
+#### 誤用例4：多重継承の代替として無理な継承
+
+Javaは多重継承をサポートしないため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
+
+<span class="listing-number">**サンプルコード5-32**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
+
+```java
+// 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
+public class Employee {
+    public void work() { /* ... */ }
+    public void attendMeeting() { /* ... */ }
+}
+
+public class ReportingEmployee extends Employee {
+    public void generateReport() { /* ... */ }
+}
+
+public class ApprovingEmployee extends Employee {
+    public void approveRequest() { /* ... */ }
+}
+
+// 問題：マネージャーはレポート作成も承認もできる、アナリストはレポート作成のみ
+// どちらを継承すればよい？
+```
+
+この問題は、Javaが単一継承しかサポートしないことによる制約を示しています。複数の能力を持つオブジェクトを表現しようとすると、継承階層が複雑になり、設計の柔軟性が失われます。
+
+たとえば、マネージャー（Manager）はレポートを作成することもできるし承認権限も持っていますが、`ReportingEmployee`と`ApprovingEmployee`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
+
+この問題を解決するもっとも効果的な方法は、インターフェイスを使用して能力を表現することです。インターフェイスを使えば、クラスは必要な能力を選択的に実装でき、継承階層をシンプルに保つことができます。この設計手法については、第7章「抽象クラスとインターフェイス」で詳しく説明します。
+
+> ポイント: 継承は強力な機能ですが、すべての問題を解決できるわけではありません。とくに複数の異なる能力を持つオブジェクトを表現する場合は、継承以外の設計手法を検討してください。
 
 ## 例外処理の基礎（補足）
 
@@ -1906,6 +1976,9 @@ class Child extends Parent {
 - `instanceof`とキャスト
     + 子クラス固有の機能が必要なときは、`instanceof`で型を確認してからキャストする
     + パターンマッチングを使うと、型の確認とキャストを1つの式で書ける
+- `Object`クラスのメソッド
+    + すべてのクラスは`Object`を継承し、`toString`・`equals`・`hashCode`をオーバーライドして使う
+    + `equals`をオーバーライドしたら、同じフィールドから計算する`hashCode`もオーバーライドする
 - 継承と例外
     + オーバーライドしたメソッドは、親クラスのメソッドより広いチェック例外を投げられない
 
@@ -1939,7 +2012,7 @@ PayrollSystem（給与計算システム）
 
 1. 親クラスの設計
     + 共通属性（名前、社員番号）を定義
-2. 抽象メソッドの活用
+2. オーバーライドの活用
     + 給与計算ロジックは子クラスで実装
 3. ポリモーフィズムの実践
     + Employee[]配列で全従業員を管理

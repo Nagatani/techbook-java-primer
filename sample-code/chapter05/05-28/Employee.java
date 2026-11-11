@@ -1,5 +1,3 @@
-import java.util.List;
-
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
 public class Employee {
     protected String employeeId;

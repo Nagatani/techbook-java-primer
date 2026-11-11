@@ -1,14 +1,14 @@
 sequenceDiagram
     participant Main as 呼び出し側
-    participant W as WordDocument()
-    participant D as Document()
+    participant W as Wizard()
+    participant C as Character()
     participant O as Object()
 
-    Main->>W: new WordDocument(filename, content)
-    W->>D: super(filename, content)
-    D->>O: super()（自動で挿入）
-    O-->>D: 戻る
-    Note over D: フィールドを初期化
-    D-->>W: 戻る
+    Main->>W: new Wizard(name, hp, mp)
+    W->>C: super(name, hp)
+    C->>O: super()（自動で挿入）
+    O-->>C: 戻る
+    Note over C: フィールドを初期化
+    C-->>W: 戻る
     Note over W: 残りの初期化
     W-->>Main: 完成したオブジェクト

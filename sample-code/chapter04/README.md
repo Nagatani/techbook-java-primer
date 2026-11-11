@@ -27,13 +27,12 @@ javac -d out *.java
 | [4-11](./04-11/) | BankAccountV2.java | （mainメソッドなし） |
 | [4-12](./04-12/) | BankAccountV2.java<br>BankAccountV2Test.java | `java -cp out BankAccountV2Test` |
 | [4-13](./04-13/) | BankAccountV3.java | （mainメソッドなし） |
-| [4-15](./04-15/) | BankAccountV3.java<br>EnhancedBankAccount.java | （mainメソッドなし） |
-| [4-21](./04-21/) | Example.java | （mainメソッドなし） |
-| [4-23](./04-23/) | User.java | （mainメソッドなし） |
-| [4-24](./04-24/) | User.java<br>UserTest.java | `java -cp out UserTest` |
-| [4-25](./04-25/) | Book.java | （mainメソッドなし） |
-| [4-27](./04-27/) | DatabaseConfig.java | （mainメソッドなし） |
-| [4-28](./04-28/) | EventProcessor.java | （mainメソッドなし） |
-| [4-29](./04-29/) | HttpClient.java | （mainメソッドなし） |
-| [4-30](./04-30/) | Logger.java | （mainメソッドなし） |
-| [4-34](./04-34/) | BankAccount.java | （mainメソッドなし） |
+| [4-20](./04-20/) | Example.java | （mainメソッドなし） |
+| [4-22](./04-22/) | User.java | （mainメソッドなし） |
+| [4-23](./04-23/) | User.java<br>UserTest.java | `java -cp out UserTest` |
+| [4-24](./04-24/) | Book.java | （mainメソッドなし） |
+| [4-26](./04-26/) | DatabaseConfig.java | （mainメソッドなし） |
+| [4-27](./04-27/) | EventProcessor.java | （mainメソッドなし） |
+| [4-28](./04-28/) | HttpClient.java | （mainメソッドなし） |
+| [4-29](./04-29/) | Logger.java | （mainメソッドなし） |
+| [4-33](./04-33/) | BankAccount.java | （mainメソッドなし） |

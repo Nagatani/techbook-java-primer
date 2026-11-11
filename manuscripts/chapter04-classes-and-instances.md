@@ -87,6 +87,9 @@ public class ProblemDemo {
 
 ### アクセス修飾子の詳細
 
+第3章では、`public`と`private`の2つのアクセス修飾子を学びました。
+ここでは、残りの`protected`とパッケージプライベートを加えた4つのアクセス修飾子の全体を見ていきます。
+
 Javaのアクセス制御は、カプセル化を実現する重要な機能です。Javaは4つのアクセス修飾子を提供しており、これらをパッケージ構造や継承関係に応じて使い分けると、クラスの内部実装を隠蔽しながら必要な機能だけを外部に公開できます。各修飾子は、フィールドとメソッドの可視性を段階的に制御し、オブジェクト指向設計の原則である「必要最小限の公開」を実現します。
 
 #### アクセス修飾子の可視性マトリックス
@@ -192,6 +195,11 @@ class ProcessorHelper {
 これはパッケージプライベート（デフォルトアクセス）の例です。
 
 `protected`の使用例。
+
+次のサンプルの`extends Vehicle`は、「`Vehicle`の機能を引き継いだクラス（サブクラス）として`Car`を作る」という意味で、継承と呼びます。
+継承は第5章「継承とポリモーフィズム」で学びます。
+ここでは、サブクラスの`Car`から親の`Vehicle`の`protected`メンバーを使える点だけを読み取ってください。
+
 <span class="listing-number">**サンプルコード4-4**</span>
 
 ```java
@@ -289,6 +297,7 @@ PI = 3.14159
 
 ### getter/setterメソッドのベストプラクティス
 
+第3章では、getter/setterメソッドの基本的な書き方を学びました。
 getter/setterメソッド（アクセサメソッドとも呼ばれます）は、カプセル化の実装で中心的な役割を果たします。
 フィールドの値を取得・設定するだけでなく、データの整合性を保証し、将来の変更に対する柔軟性を提供します。
 以下の例では、プライベートフィールドへの安全なアクセスを提供する標準パターンを示します。
@@ -686,70 +695,7 @@ BankAccountV3では、口座番号のフィールドにfinalを付けたので�
 また、`getTransactionHistory`は内部のリストをそのまま返さず、コピーを返します。
 これを防御的コピーと呼びます。
 呼び出し側が受け取ったリストを書き換えても、口座の内部にある履歴は変わりません。
-
-### 銀行口座クラスのさらなる発展
-
-BankAccountV3の設計を基に、本章ではさらに高度な設計パターンを適用した例を見てみましょう。これは、実際のエンタープライズアプリケーションで使用されるレベルの設計です。
-
-<span class="listing-number">**サンプルコード4-15**　EnhancedBankAccount.java（3〜8、15〜21、23〜54、68行目）</span>
-
-```java
-// BankAccountV3をさらに発展させた設計例
-public class EnhancedBankAccount extends BankAccountV3 {
-    // 追加のフィールド：口座の状態管理
-    private String status;
-    private LocalDateTime lastActivityDate;
-    private int failedTransactionCount;
-    // ...
-    // 拡張されたコンストラクタ
-    public EnhancedBankAccount(String accountNumber, double initialBalance) {
-        super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
-        this.status = STATUS_ACTIVE;
-        this.lastActivityDate = LocalDateTime.now();
-        this.failedTransactionCount = 0;
-    }
-    // ...
-    // オーバーライドされた入金メソッド：状態チェックを追加
-    @Override
-    public void deposit(double amount) {
-        validateAccountStatus();
-        super.deposit(amount);
-        updateLastActivity();
-    }
-    
-    // オーバーライドされた出金メソッド：失敗回数の追跡
-    @Override
-    public boolean withdraw(double amount) {
-        validateAccountStatus();
-        boolean success = super.withdraw(amount);
-        if (!success) {
-            failedTransactionCount++;
-            if (failedTransactionCount >= 3) {
-                status = STATUS_SUSPENDED;
-                IO.println("連続した取引失敗により、口座が一時停止されました。");
-            }
-        } else {
-            failedTransactionCount = 0;  // 成功したらリセット
-        }
-        updateLastActivity();
-        return success;
-    }
-    
-    // プライベートメソッド：内部ロジック
-    private void validateAccountStatus() {
-        if (!STATUS_ACTIVE.equals(status)) {
-            throw new IllegalStateException("口座がアクティブではありません: " + status);
-        }
-    }
-    // ...
-}
-```
-
-EnhancedBankAccountは、継承（第5章で学びます）を使い、サンプルコード4-13のBankAccountV3に機能を足しています。
-口座の状態は、`STATUS_ACTIVE`などの文字列の定数で表します。
-出金に失敗した回数を数え、3回続けて失敗すると口座を自動で一時停止します。
-`deposit`と`withdraw`では、`super.deposit(amount)`のようにBankAccountV3の処理をそのまま呼び出し、その前後に状態の確認や記録を付け加えています。
-こうすると、入出金の基本の動作を保ったまま機能を拡張できます。
+防御的コピーは、第6章「不変性とfinalキーワード」で不変オブジェクトの設計とあわせて詳しく学びます。
 
 ### クラス設計のベストプラクティス
 
@@ -780,7 +726,7 @@ Javaにおけるパッケージは、関連するクラスやインターフェ�
 
 Javaの言語仕様では、パッケージ名の衝突を避けるため、インターネットドメイン名を逆順にした命名規則が推奨されています。
 
-<span class="listing-number">**サンプルコード4-16**</span>
+<span class="listing-number">**サンプルコード4-15**</span>
 
 ```java
 // ドメイン名: example.com
@@ -823,7 +769,7 @@ src/
 
 パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します。
 
-<span class="listing-number">**サンプルコード4-17**</span>
+<span class="listing-number">**サンプルコード4-16**</span>
 
 ```java
 // 完全限定名での使用
@@ -841,7 +787,7 @@ List<String> names = new ArrayList<>();
 import文の種類。
 
 1. 単一型インポート。
-<span class="listing-number">**サンプルコード4-18**</span>
+<span class="listing-number">**サンプルコード4-17**</span>
 
 ```java
 import java.util.Scanner;  // Scannerクラスのみインポート
@@ -850,7 +796,7 @@ import java.util.Scanner;  // Scannerクラスのみインポート
 これは単一型インポートの例です。
 
 2. オンデマンドインポート。
-<span class="listing-number">**サンプルコード4-19**</span>
+<span class="listing-number">**サンプルコード4-18**</span>
 
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
@@ -859,7 +805,7 @@ import java.util.*;  // java.utilパッケージのすべてのクラスをイ�
 これはオンデマンドインポートの例です。
 
 3. 静的インポート。
-<span class="listing-number">**サンプルコード4-20**</span>
+<span class="listing-number">**サンプルコード4-19**</span>
 
 ```java
 import static java.lang.Math.PI;
@@ -875,7 +821,7 @@ double result = sqrt(16);                 // Math.sqrt と書く必要がない
 
 異なるパッケージに同名のクラスが存在する場合、明示的な指定が必要です。
 
-<span class="listing-number">**サンプルコード4-21**　Example.java</span>
+<span class="listing-number">**サンプルコード4-20**　Example.java</span>
 
 ```java
 import java.util.*;
@@ -902,7 +848,7 @@ public class Example {
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます。
 
-<span class="listing-number">**サンプルコード4-22**</span>
+<span class="listing-number">**サンプルコード4-21**</span>
 
 ```java
 com.example.myapp/
@@ -934,7 +880,7 @@ com.example.myapp/
 
 実務では、コンストラクタでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
 
-<span class="listing-number">**サンプルコード4-23**　User.java</span>
+<span class="listing-number">**サンプルコード4-22**　User.java</span>
 
 ```java
 public class User {
@@ -967,7 +913,7 @@ public class User {
 
 使用例と実行結果：
 
-<span class="listing-number">**サンプルコード4-24**　UserTest.java</span>
+<span class="listing-number">**サンプルコード4-23**　UserTest.java</span>
 
 ```java
 // UserTest.java
@@ -1002,11 +948,13 @@ public class UserTest {
 エラー: ユーザー名は3文字以上である必要があります
 ```
 
-#### 複数のコンストラクタ（オーバーロード）
+#### コンストラクタから別のコンストラクタを呼び出す
 
-クラスには複数のコンストラクタを定義できます。これをコンストラクタオーバーロードといいます。
+第3章で学んだように、クラスには複数のコンストラクタを定義できます（コンストラクタのオーバーロード）。
+コンストラクタで`this(...)`と書くと、同じクラスの別のコンストラクタを呼び出せます。
+次の例では、引数の少ないコンストラクタが、足りない値を補ってすべての引数を受け取るコンストラクタを呼び出しています。
 
-<span class="listing-number">**サンプルコード4-25**　Book.java</span>
+<span class="listing-number">**サンプルコード4-24**　Book.java</span>
 
 ```java
 public class Book {
@@ -1045,7 +993,7 @@ public class Book {
 
 複雑なオブジェクト構築で、`this`を返すことで流暢なインターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード4-26**</span>
+<span class="listing-number">**サンプルコード4-25**</span>
 
 ```java
 public class EmailBuilder {
@@ -1089,12 +1037,14 @@ Email email = new EmailBuilder()
 ```
 
 これはビルダーパターンを使った流暢なインターフェイスの例です。
+ここでは、メソッドが`this`を返すと呼び出しをつなげて書ける点に注目してください。
+ビルダーパターンそのものは、第6章「不変性とfinalキーワード」で不変オブジェクトを組み立てる方法として学びます。
 
 #### 高度なコンストラクタチェーン
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクタに集約し、他のコンストラクタはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-27**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
+<span class="listing-number">**サンプルコード4-26**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
 
 ```java
 public class DatabaseConfig {
@@ -1139,12 +1089,9 @@ public class DatabaseConfig {
 
 イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
 
-<span class="listing-number">**サンプルコード4-28**　EventProcessor.java</span>
+<span class="listing-number">**サンプルコード4-27**　EventProcessor.java</span>
 
 ```java
-import java.util.List;
-import java.util.ArrayList;
-
 public class EventProcessor {
     private String name;
     
@@ -1163,15 +1110,19 @@ public class EventProcessor {
     }
 }
 class EventManager {
-    private static List<EventProcessor> processors = new ArrayList<>();
+    private static EventProcessor[] processors = new EventProcessor[10];
+    private static int count = 0;  // 登録済みの数
     
     public static void register(EventProcessor processor) {
-        processors.add(processor);
+        if (count < processors.length) {
+            processors[count] = processor;
+            count++;
+        }
     }
     
     public static void fireEvent(String event) {
-        for (EventProcessor processor : processors) {
-            processor.handleEvent(event);
+        for (int i = 0; i < count; i++) {
+            processors[i].handleEvent(event);
         }
     }
 }
@@ -1188,7 +1139,7 @@ class EventManager {
 次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
 ここでは、HTTPのヘッダー名と値の組をまとめて渡すための引数と考えてください。
 
-<span class="listing-number">**サンプルコード4-29**　HttpClient.java</span>
+<span class="listing-number">**サンプルコード4-28**　HttpClient.java</span>
 
 ```java
 import java.util.Map;
@@ -1217,7 +1168,7 @@ public class HttpClient {
 
 異なるデータ型に対応しながら、型安全性を維持します。
 
-<span class="listing-number">**サンプルコード4-30**　Logger.java</span>
+<span class="listing-number">**サンプルコード4-29**　Logger.java</span>
 
 ```java
 public class Logger {
@@ -1274,7 +1225,7 @@ public class Logger {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-31**</span>
+<span class="listing-number">**サンプルコード4-30**</span>
 
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
@@ -1310,7 +1261,7 @@ public class UserManager {
 さらに、複数の開発者が同じクラスを修正することになり、変更が競合しやすくなります。
 
 #### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-32**</span>
+<span class="listing-number">**サンプルコード4-31**</span>
 
 ```java
 // 責任を分離したクラス設計
@@ -1375,7 +1326,7 @@ public class AuthenticationService {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-33**</span>
+<span class="listing-number">**サンプルコード4-32**</span>
 
 ```java
 public class BankAccount {
@@ -1401,7 +1352,7 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
 さらに、複数のスレッドから同時に使うと、`getBalance`で読んでから`setBalance`で書き戻すまでの間に別のスレッドが残高を変え、その変更が失われることがあります。
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-34**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード4-33**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -1477,7 +1428,7 @@ public class BankAccount {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-35**</span>
+<span class="listing-number">**サンプルコード4-34**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1516,68 +1467,12 @@ Teamとは関係のない箇所でリストを変更しただけで、Teamの中
 
 #### 解決方法：防御的コピー
 
-<span class="listing-number">**サンプルコード4-36**</span>
+解決するには、コンストラクタで受け取ったリストをそのまま保存せず、`new ArrayList<>(members)`でコピーを作って保存します。
+getterでも、内部のリストではなくコピーを返します。
+サンプルコード4-13の`getTransactionHistory`と同じ防御的コピーです。
+こうすると、外部でリストを変更してもTeamの中身は変わらず、メンバーを変更する手段をTeamのメソッドに限定できます。
 
-```java
-import java.util.ArrayList;
-import java.util.List;
-
-public class Team {
-    private List<String> members;
-    
-    public Team(List<String> members) {
-        // 防御的コピー（コンストラクタ）
-        this.members = new ArrayList<>(members);
-    }
-    
-    public List<String> getMembers() {
-        // 防御的コピー（getter）
-        return new ArrayList<>(members);
-    }
-    
-    // 正しい方法でメンバーを追加
-    public void addMember(String member) {
-        if (member != null && !member.trim().isEmpty()) {
-            members.add(member);
-        }
-    }
-    
-    // 正しい方法でメンバーを削除
-    public boolean removeMember(String member) {
-        return members.remove(member);
-    }
-}
-```
-
-#### 解決策のメリット
-
-コンストラクタとgetterでコピーを作ると、Teamの内部のリストに外部から触れられなくなります。
-外部でリストを変更してもTeamの中身は変わらないので、Teamの動作を予測しやすくなり、不変条件も保てます。
-メンバーを変更できるのは`addMember`と`removeMember`だけなので、不具合が起きたときに調べる箇所も限られます。
-防御的コピーだけでスレッドセーフになるわけではありませんが、明示的な同期と組み合わせやすくなります。
-
-#### 解決策のデメリット
-
-一方で、コピーを作るたびに処理の時間がかかり、複製したオブジェクトのぶんメモリも多く使います。
-要素がさらに可変オブジェクトを持っていて深いコピーが必要な場合は、実装が複雑になります。
-また、防御的コピーは、可変オブジェクトを受け渡すすべての箇所で忘れずに書かなければなりません。
-
-#### 防御的プログラミングのガイドライン
-
-1. コンストラクタでの防御
-   - 可変オブジェクトは必ずコピー
-   - nullチェックと検証を実施
-   - 不変オブジェクトの使用を検討
-
-2. getterでの防御
-   - コレクションは新しいインスタンスを返す
-   - 日付などの可変オブジェクトもコピー
-   - 読み取り専用ビューの提供も検討
-
-3. パフォーマンスとのバランス
-   - 小さなコレクションなら防御的コピー
-   - 大きなデータは読み取り専用ビュー
-   - イミュータブルコレクションの活用
+防御的コピーの実装例と、どのような場合にコピーが必要になるかは、第6章「不変性とfinalキーワード」で詳しく学びます。
 
 ## よくあるエラーと対処法
 

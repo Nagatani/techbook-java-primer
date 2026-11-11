@@ -1,7 +1,7 @@
 // 問題点が露呈する使用例
 public class StackProblem {
     public static void main(String[] args) {
-        MyStack<String> stack = new MyStack<>();
+        MyStack stack = new MyStack();
         stack.push("first");
         stack.push("second");
         stack.push("third");

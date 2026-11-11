@@ -1,6 +1,3 @@
-import java.util.List;
-import java.util.ArrayList;
-
 public class EventProcessor {
     private String name;
     
@@ -19,15 +16,19 @@ public class EventProcessor {
     }
 }
 class EventManager {
-    private static List<EventProcessor> processors = new ArrayList<>();
+    private static EventProcessor[] processors = new EventProcessor[10];
+    private static int count = 0;  // 登録済みの数
     
     public static void register(EventProcessor processor) {
-        processors.add(processor);
+        if (count < processors.length) {
+            processors[count] = processor;
+            count++;
+        }
     }
     
     public static void fireEvent(String event) {
-        for (EventProcessor processor : processors) {
-            processor.handleEvent(event);
+        for (int i = 0; i < count; i++) {
+            processors[i].handleEvent(event);
         }
     }
 }

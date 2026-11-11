@@ -2,21 +2,21 @@
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
-public class MyStack<E> {
-    private final ArrayList<E> elements = new ArrayList<>(); // privateで隠蔽
+public class MyStack {
+    private final ArrayList<String> elements = new ArrayList<>(); // privateで隠蔽
     
-    public void push(E item) {
+    public void push(String item) {
         elements.add(item);
     }
     
-    public E pop() {
+    public String pop() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
         return elements.remove(elements.size() - 1);
     }
     
-    public E peek() {
+    public String peek() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }

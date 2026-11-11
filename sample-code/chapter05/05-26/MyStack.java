@@ -2,19 +2,19 @@
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
-public class MyStack<E> extends ArrayList<E> {
-    public void push(E item) {
+public class MyStack extends ArrayList<String> {
+    public void push(String item) {
         add(item);
     }
     
-    public E pop() {
+    public String pop() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
         return remove(size() - 1);
     }
     
-    public E peek() {
+    public String peek() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }

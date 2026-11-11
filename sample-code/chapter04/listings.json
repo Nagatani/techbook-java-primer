@@ -85,52 +85,39 @@
       { "file": "BankAccountV3.java", "from": 52, "to": 56 }
     ]
   },
-  "4-15": {
-    "dir": "04-15",
-    "main": null,
-    "excerpt": [
-      { "file": "EnhancedBankAccount.java", "from": 3, "to": 8 },
-      { "file": "EnhancedBankAccount.java", "from": 15, "to": 21 },
-      { "file": "EnhancedBankAccount.java", "from": 23, "to": 54 },
-      { "file": "EnhancedBankAccount.java", "from": 68, "to": 68 }
-    ],
-    "uses": [
-      "4-10"
-    ]
-  },
-  "4-21": {
-    "dir": "04-21",
+  "4-20": {
+    "dir": "04-20",
     "main": null,
     "excerpt": [
       { "file": "Example.java", "from": 1, "to": 16 }
     ]
   },
-  "4-23": {
-    "dir": "04-23",
+  "4-22": {
+    "dir": "04-22",
     "main": null,
     "excerpt": [
       { "file": "User.java", "from": 1, "to": 26 }
     ]
   },
-  "4-24": {
-    "dir": "04-24",
+  "4-23": {
+    "dir": "04-23",
     "main": "UserTest",
     "excerpt": [
       { "file": "UserTest.java", "from": 1, "to": 22 }
     ],
     "uses": [
-      "4-23"
+      "4-22"
     ]
   },
-  "4-25": {
-    "dir": "04-25",
+  "4-24": {
+    "dir": "04-24",
     "main": null,
     "excerpt": [
       { "file": "Book.java", "from": 1, "to": 24 }
     ]
   },
-  "4-27": {
-    "dir": "04-27",
+  "4-26": {
+    "dir": "04-26",
     "main": null,
     "excerpt": [
       { "file": "DatabaseConfig.java", "from": 1, "to": 4 },
@@ -139,29 +126,29 @@
       { "file": "DatabaseConfig.java", "from": 31, "to": 44 }
     ]
   },
+  "4-27": {
+    "dir": "04-27",
+    "main": null,
+    "excerpt": [
+      { "file": "EventProcessor.java", "from": 1, "to": 34 }
+    ]
+  },
   "4-28": {
     "dir": "04-28",
     "main": null,
     "excerpt": [
-      { "file": "EventProcessor.java", "from": 1, "to": 33 }
+      { "file": "HttpClient.java", "from": 1, "to": 20 }
     ]
   },
   "4-29": {
     "dir": "04-29",
     "main": null,
     "excerpt": [
-      { "file": "HttpClient.java", "from": 1, "to": 20 }
-    ]
-  },
-  "4-30": {
-    "dir": "04-30",
-    "main": null,
-    "excerpt": [
       { "file": "Logger.java", "from": 1, "to": 29 }
     ]
   },
-  "4-34": {
-    "dir": "04-34",
+  "4-33": {
+    "dir": "04-33",
     "main": null,
     "excerpt": [
       { "file": "BankAccount.java", "from": 1, "to": 32 }

@@ -311,18 +311,6 @@
     "overflows": [],
     "collisions": []
   },
-  "chapter18-edt": {
-    "minFont": 16,
-    "overlaps": [],
-    "overflows": [],
-    "collisions": []
-  },
-  "chapter18-event-model": {
-    "minFont": 16,
-    "overlaps": [],
-    "overflows": [],
-    "collisions": []
-  },
   "chapter17-gridlayout": {
     "minFont": 16,
     "overlaps": [],
@@ -330,6 +318,18 @@
     "collisions": []
   },
   "chapter17-swing-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter18-edt": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter18-event-model": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],
