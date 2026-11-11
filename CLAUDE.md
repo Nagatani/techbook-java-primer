@@ -123,6 +123,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 索引・用語集（`theme/my-theme/glossary-theme.css`）は色の帯を使わず、小さめの文字の2段組みにし、ノンブルと柱（「索引」）を付ける。原稿は「- **用語** - 第N章」の形のまま（`check:structure`が読む）で、ビルド時に`scripts/vfm-index-entries.js`が用語と参照先に分ける
    - 引用とコラム（`> **コラム：…**{.column-section}`）の余白は枠の側だけに付け、中の段落には付けない。コードブロックの上下の余白は半行。ビルド時に`scripts/vfm-code-lines.js`（`documentProcessor`に組み込み）がコードを1行ずつの`span.code-line`に分け、折り返した続きの行をその行の字下げ＋4文字の位置から始め、縞模様も行ごとに付ける。コードの色分けでは背景や余白を付けない（等幅のそろいが崩れる）
    - コードブロックは前に空行を入れる。VFMでは空行なしで段落に続く```がコードブロックにならず、段落に吸収される（2026-11-10に123か所を修正）
+   - コードの地は印刷用の設定（`@media print`の`pre`）で明るい色に固定される。コードの文字色は暗い地を前提にした淡い色を使わず、明るい地でコントラスト比4.5以上にする（2026-11-11に、bashのブロックを暗い地に明るい文字にしていたため、PDFで文字が背景に溶けて読めなかった。bashのブロックは左の緑の線で区別する）
    - テーマは`theme/my-theme/theme.css`。変更したら`npm run build`でPDFを確認する
 
 ## Git運用
