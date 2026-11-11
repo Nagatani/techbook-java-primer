@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" width="880" height="560">
+  <!-- 表紙の模様: 継承関係でつながったクラスの箱（クラス図）を線で描く -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.8" fill="#8da9c4" fill-opacity="0.16"/>
+    </pattern>
+    <g id="cls">
+      <rect x="0" y="0" width="150" height="100" rx="3" fill="#0e2a4a"/>
+      <rect x="0" y="0" width="150" height="100" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+      <line x1="0" y1="30" x2="150" y2="30" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="0" y1="64" x2="150" y2="64" stroke="currentColor" stroke-width="1.5"/>
+      <rect x="40" y="12" width="70" height="7" rx="3.5" fill="currentColor" fill-opacity="0.8"/>
+      <rect x="14" y="40" width="80" height="5" rx="2.5" fill="currentColor" fill-opacity="0.5"/>
+      <rect x="14" y="51" width="56" height="5" rx="2.5" fill="currentColor" fill-opacity="0.5"/>
+      <rect x="14" y="74" width="96" height="5" rx="2.5" fill="currentColor" fill-opacity="0.5"/>
+      <rect x="14" y="85" width="66" height="5" rx="2.5" fill="currentColor" fill-opacity="0.5"/>
+    </g>
+    <path id="tri" d="M0 0 L-11 18 L11 18 Z" fill="#0e2a4a" stroke="currentColor" stroke-width="2"/>
+    <radialGradient id="fade" cx="0.7" cy="0.6" r="0.6">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="fadeMask"><rect width="880" height="560" fill="url(#fade)"/></mask>
+  </defs>
+  <rect width="880" height="560" fill="url(#grid)" mask="url(#fadeMask)"/>
+  <g fill="none" stroke="#8da9c4" stroke-opacity="0.6" stroke-width="2" color="#8da9c4">
+    <!-- 線（子の上辺から親の下辺へ） -->
+    <path d="M595 148 V190 M405 230 V190 H785 V230"/>
+    <path d="M405 348 V390 M275 430 V390 H495 V430"/>
+    <path d="M785 348 V390 M695 430 V390 H875 V430"/>
+  </g>
+  <g color="#8da9c4" opacity="0.7">
+    <use href="#tri" x="595" y="130"/>
+    <use href="#tri" x="405" y="330"/>
+    <use href="#tri" x="785" y="330"/>
+    <use href="#cls" x="520" y="30"/>
+    <use href="#cls" x="710" y="230"/>
+    <use href="#cls" x="200" y="430"/>
+    <use href="#cls" x="420" y="430"/>
+    <use href="#cls" x="620" y="430"/>
+    <use href="#cls" x="800" y="430"/>
+  </g>
+  <!-- 1つだけ明るい色で示す -->
+  <g color="#f2a65a">
+    <use href="#cls" x="330" y="230"/>
+  </g>
+</svg>
