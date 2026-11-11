@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
 public class TextBlockStructuredData {
     public static void main(String[] args) throws IOException {
@@ -158,16 +159,18 @@ public class TextBlockStructuredData {
         // 生成されたファイルの一覧表示
         IO.println("\n=== 生成されたファイル一覧 ===");
         Path currentDir = Paths.get(".");
-        Files.list(currentDir).sorted()  // 並び順はOSによって異なるため名前順にする
-                .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))
-                .forEach(p -> {
-                    try {
-                        long size = Files.size(p);
-                        IO.println("%-20s (%d bytes)".formatted(
-                                p.getFileName(), size));
-                    } catch (IOException e) {
-                        IO.println(p.getFileName() + " (サイズ取得エラー)");
-                    }
-                });
+        try (Stream<Path> files = Files.list(currentDir)) {  // ストリームを閉じる
+            files.sorted()  // 並び順はOSによって異なるため名前順にする
+                    .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))
+                    .forEach(p -> {
+                        try {
+                            long size = Files.size(p);
+                            IO.println("%-20s (%d bytes)".formatted(
+                                    p.getFileName(), size));
+                        } catch (IOException e) {
+                            IO.println(p.getFileName() + " (サイズ取得エラー)");
+                        }
+                    });
+        }
     }
 }

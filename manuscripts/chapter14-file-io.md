@@ -447,6 +447,8 @@ public class SerializationExample {
 復元されたオブジェクト: User[name=testuser, pw=null, date=2025-08-01T20:58:13.831566]
 ```
 
+`date`の値は、プログラムを実行した日時になります。
+
 ## ファイルシステムの操作 (NIO.2)
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、よりモダンで高機能なファイル・ディレクトリ操作が可能です。
@@ -881,7 +883,7 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
-<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java（8〜40、172〜173行目）</span>
+<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java（9〜41、175〜176行目）</span>
 
 ```java
 public class TextBlockStructuredData {
@@ -979,7 +981,8 @@ user_query.sql       (449 bytes)
 ```
 
 HTMLファイルのパスは、プログラムを実行したディレクトリによって変わります。
-ファイル一覧の順序は、OSやファイルシステムによって異なることがあります。
+JSONの日時は、プログラムを実行した日時になります。
+ファイル一覧は、OSによって順序が変わらないように名前順に並べ替えて表示しています。
 
 ### ファイルI/Oでの活用例
 
