@@ -25,22 +25,29 @@ class Child extends Parent {
 解決策:
 
 ```java
+class Parent {
+    public Parent(String name) {
+        IO.println("Parent コンストラクタ: " + name);
+    }
+}
+
 class Child extends Parent {
     public Child() {
         super("default");  // 明示的に親のコンストラクタを呼び出す
+        IO.println("Child コンストラクタ");
     }
 }
 ```
 
-実行結果：
+`new Child()`を実行した結果：
 ```
-Parent30 コンストラクタ: default
-Child31 コンストラクタ
+Parent コンストラクタ: default
+Child コンストラクタ
 ```
 
 重要なポイント:
 - 親クラスにパラメータ付きコンストラクタのみがある場合は明示的なsuper()が必要
-- super()は必ずコンストラクタの最初に記述
+- super()の前には、作成中のオブジェクト（this）を使わない処理しか書けない（Java 25より前は、コンストラクタの最初に書く必要があった）
 - デフォルトコンストラクタは自動生成されない
 
 ### 2. オーバーライドエラー
@@ -99,22 +106,41 @@ Child c = (Child) p;  // 実行時エラー：ParentはChildではない
 解決策:
 
 ```java
-// instanceof使用
-if (p instanceof Child) {
-    Child c = (Child) p;
+class Parent { }
+
+class Child extends Parent {
+    void childMethod() {
+        IO.println("Child 固有メソッド");
+    }
 }
 
-// パターンマッチング（Java 16以降）
-if (p instanceof Child child) {
-    child.childMethod();
+public class CastExample {
+    public static void main(String[] args) {
+        Parent p1 = new Parent();
+        Parent p2 = new Child();
+
+        // instanceof使用
+        if (p1 instanceof Child) {
+            Child c = (Child) p1;
+            c.childMethod();
+        } else {
+            IO.println("p1はChildではないため、キャストできません");
+        }
+
+        // パターンマッチング（Java 16以降）
+        if (p2 instanceof Child child) {
+            IO.println("p2はChildにキャスト可能");
+            child.childMethod();
+        }
+    }
 }
 ```
 
 実行結果：
 ```
-p1はChild34ではないため、キャストできません
-p2はChild34にキャスト可能
-Child34 固有メソッド
+p1はChildではないため、キャストできません
+p2はChildにキャスト可能
+Child 固有メソッド
 ```
 
 重要なポイント:

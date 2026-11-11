@@ -19,7 +19,7 @@ public final class ImmutablePerson {
     }
     
     public List<String> getHobbies() {
-        // 防御的コピーを返却
-        return Collections.unmodifiableList(hobbies);
+        // コンストラクタで変更できないリストにしてあるので、そのまま返せる
+        return hobbies;
     }
 }

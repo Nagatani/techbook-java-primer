@@ -17,12 +17,24 @@ public class User {
 User user = new User();  // エラー：引数なしコンストラクタがない
 
 // エラー例2：戻り値型を指定
-public void User() { }  // エラー：コンストラクタに戻り値型
+public class User {
+    private String name;
+    public void User() {  // コンストラクタではなく、Userという名前の普通のメソッドになる
+        this.name = "Unknown";
+    }
+}
+User user = new User();  // コンパイルは通るが、nameはnullのまま
 ```
+
+エラー例2はコンパイルエラーになりません。
+戻り値型を書くと、クラスと同じ名前の普通のメソッドとして扱われます。
+コンストラクタのつもりで書いた初期化の処理が、インスタンスを作るときに実行されません。
 
 解決策:
 ```java
 public class User {
+    private String name;
+
     // デフォルトコンストラクタを明示的に定義
     public User() {
         this("Unknown");
@@ -36,7 +48,7 @@ public class User {
 
 重要なポイント:
 - カスタムコンストラクタを定義すると、デフォルトコンストラクタは自動生成されない
-- コンストラクタには戻り値型を指定しない
+- コンストラクタには戻り値型を指定しない（`void`を付けるとメソッドになる）
 - this()でコンストラクタチェーンを活用
 
 ### 2. NullPointerException完全ガイド

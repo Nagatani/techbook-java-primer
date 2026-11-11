@@ -88,6 +88,8 @@ public class InitializedFinalExample {
 ### エラー例: 可変フィールドの露出
 
 ```java
+import java.util.List;
+
 public final class BrokenImmutablePerson {
     private final String name;
     private final List<String> hobbies; // 問題: 可変コレクション
@@ -106,12 +108,13 @@ public final class BrokenImmutablePerson {
 #### 問題点
 
 ```java
-List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
+List<String> hobbies = new ArrayList<>(List.of("読書", "映画鑑賞"));
 BrokenImmutablePerson person = new BrokenImmutablePerson("太郎", hobbies);
 
 // 不変性が破られる
-person.getHobbies().add("ゲーム"); // UnsupportedOperationException（Arrays.asListは要素の追加ができない）
-hobbies.set(0, "スポーツ"); // 元オブジェクトの状態が変わる
+person.getHobbies().add("ゲーム"); // 受け取ったリストから、personの内部の状態を変更できる
+hobbies.set(0, "スポーツ"); // 渡した元のリストを変更すると、personの状態も変わる
+IO.println(person.getHobbies()); // [スポーツ, 映画鑑賞, ゲーム]
 ```
 
 #### 対処法
@@ -140,8 +143,8 @@ public final class ImmutablePerson {
     }
     
     public List<String> getHobbies() {
-        // 防御的コピーを返却
-        return Collections.unmodifiableList(hobbies);
+        // コンストラクタで変更できないリストにしてあるので、そのまま返せる
+        return hobbies;
     }
 }
 ```
@@ -392,16 +395,16 @@ public final class ImmutablePerson { // finalクラス
 
 ### エラー例: 不必要な防御的コピー
 
-コンパイルできる全文：[chapter06-code/IneffientImmutableClass/](chapter06-code/IneffientImmutableClass/)
+コンパイルできる全文：[chapter06-code/InefficientImmutableClass/](chapter06-code/InefficientImmutableClass/)
 
 ```java
 import java.util.ArrayList;
 import java.util.List;
 
-public final class IneffientImmutableClass {
+public final class InefficientImmutableClass {
     private final List<String> items;
     
-    public IneffientImmutableClass(List<String> items) {
+    public InefficientImmutableClass(List<String> items) {
         this.items = new ArrayList<>(items); // 防御的コピー
     }
     
@@ -446,33 +449,27 @@ public final class EfficientImmutableClass {
 }
 ```
 
-#### 大量データの場合の最適化
+#### List.copyOfを使う方法（Java 10以降）
+
+`List.copyOf`は、渡したコレクションの要素を持つ変更できないリストを作ります。
+渡したものが`List.copyOf`や`List.of`で作った変更できないリストであれば、通常はコピーせずにそのまま返すので、不変オブジェクトどうしでリストを受け渡しても無駄なコピーが増えません。
+要素に`null`を含むと`NullPointerException`になる点に注意します。
 
 コンパイルできる全文：[chapter06-code/OptimizedImmutableClass/](chapter06-code/OptimizedImmutableClass/)
 
 ```java
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public final class OptimizedImmutableClass {
     private final List<String> items;
-    private volatile List<String> cachedView; // 遅延初期化（volatileはスレッド間での可視性を保証）
     
     public OptimizedImmutableClass(Collection<String> items) {
-        this.items = new ArrayList<>(items);
+        this.items = List.copyOf(items); // 変更できないリストを作る（防御的コピーを兼ねる）
     }
     
     public List<String> getItems() {
-        if (cachedView == null) {
-            synchronized (this) {
-                if (cachedView == null) {
-                    cachedView = Collections.unmodifiableList(items);
-                }
-            }
-        }
-        return cachedView;
+        return items; // 変更できないリストなのでそのまま返せる
     }
 }
 ```

@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public final class IneffientImmutableClass {
+public final class InefficientImmutableClass {
     private final List<String> items;
     
-    public IneffientImmutableClass(List<String> items) {
+    public InefficientImmutableClass(List<String> items) {
         this.items = new ArrayList<>(items); // 防御的コピー
     }
     
