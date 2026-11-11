@@ -21,6 +21,7 @@
 | `diagram-size.js` | `check:diagrams`（CI） | 図を紙面に載せる大きさ（いちばん小さい文字が10Qになる倍率、本文の幅と高さ150mmが上限）を決める。直接実行すると、元データ・画像・原稿の対応、図ごとの文字の大きさ（9Q未満は注意）、線と文字の重なりなどを検査する |
 | `diagram-metrics.js` | `mermaid:convert`から呼ばれる | 図をブラウザで開き、いちばん小さい文字の大きさ、線が文字の上を通る箇所、文字が箱からはみ出す箇所、ラベルどうしの重なりを測って`docs/diagrams/.diagram-metrics.json`に書く |
 | `vfm-figure-size.js` | `build`（`documentProcessor`） | 図の`<img>`に`diagram-size.js`で決めた幅と高さを書き込む |
+| `vfm-line-breaks.js` | `build`（`documentProcessor`） | 両端揃えで字間が大きく開かないようにする。和文に接する原稿の改行（HTMLではスペースになる）を取り除き、インラインコード・URL・本文に書いた長い名前に折り返し位置（`<wbr>`）を入れる |
 
 ## 修正の補助
 
