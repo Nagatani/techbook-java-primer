@@ -9,7 +9,7 @@ public final class DateRange {
     private final List<LocalDate> holidays;
     
     public DateRange(LocalDate start, LocalDate end, List<LocalDate> holidays) {
-        // パラメータの検証
+        // パラメーターの検証
         if (start == null || end == null) {
             throw new IllegalArgumentException("日付はnullにできません");
         }

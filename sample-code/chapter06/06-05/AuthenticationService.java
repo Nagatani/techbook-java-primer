@@ -1,4 +1,4 @@
-public class SecurityManager {
+public class AuthenticationService {
     // テンプレートメソッドパターンでfinalを使用
     public final boolean authenticate(String username, String password) {
         // 認証の基本フローは変更させない

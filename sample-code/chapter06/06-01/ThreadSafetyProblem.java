@@ -28,7 +28,7 @@ public class ThreadSafetyProblem {
             System.err.println("スレッドの待機が中断されました");
         }
         
-        // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
+        // 期待値: 2000, 実際の値: 予測不可能（2000より小さくなることがある）
         IO.println("X座標: " + point.getX());
     }
 }

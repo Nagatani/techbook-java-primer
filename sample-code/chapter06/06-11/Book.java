@@ -10,7 +10,7 @@ public final class Book {
     private final int pages;
     private final String genre;
     
-    // プライベートコンストラクタ
+    // プライベートコンストラクター
     private Book(Builder builder) {
         this.isbn = builder.isbn;
         this.title = builder.title;
@@ -23,18 +23,18 @@ public final class Book {
     
     // ビルダークラス
     public static class Builder {
-        // 必須パラメータ
+        // 必須パラメーター
         private final String isbn;
         private final String title;
         
-        // オプションパラメータ（デフォルト値を設定）
+        // オプションパラメーター（デフォルト値を設定）
         private String author = "Unknown";
         private String publisher = "";
         private int publicationYear = 0;
         private int pages = 0;
         private String genre = "General";
         
-        // 必須パラメータのコンストラクタ
+        // 必須パラメーターのコンストラクター
         public Builder(String isbn, String title) {
             if (isbn == null || isbn.trim().isEmpty()) {
                 throw new IllegalArgumentException("ISBNは必須です");
@@ -46,7 +46,7 @@ public final class Book {
             this.title = title;
         }
         
-        // オプションパラメータのセッター（メソッドチェーン）
+        // オプションパラメーターのセッター（メソッドチェーン）
         public Builder author(String author) {
             this.author = author;
             return this;

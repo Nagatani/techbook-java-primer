@@ -12,7 +12,7 @@ public class Constants {
     
     public Constants(String id) {
         this.id = id;
-        this.createdAt = LocalDateTime.now();  // コンストラクタで初期化
+        this.createdAt = LocalDateTime.now();  // コンストラクターで初期化
     }
     
     // finalローカル変数

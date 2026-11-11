@@ -9,7 +9,7 @@ public final class ImmutablePerson {
     private final List<String> hobbies;
     
     public ImmutablePerson(String name, int age, List<String> hobbies) {
-        // パラメータの検証
+        // パラメーターの検証
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("名前は必須です");
         }

@@ -8,7 +8,7 @@ public class ImmutableExample {
         List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
         ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
         
-        // コンストラクタに渡したリストを変更しても、オブジェクトには影響しない
+        // コンストラクターに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
         IO.println(person.getHobbies()); // [読書, 映画鑑賞]
         

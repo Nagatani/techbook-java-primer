@@ -19,7 +19,7 @@ javac -d out *.java
 | [6-1](./06-01/) | MutablePoint.java<br>ThreadSafetyProblem.java | `java -cp out ThreadSafetyProblem` |
 | [6-3](./06-03/) | ImmutablePoint.java | （mainメソッドなし） |
 | [6-4](./06-04/) | Constants.java | （mainメソッドなし） |
-| [6-5](./06-05/) | SecurityManager.java | （mainメソッドなし） |
+| [6-5](./06-05/) | AuthenticationService.java | （mainメソッドなし） |
 | [6-6](./06-06/) | ImmutablePerson.java | （mainメソッドなし） |
 | [6-7](./06-07/) | ImmutableExample.java<br>ImmutablePerson.java | `java -cp out ImmutableExample` |
 | [6-9](./06-09/) | DateRange.java | （mainメソッドなし） |

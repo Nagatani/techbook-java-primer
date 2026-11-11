@@ -11,7 +11,7 @@
 3. 不変オブジェクトの設計
     - 設計ルール、防御的コピー、ビルダーパターンの活用
 4. 実践的な実装技術
-    - 可変オブジェクトの安全な扱い、パフォーマンスとのトレードオフ
+    - 可変オブジェクトの安全な扱い、Recordによる不変クラスの簡潔な書き方
 
 ### この章を始める前に
 
@@ -29,9 +29,10 @@
 
 #### 1. マルチスレッド環境での競合状態
 
-複数のスレッドが同じ可変オブジェクトのフィールドを同時に更新する場合の競合状態を示します。MutablePointクラスのsetterメソッドは同期化されていないため、複数のスレッドが同時にアクセスすると、期待した結果が得られません。
+複数のスレッドが同じ可変オブジェクトのフィールドを同時に更新する場合の競合状態を示します。
+`MutablePoint`クラスのsetterメソッドは同期化されていないため、複数のスレッドが同時にアクセスすると、期待した結果が得られません。
 
-スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数インターフェイス」で詳しく学びます。
+スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数型インターフェイス」で詳しく学びます。
 ここでは、「2つの処理が同時に動き、同じオブジェクトを書き換えている」ことだけを読み取ってください。
 
 <span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜3、11〜15行目）、ThreadSafetyProblem.java（1〜21、30〜34行目）</span>
@@ -70,7 +71,7 @@ public class ThreadSafetyProblem {
         
         // ...
         
-        // 期待値: 2000, 実際の値: 予測不可能（1000～2000の間）
+        // 期待値: 2000, 実際の値: 予測不可能（2000より小さくなることがある）
         IO.println("X座標: " + point.getX());
     }
 }
@@ -85,14 +86,16 @@ X座標: 1328
 
 #### 2. 意図しない副作用
 
-以下のコードは、可変オブジェクトの参照を直接返すことで発生する副作用の問題を示しています。getLocationメソッドが内部状態への参照を返すため、呼び出し側が意図せずEmployeeオブジェクトの内部状態を変更できてしまいます。これはカプセル化の破壊につながる深刻な問題です。
+以下のコードは、可変オブジェクトの参照を直接返すことで発生する副作用の問題を示しています。
+`getLocation`メソッドが内部状態への参照を返すため、呼び出し側が意図せず`Employee`オブジェクトの内部状態を変更できてしまいます。
+これはカプセル化の破壊につながる深刻な問題です。
 
 <span class="listing-number">**サンプルコード6-2**</span>
 
 ```java
 // 可変オブジェクトを返すメソッドの問題
 public class Employee {
-    private MutablePoint location;
+    private MutablePoint location = new MutablePoint(0, 0);
     
     public MutablePoint getLocation() {
         return location;  // 可変オブジェクトへの参照を返す
@@ -175,7 +178,7 @@ public class Constants {
     
     public Constants(String id) {
         this.id = id;
-        this.createdAt = LocalDateTime.now();  // コンストラクタで初期化
+        this.createdAt = LocalDateTime.now();  // コンストラクターで初期化
     }
     
     // finalローカル変数
@@ -191,6 +194,7 @@ public class Constants {
 ```
 
 #### final変数の初期化タイミング
+
 - 宣言時
     + `final int x = 10;`
 - コンストラクター内
@@ -204,10 +208,10 @@ public class Constants {
 
 `final`をメソッドに付けると、サブクラスでそのメソッドをオーバーライドできなくなります。
 
-<span class="listing-number">**サンプルコード6-5**　SecurityManager.java</span>
+<span class="listing-number">**サンプルコード6-5**　AuthenticationService.java</span>
 
 ```java
-public class SecurityManager {
+public class AuthenticationService {
     // テンプレートメソッドパターンでfinalを使用
     public final boolean authenticate(String username, String password) {
         // 認証の基本フローは変更させない
@@ -285,7 +289,7 @@ public final class ImmutablePerson {
     private final List<String> hobbies;
     
     public ImmutablePerson(String name, int age, List<String> hobbies) {
-        // パラメータの検証
+        // パラメーターの検証
         // ...
         
         this.name = name.trim();
@@ -340,7 +344,7 @@ public class ImmutableExample {
         List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
         ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
         
-        // コンストラクタに渡したリストを変更しても、オブジェクトには影響しない
+        // コンストラクターに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
         IO.println(person.getHobbies()); // [読書, 映画鑑賞]
         
@@ -356,6 +360,7 @@ public class ImmutableExample {
     }
 }
 ```
+
 実行結果：
 
 ```
@@ -371,11 +376,9 @@ public class ImmutableExample {
 この例の最初では、コンストラクターに渡したリスト`hobbies`に「スポーツ」を足していますが、`person`の趣味は変わりません。
 `ImmutablePerson`のコンストラクターが、受け取ったリストをコピーして持っているためです。
 また、`withAge()`や`addHobby()`を呼んでも元の`person`は変わらず、変更した内容は新しいオブジェクトに入ります。
-状態が変わらないので、複数のスレッドが同期化なしで同じ`person`を読んでも、どのスレッドも常に同じ値を受け取ります（スレッドは第15章で学びます）。
+スレッドセーフティやデバッグのしやすさといった利点は、節「不変オブジェクトによる解決」で述べたとおりです。
 
-状態が変わらないことは、デバッグのしやすさにもつながります。
-ある時点でオブジェクトの値を確かめれば、その値はそれ以降も変わらないからです。
-同じ理由で、不変オブジェクトは`HashMap`のキー（第9章で学びます）としても安全に使えます。
+ほかにも、作ったあとに内容が変わらないので、不変オブジェクトは`HashMap`のキー（第9章で学びます）として安全に使えます。
 さらに、メソッドが引数のオブジェクトを書き換える心配がないので、副作用のないコードを書きやすくなります。
 これは、第11章で学ぶ関数型プログラミングの考え方と相性のよい性質です。
 
@@ -414,7 +417,7 @@ public final class DateRange {
     private final List<LocalDate> holidays;
     
     public DateRange(LocalDate start, LocalDate end, List<LocalDate> holidays) {
-        // パラメータの検証
+        // パラメーターの検証
         if (start == null || end == null) {
             throw new IllegalArgumentException("日付はnullにできません");
         }
@@ -466,7 +469,7 @@ public final class Book {
     private final String title;
     private final String author;
     // ...
-    // プライベートコンストラクタ
+    // プライベートコンストラクター
     private Book(Builder builder) {
         this.isbn = builder.isbn;
         this.title = builder.title;
@@ -476,20 +479,20 @@ public final class Book {
     
     // ビルダークラス
     public static class Builder {
-        // 必須パラメータ
+        // 必須パラメーター
         private final String isbn;
         private final String title;
         
-        // オプションパラメータ（デフォルト値を設定）
+        // オプションパラメーター（デフォルト値を設定）
         private String author = "Unknown";
         // ...
-        // 必須パラメータのコンストラクタ
+        // 必須パラメーターのコンストラクター
         public Builder(String isbn, String title) {
             // ...
             this.title = title;
         }
         
-        // オプションパラメータのセッター（メソッドチェーン）
+        // オプションパラメーターのセッター（メソッドチェーン）
         public Builder author(String author) {
             this.author = author;
             return this;
@@ -520,11 +523,11 @@ public class BuilderExample {
             .genre("プログラミング")
             .build();
         
-        // 必須パラメータのみで構築
+        // 必須パラメーターのみで構築
         Book book2 = new Book.Builder("978-4-987654-32-1", "データベース設計")
             .build();
         
-        // 一部のオプションパラメータを設定
+        // 一部のオプションパラメーターを設定
         Book book3 = new Book.Builder("978-4-111111-11-1", "アルゴリズム入門")
             .author("鈴木花子")
             .pages(280)
@@ -593,25 +596,17 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 本章では、Javaにおける不変性とfinalキーワードの重要性について学習しました。
 
 ### 学習した主な内容
+
 1. 不変オブジェクトの概念
     + 一度作成されたら状態が変更できないオブジェクト
+    + 同期化なしでスレッド間で共有でき、キャッシュやデバッグもしやすい
+    + `HashMap`のキーとして安全に使える
 2. finalキーワードの3つの用途
     + 変数、メソッド、クラスへの適用
 3. 防御的コピー
     + 可変オブジェクトを安全に扱う技術
 4. ビルダーパターン
     + 複雑な不変オブジェクトを構築する設計パターン
-
-### 不変性の利点
-
-1. スレッドセーフティ
-    + 同期化なしで安全に共有可能
-2. 予測可能性
-    + 状態が変わらないため、動作を予測しやすい
-3. キャッシュ可能性
-    + 安全にキャッシュできる
-4. デバッグの容易さ
-    + 状態変更のタイミングを追跡する必要がない
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。
 とくに並行プログラミングや大規模システムの開発において、その価値が発揮されます。
@@ -630,11 +625,11 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 ### 課題の概要
 
 1. 基礎課題
-    + 不変なPointクラス - 基本的な不変オブジェクトの実装
+    + 不変なPointクラスで、基本的な不変オブジェクトを実装する
 2. 発展課題
-    + 不変コレクション - 防御的コピーを使った複雑な不変性の実現
+    + 防御的コピーを使い、コレクションを持つクラスを不変にする
 3. チャレンジ課題
-    + ビルダーパターン - 不変オブジェクトの柔軟な構築
+    + ビルダーパターンで、不変オブジェクトを柔軟に構築する
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 

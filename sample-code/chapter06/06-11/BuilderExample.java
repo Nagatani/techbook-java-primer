@@ -9,11 +9,11 @@ public class BuilderExample {
             .genre("プログラミング")
             .build();
         
-        // 必須パラメータのみで構築
+        // 必須パラメーターのみで構築
         Book book2 = new Book.Builder("978-4-987654-32-1", "データベース設計")
             .build();
         
-        // 一部のオプションパラメータを設定
+        // 一部のオプションパラメーターを設定
         Book book3 = new Book.Builder("978-4-111111-11-1", "アルゴリズム入門")
             .author("鈴木花子")
             .pages(280)
