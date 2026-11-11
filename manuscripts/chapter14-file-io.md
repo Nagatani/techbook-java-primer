@@ -258,9 +258,12 @@ public class TextFileWriterExample {
 
 主な文字エンコーディングは次のとおりです。
 
-- UTF-8: 現在もっとも広く使用される可変長エンコーディング
-- Shift_JIS (MS932): Windows環境で使用される日本語エンコーディング
-- ISO-8859-1: 西欧言語用の1バイトエンコーディング
+- UTF-8
+    + 現在もっとも広く使われる可変長のエンコーディング
+- Shift_JIS
+    + 日本語のエンコーディング。Windowsで使われるのは、これをMicrosoftが拡張したWindows-31J（Javaでの名前は`MS932`）で、丸数字などの文字が加わっている
+- ISO-8859-1
+    + 西欧言語用の1バイトのエンコーディング
 
 <span class="listing-number">**サンプルコード14-5**　CharacterEncodingExample.java（10〜12、20〜41、44〜45行目）</span>
 
