@@ -6,92 +6,43 @@
       { "file": "LambdaIntroExample.java", "from": 1, "to": 18 }
     ]
   },
-  "11-3": {
-    "dir": "11-03",
-    "main": "HigherOrderFunctionExample",
-    "excerpt": [
-      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 46 }
-    ]
-  },
-  "11-8": {
-    "dir": "11-08",
-    "main": null,
-    "excerpt": [
-      { "file": "ResilientService.java", "from": 6, "to": 28 },
-      { "file": "ResilientService.java", "from": 40, "to": 40 }
-    ]
-  },
-  "11-10": {
-    "dir": "11-10",
-    "main": "MiddlewareChain",
-    "excerpt": [
-      { "file": "MiddlewareChain.java", "from": 3, "to": 3 },
-      { "file": "MiddlewareChain.java", "from": 9, "to": 32 },
-      { "file": "MiddlewareChain.java", "from": 48, "to": 52 },
-      { "file": "MiddlewareChain.java", "from": 61, "to": 61 }
-    ]
-  },
-  "11-12": {
-    "dir": "11-12",
-    "main": null,
-    "excerpt": [
-      { "file": "EventSourcedAccount.java", "from": 3, "to": 37 }
-    ]
-  },
-  "11-15": {
-    "dir": "11-15",
-    "main": null,
-    "excerpt": [
-      { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
-      { "file": "FunctionalBuilder.java", "from": 26, "to": 43 },
-      { "file": "FunctionalBuilder.java", "from": 45, "to": 56 }
-    ]
-  },
-  "11-21": {
-    "dir": "11-21",
+  "11-4": {
+    "dir": "11-04",
     "main": "FunctionalInterfaceExample",
     "excerpt": [
       { "file": "FunctionalInterfaceExample.java", "from": 1, "to": 15 }
     ]
   },
-  "11-22": {
-    "dir": "11-22",
+  "11-6": {
+    "dir": "11-06",
     "main": "MultiConditionSortExample",
     "excerpt": [
       { "file": "MultiConditionSortExample.java", "from": 7, "to": 53 }
     ]
   },
-  "11-23": {
-    "dir": "11-23",
+  "11-7": {
+    "dir": "11-07",
     "main": "StandardFunctionalInterfaces",
     "excerpt": [
       { "file": "StandardFunctionalInterfaces.java", "from": 1, "to": 32 }
     ]
   },
-  "11-24": {
-    "dir": "11-24",
+  "11-8": {
+    "dir": "11-08",
     "main": "MethodReferenceExample",
     "excerpt": [
-      { "file": "MethodReferenceExample.java", "from": 1, "to": 42 }
+      { "file": "MethodReferenceExample.java", "from": 1, "to": 39 }
     ]
   },
-  "11-25": {
-    "dir": "11-25",
-    "main": "MethodReferenceConcurrencyExample",
-    "excerpt": [
-      { "file": "MethodReferenceConcurrencyExample.java", "from": 4, "to": 18 },
-      { "file": "MethodReferenceConcurrencyExample.java", "from": 23, "to": 47 }
-    ]
-  },
-  "11-26": {
-    "dir": "11-26",
+  "11-9": {
+    "dir": "11-09",
     "main": "LambdaVsMethodReference",
     "excerpt": [
-      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 40 }
+      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 33 }
     ]
   },
-  "11-27": {
-    "dir": "11-27",
+  "11-10": {
+    "dir": "11-10",
     "main": "RunnableLambdaExample",
     "excerpt": [
       { "file": "RunnableLambdaExample.java", "from": 1, "to": 8 },
@@ -100,12 +51,61 @@
       { "file": "RunnableLambdaExample.java", "from": 44, "to": 46 }
     ]
   },
-  "11-28": {
-    "dir": "11-28",
+  "11-11": {
+    "dir": "11-11",
+    "main": "MethodReferenceConcurrencyExample",
+    "excerpt": [
+      { "file": "MethodReferenceConcurrencyExample.java", "from": 4, "to": 18 },
+      { "file": "MethodReferenceConcurrencyExample.java", "from": 23, "to": 47 }
+    ]
+  },
+  "11-12": {
+    "dir": "11-12",
     "main": "ValidationFramework",
     "excerpt": [
       { "file": "ValidationFramework.java", "from": 6, "to": 22 },
       { "file": "ValidationFramework.java", "from": 36, "to": 67 }
+    ]
+  },
+  "11-13": {
+    "dir": "11-13",
+    "main": "HigherOrderFunctionExample",
+    "excerpt": [
+      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 46 }
+    ]
+  },
+  "11-18": {
+    "dir": "11-18",
+    "main": null,
+    "excerpt": [
+      { "file": "ResilientService.java", "from": 3, "to": 18 },
+      { "file": "ResilientService.java", "from": 30, "to": 30 }
+    ]
+  },
+  "11-20": {
+    "dir": "11-20",
+    "main": "MiddlewareChain",
+    "excerpt": [
+      { "file": "MiddlewareChain.java", "from": 3, "to": 3 },
+      { "file": "MiddlewareChain.java", "from": 9, "to": 32 },
+      { "file": "MiddlewareChain.java", "from": 48, "to": 52 },
+      { "file": "MiddlewareChain.java", "from": 61, "to": 61 }
+    ]
+  },
+  "11-22": {
+    "dir": "11-22",
+    "main": null,
+    "excerpt": [
+      { "file": "EventSourcedAccount.java", "from": 3, "to": 36 }
+    ]
+  },
+  "11-25": {
+    "dir": "11-25",
+    "main": null,
+    "excerpt": [
+      { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
+      { "file": "FunctionalBuilder.java", "from": 26, "to": 43 },
+      { "file": "FunctionalBuilder.java", "from": 45, "to": 56 }
     ]
   }
 }

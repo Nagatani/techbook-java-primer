@@ -17,150 +17,8 @@
 
 第9章のコレクションフレームワーク、第10章のジェネリクス、第11章のラムダ式と関数型インターフェイスを理解していれば準備完了です。
 
-## データ構造の選択
-
-第9章では基本的なコレクションを学びましたが、それぞれのインターフェイスには異なる特性を持つ実装クラスが存在します。
-状況に応じて最適なものを選択することが、パフォーマンスのよいプログラムを書く鍵となります。
-
-### `ArrayList` vs `LinkedList`
-
-| 操作 | `ArrayList` (内部配列) | `LinkedList` (連結リスト) |
-| :--- | :--- | :--- |
-| 要素の取得 (get) | 高速 (O(1)) | 低速 (O(n)) |
-| 先頭/末尾への追加・削除 | 低速 (O(n)) / 高速 (O(1)) | 高速 (O(1)) |
-| 中間への追加・削除 | 低速 (O(n)) | 高速 (O(1)) |
-
-#### 使い分けの指針
-
-リストの実装クラスを選択する際は、アプリケーションの使用パターンを正確に分析することが重要です。
-ArrayListは、要素の参照（取得）が多く、リストのサイズがあまり変化しない場合に最適であり、
-実際にほとんどのケースで第一候補となる使いやすい実装です。
-内部的に配列を使用しているため、インデックスでのランダムアクセスが非常に高速で、メモリ効率も優秀です。
-
-一方、LinkedListは、リストの先頭や中間で頻繁に要素を追加・削除する場合にとくに有効です。
-連結リストの性質上、ノードの挿入や削除はO(1)で実行できるため、
-データのサイズが頻繁に変更されるアプリケーションでは優位性を発揮します。
-ただし、ランダムアクセスが必要な場合は、O(n)の時間計算量となりパフォーマンスが低下することに注意が必要です。
-
-### `HashSet` vs `LinkedHashSet` vs `TreeSet`
-
-| 特徴 | `HashSet` | `LinkedHashSet` | `TreeSet` |
-| :--- | :--- | :--- | :--- |
-| 順序 | 保証されない | 挿入順 | ソート順 |
-| 性能 | 最速 | `HashSet`よりわずかに遅い | `log(n)`時間（比較的低速） |
-| null要素 | 許可 | 許可 | 不可 |
-
-#### 使い分けの指針
-
-Setの実装クラスの選択は、アプリケーションの要件によって決まります。
-HashSetは、順序が不要で、とにかく高速に重複を除きたい場合に最適な選択です。
-ハッシュテーブルを内部で使用しているため、要素の検索、追加、削除が平均でO(1)と非常に高速です。
-
-LinkedHashSetは、要素を追加した順序を保持したい場合に使います。
-HashSetの性能をほぼ保ちながら、追加順序を記憶するためのリンク情報を内部で管理しています。
-これにより、データの出力順序が予測可能になり、テストやデバッグが容易になります。
-
-TreeSetは、要素を常にソートされた状態に保ちたい場合に使用します。
-内部的に赤黒木（Red-Black Tree）というバランス木を使用しているため、操作の時間計算量はlog(n)となります。
-HashSetよりは低速ですが、要素が常にソートされた状態で管理されます。
-これにより、即座にソート済みのデータを取得できる利点があります。
-
-## ラムダ式によるカスタムソート
-
-コレクションを独自のルールでソートしたい場合、`Comparator`インターフェイスを使います。
-Java 8から導入されたラムダ式を使うと、この`Comparator`の実装を非常に簡潔に記述できます。
-
-### 匿名クラスからラムダ式へ
-
-ラムダ式が登場する前は、`Comparator`をその場で実装するために匿名クラスが使われていました。以下のコードは、古い書き方でComparatorを実装した例です。
-
-<span class="listing-number">**サンプルコード12-1**</span>
-
-```java
-import java.util.Comparator;
-// ...
-// 匿名クラスを使ったComparatorの実装（古い書き方）
-Comparator<Student> scoreComparator = new Comparator<Student>() {
-    @Override
-    public int compare(Student s1, Student s2) {
-        return Integer.compare(s2.getScore(), s1.getScore()); // 点数の降順
-    }
-};
-```
-この冗長な記述は、ラムダ式を使うと以下のように書き換えられます。ラムダ式を使った現代的な書き方です。
-
-<span class="listing-number">**サンプルコード12-2**</span>
-
-```java
-// ラムダ式を使ったComparatorの実装
-Comparator<Student> scoreComparator = (s1, s2) -> Integer.compare(s2.getScore(), s1.getScore());
-```
-
-サンプルコード12-1と12-2は、どちらも点数の降順に並べる同じ`Comparator`です。
-`students.sort(scoreComparator)`のように`List`の`sort`メソッドへ渡すと、点数の高い順に並びます。
-`Student`クラスの定義と、実際に並べ替える例は、次のサンプルコード12-3で示します。
-
-`compare`メソッドの実装だけを抜き出したような形になり、非常にシンプルになりました。`->`の左側がメソッドの引数、右側が処理本体です。
-
-### `Comparator`の便利なメソッド
-
-Java 8以降、`Comparator`インターフェイスには、ラムダ式と組み合わせてソート条件をより宣言的に記述できる便利なメソッドが追加されました。
-
-- `Comparator.comparing(keyExtractor)`: 比較のキーとなる値を抽出する関数を渡す
-- `reversed()`: 比較順序を逆にする
-- `thenComparing(other)`: 比較結果が同じだった場合の、次の比較条件を指定する
-
-これらのメソッドを使った具体的な例を見てみましょう。
-
-<span class="listing-number">**サンプルコード12-3**　AdvancedSortExample.java</span>
-
-```java
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-class Student {
-    String name;
-    int score;
-    int height;
-    public Student(String name, int score, int height) { this.name = name; this.score = score; this.height = height; }
-    public String getName() { return name; }
-    public int getScore() { return score; }
-    public int getHeight() { return height; }
-    @Override public String toString() { return name + "(score:" + score + ", height:" + height + ")"; }
-}
-
-public class AdvancedSortExample {
-    public static void main(String[] args) {
-        List<Student> students = new ArrayList<>();
-        students.add(new Student("Bob", 92, 170));
-        students.add(new Student("Alice", 85, 165));
-        students.add(new Student("Charlie", 92, 180));
-
-        // 点数が高い順、同じ点数の場合は身長が高い順にソート
-        Comparator<Student> comparator = Comparator
-            .comparingInt(Student::getScore).reversed() // 点数で比較し、逆順（降順）に
-            .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()); // 次に身長で比較し、逆順（降順）に
-
-        students.sort(comparator); // List.sort()に渡す
-
-        IO.println(students);
-        // 出力: [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
-    }
-}
-```
-
-実行結果：
-
-```
-[Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
-```
-
-`Student::getScore`はメソッド参照といい、`student -> student.getScore()`というラムダ式をさらに簡潔にした書き方です。
-
-`reversed()`は、それまでに組み立てた比較条件の全体を逆にします。
-`thenComparingInt(Student::getHeight).reversed()`と書くと、点数の降順まで逆になり、点数の昇順・身長の昇順に並んでしまいます。
-2つ目の条件だけを降順にしたいときは、サンプルコード12-3のように、逆順にした`Comparator`を`thenComparing`に渡します。
+List・Set・Mapの実装クラス（`ArrayList`と`LinkedList`、`HashSet`・`LinkedHashSet`・`TreeSet`など）の特徴と選び方は、第9章で学びました。
+本章のサンプルで実装クラスの選び方に迷ったら、第9章の「コレクションの選択指針」を読み返してください。
 
 ## Stream APIによる現代的なコレクション操作
 
@@ -187,7 +45,7 @@ Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
 
 この遅延評価の動作を具体的なコードで見てみましょう。以下のコードは、遅延評価がどのタイミングで実行されるかを実際に確認できる例です。
 
-<span class="listing-number">**サンプルコード12-4**</span>
+<span class="listing-number">**サンプルコード12-1**</span>
 
 ```java
 // この時点ではまだフィルタリングは実行されない
@@ -279,7 +137,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。学生のリストから高得点者を抽出する例で確認してみましょう。以下のコードは、filter操作の基本的な使い方を示しています。
 
-<span class="listing-number">**サンプルコード12-5**</span>
+<span class="listing-number">**サンプルコード12-2**</span>
 
 ```java
 List<Student> list = ...;
@@ -293,7 +151,7 @@ List<Student> highScorers = list.stream()
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。学生オブジェクトから名前だけを抽出する例です。以下のコードは、map操作を使った型変換の実例を示しています。
 
-<span class="listing-number">**サンプルコード12-6**</span>
+<span class="listing-number">**サンプルコード12-3**</span>
 
 ```java
 // 生徒のリストから、名前のリストを生成
@@ -302,11 +160,67 @@ List<String> names = list.stream()
     .collect(Collectors.toList());
 ```
 
+### `sorted`による並べ替え
+
+`sorted`は、要素を並べ替えたストリームを返す中間操作です。
+引数なしの`sorted()`は自然な順序（文字列ならアルファベット順）で並べ、`Comparator`を渡すとその比較条件で並べます。
+`Comparator`をラムダ式やメソッド参照で組み立てる方法（`comparing`・`thenComparing`・`reversed`）は、第11章で学びました。
+次のサンプルでは、本章で使う`Student`クラス（名前・点数・身長）を定義し、Streamで並べ替えます。
+
+<span class="listing-number">**サンプルコード12-4**　AdvancedSortExample.java</span>
+
+```java
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+class Student {
+    String name;
+    int score;
+    int height;
+    public Student(String name, int score, int height) { this.name = name; this.score = score; this.height = height; }
+    public String getName() { return name; }
+    public int getScore() { return score; }
+    public int getHeight() { return height; }
+    @Override public String toString() { return name + "(score:" + score + ", height:" + height + ")"; }
+}
+
+public class AdvancedSortExample {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Bob", 92, 170));
+        students.add(new Student("Alice", 85, 165));
+        students.add(new Student("Charlie", 92, 180));
+
+        // 点数が高い順、同じ点数の場合は身長が高い順に並べる
+        List<Student> sorted = students.stream()
+            .sorted(Comparator.comparingInt(Student::getScore).reversed()
+                .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()))
+            .collect(Collectors.toList());
+
+        IO.println(sorted);
+        IO.println("元のリスト: " + students); // 元のリストの並びは変わらない
+    }
+}
+```
+
+実行結果：
+
+```
+[Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
+元のリスト: [Bob(score:92, height:170), Alice(score:85, height:165), Charlie(score:92, height:180)]
+```
+
+`List`の`sort`メソッドはリストそのものを並べ替えます。
+一方、`sorted`は元のリストを変えず、並べ替えた結果を新しいリストとして受け取ります。
+`Student`クラスは、本章のこの後のサンプルでも使います。
+
 ### 組み合わせた例
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する実用的な例です。このコードは、Stream APIの真価を発揮する複合的な処理パイプラインの例です。
 
-<span class="listing-number">**サンプルコード12-7**　StreamExample.java</span>
+<span class="listing-number">**サンプルコード12-5**　StreamExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -357,7 +271,7 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
 
-<span class="listing-number">**サンプルコード12-8**　OptionalCreationExample.java</span>
+<span class="listing-number">**サンプルコード12-6**　OptionalCreationExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -390,7 +304,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalRetrievalExample.java（4〜7、19〜41行目）</span>
+<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜7、19〜41行目）</span>
 
 ```java
 public class OptionalRetrievalExample {
@@ -427,7 +341,7 @@ public class OptionalRetrievalExample {
 
 値の存在を確認し、存在する場合のみ処理を実行する方法。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
-<span class="listing-number">**サンプルコード12-10**　OptionalPresenceExample.java</span>
+<span class="listing-number">**サンプルコード12-8**　OptionalPresenceExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -468,11 +382,14 @@ public class OptionalPresenceExample {
 }
 ```
 
+1の`isPresent()`で確かめてから`get()`で取り出す書き方は、nullチェックと変わらず、確かめ忘れると例外になります。
+値を使う処理は、3の`ifPresent()`や4の`ifPresentOrElse()`で書くようにします（後の「アンチパターンと注意点」でも取り上げます）。
+
 ### Optionalの変換操作
 
 Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalTransformationExample.java（3〜6、15、17〜37、47〜48行目）</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、15、17〜37、47〜48行目）</span>
 
 ```java
 public class OptionalTransformationExample {
@@ -523,7 +440,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-12**　OptionalStreamExample.java（7〜8、19、21〜22、27〜59、60行目）</span>
+<span class="listing-number">**サンプルコード12-10**　OptionalStreamExample.java（7〜8、19、21〜22、27〜59、60行目）</span>
 
 ```java
 public class OptionalStreamExample {
@@ -583,7 +500,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-13**　OptionalPracticalExample.java（5、15〜18、34〜36、53〜58、61、65〜80、89〜90行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5、15〜18、34〜36、53〜58、61、65〜80、89〜90行目）</span>
 
 ```java
 public class OptionalPracticalExample {
@@ -640,7 +557,7 @@ public class OptionalPracticalExample {
 
 Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
 
-<span class="listing-number">**サンプルコード12-14**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
+<span class="listing-number">**サンプルコード12-12**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
 
 ```java
 public class OptionalAntiPatternsExample {
@@ -727,7 +644,7 @@ Optionalをメソッドの戻り値やチェイン操作で使うと、NullPoint
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
 
-<span class="listing-number">**サンプルコード12-15**</span>
+<span class="listing-number">**サンプルコード12-13**</span>
 
 ```java
 List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -771,7 +688,7 @@ IO.println("並列処理の結果: " + sumParallel);
 
 </div>
 
-<span class="listing-number">**サンプルコード12-16**　ParallelStreamExample.java</span>
+<span class="listing-number">**サンプルコード12-14**　ParallelStreamExample.java</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -823,7 +740,7 @@ public class ParallelStreamExample {
 #### スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
-<span class="listing-number">**サンプルコード12-17**</span>
+<span class="listing-number">**サンプルコード12-15**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -865,7 +782,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-18**　FlatMapExample.java</span>
+<span class="listing-number">**サンプルコード12-16**　FlatMapExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -920,7 +837,7 @@ public class FlatMapExample {
 
 `reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-19**　ReduceExample.java（5〜25、39〜40行目）</span>
+<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜25、39〜40行目）</span>
 
 ```java
 public class ReduceExample {
@@ -964,7 +881,7 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-20**　CollectorsExample.java</span>
+<span class="listing-number">**サンプルコード12-18**　CollectorsExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1017,100 +934,18 @@ public class CollectorsExample {
 
 `Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句に相当する処理をJavaのコード内で簡潔に実現できます。
 
-### Optionalによる安全なデータ処理
+### nullを含むデータの処理
 
-`Optional`クラスは、null値が存在する可能性がある処理を安全に扱うためのJava 8で導入された重要な仕組みです。従来のnullポインタ例外を避けながら、よりエレガントなコードを書くことができます。
+要素に`null`が混ざったリストをStreamで処理するときは、`filter`で`null`を取り除いてから変換します。
+`Objects::nonNull`は、`name -> name != null`と同じ判定をするメソッド参照です。
+値が1つだけで、それが存在しない場合もあるときは、本章の「Optional型による安全なnull処理」で学んだ`Optional`を使います。
 
-<span class="listing-number">**サンプルコード12-21**　OptionalExample.java</span>
-
-```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-public class OptionalExample {
-    public static void main(String[] args) {
-        List<Student> students = Arrays.asList(
-            new Student("Alice", 85, 165),
-            new Student("Bob", 92, 170),
-            new Student("Charlie", 78, 180)
-        );
-        
-        // Optionalの基本使用：最初の高得点者を安全に取得
-        // findFirst()はOptional<Student>を返すため、null安全
-        Optional<Student> firstHighScorer = students.stream()
-            .filter(s -> s.getScore() >= 90)
-            .findFirst();
-        
-        // 値が存在する場合のみ処理を実行
-        firstHighScorer.ifPresent(student -> 
-            IO.println("最初の高得点者: " + student.getName()));
-        
-        // デフォルト値を使用した安全な処理
-        String topScorerName = firstHighScorer
-            .map(Student::getName)
-            .orElse("該当者なし");
-        IO.println("トップスコアラー: " + topScorerName);
-    }
-}
-```
-
-実行結果：
-
-```
-最初の高得点者: Bob
-トップスコアラー: Bob
-```
-
-### Optionalの連鎖操作
-
-`Optional`は、複数の操作を安全に連鎖させることができ、従来のif-nullチェックの連続をメソッドチェーンで簡潔に表現できます。
-
-<span class="listing-number">**サンプルコード12-22**　OptionalChainingExample.java</span>
-
-```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-public class OptionalChainingExample {
-    public static void main(String[] args) {
-        List<Student> students = Arrays.asList(
-            new Student("Alice", 85, 165),
-            new Student("Bob", 92, 170),
-            new Student("Charlie", 78, 180)
-        );
-        
-        // Optionalの連鎖：複数の変換を安全に実行
-        // 最高得点者の名前を大文字で取得（該当者がいない場合は"N/A"）
-        String result = students.stream()
-            .max((s1, s2) -> Integer.compare(s1.getScore(), s2.getScore()))
-            .map(Student::getName)          // 学生が見つかれば名前を取得
-            .map(String::toUpperCase)       // 名前を大文字に変換
-            .orElse("N/A");                 // 見つからない場合のデフォルト値
-        
-        IO.println("最高得点者（大文字）: " + result);
-    }
-}
-```
-
-実行結果：
-
-```
-最高得点者（大文字）: BOB
-```
-
-### null安全な処理パターン
-
-実際のアプリケーションでは、nullが混入する可能性があるデータを安全に処理します。`Optional`を活用することで、予期しないnullポインタ例外を防げます。
-
-<span class="listing-number">**サンプルコード12-23**　NullSafeProcessingExample.java</span>
+<span class="listing-number">**サンプルコード12-19**　NullSafeProcessingExample.java</span>
 
 ```java
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class NullSafeProcessingExample {
@@ -1118,7 +953,7 @@ public class NullSafeProcessingExample {
         // nullが混入する可能性があるデータ
         List<String> namesWithNull = Arrays.asList("Alice", null, "Bob", "", "Charlie");
         
-        // null安全な処理：nullや空文字列を確実に処理
+        // nullや空文字列を取り除いてから変換する
         List<String> validNames = namesWithNull.stream()
             .filter(Objects::nonNull)           // nullを除外
             .filter(name -> !name.trim().isEmpty()) // 空文字列を除外
@@ -1127,15 +962,6 @@ public class NullSafeProcessingExample {
         
         IO.println("有効な名前: " + validNames);
         // 出力: 有効な名前: [ALICE, BOB, CHARLIE]
-        
-        // Optionalでnullをラップしてnullセーフ処理
-        Optional<String> nullableName = Optional.ofNullable(null);
-        String safeName = nullableName
-            .filter(name -> !name.isEmpty())
-            .map(String::toUpperCase)
-            .orElse("UNKNOWN");
-        
-        IO.println("安全な名前処理: " + safeName); // 出力: 安全な名前処理: UNKNOWN
     }
 }
 ```
@@ -1144,14 +970,13 @@ public class NullSafeProcessingExample {
 
 ```
 有効な名前: [ALICE, BOB, CHARLIE]
-安全な名前処理: UNKNOWN
 ```
 
 ### 早期終了操作の活用
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 
-<span class="listing-number">**サンプルコード12-24**　ShortCircuitExample.java</span>
+<span class="listing-number">**サンプルコード12-20**　ShortCircuitExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1198,7 +1023,7 @@ public class ShortCircuitExample {
 
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが重要です。
 
-<span class="listing-number">**サンプルコード12-25**　ToArrayExample.java</span>
+<span class="listing-number">**サンプルコード12-21**　ToArrayExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1237,7 +1062,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-26**　ComplexProcessingExample.java（6〜8、16〜32、44〜45行目）</span>
+<span class="listing-number">**サンプルコード12-22**　ComplexProcessingExample.java（6〜8、16〜32、44〜45行目）</span>
 
 ```java
 public class ComplexProcessingExample {
@@ -1307,12 +1132,9 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
 
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
-- データ構造の選択
-    + `ArrayList`, `LinkedList`, `HashSet`, `TreeSet`など、状況に応じて最適な実装クラスを選択することが重要である
-- ラムダ式と`Comparator`
-    + ラムダ式を使うことで、独自のソートロジックを簡潔かつ宣言的に記述できる
 - Stream API
     + `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
+    + `sorted`に第11章で学んだ`Comparator`を渡すと、元のリストを変えずに並べ替えた結果を得られる
 - Optional型
     + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
 - 並列ストリーム

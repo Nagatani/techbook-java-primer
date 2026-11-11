@@ -126,7 +126,7 @@
 - **ObjectInputStream** - 第14章
 - **ObjectOutputStream** - 第14章
 - **Observer パターン** - 第19章
-- **Optional クラス** - 第11章、第12章、付録B.02
+- **Optional クラス** - 第12章、付録B.02
 - **OutputStream** - 第14章
 - **OutOfMemoryError** - 第15章
 - **@Override** - 第5章、第12章
@@ -161,7 +161,7 @@
 - **static キーワード** - 第4章
 - **Strategy パターン** - 第8章、第11章、付録B.09
 - **Stream API** - 第12章、付録B.08
-- **StringBuilder** - 第2章、第17章
+- **StringBuilder** - 第2章
 - **String クラス** - 第2章、第9章
 - **super キーワード** - 第5章
 - **switch式** - 第2章、付録B.10

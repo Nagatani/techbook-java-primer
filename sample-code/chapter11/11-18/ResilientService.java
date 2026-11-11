@@ -1,29 +1,19 @@
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class ResilientService {
     // 関数型リトライメカニズム
     public <T> Supplier<T> withRetry(Supplier<T> supplier, int maxAttempts) {
         return () -> {
-            AtomicInteger attempts = new AtomicInteger(0);
-            
-
-            return Stream.generate(() -> {
+            for (int attempt = 1; ; attempt++) {
                 try {
-                    return Optional.of(supplier.get());
-                } catch (Exception e) {
-                    if (attempts.incrementAndGet() >= maxAttempts) {
+                    return supplier.get();  // 成功したら結果を返す
+                } catch (RuntimeException e) {
+                    if (attempt >= maxAttempts) {
                         throw new RuntimeException("Max attempts reached", e);
                     }
-                    return Optional.<T>empty();
+                    // 失敗したら、もう一度呼び出す
                 }
-            })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst()
-            .orElseThrow();
+            }
         };
     }
     

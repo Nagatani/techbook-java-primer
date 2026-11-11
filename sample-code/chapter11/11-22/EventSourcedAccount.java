@@ -10,15 +10,14 @@ public class EventSourcedAccount {
     record MoneyDeposited(String accountId, Money amount) implements AccountEvent {}
     record MoneyWithdrawn(String accountId, Money amount) implements AccountEvent {}
     
-    // イベントストリーム処理
+    // イベントを順に適用して、現在の状態を求める
     public class AccountProjection {
         public AccountState project(List<AccountEvent> events) {
-            return events.stream()
-                .reduce(
-                    AccountState.empty(),
-                    this::applyEvent,
-                    (s1, s2) -> s2  // 並列処理では使用しない
-                );
+            AccountState state = AccountState.empty();
+            for (AccountEvent event : events) {
+                state = applyEvent(state, event);
+            }
+            return state;
         }
         
         private AccountState applyEvent(AccountState state, AccountEvent event) {

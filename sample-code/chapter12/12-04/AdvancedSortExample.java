@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class Student {
     String name;
@@ -20,14 +21,13 @@ public class AdvancedSortExample {
         students.add(new Student("Alice", 85, 165));
         students.add(new Student("Charlie", 92, 180));
 
-        // 点数が高い順、同じ点数の場合は身長が高い順にソート
-        Comparator<Student> comparator = Comparator
-            .comparingInt(Student::getScore).reversed() // 点数で比較し、逆順（降順）に
-            .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()); // 次に身長で比較し、逆順（降順）に
+        // 点数が高い順、同じ点数の場合は身長が高い順に並べる
+        List<Student> sorted = students.stream()
+            .sorted(Comparator.comparingInt(Student::getScore).reversed()
+                .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()))
+            .collect(Collectors.toList());
 
-        students.sort(comparator); // List.sort()に渡す
-
-        IO.println(students);
-        // 出力: [Charlie(score:92, height:180), Bob(score:92, height:170), Alice(score:85, height:165)]
+        IO.println(sorted);
+        IO.println("元のリスト: " + students); // 元のリストの並びは変わらない
     }
 }
