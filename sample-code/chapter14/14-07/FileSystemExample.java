@@ -6,24 +6,24 @@ public class FileSystemExample {
         Path dir = Paths.get("my_temp_dir");
         Path file = dir.resolve("my_file.txt");
 
-        // Files.createDirectory()は指定されたディレクトリを作成します。
-        // createDirectories()を使用すると、必要に応じて親ディレクトリも同時に作成されます。
         // ディレクトリ作成
+        // Files.createDirectory()は指定されたディレクトリを作成します。
+        // createDirectories()を使用すると、親ディレクトリがなければ同時に作成されます。
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
             IO.println("ディレクトリを作成しました: " + dir);
         }
 
-        // writeString()は小容量のテキストデータを簡単にファイルに保存できる便利メソッドです。
-        // 内部的にはBufferedWriterが使用されており、効率的な書き込みが行われます。
         // ファイル作成と書き込み
+        // writeString()は、小さなテキストデータをファイルに保存する便利メソッドです。
+        // ファイルを開いて書き込み、閉じるまでをメソッドのなかで済ませます。
         Files.writeString(file, "Hello, NIO.2!");
         IO.println("ファイルを作成しました: " + file);
 
+        // ファイルのコピー
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
         // REPLACE_EXISTING: 同名ファイルがある場合は上書き
         // COPY_ATTRIBUTES: ファイルの属性（作成日時、アクセス権など）もコピー
-        // ファイルのコピー
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile, StandardCopyOption.REPLACE_EXISTING);
         IO.println("ファイルをコピーしました: " + copiedFile);
