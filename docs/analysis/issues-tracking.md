@@ -486,7 +486,7 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 
 #### Issue #017: 箇条書きの書き直しの際に見つけた、未修正の誤り
 - **発見日**: 2026年11月11日
-- コードの誤り（本文のコードブロックのため未修正）
+- コードの誤り ✅ 2026-11-11に3件とも修正（9-16は`ArrayList`にコピー、3-34は`Book`に`getPrice()`を足して全文を`sample-code/chapter03/03-34/`に公開、6-8は渡したリストそのものに要素を足す形にし、本文に説明を足した）
     + サンプルコード9-16: `Arrays.asList(...)`で作ったリストに`iter2.remove()`を呼ぶため、`UnsupportedOperationException`になる。`new ArrayList<>(Arrays.asList(...))`にする
     + サンプルコード3-34: `book1.getPrice()`を呼ぶが、3-32の`Book`クラスに`getPrice()`がなくコンパイルできない（`sample-code/`に全文がないため自動検査の対象外）
     + サンプルコード6-8: 「元のリストを変更してもオブジェクトには影響しない」としているが、別のリストに差し替えてから`add`しており、防御的コピーの効果を示していない

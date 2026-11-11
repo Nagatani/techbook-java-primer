@@ -15,7 +15,7 @@ sections:
   - key: "Map インターフェイス"
     hash: 8f2b9ed9
   - key: "イテレータとfor-each文"
-    hash: 75c6a27d
+    hash: f98a3aa0
   - key: "コレクションの選択指針"
     hash: 0419f4c4
   - key: "今後の学習へ向けて"
