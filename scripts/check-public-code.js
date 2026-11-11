@@ -118,7 +118,7 @@ function runTests(unit, out, cp, workDir) {
   const res = ['src/main/resources', 'src/test/resources'].map((d) => path.join(ROOT, unit.dir, d)).filter((d) => fs.existsSync(d));
   const r = spawnSync('java', ['-jar', libJars()[0], 'execute', '--class-path', [out, ...res, cp].join(path.delimiter),
     '--scan-class-path', out, '--disable-banner', '--details=summary', '--details-theme=ascii'],
-  { cwd: workDir, encoding: 'utf8', timeout: TEST_TIMEOUT_MS });
+  { cwd: workDir, encoding: 'utf8', timeout: TEST_TIMEOUT_MS, maxBuffer: 64 * 1024 * 1024 });
   const text = (r.stdout || '') + (r.stderr || '');
   const found = text.match(/(\d+) tests found/);
   const failed = text.match(/(\d+) tests failed/);

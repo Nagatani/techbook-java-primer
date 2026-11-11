@@ -120,6 +120,4 @@ Gradleは`--warning-mode all`で、Gradle 10で使えなくなる書き方の警
 
 ## 既知の例外
 
-- 第14章のWatchServiceのテスト1件は、macOSでは失敗することがある
-  - macOSのWatchServiceはポーリングで変更を検出するため、短時間で作成・削除したファイルを取りこぼす
-  - Linux（Docker・CI）では通るので、そのままにしている
+- いまはない（2026-11-11に、第14章のWatchServiceのテストを、イベントが届いてから次の操作をするように直した。macOSのWatchServiceはポーリングで変更を検出するため、短時間で作成・削除したファイルを取りこぼしていた）
