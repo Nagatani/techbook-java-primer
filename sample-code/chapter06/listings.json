@@ -34,8 +34,7 @@
     "dir": "06-06",
     "main": null,
     "excerpt": [
-      { "file": "String.java", "from": 1, "to": 4 },
-      { "file": "ImmutablePerson.java", "from": 1, "to": 16 }
+      { "file": "ImmutablePerson.java", "from": 1, "to": 20 }
     ]
   },
   "6-7": {

@@ -237,13 +237,12 @@ public class SecurityManager {
 
 `final`をクラスに付けると、そのクラスを継承できなくなります。
 
-<span class="listing-number">**サンプルコード6-6**　String.java、ImmutablePerson.java</span>
+<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java</span>
 
 ```java
-// Stringクラスのfinalクラスの代表例
-public final class String {
-    // Stringクラスは継承できない
-}
+// 標準ライブラリのStringクラスは、finalクラスの代表例
+// public final class String ... と宣言されているので、継承できない
+// class MyString extends String { }  // コンパイルエラー
 
 // 不変クラスは通常finalにする
 public final class ImmutablePerson {

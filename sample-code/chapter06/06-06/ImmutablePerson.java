@@ -1,3 +1,7 @@
+// 標準ライブラリのStringクラスは、finalクラスの代表例
+// public final class String ... と宣言されているので、継承できない
+// class MyString extends String { }  // コンパイルエラー
+
 // 不変クラスは通常finalにする
 public final class ImmutablePerson {
     private final String name;
