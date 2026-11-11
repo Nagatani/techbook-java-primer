@@ -17,5 +17,5 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [23-1](./23-01/) | SimpleApp.java | `java -cp out SimpleApp` |
-| [23-2](./23-02/) | TodoApp.java | `java -cp out TodoApp` |
-| [23-6](./23-06/) | ResourceApp.java | `java -cp out ResourceApp` |
+| [23-6](./23-06/) | TodoApp.java | `java -cp out TodoApp` |
+| [23-8](./23-08/) | ResourceApp.java | `java -cp out ResourceApp` |

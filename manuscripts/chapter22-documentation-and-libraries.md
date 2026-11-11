@@ -199,6 +199,8 @@ Javaのオープンソースエコシステムは、1998年のApache Software Fo
 Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を
 探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。
 外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
+JARファイルは、多数のクラスファイルを1つにまとめたファイルで、ライブラリはふつうこの形で配布されます。
+自分のプログラムをJARファイルにまとめる方法は、第23章「ビルドとデプロイ」で学びます。
 
 ### 依存関係管理ツール：Maven
 
@@ -979,6 +981,9 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 
 #### 依存関係の管理
 
+第21章で使ったJUnitやMockitoのように、テストのときだけ使うライブラリは、`<scope>test</scope>`を指定して依存関係に加えます。
+次の例では、ライブラリのバージョンを`<properties>`にまとめて管理しています。
+
 <span class="listing-number">**サンプルコード22-20**</span>
 
 ```xml
@@ -1061,37 +1066,8 @@ mvn dependency:analyze
 
 // 5. 最新バージョンの確認
 mvn versions:display-dependency-updates
-```
 
-### トラブルシューティング
-
-よくある問題と解決方法。
-
-<span class="listing-number">**サンプルコード22-23**</span>
-
-```java
-// 1. 依存関係の競合
-// 解決策: 明示的にバージョンを指定
-<dependency>
-    <groupId>commons-logging</groupId>
-    <artifactId>commons-logging</artifactId>
-    <version>1.2</version>
-</dependency>
-
-// 2. 推移的依存関係の除外
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-core</artifactId>
-    <version>5.3.28</version>
-    <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-
-// 3. ローカルリポジトリのクリア（キャッシュ問題）
+// 6. ローカルリポジトリのクリア（ダウンロードしたファイルが壊れたとき）
 mvn dependency:purge-local-repository
 ```
 
@@ -1103,8 +1079,10 @@ mvn dependency:purge-local-repository
     + タグの構文やHTMLタグの誤り、文字エンコーディングの指定漏れ（`-encoding UTF-8`）が原因になる
 - 依存関係の競合
     + 同じライブラリの異なるバージョンが、直接または推移的な依存として混在する
+    + `mvn dependency:tree`でどの版が選ばれたかを確かめ、使う版を`pom.xml`に直接書くか、`<exclusions>`で推移的な依存を除く
 - ライブラリのバージョン管理の問題
     + 脆弱性のある古いバージョンを使い続けたり、バージョン範囲の指定で予期しない版が選ばれたりする
+    + バージョンの一元管理（サンプルコード22-20）と脆弱性のチェック（サンプルコード22-21）で防ぐ
 - APIの非互換性
     + 新しい版で加わったメソッドを使ったコードを古い版で実行すると`NoSuchMethodError`が発生する。廃止予定のAPIは将来の版で削除される
 - クラスパスの問題

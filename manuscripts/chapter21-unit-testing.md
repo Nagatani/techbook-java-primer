@@ -410,6 +410,14 @@ public class StringCalculator {
 
 実際の開発では、JUnitのようなテストフレームワークを使用します。
 
+JUnitはJDKに含まれていない外部ライブラリなので、使う前にプロジェクトへ追加します。
+IntelliJ IDEAでは、テストクラスに`@Test`を書き、赤く表示された`@Test`にカーソルを置いて`Alt+Enter`（macOSでは`Option+Enter`）を押します。
+表示された一覧からJUnit 5をクラスパスに追加する項目（Add 'JUnit5…' to classpath）を選ぶと、JUnitがダウンロードされて使えるようになります。
+テストを実行するには、テストクラスやテストメソッドの左に表示される実行ボタンを押します。
+このあと使うMockitoは、`File` → `Project Structure...` → `Libraries` → `+` → `From Maven...`で`org.mockito:mockito-junit-jupiter`を検索して追加します。
+実際の開発では、Mavenなどのビルドツールの設定ファイルに依存関係として書くのが一般的です。
+外部ライブラリとクラスパスの関係や、Mavenでの依存関係の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
+
 JUnit 5（Jupiter）を使用した基本的なテストの例を示します。@Testアノテーションでテストメソッドをマークし、@BeforeEachで各テスト前の初期化処理を定義し、Assertionsクラスのメソッドで検証を行います。
 
 <span class="listing-number">**サンプルコード21-11**</span>
@@ -540,6 +548,9 @@ public class PaymentServiceTest {
 ### 自動テストの重要性
 
 継続的インテグレーション（CI）では、コードがリポジトリにプッシュされるたびに自動的にテストが実行されます。
+次の例は、ビルドツールのGradleを使うプロジェクトで、`./gradlew test`によってテストを実行する設定です。
+ビルドツールの役割は、Mavenを例に第22章で学びます。
+ここでは、CIがテストを自動で実行するという流れをつかんでください。
 
 <span class="listing-number">**サンプルコード21-14**</span>
 
