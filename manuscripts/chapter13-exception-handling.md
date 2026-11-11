@@ -15,7 +15,8 @@
 
 ### この章を始める前に
 
-第5章までの基本的なJavaプログラミング能力とオブジェクト指向設計の実践経験があれば準備完了です。
+第12章までの内容を理解していれば準備完了です。
+後半の実践的なパターンでは、第10章「ジェネリクス」で学んだ型パラメータと、第11章「ラムダ式と関数インターフェイス」で学んだラムダ式も使います。
 
 ## エラーの種類と対処法
 
@@ -113,7 +114,15 @@ try {
 
 ### `try-with-resources`文 (推奨)
 
-`AutoCloseable`インターフェイスを実装したリソース（ファイルストリームなど）を扱う場合、`try-with-resources`文を使うことで、リソースの自動解放が保証されます。
+ファイルやネットワーク接続などのリソースは、使い終わったら必ず閉じます（closeします）。
+閉じ忘れると、OSが管理するファイルの数などの資源を使い続けるリソースリークが起きます。
+`finally`ブロックで閉じる書き方では、`close`メソッド自体も例外を投げうるため、`finally`のなかにさらに`try-catch`を書くことになり、コードが長くなります。
+
+そこでJava 7で導入されたのが`try-with-resources`文です。
+`AutoCloseable`インターフェイスを実装したリソース（ファイルストリームなど）を`try`の後ろの括弧内で宣言すると、`try`ブロックを抜けるときに`close`メソッドが自動的に呼ばれます。
+例外で抜けた場合も同じです。
+次のコードでは、ファイルを1行読み込む`BufferedReader`を自動的に閉じています。
+ファイルを読み書きするクラスの使い方は、第14章「ファイルI/O」で詳しく学びます。
 
 <span class="listing-number">**サンプルコード13-3**　TryWithResourcesSample.java</span>
 
@@ -148,6 +157,9 @@ public class TryWithResourcesSample {
 この実行結果は、テスト用のファイルと存在しないファイル`non_existent.txt`を順に`readFile`へ渡したときのものです。
 `readFile`を呼び出す`main`メソッドは、全文の`TryWithResourcesDemo.java`にあります。
 例外のメッセージ（`No such file or directory`の部分）は、OSによって異なります。
+
+`finally`ブロックに閉じる処理を書く必要はありません。
+複数のリソースをまとめて宣言する書き方と、自作のクラスを`try-with-resources`で使えるようにする方法は、本章の「リソース管理の実践例」で学びます。
 
 ## 検査例外と非検査例外
 
@@ -264,6 +276,9 @@ public class BankAccount {
 
 ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
+次の例の`SQLException`は、データベースの操作で起きる検査例外です。
+ここではデータベースには接続せず、例外が起きたと仮定して投げています。
+
 <div class="figure">
 
 ![例外の連鎖（サンプルコード13-6）](images/diagrams/chapter13-exception-chaining.svg)
@@ -305,6 +320,10 @@ public class UserService {
 
 ネットワーク接続の一時的な問題やリソースの一時的な不足など、
 時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
+
+`Callable<T>`は、`T`型の値を返す処理を表す関数インターフェイスで、`Runnable`と違って検査例外を投げられます。
+`executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります）。
+第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
 <span class="listing-number">**サンプルコード13-7**　RetryableOperation.java（4〜6、8〜24、33〜37、55行目）</span>
 
@@ -413,7 +432,7 @@ public class CircuitBreaker {
 
 ### 例外の集約と報告
 
-複数の処理を並行実行する場合、発生した例外を集約して報告します。
+複数の処理を順に実行し、途中で失敗しても残りの処理を続けたい場合は、発生した例外を集めておき、最後にまとめて報告します。
 
 <span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜28、38〜55行目）</span>
 
@@ -501,7 +520,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜6、13〜53、67行目）</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜6、14〜44、58行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
@@ -509,50 +528,68 @@ public class ResourcePool implements AutoCloseable {
     private final Set<Resource> usedResources = new HashSet<>();
     private boolean closed = false;
     // ...
-    
-    public Resource acquire() throws InterruptedException {
-        synchronized (this) {
-            while (availableResources.isEmpty() && !closed) {
-                wait();
-            }
-            
-            if (closed) {
-                throw new IllegalStateException("プールはクローズされています");
-            }
-            
-            Resource resource = availableResources.poll();
-            usedResources.add(resource);
-            return resource;
+    public Resource acquire() {
+        if (closed) {
+            throw new IllegalStateException("プールはクローズされています");
         }
+        if (availableResources.isEmpty()) {
+            throw new IllegalStateException("使えるリソースが残っていません");
+        }
+        
+        Resource resource = availableResources.poll();
+        usedResources.add(resource);
+        return resource;
     }
     
     public void release(Resource resource) {
-        synchronized (this) {
-            if (usedResources.remove(resource)) {
-                availableResources.offer(resource);
-                notify();
-            }
+        if (usedResources.remove(resource)) {
+            availableResources.offer(resource);
         }
     }
     
     @Override
     public void close() {
-        synchronized (this) {
-            closed = true;
-            notifyAll();
-            
-            // すべてのリソースをクリーンアップ
-            for (Resource resource : availableResources) {
-                resource.cleanup();
-            }
-            for (Resource resource : usedResources) {
-                resource.cleanup();
-            }
+        closed = true;
+        
+        // すべてのリソースをクリーンアップ
+        for (Resource resource : availableResources) {
+            resource.cleanup();
+        }
+        for (Resource resource : usedResources) {
+            resource.cleanup();
         }
     }
     // ...
 }
+
+public class ResourcePoolDemo {
+    public static void main(String[] args) {
+        // tryブロックを抜けると、pool.close()が自動的に呼ばれる
+        try (ResourcePool pool = new ResourcePool(2)) {
+            ResourcePool.Resource resource = pool.acquire();
+            IO.println("リソースを借りました");
+            pool.release(resource);
+            IO.println("リソースを返しました");
+        }
+        IO.println("tryブロックを抜けました");
+    }
+}
 ```
+
+実行結果：
+
+```
+リソースを借りました
+リソースを返しました
+リソース 1 をクリーンアップしました
+リソース 0 をクリーンアップしました
+tryブロックを抜けました
+```
+
+`try`ブロックを抜けた時点で`close`メソッドが呼ばれ、プールが持つリソースがすべて片付けられています。
+このプールは1つのスレッドから使うことを前提にしています。
+複数のスレッドから同時に借りたり返したりする場合は排他制御が必要になります。
+排他制御は第15章「マルチスレッドプログラミング」で学びます。
 
 ## 例外処理とログ記録
 
@@ -739,22 +776,20 @@ public class ErrorResponse {
 
 ### 例外処理戦略の実装例
 
-実際のアプリケーションでの例外処理戦略の実装例を示します。
-Spring Frameworkを使う場面を想定した例ですが、単独でコンパイルできるように、`@Transactional`などSpringのアノテーションはコメントにしてあります。
+実際のアプリケーションでの例外処理戦略の実装例として、口座間の送金処理を示します。
+入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります。
 
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（6、23〜28、33〜54、66〜79、127行目）</span>
+<span class="listing-number">**サンプルコード13-16**　TransferService.java（3、13〜16、20〜41、52〜63、111行目）</span>
 
 ```java
 public class TransferService {
     // ...
-    // @Transactional
     public TransferResult transfer(String fromAccountId, 
                                  String toAccountId, 
                                  BigDecimal amount) 
             throws BusinessException {
-        
-        // ...
+            // ...
         try {
             // 入力検証
             validateTransferRequest(fromAccountId, toAccountId, amount);
@@ -780,13 +815,11 @@ public class TransferService {
             // ...
         } catch (BusinessException e) {
             // ビジネス例外は呼び出し元に伝播
-            // logger.warn("送金処理でビジネスエラー: {}", e.getMessage());
             System.err.println("送金処理でビジネスエラー: " + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            // logger.error("予期せぬエラー", e);
             e.printStackTrace();
             // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
@@ -828,7 +861,7 @@ public class TransferService {
 - 再スロー時の情報の欠落
     + 新しい例外をスローするときは、元の例外をcauseとして渡す
 - スレッドのなかで発生した例外
-    + 別スレッドの例外は呼び出し元のcatchでは捕まえられない
+    + 別スレッドの例外は呼び出し元のcatchでは捕まえられない（スレッドは第15章で学ぶ）
 
 誤ったコードと修正したコード（コンパイルできる全文を含む）、デバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter13.md`

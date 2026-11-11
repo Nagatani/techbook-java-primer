@@ -262,11 +262,12 @@ future.exceptionally(ex -> {
    - `getCause()`: 原因となった例外を取得
    - `getStackTrace()`: スタックトレースを取得
 
-2. 目的に応じたログレベルを使用する
-   - ERROR: システムエラー
-   - WARN: ビジネスエラー
-   - INFO: 重要な処理の完了
-   - DEBUG: デバッグ情報
+2. 目的に応じたログレベルを使用する（本文の「例外処理とログ記録」とサンプルコード13-12）
+   - SEVERE: システムエラーと予期せぬ例外
+   - WARNING: ビジネスエラー
+   - INFO: 想定内のエラー（入力検証エラーなど）と重要な処理の完了
+   - FINE: デバッグ情報
+   - 本文の`java.util.logging`のレベル名で示した。このページのコード例の`logger.warn`・`logger.error`はSLF4Jなどのログライブラリの書き方で、それぞれWARNING・SEVEREにあたる
 
 3. 例外の発生箇所を特定する
    - IDEのデバッガーを活用

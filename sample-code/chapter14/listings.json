@@ -1,14 +1,14 @@
 {
-  "14-2": {
-    "dir": "14-02",
+  "14-1": {
+    "dir": "14-01",
     "main": "ScannerExample",
     "excerpt": [
       { "file": "ScannerExample.java", "from": 8, "to": 32 },
       { "file": "ScannerExample.java", "from": 44, "to": 45 }
     ]
   },
-  "14-3": {
-    "dir": "14-03",
+  "14-2": {
+    "dir": "14-02",
     "main": "TextFileReaderExample",
     "excerpt": [
       { "file": "TextFileReaderExample.java", "from": 9, "to": 10 },
@@ -17,15 +17,15 @@
       { "file": "TextFileReaderExample.java", "from": 35, "to": 43 }
     ]
   },
-  "14-4": {
-    "dir": "14-04",
+  "14-3": {
+    "dir": "14-03",
     "main": "TextFileWriterExample",
     "excerpt": [
       { "file": "TextFileWriterExample.java", "from": 1, "to": 29 }
     ]
   },
-  "14-5": {
-    "dir": "14-05",
+  "14-4": {
+    "dir": "14-04",
     "main": "CharacterEncodingExample",
     "excerpt": [
       { "file": "CharacterEncodingExample.java", "from": 10, "to": 12 },
@@ -33,29 +33,29 @@
       { "file": "CharacterEncodingExample.java", "from": 44, "to": 45 }
     ]
   },
-  "14-6": {
-    "dir": "14-06",
+  "14-5": {
+    "dir": "14-05",
     "main": "DataStreamExample",
     "excerpt": [
       { "file": "DataStreamExample.java", "from": 1, "to": 37 }
     ]
   },
-  "14-7": {
-    "dir": "14-07",
+  "14-6": {
+    "dir": "14-06",
     "main": "SerializationExample",
     "excerpt": [
       { "file": "SerializationExample.java", "from": 4, "to": 45 }
     ]
   },
-  "14-8": {
-    "dir": "14-08",
+  "14-7": {
+    "dir": "14-07",
     "main": "FileSystemExample",
     "excerpt": [
       { "file": "FileSystemExample.java", "from": 4, "to": 37 }
     ]
   },
-  "14-9": {
-    "dir": "14-09",
+  "14-8": {
+    "dir": "14-08",
     "main": "CSVProcessingExample",
     "excerpt": [
       { "file": "CSVProcessingExample.java", "from": 6, "to": 6 },
@@ -63,29 +63,22 @@
       { "file": "CSVProcessingExample.java", "from": 65, "to": 65 }
     ]
   },
-  "14-10": {
-    "dir": "14-10",
+  "14-9": {
+    "dir": "14-09",
     "main": "FileChooserExample",
     "excerpt": [
       { "file": "FileChooserExample.java", "from": 1, "to": 24 }
     ]
   },
-  "14-11": {
-    "dir": "14-11",
-    "main": "TraditionalStringProblems",
-    "excerpt": [
-      { "file": "TraditionalStringProblems.java", "from": 1, "to": 36 }
-    ]
-  },
-  "14-12": {
-    "dir": "14-12",
+  "14-10": {
+    "dir": "14-10",
     "main": "TextBlockBasics",
     "excerpt": [
       { "file": "TextBlockBasics.java", "from": 1, "to": 32 }
     ]
   },
-  "14-13": {
-    "dir": "14-13",
+  "14-11": {
+    "dir": "14-11",
     "main": "TextBlockIndentation",
     "excerpt": [
       { "file": "TextBlockIndentation.java", "from": 1, "to": 16 },
@@ -93,8 +86,8 @@
       { "file": "TextBlockIndentation.java", "from": 49, "to": 50 }
     ]
   },
-  "14-14": {
-    "dir": "14-14",
+  "14-12": {
+    "dir": "14-12",
     "main": "TextBlockEscaping",
     "excerpt": [
       { "file": "TextBlockEscaping.java", "from": 1, "to": 11 },
@@ -102,21 +95,12 @@
       { "file": "TextBlockEscaping.java", "from": 42, "to": 43 }
     ]
   },
-  "14-15": {
-    "dir": "14-15",
+  "14-13": {
+    "dir": "14-13",
     "main": "TextBlockStructuredData",
     "excerpt": [
       { "file": "TextBlockStructuredData.java", "from": 9, "to": 41 },
       { "file": "TextBlockStructuredData.java", "from": 175, "to": 176 }
-    ]
-  },
-  "14-16": {
-    "dir": "14-16",
-    "main": "TextBlockFileIO",
-    "excerpt": [
-      { "file": "TextBlockFileIO.java", "from": 8, "to": 8 },
-      { "file": "TextBlockFileIO.java", "from": 23, "to": 50 },
-      { "file": "TextBlockFileIO.java", "from": 232, "to": 232 }
     ]
   }
 }

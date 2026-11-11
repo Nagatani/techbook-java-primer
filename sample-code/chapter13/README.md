@@ -25,7 +25,7 @@ javac -d out *.java
 | [13-8](./13-08/) | CircuitBreaker.java | （mainメソッドなし） |
 | [13-9](./13-09/) | ExceptionAggregator.java | （mainメソッドなし） |
 | [13-10](./13-10/) | MultiResourceExample.java | （mainメソッドなし） |
-| [13-11](./13-11/) | ResourcePool.java | （mainメソッドなし） |
+| [13-11](./13-11/) | ResourcePool.java<br>ResourcePoolDemo.java | `java -cp out ResourcePoolDemo` |
 | [13-12](./13-12/) | ExceptionLogging.java<br>Exceptions.java | （mainメソッドなし） |
 | [13-13](./13-13/) | StructuredExceptionLogger.java | （mainメソッドなし） |
 | [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |

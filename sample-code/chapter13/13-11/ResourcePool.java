@@ -11,44 +11,35 @@ public class ResourcePool implements AutoCloseable {
         }
     }
     
-    public Resource acquire() throws InterruptedException {
-        synchronized (this) {
-            while (availableResources.isEmpty() && !closed) {
-                wait();
-            }
-            
-            if (closed) {
-                throw new IllegalStateException("プールはクローズされています");
-            }
-            
-            Resource resource = availableResources.poll();
-            usedResources.add(resource);
-            return resource;
+    public Resource acquire() {
+        if (closed) {
+            throw new IllegalStateException("プールはクローズされています");
         }
+        if (availableResources.isEmpty()) {
+            throw new IllegalStateException("使えるリソースが残っていません");
+        }
+        
+        Resource resource = availableResources.poll();
+        usedResources.add(resource);
+        return resource;
     }
     
     public void release(Resource resource) {
-        synchronized (this) {
-            if (usedResources.remove(resource)) {
-                availableResources.offer(resource);
-                notify();
-            }
+        if (usedResources.remove(resource)) {
+            availableResources.offer(resource);
         }
     }
     
     @Override
     public void close() {
-        synchronized (this) {
-            closed = true;
-            notifyAll();
-            
-            // すべてのリソースをクリーンアップ
-            for (Resource resource : availableResources) {
-                resource.cleanup();
-            }
-            for (Resource resource : usedResources) {
-                resource.cleanup();
-            }
+        closed = true;
+        
+        // すべてのリソースをクリーンアップ
+        for (Resource resource : availableResources) {
+            resource.cleanup();
+        }
+        for (Resource resource : usedResources) {
+            resource.cleanup();
         }
     }
     

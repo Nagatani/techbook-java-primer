@@ -7,7 +7,7 @@
 1. ファイルI/Oの基本
     - InputStream/OutputStreamとReader/Writerの使い分け
     - バイトストリームと文字ストリームの特性理解
-    - try-with-resourcesによる確実なリソース管理
+    - try-with-resourcesによるストリームの確実なクローズ
 2. NIO.2による現代的ファイル操作
     - FilesクラスとPathインターフェイスの活用
     - より簡潔で安全なファイル操作の実装
@@ -66,23 +66,18 @@
 
 </div>
 
-### `try-with-resources`による安全なリソース管理
+### `try-with-resources`でストリームを閉じる
 
-ファイルなどの外部リソースは、使い終わったら必ず「閉じる（closeする）」必要があります。これを怠ると、リソースリークなどの問題を引き起こします。Java 7以降で導入された`try-with-resources`文を使うと、リソースのクローズ処理が自動的に行われ、安全かつ簡潔にコードを記述できます。
+ファイルを開いたストリームは、使い終わったら必ず閉じます。
+本章のサンプルでは、第13章「例外処理」で学んだ`try-with-resources`文でストリームを閉じます。
+文の書き方と、`finally`で閉じる書き方との違いは、第13章の「`try-with-resources`文」と「リソース管理の実践例」を読み直してください。
 
-以下のコードは、try-with-resources構文の基本的な使い方を示しています。try括弧内で宣言されたリソース（BufferedReader）は、tryブロックを抜ける際に自動的にclose()メソッドが呼ばれます。これにより、finallyブロックでの明示的なクローズ処理が不要になり、コードがより簡潔で安全になります。
+ファイル処理で`try-with-resources`を使うときは、次の2点に注意します。
 
-<span class="listing-number">**サンプルコード14-1**</span>
-
-```java
-// try()の括弧内でリソースを初期化する
-try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
-    // ... ファイル読み込み処理 ...
-} catch (IOException e) {
-    // ... エラー処理 ...
-}
-// tryブロックを抜ける際にbrが自動的にクローズされる
-```
+- `new BufferedReader(new FileReader(path))`のようにストリームを重ねたときは、外側の`BufferedReader`を宣言すれば足りる
+    + 外側のストリームを閉じると、内側のストリームも閉じられる
+- `Files.newBufferedReader`のように、ファイルを開いたReaderやWriterを返すメソッドの戻り値も`try-with-resources`で閉じる
+    + `Files.readAllLines`や`Files.writeString`のように、開いてから閉じるまでをメソッドのなかで済ませるものは閉じなくてよい
 
 ## テキストファイルの読み書き
 
@@ -96,7 +91,7 @@ try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
 
 次のプログラムは、実行したディレクトリにある`data.txt`を読み込みます。`data.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
 
-<span class="listing-number">**サンプルコード14-2**　ScannerExample.java（8〜32、44〜45行目）</span>
+<span class="listing-number">**サンプルコード14-1**　ScannerExample.java（8〜32、44〜45行目）</span>
 
 ```java
 public class ScannerExample {
@@ -151,7 +146,7 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-3**　TextFileReaderExample.java（9〜10、15〜28、31〜32、35〜43行目）</span>
+<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（9〜10、15〜28、31〜32、35〜43行目）</span>
 
 ```java
 public class TextFileReaderExample {
@@ -202,7 +197,7 @@ Line 2
 
 同様に`Files`クラスと`BufferedWriter`を使います。
 
-<span class="listing-number">**サンプルコード14-4**　TextFileWriterExample.java</span>
+<span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java</span>
 
 ```java
 import java.io.BufferedWriter;
@@ -265,7 +260,7 @@ public class TextFileWriterExample {
 - ISO-8859-1
     + 西欧言語用の1バイトのエンコーディング
 
-<span class="listing-number">**サンプルコード14-5**　CharacterEncodingExample.java（10〜12、20〜41、44〜45行目）</span>
+<span class="listing-number">**サンプルコード14-4**　CharacterEncodingExample.java（10〜12、20〜41、44〜45行目）</span>
 
 ```java
 public class CharacterEncodingExample {
@@ -318,7 +313,7 @@ public class CharacterEncodingExample {
 `DataInputStream`と`DataOutputStream`は、Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
 数値を文字列に変換せずに保存するため、テキスト形式と比べてファイルサイズが小さくなり、変換処理も不要になります。
 
-<span class="listing-number">**サンプルコード14-6**　DataStreamExample.java</span>
+<span class="listing-number">**サンプルコード14-5**　DataStreamExample.java</span>
 
 ```java
 import java.io.*;
@@ -377,11 +372,11 @@ public class DataStreamExample {
 
 これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
-サンプルコード14-6では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
+サンプルコード14-5では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
 
 <div class="figure">
 
-![ストリームを重ねて機能を組み合わせる（サンプルコード14-6）](images/diagrams/chapter14-stream-layers.svg)
+![ストリームを重ねて機能を組み合わせる（サンプルコード14-5）](images/diagrams/chapter14-stream-layers.svg)
 
 </div>
 
@@ -393,7 +388,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 そのクラスのオブジェクトを`ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
 パスワードのように保存したくないフィールドには`transient`修飾子を付けると、そのフィールドを直列化の対象から外せます。
 
-<span class="listing-number">**サンプルコード14-7**　SerializationExample.java（4〜45行目）</span>
+<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜45行目）</span>
 
 ```java
 // Serializableを実装したクラス
@@ -460,7 +455,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）を使うと、
 - `Files`
     + ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
 
-<span class="listing-number">**サンプルコード14-8**　FileSystemExample.java（4〜37行目）</span>
+<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（4〜37行目）</span>
 
 ```java
 public class FileSystemExample {
@@ -516,7 +511,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 以下は、基本的なCSV読み込み・書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-9**　CSVProcessingExample.java（6、21〜54、65行目）</span>
+<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6、21〜54、65行目）</span>
 
 ```java
 public class CSVProcessingExample {
@@ -589,9 +584,13 @@ java.time APIの詳細な使い方については、付録F: java.time API完全
 
 ## GUIでのファイル選択: `JFileChooser`
 
-Swingアプリケーションでユーザーにファイルを選択させるには、`JFileChooser`を使います。
+GUIのアプリケーションでユーザーにファイルを選択させるには、Swingの`JFileChooser`を使います。
+Swingを使ったGUIプログラミングは第17章「GUIプログラミングの基礎」から学びます。
+ここでは、選んだファイルの場所を`File`オブジェクトとして受け取れることだけを確かめてください。
+次のプログラムを実行するとダイアログが開き、選んだファイルのパスが表示されます。
+GUIのアプリケーションに組み込むときは、第17章で学ぶ起動の手順（`SwingUtilities.invokeLater`）に従い、ウィンドウのなかから`JFileChooser`を開きます。
 
-<span class="listing-number">**サンプルコード14-10**　FileChooserExample.java</span>
+<span class="listing-number">**サンプルコード14-9**　FileChooserExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -632,68 +631,21 @@ public class FileChooserExample {
 
 ## Text Blocks - 複数行文字列の効率的な処理
 
-Java 15で正式に導入されたText Blocksは、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。とくにファイルI/Oにおいて、JSON、XML、SQL文、HTMLテンプレートなどの構造化されたテキストデータを扱う際に非常に有用です。
+Java 15で正式に導入されたText Blocksは、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。
+ファイルに限らず使える言語機能ですが、JSON、SQL、HTMLのような構造を持つテキストをファイルに書き出すときにとくに役立つため、本章で取り上げます。
 
 ### 従来の文字列連結の問題点
 
-Text Blocksが導入される前は、複数行の文字列を作成するために文字列連結やエスケープシーケンスを多用する必要がありました。
-
-<span class="listing-number">**サンプルコード14-11**　TraditionalStringProblems.java</span>
-
-```java
-public class TraditionalStringProblems {
-    public static void main(String[] args) {
-        // 従来の方法：読みにくく、エラーが起きやすい
-        String jsonData = "{\n" +
-                "  \"name\": \"田中太郎\",\n" +
-                "  \"age\": 30,\n" +
-                "  \"address\": {\n" +
-                "    \"city\": \"東京\",\n" +
-                "    \"zipCode\": \"100-0001\"\n" +
-                "  }\n" +
-                "}";
-        
-        String sqlQuery = "SELECT u.name, u.email, p.title\n" +
-                "FROM users u\n" +
-                "INNER JOIN posts p ON u.id = p.user_id\n" +
-                "WHERE u.created_at > '2024-01-01'\n" +
-                "ORDER BY u.name";
-        
-        String htmlTemplate = "<html>\n" +
-                "<head>\n" +
-                "  <title>ユーザー情報</title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "  <h1>プロフィール</h1>\n" +
-                "  <p>名前: %s</p>\n" +
-                "  <p>年齢: %d</p>\n" +
-                "</body>\n" +
-                "</html>";
-        
-        IO.println("=== 従来の方法の問題点 ===");
-        IO.println("1. エスケープシーケンス（\\n, \\\"）が多くて読みにくい");
-        IO.println("2. 文字列連結（+）によるエラーが起きやすい");
-        IO.println("3. インデントの管理が困難");
-        IO.println("4. 引用符のエスケープが煩雑");
-    }
-}
-```
-
-実行結果：
-
-```
-=== 従来の方法の問題点 ===
-1. エスケープシーケンス（\n, \"）が多くて読みにくい
-2. 文字列連結（+）によるエラーが起きやすい
-3. インデントの管理が困難
-4. 引用符のエスケープが煩雑
-```
+Text Blocksが導入される前は、複数行の文字列を作るために、行ごとの文字列を`+`でつなぎ、改行を`\n`、引用符を`\"`と書く必要がありました。
+たとえばJSONの`"name": "田中太郎",`という1行は、`"  \"name\": \"田中太郎\",\n" +`と書くことになります。
+エスケープシーケンスが多くて読みにくく、`+`や`\n`の書き忘れも起きやすい書き方です。
+次のサンプルコードでも、同じ内容の文字列を従来の書き方で作って比べています。
 
 ### Text Blocksの基本構文
 
 Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
 
-<span class="listing-number">**サンプルコード14-12**　TextBlockBasics.java</span>
+<span class="listing-number">**サンプルコード14-10**　TextBlockBasics.java</span>
 
 ```java
 public class TextBlockBasics {
@@ -749,7 +701,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です。
 
-<span class="listing-number">**サンプルコード14-13**　TextBlockIndentation.java（1〜16、29〜38、49〜50行目）</span>
+<span class="listing-number">**サンプルコード14-11**　TextBlockIndentation.java（1〜16、29〜38、49〜50行目）</span>
 
 ```java
 public class TextBlockIndentation {
@@ -822,7 +774,7 @@ public class Example {
 
 Text Blocksでは多くのエスケープシーケンスが不要になります。
 
-<span class="listing-number">**サンプルコード14-14**　TextBlockEscaping.java（1〜11、22〜31、42〜43行目）</span>
+<span class="listing-number">**サンプルコード14-12**　TextBlockEscaping.java（1〜11、22〜31、42〜43行目）</span>
 
 ```java
 public class TextBlockEscaping {
@@ -883,7 +835,7 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
 
-<span class="listing-number">**サンプルコード14-15**　TextBlockStructuredData.java（9〜41、175〜176行目）</span>
+<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（9〜41、175〜176行目）</span>
 
 ```java
 public class TextBlockStructuredData {
@@ -924,7 +876,7 @@ public class TextBlockStructuredData {
 }
 ```
 
-実行結果：
+次は実行結果の抜粋です。
 
 ```
 === JSON データを保存しました ===
@@ -945,33 +897,7 @@ public class TextBlockStructuredData {
   }
 }
 
-
-=== SQL クエリを保存しました ===
-SELECT
-    u.id,
-    u.name,
-    u.email,
-    u.created_at,
-    p.title AS latest_post,
-    COUNT(c.id) AS comment_count
-FROM users u
-LEFT JOIN posts p ON u.id = p.user_id
-    AND p.created_at = (
-        SELECT MAX(created_at)
-        FROM posts
-        WHERE user_id = u.id
-    )
-LEFT JOIN comments c ON p.id = c.post_id
-WHERE u.created_at > '2024-01-01'
-GROUP BY u.id, u.name, u.email, u.created_at, p.title
-ORDER BY u.created_at DESC
-LIMIT 100;
-
-
-=== HTML テンプレートを保存しました ===
-ファイル: /home/user/work/user_profile.html
-
-=== XML 設定ファイルを保存しました ===
+...（SQL・HTML・XMLの出力は省略）
 
 === 生成されたファイル一覧 ===
 app_config.xml       (706 bytes)
@@ -980,74 +906,17 @@ user_profile.html    (1170 bytes)
 user_query.sql       (449 bytes)
 ```
 
-HTMLファイルのパスは、プログラムを実行したディレクトリによって変わります。
+全文では、JSONと同じようにSQL・HTML・XMLのテキストもText Blocksで作り、ファイルに保存しています。
 JSONの日時は、プログラムを実行した日時になります。
 ファイル一覧は、OSによって順序が変わらないように名前順に並べ替えて表示しています。
-
-### ファイルI/Oでの活用例
-
-Text Blocksをファイル読み書きと組み合わせた実践的な使用例。
-
-<span class="listing-number">**サンプルコード14-16**　TextBlockFileIO.java（8、23〜50、232行目）</span>
-
-```java
-public class TextBlockFileIO {
-    // ...
-    private static void generateLogTemplate() throws IOException {
-        String logTemplate = """
-                # アプリケーションログ設定
-                # 生成日時: %s
-                
-                ## ログレベル設定
-                root.level=INFO
-                com.example.app=DEBUG
-                com.example.db=WARN
-                
-                ## 出力先設定
-                console.enabled=true
-                file.enabled=true
-                file.path=logs/app-%s.log
-                file.maxSize=10MB
-                file.maxHistory=30
-                
-                ## フォーマット設定
-                pattern.console=%%d{HH:mm:ss} [%%thread] %%-5level %%logger{0} - %%msg%%n
-                pattern.file=%%d{yyyy-MM-dd HH:mm:ss.SSS} [%%thread] %%-5level %%logger{36} - %%msg%%n
-                """.formatted(
-                LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        
-        Path logConfigPath = Paths.get("log_config.properties");
-        Files.writeString(logConfigPath, logTemplate);
-        IO.println("ログ設定ファイルを生成しました: " + logConfigPath);
-    }
-    // ...
-}
-```
-
-実行結果：
-
-```
-ログ設定ファイルを生成しました: log_config.properties
-デフォルト設定ファイルを作成しました
-HTMLレポートを生成しました: user_report.html
-生成しました: README.md
-生成しました: TODO.md
-生成しました: project.json
-
-=== 一括ファイル処理完了 ===
-```
 
 ### Text Blocksのベストプラクティス
 
 Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのように複雑な構造を持つテキストを書くときです。
-エスケープシーケンスを多用した従来の文字列と違い、コードの見た目がそのまま実際の出力に対応するため、読みやすくなります。
+コードの見た目がそのまま実際の出力に対応するため、エスケープシーケンスを多用した従来の文字列より読みやすくなります。
 使うときは、もっとも左にある行がインデントの基準になることを意識してください。
-また、`formatted()`メソッドや`String.format()`と組み合わせると、値を埋め込んだ内容を動的に作れます。
-さらに、Text Blocksは設定ファイルやレポート、コード生成のテンプレートとしても使えます。
-
-Text Blocksは、とくにファイルI/O処理において構造化されたテキストデータを扱う際の強力なツールです。
-JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生成など、現代的なJavaアプリケーション開発において欠かせない機能となっています。
+また、`formatted()`メソッドと組み合わせると、値を埋め込んだ内容を作れます。
+設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存する使い方も同じです。
 
 ※ 本章の高度な内容については、付録B.13「NIO.2の高度な機能」を参照してください。
 （`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`）
@@ -1055,11 +924,12 @@ JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生�
 ## まとめ
 
 - JavaのファイルI/Oはストリームベースである
-- リソース管理には`try-with-resources`を使い、安全性を高めましょう
+- ストリームは第13章で学んだ`try-with-resources`で確実に閉じる
 - テキストファイルはキャラクタストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱う
 - オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段である
 - NIO.2 (`java.nio.file`) を使うと、モダンで高機能なファイルシステム操作が可能である
-- GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させることができる
+- GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させる（Swingは第17章から学ぶ）
+- Text Blocksを使うと、JSONやSQLのような複数行のテキストを読みやすく書け、そのままファイルに保存できる
 
 ## よくあるエラーと対処法
 
@@ -1076,7 +946,7 @@ JSON APIの応答処理、SQLクエリの構築、HTMLテンプレートの生�
 - OSによる違い
     + パスの区切り文字やファイル名に使える文字はOSごとに異なる。`Path`を使って組み立てる
 - 複数のスレッドからの同時アクセス
-    + 同じファイルへの同時書き込みで内容が壊れる
+    + 同じファイルへの同時書き込みで内容が壊れる（スレッドは第15章で学ぶ）
 - 一時ファイルの削除忘れ
     + 作成した一時ファイルを削除しないと、ディスクを圧迫する
 

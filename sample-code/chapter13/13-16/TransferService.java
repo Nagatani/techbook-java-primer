@@ -1,33 +1,20 @@
 import java.math.BigDecimal;
 
-// 以下はSpring Frameworkを使用した例
-// @Service, @Autowired, @Transactionalアノテーションは
-// 実際の使用時にはSpringの依存関係が必要
 public class TransferService {
-    // private static final Logger logger = 
-    //     LoggerFactory.getLogger(TransferService.class);
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
     
-    // @Autowired
-    private AccountRepository accountRepository;
-    
-    // @Autowired
-    private TransactionRepository transactionRepository;
-    
-    // Springでは@Autowiredで注入される。ここではコンストラクタで受け取る
     public TransferService(AccountRepository accountRepository,
                            TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
     }
     
-    // @Transactional
     public TransferResult transfer(String fromAccountId, 
                                  String toAccountId, 
                                  BigDecimal amount) 
             throws BusinessException {
         
-        // logger.info("送金処理開始: {} -> {}, 金額: {}", 
-        //     fromAccountId, toAccountId, amount);
         IO.println("送金処理開始: " + fromAccountId + " -> " + toAccountId + ", 金額: " + amount);
         
         try {
@@ -59,19 +46,16 @@ public class TransferService {
                 fromAccount.getBalance(), 
                 toAccount.getBalance());
             
-            // logger.info("送金処理完了: {}", result);
             IO.println("送金処理完了: " + result);
             return result;
             
         } catch (BusinessException e) {
             // ビジネス例外は呼び出し元に伝播
-            // logger.warn("送金処理でビジネスエラー: {}", e.getMessage());
             System.err.println("送金処理でビジネスエラー: " + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            // logger.error("予期せぬエラー", e);
             e.printStackTrace();
             // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
