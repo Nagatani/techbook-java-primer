@@ -6,8 +6,8 @@
       { "file": "SimpleApp.java", "from": 1, "to": 15 }
     ]
   },
-  "23-6": {
-    "dir": "23-06",
+  "23-3": {
+    "dir": "23-03",
     "main": "TodoApp",
     "excerpt": [
       { "file": "TodoApp.java", "from": 1, "to": 1 },
@@ -17,8 +17,8 @@
       { "file": "TodoApp.java", "from": 42, "to": 47 }
     ]
   },
-  "23-8": {
-    "dir": "23-08",
+  "23-4": {
+    "dir": "23-04",
     "main": "ResourceApp",
     "excerpt": [
       { "file": "ResourceApp.java", "from": 1, "to": 23 }

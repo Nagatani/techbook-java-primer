@@ -39,8 +39,6 @@
 
 開発環境を持たないユーザーでも簡単に実行できるように、必要なファイルをまとめて実行可能な形式に変換します。この一連の作業を「ビルド」と「パッケージング」と呼び、最終的にユーザーに配布できる形にすることを「配布」といいます。
 
-
-
 本章では、Javaアプリケーションを配布するためのもっとも基本的な形式である実行可能JARファイルの作成方法と、さらに一歩進んでOSネイティブのアプリケーションを作成する方法を学びます。
 
 <div class="figure">
@@ -88,8 +86,6 @@ public class SimpleApp {
 
 まず、ソースコードをコンパイルしてクラスファイル (`.class`) を作成します。
 
-<span class="listing-number">**サンプルコード23-2**</span>
-
 ```bash
 javac SimpleApp.java
 ```
@@ -99,7 +95,7 @@ javac SimpleApp.java
 
 次に、JARファイルに「メインクラスは何か」を教えるためのマニフェストファイルを作成します。`manifest.txt`という名前で、以下の内容を記述します。
 
-<span class="listing-number">**サンプルコード23-3**</span>
+<span class="listing-number">**サンプルコード23-2**</span>
 
 ```text
 Main-Class: SimpleApp
@@ -114,8 +110,6 @@ Main-Class: SimpleApp
 ### ステップ4: `jar`コマンドによるパッケージング
 
 `jar`コマンドを使って、クラスファイルとマニフェストファイルを1つのJARファイルにまとめます。
-
-<span class="listing-number">**サンプルコード23-4**</span>
 
 ```bash
 # 書式: jar cvfm [出力JARファイル名] [マニフェストファイル名] [含めるクラスファイル]
@@ -139,8 +133,6 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 
 作成したJARファイルは、`java -jar`コマンドで実行できます。
 
-<span class="listing-number">**サンプルコード23-5**</span>
-
 ```bash
 java -jar SimpleApp.jar
 ```
@@ -152,7 +144,7 @@ java -jar SimpleApp.jar
 ここからは、ステップ1〜5の手順を応用して、もう少し実際のアプリケーションに近いJARを作ります。
 実際のアプリケーションは通常、複数のクラスから構成されます。以下は、シンプルなTodoアプリケーションの例です。
 
-<span class="listing-number">**サンプルコード23-6**　TodoApp.java（1、5〜6、12〜13、27〜33、42〜47行目）</span>
+<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、12〜13、27〜33、42〜47行目）</span>
 
 ```java
 // TodoApp.java
@@ -187,8 +179,6 @@ public class TodoApp {
 複数のクラスファイルを含む場合は、次のようにJARを作成します。
 マニフェストファイル`manifest.txt`には、ステップ3と同じ書き方で`Main-Class: TodoApp`と書いておきます。
 
-<span class="listing-number">**サンプルコード23-7**</span>
-
 ```bash
 # すべてのJavaファイルをコンパイル
 javac *.java
@@ -201,7 +191,7 @@ jar cvfm TodoApp.jar manifest.txt *.class
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-8**　ResourceApp.java</span>
+<span class="listing-number">**サンプルコード23-4**　ResourceApp.java</span>
 
 ```java
 // ResourceApp.java
@@ -237,8 +227,6 @@ public class ResourceApp {
 
 リソースを含むJARは、次のように作成します。
 
-<span class="listing-number">**サンプルコード23-9**</span>
-
 ```bash
 # コンパイル
 javac ResourceApp.java
@@ -260,14 +248,11 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 JARファイルは便利ですが、実行するにはユーザーのPCにJavaランタイム（JRE）がインストールされている必要があります。
 
-Java 16で正式に導入された`jpackage`ツールを使えば、アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラーや実行ファイル（Windowsなら`.exe`、Macなら`.app`）を作成できます。これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
+Java 16で正式に導入された`jpackage`ツールを使えば、アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラー（Windowsの`.exe`・`.msi`、macOSの`.dmg`など）や、インストールせずに実行できるアプリケーション（macOSの`.app`など）を作成できます。これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
 
 ### `jpackage`を使うための準備：入力と出力の分離
 
-`jpackage`でエラーを起こさないための重要事項は、
-「パッケージ化の材料（入力）が入ったディレクトリ」と
-「作成されたアプリケーション（出力）を保存するディレクトリ」を
-別々のディレクトリとして管理することです。
+`jpackage`でエラーを起こさないために、パッケージ化の材料（入力）を入れるディレクトリと、作成されたアプリケーション（出力）を保存するディレクトリを分けて管理します。
 
 ```
 /MyProject/
@@ -284,8 +269,6 @@ Java 16で正式に導入された`jpackage`ツールを使えば、アプリケ
 ### `jpackage`の実行例
 
 プロジェクトのルートディレクトリ (`/MyProject/`) で、以下のコマンドを実行します。
-
-<span class="listing-number">**サンプルコード23-10**</span>
 
 ```bash
 jpackage --type app-image \
@@ -312,8 +295,6 @@ jpackage --type app-image \
 
 #### Windows向け（.exeまたは.msi）
 
-<span class="listing-number">**サンプルコード23-11**</span>
-
 ```bash
 jpackage --type exe \
          --name "SimpleApp" \
@@ -325,8 +306,6 @@ jpackage --type exe \
 
 #### macOS向け（.appまたは.dmg）
 
-<span class="listing-number">**サンプルコード23-12**</span>
-
 ```bash
 jpackage --type dmg \
          --name "SimpleApp" \
@@ -336,8 +315,6 @@ jpackage --type dmg \
 ```
 
 #### Linux向け（.debまたは.rpm）
-
-<span class="listing-number">**サンプルコード23-13**</span>
 
 ```bash
 jpackage --type deb \
@@ -357,9 +334,8 @@ jpackage --type deb \
 
 ### ビルド技術の進化
 
-本章で学んだ技術は、Javaのビルド・配布技術の基礎です。実際の開発では、さらに高度な技術も使用されます。
-
-主な高度な技術は次の通りです。
+本章で学んだ技術は、Javaのビルド・配布技術の基礎です。
+実際の開発では、次のような高度な技術も使われます。
 
 1. ビルド自動化ツール
     + 第22章で学んだMavenなどのビルドツールで、依存関係の管理に加えて、コンパイルからJARの作成までを1つのコマンドで行う
@@ -378,12 +354,13 @@ jpackage --type deb \
 
 実務では、プロジェクトの規模や要件に合わせて、ビルドと配布の方法を選びます。小規模なツールであれば実行可能JARで十分ですが、エンタープライズアプリケーションではより高度な配布戦略が必要になります。本章で学んだビルドと配布の知識は、あなたの作品を世界に公開するための第一歩です。
 
-※ 高度なビルド技術（Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用など）については、付録G「高度なビルドとデプロイメント技術」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`）
+Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録G「高度なビルドとデプロイメント技術」で扱います。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`
 
 ## 章末演習
 
 ### 演習課題へのアクセス
+
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/`
 
