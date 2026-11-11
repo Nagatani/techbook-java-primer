@@ -80,7 +80,9 @@ public final class Constants {
     
     // データベース関連定数
     public static final class Database {
-        private Database() {}
+        private Database() {
+            throw new AssertionError("Database class should not be instantiated");
+        }
         
         public static final String DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
         public static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/";
@@ -91,7 +93,9 @@ public final class Constants {
     
     // ファイル関連定数
     public static final class Files {
-        private Files() {}
+        private Files() {
+            throw new AssertionError("Files class should not be instantiated");
+        }
         
         public static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
         public static final String LINE_SEPARATOR = System.lineSeparator();
@@ -106,7 +110,9 @@ public final class Constants {
     
     // UI関連定数
     public static final class UI {
-        private UI() {}
+        private UI() {
+            throw new AssertionError("UI class should not be instantiated");
+        }
         
         public static final int DEFAULT_WINDOW_WIDTH = 800;
         public static final int DEFAULT_WINDOW_HEIGHT = 600;
@@ -124,7 +130,9 @@ public final class Constants {
     
     // 数学定数
     public static final class Math {
-        private Math() {}
+        private Math() {
+            throw new AssertionError("Math class should not be instantiated");
+        }
         
         public static final double E = 2.71828182845904523536;
         public static final double GOLDEN_RATIO = 1.6180339887498948482;
@@ -138,12 +146,15 @@ public final class Constants {
     // === 正規表現定数 ===
     
     public static final class Regex {
-        private Regex() {}
+        private Regex() {
+            throw new AssertionError("Regex class should not be instantiated");
+        }
         
         public static final String EMAIL_PATTERN = 
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        // 0で始まり、ハイフンで3つに区切った電話番号（例：03-1234-5678、0120-123-456）
         public static final String PHONE_NUMBER_PATTERN = 
-            "^\\d{2,4}-\\d{2,4}-\\d{4}$";
+            "^0\\d{1,4}-\\d{1,4}-\\d{3,4}$";
         public static final String POSTAL_CODE_PATTERN = 
             "^\\d{3}-\\d{4}$";
         public static final String PASSWORD_PATTERN = 
@@ -153,7 +164,9 @@ public final class Constants {
     // === 設定関連定数 ===
     
     public static final class Config {
-        private Config() {}
+        private Config() {
+            throw new AssertionError("Config class should not be instantiated");
+        }
         
         // 設定ファイル名
         public static final String APP_CONFIG_FILE = "application.properties";
@@ -176,7 +189,9 @@ public final class Constants {
      * 列挙型の代わりに定数で実装する場合の例
      */
     public static final class Priority {
-        private Priority() {}
+        private Priority() {
+            throw new AssertionError("Priority class should not be instantiated");
+        }
         
         public static final int LOW = 1;
         public static final int NORMAL = 2;
@@ -215,7 +230,9 @@ public final class Constants {
      * APIエンドポイント定数
      */
     public static final class ApiEndpoints {
-        private ApiEndpoints() {}
+        private ApiEndpoints() {
+            throw new AssertionError("ApiEndpoints class should not be instantiated");
+        }
         
         private static final String BASE_URL = "https://api.example.com";
         private static final String VERSION = "/v1";

@@ -91,14 +91,14 @@ public final class ThreadSafeCounter {
     }
     
     /**
-     * 総インクリメント回数を取得
+     * 増やした量の合計を取得（increment()は1、addAndGet(n)はnとして数える）
      */
     public long getTotalIncrements() {
         return totalIncrements.get();
     }
     
     /**
-     * 総デクリメント回数を取得
+     * 減らした量の合計を取得（decrement()は1、addAndGet(-n)はnとして数える）
      */
     public long getTotalDecrements() {
         return totalDecrements.get();

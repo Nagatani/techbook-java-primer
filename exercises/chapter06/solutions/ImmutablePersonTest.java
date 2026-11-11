@@ -97,7 +97,7 @@ public class ImmutablePersonTest {
     @Test
     @DisplayName("withHobbiesメソッドのテスト")
     void testWithHobbies() {
-        List<String> newHobbies = Arrays.asList("料理", "旅行", "写真");
+        List<String> newHobbies = new ArrayList<>(Arrays.asList("料理", "旅行", "写真"));
         ImmutablePerson newPerson = person.withHobbies(newHobbies);
         
         assertNotSame(person, newPerson);

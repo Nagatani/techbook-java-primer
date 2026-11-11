@@ -144,14 +144,17 @@ final class Email {
  * 電話番号を表す値オブジェクト
  */
 final class PhoneNumber {
+    // 0で始まり、ハイフンで3つに区切った形（例：03-1234-5678、090-1234-5678、0120-123-456）
     private static final Pattern PHONE_PATTERN = 
-        Pattern.compile("^\\d{2,4}-\\d{2,4}-\\d{4}$");
+        Pattern.compile("^0\\d{1,4}-\\d{1,4}-\\d{3,4}$");
     
     private final String number;
     
     public PhoneNumber(String number) {
         this.number = Objects.requireNonNull(number, "電話番号はnullにできません");
-        if (!PHONE_PATTERN.matcher(number).matches()) {
+        // 形に加えて、数字の桁数（固定電話・フリーダイヤルは10桁、携帯電話は11桁）も確かめる
+        int digits = number.replace("-", "").length();
+        if (!PHONE_PATTERN.matcher(number).matches() || digits < 10 || digits > 11) {
             throw new IllegalArgumentException("無効な電話番号形式です: " + number);
         }
     }

@@ -176,7 +176,7 @@ public class ValueObjectTest {
         void testValidPhoneNumber() {
             PhoneNumber phone = new PhoneNumber("03-1234-5678");
             assertEquals("03-1234-5678", phone.getNumber());
-            assertEquals("03123456789", phone.getNumberWithoutHyphens());
+            assertEquals("0312345678", phone.getNumberWithoutHyphens());
         }
         
         @Test

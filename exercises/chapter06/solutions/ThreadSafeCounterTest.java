@@ -174,8 +174,9 @@ public class ThreadSafeCounterTest {
             assertEquals(largeValue, counter.get());
             
             // オーバーフローのテスト
+            // MAX_VALUE - 1 に 2 を足すと MAX_VALUE を1つ越えて MIN_VALUE になる
             counter.addAndGet(2);
-            assertEquals(Integer.MIN_VALUE + 1, counter.get());
+            assertEquals(Integer.MIN_VALUE, counter.get());
         }
         
         @Test
@@ -186,8 +187,9 @@ public class ThreadSafeCounterTest {
             assertEquals(largeNegativeValue, counter.get());
             
             // アンダーフローのテスト
+            // MIN_VALUE + 1 から 2 を引くと MIN_VALUE を1つ越えて MAX_VALUE になる
             counter.addAndGet(-2);
-            assertEquals(Integer.MAX_VALUE - 1, counter.get());
+            assertEquals(Integer.MAX_VALUE, counter.get());
         }
         
         @Test
@@ -349,8 +351,8 @@ public class ThreadSafeCounterTest {
                 final int threadId = i;
                 executor.submit(() -> {
                     try {
-                        // 0から各スレッドIDに変更を試みる
-                        if (counter.compareAndSet(0, threadId)) {
+                        // 0から各スレッドの番号（1以上。0にすると値が0のまま残り、別のスレッドも成功してしまう）に変更を試みる
+                        if (counter.compareAndSet(0, threadId + 1)) {
                             successCount.incrementAndGet();
                         }
                     } finally {
@@ -366,7 +368,7 @@ public class ThreadSafeCounterTest {
             assertEquals(1, successCount.get());
             // 最終値は成功したスレッドのIDのいずれか
             int finalValue = counter.get();
-            assertTrue(finalValue >= 0 && finalValue < THREAD_COUNT);
+            assertTrue(finalValue >= 1 && finalValue <= THREAD_COUNT);
         }
     }
     
@@ -407,9 +409,9 @@ public class ThreadSafeCounterTest {
         ThreadSafeCounter.CounterStats stats = counter.getStats();
         assertEquals(0, stats.getCurrentValue());
         
-        // 各操作の回数を確認
-        long expectedIncrements = THREAD_COUNT * OPERATIONS_PER_THREAD / 4 * 2;  // increment + addAndGet(5)
-        long expectedDecrements = THREAD_COUNT * OPERATIONS_PER_THREAD / 4 * 2;  // decrement + addAndGet(-5)
+        // 増減量の合計を確認（統計はaddAndGet(5)を5として数える）
+        long expectedIncrements = THREAD_COUNT * OPERATIONS_PER_THREAD / 4 * (1 + 5);  // increment + addAndGet(5)
+        long expectedDecrements = THREAD_COUNT * OPERATIONS_PER_THREAD / 4 * (1 + 5);  // decrement + addAndGet(-5)
         
         assertEquals(expectedIncrements, stats.getTotalIncrements());
         assertEquals(expectedDecrements, stats.getTotalDecrements());
