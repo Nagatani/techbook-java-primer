@@ -1,65 +1,66 @@
 # 表記の統一（JIS Z 8301:2019 と内閣告示「外来語の表記」に従う）
 # - 英語の語末の -er・-or・-ar に当たる外来語は、長音符号「ー」を付ける（2026-11-11〜）
 # - 語末が -y の語（メモリ、ディレクトリ、ライブラリ、ファクトリなど）は長音符号を付けない
+# 続けて -ing・-bility・-able の形になる語（フィルタリング、ユーザビリティ、リーダブル）は対象外
 # textlint（npm run lint）の prh ルールとして使う。コードブロックとインラインコードは対象外
 version: 1
 rules:
   - expected: コンストラクター
-    pattern: /コンストラクタ(?!ー)/
+    pattern: /コンストラクタ(?!ー|リング|ビリティ|ブル)/
   - expected: コンパイラー
-    pattern: /コンパイラ(?!ー)/
+    pattern: /コンパイラ(?!ー|リング|ビリティ|ブル)/
   - expected: パラメーター
     pattern: /パラメータ(?!ー)/
   - expected: フォルダー
-    pattern: /フォルダ(?!ー)/
+    pattern: /フォルダ(?!ー|リング|ビリティ|ブル)/
   - expected: イテレーター
     pattern: /イテレータ(?!ー)/
   - expected: リスナー
-    pattern: /リスナ(?!ー)/
+    pattern: /リスナ(?!ー|リング|ビリティ|ブル)/
   - expected: カウンター
-    pattern: /カウンタ(?!ー)/
+    pattern: /カウンタ(?!ー|リング|ビリティ|ブル)/
   - expected: バッファー
-    pattern: /バッファ(?!ー|リング)/
+    pattern: /バッファ(?!ー|リング|ビリティ|ブル)/
   - expected: エディター
-    pattern: /エディタ(?!ー)/
+    pattern: /エディタ(?!ー|リング|ビリティ|ブル)/
   - expected: ポインター
-    pattern: /ポインタ(?!ー)/
+    pattern: /ポインタ(?!ー|リング|ビリティ|ブル)/
   - expected: コンピューター
     pattern: /コンピュータ(?!ー)/
   - expected: コンテナー
-    pattern: /コンテナ(?!ー)/
+    pattern: /コンテナ(?!ー|リング|ビリティ|ブル)/
   - expected: インストーラー
     pattern: /インストーラ(?!ー)/
   - expected: ハンドラー
-    pattern: /ハンドラ(?!ー)/
+    pattern: /ハンドラ(?!ー|リング|ビリティ|ブル)/
   - expected: プログラマー
-    pattern: /プログラマ(?!ー)/
+    pattern: /プログラマ(?!ー|リング|ビリティ|ブル)/
   - expected: ブラウザー
-    pattern: /ブラウザ(?!ー)/
+    pattern: /ブラウザ(?!ー|リング|ビリティ|ブル)/
   - expected: アクセサー
-    pattern: /アクセサ(?!ー)/
+    pattern: /アクセサ(?!ー|リング|ビリティ|ブル)/
   - expected: ゲッター
-    pattern: /ゲッタ(?!ー)/
+    pattern: /ゲッタ(?!ー|リング|ビリティ|ブル)/
   - expected: セッター
-    pattern: /セッタ(?!ー)/
+    pattern: /セッタ(?!ー|リング|ビリティ|ブル)/
   - expected: インタプリター
-    pattern: /インタプリタ(?!ー)/
+    pattern: /インタプリタ(?!ー|リング|ビリティ|ブル)/
   - expected: デバッガー
-    pattern: /デバッガ(?!ー)/
+    pattern: /デバッガ(?!ー|リング|ビリティ|ブル)/
   - expected: メンバー
-    pattern: /メンバ(?!ー)/
+    pattern: /メンバ(?!ー|リング|ビリティ|ブル)/
   - expected: アダプター
-    pattern: /アダプタ(?!ー)/
+    pattern: /アダプタ(?!ー|リング|ビリティ|ブル)/
   - expected: プレースホルダー
     pattern: /プレースホルダ(?!ー)/
   - expected: ビルダー
-    pattern: /ビルダ(?!ー)/
+    pattern: /ビルダ(?!ー|リング|ビリティ|ブル)/
   - expected: レジスター
-    pattern: /レジスタ(?!ー)/
+    pattern: /レジスタ(?!ー|リング|ビリティ|ブル)/
   - expected: サーバー
     pattern: /サーバ(?!ー)/
   - expected: プロセッサー
-    pattern: /プロセッサ(?!ー)/
+    pattern: /プロセッサ(?!ー|リング|ビリティ|ブル)/
   - expected: マネージャー
     pattern: /マネージャ(?!ー)/
   - expected: バリデーター
@@ -67,23 +68,23 @@ rules:
   - expected: エクスプローラー
     pattern: /エクスプローラ(?!ー)/
   - expected: ファンクター
-    pattern: /ファンクタ(?!ー)/
+    pattern: /ファンクタ(?!ー|リング|ビリティ|ブル)/
   - expected: ユーザー
-    pattern: /ユーザ(?!ー)/
+    pattern: /ユーザ(?!ー|ビリティ)/
   - expected: ヘッダー
-    pattern: /ヘッダ(?!ー)/
+    pattern: /ヘッダ(?!ー|リング|ビリティ|ブル)/
   - expected: フィルター
-    pattern: /フィルタ(?!ー|リング)/
+    pattern: /フィルタ(?!ー|リング|ビリティ|ブル)/
   - expected: モニター
-    pattern: /モニタ(?!ー)/
+    pattern: /モニタ(?!ー|リング|ビリティ|ブル)/
   - expected: スキャナー
-    pattern: /スキャナ(?!ー)/
+    pattern: /スキャナ(?!ー|リング|ビリティ|ブル)/
   - expected: レンダラー
-    pattern: /レンダラ(?!ー)/
+    pattern: /レンダラ(?!ー|リング|ビリティ|ブル)/
   - expected: ラッパー
-    pattern: /ラッパ(?!ー)/
+    pattern: /ラッパ(?!ー|リング|ビリティ|ブル)/
   - expected: コレクター
-    pattern: /コレクタ(?!ー)/
+    pattern: /コレクタ(?!ー|リング|ビリティ|ブル)/
   - expected: ジェネレーター
     pattern: /ジェネレータ(?!ー)/
   - expected: オペレーター
@@ -99,33 +100,33 @@ rules:
   - expected: ローダー
     pattern: /ローダ(?!ー)/
   - expected: ドライバー
-    pattern: /ドライバ(?!ー)/
+    pattern: /ドライバ(?!ー|リング|ビリティ|ブル)/
   - expected: パーサー
     pattern: /パーサ(?!ー)/
   - expected: トリガー
-    pattern: /トリガ(?!ー)/
+    pattern: /トリガ(?!ー|リング|ビリティ|ブル)/
   - expected: プロバイダー
-    pattern: /プロバイダ(?!ー)/
+    pattern: /プロバイダ(?!ー|リング|ビリティ|ブル)/
   - expected: ディスパッチャー
-    pattern: /ディスパッチャ(?!ー)/
+    pattern: /ディスパッチャ(?!ー|リング|ビリティ|ブル)/
   - expected: コンバーター
     pattern: /コンバータ(?!ー)/
   - expected: イニシャライザー
-    pattern: /イニシャライザ(?!ー)/
+    pattern: /イニシャライザ(?!ー|リング|ビリティ|ブル)/
   - expected: シリアライザー
-    pattern: /シリアライザ(?!ー)/
+    pattern: /シリアライザ(?!ー|リング|ビリティ|ブル)/
   - expected: セレクター
-    pattern: /セレクタ(?!ー)/
+    pattern: /セレクタ(?!ー|リング|ビリティ|ブル)/
   - expected: コネクター
-    pattern: /コネクタ(?!ー)/
+    pattern: /コネクタ(?!ー|リング|ビリティ|ブル)/
   - expected: インジケーター
     pattern: /インジケータ(?!ー)/
   - expected: リーダー
     pattern: /リーダ(?!ー|ーシップ)/
   - expected: ライター
-    pattern: /ライタ(?!ー)/
+    pattern: /ライタ(?!ー|リング|ビリティ|ブル)/
   - expected: マッパー
-    pattern: /マッパ(?!ー)/
+    pattern: /マッパ(?!ー|リング|ビリティ|ブル)/
   - expected: ブローカー
     pattern: /ブローカ(?!ー)/
   - expected: ファクトリ

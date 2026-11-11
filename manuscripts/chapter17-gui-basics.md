@@ -387,7 +387,7 @@ public class AdvancedButton {
 3. JTextArea: 複数行テキスト入力（コメント、説明文など）
 4. JFormattedTextField: 書式制限付き入力（日付、数値など）
 
-以下のコードは、Swingが提供するさまざまなテキスト入力コンポーネントの実装例です。JTextField、JPasswordField、JTextAreaなどの基本的なテキスト入力に加え、JSpinnerやJSliderなどの数値入力専用コンポーネントも示しています。各コンポーネントは特定の用途に最適化されており、適切に選択することでユーザービリティの高いインターフェイスを構築できます。
+以下のコードは、Swingが提供するさまざまなテキスト入力コンポーネントの実装例です。JTextField、JPasswordField、JTextAreaなどの基本的なテキスト入力に加え、JSpinnerやJSliderなどの数値入力専用コンポーネントも示しています。各コンポーネントは特定の用途に最適化されており、適切に選択することでユーザビリティの高いインターフェイスを構築できます。
 
 <span class="listing-number">**サンプルコード17-8**　TextInputComponents.java（4、9、15〜45、49〜50行目）</span>
 
