@@ -3,7 +3,7 @@ source: manuscripts/appendix-f-java-time-api.md
 summarized: 2026-11-07
 sections:
   - key: "付録Fについて"
-    hash: 88c68524
+    hash: a4f3bdd0
 ---
 
 # 付録F java.time API完全ガイド 要約

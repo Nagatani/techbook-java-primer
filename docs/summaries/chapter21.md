@@ -3,31 +3,31 @@ source: manuscripts/chapter21-unit-testing.md
 summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
-    hash: ea40cf6d
+    hash: 0e5ab77e
   - key: "単体テストの基礎"
     hash: 20abcd83
   - key: "テストの基本形（AAAパターン）"
-    hash: 7f00c41e
+    hash: d8882771
   - key: "テストを妨げる「依存関係」"
-    hash: d385173a
+    hash: 457e89bd
   - key: "疎結合設計（Dependency Injection）"
-    hash: 35784d45
+    hash: 07168858
   - key: "DIによるテスト容易性の向上"
     hash: e874b14f
   - key: "テスト駆動開発（TDD）"
     hash: 43c75f7e
   - key: "JUnitによる効率的なテスト"
-    hash: 39e623d8
+    hash: 9936e3b0
   - key: "テストのベストプラクティス"
     hash: d8a6a05e
   - key: "継続的インテグレーション（CI）との統合"
-    hash: efeccc25
+    hash: dd24d19a
   - key: "よくあるエラーと対処法"
     hash: a871107b
   - key: "まとめ"
     hash: 1cc54646
   - key: "章末演習"
-    hash: 3f699e0e
+    hash: a361d3f8
 ---
 
 # 第21章 ユニットテストと品質保証 要約
@@ -49,7 +49,7 @@ sections:
     + 21-14・21-15はGradleを前提にする。本文（L551–553）は「ビルドツールの役割は、Mavenを例に第22章で学びます」と断るが、Gradle自体は本書で扱う章がない（第23章はjarとjpackageが中心）
 - TDDの実践例が1サイクルだけ
     + Red（21-9）とGreen（`return 0;`の21-10）のあと、Refactoringは「不要」として終わる。三角測量や2つ目のテストがなく、サイクルを回す感覚が伝わらない
-- 21-11はCalculatorの`divide`をテストするが、21-2のCalculatorには`add`しかない
+- 21-11はCalculatorの`divide`をテストするが、21-2のCalculatorには`add`しかない。21-11を全文公開のサンプルにし、21-2に整数の`divide`を加えたCalculatorを全文に置き、本文で説明した（2026-11-12に解消）
 - カバレッジは21-15の設定値（80%）として出るだけで、カバレッジの種類や読み方の説明はない
 
 ## 節ごとの要約
@@ -102,10 +102,10 @@ sections:
 
 ## 校正で見つけた個別の問題
 
-- L26: 「推奨される知識：」はコロンでリストを導入している
-- L195–196、L209–210、L461–464: 文の途中で改行しており、読点で行を分けている（`vfm-line-breaks.js`で和文の改行は除かれるので紙面への影響はない）
+- L26: 「推奨される知識：」はコロンでリストを導入している（2026-11-12に解消）
+- L195–196、L209–210、L461–464: 文の途中で改行しており、読点で行を分けている（`vfm-line-breaks.js`で和文の改行は除かれるので紙面への影響はない）（2026-11-12に解消）
 - L413–417: JUnitとMockitoの追加手順がIntelliJ IDEAに限られ、付録Aの環境構築（SDKMAN・ターミナル中心）との対応が書かれていない
-- 21-14: `actions/setup-java@v2`は`distribution`の指定が必須で、このままでは失敗する。`checkout@v2`も古く、JDKは17（本書の対象はJava 25）
-- 21-15: JaCoCoの`xml.enabled`/`html.enabled`はGradle 8で削除済み（`required`を使う）。CLAUDE.mdの「Gradle 9で動く設定にする」方針とも合わない
-- L662: 「次のステップ： 基礎課題が完了したら」は項目名＋コロンの形
+- 21-14: `actions/setup-java@v2`は`distribution`の指定が必須で、このままでは失敗する。`checkout@v2`も古く、JDKは17（本書の対象はJava 25）。リポジトリのCIと同じ`checkout@v7`・`setup-java@v6`、`temurin`、25に直した（2026-11-12に解消）
+- 21-15: JaCoCoの`xml.enabled`/`html.enabled`はGradle 8で削除済み（`required`を使う）。CLAUDE.mdの「Gradle 9で動く設定にする」方針とも合わない。`required`に直し、javaプラグイン・JUnitの依存・`useJUnitPlatform()`を加え、Docker（gradle:jdk25、Gradle 9.8）で`gradle check`が通ることを確かめた（2026-11-12に解消）
+- L662: 「次のステップ： 基礎課題が完了したら」は項目名＋コロンの形（2026-11-12に解消）
 - 21-1のコメントだけのコードと「実行結果」、手戻りコストの「100分の1」の断定、21-12のMockitoの初期化漏れ、DIの説明での「モック」と「スタブ」の混同、TDDサイクルの絵文字は、2026-11-11に解消した。エラー集の21-19は付録Hへ移した

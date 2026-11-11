@@ -3,7 +3,7 @@ source: manuscripts/appendix-b-index-revised.md
 summarized: 2026-11-09
 sections:
   - key: "付録リソース一覧"
-    hash: f4e78dc0
+    hash: 8dcb666e
   - key: "付録の活用方法"
     hash: 745ba2ba
   - key: "注意事項"
