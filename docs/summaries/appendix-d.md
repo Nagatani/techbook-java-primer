@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-d-integrated-project.md
-summarized: 2026-11-09
+summarized: 2026-11-11
 sections:
   - key: "付録Dについて"
     hash: c434bdbd
@@ -38,3 +38,4 @@ sections:
 - L34: 「**GitHub リポジトリ**:」で太字と半角コロンを使っている（付録E〜Hも同じ）
 - L48: 「Issueを作成してください：」はコロン導入（textlintのno-ai-colon-continuation対象の可能性）
 - 学習内容と前提知識が同じ章範囲の列挙で重複している
+- L82: 「ユーザービリティ」は2026-11-11の長音の統一（ec3b9bb）で「ユーザビリティ」から書き換わったもの。`prh-rules.yml`の規則`/ユーザ(?!ー)/`が語中の「ユーザ」にも当たるためで、語末の長音を対象とする方針とも慣用とも合わない。第17章L390にも同じ「ユーザービリティ」がある
