@@ -10,24 +10,23 @@
     - 競合状態とデッドロックの理解と回避
 2. 同期制御の技術
     - synchronizedキーワードによる排他制御
-    - LockインターフェイスとReentrantLockの活用
+    - volatileキーワードによるメモリ可視性の保証
     - Atomic変数によるロックフリーな同期化
 3. ExecutorServiceとスレッドプール
     - スレッドプールの種類と選択基準
-    - タスクのスケジューリングと管理
+    - タスクの投入とスレッドプールのシャットダウン
     - FutureとCompletableFutureによる非同期処理
-4. 並行コレクション
-    - ConcurrentHashMap、CopyOnWriteArrayListなどの活用
+4. 並行コレクションと性能の測定
+    - HashMapとConcurrentHashMapの違い
     - BlockingQueueによるプロデューサー・コンシューマーパターン
-    - パフォーマンスとスケーラビリティの最適化
+    - parallelSortとFork/Joinによる処理時間の比較
 
 ### この章を始める前に
 
 第13章までのJavaアプリケーション開発能力、とくに例外処理とコレクションフレームワークを理解していれば準備完了です。
 
-最終的な到達レベルとして、基本的な並行処理プログラムを安全に実装できることから始まり、段階的にスキルを向上させます。
-ExecutorServiceを使った実用的な非同期処理の実装、デッドロック回避やライブロック対策、マルチコア環境での2倍以上の性能向上を実現するプログラムの作成まで習得します。
-これにより、高性能で応答性の高いアプリケーションを構築する能力を身につけます。
+本章では、基本的な並行処理プログラムを安全に書くところから始めます。
+その後、ExecutorServiceを使った非同期処理の実装、デッドロックの回避、並列処理による処理時間の変化を測って確かめるところまでを学びます。
 
 ## 並行処理の世界への招待
 
@@ -221,7 +220,7 @@ new Thread(() -> {
 - スレッド間の実行順序の確認
 - スレッドの優先度設定
 
-実行例。
+実行例は次のとおりです。
 
 ```
 === 基本的なスレッド操作 ===
@@ -265,15 +264,17 @@ Thread-pool-1-thread-3: カウンタ 2
 メインスレッド終了
 ```
 
-評価ポイント。
+評価のポイントは次のとおりです。
+
 - スレッド作成方法の理解
 - 並行実行の概念理解
 - スレッドライフサイクルの理解
 
-実装ヒント。
-- Thread.start（）でスレッド開始（run() 直接呼び出しは×）
-- Thread.join() で他スレッドの完了待機
-- Thread.sleep() で一時停止
+実装のヒントは次のとおりです。
+
+- `Thread.start()`でスレッドを開始する（`run()`を直接呼び出さない）
+- `Thread.join()`で他スレッドの完了を待つ
+- `Thread.sleep()`で一時停止する
 
 ### 課題2: 同期処理とデータ競合対策
 
@@ -296,22 +297,26 @@ class UnsafeCounter {
 }
 ```
 
-①の処理内容`count++`は以下の3つの原子的でない操作で構成されています。
-- CPU命令1: メモリからcountの現在値を読み込み  
-- CPU命令2: レジスター内で値を1増加
-- CPU命令3: 増加後の値をメモリに書き戻し
+①の処理内容`count++`は、次の3つの操作に分かれます。
+3つの操作のあいだに、ほかのスレッドの処理が割り込む可能性があります。
 
-実際の実行結果では、10個のスレッドがそれぞれ1000回incrementを実行した場合、理論的には10,000になるはずですが、実際には8,000～9,800程度の値になってしまいます。これは、複数のスレッドが同じタイミングで同じ値を読み込み、同じ結果を書き込むことで、一部のインクリメント操作が失われるためです。
+1. メモリからcountの現在値を読み込む
+2. レジスター内で値を1増やす
+3. 増やした値をメモリに書き戻す
 
-同期化メカニズムの比較。
+実際の実行結果では、10個のスレッドがそれぞれ1000回incrementを実行した場合、理論的には10,000になるはずですが、実際にはそれより小さい値になることがあります。
+これは、複数のスレッドが同じタイミングで同じ値を読み込み、同じ結果を書き込むことで、一部のインクリメント操作が失われるためです。
+
+同期化の手段を比べると、次のようになります。
+
 - synchronized
     + シンプルだが粒度が粗い
 - ReentrantLock
     + 柔軟だが複雑（tryLock、公平性制御）
 - ReadWriteLock
-    + 読み込み多数の場合に高性能
+    + 読み込みが多い場合に、複数のスレッドが同時に読める
 - Atomic変数
-    + CAS（Compare-And-Swap）による高速化
+    + CAS（Compare-And-Swap）により、ロックを使わずに値を更新する
 
 <div class="figure">
 
@@ -319,7 +324,8 @@ class UnsafeCounter {
 
 </div>
 
-実世界での同期化の例。
+実際のシステムで同期化が必要になる例を挙げます。
+
 - 銀行システム
     + 口座残高の一貫性保証
 - 在庫管理
@@ -354,7 +360,7 @@ class UnsafeCounter {
 - スレッドセーフなデータ構造の実装
 - デッドロック回避策
 
-実行例。
+実行例は次のとおりです。
 
 ```
 === 同期処理とデータ競合対策 ===
@@ -611,9 +617,12 @@ step3: 集計処理 → 30
 wait/notifyは、Javaの初期から存在するスレッド間通信のメカニズムです。1つのスレッドが特定の条件を待ち（wait）、別のスレッドがその条件を満たしたら通知（notify）するという仕組みです。しかし、このメカニズムは多くの微妙な問題を含んでおり、正しく使用するには注意が重要です。
 
 ##### wait/notifyの基本的な仕組み
-- `wait()`: 現在のスレッドを待機状態にし、ロックを解放する
-- `notify()`: 待機中のスレッドを1つ起こす
-- `notifyAll()`: 待機中のすべてのスレッドを起こす
+- `wait()`
+    + 現在のスレッドを待機状態にし、ロックを解放する
+- `notify()`
+    + 待機中のスレッドを1つ起こす
+- `notifyAll()`
+    + 待機中のすべてのスレッドを起こす
 
 以下の例では、よくある間違った実装と正しい実装パターンを比較します。
 
@@ -726,14 +735,16 @@ LinkedBlockingQueue: 87個/秒
 SynchronousQueue: 120個/秒（直接受け渡し）
 ```
 
-評価ポイント。
+評価のポイントは次のとおりです。
+
 - プロデューサー・コンシューマーパターンの理解
 - 用途に応じた同期プリミティブの選択
 - スループット最適化の考慮
 
-実装ヒント。
+実装のヒントは次のとおりです。
+
 - ArrayBlockingQueueで固定サイズキュー
-- put（）でブロッキング挿入、take() でブロッキング取得
+- `put()`でブロッキング挿入、`take()`でブロッキング取得
 - Semaphoreでリソース数制限
 
 ## 実装のヒント
@@ -754,7 +765,7 @@ SynchronousQueue: 120個/秒（直接受け渡し）
     + 最適な並行度とオーバーヘッド考慮
 
 ### よくある落とし穴
-- run（）メソッドの直接呼び出し（start()を使う）
+- `run()`メソッドの直接呼び出し（`start()`を使う）
 - 同期処理の範囲が広すぎる・狭すぎる
 - デッドロックの発生（ロック順序に注意）
 - リソースリーク（ExecutorServiceのshutdown忘れ）
@@ -767,19 +778,24 @@ SynchronousQueue: 120個/秒（直接受け渡し）
 
 ## 実装環境
 
-演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
+各課題の説明と、解答例（テストコードを含む）は以下のディレクトリにあります。
 
 ```
 exercises/chapter15/
+├── README.md       # 演習全体の説明
 ├── basic/          # 基礎レベル課題
-│   ├── README.md   # 詳細な課題説明
-│   ├── BasicThreading.java
-│   ├── SynchronizedCounter.java
-│   ├── ConcurrentCollections.java
-│   └── ProducerConsumer.java
+│   └── README.md
 ├── advanced/       # 応用レベル課題
+│   └── README.md
 ├── challenge/      # 発展レベル課題
-└── solutions/      # 解答例（実装完了後に参照）
+│   └── README.md
+└── solutions/      # 解答例とテスト（実装完了後に参照）
+    ├── README.md
+    ├── ThreadSafeCounter.java
+    ├── ThreadPoolExample.java
+    ├── ProducerConsumer.java
+    ├── CompletableFutureExample.java
+    └── *Test.java  # 各解答例のテスト
 ```
 
 ## 完了確認チェックリスト
@@ -802,7 +818,7 @@ exercises/chapter15/
 - 実用的な並行アプリケーションが構築できている
 - 並行処理のトラブルシューティングができている
 
-次のステップ： 基本課題が完了したら、advanced/の発展課題でより高度な並行プログラミングに挑戦しましょう。
+基本課題が完了したら、`advanced/`の発展課題でより高度な並行プログラミングに挑戦しましょう。
 
 ## マルチスレッドプログラミングの基礎
 
@@ -910,7 +926,7 @@ class SynchronizedCounter {
 }
 ```
 
-`synchronized`は非常に強力ですが、使用には注意が必要です。
+`synchronized`は手軽に排他制御を実現できますが、使い方には注意が必要です。
 ロックの範囲が広すぎるとパフォーマンスの低下を招きます。
 また、複数のロックが絡み合うとデッドロック（スレッドがお互いを待ち続けて処理が進まなくなる状態）を引き起こす危険性もあります。
 
@@ -1019,13 +1035,18 @@ public class VolatileDemo {
 
 ### Atomicクラスによるロックフリーなアトミック操作
 
-`java.util.concurrent.atomic`パッケージは、ロックを使わずにアトミックな操作を実現するクラス群を提供します。これらは内部的にCAS（Compare-And-Swap）操作を使用し、高性能な並行処理を実現します。
+`java.util.concurrent.atomic`パッケージは、ロックを使わずにアトミックな操作を実現するクラス群を提供します。これらは内部でCAS（Compare-And-Swap）操作を使い、ロックを取得するために待つことなく値を更新します。
 
-主なAtomicクラス。
-- `AtomicInteger`: int値のアトミック操作
-- `AtomicLong`: long値のアトミック操作
-- `AtomicBoolean`: boolean値のアトミック操作
-- `AtomicReference<T>`: 参照型のアトミック操作
+主なAtomicクラスは次のとおりです。
+
+- `AtomicInteger`
+    + int値のアトミック操作
+- `AtomicLong`
+    + long値のアトミック操作
+- `AtomicBoolean`
+    + boolean値のアトミック操作
+- `AtomicReference<T>`
+    + 参照型のアトミック操作
 
 <span class="listing-number">**サンプルコード15-13**　AtomicCounterExample.java（6〜31、49行目）</span>
 
@@ -1060,7 +1081,9 @@ public class AtomicCounterExample {
 }
 ```
 
-Atomicクラスはsynchronizedよりもはるかに高速で、とくに読み取りが多い場合や競合が少ない場合に優れたパフォーマンスを発揮します。
+Atomicクラスはロックを使わないため、スレッドどうしの競合が少ない場合には`synchronized`より速く動くことが多いです。
+一方、多数のスレッドが同じ変数を頻繁に更新すると、CASの失敗と再試行が増えて速さの差は小さくなります。
+どちらが速いかは、実際に時間を測って確かめます。
 
 ### Executorフレームワークによる高度なスレッド管理
 
@@ -1081,11 +1104,16 @@ Atomicクラスはsynchronizedよりもはるかに高速で、とくに読み�
 
 </div>
 
-主なExecutorServiceの種類。
-- `newFixedThreadPool(int)`: 固定数のスレッドを持つプール
-- `newCachedThreadPool()`: I/O待機が多いタスク向けにスレッドを作成・再利用するプール
-- `newSingleThreadExecutor()`: 単一スレッドで順次実行するプール
-- `newScheduledThreadPool(int)`: スケジュール実行が可能なプール
+主なExecutorServiceの種類は次のとおりです。
+
+- `newFixedThreadPool(int)`
+    + 固定数のスレッドを持つプール
+- `newCachedThreadPool()`
+    + I/O待機が多いタスク向けにスレッドを作成・再利用するプール
+- `newSingleThreadExecutor()`
+    + 単一スレッドで順次実行するプール
+- `newScheduledThreadPool(int)`
+    + スケジュール実行が可能なプール
 
 <span class="listing-number">**サンプルコード15-14**　ExecutorExample.java</span>
 
@@ -1263,17 +1291,19 @@ public class FutureCallableExample {
 
 #### CompletableFuture による高度な非同期処理
 
-`CompletableFuture`は、Java 8で導入された強力な非同期処理フレームワークです。従来の`Future`の制限を克服し、関数型プログラミングスタイルで非同期処理を記述できます。
+`CompletableFuture`は、Java 8で導入された非同期処理のためのクラスです。
+従来の`Future`では結果を受け取るまで待つしかありませんでしたが、`CompletableFuture`では結果を受け取ったあとの処理をラムダ式で続けて書けます。
 
-CompletableFutureの主な特徴。
+CompletableFutureの主な特徴は次のとおりです。
+
 - 非同期処理の連鎖
     + `thenApply`、`thenCompose`などで処理を連鎖
 - 例外処理
-    + `exceptionally`、`handle`で例外を優雅に処理
+    + `exceptionally`、`handle`で例外が起きたときの処理を書く
 - 複数の非同期処理の組み合わせ
     + `allOf`、`anyOf`で複数の処理を統合
 - タイムアウト処理
-    + Java 9以降では`orTimeout`メソッドも利用可能
+    + `orTimeout`メソッドで、決めた時間内に終わらない処理を例外にする
 
 <span class="listing-number">**サンプルコード15-17**　CompletableFutureExample.java（6、9、12〜24、38、40、52〜75、91〜92行目）</span>
 
@@ -1331,9 +1361,11 @@ public class CompletableFutureExample {
 
 #### 非同期処理の連鎖と合成
 
-`CompletableFuture`の真の力は、複数の非同期処理を優雅に連鎖・合成できる点にあります。これにより、複雑な非同期ワークフローを宣言的に記述できます。
+`CompletableFuture`を使うと、複数の非同期処理をつないだり、組み合わせたりできます。
+処理の手順をメソッドの連鎖で書けるため、いくつもの非同期処理が順に続く流れも読みやすく書けます。
 
-主な連鎖メソッド。
+主な連鎖メソッドは次のとおりです。
+
 - `thenApply()`
     + 結果を変換（同期的）
 - `thenApplyAsync()`
@@ -1378,7 +1410,8 @@ public class AsyncChainingExample {
 }
 ```
 
-この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、美しく連鎖させています。各ステップは非同期に実行され、エラーハンドリングも含まれています。
+この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、メソッドの連鎖でつないでいます。
+各ステップは非同期に実行され、エラーハンドリングも含まれています。
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
@@ -1691,6 +1724,6 @@ public class ResiliencePatterns {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第16章「ネットワークプログラミング」に進みましょう。
+基礎課題が完了したら、第16章「ネットワークプログラミング」に進みましょう。
 
 ※ 本章の高度な内容については、付録B.14「Javaメモリモデル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`）を参照してください。
