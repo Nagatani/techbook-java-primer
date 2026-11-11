@@ -85,7 +85,7 @@ List<Integer> evenDoubled = numbers.stream()
 ```java
 // × 並列処理での共有状態の変更
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-List<Integer> results = new ArrayList<>(); // 非同期安全でない
+List<Integer> results = new ArrayList<>(); // スレッドセーフではない
 
 numbers.parallelStream()
     .filter(n -> n % 2 == 0)
@@ -94,7 +94,7 @@ numbers.parallelStream()
 
 ##### 問題点
 - 複数のスレッドが同時に`ArrayList`に追加操作を行う
-- データの破損や`ConcurrentModificationException`の発生
+- 追加した要素が失われる、`null`が入る、内部の配列を広げる途中で`ArrayIndexOutOfBoundsException`が発生するなど、結果が実行のたびに変わる
 
 #### 対処法
 
@@ -170,7 +170,7 @@ String result = names.stream()
 以下のコードは、非効率なStream操作の例です。
 
 ```java
-// × 不効率なStream操作
+// × 非効率なStream操作
 List<Integer> numbers = IntStream.range(1, 1000000)
     .boxed()
     .collect(Collectors.toList());
@@ -181,10 +181,9 @@ int sum = numbers.stream()
     .mapToInt(Integer::intValue)
     .sum();
 
-int count = numbers.stream()
+long count = numbers.stream()
     .filter(n -> n % 2 == 0)
-    .mapToInt(Integer::intValue)
-    .reduce(0, Integer::sum);
+    .count();
 ```
 
 ##### 問題点
@@ -211,8 +210,8 @@ IO.println("Count: " + stats.getCount());
 
 ## 例外処理の問題
 
-この項のサンプルは、第13章「例外処理」で学ぶチェック例外と、第14章「ファイルI/O」で学ぶ`Files.readString`を使います。
-ここでは、ラムダ式の本体からはチェック例外をそのまま投げられない、という点だけを押さえてください。
+この項のサンプルは、第13章「例外処理」で学ぶ検査例外と、第14章「ファイルI/O」で学ぶ`Files.readString`を使います。
+ここでは、ラムダ式の本体からは検査例外をそのまま投げられない、という点だけを押さえてください。
 
 #### エラー例
 
@@ -279,6 +278,6 @@ List<String> allContents = files.stream()
 5. プリミティブ型Streamを使用する
     + 数値計算処理では`IntStream`、`LongStream`、`DoubleStream`を使用
 6. 例外処理を確実に行う
-    + チェック例外は事前に処理するか、ランタイム例外でラップする
+    + 検査例外は事前に処理するか、ランタイム例外でラップする
 7. パフォーマンステストを実施する
     + 大量データでの並列処理の効果を測定する

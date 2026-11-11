@@ -2,16 +2,17 @@ import java.util.Optional;
 
 public class OptionalTransformationExample {
     static class User {
-        private String name;
-        private Optional<String> email;
-        
+        private final String name;
+        private final String email;  // メールアドレスがないときはnull
+
         public User(String name, String email) {
             this.name = name;
-            this.email = Optional.ofNullable(email);
+            this.email = email;
         }
-        
+
         public String getName() { return name; }
-        public Optional<String> getEmail() { return email; }
+        // フィールドはOptionalにせず、戻り値で「値がないかもしれない」ことを示す
+        public Optional<String> getEmail() { return Optional.ofNullable(email); }
     }
     
     public static void main(String[] args) {
@@ -29,7 +30,7 @@ public class OptionalTransformationExample {
         IO.println("Nested map: " + nameLength);  // Optional[5]
         
         // 2. flatMap() - Optional<Optional<T>>を平坦化
-        // getUserはOptional<User>を返し、getEmailもOptional<String>を返す
+        // getEmailはOptional<String>を返すので、mapではOptional<Optional<String>>になる
         Optional<String> email = user.flatMap(u -> u.getEmail());
         IO.println("flatMap: " + email);  // Optional[alice@example.com]
         

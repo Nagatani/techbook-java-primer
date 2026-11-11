@@ -6,16 +6,18 @@
 
 1. Stream APIの基本
     - 宣言的データ処理、中間操作と終端操作、遅延評価のしくみ
-2. 高度なコレクション操作
+2. Optional型
+    - nullになりうる値を型で示す方法、値の取り出し、map・flatMapによる連結
+3. 高度なコレクション操作
     - フィルタリング、マッピング、リダクション、グルーピング
-3. Collectorsの活用
-    - 標準Collectors、カスタムCollectorの作成、複雑な集計処理
-4. 並列ストリーム
+4. Collectorsの活用
+    - 標準のCollectors、グルーピングを使った集計処理
+5. 並列ストリーム
     - マルチコア環境での並列処理、性能向上と注意点
 
 ### この章を始める前に
 
-第9章のコレクションフレームワーク、第10章のジェネリクス、第11章のラムダ式と関数型インターフェイスを理解していれば準備完了です。
+第9章のコレクションフレームワーク、第10章のジェネリクス、第11章「ラムダ式と関数型インターフェイス」を理解していれば準備完了です。
 
 List・Set・Mapの実装クラス（`ArrayList`と`LinkedList`、`HashSet`・`LinkedHashSet`・`TreeSet`など）の特徴と選び方は、第9章で学びました。
 本章のサンプルで実装クラスの選び方に迷ったら、第9章の「コレクションの選択指針」を読み返してください。
@@ -71,7 +73,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 ### Stream操作の基本パターン
 
-`コレクション.stream().中間操作1().中間操作2()...終端操作()`。
+Stream操作の基本の形は`コレクション.stream().中間操作1().中間操作2()...終端操作()`です。
 
 <div class="figure">
 
@@ -136,6 +138,7 @@ List<Integer> result = stream.collect(Collectors.toList());
 ### `filter`: 条件に合う要素だけを抽出
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。学生のリストから高得点者を抽出する例で確認してみましょう。以下のコードは、filter操作の基本的な使い方を示しています。
+`Student`は名前・点数・身長を持つクラスで、定義はサンプルコード12-4で示します。
 
 <span class="listing-number">**サンプルコード12-2**</span>
 
@@ -150,6 +153,7 @@ List<Student> highScorers = list.stream()
 ### `map`: 要素を別の形に変換
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。学生オブジェクトから名前だけを抽出する例です。以下のコードは、map操作を使った型変換の実例を示しています。
+`list`はサンプルコード12-2と同じ`Student`のリストです。
 
 <span class="listing-number">**サンプルコード12-3**</span>
 
@@ -267,9 +271,8 @@ Java 8で導入されたOptionalクラスは、「値が存在する場合と存
 
 ### Optionalの作成
 
-#### Optionalオブジェクトを作成する3つの基本的な方法があります
-
 Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
+Optionalオブジェクトは、`Optional.of()`・`Optional.ofNullable()`・`Optional.empty()`の3つのメソッドで作ります。
 
 <span class="listing-number">**サンプルコード12-6**　OptionalCreationExample.java</span>
 
@@ -339,7 +342,7 @@ public class OptionalRetrievalExample {
 
 ### 値の存在確認と条件付き処理
 
-値の存在を確認し、存在する場合のみ処理を実行する方法。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
+値の存在を確認し、存在する場合だけ処理を実行する方法を見ていきます。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
 <span class="listing-number">**サンプルコード12-8**　OptionalPresenceExample.java</span>
 
@@ -389,14 +392,16 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、15、17〜37、47〜48行目）</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、14〜16、18〜38、48〜49行目）</span>
 
 ```java
 public class OptionalTransformationExample {
     static class User {
-        private String name;
-        private Optional<String> email;
+        private final String name;
+        private final String email;  // メールアドレスがないときはnull
         // ...
+        // フィールドはOptionalにせず、戻り値で「値がないかもしれない」ことを示す
+        public Optional<String> getEmail() { return Optional.ofNullable(email); }
     }
     // ...
     public static void main(String[] args) {
@@ -414,7 +419,7 @@ public class OptionalTransformationExample {
         IO.println("Nested map: " + nameLength);  // Optional[5]
         
         // 2. flatMap() - Optional<Optional<T>>を平坦化
-        // getUserはOptional<User>を返し、getEmailもOptional<String>を返す
+        // getEmailはOptional<String>を返すので、mapではOptional<Optional<String>>になる
         Optional<String> email = user.flatMap(u -> u.getEmail());
         IO.println("flatMap: " + email);  // Optional[alice@example.com]
         
@@ -555,7 +560,7 @@ public class OptionalPracticalExample {
 
 ### アンチパターンと注意点
 
-Optionalを使用する際に避けるべき一般的な間違いとベストプラクティス。
+Optionalを使う際に避けるべき間違いと、その代わりの書き方を示します。
 
 <span class="listing-number">**サンプルコード12-12**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
 
@@ -1122,7 +1127,7 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
     + `isPresent()`と`get()`の組み合わせではなく、`orElse()`や`ifPresent()`を使う
 - 同じ処理の繰り返しによる性能の低下
     + 同じフィルタリングを何度も実行するなど、Streamの組み立て方で処理量が増える
-- ラムダ式のなかでのチェック例外
+- ラムダ式のなかでの検査例外
     + `Files.readString()`のような例外をスローするメソッドは、そのままではStreamのなかで使えない
 
 エラーの例と問題点、修正したコード、共通の対処戦略は、GitHubリポジトリにまとめています。<br>
