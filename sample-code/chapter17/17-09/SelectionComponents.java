@@ -3,6 +3,10 @@ import java.awt.*;
 
 public class SelectionComponents {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("選択コンポーネント");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

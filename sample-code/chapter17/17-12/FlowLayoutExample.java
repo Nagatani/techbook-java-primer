@@ -3,6 +3,10 @@ import java.awt.*;
 
 public class FlowLayoutExample {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("FlowLayoutの例");
         frame.setSize(400, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

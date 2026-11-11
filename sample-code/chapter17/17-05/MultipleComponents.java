@@ -3,6 +3,10 @@ import java.awt.*;
 
 public class MultipleComponents {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("複数のコンポーネント");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

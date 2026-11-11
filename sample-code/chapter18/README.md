@@ -18,9 +18,12 @@ javac -d out *.java
 |---|---|---|
 | [18-1](./18-01/) | ButtonEventExample.java | `java -cp out ButtonEventExample` |
 | [18-3](./18-03/) | GreetingApp.java | `java -cp out GreetingApp` |
-| [18-4](./18-04/) | WindowEventExample.java | `java -cp out WindowEventExample` |
-| [18-5](./18-05/) | BasicMouseEventExample.java | `java -cp out BasicMouseEventExample` |
-| [18-6](./18-06/) | BasicKeyEventExample.java | `java -cp out BasicKeyEventExample` |
-| [18-7](./18-07/) | ItemListenerExample.java | `java -cp out ItemListenerExample` |
-| [18-8](./18-08/) | FocusListenerExample.java | `java -cp out FocusListenerExample` |
-| [18-9](./18-09/) | ChangeListenerExample.java | `java -cp out ChangeListenerExample` |
+| [18-4](./18-04/) | CounterApplication.java | `java -cp out CounterApplication` |
+| [18-5](./18-05/) | WindowEventExample.java | `java -cp out WindowEventExample` |
+| [18-6](./18-06/) | BasicMouseEventExample.java | `java -cp out BasicMouseEventExample` |
+| [18-7](./18-07/) | BasicKeyEventExample.java | `java -cp out BasicKeyEventExample` |
+| [18-8](./18-08/) | ItemListenerExample.java | `java -cp out ItemListenerExample` |
+| [18-9](./18-09/) | FocusListenerExample.java | `java -cp out FocusListenerExample` |
+| [18-10](./18-10/) | ChangeListenerExample.java | `java -cp out ChangeListenerExample` |
+| [18-11](./18-11/) | EventQueueExample.java | `java -cp out EventQueueExample` |
+| [18-13](./18-13/) | TimerExample.java | `java -cp out TimerExample` |

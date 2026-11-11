@@ -2,23 +2,19 @@ import javax.swing.*;
 
 public class EDTBasicExample {
     public static void main(String[] args) {
-        // 間違った方法：メインスレッドから直接GUI作成
-        // JFrame frame = new JFrame("Bad Example");
-        
-        // 正しい方法：EDT上でGUI作成
-        SwingUtilities.invokeLater(() -> {
-            createAndShowGUI();
-        });
+        // GUIの組み立てをEDT（イベントディスパッチスレッド）に任せる
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
-    
+
+    // 画面を組み立てて表示する（EDT上で呼び出される）
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("正しいEDTの使用例");
+        JFrame frame = new JFrame("EDTでGUIを組み立てる");
         frame.setSize(300, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         JLabel label = new JLabel("このGUIはEDT上で作成されました", JLabel.CENTER);
         frame.add(label);
-        
+
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

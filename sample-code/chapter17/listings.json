@@ -8,211 +8,116 @@
   },
   "17-2": {
     "dir": "17-02",
-    "main": "WindowSettings",
+    "main": "EDTBasicExample",
     "excerpt": [
-      { "file": "WindowSettings.java", "from": 1, "to": 14 }
+      { "file": "EDTBasicExample.java", "from": 1, "to": 21 }
     ]
   },
   "17-3": {
     "dir": "17-03",
-    "main": "HelloLabel",
+    "main": "WindowSettings",
     "excerpt": [
-      { "file": "HelloLabel.java", "from": 1, "to": 20 }
+      { "file": "WindowSettings.java", "from": 1, "to": 19 }
     ]
   },
   "17-4": {
     "dir": "17-04",
-    "main": "MultipleComponents",
+    "main": "HelloLabel",
     "excerpt": [
-      { "file": "MultipleComponents.java", "from": 1, "to": 21 }
+      { "file": "HelloLabel.java", "from": 1, "to": 25 }
     ]
   },
   "17-5": {
     "dir": "17-05",
-    "main": "AdvancedLabel",
+    "main": "MultipleComponents",
     "excerpt": [
-      { "file": "AdvancedLabel.java", "from": 1, "to": 28 }
+      { "file": "MultipleComponents.java", "from": 1, "to": 25 }
     ]
   },
   "17-6": {
     "dir": "17-06",
-    "main": "AdvancedButton",
+    "main": "AdvancedLabel",
     "excerpt": [
-      { "file": "AdvancedButton.java", "from": 1, "to": 35 }
+      { "file": "AdvancedLabel.java", "from": 1, "to": 32 }
     ]
   },
   "17-7": {
     "dir": "17-07",
-    "main": "TextInputComponents",
+    "main": "AdvancedButton",
     "excerpt": [
-      { "file": "TextInputComponents.java", "from": 4, "to": 5 },
-      { "file": "TextInputComponents.java", "from": 11, "to": 41 },
-      { "file": "TextInputComponents.java", "from": 45, "to": 46 }
+      { "file": "AdvancedButton.java", "from": 1, "to": 39 }
     ]
   },
   "17-8": {
     "dir": "17-08",
-    "main": "SelectionComponents",
+    "main": "TextInputComponents",
     "excerpt": [
-      { "file": "SelectionComponents.java", "from": 4, "to": 5 },
-      { "file": "SelectionComponents.java", "from": 11, "to": 44 },
-      { "file": "SelectionComponents.java", "from": 48, "to": 49 }
+      { "file": "TextInputComponents.java", "from": 4, "to": 4 },
+      { "file": "TextInputComponents.java", "from": 9, "to": 9 },
+      { "file": "TextInputComponents.java", "from": 15, "to": 45 },
+      { "file": "TextInputComponents.java", "from": 49, "to": 50 }
     ]
   },
   "17-9": {
     "dir": "17-09",
-    "main": "BorderLayoutExample",
+    "main": "SelectionComponents",
     "excerpt": [
-      { "file": "BorderLayoutExample.java", "from": 1, "to": 23 }
+      { "file": "SelectionComponents.java", "from": 4, "to": 4 },
+      { "file": "SelectionComponents.java", "from": 9, "to": 9 },
+      { "file": "SelectionComponents.java", "from": 15, "to": 48 },
+      { "file": "SelectionComponents.java", "from": 52, "to": 53 }
     ]
   },
   "17-10": {
     "dir": "17-10",
-    "main": "GridLayoutExample",
+    "main": "BorderLayoutExample",
     "excerpt": [
-      { "file": "GridLayoutExample.java", "from": 1, "to": 22 }
+      { "file": "BorderLayoutExample.java", "from": 1, "to": 27 }
     ]
   },
   "17-11": {
     "dir": "17-11",
-    "main": "FlowLayoutExample",
+    "main": "GridLayoutExample",
     "excerpt": [
-      { "file": "FlowLayoutExample.java", "from": 1, "to": 25 }
+      { "file": "GridLayoutExample.java", "from": 1, "to": 26 }
     ]
   },
   "17-12": {
     "dir": "17-12",
-    "main": "ComplexLayoutExample",
+    "main": "FlowLayoutExample",
     "excerpt": [
-      { "file": "ComplexLayoutExample.java", "from": 4, "to": 9 },
-      { "file": "ComplexLayoutExample.java", "from": 23, "to": 45 },
-      { "file": "ComplexLayoutExample.java", "from": 55, "to": 58 }
+      { "file": "FlowLayoutExample.java", "from": 1, "to": 29 }
     ]
   },
   "17-13": {
     "dir": "17-13",
-    "main": "CombinedLayoutExample",
+    "main": "ComplexLayoutExample",
     "excerpt": [
-      { "file": "CombinedLayoutExample.java", "from": 4, "to": 12 },
-      { "file": "CombinedLayoutExample.java", "from": 37, "to": 42 },
-      { "file": "CombinedLayoutExample.java", "from": 59, "to": 62 },
-      { "file": "CombinedLayoutExample.java", "from": 76, "to": 84 },
-      { "file": "CombinedLayoutExample.java", "from": 93, "to": 93 },
-      { "file": "CombinedLayoutExample.java", "from": 97, "to": 98 }
+      { "file": "ComplexLayoutExample.java", "from": 4, "to": 4 },
+      { "file": "ComplexLayoutExample.java", "from": 9, "to": 13 },
+      { "file": "ComplexLayoutExample.java", "from": 27, "to": 49 },
+      { "file": "ComplexLayoutExample.java", "from": 59, "to": 62 }
     ]
   },
   "17-14": {
     "dir": "17-14",
-    "main": "ButtonEventExample",
+    "main": "CombinedLayoutExample",
     "excerpt": [
-      { "file": "ButtonEventExample.java", "from": 1, "to": 30 }
+      { "file": "CombinedLayoutExample.java", "from": 4, "to": 4 },
+      { "file": "CombinedLayoutExample.java", "from": 9, "to": 16 },
+      { "file": "CombinedLayoutExample.java", "from": 41, "to": 46 },
+      { "file": "CombinedLayoutExample.java", "from": 63, "to": 66 },
+      { "file": "CombinedLayoutExample.java", "from": 80, "to": 88 },
+      { "file": "CombinedLayoutExample.java", "from": 97, "to": 97 },
+      { "file": "CombinedLayoutExample.java", "from": 101, "to": 102 }
     ]
   },
   "17-15": {
     "dir": "17-15",
-    "main": "TextFieldEventExample",
+    "main": "DrawingPanelExample",
     "excerpt": [
-      { "file": "TextFieldEventExample.java", "from": 1, "to": 35 }
-    ]
-  },
-  "17-17": {
-    "dir": "17-17",
-    "main": "LambdaEventExample",
-    "excerpt": [
-      { "file": "LambdaEventExample.java", "from": 5, "to": 6 },
-      { "file": "LambdaEventExample.java", "from": 12, "to": 27 },
-      { "file": "LambdaEventExample.java", "from": 45, "to": 46 }
-    ]
-  },
-  "17-18": {
-    "dir": "17-18",
-    "main": "CounterApplication",
-    "excerpt": [
-      { "file": "CounterApplication.java", "from": 6, "to": 10 },
-      { "file": "CounterApplication.java", "from": 17, "to": 37 },
-      { "file": "CounterApplication.java", "from": 54, "to": 64 }
-    ]
-  },
-  "17-19": {
-    "dir": "17-19",
-    "main": "SelectionEventExample",
-    "excerpt": [
-      { "file": "SelectionEventExample.java", "from": 5, "to": 6 },
-      { "file": "SelectionEventExample.java", "from": 12, "to": 22 },
-      { "file": "SelectionEventExample.java", "from": 24, "to": 40 },
-      { "file": "SelectionEventExample.java", "from": 53, "to": 54 }
-    ]
-  },
-  "17-20": {
-    "dir": "17-20",
-    "main": "FormApplication",
-    "excerpt": [
-      { "file": "FormApplication.java", "from": 4, "to": 5 },
-      { "file": "FormApplication.java", "from": 11, "to": 35 },
-      { "file": "FormApplication.java", "from": 57, "to": 73 },
-      { "file": "FormApplication.java", "from": 91, "to": 92 }
-    ]
-  },
-  "17-21": {
-    "dir": "17-21",
-    "main": "EDTBasicExample",
-    "excerpt": [
-      { "file": "EDTBasicExample.java", "from": 1, "to": 25 }
-    ]
-  },
-  "17-22": {
-    "dir": "17-22",
-    "main": "EventQueueExample",
-    "excerpt": [
-      { "file": "EventQueueExample.java", "from": 6, "to": 8 },
-      { "file": "EventQueueExample.java", "from": 14, "to": 31 },
-      { "file": "EventQueueExample.java", "from": 37, "to": 39 }
-    ]
-  },
-  "17-23": {
-    "dir": "17-23",
-    "main": "SwingWorkerExample",
-    "excerpt": [
-      { "file": "SwingWorkerExample.java", "from": 6, "to": 8 },
-      { "file": "SwingWorkerExample.java", "from": 18, "to": 55 },
-      { "file": "SwingWorkerExample.java", "from": 63, "to": 65 }
-    ]
-  },
-  "17-24": {
-    "dir": "17-24",
-    "main": "EDTUtilityExample",
-    "excerpt": [
-      { "file": "EDTUtilityExample.java", "from": 4, "to": 26 },
-      { "file": "EDTUtilityExample.java", "from": 31, "to": 39 },
-      { "file": "EDTUtilityExample.java", "from": 44, "to": 45 }
-    ]
-  },
-  "17-26": {
-    "dir": "17-26",
-    "main": "HeavyProcessingExample",
-    "excerpt": [
-      { "file": "HeavyProcessingExample.java", "from": 5, "to": 7 },
-      { "file": "HeavyProcessingExample.java", "from": 21, "to": 48 },
-      { "file": "HeavyProcessingExample.java", "from": 60, "to": 72 },
-      { "file": "HeavyProcessingExample.java", "from": 80, "to": 82 }
-    ]
-  },
-  "17-27": {
-    "dir": "17-27",
-    "main": "TimerExample",
-    "excerpt": [
-      { "file": "TimerExample.java", "from": 6, "to": 8 },
-      { "file": "TimerExample.java", "from": 14, "to": 35 },
-      { "file": "TimerExample.java", "from": 42, "to": 44 }
-    ]
-  },
-  "17-28": {
-    "dir": "17-28",
-    "main": "ThreadSafetyExample",
-    "excerpt": [
-      { "file": "ThreadSafetyExample.java", "from": 6, "to": 7 },
-      { "file": "ThreadSafetyExample.java", "from": 45, "to": 80 },
-      { "file": "ThreadSafetyExample.java", "from": 87, "to": 87 }
+      { "file": "DrawingPanel.java", "from": 1, "to": 31 },
+      { "file": "DrawingPanelExample.java", "from": 9, "to": 16 }
     ]
   }
 }

@@ -1,7 +1,12 @@
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class WindowSettings {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame();
         
         frame.setTitle("カスタマイズされたウィンドウ");     // ①

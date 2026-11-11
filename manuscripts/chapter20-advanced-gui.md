@@ -36,7 +36,7 @@ JListは項目のリストを表示するコンポーネントで、選択可能
 - 第8章のRecord（データ表現）
 - MVCアーキテクチャパターンの基本概念
 - オブザーバーパターンの理解
-- 第15章のマルチスレッドプログラミング（SwingUtilities.invokeLater）
+- 第18章で学んだEDT（`SwingUtilities.invokeLater`）と、第19章で学んだSwingWorker
 
 ## JTableの詳細な実装
 
@@ -265,7 +265,8 @@ public class DynamicTreeExample extends JFrame {
 
 ### カスタムレンダラーを使ったJList
 
-JListにカスタムレンダラーを適用して、リッチな表示を実現します。
+第17章のサンプルコード17-9では、文字列の配列から`JList`を作り、`setSelectionMode()`で選択のしかたを決めました。
+本節では、`JList`の項目をモデルで管理し、カスタムレンダラーで項目の表示を作り込みます。
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、それらを1つのリスト項目として美しく表示します。ダブルクリックでタスクの完了状態を切り替えるなど、インタラクティブな機能も実装しています。
 
@@ -485,6 +486,7 @@ JTableやカスタム描画を使った画面では、描画のしくみやス�
 - カスタムレンダラーで選択状態が表示されない
     + `isSelected`の値に応じて背景色と文字色を切り替える
 
+`paintComponent()`による描画の基本は第17章「GUIプログラミングの基礎」の「カスタムコンポーネントの作成」で、EDTは第18章、SwingWorkerは第19章で学びました。
 問題のあるコードと修正したコード（コンパイルできる全文を含む）、描画やメモリを確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter20.md`
 
