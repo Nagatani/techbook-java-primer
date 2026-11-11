@@ -4,6 +4,12 @@ public class PDFDocument {
     private long fileSize;       // ①と重複
     private int pageCount;       // ⑤
     
+    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
+        this.filename = filename;
+        this.content = content;
+        this.pageCount = pageCount;
+    }
+    
     public void open() {         // ②と完全重複
         IO.println(filename + " を開いています");
     }

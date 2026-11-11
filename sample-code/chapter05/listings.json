@@ -29,15 +29,23 @@
     "dir": "05-04",
     "main": null,
     "excerpt": [
-      { "file": "WordDocument.java", "from": 1, "to": 19 },
-      { "file": "PDFDocument.java", "from": 1, "to": 24 }
+      { "file": "WordDocument.java", "from": 1, "to": 24 },
+      { "file": "PDFDocument.java", "from": 1, "to": 30 }
     ]
+  },
+  "5-5": {
+    "dir": "05-05",
+    "main": "DocumentTest",
+    "excerpt": [
+      { "file": "DocumentTest.java", "from": 1, "to": 18 }
+    ],
+    "uses": ["5-4"]
   },
   "5-6": {
     "dir": "05-06",
     "main": null,
     "excerpt": [
-      { "file": "ExcelDocument.java", "from": 1, "to": 20 }
+      { "file": "ExcelDocument.java", "from": 1, "to": 25 }
     ]
   },
   "5-7": {
@@ -149,6 +157,16 @@
       { "file": "Employee.java", "from": 1, "to": 5 },
       { "file": "ReportingEmployee.java", "from": 1, "to": 3 },
       { "file": "ApprovingEmployee.java", "from": 1, "to": 6 }
+    ]
+  },
+  "5-21": {
+    "dir": "05-21",
+    "main": "Main",
+    "excerpt": [
+      { "file": "Character.java", "from": 1, "to": 9 },
+      { "file": "Hero.java", "from": 1, "to": 6 },
+      { "file": "Wizard.java", "from": 1, "to": 8 },
+      { "file": "Main.java", "from": 1, "to": 18 }
     ]
   },
   "5-22": {

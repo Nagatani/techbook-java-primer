@@ -20,6 +20,7 @@ javac -d out *.java
 | [5-2](./05-02/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
 | [5-3](./05-03/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentExample.java<br>PaymentProcessor.java<br>PaymentResult.java | `java -cp out PaymentExample` |
 | [5-4](./05-04/) | PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
+| [5-5](./05-05/) | DocumentTest.java<br>PDFDocument.java<br>WordDocument.java | `java -cp out DocumentTest` |
 | [5-6](./05-06/) | ExcelDocument.java | （mainメソッドなし） |
 | [5-7](./05-07/) | Document.java | （mainメソッドなし） |
 | [5-8](./05-08/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
@@ -33,6 +34,7 @@ javac -d out *.java
 | [5-17](./05-17/) | Shape.java | （mainメソッドなし） |
 | [5-19](./05-19/) | MyStack.java | （mainメソッドなし） |
 | [5-20](./05-20/) | ApprovingEmployee.java<br>Employee.java<br>ReportingEmployee.java | （mainメソッドなし） |
+| [5-21](./05-21/) | Character.java<br>Hero.java<br>Main.java<br>Wizard.java | `java -cp out Main` |
 | [5-22](./05-22/) | Character.java<br>CharacterOverrideTest.java<br>Knight.java<br>Wizard.java | `java -cp out CharacterOverrideTest` |
 | [5-26](./05-26/) | UserSystemBefore.java<br>Users.java | `java -cp out UserSystemBefore` |
 | [5-27](./05-27/) | User.java<br>UserSystemAfter.java<br>Users.java | `java -cp out UserSystemAfter` |

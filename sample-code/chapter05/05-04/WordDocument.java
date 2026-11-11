@@ -3,6 +3,11 @@ public class WordDocument {
     private String content;      // ①
     private long fileSize;       // ①
     
+    public WordDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
+    
     public void open() {         // ②
         IO.println(filename + " を開いています");
     }

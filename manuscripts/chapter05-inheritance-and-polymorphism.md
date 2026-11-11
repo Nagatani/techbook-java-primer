@@ -298,6 +298,11 @@ public class WordDocument {
     private String content;      // ①
     private long fileSize;       // ①
     
+    public WordDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
+    
     public void open() {         // ②
         IO.println(filename + " を開いています");
     }
@@ -318,6 +323,12 @@ public class PDFDocument {
     private String content;      // ①と重複
     private long fileSize;       // ①と重複
     private int pageCount;       // ⑤
+    
+    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
+        this.filename = filename;
+        this.content = content;
+        this.pageCount = pageCount;
+    }
     
     public void open() {         // ②と完全重複
         IO.println(filename + " を開いています");
@@ -341,7 +352,7 @@ public class PDFDocument {
 
 これらのクラスを使用した例：
 
-<span class="listing-number">**サンプルコード5-5**</span>
+<span class="listing-number">**サンプルコード5-5**　DocumentTest.java</span>
 
 ```java
 public class DocumentTest {
@@ -360,14 +371,6 @@ public class DocumentTest {
         pdf.save();
         pdf.generatePDF();
         pdf.close();
-        
-        IO.println();
-        
-        // ExcelDocumentの操作
-        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
-        excel.open();
-        excel.save();
-        excel.close();
     }
 }
 ```
@@ -383,10 +386,6 @@ manual.pdf を開いています
 manual.pdf を保存しました: 17バイト
 PDF形式で 10 ページを生成
 manual.pdf を閉じました
-
-data.xlsx を開いています
-data.xlsx を保存しました: 19バイト
-data.xlsx を閉じました
 ```
 
 #### 重複コードの分析
@@ -411,6 +410,11 @@ public class ExcelDocument {
     private String filename;
     private String content;
     private long fileSize;
+    
+    public ExcelDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
     
     // また同じメソッドの重複！
     public void open() {
@@ -1011,7 +1015,9 @@ class Square implements Shape {
 <span class="listing-number">**サンプルコード5-18**</span>
 
 ```java
-// 悪い例：Stackを継承したMyStack
+import java.util.ArrayList;
+
+// 悪い例：ArrayListを継承したMyStack
 public class MyStack<E> extends ArrayList<E> {
     public void push(E item) {
         add(item);
@@ -1113,10 +1119,35 @@ public class ApprovingEmployee extends Employee {
 
 RPGゲームのキャラクターシステムを例に、継承を実際に使用した実装例です。親クラスのフィールドやメソッドを子クラスで活用し、独自の機能を追加する方法を示しています。
 
-<span class="listing-number">**サンプルコード5-21**</span>
+<span class="listing-number">**サンプルコード5-21**　Character.java、Hero.java、Wizard.java、Main.java</span>
 
 ```java
-// Main.java
+// 親クラス
+public class Character {
+    String name;
+    int hp;
+
+    public void attack() {
+        IO.println(name + "の攻撃！（HP: " + hp + "）");
+    }
+}
+
+// 子クラス：勇者
+public class Hero extends Character {
+    public void specialMove() {
+        IO.println(name + "は必殺技を放った！");
+    }
+}
+
+// 子クラス：魔法使い
+public class Wizard extends Character {
+    int mp; // 子クラス独自のフィールド
+
+    public void castSpell() {
+        IO.println(name + "は魔法を唱えた！（MP: " + mp + "）");
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
         Hero hero = new Hero();
@@ -1136,6 +1167,17 @@ public class Main {
     }
 }
 ```
+
+実行結果：
+
+```
+勇者の攻撃！（HP: 100）
+勇者は必殺技を放った！
+魔法使いの攻撃！（HP: 70）
+魔法使いは魔法を唱えた！（MP: 50）
+```
+
+`Hero`と`Wizard`には`name`・`hp`フィールドや`attack`メソッドを書いていませんが、親クラスの`Character`から受け継いでいるので使えます。
 
 ## メソッドのオーバーライド
 
@@ -1807,6 +1849,8 @@ if (user instanceof AdminUser admin) {
 <span class="listing-number">**サンプルコード5-33**</span>
 
 ```java
+import java.io.IOException;
+
 class Parent {
     void doSomething() throws IOException {
         // 処理

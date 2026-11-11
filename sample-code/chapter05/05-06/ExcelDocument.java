@@ -3,6 +3,11 @@ public class ExcelDocument {
     private String content;
     private long fileSize;
     
+    public ExcelDocument(String filename, String content) {
+        this.filename = filename;
+        this.content = content;
+    }
+    
     // また同じメソッドの重複！
     public void open() {
         IO.println(filename + " を開いています");
