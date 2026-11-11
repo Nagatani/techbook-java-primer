@@ -138,6 +138,8 @@ public class UserService {
 
 #### 問題
 異なるバージョンのライブラリが競合します。
+jackson-databind 2.15.0は同じ版のjackson-coreを前提にしていますが、次の例ではjackson-coreを2.12.0と直接指定しています。
+Mavenは直接指定した版を優先するため、実行時には2.12.0のjackson-coreが使われます。
 
 #### エラー例
 
@@ -157,9 +159,14 @@ public class UserService {
 ```
 
 #### エラーメッセージ
+コンパイルは通り、単純な変換も動きます。
+しかし、2.15で加わったjackson-coreのクラスを使う処理（`ObjectMapper.convertValue`など）を呼ぶと、実行時に次のエラーになります。
+
 ```
-java.lang.NoSuchMethodError: com.fasterxml.jackson.core.JsonFactory.createGenerator
+java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadConstraints
 ```
+
+どのメソッドで失敗するかは使う機能によって変わり、`NoSuchMethodError`になることもあります。
 
 #### 解決策
 
@@ -287,38 +294,60 @@ mvn dependency:tree
 
 ## APIの非互換性
 
-### 1. メソッドシグネチャの変更
+### 1. コンパイル時と実行時のバージョンの違い
 
 #### 問題
-ライブラリのバージョンアップでAPIが変更される。
+新しいバージョンで加わったメソッドを使ってコンパイルしたコードを、古いバージョンのライブラリで実行しています。
+コンパイルは通りますが、実行時にメソッドが見つからずエラーになります。
+推移的な依存関係で古いバージョンが選ばれたときや、実行時のクラスパスに古いJARが残っているときに起こります。
 
 #### エラー例
 
 ```java
-// 古いバージョン（1.x）
+// jackson-databind 2.15でコンパイルしたコード
+// JsonNode.properties()は2.15で加わったメソッド
 ObjectMapper mapper = new ObjectMapper();
-String json = mapper.writeValueAsString(object);
-
-// 新しいバージョン（2.x）でコンパイルエラー
+JsonNode node = mapper.readTree("{\"name\":\"Alice\",\"age\":20}");
+for (Map.Entry<String, JsonNode> entry : node.properties()) {
+    IO.println(entry.getKey() + " = " + entry.getValue());
+}
 ```
 
 #### エラーメッセージ
+実行時に2.14のjackson-databindが使われると、次のエラーになります。
+
 ```
-java.lang.NoSuchMethodError: com.fasterxml.jackson.databind.ObjectMapper.writeValueAsString
+Exception in thread "main" java.lang.NoSuchMethodError: 'java.util.Set com.fasterxml.jackson.databind.JsonNode.properties()'
 ```
 
 #### 解決策
 
-```java
-// 新しいAPIに対応
-ObjectMapper mapper = new ObjectMapper();
-try {
-    String json = mapper.writeValueAsString(object);
-} catch (JsonProcessingException e) {
-    // 新しいバージョンでは例外処理が必要
-    throw new RuntimeException("JSON変換エラー", e);
-}
+`mvn dependency:tree`で実際に使われるバージョンを確かめ、コンパイル時と同じバージョンにそろえます。
+Jacksonのように複数のモジュールからなるライブラリは、BOMを読み込むとモジュールのバージョンをまとめて固定できます。
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson</groupId>
+            <artifactId>jackson-bom</artifactId>
+            <version>2.15.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <!-- バージョンはBOMで決まる -->
+    </dependency>
+</dependencies>
 ```
+
+古いバージョンでも動かす必要がある場合は、古いバージョンにもあるメソッドで書きます（`properties()`の代わりに`fields()`を使うなど）。
 
 ### 2. 廃止予定APIの使用
 
