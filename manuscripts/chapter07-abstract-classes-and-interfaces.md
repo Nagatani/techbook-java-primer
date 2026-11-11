@@ -283,20 +283,11 @@ public interface Collection<E> extends Iterable<E> {
     boolean isEmpty();
     boolean contains(Object o);
     Iterator<E> iterator();
+    boolean containsAll(Collection<?> c);
     // ... 他の既存メソッド
     
     // Java 8で追加されたdefaultメソッドの例
-    // 注：Stream APIは第12章で詳しく学習します
-    // ここでは別のdefaultメソッドの例を示します
-    default boolean containsAll(Collection<?> c) {
-        for (Object e : c) {
-            if (!contains(e)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+    // （本物のjava.util.CollectionにもremoveIfがdefaultメソッドとして追加された）
     default boolean removeIf(Predicate<? super E> filter) {
         boolean removed = false;
         Iterator<E> each = iterator();
@@ -319,7 +310,7 @@ abstract class MyCollection<E> implements Collection<E> {
 
 この例は`default`メソッドの大きな利点を実証しています。
 Java 8のリリース時点で、`Collection`インターフェイスを実装する無数のクラスがすでに存在していました。
-`ArrayList`、`HashSet`、`TreeMap`などのクラスです。
+`ArrayList`、`HashSet`、`TreeSet`などのクラスです。
 新しいメソッドを`default`として追加することで、既存コードを一切変更することなく、
 すべてのコレクションで新機能を利用できるようになりました。
 これにより、APIの後方互換性を保ちながら機能を拡張できるようになりました。
@@ -478,7 +469,7 @@ import java.util.List;
 public interface JsonSerializable {
     String toJson();
     
-    // ファクトリメソッド
+    // 複数のオブジェクトをJSONの配列にまとめるユーティリティメソッド
     static <T extends JsonSerializable> String serializeList(List<T> items) {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < items.size(); i++) {
@@ -493,7 +484,8 @@ public interface JsonSerializable {
     
     // ユーティリティメソッド
     static String escapeJson(String input) {
-        return input.replace("\"", "\\\"")
+        return input.replace("\\", "\\\\")  // 先に「\」自身をエスケープする
+                   .replace("\"", "\\\"")
                    .replace("\n", "\\n")
                    .replace("\r", "\\r");
     }

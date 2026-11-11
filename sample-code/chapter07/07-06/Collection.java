@@ -7,20 +7,11 @@ public interface Collection<E> extends Iterable<E> {
     boolean isEmpty();
     boolean contains(Object o);
     Iterator<E> iterator();
+    boolean containsAll(Collection<?> c);
     // ... 他の既存メソッド
     
     // Java 8で追加されたdefaultメソッドの例
-    // 注：Stream APIは第12章で詳しく学習します
-    // ここでは別のdefaultメソッドの例を示します
-    default boolean containsAll(Collection<?> c) {
-        for (Object e : c) {
-            if (!contains(e)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+    // （本物のjava.util.CollectionにもremoveIfがdefaultメソッドとして追加された）
     default boolean removeIf(Predicate<? super E> filter) {
         boolean removed = false;
         Iterator<E> each = iterator();
