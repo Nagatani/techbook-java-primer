@@ -15,7 +15,9 @@ public class Logger {
     }
     
     // フォーマット付きメッセージ
-    public void log(String format, Object... args) {
+    // log(String, Object...)にすると、log("Hello %s", "World")が
+    // レベル付きログのlog(String, String)に解決されるため、名前を分ける
+    public void logf(String format, Object... args) {
         IO.println("[INFO] " + String.format(format, args));
     }
     

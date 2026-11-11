@@ -225,6 +225,8 @@ public class Car extends Vehicle {
 
 ```java
 // VehicleTest.java
+import com.example.cars.Car;
+
 public class VehicleTest {
     public static void main(String[] args) {
         Car car = new Car();
@@ -700,7 +702,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
     private int failedTransactionCount;
     // ...
     // 拡張されたコンストラクタ
-    public EnhancedBankAccount(String accountNumber, String accountHolder, double initialBalance) {
+    public EnhancedBankAccount(String accountNumber, double initialBalance) {
         super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
         this.status = STATUS_ACTIVE;
         this.lastActivityDate = LocalDateTime.now();
@@ -1235,7 +1237,9 @@ public class Logger {
     }
     
     // フォーマット付きメッセージ
-    public void log(String format, Object... args) {
+    // log(String, Object...)にすると、log("Hello %s", "World")が
+    // レベル付きログのlog(String, String)に解決されるため、名前を分ける
+    public void logf(String format, Object... args) {
         IO.println("[INFO] " + String.format(format, args));
     }
     
@@ -1246,6 +1250,10 @@ public class Logger {
     public static final String LOG_ERROR = "ERROR";
 }
 ```
+
+フォーマット付きメッセージを`log(String format, Object... args)`というオーバーロードにすると、`log("Hello %s", "World")`は引数の型がぴったり合う`log(String level, String message)`のほうが呼び出されます。
+このように引数の型が重なるオーバーロードは、意図と違うメソッドが選ばれる原因になります。
+そこで、フォーマット付きメッセージのメソッドは`logf`という別の名前にしています。
 
 オーバーロードを設計するときの目安は次のとおりです。
 
@@ -1472,6 +1480,9 @@ public class BankAccount {
 <span class="listing-number">**サンプルコード4-35**</span>
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+
 public class Team {
     private List<String> members;
     
@@ -1508,6 +1519,9 @@ Teamとは関係のない箇所でリストを変更しただけで、Teamの中
 <span class="listing-number">**サンプルコード4-36**</span>
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+
 public class Team {
     private List<String> members;
     

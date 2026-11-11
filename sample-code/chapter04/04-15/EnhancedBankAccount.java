@@ -13,7 +13,7 @@ public class EnhancedBankAccount extends BankAccountV3 {
     public static final String STATUS_CLOSED = "CLOSED";       // 閉鎖
     
     // 拡張されたコンストラクタ
-    public EnhancedBankAccount(String accountNumber, String accountHolder, double initialBalance) {
+    public EnhancedBankAccount(String accountNumber, double initialBalance) {
         super(accountNumber, initialBalance);  // 親クラスのコンストラクタを呼び出し
         this.status = STATUS_ACTIVE;
         this.lastActivityDate = LocalDateTime.now();
