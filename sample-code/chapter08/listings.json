@@ -35,21 +35,28 @@
   },
   "8-5": {
     "dir": "08-05",
-    "main": null,
+    "main": "TrafficLightDemo",
     "excerpt": [
       { "file": "TrafficLight.java", "from": 1, "to": 19 }
     ]
   },
   "8-6": {
     "dir": "08-06",
-    "main": null,
+    "main": "OperationDemo",
     "excerpt": [
       { "file": "Operation.java", "from": 1, "to": 27 }
     ]
   },
+  "8-7": {
+    "dir": "08-07",
+    "main": null,
+    "excerpt": [
+      { "file": "DatabaseConnection.java", "from": 1, "to": 21 }
+    ]
+  },
   "8-8": {
     "dir": "08-08",
-    "main": null,
+    "main": "PaymentStrategyDemo",
     "excerpt": [
       { "file": "PaymentStrategy.java", "from": 1, "to": 22 }
     ]
@@ -76,6 +83,13 @@
       { "file": "Person.java", "from": 1, "to": 1 }
     ]
   },
+  "8-13": {
+    "dir": "08-13",
+    "main": "RecordExample",
+    "excerpt": [
+      { "file": "RecordExample.java", "from": 1, "to": 21 }
+    ]
+  },
   "8-14": {
     "dir": "08-14",
     "main": null,
@@ -97,12 +111,26 @@
       { "file": "Temperature.java", "from": 1, "to": 24 }
     ]
   },
+  "8-17": {
+    "dir": "08-17",
+    "main": null,
+    "excerpt": [
+      { "file": "Configuration.java", "from": 1, "to": 25 }
+    ]
+  },
   "8-18": {
     "dir": "08-18",
     "main": "PatternMatchingExample",
     "excerpt": [
       { "file": "Point.java", "from": 1, "to": 1 },
-      { "file": "PatternMatchingExample.java", "from": 1, "to": 19 }
+      { "file": "PatternMatchingExample.java", "from": 1, "to": 22 }
+    ]
+  },
+  "8-19": {
+    "dir": "08-19",
+    "main": null,
+    "excerpt": [
+      { "file": "LocalRecordExample.java", "from": 1, "to": 25 }
     ]
   },
   "8-20": {
@@ -114,6 +142,13 @@
       { "file": "Employee.java", "from": 1, "to": 12 }
     ]
   },
+  "8-22": {
+    "dir": "08-22",
+    "main": null,
+    "excerpt": [
+      { "file": "Money.java", "from": 1, "to": 26 }
+    ]
+  },
   "8-23": {
     "dir": "08-23",
     "main": null,
@@ -123,6 +158,16 @@
       { "file": "Rectangle.java", "from": 1, "to": 1 },
       { "file": "Triangle.java", "from": 1, "to": 1 },
       { "file": "ShapeCalculator.java", "from": 1, "to": 10 }
+    ]
+  },
+  "8-24": {
+    "dir": "08-24",
+    "main": null,
+    "excerpt": [
+      { "file": "Order.java", "from": 4, "to": 5 },
+      { "file": "Customer.java", "from": 1, "to": 1, "sep": "none" },
+      { "file": "OrderItem.java", "from": 3, "to": 3, "sep": "none" },
+      { "file": "OrderProcessor.java", "from": 3, "to": 15 }
     ]
   },
   "8-25": {

@@ -187,7 +187,7 @@ public class TrafficLight {
 }
 ```
 
-テスト用のコードを加えて実行すると、次のように表示されます。
+実行結果：
 
 ```
 信号のテスト:
@@ -195,6 +195,8 @@ public class TrafficLight {
 注意して進んでください
 進んでください
 ```
+
+この実行結果は、GitHubの全文に付けた`TrafficLightDemo.java`で、すべての色について`handleSignal`を呼んだときのものです。
 
 ### 列挙子ごとのメソッド実装
 
@@ -232,7 +234,7 @@ public enum Operation {
 }
 ```
 
-テスト用のコードを加えて実行すると、次のように表示されます。
+実行結果：
 
 ```
 x = 6.0, y = 2.0
@@ -242,15 +244,21 @@ x = 6.0, y = 2.0
 6.000000 / 2.000000 = 3.000000
 ```
 
+この実行結果は、GitHubの全文に付けた`OperationDemo.java`で、6.0と2.0に4つの演算を適用したときのものです。
+
 ### enumを使ったデザインパターン
 
 #### Singletonパターン
 
 `enum`を使うと、最も簡潔で安全なシングルトンを実装できます。
+次のサンプルの`Connection`は、データベースとの接続を表す`java.sql`パッケージのインターフェイスです。
+ここでは接続の処理そのものは扱わず、列挙子`INSTANCE`がただ1つのインスタンスとして接続を持ち続ける形に注目してください。
 
-<span class="listing-number">**サンプルコード8-7**</span>
+<span class="listing-number">**サンプルコード8-7**　DatabaseConnection.java</span>
 
 ```java
+import java.sql.Connection;
+
 public enum DatabaseConnection {
     INSTANCE;
     
@@ -273,6 +281,8 @@ public enum DatabaseConnection {
 ```
 
 #### Strategyパターン
+
+列挙子ごとに異なる処理（戦略）を持たせると、Strategyパターンになります。
 
 <span class="listing-number">**サンプルコード8-8**　PaymentStrategy.java</span>
 
@@ -301,7 +311,7 @@ public enum PaymentStrategy {
 }
 ```
 
-テスト用のコードを加えて実行すると、次のように表示されます。
+実行結果：
 
 ```
 支払い方法のテスト:
@@ -309,6 +319,8 @@ public enum PaymentStrategy {
 銀行振込で1500.0円を支払いました
 現金で1500.0円を支払いました
 ```
+
+この実行結果は、GitHubの全文に付けた`PaymentStrategyDemo.java`で、すべての支払い方法で1500円を支払ったときのものです。
 
 ### インターフェイスの実装
 
@@ -499,7 +511,7 @@ Recordを使う最大のメリットは簡潔さです。
 
 ### Recordの使い方
 
-<span class="listing-number">**サンプルコード8-13**</span>
+<span class="listing-number">**サンプルコード8-13**　RecordExample.java</span>
 
 ```java
 public class RecordExample {
@@ -620,9 +632,11 @@ public record Temperature(double value, String unit) {
 
 不変性を保ちながら部分的な更新を行うwithメソッドパターンは、Recordで頻繁に使用されます。
 
-<span class="listing-number">**サンプルコード8-17**</span>
+<span class="listing-number">**サンプルコード8-17**　Configuration.java</span>
 
 ```java
+import java.time.Duration;
+
 public record Configuration(
     String host,
     int port,
@@ -673,12 +687,15 @@ public class PatternMatchingExample {
     
     public static void main(String[] args) {
         Point p = new Point(10, 20);
-        IO.println(describe(p));  // 座標(10, 20)の点
+        IO.println(describe(p));        // 座標(10, 20)の点
+        IO.println(describe("Hello"));  // 文字列: Hello
+        IO.println(describe(null));     // null値
+        IO.println(describe(42));       // 未知のオブジェクト
     }
 }
 ```
 
-テスト用のコードを加えて実行すると、次のように表示されます。
+実行結果：
 
 ```
 座標(10, 20)の点
@@ -694,9 +711,12 @@ null値
 次のサンプルでは、第9章で学ぶ`List`と`Collections`、第11章・第12章で学ぶ`stream()`とメソッド参照（`Integer::intValue`）を使って平均・最大・最小を求めています。
 ここでは、計算した結果を1つのRecordにまとめて返している点に注目してください。
 
-<span class="listing-number">**サンプルコード8-19**</span>
+<span class="listing-number">**サンプルコード8-19**　LocalRecordExample.java</span>
 
 ```java
+import java.util.Collections;
+import java.util.List;
+
 public class LocalRecordExample {
     public static void analyzeData(List<Integer> numbers) {
         // ローカルRecord
@@ -779,9 +799,12 @@ public record ApiResponse<T>(
 
 #### Value Objectパターン
 
-<span class="listing-number">**サンプルコード8-22**</span>
+<span class="listing-number">**サンプルコード8-22**　Money.java</span>
 
 ```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public record Money(BigDecimal amount, String currency) {
     public Money {
         if (amount == null) {
@@ -846,8 +869,9 @@ public class ShapeCalculator {
 データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです。
 
 次のサンプルの`order.items().stream()`以降は、第12章「Stream APIと高度なコレクション操作」で学ぶ書き方で、リストの全要素に対して計算や判定を行います。
+本文では、各ファイルの先頭にあるimport文（`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`）を省いています。
 
-<span class="listing-number">**サンプルコード8-24**</span>
+<span class="listing-number">**サンプルコード8-24**　Order.java（4〜5行目）、Customer.java、OrderItem.java（3行目）、OrderProcessor.java（3〜15行目）</span>
 
 ```java
 // データの定義（Records）
@@ -1077,7 +1101,7 @@ public class LocalClassExample {
         }
         
         DataProcessor processor = new DataProcessor();
-        IO.println(processor.process("hello")); // PREFIX: HELLO
+        IO.println(processor.process("hello")); // 例: prefixが"Log"なら「Log: HELLO」
     }
 }
 ```
