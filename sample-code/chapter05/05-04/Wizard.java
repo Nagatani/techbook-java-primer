@@ -3,7 +3,7 @@ public class Wizard extends Character {
     int mp;
 
     public Wizard(String name, int hp, int mp) {
-        // super()で親クラスのコンストラクタを呼び出す
+        // super()で親クラスのコンストラクターを呼び出す
         super(name, hp); 
         this.mp = mp;
     }

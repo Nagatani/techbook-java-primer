@@ -25,7 +25,7 @@ javac -d out *.java
 | [5-10](./05-10/) | DrawingAppBefore.java | `java -cp out DrawingAppBefore` |
 | [5-11](./05-11/) | DrawingAppAfter.java | `java -cp out DrawingAppAfter` |
 | [5-15](./05-15/) | Student.java | （mainメソッドなし） |
-| [5-16](./05-16/) | ObjectMethodsDemo.java | `java -cp out ObjectMethodsDemo` |
+| [5-16](./05-16/) | ObjectMethodsDemo.java<br>Student.java | `java -cp out ObjectMethodsDemo` |
 | [5-17](./05-17/) | PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
 | [5-18](./05-18/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
 | [5-19](./05-19/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentExample.java<br>PaymentProcessor.java<br>PaymentResult.java | `java -cp out PaymentExample` |
@@ -39,5 +39,5 @@ javac -d out *.java
 | [5-27](./05-27/) | MyStack.java | （mainメソッドなし） |
 | [5-28](./05-28/) | Employee.java<br>EmployeeManagementSystem.java<br>RegularEmployee.java<br>SystemAdministrator.java | （mainメソッドなし） |
 | [5-29](./05-29/) | Rectangle.java<br>RectangleSquareTest.java<br>Square.java | `java -cp out RectangleSquareTest` |
-| [5-31](./05-31/) | Shape.java | （mainメソッドなし） |
-| [5-32](./05-32/) | ApprovingEmployee.java<br>Employee.java<br>ReportingEmployee.java | （mainメソッドなし） |
+| [5-30](./05-30/) | Shape.java | （mainメソッドなし） |
+| [5-31](./05-31/) | ApprovingEmployee.java<br>Employee.java<br>ReportingEmployee.java | （mainメソッドなし） |
