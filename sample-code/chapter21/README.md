@@ -16,9 +16,11 @@ javac -d out *.java
 
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
+| [21-1](./21-01/) | AverageCheck.java | `java -cp out AverageCheck` |
 | [21-2](./21-02/) | Calculator.java | （mainメソッドなし） |
 | [21-3](./21-03/) | Calculator.java<br>CalculatorManualTest.java | `java -cp out CalculatorManualTest` |
 | [21-4](./21-04/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
 | [21-7](./21-07/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
 | [21-8](./21-08/) | UserRepository.java<br>UserRepositoryStub.java<br>UserService.java<br>UserServiceManualTest.java | `java -cp out UserServiceManualTest` |
 | [21-10](./21-10/) | StringCalculator.java | （mainメソッドなし） |
+| [21-12](./21-12/) | UserRepository.java<br>UserService.java<br>UserServiceTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:5.13.4, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0, org.mockito:mockito-core:5.20.0, org.mockito:mockito-junit-jupiter:5.20.0 |

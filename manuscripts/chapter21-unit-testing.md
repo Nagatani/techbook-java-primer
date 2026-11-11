@@ -45,30 +45,36 @@
 バグが見つかるのが遅いほど、原因を探す範囲が広がり、修正の影響もほかの部分に及ぶため、手戻りのコストは大きくなります。
 単体テストは、コードを書いた直後に品質を検証するので、修正しやすいうちにバグを見つけられます。
 
-<span class="listing-number">**サンプルコード21-1**</span>
+次の例では、平均を求めるメソッドを書いた直後に、結果を確かめています。
+
+<span class="listing-number">**サンプルコード21-1**　AverageCheck.java</span>
 
 ```java
-// バグ修正のコスト
-// 開発段階でのバグ修正コスト： 1
-// リリース後のバグ修正コスト： 100〜1000倍
+public class AverageCheck {
+    // 2つの整数の平均を求める（この書き方には誤りがある）
+    static double average(int a, int b) {
+        return (a + b) / 2;
+    }
+
+    public static void main(String[] args) {
+        // 書いた直後に確かめれば、原因はこのメソッドの中だとすぐにわかる
+        double result = average(1, 2);
+        IO.println("average(1, 2) = " + result);
+        IO.println(result == 1.5 ? "OK" : "NG：1.5になるはず");
+    }
+}
 ```
 
 実行結果：
 
 ```
-（この例はコメントのみのため実行結果はありません）
-単体テストの価値を理解するための概念図として記載されています
-
-開発段階（単体テスト実行時）：
-- バグ発見・修正コスト = 1（基準値）
-- 影響範囲が限定的
-- 修正が容易
-
-リリース後（本番環境）：
-- バグ発見・修正コスト = 100～1000倍
-- 影響範囲が広範囲
-- 修正に多くのリソースが必要
+average(1, 2) = 1.0
+NG：1.5になるはず
 ```
+
+期待した1.5ではなく1.0になったことから、`(a + b) / 2`がint同士の割り算になっている誤りに気付けます。
+`(a + b) / 2.0`と書けば1.5になります。
+同じ誤りに、このメソッドを使う画面や集計の処理が完成してから気付くと、どこで値がずれたのかを探す手間がかかります。
 
 #### 変更を恐れないための「安全網」
 
@@ -448,15 +454,20 @@ Mockitoを使用すると、モックオブジェクトの振る舞いを詳細�
 メソッド呼び出しの検証も可能になります。
 以下の例では、@Mockアノテーションでモックを宣言し、when-thenReturnで振る舞いを定義し、
 verifyでメソッド呼び出しを検証しています。
+@Mockを付けたフィールドにモックを作って入れるのは、クラスに付けた`@ExtendWith(MockitoExtension.class)`です。
+これを付け忘れるとフィールドが`null`のままになり、テストは`NullPointerException`で失敗します。
 
-<span class="listing-number">**サンプルコード21-12**</span>
+<span class="listing-number">**サンプルコード21-12**　UserServiceTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @Mock
     private UserRepository mockRepository;
