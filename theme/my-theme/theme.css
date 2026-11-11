@@ -808,7 +808,9 @@ pre[data-line-numbers="true"] code .line::before {
 code:not(pre code) {
   background-color: #f5f5f5;
   color: #c0103f;
-  padding: 0.2em 0.4em;
+  /* 左右の余白は小さくする。和文と欧文の間のアキ（text-spacing）に重なり、
+     「、　public　や」のように前後が大きく空いて見えるため */
+  padding: 0.2em 0.15em;
   border-radius: 3px;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 0.9em;
@@ -1986,4 +1988,13 @@ a.code-url[href^='http']::before,
 a.code-url[href^='http']::after {
   content: none;
   float: none;
+}
+
+/* URLはどの文字の後ろでも折り返す。英字の並びには両端揃えで字間を足す場所がないため、
+   区切りでしか折り返せないと、入りきらなかった分が行の中の1か所にまとまって大きく空く。
+   （インラインコードの名前は scripts/vfm-line-breaks.js が「.」などの後ろに折り返し位置を入れる） */
+a.code-url[href^='http'] code,
+a.code-url[href^='http'] {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
 }
