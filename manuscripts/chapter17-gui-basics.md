@@ -182,8 +182,6 @@ public class HelloLabel {
 そのため、異なるOSでも同じようにレイアウトでき、画面の文字サイズやDPIが変わってもそれに合わせて配置できます。
 また、ユーザーがウィンドウの大きさを変えると、コンポーネントを自動的に配置し直します。
 
-BorderLayoutによる5領域レイアウトの実装。
-
 BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャです。多くのアプリケーションで使用される基本的なレイアウトパターンです。
 
 <span class="listing-number">**サンプルコード17-4**　MultipleComponents.java</span>
@@ -444,22 +442,15 @@ public class SelectionComponents {
 
 #### BorderLayout - 5つの領域に配置
 
-BorderLayoutの例。
-
-BorderLayoutは、ウィンドウを方位に基づいた5つの領域に分割するレイアウトマネージャーです。JFrameのデフォルトレイアウトであり、多くのアプリケーションで基本構造として使用されます。
-
-BorderLayoutの領域の特性。
-- NORTH/SOUTH: ウィンドウの幅全体を使用し、高さはコンポーネントの優先サイズに応じて決定
-- EAST/WEST: 残った高さを使用し、幅はコンポーネントの優先サイズに応じて決定
-- CENTER: 残ったすべての領域を使用（伸縮可能）
+BorderLayoutは、サンプルコード17-4で使ったレイアウトマネージャーで、JFrameのデフォルトのレイアウトでもあります。
+ウィンドウを方位に基づいた5つの領域に分け、各領域は17-4の解説で述べたとおりに広がります。
+5つの領域の位置関係は、次の図のとおりです。
 
 <div class="figure">
 
 ![BorderLayoutの5つの領域](images/diagrams/chapter17-borderlayout.svg)
 
 </div>
-
-`BorderLayout`は、ウィンドウを5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置します。
 
 以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
 
