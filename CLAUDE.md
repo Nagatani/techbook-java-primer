@@ -58,6 +58,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 本文: ですます調で統一
    - リスト項目: である調を使用（意図的な使い分け）
    - 専門用語: 「インターフェイス」で統一（「インターフェース」ではない）
+   - 外来語の長音（2026-11-11〜）: JIS Z 8301:2019（旧規定の「3音以上の語は語末の長音を省く」は削除され、内閣告示「外来語の表記」による）に従い、英語の語末の-er・-or・-arに当たる語は長音符号を付ける（コンストラクター、パラメーター、コンパイラー、サーバー、リスナー）。語末が-yの語は付けない（メモリ、ディレクトリ、ライブラリ、ファクトリ）。`prh-rules.yml`に語を登録し、`npm run lint`（textlintのprhルール）で検査する。新しい語が出てきたら`prh-rules.yml`に足す。コードの識別子・コメントと図の元データ（`docs/diagrams/*.mmd`）はtextlintの対象外なので、図の文字は手で合わせる
 
 4. **Code Listing Numbers**: 
    - 全23章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
@@ -171,7 +172,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - Book configuration is in `vivliostyle.config.js`
 - Markdown sources are in `manuscripts/` directory
 - PDF output goes to `output/techbook-java-primer.pdf`
-- textlint configuration is in `.textlintrc.json` (`prh-rules.yml` was removed in 2025-07; the 「インターフェイス」 spelling is not checked automatically)
+- textlint configuration is in `.textlintrc.json`. `prh-rules.yml` (restored 2026-11-11) holds the spelling rules for loanword long vowels and 「インターフェイス」
 
 ## Architecture
 

@@ -387,7 +387,7 @@ public class OptionalPresenceExample {
 
 ### Optionalの変換操作
 
-Optionalは関数型プログラミングのコンテナとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
+Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
 <span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、15、17〜37、47〜48行目）</span>
 
@@ -1021,7 +1021,7 @@ public class ShortCircuitExample {
 
 ### 実用的なtoArray操作
 
-ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクタを指定することが重要です。
+ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクターを指定することが重要です。
 
 <span class="listing-number">**サンプルコード12-21**　ToArrayExample.java</span>
 
@@ -1155,4 +1155,4 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
 - 応用的な実装練習
 - 実践的な総合問題
 
-詳細な課題内容と実装のヒントは、各課題フォルダ内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください。

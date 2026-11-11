@@ -1,0 +1,134 @@
+# 表記の統一（JIS Z 8301:2019 と内閣告示「外来語の表記」に従う）
+# - 英語の語末の -er・-or・-ar に当たる外来語は、長音符号「ー」を付ける（2026-11-11〜）
+# - 語末が -y の語（メモリ、ディレクトリ、ライブラリ、ファクトリなど）は長音符号を付けない
+# textlint（npm run lint）の prh ルールとして使う。コードブロックとインラインコードは対象外
+version: 1
+rules:
+  - expected: コンストラクター
+    pattern: /コンストラクタ(?!ー)/
+  - expected: コンパイラー
+    pattern: /コンパイラ(?!ー)/
+  - expected: パラメーター
+    pattern: /パラメータ(?!ー)/
+  - expected: フォルダー
+    pattern: /フォルダ(?!ー)/
+  - expected: イテレーター
+    pattern: /イテレータ(?!ー)/
+  - expected: リスナー
+    pattern: /リスナ(?!ー)/
+  - expected: カウンター
+    pattern: /カウンタ(?!ー)/
+  - expected: バッファー
+    pattern: /バッファ(?!ー|リング)/
+  - expected: エディター
+    pattern: /エディタ(?!ー)/
+  - expected: ポインター
+    pattern: /ポインタ(?!ー)/
+  - expected: コンピューター
+    pattern: /コンピュータ(?!ー)/
+  - expected: コンテナー
+    pattern: /コンテナ(?!ー)/
+  - expected: インストーラー
+    pattern: /インストーラ(?!ー)/
+  - expected: ハンドラー
+    pattern: /ハンドラ(?!ー)/
+  - expected: プログラマー
+    pattern: /プログラマ(?!ー)/
+  - expected: ブラウザー
+    pattern: /ブラウザ(?!ー)/
+  - expected: アクセサー
+    pattern: /アクセサ(?!ー)/
+  - expected: ゲッター
+    pattern: /ゲッタ(?!ー)/
+  - expected: セッター
+    pattern: /セッタ(?!ー)/
+  - expected: インタプリター
+    pattern: /インタプリタ(?!ー)/
+  - expected: デバッガー
+    pattern: /デバッガ(?!ー)/
+  - expected: メンバー
+    pattern: /メンバ(?!ー)/
+  - expected: アダプター
+    pattern: /アダプタ(?!ー)/
+  - expected: プレースホルダー
+    pattern: /プレースホルダ(?!ー)/
+  - expected: ビルダー
+    pattern: /ビルダ(?!ー)/
+  - expected: レジスター
+    pattern: /レジスタ(?!ー)/
+  - expected: サーバー
+    pattern: /サーバ(?!ー)/
+  - expected: プロセッサー
+    pattern: /プロセッサ(?!ー)/
+  - expected: マネージャー
+    pattern: /マネージャ(?!ー)/
+  - expected: バリデーター
+    pattern: /バリデータ(?!ー)/
+  - expected: エクスプローラー
+    pattern: /エクスプローラ(?!ー)/
+  - expected: ファンクター
+    pattern: /ファンクタ(?!ー)/
+  - expected: ユーザー
+    pattern: /ユーザ(?!ー)/
+  - expected: ヘッダー
+    pattern: /ヘッダ(?!ー)/
+  - expected: フィルター
+    pattern: /フィルタ(?!ー|リング)/
+  - expected: モニター
+    pattern: /モニタ(?!ー)/
+  - expected: スキャナー
+    pattern: /スキャナ(?!ー)/
+  - expected: レンダラー
+    pattern: /レンダラ(?!ー)/
+  - expected: ラッパー
+    pattern: /ラッパ(?!ー)/
+  - expected: コレクター
+    pattern: /コレクタ(?!ー)/
+  - expected: ジェネレーター
+    pattern: /ジェネレータ(?!ー)/
+  - expected: オペレーター
+    pattern: /オペレータ(?!ー)/
+  - expected: ワーカー
+    pattern: /ワーカ(?!ー)/
+  - expected: スケジューラー
+    pattern: /スケジューラ(?!ー)/
+  - expected: エンコーダー
+    pattern: /エンコーダ(?!ー)/
+  - expected: デコーダー
+    pattern: /デコーダ(?!ー)/
+  - expected: ローダー
+    pattern: /ローダ(?!ー)/
+  - expected: ドライバー
+    pattern: /ドライバ(?!ー)/
+  - expected: パーサー
+    pattern: /パーサ(?!ー)/
+  - expected: トリガー
+    pattern: /トリガ(?!ー)/
+  - expected: プロバイダー
+    pattern: /プロバイダ(?!ー)/
+  - expected: ディスパッチャー
+    pattern: /ディスパッチャ(?!ー)/
+  - expected: コンバーター
+    pattern: /コンバータ(?!ー)/
+  - expected: イニシャライザー
+    pattern: /イニシャライザ(?!ー)/
+  - expected: シリアライザー
+    pattern: /シリアライザ(?!ー)/
+  - expected: セレクター
+    pattern: /セレクタ(?!ー)/
+  - expected: コネクター
+    pattern: /コネクタ(?!ー)/
+  - expected: インジケーター
+    pattern: /インジケータ(?!ー)/
+  - expected: リーダー
+    pattern: /リーダ(?!ー|ーシップ)/
+  - expected: ライター
+    pattern: /ライタ(?!ー)/
+  - expected: マッパー
+    pattern: /マッパ(?!ー)/
+  - expected: ブローカー
+    pattern: /ブローカ(?!ー)/
+  - expected: ファクトリ
+    pattern: ファクトリー
+  - expected: インターフェイス
+    pattern: /インタ[ーァ]?フェ[ーイ]?ス/

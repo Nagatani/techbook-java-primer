@@ -6,7 +6,7 @@ flowchart TB
 
     subgraph after["DIを使った疎結合（サンプルコード21-7・21-8）"]
         direction LR
-        caller["呼び出し側<br/>（main、テスト）"] -->|"コンストラクタで渡す"| us2["UserService"]
+        caller["呼び出し側<br/>（main、テスト）"] -->|"コンストラクターの<br/>引数で渡す"| us2["UserService"]
         us2 -->|"依存する"| iface["≪interface≫<br/>UserRepository"]
         real["本番用の実装"] -.->|implements| iface
         stub["UserRepositoryStub<br/>（テスト用）"] -.->|implements| iface

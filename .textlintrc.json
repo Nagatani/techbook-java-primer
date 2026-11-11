@@ -22,7 +22,10 @@
         "allows": ["/ - (第\\d+(-\\d+)?章|付録)/"]
       }
     },
-    "ja-hiraku": true
+    "ja-hiraku": true,
+    "prh": {
+      "rulePaths": ["./prh-rules.yml"]
+    }
   },
   "rules_bk": {
     "preset-ja-technical-writing": {
