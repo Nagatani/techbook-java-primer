@@ -620,7 +620,8 @@ for-each文は内部的にイテレータを使用しているため、理解し
 <span class="listing-number">**サンプルコード9-16**</span>
 
 ```java
-List<String> list = Arrays.asList("A", "B", "C");
+// Arrays.asListのリストはサイズが固定で削除できないため、ArrayListにコピーする
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C"));
 
 // イテレータを使った走査：全コレクション型で統一された方法
 Iterator<String> iter = list.iterator();
