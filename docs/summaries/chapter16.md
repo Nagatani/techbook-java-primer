@@ -1,29 +1,29 @@
 ---
 source: manuscripts/chapter16-network-programming.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: f1ef8fd9
   - key: "はじめに"
     hash: c0698d24
   - key: "ネットワークプログラミングの基礎"
-    hash: 05301c42
+    hash: d6c377f5
   - key: "ソケットプログラミングの基礎"
     hash: ac9595b4
   - key: "マルチスレッドサーバーの実装"
-    hash: 964f2790
+    hash: fb284b01
   - key: "HTTPクライアントの実装"
-    hash: 75b721e1
+    hash: e7caa352
   - key: "UDP通信の実装"
-    hash: ee8f0df9
+    hash: 94a5c17d
   - key: "実践的な例：チャットアプリケーション"
     hash: bea458cc
   - key: "JSON APIクライアントの実装"
-    hash: 1ede2ac8
+    hash: 578ad5f4
   - key: "REST API実装の基礎"
-    hash: 353861b7
+    hash: c1cffb45
   - key: "WebSocketクライアントの基礎"
-    hash: 4e3e507d
+    hash: fef04f95
   - key: "セキュリティの考慮事項"
     hash: 95446bbf
   - key: "パフォーマンスの最適化"
@@ -75,7 +75,7 @@ sections:
     + Socket、PrintWriter、BufferedReaderによるTCPクライアント（16-1）と、accept()で待ち受けるエコーサーバー（16-2）。try-with-resourcesで自動クローズする
 - マルチスレッドサーバーの実装（L165–240）
     + 単一スレッドサーバーの限界を述べ、ExecutorServiceの固定スレッドプールでClientHandlerを実行するサーバー（16-3）。ECHO・TIME・QUITの簡易プロトコル
-    + L173–175で項目名と説明が連結している（Issue #013）
+    + L173–175で項目名と説明が連結している（Issue #013）（2026-11-11に箇条書きを文章にした際に解消）
 - HTTPクライアントの実装（L241–450）
     + HTTPリクエスト・レスポンスの構造
     + ソケットで直接HTTPを話すクライアント（16-4）、HttpURLConnectionによるGitHub APIへのGET（16-5）、Java 11のHttpClientのsendAsyncとCompletableFutureの連鎖（16-6）
@@ -91,9 +91,9 @@ sections:
 - JSON APIクライアントの実装（L700–746）
     + JacksonとHttpClientで汎用GET/POSTクライアントを作る（16-11）。JSON処理のポイント4点
 - REST API実装の基礎（L747–758）
-    + RESTの4原則を挙げ、実装はSpring BootやJAX-RSを使うと述べるのみ。L873–876は項目名と説明が連結している（Issue #013）
+    + RESTの4原則を挙げ、実装はSpring BootやJAX-RSを使うと述べるのみ。L873–876は項目名と説明が連結している（Issue #013）（2026-11-11に箇条書きを文章にした際に解消）
 - WebSocketクライアントの基礎（L759–769）
-    + WebSocketの特徴3点のみでコードなし。L885–887も連結している（Issue #013）
+    + WebSocketの特徴3点のみでコードなし。L885–887も連結している（Issue #013）（2026-11-11に箇条書きを文章にした際に解消）
     + 「Java標準APIで実装できる」とあるが、Java 11のHttpClient.newWebSocketBuilderなど具体名がない
 - セキュリティの考慮事項（L770–847）
     + 入力検証・暗号化・認証・タイムアウト・リソース制限の5対策

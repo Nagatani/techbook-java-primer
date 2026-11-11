@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter21-unit-testing.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: bb0dba1d
   - key: "単体テストの基礎"
     hash: 6184266d
   - key: "テストの基本形（AAAパターン）"
-    hash: 42fb3963
+    hash: 7f00c41e
   - key: "テストを妨げる「依存関係」"
     hash: d385173a
   - key: "疎結合設計（Dependency Injection）"
-    hash: 6de70805
+    hash: dc361664
   - key: "DIによるテスト容易性の向上"
     hash: e874b14f
   - key: "テスト駆動開発（TDD）"

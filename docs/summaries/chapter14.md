@@ -1,19 +1,19 @@
 ---
 source: manuscripts/chapter14-file-io.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 14f07a1e
   - key: "完了確認チェックリスト"
     hash: 863458c4
   - key: "ファイルI/Oの基礎とストリーム"
-    hash: 19643f5b
+    hash: 872e1bd8
   - key: "テキストファイルの読み書き"
-    hash: da14856f
+    hash: 836740c5
   - key: "バイナリファイルの高度な処理"
-    hash: 3cb7a518
+    hash: 81c13dea
   - key: "オブジェクトの直列化（シリアライズ）"
-    hash: 8cf4a1b2
+    hash: ba335569
   - key: "ファイルシステムの操作 (NIO.2)"
     hash: d06fdb69
   - key: "実践的なファイル処理例"
@@ -23,7 +23,7 @@ sections:
   - key: "GUIでのファイル選択: `JFileChooser`"
     hash: 6ce51fc3
   - key: "Text Blocks - 複数行文字列の効率的な処理"
-    hash: 167d30bf
+    hash: 3cef87c2
   - key: "まとめ"
     hash: 16771c84
   - key: "よくあるエラーと対処法"

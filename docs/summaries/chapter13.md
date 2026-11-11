@@ -1,15 +1,15 @@
 ---
 source: manuscripts/chapter13-exception-handling.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: ac1a11b8
   - key: "エラーの種類と対処法"
-    hash: 274562fc
+    hash: c9e64392
   - key: "例外処理の基本: `try-catch-finally`"
-    hash: 26aa5b73
+    hash: 7db15c38
   - key: "検査例外と非検査例外"
-    hash: 62c93a20
+    hash: 1aebd86b
   - key: "独自例外と例外の連鎖"
     hash: a2f971ff
   - key: "実践的な例外処理パターン"
@@ -21,7 +21,7 @@ sections:
   - key: "業務アプリケーションでの例外設計"
     hash: e6b90abd
   - key: "例外処理のベストプラクティス"
-    hash: 4010d281
+    hash: 4a551db0
   - key: "よくあるエラーと対処法"
     hash: 14474f3e
   - key: "まとめ"

@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter08-special-classes.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 713ec8aa
   - key: "列挙型（Enum）"
-    hash: 817f41cf
+    hash: 23ae85da
   - key: "レコード（Record）"
-    hash: 337806fe
+    hash: 62bd7df6
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 034b1298
   - key: "内部クラス（Inner Classes）"
-    hash: 98d98179
+    hash: 1406b2d9
   - key: "まとめ"
     hash: 648e3d3d
   - key: "章末演習"

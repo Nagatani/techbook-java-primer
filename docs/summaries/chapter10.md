@@ -1,11 +1,11 @@
 ---
 source: manuscripts/chapter10-generics.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 35d59ace
   - key: "なぜジェネリクスが必要なのか？"
-    hash: bde8ea12
+    hash: ca5f27da
   - key: "ジェネリッククラスの作成"
     hash: 47e8d88c
   - key: "ジェネリックメソッド"
@@ -13,9 +13,9 @@ sections:
   - key: "型制約（境界のある型パラメータ）"
     hash: 6acf2648
   - key: "ワイルドカード"
-    hash: 9b900074
+    hash: d13cf761
   - key: "var型推論とジェネリクス"
-    hash: 976f6ac5
+    hash: e927831f
   - key: "よくあるエラーと対処法"
     hash: cf91d99f
   - key: "まとめ"

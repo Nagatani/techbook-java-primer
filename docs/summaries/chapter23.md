@@ -1,15 +1,15 @@
 ---
 source: manuscripts/chapter23-build-and-deploy.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 80f3ca55
   - key: "なぜビルドと配布が必要か"
     hash: 43aceae4
   - key: "実行可能JARファイルの作成"
-    hash: 474cd845
+    hash: 200d2d8b
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: d31df8cd
+    hash: 938d3626
   - key: "まとめ"
     hash: 97597efa
   - key: "章末演習"

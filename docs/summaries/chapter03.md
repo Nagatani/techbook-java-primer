@@ -1,31 +1,31 @@
 ---
 source: manuscripts/chapter03-oop-basics.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 04583f01
   - key: "章の構成"
     hash: e27685fc
   - key: "なぜオブジェクト指向が必要なのか"
-    hash: e5b030ff
+    hash: 0e3a17f9
   - key: "オブジェクト指向とは"
     hash: fb75d99b
   - key: "オブジェクト指向を学ぶ意義"
     hash: 021d1418
   - key: "オブジェクト指向の重要な用語と概念"
-    hash: d8961709
+    hash: 6edb6074
   - key: "オブジェクト指向の基本概念を実際のコードで理解する"
-    hash: 36ba71ad
+    hash: 8b40e254
   - key: "クラスの作成"
-    hash: 2385d68b
+    hash: 01d0172a
   - key: "クラスとオブジェクト"
-    hash: d4a50409
+    hash: c43d4a82
   - key: "publicとprivate - アクセス修飾子の基本"
     hash: be54a14e
   - key: "static修飾子の詳細な理解"
-    hash: 6c8ccad9
+    hash: fc01ff1f
   - key: "オブジェクトの配列"
-    hash: 436f05ff
+    hash: c169f627
   - key: "実用的なクラス設計例"
     hash: 55ecd50a
   - key: "オブジェクトの等価性とhashCode"
@@ -162,7 +162,7 @@ sections:
 
 - L2312: 「#### 実装する機能」の前に課題名（Calculator.javaなど）の見出しが抜けている。L2341のStudentScoresと形式がそろっていない
 - L301: 「概念を直接的にプログラムで表現される」は助詞と態が合わない
-- L433: 「extends文」は不正確（extendsはキーワード）
+- L433: 「extends文」は不正確（extendsはキーワード）（2026-11-11に箇条書きを文章にした際に解消）
 - L1376: 「※」で始まる注記が脚注になっていない。「動的（dynamic）な○○」という対義語の説明は誤解を招く
 - L1965: 太字を見出し代わりに使っている（「**ユーティリティメソッドとは**」）。L1113のJavaコード（戻り値だけが異なるオーバーロード）は引用内で番号がない
 - L2199: Studentクラスの定義（Java）にサンプルコード番号がない。L64、L115、L1032、L1403のCコードも番号がない

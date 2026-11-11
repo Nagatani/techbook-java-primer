@@ -1,21 +1,21 @@
 ---
 source: manuscripts/chapter06-immutability-and-final.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 9d217965
   - key: "不変性の概念と重要性"
-    hash: aed548c8
+    hash: eae83967
   - key: "finalキーワードの3つの用途"
-    hash: 324b4a78
+    hash: f890f063
   - key: "不変オブジェクトの設計パターン"
-    hash: b48ba650
+    hash: 74d10cbf
   - key: "防御的コピーとビルダーパターン"
-    hash: 820fc62a
+    hash: 73f5f67d
   - key: "よくあるエラーと対処法"
     hash: 95a640c5
   - key: "まとめ"
-    hash: f89124c1
+    hash: e681148e
   - key: "章末演習"
     hash: 95cf85a2
 ---

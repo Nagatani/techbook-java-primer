@@ -1,9 +1,9 @@
 ---
 source: manuscripts/chapter01-introduction.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
-    hash: 380de221
+    hash: 127f3e53
   - key: "本書のGitHubリポジトリについて"
     hash: 936065e8
   - key: "本書の対象読者"
@@ -13,7 +13,7 @@ sections:
   - key: "C言語、Java、そして現代的ソフトウェア開発のしくみ"
     hash: 58b2f1c9
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
-    hash: 4c1a912e
+    hash: c2a4a991
   - key: "Javaの特徴"
     hash: 64507654
   - key: "開発環境の準備"
@@ -21,7 +21,7 @@ sections:
   - key: "最初のJavaプログラム"
     hash: 23b58e29
   - key: "Javaプログラムの基本構文"
-    hash: b6b19202
+    hash: e9a18d08
   - key: "標準入出力を扱うサンプルを動かしてみよう"
     hash: c76b92df
   - key: "よくあるエラーと対処法"

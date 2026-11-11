@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter05-inheritance-and-polymorphism.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: a983482e
   - key: "なぜ継承とポリモーフィズムが必要なのか"
-    hash: d8559dc0
+    hash: b391ca8a
   - key: "実践的な継承設計パターン"
-    hash: 84479aac
+    hash: f1bdbc63
   - key: "メソッドのオーバーライド"
-    hash: 94f806c1
+    hash: 6645b7b6
   - key: "ポリモーフィズム（多態性）"
-    hash: 0dcf5e09
+    hash: 2202f42d
   - key: "`instanceof`演算子とキャスト"
     hash: e25e67f5
   - key: "例外処理の基礎（補足）"

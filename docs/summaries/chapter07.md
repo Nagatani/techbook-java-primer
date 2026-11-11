@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter07-abstract-classes-and-interfaces.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: a4ebbff3
@@ -13,11 +13,11 @@ sections:
   - key: "抽象クラス vs インターフェイス"
     hash: 1d96f177
   - key: "Java 8以降のインターフェイス進化"
-    hash: 031c4eca
+    hash: 5f5a816d
   - key: "高度な設計パターン"
     hash: 62d1cbdf
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 3d39de19
+    hash: fba2e61c
   - key: "よくあるエラーと対処法"
     hash: d79631ad
   - key: "まとめ"

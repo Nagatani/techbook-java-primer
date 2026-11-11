@@ -1,21 +1,21 @@
 ---
 source: manuscripts/chapter15-multithreading.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: ea621fb4
   - key: "並行処理の世界への招待"
     hash: feb7879c
   - key: "基礎レベル課題（ポイント）"
-    hash: d8ee41e2
+    hash: 6a6bd696
   - key: "実装のヒント"
-    hash: 70907122
+    hash: ec3dae9f
   - key: "実装環境"
     hash: 217a5246
   - key: "完了確認チェックリスト"
     hash: 3e251a9a
   - key: "マルチスレッドプログラミングの基礎"
-    hash: f9b65ddc
+    hash: 148e66c2
   - key: "実践的なパフォーマンス測定とベンチマーク"
     hash: e899b017
   - key: "スレッドセーフなシングルトンパターン"
@@ -146,7 +146,7 @@ sections:
 - L625: 段落の先頭に不要な「+ 」がある
 - L281・L324・L329・L801・L806: 「実行例。」「評価ポイント。」など、コロンを句点に置換した不自然な導入句
 - L330、L808、L828: 「start（）」「put（）」「run（）」と括弧が全角になっている
-- L520: ConcurrentHashMapを「16個のセグメントに分割」と説明しているが、Java 8以降の実装はセグメントロックではない（内容が古い）
+- L520: ConcurrentHashMapを「16個のセグメントに分割」と説明しているが、Java 8以降の実装はセグメントロックではない（内容が古い）（2026-11-11に箇条書きを文章にした際に解消）
 - 「関連する共通エラー」のリスト内で太字を使い、2スペースの入れ子になっている
 - 15-15: ExecutorService、Executors、TimeUnitのimportが欠けている
 - 15-7: コメントだけの概念図に「サンプルコード」番号が付いている

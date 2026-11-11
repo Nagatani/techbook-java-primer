@@ -1,15 +1,15 @@
 ---
 source: manuscripts/chapter17-gui-basics.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: e603fde1
   - key: "基本コンポーネントとレイアウト"
-    hash: 2a310f62
+    hash: a0258df0
   - key: "イベント処理入門"
     hash: 63e275be
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"
-    hash: 2e77e82d
+    hash: 14df9a64
   - key: "カスタムコンポーネントの作成"
     hash: 76f93346
   - key: "よくあるエラーと対処法"
