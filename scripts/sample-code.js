@@ -490,6 +490,8 @@ function numberCommand(filters) {
       if (!to) throw new Error(`${f}: listings.json の ${id} が本文にない`);
       if (dirName(to) !== e.dir) renames.push([e.dir, dirName(to)]);
       next[to] = { ...e, dir: dirName(to) };
+      // uses（型を借りているほかのサンプル）も新しい番号にする
+      if (e.uses) next[to].uses = e.uses.map((u) => maps.get(Number(u.split('-')[0]))?.get(u) || u);
     }
     for (const [a] of renames) fs.renameSync(path.join(chapterDir(ch), a), path.join(chapterDir(ch), `.renumber-${a}`));
     for (const [a, b] of renames) fs.renameSync(path.join(chapterDir(ch), `.renumber-${a}`), path.join(chapterDir(ch), b));
