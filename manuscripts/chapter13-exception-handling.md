@@ -5,18 +5,18 @@
 ### この章で学ぶこと
 
 1. 例外処理の基本
-    - try-catch-finally構文、チェック例外と非チェック例外、例外の階層構造
+    - try-catch-finally構文、検査例外と非検査例外、例外の階層構造
 2. リソース管理
-    - try-with-resources、AutoCloseableインターフェイス、メモリリークの防止
+    - try-with-resources、AutoCloseableインターフェイス、リソースリークの防止
 3. カスタム例外
     - 独自の例外クラス設計、ビジネスロジックへの対応、例外の伝搬
 4. 堅牢なシステム設計
-    - フェイルセーフ設計、エラーハンドリング戦略、ログ記録とデバッグ
+    - リトライとサーキットブレーカー、ビジネス例外とシステム例外の分離、ログ記録
 
 ### この章を始める前に
 
 第12章までの内容を理解していれば準備完了です。
-後半の実践的なパターンでは、第10章「ジェネリクス」で学んだ型パラメーターと、第11章「ラムダ式と関数インターフェイス」で学んだラムダ式も使います。
+後半の実践的なパターンでは、第10章「ジェネリクス」で学んだ型パラメーターと、第11章「ラムダ式と関数型インターフェイス」で学んだラムダ式も使います。
 
 ## エラーの種類と対処法
 
@@ -87,6 +87,9 @@ java.lang.NullPointerException: Cannot invoke "String.length()" because "<local1
 	at TryCatchSample.main(TryCatchSample.java:5)
 プログラムは処理を継続しています。
 ```
+
+この例は、例外が起きたときに処理が`catch`ブロックへ移るしくみを見るためのものです。
+`NullPointerException`のような非検査例外は、本来は`catch`で受け止めるのではなく、nullのまま使わないようにコードを直して防ぎます（このあとの「検査例外と非検査例外」で説明します）。
 
 ### `finally`ブロック
 
@@ -238,8 +241,8 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 ```java
 // 独自の検査例外クラス
-class BalanceInsufficientException extends Exception {
-    public BalanceInsufficientException(String message) {
+class InsufficientBalanceException extends Exception {
+    public InsufficientBalanceException(String message) {
         super(message);
     }
 }
@@ -247,10 +250,10 @@ class BalanceInsufficientException extends Exception {
 // 使用例
 public class BankAccount {
     private int balance;
-    public void withdraw(int amount) throws BalanceInsufficientException {
+    public void withdraw(int amount) throws InsufficientBalanceException {
         if (amount > balance) {
             // 意図的に例外をスローする
-            throw new BalanceInsufficientException("残高が不足しています。");
+            throw new InsufficientBalanceException("残高が不足しています。");
         }
         this.balance -= amount;
     }
@@ -318,10 +321,9 @@ public class UserService {
 
 ### リトライパターン（一時的な障害への対処）
 
-ネットワーク接続の一時的な問題やリソースの一時的な不足など、
-時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
+ネットワーク接続の一時的な問題やリソースの一時的な不足など、時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
-`Callable<T>`は、`T`型の値を返す処理を表す関数インターフェイスで、`Runnable`と違って検査例外を投げられます。
+`Callable<T>`は、`T`型の値を返す処理を表す関数型インターフェイスで、`Runnable`と違って検査例外を投げられます。
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
@@ -639,7 +641,7 @@ public class ExceptionLogging {
             String errorId = generateErrorId();
             logger.severe("エラーID: " + errorId);
             
-            throw new SystemException(
+            throw new RuntimeException(
                 "システムエラーが発生しました。エラーID: " + errorId, e);
         }
     }
@@ -680,6 +682,8 @@ public class StructuredExceptionLogger {
 ### ビジネス例外とシステム例外の分離
 
 大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
+次のコードでは、検査例外の基底クラス`BusinessException`と、非検査例外の基底クラス`SystemException`を抽象クラスとして用意します。
+サンプルコード13-5の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
 <span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（4〜13行目）、SystemException.java（4〜13、28行目）</span>
 
@@ -853,7 +857,7 @@ public class TransferService {
 - 例外の握りつぶし
     + 空のcatchブロックは、問題が起きた事実そのものを隠してしまう
 - 例外の型の選び方の誤り
-    + 呼び出し元が回復できる状況か、プログラムの誤りかによって、チェック例外と非チェック例外を使い分ける
+    + 呼び出し元が回復できる状況か、プログラムの誤りかによって、検査例外と非検査例外を使い分ける
 - リソースの解放漏れ
     + finallyでの解放忘れを防ぐため、try-with-resources文を使う
 - カスタム例外の設計の誤り
@@ -905,19 +909,24 @@ public class TransferService {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第14章「ファイルI/O」に進みましょう。
+基礎課題が完了したら、第14章「ファイルI/O」に進みましょう。
 
-演習課題の詳細な実装テンプレート、テストコード、解答例は以下のディレクトリを参照してください。
+各課題の説明と、解答例（テストコードを含む）は以下のディレクトリにあります。
 
 ```
 exercises/chapter13/
+├── README.md       # 演習全体の説明
 ├── basic/          # 基礎レベル課題
-│   ├── README.md   # 詳細な課題説明
-│   ├── BasicExceptionHandling.java
-│   ├── BankAccountException.java
-│   └── FileProcessor.java
+│   └── README.md
 ├── advanced/       # 応用・発展レベル課題
 │   └── README.md
 ├── challenge/      # 挑戦レベル課題
-└── solutions/      # 解答例（実装完了後に参照）
+│   └── README.md
+└── solutions/      # 解答例とテスト（実装完了後に参照）
+    ├── README.md
+    ├── CustomException.java
+    ├── ExceptionChain.java
+    ├── ResourceManager.java
+    ├── ValidationHelper.java
+    └── *Test.java  # 各解答例のテスト
 ```

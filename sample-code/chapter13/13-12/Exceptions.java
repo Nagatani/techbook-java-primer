@@ -12,7 +12,3 @@ class ValidationException extends Exception {
 class DatabaseException extends Exception {
     DatabaseException(String message, Throwable cause) { super(message, cause); }
 }
-
-class SystemException extends RuntimeException {
-    SystemException(String message, Throwable cause) { super(message, cause); }
-}

@@ -14,7 +14,7 @@ public class BankAccountDemo {
         try {
             account.withdraw(amount);
             IO.println("残高: " + account.getBalance() + "円");
-        } catch (BalanceInsufficientException e) {
+        } catch (InsufficientBalanceException e) {
             IO.println("エラー: " + e.getMessage());
             IO.println("現在の残高: " + account.getBalance() + "円");
         }

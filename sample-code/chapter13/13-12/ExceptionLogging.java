@@ -41,7 +41,7 @@ public class ExceptionLogging {
             String errorId = generateErrorId();
             logger.severe("エラーID: " + errorId);
             
-            throw new SystemException(
+            throw new RuntimeException(
                 "システムエラーが発生しました。エラーID: " + errorId, e);
         }
     }
