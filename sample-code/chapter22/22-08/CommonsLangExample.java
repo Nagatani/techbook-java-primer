@@ -46,7 +46,7 @@ public class CommonsLangExample {
         
         // 空文字列の安全な処理
         String nullStr = null;
-        IO.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
+        IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
@@ -57,11 +57,11 @@ public class CommonsLangExample {
         
         // 3. RandomStringUtils - ランダム文字列生成
         IO.println("\nRandom alphabetic: " + 
-            RandomStringUtils.randomAlphabetic(10));
+            RandomStringUtils.secure().nextAlphabetic(10));
         IO.println("Random numeric: " + 
-            RandomStringUtils.randomNumeric(6));
+            RandomStringUtils.secure().nextNumeric(6));
         IO.println("Random alphanumeric: " + 
-            RandomStringUtils.randomAlphanumeric(8));
+            RandomStringUtils.secure().nextAlphanumeric(8));
         
         // 4. DateFormatUtils - 日付フォーマット
         Date now = new Date();

@@ -7,15 +7,14 @@
  * 
  * <h2>使用例</h2>
  * <pre>{@code
- * TaskManager manager = new TaskManager();
- * Task task = manager.createTask("買い物", Priority.HIGH);
- * task.setCompleted(true);
+ * Task task = new Task("買い物", Task.Priority.HIGH);
+ * task.increasePriority();
+ * task.complete();
  * }</pre>
  * 
  * @author Taro Yamada
  * @version 2.0
  * @since 1.0
- * @see TaskManager
  * @see Priority
  */
 public class Task {

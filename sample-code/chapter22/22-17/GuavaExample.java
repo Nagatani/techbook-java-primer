@@ -1,7 +1,7 @@
 import com.google.common.collect.*;
 import com.google.common.base.*;
 import com.google.common.cache.*;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.List;
 
 public class GuavaExample {
@@ -61,7 +61,7 @@ public class GuavaExample {
         // 6. キャッシュ
         LoadingCache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(100)
-            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .expireAfterWrite(Duration.ofMinutes(10))
             .build(new CacheLoader<String, String>() {
                 @Override
                 public String load(String key) {

@@ -23,7 +23,7 @@
 - 第14章のファイル入出力（基本的なI/O操作）
 - HTMLの基礎知識
 
-推奨される知識：
+次の知識があると、より理解が深まります。
 
 - 第21章のユニットテスト（テストコードの作成）
 - JSONデータ形式の理解
@@ -34,8 +34,6 @@
 Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成する
 Javadocというツールが標準で備わっています。
 Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
-
-
 
 ### Javadocコメントの書き方
 
@@ -49,19 +47,18 @@ Javadocコメントは `/**` で始まり、`*/` で終わります。クラス�
 /**
  * 2つの整数の和を計算して返す
  * <p>
- * このメソッドは、nullを許容せず、オーバーフローも考慮しません
+ * 計算結果がintの範囲を超える場合は、例外をスローする
  * </p>
  *
  * @param a 加算する最初の整数
  * @param b 加算する2番目の整数
  * @return 2つの整数の和
- * @throws ArithmeticException 計算結果がオーバーフローした場合（この例では発生しないが記述例として）
+ * @throws ArithmeticException 計算結果がオーバーフローした場合
  * @see Math#addExact(int, int)
  * @since 1.0
- * @author Taro Yamada
  */
 public int add(int a, int b) {
-    return a + b;
+    return Math.addExact(a, b);
 }
 ```
 
@@ -84,7 +81,7 @@ public int add(int a, int b) {
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクター、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード22-2**　Task.java（1〜21、59〜67、79、136〜146、160行目）</span>
+<span class="listing-number">**サンプルコード22-2**　Task.java（1〜20、58〜66、78、135〜145、159行目）</span>
 
 ```java
 /**
@@ -96,15 +93,14 @@ public int add(int a, int b) {
  * 
  * <h2>使用例</h2>
  * <pre>{@code
- * TaskManager manager = new TaskManager();
- * Task task = manager.createTask("買い物", Priority.HIGH);
- * task.setCompleted(true);
+ * Task task = new Task("買い物", Task.Priority.HIGH);
+ * task.increasePriority();
+ * task.complete();
  * }</pre>
  * 
  * @author Taro Yamada
  * @version 2.0
  * @since 1.0
- * @see TaskManager
  * @see Priority
  */
 public class Task {
@@ -138,9 +134,7 @@ public class Task {
 
 ### Javadocの生成方法
 
-#### コマンドライン (javac)
-
-<span class="listing-number">**サンプルコード22-3**</span>
+#### コマンドライン（javadoc）
 
 ```bash
 # 基本的な使用方法
@@ -157,10 +151,13 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 ```
 
 #### IntelliJ IDEA
+
 メニューの `Tools` -> `Generate JavaDoc...` から生成できます。
-- Output directory: `doc` または `javadoc`
-- Other command LINE arguments: `-encoding UTF-8 -charset UTF-8`
-- 著者情報やバージョン情報を含める場合は `-author`、`-version` オプションを追加
+主な設定は次の通りです。
+
+- 「Output directory」に出力先（`doc`など）を指定する
+- 「Other command line arguments」に`-encoding UTF-8 -charset UTF-8`を指定する
+- 著者情報やバージョン情報を含める場合は`-author`、`-version`オプションを加える
 
 ## 外部ライブラリの利用
 
@@ -168,18 +165,16 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 
 ### オープンソースエコシステムの歴史
 
-Javaのオープンソースエコシステムは、1998年のApache Software Foundationの設立とともに本格化しました。
+Javaのオープンソースエコシステムは、オープンソースの開発を支える団体やツールとともに広がってきました。
 
-重要なマイルストーンは次の通りです。
+主な出来事は次の通りです。
 
 1. 1999年
-    + Apache Commons プロジェクト開始
-2. 2003年
-    + Maven Central Repository の設立
-3. 2004年
-    + Spring Framework 1.0 リリース
-4. 2009年
-    + GitHub の普及によるソーシャルコーディングの加速
+    + Apache Software Foundationの設立
+2. 2004年
+    + Maven 1.0とSpring Framework 1.0のリリース
+3. 2008年
+    + GitHubのサービス開始。ソースコードを公開して共同で開発するスタイルが広まる
 
 ### ライブラリ利用の技術的利点
 
@@ -200,6 +195,16 @@ Java仮想マシン（JVM）がプログラムの実行時に必要なクラス�
 探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。
 外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
 JARファイルは、多数のクラスファイルを1つにまとめたファイルで、ライブラリはふつうこの形で配布されます。
+
+クラスパスは、`javac`や`java`コマンドの`-cp`（`-classpath`）オプションで指定します。
+次の例では、カレントディレクトリ（`.`）と`lib`ディレクトリのGsonのJARファイルをクラスパスに含めています。
+macOSやLinuxでは区切りに`:`を、Windowsでは`;`を使います。
+
+```bash
+javac -cp .:lib/gson-2.15.0.jar Main.java
+java -cp .:lib/gson-2.15.0.jar Main
+```
+
 自分のプログラムをJARファイルにまとめる方法は、第23章「ビルドとデプロイ」で学びます。
 
 ### 依存関係管理ツール：Maven
@@ -247,7 +252,7 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 たとえば、Googleが開発したJSONライブラリであるGsonを利用したい場合、`pom.xml`の`<dependencies>`セクションに以下のように記述します。
 
-<span class="listing-number">**サンプルコード22-4**</span>
+<span class="listing-number">**サンプルコード22-3**</span>
 
 ```xml
 <dependencies>
@@ -256,7 +261,7 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.10.1</version>
+        <version>2.15.0</version>
     </dependency>
 </dependencies>
 ```
@@ -268,7 +273,7 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-5**　Task.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
+<span class="listing-number">**サンプルコード22-4**　Task.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
 // Gsonの高度な使用例
@@ -369,13 +374,13 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。スト�
 
 #### Mavenの依存関係
 
-<span class="listing-number">**サンプルコード22-6**</span>
+<span class="listing-number">**サンプルコード22-5**</span>
 
 ```xml
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.15.2</version>
+    <version>2.23.0</version>
 </dependency>
 ```
 
@@ -385,7 +390,7 @@ Jacksonはエンタープライズアプリケーションで広く使われて�
 以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
 TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-7**　JacksonExample.java（7〜21、36、38〜50、64〜65、80〜81行目）</span>
+<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜21、36、38〜50、64〜65、80〜81行目）</span>
 
 ```java
 public class JacksonExample {
@@ -451,19 +456,19 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 #### Commons Langの例
 
-<span class="listing-number">**サンプルコード22-8**</span>
+<span class="listing-number">**サンプルコード22-7**</span>
 
 ```xml
 <dependency>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-lang3</artifactId>
-    <version>3.12.0</version>
+    <version>3.22.0</version>
 </dependency>
 ```
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード22-9**　CommonsLangExample.java（11〜13、22〜25、36、38〜56、75〜76行目）</span>
+<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜13、22〜25、36、38〜56、75〜76行目）</span>
 
 ```java
 public class CommonsLangExample {
@@ -488,7 +493,7 @@ public class CommonsLangExample {
         
         // 空文字列の安全な処理
         String nullStr = null;
-        IO.println("Default: " + StringUtils.defaultString(nullStr, "デフォルト値"));
+        IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
@@ -527,13 +532,13 @@ Person: CommonsLangExample$Person@b97c004[age=30,name=田中太郎]
 
 #### Commons I/Oの例
 
-<span class="listing-number">**サンプルコード22-10**</span>
+<span class="listing-number">**サンプルコード22-9**</span>
 
 ```xml
 <dependency>
     <groupId>commons-io</groupId>
     <artifactId>commons-io</artifactId>
-    <version>2.11.0</version>
+    <version>2.22.0</version>
 </dependency>
 ```
 
@@ -542,7 +547,7 @@ Java標準APIでは何行も必要なファイル操作が、1行で実装でき
 以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、
 実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-11**　CommonsIOExample.java（9〜28、43〜48、64〜65行目）</span>
+<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜28、43〜48、64〜65行目）</span>
 
 ```java
 public class CommonsIOExample {
@@ -599,13 +604,13 @@ Stream copy result: Stream processing example
 
 OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を備えたHTTP通信ライブラリです。
 
-<span class="listing-number">**サンプルコード22-12**</span>
+<span class="listing-number">**サンプルコード22-11**</span>
 
 ```xml
 <dependency>
     <groupId>com.squareup.okhttp3</groupId>
     <artifactId>okhttp</artifactId>
-    <version>4.11.0</version>
+    <version>4.12.0</version>
 </dependency>
 ```
 
@@ -613,7 +618,7 @@ OkHttpはSquare社が開発した高性能なHTTPクライアントライブラ�
 コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
 以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
 
-<span class="listing-number">**サンプルコード22-13**　OkHttpExample.java（5〜28、51〜72、84〜85行目）</span>
+<span class="listing-number">**サンプルコード22-12**　OkHttpExample.java（5〜28、51〜72、84〜85行目）</span>
 
 ```java
 public class OkHttpExample {
@@ -689,13 +694,13 @@ Thread: OkHttp https://httpbin.org/...
 
 Lombokは、アノテーションを使ってゲッター、セッター、コンストラクターなどを自動生成します。
 
-<span class="listing-number">**サンプルコード22-14**</span>
+<span class="listing-number">**サンプルコード22-13**</span>
 
 ```xml
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
-    <version>1.18.28</version>
+    <version>1.18.48</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -705,7 +710,7 @@ Lombokはコンパイル時にアノテーションを処理し、
 @Dataアノテーション1つでゲッター、セッター、equals、hashCode、toStringメソッドが自動生成されます。
 以下の例では、主要なアノテーションの使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-15**</span>
+<span class="listing-number">**サンプルコード22-14**</span>
 
 ```java
 import lombok.Data;
@@ -817,12 +822,12 @@ Product: Product(id=0, name=ノートPC, price=15000.0)
 <dependency>
   <groupId>org.projectlombok</groupId>
   <artifactId>lombok</artifactId>
-  <version>1.18.28</version>
+  <version>1.18.48</version>
   <scope>provided</scope>
 </dependency>
 ```
 
-<span class="listing-number">**サンプルコード22-16**</span>
+<span class="listing-number">**サンプルコード22-15**</span>
 
 ```java
 // 個別のアノテーション使用例
@@ -846,13 +851,13 @@ class Product {
 
 GoogleのGuavaライブラリは、コレクション、キャッシュ、文字列処理などの高度な機能を提供します。
 
-<span class="listing-number">**サンプルコード22-17**</span>
+<span class="listing-number">**サンプルコード22-16**</span>
 
 ```xml
 <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
-    <version>32.1.1-jre</version>
+    <version>33.8.0-jre</version>
 </dependency>
 ```
 
@@ -861,7 +866,7 @@ GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多�
 実用的な機能が豊富に含まれています。
 以下の例では、これらの主要機能の使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-18**　GuavaExample.java（7〜28、48〜59、61〜71、82〜83行目）</span>
+<span class="listing-number">**サンプルコード22-17**　GuavaExample.java（7〜28、48〜59、61〜71、82〜83行目）</span>
 
 ```java
 public class GuavaExample {
@@ -903,7 +908,7 @@ public class GuavaExample {
         // 6. キャッシュ
         LoadingCache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(100)
-            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .expireAfterWrite(Duration.ofMinutes(10))
             .build(new CacheLoader<String, String>() {
                 @Override
                 public String load(String key) {
@@ -946,9 +951,10 @@ Value: Hello
 
 ### 外部ライブラリ選定の指針
 
-ライブラリの選定では、機能性、信頼性、保守性、ライセンスの4つの観点から評価します。
+ライブラリを選ぶときは、成熟度と信頼性、ライセンス、依存関係の管理、セキュリティの観点から評価します。
 
 #### ライブラリの成熟度と信頼性
+
 - リリース履歴
     + 安定版がリリースされているか（1.0以上）
 - 更新頻度
@@ -959,14 +965,17 @@ Value: Hello
     + 大規模プロジェクトでの採用実績
 
 #### ライセンスの確認
-<span class="listing-number">**サンプルコード22-19**</span>
 
-```java
-// pom.xmlでライセンスを確認
+ライブラリのライセンスは、そのライブラリのpom.xmlの`<licenses>`要素で確かめられます。
+
+<span class="listing-number">**サンプルコード22-18**</span>
+
+```xml
+<!-- ライブラリのpom.xmlに書かれたライセンスの情報 -->
 <licenses>
     <license>
         <name>Apache License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
 </licenses>
 ```
@@ -984,15 +993,15 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 第21章で使ったJUnitやMockitoのように、テストのときだけ使うライブラリは、`<scope>test</scope>`を指定して依存関係に加えます。
 次の例では、ライブラリのバージョンを`<properties>`にまとめて管理しています。
 
-<span class="listing-number">**サンプルコード22-20**</span>
+<span class="listing-number">**サンプルコード22-19**</span>
 
 ```xml
 <!-- バージョン管理のベストプラクティス -->
 <properties>
     <!-- バージョンを一元管理 -->
-    <jackson.version>2.15.2</jackson.version>
-    <commons.lang.version>3.12.0</commons.lang.version>
-    <junit.version>5.9.3</junit.version>
+    <jackson.version>2.23.0</jackson.version>
+    <commons.lang.version>3.22.0</commons.lang.version>
+    <junit.version>5.13.4</junit.version>
 </properties>
 
 <dependencies>
@@ -1014,14 +1023,14 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 
 #### セキュリティの考慮事項
 
-<span class="listing-number">**サンプルコード22-21**</span>
+<span class="listing-number">**サンプルコード22-20**</span>
 
 ```xml
 <!-- 依存関係の脆弱性チェックプラグイン -->
 <plugin>
     <groupId>org.owasp</groupId>
     <artifactId>dependency-check-maven</artifactId>
-    <version>8.3.1</version>
+    <version>13.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -1036,38 +1045,39 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 
 Webアプリケーション開発でよく使われる組み合わせを、Mavenの座標（groupId:artifactId）で示します。
 pom.xmlには、それぞれを前述の`<dependency>`要素として書きます。
+バージョンは更新が続くため、使うときにMaven Centralで最新の安定版を確かめて指定します。
 
-| 用途 | ライブラリ（groupId:artifactId） | バージョン |
-|------|------|------|
-| Webフレームワーク | org.springframework.boot:spring-boot-starter-web | 3.1.0 |
-| JSON処理 | com.fasterxml.jackson.core:jackson-databind | 2.15.2 |
-| データベースアクセス | org.springframework.boot:spring-boot-starter-data-jpa | 3.1.0 |
-| ユーティリティ | org.apache.commons:commons-lang3 | 3.12.0 |
-| ログ | ch.qos.logback:logback-classic | 1.4.8 |
-| テスト（scopeはtest） | org.junit.jupiter:junit-jupiter | 5.9.3 |
-| テスト（scopeはtest） | org.mockito:mockito-core | 5.4.0 |
+| 用途 | ライブラリ（groupId:artifactId） |
+|------|------|
+| Webフレームワーク | org.springframework.boot:spring-boot-starter-web |
+| JSON処理 | com.fasterxml.jackson.core:jackson-databind |
+| データベースアクセス | org.springframework.boot:spring-boot-starter-data-jpa |
+| ユーティリティ | org.apache.commons:commons-lang3 |
+| ログ | ch.qos.logback:logback-classic |
+| テスト（scopeはtest） | org.junit.jupiter:junit-jupiter |
+| テスト（scopeはtest） | org.mockito:mockito-core |
 
 ### 実践的な開発フロー
 
-<span class="listing-number">**サンプルコード22-22**</span>
+Mavenを使った開発では、次のようなコマンドを使います。
 
-```java
-// 1. プロジェクトの初期化（Maven）
+```bash
+# 1. プロジェクトの初期化（Maven）
 mvn archetype:generate -DgroupId=com.example -DartifactId=myapp
 
-// 2. 依存関係の追加（pom.xmlを編集後）
+# 2. 依存関係の追加（pom.xmlを編集後）
 mvn clean install
 
-// 3. 依存関係ツリーの確認
+# 3. 依存関係ツリーの確認
 mvn dependency:tree
 
-// 4. 不要な依存関係の検出
+# 4. 不要な依存関係の検出
 mvn dependency:analyze
 
-// 5. 最新バージョンの確認
+# 5. 最新バージョンの確認
 mvn versions:display-dependency-updates
 
-// 6. ローカルリポジトリのクリア（ダウンロードしたファイルが壊れたとき）
+# 6. ローカルリポジトリのクリア（ダウンロードしたファイルが壊れたとき）
 mvn dependency:purge-local-repository
 ```
 
@@ -1082,7 +1092,7 @@ mvn dependency:purge-local-repository
     + `mvn dependency:tree`でどの版が選ばれたかを確かめ、使う版を`pom.xml`に直接書くか、`<exclusions>`で推移的な依存を除く
 - ライブラリのバージョン管理の問題
     + 脆弱性のある古いバージョンを使い続けたり、バージョン範囲の指定で予期しない版が選ばれたりする
-    + バージョンの一元管理（サンプルコード22-20）と脆弱性のチェック（サンプルコード22-21）で防ぐ
+    + バージョンの一元管理（サンプルコード22-19）と脆弱性のチェック（サンプルコード22-20）で防ぐ
 - APIの非互換性
     + 新しい版で加わったメソッドを使ったコードを古い版で実行すると`NoSuchMethodError`が発生する。廃止予定のAPIは将来の版で削除される
 - クラスパスの問題
@@ -1100,13 +1110,13 @@ mvn dependency:purge-local-repository
 ### 本章で学んだ技術の核心
 
 - Javadoc
-    + ソースコード内のコメントからAPI仕様書を自動生成する標準ツール。文芸的プログラミングの思想に基づき、コードとドキュメントの一体化を実現
+    + ソースコード内のコメントからAPI仕様書を自動生成する標準ツール。コードとドキュメントを同じ場所で管理できる
 - 外部ライブラリ
     + 同じ処理を自分で書き直さずに済み（DRY原則）、コミュニティによって検証された高品質なコードの再利用を促進
 - 依存関係管理
     + Mavenが推移的な依存関係を解決するしくみにより、複雑なライブラリ間の依存関係を自動的に管理
 - エコシステム
-    + Maven Central Repositoryを中心とした巨大なJavaエコシステムが、40万以上のアーティファクトを提供
+    + Maven Central Repositoryを中心としたJavaエコシステムが、膨大な数のライブラリを提供している
 
 ### ドキュメント化の技術的価値
 
@@ -1136,9 +1146,7 @@ mvn dependency:purge-local-repository
 
 ### セキュリティとコンプライアンス
 
-現代の開発では、複数の重要な観点があります。
-
-特に重要な観点は次の通りです。
+外部ライブラリを使う開発では、セキュリティとコンプライアンスについて次の観点が重要です。
 
 1. 脆弱性管理
     + OWASP Dependency Checkによる自動スキャン
@@ -1152,10 +1160,12 @@ mvn dependency:purge-local-repository
 ## 章末演習
 
 ### 演習課題へのアクセス
+
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter22/`
 
 ### 課題構成
+
 - 本章の基本概念の理解確認
 - 応用的な実装練習
 - 実践的な総合問題
@@ -1169,4 +1179,4 @@ mvn dependency:purge-local-repository
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第23章「ビルドとデプロイ」に進みましょう。
+基礎課題が完了したら、第23章「ビルドとデプロイ」に進みましょう。

@@ -17,9 +17,9 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [22-2](./22-02/) | Task.java | （mainメソッドなし） |
-| [22-5](./22-05/) | GsonAdvancedExample.java<br>Task.java | `java -cp out GsonAdvancedExample`<br>外部ライブラリ: com.google.code.gson:gson:2.10.1 |
-| [22-7](./22-07/) | JacksonExample.java | `java -cp out JacksonExample`<br>外部ライブラリ: com.fasterxml.jackson.core:jackson-databind:2.15.2, com.fasterxml.jackson.core:jackson-core:2.15.2, com.fasterxml.jackson.core:jackson-annotations:2.15.2 |
-| [22-9](./22-09/) | CommonsLangExample.java | `java -cp out CommonsLangExample`<br>外部ライブラリ: org.apache.commons:commons-lang3:3.12.0 |
-| [22-11](./22-11/) | CommonsIOExample.java | `java -cp out CommonsIOExample`<br>外部ライブラリ: commons-io:commons-io:2.11.0 |
-| [22-13](./22-13/) | OkHttpExample.java | `java -cp out OkHttpExample`<br>外部ライブラリ: com.squareup.okhttp3:okhttp:4.11.0, com.squareup.okio:okio-jvm:3.2.0, org.jetbrains.kotlin:kotlin-stdlib:1.8.21 |
-| [22-18](./22-18/) | GuavaExample.java | `java -cp out GuavaExample`<br>外部ライブラリ: com.google.guava:guava:32.1.1-jre, com.google.guava:failureaccess:1.0.1 |
+| [22-4](./22-04/) | GsonAdvancedExample.java<br>Task.java | `java -cp out GsonAdvancedExample`<br>外部ライブラリ: com.google.code.gson:gson:2.15.0 |
+| [22-6](./22-06/) | JacksonExample.java | `java -cp out JacksonExample`<br>外部ライブラリ: com.fasterxml.jackson.core:jackson-databind:2.23.0, com.fasterxml.jackson.core:jackson-core:2.23.0, com.fasterxml.jackson.core:jackson-annotations:2.23 |
+| [22-8](./22-08/) | CommonsLangExample.java | `java -cp out CommonsLangExample`<br>外部ライブラリ: org.apache.commons:commons-lang3:3.22.0 |
+| [22-10](./22-10/) | CommonsIOExample.java | `java -cp out CommonsIOExample`<br>外部ライブラリ: commons-io:commons-io:2.22.0 |
+| [22-12](./22-12/) | OkHttpExample.java | `java -cp out OkHttpExample`<br>外部ライブラリ: com.squareup.okhttp3:okhttp:4.12.0, com.squareup.okio:okio-jvm:3.6.0, org.jetbrains.kotlin:kotlin-stdlib:1.8.21 |
+| [22-17](./22-17/) | GuavaExample.java | `java -cp out GuavaExample`<br>外部ライブラリ: com.google.guava:guava:33.8.0-jre, com.google.guava:failureaccess:1.0.3 |
