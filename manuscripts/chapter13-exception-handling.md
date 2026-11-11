@@ -135,17 +135,19 @@ public class TryWithResourcesSample {
 }
 ```
 
-次は実行結果の一例です。
+実行結果：
 
 ```
 存在するファイルを読み込み:
 これはテストファイルです。
 
 存在しないファイルを読み込み:
-ファイル読み込みエラー: /tmp/non_existent.txt (No such file or directory)
+ファイル読み込みエラー: non_existent.txt (No such file or directory)
 ```
 
-※mainメソッドを追加して実行結果を示しています。
+この実行結果は、テスト用のファイルと存在しないファイル`non_existent.txt`を順に`readFile`へ渡したときのものです。
+`readFile`を呼び出す`main`メソッドは、全文の`TryWithResourcesDemo.java`にあります。
+例外のメッセージ（`No such file or directory`の部分）は、OSによって異なります。
 
 ## 検査例外と非検査例外
 
@@ -220,7 +222,7 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-5**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード13-5**　BankAccount.java（1〜17、26行目）</span>
 
 ```java
 // 独自の検査例外クラス
@@ -240,10 +242,11 @@ public class BankAccount {
         }
         this.balance -= amount;
     }
+    // ...
 }
 ```
 
-次は実行結果の一例です。
+実行結果：
 
 ```
 初期残高: 1000円
@@ -254,7 +257,8 @@ public class BankAccount {
 現在の残高: 500円
 ```
 
-※mainメソッドを追加して実行結果を示しています。
+この実行結果は、1,000円を預けた口座から500円と600円を順に引き出したときのものです。
+入金と残高の取得のメソッド、引き出しを試す`main`メソッド（`BankAccountDemo.java`）は、全文にあります。
 
 ### 例外の連鎖 (Exception Chaining)
 
@@ -736,8 +740,10 @@ public class ErrorResponse {
 ### 例外処理戦略の実装例
 
 実際のアプリケーションでの例外処理戦略の実装例を示します。
+Spring Frameworkを使う場面を想定した例ですが、単独でコンパイルできるように、`@Transactional`などSpringのアノテーションはコメントにしてあります。
+`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります。
 
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（6、16〜21、26〜47、59〜72、120行目）</span>
+<span class="listing-number">**サンプルコード13-16**　TransferService.java（6、23〜28、33〜54、66〜79、127行目）</span>
 
 ```java
 public class TransferService {
@@ -782,7 +788,7 @@ public class TransferService {
             // 予期せぬエラー（DataAccessExceptionなども含む）
             // logger.error("予期せぬエラー", e);
             e.printStackTrace();
-            // SystemExceptionは抽象クラスなので、実装クラスが必要
+            // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
         }
     }

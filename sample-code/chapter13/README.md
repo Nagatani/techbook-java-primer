@@ -17,9 +17,9 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [13-1](./13-01/) | TryCatchSample.java | `java -cp out TryCatchSample` |
-| [13-3](./13-03/) | TryWithResourcesSample.java | （mainメソッドなし） |
+| [13-3](./13-03/) | TryWithResourcesDemo.java<br>TryWithResourcesSample.java | `java -cp out TryWithResourcesDemo` |
 | [13-4](./13-04/) | ThrowsExample.java | `java -cp out ThrowsExample` |
-| [13-5](./13-05/) | BankAccount.java | （mainメソッドなし） |
+| [13-5](./13-05/) | BankAccount.java<br>BankAccountDemo.java | `java -cp out BankAccountDemo` |
 | [13-6](./13-06/) | UserService.java | （mainメソッドなし） |
 | [13-7](./13-07/) | RetryableOperation.java | `java -cp out RetryableOperation` |
 | [13-8](./13-08/) | CircuitBreaker.java | （mainメソッドなし） |
@@ -30,4 +30,4 @@ javac -d out *.java
 | [13-13](./13-13/) | StructuredExceptionLogger.java | （mainメソッドなし） |
 | [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
 | [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>SystemException.java | （mainメソッドなし） |
-| [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferService.java<br>TransferSupport.java | （mainメソッドなし） |
+| [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferDemo.java<br>TransferService.java<br>TransferSupport.java | `java -cp out TransferDemo` |

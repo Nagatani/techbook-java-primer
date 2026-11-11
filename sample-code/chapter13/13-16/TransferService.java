@@ -13,6 +13,13 @@ public class TransferService {
     // @Autowired
     private TransactionRepository transactionRepository;
     
+    // Springでは@Autowiredで注入される。ここではコンストラクタで受け取る
+    public TransferService(AccountRepository accountRepository,
+                           TransactionRepository transactionRepository) {
+        this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
+    }
+    
     // @Transactional
     public TransferResult transfer(String fromAccountId, 
                                  String toAccountId, 
@@ -66,7 +73,7 @@ public class TransferService {
             // 予期せぬエラー（DataAccessExceptionなども含む）
             // logger.error("予期せぬエラー", e);
             e.printStackTrace();
-            // SystemExceptionは抽象クラスなので、実装クラスが必要
+            // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
         }
     }

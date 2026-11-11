@@ -2,7 +2,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 // 本文では省略している補助の型（送金処理を試せる最小限の実装）
 
@@ -37,7 +36,8 @@ class Account {
 enum TransactionType { TRANSFER }
 
 class Transaction {
-    private final String id = UUID.randomUUID().toString();
+    private static int count = 0;
+    private final String id = "T%04d".formatted(++count);
     Transaction(String from, String to, BigDecimal amount, TransactionType type) {}
     String getId() { return id; }
 }
@@ -66,4 +66,9 @@ class InMemoryAccountRepository implements AccountRepository {
     private final Map<String, Account> accounts = new HashMap<>();
     void add(Account account) { accounts.put(account.getId(), account); }
     public Optional<Account> findById(String id) { return Optional.ofNullable(accounts.get(id)); }
+}
+
+class InMemoryTransactionRepository implements TransactionRepository {
+    public void save(Transaction transaction) {}
+    public BigDecimal getTodayTotalAmount(String accountId) { return BigDecimal.ZERO; }
 }
