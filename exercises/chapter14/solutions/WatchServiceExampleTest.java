@@ -56,6 +56,31 @@ public class WatchServiceExampleTest {
         assertFalse(watcher.isRunning());
     }
     
+    /**
+     * 種類ごとに「そのイベントが1回以上届いた」ことを待てるようにする。
+     *
+     * macOSのWatchServiceは数秒おきにディレクトリを見比べる（ポーリング）ため、
+     * 作成・変更・削除を続けて行うと、見比べる間にファイルが消えてイベントが届かないことがある。
+     * テストでは1つの操作のイベントが届いてから次の操作を行い、どのOSでも結果が同じになるようにする。
+     */
+    private static Map<WatchServiceExample.FileEventType, CountDownLatch> latchesForEachType() {
+        Map<WatchServiceExample.FileEventType, CountDownLatch> latches =
+            new EnumMap<>(WatchServiceExample.FileEventType.class);
+        for (WatchServiceExample.FileEventType type : WatchServiceExample.FileEventType.values()) {
+            latches.put(type, new CountDownLatch(1));
+        }
+        return latches;
+    }
+    
+    // macOSのポーリング（既定で数秒おき）でも間に合うように、1つの操作につき長めに待つ
+    private static final long EVENT_TIMEOUT_SECONDS = 20;
+    
+    private static void awaitEvent(Map<WatchServiceExample.FileEventType, CountDownLatch> latches,
+                                   WatchServiceExample.FileEventType type) throws InterruptedException {
+        assertTrue(latches.get(type).await(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS),
+                   type + " のイベントが届かない");
+    }
+    
     @Test
     public void testFileEventTypes() throws IOException, InterruptedException {
         WatchServiceExample.WatchConfig config = WatchServiceExample.WatchConfig.defaultConfig();
@@ -63,15 +88,11 @@ public class WatchServiceExampleTest {
         
         // 監視スレッドから書き込むので、スレッドセーフな集合を使う
         Set<WatchServiceExample.FileEventType> observedEvents = ConcurrentHashMap.newKeySet();
-        // 作成時には作成と変更の2つ、書き込みのたびに変更のイベントが届くため、
-        // イベントの数ではなく、最後に起きる削除のイベントが届くまで待つ
-        CountDownLatch latch = new CountDownLatch(1);
+        Map<WatchServiceExample.FileEventType, CountDownLatch> latches = latchesForEachType();
         
         watcher.addEventHandler(event -> {
             observedEvents.add(event.getType());
-            if (event.getType() == WatchServiceExample.FileEventType.DELETED) {
-                latch.countDown();
-            }
+            latches.get(event.getType()).countDown();
         });
         
         watcher.start();
@@ -80,14 +101,15 @@ public class WatchServiceExampleTest {
         
         // ファイル作成
         Files.write(testFile, "Initial content".getBytes());
+        awaitEvent(latches, WatchServiceExample.FileEventType.CREATED);
         
-        // ファイル変更
+        // ファイル変更（Linuxでは作成のときにも変更のイベントが届くことがある）
         Files.write(testFile, "Modified content".getBytes());
+        awaitEvent(latches, WatchServiceExample.FileEventType.MODIFIED);
         
         // ファイル削除
         Files.delete(testFile);
-        
-        assertTrue(latch.await(10, TimeUnit.SECONDS));
+        awaitEvent(latches, WatchServiceExample.FileEventType.DELETED);
         
         assertTrue(observedEvents.contains(WatchServiceExample.FileEventType.CREATED));
         assertTrue(observedEvents.contains(WatchServiceExample.FileEventType.MODIFIED));
@@ -225,14 +247,10 @@ public class WatchServiceExampleTest {
         WatchServiceExample.WatchConfig config = WatchServiceExample.WatchConfig.defaultConfig();
         watcher = new WatchServiceExample.FileWatcher(tempDir, config);
         
-        // イベントの数ではなく、最後に起きる削除のイベントが届くまで待つ
-        CountDownLatch latch = new CountDownLatch(1);
+        // 1つの操作のイベントが届いてから次の操作を行う（latchesForEachTypeの説明を参照）
+        Map<WatchServiceExample.FileEventType, CountDownLatch> latches = latchesForEachType();
         
-        watcher.addEventHandler(event -> {
-            if (event.getType() == WatchServiceExample.FileEventType.DELETED) {
-                latch.countDown();
-            }
-        });
+        watcher.addEventHandler(event -> latches.get(event.getType()).countDown());
         watcher.start();
         
         WatchServiceExample.WatchStatistics initialStats = watcher.getStatistics();
@@ -242,10 +260,11 @@ public class WatchServiceExampleTest {
         // 複数のイベントを発生させる
         Path testFile = tempDir.resolve("stats_test.txt");
         Files.write(testFile, "Content 1".getBytes());
+        awaitEvent(latches, WatchServiceExample.FileEventType.CREATED);
         Files.write(testFile, "Content 2".getBytes());
+        awaitEvent(latches, WatchServiceExample.FileEventType.MODIFIED);
         Files.delete(testFile);
-        
-        assertTrue(latch.await(10, TimeUnit.SECONDS));
+        awaitEvent(latches, WatchServiceExample.FileEventType.DELETED);
         
         WatchServiceExample.WatchStatistics finalStats = watcher.getStatistics();
         assertTrue(finalStats.getTotalEvents() >= 3);
