@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 713ec8aa
   - key: "列挙型（Enum）"
-    hash: 23ae85da
+    hash: a551b85e
   - key: "レコード（Record）"
     hash: 62bd7df6
   - key: "EnumとRecordの使い分けと組み合わせ"

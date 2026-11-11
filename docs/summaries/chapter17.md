@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: e603fde1
   - key: "基本コンポーネントとレイアウト"
-    hash: a0258df0
+    hash: 0b4cc635
   - key: "イベント処理入門"
     hash: 63e275be
   - key: "EDT（Event Dispatch Thread）とスレッド安全性"

@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 0cb94cb6
   - key: "基本データ型"
-    hash: 9d492f38
+    hash: 50957dd9
   - key: "変数の宣言と初期化"
     hash: cdb76d93
   - key: "演算子"

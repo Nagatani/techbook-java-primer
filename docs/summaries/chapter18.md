@@ -13,7 +13,7 @@ sections:
   - key: "代表的なイベントの種類"
     hash: f10f57c2
   - key: "イベント処理のベストプラクティス"
-    hash: c6f967c6
+    hash: d693425a
   - key: "まとめ"
     hash: 3c9a1064
   - key: "章末演習"
@@ -42,7 +42,7 @@ sections:
 - 第19章との境界
     + 第19章は「マウスイベントの完全な処理」「キーボードイベントの高度な処理」「SwingWorkerによる非同期処理」を扱う。本章の18-5、18-6、18-11は基本編として位置付けが明確なので重複は許容範囲だが、18-11の説明文がSwingWorkerを名乗っている点は第19章の内容と衝突する（下記）
 - 本文とコードの不一致
-    + L737はSwingWorkerを使った解決法を示すと述べるが、18-11のコードは`new Thread`と`invokeLater`を使っていて、SwingWorkerは登場しない
+    + L737はSwingWorkerを使った解決法を示すと述べるが、18-11のコードは`new Thread`と`invokeLater`を使っていて、SwingWorkerは登場しない（2026-11-11に解消）
     + L264はMouseListenerとMouseMotionListenerを実装すると述べるが、18-5は`MouseAdapter`を`addMouseListener`で登録するだけで、移動（`mouseMoved`）の検出がない
     + ベストプラクティスで「すべてのGUI操作をEDT上で実行する」と教える（18-10）が、前半の18-1、18-3、18-4は`main`から直接GUIを組み立てていて`invokeLater`を使っていない
 

@@ -13,11 +13,11 @@ sections:
   - key: "Set インターフェイス"
     hash: 5514d39f
   - key: "Map インターフェイス"
-    hash: 8f2b9ed9
+    hash: 36814222
   - key: "イテレータとfor-each文"
     hash: f98a3aa0
   - key: "コレクションの選択指針"
-    hash: 0419f4c4
+    hash: a7e30954
   - key: "今後の学習へ向けて"
     hash: 7e623039
   - key: "よくあるエラーと対処法"

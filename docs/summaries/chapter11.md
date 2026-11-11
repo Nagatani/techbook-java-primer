@@ -1,11 +1,11 @@
 ---
 source: manuscripts/chapter11-lambda-and-functional-interfaces.md
-summarized: 2026-11-08
+summarized: 2026-11-11
 sections:
   - key: "本章の学習目標"
     hash: 7c65c633
   - key: "匿名クラスからラムダ式へ"
-    hash: 0573b246
+    hash: bb8db4d2
   - key: "関数型インターフェイス"
     hash: 31356c2c
   - key: "メソッド参照"
@@ -99,7 +99,7 @@ sections:
 ## 校正で見つけた個別の問題
 
 - 11-32、11-34、11-36: 同じブロック内で変数`comp`、`contents`やメソッド`processNumbers`を二重に宣言している。11-36の2つ目は`initialThreshold`が未使用で、対処法として意味をなさない
-- L187–239: Netflixの事例と「レイテンシ300ms→50ms」などの数値に出典がない。L187、L189、L233、L635は体言止めや「活用。」で終わる不完全な文
+- L187–239: Netflixの事例と「レイテンシ300ms→50ms」などの数値に出典がない。L187、L189、L233、L635は体言止めや「活用。」で終わる不完全な文（2026-11-11に解消）
 - 11-20と11-22でStudentのコンストラクタが異なる（11-22は2026-11-08に、全文に出力文とStudent・Taskの定義を足して実行結果と一致させた）
 - 11-3: MarketData、TradingDecisionなどが未定義だった。2026-11-08に補助型を全文（sample-code）に足し、実行結果と一致することを確認した
 - 11-10: 独自の`andThen`が`Function.andThen`と衝突してコンパイルできなかった。2026-11-08に`then`へ改名し、本文に理由を書いた

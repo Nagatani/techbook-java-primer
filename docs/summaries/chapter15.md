@@ -7,7 +7,7 @@ sections:
   - key: "並行処理の世界への招待"
     hash: feb7879c
   - key: "基礎レベル課題（ポイント）"
-    hash: 6a6bd696
+    hash: 962431e8
   - key: "実装のヒント"
     hash: ec3dae9f
   - key: "実装環境"

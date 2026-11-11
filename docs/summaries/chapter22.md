@@ -7,7 +7,7 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 99979036
   - key: "外部ライブラリの利用"
-    hash: 6a75c21a
+    hash: 8356c7a2
   - key: "よくあるエラーと対処法"
     hash: 2e588189
   - key: "まとめ"
@@ -142,4 +142,4 @@ sections:
 - 22-2と22-5で別内容の`Task`クラスが同名で登場する
 - 22-32: dependency:treeの出力例で、slf4j-apiがcommons-loggingに依存しているのは事実と異なる
 - 22-38、22-39: Jackson 1.xと2.xはパッケージ名（org.codehaus.jackson と com.fasterxml.jackson）から異なるので、例として不正確。コメントは「コンパイルエラー」、エラーメッセージは実行時のNoSuchMethodErrorで食い違う
-- L365–371: Mavenの依存関係解決手順に「深さ優先探索」とあるが、最短経路優先（nearest wins）の説明と合わない
+- L365–371: Mavenの依存関係解決手順に「深さ優先探索」とあるが、最短経路優先（nearest wins）の説明と合わない（2026-11-11に解消）
