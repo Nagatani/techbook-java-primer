@@ -105,16 +105,16 @@ numbers.parallelStream()
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
 // 方法1: collectを使用
-List<Integer> results = numbers.parallelStream()
+List<Integer> collected = numbers.parallelStream()
     .filter(n -> n % 2 == 0)
     .map(n -> n * 2)
     .collect(Collectors.toList());
 
 // 方法2: 同期化されたコレクション
-List<Integer> results = Collections.synchronizedList(new ArrayList<>());
+List<Integer> synchronizedResults = Collections.synchronizedList(new ArrayList<>());
 numbers.parallelStream()
     .filter(n -> n % 2 == 0)
-    .forEach(n -> results.add(n * 2));
+    .forEach(n -> synchronizedResults.add(n * 2));
 ```
 
 ## Optionalの誤用
@@ -255,7 +255,7 @@ List<String> contents = files.stream()
     .collect(Collectors.toList());
 
 // 方法2: 例外をランタイム例外でラップ
-List<String> contents = files.stream()
+List<String> allContents = files.stream()
     .map(file -> {
         try {
             return Files.readString(Path.of(file));

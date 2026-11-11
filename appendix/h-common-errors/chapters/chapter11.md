@@ -120,8 +120,8 @@ List<String> contents = files.stream()
     })
     .collect(Collectors.toList());
 
-// またはOptionalを使用した安全な処理
-List<String> contents = files.stream()
+// またはOptionalを使用した安全な処理（読めなかったファイルは除く）
+List<String> readableContents = files.stream()
     .map(file -> {
         try {
             return Optional.of(Files.readString(Path.of(file)));
@@ -167,13 +167,14 @@ public void processNumbers(List<Integer> numbers) {
         .collect(Collectors.toList());
 }
 
-// または異なる変数名を使用
-public void processNumbers(List<Integer> numbers) {
-    int initialThreshold = 10;
-    int finalThreshold = 20;
+// または、変更し終えた値を別の変数にコピーし、ラムダ式からはその変数を参照する
+public void processNumbersWithCopy(List<Integer> numbers) {
+    int threshold = 10;
+    threshold = 20;  // 変更する変数はラムダ式から参照しない
+    int currentThreshold = threshold;  // 以後変更しないので実質的にfinal
     
     List<Integer> filtered = numbers.stream()
-        .filter(n -> n > finalThreshold)
+        .filter(n -> n > currentThreshold)
         .collect(Collectors.toList());
 }
 ```
