@@ -2,8 +2,6 @@
 
 書籍『Java入門』第19章「高度なイベント処理パターン」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-高度なイベント処理を実装する際に遭遇しやすいエラーとその対処法をまとめます。
-
 ## SwingWorkerでの典型的なエラー
 
 ### 問題：SwingWorkerから直接UIを更新してしまう
@@ -49,9 +47,9 @@ SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 };
 ```
 
-## DocumentListenerでの無限ループ
+## DocumentListenerのなかでのドキュメントの変更
 
-### 問題：DocumentListener内でテキストを変更して無限ループ
+### 問題：DocumentListenerのなかで同じドキュメントを変更して例外が発生する
 
 エラー症状
 
@@ -59,17 +57,48 @@ SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 textField.getDocument().addDocumentListener(new DocumentListener() {
     @Override
     public void insertUpdate(DocumentEvent e) {
-        textField.setText(textField.getText().toUpperCase());  // 無限ループ
+        textField.setText(textField.getText().toUpperCase());  // 例外が発生する
     }
     // 他のメソッドも同様
 });
 ```
 
-原因
-- DocumentListener内でドキュメントを変更すると、再度イベントが発生
-- 再帰的にリスナーが呼び出される
+文字を入力すると、次の例外が発生し、テキストは書き換わりません。
 
-対処法
+```
+Exception in thread "AWT-EventQueue-0" java.lang.IllegalStateException: Attempt to mutate in notification
+	at java.desktop/javax.swing.text.AbstractDocument.writeLock(AbstractDocument.java:...)
+```
+
+原因
+- `AbstractDocument`は、リスナーへ変更を通知しているあいだ、同じドキュメントへの変更を受け付けない
+- 変更を許すと通知が入れ子になり、リスナーが再帰的に呼ばれてしまうため、例外にして防いでいる
+
+対処法1：`DocumentFilter`で入力そのものを書き換える
+
+入力された文字を大文字にする、数字以外を受け付けないといった処理は、ドキュメントに入る前に書き換える`DocumentFilter`で行います。
+
+```java
+((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
+    @Override
+    public void insertString(FilterBypass fb, int offset, String text,
+            AttributeSet attr) throws BadLocationException {
+        super.insertString(fb, offset, text.toUpperCase(), attr);
+    }
+
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text,
+            AttributeSet attrs) throws BadLocationException {
+        super.replace(fb, offset, length,
+            text == null ? null : text.toUpperCase(), attrs);
+    }
+});
+```
+
+対処法2：`invokeLater()`で変更を通知のあとに回す
+
+リスナーのなかでどうしても変更するときは、`invokeLater()`で通知が終わったあとに変更します。
+変更によって再びリスナーが呼ばれるので、フラグで二重の書き換えを防ぎます。
 
 ```java
 private boolean updating = false;
@@ -81,10 +110,7 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
             updating = true;
             SwingUtilities.invokeLater(() -> {
                 try {
-                    String text = e.getDocument().getText(0, e.getDocument().getLength());
-                    textField.setText(text.toUpperCase());
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
+                    textField.setText(textField.getText().toUpperCase());
                 } finally {
                     updating = false;
                 }
@@ -114,37 +140,42 @@ public class EventSource {
 ```
 
 原因
-- リスナーが強参照で保持される
-- イベントソースが生存する限り、リスナーもGCされない
+- イベントソースはリスナーへの参照を一覧に持ち続ける
+- イベントソースが生存する限り、リスナーと、リスナーが参照する画面などのオブジェクトもGCされない
 
 対処法
 
+イベントソースに削除のメソッドを用意し、リスナーを登録した側が、不要になった時点で削除します。
+
 ```java
 public class EventSource {
-    private List<WeakReference<CustomListener>> listeners = new ArrayList<>();
-    
+    private final List<CustomListener> listeners = new ArrayList<>();
+
     public void addListener(CustomListener listener) {
-        listeners.add(new WeakReference<>(listener));
+        listeners.add(listener);
     }
-    
+
     public void removeListener(CustomListener listener) {
-        listeners.removeIf(ref -> ref.get() == null || ref.get() == listener);
-    }
-    
-    private void fireEvent(CustomEvent event) {
-        // 無効な参照を削除しながら通知
-        Iterator<WeakReference<CustomListener>> iterator = listeners.iterator();
-        while (iterator.hasNext()) {
-            CustomListener listener = iterator.next().get();
-            if (listener != null) {
-                listener.customEventOccurred(event);
-            } else {
-                iterator.remove();  // GCされたリスナーを削除
-            }
-        }
+        listeners.remove(listener);
     }
 }
 ```
+
+```java
+// リスナーを登録した画面を閉じるときに削除する
+CustomListener listener = event -> label.setText(event.toString());
+source.addListener(listener);
+
+dialog.addWindowListener(new WindowAdapter() {
+    @Override
+    public void windowClosed(WindowEvent e) {
+        source.removeListener(listener);
+    }
+});
+```
+
+リスナーを`WeakReference`で持つ方法もありますが、ラムダ式や匿名クラスのリスナーをほかのどこからも参照していないと、すぐにGCされて通知が届かなくなります。
+まずは登録と削除を対にする書き方を守ってください。
 
 ## ドラッグ&ドロップの実装エラー
 
@@ -239,21 +270,15 @@ button.addActionListener(e -> {
 });
 ```
 
-### 3. WeakReferenceの使用状況確認
+### 3. 登録されているリスナーの数の確認
+
+画面を開いたり閉じたりするたびにリスナーの数が増え続けるなら、削除し忘れています。
+Swingのコンポーネントは、登録されているリスナーを配列で返すメソッドを持っています。
 
 ```java
-public class ListenerManager {
-    private List<WeakReference<EventListener>> listeners = new ArrayList<>();
-    
-    public void debugListeners() {
-        int total = listeners.size();
-        int alive = 0;
-        for (WeakReference<EventListener> ref : listeners) {
-            if (ref.get() != null) alive++;
-        }
-        IO.println("リスナー状況: " + alive + "/" + total + " 生存");
-    }
-}
+IO.println("ActionListenerの数: " + button.getActionListeners().length);
+IO.println("DocumentListenerの数: "
+    + ((AbstractDocument) textField.getDocument()).getDocumentListeners().length);
 ```
 
 これらの対処法を参考に、不具合の起きにくいイベント処理を実装してください。
