@@ -573,7 +573,7 @@ Second: 42
 
 var型推論を効果的に使用するためのガイドラインを、よい例と悪い例で紹介します。
 
-<span class="listing-number">**サンプルコード10-15**　VarBestPractices.java（6〜12、14〜15、26〜44、58、63行目）</span>
+<span class="listing-number">**サンプルコード10-15**　VarBestPractices.java（6〜12、14〜15、26〜44、63行目）</span>
 
 ```java
 public class VarBestPractices {
@@ -605,8 +605,6 @@ public class VarBestPractices {
         
         // × 配列初期化子（コンパイルエラー）
         // var array = {1, 2, 3};
-    }
-    // ...
     }
     // ...
 }
