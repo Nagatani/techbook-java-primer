@@ -607,7 +607,6 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 
 すべての要素を走査するときは、`keySet()`より`entrySet()`を使うほうが速くなります。
 `keySet()`ではキーごとに`get()`で値を検索し直しますが、`entrySet()`ならキーと値の組をまとめて受け取れるからです。
-大きなMapでは、2倍以上速くなることもあります。
 
 ## イテレータとfor-each文
 
@@ -703,7 +702,7 @@ for (String element : list) {
    - 学生名簿、商品リスト
    - インデックスアクセスが多い場合
    - 実例
-       + Androidの`RecyclerView`は内部的にArrayListを使用し、画面に表示される項目を効率的に管理
+       + Androidアプリの一覧画面（`RecyclerView`）に表示するデータを、アダプタに渡すために保持する
 
 2. LinkedList:
    - 待ち行列、履歴管理
@@ -715,7 +714,7 @@ for (String element : list) {
    - ユニークなID管理、重複チェック
    - 順序が重要でない場合
    - 実例
-       + データベースのインデックス、重複メールアドレスの検出
+       + 処理済みのIDの記録、重複メールアドレスの検出
 
 4. TreeSet:
    - ランキング、ソート済みデータ
