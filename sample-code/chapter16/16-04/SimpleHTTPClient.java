@@ -13,8 +13,8 @@ public class SimpleHTTPClient {
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
             
-            // HTTPリクエストを送信
-            out.println("GET " + path + " HTTP/1.1");
+            // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
+            out.println("GET " + path + " HTTP/1.0");
             out.println("Host: " + host);
             out.println("Connection: close");
             out.println(); // 空行でヘッダー終了

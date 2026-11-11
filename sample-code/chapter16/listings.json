@@ -28,8 +28,7 @@
     "main": "SimpleHTTPClient",
     "excerpt": [
       { "file": "SimpleHTTPClient.java", "from": 4, "to": 21 },
-      { "file": "SimpleHTTPClient.java", "from": 25, "to": 40 },
-      { "file": "SimpleHTTPClient.java", "from": 47, "to": 51 }
+      { "file": "SimpleHTTPClient.java", "from": 25, "to": 51 }
     ]
   },
   "16-5": {
@@ -99,7 +98,7 @@
     "dir": "16-12",
     "main": "SSLClient",
     "excerpt": [
-      { "file": "SSLClient.java", "from": 1, "to": 36 }
+      { "file": "SSLClient.java", "from": 1, "to": 44 }
     ]
   },
   "16-13": {

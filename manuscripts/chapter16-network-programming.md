@@ -283,7 +283,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
-<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜21、25〜40、47〜51行目）</span>
+<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜21、25〜51行目）</span>
 
 ```java
 public class SimpleHTTPClient {
@@ -298,8 +298,8 @@ public class SimpleHTTPClient {
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
             
-            // HTTPリクエストを送信
-            out.println("GET " + path + " HTTP/1.1");
+            // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
+            out.println("GET " + path + " HTTP/1.0");
             out.println("Host: " + host);
             out.println("Connection: close");
             out.println(); // 空行でヘッダー終了
@@ -321,7 +321,12 @@ public class SimpleHTTPClient {
                     body.append(line).append("\n");
                 }
             }
-            // ...
+            
+            IO.println("=== Headers ===");
+            IO.println(headers);
+            IO.println("=== Body ===");
+            IO.println(body);
+            
         } catch (IOException e) {
             System.err.println("エラー: " + e.getMessage());
         }
@@ -330,22 +335,24 @@ public class SimpleHTTPClient {
 ```
 
 次は実行結果の一例です。
+ヘッダーの項目や値は、接続先のサーバーや実行した日時によって変わります。
 
 ```
-Header: HTTP/1.1 200 OK
-Header: Accept-Ranges: bytes
-Header: Content-Type: text/html
-Header: ETag: "84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134"
-Header: Last-Modified: Mon, 13 Jan 2025 20:11:20 GMT
-Header: Content-Length: 1256
-Header: 
---- Body ---
-<!doctype html>
-<html>
-<head>
-    <title>Example Domain</title>
-...（以下省略）
+=== Headers ===
+HTTP/1.1 200 OK
+Date: Wed, 11 Nov 2026 03:43:02 GMT
+Content-Type: text/html; charset=utf-8
+Connection: close
+Server: cloudflare
+Last-Modified: Sun, 08 Nov 2026 18:05:34 GMT
+...（中略）
+
+=== Body ===
+<!doctype html><html lang=en><head><meta charset=utf-8>...（以下省略）
 ```
+
+リクエストをHTTP/1.1で送ると、サーバーがボディを複数のかたまり（チャンク）に分けて返すことがあります。
+そのときはボディの前後にかたまりの大きさを表す16進数の行が入るため、この例ではHTTP/1.0でリクエストを送っています。
 
 ### HttpURLConnectionの使用
 
@@ -521,7 +528,6 @@ public class UDPServer {
 ```
 UDPサーバーがポート 9999 で起動しました
 受信: Hello UDP Server! from /127.0.0.1
-レスポンス送信: Echo: Hello UDP Server!
 ```
 
 ### UDP受信側
@@ -816,30 +822,38 @@ public class SSLClient {
     public static void main(String[] args) {
         String host = "www.example.com";
         int port = 443;
-        
-        try {
-            SSLSocketFactory factory = 
-                (SSLSocketFactory) SSLSocketFactory.getDefault();
-            SSLSocket socket = 
-                (SSLSocket) factory.createSocket(host, port);
-            
+
+        SSLSocketFactory factory =
+            (SSLSocketFactory) SSLSocketFactory.getDefault();
+        try (SSLSocket socket =
+                (SSLSocket) factory.createSocket(host, port)) {
+
             // サポートされているプロトコルを設定
             socket.setEnabledProtocols(
                 new String[] {"TLSv1.2", "TLSv1.3"});
-            
+
             // ハンドシェイクを開始
             socket.startHandshake();
-            
+            SSLSession session = socket.getSession();
+            IO.println("SSL接続が確立されました");
+            IO.println("使用しているプロトコル: " + session.getProtocol());
+            IO.println("暗号スイート: " + session.getCipherSuite());
+
             // 以降は通常のソケットと同様に使用
             PrintWriter out = new PrintWriter(
                 socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
-            
-            // HTTPS通信...
-            
-            socket.close();
-            
+
+            // HTTPSのリクエストを送り、レスポンスのヘッダーを表示
+            out.println("GET / HTTP/1.0");
+            out.println("Host: " + host);
+            out.println();
+            String line;
+            while ((line = in.readLine()) != null && !line.isEmpty()) {
+                IO.println(line);
+            }
+
         } catch (IOException e) {
             System.err.println("SSL接続エラー: " + e.getMessage());
         }
@@ -848,16 +862,17 @@ public class SSLClient {
 ```
 
 次は実行結果の一例です。
+プロトコル・暗号スイート・ヘッダーの内容は、接続先のサーバーや実行した日時によって変わります。
 
 ```
 SSL接続が確立されました
 使用しているプロトコル: TLSv1.3
 暗号スイート: TLS_AES_256_GCM_SHA384
 HTTP/1.1 200 OK
-Date: Fri, 01 Aug 2025 13:21:37 GMT
-Expires: -1
-Cache-Control: private, max-age=0
-Content-Type: text/html; charset=ISO-8859-1
+Date: Wed, 11 Nov 2026 03:47:19 GMT
+Content-Type: text/html; charset=utf-8
+Connection: close
+...（以下省略）
 ```
 
 ## パフォーマンスの最適化
