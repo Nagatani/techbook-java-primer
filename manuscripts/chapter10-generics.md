@@ -5,7 +5,7 @@
 ### この章で学ぶこと
 
 1. ジェネリクスの基本理解
-    - 型安全性の必要性、型パラメーターと型引数、型消去（Type Erasure）の仕組み
+    - 型安全性の必要性、型パラメーターと型引数（型消去のしくみは付録B.07で扱う）
 2. ジェネリッククラスとメソッド
     - ジェネリッククラスの定義、ジェネリックメソッド、複数の型パラメーター
 3. 境界ワイルドカード
@@ -294,6 +294,7 @@ public class BoundedTypeExample {
 
 `List<? super Type>`は下限境界ワイルドカードと呼び、`Type`またはそのスーパークラスのリストを受け取れます。
 どのリストにも`Type`の値なら入れられるので、主にデータの書き込み（Consumer）に使います。
+読み取りには`extends`、書き込みには`super`を使うこの指針は、Producer Extends, Consumer Superの頭文字を取ってPECS原則と呼びます。
 
 たとえば`List<? extends Number>`は、要素の型が`Number`・`Integer`・`Double`のリストを受け取れます。`List<? super Integer>`は、要素の型が`Integer`・`Number`・`Object`のリストを受け取れます。次の図の緑の型が、それぞれ当てはまる型です。
 
@@ -306,8 +307,8 @@ public class BoundedTypeExample {
 <span class="listing-number">**サンプルコード10-8**　WildcardExample.java</span>
 
 ```java
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class WildcardExample {
     // 上限境界ワイルドカード：Numberとそのサブクラスのリストを受け取り、合計値を計算する
@@ -319,20 +320,40 @@ public class WildcardExample {
         return total;
     }
 
+    // 下限境界ワイルドカード：Integerとそのスーパークラスのリストを受け取り、1からcountまでを追加する
+    public static void addNumbers(List<? super Integer> list, int count) {
+        for (int i = 1; i <= count; i++) {
+            list.add(i);
+        }
+    }
+
     public static void main(String[] args) {
         List<Integer> intList = List.of(1, 2, 3);
         List<Double> doubleList = List.of(1.1, 2.2, 3.3);
 
         IO.println("Integerの合計: " + sum(intList));
         IO.println("Doubleの合計: " + sum(doubleList));
+
+        List<Number> numberList = new ArrayList<>();
+        addNumbers(numberList, 3);
+        numberList.add(0.5);
+        IO.println("Numberのリスト: " + numberList);
+        IO.println("Numberの合計: " + sum(numberList));
     }
 }
 ```
+
+`sum`は`? extends Number`なので、`List<Integer>`も`List<Double>`も渡せます。
+`addNumbers`は`? super Integer`なので、`List<Number>`に`Integer`の値を追加できます。
+`List<Double>`は`Integer`を入れられないため、`addNumbers`には渡せません。
+
 実行結果：
 
 ```
 Integerの合計: 6.0
 Doubleの合計: 6.6
+Numberのリスト: [1, 2, 3, 0.5]
+Numberの合計: 6.5
 ```
 
 ## var型推論とジェネリクス
@@ -587,8 +608,6 @@ var型推論を使うかどうかは、次の基準で判断します。
 - 応用的な実装練習
 - 実践的な総合問題
 
-詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください。
-
 1. 基礎課題
     + ジェネリックペアクラス、コンテナークラス、ワイルドカード活用、var型推論の適用など、ジェネリクスの基本概念の実装
 2. 発展課題
@@ -598,4 +617,4 @@ var型推論を使うかどうかは、次の基準で判断します。
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第11章「ラムダ式と関数インターフェイス」に進みましょう。
+次のステップ：基礎課題が完了したら、第11章「ラムダ式と関数型インターフェイス」に進みましょう。
