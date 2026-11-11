@@ -4,7 +4,7 @@ public class Book {
     private int pages;
     private double price;
     
-    // コンストラクタ1：すべてのフィールドを初期化
+    // コンストラクター1：すべてのフィールドを初期化
     public Book(String title, String author, int pages, double price) {
         this.title = title;
         this.author = author;
@@ -12,12 +12,12 @@ public class Book {
         this.price = price;
     }
     
-    // コンストラクタ2：必須フィールドのみ
+    // コンストラクター2：必須フィールドのみ
     public Book(String title, String author) {
-        this(title, author, 0, 0.0);  // 他のコンストラクタを呼び出す
+        this(title, author, 0, 0.0);  // 他のコンストラクターを呼び出す
     }
     
-    // コンストラクタ3：タイトルのみ
+    // コンストラクター3：タイトルのみ
     public Book(String title) {
         this(title, "Unknown", 0, 0.0);
     }

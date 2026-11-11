@@ -7,7 +7,7 @@ public class DatabaseConfig {
     private final int maxConnections;
     private final int timeoutSeconds;
     
-    // マスターコンストラクタ（すべての検証をここに集約）
+    // マスターコンストラクター（すべての検証をここに集約）
     public DatabaseConfig(String host, int port, String database, 
                          String username, String password, 
                          int maxConnections, int timeoutSeconds) {
@@ -31,12 +31,12 @@ public class DatabaseConfig {
         this.timeoutSeconds = timeoutSeconds;
     }
     
-    // 開発環境用のコンストラクタ
+    // 開発環境用のコンストラクター
     public DatabaseConfig(String host, String database) {
         this(host, 5432, database, "dev_user", "dev_password", 10, 30);
     }
     
-    // 本番環境用のコンストラクタ
+    // 本番環境用のコンストラクター
     public DatabaseConfig(String host, int port, String database, 
                          String username, String password) {
         this(host, port, database, username, password, 100, 60);

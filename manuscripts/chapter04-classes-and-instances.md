@@ -9,12 +9,12 @@
     - getter/setterメソッドによる安全なデータアクセス
     - データ検証とバリデーションの実装
 2. コンストラクターの活用
-    - デフォルトコンストラクターと引数付きコンストラクター
-    - thisキーワードによるフィールドアクセス
+    - コンストラクターでの入力検証
+    - thisキーワードによる別のコンストラクターの呼び出しとメソッドチェーン
     - コンストラクターのオーバーロード
 3. クラス設計のベストプラクティス
     - 単一責任の原則に基づく設計
-    - 不変性（イミュータブル）の重要性
+    - finalフィールドで変えてはいけない値を守る設計
     - 責任の明確なメソッド設計
 4. パッケージシステム
     - パッケージの概念と命名規則
@@ -192,9 +192,7 @@ class ProcessorHelper {
 }
 ```
 
-これはパッケージプライベート（デフォルトアクセス）の例です。
-
-`protected`の使用例。
+##### `protected`の使用例
 
 次のサンプルの`extends Vehicle`は、「`Vehicle`の機能を引き継いだクラス（サブクラス）として`Car`を作る」という意味で、継承と呼びます。
 継承は第5章「継承とポリモーフィズム」で学びます。
@@ -402,12 +400,6 @@ public class Employee {
 ```
 
 これはデータ検証パターンの例です。
-
-## 設計原則とソフトウェアアーキテクチャ
-
-ソフトウェア設計では、SOLID原則と呼ばれる5つの基本原則があります。これらはオブジェクト指向設計の文脈で生まれましたが、単一責任原則（モジュールは1つの責任のみを持つべき）や開放閉鎖原則（拡張に開かれ、修正に閉じているべき）などは、他のプログラミングパラダイムでも応用可能な普遍的な原則です。
-
-カプセル化は単にデータを隠す技術ではなく、変更の影響を局所化し、再利用性とテスト容易性を高める重要な設計技術です。
 
 ## 実践的なクラス設計例
 
@@ -699,15 +691,29 @@ BankAccountV3では、口座番号のフィールドにfinalを付けたので�
 
 ### クラス設計のベストプラクティス
 
-クラス設計は、ソフトウェアの品質向上に寄与する要素の1つです。オブジェクト指向設計の実践から生まれたベストプラクティスは、保守性、拡張性、信頼性の高いソフトウェアを構築するための指針を提供します。ただし、これらは唯一の解決策ではなく、バッチ処理やデータ変換処理では関数型プログラミングのイミュータブルなデータ構造、シンプルなスクリプトでは手続き型プログラミングの直接的な関数呼び出しが適している場合もあります。
+ここまでの改善で使った考え方を、クラス設計の原則として整理します。
+これらはオブジェクト指向設計の実践から生まれた指針で、保守しやすく信頼できるソフトウェアを作る助けになります。
+ただし、唯一の正解ではありません。
+バッチ処理やデータ変換処理では関数型プログラミングのイミュータブルなデータ構造が、シンプルなスクリプトでは手続き型の直接的な関数呼び出しが向く場合もあります。
 
-もっとも基本的な原則は単一責任の原則です。1つのクラスは1つの明確な責任のみを持つべきであり、これにより変更の理由が限定され、クラスの理解と保守が容易になります。次に重要なのはデータの隠蔽で、クラスの内部状態をprivateで保護し、必要な操作のみをパブリックメソッドとして公開します。これにより、実装の詳細を変更してもクライアントコードに影響を与えません。
+もっとも基本的な原則は単一責任の原則です。
+1つのクラスは1つの明確な責任だけを持つようにします。
+変更の理由が1つに限られるので、クラスを理解しやすく、保守しやすくなります。
+単一責任の原則は、SOLID原則と呼ばれるオブジェクト指向設計の5つの原則の1つです。
 
-入力検証も欠かせない要素です。すべての外部入力は、setterメソッドやコンストラクターで厳密に検証し、不正なデータがオブジェクトの状態を破壊することを防ぎます。また、意味のある名前を使用することで、コードの可読性と保守性が向上します。クラス名は名詞、メソッド名は動詞で始まるという慣習に従い、その役割を明確に表現する名前を選びます。
+次に重要なのはデータの隠蔽です。
+クラスの内部状態をprivateで保護し、必要な操作だけをpublicメソッドとして公開します。
+こうしておけば、実装の詳細を変更しても、クラスを使う側のコードに影響しません。
+カプセル化は単にデータを隠す技術ではなく、変更の影響をクラスの内側に閉じ込める設計技術です。
 
-最後に、不変条件の維持は、オブジェクトの整合性を保証するうえできわめて重要です。オブジェクトの生成から破棄まで、常に満たされるべき条件（不変条件）を明確に定義し、すべての操作でこれを維持するよう設計します。
+入力検証も欠かせません。
+外部から受け取る値は、setterメソッドやコンストラクターで検証し、不正なデータがオブジェクトの状態を壊さないようにします。
+また、意味のある名前を使うと、コードが読みやすく保守しやすくなります。
+クラス名は名詞、メソッド名は動詞で始めるという慣習に従い、役割がわかる名前を選びます。
 
-これらの原則に従うことで、保守性が高く、バグの少ないJavaプログラムを作成できます。
+最後に、不変条件を守ります。
+不変条件とは、オブジェクトの生成から破棄まで常に満たされるべき条件（「残高は0以上」など）です。
+不変条件を明確に決め、すべての操作でこれを保つように設計すると、オブジェクトの整合性を保証できます。
 
 ## パッケージシステムとクラスの組織化
 
@@ -738,9 +744,8 @@ package com.example.myapp.service;
 package jp.ac.university.research;
 ```
 
-これはパッケージ名の命名規則の例です。
-
 #### 命名規則のポイント
+
 - すべて小文字を使用
 - ドメイン名を逆順に記述
 - 意味のある階層構造を作成
@@ -782,29 +787,33 @@ import java.util.ArrayList;
 List<String> names = new ArrayList<>();
 ```
 
-これはimport文の使用例です。
+import文には、次の3つの種類があります。
 
-import文の種類。
+#### 単一型インポート
 
-1. 単一型インポート。
+インポートするクラスを1つずつ指定します。
+
 <span class="listing-number">**サンプルコード4-17**</span>
 
 ```java
-import java.util.Scanner;  // Scannerクラスのみインポート
+import java.time.LocalDate;  // LocalDateクラスのみインポート
 ```
 
-これは単一型インポートの例です。
+#### オンデマンドインポート
 
-2. オンデマンドインポート。
+`*`を使い、パッケージに含まれるすべてのクラスをまとめてインポートします。
+サブパッケージのクラスは含みません。
+
 <span class="listing-number">**サンプルコード4-18**</span>
 
 ```java
 import java.util.*;  // java.utilパッケージのすべてのクラスをインポート
 ```
 
-これはオンデマンドインポートの例です。
+#### 静的インポート
 
-3. 静的インポート。
+`import static`を使うと、クラスのstaticなフィールドやメソッドを、クラス名を付けずに書けます。
+
 <span class="listing-number">**サンプルコード4-19**</span>
 
 ```java
@@ -814,8 +823,6 @@ import static java.lang.Math.sqrt;
 double circumference = 2 * PI * radius;  // Math.PI と書く必要がない
 double result = sqrt(16);                 // Math.sqrt と書く必要がない
 ```
-
-これはstatic importの使用例です。
 
 ### import文の注意点
 
@@ -842,15 +849,11 @@ public class Example {
 }
 ```
 
-これは同名クラスの競合解決の例です。
-
 ### パッケージ構成のベストプラクティス
 
 効果的なパッケージ構成は、プロジェクトの保守性と拡張性を大きく向上させます。
 
-<span class="listing-number">**サンプルコード4-21**</span>
-
-```java
+```
 com.example.myapp/
 ├── model/          // ドメインモデル（エンティティ）
 ├── service/        // ビジネスロジック（処理の中核となる業務ルール）
@@ -859,8 +862,6 @@ com.example.myapp/
 ├── util/          // ユーティリティクラス
 └── exception/     // カスタム例外
 ```
-
-これはパッケージ構造の例です。
 
 #### 設計原則
 
@@ -880,7 +881,7 @@ com.example.myapp/
 
 実務では、コンストラクターでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
 
-<span class="listing-number">**サンプルコード4-22**　User.java</span>
+<span class="listing-number">**サンプルコード4-21**　User.java</span>
 
 ```java
 public class User {
@@ -913,7 +914,7 @@ public class User {
 
 使用例と実行結果：
 
-<span class="listing-number">**サンプルコード4-23**　UserTest.java</span>
+<span class="listing-number">**サンプルコード4-22**　UserTest.java</span>
 
 ```java
 // UserTest.java
@@ -954,7 +955,7 @@ public class UserTest {
 コンストラクターで`this(...)`と書くと、同じクラスの別のコンストラクターを呼び出せます。
 次の例では、引数の少ないコンストラクターが、足りない値を補ってすべての引数を受け取るコンストラクターを呼び出しています。
 
-<span class="listing-number">**サンプルコード4-24**　Book.java</span>
+<span class="listing-number">**サンプルコード4-23**　Book.java</span>
 
 ```java
 public class Book {
@@ -963,7 +964,7 @@ public class Book {
     private int pages;
     private double price;
     
-    // コンストラクタ1：すべてのフィールドを初期化
+    // コンストラクター1：すべてのフィールドを初期化
     public Book(String title, String author, int pages, double price) {
         this.title = title;
         this.author = author;
@@ -971,12 +972,12 @@ public class Book {
         this.price = price;
     }
     
-    // コンストラクタ2：必須フィールドのみ
+    // コンストラクター2：必須フィールドのみ
     public Book(String title, String author) {
-        this(title, author, 0, 0.0);  // 他のコンストラクタを呼び出す
+        this(title, author, 0, 0.0);  // 他のコンストラクターを呼び出す
     }
     
-    // コンストラクタ3：タイトルのみ
+    // コンストラクター3：タイトルのみ
     public Book(String title) {
         this(title, "Unknown", 0, 0.0);
     }
@@ -993,7 +994,7 @@ public class Book {
 
 複雑なオブジェクト構築で、`this`を返すことで流暢なインターフェイスを実現できます。
 
-<span class="listing-number">**サンプルコード4-25**</span>
+<span class="listing-number">**サンプルコード4-24**</span>
 
 ```java
 public class EmailBuilder {
@@ -1044,7 +1045,7 @@ Email email = new EmailBuilder()
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクターに集約し、他のコンストラクターはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-26**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
+<span class="listing-number">**サンプルコード4-25**　DatabaseConfig.java（1〜4、9〜18、24〜26、31〜44行目）</span>
 
 ```java
 public class DatabaseConfig {
@@ -1053,7 +1054,7 @@ public class DatabaseConfig {
     private final String database;
     // ...
     
-    // マスターコンストラクタ（すべての検証をここに集約）
+    // マスターコンストラクター（すべての検証をここに集約）
     public DatabaseConfig(String host, int port, String database, 
                          String username, String password, 
                          int maxConnections, int timeoutSeconds) {
@@ -1070,12 +1071,12 @@ public class DatabaseConfig {
         this.timeoutSeconds = timeoutSeconds;
     }
     
-    // 開発環境用のコンストラクタ
+    // 開発環境用のコンストラクター
     public DatabaseConfig(String host, String database) {
         this(host, 5432, database, "dev_user", "dev_password", 10, 30);
     }
     
-    // 本番環境用のコンストラクタ
+    // 本番環境用のコンストラクター
     public DatabaseConfig(String host, int port, String database, 
                          String username, String password) {
         this(host, port, database, username, password, 100, 60);
@@ -1089,7 +1090,7 @@ public class DatabaseConfig {
 
 イベント処理やコールバック関数で、現在のオブジェクトを別のオブジェクトへ渡す場合に使用します。
 
-<span class="listing-number">**サンプルコード4-27**　EventProcessor.java</span>
+<span class="listing-number">**サンプルコード4-26**　EventProcessor.java</span>
 
 ```java
 public class EventProcessor {
@@ -1139,7 +1140,7 @@ class EventManager {
 次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
 ここでは、HTTPのヘッダー名と値の組をまとめて渡すための引数と考えてください。
 
-<span class="listing-number">**サンプルコード4-28**　HttpClient.java</span>
+<span class="listing-number">**サンプルコード4-27**　HttpClient.java</span>
 
 ```java
 import java.util.Map;
@@ -1168,7 +1169,7 @@ public class HttpClient {
 
 異なるデータ型に対応しながら、型安全性を維持します。
 
-<span class="listing-number">**サンプルコード4-29**　Logger.java</span>
+<span class="listing-number">**サンプルコード4-28**　Logger.java</span>
 
 ```java
 public class Logger {
@@ -1225,7 +1226,7 @@ public class Logger {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-30**</span>
+<span class="listing-number">**サンプルコード4-29**</span>
 
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
@@ -1261,7 +1262,7 @@ public class UserManager {
 さらに、複数の開発者が同じクラスを修正することになり、変更が競合しやすくなります。
 
 #### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-31**</span>
+<span class="listing-number">**サンプルコード4-30**</span>
 
 ```java
 // 責任を分離したクラス設計
@@ -1270,7 +1271,7 @@ public class User {
     private String password;
     private String email;
     
-    // コンストラクタ、getter、setter
+    // コンストラクター、getter、setter
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -1326,7 +1327,7 @@ public class AuthenticationService {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-32**</span>
+<span class="listing-number">**サンプルコード4-31**</span>
 
 ```java
 public class BankAccount {
@@ -1352,7 +1353,7 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
 さらに、複数のスレッドから同時に使うと、`getBalance`で読んでから`setBalance`で書き戻すまでの間に別のスレッドが残高を変え、その変更が失われることがあります。
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-33**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード4-32**　BankAccount.java</span>
 
 ```java
 public class BankAccount {
@@ -1407,19 +1408,17 @@ public class BankAccount {
 #### getter/setter設計のベストプラクティス
 
 1. getterの設計指針
-   - 内部状態を公開してもよいかを慎重に検討
-   - 必要なら防御的コピーを返す（コレクションなど）
-   - 計算結果を返すメソッドも検討（getTotal()など）
-
+    - 内部状態を公開してもよいかを慎重に検討
+    - 必要なら防御的コピーを返す（コレクションなど）
+    - 計算結果を返すメソッドも検討（getTotal()など）
 2. setterの設計指針
-   - 本当に外部から変更可能にすべきか検討
-   - 検証ロジックを必ず含める
-   - イミュータブルオブジェクトの使用も検討
-
+    - 本当に外部から変更可能にすべきか検討
+    - 検証ロジックを必ず含める
+    - イミュータブルオブジェクトの使用も検討
 3. 代替案の検討
-   - ビルダーパターンでの初期化
-   - ファクトリメソッドでの生成
-   - コンストラクターでの完全な初期化
+    - ビルダーパターンでの初期化
+    - ファクトリメソッドでの生成
+    - コンストラクターでの完全な初期化
 
 ### 3. 防御的プログラミングの欠如
 
@@ -1428,7 +1427,7 @@ public class BankAccount {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-34**</span>
+<span class="listing-number">**サンプルコード4-33**</span>
 
 ```java
 import java.util.ArrayList;
@@ -1497,32 +1496,28 @@ getterでも、内部のリストではなくコピーを返します。
 ### 学習した重要概念
 
 1. カプセル化
-   - データと処理を1つのクラスにまとめる
-   - privateフィールドとpublicメソッドによるアクセス制御
-   - データの整合性と安全性の確保
-
+    - データと処理を1つのクラスにまとめる
+    - privateフィールドとpublicメソッドによるアクセス制御
+    - データの整合性と安全性の確保
 2. アクセス修飾子
-   - `private`: 同じクラス内のみ
-   - パッケージプライベート（デフォルト）: 同じパッケージ内
-   - `protected`: 同じパッケージかサブクラス
-   - `public`: どこからでもアクセス可能
-
+    - `private`は同じクラス内からだけアクセスできる
+    - パッケージプライベート（デフォルト）は同じパッケージ内からアクセスできる
+    - `protected`は同じパッケージとサブクラスからアクセスできる
+    - `public`はどこからでもアクセスできる
 3. 実践的なクラス設計
-   - BankAccountの段階的改善（V0→V1→V2→V3）
-   - getter/setterによる安全なデータアクセス
-   - バリデーションによるデータ検証
-   - 防御的コピーによる内部状態の保護
-
+    - BankAccountの段階的改善（V0→V1→V2→V3）
+    - getter/setterによる安全なデータアクセス
+    - バリデーションによるデータ検証
+    - 防御的コピーによる内部状態の保護
 4. コンストラクターとthisキーワード
-   - デフォルトコンストラクターとカスタムコンストラクター
-   - コンストラクターオーバーロード
-   - thisキーワードの3つの用法
-   - メソッドオーバーロードによる柔軟なAPI設計
-
+    - コンストラクターでの入力検証
+    - `this(...)`による別のコンストラクターの呼び出しと、検証ロジックの集約
+    - `return this`によるメソッドチェーンと、コールバックへのthisの受け渡し
+    - メソッドオーバーロードによる柔軟なAPI設計
 5. パッケージシステム
-   - 機能別・層別によるクラスの組織化
-   - ドメイン名を逆にした一意な名前空間
-   - import文による明示的な依存関係の表現
+    - 機能別・層別によるクラスの組織化
+    - ドメイン名を逆にした一意な名前空間
+    - import文による明示的な依存関係の表現
 
 ### 次章への展望
 
