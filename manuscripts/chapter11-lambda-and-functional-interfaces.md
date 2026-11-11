@@ -1,4 +1,4 @@
-# <b>11章</b> <span>ラムダ式と関数インターフェイス</span> <small>関数型プログラミングへの誘い</small>
+# <b>11章</b> <span>ラムダ式と関数型インターフェイス</span> <small>関数型プログラミングへの誘い</small>
 
 ## 本章の学習目標
 
@@ -55,7 +55,7 @@ public class LambdaIntroExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 Hello from anonymous class!
@@ -129,7 +129,7 @@ public class FunctionalInterfaceExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 足し算: 15
@@ -155,20 +155,22 @@ public class FunctionalInterfaceExample {
 `String`や`Integer`のように`Comparable`インターフェイスを実装したクラスは、自然な順序（文字列なら辞書順）を持ちます。
 `Comparator`を使うと、自然な順序とは別の並べ方を、クラスを書き換えずに外から指定できます。
 次のサンプルでは、学生を名前の順に並べる同じ処理を、匿名クラス、ラムダ式、`Comparator.comparing`の3通りで書いています。
+`Student`は名前・学年・学生番号を持つクラスで、サンプルコード11-6でも使います。
+本文では定義とimport文を省いています（全文はGitHubリポジトリの`sample-code/chapter11/`にあります）。
 
-<span class="listing-number">**サンプルコード11-5**</span>
+<span class="listing-number">**サンプルコード11-5**　ComparatorLambdaExample.java（7〜37行目）</span>
 
 ```java
 public class ComparatorLambdaExample {
     public static void main(String[] args) {
         List<Student> students = Arrays.asList(
-            new Student("Charlie"),
-            new Student("Alice"),
-            new Student("Bob")
+            new Student("Charlie", 2, "S002"),
+            new Student("Alice", 2, "S003"),
+            new Student("Bob", 1, "S001")
         );
-        
+
         IO.println("ソート前: " + students);
-        
+
         // 従来の方法：冗長で理解しにくい
         List<Student> students1 = new ArrayList<>(students);
         Collections.sort(students1, new Comparator<Student>() {
@@ -192,13 +194,13 @@ public class ComparatorLambdaExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
-ソート前: [Charlie, Alice, Bob]
-従来の方法: [Alice, Bob, Charlie]
-ラムダ式: [Alice, Bob, Charlie]
-メソッド参照: [Alice, Bob, Charlie]
+ソート前: [Charlie(2年, S002), Alice(2年, S003), Bob(1年, S001)]
+従来の方法: [Alice(2年, S003), Bob(1年, S001), Charlie(2年, S002)]
+ラムダ式: [Alice(2年, S003), Bob(1年, S001), Charlie(2年, S002)]
+メソッド参照: [Alice(2年, S003), Bob(1年, S001), Charlie(2年, S002)]
 ```
 
 `Comparator.comparing`は、比較に使うキー（ここでは名前）を取り出す関数を受け取り、そのキーで比べる`Comparator`を作ります。
@@ -258,20 +260,20 @@ public class MultiConditionSortExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 学生ソート後（学年→名前→学生番号）:
-Student{name='Alice', grade=1, id='S004'}
-Student{name='Bob', grade=1, id='S001'}
-Student{name='Alice', grade=2, id='S003'}
-Student{name='Charlie', grade=2, id='S002'}
+Alice(1年, S004)
+Bob(1年, S001)
+Alice(2年, S003)
+Charlie(2年, S002)
 
 降順ソート（学年降順→名前昇順）:
-Student{name='Alice', grade=2, id='S003'}
-Student{name='Charlie', grade=2, id='S002'}
-Student{name='Alice', grade=1, id='S004'}
-Student{name='Bob', grade=1, id='S001'}
+Alice(2年, S003)
+Charlie(2年, S002)
+Alice(1年, S004)
+Bob(1年, S001)
 
 タスクソート後（優先度降順→作成日時→タイトル）:
 Task{priority=3, title='Task A'}
@@ -337,7 +339,7 @@ public class StandardFunctionalInterfaces {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 ''は空？: true
@@ -352,7 +354,7 @@ public class StandardFunctionalInterfaces {
 
 ## メソッド参照
 
-ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します
+ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
 
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
@@ -410,7 +412,7 @@ public class MethodReferenceExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 元のリスト: [apple, banana, cherry]
@@ -478,7 +480,7 @@ public class LambdaVsMethodReference {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 元のリスト: [Alice, Bob, Charlie]
@@ -546,7 +548,7 @@ public class RunnableLambdaExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 メインスレッド開始
@@ -564,10 +566,10 @@ Thread t1 (Anonymous) finished
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
-<span class="listing-number">**サンプルコード11-11**　MethodReferenceConcurrencyExample.java（4〜18、23〜47行目）</span>
+<span class="listing-number">**サンプルコード11-11**　ExecutorLambdaExample.java（4〜18、23〜47行目）</span>
 
 ```java
-public class MethodReferenceConcurrencyExample {
+public class ExecutorLambdaExample {
     public static void main(String[] args) {
         // ExecutorServiceとラムダ式の組み合わせ
         ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -610,7 +612,7 @@ public class MethodReferenceConcurrencyExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 タスク実行開始...
@@ -680,7 +682,7 @@ public class ValidationFramework {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 有効なユーザーのバリデーション:
@@ -749,7 +751,7 @@ public class HigherOrderFunctionExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 
 ```
 安全な取引決定: TradingDecision{BUY}
@@ -758,7 +760,7 @@ public class HigherOrderFunctionExample {
 
 ### 関数型プログラミングのベストプラクティス
 
-アンチパターン1: 過度なラムダネスト。
+#### ラムダ式を深く入れ子にしない
 
 <span class="listing-number">**サンプルコード11-14**</span>
 
@@ -786,7 +788,7 @@ private Item transformItem(Item x) {
 
 <span class="footnote">※ このコードは設計上のアンチパターンを示す例のため、実行可能な完全なコードではありません。可読性の観点から、ラムダ式の過度なネストは避けるべきことを説明しています。</span>
 
-アンチパターン2: 副作用の濫用。
+#### ラムダ式から外部の状態を変えない
 
 <span class="listing-number">**サンプルコード11-15**</span>
 
@@ -858,7 +860,7 @@ public class ReactiveVideoRecommendationService {
 
 ### 関数型プログラミングの実装パターン集
 
-1. リトライとサーキットブレーカー
+#### 失敗した処理の再試行
 
 <span class="listing-number">**サンプルコード11-18**　ResilientService.java（3〜18、30行目）</span>
 
@@ -923,7 +925,7 @@ public class EventProcessor {
 }
 ```
 
-2. 関数合成によるミドルウェアパターン
+#### 関数合成によるミドルウェア
 
 <span class="listing-number">**サンプルコード11-20**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
@@ -1002,7 +1004,7 @@ public class DataProcessingTemplate {
 }
 ```
 
-3. イベントソーシングとCQRS
+#### イベントソーシング
 
 <span class="listing-number">**サンプルコード11-22**　EventSourcedAccount.java（3〜36行目）</span>
 
@@ -1082,9 +1084,7 @@ public class ProcessorFactory {
 
 <span class="footnote">※ このコードは関数型ファクトリパターンの概念例です。実際の動作にはDataProcessor、CsvProcessor、XmlProcessor、JsonProcessor、ProcessorConfigクラスの実装が必要です。従来のファクトリパターンを関数型で簡潔に表現した設計例として理解してください。</span>
 
-### メモリ効率とパフォーマンス最適化
-
-#### ラムダ式の内部実装とメモリ使用
+### ラムダ式の内部実装とメモリ使用
 
 <span class="listing-number">**サンプルコード11-24**</span>
 
@@ -1100,10 +1100,10 @@ public class LambdaPerformance {
         Function<Integer, Integer> withCapture = x -> x * multiplier;
         // 新しいインスタンスが生成される
         
-        // パフォーマンステスト
+        // 1回だけの簡易な計測（ウォームアップなし）
         long start = System.nanoTime();
         IntStream.range(0, 1_000_000)
-            .map(x -> x * 2)  // インライン化される
+            .map(x -> x * 2)  // ラムダ式を直接渡す
             .sum();
         long inlineTime = System.nanoTime() - start;
         
@@ -1120,14 +1120,18 @@ public class LambdaPerformance {
 }
 ```
 
-
-#### デザインパターンでの関数型アプローチ活用
-
-関数型プログラミングは、従来のデザインパターンをより簡潔かつ柔軟に実装する手段を提供します。
-とくに、戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式を使うことでクラス定義を省略して直接振る舞いを定義できます。
-以下では、実際のビジネスロジックでよく使われるパターンを関数型アプローチで実装する方法を紹介します。
+外側の変数をキャプチャしないラムダ式は、HotSpotなどのJVMでは同じインスタンスを使い回します。
+キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
+後半の計測は、ウォームアップ（JITコンパイラーが最適化を終えるまで事前に動かすこと）をせずに1回だけ測っています。
+そのため結果は実行のたびに変わり、2つの書き方の性能差を示すものではありません。
+`noCapture::apply`には`int`と`Integer`の変換も含まれるので、比べる条件もそろっていません。
+性能を比べるときは、JMH（Java Microbenchmark Harness）などのツールで、ウォームアップと繰り返しを含めて測ります。
 
 ### 実践的なデザインパターン：関数型ビルダー
+
+関数型プログラミングでは、デザインパターンの一部をクラスを増やさずに書けます。
+戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
+ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
 <span class="listing-number">**サンプルコード11-25**　FunctionalBuilder.java（5、26〜43、45〜56行目）</span>
 
@@ -1167,7 +1171,7 @@ public class FunctionalBuilder {
 }
 ```
 
-設定ビルダーパターンの関数型実装。
+#### 条件に応じた設定の組み立て
 
 設定やコンフィギュレーションを構築する際、関数型ビルダーパターンはとくに威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
 
@@ -1200,7 +1204,7 @@ public class ConfigurationBuilder {
 }
 ```
 
-### 産業界での採用事例：金融取引システム
+### 応用例：金融取引システム
 
 高頻度取引（HFT）システムを題材に、関数型アプローチの例を示します。
 
@@ -1239,7 +1243,7 @@ public class TradingSystem {
 
 <span class="footnote">※ このコードは外部ライブラリReactorの`Flux`を使った概念例です。動かすには、ライブラリと、MarketTick、TradingSignalなどのクラスの実装が必要です。</span>
 
-#### 関数型アプローチによるビジネスロジック設計
+### 関数合成によるビジネスロジックの設計
 
 複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
 
@@ -1279,8 +1283,8 @@ public class BusinessLogicProcessor {
     + 複数の文を書くときの波括弧と`return`の書き忘れ、引数の括弧の誤りなど
 - 型推論の失敗
     + ラムダ式を代入する先の関数型インターフェイスが決まらないと、型を推論できない
-- チェック例外の扱い
-    + `Function`などの標準の関数型インターフェイスは、チェック例外をスローできない
+- 検査例外の扱い
+    + `Function`などの標準の関数型インターフェイスは、検査例外をスローできない
 - 変数のキャプチャ
     + ラムダ式のなかから参照できるローカル変数は、実質的にfinalなものに限られる
 - 関数型インターフェイスの実装の誤り
@@ -1323,7 +1327,7 @@ public class BusinessLogicProcessor {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
+次のステップ：基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
 
 ※ 本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください。
 （`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）

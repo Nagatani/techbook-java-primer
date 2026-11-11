@@ -18,7 +18,7 @@ class Student {
 
     @Override
     public String toString() {
-        return "Student{name='" + name + "', grade=" + grade + ", id='" + studentId + "'}";
+        return name + "(" + grade + "年, " + studentId + ")";
     }
 }
 

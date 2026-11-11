@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.concurrent.*;
 
-public class MethodReferenceConcurrencyExample {
+public class ExecutorLambdaExample {
     public static void main(String[] args) {
         // ExecutorServiceとラムダ式の組み合わせ
         ExecutorService executor = Executors.newFixedThreadPool(4);

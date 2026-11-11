@@ -13,6 +13,13 @@
       { "file": "FunctionalInterfaceExample.java", "from": 1, "to": 15 }
     ]
   },
+  "11-5": {
+    "dir": "11-05",
+    "main": "ComparatorLambdaExample",
+    "excerpt": [
+      { "file": "ComparatorLambdaExample.java", "from": 7, "to": 37 }
+    ]
+  },
   "11-6": {
     "dir": "11-06",
     "main": "MultiConditionSortExample",
@@ -53,10 +60,10 @@
   },
   "11-11": {
     "dir": "11-11",
-    "main": "MethodReferenceConcurrencyExample",
+    "main": "ExecutorLambdaExample",
     "excerpt": [
-      { "file": "MethodReferenceConcurrencyExample.java", "from": 4, "to": 18 },
-      { "file": "MethodReferenceConcurrencyExample.java", "from": 23, "to": 47 }
+      { "file": "ExecutorLambdaExample.java", "from": 4, "to": 18 },
+      { "file": "ExecutorLambdaExample.java", "from": 23, "to": 47 }
     ]
   },
   "11-12": {

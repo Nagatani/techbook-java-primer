@@ -1,6 +1,6 @@
-# 第11章 ラムダ式と関数インターフェイス：よくあるエラーと対処法
+# 第11章 ラムダ式と関数型インターフェイス：よくあるエラーと対処法
 
-書籍『Java入門』第11章「ラムダ式と関数インターフェイス」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
+書籍『Java入門』第11章「ラムダ式と関数型インターフェイス」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
 ラムダ式と関数型インターフェイスの学習で遭遇する典型的なエラーと、その対処法について説明します。
 
@@ -94,7 +94,7 @@ Comparator<String> byLength = Comparator.comparing(String::length);
 #### エラー例
 
 ```java
-// × チェック例外のハンドリング
+// × 検査例外のハンドリング
 List<String> files = Arrays.asList("file1.txt", "file2.txt");
 files.stream()
     .map(file -> Files.readString(Path.of(file)))  // IOException発生
