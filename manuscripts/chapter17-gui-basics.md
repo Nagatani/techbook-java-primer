@@ -1525,20 +1525,40 @@ public class MyPanel extends JPanel
 
 #### パフォーマンスの最適化
 
-以下のコードは、カスタムコンポーネントのパフォーマンス最適化のテクニックを示しています。不要な再描画を避け、境界判定を効率化することで、スムーズなユーザーエクスペリエンスを提供できます。とくに、複雑な形状のコンポーネントでは、contains()メソッドの最適化が重要です。
+以下のコードは、カスタムコンポーネントのパフォーマンス最適化のテクニックを示しています。
+重い描画の結果を画像に保存しておき、内容が変わったときだけ作り直すことで、スムーズなユーザーエクスペリエンスを提供できます。
+とくに、複雑な形状のコンポーネントでは、contains()メソッドの最適化が重要です。
 
 <span class="listing-number">**サンプルコード17-30**</span>
 
 ```java
+private BufferedImage cache;   // 描画結果を保存しておく画像
+private boolean dirty = true;  // 内容が変わったらtrueにする
+
 @Override
 protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    
-    // 必要な場合のみ再描画
-    if (needsRepaint) {
-        // 重い描画処理
-        needsRepaint = false;
+    int w = Math.max(1, getWidth());
+    int h = Math.max(1, getHeight());
+
+    // 内容かサイズが変わったときだけ、重い描画処理で画像を作り直す
+    if (dirty || cache == null
+            || cache.getWidth() != w || cache.getHeight() != h) {
+        cache = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = cache.createGraphics();
+        drawContent(g2);  // 重い描画処理
+        g2.dispose();
+        dirty = false;
     }
+    // 画面には毎回、保存しておいた画像を描く
+    g.drawImage(cache, 0, 0, null);
+}
+
+// 内容を変えたら、画像を作り直す印を付けて再描画を要求する
+public void setData(List<Point> newData) {
+    data = newData;
+    dirty = true;
+    repaint();
 }
 
 // 効率的な境界計算
@@ -1549,7 +1569,11 @@ public boolean contains(int x, int y) {
 }
 ```
 
-これはパフォーマンス最適化のための実装パターンです。needsRepaintフラグで不要な再描画を防ぎ、contains()メソッドで、クリックされた座標が図形の内側かどうかを判定します。
+これはパフォーマンス最適化のための実装パターンです。
+paintComponentは、ウィンドウが隠れたあとに再び表示されたときなど、内容が変わっていなくても呼ばれます。
+そのため、呼ばれるたびに何かを描く必要があり、描画を省くと画面が空白になります。
+この例では、重い描画処理を画像の作り直しのときだけ行い、paintComponentでは毎回その画像を描くことで、不要な描画処理を防いでいます。
+contains()メソッドでは、クリックされた座標が図形の内側かどうかを判定します。
 
 #### アクセシビリティの考慮
 
