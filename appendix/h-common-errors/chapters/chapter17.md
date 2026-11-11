@@ -64,31 +64,32 @@ frame.add(new JButton("ボタン2"), BorderLayout.SOUTH);
 
 ## コンポーネントの表示問題
 
-### 問題：JPanelの背景色が反映されない
+### 問題：JLabelの背景色が反映されない
 
 エラー症状。
 
 ```java
-JPanel panel = new JPanel();
-panel.setBackground(Color.RED);
+JLabel label = new JLabel("メッセージ");
+label.setBackground(Color.RED);
 // 背景色が表示されない
 ```
 
-これは背景色が表示されない問題の例です。JPanelのデフォルトでは、背景が透明になることがあります。
+これは背景色が表示されない問題の例です。JLabelは既定で透明（`isOpaque()`が`false`）なので、`setBackground`で色を指定しても背景を塗りません。
+なお、JPanelは標準のLook&Feelでは既定で不透明なので、`setBackground`だけで背景色が表示されます。
 
 原因
-- `setOpaque(true)`が設定されていない
-- 親コンポーネントの背景色が優先されている
+- 既定で透明なコンポーネント（JLabelなど）に`setOpaque(true)`を設定していない
+- コンポーネントが透明なため、親コンポーネントの背景がそのまま見えている
 
 対処法。
 
 ```java
-JPanel panel = new JPanel();
-panel.setBackground(Color.RED);
-panel.setOpaque(true);  // 不透明に設定
+JLabel label = new JLabel("メッセージ");
+label.setBackground(Color.RED);
+label.setOpaque(true);  // 不透明に設定
 ```
 
-これは背景色を正しく表示させる対処法です。setOpaque(true)により、パネルが不透明になり、背景色が表示されます。
+これは背景色を正しく表示させる対処法です。setOpaque(true)により、ラベルが不透明になり、背景色が表示されます。
 
 ### 問題：JTextFieldが編集できない
 
