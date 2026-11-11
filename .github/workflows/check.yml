@@ -43,6 +43,10 @@ jobs:
       - name: サンプルコードの抜粋とコンパイル
         run: npm run check:samples -- --no-run
 
+      # 付録（appendix/）と演習（exercises/）の公開コードのコンパイル
+      - name: 付録・演習のコードのコンパイル
+        run: npm run check:public-code -- --no-test
+
       # 図の元データ（docs/diagrams/*.mmd）・画像・原稿の対応。文字が小さすぎる図は注意として表示するだけ
       - name: 図の元データと画像の対応
         run: npm run check:diagrams
@@ -54,6 +58,13 @@ jobs:
           TZ: Asia/Tokyo
           LANG: ja_JP.UTF-8
         run: xvfb-run -a npm run check:samples
+
+      # 付録・演習のテストの実行。スレッドやファイル監視のタイミングに左右されるテストがあるため参考として流す
+      - name: 付録・演習のテストの実行（参考）
+        continue-on-error: true
+        env:
+          TZ: Asia/Tokyo
+        run: npm run check:public-code
 
       # textlintは規約上の例外が残っているため参考として流す
       - name: textlint（参考）

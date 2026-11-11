@@ -72,7 +72,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
    - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
-   - 付録・演習のコードは自動検査の対象外。変更したらDockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
+   - 付録・演習のコードは`npm run check:public-code`でコンパイルとテストを確かめる（2026-11-11〜、CIはコンパイルを失敗扱い）。Maven・Gradleのビルド、GUIの起動、READMEの手順どおりの実行は、DockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
 
 7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/h-common-errors/chapters/chapterXX.md`で提供する
    - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
@@ -157,6 +157,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run check:java`: Compile the numbered Java samples with javac and report real compile errors
 - `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
 - `npm run check:samples`: For samples whose full source is in `sample-code/`, check that the manuscript code equals the recorded line ranges, the caption matches, the full source compiles, and its output matches 実行結果
+- `npm run check:public-code`: Compile the code in `appendix/` and `exercises/` with Java 25 and run their JUnit tests (`-- --no-test` for compile only, `-- exercises/chapter06` to narrow by path). CI fails on compile errors; test results are informational
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
 - `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source

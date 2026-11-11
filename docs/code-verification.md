@@ -23,10 +23,18 @@
 | `npm run check:samples -- --no-run` | `sample-code/`の抜粋の一致とコンパイル（CIで失敗扱い） |
 | `npm run check:samples` | 上に加えて実行し、本文の「実行結果」と照合する（CIでは参考） |
 | `npm run check:java` | 全文を公開していない番号付きコードブロックのコンパイル |
+| `npm run check:public-code -- --no-test` | `appendix/`と`exercises/`のコードのコンパイル（CIで失敗扱い） |
+| `npm run check:public-code` | 上に加えて、テストのあるまとまりをJUnitで実行する（CIでは参考） |
 
 `check:samples`は非推奨・削除予定のAPIの使用を「非推奨・削除予定のAPIを使っている」として報告します。
 
-`appendix/`と`exercises/`は自動の検査の対象外です。変更したら、次の手順で手動で確かめます。
+`check:public-code`（`scripts/check-public-code.js`、2026-11-11〜）は、`package`宣言からソースのルートを求めてまとまりに分け（`src/main/java`と`src/test/java`はプロジェクト単位）、Java 25でコンパイルします。
+JUnit・Mockito・JMH・SLF4J・Gson・Commonsは、スクリプトの`LIBS`に書いた版をMaven Centralから取得して、すべてのまとまりのクラスパスに加えます。
+新しいライブラリを使うコードを足したら`LIBS`に加え、READMEの手順で特別なオプションが要るまとまりは`JAVAC_OPTIONS`に書きます。
+`check:public-code exercises/chapter06`のように、パスの先頭で対象を絞れます。
+
+この検査は、Maven・Gradleのビルド、READMEの手順どおりの実行、`main`の実行、GUIの起動までは確かめません。
+それらにかかわる変更をしたら、次の手順で手動で確かめます。
 
 ## 手動の確認（Docker）
 
