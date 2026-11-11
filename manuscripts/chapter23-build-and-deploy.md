@@ -134,7 +134,7 @@ Todo Manager の準備が完了しました
 
 <span class="footnote">※ この実行結果では、Todo Manager ウィンドウ（400×300ピクセル）が表示され、中央にリスト表示エリア、下部にテキスト入力フィールドと「追加」ボタンが配置されます。サンプルとして「Javaの学習を続ける」「プロジェクトの企画書を作成」「単体テストを実装」の3つのTodoアイテムが自動的に追加されます。</span>
 
-複数のクラスファイルを含む場合のJAR作成
+複数のクラスファイルを含む場合は、次のようにJARを作成します。
 
 <span class="listing-number">**サンプルコード23-3**</span>
 
@@ -167,10 +167,11 @@ javac SimpleApp.java
 Main-Class: SimpleApp
 
 ```
-重要な注意点
-- `Main-Class:`の後には半角スペースが1つ必要
-- ファイルの末尾には改行を入れることが必須
-- 改行がないと正しく認識されない場合がある
+
+書くときには2つの点に注意してください。
+1つは、`Main-Class:`の後に半角スペースを1つ入れることです。
+もう1つは、ファイルの末尾に改行を入れることです。
+最後の行が改行で終わっていないと、その行が正しく読み込まれない場合があります。
 
 ### リソースファイルを含むJARの作成
 
@@ -210,7 +211,7 @@ public class ResourceApp {
 `null`をそのまま`ImageIcon`に渡すと`NullPointerException`になるため、`icon.png`はクラスファイルと同じ場所（JARにする場合はJARのなか）に置いてください。
 `icon.png`と、次のJARの作成で使う`manifest.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
 
-リソースを含むJARの作成方法
+リソースを含むJARは、次のように作成します。
 
 <span class="listing-number">**サンプルコード23-7**</span>
 
@@ -232,7 +233,9 @@ jar cvfm ResourceApp.jar manifest.txt ResourceApp.class icon.png
 # 書式: jar cvfm [出力JARファイル名] [マニフェストファイル名] [含めるクラスファイル]
 jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 ```
-コマンドの各オプションの意味
+
+コマンドの各オプションの意味は次のとおりです。
+
 - `c`
     + 新しいアーカイブを作成する（create）
 - `v`
@@ -302,7 +305,9 @@ jpackage --type app-image \
           --main-jar SimpleApp.jar \
           --dest ./output
 ```
-主なオプションの説明
+
+主なオプションの意味は次のとおりです。
+
 - `--type app-image`
     + アプリケーションイメージを作成する。インストーラ形式にしたい場合は、OSに応じて`dmg`（macOS）、`msi`（Windows）、`rpm`/`deb`（Linux）などを指定する
 - `--name "SimpleApp"`
