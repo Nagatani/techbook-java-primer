@@ -15,95 +15,60 @@
   },
   "10-4": {
     "dir": "10-04",
-    "main": "WithoutGenericsExample",
-    "excerpt": [
-      { "file": "WithoutGenericsExample.java", "from": 1, "to": 19 }
-    ]
-  },
-  "10-5": {
-    "dir": "10-05",
-    "main": "WithGenericsExample",
-    "excerpt": [
-      { "file": "WithGenericsExample.java", "from": 1, "to": 16 }
-    ]
-  },
-  "10-6": {
-    "dir": "10-06",
     "main": "BoxExample",
     "excerpt": [
       { "file": "Box.java", "from": 1, "to": 12 },
       { "file": "BoxExample.java", "from": 1, "to": 15 }
     ]
   },
-  "10-8": {
-    "dir": "10-08",
+  "10-6": {
+    "dir": "10-06",
     "main": "GenericMethodExample",
     "excerpt": [
       { "file": "GenericMethodExample.java", "from": 1, "to": 20 }
     ]
   },
-  "10-9": {
-    "dir": "10-09",
+  "10-7": {
+    "dir": "10-07",
     "main": "BoundedTypeExample",
     "excerpt": [
       { "file": "NumericBox.java", "from": 1, "to": 13 },
       { "file": "BoundedTypeExample.java", "from": 1, "to": 13 }
     ]
   },
-  "10-10": {
-    "dir": "10-10",
+  "10-8": {
+    "dir": "10-08",
     "main": "WildcardExample",
     "excerpt": [
       { "file": "WildcardExample.java", "from": 1, "to": 21 }
     ]
   },
-  "10-11": {
-    "dir": "10-11",
+  "10-9": {
+    "dir": "10-09",
     "main": "VarBasicExample",
     "excerpt": [
       { "file": "VarBasicExample.java", "from": 1, "to": 24 }
     ]
   },
-  "10-12": {
-    "dir": "10-12",
+  "10-10": {
+    "dir": "10-10",
     "main": null,
     "excerpt": [
       { "file": "VarLimitations.java", "from": 1, "to": 33 }
     ]
   },
-  "10-13": {
-    "dir": "10-13",
+  "10-11": {
+    "dir": "10-11",
     "main": null,
     "excerpt": [
-      { "file": "VarReadabilityExample.java", "from": 6, "to": 35 },
-      { "file": "VarReadabilityExample.java", "from": 40, "to": 40 }
+      { "file": "VarReadabilityExample.java", "from": 5, "to": 34 }
     ]
   },
-  "10-14": {
-    "dir": "10-14",
+  "10-12": {
+    "dir": "10-12",
     "main": "VarWithGenericsExample",
     "excerpt": [
-      { "file": "VarWithGenericsExample.java", "from": 4, "to": 25 },
-      { "file": "VarWithGenericsExample.java", "from": 33, "to": 36 },
-      { "file": "VarWithGenericsExample.java", "from": 49, "to": 49 }
-    ]
-  },
-  "10-15": {
-    "dir": "10-15",
-    "main": null,
-    "excerpt": [
-      { "file": "VarBestPractices.java", "from": 6, "to": 12 },
-      { "file": "VarBestPractices.java", "from": 14, "to": 15 },
-      { "file": "VarBestPractices.java", "from": 26, "to": 44 },
-      { "file": "VarBestPractices.java", "from": 63, "to": 63 }
-    ]
-  },
-  "10-16": {
-    "dir": "10-16",
-    "main": null,
-    "excerpt": [
-      { "file": "VarRefactoringExample.java", "from": 5, "to": 31 },
-      { "file": "VarRefactoringExample.java", "from": 54, "to": 54 }
+      { "file": "VarWithGenericsExample.java", "from": 7, "to": 44 }
     ]
   }
 }

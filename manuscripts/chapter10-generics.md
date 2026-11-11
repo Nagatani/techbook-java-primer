@@ -75,7 +75,20 @@ PYTHON
 Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer cannot be cast to class java.lang.String
 ```
 
-このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。これは実行時まで発見できないエラーです。
+このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。
+
+このプログラムは、コンパイルの段階では止まりません。
+コンパイルすると、次のような注意（ノート）が表示されるだけです。
+これは警告であり、エラーではないため、クラスファイルは作成されます。
+
+```
+ノート: CollectionProblem.javaの操作は、未チェックまたは安全ではありません。
+ノート: 詳細は、-Xlint:uncheckedオプションを指定して再コンパイルしてください。
+```
+
+コンパイラは、リストに文字列以外のデータが入ることを止められず、誤りは実行するまで見つかりません。
+Java 5より前は、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物で、このような書き方しかありませんでした。
+「どんな型でも扱える」柔軟性と「型の安全性」を両立させるために、Java 5で導入されたのがジェネリクス（Generics）です。
 
 ### ジェネリクスによる解決
 
@@ -113,95 +126,22 @@ JAVA
 PYTHON
 ```
 
-ジェネリクスを使うと、型の不一致をコンパイル時に検出できます。
-取り出した要素の型はコンパイラが知っているので、明示的な型変換（キャスト）も要りません。
-さらに、`List<String>`と書くだけで「文字列のリスト」であることが一目でわかり、コードの意図が明確になります。
-
-### 型安全性の重要性
-
-プログラミング言語における型システムの目的は、プログラムの正しさをコンパイル時に検証し、実行時エラーを減らすことです。
-しかし、汎用的なデータ構造（コレクションなど）を実装する際には、「どんな型でも扱える」柔軟性と「型の安全性」を両立させる必要がありました。
-
-Java 5より前の時代、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物でした。これは一見便利に思えますが、大きな問題を抱えていました。
-
-<span class="listing-number">**サンプルコード10-4**　WithoutGenericsExample.java</span>
-
-```java
-// ジェネリクスがなかった時代のコード（現在は非推奨）
-import java.util.ArrayList;
-import java.util.List;
-
-public class WithoutGenericsExample {
-    public static void main(String[] args) {
-        List list = new ArrayList();
-        list.add("Hello");
-        list.add(123); // 文字列も数値も、何でも入ってしまう！
-
-        // 取り出すときにキャストが必要
-        String message = (String) list.get(0); // OK
-        IO.println("取り出した文字列: " + message);
-
-        // もし間違った型で取り出そうとすると...
-        // コンパイルは通るが実行時にClassCastExceptionが発生
-        // String wrong = (String) list.get(1); 
-    }
-}
-```
-
-コンパイルすると、次のような注意（ノート）が表示されます。
-これは警告であり、エラーではないため、クラスファイルは作成されます。
-
-```
-ノート: WithoutGenericsExample.javaの操作は、未チェックまたは安全ではありません。
-ノート: 詳細は、-Xlint:uncheckedオプションを指定して再コンパイルしてください。
-```
-
-実行結果：
-
-```
-取り出した文字列: Hello
-```
-
-このように、コンパイラは型の誤りをチェックできませんでした。バグが実行時まで発見されない危険な状態でした。
-
-この問題を解決するためにJava 5で導入されたのがジェネリクス（Generics）です。
+数値を追加する行のコメントを外すと、コンパイルエラーになります。
+誤りが実行する前に見つかるわけです。
 
 ### ジェネリクスの基本概念
 
 ジェネリクスは、クラスやインターフェイスが「どの型のデータ」を扱うのかを、クラスを定義または利用する時点で指定できるようにするしくみです。
 これは「パラメータ化された型（Parameterized Types）」とも呼ばれます。
-先ほど見たとおり、型の不一致をコンパイル時に検出して実行時エラーを防ぎ、キャストを不要にしてコードを安全で読みやすくします。
-加えて、同じロジックを異なる型に対して使い回せるため、コードの再利用性も高まります。
 
 `List<String>`のように、クラス名の後に山括弧`< >`で型を指定します。このとき指定する型（ここでは`String`）を型引数と呼びます。クラスを定義する側で宣言する`<T>`のような型パラメータ（次の節で学びます）に、使う側が具体的な型を当てはめるわけです。
 
-<span class="listing-number">**サンプルコード10-5**　WithGenericsExample.java</span>
+ジェネリクスを使う利点は、次の4つにまとめられます。
 
-```java
-import java.util.ArrayList;
-import java.util.List;
-
-public class WithGenericsExample {
-    public static void main(String[] args) {
-        // String型の要素だけを格納できるListを宣言
-        List<String> stringList = new ArrayList<>();
-
-        stringList.add("Java");
-        // stringList.add(123); // コンパイルエラー！ String型以外は追加できない
-
-        // 取り出すときも、キャストは不要
-        String element = stringList.get(0); // 安全！
-        IO.println(element);
-    }
-}
-```
-実行結果：
-
-```
-Java
-```
-
-ジェネリクスを使うことで、コンパイラが型の整合性をチェックしてくれるため、意図しない型のデータが混入するのを防ぎ、実行時のClassCastExceptionをコンパイル時点で検出できるようになります。
+- 型の不一致をコンパイル時に検出できる。意図しない型のデータの混入を防ぎ、実行時の`ClassCastException`を起こさない
+- 取り出した要素の型をコンパイラが知っているので、明示的な型変換（キャスト）が要らない
+- `List<String>`と書くだけで「文字列のリスト」だとわかり、コードの意図が明確になる
+- 同じ処理を異なる型に対して使い回せるので、コードを再利用しやすい（次の節で自作のクラスに使う）
 
 ## ジェネリッククラスの作成
 
@@ -211,7 +151,7 @@ Java
 
 クラス名の後に`<T>`のような型パラメータを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダです。
 
-<span class="listing-number">**サンプルコード10-6**　Box.java、BoxExample.java</span>
+<span class="listing-number">**サンプルコード10-4**　Box.java、BoxExample.java</span>
 
 ```java
 // Tという型パラメータを持つジェネリッククラス
@@ -254,7 +194,7 @@ Hello Generics
 
 Java 7からは、右辺の型引数を省略できるダイヤモンド演算子 (`<>`)が導入され、より簡潔に記述できるようになりました。コンパイラが左辺の宣言から型を推論してくれます。
 
-<span class="listing-number">**サンプルコード10-7**</span>
+<span class="listing-number">**サンプルコード10-5**</span>
 
 ```java
 // Java 7以降の推奨される書き方
@@ -267,7 +207,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 以下のコードは、ジェネリックメソッドの実装例を示しています。ユーティリティクラスの静的メソッドとして、さまざまな型の配列を扱う場合に便利です。
 
-<span class="listing-number">**サンプルコード10-8**　GenericMethodExample.java</span>
+<span class="listing-number">**サンプルコード10-6**　GenericMethodExample.java</span>
 
 ```java
 public class GenericMethodExample {
@@ -304,7 +244,7 @@ String配列: A B C
 
 `<T extends Number>`と書くと、「Tは`Number`クラスまたはそのサブクラス」という制約を課すことができます。
 
-<span class="listing-number">**サンプルコード10-9**　NumericBox.java、BoundedTypeExample.java</span>
+<span class="listing-number">**サンプルコード10-7**　NumericBox.java、BoundedTypeExample.java</span>
 
 ```java
 // Numberまたはそのサブクラスしか扱えないNumericBox
@@ -363,7 +303,7 @@ public class BoundedTypeExample {
 
 </div>
 
-<span class="listing-number">**サンプルコード10-10**　WildcardExample.java</span>
+<span class="listing-number">**サンプルコード10-8**　WildcardExample.java</span>
 
 ```java
 import java.util.List;
@@ -397,16 +337,14 @@ Doubleの合計: 6.6
 
 ## var型推論とジェネリクス
 
-Java 10で導入されたvar型推論は、ジェネリクスと組み合わせることで、より簡潔で読みやすいコードを書くことができます。本セクションでは、ジェネリクスの文脈でのvar型推論の活用方法について学習します。
-
-この節の後半のサンプルには、第11章で学ぶラムダ式（`x -> …`）とメソッド参照（`String::length`など）、第12章で学ぶStream API（`stream().filter(…).map(…)`）が出てきます。
-ここでは、`var`で宣言した変数にどの型が推論されるかに注目し、ラムダ式とStream APIは各章を学んだあとに読み返してください。
+Java 10で導入されたvar型推論を使うと、ローカル変数を宣言するときに型の記述を省けます。
+`var`は、ジェネリクスの長い型名を繰り返さずに済む場面でとくに役立つため、本章で扱います。
 
 ### var型推論の基本概念
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード10-11**　VarBasicExample.java</span>
+<span class="listing-number">**サンプルコード10-9**　VarBasicExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -445,7 +383,7 @@ var型推論は、以下の場面でのみ使用できます。
 
 一方、以下の場面では使用できません。具体的な例で確認してみましょう。
 
-<span class="listing-number">**サンプルコード10-12**　VarLimitations.java</span>
+<span class="listing-number">**サンプルコード10-10**　VarLimitations.java</span>
 
 ```java
 import java.util.List;
@@ -485,167 +423,102 @@ public class VarLimitations {
 
 ### 可読性の向上とトレードオフ
 
-var型推論は適切に使用すると可読性を向上させますが、使いすぎると逆に可読性を損なう場合があります。以下の例でよい使用例と悪い使用例を比較してみましょう。
+var型推論は、使いどころを選べば読みやすさを高めますが、使いすぎると逆に読みにくくなります。
+次の例で、よい使い方と悪い使い方を比べてみましょう。
 
-<span class="listing-number">**サンプルコード10-13**　VarReadabilityExample.java（6〜35、40行目）</span>
+<span class="listing-number">**サンプルコード10-11**　VarReadabilityExample.java（5〜34行目）</span>
 
 ```java
 public class VarReadabilityExample {
     public static void demonstrateGoodUsage() {
-        // 良い使用例：型が明らかで、冗長性を減らす
+        // 良い使用例：右辺から型が明らかで、長い型名を繰り返さずに済む
         var students = List.of("Alice", "Bob", "Charlie");
         var scoreMap = new HashMap<String, Integer>();
         var builder = new StringBuilder();
-        
-        // 複雑なジェネリック型でとくに有効
+
+        // 長いジェネリック型でとくに有効
         var complexMap = new HashMap<String, List<Map<String, Object>>>();
-        
-        // Stream APIとの組み合わせ
-        var upperCaseNames = students.stream()
-            .map(String::toUpperCase)
-            .collect(Collectors.toList());
     }
-    
+
     public static void demonstratePoorUsage() {
-        // 悪い使用例：型が不明確
+        // 悪い使用例：右辺を見ても型がわからない
         var data = getData();           // 戻り値の型が不明
         var result = process(data);     // メソッドの結果の型が不明
         var flag = checkCondition();    // boolean? String? 不明
-        
-        // 数値型の場合は明示的な型の方が良い場合も
-        var count = 0;      // int? long? 
+
+        // 数値リテラルは、どの型になるか読み手が迷いやすい
+        var count = 0;      // int? long?
         var rate = 0.5;     // float? double?
-        
-        // より明確な書き方
+
+        // 型を明示したほうが意図が伝わる
         int itemCount = 0;
         double successRate = 0.5;
     }
-    // ...
+
+    private static Object getData() { return null; }
+    private static Object process(Object data) { return null; }
+    private static boolean checkCondition() { return true; }
 }
 ```
 
 ### ジェネリクスとvarの組み合わせ
 
-var型推論は、ジェネリクスと組み合わせることでとくに威力を発揮します。複雑なジェネリック型の宣言を簡潔にし、Stream APIやメソッドチェーンでの型推論を活用できます。
+var型推論は、ジェネリクスと組み合わせると効果が大きくなります。
+長いジェネリック型の宣言を簡潔にできるほか、ジェネリックメソッドの戻り値の型もコンパイラが推論します。
+`var`で宣言した変数にも型は決まっているので、取り出した値はその型として扱えます。
 
-<span class="listing-number">**サンプルコード10-14**　VarWithGenericsExample.java（4〜25、33〜36、49行目）</span>
+サンプルの`Pair<T, U>`は、2つの型パラメータを持つジェネリッククラスです。
+`<T, U>`のように、型パラメータはカンマで区切って複数宣言できます。
+
+<span class="listing-number">**サンプルコード10-12**　VarWithGenericsExample.java（7〜44行目）</span>
 
 ```java
 public class VarWithGenericsExample {
     public static void main(String[] args) {
-        // 複雑なジェネリック型の簡略化
+        // 長いジェネリック型の宣言を簡潔にする
         var userPreferences = new HashMap<String, List<String>>();
         var nestedData = new ArrayList<Map<String, Set<Integer>>>();
-        
-        // メソッドチェーンでの型推論
-        var processedData = Arrays.asList("apple", "banana", "cherry")
-            .stream()
-            .filter(s -> s.length() > 5)
-            .map(String::toUpperCase)
-            .collect(Collectors.toList());
-        
-        // ワイルドカードとの組み合わせ
-        List<? extends Number> numbers = Arrays.asList(1, 2.5, 3L);
-        var sum = calculateSum(numbers);
-        
-        // ジェネリックメソッドの戻り値
+
+        // HashMap<String, List<String>>と推論されるので、getの戻り値はList<String>になる
+        userPreferences.put("Alice", List.of("Java", "Python"));
+        List<String> languages = userPreferences.get("Alice");
+        IO.println("Alice: " + languages);
+
+        // ジェネリックメソッドの戻り値（Pair<String, Integer>と推論される）
         var pair = createPair("Hello", 42);
-        IO.println("First: " + pair.getFirst());
-        IO.println("Second: " + pair.getSecond());
+        String first = pair.getFirst();
+        int second = pair.getSecond();
+        IO.println("First: " + first);
+        IO.println("Second: " + second);
     }
-    // ...
+
+    // 2つの型パラメータT、Uを持つジェネリックメソッド
     public static <T, U> Pair<T, U> createPair(T first, U second) {
         return new Pair<>(first, second);
     }
-    
-    // ...
+
+    // 2つの型パラメータを持つジェネリッククラス
+    static class Pair<T, U> {
+        private final T first;
+        private final U second;
+
+        public Pair(T first, U second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public T getFirst() { return first; }
+        public U getSecond() { return second; }
+    }
 }
 ```
 
 実行結果：
 
 ```
+Alice: [Java, Python]
 First: Hello
 Second: 42
-```
-
-### ベストプラクティスとアンチパターン
-
-var型推論を効果的に使用するためのガイドラインを、よい例と悪い例で紹介します。
-
-<span class="listing-number">**サンプルコード10-15**　VarBestPractices.java（6〜12、14〜15、26〜44、63行目）</span>
-
-```java
-public class VarBestPractices {
-    
-    // GOOD: 変数名で型が明確
-    public static void goodPractices() {
-        var studentList = new ArrayList<String>();
-        var scoreMap = new HashMap<String, Integer>();
-        var messageBuilder = new StringBuilder();
-        // ...
-        // ○ 長いジェネリック型の簡略化
-        var complexStructure = new HashMap<String, List<Map<String, Object>>>();
-        // ...
-    }
-    
-    // POOR: 型が不明確
-    public static void poorPractices() {
-        // × 変数名だけでは型が不明
-        var data = processData();
-        var result = calculate();
-        var value = getValue();
-        
-        // × プリミティブ型での誤用
-        var x = 10;          // int? long?
-        var y = 3.14;        // float? double?
-        
-        // × nullリテラル（コンパイルエラー）
-        // var nullValue = null;
-        
-        // × 配列初期化子（コンパイルエラー）
-        // var array = {1, 2, 3};
-    }
-    // ...
-}
-```
-
-### リファクタリングでのvar活用
-
-既存のコードをvarを使ってリファクタリングする際の戦略を、具体的な例で示します。
-
-<span class="listing-number">**サンプルコード10-16**　VarRefactoringExample.java（5〜31、54行目）</span>
-
-```java
-public class VarRefactoringExample {
-    
-    // リファクタリング前
-    public static void beforeRefactoring() {
-        HashMap<String, List<Map<String, Object>>> complexData = 
-            new HashMap<String, List<Map<String, Object>>>();
-        
-        ArrayList<String> filteredNames = new ArrayList<String>();
-        
-        List<Integer> processedNumbers = Arrays.asList(1, 2, 3, 4, 5)
-            .stream()
-            .filter(n -> n % 2 == 0)
-            .map(n -> n * 2)
-            .collect(Collectors.toList());
-    }
-    
-    // リファクタリング後
-    public static void afterRefactoring() {
-        var complexData = new HashMap<String, List<Map<String, Object>>>();
-        var filteredNames = new ArrayList<String>();
-        
-        var processedNumbers = Arrays.asList(1, 2, 3, 4, 5)
-            .stream()
-            .filter(n -> n % 2 == 0)
-            .map(n -> n * 2)
-            .collect(Collectors.toList());
-    }
-    // ...
-}
 ```
 
 ### var型推論の実践的な判断基準
@@ -656,7 +529,6 @@ var型推論を使うかどうかは、次の基準で判断します。
    - 複雑なジェネリック型で冗長性が高い
    - 変数名から型が明確に推測できる
    - 初期化式から型が明らか（ファクトリーメソッド、new演算子）
-   - Stream APIの処理結果
 
 2. 明示的な型宣言を推奨する場面
    - メソッドの戻り値型が不明確
@@ -664,8 +536,8 @@ var型推論を使うかどうかは、次の基準で判断します。
    - パブリックAPIの一部
    - 型が重要な意味を持つ場合
 
-var型推論は、Javaの表現力を高める強力な機能ですが、適切に使用することでコードの可読性と保守性を向上させることができます。
-ジェネリクスと組み合わせて使用することで、複雑な型宣言を簡潔にし、本質的なロジックに集中できるコードを書くことが可能になります。
+`var`を使っても、変数の型はコンパイル時に決まり、型安全性は変わりません。
+省けるのは型を書く手間だけなので、読み手が型を判断しにくくなる場面では型を明示します。
 
 ※ 本章の高度な内容については、付録B.07「型消去とジェネリクス」を参照してください。
 （`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`）
@@ -698,10 +570,11 @@ var型推論は、Javaの表現力を高める強力な機能ですが、適切�
 - これにより、実行時エラーである`ClassCastException`を未然に防ぐことができる
 - 自作のクラスやメソッドもジェネリックにすることで、再利用性を高めることができる
 - 型制約やワイルドカードを使うことで、より柔軟で安全なメソッド設計が可能になる
-- var型推論は、ジェネリクスの複雑な型宣言を簡潔にし、コードの可読性を向上させる強力な機能である
-- 適切にvar型推論を活用することで、型安全性を保ちながら、より保守しやすいコードを書くことができる
+- var型推論は、ジェネリクスの長い型宣言を簡潔にする。型はコンパイル時に決まるので、型安全性は変わらない
+- 右辺から型がわからない場面では`var`を使わず、型を明示する
 
-コレクションを扱う際には必ずジェネリクスを使い、ローカル変数の宣言ではvar型推論を活用します。これにより型安全性とコードの簡潔性を両立させることが、現代的なJavaプログラミングの基本です。
+コレクションを扱う際には必ずジェネリクスを使います。
+`var`は、右辺から型が明らかな場面に絞って使い、型安全性とコードの簡潔性を両立させます。
 
 ## 章末演習
 

@@ -15,7 +15,8 @@
 
 ### この章を始める前に
 
-配列の基本的な使い方とインターフェイスの概念を理解していれば準備完了です。
+配列の基本的な使い方と、第7章のインターフェイスの概念を理解していれば準備完了です。
+`HashSet`と`HashMap`では、第5章で学んだ`equals()`と`hashCode()`のオーバーライドが関係します。
 
 ## なぜコレクションフレームワークが必要か
 
@@ -404,6 +405,12 @@ public class HashSetExample {
 「プログラミング」タグは存在します。
 ```
 
+`HashSet`は、要素が重複しているかどうかを`hashCode()`と`equals()`の2つのメソッドで判定します。
+まず`hashCode()`が返す整数で格納する場所を決め、同じ場所にある要素と`equals()`で比べて、等しければ重複とみなします。
+`String`や`Integer`などの標準のクラスは、この2つのメソッドを内容で比べるようにオーバーライドしているので、そのまま使えます。
+自作のクラスのオブジェクトを入れるときは、`equals()`と`hashCode()`を一貫した形でオーバーライドしないと、同じ内容のオブジェクトが重複して登録されます。
+オーバーライドの書き方は、第5章の節「`Object`クラスのメソッド（toString・equals・hashCode）」を読み直してください。
+
 ### HashSet vs TreeSet vs LinkedHashSet
 
 Setの実装クラスは、内部構造の違いにより異なる特性を持ちます。データの順序が重要かどうか、検索や挿入の頻度、ソートが必要かどうかを考慮して選択します。
@@ -524,6 +531,9 @@ Bobの点数: 92
 Bob: 92点
 Alice: 95点
 ```
+
+`HashMap`も、キーが同じかどうかを`HashSet`と同じく`hashCode()`と`equals()`で判定します。
+自作のクラスをキーに使うときは、この2つのメソッドを一貫した形でオーバーライドしておく必要があります（第5章で学んだ書き方を使います）。
 
 ### HashMap vs TreeMap vs LinkedHashMap
 
@@ -743,6 +753,7 @@ for (String element : list) {
 ### Java 8以降の進化
 
 Java 8で導入されたStream APIは、コレクションの処理方法を革新しました。
+次のコードは、5文字より長い要素を大文字にして新しいリストに集める処理を、拡張for文とStream APIで書き比べたものです。
 
 <span class="listing-number">**サンプルコード9-18**</span>
 
@@ -762,8 +773,11 @@ List<String> result = list.stream()
     .collect(Collectors.toList());
 ```
 
+`s -> s.length() > 5`はラムダ式と呼ばれる書き方で、「要素`s`を受け取り、長さが5より大きいかを返す処理」を表します。
+`String::toUpperCase`は、各要素の`toUpperCase()`を呼ぶ処理を表すメソッド参照です。
 Stream APIは関数型プログラミングのパラダイムを取り入れ、より宣言的で読みやすいコードを可能にします。
-ラムダ式は第11章、Stream APIは第12章で詳しく学びます。
+ここでは書き方の雰囲気をつかめば十分です。
+ラムダ式とメソッド参照は第11章、Stream APIは第12章で詳しく学びます。
 
 ### 不変コレクション
 
@@ -787,17 +801,17 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 - `NullPointerException`
     + コレクションの初期化忘れや、`null`要素を含むコレクションの操作で発生する
 - `ClassCastException`
-    + ジェネリクスを使わずに取り出した要素を、誤った型へキャストすると発生する
+    + ジェネリクスを使わない（型引数を省いた）コレクションから取り出した要素を、誤った型へキャストすると発生する。原因と防ぎ方は第10章で学ぶ
 - `UnsupportedOperationException`
     + `List.of()`などで作った不変リストに要素を追加・削除しようとすると発生する
 - `ConcurrentModificationException`
-    + 拡張for文でリストを反復している最中に要素を削除すると発生する。`Iterator.remove()`や`removeIf()`を使う
+    + 拡張for文でリストを反復している最中に要素を削除すると発生する。`Iterator.remove()`を使う
 - `IndexOutOfBoundsException`
     + 存在しない位置の要素を取り出そうとすると発生する
 - Mapで存在しないキーへのアクセス
     + `get()`は`null`を返すため、`getOrDefault()`や`containsKey()`で確かめる
 - `equals()`と`hashCode()`の不整合
-    + 独自クラスを`HashSet`や`HashMap`のキーに使うときは、両方を一貫した形でオーバーライドする
+    + 独自クラスを`HashSet`の要素や`HashMap`のキーに使うときは、両方を一貫した形でオーバーライドする（第5章）
 
 エラーの例と修正したコード、デバッグのコツは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter09.md`
