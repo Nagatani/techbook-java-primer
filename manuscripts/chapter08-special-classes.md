@@ -1,4 +1,4 @@
-# <b>8章</b> <span>Javaの特殊なクラス形式</span> <small>列挙型とレコードによる効率的な実装</small>
+# <b>8章</b> <span>Javaの特殊なクラス形式</span> <small>列挙型・レコード・内部クラスの使いどころ</small>
 
 ## 本章の学習目標
 
@@ -29,7 +29,6 @@
 ### enumとは？
 
 `enum`（列挙型）は、決まったいくつかの値だけを取りうる型を定義するための、特殊なクラスです。たとえば、「曜日（月、火、水、木、金、土、日）」や「信号の色（赤、青、黄）」のように、値の範囲が限定されているものを扱うのに最適です。
-
 
 ### なぜenumが必要なのか？
 
@@ -80,10 +79,14 @@ public class EnumExample {
 
 Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、便利なメソッドが標準で提供されています。
 
-- `values()`: すべての列挙子を定義順に格納した配列を返す
-- `valueOf(String name)`: 指定された名前の列挙子を返す
-- `name()`: 列挙子の名前（定義した通りの文字列）を返す
-- `ordinal()`: 列挙子の定義順序（ゼロから始まる）を返す
+- `values()`
+    + すべての列挙子を定義順に格納した配列を返す
+- `valueOf(String name)`
+    + 指定された名前の列挙子を返す
+- `name()`
+    + 列挙子の名前（定義した通りの文字列）を返す
+- `ordinal()`
+    + 列挙子の定義順序（ゼロから始まる）を返す
 
 <span class="listing-number">**サンプルコード8-3**　EnumMethodsExample.java</span>
 
@@ -461,9 +464,7 @@ Recordは、これらを手で書く代わりにコンパイラーに任せる�
 public record Person(String name, int age) {}
 ```
 
-これだけで、以下をすべて定義したのとほぼ同じ意味になります。
-
-#### 上記のRecord定義は、コンパイラーによって以下のような完全なクラス定義に展開されます
+これだけで、コンパイラーが次のクラスを定義したのとほぼ同じ意味になります（メソッドの中身は省略しています）。
 
 <span class="listing-number">**サンプルコード8-12**</span>
 
@@ -580,13 +581,14 @@ public record BankAccount(String accountNumber, double balance) {
 ### 追加のコンストラクター
 
 標準のコンストラクター以外にも、追加のコンストラクターを定義できます。
+次の`Tile`は、幅と高さを持つ長方形のタイルを表すRecordで、1辺の長さだけを渡して正方形のタイルを作るコンストラクターを足しています。
 
-<span class="listing-number">**サンプルコード8-15**　Rectangle.java</span>
+<span class="listing-number">**サンプルコード8-15**　Tile.java</span>
 
 ```java
-public record Rectangle(double width, double height) {
+public record Tile(double width, double height) {
     // 正方形用のコンストラクタ
-    public Rectangle(double side) {
+    public Tile(double side) {
         this(side, side);
     }
     
@@ -928,6 +930,9 @@ public class OrderProcessor {
 
 ### EnumとRecordの組み合わせ
 
+次のサンプルは、注文の状態を表すEnumの`OrderStatus`と、その状態を持つRecordの`Order`を組み合わせたものです。
+この`Order`は、サンプルコード8-24の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
+`updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
 <span class="listing-number">**サンプルコード8-25**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
 
 ```java
@@ -1164,7 +1169,7 @@ public class AnonymousClassExample {
 ```
 
 このように、メソッドを1つだけ持つインターフェイスを匿名クラスで実装する書き方は、ラムダ式を使うともっと短く書けます。
-第11章「ラムダ式と関数インターフェイス」の冒頭で、匿名クラスとラムダ式を比べながら、ラムダ式の書き方を学びます。
+第11章「ラムダ式と関数型インターフェイス」の冒頭で、匿名クラスとラムダ式を比べながら、ラムダ式の書き方を学びます。
 `Comparator`をラムダ式で書いて並べ替える方法も、第11章で扱います。
 
 ### 実践的な使用例：イテレーターパターン
@@ -1269,7 +1274,7 @@ Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフ
 ### 内部クラスの重要ポイント
 - 4種類の内部クラスそれぞれの特性と用途
 - 外部クラスとの関係性とアクセス制御
-- メモリモデルとパフォーマンスへの影響
+- メンバー内部クラスが外部クラスへの参照を持つことと、メモリリークを防ぐための選び方
 - Java 8以降のラムダ式による代替
 
 ### 次のステップ
@@ -1279,16 +1284,19 @@ Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフ
 
 ### 演習課題へのアクセス
 
-本章の理解を深めるための演習課題を用意しています。以下のGitHubリポジトリで、実践的な問題に挑戦してください。
-
-**演習課題URL**: https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter08/
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter08/`
 
 ### 課題構成
 
-演習は難易度別に以下の3つのレベルで構成されています。
+演習は題材ごとに、レコード（`records/`）と列挙型（`enums/`）の2つのディレクトリに分かれています。
+それぞれに、難易度別の3つのレベルの課題があります。
 
-- 基礎演習: EnumとRecordの基本的な使い方
-- 応用演習: 実践的なアプリケーションでの活用
-- 発展演習: パターンマッチングや高度な設計パターン
+- 基礎課題（basic/）
+    + EnumとRecordの基本的な使い方
+- 発展課題（advanced/）
+    + 実践的なアプリケーションでの活用
+- チャレンジ課題（challenge/）
+    + パターンマッチングや高度な設計パターン
 
-各演習には、詳細な要件と期待される実装のヒントが含まれています。
+各課題には、詳細な要件と実装のヒントが含まれています。

@@ -1,7 +1,7 @@
 <!-- このファイルは scripts/sample-code.js sync が生成します -->
 # 第8章のサンプルコード
 
-「Javaの特殊なクラス形式 列挙型とレコードによる効率的な実装」の章のサンプルコードです。
+「Javaの特殊なクラス形式 列挙型・レコード・内部クラスの使いどころ」の章のサンプルコードです。
 
 本文の「サンプルコード8-N」の全文です。ディレクトリ名がサンプルコードの番号に対応します。
 本文には全文の一部だけを載せていることがあります。本文のキャプションに、ファイル名と掲載した行の範囲を示しています。
@@ -29,7 +29,7 @@ javac -d out *.java
 | [8-11](./08-11/) | Person.java | （mainメソッドなし） |
 | [8-13](./08-13/) | Person.java<br>RecordExample.java | `java -cp out RecordExample` |
 | [8-14](./08-14/) | BankAccount.java | （mainメソッドなし） |
-| [8-15](./08-15/) | Rectangle.java | （mainメソッドなし） |
+| [8-15](./08-15/) | Tile.java | （mainメソッドなし） |
 | [8-16](./08-16/) | Temperature.java | （mainメソッドなし） |
 | [8-17](./08-17/) | Configuration.java | （mainメソッドなし） |
 | [8-18](./08-18/) | PatternMatchingExample.java<br>Point.java | `java -cp out PatternMatchingExample` |

@@ -101,7 +101,7 @@
     "dir": "08-15",
     "main": null,
     "excerpt": [
-      { "file": "Rectangle.java", "from": 1, "to": 16 }
+      { "file": "Tile.java", "from": 1, "to": 16 }
     ]
   },
   "8-16": {

@@ -1,6 +1,6 @@
-public record Rectangle(double width, double height) {
+public record Tile(double width, double height) {
     // 正方形用のコンストラクタ
-    public Rectangle(double side) {
+    public Tile(double side) {
         this(side, side);
     }
     
