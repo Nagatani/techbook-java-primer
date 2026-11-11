@@ -17,7 +17,7 @@
 - [8章　Javaの特殊なクラス形式](chapter08-special-classes.md)
 - [9章　コレクションフレームワーク](chapter09-collections.md)
 - [10章　ジェネリクス](chapter10-generics.md)
-- [11章　ラムダ式と関数インターフェイス](chapter11-lambda-and-functional-interfaces.md)
+- [11章　ラムダ式と関数型インターフェイス](chapter11-lambda-and-functional-interfaces.md)
 - [12章　Stream APIと高度なコレクション操作](chapter12-advanced-collections.md)
 - [13章　例外処理](chapter13-exception-handling.md)
 

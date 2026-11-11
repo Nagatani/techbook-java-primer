@@ -133,3 +133,7 @@ rules:
     pattern: ファクトリー
   - expected: インターフェイス
     pattern: /インタ[ーァ]?フェ[ーイ]?ス/
+  - expected: 関数型インターフェイス
+    pattern: 関数インターフェイス
+  - expected: 検査例外
+    pattern: チェック例外
