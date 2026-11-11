@@ -20,9 +20,8 @@ public class Constants {
         final int size = data.size();
         // size = 10;  // コンパイルエラー： final変数は変更不可
         
-        data.forEach(item -> {
-            // ラムダ式内でローカル変数を使う場合、実質的にfinalである必要がある
+        for (String item : data) {
             IO.println(item + " (total: " + size + ")");
-        });
+        }
     }
 }

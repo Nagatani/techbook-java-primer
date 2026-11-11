@@ -44,4 +44,4 @@ javac -d out *.java
 | [8-28](./08-28/) | MathOperations.java | `java -cp out MathOperations` |
 | [8-29](./08-29/) | LocalClassExample.java | （mainメソッドなし） |
 | [8-30](./08-30/) | AnonymousClassExample.java | `java -cp out AnonymousClassExample` |
-| [8-31](./08-31/) | MyList.java | （mainメソッドなし） |
+| [8-31](./08-31/) | StringList.java | `java -cp out StringList` |

@@ -130,7 +130,7 @@
     "dir": "08-19",
     "main": null,
     "excerpt": [
-      { "file": "LocalRecordExample.java", "from": 1, "to": 25 }
+      { "file": "LocalRecordExample.java", "from": 1, "to": 28 }
     ]
   },
   "8-20": {
@@ -167,7 +167,7 @@
       { "file": "Order.java", "from": 4, "to": 5 },
       { "file": "Customer.java", "from": 1, "to": 1, "sep": "none" },
       { "file": "OrderItem.java", "from": 3, "to": 3, "sep": "none" },
-      { "file": "OrderProcessor.java", "from": 3, "to": 15 }
+      { "file": "OrderProcessor.java", "from": 3, "to": 21 }
     ]
   },
   "8-25": {
@@ -214,14 +214,14 @@
     "dir": "08-30",
     "main": "AnonymousClassExample",
     "excerpt": [
-      { "file": "AnonymousClassExample.java", "from": 1, "to": 21 }
+      { "file": "AnonymousClassExample.java", "from": 1, "to": 18 }
     ]
   },
   "8-31": {
     "dir": "08-31",
-    "main": null,
+    "main": "StringList",
     "excerpt": [
-      { "file": "MyList.java", "from": 1, "to": 35 }
+      { "file": "StringList.java", "from": 1, "to": 49 }
     ]
   }
 }

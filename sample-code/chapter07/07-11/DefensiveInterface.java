@@ -1,21 +1,20 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 interface DefensiveInterface {
     List<String> getItems();
     
-    // 防御的なdefaultメソッド
+    // 防御的なdefaultメソッド：nullの代わりに空のリストを返し、
+    // 内部のリストではなくコピーを渡す
     default List<String> getSafeItems() {
         List<String> items = getItems();
-        return items != null ? new ArrayList<>(items) : Collections.emptyList();
+        return items != null ? new ArrayList<>(items) : new ArrayList<>();
     }
     
-    default Optional<String> getFirstItem() {
+    // 要素がないときは、nullではなく引数の既定値を返す
+    default String getFirstItemOrDefault(String defaultValue) {
         List<String> items = getSafeItems();
-        return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
-    }
-    
-    default Iterator<String> iterateItems() {
-        return getSafeItems().iterator();
+        return items.isEmpty() ? defaultValue : items.get(0);
     }
     
     // バリデーション付きメソッド

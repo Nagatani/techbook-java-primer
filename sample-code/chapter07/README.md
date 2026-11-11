@@ -21,16 +21,16 @@ javac -d out *.java
 | [7-3](./07-03/) | Circle.java<br>Main.java<br>Rectangle.java<br>Shape.java | `java -cp out Main` |
 | [7-4](./07-04/) | Archivable.java<br>Exportable.java | （mainメソッドなし） |
 | [7-5](./07-05/) | Archivable.java<br>Document.java<br>Exportable.java | （mainメソッドなし） |
-| [7-6](./07-06/) | Collection.java | （mainメソッドなし） |
+| [7-6](./07-06/) | DefaultMethodDemo.java | `java -cp out DefaultMethodDemo` |
 | [7-7](./07-07/) | DataProcessor.java | （mainメソッドなし） |
 | [7-8](./07-08/) | A.java | （mainメソッドなし） |
 | [7-9](./07-09/) | BaseClass.java | （mainメソッドなし） |
-| [7-11](./07-11/) | DefensiveInterface.java | （mainメソッドなし） |
+| [7-10](./07-10/) | JsonDemo.java<br>JsonSerializable.java<br>User.java | `java -cp out JsonDemo` |
+| [7-11](./07-11/) | DefensiveDemo.java<br>DefensiveInterface.java | `java -cp out DefensiveDemo` |
 | [7-12](./07-12/) | Timestamped.java | （mainメソッドなし） |
-| [7-13](./07-13/) | ComparableTrait.java | （mainメソッドなし） |
+| [7-13](./07-13/) | Measurable.java | （mainメソッドなし） |
 | [7-14](./07-14/) | BadUserService.java<br>User.java | （mainメソッドなし） |
-| [7-15](./07-15/) | FunctionEnhancementDemo.java | `java -cp out FunctionEnhancementDemo` |
-| [7-16](./07-16/) | ServiceConfig.java<br>ServiceV1.java | （mainメソッドなし） |
-| [7-17](./07-17/) | FactoryDemo.java<br>ShapeFactory.java | `java -cp out FactoryDemo` |
-| [7-18](./07-18/) | DocumentFactory.java | （mainメソッドなし） |
-| [7-19](./07-19/) | DatabaseConnectionFactory.java | （mainメソッドなし） |
+| [7-15](./07-15/) | ServiceConfig.java<br>ServiceV1.java | （mainメソッドなし） |
+| [7-16](./07-16/) | FactoryDemo.java<br>ShapeFactory.java | `java -cp out FactoryDemo` |
+| [7-17](./07-17/) | DocumentFactory.java | （mainメソッドなし） |
+| [7-18](./07-18/) | DatabaseConnectionFactory.java | （mainメソッドなし） |

@@ -263,57 +263,59 @@ Java 8以降、インターフェイスは大きく進化し、より柔軟な�
 さまざまな設計パターンを実現できるようになりました。
 これは関数型プログラミングの影響を受けたJavaの進化の一例です。
 
-この節と次の「高度な設計パターン」のサンプルには、後の章で学ぶ機能が出てきます。
-主なものは、コレクション（`List`、`Map`。第9章）、ジェネリクス（`<E>`、`<T>`。第10章）、ラムダ式と`Function`・`Predicate`（第11章）、`Optional`（第12章）です。
-初めて読むときは、defaultメソッドやstaticメソッドといったインターフェイスの構造に注目し、これらの機能は各章を学んだあとに読み返してください。
+この節と次の「高度な設計パターン」の一部のサンプルでは、第6章でも使った`List<String>`のようなリストと、キーと値の組を持つ`Map`を使います。
+どちらも第9章「コレクションフレームワーク」で学びます。
+ここでは、defaultメソッドやstaticメソッドといったインターフェイスの構造に注目して読んでください。
 
 ### defaultメソッドの活用
 
 defaultメソッドは、既存のインターフェイスに新しいメソッドを追加しても、既存の実装クラスが壊れないようにするための重要な機能です。
 
-<span class="listing-number">**サンプルコード7-6**　Collection.java</span>
+<span class="listing-number">**サンプルコード7-6**　DefaultMethodDemo.java</span>
 
 ```java
-import java.util.Iterator;
-import java.util.function.Predicate;
+// 最初の版から、多くのクラスが実装しているインターフェイス
+interface Greeting {
+    String message();
 
-// 既存のインターフェイス（多くの実装クラスが存在）
-public interface Collection<E> extends Iterable<E> {
-    int size();
-    boolean isEmpty();
-    boolean contains(Object o);
-    Iterator<E> iterator();
-    boolean containsAll(Collection<?> c);
-    // ... 他の既存メソッド
-    
-    // Java 8で追加されたdefaultメソッドの例
-    // （本物のjava.util.CollectionにもremoveIfがdefaultメソッドとして追加された）
-    default boolean removeIf(Predicate<? super E> filter) {
-        boolean removed = false;
-        Iterator<E> each = iterator();
-        while (each.hasNext()) {
-            if (filter.test(each.next())) {
-                each.remove();
-                removed = true;
-            }
-        }
-        return removed;
+    // あとの版で追加したdefaultメソッド
+    // 実装クラスを書き換えなくても、すべての実装クラスで使える
+    default String messageTo(String name) {
+        return name + "さん、" + message();
     }
 }
 
-// 既存の実装クラスは変更不要
-// （size()などの既存メソッドの実装は省略するため、ここではabstractにしている）
-abstract class MyCollection<E> implements Collection<E> {
-    // defaultメソッドを実装しなくても、デフォルト実装が使われる
+// defaultメソッドを追加する前から存在する実装クラス（変更していない）
+class MorningGreeting implements Greeting {
+    @Override
+    public String message() {
+        return "おはようございます";
+    }
+}
+
+public class DefaultMethodDemo {
+    public static void main(String[] args) {
+        Greeting greeting = new MorningGreeting();
+        IO.println(greeting.message());
+        IO.println(greeting.messageTo("田中"));
+    }
 }
 ```
 
-この例は`default`メソッドの大きな利点を実証しています。
-Java 8のリリース時点で、`Collection`インターフェイスを実装する無数のクラスがすでに存在していました。
-`ArrayList`、`HashSet`、`TreeSet`などのクラスです。
-新しいメソッドを`default`として追加することで、既存コードを一切変更することなく、
-すべてのコレクションで新機能を利用できるようになりました。
-これにより、APIの後方互換性を保ちながら機能を拡張できるようになりました。
+実行結果：
+
+```
+おはようございます
+田中さん、おはようございます
+```
+
+`MorningGreeting`は`messageTo()`を実装していませんが、`Greeting`のdefaultメソッドがそのまま使われます。
+もし`messageTo()`を通常の抽象メソッドとして追加していたら、`Greeting`を実装しているすべてのクラスがコンパイルエラーになっていたところです。
+
+Javaの標準ライブラリも、この方法で機能を広げてきました。
+Java 8のリリース時点で、コレクション（第9章で学ぶ`ArrayList`や`HashSet`など）が実装する`Collection`インターフェイスには、すでに無数の実装クラスがありました。
+そこで、条件に合う要素をまとめて取り除く`removeIf`などのメソッドを`default`として追加し、既存のクラスを変更せずに新しい機能を使えるようにしました。
+このように、defaultメソッドを使うと、APIの後方互換性を保ちながら機能を拡張できます。
 
 #### テンプレートメソッドパターンの実現
 
@@ -461,22 +463,20 @@ class Implementation implements Parent, Child {
 
 インターフェイスの`static`メソッドは、そのインターフェイスに関連するユーティリティ機能を提供する強力な手段です。これにより、関連する機能を1つのインターフェイス内にまとめ、使いやすいAPIを設計できます。とくに、ファクトリメソッドや共通的なユーティリティ処理を提供する場合に威力を発揮します。
 
-<span class="listing-number">**サンプルコード7-10**</span>
+<span class="listing-number">**サンプルコード7-10**　JsonSerializable.java、JsonDemo.java</span>
 
 ```java
-import java.util.List;
-
 public interface JsonSerializable {
     String toJson();
     
     // 複数のオブジェクトをJSONの配列にまとめるユーティリティメソッド
-    static <T extends JsonSerializable> String serializeList(List<T> items) {
+    static String serializeAll(JsonSerializable[] items) {
         StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < items.length; i++) {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(items.get(i).toJson());
+            sb.append(items[i].toJson());
         }
         sb.append("]");
         return sb.toString();
@@ -491,9 +491,16 @@ public interface JsonSerializable {
     }
 }
 
-// 使用例
-List<User> users = List.of(new User("Alice"), new User("Bob"));
-String json = JsonSerializable.serializeList(users);
+public class JsonDemo {
+    public static void main(String[] args) {
+        // 使用例
+        User[] users = { new User("Alice"), new User("Bob") };
+        IO.println("Serialized users: " + JsonSerializable.serializeAll(users));
+
+        User special = new User("Charlie \"The Boss\" Smith\nNew line");
+        IO.println("Special user JSON: " + special.toJson());
+    }
+}
 ```
 
 実行結果：
@@ -503,7 +510,9 @@ Serialized users: [{"name":"Alice"},{"name":"Bob"}]
 Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
 ```
 
-この設計により、JSONシリアライゼーション機能を実装するクラスは`toJson()`メソッドを実装するだけで、リスト全体のシリアライゼーションや文字列エスケープなどの便利な機能を自動的に利用できるようになります。
+`User`クラス（全文に含めています）は、`toJson()`で`JsonSerializable.escapeJson()`を使って名前をエスケープしています。
+インターフェイスのstaticメソッドは、このように`インターフェイス名.メソッド名()`の形で呼び出します。
+この設計により、JSONシリアライゼーション機能を実装するクラスは`toJson()`メソッドを実装するだけで、複数のオブジェクトをまとめる処理や文字列エスケープなどの便利な機能を利用できるようになります。
 
 ### 実践的な活用例：防御的プログラミング
 
@@ -512,24 +521,23 @@ Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
 <span class="listing-number">**サンプルコード7-11**　DefensiveInterface.java</span>
 
 ```java
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 interface DefensiveInterface {
     List<String> getItems();
     
-    // 防御的なdefaultメソッド
+    // 防御的なdefaultメソッド：nullの代わりに空のリストを返し、
+    // 内部のリストではなくコピーを渡す
     default List<String> getSafeItems() {
         List<String> items = getItems();
-        return items != null ? new ArrayList<>(items) : Collections.emptyList();
+        return items != null ? new ArrayList<>(items) : new ArrayList<>();
     }
     
-    default Optional<String> getFirstItem() {
+    // 要素がないときは、nullではなく引数の既定値を返す
+    default String getFirstItemOrDefault(String defaultValue) {
         List<String> items = getSafeItems();
-        return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
-    }
-    
-    default Iterator<String> iterateItems() {
-        return getSafeItems().iterator();
+        return items.isEmpty() ? defaultValue : items.get(0);
     }
     
     // バリデーション付きメソッド
@@ -546,24 +554,25 @@ interface DefensiveInterface {
 実行結果：
 
 ```
-=== 安全でない実装のテスト ===
+=== nullを返す実装 ===
 getSafeItems(): []
-getFirstItem(): Optional.empty
+getFirstItemOrDefault(): (なし)
 
-=== 安全な実装のテスト ===
-Items: [Item 1, Item 2]
-First item: Optional[Item 1]
-
-イテレータでのアクセス:
-  - Item 1
-  - Item 2
+=== リストを持つ実装 ===
+getSafeItems(): [Item 1, Item 2]
+getFirstItemOrDefault(): Item 1
 ```
 
-このパターンにより、実装クラスが`null`を返したり、変更可能なリストを直接公開したりしても、呼び出し側は常に安全で一貫したAPIを使用できます。また、`Optional`やバリデーションを使用することで、現代的で安全なJavaコードの作法を推進できます。
+このパターンにより、実装クラスが`null`を返したり、変更可能なリストを直接公開したりしても、呼び出し側は常に安全で一貫したAPIを使用できます。
+`getFirstItemOrDefault()`は、要素がないときに`null`ではなく呼び出し側が指定した値を返すので、呼び出し側で`null`を確かめる処理が要りません。
+値がないことをより明確に表す`Optional`というクラスもあり、第12章で学びます。
 
 ## 高度な設計パターン
 
 インターフェイスの進化により、より洗練された設計パターンを実装できるようになりました。ここでは実践的な設計パターンとその実装例を紹介します。
+
+defaultメソッドは、ラムダ式で使う関数型インターフェイスに機能を足すときにも使われます。
+その例は、第11章「ラムダ式と関数インターフェイス」で関数型インターフェイスを学んでから見ていきます。
 
 ### Mixinパターン
 
@@ -632,38 +641,48 @@ Document#DOC001 (version 2, age: 23ms)
 
 トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
-<span class="listing-number">**サンプルコード7-13**　ComparableTrait.java（1〜14、27〜30、37〜50行目）</span>
+次の`Measurable`は、比べる基準の値を返す`measure()`だけを実装クラスに求め、大小を比べるメソッドをdefaultメソッドとして提供します。
+Javaの標準ライブラリにも、大小を比べる`compareTo()`を実装クラスに求める`Comparable`インターフェイスがあります。
+`Comparable`をもとに同じようなトレイトを作るには第10章「ジェネリクス」の知識が要るため、ここでは`double`の値で比べる形にしました。
+
+<span class="listing-number">**サンプルコード7-13**　Measurable.java（1〜12、18〜44行目）</span>
 
 ```java
-// 比較可能オブジェクトのトレイト
-interface ComparableTrait<T> extends Comparable<T> {
-    
-    default boolean isLessThan(T other) {
-        return compareTo(other) < 0;
+// 大きさを比べられるオブジェクトのトレイト（状態を持たず、振る舞いだけを提供する）
+interface Measurable {
+    // 比べる基準になる値（実装クラスが決める）
+    double measure();
+
+    default boolean isLessThan(Measurable other) {
+        return measure() < other.measure();
     }
-    
-    default boolean isGreaterThan(T other) {
-        return compareTo(other) > 0;
-    }
-    
-    default boolean isEqualTo(T other) {
-        return compareTo(other) == 0;
+
+    default boolean isGreaterThan(Measurable other) {
+        return measure() > other.measure();
     }
     // ...
+    default boolean isBetween(Measurable lower, Measurable upper) {
+        return isGreaterThan(lower) && isLessThan(upper);
+    }
 }
 
 // 使用例
-class Temperature implements ComparableTrait<Temperature> {
-    // ...
-    @Override
-    public int compareTo(Temperature other) {
-        return Double.compare(this.celsius, other.celsius);
+class Temperature implements Measurable {
+    private final double celsius;
+
+    public Temperature(double celsius) {
+        this.celsius = celsius;
     }
-    
+
+    @Override
+    public double measure() {
+        return celsius;
+    }
+
     public void checkRange() {
         Temperature freezing = new Temperature(0);
         Temperature boiling = new Temperature(100);
-        
+
         if (this.isBetween(freezing, boiling)) {
             IO.println("水は液体状態です");
         }
@@ -720,60 +739,12 @@ class BasicUserService implements UserRepository, UserNotificationService {
 }
 ```
 
-### 関数型インターフェイスとの統合
-
-defaultメソッドを使って、関数型インターフェイスを拡張し、より豊かな機能を提供できます。
-
-<span class="listing-number">**サンプルコード7-15**　FunctionEnhancementDemo.java（5〜13、35〜40、53〜75行目）</span>
-
-```java
-@FunctionalInterface
-interface EnhancedFunction<T, R> extends Function<T, R> {
-    
-    // Function<T, R>のapplyメソッドは抽象メソッド
-    
-    // 条件付き適用
-    default EnhancedFunction<T, R> when(Predicate<T> condition, R defaultValue) {
-        return t -> condition.test(t) ? this.apply(t) : defaultValue;
-    }
-    // ...
-    
-    // メモ化（結果のキャッシュ）
-    default EnhancedFunction<T, R> memoized() {
-        Map<T, R> cache = new ConcurrentHashMap<>();
-        return t -> cache.computeIfAbsent(t, this::apply);
-    }
-    // ...
-}
-
-// 使用例
-public class FunctionEnhancementDemo {
-    public static void main(String[] args) {
-        // 高価な計算を行う関数
-        EnhancedFunction<Integer, Double> expensiveComputation = n -> {
-            IO.println("計算中: " + n);
-            return Math.sqrt(n) * Math.PI;
-        };
-        
-        // 機能を組み合わせて使用
-        Function<Integer, Double> optimizedFunction = expensiveComputation
-            .when(n -> n > 0, -1.0)  // 正の数のみ計算
-            .memoized()              // 結果をキャッシュ
-            .timed(time -> IO.println("実行時間: " + time + "ns"));
-        
-        // 同じ値で複数回呼び出し
-        IO.println(optimizedFunction.apply(16));  // 計算実行
-        IO.println(optimizedFunction.apply(16));  // キャッシュから取得
-        IO.println(optimizedFunction.apply(-5));  // デフォルト値を返す
-    }
-}
-```
-
 ### バージョニング戦略
 
-APIの進化を管理するための戦略的なアプローチです。
+インターフェイスを継承して版を重ね、新しいメソッドをdefaultメソッドで追加していくと、古い版に合わせて書いた実装クラスを壊さずにAPIを広げられます。
+次の例の`ServiceConfig`は、タイムアウトなどの設定値を持つクラスです（全文に含めています）。
 
-<span class="listing-number">**サンプルコード7-16**　ServiceV1.java（7〜17、26〜32、40〜64行目）</span>
+<span class="listing-number">**サンプルコード7-15**　ServiceV1.java</span>
 
 ```java
 // API進化の管理
@@ -783,19 +754,19 @@ interface ServiceV1 {
 
 interface ServiceV2 extends ServiceV1 {
     // 新機能をdefaultメソッドで追加（後方互換性維持）
-    default String processWithOptions(String input, Map<String, String> options) {
-        // デフォルトではオプションを無視して従来の処理
+    default String processWithConfig(String input, ServiceConfig config) {
+        // デフォルトでは設定を無視して従来の処理
         return process(input);
     }
-    // ...
 }
 
 interface ServiceV3 extends ServiceV2 {
-    // さらなる拡張：非同期処理
-    default CompletableFuture<String> processAsync(String input) {
-        return CompletableFuture.supplyAsync(() -> process(input));
-    }
-        // ...
+    // さらなる拡張：まとめて処理する（バッチ処理）
+    default String[] processBatch(String[] inputs) {
+        String[] results = new String[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            results[i] = process(inputs[i]);
+        }
         return results;
     }
     
@@ -816,12 +787,15 @@ class ServiceImpl implements ServiceV3 {
     
     // オプションで新機能をオーバーライド
     @Override
-    public String processWithOptions(String input, Map<String, String> options) {
-        String timeout = options.getOrDefault("timeout", "1000");
-        return "Processed with timeout " + timeout + ": " + input.toUpperCase();
+    public String processWithConfig(String input, ServiceConfig config) {
+        return "Processed with timeout " + config.getTimeout() + ": " + input.toUpperCase();
     }
 }
 ```
+
+`ServiceImpl`が実装しなければならないのは、最初の版からある`process()`だけです。
+`processBatch()`のように後の版で追加したメソッドは、defaultメソッドの実装がそのまま使われます。
+使ってほしくなくなったメソッドには`@Deprecated`を付けて、将来削除する予定であることを利用者に知らせます。
 
 ## Factoryパターン：オブジェクト生成の抽象化
 
@@ -839,7 +813,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-17**　ShapeFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java（3〜20行目）</span>
+<span class="listing-number">**サンプルコード7-16**　ShapeFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
@@ -884,7 +858,7 @@ public class FactoryDemo {
         Shape triangle = ShapeFactory.createShape("triangle", 3.0, 4.0);
         
         // 具体的なクラスを知らなくても使える
-        List<Shape> shapes = List.of(circle, rectangle, triangle);
+        Shape[] shapes = { circle, rectangle, triangle };
         
         for (Shape shape : shapes) {
             shape.draw();
@@ -905,7 +879,7 @@ public class FactoryDemo {
 
 </div>
 
-<span class="listing-number">**サンプルコード7-18**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
+<span class="listing-number">**サンプルコード7-17**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
 
 ```java
 // 抽象ファクトリークラス
@@ -957,7 +931,7 @@ Factoryパターンを使うと、クライアントコード（オブジェク�
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-19**　DatabaseConnectionFactory.java（3〜32、57〜68、79行目）</span>
+<span class="listing-number">**サンプルコード7-18**　DatabaseConnectionFactory.java（3〜32、57〜68、79行目）</span>
 
 ```java
 // データベース接続インターフェイス

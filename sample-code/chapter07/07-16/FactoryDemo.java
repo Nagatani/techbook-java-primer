@@ -1,5 +1,3 @@
-import java.util.*;
-
 // 使用例
 public class FactoryDemo {
     public static void main(String[] args) {
@@ -9,7 +7,7 @@ public class FactoryDemo {
         Shape triangle = ShapeFactory.createShape("triangle", 3.0, 4.0);
         
         // 具体的なクラスを知らなくても使える
-        List<Shape> shapes = List.of(circle, rectangle, triangle);
+        Shape[] shapes = { circle, rectangle, triangle };
         
         for (Shape shape : shapes) {
             shape.draw();

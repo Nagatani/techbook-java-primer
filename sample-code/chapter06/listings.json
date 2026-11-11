@@ -20,7 +20,7 @@
     "dir": "06-04",
     "main": null,
     "excerpt": [
-      { "file": "Constants.java", "from": 1, "to": 28 }
+      { "file": "Constants.java", "from": 1, "to": 27 }
     ]
   },
   "6-5": {
@@ -34,27 +34,20 @@
     "dir": "06-06",
     "main": null,
     "excerpt": [
-      { "file": "ImmutablePerson.java", "from": 1, "to": 20 }
-    ]
-  },
-  "6-7": {
-    "dir": "06-07",
-    "main": null,
-    "excerpt": [
       { "file": "ImmutablePerson.java", "from": 5, "to": 12 },
       { "file": "ImmutablePerson.java", "from": 19, "to": 28 },
       { "file": "ImmutablePerson.java", "from": 37, "to": 51 },
       { "file": "ImmutablePerson.java", "from": 73, "to": 73 }
     ]
   },
-  "6-8": {
-    "dir": "06-08",
+  "6-7": {
+    "dir": "06-07",
     "main": "ImmutableExample",
     "excerpt": [
-      { "file": "ImmutableExample.java", "from": 1, "to": 42 }
+      { "file": "ImmutableExample.java", "from": 1, "to": 25 }
     ],
     "uses": [
-      "6-7"
+      "6-6"
     ]
   },
   "6-9": {

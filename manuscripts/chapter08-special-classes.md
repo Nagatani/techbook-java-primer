@@ -358,6 +358,9 @@ public enum DocumentType implements Printable {
 ### EnumSetとEnumMap
 
 Java標準ライブラリには、`enum`専用の高速なコレクションクラスが用意されています。
+コレクション（`Set`や`Map`）は第9章で学びます。
+ここでは、`EnumSet`は列挙子の集まり、`EnumMap`は列挙子ごとに値を対応づける表、と読んでください。
+`EnumSet<Permission>`の`<Permission>`は、入れる要素の型を表します。
 
 <span class="listing-number">**サンプルコード8-10**　EnumCollectionExample.java</span>
 
@@ -443,6 +446,10 @@ Recordは、Java 16で正式に導入された、不変（immutable）なデー�
 - `equals()`, `hashCode()`, `toString()` メソッドのオーバーライド
 
 `Record`は、これらの定型コードをコンパイラが自動的に生成してくれます。
+
+フィールドを`private final`にしてsetterを持たせないという不変クラスのルールは、第6章「不変性とfinalキーワード」で学びました。
+`equals()`・`hashCode()`・`toString()`をオーバーライドする理由と書き方は、第5章の節「`Object`クラスのメソッド（toString・equals・hashCode）」で学んでいます。
+Recordは、これらを手で書く代わりにコンパイラに任せるしくみです。
 
 ### 基本的な構文
 
@@ -708,34 +715,36 @@ null値
 
 メソッド内でのみ使用する小さなデータ構造として、ローカルRecordを定義できます。
 
-次のサンプルでは、第9章で学ぶ`List`と`Collections`、第11章・第12章で学ぶ`stream()`とメソッド参照（`Integer::intValue`）を使って平均・最大・最小を求めています。
-ここでは、計算した結果を1つのRecordにまとめて返している点に注目してください。
+次のサンプルでは、配列から求めた件数・平均・最大・最小を、メソッド内で宣言したRecordにまとめています。
 
 <span class="listing-number">**サンプルコード8-19**　LocalRecordExample.java</span>
 
 ```java
-import java.util.Collections;
-import java.util.List;
-
 public class LocalRecordExample {
-    public static void analyzeData(List<Integer> numbers) {
+    public static void analyzeData(int[] numbers) {
         // ローカルRecord
         record Statistics(int count, double average, int max, int min) {}
         
-        if (numbers.isEmpty()) {
+        if (numbers.length == 0) {
             IO.println("データがありません");
             return;
         }
         
-        int count = numbers.size();
-        double average = numbers.stream()
-            .mapToInt(Integer::intValue)
-            .average()
-            .orElse(0.0);
-        int max = Collections.max(numbers);
-        int min = Collections.min(numbers);
+        int sum = 0;
+        int max = numbers[0];
+        int min = numbers[0];
+        for (int n : numbers) {
+            sum += n;
+            if (n > max) {
+                max = n;
+            }
+            if (n < min) {
+                min = n;
+            }
+        }
+        double average = (double) sum / numbers.length;
         
-        Statistics stats = new Statistics(count, average, max, min);
+        Statistics stats = new Statistics(numbers.length, average, max, min);
         IO.println("統計情報: " + stats);
     }
 }
@@ -770,29 +779,29 @@ public record Employee(String name, String id, Company company) {
 
 #### DTOパターン
 
-次のサンプルの`ApiResponse<T>`の`<T>`は、第10章「ジェネリクス」で学ぶ型パラメータです。
-`T`には、利用するときに`ApiResponse<String>`のように具体的な型が入ります。
+DTO（Data Transfer Object）は、処理の間やシステムの間でデータをまとめて受け渡すためのオブジェクトです。
+次の`ApiResponse`は、処理が成功したかどうか、結果のデータ、メッセージ、作った時刻をまとめて返します。
 
 <span class="listing-number">**サンプルコード8-21**</span>
 
 ```java
 // APIレスポンス用のDTO
-public record ApiResponse<T>(
+public record ApiResponse(
     boolean success,
-    T data,
+    String data,
     String message,
     long timestamp
 ) {
-    public ApiResponse(boolean success, T data, String message) {
+    public ApiResponse(boolean success, String data, String message) {
         this(success, data, message, System.currentTimeMillis());
     }
     
-    public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<>(true, data, "Success");
+    public static ApiResponse success(String data) {
+        return new ApiResponse(true, data, "Success");
     }
     
-    public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(false, null, message);
+    public static ApiResponse error(String message) {
+        return new ApiResponse(false, null, message);
     }
 }
 ```
@@ -868,10 +877,11 @@ public class ShapeCalculator {
 
 データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです。
 
-次のサンプルの`order.items().stream()`以降は、第12章「Stream APIと高度なコレクション操作」で学ぶ書き方で、リストの全要素に対して計算や判定を行います。
+次のサンプルの`List<OrderItem>`は、`OrderItem`を順に並べて持つリストです（第9章で学びます）。
+`OrderProcessor`では、拡張for文でリストの要素を1つずつ取り出して計算や判定を行います。
 本文では、各ファイルの先頭にあるimport文（`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`）を省いています。
 
-<span class="listing-number">**サンプルコード8-24**　Order.java（4〜5行目）、Customer.java、OrderItem.java（3行目）、OrderProcessor.java（3〜15行目）</span>
+<span class="listing-number">**サンプルコード8-24**　Order.java（4〜5行目）、Customer.java、OrderItem.java（3行目）、OrderProcessor.java（3〜21行目）</span>
 
 ```java
 // データの定義（Records）
@@ -882,14 +892,20 @@ public record OrderItem(String productName, int quantity, BigDecimal price) {}
 // ロジックの分離（純粋関数）
 public class OrderProcessor {
     public static BigDecimal calculateTotal(Order order) {
-        return order.items().stream()
-            .map(item -> item.price().multiply(BigDecimal.valueOf(item.quantity())))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem item : order.items()) {
+            total = total.add(item.price().multiply(BigDecimal.valueOf(item.quantity())));
+        }
+        return total;
     }
     
     public static boolean hasProduct(Order order, String productName) {
-        return order.items().stream()
-            .anyMatch(item -> item.productName().equals(productName));
+        for (OrderItem item : order.items()) {
+            if (item.productName().equals(productName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 ```
@@ -1083,6 +1099,9 @@ public class MathOperations {
 大きさ: 5.0
 ```
 
+第6章のビルダーパターン（サンプルコード6-10）で使った`Book.Builder`も、`Book`の内側に宣言した静的内部クラスです。
+外部クラスのインスタンスがなくても`new Book.Builder(...)`で作れるのは、このためです。
+
 #### 3. ローカル内部クラス（Local Inner Class）
 
 メソッド内で定義される内部クラスです。
@@ -1110,6 +1129,11 @@ public class LocalClassExample {
 
 名前を持たない内部クラスで、インターフェイスの実装や抽象クラスの継承に使用されます。
 
+次のサンプルでは、配列を並べ替える`Arrays.sort()`に、並べ方を決める`Comparator`インターフェイスを実装した匿名クラスのオブジェクトを渡しています。
+`Comparator<String>`の`<String>`は、比べる要素が文字列であることを表します（型の指定のしかたは第10章「ジェネリクス」で学びます）。
+`compare()`は、1つめの引数を先に並べるなら負の数、後に並べるなら正の数を返します。
+ここでは`s2.compareTo(s1)`を返すことで、辞書順の逆に並べています。
+
 <span class="listing-number">**サンプルコード8-30**　AnonymousClassExample.java</span>
 
 ```java
@@ -1128,9 +1152,6 @@ public class AnonymousClassExample {
             }
         });
         
-        // Java 8以降はラムダ式で簡潔に記述可能
-        // Arrays.sort(names, (s1, s2) -> s2.compareTo(s1));
-        
         IO.println(Arrays.toString(names));
     }
 }
@@ -1142,50 +1163,80 @@ public class AnonymousClassExample {
 [Charlie, Bob, Alice]
 ```
 
+このように、メソッドを1つだけ持つインターフェイスを匿名クラスで実装する書き方は、ラムダ式を使うともっと短く書けます。
+第11章「ラムダ式と関数インターフェイス」の冒頭で、匿名クラスとラムダ式を比べながら、ラムダ式の書き方を学びます。
+`Comparator`をラムダ式で書いて並べ替える方法も、第11章で扱います。
+
 ### 実践的な使用例：イテレータパターン
 
-次のサンプルは、型パラメータ`<T>`（第10章）と`Iterable`・`Iterator`（第9章）を使って、拡張for文で走査できる独自のリストを作ります。
-内部クラスがイテレータとして外側のクラスの配列を直接参照している点が、ここでの要点です。
+イテレータは、入れ物にある要素を1つずつ順に取り出すためのオブジェクトです。
+次のサンプルでは、文字列を持つ独自のリスト`StringList`が、匿名内部クラスでイテレータを作って返します。
+匿名内部クラスが、外側のクラスのフィールド（`elements`と`size`）を直接参照している点が、ここでの要点です。
 
-<span class="listing-number">**サンプルコード8-31**　MyList.java</span>
+<span class="listing-number">**サンプルコード8-31**　StringList.java</span>
 
 ```java
-import java.util.Iterator;
+// 要素を1つずつ順に取り出すためのインターフェイス
+interface StringIterator {
+    boolean hasNext();
+    String next();
+}
 
-public class MyList<T> implements Iterable<T> {
-    private Object[] elements;
+public class StringList {
+    private final String[] elements;
     private int size = 0;
     
-    public MyList(int capacity) {
-        elements = new Object[capacity];
+    public StringList(int capacity) {
+        elements = new String[capacity];
     }
     
-    public void add(T element) {
+    public void add(String element) {
         if (size < elements.length) {
             elements[size++] = element;
         }
     }
     
-    @Override
-    public Iterator<T> iterator() {
-        // 匿名内部クラスでIteratorを実装
-        return new Iterator<T>() {
+    public StringIterator iterator() {
+        // 匿名内部クラスでStringIteratorを実装
+        return new StringIterator() {
             private int index = 0;
             
             @Override
             public boolean hasNext() {
-                return index < size;
+                return index < size;  // 外側のクラスのフィールドを直接参照
             }
             
             @Override
-            @SuppressWarnings("unchecked")
-            public T next() {
-                return (T) elements[index++];
+            public String next() {
+                return elements[index++];
             }
         };
     }
+    
+    public static void main(String[] args) {
+        StringList list = new StringList(5);
+        list.add("りんご");
+        list.add("みかん");
+        list.add("ぶどう");
+        
+        StringIterator it = list.iterator();
+        while (it.hasNext()) {
+            IO.println(it.next());
+        }
+    }
 }
 ```
+
+実行結果：
+
+```
+りんご
+みかん
+ぶどう
+```
+
+Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフェイスがあります。
+第9章で学ぶコレクションは、`Iterator`を返すことで、拡張for文で要素を順に取り出せるようにしています。
 
 ### 内部クラスのベストプラクティス
 
@@ -1197,7 +1248,7 @@ public class MyList<T> implements Iterable<T> {
 長い期間使い続ける内部クラスは静的内部クラスにし、不要になった外部クラスへの参照は切って、メモリリークを防ぎます。
 
 なお、Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えられます。
-ラムダ式を使うと、同じ処理をより簡潔で読みやすいコードで書けます。
+ラムダ式を使うと、同じ処理をより簡潔で読みやすいコードで書けます（第11章で学びます）。
 
 ## まとめ
 

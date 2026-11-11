@@ -21,22 +21,5 @@ public class ImmutableExample {
         ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
         IO.println("元の趣味: " + person.getHobbies());
         IO.println("新しい趣味: " + personWithNewHobby.getHobbies());
-        
-        // マルチスレッド環境での安全な共有（スレッドは第15章で詳しく学ぶ）
-        Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 3; i++) {
-                // 不変オブジェクトはスレッドセーフ
-                IO.println("T1: " + person.getName());
-            }
-        });
-        
-        Thread t2 = new Thread(() -> {
-            for (int i = 0; i < 3; i++) {
-                IO.println("T2: " + person.getAge());
-            }
-        });
-        
-        t1.start();
-        t2.start();
     }
 }

@@ -155,8 +155,8 @@ public final class ImmutablePoint {
 
 `final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります。
 
-次のサンプルの`List<String>`は第9章「コレクションフレームワーク」で、`data.forEach(item -> { … })`は第11章「ラムダ式と関数インターフェイス」で学びます。
-ここでは、`forEach`はリストの要素を1つずつ取り出して`{ … }`の処理を行う、と読んでください。
+次のサンプルの`List<String>`（文字列を順に並べて持つリスト）は、第9章「コレクションフレームワーク」で学びます。
+ここでは、拡張for文で配列と同じように要素を1つずつ取り出せる、と読んでください。
 
 <span class="listing-number">**サンプルコード6-4**　Constants.java</span>
 
@@ -183,10 +183,9 @@ public class Constants {
         final int size = data.size();
         // size = 10;  // コンパイルエラー： final変数は変更不可
         
-        data.forEach(item -> {
-            // ラムダ式内でローカル変数を使う場合、実質的にfinalである必要がある
+        for (String item : data) {
             IO.println(item + " (total: " + size + ")");
-        });
+        }
     }
 }
 ```
@@ -237,30 +236,18 @@ public class SecurityManager {
 
 `final`をクラスに付けると、そのクラスを継承できなくなります。
 
-<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java</span>
+標準ライブラリの`String`クラスは、`public final class String`と宣言されている`final`クラスの代表例です。
+`class MyString extends String { }`のように継承しようとすると、コンパイルエラーになります。
 
-```java
-// 標準ライブラリのStringクラスは、finalクラスの代表例
-// public final class String ... と宣言されているので、継承できない
-// class MyString extends String { }  // コンパイルエラー
+サンプルコード6-3の`ImmutablePoint`も、`public final class ImmutablePoint`と宣言しました。
+`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラは次のエラーを報告します。
 
-// 不変クラスは通常finalにする
-public final class ImmutablePerson {
-    private final String name;
-    private final int age;
-    
-    public ImmutablePerson(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    public String getName() { return name; }
-    public int getAge() { return age; }
-}
-
-// 以下はコンパイルエラー
-// class ExtendedPerson extends ImmutablePerson { }
 ```
+error: cannot inherit from final ImmutablePoint
+```
+
+不変クラスは、このように通常`final`にします。
+理由は次の節の「不変クラスの基本ルール」で説明します。
 
 クラスを`final`にすると、サブクラスを作れなくなります。
 そのため、悪意のあるサブクラスがメソッドをオーバーライドして動作を書き換えることを防げます。
@@ -288,7 +275,7 @@ public final class ImmutablePerson {
 
 ### 実践例：不変な`Person`クラス
 
-<span class="listing-number">**サンプルコード6-7**　ImmutablePerson.java（5〜12、19〜28、37〜51、73行目）</span>
+<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、19〜28、37〜51、73行目）</span>
 
 ```java
 // 完全な不変クラスの例
@@ -330,9 +317,17 @@ public final class ImmutablePerson {
 }
 ```
 
+`new ArrayList<>(hobbies)`は、`hobbies`と同じ要素を持つ新しいリスト（`ArrayList`）を作ります。
+`ArrayList`は第9章で学びます。
+ここでは「リストの中身を別のリストに写す」と読んでください。
+
+本文では省きましたが、全文にはオブジェクトの内容を比べる`equals()`と`hashCode()`、文字列にする`toString()`のオーバーライドもあります。
+書き方は、第5章の節「`Object`クラスのメソッド（toString・equals・hashCode）」で学んだとおりです。
+不変オブジェクトでは、内容が等しいかどうかが作ったあとに変わらないので、`equals()`と`hashCode()`の結果も変わりません。
+
 ### 不変オブジェクトの使用例
 
-<span class="listing-number">**サンプルコード6-8**　ImmutableExample.java</span>
+<span class="listing-number">**サンプルコード6-7**　ImmutableExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -358,28 +353,10 @@ public class ImmutableExample {
         ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
         IO.println("元の趣味: " + person.getHobbies());
         IO.println("新しい趣味: " + personWithNewHobby.getHobbies());
-        
-        // マルチスレッド環境での安全な共有（スレッドは第15章で詳しく学ぶ）
-        Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 3; i++) {
-                // 不変オブジェクトはスレッドセーフ
-                IO.println("T1: " + person.getName());
-            }
-        });
-        
-        Thread t2 = new Thread(() -> {
-            for (int i = 0; i < 3; i++) {
-                IO.println("T2: " + person.getAge());
-            }
-        });
-        
-        t1.start();
-        t2.start();
     }
 }
 ```
-T1とT2の行の順序は、実行するたびに変わります。
-次は実行結果の一例です。
+実行結果：
 
 ```
 [読書, 映画鑑賞]
@@ -387,12 +364,6 @@ T1とT2の行の順序は、実行するたびに変わります。
 新しい人: ImmutablePerson{name='田中太郎', age=26, hobbies=[読書, 映画鑑賞]}
 元の趣味: [読書, 映画鑑賞]
 新しい趣味: [読書, 映画鑑賞, プログラミング]
-T1: 田中太郎
-T1: 田中太郎
-T2: 25
-T1: 田中太郎
-T2: 25
-T2: 25
 ```
 
 #### 不変オブジェクトの重要な特性
@@ -400,13 +371,28 @@ T2: 25
 この例の最初では、コンストラクタに渡したリスト`hobbies`に「スポーツ」を足していますが、`person`の趣味は変わりません。
 `ImmutablePerson`のコンストラクタが、受け取ったリストをコピーして持っているためです。
 また、`withAge()`や`addHobby()`を呼んでも元の`person`は変わらず、変更した内容は新しいオブジェクトに入ります。
-後半では、2つのスレッドが同期化なしで同じ`person`を読んでいますが、状態が変わらないので、どちらのスレッドも常に同じ値を受け取ります。
+状態が変わらないので、複数のスレッドが同期化なしで同じ`person`を読んでも、どのスレッドも常に同じ値を受け取ります（スレッドは第15章で学びます）。
 
 状態が変わらないことは、デバッグのしやすさにもつながります。
 ある時点でオブジェクトの値を確かめれば、その値はそれ以降も変わらないからです。
 同じ理由で、不変オブジェクトは`HashMap`のキー（第9章で学びます）としても安全に使えます。
 さらに、メソッドが引数のオブジェクトを書き換える心配がないので、副作用のないコードを書きやすくなります。
 これは、第11章で学ぶ関数型プログラミングの考え方と相性のよい性質です。
+
+### Recordで不変なクラスを簡潔に書く
+
+Java 16以降では、Record（レコード）という書き方で、不変なクラスを短く書けます。
+次の1行で、サンプルコード6-3のように`private final`なフィールド、コンストラクタ、値を取り出すメソッドを持つクラスになります。
+
+<span class="listing-number">**サンプルコード6-8**</span>
+
+```java
+// x と y を持つ不変なクラス（値は point.x()、point.y() で取り出す）
+public record Point(int x, int y) { }
+```
+
+Recordの書き方や、コンパイラが自動で作るメソッド、値の検証のしかたは、第8章「Javaの特殊なクラス形式」で詳しく学びます。
+本章で学んだ不変クラスのルールを知っておくと、Recordが何を代わりに書いてくれるのかがわかります。
 
 ## 防御的コピーとビルダーパターン
 
@@ -466,6 +452,10 @@ public final class DateRange {
 ### ビルダーパターンによる不変オブジェクトの構築
 
 複雑な不変オブジェクトを構築する際、コンストラクタの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
+
+次のサンプルでは、`Book`クラスの内側に`static class Builder`というクラスを宣言しています。
+クラスの内側に宣言するクラス（静的ネストクラス）は、第8章で学びます。
+ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
 <span class="listing-number">**サンプルコード6-10**　Book.java（3〜7、13〜17、22〜31、37〜38、46〜53、81〜85、91行目）</span>
 
@@ -625,30 +615,6 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。
 とくに並行プログラミングや大規模システムの開発において、その価値が発揮されます。
-
-### Java 16以降の不変性サポート
-
-Java 16以降では、Recordクラスにより不変データクラスの作成がより簡潔になりました。
-
-<span class="listing-number">**サンプルコード6-12**</span>
-
-```java
-// Java 16以降：Recordを使った不変クラス
-public record ImmutablePoint(int x, int y) {
-    // コンストラクタ、getter、equals、hashCode、toStringが自動生成される
-}
-
-// 使用例
-ImmutablePoint point = new ImmutablePoint(10, 20);
-IO.println(point.x()); // 10
-IO.println(point.y()); // 20
-```
-実行結果：
-
-```
-10
-20
-```
 
 ## 章末演習
 
