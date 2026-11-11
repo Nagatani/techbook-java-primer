@@ -57,6 +57,18 @@
       { "file": "StringCalculator.java", "from": 1, "to": 5 }
     ]
   },
+  "21-11": {
+    "dir": "21-11",
+    "main": null,
+    "excerpt": [
+      { "file": "CalculatorTest.java", "from": 1, "to": 29 }
+    ],
+    "libs": [
+      "org.junit.jupiter:junit-jupiter-api:5.13.4",
+      "org.apiguardian:apiguardian-api:1.1.2",
+      "org.opentest4j:opentest4j:1.3.0"
+    ]
+  },
   "21-12": {
     "dir": "21-12",
     "main": null,

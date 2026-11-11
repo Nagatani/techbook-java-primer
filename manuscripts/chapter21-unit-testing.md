@@ -23,7 +23,7 @@
 - 第13章の例外処理（try-catch、例外の種類）
 - 基本的なJavaプログラミング経験
 
-推奨される知識：
+次の知識もあると、より理解しやすくなります。
 
 - 第15章のマルチスレッドプログラミング（テストの独立性）
 - デザインパターンの基礎知識（Strategy、Factoryパターン）
@@ -123,7 +123,8 @@ public class Calculator {
 
 ### テストコードの実践
 
-以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を明確に示します。各ステップが明確に分離され、テストの意図が一目で理解できるようになっています。
+以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を示します。
+準備・実行・検証の各ステップをコメントで区切っているので、何を確かめるテストなのかを読み取りやすくなります。
 
 <span class="listing-number">**サンプルコード21-3**　CalculatorManualTest.java</span>
 
@@ -192,8 +193,7 @@ public class UserService {
 
 ### なぜ密結合コードはテストが難しいのか？
 
-この`UserService`を単体テストしようとすると、`new UserRepository()`によって、
-必ずデータベース接続処理が実行されてしまいます。
+この`UserService`を単体テストしようとすると、`new UserRepository()`によって、必ずデータベース接続処理が実行されてしまいます。
 これでは、`UserService`のロジック（文字列を連結する処理）だけを独立して検証できません。
 テスト対象をその依存先から切り離せないことが、問題の根源です。
 
@@ -206,8 +206,7 @@ public class UserService {
 ### Dependency Injection (DI) とは
 
 Dependency Injection (DI)は、疎結合を実現するための具体的な設計テクニックです。
-その原則は、「あるオブジェクトが必要とする別のオブジェクト（依存オブジェクト）を、
-内部で生成するのではなく、外部から与える（注入する）」というものです。
+その原則は、「あるオブジェクトが必要とする別のオブジェクト（依存オブジェクト）を、内部で生成するのではなく、外部から与える（注入する）」というものです。
 
 この考え方は、制御の反転 (Inversion of Control - IoC)という、より大きな設計原則にもとづいています。
 
@@ -418,9 +417,12 @@ IntelliJ IDEAでは、テストクラスに`@Test`を書き、赤く表示され
 実際の開発では、Mavenなどのビルドツールの設定ファイルに依存関係として書くのが一般的です。
 外部ライブラリとクラスパスの関係や、Mavenでの依存関係の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 
-JUnit 5（Jupiter）を使用した基本的なテストの例を示します。@Testアノテーションでテストメソッドをマークし、@BeforeEachで各テスト前の初期化処理を定義し、Assertionsクラスのメソッドで検証を行います。
+JUnit 5（Jupiter）を使用した基本的なテストの例を示します。
+`@Test`アノテーションでテストメソッドを示し、`@BeforeEach`で各テストの前に実行する初期化処理を定義し、`Assertions`クラスのメソッドで検証します。
+テスト対象は、サンプルコード21-2の`Calculator`に、整数の割り算をする`divide`メソッド（`return a / b;`）を加えたものです。
+整数を0で割ると`ArithmeticException`が発生するので、`assertThrows`でその例外が投げられることを確かめます。
 
-<span class="listing-number">**サンプルコード21-11**</span>
+<span class="listing-number">**サンプルコード21-11**　CalculatorTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -442,7 +444,7 @@ public class CalculatorTest {
     
     @Test
     void testDivide() {
-        assertEquals(2.0, calculator.divide(10, 5), 0.001);
+        assertEquals(2, calculator.divide(10, 5));
     }
     
     @Test
@@ -458,11 +460,9 @@ public class CalculatorTest {
 
 Mockitoなどのモックフレームワークを使うと、より柔軟なテストが可能になります。
 
-Mockitoを使用すると、モックオブジェクトの振る舞いを詳細に制御でき、
-メソッド呼び出しの検証も可能になります。
-以下の例では、@Mockアノテーションでモックを宣言し、when-thenReturnで振る舞いを定義し、
-verifyでメソッド呼び出しを検証しています。
-@Mockを付けたフィールドにモックを作って入れるのは、クラスに付けた`@ExtendWith(MockitoExtension.class)`です。
+Mockitoを使用すると、モックオブジェクトの振る舞いを詳細に制御でき、メソッド呼び出しの検証もできます。
+以下の例では、`@Mock`アノテーションでモックを宣言し、`when().thenReturn()`で振る舞いを定義し、`verify()`でメソッド呼び出しを検証しています。
+`@Mock`を付けたフィールドにモックを作って入れるのは、クラスに付けた`@ExtendWith(MockitoExtension.class)`です。
 これを付け忘れるとフィールドが`null`のままになり、テストは`NullPointerException`で失敗します。
 
 <span class="listing-number">**サンプルコード21-12**　UserServiceTest.java</span>
@@ -548,14 +548,15 @@ public class PaymentServiceTest {
 ### 自動テストの重要性
 
 継続的インテグレーション（CI）では、コードがリポジトリにプッシュされるたびに自動的にテストが実行されます。
-次の例は、ビルドツールのGradleを使うプロジェクトで、`./gradlew test`によってテストを実行する設定です。
+次の例は、ビルドツールのGradleを使うプロジェクトで、GitHub Actionsが`./gradlew test`によってテストを実行する設定です。
+`./gradlew`は、プロジェクトに置いたGradle Wrapperを使ってGradleを実行するスクリプトです。
 ビルドツールの役割は、Mavenを例に第22章で学びます。
 ここでは、CIがテストを自動で実行するという流れをつかんでください。
 
 <span class="listing-number">**サンプルコード21-14**</span>
 
 ```yaml
-# GitHub Actions の例
+# .github/workflows/test.yml（GitHub Actions の例）
 name: Java CI
 
 on: [push, pull_request]
@@ -563,33 +564,54 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17'
-    - name: Run tests
-      run: ./gradlew test
+      - uses: actions/checkout@v7
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      - name: Run tests
+        run: ./gradlew test
 ```
+
+`actions/setup-java`では、`distribution`でJDKの配布元（ここではEclipse Temurin）を、`java-version`で版を指定します。
 
 ### テストカバレッジ
 
 テストカバレッジは、コードのどの部分がテストされているかを示す指標です。
+次の例は、GradleのJaCoCoプラグインでカバレッジを測る設定です（Gradle 9で動く書き方です）。
+`./gradlew test`のあとにHTMLとXMLのレポートを作り、`./gradlew check`ではカバレッジが80%に満たないとビルドを失敗させます。
 
 <span class="listing-number">**サンプルコード21-15**</span>
 
 ```gradle
 // build.gradle
 plugins {
+    id 'java'
     id 'jacoco'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.13.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // テストのあとにレポートを作る
 }
 
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.enabled true
+        xml.required = true
+        html.required = true
     }
 }
 
@@ -602,6 +624,9 @@ jacocoTestCoverageVerification {
         }
     }
 }
+
+// checkタスクでカバレッジも検証する
+check.dependsOn jacocoTestCoverageVerification
 ```
 
 ## よくあるエラーと対処法
@@ -659,4 +684,4 @@ jacocoTestCoverageVerification {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 基礎課題が完了したら、第22章「ドキュメントと外部ライブラリ」に進みましょう。
+基礎課題が完了したら、第22章「ドキュメントと外部ライブラリ」に進みましょう。

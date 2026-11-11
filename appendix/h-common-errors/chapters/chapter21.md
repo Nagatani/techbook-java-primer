@@ -2,14 +2,15 @@
 
 書籍『Java入門』第21章「ユニットテストと品質保証」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-単体テスト初学者がよく遭遇する基本的なエラーとその対処法を説明します。
+テストの誤りは、テストが成功しているのにバグを見逃している、という形で現れるため気づきにくいものです。
 
 ## 1. テストケースが不十分
 
-#### 問題
-テストケースが期待値のみをチェックし、境界値や異常値をテストしていません。
+### 問題
 
-#### 解決策
+期待どおりの入力の1組だけを確かめ、0や負の数、境界にある値をテストしていません。
+
+### 解決策
 
 ```java
 @Test
@@ -19,7 +20,7 @@ void testAdd() {
     // 正常値のテスト
     assertEquals(5, calc.add(2, 3));
     
-    // 境界値のテスト
+    // 0を含む値のテスト
     assertEquals(0, calc.add(0, 0));
     
     // 負数のテスト
@@ -27,12 +28,14 @@ void testAdd() {
 }
 ```
 
-## 2. アサーション使用ミス
+## 2. アサーションの使い方の誤り
 
-#### 問題
-浮動小数点の厳密な比較によるテスト失敗。
+### 問題
 
-#### 解決策
+浮動小数点数を誤差の許容範囲なしで比較し、計算は正しいのにテストが失敗します。
+`0.1 + 0.2`は`0.30000000000000004`になるため、`assertEquals(0.3, 0.1 + 0.2)`は失敗します。
+
+### 解決策
 
 ```java
 @Test
@@ -44,37 +47,78 @@ void testDoubleCalculation() {
 
 ## 3. モックの設定不足
 
-#### 問題
-モックオブジェクトの振る舞いが正しく設定されていません。
+### 問題
 
-#### 解決策
+テスト対象が呼び出すメソッドの振る舞いをモックに設定していません。
+Mockitoのモックは、設定していないメソッドに対して`null`や0などの既定値を返すため、期待と違う結果になります。
+
+### 解決策
+
+テスト対象が呼び出すメソッドの戻り値を`when().thenReturn()`で設定します（本文のサンプルコード21-12と同じ`UserRepository`と`UserService`を使います）。
 
 ```java
 @Test
-void testUserService() {
+void testGetUserProfile() {
     UserRepository mockRepo = mock(UserRepository.class);
     
     // モックの振る舞いを設定
-    when(mockRepo.findById(1L)).thenReturn(new User(1L, "Test User"));
+    when(mockRepo.findById("123")).thenReturn("Test User");
     
     UserService service = new UserService(mockRepo);
-    User user = service.findById(1L);
-    assertNotNull(user);
+    assertEquals("【Profile】Test User", service.getUserProfile("123"));
 }
 ```
 
 ## 4. テスト間の依存関係
 
-#### 問題
-テストの実行順序に依存したテストケース。
+### 問題
 
-#### 解決策
+複数のテストが同じオブジェクトを共有し、前のテストが残した状態に結果が左右されます。
+JUnitはテストメソッドの実行順序を保証しないため、実行のたびに結果が変わることがあります。
 
 ```java
-@Test
-void testIncrement() {
-    int counter = 0;  // 各テストで初期化
-    counter++;
-    assertEquals(1, counter);
+public class CartTest {
+    private static List<String> cart = new ArrayList<>();  // すべてのテストで共有される
+
+    @Test
+    void testAddItem() {
+        cart.add("りんご");
+        assertEquals(1, cart.size());  // 先にtestAddTwoItemsが動くと失敗する
+    }
+
+    @Test
+    void testAddTwoItems() {
+        cart.add("みかん");
+        cart.add("ぶどう");
+        assertEquals(2, cart.size());
+    }
+}
+```
+
+### 解決策
+
+`@BeforeEach`で、テストごとに新しいオブジェクトを用意します。
+
+```java
+public class CartTest {
+    private List<String> cart;
+
+    @BeforeEach
+    void setUp() {
+        cart = new ArrayList<>();  // 各テストの前に初期化
+    }
+
+    @Test
+    void testAddItem() {
+        cart.add("りんご");
+        assertEquals(1, cart.size());
+    }
+
+    @Test
+    void testAddTwoItems() {
+        cart.add("みかん");
+        cart.add("ぶどう");
+        assertEquals(2, cart.size());
+    }
 }
 ```
