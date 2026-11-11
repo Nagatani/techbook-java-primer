@@ -107,6 +107,13 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - ガントチャートは文字の既定が約11pxで、`check:diagrams`の前提（16px）と合わない。frontmatterで`gantt: { fontSize: 16, sectionFontSize: 16, useWidth: 900 }`を指定する（目盛りは`themeCSS`で大きくする。chapter15-chef-timeline）。ブロック図（`block-beta`）は格子の配置（BorderLayoutなど）に使える
    - 枠（subgraph）の外へ線を引くと、枠の中の`direction`が効かず、枠どうしが重なることがある。そのときは枠をやめるか、線を枠そのものに引く
 
+12. **技術を正式に説明する章（2026-11-11〜）**: 同じ技術を複数の章で説明しない。その技術を説明するのにふさわしい章に解説をまとめ、ほかの章で先に使う・後で使うときは「第N章で学びます」「第N章で学んだ〜」と誘導する
+   - クラス・フィールド・メソッド・コンストラクターとgetter/setterの基本・public/private・static・オブジェクトの配列は第3章。アクセス修飾子の全体・パッケージ・this・オーバーロードの設計は第4章
+   - 継承・オーバーライド・ポリモーフィズム・instanceof・`Object`クラスのメソッド（toString・equals・hashCode）は第5章。不変オブジェクト・final・防御的コピー・ビルダーは第6章。enum・Record・sealed・内部クラス・匿名クラスは第8章
+   - コレクションとその選び方は第9章、ジェネリクスとvarは第10章、ラムダ式・メソッド参照・Comparatorは第11章、Stream・Optional・並列ストリームは第12章、例外処理・try-with-resourcesは第13章
+   - GUIの部品とレイアウト（invokeLaterの定型を含む）は第17章、イベント処理の基本・EDT・javax.swing.Timerは第18章、マウス・キーボードの詳細とSwingWorkerは第19章
+   - 後の章で学ぶ機能は、コードを動かせばわかる程度なら先に使ってよい。説明なしでは難しいもの・読み解きの邪魔になるものは別の書き方にする（例: ラムダ式の代わりに拡張for文、ジェネリクスの代わりに配列）。使い続ける場合は初出に最小限の読み方と誘導を置く
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
