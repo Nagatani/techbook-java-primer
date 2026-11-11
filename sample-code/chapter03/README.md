@@ -50,4 +50,3 @@ javac -d out *.java
 | [3-49](./03-49/) | Book.java<br>BookLibraryTest.java | `java -cp out BookLibraryTest` |
 | [3-50](./03-50/) | CartItem.java<br>ShoppingCart.java | （mainメソッドなし） |
 | [3-52](./03-52/) | StringComparison.java | `java -cp out StringComparison` |
-| [3-53](./03-53/) | MethodsPractice.java | `java -cp out MethodsPractice` |

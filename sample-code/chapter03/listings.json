@@ -277,12 +277,5 @@
     "excerpt": [
       { "file": "StringComparison.java", "from": 1, "to": 15 }
     ]
-  },
-  "3-53": {
-    "dir": "03-53",
-    "main": "MethodsPractice",
-    "excerpt": [
-      { "file": "MethodsPractice.java", "from": 1, "to": 7 }
-    ]
   }
 }

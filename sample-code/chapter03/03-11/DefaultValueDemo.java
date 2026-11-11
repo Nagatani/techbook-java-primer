@@ -5,7 +5,7 @@ public class DefaultValueDemo {
     
     // その他の型のデフォルト値
     boolean boolValue;    // false
-    char charValue;       // '\u0000' (空文字)
+    char charValue;       // '\u0000'（値が0の文字）
     String stringValue;   // null
     
     public void showDefaults() {
