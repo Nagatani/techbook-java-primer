@@ -7,7 +7,7 @@ sections:
   - key: "不変性の概念と重要性"
     hash: eae83967
   - key: "finalキーワードの3つの用途"
-    hash: bec21adb
+    hash: 833ff5d4
   - key: "不変オブジェクトの設計パターン"
     hash: f851fb79
   - key: "防御的コピーとビルダーパターン"
@@ -86,7 +86,7 @@ sections:
 - L148、L272: 「不変オブジェクトの利点。」「finalクラスの利点。」はリスト導入文として不自然（コロン削除の機械的な置換の跡と推測される）
 - L250（6-6）: `public final class String { }`と書いており、標準の`String`を再定義するように読める。コメントで示すだけにするのがよい
 - L667: 「状態が変わらない　→　動作を予測しやすい」に全角スペースと矢印が入っている
-- L822–835（6-16）: `List`のimportがない。6-17の`RuntimeException`というコメントは実際には`UnsupportedOperationException`
+- L822–835（6-16）: `List`のimportがない。6-17の`RuntimeException`というコメントは実際には`UnsupportedOperationException`（2026-11-11に解消）
 - L876–879（6-18）: コメントは「防御的コピーを返却」だが、既に不変のリストを再度`unmodifiableList`で包んでいるだけ
-- L1131（6-28）: クラス名`IneffientImmutableClass`は`Inefficient`の綴り誤り
+- L1131（6-28）: クラス名`IneffientImmutableClass`は`Inefficient`の綴り誤り（2026-11-11に解消）
 - L1179–1207（6-30）: unmodifiableListのビューを作るだけの処理にダブルチェックロッキングを使っており、「大量データの最適化」として説明するには根拠が弱い。volatileとsynchronizedも第15章より前に出てくる

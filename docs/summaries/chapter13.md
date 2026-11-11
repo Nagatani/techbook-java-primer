@@ -7,11 +7,11 @@ sections:
   - key: "エラーの種類と対処法"
     hash: c9e64392
   - key: "例外処理の基本: `try-catch-finally`"
-    hash: 7db15c38
+    hash: d0a8ce9e
   - key: "検査例外と非検査例外"
     hash: 1aebd86b
   - key: "独自例外と例外の連鎖"
-    hash: a2f971ff
+    hash: 6050daf4
   - key: "実践的な例外処理パターン"
     hash: 559d262b
   - key: "リソース管理の実践例"
@@ -19,7 +19,7 @@ sections:
   - key: "例外処理とログ記録"
     hash: cde4163e
   - key: "業務アプリケーションでの例外設計"
-    hash: e6b90abd
+    hash: 79382d83
   - key: "例外処理のベストプラクティス"
     hash: 4a551db0
   - key: "よくあるエラーと対処法"
@@ -48,7 +48,7 @@ sections:
 - 前提知識と章順の矛盾
     + 「第5章までの基本的なJavaプログラミング能力」（L18）とあるが、13-7は`<T>`と`Class<? extends Exception>`とラムダ式、13-9はジェネリクスのコレクション、13-16は`orElseThrow(() -> ...)`、13-29/13-30はラムダ式・ExecutorService・CompletableFutureを使う
     + 13-10のJDBCの例は、2026-11-08に本文の抜粋から外した（全文はsample-codeにある）
-    + 13-16はSpringのアノテーションをコメントアウトした形で載せており、AccountRepositoryなど未定義のクラスに依存して単体では動かない
+    + 13-16はSpringのアノテーションをコメントアウトした形で載せており、AccountRepositoryなど未定義のクラスに依存して単体では動かない（2026-11-11に解消）
 - 学習目標と本文の不一致
     + 学習目標の「メモリリークの防止」「フェイルセーフ設計」は本文で独立した説明がない
 - 章内の重複
@@ -69,13 +69,13 @@ sections:
 - 例外処理の基本: `try-catch-finally`（L40–141）
     + 例外発生時の制御の流れ（呼び出しスタックをさかのぼる）
     + try-catchとNullPointerExceptionの捕捉（13-1）、finallyの骨組み（13-2）、try-with-resourcesでBufferedReaderを自動クローズ（13-3）
-    + 13-3の実行結果はコードにないmainメソッドを前提にしている（L196で注記）
+    + 13-3の実行結果はコードにないmainメソッドを前提にしている（L196で注記）（2026-11-11に解消）
 - 検査例外と非検査例外（L142–216）
     + Throwable→Error/Exception→RuntimeExceptionの階層図（ASCII図と図13-1の両方がある）
     + 検査例外はコンパイラが処理を強制する。throwsによる委譲（13-4）
     + 非検査例外はバグが原因なのでcatchせずコードを直すべき、という方針
 - 独自例外と例外の連鎖（L217–288）
-    + Exceptionを継承したBalanceInsufficientExceptionとthrow（13-5）。実行結果はコードにないmainを前提にしている
+    + Exceptionを継承したBalanceInsufficientExceptionとthrow（13-5）。実行結果はコードにないmainを前提にしている（2026-11-11に解消）
     + SQLExceptionをDataAccessExceptionでラップする例外の連鎖（13-6）
     + 付録B.12「例外処理のパフォーマンス」へのリンク（L341）
 - 実践的な例外処理パターン（L289–451）

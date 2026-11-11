@@ -7,11 +7,11 @@ sections:
   - key: "イベント駆動プログラミングの理解"
     hash: 9b362645
   - key: "ボタンクリックの実装"
-    hash: 0bb0c047
+    hash: 433d068d
   - key: "ラムダ式による簡潔な記述"
-    hash: 40610145
+    hash: 63bbdfd4
   - key: "代表的なイベントの種類"
-    hash: f10f57c2
+    hash: 02d3af78
   - key: "イベント処理のベストプラクティス"
     hash: d693425a
   - key: "まとめ"
@@ -44,7 +44,7 @@ sections:
 - 本文とコードの不一致
     + L737はSwingWorkerを使った解決法を示すと述べるが、18-11のコードは`new Thread`と`invokeLater`を使っていて、SwingWorkerは登場しない（2026-11-11に解消）
     + L264はMouseListenerとMouseMotionListenerを実装すると述べるが、18-5は`MouseAdapter`を`addMouseListener`で登録するだけで、移動（`mouseMoved`）の検出がない
-    + ベストプラクティスで「すべてのGUI操作をEDT上で実行する」と教える（18-10）が、前半の18-1、18-3、18-4は`main`から直接GUIを組み立てていて`invokeLater`を使っていない
+    + ベストプラクティスで「すべてのGUI操作をEDT上で実行する」と教える（18-10）が、前半の18-1、18-3、18-4は`main`から直接GUIを組み立てていて`invokeLater`を使っていない（2026-11-11に解消）
 
 ## 節ごとの要約
 

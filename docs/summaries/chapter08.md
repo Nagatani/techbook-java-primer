@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 713ec8aa
   - key: "列挙型（Enum）"
-    hash: a551b85e
+    hash: fa51b360
   - key: "レコード（Record）"
-    hash: 62bd7df6
+    hash: afb80a9b
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 034b1298
   - key: "内部クラス（Inner Classes）"
-    hash: 1406b2d9
+    hash: 56c017fb
   - key: "まとめ"
     hash: 648e3d3d
   - key: "章末演習"
@@ -88,9 +88,9 @@ sections:
 ## 校正で見つけた個別の問題
 
 - L81–84、L507–514、L1236–1238: 「項目: 説明」形式のリスト項目で、階層化リストの規約に反する
-- L181、L225、L293: 「実行結果（テストコード付き）」とあるが、テストコードが示されていない。L696の「実行結果（拡張版）」も8-18のmainと出力が合わない
-- L246（8-7）: `Connection`のimportがなく、どのクラスか（java.sql）説明もない。ほかにも8-17の`Duration`、8-19の`List`/`Collections`、8-22の`BigDecimal`/`RoundingMode`、8-24の`LocalDateTime`などimportがない（8-25は2026-11-08に全文を公開）
+- L181、L225、L293: 「実行結果（テストコード付き）」とあるが、テストコードが示されていない。L696の「実行結果（拡張版）」も8-18のmainと出力が合わない（2026-11-11に解消）
+- L246（8-7）: `Connection`のimportがなく、どのクラスか（java.sql）説明もない。ほかにも8-17の`Duration`、8-19の`List`/`Collections`、8-22の`BigDecimal`/`RoundingMode`、8-24の`LocalDateTime`などimportがない（8-25は2026-11-08に全文を公開）（2026-11-11に解消）
 - 8-26: `CharacterClass`のゲッターを「省略」していた。2026-11-08に全文（sample-code）へゲッターとmainを足し、本文は抜粋にした
-- L1099（8-29）: コメントの出力例「PREFIX: HELLO」は誤り。prefixは大文字化されないので「(prefixの値): HELLO」になる
+- L1099（8-29）: コメントの出力例「PREFIX: HELLO」は誤り。prefixは大文字化されないので「(prefixの値): HELLO」になる（2026-11-11に解消）
 - L1230: 「**演習課題URL**:」が太字ラベルで、URLもコード表記でない。他章の「演習課題へのアクセス」の書式と揃っていない
 - L30: 見出しの後に空行が2つ続いている

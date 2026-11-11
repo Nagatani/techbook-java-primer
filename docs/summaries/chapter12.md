@@ -13,7 +13,7 @@ sections:
   - key: "Optional型による安全なnull処理"
     hash: 9b125378
   - key: "並列ストリームによるパフォーマンス向上"
-    hash: e928331a
+    hash: dc9bb5f7
   - key: "高度なStream操作"
     hash: e9c3466b
   - key: "よくあるエラーと対処法"
@@ -104,7 +104,7 @@ sections:
 - L214: コード断片の後に句点だけがある文
 - L413、L709: 「…する方法。」「…ベストプラクティス。」の体言止めの断片文
 - L495: コメント「getUserは…」がコードに存在しないメソッドを指している
-- 12-17、12-32、12-38: 同じ変数（results、contents）を1つのコード中で2回宣言しており、そのままではコンパイルできない
+- 12-17、12-32、12-38: 同じ変数（results、contents）を1つのコード中で2回宣言しており、そのままではコンパイルできない（2026-11-11に解消）
 - 12-31: 「非同期安全でない」は不自然。ArrayListへの並列追加でConcurrentModificationExceptionが出るという説明も不正確（実際はデータの欠落や配列外アクセス例外が多い）
 - 12-35: 変数名`count`に合計（reduce(0, Integer::sum)）を代入している
 - 12-37: エラーメッセージがEclipse形式で、javacの「unreported exception IOException」と異なる

@@ -7,9 +7,9 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 99979036
   - key: "外部ライブラリの利用"
-    hash: 8356c7a2
+    hash: cc5b4b33
   - key: "よくあるエラーと対処法"
-    hash: 2e588189
+    hash: c5cdf72e
   - key: "まとめ"
     hash: a6941e3c
   - key: "章末演習"
@@ -138,8 +138,8 @@ sections:
 - L292–296: 「#### IntelliJ IDEA」の直後に空行なしでリストが始まる
 - 22-19（L1479）: 中身はpom.xmlのXMLなのに言語指定が`java`。22-22、22-23もmvnコマンドやXMLを`java`で囲っている
 - 22-3、22-22、22-26、22-27、22-32、22-44、22-45: コマンドライン操作の例に番号が付いている（番号付けルールでは付けない例）
-- 22-5: `excludeFieldsWithoutExposeAnnotation()`を指定しつつ@Exposeを付けたのはinternalIdだけなので、実際には全フィールドが除外される。また`setDateFormat`は`LocalDateTime`に効かず、TypeAdapterなしでは`LocalDateTime`をシリアライズできない。実行結果の`"tags": [work, important]`も正しいJSONでない
+- 22-5: `excludeFieldsWithoutExposeAnnotation()`を指定しつつ@Exposeを付けたのはinternalIdだけなので、実際には全フィールドが除外される。また`setDateFormat`は`LocalDateTime`に効かず、TypeAdapterなしでは`LocalDateTime`をシリアライズできない。実行結果の`"tags": [work, important]`も正しいJSONでない（2026-11-11に解消）
 - 22-2と22-5で別内容の`Task`クラスが同名で登場する
 - 22-32: dependency:treeの出力例で、slf4j-apiがcommons-loggingに依存しているのは事実と異なる
-- 22-38、22-39: Jackson 1.xと2.xはパッケージ名（org.codehaus.jackson と com.fasterxml.jackson）から異なるので、例として不正確。コメントは「コンパイルエラー」、エラーメッセージは実行時のNoSuchMethodErrorで食い違う
+- 22-38、22-39: Jackson 1.xと2.xはパッケージ名（org.codehaus.jackson と com.fasterxml.jackson）から異なるので、例として不正確。コメントは「コンパイルエラー」、エラーメッセージは実行時のNoSuchMethodErrorで食い違う（2026-11-11に解消）
 - L365–371: Mavenの依存関係解決手順に「深さ優先探索」とあるが、最短経路優先（nearest wins）の説明と合わない（2026-11-11に解消）
