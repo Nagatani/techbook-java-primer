@@ -147,7 +147,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 }
 ```
 
-実行すると、「高度なキーボードイベント処理」というウィンドウが開きます。キーを押したり離したりするたびに、下のステータスラベルに修飾キーとキーの名前を表示します。Ctrl+Sで保存のダイアログ、F1でヘルプを表示し、Ctrl+Aで全選択、Ctrl+Dで現在の行の削除、F5で内容のクリアを行います。
+実行すると、「高度なキーボードイベント処理」というウィンドウが開きます。キーを押したり離したりするたびに、下のステータスラベルに修飾キーとキーの名前を表示します。Ctrl+Sで保存のダイアログ、F1でヘルプを表示し、Ctrl+Aで全選択、Ctrl+Dで現在の行の削除、Ctrl+Shift+Dで現在の行の複製、F5で内容のクリアを行います。
 
 ### DocumentListenerによるテキスト変更の監視
 
@@ -464,18 +464,17 @@ public class DragAndDropExample extends JFrame {
 
 以下のコードは、マウス移動のような高頻度イベントを効率的に処理するための最適化技術を示しています。デバウンス（一定時間イベントが発生しなくなってから処理）とスロットル（一定間隔でのみ処理）の両方を実装し、パフォーマンスを改善しています。これらの技術は、リアルタイム検索や自動保存などの機能でも活用できます。
 
-<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（6、11、13〜15、45〜46、49〜61、63〜67、85〜101、121行目）</span>
+<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（5、10〜13、43〜44、47〜59、61〜65、80〜96、110行目）</span>
 
 ```java
 public class EventOptimizationExample extends JFrame {
     // ...
     private Timer debounceTimer;
-    // ...
     private long lastThrottleTime = 0;
     private static final int DEBOUNCE_DELAY = 300; // ミリ秒
     private static final int THROTTLE_DELAY = 100; // ミリ秒
         // ...
-        // 通常のマウス移動イベント（最適化なし）
+        // マウス移動イベント（位置の表示は毎回、描画とログはデバウンスとスロットルで間引く）
         drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
             // ...
             @Override

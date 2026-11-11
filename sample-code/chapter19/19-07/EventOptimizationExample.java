@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.concurrent.*;
 
 public class EventOptimizationExample extends JFrame {
     private JPanel drawPanel;
@@ -9,7 +8,6 @@ public class EventOptimizationExample extends JFrame {
     private JTextArea logArea;
     private Point currentMousePos;
     private Timer debounceTimer;
-    private ScheduledExecutorService throttleExecutor;
     private long lastThrottleTime = 0;
     private static final int DEBOUNCE_DELAY = 300; // ミリ秒
     private static final int THROTTLE_DELAY = 100; // ミリ秒
@@ -42,7 +40,7 @@ public class EventOptimizationExample extends JFrame {
         logArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(logArea);
         
-        // 通常のマウス移動イベント（最適化なし）
+        // マウス移動イベント（位置の表示は毎回、描画とログはデバウンスとスロットルで間引く）
         drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
             private int eventCount = 0;
             
@@ -65,9 +63,6 @@ public class EventOptimizationExample extends JFrame {
             log("デバウンス: マウス移動が停止しました - " + currentMousePos);
         });
         debounceTimer.setRepeats(false);
-        
-        // スロットル用のExecutor
-        throttleExecutor = Executors.newSingleThreadScheduledExecutor();
         
         // コントロールパネル
         JPanel controlPanel = new JPanel();
@@ -105,12 +100,6 @@ public class EventOptimizationExample extends JFrame {
             logArea.append(message + "\n");
             logArea.setCaretPosition(logArea.getDocument().getLength());
         });
-    }
-    
-    @Override
-    public void dispose() {
-        super.dispose();
-        throttleExecutor.shutdown();
     }
     
     public static void main(String[] args) {

@@ -79,14 +79,13 @@
     "dir": "19-07",
     "main": "EventOptimizationExample",
     "excerpt": [
-      { "file": "EventOptimizationExample.java", "from": 6, "to": 6 },
-      { "file": "EventOptimizationExample.java", "from": 11, "to": 11 },
-      { "file": "EventOptimizationExample.java", "from": 13, "to": 15 },
-      { "file": "EventOptimizationExample.java", "from": 45, "to": 46 },
-      { "file": "EventOptimizationExample.java", "from": 49, "to": 61 },
-      { "file": "EventOptimizationExample.java", "from": 63, "to": 67 },
-      { "file": "EventOptimizationExample.java", "from": 85, "to": 101 },
-      { "file": "EventOptimizationExample.java", "from": 121, "to": 121 }
+      { "file": "EventOptimizationExample.java", "from": 5, "to": 5 },
+      { "file": "EventOptimizationExample.java", "from": 10, "to": 13 },
+      { "file": "EventOptimizationExample.java", "from": 43, "to": 44 },
+      { "file": "EventOptimizationExample.java", "from": 47, "to": 59 },
+      { "file": "EventOptimizationExample.java", "from": 61, "to": 65 },
+      { "file": "EventOptimizationExample.java", "from": 80, "to": 96 },
+      { "file": "EventOptimizationExample.java", "from": 110, "to": 110 }
     ]
   },
   "19-8": {
