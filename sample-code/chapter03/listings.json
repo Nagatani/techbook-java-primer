@@ -150,7 +150,7 @@
     "dir": "03-32",
     "main": null,
     "excerpt": [
-      { "file": "Book.java", "from": 1, "to": 39 }
+      { "file": "Book.java", "from": 1, "to": 43 }
     ]
   },
   "3-33": {
@@ -158,6 +158,16 @@
     "main": "BookClassTest",
     "excerpt": [
       { "file": "BookClassTest.java", "from": 1, "to": 14 }
+    ],
+    "uses": [
+      "3-32"
+    ]
+  },
+  "3-34": {
+    "dir": "03-34",
+    "main": "BookTest",
+    "excerpt": [
+      { "file": "BookTest.java", "from": 1, "to": 16 }
     ],
     "uses": [
       "3-32"

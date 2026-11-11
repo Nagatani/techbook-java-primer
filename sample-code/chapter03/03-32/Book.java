@@ -30,6 +30,10 @@ public class Book {
         return author;
     }
     
+    public double getPrice() {
+        return price;
+    }
+    
     // セッターメソッド
     public void setPrice(double price) {
         if (price >= 0) {

@@ -36,6 +36,7 @@ javac -d out *.java
 | [3-31](./03-31/) | Person.java | （mainメソッドなし） |
 | [3-32](./03-32/) | Book.java | （mainメソッドなし） |
 | [3-33](./03-33/) | Book.java<br>BookClassTest.java | `java -cp out BookClassTest` |
+| [3-34](./03-34/) | Book.java<br>BookTest.java | `java -cp out BookTest` |
 | [3-35](./03-35/) | Student.java | （mainメソッドなし） |
 | [3-36](./03-36/) | Student.java<br>StudentAccessTest.java | `java -cp out StudentAccessTest` |
 | [3-37](./03-37/) | BadExample.java<br>Product.java | `java -cp out BadExample` |

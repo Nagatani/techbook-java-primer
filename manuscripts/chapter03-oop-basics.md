@@ -1340,6 +1340,10 @@ public class Book {
         return author;
     }
     
+    public double getPrice() {
+        return price;
+    }
+    
     // セッターメソッド
     public void setPrice(double price) {
         if (price >= 0) {
@@ -1395,7 +1399,7 @@ public class BookClassTest {
 「本は自分の情報を表示できる」という、自然な責任の分担です。
 
 フィールドへのアクセスのさせ方にも使い分けがあります。
-読み取り専用にしたいタイトルと著者にはgetterだけを用意し、変更してよい価格には`setPrice`というsetterを用意しています。
+読み取り専用にしたいタイトルと著者にはgetterだけを用意し、変更してよい価格にはgetterに加えて`setPrice`というsetterを用意しています。
 `setPrice`は価格が0以上かどうかを確かめてから値を変えるので、「価格は0以上」というビジネスルールをクラスの内部で守れます。
 
 ### オブジェクトの作成と使用
@@ -1404,7 +1408,7 @@ public class BookClassTest {
 
 以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード3-34**</span>
+<span class="listing-number">**サンプルコード3-34**　BookTest.java</span>
 
 ```java
 public class BookTest {
