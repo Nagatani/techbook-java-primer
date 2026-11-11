@@ -24,16 +24,12 @@ public class LazyTableDemo {
                     return page;
                 }
             };
+            // 2. テーブルの設定
             JTable table = new JTable(new LazyTableModel(dataSource));
-
-            // 2. テーブルの最適化設定
-            table.setAutoCreateRowSorter(true);
             table.setFillsViewportHeight(true);
-            table.getTableHeader().setReorderingAllowed(false);
-
-            // 3. 不要な更新を避ける
-            table.setUpdateSelectionOnSort(false);
-            table.setRowHeight(20);  // 固定の行高さを設定
+            table.setRowHeight(20);  // 行の高さを固定にする
+            // setAutoCreateRowSorter(true)で並べ替えを有効にすると、
+            // 並べ替えのために全行の値を読むので、遅延読み込みの効果がなくなる
 
             JFrame frame = new JFrame("遅延読み込みのテーブル");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -11,9 +11,13 @@ public class SmoothPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (getWidth() == 0 || getHeight() == 0) {
+            return;  // 大きさが決まる前は描かない
+        }
         
-        // バッファが未作成または再描画が必要な場合のみ描画
-        if (buffer == null || needsRedraw) {
+        // バッファが未作成、大きさが変わった、または再描画が必要な場合のみ描画
+        if (buffer == null || buffer.getWidth() != getWidth()
+                || buffer.getHeight() != getHeight() || needsRedraw) {
             createBuffer();
             needsRedraw = false;
         }
@@ -38,6 +42,7 @@ public class SmoothPanel extends JPanel {
         g2d.dispose();
     }
     
+    // 描く内容が変わったときに呼ぶ
     public void invalidateBuffer() {
         needsRedraw = true;
         repaint();

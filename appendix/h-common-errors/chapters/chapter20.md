@@ -2,13 +2,11 @@
 
 書籍『Java入門』第20章「JTableとJListの基礎」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-高度なGUIプログラミングの学習において遭遇しやすい典型的なエラーとその対処法を以下にまとめます。
-
 ## カスタムコンポーネントの描画問題
 
 ### 問題：paintComponent()で描画した内容が表示されない
 
-エラー症状。
+エラー症状
 
 ```java
 public class CustomPanel extends JPanel {
@@ -26,7 +24,7 @@ public class CustomPanel extends JPanel {
 - コンポーネントのサイズが0になっている
 - 透明度の設定に問題がある
 
-対処法。
+対処法
 
 ```java
 public class CustomPanel extends JPanel {
@@ -45,9 +43,9 @@ public class CustomPanel extends JPanel {
 }
 ```
 
-### 問題：カスタム描画がちらつく
+### 問題：カスタム描画が重く、ちらつく
 
-エラー症状。
+エラー症状
 
 ```java
 @Override
@@ -63,11 +61,14 @@ public void paintComponent(Graphics g) {
 ```
 
 原因
-- ダブルバッファリングが無効になっている
-- 描画処理が重すぎる
+- 再描画のたびに重い描画処理をしている
+- `paintComponent()`ではなく`paint()`をオーバーライドしている、`setDoubleBuffered(false)`にしているなどで、Swingのダブルバッファリング（画面外で描いてから一度に表示するしくみ）が働いていない
 - 不要な再描画が発生している
 
-対処法。
+`JPanel`は標準でダブルバッファリングが有効なので、`paintComponent()`をオーバーライドしていれば描画の途中の状態は見えません。
+それでも動きが重いときは、描画の結果を画像に保存しておき、内容が変わったときだけ描き直します。
+
+対処法
 
 コンパイルできる全文：[chapter20-code/SmoothPanel/](chapter20-code/SmoothPanel/)
 
@@ -79,9 +80,13 @@ public class SmoothPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (getWidth() == 0 || getHeight() == 0) {
+            return;  // 大きさが決まる前は描かない
+        }
         
-        // バッファが未作成または再描画が必要な場合のみ描画
-        if (buffer == null || needsRedraw) {
+        // バッファが未作成、大きさが変わった、または再描画が必要な場合のみ描画
+        if (buffer == null || buffer.getWidth() != getWidth()
+                || buffer.getHeight() != getHeight() || needsRedraw) {
             createBuffer();
             needsRedraw = false;
         }
@@ -106,6 +111,7 @@ public class SmoothPanel extends JPanel {
         g2d.dispose();
     }
     
+    // 描く内容が変わったときに呼ぶ
     public void invalidateBuffer() {
         needsRedraw = true;
         repaint();
@@ -115,19 +121,23 @@ public class SmoothPanel extends JPanel {
 
 ## スレッド間でのGUI更新
 
-### 問題：背景スレッドからGUIを更新すると例外が発生
+### 問題：背景スレッドからGUIを更新すると、表示が乱れたり例外が発生したりする
 
-エラーメッセージ。
+エラー症状
+
+EDT以外からコンポーネントを操作しても、Swingはその場で例外を投げるとは限りません。
+多くの場合は、表示が更新されない、ときどき表示が乱れるといった、再現しにくい形で現れます。
+JTableのモデルを背景スレッドから変更すると、描画中のEDTと食い違い、次のような例外がEDTのスレッドで発生することもあります。
+
 ```
-Exception in thread "Thread-1" java.lang.IllegalStateException: 
-This component does not support a null LayoutManager
+Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: Index 5 out of bounds for length 5
 ```
 
 原因
-- EDT（Event Dispatch Thread）以外からGUIコンポーネントを更新している
-- スレッドセーフでない操作を実行している
+- EDT（Event Dispatch Thread）以外からGUIコンポーネントやモデルを更新している
+- Swingのコンポーネントはスレッドセーフではなく、EDTからだけ操作する前提で作られている
 
-対処法。
+対処法
 
 ```java
 // 間違った方法
@@ -170,7 +180,7 @@ worker.execute();
 
 ### 問題：大量の画像を扱うとメモリ不足になる
 
-エラーメッセージ。
+エラーメッセージ
 ```
 java.lang.OutOfMemoryError: Java heap space
 ```
@@ -180,7 +190,7 @@ java.lang.OutOfMemoryError: Java heap space
 - 大きな画像を縮小せずに使用している
 - 画像のキャッシュが適切に管理されていない
 
-対処法。
+対処法
 
 コンパイルできる全文：[chapter20-code/ImageManager/](chapter20-code/ImageManager/)
 
@@ -233,7 +243,7 @@ public class ImageManager {
 
 ### 問題：大量のデータを表示するJTableの動作が遅い
 
-エラー症状。
+エラー症状
 
 ```java
 // 10万行のデータを表示すると動作が非常に遅くなる
@@ -245,11 +255,13 @@ table.setModel(model);
 ```
 
 原因
-- すべてのデータを一度にメモリに読み込んでいる
-- 大量データの仮想化が実装されていない
-- 不要な再描画が発生している
+- 1行追加するたびにモデルが変更を通知し、テーブルが表示を計算し直している
+- すべてのデータを一度に作り、メモリに読み込んでいる
 
-対処法。
+JTableが描くのは画面に見えている行だけなので、行数そのものより、データの作り方と通知の回数が問題になります。
+データを先にそろえてからモデルを1回で設定するか、次のように、表示に必要な行だけをデータ源から読み込むモデルを作ります。
+
+対処法
 
 コンパイルできる全文：[chapter20-code/LazyTableDemo/](chapter20-code/LazyTableDemo/)
 
@@ -286,21 +298,19 @@ public class LazyTableModel extends AbstractTableModel {
     }
 }
 
-            // 2. テーブルの最適化設定
-            table.setAutoCreateRowSorter(true);
-            table.setFillsViewportHeight(true);
-            table.getTableHeader().setReorderingAllowed(false);
-
-            // 3. 不要な更新を避ける
-            table.setUpdateSelectionOnSort(false);
-            table.setRowHeight(20);  // 固定の行高さを設定
+// 2. テーブルの設定
+JTable table = new JTable(new LazyTableModel(dataSource));
+table.setFillsViewportHeight(true);
+table.setRowHeight(20);  // 行の高さを固定にする
+// setAutoCreateRowSorter(true)で並べ替えを有効にすると、
+// 並べ替えのために全行の値を読むので、遅延読み込みの効果がなくなる
 ```
 
 ## 複雑なレイアウトの管理
 
 ### 問題：動的にコンポーネントを追加・削除すると配置が崩れる
 
-エラー症状。
+エラー症状
 
 ```java
 JPanel panel = new JPanel(new GridBagLayout());
@@ -318,11 +328,10 @@ panel.revalidate();
 ```
 
 原因
-- GridBagLayoutの制約が適切に管理されていない
-- レイアウトの再計算が正しく行われていない
-- コンポーネントの削除後に制約が更新されていない
+- 残ったコンポーネントの`gridx`・`gridy`は追加したときのままなので、追加と削除を繰り返すと、意図した行や列に並ばなくなる
+- 削除のあとに`repaint()`を呼んでいないと、消したボタンが画面に残る
 
-対処法。
+対処法
 
 コンパイルできる全文：[chapter20-code/DynamicPanel/](chapter20-code/DynamicPanel/)
 
@@ -362,7 +371,7 @@ public class DynamicPanel extends JPanel {
 
 ### 問題：JTableのカスタムレンダラーで選択状態が正しく表示されない
 
-エラー症状。
+エラー症状
 
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -381,7 +390,7 @@ table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 - 選択状態やフォーカス状態を適切に処理していない
 - コンポーネントの設定が不完全
 
-対処法。
+対処法
 
 ```java
 table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -454,4 +463,5 @@ long usedMemory = runtime.totalMemory() - runtime.freeMemory();
 IO.println("使用メモリ: " + usedMemory / 1024 / 1024 + "MB");
 ```
 
-これらの対処法を参考に、高度なGUIアプリケーションの開発を進めてください。複雑な問題に直面した場合は、問題を小さく分割し、段階的に解決することが重要です。
+これらの対処法を参考に、GUIアプリケーションの開発を進めてください。
+複雑な問題に直面したときは、問題を小さく分割し、1つずつ確かめながら解決してください。
