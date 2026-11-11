@@ -64,6 +64,8 @@ error: unexpected type
 `Supplier<T>`は「`T`型の値を1つ作って返す」処理を表すインターフェイスで、第11章で学ぶラムダ式と組み合わせて`new Container<>(() -> new StringBuilder())`のように使います。
 
 ```java
+import java.util.function.Supplier;
+
 // ○ ファクトリーメソッドを使用
 public class Container<T> {
     private T value;
@@ -136,6 +138,8 @@ error: generic array creation
 型消去を考慮した正しい実装方法です。
 
 ```java
+import java.lang.reflect.Array;
+
 // ○ 型消去を考慮した実装
 public class GenericArray<T> {
     private T[] array;
@@ -174,18 +178,23 @@ error: bad operand types for binary operator '*'
 #### 対処法
 
 境界型パラメータの正しい使用方法です。
+`T`型の値どうしを`*`で計算することはできませんが、`Number`のメソッド`doubleValue()`で`double`に変換すれば計算できます。
+ただし、計算結果の`double`を`T`型のフィールドに戻すことはできないため、結果は`double`として返します。
 
 コンパイルできる全文：[chapter10-code/NumberContainer/](chapter10-code/NumberContainer/)
 
 ```java
 // ○ 適切な境界型パラメータ
 public class NumberContainer<T extends Number> {
-    private T value;
+    private final T value;
     
-    public void multiplyBy(double factor) {
-        // Number型の共通メソッドを使用
-        double result = this.value.doubleValue() * factor;
-        // 結果の設定は型に応じて処理
+    public NumberContainer(T value) {
+        this.value = value;
+    }
+    
+    public double multipliedBy(double factor) {
+        // Number型の共通メソッドでdoubleに変換してから計算し、結果を返す
+        return this.value.doubleValue() * factor;
     }
 }
 ```

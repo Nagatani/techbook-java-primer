@@ -1,10 +1,13 @@
 // ○ 適切な境界型パラメータ
 public class NumberContainer<T extends Number> {
-    private T value;
+    private final T value;
     
-    public void multiplyBy(double factor) {
-        // Number型の共通メソッドを使用
-        double result = this.value.doubleValue() * factor;
-        // 結果の設定は型に応じて処理
+    public NumberContainer(T value) {
+        this.value = value;
+    }
+    
+    public double multipliedBy(double factor) {
+        // Number型の共通メソッドでdoubleに変換してから計算し、結果を返す
+        return this.value.doubleValue() * factor;
     }
 }
