@@ -451,14 +451,8 @@ public class TypeConversionExample {
         String str = "123";
         int num = Integer.parseInt(str);     // 文字列→整数
         String str2 = String.valueOf(num);   // 整数→文字列
-        
-        // 数値解析のエラー処理
-        try {
-            String invalidStr = "abc";
-            int invalid = Integer.parseInt(invalidStr);  // NumberFormatException
-        } catch (NumberFormatException e) {
-            IO.println("数値変換エラー: " + e.getMessage());
-        }
+        IO.println("文字列から変換した整数: " + (num + 1));  // 124
+        IO.println("整数から変換した文字列: " + (str2 + 4)); // 1234
     }
 }
 ```
@@ -470,12 +464,14 @@ long: 100
 double: 100.0
 元の値: 130
 byte変換後: -126
-数値変換エラー: For input string: "abc"
+文字列から変換した整数: 124
+整数から変換した文字列: 1234
 ```
 
-最後の`try { ... } catch (NumberFormatException e) { ... }`は、実行中に起きたエラー（例外）に対処するための構文です。
-`try`ブロックでエラーが起きると、処理が`catch`ブロックに移ります。
-例外処理は第13章「例外処理」で詳しく学ぶので、ここではこの動きだけを押さえておけば十分です。
+`Integer.parseInt`で変換した`num`は整数なので、`+ 1`は足し算になります。
+`String.valueOf`で変換した`str2`は文字列なので、`+ 4`は文字列の連結になります。
+`"abc"`のように数値として読めない文字列を`Integer.parseInt`に渡すと、`NumberFormatException`というエラー（例外）が発生してプログラムが止まります（第1章のコラム「Integer.parseIntのエラーから学ぶ」）。
+入力された文字列を変換するときの対処は、本章の「入出力のベストプラクティス」で紹介します。
 
 ### 型変換の実践的な利点
 
@@ -507,8 +503,8 @@ int[] inefficient = new int[1024 * 1024];   // 4MBの整数配列（非効率）
 ```java
 // 多くのJava APIは特定の型を要求
 Math.sqrt(25);        // double型を要求
-Math.round(3.7f);     // float型を受け付ける
-Collections.shuffle(list, new Random(42L));  // long型のシード
+Math.round(3.7f);     // float型を受け付け、int型を返す
+Math.round(3.7);      // double型を受け付け、long型を返す
 ```
 
 ### 型変換のベストプラクティス
@@ -518,7 +514,7 @@ Collections.shuffle(list, new Random(42L));  // long型のシード
 2. データ損失の確認
     + 縮小変換を行う前に、値の範囲を確認する
 3. 例外処理の実装
-    + 文字列から数値への変換では、NumberFormatExceptionをキャッチしてエラーメッセージを表示するなどの例外処理を実装する
+    + 文字列から数値への変換では、NumberFormatExceptionに備えてエラーメッセージを表示するなどの対処をする（本章の「入出力のベストプラクティス」と第13章で扱う）
 4. 定数の型指定
     + リテラルには明示的な型サフィックスを使用（long型には`100L`、float型には`3.14f`、double型には`3.14d`またはサフィックスなし）
 
@@ -529,6 +525,8 @@ Collections.shuffle(list, new Random(42L));  // long型のシード
 プログラムとユーザーの対話は、多くのアプリケーションにおいて基本的な要素です。Javaでは、標準入出力を扱うためのクラスが`java.lang`パッケージに用意されています。C言語の`printf()`や`scanf()`に相当する機能を提供しています。
 
 第1章で説明したとおり、本書では標準入出力にJava 25の`IO`クラス（`IO.println`、`IO.print`、`IO.readln`）を使います。
+各メソッドの基本的な使い方は第1章の「画面に文字列を出力する方法」と「標準入出力を扱うサンプルを動かしてみよう」で学びました。
+この節では、書式の指定、入力した文字列の変換、入力の終わりの扱いなど、入出力を実際のプログラムで使うための知識を補います。
 
 ### Javaの入出力設計の特徴
 
@@ -568,11 +566,6 @@ scanf("%d", &age);  // バッファオーバーフローの危険性
 ```java
 public class IOExample {
     public static void main(String[] args) {
-        // === 出力メソッドの使い分け ===
-        IO.println("Hello, World!");      // 改行付き出力
-        IO.print("改行なし");             // 改行なし出力
-        IO.print("出力\n");               // 手動で改行を追加
-
         // formatted による書式付き出力（C言語のprintf風）
         IO.println("整数: %d, 浮動小数点: %.2f".formatted(10, 3.14159));
         IO.println("文字列: %-10s | 右寄せ: %10s".formatted("左寄せ", "右寄せ"));
@@ -581,18 +574,9 @@ public class IOExample {
         // 文字列入力（メッセージを表示してから1行を読み取る）
         String name = IO.readln("名前を入力してください: ");
 
-        // 整数入力（エラー処理付き）
-        int age = 0;
-        boolean validInput = false;
-        while (!validInput) {
-            String input = IO.readln("年齢を入力してください: ");
-            try {
-                age = Integer.parseInt(input);
-                validInput = true;
-            } catch (NumberFormatException e) {
-                IO.println("エラー: 整数を入力してください");
-            }
-        }
+        // 整数入力（読み取った文字列を整数に変換する）
+        String input = IO.readln("年齢を入力してください: ");
+        int age = Integer.parseInt(input);
 
         // 入力値の確認出力
         IO.println("%sさん（%d歳）、こんにちは！".formatted(name, age));
@@ -601,25 +585,34 @@ public class IOExample {
 ```
 
 #### 実行結果
-名前に「田中太郎」、年齢に「abc」（エラー）→「25」を入力した場合の実行例を示します。
+名前に「田中太郎」、年齢に「25」を入力した場合の実行例を示します。
 
 ```
-Hello, World!
-改行なし出力
 整数: 10, 浮動小数点: 3.14
 文字列: 左寄せ        | 右寄せ:        右寄せ
 名前を入力してください: 田中太郎
-年齢を入力してください: abc
-エラー: 整数を入力してください
 年齢を入力してください: 25
 田中太郎さん（25歳）、こんにちは！
 ```
 
-C言語の`scanf("%d", &age)`は、入力を読むことと整数に変換することを1回で行います。Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`で整数に変換するというように、2つの手順に分けて書きます。変換できない文字列が入力されると`NumberFormatException`が発生するので、`try-catch`で捕まえて入力をやり直してもらえます（例外処理は第13章で詳しく学習します）。
+書式指定子には、C言語のprintfと同じように桁数や幅を指定できます。
+
+- `%.2f`
+    + 小数点以下2桁で表示する
+- `%-10s`
+    + 10文字分の幅に左寄せで表示する
+- `%10s`
+    + 10文字分の幅に右寄せで表示する
+
+C言語の`scanf("%d", &age)`は、入力を読むことと整数に変換することを1回で行います。
+Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`で整数に変換するというように、2つの手順に分けて書きます。
+年齢に整数以外を入力すると`NumberFormatException`が発生してプログラムが止まります。
+入力をやり直してもらう方法は、この節の「入出力のベストプラクティス」で紹介します。
 
 ### 入力した文字列の変換
 
-#### 1. 型ごとの変換メソッド
+`IO.readln`の戻り値はつねにString型です。
+数値や真偽値として使うときは、型ごとの変換メソッドで変換します。
 
 <span class="listing-number">**サンプルコード2-19**</span>
 
@@ -632,67 +625,57 @@ String[] words = IO.readln().split(" ");                // 空白で区切った
 String line = IO.readln();                              // 行全体
 ```
 
-#### 2. 入力検証機能
-
-<span class="listing-number">**サンプルコード2-20**</span>
-
-```java
-String input = IO.readln("整数を入力: ");
-
-// 整数に変換できるかどうかを例外で判定する
-try {
-    int value = Integer.parseInt(input);
-    IO.println("入力値: " + value);
-} catch (NumberFormatException e) {
-    IO.println("整数ではありません");
-}
-```
-
-#### 3. 区切り文字で分ける
-
-1行にまとめて入力された値は、`java.util.Scanner`クラスで区切り文字ごとに取り出せます。`Scanner`は文字列やファイルの中身を、区切り文字で分けながら読むためのクラスです（ファイルからの読み込みは第14章で扱います）。
-
-<span class="listing-number">**サンプルコード2-21**</span>
-
-```java
-Scanner sc = new Scanner("apple,banana,orange");
-sc.useDelimiter(",");  // カンマ区切りに変更
-
-while (sc.hasNext()) {
-    IO.println(sc.next());
-}
-// 出力: apple, banana, orange（各行）
-```
+1行にまとめて入力された値は、`split`で区切り文字ごとに分けて文字列の配列にできます（配列は本章の「配列」、`split`は「文字列処理」で学びます）。
+ファイルや文字列を区切りながら読む`Scanner`クラスは、第14章「ファイルI/O」で紹介します。
 
 ### 入出力のベストプラクティス
 
-#### 1. エラー処理の重要性
-入力処理では必ず例外処理を実装し、ユーザーの誤入力に対して適切に対応することが重要です。次の例では、整数に変換できるまで入力を繰り返します。`strip()`で前後の空白を取り除いてから変換するので、「 42 」のような入力も受け付けます。
+#### 1. 誤った入力への対処
+利用者は、整数を求められても文字や空の行を入力することがあります。
+次の例では、整数に変換できるまで入力を繰り返します。
+`strip()`で前後の空白を取り除いてから変換するので、「 42 」のような入力も受け付けます。
 
-<span class="listing-number">**サンプルコード2-22**　SafeInputExample.java</span>
+<span class="listing-number">**サンプルコード2-20**　SafeInputExample.java</span>
 
 ```java
 public class SafeInputExample {
     public static void main(String[] args) {
-        while (true) {
+        int number = 0;
+        boolean valid = false;
+        while (!valid) {
             String input = IO.readln("整数を入力してください: ");
             try {
-                int number = Integer.parseInt(input.strip());
-                IO.println("入力された数値: " + number);
-                break;
+                number = Integer.parseInt(input.strip());
+                valid = true;  // ここに来たのは変換できたとき
             } catch (NumberFormatException e) {
                 IO.println("エラー: 整数を入力してください");
             }
         }
+        IO.println("入力された数値: " + number);
     }
 }
 ```
+
+#### 実行結果
+「abc」を入力したあとに「42」を入力した場合の実行例を示します。
+
+```
+整数を入力してください: abc
+エラー: 整数を入力してください
+整数を入力してください: 42
+入力された数値: 42
+```
+
+`try { ... } catch (NumberFormatException e) { ... }`は、第1章のコラムで参考として見た、実行中のエラー（例外）に対処する構文です。
+`try`ブロックのなかで`NumberFormatException`が起きると、残りの文（`valid = true;`）は実行されず、処理が`catch`ブロックに移ります。
+そのため、変換に成功するまで`valid`は`false`のままで、入力を繰り返します。
+例外処理のしくみは第13章「例外処理」で詳しく学ぶので、ここではこの動きだけを押さえておけば十分です。
 
 #### 2. 入力の終わりの扱い
 
 `IO.readln`は、入力がもう残っていないとき（ファイルを標準入力にリダイレクトして最後まで読んだときや、キーボードでCtrl+D、WindowsではCtrl+Zを押したとき）に`null`を返します。行数が決まっていない入力は、`null`が返るまで読み続けます。
 
-<span class="listing-number">**サンプルコード2-23**</span>
+<span class="listing-number">**サンプルコード2-21**</span>
 
 ```java
 String line;
@@ -720,7 +703,7 @@ IO.println(count + "行読みました");
 #### 事前説明
 条件分岐は、プログラムが状況に応じて異なる処理を選択するしくみです。成績判定、ユーザー入力の検証、システム状態の確認など、実用的なプログラムには不可欠な機能です。
 
-<span class="listing-number">**サンプルコード2-24**</span>
+<span class="listing-number">**サンプルコード2-22**</span>
 
 ```java
 // if文（C言語と同じ）
@@ -750,7 +733,7 @@ C言語のように整数を条件に使うと、コンパイルエラーにな�
 
 switch文は、変数の値によって処理を分岐させる制御構造です。多数のif-else文を使用するよりも読みやすくなります。
 
-<span class="listing-number">**サンプルコード2-25**　SwitchExample.java</span>
+<span class="listing-number">**サンプルコード2-23**　SwitchExample.java</span>
 
 ```java
 // switch文の基本的な使い方
@@ -795,9 +778,9 @@ public class SwitchExample {
 #### switch式（Java 14以降）
 
 Java 14からは、switchを値を返す「式」として書けるようになりました。
-サンプルコード2-25と同じ判定を、`->`（アロー）を使ったswitch式で書くと次のようになります。
+サンプルコード2-23と同じ判定を、`->`（アロー）を使ったswitch式で書くと次のようになります。
 
-<span class="listing-number">**サンプルコード2-26**</span>
+<span class="listing-number">**サンプルコード2-24**</span>
 
 ```java
 String evaluation = switch (grade / 10) {
@@ -818,7 +801,7 @@ switch式では`break`文を書きません。
 #### 事前説明
 繰り返し処理（ループ）は、同じ処理を何度も実行するためのしくみです。配列の全要素を処理する、計算を指定回数繰り返す、条件が満たされるまで処理を続けるなど、プログラミングの基本的なパターンを実現します。Javaでは、用途に応じて3つの主要なループ構文を提供しています。
 
-<span class="listing-number">**サンプルコード2-27**</span>
+<span class="listing-number">**サンプルコード2-25**</span>
 
 ```java
 // for文
@@ -873,7 +856,7 @@ while文は、条件が複雑な場合や、ループの回数が事前に決ま
 #### 事前説明
 配列は、同じ型の複数のデータを一括で管理するための基本的なデータ構造です。学生の成績管理、商品の在庫管理、数値計算など、プログラミングの多くの場面で配列が活用されます。Javaの配列は、C言語の配列の利便性を継承しつつ、境界チェックや自動初期化により安全性を向上させています。
 
-<span class="listing-number">**サンプルコード2-28**</span>
+<span class="listing-number">**サンプルコード2-26**</span>
 
 ```java
 // 配列の宣言と初期化
@@ -905,11 +888,11 @@ Javaの配列はオブジェクトなので、`length`で要素数を取得で�
 そのため、C言語のように初期化していない値を読んで予期しない動作になることはありません。
 
 2次元配列は「配列の配列」として作られます。
-サンプルコード2-28の`matrix`のように、行列や表の形のデータをそのまま表現できます。
+サンプルコード2-26の`matrix`のように、行列や表の形のデータをそのまま表現できます。
 
 ##### 配列操作の実用例
 
-<span class="listing-number">**サンプルコード2-29**</span>
+<span class="listing-number">**サンプルコード2-27**</span>
 
 ```java
 // 配列の全要素を処理する安全な方法
@@ -942,7 +925,7 @@ Javaでは、範囲外へのアクセスを実行時に検査し、`ArrayIndexOu
 
 ### 配列操作の応用例
 
-<span class="listing-number">**サンプルコード2-30**</span>
+<span class="listing-number">**サンプルコード2-28**</span>
 
 ```java
 // 配列の要素を検索する
@@ -963,14 +946,20 @@ public static int sumArray(int[] array) {
     }
     return sum;
 }
+```
 
+配列をコピーするには、`System.arraycopy`か、`java.util.Arrays`クラスの`copyOf`を使います。
+`Arrays`のように`java.lang`以外のパッケージにあるクラスは、ファイルの先頭に`import java.util.Arrays;`と書いてから使います（本章の「import文の使い方」で説明します）。
+
+<span class="listing-number">**サンプルコード2-29**</span>
+
+```java
 // 配列をコピーする
 int[] original = {1, 2, 3, 4, 5};
 int[] copy = new int[original.length];
 System.arraycopy(original, 0, copy, 0, original.length);
 
-// またはArraysクラスを使用
-import java.util.Arrays;
+// またはArraysクラスを使用（ファイルの先頭に import java.util.Arrays; が必要）
 int[] copy2 = Arrays.copyOf(original, original.length);
 ```
 
@@ -986,7 +975,7 @@ int[] copy2 = Arrays.copyOf(original, original.length);
 配列は参照型なので、配列変数を代入すると、配列の中身ではなく参照がコピーされます。
 次のコードでは、`a`と`b`が同じ配列を指すため、`b`を通じて変更した値は`a`からも見えます。
 
-<span class="listing-number">**サンプルコード2-31**</span>
+<span class="listing-number">**サンプルコード2-30**</span>
 
 ```java
 int[] a = {1, 2, 3};
@@ -998,7 +987,7 @@ b[0] = 100;   // a[0]も100になる
 
 Javaの多次元配列は、各行の長さが異なってもかまいません。
 
-<span class="listing-number">**サンプルコード2-32**</span>
+<span class="listing-number">**サンプルコード2-31**</span>
 
 ```java
 int[][] jaggedArray = {
@@ -1019,7 +1008,7 @@ C言語の関数に相当しますが、Javaではすべてのメソッドはク
 
 この章では、mainメソッドから直接呼び出すことができる「staticメソッド」の基本的な使い方を学習します。
 
-<span class="listing-number">**サンプルコード2-33**　Calculator.java</span>
+<span class="listing-number">**サンプルコード2-32**　Calculator.java</span>
 
 ```java
 public class Calculator {
@@ -1055,7 +1044,7 @@ public class Calculator {
 
 ### staticメソッドの基本構文
 
-<span class="listing-number">**サンプルコード2-34**</span>
+<span class="listing-number">**サンプルコード2-33**</span>
 
 ```java
 public static 戻り値の型 メソッド名(引数リスト) {
@@ -1106,7 +1095,7 @@ Javaにおける文字列処理は、C言語のアプローチとは根本的に
 
 #### C言語の文字列処理の課題
 
-<span class="listing-number">**サンプルコード2-35**</span>
+<span class="listing-number">**サンプルコード2-34**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1122,7 +1111,7 @@ strcpy(copy, str);  // メモリリークの可能性
 
 #### Javaの文字列処理の利点
 
-<span class="listing-number">**サンプルコード2-36**</span>
+<span class="listing-number">**サンプルコード2-35**</span>
 
 ```java
 // Javaでの文字列処理
@@ -1145,7 +1134,7 @@ String copy = str;  // 参照のコピー（安全）
 
 #### 文字列の長さ取得
 
-<span class="listing-number">**サンプルコード2-37**</span>
+<span class="listing-number">**サンプルコード2-36**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1154,7 +1143,7 @@ String copy = str;  // 参照のコピー（安全）
 int len = strlen(str);  // 毎回文字列を走査
 ```
 
-<span class="listing-number">**サンプルコード2-38**</span>
+<span class="listing-number">**サンプルコード2-37**</span>
 
 ```java
 // Java - O(1)で即座に取得
@@ -1163,7 +1152,7 @@ int len = str.length();  // 内部フィールドを返すだけ
 
 #### 文字列の比較
 
-<span class="listing-number">**サンプルコード2-39**</span>
+<span class="listing-number">**サンプルコード2-38**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1174,7 +1163,7 @@ if (strcmp(str1, str2) == 0) {
 }
 ```
 
-<span class="listing-number">**サンプルコード2-40**</span>
+<span class="listing-number">**サンプルコード2-39**</span>
 
 ```java
 // Java
@@ -1185,7 +1174,7 @@ if (str1.equals(str2)) {
 
 #### 部分文字列の取得
 
-<span class="listing-number">**サンプルコード2-41**</span>
+<span class="listing-number">**サンプルコード2-40**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1196,7 +1185,7 @@ strncpy(sub, str + 5, 9);
 sub[9] = '\0';
 ```
 
-<span class="listing-number">**サンプルコード2-42**</span>
+<span class="listing-number">**サンプルコード2-41**</span>
 
 ```java
 // Java - 簡潔で安全
@@ -1208,7 +1197,7 @@ String sub = str.substring(5, 14);
 文字列オブジェクトの作成と基本操作は、Javaプログラミングにおいてもっとも頻繁に使用される機能の1つです。
 以下のコード例では、文字列の作成、連結、長さの取得、個別文字へのアクセスという基本的な操作を示します。
 
-<span class="listing-number">**サンプルコード2-43**</span>
+<span class="listing-number">**サンプルコード2-42**</span>
 
 ```java
 // 文字列の作成
@@ -1231,7 +1220,7 @@ char firstChar = message.charAt(0);  // 'H'
 
 文字列の比較は、Javaプログラミングでもっとも誤解されやすい概念の1つです。C言語では`strcmp()`関数を使用していましたが、Javaではオブジェクトの比較という観点から、より慎重なアプローチが必要です。以下のコード例で、参照の比較と内容の比較の重要な違いを示します。
 
-<span class="listing-number">**サンプルコード2-44**</span>
+<span class="listing-number">**サンプルコード2-43**</span>
 
 ```java
 String s1 = "Java";
@@ -1256,7 +1245,7 @@ boolean ignore = s1.equalsIgnoreCase("java");  // true
 
 Javaの`String`クラスは、テキスト処理に必要な豊富なメソッドを提供しています。これらのメソッドは、Web開発でのユーザー入力の処理、データベースから取得した文字列の整形、ファイルの読み書きなど、実際の開発で頻繁に使用されます。以下のコード例で、もっとも重要な文字列操作メソッドを実践的に学習します。
 
-<span class="listing-number">**サンプルコード2-45**</span>
+<span class="listing-number">**サンプルコード2-44**</span>
 
 ```java
 String text = "  Java Programming  ";
@@ -1289,7 +1278,7 @@ boolean contains = text.contains("Java");  // true
 
 Javaの文字列設計におけるもっとも重要な特徴の1つが不変性（Immutability）です。この設計思想は、最初は直感に反するように感じることがありますが、スレッドセーフティ、セキュリティ、パフォーマンスの観点からきわめて重要な役割を果たしています。文字列が不変であることにより、複数のスレッドが同じ文字列オブジェクトを安全に共有でき、予期しない変更によるバグを防ぐことができます。以下のコード例で、この重要な概念を実際に確認してみましょう。
 
-<span class="listing-number">**サンプルコード2-46**</span>
+<span class="listing-number">**サンプルコード2-45**</span>
 
 ```java
 String str = "Hello";
@@ -1313,7 +1302,7 @@ IO.println(str);  // "Hello World"
 
 文字列の不変性は多くの利点をもたらしますが、頻繁な文字列操作が必要な場合にはパフォーマンスの問題を引き起こす可能性があります。なぜなら、文字列を連結するたびに新しいオブジェクトが作成され、古いオブジェクトはガベージコレクションの対象となるからです。この問題を解決するために、Javaは`StringBuilder`クラスを提供しています。`StringBuilder`は内部に可変長の文字配列を持ち、メモリの再割り当てを最小限に抑えながら文字列操作を行います。
 
-<span class="listing-number">**サンプルコード2-47**</span>
+<span class="listing-number">**サンプルコード2-46**</span>
 
 ```java
 StringBuilder sb = new StringBuilder();
@@ -1338,9 +1327,10 @@ String result = sb.toString();
 
 ## import文の使い方
 
-外部のクラスやライブラリを使用する際は`import`文が必要な場合があります。
+Javaの標準ライブラリのクラスは、パッケージという単位に分けて置かれています。
+`java.lang`以外のパッケージにあるクラス（配列の節で使った`java.util.Arrays`など）を使うときは、ファイルの先頭に`import`文を書きます。
 
-<span class="listing-number">**サンプルコード2-48**　ImportExample.java</span>
+<span class="listing-number">**サンプルコード2-47**　ImportExample.java</span>
 
 ```java
 import java.util.Arrays;  // Arraysクラスを使用するための宣言
@@ -1386,16 +1376,18 @@ public class ImportExample {
 - `java.lang`パッケージ（`String`, `System`, `Integer`, `IO`など）は自動的に利用可能
 - そのため`IO.readln()`や`Integer.parseInt()`にはimport文は不要
 
+パッケージのしくみや、自分で作ったクラスをパッケージに分ける方法は、第4章「クラスとインスタンス」で学びます。
+
 ## よくあるコンパイルエラーとその対処法
 
-基本文法を学び始めると、コンパイルエラーに出会う機会が増えます。コンパイラは誤りを見つけた行番号と内容を表示するので、表示された行とその直前の行を確認するのが近道です。特に多いのは次の3つです。
+基本文法を学び始めると、コンパイルエラーに出会う機会が増えます。コンパイラは誤りを見つけた行番号と内容を表示するので、表示された行とその直前の行を確認するのが近道です。特に多いのは次の2つです。
 
 - セミコロン忘れ
     + 文の末尾に`;`がないと`';'がありません`というエラーになる。エラーは次の行で報告されることもある
 - 大文字・小文字の間違い
     + Javaは大文字と小文字を区別するため、`string`や`system.out`と書くとシンボルが見つからない
-- クラス名とファイル名の不一致
-    + `public class`の名前とファイル名が異なると、コンパイルできない
+
+クラス名とファイル名の不一致や、JDKやクラスファイルが見つからないといった、コンパイル・実行の手順で起きるエラーは、第1章の「よくあるエラーと対処法」を参照してください。
 
 エラーメッセージの例と修正の手順は、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter02.md`

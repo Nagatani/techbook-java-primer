@@ -24,13 +24,7 @@ public class TypeConversionExample {
         String str = "123";
         int num = Integer.parseInt(str);     // 文字列→整数
         String str2 = String.valueOf(num);   // 整数→文字列
-        
-        // 数値解析のエラー処理
-        try {
-            String invalidStr = "abc";
-            int invalid = Integer.parseInt(invalidStr);  // NumberFormatException
-        } catch (NumberFormatException e) {
-            IO.println("数値変換エラー: " + e.getMessage());
-        }
+        IO.println("文字列から変換した整数: " + (num + 1));  // 124
+        IO.println("整数から変換した文字列: " + (str2 + 4)); // 1234
     }
 }

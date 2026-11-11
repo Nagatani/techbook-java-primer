@@ -10,39 +10,39 @@
     "dir": "02-13",
     "main": "TypeConversionExample",
     "excerpt": [
-      { "file": "TypeConversionExample.java", "from": 1, "to": 36 }
+      { "file": "TypeConversionExample.java", "from": 1, "to": 30 }
     ]
   },
   "2-18": {
     "dir": "02-18",
     "main": "IOExample",
     "excerpt": [
-      { "file": "IOExample.java", "from": 1, "to": 32 }
+      { "file": "IOExample.java", "from": 1, "to": 18 }
     ]
   },
-  "2-22": {
-    "dir": "02-22",
+  "2-20": {
+    "dir": "02-20",
     "main": "SafeInputExample",
     "excerpt": [
-      { "file": "SafeInputExample.java", "from": 1, "to": 14 }
+      { "file": "SafeInputExample.java", "from": 1, "to": 16 }
     ]
   },
-  "2-25": {
-    "dir": "02-25",
+  "2-23": {
+    "dir": "02-23",
     "main": "SwitchExample",
     "excerpt": [
       { "file": "SwitchExample.java", "from": 1, "to": 25 }
     ]
   },
-  "2-33": {
-    "dir": "02-33",
+  "2-32": {
+    "dir": "02-32",
     "main": "Calculator",
     "excerpt": [
       { "file": "Calculator.java", "from": 1, "to": 22 }
     ]
   },
-  "2-48": {
-    "dir": "02-48",
+  "2-47": {
+    "dir": "02-47",
     "main": "ImportExample",
     "excerpt": [
       { "file": "ImportExample.java", "from": 1, "to": 19 }
