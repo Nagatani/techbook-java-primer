@@ -24,7 +24,7 @@
 ### この章を始める前に
 
 第17章のGUIプログラミングの基礎、とくにJFrame、JButton、JTextFieldなどの基本的なコンポーネントの使い方を理解していることが前提です。
-また、Java 8のラムダ式と関数型インターフェイスの基本知識があると、より効率的にイベント処理を実装できます。
+また、第11章で学んだラムダ式と関数型インターフェイスを使って、イベント処理を短く書きます。
 
 ## イベント駆動プログラミングの理解
 
@@ -158,23 +158,34 @@ public class ButtonEventExample {
 ### ラムダ式の導入
 
 ActionListenerのように、実装すべきメソッドが1つだけのインターフェイス（関数型インターフェイス）は、ラムダ式を使って非常に簡潔に記述できます。
-ラムダ式と関数型インターフェイスの詳しい説明は、第11章「ラムダ式と関数インターフェイス」を読み直してください。
+ラムダ式と関数型インターフェイスは、第11章「ラムダ式と関数型インターフェイス」で学びました。
 
 以下のコードは、先ほどの匿名クラスをラムダ式で書き換えた例です。ラムダ式を使用することで、コードがより簡潔になり、イベント処理の本質に集中できます。ActionEventのパラメーターeはラムダ式内で参照できますが、この例では使用していません。
+2つ目のボタン`shortButton`には、処理が1行のときの短い書き方でリスナーを登録しています。
 
-<span class="listing-number">**サンプルコード18-2**</span>
+<span class="listing-number">**サンプルコード18-2**　LambdaButtonExample.java（7、12、17〜26、33〜34行目）</span>
 
 ```java
-// 上記の匿名クラスの部分をラムダ式で書き換える
-button.addActionListener(e -> {
-    JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
-});
+public class LambdaButtonExample {
+    // ...
+    private static void createAndShowGUI() {
+        // ...
+        JButton button = new JButton("クリックしてね");
+        JButton shortButton = new JButton("こちらも押してね");
 
-// 処理が1行なら波括弧も省略可能
-button.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！"));
+        // サンプルコード18-1の匿名クラスの部分をラムダ式で書き換える
+        button.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
+        });
+
+        // 処理が1行なら波括弧も省略可能
+        shortButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！"));
+        // ...
+    }
+}
 ```
 
-ラムダ式はJava 8で導入された機能で、関数型インターフェイスの実装を非常に簡潔に記述できます。とくにイベント処理のようなコールバック処理では、ラムダ式が標準的な記法となっています。
+イベント処理のように、あとで呼び出してもらう処理（コールバック）を渡す場面では、ラムダ式で書くのが標準的です。
 
 ### 簡単なアプリケーション：挨拶プログラム
 
@@ -416,7 +427,7 @@ public class BasicMouseEventExample extends JFrame {
   - パネルからマウスを離す → 背景が灰色に戻ります
   - パネル内でクリック → ステータスバーに「左ボタンがクリックされました: java.awt.Point[x=XX,y=YY]」と表示
   - 右クリック → 「右ボタンがクリックされました」と表示
-  - 中クリック → 「中ボタンがクリックされました」と表示
+  - 中クリック → 「中央ボタンがクリックされました」と表示
 ```
 
 ### 基本的なキーボードイベント
@@ -645,34 +656,48 @@ EDTに処理を頼むメソッドには、`invokeLater()`のほかに`SwingUtili
 以下のコードは、イベントハンドラー内で長時間の処理を実行した場合の問題と、その解決法を示しています。
 よい例では、長時間の処理を第15章で学んだ`Thread`で別のスレッドに任せ、処理が終わったらラベルの更新を`SwingUtilities.invokeLater`でEDTに任せています。
 こうすると、処理の間もEDTはほかのイベントを処理できるので、UIは固まりません。
+「悪い例」のボタンを押すと、3秒間はウィンドウを動かすこともほかのボタンを押すこともできません。
+「よい例」のボタンを押すと、ラベルが「処理中...」に変わり、3秒後に「完了」になるまでの間も画面は反応します。
 進捗の表示やキャンセルにも対応できる`SwingWorker`は、第19章で学びます。
 
-<span class="listing-number">**サンプルコード18-12**</span>
+<span class="listing-number">**サンプルコード18-12**　FreezeExample.java（7、12、17〜44、52〜53行目）</span>
 
 ```java
-// 悪い例：UIがフリーズする
-button.addActionListener(e -> {
-    // 長時間かかる処理（3秒待機）
-    try {
-        Thread.sleep(3000);
-    } catch (InterruptedException ex) {
-        ex.printStackTrace();
-    }
-    label.setText("完了");
-});
+public class FreezeExample {
+    // ...
+    private static void createAndShowGUI() {
+        // ...
+        JButton badButton = new JButton("悪い例");
+        JButton goodButton = new JButton("よい例");
+        JLabel label = new JLabel("待機中");
 
-// 良い例：別スレッドで実行
-button.addActionListener(e -> {
-    new Thread(() -> {
-        try {
-            Thread.sleep(3000);
-            // UI更新はEDT上で行う
-            SwingUtilities.invokeLater(() -> label.setText("完了"));
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-    }).start();
-});
+        // 悪い例：UIがフリーズする
+        badButton.addActionListener(e -> {
+            // 長時間かかる処理（3秒待機）
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            label.setText("完了");
+        });
+
+        // よい例：別スレッドで実行
+        goodButton.addActionListener(e -> {
+            label.setText("処理中...");
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3000);
+                    // UI更新はEDT上で行う
+                    SwingUtilities.invokeLater(() -> label.setText("完了"));
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }).start();
+        });
+        // ...
+    }
+}
 ```
 
 ### 定期的な処理：javax.swing.Timer

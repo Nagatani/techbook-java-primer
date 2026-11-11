@@ -6,6 +6,16 @@
       { "file": "ButtonEventExample.java", "from": 1, "to": 40 }
     ]
   },
+  "18-2": {
+    "dir": "18-02",
+    "main": "LambdaButtonExample",
+    "excerpt": [
+      { "file": "LambdaButtonExample.java", "from": 7, "to": 7 },
+      { "file": "LambdaButtonExample.java", "from": 12, "to": 12 },
+      { "file": "LambdaButtonExample.java", "from": 17, "to": 26 },
+      { "file": "LambdaButtonExample.java", "from": 33, "to": 34 }
+    ]
+  },
   "18-3": {
     "dir": "18-03",
     "main": "GreetingApp",
@@ -93,6 +103,16 @@
       { "file": "EventQueueExample.java", "from": 6, "to": 8 },
       { "file": "EventQueueExample.java", "from": 14, "to": 31 },
       { "file": "EventQueueExample.java", "from": 37, "to": 39 }
+    ]
+  },
+  "18-12": {
+    "dir": "18-12",
+    "main": "FreezeExample",
+    "excerpt": [
+      { "file": "FreezeExample.java", "from": 7, "to": 7 },
+      { "file": "FreezeExample.java", "from": 12, "to": 12 },
+      { "file": "FreezeExample.java", "from": 17, "to": 44 },
+      { "file": "FreezeExample.java", "from": 52, "to": 53 }
     ]
   },
   "18-13": {

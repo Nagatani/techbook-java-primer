@@ -17,6 +17,7 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [18-1](./18-01/) | ButtonEventExample.java | `java -cp out ButtonEventExample` |
+| [18-2](./18-02/) | LambdaButtonExample.java | `java -cp out LambdaButtonExample` |
 | [18-3](./18-03/) | GreetingApp.java | `java -cp out GreetingApp` |
 | [18-4](./18-04/) | CounterApplication.java | `java -cp out CounterApplication` |
 | [18-5](./18-05/) | WindowEventExample.java | `java -cp out WindowEventExample` |
@@ -26,4 +27,5 @@ javac -d out *.java
 | [18-9](./18-09/) | FocusListenerExample.java | `java -cp out FocusListenerExample` |
 | [18-10](./18-10/) | ChangeListenerExample.java | `java -cp out ChangeListenerExample` |
 | [18-11](./18-11/) | EventQueueExample.java | `java -cp out EventQueueExample` |
+| [18-12](./18-12/) | FreezeExample.java | `java -cp out FreezeExample` |
 | [18-13](./18-13/) | TimerExample.java | `java -cp out TimerExample` |
