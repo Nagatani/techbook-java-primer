@@ -112,22 +112,20 @@
 
 ### テストの実行
 
+解答例のパッケージ名は`chapter09.solutions`なので、`exercises`ディレクトリでコンパイルします。
+JUnit 5の`junit-platform-console-standalone`（Maven Centralから入手）のJARを使います。
+
 ```bash
+cd exercises
+
+# コンパイル
+javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter09/solutions/*.java
+
 # 全テストの実行
-./gradlew test
+java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter09.solutions
 
-# 特定の章のテストのみ実行
-./gradlew test --tests "chapter08.*"
-```
-
-### 個別システムの実行
-
-```bash
-# 学生管理システムのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter08.solutions.StudentManagerTest
-
-# 図書館システムのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter08.solutions.LibrarySystemTest
+# 特定のテストクラスだけ実行
+java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-class chapter09.solutions.LibrarySystemTest
 ```
 
 ## 重要なポイント

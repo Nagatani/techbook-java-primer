@@ -220,18 +220,12 @@ class LibrarySystemTest {
         library.addBook(book1);
         library.addUser(student);
         
-        // 貸出期限を過ぎた記録を手動で作成
-        LibrarySystem.LoanRecord overdueRecord = new LibrarySystem.LoanRecord(
-            "U001", "978-4-12345-678-9",
-            LocalDate.now().minusDays(20),
-            LocalDate.now().minusDays(1)
-        );
-        
-        // 現在の貸出状況に追加（テスト用）
-        library.getCurrentLoans("U001").add(overdueRecord);
+        // 20日前に貸し出したことにする（学生の貸出期間は14日なので、6日延滞している）
+        assertTrue(library.loanBook("U001", "978-4-12345-678-9", LocalDate.now().minusDays(20)));
         
         List<LibrarySystem.LoanRecord> overdueLoans = library.getOverdueLoans();
         assertEquals(1, overdueLoans.size());
+        assertEquals(6, overdueLoans.get(0).getOverdueDays());
     }
     
     @Test

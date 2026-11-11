@@ -101,7 +101,7 @@ class DataProcessorTest {
     @Test
     void testFindByValueRange() {
         List<DataProcessor.DataEntry> range = processor.findByValueRange(100.0, 120.0);
-        assertEquals(3, range.size()); // 100, 120のデータ
+        assertEquals(2, range.size()); // 100と120のデータ（両端を含む）
         
         range = processor.findByValueRange(200.0, 300.0);
         assertEquals(0, range.size());

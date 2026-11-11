@@ -168,7 +168,7 @@ public class LibrarySystem {
     // 利用者管理（UserID -> User）
     private Map<String, User> users;
     
-    // 貸出記録管理（UUID -> LoanRecord）
+    // 貸出記録管理（UUID -> LoanRecord）。履歴を貸し出した順に取り出せるようにLinkedHashMapを使う
     private Map<String, LoanRecord> loanRecords;
     
     // 現在の貸出状況（UserID -> List<LoanRecord>）
@@ -189,7 +189,7 @@ public class LibrarySystem {
     public LibrarySystem() {
         books = new HashMap<>();
         users = new HashMap<>();
-        loanRecords = new HashMap<>();
+        loanRecords = new LinkedHashMap<>();
         currentLoans = new HashMap<>();
         booksByCategory = new HashMap<>();
         booksByAuthor = new HashMap<>();
@@ -239,6 +239,18 @@ public class LibrarySystem {
      * @return 貸出に成功した場合true
      */
     public boolean loanBook(String userId, String isbn) {
+        return loanBook(userId, isbn, LocalDate.now());
+    }
+    
+    /**
+     * 貸出日を指定して本を貸し出す（過去の貸出の登録や、延滞のテストに使う）
+     * 
+     * @param userId 利用者ID
+     * @param isbn 本のISBN
+     * @param loanDate 貸出日
+     * @return 貸出に成功した場合true
+     */
+    public boolean loanBook(String userId, String isbn, LocalDate loanDate) {
         User user = users.get(userId);
         Book book = books.get(isbn);
         
@@ -247,7 +259,6 @@ public class LibrarySystem {
         }
         
         // 貸出期限を計算
-        LocalDate loanDate = LocalDate.now();
         LocalDate dueDate = loanDate.plusDays(user.getUserType().getMaxLoanDays());
         
         // 貸出記録を作成
@@ -446,10 +457,7 @@ public class LibrarySystem {
      * @return 貸出履歴のリスト
      */
     public List<LoanRecord> getUserLoanHistory(String userId) {
-        return loanRecords.values().stream()
-                         .filter(record -> record.getUserId().equals(userId))
-                         .sorted(Comparator.comparing(LoanRecord::getLoanDate).reversed())
-                         .collect(Collectors.toList());
+        return newestFirst(record -> record.getUserId().equals(userId));
     }
     
     /**
@@ -459,10 +467,23 @@ public class LibrarySystem {
      * @return 貸出履歴のリスト
      */
     public List<LoanRecord> getBookLoanHistory(String isbn) {
-        return loanRecords.values().stream()
-                         .filter(record -> record.getIsbn().equals(isbn))
-                         .sorted(Comparator.comparing(LoanRecord::getLoanDate).reversed())
-                         .collect(Collectors.toList());
+        return newestFirst(record -> record.getIsbn().equals(isbn));
+    }
+    
+    /**
+     * 条件に合う貸出記録を新しい順に並べて返す
+     * 
+     * 貸出日だけで並べると、同じ日の貸出の順序が決まらない。
+     * loanRecordsは貸し出した順に記録を持つので、それを逆順にしてから
+     * 貸出日の新しい順に安定ソートする（同じ日の貸出は後から貸したものが先になる）。
+     */
+    private List<LoanRecord> newestFirst(java.util.function.Predicate<LoanRecord> condition) {
+        List<LoanRecord> result = loanRecords.values().stream()
+                                             .filter(condition)
+                                             .collect(Collectors.toCollection(ArrayList::new));
+        Collections.reverse(result);
+        result.sort(Comparator.comparing(LoanRecord::getLoanDate).reversed());
+        return result;
     }
     
     // Getter methods

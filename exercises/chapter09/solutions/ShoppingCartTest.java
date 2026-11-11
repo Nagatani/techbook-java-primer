@@ -67,8 +67,12 @@ class ShoppingCartTest {
         
         // 固定金額割引
         assertEquals(new BigDecimal("1000"), discount2.calculateDiscount(new BigDecimal("15000")));
-        assertEquals(new BigDecimal("500"), discount2.calculateDiscount(new BigDecimal("500"))); // 割引額より小さい場合
         assertEquals(BigDecimal.ZERO, discount2.calculateDiscount(new BigDecimal("5000"))); // 最低金額未満
+        
+        // 金額が割引額より小さい場合は、金額までしか割り引かない（最低金額のない割引で確かめる）
+        ShoppingCart.Discount noMinimum = new ShoppingCart.Discount("FLAT1000ANY", "1000円割引（条件なし）",
+            ShoppingCart.Discount.DiscountType.FIXED_AMOUNT, new BigDecimal("1000"), BigDecimal.ZERO);
+        assertEquals(new BigDecimal("500"), noMinimum.calculateDiscount(new BigDecimal("500")));
     }
     
     @Test
@@ -146,7 +150,9 @@ class ShoppingCartTest {
         cart.addToCart("P001", 1); // 80000
         cart.applyDiscount("SAVE10"); // 8000円割引
         
-        assertEquals(new BigDecimal("72000"), cart.getTotal());
+        // パーセンテージ割引は小数第2位まで計算するので、合計は 72000.00 になる。
+        // BigDecimalのequalsは桁数（scale）も比べるため、値だけを比べるときはcompareToを使う
+        assertEquals(0, new BigDecimal("72000").compareTo(cart.getTotal()));
     }
     
     @Test
