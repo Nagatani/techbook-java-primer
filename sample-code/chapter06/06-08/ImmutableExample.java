@@ -5,11 +5,10 @@ import java.util.List;
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
-        List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
+        List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
         ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
         
-        // 元のリストを変更してもオブジェクトには影響しない
-        hobbies = new ArrayList<>(hobbies);
+        // コンストラクタに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
         IO.println(person.getHobbies()); // [読書, 映画鑑賞]
         

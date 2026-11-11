@@ -341,11 +341,10 @@ import java.util.List;
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
-        List<String> hobbies = Arrays.asList("読書", "映画鑑賞");
+        List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
         ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
         
-        // 元のリストを変更してもオブジェクトには影響しない
-        hobbies = new ArrayList<>(hobbies);
+        // コンストラクタに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
         IO.println(person.getHobbies()); // [読書, 映画鑑賞]
         
@@ -397,7 +396,9 @@ T2: 25
 
 #### 不変オブジェクトの重要な特性
 
-この例では、`withAge()`や`addHobby()`を呼んでも元の`person`は変わらず、変更した内容は新しいオブジェクトに入ります。
+この例の最初では、コンストラクタに渡したリスト`hobbies`に「スポーツ」を足していますが、`person`の趣味は変わりません。
+`ImmutablePerson`のコンストラクタが、受け取ったリストをコピーして持っているためです。
+また、`withAge()`や`addHobby()`を呼んでも元の`person`は変わらず、変更した内容は新しいオブジェクトに入ります。
 後半では、2つのスレッドが同期化なしで同じ`person`を読んでいますが、状態が変わらないので、どちらのスレッドも常に同じ値を受け取ります。
 
 状態が変わらないことは、デバッグのしやすさにもつながります。

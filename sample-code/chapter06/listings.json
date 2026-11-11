@@ -52,7 +52,7 @@
     "dir": "06-08",
     "main": "ImmutableExample",
     "excerpt": [
-      { "file": "ImmutableExample.java", "from": 1, "to": 43 }
+      { "file": "ImmutableExample.java", "from": 1, "to": 42 }
     ],
     "uses": [
       "6-7"
