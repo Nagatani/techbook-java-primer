@@ -4,6 +4,11 @@ import java.awt.event.WindowEvent;
 
 public class WindowEventExample {
     public static void main(String[] args) {
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("終了確認");
         // デフォルトの閉じる操作を無効化
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

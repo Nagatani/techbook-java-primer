@@ -61,6 +61,7 @@ GUIコンポーネントを安全に更新できるのは、EDT上で操作し�
 もっとも基本的な、ボタンクリックイベントを処理してみましょう。ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
 
 以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを作成し、actionPerformed()メソッドでクリック時の処理を定義します。addActionListener()メソッドでリスナーをボタンに登録することで、クリックイベントとの関連付けが完了します。
+mainメソッドでは、第17章で学んだとおり`SwingUtilities.invokeLater()`を使い、GUIの組み立てをEDT上で行っています。
 
 <span class="listing-number">**サンプルコード18-1**　ButtonEventExample.java</span>
 
@@ -71,9 +72,15 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class ButtonEventExample {
     public static void main(String[] args) {
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("ボタンイベントの例");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new FlowLayout());
@@ -104,7 +111,7 @@ public class ButtonEventExample {
 実行すると、次のように表示されます。
 
 ```
-ウィンドウが表示されます（サイズ: 約300x100ピクセル）
+ウィンドウが表示されます（大きさはpack()でボタンに合わせて決まります）
 - 「クリックしてね」というラベルのボタンが中央に配置されています
 - ボタンをクリックすると、「ボタンがクリックされました！」というメッセージダイアログが表示されます
 - OKボタンでダイアログを閉じることができます
@@ -150,9 +157,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class GreetingApp {
     public static void main(String[] args) {
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("挨拶プログラム");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new FlowLayout());
@@ -222,6 +235,11 @@ import java.awt.event.WindowEvent;
 
 public class WindowEventExample {
     public static void main(String[] args) {
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
         JFrame frame = new JFrame("終了確認");
         // デフォルトの閉じる操作を無効化
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
