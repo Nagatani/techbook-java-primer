@@ -1,10 +1,10 @@
-// Document.java
+// TextDocument.java
 // ExportableとArchivableの両方のインターフェイスを実装する
-public class Document implements Exportable, Archivable {
+public class TextDocument implements Exportable, Archivable {
     private String title;
     private String content;
 
-    public Document(String title, String content) {
+    public TextDocument(String title, String content) {
         this.title = title;
         this.content = content;
     }

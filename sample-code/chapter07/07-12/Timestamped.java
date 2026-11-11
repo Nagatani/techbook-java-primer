@@ -34,13 +34,13 @@ interface Versioned {
 }
 
 // 複数のMixinを組み合わせ
-class Document implements Timestamped, Identifiable, Versioned {
+class Memo implements Timestamped, Identifiable, Versioned {
     private final String id;
     private final long timestamp;
     private int version;
     private String content;
     
-    public Document(String id, String content) {
+    public Memo(String id, String content) {
         this.id = id;
         this.timestamp = System.currentTimeMillis();
         this.version = 1;
@@ -62,7 +62,7 @@ class Document implements Timestamped, Identifiable, Versioned {
         
         // デフォルトメソッドを活用
         if (isExpired(3600000)) {  // 1時間
-            IO.println("Document " + getFullIdentifier() + " has expired");
+            IO.println("Memo " + getFullIdentifier() + " has expired");
         }
     }
 }

@@ -40,7 +40,7 @@
     "dir": "07-05",
     "main": null,
     "excerpt": [
-      { "file": "Document.java", "from": 1, "to": 23 }
+      { "file": "TextDocument.java", "from": 1, "to": 23 }
     ],
     "uses": [
       "7-4"

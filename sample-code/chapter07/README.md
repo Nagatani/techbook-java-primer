@@ -20,7 +20,7 @@ javac -d out *.java
 | [7-2](./07-02/) | Circle.java<br>Rectangle.java<br>Shape.java | （mainメソッドなし） |
 | [7-3](./07-03/) | Circle.java<br>Main.java<br>Rectangle.java<br>Shape.java | `java -cp out Main` |
 | [7-4](./07-04/) | Archivable.java<br>Exportable.java | （mainメソッドなし） |
-| [7-5](./07-05/) | Archivable.java<br>Document.java<br>Exportable.java | （mainメソッドなし） |
+| [7-5](./07-05/) | Archivable.java<br>Exportable.java<br>TextDocument.java | （mainメソッドなし） |
 | [7-6](./07-06/) | DefaultMethodDemo.java | `java -cp out DefaultMethodDemo` |
 | [7-7](./07-07/) | DataProcessor.java | （mainメソッドなし） |
 | [7-8](./07-08/) | A.java | （mainメソッドなし） |

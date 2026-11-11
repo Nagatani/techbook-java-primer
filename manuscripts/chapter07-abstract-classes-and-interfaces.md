@@ -5,11 +5,11 @@
 ### この章で学ぶこと
 
 1. 抽象クラスの理解
-    - 抽象メソッドと具象メソッドの使い分け、テンプレートメソッドパターン
+    - 抽象メソッドと具象メソッドの使い分け
 2. インターフェイスの活用
     - 契約としての設計、複数実装、is-a関係とcan-do関係の違い
 3. Java 8以降の機能
-    - defaultメソッド、staticメソッド、ダイヤモンド継承問題
+    - defaultメソッドとテンプレートメソッドパターン、staticメソッド、ダイヤモンド継承問題
 4. 設計パターンの実践
     - Factoryパターン、Mixinパターンの実装
 
@@ -158,18 +158,18 @@ public class Main {
 
 インターフェイス (Interface) は、クラスがどのような振る舞い（メソッド）を持つべきかを定めた「契約」です。
 
-インターフェイスは、メソッドのシグネチャ（名前、引数、戻り値の型）と定数のみを定義でき、
-インスタンスフィールドを持つことはできません。
-実装は一切持たず、クラスが実装すべきメソッドの仕様だけを列挙します。
+インターフェイスの中心は、メソッドのシグネチャ（名前、引数、戻り値の型）と定数で、インスタンスフィールドを持つことはできません。
+抽象メソッドには実装を書かず、クラスが実装すべきメソッドの仕様だけを列挙します。
+Java 8以降は、あとで説明する`default`メソッドと`static`メソッドに限って、インターフェイスにも実装を書けるようになりました。
 
 ### インターフェイスのルール
 
-1.  `interface`キーワードを使って宣言する。
-2.  定義できるメンバーは、抽象メソッド、定数 (`public static final`)、そしてJava 8から追加された`default`メソッドと`static`メソッドのみ。
-3.  インターフェイスもインスタンス化できない。
-4.  クラスは`implements`キーワードを使ってインターフェイスを実装する。
-5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない。
-6.  クラスは複数のインターフェイスを同時に実装できる（`implements InterfaceA, InterfaceB`のようにカンマで区切る）。
+1.  `interface`キーワードを使って宣言する
+2.  定義できるメンバーは、抽象メソッド、定数 (`public static final`)、そしてJava 8から追加された`default`メソッドと`static`メソッドのみ
+3.  インターフェイスもインスタンス化できない
+4.  クラスは`implements`キーワードを使ってインターフェイスを実装する
+5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない
+6.  クラスは複数のインターフェイスを同時に実装できる（`implements InterfaceA, InterfaceB`のようにカンマで区切る）
 
 6番目の性質は、クラスの単一継承とは異なる大きな特徴です。
 
@@ -202,16 +202,16 @@ public interface Archivable {
 
 `implements`キーワードを使って、クラスにインターフェイスの振る舞いを実装します。
 
-<span class="listing-number">**サンプルコード7-5**　Document.java</span>
+<span class="listing-number">**サンプルコード7-5**　TextDocument.java</span>
 
 ```java
-// Document.java
+// TextDocument.java
 // ExportableとArchivableの両方のインターフェイスを実装する
-public class Document implements Exportable, Archivable {
+public class TextDocument implements Exportable, Archivable {
     private String title;
     private String content;
 
-    public Document(String title, String content) {
+    public TextDocument(String title, String content) {
         this.title = title;
         this.content = content;
     }
@@ -319,7 +319,10 @@ Java 8のリリース時点で、コレクション（第9章で学ぶ`ArrayList
 
 #### テンプレートメソッドパターンの実現
 
-`default`メソッドの強力な応用例として、テンプレートメソッドパターンをインターフェイスで実現できるようになりました。従来このパターンは抽象クラスでしか実装できませんでしたが、インターフェイスでも実現可能になったことで、より柔軟な設計が可能になりました。このパターンは、処理の大枠（アルゴリズムの骨格）を定義しつつ、個別のステップを実装クラスに委ねる場合に非常に有効です。
+`default`メソッドの強力な応用例として、テンプレートメソッドパターンをインターフェイスで実現できるようになりました。
+第5章ではこのパターンをクラスの継承で実現しましたが、クラスは1つしか継承できません。
+インターフェイスで書けば、ほかのクラスを継承しているクラスにも同じ処理の骨格を与えられます。
+このパターンは、処理の大枠（アルゴリズムの骨格）を定義しつつ、個別のステップを実装クラスに委ねる場合に非常に有効です。
 
 <span class="listing-number">**サンプルコード7-7**　DataProcessor.java</span>
 
@@ -572,7 +575,7 @@ getFirstItemOrDefault(): Item 1
 インターフェイスの進化により、より洗練された設計パターンを実装できるようになりました。ここでは実践的な設計パターンとその実装例を紹介します。
 
 defaultメソッドは、ラムダ式で使う関数型インターフェイスに機能を足すときにも使われます。
-その例は、第11章「ラムダ式と関数インターフェイス」で関数型インターフェイスを学んでから見ていきます。
+その例は、第11章「ラムダ式と関数型インターフェイス」で関数型インターフェイスを学んでから見ていきます。
 
 ### Mixinパターン
 
@@ -603,7 +606,7 @@ interface Identifiable {
 }
 // ...
 // 複数のMixinを組み合わせ
-class Document implements Timestamped, Identifiable, Versioned {
+class Memo implements Timestamped, Identifiable, Versioned {
     // ...
     public void update(String newContent) {
         this.content = newContent;
@@ -611,7 +614,7 @@ class Document implements Timestamped, Identifiable, Versioned {
         
         // デフォルトメソッドを活用
         if (isExpired(3600000)) {  // 1時間
-            IO.println("Document " + getFullIdentifier() + " has expired");
+            IO.println("Memo " + getFullIdentifier() + " has expired");
         }
     }
 }
@@ -621,20 +624,20 @@ class Document implements Timestamped, Identifiable, Versioned {
 
 ```
 === Identifiableの機能 ===
-doc1: Document#DOC001
-doc2: Document#DOC002
+memo1: Memo#M001
+memo2: Memo#M002
 
 === Timestampedの機能 ===
-doc1の経過時間: 19ms
-doc1は期限切れ？: false
+memo1の経過時間: 19ms
+memo1は期限切れ？: false
 
 === Versionedの機能 ===
-doc1のバージョン: 2
-doc2のバージョン: 1
-doc1はdoc2より新しい？: true
+memo1のバージョン: 2
+memo2のバージョン: 1
+memo1はmemo2より新しい？: true
 
 === 組み合わせた使用 ===
-Document#DOC001 (version 2, age: 23ms)
+Memo#M001 (version 2, age: 23ms)
 ```
 
 ### トレイトパターン
@@ -806,6 +809,8 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 ### Simple Factory パターン
 
 もっとも基本的なFactoryパターンの実装例を見てみましょう。
+ここでの`Shape`は、サンプルコード7-1の抽象クラスとは別に、インターフェイスとして定義し直したものです。
+`Circle`と`Rectangle`も、この`Shape`を実装する別のクラスです。
 
 <div class="figure">
 
@@ -1032,14 +1037,13 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 - 応用的な実装練習
 - 実践的な総合問題
 
-詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください。
-- DrawableインターフェイスでSVG出力機能を追加
+### 基礎課題のヒント
 
-### PaymentSystem（支払い）課題
-- PaymentMethodインターフェイスで戦略パターンを実装
-- CreditCard、BankTransfer、DigitalWalletを実装
-- 支払い手数料の計算をdefaultメソッドで共通化
+支払い方法の戦略パターン（基礎課題3）
+- PaymentMethodインターフェイスで支払い処理と手数料の計算を定める
+- CreditCard、DebitCard、Cashの3つのクラスで実装する
+- 支払い方法ごとに異なる手数料率を設定する
 
-詳細はGitHubリポジトリのREADMEを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
 
-次のステップ： 第8章「Javaの特殊なクラス形式」へ進みましょう。
+次のステップ：基礎課題が完了したら、第8章「Javaの特殊なクラス形式」に進みましょう。
