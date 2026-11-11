@@ -126,20 +126,25 @@ public class ProducerConsumer {
             producerExecutor.submit(() -> {
                 while (running.get() && System.currentTimeMillis() < endTime) {
                     try {
-                        Task task = taskProducer.get();
+                        Task task = null;
+                        try {
+                            task = taskProducer.get();
+                        } catch (RuntimeException e) {
+                            // 生成に失敗しても止めずに次へ進む
+                            logger.log(Level.WARNING, "プロデューサーエラー", e);
+                        }
                         if (task != null) {
                             queue.put(task); // ブロッキング
                             statistics.recordProduced();
                         }
                         
+                        // 失敗したときも待つ。待たないと、失敗し続ける生成処理を休みなく呼び続けてしまう
                         if (productionRate > 0) {
                             Thread.sleep(1000 / productionRate);
                         }
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
-                    } catch (Exception e) {
-                        logger.log(Level.WARNING, "プロデューサーエラー", e);
                     }
                 }
             });
