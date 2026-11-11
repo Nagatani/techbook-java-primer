@@ -36,30 +36,6 @@ public class ParallelPerformanceExample {
             String.format("%.2fx", (double)singleThreadTime / parallelTime));
     }
     
-    // 並列ストリーム処理
-    public static void parallelStreamExample() {
-        int size = 50_000_000;
-        long[] numbers = new long[size];
-        Arrays.fill(numbers, 1);
-        
-        // シーケンシャル処理
-        long startTime = System.currentTimeMillis();
-        long sum1 = Arrays.stream(numbers).sum();
-        long sequentialTime = System.currentTimeMillis() - startTime;
-        
-        // 並列処理
-        startTime = System.currentTimeMillis();
-        long sum2 = Arrays.stream(numbers).parallel().sum();
-        long parallelTime = System.currentTimeMillis() - startTime;
-        
-        IO.println("\n=== ストリーム処理ベンチマーク ===");
-        IO.println("要素数: " + size);
-        IO.println("シーケンシャル: " + sequentialTime + "ms");
-        IO.println("並列: " + parallelTime + "ms");
-        IO.println("性能向上: " + 
-            String.format("%.2fx", (double)sequentialTime / parallelTime));
-    }
-    
     // ForkJoinPoolを使った再帰的並列処理
     static class RecursiveSum extends RecursiveTask<Long> {
         private static final int THRESHOLD = 10_000;
@@ -120,7 +96,6 @@ public class ParallelPerformanceExample {
         IO.println("利用可能なCPUコア数: " + processors);
         
         parallelSortBenchmark();
-        parallelStreamExample();
         forkJoinExample();
     }
 }

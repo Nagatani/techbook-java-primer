@@ -813,9 +813,11 @@ exercises/chapter15/
 
 ### なぜマルチスレッドが必要か
 
-現代のコンピュータは、複数のコアを持つCPU（マルチコアプロセッサ）を搭載するのが一般的です。マルチスレッドプログラミングは、この複数のコアを並列に活用し、アプリケーションのパフォーマンスを向上させるための重要な技術です。
+「並行処理の世界への招待」では、朝食の準備を3つのスレッドに分けて、全体の時間を短くしました。
+ここでは、マルチスレッドが役立つ場面を整理します。
 
-時間のかかる処理を複数のスレッドに分割して同時に実行すれば、全体の処理時間を短縮できます。
+現代のコンピュータは、複数のコアを持つCPU（マルチコアプロセッサ）を搭載するのが一般的です。
+時間のかかる処理を複数のスレッドに分割すれば、複数のコアで同時に実行して、全体の処理時間を短縮できます。
 GUIアプリケーションでは、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスが固まるのを防げます。
 サーバアプリケーションでは、複数のクライアントからのリクエストを同時に処理することで、計算リソースを無駄なく使えます。
 
@@ -918,6 +920,9 @@ class SynchronizedCounter {
 
 </div>
 
+デッドロックは、どのスレッドもロックを同じ順序で取得するように決めておけば防げます。
+図の例なら、2つのスレッドがどちらもlock1を取ってからlock2を取るようにします。
+
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
 <span class="listing-number">**サンプルコード15-11**　BankAccount.java</span>
@@ -1010,7 +1015,7 @@ public class VolatileDemo {
 }
 ```
 
-前に述べたとおり、volatileは複合操作をアトミックにしません。カウンターのインクリメントなどには使用できないため、そのような場合は`AtomicInteger`などのアトミッククラスを使用してください。
+カウンターのインクリメント（`count++`）のような複合操作には`volatile`を使えません。そのような場合は、次に説明する`AtomicInteger`などのアトミッククラスを使用してください。
 
 ### Atomicクラスによるロックフリーなアトミック操作
 
@@ -1377,7 +1382,16 @@ public class AsyncChainingExample {
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
-<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java（5、20〜30、62〜68、75〜97、99〜108、126行目）</span>
+複数のスレッドで処理を分けても、データ量や処理の内容によっては速くならないことがあります。
+効果は実際に時間を測って確かめます。
+サンプルコード15-19は、配列のソートを`Arrays.sort`と`Arrays.parallelSort`で比べ、`ForkJoinPool`で大きな配列の合計を求めます。
+
+`RecursiveTask`を継承したクラスの`compute`メソッドは、範囲が小さければ直接計算し、大きければ2つに分けます。
+分けた片方を`fork`で別のスレッドに任せ、もう片方を自分で計算してから、`join`で結果を待って足し合わせます。
+第12章「Stream APIと高度なコレクション操作」で学んだ並列ストリームも、内部ではこのFork/Joinのしくみで処理を分けています。
+並列ストリームの使い方と、逐次処理との時間の比べ方は第12章の「並列ストリームによるパフォーマンス向上」を参照してください。
+
+<span class="listing-number">**サンプルコード15-19**　ParallelPerformanceExample.java（5、20〜30、38〜44、51〜73、75〜84、101行目）</span>
 
 ```java
 public class ParallelPerformanceExample {
@@ -1491,87 +1505,11 @@ public class ThreadSafeSingletonExamples {
 }
 ```
 
-## 一般的な並行処理の落とし穴と解決策
-
-<span class="listing-number">**サンプルコード15-21**　ConcurrencyPitfallsAndSolutions.java（5、7〜25、40〜48、56〜79、85〜92、100、150行目）</span>
-
-```java
-public class ConcurrencyPitfallsAndSolutions {
-    // ...
-    // 落とし穴1: 誤った同期によるデッドロック
-    static class DeadlockExample {
-        private final Object lock1 = new Object();
-        private final Object lock2 = new Object();
-        
-        // デッドロックが発生する可能性のあるコード
-        public void method1() {
-            synchronized (lock1) {
-                IO.println("Method1: lock1を取得");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                synchronized (lock2) {
-                    IO.println("Method1: lock2を取得");
-                }
-            }
-        }
-        // ...
-        
-        // 解決策: ロック順序の統一
-        public void safeMethod1() {
-            synchronized (lock1) {
-                synchronized (lock2) {
-                    IO.println("Safe method1 実行");
-                }
-            }
-        }
-        // ...
-        }
-    }
-    
-    // 落とし穴2: 誤ったvolatileの使用
-    static class VolatileMisuse {
-        // 誤り: volatileは複合操作をアトミックにしない
-        private volatile int counter = 0;
-        
-        public void incorrectIncrement() {
-            counter++; // これはアトミックではない！
-        }
-        
-        // 解決策: AtomicIntegerを使用
-        private final AtomicInteger atomicCounter = new AtomicInteger(0);
-        
-        public void correctIncrement() {
-            atomicCounter.incrementAndGet();
-        }
-    }
-    
-    // 落とし穴3: スレッドセーフでないコレクションの誤用
-    static class CollectionMisuse {
-        // 誤り: 通常のHashMapは並行アクセスに対して安全でない
-        private final Map<String, Integer> unsafeMap = new HashMap<>();
-        // ...
-        
-        // 解決策1: ConcurrentHashMapを使用
-        private final ConcurrentHashMap<String, Integer> safeMap = 
-            new ConcurrentHashMap<>();
-        
-        public void safeOperation1() {
-            safeMap.merge("key", 1, Integer::sum);
-        }
-        // ...
-    }
-    // ...
-}
-```
-
 ## 実践的な並行処理パターン
 
 ### 並列データ処理パイプライン
 
-<span class="listing-number">**サンプルコード15-22**　ParallelDataPipeline.java（5〜15、21〜37、41、43、70〜79、82〜83行目）</span>
+<span class="listing-number">**サンプルコード15-21**　ParallelDataPipeline.java（5〜15、21〜37、41、43、70〜79、82〜83行目）</span>
 
 ```java
 public class ParallelDataPipeline {
@@ -1625,7 +1563,7 @@ public class ParallelDataPipeline {
 
 ### リトライとサーキットブレーカーパターン
 
-<span class="listing-number">**サンプルコード15-23**　ResiliencePatterns.java（4〜7、20〜43、58〜89、127行目）</span>
+<span class="listing-number">**サンプルコード15-22**　ResiliencePatterns.java（4〜7、20〜43、58〜89、127行目）</span>
 
 ```java
 public class ResiliencePatterns {
@@ -1703,7 +1641,7 @@ public class ResiliencePatterns {
 - デッドロック
     + 複数のスレッドが互いのロックの解放を待ち、処理が止まる。ロックを取得する順序をそろえて防ぐ
 - スレッドセーフでないコレクションの使用
-    + `ArrayList`や`HashMap`を複数のスレッドから更新すると、内容が壊れたり例外が発生したりする
+    + `ArrayList`や`HashMap`を複数のスレッドから更新すると、内容が壊れたり例外が発生したりする。`ConcurrentHashMap`などの並行処理用のコレクションを使う
 - `ExecutorService`のシャットダウン忘れ
     + `shutdown()`を呼ばないと、スレッドプールが残ってプログラムが終了しない
 
@@ -1726,9 +1664,9 @@ public class ResiliencePatterns {
     + `Future`と`Callable`で結果を受け取り、`CompletableFuture`で非同期処理を連鎖させる
     + `BlockingQueue`でプロデューサー・コンシューマーパターンを実装できる
 - 実践的な並行処理
-    + 並列ストリームやForkJoinPoolの効果は、ベンチマークで測定して確かめる
+    + 並列ソートやForkJoinPoolの効果は、時間を測って確かめる（並列ストリームは第12章）
     + シングルトンはHolderクラスやenumでスレッドセーフに実装できる
-    + デッドロック、volatileの誤用、スレッドセーフでないコレクション、スレッドリークに注意する
+    + デッドロックはロックを取得する順序をそろえて防ぐ。`volatile`は複合操作をアトミックにしない
     + パイプライン、リトライ、サーキットブレーカーなどのパターンを組み合わせて、障害に強い処理を作る
 
 並行処理のバグは再現しにくいため、設計の段階で共有データとロックの範囲を明確にすることが大切です。

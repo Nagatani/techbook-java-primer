@@ -30,6 +30,5 @@ javac -d out *.java
 | [15-18](./15-18/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
 | [15-19](./15-19/) | ParallelPerformanceExample.java | `java -cp out ParallelPerformanceExample` |
 | [15-20](./15-20/) | ThreadSafeSingletonExamples.java | `java -cp out ThreadSafeSingletonExamples` |
-| [15-21](./15-21/) | ConcurrencyPitfallsAndSolutions.java | `java -cp out ConcurrencyPitfallsAndSolutions` |
-| [15-22](./15-22/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
-| [15-23](./15-23/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |
+| [15-21](./15-21/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
+| [15-22](./15-22/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |

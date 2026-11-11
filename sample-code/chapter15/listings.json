@@ -108,10 +108,10 @@
     "excerpt": [
       { "file": "ParallelPerformanceExample.java", "from": 5, "to": 5 },
       { "file": "ParallelPerformanceExample.java", "from": 20, "to": 30 },
-      { "file": "ParallelPerformanceExample.java", "from": 62, "to": 68 },
-      { "file": "ParallelPerformanceExample.java", "from": 75, "to": 97 },
-      { "file": "ParallelPerformanceExample.java", "from": 99, "to": 108 },
-      { "file": "ParallelPerformanceExample.java", "from": 126, "to": 126 }
+      { "file": "ParallelPerformanceExample.java", "from": 38, "to": 44 },
+      { "file": "ParallelPerformanceExample.java", "from": 51, "to": 73 },
+      { "file": "ParallelPerformanceExample.java", "from": 75, "to": 84 },
+      { "file": "ParallelPerformanceExample.java", "from": 101, "to": 101 }
     ]
   },
   "15-20": {
@@ -125,19 +125,6 @@
   },
   "15-21": {
     "dir": "15-21",
-    "main": "ConcurrencyPitfallsAndSolutions",
-    "excerpt": [
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 5, "to": 5 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 7, "to": 25 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 40, "to": 48 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 56, "to": 79 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 85, "to": 92 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 100, "to": 100 },
-      { "file": "ConcurrencyPitfallsAndSolutions.java", "from": 150, "to": 150 }
-    ]
-  },
-  "15-22": {
-    "dir": "15-22",
     "main": "ParallelDataPipeline",
     "excerpt": [
       { "file": "ParallelDataPipeline.java", "from": 5, "to": 15 },
@@ -148,8 +135,8 @@
       { "file": "ParallelDataPipeline.java", "from": 82, "to": 83 }
     ]
   },
-  "15-23": {
-    "dir": "15-23",
+  "15-22": {
+    "dir": "15-22",
     "main": "ResiliencePatterns",
     "excerpt": [
       { "file": "ResiliencePatterns.java", "from": 4, "to": 7 },
