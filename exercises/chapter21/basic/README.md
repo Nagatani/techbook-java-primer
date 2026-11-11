@@ -694,12 +694,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
+    - name: Set up JDK 25
+      uses: actions/setup-java@v6
       with:
-        java-version: '17'
+        java-version: '25'
         distribution: 'temurin'
     
     - name: Cache Maven dependencies

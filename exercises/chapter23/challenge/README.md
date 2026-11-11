@@ -83,12 +83,13 @@ jobs:
         working-directory: backend
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
+    - name: Set up JDK 25
+      uses: actions/setup-java@v6
       with:
-        java-version: '11'
+        java-version: '25'
+        distribution: 'temurin'
     
     - name: Run tests
       run: mvn clean verify
@@ -115,7 +116,7 @@ jobs:
         working-directory: frontend
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     
     - name: Use Node.js
       uses: actions/setup-node@v3
@@ -142,7 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     
     - name: Run E2E tests
       run: |
