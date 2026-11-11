@@ -827,12 +827,12 @@ public class ParallelStreamExample {
 
 ```java
 // スレッドセーフでない例（避けるとよい）
-List<Integer> results = new ArrayList<>();  // スレッドセーフでない
+List<Integer> unsafeResults = new ArrayList<>();  // スレッドセーフでない
 numbers.parallelStream()
-    .forEach(n -> results.add(n * 2));  // データ競合の危険！
+    .forEach(n -> unsafeResults.add(n * 2));  // データ競合の危険！
 
 // スレッドセーフな代替方法
-List<Integer> results = numbers.parallelStream()
+List<Integer> safeResults = numbers.parallelStream()
     .map(n -> n * 2)
     .collect(Collectors.toList());  // スレッドセーフ
 ```

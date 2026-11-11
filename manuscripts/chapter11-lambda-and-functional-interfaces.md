@@ -181,7 +181,7 @@ items.forEach(item -> {
 });
 
 // 良い例：純粋な関数型アプローチ
-List<String> results = items.stream()
+List<String> processed = items.stream()
     .map(this::processItem)
     .collect(Collectors.toList());
 ```
