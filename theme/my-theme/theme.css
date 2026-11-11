@@ -807,7 +807,7 @@ pre[data-line-numbers="true"] code .line::before {
 /* インラインコード */
 code:not(pre code) {
   background-color: #f5f5f5;
-  color: #d14;
+  color: #c0103f;
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
@@ -847,14 +847,6 @@ pre[data-lang="python"] {
 pre[data-lang="bash"],
 pre[data-lang="shell"] {
   border-left: 5px solid #4eaa25;
-  background-color: #1e1e1e;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-pre[data-lang="bash"] code,
-pre[data-lang="shell"] code {
-  color: #d4d4d4;
-  background-image: none;
 }
 
 /* 文字列 */
@@ -874,14 +866,14 @@ pre[data-lang="shell"] code {
 /* 数値 */
 .token.number,
 .hljs-number {
-  color: #6c875d;
+  color: #4d6a3f;
   font-weight: 500;
 }
 
 /* クラス名 */
 .token.class-name,
 .hljs-class .hljs-title {
-  color: rgb(76 159 142);
+  color: #26705f;
   font-weight: bold;
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -904,13 +896,13 @@ pre[data-lang="shell"] code {
 
 /* 区切り文字 */
 .token.punctuation {
-  color: #808080;
+  color: #666666;
 }
 
 /* アノテーション */
 .token.annotation,
 .hljs-meta {
-  color: #569cd6;
+  color: #1f5fa8;
   font-weight: bold;
   font-style: italic;
 }
@@ -919,27 +911,27 @@ pre[data-lang="shell"] code {
 .token.builtin,
 .token.type,
 .hljs-type {
-  color: #4ec9b0;
+  color: #26705f;
   font-style: italic;
 }
 
 /* 変数 */
 .token.variable,
 .hljs-variable {
-  color: #9cdcfe;
+  color: #0b6e99;
 }
 
 /* パッケージ・インポート */
 .token.namespace,
 .hljs-namespace {
-  color: #c586c0;
+  color: #8a3f85;
   opacity: 0.9;
 }
 
 /* 定数 */
 .token.constant,
 .hljs-constant {
-  color: #4fc1ff;
+  color: #0b5e8c;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -948,24 +940,24 @@ pre[data-lang="shell"] code {
 .token.boolean,
 .token.null,
 .hljs-literal {
-  color: #569cd6;
+  color: #1f5fa8;
   font-weight: bold;
 }
 
 /* XMLタグ */
 .token.tag,
 .hljs-tag {
-  color: #569cd6;
+  color: #1f5fa8;
 }
 
 .token.attr-name,
 .hljs-attr {
-  color: #9cdcfe;
+  color: #8a3f85;
 }
 
 .token.attr-value,
 .hljs-string {
-  color: #ce9178;
+  color: #a31515;
 }
 
 /* 言語別コードブロックのスタイル */
@@ -986,32 +978,19 @@ pre[class*="language-python"] {
   border-left: 4px solid #3776ab;
 }
 
+/*
+ * コマンドの例（bash）は左の緑の線で区別し、地はほかのコードと同じ明るい色にする。
+ * 印刷用の設定（@media print の pre）が背景を明るい色に固定するため、
+ * 暗い地に明るい文字の配色にすると、PDFでは文字が背景に溶けて読めなくなる（2026-11-11に修正）
+ */
 pre[class*="language-bash"],
 pre[class*="language-shell"] {
   border-left: 4px solid #4eaa25;
-  background-color: #2d2d2d;
-  color: #f8f8f2;
 }
 
-/* bashコード用の配色 */
 pre[class*="language-bash"] code,
 pre[class*="language-shell"] code {
-  color: #f8f8f2;
-}
-
-pre[class*="language-bash"] .token.function,
-pre[class*="language-shell"] .token.function {
-  color: #50fa7b;
-}
-
-pre[class*="language-bash"] .token.string,
-pre[class*="language-shell"] .token.string {
-  color: #f1fa8c;
-}
-
-pre[class*="language-bash"] .token.comment,
-pre[class*="language-shell"] .token.comment {
-  color: #6272a4;
+  color: #222;
 }
 
 /* カスタムクラス - 学習支援要素 */
@@ -1627,7 +1606,7 @@ table th:first-child {
 /* 数値やコードを含むセル */
 table td code {
   background-color: #f1f3f4;
-  color: #d73a49;
+  color: #c0103f;
   padding: 2px 4px;
   border-radius: 3px;
   font-size: 11Q;
@@ -1847,7 +1826,7 @@ section:has(h1:contains("目次")) {
   
   /* インラインコードの印刷調整 */
   code:not(pre code) {
-    background-color: #e0e0e0 !important;
+    background-color: #eeeeee !important;
     word-break: break-word !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
