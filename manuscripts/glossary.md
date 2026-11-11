@@ -43,7 +43,7 @@
 - **double** - 第2章、第8章
 
 ### E
-- **equals()メソッド** - 第3章、第8章、第9章
+- **equals()メソッド** - 第3章、第5章、第8章、第9章
 - **enum (列挙型)** - 第8章、付録B.11
 - **Exception (例外)** - 第13章、付録B.12
 - **ExecutorService** - 第15章
@@ -68,7 +68,7 @@
 
 ### H
 - **HashMap** - 第9章、付録B.06
-- **hashCode()メソッド** - 第3章、第8章、第9章
+- **hashCode()メソッド** - 第5章、第8章、第9章
 - **HashSet** - 第9章、付録B.06
 
 ### I
@@ -175,7 +175,7 @@
 - **throws キーワード** - 第13章
 - **@throws** - 第22章
 - **TimeoutException** - 第15章
-- **toString()メソッド** - 第3章、第8章
+- **toString()メソッド** - 第5章、第8章
 - **transient** - 第14章
 - **try-catch文** - 第13章、付録B.12
 - **try-with-resources文** - 第13章、第14章、付録B.12
