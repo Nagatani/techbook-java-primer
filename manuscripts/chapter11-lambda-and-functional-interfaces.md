@@ -19,7 +19,7 @@
 
 ## 匿名クラスからラムダ式へ
 
-Java 8でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。これは名前を持たないクラスで、とくにGUIのイベントリスナーなどで多用されていました。
+Java 8<span class="footnote">Java 8（Java SE 8）は2014年3月に公開されました。ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました。</span>でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。これは名前を持たないクラスで、とくにGUIのイベントリスナーなどで多用されていました。
 
 本章のサンプルには、ラムダ式を渡す先として、後の章で学ぶ機能も出てきます。
 主なものは、`Thread`と`ExecutorService`（第15章）と、GUIのイベントリスナー（第17章・第18章）です。
@@ -62,7 +62,7 @@ Hello from anonymous class!
 Hello from lambda!
 ```
 
-ラムダ式は、匿名クラスの冗長な記述を簡潔に表現できます。`() ->` が「引数なしで何かを実行する」という意味になります。
+ラムダ式<span class="footnote">「ラムダ」は、1930年代に数学者アロンゾ・チャーチが考えたラムダ計算（λ計算）に由来します。1958年に登場したLispも、名前のない関数を書くキーワードに`lambda`を使っていました。</span>は、匿名クラスの冗長な記述を簡潔に表現できます。`() ->` が「引数なしで何かを実行する」という意味になります。
 
 <span class="listing-number">**サンプルコード11-2**</span>
 
@@ -76,11 +76,10 @@ button.addActionListener(new ActionListener() {
 });
 ```
 
-<span class="footnote">※ このコードはGUIアプリケーション内での使用例を示しています。buttonオブジェクトは事前にJButtonとして定義されている前提です。</span>
-このコードは、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
+このコード<span class="footnote">GUIアプリケーションで使う例で、`button`はあらかじめ`JButton`として作ってあるものとします。ボタンなどのGUIの部品は第17章で学びます。</span>は、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
 
 ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
-サンプルコード11-2をラムダ式で書くと、次のように1行になります。
+サンプルコード11-2をラムダ式で書くと、次のように1行になります<span class="footnote">サンプルコード11-2と同じく、`button`はあらかじめ`JButton`として作ってあるものとします。</span>。
 
 <span class="listing-number">**サンプルコード11-3**</span>
 
@@ -88,8 +87,6 @@ button.addActionListener(new ActionListener() {
 // ラムダ式を使った場合
 button.addActionListener(e -> IO.println("ボタンがクリックされました！"));
 ```
-
-<span class="footnote">※ サンプルコード11-2と同じく、buttonオブジェクトは事前にJButtonとして定義されている前提です。</span>
 
 ## 関数型インターフェイス
 
@@ -107,7 +104,7 @@ button.addActionListener(e -> IO.println("ボタンがクリックされまし�
 
 </div>
 
-関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです。`@FunctionalInterface` アノテーションを付けると、コンパイラーが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けるとよいでしょう。
+関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです<span class="footnote">defaultメソッドとstaticメソッドは数えません。`equals`のように`Object`クラスのpublicメソッドと同じ形の抽象メソッドも数えないので、`equals`を宣言している`Comparator`も関数型インターフェイスです。</span>。`@FunctionalInterface` アノテーションを付けると、コンパイラーが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けるとよいでしょう。
 
 <span class="listing-number">**サンプルコード11-4**　FunctionalInterfaceExample.java</span>
 
@@ -151,7 +148,7 @@ public class FunctionalInterfaceExample {
 ### ラムダ式から参照できる変数と副作用
 
 ラムダ式の本体からは、ラムダ式の外で宣言したローカル変数を参照できます。
-ただし、参照できるのは、`final`を付けた変数か、実質的にfinalな変数に限られます。
+ただし、参照できるのは、`final`を付けた変数か、実質的にfinalな変数に限られます<span class="footnote">Java 7までは匿名クラスから参照するローカル変数に`final`が必須でした。`final`のない実質的にfinalな変数を参照できるようになったのは、Java 8からです。</span>。
 実質的にfinalな変数とは、`final`を付けていなくても、初期化したあとで一度も代入し直さない変数のことです。
 
 たとえば、`int count = 0;`と宣言した変数を、ラムダ式のなかで`count++`と書いて増やそうとすると、コンパイルエラーになります。
@@ -173,12 +170,12 @@ javacは「ラムダ式から参照されるローカル変数は、finalまた�
 ### `Comparator`による並べ替え
 
 `Comparator<T>`は、2つのオブジェクトを比べる`compare`メソッドを実装する関数型インターフェイスです。
-そのため、リストを並べ替える`sort`メソッドに渡す比較のルールを、匿名クラスの代わりにラムダ式で書けます。
+そのため、リストを並べ替える`sort`メソッドに渡す比較のルールを、匿名クラスの代わりにラムダ式で書けます<span class="footnote">C言語の`qsort`関数では、比較のルールを関数ポインターで渡しました。Javaには関数ポインターがないので、関数型インターフェイスを実装したオブジェクトとして渡します。</span>。
 `String`や`Integer`のように`Comparable`インターフェイスを実装したクラスは、自然な順序（文字列なら辞書順）を持ちます。
 `Comparator`を使うと、自然な順序とは別の並べ方を、クラスを書き換えずに外から指定できます。
 次のサンプルでは、学生を名前の順に並べる同じ処理を、匿名クラス、ラムダ式、`Comparator.comparing`の3通りで書いています。
 `Student`は名前・学年・学生番号を持つクラスで、サンプルコード11-6でも使います。
-本文では定義とimport文を省いています（全文はGitHubリポジトリの`sample-code/chapter11/`にあります）。
+本文では定義とimport文を省いています<span class="footnote">`Student`の定義を含む全文は、`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-05/`にあります。</span>。
 
 <span class="listing-number">**サンプルコード11-5**　ComparatorLambdaExample.java（7〜37行目）</span>
 
@@ -313,7 +310,7 @@ Task{priority=1, title='Task B'}
 
 ### `java.util.function` パッケージ
 
-Javaには、`java.util.function`パッケージに、よく使われる汎用的な関数型インターフェイスが多数用意されています。これらを活用することで、自分でインターフェイスを定義する手間を省けます。
+Javaには、`java.util.function`パッケージ<span class="footnote">このパッケージはJava 8で追加されました。`IntPredicate`のような基本データ型用のものを含めて、43個のインターフェイスがあります。</span>に、よく使われる汎用的な関数型インターフェイスが多数用意されています。これらを活用することで、自分でインターフェイスを定義する手間を省けます。
 
 | インターフェイス | 抽象メソッド | 説明 |
 | :--- | :--- | :--- |
@@ -597,7 +594,7 @@ Person{name='Charlie'}
 
 `Runnable`インターフェイス（`run`メソッドを持つ関数型インターフェイス）もラムダ式で簡単に実装できます。
 スレッドの使い方は第15章で詳しく学びます。
-ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください（`start()`を呼ぶと、別のスレッドで`run`の処理を始めます）。
+ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください<span class="footnote">`start()`を呼ぶと、別のスレッドで`run`の処理を始めます。</span>。
 
 <span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜33、44〜46行目）</span>
 
@@ -955,7 +952,7 @@ public class SideEffectExample {
 
 ### 実世界での応用例：リアクティブストリーム処理
 
-動画配信サービスのNetflixは、大量のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用してきました。
+動画配信サービスのNetflixは、大量のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用してきました<span class="footnote">NetflixはMicrosoftのReactive Extensions（Rx）をJavaに移植したRxJavaを開発しました。2013年にオープンソースとして公開しています。</span>。
 ここでは、その考え方を、動画のおすすめを計算するサービスを題材に説明します。
 おすすめを計算するには、利用者の情報、視聴履歴、人気の動画の3つを、それぞれ別のサービスから取得します。
 
@@ -963,7 +960,7 @@ public class SideEffectExample {
 リアクティブなアプローチでは、3つを同時に呼び出し、結果がそろったときに行う計算をラムダ式で渡しておきます。
 そのため、待ち時間はもっとも遅い1つの分で済みます。
 また、応答を待つ間にスレッドを占有しないため、同じ数のスレッドでより多くのリクエストを処理できます。
-Javaでこのような処理を書くときは、Reactorなどの外部ライブラリを使います。
+Javaでこのような処理を書くときは、Reactorなどの外部ライブラリを使います<span class="footnote">Java 9で、リアクティブストリームの共通のインターフェイスが`java.util.concurrent.Flow`として標準ライブラリに入りました。ただし、処理を組み立てるメソッドは持たないので、実際にはライブラリと組み合わせて使います。</span>。
 
 ### 関数型プログラミングの実装パターン集
 
@@ -1190,9 +1187,7 @@ public class EventSourcedAccount {
 }
 ```
 
-<span class="footnote">※ sealedインターフェイス、record、switchのレコードパターン（第8章）を使っています。口座の状態を表す`AccountState`と金額を表す`Money`は、GitHubの全文にあります。</span>
-
-`project`メソッドは、空の状態から始めてイベントを古い順に1つずつ適用し、現在の状態を求めます。
+`project`メソッドは、空の状態から始めてイベントを古い順に1つずつ適用し、現在の状態を求めます<span class="footnote">このサンプルは、sealedインターフェイス、record、switchのレコードパターン（第8章）を使っています。口座の状態を表す`AccountState`と金額を表す`Money`は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-21/`）にあります。</span>。
 第12章で学ぶStreamの`reduce`を使うと、この繰り返しを1つの式で書けます。
 
 #### ファクトリパターンの関数型実装
@@ -1226,7 +1221,7 @@ public class ProcessorFactory {
 }
 ```
 
-`CsvProcessor`などの3つのクラスは、`DataProcessor`を実装し、受け取った文字列に形式の名前を付けて返すだけのクラスです（GitHubの全文を参照）。
+`CsvProcessor`などの3つのクラスは、`DataProcessor`を実装し、受け取った文字列に形式の名前を付けて返すだけのクラスです<span class="footnote">3つのクラスの定義は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-22/`）にあります。</span>。
 `createProcessor("csv")`、`createProcessor("json")`、`createProcessor("yaml")`の順に呼び出して処理させると、次のように表示されます。
 
 ```
@@ -1240,7 +1235,7 @@ JSONとして読み込み: {"a": 1}
 
 ### ラムダ式の内部実装とメモリ使用
 
-ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます。
+ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます<span class="footnote">匿名クラスはコンパイルすると`Outer$1.class`のような別のクラスファイルになりますが、ラムダ式はなりません。ラムダ式の本体は同じクラスのprivateメソッドになり、実行時に`invokedynamic`命令（Java 7で追加）を使ってオブジェクトを作ります。</span>。
 サンプルコード11-23は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
 
 <span class="listing-number">**サンプルコード11-23**　LambdaCapture.java（5〜25行目）</span>
@@ -1280,7 +1275,7 @@ public class LambdaCapture {
 キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
 ただし、インスタンスを使い回すかどうかは言語仕様で決められておらず、JVMの実装によって変わることがあります。
 ラムダ式のオブジェクトを`==`で比べる処理を、プログラムの動作に使ってはいけません。
-キャプチャによる性能の違いは小さいことが多いので、気になるときはJMH（Java Microbenchmark Harness）などのツールで測ってから判断します。
+キャプチャによる性能の違いは小さいことが多いので、気になるときはJMH（Java Microbenchmark Harness）<span class="footnote">JMHはOpenJDKのプロジェクトとして開発されている、小さな処理の実行時間を測るためのツールです。JVMが実行中にコードを最適化する影響を考えて測定します。</span>などのツールで測ってから判断します。
 
 ### 実践的なデザインパターン：関数型ビルダー
 
@@ -1378,7 +1373,7 @@ public class ConfigurationBuilder {
 }
 ```
 
-`DatabaseConfig`は、ホスト名・ポート番号・データベース名・SSLを使うかどうかを持ち、setterと`toString`を定義したクラスです（GitHubの全文を参照）。
+`DatabaseConfig`は、ホスト名・ポート番号・データベース名・SSLを使うかどうかを持ち、setterと`toString`を定義したクラスです<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-25/`にあります。</span>。
 環境の名前を変えて`buildDatabaseConfig`を呼び出すと、次の設定ができます。
 
 ```
@@ -1423,7 +1418,7 @@ public class OrderPipeline {
 }
 ```
 
-`calculateSubtotal`・`applyDiscount`・`addTax`・`toReceipt`は、受け取った注文から新しい`Order`や文字列を返すメソッドです（GitHubの全文を参照）。
+`calculateSubtotal`・`applyDiscount`・`addTax`・`toReceipt`は、受け取った注文から新しい`Order`や文字列を返すメソッドです<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-26/`にあります。</span>。
 メソッド参照のままでは`andThen`を呼び出せないので、最初の`validate`だけを`Function<Order, Order>`型の変数に入れています。
 
 実行結果：
@@ -1489,7 +1484,7 @@ public class OrderPipeline {
 3. チャレンジ課題
     + 高階関数による関数型プログラミング
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 次のステップ：基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
 
