@@ -1,635 +1,197 @@
-# 第21章 応用課題
+# 第21章 発展課題
 
 ## 学習目標
-- 高度なテスト戦略・アーキテクチャ
-- エンタープライズテストフレームワーク
-- AI駆動テスト自動生成
-- パフォーマンステスト設計
-- 分散システムテスト
+- テスト駆動開発（TDD）のRed・Green・Refactoringのサイクルを、小さなテストを1つずつ足しながら回す
+- `@Nested`と`@DisplayName`で、テストを読みやすく分類する
+- 境界値分析で、値が切り替わる境目の両側をテストする
+- `@ParameterizedTest`と`@CsvSource`・`@ValueSource`で、入力と期待値の組を表にしてテストする
+- `assertThrows`で、不正な入力に例外が投げられることを確かめる
 
 ## 課題一覧
 
-### 課題1: AI駆動自動テスト生成システム
-**ファイル名**: `AITestGenerationFramework.java`
+### 課題1: 買い物かごをTDDで作る
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task1-shopping-cart/
+├── ShoppingCart.java      買い物かご（テスト対象）
+├── CartItem.java          かごに入った1種類の商品
+└── ShoppingCartTest.java  JUnit 5のテスト
+```
 
-人工知能を活用してテストケースを自動生成する高度なテストフレームワークを作成してください。
+ネットショップの買い物かごを、テストを先に書くTDDの手順で作成してください。
+いきなりクラスを完成させるのではなく、次の表の順にテストを1つ書き（Red）、それを通す最小限のコードを書き（Green）、テストが通ったまま書き直す（Refactoring）ことを繰り返します。
+
+| 順 | 加えるテスト | このテストで増えるコードの例 |
+|---|---|---|
+| 1 | 空のかごの小計は0円 | `subtotal()`が0を返す |
+| 2 | 1つ入れると、その単価が小計になる | `add`で単価を覚える |
+| 3 | 数量を指定すると、単価×数量が小計になる | 数量を掛ける |
+| 4 | 種類の違う商品は小計に足される | 商品をリストで持つ |
+| 5 | 同じ商品を2回入れると数量がまとまる | 同じ名前の商品を探して数量を足す |
+| 6〜8 | 小計が4999円・5000円・5005円のときの割引 | 5000円以上で10%引き、1円未満は切り捨て |
+| 9〜10 | 商品を取り除く | `remove` |
+| 11〜13 | 数量0・単価が負・商品名が空なら例外 | 引数の検査 |
 
 **要求仕様**:
-- コード解析による自動テスト生成
-- 変異テスト (Mutation Testing)
-- 境界値・等価クラス自動分析
-- テストカバレッジ最適化
+- `ShoppingCart`（買い物かご）
+    - `add(商品名, 単価, 数量)`で商品を入れる。同じ名前の商品がすでにあれば、数量を足す
+    - `remove(商品名)`で商品を取り除く。かごになければ`false`を返す
+    - `itemCount()`は数量の合計、`subtotal()`は割引前の合計を返す
+    - `discount()`は、小計が5000円以上なら小計の10%（1円未満は切り捨て）、5000円未満なら0を返す。`total()`は小計から割引を引いた金額を返す
+    - 数量が0以下、単価が負、商品名が空（`null`や空白だけ）なら`IllegalArgumentException`を投げ、かごは変えない
+- `ShoppingCartTest`（テスト）
+    - 上の表の13個のテストを、`@Nested`で「小計」「割引」「取り除く」「不正な入力」に分ける
+    - 各テストに`@DisplayName`で日本語の名前を付ける
+    - かごは`@BeforeEach`で毎回新しく作り、テストどうしが影響し合わないようにする
+    - 割引のテストでは、境目の5000円とその手前の4999円の両方を確かめる
 
-**AI機能**:
-- 機械学習によるバグ予測
-- 自然言語からのテスト仕様生成
-- リグレッションテスト最適化
-- テスト実行時間予測
-
-**実行例**:
+**実行例**（テストの実行結果）:
 ```
-=== AI駆動自動テスト生成システム ===
+'-- 買い物かご [OK]
+  +-- 不正な入力 [OK]
+  | +-- 12. 単価が負なら例外 [OK]
+  | +-- 11. 数量が0なら例外 [OK]
+  | '-- 13. 商品名が空なら例外で、かごは変わらない [OK]
+  +-- 取り除く [OK]
+  | +-- 10. かごにない商品を取り除こうとするとfalse [OK]
+  | '-- 9. 取り除いた商品は小計に含まれない [OK]
+  +-- 割引 [OK]
+  | +-- 8. 割引の1円未満は切り捨てる [OK]
+  | +-- 6. 小計が4999円なら割引はない [OK]
+  | '-- 7. 小計が5000円ちょうどなら10%引き [OK]
+  '-- 小計 [OK]
+    +-- 1. 空のかごの小計は0円 [OK]
+    +-- 2. 1つ入れると、その単価が小計になる [OK]
+    +-- 3. 数量を指定すると、単価×数量が小計になる [OK]
+    +-- 5. 同じ商品を2回入れると数量がまとまる [OK]
+    '-- 4. 種類の違う商品は小計に足される [OK]
 
-AITestGen Pro v3.0
+[        13 tests successful      ]
+[         0 tests failed          ]
+```
 
-=== コード解析・テスト生成 ===
-自動テスト分析システム:
+JUnitはテストメソッドを書いた順に実行するとは限りません。
+各テストが`@BeforeEach`で作った新しいかごを使うので、どの順で実行しても結果は変わりません。
 
-対象コード解析:
-プロジェクト: E-Commerce Backend
-解析ファイル: 247個
-解析クラス: 892個
-解析メソッド: 4,567個
-複雑度分析: McCabe複雑度平均 3.2
+### 課題2: 成績の評価を境界値とパラメーター化テストで確かめる
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task2-grade-evaluator/
+├── GradeEvaluator.java      評価と合否を決めるクラス（テスト対象）
+└── GradeEvaluatorTest.java  パラメーター化テスト
+```
 
-自動生成結果:
-生成テストクラス: 892個
-生成テストメソッド: 12,847個
-総テストライン数: 247,562行
-生成時間: 12分34秒
+科目の点数と出席回数から、評価と合否を決めるクラスを作り、境界値をパラメーター化テストで確かめてください。
 
-=== AI解析結果 ===
-機械学習テスト分析:
+**要求仕様**:
+- `GradeEvaluator`
+    - `grade(点数)`は、90〜100点ならS、80〜89点ならA、70〜79点ならB、60〜69点ならC、0〜59点ならDを返す。0〜100の外なら`IllegalArgumentException`を投げる
+    - `hasEnoughAttendance(出席回数, 授業回数)`は、出席が授業回数の3分の2以上なら`true`を返す。授業回数が0以下、出席回数が負か授業回数より多いときは`IllegalArgumentException`を投げる
+    - `isPassed(点数, 出席回数, 授業回数)`は、評価がD以外で、出席が足りていれば`true`を返す
+- `GradeEvaluatorTest`
+    - 評価が切り替わる境目（90と89、80と79、70と69、60と59）と両端（100と0）を、`@CsvSource`で1つのテストメソッドにまとめる
+    - 範囲外の点数（-1と101）を`@ValueSource`で渡し、例外を確かめる
+    - 授業15回と14回のそれぞれで、出席が足りる回数と足りない回数の境目を確かめる
+    - `@ParameterizedTest(name = ...)`で、実行結果に入力の値が表示されるようにする
+
+**実行例**（テストの実行結果の一部）:
+```
+'-- 成績の評価 [OK]
+  +-- 点数から評価を決める（境界値） [OK]
+  | +-- 100点はS [OK]
+  | +-- 90点はS [OK]
+  | +-- 89点はA [OK]
+  | +-- 80点はA [OK]
+  | +-- 79点はB [OK]
+  | +-- 70点はB [OK]
+  | +-- 69点はC [OK]
+  | +-- 60点はC [OK]
+  | +-- 59点はD [OK]
+  | '-- 0点はD [OK]
+  +-- 0〜100の外の点数は例外 [OK]
+  | +-- -1点は範囲外 [OK]
+  | '-- 101点は範囲外 [OK]
+  '-- 出席が3分の2以上か [OK]
+    +-- 15回中10回の出席 → true [OK]
+    +-- 15回中9回の出席 → false [OK]
+    +-- 14回中10回の出席 → true [OK]
+    +-- 14回中9回の出席 → false [OK]
+    +-- 1回中0回の出席 → false [OK]
+    '-- 1回中1回の出席 → true [OK]
+
+[        25 tests successful      ]
+[         0 tests failed          ]
+```
+
+## コンパイルと実行
+
+IntelliJ IDEAでは、第21章の手順でJUnit 5をプロジェクトに追加し、テストクラスの左に出る実行ボタンを押します。
+
+コマンドラインで実行するときは、Maven Centralから`junit-platform-console-standalone`のJAR（JUnit 5.14.4に対応する1.14.4）を入手し、課題のフォルダーに置きます。
+JARをクラスパスに加えてコンパイルし、同じJARでテストを実行します。
+
+```bash
+cd task1-shopping-cart
+javac -cp junit-platform-console-standalone-1.14.4.jar -d out *.java
+java -jar junit-platform-console-standalone-1.14.4.jar execute -cp out --scan-class-path --details=tree
+```
+
+課題2も、フォルダーを`task2-grade-evaluator`に変えて同じように実行します。
+外部ライブラリとクラスパスの関係は、第22章で学びます。
+
+## 実装のヒント
 
 ```java
-@Component
-public class AITestGenerationFramework {
-    private final CodeAnalyzer codeAnalyzer;
-    private final AITestGenerator aiGenerator;
-    private final MutationTester mutationTester;
-    private final CoverageOptimizer coverageOptimizer;
-    private final BugPredictor bugPredictor;
-    
-    public AITestGenerationFramework() {
-        initializeAIFramework();
-        setupMachineLearningModels();
-        configureTestGeneration();
-    }
-    
-    private void initializeAIFramework() {
-        // コード解析エンジン
-        this.codeAnalyzer = new DeepCodeAnalyzer();
-        codeAnalyzer.addAnalyzer(new SyntaxAnalyzer());
-        codeAnalyzer.addAnalyzer(new SemanticAnalyzer());
-        codeAnalyzer.addAnalyzer(new DataFlowAnalyzer());
-        codeAnalyzer.addAnalyzer(new ControlFlowAnalyzer());
-        
-        // AI テスト生成エンジン
-        this.aiGenerator = new NeuralTestGenerator();
-        
-        // 変異テスターシステム
-        this.mutationTester = new AdvancedMutationTester();
-        
-        // カバレッジ最適化
-        this.coverageOptimizer = new AIBasedCoverageOptimizer();
-        
-        // バグ予測システム
-        this.bugPredictor = new MachineLearningBugPredictor();
-    }
-    
-    public TestSuite generateTestsForClass(Class<?> targetClass) {
-        // クラス解析
-        ClassAnalysis analysis = codeAnalyzer.analyzeClass(targetClass);
-        
-        // AIによるテスト戦略決定
-        TestStrategy strategy = aiGenerator.determineTestStrategy(analysis);
-        
-        // 基本テストケース生成
-        List<TestCase> basicTests = generateBasicTests(analysis, strategy);
-        
-        // 境界値テスト生成
-        List<TestCase> boundaryTests = generateBoundaryTests(analysis);
-        
-        // 等価クラステスト生成
-        List<TestCase> equivalenceTests = generateEquivalenceTests(analysis);
-        
-        // 例外ケーステスト生成
-        List<TestCase> exceptionTests = generateExceptionTests(analysis);
-        
-        // エッジケーステスト生成
-        List<TestCase> edgeTests = aiGenerator.generateEdgeCases(analysis);
-        
-        // バグ予測に基づく重点テスト
-        List<TestCase> bugFocusedTests = generateBugFocusedTests(analysis);
-        
-        // テストスイート構築
-        TestSuite testSuite = new TestSuite(targetClass.getSimpleName() + "Test");
-        testSuite.addTests(basicTests);
-        testSuite.addTests(boundaryTests);
-        testSuite.addTests(equivalenceTests);
-        testSuite.addTests(exceptionTests);
-        testSuite.addTests(edgeTests);
-        testSuite.addTests(bugFocusedTests);
-        
-        // カバレッジ最適化
-        testSuite = coverageOptimizer.optimizeTestSuite(testSuite);
-        
-        return testSuite;
-    }
-    
-    private List<TestCase> generateBasicTests(ClassAnalysis analysis, 
-                                            TestStrategy strategy) {
-        List<TestCase> tests = new ArrayList<>();
-        
-        for (MethodAnalysis method : analysis.getMethods()) {
-            // メソッド基本テスト
-            TestCase normalCaseTest = createNormalCaseTest(method);
-            tests.add(normalCaseTest);
-            
-            // パラメータ組み合わせテスト
-            if (method.getParameterCount() > 1) {
-                List<TestCase> combinationTests = 
-                    generateParameterCombinationTests(method);
-                tests.addAll(combinationTests);
-            }
-            
-            // 戻り値検証テスト
-            TestCase returnValueTest = createReturnValueTest(method);
-            tests.add(returnValueTest);
-            
-            // 副作用検証テスト
-            if (method.hasSideEffects()) {
-                TestCase sideEffectTest = createSideEffectTest(method);
-                tests.add(sideEffectTest);
-            }
-        }
-        
-        return tests;
-    }
-    
-    private List<TestCase> generateBoundaryTests(ClassAnalysis analysis) {
-        List<TestCase> tests = new ArrayList<>();
-        
-        for (MethodAnalysis method : analysis.getMethods()) {
-            for (ParameterAnalysis param : method.getParameters()) {
-                // 数値型境界値
-                if (param.isNumericType()) {
-                    tests.addAll(generateNumericBoundaryTests(method, param));
-                }
-                
-                // 文字列型境界値
-                if (param.isStringType()) {
-                    tests.addAll(generateStringBoundaryTests(method, param));
-                }
-                
-                // コレクション型境界値
-                if (param.isCollectionType()) {
-                    tests.addAll(generateCollectionBoundaryTests(method, param));
-                }
-                
-                // カスタム型境界値
-                if (param.isCustomType()) {
-                    tests.addAll(generateCustomTypeBoundaryTests(method, param));
-                }
-            }
-        }
-        
-        return tests;
-    }
-    
-    private List<TestCase> generateBugFocusedTests(ClassAnalysis analysis) {
-        // バグ予測による重点テスト生成
-        BugPrediction prediction = bugPredictor.predictBugs(analysis);
-        
-        List<TestCase> tests = new ArrayList<>();
-        
-        for (BugRisk risk : prediction.getHighRiskAreas()) {
-            // 高リスクメソッドの集中テスト
-            List<TestCase> riskTests = generateRiskFocusedTests(risk);
-            tests.addAll(riskTests);
-            
-            // 過去のバグパターンに基づくテスト
-            List<TestCase> patternTests = 
-                generateHistoricalPatternTests(risk);
-            tests.addAll(patternTests);
-        }
-        
-        return tests;
-    }
+// 課題1: 最初のテスト（Red）
+@Test
+@DisplayName("1. 空のかごの小計は0円")
+void emptyCart() {
+    assertEquals(0, cart.subtotal());
 }
 
-// AI テスト生成エンジン
-public class NeuralTestGenerator {
-    private final NeuralNetwork testGenerationModel;
-    private final TestPatternLibrary patternLibrary;
-    private final CodeEmbedding codeEmbedding;
-    
-    public NeuralTestGenerator() {
-        // 事前学習済みモデル読み込み
-        this.testGenerationModel = loadPretrainedModel("test-generation-v3.model");
-        this.patternLibrary = new TestPatternLibrary();
-        this.codeEmbedding = new CodeEmbedding();
-    }
-    
-    public TestStrategy determineTestStrategy(ClassAnalysis analysis) {
-        // コードをベクトル化
-        Vector codeVector = codeEmbedding.embedCode(analysis);
-        
-        // ニューラルネットワークで戦略予測
-        Vector strategyVector = testGenerationModel.predict(codeVector);
-        
-        // 戦略オブジェクトに変換
-        TestStrategy strategy = vectorToStrategy(strategyVector);
-        
-        // 戦略調整
-        strategy = adjustStrategyBasedOnDomain(strategy, analysis);
-        
-        return strategy;
-    }
-    
-    public List<TestCase> generateEdgeCases(ClassAnalysis analysis) {
-        List<TestCase> edgeCases = new ArrayList<>();
-        
-        // 学習済みパターンから生成
-        for (MethodAnalysis method : analysis.getMethods()) {
-            // メソッド特性を解析
-            MethodCharacteristics characteristics = 
-                analyzeMethodCharacteristics(method);
-            
-            // 類似メソッドの成功パターン検索
-            List<TestPattern> similarPatterns = 
-                patternLibrary.findSimilarPatterns(characteristics);
-            
-            // エッジケース生成
-            for (TestPattern pattern : similarPatterns) {
-                TestCase edgeCase = generateFromPattern(method, pattern);
-                if (edgeCase.isValidEdgeCase()) {
-                    edgeCases.add(edgeCase);
-                }
-            }
-            
-            // 新規エッジケース発見
-            List<TestCase> novelEdgeCases = discoverNovelEdgeCases(method);
-            edgeCases.addAll(novelEdgeCases);
-        }
-        
-        return edgeCases;
-    }
-    
-    private List<TestCase> discoverNovelEdgeCases(MethodAnalysis method) {
-        List<TestCase> novelCases = new ArrayList<>();
-        
-        // 遺伝的アルゴリズムによる新規ケース探索
-        GeneticAlgorithm ga = new GeneticAlgorithm();
-        ga.setFitnessFunction(new EdgeCaseFitnessFunction(method));
-        ga.setPopulationSize(100);
-        ga.setGenerations(50);
-        
-        Population population = ga.evolve();
-        
-        for (Individual individual : population.getTopIndividuals(10)) {
-            TestCase testCase = individual.toTestCase();
-            if (isNovelEdgeCase(testCase, method)) {
-                novelCases.add(testCase);
-            }
-        }
-        
-        return novelCases;
-    }
-}
-
-// 高度な変異テスト
-public class AdvancedMutationTester {
-    private final List<MutationOperator> operators;
-    private final MutationAnalyzer analyzer;
-    private final TestEffectivenessEvaluator evaluator;
-    
-    public AdvancedMutationTester() {
-        setupMutationOperators();
-        this.analyzer = new MutationAnalyzer();
-        this.evaluator = new TestEffectivenessEvaluator();
-    }
-    
-    private void setupMutationOperators() {
-        this.operators = Arrays.asList(
-            new ArithmeticOperatorMutation(),
-            new RelationalOperatorMutation(),
-            new ConditionalBoundaryMutation(),
-            new NegateConditionMutation(),
-            new IncrementDecrementMutation(),
-            new ReturnValueMutation(),
-            new VoidMethodCallMutation(),
-            new ConstructorCallMutation(),
-            new ArgumentPropagationMutation(),
-            new StaticVariableMutation()
-        );
-    }
-    
-    public MutationTestResult performMutationTesting(
-            Class<?> targetClass, TestSuite testSuite) {
-        
-        List<Mutant> mutants = generateMutants(targetClass);
-        
-        MutationTestResult result = new MutationTestResult();
-        result.setTotalMutants(mutants.size());
-        
-        int killedMutants = 0;
-        int survivedMutants = 0;
-        int equivalentMutants = 0;
-        
-        for (Mutant mutant : mutants) {
-            MutantExecutionResult execution = executeMutant(mutant, testSuite);
-            
-            switch (execution.getStatus()) {
-                case KILLED:
-                    killedMutants++;
-                    result.addKilledMutant(mutant);
-                    break;
-                case SURVIVED:
-                    survivedMutants++;
-                    result.addSurvivedMutant(mutant);
-                    // 生存変異体に対する追加テスト提案
-                    suggestAdditionalTests(mutant, result);
-                    break;
-                case EQUIVALENT:
-                    equivalentMutants++;
-                    result.addEquivalentMutant(mutant);
-                    break;
-            }
-        }
-        
-        // 変異スコア計算
-        double mutationScore = (double) killedMutants / 
-                              (mutants.size() - equivalentMutants);
-        result.setMutationScore(mutationScore);
-        
-        // テスト品質分析
-        TestQualityAnalysis qualityAnalysis = 
-            analyzer.analyzeTestQuality(result);
-        result.setQualityAnalysis(qualityAnalysis);
-        
-        return result;
-    }
-    
-    private List<Mutant> generateMutants(Class<?> targetClass) {
-        List<Mutant> mutants = new ArrayList<>();
-        
-        // クラスのAST解析
-        AST classAST = parseClassToAST(targetClass);
-        
-        // 各変異オペレータを適用
-        for (MutationOperator operator : operators) {
-            List<MutationPoint> points = operator.findMutationPoints(classAST);
-            
-            for (MutationPoint point : points) {
-                Mutant mutant = operator.createMutant(classAST, point);
-                mutants.add(mutant);
-            }
-        }
-        
-        // 変異体の優先度付け
-        prioritizeMutants(mutants);
-        
-        return mutants;
-    }
-}
-
-// パフォーマンステストフレームワーク
-public class PerformanceTestFramework {
-    private final LoadGenerator loadGenerator;
-    private final PerformanceMetrics metricsCollector;
-    private final ResourceMonitor resourceMonitor;
-    private final BottleneckAnalyzer bottleneckAnalyzer;
-    
-    public PerformanceTestResult executePerformanceTest(
-            PerformanceTestPlan testPlan) {
-        
-        PerformanceTestResult result = new PerformanceTestResult();
-        
-        // テスト実行前のベースライン取得
-        SystemMetrics baseline = resourceMonitor.captureBaseline();
-        
-        // 段階的負荷テスト
-        for (LoadLevel level : testPlan.getLoadLevels()) {
-            LoadLevelResult levelResult = executeLoadLevel(level);
-            result.addLoadLevelResult(levelResult);
-            
-            // スループット・応答時間分析
-            analyzePerformanceMetrics(levelResult);
-            
-            // リソース使用量監視
-            monitorSystemResources(levelResult);
-            
-            // ボトルネック検出
-            detectBottlenecks(levelResult);
-        }
-        
-        // 総合分析
-        PerformanceAnalysis analysis = 
-            bottleneckAnalyzer.analyzeOverallPerformance(result);
-        result.setPerformanceAnalysis(analysis);
-        
-        return result;
-    }
-    
-    private LoadLevelResult executeLoadLevel(LoadLevel level) {
-        LoadLevelResult result = new LoadLevelResult(level);
-        
-        // 仮想ユーザー生成
-        List<VirtualUser> virtualUsers = 
-            loadGenerator.generateVirtualUsers(level.getConcurrentUsers());
-        
-        // 負荷実行
-        long startTime = System.currentTimeMillis();
-        
-        ExecutorService executor = Executors.newFixedThreadPool(
-            level.getConcurrentUsers());
-        
-        List<Future<UserSessionResult>> futures = new ArrayList<>();
-        
-        for (VirtualUser user : virtualUsers) {
-            Future<UserSessionResult> future = 
-                executor.submit(user::executeSession);
-            futures.add(future);
-        }
-        
-        // 結果収集
-        for (Future<UserSessionResult> future : futures) {
-            try {
-                UserSessionResult sessionResult = future.get();
-                result.addSessionResult(sessionResult);
-            } catch (Exception e) {
-                result.addError(e);
-            }
-        }
-        
-        long endTime = System.currentTimeMillis();
-        result.setTotalExecutionTime(endTime - startTime);
-        
-        executor.shutdown();
-        
-        return result;
-    }
+// それを通す最小限のコード（Green）。いまはこれで十分
+public int subtotal() {
+    return 0;
 }
 ```
 
-実行ログ:
-```
-=== AI テスト生成実行ログ ===
-
-コード解析フェーズ:
-14:30:00.001 - プロジェクト解析開始
-14:30:00.234 - 247ファイル解析完了
-14:30:00.567 - 892クラス構造解析完了
-14:30:01.234 - 4,567メソッド解析完了
-14:30:01.891 - データフロー解析完了
-
-AI テスト生成フェーズ:
-14:30:02.001 - ニューラルネットワーク初期化
-14:30:02.123 - テスト戦略決定
-14:30:02.456 - 基本テストケース生成: 4,567個
-14:30:03.789 - 境界値テスト生成: 2,234個
-14:30:04.567 - エッジケース探索: 1,234個
-14:30:05.890 - バグ予測テスト生成: 892個
-
-変異テストフェーズ:
-14:30:06.001 - 変異体生成開始
-14:30:08.234 - 12,847個の変異体生成完了
-14:30:08.456 - 変異体実行開始
-14:30:15.789 - 変異テスト完了
-
-結果統計:
-生成テストケース: 8,927個
-テストカバレッジ: 94.7% (行カバレッジ)
-変異スコア: 89.3%
-バグ検出: 156個の潜在的バグ発見
-実行時間: 15分48秒
-
-品質評価:
-テスト品質スコア: 92.4/100
-推定バグ検出率: 87.9%
-偽陽性率: 2.1%
-テスト実行効率: 95.3%
-```
+```java
+// 課題2: 入力と期待値の組を表にする
+@ParameterizedTest(name = "{0}点は{1}")
+@CsvSource({"90, S", "89, A", "60, C", "59, D"})
+void grade(int score, String expected) {
+    assertEquals(expected, evaluator.grade(score));
+}
 ```
 
-### 課題2: 分散システム統合テストフレームワーク
-**ファイル名**: `DistributedSystemTestFramework.java`
+- TDDでは、テストが失敗することを先に確かめる。最初から成功するテストは、何も確かめていないことがある
+- Greenの段階では、`return 0;`のような仮の実装でよい。次のテストが仮の実装では通らなくなったときに、本当の処理を書く
+- `@Nested`を付けた内部クラスは`static`にしない。外側のクラスのフィールド（`cart`）と`@BeforeEach`をそのまま使える
+- `@CsvSource`の各行は「引数1, 引数2, ...」の順で、テストメソッドの引数に`int`や`String`、`boolean`として渡される
+- 出席の3分の2は、割り算で`total * 2 / 3`と書くと切り捨てが起きる。授業14回なら9になり、9回の出席を合格にしてしまう。`attended * 3 >= total * 2`のように掛け算で比べる
+- 1円未満の切り捨ては、整数の割り算`subtotal * 10 / 100`で自然に起きる
 
-マイクロサービス・分散システムの統合テストを行う高度なフレームワークを作成してください。
+## 応用のポイント
 
-**要求仕様**:
-- サービス間テスト自動化
-- 分散トランザクションテスト
-- ネットワーク障害シミュレーション
-- 契約テスト (Contract Testing)
+1. テストが仕様書になる
+    - `@DisplayName`の一覧を読めば、買い物かごが何をするかがわかる。表の順にテストを読むと、機能がどう育ったかもたどれる
+2. 境界値の両側を確かめる
+    - 不具合は「以上」と「より大きい」の取り違えなど、境目で起きやすい。5000円と4999円、60点と59点のように、境目の両側を必ずテストする
+3. 表にすると抜けが見える
+    - パラメーター化テストでは、確かめる値の一覧が1か所に並ぶので、足りない組み合わせに気付きやすい
 
-**実行例**:
-```
-=== 分散システム統合テストフレームワーク ===
+## 発展（任意）
 
-DistributedTest Pro v2.0
+- 課題1に「同じ商品を3個以上買うと、その商品が1個無料」という規則を、テストを先に書いて加える。既存の13個のテストが通ったままであることを確かめる
+- 課題2の評価の境目を`@CsvSource`ではなく、CSVファイルから読む`@CsvFileSource`に書き換える
+- 課題2の評価を、第8章で学んだenum（`Grade.S`など）で返すように書き直す。テストを先に直してから、本体を直す
 
-=== テスト対象システム構成 ===
-マイクロサービス環境:
+## 完了チェックリスト
 
-サービス構成: 12個のマイクロサービス
-- user-service (8081)
-- order-service (8082) 
-- payment-service (8083)
-- inventory-service (8084)
-- notification-service (8085)
-- analytics-service (8086)
+- [ ] テストを先に書き、失敗することを確かめてから本体を書いた
+- [ ] 課題1の13個のテストがすべて成功する
+- [ ] 割引と評価の境目の両側をテストしている
+- [ ] 不正な入力に`assertThrows`で例外を確かめている
+- [ ] 課題2の25個のテストがすべて成功し、実行結果に入力の値が表示される
 
-依存関係マップ:
-order-service → [payment-service, inventory-service, user-service]
-payment-service → [user-service, external-payment-gateway]
-notification-service → [user-service, email-service]
-
-テスト実行:
-契約テスト: 67個 (成功: 65, 失敗: 2)
-統合テスト: 234個 (成功: 228, 失敗: 6)
-E2Eテスト: 45個 (成功: 43, 失敗: 2)
-障害注入テスト: 156個 (成功: 142, 失敗: 14)
-
-分散トランザクションテスト:
-SAGAパターン: 23個のシナリオテスト
-2PCパターン: 12個のシナリオテスト
-補償トランザクション: 34個のテスト
-
-ネットワーク障害シミュレーション:
-遅延注入: 500ms-2000ms
-パケットロス: 1%-10%
-接続断: 5秒-30秒
-パーティション: 複数パターン
-```
-
-### 課題3: 量子テスト技術プラットフォーム
-**ファイル名**: `QuantumTestTechnologyPlatform.java`
-
-量子コンピューティングの原理を活用した革新的なテスト技術プラットフォームを作成してください。
-
-**要求仕様**:
-- 量子重ね合わせテスト実行
-- 量子もつれ状態検証
-- 量子アルゴリズムテスト
-- 並行世界テスト実行
-
-**実行例**:
-```
-=== 量子テスト技術プラットフォーム ===
-
-QuantumTest v∞.0
-
-=== 量子テスト実行システム ===
-重ね合わせテスト:
-
-量子テスト構成:
-量子ビット数: 128 qubits
-重ね合わせ状態: 2^128 個の並行テスト
-もつれペア: 64組
-コヒーレンス時間: 100μs
-
-テスト実行統計:
-並行実行テストケース: 340,282,366,920,938,463,463,374,607,431,768,211,456個
-観測されたテスト結果: 12,847個
-量子優位性達成: 2^64倍の高速化
-エラー率: 0.001% (量子エラー訂正適用後)
-
-量子もつれテスト:
-もつれペア検証: 64組全て正常
-非局所性テスト: ベルの不等式破り確認
-量子テレポーテーション: 99.97%の忠実度
-
-重ね合わせ状態解析:
-|Test⟩ = α|Pass⟩ + β|Fail⟩ + γ|Pending⟩
-観測前確率: P(Pass)=87.3%, P(Fail)=11.2%, P(Pending)=1.5%
-観測後結果: Pass (確率収束)
-
-並行世界テスト実行:
-Universe-A: 全テスト成功 (34.7%)
-Universe-B: 部分的失敗 (52.1%) 
-Universe-C: 重大エラー (13.2%)
-最適宇宙選択: Universe-A採用
-```
-
-## 習得すべき技術要素
-
-### AI・機械学習テスト
-- ニューラルネットワークによるテスト生成
-- 機械学習バグ予測
-- 遺伝的アルゴリズムテスト最適化
-- 自然言語処理テスト仕様
-
-### 分散システムテスト
-- マイクロサービステスト戦略
-- 契約駆動開発 (Contract-Driven Development)
-- カオスエンジニアリング
-- 分散トレーシング
-
-### 高度なテスト技法
-- 変異テスト (Mutation Testing)
-- プロパティベーステスト
-- モデルベーステスト
-- 形式手法検証
-
-## 参考リソース
-
-- AI-Driven Testing (Tariq King)
-- Testing Microservices (Toby Clemson)
-- Mutation Testing in Practice
-- Quantum Computing and Software Testing
-
-## 重要な注意事項
-
-高度なテスト技術は複雑性が高いため、適切な投資対効果を考慮して導入してください。AIや量子技術は理論的側面も含むため、現実的な実装可能性を検討してください。
+**次のステップ**: 発展課題が完了したら、チャレンジ課題に挑戦しましょう。
