@@ -89,7 +89,7 @@ public class MouseEventCompleteExample extends JFrame {
 }
 ```
 
-実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルでクリック、ボタンの押下と解放、ドラッグをすると、下のログエリアにイベントの種類と座標が記録されます。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します。
+実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルでクリック、ボタンの押下と解放、ドラッグをすると、下のログエリアにイベントの種類と座標が記録されます。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します<span class="footnote">右クリックメニューを作る部分と描画の部分は、本文では省いています。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/19-01/`にあります。</span>。
 
 ### キーボードイベントの高度な処理
 
@@ -230,7 +230,7 @@ SubjectはObserverをインターフェイスとしてだけ知っているの�
 これまで使ってきた`addActionListener()`などのリスナーの仕組みも、ボタンをSubject、リスナーをObserverとするObserverパターンです。
 
 Swingの部品が用意するイベントだけでなく、独自のイベントを作ってこの仕組みを自分のクラスに組み込むこともできます。
-以下のコードは、`EventObject`を継承したカスタムイベントの例です。
+以下のコードは、`EventObject`を継承したカスタムイベントの例です<span class="footnote">標準ライブラリには`java.util.Observer`と`java.util.Observable`もありますが、Java 9で非推奨になりました。独自のイベントは、このように`java.util`の`EventObject`と`EventListener`を使って作ります。</span>。
 温度センサーの値が変化したときにイベントを発生させ、登録された複数のリスナーに通知します。
 センサーがSubject、リスナーがObserverに当たり、センサー（モデル）は表示部分（ビュー）のクラスを直接参照しません。
 
@@ -316,7 +316,7 @@ public class CustomEventExample extends JFrame {
 ### JavaBeansイベントモデルの実装
 
 サンプルコード19-4では、イベントクラス、リスナーインターフェイス、リスナーの一覧をすべて自分で書きました。
-JavaBeansの`PropertyChangeSupport`を使うと、リスナーの一覧の管理と通知をこのクラスに任せられます。
+JavaBeans<span class="footnote">JavaBeansは、Javaで再利用できる部品を作るための仕様で、JDK 1.1から使えます。名前は、Javaという言葉がコーヒーを連想させることにちなんだ「コーヒー豆」のしゃれです。</span>の`PropertyChangeSupport`を使うと、リスナーの一覧の管理と通知をこのクラスに任せられます。
 以下のコードは、株価の変化を複数の表示パネルに通知する株価モニターの例です。
 `PropertyChangeSupport`では、プロパティの名前を指定して、そのプロパティの変化だけを受け取るリスナーを登録できます。
 
@@ -485,7 +485,7 @@ public class DragAndDropExample extends JFrame {
 ### イベント処理の最適化技術
 
 マウスの移動のように短い間隔で大量に発生するイベントでは、イベントごとに重い処理をすると画面の反応が遅くなります。
-処理の回数を減らす方法として、デバウンスとスロットルがあります。
+処理の回数を減らす方法として、デバウンスとスロットルがあります<span class="footnote">デバウンス（debounce）は電子回路の用語に由来します。スイッチを押した瞬間に接点が細かく跳ねて（bounce）信号が何度も切り替わる現象を、1回の入力にまとめる処理をこう呼びます。</span>。
 
 - デバウンス
     + イベントが一定時間発生しなくなってから、1回だけ処理する
@@ -558,7 +558,7 @@ public class EventOptimizationExample extends JFrame {
 
 第18章のサンプルコード18-12では、長時間の処理を`Thread`で別のスレッドに任せ、結果の表示を`invokeLater()`でEDTに頼みました。
 進捗を途中で表示したり、処理を途中で止めたりしたいときは、この組み立てを自分で書くと複雑になります。
-`javax.swing.SwingWorker`は、バックグラウンドのスレッドでの処理と、EDTでの画面の更新を分けて書けるようにしたクラスです。
+`javax.swing.SwingWorker`<span class="footnote">`SwingWorker`がJavaの標準ライブラリに入ったのはJava 6からです。</span>は、バックグラウンドのスレッドでの処理と、EDTでの画面の更新を分けて書けるようにしたクラスです。
 
 `SwingWorker<T, V>`を継承し、次のメソッドをオーバーライドします。
 型パラメーターの`T`は処理の最終結果の型、`V`は途中経過として渡すデータの型です。
@@ -572,9 +572,8 @@ public class EventOptimizationExample extends JFrame {
 
 処理は`execute()`で開始します。
 `cancel(true)`で中断を頼むと、`doInBackground()`のなかの`isCancelled()`がtrueを返すようになるので、それを見て処理を打ち切ります。
-進捗の割合（0〜100）だけを知らせたいときは、`publish()`の代わりに`setProgress()`を使い、`addPropertyChangeListener()`で登録したリスナーで`"progress"`プロパティの変化を受け取る方法もあります。
 
-以下のコードは、SwingWorkerで100件のデータを順に処理し、`publish()`と`process()`で進捗を表示する例です。
+以下のコードは、SwingWorkerで100件のデータを順に処理し、`publish()`と`process()`で進捗を表示する例です<span class="footnote">進捗の割合（0〜100）だけを知らせたいときは、`publish()`の代わりに`setProgress()`を使う方法もあります。`addPropertyChangeListener()`で登録したリスナーが、`"progress"`プロパティの変化として受け取ります。</span>。
 処理中も画面は操作でき、「キャンセル」ボタンで処理を中断できます。
 
 <div class="figure">
@@ -677,6 +676,6 @@ public class SwingWorkerExample extends JFrame {
 本章の演習課題は準備中です。準備ができしだい、GitHubリポジトリの次の場所で提供します。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/`
 
-それまでは、本文のサンプルコードを動かし、値や部品を変えて動きの違いを確かめてください。コンパイルできる全文はGitHubリポジトリの`sample-code/chapter19/`にあります。
+それまでは、本文のサンプルコードを動かし、値や部品を変えて動きの違いを確かめてください。コンパイルできる全文はGitHubリポジトリの`sample-code/chapter19/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/`にあります。サンプルコード19-1の全文は`19-01/`のように、番号ごとのディレクトリに置いています。</span>。
 
 本章の内容を理解できたら、第20章「JTableとJListの基礎」に進みましょう。

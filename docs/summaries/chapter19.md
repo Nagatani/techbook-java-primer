@@ -5,19 +5,19 @@ sections:
   - key: "本章の学習目標"
     hash: 54a9f739
   - key: "詳細なイベント処理の実装"
-    hash: bf825595
+    hash: d7564754
   - key: "カスタムイベントとObserverパターン"
-    hash: 11ef2342
+    hash: 8463e3b0
   - key: "ドラッグ&ドロップの実装"
     hash: 0638daea
   - key: "パフォーマンスの最適化"
-    hash: b00c6ef5
+    hash: 7894eaac
   - key: "よくあるエラーと対処法"
     hash: 03aa1999
   - key: "まとめ"
     hash: 03e7e94a
   - key: "章末演習"
-    hash: cc3a5f42
+    hash: ce9f16b0
 ---
 
 # 第19章 高度なイベント処理パターン 要約
