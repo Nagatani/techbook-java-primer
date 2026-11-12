@@ -10,7 +10,6 @@
  */
 public class Exercise01_SelfIntroduction {
     public static void main(String[] args) {
-        // 解答例 1: 基本的な実装
         String name = "田中太郎";
         int age = 20;
         double height = 170.5;
@@ -21,50 +20,11 @@ public class Exercise01_SelfIntroduction {
         IO.println("年齢: " + age + "歳");
         IO.println("身長: " + height + "cm");
         IO.println("好きな科目: " + favoriteSubject);
-        
-        IO.println(); // 空行
-        
-        // 解答例 2: 別の書き方（変数宣言と代入を分離）
-        String name2;
-        int age2;
-        double height2;
-        String favoriteSubject2;
-        
-        name2 = "佐藤花子";
-        age2 = 22;
-        height2 = 165.0;
-        favoriteSubject2 = "物理学";
-        
-        IO.println("=== 自己紹介（その2）===");
-        IO.println("名前: " + name2);
-        IO.println("年齢: " + age2 + "歳");
-        IO.println("身長: " + height2 + "cm");
-        IO.println("好きな科目: " + favoriteSubject2);
-        
-        IO.println(); // 空行
-        
-        // 解答例 3: より多くの情報を含む実装
-        String firstName = "鈴木";
-        String lastName = "一郎";
-        int birthYear = 2003;
-        int currentYear = 2025;
-        double weight = 65.5;
-        boolean hasGlasses = true;
-        char bloodType = 'A';
-        
-        // 計算して年齢を求める
-        int calculatedAge = currentYear - birthYear;
-        
-        IO.println("=== 詳細な自己紹介 ===");
-        IO.println("氏名: " + firstName + " " + lastName);
-        IO.println("年齢: " + calculatedAge + "歳（" + birthYear + "年生まれ）");
-        IO.println("体重: " + weight + "kg");
-        IO.println("血液型: " + bloodType + "型");
-        IO.println("眼鏡着用: " + (hasGlasses ? "あり" : "なし"));
-        
-        // BMI計算（応用例）
-        double bmi = weight / ((height / 100) * (height / 100));
-        IO.println("BMI: " + "%.1f".formatted(bmi));
+
+        // 別の書き方: 宣言と代入を分けてもよい
+        // String name;
+        // name = "田中太郎";
+        // boolean（眼鏡を使うか）やchar（血液型）の変数を足して、情報を増やしてもよい
     }
 }
 

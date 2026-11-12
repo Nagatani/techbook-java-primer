@@ -10,17 +10,13 @@
  */
 public class Exercise01_HelloWorld {
     public static void main(String[] args) {
-        // 解答例 1: 直接文字列を出力（もっともシンプル）
         IO.println("こんにちは！私の名前は田中太郎です。");
         IO.println("今年は2026年です。");
         IO.println("Java学習を開始します！");
 
-        IO.println(); // 空行を挿入
-
-        // 解答例 2: formattedで書式を指定する（第1章「書式を指定した出力」）
-        IO.println("こんにちは！私の名前は%sです。".formatted("田中太郎"));
-        IO.println("今年は%d年です。".formatted(2026));
-        IO.println("Java学習を開始します！");
+        // 別の書き方: formattedで書式を指定する（第1章「書式を指定した出力」）
+        // IO.println("こんにちは！私の名前は%sです。".formatted("田中太郎"));
+        // IO.println("今年は%d年です。".formatted(2026));
     }
 }
 

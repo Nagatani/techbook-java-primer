@@ -10,7 +10,6 @@
  */
 public class Exercise03_DataTypes {
     public static void main(String[] args) {
-        // 解答例 1: 基本的なデータ型の実装
         byte byteValue = 100;
         short shortValue = 30000;
         int intValue = 2000000;
@@ -31,111 +30,11 @@ public class Exercise03_DataTypes {
         IO.println("char値: " + charValue);
         IO.println("boolean値: " + booleanValue);
         IO.println("String値: " + stringValue);
-        
-        IO.println(); // 空行
-        
-        // 解答例 2: 各型の範囲と特徴の確認
-        IO.println("=== 各データ型の範囲 ===");
-        IO.println("byte範囲: " + Byte.MIN_VALUE + " ～ " + Byte.MAX_VALUE);
-        IO.println("short範囲: " + Short.MIN_VALUE + " ～ " + Short.MAX_VALUE);
-        IO.println("int範囲: " + Integer.MIN_VALUE + " ～ " + Integer.MAX_VALUE);
-        IO.println("long範囲: " + Long.MIN_VALUE + " ～ " + Long.MAX_VALUE);
-        IO.println("float範囲: " + Float.MIN_VALUE + " ～ " + Float.MAX_VALUE);
-        IO.println("double範囲: " + Double.MIN_VALUE + " ～ " + Double.MAX_VALUE);
-        
-        IO.println(); // 空行
-        
-        // 解答例 3: 様々なリテラルの記述方法
-        IO.println("=== リテラルの記述方法 ===");
-        
-        // 整数リテラル
-        int decimal = 42;           // 10進数
-        int binary = 0b101010;      // 2進数 (Java 7以降)
-        int octal = 052;            // 8進数
-        int hexadecimal = 0x2A;     // 16進数
-        
-        IO.println("10進数: " + decimal);
-        IO.println("2進数: " + binary);
-        IO.println("8進数: " + octal);
-        IO.println("16進数: " + hexadecimal);
-        
-        // 浮動小数点リテラル
-        double d1 = 123.456;        // 通常の記述
-        double d2 = 1.23456e2;      // 指数表記 (123.456)
-        double d3 = 1.23456E2;      // 指数表記（大文字E）
-        
-        IO.println("通常: " + d1);
-        IO.println("指数表記(e): " + d2);
-        IO.println("指数表記(E): " + d3);
-        
-        // 文字リテラル
-        char ch1 = 'J';             // 通常の文字
-        char ch2 = '\n';            // エスケープ文字（改行）
-        char ch3 = '\u0041';        // Unicode（A）
-        char ch4 = 65;              // ASCII値（A）
-        
-        IO.println("通常文字: " + ch1);
-        IO.print("改行文字: Hello");
-        IO.print(ch2);
-        IO.println("World");
-        IO.println("Unicode: " + ch3);
-        IO.println("ASCII値: " + ch4);
-        
-        IO.println(); // 空行
-        
-        // 解答例 4: 型変換の例
-        IO.println("=== 型変換の例 ===");
-        
-        // 暗黙的型変換（拡大変換）
-        byte b = 10;
-        int i = b;              // byte → int（自動変換）
-        double d = i;           // int → double（自動変換）
-        
-        IO.println("byte → int: " + b + " → " + i);
-        IO.println("int → double: " + i + " → " + d);
-        
-        // 明示的型変換（縮小変換）
-        double largeDouble = 123.456;
-        int convertedInt = (int)largeDouble;    // double → int（キャスト）
-        byte convertedByte = (byte)convertedInt; // int → byte（キャスト）
-        
-        IO.println("double → int: " + largeDouble + " → " + convertedInt);
-        IO.println("int → byte: " + convertedInt + " → " + convertedByte);
-        
-        IO.println(); // 空行
-        
-        // 解答例 5: 実用的な例
-        IO.println("=== 実用例 ===");
-        
-        // 学生情報の表現
-        String studentName = "山田太郎";
-        int studentAge = 20;
-        double height = 175.5;
-        double weight = 65.8;
-        char grade = 'A';
-        boolean isGraduated = false;
-        
-        // BMI計算
-        double bmi = weight / ((height / 100) * (height / 100));
-        
-        IO.println("学生名: " + studentName);
-        IO.println("年齢: " + studentAge + "歳");
-        IO.println("身長: " + height + "cm");
-        IO.println("体重: " + weight + "kg");
-        IO.println("成績: " + grade + "ランク");
-        IO.println("卒業済み: " + isGraduated);
-        IO.println("BMI: " + "%.2f".formatted(bmi));
-        
-        // 条件による判定
-        String bmiCategory;
-        if (bmi < 18.5) {
-            bmiCategory = "痩せ型";
-        } else if (bmi < 25.0) {
-            bmiCategory = "標準";
-        } else {
-            bmiCategory = "肥満";
-        }
-        IO.println("BMI分類: " + bmiCategory);
+
+        // 各型の範囲は、Integer.MIN_VALUE・Integer.MAX_VALUEのような定数で確かめられる
+        // IO.println("int範囲: " + Integer.MIN_VALUE + " ～ " + Integer.MAX_VALUE);
+        // 整数は2進数（0b101010）・16進数（0x2A）でも書ける。どちらも10進数の42
+        // 大きい型から小さい型へはキャストが要る: int convertedInt = (int) 123.456;  // 123
     }
 }
 
