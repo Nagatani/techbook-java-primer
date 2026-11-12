@@ -15,11 +15,11 @@
 ## 課題構成
 
 ### basic/
-テスト作成の基礎スキルを習得するための課題です。
+JUnit 5の基本とTDD、モックを練習する課題です。このフォルダーのJavaファイルは、テストや実装を書き足して完成させる雛形です。
 
-- **SimpleCalculatorTest.java** - 基本的な単体テストの作成
-- **StringUtilsTest.java** - 文字列処理のテスト
-- **ValidationTest.java** - バリデーション機能のテスト
+- **課題1: JUnitの基本**（`JUnitBasics.java`） - できあがっている`SimpleCalculator`のテストを書く
+- **課題2: テスト駆動開発で作る計算機**（`TestDrivenCalculator.java`） - テストを先に書きながら、メソッドをつなげて呼べる計算機を作る
+- **課題3: モックを使ったテスト** - Mockitoで依存する相手を差し替える（解答例`solutions/MockExample.java`を読んで書く）
 
 ### advanced/
 TDDのサイクルと、境界値・パラメーター化テストを練習する課題です。
@@ -35,13 +35,12 @@ DIとテストダブルを使って、依存を持つクラスをテストする
 - **課題1: 図書館の貸出サービスとそのテスト** - 保存先・お知らせ・今日の日付をインターフェイスにして差し替え、手書きのテストダブルとMockitoの両方でテストする
 
 ### solutions/
-各課題の完全な解答例と詳細な解説です。
+基礎課題の解答例と、発展的な参考の例です。
 
-- **TestDrivenCalculator.java** - TDD手法で実装された計算機クラス
-- **TestDrivenCalculatorTest.java** - JUnit 5を使用した包括的なテストスイート
-- **MockExample.java** - モッキングフレームワークを使用したテスト実装
-- **ParameterizedTestExamples.java** - パラメータ化テストの効率的な活用例
-- **TestSuite.java** - テストスイートによる体系的なテスト管理
+- **TestDrivenCalculator.java**・**TestDrivenCalculatorTest.java** - 課題2の解答例
+- **MockExample.java** - 課題3の解答例（Mockito）
+- **ParameterizedTestExamples.java** - `@ParameterizedTest`でデータを変えながら同じテストを繰り返す例（本文では扱わない機能）
+- **TestSuite.java** - `@Suite`で複数のテストクラスをまとめて動かす例（本文では扱わない機能）
 
 ## 課題の進め方
 
@@ -49,7 +48,7 @@ DIとテストダブルを使って、依存を持つクラスをテストする
 ```bash
 # JUnit 5の基本機能を理解
 cd basic/
-# SimpleCalculatorTest.java から始めることを推奨
+# JUnitBasics.java の SimpleCalculator のテストから始める
 ```
 
 ### 2. TDDサイクルの実践
