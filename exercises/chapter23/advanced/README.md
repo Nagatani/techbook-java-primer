@@ -1,204 +1,154 @@
-# 第23章 発展課題 - ビルドとデプロイ
+# 第23章 発展課題
 
-## 課題概要
-エンタープライズレベルのビルドとデプロイメントプロセスを構築する発展課題です。
+## 学習目標
+- 複数のクラスとリソースファイル（データ・設定）を1つの実行可能JARにまとめる
+- `getResourceAsStream`で、JARの中のリソースをクラスパスから読む
+- ファイルのパスで読む方法と、クラスパスからリソースとして読む方法の違いを理解する
+- `jar tf`でJARの中身を確かめ、入れ忘れによるエラーを見つける
+- ソース・リソース・クラスファイルのフォルダーを分けて、ビルドの手順を整理する
 
-## 課題リスト
+## 課題一覧
 
-### 課題1: マルチモジュールプロジェクト
-複数のモジュールから成る大規模プロジェクトを構築してください。
-
-**プロジェクト構造:**
+### 課題1: 時間割ビューアーの実行可能JAR
+**ファイル**（このフォルダーのファイルは解答例です）:
 ```
-my-enterprise-app/
-├── parent-pom.xml
-├── common/
-│   ├── pom.xml
-│   └── src/
-├── service/
-│   ├── pom.xml
-│   └── src/
-├── web/
-│   ├── pom.xml
-│   └── src/
-└── integration-tests/
-    ├── pom.xml
-    └── src/
+advanced/task1-timetable/
+├── src/
+│   ├── Timetable.java      時間割（CSVの行から作る）
+│   └── TimetableApp.java   mainメソッド（リソースを読んで表示する）
+├── resources/
+│   ├── timetable.csv       時間割のデータ（曜日,時限,科目名,教室）
+│   └── app.properties      アプリケーション名・版・学期
+└── manifest.txt            マニフェスト（Main-Class: TimetableApp）
 ```
 
-**親POMの設定:**
-```xml
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>my-enterprise-app</artifactId>
-    <version>1.0.0</version>
-    <packaging>pom</packaging>
-    
-    <modules>
-        <module>common</module>
-        <module>service</module>
-        <module>web</module>
-        <module>integration-tests</module>
-    </modules>
-    
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <spring.version>5.3.20</spring.version>
-    </properties>
-    
-    <dependencyManagement>
-        <dependencies>
-            <!-- 共通の依存関係バージョン管理 -->
-        </dependencies>
-    </dependencyManagement>
-</project>
+大学の時間割を表示するコンソールアプリケーションを作り、時間割のデータと設定ファイルを含めた実行可能JARにしてください。
+JARファイル1つを渡せば、受け取った人が`java -jar`だけで時間割を見られるようにします。
+
+**要求仕様**:
+- `Timetable`
+    - 「曜日,時限,科目名,教室」のCSVの行から時間割（月〜金、1〜5限）を作る。空行と`#`で始まる行は読み飛ばす
+    - 列の数が4でない行や、曜日・時限が正しくない行があれば、行番号を付けて`IllegalArgumentException`を投げる
+    - 曜日を指定してその日の授業を返すメソッドと、1週間の授業のコマ数を返すメソッドを持つ
+- `TimetableApp`
+    - `timetable.csv`と`app.properties`を、ファイルのパスではなく`getResourceAsStream`でクラスパスから読む。文字コードはUTF-8を指定する
+    - 引数がなければ月〜金のすべて、引数に曜日（`水`など）があればその日だけを表示する。月〜金以外ならエラーメッセージを出して終了する
+    - リソースが見つからないときは、`NullPointerException`で落とさず、どのリソースがないかを表示して終了する
+- JAR
+    - `Main-Class`を書いたマニフェストで、2つのクラスファイルと2つのリソースを`timetable.jar`にまとめる
+    - リソースはJARの直下に置く（`getResourceAsStream("/timetable.csv")`の`/`はクラスパスの直下を表す）
+
+**実行例**:
+```
+$ java -jar timetable.jar
+時間割ビューアー 1.0
+2026年度 前期（授業 10コマ）
+[月曜日]
+  1限 線形代数(A201)
+  2限 Javaプログラミング(情報演習室1)
+  4限 英語コミュニケーション(B105)
+[火曜日]
+  2限 データ構造とアルゴリズム(A305)
+  3限 統計学入門(A201)
+[水曜日]
+  1限 Javaプログラミング演習(情報演習室1)
+  2限 Javaプログラミング演習(情報演習室1)
+[木曜日]
+  3限 情報倫理(大講義室)
+  4限 英語コミュニケーション(B105)
+[金曜日]
+  1限 データベース(A305)
+
+$ java -jar timetable.jar 水
+時間割ビューアー 1.0
+2026年度 前期（授業 10コマ）
+[水曜日]
+  1限 Javaプログラミング演習(情報演習室1)
+  2限 Javaプログラミング演習(情報演習室1)
+
+$ java -jar timetable.jar 土
+曜日は月〜金で指定してください: 土
 ```
 
-### 課題2: Dockerコンテナ化
-アプリケーションをDockerコンテナとしてパッケージングしてください。
+リソースを入れずにクラスファイルだけで実行すると、次のように表示して終了します。
 
-**Dockerfile:**
-```dockerfile
-# マルチステージビルド
-FROM maven:3.8-openjdk-11 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# 実行用イメージ
-FROM openjdk:11-jre-slim
-WORKDIR /app
-COPY --from=build /app/target/my-app.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+エラー: リソース /app.properties が見つかりません（JARに入れ忘れていませんか）
 ```
 
-**docker-compose.yml:**
-```yaml
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - DB_HOST=database
-      - DB_PORT=5432
-    depends_on:
-      - database
-  
-  database:
-    image: postgres:13
-    environment:
-      - POSTGRES_DB=myapp
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - db-data:/var/lib/postgresql/data
+## コンパイルと実行
 
-volumes:
-  db-data:
-```
-
-### 課題3: CI/CDパイプライン
-GitHub Actionsを使用して自動ビルド・デプロイパイプラインを構築してください。
-
-**.github/workflows/ci-cd.yml:**
-```yaml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v7
-    
-    - name: Set up JDK 25
-      uses: actions/setup-java@v6
-      with:
-        java-version: '25'
-        distribution: 'temurin'
-    
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-    
-    - name: Run tests
-      run: mvn clean test
-    
-    - name: Generate test report
-      uses: dorny/test-reporter@v1
-      if: success() || failure()
-      with:
-        name: Maven Tests
-        path: target/surefire-reports/*.xml
-        reporter: java-junit
-  
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - uses: actions/checkout@v7
-    
-    - name: Build application
-      run: mvn clean package
-    
-    - name: Build Docker image
-      run: docker build -t myapp:${{ github.sha }} .
-    
-    - name: Push to registry
-      run: |
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        docker tag myapp:${{ github.sha }} myregistry/myapp:latest
-        docker push myregistry/myapp:latest
-```
-
-## 実行方法
-
-### マルチモジュールビルド
 ```bash
-# 全モジュールのビルド
-mvn clean install
+cd task1-timetable
 
-# 特定モジュールのビルド
-mvn clean install -pl service -am
+# 1. クラスファイルをclassesフォルダーに出力する
+javac -d classes src/*.java
 
-# 依存関係の更新
-mvn versions:display-dependency-updates
+# 2. classesとresourcesの中身をJARの直下にまとめる
+jar cvfm timetable.jar manifest.txt -C classes . -C resources .
+
+# 3. JARの中身を確かめる
+jar tf timetable.jar
+
+# 4. 実行する
+java -jar timetable.jar
+java -jar timetable.jar 水
 ```
 
-### Dockerの操作
-```bash
-# イメージのビルド
-docker build -t myapp .
+`jar`の`-C フォルダー .`は「そのフォルダーに移動して、中身をすべて入れる」という意味です。
+第23章の例ではクラスファイルとリソースを1つずつ並べましたが、フォルダーを分けると、ファイルが増えてもコマンドは変わりません。
+`jar tf`の結果は、次のようになります。
 
-# コンテナの実行
-docker run -p 8080:8080 myapp
-
-# Docker Composeでの起動
-docker-compose up -d
-
-# ログの確認
-docker-compose logs -f app
+```
+META-INF/
+META-INF/MANIFEST.MF
+Timetable.class
+TimetableApp.class
+app.properties
+timetable.csv
 ```
 
-## 評価基準
-- モジュール間の依存関係の適切な管理
-- Dockerイメージの最適化（サイズ、レイヤー）
-- CI/CDパイプラインの完全性
-- セキュリティベストプラクティスの適用
-- 自動化のレベル
+`manifest.txt`は、`Main-Class: TimetableApp`の行の最後で改行しておきます（改行がないと、その行が読み込まれません）。
+
+## 実装のヒント
+
+```java
+// クラスパスからリソースを開く。見つからなければnullが返る
+InputStream in = TimetableApp.class.getResourceAsStream("/timetable.csv");
+if (in == null) {
+    throw new IOException("リソース /timetable.csv が見つかりません");
+}
+// 文字コードを指定して読む（指定しないと、OSによって文字化けすることがある）
+BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+```
+
+- `Files.readAllLines(Path.of("resources/timetable.csv"))`のようにファイルのパスで読むと、開発中は動いても、JARにしたあと別のフォルダーで実行すると読めない。パスは「実行したときのカレントディレクトリ」から探されるためである
+- `getResourceAsStream`はクラスパス（JARの中やclassesフォルダー）から探すので、どこで実行しても同じように読める
+- `Properties.load`に`InputStream`を渡すと、ISO 8859-1として読まれ日本語が化ける。`InputStreamReader`でUTF-8を指定した`Reader`を渡す
+- 読み込みは`try-with-resources`で閉じる（第13章）
+- 時間割の解析は`Timetable`に分け、リソースを読む処理と分けておくと、文字列のリストを渡すだけで解析を確かめられる
+
+## 応用のポイント
+
+1. データをプログラムから分ける
+    - 時間割を変えるときは`timetable.csv`だけを直してJARを作り直せばよく、Javaのコードは変えなくてよい
+2. 入れ忘れはすぐにわかるように
+    - リソースが見つからないときに、どのファイルがないかを表示しておくと、JARの作り方の誤りにすぐ気付ける
+3. フォルダーを分ける
+    - `src`（ソース）、`resources`（リソース）、`classes`（生成物）を分けると、生成物だけを消して作り直すのも簡単になる。第22章で学んだMavenの`src/main/java`・`src/main/resources`・`target`も同じ考え方である
+
+## 発展（任意）
+
+- `app.properties`の`app.version`ではなく、マニフェストに`Implementation-Version: 1.0`を書き、プログラムから読み出す方法を調べる（クラスをパッケージに入れる必要がある）
+- 利用者が自分の時間割を使えるように、引数`--file パス`でJARの外のCSVを指定できるようにする。指定がなければJARの中の`timetable.csv`を使う
+- 第22章で学んだMavenのプロジェクトにし、`src/main/resources`に置いたファイルが`mvn package`でJARに入ることを確かめる
+
+## 完了チェックリスト
+
+- [ ] `java -jar timetable.jar`で、どのフォルダーから実行しても時間割が表示される
+- [ ] `jar tf`で、2つのクラスファイルと2つのリソースが入っていることを確かめた
+- [ ] リソースを`getResourceAsStream`で読み、文字コードにUTF-8を指定している
+- [ ] リソースが見つからないとき、`NullPointerException`ではなくわかりやすいメッセージが出る
+- [ ] CSVを書き換えてJARを作り直すと、表示が変わる
+
+**次のステップ**: 発展課題が完了したら、チャレンジ課題に挑戦しましょう。
