@@ -15,11 +15,10 @@
 ## 課題構成
 
 ### basic/
-APIドキュメンテーションの基礎スキルを習得するための課題です。
+Javadocの基本を練習する課題です。このフォルダーのJavaファイルは、`TODO`を埋めて完成させる雛形です。
 
-- **SimpleLibrary.java** - 基本的なJavadoc作成
-- **UtilityClass.java** - ユーティリティクラスの文書化
-- **ConfigurationAPI.java** - 設定APIの設計と文書化
+- **SimpleLibraryDoc.java** - できあがっているユーティリティにJavadocを書き、`javadoc -Xdoclint:all`の警告を0にする
+- **APIDocumentation.java** - 数学のユーティリティを実装し、例外の条件を含むJavadocを書く
 
 ### advanced/
 小さなライブラリにJavadocを書き、APIの変更を利用者に伝える課題です。
@@ -35,10 +34,10 @@ APIドキュメンテーションの基礎スキルを習得するための課�
 - **課題1: ToDoリストのライブラリ** - 不変のレコード・変更できないリスト・`Optional`・例外を使い分けたAPIを設計し、`package-info.java`を含むJavadocを書き、別のプログラムからクラスパスで使う
 
 ### solutions/
-各課題の完全な解答例と詳細な解説です。
+Javadocの書き方の例です（基礎課題の雛形とは別の、統計の計算をするクラスです）。
 
-- **APIDocumentation.java** - 包括的なJavadocドキュメンテーションの実装例
-- **AdvancedAPIDocumentation.java** - 実務レベルの高度なAPI文書化例
+- **APIDocumentation.java** - 統計値を計算するユーティリティのJavadocの例
+- **AdvancedAPIDocumentation.java** - 記述統計と相関係数を求めるクラスの、より詳しいJavadocの例
 
 ## 課題の進め方
 
@@ -46,7 +45,7 @@ APIドキュメンテーションの基礎スキルを習得するための課�
 ```bash
 # 基本的なドキュメンテーション技法を理解
 cd basic/
-# SimpleLibrary.java から始めることを推奨
+# SimpleLibraryDoc.java から始めることを推奨
 ```
 
 ### 2. 実践的なライブラリ設計
@@ -231,20 +230,28 @@ public class ConnectionPool {
 }
 ```
 
-### カスタムタグの使用
+### 標準ではないタグ
 ```java
 /**
  * ユーザー認証サービス
- * 
- * @apiNote このAPIは認証情報を扱うため、セキュリティ要件に注意してください
- * @implNote 内部的にはBCryptを使用してパスワードをハッシュ化します
- * @performance 1秒間に約1000回の認証リクエストを処理可能
- * @threadsafety このクラスはスレッドセーフです
+ *
+ * @apiNote このAPIは認証情報を扱うため、ログに出さないでください
+ * @implNote パスワードは保存する前にハッシュ値へ変換します
  */
 public class AuthenticationService {
     // 実装
 }
 ```
+
+`@apiNote`・`@implSpec`・`@implNote`はJDKのドキュメントで使われているタグですが、`javadoc`の標準のタグではありません。
+そのまま`javadoc`を実行すると「不明なタグ」のエラーになるので、`-tag`オプションで見出しを付けて登録します。
+
+```bash
+javadoc -tag apiNote:a:"API Note:" -tag implNote:a:"Implementation Note:" -d docs AuthenticationService.java
+```
+
+`@performance`や`@threadsafety`のように自分で決めた名前のタグも、同じように`-tag`で登録すれば使えます。
+ただし、読む人や道具がそのタグを知っているとは限らないので、スレッドセーフかどうかのような大事な約束は、本文の文章で書きます。
 
 ### {@code} と {@literal} の使い分け
 ```java
@@ -276,19 +283,27 @@ public class JSONParser {
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <version>3.4.1</version>
+    <version>3.6.3</version>
     <configuration>
-        <source>11</source>
-        <target>11</target>
+        <release>25</release>
         <encoding>UTF-8</encoding>
         <docencoding>UTF-8</docencoding>
         <charset>UTF-8</charset>
         <locale>ja_JP</locale>
-        <windowTitle>My Library API</windowTitle>
+        <windowtitle>My Library API</windowtitle>
         <doctitle>My Library API Documentation</doctitle>
+        <tags>
+            <tag>
+                <name>apiNote</name>
+                <placement>a</placement>
+                <head>API Note:</head>
+            </tag>
+        </tags>
     </configuration>
 </plugin>
 ```
+
+`<release>`には、コンパイルと同じJavaの版を書きます。版の番号は、[documentation/solutions/pom.xml](../documentation/solutions/pom.xml)と同じものにそろえています。
 
 ### Gradle での設定
 ```gradle
@@ -298,11 +313,8 @@ javadoc {
     options.locale = 'ja_JP'
     options.windowTitle = 'My Library API'
     options.docTitle = 'My Library API Documentation'
-    
-    // Java 11+ での警告抑制
-    if(JavaVersion.current().isJava11Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
+    // 標準ではないタグを登録する
+    options.tags('apiNote:a:API Note:')
 }
 ```
 
