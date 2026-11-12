@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-d-integrated-project.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "付録Dについて"
     hash: 71cd2db3

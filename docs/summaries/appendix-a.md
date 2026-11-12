@@ -1,9 +1,9 @@
 ---
 source: manuscripts/appendix-a-environment-setup.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "付録Aについて"
-    hash: 873d0046
+    hash: 4753b1dc
 ---
 
 # 付録A 開発環境の構築 要約
@@ -20,6 +20,7 @@ sections:
 
 - 付録Aについて（L3–76）
     + 学習内容8項目（JDKの選択、SDKMAN、IntelliJ IDEAとVS Code、コマンドライン開発、OS別ガイド、トラブルシューティング、Docker、自動化スクリプト）
+    + IntelliJ IDEAは2025.3で統合版になり、旧Community Editionの機能は無料で使えること、Ultimateの機能は不要なことを原稿とGitHubのREADME（A.3）に書いた（2026-11-12に解消）
     + 前提知識（コマンドライン操作、テキストエディター、ファイルシステム）
     + オンライン資料へのリンクとリポジトリの内容6項目、Issueへの案内
     + 関連する付録・章、学習のポイント4項目、実践への応用

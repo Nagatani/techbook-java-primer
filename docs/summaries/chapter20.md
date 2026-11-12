@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter20-advanced-gui.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: be6378cb

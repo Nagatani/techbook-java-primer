@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter08-special-classes.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 713ec8aa
   - key: "列挙型（Enum）"
     hash: d4e3e259
   - key: "レコード（Record）"
-    hash: 442b032a
+    hash: 65653846
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 258265f2
   - key: "内部クラス（Inner Classes）"
-    hash: e013b301
+    hash: 61db3cbb
   - key: "まとめ"
     hash: b88f5560
   - key: "章末演習"
@@ -41,9 +41,10 @@ sections:
     + 8-19は配列から統計を求める形に、8-24は拡張for文で計算する形にし、Stream・ラムダ式・メソッド参照を外した
     + 8-10（EnumSet/EnumMap）、8-24（List）、8-30（`Comparator<String>`）は、初出の箇所で後の章で学ぶ旨と読み方を案内している
 - 匿名クラスとラムダ式の対比が第11章冒頭と重複していた（2026-11-11に解消。8-30の後で第11章へ誘導するだけにした）
-- 同じ型名が章内で別定義になっている（2026-11-12に解消。8-15を`Tile`に改名し、8-25の前に8-24とは別の`Order`である旨の導入文を足した。8-23の`Rectangle`は図があるので名前を残した）
+- 同じ型名が章内で別定義になっている（2026-11-12に解消。8-15を`Tile`に改名し、8-25の前に8-24とは別の`Order`である旨の導入文を足した。8-23の`Rectangle`は図があるので名前を残した。8-15の改名で章内の`Rectangle`は8-23だけになった）
     + `Rectangle`: 8-15（正方形用コンストラクター付き）と8-23（Shape実装）
     + `Order`: 8-24（Customerとitemsを持つ）と8-25（OrderStatusを持つ）
+- 第10章で学ぶ`var`を8-23のレコードパターン（`case Circle(var radius)`など）で先に使っていた（2026-11-12に解消。`Circle(double radius)`のように型を書いた）
 - 第3章・第6章とのRecordの重複（2026-11-11に解消。どちらも本章への誘導になった）
 
 ## 節ごとの要約

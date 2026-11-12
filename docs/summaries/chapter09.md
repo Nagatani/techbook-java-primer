@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter09-collections.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 82dc17cb
@@ -11,7 +11,7 @@ sections:
   - key: "List インターフェイス"
     hash: 424d4f46
   - key: "Set インターフェイス"
-    hash: 01b12594
+    hash: 98a1ffb4
   - key: "Map インターフェイス"
     hash: ab9435d6
   - key: "イテレーターとfor-each文"
@@ -61,7 +61,7 @@ sections:
     + 配列とListの相互変換と`Arrays.asList`の固定サイズの注意（9-9）
 - Set インターフェイス（L369–484）
     + HashSetの完全なサンプル。addの戻り値で重複を検出する（9-10）。hashCodeとequalsによる重複の判定と、自作クラスでは両方のオーバーライドが要ることを説明し、第5章へ誘導する
-    + HashSet/TreeSet/LinkedHashSetの順序の違い（9-11、図chapter09-set-order）と使い分け（文章）
+    + HashSet/TreeSet/LinkedHashSetの順序の違い（9-11、図chapter09-set-order）と使い分け（文章）。TreeSetの要素に要る比べ方（Comparable・Comparator、第11章へ誘導）と`null`を入れられないこと
     + addAll/retainAll/removeAllによる和集合・積集合・差集合（9-12）
 - Map インターフェイス（L485–620）
     + HashMapの完全なサンプル。putの上書き、entrySetの走査（9-13）。キーの判定もhashCodeとequalsによると説明する
@@ -101,3 +101,4 @@ sections:
 - L22–23、L242–245: 見出しの前後に空行が2つ続いている（2026-11-12に解消。ほかの5か所の空行の重複も直した）
 - L541–542: 「一般的なデータ検索ではHashMapで最高速度を実現します」は根拠のない誇張に読める（直後のL566–569で平均O(1)と説明している）（2026-11-12に解消）
 - 9-8の後の表で、`LinkedList`の中間への追加・削除を「高速」としていた（その位置までたどるのにO(n)かかる。2026-11-12に解消）
+- TreeSetに`null`を入れられないこと、要素に比べ方（`Comparable`か`Comparator`）が要ることを書いていなかった（2026-11-12に解消。Setの節に「TreeSetに入れられる要素」を足し、HashSetは`null`を1つ入れられることと対比した）

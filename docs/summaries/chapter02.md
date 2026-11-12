@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter02-getting-started.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 0cb94cb6
@@ -29,7 +29,7 @@ sections:
   - key: "まとめ"
     hash: 389d5297
   - key: "章末演習"
-    hash: f6e8598b
+    hash: 163220ca
 ---
 
 # 第2章 Java基本文法 要約
@@ -53,7 +53,7 @@ sections:
     + 例外処理: 型変換の2-13からtry-catchを外し、入出力の2-18も変換だけにした。try-catchは「入出力のベストプラクティス」の2-20だけで使い、第1章のコラムを受けて動きを説明し、第13章へ誘導する
     + `Collections.shuffle`（第9章の内容）は2026-11-11に`Math.round`のfloat版・double版の例へ差し替えた
     + `Scanner`の区切り読み（useDelimiter）は削除し、`split`で分ける説明と第14章への誘導にした
-- 章末演習と本文の不一致（2026-11-12に解消）（本文の章末演習をREADMEの課題構成に合わせ、架空の課題名とオーバーロード・パターンマッチングの記述を削除した。課題がクラスを使うことと、第3章を読んでから取り組むことを本文に書いた。課題の中身が第3章以降を前提にしている点は演習側の問題として残る）
+- 章末演習と本文の不一致（2026-11-12に解消）（本文の章末演習をREADMEの課題構成に合わせ、架空の課題名とオーバーロード・パターンマッチングの記述を削除した。課題がクラスを使うことと、第3章を読んでから取り組むことを本文に書いた。課題の中身が第3章以降を前提にしている点は演習側の問題として残る）（2026-11-12に演習側も解消）（`exercises/chapter02/`を第2章の内容だけで解く課題に組み替え、第1章の変数・計算の課題を移し、クラスを定義する課題は`exercises/chapter03/`へ移した。本文の課題構成とつまずき表も合わせた）
     + MethodExerciseでメソッドのオーバーロード、StringExerciseでパターンマッチングを求めるが、本文で扱っていない
     + 「つまずきポイント」の表に、まだ学んでいないコンストラクターやNullPointerExceptionが並ぶ
     + 本文の課題名（ControlFlowExercise、ArrayExercise、MethodExercise、StringExercise）が`exercises/chapter02/`の実ファイル（basic/Person.java・PersonTest.java、advanced/GradeManagement.java・LibraryManagement.java、solutions/Book.java・Circle.java など）と一致しない。実ファイルはクラスを定義する課題で、第3章以降の内容を前提にしている。リンク自体は正しい番号を指している

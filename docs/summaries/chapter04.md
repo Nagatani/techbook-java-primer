@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter04-classes-and-instances.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 8c9321fa

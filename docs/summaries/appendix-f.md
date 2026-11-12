@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-f-java-time-api.md
-summarized: 2026-11-07
+summarized: 2026-11-12
 sections:
   - key: "付録Fについて"
     hash: a4f3bdd0

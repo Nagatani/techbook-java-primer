@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter12-advanced-collections.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: a46ea38e

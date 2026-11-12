@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-b-index-revised.md
-summarized: 2026-11-09
+summarized: 2026-11-12
 sections:
   - key: "付録リソース一覧"
     hash: 8dcb666e

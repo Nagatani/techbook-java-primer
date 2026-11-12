@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-g-build-and-deploy.md
-summarized: 2026-11-07
+summarized: 2026-11-12
 sections:
   - key: "付録Gについて"
     hash: 26532ca9

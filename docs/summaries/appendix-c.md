@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-c-theoretical-foundations.md
-summarized: 2026-11-09
+summarized: 2026-11-12
 sections:
   - key: "付録Cについて"
     hash: 8e39afe5

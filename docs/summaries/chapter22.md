@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter22-documentation-and-libraries.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
-    hash: b6cb2a11
+    hash: 5daf6b68
   - key: "Javadocによるドキュメント"
     hash: 1af87278
   - key: "外部ライブラリの利用"
-    hash: 72bd75fb
+    hash: 658c0ff4
   - key: "よくあるエラーと対処法"
     hash: cb6911e5
   - key: "まとめ"
-    hash: d1441304
+    hash: a8d800c4
   - key: "章末演習"
     hash: 1b6d119f
 ---
@@ -26,13 +26,13 @@ sections:
 - 紹介するライブラリはGson、Jackson、Apache Commons Lang/IO、OkHttp、Lombok、Guavaの6種で、それぞれpom.xmlの依存関係と使用例・実行結果を示す
 - 外部ライブラリとクラスパス、Mavenでの依存関係の書き方を正式に説明する章で、第16章（Jackson）と第21章（JUnit・Mockito）から誘導される
 - 前提は第4章（クラス）、第13章（例外処理）、第14章（ファイルI/O）。第21章（ユニットテスト）は推奨扱い
-- ビルドツールはMavenだけを扱い、Gradleは名前と年表に出るだけ
+- ビルドツールはMavenだけを扱い、Gradleは名前と年表に出るだけ。「実践的な開発フロー」の後ろに「もう1つのビルドツール：Gradle」（build.gradle/build.gradle.kts、Gsonの依存関係の例22-21、Gradle Wrapper、付録Gへの誘導）を加え、学習目標とまとめも合わせた。Docker（gradle:jdk25、Gradle 9.8）でWrapperの生成とビルドを確かめた（2026-11-12に解消）
 
 ## 構成上の問題
 
 - Gradleの扱い
     + 学習目標は「Mavenを例にしたビルドツールの役割と概念」に改めてあり、本文もMavenだけで一貫している
-    + 第21章の21-14・21-15はGradle（`./gradlew test`、build.gradle）を使うが、本書でGradleを説明する章はない（第21章は「Mavenを例に第22章で学びます」と断る）
+    + 第21章の21-14・21-15はGradle（`./gradlew test`、build.gradle）を使うが、本書でGradleを説明する章はない（第21章は「Mavenを例に第22章で学びます」と断る）。第21章をMavenの例にし、本章にGradleの紹介を加えた（2026-11-12に解消）
 - 前提知識の矛盾（推奨知識のビルドツール、第21章との相互参照）は解消した。第21章は推奨から第22章を外し、JUnitの追加手順をIntelliJ IDEAで示して本章へ誘導する（2026-11-11に解消）
 - 章内の内容の重複（「トラブルシューティング」とエラー集の依存関係の競合、選定の指針とバージョン管理）は、「トラブルシューティング」をなくし、エラー集の要点から22-20・22-21を参照する形にして解消した（2026-11-11に解消）
 - 「よくあるエラーと対処法」の分量が章の4分の1を占めていた問題は、詳細を付録Hへ移して解消した（2026-11-09）

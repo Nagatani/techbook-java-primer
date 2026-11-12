@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter21-unit-testing.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 0e5ab77e
@@ -15,13 +15,13 @@ sections:
   - key: "DIによるテスト容易性の向上"
     hash: e874b14f
   - key: "テスト駆動開発（TDD）"
-    hash: 43c75f7e
+    hash: cd6da043
   - key: "JUnitによる効率的なテスト"
-    hash: 9936e3b0
+    hash: 2f32e564
   - key: "テストのベストプラクティス"
-    hash: d8a6a05e
+    hash: 3e0ff7a7
   - key: "継続的インテグレーション（CI）との統合"
-    hash: dd24d19a
+    hash: 8e55d879
   - key: "よくあるエラーと対処法"
     hash: a871107b
   - key: "まとめ"
@@ -46,11 +46,11 @@ sections:
 - 前提知識と章順の矛盾
     + 推奨知識に第22章（Maven、Gradle）を挙げていた問題は、推奨から外して解消した（2026-11-08）
     + JUnit・Mockitoをプロジェクトに追加する方法がなかった問題は、IntelliJ IDEAでの追加手順と、Mavenでの書き方は第22章で学ぶという誘導をL413–419に加えて解消した（2026-11-11）
-    + 21-14・21-15はGradleを前提にする。本文（L551–553）は「ビルドツールの役割は、Mavenを例に第22章で学びます」と断るが、Gradle自体は本書で扱う章がない（第23章はjarとjpackageが中心）
+    + 21-14・21-15はGradleを前提にする。本文（L551–553）は「ビルドツールの役割は、Mavenを例に第22章で学びます」と断るが、Gradle自体は本書で扱う章がない（第23章はjarとjpackageが中心）。21-17（GitHub Actionsで`mvn -B verify`）と21-18（pom.xmlにmaven-surefire-pluginとjacoco-maven-pluginのreport・check）をMavenの例にし、第22章へ誘導した。Dockerのmaven:3-eclipse-temurin-25で`mvn -B verify`とJaCoCoのレポート・80%の検査を確かめた（2026-11-12に解消）
 - TDDの実践例が1サイクルだけ
-    + Red（21-9）とGreen（`return 0;`の21-10）のあと、Refactoringは「不要」として終わる。三角測量や2つ目のテストがなく、サイクルを回す感覚が伝わらない
+    + Red（21-9）とGreen（`return 0;`の21-10）のあと、Refactoringは「不要」として終わる。三角測量や2つ目のテストがなく、サイクルを回す感覚が伝わらない。「1,2」の合計を返す2回目のサイクル（ステップ4〜6、21-11〜21-13、全文を登録）を加えた。これに伴い旧21-11〜21-15は21-14〜21-18になった（2026-11-12に解消）
 - 21-11はCalculatorの`divide`をテストするが、21-2のCalculatorには`add`しかない。21-11を全文公開のサンプルにし、21-2に整数の`divide`を加えたCalculatorを全文に置き、本文で説明した（2026-11-12に解消）
-- カバレッジは21-15の設定値（80%）として出るだけで、カバレッジの種類や読み方の説明はない
+- カバレッジは21-15の設定値（80%）として出るだけで、カバレッジの種類や読み方の説明はない。行カバレッジの定義とレポートの読み方を短く加えた（2026-11-12に解消）
 
 ## 節ごとの要約
 
@@ -104,7 +104,7 @@ sections:
 
 - L26: 「推奨される知識：」はコロンでリストを導入している（2026-11-12に解消）
 - L195–196、L209–210、L461–464: 文の途中で改行しており、読点で行を分けている（`vfm-line-breaks.js`で和文の改行は除かれるので紙面への影響はない）（2026-11-12に解消）
-- L413–417: JUnitとMockitoの追加手順がIntelliJ IDEAに限られ、付録Aの環境構築（SDKMAN・ターミナル中心）との対応が書かれていない
+- L413–417: JUnitとMockitoの追加手順がIntelliJ IDEAに限られ、付録Aの環境構築（SDKMAN・ターミナル中心）との対応が書かれていない。なお、クイックフィックスの項目名（Add 'JUnit5…' to classpath）に頼る書き方は、版で文言が変わるため「JUnit 5をクラスパスに追加する項目」に改めた（2026-11-12に解消）
 - 21-14: `actions/setup-java@v2`は`distribution`の指定が必須で、このままでは失敗する。`checkout@v2`も古く、JDKは17（本書の対象はJava 25）。リポジトリのCIと同じ`checkout@v7`・`setup-java@v6`、`temurin`、25に直した（2026-11-12に解消）
 - 21-15: JaCoCoの`xml.enabled`/`html.enabled`はGradle 8で削除済み（`required`を使う）。CLAUDE.mdの「Gradle 9で動く設定にする」方針とも合わない。`required`に直し、javaプラグイン・JUnitの依存・`useJUnitPlatform()`を加え、Docker（gradle:jdk25、Gradle 9.8）で`gradle check`が通ることを確かめた（2026-11-12に解消）
 - L662: 「次のステップ： 基礎課題が完了したら」は項目名＋コロンの形（2026-11-12に解消）

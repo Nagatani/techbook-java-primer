@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter07-abstract-classes-and-interfaces.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 8f9b41d2
@@ -13,11 +13,11 @@ sections:
   - key: "抽象クラス vs インターフェイス"
     hash: 69044bf1
   - key: "Java 8以降のインターフェイス進化"
-    hash: bd8c9e45
+    hash: 0950d98d
   - key: "高度な設計パターン"
     hash: 9345f2d7
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 04b44d06
+    hash: 9eba983d
   - key: "よくあるエラーと対処法"
     hash: d79631ad
   - key: "まとめ"
@@ -50,10 +50,11 @@ sections:
     + 7-11の`Optional`は呼び出し側が指定した既定値を返す形にし、`Optional`は第12章へ誘導する
     + `List`と`Map`は「Java 8以降のインターフェイス進化」の冒頭で第9章へ誘導している
 - 章内の重複（ダイヤモンド問題、使い分け）がエラー集と重なっていた（2026-11-09に解消。エラー集の詳細は付録Hへ移した）
-- 同名の型の定義が節ごとに食い違う（2026-11-12に解消。7-5を`TextDocument`、7-12を`Memo`に改名し、7-16の`Shape`は7-1とは別に定義し直したものだと本文に書いた。7-17の`Document`は図があるので名前を残した）
+- 同名の型の定義が節ごとに食い違う（2026-11-12に解消。7-5を`TextDocument`、7-12を`Memo`に改名し、7-16の`Shape`は7-1とは別に定義し直したものだと本文に書いた。7-17の`Document`は図があるので名前を残した）（2026-11-12に再度解消。7-16を`Figure`・`CircleFigure`・`RectangleFigure`・`TriangleFigure`・`FigureFactory`に改名し、図も直した。7-17の`Document`は7-5・7-12の改名で章内に1つだけになったので残した）
     + `Shape`は7-1で抽象クラス、7-16でインターフェイス
     + `Document`は7-5で`Exportable`と`Archivable`を実装するクラス、7-12で`Timestamped`などを実装する別のクラス、7-17でインターフェイス
     + `DataProcessor`の食い違い（7-7と旧7-20）は解消した（2026-11-11）
+- 第10章で学ぶ`var`を7-7で先に使っていた（2026-11-12に解消。`Object`・`boolean`と型を書いた）
 
 ## 節ごとの要約
 
@@ -83,7 +84,7 @@ sections:
     + インターフェイス分離原則: 肥大化した`BadUserService`を役割ごとに分割する（7-14）
     + `ServiceV1`〜`ServiceV3`の継承とdefaultメソッド・`@Deprecated`によるAPIのバージョニング（7-15）
 - Factoryパターン：オブジェクト生成の抽象化（L800–985）
-    + Simple Factory: 文字列から図形を生成する`ShapeFactory`（7-16、図chapter07-factory-pattern）
+    + Simple Factory: 文字列から図形を生成する`FigureFactory`（7-16、図chapter07-factory-pattern）
     + Factory Method: 抽象クラス`DocumentFactory`のサブクラスがWord/PDF文書を生成する（7-17、図chapter07-factory-method）
     + 利点（結合度の低減、拡張性、生成ロジックの隠蔽、一貫性）を文章で説明する
     + MySQL/PostgreSQLの接続を切り替える`DatabaseConnectionFactory`（7-18）

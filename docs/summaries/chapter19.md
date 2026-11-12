@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter19-event-advanced.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: 54a9f739

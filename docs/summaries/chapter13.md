@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter13-exception-handling.md
-summarized: 2026-11-11
+summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
     hash: f4d82246

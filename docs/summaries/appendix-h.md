@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-h-common-errors.md
-summarized: 2026-11-09
+summarized: 2026-11-12
 sections:
   - key: "付録Hについて"
     hash: e7a358ea

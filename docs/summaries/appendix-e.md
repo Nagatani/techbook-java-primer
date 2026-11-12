@@ -1,6 +1,6 @@
 ---
 source: manuscripts/appendix-e-database-programming.md
-summarized: 2026-11-07
+summarized: 2026-11-12
 sections:
   - key: "付録Eについて"
     hash: dd0a102b
