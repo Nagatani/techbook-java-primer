@@ -28,7 +28,7 @@
 
 ### enumとは？
 
-`enum`（列挙型）は、決まったいくつかの値だけを取りうる型を定義するための、特殊なクラスです。たとえば、「曜日（月、火、水、木、金、土、日）」や「信号の色（赤、青、黄）」のように、値の範囲が限定されているものを扱うのに最適です。
+`enum`（列挙型）は、決まったいくつかの値だけを取りうる型を定義するための、特殊なクラスです<span class="footnote">enumはJava 5（2004年）で導入されました。C言語のenumは整数に名前を付けるだけで`int`の値と混ぜて使えますが、Javaのenumはクラスなので、ほかの型の値と取り違えることはありません。</span>。たとえば、「曜日（月、火、水、木、金、土、日）」や「信号の色（赤、青、黄）」のように、値の範囲が限定されているものを扱うのに最適です。
 
 ### なぜenumが必要なのか？
 
@@ -77,7 +77,7 @@ public class EnumExample {
 
 ### enumの便利な機能
 
-Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、便利なメソッドが標準で提供されています。
+Javaの`enum`は、暗黙的に`java.lang.Enum`クラスを継承しており、便利なメソッドが標準で提供されています<span class="footnote">このうち`values()`と`valueOf(String)`は`Enum`クラスにはなく、コンパイラーがenumごとに自動で追加する静的メソッドです。</span>。
 
 - `values()`
     + すべての列挙子を定義順に格納した配列を返す
@@ -199,7 +199,7 @@ public class TrafficLight {
 進んでください
 ```
 
-この実行結果は、GitHubの全文に付けた`TrafficLightDemo.java`で、すべての色について`handleSignal`を呼んだときのものです。
+この実行結果は、GitHubの全文に付けた`TrafficLightDemo.java`<span class="footnote">サンプルコード8-5の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-05/`にあります。</span>で、すべての色について`handleSignal`を呼んだときのものです。
 
 ### 列挙子ごとのメソッド実装
 
@@ -247,13 +247,13 @@ x = 6.0, y = 2.0
 6.000000 / 2.000000 = 3.000000
 ```
 
-この実行結果は、GitHubの全文に付けた`OperationDemo.java`で、6.0と2.0に4つの演算を適用したときのものです。
+この実行結果は、GitHubの全文に付けた`OperationDemo.java`<span class="footnote">サンプルコード8-6の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-06/`にあります。</span>で、6.0と2.0に4つの演算を適用したときのものです。
 
 ### enumを使ったデザインパターン
 
 #### Singletonパターン
 
-`enum`を使うと、最も簡潔で安全なシングルトンを実装できます。
+`enum`を使うと、最も簡潔で安全なシングルトンを実装できます<span class="footnote">enumによるシングルトンは、ジョシュア・ブロックの『Effective Java』（第2版、2008年）で勧められたことで広く知られるようになりました。</span>。
 次のサンプルの`Connection`は、データベースとの接続を表す`java.sql`パッケージのインターフェイスです。
 ここでは接続の処理そのものは扱わず、列挙子`INSTANCE`がただ1つのインスタンスとして接続を持ち続ける形に注目してください。
 
@@ -323,7 +323,7 @@ public enum PaymentStrategy {
 現金で1500.0円を支払いました
 ```
 
-この実行結果は、GitHubの全文に付けた`PaymentStrategyDemo.java`で、すべての支払い方法で1500円を支払ったときのものです。
+この実行結果は、GitHubの全文に付けた`PaymentStrategyDemo.java`<span class="footnote">サンプルコード8-8の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-08/`にあります。</span>で、すべての支払い方法で1500円を支払ったときのものです。
 
 ### インターフェイスの実装
 
@@ -360,7 +360,7 @@ public enum DocumentType implements Printable {
 
 ### EnumSetとEnumMap
 
-Java標準ライブラリには、`enum`専用の高速なコレクションクラスが用意されています。
+Java標準ライブラリには、`enum`専用の高速なコレクションクラスが用意されています<span class="footnote">`EnumSet`は内部で、各列挙子を1ビットに対応させたビットの並びとして集合を表します。C言語で`READ | WRITE`のようにビットフラグを組み合わせる書き方を、型安全にしたものと考えられます。</span>。
 コレクション（`Set`や`Map`）は第9章で学びます。
 ここでは、`EnumSet`は列挙子の集まり、`EnumMap`は列挙子ごとに値を対応づける表、と読んでください。
 `EnumSet<Permission>`の`<Permission>`は、入れる要素の型を表します。
@@ -439,7 +439,7 @@ enumは定義していない値を表せないので、新しい値を受け取�
 
 ### Recordとは？
 
-Recordは、Java 16で正式に導入された、不変（immutable）なデータを保持するための、簡潔なクラスを定義するための機能です。
+Recordは、Java 16で正式に導入された<span class="footnote">Java 14と15では、プレビュー機能（試験的に提供する機能）として先に公開されていました。</span>、不変（immutable）なデータを保持するための、簡潔なクラスを定義するための機能です。
 
 これまで、データを保持するためだけのクラス（データクラスやデータキャリアと呼ばれる）を作るには、多くの定型的なコード（ボイラープレートコード）が必要でした。
 
@@ -514,7 +514,7 @@ Recordを使う最大のメリットは簡潔さです。
 また、フィールドはすべて`final`になるので、作成したあとで値が書き換わる心配がなく、プログラムの安全性が高まります。
 `record`と宣言するだけで、このクラスが「データを保持するためのもの」だという意図も読み手に伝わります。
 
-一方で、`Record`は暗黙的に`final`なので、ほかのクラスから継承できません。
+一方で、`Record`は暗黙的に`final`なので、ほかのクラスから継承できません<span class="footnote">また、Recordは暗黙的に`java.lang.Record`クラスを継承するため、ほかのクラスを継承することもできません。インターフェイスは実装できます。</span>。
 また、フィールドを変更できないため、状態が変わっていくオブジェクトを表すのには使えません。
 
 ### Recordの使い方
@@ -673,7 +673,7 @@ public record Configuration(
 
 ### パターンマッチング（Java 21以降）
 
-Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます。
+Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます<span class="footnote">Recordを分解するパターン（レコードパターン）と、switchで型を判定するパターンは、プレビュー機能の期間を経てJava 21で正式な機能になりました。</span>。
 
 <span class="listing-number">**サンプルコード8-18**　Point.java、PatternMatchingExample.java</span>
 
@@ -843,7 +843,7 @@ public record Money(BigDecimal amount, String currency) {
 
 ### sealed interfaceとRecordの組み合わせ
 
-sealed interfaceは、実装可能なクラスを明示的に制限する機能で、Recordと組み合わせることで型安全な設計を実現できます。
+sealed interfaceは、実装可能なクラスを明示的に制限する機能で<span class="footnote">sealedは、Java 15と16のプレビュー機能を経て、Java 17で正式な機能になりました。</span>、Recordと組み合わせることで型安全な設計を実現できます。
 
 <div class="figure">
 
@@ -877,11 +877,11 @@ public class ShapeCalculator {
 
 ### データ指向プログラミング（DOP）
 
-データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです。
+データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです<span class="footnote">Javaの言語設計者であるブライアン・ゲッツが、2022年の記事「Data Oriented Programming in Java」で、Record・sealed・パターンマッチングを組み合わせた書き方として紹介しました。</span>。
 
 次のサンプルの`List<OrderItem>`は、`OrderItem`を順に並べて持つリストです（第9章で学びます）。
 `OrderProcessor`では、拡張for文でリストの要素を1つずつ取り出して計算や判定を行います。
-本文では、各ファイルの先頭にあるimport文（`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`）を省いています。
+本文では、各ファイルの先頭にあるimport文を省いています<span class="footnote">省いたimport文は`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`です。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-24/`にあります。</span>。
 
 <span class="listing-number">**サンプルコード8-24**　Order.java（4〜5行目）、Customer.java、OrderItem.java（3行目）、OrderProcessor.java（3〜21行目）</span>
 
@@ -1025,7 +1025,7 @@ public record GameCharacter(
 
 ### 内部クラスとは？
 
-内部クラスは、他のクラスの内部に定義されるクラスです。Javaでは4種類の内部クラスがあり、それぞれ異なる特性と用途を持ちます。
+内部クラスは、他のクラスの内部に定義されるクラスです<span class="footnote">Javaの言語仕様では、クラスの内側に宣言したクラスをまとめて「ネストしたクラス（nested class）」と呼び、`static`を付けないものだけを「内部クラス（inner class）」と呼びます。本書では広く使われている呼び方に合わせ、4種類とも内部クラスと呼びます。</span>。Javaでは4種類の内部クラスがあり、それぞれ異なる特性と用途を持ちます。
 
 <div class="figure">
 
@@ -1132,7 +1132,7 @@ public class LocalClassExample {
 
 #### 4. 匿名内部クラス（Anonymous Inner Class）
 
-名前を持たない内部クラスで、インターフェイスの実装や抽象クラスの継承に使用されます。
+名前を持たない内部クラスで<span class="footnote">名前がなくてもクラスファイルは作られ、コンパイラーは`AnonymousClassExample$1.class`のように、外部クラスの名前に番号を付けた名前にします。メンバー内部クラスなら`OuterClass$InnerClass.class`です。</span>、インターフェイスの実装や抽象クラスの継承に使用されます。
 
 次のサンプルでは、配列を並べ替える`Arrays.sort()`に、並べ方を決める`Comparator`インターフェイスを実装した匿名クラスのオブジェクトを渡しています。
 `Comparator<String>`の`<String>`は、比べる要素が文字列であることを表します（型の指定のしかたは第10章「ジェネリクス」で学びます）。
@@ -1247,13 +1247,10 @@ Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフ
 
 内部クラスは、用途に合わせて種類を選びます。
 外部クラスのインスタンスのフィールドやメソッドを使うならメンバー内部クラス、外部クラスのインスタンスから独立して使うなら静的内部クラスにします。
-1つのメソッド内で一時的に使うだけなら、ローカル内部クラスか匿名内部クラスで十分です。
+1つのメソッド内で一時的に使うだけなら、ローカル内部クラスか匿名内部クラスで十分です<span class="footnote">Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えて短く書けます。ラムダ式は第11章「ラムダ式と関数型インターフェイス」で学びます。</span>。
 
 メンバー内部クラスのオブジェクトは、外部クラスのインスタンスに関連付けられています。
 長い期間使い続ける内部クラスは静的内部クラスにし、不要になった外部クラスへの参照は切って、メモリリークを防ぎます。
-
-なお、Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えられます。
-ラムダ式を使うと、同じ処理をより簡潔で読みやすいコードで書けます（第11章で学びます）。
 
 ## まとめ
 
