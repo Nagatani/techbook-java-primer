@@ -48,7 +48,7 @@ Mockitoのモックは、設定していないメソッドに対して`null`や0
 
 ### 対処法
 
-テスト対象が呼び出すメソッドの戻り値を`when().thenReturn()`で設定します（本文のサンプルコード21-12と同じ`UserRepository`と`UserService`を使います）。
+テスト対象が呼び出すメソッドの戻り値を`when().thenReturn()`で設定します（本文のサンプルコード21-15と同じ`UserRepository`と`UserService`を使います）。
 
 ```java
 @Test

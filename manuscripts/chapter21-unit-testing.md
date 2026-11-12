@@ -403,6 +403,77 @@ public class StringCalculator {
 
 この段階ではとくにリファクタリングは不要です。次のテストに進みます。
 
+#### ステップ4: Red - 次の要求をテストで表す
+
+1回目のサイクルで、空文字列を渡すと0を返す`add`メソッドができました。
+2回目のサイクルでは、「カンマで区切った2つの数を渡すと、その合計を返す」という要求を加えます。
+まず、この要求をテストで表します。
+`StringCalculatorTest`に、`"1,2"`を渡すと3が返ることを確かめるテストを加えます。
+
+<span class="listing-number">**サンプルコード21-11**　StringCalculatorTest.java（4、11〜16行目）</span>
+
+```java
+public class StringCalculatorTest {
+    // ...
+    @Test
+    public void testAdd_TwoNumbers_ReturnsSum() {
+        StringCalculator calc = new StringCalculator();
+        assertEquals(3, calc.add("1,2"));
+    }
+}
+```
+
+いまの`add`メソッドは常に0を返すので、このテストは`expected: <3> but was: <0>`というメッセージで失敗します。
+1回目のサイクルで書いたテストは、成功したままです。
+
+#### ステップ5: Green - 2つのテストを通す
+
+次に、2つのテストがどちらも成功する最小限のコードを書きます。
+空文字列なら0を返し、それ以外はカンマで分けた2つの数を足します。
+
+<span class="listing-number">**サンプルコード21-12**　StringCalculator.java</span>
+
+```java
+public class StringCalculator {
+    public int add(String numbers) {
+        if (numbers.isEmpty()) {
+            return 0;
+        }
+        String[] parts = numbers.split(",");
+        return Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]);
+    }
+}
+```
+
+テストを実行し、2つのテストがどちらも成功することを確かめます。
+
+#### ステップ6: Refactoring - テストを保ったまま書き直す
+
+`parts[0]`と`parts[1]`を足す書き方は、数がちょうど2つのときにしか使えません。
+テストが成功する状態を保ったまま、カンマで分けた数をループで合計する形に書き直します。
+
+<span class="listing-number">**サンプルコード21-13**　StringCalculator.java</span>
+
+```java
+public class StringCalculator {
+    public int add(String numbers) {
+        if (numbers.isEmpty()) {
+            return 0;
+        }
+        int sum = 0;
+        for (String part : numbers.split(",")) {
+            sum += Integer.parseInt(part);
+        }
+        return sum;
+    }
+}
+```
+
+書き直したら、もう一度テストを実行し、2つのテストがどちらも成功することを確かめます。
+テストがあるので、書き直しで振る舞いを壊していないことをすぐに確かめられます。
+この書き方は1つの数や3つ以上の数も合計できますが、その振る舞いはまだテストで確かめていません。
+次のサイクルでは、たとえば`add("5")`が5を返すテストを書くところから始めます。
+
 ## JUnitによる効率的なテスト
 
 ### JUnitの基本的な使い方
@@ -410,8 +481,10 @@ public class StringCalculator {
 実際の開発では、JUnitのようなテストフレームワークを使用します。
 
 JUnitはJDKに含まれていない外部ライブラリなので、使う前にプロジェクトへ追加します。
-IntelliJ IDEAでは、テストクラスに`@Test`を書き、赤く表示された`@Test`にカーソルを置いて`Alt+Enter`（macOSでは`Option+Enter`）を押します。
-表示された一覧からJUnit 5をクラスパスに追加する項目（Add 'JUnit5…' to classpath）を選ぶと、JUnitがダウンロードされて使えるようになります。
+IntelliJ IDEAでは、テストクラスに`@Test`を書くと、JUnitがまだないため`@Test`が赤く表示されます。
+`@Test`にカーソルを置いて`Alt+Enter`（macOSでは`Option+Enter`）を押し、表示された一覧からJUnit 5をクラスパスに追加する項目を選びます。
+項目の文言はIntelliJ IDEAの版によって異なります。
+選ぶとJUnitがダウンロードされ、使えるようになります。
 テストを実行するには、テストクラスやテストメソッドの左に表示される実行ボタンを押します。
 このあと使うMockitoは、`File` → `Project Structure...` → `Libraries` → `+` → `From Maven...`で`org.mockito:mockito-junit-jupiter`を検索して追加します。
 実際の開発では、Mavenなどのビルドツールの設定ファイルに依存関係として書くのが一般的です。
@@ -422,7 +495,7 @@ JUnit 5（Jupiter）を使用した基本的なテストの例を示します。
 テスト対象は、サンプルコード21-2の`Calculator`に、整数の割り算をする`divide`メソッド（`return a / b;`）を加えたものです。
 整数を0で割ると`ArithmeticException`が発生するので、`assertThrows`でその例外が投げられることを確かめます。
 
-<span class="listing-number">**サンプルコード21-11**　CalculatorTest.java</span>
+<span class="listing-number">**サンプルコード21-14**　CalculatorTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -465,7 +538,7 @@ Mockitoを使用すると、モックオブジェクトの振る舞いを詳細�
 `@Mock`を付けたフィールドにモックを作って入れるのは、クラスに付けた`@ExtendWith(MockitoExtension.class)`です。
 これを付け忘れるとフィールドが`null`のままになり、テストは`NullPointerException`で失敗します。
 
-<span class="listing-number">**サンプルコード21-12**　UserServiceTest.java</span>
+<span class="listing-number">**サンプルコード21-15**　UserServiceTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -516,7 +589,7 @@ JUnit 5の@Nestedアノテーションを使用すると、テストを論理的
 @DisplayNameを使用することで、テストレポートに読みやすい説明を表示できます。
 以下の例では、正常系と異常系のテストを明確に分離しています。
 
-<span class="listing-number">**サンプルコード21-13**</span>
+<span class="listing-number">**サンプルコード21-16**</span>
 
 ```java
 public class PaymentServiceTest {
@@ -548,12 +621,14 @@ public class PaymentServiceTest {
 ### 自動テストの重要性
 
 継続的インテグレーション（CI）では、コードがリポジトリにプッシュされるたびに自動的にテストが実行されます。
-次の例は、ビルドツールのGradleを使うプロジェクトで、GitHub Actionsが`./gradlew test`によってテストを実行する設定です。
-`./gradlew`は、プロジェクトに置いたGradle Wrapperを使ってGradleを実行するスクリプトです。
-ビルドツールの役割は、Mavenを例に第22章で学びます。
+次の例は、ビルドツールのMavenを使うプロジェクトで、GitHub Actionsが`mvn -B verify`によってテストを実行する設定です。
+`mvn verify`は、コンパイル、テストの実行、JARファイルの作成などを順に行い、テストが1つでも失敗するとビルドを失敗させます。
+`-B`は、対話的な入力を求めずに実行するバッチモードの指定で、CIのように人が操作しない環境で使います。
+GitHub Actionsの`ubuntu-latest`の環境にはMavenが入っているので、そのまま`mvn`コマンドを使えます。
+Mavenの使い方と`pom.xml`の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、CIがテストを自動で実行するという流れをつかんでください。
 
-<span class="listing-number">**サンプルコード21-14**</span>
+<span class="listing-number">**サンプルコード21-17**</span>
 
 ```yaml
 # .github/workflows/test.yml（GitHub Actions の例）
@@ -572,8 +647,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
-      - name: Run tests
-        run: ./gradlew test
+      - name: Build and test with Maven
+        run: mvn -B verify
 ```
 
 `actions/setup-java`では、`distribution`でJDKの配布元（ここではEclipse Temurin）を、`java-version`で版を指定します。
@@ -581,53 +656,73 @@ jobs:
 ### テストカバレッジ
 
 テストカバレッジは、コードのどの部分がテストされているかを示す指標です。
-次の例は、GradleのJaCoCoプラグインでカバレッジを測る設定です（Gradle 9で動く書き方です）。
-`./gradlew test`のあとにHTMLとXMLのレポートを作り、`./gradlew check`ではカバレッジが80%に満たないとビルドを失敗させます。
+たとえば行カバレッジは、プロダクトコードの行のうち、テストの実行中に通った行の割合です。
+次の例は、Mavenの`pom.xml`に、テストを実行するmaven-surefire-pluginと、カバレッジを測るjacoco-maven-pluginを書いたものです。
+`pom.xml`のうち`<build>`の部分だけを示します。
+JUnitは、`<dependencies>`に`test`スコープの依存関係（`org.junit.jupiter:junit-jupiter`）として加えておきます。
 
-<span class="listing-number">**サンプルコード21-15**</span>
+<span class="listing-number">**サンプルコード21-18**</span>
 
-```gradle
-// build.gradle
-plugins {
-    id 'java'
-    id 'jacoco'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.13.4')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport // テストのあとにレポートを作る
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.80 // 80%以上のカバレッジを要求
-            }
-        }
-    }
-}
-
-// checkタスクでカバレッジも検証する
-check.dependsOn jacocoTestCoverageVerification
+```xml
+<build>
+    <plugins>
+        <!-- mvn test でJUnit 5のテストを実行する -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.6.1</version>
+        </plugin>
+        <!-- JaCoCoでカバレッジを測る -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.16</version>
+            <executions>
+                <execution>
+                    <!-- テストの実行中に通った行を記録する -->
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <!-- HTMLとXMLのレポートを作る -->
+                    <id>report</id>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <!-- 行カバレッジが80%に満たないとビルドを失敗させる -->
+                    <id>check</id>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                    <configuration>
+                        <rules>
+                            <rule>
+                                <element>BUNDLE</element>
+                                <limits>
+                                    <limit>
+                                        <counter>LINE</counter>
+                                        <value>COVEREDRATIO</value>
+                                        <minimum>0.80</minimum>
+                                    </limit>
+                                </limits>
+                            </rule>
+                        </rules>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 ```
+
+JaCoCoの`prepare-agent`ゴールは、テストの実行中にどの行を通ったかを記録する準備をします。
+`report`ゴールは、その記録から`target/site/jacoco/`にHTMLとXMLのレポートを作ります。
+`index.html`をブラウザーで開くと、クラスやメソッドごとに、テストで通った行と通らなかった行を確かめられます。
+`check`ゴールは、プロジェクト全体（`BUNDLE`）の行カバレッジが80%に満たないとビルドを失敗させます。
+これらのゴールは`mvn verify`の途中で実行されるので、サンプルコード21-17のワークフローでもカバレッジが検査されます。
 
 ## よくあるエラーと対処法
 

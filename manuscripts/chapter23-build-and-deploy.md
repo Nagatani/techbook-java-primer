@@ -142,19 +142,39 @@ java -jar SimpleApp.jar
 ### 複数のクラスファイルを含むアプリケーションの例
 
 ここからは、ステップ1〜5の手順を応用して、もう少し実際のアプリケーションに近いJARを作ります。
-実際のアプリケーションは通常、複数のクラスから構成されます。以下は、シンプルなTodoアプリケーションの例です。
+実際のアプリケーションは通常、複数のクラスから構成されます。
+次のTodoアプリケーションは、ウィンドウを組み立てる`TodoApp`クラスと、入力欄と「追加」ボタンをまとめた`TodoInputPanel`クラスの2つのファイルからなります。
+`TodoInputPanel`は`JPanel`を継承したクラスで、「追加」ボタンが押されると、入力された文字を`TodoApp`から受け取ったリストのモデルに加えます。
 
-<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、12〜13、27〜33、42〜47行目）</span>
+<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、12〜13、21〜22、27〜32行目）、TodoInputPanel.java（1、5〜21行目）</span>
 
 ```java
 // TodoApp.java
 // ...
 public class TodoApp {
-    private DefaultListModel<String> listModel = new DefaultListModel<>();
+    private final DefaultListModel<String> listModel = new DefaultListModel<>();
     // ...
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Todo Manager");
         // ...
+        // 入力パネル（TodoInputPanel.javaで定義したクラス）
+        frame.add(new TodoInputPanel(listModel), BorderLayout.SOUTH);
+        // ...
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TodoApp::new);
+    }
+}
+
+// TodoInputPanel.java
+// ...
+public class TodoInputPanel extends JPanel {
+    private final JTextField inputField = new JTextField();
+    private final JButton addButton = new JButton("追加");
+
+    public TodoInputPanel(DefaultListModel<String> listModel) {
+        super(new BorderLayout());
         addButton.addActionListener(e -> {
             String text = inputField.getText().trim();
             if (!text.isEmpty()) {
@@ -162,11 +182,8 @@ public class TodoApp {
                 inputField.setText("");
             }
         });
-        // ...
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TodoApp::new);
+        add(inputField, BorderLayout.CENTER);
+        add(addButton, BorderLayout.EAST);
     }
 }
 ```
@@ -178,14 +195,32 @@ public class TodoApp {
 
 複数のクラスファイルを含む場合は、次のようにJARを作成します。
 マニフェストファイル`manifest.txt`には、ステップ3と同じ書き方で`Main-Class: TodoApp`と書いておきます。
+`main`メソッドを持つのは`TodoApp`だけなので、`Main-Class`には`TodoApp`だけを書きます。
+`TodoInputPanel.java`と`manifest.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
 
 ```bash
-# すべてのJavaファイルをコンパイル
+# すべてのJavaファイルをコンパイル（TodoApp.classとTodoInputPanel.classができる）
 javac *.java
 
 # 複数のクラスファイルを含むJARを作成
 jar cvfm TodoApp.jar manifest.txt *.class
+
+# JARに含まれるファイルの一覧を表示
+jar tf TodoApp.jar
 ```
+
+`jar tf`は、JARファイルに含まれるファイルの一覧を表示します（`t`は一覧の表示、`f`はファイル名の指定）。
+次のように、マニフェストと2つのクラスファイルが含まれていることを確かめられます。
+
+```
+META-INF/
+META-INF/MANIFEST.MF
+TodoApp.class
+TodoInputPanel.class
+```
+
+`java -jar TodoApp.jar`で実行すると、JVMはマニフェストの`Main-Class`に書いた`TodoApp`から実行を始めます。
+`TodoApp`が`TodoInputPanel`を使う時点で、同じJARのなかから`TodoInputPanel.class`を読み込みます。
 
 ### リソースファイルを含むJARの作成
 

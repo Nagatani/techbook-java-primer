@@ -13,8 +13,10 @@
       { "file": "TodoApp.java", "from": 1, "to": 1 },
       { "file": "TodoApp.java", "from": 5, "to": 6 },
       { "file": "TodoApp.java", "from": 12, "to": 13 },
-      { "file": "TodoApp.java", "from": 27, "to": 33 },
-      { "file": "TodoApp.java", "from": 42, "to": 47 }
+      { "file": "TodoApp.java", "from": 21, "to": 22 },
+      { "file": "TodoApp.java", "from": 27, "to": 32 },
+      { "file": "TodoInputPanel.java", "from": 1, "to": 1 },
+      { "file": "TodoInputPanel.java", "from": 5, "to": 21 }
     ]
   },
   "23-4": {

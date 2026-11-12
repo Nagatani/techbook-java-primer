@@ -10,7 +10,7 @@
 1. Javadocによるドキュメント生成の仕組みと重要性
 2. クラス、メソッド、フィールドを説明するJavadocコメントの記述
 3. 外部ライブラリの選択基準とライセンスの考慮事項
-4. Mavenを例にしたビルドツールの役割と概念
+4. Mavenを例にしたビルドツールの役割と概念（Gradleの概要を含む）
 5. 依存関係管理の原則と版数管理の重要性
 
 ### この章を始める前に
@@ -1081,6 +1081,57 @@ mvn versions:display-dependency-updates
 mvn dependency:purge-local-repository
 ```
 
+### もう1つのビルドツール：Gradle
+
+Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールです。
+Mavenは`pom.xml`にXMLで設定を書きますが、Gradleは`build.gradle`（Groovy DSL）または`build.gradle.kts`（Kotlin DSL）に設定を書きます。
+DSL（ドメイン固有言語）は、ビルドの設定のような特定の目的のために作られた言語のことです。
+ライブラリはMavenと同じ座標（`groupId`、`artifactId`、`version`）で指定し、Maven Centralから取得できます。
+サンプルコード22-3と同じGsonの依存関係を`build.gradle`に書くと、次のようになります。
+
+<span class="listing-number">**サンプルコード22-21**</span>
+
+```gradle
+// build.gradle
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.15.0'
+}
+```
+
+`plugins`の`java`は、Javaのプログラムをコンパイル・テストしてJARファイルにまとめる機能を有効にします。
+`repositories`はライブラリの取得先で、`mavenCentral()`はMaven Central Repositoryを表します。
+`dependencies`の`implementation`は、コンパイルと実行に使う依存関係の指定で、Mavenの`compile`スコープに当たります。
+テストだけで使うライブラリは`testImplementation`で指定します（Mavenの`test`スコープに当たります）。
+
+Gradleのプロジェクトには、Gradle Wrapperを入れておくのが一般的です。
+Gradle Wrapperは、プロジェクトで使うGradleの版を記録した設定ファイルと、`gradlew`（Windowsでは`gradlew.bat`）というスクリプトからなります。
+`./gradlew`を通して実行すると、記録した版のGradleが自動でダウンロードされて使われます。
+各自のパソコンにGradleをインストールしなくても、チームの全員やCIが同じ版のGradleでビルドできます。
+Wrapperのファイルは、Gradleをインストールした環境で`gradle wrapper`を実行すると作られます。
+
+```bash
+# コンパイル、テストの実行、JARファイルの作成
+./gradlew build
+
+# テストだけを実行
+./gradlew test
+
+# 依存関係の木を表示（mvn dependency:treeに当たる）
+./gradlew dependencies
+```
+
+本書では、ビルドツールの例としてMavenを使います。
+Gradleでビルドを自動化する設定やプロジェクトの例は、付録G「高度なビルドとデプロイメント技術」のGitHubリポジトリで提供しています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`
+
 ## よくあるエラーと対処法
 
 ドキュメントの生成や外部ライブラリの利用では、コードそのものではなく、コメントの書き方や依存関係、クラスパスの設定が原因でエラーが起こります。本章の内容に関連して出会いやすいエラーは次のとおりです。
@@ -1115,6 +1166,7 @@ mvn dependency:purge-local-repository
     + 同じ処理を自分で書き直さずに済み（DRY原則）、コミュニティによって検証された高品質なコードの再利用を促進
 - 依存関係管理
     + Mavenが推移的な依存関係を解決するしくみにより、複雑なライブラリ間の依存関係を自動的に管理
+    + Gradleも同じ座標とリポジトリを使い、`build.gradle`に依存関係を書く。Gradle Wrapperでチーム全員が同じ版を使える
 - エコシステム
     + Maven Central Repositoryを中心としたJavaエコシステムが、膨大な数のライブラリを提供している
 
