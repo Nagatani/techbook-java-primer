@@ -127,11 +127,11 @@
     "dir": "07-16",
     "main": "FactoryDemo",
     "excerpt": [
-      { "file": "ShapeFactory.java", "from": 3, "to": 10 },
-      { "file": "ShapeFactory.java", "from": 17, "to": 20 },
-      { "file": "ShapeFactory.java", "from": 26, "to": 26 },
-      { "file": "ShapeFactory.java", "from": 68, "to": 77 },
-      { "file": "ShapeFactory.java", "from": 90, "to": 94 },
+      { "file": "FigureFactory.java", "from": 3, "to": 10 },
+      { "file": "FigureFactory.java", "from": 17, "to": 20 },
+      { "file": "FigureFactory.java", "from": 26, "to": 26 },
+      { "file": "FigureFactory.java", "from": 68, "to": 77 },
+      { "file": "FigureFactory.java", "from": 90, "to": 94 },
       { "file": "FactoryDemo.java", "from": 1, "to": 18 }
     ]
   },

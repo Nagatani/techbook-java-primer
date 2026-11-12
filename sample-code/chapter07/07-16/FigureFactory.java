@@ -1,16 +1,16 @@
 import java.util.*;
 
 // 共通のインターフェイス
-interface Shape {
+interface Figure {
     void draw();
     double getArea();
 }
 
 // 具体的な実装クラス
-class Circle implements Shape {
+class CircleFigure implements Figure {
     private double radius;
     
-    public Circle(double radius) {
+    public CircleFigure(double radius) {
         this.radius = radius;
     }
     
@@ -25,11 +25,11 @@ class Circle implements Shape {
     }
 }
 
-class Rectangle implements Shape {
+class RectangleFigure implements Figure {
     private double width;
     private double height;
     
-    public Rectangle(double width, double height) {
+    public RectangleFigure(double width, double height) {
         this.width = width;
         this.height = height;
     }
@@ -45,11 +45,11 @@ class Rectangle implements Shape {
     }
 }
 
-class Triangle implements Shape {
+class TriangleFigure implements Figure {
     private double base;
     private double height;
     
-    public Triangle(double base, double height) {
+    public TriangleFigure(double base, double height) {
         this.base = base;
         this.height = height;
     }
@@ -66,26 +66,26 @@ class Triangle implements Shape {
 }
 
 // ファクトリークラス
-public class ShapeFactory {
-    public static Shape createShape(String type, double... params) {
+public class FigureFactory {
+    public static Figure createFigure(String type, double... params) {
         switch (type.toLowerCase()) {
             case "circle":
                 if (params.length != 1) {
                     throw new IllegalArgumentException("円には半径が必要です");
                 }
-                return new Circle(params[0]);
+                return new CircleFigure(params[0]);
                 
             case "rectangle":
                 if (params.length != 2) {
                     throw new IllegalArgumentException("長方形には幅と高さが必要です");
                 }
-                return new Rectangle(params[0], params[1]);
+                return new RectangleFigure(params[0], params[1]);
                 
             case "triangle":
                 if (params.length != 2) {
                     throw new IllegalArgumentException("三角形には底辺と高さが必要です");
                 }
-                return new Triangle(params[0], params[1]);
+                return new TriangleFigure(params[0], params[1]);
                 
             default:
                 throw new IllegalArgumentException("不明な図形タイプ: " + type);

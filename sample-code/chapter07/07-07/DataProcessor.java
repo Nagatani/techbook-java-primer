@@ -2,10 +2,10 @@
 public interface DataProcessor {
     // テンプレートメソッド
     default void process() {
-        var data = loadData();
-        var validated = validate(data);
+        Object data = loadData();
+        boolean validated = validate(data);
         if (validated) {
-            var processed = transform(data);
+            Object processed = transform(data);
             save(processed);
             onSuccess();
         } else {

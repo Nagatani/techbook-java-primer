@@ -331,10 +331,10 @@ Java 8のリリース時点で、コレクション（第9章で学ぶ`ArrayList
 public interface DataProcessor {
     // テンプレートメソッド
     default void process() {
-        var data = loadData();
-        var validated = validate(data);
+        Object data = loadData();
+        boolean validated = validate(data);
         if (validated) {
-            var processed = transform(data);
+            Object processed = transform(data);
             save(processed);
             onSuccess();
         } else {
@@ -809,8 +809,8 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 ### Simple Factory パターン
 
 もっとも基本的なFactoryパターンの実装例を見てみましょう。
-ここでの`Shape`は、サンプルコード7-1の抽象クラスとは別に、インターフェイスとして定義し直したものです。
-`Circle`と`Rectangle`も、この`Shape`を実装する別のクラスです。
+図形を表す共通の型は、サンプルコード7-1の抽象クラス`Shape`と区別するため、`Figure`という名前のインターフェイスにしています。
+`CircleFigure`などの実装クラスは`Figure`を実装し、ファクトリの`FigureFactory`がこれらを生成します。
 
 <div class="figure">
 
@@ -818,17 +818,17 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-16**　ShapeFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java</span>
+<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
-interface Shape {
+interface Figure {
     void draw();
     double getArea();
 }
 
 // 具体的な実装クラス
-class Circle implements Shape {
+class CircleFigure implements Figure {
     // ...
     @Override
     public void draw() {
@@ -838,14 +838,14 @@ class Circle implements Shape {
 }
 // ...
 // ファクトリークラス
-public class ShapeFactory {
-    public static Shape createShape(String type, double... params) {
+public class FigureFactory {
+    public static Figure createFigure(String type, double... params) {
         switch (type.toLowerCase()) {
             case "circle":
                 if (params.length != 1) {
                     throw new IllegalArgumentException("円には半径が必要です");
                 }
-                return new Circle(params[0]);
+                return new CircleFigure(params[0]);
                 
                 // ...
             default:
@@ -858,16 +858,16 @@ public class ShapeFactory {
 public class FactoryDemo {
     public static void main(String[] args) {
         // ファクトリーを使って図形を生成
-        Shape circle = ShapeFactory.createShape("circle", 5.0);
-        Shape rectangle = ShapeFactory.createShape("rectangle", 4.0, 6.0);
-        Shape triangle = ShapeFactory.createShape("triangle", 3.0, 4.0);
+        Figure circle = FigureFactory.createFigure("circle", 5.0);
+        Figure rectangle = FigureFactory.createFigure("rectangle", 4.0, 6.0);
+        Figure triangle = FigureFactory.createFigure("triangle", 3.0, 4.0);
         
         // 具体的なクラスを知らなくても使える
-        Shape[] shapes = { circle, rectangle, triangle };
+        Figure[] figures = { circle, rectangle, triangle };
         
-        for (Shape shape : shapes) {
-            shape.draw();
-            IO.println("面積: " + shape.getArea());
+        for (Figure figure : figures) {
+            figure.draw();
+            IO.println("面積: " + figure.getArea());
             IO.println();
         }
     }

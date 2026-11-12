@@ -867,9 +867,9 @@ public record Triangle(double base, double height) implements Shape {}
 public class ShapeCalculator {
     public static double calculateArea(Shape shape) {
         return switch (shape) {
-            case Circle(var radius) -> Math.PI * radius * radius;
-            case Rectangle(var width, var height) -> width * height;
-            case Triangle(var base, var height) -> 0.5 * base * height;
+            case Circle(double radius) -> Math.PI * radius * radius;
+            case Rectangle(double width, double height) -> width * height;
+            case Triangle(double base, double height) -> 0.5 * base * height;
         };
     }
 }
@@ -1104,7 +1104,7 @@ public class MathOperations {
 大きさ: 5.0
 ```
 
-第6章のビルダーパターン（サンプルコード6-10）で使った`Book.Builder`も、`Book`の内側に宣言した静的内部クラスです。
+第6章のビルダーパターン（サンプルコード6-11）で使った`Book.Builder`も、`Book`の内側に宣言した静的内部クラスです。
 外部クラスのインスタンスがなくても`new Book.Builder(...)`で作れるのは、このためです。
 
 #### 3. ローカル内部クラス（Local Inner Class）
