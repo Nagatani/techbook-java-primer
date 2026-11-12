@@ -148,6 +148,28 @@ public class FunctionalInterfaceExample {
 - `a -> { return a * 2; }` は `a -> a * 2` と書ける
 - `() -> IO.println("Hello");` のように括弧だけを書く
 
+### ラムダ式から参照できる変数と副作用
+
+ラムダ式の本体からは、ラムダ式の外で宣言したローカル変数を参照できます。
+ただし、参照できるのは、`final`を付けた変数か、実質的にfinalな変数に限られます。
+実質的にfinalな変数とは、`final`を付けていなくても、初期化したあとで一度も代入し直さない変数のことです。
+
+たとえば、`int count = 0;`と宣言した変数を、ラムダ式のなかで`count++`と書いて増やそうとすると、コンパイルエラーになります。
+ラムダ式の外で、あとから`count = 1;`のように代入し直した場合も、ラムダ式で`count`を参照した箇所がエラーになります。
+javacは「ラムダ式から参照されるローカル変数は、finalまたは事実上のfinalである必要があります」と表示します。
+英語の環境では「local variables referenced from a lambda expression must be final or effectively final」です。
+
+この制限は変数への代入を禁じるもので、変数が指すオブジェクトの中身を変えることは禁じていません。
+そのため、ラムダ式のなかから外のリストに要素を追加する書き方は、コンパイルできます。
+しかし、ラムダ式の外の状態を書き換えない（副作用を持たない）書き方には、次のような利点があります。
+
+- 同じ引数に対して同じ結果を返すので、ラムダ式だけを取り出して確かめやすい
+- 呼び出す順序や回数で結果が変わらないので、処理を組み替えたり、関数を合成したりしやすい
+- 複数のスレッドから同時に呼び出しても、共有している状態を壊さない（第15章）
+
+ラムダ式で計算した結果は、外の変数に書き込まず、戻り値として返すようにしましょう。
+書き換えの例は、章の後半の「ラムダ式から外部の状態を変えない」（サンプルコード11-16）で示します。
+
 ### `Comparator`による並べ替え
 
 `Comparator<T>`は、2つのオブジェクトを比べる`compare`メソッドを実装する関数型インターフェイスです。
@@ -352,6 +374,69 @@ public class StandardFunctionalInterfaces {
 5 × 7 = 35
 ```
 
+### 関数の合成
+
+`java.util.function`の関数型インターフェイスには、2つの関数を組み合わせて新しい関数を作るdefaultメソッドがあります。
+このように関数を組み合わせることを、関数の合成と呼びます。
+
+`Function`の`andThen`と`compose`は、どちらも2つの関数をつなぎますが、適用する順序が逆です。
+`f.andThen(g)`は、先に`f`を適用し、その結果に`g`を適用する関数を作ります。
+`f.compose(g)`は、先に`g`を適用し、その結果に`f`を適用する関数を作ります。
+
+`Predicate`には、条件を組み合わせる`and`（かつ）、`or`（または）、`negate`（否定）があります。
+`and`と`or`は、`&&`や`||`と同じく、1つ目の条件で結果が決まれば2つ目の条件を調べません。
+
+<span class="listing-number">**サンプルコード11-8**　FunctionComposition.java</span>
+
+```java
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+public class FunctionComposition {
+    public static void main(String[] args) {
+        Function<Integer, Integer> plusOne = x -> x + 1;
+        Function<Integer, Integer> twice = x -> x * 2;
+
+        // andThen: plusOneを先に、twiceをあとに適用する
+        Function<Integer, Integer> plusOneThenTwice = plusOne.andThen(twice);
+        // compose: twiceを先に、plusOneをあとに適用する
+        Function<Integer, Integer> twiceThenPlusOne = plusOne.compose(twice);
+
+        IO.println("andThen: " + plusOneThenTwice.apply(5)); // (5 + 1) * 2
+        IO.println("compose: " + twiceThenPlusOne.apply(5)); // 5 * 2 + 1
+
+        Predicate<String> isEmpty = s -> s.isEmpty();
+        Predicate<String> isShort = s -> s.length() < 5;
+        Predicate<String> startsWithJ = s -> s.startsWith("J");
+
+        Predicate<String> notEmpty = isEmpty.negate();          // 空でない
+        Predicate<String> shortAndJ = isShort.and(startsWithJ); // 短く、かつJで始まる
+        Predicate<String> emptyOrJ = isEmpty.or(startsWithJ);   // 空、またはJで始まる
+
+        for (String word : List.of("Java", "", "JavaScript", "Go")) {
+            IO.println("'%s': negate=%b, and=%b, or=%b".formatted(
+                word, notEmpty.test(word), shortAndJ.test(word), emptyOrJ.test(word)));
+        }
+    }
+}
+```
+
+実行結果：
+
+```
+andThen: 12
+compose: 11
+'Java': negate=true, and=true, or=true
+'': negate=false, and=false, or=true
+'JavaScript': negate=true, and=false, or=true
+'Go': negate=true, and=false, or=false
+```
+
+同じ2つの関数でも、`andThen`では(5 + 1) × 2 = 12、`compose`では5 × 2 + 1 = 11になり、合成する順序で結果が変わります。
+組み合わせて作った`Predicate`も、もとの`Predicate`と同じように`test`メソッドで使えます。
+第12章で学ぶStream APIの`filter`メソッドにも、そのまま渡せます。
+
 ## メソッド参照
 
 ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
@@ -368,7 +453,7 @@ public class StandardFunctionalInterfaces {
 次のサンプルでは、ラムダ式を受け取る`List`のメソッドを2つ使います。
 `forEach`は各要素を順に`Consumer`へ渡し、`replaceAll`は各要素を`UnaryOperator`の結果で置き換えます。
 
-<span class="listing-number">**サンプルコード11-8**　MethodReferenceExample.java</span>
+<span class="listing-number">**サンプルコード11-9**　MethodReferenceExample.java</span>
 
 ```java
 import java.util.*;
@@ -442,7 +527,7 @@ CHERRY
 同じ処理をラムダ式とメソッド参照で書き比べてみましょう。
 第12章で学ぶStream APIでも、メソッド参照をよく使います。
 
-<span class="listing-number">**サンプルコード11-9**　LambdaVsMethodReference.java</span>
+<span class="listing-number">**サンプルコード11-10**　LambdaVsMethodReference.java</span>
 
 ```java
 import java.util.*;
@@ -501,7 +586,7 @@ Person{name='Bob'}
 Person{name='Charlie'}
 ```
 
-サンプルコード11-8の`ArrayList::new`は引数のないコンストラクターの参照でしたが、引数を受け取るコンストラクターも参照できます。
+サンプルコード11-9の`ArrayList::new`は引数のないコンストラクターの参照でしたが、引数を受け取るコンストラクターも参照できます。
 `Person::new`を`Function<String, Person>`に代入すると、文字列を1つ受け取る`Person(String)`のコンストラクターを指します。
 
 ## ラムダ式の応用例
@@ -514,7 +599,7 @@ Person{name='Charlie'}
 スレッドの使い方は第15章で詳しく学びます。
 ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください（`start()`を呼ぶと、別のスレッドで`run`の処理を始めます）。
 
-<span class="listing-number">**サンプルコード11-10**　RunnableLambdaExample.java（1〜8、14〜21、27〜33、44〜46行目）</span>
+<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜33、44〜46行目）</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -566,7 +651,7 @@ Thread t1 (Anonymous) finished
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
-<span class="listing-number">**サンプルコード11-11**　ExecutorLambdaExample.java（4〜18、23〜47行目）</span>
+<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜18、23〜47行目）</span>
 
 ```java
 public class ExecutorLambdaExample {
@@ -627,7 +712,7 @@ Task 3 completed
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-12**　ValidationFramework.java（6〜22、36〜67行目）</span>
+<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜22、36〜67行目）</span>
 
 ```java
 public class ValidationFramework {
@@ -696,14 +781,14 @@ public class ValidationFramework {
 
 ここからは、ラムダ式と関数型インターフェイスを使った、実務に近い設計の例を紹介します。
 本章の基本を学んだあとに読む発展的な内容で、多くは考え方を示すための断片的なコードです。
-Stream API（第12章）や、外部ライブラリのReactorを使う例もあるので、最初はラムダ式をどこに渡しているかに注目して読んでください。
+Stream API（第12章）を使う例もあるので、最初はラムダ式をどこに渡しているかに注目して読んでください。
 たとえば`list.stream().map(…).collect(Collectors.toList())`は、各要素を`map`に渡したラムダ式で変換し、結果を新しいリストに集める書き方です。
 
 ### 高階関数による処理の抽象化
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-13**　HigherOrderFunctionExample.java（4〜46行目）</span>
+<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜46行目）</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -762,107 +847,129 @@ public class HigherOrderFunctionExample {
 
 #### ラムダ式を深く入れ子にしない
 
-<span class="listing-number">**サンプルコード11-14**</span>
+ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
+サンプルコード11-15は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
+
+<span class="listing-number">**サンプルコード11-15**　NestedLambdaExample.java（5〜46行目）</span>
 
 ```java
-// 悪い例：読みづらいネストされたラムダ
-result = list.stream()
-    .map(x -> {
-        return transform(x, y -> {
-            return process(y, z -> {
-                return calculate(z);
-            });
-        });
-    })
-    .collect(Collectors.toList());
+public class NestedLambdaExample {
+    public static void main(String[] args) {
+        // 1行に「名前:点数」を並べたデータから、行ごとの合計点を求める
+        List<String> lines = List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
 
-// 良い例：メソッド参照とヘルパーメソッドを使用
-result = list.stream()
-    .map(this::transformItem)
-    .collect(Collectors.toList());
+        // 悪い例：ラムダ式の中にラムダ式を重ねていて、何をしているか読み取りにくい
+        List<Integer> bad = lines.stream()
+            .map(line -> {
+                return Arrays.stream(line.split(","))
+                    .map(entry -> {
+                        String[] parts = entry.split(":");
+                        return Integer.parseInt(parts[1]);
+                    })
+                    .reduce(0, (a, b) -> {
+                        return a + b;
+                    });
+            })
+            .collect(Collectors.toList());
 
-private Item transformItem(Item x) {
-    return transform(x, this::processItem);
+        // 良い例：処理に名前を付けたメソッドに分け、メソッド参照で渡す
+        List<Integer> good = lines.stream()
+            .map(NestedLambdaExample::sumScores)
+            .collect(Collectors.toList());
+
+        IO.println("悪い例: " + bad);
+        IO.println("良い例: " + good);
+    }
+
+    // 1行の合計点を求める
+    private static int sumScores(String line) {
+        int total = 0;
+        for (String entry : line.split(",")) {
+            total += scoreOf(entry);
+        }
+        return total;
+    }
+
+    // 「名前:点数」から点数を取り出す
+    private static int scoreOf(String entry) {
+        return Integer.parseInt(entry.split(":")[1]);
+    }
 }
 ```
 
-<span class="footnote">※ このコードは設計上のアンチパターンを示す例のため、実行可能な完全なコードではありません。可読性の観点から、ラムダ式の過度なネストは避けるべきことを説明しています。</span>
+実行結果：
+
+```
+悪い例: [145, 160]
+良い例: [145, 160]
+```
+
+2つの書き方の結果は同じです。
+悪い例では、行を区切る処理、点数を取り出す処理、足し合わせる処理が1つの式に入れ子になっています。
+よい例では、それぞれを`sumScores`と`scoreOf`という名前のメソッドに分けたので、メソッド名から処理の内容がわかります。
+メソッドに分けると、`scoreOf("Alice:80")`のように1つずつ呼び出して確かめることもできます。
 
 #### ラムダ式から外部の状態を変えない
 
-<span class="listing-number">**サンプルコード11-15**</span>
+サンプルコード11-16は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
+
+<span class="listing-number">**サンプルコード11-16**　SideEffectExample.java（5〜27行目）</span>
 
 ```java
-// 悪い例：ラムダ内で外部状態を変更
-List<String> results = new ArrayList<>();
-items.forEach(item -> {
-    results.add(processItem(item));  // 副作用！
-});
+public class SideEffectExample {
+    public static void main(String[] args) {
+        List<String> items = List.of("apple", "banana", "cherry");
 
-// 良い例：純粋な関数型アプローチ
-List<String> processed = items.stream()
-    .map(this::processItem)
-    .collect(Collectors.toList());
+        // 悪い例：ラムダ式の中から、外のリストを書き換えている（副作用）
+        List<String> results = new ArrayList<>();
+        items.forEach(item -> {
+            results.add(processItem(item));
+        });
+
+        // 良い例：変換した結果を、新しいリストとして受け取る
+        List<String> processed = items.stream()
+            .map(SideEffectExample::processItem)
+            .collect(Collectors.toList());
+
+        IO.println("悪い例: " + results);
+        IO.println("良い例: " + processed);
+    }
+
+    private static String processItem(String item) {
+        return item.toUpperCase();
+    }
+}
 ```
 
-<span class="footnote">※ このコードは副作用のアンチパターンを示す例です。実際のprocessItemメソッドの実装は省略されています。関数型プログラミングでは副作用を避け、純粋関数を使用することが推奨されます。</span>
+実行結果：
+
+```
+悪い例: [APPLE, BANANA, CHERRY]
+良い例: [APPLE, BANANA, CHERRY]
+```
+
+この例では、どちらも同じ結果になります。
+しかし悪い例のラムダ式は、外にある`results`に要素を追加するので、呼び出す順序や回数によって結果が変わります。
+たとえば、第12章で学ぶ並列ストリームで複数のスレッドから同時に呼び出すと、`ArrayList`への追加がぶつかって要素が欠けることがあります。
+よい例のラムダ式は、受け取った値から新しい値を返すだけなので、どの順序で呼び出しても同じ結果になります。
 
 ### 実世界での応用例：リアクティブストリーム処理
 
 動画配信サービスのNetflixは、大量のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用してきました。
-ここでは、その考え方を、動画のおすすめを計算するサービスを題材に示します。
-
-<span class="listing-number">**サンプルコード11-16**</span>
-
-```java
-// 従来の同期的アプローチ（スケールしない）
-public class VideoRecommendationService {
-    public List<Video> getRecommendations(String userId) {
-        User user = userService.getUser(userId);  // ブロッキング
-        List<Video> watched = historyService.getWatchHistory(userId);
-                                                        // ブロッキング
-        List<Video> trending = trendingService.getTrending();  // ブロッキング
-        
-        return recommendationEngine.calculate(user, watched, trending);
-    }
-}
-```
-
-<span class="listing-number">**サンプルコード11-17**</span>
-
-```java
-// リアクティブ・関数型アプローチ（高スケーラビリティ）
-public class ReactiveVideoRecommendationService {
-    public Mono<List<Video>> getRecommendations(String userId) {
-        return Mono.zip(
-            userService.getUserAsync(userId),
-            historyService.getWatchHistoryAsync(userId),
-            trendingService.getTrendingAsync()
-        )
-        .map(tuple -> {
-            User user = tuple.getT1();
-            List<Video> watched = tuple.getT2();
-            List<Video> trending = tuple.getT3();
-            
-            return recommendationEngine.calculate(user, watched, trending);
-        })
-        .timeout(Duration.ofMillis(100))
-        .onErrorReturn(Collections.emptyList());
-    }
-}
-```
-
-<span class="footnote">※ このコードは高度なリアクティブプログラミングの概念例です。実際の動作にはReactor（Mono, Flux）やSpring WebFluxなどの追加ライブラリが必要です。Netflix等の大規模システムでの関数型アプローチの応用例として理解してください。</span>
+ここでは、その考え方を、動画のおすすめを計算するサービスを題材に説明します。
+おすすめを計算するには、利用者の情報、視聴履歴、人気の動画の3つを、それぞれ別のサービスから取得します。
 
 同期的なアプローチでは、3つのサービスの呼び出しを順に待つため、応答までの時間は3つの待ち時間の合計になります。
-リアクティブなアプローチでは3つを同時に呼び出すので、待ち時間はもっとも遅い1つの分で済みます。
+リアクティブなアプローチでは、3つを同時に呼び出し、結果がそろったときに行う計算をラムダ式で渡しておきます。
+そのため、待ち時間はもっとも遅い1つの分で済みます。
 また、応答を待つ間にスレッドを占有しないため、同じ数のスレッドでより多くのリクエストを処理できます。
+Javaでこのような処理を書くときは、Reactorなどの外部ライブラリを使います。
 
 ### 関数型プログラミングの実装パターン集
 
 #### 失敗した処理の再試行
 
-<span class="listing-number">**サンプルコード11-18**　ResilientService.java（3〜18、30行目）</span>
+<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜18、30行目）</span>
 
 ```java
 public class ResilientService {
@@ -889,45 +996,72 @@ public class ResilientService {
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラーをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
-<span class="listing-number">**サンプルコード11-19**</span>
+<span class="listing-number">**サンプルコード11-18**　EventProcessor.java（8〜53行目）</span>
 
 ```java
 public class EventProcessor {
-    private final Map<Class<?>, List<Consumer<Object>>> handlers = new ConcurrentHashMap<>();
-    
-    // イベントハンドラの登録
+    // イベントの種類ごとに、登録されたハンドラーの一覧を持つ
+    private final Map<Class<?>, List<Consumer<Object>>> handlers = new HashMap<>();
+
+    // イベントハンドラーの登録
     public <T> void on(Class<T> eventType, Consumer<T> handler) {
-        handlers.computeIfAbsent(eventType, k -> new CopyOnWriteArrayList<>())
-                .add((Consumer<Object>) handler);
+        handlers.computeIfAbsent(eventType, k -> new ArrayList<>())
+                .add(event -> handler.accept(eventType.cast(event)));
     }
-    
-    // 関数型フィルタとトランスフォーマー
-    public <T> void onFiltered(Class<T> eventType, 
-                              Predicate<T> filter,
-                              Consumer<T> handler) {
+
+    // 条件を満たすイベントだけを処理するハンドラーの登録
+    public <T> void onFiltered(Class<T> eventType,
+                               Predicate<T> filter,
+                               Consumer<T> handler) {
         on(eventType, event -> {
             if (filter.test(event)) {
                 handler.accept(event);
             }
         });
     }
-    
-    // 使用例
-    public void setupEventHandlers() {
-        // 単純なハンドラ
-        on(OrderCreated.class, order -> logger.info("Order created: {}", order.getId()));
-        
-        // フィルタ付きハンドラ
-        onFiltered(OrderCreated.class,
-            order -> order.getAmount() > 1000,
-            order -> notificationService.sendHighValueOrderAlert(order));
+
+    // イベントの発行：登録されたハンドラーを順に呼び出す
+    public void publish(Object event) {
+        for (Consumer<Object> handler : handlers.getOrDefault(event.getClass(), List.of())) {
+            handler.accept(event);
+        }
+    }
+
+    record OrderCreated(String id, int amount) {}
+
+    public static void main(String[] args) {
+        EventProcessor processor = new EventProcessor();
+
+        // すべての注文で呼ばれるハンドラー
+        processor.on(OrderCreated.class,
+            order -> IO.println("注文を受け付けました: " + order.id()));
+
+        // 金額が10000円を超える注文だけで呼ばれるハンドラー
+        processor.onFiltered(OrderCreated.class,
+            order -> order.amount() > 10000,
+            order -> IO.println("高額の注文です: " + order.id()));
+
+        processor.publish(new OrderCreated("A001", 3000));
+        processor.publish(new OrderCreated("A002", 25000));
     }
 }
 ```
 
+実行結果：
+
+```
+注文を受け付けました: A001
+注文を受け付けました: A002
+高額の注文です: A002
+```
+
+`on`はイベントの型ごとにハンドラーを登録し、`publish`はそのイベントの型に登録されたハンドラーを順に呼び出します。
+`onFiltered`は、条件を表す`Predicate`とハンドラーを組み合わせた新しいラムダ式を作り、`on`で登録しています。
+そのため、金額が10000円を超えるA002のときだけ、2つ目のハンドラーが処理をします。
+
 #### 関数合成によるミドルウェア
 
-<span class="listing-number">**サンプルコード11-20**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
+<span class="listing-number">**サンプルコード11-19**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
 ```java
 public class MiddlewareChain {
@@ -973,40 +1107,51 @@ public class MiddlewareChain {
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
-<span class="listing-number">**サンプルコード11-21**</span>
+<span class="listing-number">**サンプルコード11-20**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
 
 ```java
-// データ処理の基本的なテンプレート
 public class DataProcessingTemplate {
+    // ...
+    // データ処理の骨格：前処理 → メイン処理 → 後処理の順に適用する
     public <T, R> R processData(
         T input,
         Function<T, T> preprocessor,
         Function<T, R> processor,
         Function<R, R> postprocessor) {
-        
+
         T preprocessed = preprocessor.apply(input);
         R processed = processor.apply(preprocessed);
         return postprocessor.apply(processed);
     }
-    
-    // 使用例：CSVデータの処理
+
+    // 使用例：CSV形式の文字列から顧客の一覧を作る
     public List<Customer> processCsvData(String csvData) {
         return processData(
             csvData,
-            data -> data.trim().toLowerCase(),  // 前処理
+            data -> data.trim(),               // 前処理：前後の空白を除く
             this::parseCustomers,              // メイン処理
-            customers -> {                      // 後処理：無効なデータを除く
+            customers -> {                     // 後処理：無効なデータを除く
                 customers.removeIf(c -> !c.isValid());
                 return customers;
             }
         );
     }
+    // ...
 }
 ```
 
+`processCsvData("  Alice,30;Bob,-1;Carol,25  ")`を呼び出すと、年齢が負のBobを除いた次のリストが返ります。
+
+```
+[Customer[name=Alice, age=30], Customer[name=Carol, age=25]]
+```
+
+`processData`は処理の順序だけを決め、各段階で何をするかは呼び出す側がラムダ式やメソッド参照で渡します。
+継承を使うテンプレートメソッドパターンとちがい、処理の組み合わせごとにサブクラスを作らずに済みます。
+
 #### イベントソーシング
 
-<span class="listing-number">**サンプルコード11-22**　EventSourcedAccount.java（3〜36行目）</span>
+<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜36行目）</span>
 
 ```java
 public class EventSourcedAccount {
@@ -1045,27 +1190,31 @@ public class EventSourcedAccount {
 }
 ```
 
-<span class="footnote">※ このコードはJava 21以降のsealed interface、record、switch式のパターンマッチング（レコードパターン）を使用した高度な例です。実際の動作にはAccountState、Moneyクラスの実装が必要です。イベントソーシングの設計パターンを関数型で表現した概念例として理解してください。</span>
+<span class="footnote">※ sealedインターフェイス、record、switchのレコードパターン（第8章）を使っています。口座の状態を表す`AccountState`と金額を表す`Money`は、GitHubの全文にあります。</span>
 
 `project`メソッドは、空の状態から始めてイベントを古い順に1つずつ適用し、現在の状態を求めます。
 第12章で学ぶStreamの`reduce`を使うと、この繰り返しを1つの式で書けます。
 
 #### ファクトリパターンの関数型実装
 
-従来のファクトリパターンでは、オブジェクトの生成ロジックを専用のクラスにカプセル化していましたが、関数型アプローチでは、Supplier関数やFunction関数を使ってより柔軟なファクトリを実装できます。
-これにより、実行時の条件に応じて異なる生成戦略を動的に選択することが可能になります。
+ファクトリパターンは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
+`Supplier`にコンストラクター参照を入れておくと、形式の名前から生成する処理を選ぶファクトリを、`Map`1つで書けます。
 
-<span class="listing-number">**サンプルコード11-23**</span>
+<span class="listing-number">**サンプルコード11-22**　ProcessorFactory.java（4〜7、27〜40、52行目）</span>
 
 ```java
-// 関数型ファクトリパターン
 public class ProcessorFactory {
+    interface DataProcessor {
+        String process(String data);
+    }
+    // ...
+    // 形式の名前と、オブジェクトを作る処理（コンストラクター参照）の対応
     private final Map<String, Supplier<DataProcessor>> processors = Map.of(
         "csv", CsvProcessor::new,
         "xml", XmlProcessor::new,
         "json", JsonProcessor::new
     );
-    
+
     public DataProcessor createProcessor(String type) {
         Supplier<DataProcessor> supplier = processors.get(type);
         if (supplier == null) {
@@ -1073,59 +1222,65 @@ public class ProcessorFactory {
         }
         return supplier.get();  // ここではじめてオブジェクトを生成する
     }
-    
-    // さらに高度な例：パラメータ化されたファクトリ
-    public Function<ProcessorConfig, DataProcessor> createConfigurableFactory(
-        String type) {
-        return config -> createProcessor(type).configure(config);
-    }
+    // ...
 }
 ```
 
-<span class="footnote">※ このコードは関数型ファクトリパターンの概念例です。実際の動作にはDataProcessor、CsvProcessor、XmlProcessor、JsonProcessor、ProcessorConfigクラスの実装が必要です。従来のファクトリパターンを関数型で簡潔に表現した設計例として理解してください。</span>
+`CsvProcessor`などの3つのクラスは、`DataProcessor`を実装し、受け取った文字列に形式の名前を付けて返すだけのクラスです（GitHubの全文を参照）。
+`createProcessor("csv")`、`createProcessor("json")`、`createProcessor("yaml")`の順に呼び出して処理させると、次のように表示されます。
+
+```
+CSVとして読み込み: a,b,c
+JSONとして読み込み: {"a": 1}
+エラー: 未対応の形式: yaml
+```
+
+`Map`に入れた時点ではオブジェクトは作られず、`supplier.get()`を呼び出したときにはじめてコンストラクターが実行されます。
+新しい形式に対応するときは、`Map`に1行を足すだけで済みます。
 
 ### ラムダ式の内部実装とメモリ使用
 
-<span class="listing-number">**サンプルコード11-24**</span>
+ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます。
+サンプルコード11-23は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
+
+<span class="listing-number">**サンプルコード11-23**　LambdaCapture.java（5〜25行目）</span>
 
 ```java
-public class LambdaPerformance {
-    // ラムダ式のキャプチャによるメモリ影響
-    public void demonstrateCapture() {
-        // キャプチャなし - 静的にインスタンス化される
-        Function<Integer, Integer> noCapture = x -> x * 2;
-        
-        // 実質的にfinal変数のキャプチャ
-        int multiplier = 3;
-        Function<Integer, Integer> withCapture = x -> x * multiplier;
-        // 新しいインスタンスが生成される
-        
-        // 1回だけの簡易な計測（ウォームアップなし）
-        long start = System.nanoTime();
-        IntStream.range(0, 1_000_000)
-            .map(x -> x * 2)  // ラムダ式を直接渡す
-            .sum();
-        long inlineTime = System.nanoTime() - start;
-        
-        start = System.nanoTime();
-        IntStream.range(0, 1_000_000)
-            .map(noCapture::apply)  // メソッド参照
-            .sum();
-        long methodRefTime = System.nanoTime() - start;
-        
-        IO.println("Inline: %dms, Method ref: %dms".formatted(
-            inlineTime / 1_000_000, 
-            methodRefTime / 1_000_000));
+public class LambdaCapture {
+    public static void main(String[] args) {
+        List<IntUnaryOperator> noCaptures = new ArrayList<>();
+        List<IntUnaryOperator> captures = new ArrayList<>();
+
+        // 同じラムダ式を2回評価して、できたオブジェクトを比べる
+        for (int i = 1; i <= 2; i++) {
+            // キャプチャなし：外側の変数を使わない
+            noCaptures.add(x -> x * 2);
+
+            // キャプチャあり：外側の変数multiplierを使う
+            int multiplier = i;
+            captures.add(x -> x * multiplier);
+        }
+
+        IO.println("キャプチャなし: 同じインスタンスか = "
+            + (noCaptures.get(0) == noCaptures.get(1)));
+        IO.println("キャプチャあり: 同じインスタンスか = "
+            + (captures.get(0) == captures.get(1)));
     }
 }
 ```
 
-外側の変数をキャプチャしないラムダ式は、HotSpotなどのJVMでは同じインスタンスを使い回します。
+実行結果：
+
+```
+キャプチャなし: 同じインスタンスか = true
+キャプチャあり: 同じインスタンスか = false
+```
+
+外側の変数をキャプチャしないラムダ式は、OpenJDKのHotSpotなどのJVMでは同じインスタンスを使い回します。
 キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
-後半の計測は、ウォームアップ（JITコンパイラーが最適化を終えるまで事前に動かすこと）をせずに1回だけ測っています。
-そのため結果は実行のたびに変わり、2つの書き方の性能差を示すものではありません。
-`noCapture::apply`には`int`と`Integer`の変換も含まれるので、比べる条件もそろっていません。
-性能を比べるときは、JMH（Java Microbenchmark Harness）などのツールで、ウォームアップと繰り返しを含めて測ります。
+ただし、インスタンスを使い回すかどうかは言語仕様で決められておらず、JVMの実装によって変わることがあります。
+ラムダ式のオブジェクトを`==`で比べる処理を、プログラムの動作に使ってはいけません。
+キャプチャによる性能の違いは小さいことが多いので、気になるときはJMH（Java Microbenchmark Harness）などのツールで測ってから判断します。
 
 ### 実践的なデザインパターン：関数型ビルダー
 
@@ -1133,7 +1288,7 @@ public class LambdaPerformance {
 戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
 ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
-<span class="listing-number">**サンプルコード11-25**　FunctionalBuilder.java（5、26〜43、45〜56行目）</span>
+<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜43、45〜56行目）</span>
 
 ```java
 public class FunctionalBuilder {
@@ -1173,107 +1328,116 @@ public class FunctionalBuilder {
 
 #### 条件に応じた設定の組み立て
 
-設定やコンフィギュレーションを構築する際、関数型ビルダーパターンはとくに威力を発揮します。条件分岐を含む複雑な設定ロジックを、ラムダ式を使って直感的に表現できます。
+関数型のビルダーは、実行する環境によって設定を変えるような、条件のある組み立てにも向いています。
+サンプルコード11-25の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
 
-<span class="listing-number">**サンプルコード11-26**</span>
+<span class="listing-number">**サンプルコード11-25**　ConfigurationBuilder.java（6〜31、50〜62、70行目）</span>
 
 ```java
 public class ConfigurationBuilder {
-    public static class DatabaseConfig {
-        private String host;
-        private int port;
-        private String database;
-        private boolean sslEnabled;
-        
-        // 設定メソッド（省略）
+    // 設定の操作をためておき、buildで順に適用するビルダー
+    public static class FunctionalConfigBuilder<T> {
+        private final List<Consumer<T>> operations = new ArrayList<>();
+
+        public FunctionalConfigBuilder<T> with(Consumer<T> operation) {
+            operations.add(operation);
+            return this;
+        }
+
+        // 条件が成り立つときだけ、操作を加える
+        public FunctionalConfigBuilder<T> whenCondition(boolean condition, Consumer<T> operation) {
+            if (condition) {
+                operations.add(operation);
+            }
+            return this;
+        }
+
+        public T build(Supplier<T> factory) {
+            T config = factory.get();
+            for (Consumer<T> operation : operations) {
+                operation.accept(config);
+            }
+            return config;
+        }
     }
-    
+    // ...
     public DatabaseConfig buildDatabaseConfig(String environment) {
         return new FunctionalConfigBuilder<DatabaseConfig>()
-            .with(config -> config.setHost("localhost"))  // デフォルト設定
+            .with(config -> config.setHost("localhost"))  // 既定の設定
             .with(config -> config.setPort(5432))
             .whenCondition("production".equals(environment),
                 config -> {
-                    config.setHost("prod-db.company.com");
+                    config.setHost("db.example.com");
                     config.setSslEnabled(true);
                 })
             .whenCondition("test".equals(environment),
                 config -> config.setDatabase("test_db"))
             .build(DatabaseConfig::new);
     }
+    // ...
 }
 ```
 
-### 応用例：金融取引システム
+`DatabaseConfig`は、ホスト名・ポート番号・データベース名・SSLを使うかどうかを持ち、setterと`toString`を定義したクラスです（GitHubの全文を参照）。
+環境の名前を変えて`buildDatabaseConfig`を呼び出すと、次の設定ができます。
 
-高頻度取引（HFT）システムを題材に、関数型アプローチの例を示します。
+```
+development: localhost:5432/app_db (SSL: false)
+test: localhost:5432/test_db (SSL: false)
+production: db.example.com:5432/app_db (SSL: true)
+```
 
-<span class="listing-number">**サンプルコード11-27**</span>
+`build`は、`DatabaseConfig::new`で作ったオブジェクトに、ためておいた操作を加えた順に適用します。
+そのため、productionでは既定の`localhost`のあとに`db.example.com`が設定され、後から加えた操作が優先されます。
+
+### 関数合成によるビジネスロジックの設計
+
+業務の処理を、入力から結果を返すだけの小さな関数に分けておくと、関数ごとに確かめやすく、組み替えもしやすくなります。
+サンプルコード11-26は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
+
+<span class="listing-number">**サンプルコード11-26**　OrderPipeline.java（3〜13、40〜47、56〜57行目）</span>
 
 ```java
-public class TradingSystem {
-    // マーケットデータのストリーム処理
-    public class MarketDataProcessor {
-        // 価格変動の分析
-        public Flux<TradingSignal> analyzeMarketData(Flux<MarketTick> ticks) {
-            return ticks
-                .window(Duration.ofSeconds(1))
-                .flatMap(window -> window
-                    .collect(Collectors.toList())
-                    .map(this::calculateVolatility)
-                )
-                .filter(volatility -> volatility > THRESHOLD)
-                .map(this::generateTradingSignal)
-                .onBackpressureBuffer(1000)
-                .publishOn(Schedulers.parallel());
+public class OrderPipeline {
+    // 注文：品名、単価、数量、金額
+    record Order(String item, int unitPrice, int quantity, int total) {}
+
+    // 不正な注文なら例外をスローする
+    static Order validate(Order order) {
+        if (order.quantity() <= 0) {
+            throw new IllegalArgumentException("数量が不正です: " + order.quantity());
         }
-        
-        // 複雑な取引戦略の組み合わせ
-        public Function<MarketData, TradingDecision> combineStrategies(
-            List<TradingStrategy> strategies) {
-            
-            return marketData -> strategies.stream()
-                .map(strategy -> strategy.evaluate(marketData))
-                .reduce(TradingDecision.NEUTRAL, 
-                    TradingDecision::combine);
-        }
+        return order;
+    }
+    // ...
+    public static void main(String[] args) {
+        // 各段階の関数をandThenで1つの関数にまとめる
+        Function<Order, Order> validate = OrderPipeline::validate;
+        Function<Order, String> processOrder = validate
+            .andThen(OrderPipeline::calculateSubtotal)
+            .andThen(OrderPipeline::applyDiscount)
+            .andThen(OrderPipeline::addTax)
+            .andThen(OrderPipeline::toReceipt);
+            // ...
     }
 }
 ```
 
-<span class="footnote">※ このコードは外部ライブラリReactorの`Flux`を使った概念例です。動かすには、ライブラリと、MarketTick、TradingSignalなどのクラスの実装が必要です。</span>
+`calculateSubtotal`・`applyDiscount`・`addTax`・`toReceipt`は、受け取った注文から新しい`Order`や文字列を返すメソッドです（GitHubの全文を参照）。
+メソッド参照のままでは`andThen`を呼び出せないので、最初の`validate`だけを`Function<Order, Order>`型の変数に入れています。
 
-### 関数合成によるビジネスロジックの設計
+実行結果：
 
-複雑なビジネスロジックを関数型で設計することで、テストしやすく、再利用可能で、理解しやすいコードを作成できます。各機能を純粋関数として実装し、関数の組み合わせで複雑な処理を表現します。
-
-<span class="listing-number">**サンプルコード11-28**</span>
-
-```java
-public class BusinessLogicProcessor {
-    // 純粋関数による価格計算
-    public Function<Order, BigDecimal> calculatePrice = order -> {
-        BigDecimal basePrice = order.getBasePrice();
-        BigDecimal discount = applyDiscount(order);
-        BigDecimal tax = calculateTax(basePrice.subtract(discount));
-        return basePrice.subtract(discount).add(tax);
-    };
-    
-    // 処理の各段階を関数として用意する
-    private final Function<Order, Order> validate = this::validateOrder;  // 不正な注文なら例外をスローする
-    private final Function<Order, Order> applyRules = this::applyBusinessRules;
-    private final Function<Order, Order> finalPrice = this::calculateFinalPrice;
-
-    // 関数合成による複雑な処理（validate → applyRules → finalPrice → generateProcessedOrder の順に適用）
-    public Function<Order, ProcessedOrder> processOrder =
-        validate.andThen(applyRules)
-                .andThen(finalPrice)
-                .andThen(this::generateProcessedOrder);
-}
+```
+ノート × 5 = 1100円
+電卓 × 3 = 11880円
+エラー: 数量が不正です: 0
 ```
 
-`andThen`は`Function`のdefaultメソッドで、2つの関数をつなぎ、前の関数の結果を次の関数に渡す新しい関数を作ります。
-`processOrder.apply(order)`と呼ぶと、4つの処理が順に適用されます。
+本章の「関数の合成」で学んだ`andThen`で、5つの処理を1つの関数にまとめています。
+`processOrder.apply(order)`と呼ぶと、5つの処理が順に適用されます。
+電卓の注文は、金額12000円が10000円以上なので1割引きの10800円になり、消費税を加えて11880円になります。
+数量が0の注文は、最初の`validate`で例外がスローされ、あとの処理は行われません。
 
 ## よくあるエラーと対処法
 
