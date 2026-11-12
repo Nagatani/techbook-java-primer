@@ -33,11 +33,11 @@
 
 Javaには、ソースコード内に記述した特定の形式のコメントから、API仕様書（HTML形式）を自動生成する
 Javadocというツールが標準で備わっています。
-Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています。
+Oracleが提供するJavaの公式APIドキュメントも、このJavadocによって生成されています<span class="footnote">JavadocはJDK 1.0から付属しているツールです。Java 25のAPIドキュメントは`https://docs.oracle.com/en/java/javase/25/docs/api/`で読めます。</span>。
 
 ### Javadocコメントの書き方
 
-Javadocコメントは `/**` で始まり、`*/` で終わります。クラス、フィールド、コンストラクター、メソッドなどの宣言の直前に記述します。
+Javadocコメントは `/**` で始まり、`*/` で終わります<span class="footnote">Java 23からは、`///`で始まる行コメントにMarkdownで書くドキュメントコメントも使えます（JEP 467）。本書では従来の`/** */`の形を使います。</span>。クラス、フィールド、コンストラクター、メソッドなどの宣言の直前に記述します。
 
 以下の例では、メソッドに対する完全なJavadocコメントの記述方法を示します。最初の行は概要説明、HTMLタグを使った詳細説明、そしてさまざまなJavadocタグによる構造化された情報が含まれています。
 
@@ -198,7 +198,7 @@ JARファイルは、多数のクラスファイルを1つにまとめたファ�
 
 クラスパスは、`javac`や`java`コマンドの`-cp`（`-classpath`）オプションで指定します。
 次の例では、カレントディレクトリ（`.`）と`lib`ディレクトリのGsonのJARファイルをクラスパスに含めています。
-macOSやLinuxでは区切りに`:`を、Windowsでは`;`を使います。
+macOSやLinuxでは区切りに`:`を、Windowsでは`;`を使います<span class="footnote">Windowsで`;`を使うのは、`C:\lib`のようにドライブ名に`:`を使うためです。環境変数`PATH`の区切りも同じ使い分けです。</span>。
 
 ```bash
 javac -cp .:lib/gson-2.15.0.jar Main.java
@@ -213,7 +213,7 @@ java -cp .:lib/gson-2.15.0.jar Main
 
 #### Mavenの技術的アーキテクチャ
 
-Mavenは2002年にJason van Zylが開発しました。
+Mavenは2002年にJason van Zylが開発しました<span class="footnote">Mavenは、イディッシュ語で「知識を蓄える者」を意味する言葉です。ApacheのJakarta Turbineというプロジェクトのビルドを簡単にするために作られました。</span>。
 その設計は、いくつかの明確な原則に基づいています。
 
 1つめは「Convention over Configuration」（設定より規約）です。
@@ -265,13 +265,13 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
     </dependency>
 </dependencies>
 ```
-`groupId`, `artifactId`, `version`は、ライブラリを一意に識別するための座標（coordinates）です。これらの情報は、Maven Centralなどのリポジトリサイトで検索できます。
+`groupId`, `artifactId`, `version`は、ライブラリを一意に識別するための座標（coordinates）です。これらの情報は、Maven Centralなどのリポジトリサイトで検索できます<span class="footnote">Maven Centralに登録されたライブラリは、`https://central.sonatype.com/`で検索できます。</span>。
 
 ### 外部ライブラリの利用例 (Gson)
 
 `pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
-次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
+次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
 <span class="listing-number">**サンプルコード22-4**　Task.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
@@ -602,7 +602,7 @@ Stream copy result: Stream processing example
 
 ### OkHttp - モダンなHTTPクライアント
 
-OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を備えたHTTP通信ライブラリです。
+OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を備えたHTTP通信ライブラリです<span class="footnote">Java 11からは、第16章「ネットワークプログラミング」で学んだ標準APIの`HttpClient`もHTTP/2に対応しています。</span>。
 
 <span class="listing-number">**サンプルコード22-11**</span>
 
@@ -692,7 +692,7 @@ Thread: OkHttp https://httpbin.org/...
 
 ### Lombok - ボイラープレートコードの削減
 
-Lombokは、アノテーションを使ってゲッター、セッター、コンストラクターなどを自動生成します。
+Lombok<span class="footnote">Lombokという名前は、ジャワ島（Java）の近くにあるインドネシアのロンボク島に由来します。</span>は、アノテーションを使ってゲッター、セッター、コンストラクターなどを自動生成します。
 
 <span class="listing-number">**サンプルコード22-13**</span>
 
@@ -707,7 +707,7 @@ Lombokは、アノテーションを使ってゲッター、セッター、コ�
 
 Lombokはコンパイル時にアノテーションを処理し、
 ボイラープレートコードを自動生成する革新的なライブラリです。
-@Dataアノテーション1つでゲッター、セッター、equals、hashCode、toStringメソッドが自動生成されます。
+@Dataアノテーション1つでゲッター、セッター、equals、hashCode、toStringメソッドが自動生成されます<span class="footnote">値を変えないデータのクラスなら、Java 16で正式に加わったRecord（第8章「Javaの特殊なクラス形式」で学びました）でも、equals・hashCode・toStringを自動で用意できます。</span>。
 以下の例では、主要なアノテーションの使用方法を示します。
 
 <span class="listing-number">**サンプルコード22-14**</span>
@@ -984,7 +984,7 @@ Value: Hello
 Apache License 2.0は商用で利用でき、特許の扱いを定めた条項を含みます。
 MIT Licenseは、主要なライセンスのなかでもっとも制限が少ないライセンスです。
 
-注意が要るのはGPLです。
+注意が要るのはGPL<span class="footnote">GPLはGNU General Public Licenseの略で、フリーソフトウェア財団（FSF）が定めたライセンスです。LGPLのLはLesser（以前はLibrary）を表します。</span>です。
 GPLのライブラリを組み込んだプログラムを配布するときは、そのプログラムのソースコードも公開する義務があるため、商用の製品に使うときは慎重に判断します。
 LGPLはこの義務を緩めたもので、ライブラリをリンクして使うだけなら、自分のプログラムのソースコードを公開する義務はありません。
 
@@ -1083,7 +1083,7 @@ mvn dependency:purge-local-repository
 
 ### もう1つのビルドツール：Gradle
 
-Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールです。
+Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールです<span class="footnote">Gradleは、Androidアプリの開発で標準のビルドツールとして使われています。</span>。
 Mavenは`pom.xml`にXMLで設定を書きますが、Gradleは`build.gradle`（Groovy DSL）または`build.gradle.kts`（Kotlin DSL）に設定を書きます。
 DSL（ドメイン固有言語）は、ビルドの設定のような特定の目的のために作られた言語のことです。
 ライブラリはMavenと同じ座標（`groupId`、`artifactId`、`version`）で指定し、Maven Centralから取得できます。
@@ -1229,6 +1229,6 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
 3. チャレンジ課題
     + 複数のライブラリを組み合わせた実用的なアプリケーション開発
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">本章の演習は、題材ごとに`documentation`と`api-design`の2つのフォルダーに分かれ、それぞれに`basic`・`advanced`・`challenge`のフォルダーがあります。たとえば`https://github.com/Nagatani/techbook-java-primer/blob/main/exercises/chapter22/documentation/basic/README.md`です。</span>。
 
 基礎課題が完了したら、第23章「ビルドとデプロイ」に進みましょう。
