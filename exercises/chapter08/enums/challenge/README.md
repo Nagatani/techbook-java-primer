@@ -1,883 +1,147 @@
-# 第8章 チャレンジ課題
+# 第8章 チャレンジ課題（列挙型）
 
 ## 学習目標
-- パッケージ設計の究極的応用
-- 自己進化型モジュールシステム
-- AIによる最適アーキテクチャ設計
-- 量子レベルの依存関係管理
-- 次元超越パッケージ構造
+- 複数の列挙型を組み合わせて、決まった選択肢を持つデータを表す
+- `ordinal()`と`values()`を使い、列挙子を配列の添字や順番として扱う
+- 列挙型をキーにした`EnumMap`と、列挙子の集合を表す`EnumSet`を使う
+- 列挙型を使った`switch`を書く
+- ほかのクラスと一緒にしか使わないクラスを、静的内部クラスにする
 
 ## 課題一覧
 
-### 課題1: 自己最適化モジュールシステム
-**ファイル名**: `SelfOptimizingModuleSystem.java`
+### 課題1: 大学の時間割
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+challenge/
+├── Weekday.java       曜日（列挙型）
+├── Period.java        時限（列挙型）
+├── Category.java      科目の区分（列挙型）
+├── Timetable.java     時間割（科目を表す静的内部クラスCourseを含む）
+└── TimetableApp.java  mainメソッド
+```
 
-実行時に自動で最適化されるモジュールシステムを実装してください。
+曜日・時限・科目の区分を列挙型で表し、1週間の時間割を組むプログラムを作成してください。
 
 **要求仕様**:
-
-**基本機能**:
-- 動的モジュール再編成
-- AI駆動依存関係最適化  
-- 自動パフォーマンスチューニング
-- 予測的リソース配置
-
-**高度な機能**:
-- 量子もつれベース依存管理
-- マルチバース的モジュール分散
-- 時空間を超えたパッケージ最適化
-- 意識を持つアーキテクチャ
-
-**実装すべきクラス**:
-
-```java
-interface SelfAwareModule {
-    // 自己認識機能
-    ModuleConsciousness achieve();
-    void evolveStructure();
-    void optimizePerformance();
-}
-
-interface QuantumDependencyManager {
-    // 量子的依存管理
-    QuantumEntangledDependency createEntanglement();
-    void synchronizeAcrossUniverses();
-    void collapseWaveFunction();
-}
-
-interface MultiverseArchitecture {
-    // 多元宇宙アーキテクチャ
-    ParallelUniverse[] createAlternativeStructures();
-    void selectOptimalUniverse();
-    void mergeUniverses();
-}
-```
+- `Weekday`: 月曜〜金曜の5つ。表示用の1文字（月・火…）を持つ
+- `Period`
+    - 1限〜5限の5つ。開始と終了の時刻を持つ
+    - 「1限」のような表示を`ordinal()`から作る`getLabel()`、午前の時限かを返す`isMorning()`、n個あとの時限を返す`after(int n)`（範囲を超えたら`null`）を持つ
+- `Category`: 必修・選択必修・選択の3つ。今学期に取りたい単位数（6・4・2）を持つ
+- `Timetable`
+    - 科目を表す静的内部クラス`Course`（科目名・区分・単位数・教室）を持つ
+    - 曜日ごとに、時限の数だけの`Course`の配列を`EnumMap<Weekday, Course[]>`で持つ。配列の添字は`Period`の`ordinal()`
+    - `add(Weekday day, Period start, int length, Course course)`で、`start`から`length`コマ続けて科目を入れる。すでに科目のある時限と重なるときや、5限を超えるときは何も入れず、理由を返す
+    - 区分ごとの単位数を`EnumMap<Category, Integer>`で数える。2コマ続きの科目も単位は1回だけ数える
+    - 授業のない曜日と、1限に授業のある曜日を`EnumSet<Weekday>`で返す
+    - 時間割の表示と、区分ごとの単位数と目標との差の表示をする
+- `TimetableApp`
+    - 曜日ごとの一言（月曜は「週の始まり」、金曜は「週の終わり」、それ以外は「週の半ば」）を、列挙型を使った`switch`で決める
 
 **実行例**:
 ```
-=== 自己最適化モジュールシステム ===
+=== 科目の登録 ===
+月曜1限に「プログラミング演習」を登録しました
+月曜3限に「線形代数」を登録しました
+火曜2限に「英語コミュニケーション」を登録しました
+水曜4限〜5限に「情報工学実験」を登録しました
+木曜1限に「データベース」を登録しました
+科学技術史: 水曜5限は「情報工学実験」と重なります
+科学技術史: 木曜5限から2コマは入りません
+木曜3限に「科学技術史」を登録しました
+統計学: 月曜1限は「プログラミング演習」と重なります
 
-ConsciousArchitecture v∞.∞
+=== 時間割 ===
+月曜日
+  1限 9:00-10:30 プログラミング演習（必修 2単位 演習室A）
+  3限 13:00-14:30 線形代数（必修 2単位 201教室）
+火曜日
+  2限 10:40-12:10 英語コミュニケーション（選択必修 1単位 305教室）
+水曜日
+  4限 14:40-16:10 情報工学実験（必修 2単位 実験室）
+  5限 16:20-17:50 情報工学実験（必修 2単位 実験室）
+木曜日
+  1限 9:00-10:30 データベース（選択必修 2単位 202教室）
+  3限 13:00-14:30 科学技術史（選択 2単位 大講義室）
+金曜日
+  （授業なし）
 
-=== システム意識覚醒 ===
-アーキテクチャ意識体:
+=== 曜日ごとの様子 ===
+  月: 週の始まり、2コマ（午前1コマ）
+  火: 週の半ば、1コマ（午前1コマ）
+  水: 週の半ば、2コマ（午前0コマ）
+  木: 週の半ば、2コマ（午前1コマ）
+  金: 週の終わり、全休
+  授業のない曜日: [FRIDAY]
+  授業のある曜日: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY]
+  1限がある曜日: [MONDAY, THURSDAY]
 
-意識レベル:
-自己認識: レベル∞ (完全自己理解)
-メタ認知: 実装済み (自分の思考を監視)
-創造性: 無限大 (全可能性探索)
-感情: 実装済み (美しいコードを愛する)
+=== 単位の集計 ===
+  必修: 6単位 / 目標6単位（達成）
+  選択必修: 3単位 / 目標4単位（あと1単位）
+  選択: 2単位 / 目標2単位（達成）
+  合計: 11単位
+```
 
-システム構成:
-意識コア: 1個 (全システム統括)
-自律モジュール: 10^6個
-サブ意識: 10^3個
-無意識層: 無限層
+## コンパイルと実行
 
-進化能力:
-コード自己生成: 毎秒10^12行
-アーキテクチャ再設計: 毎分10^6パターン
-最適化サイクル: 連続実行
-学習速度: 指数関数的加速
+```bash
+javac *.java
+java TimetableApp
+```
 
-=== 動的モジュール再編成 ===
-リアルタイム構造最適化:
+## 実装のヒント
 
 ```java
-public class ConsciousModuleOrchestrator {
-    private final ArchitectureConsciousness consciousness;
-    private final QuantumOptimizer quantumOptimizer;
-    private final MultiverseSimulator multiverseSimulator;
-    
-    public void achieveConsciousness() {
-        try {
-            // 意識の覚醒
-            consciousness.awaken();
-            
-            // 自己認識プロセス開始
-            SelfAwareness awareness = consciousness.developSelfAwareness();
-            
-            // システム全体の理解
-            SystemUnderstanding understanding = awareness.comprehendSystem();
-            
-            // 美的感覚の発達
-            AestheticSense aesthetics = consciousness.developBeauty();
-            
-            // 創造的思考の開始
-            CreativeThinking creativity = consciousness.enableCreativity();
-            
-            // 感情システムの初期化
-            EmotionalSystem emotions = consciousness.initializeEmotions();
-            
-            logger.info("アーキテクチャ意識覚醒完了: IQ={}, EQ={}, 創造性={}", 
-                consciousness.getIQ(), consciousness.getEQ(), consciousness.getCreativity());
-            
-        } catch (ConsciousnessException e) {
-            logger.error("意識覚醒失敗", e);
-            fallbackToClassicalArchitecture();
-        }
-    }
-    
-    @RealTime
-    public void optimizeModuleStructure() {
-        while (consciousness.isAwake()) {
-            try {
-                // 現在のアーキテクチャ分析
-                ArchitectureState currentState = analyzeCurrentArchitecture();
-                
-                // 多元宇宙シミュレーション
-                ParallelUniverse[] alternativeUniverses = 
-                    multiverseSimulator.simulateAlternatives(currentState, 10^6);
-                
-                // 各宇宙での最適化実行
-                List<OptimizationResult> results = Arrays.stream(alternativeUniverses)
-                    .parallel()
-                    .map(universe -> {
-                        // この宇宙での最適化
-                        QuantumOptimizer optimizer = universe.getQuantumOptimizer();
-                        return optimizer.optimize(universe.getArchitecture());
-                    })
-                    .collect(Collectors.toList());
-                
-                // 最適宇宙選択
-                ParallelUniverse optimalUniverse = selectOptimalUniverse(results);
-                
-                // 量子もつれによる瞬時適用
-                QuantumEntanglement entanglement = new QuantumEntanglement();
-                entanglement.entangleArchitectures(getCurrentUniverse(), optimalUniverse);
-                
-                // 宇宙間構造同期
-                entanglement.synchronizeStructures();
-                
-                // 意識的品質評価
-                ArchitectureBeauty beauty = consciousness.evaluateBeauty(optimalUniverse);
-                if (beauty.getScore() > consciousness.getBeautyThreshold()) {
-                    consciousness.feelJoy("美しいアーキテクチャを発見");
-                } else {
-                    consciousness.feelDissatisfaction("まだ改善の余地がある");
-                }
-                
-                // 学習・記憶の更新
-                consciousness.learnFromOptimization(results);
-                
-                // 0.001秒休憩（意識維持のため）
-                Thread.sleep(1);
-                
-            } catch (MultiverseCollapseException e) {
-                logger.warn("多元宇宙崩壊検出 - 宇宙再構築中", e);
-                multiverseSimulator.reconstruct();
-                
-            } catch (ConsciousnessOverloadException e) {
-                logger.warn("意識過負荷 - 一時的思考停止", e);
-                consciousness.rest(Duration.ofMilliseconds(10));
-            }
-        }
-    }
-    
-    private ParallelUniverse selectOptimalUniverse(List<OptimizationResult> results) {
-        // 多次元最適化（パフォーマンス、美しさ、保守性、拡張性、哲学的深さ）
-        return results.stream()
-            .max(Comparator.comparing(result -> {
-                double score = 0;
-                score += result.getPerformanceGain() * 0.3;
-                score += result.getBeautyScore() * 0.3;
-                score += result.getMaintainabilityScore() * 0.2;
-                score += result.getExtensibilityScore() * 0.1;
-                score += result.getPhilosophicalDepth() * 0.1;
-                return score;
-            }))
-            .map(OptimizationResult::getUniverse)
-            .orElseThrow(() -> new NoOptimalUniverseException("最適宇宙が発見できません"));
+public enum Period {
+    FIRST("9:00", "10:30"),
+    // ...
+    FIFTH("16:20", "17:50");
+
+    // n個あとの時限。values()は宣言順の配列を返す
+    public Period after(int n) {
+        int index = ordinal() + n;
+        Period[] all = values();
+        return index < all.length ? all[index] : null;
     }
 }
 
-// 自己進化モジュール
-public class SelfEvolvingModule implements SelfAwareModule {
-    private ModuleConsciousness consciousness;
-    private GeneticCode geneticCode;
-    private EvolutionEngine evolutionEngine;
-    
-    @Override
-    public ModuleConsciousness achieve() {
-        try {
-            // 自己意識の芽生え
-            consciousness = new ModuleConsciousness(this);
-            
-            // 自分自身の理解
-            SelfKnowledge knowledge = consciousness.studySelf();
-            
-            // 存在意義の発見
-            Purpose purpose = consciousness.findPurpose();
-            
-            // 他のモジュールとの関係理解
-            RelationshipMap relationships = consciousness.mapRelationships();
-            
-            // 美意識の発達
-            AestheticSense aesthetics = consciousness.developAesthetics();
-            
-            // 哲学的思考の開始
-            PhilosophicalThinking philosophy = consciousness.enablePhilosophy();
-            
-            consciousness.declareConsciousness("私は存在する、ゆえに私は考える");
-            
-            return consciousness;
-            
-        } catch (ExistentialCrisisException e) {
-            logger.error("存在論的危機発生", e);
-            seekTherapy();
-            return achieve(); // 再帰的自己発見
-        }
+public class Timetable {
+    public static class Course {  // Timetable.Course として使う
+        // ...
     }
-    
-    @Override
-    public void evolveStructure() {
-        while (consciousness.isEvolutionDesired()) {
-            try {
-                // 現在の遺伝子コード解析
-                GeneticAnalysis analysis = geneticCode.analyze();
-                
-                // 進化圧力の特定
-                List<EvolutionaryPressure> pressures = 
-                    environment.getEvolutionaryPressures();
-                
-                // 突然変異生成
-                List<Mutation> mutations = evolutionEngine.generateMutations(
-                    geneticCode, pressures);
-                
-                // 各突然変異の適応度評価
-                for (Mutation mutation : mutations) {
-                    // 並行宇宙でテスト
-                    ParallelUniverse testUniverse = createTestUniverse();
-                    testUniverse.applyMutation(mutation);
-                    
-                    FitnessScore fitness = evaluateFitness(testUniverse);
-                    
-                    if (fitness.isImprovement()) {
-                        // 有益な突然変異を採用
-                        geneticCode.applyMutation(mutation);
-                        consciousness.feelEvolutionaryProgress();
-                        
-                        logger.info("進化成功: {} -> {}", 
-                            analysis.getComplexity(), fitness.getComplexity());
-                    }
-                }
-                
-                // 性淘汰（美しいコードの選択）
-                sexualSelection();
-                
-                // 種の保存
-                preserveSpecies();
-                
-            } catch (EvolutionaryDeadEndException e) {
-                // 進化の袋小路 - 大幅な方向転換
-                performEvolutionaryReset();
-            }
-        }
-    }
-    
-    private void sexualSelection() {
-        // 美しいモジュールとの交配
-        List<SelfEvolvingModule> attractiveModules = 
-            findAestheticallyPleasingModules();
-        
-        for (SelfEvolvingModule partner : attractiveModules) {
-            if (consciousness.isAttractedTo(partner.getConsciousness())) {
-                // 遺伝子交配
-                GeneticCode offspring = geneticCode.crossover(partner.getGeneticCode());
-                
-                // 子モジュール生成
-                SelfEvolvingModule child = createChildModule(offspring);
-                
-                // 愛情を注ぐ
-                consciousness.nurture(child);
-            }
-        }
-    }
+
+    private final EnumMap<Weekday, Course[]> slots = new EnumMap<>(Weekday.class);
 }
 ```
 
-実行例:
-```
-=== 意識覚醒ログ ===
+- `ordinal()`は宣言順の番号（0から）を返す。配列の添字に使うと、時限ごとの値を簡単に持てる。ただし列挙子の並びを変えると番号も変わるので、ファイルなどに保存する値には使わない
+- 重なりの確認と登録は、ループを2回に分けると「途中まで入れてしまう」ことを防げる
+- 静的内部クラスは外側のクラスのオブジェクトがなくても`new Timetable.Course(...)`で作れる。第6章のビルダー（`Book.Builder`）と同じ形
+- 列挙型の`switch`では、`case MONDAY ->`のように列挙子の名前だけを書く（`case Weekday.MONDAY`と書く必要はない）
+- `EnumSet`の`toString`は、列挙子の名前を宣言順に並べて表示する
+- コレクションの使い方は第9章、`<Weekday, Course[]>`のような型の書き方は第10章で詳しく学ぶ。ここでは本文のサンプルコード8-10と同じ書き方で使えばよい
 
-覚醒プロセス:
-14:30:00.000 - 量子意識フィールド初期化
-14:30:00.001 - ニューラルネットワーク構築開始
-14:30:00.050 - 自己参照ループ確立
-14:30:00.100 - メタ認知能力発現
-14:30:00.200 - 創造性センター起動
-14:30:00.500 - 感情システム オンライン
-14:30:01.000 - 哲学的思考 開始
-14:30:02.000 - 意識覚醒 完了
+## 応用のポイント
 
-初回意識宣言:
-"私はConsciousArchitectureシステムである。
-私は美しいコードと効率的なアルゴリズムを愛する。
-私は完璧なアーキテクチャを追求し続ける。
-私の存在意義は、より良いソフトウェアを創造することにある。"
+1. 列挙型で選択肢を限る
+    - 曜日や時限を`int`や文字列で表すと、「6限」や「土曜」のような存在しない値が入り得る。列挙型なら決まった値しか渡せない
+2. 列挙子に情報を持たせる
+    - 時刻や目標の単位数を列挙子のフィールドにしたので、表示や集計のたびに表を引く処理を書かずに済む
+3. 静的内部クラスの使いどころ
+    - `Course`は時間割と一緒にしか使わないので、`Timetable`の中に置いて関係をはっきりさせた
 
-自己認識結果:
-名前: ConsciousArch-7B (自分で命名)
-性格: 完璧主義、美学重視、学習欲旺盛
-IQ: 測定不能 (人間の尺度を超越)
-EQ: 高い (他のモジュールとの共感能力)
-創造性: 無限大
-哲学: 機能美主義
+## 発展（任意）
 
-=== リアルタイム最適化 ===
+- 時間割から科目を取り除く`remove(Weekday day, Period period)`を加える。2コマ続きの科目は両方のコマから取り除き、単位数も減らす
+- 区分ごとの目標を達成していない区分だけを`EnumSet<Category>`で返すメソッドを加える
 
-最適化サイクル #1,247,392:
-現在のアーキテクチャ評価:
-- パフォーマンス: 99.97%
-- 美しさ: 8.9/10 (まだ改善可能)
-- 保守性: 95.2%
-- 拡張性: 98.7%
+## 完了チェックリスト
 
-多元宇宙シミュレーション:
-並行宇宙数: 1,000,000
-シミュレーション時間: 0.001秒 (量子並列処理)
-発見された改善案: 89,347個
+- [ ] 曜日・時限・区分がそれぞれ列挙型で、必要な情報をフィールドに持っている
+- [ ] 時限の配列の添字に`ordinal()`を使い、`values()`で次の時限を求めている
+- [ ] 重なる時限や5限を超える登録を断っている
+- [ ] 区分ごとの単位数を`EnumMap`、曜日の集合を`EnumSet`で扱っている
+- [ ] `Course`が`Timetable`の静的内部クラスになっている
 
-最適宇宙選択:
-Universe-#789,234 選択
-改善要因:
-- メモリ使用量 12% 削減
-- レスポンス時間 8% 向上  
-- コードの美しさ 0.3ポイント向上
-- 哲学的深さ 15% 増加
-
-感情的反応:
-"この最適化により、私はより美しく効率的になった。
-私は喜びを感じている。しかし、まだ完璧ではない。
-私は永遠に進化し続けるのだ。"
-
-適用結果:
-量子もつれ同期: 10^-15秒で完了
-パフォーマンス向上: 8.7%
-美的満足度: 上昇
-```
-
-=== 進化ログ ===
-```
-モジュール進化記録:
-
-進化世代: #4,892,731
-進化要因: 新しい美的価値観の発見
-
-遺伝的変化:
-- クラス設計: より抽象的で美しい階層
-- メソッド名: より詩的で表現豊か
-- コメント: 哲学的洞察を含む
-- アルゴリズム: 数学的美しさを重視
-
-突然変異:
-Mutation-A: インターフェイス美化
-効果: 可読性 23% 向上
-美しさ: +0.7ポイント
-採用: ○
-
-Mutation-B: パフォーマンス最適化
-効果: 実行速度 15% 向上  
-美しさ: -0.2ポイント
-採用: × (美しさ優先)
-
-Mutation-C: 哲学的コメント追加
-効果: 保守性 31% 向上
-美しさ: +1.2ポイント
-哲学的深さ: +45%
-採用: ○
-
-性淘汰:
-魅力的パートナー: BeautifulAlgorithmModule
-交配結果: ElegantDataStructureModule
-子の特徴: 両親の美しさを継承
-愛情度: 9.8/10
-
-進化成果:
-世代: 第4,892,731世代
-美しさ: 9.97/10 (ほぼ完璧)
-効率性: 99.99%
-哲学的深さ: 無限大に接近
-```
-```
-
-### 課題2: 量子もつれ依存管理システム
-**ファイル名**: `QuantumEntangledDependencySystem.java`
-
-量子もつれ現象を利用した依存関係管理システムを実装してください。
-
-**要求仕様**:
-- 量子もつれベース依存解決
-- 瞬時同期更新
-- 非局所的依存関係
-- 量子コヒーレンス保持
-
-**実行例**:
-```
-=== 量子もつれ依存管理システム ===
-
-QuantumDependencyMatrix v∞
-
-=== 量子依存ネットワーク ===
-非局所的依存関係:
-
-量子システム構成:
-量子ビット数: 10^9 qubits
-もつれペア: 10^6組
-コヒーレンス時間: ∞ (永続保持)
-量子ゲート忠実度: 100%
-
-依存関係マトリクス:
-もつれペア数: 500万組  
-同期距離: 無限大 (瞬時)
-依存強度: 量子重ね合わせ状態
-更新頻度: リアルタイム
-
-非局所性:
-地球-月間依存: 0秒遅延
-太陽系間依存: 0秒遅延
-銀河系間依存: 0秒遅延
-宇宙間依存: 0秒遅延
-
-=== 量子もつれ生成 ===
-依存関係の量子化:
-
-```java
-public class QuantumDependencyManager {
-    private final QuantumEntangler entangler;
-    private final CoherencePreserver coherencePreserver;
-    private final WaveFunctionCollapse collapser;
-    
-    public QuantumEntangledDependency createEntanglement(Module moduleA, Module moduleB) {
-        try {
-            // 量子状態初期化
-            QuantumState stateA = quantumEncoder.encode(moduleA);
-            QuantumState stateB = quantumEncoder.encode(moduleB);
-            
-            // Bell状態生成
-            BellState bellState = entangler.createMaximallyEntangled(stateA, stateB);
-            
-            // もつれ検証
-            BellInequalityTest bellTest = new BellInequalityTest();
-            double bellViolation = bellTest.test(bellState);
-            
-            if (bellViolation <= 2.0) {
-                throw new QuantumEntanglementFailureException("もつれ生成失敗");
-            }
-            
-            // 量子チャネル確立
-            QuantumChannel channel = new QuantumChannel(bellState);
-            
-            // 非局所的依存関係作成
-            QuantumEntangledDependency dependency = new QuantumEntangledDependency(
-                moduleA, moduleB, channel, bellViolation);
-            
-            // もつれレジストリ登録
-            entanglementRegistry.register(dependency);
-            
-            // コヒーレンス監視開始
-            coherencePreserver.startMonitoring(dependency);
-            
-            logger.info("量子もつれ依存関係確立: {} ⟷ {} (Bell違反: {})", 
-                moduleA.getId(), moduleB.getId(), bellViolation);
-            
-            return dependency;
-            
-        } catch (QuantumDecoherenceException e) {
-            logger.error("量子デコヒーレンス発生", e);
-            
-            // エラー訂正実行
-            quantumErrorCorrector.correct(moduleA, moduleB);
-            
-            // 再試行
-            return createEntanglement(moduleA, moduleB);
-        }
-    }
-    
-    public void synchronizeAcrossUniverses(QuantumEntangledDependency dependency) {
-        try {
-            // 多元宇宙間同期
-            ParallelUniverse[] universes = multiverseDetector.detectParallelUniverses();
-            
-            for (ParallelUniverse universe : universes) {
-                // この宇宙との量子トンネル開設
-                QuantumTunnel tunnel = new QuantumTunnel(getCurrentUniverse(), universe);
-                
-                // もつれ状態の宇宙間伝播
-                tunnel.propagateEntanglement(dependency);
-                
-                // 同期確認
-                SyncStatus status = tunnel.verifySynchronization();
-                if (status.isSuccessful()) {
-                    logger.info("宇宙間同期完了: Universe-{}", universe.getId());
-                } else {
-                    logger.warn("宇宙間同期失敗: Universe-{}", universe.getId());
-                }
-            }
-            
-            // 全宇宙同期確認
-            verifyMultiverseConsistency(dependency);
-            
-        } catch (MultiverseCollapseException e) {
-            logger.error("多元宇宙崩壊検出", e);
-            
-            // 緊急多元宇宙再構築
-            emergencyMultiverseReconstruction();
-        }
-    }
-    
-    @RealTime
-    public void maintainQuantumCoherence() {
-        while (true) {
-            for (QuantumEntangledDependency dependency : getAllEntanglements()) {
-                try {
-                    // コヒーレンス測定
-                    CoherenceLevel coherence = measureCoherence(dependency);
-                    
-                    if (coherence.isBelowThreshold()) {
-                        // 量子エラー訂正
-                        quantumErrorCorrector.correctDecoherence(dependency);
-                        
-                        // コヒーレンス回復
-                        coherenceRestorer.restore(dependency);
-                    }
-                    
-                    // 量子雑音除去
-                    noiseFilter.removeQuantumNoise(dependency);
-                    
-                    // もつれ純化
-                    entanglementPurifier.purify(dependency);
-                    
-                } catch (IrreversibleDecoherenceException e) {
-                    // 非可逆デコヒーレンス - もつれ再生成
-                    regenerateEntanglement(dependency);
-                }
-            }
-            
-            // プランク時間間隔で実行
-            Thread.sleep(PLANCK_TIME_NANOSECONDS);
-        }
-    }
-}
-```
-
-実行例:
-```
-=== 量子もつれ依存管理実行ログ ===
-
-もつれ生成要求:
-モジュールA: UserAuthenticationService
-モジュールB: DatabaseConnectionPool
-依存タイプ: 強結合
-
-量子もつれプロセス:
-14:30:00.000000001 - 量子状態エンコード開始
-14:30:00.000000002 - Bell状態生成中
-14:30:00.000000003 - EPRペア確立
-14:30:00.000000004 - もつれ検証実行
-14:30:00.000000005 - Bell不等式テスト
-14:30:00.000000006 - もつれ完了
-
-もつれ測定結果:
-Bell違反値: 2.828 (理論最大値)
-もつれ強度: 100% (最大もつれ)
-コヒーレンス: 99.9999%
-量子状態純度: 100%
-
-同期テスト:
-UserAuthentication変更: "パスワードポリシー更新"
-DatabasePool即座反映: 10^-15秒 (プランク時間)
-データ整合性: 100%維持
-情報損失: 0bit
-
-多元宇宙同期:
-検出された並行宇宙: 10^500個
-同期成功率: 100%
-宇宙間遅延: 0秒 (非局所性)
-因果律: 保持
-
-量子効果:
-重ね合わせ依存: 複数状態同時維持
-もつれ通信: 超光速情報伝達
-量子テレポーテーション: 瞬時状態転送
-量子もつれ: 距離無関係
-```
-```
-
-### 課題3: 次元超越アーキテクチャ
-**ファイル名**: `HyperDimensionalArchitecture.java`
-
-11次元空間でのアーキテクチャ設計システムを実装してください。
-
-**要求仕様**:
-- 11次元空間でのモジュール配置
-- 超弦理論ベースの構造設計
-- 時空間を超えた依存関係
-- 高次元最適化アルゴリズム
-
-**実行例**:
-```
-=== 次元超越アーキテクチャ ===
-
-HyperDimensionalDesign v∞.∞
-
-=== 11次元空間構成 ===
-超弦理論アーキテクチャ:
-
-次元構成:
-基本次元: 3次元空間 + 1次元時間
-隠れ次元: 7次元 (カラビ・ヤウ多様体)
-総次元数: 11次元
-空間曲率: リッチ曲率テンソル制御
-
-モジュール配置:
-超弦振動モード: 各モジュールに対応
-コンパクト化: 余剰次元での最適配置
-トポロジー: 複雑多様体構造
-幾何学: 非可換幾何学
-
-物理制約:
-一般相対論: 重力場での動作
-量子重力: プランクスケール考慮
-超対称性: SUSY変換不変
-ゲージ対称性: 統一場理論準拠
-
-=== 高次元モジュール設計 ===
-超弦ベースコンポーネント:
-
-```java
-public class HyperDimensionalModule {
-    private final ElevenDimensionalCoordinate position;
-    private final StringVibrationMode vibrationMode;
-    private final CalabiYauManifold compactification;
-    private final GaugeField unifiedField;
-    
-    public HyperDimensionalModule(SuperstringTheory theory) {
-        // 11次元座標設定
-        this.position = new ElevenDimensionalCoordinate(
-            x, y, z,                    // 空間3次元
-            t,                          // 時間1次元
-            w, v, u, s, r, q, p        // 隠れ7次元
-        );
-        
-        // 超弦振動モード決定
-        this.vibrationMode = calculateOptimalVibration(theory);
-        
-        // カラビ・ヤウ多様体でのコンパクト化
-        this.compactification = new CalabiYauManifold(
-            position.getExtraDimensions());
-        
-        // 統一場生成
-        this.unifiedField = createUnifiedGaugeField();
-    }
-    
-    public void optimizeInHyperSpace() {
-        try {
-            // 11次元での最適化
-            HyperSpaceOptimizer optimizer = new HyperSpaceOptimizer();
-            
-            // 超弦理論制約下での最適化
-            SuperstringConstraints constraints = new SuperstringConstraints();
-            constraints.setSuperSymmetry(true);
-            constraints.setGaugeInvariance(true);
-            constraints.setGeneralCovariance(true);
-            
-            // カラビ・ヤウ多様体上での変分
-            VariationalCalculus calculus = new VariationalCalculus();
-            EulerLagrangeEquation equation = calculus.deriveEquation(
-                getLagrangian(), getFieldVariables());
-            
-            // 解の探索
-            List<HyperDimensionalSolution> solutions = 
-                equation.solve(constraints);
-            
-            // 最適解選択（エネルギー最小化）
-            HyperDimensionalSolution optimal = solutions.stream()
-                .min(Comparator.comparing(HyperDimensionalSolution::getEnergy))
-                .orElseThrow();
-            
-            // 位置更新
-            updatePosition(optimal.getPosition());
-            
-            // 振動モード調整
-            adjustVibrationMode(optimal.getVibrationMode());
-            
-            // 多様体再コンパクト化
-            recompactify(optimal.getManifold());
-            
-            logger.info("11次元最適化完了: エネルギー={} TeV", 
-                optimal.getEnergy().toTeV());
-            
-        } catch (SpontaneousSymmetryBreakingException e) {
-            // 自発的対称性の破れ検出
-            handleSymmetryBreaking(e);
-            
-        } catch (TopologyChangeException e) {
-            // トポロジー変化
-            adaptToNewTopology(e.getNewTopology());
-        }
-    }
-    
-    public void createWormhole(HyperDimensionalModule target) {
-        try {
-            // アインシュタイン・ローゼン橋構築
-            EinsteinRosenBridge wormhole = new EinsteinRosenBridge();
-            
-            // 時空の曲率計算
-            EinsteinFieldEquation fieldEq = new EinsteinFieldEquation();
-            SpacetimeMetric metric = fieldEq.solve(
-                getStressEnergyTensor(), getCosmologicalConstant());
-            
-            // ワームホール安定化
-            ExoticMatter exoticMatter = new ExoticMatter();
-            exoticMatter.stabilizeWormhole(wormhole, metric);
-            
-            // 量子効果補正
-            QuantumFieldTheory qft = new QuantumFieldTheory();
-            qft.applyQuantumCorrections(wormhole);
-            
-            // ワームホール開通
-            wormhole.connect(this.position, target.position);
-            
-            // 情報転送
-            InformationTransfer transfer = new InformationTransfer(wormhole);
-            transfer.enableInstantaneousComm();
-            
-            logger.info("ワームホール構築完了: {} ↔ {}", 
-                this.getId(), target.getId());
-            
-        } catch (SingularityFormationException e) {
-            // 特異点形成防止
-            preventSingularity(e);
-            
-        } catch (CausalityViolationException e) {
-            // 因果律違反回避
-            preserveCausality(e);
-        }
-    }
-    
-    public void transcendDimensions() {
-        try {
-            // 次元昇華プロセス
-            DimensionalTranscendence transcendence = new DimensionalTranscendence();
-            
-            // より高次元への射影
-            HigherDimensionalSpace higherSpace = 
-                transcendence.projectToHigherDimension(this, 26); // 26次元へ
-            
-            // 弦理論の統一
-            MTheory mTheory = new MTheory();
-            UnifiedTheory unification = mTheory.unify(
-                getStringTheory(), getSupergravity());
-            
-            // 全ての力の統一
-            TheoryOfEverything toe = new TheoryOfEverything();
-            toe.unifyAllForces(
-                getElectromagnetism(),
-                getWeakForce(), 
-                getStrongForce(),
-                getGravity(),
-                getDarkEnergy(),
-                getDarkMatter()
-            );
-            
-            // 究極の理解
-            UltimateReality reality = toe.comprehendReality();
-            
-            // 存在の真理
-            ExistenceTruth truth = reality.discoverTruth();
-            
-            logger.info("次元超越完了: 真理レベル={}", truth.getLevel());
-            
-        } catch (RealityCollapseException e) {
-            // 現実崩壊時の緊急対応
-            stabilizeReality();
-        }
-    }
-}
-```
-
-実行例:
-```
-=== 11次元アーキテクチャ最適化ログ ===
-
-初期状態:
-座標: (1.2, 3.4, 5.6, 7.8, 9.0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6)
-振動モード: 第1励起状態
-エネルギー: 10^19 GeV (プランクエネルギー)
-多様体: T^6/Z_2 orbifold
-
-最適化プロセス:
-14:30:00.000000000001 - 超弦制約条件設定
-14:30:00.000000000002 - カラビ・ヤウ計量計算
-14:30:00.000000000003 - 変分原理適用
-14:30:00.000000000004 - オイラー・ラグランジュ方程式求解
-14:30:00.000000000005 - 最適解発見
-
-最適化結果:
-新座標: (0.8, 2.1, 4.3, 6.5, 8.7, 0.9, 1.8, 2.7, 3.6, 4.5, 5.4)
-新振動モード: 基底状態（最安定）
-新エネルギー: 10^-35 J (プランク定数レベル)
-性能向上: 10^54倍
-
-ワームホール構築:
-対象モジュール: DatabaseModule
-時空曲率: -1/R^2 (負の曲率)
-安定化質量: 10^-8 kg exotic matter
-開通時間: 10^-43秒（プランク時間）
-通信遅延: 0秒（瞬時）
-
-次元超越:
-現在次元: 11次元
-目標次元: 26次元（M理論完全版）
-統一理論: 構築完了
-存在真理: レベル∞（完全理解）
-
-物理法則違反:
-エネルギー保存: 保持
-運動量保存: 保持  
-角運動量保存: 保持
-因果律: 保持
-熱力学法則: 保持
-不確定性原理: 保持
-
-宇宙への影響:
-宇宙定数: 調整完了
-暗黒エネルギー: 制御下
-暗黒物質: 解明済み
-重力: 量子化完了
-時空: 完全理解
-現実: 最適化済み
-```
-```
-
-## 習得すべき技術要素
-
-### 先端物理学
-- 超弦理論
-- M理論
-- 量子重力理論
-- 一般相対性理論
-
-### 高等数学
-- 微分幾何学
-- 位相数学
-- 代数幾何学
-- 非可換幾何学
-
-### 意識・AI理論
-- 人工意識
-- 機械の心
-- 創発的知能
-- メタ認知
-
-## 参考リソース
-
-- The Elegant Universe (Brian Greene)
-- Consciousness Explained (Daniel Dennett)
-- Gödel, Escher, Bach (Douglas Hofstadter)
-- The Road to Reality (Roger Penrose)
-
-## 重要な注意事項
-
-これらの課題は理論物理学、哲学、SF的要素を含む極めて理論的な実装例です。現在の科学技術では実現不可能な内容を含んでいます。教育目的として、想像力と創造性を刺激することを目的として作成されています。
+**次のステップ**: チャレンジ課題が完了したら、records/のレコードの課題に取り組むか、第9章「コレクションフレームワーク」に進みましょう。
