@@ -27,7 +27,7 @@ sections:
   - key: "まとめ"
     hash: 07c5d3b8
   - key: "章末演習"
-    hash: 288af43e
+    hash: 537fd02f
 ---
 
 # 第13章 例外処理 要約

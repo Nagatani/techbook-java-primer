@@ -10,8 +10,10 @@
 
 ## 課題一覧
 
+このフォルダーには解答例のコードを置いていません。各課題の「作成するファイル」は、自分で作成するファイルの名前の例です。近い内容の解答例とテストは[solutions/](../solutions/)にあります。
+
 ### 課題1: 基本的な例外処理
-**ファイル名**: `BasicExceptionHandling.java`, `BasicExceptionTest.java`
+**作成するファイル**: `BasicExceptionHandling.java`, `BasicExceptionTest.java`
 
 基本的な例外処理を実装し、try-catch-finallyの動作を理解してください。
 
@@ -60,7 +62,7 @@ NumberFormatException発生: 数値変換に失敗しました
 
 
 ### 課題2: カスタム例外クラス設計
-**ファイル名**: `BankAccountException.java`, `InsufficientFundsException.java`, `InvalidAccountException.java`, `BankAccount.java`, `CustomExceptionTest.java`
+**作成するファイル**: `BankAccountException.java`, `InsufficientFundsException.java`, `InvalidAccountException.java`, `BankAccount.java`, `CustomExceptionTest.java`
 
 銀行口座システムのカスタム例外を設計し、ビジネスロジックに応じた例外処理を実装してください。
 
@@ -117,7 +119,7 @@ NumberFormatException発生: 数値変換に失敗しました
 
 
 ### 課題3: ファイル操作とリソース管理
-**ファイル名**: `FileProcessor.java`, `ResourceManagerTest.java`
+**作成するファイル**: `FileProcessor.java`, `ResourceManagerTest.java`
 
 ファイル操作におけるリソース管理と例外処理を実装してください。
 
@@ -180,7 +182,7 @@ DatabaseConnection 自動クローズ
 
 
 ### 課題4: 例外処理設計パターン
-**ファイル名**: `ValidationResult.java`, `UserService.java`, `ExceptionDesignTest.java`
+**作成するファイル**: `ValidationResult.java`, `UserService.java`, `ExceptionDesignTest.java`
 
 例外処理の設計パターンを実装し、保守性の高い例外処理システムを構築してください。
 
@@ -234,6 +236,8 @@ Optional パターン:
 [WARN] 処理を中断しました
 [INFO] 代替処理を実行
 ```
+
+パフォーマンステストの時間は、実行する環境によって変わります。
 
 **評価ポイント**:
 - 例外処理の設計判断

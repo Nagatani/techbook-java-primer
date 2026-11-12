@@ -919,9 +919,12 @@ exercises/chapter13/
 ├── basic/          # 基礎レベル課題
 │   └── README.md
 ├── advanced/       # 応用・発展レベル課題
-│   └── README.md
+│   ├── README.md
+│   ├── task1-library/  # 課題1の解答例
+│   └── task2-config/   # 課題2の解答例
 ├── challenge/      # 挑戦レベル課題
-│   └── README.md
+│   ├── README.md
+│   └── *.java      # 解答例
 └── solutions/      # 解答例とテスト（実装完了後に参照）
     ├── README.md
     ├── CustomException.java
