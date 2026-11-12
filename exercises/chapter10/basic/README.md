@@ -11,6 +11,7 @@
 
 このフォルダーのJavaファイルは、`TODO`の箇所を埋めて完成させる雛形です。
 課題1と課題2は雛形を完成させ、課題3は新しくファイルを作ります。
+解答例は[solutions/](../solutions/)にあります。
 
 ### 課題1: 何でも入る箱（ジェネリッククラス）
 
@@ -77,6 +78,7 @@ Boxの内容: 42
 === Pairクラスデモ ===
 
 --- String-Integer Pair ---
+Pair情報:
 First (String): 山田太郎
 Second (Integer): 25
 

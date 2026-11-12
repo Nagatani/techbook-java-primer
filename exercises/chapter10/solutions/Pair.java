@@ -1,62 +1,78 @@
 package chapter10.solutions;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Objects;
 
 /**
- * ジェネリクスを使った汎用ペアクラス
+ * 2つの値の組（課題2の解答例）
+ *
+ * @param <F> 1つ目の値の型
+ * @param <S> 2つ目の値の型
  */
-public class Pair<T, U> {
-    private final T first;
-    private final U second;
-    
-    public Pair(T first, U second) {
+public class Pair<F, S> {
+    private F first;
+    private S second;
+
+    public Pair(F first, S second) {
         this.first = first;
         this.second = second;
     }
-    
-    public T getFirst() { return first; }
-    public U getSecond() { return second; }
-    
-    public <R> R mapFirst(Function<T, R> mapper) {
-        return mapper.apply(first);
+
+    public F getFirst() {
+        return first;
     }
-    
-    public <R> R mapSecond(Function<U, R> mapper) {
-        return mapper.apply(second);
+
+    public S getSecond() {
+        return second;
     }
-    
-    public <R, S> Pair<R, S> map(Function<T, R> firstMapper, Function<U, S> secondMapper) {
-        return new Pair<>(firstMapper.apply(first), secondMapper.apply(second));
+
+    public void setFirst(F first) {
+        this.first = first;
     }
-    
-    public boolean test(Predicate<T> firstPredicate, Predicate<U> secondPredicate) {
-        return firstPredicate.test(first) && secondPredicate.test(second);
+
+    public void setSecond(S second) {
+        this.second = second;
     }
-    
-    public static <T, U> Pair<T, U> of(T first, U second) {
-        return new Pair<>(first, second);
-    }
-    
-    public Pair<U, T> swap() {
+
+    /**
+     * 値の順序を入れ替えた新しい組を返す。型パラメーターの順序も入れ替わる
+     */
+    public Pair<S, F> swap() {
         return new Pair<>(second, first);
     }
-    
+
+    public void displayInfo() {
+        IO.println("Pair情報:");
+        IO.println("First (" + typeName(first) + "): " + first);
+        IO.println("Second (" + typeName(second) + "): " + second);
+    }
+
+    private static String typeName(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        return value.getClass().getSimpleName();
+    }
+
+    @Override
+    public String toString() {
+        return "Pair{first=" + first + ", second=" + second + "}";
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Pair<?, ?> pair = (Pair<?, ?>) obj;
-        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        // 型パラメーターは実行時に消えるので、Pair<F, S>かどうかは確かめられない。Pair<?, ?>にキャストする
+        Pair<?, ?> other = (Pair<?, ?>) obj;
+        return Objects.equals(first, other.first) && Objects.equals(second, other.second);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(first, second);
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("Pair{first=%s, second=%s}", first, second);
     }
 }

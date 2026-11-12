@@ -1,259 +1,57 @@
-# 第10章 解答例
+# 第10章 ジェネリクス - 解答例
 
-## 概要
-
-第10章では、Javaのジェネリクスについて学習します。型安全性の確保、ワイルドカードの活用、型消去の理解などを重視した実装を行います。
+[基礎課題](../basic/)の解答例です。
+基礎課題の雛形の`TODO`を埋めた形で書いてあり、第10章までに学んだ機能だけを使っています。
+後の章で学ぶ機能を使うと短く書ける箇所には、その書き方をコメントで添えています。
 
 ## 解答例一覧
 
-### 1. 汎用ボックス (GenericBox系)
+| 課題 | ファイル | 主な内容 |
+|------|----------|----------|
+| 課題1: 何でも入る箱 | `GenericBox.java`、`GenericBoxDemo.java` | ジェネリッククラス、`GenericBox<?>`で受け取るメソッド |
+| 課題2: ペア・数値の箱・ジェネリックメソッド | `Pair.java`、`NumberBox.java`、`GenericUtils.java`、`PairDemo.java` | 複数の型パラメーター、境界のある型パラメーター、ジェネリックメソッド |
+| 課題3: 数値のリストとワイルドカード | `NumberLists.java` | `? extends Number`で読み、`? super Integer`で書き込む |
 
-- **GenericBox.java**: ジェネリクスを活用した汎用ボックスクラス
-- **GenericBoxTest.java**: GenericBoxクラスのテスト
+テストは`GenericsTest.java`の8件です。
 
-#### 学習ポイント
-- 基本的なジェネリクスの使用方法
-- 境界ワイルドカード（? extends T, ? super T）
-- ジェネリクスメソッドの実装
-- 型安全なキャストと型チェック
-
-### 2. ペアクラス (Pair系)
-
-- **Pair.java**: ジェネリクスを使った汎用ペアクラス
-- **PairTest.java**: Pairクラスのテスト
-
-#### 学習ポイント
-- 複数の型パラメータの使用
-- 関数型インターフェイスとの組み合わせ
-- イミュータブルな設計
-- ファクトリーメソッドの活用
-
-### 3. ジェネリックスタック (GenericStack系)
-
-- **GenericStack.java**: ジェネリクスを使ったスタッククラス
-- **GenericStackTest.java**: GenericStackクラスのテスト
-
-#### 学習ポイント
-- コレクションのラッパークラス実装
-- 関数型プログラミングとの統合
-- Iterableインターフェイスの実装
-- @SafeVarargsアノテーションの使用
-
-### 4. 型安全ビルダー (TypeSafeBuilder系)
-
-- **TypeSafeBuilder.java**: 型安全なビルダーパターンの実装
-- **TypeSafeBuilderTest.java**: TypeSafeBuilderクラスのテスト
-
-#### 学習ポイント
-- ビルダーパターンとジェネリクスの組み合わせ
-- フルーエントインターフェイスの実装
-- 型安全性を保ったメソッドチェーン
-- バリデーション機能の組み込み
-
-## ジェネリクスの重要概念
-
-### 1. 型パラメータ
-
-```java
-public class GenericBox<T> {
-    private T content;
-    
-    public void setContent(T content) {
-        this.content = content;
-    }
-    
-    public T getContent() {
-        return content;
-    }
-}
-```
-
-### 2. 境界ワイルドカード
-
-#### 共変性（? extends T）
-```java
-// Tのサブタイプを受け入れる
-public <U extends T> void copyFrom(GenericBox<U> other) {
-    if (!other.isEmpty()) {
-        setContent(other.getContent());
-    }
-}
-```
-
-#### 反変性（? super T）
-```java
-// Tのスーパータイプを受け入れる
-public <U super T> void copyTo(GenericBox<U> other) {
-    if (!isEmpty()) {
-        other.setContent(getContent());
-    }
-}
-```
-
-### 3. ジェネリクスメソッド
-
-```java
-public <R> R applyOperation(Function<T, R> operation) {
-    if (content == null) {
-        return null;
-    }
-    return operation.apply(content);
-}
-```
-
-### 4. 型安全なキャスト
-
-```java
-public <U> U getContentAs(Class<U> clazz) {
-    if (content == null) {
-        return null;
-    }
-    if (clazz.isInstance(content)) {
-        return clazz.cast(content);
-    }
-    throw new ClassCastException("Cannot cast to " + clazz);
-}
-```
-
-### 5. @SafeVarargs
-
-```java
-@SafeVarargs
-public static <T> GenericStack<T> of(T... items) {
-    GenericStack<T> stack = new GenericStack<>();
-    for (T item : items) {
-        stack.push(item);
-    }
-    return stack;
-}
-```
-
-## 設計パターンとの組み合わせ
-
-### 1. ファクトリーパターン
-
-```java
-public static <T> GenericBox<T> of(T value, Class<T> type) {
-    GenericBox<T> box = new GenericBox<>(type);
-    box.setContent(value);
-    return box;
-}
-```
-
-### 2. ビルダーパターン
-
-```java
-public static PersonBuilder personBuilder() {
-    return new PersonBuilder();
-}
-
-// メソッドチェーンで型安全な構築
-Person person = TypeSafeBuilder.personBuilder()
-    .name("田中太郎")
-    .age(30)
-    .email("tanaka@example.com")
-    .build();
-```
-
-### 3. フルーエントインターフェイス
-
-```java
-// 段階的な構築を強制する型安全なインターフェイス
-Person person = TypeSafeBuilder.fluentPerson()
-    .name("鈴木次郎")     // NameStep を返す
-    .age(35)             // AgeStep を返す
-    .email("suzuki@example.com")  // EmailStep を返す
-    .build();            // Person を返す
-```
+各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
 ## 実行方法
 
-### テストの実行
+解答例はパッケージ`chapter10.solutions`にあるので、`exercises/`フォルダーでコンパイルします。
 
 ```bash
-# 全テストの実行
-./gradlew test
-
-# 特定の章のテストのみ実行
-./gradlew test --tests "chapter09.*"
+cd exercises
+javac -d out $(ls chapter10/solutions/*.java | grep -v Test)
+java -cp out chapter10.solutions.GenericBoxDemo
+java -cp out chapter10.solutions.PairDemo
+java -cp out chapter10.solutions.NumberLists
 ```
 
-### 個別クラスの実行
+テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
 
 ```bash
-# GenericBoxのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter09.solutions.GenericBoxTest
-
-# TypeSafeBuilderのテスト
-java -cp build/classes/java/main:build/classes/java/test chapter09.solutions.TypeSafeBuilderTest
+cd exercises
+javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter10/solutions/*.java
+java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter10.solutions
 ```
 
-## 重要なポイント
+## 実装のポイント
 
-### 1. 型安全性の確保
+- `GenericBox`の`displayInfo`は、型名を中身のオブジェクトの`getClass()`から取り出す。型パラメーター`T`は実行時に消えているので、`T.class`とは書けない
+- `Pair`の`swap`の戻り値は`Pair<S, F>`。`new Pair<>(second, first)`と書けば、ダイヤモンド演算子が型を補う
+- `Pair`の`equals`では、`Object`を`Pair<?, ?>`にキャストする。値は`Objects.equals`で比べるので、`null`の値を持つ組どうしも比べられる
+- `NumberBox<T extends Number>`の中では、`T`の値に`Number`のメソッドを呼べる。`compareTo`の引数を`NumberBox<?>`にしたので、`NumberBox<Integer>`と`NumberBox<Double>`を比べられる
+- `GenericUtils`の`max`・`findMin`は、`T extends Comparable<T>`の`compareTo`で比べる。`String`や`Integer`は`Comparable`を実装している
+- `NumberLists`の`sum`の中で`list.add(1)`と書くと、コンパイルエラーになる。`List<? extends Number>`は`List<Double>`かもしれないので、`Integer`を入れられない
 
-- コンパイル時に型エラーを検出
-- ClassCastExceptionを防ぐ
-- 型情報の保持と活用
+## 後の章の機能を使った書き方
 
-### 2. パフォーマンスの考慮
+コメントに書いた別の書き方をまとめます。
+どれも第10章の書き方と同じ結果になります。
 
-- 型消去によるランタイムオーバーヘッドの削減
-- ボクシング/アンボクシングの最小化
-- 適切な境界の設定
-
-### 3. 可読性と保守性
-
-- 明確な型情報による可読性向上
-- 型安全なAPIの提供
-- ドキュメントとしての型情報
-
-### 4. ワイルドカードの使い分け
-
-- **? extends T**: 読み取り専用（Producer）
-- **? super T**: 書き込み専用（Consumer）
-- **PECS原則**: Producer Extends, Consumer Super
-
-## よくある落とし穴
-
-### 1. 型消去
-
-```java
-// 実行時には型情報が失われる
-List<String> strings = new ArrayList<>();
-List<Integer> integers = new ArrayList<>();
-// strings.getClass() == integers.getClass() // true
-```
-
-### 2. 配列との組み合わせ
-
-```java
-// コンパイルエラー
-// List<String>[] arrays = new List<String>[10];
-
-// 回避策
-List<String>[] arrays = (List<String>[]) new List[10];
-```
-
-### 3. 静的コンテキスト
-
-```java
-public class GenericClass<T> {
-    // エラー: 静的メンバでは型パラメータを使用できない
-    // private static T staticField;
-    
-    // OK: ジェネリクスメソッドとして定義
-    public static <U> void staticMethod(U parameter) {
-        // ...
-    }
-}
-```
-
-## 発展的な学習
-
-1. **高階カインド**: より複雑な型システムの理解
-2. **型推論**: Diamond演算子やvarの活用
-3. **ジェネリクスとリフレクション**: TypeTokenパターンの応用
-4. **関数型プログラミング**: ジェネリクスと関数型インターフェイスの組み合わせ
-
-これらの解答例を通じて、Javaのジェネリクスシステムを深く理解し、型安全で再利用可能なコードを書く技術を身につけることができます。
+| 箇所 | 第10章の書き方 | 後の章の機能を使った書き方 |
+|------|----------------|----------------------------|
+| `null`でない要素の数 | 拡張for文で数える | `stream().filter(Objects::nonNull).count()`（第11章のメソッド参照、第12章のStream API） |
+| リストの最小値 | 拡張for文と`compareTo` | `stream().min(Comparator.naturalOrder()).orElse(null)`（第12章のStream APIとOptional） |
+| 数値のリストの合計 | 拡張for文で足す | `stream().mapToDouble(Number::doubleValue).sum()`（第12章） |

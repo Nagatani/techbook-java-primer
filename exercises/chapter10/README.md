@@ -22,11 +22,5 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `GenericBox.java`
-- `GenericBoxTest.java`
-- `GenericStack.java`
-- `GenericStackTest.java`
-- `Pair.java`
-- `PairTest.java`
-- `TypeSafeBuilder.java`
-- `TypeSafeBuilderTest.java`
+- 基礎課題の課題1〜3の解答例と、そのテスト
+- 第10章までに学んだ機能で書き、後の章の機能を使った書き方をコメントで添えている
