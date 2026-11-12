@@ -5,23 +5,23 @@ sections:
   - key: "本章の学習目標"
     hash: 1d9abcfc
   - key: "なぜジェネリクスが必要なのか？"
-    hash: 82274269
+    hash: 778d88bf
   - key: "ジェネリッククラスの作成"
-    hash: 249b53f2
+    hash: f4ac1510
   - key: "ジェネリックメソッド"
     hash: a96a980b
   - key: "型制約（境界のある型パラメーター）"
     hash: 40a0e685
   - key: "ワイルドカード"
-    hash: 6a5700b0
+    hash: af0f3447
   - key: "var型推論とジェネリクス"
-    hash: a27eb7cd
+    hash: 72a91062
   - key: "よくあるエラーと対処法"
     hash: 54b432e4
   - key: "まとめ"
     hash: 60905ffd
   - key: "章末演習"
-    hash: 47c1a834
+    hash: 883a05af
 ---
 
 # 第10章 ジェネリクス 要約

@@ -78,7 +78,7 @@ Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer
 このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。
 
 このプログラムは、コンパイルの段階では止まりません。
-コンパイルすると、次のような注意（ノート）が表示されるだけです。
+コンパイルすると、次のような注意（ノート）が表示されるだけです<span class="footnote">javacのメッセージは環境の言語設定で変わり、英語の環境では英語で表示されます。付録Hは英語の表示で載せています。</span>。
 これは警告であり、エラーではないため、クラスファイルは作成されます。
 
 ```
@@ -86,11 +86,9 @@ Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer
 ノート: 詳細は、-Xlint:uncheckedオプションを指定して再コンパイルしてください。
 ```
 
-javacのメッセージは環境の言語設定で変わり、英語の環境では英語で表示されます（付録Hは英語の表示で載せています）。
-
 コンパイラーは、リストに文字列以外のデータが入ることを止められず、誤りは実行するまで見つかりません。
 Java 5より前は、コレクションは「あらゆるオブジェクト」を格納できる`Object`型の入れ物で、このような書き方しかありませんでした。
-「どんな型でも扱える」柔軟性と「型の安全性」を両立させるために、Java 5で導入されたのがジェネリクス（Generics）です。
+「どんな型でも扱える」柔軟性と「型の安全性」を両立させるために、Java 5で導入されたのがジェネリクス（Generics）です<span class="footnote">J2SE 5.0（2004年）で加わりました。C言語でどんな型でも入る入れ物を作るときは`void *`を使い、取り出すときにキャストします。ジェネリクス以前のJavaの`Object`型の入れ物も、これと同じ弱点を抱えていました。</span>。
 
 ### ジェネリクスによる解決
 
@@ -151,7 +149,7 @@ PYTHON
 
 ### 基本的なジェネリッククラス
 
-クラス名の後に`<T>`のような型パラメーターを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダーです。
+クラス名の後に`<T>`のような型パラメーターを宣言します。`T`は"Type"の頭文字で、慣習的に使われるプレースホルダーです<span class="footnote">型パラメーターの名前には、Oracleのチュートリアルが示す慣習でE（Element）・K（Key）・V（Value）・N（Number）・T（Type）を使います。2つめ以降の型パラメーターにはS・U・Vを使います。</span>。
 
 <span class="listing-number">**サンプルコード10-4**　Box.java、BoxExample.java</span>
 
@@ -194,7 +192,7 @@ Hello Generics
 
 ### ダイヤモンド演算子
 
-Java 7からは、右辺の型引数を省略できるダイヤモンド演算子 (`<>`)が導入され、より簡潔に記述できるようになりました。コンパイラーが左辺の宣言から型を推論してくれます。
+Java 7からは、右辺の型引数を省略できるダイヤモンド演算子 (`<>`)<span class="footnote">`<>`の形がひし形（ダイヤモンド）に見えることからの呼び名です。言語仕様上は演算子ではなく、Oracleのチュートリアルでも単に「ダイヤモンド」と呼んでいます。</span>が導入され、より簡潔に記述できるようになりました。コンパイラーが左辺の宣言から型を推論してくれます。
 
 <span class="listing-number">**サンプルコード10-5**</span>
 
@@ -296,7 +294,7 @@ public class BoundedTypeExample {
 
 `List<? super Type>`は下限境界ワイルドカードと呼び、`Type`またはそのスーパークラスのリストを受け取れます。
 どのリストにも`Type`の値なら入れられるので、主にデータの書き込み（Consumer）に使います。
-読み取りには`extends`、書き込みには`super`を使うこの指針は、Producer Extends, Consumer Superの頭文字を取ってPECS原則と呼びます。
+読み取りには`extends`、書き込みには`super`を使うこの指針は、Producer Extends, Consumer Superの頭文字を取ってPECS原則と呼びます<span class="footnote">ジョシュア・ブロックが著書『Effective Java』の第2版（2008年）で紹介した覚え方です。</span>。
 
 たとえば`List<? extends Number>`は、要素の型が`Number`・`Integer`・`Double`のリストを受け取れます。`List<? super Integer>`は、要素の型が`Integer`・`Number`・`Object`のリストを受け取れます。次の図の緑の型が、それぞれ当てはまる型です。
 
@@ -360,12 +358,12 @@ Numberの合計: 6.5
 
 ## var型推論とジェネリクス
 
-Java 10で導入されたvar型推論を使うと、ローカル変数を宣言するときに型の記述を省けます。
+Java 10で導入されたvar型推論<span class="footnote">提案文書はJEP 286です。`var`は通常のキーワードではなく、型を書く位置でだけ特別な意味を持つ語なので、`var`という名前の変数を使った古いコードもそのまま動きます。</span>を使うと、ローカル変数を宣言するときに型の記述を省けます。
 `var`は、ジェネリクスの長い型名を繰り返さずに済む場面でとくに役立つため、本章で扱います。
 
 ### var型推論の基本概念
 
-var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラーが変数の初期化式から型を自動的に推論する機能です。これにより、冗長な型宣言を省略できます。
+var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラーが変数の初期化式から型を自動的に推論する機能です<span class="footnote">C++の`auto`（C++11）やC#の`var`など、ほかの言語にも同じ機能があります。C言語の`auto`はもともと自動変数を表す記憶域クラス指定子で、型推論の意味が加わったのはC23からです。</span>。これにより、冗長な型宣言を省略できます。
 
 <span class="listing-number">**サンプルコード10-9**　VarBasicExample.java</span>
 
@@ -617,6 +615,6 @@ var型推論を使うかどうかは、次の基準で判断します。
 3. チャレンジ課題
     + 実用的なジェネリックライブラリの設計・実装
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter10/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 次のステップ：基礎課題が完了したら、第11章「ラムダ式と関数型インターフェイス」に進みましょう。
