@@ -34,7 +34,7 @@ java TimeTest
 - `Student()`と`Student(String name)`は、`this("未設定", 0, "未設定")`のように一番多くの引数を受け取るコンストラクターを呼ぶ。値を入れる処理を1か所にまとめられる
 - `this(...)`は、コンストラクターの最初の文に書く
 - `Time`では、どのコンストラクター・`addTime`も最後に`normalize()`を呼び、秒→分→時の順に繰り上げる。23時45分30秒に1時間30分45秒を足すと、25時16分15秒を経て1時16分15秒になる
-- `addTime(int minutes, boolean isMinute)`は、`addTime(int seconds)`と引数の数を変えて区別するための形。第4章では、`addMinutes`のように名前を変えるほうがわかりやすい場合も学ぶ
+- `addTime(int minutes, boolean isMinute)`は、`addTime(int seconds)`と引数の数を変えて区別するための形。`true`・`false`の意味は呼び出す側から読み取りにくいので、`addMinutes`のように名前を変えるほうがわかりやすい場合もある
 
 ## 後の章で学ぶこと
 

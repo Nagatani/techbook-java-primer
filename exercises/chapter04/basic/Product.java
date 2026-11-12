@@ -81,7 +81,7 @@ public class Product {
     // public void setPrice(double price) {
     //     if (price >= 0) {
     //         this.price = price;
-    //         IO.println("価格を" + String.format("%.0f", price) + "円に変更しました。");
+    //         IO.println("価格を" + "%,.0f".formatted(price) + "円に変更しました。");
     //     } else {
     //         IO.println("エラー: 価格は0円以上である必要があります。");
     //     }
@@ -89,9 +89,9 @@ public class Product {
     
     // TODO: 商品情報表示メソッドを実装してください
     // public void showProductInfo() {
-    //     IO.println("商品ID: " + String.format("%03d", id));
+    //     IO.println("商品ID: " + "%03d".formatted(id));
     //     IO.println("商品名: " + name);
-    //     IO.println("価格: " + String.format("%.0f", price) + "円（税込: " + String.format("%.0f", getTaxIncludedPrice()) + "円）");
+    //     IO.println("価格: " + "%,.0f".formatted(price) + "円（税込: " + "%,.0f".formatted(getTaxIncludedPrice()) + "円）");
     //     IO.println("在庫数: " + stock + "個");
     // }
 }

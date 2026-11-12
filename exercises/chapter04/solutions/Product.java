@@ -1,27 +1,22 @@
 /**
- * 第4章 演習問題3: Productクラスの解答例
- * 
- * 【学習ポイント】
- * - 商品データの適切な管理
- * - 在庫管理システムの実装
- * - ビジネスロジックの実装
- * - エラーハンドリング
+ * 商品を表すクラス（課題3の解答例）
  */
 public class Product {
+    // privateフィールドを宣言する
     private int id;
     private String name;
     private double price;
     private int stock;
-    private static final double TAX_RATE = 0.1;  // 消費税率10%
     
+    // コンストラクタ
     public Product(int id, String name, double price, int stock) {
         this.id = id;
-        setName(name);
-        setPrice(price);
-        setStock(stock);
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
     }
     
-    // getter/setterメソッド
+    // 各フィールドのgetterメソッド
     public int getId() {
         return id;
     }
@@ -30,95 +25,60 @@ public class Product {
         return name;
     }
     
-    public void setName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            this.name = "未設定";
-        } else {
-            this.name = name.trim();
-        }
-    }
-    
     public double getPrice() {
         return price;
-    }
-    
-    public void setPrice(double price) {
-        if (price < 0) {
-            IO.println("エラー: 価格は0円以上である必要があります。");
-            return;
-        }
-        this.price = price;
     }
     
     public int getStock() {
         return stock;
     }
     
-    public void setStock(int stock) {
-        if (stock < 0) {
-            IO.println("エラー: 在庫数は0個以上である必要があります。");
-            return;
-        }
-        this.stock = stock;
-    }
-    
-    // 税込価格の計算
+    // 税込価格を計算するメソッド
     public double getTaxIncludedPrice() {
-        return price * (1 + TAX_RATE);
+        return price * 1.1;
     }
     
-    // 入荷処理
-    public void addStock(int quantity) {
-        if (quantity <= 0) {
-            IO.println("エラー: 入荷数は正の値である必要があります。");
-            return;
+    // 入荷メソッド
+    public void restock(int quantity) {
+        if (quantity > 0) {
+            stock += quantity;
+            IO.println("入荷処理: " + quantity + "個を入荷しました。");
+            IO.println("現在の在庫: " + stock + "個");
+        } else {
+            IO.println("エラー: 入荷数は0より大きい必要があります。");
         }
-        
-        stock += quantity;
-        IO.println(quantity + "個を入荷しました。現在の在庫: " + stock + "個");
     }
     
-    // 出荷処理
-    public boolean removeStock(int quantity) {
-        if (quantity <= 0) {
-            IO.println("エラー: 出荷数は正の値である必要があります。");
-            return false;
+    // 出荷メソッド
+    public void ship(int quantity) {
+        if (quantity > 0) {
+            if (stock >= quantity) {
+                stock -= quantity;
+                IO.println("出荷処理: " + quantity + "個を出荷しました。");
+                IO.println("現在の在庫: " + stock + "個");
+            } else {
+                IO.println("エラー: 在庫が不足しています。（要求: " + quantity + "個, 在庫: " + stock + "個）");
+            }
+        } else {
+            IO.println("エラー: 出荷数は0より大きい必要があります。");
         }
-        
-        if (stock < quantity) {
-            IO.println("エラー: 在庫が不足しています。（要求: " + quantity + "個, 在庫: " + stock + "個）");
-            return false;
-        }
-        
-        stock -= quantity;
-        IO.println(quantity + "個を出荷しました。現在の在庫: " + stock + "個");
-        return true;
     }
     
-    // 商品情報の表示
-    public void displayInfo() {
-        IO.println("商品ID: " + String.format("%03d", id));
+    // 価格設定メソッド（妥当性検証付き）
+    public void setPrice(double price) {
+        if (price >= 0) {
+            this.price = price;
+            IO.println("価格を" + "%,.0f".formatted(price) + "円に変更しました。");
+        } else {
+            IO.println("エラー: 価格は0円以上である必要があります。");
+        }
+    }
+    
+    // 商品情報表示メソッド
+    public void showProductInfo() {
+        IO.println("商品ID: " + "%03d".formatted(id));
         IO.println("商品名: " + name);
-        IO.println("価格: %.0f円（税込: %.0f円）".formatted(price, getTaxIncludedPrice()));
+        IO.println("価格: " + "%,.0f".formatted(price) + "円（税込: " + "%,.0f".formatted(getTaxIncludedPrice()) + "円）");
         IO.println("在庫数: " + stock + "個");
-    }
-    
-    // 在庫の状態判定
-    public boolean isInStock() {
-        return stock > 0;
-    }
-    
-    public boolean isLowStock() {
-        return stock > 0 && stock <= 5;  // 5個以下を在庫僅少とする
-    }
-    
-    public boolean isOutOfStock() {
-        return stock == 0;
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("Product{id=%d, name='%s', price=%.0f, stock=%d}", 
-                           id, name, price, stock);
     }
 }

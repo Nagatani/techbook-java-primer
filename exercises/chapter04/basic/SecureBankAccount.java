@@ -26,7 +26,7 @@ public class SecureBankAccount {
     //     this.balance = initialBalance;
     //     this.pin = pin;
     //     IO.println("口座作成: 口座番号 " + accountNumber);
-    //     IO.println("残高: " + String.format("%.0f", balance) + "円");
+    //     IO.println("残高: " + "%,.0f".formatted(balance) + "円");
     // }
     
     // TODO: PIN認証のprivateメソッドを実装してください
@@ -57,8 +57,8 @@ public class SecureBankAccount {
     //     
     //     if (amount > 0) {
     //         balance += amount;
-    //         IO.println(String.format("%.0f", amount) + "円を入金しました。");
-    //         IO.println("現在の残高: " + String.format("%.0f", balance) + "円");
+    //         IO.println("%,.0f".formatted(amount) + "円を入金しました。");
+    //         IO.println("現在の残高: " + "%,.0f".formatted(balance) + "円");
     //     } else {
     //         IO.println("エラー: 入金額は0円より大きい必要があります。");
     //     }
@@ -72,8 +72,8 @@ public class SecureBankAccount {
     //     
     //     if (amount > 0 && amount <= balance) {
     //         balance -= amount;
-    //         IO.println(String.format("%.0f", amount) + "円を出金しました。");
-    //         IO.println("現在の残高: " + String.format("%.0f", balance) + "円");
+    //         IO.println("%,.0f".formatted(amount) + "円を出金しました。");
+    //         IO.println("現在の残高: " + "%,.0f".formatted(balance) + "円");
     //     } else if (amount > balance) {
     //         IO.println("エラー: 残高不足です。");
     //     } else {
@@ -90,7 +90,7 @@ public class SecureBankAccount {
     // public void showAccountInfo(String pin) {
     //     if (authenticate(pin)) {
     //         IO.println("口座番号: " + accountNumber);
-    //         IO.println("残高: " + String.format("%.0f", balance) + "円");
+    //         IO.println("残高: " + "%,.0f".formatted(balance) + "円");
     //     }
     // }
 }

@@ -1,37 +1,40 @@
 /**
- * 第4章 演習問題2: SecureBankAccountTestクラスの解答例
+ * SecureBankAccountを試すプログラム（課題2の解答例）
  */
 public class SecureBankAccountTest {
     public static void main(String[] args) {
-        IO.println("=== SecureBankAccount テスト ===");
+        IO.println("=== セキュア銀行口座システム ===");
         
-        SecureBankAccount account = new SecureBankAccount("123456", "1234", 100000.0);
+        // SecureBankAccountオブジェクトを作成する
+        SecureBankAccount account = new SecureBankAccount("123456", 100000, "1234");
+        IO.println();
         
-        // 正常な取引のテスト
-        IO.println("--- 正常な取引 ---");
-        account.deposit("1234", 10000.0);
-        account.withdraw("1234", 5000.0);
+        // 正しいPINで入金を行ってください
+        account.deposit(10000, "1234");
+        IO.println();
         
-        // 認証失敗のテスト
-        IO.println("\n--- 認証失敗テスト ---");
-        account.deposit("0000", 1000.0);  // 間違ったPIN
-        account.deposit("1111", 1000.0);  // 間違ったPIN
-        account.deposit("2222", 1000.0);  // 間違ったPIN（口座ロック）
+        // 間違ったPINで出金を試行する
+        account.withdraw(5000, "9999");
+        IO.println();
         
-        // ロック後の操作試行
-        IO.println("\n--- ロック後の操作 ---");
-        account.deposit("1234", 1000.0);  // 正しいPINでもロックされている
+        // 正しいPINで出金を行ってください
+        account.withdraw(50000, "1234");
+        IO.println();
         
-        // 管理者によるロック解除
-        IO.println("\n--- ロック解除 ---");
-        account.unlockAccount("ADMIN123");
+        // 口座情報を表示する
+        account.showAccountInfo("1234");
+        IO.println();
         
-        // ロック解除後の操作
-        IO.println("\n--- ロック解除後の操作 ---");
-        account.deposit("1234", 5000.0);
+        // 残高照会を行ってください
+        double balance = account.getBalance("1234");
+        if (balance >= 0) {
+            IO.println("照会結果: " + "%,.0f".formatted(balance) + "円");
+        }
         
-        // 取引履歴の表示
-        IO.println("\n--- 取引履歴 ---");
-        account.showTransactionHistory("1234");
+        // 間違ったPINで残高照会を試行する
+        double failedBalance = account.getBalance("0000");
+        if (failedBalance < 0) {
+            IO.println("残高照会に失敗しました。");
+        }
     }
 }

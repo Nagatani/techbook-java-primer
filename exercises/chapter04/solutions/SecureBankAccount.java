@@ -1,137 +1,83 @@
 /**
- * 第4章 演習問題2: SecureBankAccountクラスの解答例
- * 
- * 【学習ポイント】
- * - セキュリティを考慮したカプセル化
- * - 認証システムの実装
- * - 不正操作の防止
- * - 取引履歴の管理
+ * PINで守る銀行口座（課題2の解答例）
  */
 public class SecureBankAccount {
+    // privateフィールドを宣言する
     private String accountNumber;
     private double balance;
     private String pin;
-    private java.util.List<String> transactionHistory;
-    private int failedAttempts;
-    private boolean isLocked;
-    private java.time.LocalDateTime lastTransaction;
     
-    public SecureBankAccount(String accountNumber, String pin, double initialBalance) {
+    // コンストラクタ
+    public SecureBankAccount(String accountNumber, double initialBalance, String pin) {
         this.accountNumber = accountNumber;
+        this.balance = initialBalance;
         this.pin = pin;
-        this.balance = Math.max(0, initialBalance);
-        this.transactionHistory = new java.util.ArrayList<>();
-        this.failedAttempts = 0;
-        this.isLocked = false;
-        this.lastTransaction = java.time.LocalDateTime.now();
-        addTransaction("口座開設", initialBalance);
+        IO.println("口座作成: 口座番号 " + accountNumber);
+        IO.println("残高: " + "%,.0f".formatted(balance) + "円");
     }
     
-    public boolean authenticate(String inputPin) {
-        if (isLocked) {
-            IO.println("口座がロックされています。管理者にお問い合わせください。");
-            return false;
-        }
-        
-        if (pin.equals(inputPin)) {
-            failedAttempts = 0;
-            return true;
+    // PIN認証のprivateメソッド
+    private boolean authenticate(String inputPin) {
+        boolean isValid = this.pin.equals(inputPin);
+        if (isValid) {
+            IO.println("PIN認証成功");
         } else {
-            failedAttempts++;
-            IO.println("PIN認証に失敗しました。試行回数: " + failedAttempts + "/3");
-            
-            if (failedAttempts >= 3) {
-                isLocked = true;
-                IO.println("口座がロックされました。");
-                addTransaction("口座ロック", 0);
-            }
-            return false;
+            IO.println("PIN認証失敗");
+            IO.println("取引が拒否されました。");
         }
+        return isValid;
     }
     
-    public boolean deposit(String inputPin, double amount) {
-        if (!authenticate(inputPin)) {
-            return false;
+    // 残高照会メソッド
+    public double getBalance(String pin) {
+        if (authenticate(pin)) {
+            return balance;
         }
-        
-        if (amount <= 0) {
-            IO.println("入金額は正の値である必要があります。");
-            return false;
-        }
-        
-        balance += amount;
-        addTransaction("入金", amount);
-        lastTransaction = java.time.LocalDateTime.now();
-        IO.println(amount + "円を入金しました。残高: " + balance + "円");
-        return true;
+        return -1; // 認証失敗時は-1を返す
     }
     
-    public boolean withdraw(String inputPin, double amount) {
-        if (!authenticate(inputPin)) {
-            return false;
-        }
-        
-        if (amount <= 0) {
-            IO.println("出金額は正の値である必要があります。");
-            return false;
-        }
-        
-        if (balance < amount) {
-            IO.println("残高が不足しています。残高: " + balance + "円");
-            addTransaction("出金失敗（残高不足）", amount);
-            return false;
-        }
-        
-        balance -= amount;
-        addTransaction("出金", amount);
-        lastTransaction = java.time.LocalDateTime.now();
-        IO.println(amount + "円を出金しました。残高: " + balance + "円");
-        return true;
-    }
-    
-    public double getBalance(String inputPin) {
-        if (!authenticate(inputPin)) {
-            return -1;
-        }
-        return balance;
-    }
-    
-    public void showTransactionHistory(String inputPin) {
-        if (!authenticate(inputPin)) {
+    // 入金メソッド
+    public void deposit(double amount, String pin) {
+        if (!authenticate(pin)) {
             return;
         }
         
-        IO.println("=== 取引履歴 ===");
-        for (String transaction : transactionHistory) {
-            IO.println(transaction);
+        if (amount > 0) {
+            balance += amount;
+            IO.println("%,.0f".formatted(amount) + "円を入金しました。");
+            IO.println("現在の残高: " + "%,.0f".formatted(balance) + "円");
+        } else {
+            IO.println("エラー: 入金額は0円より大きい必要があります。");
         }
     }
     
-    private void addTransaction(String type, double amount) {
-        String timestamp = java.time.LocalDateTime.now().format(
-            java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-        String transaction = String.format("%s - %s: %.0f円 (残高: %.0f円)", 
-                                         timestamp, type, amount, balance);
-        transactionHistory.add(transaction);
+    // 出金メソッド
+    public void withdraw(double amount, String pin) {
+        if (!authenticate(pin)) {
+            return;
+        }
+        
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            IO.println("%,.0f".formatted(amount) + "円を出金しました。");
+            IO.println("現在の残高: " + "%,.0f".formatted(balance) + "円");
+        } else if (amount > balance) {
+            IO.println("エラー: 残高不足です。");
+        } else {
+            IO.println("エラー: 出金額は0円より大きい必要があります。");
+        }
     }
     
+    // 口座番号のgetterメソッド（PINは不要）
     public String getAccountNumber() {
         return accountNumber;
     }
     
-    public boolean isLocked() {
-        return isLocked;
-    }
-    
-    // 管理者用のロック解除メソッド（実際の実装では管理者権限チェックが必要）
-    public void unlockAccount(String adminCode) {
-        if ("ADMIN123".equals(adminCode)) {  // 簡易的な管理者認証
-            isLocked = false;
-            failedAttempts = 0;
-            addTransaction("口座ロック解除", 0);
-            IO.println("口座のロックが解除されました。");
-        } else {
-            IO.println("管理者コードが正しくありません。");
+    // 口座情報表示メソッド
+    public void showAccountInfo(String pin) {
+        if (authenticate(pin)) {
+            IO.println("口座番号: " + accountNumber);
+            IO.println("残高: " + "%,.0f".formatted(balance) + "円");
         }
     }
 }

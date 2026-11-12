@@ -10,14 +10,29 @@
  * 商品名: ノートPC
  * 価格: 80,000円（税込: 88,000円）
  * 在庫数: 10個
- * 
+ *
  * 入荷処理: 5個を入荷しました。
  * 現在の在庫: 15個
- * 
+ *
  * 出荷処理: 3個を出荷しました。
  * 現在の在庫: 12個
- * 
+ *
  * エラー: 在庫が不足しています。（要求: 20個, 在庫: 12個）
+ *
+ * 価格を85,000円に変更しました。
+ *
+ * 更新後の商品情報:
+ * 商品ID: 001
+ * 商品名: ノートPC
+ * 価格: 85,000円（税込: 93,500円）
+ * 在庫数: 12個
+ *
+ * getterメソッドでの取得:
+ * 商品ID: 1
+ * 商品名: ノートPC
+ * 価格: 85000.0円
+ * 在庫数: 12個
+ * 税込価格: 93,500円
  */
 public class ProductTest {
     public static void main(String[] args) {
@@ -55,6 +70,6 @@ public class ProductTest {
         // IO.println("商品名: " + product.getName());
         // IO.println("価格: " + product.getPrice() + "円");
         // IO.println("在庫数: " + product.getStock() + "個");
-        // IO.println("税込価格: " + String.format("%.0f", product.getTaxIncludedPrice()) + "円");
+        // IO.println("税込価格: " + "%,.0f".formatted(product.getTaxIncludedPrice()) + "円");
     }
 }

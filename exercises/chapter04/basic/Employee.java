@@ -64,7 +64,7 @@ public class Employee {
     //         return;
     //     }
     //     this.salary = salary;
-    //     IO.println("給与を" + String.format("%.0f", salary) + "円に変更しました。");
+    //     IO.println("給与を" + "%,.0f".formatted(salary) + "円に変更しました。");
     // }
     
     // TODO: 従業員情報を表示するメソッドを実装してください
@@ -72,6 +72,6 @@ public class Employee {
     //     IO.println("従業員情報:");
     //     IO.println("名前: " + name);
     //     IO.println("年齢: " + age + "歳");
-    //     IO.println("給与: " + String.format("%.0f", salary) + "円");
+    //     IO.println("給与: " + "%,.0f".formatted(salary) + "円");
     // }
 }

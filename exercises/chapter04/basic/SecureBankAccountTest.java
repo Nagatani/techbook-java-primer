@@ -8,17 +8,27 @@
  * === セキュア銀行口座システム ===
  * 口座作成: 口座番号 123456
  * 残高: 100,000円
- * 
+ *
  * PIN認証成功
  * 10,000円を入金しました。
  * 現在の残高: 110,000円
- * 
+ *
  * PIN認証失敗
  * 取引が拒否されました。
- * 
+ *
  * PIN認証成功
  * 50,000円を出金しました。
  * 現在の残高: 60,000円
+ *
+ * PIN認証成功
+ * 口座番号: 123456
+ * 残高: 60,000円
+ *
+ * PIN認証成功
+ * 照会結果: 60,000円
+ * PIN認証失敗
+ * 取引が拒否されました。
+ * 残高照会に失敗しました。
  */
 public class SecureBankAccountTest {
     public static void main(String[] args) {
@@ -47,7 +57,7 @@ public class SecureBankAccountTest {
         // TODO: 残高照会を行ってください
         // double balance = account.getBalance("1234");
         // if (balance >= 0) {
-        //     IO.println("照会結果: " + String.format("%.0f", balance) + "円");
+        //     IO.println("照会結果: " + "%,.0f".formatted(balance) + "円");
         // }
         
         // TODO: 間違ったPINで残高照会を試行してください

@@ -1,41 +1,42 @@
 /**
- * 第4章 演習問題3: ProductTestクラスの解答例
+ * Productを試すプログラム（課題3の解答例）
  */
 public class ProductTest {
     public static void main(String[] args) {
-        IO.println("=== Product クラスのテスト ===");
+        IO.println("=== 商品管理システム ===");
         
-        // 商品の作成
-        Product product = new Product(1, "ノートPC", 80000.0, 10);
+        // Productオブジェクトを作成する
+        Product product = new Product(1, "ノートPC", 80000, 10);
+        product.showProductInfo();
+        IO.println();
         
-        IO.println("初期状態:");
-        product.displayInfo();
+        // 入荷処理を行ってください
+        product.restock(5);
+        IO.println();
         
-        // 入荷処理のテスト
-        IO.println("\n--- 入荷処理 ---");
-        product.addStock(5);
+        // 出荷処理を行ってください
+        product.ship(3);
+        IO.println();
         
-        // 出荷処理のテスト
-        IO.println("\n--- 出荷処理 ---");
-        product.removeStock(3);
+        // 在庫不足のエラーを確認する
+        product.ship(20);
+        IO.println();
         
-        // 在庫不足のテスト
-        IO.println("\n--- 在庫不足テスト ---");
-        product.removeStock(20);
+        // 価格変更を行ってください
+        product.setPrice(85000);
+        IO.println();
         
-        // 在庫状態のテスト
-        IO.println("\n--- 在庫状態 ---");
-        IO.println("在庫あり: " + product.isInStock());
-        IO.println("在庫僅少: " + product.isLowStock());
-        IO.println("品切れ: " + product.isOutOfStock());
+        // 更新後の商品情報を表示する
+        IO.println("更新後の商品情報:");
+        product.showProductInfo();
+        IO.println();
         
-        // 異常ケースのテスト
-        IO.println("\n--- 異常ケース ---");
-        product.setPrice(-1000);  // 負の価格
-        product.addStock(-5);     // 負の入荷
-        product.removeStock(-3);  // 負の出荷
-        
-        IO.println("\n最終状態:");
-        product.displayInfo();
+        // getterメソッドを使ってデータを取得する
+        IO.println("getterメソッドでの取得:");
+        IO.println("商品ID: " + product.getId());
+        IO.println("商品名: " + product.getName());
+        IO.println("価格: " + product.getPrice() + "円");
+        IO.println("在庫数: " + product.getStock() + "個");
+        IO.println("税込価格: " + "%,.0f".formatted(product.getTaxIncludedPrice()) + "円");
     }
 }
