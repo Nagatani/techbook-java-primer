@@ -123,7 +123,7 @@
     "main": "PatternMatchingExample",
     "excerpt": [
       { "file": "Point.java", "from": 1, "to": 1 },
-      { "file": "PatternMatchingExample.java", "from": 1, "to": 22 }
+      { "file": "PatternMatchingExample.java", "from": 1, "to": 27 }
     ]
   },
   "8-19": {
