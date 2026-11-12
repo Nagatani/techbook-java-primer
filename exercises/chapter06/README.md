@@ -8,6 +8,7 @@
 - 不変の人物情報クラス
 - 設定値管理クラス
 - 金額計算クラス
+- 課題1は`TODO`を埋めて完成させる雛形、課題2〜4はファイルを新しく作る
 
 ## 発展課題（[advanced/](advanced/)）
 
@@ -22,11 +23,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `Constants.java`
-- `ConstantsTest.java`
-- `ImmutablePerson.java`
-- `ImmutablePersonTest.java`
-- `ThreadSafeCounter.java`
-- `ThreadSafeCounterTest.java`
-- `ValueObject.java`
-- `ValueObjectTest.java`
+- 基礎課題の課題1〜4の解答例

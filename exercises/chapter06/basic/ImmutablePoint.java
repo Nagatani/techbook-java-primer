@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * 第6章 基本課題1: 不変の座標クラス設計
  * 
@@ -68,7 +70,7 @@ public final class ImmutablePoint {
     // TODO: 文字列表現を返すメソッドを実装してください
     // @Override
     // public String toString() {
-    //     return String.format("(%.1f, %.1f)", x, y);
+    //     return "(%.1f, %.1f)".formatted(x, y);
     // }
     
     // TODO: equalsメソッドを実装してください（不変クラスでは重要）
