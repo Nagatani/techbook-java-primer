@@ -15,7 +15,7 @@ sections:
   - key: "コンソール入出力"
     hash: b1339018
   - key: "制御構造"
-    hash: 261f81e9
+    hash: edc773cb
   - key: "配列"
     hash: 9ead3203
   - key: "メソッド（staticメソッドの基本）"
@@ -86,7 +86,7 @@ sections:
     + 入出力のベストプラクティス: 誤った入力への対処として、変換できるまで繰り返すSafeInputExample（2-20、try-catchとフラグ変数。実行結果あり）、IO.readlnが入力の終わりでnullを返すこと（2-21）、1行単位の読み取り、ロケール
 - 制御構造（L696–853）
     + 条件分岐: if-else ifの成績判定（2-22）
-    + switch文とswitch式: 従来形式の成績評価（2-23 SwitchExample）と注意点、同じ判定のswitch式（2-24、Java 14以降）とその利点
+    + switch文とswitch式: 従来形式の成績評価（2-23 SwitchExample）と注意点、同じ判定のswitch式（2-24、Java 14以降）とその利点。caseに型と条件（`when`）も書けることを脚注で示し、第8章へ誘導する
     + 繰り返し処理: for、拡張for、while（2-25）と使い分け、ループ変数のスコープ。do-while、break・continueは扱わない
 - 配列（L854–1000）
     + リテラルとnewによる初期化、length、多次元配列（2-26）、境界チェックと自動初期化（2-27）
