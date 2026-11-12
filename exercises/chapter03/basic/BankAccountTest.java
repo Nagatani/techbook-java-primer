@@ -7,14 +7,18 @@
  * 実行例:
  * === 銀行口座管理システム ===
  * 口座1: 口座番号: 12345, 残高: 0.0円, 名義: 未設定
+ *
  * 口座2: 口座番号: 67890, 残高: 0.0円, 名義: 田中太郎
+ *
  * 口座3: 口座番号: 11111, 残高: 50000.0円, 名義: 佐藤花子
- * 
+ *
+ * 10000.0円を入金しました。
  * 入金後:
  * 口座1: 口座番号: 12345, 残高: 10000.0円, 名義: 未設定
- * 
+ *
+ * 20000.0円を出金しました。（手数料: 100.0円）
  * 出金後:
- * 口座3: 口座番号: 11111, 残高: 30000.0円, 名義: 佐藤花子
+ * 口座3: 口座番号: 11111, 残高: 29900.0円, 名義: 佐藤花子
  */
 public class BankAccountTest {
     public static void main(String[] args) {
@@ -22,28 +26,33 @@ public class BankAccountTest {
         
         // TODO: 口座番号のみを設定して口座を作成してください
         // BankAccount account1 = new BankAccount("12345");
+        // IO.print("口座1: ");
         // account1.showAccountInfo();
         // IO.println();
         
         // TODO: 口座番号と名前を設定して口座を作成してください
         // BankAccount account2 = new BankAccount("67890", "田中太郎");
+        // IO.print("口座2: ");
         // account2.showAccountInfo();
         // IO.println();
         
         // TODO: 全ての項目を設定して口座を作成してください
         // BankAccount account3 = new BankAccount("11111", 50000.0, "佐藤花子");
+        // IO.print("口座3: ");
         // account3.showAccountInfo();
         // IO.println();
         
         // TODO: 入金を行ってください
         // account1.deposit(10000.0);
         // IO.println("入金後:");
+        // IO.print("口座1: ");
         // account1.showAccountInfo();
         // IO.println();
         
         // TODO: 手数料付き出金を行ってください
         // account3.withdraw(20000.0, 100.0);
         // IO.println("出金後:");
+        // IO.print("口座3: ");
         // account3.showAccountInfo();
     }
 }

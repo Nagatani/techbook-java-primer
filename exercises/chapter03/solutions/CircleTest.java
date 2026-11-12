@@ -1,9 +1,5 @@
 /**
- * 第3章 演習問題3: Circleクラスのテスト - 解答例
- *
- * 学習ポイント:
- * - 同じクラスから、フィールドの値が違う複数のオブジェクトを作る
- * - オブジェクトごとにメソッドの結果が変わることを確かめる
+ * Circleを試すプログラム（課題3の解答例）
  */
 public class CircleTest {
     public static void main(String[] args) {
@@ -21,7 +17,7 @@ public class CircleTest {
         circle2.displayInfo();
         IO.println();
 
-        double difference = circle1.calculateArea() - circle2.calculateArea();
-        IO.println("面積の差: " + "%.2f".formatted(difference) + "cm²");
+        double diff = circle1.calculateArea() - circle2.calculateArea();
+        IO.println("面積の差: " + "%.2f".formatted(diff) + "cm²");
     }
 }
