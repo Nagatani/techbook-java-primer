@@ -37,6 +37,10 @@
 5. トラブルシューティング、環境構築チェックリスト、FAQ
 6. Docker環境での開発と、環境構築の自動化スクリプト
 
+IDEのIntelliJ IDEAは、2025.3（2025年12月8日公開）からCommunity EditionとUltimateが「IntelliJ IDEA」という1つの製品に統合されました。
+統合版をインストールすれば、Community Editionにあった機能は無料のまま使えます。
+本書の学習には、サブスクリプションが必要なUltimateの機能は使いません。
+
 ### 問題や質問がある場合
 
 本付録の内容に関する問題や質問がある場合は、GitHubのIssue（`https://github.com/Nagatani/techbook-java-primer/issues`）を作成してください。

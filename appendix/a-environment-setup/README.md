@@ -367,21 +367,28 @@ sdkman_proxy_port=8080
 ## A.3 統合開発環境（IDE）のセットアップ
 
 本書では以下のIDEを推奨します。
-- IntelliJ IDEA: Community Editionで十分
+- IntelliJ IDEA: 無料で使える機能で十分（有料のUltimateの機能は不要）
 - Visual Studio Code: Java開発の拡張機能が必須
 
-IDEの利用に関しては、IntelliJ IDEA Community Editionがお勧めです。
+IDEの利用に関しては、IntelliJ IDEAがお勧めです。
+本書で取り上げる操作説明などは、IntelliJ IDEAの無料で使える機能を基本とします。
 
-本書で取り上げる操作説明などは、IntelliJ IDEA Community Editionを基本とします。
+### IntelliJ IDEAのエディションについて
 
-### IntelliJ IDEA Community Editionのインストール
+IntelliJ IDEAには、以前は無料のCommunity Editionと有料のUltimateの2つの製品がありました。
+2025.3（2025年12月8日公開）から、この2つは「IntelliJ IDEA」という1つの製品に統合されています。
+統合版をインストールすれば、Community Editionにあった機能はサブスクリプションなしで無料のまま使えます。
+Webフレームワークやデータベースの支援など、Ultimateの機能を使うにはサブスクリプションが必要ですが、本書の学習には必要ありません。
+
+### IntelliJ IDEAのインストール
 
 1. [JetBrains公式サイト](https://www.jetbrains.com/idea/download/)にアクセス
-2. Community Editionを選択してダウンロード
-3. ダウンロードしたインストーラを実行
+2. IntelliJ IDEA（統合版）をダウンロード
+3. ダウンロードしたインストーラーを実行
 4. 初回起動時の設定で、インストール済みのJDK（Java 25）を指定
 
 Java 25の文法と`IO`クラスを扱うには、Java 25に対応した版（2025.2以降）のIntelliJ IDEAを使ってください。
+これから新しくインストールする場合は、統合版（2025.3以降）になります。
 
 ### Visual Studio Codeでの開発環境構築
 
