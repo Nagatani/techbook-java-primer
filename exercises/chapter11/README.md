@@ -22,13 +22,5 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `EventProcessor.java`
-- `EventProcessorTest.java`
-- `FunctionProcessor.java`
-- `FunctionProcessorTest.java`
-- `FunctionalCalculator.java`
-- `FunctionalCalculatorTest.java`
-- `PipelineProcessor.java`
-- `PipelineProcessorTest.java`
-- `ValidationSystem.java`
-- `ValidationSystemTest.java`
+- 基礎課題の課題1〜3の解答例と、そのテスト
+- 第11章までに学んだ機能で書き、メソッド参照や後の章の機能を使った書き方をコメントで添えている
