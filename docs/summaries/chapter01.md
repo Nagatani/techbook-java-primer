@@ -13,7 +13,7 @@ sections:
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
     hash: 078aee40
   - key: "Javaの特徴"
-    hash: f81da58e
+    hash: 1fd4b1a4
   - key: "開発環境の準備"
     hash: 30b8cbc8
   - key: "最初のJavaプログラム"
@@ -38,7 +38,7 @@ sections:
 
 - 書籍全体の導入（本書の考え方、GitHubリポジトリ、対象読者、本書で学べること）と、Javaの最初の一歩（Hello World、IOクラスによる標準入出力）を1章にまとめている
 - C言語のグローバル変数による「データと手続きの分離」を動機に、Productクラスでオブジェクト指向の考え方を先取りして見せ、書き方は第3章から学ぶと案内する
-- Javaの特徴としてプラットフォーム独立性（JVM・バイトコード）、サンドボックス、JIT、GC、参照とポインターの違い、強い型付け、ライブラリエコシステムを紹介する
+- Javaの特徴としてプラットフォーム独立性（JVM・バイトコード）、バイトコード検証、JIT、GC、参照とポインターの違い、強い型付け、ライブラリエコシステムを紹介する
 - 開発環境はOpenJDK 25（LTS）とIntelliJ IDEA（2025.3で統合版になり、旧Community Editionの機能は無料。2026-11-12に表記を更新）を指定し、手順そのものはGitHubの`appendix/a-environment-setup/`へ委ねる
 - Java 25のコンパクトソースファイルとインスタンスmainメソッドを紹介し、本書はクラスを宣言して書く方針と理由を述べる
 - 前提はC言語の基礎（変数、関数、if文、ループ）
@@ -78,7 +78,7 @@ sections:
     + ProductクラスとMainクラス（1-2、1-3）で、カプセル化・データと処理の一体化・再利用性の3原則を文章で示し、privateフィールド、コンストラクター、メソッド、newによるインスタンス生成を丸数字で解説
     + 1ファイル1publicクラスの注意、C言語との対比。節末で「クラスやオブジェクトの書き方は第3章から学ぶ」と案内（存在しないDeep Diveへの案内は2026-11-11に削除）
 - Javaの特徴（L264–316）
-    + Write Once, Run Anywhere、JVMとバイトコード、サンドボックス、JIT。JVMアーキテクチャの図（chapter01-jvm-architecture）
+    + Write Once, Run Anywhere、JVMとバイトコード、バイトコード検証、JIT。JVMアーキテクチャの図（chapter01-jvm-architecture）
     + オブジェクト指向（前節を受ける）、GC（ダングリングポインターの説明を含む。表記についての脚注）、参照とポインターの違い、強い型付け、Maven/Gradleを含むエコシステム
     + 「なぜJavaを学ぶのか」で企業システム、Spring Boot/Jakarta EE、Android、Hadoop/Sparkを挙げる
 - 開発環境の準備（L317–330）
