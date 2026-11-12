@@ -1,238 +1,173 @@
 # 第10章 基本課題
 
 ## 学習目標
-- ジェネリクスの基本概念と型安全性の理解
-- 型パラメータ（T、E、K、V）の使い方
-- 境界付きワイルドカード（extends、super）の活用
-- ジェネリックメソッドとジェネリッククラスの実装
-- 型消去（Type Erasure）の理解と制限事項
-- 型安全なビルダーパターンの設計と実装
+
+- 型パラメーターを持つクラス（ジェネリッククラス）を書き、キャストなしで値を取り出せる利点を確かめる
+- 複数の型パラメーターを使い、型の順序を入れ替えるメソッドを書く
+- 境界のある型パラメーター（`T extends Number`、`T extends Comparable<T>`）で、使えるメソッドを広げる
+- ジェネリックメソッドと、`?`・`? extends`・`? super`のワイルドカードを使い分ける
 
 ## 課題一覧
 
-### 課題1: ジェネリックペアクラス
-**ファイル名**: `Pair.java`, `PairTest.java`
+このフォルダーのJavaファイルは、`TODO`の箇所を埋めて完成させる雛形です。
+課題1と課題2は雛形を完成させ、課題3は新しくファイルを作ります。
 
-2つの値を保持するジェネリックなペアクラスを作成し、型安全性を実装してください。
+### 課題1: 何でも入る箱（ジェネリッククラス）
 
-**要求仕様**:
-- ジェネリッククラス Pair<T, U>
-- 2つの異なる型の値を保持
-- getter、setter、swap メソッド
-- equals、hashCode、toString の実装
-- 型安全性の確保
+**ファイル**: `GenericBox.java`、`GenericBoxDemo.java`（課題2の`Pair.java`も使う）
 
-**実行例**:
-```
-=== ジェネリックペアクラステスト ===
-文字列と数値のペア:
-Pair: ("Hello", 42)
-
-値の入れ替え:
-スワップ前: ("Hello", 42)
-スワップ後: (42, "Hello")
-
-座標ペア:
-座標: (3.14, 2.71)
-X座標: 3.14
-Y座標: 2.71
-
-同じ型のペア:
-名前ペア: ("田中", "太郎")
-結合名: 田中太郎
-
-型安全性テスト:
-// 以下はコンパイルエラーになる
-// pair.setFirst(123);  // String型にintは代入不可
-```
-
-**評価ポイント**:
-- ジェネリック型パラメータの理解
-- 型安全性の確保
-- 複数型パラメータの活用
-
-
-
-### 課題2: ジェネリックコンテナクラス
-**ファイル名**: `Container.java`, `ContainerTest.java`
-
-型安全なコンテナクラスを作成し、ジェネリックメソッドを実装してください。
+値を1つだけ入れられる箱`GenericBox<T>`を完成させます。
 
 **要求仕様**:
-- ジェネリッククラス Container<T>
-- 要素の追加、取得、削除メソッド
-- ジェネリックメソッド（検索、変換、フィルタリング）
-- Iterable インターフェイスの実装
-- 型制約のある操作メソッド
+
+- 2つのコンストラクター（空の箱、値の入った箱）と、`put`・`get`・`isEmpty`・`clear`を書く
+- `displayInfo`は、中身の型名（`getClass().getSimpleName()`）と値を表示し、空なら「空」と表示する
+- `GenericBoxDemo`の`TODO`を埋めて、`String`・`Integer`・`Pair<String, Integer>`・`Double`の箱を試す
+- `displayBoxContent(GenericBox<?> box)`は、どの型の箱でも受け取れることを確かめる
 
 **実行例**:
+
 ```
-=== ジェネリックコンテナクラステスト ===
-文字列コンテナ:
-追加: Hello, World, Java, Programming
-内容: [Hello, World, Java, Programming]
+=== GenericBoxデモ ===
 
-検索テスト:
-"Java"が含まれているか: true
-"Python"が含まれているか: false
+--- String型のBox ---
+GenericBox情報:
+  型: String, 値: Hello, Generics!
+取得: Hello, Generics!
 
-数値コンテナ:
-追加: 1, 2, 3, 4, 5
-内容: [1, 2, 3, 4, 5]
+--- Integer型のBox ---
+GenericBox情報:
+  型: Integer, 値: 42
 
-変換テスト（数値を2倍）:
-元の値: [1, 2, 3, 4, 5]
-変換後: [2, 4, 6, 8, 10]
+--- Pair型のBox ---
+GenericBox情報:
+  型: Pair, 値: Pair{first=山田太郎, second=25}
 
-フィルタリングテスト（偶数のみ）:
-フィルタ前: [2, 4, 6, 8, 10]
-フィルタ後: [2, 4, 6, 8, 10]
+--- Box操作デモ ---
+空？: false
+クリア後、空？: true
+GenericBox情報:
+  空
 
-型制約テスト（Comparable要素のソート）:
-ソート前: [banana, apple, orange]
-ソート後: [apple, banana, orange]
+--- 型安全性 ---
+取得した値: 型安全
+
+--- ワイルドカード ---
+Boxの内容: Hello, Generics!
+Boxの内容: 42
 ```
 
-**評価ポイント**:
-- ジェネリッククラスとメソッドの実装
-- 型制約（境界付き型パラメータ）の活用
-- Iterable インターフェイスの理解
+### 課題2: ペア・数値の箱・ジェネリックメソッド
 
+**ファイル**: `Pair.java`、`NumberBox.java`、`GenericUtils.java`、`PairDemo.java`
 
-
-### 課題3: ワイルドカード活用システム
-**ファイル名**: `NumberProcessor.java`, `WildcardTest.java`
-
-ワイルドカードを活用した数値処理システムを作成し、共変・反変を実装してください。
+2つの値の組`Pair<F, S>`、数値だけを入れられる`NumberBox<T extends Number>`、ジェネリックメソッドを集めた`GenericUtils`を完成させます。
 
 **要求仕様**:
-- 境界付きワイルドカード（? extends、? super）の活用
-- 数値リストの統計処理（上限境界ワイルドカード）
-- 要素追加処理（下限境界ワイルドカード）
-- PECS原則（Producer Extends, Consumer Super）の実践
+
+- `Pair`の`swap`は、値の順序を入れ替えた`Pair<S, F>`を新しく作って返す。`equals`と`hashCode`は両方の値で比べる
+- `NumberBox`は`Number`のメソッド（`doubleValue`・`intValue`）を使って、`getAsDouble`・`getAsInt`・`isPositive`・`compareTo`を書く。`compareTo`は型の違う`NumberBox`とも比べられる
+- `GenericUtils`の`swap`・`find`・`printArray`は配列、`countNonNull`・`findMin`はリストを受け取る。`max`と`findMin`は`T extends Comparable<T>`の`compareTo`で比べる
+- `combinePairs`は、1つ目の組の`first`と2つ目の組の`second`から新しい組を作る
+- `PairDemo`の`TODO`を埋めて、各機能を試す
 
 **実行例**:
+
 ```
-=== ワイルドカード活用システムテスト ===
-整数リスト: [1, 2, 3, 4, 5]
-統計情報:
-合計: 15
-平均: 3.0
-最大値: 5
+=== Pairクラスデモ ===
+
+--- String-Integer Pair ---
+First (String): 山田太郎
+Second (Integer): 25
+
+--- Integer-Double Pair ---
+スコア: 85
+評点: 3.5
+
+--- Pairの入れ替え ---
+元: Pair{first=項目, second=100}
+入れ替え後: Pair{first=100, second=項目}
+
+=== NumberBoxデモ ===
+NumberBox情報:
+  型: Integer
+  値: 42
+  double値: 42.0
+  int値: 42
+NumberBox情報:
+  型: Double
+  値: 3.14
+  double値: 3.14
+  int値: 3
+比較結果: 1
+
+=== GenericUtilsデモ ===
+
+--- 配列要素の入れ替え ---
+元の配列: [Hello, World, Java, Generics]
+入れ替え後: [Java, World, Hello, Generics]
+
+--- 要素の検索 ---
+30のインデックス: 2
+
+--- 最大値 ---
+最大値: Banana
+
+--- リストの最小値 ---
 最小値: 1
 
-Double リスト: [1.5, 2.5, 3.5]
-統計情報:
-合計: 7.5
-平均: 2.5
-最大値: 3.5
-最小値: 1.5
-
-Number リストへの追加テスト:
-追加前: []
-Integer追加後: [10, 20, 30]
-Double追加後: [10, 20, 30, 3.14, 2.71]
-
-型の共変性テスト:
-List<Integer> を List<? extends Number> として処理可能
-List<Double> を List<? extends Number> として処理可能
-
-型の反変性テスト:
-List<Number> を List<? super Integer> として処理可能
-List<Object> を List<? super Integer> として処理可能
+--- Pairの結合 ---
+結合結果: Pair{first=Start, second=End}
 ```
 
-**評価ポイント**:
-- 境界付きワイルドカードの理解
-- PECS原則の実践
-- 共変・反変の概念理解
+### 課題3: 数値のリストとワイルドカード
 
+**ファイル**: `NumberLists.java`（新しく作る）
 
-
-### 課題4: ジェネリック型変換ユーティリティ
-**ファイル名**: `TypeConverter.java`, `TypeConverterTest.java`
-
-型変換を行うジェネリックユーティリティクラスを作成し、高度なジェネリクス機能を実装してください。
+`? extends`で数値のリストを読み、`? super`で整数をリストに書き込みます。
 
 **要求仕様**:
-- ジェネリックメソッドによる型変換
-- Function インターフェイスを活用した変換関数
-- 複数段階の型変換チェーン
-- Optional を活用した安全な型変換
+
+- `static double sum(List<? extends Number> list)`は、`List<Integer>`・`List<Double>`・`List<Number>`のどれでも合計を返す
+- `static void addSquares(List<? super Integer> dest, int count)`は、1からcountまでの2乗を`dest`に加える。`List<Number>`にも`List<Object>`にも加えられる
+- `sum`の中でリストに要素を加えようとすると、コンパイルエラーになることを確かめる（確かめたらその行は消す）
 
 **実行例**:
+
 ```
-=== ジェネリック型変換ユーティリティテスト ===
-基本的な型変換:
-文字列 "123" → 整数: 123
-整数 42 → 文字列: "42"
-Double 3.14 → 文字列: "3.14"
-
-リスト変換:
-文字列リスト: ["1", "2", "3", "4", "5"]
-整数リスト: [1, 2, 3, 4, 5]
-二乗リスト: [1, 4, 9, 16, 25]
-
-チェーン変換:
-"123" → 整数 → 二乗 → 文字列: "15129"
-
-安全な変換（Optional使用）:
-"123" → 整数: Optional[123]
-"abc" → 整数: Optional.empty
-
-フィルタ付き変換:
-文字列リスト: ["1", "abc", "3", "def", "5"]
-数値のみ変換: [1, 3, 5]
-
-カスタム変換:
-Person{name='田中', age=25} → "田中 (25歳)"
-Person{name='佐藤', age=30} → "佐藤 (30歳)"
+整数 [1, 2, 3, 4, 5] の合計: 15.0
+小数 [1.5, 2.5, 3.5] の合計: 7.5
+List<Number>に追加: [1, 4, 9, 0.5]
+List<Object>に追加: [平方数:, 1, 4, 9, 16]
+List<Number>の合計: 14.5
 ```
 
-**評価ポイント**:
-- 高度なジェネリックメソッドの実装
-- Function インターフェイスの活用
-- Optional との組み合わせ
-- メソッドチェーンの実装
+## コンパイルと実行
+
+課題1と課題2の雛形は`package chapter10.basic;`を宣言しているので、`exercises/`フォルダーでコンパイルします。
+
+```bash
+cd exercises
+javac -d out chapter10/basic/*.java
+java -cp out chapter10.basic.GenericBoxDemo
+java -cp out chapter10.basic.PairDemo
+```
+
+課題3は、作ったファイルのあるフォルダーで`javac`と`java`を実行します。
 
 ## ヒント
 
-### 課題1のヒント
-- 型パラメータは慣例的に T、U、V を使用
-- Objects.equals() で null セーフな比較
-- Objects.hash() で複数フィールドのハッシュ計算
+- `Pair<S, F> swap()`では、戻り値の型パラメーターの順序が入れ替わる。`new Pair<>(second, first)`と書けば、ダイヤモンド演算子が型を補う
+- `equals`で`Object`を`Pair`にキャストするときは`Pair<?, ?>`にする（型パラメーターは実行時に消えるため、`Pair<F, S>`かどうかは確かめられない）
+- 値が`null`かもしれないフィールドの比較には`Objects.equals`、ハッシュ値には`Objects.hash`が使える
+- 「値を取り出すだけなら`extends`、入れるだけなら`super`」と覚える
 
-### 課題2のヒント
-- <T extends Comparable<T>> で比較可能な型に制限
-- Predicate<T> でフィルタリング条件を抽象化
-- Function<T, R> で変換処理を抽象化
+## 完了チェックリスト
 
-### 課題3のヒント
-- ? extends Number で上限境界（読み取り専用）
-- ? super Integer で下限境界（書き込み可能）
-- Producer Extends, Consumer Super の原則
+- [ ] 課題1: キャストなしで箱から値を取り出せる
+- [ ] 課題1: `GenericBox<?>`でどの型の箱も受け取れる
+- [ ] 課題2: `swap`で型パラメーターの順序が入れ替わった組を返せる
+- [ ] 課題2: 境界のある型パラメーターで`doubleValue`や`compareTo`を呼べる
+- [ ] 課題3: `? extends`と`? super`の違いを、読み書きできる操作で説明できる
 
-### 課題4のヒント
-- <T, R> でメソッドレベルの型パラメータ
-- Function.compose() でチェーン処理
-- try-catch で安全な変換とOptional返却
-
-## ジェネリクスのポイント
-
-1. **型安全性**: コンパイル時の型チェック
-2. **型消去**: 実行時には型情報が消える
-3. **境界付き型**: extends で上限、super で下限
-4. **ワイルドカード**: ? extends（共変）、? super（反変）
-5. **PECS原則**: Producer Extends, Consumer Super
-6. **型推論**: ダイヤモンド演算子 <> の活用
-
-## ○ 完了チェックリスト
-
-- [ ] 課題1: ジェネリックペアクラスで型安全性が確保されている
-- [ ] 課題2: ジェネリックコンテナで型制約が活用されている
-- [ ] 課題3: ワイルドカードでPECS原則が実践されている
-- [ ] 課題4: 高度なジェネリックメソッドが実装されている
-- [ ] 型パラメータと境界の使い分けができている
-- [ ] ジェネリクスの制限事項を理解している
-
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより複雑なジェネリクス設計に挑戦しましょう！
+**次のステップ**: 基本課題が終わったら、[advanced/](../advanced/)の発展課題に進みましょう。

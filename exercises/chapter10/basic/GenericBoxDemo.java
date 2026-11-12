@@ -21,12 +21,11 @@ public class GenericBoxDemo {
         // GenericBox<Integer> intBox = new GenericBox<>(42);
         // intBox.displayInfo();
         
-        // TODO: 独自クラス（Student）型のGenericBoxを作成
-        IO.println("\n--- Student型のBox ---");
-        // 注意: Studentクラスは第9章で作成したものを使用
-        // GenericBox<Student> studentBox = new GenericBox<>();
-        // studentBox.put(new Student("S001", "山田太郎", 2, 85.5));
-        // studentBox.displayInfo();
+        // TODO: 自作のクラス（Pair）型のGenericBoxを作成
+        IO.println("\n--- Pair型のBox ---");
+        // GenericBox<Pair<String, Integer>> pairBox = new GenericBox<>();
+        // pairBox.put(new Pair<>("山田太郎", 25));
+        // pairBox.displayInfo();
         
         // TODO: Boxの操作デモ
         IO.println("\n--- Box操作デモ ---");
