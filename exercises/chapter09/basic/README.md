@@ -1,245 +1,224 @@
 # 第9章 基本課題
 
 ## 学習目標
-- コレクションフレームワークの基本概念と階層構造の理解
-- List、Set、Mapの特性と使い分け
-- ArrayList、LinkedList、HashSet、TreeSet、HashMap、TreeMapの実装の違い
-- 効率的なデータ構造選択の判断基準
-- Iteratorを使った安全な要素操作
-- カスタムComparatorとComparableの実装による高度なソート機能
+
+- List・Set・Mapの特性を理解し、目的に合わせて使い分ける
+- ArrayListとHashMapを組み合わせて、順序と検索の速さを両立させる
+- HashSet・LinkedHashSet・TreeSet、HashMap・LinkedHashMap・TreeMapの順序の違いを確かめる
+- 要素の比べ方（equals・hashCode）がコレクションの動きに与える影響を理解する
 
 ## 課題一覧
 
-### 課題1: 学生管理システム（List活用）
-**ファイル名**: `Student.java`, `StudentManager.java`, `StudentManagerTest.java`
+このフォルダーのJavaファイルは、`TODO`の箇所を埋めて完成させる雛形です。
+課題1と課題2は雛形を完成させ、課題3と課題4は新しくファイルを作ります。
 
-学生情報を管理するシステムを作成し、Listの特性を活用してください。
+### 課題1: 学生管理（ListとMapの組み合わせ）
 
-**要求仕様**:
-- Student クラス（ID、名前、成績）
-- StudentManager でリスト操作（追加、削除、検索、ソート）
-- ArrayList と LinkedList の性能比較
-- 成績順、名前順でのソート機能
+**ファイル**: `Student.java`、`StudentManager.java`、`StudentManagerDemo.java`
 
-**実行例**:
-```
-=== 学生管理システム（List活用）===
-学生を追加:
-ID: 001, 名前: 田中太郎, 成績: 85
-ID: 002, 名前: 佐藤花子, 成績: 92
-ID: 003, 名前: 鈴木一郎, 成績: 78
-
-名前で検索（田中）: 田中太郎（成績: 85）
-
-成績順ソート（降順）:
-1位: 佐藤花子（92点）
-2位: 田中太郎（85点）
-3位: 鈴木一郎（78点）
-
-ArrayList vs LinkedList 性能テスト:
-ArrayList 追加時間: 15ms
-LinkedList 追加時間: 8ms
-ArrayList アクセス時間: 2ms
-LinkedList アクセス時間: 45ms
-```
-
-**評価ポイント**:
-- List インターフェイスの理解
-- ArrayList と LinkedList の使い分け
-- Comparator を使ったソート
-
-
-
-### 課題2: 単語カウンター（Map活用）
-**ファイル名**: `WordCounter.java`, `WordCounterTest.java`
-
-テキストの単語出現頻度を集計するシステムを作成し、Mapの特性を活用してください。
+学生の一覧をArrayListで登録順に持ち、同じ学生をHashMapで学生IDから引けるようにします。
 
 **要求仕様**:
-- テキストから単語を抽出して出現回数をカウント
-- HashMap と TreeMap の使い分け
-- 頻度順、アルファベット順でのソート
-- 統計情報の提供（総単語数、ユニーク単語数など）
+
+- `Student`のコンストラクター、`toString`（`学生ID: S001, 名前: 山田太郎, 学年: 2, 成績: 85.5`の形）、学生IDで比べる`equals`と`hashCode`を書く
+- `StudentManager`は、追加・IDでの検索・全員の表示・成績の高い順の表示・学年での絞り込み・平均・削除を、リストとマップの両方を正しく保つように書く
+- 登録済みのIDを追加しようとしたら、追加せずにメッセージを出す
+- 成績順の表示では、元のリストの順序を変えないよう、コピーを並べ替える
+- `StudentManagerDemo`の`TODO`を埋めて、各機能を試す
+
+**実行例**（学生を4人と、IDが重複する1人を追加した場合）:
+
+```
+=== 学生管理システムデモ ===
+
+登録済みのIDです: S001
+
+--- 全学生一覧 ---
+=== 学生一覧 ===
+学生ID: S001, 名前: 山田太郎, 学年: 2, 成績: 85.5
+学生ID: S002, 名前: 鈴木花子, 学年: 1, 成績: 92.0
+学生ID: S003, 名前: 佐藤次郎, 学年: 2, 成績: 78.0
+学生ID: S004, 名前: 高橋美咲, 学年: 3, 成績: 88.5
+
+--- 学生検索 ---
+S001: 学生ID: S001, 名前: 山田太郎, 学年: 2, 成績: 85.5
+S009: null
+
+--- 成績順表示 ---
+=== 成績順学生一覧 ===
+学生ID: S002, 名前: 鈴木花子, 学年: 1, 成績: 92.0
+学生ID: S004, 名前: 高橋美咲, 学年: 3, 成績: 88.5
+学生ID: S001, 名前: 山田太郎, 学年: 2, 成績: 85.5
+学生ID: S003, 名前: 佐藤次郎, 学年: 2, 成績: 78.0
+
+--- 2年生の学生 ---
+山田太郎
+佐藤次郎
+
+--- 平均成績 ---
+平均: 86.00
+
+--- 学生削除 ---
+S003を削除: true
+S003をもう一度削除: false
+残りの人数: 3
+```
+
+### 課題2: ショッピングカート（Mapでの数量管理）
+
+**ファイル**: `Product.java`、`CartItem.java`、`ShoppingCart.java`、`ShoppingCartDemo.java`
+
+商品IDをキーにしたMapで、カートの中の商品と数量を管理します。
+
+**要求仕様**:
+
+- `Product`は在庫を持ち、`reduceStock`は在庫が足りないとき`false`を返す
+- `CartItem`は小計（単価×数量）を計算する
+- `ShoppingCart`の`addItem`は、同じ商品がすでにあれば数量を増やす。カートの数量の合計が在庫を超えるときは追加せず`false`を返す
+- `updateQuantity`は数量を変え、0を指定したら商品をカートから除く
+- `displayCart`は商品を入れた順に並べ、最後に合計金額を出す（`items`を`LinkedHashMap`で作ると、入れた順が保たれる）
+- `getTotalItemCount`は商品の種類の数ではなく、数量の合計を返す
 
 **実行例**:
-```
-=== 単語カウンター（Map活用）===
-入力テキスト: "Java is fun. Java is powerful. Programming with Java is exciting."
 
-単語出現頻度（HashMap使用）:
-Java: 3回
-is: 3回
-fun: 1回
-powerful: 1回
-Programming: 1回
-with: 1回
+```
+=== ショッピングカートシステムデモ ===
+
+--- 商品在庫 ---
+P001: ノートパソコン（80000円、在庫5個）
+P002: マウス（2000円、在庫10個）
+P003: キーボード（5000円、在庫8個）
+
+--- カート作成 ---
+カートは空？: true
+
+--- 商品追加 ---
+ノートパソコン×1: true
+マウス×2: true
+
+--- カート内容 ---
+=== ショッピングカート (山田太郎) ===
+ノートパソコン 80000円 × 1 = 80000円
+マウス 2000円 × 2 = 4000円
+合計: 84000円
+
+--- 同じ商品を追加 ---
+=== ショッピングカート (山田太郎) ===
+ノートパソコン 80000円 × 1 = 80000円
+マウス 2000円 × 5 = 10000円
+合計: 90000円
+
+--- 数量更新 ---
+=== ショッピングカート (山田太郎) ===
+ノートパソコン 80000円 × 1 = 80000円
+マウス 2000円 × 1 = 2000円
+合計: 82000円
+
+--- 在庫チェック ---
+ノートパソコン×10: false
+
+--- 商品削除 ---
+=== ショッピングカート (山田太郎) ===
+マウス 2000円 × 1 = 2000円
+キーボード 5000円 × 1 = 5000円
+合計: 7000円
+
+--- カート統計 ---
+総アイテム数: 2
+合計金額: 7000円
+
+--- カートクリア ---
+カートは空？: true
+```
+
+### 課題3: 単語カウンター（Map）
+
+**ファイル**: `WordCounter.java`（新しく作る）
+
+英文の単語ごとの出現回数を数えます。
+
+**要求仕様**:
+
+- 文を空白で区切り、ピリオドを除いて小文字にそろえる
+- `HashMap<String, Integer>`で回数を数える（`getOrDefault`を使う）
+- `TreeMap`に移して、アルファベット順に表示する
+- 最も多く出た単語（同じ回数なら全部）、総単語数、異なる単語の数を表示する
+
+**実行例**:
+
+```
+入力: Java is fun. Java is powerful. Programming with Java is exciting.
+
+アルファベット順（TreeMap）:
 exciting: 1回
-
-アルファベット順（TreeMap使用）:
-Java: 3回
-Programming: 1回
-exciting: 1回
 fun: 1回
 is: 3回
+java: 3回
 powerful: 1回
+programming: 1回
 with: 1回
 
-出現頻度順（上位3位）:
-1位: Java（3回）
-1位: is（3回）
-3位: fun（1回）
+出現回数の多い単語:
+is（3回）
+java（3回）
 
-統計情報:
-総単語数: 9個
-ユニーク単語数: 7個
-平均出現回数: 1.29回
+総単語数: 11
+異なる単語の数: 7
 ```
 
-**評価ポイント**:
-- Map インターフェイスの理解
-- HashMap と TreeMap の特性理解
-- EntrySet を使った効率的な処理
+### 課題4: 重複の除去と集合演算（Set）
 
+**ファイル**: `SetOperations.java`（新しく作る）
 
-
-### 課題3: 重複除去システム（Set活用）
-**ファイル名**: `DuplicateRemover.java`, `DuplicateRemoverTest.java`
-
-データの重複を除去するシステムを作成し、Setの特性を活用してください。
+Setで重複を除き、2つの集合の和・積・差を求めます。
 
 **要求仕様**:
-- 文字列リストから重複を除去
-- HashSet と TreeSet の使い分け
-- カスタムオブジェクトの重複判定
-- 集合演算（和集合、積集合、差集合）の実装
+
+- 重複のあるリストを`LinkedHashSet`と`TreeSet`に入れ、順序の違いを確かめる
+- 和集合は`addAll`、積集合は`retainAll`、差集合は`removeAll`で求める。元の集合を壊さないよう、コピーに対して操作する
+- 結果の順序が実行のたびに同じになるよう、表示する集合は`TreeSet`にする
 
 **実行例**:
+
 ```
-=== 重複除去システム（Set活用）===
 元のリスト: [apple, banana, apple, orange, banana, grape]
+LinkedHashSet（最初に出た順）: [apple, banana, orange, grape]
+TreeSet（辞書順）: [apple, banana, grape, orange]
 
-HashSet で重複除去（挿入順不保証）:
-結果: [banana, orange, apple, grape]
-処理時間: 5ms
-
-TreeSet で重複除去（自動ソート）:
-結果: [apple, banana, grape, orange]
-処理時間: 12ms
-
-集合演算テスト:
-セットA: [Java, Python, C++]
-セットB: [Python, JavaScript, Java]
-
-和集合: [Java, Python, C++, JavaScript]
+A: [C, Java, Python]
+B: [Java, JavaScript, Python]
+和集合: [C, Java, JavaScript, Python]
 積集合: [Java, Python]
-差集合（A-B）: [C++]
+差集合（A-B）: [C]
 差集合（B-A）: [JavaScript]
-
-カスタムオブジェクト重複除去:
-Person{name='田中', age=25}
-Person{name='佐藤', age=30}
-Person{name='鈴木', age=25}
 ```
 
-**評価ポイント**:
-- Set インターフェイスの理解
-- HashSet と TreeSet の性能差理解
-- equals() と hashCode() の重要性理解
+## コンパイルと実行
 
+課題1と課題2の雛形は`package chapter09.basic;`を宣言しているので、`exercises/`フォルダーでコンパイルします。
 
-
-### 課題4: 在庫管理システム（複合コレクション活用）
-**ファイル名**: `Product.java`, `InventoryManager.java`, `InventoryManagerTest.java`
-
-商品在庫を管理するシステムを作成し、複数のコレクションを組み合わせて活用してください。
-
-**要求仕様**:
-- Product クラス（ID、名前、価格、カテゴリ）
-- カテゴリ別商品管理（Map<String, List<Product>>）
-- 価格帯別集計（TreeMap使用）
-- 在庫検索・フィルタリング機能
-
-**実行例**:
-```
-=== 在庫管理システム（複合コレクション活用）===
-商品登録:
-[家電] ノートPC（150,000円）
-[家電] スマートフォン（80,000円）
-[書籍] Java入門（3,000円）
-[書籍] Python基礎（2,500円）
-[食品] りんご（500円）
-
-カテゴリ別在庫:
-家電カテゴリ: 2商品
-  - ノートPC: 150,000円
-  - スマートフォン: 80,000円
-書籍カテゴリ: 2商品
-  - Java入門: 3,000円
-  - Python基礎: 2,500円
-食品カテゴリ: 1商品
-  - りんご: 500円
-
-価格帯別集計:
-0-1,000円: 1商品
-1,001-10,000円: 2商品
-10,001-100,000円: 1商品
-100,001円以上: 1商品
-
-検索結果（価格5,000円以下）:
-Java入門（3,000円）
-Python基礎（2,500円）
-りんご（500円）
-
-統計情報:
-総商品数: 5個
-平均価格: 47,200円
-最高価格: 150,000円（ノートPC）
-最低価格: 500円（りんご）
+```bash
+cd exercises
+javac -d out chapter09/basic/*.java
+java -cp out chapter09.basic.StudentManagerDemo
+java -cp out chapter09.basic.ShoppingCartDemo
 ```
 
-**評価ポイント**:
-- 複数コレクションの組み合わせ活用
-- ネストしたコレクション構造の設計
-- 効率的な検索・集計処理の実装
+課題3と課題4は、作ったファイルのあるフォルダーで`javac`と`java`を実行します。
 
 ## ヒント
 
-### 課題1のヒント
-- Comparator.comparing() でソート条件を指定
-- System.currentTimeMillis() で処理時間測定
-- リストサイズが大きい場合の性能差に注目
+- 成績の高い順に並べるには、第8章で学んだ匿名クラスで`Comparator<Student>`を書き、`list.sort(...)`に渡す（`Double.compare(b.getScore(), a.getScore())`で降順になる）。ラムダ式や`Comparator.comparing`での書き方は第11章で学ぶ
+- 削除では、マップから取り出した学生をリストからも除く。`equals`を学生IDで比べるように書いてあれば、`list.remove(student)`で同じ学生が除かれる
+- HashMap・HashSetの順序は決まっていない。表示の順序を決めたいときはLinkedHashMap（入れた順）かTreeMap（キーの順）を選ぶ
 
-### 課題2のヒント
-- String.split() と String.toLowerCase() で単語抽出
-- Map.getOrDefault() で初期値設定
-- Stream API で値によるソートも可能
+## 完了チェックリスト
 
-### 課題3のヒント
-- Set の contains() は O(1) または O(log n)
-- Collections の集合演算メソッドを活用
-- equals() と hashCode() の一貫性が重要
+- [ ] 課題1: リストとマップの両方を矛盾なく更新できている
+- [ ] 課題1: 元のリストを変えずに成績順に表示できている
+- [ ] 課題2: 同じ商品の追加で数量が増え、在庫を超える追加を断れる
+- [ ] 課題3: Mapで単語の回数を数え、TreeMapで並べられる
+- [ ] 課題4: 集合演算を、元の集合を壊さずに行える
+- [ ] HashMap・LinkedHashMap・TreeMapの順序の違いを説明できる
 
-### 課題4のヒント
-- Map.computeIfAbsent() でネストした構造を効率的に構築
-- TreeMap で価格帯をキーとした自動ソート
-- Stream API でフィルタリングと集計を効率化
-
-## コレクションフレームワークのポイント
-
-1. **List**: 順序付き、重複許可、インデックスアクセス
-2. **Set**: 重複なし、数学的集合演算
-3. **Map**: キー・値ペア、キーの重複なし
-4. **実装選択**: ArrayList vs LinkedList, HashMap vs TreeMap
-5. **時間計算量**: O(1), O(log n), O(n) の理解
-6. **Iterator**: 安全な要素操作、ConcurrentModificationException回避
-
-## ○ 完了チェックリスト
-
-- [ ] 課題1: List の特性を活かした学生管理ができている
-- [ ] 課題2: Map を使った効率的な単語集計ができている
-- [ ] 課題3: Set による重複除去と集合演算ができている
-- [ ] 課題4: 複合コレクションで複雑なデータ管理ができている
-- [ ] コレクションの時間計算量を理解している
-- [ ] 適切なコレクション選択ができている
-
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより複雑なデータ構造活用に挑戦しましょう！
+**次のステップ**: 基本課題が終わったら、[advanced/](../advanced/)の発展課題に進みましょう。
