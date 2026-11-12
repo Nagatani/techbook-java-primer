@@ -600,3 +600,25 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - 第22章の章末演習は「基礎・発展・チャレンジ課題」と書いているが、`exercises/chapter22/`は`documentation/`と`api-design/`に分かれている（脚注で実際の構成を示した）
 - `sample-code/chapter19/19-01/MouseEventCompleteExample.java`は`isPopupTrigger()`を`mouseReleased`でだけ確かめている。macOSやLinuxでは`mousePressed`で真になるため、右クリックメニューが出ない可能性がある
 - 脚注の文字はtextlintで本文の文に数えられるため、脚注を足すと文の長さや読点の数の指摘が出ることがある
+
+## 2026年11月12日実施作業のサマリー（演習の発展課題・チャレンジ課題）
+
+- 第4〜16・18・20〜23章の`advanced/`と`challenge/`を作り直した（章ごとにコミット）。第4・5・16・23章と第22章の`documentation/`は題材を残し、章の範囲に絞って書き直した
+- 架空の題材（「量子シミュレーター」「意識を持つ…」「時空間…」「AI駆動…」など）と、旧章番号のころの別の章の内容は、すべて消した
+- 各課題に解答例のコードを付けた。READMEの構成は第5章のチャレンジ課題にそろえ、実行例は実際の出力にした（全課題で出力と照合済み）
+- 第9〜11・13・15・16・20章の原稿の章末演習の課題名を、新しい課題に合わせた
+- `exercises/EXERCISE_STATUS.md`を更新し、旧章構成の`ADVANCED_CHALLENGE_PLAN.md`と、`check:public-code`に置き換わった`check_solutions.sh`を削除した
+- 確認: `npm run check:public-code -- exercises`で90まとまりすべてコンパイルでき、テスト907件が通る。GUIの章（第18・20・23章）はDockerのXvfbで起動を確かめた
+
+#### Issue #020: 演習の基礎課題と章ごとのREADMEに残る食い違い
+- 後の章の内容を求める基礎課題
+    + 第9章（Comparator.comparing、Stream API、実行のたびに変わる時間計測）、第10章（Function・Optional）、第14章（Files.walk、WatchService、JSON）、第18章（ドラッグ、元に戻す、キーバインディングは第19章）、第20章（データバインディング、ダッシュボード）、第23章（Maven・Gradle、maven-shadeのFat JAR、Java 11、JUnit 4）
+- 存在しないファイルや古い内容を挙げるREADME
+    + 第11章の基礎課題（`BasicLambda.java`など、`System.out`の記述）、第16章のsolutions（UDP・ポートスキャナーの解答）、第18章・第20章・第21章の章ごとのREADMEの基礎課題の一覧、第22章のapi-designのREADME（maven-javadoc-pluginのsource 11、架空の`@performance`タグ）
+- 作り物の実行例
+    + 第13章の基礎課題（スタックトレースの行番号、`[ERROR]`のようなログレベル、決め打ちの計測時間）、第15章の基礎課題（計測時間）
+- そのほか
+    + 第16章の発展課題3（REST APIクライアント）は解答例がない。PUT・DELETEを試す外部のAPIが要るため、ローカルのサーバーと組にするか検討する
+    + 第20章のチャレンジ課題（ToDoリスト）は`LocalDate.now()`から見本のデータを作るため、表示される日付は実行日で変わる（READMEは2026-11-12の実行として書いた）
+    + 第14章の解答例は実行したディレクトリに作業フォルダー（`savedata/`など）を作る。リポジトリ内で実行した場合に備えて`.gitignore`に加えるか検討する
+    + switchのガード（`when`）は本文のどの章でも説明していない（第8章のチャレンジ課題は条件式で代用した）
