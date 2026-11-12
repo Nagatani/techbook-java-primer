@@ -11,15 +11,14 @@
 
 ## 発展課題（[advanced/](advanced/)）
 
-- 動的配列ベースのデータベース
-- リアルタイムログ解析システム
-- 動的在庫最適化システム
+- 履修登録と時間割（Map・Setの使い分け、LinkedHashMap・LinkedHashSetによる登録順）
+- タグ付きのToDoリスト（Listの並べ替え、Iteratorによる削除、TreeSet・TreeMap）
+- このフォルダーのJavaファイルは解答例です
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- 分散インメモリ検索エンジン
-- 高頻度取引システム
-- 自律分散ロボット制御システム
+- 文章の索引と検索（値がコレクションのMap、集合演算、TreeMapによる並べ替え、Iteratorによる削除）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 

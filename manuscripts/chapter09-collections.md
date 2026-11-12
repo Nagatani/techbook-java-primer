@@ -851,9 +851,9 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 1. 基礎課題
     + 学生管理システム、単語カウンター、重複除去システムなど、各コレクションの基本的な活用
 2. 発展課題
-    + 動的配列ベースのデータベース、複雑なソート処理の実装
+    + 履修登録と時間割、タグ付きのToDoリストなど、目的に合わせたコレクションの選択とイテレーターによる削除
 3. チャレンジ課題
-    + 簡易検索エンジン、図書館管理システムなど、実用的なアプリケーション開発
+    + 文章の索引と検索など、List・Set・Mapを組み合わせたアプリケーション開発
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
