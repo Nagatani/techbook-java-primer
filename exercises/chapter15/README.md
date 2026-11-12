@@ -4,10 +4,10 @@
 
 ## 基礎課題（[basic/](basic/)）
 
-- 基本的なスレッド操作
-- 同期処理とデータ競合対策
-- 並行コレクションとExecutor
-- プロデューサー・コンシューマーパターン
+- スレッドを作って待つ（Threadの継承、Runnable、start・join）
+- データ競合と同期（synchronized、AtomicInteger、volatile）
+- スレッドプールと非同期の処理（ExecutorService・Callable・Future、ConcurrentHashMap、CompletableFuture）
+- 生産者と消費者（BlockingQueue、Semaphore）
 
 ## 発展課題（[advanced/](advanced/)）
 
