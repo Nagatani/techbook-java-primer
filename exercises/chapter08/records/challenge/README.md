@@ -109,6 +109,14 @@ public static int fee(Transaction t) {
 
 - レコードはインターフェイスを実装できる。成分と同じ名前・型のアクセサーが自動で作られるので、`day()`と`amount()`を改めて書く必要はない
 - `case Withdrawal(int day, int amount, Channel channel)`のようなレコードパターンは、型を確かめたうえで成分を変数に取り出す。成分を使わないときは`case Deposit d`のような型のパターンでもよい
+- 振込の手数料は、本文で学んだガード（`when`）を使って、金額で2つのcaseに分けても書ける。ガードの付いたcaseを先に書く
+
+```java
+case Transfer(int day, int amount, String to, Channel channel) when amount >= LARGE_TRANSFER ->
+        channel.getTransferFee() + 220;
+case Transfer(int day, int amount, String to, Channel channel) -> channel.getTransferFee();
+```
+
 - sealedインターフェイスの`switch`で`default`を書かずにおくと、取引の種類を足したときに、caseの足りない`switch`をコンパイラーがエラーで知らせてくれる
 - クラスの中に宣言したレコード（`Passbook.Entry`）は、暗黙に`static`になる。外からは`Passbook.Entry`という名前で使う
 - 列挙型の値（窓口ごとの手数料）とレコードの成分（取引の内容）を組み合わせると、手数料の表を`if`の連続で書かずに済む
