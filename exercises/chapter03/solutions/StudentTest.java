@@ -1,5 +1,5 @@
 /**
- * 第3章 演習問題1: StudentTestクラスの解答例
+ * 第3章 演習問題4: StudentTestクラスの解答例
  * 
  * 【テストの目的】
  * - 複数のコンストラクタの動作確認
@@ -15,7 +15,7 @@
  */
 public class StudentTest {
     public static void main(String[] args) {
-        IO.println("=== 第3章 演習問題1: Student クラスのテスト ===");
+        IO.println("=== 第3章 演習問題4: Student クラスのテスト ===");
         
         // 【基本テスト】各コンストラクタの動作確認
         testBasicConstructors();

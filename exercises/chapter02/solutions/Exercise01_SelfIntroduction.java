@@ -1,5 +1,5 @@
 /**
- * 第1章 課題2: 変数を使った自己紹介 - 解答例
+ * 第2章 課題1: 変数を使った自己紹介 - 解答例
  * 
  * 変数を使って自己紹介プログラムを作成してください。
  * 
@@ -8,7 +8,7 @@
  * - 適切なデータ型の選択
  * - 文字列の連結
  */
-public class Exercise02_SelfIntroduction {
+public class Exercise01_SelfIntroduction {
     public static void main(String[] args) {
         // 解答例 1: 基本的な実装
         String name = "田中太郎";
@@ -64,7 +64,7 @@ public class Exercise02_SelfIntroduction {
         
         // BMI計算（応用例）
         double bmi = weight / ((height / 100) * (height / 100));
-        IO.println("BMI: " + String.format("%.1f", bmi));
+        IO.println("BMI: " + "%.1f".formatted(bmi));
     }
 }
 

@@ -2,269 +2,111 @@
 
 ## この章で学ぶこと
 
-第2章では、Javaプログラミングの核心であるクラスとオブジェクトについて学習します。変数だけでなく、データと処理を組み合わせた構造化されたプログラミングの基礎を身につけます。
+第2章では、C言語と比べながらJavaの基本文法を身につけます。
+変数とデータ型、演算子、条件分岐と繰り返し、配列、staticメソッド、文字列を使って、計算や判定をするプログラムを書きます。
 
-## 学習の目標
+## 解答例の一覧
 
-- **クラスの概念**: データ（フィールド）と処理（メソッド）をまとめる仕組みを理解する
-- **オブジェクトの生成**: クラスからインスタンスを作成し、それぞれが独立したデータを持つことを理解する
-- **メソッドの実装**: オブジェクトに対する操作を関数として定義する方法を学ぶ
-- **オブジェクト指向の基礎**: 現実世界の概念をプログラムで表現する方法を習得する
+| ファイル | 課題 |
+|------|------|
+| `Exercise01_SelfIntroduction.java` | 基礎課題1: 変数を使った自己紹介 |
+| `Exercise02_BasicCalculation.java` | 基礎課題2: 四則演算と余り |
+| `Exercise03_DataTypes.java` | 基礎課題3: データ型とリテラル |
+| `Exercise04_ControlFlow.java` | 基礎課題4: 成績判定とFizzBuzz |
+| `Exercise05_Arrays.java` | 基礎課題5: 点数の集計 |
+| `Exercise06_StaticMethods.java` | 基礎課題6: staticメソッドの定義 |
+| `Exercise07_Strings.java` | 基礎課題7: 文字列の操作 |
 
-## 課題と解答例
+発展課題（`advanced/`）とチャレンジ課題（`challenge/`）は、各フォルダーのJavaファイルが完成したプログラム（解答例）です。
 
-### 課題1: Personクラスの作成
+## 課題ごとのポイント
 
-**学習ポイント**:
-- クラスの基本的な構造（フィールド + メソッド）
-- インスタンス変数とメソッドの定義方法
-- オブジェクトの生成と操作
+### 課題1: 変数を使った自己紹介
+- 変数の宣言と初期化（`型名 変数名 = 初期値;`）
+- 文字列はString、整数はint、小数はdouble
+- 文字列の連結には`+`を使う
 
-**設計パターン**:
-```java
-public class Person {
-    // フィールド（データ）
-    String name;
-    int age;
-    
-    // メソッド（処理）
-    void introduce() { /* 実装 */ }
-    void birthday() { /* 実装 */ }
-}
-```
+### 課題2: 基本計算プログラム
+- 四則演算子（`+`, `-`, `*`, `/`）と余り（`%`）
+- 整数どうしの除算は結果も整数（小数部は切り捨て）
+- 正確な小数の計算にはdouble型を使う
+- 0で割ると、整数では`ArithmeticException`になる
 
-**重要な概念**:
-- **フィールド**: オブジェクトが持つデータ
-- **メソッド**: オブジェクトに対する操作
-- **インスタンス**: クラスから作られた具体的なオブジェクト
+### 課題3: データ型の理解
+- プリミティブ型の種類と範囲
+- リテラルの書き方（`9000000000L`、`3.14f`、`'A'`）
+- 型の選び方の基本は、整数ならint、小数ならdouble
 
-### 課題2: Bookクラスの設計
+### 課題4: 条件分岐と繰り返し
+- if-else ifは上から順に調べ、最初に当てはまった処理だけを実行する。範囲の判定は大きい値から書く
+- switch式（`case "B", "C" -> "合格";`）は、値ごとの分岐を短く書ける。従来のswitch文で書いてもよい
+- FizzBuzzでは、15の倍数を最初に調べる
 
-**学習ポイント**:
-- 複数のフィールドを持つクラス設計
-- 計算処理を含むメソッドの実装
-- オブジェクト間の比較処理
+### 課題5: 配列の操作
+- `length`で要素数を得る
+- 拡張for文は全要素を順に見るときに、添字を使うfor文は位置が必要なときに使う
+- 平均の計算では`(double)`でキャストして小数の割り算にする
 
-**高度な機能**:
-- 税込価格の計算
-- 価格比較メソッド
-- データの妥当性チェック
-- 書籍情報の表示
+### 課題6: staticメソッドの定義
+- `static 戻り値の型 メソッド名(引数)`で定義し、`return`で値を返す
+- mainメソッドと同じクラスのstaticメソッドは、メソッド名だけで呼び出せる
+- 同じ計算をメソッドにまとめると、何度でも呼び出せて読みやすくなる
 
-### 課題3: Circleクラスの実装
-
-**学習ポイント**:
-- double型を使った精密な数値計算
-- Math.PIを使った数学的計算
-- 幾何学的な概念のプログラム表現
-
-**数学的処理**:
-- 面積計算: π × r²
-- 円周計算: 2 × π × r
-- スケーリング処理
-
-### 課題4: Carクラスの基本実装
-
-**学習ポイント**:
-- 状態を持つオブジェクトの設計
-- 状態変更を伴うメソッド
-- 現実世界の概念のモデル化
-
-## オブジェクト指向の基本概念
-
-### クラスとオブジェクトの関係
-
-```java
-// クラス = 設計図
-public class Person {
-    String name;
-    int age;
-}
-
-// オブジェクト = 設計図から作った実体
-Person person1 = new Person();  // 1つ目のインスタンス
-Person person2 = new Person();  // 2つ目のインスタンス
-```
-
-### データとメソッドの組み合わせ
-
-```java
-public class Circle {
-    double radius;              // データ
-    
-    double calculateArea() {    // そのデータを使う処理
-        return Math.PI * radius * radius;
-    }
-}
-```
+### 課題7: 文字列の操作
+- 文字列の比較は`equals`（大文字・小文字を区別しないなら`equalsIgnoreCase`）
+- Stringは不変なので、`trim`などの結果は変数に代入し直す
+- ループの中で文字列を組み立てるときはStringBuilderを使う
 
 ## よくある間違いと対策
 
-### 1. オブジェクトの独立性の誤解
-
+### 1. 文字と文字列の混同
 ```java
-// × 間違った理解
-Person person1 = new Person();
-Person person2 = person1;  // 同じオブジェクトを参照
+// 間違い
+char ch = "A";     // 文字列を文字型に代入
 
-// 正しい理解
-Person person1 = new Person();
-Person person2 = new Person();  // 別々のオブジェクトを作成
+// 正解
+char ch = 'A';     // 文字は単一引用符
+String str = "A";  // 文字列は二重引用符
 ```
 
-### 2. フィールドの初期化忘れ
-
+### 2. 整数除算の誤解
 ```java
-// 問題のあるコード
-Person person = new Person();
-person.introduce();  // nameがnullで表示される
+// 間違い（3.75を期待しているが結果は3）
+int result = 15 / 4;
 
-// ○ 適切なコード
-Person person = new Person();
-person.name = "田中太郎";  // 使用前に初期化
-person.age = 20;
-person.introduce();
+// 正解
+double result1 = 15.0 / 4;          // 3.75
+double result2 = (double) 15 / 4;   // キャストを使う
 ```
 
-### 3. nullチェックの忘れ
-
+### 3. リテラルのサフィックス忘れ
 ```java
-// × null安全でないコード
-boolean isSameAuthor(Book other) {
-    return this.author.equals(other.author);  // NullPointerException の可能性
-}
+// 間違い
+long big = 9000000000;    // intの範囲を超える
+float f = 3.14;           // doubleとして扱われる
 
-// ○ null安全なコード
-boolean isSameAuthor(Book other) {
-    if (other != null && this.author != null && other.author != null) {
-        return this.author.equals(other.author);
-    }
-    return false;
-}
+// 正解
+long big = 9000000000L;
+float f = 3.14f;
 ```
 
-### 4. 計算精度の問題
-
+### 4. 配列の範囲外
 ```java
-// × 精度の低い計算
-double pi = 3.14;
-double area = pi * radius * radius;
+// 間違い（最後に scores[5] を参照して例外になる）
+for (int i = 0; i <= scores.length; i++) { ... }
 
-// ○ 正確な計算
-double area = Math.PI * radius * radius;
-```
-
-## 設計のベストプラクティス
-
-### クラス設計の原則
-
-1. **単一責任の原則**: 一つのクラスは一つの概念を表現する
-2. **データの整合性**: フィールドの値は常に有効な状態を保つ
-3. **メソッドの命名**: 動詞で始める（introduce, calculate, display）
-4. **判定メソッド**: is/hasで始める（isLarger, isSameAuthor）
-
-### メソッドの種類と設計
-
-```java
-// 1. 計算メソッド（戻り値あり）
-double calculateArea() {
-    return Math.PI * radius * radius;
-}
-
-// 2. 表示メソッド（戻り値なし）
-void displayInfo() {
-    IO.println("半径: " + radius);
-}
-
-// 3. 判定メソッド（boolean戻り値）
-boolean isLarger(Circle other) {
-    return this.calculateArea() > other.calculateArea();
-}
-
-// 4. 設定メソッド（妥当性チェック付き）
-void setRadius(double newRadius) {
-    if (newRadius > 0) {
-        this.radius = newRadius;
-    }
-}
-```
-
-### エラーハンドリング
-
-```java
-// 入力値の妥当性チェック
-void setAge(int newAge) {
-    if (newAge >= 0 && newAge <= 150) {
-        this.age = newAge;
-    } else {
-        IO.println("年齢は0から150の範囲で入力してください");
-    }
-}
+// 正解
+for (int i = 0; i < scores.length; i++) { ... }
 ```
 
 ## デバッグのコツ
 
-### オブジェクトの状態確認
-
-```java
-// デバッグ用メソッドを追加
-void debugInfo() {
-    IO.println("Debug: name=" + name + ", age=" + age);
-}
-```
-
-### 段階的なテスト
-
-1. **オブジェクト作成**: 正常にインスタンスが生成できるか
-2. **フィールド設定**: 値の設定と取得が正しく動作するか
-3. **メソッド呼び出し**: 期待した結果が得られるか
-4. **エラーケース**: 不正な値での動作確認
-
-## 発展的な内容
-
-### オブジェクトの配列管理
-
-```java
-Person[] people = new Person[3];
-people[0] = new Person();
-people[0].name = "田中太郎";
-people[0].age = 20;
-
-// 全員の情報を表示
-for (Person person : people) {
-    if (person != null) {
-        person.introduce();
-    }
-}
-```
-
-### 統計処理の実装
-
-```java
-// 平均年齢の計算
-double calculateAverageAge(Person[] people) {
-    int total = 0;
-    int count = 0;
-    
-    for (Person person : people) {
-        if (person != null) {
-            total += person.age;
-            count++;
-        }
-    }
-    
-    return count > 0 ? (double)total / count : 0.0;
-}
-```
+1. コンパイルエラーのメッセージの行番号を確認し、その周辺を見る
+2. 途中の変数の値を`IO.println`で表示して、期待どおりかを確かめる
+3. 境界の値（0、配列の最初と最後、ちょうど90点など）で動作を確かめる
 
 ## 次のステップ
 
-第2章をマスターしたら、第3章「オブジェクト指向の考え方」に進みましょう。
-
-第3章では以下を学習します:
-- コンストラクタによる初期化
-- thisキーワードの使い方
-- メソッドオーバーロード
-- より洗練されたクラス設計
-
-第2章で学んだクラスとオブジェクトの基礎概念は、これ以降のすべての章で使用される重要な土台となります。しっかりと理解を固めてから次に進みましょう。
+第2章が終わったら、第3章「オブジェクト指向の考え方」に進みましょう。
+第3章では、クラスを定義し、フィールドとメソッドを持つオブジェクトを作ります。
+Personクラス・Bookクラス・Circleクラスを作る課題は、第3章の演習にあります。

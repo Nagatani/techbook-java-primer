@@ -1,5 +1,5 @@
 /**
- * 第1章 応用課題3: 時間計算プログラム
+ * 第2章 発展課題3: 時間計算プログラム
  * 
  * 時間に関する様々な計算を行うプログラム。
  * 秒数変換、時刻の差、年齢計算など実用的な時間処理を実装します。
@@ -200,8 +200,8 @@ public class TimeCalculation {
     private static void calculateAndDisplayTimeDiff(String label, int startH, int startM, 
                                                    int endH, int endM) {
         int[] diff = calculateTimeDifference(startH, startM, endH, endM);
-        IO.println(label + ": " + startH + ":" + String.format("%02d", startM) + 
-                          " ～ " + endH + ":" + String.format("%02d", endM) + 
+        IO.println(label + ": " + startH + ":" + "%02d".formatted(startM) + 
+                          " ～ " + endH + ":" + "%02d".formatted(endM) + 
                           " = " + diff[0] + "時間" + diff[1] + "分");
     }
     
@@ -223,18 +223,18 @@ public class TimeCalculation {
         long seconds = minutes * 60L;
         
         IO.println(age + "歳の詳細:");
-        IO.println("  約" + String.format("%,d", daysApprox) + "日 (365日/年)");
-        IO.println("  約" + String.format("%,d", daysAccurate) + "日 (うるう年考慮)");
-        IO.println("  約" + String.format("%,d", hours) + "時間");
-        IO.println("  約" + String.format("%,d", minutes) + "分");
-        IO.println("  約" + String.format("%,d", seconds) + "秒");
+        IO.println("  約" + "%,d".formatted(daysApprox) + "日 (365日/年)");
+        IO.println("  約" + "%,d".formatted(daysAccurate) + "日 (うるう年考慮)");
+        IO.println("  約" + "%,d".formatted(hours) + "時間");
+        IO.println("  約" + "%,d".formatted(minutes) + "分");
+        IO.println("  約" + "%,d".formatted(seconds) + "秒");
         
         // 人生の残り時間（平均寿命を80歳として）
         if (age < 80) {
             int remainingYears = 80 - age;
             int remainingDays = remainingYears * 365;
             IO.println("  残り約" + remainingYears + "年 (" + 
-                              String.format("%,d", remainingDays) + "日)");
+                              "%,d".formatted(remainingDays) + "日)");
         }
     }
     
@@ -259,7 +259,7 @@ public class TimeCalculation {
             period = "PM";
         }
         
-        return hour12 + ":" + String.format("%02d", minute) + " " + period;
+        return hour12 + ":" + "%02d".formatted(minute) + " " + period;
     }
     
     /**
@@ -315,8 +315,8 @@ public class TimeCalculation {
         double minutesPerTask = (totalHours * 60) / tasks;
         
         IO.println(hours + "時間" + minutes + "分で" + tasks + "タスク:");
-        IO.println("  時間あたり: " + String.format("%.1f", tasksPerHour) + "タスク");
-        IO.println("  1タスクあたり: " + String.format("%.1f", minutesPerTask) + "分");
+        IO.println("  時間あたり: " + "%.1f".formatted(tasksPerHour) + "タスク");
+        IO.println("  1タスクあたり: " + "%.1f".formatted(minutesPerTask) + "分");
     }
 }
 

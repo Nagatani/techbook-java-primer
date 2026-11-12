@@ -1,5 +1,5 @@
 /**
- * 第3章 演習問題3: BankAccountTestクラスの解答例
+ * 第3章 演習問題6: BankAccountTestクラスの解答例
  * 
  * 【テストの目的】
  * - コンストラクタチェーンの動作確認
@@ -15,7 +15,7 @@
  */
 public class BankAccountTest {
     public static void main(String[] args) {
-        IO.println("=== 第3章 演習問題3: BankAccount クラスのテスト ===");
+        IO.println("=== 第3章 演習問題6: BankAccount クラスのテスト ===");
         
         // 【基本テスト】コンストラクタのテスト
         testConstructors();

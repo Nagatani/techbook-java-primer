@@ -1,5 +1,5 @@
 /**
- * 第1章 応用課題2: 個人情報管理システム
+ * 第2章 発展課題2: 個人情報管理システム
  * 
  * 個人の詳細情報を管理し、様々な計算を行うプログラム。
  * 基本情報から健康指標や統計情報を自動計算します。
@@ -77,21 +77,21 @@ public class PersonalInfo {
         double heightInMeters = height / 100.0;
         double bmi = weight / (heightInMeters * heightInMeters);
         String bmiCategory = getBMICategory(bmi);
-        IO.println("BMI: " + String.format("%.1f", bmi) + " (" + bmiCategory + ")");
+        IO.println("BMI: " + "%.1f".formatted(bmi) + " (" + bmiCategory + ")");
         
         // 理想体重計算（複数の方式）
         double idealWeight1 = (height - 100) * 0.9; // 簡易式
         double idealWeight2 = heightInMeters * heightInMeters * 22; // BMI 22基準
-        IO.println("理想体重 (簡易式): " + String.format("%.1f", idealWeight1) + "kg");
-        IO.println("理想体重 (BMI22): " + String.format("%.1f", idealWeight2) + "kg");
+        IO.println("理想体重 (簡易式): " + "%.1f".formatted(idealWeight1) + "kg");
+        IO.println("理想体重 (BMI22): " + "%.1f".formatted(idealWeight2) + "kg");
         
         // 体重差
         double weightDiff1 = weight - idealWeight1;
         double weightDiff2 = weight - idealWeight2;
         IO.println("理想体重との差 (簡易式): " + 
-                          (weightDiff1 >= 0 ? "+" : "") + String.format("%.1f", weightDiff1) + "kg");
+                          (weightDiff1 >= 0 ? "+" : "") + "%.1f".formatted(weightDiff1) + "kg");
         IO.println("理想体重との差 (BMI22): " + 
-                          (weightDiff2 >= 0 ? "+" : "") + String.format("%.1f", weightDiff2) + "kg");
+                          (weightDiff2 >= 0 ? "+" : "") + "%.1f".formatted(weightDiff2) + "kg");
         
         // 成人判定
         String adultStatus = getAdultStatus(age);
@@ -99,7 +99,7 @@ public class PersonalInfo {
         
         // 基礎代謝計算（Harris-Benedict式）
         double bmr = calculateBMR(weight, height, age, gender);
-        IO.println("基礎代謝: " + String.format("%.0f", bmr) + " kcal/日");
+        IO.println("基礎代謝: " + "%.0f".formatted(bmr) + " kcal/日");
         
         IO.println();
     }
@@ -122,8 +122,8 @@ public class PersonalInfo {
         // 文字数比率
         double firstNameRatio = (double) firstNameChars / totalChars * 100;
         double lastNameRatio = (double) lastNameChars / totalChars * 100;
-        IO.println("名の比率: " + String.format("%.1f", firstNameRatio) + "%");
-        IO.println("姓の比率: " + String.format("%.1f", lastNameRatio) + "%");
+        IO.println("名の比率: " + "%.1f".formatted(firstNameRatio) + "%");
+        IO.println("姓の比率: " + "%.1f".formatted(lastNameRatio) + "%");
         
         // 名前の特徴
         if (firstNameChars == lastNameChars) {
@@ -145,15 +145,15 @@ public class PersonalInfo {
         
         // 日数計算（概算）
         int daysLived = age * 365; // うるう年は考慮しない簡易計算
-        IO.println(age + "歳 = 約" + String.format("%,d", daysLived) + "日");
+        IO.println(age + "歳 = 約" + "%,d".formatted(daysLived) + "日");
         
         // 時間計算
         long hoursLived = daysLived * 24L;
-        IO.println("生まれてから約" + String.format("%,d", hoursLived) + "時間");
+        IO.println("生まれてから約" + "%,d".formatted(hoursLived) + "時間");
         
         // 分計算
         long minutesLived = hoursLived * 60L;
-        IO.println("生まれてから約" + String.format("%,d", minutesLived) + "分");
+        IO.println("生まれてから約" + "%,d".formatted(minutesLived) + "分");
         
         // 世代分析
         String generation = getGeneration(age);
@@ -187,7 +187,7 @@ public class PersonalInfo {
         // 体格指数（ローレル指数）
         double rohrer = weight / Math.pow(height, 3) * 10000000;
         String rohrerCategory = getRohrerCategory(rohrer);
-        IO.println("ローレル指数: " + String.format("%.2f", rohrer) + " (" + rohrerCategory + ")");
+        IO.println("ローレル指数: " + "%.2f".formatted(rohrer) + " (" + rohrerCategory + ")");
         
         // 平均との比較（仮想データ）
         double avgHeight = gender.equals("男性") ? 171.0 : 158.0;
@@ -197,9 +197,9 @@ public class PersonalInfo {
         double weightDiff = weight - avgWeight;
         
         IO.println("平均身長との差: " + 
-                          (heightDiff >= 0 ? "+" : "") + String.format("%.1f", heightDiff) + "cm");
+                          (heightDiff >= 0 ? "+" : "") + "%.1f".formatted(heightDiff) + "cm");
         IO.println("平均体重との差: " + 
-                          (weightDiff >= 0 ? "+" : "") + String.format("%.1f", weightDiff) + "kg");
+                          (weightDiff >= 0 ? "+" : "") + "%.1f".formatted(weightDiff) + "kg");
         
         IO.println();
     }
@@ -402,5 +402,5 @@ public class PersonalInfo {
  * 2. 条件分岐：年齢や数値に応じた文字列の切り替え
  * 3. 文字列操作：length(), substring() メソッドの活用
  * 4. 数値計算：実用的な計算式の実装
- * 5. フォーマット：String.format() での表示調整
+ * 5. フォーマット：formatted()での表示調整
  */

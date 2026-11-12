@@ -1,5 +1,5 @@
 /**
- * 第3章 演習問題4: TimeTestクラスの解答例
+ * 第3章 演習問題7: TimeTestクラスの解答例
  * 
  * 【テストの目的】
  * - 時刻の正規化処理の動作確認
@@ -15,7 +15,7 @@
  */
 public class TimeTest {
     public static void main(String[] args) {
-        IO.println("=== 第3章 演習問題4: Time クラスのテスト ===");
+        IO.println("=== 第3章 演習問題7: Time クラスのテスト ===");
         
         // 【基本テスト】コンストラクタのテスト
         testConstructors();

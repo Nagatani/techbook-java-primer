@@ -1,5 +1,5 @@
 /**
- * 第3章 演習問題2: RectangleTestクラスの解答例
+ * 第3章 演習問題5: RectangleTestクラスの解答例
  * 
  * 【テストの目的】
  * - メソッドオーバーロードの動作確認
@@ -15,7 +15,7 @@
  */
 public class RectangleTest {
     public static void main(String[] args) {
-        IO.println("=== 第3章 演習問題2: Rectangle クラスのテスト ===");
+        IO.println("=== 第3章 演習問題5: Rectangle クラスのテスト ===");
         
         // 【基本テスト】コンストラクタのテスト
         testConstructors();

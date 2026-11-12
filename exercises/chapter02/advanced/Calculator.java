@@ -1,5 +1,5 @@
 /**
- * 第1章 応用課題1: 高機能計算機
+ * 第2章 発展課題1: 高機能計算機
  * 
  * 2つの数値を使って様々な計算を行う高機能な計算機プログラム。
  * 整数と小数の両方に対応し、基本演算に加えて統計的な計算も行います。
@@ -8,7 +8,7 @@
  * - double型を使った精密な計算
  * - 型変換（キャスト）の理解
  * - Math.max(), Math.min()等のMathクラスメソッドの活用
- * - String.format()を使った出力フォーマット
+ * - formatted()を使った出力フォーマット
  * - 複雑な計算ロジックの組み立て
  */
 
@@ -84,7 +84,7 @@ public class Calculator {
         
         // 平均値
         double average = (a + b) / 2.0;
-        IO.println("平均値: " + String.format("%.2f", average));
+        IO.println("平均値: " + "%.2f".formatted(average));
         
         // 最大値
         double maximum = Math.max(a, b);
@@ -101,7 +101,7 @@ public class Calculator {
         // 幾何平均（正の数の場合のみ）
         if (a > 0 && b > 0) {
             double geometricMean = Math.sqrt(a * b);
-            IO.println("幾何平均: " + String.format("%.2f", geometricMean));
+            IO.println("幾何平均: " + "%.2f".formatted(geometricMean));
         }
         
         IO.println();
@@ -124,8 +124,8 @@ public class Calculator {
         // 小数部の計算
         double fracPartA = a - intPartA;
         double fracPartB = b - intPartB;
-        IO.println("数値1の小数部: " + String.format("%.2f", fracPartA));
-        IO.println("数値2の小数部: " + String.format("%.2f", fracPartB));
+        IO.println("数値1の小数部: " + "%.2f".formatted(fracPartA));
+        IO.println("数値2の小数部: " + "%.2f".formatted(fracPartB));
         
         // 四捨五入
         long roundedA = Math.round(a);
@@ -158,45 +158,45 @@ public class Calculator {
         
         // べき乗計算
         double powerAB = Math.pow(a, b);
-        IO.println(a + " の " + b + " 乗: " + String.format("%.2f", powerAB));
+        IO.println(a + " の " + b + " 乗: " + "%.2f".formatted(powerAB));
         
         // 平方根（正の数の場合のみ）
         if (a >= 0) {
             double sqrtA = Math.sqrt(a);
-            IO.println(a + " の平方根: " + String.format("%.2f", sqrtA));
+            IO.println(a + " の平方根: " + "%.2f".formatted(sqrtA));
         }
         if (b >= 0) {
             double sqrtB = Math.sqrt(b);
-            IO.println(b + " の平方根: " + String.format("%.2f", sqrtB));
+            IO.println(b + " の平方根: " + "%.2f".formatted(sqrtB));
         }
         
         // 自然対数（正の数の場合のみ）
         if (a > 0) {
             double logA = Math.log(a);
-            IO.println(a + " の自然対数: " + String.format("%.2f", logA));
+            IO.println(a + " の自然対数: " + "%.2f".formatted(logA));
         }
         if (b > 0) {
             double logB = Math.log(b);
-            IO.println(b + " の自然対数: " + String.format("%.2f", logB));
+            IO.println(b + " の自然対数: " + "%.2f".formatted(logB));
         }
         
         // 常用対数（正の数の場合のみ）
         if (a > 0) {
             double log10A = Math.log10(a);
-            IO.println(a + " の常用対数: " + String.format("%.2f", log10A));
+            IO.println(a + " の常用対数: " + "%.2f".formatted(log10A));
         }
         if (b > 0) {
             double log10B = Math.log10(b);
-            IO.println(b + " の常用対数: " + String.format("%.2f", log10B));
+            IO.println(b + " の常用対数: " + "%.2f".formatted(log10B));
         }
         
         // 三角関数（ラジアン）
         double sinA = Math.sin(a);
         double cosA = Math.cos(a);
         double tanA = Math.tan(a);
-        IO.println(a + " ラジアンの sin: " + String.format("%.2f", sinA));
-        IO.println(a + " ラジアンの cos: " + String.format("%.2f", cosA));
-        IO.println(a + " ラジアンの tan: " + String.format("%.2f", tanA));
+        IO.println(a + " ラジアンの sin: " + "%.2f".formatted(sinA));
+        IO.println(a + " ラジアンの cos: " + "%.2f".formatted(cosA));
+        IO.println(a + " ラジアンの tan: " + "%.2f".formatted(tanA));
         
         IO.println();
     }
@@ -252,5 +252,5 @@ public class Calculator {
  * 2. Math クラス：様々な数学関数が提供されている
  * 3. 型変換：(int) を使った明示的なキャスト
  * 4. 条件分岐：ゼロ除算や負の数の平方根など、数学的に無効な操作を避ける
- * 5. フォーマット：String.format() で小数点以下の桁数を制御
+ * 5. フォーマット：formatted()で小数点以下の桁数を制御
  */

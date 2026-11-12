@@ -1,5 +1,5 @@
 /**
- * 第1章 課題4: データ型の理解 - 解答例
+ * 第2章 課題3: データ型の理解 - 解答例
  * 
  * さまざまなデータ型を使った変数宣言と出力を行ってください。
  * 
@@ -8,7 +8,7 @@
  * - リテラルの正しい記述方法
  * - 各型の値の範囲と用途
  */
-public class Exercise04_DataTypes {
+public class Exercise03_DataTypes {
     public static void main(String[] args) {
         // 解答例 1: 基本的なデータ型の実装
         byte byteValue = 100;
@@ -124,7 +124,7 @@ public class Exercise04_DataTypes {
         IO.println("体重: " + weight + "kg");
         IO.println("成績: " + grade + "ランク");
         IO.println("卒業済み: " + isGraduated);
-        IO.println("BMI: " + String.format("%.2f", bmi));
+        IO.println("BMI: " + "%.2f".formatted(bmi));
         
         // 条件による判定
         String bmiCategory;

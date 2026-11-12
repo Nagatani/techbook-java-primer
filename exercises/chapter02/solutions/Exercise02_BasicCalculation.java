@@ -1,5 +1,5 @@
 /**
- * 第1章 課題3: 基本計算プログラム - 解答例
+ * 第2章 課題2: 基本計算プログラム - 解答例
  * 
  * 2つの整数を使って四則演算を行うプログラムを作成してください。
  * 
@@ -8,7 +8,7 @@
  * - 整数除算の特徴
  * - 余りの演算
  */
-public class Exercise03_BasicCalculation {
+public class Exercise02_BasicCalculation {
     public static void main(String[] args) {
         // 解答例 1: 基本的な実装
         int num1 = 15;

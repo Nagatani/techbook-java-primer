@@ -1,5 +1,5 @@
 /**
- * 第1章 基本課題3: 基本計算プログラム
+ * 第2章 基本課題2: 基本計算プログラム
  * 
  * 課題: 2つの整数を使って四則演算を行うプログラムを作成してください。
  * 
@@ -24,7 +24,7 @@
  * - 整数除算の結果を理解している
  * - 出力形式が見やすい
  */
-public class Exercise03_BasicCalculation {
+public class Exercise02_BasicCalculation {
     public static void main(String[] args) {
         // TODO: 2つの整数を宣言し、値を代入してください
         int num1 = 0; // ここに最初の数値を代入

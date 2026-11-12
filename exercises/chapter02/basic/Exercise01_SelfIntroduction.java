@@ -1,5 +1,5 @@
 /**
- * 第1章 基本課題2: 変数を使った自己紹介
+ * 第2章 基本課題1: 変数を使った自己紹介
  * 
  * 課題: 変数を使って自己紹介プログラムを作成してください。
  * 
@@ -21,7 +21,7 @@
  * - 変数の宣言と初期化
  * - わかりやすい出力フォーマット
  */
-public class Exercise02_SelfIntroduction {
+public class Exercise01_SelfIntroduction {
     public static void main(String[] args) {
         // TODO: 以下の変数を宣言し、自分の情報を代入してください
         

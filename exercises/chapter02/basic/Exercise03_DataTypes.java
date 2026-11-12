@@ -1,5 +1,5 @@
 /**
- * 第1章 基本課題4: データ型の理解
+ * 第2章 基本課題3: データ型の理解
  * 
  * 課題: さまざまなデータ型を使った変数宣言と出力を行ってください。
  * 
@@ -16,7 +16,7 @@
  * short値: 30000
  * int値: 2000000
  * long値: 9000000000
- * float値: 3.14f
+ * float値: 3.14
  * double値: 3.141592653589793
  * char値: A
  * boolean値: true
@@ -27,7 +27,7 @@
  * - 適切な値の範囲を理解
  * - リテラルの記述方法を理解
  */
-public class Exercise04_DataTypes {
+public class Exercise03_DataTypes {
     public static void main(String[] args) {
         // TODO: 各データ型の変数を宣言し、適切な値を代入してください
         
