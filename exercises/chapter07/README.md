@@ -4,10 +4,10 @@
 
 ## 基礎課題（[basic/](basic/)）
 
-- 図形の抽象クラス設計
-- 動物の行動インターフェイス設計
-- 支払い方法の戦略パターン
-- 通知システムの複合インターフェイス
+- 図形の抽象クラス（雛形あり）
+- 支払いのインターフェイス（雛形あり）
+- 動物の行動のインターフェイス（多重実装、デフォルトメソッド）
+- 通知とログのインターフェイス（デフォルトメソッドのオーバーライド、静的メソッド）
 
 ## 発展課題（[advanced/](advanced/)）
 
@@ -22,19 +22,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `Circle.java`
-- `Drawable.java`
-- `Employee.java`
-- `Enemy.java`
-- `GameCharacter.java`
-- `GameTest.java`
-- `Invoice.java`
-- `Payable.java`
-- `PayrollTest.java`
-- `Player.java`
-- `Rectangle.java`
-- `Shape.java`
-- `ShapeTest.java`
-- `Sortable.java`
-- `SortableTest.java`
-- `Student.java`
+- 基礎課題の課題1〜4の解答例

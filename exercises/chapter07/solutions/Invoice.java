@@ -1,83 +1,49 @@
 package chapter07.solutions;
 
 /**
- * 請求書を表すクラス
- * 
- * Payableインターフェイスを実装し、給与計算システムで
- * 統一的に扱えるようにしています。
+ * 請求書（課題2の解答例）
  */
 public class Invoice implements Payable {
-    
-    private String partNumber;
-    private String partDescription;
+    private String invoiceNumber;
+    private String productDescription;
     private int quantity;
     private double pricePerItem;
-    
-    /**
-     * 請求書のコンストラクタ
-     * 
-     * @param partNumber 部品番号
-     * @param partDescription 部品説明
-     * @param quantity 数量
-     * @param pricePerItem 単価
-     */
-    public Invoice(String partNumber, String partDescription, int quantity, double pricePerItem) {
-        this.partNumber = partNumber;
-        this.partDescription = partDescription;
-        this.quantity = Math.max(0, quantity);
-        this.pricePerItem = Math.max(0.0, pricePerItem);
+
+    // 負の数量・単価は0にする
+    public Invoice(String invoiceNumber, String productDescription, int quantity, double pricePerItem) {
+        this.invoiceNumber = invoiceNumber;
+        this.productDescription = productDescription;
+        this.quantity = quantity < 0 ? 0 : quantity;
+        this.pricePerItem = pricePerItem < 0 ? 0.0 : pricePerItem;
     }
-    
-    /**
-     * 支払い金額（請求額）を計算する
-     * 数量 × 単価を返す
-     * 
-     * @return 支払い金額
-     */
+
+    // 数量 × 単価
     @Override
-    public double getPaymentAmount() {
+    public double calculatePayment() {
         return quantity * pricePerItem;
     }
-    
-    /**
-     * 支払い対象の名前を取得する
-     * 
-     * @return 部品番号
-     */
-    @Override
-    public String getPaymentName() {
-        return partNumber;
+
+    public void displayInvoiceInfo() {
+        IO.println("請求書情報:");
+        IO.println("  番号: " + invoiceNumber);
+        IO.println("  商品: " + productDescription);
+        IO.println("  数量: " + quantity + "個、単価: " + "%,.0f".formatted(pricePerItem) + "円");
+        IO.println("  合計: " + "%,.0f".formatted(calculatePayment()) + "円");
     }
-    
-    /**
-     * 請求書の詳細情報を取得する
-     * 
-     * @return 請求書の詳細情報
-     */
-    @Override
-    public String getPaymentDescription() {
-        return String.format(
-            "請求書: %s\n" +
-            "部品説明: %s\n" +
-            "数量: %d個\n" +
-            "単価: %.2f円\n" +
-            "総額: %.2f円",
-            partNumber, partDescription, quantity, pricePerItem, getPaymentAmount()
-        );
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
     }
-    
-    // Getters
-    public String getPartNumber() { return partNumber; }
-    public String getPartDescription() { return partDescription; }
-    public int getQuantity() { return quantity; }
-    public double getPricePerItem() { return pricePerItem; }
-    
-    // Setters
-    public void setQuantity(int quantity) {
-        this.quantity = Math.max(0, quantity);
+
+    public String getProductDescription() {
+        return productDescription;
     }
-    
-    public void setPricePerItem(double pricePerItem) {
-        this.pricePerItem = Math.max(0.0, pricePerItem);
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getPricePerItem() {
+        return pricePerItem;
     }
 }
