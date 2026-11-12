@@ -1,7 +1,7 @@
 // BookLibraryTest.java
 public class BookLibraryTest {
     public static void main(String[] args) {
-        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
+        Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
         
         IO.println(book.getInfo());
         

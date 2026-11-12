@@ -1,16 +1,19 @@
-public class Student {
+class Student {
     private String name;
     private int age;
+    private double gpa;
     
-    private Student(String name, int age) {
+    public Student(String name, int age, double gpa) {
         this.name = name;
         this.age = age;
+        this.gpa = gpa;
     }
     
-    public static Student createStudent(String name, int age) {
-        if (age < 0 || age > 150) {
-            throw new IllegalArgumentException("Invalid age");
-        }
-        return new Student(name, age);
+    public void display() {
+        IO.println("名前: " + name + ", 年齢: " + age + ", GPA: " + gpa);
+    }
+    
+    public double getGpa() {
+        return gpa;
     }
 }

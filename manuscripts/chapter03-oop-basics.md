@@ -294,7 +294,7 @@ WebアプリケーションではMVCパターン（Model-View-Controller）、�
 
 これを**カプセル化（隠ぺい）**といいます。
 
-カプセル化を施すことで、内部実装の変更による影響を局所化し、バグの混入を防ぎ、APIの安定性を保つことができます。
+カプセル化をコードで書くとどうなるか、どんな効果があるかは、この章の「オブジェクト指向の3つの基本原則」で確かめます。
 
 ### 設計時に振る舞いの名前や入出力情報だけ決める
 昨今のオブジェクト指向言語には、インターフェイスという概念があります。
@@ -485,6 +485,11 @@ public class BankAccountTest {
 ③のメソッドで残高を確認することはできますが、それを使って残高を書き換えることはできません。
 こうして、残高のデータはつねに整合性が保たれます。
 
+カプセル化の効果は、データを守ることだけではありません。
+外部のコードはメソッドを呼び出すだけなので、残高の持ち方などクラスの内部を変えても、メソッドの名前・引数・戻り値が同じなら外部のコードを直さずに済みます。
+また、フィールドを書き換える処理がクラスの内部に限られるため、値がおかしくなったときに原因を探す範囲が狭くなります。
+この章で後に学ぶgetter/setterや`private`の使い方は、どれもこのカプセル化を実現するための書き方です。
+
 <div class="figure">
 
 ![カプセル化によるデータ保護とアクセス制御](images/diagrams/chapter03-encapsulation.svg)
@@ -513,8 +518,8 @@ public class Product {
 }
 
 public class Book extends Product {  // ③
-    private String author;     // ④
-    private String isbn;       // ④
+    protected String author;   // ④
+    protected String isbn;     // ④
     
     public void displayBookInfo() {  // ⑤
         displayInfo();  // ②を呼び出し
@@ -649,12 +654,23 @@ public class PolymorphismTest {
 
 これらの要素について、順に詳しく見ていきましょう。
 
-### フィールド（属性）の基礎
+### フィールド（属性）
 
-フィールドは、オブジェクトが持つデータを表現します。
-各オブジェクトは自分専用のフィールドの値を持ちます。
+フィールドは、オブジェクトが持つデータ（状態）を表す変数です。
+クラスの内部で宣言し、そのクラスから作られる各オブジェクトが、自分専用のフィールドの値を持ちます。
 
-<span class="listing-number">**サンプルコード3-10**　Student.java</span>
+#### フィールドの宣言構文
+
+<span class="listing-number">**サンプルコード3-10**</span>
+
+```java
+アクセス修飾子 データ型 フィールド名;
+アクセス修飾子 データ型 フィールド名 = 初期値;
+```
+
+次の`Student`クラスは、学生の情報をフィールドとして宣言した例です。
+
+<span class="listing-number">**サンプルコード3-11**　Student.java</span>
 
 ```java
 public class Student {
@@ -675,6 +691,7 @@ public class Student {
 - 各フィールドには型（String、int、doubleなど）が必要である
 - 初期値を設定しない場合、デフォルト値が自動的に設定される
 - フィールド名は意味がわかりやすい名前にする
+- アクセス修飾子は省略できる。`private`と`public`の使い分けは、この章の「publicとprivate」の節で学ぶ
 
 #### フィールドのデフォルト値
 
@@ -683,7 +700,7 @@ public class Student {
 
 これらは、メソッド内部で通常の変数として定義した際の「未初期化」の状態とは異なります。
 
-<span class="listing-number">**サンプルコード3-11**　DefaultValueDemo.java</span>
+<span class="listing-number">**サンプルコード3-12**　DefaultValueDemo.java</span>
 
 ```java
 public class DefaultValueDemo {
@@ -719,95 +736,7 @@ boolean: false
 String: null
 ```
 
-### フィールド（インスタンス変数）の詳細
-
-フィールドは、オブジェクトの状態を表現する変数です。
-クラス内で宣言され、そのクラスから生成される各オブジェクトが独自の値を保持します。
-
-#### フィールドの宣言構文
-
-<span class="listing-number">**サンプルコード3-12**</span>
-
-```java
-アクセス修飾子 データ型 フィールド名;
-アクセス修飾子 データ型 フィールド名 = 初期値;
-```
-
-#### 実際の使用例
-
-<span class="listing-number">**サンプルコード3-13**　Product.java</span>
-
-```java
-public class Product {
-    // フィールドの宣言
-    private String productId;  // 商品ID
-    private String name;       // 商品名  
-    private double price;      // 価格
-    private int stock;         // 在庫数
-    
-    // コンストラクタでフィールドを初期化
-    public Product(String productId, String name, double price) {
-        this.productId = productId;  // thisは現在のオブジェクトを指す
-        this.name = name;
-        this.price = price;
-        this.stock = 0;              // 初期在庫は0
-    }
-    
-    // フィールドを使った処理
-    public void addStock(int quantity) {
-        if (quantity > 0) {
-            stock += quantity;  // 在庫数を更新
-            IO.println(quantity + "個入荷しました");
-        }
-    }
-    
-    // フィールドの値を表示
-    public void showInfo() {
-        IO.println("商品ID: " + productId);
-        IO.println("商品名: " + name);
-        IO.println("価格: ¥" + price);
-        IO.println("在庫数: " + stock + "個");
-    }
-}
-```
-
-#### 使用例
-
-<span class="listing-number">**サンプルコード3-14**　ProductTest.java</span>
-
-```java
-// ProductTest.java
-public class ProductTest {
-    public static void main(String[] args) {
-        Product product = new Product("P001", "ノートPC", 98000);
-        
-        product.showInfo();
-        IO.println("---");
-        
-        product.addStock(10);
-        product.showInfo();
-    }
-}
-```
-
-#### 実行結果
-
-```
-商品ID: P001
-商品名: ノートPC
-価格: ¥98000.0
-在庫数: 0個
----
-10個入荷しました
-商品ID: P001
-商品名: ノートPC
-価格: ¥98000.0
-在庫数: 10個
-```
-
-#### 型ごとのデフォルト値
-
-フィールドに初期値を指定しない場合に自動的に設定されるデフォルト値を、型ごとにまとめます。
+型ごとのデフォルト値をまとめると、次の表のとおりです。
 
 | データ型 | デフォルト値 |
 |---------|------------|
@@ -826,7 +755,7 @@ C言語の関数と似ていますが、関数とデータ（フィールド）�
 
 #### メソッドの宣言構文
 
-<span class="listing-number">**サンプルコード3-15**</span>
+<span class="listing-number">**サンプルコード3-13**</span>
 
 ```java
 アクセス修飾子 戻り値の型 メソッド名(引数リスト) {
@@ -835,7 +764,7 @@ C言語の関数と似ていますが、関数とデータ（フィールド）�
 }
 ```
 
-<span class="listing-number">**サンプルコード3-16**　Rectangle.java、RectangleExample.java</span>
+<span class="listing-number">**サンプルコード3-14**　Rectangle.java、RectangleExample.java</span>
 
 ```java
 public class Rectangle {
@@ -916,7 +845,7 @@ public class RectangleExample {
 
 ##### 1. 戻り値がないメソッド（voidメソッド）
 
-<span class="listing-number">**サンプルコード3-17**</span>
+<span class="listing-number">**サンプルコード3-15**</span>
 
 ```java
 public void printMessage() {
@@ -926,7 +855,7 @@ public void printMessage() {
 
 ##### 2. 戻り値があるメソッド
 
-<span class="listing-number">**サンプルコード3-18**</span>
+<span class="listing-number">**サンプルコード3-16**</span>
 
 ```java
 public int add(int a, int b) {
@@ -936,7 +865,7 @@ public int add(int a, int b) {
 
 ##### 3. 引数がないメソッド
 
-<span class="listing-number">**サンプルコード3-19**</span>
+<span class="listing-number">**サンプルコード3-17**</span>
 
 ```java
 public void showSeparator() {
@@ -946,7 +875,7 @@ public void showSeparator() {
 
 ##### 4. 複数の引数を持つメソッド
 
-<span class="listing-number">**サンプルコード3-20**</span>
+<span class="listing-number">**サンプルコード3-18**</span>
 
 ```java
 public double calculateBMI(double weight, double height) {
@@ -959,9 +888,10 @@ public double calculateBMI(double weight, double height) {
 オブジェクト指向プログラミングでは、フィールドを`private`にして直接アクセスを禁止し、`public`メソッドを通じてアクセスする方法が推奨されます。
 これをアクセサーメソッド（getter/setter）パターンと呼びます。
 
-値の取得(getter)と設定(setter)をそれぞれ分割して作成することは、「取得はできるけど外部からは設定できないデータ」のような条件のデータを作成できることになります。
+サンプルコード3-4の`getBalance`は、このうちのgetterにあたります。
+値の取得（getter）と設定（setter）を別のメソッドにするので、getterだけを用意すれば「外部から読めるが書き換えられないデータ」も作れます。
 
-<span class="listing-number">**サンプルコード3-21**　Person.java</span>
+<span class="listing-number">**サンプルコード3-19**　Person.java</span>
 
 ```java
 public class Person {
@@ -997,7 +927,7 @@ public class Person {
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-22**　PersonTest.java</span>
+<span class="listing-number">**サンプルコード3-20**　PersonTest.java</span>
 
 ```java
 // PersonTest.java
@@ -1031,8 +961,7 @@ public class PersonTest {
 
 getter/setterを通すと、フィールドへのアクセスをクラスの側で制御できます。
 この例のsetterのように、値を設定するときに検証を行い、無効な値を受け付けないようにもできます。
-また、外部のコードはメソッドを呼び出すだけなので、将来クラス内部の実装を変えても、外部に見せるインターフェイスは変わりません。
-フィールドに触れる箇所がgetter/setterに限られるため、デバッグのときに値がどこで読み書きされたのかを特定しやすくなる利点もあります。
+クラスの内部を変えても外部のコードに影響しにくい、値の書き換えの原因を探しやすいといった効果は、サンプルコード3-4の解説で述べたカプセル化の効果そのものです。
 
 ただし、すべてのフィールドに機械的にgetter/setterを作成するのは避けましょう。
 外部からのアクセスが本当に必要なフィールドにだけ用意し、オブジェクトの内部状態はできるだけ隠すのがよい設計です。
@@ -1041,7 +970,7 @@ getter/setterを通すと、フィールドへのアクセスをクラスの側�
 
 コンストラクターは、オブジェクトを作成するときに自動的に呼ばれる特別なメソッドです。
 
-<span class="listing-number">**サンプルコード3-23**　Book.java</span>
+<span class="listing-number">**サンプルコード3-21**　Book.java</span>
 
 ```java
 public class Book {
@@ -1049,14 +978,14 @@ public class Book {
     private String author;
     private int pages;
     
-    // コンストラクタ（クラス名と同じ名前）
+    // コンストラクター（クラス名と同じ名前）
     public Book(String title, String author, int pages) {
         this.title = title;
         this.author = author;
         this.pages = pages;
     }
     
-    // デフォルトコンストラクタ（引数なし）
+    // 引数のないコンストラクター
     public Book() {
         this.title = "未設定";
         this.author = "不明";
@@ -1073,7 +1002,7 @@ public class Book {
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-24**　BookTest.java</span>
+<span class="listing-number">**サンプルコード3-22**　BookTest.java</span>
 
 ```java
 // BookTest.java
@@ -1109,7 +1038,7 @@ public class BookTest {
 Javaでは、同じ名前のメソッドを複数定義できます。
 これを「メソッドオーバーロード」と呼びます。
 
-<span class="listing-number">**サンプルコード3-25**　PrintHelper.java、OverloadExample.java</span>
+<span class="listing-number">**サンプルコード3-23**　PrintHelper.java、OverloadExample.java</span>
 
 ```java
 public class PrintHelper {
@@ -1160,7 +1089,7 @@ public class OverloadExample {
 C言語では関数名は一意でなければならず、パラメーターが違っても別の名前を付ける必要がありました。
 以下の例でこの制約を確認できます。
 
-<span class="listing-number">**サンプルコード3-26**</span>
+<span class="listing-number">**サンプルコード3-24**</span>
 
 ```c
 // C言語では別々の名前が必要
@@ -1171,7 +1100,7 @@ int add_three_ints(int a, int b, int c);
 
 一方、Javaではすべて同じ名前で定義できます。
 
-<span class="listing-number">**サンプルコード3-27**</span>
+<span class="listing-number">**サンプルコード3-25**</span>
 
 ```java
 public int add(int a, int b) { return a + b; }
@@ -1200,7 +1129,7 @@ Javaコンパイラーはメソッド選択の際に特定のルールに従い�
 3. オートボクシング（`int` → `Integer`など）
 4. 可変長引数
 
-<span class="listing-number">**サンプルコード3-28**</span>
+<span class="listing-number">**サンプルコード3-26**</span>
 
 ```java
 import java.util.Arrays;
@@ -1246,7 +1175,7 @@ Integer: 10
 > 戻り値の型だけが異なるメソッドはオーバーロードできません。
 > 次のコードはコンパイルエラーになります。
 >
-> <span class="listing-number">**サンプルコード3-29**</span>
+> <span class="listing-number">**サンプルコード3-27**</span>
 >
 > ```java
 > public int calculate() { return 1; }
@@ -1256,38 +1185,35 @@ Integer: 10
 ##### コンストラクターのオーバーロード
 
 コンストラクターもメソッドと同じようにオーバーロードできます。
-サンプルコード3-23の`Book`クラスは、引数が3つのコンストラクターと引数のないコンストラクターを持ち、`new`に渡す引数によってどちらを呼び出すかが決まります。
+サンプルコード3-21の`Book`クラスは、引数が3つのコンストラクターと引数のないコンストラクターを持ち、`new`に渡す引数によってどちらを呼び出すかが決まります。
 コンストラクターから同じクラスの別のコンストラクターを呼び出す`this(...)`の書き方は、第4章「クラスとインスタンス」で学びます。
 
 ## クラスとオブジェクト
 
 ### クラスの定義
 
-クラスの定義は、オブジェクト指向プログラミングの核心部分です。
-ここでは、「本」という現実世界の概念をプログラムで表現する方法を学びます。
-クラス設計では、そのオブジェクトが「何を知っているか（属性）」と「何ができるか（操作）」を明確に定義することが重要です。
+クラス設計では、そのオブジェクトが「何を知っているか（属性）」と「何ができるか（操作）」を決めます。
+ここでは、サンプルコード3-21の`Book`クラスを育てながら、クラスの定義とオブジェクトの使い方を確かめます。
+まず、本の属性に価格を加え、タイトル・著者・価格を読み取るgetterと、価格を変えるsetterを用意します。
+引数のないコンストラクターは、価格を0にする行を足しただけなので省略しています。
 
-以下のBookクラスは、本という概念の本質的な属性と操作を表現した例です。
-
-<span class="listing-number">**サンプルコード3-30**　Book.java</span>
+<span class="listing-number">**サンプルコード3-28**　Book.java（1〜13、23〜49行目）</span>
 
 ```java
 public class Book {
-    // フィールド（属性）
     private String title;
     private String author;
     private int pages;
-    private double price;
+    private double price;  // 追加：価格
     
-    // コンストラクタ
+    // 価格も受け取るようにしたコンストラクター
     public Book(String title, String author, int pages, double price) {
         this.title = title;
         this.author = author;
         this.pages = pages;
         this.price = price;
     }
-    
-    // メソッド（操作）
+    // ...
     public void displayInfo() {
         IO.println("タイトル: " + title);
         IO.println("著者: " + author);
@@ -1295,7 +1221,7 @@ public class Book {
         IO.println("価格: " + price + "円");
     }
     
-    // ゲッターメソッド
+    // getter（読み取り用）
     public String getTitle() {
         return title;
     }
@@ -1308,7 +1234,7 @@ public class Book {
         return price;
     }
     
-    // セッターメソッド
+    // setter（価格だけは変更できる）
     public void setPrice(double price) {
         if (price >= 0) {
             this.price = price;
@@ -1317,52 +1243,13 @@ public class Book {
 }
 ```
 
-#### 使用例
-
-<span class="listing-number">**サンプルコード3-31**　BookClassTest.java</span>
-
-```java
-// BookClassTest.java
-public class BookClassTest {
-    public static void main(String[] args) {
-        Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
-        
-        book.displayInfo();
-        IO.println("---");
-        
-        // 価格変更
-        book.setPrice(2500.0);
-        IO.println("価格変更後:");
-        book.displayInfo();
-    }
-}
-```
-
-#### 実行結果
-
-```
-タイトル: Java入門
-著者: 田中太郎
-ページ数: 300
-価格: 2800.0円
----
-価格変更後:
-タイトル: Java入門
-著者: 田中太郎
-ページ数: 300
-価格: 2500.0円
-```
-
 #### このクラス定義から学ぶ重要な概念
 
-`Book`クラスでは、すべてのフィールドを`private`で宣言しています。
-外部からフィールドに直接アクセスできないので、データの整合性はクラス自身が守れます。
 コンストラクターはオブジェクトを作成するときに必要な情報をすべて受け取るため、情報が欠けた不完全なオブジェクトは生まれません。
-
 本の情報を表示する`displayInfo`は、`Book`クラス自身が担当しています。
 「本は自分の情報を表示できる」という、自然な責任の分担です。
 
-フィールドへのアクセスのさせ方にも使い分けがあります。
+フィールドはすべて`private`にし、アクセスのさせ方をフィールドごとに決めています。
 読み取り専用にしたいタイトルと著者にはgetterだけを用意し、変更してよい価格にはgetterに加えて`setPrice`というsetterを用意しています。
 `setPrice`は価格が0以上かどうかを確かめてから値を変えるので、「価格は0以上」というビジネスルールをクラスの内部で守れます。
 
@@ -1371,9 +1258,9 @@ public class BookClassTest {
 クラスを定義しただけでは、まだ実際にデータを保存したり処理を実行したりできません。
 クラスは「設計図」であり、実際に動作するプログラムを作るには、その設計図からオブジェクト（インスタンス）を作成します。
 
-以下のプログラムは、Bookクラスから実際のオブジェクトを作成し、それらを操作する方法を示しています。
+次のプログラムは、サンプルコード3-28の`Book`クラスから2つのオブジェクトを作成し、それぞれを操作します。
 
-<span class="listing-number">**サンプルコード3-32**　BookTest.java</span>
+<span class="listing-number">**サンプルコード3-29**　BookTest.java</span>
 
 ```java
 public class BookTest {
@@ -1451,7 +1338,7 @@ public class BookTest {
     - 外部から直接アクセスできない
     - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-33**　Student.java</span>
+<span class="listing-number">**サンプルコード3-30**　Student.java</span>
 
 ```java
 public class Student {
@@ -1490,7 +1377,7 @@ public class Student {
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-34**　StudentAccessTest.java</span>
+<span class="listing-number">**サンプルコード3-31**　StudentAccessTest.java</span>
 
 ```java
 // StudentAccessTest.java
@@ -1522,7 +1409,7 @@ public class StudentAccessTest {
 
 フィールドをprivateにする理由を具体例で見てみましょう。
 
-<span class="listing-number">**サンプルコード3-35**　Product.java、BadExample.java</span>
+<span class="listing-number">**サンプルコード3-32**　Product.java、BadExample.java</span>
 
 ```java
 public class Product {
@@ -1548,71 +1435,12 @@ public class BadExample {
 }
 ```
 
-#### privateを使った改善例
+`Product`クラスのフィールドが`public`なので、使う側のコードはどんな値でも代入でき、負の価格や在庫数も入ってしまいます。
+`Product`クラスの側には、それを防ぐ手段がありません。
 
-<span class="listing-number">**サンプルコード3-36**　Product.java（1〜7、20〜37、48行目）</span>
-
-```java
-public class Product {
-    // privateフィールド - 直接アクセスできない
-    private double price;
-    private int stock;
-    
-    // コンストラクタで初期値を設定
-    public Product(double price, int stock) {
-    // ...
-    }
-    
-    // publicメソッドを通じて安全にアクセス
-    public void updatePrice(double newPrice) {
-        if (newPrice >= 0) {
-            price = newPrice;
-            IO.println("価格を更新しました: " + price + "円");
-        } else {
-            IO.println("エラー: 価格は0円以上にしてください");
-        }
-    }
-    
-    public void addStock(int amount) {
-        if (amount > 0) {
-            stock += amount;
-            IO.println("在庫を追加しました。現在の在庫: " + stock);
-        }
-    }
-    // ...
-}
-```
-
-#### 使用例
-
-<span class="listing-number">**サンプルコード3-37**</span>
-
-```java
-// ImprovedProductTest.java
-public class ImprovedProductTest {
-    public static void main(String[] args) {
-        Product product = new Product(1500.0, 10);
-        
-        // 正常な操作
-        product.updatePrice(1800.0);
-        product.addStock(5);
-        product.sell(3);
-        // 異常な操作（エラーが適切に処理される）
-        product.updatePrice(-500.0);
-        product.sell(20);
-    }
-}
-```
-
-#### 実行結果
-
-```
-価格を更新しました: 1800.0円
-在庫を追加しました。現在の在庫: 15
-販売しました。残り在庫: 12
-エラー: 価格は0円以上にしてください
-在庫が不足しています
-```
+フィールドを`private`にし、値を変える操作をメソッドに限れば、メソッドの内部で値を確かめてから代入できます。
+これが「オブジェクト指向の3つの基本原則」で学んだカプセル化です。
+サンプルコード3-4の`BankAccount`の入金処理や、サンプルコード3-19の`Person`の`setAge`が、その書き方の例です。
 
 ## static修飾子の詳細な理解
 
@@ -1626,7 +1454,7 @@ static修飾子は、フィールドやメソッドが「クラスに属する�
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-38**　MathHelper.java、StaticExample.java</span>
+<span class="listing-number">**サンプルコード3-33**　MathHelper.java、StaticExample.java</span>
 
 ```java
 public class MathHelper {
@@ -1673,7 +1501,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-39**　StaticMemberExample.java</span>
+<span class="listing-number">**サンプルコード3-34**　StaticMemberExample.java</span>
 
 ```java
 // StaticMemberExample.java
@@ -1766,7 +1594,7 @@ public class StaticMemberExample {
 
 #### ユーティリティメソッド
 
-<span class="listing-number">**サンプルコード3-40**　MathUtils.java</span>
+<span class="listing-number">**サンプルコード3-35**　MathUtils.java</span>
 
 ```java
 public class MathUtils {
@@ -1778,7 +1606,7 @@ public class MathUtils {
 
 #### ファクトリメソッド
 
-<span class="listing-number">**サンプルコード3-41**　Student.java</span>
+<span class="listing-number">**サンプルコード3-36**　Student.java</span>
 
 ```java
 public class Student {
@@ -1806,7 +1634,7 @@ public class Student {
 
 #### 定数の定義
 
-<span class="listing-number">**サンプルコード3-42**　Constants.java</span>
+<span class="listing-number">**サンプルコード3-37**　Constants.java</span>
 
 ```java
 public class Constants {
@@ -1848,7 +1676,7 @@ static修飾子は強力な機能ですが、オブジェクト指向プログ�
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-43**</span>
+<span class="listing-number">**サンプルコード3-38**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -1870,7 +1698,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-44**</span>
+<span class="listing-number">**サンプルコード3-39**</span>
 
 ```java
 public class StudentArrayExample {
@@ -1903,7 +1731,7 @@ public class StudentArrayExample {
 #### Studentクラスの定義（簡略版）
 実行に必要なStudentクラスを以下に示します。
 
-<span class="listing-number">**サンプルコード3-45**　Student.java</span>
+<span class="listing-number">**サンプルコード3-40**　Student.java</span>
 
 ```java
 class Student {
@@ -1945,7 +1773,7 @@ class Student {
 配列を`new`で初期化を行うと、配列の要素それぞれの初期値は`null`です。
 すべての要素に実体化されたオブジェクトが格納されているとは限らないので、配列の要素の中身を走査する場合は必ずnullチェックを行いましょう。
 
-<span class="listing-number">**サンプルコード3-46**　NullCheckExample.java</span>
+<span class="listing-number">**サンプルコード3-41**　NullCheckExample.java</span>
 
 ```java
 public class NullCheckExample {
@@ -1977,7 +1805,7 @@ public class NullCheckExample {
 クラス型の配列の初期値は`null`でしたが、プリミティブ型の配列の場合は、それぞれの型の初期値が代入されています。
 プリミティブ型を指定した配列には、`null`は入りません。
 
-<span class="listing-number">**サンプルコード3-47**</span>
+<span class="listing-number">**サンプルコード3-42**</span>
 
 ```java
 // プリミティブ型の配列
@@ -2006,25 +1834,21 @@ IO.println(students[0]);     // nullが表示される
 
 ### 例1：図書管理システム
 
-図書館の蔵書管理システムを想定したBookクラスの例です。
-このクラスでは、本の基本情報と貸出状況を管理し、貸出・返却処理を安全に行うしくみを提供します。
+「クラスとオブジェクト」の節で育てた`Book`クラス（サンプルコード3-28）を、図書館の蔵書として使えるようにします。
+貸出状況を表すフィールドと、貸出・返却のメソッドを加えます。
+ここでは加えた部分だけを示し、変えていない部分は省略しています。
 
-<span class="listing-number">**サンプルコード3-48**　Book.java</span>
+<span class="listing-number">**サンプルコード3-43**　Book.java（1〜6、47〜66行目）</span>
 
 ```java
 public class Book {
-    private String isbn;
     private String title;
     private String author;
-    private boolean isAvailable;
-    
-    public Book(String isbn, String title, String author) {
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.isAvailable = true;
-    }
-    
+    private int pages;
+    private double price;
+    private boolean isAvailable = true;  // 追加：貸出できるかどうか
+    // ...
+    // 追加：本を借りる（貸出中なら借りられない）
     public boolean borrow() {
         if (isAvailable) {
             isAvailable = false;
@@ -2033,26 +1857,28 @@ public class Book {
         return false;
     }
     
+    // 追加：本を返す
     public void returnBook() {
         isAvailable = true;
     }
     
+    // 追加：貸出状況を含めた本の情報
     public String getInfo() {
         String status = isAvailable ? "貸出可能" : "貸出中";
-        return String.format("%s - %s (%s) [%s]", isbn, title, author, status);
+        return "%s (%s) [%s]".formatted(title, author, status);
     }
 }
 ```
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-49**　BookLibraryTest.java</span>
+<span class="listing-number">**サンプルコード3-44**　BookLibraryTest.java</span>
 
 ```java
 // BookLibraryTest.java
 public class BookLibraryTest {
     public static void main(String[] args) {
-        Book book = new Book("978-4-12345-678-9", "Java入門", "田中太郎");
+        Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
         
         IO.println(book.getInfo());
         
@@ -2078,16 +1904,17 @@ public class BookLibraryTest {
 #### 実行結果
 
 ```
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+Java入門 (田中太郎) [貸出可能]
 貸出処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出中]
+Java入門 (田中太郎) [貸出中]
 この本は貸出中です
 返却処理が完了しました
-978-4-12345-678-9 - Java入門 (田中太郎) [貸出可能]
+Java入門 (田中太郎) [貸出可能]
 ```
 
-このBookクラスでは、boolean型のisAvailableフィールドで貸出状況を管理しています。
-borrowメソッドでは二重貸出を防ぎ、returnBookメソッドでは確実に返却処理を行うことで、データの整合性を保っています。
+加えた`isAvailable`フィールドは、宣言のときに`true`を初期値として与えているので、コンストラクターを変えずに「貸出可能」の状態から始まります。
+貸出状況を変えられるのは`borrow`と`returnBook`だけで、`borrow`は貸出中の本を貸し出さないので、二重貸出は起きません。
+このように、クラスを育てるときも、データとそれを扱う処理を同じクラスに加えていきます。
 
 ### 例2：ショッピングカート
 
@@ -2096,9 +1923,9 @@ ECサイトのショッピングカート機能を実装したクラスです。
 
 カートに入れた商品は、`CartItem`クラスのオブジェクトにして、前の節で学んだオブジェクトの配列に入れます。
 配列の大きさは作るときに決まるので、実際に入っている商品の数を`itemCount`で数えています。
-配列の大きさに使う`MAX_ITEMS`は、サンプルコード3-42と同じ`static final`の定数です。
+配列の大きさに使う`MAX_ITEMS`は、サンプルコード3-37と同じ`static final`の定数です。
 
-<span class="listing-number">**サンプルコード3-50**　ShoppingCart.java、CartItem.java（1〜14行目）</span>
+<span class="listing-number">**サンプルコード3-45**　ShoppingCart.java、CartItem.java（1〜14行目）</span>
 
 ```java
 public class ShoppingCart {
@@ -2157,7 +1984,7 @@ public class CartItem {
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-51**</span>
+<span class="listing-number">**サンプルコード3-46**</span>
 
 ```java
 // ShoppingCartTest.java
@@ -2192,7 +2019,7 @@ public class ShoppingCartTest {
 `==`演算子は、2つの変数が同じオブジェクトを指しているか（参照が同じか）を比べます。
 `equals`メソッドは、2つのオブジェクトの中身が等しいかを比べます。
 
-<span class="listing-number">**サンプルコード3-52**　StringComparison.java</span>
+<span class="listing-number">**サンプルコード3-47**　StringComparison.java</span>
 
 ```java
 public class StringComparison {

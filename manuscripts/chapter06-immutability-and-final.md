@@ -452,6 +452,56 @@ public final class DateRange {
 
 </div>
 
+#### 防御的コピーのコストと注意点
+
+防御的コピーは、呼び出されるたびに新しいリストや配列を作ります。
+要素の数に比例した時間とメモリがかかるので、要素の多いリストを返すgetterを何度も呼ぶ処理では負担になります。
+`LocalDate`や`String`のような不変オブジェクトはコピーせずに共有してかまわないので、コピーするのは可変なものだけにします。
+
+`new ArrayList<>(holidays)`がコピーするのはリストの入れ物だけで、要素は同じオブジェクトを指したままです。
+これを浅いコピーといいます。
+`DateRange`の要素の`LocalDate`は不変なので浅いコピーで十分ですが、要素がサンプルコード6-1の`MutablePoint`のような可変オブジェクトなら、要素も1つずつコピーする深いコピーが必要です。
+そうしないと、取り出した要素の中身を書き換えられてしまいます。
+
+コピーの代わりに、変更できないリストを返す方法もあります。
+`Collections.unmodifiableList(リスト)`は、元のリストを包んだ読み取り専用のビューを返します。
+ビューに要素を追加しようとすると例外（`UnsupportedOperationException`）が発生しますが、元のリストを変更すると、その変更はビューからも見えます。
+一方、`List.copyOf(リスト)`は、変更できない新しいリストを作るコピーなので、元のリストを変更しても影響を受けません。
+例外の扱いは、第13章「例外処理」で学びます。
+
+<span class="listing-number">**サンプルコード6-10**　ViewVsCopy.java</span>
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ViewVsCopy {
+    public static void main(String[] args) {
+        List<String> original = new ArrayList<>();
+        original.add("読書");
+        
+        List<String> view = Collections.unmodifiableList(original);  // 読み取り専用のビュー
+        List<String> copy = List.copyOf(original);  // 変更できないコピー
+        
+        original.add("登山");  // 元のリストに要素を追加する
+        
+        IO.println("ビュー: " + view);
+        IO.println("コピー: " + copy);
+    }
+}
+```
+
+#### 実行結果
+
+```
+ビュー: [読書, 登山]
+コピー: [読書]
+```
+
+不変クラスのように、元のリストをクラスの内部だけで持ち、クラス自身も変更しない場合は、getterでビューを返せばコピーの手間を省けます。
+一方、コンストラクターが受け取ったリストは呼び出し元が後から変更しうるので、`List.copyOf`や`new ArrayList<>(...)`でコピーしてから保持します。
+
 ### ビルダーパターンによる不変オブジェクトの構築
 
 複雑な不変オブジェクトを構築する際、コンストラクターの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
@@ -460,7 +510,7 @@ public final class DateRange {
 クラスの内側に宣言するクラス（静的ネストクラス）は、第8章で学びます。
 ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
-<span class="listing-number">**サンプルコード6-10**　Book.java（3〜7、13〜17、22〜31、37〜38、46〜53、81〜85、91行目）</span>
+<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜31、37〜38、46〜53、81〜85、91行目）</span>
 
 ```java
 // ビルダーパターンを使った不変オブジェクトの構築
@@ -509,7 +559,7 @@ public final class Book {
 
 ### ビルダーパターンの使用例
 
-<span class="listing-number">**サンプルコード6-11**　BuilderExample.java</span>
+<span class="listing-number">**サンプルコード6-12**　BuilderExample.java</span>
 
 ```java
 public class BuilderExample {
@@ -569,7 +619,7 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 `build()`で作った`Book`オブジェクトには、値を変更する手段がありません。
 ビルダーで値を組み立てている途中だけ変更でき、できあがったオブジェクトは不変のまま使えます。
 さらに、オブジェクトを作る段階で値が正しいかを検証できます。
-サンプルコード6-10の全文では、`Builder`のコンストラクターがISBNとタイトルが空でないかを確かめています。
+サンプルコード6-11の全文では、`Builder`のコンストラクターがISBNとタイトルが空でないかを確かめています。
 
 ## よくあるエラーと対処法
 

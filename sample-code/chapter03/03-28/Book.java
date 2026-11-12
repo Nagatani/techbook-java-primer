@@ -1,11 +1,10 @@
 public class Book {
-    // フィールド（属性）
     private String title;
     private String author;
     private int pages;
-    private double price;
+    private double price;  // 追加：価格
     
-    // コンストラクタ
+    // 価格も受け取るようにしたコンストラクター
     public Book(String title, String author, int pages, double price) {
         this.title = title;
         this.author = author;
@@ -13,7 +12,14 @@ public class Book {
         this.price = price;
     }
     
-    // メソッド（操作）
+    // 引数のないコンストラクター
+    public Book() {
+        this.title = "未設定";
+        this.author = "不明";
+        this.pages = 0;
+        this.price = 0.0;
+    }
+    
     public void displayInfo() {
         IO.println("タイトル: " + title);
         IO.println("著者: " + author);
@@ -21,7 +27,7 @@ public class Book {
         IO.println("価格: " + price + "円");
     }
     
-    // ゲッターメソッド
+    // getter（読み取り用）
     public String getTitle() {
         return title;
     }
@@ -34,7 +40,7 @@ public class Book {
         return price;
     }
     
-    // セッターメソッド
+    // setter（価格だけは変更できる）
     public void setPrice(double price) {
         if (price >= 0) {
             this.price = price;

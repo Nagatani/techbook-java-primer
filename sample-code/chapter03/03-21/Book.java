@@ -3,14 +3,14 @@ public class Book {
     private String author;
     private int pages;
     
-    // コンストラクタ（クラス名と同じ名前）
+    // コンストラクター（クラス名と同じ名前）
     public Book(String title, String author, int pages) {
         this.title = title;
         this.author = author;
         this.pages = pages;
     }
     
-    // デフォルトコンストラクタ（引数なし）
+    // 引数のないコンストラクター
     public Book() {
         this.title = "未設定";
         this.author = "不明";

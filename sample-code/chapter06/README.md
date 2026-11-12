@@ -23,5 +23,6 @@ javac -d out *.java
 | [6-6](./06-06/) | ImmutablePerson.java | （mainメソッドなし） |
 | [6-7](./06-07/) | ImmutableExample.java<br>ImmutablePerson.java | `java -cp out ImmutableExample` |
 | [6-9](./06-09/) | DateRange.java | （mainメソッドなし） |
-| [6-10](./06-10/) | Book.java | （mainメソッドなし） |
-| [6-11](./06-11/) | Book.java<br>BuilderExample.java | `java -cp out BuilderExample` |
+| [6-10](./06-10/) | ViewVsCopy.java | `java -cp out ViewVsCopy` |
+| [6-11](./06-11/) | Book.java | （mainメソッドなし） |
+| [6-12](./06-12/) | Book.java<br>BuilderExample.java | `java -cp out BuilderExample` |
