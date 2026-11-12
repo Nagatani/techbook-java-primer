@@ -22,18 +22,15 @@
 - **BasicFileManager.java** - ファイル操作GUIの基礎
 
 ### advanced/
-より高度なGUI機能とパターンを学習する課題です。
+AbstractTableModel・TableRowSorter・JTreeを使う発展課題です。このフォルダーのJavaファイルは解答例です。
 
-- **MVCPatternDemo.java** - MVCパターンの実装
-- **CustomComponents.java** - カスタムコンポーネントの作成
-- **ResponsiveGUI.java** - レスポンシブデザインの実装
+- **成績一覧表**（task1-grade-table）- テーブルモデル、列の型による並べ替え、RowFilterの組み合わせ、セルエディター
+- **本棚の分類ツリー**（task2-bookshelf-tree）- DefaultTreeModelによるノードの追加・削除、TreeCellRenderer
 
 ### challenge/
-実践的で複合的なスキルが求められる挑戦課題です。
+本章の内容をまとめて使うチャレンジ課題です。このフォルダーのJavaファイルは解答例です。
 
-- **DataVisualizationTool.java** - データ可視化アプリケーション
-- **MultiWindowApp.java** - 複数ウィンドウの管理
-- **PluginArchitecture.java** - プラグイン式アーキテクチャ
+- **ToDoリスト** - JListとJTableをJSplitPaneで組み合わせ、Model・View・Controllerに役割を分ける
 
 ### solutions/
 各課題の完全な解答例と詳細な解説です。

@@ -554,9 +554,10 @@ JTableやカスタム描画を使った画面では、描画のしくみやス�
 1. 基礎課題
     + 高度なテーブル操作システムの実装
 2. 発展課題
-    + ファイルエクスプローラーの開発
+    + 並べ替えと絞り込みができる成績一覧表の作成
+    + 本棚の分類ツリーの作成
 3. チャレンジ課題
-    + 統合開発環境（IDE）風アプリケーションの構築
+    + 分類の一覧とタスクの表を組み合わせたToDoリストの構築
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 

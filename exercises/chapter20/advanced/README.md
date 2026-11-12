@@ -1,598 +1,177 @@
-# 第20章 応用課題
+# 第20章 発展課題
 
 ## 学習目標
-- 高度なMVCアーキテクチャパターン
-- エンタープライズMVP/MVVM実装
-- リアクティブプログラミング統合
-- モダンアーキテクチャパターン応用
-- 大規模アプリケーション設計
+- `AbstractTableModel`を継承して、自分のデータを表にするテーブルモデルを作る
+- `getColumnClass`で列の型を決め、数の列を数として並べ替える
+- `TableRowSorter`と`RowFilter`で、並べ替えと絞り込みを組み合わせる
+- 表示上の行番号とモデルの行番号の違いを理解し、`convertRowIndexToModel`で変換する
+- `DefaultTreeModel`でツリーのノードを追加・削除し、`TreeCellRenderer`で表示を変える
 
 ## 課題一覧
 
-### 課題1: エンタープライズMVVM統合プラットフォーム
-**ファイル名**: `EnterpriseMVVMIntegratedPlatform.java`
+### 課題1: 成績一覧表
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task1-grade-table/
+├── Student.java          学生1人の成績（GUIなし）
+├── GradeTableModel.java  成績の一覧のテーブルモデル
+├── ScoreCellEditor.java  点数のセルの編集（0〜100の整数だけ受け付ける）
+└── GradeTableApp.java    画面とイベント処理、mainメソッド
+```
 
-大規模エンタープライズ向けのMVVMアーキテクチャを中心とした統合プラットフォームを作成してください。
+学生の国語・数学・英語の点数を表で表示し、並べ替え・絞り込み・編集ができるプログラムを作成してください。
+表の下には、表示されている学生だけで計算した平均を表示します。
 
 **要求仕様**:
-- MVVM + Reactive Streams
-- 双方向データバインディング
-- 依存性注入フレームワーク
-- 非同期処理統合
-
-**アーキテクチャ構成**:
-- Model: データ層 + ビジネスロジック
-- ViewModel: プレゼンテーション層
-- View: UI層 (JavaFX/Swing統合)
-- Service: 外部システム連携
+- `Student`は学籍番号・氏名・3科目の点数を持つ。点数が0〜100でなければ例外を投げる。合計と、60点未満の科目があるかどうかを返すメソッドを持つ
+- `GradeTableModel`（`AbstractTableModel`を継承）
+    - 列は「学籍番号」「氏名」「国語」「数学」「英語」「合計」。合計は点数から計算し、フィールドに持たない
+    - 点数と合計の列の`getColumnClass`は`Integer.class`にする
+    - 点数の列だけ編集できる（`isCellEditable`）。`setValueAt`では範囲外の値を受け付けず、変更したら`fireTableRowsUpdated`で行を描き直す
+    - 指定した行（モデルの行番号の一覧）だけで、列の平均を求めるメソッドを持つ
+- `ScoreCellEditor`（`DefaultCellEditor`を継承）
+    - 0〜100の整数でなければ、入力欄の枠を赤くして編集を終わらせない（`stopCellEditing`で`false`を返す）
+- `GradeTableApp`（画面）
+    - 列見出しのクリックで並べ替える（`TableRowSorter`）。点数を編集したら並べ替え直す（`setSortsOnUpdates(true)`）
+    - 氏名の入力欄に文字を入れるたびに、その文字を含む学生だけを表示する
+    - 「60点未満の科目がある人だけ」のチェックボックスで、さらに絞り込む。2つの条件は`RowFilter.andFilter`で組み合わせる
+    - 表の下に、表示中の人数と、表示中の学生だけで求めた各科目と合計の平均を表示する。並べ替え・絞り込み・編集のたびに更新する
+    - 行を選ぶと、その学生の合計と平均点を表示する
 
 **実行例**:
+
+`java GradeTableApp`を実行すると「成績一覧」というウィンドウが開き、6人の成績が学籍番号の順に表示されます。
+表の下の行は次のとおりです。
+
 ```
-=== エンタープライズMVVM統合プラットフォーム ===
+表示 6人 / 全 6人　平均　国語 73.0　数学 69.2　英語 77.2　合計 219.3
+```
 
-EnterpriseMVVM Platform v4.0
+- 「合計」の見出しを2回クリックすると、合計の大きい順（江藤由紀279、青木健太235、井上美咲232、加藤真央216、大野拓海181、上田翔173）に並ぶ。数として並ぶので、文字列の順にはならない
+- 氏名の欄に「藤」と入力すると、江藤由紀と加藤真央だけが表示され、下の行が`表示 2人 / 全 6人　平均　国語 82.5　数学 75.5　英語 89.5　合計 247.5`に変わる
+- 氏名の欄を空にして「60点未満の科目がある人だけ」にチェックを入れると、井上美咲・大野拓海・上田翔が表示される。平均は`国語 65.0　数学 57.3　英語 73.0　合計 195.3`になる
+- 井上美咲の行を選ぶと、いちばん下に`S002 井上美咲　合計 232点　平均 77.3点`と表示される
+- 上田翔の国語のセルをダブルクリックして`65`に直すと、合計が193になり、平均の行も`国語 71.7`、`合計 202.0`に変わる。並べ替えたままなので、上田翔は大野拓海より上に移る
+- 点数のセルに`120`や`abc`を入力してEnterキーを押すと、入力欄の枠が赤くなり、編集が終わらない。Escキーで編集をやめると元の値に戻る
 
-=== アーキテクチャ概要 ===
-統合アプリケーション構成:
+### 課題2: 本棚の分類ツリー
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task2-bookshelf-tree/
+├── Book.java                本1冊（レコード）
+├── BookshelfTreeModel.java  蔵書のツリーモデル（分類と本の追加・削除）
+├── BookshelfRenderer.java   冊数や出版年を添えて表示するレンダラー
+└── BookshelfApp.java        画面とイベント処理、mainメソッド
+```
 
-アプリケーション階層:
-Presentation Layer:
-- JavaFX Views: 45個
-- Swing Legacy Views: 23個
-- Web Views (WebEngine): 12個
+蔵書を「蔵書 → 分類 → 本」の3段のツリーで表示し、本の追加・削除ができるプログラムを作成してください。
 
-ViewModel Layer:
-- ViewModels: 68個
-- Commands: 247個
-- ObservableProperties: 1,847個
-- Validators: 156個
+**要求仕様**:
+- `Book`は題名・著者・出版年を持つレコードにする
+- `BookshelfTreeModel`（`DefaultTreeModel`を継承）
+    - 根のノードは「蔵書」。分類のノードは分類名の文字列、本のノードは`Book`を持つ
+    - `addCategory`は分類を末尾に追加する。同じ名前の分類があれば、新しく作らずにそれを返す
+    - `addBook`は、分類のノードの子として、題名の順に並ぶ位置に本を追加する。分類でないノードを渡したら例外を投げる
+    - `removeBook`は本のノードだけを削除する
+    - ノードの追加・削除は`insertNodeInto`・`removeNodeFromParent`で行い、ツリーの表示も更新されるようにする
+- `BookshelfRenderer`（`DefaultTreeCellRenderer`を継承）
+    - 分類は「数学（1冊）」、本は「線形代数の基礎（2019年）」のように表示する
+- `BookshelfApp`（画面）
+    - 起動したら、すべての分類を展開して表示する
+    - ノードを選ぶと、本なら題名・著者・出版年・分類を、分類ならその冊数を、根なら全体の冊数を表示する（`TreeSelectionListener`）
+    - 分類を選んでいるときだけ「選択した分類に追加」ボタンを、本を選んでいるときだけ「選択した本を削除」ボタンを押せる
+    - 本を追加したら、追加した本を選んだ状態にする。題名・著者が空のとき、出版年が整数でないときは赤い文字でメッセージを表示する
+    - 「分類を追加」ボタンで、ダイアログに入力した名前の分類を追加する
 
-Model Layer:
-- Domain Models: 89個
-- Data Models: 134個
-- Repository Interfaces: 45個
-- Business Services: 67個
+**実行例**:
 
-Infrastructure Layer:
-- Database Repositories: 45個
-- Web API Clients: 23個
-- Message Queues: 8個
-- File Systems: 12個
+`java BookshelfApp`を実行すると「本棚」というウィンドウが開き、次のツリーが展開された状態で表示されます。
+いちばん下の行には「蔵書 全5冊」と表示されています。
 
-=== MVVM実装 ===
-双方向データバインディング:
+```
+蔵書
+  プログラミング（2冊）
+    Javaプログラミング入門（2024年）
+    アルゴリズム図鑑（2021年）
+  数学（1冊）
+    線形代数の基礎（2019年）
+  小説（2冊）
+    坊っちゃん（1906年）
+    銀河鉄道の夜（1934年）
+```
+
+- 「プログラミング（2冊）」を選ぶと「分類「プログラミング」 2冊」と表示され、「選択した分類に追加」だけが押せるようになる
+- 「Javaプログラミング入門（2024年）」を選ぶと「「Javaプログラミング入門」 著者: 山田一郎　出版年: 2024年　分類: プログラミング」と表示され、「選択した本を削除」だけが押せるようになる
+- 「数学（1冊）」を選び、題名に`確率と統計`、著者に`鈴木三郎`、出版年に`2020年`と入力して追加を押すと、赤い文字で「出版年は整数で入力してください」と表示される
+- 出版年を`2020`に直して追加を押すと、数学の下に「確率と統計（2020年）」が加わって選ばれ、分類の表示が「数学（2冊）」に変わる
+- そのまま「選択した本を削除」を押すと、本が消えて「数学」が選ばれ、「分類「数学」 1冊」と表示される
+
+## コンパイルと実行
+
+課題ごとのフォルダーでコンパイルし、実行します。
+
+```bash
+cd task1-grade-table
+javac *.java
+java GradeTableApp
+```
+
+```bash
+cd task2-bookshelf-tree
+javac *.java
+java BookshelfApp
+```
+
+## 実装のヒント
 
 ```java
-@Component
-public class EnterpriseMVVMPlatform {
-    private final ViewModelFactory viewModelFactory;
-    private final ModelFactory modelFactory;
-    private final ServiceRegistry serviceRegistry;
-    private final EventBus eventBus;
-    private final DataBindingEngine bindingEngine;
-    
-    public EnterpriseMVVMPlatform() {
-        initializePlatform();
-        setupDependencyInjection();
-        configureDataBinding();
-        startReactiveStreams();
-    }
-    
-    private void initializePlatform() {
-        // ViewModelファクトリー
-        this.viewModelFactory = new ViewModelFactory();
-        
-        // Modelファクトリー
-        this.modelFactory = new ModelFactory();
-        
-        // サービスレジストリ
-        this.serviceRegistry = new ServiceRegistry();
-        
-        // イベントバス
-        this.eventBus = new AsyncEventBus();
-        
-        // データバインディングエンジン
-        this.bindingEngine = new ReactiveDataBindingEngine();
-        
-        setupArchitecture();
-    }
-    
-    private void setupArchitecture() {
-        // Model層セットアップ
-        setupModelLayer();
-        
-        // ViewModel層セットアップ
-        setupViewModelLayer();
-        
-        // View層セットアップ
-        setupViewLayer();
-        
-        // Service層セットアップ
-        setupServiceLayer();
-    }
-    
-    private void setupModelLayer() {
-        // ドメインモデル
-        modelFactory.registerModel(UserModel.class);
-        modelFactory.registerModel(OrderModel.class);
-        modelFactory.registerModel(ProductModel.class);
-        modelFactory.registerModel(CustomerModel.class);
-        
-        // データアクセス層
-        modelFactory.registerRepository(UserRepository.class);
-        modelFactory.registerRepository(OrderRepository.class);
-        modelFactory.registerRepository(ProductRepository.class);
-        
-        // ビジネスサービス
-        modelFactory.registerService(UserService.class);
-        modelFactory.registerService(OrderService.class);
-        modelFactory.registerService(PaymentService.class);
-    }
-    
-    private void setupViewModelLayer() {
-        // ViewModel登録
-        viewModelFactory.registerViewModel("UserManagement", 
-            UserManagementViewModel.class);
-        viewModelFactory.registerViewModel("OrderProcessing",
-            OrderProcessingViewModel.class);
-        viewModelFactory.registerViewModel("ProductCatalog",
-            ProductCatalogViewModel.class);
-        viewModelFactory.registerViewModel("Dashboard",
-            DashboardViewModel.class);
-        
-        // コマンドセットアップ
-        setupCommands();
-        
-        // バリデーション設定
-        setupValidation();
-    }
-    
-    private void setupViewLayer() {
-        // JavaFX Views
-        ViewRegistry.registerView("UserManagementView", 
-            UserManagementView.class);
-        ViewRegistry.registerView("OrderProcessingView",
-            OrderProcessingView.class);
-        
-        // Swing Legacy Views
-        ViewRegistry.registerLegacyView("LegacyReportView",
-            LegacyReportView.class);
-        
-        // Web Views
-        ViewRegistry.registerWebView("WebDashboard",
-            "dashboard.html");
-    }
+// 2つの条件をそろえてから、まとめてソーターに設定する
+List<RowFilter<GradeTableModel, Integer>> filters = new ArrayList<>();
+if (!text.isEmpty()) {
+    filters.add(RowFilter.regexFilter(Pattern.quote(text), GradeTableModel.NAME_COLUMN));
 }
-
-// 高度なViewModel実装
-public class UserManagementViewModel extends BaseViewModel {
-    // Observable Properties
-    private final ObservableList<User> users;
-    private final ObservableProperty<User> selectedUser;
-    private final ObservableProperty<String> searchText;
-    private final ObservableProperty<Boolean> isLoading;
-    private final ObservableProperty<String> statusMessage;
-    
-    // Commands
-    private final Command loadUsersCommand;
-    private final Command createUserCommand;
-    private final Command updateUserCommand;
-    private final Command deleteUserCommand;
-    private final Command searchUsersCommand;
-    
-    // Services
-    private final UserService userService;
-    private final ValidationService validationService;
-    
-    public UserManagementViewModel(UserService userService,
-                                  ValidationService validationService) {
-        this.userService = userService;
-        this.validationService = validationService;
-        
-        initializeProperties();
-        initializeCommands();
-        setupValidation();
-        setupReactiveStreams();
-    }
-    
-    private void initializeProperties() {
-        // Observable Properties初期化
-        this.users = FXCollections.observableArrayList();
-        this.selectedUser = new ObservableProperty<>();
-        this.searchText = new ObservableProperty<>("");
-        this.isLoading = new ObservableProperty<>(false);
-        this.statusMessage = new ObservableProperty<>("");
-        
-        // プロパティ変更監視
-        selectedUser.addListener(this::onSelectedUserChanged);
-        searchText.addListener(this::onSearchTextChanged);
-    }
-    
-    private void initializeCommands() {
-        // ユーザー読み込みコマンド
-        this.loadUsersCommand = new AsyncCommand(
-            this::canLoadUsers,
-            this::executeLoadUsers
-        );
-        
-        // ユーザー作成コマンド
-        this.createUserCommand = new AsyncCommand(
-            this::canCreateUser,
-            this::executeCreateUser
-        );
-        
-        // ユーザー更新コマンド
-        this.updateUserCommand = new AsyncCommand(
-            this::canUpdateUser,
-            this::executeUpdateUser
-        );
-        
-        // ユーザー削除コマンド
-        this.deleteUserCommand = new AsyncCommand(
-            this::canDeleteUser,
-            this::executeDeleteUser
-        );
-        
-        // 検索コマンド
-        this.searchUsersCommand = new AsyncCommand(
-            this::canSearchUsers,
-            this::executeSearchUsers
-        );
-    }
-    
-    private void setupReactiveStreams() {
-        // リアクティブな検索
-        searchText.asObservable()
-            .debounce(300, TimeUnit.MILLISECONDS) // 300ms デバウンス
-            .distinctUntilChanged()
-            .filter(text -> text.length() >= 2)
-            .switchMap(text -> userService.searchUsers(text))
-            .subscribeOn(Schedulers.io())
-            .observeOn(JavaFxScheduler.platform())
-            .subscribe(
-                this::updateUsersList,
-                this::handleSearchError
-            );
-        
-        // 選択ユーザー変更の連鎖反応
-        selectedUser.asObservable()
-            .map(user -> user != null)
-            .subscribe(hasSelection -> {
-                updateUserCommand.setCanExecute(hasSelection);
-                deleteUserCommand.setCanExecute(hasSelection);
-            });
-    }
-    
-    private CompletableFuture<Void> executeLoadUsers() {
-        isLoading.set(true);
-        statusMessage.set("ユーザー一覧を読み込み中...");
-        
-        return userService.getAllUsersAsync()
-            .thenAccept(userList -> {
-                Platform.runLater(() -> {
-                    users.setAll(userList);
-                    statusMessage.set(String.format("%d件のユーザーを読み込みました", 
-                        userList.size()));
-                });
-            })
-            .exceptionally(throwable -> {
-                Platform.runLater(() -> {
-                    statusMessage.set("エラー: " + throwable.getMessage());
-                });
-                return null;
-            })
-            .whenComplete((result, throwable) -> {
-                Platform.runLater(() -> isLoading.set(false));
-            });
-    }
-    
-    private CompletableFuture<Void> executeCreateUser() {
-        User newUser = createNewUserFromForm();
-        
-        // バリデーション
-        ValidationResult validation = validationService.validate(newUser);
-        if (!validation.isValid()) {
-            showValidationErrors(validation);
-            return CompletableFuture.completedFuture(null);
+if (failingOnly.isSelected()) {
+    filters.add(new RowFilter<GradeTableModel, Integer>() {
+        @Override
+        public boolean include(Entry<? extends GradeTableModel, ? extends Integer> entry) {
+            // getIdentifier()はモデルの行番号
+            return entry.getModel().getStudent(entry.getIdentifier()).hasFailingSubject();
         }
-        
-        isLoading.set(true);
-        statusMessage.set("ユーザーを作成中...");
-        
-        return userService.createUserAsync(newUser)
-            .thenAccept(createdUser -> {
-                Platform.runLater(() -> {
-                    users.add(createdUser);
-                    selectedUser.set(createdUser);
-                    statusMessage.set("ユーザーを作成しました");
-                    clearForm();
-                });
-            })
-            .exceptionally(throwable -> {
-                Platform.runLater(() -> {
-                    statusMessage.set("作成エラー: " + throwable.getMessage());
-                });
-                return null;
-            })
-            .whenComplete((result, throwable) -> {
-                Platform.runLater(() -> isLoading.set(false));
-            });
-    }
+    });
 }
-
-// データバインディングエンジン
-public class ReactiveDataBindingEngine {
-    private final Map<String, Binding> bindings;
-    private final ObservablePropertyFactory propertyFactory;
-    
-    public ReactiveDataBindingEngine() {
-        this.bindings = new ConcurrentHashMap<>();
-        this.propertyFactory = new ObservablePropertyFactory();
-    }
-    
-    public <T> void bind(ObservableProperty<T> viewModelProperty,
-                        Property<T> viewProperty) {
-        // 双方向データバインディング
-        Binding<T> binding = new TwoWayBinding<>(viewModelProperty, viewProperty);
-        
-        // ViewModelからViewへ
-        viewModelProperty.addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (!Objects.equals(viewProperty.getValue(), newValue)) {
-                    viewProperty.setValue(newValue);
-                }
-            });
-        });
-        
-        // ViewからViewModelへ
-        viewProperty.addListener((observable, oldValue, newValue) -> {
-            if (!Objects.equals(viewModelProperty.get(), newValue)) {
-                viewModelProperty.set(newValue);
-            }
-        });
-        
-        String bindingId = UUID.randomUUID().toString();
-        bindings.put(bindingId, binding);
-    }
-    
-    public <T, R> void bindConverted(ObservableProperty<T> viewModelProperty,
-                                   Property<R> viewProperty,
-                                   Function<T, R> viewModelToView,
-                                   Function<R, T> viewToViewModel) {
-        // 変換付きバインディング
-        viewModelProperty.addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                R convertedValue = viewModelToView.apply(newValue);
-                if (!Objects.equals(viewProperty.getValue(), convertedValue)) {
-                    viewProperty.setValue(convertedValue);
-                }
-            });
-        });
-        
-        viewProperty.addListener((observable, oldValue, newValue) -> {
-            T convertedValue = viewToViewModel.apply(newValue);
-            if (!Objects.equals(viewModelProperty.get(), convertedValue)) {
-                viewModelProperty.set(convertedValue);
-            }
-        });
-    }
-}
-
-// 非同期コマンド実装
-public class AsyncCommand implements Command {
-    private final Supplier<Boolean> canExecutePredicate;
-    private final Supplier<CompletableFuture<Void>> executeFunction;
-    private final ObservableProperty<Boolean> canExecute;
-    private final ObservableProperty<Boolean> isExecuting;
-    
-    public AsyncCommand(Supplier<Boolean> canExecutePredicate,
-                       Supplier<CompletableFuture<Void>> executeFunction) {
-        this.canExecutePredicate = canExecutePredicate;
-        this.executeFunction = executeFunction;
-        this.canExecute = new ObservableProperty<>(true);
-        this.isExecuting = new ObservableProperty<>(false);
-        
-        updateCanExecute();
-    }
-    
-    @Override
-    public CompletableFuture<Void> executeAsync() {
-        if (!canExecute.get()) {
-            return CompletableFuture.completedFuture(null);
-        }
-        
-        isExecuting.set(true);
-        updateCanExecute();
-        
-        return executeFunction.get()
-            .whenComplete((result, throwable) -> {
-                Platform.runLater(() -> {
-                    isExecuting.set(false);
-                    updateCanExecute();
-                });
-            });
-    }
-    
-    private void updateCanExecute() {
-        boolean newCanExecute = !isExecuting.get() && 
-                               canExecutePredicate.get();
-        canExecute.set(newCanExecute);
-    }
-}
+sorter.setRowFilter(filters.isEmpty() ? null : RowFilter.andFilter(filters));
 ```
 
-実行ログ:
-```
-=== MVVM プラットフォーム実行ログ ===
+- `getColumnClass`を書かないと、すべての列が文字列として並べ替えられ、「100」が「45」より前に来る
+- `table.getSelectedRow()`や`sorter.getViewRowCount()`は表示上の行番号で数える。モデルのデータを取り出すときは`convertRowIndexToModel`でモデルの行番号に直す
+- `regexFilter`は正規表現で探す。入力をそのまま渡すと`(`などの記号で例外が出るので、`Pattern.quote`で囲む
+- ソーターは、`table.setRowSorter`で表に設定してからモデルの変更を受け取る。データの追加は、ソーターを作る前に済ませておく
+- ツリーの`DefaultMutableTreeNode`に直接`add`しても、表示は更新されない。`DefaultTreeModel`の`insertNodeInto`・`removeNodeFromParent`を使う。冊数の表示のように、子の数で変わる表示は`nodeChanged`で描き直してもらう
+- レンダラーでは、最初に`super.getTreeCellRendererComponent(...)`を呼んで、選択時の色やアイコンを標準のまま設定してもらい、文字だけを`setText`で変える
 
-プラットフォーム初期化:
-14:30:00.001 - 依存性注入コンテナ起動
-14:30:00.015 - Model層初期化完了 (89個のモデル)
-14:30:00.028 - ViewModel層初期化完了 (68個のViewModel)
-14:30:00.041 - View層初期化完了 (80個のView)
-14:30:00.055 - Service層初期化完了 (67個のService)
-14:30:00.068 - データバインディング設定完了
-14:30:00.082 - リアクティブストリーム開始
-14:30:00.095 - プラットフォーム起動完了
+## 応用のポイント
 
-ユーザー管理機能実行:
-14:30:15.123 - UserManagementView表示要求
-14:30:15.125 - UserManagementViewModel作成
-14:30:15.128 - データバインディング確立
-14:30:15.131 - loadUsersCommand実行開始
-14:30:15.134 - UserService.getAllUsersAsync()呼び出し
-14:30:15.245 - 1,247件のユーザーデータ取得完了
-14:30:15.248 - ObservableList更新
-14:30:15.251 - View自動更新 (データバインディング)
-14:30:15.254 - ステータス更新: "1,247件のユーザーを読み込みました"
+1. モデルが表示の元になる
+    - 合計の列や冊数の表示は、モデルのデータから毎回計算する。データを1か所に持つので、表示と食い違わない
+2. 表示上の行とモデルの行
+    - 並べ替えや絞り込みをすると、表の3行目がモデルの3行目とは限らない。集計や選択の処理は、必ずモデルの行番号に直してから行う
+3. 編集の検査を2か所で
+    - セルエディターは入力中の誤りを利用者に示し、モデルの`setValueAt`は範囲外の値を受け付けない。画面から以外の変更にも備えられる
 
-リアクティブ検索実行:
-14:30:45.567 - 検索テキスト入力: "ta"
-14:30:45.570 - デバウンス待機中...
-14:30:45.890 - 検索テキスト確定: "tanaka"
-14:30:45.892 - UserService.searchUsers("tanaka")実行
-14:30:45.956 - 23件の検索結果取得
-14:30:45.958 - ユーザーリスト更新
-14:30:45.961 - View自動更新
+## 発展（任意）
 
-データバインディング統計:
-確立済みバインディング: 1,847個
-双方向バインディング: 1,234個
-変換バインディング: 456個
-コマンドバインディング: 157個
-バインディング同期エラー: 0件
-```
-```
+- 成績一覧に「追加」「削除」ボタンを付ける。削除では、選んだ行をモデルの行番号に直してから消す
+- 平均点より低い点数のセルを赤い文字で表示する`TableCellRenderer`を作る
+- 本の題名を五十音順に並べる。`String.compareTo`は文字コードの順なので、`java.text.Collator.getInstance(Locale.JAPAN)`で比べる（漢字の読みまでは考慮されない）
+- 本のノードをダブルクリックしたら、題名・著者・出版年を編集できるダイアログを開く
 
-### 課題2: リアクティブ統合アーキテクチャ
-**ファイル名**: `ReactiveIntegratedArchitecture.java`
+## 完了チェックリスト
 
-Reactive Streams、RxJava、Project Reactorを統合した高度なリアクティブアーキテクチャを作成してください。
+- [ ] 点数と合計の列が、数として並べ替えられる
+- [ ] 氏名と赤点の条件を組み合わせて絞り込める
+- [ ] 平均が、表示されている学生だけで計算され、操作のたびに更新される
+- [ ] 点数の列だけを編集でき、範囲外の値を入力すると編集が終わらない
+- [ ] ツリーの本の追加・削除が、すぐに表示と冊数に反映される
+- [ ] 選んだノードの種類によって、押せるボタンが変わる
 
-**要求仕様**:
-- マルチリアクティブライブラリ統合
-- 背圧制御
-- エラーハンドリング戦略
-- パフォーマンス最適化
-
-**実行例**:
-```
-=== リアクティブ統合アーキテクチャ ===
-
-ReactiveArch v3.0
-
-=== リアクティブストリーム構成 ===
-非同期データフロー:
-
-ライブラリ統合:
-- RxJava 3.x: UI層リアクティブ処理
-- Project Reactor: Web層・データ層
-- Akka Streams: 大容量データ処理
-- Reactive Streams: 標準化インターフェイス
-
-ストリーム統計:
-アクティブストリーム: 247個
-処理済みイベント: 12,847,562件
-バックプレッシャー発生: 23回
-エラー処理: 156件
-平均スループット: 50,000 events/sec
-
-=== データフロー例 ===
-```
-ユーザーイベント → debounce(300ms) → distinctUntilChanged() 
-     ↓
-バリデーション → filter(valid) → map(transform)
-     ↓  
-ビジネスロジック → flatMap(async) → retry(3)
-     ↓
-データベース → observeOn(io) → subscribe(update)
-     ↓
-UI更新 → observeOn(fx) → bindTo(properties)
-```
-
-背圧制御:
-DROP: 25,234回 (過負荷時の最新データ保持)
-BUFFER: 12,891回 (一時バッファリング)
-LATEST: 8,456回 (最新値のみ保持)
-ERROR: 0回 (エラー発生なし)
-```
-
-### 課題3: マイクロフロントエンドアーキテクチャ
-**ファイル名**: `MicroFrontendArchitecture.java`
-
-Javaベースのマイクロフロントエンドアーキテクチャを実装してください。
-
-**要求仕様**:
-- コンポーネント分離
-- 独立デプロイメント
-- イベント間通信
-- 統合シェル
-
-**実行例**:
-```
-=== マイクロフロントエンドアーキテクチャ ===
-
-MicroFrontend v2.0
-
-=== マイクロフロントエンド構成 ===
-分離されたコンポーネント:
-
-登録済みマイクロフロントエンド:
-1. user-management-mfe (Port: 8081)
-   - 技術: JavaFX + Spring Boot
-   - 機能: ユーザー管理
-   - 状態: アクティブ
-
-2. order-processing-mfe (Port: 8082)
-   - 技術: Swing + Reactive Streams
-   - 機能: 注文処理
-   - 状態: アクティブ
-
-3. analytics-dashboard-mfe (Port: 8083)
-   - 技術: WebView + Chart.js
-   - 機能: 分析ダッシュボード
-   - 状態: アクティブ
-
-統合シェル:
-- ナビゲーション統合
-- 認証状態共有
-- テーマ統一
-- イベント配信
-
-イベント間通信:
-送信イベント: 12,847件
-受信イベント: 11,923件
-ルーティングエラー: 0件
-通信遅延: 平均12ms
-```
-
-## 習得すべき技術要素
-
-### アーキテクチャパターン
-- MVVM (Model-View-ViewModel)
-- MVP (Model-View-Presenter)
-- 依存性注入パターン
-- ファクトリーパターン
-
-### リアクティブプログラミング
-- Reactive Streams仕様
-- RxJava Observables
-- Project Reactor Flux/Mono
-- バックプレッシャー制御
-
-### データバインディング
-- 双方向データバインディング
-- 変換バインディング
-- コマンドバインディング
-- 検証バインディング
-
-## 参考リソース
-
-- Reactive Programming with RxJava
-- Hands-On Reactive Programming with Reactor
-- JavaFX Enterprise Application Development
-- Modern Java EE Design Patterns
-
-## 重要な注意事項
-
-大規模なMVVMアーキテクチャでは、適切な関心の分離と依存性管理が重要です。パフォーマンスとメモリ使用量に注意して実装してください。
+**次のステップ**: 発展課題が完了したら、challenge/のチャレンジ課題に挑戦してみましょう。
