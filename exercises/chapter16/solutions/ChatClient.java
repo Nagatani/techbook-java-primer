@@ -80,9 +80,18 @@ public class ChatClient {
         
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
+            if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                // 受信スレッドがreadLine()で待ったままなら、入力側を閉じて抜けさせる
+                // （readLine()の途中でBufferedReaderを閉じると、ロックを待って止まる）
+                if (socket != null && !socket.isClosed()) {
+                    socket.shutdownInput();
+                }
+                if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
             }
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "切断処理エラー", e);
         } catch (InterruptedException e) {
             executor.shutdownNow();
             Thread.currentThread().interrupt();

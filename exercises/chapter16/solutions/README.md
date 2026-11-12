@@ -10,13 +10,14 @@
 
 **実行方法：**
 ```bash
+# コンパイル（このフォルダーで実行。クラスはパッケージchapter16.solutionsにある）
+javac -d out *.java
+
 # サーバーを起動（別ターミナル）
-javac EchoServer.java
-java EchoServer [ポート番号]
+java -cp out chapter16.solutions.EchoServer [ポート番号]
 
 # クライアントを起動
-javac EchoClient.java
-java EchoClient [ホスト名] [ポート番号]
+java -cp out chapter16.solutions.EchoClient [ホスト名] [ポート番号]
 ```
 
 **実装のポイント：**
@@ -33,8 +34,8 @@ java EchoClient [ホスト名] [ポート番号]
 
 **実行方法：**
 ```bash
-javac SimpleHttpClient.java
-java SimpleHttpClient http://example.com/
+javac -d out *.java
+java -cp out chapter16.solutions.SimpleHttpClient http://example.com/
 ```
 
 **実装のポイント：**
@@ -61,13 +62,13 @@ java SimpleHttpClient http://example.com/
 
 **実行方法：**
 ```bash
+javac -d out *.java
+
 # サーバーを起動
-javac ChatServer.java
-java ChatServer [ポート番号]
+java -cp out chapter16.solutions.ChatServer [ポート番号]
 
 # クライアントを起動（複数起動可能）
-javac ChatClient.java
-java ChatClient [ホスト名] [ポート番号]
+java -cp out chapter16.solutions.ChatClient [ホスト名] [ポート番号]
 ```
 
 **実装の特徴：**

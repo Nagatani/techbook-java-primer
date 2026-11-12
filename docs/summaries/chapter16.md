@@ -27,7 +27,7 @@ sections:
   - key: "まとめ"
     hash: 5947cb2f
   - key: "章末演習"
-    hash: 3f5c75a2
+    hash: 2bcca8ac
   - key: "よくあるエラーと対処法"
     hash: 59e9cab0
 ---

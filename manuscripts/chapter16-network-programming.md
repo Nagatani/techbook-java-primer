@@ -1037,9 +1037,9 @@ public class NIOServer {
 1. 基礎課題
     + シンプルなTCPサーバー・クライアントの実装
 2. 発展課題
-    + チャットアプリケーションの開発
+    + チャットアプリケーション、ファイル転送、REST APIクライアントの開発
 3. チャレンジ課題
-    + HTTPサーバーの実装とRESTful API設計
+    + 静的ファイルを配信する簡易Webサーバーの実装
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter16/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
