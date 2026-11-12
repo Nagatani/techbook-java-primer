@@ -1,184 +1,100 @@
 # 第23章 基礎課題 - ビルドとデプロイ
 
 ## 課題概要
-ビルドツールの基本的な使い方と、Javaアプリケーションのパッケージングを学ぶ課題です。
+
+`javac`・`jar`・`java -jar`の3つのコマンドで、作ったプログラムを1つのJARファイルにまとめて配る練習をします。
+
+このフォルダーには解答例のコードを置いていません。解答例は[solutions/](../solutions/)にあり、課題ごとに対応する解答例を書いています。
 
 ## 課題リスト
 
-### 課題1: Mavenプロジェクトの作成とビルド
-シンプルなMavenプロジェクトを作成し、ビルドしてください。
+### 課題1: 実行可能JARの作成
+
+コマンドライン引数で計算する小さな計算機を、`java -jar`で実行できるJARにしてください。
 
 **要件:**
-- pom.xmlの作成
-- 依存関係の追加（JUnit、Log4j2など）
-- コンパイルとテストの実行
-- JARファイルの生成
 
-**pom.xmlの例:**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <groupId>com.example</groupId>
-    <artifactId>my-app</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
+- `java -jar calculator.jar add 10 20`のように、操作と2つの数を引数で受け取って結果を表示する
+- 0で割ろうとしたら、エラーのメッセージを`System.err`に出し、終了コード1で終わる（`System.exit(1)`）
+- マニフェストに`Main-Class`を書き、`jar cfm`でJARを作る
+- `jar tf`でJARの中身を表示して、クラスファイルとマニフェストが入っていることを確かめる
+
+解答例: `CalculatorApp.java`、`manifest.txt`、ビルドと動作確認をまとめて行う`build.sh`（Windowsは`build.bat`）。
+
+**実行例**（解答例の`build.sh`の後半）:
+
+```
+4. JARファイルの情報:
+----------------------------------------
+META-INF/
+META-INF/MANIFEST.MF
+chapter23/solutions/CalculatorApp.class
+----------------------------------------
+ファイルサイズ: 2.8K
+
+5. 動作テストの実行...
+----------------------------------------
+テスト1: 加算 (10 + 20)
+10 + 20 = 30
+✓ 加算テスト成功
+
+テスト2: 乗算 (5.5 × 3.2)
+5.5 × 3.2 = 17.6
+✓ 乗算テスト成功
+
+テスト3: 除算 (100 ÷ 3)
+100 ÷ 3 = 33.3333333333
+✓ 除算テスト成功
+
+テスト4: ゼロ除算（エラーテスト）
+エラー: ゼロで除算することはできません
+✓ ゼロ除算エラー処理成功
 ```
 
-### 課題2: Gradleプロジェクトの作成とビルド
-同じアプリケーションをGradleでビルドしてください。
+マニフェストは、最後の行のあとにも改行が要ります。改行がないと、最後の行の属性は読み飛ばされます。
+
+### 課題2: リソースを含むJAR
+
+設定ファイルと、日本語・英語のメッセージを含むSwingアプリを、1つのJARにまとめてください。
 
 **要件:**
-- build.gradleの作成
-- タスクの定義と実行
-- 依存関係の管理
-- カスタムタスクの作成
 
-**build.gradleの例:**
-```gradle
-plugins {
-    id 'java'
-    id 'application'
-}
+- アプリの題名と言語を`config.properties`に書き、`getClass().getResourceAsStream("/resources/config.properties")`で読む
+- 画面の文字は`messages_ja.properties`・`messages_en.properties`に書き、`ResourceBundle.getBundle`で言語に合わせて読む
+- リソースのファイルをクラスファイルと一緒にJARへ入れ、`java -jar`で起動しても読めることを確かめる（ファイルのパスで読むと、JARの中のファイルは読めない）
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+解答例: `MessageApp.java`と`resources/`フォルダー。ビルドの手順は[solutions/README.md](../solutions/README.md)にあります。
 
-repositories {
-    mavenCentral()
-}
+**実行例**（解答例）: 起動すると、`config.properties`の題名と版がウィンドウのタイトルに出ます。言語を切り替えると、ボタンやラベルの文字が日本語と英語で入れ替わります。
 
-dependencies {
-    testImplementation 'junit:junit:4.13.2'
-    implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
-}
+### 課題3（発展）: 外部ライブラリを使うアプリのJAR
 
-application {
-    mainClass = 'com.example.Main'
-}
-
-test {
-    useJUnit()
-}
-```
-
-### 課題3: 実行可能JARの作成
-依存関係を含む実行可能なJARファイル（Fat JAR）を作成してください。
-
-**Maven（maven-shade-plugin）:**
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-shade-plugin</artifactId>
-    <version>3.2.4</version>
-    <configuration>
-        <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                <mainClass>com.example.Main</mainClass>
-            </transformer>
-        </transformers>
-    </configuration>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>shade</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
-```
-
-### 課題4: 環境設定の管理
-異なる環境（開発、テスト、本番）での設定管理を実装してください。
+外部ライブラリ（JSONを扱うGson、コマンドライン引数を扱うCommons CLI）を使うアプリを、ライブラリごと1つのJAR（Fat JAR）にまとめてください。
 
 **要件:**
-- プロパティファイルの使用
-- 環境変数の活用
-- プロファイル別の設定
 
-**実装例:**
-```java
-public class ConfigManager {
-    private static final String ENV = System.getenv("APP_ENV");
-    private static Properties props = new Properties();
-    
-    static {
-        String configFile = String.format("config-%s.properties", 
-            ENV != null ? ENV : "dev");
-        try (InputStream is = ConfigManager.class
-            .getResourceAsStream("/" + configFile)) {
-            props.load(is);
-        } catch (IOException e) {
-            throw new RuntimeException("設定ファイルの読み込みに失敗", e);
-        }
-    }
-    
-    public static String get(String key) {
-        return props.getProperty(key);
-    }
-}
-```
+- ライブラリのJARを`lib/`に置き、`javac -cp`でコンパイルする
+- ライブラリのJARを展開してクラスファイルと一緒にまとめるか、マニフェストの`Class-Path`でライブラリのJARを指定する
+- できたJARを、ライブラリのない別のフォルダーにコピーしても動くか（Fat JARの場合）を確かめる
+
+Fat JARは本文ではまとめで名前を挙げるだけなので、詳しくは付録Gを読んでから取り組みます。
+実際の開発では、MavenやGradle（第22章）のプラグインでFat JARを作ります。
+
+解答例: `JsonTool.java`と、ライブラリの取得からFat JARの作成までを行う`build-fatjar.sh`（ライブラリをMaven Centralからダウンロードするため、ネットワークへの接続が要ります）。
 
 ## 実行方法
 
-### Maven
+解答例はパッケージ`chapter23.solutions`にあるので、`solutions/`でビルドします。
+
 ```bash
-# プロジェクトの作成
-mvn archetype:generate -DgroupId=com.example -DartifactId=my-app
-
-# ビルド
-mvn clean compile
-
-# テスト実行
-mvn test
-
-# パッケージング
-mvn package
-
-# 実行
-java -jar target/my-app-1.0-SNAPSHOT.jar
+cd ../solutions
+bash build.sh
+java -jar dist/calculator.jar divide 100 3
 ```
 
-### Gradle
-```bash
-# プロジェクトの初期化
-gradle init --type java-application
+`build.sh`が作る`build/`と`dist/`は、試し終えたら消してかまいません。
 
-# ビルド
-gradle build
+## 注意事項
 
-# テスト実行
-gradle test
-
-# 実行
-gradle run
-
-# JARの生成
-gradle jar
-```
-
-## 評価基準
-- ビルド設定の正確性
-- 依存関係の適切な管理
-- 実行可能JARの動作確認
-- 環境設定の柔軟性
+- `jar`コマンドに渡すクラスファイルのパスは、パッケージのフォルダー（`chapter23/solutions/`）から始まるようにする。`build/`の中に移動してから`jar`を実行するのはこのため
+- `java -jar`で起動すると、`-cp`（クラスパス）の指定は無視され、マニフェストの`Class-Path`だけが使われる
