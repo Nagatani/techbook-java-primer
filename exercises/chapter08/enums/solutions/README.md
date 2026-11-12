@@ -1,116 +1,44 @@
-# 第8章 Enum 解答例
+# 第8章 列挙型 - 解答例
 
-この章では、Javaの列挙型（Enum）の様々な使用方法を学習します。
+[基礎課題](../basic/)の解答例です。
+第8章までに学んだ機能だけを使っています。
 
-## 実装内容
+## 解答例一覧
 
-### 1. Status.java - 基本的なEnum使用例
-- システムの状態を表現するEnum
-- 状態遷移の制御
-- 終了状態の判定
-- 日本語表示名の提供
+| 課題 | ファイル | 主な内容 |
+|------|----------|----------|
+| 課題1: 曜日と優先度 | `DayOfWeek.java`、`Priority.java`、`BasicEnumTest.java` | フィールドとメソッドを持つ列挙型、`values`・`valueOf`・`ordinal`・`compareTo`、列挙型の`switch` |
+| 課題2: 注文の状態 | `OrderStatus.java`、`Order.java`、`OrderStatusTest.java` | `switch`式で次の状態を決める、`EnumSet`でキャンセルできる状態を表す |
+| 課題3: 四則演算の列挙型 | `Operation.java`、`OperationTest.java` | 列挙子ごとの抽象メソッドの実装、一部の列挙子だけがオーバーライドするメソッド |
 
-**重要ポイント：**
-- Switch式を使用した現代的な記述
-- 状態遷移ルールの実装
-- Enumの基本的な使用方法
-
-### 2. Planet.java - 値を持つEnum
-- 太陽系の惑星の物理的特性を管理
-- 質量と半径を持つEnum定数
-- 重力計算などの複雑な処理
-
-**重要ポイント：**
-- Enumに値を持たせる方法
-- 物理計算の実装
-- 実用的なデータ管理
-
-### 3. OperationEnum.java - 抽象メソッドを持つEnum
-- 計算機の四則演算を表現
-- 各定数で異なる処理を実装
-- 演算子の優先順位管理
-
-**重要ポイント：**
-- 抽象メソッドの実装
-- 各Enum定数での異なる振る舞い
-- 例外処理の実装
-
-### 4. StateMachine.java - 状態遷移システム
-- **EnumSetとEnumMapの高性能活用**
-- 複雑な状態遷移ルールの管理
-- 遷移履歴の記録
-
-**重要ポイント：**
-- **EnumSet**: 高性能なEnum専用Set実装
-- **EnumMap**: 高性能なEnum専用Map実装
-- 状態遷移テーブルの実装
-- 複雑なビジネスロジックの管理
-
-## 学習のポイント
-
-1. **Enumの基本概念**
-   - 定数の型安全な定義
-   - switch文での使用
-
-2. **値を持つEnum**
-   - コンストラクタの定義
-   - インスタンス変数の管理
-
-3. **抽象メソッドを持つEnum**
-   - 各定数での異なる実装
-   - ポリモーフィズムの活用
-
-4. **EnumSetとEnumMapの活用**
-   - 高性能なEnum専用コレクション
-   - ビット演算による最適化
-   - 実用的なデータ構造設計
+各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
 ## 実行方法
 
 ```bash
-# コンパイル
+cd exercises/chapter08/enums/solutions
 javac *.java
-
-# テスト実行（JUnit 5が必要）
-java -cp .:junit-platform-console-standalone-1.8.2.jar org.junit.platform.console.ConsoleLauncher --scan-classpath
-
-# 個別実行例
-java -cp . StatusTest
-java -cp . PlanetTest
-java -cp . OperationEnumTest
-java -cp . StateMachineTest
+java BasicEnumTest
+java OrderStatusTest
+java OperationTest
 ```
 
-## 設計パターン
+## 実装のポイント
 
-### 状態パターン（State Pattern）
-StateMachineクラスは状態パターンの実装例です：
-- 状態ごとに異なる振る舞い
-- 状態遷移の制御
-- 状態の履歴管理
+- `DayOfWeek`の`next`は`values()[(ordinal() + 1) % values().length]`。最後の列挙子の次が最初に戻る
+- 週末かどうかをフィールドにせず`isWeekend`で求めているのは、列挙子の並びと名前から決まる値だから。フィールドにするのは、列挙子ごとに自由に決める値（日本語の名前、レベル）
+- `Priority`の`compareTo`は、レベルのフィールドではなく、列挙子を書いた順で比べる。`Arrays.sort`の結果も書いた順になる
+- `OrderStatus`の`nextStatus`の`switch`式は、6つの列挙子をすべて書いているので`default`が要らない。状態を足すと、書き漏れがコンパイルエラーになる
+- `Operation`の`DIVIDE`は、`apply`に加えて`canApply`もオーバーライドしている。列挙子ごとの`{ }`の中には、ふつうのクラスと同じようにメソッドをいくつでも書ける
+- `double`を0で割っても例外にならず、`Infinity`になる。`format`は、割る前に`canApply`で確かめる
 
-### 戦略パターン（Strategy Pattern）
-OperationEnumクラスは戦略パターンの実装例です：
-- 異なる演算アルゴリズムの実装
-- 実行時の戦略選択
-- 拡張可能な設計
+## 後の章の機能を使った書き方
 
-## 応用例
+- 状態ごとにできる操作の一覧を持たせるなら、第9章で学ぶ`List`や、第8章の`EnumMap`を使う
+- 第11章で学ぶラムダ式を使うと、`Operation`の計算をコンストラクターに渡せる
 
-1. **ワークフローエンジン**
-   - 承認プロセスの管理
-   - 状態遷移の制御
-
-2. **ゲーム開発**
-   - キャラクターの状態管理
-   - アイテムの種類管理
-
-3. **設定管理**
-   - 環境設定の管理
-   - 機能フラグの管理
-
-## 注意点
-
-- EnumSetとEnumMapは通常のSetやMapより高速
-- Enumは本質的にシングルトンパターン
-- switch文でEnumを使用する際は、すべての値を処理することを推奨
+```java
+ADD("+", (x, y) -> x + y),
+// ...
+Operation(String symbol, DoubleBinaryOperator operator) { ... }
+```

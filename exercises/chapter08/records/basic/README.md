@@ -1,271 +1,134 @@
-# 第8章 基本課題
+# 第8章 基本課題（レコード）
 
 ## 学習目標
-- Record クラスの基本概念と利点の理解
-- 不変データ構造としての Record の活用
-- 従来のクラスと Record の使い分け
-- Record の制限事項と適用場面の理解
-- Record を使ったデータ中心設計の実践
-- データ転送オブジェクト（DTO）としてのRecordの効果的な活用
+
+- `record`でデータを持つクラスを1行で宣言し、自動で作られるアクセサー・`equals`・`hashCode`・`toString`を使う
+- コンパクトコンストラクターで、作るときに値を検査する
+- レコードにメソッドと静的ファクトリメソッドを足す
+- レコードの中に別のレコードを持たせ、ビルダーで組み立てる
 
 ## 課題一覧
 
-### 課題1: 基本的なRecord定義と活用
-**ファイル名**: `BasicRecord.java`, `BasicRecordTest.java`
+このフォルダーのJavaファイルは、`TODO`の箇所を埋めて完成させる雛形です。
+課題1〜4を進めながら、`RecordDemo.java`の各メソッドの`TODO`を埋めて試します。
+解答例は[solutions/](../solutions/)にあります。
 
-基本的なRecordクラスを定義し、その特性を理解してください。
+### 課題1: 点のレコード
 
-**要求仕様**:
-- シンプルなRecord定義（Point、Person等）
-- 自動生成されるメソッド（equals、hashCode、toString）の確認
-- Record のアクセサメソッドの使用
-- Record の不変性の確認
-- 従来のクラスとの比較
-
-**実行例**:
-```
-=== 基本的なRecord定義と活用 ===
-座標Record:
-point1: Point[x=3, y=4]
-point2: Point[x=3, y=4]
-
-アクセサメソッド:
-X座標: 3
-Y座標: 4
-
-equals比較:
-point1.equals(point2): true
-point1 == point2: false
-
-hashCode比較:
-point1.hashCode(): 128
-point2.hashCode(): 128
-
-人物Record:
-person: Person[name=田中太郎, age=30, email=tanaka@example.com]
-
-不変性確認:
-// 以下はコンパイルエラー
-// person.name = "佐藤花子";  // フィールドは final
-
-Record vs 従来クラス比較:
-従来クラスの行数: 35行（getter、setter、equals、hashCode、toString）
-Recordの行数: 1行（record Person(String name, int age) {}）
-```
-
-**評価ポイント**:
-- Record の基本構文理解
-- 自動生成メソッドの理解
-- 不変性の確認
-
-
-
-### 課題2: Recordを使ったデータ転送オブジェクト（DTO）
-**ファイル名**: `UserDTO.java`, `OrderDTO.java`, `DTOTest.java`
-
-RecordをDTOとして活用し、データ転送の実装を行ってください。
+**ファイル**: `Point.java`（`RecordDemo`の`demonstratePoint`・`demonstrateRecordCollections`）
 
 **要求仕様**:
-- ユーザー情報のRecord DTO
-- 注文情報のRecord DTO（ネストしたRecord含む）
-- JSON風データ構造の表現
-- Record のバリデーション機能
-- Record の変換メソッド
 
-**実行例**:
-```
-=== Recordを使ったデータ転送オブジェクト ===
-ユーザーDTO:
-user: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true]
+- `record Point(double x, double y)`を宣言する
+- コンパクトコンストラクターで、xとyが有限の値（`Double.isFinite`）でなければ`IllegalArgumentException`を投げる
+- `distanceFromOrigin`・`distanceTo`は距離を返し、`translate`は移動した新しい`Point`を返す。`origin`は原点を返す静的ファクトリメソッド
+- `Point`の配列で、原点にいちばん近い点と、半径4以内の点の数を求める
 
-注文DTO（ネストしたRecord）:
-order: OrderDTO[
-  orderId=ORD-2024-001,
-  user=UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true],
-  items=[
-    OrderItem[productName=ノートPC, quantity=1, price=150000],
-    OrderItem[productName=マウス, quantity=2, price=3000]
-  ],
-  totalAmount=156000,
-  orderDate=2024-07-04T10:30:00
-]
+### 課題2: 人のレコード
 
-データ変換:
-CSV形式: "1001,田中太郎,tanaka@example.com,true"
-Map形式: {id=1001, name=田中太郎, email=tanaka@example.com, active=true}
-
-バリデーション:
-有効なユーザー: UserDTO[id=1001, name=田中太郎, email=tanaka@example.com, active=true] ✓
-無効なユーザー: UserDTO[id=0, name=, email=invalid-email, active=false] ✗
-エラー: [IDは1以上である必要があります, 名前は必須です, メールアドレスの形式が正しくありません]
-```
-
-**評価ポイント**:
-- Record のネスト構造活用
-- DTO としての適切な設計
-- データ変換処理の実装
-
-
-
-### 課題3: Record と設定管理
-**ファイル名**: `AppConfig.java`, `DatabaseConfig.java`, `ConfigManager.java`, `ConfigTest.java`
-
-Recordを使ったアプリケーション設定管理システムを実装してください。
+**ファイル**: `Person.java`（`RecordDemo`の`demonstratePerson`）
 
 **要求仕様**:
-- 階層的な設定構造（Record内にRecord）
-- 設定の読み込みと保存
-- デフォルト値の提供
-- 設定の部分更新（新しいRecordインスタンス生成）
-- 設定の検証機能
 
-**実行例**:
-```
-=== Record と設定管理 ===
-デフォルト設定:
-AppConfig[
-  appName=MyApplication,
-  version=1.0.0,
-  database=DatabaseConfig[
-    url=jdbc:h2:mem:testdb,
-    username=sa,
-    password=,
-    maxConnections=10,
-    timeout=30
-  ],
-  features=[logging, caching],
-  debug=true
-]
+- `record Person(String name, LocalDate birthDate, String email)`を宣言する
+- コンパクトコンストラクターで、名前が空でないこと、誕生日が未来でないこと、メールアドレスに`@`があることを確かめる
+- `getAge`は`Period.between(birthDate, LocalDate.now()).getYears()`で年齢を返す。実行する日で値が変わるので、解答例では日付を引数で受け取る`getAgeOn`も作り、デモでは2026年4月1日の年齢を表示する
+- `getEmailDomain`は`@`より後ろを、`getFormattedName`は語の先頭を大文字にした名前を返す
+- `of(name, email)`は、誕生日を今日の20年前にした`Person`を返す
 
-設定更新（部分更新）:
-データベース接続数を20に変更:
-新しい設定: AppConfig[
-  appName=MyApplication,
-  version=1.0.0,
-  database=DatabaseConfig[
-    url=jdbc:h2:mem:testdb,
-    username=sa,
-    password=,
-    maxConnections=20,
-    timeout=30
-  ],
-  features=[logging, caching],
-  debug=true
-]
+### 課題3: DTOのレコード
 
-設定ファイル形式での出力:
-app.name=MyApplication
-app.version=1.0.0
-database.url=jdbc:h2:mem:testdb
-database.username=sa
-database.password=
-database.maxConnections=20
-database.timeout=30
-features=logging,caching
-debug=true
-
-設定検証:
-✓ アプリケーション名が設定されています
-✓ データベースURLが有効です
-✓ 接続数が適切な範囲内です
-✗ パスワードが設定されていません（警告）
-```
-
-**評価ポイント**:
-- 複雑なRecord構造の設計
-- 不変性を保った部分更新
-- 設定管理システムの実装
-
-
-
-### 課題4: Record とパターンマッチング（Java 17+）
-**ファイル名**: `Shape.java`, `PatternMatching.java`, `PatternMatchingTest.java`
-
-Recordとパターンマッチングを組み合わせた処理を実装してください。
+**ファイル**: `ProductDTO.java`、`ProductEntity.java`（雛形のまま使う。`RecordDemo`の`demonstrateDTO`）
 
 **要求仕様**:
-- 図形を表すRecord（Circle、Rectangle、Triangle）
-- sealed interface との組み合わせ
-- パターンマッチング（switch式）の活用
-- Record のデコンストラクション
-- 型安全な処理の実装
 
-**実行例**:
+- `record ProductDTO(Long id, String name, double price, String category)`を宣言し、価格が負のときと、商品名・カテゴリが空のときは作らない
+- `getPriceWithTax`（税込み）・`getFormattedPrice`（`¥120,000`の形）・`toJson`（`{"id":1,"name":"Laptop",...}`の形）を書く
+- `fromEntity`は、変更できるクラス`ProductEntity`から、受け渡しに必要な4つの値だけを取り出して`ProductDTO`を作る
+- DTOを作ったあとでエンティティの価格を変えても、DTOの価格が変わらないことを確かめる
+
+### 課題4: 入れ子のレコードとビルダー
+
+**ファイル**: `Address.java`、`Customer.java`（`RecordDemo`の`demonstrateNestedRecords`）
+
+**要求仕様**:
+
+- `record Address(String street, String city, String postalCode, String country)`は、すべての項目が空でなく、郵便番号が数字とハイフンだけであることを確かめる
+- `record Customer(String name, String email, Address address, List<String> phoneNumbers)`は、電話番号が1つ以上あることを確かめ、`List.copyOf`で変更できないリストにしてからフィールドに入れる
+- `Customer.builder().name(...).email(...).address(...).phoneNumbers(...).build()`の形で組み立てられるよう、`CustomerBuilder`のメソッドを書く
+- `getSummary`は「名前 (メール) - 都市, 国」の形、`getPrimaryPhone`は最初の電話番号を返す
+
+`List`（要素を順に並べて持つリスト）は第9章で学びます。この課題では、`List.of(...)`で作ったリストを受け取り、`List.copyOf`でコピーし、`get(0)`で最初の要素を取り出すことだけを使います。
+
+## 実行例
+
+`RecordDemo`の出力です（解答例）。
+
 ```
-=== Record とパターンマッチング ===
-図形Record定義:
-circle: Circle[radius=5.0]
-rectangle: Rectangle[width=4.0, height=3.0]
-triangle: Triangle[base=6.0, height=4.0]
+=== Pointレコードのデモ ===
+p1: Point[x=3.0, y=4.0]
+x座標: 3.0, y座標: 4.0
+原点からの距離: 5.0
+(6, 8)までの距離: 5.0
+(1, -2)だけ移動: Point[x=4.0, y=2.0]（p1は Point[x=3.0, y=4.0] のまま）
+原点: Point[x=0.0, y=0.0]
+p1.equals(p2): true、p1 == p2: false
+hashCodeが等しい: true
+作れない点: 座標は有限の値にします: NaN, 0.0
 
-面積計算（パターンマッチング）:
-円の面積: 78.54
-長方形の面積: 12.0
-三角形の面積: 12.0
+=== Personレコードのデモ ===
+person: Person[name=taro yamada, birthDate=2005-06-15, email=taro@example.com]
+2026年4月1日の年齢: 20
+メールのドメイン: example.com
+整えた名前: Taro Yamada
+Person.ofで作った人: hanako（example.org）
+作れない人: メールアドレスには@が要ります: jiro.example.com
 
-周囲計算（パターンマッチング）:
-円の周囲: 31.42
-長方形の周囲: 14.0
-三角形の周囲: （計算複雑）
+=== DTOパターンのデモ ===
+dto: ProductDTO[id=1, name=Laptop, price=120000.0, category=Electronics]
+税込み価格: 132,000円
+表示用の価格: ¥120,000
+JSON: {"id":1,"name":"Laptop","price":120000.0,"category":"Electronics"}
+エンティティの価格を変えたあとのDTO: ¥120,000
 
-Record デコンストラクション:
-circle(5.0) → 半径: 5.0
-rectangle(4.0, 3.0) → 幅: 4.0, 高さ: 3.0
-triangle(6.0, 4.0) → 底辺: 6.0, 高さ: 4.0
+=== ネストされたRecordのデモ ===
+要約: 山田太郎 (yamada@example.com) - 東京都千代田区, 日本
+主な電話番号: 03-1234-5678
+日本の住所: true
+住所:
+100-0001 東京都千代田区
+千代田1-1
+日本
+作れない住所: 郵便番号は数字とハイフンで書きます: AB-123
 
-図形分類:
-小さい図形（面積20未満）: [circle, rectangle, triangle]
-中くらいの図形（面積20-100）: []
-大きい図形（面積100以上）: []
-
-型安全性確認:
-switch 文で全ケースを網羅
-コンパイル時に型安全性を保証
+=== Recordを配列で扱う ===
+原点にいちばん近い点: Point[x=1.0, y=2.0]
+原点から半径4以内の点: 3個
+points[1].equals(points[3]): true
 ```
 
-**評価ポイント**:
-- sealed interface と Record の組み合わせ
-- パターンマッチングの活用
-- 型安全性の確保
+## コンパイルと実行
+
+```bash
+cd exercises/chapter08/records/basic
+javac *.java
+java RecordDemo
+```
 
 ## ヒント
 
-### 課題1のヒント
-- Record 定義: record Point(int x, int y) {}
-- アクセサメソッド: point.x(), point.y()
-- equals() と hashCode() は自動生成
+- レコードのフィールドは`private final`になり、setterは作られない。値を変えたいときは、新しいレコードを作って返す
+- アクセサーは`getX()`ではなく、フィールドと同じ名前の`x()`になる
+- コンパクトコンストラクターでは、引数に代入し直すと、その値がフィールドに入る（`phoneNumbers = List.copyOf(phoneNumbers);`）
+- コンパクトコンストラクターから呼ぶ補助のメソッドは、`static`にする（まだフィールドに値が入っていないため）
+- 正しくない値で例外を投げる`throw`と、受け取る`try`・`catch`は第13章で学ぶ
 
-### 課題2のヒント
-- ネストしたRecord: record Order(User user, List<Item> items) {}
-- データ変換にはStream APIを活用
-- バリデーションは静的メソッドで実装
+## 完了チェックリスト
 
-### 課題3のヒント
-- with メソッドパターンで部分更新を実現
-- record.field() で値取得、新しいRecordで更新
-- Properties ファイル形式での出力
+- [ ] 課題1: 自動で作られる`equals`で、別々に作った同じ値の点が等しくなる
+- [ ] 課題2: コンパクトコンストラクターで、正しくない値の人を作らせない
+- [ ] 課題3: エンティティを変えても、DTOが変わらない
+- [ ] 課題4: ビルダーで、入れ子のレコードを組み立てられる
+- [ ] レコードにできるクラスと、できないクラス（値を変えたいクラス、継承したいクラス）を説明できる
 
-### 課題4のヒント
-- sealed interface で型を限定
-- switch式でパターンマッチング
-- var でRecord要素を取得
-
-## Record のポイント
-
-1. **不変データ**: Record は本質的に不変
-2. **簡潔性**: boilerplate コードの大幅削減
-3. **透明性**: データの構造が明確
-4. **値ベース**: equals/hashCode が自動で正しく実装
-5. **制限事項**: 継承不可、追加フィールド不可
-6. **適用場面**: DTO、設定、値オブジェクト
-
-## ○ 完了チェックリスト
-
-- [ ] 課題1: 基本的なRecordの定義と特性が理解できている
-- [ ] 課題2: RecordをDTOとして適切に活用できている
-- [ ] 課題3: 複雑なRecord構造と設定管理ができている
-- [ ] 課題4: パターンマッチングと組み合わせて使えている
-- [ ] Record の利点と制限を理解している
-- [ ] 従来のクラスとの使い分けができている
-
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより複雑なRecord活用に挑戦しましょう！
+**次のステップ**: 基本課題が完了したら、[advanced/](../advanced/)の発展課題に進みましょう。
