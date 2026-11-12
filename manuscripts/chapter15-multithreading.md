@@ -1337,10 +1337,10 @@ public class ResiliencePatterns {
 ### 課題構成
 
 1. 基礎課題（`basic/`）
-    + 基本的なスレッド操作（Thread継承とRunnable、開始・待機・優先度）
-    + 同期処理とデータ競合対策（synchronized、Lock、volatile、デッドロックの回避）
-    + 並行コレクションとExecutor（ConcurrentHashMap、スレッドプール、Future、CompletableFuture）
-    + プロデューサー・コンシューマーパターン（BlockingQueue、wait/notify、`Semaphore`によるリソース数の制限）
+    + スレッドを作って待つ（Threadの継承とRunnable、開始と待機）
+    + データ競合と同期（synchronized、AtomicInteger、volatile）
+    + スレッドプールと非同期の処理（ExecutorService、Future、ConcurrentHashMap、CompletableFuture）
+    + 生産者と消費者（BlockingQueue、`Semaphore`による同時に使える数の制限）
 2. 発展課題（`advanced/`）
     + 映画館の座席予約（synchronizedによる競合状態の防止、AtomicInteger）
     + 店舗の売上の並行集計（Future、ConcurrentHashMap、CompletableFuture）
@@ -1348,7 +1348,7 @@ public class ResiliencePatterns {
     + 学食の注文処理（BlockingQueue、Semaphore、スレッドの終わらせ方）
 
 各課題の要求仕様・実行例・実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdにあります。
-基礎課題の解答例は`solutions/`（テストを含む）に、発展課題とチャレンジ課題の解答例は各課題のフォルダーにあります<span class="footnote">基礎課題の解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
+基礎課題に近い内容の解答例は`solutions/`（テストを含む）に、発展課題とチャレンジ課題の解答例は各課題のフォルダーにあります<span class="footnote">基礎課題に近い内容の解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
 
 基礎課題が完了したら、第16章「ネットワークプログラミング」に進みましょう。
 
