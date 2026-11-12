@@ -17,7 +17,8 @@
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- （ファイルなし）
+- 図書館の資料管理システム（本・雑誌・DVDの継承、オーバーライド、ポリモーフィズム、instanceof、equals・hashCode）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 
