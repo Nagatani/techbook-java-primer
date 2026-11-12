@@ -11,15 +11,14 @@
 
 ## 発展課題（[advanced/](advanced/)）
 
-- 高可用性銀行システム
-- 自動運転車制御システム
-- 医療情報統合システム
+- 図書館の貸出記録の集計（groupingBy・counting・mapping・collectingAndThen・partitioningBy、集計結果の並べ替え）
+- 会員情報の検索（Optionalのmap・flatMap・filter・orElse・ifPresentOrElse、Optional::stream）
+- このフォルダーのJavaファイルは解答例です（課題ごとのサブフォルダー）
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- 自律型宇宙探査機制御システム
-- 量子耐性暗号化金融システム
-- 自己進化型汎用AI基盤
+- 成績の集計レポート（flatMapによるデータの変換、Collectorsの組み合わせ、anyMatch・allMatch、Optional、並列ストリーム）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 
