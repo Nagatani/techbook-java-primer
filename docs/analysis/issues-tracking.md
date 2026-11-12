@@ -577,4 +577,5 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 
 ### 残っている点
 - exercises/chapter01/challenge/CompactHello.java は、クラス宣言のないコンパクトソースファイルを、クラスを宣言する形に書き直す課題の出発点として、意図してこの形にしている（CLAUDE.mdの方針10の例外）
-- 第3章のチャレンジ課題（exercises/chapter03/challenge/）は「準備中」のまま
+- ~~第3章のチャレンジ課題（exercises/chapter03/challenge/）は「準備中」のまま~~ ✅ 2026-11-12に自動販売機シミュレーター（VendingMachineSimulator.java、第3章の範囲のクラス・private・オブジェクトの配列・static finalで解ける）を作成。作られた形跡はgitの履歴になく、課題を移した際に空のまま残っていた
+- 第4章・第5章のチャレンジ課題（exercises/chapter04/challenge/、chapter05/challenge/）もファイルがない
