@@ -5,19 +5,19 @@ sections:
   - key: "本章の学習目標"
     hash: ed4c0ab7
   - key: "なぜ継承とポリモーフィズムが必要なのか"
-    hash: fb095627
+    hash: 173cde7d
   - key: "継承の基本"
     hash: f9d00d29
   - key: "メソッドのオーバーライド"
-    hash: 00478954
+    hash: cf31b7c7
   - key: "ポリモーフィズム（多態性）"
-    hash: 1704d6a6
+    hash: 19ad82d7
   - key: "`instanceof`演算子とキャスト"
-    hash: b2bdc22d
+    hash: 116023f9
   - key: "`Object`クラスのメソッド（toString・equals・hashCode）"
-    hash: 454ddf7f
+    hash: aed59bec
   - key: "実践的な継承設計パターン"
-    hash: cb9318e8
+    hash: e69bc852
   - key: "例外処理の基礎（補足）"
     hash: adc39f75
   - key: "よくあるエラーと対処法"
@@ -25,7 +25,7 @@ sections:
   - key: "まとめ"
     hash: 015f01a6
   - key: "章末演習"
-    hash: 27f472ee
+    hash: 4ae236b5
 ---
 
 # 第5章 継承とポリモーフィズム 要約
