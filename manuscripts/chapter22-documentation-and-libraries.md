@@ -1218,17 +1218,23 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
 
 ### 課題構成
 
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+本章の演習は、題材ごとに2つのフォルダーに分かれています。
+どちらのフォルダーにも、基礎課題（`basic/`）、発展課題（`advanced/`）、チャレンジ課題（`challenge/`）と解答例（`solutions/`）があります。
+
+- `documentation/`
+    + Javadocによるドキュメントの作成と、ライブラリの利用
+- `api-design/`
+    + APIドキュメントとライブラリの設計
+
+`documentation/`の課題は、次の順に進みます。
 
 1. 基礎課題
-    + Javadocコメントの記述とHTML文書の生成
+    + Javadocコメントの記述と、APIドキュメント・使用例・READMEの作成
 2. 発展課題
-    + Mavenプロジェクトの作成と外部ライブラリの統合
+    + ユーティリティライブラリの開発とドキュメントの整備
 3. チャレンジ課題
-    + 複数のライブラリを組み合わせた実用的なアプリケーション開発
+    + JSONを解析するライブラリのプロジェクトを一通り作る
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">本章の演習は、題材ごとに`documentation`と`api-design`の2つのフォルダーに分かれ、それぞれに`basic`・`advanced`・`challenge`のフォルダーがあります。たとえば`https://github.com/Nagatani/techbook-java-primer/blob/main/exercises/chapter22/documentation/basic/README.md`です。</span>。
+詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">たとえば`documentation/`の基礎課題は`https://github.com/Nagatani/techbook-java-primer/blob/main/exercises/chapter22/documentation/basic/README.md`です。</span>。
 
 基礎課題が完了したら、第23章「ビルドとデプロイ」に進みましょう。
