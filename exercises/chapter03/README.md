@@ -33,11 +33,11 @@
 2. **GradeManagement.java** - 成績管理プログラム（StudentクラスとGradeBookクラスの連携）
 
 ### チャレンジ課題 (challenge/)
-- 準備中
+1. **VendingMachineSimulator.java** - 自動販売機シミュレーター（DrinkクラスとVendingMachineクラスの連携、お金の投入・購入・おつり・補充）
 
 ### 解答例 (solutions/)
 - 基礎課題1〜7の解答例
-- 発展課題は、`advanced/`のJavaファイルが完成したプログラム（解答例）
+- 発展課題とチャレンジ課題は、`advanced/`・`challenge/`のJavaファイルが完成したプログラム（解答例）
 
 ## 実行方法
 
