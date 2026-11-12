@@ -105,14 +105,9 @@ public class MouseEventCompleteExample extends JFrame {
         popupMenu.add(new JMenuItem("コピー"));
         popupMenu.add(new JMenuItem("貼り付け"));
         
-        drawPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
+        // メニューを開く操作はOSによって異なる（ボタンを押したとき・離したとき）。
+        // setComponentPopupMenuは、どちらの場合もメニューを表示する
+        drawPanel.setComponentPopupMenu(popupMenu);
         
         add(drawPanel, BorderLayout.CENTER);
         add(scrollPane, BorderLayout.SOUTH);

@@ -36,7 +36,7 @@
 以下のコードは、クリック、ダブルクリック、ドラッグ、右クリックメニューを1つのパネルで処理する例です。
 `MouseAdapter`で必要なメソッドだけをオーバーライドし、イベントの種類と座標をログに記録します。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜63、77〜82、97〜100、122、134行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜63、77〜82、97〜100、117、129行目）</span>
 
 ```java
 public class MouseEventCompleteExample extends JFrame {
