@@ -1,39 +1,32 @@
 /**
- * 第5章 演習問題1: Dogクラスの解答例（派生クラス）
+ * 犬のクラス（課題1の解答例）
  */
 public class Dog extends Animal {
-    private String breed;
-    
+    // コンストラクタ（superキーワードを使用）
     public Dog(String name, int age) {
         super(name, age);
-        this.breed = "雑種";
     }
     
-    public Dog(String name, int age, String breed) {
-        super(name, age);
-        this.breed = breed;
-    }
-    
+    // makeSoundメソッドをオーバーライドする
     @Override
     public void makeSound() {
         IO.println(name + "は「ワンワン」と鳴きます。");
     }
     
-    // Dog固有のメソッド
+    // 犬固有の行動メソッド
     public void wagTail() {
         IO.println(name + "は尻尾を振っています。");
     }
     
+    // 犬固有の行動メソッド
     public void fetch() {
         IO.println(name + "はボールを取ってきました。");
     }
     
+    // showInfoメソッドをオーバーライドして犬の情報を表示する
     @Override
-    public void displayInfo() {
-        super.displayInfo();
-        IO.println("犬種: " + breed);
+    public void showInfo() {
+        super.showInfo(); // 親クラスの基本情報を表示
+        IO.println("種類: 犬");
     }
-    
-    public String getBreed() { return breed; }
-    public void setBreed(String breed) { this.breed = breed; }
 }

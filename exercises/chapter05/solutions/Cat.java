@@ -1,39 +1,32 @@
 /**
- * 第5章 演習問題1: Catクラスの解答例（派生クラス）
+ * 猫のクラス（課題1の解答例）
  */
 public class Cat extends Animal {
-    private String color;
-    
+    // コンストラクタ（superキーワードを使用）
     public Cat(String name, int age) {
         super(name, age);
-        this.color = "グレー";
     }
     
-    public Cat(String name, int age, String color) {
-        super(name, age);
-        this.color = color;
-    }
-    
+    // makeSoundメソッドをオーバーライドする
     @Override
     public void makeSound() {
         IO.println(name + "は「ニャーニャー」と鳴きます。");
     }
     
-    // Cat固有のメソッド
+    // 猫固有の行動メソッド
     public void groom() {
         IO.println(name + "は毛づくろいをしています。");
     }
     
-    public void purr() {
-        IO.println(name + "はゴロゴロとのどを鳴らしています。");
+    // 猫固有の行動メソッド
+    public void climb() {
+        IO.println(name + "は木に登っています。");
     }
     
+    // showInfoメソッドをオーバーライドして猫の情報を表示する
     @Override
-    public void displayInfo() {
-        super.displayInfo();
-        IO.println("毛色: " + color);
+    public void showInfo() {
+        super.showInfo(); // 親クラスの基本情報を表示
+        IO.println("種類: 猫");
     }
-    
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
 }

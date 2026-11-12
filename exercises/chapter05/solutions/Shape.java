@@ -1,22 +1,28 @@
 /**
- * 第5章 演習問題2: Shapeクラスの解答例（抽象クラス）
+ * 図形の基底クラス（課題2の解答例）
+ *
+ * 面積の求め方は図形ごとに違うので、getAreaはサブクラスでオーバーライドする。
  */
-public abstract class Shape {
+public class Shape {
+    protected String name;
     protected String color;
-    
-    public Shape(String color) {
+
+    public Shape(String name, String color) {
+        this.name = name;
         this.color = color;
     }
-    
-    public abstract double getArea();
-    public abstract double getPerimeter();
-    
-    public void displayInfo() {
-        IO.println("色: " + color);
-        IO.println("面積: " + String.format("%.2f", getArea()));
-        IO.println("周囲: " + String.format("%.2f", getPerimeter()));
+
+    // Shapeそのものには形がないので0を返す。サブクラスが正しい面積を返すようにオーバーライドする
+    // 第7章で学ぶ抽象クラスにすると、オーバーライドを強制できる:
+    // public abstract class Shape { ... public abstract double getArea(); }
+    public double getArea() {
+        return 0.0;
     }
-    
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+
+    public void showInfo() {
+        IO.println(name);
+        IO.println("色: " + color);
+        // getAreaは、実際のオブジェクト（RectangleやCircle）のメソッドが呼ばれる
+        IO.println("面積: " + "%.2f".formatted(getArea()));
+    }
 }
