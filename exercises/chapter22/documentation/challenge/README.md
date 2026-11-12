@@ -1,7 +1,7 @@
 # 第22章 チャレンジ課題 - ドキュメンテーションとライブラリ
 
 ## 課題概要
-プロダクションレベルの完全なライブラリプロジェクトを作成する総合課題です。
+小さなライブラリのプロジェクトを、コード・テスト・ドキュメントまで一通り作る総合課題です。
 
 ## 課題
 
@@ -13,8 +13,8 @@
 1. **コア機能**
    - JSONの解析（文字列→Javaオブジェクト）
    - JSONの生成（Javaオブジェクト→文字列）
-   - ストリーミングAPI
-   - 型安全なアクセサ
+   - 型安全なアクセサ（`getString`、`getInt`など。型が違うときは`JsonException`を投げる）
+   - 外部ライブラリには頼らず、Javaの標準APIだけで作る（第22章のGsonやJacksonが何をしているかを、自分で作って確かめる課題です）
 
 2. **プロジェクト構成**
    ```
@@ -31,36 +31,23 @@
    │       └── com/example/json/
    │           └── (テストクラス)
    ├── docs/
-   │   ├── getting-started.md
-   │   ├── api-reference.md
-   │   └── examples/
-   ├── .github/
-   │   └── workflows/
-   │       └── ci.yml
+   │   └── getting-started.md
    ├── README.md
    ├── LICENSE
-   ├── CONTRIBUTING.md
-   └── pom.xml or build.gradle
+   └── pom.xml または build.gradle
    ```
 
 3. **ドキュメンテーション**
-   - 完全なJavadoc
-   - Getting Startedガイド
-   - APIリファレンス
-   - 実例集
-   - パフォーマンスガイド
+   - 公開するすべてのクラス・メソッドのJavadoc（`javadoc -Xdoclint:all`で警告が出ないこと）
+   - Getting Startedガイド（インストール方法と最初の使用例）
+   - README.md（概要、ビルド方法、基本的な使い方、ライセンス）
 
 4. **品質保証**
-   - 単体テスト（90%以上のカバレッジ）
-   - 統合テスト
-   - パフォーマンステスト
-   - コード品質チェック（SpotBugs、Checkstyle）
+   - 第21章で学んだJUnit 5による単体テスト（正しいJSON、不正なJSON、空のオブジェクト・配列、文字列のエスケープ）
+   - Mavenなら`mvn test`、Gradleなら`gradle test`でテストが通る
 
-5. **CI/CD**
-   - GitHub Actions設定
-   - 自動テスト実行
-   - 自動ドキュメント生成
-   - リリース自動化
+5. **ライセンス**
+   - 第22章のライセンスの説明を参考に、ライブラリのライセンス（MITやApache License 2.0など）を選び、LICENSEファイルを置く
 
 **サンプル使用例:**
 ```java
@@ -78,15 +65,6 @@ JsonObject json = new JsonObject()
         .add("Java")
         .add("Python"));
 String result = json.toString();
-
-// ストリーミングAPI
-try (JsonReader reader = new JsonReader(new FileReader("data.json"))) {
-    reader.beginObject();
-    while (reader.hasNext()) {
-        String key = reader.nextName();
-        // 処理...
-    }
-}
 ```
 
 ## 成果物
@@ -101,14 +79,8 @@ try (JsonReader reader = new JsonReader(new FileReader("data.json"))) {
    - チュートリアル
    - 貢献ガイドライン
 
-3. **ビルド成果物**
-   - JARファイル
-   - ソースJAR
-   - JavadocJAR
-
-4. **品質レポート**
-   - テストカバレッジレポート
-   - 静的解析レポート
+3. **生成したAPIドキュメント**
+   - `mvn javadoc:javadoc`（Mavenの場合）または`gradle javadoc`（Gradleの場合）で生成したHTML
 
 ## 評価基準
 
@@ -116,13 +88,15 @@ try (JsonReader reader = new JsonReader(new FileReader("data.json"))) {
 - **使いやすさ**: APIが直感的で使いやすいか
 - **ドキュメント**: 完全で分かりやすいドキュメントか
 - **コード品質**: クリーンで保守しやすいコードか
-- **テスト**: 十分なテストカバレッジがあるか
-- **プロフェッショナリズム**: 実際のOSSプロジェクトとして公開できる品質か
+- **テスト**: 正常な入力と不正な入力の両方をテストしているか
+
+## 発展（任意）
+
+- ファイルから少しずつ読みながら解析するストリーミングAPI（`JsonReader`）を加える
+- 第21章で学んだJaCoCoでカバレッジを測る。第21章のGitHub Actionsの設定にならって、プッシュのたびにテストを実行する
+- 第23章で学ぶ`jar`コマンドで、ライブラリのJARファイルを作る
 
 ## 提出方法
 
-GitHubリポジトリとして提出し、以下を含めてください：
-- 完全なソースコード
-- ビルド済みアーティファクト
-- 生成されたドキュメント
-- CI/CDの設定と実行結果
+GitHubリポジトリとして提出します。
+ソースコード、テスト、README.md、LICENSE、ビルドの設定ファイルを含め、`target/`や`build/`などの生成物は含めません。

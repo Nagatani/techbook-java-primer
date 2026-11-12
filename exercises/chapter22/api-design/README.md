@@ -22,18 +22,17 @@ APIドキュメンテーションの基礎スキルを習得するための課�
 - **ConfigurationAPI.java** - 設定APIの設計と文書化
 
 ### advanced/
-より高度なライブラリ設計とドキュメンテーション技法を学習する課題です。
+小さなライブラリにJavadocを書き、APIの変更を利用者に伝える課題です。
+このフォルダーのJavaファイルは解答例です。
 
-- **FrameworkAPI.java** - フレームワーク設計の実践
-- **PluginSystem.java** - プラグインシステムの設計
-- **VersioningStrategy.java** - バージョニング戦略の実装
+- **課題1: 成績表ライブラリのAPIドキュメント**（`task1-scorebook/`） - 引数・戻り値・例外の約束をJavadocに書き、`javadoc -Xdoclint:all`で検査する
+- **課題2: 非推奨にして新しいAPIへ移す**（`task2-deprecation/`） - `@since`・`@deprecated`・`@Deprecated`で、1.0の利用者を壊さずに1.1のAPIへ移す
 
 ### challenge/
-実践的で包括的なライブラリ設計スキルが求められる挑戦課題です。
+ライブラリの公開APIを設計し、ドキュメントとともに仕上げる課題です。
+このフォルダーのJavaファイルは解答例です。
 
-- **EnterpiseLibrary.java** - 企業レベルのライブラリ設計
-- **DomainSpecificLanguage.java** - DSL（ドメイン固有言語）の設計
-- **CrossPlatformAPI.java** - クロスプラットフォーム対応API
+- **課題1: ToDoリストのライブラリ** - 不変のレコード・変更できないリスト・`Optional`・例外を使い分けたAPIを設計し、`package-info.java`を含むJavadocを書き、別のプログラムからクラスパスで使う
 
 ### solutions/
 各課題の完全な解答例と詳細な解説です。
@@ -57,11 +56,11 @@ cd advanced/
 # 実際のライブラリ開発フローを体験
 ```
 
-### 3. 企業レベルの設計技法
+### 3. ライブラリの設計
 ```bash
-# 大規模プロジェクトでの設計原則
+# 公開APIの設計とドキュメントの仕上げ
 cd challenge/
-# 実務で求められる品質基準を習得
+# 自分で作ったライブラリを、別のプログラムからクラスパスで使う
 ```
 
 ## Javadocの基本構文

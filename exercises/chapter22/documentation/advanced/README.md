@@ -34,17 +34,20 @@ com.example.utils/
 
 ### 課題2: Maven/Gradleプロジェクトの構成
 ライブラリをMavenまたはGradleプロジェクトとして構成してください。
+ソースは`src/main/java`、テストは`src/test/java`に置きます（第22章のMavenのディレクトリ規約）。
+Javaの版は25、Gradleを使う場合はGradle 9で動く設定にします。
 
 **Maven (pom.xml)の例:**
 ```xml
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>common-utils</artifactId>
     <version>1.0.0</version>
     
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
     <dependencies>
