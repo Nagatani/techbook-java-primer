@@ -90,7 +90,14 @@ TCPでファイルを送り、受け取った側が同じ内容を保存でき�
 3つのファイルを送り終える順序は実行ごとに変わりますが、結果は`Future`を投入した順に受け取るので、表示は変わりません。
 
 ### 課題3: REST APIクライアント
-**ファイル**: `RestApiClient.java`（解答例はありません）
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task3-rest-client/
+├── RestApiClient.java  GET・POST・PUT・DELETEを送るクライアント
+├── ApiException.java   200番台以外の応答を表す例外
+├── TodoApiServer.java  試す相手になる、手元で動くToDoのAPIサーバー（解答例の確認用）
+└── RestApiDemo.java    サーバーを起動し、クライアントで一通りのリクエストを送る確認用のmain
+```
 
 `HttpClient`で、Web APIにデータを問い合わせたり送ったりするクライアントを作成してください。
 第16章の「JSON APIクライアントの実装」（サンプルコード16-11）を発展させる課題です。
@@ -105,8 +112,34 @@ TCPでファイルを送り、受け取った側が同じ内容を保存でき�
 
 JSONは文字列のまま扱っても、Jacksonで変換してもかまいません。
 Jacksonは外部ライブラリで、プロジェクトへの追加方法は第22章で学びます。
-試す相手には、認証の要らない公開のテスト用APIを使います。
-GETだけなら、チャレンジ課題のHTTPサーバーを相手に試せます。
+
+PUTやDELETEを受け付ける公開のAPIは、試すたびにデータが変わったり、登録が要ったりします。
+そこで解答例には、試す相手として手元で動く`TodoApiServer`を付けました。
+JDKに含まれる`com.sun.net.httpserver`で書いた、メモリにだけデータを持つサーバーで、どのリクエストにも`Authorization: Bearer secret-token`を求めます。
+このサーバーは確認のための道具で、課題で作るのはクライアントの側です。
+
+**実行例**（`RestApiDemo`）:
+```
+GET /todos
+  [{"id":1,"title":"牛乳を買う","done":false},{"id":2,"title":"レポートを出す","done":true}]
+POST /todos
+  {"id":3,"title":"部屋を片付ける","done":false}
+PUT /todos/1
+  {"id":1,"title":"牛乳を買う","done":true}
+DELETE /todos/2
+  本文: ""
+GET /todos
+  [{"id":1,"title":"牛乳を買う","done":true},{"id":3,"title":"部屋を片付ける","done":false}]
+
+--- 200番台以外は例外になる ---
+GET /todos/2: ステータスコード 404: {"error":"2番はありません"}
+トークンなし: ステータスコード 401: {"error":"認証が必要です"}
+
+--- sendAsyncで同時に送る ---
+  200 {"id":1,"title":"牛乳を買う","done":true}
+  200 {"id":3,"title":"部屋を片付ける","done":false}
+  404 {"error":"9番はありません"}
+```
 
 ## コンパイルと実行
 
@@ -127,6 +160,11 @@ java FileTransferDemo
 java FileTransferServer 5001 received
 # 別のターミナルで
 java FileTransferClient localhost 5001 送りたいファイル
+
+# 課題3（サーバーは空いているポートで起動し、終わると止まる）
+cd ../task3-rest-client
+javac *.java
+java RestApiDemo
 ```
 
 課題1の`out`と、課題2のサーバーが作る`received`フォルダーは、試し終えたら消してかまいません。

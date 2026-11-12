@@ -4,7 +4,7 @@
 
 ## 基礎レベル課題の解答
 
-### 1. TCPエコーサーバー・クライアント
+### 1. TCPエコーサーバー・クライアント（基礎課題1・4）
 - **EchoServer.java**: マルチスレッド対応のTCPエコーサーバー
 - **EchoClient.java**: 対話的なTCPエコークライアント
 
@@ -26,11 +26,11 @@ java -cp out chapter16.solutions.EchoClient [ホスト名] [ポート番号]
 - 適切なログ出力とエラーハンドリング
 - シャットダウンフックによるグレースフルな終了
 
-### 2. UDPチャットプログラム
-※ 基礎課題のREADMEには記載されていますが、解答例は応用的な内容のため、ChatServer/ChatClientで代替しています。
-
-### 3. 簡易HTTPクライアント
+### 2. HTTP通信（基礎課題2の参考）
 - **SimpleHttpClient.java**: ソケットベースのHTTPクライアント実装
+
+基礎課題2は`HttpURLConnection`を使う課題で、その解答例はありません。
+この例は`HttpURLConnection`を使わず、ソケットでHTTPのリクエストを直接書くので、HTTPの中身を知る参考になります。
 
 **実行方法：**
 ```bash
@@ -44,12 +44,32 @@ java -cp out chapter16.solutions.SimpleHttpClient http://example.com/
 - Content-LengthとChunked転送エンコーディングの両方に対応
 - 相対URLの適切な解決
 
-### 4. ポートスキャナー
-※ セキュリティの観点から、解答例には含めていません。実装する場合は必ず自分が管理するホストのみを対象とし、教育目的に限定してください。
+### 3. UDPソケット通信（基礎課題3）
+- **UdpServer.java**: 受け取った文字列を大文字にして返すUDPサーバー。`bye`を受け取ると終わる
+- **UdpClient.java**: 3つの文字列を送り、返事を待つクライアント。2秒待っても返事がなければその旨を表示する
+
+**実行方法：**
+```bash
+javac -d out *.java
+
+# サーバーを起動（別ターミナル）
+java -cp out chapter16.solutions.UdpServer [ポート番号]
+
+# クライアントを起動
+java -cp out chapter16.solutions.UdpClient [ホスト名] [ポート番号]
+```
+
+**実装のポイント：**
+- `DatagramPacket`の`getLength()`で、受け取った長さだけを文字列にする
+- 返事は、受け取ったパケットの`getAddress()`と`getPort()`へ送る
+- UDPは届いたかどうかを知らせないので、`setSoTimeout`で待つ時間の上限を決める
+
+### 4. マルチスレッドサーバー（基礎課題4）
+1.の`EchoServer.java`が、接続ごとの処理をスレッドプールに任せる解答例です。
 
 ## 応用レベル課題の解答
 
-### 1. マルチクライアント対応チャットサーバー
+### 1. マルチクライアント対応チャットサーバー（発展課題1）
 - **ChatServer.java**: 高機能チャットサーバー
 - **ChatClient.java**: 対応するチャットクライアント
 

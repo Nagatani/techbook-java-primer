@@ -7,14 +7,14 @@
 
 ### 基礎課題（basic/）
 - **課題1**: TCPクライアント・サーバー通信の実装
-- **課題2**: URLConnectionを使用したHTTP通信
-- **課題3**: UDPソケット通信の基礎
-- **課題4**: マルチスレッドサーバーの実装
+- **課題2**: HttpURLConnectionを使用したHTTP通信
+- **課題3**: UDPソケット通信の基礎（解答例は`solutions/`の`UdpServer.java`・`UdpClient.java`）
+- **課題4**: マルチスレッドサーバーの実装（解答例は`solutions/`の`EchoServer.java`・`EchoClient.java`）
 
 ### 発展課題（advanced/）
 - **課題1**: チャットアプリケーションの実装（解答例は`solutions/`の`ChatServer.java`・`ChatClient.java`）
 - **課題2**: ファイル転送プロトコルの実装（解答例は`advanced/task2-file-transfer/`）
-- **課題3**: RESTful APIクライアントの作成（解答例なし）
+- **課題3**: RESTful APIクライアントの作成（解答例は`advanced/task3-rest-client/`）
 
 ### チャレンジ課題（challenge/）
 - **課題1**: HTTPサーバーの実装（簡易Webサーバー）
