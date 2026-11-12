@@ -1,58 +1,53 @@
 /**
- * 第20章 解答例3: ファイルエクスプローラーGUI
- * 
- * JTreeとJTableを組み合わせた高機能ファイルエクスプローラーの完全実装版
- * 
- * 実装内容:
- * - ディレクトリ構造をJTreeで表示
- * - ファイル一覧をJTableで表示
- * - ファイル・フォルダの操作機能（コピー、移動、削除）
- * - ファイルの検索機能
- * - ファイルプレビュー機能
- * 
- * 技術的特徴:
- * - ファイルシステムWatchServiceによる監視
- * - SwingWorkerによる非同期処理
- * - ドラッグ&ドロップサポート
- * - カスタムレンダラーによる見た目改善
- * - メモリ効率的な遅延読み込み
+ * 第20章 課題2: ファイルの一覧（解答例）
+ *
+ * 左にフォルダーの木（JTree）、右上にファイルの表（JTable）、右下に中身のプレビューを並べます。
+ * 子のフォルダーはノードを開いたときに初めて読み込み、フォルダーの中身の読み込みはSwingWorker（第19章）で
+ * 別のスレッドに任せます。
  */
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
-import javax.swing.table.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.dnd.*;
-import java.awt.datatransfer.*;
-import java.io.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.nio.file.attribute.*;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import javax.swing.border.TitledBorder;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 public class FileExplorer extends JFrame {
-    
+
+    // プレビューに出す行の数
+    private static final int PREVIEW_LINES = 50;
+
     private JTree directoryTree;
+    private DirectoryTreeModel treeModel;
     private JTable fileTable;
     private FileTableModel fileTableModel;
     private JTextArea previewArea;
     private JTextField searchField;
-    private JProgressBar progressBar;
-    private JSplitPane mainSplitPane, rightSplitPane;
     private JLabel statusLabel;
+    private JSplitPane mainSplitPane, rightSplitPane;
     private Path currentDirectory;
-    private ExecutorService executorService;
-    private WatchService watchService;
-    
-    // ファイル情報クラス
+
+    // ファイルの情報（雛形のまま）
     public static class FileInfo {
         private final Path path;
         private final String name;
@@ -60,818 +55,498 @@ public class FileExplorer extends JFrame {
         private final long lastModified;
         private final boolean isDirectory;
         private final boolean isHidden;
-        private final String type;
-        
+
         public FileInfo(Path path) throws IOException {
             this.path = path;
             this.name = path.getFileName().toString();
-            
+
             BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
             this.size = attrs.size();
             this.lastModified = attrs.lastModifiedTime().toMillis();
             this.isDirectory = attrs.isDirectory();
             this.isHidden = Files.isHidden(path);
-            this.type = determineFileType();
         }
-        
-        private String determineFileType() {
-            if (isDirectory) return "フォルダ";
-            
-            String fileName = name.toLowerCase();
-            if (fileName.endsWith(".txt")) return "テキストファイル";
-            if (fileName.endsWith(".java")) return "Javaソースファイル";
-            if (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".gif")) return "画像ファイル";
-            if (fileName.endsWith(".pdf")) return "PDFファイル";
-            if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) return "圧縮ファイル";
-            
-            int dotIndex = fileName.lastIndexOf('.');
-            if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
-                return fileName.substring(dotIndex + 1).toUpperCase() + " ファイル";
-            }
-            return "ファイル";
-        }
-        
-        // getters
+
         public Path getPath() { return path; }
         public String getName() { return name; }
         public long getSize() { return size; }
         public long getLastModified() { return lastModified; }
         public boolean isDirectory() { return isDirectory; }
         public boolean isHidden() { return isHidden; }
-        public String getType() { return type; }
-        
+
         public String getFormattedSize() {
             if (isDirectory) return "";
-            
+
             if (size < 1024) return size + " B";
             if (size < 1024 * 1024) return String.format("%.1f KB", size / 1024.0);
             if (size < 1024 * 1024 * 1024) return String.format("%.1f MB", size / (1024.0 * 1024.0));
             return String.format("%.1f GB", size / (1024.0 * 1024.0 * 1024.0));
         }
-        
+
         public String getFormattedDate() {
             return new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new Date(lastModified));
         }
     }
-    
-    // ディレクトリツリーノード
-    private class DirectoryTreeNode extends DefaultMutableTreeNode {
-        private final Path path;
-        private boolean loaded;
-        private boolean loading;
-        
-        public DirectoryTreeNode(Path path) {
-            super(path.getFileName() != null ? path.getFileName().toString() : path.toString());
-            this.path = path;
-            this.loaded = false;
-            this.loading = false;
+
+    // ツリーのモデル。ノードの子を読み込んだあとに、木の表示へ知らせる
+    private class DirectoryTreeModel extends DefaultTreeModel {
+        public DirectoryTreeModel(TreeNode root) {
+            super(root);
         }
-        
-        public Path getDirectoryPath() {
-            return path;
-        }
-        
-        public boolean isLoaded() {
-            return loaded;
-        }
-        
-        public void loadChildren() {
-            if (loaded || loading) return;
-            
-            loading = true;
-            SwingUtilities.invokeLater(() -> progressBar.setVisible(true));
-            
-            CompletableFuture.supplyAsync(() -> {
-                List<Path> directories = new ArrayList<>();
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, Files::isDirectory)) {
-                    for (Path dir : stream) {
-                        if (!Files.isHidden(dir)) {
-                            directories.add(dir);
-                        }
-                    }
-                } catch (IOException e) {
-                    // アクセス権限がない場合など
-                }
-                directories.sort((a, b) -> a.getFileName().toString().compareToIgnoreCase(
-                    b.getFileName().toString()));
-                return directories;
-            }, executorService).thenAccept(directories -> {
-                SwingUtilities.invokeLater(() -> {
-                    removeAllChildren();
-                    for (Path dir : directories) {
-                        DirectoryTreeNode childNode = new DirectoryTreeNode(dir);
-                        add(childNode);
-                        // 子ディレクトリがある場合は展開可能にする
-                        try (DirectoryStream<Path> childStream = Files.newDirectoryStream(dir, Files::isDirectory)) {
-                            if (childStream.iterator().hasNext()) {
-                                childNode.add(new DefaultMutableTreeNode("Loading..."));
-                            }
-                        } catch (IOException e) {
-                            // ignore
-                        }
-                    }
-                    
-                    loaded = true;
-                    loading = false;
-                    ((DefaultTreeModel) directoryTree.getModel()).nodeStructureChanged(this);
-                    progressBar.setVisible(false);
-                });
-            });
-        }
-        
-        @Override
-        public boolean isLeaf() {
-            if (!loaded) {
-                try {
-                    return !Files.isDirectory(path) || !hasSubdirectories();
-                } catch (Exception e) {
-                    return true;
-                }
-            }
-            return getChildCount() == 0;
-        }
-        
-        private boolean hasSubdirectories() {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, Files::isDirectory)) {
-                return stream.iterator().hasNext();
-            } catch (IOException e) {
-                return false;
+
+        public void loadChildrenOf(DirectoryTreeNode node) {
+            if (!node.isLoaded()) {
+                node.loadChildren();
+                nodeStructureChanged(node);
             }
         }
     }
-    
-    // ファイルテーブルモデル
+
+    // ファイルの表のモデル
     private class FileTableModel extends AbstractTableModel {
         private final String[] columnNames = {"名前", "サイズ", "種類", "更新日時"};
         private List<FileInfo> files;
         private List<FileInfo> filteredFiles;
         private String filter;
-        
+
         public FileTableModel() {
             this.files = new ArrayList<>();
             this.filteredFiles = new ArrayList<>();
             this.filter = "";
         }
-        
+
         @Override
         public int getRowCount() {
             return filteredFiles.size();
         }
-        
+
         @Override
         public int getColumnCount() {
             return columnNames.length;
         }
-        
+
         @Override
         public String getColumnName(int column) {
             return columnNames[column];
         }
-        
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            FileInfo file = filteredFiles.get(rowIndex);
+            return switch (columnIndex) {
+                case 0 -> file.getName();
+                case 1 -> file.getFormattedSize();
+                case 2 -> file.isDirectory() ? "フォルダ" : getFileType(file.getName());
+                case 3 -> file.getFormattedDate();
+                default -> "";
+            };
+        }
+
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             return String.class;
         }
-        
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            FileInfo file = filteredFiles.get(rowIndex);
-            switch (columnIndex) {
-                case 0: return file.getName();
-                case 1: return file.getFormattedSize();
-                case 2: return file.getType();
-                case 3: return file.getFormattedDate();
-                default: return "";
-            }
-        }
-        
+
         public void setFiles(List<FileInfo> files) {
             this.files = new ArrayList<>(files);
             applyFilter();
         }
-        
+
         public void setFilter(String filter) {
             this.filter = filter.toLowerCase();
             applyFilter();
         }
-        
+
+        // 名前に検索の文字を含むものだけを残し、表に知らせる
         private void applyFilter() {
-            if (filter.isEmpty()) {
-                filteredFiles = new ArrayList<>(files);
-            } else {
-                filteredFiles = files.stream()
-                    .filter(file -> file.getName().toLowerCase().contains(filter) ||
-                                  file.getType().toLowerCase().contains(filter))
-                    .collect(java.util.stream.Collectors.toList());
+            filteredFiles = new ArrayList<>();
+            for (FileInfo file : files) {
+                if (filter.isEmpty() || file.getName().toLowerCase().contains(filter)) {
+                    filteredFiles.add(file);
+                }
             }
+            // 第12章のStream APIを使うと、次のように書ける
+            // filteredFiles = files.stream().filter(f -> f.getName().toLowerCase().contains(filter)).toList();
             fireTableDataChanged();
         }
-        
+
         public FileInfo getFileAt(int index) {
             return filteredFiles.get(index);
         }
-        
-        public List<FileInfo> getFiles() {
-            return new ArrayList<>(files);
-        }
-    }
-    
-    // カスタムファイルレンダラー
-    private class FileTableCellRenderer extends DefaultTableCellRenderer {
-        private final FileSystemView fileSystemView = FileSystemView.getFileSystemView();
-        
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            
-            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
-            if (column == 0) { // 名前列にアイコンを表示
-                FileInfo fileInfo = fileTableModel.getFileAt(row);
-                Icon icon = getFileIcon(fileInfo.getPath());
-                setIcon(icon);
-                
-                if (fileInfo.isHidden()) {
-                    setForeground(Color.GRAY);
-                } else if (fileInfo.isDirectory()) {
-                    setForeground(Color.BLUE);
-                } else {
-                    setForeground(isSelected ? Color.WHITE : Color.BLACK);
-                }
-            } else {
-                setIcon(null);
+
+        private String getFileType(String fileName) {
+            int dotIndex = fileName.lastIndexOf('.');
+            if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+                return fileName.substring(dotIndex + 1).toUpperCase() + " ファイル";
             }
-            
-            return this;
+            return "ファイル";
         }
     }
-    
-    public FileExplorer() {
-        setTitle("ファイルエクスプローラー");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 700);
-        setLocationRelativeTo(null);
-        
-        executorService = Executors.newCachedThreadPool();
-        
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-        } catch (IOException e) {
-            showErrorMessage("ファイル監視サービスの初期化に失敗しました: " + e.getMessage());
+
+    // フォルダーのノード。開かれるまで子を読み込まない（遅延読み込み）
+    private class DirectoryTreeNode extends DefaultMutableTreeNode {
+        private final Path path;
+        private boolean loaded;
+
+        public DirectoryTreeNode(Path path) {
+            super(path.getFileName() == null ? path.toString() : path.getFileName().toString());
+            this.path = path;
+            this.loaded = false;
         }
-        
+
+        public Path getDirectoryPath() {
+            return path;
+        }
+
+        public boolean isLoaded() {
+            return loaded;
+        }
+
+        // 子のフォルダーだけを名前順にノードにする。隠しフォルダーと読めないフォルダーは飛ばす
+        public void loadChildren() {
+            if (loaded) return;
+
+            for (Path child : listSorted(path)) {
+                try {
+                    if (Files.isDirectory(child) && !Files.isHidden(child)) {
+                        add(new DirectoryTreeNode(child));
+                    }
+                } catch (IOException e) {
+                    // 属性を読めないフォルダーは木に出さない
+                }
+            }
+            loaded = true;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            if (!loaded) {
+                return !Files.isDirectory(path);
+            }
+            return getChildCount() == 0;
+        }
+    }
+
+    public FileExplorer() {
+        setTitle("ファイルの一覧");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(900, 600);
+        setLocationRelativeTo(null);
+
         initializeComponents();
         setupLayout();
         setupEventListeners();
         loadInitialDirectory();
-        setupDragAndDrop();
     }
-    
-    // コンポーネントの初期化
+
     private void initializeComponents() {
-        // ディレクトリツリー
-        DirectoryTreeNode rootNode = new DirectoryTreeNode(Paths.get(System.getProperty("user.home")));
-        directoryTree = new JTree(new DefaultTreeModel(rootNode));
-        directoryTree.setRootVisible(true);
-        directoryTree.setShowsRootHandles(true);
-        directoryTree.setCellRenderer(new DirectoryTreeCellRenderer());
-        
-        // ファイルテーブル
+        DirectoryTreeNode root = new DirectoryTreeNode(Path.of(System.getProperty("user.home")));
+        treeModel = new DirectoryTreeModel(root);
+        treeModel.loadChildrenOf(root);
+        directoryTree = new JTree(treeModel);
+        directoryTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
         fileTableModel = new FileTableModel();
         fileTable = new JTable(fileTableModel);
-        fileTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        fileTable.setRowHeight(20);
-        fileTable.getTableHeader().setReorderingAllowed(false);
-        fileTable.setDefaultRenderer(String.class, new FileTableCellRenderer());
-        
-        // テーブルソート機能
-        TableRowSorter<FileTableModel> sorter = new TableRowSorter<>(fileTableModel);
-        fileTable.setRowSorter(sorter);
-        
-        // プレビューエリア
+        fileTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // 名前の列に、OSのファイルのアイコンを付けて表示する
+        fileTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setIcon(getFileIcon(fileTableModel.getFileAt(row).getPath()));
+                return this;
+            }
+        });
+
         previewArea = new JTextArea();
         previewArea.setEditable(false);
         previewArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        previewArea.setBorder(new TitledBorder("プレビュー"));
-        
-        // 検索フィールド
+
         searchField = new JTextField(20);
-        searchField.setToolTipText("ファイル名または種類で検索");
-        
-        // プログレスバー
-        progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
-        progressBar.setVisible(false);
-        
-        // ステータスラベル
-        statusLabel = new JLabel("準備完了");
-        statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusLabel = new JLabel(" ");
     }
-    
-    // レイアウトの設定
+
     private void setupLayout() {
-        setLayout(new BorderLayout());
-        
-        // 上部パネル（検索とツールバー）
-        JPanel topPanel = new JPanel(new BorderLayout());
-        
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchPanel.add(new JLabel("検索:"));
-        searchPanel.add(searchField);
-        topPanel.add(searchPanel, BorderLayout.WEST);
-        
-        JPanel toolbarPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton refreshButton = new JButton("更新");
-        JButton newFolderButton = new JButton("新規フォルダ");
-        JButton deleteButton = new JButton("削除");
-        JButton copyButton = new JButton("コピー");
-        
-        refreshButton.addActionListener(e -> refreshCurrentDirectory());
-        newFolderButton.addActionListener(e -> createNewFolder());
-        deleteButton.addActionListener(e -> deleteSelectedFiles());
-        copyButton.addActionListener(e -> copySelectedFiles());
-        
-        toolbarPanel.add(refreshButton);
-        toolbarPanel.add(newFolderButton);
-        toolbarPanel.add(copyButton);
-        toolbarPanel.add(deleteButton);
-        topPanel.add(toolbarPanel, BorderLayout.EAST);
-        
-        topPanel.add(progressBar, BorderLayout.SOUTH);
-        add(topPanel, BorderLayout.NORTH);
-        
-        // メイン分割パネル
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        mainSplitPane.setLeftComponent(new JScrollPane(directoryTree));
-        
-        // 右側分割パネル
-        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        rightSplitPane.setTopComponent(new JScrollPane(fileTable));
-        rightSplitPane.setBottomComponent(new JScrollPane(previewArea));
+        // 右側を上下に、全体を左右に分ける。境目はドラッグで動かせる
+        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                new JScrollPane(fileTable), new JScrollPane(previewArea));
         rightSplitPane.setResizeWeight(0.7);
-        
-        mainSplitPane.setRightComponent(rightSplitPane);
-        mainSplitPane.setResizeWeight(0.3);
-        
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                new JScrollPane(directoryTree), rightSplitPane);
+        mainSplitPane.setDividerLocation(250);
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(new JLabel("名前で絞り込み:"));
+        topPanel.add(searchField);
+
+        add(topPanel, BorderLayout.NORTH);
         add(mainSplitPane, BorderLayout.CENTER);
-        
-        // ステータスバー
         add(statusLabel, BorderLayout.SOUTH);
     }
-    
-    // イベントリスナーの設定
+
     private void setupEventListeners() {
-        // ツリー展開イベント
-        directoryTree.addTreeExpansionListener(new TreeExpansionListener() {
+        // ノードが開かれる直前に、子のフォルダーを読み込む
+        directoryTree.addTreeWillExpandListener(new TreeWillExpandListener() {
             @Override
-            public void treeExpanded(TreeExpansionEvent event) {
-                TreePath path = event.getPath();
-                DirectoryTreeNode node = (DirectoryTreeNode) path.getLastPathComponent();
-                node.loadChildren();
-            }
-            
-            @Override
-            public void treeCollapsed(TreeExpansionEvent event) {
-                // 何もしない
-            }
-        });
-        
-        // ツリー選択イベント
-        directoryTree.addTreeSelectionListener(e -> {
-            TreePath path = e.getNewLeadSelectionPath();
-            if (path != null) {
-                DirectoryTreeNode node = (DirectoryTreeNode) path.getLastPathComponent();
-                loadDirectoryContents(node.getDirectoryPath());
-            }
-        });
-        
-        // ファイルテーブル選択イベント
-        fileTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                int selectedRow = fileTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    int modelRow = fileTable.convertRowIndexToModel(selectedRow);
-                    FileInfo fileInfo = fileTableModel.getFileAt(modelRow);
-                    updateStatusLabel(fileInfo);
-                    
-                    if (!fileInfo.isDirectory()) {
-                        previewFile(fileInfo.getPath());
-                    } else {
-                        previewArea.setText("");
-                    }
+            public void treeWillExpand(TreeExpansionEvent event) {
+                Object node = event.getPath().getLastPathComponent();
+                if (node instanceof DirectoryTreeNode dirNode) {
+                    treeModel.loadChildrenOf(dirNode);
                 }
             }
+
+            @Override
+            public void treeWillCollapse(TreeExpansionEvent event) {
+            }
         });
-        
-        // ファイルテーブルダブルクリック
+
+        // ツリーで選んだフォルダーの中身を表に出す
+        directoryTree.addTreeSelectionListener(e -> {
+            Object node = directoryTree.getLastSelectedPathComponent();
+            if (node instanceof DirectoryTreeNode dirNode) {
+                loadDirectoryContents(dirNode.getDirectoryPath());
+            }
+        });
+
+        // 表で選んだファイルの中身を下にプレビューする
+        fileTable.getSelectionModel().addListSelectionListener(e -> {
+            int row = fileTable.getSelectedRow();
+            if (!e.getValueIsAdjusting() && row >= 0) {
+                previewFile(fileTableModel.getFileAt(row).getPath());
+            }
+        });
+
+        // 右クリックで、選んだファイルの操作メニューを出す
         fileTable.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int row = fileTable.rowAtPoint(e.getPoint());
-                    if (row != -1) {
-                        int modelRow = fileTable.convertRowIndexToModel(row);
-                        FileInfo fileInfo = fileTableModel.getFileAt(modelRow);
-                        
-                        if (fileInfo.isDirectory()) {
-                            loadDirectoryContents(fileInfo.getPath());
-                            selectDirectoryInTree(fileInfo.getPath());
-                        } else {
-                            openFile(fileInfo.getPath());
-                        }
-                    }
+            public void mousePressed(MouseEvent e) { showPopup(e); }
+            @Override
+            public void mouseReleased(MouseEvent e) { showPopup(e); }
+
+            private void showPopup(MouseEvent e) {
+                // ポップアップを出す操作はOSで違う（押したとき・離したとき）ので、両方で確かめる
+                if (!e.isPopupTrigger()) {
+                    return;
+                }
+                int row = fileTable.rowAtPoint(e.getPoint());
+                if (row >= 0) {
+                    fileTable.setRowSelectionInterval(row, row);
+                    boolean isDirectory = fileTableModel.getFileAt(row).isDirectory();
+                    createContextMenu(isDirectory).show(fileTable, e.getX(), e.getY());
                 }
             }
         });
-        
-        // 検索フィールド
-        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                filterFiles();
-            }
-            
+            public void insertUpdate(DocumentEvent e) { searchFiles(searchField.getText()); }
             @Override
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                filterFiles();
-            }
-            
+            public void removeUpdate(DocumentEvent e) { searchFiles(searchField.getText()); }
             @Override
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                filterFiles();
-            }
-        });
-        
-        // 右クリックメニュー
-        JPopupMenu fileTablePopup = createFileTablePopupMenu();
-        fileTable.setComponentPopupMenu(fileTablePopup);
-        
-        JPopupMenu treePopup = createTreePopupMenu();
-        directoryTree.setComponentPopupMenu(treePopup);
-    }
-    
-    // ドラッグ&ドロップの設定
-    private void setupDragAndDrop() {
-        fileTable.setDragEnabled(true);
-        fileTable.setDropMode(DropMode.ON);
-        
-        fileTable.setTransferHandler(new TransferHandler() {
-            @Override
-            protected Transferable createTransferable(JComponent c) {
-                int[] selectedRows = fileTable.getSelectedRows();
-                List<File> files = new ArrayList<>();
-                
-                for (int row : selectedRows) {
-                    int modelRow = fileTable.convertRowIndexToModel(row);
-                    FileInfo fileInfo = fileTableModel.getFileAt(modelRow);
-                    files.add(fileInfo.getPath().toFile());
-                }
-                
-                return new FileTransferable(files);
-            }
-            
-            @Override
-            public int getSourceActions(JComponent c) {
-                return COPY_OR_MOVE;
-            }
-            
-            @Override
-            public boolean canImport(TransferSupport support) {
-                return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
-            }
-            
-            @Override
-            public boolean importData(TransferSupport support) {
-                if (!canImport(support)) {
-                    return false;
-                }
-                
-                try {
-                    @SuppressWarnings("unchecked")
-                    List<File> files = (List<File>) support.getTransferable()
-                        .getTransferData(DataFlavor.javaFileListFlavor);
-                    
-                    for (File file : files) {
-                        Path source = file.toPath();
-                        Path destination = currentDirectory.resolve(file.getName());
-                        
-                        if (support.getDropAction() == MOVE) {
-                            Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                        } else {
-                            if (Files.isDirectory(source)) {
-                                copyDirectory(source, destination);
-                            } else {
-                                Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                            }
-                        }
-                    }
-                    
-                    refreshCurrentDirectory();
-                    return true;
-                    
-                } catch (Exception e) {
-                    showErrorMessage("ファイルの移動/コピーに失敗しました: " + e.getMessage());
-                    return false;
-                }
-            }
+            public void changedUpdate(DocumentEvent e) { searchFiles(searchField.getText()); }
         });
     }
-    
-    // 初期ディレクトリの読み込み
+
     private void loadInitialDirectory() {
-        Path homeDir = Paths.get(System.getProperty("user.home"));
-        loadDirectoryContents(homeDir);
-        
-        // ツリーのルートノードを展開
-        DirectoryTreeNode rootNode = (DirectoryTreeNode) directoryTree.getModel().getRoot();
-        rootNode.loadChildren();
-        directoryTree.expandPath(new TreePath(rootNode.getPath()));
+        directoryTree.setSelectionRow(0);
     }
-    
-    // ディレクトリの内容を読み込み
+
+    // フォルダーの中身を別のスレッドで読み、読み終えたらEDTで表に入れる
     private void loadDirectoryContents(Path directory) {
-        if (!Files.exists(directory) || !Files.isDirectory(directory)) {
-            return;
-        }
-        
         currentDirectory = directory;
-        progressBar.setVisible(true);
-        
-        CompletableFuture.supplyAsync(() -> {
-            List<FileInfo> files = new ArrayList<>();
-            
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
-                for (Path file : stream) {
+        statusLabel.setText(directory + " を読み込んでいます...");
+        new SwingWorker<List<FileInfo>, Void>() {
+            @Override
+            protected List<FileInfo> doInBackground() {
+                List<FileInfo> result = new ArrayList<>();
+                for (Path child : listSorted(directory)) {
                     try {
-                        files.add(new FileInfo(file));
+                        FileInfo info = new FileInfo(child);
+                        if (!info.isHidden()) {
+                            result.add(info);
+                        }
                     } catch (IOException e) {
-                        // アクセスできないファイルは無視
+                        // 属性を読めないファイルは一覧に出さない
                     }
                 }
-            } catch (IOException e) {
-                SwingUtilities.invokeLater(() -> 
-                    showErrorMessage("ディレクトリの読み込みに失敗しました: " + e.getMessage()));
-                return files;
+                // フォルダーを先に、同じ種類どうしは名前順に並べる
+                result.sort(Comparator.comparing(FileInfo::isDirectory).reversed()
+                        .thenComparing(FileInfo::getName));
+                return result;
             }
-            
-            // ソート: ディレクトリを先に、その後名前順
-            files.sort((a, b) -> {
-                if (a.isDirectory() != b.isDirectory()) {
-                    return a.isDirectory() ? -1 : 1;
+
+            @Override
+            protected void done() {
+                try {
+                    List<FileInfo> files = get();
+                    fileTableModel.setFiles(files);
+                    previewArea.setText("");
+                    statusLabel.setText(directory + "（" + files.size() + "件）");
+                } catch (InterruptedException | ExecutionException e) {
+                    statusLabel.setText("読み込めませんでした: " + e.getMessage());
                 }
-                return a.getName().compareToIgnoreCase(b.getName());
-            });
-            
-            return files;
-            
-        }, executorService).thenAccept(files -> {
-            SwingUtilities.invokeLater(() -> {
-                fileTableModel.setFiles(files);
-                previewArea.setText("");
-                statusLabel.setText(directory.toString() + " - " + files.size() + " 項目");
-                progressBar.setVisible(false);
-                setTitle("ファイルエクスプローラー - " + directory.toString());
-            });
-        });
-    }
-    
-    // ファイルプレビュー
-    private void previewFile(Path filePath) {
-        try {
-            if (Files.size(filePath) > 1024 * 1024) { // 1MBより大きいファイルはプレビューしない
-                previewArea.setText("ファイルが大きすぎます（1MB以上）");
-                return;
             }
-        } catch (IOException e) {
-            previewArea.setText("ファイルのサイズを取得できませんでした: " + e.getMessage());
+        }.execute();
+    }
+
+    // テキストのファイルなら先頭の行を、フォルダーなら中の件数を表示する
+    private void previewFile(Path filePath) {
+        if (Files.isDirectory(filePath)) {
+            previewArea.setText("フォルダー: " + filePath.getFileName()
+                    + "\n中の項目: " + listSorted(filePath).size() + "件");
             return;
         }
-        
-        String fileName = filePath.getFileName().toString().toLowerCase();
-        
-        if (fileName.endsWith(".txt") || fileName.endsWith(".java") || 
-            fileName.endsWith(".xml") || fileName.endsWith(".json") ||
-            fileName.endsWith(".properties")) {
-            
-            CompletableFuture.supplyAsync(() -> {
-                try {
-                    return Files.readString(filePath);
-                } catch (IOException e) {
-                    return "ファイルの読み込みに失敗しました: " + e.getMessage();
-                }
-            }, executorService).thenAccept(content -> {
-                SwingUtilities.invokeLater(() -> previewArea.setText(content));
-            });
-            
-        } else if (fileName.endsWith(".png") || fileName.endsWith(".jpg") || 
-                   fileName.endsWith(".gif") || fileName.endsWith(".bmp")) {
-            
-            previewArea.setText("画像ファイル\n" +
-                              "ファイル名: " + filePath.getFileName() + "\n" +
-                              "サイズ: " + formatFileSize(filePath) + "\n" +
-                              "\n[画像プレビューは未実装]");
-            
-        } else {
-            previewArea.setText("プレビューできないファイル形式です。\n" +
-                              "ファイル名: " + filePath.getFileName() + "\n" +
-                              "サイズ: " + formatFileSize(filePath));
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            String line;
+            int count = 0;
+            while ((line = reader.readLine()) != null && count < PREVIEW_LINES) {
+                sb.append(line).append('\n');
+                count++;
+            }
+            if (line != null) {
+                sb.append("...（先頭の").append(PREVIEW_LINES).append("行だけを表示しています）\n");
+            }
+            previewArea.setText(sb.toString());
+        } catch (CharacterCodingException e) {
+            // UTF-8の文字として読めないファイル（画像など）
+            previewArea.setText("このファイルはプレビューできません");
+        } catch (IOException e) {
+            previewArea.setText("読み込めませんでした: " + e.getMessage());
         }
+        previewArea.setCaretPosition(0);
     }
-    
-    // その他のメソッド省略（フィルタリング、ファイル操作、UI関連メソッドなど）
-    
-    private void filterFiles() {
-        String searchText = searchField.getText().trim();
-        fileTableModel.setFilter(searchText);
+
+    private void searchFiles(String searchTerm) {
+        fileTableModel.setFilter(searchTerm.trim());
+        statusLabel.setText(fileTableModel.getRowCount() + "件が一致しました");
     }
-    
+
+    private void copyFile(Path source, Path destination) {
+        try {
+            Files.copy(source, destination);
+            statusLabel.setText(source.getFileName() + " をコピーしました");
+        } catch (FileAlreadyExistsException e) {
+            showError("同じ名前のファイルがあります: " + destination);
+        } catch (IOException e) {
+            showError("コピーできませんでした: " + e.getMessage());
+        }
+        refreshCurrentDirectory();
+    }
+
+    private void moveFile(Path source, Path destination) {
+        try {
+            // Files.moveは、Files.copyと同じ形で使える移動（名前の変更）のメソッド
+            Files.move(source, destination);
+            statusLabel.setText(source.getFileName() + " を移動しました");
+        } catch (FileAlreadyExistsException e) {
+            showError("同じ名前のファイルがあります: " + destination);
+        } catch (IOException e) {
+            showError("移動できませんでした: " + e.getMessage());
+        }
+        refreshCurrentDirectory();
+    }
+
+    private void deleteFile(Path filePath) {
+        int answer = JOptionPane.showConfirmDialog(this, filePath.getFileName() + " を削除しますか？",
+                "削除の確認", JOptionPane.YES_NO_OPTION);
+        if (answer != JOptionPane.YES_OPTION) {
+            return;
+        }
+        try {
+            // Files.deleteは、中身のあるフォルダーを消せない（DirectoryNotEmptyException）
+            Files.delete(filePath);
+            statusLabel.setText(filePath.getFileName() + " を削除しました");
+        } catch (DirectoryNotEmptyException e) {
+            showError("中身のあるフォルダーは削除できません");
+        } catch (IOException e) {
+            showError("削除できませんでした: " + e.getMessage());
+        }
+        refreshCurrentDirectory();
+    }
+
+    private JPopupMenu createContextMenu(boolean isDirectory) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem copyItem = new JMenuItem("コピー...");
+        JMenuItem moveItem = new JMenuItem("移動...");
+        JMenuItem deleteItem = new JMenuItem("削除");
+
+        copyItem.addActionListener(e -> {
+            Path source = selectedPath();
+            Path folder = chooseFolder("コピー先のフォルダー");
+            if (source != null && folder != null) {
+                copyFile(source, folder.resolve(source.getFileName()));
+            }
+        });
+        moveItem.addActionListener(e -> {
+            Path source = selectedPath();
+            Path folder = chooseFolder("移動先のフォルダー");
+            if (source != null && folder != null) {
+                moveFile(source, folder.resolve(source.getFileName()));
+            }
+        });
+        deleteItem.addActionListener(e -> {
+            Path target = selectedPath();
+            if (target != null) {
+                deleteFile(target);
+            }
+        });
+
+        // Files.copyはフォルダーの中身までは写さないので、フォルダーのコピーは出さない
+        if (!isDirectory) {
+            menu.add(copyItem);
+        }
+        menu.add(moveItem);
+        menu.addSeparator();
+        menu.add(deleteItem);
+        return menu;
+    }
+
+    private Icon getFileIcon(Path path) {
+        return FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
+    }
+
+    private Path selectedPath() {
+        int row = fileTable.getSelectedRow();
+        return row < 0 ? null : fileTableModel.getFileAt(row).getPath();
+    }
+
+    private Path chooseFolder(String title) {
+        JFileChooser chooser = new JFileChooser(currentDirectory.toFile());
+        chooser.setDialogTitle(title);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (chooser.showDialog(this, "選択") == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile().toPath();
+        }
+        return null;
+    }
+
     private void refreshCurrentDirectory() {
         if (currentDirectory != null) {
             loadDirectoryContents(currentDirectory);
         }
     }
-    
-    private String formatFileSize(Path path) {
-        try {
-            long size = Files.size(path);
-            if (size < 1024) return size + " B";
-            if (size < 1024 * 1024) return String.format("%.1f KB", size / 1024.0);
-            if (size < 1024 * 1024 * 1024) return String.format("%.1f MB", size / (1024.0 * 1024.0));
-            return String.format("%.1f GB", size / (1024.0 * 1024.0 * 1024.0));
-        } catch (IOException e) {
-            return "不明";
-        }
-    }
-    
-    // 残りのメソッドは省略（紙面の都合上）
-    // 実際の実装では以下のメソッドも含まれます:
-    // - createNewFolder()
-    // - deleteSelectedFiles()
-    // - copySelectedFiles()
-    // - openFile()
-    // - selectDirectoryInTree()
-    // - updateStatusLabel()
-    // - showErrorMessage()
-    // - createFileTablePopupMenu()
-    // - createTreePopupMenu()
-    // - DirectoryTreeCellRenderer
-    // - FileTransferable
-    // - copyDirectory()
-    
-    private void showErrorMessage(String message) {
+
+    private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "エラー", JOptionPane.ERROR_MESSAGE);
     }
-    
-    private Icon getFileIcon(Path path) {
-        // システムのファイルアイコンを取得する実装
-        // 実装省略
-        return null;
-    }
-    
-    // その他のメソッド実装省略...
-    
-    @Override
-    public void dispose() {
-        if (executorService != null) {
-            executorService.shutdown();
-        }
-        try {
-            if (watchService != null) {
-                watchService.close();
-            }
+
+    // フォルダーの中の項目を名前順のリストで返す。Files.listの順序はOSで変わるので並べ替える
+    private static List<Path> listSorted(Path directory) {
+        List<Path> result = new ArrayList<>();
+        // Files.listはStream（第12章）を返す。閉じる必要があるので、try-with-resourcesで囲む
+        try (Stream<Path> children = Files.list(directory)) {
+            children.forEach(result::add);
         } catch (IOException e) {
-            // ignore
+            // 読めないフォルダーは空として扱う
         }
-        super.dispose();
+        result.sort(Comparator.comparing(p -> p.getFileName().toString()));
+        return result;
     }
-    
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            new FileExplorer().setVisible(true);
-        });
-    }
-    
-    // 内部クラス定義（省略）
-    private class DirectoryTreeCellRenderer extends DefaultTreeCellRenderer {
-        // 実装省略
-    }
-    
-    private class FileTransferable implements Transferable {
-        private final List<File> files;
-        
-        public FileTransferable(List<File> files) {
-            this.files = files;
-        }
-        
-        @Override
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{DataFlavor.javaFileListFlavor};
-        }
-        
-        @Override
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return DataFlavor.javaFileListFlavor.equals(flavor);
-        }
-        
-        @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
-            if (!isDataFlavorSupported(flavor)) {
-                throw new UnsupportedFlavorException(flavor);
-            }
-            return files;
-        }
-    }
-    
-    private void copyDirectory(Path source, Path destination) throws IOException {
-        // ディレクトリの再帰的コピー実装
-        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                Path targetDir = destination.resolve(source.relativize(dir));
-                Files.createDirectories(targetDir);
-                return FileVisitResult.CONTINUE;
-            }
-            
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Path targetFile = destination.resolve(source.relativize(file));
-                Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                return FileVisitResult.CONTINUE;
-            }
-        });
-    }
-    
-    // その他のヘルパーメソッド実装省略...
-    private void createNewFolder() {
-        // 新規フォルダ作成の実装
-    }
-    
-    private void deleteSelectedFiles() {
-        // 選択ファイル削除の実装
-    }
-    
-    private void copySelectedFiles() {
-        // 選択ファイルコピーの実装
-    }
-    
-    private void openFile(Path path) {
-        // ファイルを関連アプリケーションで開く実装
-    }
-    
-    private void selectDirectoryInTree(Path path) {
-        // ツリーで指定ディレクトリを選択する実装
-    }
-    
-    private void updateStatusLabel(FileInfo fileInfo) {
-        // ステータスラベル更新の実装
-    }
-    
-    private JPopupMenu createFileTablePopupMenu() {
-        // ファイルテーブル用ポップアップメニューの実装
-        return new JPopupMenu();
-    }
-    
-    private JPopupMenu createTreePopupMenu() {
-        // ツリー用ポップアップメニューの実装
-        return new JPopupMenu();
+        SwingUtilities.invokeLater(() -> new FileExplorer().setVisible(true));
     }
 }
-
-/*
- * 実装のポイント:
- * 
- * 1. 非同期処理の活用
- *    - CompletableFutureによる非ブロッキング処理
- *    - SwingWorkerによるバックグラウンドタスク
- *    - ExecutorServiceによるスレッド管理
- *    - プログレス表示によるユーザビリティ向上
- * 
- * 2. ファイルシステム操作
- *    - java.nio.file APIの活用
- *    - WatchServiceによるファイル監視
- *    - 例外処理とエラーハンドリング
- *    - 権限チェックとセキュリティ考慮
- * 
- * 3. 高度なUI機能
- *    - ドラッグ&ドロップサポート
- *    - カスタムレンダラーによる見た目改善
- *    - 右クリックメニュー
- *    - キーボードショートカット
- * 
- * 4. パフォーマンス最適化
- *    - 遅延読み込み（Lazy Loading）
- *    - 仮想化によるメモリ効率
- *    - キャッシュ機能
- *    - ファイルサイズ制限によるプレビュー最適化
- * 
- * 5. 拡張性とメンテナンス性
- *    - プラグインアーキテクチャ対応
- *    - 設定の外部化
- *    - ログ機能
- *    - 国際化対応
- */

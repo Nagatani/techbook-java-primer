@@ -23,9 +23,10 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-基礎課題の解答例です。雛形と同じ名前で、要求仕様より多くの機能を持つ大きめのプログラムです。
+基礎課題の解答例です。雛形と同じ名前・同じ構成で、雛形の「ここに実装してください」「TODO」を埋めた形で書いています。
 
 - `StudentManagementGUI.java` - 学生名簿の表
-- `FileExplorer.java` - ファイルの一覧（コピー・削除、WatchServiceによる自動更新つき）
-- `MVCExample.java` - MVCの例（書籍の代わりにタスクを管理する）
+- `FileExplorer.java` - ファイルの一覧（プレビュー、右クリックのメニューでのコピー・移動・削除つき）
+- `MVCExample.java` - 書籍管理とMVC
 - `DataVisualization.java` - データのグラフ（アニメーション、画像への書き出しつき）
+- 第12章のStream APIで短く書ける箇所には、その書き方をコメントで添えている

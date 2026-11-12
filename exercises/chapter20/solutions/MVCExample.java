@@ -1,1034 +1,515 @@
 /**
- * 第20章 解答例4: MVCパターンの実装例
- * 
- * 完全なMVCアーキテクチャを実装したタスク管理アプリケーション
- * 
- * 実装内容:
- * - Model: データとビジネスロジック
- * - View: ユーザーインターフェイス
- * - Controller: ModelとViewの制御
- * 
- * 技術的特徴:
- * - オブザーバーパターンによる疎結合
- * - イベント駆動アーキテクチャ
- * - データバインディング
- * - 状態管理の分離
- * - テスト容易性を考慮した設計
+ * 第20章 課題3: 書籍管理とMVC（解答例）
+ *
+ * Model（BookModel）は書籍のリストを持ち、変更をオブザーバー（ModelObserver）に知らせます。画面の部品は知りません。
+ * View（BookView）はModelからの通知を受けて表を描き直し、ボタンの操作はControllerに伝えます。
+ * Controller（BookController）は、Viewからの操作を受けてModelのメソッドを呼びます。
  */
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class MVCExample {
-    
-    /**
-     * Model: タスクデータとビジネスロジックを管理
-     */
-    public static class TaskModel {
-        // 変更の通知（java.util.ObservableはJava 9で非推奨になったため、PropertyChangeSupportを使う）
-        private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
-        
-        /** モデルの変更を受け取るリスナーを登録する */
-        public void addPropertyChangeListener(PropertyChangeListener listener) {
-            changes.addPropertyChangeListener(listener);
+public class MVCExample extends JFrame {
+
+    // Model（データとビジネスロジック）
+    public static class BookModel {
+        private List<Book> books;
+        private List<ModelObserver> observers;
+
+        public BookModel() {
+            this.books = new ArrayList<>();
+            // 通知の途中でオブザーバーの登録・解除があっても例外にならないリスト
+            this.observers = new CopyOnWriteArrayList<>();
+            initializeSampleData();
         }
-        
-        /** 変更の種類（TASK_ADDEDなど）をリスナーに通知する */
-        private void fireChange(String eventName) {
-            changes.firePropertyChange("model", null, eventName);
+
+        public void addObserver(ModelObserver observer) {
+            observers.add(observer);
         }
-        
-        // タスクの状態を表す列挙型
-        public enum TaskStatus {
-            TODO("未完了"),
-            IN_PROGRESS("進行中"),
-            COMPLETED("完了");
-            
-            private final String displayName;
-            
-            TaskStatus(String displayName) {
-                this.displayName = displayName;
-            }
-            
-            @Override
-            public String toString() {
-                return displayName;
+
+        public void removeObserver(ModelObserver observer) {
+            observers.remove(observer);
+        }
+
+        private void notifyObservers(ModelEvent event) {
+            for (ModelObserver observer : observers) {
+                observer.modelChanged(event);
             }
         }
-        
-        // タスク優先度の列挙型
-        public enum TaskPriority {
-            LOW("低", 1),
-            MEDIUM("中", 2),
-            HIGH("高", 3),
-            URGENT("緊急", 4);
-            
-            private final String displayName;
-            private final int level;
-            
-            TaskPriority(String displayName, int level) {
-                this.displayName = displayName;
-                this.level = level;
-            }
-            
-            public int getLevel() {
-                return level;
-            }
-            
-            @Override
-            public String toString() {
-                return displayName;
+
+        /**
+         * 書籍を加える。検査に通らなければ加えず、通知もしない（表は変わらない）
+         */
+        public void addBook(Book book) {
+            if (validateBook(book)) {
+                books.add(book);
+                notifyObservers(new ModelEvent(ModelEvent.Type.BOOK_ADDED, book));
             }
         }
-        
-        // タスクエンティティクラス
-        public static class Task {
-            private static int nextId = 1;
-            
-            private final int id;
-            private String title;
-            private String description;
-            private TaskStatus status;
-            private TaskPriority priority;
-            private LocalDateTime createdAt;
-            private LocalDateTime updatedAt;
-            private LocalDateTime dueDate;
-            
-            public Task(String title, String description, TaskPriority priority) {
-                this.id = nextId++;
-                this.title = title;
-                this.description = description;
-                this.priority = priority;
-                this.status = TaskStatus.TODO;
-                this.createdAt = LocalDateTime.now();
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            // Getters and Setters
-            public int getId() { return id; }
-            
-            public String getTitle() { return title; }
-            public void setTitle(String title) {
-                this.title = title;
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            public String getDescription() { return description; }
-            public void setDescription(String description) {
-                this.description = description;
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            public TaskStatus getStatus() { return status; }
-            public void setStatus(TaskStatus status) {
-                this.status = status;
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            public TaskPriority getPriority() { return priority; }
-            public void setPriority(TaskPriority priority) {
-                this.priority = priority;
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            public LocalDateTime getCreatedAt() { return createdAt; }
-            public LocalDateTime getUpdatedAt() { return updatedAt; }
-            
-            public LocalDateTime getDueDate() { return dueDate; }
-            public void setDueDate(LocalDateTime dueDate) {
-                this.dueDate = dueDate;
-                this.updatedAt = LocalDateTime.now();
-            }
-            
-            public boolean isOverdue() {
-                return dueDate != null && LocalDateTime.now().isAfter(dueDate) && status != TaskStatus.COMPLETED;
-            }
-            
-            public String getFormattedCreatedAt() {
-                return createdAt.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm"));
-            }
-            
-            public String getFormattedDueDate() {
-                return dueDate != null ? dueDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")) : "-";
-            }
-            
-            @Override
-            public String toString() {
-                return String.format("Task{id=%d, title='%s', status=%s, priority=%s}",
-                        id, title, status, priority);
-            }
-            
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (!(o instanceof Task)) return false;
-                Task task = (Task) o;
-                return id == task.id;
-            }
-            
-            @Override
-            public int hashCode() {
-                return Objects.hash(id);
+
+        public void updateBook(int index, Book book) {
+            if (index >= 0 && index < books.size() && validateBook(book)) {
+                Book oldBook = books.get(index);
+                books.set(index, book);
+                notifyObservers(new ModelEvent(ModelEvent.Type.BOOK_UPDATED, book, oldBook));
             }
         }
-        
-        // モデルの状態
-        private List<Task> tasks;
-        private TaskStatus filterStatus;
-        private TaskPriority filterPriority;
-        private String searchText;
-        
-        public TaskModel() {
-            this.tasks = new ArrayList<>();
-            this.filterStatus = null;
-            this.filterPriority = null;
-            this.searchText = "";
-            generateSampleData();
-        }
-        
-        // タスク操作メソッド
-        public void addTask(Task task) {
-            tasks.add(task);
-            fireChange("TASK_ADDED");
-        }
-        
-        public void updateTask(Task task) {
-            int index = tasks.indexOf(task);
-            if (index != -1) {
-                tasks.set(index, task);
-                fireChange("TASK_UPDATED");
+
+        public void removeBook(int index) {
+            if (index >= 0 && index < books.size()) {
+                Book removedBook = books.remove(index);
+                notifyObservers(new ModelEvent(ModelEvent.Type.BOOK_REMOVED, removedBook));
             }
         }
-        
-        public void deleteTask(Task task) {
-            if (tasks.remove(task)) {
-                fireChange("TASK_DELETED");
+
+        public List<Book> getBooks() {
+            return new ArrayList<>(books);
+        }
+
+        /**
+         * タイトルか著者にキーワードを含む書籍を返す（大文字と小文字は区別しない）。
+         * キーワードが空なら全部を返す
+         */
+        public List<Book> searchBooks(String keyword) {
+            String key = keyword == null ? "" : keyword.trim().toLowerCase();
+            List<Book> result = new ArrayList<>();
+            for (Book book : books) {
+                if (book.getTitle().toLowerCase().contains(key)
+                        || book.getAuthor().toLowerCase().contains(key)) {
+                    result.add(book);
+                }
             }
+            // 第12章のStream APIを使うと、次のように書ける
+            // return books.stream()
+            //         .filter(b -> b.getTitle().toLowerCase().contains(key) || b.getAuthor().toLowerCase().contains(key))
+            //         .toList();
+            return result;
         }
-        
-        public Task findTaskById(int id) {
-            return tasks.stream()
-                    .filter(task -> task.getId() == id)
-                    .findFirst()
-                    .orElse(null);
+
+        // タイトルと著者が空でなく、出版年・価格・在庫が負でない書籍だけを受け付ける
+        private boolean validateBook(Book book) {
+            return book != null
+                    && book.getTitle() != null && !book.getTitle().trim().isEmpty()
+                    && book.getAuthor() != null && !book.getAuthor().trim().isEmpty()
+                    && book.getPublicationYear() >= 0
+                    && book.getPrice() >= 0
+                    && book.getStock() >= 0;
         }
-        
-        // フィルタリング機能
-        public List<Task> getFilteredTasks() {
-            return tasks.stream()
-                    .filter(this::matchesFilter)
-                    .sorted(this::compareTasksByPriority)
-                    .collect(java.util.stream.Collectors.toList());
+
+        // まだオブザーバーがいない段階なので、通知せずに直接リストに入れる
+        private void initializeSampleData() {
+            books.add(new Book("Java入門", "山田太郎", 2026, 3200, 5));
+            books.add(new Book("オブジェクト指向設計", "鈴木花子", 2024, 2800, 3));
+            books.add(new Book("Swingによる画面作り", "佐藤次郎", 2025, 3000, 0));
+            books.add(new Book("テスト駆動開発", "高橋美咲", 2023, 2500, 2));
         }
-        
-        private boolean matchesFilter(Task task) {
-            // ステータスフィルタ
-            if (filterStatus != null && task.getStatus() != filterStatus) {
-                return false;
-            }
-            
-            // 優先度フィルタ
-            if (filterPriority != null && task.getPriority() != filterPriority) {
-                return false;
-            }
-            
-            // テキスト検索
-            if (!searchText.isEmpty()) {
-                String search = searchText.toLowerCase();
-                return task.getTitle().toLowerCase().contains(search) ||
-                       task.getDescription().toLowerCase().contains(search);
-            }
-            
-            return true;
-        }
-        
-        private int compareTasksByPriority(Task a, Task b) {
-            // 優先度の降順（緊急 → 高 → 中 → 低）
-            int priorityComparison = Integer.compare(
-                    b.getPriority().getLevel(), 
-                    a.getPriority().getLevel()
-            );
-            
-            if (priorityComparison != 0) {
-                return priorityComparison;
-            }
-            
-            // 優先度が同じ場合は作成日時の昇順
-            return a.getCreatedAt().compareTo(b.getCreatedAt());
-        }
-        
-        // フィルタ設定
-        public void setStatusFilter(TaskStatus status) {
-            this.filterStatus = status;
-            fireChange("FILTER_CHANGED");
-        }
-        
-        public void setPriorityFilter(TaskPriority priority) {
-            this.filterPriority = priority;
-            fireChange("FILTER_CHANGED");
-        }
-        
-        public void setSearchText(String searchText) {
-            this.searchText = searchText != null ? searchText : "";
-            fireChange("FILTER_CHANGED");
-        }
-        
-        // 統計情報
-        public Map<TaskStatus, Integer> getTaskCountByStatus() {
-            Map<TaskStatus, Integer> counts = new EnumMap<>(TaskStatus.class);
-            for (TaskStatus status : TaskStatus.values()) {
-                counts.put(status, 0);
-            }
-            
-            for (Task task : tasks) {
-                counts.put(task.getStatus(), counts.get(task.getStatus()) + 1);
-            }
-            
-            return counts;
-        }
-        
-        public int getOverdueTaskCount() {
-            return (int) tasks.stream().filter(Task::isOverdue).count();
-        }
-        
-        // サンプルデータの生成
-        private void generateSampleData() {
-            addTask(new Task("プロジェクト企画書作成", "新プロジェクトの企画書を作成する", TaskPriority.HIGH));
-            addTask(new Task("週次レポート提出", "今週の進捗レポートをまとめる", TaskPriority.MEDIUM));
-            addTask(new Task("システム設計書レビュー", "開発チームの設計書をレビューする", TaskPriority.HIGH));
-            addTask(new Task("顧客プレゼン準備", "来週の顧客プレゼンテーション資料を準備する", TaskPriority.URGENT));
-            addTask(new Task("バックアップ設定確認", "サーバーのバックアップ設定を確認する", TaskPriority.LOW));
-            
-            // いくつかのタスクの状態を変更
-            tasks.get(1).setStatus(TaskStatus.COMPLETED);
-            tasks.get(2).setStatus(TaskStatus.IN_PROGRESS);
-            
-            // 期限を設定
-            tasks.get(0).setDueDate(LocalDateTime.now().plusDays(3));
-            tasks.get(3).setDueDate(LocalDateTime.now().plusDays(1));
-            tasks.get(4).setDueDate(LocalDateTime.now().minusDays(1)); // 期限切れ
-        }
-        
-        // Getters
-        public List<Task> getAllTasks() { return new ArrayList<>(tasks); }
-        public TaskStatus getFilterStatus() { return filterStatus; }
-        public TaskPriority getFilterPriority() { return filterPriority; }
-        public String getSearchText() { return searchText; }
     }
-    
-    /**
-     * View: ユーザーインターフェイスを管理
-     */
-    public static class TaskView extends JFrame implements PropertyChangeListener {
-        
-        private TaskModel model;
-        private TaskController controller;
-        
-        // GUI コンポーネント
-        private JTable taskTable;
-        private TaskTableModel tableModel;
+
+    // View（表示とユーザーの操作）
+    public static class BookView extends JPanel implements ModelObserver {
+        private BookController controller;
+        private JTable bookTable;
+        private BookTableModel tableModel;
         private JTextField searchField;
-        private JComboBox<TaskModel.TaskStatus> statusFilterCombo;
-        private JComboBox<TaskModel.TaskPriority> priorityFilterCombo;
-        private JButton addButton, editButton, deleteButton;
-        private JLabel statusLabel;
-        private JProgressBar progressBar;
-        private JPanel statisticsPanel;
-        
-        public TaskView(TaskModel model) {
-            this.model = model;
-            this.model.addPropertyChangeListener(this);
-            
+        private JButton addButton, editButton, deleteButton, refreshButton;
+        private JLabel summaryLabel;
+
+        public BookView() {
             initializeComponents();
             setupLayout();
             setupEventListeners();
-            setupFrame();
-            updateStatistics();
         }
-        
+
+        public void setController(BookController controller) {
+            this.controller = controller;
+            refreshTable();
+        }
+
         private void initializeComponents() {
-            // テーブル
-            tableModel = new TaskTableModel();
-            taskTable = new JTable(tableModel);
-            taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            taskTable.setRowHeight(25);
-            setupTableRenderers();
-            
-            // フィルタコンポーネント
-            searchField = new JTextField(20);
-            statusFilterCombo = new JComboBox<>();
-            priorityFilterCombo = new JComboBox<>();
-            
-            setupFilterCombos();
-            
-            // ボタン
+            tableModel = new BookTableModel();
+            bookTable = new JTable(tableModel);
+            bookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            searchField = new JTextField(15);
             addButton = new JButton("追加");
             editButton = new JButton("編集");
             deleteButton = new JButton("削除");
-            
-            // ステータス表示
-            statusLabel = new JLabel("準備完了");
-            statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-            
-            // プログレスバー
-            progressBar = new JProgressBar(0, 100);
-            progressBar.setStringPainted(true);
-            
-            // 統計パネル
-            statisticsPanel = new JPanel(new GridLayout(1, 4, 5, 5));
-            statisticsPanel.setBorder(BorderFactory.createTitledBorder("統計情報"));
+            refreshButton = new JButton("すべて表示");
+            summaryLabel = new JLabel(" ");
         }
-        
-        private void setupTableRenderers() {
-            // 優先度列のカスタムレンダラー
-            taskTable.getColumnModel().getColumn(2).setCellRenderer(new PriorityRenderer());
-            
-            // ステータス列のカスタムレンダラー
-            taskTable.getColumnModel().getColumn(3).setCellRenderer(new StatusRenderer());
-            
-            // 期限列のカスタムレンダラー
-            taskTable.getColumnModel().getColumn(4).setCellRenderer(new DueDateRenderer());
-            
-            // 列幅の設定
-            TableColumnModel columnModel = taskTable.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(50);  // ID
-            columnModel.getColumn(1).setPreferredWidth(200); // タイトル
-            columnModel.getColumn(2).setPreferredWidth(80);  // 優先度
-            columnModel.getColumn(3).setPreferredWidth(80);  // ステータス
-            columnModel.getColumn(4).setPreferredWidth(120); // 期限
-        }
-        
-        private void setupFilterCombos() {
-            // ステータスフィルタ
-            statusFilterCombo.addItem(null); // "すべて"を表す
-            for (TaskModel.TaskStatus status : TaskModel.TaskStatus.values()) {
-                statusFilterCombo.addItem(status);
-            }
-            statusFilterCombo.setRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value,
-                        int index, boolean isSelected, boolean cellHasFocus) {
-                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                    setText(value == null ? "すべて" : value.toString());
-                    return this;
-                }
-            });
-            
-            // 優先度フィルタ
-            priorityFilterCombo.addItem(null); // "すべて"を表す
-            for (TaskModel.TaskPriority priority : TaskModel.TaskPriority.values()) {
-                priorityFilterCombo.addItem(priority);
-            }
-            priorityFilterCombo.setRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value,
-                        int index, boolean isSelected, boolean cellHasFocus) {
-                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                    setText(value == null ? "すべて" : value.toString());
-                    return this;
-                }
-            });
-        }
-        
+
         private void setupLayout() {
             setLayout(new BorderLayout());
-            
-            // 上部パネル（フィルタ）
-            JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            filterPanel.add(new JLabel("検索:"));
-            filterPanel.add(searchField);
-            filterPanel.add(new JLabel("ステータス:"));
-            filterPanel.add(statusFilterCombo);
-            filterPanel.add(new JLabel("優先度:"));
-            filterPanel.add(priorityFilterCombo);
-            
-            JPanel topPanel = new JPanel(new BorderLayout());
-            topPanel.add(filterPanel, BorderLayout.NORTH);
-            topPanel.add(statisticsPanel, BorderLayout.SOUTH);
-            
+            JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            topPanel.add(new JLabel("検索:"));
+            topPanel.add(searchField);
+            topPanel.add(addButton);
+            topPanel.add(editButton);
+            topPanel.add(deleteButton);
+            topPanel.add(refreshButton);
+
             add(topPanel, BorderLayout.NORTH);
-            
-            // 中央パネル（テーブル）
-            JScrollPane scrollPane = new JScrollPane(taskTable);
-            scrollPane.setBorder(BorderFactory.createTitledBorder("タスク一覧"));
-            add(scrollPane, BorderLayout.CENTER);
-            
-            // 右パネル（ボタン）
-            JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-            buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            buttonPanel.add(addButton);
-            buttonPanel.add(editButton);
-            buttonPanel.add(deleteButton);
-            add(buttonPanel, BorderLayout.EAST);
-            
-            // 下部パネル（ステータス）
-            JPanel bottomPanel = new JPanel(new BorderLayout());
-            bottomPanel.add(statusLabel, BorderLayout.CENTER);
-            bottomPanel.add(progressBar, BorderLayout.EAST);
-            add(bottomPanel, BorderLayout.SOUTH);
+            add(new JScrollPane(bookTable), BorderLayout.CENTER);
+            add(summaryLabel, BorderLayout.SOUTH);
         }
-        
+
+        // ボタンが押されたら、自分ではデータを変えず、Controllerに伝えるメソッドを呼ぶ
         private void setupEventListeners() {
-            // 検索フィールド
-            searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-                @Override
-                public void insertUpdate(javax.swing.event.DocumentEvent e) { filterChanged(); }
-                @Override
-                public void removeUpdate(javax.swing.event.DocumentEvent e) { filterChanged(); }
-                @Override
-                public void changedUpdate(javax.swing.event.DocumentEvent e) { filterChanged(); }
-            });
-            
-            // フィルタコンボボックス
-            statusFilterCombo.addActionListener(e -> filterChanged());
-            priorityFilterCombo.addActionListener(e -> filterChanged());
-            
-            // テーブル選択
-            taskTable.getSelectionModel().addListSelectionListener(e -> {
-                if (!e.getValueIsAdjusting()) {
-                    updateButtonStates();
-                }
-            });
-            
-            // ダブルクリックで編集
-            taskTable.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2 && taskTable.getSelectedRow() != -1) {
-                        editTask();
-                    }
-                }
-            });
-        }
-        
-        private void setupFrame() {
-            setTitle("タスク管理システム - MVCパターンデモ");
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setSize(900, 600);
-            setLocationRelativeTo(null);
-            
-            // メニューバー
-            setupMenuBar();
-        }
-        
-        private void setupMenuBar() {
-            JMenuBar menuBar = new JMenuBar();
-            
-            JMenu taskMenu = new JMenu("タスク");
-            JMenuItem addItem = new JMenuItem("新規タスク");
-            JMenuItem editItem = new JMenuItem("編集");
-            JMenuItem deleteItem = new JMenuItem("削除");
-            
-            addItem.addActionListener(e -> addTask());
-            editItem.addActionListener(e -> editTask());
-            deleteItem.addActionListener(e -> deleteTask());
-            
-            taskMenu.add(addItem);
-            taskMenu.add(editItem);
-            taskMenu.add(deleteItem);
-            
-            JMenu viewMenu = new JMenu("表示");
-            JMenuItem refreshItem = new JMenuItem("更新");
-            refreshItem.addActionListener(e -> refreshTable());
-            viewMenu.add(refreshItem);
-            
-            menuBar.add(taskMenu);
-            menuBar.add(viewMenu);
-            
-            setJMenuBar(menuBar);
-        }
-        
-        // モデルの変更通知を受け取る（Observerパターン）
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            SwingUtilities.invokeLater(() -> {
+            addButton.addActionListener(e -> showAddBookDialog());
+            editButton.addActionListener(e -> showEditBookDialog());
+            deleteButton.addActionListener(e -> deleteSelectedBook());
+            refreshButton.addActionListener(e -> {
+                searchField.setText("");
                 refreshTable();
-                updateStatistics();
-                updateStatusLabel((String) evt.getNewValue());
+            });
+            // 検索欄でEnterを押すと検索する
+            searchField.addActionListener(e -> performSearch());
+        }
+
+        // Modelからの通知。どの変更でも表を描き直す
+        @Override
+        public void modelChanged(ModelEvent event) {
+            SwingUtilities.invokeLater(() -> {
+                switch (event.getType()) {
+                    case BOOK_ADDED, BOOK_UPDATED, BOOK_REMOVED -> refreshTable();
+                }
             });
         }
-        
-        // コントローラーの設定
-        public void setController(TaskController controller) {
-            this.controller = controller;
-            
-            // ボタンイベントの設定
-            addButton.addActionListener(e -> addTask());
-            editButton.addActionListener(e -> editTask());
-            deleteButton.addActionListener(e -> deleteTask());
-            
-            updateButtonStates();
-        }
-        
-        // UI更新メソッド
+
         private void refreshTable() {
-            tableModel.setTasks(model.getFilteredTasks());
-        }
-        
-        private void updateStatistics() {
-            Map<TaskModel.TaskStatus, Integer> counts = model.getTaskCountByStatus();
-            int total = counts.values().stream().mapToInt(Integer::intValue).sum();
-            int completed = counts.get(TaskModel.TaskStatus.COMPLETED);
-            int overdue = model.getOverdueTaskCount();
-            
-            statisticsPanel.removeAll();
-            
-            statisticsPanel.add(createStatLabel("総数", String.valueOf(total), Color.BLUE));
-            statisticsPanel.add(createStatLabel("完了", String.valueOf(completed), Color.GREEN));
-            statisticsPanel.add(createStatLabel("進行中", String.valueOf(counts.get(TaskModel.TaskStatus.IN_PROGRESS)), Color.ORANGE));
-            statisticsPanel.add(createStatLabel("期限切れ", String.valueOf(overdue), Color.RED));
-            
-            // プログレスバーの更新
-            int progress = total > 0 ? (completed * 100 / total) : 0;
-            progressBar.setValue(progress);
-            progressBar.setString(progress + "% 完了");
-            
-            statisticsPanel.revalidate();
-            statisticsPanel.repaint();
-        }
-        
-        private JLabel createStatLabel(String title, String value, Color color) {
-            JLabel label = new JLabel(String.format("<html><b>%s</b><br><font size='+1' color='%s'>%s</font></html>",
-                    title, String.format("#%06X", color.getRGB() & 0xFFFFFF), value));
-            label.setHorizontalAlignment(SwingConstants.CENTER);
-            label.setBorder(BorderFactory.createEtchedBorder());
-            return label;
-        }
-        
-        private void updateButtonStates() {
-            boolean hasSelection = taskTable.getSelectedRow() != -1;
-            editButton.setEnabled(hasSelection);
-            deleteButton.setEnabled(hasSelection);
-        }
-        
-        private void updateStatusLabel(String action) {
-            String message = switch (action) {
-                case "TASK_ADDED" -> "タスクが追加されました";
-                case "TASK_UPDATED" -> "タスクが更新されました";
-                case "TASK_DELETED" -> "タスクが削除されました";
-                case "FILTER_CHANGED" -> "フィルターが変更されました";
-                default -> "準備完了";
-            };
-            statusLabel.setText(message + " [" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "]");
-        }
-        
-        // イベントハンドラー
-        private void filterChanged() {
             if (controller != null) {
-                controller.updateFilters(
-                        searchField.getText(),
-                        (TaskModel.TaskStatus) statusFilterCombo.getSelectedItem(),
-                        (TaskModel.TaskPriority) priorityFilterCombo.getSelectedItem()
-                );
+                tableModel.setBooks(controller.getBooks());
+                summaryLabel.setText("在庫の合計: " + controller.getTotalStock() + "冊、"
+                        + String.format("在庫の金額: ¥%,d", controller.getTotalValue()));
             }
         }
-        
-        private void addTask() {
-            if (controller != null) {
-                controller.showAddTaskDialog();
+
+        private void showAddBookDialog() {
+            BookForm form = new BookForm(null);
+            if (form.show(this, "書籍の追加")) {
+                controller.addBook(form.title(), form.author(), form.year(), form.price(), form.stock());
             }
         }
-        
-        private void editTask() {
-            int selectedRow = taskTable.getSelectedRow();
-            if (selectedRow != -1 && controller != null) {
-                TaskModel.Task task = tableModel.getTaskAt(selectedRow);
-                controller.showEditTaskDialog(task);
+
+        private void showEditBookDialog() {
+            int index = selectedModelIndex();
+            if (index < 0) {
+                showError("編集する書籍を選んでください");
+                return;
+            }
+            BookForm form = new BookForm(tableModel.getBookAt(bookTable.getSelectedRow()));
+            if (form.show(this, "書籍の編集")) {
+                controller.updateBook(index, form.title(), form.author(), form.year(), form.price(), form.stock());
             }
         }
-        
-        private void deleteTask() {
-            int selectedRow = taskTable.getSelectedRow();
-            if (selectedRow != -1 && controller != null) {
-                TaskModel.Task task = tableModel.getTaskAt(selectedRow);
-                controller.deleteTask(task);
+
+        private void deleteSelectedBook() {
+            int index = selectedModelIndex();
+            if (index < 0) {
+                showError("削除する書籍を選んでください");
+                return;
             }
+            if (!controller.canDeleteBook(index)) {
+                // 在庫が残っている書籍は、確かめてから削除する
+                Book book = tableModel.getBookAt(bookTable.getSelectedRow());
+                int answer = JOptionPane.showConfirmDialog(this,
+                        "「" + book.getTitle() + "」は在庫が" + book.getStock() + "冊残っています。削除しますか？",
+                        "削除の確認", JOptionPane.YES_NO_OPTION);
+                if (answer != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+            controller.removeBook(index);
         }
-        
-        // カスタムテーブルモデル
-        private class TaskTableModel extends AbstractTableModel {
-            private final String[] columnNames = {"ID", "タイトル", "優先度", "ステータス", "期限"};
-            private List<TaskModel.Task> tasks = new ArrayList<>();
-            
-            public void setTasks(List<TaskModel.Task> tasks) {
-                this.tasks = new ArrayList<>(tasks);
+
+        private void performSearch() {
+            List<Book> found = controller.searchBooks(searchField.getText());
+            tableModel.setBooks(found);
+            summaryLabel.setText(found.size() + "冊が見つかりました");
+        }
+
+        // 表で選んだ書籍が、Modelのリストで何番目かを返す。検索で絞り込んでいると、表の行番号とは違う
+        private int selectedModelIndex() {
+            int row = bookTable.getSelectedRow();
+            if (row < 0) {
+                return -1;
+            }
+            return controller.getBooks().indexOf(tableModel.getBookAt(row));
+        }
+
+        private void showError(String message) {
+            JOptionPane.showMessageDialog(this, message, "エラー", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // テーブルモデル
+        private class BookTableModel extends AbstractTableModel {
+            private final String[] columnNames = {"タイトル", "著者", "出版年", "価格", "在庫"};
+            private List<Book> books;
+
+            public BookTableModel() {
+                this.books = new ArrayList<>();
+            }
+
+            public void setBooks(List<Book> books) {
+                this.books = new ArrayList<>(books);
                 fireTableDataChanged();
             }
-            
+
             @Override
-            public int getRowCount() { return tasks.size(); }
-            
+            public int getRowCount() {
+                return books.size();
+            }
+
             @Override
-            public int getColumnCount() { return columnNames.length; }
-            
+            public int getColumnCount() {
+                return columnNames.length;
+            }
+
             @Override
-            public String getColumnName(int column) { return columnNames[column]; }
-            
+            public String getColumnName(int column) {
+                return columnNames[column];
+            }
+
             @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
-                TaskModel.Task task = tasks.get(rowIndex);
+                Book book = books.get(rowIndex);
                 return switch (columnIndex) {
-                    case 0 -> task.getId();
-                    case 1 -> task.getTitle();
-                    case 2 -> task.getPriority();
-                    case 3 -> task.getStatus();
-                    case 4 -> task.getFormattedDueDate();
-                    default -> null;
+                    case 0 -> book.getTitle();
+                    case 1 -> book.getAuthor();
+                    case 2 -> book.getPublicationYear();
+                    case 3 -> String.format("¥%,d", book.getPrice());
+                    case 4 -> book.getStock();
+                    default -> "";
                 };
             }
-            
-            public TaskModel.Task getTaskAt(int rowIndex) {
-                return tasks.get(rowIndex);
-            }
-        }
-        
-        // カスタムレンダラー
-        private class PriorityRenderer extends DefaultTableCellRenderer {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
-                if (value instanceof TaskModel.TaskPriority priority) {
-                    Color color = switch (priority) {
-                        case URGENT -> Color.RED;
-                        case HIGH -> Color.ORANGE;
-                        case MEDIUM -> Color.BLUE;
-                        case LOW -> Color.GRAY;
-                    };
-                    
-                    if (!isSelected) {
-                        setForeground(color);
-                    }
-                    setFont(getFont().deriveFont(Font.BOLD));
-                }
-                
-                return this;
-            }
-        }
-        
-        private class StatusRenderer extends DefaultTableCellRenderer {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
-                if (value instanceof TaskModel.TaskStatus status) {
-                    Color color = switch (status) {
-                        case TODO -> Color.BLACK;
-                        case IN_PROGRESS -> Color.BLUE;
-                        case COMPLETED -> Color.GREEN;
-                    };
-                    
-                    if (!isSelected) {
-                        setForeground(color);
-                    }
-                }
-                
-                return this;
-            }
-        }
-        
-        private class DueDateRenderer extends DefaultTableCellRenderer {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
-                TaskModel.Task task = ((TaskTableModel) table.getModel()).getTaskAt(row);
-                if (task.isOverdue() && !isSelected) {
-                    setForeground(Color.RED);
-                    setFont(getFont().deriveFont(Font.BOLD));
-                }
-                
-                return this;
+
+            public Book getBookAt(int index) {
+                return books.get(index);
             }
         }
     }
-    
-    /**
-     * Controller: ModelとViewの橋渡しを行う
-     */
-    public static class TaskController {
-        
-        private TaskModel model;
-        private TaskView view;
-        
-        public TaskController(TaskModel model, TaskView view) {
-            this.model = model;
-            this.view = view;
-        }
-        
-        // フィルター更新
-        public void updateFilters(String searchText, TaskModel.TaskStatus status, TaskModel.TaskPriority priority) {
-            model.setSearchText(searchText);
-            model.setStatusFilter(status);
-            model.setPriorityFilter(priority);
-        }
-        
-        // タスク追加ダイアログ
-        public void showAddTaskDialog() {
-            TaskDialog dialog = new TaskDialog(view, "新規タスク", null);
-            dialog.setVisible(true);
-            
-            if (dialog.isOK()) {
-                TaskModel.Task task = dialog.getTask();
-                model.addTask(task);
+
+    // 追加と編集の入力欄。数の欄が整数でなければ、showはfalseを返す
+    private static class BookForm {
+        private final JTextField titleField = new JTextField();
+        private final JTextField authorField = new JTextField();
+        private final JTextField yearField = new JTextField();
+        private final JTextField priceField = new JTextField();
+        private final JTextField stockField = new JTextField();
+        private int year, price, stock;
+
+        BookForm(Book book) {
+            if (book != null) {
+                titleField.setText(book.getTitle());
+                authorField.setText(book.getAuthor());
+                yearField.setText(String.valueOf(book.getPublicationYear()));
+                priceField.setText(String.valueOf(book.getPrice()));
+                stockField.setText(String.valueOf(book.getStock()));
+            } else {
+                yearField.setText("2026");
+                priceField.setText("0");
+                stockField.setText("0");
             }
         }
-        
-        // タスク編集ダイアログ
-        public void showEditTaskDialog(TaskModel.Task task) {
-            TaskDialog dialog = new TaskDialog(view, "タスク編集", task);
-            dialog.setVisible(true);
-            
-            if (dialog.isOK()) {
-                TaskModel.Task updatedTask = dialog.getTask();
-                // 既存タスクのプロパティを更新
-                task.setTitle(updatedTask.getTitle());
-                task.setDescription(updatedTask.getDescription());
-                task.setPriority(updatedTask.getPriority());
-                task.setStatus(updatedTask.getStatus());
-                task.setDueDate(updatedTask.getDueDate());
-                
-                model.updateTask(task);
+
+        boolean show(Component parent, String title) {
+            JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
+            panel.add(new JLabel("タイトル:"));
+            panel.add(titleField);
+            panel.add(new JLabel("著者:"));
+            panel.add(authorField);
+            panel.add(new JLabel("出版年:"));
+            panel.add(yearField);
+            panel.add(new JLabel("価格:"));
+            panel.add(priceField);
+            panel.add(new JLabel("在庫:"));
+            panel.add(stockField);
+            int result = JOptionPane.showConfirmDialog(parent, panel, title, JOptionPane.OK_CANCEL_OPTION);
+            if (result != JOptionPane.OK_OPTION) {
+                return false;
             }
-        }
-        
-        // タスク削除
-        public void deleteTask(TaskModel.Task task) {
-            int result = JOptionPane.showConfirmDialog(view,
-                    "タスク「" + task.getTitle() + "」を削除しますか？",
-                    "削除確認", JOptionPane.YES_NO_OPTION);
-            
-            if (result == JOptionPane.YES_OPTION) {
-                model.deleteTask(task);
-            }
-        }
-    }
-    
-    /**
-     * タスク入力ダイアログ
-     */
-    private static class TaskDialog extends JDialog {
-        private JTextField titleField, descriptionField;
-        private JComboBox<TaskModel.TaskPriority> priorityCombo;
-        private JComboBox<TaskModel.TaskStatus> statusCombo;
-        private JTextField dueDateField;
-        private boolean okPressed = false;
-        private TaskModel.Task task;
-        
-        public TaskDialog(JFrame parent, String title, TaskModel.Task task) {
-            super(parent, title, true);
-            this.task = task;
-            initializeDialog();
-            if (task != null) {
-                populateFields(task);
-            }
-        }
-        
-        private void initializeDialog() {
-            setLayout(new BorderLayout());
-            
-            // フォームパネル
-            JPanel formPanel = new JPanel(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5);
-            gbc.anchor = GridBagConstraints.WEST;
-            
-            titleField = new JTextField(20);
-            descriptionField = new JTextField(20);
-            priorityCombo = new JComboBox<>(TaskModel.TaskPriority.values());
-            statusCombo = new JComboBox<>(TaskModel.TaskStatus.values());
-            dueDateField = new JTextField(20);
-            dueDateField.setToolTipText("yyyy-MM-dd HH:mm 形式で入力してください");
-            
-            // フィールドの配置
-            gbc.gridx = 0; gbc.gridy = 0;
-            formPanel.add(new JLabel("タイトル:"), gbc);
-            gbc.gridx = 1;
-            formPanel.add(titleField, gbc);
-            
-            gbc.gridx = 0; gbc.gridy = 1;
-            formPanel.add(new JLabel("説明:"), gbc);
-            gbc.gridx = 1;
-            formPanel.add(descriptionField, gbc);
-            
-            gbc.gridx = 0; gbc.gridy = 2;
-            formPanel.add(new JLabel("優先度:"), gbc);
-            gbc.gridx = 1;
-            formPanel.add(priorityCombo, gbc);
-            
-            gbc.gridx = 0; gbc.gridy = 3;
-            formPanel.add(new JLabel("ステータス:"), gbc);
-            gbc.gridx = 1;
-            formPanel.add(statusCombo, gbc);
-            
-            gbc.gridx = 0; gbc.gridy = 4;
-            formPanel.add(new JLabel("期限:"), gbc);
-            gbc.gridx = 1;
-            formPanel.add(dueDateField, gbc);
-            
-            // ボタンパネル
-            JPanel buttonPanel = new JPanel(new FlowLayout());
-            JButton okButton = new JButton("OK");
-            JButton cancelButton = new JButton("キャンセル");
-            
-            okButton.addActionListener(e -> {
-                if (validateAndSave()) {
-                    okPressed = true;
-                    dispose();
-                }
-            });
-            
-            cancelButton.addActionListener(e -> dispose());
-            
-            buttonPanel.add(okButton);
-            buttonPanel.add(cancelButton);
-            
-            add(formPanel, BorderLayout.CENTER);
-            add(buttonPanel, BorderLayout.SOUTH);
-            
-            setSize(400, 300);
-            setLocationRelativeTo(getParent());
-        }
-        
-        private void populateFields(TaskModel.Task task) {
-            titleField.setText(task.getTitle());
-            descriptionField.setText(task.getDescription());
-            priorityCombo.setSelectedItem(task.getPriority());
-            statusCombo.setSelectedItem(task.getStatus());
-            if (task.getDueDate() != null) {
-                dueDateField.setText(task.getDueDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-            }
-        }
-        
-        private boolean validateAndSave() {
             try {
-                String title = titleField.getText().trim();
-                String description = descriptionField.getText().trim();
-                TaskModel.TaskPriority priority = (TaskModel.TaskPriority) priorityCombo.getSelectedItem();
-                TaskModel.TaskStatus status = (TaskModel.TaskStatus) statusCombo.getSelectedItem();
-                
-                if (title.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "タイトルを入力してください", "入力エラー", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-                
-                LocalDateTime dueDate = null;
-                String dueDateText = dueDateField.getText().trim();
-                if (!dueDateText.isEmpty()) {
-                    dueDate = LocalDateTime.parse(dueDateText, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                }
-                
-                if (task == null) {
-                    // 新規タスクの作成
-                    task = new TaskModel.Task(title, description, priority);
-                    task.setStatus(status);
-                    task.setDueDate(dueDate);
-                } else {
-                    // 既存タスクの更新
-                    task.setTitle(title);
-                    task.setDescription(description);
-                    task.setPriority(priority);
-                    task.setStatus(status);
-                    task.setDueDate(dueDate);
-                }
-                
+                year = Integer.parseInt(yearField.getText().trim());
+                price = Integer.parseInt(priceField.getText().trim());
+                stock = Integer.parseInt(stockField.getText().trim());
                 return true;
-                
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "入力値に誤りがあります: " + e.getMessage(), 
-                        "入力エラー", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(parent, "出版年・価格・在庫は整数で入力してください",
+                        "エラー", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         }
-        
-        public boolean isOK() {
-            return okPressed;
+
+        String title() { return titleField.getText(); }
+        String author() { return authorField.getText(); }
+        int year() { return year; }
+        int price() { return price; }
+        int stock() { return stock; }
+    }
+
+    // Controller（ViewとModelの橋渡し）
+    public static class BookController {
+        private BookModel model;
+        private BookView view;
+
+        public BookController() {
+            this.model = new BookModel();
         }
-        
-        public TaskModel.Task getTask() {
-            return task;
+
+        public void setView(BookView view) {
+            this.view = view;
+            model.addObserver(view);
+            view.setController(this);
+        }
+
+        public void addBook(String title, String author, int publicationYear, int price, int stock) {
+            model.addBook(new Book(title.trim(), author.trim(), publicationYear, price, stock));
+        }
+
+        public void updateBook(int index, String title, String author, int publicationYear, int price, int stock) {
+            model.updateBook(index, new Book(title.trim(), author.trim(), publicationYear, price, stock));
+        }
+
+        public void removeBook(int index) {
+            model.removeBook(index);
+        }
+
+        public List<Book> getBooks() {
+            return model.getBooks();
+        }
+
+        public List<Book> searchBooks(String keyword) {
+            return model.searchBooks(keyword);
+        }
+
+        // 在庫が0の書籍は、確かめずに削除してよい、という決まり（在庫が残っていれば、Viewが確認を出す）
+        public boolean canDeleteBook(int index) {
+            List<Book> books = model.getBooks();
+            return index >= 0 && index < books.size() && books.get(index).getStock() == 0;
+        }
+
+        // 在庫の金額の合計（価格×在庫）
+        public int getTotalValue() {
+            int total = 0;
+            for (Book book : model.getBooks()) {
+                total += book.getPrice() * book.getStock();
+            }
+            // 第12章のStream APIを使うと、次のように書ける
+            // return model.getBooks().stream().mapToInt(b -> b.getPrice() * b.getStock()).sum();
+            return total;
+        }
+
+        public int getTotalStock() {
+            int total = 0;
+            for (Book book : model.getBooks()) {
+                total += book.getStock();
+            }
+            return total;
         }
     }
-    
-    /**
-     * アプリケーションのエントリーポイント
-     */
+
+    // データモデル（雛形のまま）
+    public static class Book {
+        private String title;
+        private String author;
+        private int publicationYear;
+        private int price;
+        private int stock;
+
+        public Book(String title, String author, int publicationYear, int price, int stock) {
+            this.title = title;
+            this.author = author;
+            this.publicationYear = publicationYear;
+            this.price = price;
+            this.stock = stock;
+        }
+
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+
+        public String getAuthor() { return author; }
+        public void setAuthor(String author) { this.author = author; }
+
+        public int getPublicationYear() { return publicationYear; }
+        public void setPublicationYear(int publicationYear) { this.publicationYear = publicationYear; }
+
+        public int getPrice() { return price; }
+        public void setPrice(int price) { this.price = price; }
+
+        public int getStock() { return stock; }
+        public void setStock(int stock) { this.stock = stock; }
+
+        @Override
+        public String toString() {
+            return String.format("%s - %s (%d年)", title, author, publicationYear);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+
+            Book book = (Book) obj;
+            return Objects.equals(title, book.title) &&
+                   Objects.equals(author, book.author) &&
+                   publicationYear == book.publicationYear;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(title, author, publicationYear);
+        }
+    }
+
+    // オブザーバーのインターフェイス
+    public interface ModelObserver {
+        void modelChanged(ModelEvent event);
+    }
+
+    // Modelからの通知の内容
+    public static class ModelEvent {
+        public enum Type {
+            BOOK_ADDED, BOOK_UPDATED, BOOK_REMOVED
+        }
+
+        private final Type type;
+        private final Book newBook;
+        private final Book oldBook;
+
+        public ModelEvent(Type type, Book newBook) {
+            this(type, newBook, null);
+        }
+
+        public ModelEvent(Type type, Book newBook, Book oldBook) {
+            this.type = type;
+            this.newBook = newBook;
+            this.oldBook = oldBook;
+        }
+
+        public Type getType() { return type; }
+        public Book getNewBook() { return newBook; }
+        public Book getOldBook() { return oldBook; }
+    }
+
+    public MVCExample() {
+        BookController controller = new BookController();
+        BookView view = new BookView();
+
+        controller.setView(view);
+
+        setTitle("書籍管理システム - MVCパターン実装例");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+
+        add(view);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            // MVCコンポーネントの初期化
-            TaskModel model = new TaskModel();
-            TaskView view = new TaskView(model);
-            TaskController controller = new TaskController(model, view);
-            
-            // コントローラーをビューに設定
-            view.setController(controller);
-            
-            // アプリケーション開始
-            view.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new MVCExample().setVisible(true));
     }
 }
-
-/*
- * MVCパターンの実装ポイント:
- * 
- * 1. Model（データとビジネスロジック）
- *    - データの管理とビジネスルールの実装
- *    - オブザーバーパターンによる変更通知
- *    - フィルタリングとソート機能
- *    - 統計情報の計算
- *    - データの整合性保証
- * 
- * 2. View（ユーザーインターフェイス）
- *    - GUI コンポーネントの管理
- *    - ユーザー入力の受け取り
- *    - モデルの変更を監視（Observer）
- *    - 表示の更新とレンダリング
- *    - UI状態の管理
- * 
- * 3. Controller（制御ロジック）
- *    - ModelとViewの橋渡し
- *    - ユーザーアクションの処理
- *    - ビジネスロジックの呼び出し
- *    - ダイアログの管理
- *    - データフローの制御
- * 
- * 4. 設計の利点
- *    - 関心の分離（Separation of Concerns）
- *    - 疎結合な設計
- *    - テスト容易性
- *    - 拡張性と保守性
- *    - 再利用性の向上
- * 
- * 5. パターンの活用
- *    - Observer Pattern（モデルの変更通知）
- *    - Strategy Pattern（フィルタリング戦略）
- *    - Command Pattern（ユーザーアクション）
- *    - Factory Pattern（オブジェクト生成）
- * 
- * 6. 実装の特徴
- *    - イミュータブルなデータ設計
- *    - スレッドセーフな更新処理
- *    - エラーハンドリングの充実
- *    - ユーザビリティの配慮
- *    - パフォーマンスの最適化
- */
