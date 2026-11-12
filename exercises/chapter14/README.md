@@ -11,15 +11,14 @@
 
 ## 発展課題（[advanced/](advanced/)）
 
-- 自動API仕様書生成システム
-- コードメトリクス・品質レポートシステム
-- 設計書逆生成システム
+- ゲームのセーブデータをバイナリで保存する（DataOutputStream・DataInputStream、ファイル形式の識別子と版、EOFExceptionによる破損の検出）
+- 名簿ファイルの文字エンコーディングを変換する（Windows-31JからUTF-8へ、MalformedInputExceptionと文字化け）
+- このフォルダーのJavaファイルは解答例です（課題ごとに`task1-savedata/`・`task2-encoding/`）
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- AI駆動自律ドキュメント生成システム
-- 時空間ドキュメント管理システム
-- 量子ドキュメントシステム
+- ToDoリストの保存と復元（タブ区切りのテキスト形式、壊れた行の読み飛ばし、Files.copyによるバックアップ、直列化とtransient、テキストブロックでのまとめの書き出し）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 

@@ -10,8 +10,10 @@
 
 ## 課題一覧
 
+このフォルダーには解答例のコードを置いていません。各課題の「作成するファイル」は、自分で作成するファイルの名前の例です。近い内容の解答例とテストは[solutions/](../solutions/)にあります。
+
 ### 課題1: 基本的なファイル読み書き
-**ファイル名**: `BasicFileIO.java`, `BasicFileIOTest.java`
+**作成するファイル**: `BasicFileIO.java`, `BasicFileIOTest.java`
 
 基本的なファイル読み書き操作を実装し、様々なI/O手法を理解してください。
 
@@ -75,7 +77,7 @@ Files.readAllLines使用: 89ms
 
 
 ### 課題2: ディレクトリ操作とファイル検索
-**ファイル名**: `DirectoryOperations.java`, `DirectoryOperationsTest.java`
+**作成するファイル**: `DirectoryOperations.java`, `DirectoryOperationsTest.java`
 
 ディレクトリの操作とファイル検索機能を実装してください。
 
@@ -141,7 +143,7 @@ Files.readAllLines使用: 89ms
 
 
 ### 課題3: CSVデータ処理システム
-**ファイル名**: `CsvProcessor.java`, `Employee.java`, `CsvProcessorTest.java`
+**作成するファイル**: `CsvProcessor.java`, `Employee.java`, `CsvProcessorTest.java`
 
 CSVファイルの読み書きと集計処理を実装してください。
 
@@ -212,7 +214,7 @@ CSVファイル出力:
 
 
 ### 課題4: ログファイル解析システム
-**ファイル名**: `LogAnalyzer.java`, `LogEntry.java`, `LogAnalyzerTest.java`
+**作成するファイル**: `LogAnalyzer.java`, `LogEntry.java`, `LogAnalyzerTest.java`
 
 ログファイルを解析し、統計情報を生成するシステムを実装してください。
 
