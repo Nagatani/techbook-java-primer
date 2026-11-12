@@ -22,7 +22,7 @@ JTableは表形式のデータを表示するためのコンポーネントで�
 JListは項目のリストを表示するコンポーネントで、選択可能な項目の一覧を作成できます。
 単一選択、複数選択、項目の表示の作り込みなどができます。
 
-これらのコンポーネントは、MVCアーキテクチャに基づいて設計されており、データ（Model）、表示（View）、制御（Controller）が分離されています。
+これらのコンポーネントは、MVCアーキテクチャに基づいて設計されており、データ（Model）、表示（View）、制御（Controller）が分離されています<span class="footnote">SwingはViewとControllerを1つの部品（UIデリゲート）にまとめた変形のMVCを採っています。MVCという考え方の由来は、第3章で触れました。</span>。
 この設計により、データの管理と表示を独立して扱えるので、データの持ち方を変えても表示のコードを書き換えずに済みます。
 
 ### この章を始める前に
@@ -114,12 +114,13 @@ public class BasicTableExample extends JFrame {
 
 ## テーブルのソートとフィルタリング
 
-JTableは組み込みのソート機能を提供しています。
+JTableは組み込みのソート機能を提供しています<span class="footnote">ソートとフィルタリングを受け持つ`TableRowSorter`は、Java 6で加わりました。サンプルコード20-2の`regexFilter`は入力を正規表現として扱い、先頭の`(?i)`は大文字と小文字を区別しない指定です。</span>。
 
 以下のコードは、`TableRowSorter`を使用してテーブルのソートとフィルタリングを実装する例です。
 ヘッダーをクリックすると列の値で行を並べ替え、フィルターフィールドに入力した文字列を名前に含む行だけを表示します。
 表のデータは、`AbstractTableModel`を継承した`PersonTableModel`が持ちます。
-このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます（全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります）。
+このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます。
+全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
 <span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（5、10、14〜36、70、77行目）</span>
 
@@ -221,7 +222,7 @@ public class BasicTreeExample extends JFrame {
 
 以下のコードは、右クリックメニューからノードを追加・削除できるツリーの例です。
 ポップアップメニュー、名前を編集できるノード、カスタムレンダラーを組み合わせ、ファイルエクスプローラーのような操作を実現しています。
-ノードの追加・削除は`DefaultTreeModel`を通して行い、ツリー構造の変更をビューに通知します。
+ノードの追加・削除は`DefaultTreeModel`を通して行い、ツリー構造の変更をビューに通知します<span class="footnote">表示したあとに`DefaultMutableTreeNode`の`add`で直接ノードを足すと、モデルが変更を知らないため、画面のツリーに反映されません。その場合は、`DefaultTreeModel`の`reload`などで変更を伝えます。</span>。
 
 <span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java（5〜6、9、13〜15、26〜30、86〜116、153行目）</span>
 
@@ -284,7 +285,7 @@ public class DynamicTreeExample extends JFrame {
 本節では、`JList`の項目をモデルで管理し、カスタムレンダラーで項目の表示を作り込みます。
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。
-各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、レンダラーがそれらを1つのリスト項目にまとめて表示します。
+各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、レンダラーがそれらを1つのリスト項目にまとめて表示します<span class="footnote">レンダラーは項目ごとに部品を作らず、1つの部品の内容を書き換えながら、スタンプのように全項目を順に描きます。そのため、選択状態などに応じた表示を、呼ばれるたびにすべて設定し直します。</span>。
 項目をダブルクリックすると、タスクの完了状態が切り替わります。
 
 <span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、101〜117、128〜130、133、137、141〜145、196、203行目）</span>
@@ -557,6 +558,6 @@ JTableやカスタム描画を使った画面では、描画のしくみやス�
 3. チャレンジ課題
     + 統合開発環境（IDE）風アプリケーションの構築
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter20/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 基礎課題が完了したら、第21章「ユニットテストと品質保証」に進みましょう。

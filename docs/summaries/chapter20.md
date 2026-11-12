@@ -3,15 +3,15 @@ source: manuscripts/chapter20-advanced-gui.md
 summarized: 2026-11-12
 sections:
   - key: "本章の学習目標"
-    hash: be6378cb
+    hash: d7417745
   - key: "JTableの詳細な実装"
     hash: e29758d9
   - key: "テーブルのソートとフィルタリング"
-    hash: e2de5127
+    hash: 11d4c8f2
   - key: "JTreeの実装"
-    hash: f09b5005
+    hash: b3185716
   - key: "JListの高度な使用法"
-    hash: 5f38a158
+    hash: 095258d8
   - key: "カスタムセルエディターの実装"
     hash: be1fadd0
   - key: "実践的なアプリケーション例"
@@ -21,7 +21,7 @@ sections:
   - key: "まとめ"
     hash: ab64f600
   - key: "章末演習"
-    hash: b37b493e
+    hash: 10912222
 ---
 
 # 第20章 JTableとJListの基礎 要約
