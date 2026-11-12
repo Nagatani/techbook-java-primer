@@ -5,15 +5,15 @@ sections:
   - key: "本章の学習目標"
     hash: b046d116
   - key: "イベント駆動プログラミングの理解"
-    hash: 37ae898d
+    hash: 1f01f4c0
   - key: "ボタンクリックの実装"
-    hash: 092a209b
+    hash: b98d7665
   - key: "ラムダ式による簡潔な記述"
-    hash: d064c942
+    hash: 49ee02c0
   - key: "代表的なイベントの種類"
-    hash: 6ca06a24
+    hash: 49f88219
   - key: "イベント処理のベストプラクティス"
-    hash: b8340c2c
+    hash: 22df7594
   - key: "まとめ"
     hash: cb959c2e
   - key: "章末演習"
