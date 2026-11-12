@@ -5,23 +5,23 @@ sections:
   - key: "本章の学習目標"
     hash: 0cb94cb6
   - key: "基本データ型"
-    hash: bb4fd67f
+    hash: 7ad2d8aa
   - key: "変数の宣言と初期化"
-    hash: 846a3616
+    hash: 766047ab
   - key: "演算子"
-    hash: 6e397927
+    hash: bfcd473a
   - key: "型変換"
-    hash: 632f46c8
+    hash: 4423a610
   - key: "コンソール入出力"
-    hash: 1a4ad3eb
+    hash: b1339018
   - key: "制御構造"
-    hash: 9803596f
+    hash: 261f81e9
   - key: "配列"
-    hash: a97cb577
+    hash: 9ead3203
   - key: "メソッド（staticメソッドの基本）"
     hash: 5befb8cd
   - key: "文字列処理"
-    hash: 2d27f606
+    hash: 7f54254c
   - key: "import文の使い方"
     hash: c97be75d
   - key: "よくあるコンパイルエラーとその対処法"
@@ -29,7 +29,7 @@ sections:
   - key: "まとめ"
     hash: 389d5297
   - key: "章末演習"
-    hash: 163220ca
+    hash: e8003c21
 ---
 
 # 第2章 Java基本文法 要約
