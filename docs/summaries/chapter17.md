@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: fb3738a5
   - key: "基本コンポーネントとレイアウト"
-    hash: bdc9bb16
+    hash: 66c1d18a
   - key: "カスタムコンポーネントの作成"
     hash: bcc0c3ef
   - key: "よくあるエラーと対処法"
@@ -13,7 +13,7 @@ sections:
   - key: "まとめ"
     hash: ecfa8925
   - key: "章末演習"
-    hash: 94e8a136
+    hash: 09bb5c78
 ---
 
 # 第17章 GUIプログラミングの基礎 要約
