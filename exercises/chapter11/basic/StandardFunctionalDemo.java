@@ -47,15 +47,18 @@ public class StandardFunctionalDemo {
     
     /**
      * 4. Supplier<T>の使用例
-     * ランダムなUUIDを生成
+     * 呼ばれるたびに新しい空のリストを作る
      */
     public static void demonstrateSupplier() {
-        // TODO: Supplier<String>をラムダ式で実装
-        // UUID.randomUUID().toString()を返す
-        Supplier<String> uuidGenerator = null;
+        // TODO: Supplier<List<String>>をラムダ式で実装
+        // new ArrayList<>()を返す
+        Supplier<List<String>> listFactory = null;
         
         // テスト
-        IO.println("Generated UUID: " + uuidGenerator.get());
+        List<String> first = listFactory.get();
+        first.add("A");
+        List<String> second = listFactory.get();
+        IO.println("first: " + first + ", second: " + second);
     }
     
     /**
