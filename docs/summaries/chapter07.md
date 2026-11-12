@@ -5,25 +5,25 @@ sections:
   - key: "本章の学習目標"
     hash: 8f9b41d2
   - key: "抽象化の必要性"
-    hash: fd8c7646
+    hash: 793fdc53
   - key: "抽象クラスと抽象メソッド"
-    hash: e0fbe000
+    hash: 288143c4
   - key: "インターフェイス：振る舞いの契約"
-    hash: fa66db4e
+    hash: f7f55151
   - key: "抽象クラス vs インターフェイス"
     hash: 69044bf1
   - key: "Java 8以降のインターフェイス進化"
-    hash: 0950d98d
+    hash: 3298e1d7
   - key: "高度な設計パターン"
-    hash: 9345f2d7
+    hash: 46629ce6
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 9eba983d
+    hash: e284f340
   - key: "よくあるエラーと対処法"
     hash: d79631ad
   - key: "まとめ"
     hash: ed873026
   - key: "章末演習"
-    hash: 2a8fec0c
+    hash: 9b0a3253
 ---
 
 # 第7章 抽象クラスとインターフェイス 要約
