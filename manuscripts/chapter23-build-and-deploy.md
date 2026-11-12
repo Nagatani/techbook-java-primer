@@ -136,7 +136,7 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 ```bash
 java -jar SimpleApp.jar
 ```
-多くのデスクトップ環境では、このJARファイルをダブルクリックするだけでもアプリケーションが起動します。
+多くのデスクトップ環境では、このJARファイルをダブルクリックするだけでもアプリケーションが起動します<span class="footnote">ダブルクリックで起動するのは、`.jar`の拡張子がJavaの実行環境に関連付けられている場合です。関連付けがないときやOSのセキュリティ機能に止められたときは、`java -jar`で実行します。</span>。
 これで、JDKでコンパイルしなくても、Javaの実行環境がある人ならアプリケーションを実行できるようになりました。
 
 ### 複数のクラスファイルを含むアプリケーションの例
@@ -196,7 +196,7 @@ public class TodoInputPanel extends JPanel {
 複数のクラスファイルを含む場合は、次のようにJARを作成します。
 マニフェストファイル`manifest.txt`には、ステップ3と同じ書き方で`Main-Class: TodoApp`と書いておきます。
 `main`メソッドを持つのは`TodoApp`だけなので、`Main-Class`には`TodoApp`だけを書きます。
-`TodoInputPanel.java`と`manifest.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています。
+`TodoInputPanel.java`と`manifest.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter23/23-03/`です。</span>。
 
 ```bash
 # すべてのJavaファイルをコンパイル（TodoApp.classとTodoInputPanel.classができる）
@@ -258,7 +258,7 @@ public class ResourceApp {
 
 `getResource("/icon.png")`は、クラスパスの直下から`icon.png`を探し、見つからないと`null`を返します。
 `null`をそのまま`ImageIcon`に渡すと`NullPointerException`になるため、`icon.png`はクラスファイルと同じ場所（JARにする場合はJARのなか）に置いてください。
-`icon.png`と、次のJARの作成で使う`manifest.txt`（中身は`Main-Class: ResourceApp`）は、GitHubリポジトリの全文と同じディレクトリに用意しています。
+`icon.png`と、次のJARの作成で使う`manifest.txt`（中身は`Main-Class: ResourceApp`）は、全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter23/23-04/`です。</span>。
 
 リソースを含むJARは、次のように作成します。
 
@@ -281,9 +281,9 @@ IntelliJ IDEAでは、GUI操作で実行可能JARファイルを生成できま�
 
 ## jpackageによるネイティブアプリケーション化
 
-JARファイルは便利ですが、実行するにはユーザーのPCにJavaランタイム（JRE）がインストールされている必要があります。
+JARファイルは便利ですが、実行するにはユーザーのPCにJavaランタイム（JRE）<span class="footnote">JREはJava Runtime Environmentの略です。OracleはJava 11からJREを単独では配布しておらず、アプリケーションに必要なモジュールだけを含むランタイムを`jlink`で作る方法を勧めています。</span>がインストールされている必要があります。
 
-Java 16で正式に導入された`jpackage`ツールを使えば、アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラー（Windowsの`.exe`・`.msi`、macOSの`.dmg`など）や、インストールせずに実行できるアプリケーション（macOSの`.app`など）を作成できます。これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
+Java 16で正式に導入された`jpackage`ツール<span class="footnote">`jpackage`はJava 14で試験的な機能（インキュベーター）として加わり、Java 16（JEP 392）で正式な機能になりました。内部では`jlink`を使って、アプリケーションに同梱するランタイムを作ります。</span>を使えば、アプリケーションと必要なJavaランタイムを丸ごとパッケージングし、OS標準のインストーラー（Windowsの`.exe`・`.msi`、macOSの`.dmg`など）や、インストールせずに実行できるアプリケーション（macOSの`.app`など）を作成できます。これにより、ユーザーはJavaの存在を意識することなく、普段使いのアプリケーションと同じようにインストール・実行できます。
 
 ### `jpackage`を使うための準備：入力と出力の分離
 
@@ -359,8 +359,7 @@ jpackage --type deb \
          --dest ./output
 ```
 
-コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます。
-なお、インストーラーを作るには、OSごとに追加のツールが要ります（Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`）。
+コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます<span class="footnote">インストーラーを作るには、OSごとに追加のツールが要ります。Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`を使います。</span>。
 先ほどの`--type app-image`はインストーラーではなく、インストールせずにそのまま実行できるアプリケーションのフォルダーを作ります。
 
 ## まとめ
@@ -408,4 +407,4 @@ Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用�
 3. チャレンジ課題
     + 各OS向けのネイティブインストーラー作成
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter23/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。

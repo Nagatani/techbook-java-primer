@@ -7,13 +7,13 @@ sections:
   - key: "なぜビルドと配布が必要か"
     hash: 1de35429
   - key: "実行可能JARファイルの作成"
-    hash: b85da784
+    hash: 569491c9
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: ad6cd552
+    hash: 8f021079
   - key: "まとめ"
     hash: 94022815
   - key: "章末演習"
-    hash: 12c352f3
+    hash: 54adf871
 ---
 
 # 第23章 ビルドとデプロイ 要約
