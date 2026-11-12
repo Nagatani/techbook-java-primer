@@ -2,7 +2,7 @@
 
 ## 付録Eについて
 
-本付録では、JavaのJDBC（Java Database Connectivity）を使用したデータベースプログラミングについて、実践的な内容を詳しく解説しています。
+本付録では、JavaのJDBC（Java Database Connectivity）<span class="footnote">JDBCはJDK 1.1から標準APIに含まれています。データベースごとの違いはJDBCドライバーが吸収するため、同じAPIで多くのデータベースを扱えます。</span>を使用したデータベースプログラミングについて、実践的な内容を詳しく解説しています。
 
 ### 学習内容
 

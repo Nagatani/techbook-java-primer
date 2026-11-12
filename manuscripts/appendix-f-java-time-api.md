@@ -2,7 +2,7 @@
 
 ## 付録Fについて
 
-本付録では、Java 8で導入されたjava.time APIについて、基本的な使い方から実践的な応用まで詳しく解説します。従来のjava.util.DateやCalendarクラスの問題点を解決する、現代的な日付時刻処理APIを習得することを目的とします。
+本付録では、Java 8で導入されたjava.time API<span class="footnote">java.time APIはJSR 310として策定されました。広く使われていた日付時刻ライブラリJoda-Timeの作者スティーブン・コルボーンが、仕様策定を主導しました。</span>について、基本的な使い方から実践的な応用まで詳しく解説します。従来のjava.util.DateやCalendarクラスの問題点を解決する、現代的な日付時刻処理APIを習得することを目的とします。
 
 ### 学習内容
 
