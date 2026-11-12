@@ -11,15 +11,14 @@
 
 ## 発展課題（[advanced/](advanced/)）
 
-- 高性能ログ解析システム
-- 分散ファイル同期システム
-- 高速データベースバックアップシステム
+- レジの割引ルール（独自の関数型インターフェイス、デフォルトメソッドによる組み合わせ、静的メソッド参照と特定のインスタンスのメソッド参照）
+- 成績一覧の並べ替え（Comparator.comparing・thenComparing・reversed、関数を入れたMap）
+- このフォルダーのJavaファイルは解答例です（課題ごとのサブフォルダー）
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- 超高速分散ファイルシステム
-- 量子ストレージアーキテクチャ
-- 時空間データベースシステム
+- ToDoリスト（条件を返す高階関数、Predicateのand・or・negate、FunctionのandThen、Comparator、replaceAll・removeIf）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 
