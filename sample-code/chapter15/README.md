@@ -17,18 +17,18 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [15-1](./15-01/) | SingleThreadExample.java | `java -cp out SingleThreadExample` |
+| [15-3](./15-03/) | Main.java | `java -cp out Main` |
 | [15-4](./15-04/) | UnsafeCounter.java | （mainメソッドなし） |
-| [15-9](./15-09/) | Main.java | `java -cp out Main` |
-| [15-10](./15-10/) | SynchronizedCounter.java | （mainメソッドなし） |
-| [15-11](./15-11/) | BankAccount.java | （mainメソッドなし） |
-| [15-12](./15-12/) | VolatileDemo.java | `java -cp out VolatileDemo` |
-| [15-13](./15-13/) | AtomicCounterExample.java | （mainメソッドなし） |
-| [15-14](./15-14/) | ExecutorExample.java | `java -cp out ExecutorExample` |
-| [15-15](./15-15/) | ProducerConsumerExample.java | `java -cp out ProducerConsumerExample` |
-| [15-16](./15-16/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
-| [15-17](./15-17/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
-| [15-18](./15-18/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
-| [15-19](./15-19/) | ParallelPerformanceExample.java | `java -cp out ParallelPerformanceExample` |
-| [15-20](./15-20/) | ThreadSafeSingletonExamples.java | `java -cp out ThreadSafeSingletonExamples` |
-| [15-21](./15-21/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
-| [15-22](./15-22/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |
+| [15-5](./15-05/) | SynchronizedCounter.java | （mainメソッドなし） |
+| [15-6](./15-06/) | BankAccount.java | （mainメソッドなし） |
+| [15-7](./15-07/) | VolatileDemo.java | `java -cp out VolatileDemo` |
+| [15-8](./15-08/) | AtomicCounterExample.java | （mainメソッドなし） |
+| [15-11](./15-11/) | ExecutorExample.java | `java -cp out ExecutorExample` |
+| [15-12](./15-12/) | ProducerConsumerExample.java | `java -cp out ProducerConsumerExample` |
+| [15-14](./15-14/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
+| [15-15](./15-15/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
+| [15-16](./15-16/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
+| [15-17](./15-17/) | ParallelPerformanceExample.java | `java -cp out ParallelPerformanceExample` |
+| [15-18](./15-18/) | ThreadSafeSingletonExamples.java | `java -cp out ThreadSafeSingletonExamples` |
+| [15-19](./15-19/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
+| [15-20](./15-20/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |

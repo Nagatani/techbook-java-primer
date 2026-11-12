@@ -16,7 +16,7 @@
 - パフォーマンス比較とベンチマーク
 - スレッドセーフティの保証
 
-### 2. ProducerConsumer.java - 生産者・消費者パターン
+### 2. ProducerConsumer.java - プロデューサー・コンシューマーパターン
 - BlockingQueue を使用した実装
 - wait/notify による低レベル同期
 - Semaphore を使用した実装
@@ -158,7 +158,7 @@ ThreadPoolExample.ThreadPoolComparison.testFixedThreadPool(
 
 ### 3. リアルタイムデータ処理
 ```java
-// 生産者・消費者パターンでデータストリーム処理
+// プロデューサー・コンシューマーパターンでデータストリーム処理
 ProducerConsumer.BlockingQueueProducerConsumer processor = 
     new ProducerConsumer.BlockingQueueProducerConsumer(1000, 2, 4);
 ```
