@@ -610,7 +610,10 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - `exercises/EXERCISE_STATUS.md`を更新し、旧章構成の`ADVANCED_CHALLENGE_PLAN.md`と、`check:public-code`に置き換わった`check_solutions.sh`を削除した
 - 確認: `npm run check:public-code -- exercises`で90まとまりすべてコンパイルでき、テスト907件が通る。GUIの章（第18・20・23章）はDockerのXvfbで起動を確かめた
 
-#### Issue #020: 演習の基礎課題と章ごとのREADMEに残る食い違い
+#### Issue #020: ~~演習の基礎課題と章ごとのREADMEに残る食い違い~~ ✅ **解決済み（2026-11-13、switchのガードを除く）**
+
+対応: 第9〜11・20〜22章の基礎課題のREADMEを、`basic/`にある雛形のコードに合わせて書き直し、実行例は雛形を完成させて動かした出力にした（第10章の雛形が第9章のStudentに頼っていた点、第11章のUUIDの出力、第20章の雛形のjava.util.Timerのimportも直した）。第13〜15章の基礎課題は本文で扱うAPIだけで解ける課題に直し、作り物の実行例・計測時間を、実際に動かした出力に置き換えた（第14章はFiles.walk・WatchService・JSONをやめ、本文で扱うFilesのメソッドに絞った）。第16章はUDPの解答例（`solutions/UdpServer.java`・`UdpClient.java`）と、手元で動くAPIサーバーを相手にするREST APIクライアントの解答例（`advanced/task3-rest-client/`）を加え、基礎課題と解答例のREADMEを対応させた。第18章の基礎課題は本文で扱うリスナー（Action・Item・Change・Focus・Mouse・Window）の4題に作り直して解答例を付け（Dockerの仮想ディスプレイで起動と操作を確認）、第19章の内容を使う大きな例7つは`exercises/chapter19/examples/`へ移した。第21章は存在しないファイルの一覧を直し、第22章のapi-designのREADMEから架空のタグと古いJavadocの設定を除いた。第23章の基礎課題は本文で扱う実行可能JARとリソースの課題にし、解答例のマニフェストの最後の改行（ないと最後の属性が読み飛ばされる）を補った。第14章の解答例が作る作業フォルダーは`.gitignore`に加えた。第20章のチャレンジ課題の日付は、実際の今日を使う設計のまま、別の日でも見え方が同じことをREADMEに書き足した。第10・15・18章の原稿の章末演習の課題名も合わせた。switchのガード（`when`）を本文で扱うかは著者の判断待ち
+
 - 後の章の内容を求める基礎課題
     + 第9章（Comparator.comparing、Stream API、実行のたびに変わる時間計測）、第10章（Function・Optional）、第14章（Files.walk、WatchService、JSON）、第18章（ドラッグ、元に戻す、キーバインディングは第19章）、第20章（データバインディング、ダッシュボード）、第23章（Maven・Gradle、maven-shadeのFat JAR、Java 11、JUnit 4）
 - 存在しないファイルや古い内容を挙げるREADME
@@ -621,4 +624,9 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
     + 第16章の発展課題3（REST APIクライアント）は解答例がない。PUT・DELETEを試す外部のAPIが要るため、ローカルのサーバーと組にするか検討する
     + 第20章のチャレンジ課題（ToDoリスト）は`LocalDate.now()`から見本のデータを作るため、表示される日付は実行日で変わる（READMEは2026-11-12の実行として書いた）
     + 第14章の解答例は実行したディレクトリに作業フォルダー（`savedata/`など）を作る。リポジトリ内で実行した場合に備えて`.gitignore`に加えるか検討する
-    + switchのガード（`when`）は本文のどの章でも説明していない（第8章のチャレンジ課題は条件式で代用した）
+    + switchのガード（`when`）は本文のどの章でも説明していない（第8章のチャレンジ課題は条件式で代用した）。**未解決（著者の判断待ち）**
+
+#### Issue #021: 第9〜11章の基礎課題の解答例（solutions/）が後の章の機能を使う
+- Issue #020の対応中に見つけた。第9章の`solutions/`（StudentManager・LibrarySystem・ShoppingCart・DataProcessor）はラムダ式・Stream API（第11・12章）を多く使い、基礎課題の雛形ともAPIが異なる。第10・11章の`solutions/`も同様の可能性がある
+- 第20章の`solutions/`は雛形と同じ名前だが、MVCExampleは書籍ではなくタスクを管理するなど中身が異なる（READMEにはその旨を書いた）
+- 基礎課題のREADMEは雛形に合わせてあるので、解答例を雛形に合わせて作り直すか、「参考の例」と位置づけるかを決める
