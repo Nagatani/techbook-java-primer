@@ -1,482 +1,187 @@
-# 第6章 応用課題
+# 第6章 発展課題
 
 ## 学習目標
-- finalキーワードの戦略的活用
-- 不変オブジェクトの設計と実装
-- スレッドセーフなクラス設計
-- 定数クラスとユーティリティクラスの作成
-- パフォーマンスとメモリ効率の最適化
+- 配列やリストを持つクラスを、防御的コピーで不変にする
+- 2次元配列では、外側の配列だけのコピー（浅いコピー）では足りないことを確かめる
+- 要素も不変にしておくと、リストをコピーするだけで外から変えられなくなることを理解する
+- 値を変える代わりに、新しいオブジェクトを返すメソッド（with系のメソッド）を書く
+- `final`のフィールドでも、配列やリストの中身は書き換えられることを理解する
 
 ## 課題一覧
 
-### 課題1: 不変設定管理クラス
-**ファイル名**: `ImmutableConfiguration.java`
+### 課題1: 不変の時間割
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task1-timetable/
+├── Lesson.java            1コマの授業（不変クラス）
+├── Timetable.java         1週間の時間割（不変クラス）
+├── ShallowTimetable.java  よくない例（浅いコピーの時間割）
+└── TimetableApp.java      mainメソッド
+```
 
-アプリケーションの設定を安全に管理する不変クラスを作成してください。
+月曜から金曜、1日4コマの時間割を、`Lesson`の2次元配列で持つ不変クラスとして作成してください。
+前期の時間割をもとに後期の時間割を作っても、前期の時間割が変わらないようにします。
 
 **要求仕様**:
-- 設定値の変更不可能性
-- ビルダーパターンによる柔軟な構築
-- デフォルト値の適切な管理
-- 設定の検証とバリデーション
-
-**不変性要件**:
-- 一度作成された設定は変更不可
-- 内部コレクションの外部変更防止
-- スレッドセーフな設計
-- メモリ効率の最適化
+- `Lesson`（授業）
+    - 科目名と教室を持つ不変クラス（`final`クラス、`private final`のフィールド、setterなし）
+- `Timetable`（時間割）
+    - `final`クラスにし、`Lesson[][]`を`private final`のフィールドで持つ。授業のないコマは`null`
+    - コンストラクターで、受け取った2次元配列を行ごとにコピーする（深いコピー）。5日 × 4コマでないときは`IllegalArgumentException`を投げる
+    - 引数のないコンストラクターは、`this(...)`で空の時間割を作る
+    - 曜日の番号を`public static final`の定数（`MON`〜`FRI`）で用意する。曜日の名前の配列は、`final`でも中身を書き換えられるので`private`にし、`dayName(番号)`で返す
+    - `getLesson(曜日, 時限)`で1コマを返す。配列全体は`toArray()`で、行ごとにコピーしたものを返す
+    - `withLesson(曜日, 時限, 授業)`と`withoutLesson(曜日, 時限)`は、1コマを変えた新しい時間割を返す。元の時間割は変わらない
+    - コマ数を数えるメソッドと、時間割を表示するメソッドを持つ
+- `ShallowTimetable`（よくない例）
+    - 外側の配列だけをコピーし、渡した配列を書き換えると時間割が変わってしまうことを、`Timetable`と比べて確かめる
 
 **実行例**:
 ```
-=== 不変設定管理システム ===
+=== 前期の時間割 ===
+  月: 数学(201) 英語(305) ---- ----
+  火: ---- ---- Java(演習室) Java(演習室)
+  水: ---- ---- ---- ----
+  木: 体育(体育館) ---- ---- ----
+  金: ---- ---- ---- ----
+  （5コマ）
 
-AppConfig Builder v1.0
+=== 渡した配列を書き換える ===
+月曜1限 Timetable: 数学(201)
+月曜1限 ShallowTimetable: 体育(体育館)
 
-=== 設定構築 ===
-設定ビルダー開始...
+=== 受け取った配列を書き換える ===
+火曜3限 受け取った配列: null
+火曜3限 Timetable: Java(演習室)
 
-✓ データベース設定:
-  URL: jdbc:mysql://localhost:3306/app
-  ユーザー: admin
-  接続プール: 10
+=== 後期の時間割（前期をもとに作る） ===
+  月: 数学(201) 英語(305) ---- ----
+  火: ---- ---- Java(演習室) Java(演習室)
+  水: 統計学(202) ---- ---- ----
+  木: ---- ---- ---- ----
+  金: ---- ---- ---- 英語(305)
+  （6コマ）
+前期の時間割は変わらない:
+  月: 数学(201) 英語(305) ---- ----
+  火: ---- ---- Java(演習室) Java(演習室)
+  水: ---- ---- ---- ----
+  木: 体育(体育館) ---- ---- ----
+  金: ---- ---- ---- ----
+  （5コマ）
 
-✓ サーバー設定:
-  ポート: 8080
-  ホスト: localhost  
-  SSL有効: true
-
-✓ キャッシュ設定:
-  タイプ: Redis
-  TTL: 3600秒
-  最大サイズ: 1000MB
-
-=== 不変オブジェクト生成 ===
-○ 設定オブジェクト作成完了
-ハッシュコード: 1547832946
-
-=== 設定値参照 ===
-現在の設定:
-データベースURL: jdbc:mysql://localhost:3306/app
-サーバーポート: 8080
-キャッシュTTL: 3600秒
-SSL設定: 有効
-
-=== 不変性テスト ===
-× 設定変更試行: 
-「ポート番号を9090に変更」
-→ エラー: 設定は変更できません（不変オブジェクト）
-
-× 内部リスト変更試行:
-「許可IPリストに新しいIPを追加」  
-→ エラー: 防御的コピーにより変更不可
-
-○ 新しい設定作成:
-「既存設定をベースに新しい設定を構築」
-→ 成功: 新しい不変オブジェクト生成
-
-=== スレッドセーフ検証 ===
-マルチスレッドテスト実行中...
-
-スレッド1: 設定読み取り - 成功
-スレッド2: 設定読み取り - 成功  
-スレッド3: 設定読み取り - 成功
-スレッド4: 設定読み取り - 成功
-
-結果: データ競合なし、完全スレッドセーフ
-
-=== メモリ効率検証 ===
-メモリ使用量:
-設定オブジェクト: 2.1KB
-文字列プール最適化: 有効
-重複データ削減: 85%
+水曜1限（後期）: 統計学、教室 202
 ```
 
-**評価ポイント**:
-- 完全な不変性の実現
-- ビルダーパターンの実装
-- スレッドセーフティの確保
-- メモリ効率の最適化
+渡した配列の月曜1限を体育に書き換えると、行をコピーしていない`ShallowTimetable`だけが体育に変わります。
 
+### 課題2: 不変の注文
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task2-order/
+├── OrderLine.java  注文の1行（商品名・単価・個数、不変クラス）
+├── Order.java      1件の注文（不変クラス）
+└── OrderApp.java   mainメソッド
+```
 
-
-### 課題2: 金融取引記録システム
-**ファイル名**: `FinancialTransaction.java`
-
-金融取引の完全性を保証する不変取引記録システムを作成してください。
+文房具店の注文を、`List<OrderLine>`を持つ不変クラスとして作成してください。
+注文を変えると新しい注文ができ、変更前の注文はそのまま残るようにします。
 
 **要求仕様**:
-- 取引データの改ざん防止
-- 取引履歴の不変性
-- 監査証跡の完全性
-- 暗号学的ハッシュによる検証
-
-**セキュリティ要件**:
-- 取引の後方変更不可
-- チェーン構造による整合性
-- デジタル署名の実装
-- 不正検出機能
+- `OrderLine`（注文の1行）
+    - 商品名・単価・個数を持つ不変クラス。単価と個数が0以下なら`IllegalArgumentException`を投げる
+    - 小計（単価 × 個数）と、個数を変えた新しい行を返す`withQuantity`を持つ
+    - `equals`・`hashCode`・`toString`をオーバーライドする（第5章の書き方）
+- `Order`（注文）
+    - 注文番号・お客さんの名前・`List<OrderLine>`を`private final`で持つ
+    - コンストラクターでリストをコピーし、`getLines()`もコピーを返す
+    - `withLine(行)`は、行を足した新しい注文を返す。同じ商品があれば個数を足す
+    - `withQuantity(商品名, 個数)`は、個数を変えた新しい注文を返す。0なら行を消す。商品がなければ、新しいオブジェクトを作らずに自分自身を返す
+    - 合計金額を計算するメソッドと、注文を表示するメソッドを持つ
 
 **実行例**:
 ```
-=== 金融取引記録システム ===
+=== 最初の注文 ===
+  注文 A-001（山田様）
+    ノート 150円 × 3 = 450円
+    ボールペン 120円 × 2 = 240円
+    合計 690円
 
-SecureTransaction Ledger v3.0
+=== 渡したリストに行を足す ===
+渡したリスト: 3行、注文: 2行
 
-=== 取引開始 ===
-取引ID生成: TXN-20240705-001
-ハッシュ値: a7f3c891b2d4e560f9c8...
+=== 受け取ったリストから行を消す ===
+受け取ったリスト: 0行、注文: 2行
 
-✓ 送金取引記録:
-  送金者: ACC-001 (田中太郎)
-  受取者: ACC-002 (佐藤花子)
-  金額: ¥50,000
-  手数料: ¥200
-  タイムスタンプ: 2024-07-05T10:30:15Z
+=== 注文を変える（新しい注文ができる） ===
+変更後:
+  注文 A-001（山田様）
+    ノート 150円 × 5 = 750円
+    付箋 200円 × 1 = 200円
+    合計 950円
+変更前（そのまま残る）:
+  注文 A-001（山田様）
+    ノート 150円 × 3 = 450円
+    ボールペン 120円 × 2 = 240円
+    合計 690円
+差額: 260円
 
-=== 不変性確認 ===
-取引確定後の変更試行:
-
-× 金額変更試行: ¥50,000 → ¥45,000
-→ エラー: final フィールドは変更不可
-
-× 受取者変更試行: 佐藤花子 → 山田次郎  
-→ エラー: 不変オブジェクトは変更不可
-
-× タイムスタンプ変更試行:
-→ エラー: 時刻の改ざんは検出されました
-
-○ 取引の完全性: 保証されています
-
-=== ブロックチェーン風検証 ===
-ブロック1 (Genesis):
-  前ブロックハッシュ: 0000000000000000
-  取引数: 0
-  ハッシュ: b4c7e9d1a8f2...
-
-ブロック2:
-  前ブロックハッシュ: b4c7e9d1a8f2...
-  取引数: 1 (TXN-20240705-001)
-  ハッシュ: f8a3c2e7b9d4...
-
-ブロック3:
-  前ブロックハッシュ: f8a3c2e7b9d4...
-  取引数: 2 (TXN-20240705-002, TXN-20240705-003)
-  ハッシュ: d7e9f4c8a1b5...
-
-=== 監査ログ ===
-監査証跡検証:
-○ ハッシュチェーン: 完全
-○ 時系列整合性: 正常
-○ デジタル署名: 有効
-○ 改ざん検出: 異常なし
-
-統計情報:
-- 総取引数: 3件
-- 検証済み取引: 3件  
-- 無効取引: 0件
-- システム信頼性: 100%
-
-=== 不正検出テスト ===
-注意: 故意の改ざんテスト:
-
-ブロック2のハッシュを手動変更...
-→ チェーン検証: 失敗
-→ 異常検出: ブロック2-3間で不整合
-
-自動修復試行...
-→ エラー: 不変データのため修復不可
-→ 対処: システム管理者に通知済み
+=== ない商品の個数を変える ===
+同じオブジェクトが返る: true
 ```
 
-**評価ポイント**:
-- 金融レベルのセキュリティ
-- 暗号学的検証の実装
-- 改ざん検出機能
-- 監査証跡の完全性
+## コンパイルと実行
 
+課題ごとのフォルダーで、次のように実行します。
 
+```bash
+# 課題1（task1-timetable/で）
+javac *.java
+java TimetableApp
 
-### 課題3: マルチスレッド対応キャッシュシステム
-**ファイル名**: `ThreadSafeCache.java`
-
-高性能でスレッドセーフなキャッシュシステムを作成してください。
-
-**要求仕様**:
-- 不変キャッシュエントリ
-- 並行アクセスの安全性
-- LRU（Least Recently Used）アルゴリズム
-- 統計情報の収集
-
-**パフォーマンス要件**:
-- 高速読み取り性能
-- 効率的なメモリ使用
-- ガベージコレクション負荷軽減
-- スケーラブルな設計
-
-**実行例**:
+# 課題2（task2-order/で）
+javac *.java
+java OrderApp
 ```
-=== マルチスレッドキャッシュシステム ===
-
-HyperCache Pro v2.5
-
-=== キャッシュ初期化 ===
-✓ 最大容量: 1000エントリ
-✓ TTL（生存時間）: 300秒
-✓ LRU削除ポリシー: 有効
-✓ スレッドセーフティ: 有効
-
-=== データ格納テスト ===
-データ格納中...
-
-✓ "user:1001" → UserData(田中太郎, age=25)
-✓ "product:2001" → ProductData(ノートPC, ¥98000)  
-✓ "session:abc123" → SessionData(10.0.0.1, active)
-
-=== 並行アクセステスト ===
-100スレッドで同時アクセス開始...
-
-スレッド-01: GET user:1001 → HIT (0.02ms)
-スレッド-02: PUT user:1002 → SUCCESS (0.05ms)
-スレッド-03: GET product:2001 → HIT (0.01ms)
-スレッド-04: GET user:9999 → MISS (0.03ms)
-...
-スレッド-100: GET session:abc123 → HIT (0.02ms)
-
-同時アクセス結果:
-- 総アクセス: 10,000回
-- データ競合: 0件
-- 平均応答時間: 0.025ms
-- エラー率: 0%
-
-=== LRU削除テスト ===
-メモリ上限テスト...
-
-現在のエントリ数: 1000 (上限到達)
-新規データ追加: "temp:001" → TempData(一時的)
-
-LRU削除実行:
-- 削除対象: "old:999" (最終アクセス: 285秒前)
-- 新規追加: "temp:001" 
-- エントリ数: 1000 (維持)
-
-=== パフォーマンス統計 ===
-キャッシュ統計 (過去1時間):
-
-ヒット率: 94.7%
-- ヒット数: 47,350回
-- ミス数: 2,650回
-- 総アクセス: 50,000回
-
-応答時間分布:
-- 平均: 0.024ms
-- 50%tile: 0.020ms  
-- 95%tile: 0.045ms
-- 99%tile: 0.087ms
-
-メモリ使用量:
-- 現在使用量: 45.2MB
-- 最大使用量: 50.0MB
-- 効率性: 90.4%
-
-=== 障害耐性テスト ===
-注意: 異常シナリオテスト:
-
-テスト1: メモリ不足シミュレーション
-→ 結果: 自動削除により正常動作継続
-
-テスト2: 大量同時アクセス (1000スレッド)
-→ 結果: デッドロックなし、正常処理
-
-テスト3: 不正データ投入
-→ 結果: バリデーションにより拒否
-
-○ すべてのテストに合格
-
-=== GC負荷分析 ===
-ガベージコレクション影響:
-
-GC前後のメモリ変化:
-- GC実行前: 128MB
-- GC実行後: 84MB  
-- 削減量: 44MB (34%)
-
-オブジェクト生成数:
-- 短命オブジェクト: 最小化済み
-- 長命オブジェクト: キャッシュエントリのみ
-- GC負荷: 5% (目標: <10%)
-```
-
-**評価ポイント**:
-- 高性能な並行処理
-- メモリ効率の最適化
-- 実用的なキャッシュ機能
-- 包括的な統計収集
 
 ## 実装のヒント
 
-### 課題1のヒント
 ```java
-public final class ImmutableConfiguration {
-    private final String databaseUrl;
-    private final int serverPort;
-    private final boolean sslEnabled;
-    private final List<String> allowedIps; // 防御的コピー必須
-    
-    // プライベートコンストラクタ
-    private ImmutableConfiguration(Builder builder) {
-        this.databaseUrl = builder.databaseUrl;
-        this.serverPort = builder.serverPort;
-        this.sslEnabled = builder.sslEnabled;
-        // 防御的コピー
-        this.allowedIps = List.copyOf(builder.allowedIps);
+public Timetable(Lesson[][] source) {
+    Lesson[][] copy = new Lesson[DAYS][];
+    for (int day = 0; day < DAYS; day++) {
+        copy[day] = Arrays.copyOf(source[day], PERIODS);  // 行ごとにコピーする
     }
-    
-    // 防御的コピーでの取得
-    public List<String> getAllowedIps() {
-        return List.copyOf(allowedIps);
-    }
-    
-    // ビルダーパターン
-    public static class Builder {
-        private String databaseUrl;
-        private int serverPort = 8080; // デフォルト値
-        private boolean sslEnabled = false;
-        private List<String> allowedIps = new ArrayList<>();
-        
-        public Builder databaseUrl(String url) {
-            this.databaseUrl = url;
-            return this;
-        }
-        
-        public ImmutableConfiguration build() {
-            validate();
-            return new ImmutableConfiguration(this);
-        }
-        
-        private void validate() {
-            if (databaseUrl == null) {
-                throw new IllegalStateException("Database URL is required");
-            }
-        }
-    }
+    this.lessons = copy;
 }
 ```
 
-### 課題2のヒント
-```java
-public final class Transaction {
-    private final String transactionId;
-    private final String fromAccount;
-    private final String toAccount;
-    private final BigDecimal amount;
-    private final long timestamp;
-    private final String previousHash;
-    private final String signature;
-    
-    // パッケージプライベートコンストラクタ
-    Transaction(String id, String from, String to, BigDecimal amount, String prevHash) {
-        this.transactionId = id;
-        this.fromAccount = from;
-        this.toAccount = to;
-        this.amount = amount;
-        this.timestamp = System.currentTimeMillis();
-        this.previousHash = prevHash;
-        this.signature = calculateSignature();
-    }
-    
-    private String calculateSignature() {
-        String data = transactionId + fromAccount + toAccount + 
-                     amount.toString() + timestamp + previousHash;
-        return Integer.toHexString(data.hashCode()); // 簡易実装
-    }
-    
-    // ハッシュチェーン検証
-    public boolean isValid(String expectedPreviousHash) {
-        return this.previousHash.equals(expectedPreviousHash) &&
-               this.signature.equals(calculateSignature());
-    }
-}
-```
-
-### 課題3のヒント
-```java
-public final class ThreadSafeCache<K, V> {
-    private final int maxSize;
-    private final long ttlMillis;
-    private final ConcurrentHashMap<K, CacheEntry<V>> cache;
-    private final AtomicLong hitCount = new AtomicLong(0);
-    private final AtomicLong missCount = new AtomicLong(0);
-    
-    public ThreadSafeCache(int maxSize, long ttlMillis) {
-        this.maxSize = maxSize;
-        this.ttlMillis = ttlMillis;
-        this.cache = new ConcurrentHashMap<>(maxSize);
-    }
-    
-    public Optional<V> get(K key) {
-        CacheEntry<V> entry = cache.get(key);
-        if (entry != null && !entry.isExpired()) {
-            hitCount.incrementAndGet();
-            entry.updateAccessTime(); // LRU更新
-            return Optional.of(entry.getValue());
-        } else {
-            missCount.incrementAndGet();
-            if (entry != null) {
-                cache.remove(key); // 期限切れエントリ削除
-            }
-            return Optional.empty();
-        }
-    }
-    
-    public void put(K key, V value) {
-        if (cache.size() >= maxSize) {
-            evictLRU(); // LRU削除
-        }
-        cache.put(key, new CacheEntry<>(value, ttlMillis));
-    }
-    
-    private static final class CacheEntry<V> {
-        private final V value;
-        private final long creationTime;
-        private final long ttl;
-        private volatile long lastAccessTime;
-        
-        CacheEntry(V value, long ttl) {
-            this.value = value;
-            this.creationTime = System.currentTimeMillis();
-            this.ttl = ttl;
-            this.lastAccessTime = creationTime;
-        }
-        
-        boolean isExpired() {
-            return System.currentTimeMillis() - creationTime > ttl;
-        }
-        
-        void updateAccessTime() {
-            this.lastAccessTime = System.currentTimeMillis();
-        }
-        
-        V getValue() { return value; }
-        long getLastAccessTime() { return lastAccessTime; }
-    }
-}
-```
+- 2次元配列は「配列の配列」なので、`Arrays.copyOf(source, source.length)`でコピーされるのは各行への参照だけになる。行の中身は呼び出し側と共有されたままで、これが`ShallowTimetable`の問題
+- `Lesson`や`OrderLine`は不変なので、配列やリストの要素そのものはコピーしなくてよい。要素が可変なクラスだと、要素もコピーしなければ外から変えられてしまう
+- with系のメソッドは「コピーを作る → コピーを変える → コピーから新しいオブジェクトを作る」の順に書く。`this`のフィールドには代入しない
+- 変更できないリストを返す方法として、第6章の「防御的コピーのコストと注意点」で`List.copyOf`を学んだ。コピーを返す代わりに使ってもよい。ただし変更しようとすると例外になり、例外の扱いは第13章で学ぶ
+- `List`と`ArrayList`は第9章で学ぶ。ここでは`add`・`get`・`set`・`remove`・`size`と拡張for文だけを使う
 
 ## 応用のポイント
 
-1. **不変性の設計**: オブジェクトの状態を変更不可能にする設計パターン
-2. **スレッドセーフティ**: 並行アクセスでも安全なデータ構造
-3. **メモリ効率**: オブジェクト生成コストとGC負荷の最適化
-4. **セキュリティ**: データの完全性と改ざん防止機能
-5. **パフォーマンス**: 高速アクセスと効率的なデータ管理
+1. コピーの深さ
+    - どこまでコピーすれば外から変えられなくなるかは、要素が可変かどうかで決まる。2次元配列の行は可変なのでコピーし、不変な`Lesson`はコピーしない
+2. 変更前が残る
+    - with系のメソッドで変更すると、変更前の時間割や注文がそのまま残る。前期と後期を並べたり、変更前と変更後の差額を計算したりできる
+3. `final`の範囲
+    - `final`が守るのは「フィールドがどのオブジェクトを指すか」だけで、配列やリストの中身は守らない。中身を守るのは防御的コピー
 
-## ○ 完了チェックリスト
+## 発展（任意）
 
-- [ ] 課題1: 不変設定管理クラスが正常に動作する
-- [ ] 課題2: 金融取引記録システムが実装できた
-- [ ] 課題3: マルチスレッド対応キャッシュシステムが動作する
-- [ ] finalキーワードが適切に使用されている
-- [ ] 不変オブジェクトが正しく実装されている
-- [ ] スレッドセーフティが確保されている
+- 課題1に、2つの時間割で授業が入っているコマが重なるかを調べるメソッドを加える
+- 課題2の`OrderLine`を可変クラス（setterあり）に変えて、`Order`がリストをコピーしていても外から合計金額を変えられることを確かめる。そのうえで、どうすれば防げるかを考える
+- 課題2に、注文を確定した日を`java.time.LocalDate`で持たせる。`LocalDate`は不変なのでコピーが要らないことを確かめる
 
-**次のステップ**: 応用課題が完了したら、challenge/のチャレンジ課題に挑戦してみましょう！
+## 完了チェックリスト
+
+- [ ] 渡した配列・リストを書き換えても、時間割や注文が変わらない
+- [ ] 受け取った配列・リストを書き換えても、時間割や注文が変わらない
+- [ ] with系のメソッドで変更しても、元のオブジェクトが変わらない
+- [ ] クラスが`final`で、フィールドがすべて`private final`、setterがない
+- [ ] `ShallowTimetable`で、浅いコピーでは足りないことを確かめた
+
+**次のステップ**: 発展課題が完了したら、challenge/のチャレンジ課題に挑戦してみましょう。
