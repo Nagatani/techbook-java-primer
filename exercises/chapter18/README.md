@@ -38,6 +38,17 @@
 - **UI要素**: イベントログ、リアルタイム統計、インタラクティブテストパネル
 - **学習ポイント**: MouseListener、KeyListener、FocusListener の実装
 
+### 発展課題（[advanced/](advanced/)）
+
+- ストップウォッチ（javax.swing.Timer、状態に合わせたボタンの切り替え、ラップの記録）
+- 長さの単位換算（ActionListener・ItemListener、入力の検査とエラー表示）
+- このフォルダーのJavaファイルは解答例です
+
+### チャレンジ課題（[challenge/](challenge/)）
+
+- 制限時間つきクイズ（ボタンと数字キーでの回答、Timerによる制限時間、終了時の確認）
+- このフォルダーのJavaファイルは解答例です
+
 ## 実装のベストプラクティス
 
 ### 1. イベントリスナーの効率的な実装

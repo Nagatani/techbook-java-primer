@@ -1,640 +1,152 @@
-# 第18章 応用課題
+# 第18章 発展課題
 
 ## 学習目標
-- 高度なイベント処理アーキテクチャ
-- 非同期・並行イベント処理
-- カスタムイベントシステム設計
-- リアルタイムイベント分析
-- エンタープライズイベント駆動設計
+- ボタンのクリックをActionListenerで受け取り、ラムダ式で短く書く
+- アプリの状態（計測中かどうか、入力された値）をフィールドに持ち、イベントのたびに表示を作り直す
+- `javax.swing.Timer`で、一定時間ごとの処理をEDT上で動かす
+- ActionListener・ItemListenerなど、部品ごとに合ったリスナーを選ぶ
+- 計算や状態の管理をGUIでないクラスに分け、画面のクラスはイベントと表示に専念させる
 
 ## 課題一覧
 
-### 課題1: 企業級イベント駆動アーキテクチャ
-**ファイル名**: `EnterpriseEventDrivenArchitecture.java`
+### 課題1: ストップウォッチ
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task1-stopwatch/
+├── StopwatchModel.java  経過時間とラップを管理するクラス（GUIなし）
+└── StopwatchApp.java    画面とイベント処理、mainメソッド
+```
 
-大規模システム向けの包括的なイベント駆動アーキテクチャを実装してください。
+0.1秒単位で時間を計るストップウォッチを作成してください。
+時間は「0.1秒を1とする整数」で数え、表示のときに「分:秒.1/10秒」の形に直します。
 
 **要求仕様**:
-- 非同期イベント処理
-- イベントソーシング
-- CQRS (Command Query Responsibility Segregation)
-- 分散イベント処理
-
-**システム構成**:
-- イベントストア
-- コマンドハンドラー
-- イベントハンドラー
-- プロジェクション管理
+- `StopwatchModel`（GUIに依存しない）
+    - 計測中かどうか、経過時間（0.1秒単位の整数）、ラップの記録を持つ
+    - `start`、`stop`、`tick`（計測中なら経過時間を1増やす）、`lap`（計測中だけ記録できる）、`reset`（停止中だけできる）を持つ
+    - 0.1秒単位の値を`01:03.7`の形の文字列にする静的メソッド`format`を持つ
+- `StopwatchApp`（画面）
+    - 経過時間を大きな文字で表示し、その下に「開始」「ラップ」「リセット」のボタンを置く
+    - `javax.swing.Timer`を100ミリ秒ごとに動かし、そのたびに`tick`を呼んで表示を更新する
+    - 開始ボタンは押すたびに「停止」と切り替わる。いったん止めたあとは「再開」と表示する
+    - 計測中でなければラップボタンを押せない。止まっていて、経過時間が0でないときだけリセットボタンを押せる（`setEnabled`）
+    - ラップを押すと、区間の長さとそれまでの経過時間を下の一覧に1行ずつ追加する
 
 **実行例**:
+
+`java StopwatchApp`を実行すると「ストップウォッチ」というウィンドウが開きます。
+
+- 開いた直後は`00:00.0`と表示され、「開始」ボタンだけが押せる。「ラップ」と「リセット」は灰色になっている
+- 「開始」を押すと表示が0.1秒ごとに進み、ボタンが「停止」に変わる。「ラップ」が押せるようになる
+- 12.5秒の時点と1分16.2秒の時点で「ラップ」を押すと、下の一覧が次のようになる
+
 ```
-=== 企業級イベント駆動アーキテクチャ ===
+ラップ1  00:12.5  (経過 00:12.5)
+ラップ2  01:03.7  (経過 01:16.2)
+```
 
-EventDriven Enterprise v3.0
+- 「停止」を押すと表示が止まり、ボタンが「再開」に変わる。「ラップ」は押せなくなり、「リセット」が押せるようになる
+- 「リセット」を押すと表示が`00:00.0`に戻り、一覧が空になる。ボタンは「開始」に戻る
 
-=== イベントソーシングシステム ===
-大容量イベント処理:
+### 課題2: 長さの単位換算
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task2-unit-converter/
+├── LengthUnit.java        長さの単位（列挙型）
+├── LengthConverter.java   入力の検査・換算・表示用の丸め（GUIなし）
+└── UnitConverterApp.java  画面とイベント処理、mainメソッド
+```
 
-システム構成:
-イベントストア: PostgreSQL + EventStore
-メッセージブローカー: Apache Kafka
-イベント処理: 4コア並行処理
-スループット: 100,000 events/sec
+数値と単位を選ぶと、別の単位に換算した結果を表示するプログラムを作成してください。
+「換算」ボタンを押したときだけでなく、入力や単位を変えたときにも結果を計算し直します。
 
-イベント統計:
-総イベント数: 12,847,562件
-処理待ちイベント: 234件
-エラーイベント: 12件 (0.0001%)
-平均処理時間: 3.2ms
+**要求仕様**:
+- `LengthUnit`は、ミリメートル・センチメートル・メートル・キロメートル・インチ・フィート・マイルを表す列挙型にする。1単位が何メートルかを持ち、`toString`で「インチ (in)」の形を返す
+- `LengthConverter`（GUIに依存しない）
+    - `parse`は入力の文字列を0以上の数に変換する。空、数値でない、負の数のときは、理由を書いたメッセージ付きの`IllegalArgumentException`を投げる
+    - `convert`は、いったんメートルに直してから目的の単位に直す
+    - `format`は小数点以下を指定の桁に丸め、末尾の0を取って文字列にする
+- `UnitConverterApp`（画面）
+    - 値の入力欄、換算前と換算後の単位を選ぶ`JComboBox`、「換算」「単位を入れ替え」ボタン、「小数点以下2桁に丸める」チェックボックスを置く
+    - 入力欄でEnterキーを押したとき、単位を選び直したとき（ActionListener）、チェックボックスを切り替えたとき（ItemListener）に計算し直す
+    - 入力が正しくなければ、結果を消して赤い文字でメッセージを表示し、入力欄の背景を薄い赤にする
+    - 丸めないときは小数点以下6桁まで表示する
 
-=== CQRS実装 ===
-コマンド・クエリ分離:
+**実行例**:
+
+`java UnitConverterApp`を実行すると「長さの単位換算」というウィンドウが開きます。
+開いた直後は値が`1`、単位が「インチ (in)」から「センチメートル (cm)」になっていて、結果欄に`1 in = 2.54 cm`と表示されています。
+
+- 値を`5`、換算前を「キロメートル (km)」、換算後を「マイル (mi)」にすると、結果が`5 km = 3.106856 mi`になる
+- 「小数点以下2桁に丸める」にチェックを入れると、ボタンを押さなくても`5 km = 3.11 mi`に変わる
+- 「単位を入れ替え」を押すと、換算前が「マイル (mi)」、換算後が「キロメートル (km)」になり、`5 mi = 8.05 km`と表示される
+- 値を`abc`にしてEnterキーを押すと、結果が消え、赤い文字で「「abc」は数値ではありません」と表示される。入力欄の背景が薄い赤になる
+- 値を`-3`にすると「0以上の数を入力してください」、空にすると「値を入力してください」と表示される
+
+## コンパイルと実行
+
+課題ごとのフォルダーでコンパイルし、実行します。
+
+```bash
+cd task1-stopwatch
+javac *.java
+java StopwatchApp
+```
+
+```bash
+cd task2-unit-converter
+javac *.java
+java UnitConverterApp
+```
+
+## 実装のヒント
 
 ```java
-public class EnterpriseEventDrivenSystem {
-    private final EventStore eventStore;
-    private final CommandBus commandBus;
-    private final EventBus eventBus;
-    private final ProjectionManager projectionManager;
-    private final EventProcessor eventProcessor;
-    
-    public EnterpriseEventDrivenSystem() {
-        // イベントストア初期化
-        this.eventStore = new PostgreSQLEventStore();
-        
-        // コマンド・イベントバス
-        this.commandBus = new AsyncCommandBus();
-        this.eventBus = new KafkaEventBus();
-        
-        // プロジェクション管理
-        this.projectionManager = new ProjectionManager();
-        
-        // イベント処理エンジン
-        this.eventProcessor = new ConcurrentEventProcessor(4);
-        
-        setupEventHandlers();
-        startEventProcessing();
-    }
-    
-    private void setupEventHandlers() {
-        // コマンドハンドラー登録
-        commandBus.registerHandler(CreateUserCommand.class, 
-            new CreateUserCommandHandler(eventStore));
-        commandBus.registerHandler(UpdateUserCommand.class,
-            new UpdateUserCommandHandler(eventStore));
-        commandBus.registerHandler(DeleteUserCommand.class,
-            new DeleteUserCommandHandler(eventStore));
-        
-        // イベントハンドラー登録
-        eventBus.subscribe(UserCreatedEvent.class,
-            new UserCreatedEventHandler(projectionManager));
-        eventBus.subscribe(UserUpdatedEvent.class,
-            new UserUpdatedEventHandler(projectionManager));
-        eventBus.subscribe(UserDeletedEvent.class,
-            new UserDeletedEventHandler(projectionManager));
-        
-        // ドメインイベントハンドラー
-        eventBus.subscribe(UserEmailChangedEvent.class,
-            new SendEmailChangeNotificationHandler());
-        eventBus.subscribe(UserPasswordChangedEvent.class,
-            new SendSecurityNotificationHandler());
-    }
-    
-    private void startEventProcessing() {
-        // 非同期イベント処理開始
-        eventProcessor.start();
-        
-        // イベントストリーム監視
-        EventStreamMonitor monitor = new EventStreamMonitor(eventStore);
-        monitor.addListener(this::handleNewEvents);
-        monitor.start();
-        
-        // デッドレターキュー監視
-        DeadLetterQueueMonitor dlqMonitor = new DeadLetterQueueMonitor();
-        dlqMonitor.addListener(this::handleFailedEvents);
-        dlqMonitor.start();
-    }
-    
-    public CompletableFuture<CommandResult> executeCommand(Command command) {
-        return commandBus.send(command)
-            .thenApply(this::handleCommandResult)
-            .exceptionally(this::handleCommandError);
-    }
-    
-    private CommandResult handleCommandResult(Object result) {
-        if (result instanceof DomainEvent[]) {
-            DomainEvent[] events = (DomainEvent[]) result;
-            
-            // イベント永続化
-            CompletableFuture<Void> storeEvents = 
-                eventStore.saveEventsAsync(Arrays.asList(events));
-            
-            // イベント発行
-            CompletableFuture<Void> publishEvents = storeEvents
-                .thenCompose(v -> publishEventsAsync(events));
-            
-            return CommandResult.success(publishEvents);
-        }
-        return CommandResult.success();
-    }
-    
-    private CompletableFuture<Void> publishEventsAsync(DomainEvent[] events) {
-        List<CompletableFuture<Void>> publishTasks = Arrays.stream(events)
-            .map(event -> eventBus.publishAsync(event))
-            .collect(Collectors.toList());
-        
-        return CompletableFuture.allOf(
-            publishTasks.toArray(new CompletableFuture[0]));
-    }
-}
+// 0.1秒ごとにEDT上で呼ばれる。ラベルを直接書き換えてよい
+timer = new Timer(100, e -> {
+    model.tick();
+    timeLabel.setText(StopwatchModel.format(model.getElapsedTenths()));
+});
 
-// 高性能イベントストア
-public class PostgreSQLEventStore implements EventStore {
-    private final DataSource dataSource;
-    private final EventSerializer serializer;
-    private final ExecutorService executorService;
-    
-    public PostgreSQLEventStore() {
-        this.dataSource = createDataSource();
-        this.serializer = new JsonEventSerializer();
-        this.executorService = Executors.newFixedThreadPool(10);
+startStopButton.addActionListener(e -> {
+    if (model.isRunning()) {
+        model.stop();
+        timer.stop();
+    } else {
+        model.start();
+        timer.start();
     }
-    
-    @Override
-    public CompletableFuture<Void> saveEventsAsync(List<DomainEvent> events) {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection conn = dataSource.getConnection()) {
-                conn.setAutoCommit(false);
-                
-                String sql = "INSERT INTO event_stream " +
-                           "(aggregate_id, event_type, event_data, version, timestamp) " +
-                           "VALUES (?, ?, ?, ?, ?)";
-                
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    for (DomainEvent event : events) {
-                        stmt.setString(1, event.getAggregateId());
-                        stmt.setString(2, event.getClass().getSimpleName());
-                        stmt.setString(3, serializer.serialize(event));
-                        stmt.setLong(4, event.getVersion());
-                        stmt.setTimestamp(5, 
-                            Timestamp.from(event.getTimestamp()));
-                        stmt.addBatch();
-                    }
-                    
-                    int[] results = stmt.executeBatch();
-                    conn.commit();
-                    
-                    logger.info("Saved {} events", results.length);
-                    
-                } catch (SQLException e) {
-                    conn.rollback();
-                    throw new EventStoreException("Failed to save events", e);
-                }
-                
-            } catch (SQLException e) {
-                throw new EventStoreException("Database connection failed", e);
-            }
-        }, executorService);
-    }
-    
-    @Override
-    public CompletableFuture<List<DomainEvent>> getEventsAsync(
-            String aggregateId, long fromVersion) {
-        return CompletableFuture.supplyAsync(() -> {
-            List<DomainEvent> events = new ArrayList<>();
-            
-            String sql = "SELECT event_type, event_data, version, timestamp " +
-                        "FROM event_stream " +
-                        "WHERE aggregate_id = ? AND version >= ? " +
-                        "ORDER BY version";
-            
-            try (Connection conn = dataSource.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                
-                stmt.setString(1, aggregateId);
-                stmt.setLong(2, fromVersion);
-                
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        String eventType = rs.getString("event_type");
-                        String eventData = rs.getString("event_data");
-                        
-                        DomainEvent event = serializer.deserialize(
-                            eventData, eventType);
-                        events.add(event);
-                    }
-                }
-                
-            } catch (SQLException e) {
-                throw new EventStoreException("Failed to retrieve events", e);
-            }
-            
-            return events;
-        }, executorService);
-    }
-}
-
-// 並行イベント処理エンジン
-public class ConcurrentEventProcessor {
-    private final int numberOfThreads;
-    private final ExecutorService executorService;
-    private final BlockingQueue<EventProcessingTask> taskQueue;
-    private final EventProcessingMetrics metrics;
-    
-    public ConcurrentEventProcessor(int numberOfThreads) {
-        this.numberOfThreads = numberOfThreads;
-        this.executorService = Executors.newFixedThreadPool(numberOfThreads);
-        this.taskQueue = new LinkedBlockingQueue<>();
-        this.metrics = new EventProcessingMetrics();
-    }
-    
-    public void start() {
-        // 処理スレッド開始
-        for (int i = 0; i < numberOfThreads; i++) {
-            executorService.submit(new EventProcessingWorker(i));
-        }
-        
-        logger.info("Started {} event processing threads", numberOfThreads);
-    }
-    
-    public CompletableFuture<Void> processEvent(DomainEvent event) {
-        EventProcessingTask task = new EventProcessingTask(event);
-        
-        try {
-            taskQueue.put(task);
-            metrics.incrementQueuedEvents();
-            return task.getCompletionFuture();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return CompletableFuture.failedFuture(e);
-        }
-    }
-    
-    private class EventProcessingWorker implements Runnable {
-        private final int workerId;
-        
-        public EventProcessingWorker(int workerId) {
-            this.workerId = workerId;
-        }
-        
-        @Override
-        public void run() {
-            Thread.currentThread().setName("EventProcessor-" + workerId);
-            
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    EventProcessingTask task = taskQueue.take();
-                    metrics.incrementProcessingEvents();
-                    
-                    long startTime = System.nanoTime();
-                    
-                    try {
-                        processEventInternal(task.getEvent());
-                        task.complete();
-                        metrics.incrementSuccessfulEvents();
-                        
-                    } catch (Exception e) {
-                        task.completeExceptionally(e);
-                        metrics.incrementFailedEvents();
-                        logger.error("Event processing failed", e);
-                    }
-                    
-                    long duration = System.nanoTime() - startTime;
-                    metrics.recordProcessingTime(duration);
-                    
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        }
-        
-        private void processEventInternal(DomainEvent event) throws Exception {
-            // イベントハンドラー実行
-            List<EventHandler> handlers = getEventHandlers(event.getClass());
-            
-            for (EventHandler handler : handlers) {
-                try {
-                    handler.handle(event);
-                } catch (Exception e) {
-                    logger.error("Handler {} failed for event {}", 
-                        handler.getClass().getSimpleName(), 
-                        event.getClass().getSimpleName(), e);
-                    throw e;
-                }
-            }
-        }
-    }
-}
-
-// CQRS - コマンドハンドラー
-@Component
-public class CreateUserCommandHandler implements CommandHandler<CreateUserCommand> {
-    private final UserRepository repository;
-    private final EventStore eventStore;
-    
-    @Override
-    public CompletableFuture<CommandResult> handle(CreateUserCommand command) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                // ビジネスルール検証
-                validateUserCreation(command);
-                
-                // ユーザーアグリゲート作成
-                User user = User.create(
-                    command.getUserId(),
-                    command.getEmail(),
-                    command.getName()
-                );
-                
-                // ドメインイベント取得
-                List<DomainEvent> events = user.getUncommittedEvents();
-                
-                // イベント永続化
-                eventStore.saveEvents(command.getUserId(), events);
-                
-                // アグリゲート保存
-                repository.save(user);
-                
-                return CommandResult.success(events);
-                
-            } catch (DomainException e) {
-                return CommandResult.failure(e.getMessage());
-            }
-        });
-    }
-    
-    private void validateUserCreation(CreateUserCommand command) {
-        // メールアドレス重複チェック
-        if (repository.existsByEmail(command.getEmail())) {
-            throw new DomainException("Email already exists: " + command.getEmail());
-        }
-        
-        // ビジネスルール検証
-        UserBusinessRules.validateUserCreation(command);
-    }
-}
-
-// プロジェクション管理
-@Component
-public class ProjectionManager {
-    private final Map<Class<? extends DomainEvent>, List<ProjectionHandler>> handlers;
-    private final ProjectionStore projectionStore;
-    
-    public ProjectionManager() {
-        this.handlers = new ConcurrentHashMap<>();
-        this.projectionStore = new ProjectionStore();
-        setupProjectionHandlers();
-    }
-    
-    private void setupProjectionHandlers() {
-        // ユーザー一覧プロジェクション
-        registerHandler(UserCreatedEvent.class, 
-            new UserListProjectionHandler(projectionStore));
-        registerHandler(UserUpdatedEvent.class,
-            new UserListProjectionHandler(projectionStore));
-        registerHandler(UserDeletedEvent.class,
-            new UserListProjectionHandler(projectionStore));
-        
-        // ユーザー詳細プロジェクション
-        registerHandler(UserCreatedEvent.class,
-            new UserDetailProjectionHandler(projectionStore));
-        registerHandler(UserProfileUpdatedEvent.class,
-            new UserDetailProjectionHandler(projectionStore));
-        
-        // 統計プロジェクション
-        registerHandler(UserCreatedEvent.class,
-            new UserStatisticsProjectionHandler(projectionStore));
-        registerHandler(UserDeletedEvent.class,
-            new UserStatisticsProjectionHandler(projectionStore));
-    }
-    
-    public CompletableFuture<Void> updateProjections(DomainEvent event) {
-        List<ProjectionHandler> eventHandlers = handlers.get(event.getClass());
-        
-        if (eventHandlers == null || eventHandlers.isEmpty()) {
-            return CompletableFuture.completedFuture(null);
-        }
-        
-        List<CompletableFuture<Void>> updateTasks = eventHandlers.stream()
-            .map(handler -> updateProjectionAsync(handler, event))
-            .collect(Collectors.toList());
-        
-        return CompletableFuture.allOf(
-            updateTasks.toArray(new CompletableFuture[0]));
-    }
-    
-    private CompletableFuture<Void> updateProjectionAsync(
-            ProjectionHandler handler, DomainEvent event) {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                handler.handle(event);
-            } catch (Exception e) {
-                logger.error("Projection update failed: {}", 
-                    handler.getClass().getSimpleName(), e);
-                throw new ProjectionException("Projection update failed", e);
-            }
-        });
-    }
-}
+    updateButtons();  // ボタンの文字と押せるかどうかを状態に合わせる
+});
 ```
 
-実行ログ:
-```
-=== イベント処理実行ログ ===
+- `java.util.Timer`ではなく`javax.swing.Timer`を使う。`import javax.swing.Timer;`と明示すると、`java.util`のクラスと名前がぶつからない
+- ボタンの状態をイベントごとに個別に変えると食い違いやすい。状態から表示を決めるメソッド（`updateButtons`）を1つ作り、操作のたびに呼ぶ
+- 時間を`double`の秒で足していくと誤差がたまる。0.1秒を1とする整数で数え、表示のときだけ分と秒に直す
+- `JComboBox`の`setSelectedItem`でも、ActionListenerが呼ばれる。単位の入れ替えは2つを選び直すだけで、結果も計算し直される
+- 換算の処理で例外を投げ、画面のクラスで`catch`してメッセージを表示すると、入力の検査を1か所にまとめられる
 
-14:30:00.001 - システム初期化開始
-14:30:00.015 - イベントストア接続確立
-14:30:00.028 - コマンドバス初期化完了
-14:30:00.041 - イベントバス初期化完了
-14:30:00.055 - プロジェクション管理開始
-14:30:00.068 - イベント処理エンジン開始
-14:30:00.082 - システム起動完了
+## 応用のポイント
 
-コマンド実行:
-14:30:15.123 - CreateUserCommand受信 (userId: USR-001)
-14:30:15.125 - ビジネスルール検証開始
-14:30:15.128 - ユーザーアグリゲート作成
-14:30:15.131 - UserCreatedEvent生成
-14:30:15.134 - イベントストア保存開始
-14:30:15.142 - イベントストア保存完了 (8ms)
-14:30:15.144 - イベント発行開始
-14:30:15.146 - イベント発行完了
+1. 状態と表示を分ける
+    - `StopwatchModel`と`LengthConverter`はウィンドウを開かずに動かせるので、メソッドの動きを`main`から確かめられる
+2. 同じ処理を複数のイベントから呼ぶ
+    - 単位換算では、Enterキー・ボタン・コンボボックス・チェックボックスのリスナーがどれも`convert()`を呼ぶ
+3. 押せない操作は押せなくする
+    - 計測していないときのラップのように意味のない操作は、ボタンを`setEnabled(false)`にし、モデルの側でも受け付けない
 
-イベント処理:
-14:30:15.147 - UserCreatedEvent処理開始
-14:30:15.148 - UserListProjection更新 (Thread-1)
-14:30:15.149 - UserDetailProjection更新 (Thread-2)
-14:30:15.150 - UserStatisticsProjection更新 (Thread-3)
-14:30:15.152 - 通知メール送信 (Thread-4)
-14:30:15.156 - 全プロジェクション更新完了
+## 発展（任意）
 
-処理統計:
-総処理時間: 33ms
-イベント処理並行度: 4スレッド
-プロジェクション更新: 3個
-副次処理: 1個 (通知)
-```
-```
+- `javax.swing.Timer`の呼び出しは少しずつ遅れることがある。開始した時刻を`System.nanoTime()`で覚え、表示のたびに差から経過時間を求める形に直す
+- 単位換算に温度（摂氏・華氏）を加える。温度は掛け算だけでは換算できないので、`LengthUnit`と同じ形では書けない。どう設計するかを考える
+- 換算の履歴を`JTextArea`に1行ずつ残す
 
-### 課題2: リアルタイムイベント分析システム
-**ファイル名**: `RealTimeEventAnalyticsSystem.java`
+## 完了チェックリスト
 
-大量のイベントをリアルタイムで分析・集計するシステムを作成してください。
+- [ ] ストップウォッチの表示が0.1秒ごとに進み、停止と再開ができる
+- [ ] ラップとリセットのボタンが、状態に合わせて押せたり押せなかったりする
+- [ ] 単位換算で、Enterキー・単位の選択・チェックボックスのどれでも結果が更新される
+- [ ] 正しくない入力で、例外で落ちずにメッセージが表示される
+- [ ] 計算や状態の管理が、画面のクラスと別のクラスに書かれている
 
-**要求仕様**:
-- ストリーミングイベント処理
-- リアルタイム集計・統計
-- 異常検知・アラート
-- ダッシュボード表示
-
-**分析機能**:
-- 時系列分析
-- パターン認識
-- 予測分析
-- 相関分析
-
-**実行例**:
-```
-=== リアルタイムイベント分析システム ===
-
-EventAnalytics Pro v2.0
-
-=== ストリーミング分析エンジン ===
-高速イベント処理:
-
-処理統計:
-入力レート: 50,000 events/sec
-処理レート: 49,876 events/sec
-処理率: 99.75%
-遅延: 平均12ms, P99: 45ms
-
-分析ウィンドウ:
-- 1分間ウィンドウ: 3,000,000イベント
-- 5分間ウィンドウ: 15,000,000イベント  
-- 1時間ウィンドウ: 180,000,000イベント
-
-=== 異常検知結果 ===
-注意: 検知された異常:
-
-14:30:15 - ログイン失敗率異常
-通常: 2.3% → 現在: 15.7% (6.8倍)
-影響範囲: AP-Tokyo-01サーバー
-対応: セキュリティチーム通知済み
-
-14:29:45 - API応答時間異常
-通常: 120ms → 現在: 890ms (7.4倍)
-影響範囲: payment-service
-対応: オートスケーリング実行中
-
-14:28:30 - トランザクション量急増
-通常: 1,200件/min → 現在: 8,900件/min (7.4倍)
-原因: キャンペーン開始
-対応: 処理能力拡張完了
-
-=== 予測分析 ===
-次1時間の予測:
-
-ユーザーアクセス: 
-現在: 12,500人 → 予測: 18,700人 (+49.6%)
-信頼度: 94.2%
-
-トランザクション:
-現在: 8,900件/h → 予測: 12,400件/h (+39.3%)
-信頼度: 91.8%
-
-システム負荷:
-現在: CPU 67% → 予測: CPU 89% (警告レベル)
-推奨: インスタンス追加
-```
-
-### 課題3: イベント駆動マイクロサービス統合
-**ファイル名**: `EventDrivenMicroservicesIntegration.java`
-
-複数のマイクロサービス間でのイベント駆動統合システムを作成してください。
-
-**要求仕様**:
-- サービス間イベント通信
-- 分散トランザクション
-- サーキットブレーカー
-- サービスディスカバリー
-
-**統合機能**:
-- イベントルーティング
-- 重複排除
-- 順序保証
-- 障害回復
-
-**実行例**:
-```
-=== イベント駆動マイクロサービス統合 ===
-
-MicroserviceHub v3.0
-
-=== サービス統合マップ ===
-分散システム構成:
-
-接続サービス: 12個
-- user-service (Port: 8081)
-- order-service (Port: 8082)  
-- payment-service (Port: 8083)
-- inventory-service (Port: 8084)
-- notification-service (Port: 8085)
-- analytics-service (Port: 8086)
-- recommendation-service (Port: 8087)
-- review-service (Port: 8088)
-- shipping-service (Port: 8089)
-- fraud-detection-service (Port: 8090)
-- loyalty-service (Port: 8091)
-- support-service (Port: 8092)
-
-イベントフロー:
-Order Created → [Payment, Inventory, Notification]
-Payment Completed → [Shipping, Loyalty, Analytics]
-User Registered → [Notification, Recommendation, Analytics]
-Fraud Detected → [Payment, Notification, Support]
-
-メッセージング統計:
-総メッセージ: 2,847,562件
-成功: 2,844,891件 (99.91%)
-失敗: 2,671件 (0.09%)
-リトライ中: 1,234件
-デッドレター: 156件
-
-サーキットブレーカー状態:
-- payment-service: CLOSED (正常)
-- shipping-service: HALF_OPEN (回復中)
-- fraud-detection-service: CLOSED (正常)
-- recommendation-service: OPEN (障害中)
-```
-
-## 習得すべき技術要素
-
-### イベント駆動アーキテクチャ
-- イベントソーシング
-- CQRS パターン  
-- サーガパターン
-- イベントストーミング
-
-### 分散システム設計
-- 非同期メッセージング
-- 分散トランザクション
-- 結果整合性
-- 障害トレラント設計
-
-### リアルタイム処理
-- ストリーミング処理
-- 複雑イベント処理 (CEP)
-- 時系列データ分析
-- 機械学習統合
-
-## 参考リソース
-
-- Building Event-Driven Microservices (Adam Bellemare)
-- Microservices Patterns (Chris Richardson)  
-- Streaming Systems (Tyler Akidau)
-- Designing Event-Driven Systems (Ben Stopford)
-
-## 重要な注意事項
-
-イベント駆動システムは複雑性が高いため、適切な監視、ログ記録、テスト戦略が重要です。分散システムの特性を理解して実装してください。
+**次のステップ**: 発展課題が完了したら、challenge/のチャレンジ課題に挑戦してみましょう。
