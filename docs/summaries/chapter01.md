@@ -5,7 +5,7 @@ sections:
   - key: "本書について"
     hash: 1daff654
   - key: "本書のGitHubリポジトリについて"
-    hash: 0f1c15ec
+    hash: 5856b72e
   - key: "本章の学習目標"
     hash: 54e39de4
   - key: "C言語、Java、そして現代的ソフトウェア開発のしくみ"
@@ -13,13 +13,13 @@ sections:
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
     hash: 078aee40
   - key: "Javaの特徴"
-    hash: 0590c388
+    hash: f81da58e
   - key: "開発環境の準備"
-    hash: f9717925
+    hash: 30b8cbc8
   - key: "最初のJavaプログラム"
-    hash: 0ca90b69
+    hash: 51928b9f
   - key: "Javaプログラムの基本構文"
-    hash: 6adeb9bb
+    hash: b1855d5f
   - key: "標準入出力を扱うサンプルを動かしてみよう"
     hash: 1c6f0063
   - key: "よくあるエラーと対処法"
@@ -27,7 +27,7 @@ sections:
   - key: "まとめ"
     hash: ea4a3cb2
   - key: "章末演習"
-    hash: 3a5e598b
+    hash: 4c3d6d57
 ---
 
 # 第1章 Java入門と開発環境構築 要約
