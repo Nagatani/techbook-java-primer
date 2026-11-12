@@ -7,27 +7,27 @@ sections:
   - key: "単体テストの基礎"
     hash: 20abcd83
   - key: "テストの基本形（AAAパターン）"
-    hash: d8882771
+    hash: 0add080c
   - key: "テストを妨げる「依存関係」"
     hash: 457e89bd
   - key: "疎結合設計（Dependency Injection）"
-    hash: 07168858
+    hash: 3bf8974b
   - key: "DIによるテスト容易性の向上"
-    hash: e874b14f
+    hash: 7ff715d2
   - key: "テスト駆動開発（TDD）"
-    hash: cd6da043
+    hash: d43b6dc8
   - key: "JUnitによる効率的なテスト"
-    hash: 2f32e564
+    hash: d9eb4edd
   - key: "テストのベストプラクティス"
     hash: 3e0ff7a7
   - key: "継続的インテグレーション（CI）との統合"
-    hash: 8e55d879
+    hash: 018ef75d
   - key: "よくあるエラーと対処法"
     hash: a871107b
   - key: "まとめ"
     hash: 1cc54646
   - key: "章末演習"
-    hash: a361d3f8
+    hash: a16be2ac
 ---
 
 # 第21章 ユニットテストと品質保証 要約

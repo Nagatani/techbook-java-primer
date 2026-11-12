@@ -123,7 +123,7 @@ public class Calculator {
 
 ### テストコードの実践
 
-以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を示します。
+以下の例では、JUnitを使わずに手動でテストを実装して、AAAパターンの構造を示します<span class="footnote">Javaにも、C言語の`assert`マクロに似た`assert`文（Java 1.4から）があります。ただし既定では無効で、`java -ea`のように指定したときだけ検査するため、単体テストにはJUnitなどのテストフレームワークを使います。</span>。
 準備・実行・検証の各ステップをコメントで区切っているので、何を確かめるテストなのかを読み取りやすくなります。
 
 <span class="listing-number">**サンプルコード21-3**　CalculatorManualTest.java</span>
@@ -205,7 +205,7 @@ public class UserService {
 
 ### Dependency Injection (DI) とは
 
-Dependency Injection (DI)は、疎結合を実現するための具体的な設計テクニックです。
+Dependency Injection (DI)は、疎結合を実現するための具体的な設計テクニックです<span class="footnote">Dependency Injectionという名前は、マーチン・ファウラーが2004年の記事「Inversion of Control Containers and the Dependency Injection pattern」で広めたものです。</span>。
 その原則は、「あるオブジェクトが必要とする別のオブジェクト（依存オブジェクト）を、内部で生成するのではなく、外部から与える（注入する）」というものです。
 
 この考え方は、制御の反転 (Inversion of Control - IoC)という、より大きな設計原則にもとづいています。
@@ -265,7 +265,7 @@ public class UserService {
 
 #### フィールドインジェクション
 
-クラスのフィールドに直接依存性を注入します。この方法は主にフレームワークが利用するもので、手動での利用は推奨されません。
+クラスのフィールドに直接依存性を注入します。この方法は主にフレームワークが利用するもので、手動での利用は推奨されません<span class="footnote">たとえばSpring Frameworkでは、フィールドに`@Autowired`アノテーションを付けると、フレームワークがオブジェクトを生成したあとでそのフィールドに依存オブジェクトを入れます。</span>。
 
 ## DIによるテスト容易性の向上
 
@@ -302,7 +302,7 @@ public class UserService {
 
 ### スタブを使った単体テストの実践
 
-スタブ（偽物オブジェクト）を使用することで、データベースに接続することなくUserServiceのロジックをテストできます。以下の例では、テスト用の偽物リポジトリを作成し、それを使ってUserServiceをテストしています。
+スタブ<span class="footnote">スタブやモックのように、テストで本物の代わりに使うオブジェクトをまとめてテストダブル（test double）と呼びます。映画で俳優の代わりに危険な場面を演じるスタントダブルに由来する言葉です。</span>（偽物オブジェクト）を使用することで、データベースに接続することなくUserServiceのロジックをテストできます。以下の例では、テスト用の偽物リポジトリを作成し、それを使ってUserServiceをテストしています。
 
 <span class="listing-number">**サンプルコード21-8**　UserRepositoryStub.java、UserServiceManualTest.java</span>
 
@@ -349,7 +349,7 @@ public class UserServiceManualTest {
 
 ### TDDの基本サイクル
 
-テスト駆動開発（TDD）とは、プロダクトコードを実装する前に、まずテストコードを書く開発手法です。
+テスト駆動開発（TDD）とは、プロダクトコードを実装する前に、まずテストコードを書く開発手法です<span class="footnote">TDDはTest-Driven Developmentの略です。ケント・ベックが1990年代にエクストリーム・プログラミング（XP）の実践の1つとして広め、2002年に書籍『Test-Driven Development: By Example』にまとめました。</span>。
 
 TDDでは、以下の短いサイクルを繰り返します。
 
@@ -478,7 +478,7 @@ public class StringCalculator {
 
 ### JUnitの基本的な使い方
 
-実際の開発では、JUnitのようなテストフレームワークを使用します。
+実際の開発では、JUnitのようなテストフレームワークを使用します<span class="footnote">JUnitは、ケント・ベックとエリック・ガンマが1990年代の終わりに作ったJava用のテストフレームワークです。ベックがSmalltalk用に作ったSUnitが元になっており、ほかの言語にも同じ形のフレームワーク（xUnitと総称します）が広がりました。</span>。
 
 JUnitはJDKに含まれていない外部ライブラリなので、使う前にプロジェクトへ追加します。
 IntelliJ IDEAでは、テストクラスに`@Test`を書くと、JUnitがまだないため`@Test`が赤く表示されます。
@@ -490,7 +490,7 @@ IntelliJ IDEAでは、テストクラスに`@Test`を書くと、JUnitがまだ�
 実際の開発では、Mavenなどのビルドツールの設定ファイルに依存関係として書くのが一般的です。
 外部ライブラリとクラスパスの関係や、Mavenでの依存関係の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 
-JUnit 5（Jupiter）を使用した基本的なテストの例を示します。
+JUnit 5（Jupiter）<span class="footnote">JUnit 5は、テストを実行する基盤のJUnit Platform、テストを書くためのJUnit Jupiter、古いJUnitのテストを動かすJUnit Vintageからなります。Jupiter（木星）は太陽系の5番目の惑星で、JUnit 5の「5」にちなんだ名前です。</span>を使用した基本的なテストの例を示します。
 `@Test`アノテーションでテストメソッドを示し、`@BeforeEach`で各テストの前に実行する初期化処理を定義し、`Assertions`クラスのメソッドで検証します。
 テスト対象は、サンプルコード21-2の`Calculator`に、整数の割り算をする`divide`メソッド（`return a / b;`）を加えたものです。
 整数を0で割ると`ArithmeticException`が発生するので、`assertThrows`でその例外が投げられることを確かめます。
@@ -651,7 +651,7 @@ jobs:
         run: mvn -B verify
 ```
 
-`actions/setup-java`では、`distribution`でJDKの配布元（ここではEclipse Temurin）を、`java-version`で版を指定します。
+`actions/setup-java`では、`distribution`でJDKの配布元（ここではEclipse Temurin）を、`java-version`で版を指定します<span class="footnote">Eclipse TemurinはEclipse FoundationのAdoptiumプロジェクトが配布するOpenJDKのビルドです。以前はAdoptOpenJDKという名前でした。Temurinは「runtime」の文字を並べ替えた名前です。</span>。
 
 ### テストカバレッジ
 
@@ -718,7 +718,7 @@ JUnitは、`<dependencies>`に`test`スコープの依存関係（`org.junit.jup
 </build>
 ```
 
-JaCoCoの`prepare-agent`ゴールは、テストの実行中にどの行を通ったかを記録する準備をします。
+JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前です。</span>の`prepare-agent`ゴールは、テストの実行中にどの行を通ったかを記録する準備をします。
 `report`ゴールは、その記録から`target/site/jacoco/`にHTMLとXMLのレポートを作ります。
 `index.html`をブラウザーで開くと、クラスやメソッドごとに、テストで通った行と通らなかった行を確かめられます。
 `check`ゴールは、プロジェクト全体（`BUNDLE`）の行カバレッジが80%に満たないとビルドを失敗させます。
@@ -777,6 +777,6 @@ JaCoCoの`prepare-agent`ゴールは、テストの実行中にどの行を通�
 3. チャレンジ課題
     + モックフレームワークを使った高度なテスト
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 基礎課題が完了したら、第22章「ドキュメントと外部ライブラリ」に進みましょう。
