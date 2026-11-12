@@ -5,15 +5,15 @@ sections:
   - key: "本章の学習目標"
     hash: 01038799
   - key: "ファイルI/Oの基礎とストリーム"
-    hash: e12d40d6
+    hash: 87650588
   - key: "テキストファイルの読み書き"
-    hash: ffd9bd3d
+    hash: fe831232
   - key: "バイナリファイルの高度な処理"
-    hash: 6e4510e6
+    hash: 3d41f477
   - key: "オブジェクトの直列化（シリアライズ）"
-    hash: 32f75238
+    hash: 7d2e70c1
   - key: "ファイルシステムの操作 (NIO.2)"
-    hash: de627016
+    hash: 0aa470b5
   - key: "実践的なファイル処理例"
     hash: 1bfebd32
   - key: "日付時刻処理について"
@@ -21,13 +21,13 @@ sections:
   - key: "GUIでのファイル選択: `JFileChooser`"
     hash: eac319ea
   - key: "Text Blocks - 複数行文字列の効率的な処理"
-    hash: 86f8201f
+    hash: d0342d6b
   - key: "まとめ"
     hash: 4ed12e71
   - key: "よくあるエラーと対処法"
     hash: e69b9ac5
   - key: "章末演習"
-    hash: feab3b61
+    hash: 79c4ba52
 ---
 
 # 第14章 ファイルI/O 要約
