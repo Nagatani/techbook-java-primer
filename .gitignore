@@ -152,3 +152,12 @@ dist
 .gradle/
 **/gradle-project/build/
 exercises/**/build/
+
+# 第14章の演習の解答例が、実行したフォルダーに作る作業用のフォルダー
+exercises/chapter14/**/io-basic-work/
+exercises/chapter14/**/folder-work/
+exercises/chapter14/**/csv-work/
+exercises/chapter14/**/log-work/
+exercises/chapter14/**/savedata/
+exercises/chapter14/**/encoding-work/
+exercises/chapter14/**/todo-data/

@@ -4,10 +4,10 @@
 
 ## 基礎課題（[basic/](basic/)）
 
-- 基本的なファイル読み書き
-- ディレクトリ操作とファイル検索
-- CSVデータ処理システム
-- ログファイル解析システム
+- テキストとバイナリの読み書き（BufferedReader・BufferedWriter、FileInputStream・FileOutputStream）
+- フォルダーの操作とバックアップ（Files.createDirectory・list・copy・delete）
+- CSVの読み込みと集計（壊れた行の読み飛ばし、書き出し）
+- アクセスログの集計（行の分割、キーごとの件数）
 
 ## 発展課題（[advanced/](advanced/)）
 
