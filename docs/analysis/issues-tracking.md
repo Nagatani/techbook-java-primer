@@ -579,3 +579,20 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - exercises/chapter01/challenge/CompactHello.java は、クラス宣言のないコンパクトソースファイルを、クラスを宣言する形に書き直す課題の出発点として、意図してこの形にしている（CLAUDE.mdの方針10の例外）
 - ~~第3章のチャレンジ課題（exercises/chapter03/challenge/）は「準備中」のまま~~ ✅ 2026-11-12に自動販売機シミュレーター（VendingMachineSimulator.java、第3章の範囲のクラス・private・オブジェクトの配列・static finalで解ける）を作成。作られた形跡はgitの履歴になく、課題を移した際に空のまま残っていた
 - ~~第4章・第5章のチャレンジ課題（exercises/chapter04/challenge/、chapter05/challenge/）もファイルがない~~ ✅ 2026-11-12に作成。第4章はホテルの客室予約システム（hotel.domain・hotel.appの2パッケージ、パッケージプライベートで予約の入り口をHotelに限る、this(...)とオーバーロード）、第5章は図書館の資料管理システム（LibraryItemを親に本・雑誌・DVD、貸出期間と延滞料金のオーバーライド、集計だけinstanceof、equals・hashCode）。どちらも抽象クラス（第7章）・例外の捕捉（第13章）・コレクション（第9章）・防御的コピー（第6章）を使わない
+
+## 2026年11月12日実施作業のサマリー（脚注の追加）
+
+本文に脚注（`<span class="footnote">`）を加えた（章ごとにコミット）。脚注は7個から278個になった。書き方は`docs/writing-guidelines-textlint-compliance.md`の「11. 脚注」。
+
+- GitHubの場所だけを書いていた箇所（「GitHubの全文」「各課題フォルダー内のREADME.md」など）に、URLの全文を脚注で添えた。URLはすべてリポジトリに実在するパスであることを確かめた
+- 略語の正式名称、機能が加わった版、本文で省いていた条件を脚注で補った
+- C言語との違い、名前の由来、歴史などの余談を各章に2〜4個加えた。同じ余談が複数の章に出ないよう、初出の章に1つだけ残した（ホーアのnull、GoF本、JavaBeansの命名、SOLID、DRY、JEPなど）
+- 本文の流れを止めていた「なお、〜」や括弧書き、「※」で始まる段落の一部を脚注へ移した
+- 確認: textlint 0件、check:structure・index:checkは問題なし。PDFで278個すべての脚注の本文が出ていることを確かめた（683ページ）
+
+#### Issue #019: 脚注を加える際に見つけた、未修正の点
+- 第3章のコラム「システム開発に『銀の弾丸などない』」が、1975年の『人月の神話』で述べられたとしている。「No Silver Bullet」は1986年の論文で、1995年の20周年記念版に収録された。コラムの中には脚注を置かないため、本文を直す必要がある
+- 第1章のサンドボックスの説明が現在も使われている機能のように読める。脚注でセキュリティマネージャーがJava 24で無効になったことを補ったが、本文の書き方を見直すか検討する
+- 第22章の章末演習は「基礎・発展・チャレンジ課題」と書いているが、`exercises/chapter22/`は`documentation/`と`api-design/`に分かれている（脚注で実際の構成を示した）
+- `sample-code/chapter19/19-01/MouseEventCompleteExample.java`は`isPopupTrigger()`を`mouseReleased`でだけ確かめている。macOSやLinuxでは`mousePressed`で真になるため、右クリックメニューが出ない可能性がある
+- 脚注の文字はtextlintで本文の文に数えられるため、脚注を足すと文の長さや読点の数の指摘が出ることがある

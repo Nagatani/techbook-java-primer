@@ -114,6 +114,11 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - GUIの部品とレイアウト（invokeLaterの定型を含む）は第17章、イベント処理の基本・EDT・javax.swing.Timerは第18章、マウス・キーボードの詳細とSwingWorkerは第19章
    - 後の章で学ぶ機能は、コードを動かせばわかる程度なら先に使ってよい。説明なしでは難しいもの・読み解きの邪魔になるものは別の書き方にする（例: ラムダ式の代わりに拡張for文、ジェネリクスの代わりに配列）。使い続ける場合は初出に最小限の読み方と誘導を置く
 
+13. **脚注（2026-11-12〜）**: 本文を補う内容は`<span class="footnote">…</span>`で脚注にする（PDFではページの下端に出る）。書き方と何を脚注にするかは`docs/writing-guidelines-textlint-compliance.md`の11節
+   - GitHubの場所だけを書く箇所には、URLの全文を脚注で添える（インラインコードで書く）。先頭に「※」を付けない。ですます調
+   - 見出し・表・コードブロック・キャプション・図・コラムの中には置かない。同じ余談は初出の章に1つだけ置く
+   - 脚注の文字はtextlintで本文の文に数えられる（文の長さ・読点の数）。脚注を足したら`npm run lint`で確かめる
+
 5. **Chapter Structure**:
    - 全23章構成
    - 第21章（ユニットテスト）の配置は現状維持
