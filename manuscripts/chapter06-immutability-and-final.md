@@ -156,7 +156,7 @@ public final class ImmutablePoint {
 
 ### final変数（定数と不変フィールド）
 
-`final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります。
+`final`を変数に付けると、その変数は一度だけ初期化でき、その後は変更できなくなります<span class="footnote">C言語の`const`に近い働きです。Javaでも`const`は予約語になっていますが、使い道は決められておらず、書くとコンパイルエラーになります。</span>。
 
 次のサンプルの`List<String>`（文字列を順に並べて持つリスト）は、第9章「コレクションフレームワーク」で学びます。
 ここでは、拡張for文で配列と同じように要素を1つずつ取り出せる、と読んでください。
@@ -240,7 +240,7 @@ public class AuthenticationService {
 
 `final`をクラスに付けると、そのクラスを継承できなくなります。
 
-標準ライブラリの`String`クラスは、`public final class String`と宣言されている`final`クラスの代表例です。
+標準ライブラリの`String`クラスは、`public final class String`と宣言されている`final`クラスの代表例です<span class="footnote">C言語の文字列は`char`の配列なので、あとから1文字ずつ書き換えられます。Javaの`String`は不変で、内容を変えるように見えるメソッドも、新しい文字列を作って返します。</span>。
 `class MyString extends String { }`のように継承しようとすると、コンパイルエラーになります。
 
 サンプルコード6-3の`ImmutablePoint`も、`public final class ImmutablePoint`と宣言しました。
@@ -255,10 +255,7 @@ error: cannot inherit from final ImmutablePoint
 
 クラスを`final`にすると、サブクラスを作れなくなります。
 そのため、悪意のあるサブクラスがメソッドをオーバーライドして動作を書き換えることを防げます。
-また、「このクラスは継承して使うことを想定していない」という設計者の意図を、コードではっきり示せます。
-
-なお、処理を速くする目的で`final`を付ける必要はありません。
-いまのJVMは、実行中にサブクラスが読み込まれていなければ、`final`のないクラスでも同じようにメソッド呼び出しを最適化します。
+また、「このクラスは継承して使うことを想定していない」という設計者の意図を、コードではっきり示せます<span class="footnote">処理を速くする目的で`final`を付ける必要はありません。いまのJVMは、実行中にサブクラスが読み込まれていなければ、`final`のないクラスでも同じようにメソッド呼び出しを最適化します。</span>。
 
 ## 不変オブジェクトの設計パターン
 
@@ -325,7 +322,7 @@ public final class ImmutablePerson {
 `ArrayList`は第9章で学びます。
 ここでは「リストの中身を別のリストに写す」と読んでください。
 
-本文では省きましたが、全文にはオブジェクトの内容を比べる`equals()`と`hashCode()`、文字列にする`toString()`のオーバーライドもあります。
+本文では省きましたが、全文<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter06/06-06/`にあります。</span>にはオブジェクトの内容を比べる`equals()`と`hashCode()`、文字列にする`toString()`のオーバーライドもあります。
 書き方は、第5章の節「`Object`クラスのメソッド（toString・equals・hashCode）」で学んだとおりです。
 不変オブジェクトでは、内容が等しいかどうかが作ったあとに変わらないので、`equals()`と`hashCode()`の結果も変わりません。
 
@@ -466,7 +463,7 @@ public final class DateRange {
 コピーの代わりに、変更できないリストを返す方法もあります。
 `Collections.unmodifiableList(リスト)`は、元のリストを包んだ読み取り専用のビューを返します。
 ビューに要素を追加しようとすると例外（`UnsupportedOperationException`）が発生しますが、元のリストを変更すると、その変更はビューからも見えます。
-一方、`List.copyOf(リスト)`は、変更できない新しいリストを作るコピーなので、元のリストを変更しても影響を受けません。
+一方、`List.copyOf(リスト)`は、変更できない新しいリストを作るコピーなので、元のリストを変更しても影響を受けません<span class="footnote">`List.copyOf`はJava 10で加わったメソッドです。要素に`null`を含むリストを渡すと、例外（`NullPointerException`）が発生します。</span>。
 例外の扱いは、第13章「例外処理」で学びます。
 
 <span class="listing-number">**サンプルコード6-10**　ViewVsCopy.java</span>
@@ -504,7 +501,7 @@ public class ViewVsCopy {
 
 ### ビルダーパターンによる不変オブジェクトの構築
 
-複雑な不変オブジェクトを構築する際、コンストラクターの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します。
+複雑な不変オブジェクトを構築する際、コンストラクターの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します<span class="footnote">ビルダーパターンは、1994年の書籍『オブジェクト指向における再利用のためのデザインパターン』（いわゆるGoF本）が挙げた23のパターンの1つです。本章の形は、ジョシュア・ブロックの『Effective Java』が紹介して広まった変形です。</span>。
 
 次のサンプルでは、`Book`クラスの内側に`static class Builder`というクラスを宣言しています。
 クラスの内側に宣言するクラス（静的ネストクラス）は、第8章で学びます。
@@ -619,7 +616,7 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 `build()`で作った`Book`オブジェクトには、値を変更する手段がありません。
 ビルダーで値を組み立てている途中だけ変更でき、できあがったオブジェクトは不変のまま使えます。
 さらに、オブジェクトを作る段階で値が正しいかを検証できます。
-サンプルコード6-11の全文では、`Builder`のコンストラクターがISBNとタイトルが空でないかを確かめています。
+サンプルコード6-11の全文<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter06/06-11/`にあります。</span>では、`Builder`のコンストラクターがISBNとタイトルが空でないかを確かめています。
 
 ## よくあるエラーと対処法
 
@@ -681,7 +678,7 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 3. チャレンジ課題
     + ビルダーパターンで、不変オブジェクトを柔軟に構築する
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter06/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 #### 次のステップ
 
