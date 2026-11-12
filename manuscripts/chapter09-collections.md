@@ -74,7 +74,7 @@ String[] students = new String[5];
 students[5] = "山田";  // ArrayIndexOutOfBoundsException!
 ```
 
-従来の解決方法は、より大きな配列を作り直してコピーすることでした。
+従来の解決方法は、より大きな配列を作り直してコピーすることでした<span class="footnote">C言語では`realloc`関数で確保した領域を広げられますが、Javaの配列は作ったあとで長さを変えられません。あとで使う`ArrayList`も、内部では同じように大きな配列を作り直してコピーしています。</span>。
 
 以下のコードは、配列のサイズを拡張するための複雑な手順を示しています。この処理には、新しい配列の作成、既存データの全件コピー、参照の付け替えという3つのステップが必要であり、データが増えるたびにこの処理を繰り返す必要があります。
 
@@ -137,7 +137,7 @@ for (String student : students) {
 
 ### コレクションフレームワークの登場
 
-これらの問題を解決するために、Javaはコレクションフレームワークを提供しています。同じ学生管理プログラムをArrayListで書き直してみましょう。
+これらの問題を解決するために、Javaはコレクションフレームワークを提供しています<span class="footnote">コレクションフレームワークはJava 1.2（1998年）で加わりました。設計の中心になったのは、のちに『Effective Java』を著すジョシュア・ブロックです。</span>。同じ学生管理プログラムをArrayListで書き直してみましょう。
 
 <span class="listing-number">**サンプルコード9-6**　StudentManagerImproved.java</span>
 
@@ -212,7 +212,7 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 ### 主な実装クラスの一覧
 
-図に描いていないものも含めて、主な実装クラスを一覧にすると次のようになります。`Vector`と`Hashtable`は古いクラスで、新しく書くコードでは`ArrayList`と`HashMap`を使います。
+図に描いていないものも含めて、主な実装クラスを一覧にすると次のようになります。`Vector`と`Hashtable`は古いクラスで<span class="footnote">2つのクラスはJava 1.0からあり、すべてのメソッドが同期（synchronized）されているため、1つのスレッドで使うと`ArrayList`や`HashMap`より遅くなります。スレッドと同期は第15章「マルチスレッドプログラミング」で学びます。</span>、新しく書くコードでは`ArrayList`と`HashMap`を使います。
 
 ```
 Collection
@@ -447,7 +447,7 @@ linkedHashSet.add(2);
 #### 使い分けの指針
 
 順序が重要でなければ、HashSetを選びます。
-追加や検索が平均O(1)で済むので、重複チェックや集合演算に向いています。
+追加や検索が平均O(1)<span class="footnote">O(1)やO(log n)は、要素の数nが増えたときに処理時間がどう増えるかを表すO記法（オーダー記法）です。O(1)は要素数によらずほぼ一定、O(n)は要素数に比例して増えることを表します。</span>で済むので、重複チェックや集合演算に向いています。
 常にソートされた状態を保ちたい場合は、TreeSetを使います。
 要素が順に並んでいるため、範囲検索のように順序が大切な処理に適しています。
 挿入した順序を保ちながら重複を取り除きたい場合は、LinkedHashSetが便利です。
@@ -455,7 +455,7 @@ linkedHashSet.add(2);
 
 #### TreeSetに入れられる要素
 
-TreeSetは、要素どうしを比べて大小の順に並べます（内部は赤黒木と呼ばれる二分探索木です）。
+TreeSetは、要素どうしを比べて大小の順に並べます<span class="footnote">TreeSetの内部は、赤黒木（red-black tree）と呼ばれる二分探索木です。要素を追加・削除しても木の高さが偏らないように保つので、検索や追加がO(log n)で済みます。</span>。
 そのため、要素の型は大小を比べる方法を持っている必要があります。
 `String`や`Integer`のように`Comparable`インターフェイスを実装したクラスはそのまま入れられます。
 それ以外のクラスを入れるときは、`Comparable`を実装するか、TreeSetを作るときに比べ方を表す`Comparator`を渡します（`Comparator`は第11章で学びます）。
@@ -494,7 +494,7 @@ difference.removeAll(set2);  // {A}
 
 ## Map インターフェイス
 
-Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます。
+Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます<span class="footnote">同じしくみを、Pythonでは辞書（dict）、Rubyではハッシュ（Hash）、C#では`Dictionary`と呼びます。C言語の標準ライブラリにはないため、C言語では自分で作るかライブラリを使います。</span>。
 
 ### `HashMap`の基本的な使い方
 
@@ -548,7 +548,7 @@ Alice: 95点
 ### HashMap vs TreeMap vs LinkedHashMap
 
 Map実装の選択は、データ量、検索頻度、順序の重要性によって決まります。
-辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装します。
+辞書アプリではTreeMapで五十音順を維持し、キャッシュではLinkedHashMapでLRU（最近最少使用）を実装します<span class="footnote">LRUはLeast Recently Usedの略です。LinkedHashMapでLRUを作るには、コンストラクターの3つめの引数に`true`を渡して並び順をアクセス順にし、`removeEldestEntry`メソッドをオーバーライドします。</span>。
 順序が要らず、キーで値を探すだけならHashMapを使います。
 
 <span class="listing-number">**サンプルコード9-14**</span>
@@ -668,7 +668,7 @@ while (iter2.hasNext()) {
 ### 拡張for文（for-each）
 
 拡張for文（for-each文）は、Java 5で導入された簡潔で読みやすいコレクション走査の記法です。
-内部的にはイテレーターを使用しているため、すべてのコレクション型で使用できます。
+内部的にはイテレーターを使用しているため、すべてのコレクション型で使用できます<span class="footnote">拡張for文を使えるのは、配列と、`Iterable`インターフェイスを実装したクラスです。`Map`は`Iterable`を実装していないので、`keySet()`や`entrySet()`を通して走査します。</span>。
 日常的なコレクション処理の大部分は、この記法で十分カバーできます。
 
 <span class="listing-number">**サンプルコード9-17**</span>
@@ -692,7 +692,7 @@ for (String element : list) {
 拡張for文は、インデックスを使う従来のループやイテレーターより短く書けます。
 インデックスを自分で扱わないので、インデックスの範囲外エラーも起きません。
 「すべての要素を順に処理する」という意図がそのまま読み取れるため、保守もしやすくなります。
-ただし、拡張for文で走査しているコレクションから、その途中で要素を削除できません。
+ただし、拡張for文で走査しているコレクションから、その途中で要素を削除できません<span class="footnote">削除すると、多くの場合、次の要素を取り出すときに`ConcurrentModificationException`が発生します。コレクションの変更を検出してすぐに例外を投げるこの性質を、フェイルファスト（fail-fast）と呼びます。</span>。
 削除が必要なときは、イテレーターを使います。
 
 #### 使い分けの指針
@@ -789,7 +789,7 @@ Stream APIは関数型プログラミングのパラダイムを取り入れ、�
 
 ### 不変コレクション
 
-Java 9以降、不変（Immutable）コレクションの作成が簡単になりました。
+Java 9以降、不変（Immutable）コレクションの作成が簡単になりました<span class="footnote">`List.of()`などで作った不変コレクションには`null`を入れられません。`null`を渡すと`NullPointerException`が発生します。</span>。
 
 <span class="listing-number">**サンプルコード9-19**</span>
 
@@ -855,6 +855,6 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 3. チャレンジ課題
     + 簡易検索エンジン、図書館管理システムなど、実用的なアプリケーション開発
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 次のステップ：基礎課題が完了したら、第10章「ジェネリクス」に進みましょう。
