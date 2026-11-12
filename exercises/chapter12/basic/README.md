@@ -1,262 +1,142 @@
 # 第12章 基本課題
 
 ## 学習目標
-- Stream APIの基本概念と利用方法の理解
-- 中間操作（filter、map、sorted等）と終端操作（collect、reduce等）の使い分け
-- データ処理パイプラインの構築
-- 並列ストリームによる性能向上
-- Optional クラスによる null 安全プログラミング
-- カスタムCollectorの実装による独自集約処理の開発
+
+- `stream()`から始め、中間操作（`filter`・`map`・`sorted`・`limit`）と終端操作（`collect`）でデータを処理する
+- `Collectors.groupingBy`でグループに分け、グループごとに集める（`summingDouble`など）
+- `mapToDouble`で数のストリームにし、`average`の結果（`OptionalDouble`）から値を取り出す
+- `partitioningBy`・`reduce`・`flatMap`・`anyMatch`・`allMatch`・`findFirst`を使い分ける
 
 ## 課題一覧
 
-### 課題1: 社員データ分析システム
-**ファイル名**: `Employee.java`, `EmployeeAnalyzer.java`, `EmployeeAnalyzerTest.java`
+このフォルダーのJavaファイルは、`TODO`の箇所を埋めて完成させる雛形です。
+課題1と課題2は雛形を完成させ、課題3は新しくファイルを作ります。
+解答例は[solutions/](../solutions/)にあります。
 
-社員データを分析するシステムを作成し、Stream APIを活用してください。
+### 課題1: 学生データの分析
 
-**要求仕様**:
-- Employee クラス（名前、年齢、部署、給与）
-- Stream API による多様な分析処理
-- フィルタリング、ソート、グループ化、集約
-- 部署別・年齢層別の統計分析
+**ファイル**: `Student.java`、`StudentAnalyzer.java`、`StreamDemo.java`（前半）
 
-**実行例**:
-```
-=== 社員データ分析システム ===
-全社員データ（10名）:
-田中太郎（30歳・営業部・500万円）
-佐藤花子（25歳・開発部・450万円）
-...
-
-年齢フィルタ（30歳以上）:
-田中太郎（30歳・営業部・500万円）
-鈴木一郎（35歳・開発部・600万円）
-...
-
-給与順ソート（上位3名）:
-1位: 鈴木一郎（600万円）
-2位: 田中太郎（500万円）
-3位: 佐藤花子（450万円）
-
-部署別集計:
-営業部: 3名（平均給与: 480万円）
-開発部: 4名（平均給与: 520万円）
-総務部: 3名（平均給与: 420万円）
-
-年齢層別分析:
-20代: 3名（平均給与: 430万円）
-30代: 5名（平均給与: 510万円）
-40代: 2名（平均給与: 580万円）
-
-全体統計:
-総人数: 10名
-平均給与: 485万円
-最高給与: 600万円
-最低給与: 380万円
-給与合計: 4,850万円
-```
-
-**評価ポイント**:
-- Stream API の基本操作の理解
-- 複雑なデータ処理パイプラインの構築
-- Collectors クラスの活用
-
-
-
-### 課題2: 商品売上分析システム
-**ファイル名**: `Sale.java`, `SalesAnalyzer.java`, `SalesAnalyzerTest.java`
-
-商品売上データを分析するシステムを作成し、高度なStream処理を実装してください。
+学生（名前・年齢・GPA・学部）のリストを、Stream APIで分析します。
 
 **要求仕様**:
-- Sale クラス（商品名、カテゴリ、売上金額、売上日）
-- 期間別・カテゴリ別の売上分析
-- Stream API の高度な操作（flatMap、partition等）
-- Optional を活用した安全なデータアクセス
 
-**実行例**:
+- `Student`のコンストラクター・getter・`toString`（`Alice（20歳、GPA 3.8、Computer Science）`の形）を書く
+- `getAllNames`は`map`で名前のリストを、`filterByGPA`は`filter`でGPAが指定の値以上の学生を返す
+- `groupByDepartment`は`Collectors.groupingBy`で学部ごとに分ける。表示の順序が決まるよう、学部名の順に並ぶ`TreeMap`で返す（`groupingBy(分け方, TreeMap::new, Collectors.toList())`）
+- `calculateAverageGPA`は`mapToDouble`と`average`で平均を求める。学生がいないときは0.0を返す
+- `getTopStudents`は、GPAの高い順に`sorted`で並べ、`limit`で上位n人に絞る
+- どのメソッドも、元のリストを変えない
+- `StreamDemo`の前半の`TODO`を埋めて、各メソッドを試す
+
+**実行例**（`StreamDemo`の前半）:
+
 ```
-=== 商品売上分析システム ===
-売上データ（15件）:
-2024-07-01: ノートPC（家電・150,000円）
-2024-07-01: Java入門（書籍・3,000円）
-...
-
-月別売上集計:
-2024年7月: 1,250,000円（8件）
-2024年8月: 980,000円（7件）
-
-カテゴリ別分析:
-家電: 750,000円（3件・平均250,000円）
-書籍: 45,000円（5件・平均9,000円）
-食品: 80,000円（4件・平均20,000円）
-衣料: 120,000円（3件・平均40,000円）
-
-高額商品分析（10万円以上）:
-ノートPC: 150,000円
-デジタルカメラ: 120,000円
-タブレット: 80,000円
-
-売上トレンド:
-最高売上日: 2024-07-15（350,000円）
-最低売上日: 2024-08-05（15,000円）
-
-Optional活用例:
-最高額商品: Optional[ノートPC（150,000円）]
-該当なし検索: Optional.empty
+=== 学生データ分析 ===
+名前: [Alice, Bob, Charlie, David, Eve]
+GPA 3.7以上:
+  Alice（20歳、GPA 3.8、Computer Science）
+  Charlie（21歳、GPA 3.9、Computer Science）
+  Eve（20歳、GPA 3.7、Mathematics）
+学部ごと:
+  Computer Science: [Alice, Charlie]
+  Mathematics: [Bob, Eve]
+  Physics: [David]
+平均GPA: 3.62
+GPA上位3人:
+  Charlie 3.9
+  Alice 3.8
+  Eve 3.7
 ```
 
-**評価ポイント**:
-- 複雑なデータ変換処理
-- flatMap による階層データの平坦化
-- Optional による null 安全処理
+### 課題2: 商品の売上の分析
 
+**ファイル**: `Product.java`、`SalesAnalyzer.java`、`StreamDemo.java`（後半）
 
-
-### 課題3: テキスト解析システム
-**ファイル名**: `TextAnalyzer.java`, `TextAnalyzerTest.java`
-
-テキストデータを解析するシステムを作成し、文字列処理でのStream活用を実装してください。
+商品（名前・カテゴリ・価格・数量）のリストから、売上を集計します。
 
 **要求仕様**:
-- テキストファイルの読み込みと単語分析
-- Stream API による文字列処理
-- 並列ストリームによる性能向上
-- 正規表現と組み合わせた高度な解析
 
-**実行例**:
+- `Product`の`getTotalSales`は売上金額（価格×数量）を返す。`toString`は`Desk（Furniture、350.0ドル × 10個）`の形にする
+- `calculateSalesByCategory`は、`groupingBy`の3つ目の引数に`Collectors.summingDouble(Product::getTotalSales)`を渡して、カテゴリごとの売上の合計を求める（カテゴリ名の順の`TreeMap`で返す）
+- `filterByPriceRange`は価格が下限以上・上限以下の商品、`getOutOfStockProducts`は数量が0の商品を返す
+- `getTopSellingProducts`は売上金額の多い順に上位n件を返す
+- `getProductDescriptions`は`Laptop (Electronics)`の形の文字列のリストを返す
+- `StreamDemo`の後半の`TODO`を埋めて、各メソッドを試す
+
+**実行例**（`StreamDemo`の後半）:
+
 ```
-=== テキスト解析システム ===
-入力テキスト:
-"Java is a programming language. Java is platform independent.
-Stream API makes Java programming more functional."
-
-基本統計:
-総文字数: 145文字
-総単語数: 23語
-総行数: 3行
-ユニーク単語数: 18語
-
-単語頻度分析（上位5位）:
-1位: Java（3回）
-2位: is（2回）
-3位: programming（2回）
-4位: a（1回）
-5位: language（1回）
-
-長さ別単語分析:
-1-3文字: 8語（35%）
-4-6文字: 7語（30%）
-7-9文字: 6語（26%）
-10文字以上: 2語（9%）
-
-特徴的な単語（6文字以上）:
-programming（2回）
-language（1回）
-platform（1回）
-independent（1回）
-functional（1回）
-
-並列処理性能テスト:
-シーケンシャル処理: 15ms
-並列処理: 8ms
-性能向上率: 46.7%
+=== 売上分析 ===
+カテゴリごとの売上:
+  Education: 0.0
+  Electronics: 7250.0
+  Furniture: 5750.0
+価格が100〜500の商品:
+  Desk（Furniture、350.0ドル × 10個）
+  Chair（Furniture、150.0ドル × 15個）
+在庫切れ: [Book（Education、30.0ドル × 0個）]
+売上の上位2件:
+  Laptop 6000.0
+  Desk 3500.0
+商品の説明: [Laptop (Electronics), Mouse (Electronics), Book (Education), Desk (Furniture), Chair (Furniture)]
 ```
 
-**評価ポイント**:
-- 文字列処理での Stream 活用
-- 並列ストリームの理解と適用
-- 正規表現との組み合わせ
+### 課題3: 数のリストのパイプライン
 
+**ファイル**: `NumberPipeline.java`（新しく作る）
 
-
-### 課題4: データ変換パイプライン
-**ファイル名**: `DataProcessor.java`, `DataProcessorTest.java`
-
-複雑なデータ変換パイプラインを作成し、Stream APIの高度な機能を実装してください。
+1から10までの整数のリストに、いろいろな終端操作を使います。
 
 **要求仕様**:
-- 複数段階のデータ変換処理
-- カスタムコレクターの実装
-- ストリームの合成と分岐
-- 例外処理を含む安全なパイプライン
+
+- `IntStream.rangeClosed(1, 10).boxed()`で、1から10までの`Integer`のリストを作る
+- 偶数だけを2乗し、文字列に変えたリストを作る（`filter`→`map`→`map`）
+- `Collectors.partitioningBy`で偶数と奇数に分け、それぞれの合計を`reduce(0, Integer::sum)`で求める
+- `reduce`で、1から5までの積を求める（初期値を1にする）
+- 入れ子のリストを`flatMap(List::stream)`で1つのリストにする
+- `anyMatch`で7の倍数があるか、`allMatch`ですべて正の数かを調べる
+- `filter`と`findFirst`で、ある数より大きい最初の数を`Optional`で求め、ないときは`orElse`で「なし」と表示する
 
 **実行例**:
+
 ```
-=== データ変換パイプライン ===
-入力データ: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-パイプライン処理1（数値処理）:
-元データ → 偶数フィルタ → 二乗 → 文字列変換
-結果: ["4", "16", "36", "64", "100"]
-
-パイプライン処理2（分岐処理）:
-奇数グループ: [1, 3, 5, 7, 9]
-偶数グループ: [2, 4, 6, 8, 10]
-奇数合計: 25
-偶数合計: 30
-
-カスタムコレクター使用:
-統計情報: {count=10, sum=55, average=5.5, min=1, max=10}
-
-並列パイプライン:
-大量データ処理（100万件）
-シーケンシャル: 245ms
-並列処理: 98ms
-性能向上: 60%
-
-例外安全パイプライン:
-"123" → 123 ✓
-"abc" → エラー（スキップ）
-"456" → 456 ✓
-"def" → エラー（スキップ）
-成功件数: 2件, エラー件数: 2件
+入力: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+偶数の2乗（文字列）: [4, 16, 36, 64, 100]
+奇数: [1, 3, 5, 7, 9] 合計 25
+偶数: [2, 4, 6, 8, 10] 合計 30
+1から5の積: 120
+入れ子のリスト [[1, 2], [3], [], [4, 5, 6]] をならす: [1, 2, 3, 4, 5, 6]
+7の倍数がある？: true
+すべて正の数？: true
+8より大きい最初の数: 9
+20より大きい最初の数: なし
 ```
 
-**評価ポイント**:
-- 複雑なパイプライン設計
-- カスタムコレクターの実装
-- 例外処理を含む実用的な実装
+## コンパイルと実行
+
+```bash
+cd exercises/chapter12/basic
+javac *.java
+java StreamDemo
+```
+
+課題3は、作ったファイルのあるフォルダーで`javac`と`java`を実行します。
 
 ## ヒント
 
-### 課題1のヒント
-- Collectors.groupingBy() で部署別グループ化
-- Collectors.averagingDouble() で平均給与計算
-- Comparator.comparing() でソート条件指定
+- `collect(Collectors.toList())`の代わりに、Java 16以降は`toList()`とも書ける。ただし`toList()`が返すリストは変更できない
+- 降順に並べるには`Comparator.comparingDouble(Student::getGpa).reversed()`を使う（第11章）
+- `average()`は`OptionalDouble`を返す。要素が1つもないと平均がないため。`orElse(0.0)`で、ないときの値を決める
+- `partitioningBy`の結果は、キーが`true`と`false`の2つだけの`Map<Boolean, List<...>>`になる
+- ストリームは1回しか使えない。同じデータを別の処理に使うときは、もう一度`stream()`を呼ぶ
 
-### 課題2のヒント
-- LocalDate.parse() で日付変換
-- Stream.flatMap() で入れ子構造の平坦化
-- Optional.map() でチェーン処理
+## 完了チェックリスト
 
-### 課題3のヒント
-- Files.lines() でファイル読み込み
-- String.split() と Pattern.compile() で単語分割
-- parallelStream() で並列処理
+- [ ] 課題1: `filter`・`map`・`sorted`・`limit`をつなげて、元のリストを変えずに結果を作れる
+- [ ] 課題1: `groupingBy`で学部ごとに分けられる
+- [ ] 課題2: `groupingBy`と`summingDouble`で、グループごとの合計を求められる
+- [ ] 課題3: `reduce`・`flatMap`・`partitioningBy`の働きを説明できる
+- [ ] 課題3: `findFirst`の結果の`Optional`から、値がないときも安全に値を取り出せる
 
-### 課題4のヒント
-- Collector.of() でカスタムコレクター作成
-- Stream.concat() でストリーム結合
-- try-catch と filter() で例外処理
-
-## Stream APIのポイント
-
-1. **中間操作**: filter、map、sorted、distinct等（遅延評価）
-2. **終端操作**: collect、reduce、forEach等（実際の処理実行）
-3. **並列処理**: parallelStream() で自動並列化
-4. **Optional**: null安全なプログラミング
-5. **Collectors**: 豊富な集約操作の提供
-6. **関数型インターフェイス**: Predicate、Function、Consumer等
-
-## ○ 完了チェックリスト
-
-- [ ] 課題1: 社員データで基本的なStream操作ができている
-- [ ] 課題2: 売上データで高度なStream処理ができている
-- [ ] 課題3: テキスト処理で並列ストリームが活用されている
-- [ ] 課題4: 複雑なパイプラインとカスタムコレクターが実装されている
-- [ ] Stream APIの中間操作と終端操作を理解している
-- [ ] Optional による null 安全プログラミングができている
-
-**次のステップ**: 基本課題が完了したら、advanced/の発展課題でより高度なデータ処理に挑戦しましょう！
+**次のステップ**: 基本課題が終わったら、[advanced/](../advanced/)の発展課題に進みましょう。

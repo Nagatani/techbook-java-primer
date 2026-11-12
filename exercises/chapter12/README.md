@@ -4,10 +4,10 @@
 
 ## 基礎課題（[basic/](basic/)）
 
-- 社員データ分析システム
-- 商品売上分析システム
-- テキスト解析システム
-- データ変換パイプライン
+- 学生データの分析（filter・map・sorted・limit、groupingBy、平均）
+- 商品の売上の分析（groupingByとsummingDouble、範囲での絞り込み）
+- 数のリストのパイプライン（partitioningBy・reduce・flatMap・anyMatch・findFirst）
+- このフォルダーのJavaファイルは、`TODO`を埋めて完成させる雛形です
 
 ## 発展課題（[advanced/](advanced/)）
 
@@ -22,11 +22,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `CustomCollector.java`
-- `CustomCollectorTest.java`
-- `DataAnalyzer.java`
-- `DataAnalyzerTest.java`
-- `LogProcessor.java`
-- `LogProcessorTest.java`
-- `StudentGradeProcessor.java`
-- `StudentGradeProcessorTest.java`
+- 基礎課題の課題1〜3の解答例と、そのテスト
