@@ -1,174 +1,59 @@
-# 第9章 解答例
+# 第9章 コレクションフレームワーク - 解答例
 
-## 概要
-
-第9章では、Javaコレクションフレームワークについて学習します。適切なコレクションクラスの選択、効率的なデータ操作、Comparatorの活用などを重視した実装を行います。
+[基礎課題](../basic/)の解答例です。
+基礎課題の雛形の`TODO`を埋めた形で書いてあり、第9章までに学んだ機能だけを使っています。
+後の章で学ぶ機能を使うと短く書ける箇所には、その書き方をコメントで添えています。
 
 ## 解答例一覧
 
-### 1. 学生管理システム (StudentManager系)
+| 課題 | ファイル | 使うコレクション |
+|------|----------|------------------|
+| 課題1: 学生管理 | `Student.java`、`StudentManager.java`、`StudentManagerDemo.java` | `ArrayList`（登録順）と`HashMap`（IDで検索） |
+| 課題2: ショッピングカート | `Product.java`、`CartItem.java`、`ShoppingCart.java`、`ShoppingCartDemo.java` | `LinkedHashMap`（入れた順を保つ） |
+| 課題3: 単語カウンター | `WordCounter.java` | `HashMap`（回数を数える）と`TreeMap`（アルファベット順） |
+| 課題4: 重複の除去と集合演算 | `SetOperations.java` | `LinkedHashSet`・`TreeSet` |
 
-- **StudentManager.java**: 学生管理システムのメインクラス
-- **StudentManagerTest.java**: 学生管理システムのテスト
+テストは`StudentManagerTest.java`・`ShoppingCartTest.java`・`CollectionTasksTest.java`（課題3・4）の16件です。
 
-#### 使用コレクション
-- `HashMap<String, Student>`: ID別の高速検索
-- `TreeSet<Student>`: 成績順の自動ソート
-- `Map<String, List<Student>>`: 学科別のグループ化
-- `ArrayList<Student>`: 登録順序の保持
-
-#### 学習ポイント
-- 適切なコレクションクラスの選択
-- 複数のインデックスによる効率的な検索
-- Stream APIを活用した統計計算
-- Comparatorによる複合ソート
-
-### 2. 図書館管理システム (LibrarySystem系)
-
-- **LibrarySystem.java**: 図書館管理システムのメインクラス
-- **LibrarySystemTest.java**: 図書館管理システムのテスト
-
-#### 使用コレクション
-- `HashMap<String, Book>`: 書籍のID別管理
-- `Map<String, List<Book>>`: カテゴリ別・著者別インデックス
-- `Queue<String>`: 予約待ちキュー
-- `Map<String, List<LoanRecord>>`: 利用者別貸出記録
-
-#### 学習ポイント
-- Queueインターフェイスの活用（予約システム）
-- 複数のインデックスによる効率的な検索
-- 日付操作とStreamAPIの組み合わせ
-- 列挙型を活用した設計
-
-### 3. ショッピングカートシステム (ShoppingCart系)
-
-- **ShoppingCart.java**: ショッピングカートのメインクラス
-- **ShoppingCartTest.java**: ショッピングカートのテスト
-
-#### 使用コレクション
-- `LinkedHashMap<String, CartItem>`: 追加順序を保持したカート
-- `HashMap<String, Product>`: 商品管理
-- `Set<String>`: 適用済み割引の管理
-- `Map<String, List<Product>>`: カテゴリ別商品管理
-
-#### 学習ポイント
-- BigDecimalを使った正確な金額計算
-- LinkedHashMapによる順序保持
-- 複雑な割引計算ロジック
-- 在庫管理とカート操作の整合性
-
-### 4. データ処理システム (DataProcessor系)
-
-- **DataProcessor.java**: データ処理システムのメインクラス
-- **DataProcessorTest.java**: データ処理システムのテスト
-
-#### 使用コレクション
-- `ArrayList<DataEntry>`: データの順序保持
-- `HashMap<String, DataEntry>`: ID別の高速検索
-- `TreeMap<Double, List<DataEntry>>`: 値による範囲検索
-- `TreeMap<Date, List<DataEntry>>`: 時刻による範囲検索
-
-#### 学習ポイント
-- TreeMapによる範囲検索の実装
-- 統計計算とキャッシュ機能
-- 複数のインデックスによる効率的な検索
-- エラーハンドリングと処理結果の管理
-
-## コレクション選択の指針
-
-### 1. List系
-
-| コレクション | 特徴 | 使用場面 |
-|-------------|------|----------|
-| ArrayList | 高速なランダムアクセス | 検索が多い、サイズ変更が少ない |
-| LinkedList | 高速な挿入・削除 | 頻繁な挿入・削除が発生する |
-| Vector | 同期化されたArrayList | マルチスレッド環境（非推奨） |
-
-### 2. Set系
-
-| コレクション | 特徴 | 使用場面 |
-|-------------|------|----------|
-| HashSet | 高速な検索・追加・削除 | 順序不要、重複排除 |
-| LinkedHashSet | 挿入順序を保持 | 順序が重要、重複排除 |
-| TreeSet | 自動ソート | ソート済み、重複排除 |
-
-### 3. Map系
-
-| コレクション | 特徴 | 使用場面 |
-|-------------|------|----------|
-| HashMap | 高速な検索・追加・削除 | 順序不要、キー-値ペア |
-| LinkedHashMap | 挿入順序を保持 | 順序が重要、キー-値ペア |
-| TreeMap | 自動ソート | ソート済み、範囲検索 |
-
-### 4. Queue系
-
-| コレクション | 特徴 | 使用場面 |
-|-------------|------|----------|
-| ArrayDeque | 両端操作が高速 | スタック、キュー |
-| LinkedList | Queueインターフェイス実装 | キュー操作 |
-| PriorityQueue | 優先度付きキュー | 優先度に基づく処理 |
+各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
 ## 実行方法
 
-### テストの実行
-
-解答例のパッケージ名は`chapter09.solutions`なので、`exercises`ディレクトリでコンパイルします。
-JUnit 5の`junit-platform-console-standalone`（Maven Centralから入手）のJARを使います。
+解答例はパッケージ`chapter09.solutions`にあるので、`exercises/`フォルダーでコンパイルします。
 
 ```bash
 cd exercises
+javac -d out $(ls chapter09/solutions/*.java | grep -v Test)
+java -cp out chapter09.solutions.StudentManagerDemo
+java -cp out chapter09.solutions.ShoppingCartDemo
+java -cp out chapter09.solutions.WordCounter
+java -cp out chapter09.solutions.SetOperations
+```
 
-# コンパイル
+テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
+
+```bash
+cd exercises
 javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter09/solutions/*.java
-
-# 全テストの実行
 java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter09.solutions
-
-# 特定のテストクラスだけ実行
-java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-class chapter09.solutions.LibrarySystemTest
 ```
 
-## 重要なポイント
+## 実装のポイント
 
-### 1. コレクションの選択基準
+- `Student`の`equals`と`hashCode`は、学生IDだけで比べる。`List`の`remove`・`contains`も`equals`で探すので、マップから取り出した学生をリストからも同じように除ける
+- `StudentManager`の追加と削除では、リストとマップを必ず一緒に更新する。片方だけを更新すると、一覧と検索の結果が食い違う
+- 成績順の表示は`new ArrayList<>(studentList)`で作ったコピーを並べ替え、元のリストの登録順を残す
+- `ShoppingCart`の`addItem`は、カートにすでに入っている数量と足す数量の合計を在庫と比べる。足す数量だけを比べると、何回かに分けて入れたときに在庫を超えてしまう
+- 集合演算の`addAll`・`retainAll`・`removeAll`は、呼び出した集合そのものを書き換える。元の集合をコピーしてから操作する
 
-- **検索頻度**: 検索が多い場合はHashMap, HashSet
-- **順序の重要性**: 順序が重要な場合はLinkedHashMap, LinkedHashSet
-- **ソートの必要性**: 自動ソートが必要な場合はTreeMap, TreeSet
-- **範囲検索**: 範囲検索が必要な場合はTreeMap
+## 後の章の機能を使った書き方
 
-### 2. Comparatorの活用
+コメントに書いた別の書き方をまとめます。
+どれも第9章の書き方と同じ結果になります。
 
-```java
-// 複合ソート
-Comparator<Student> comparator = 
-    Comparator.comparingInt(Student::getScore)
-             .reversed()
-             .thenComparing(Student::getName);
-```
-
-### 3. Stream APIとの組み合わせ
-
-```java
-// 統計計算
-DoubleSummaryStatistics stats = 
-    students.stream()
-           .mapToDouble(Student::getScore)
-           .summaryStatistics();
-```
-
-### 4. パフォーマンスの考慮
-
-- 大量データの場合は適切なコレクションの選択が重要
-- 頻繁な検索にはHashMapを使用
-- 範囲検索にはTreeMapを使用
-- 順序が重要な場合はLinkedHashMapを使用
-
-## 発展的な学習
-
-1. **カスタムコレクション**: 特定の用途に最適化されたコレクションの実装
-2. **並行コレクション**: ConcurrentHashMapなどのスレッドセーフなコレクション
-3. **イミュータブルコレクション**: 不変コレクションの活用
-4. **ストリーム処理**: より複雑なデータ処理パイプラインの構築
-
-これらの解答例を通じて、適切なコレクションクラスの選択方法と効率的なデータ操作手法を身につけることができます。
+| 箇所 | 第9章の書き方 | 後の章の機能を使った書き方 |
+|------|---------------|----------------------------|
+| 成績の降順の並べ替え | 匿名クラスの`Comparator`（第8章） | ラムダ式`(a, b) -> Double.compare(b.getScore(), a.getScore())`、`Comparator.comparingDouble(Student::getScore).reversed()`（第11章） |
+| 学年での絞り込み | 拡張for文と`if` | `stream().filter(...).toList()`（第12章） |
+| 平均・合計 | 拡張for文で足す | `mapToDouble(...).average()`・`sum()`（第12章） |
+| 単語の数え上げ | `put(word, getOrDefault(word, 0) + 1)` | `merge(word, 1, Integer::sum)`（第11章） |

@@ -23,11 +23,5 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `DataProcessor.java`
-- `DataProcessorTest.java`
-- `LibrarySystem.java`
-- `LibrarySystemTest.java`
-- `ShoppingCart.java`
-- `ShoppingCartTest.java`
-- `StudentManager.java`
-- `StudentManagerTest.java`
+- 基礎課題の課題1〜4の解答例と、そのテスト
+- 第9章までに学んだ機能で書き、後の章の機能を使った書き方をコメントで添えている
