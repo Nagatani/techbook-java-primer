@@ -578,4 +578,4 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 ### 残っている点
 - exercises/chapter01/challenge/CompactHello.java は、クラス宣言のないコンパクトソースファイルを、クラスを宣言する形に書き直す課題の出発点として、意図してこの形にしている（CLAUDE.mdの方針10の例外）
 - ~~第3章のチャレンジ課題（exercises/chapter03/challenge/）は「準備中」のまま~~ ✅ 2026-11-12に自動販売機シミュレーター（VendingMachineSimulator.java、第3章の範囲のクラス・private・オブジェクトの配列・static finalで解ける）を作成。作られた形跡はgitの履歴になく、課題を移した際に空のまま残っていた
-- 第4章・第5章のチャレンジ課題（exercises/chapter04/challenge/、chapter05/challenge/）もファイルがない
+- ~~第4章・第5章のチャレンジ課題（exercises/chapter04/challenge/、chapter05/challenge/）もファイルがない~~ ✅ 2026-11-12に作成。第4章はホテルの客室予約システム（hotel.domain・hotel.appの2パッケージ、パッケージプライベートで予約の入り口をHotelに限る、this(...)とオーバーロード）、第5章は図書館の資料管理システム（LibraryItemを親に本・雑誌・DVD、貸出期間と延滞料金のオーバーライド、集計だけinstanceof、equals・hashCode）。どちらも抽象クラス（第7章）・例外の捕捉（第13章）・コレクション（第9章）・防御的コピー（第6章）を使わない
