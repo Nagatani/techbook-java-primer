@@ -24,7 +24,7 @@ List・Set・Mapの実装クラス（`ArrayList`と`LinkedList`、`HashSet`・`L
 
 ## Stream APIによる現代的なコレクション操作
 
-Java 8で導入されたStream APIは、コレクションの要素の集まりを「データの流れ（ストリーム）」として扱い、その流れに対してさまざまな処理を連結（パイプライン化）していくしくみです。
+Java 8で導入されたStream APIは、コレクションの要素の集まりを「データの流れ（ストリーム）」<span class="footnote">Stream APIのストリームは、第14章で学ぶ`InputStream`などの入出力のストリームとは別のしくみです。</span>として扱い、その流れに対してさまざまな処理を連結（パイプライン化）していくしくみです。
 
 ### なぜStream APIが必要なのか？
 
@@ -34,12 +34,11 @@ Java 8で導入されたStream APIは、コレクションの要素の集まり�
 さらに、マルチコアCPUを生かして並列に処理しようとすると、スレッドを自分で管理する複雑なコードが必要でした。
 
 Stream APIは、関数型プログラミングの考え方を取り入れて、これらの課題を解決します。
-データ処理を「変換のパイプライン」として表現するので、何をするのかが読み取りやすい宣言的なコードになります。
-なお、nullチェックがコードのあちこちに散らばり、NullPointerExceptionの危険が残る問題は、Stream APIではなく本章で後に学ぶ`Optional`が扱います。
+データ処理を「変換のパイプライン」として表現するので、何をするのかが読み取りやすい宣言的なコードになります<span class="footnote">nullチェックがコードのあちこちに散らばり、NullPointerExceptionの危険が残る問題は、Stream APIではなく本章で後に学ぶ`Optional`が扱います。</span>。
 
 ### 遅延評価のしくみ
 
-Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です。
+Stream APIの重要な特徴の1つが遅延評価（Lazy Evaluation）です<span class="footnote">Haskellのように、遅延評価を言語全体の基本にしている言語もあります。C言語の`&&`と`||`が、左辺で結果が決まると右辺を評価しないのも、必要になるまで計算しないという点で似た考え方です。</span>。
 中間操作（filter、mapなど）は、終端操作（collect、forEachなど）が呼ばれるまで実際には実行されません。
 実際に必要になるまで計算しないので、結果に使われない要素の計算を避けられます。
 メモリ効率がよくなるのも利点です。
@@ -167,7 +166,7 @@ List<String> names = list.stream()
 ### `sorted`による並べ替え
 
 `sorted`は、要素を並べ替えたストリームを返す中間操作です。
-引数なしの`sorted()`は自然な順序（文字列ならアルファベット順）で並べ、`Comparator`を渡すとその比較条件で並べます。
+引数なしの`sorted()`は自然な順序（文字列ならアルファベット順）<span class="footnote">正確には、文字列は文字コード（UTF-16）の値の順に並びます。そのため大文字は小文字より前に並び、漢字は読みの順になりません。</span>で並べ、`Comparator`を渡すとその比較条件で並べます。
 `Comparator`をラムダ式やメソッド参照で組み立てる方法（`comparing`・`thenComparing`・`reversed`）は、第11章で学びました。
 次のサンプルでは、本章で使う`Student`クラス（名前・点数・身長）を定義し、Streamで並べ替えます。
 
@@ -262,7 +261,7 @@ JavaプログラミングにおいてNullPointerException（NPE）はもっと�
 
 ### Optional型の概念
 
-Java 8で導入されたOptionalクラスは、「値が存在する場合と存在しない場合がある」という概念を型レベルで表現します。
+Java 8で導入されたOptionalクラス<span class="footnote">同じ考え方の型は、HaskellのMaybeやScalaのOptionなど、ほかの言語にもあります。</span>は、「値が存在する場合と存在しない場合がある」という概念を型レベルで表現します。
 
 メソッドの戻り値を`Optional`にすると、値が存在しない場合があることを型で示せます。
 戻り値が`String`のままでは、nullが返るかどうかはドキュメントを読まないとわかりません。
@@ -678,7 +677,7 @@ IO.println("並列処理の結果: " + sumParallel);
 
 ### 並列ストリームの内部動作
 
-並列ストリームは、JavaのFork/Joinフレームワークを使用して実装されています。処理の流れは以下のようになります。
+並列ストリームは、JavaのFork/Joinフレームワーク<span class="footnote">Fork/JoinフレームワークはJava 7で加わったしくみで、第15章で学びます。並列ストリームは共通のスレッドプール（`ForkJoinPool.commonPool()`）を使い、そのスレッド数は既定でCPUのコア数より1少ない数です。</span>を使用して実装されています。処理の流れは以下のようになります。
 
 1. 分割（Split）
     + データを複数の小さなチャンクに分割
@@ -840,7 +839,7 @@ public class FlatMapExample {
 
 ### reduceによる集約処理
 
-`reduce`操作は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
+`reduce`操作<span class="footnote">mapとreduceは、Lispなどの関数型言語で古くから使われてきた名前です。Googleが2004年に発表した大規模データ処理のしくみMapReduceも、この2つの関数から名前を取っています。</span>は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
 <span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜25、39〜40行目）</span>
 
@@ -880,7 +879,7 @@ Java is awesome
 平均点: 85.0
 ```
 
-`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`, `max()`, `min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます。
+`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`, `max()`, `min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
 
 ### Collectorsによる高度なデータ収集
 
@@ -937,7 +936,7 @@ public class CollectorsExample {
 不合格者: 1人
 ```
 
-`Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句に相当する処理をJavaのコード内で簡潔に実現できます。
+`Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句<span class="footnote">SQL（Structured Query Language）は、データベースを操作するための言語です。`GROUP BY`句は、同じ値を持つ行をまとめて集計します。</span>に相当する処理をJavaのコード内で簡潔に実現できます。
 
 ### nullを含むデータの処理
 
@@ -1109,7 +1108,7 @@ public class ComplexProcessingExample {
 ```
 
 `groupingBy`が返す`Map`は`HashMap`なので、グループの表示順は保証されません。
-順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します。
+順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します<span class="footnote">`Map`の種類を指定できるのは3つの引数をとる`groupingBy`で、3番目の引数にはグループごとの集め方（`Collectors.toList()`など）を渡します。</span>。
 
 このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
 
@@ -1160,4 +1159,4 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
 - 応用的な実装練習
 - 実践的な総合問題
 
-詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください。
+詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
