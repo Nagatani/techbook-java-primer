@@ -1040,10 +1040,10 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 ### 基礎課題のヒント
 
-支払い方法の戦略パターン（基礎課題3）
-- PaymentMethodインターフェイスで支払い処理と手数料の計算を定める
-- CreditCard、DebitCard、Cashの3つのクラスで実装する
-- 支払い方法ごとに異なる手数料率を設定する
+支払いのインターフェイス（基礎課題2）
+- Payableインターフェイスで、支払い金額を計算するメソッドを定める
+- 継承の関係にないEmployee（従業員）とInvoice（請求書）の2つのクラスで実装する
+- Payable型の配列で、従業員と請求書の支払い金額をまとめて合計する
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
