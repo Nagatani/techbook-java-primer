@@ -1,796 +1,176 @@
-# 第15章 応用課題
+# 第15章 発展課題
 
 ## 学習目標
-- 高度なJavaプログラミング技術統合
-- 企業レベルのアプリケーション開発
-- 複合的な技術要素の組み合わせ
-- 実務レベルの問題解決
-- アーキテクチャ設計の実践
+- 「調べてから書き込む」処理を`synchronized`で1つの操作にまとめ、競合状態を防ぐ
+- 複数のスレッドから更新する数を`AtomicInteger`で数える
+- `ExecutorService`にタスクを渡し、`shutdown`と`awaitTermination`で終わりを待つ
+- `Callable`と`Future`で、別のスレッドで計算した結果を受け取る
+- 複数のスレッドから同じマップを更新するときに`ConcurrentHashMap`の`merge`を使う
+- `CompletableFuture`の`supplyAsync`・`exceptionally`・`allOf`で、失敗を含む複数の処理をまとめる
 
 ## 課題一覧
 
-### 課題1: 統合ECプラットフォーム
-**ファイル名**: `IntegratedECommercePlatform.java`
+### 課題1: 映画館の座席予約
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task1-theater/
+├── Theater.java     座席（予約の処理をsynchronizedにする）
+├── Request.java     1人の客の申し込み（レコード）
+└── TheaterApp.java  mainメソッド（4つの窓口で同時に予約する）
+```
 
-複数の技術要素を統合したエンタープライズ級ECプラットフォームを作成してください。
+12席の映画館で、4つの窓口が客の申し込みを同時に処理するプログラムを作成してください。
+同じ座席を希望する客が何人もいても、1つの座席を2人に売ってはいけません。
 
 **要求仕様**:
-- マイクロサービスアーキテクチャ
-- イベント駆動設計
-- CQRS + Event Sourcing
-- 分散トランザクション処理
-
-**システム構成**:
-- ユーザー管理サービス
-- 商品カタログサービス
-- 注文処理サービス
-- 在庫管理サービス
-- 決済サービス
-- 通知サービス
+- `Theater`（座席）
+    - 座席ごとに予約した人の名前を持つ（空席は`null`）
+    - `reserve(客の名前, 座席番号のリスト)`は、希望した座席がすべて空いているときだけ全部を予約して`true`を返す。1席でも埋まっているか、存在しない番号があれば何も予約せず`false`を返す
+    - 予約済みの席の数と、座席表（予約済みは×、空席は○）を返すメソッドを持つ
+    - 座席を読み書きするメソッドはすべて`synchronized`にする
+- `TheaterApp`
+    - 申し込みは15件。2席ずつの4組（1・2、3・4、5・6、7・8）に3人ずつ、9番と10番に1人ずつ、存在しない13番に1人が申し込む
+    - `Executors.newFixedThreadPool(4)`の4つのスレッドを窓口とし、申し込みを1件ずつタスクとして渡す
+    - 予約できた件数、できなかった件数、予約できた申し込みの席数の合計を`AtomicInteger`で数える
+    - すべてのタスクが終わってから、結果と座席表を表示する
+    - 「予約できた申し込みの席数の合計 − 座席表の予約済みの席の数」を、二重に予約された席の数として表示する
 
 **実行例**:
 ```
-=== 統合ECプラットフォーム ===
+=== 映画館の座席予約 ===
+座席: 12席、窓口: 4か所、申し込み: 15件
 
-EnterpriseCommerce v3.0
+=== 結果 ===
+予約できた申し込み: 6件
+予約できなかった申し込み: 9件
+座席表: [1 ×][2 ×][3 ×][4 ×][5 ×][6 ×][7 ×][8 ×][9 ×][10 ×][11 ○][12 ○]
+予約できた申し込みの席数: 10席
+座席表の予約済みの席: 10席
+二重に予約された席: 0席
+```
 
-=== システムアーキテクチャ ===
-マイクロサービス構成:
+同じ組を希望した3人のうち、だれが予約できるかは実行ごとに変わります。
+そのため、実行例では客の名前を出さず、実行ごとに変わらない件数と座席表だけを表示しています。
 
-サービス一覧:
-1. user-service (ユーザー管理)
-   - Port: 8081
-   - Database: PostgreSQL
-   - Cache: Redis
-   
-2. catalog-service (商品カタログ)
-   - Port: 8082
-   - Database: MongoDB
-   - Search: Elasticsearch
-   
-3. order-service (注文処理)
-   - Port: 8083
-   - Database: PostgreSQL
-   - Event Store: EventStore DB
-   
-4. inventory-service (在庫管理)
-   - Port: 8084
-   - Database: PostgreSQL
-   - Cache: Redis
-   
-5. payment-service (決済処理)
-   - Port: 8085
-   - Database: PostgreSQL
-   - External: Stripe API
-   
-6. notification-service (通知)
-   - Port: 8086
-   - Queue: RabbitMQ
-   - Email: SendGrid
+### 課題2: 店舗の売上の並行集計
+**ファイル**（このフォルダーのファイルは解答例です）:
+```
+advanced/task2-sales/
+├── StoreResult.java  1店舗の集計結果（レコード）
+├── SalesTask.java    1店舗の売上ファイルを集計するCallable
+├── SalesApp.java     mainメソッド
+└── data/
+    ├── honten.csv    本店の売上
+    ├── ekimae.csv    駅前店の売上
+    └── daigaku.csv   大学店の売上（読めない行を1行含む）
+```
 
-インフラストラクチャ:
-- API Gateway: Kong
-- Service Mesh: Istio
-- Message Broker: Apache Kafka
-- Config Server: Spring Cloud Config
-- Service Discovery: Consul
-- Monitoring: Prometheus + Grafana
-- Tracing: Jaeger
+3つの店舗の売上ファイル（CSV）を、店舗ごとに別のスレッドで同時に集計するプログラムを作成してください。
+ファイルの1行目は見出しで、2行目からは「商品,単価,個数」の形です。
 
-=== イベント駆動アーキテクチャ ===
-非同期イベント処理:
+```
+商品,単価,個数
+おにぎり,150,40
+サンドイッチ,320,25
+```
+
+**要求仕様**:
+- `SalesTask`（`Callable<StoreResult>`を実装する）
+    - 1店舗のファイルを読み、売上の合計（単価 × 個数の和）を求める
+    - 数に直せない行は飛ばし、飛ばした行の数を数える
+    - 商品ごとの個数を、全店舗で共有する`ConcurrentHashMap<String, Integer>`に`merge`で足し込む
+- Futureによる集計
+    - 3店舗のタスクをすべて`ExecutorService`に`submit`してから、`Future`の`get`で結果を店舗の順に受け取る
+    - 店舗ごとの売上と全体の合計、商品ごとの販売数（多い順、同じ数なら商品名の順）を表示する
+- CompletableFutureによる集計
+    - ファイルのない「公園店」（`data/kouen.csv`）を加えた4店舗を、`CompletableFuture.supplyAsync`で集計する
+    - 読めなかった店舗は`exceptionally`でメッセージを表示し、0円として扱う
+    - `allOf`ですべての店舗が終わるのを待ってから、合計と売上がいちばん多い店舗を表示する
+
+**実行例**:
+```
+=== Futureによる店舗ごとの集計 ===
+  本店: 28,100円
+  駅前店: 38,090円
+  大学店: 46,700円（読めない行 1行）
+  合計: 112,890円
+
+=== 商品ごとの販売数（多い順） ===
+  おにぎり 175個
+  お茶 153個
+  コーヒー 105個
+  サンドイッチ 55個
+  弁当 55個
+
+=== CompletableFutureによる集計 ===
+  公園店: ファイルを読めませんでした（0円として扱います）
+  集計した店舗: 4店
+  合計: 112,890円
+  売上がいちばん多い店舗: 大学店（46,700円）
+```
+
+店舗のタスクが終わる順序は実行ごとに変わりますが、結果は`Future`を投入した順に受け取るので、表示の順序は変わりません。
+
+## コンパイルと実行
+
+```bash
+cd task1-theater
+javac *.java
+java TheaterApp
+
+cd ../task2-sales
+javac *.java
+java SalesApp
+```
+
+課題2は`data/`フォルダーのファイルを相対パスで読むので、`task2-sales`フォルダーで実行します。
+
+## 実装のヒント
 
 ```java
-// ドメインイベント定義
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = UserRegisteredEvent.class, name = "USER_REGISTERED"),
-    @JsonSubTypes.Type(value = OrderPlacedEvent.class, name = "ORDER_PLACED"),
-    @JsonSubTypes.Type(value = PaymentProcessedEvent.class, name = "PAYMENT_PROCESSED"),
-    @JsonSubTypes.Type(value = InventoryUpdatedEvent.class, name = "INVENTORY_UPDATED")
-})
-public abstract class DomainEvent {
-    private final String eventId;
-    private final Instant timestamp;
-    private final String aggregateId;
-    private final Long version;
-    
-    protected DomainEvent(String aggregateId, Long version) {
-        this.eventId = UUID.randomUUID().toString();
-        this.timestamp = Instant.now();
-        this.aggregateId = aggregateId;
-        this.version = version;
-    }
-}
-
-// 注文処理サービス
-@Service
-@Transactional
-public class OrderService {
-    private final OrderRepository orderRepository;
-    private final EventStore eventStore;
-    private final EventPublisher eventPublisher;
-    private final SagaOrchestrator sagaOrchestrator;
-    
-    public OrderResult placeOrder(PlaceOrderCommand command) {
-        try {
-            // 1. コマンド検証
-            CommandValidation validation = validateCommand(command);
-            if (!validation.isValid()) {
-                return OrderResult.failure(validation.getErrors());
-            }
-            
-            // 2. 注文アグリゲート作成
-            Order order = Order.create(
-                command.getCustomerId(),
-                command.getOrderItems(),
-                command.getShippingAddress()
-            );
-            
-            // 3. ビジネスルール適用
-            BusinessRuleEngine ruleEngine = new BusinessRuleEngine();
-            RuleValidationResult ruleResult = ruleEngine.validate(order);
-            
-            if (!ruleResult.isValid()) {
-                return OrderResult.failure(ruleResult.getViolations());
-            }
-            
-            // 4. イベント生成
-            List<DomainEvent> events = order.getUncommittedEvents();
-            
-            // 5. Event Sourcing - イベント永続化
-            eventStore.saveEvents(order.getId(), events, order.getVersion());
-            
-            // 6. 読み取りモデル更新
-            updateReadModel(order);
-            
-            // 7. イベント発行
-            events.forEach(eventPublisher::publish);
-            
-            // 8. Saga開始 (分散トランザクション)
-            SagaDefinition orderSaga = createOrderProcessingSaga(order);
-            sagaOrchestrator.startSaga(orderSaga);
-            
-            logger.info("注文作成完了: orderId={}, customerId={}", 
-                order.getId(), command.getCustomerId());
-            
-            return OrderResult.success(order.getId());
-            
-        } catch (Exception e) {
-            logger.error("注文作成エラー", e);
-            return OrderResult.failure("注文処理中にエラーが発生しました: " + e.getMessage());
+public synchronized boolean reserve(String customer, List<Integer> seatNumbers) {
+    for (int number : seatNumbers) {
+        if (number < 1 || number > reservedBy.length || reservedBy[number - 1] != null) {
+            return false;  // 1席でも取れなければ何もしない
         }
     }
-    
-    private SagaDefinition createOrderProcessingSaga(Order order) {
-        return SagaDefinition.builder()
-            .sagaId(UUID.randomUUID().toString())
-            .sagaType("OrderProcessingSaga")
-            .step("ReserveInventory")
-                .invokeParticipant("inventory-service")
-                .withCommand(new ReserveInventoryCommand(order.getOrderItems()))
-                .withCompensation(new ReleaseInventoryCommand(order.getOrderItems()))
-            .step("ProcessPayment")
-                .invokeParticipant("payment-service")
-                .withCommand(new ProcessPaymentCommand(
-                    order.getCustomerId(), 
-                    order.getTotalAmount(),
-                    order.getPaymentMethod()))
-                .withCompensation(new RefundPaymentCommand(order.getId()))
-            .step("UpdateInventory")
-                .invokeParticipant("inventory-service")
-                .withCommand(new UpdateInventoryCommand(order.getOrderItems()))
-                .withCompensation(new RestoreInventoryCommand(order.getOrderItems()))
-            .step("SendNotification")
-                .invokeParticipant("notification-service")
-                .withCommand(new SendOrderConfirmationCommand(
-                    order.getCustomerId(), 
-                    order.getId()))
-            .build();
+    for (int number : seatNumbers) {
+        reservedBy[number - 1] = customer;
     }
-}
-
-// CQRS実装 - コマンドハンドラー
-@Component
-public class OrderCommandHandler {
-    
-    @EventSourcingHandler
-    public void handle(PlaceOrderCommand command) {
-        Order order = Order.create(
-            command.getCustomerId(),
-            command.getOrderItems(),
-            command.getShippingAddress()
-        );
-        
-        repository.save(order);
-    }
-    
-    @EventSourcingHandler
-    public void handle(UpdateOrderStatusCommand command) {
-        Order order = repository.load(command.getOrderId());
-        order.updateStatus(command.getNewStatus());
-        repository.save(order);
-    }
-    
-    @EventSourcingHandler
-    public void handle(CancelOrderCommand command) {
-        Order order = repository.load(command.getOrderId());
-        order.cancel(command.getReason());
-        repository.save(order);
-    }
-}
-
-// CQRS実装 - クエリハンドラー
-@Component
-public class OrderQueryHandler {
-    private final OrderProjectionRepository projectionRepository;
-    
-    public OrderDetails getOrderDetails(String orderId) {
-        OrderProjection projection = projectionRepository.findById(orderId)
-            .orElseThrow(() -> new OrderNotFoundException(orderId));
-        
-        return OrderDetails.builder()
-            .orderId(projection.getOrderId())
-            .customerId(projection.getCustomerId())
-            .status(projection.getStatus())
-            .orderItems(projection.getOrderItems())
-            .totalAmount(projection.getTotalAmount())
-            .createdAt(projection.getCreatedAt())
-            .build();
-    }
-    
-    public PagedResult<OrderSummary> getCustomerOrders(String customerId, 
-                                                      Pageable pageable) {
-        Page<OrderProjection> projections = projectionRepository
-            .findByCustomerId(customerId, pageable);
-        
-        List<OrderSummary> summaries = projections.getContent().stream()
-            .map(this::toOrderSummary)
-            .collect(Collectors.toList());
-        
-        return new PagedResult<>(summaries, projections.getTotalElements());
-    }
-}
-
-// Event Sourcing - イベントストア
-@Repository
-public class EventStore {
-    private final JdbcTemplate jdbcTemplate;
-    private final EventSerializer eventSerializer;
-    
-    public void saveEvents(String aggregateId, List<DomainEvent> events, Long expectedVersion) {
-        try {
-            // 楽観的排他制御
-            Long currentVersion = getCurrentVersion(aggregateId);
-            if (!Objects.equals(currentVersion, expectedVersion)) {
-                throw new ConcurrencyException(
-                    "Expected version " + expectedVersion + 
-                    " but was " + currentVersion);
-            }
-            
-            // イベント保存
-            String sql = "INSERT INTO event_store (aggregate_id, event_type, event_data, version, timestamp) " +
-                        "VALUES (?, ?, ?, ?, ?)";
-            
-            List<Object[]> batchArgs = events.stream()
-                .map(event -> new Object[]{
-                    aggregateId,
-                    event.getClass().getSimpleName(),
-                    eventSerializer.serialize(event),
-                    event.getVersion(),
-                    event.getTimestamp()
-                })
-                .collect(Collectors.toList());
-            
-            jdbcTemplate.batchUpdate(sql, batchArgs);
-            
-            logger.debug("Saved {} events for aggregate {}", events.size(), aggregateId);
-            
-        } catch (DataAccessException e) {
-            throw new EventStoreException("Failed to save events", e);
-        }
-    }
-    
-    public List<DomainEvent> getEvents(String aggregateId) {
-        String sql = "SELECT event_type, event_data, version, timestamp " +
-                    "FROM event_store WHERE aggregate_id = ? ORDER BY version";
-        
-        return jdbcTemplate.query(sql, new Object[]{aggregateId}, (rs, rowNum) -> {
-            String eventType = rs.getString("event_type");
-            String eventData = rs.getString("event_data");
-            return eventSerializer.deserialize(eventData, eventType);
-        });
-    }
-}
-
-// Saga Orchestrator
-@Service
-public class SagaOrchestrator {
-    private final SagaRepository sagaRepository;
-    private final MessageSender messageSender;
-    
-    public void startSaga(SagaDefinition sagaDefinition) {
-        try {
-            // Saga状態初期化
-            SagaInstance saga = new SagaInstance(
-                sagaDefinition.getSagaId(),
-                sagaDefinition.getSagaType(),
-                SagaStatus.STARTED
-            );
-            
-            sagaRepository.save(saga);
-            
-            // 最初のステップ実行
-            SagaStep firstStep = sagaDefinition.getSteps().get(0);
-            executeStep(saga, firstStep);
-            
-            logger.info("Saga started: sagaId={}, type={}", 
-                saga.getSagaId(), saga.getSagaType());
-            
-        } catch (Exception e) {
-            logger.error("Failed to start saga", e);
-            throw new SagaException("Saga start failed", e);
-        }
-    }
-    
-    private void executeStep(SagaInstance saga, SagaStep step) {
-        try {
-            // ステップ状態更新
-            saga.setCurrentStep(step.getName());
-            saga.setStatus(SagaStatus.STEP_EXECUTING);
-            sagaRepository.save(saga);
-            
-            // コマンド送信
-            Command command = step.getCommand();
-            String participant = step.getParticipant();
-            
-            messageSender.sendCommand(participant, command, 
-                new SagaReplyHandler(saga.getSagaId(), step.getName()));
-            
-            logger.debug("Executing saga step: sagaId={}, step={}", 
-                saga.getSagaId(), step.getName());
-            
-        } catch (Exception e) {
-            // ステップ失敗 - 補償処理開始
-            startCompensation(saga, step);
-        }
-    }
-    
-    private void startCompensation(SagaInstance saga, SagaStep failedStep) {
-        logger.warn("Starting compensation for saga: sagaId={}, failedStep={}", 
-            saga.getSagaId(), failedStep.getName());
-        
-        saga.setStatus(SagaStatus.COMPENSATING);
-        sagaRepository.save(saga);
-        
-        // 実行済みステップの逆順で補償処理実行
-        List<SagaStep> executedSteps = getExecutedSteps(saga);
-        Collections.reverse(executedSteps);
-        
-        for (SagaStep step : executedSteps) {
-            executeCompensation(saga, step);
-        }
-        
-        saga.setStatus(SagaStatus.COMPENSATED);
-        sagaRepository.save(saga);
-    }
+    return true;
 }
 ```
 
-実行例:
-```
-=== 注文処理フロー実行ログ ===
+- 課題1で`synchronized`を外すと、2つのスレッドが同時に「空いている」と判断し、どちらも同じ席を予約することがある。空いているか調べる処理と予約する処理は、1つの`synchronized`メソッドの中にまとめる
+- 件数を`int`のフィールドで数えて`count++`とすると、読み出し・加算・書き込みのあいだに別のスレッドが割り込む。`AtomicInteger`の`incrementAndGet()`や`addAndGet()`を使う
+- ラムダ式の中からは、外側の`int`のローカル変数を書き換えられない。`AtomicInteger`のオブジェクトを使うと、件数を数えられる
+- `Future`の`get()`は、タスクの中で起きた例外を`ExecutionException`に包んで投げる。元の例外は`getCause()`で取り出す
+- `Callable`の`call()`は検査例外を投げられるが、`supplyAsync`に渡す`Supplier`は投げられない。検査例外は`CompletionException`に包んで投げ直す
+- `map.merge(商品, 個数, Integer::sum)`は「まだなければ個数を入れ、あれば足す」を1つの操作として行う。`get`してから`put`する書き方では、ほかのスレッドの更新が失われることがある
 
-注文作成要求:
-顧客ID: CUST-12345
-商品: [
-  {id: "PROD-001", quantity: 2, price: 1200},
-  {id: "PROD-005", quantity: 1, price: 3500}
-]
-配送先: 東京都渋谷区...
-支払方法: クレジットカード
+## 応用のポイント
 
-14:30:00.001 - PlaceOrderCommand受信
-14:30:00.003 - コマンド検証開始
-14:30:00.005 - ビジネスルール検証
-14:30:00.007 - 注文アグリゲート作成
-14:30:00.010 - OrderPlacedEvent生成
-14:30:00.012 - Event Store保存
-14:30:00.015 - 読み取りモデル更新
-14:30:00.018 - イベント発行
-14:30:00.020 - Saga開始
+1. 守る範囲を見極める
+    - 課題1で守るべきなのは「調べてから書き込む」までのひとまとまりで、1つ1つの読み書きではない
+2. 結果の受け取り方
+    - `Future`は投入した順に`get`すれば、終わる順序にかかわらず決まった順で結果を並べられる
+3. 失敗の扱い
+    - `exceptionally`で代わりの値を返すと、1店舗の失敗で全体の集計が止まらない
 
-Saga実行ログ:
-SagaId: SAGA-20240705-001
-Type: OrderProcessingSaga
+## 発展（任意）
 
-Step 1: ReserveInventory
-14:30:00.025 - inventory-service呼び出し
-14:30:00.067 - 在庫引当成功 (42ms)
+- 課題1の`reserve`から`synchronized`を外し、空いているか調べたあとに`Thread.sleep(10)`を入れて実行する。二重に予約された席が0でなくなることを確かめる（結果は実行ごとに変わる）
+- 課題1に、予約を取り消す`cancel(客の名前, 座席番号)`を加える。本人の予約だけを取り消せるようにする
+- 課題2の店舗のファイルを増やし、スレッドプールのスレッド数を1と3にしたときの処理時間を`System.nanoTime()`で比べる。ファイルを読む処理に`Thread.sleep(200)`を入れると差がわかりやすい
 
-Step 2: ProcessPayment  
-14:30:00.070 - payment-service呼び出し
-14:30:01.234 - 決済処理成功 (1.164s)
+## 完了チェックリスト
 
-Step 3: UpdateInventory
-14:30:01.237 - inventory-service呼び出し
-14:30:01.289 - 在庫更新成功 (52ms)
+- [ ] 課題1で、同じ席を2人に予約させない
+- [ ] 課題1で、2席の申し込みが1席だけ予約される状態にならない
+- [ ] 件数を`AtomicInteger`で数えている
+- [ ] `ExecutorService`を`shutdown`し、`awaitTermination`で終わりを待っている
+- [ ] 課題2で、`Future`の`get`で受け取った結果を店舗の順に表示している
+- [ ] 課題2で、商品ごとの個数を`ConcurrentHashMap`の`merge`で足し込んでいる
+- [ ] ファイルのない店舗があっても、残りの店舗の合計を表示できる
 
-Step 4: SendNotification
-14:30:01.292 - notification-service呼び出し
-14:30:01.456 - 通知送信成功 (164ms)
-
-Saga完了:
-14:30:01.460 - OrderProcessingSaga完了
-総実行時間: 1.459秒
-ステップ成功率: 100%
-```
-
-=== 分散トレーシング ===
-```
-Trace ID: 64b2c8f4a1e3d2b9
-Span情報:
-
-order-service [1.459s]
-├── validate-command [2ms]
-├── create-aggregate [3ms]
-├── save-events [5ms]
-├── publish-events [3ms]
-└── start-saga [1.446s]
-    ├── inventory-service::reserve [42ms]
-    ├── payment-service::process [1.164s]
-    ├── inventory-service::update [52ms]
-    └── notification-service::send [164ms]
-
-分散トレース統計:
-総リクエスト: 1
-成功: 1 (100%)
-平均レスポンス時間: 1.459s
-サービス間呼び出し: 4回
-エラー率: 0%
-```
-```
-
-### 課題2: リアルタイム分析プラットフォーム
-**ファイル名**: `RealTimeAnalyticsPlatform.java`
-
-大量データのリアルタイム分析を行うプラットフォームを作成してください。
-
-**要求仕様**:
-- ストリーミングデータ処理
-- 複雑イベント処理 (CEP)
-- 機械学習パイプライン
-- リアルタイムダッシュボード
-
-**システム機能**:
-- データ収集・前処理
-- ストリーム分析
-- 異常検知
-- 予測分析
-
-**実行例**:
-```
-=== リアルタイム分析プラットフォーム ===
-
-AnalyticsEngine Pro v4.0
-
-=== ストリーミングアーキテクチャ ===
-大容量データ処理:
-
-データソース:
-- Webアクセスログ: 50,000 events/sec
-- IoTセンサー: 100,000 events/sec  
-- トランザクション: 5,000 events/sec
-- ソーシャルメディア: 20,000 events/sec
-総入力: 175,000 events/sec
-
-処理パイプライン:
-1. Data Ingestion (Apache Kafka)
-2. Stream Processing (Apache Flink)
-3. Complex Event Processing (Esper)
-4. Machine Learning (Apache Spark ML)
-5. Storage (ClickHouse + ElasticSearch)
-6. Visualization (Grafana + Custom Dashboard)
-
-=== 複雑イベント処理 ===
-CEP実装:
-
-```java
-@Component
-public class ComplexEventProcessor {
-    private final EPServiceProvider epService;
-    private final AnomalyDetector anomalyDetector;
-    private final PatternMatcher patternMatcher;
-    
-    @PostConstruct
-    public void initializeEPL() {
-        // 異常検知パターン
-        String anomalyQuery = 
-            "SELECT * FROM UserEvent.win:time(5 min) " +
-            "GROUP BY userId " +
-            "HAVING COUNT(*) > 1000"; // 5分間で1000回以上のアクセス
-        
-        epService.getEPAdministrator()
-            .createEPL(anomalyQuery)
-            .addListener(this::handleAnomalousActivity);
-        
-        // セキュリティ脅威検知
-        String securityQuery = 
-            "SELECT a.userId, a.ipAddress, COUNT(*) as attemptCount " +
-            "FROM LoginAttempt.win:time(1 min) a " +
-            "WHERE a.success = false " +
-            "GROUP BY a.userId, a.ipAddress " +
-            "HAVING COUNT(*) >= 5"; // 1分間で5回以上の失敗
-        
-        epService.getEPAdministrator()
-            .createEPL(securityQuery)
-            .addListener(this::handleSecurityThreat);
-        
-        // ビジネス機会検知
-        String opportunityQuery =
-            "SELECT p.productId, SUM(p.viewCount) as totalViews, " +
-            "       AVG(p.conversionRate) as avgConversion " +
-            "FROM ProductEvent.win:time(1 hour) p " +
-            "GROUP BY p.productId " +
-            "HAVING SUM(p.viewCount) > 10000 AND AVG(p.conversionRate) < 0.01"; // 高閲覧・低転換
-        
-        epService.getEPAdministrator()
-            .createEPL(opportunityQuery)
-            .addListener(this::handleBusinessOpportunity);
-        
-        // システムパフォーマンス監視
-        String performanceQuery =
-            "SELECT s.serviceId, AVG(s.responseTime) as avgResponse, " +
-            "       COUNT(*) as requestCount " +
-            "FROM ServiceCall.win:time(30 sec) s " +
-            "GROUP BY s.serviceId " +
-            "HAVING AVG(s.responseTime) > 1000"; // 30秒間の平均が1秒超
-        
-        epService.getEPAdministrator()
-            .createEPL(performanceQuery)
-            .addListener(this::handlePerformanceIssue);
-    }
-    
-    public void handleAnomalousActivity(EventBean[] newEvents, EventBean[] oldEvents) {
-        for (EventBean event : newEvents) {
-            String userId = (String) event.get("userId");
-            Long eventCount = (Long) event.get("count(*)");
-            
-            AnomalyAlert alert = AnomalyAlert.builder()
-                .alertId(UUID.randomUUID().toString())
-                .userId(userId)
-                .anomalyType(AnomalyType.HIGH_FREQUENCY_ACCESS)
-                .severity(Severity.HIGH)
-                .eventCount(eventCount)
-                .detectedAt(Instant.now())
-                .message(String.format("ユーザー %s が5分間で %d 回のアクセス", userId, eventCount))
-                .build();
-            
-            // 異常検知アルゴリズム実行
-            AnomalyScore score = anomalyDetector.calculateAnomalyScore(alert);
-            alert.setAnomalyScore(score);
-            
-            // アラート送信
-            alertService.sendAlert(alert);
-            
-            // 自動対応
-            if (score.getScore() > 0.8) {
-                // 高スコア異常 - 自動ブロック
-                securityService.temporaryBlock(userId, Duration.ofMinutes(30));
-            }
-            
-            logger.warn("異常活動検知: userId={}, count={}, score={}", 
-                userId, eventCount, score.getScore());
-        }
-    }
-    
-    public void handleSecurityThreat(EventBean[] newEvents, EventBean[] oldEvents) {
-        for (EventBean event : newEvents) {
-            String userId = (String) event.get("userId");
-            String ipAddress = (String) event.get("ipAddress");
-            Long attemptCount = (Long) event.get("attemptCount");
-            
-            SecurityThreat threat = SecurityThreat.builder()
-                .threatId(UUID.randomUUID().toString())
-                .userId(userId)
-                .ipAddress(ipAddress)
-                .threatType(ThreatType.BRUTE_FORCE_ATTACK)
-                .severity(Severity.CRITICAL)
-                .attemptCount(attemptCount)
-                .detectedAt(Instant.now())
-                .build();
-            
-            // 脅威インテリジェンス確認
-            ThreatIntelligence intel = threatIntelligenceService.analyze(threat);
-            threat.setThreatIntelligence(intel);
-            
-            // 即座にブロック
-            securityService.immediateBlock(ipAddress);
-            
-            // セキュリティチームに緊急通知
-            securityAlertService.sendCriticalAlert(threat);
-            
-            logger.error("セキュリティ脅威検知: userId={}, ip={}, attempts={}", 
-                userId, ipAddress, attemptCount);
-        }
-    }
-}
-
-// 機械学習パイプライン
-@Component
-public class MLPipeline {
-    private final SparkSession spark;
-    private final ModelRegistry modelRegistry;
-    
-    @Scheduled(fixedRate = 300000) // 5分毎
-    public void executeMLPipeline() {
-        try {
-            // データ読み込み
-            Dataset<Row> rawData = loadStreamingData();
-            
-            // 特徴量エンジニアリング
-            Dataset<Row> features = performFeatureEngineering(rawData);
-            
-            // 予測実行
-            List<MLPrediction> predictions = executePredictions(features);
-            
-            // 結果配信
-            distributeResults(predictions);
-            
-        } catch (Exception e) {
-            logger.error("ML pipeline execution failed", e);
-        }
-    }
-    
-    private List<MLPrediction> executePredictions(Dataset<Row> features) {
-        List<MLPrediction> predictions = new ArrayList<>();
-        
-        // ユーザー行動予測
-        Model userBehaviorModel = modelRegistry.getModel("user-behavior-v2.1");
-        Dataset<Row> behaviorPredictions = userBehaviorModel.transform(features);
-        predictions.addAll(extractPredictions(behaviorPredictions, "user_behavior"));
-        
-        // 売上予測
-        Model salesModel = modelRegistry.getModel("sales-forecast-v1.8");
-        Dataset<Row> salesPredictions = salesModel.transform(features);
-        predictions.addAll(extractPredictions(salesPredictions, "sales_forecast"));
-        
-        // 異常検知
-        Model anomalyModel = modelRegistry.getModel("anomaly-detection-v3.2");
-        Dataset<Row> anomalyPredictions = anomalyModel.transform(features);
-        predictions.addAll(extractPredictions(anomalyPredictions, "anomaly_detection"));
-        
-        // チャーン予測
-        Model churnModel = modelRegistry.getModel("churn-prediction-v2.0");
-        Dataset<Row> churnPredictions = churnModel.transform(features);
-        predictions.addAll(extractPredictions(churnPredictions, "churn_prediction"));
-        
-        return predictions;
-    }
-}
-```
-
-実行例:
-```
-=== リアルタイム分析実行ログ ===
-
-データ処理統計:
-入力イベント数: 175,000 events/sec
-処理済みイベント数: 174,837 events/sec
-処理率: 99.91%
-遅延: 平均23ms, P99: 89ms
-スループット: 2.1GB/sec
-
-CEP検知結果:
-異常活動検知: 47件
-- 高頻度アクセス: 23件
-- 異常パターン: 12件  
-- 疑わしい行動: 12件
-
-セキュリティ脅威: 8件
-- ブルートフォース攻撃: 5件
-- DDoS攻撃の兆候: 2件
-- 不正アクセス試行: 1件
-
-ビジネス機会: 156件
-- 高関心商品: 89件
-- 価格最適化候補: 34件
-- クロスセル機会: 33件
-
-ML予測結果:
-ユーザー行動予測: 精度94.7%
-- 購入確率予測: 12,847件
-- 離脱リスク予測: 3,421件
-
-売上予測: 精度91.2%
-- 時間別売上: ¥12,450,000 (予測)
-- 商品別需要: 234商品分析
-
-異常検知: 精度97.8%
-- システム異常: 2件
-- データ品質問題: 1件
-
-処理パフォーマンス:
-Kafka消費: 175,000 msg/sec
-Flink処理: 平均23ms
-Spark ML: バッチあたり2.3秒
-ClickHouse書き込み: 89,000 rows/sec
-```
-```
-
-### 課題3: IoTデバイス管理プラットフォーム
-**ファイル名**: `IoTDeviceManagementPlatform.java`
-
-大規模IoTデバイスを管理するプラットフォームを作成してください。
-
-**要求仕様**:
-- デバイス登録・管理
-- リアルタイムデータ収集
-- デバイス制御・設定更新
-- 異常検知・アラート
-
-**実行例**:
-```
-=== IoTデバイス管理プラットフォーム ===
-
-IoTManager Enterprise v5.0
-
-=== デバイス群管理 ===
-大規模IoT環境:
-
-管理対象デバイス:
-総デバイス数: 2,500,000台
-オンライン: 2,487,352台 (99.49%)
-オフライン: 12,648台 (0.51%)
-
-デバイス種別:
-- 温度センサー: 890,000台
-- 湿度センサー: 654,000台  
-- 照度センサー: 432,000台
-- モーションセンサー: 298,000台
-- スマートメーター: 156,000台
-- カメラ: 70,000台
-
-地理的分布:
-- 日本: 1,200,000台
-- アジア太平洋: 800,000台
-- 北米: 300,000台
-- ヨーロッパ: 200,000台
-
-データ処理:
-受信データ: 125,000,000 points/hour
-処理データ: 124,876,234 points/hour
-処理率: 99.90%
-平均遅延: 45ms
-```
-
-## 習得すべき技術要素
-
-### アーキテクチャパターン
-- マイクロサービスアーキテクチャ
-- イベント駆動アーキテクチャ
-- CQRS + Event Sourcing
-- Saga パターン
-
-### 分散システム技術
-- 分散トランザクション
-- 分散合意アルゴリズム
-- 分散キャッシュ
-- 分散監視・トレーシング
-
-### ビッグデータ・ストリーミング
-- Apache Kafka
-- Apache Flink
-- Apache Spark
-- Complex Event Processing
-
-## 参考リソース
-
-- Microservices Patterns (Chris Richardson)
-- Building Event-Driven Microservices (Adam Bellemare)
-- Streaming Systems (Tyler Akidau)
-- Designing Data-Intensive Applications (Martin Kleppmann)
-
-## 重要な注意事項
-
-これらの課題は企業レベルの複雑なシステムを扱います。実装時はセキュリティ、パフォーマンス、運用性を十分に考慮し、適切な監視とログ記録を実装してください。
+**次のステップ**: 発展課題が完了したら、challenge/のチャレンジ課題に挑戦しましょう。

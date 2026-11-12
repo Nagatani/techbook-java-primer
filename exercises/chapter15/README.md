@@ -11,15 +11,14 @@
 
 ## 発展課題（[advanced/](advanced/)）
 
-- 統合ECプラットフォーム
-- リアルタイム分析プラットフォーム
-- IoTデバイス管理プラットフォーム
+- 映画館の座席予約（synchronizedによる競合状態の防止、AtomicInteger、ExecutorService）
+- 店舗の売上の並行集計（Callable・Future、ConcurrentHashMapのmerge、CompletableFutureのexceptionally・allOf）
+- このフォルダーのJavaファイルは解答例です
 
 ## チャレンジ課題（[challenge/](challenge/)）
 
-- 自己意識を持つ統合開発環境
-- 宇宙規模分散システム
-- 時空間超越計算システム
+- 学食の注文処理（BlockingQueueによるプロデューサー・コンシューマー、Semaphore、ポイズンピルによる終了、CompletableFuture）
+- このフォルダーのJavaファイルは解答例です
 
 ## 解答例（[solutions/](solutions/)）
 

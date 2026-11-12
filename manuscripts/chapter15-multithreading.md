@@ -1342,11 +1342,13 @@ public class ResiliencePatterns {
     + 並行コレクションとExecutor（ConcurrentHashMap、スレッドプール、Future、CompletableFuture）
     + プロデューサー・コンシューマーパターン（BlockingQueue、wait/notify、`Semaphore`によるリソース数の制限）
 2. 発展課題（`advanced/`）
-    + 統合ECプラットフォーム、リアルタイム分析プラットフォーム、IoTデバイス管理プラットフォーム
+    + 映画館の座席予約（synchronizedによる競合状態の防止、AtomicInteger）
+    + 店舗の売上の並行集計（Future、ConcurrentHashMap、CompletableFuture）
 3. チャレンジ課題（`challenge/`）
-    + 発展課題よりも大規模な並行・分散システムの設計
+    + 学食の注文処理（BlockingQueue、Semaphore、スレッドの終わらせ方）
 
-各課題の要求仕様・実行例・評価ポイント・実装のヒントと、解答例（`solutions/`、テストを含む）はGitHubリポジトリにあります<span class="footnote">解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
+各課題の要求仕様・実行例・実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdにあります。
+基礎課題の解答例は`solutions/`（テストを含む）に、発展課題とチャレンジ課題の解答例は各課題のフォルダーにあります<span class="footnote">基礎課題の解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
 
 基礎課題が完了したら、第16章「ネットワークプログラミング」に進みましょう。
 
