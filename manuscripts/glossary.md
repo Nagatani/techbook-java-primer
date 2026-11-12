@@ -169,6 +169,7 @@
 - **synchronized** - 第15章、付録B.14
 
 ### T
+- **TCP (Transmission Control Protocol)** - 第16章
 - **TDD (Test-Driven Development)** - 第21章、付録B.15
 - **@Test** - 第21章
 - **Thread クラス** - 第15章
@@ -181,6 +182,7 @@
 - **try-with-resources文** - 第13章、第14章、付録B.12
 
 ### U
+- **UDP (User Datagram Protocol)** - 第16章
 - **UnknownHostException** - 第16章
 
 ### V
@@ -223,6 +225,7 @@
 ### さ行
 - **サーキットブレーカー** - 第15章
 - **静的メンバー (static)** - 第4章
+- **ソケット** - 第16章
 - **疎結合** - 第21章
 - **スレッドプール** - 第15章
 - **スレッドセーフ** - 第15章
