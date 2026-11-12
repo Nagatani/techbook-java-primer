@@ -24,8 +24,6 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
