@@ -6,7 +6,7 @@
 
 ## ラムダ式のシンタックスエラー
 
-#### エラー例
+### エラー例
 
 ```java
 // × 不正なラムダ式の構文
@@ -18,12 +18,13 @@ names.forEach(name -> {
 
 ※ このコードはコンパイルエラーになります。実際に実行することはできません。
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: ';' expected
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter11-code/LambdaSyntaxFixExample/](chapter11-code/LambdaSyntaxFixExample/)
 
@@ -48,7 +49,7 @@ public class LambdaSyntaxFixExample {
 }
 ```
 
-**実行結果:**
+実行結果：
 ```
 波括弧を使用した形式:
 Alice
@@ -63,23 +64,26 @@ Charlie
 
 ## 型推論の問題
 
-#### エラー例
+### エラー例
 
 ```java
 // × ラムダ式をvarで受けると、どの関数型インターフェイスか決まらない
 var comp = (String x, String y) -> x.length() - y.length();
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: cannot infer type for local variable comp
   (lambda expression needs an explicit target-type)
 ```
 
-ラムダ式は、代入先の型（ターゲット型）から、どの関数型インターフェイスを実装するのかが決まります。
-`var`では代入先の型が決まらないため、コンパイラはラムダ式の型を推論できません。
+### 原因
 
-#### 対処法
+ラムダ式は、代入先の型（ターゲット型）から、どの関数型インターフェイスを実装するのかが決まります。
+`var`では代入先の型が決まらないため、コンパイラーはラムダ式の型を推論できません。
+
+### 対処法
 
 ```java
 // ○ 代入先の関数型インターフェイスを明示する（引数の型は推論される）
@@ -91,7 +95,7 @@ Comparator<String> byLength = Comparator.comparing(String::length);
 
 ## 例外処理での問題
 
-#### エラー例
+### エラー例
 
 ```java
 // × 検査例外のハンドリング
@@ -101,12 +105,13 @@ files.stream()
     .collect(Collectors.toList());
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: unreported exception IOException; must be caught or declared to be thrown
 ```
 
-#### 対処法
+### 対処法
 
 ```java
 // ○ 例外をランタイム例外でラップ
@@ -136,7 +141,7 @@ List<String> readableContents = files.stream()
 
 ## 変数スコープとキャプチャの問題
 
-#### エラー例
+### エラー例
 
 ```java
 // × 変数キャプチャの問題
@@ -150,12 +155,13 @@ public void processNumbers(List<Integer> numbers) {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: local variables referenced from a lambda expression must be final or effectively final
 ```
 
-#### 対処法
+### 対処法
 
 ```java
 // ○ 実質的にfinalな変数を使用
@@ -181,7 +187,7 @@ public void processNumbersWithCopy(List<Integer> numbers) {
 
 ## 関数型インターフェイスの実装間違い
 
-#### エラー例
+### エラー例
 
 ```java
 // × 関数型インターフェイスの誤用
@@ -192,14 +198,15 @@ interface Calculator {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: Unexpected @FunctionalInterface annotation
   Calculator is not a functional interface
     multiple non-overriding abstract methods found in interface Calculator
 ```
 
-#### 対処法
+### 対処法
 
 ```java
 // ○ 単一の抽象メソッドを持つ関数型インターフェイス
@@ -220,7 +227,7 @@ Calculator multiplier = (a, b) -> a * b;
 
 ## メソッド参照の型不一致
 
-#### エラー例
+### エラー例
 
 ```java
 // × プリミティブ型のストリーム（IntStream）をListに集めようとしている
@@ -230,16 +237,19 @@ List<Integer> numbers = strings.stream()
     .collect(Collectors.toList());
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: method collect in interface IntStream cannot be applied to given types;
   required: Supplier<R>,ObjIntConsumer<R>,BiConsumer<R,R>
   found:    Collector<Object,CAP#1,List<Object>>
 ```
 
+### 原因
+
 `mapToInt`が返す`IntStream`は`int`をそのまま扱うストリームで、`Collector`を受け取る`collect`メソッドを持ちません。
 
-#### 対処法
+### 対処法
 
 ```java
 // ○ mapを使えば、parseIntが返すintはIntegerへ自動変換（オートボクシング）される
@@ -266,4 +276,5 @@ List<Integer> boxedNumbers = strings.stream()
     + プロジェクト全体で一貫した例外処理戦略を採用
 5. テストの充実
     + ラムダ式の動作を確認するユニットテストを記述
-6. コードレビュー: 可読性とパフォーマンスの観点からレビューを実施
+6. コードレビュー
+    + 可読性とパフォーマンスの観点からレビューを実施

@@ -2,11 +2,9 @@
 
 書籍『Java入門』第19章「高度なイベント処理パターン」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-## SwingWorkerでの典型的なエラー
+## SwingWorkerから直接UIを更新してしまう
 
-### 問題：SwingWorkerから直接UIを更新してしまう
-
-エラー症状
+### エラー例
 
 ```java
 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -21,11 +19,12 @@ SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 };
 ```
 
-原因
+### 原因
+
 - doInBackground()メソッドはバックグラウンドスレッドで実行される
 - Swingコンポーネントの更新はEDT上でのみ安全
 
-対処法
+### 対処法
 
 ```java
 SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
@@ -47,11 +46,9 @@ SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 };
 ```
 
-## DocumentListenerのなかでのドキュメントの変更
+## DocumentListenerのなかで同じドキュメントを変更して例外が発生する
 
-### 問題：DocumentListenerのなかで同じドキュメントを変更して例外が発生する
-
-エラー症状
+### エラー例
 
 ```java
 textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -63,6 +60,8 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 });
 ```
 
+### エラーメッセージ
+
 文字を入力すると、次の例外が発生し、テキストは書き換わりません。
 
 ```
@@ -70,11 +69,14 @@ Exception in thread "AWT-EventQueue-0" java.lang.IllegalStateException: Attempt 
 	at java.desktop/javax.swing.text.AbstractDocument.writeLock(AbstractDocument.java:...)
 ```
 
-原因
+### 原因
+
 - `AbstractDocument`は、リスナーへ変更を通知しているあいだ、同じドキュメントへの変更を受け付けない
 - 変更を許すと通知が入れ子になり、リスナーが再帰的に呼ばれてしまうため、例外にして防いでいる
 
-対処法1：`DocumentFilter`で入力そのものを書き換える
+### 対処法
+
+#### 対処法1：`DocumentFilter`で入力そのものを書き換える
 
 入力された文字を大文字にする、数字以外を受け付けないといった処理は、ドキュメントに入る前に書き換える`DocumentFilter`で行います。
 
@@ -95,7 +97,7 @@ Exception in thread "AWT-EventQueue-0" java.lang.IllegalStateException: Attempt 
 });
 ```
 
-対処法2：`invokeLater()`で変更を通知のあとに回す
+#### 対処法2：`invokeLater()`で変更を通知のあとに回す
 
 リスナーのなかでどうしても変更するときは、`invokeLater()`で通知が終わったあとに変更します。
 変更によって再びリスナーが呼ばれるので、フラグで二重の書き換えを防ぎます。
@@ -121,11 +123,9 @@ textField.getDocument().addDocumentListener(new DocumentListener() {
 });
 ```
 
-## カスタムイベントのメモリリーク
+## リスナーが削除されずメモリリークが発生する
 
-### 問題：リスナーが削除されずメモリリークが発生
-
-エラー症状
+### エラー例
 
 ```java
 public class EventSource {
@@ -139,11 +139,12 @@ public class EventSource {
 }
 ```
 
-原因
+### 原因
+
 - イベントソースはリスナーへの参照を一覧に持ち続ける
 - イベントソースが生存する限り、リスナーと、リスナーが参照する画面などのオブジェクトもGCされない
 
-対処法
+### 対処法
 
 イベントソースに削除のメソッドを用意し、リスナーを登録した側が、不要になった時点で削除します。
 
@@ -177,11 +178,9 @@ dialog.addWindowListener(new WindowAdapter() {
 リスナーを`WeakReference`で持つ方法もありますが、ラムダ式や匿名クラスのリスナーをほかのどこからも参照していないと、すぐにGCされて通知が届かなくなります。
 まずは登録と削除を対にする書き方を守ってください。
 
-## ドラッグ&ドロップの実装エラー
+## ドラッグ&ドロップでドロップが受け入れられない
 
-### 問題：ドロップが受け入れられない
-
-エラー症状
+### エラー例
 
 ```java
 new DropTarget(component, new DropTargetListener() {
@@ -194,11 +193,12 @@ new DropTarget(component, new DropTargetListener() {
 });
 ```
 
-原因
+### 原因
+
 - acceptDrop()メソッドを呼び出していない
 - ドロップされたデータの形式（DataFlavor）に対応していない
 
-対処法
+### 対処法
 
 ```java
 new DropTarget(component, new DropTargetListener() {

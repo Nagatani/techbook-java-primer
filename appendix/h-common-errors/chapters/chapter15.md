@@ -4,10 +4,11 @@
 
 本章では、マルチスレッドプログラミングに特有のエラーを扱います。
 
-## 本章特有のエラー
+## 基本的な競合状態
 
-### 1. 基本的な競合状態
-問題: 複数スレッドが同じデータに同時アクセスして値が破損
+複数のスレッドが同じデータに同時にアクセスし、値が壊れます。
+
+### エラー例
 
 コンパイルできる全文：[chapter15-code/Counter/](chapter15-code/Counter/)
 
@@ -22,7 +23,7 @@ public class Counter {
 }
 ```
 
-解決策:
+### 対処法
 
 ```java
 // synchronized使用
@@ -35,13 +36,17 @@ private final AtomicInteger count = new AtomicInteger(0);
 count.incrementAndGet();
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - 共有データへのアクセスは同期化が必要
 - 単純な演算でもAtomicクラスを検討
 - volatileは可視性のみ保証
 
-### 2. デッドロックの基礎
-問題: 複数スレッドが相互にロックを待って停止
+## デッドロックの基礎
+
+複数のスレッドが互いのロックを待ち、停止します。
+
+### エラー例
 
 ```java
 // エラー例：ロック順序の不一致
@@ -49,7 +54,7 @@ method1: synchronized(lock1) → synchronized(lock2)
 method2: synchronized(lock2) → synchronized(lock1)
 ```
 
-解決策:
+### 対処法
 
 ```java
 // 常に同じ順序でロック取得
@@ -70,13 +75,17 @@ public void method2() {
 }
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - ロック順序を統一する
 - 必要最小限のロック範囲
 - tryLockでタイムアウト設定
 
-### 3. スレッドセーフでないコレクション
-問題: 通常のコレクションをマルチスレッドで使用
+## スレッドセーフでないコレクション
+
+通常のコレクションをマルチスレッドで使っています。
+
+### エラー例
 
 ```java
 // エラー例
@@ -84,7 +93,7 @@ List<String> list = new ArrayList<>();
 // 複数スレッドから同時にadd/remove → ConcurrentModificationException
 ```
 
-解決策:
+### 対処法
 
 ```java
 // 並行コレクション使用
@@ -93,13 +102,17 @@ Map<String, String> map = new ConcurrentHashMap<>();
 Queue<String> queue = new ConcurrentLinkedQueue<>();
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - java.util.concurrentパッケージを活用
 - 読み込み頻度が高い場合はCopyOnWriteを検討
 - Collections.synchronizedXXX()は性能に注意
 
-### 4. ExecutorServiceのリソース管理
-問題: スレッドプールが正しくシャットダウンされない
+## ExecutorServiceのリソース管理
+
+スレッドプールが正しくシャットダウンされません。
+
+### エラー例
 
 ```java
 // エラー例
@@ -108,7 +121,7 @@ executor.submit(task);
 // shutdownを呼ばない → リソースリーク
 ```
 
-解決策:
+### 対処法
 
 ```java
 ExecutorService executor = Executors.newFixedThreadPool(5);
@@ -126,7 +139,8 @@ try {
 }
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - 必ずfinallyでshutdown
 - awaitTerminationでタスク完了を待つ
 - タイムアウト時はshutdownNow
@@ -156,7 +170,7 @@ try {
 
 2. スレッドダンプ
    - jstackコマンドでスレッド状態確認
-   - IDEのデバッガでブレークポイント設定
+   - IDEのデバッガーでブレークポイント設定
 
 3. 並行処理のテスト
    - CountDownLatchで同期的にテスト

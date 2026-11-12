@@ -4,10 +4,11 @@
 
 ファイルI/O操作において開発者が遭遇しやすいエラーとその対処法を理解しておくことは、堅牢なアプリケーションを開発するために重要です。
 
-## 1. ファイルパスの問題
+## ファイルパスの問題
 
-#### 問題
-相対パスや絶対パスの混在によるファイルが見つからないエラー。
+相対パスと絶対パスが混在し、ファイルが見つからないエラーになります。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -17,9 +18,12 @@ if (!file.exists()) {
 }
 ```
 
-エラーメッセージ： `FileNotFoundException` または `NoSuchFileException`。
+### エラーメッセージ
 
-#### 対処法
+`FileNotFoundException`または`NoSuchFileException`が発生します。
+
+### 対処法
+
 確実なパス管理と存在チェックを実装します。
 
 ```java
@@ -43,10 +47,11 @@ if (Files.exists(configPath)) {
 }
 ```
 
-## 2. エンコーディングの問題
+## エンコーディングの問題
 
-#### 問題
-文字化けや不正な文字でのファイル読み書き。
+ファイルの読み書きで、文字化けや不正な文字のエラーが起こります。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -55,9 +60,13 @@ BufferedReader br = new BufferedReader(reader);
 String line = br.readLine(); // 文字化けする可能性
 ```
 
-エラーメッセージ： `MalformedInputException` または文字化けした出力。
+### エラーメッセージ
 
-対処法： 明示的にエンコーディングを指定します。
+`MalformedInputException`が発生するか、出力が文字化けします。
+
+### 対処法
+
+明示的にエンコーディングを指定します。
 
 ```java
 // 良い例
@@ -81,10 +90,11 @@ try (BufferedWriter writer = Files.newBufferedWriter(
 }
 ```
 
-## 3. ファイルロックとアクセス権限の問題
+## ファイルロックとアクセス権限の問題
 
-#### 問題
-ファイルが他のプロセスによって使用されている、または権限不足。
+ファイルがほかのプロセスに使われているか、アクセス権限が足りません。
+
+### エラー例
 
 ```java
 // 問題のあるコード
@@ -95,9 +105,13 @@ try {
 }
 ```
 
-エラーメッセージ： `AccessDeniedException` または `FileSystemException`。
+### エラーメッセージ
 
-対処法： 事前の権限チェックとエラーハンドリングを実装します。
+`AccessDeniedException`または`FileSystemException`が発生します。
+
+### 対処法
+
+事前の権限チェックとエラーハンドリングを実装します。
 
 ```java
 // 良い例
@@ -133,10 +147,11 @@ try {
 }
 ```
 
-## 4. メモリ効率の問題
+## メモリ効率の問題
 
-#### 問題
-大きなファイルを一度にメモリに読み込む。
+大きなファイルを一度にメモリに読み込んでいます。
+
+### エラー例
 
 ```java
 // 悪い例（大きなファイルでOutOfMemoryError）
@@ -144,9 +159,13 @@ String content = Files.readString(Paths.get("large_file.txt"));
 String[] lines = content.split("\n");
 ```
 
-エラーメッセージ： `OutOfMemoryError`。
+### エラーメッセージ
 
-対処法： ストリーミング処理やBufferedReaderを使用します。
+`OutOfMemoryError`が発生します。
+
+### 対処法
+
+ストリーミング処理やBufferedReaderを使用します。
 
 ```java
 // 良い例1: ストリーミング処理
@@ -179,10 +198,11 @@ try (BufferedReader reader = Files.newBufferedReader(
 }
 ```
 
-## 5. クロスプラットフォーム対応の問題
+## クロスプラットフォーム対応の問題
 
-#### 問題
-特定のOS固有のパス区切り文字やファイル名制限。
+特定のOSに固有のパス区切り文字やファイル名の制限に依存しています。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -190,7 +210,9 @@ File file = new File("data\\config\\settings.txt"); // Windows固有
 String path = "/home/user/data.txt"; // Unix固有
 ```
 
-対処法： `java.nio.file.Path`とシステムプロパティを活用します。
+### 対処法
+
+`java.nio.file.Path`とシステムプロパティを活用します。
 
 ```java
 // 良い例
@@ -228,10 +250,11 @@ private static boolean isValidFileName(String fileName) {
 }
 ```
 
-## 6. 並行ファイルアクセスの問題
+## 並行ファイルアクセスの問題
 
-#### 問題
-複数のスレッドからの同時ファイルアクセス。
+複数のスレッドから同時に同じファイルにアクセスしています。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -244,7 +267,9 @@ public void appendLog(String message) {
 }
 ```
 
-対処法： 必要な同期化とファイルロックを実装します。
+### 対処法
+
+必要な同期化とファイルロックを実装します。
 `synchronized`は、複数のスレッドが同じ処理を同時に実行しないようにするキーワードで、第15章「マルチスレッドプログラミング」で詳しく学びます。
 
 ```java
@@ -274,10 +299,11 @@ public class ThreadSafeFileLogger {
 }
 ```
 
-## 7. 一時ファイルの管理問題
+## 一時ファイルの管理の問題
 
-#### 問題
-一時ファイルの削除忘れによるディスク容量の浪費。
+一時ファイルを削除し忘れ、ディスク容量を浪費します。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -285,7 +311,9 @@ File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
 // 処理後にファイルが残る
 ```
 
-対処法： 体系的な一時ファイル管理を実装します。
+### 対処法
+
+体系的な一時ファイル管理を実装します。
 
 ```java
 // 良い例

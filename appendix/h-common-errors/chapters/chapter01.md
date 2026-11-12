@@ -4,34 +4,36 @@
 
 Java開発環境を構築し、はじめてのプログラムを作成する際によく遭遇するエラーとその対処法をまとめます。
 
-## 環境構築関連のエラー
+## JDKが見つからない
 
-### JDKが見つからない
-
-#### エラーメッセージ
+### エラーメッセージ
 
 ```
 'java' is not recognized as an internal or external command
 ```
 
-#### 原因と対処
+### 原因
 
 - JDKがインストールされていない、またはPATHが設定されていない
-- 対処法は以下の通りです
-  1. JDKをインストール（推奨：OpenJDK 21以上）
-  2. 環境変数PATHにJDKのbinディレクトリを追加
-  3. コマンドプロンプトで`java -version`を実行して確認
 
-## コンパイル関連のエラー
+### 対処法
 
-### クラス名とファイル名の不一致
+1. JDKをインストール（本書はOpenJDK 25を使用）
+2. 環境変数PATHにJDKのbinディレクトリを追加
+3. コマンドプロンプトで`java -version`を実行して確認
 
-#### エラーメッセージ
+## クラス名とファイル名の不一致
+
+### エラーメッセージ
+
 ```
 error: class HelloWorld is public, should be declared in a file named HelloWorld.java
 ```
 
-#### 原因と対処
+### 原因と対処法
+
+ファイル名が`Sample.java`なのに、クラス名が`public class HelloWorld`になっています。
+ファイル名を`HelloWorld.java`に変更するか、クラス名を`Sample`に変更します。
 
 ```java
 // エラー例：ファイル名が「Sample.java」だが、クラス名がHelloWorld
@@ -49,15 +51,15 @@ public class Sample {
 }
 ```
 
-### mainメソッドのシグネチャが間違っている
+## mainメソッドのシグネチャが間違っている
 
-#### エラーメッセージ
+### エラーメッセージ
 
 ```
 Error: Main method not found in class HelloWorld
 ```
 
-#### 原因と対処
+### 原因と対処法
 
 ```java
 // エラー例：mainメソッドのシグネチャが間違っている
@@ -74,16 +76,15 @@ public class HelloWorld {
 }
 ```
 
-## 実行時エラー
+## クラスファイルが見つからない
 
-### クラスファイルが見つからない
+### エラーメッセージ
 
-#### エラーメッセージ
 ```
 Error: Could not find or load main class HelloWorld
 ```
 
-#### 原因と対処
+### 原因と対処法
 
 ```
 # エラー例：コンパイルせずに実行しようとした（HelloWorld.classがない）
@@ -98,15 +99,15 @@ java HelloWorld        # 実行（.classは不要）
 なお、Java 11以降では、`java HelloWorld.java`のようにソースファイルを指定して、コンパイルせずに直接実行することもできます。
 ただし、この方法が使えるのは1つのファイルで完結するプログラムに限られるため、本書では`javac`でコンパイルしてから`java`で実行する手順を基本とします。
 
-### NumberFormatExceptionと入力処理
+## NumberFormatExceptionと入力処理
 
-#### エラーメッセージ
+### エラーメッセージ
 
 ```
 Exception in thread "main" java.lang.NumberFormatException: For input string: "abc"
 ```
 
-#### 原因と対処
+### 原因と対処法
 
 ```java
 // エラー例：数値以外の入力を数値に変換しようとした
@@ -125,22 +126,20 @@ if (input.matches("\\d+")) {  // 数字のみの場合
 }
 ```
 
-## IDE関連のトラブル
+## IntelliJ IDEAでのプロジェクト設定
 
-### IntelliJ IDEAでのプロジェクト設定
-
-#### 問題
+### 症状
 
 新規作成したプロジェクトが正しく動作しません。
 
-#### 対処法
+### 対処法
 
 1. プロジェクトSDKの設定
    - File → Project Structure → Project → Project SDK
    - インストールしたJDKを選択
 2. モジュール設定の確認
    - File → Project Structure → Modules
-   - Sourcesタブでsrcフォルダがソースルートに設定されているか確認
+   - Sourcesタブでsrcフォルダーがソースルートに設定されているか確認
 3. エンコーディングの設定
    - File → Settings → Editor → File Encodings
    - Global EncodingとProject EncodingをUTF-8に設定
@@ -192,7 +191,8 @@ public class DebugExample {
     }
 }
 ```
-### 実行結果
+
+実行結果：
 ```
 a = 10
 b = 20
@@ -218,7 +218,8 @@ public class StepByStepDebug {
     }
 }
 ```
-### 実行結果
+
+実行結果：
 ```
 プログラム開始
 x に 5 を代入しました

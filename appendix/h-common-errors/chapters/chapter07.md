@@ -4,11 +4,11 @@
 
 抽象クラスとインターフェイスの学習過程で遭遇する典型的なエラーと、その対処法を解説します。
 
-## 1. 抽象クラスのインスタンス化エラー
+## 抽象クラスのインスタンス化エラー
 
 抽象クラスは直接インスタンス化できません。
 
-エラー例：
+### エラー例
 
 ```java
 abstract class DataProcessor {
@@ -19,12 +19,13 @@ abstract class DataProcessor {
 DataProcessor processor = new DataProcessor();  // 抽象クラスはnewできない
 ```
 
-エラーメッセージ：
+### エラーメッセージ
+
 ```
 error: DataProcessor is abstract; cannot be instantiated
 ```
 
-対処法：
+### 対処法
 
 ```java
 // 抽象クラスを継承した具象クラスを作成
@@ -39,11 +40,11 @@ class CsvDataProcessor extends DataProcessor {
 DataProcessor processor = new CsvDataProcessor();  // OK
 ```
 
-## 2. 抽象メソッドの実装忘れ
+## 抽象メソッドの実装忘れ
 
 抽象メソッドを実装しないと、継承先のクラスも抽象クラスになってしまいます。
 
-エラー例：
+### エラー例
 
 ```java
 abstract class Shape {
@@ -69,12 +70,13 @@ class Rectangle extends Shape {
 }
 ```
 
-エラーメッセージ：
+### エラーメッセージ
+
 ```
 error: Rectangle is not abstract and does not override abstract method draw() in Shape
 ```
 
-対処法：
+### 対処法
 
 ```java
 class Rectangle extends Shape {
@@ -97,11 +99,11 @@ class Rectangle extends Shape {
 }
 ```
 
-## 3. インターフェイスの実装不備
+## インターフェイスの実装不備
 
 インターフェイスのすべての抽象メソッドを実装してください。
 
-エラー例：
+### エラー例
 
 ```java
 interface Drawable {
@@ -126,12 +128,13 @@ class Circle implements Drawable {
 }
 ```
 
-エラーメッセージ：
+### エラーメッセージ
+
 ```
 error: Circle is not abstract and does not override abstract method setColor(String) in Drawable
 ```
 
-対処法：
+### 対処法
 
 ```java
 class Circle implements Drawable {
@@ -154,11 +157,11 @@ class Circle implements Drawable {
 }
 ```
 
-## 4. 多重継承とダイヤモンド問題
+## 多重継承とダイヤモンド問題
 
 Javaでは複数の抽象クラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
 
-エラー例：
+### エラー例
 
 ```java
 interface Exportable {
@@ -179,13 +182,14 @@ class ReportDocument implements Exportable, Printable {
 }
 ```
 
-エラーメッセージ：
+### エラーメッセージ
+
 ```
 error: types Exportable and Printable are incompatible;
   class ReportDocument inherits unrelated defaults for export() from types Exportable and Printable
 ```
 
-対処法：
+### 対処法
 
 ```java
 class ReportDocument implements Exportable, Printable {
@@ -205,12 +209,12 @@ class ReportDocument implements Exportable, Printable {
 }
 ```
 
-## 5. defaultメソッドとstaticメソッドの混乱
+## defaultメソッドとstaticメソッドの混乱
 
 インターフェイスのstaticメソッドは実装クラスに継承されないため、実装クラスからはインターフェイス名を付けて呼び出す必要があります。
 インターフェイス自身のメソッド（defaultメソッドなど）からは、インターフェイス名を省略して呼び出せます。
 
-エラー例：
+### エラー例
 
 ```java
 interface MathUtils {
@@ -234,14 +238,15 @@ class Calculator implements MathUtils {
 }
 ```
 
-エラーメッセージ：
+### エラーメッセージ
+
 ```
 error: cannot find symbol
   symbol:   method calculateCircleArea(double)
   location: class Calculator
 ```
 
-対処法：
+### 対処法
 
 コンパイルできる全文：[chapter07-code/MathUtils/](chapter07-code/MathUtils/)
 
@@ -267,11 +272,11 @@ class Calculator implements MathUtils {
 }
 ```
 
-## 6. 抽象クラスvsインターフェイスの使い分け間違い
+## 抽象クラスとインターフェイスの使い分けの誤り
 
 どちらを使用するべきか迷うケースがあります。
 
-間違った選択例：
+### エラー例
 
 コンパイルできる全文：[chapter07-code/Service/](chapter07-code/Service/)
 
@@ -291,7 +296,7 @@ interface Service {
 }
 ```
 
-正しい選択：
+### 対処法
 
 コンパイルできる全文：[chapter07-code/BaseService/](chapter07-code/BaseService/)
 
@@ -345,11 +350,11 @@ class EmailService extends BaseService implements Monitorable {
 }
 ```
 
-## 7. オーバーライドアノテーションの省略
+## オーバーライドアノテーションの省略
 
 `@Override`アノテーションを省略すると、メソッドの実装ミスに気づきにくくなります。
 
-問題のあるコード：
+### エラー例
 
 ```java
 abstract class ReportGenerator {
@@ -364,9 +369,11 @@ class PdfReportGenerator extends ReportGenerator {
 }
 ```
 
+### 原因
+
 この場合、`generatereport()`は新しいメソッドとして認識され、`generateReport()`の実装が不足しているエラーが発生します。
 
-正しい実装：
+### 対処法
 
 ```java
 class PdfReportGenerator extends ReportGenerator {
@@ -387,6 +394,7 @@ class PdfReportGenerator extends ReportGenerator {
     + 複雑な継承階層は一度に実装せず、段階的に構築しましょう
 4. テストの活用
     + 抽象クラスやインターフェイスの実装は、単体テストで動作確認しましょう
-5. コードレビュー: 設計の妥当性を同僚と確認しましょう
+5. コードレビュー
+    + 設計の妥当性を同僚と確認しましょう
 
 これらの知識を身につけることで、抽象クラスとインターフェイスを効果的に活用した、保守性の高いJavaプログラムを作成できるようになります。

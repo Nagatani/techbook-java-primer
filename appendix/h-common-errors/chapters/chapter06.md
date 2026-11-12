@@ -4,9 +4,9 @@
 
 不変性とfinalキーワードを学習する際によく遭遇するエラーとその解決方法を説明します。
 
-## 1. finalキーワードの使い方の間違い
+## final変数の再代入
 
-### エラー例: final変数の再代入
+### エラー例
 
 ```java
 public class FinalErrorExample {
@@ -17,12 +17,13 @@ public class FinalErrorExample {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: cannot assign a value to final variable number
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/FinalCorrectExample/](chapter06-code/FinalCorrectExample/)
 
@@ -39,13 +40,16 @@ public class FinalCorrectExample {
     }
 }
 ```
+
 実行結果：
 ```
 元の値: 10
 新しい値: 20
 ```
 
-### エラー例: final変数の未初期化
+## final変数の未初期化
+
+### エラー例
 
 ```java
 public class UninitializedFinalExample {
@@ -57,12 +61,13 @@ public class UninitializedFinalExample {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: variable name might not have been initialized
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/InitializedFinalExample/](chapter06-code/InitializedFinalExample/)
 
@@ -83,9 +88,9 @@ public class InitializedFinalExample {
 }
 ```
 
-## 2. 不変オブジェクトの設計ミス
+## 可変フィールドの露出
 
-### エラー例: 可変フィールドの露出
+### エラー例
 
 ```java
 import java.util.List;
@@ -105,7 +110,7 @@ public final class BrokenImmutablePerson {
 }
 ```
 
-#### 問題点
+### 原因
 
 ```java
 List<String> hobbies = new ArrayList<>(List.of("読書", "映画鑑賞"));
@@ -117,7 +122,7 @@ hobbies.set(0, "スポーツ"); // 渡した元のリストを変更すると、
 IO.println(person.getHobbies()); // [スポーツ, 映画鑑賞, ゲーム]
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/ImmutablePerson/](chapter06-code/ImmutablePerson/)
 
@@ -149,9 +154,9 @@ public final class ImmutablePerson {
 }
 ```
 
-## 3. 防御的コピーの実装忘れ
+## 日付オブジェクトの防御的コピー漏れ
 
-### エラー例: 日付オブジェクトの防御的コピー漏れ
+### エラー例
 
 コンパイルできる全文：[chapter06-code/BrokenImmutableEvent/](chapter06-code/BrokenImmutableEvent/)
 
@@ -173,7 +178,7 @@ public final class BrokenImmutableEvent {
 }
 ```
 
-#### 問題点
+### 原因
 
 ```java
 Date date = new Date();
@@ -184,7 +189,7 @@ date.setTime(System.currentTimeMillis() + 86400000); // 翌日に変更
 event.getEventDate().setTime(0); // イベント日時が変更される
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/ImmutableEvent/](chapter06-code/ImmutableEvent/)
 
@@ -238,9 +243,9 @@ public final class ModernImmutableEvent {
 }
 ```
 
-## 4. final配列・コレクションの誤解
+## final配列の誤用
 
-### エラー例: final配列の誤用
+### エラー例
 
 コンパイルできる全文：[chapter06-code/FinalArrayMisunderstanding/](chapter06-code/FinalArrayMisunderstanding/)
 
@@ -259,12 +264,13 @@ public class FinalArrayMisunderstanding {
     }
 }
 ```
+
 実行結果：
 ```
 [10, 2, 3, 4, 5]
 ```
 
-#### 対処法（真の不変配列）
+### 対処法（真の不変配列）
 
 コンパイルできる全文：[chapter06-code/ImmutableArray/](chapter06-code/ImmutableArray/)
 
@@ -294,7 +300,9 @@ public final class ImmutableArray {
 }
 ```
 
-### エラー例: Listの不変性に関する誤解
+## Listの不変性に関する誤解
+
+### エラー例
 
 コンパイルできる全文：[chapter06-code/ListImmutabilityMisunderstanding/](chapter06-code/ListImmutabilityMisunderstanding/)
 
@@ -323,6 +331,7 @@ public class ListImmutabilityMisunderstanding {
     }
 }
 ```
+
 実行結果：
 ```
 可変リスト: [item1, item2]
@@ -330,9 +339,9 @@ public class ListImmutabilityMisunderstanding {
 元のリスト変更後の不変ビュー: [item1, item2, item3]
 ```
 
-## 5. 不変性の破綻パターン
+## 継承による不変性の破綻
 
-### エラー例: 継承による不変性の破綻
+### エラー例
 
 コンパイルできる全文：[chapter06-code/ImmutablePerson2/](chapter06-code/ImmutablePerson2/)
 
@@ -367,7 +376,7 @@ public class MutableEmployee extends ImmutablePerson {
 }
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/ImmutablePerson3/](chapter06-code/ImmutablePerson3/)
 
@@ -391,9 +400,9 @@ public final class ImmutablePerson { // finalクラス
 }
 ```
 
-## 6. パフォーマンスへの影響
+## 不必要な防御的コピー
 
-### エラー例: 不必要な防御的コピー
+### エラー例
 
 コンパイルできる全文：[chapter06-code/InefficientImmutableClass/](chapter06-code/InefficientImmutableClass/)
 
@@ -419,7 +428,7 @@ public final class InefficientImmutableClass {
 }
 ```
 
-#### 対処法
+### 対処法
 
 コンパイルできる全文：[chapter06-code/EfficientImmutableClass/](chapter06-code/EfficientImmutableClass/)
 

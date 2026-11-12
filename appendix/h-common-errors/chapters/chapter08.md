@@ -4,6 +4,8 @@
 
 ## enum定数の大文字小文字を間違える
 
+### 原因と対処法
+
 ```java
 // 間違い
 if (status == Status.active) {  // コンパイルエラー
@@ -17,6 +19,8 @@ if (status == Status.ACTIVE) {
 ```
 
 ## switch文でenum名を含めてしまう
+
+### 原因と対処法
 
 Java 20以前では、列挙型のswitchの`case`に`Status.ACTIVE`のような型名付きの定数を書くとコンパイルエラーになりました。
 Java 21からは型名付きでも書けますが、switchの対象が列挙型であることは明らかなので、定数名だけを書くのが一般的です。

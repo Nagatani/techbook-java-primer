@@ -5,11 +5,12 @@
 ## セミコロン忘れ
 
 ### エラーメッセージ
+
 ```
 error: ';' expected
 ```
 
-### 原因と対処
+### 原因と対処法
 
 ```java
 // エラー例
@@ -22,11 +23,12 @@ int x = 10; // セミコロンを追加
 ## 大文字・小文字の間違い
 
 ### エラーメッセージ
+
 ```
 error: cannot find symbol
 ```
 
-### 原因と対処
+### 原因と対処法
 
 ```java
 // エラー例
@@ -38,12 +40,5 @@ IO.println("Hello");  // IOを大文字で書く
 
 ## クラス名とファイル名の不一致
 
-### エラーメッセージ
-```
-error: class HelloWorld is public, should be declared in a file named HelloWorld.java
-```
-
-### 原因と対処
-- ファイル名 `Sample.java`
-- クラス名 `public class HelloWorld`
-- → ファイル名を`HelloWorld.java`に変更、またはクラス名を`Sample`に変更
+このエラーは、コンパイル・実行の手順で起きるエラーとして、第1章で扱っています。
+エラーメッセージの例と対処法は、[第1章の項目「クラス名とファイル名の不一致」](chapter01.md#クラス名とファイル名の不一致)を参照してください。

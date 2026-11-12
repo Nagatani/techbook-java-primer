@@ -4,11 +4,9 @@
 
 GUI基礎の学習において遭遇しやすい典型的なエラーとその対処法を以下にまとめます。
 
-## レイアウトマネージャーの問題
+## コンポーネントが表示されない
 
-### 問題：コンポーネントが表示されない
-
-エラー症状。
+### エラー例
 
 ```java
 JFrame frame = new JFrame("タイトル");
@@ -17,11 +15,12 @@ frame.setVisible(true);
 // ボタンが表示されない
 ```
 
-原因
+### 原因
+
 - `frame.setSize()`または`frame.pack()`が呼び出されていない
 - レイアウトマネージャーの制約が正しく設定されていない
 
-対処法。
+### 対処法
 
 ```java
 JFrame frame = new JFrame("タイトル");
@@ -35,9 +34,9 @@ frame.pack();  // 推奨サイズに自動調整
 
 これはコンポーネントが表示されない問題の対処法です。setSize()またはpack()を使用してウィンドウサイズを設定することで、正しくコンポーネントが表示されます。
 
-### 問題：BorderLayoutで複数のコンポーネントが重なる
+## BorderLayoutで複数のコンポーネントが重なる
 
-エラー症状。
+### エラー例
 
 ```java
 frame.setLayout(new BorderLayout());
@@ -48,11 +47,12 @@ frame.add(new JButton("ボタン2"));
 
 これはBorderLayoutで位置指定なしにコンポーネントを追加した例です。後から追加したボタン2がボタン1を上書きしてしまいます。
 
-原因
+### 原因
+
 - BorderLayoutの位置指定が省略されている
 - 同じ位置に複数のコンポーネントが配置されている
 
-対処法。
+### 対処法
 
 ```java
 frame.setLayout(new BorderLayout());
@@ -62,11 +62,9 @@ frame.add(new JButton("ボタン2"), BorderLayout.SOUTH);
 
 これは正しい位置指定の例です。BorderLayout.NORTHとBorderLayout.SOUTHを指定することで、両方のボタンが正しく表示されます。
 
-## コンポーネントの表示問題
+## JLabelの背景色が反映されない
 
-### 問題：JLabelの背景色が反映されない
-
-エラー症状。
+### エラー例
 
 ```java
 JLabel label = new JLabel("メッセージ");
@@ -77,11 +75,12 @@ label.setBackground(Color.RED);
 これは背景色が表示されない問題の例です。JLabelは既定で透明（`isOpaque()`が`false`）なので、`setBackground`で色を指定しても背景を塗りません。
 なお、JPanelは標準のLook&Feelでは既定で不透明なので、`setBackground`だけで背景色が表示されます。
 
-原因
+### 原因
+
 - 既定で透明なコンポーネント（JLabelなど）に`setOpaque(true)`を設定していない
 - コンポーネントが透明なため、親コンポーネントの背景がそのまま見えている
 
-対処法。
+### 対処法
 
 ```java
 JLabel label = new JLabel("メッセージ");
@@ -91,9 +90,9 @@ label.setOpaque(true);  // 不透明に設定
 
 これは背景色を正しく表示させる対処法です。setOpaque(true)により、ラベルが不透明になり、背景色が表示されます。
 
-### 問題：JTextFieldが編集できない
+## JTextFieldが編集できない
 
-エラー症状。
+### エラー例
 
 ```java
 JTextField textField = new JTextField("初期値");
@@ -102,11 +101,12 @@ JTextField textField = new JTextField("初期値");
 
 これは編集不可能なテキストフィールドの問題例です。デフォルトでは編集可能ですが、何らかの理由で編集できない状態になっています。
 
-原因
+### 原因
+
 - `setEditable(false)`が設定されている
 - フォーカスが取得できない状態
 
-対処法。
+### 対処法
 
 ```java
 JTextField textField = new JTextField("初期値");
@@ -116,21 +116,21 @@ textField.setFocusable(true);  // フォーカス取得可能に設定
 
 これは編集可能にする対処法です。setEditable(true)とsetFocusable(true)により、テキストフィールドが正常に編集できるようになります。
 
-## イベントディスパッチスレッドの問題
+## GUI更新でException in thread "AWT-EventQueue-0"が発生する
 
-### 問題：GUI更新でException in thread "AWT-EventQueue-0"が発生
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 	at SwingApplication.updateUI(SwingApplication.java:45)
 ```
 
-原因
+### 原因
+
 - EDT（Event Dispatch Thread）以外からGUIコンポーネントにアクセスしている
 - コンポーネントがnullのまま使用されている
 
-対処法。
+### 対処法
 
 ```java
 // 別スレッドからGUIを更新する場合
@@ -146,11 +146,9 @@ if (label != null) {
 
 これはEDT関連エラーの対処法です。SwingUtilities.invokeLater()を使用してEDT上で実行し、nullチェックでNullPointerExceptionを防ぎます。
 
-## コンポーネントのサイズ設定
+## JTextAreaが1行しか表示されない
 
-### 問題：JTextAreaが1行しか表示されない
-
-エラー症状。
+### エラー例
 
 ```java
 JTextArea textArea = new JTextArea();
@@ -160,11 +158,12 @@ textArea.setText("長いテキスト...");
 
 これはJTextAreaが1行しか表示されない問題の例です。デフォルトのJTextAreaは1行分の高さしか確保されません。
 
-原因
+### 原因
+
 - JScrollPaneに配置されていない
 - 必要なサイズが設定されていない
 
-対処法。
+### 対処法
 
 ```java
 JTextArea textArea = new JTextArea(10, 30);  // 行数と列数を指定
@@ -177,9 +176,9 @@ frame.add(scrollPane);
 
 これは正しい対処法です。行数と列数を指定し、JScrollPaneで囲むことで、指定した行数と列数に合った大きさで複数行のテキストが表示されます。
 
-### 問題：JButtonのサイズが意図通りにならない
+## JButtonのサイズが意図どおりにならない
 
-エラー症状。
+### エラー例
 
 ```java
 JButton button = new JButton("ボタン");
@@ -189,11 +188,12 @@ button.setSize(200, 100);
 
 これはボタンサイズが反映されない問題の例です。レイアウトマネージャーがsetSize()の設定を無視します。
 
-原因
+### 原因
+
 - レイアウトマネージャーがサイズを制御している
 - `setPreferredSize()`を使用していない
 
-対処法。
+### 対処法
 
 ```java
 JButton button = new JButton("ボタン");
@@ -206,11 +206,9 @@ button.setBounds(10, 10, 200, 100);
 
 これは2つの対処法です。setPreferredSize()を使うか、レイアウトマネージャーをnullにしてsetBounds()で絶対位置とサイズを指定します。
 
-## 画面のちらつき問題
+## コンポーネントの更新時に画面がちらつく
 
-### 問題：コンポーネントの更新時に画面がちらつく
-
-エラー症状。
+### エラー例
 
 ```java
 // 大量のコンポーネントを動的に追加・削除する際のちらつき
@@ -224,11 +222,12 @@ panel.repaint();
 
 これは画面がちらつく問題の例です。コンポーネントの追加・削除が1つずつ画面に反映されるため、ちらつきが発生します。
 
-原因
+### 原因
+
 - 個別の更新処理が画面に反映されている
 - ダブルバッファリングが無効になっている
 
-対処法。
+### 対処法
 
 ```java
 // 更新処理をバッチ化

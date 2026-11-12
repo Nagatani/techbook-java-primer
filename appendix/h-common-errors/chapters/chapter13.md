@@ -4,10 +4,11 @@
 
 例外処理の学習において、開発者がよく遭遇するエラーとその対処法を理解しておくことは重要です。以下は典型的なエラーパターンとその解決方法です。
 
-## 1. try-catch文の誤った使用
+## try-catch文の誤った使用
 
-#### 問題
-すべての処理をひとつのtry-catchで囲む。
+すべての処理をひとつのtry-catchで囲んでいます。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -22,9 +23,12 @@ try {
 }
 ```
 
-エラーメッセージ： 特定のエラーがわかりません。
+### 症状
 
-#### 対処法
+特定のエラーがわかりません。
+
+### 対処法
+
 具体的な例外をキャッチし、確実にリソースを管理します。
 
 ```java
@@ -48,10 +52,11 @@ try (FileReader reader = new FileReader("file.txt");
 }
 ```
 
-## 2. 例外の握りつぶし
+## 例外の握りつぶし
 
-#### 問題
-例外を無視する空のcatchブロック。
+空のcatchブロックで例外を無視しています。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -62,7 +67,9 @@ try {
 }
 ```
 
-対処法： 最低限ログを記録し、意味のある処理をします。
+### 対処法
+
+最低限ログを記録し、意味のある処理をします。
 
 ```java
 // 良い例
@@ -78,10 +85,11 @@ try {
 }
 ```
 
-## 3. 誤った例外型の使用
+## 誤った例外型の使用
 
-#### 問題
-RuntimeExceptionを誤って使用。
+RuntimeExceptionを誤って使っています。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -92,9 +100,13 @@ public void validateAge(int age) {
 }
 ```
 
-エラーメッセージ： 呼び出し元で正しく処理できません。
+### 症状
 
-対処法： 目的に合った例外型を定義・使用します。
+呼び出し元で正しく処理できません。
+
+### 対処法
+
+目的に合った例外型を定義・使用します。
 
 ```java
 // 良い例
@@ -114,10 +126,11 @@ public void validateAge(int age) throws ValidationException {
 }
 ```
 
-## 4. リソース管理の問題
+## リソース管理の問題
 
-#### 問題
-finallyブロックでのリソース解放漏れ。
+finallyブロックでのリソースの解放が漏れています。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -134,9 +147,13 @@ try {
 }
 ```
 
-エラーメッセージ： `Error: unreported exception IOException; must be caught or declared to be thrown`。
+### エラーメッセージ
 
-対処法： try-with-resourcesを使用します。
+`Error: unreported exception IOException; must be caught or declared to be thrown`というコンパイルエラーになります。
+
+### 対処法
+
+try-with-resourcesを使用します。
 
 ```java
 // 良い例
@@ -148,10 +165,11 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 }
 ```
 
-## 5. カスタム例外の設計ミス
+## カスタム例外の設計ミス
 
-#### 問題
-例外クラスに必要なコンストラクタがありません。
+例外クラスに必要なコンストラクターがありません。
+
+### エラー例
 
 コンパイルできる全文：[chapter13-code/CustomException/](chapter13-code/CustomException/)
 
@@ -165,7 +183,9 @@ public class CustomException extends Exception {
 }
 ```
 
-対処法： 標準的なコンストラクタを提供します。
+### 対処法
+
+標準的なコンストラクターを提供します。
 
 コンパイルできる全文：[chapter13-code/CustomException2/](chapter13-code/CustomException2/)
 
@@ -186,10 +206,11 @@ public class CustomException extends Exception {
 }
 ```
 
-## 6. 例外の再スロー時の問題
+## 例外の再スロー時の問題
 
-#### 問題
-スタックトレースの情報が失われる。
+例外を投げ直すときに、スタックトレースの情報が失われます。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -200,7 +221,9 @@ try {
 }
 ```
 
-対処法： 原因例外を保持します。
+### 対処法
+
+原因例外を保持します。
 
 ```java
 // 良い例
@@ -215,13 +238,14 @@ try {
 }
 ```
 
-## 7. 並行処理での例外処理
+## 並行処理での例外処理
 
 この項のサンプルは、第15章「マルチスレッドプログラミング」で学ぶスレッドや`CompletableFuture`を使います。
 第15章を学んだあとに読み返すと理解しやすくなります。
 
-#### 問題
 スレッドでの例外が正しく処理されません。
+
+### エラー例
 
 ```java
 // 悪い例
@@ -236,7 +260,9 @@ Thread thread = new Thread(() -> {
 thread.start();
 ```
 
-対処法： 包括的な例外処理戦略を採用します。
+### 対処法
+
+包括的な例外処理戦略を採用します。
 
 ```java
 // 良い例

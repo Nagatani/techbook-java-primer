@@ -4,10 +4,11 @@
 
 本章では、ネットワークプログラミングに特有のエラーを扱います。
 
-## 本章特有のエラー
+## 基本的な接続エラー
 
-### 1. 基本的な接続エラー
-問題: サーバーへの接続が失敗する
+サーバーへの接続が失敗します。
+
+### エラー例
 
 ```java
 // エラー例
@@ -15,7 +16,7 @@ Socket socket = new Socket("example.com", 80);
 // ConnectException, UnknownHostException, SocketTimeoutException
 ```
 
-解決策:
+### 対処法
 
 ```java
 // タイムアウト設定とリトライ
@@ -33,13 +34,17 @@ for (int i = 0; i < MAX_RETRIES; i++) {
 }
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - 必ずタイムアウトを設定
 - UnknownHostExceptionはリトライ不要
 - 指数バックオフで待機時間を増やす
 
-### 2. データ送受信エラー
-問題: 文字エンコーディングやデータの不完全な受信
+## データ送受信エラー
+
+文字エンコーディングの誤りや、データの不完全な受信が起こります。
+
+### エラー例
 
 ```java
 // エラー例
@@ -47,7 +52,7 @@ out.write(data.getBytes()); // エンコーディング不明
 // データが分割されて到着する可能性
 ```
 
-解決策:
+### 対処法
 
 ```java
 // UTF-8を明示的に指定
@@ -65,13 +70,17 @@ byte[] buffer = new byte[size];
 in.readFully(buffer); // すべて読み込むまで待機
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - 常にUTF-8を使用
 - データサイズを事前に送信
 - readFully()で完全受信保証
 
-### 3. HTTPクライアントエラー
-問題: HTTPステータスコードの未チェック
+## HTTPクライアントエラー
+
+HTTPステータスコードを確認していません。
+
+### エラー例
 
 ```java
 // エラー例
@@ -79,7 +88,7 @@ HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 String body = response.body(); // ステータスコードを確認しない
 ```
 
-解決策:
+### 対処法
 
 ```java
 int status = response.statusCode();
@@ -92,13 +101,17 @@ if (status >= 200 && status < 300) {
 }
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - 2xxは成功、4xxはクライアントエラー、5xxはサーバーエラー
 - エラーレスポンスのボディも確認
 - リトライ可能なエラーを識別
 
-### 4. リソース管理エラー
-問題: ソケットやストリームが適切に閉じられない
+## リソース管理エラー
+
+ソケットやストリームが適切に閉じられていません。
+
+### エラー例
 
 ```java
 // エラー例
@@ -109,7 +122,7 @@ while (true) {
 }
 ```
 
-解決策:
+### 対処法
 
 ```java
 // try-with-resources使用
@@ -124,7 +137,8 @@ try (ServerSocket server = new ServerSocket(8080)) {
 }
 ```
 
-重要なポイント:
+### 重要なポイント
+
 - try-with-resourcesで自動クローズ
 - 各クライアントを別スレッドで処理
 - シャットダウンフックを実装

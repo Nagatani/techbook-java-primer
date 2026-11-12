@@ -6,7 +6,7 @@
 
 ## Raw typeの使用エラー
 
-#### エラー例
+### エラー例
 
 ジェネリクスを使用せずにRaw typeでコレクションを使用した場合の問題を示しています。
 
@@ -17,13 +17,14 @@ list.add("Hello");
 String str = (String) list.get(0); // キャストが必要
 ```
 
-#### 警告メッセージ
+### 警告メッセージ
+
 ```
 Note: GenericsExample.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for more details.
 ```
 
-#### 対処法
+### 対処法
 
 正しいジェネリクスの使用方法です。
 
@@ -34,11 +35,11 @@ list.add("Hello");
 String str = list.get(0); // キャスト不要
 ```
 
-## 型パラメータの不適切な使用
+## 型パラメーターの不適切な使用
 
-#### エラー例
+### エラー例
 
-型パラメータを直接インスタンス化しようとした例です。
+型パラメーターを直接インスタンス化しようとした例です。
 
 ```java
 // × 不適切な使用例
@@ -51,16 +52,17 @@ public class Container<T> {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: unexpected type
   required: class
   found:    type parameter T
 ```
 
-#### 対処法
+### 対処法
 
-ファクトリーメソッドを使用した正しい実装方法です。
+ファクトリメソッドを使用した正しい実装方法です。
 `Supplier<T>`は「`T`型の値を1つ作って返す」処理を表すインターフェイスで、第11章で学ぶラムダ式と組み合わせて`new Container<>(() -> new StringBuilder())`のように使います。
 
 ```java
@@ -83,7 +85,7 @@ public class Container<T> {
 
 ## ワイルドカードの誤用
 
-#### エラー例
+### エラー例
 
 上限境界ワイルドカードで要素を追加しようとした例です。
 
@@ -93,14 +95,15 @@ List<? extends Number> numbers = new ArrayList<Integer>();
 numbers.add(1); // コンパイルエラー
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: incompatible types: int cannot be converted to CAP#1
   where CAP#1 is a fresh type-variable:
     CAP#1 extends Number from capture of ? extends Number
 ```
 
-#### 対処法
+### 対処法
 
 ワイルドカードの正しい使用方法です。
 
@@ -113,7 +116,7 @@ List<? extends Number> numbers = integers; // 読み取り専用として使用
 
 ## 型消去に関する問題
 
-#### エラー例
+### エラー例
 
 ジェネリクスで配列を作成しようとした際の問題です。
 
@@ -128,12 +131,13 @@ public class GenericArray<T> {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: generic array creation
 ```
 
-#### 対処法
+### 対処法
 
 型消去を考慮した正しい実装方法です。
 
@@ -151,11 +155,11 @@ public class GenericArray<T> {
 }
 ```
 
-## 境界型パラメータの問題
+## 境界型パラメーターの問題
 
-#### エラー例
+### エラー例
 
-境界型パラメータで算術演算を直接実行しようとした例です。
+境界型パラメーターで算術演算を直接実行しようとした例です。
 
 ```java
 // × 境界型パラメータの誤用
@@ -168,16 +172,17 @@ public class NumberContainer<T extends Number> {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: bad operand types for binary operator '*'
   first type:  T
   second type: T
 ```
 
-#### 対処法
+### 対処法
 
-境界型パラメータの正しい使用方法です。
+境界型パラメーターの正しい使用方法です。
 `T`型の値どうしを`*`で計算することはできませんが、`Number`のメソッド`doubleValue()`で`double`に変換すれば計算できます。
 ただし、計算結果の`double`を`T`型のフィールドに戻すことはできないため、結果は`double`として返します。
 
@@ -201,7 +206,7 @@ public class NumberContainer<T extends Number> {
 
 ## var型推論の誤用
 
-#### エラー例
+### エラー例
 
 var型推論を不適切に使用した例です。
 
@@ -211,13 +216,14 @@ var list = new ArrayList(); // Raw typeになる
 var value = null; // コンパイルエラー
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 error: cannot infer type for local variable value
   (variable initializer is 'null')
 ```
 
-#### 対処法
+### 対処法
 
 var型推論の正しい使用方法です。
 
@@ -231,7 +237,7 @@ String value = null; // 明示的な型宣言
 
 1. コンパイル時の警告を無視しない
     + `-Xlint:unchecked`オプションを使用して詳細な警告を確認する
-2. 型パラメータの制約を理解する
+2. 型パラメーターの制約を理解する
     + 何ができて何ができないかを明確に把握する
 3. 型安全性を保つ設計パターンを使用する
     + Factory Method、Builder、Strategyパターンなどの活用

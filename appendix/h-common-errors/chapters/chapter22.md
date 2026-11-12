@@ -4,14 +4,11 @@
 
 ドキュメント作成と外部ライブラリの使用において、よく遭遇するエラーとその対処法を説明します。
 
-## Javadocの生成エラー
+## Javadocコメントの構文エラー
 
-### 1. Javadocコメントの構文エラー
-
-#### 問題
 Javadocコメントの構文が正しくありません。
 
-#### エラー例
+### エラー例
 
 コンパイルできる全文：[chapter22-code/UserService/](chapter22-code/UserService/)
 
@@ -26,13 +23,14 @@ public class UserService {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 warning: @param has no meaning in class documentation
 warning: @return has no meaning in class documentation
 ```
 
-#### 解決策
+### 対処法
 
 ```java
 /**
@@ -62,19 +60,18 @@ public class UserService {
 }
 ```
 
-### 2. 文字エンコーディングの問題
+## Javadocの文字化け
 
-#### 問題
 日本語のJavadocが文字化けします。
 
-#### エラー例
+### エラー例
 
 ```bash
 javadoc -d docs src/*.java
 # 日本語が文字化けして表示される
 ```
 
-#### 解決策
+### 対処法
 
 ```bash
 # 文字エンコーディングを明示的に指定
@@ -84,12 +81,11 @@ javadoc -d docs -encoding UTF-8 -charset UTF-8 -docencoding UTF-8 src/*.java
 mvn javadoc:javadoc -Dfile.encoding=UTF-8
 ```
 
-### 3. HTMLタグの誤用
+## JavadocでのHTMLタグの誤用
 
-#### 問題
-JavadocでHTMLタグを間違って使用。
+JavadocでHTMLタグを間違って使っています。
 
-#### エラー例
+### エラー例
 
 コンパイルできる全文：[chapter22-code/UserService2/](chapter22-code/UserService2/)
 
@@ -107,13 +103,14 @@ public class UserService {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 warning: unclosed tag: <strong>
 warning: unclosed tag: <li>
 ```
 
-#### 解決策
+### 対処法
 
 コンパイルできる全文：[chapter22-code/UserService3/](chapter22-code/UserService3/)
 
@@ -132,16 +129,13 @@ public class UserService {
 }
 ```
 
-## 依存関係の競合
+## ライブラリのバージョン競合
 
-### 1. バージョン競合
-
-#### 問題
 異なるバージョンのライブラリが競合します。
 jackson-databind 2.15.0は同じ版のjackson-coreを前提にしていますが、次の例ではjackson-coreを2.12.0と直接指定しています。
 Mavenは直接指定した版を優先するため、実行時には2.12.0のjackson-coreが使われます。
 
-#### エラー例
+### エラー例
 
 ```xml
 <dependencies>
@@ -158,7 +152,8 @@ Mavenは直接指定した版を優先するため、実行時には2.12.0のjac
 </dependencies>
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 コンパイルは通り、単純な変換も動きます。
 しかし、2.15で加わったjackson-coreのクラスを使う処理（`ObjectMapper.convertValue`など）を呼ぶと、実行時に次のエラーになります。
 
@@ -168,7 +163,7 @@ java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadConstraints
 
 どのメソッドで失敗するかは使う機能によって変わり、`NoSuchMethodError`になることもあります。
 
-#### 解決策
+### 対処法
 
 ```xml
 <properties>
@@ -189,12 +184,11 @@ java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadConstraints
 </dependencies>
 ```
 
-### 2. 推移的な依存関係の問題
+## 推移的な依存関係の問題
 
-#### 問題
 間接的に依存するライブラリが競合します。
 
-#### エラー例
+### エラー例
 
 ```bash
 mvn dependency:tree
@@ -206,7 +200,7 @@ mvn dependency:tree
 [INFO]    \- commons-logging:commons-logging:jar:1.1.3:compile
 ```
 
-#### 解決策
+### 対処法
 
 ```xml
 <dependency>
@@ -229,14 +223,11 @@ mvn dependency:tree
 </dependency>
 ```
 
-## ライブラリのバージョン管理
+## 古いバージョンのライブラリの使用
 
-### 1. 古いバージョンの使用
+セキュリティ脆弱性のある古いライブラリを使っています。
 
-#### 問題
-セキュリティ脆弱性のある古いライブラリを使用。
-
-#### エラー例
+### エラー例
 
 ```xml
 <dependency>
@@ -246,7 +237,7 @@ mvn dependency:tree
 </dependency>
 ```
 
-#### 解決策
+### 対処法
 
 ```xml
 <!-- 脆弱性チェックプラグインを追加 -->
@@ -267,12 +258,11 @@ mvn dependency:tree
 </dependency>
 ```
 
-### 2. バージョン範囲の誤用
+## バージョン範囲の誤用
 
-#### 問題
 バージョン範囲が適切ではありません。
 
-#### エラー例
+### エラー例
 
 ```xml
 <dependency>
@@ -282,7 +272,7 @@ mvn dependency:tree
 </dependency>
 ```
 
-#### 解決策
+### 対処法
 
 ```xml
 <dependency>
@@ -292,16 +282,13 @@ mvn dependency:tree
 </dependency>
 ```
 
-## APIの非互換性
+## コンパイル時と実行時のライブラリのバージョンの違い
 
-### 1. コンパイル時と実行時のバージョンの違い
-
-#### 問題
 新しいバージョンで加わったメソッドを使ってコンパイルしたコードを、古いバージョンのライブラリで実行しています。
 コンパイルは通りますが、実行時にメソッドが見つからずエラーになります。
 推移的な依存関係で古いバージョンが選ばれたときや、実行時のクラスパスに古いJARが残っているときに起こります。
 
-#### エラー例
+### エラー例
 
 ```java
 // jackson-databind 2.15でコンパイルしたコード
@@ -313,14 +300,15 @@ for (Map.Entry<String, JsonNode> entry : node.properties()) {
 }
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 実行時に2.14のjackson-databindが使われると、次のエラーになります。
 
 ```
 Exception in thread "main" java.lang.NoSuchMethodError: 'java.util.Set com.fasterxml.jackson.databind.JsonNode.properties()'
 ```
 
-#### 解決策
+### 対処法
 
 `mvn dependency:tree`で実際に使われるバージョンを確かめ、コンパイル時と同じバージョンにそろえます。
 Jacksonのように複数のモジュールからなるライブラリは、BOMを読み込むとモジュールのバージョンをまとめて固定できます。
@@ -349,19 +337,18 @@ Jacksonのように複数のモジュールからなるライブラリは、BOM�
 
 古いバージョンでも動かす必要がある場合は、古いバージョンにもあるメソッドで書きます（`properties()`の代わりに`fields()`を使うなど）。
 
-### 2. 廃止予定APIの使用
+## 廃止予定APIの使用
 
-#### 問題
-廃止予定のAPIを使用している。
+廃止予定のAPIを使っています。
 
-#### エラー例
+### エラー例
 
 ```java
 @SuppressWarnings("deprecation")
 Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
 ```
 
-#### 解決策
+### 対処法
 
 ```java
 // 新しいAPIを使用
@@ -369,14 +356,11 @@ LocalDate date = LocalDate.of(2023, 1, 1);
 Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 ```
 
-## クラスパスの問題
+## クラスが見つからない
 
-### 1. クラスが見つからない
-
-#### 問題
 必要なクラスがクラスパスに存在しません。
 
-#### エラー例
+### エラー例
 
 ```java
 import org.apache.commons.lang3.StringUtils;
@@ -416,12 +400,13 @@ Caused by: java.lang.ClassNotFoundException: org.apache.commons.lang3.StringUtil
 - 推移的依存関係も自動的に含まれる
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 ```
 
-#### 解決策
+### 対処法
 
 ```xml
 <!-- 必要な依存関係を追加 -->
@@ -432,12 +417,11 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 </dependency>
 ```
 
-### 2. 実行時とコンパイル時のクラスパスの違い
+## 実行時とコンパイル時のクラスパスの違い
 
-#### 問題
-コンパイルは成功するが実行時にエラーが発生。
+コンパイルは成功しますが、実行時にエラーが発生します。
 
-#### エラー例
+### エラー例
 
 ```bash
 # コンパイル時
@@ -447,7 +431,7 @@ javac -cp "lib/*" src/Example.java
 java Example  # ClassNotFoundException
 ```
 
-#### 解決策
+### 対処法
 
 ```bash
 # 実行時にも必要なクラスパスを指定
@@ -458,14 +442,11 @@ mvn clean package
 java -jar target/myapp.jar
 ```
 
-## 設定ファイルの問題
+## 設定ファイルの読み込みエラー
 
-### 1. 設定ファイルの読み込みエラー
-
-#### 問題
 設定ファイルが正しく読み込まれません。
 
-#### エラー例
+### エラー例
 
 ```java
 // application.propertiesが見つからない
@@ -473,12 +454,13 @@ Properties props = new Properties();
 props.load(new FileInputStream("application.properties"));
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 java.io.FileNotFoundException: application.properties (No such file or directory)
 ```
 
-#### 解決策
+### 対処法
 
 ```java
 // クラスパスから読み込み
@@ -492,12 +474,11 @@ try (InputStream input = getClass().getClassLoader()
 }
 ```
 
-### 2. 設定値の型変換エラー
+## 設定値の型変換エラー
 
-#### 問題
-設定値の型が期待と異なる。
+設定値の型が期待と異なります。
 
-#### エラー例
+### エラー例
 
 ```properties
 # application.properties
@@ -508,12 +489,13 @@ server.port=8080abc  # 数値でない
 int port = Integer.parseInt(props.getProperty("server.port"));
 ```
 
-#### エラーメッセージ
+### エラーメッセージ
+
 ```
 java.lang.NumberFormatException: For input string: "8080abc"
 ```
 
-#### 解決策
+### 対処法
 
 ```java
 public static int getIntProperty(Properties props, String key, int defaultValue) {
@@ -534,21 +516,19 @@ public static int getIntProperty(Properties props, String key, int defaultValue)
 int port = getIntProperty(props, "server.port", 8080);
 ```
 
-## ライブラリの組み合わせ問題
+## ログフレームワークの競合
 
-### 1. ログフレームワークの競合
-
-#### 問題
 複数のログフレームワークが競合します。
 
-#### エラー例
+### エラー例
+
 ```
 SLF4J: Class path contains multiple SLF4J bindings.
 SLF4J: Found binding in [jar:file:.../slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
 ```
 
-#### 解決策
+### 対処法
 
 ```xml
 <!-- 不要なログ実装を除外 -->
@@ -572,12 +552,11 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 </dependency>
 ```
 
-### 2. 異なるJSONライブラリの混在
+## 異なるJSONライブラリの混在
 
-#### 問題
 JacksonとGsonが混在してAPIが混乱します。
 
-#### 解決策
+### 対処法
 
 ```java
 // 使用するJSONライブラリを統一

@@ -53,9 +53,9 @@ h-common-errors/
 
 - **第3章**：NullPointerExceptionの基礎
 - **第4章**：オブジェクトの初期化とnullチェック
-- **第10章**：コレクションとConcurrentModificationException
-- **第11章**：ジェネリクスとClassCastException
-- **第14章**：例外処理の詳細
+- **第9章**：コレクションとConcurrentModificationException
+- **第10章**：ジェネリクスとClassCastException
+- **第13章**：例外処理の詳細
 
 ## 利用方法
 

@@ -4,16 +4,15 @@
 
 コレクションフレームワークを学習する際によく遭遇するエラーとその対処法を以下にまとめます。
 
-## NullPointerException関連
+## 初期化忘れによるNullPointerException
 
-### 初期化忘れ
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "main" java.lang.NullPointerException
 ```
 
-原因と対処。
+### 原因と対処法
 
 以下のコードは、コレクションを初期化せずに使用しようとした例です。
 
@@ -27,7 +26,9 @@ List<String> list = new ArrayList<>();  // 初期化を忘れずに
 list.add("Hello");  // OK
 ```
 
-### null要素の扱い
+## null要素の扱い
+
+### 原因と対処法
 
 次のコードは、null要素を含むSetを扱う際の注意点を示しています。
 
@@ -52,16 +53,15 @@ for (String s : set) {
 }
 ```
 
-## ClassCastException関連
+## ジェネリクスを使わない場合のClassCastException
 
-### ジェネリクスを使わない場合
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "main" java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.String
 ```
 
-原因と対処。
+### 原因と対処法
 
 以下のコードは、ジェネリクスを使用しない場合の問題を示しています。
 
@@ -81,16 +81,15 @@ list.add("Hello");
 String s = list.get(0);  // キャストが不要、型安全
 ```
 
-## UnsupportedOperationException関連
+## 不変リストの変更によるUnsupportedOperationException
 
-### 不変リストの変更
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "main" java.lang.UnsupportedOperationException
 ```
 
-原因と対処。
+### 原因と対処法
 
 次のコードは、不変リストを変更しようとした場合の問題を示しています。
 
@@ -109,16 +108,15 @@ List<String> mutableList = new ArrayList<>(immutableList);
 mutableList.add("D");  // OK
 ```
 
-## ConcurrentModificationException関連
+## 反復中の変更によるConcurrentModificationException
 
-### 反復中の変更
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "main" java.util.ConcurrentModificationException
 ```
 
-原因と対処。
+### 原因と対処法
 
 以下のコードは、反復処理中にコレクションを変更しようとした例です。
 
@@ -155,16 +153,15 @@ for (int i = list.size() - 1; i >= 0; i--) {
 }
 ```
 
-## IndexOutOfBoundsException関連
+## 配列の範囲外アクセスによるIndexOutOfBoundsException
 
-### 配列の範囲外アクセス
+### エラーメッセージ
 
-エラーメッセージ。
 ```
 Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 5 out of bounds for length 3
 ```
 
-原因と対処。
+### 原因と対処法
 
 次のコードは、配列の範囲外にアクセスしようとした例です。
 
@@ -193,9 +190,9 @@ try {
 }
 ```
 
-## Map関連のエラー
+## Mapで存在しないキーへのアクセス
 
-### 存在しないキーのアクセス
+### 原因と対処法
 
 Mapで存在しないキーにアクセスする際の注意点を示すコード例です。
 
@@ -228,9 +225,9 @@ if (map.containsKey("key2")) {
 }
 ```
 
-## equals()とhashCode()の問題
+## 自作クラスをHashSetやHashMapのキーに使うときのequals()とhashCode()
 
-### カスタムオブジェクトをHashSetやHashMapのキーで使用
+### 原因と対処法
 
 カスタムオブジェクトをHashSetやHashMapで使用する際の問題を示すコード例です。
 
@@ -275,9 +272,9 @@ class Person {
 }
 ```
 
-## 型安全性の問題
+## Raw typeの使用
 
-### Raw typeの使用
+### 原因と対処法
 
 型安全性を損なうRaw typeの使用例を示しています。
 
@@ -298,10 +295,10 @@ stringList.add("String");
 String s = stringList.get(0);  // キャスト不要、型安全
 ```
 
-## デバッグのコツ
+## デバッグのヒント
 
 1. 型安全なジェネリクスの使用
-   - Raw typeを避け、常に型パラメータを指定
+   - Raw typeを避け、常に型パラメーターを指定
    - コンパイル時に型の安全性を確保
 
 2. null安全なコーディング
@@ -312,7 +309,7 @@ String s = stringList.get(0);  // キャスト不要、型安全
    - 拡張for文やStream APIの活用
    - 反復中の変更を避ける
 
-4. equals（）とhashCode()の実装
+4. equals()とhashCode()の実装
    - カスタムオブジェクトをコレクションで使用する場合は必須
    - IDEの自動生成機能やLombokの活用
 
