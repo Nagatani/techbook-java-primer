@@ -65,6 +65,15 @@ public class KeyboardEventAdvancedExample extends JFrame {
             }
         });
         
+        // フォーカスが外れたら、押されているキーの記録を消す
+        // （ダイアログが開くと、キーを離したイベントはテキストエリアに届かない）
+        textArea.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                pressedKeys.clear();
+            }
+        });
+        
         // InputMapとActionMapを使ったより良いアプローチ
         setupKeyBindings();
         

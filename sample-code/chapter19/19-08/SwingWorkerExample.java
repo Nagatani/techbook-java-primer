@@ -78,7 +78,8 @@ public class SwingWorkerExample extends JFrame {
             
             for (int i = 0; i < TOTAL_ITEMS; i++) {
                 if (isCancelled()) {
-                    return "処理がキャンセルされました";
+                    // キャンセルしたあとはget()で結果を受け取れないので、戻り値は使われない
+                    return null;
                 }
                 
                 // 重い処理のシミュレーション
@@ -115,7 +116,7 @@ public class SwingWorkerExample extends JFrame {
                     String result = get();
                     resultArea.append("\n処理が完了しました。\n");
                     resultArea.append("結果のサマリー:\n");
-                    resultArea.append("処理したアイテム数: " + TOTAL_ITEMS + "\n");
+                    resultArea.append("処理したアイテム数: " + result.lines().count() + "\n");
                     progressBar.setValue(100);
                     progressBar.setString("完了");
                 }

@@ -101,6 +101,7 @@ public class JavaBeansEventExample extends JFrame {
     private Map<String, StockPrice> stocks = new HashMap<>();
     private JPanel stocksPanel;
     private Timer updateTimer;
+    private final Random random = new Random();
     
     public JavaBeansEventExample() {
         setTitle("JavaBeansイベントモデルの例（株価モニター）");
@@ -150,7 +151,6 @@ public class JavaBeansEventExample extends JFrame {
     
     private void startPriceUpdates() {
         updateTimer = new Timer(1000, e -> {
-            Random random = new Random();
             for (StockPrice stock : stocks.values()) {
                 // ランダムな価格変動（-2%～+2%）
                 double change = (random.nextDouble() - 0.5) * 0.04;

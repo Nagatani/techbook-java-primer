@@ -13,9 +13,9 @@
     - DocumentListenerによるテキスト変更の監視
     - ドラッグ&ドロップ
 2. カスタムイベントとパターン
-    - JavaBeansイベントモデルの実装
     - Observerパターンによるイベント通知
     - カスタムイベントの作成と活用
+    - JavaBeansイベントモデルの実装
 3. パフォーマンスの最適化
     - イベント処理の最適化技術
     - 非同期処理とSwingWorker
@@ -34,7 +34,11 @@
 本節では、マウスの移動とドラッグを受け取る`addMouseMotionListener()`の登録も加えます。
 
 以下のコードは、クリック、ダブルクリック、ドラッグ、右クリックメニューを1つのパネルで処理する例です。
-`MouseAdapter`で必要なメソッドだけをオーバーライドし、イベントの種類と座標をログに記録します。
+`MouseAdapter`は`MouseListener`と`MouseMotionListener`の両方を実装しています。
+そのため、必要なメソッドだけをオーバーライドした1つのオブジェクトを、`addMouseListener()`と`addMouseMotionListener()`の両方に登録できます。
+各メソッドでは、イベントの種類と座標をログに記録します。
+右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
+メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
 <span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜63、77〜82、97〜100、117、129行目）</span>
 
@@ -97,8 +101,11 @@ public class MouseEventCompleteExample extends JFrame {
 本節では、それに加えて複数キーの同時押しと、`InputMap`と`ActionMap`によるキーバインディングを扱います。
 
 以下のコードは、押されているキーを`HashSet`で追跡して同時押しを検出し、`InputMap`と`ActionMap`でショートカットキーを設定する例です。
+同時押しの検出では、`keyPressed()`でキーコードを集合に加え、`keyReleased()`で取り除きます。
+ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
+そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66、78〜90、100、155行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66〜75、85、87〜99、109、164行目）</span>
 
 ```java
 public class KeyboardEventAdvancedExample extends JFrame {
@@ -132,7 +139,18 @@ public class KeyboardEventAdvancedExample extends JFrame {
             }
             // ...
         });
+        
+        // フォーカスが外れたら、押されているキーの記録を消す
+        // （ダイアログが開くと、キーを離したイベントはテキストエリアに届かない）
+        textArea.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                pressedKeys.clear();
+            }
+        });
         // ...
+    }
+    // ...
     private void setupKeyBindings() {
         InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap actionMap = textArea.getActionMap();
@@ -154,9 +172,20 @@ public class KeyboardEventAdvancedExample extends JFrame {
 
 実行すると、「高度なキーボードイベント処理」というウィンドウが開きます。キーを押したり離したりするたびに、下のステータスラベルに修飾キーとキーの名前を表示します。Ctrl+Sで保存のダイアログ、F1でヘルプを表示し、Ctrl+Aで全選択、Ctrl+Dで現在の行の削除、Ctrl+Shift+Dで現在の行の複製、F5で内容のクリアを行います。
 
+キーバインディングでは、2つの対応表を使います。
+`InputMap`は、キーの組み合わせ（`KeyStroke`）と、処理に付けた名前を対応づけます。
+`ActionMap`は、その名前と、実行する処理（`Action`。ここでは`AbstractAction`を継承した匿名クラス）を対応づけます。
+`getInputMap()`の引数の`JComponent.WHEN_FOCUSED`は、その部品がフォーカスを持っているときだけキーを受け付けるという指定です<span class="footnote">ほかに、部品を含むウィンドウがフォーカスを持っていれば受け付ける`WHEN_IN_FOCUSED_WINDOW`などがあります。</span>。
+テキストのコピーや貼り付けなど、Swingの部品が既定で持つキー操作も、この仕組みで登録されています。
+ショートカットキーは、`KeyListener`で`if`文を並べるより、キーバインディングで登録するほうが、キーと処理の対応を管理しやすくなります。
+
 ### DocumentListenerによるテキスト変更の監視
 
 `DocumentListener`を使うと、テキストフィールドやテキストエリアの内容が変わるたびに処理を実行できます。
+リスナーはテキスト部品そのものではなく、`getDocument()`で取り出した`Document`（部品が表示する文字列を保持するオブジェクト）に登録します。
+`insertUpdate()`は文字が挿入されたとき、`removeUpdate()`は文字が削除されたときに呼ばれます。
+`changedUpdate()`は文字の書式（属性）が変わったときに呼ばれるメソッドで、書式を持たない`JTextField`や`JPasswordField`では呼ばれません。
+この例では、どの変更でも同じ検証を行うので、3つのメソッドから同じ`validateForm()`を呼んでいます。
 以下のコードは、入力のたびにメールアドレスの形式、パスワードの長さと強度、確認用パスワードの一致を検証する例です。
 
 <span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、66〜110、147〜149、178行目）</span>
@@ -320,7 +349,7 @@ JavaBeans<span class="footnote">JavaBeansは、Javaで再利用できる部品�
 以下のコードは、株価の変化を複数の表示パネルに通知する株価モニターの例です。
 `PropertyChangeSupport`では、プロパティの名前を指定して、そのプロパティの変化だけを受け取るリスナーを登録できます。
 
-<span class="listing-number">**サンプルコード19-5**　JavaBeansEventExample.java（7〜11、18〜20、34〜42、64〜79、95〜100、151〜162、175行目）</span>
+<span class="listing-number">**サンプルコード19-5**　JavaBeansEventExample.java（7〜11、18〜20、34〜42、48、64〜79、95〜100、104、152〜162、175行目）</span>
 
 ```java
 // モデルクラス（PropertyChangeSupport を使用）
@@ -342,6 +371,8 @@ class StockPrice {
 
 // 株価表示コンポーネント
 class StockPricePanel extends JPanel implements PropertyChangeListener {
+    // ...
+    public StockPricePanel(StockPrice stock) {
         // ...
         previousPrice = stock.getPrice();
         stock.addPropertyChangeListener("price", this);
@@ -367,9 +398,10 @@ class StockPricePanel extends JPanel implements PropertyChangeListener {
 // メインアプリケーション
 public class JavaBeansEventExample extends JFrame {
     // ...
+    private final Random random = new Random();
+    // ...
     private void startPriceUpdates() {
         updateTimer = new Timer(1000, e -> {
-            Random random = new Random();
             for (StockPrice stock : stocks.values()) {
                 // ランダムな価格変動（-2%～+2%）
                 double change = (random.nextDouble() - 0.5) * 0.04;
@@ -397,10 +429,12 @@ public class JavaBeansEventExample extends JFrame {
 このサンプルで使う`JList`と`DefaultListModel`は、第20章「JTableとJListの基礎」で詳しく学びます。
 ここでは、`DefaultListModel`に要素を追加・削除すると`JList`の表示が更新される、という点だけを押さえてください。
 
-<span class="listing-number">**サンプルコード19-6**　DragAndDropExample.java（9、34〜39、69〜103、125〜146、151〜152、162、169行目）</span>
+<span class="listing-number">**サンプルコード19-6**　DragAndDropExample.java（9、16、34〜39、67、69〜103、125〜146、151〜152、162、169行目）</span>
 
 ```java
 public class DragAndDropExample extends JFrame {
+    // ...
+    public DragAndDropExample() {
         // ...
         // ドラッグ機能の設定
         sourceList.setDragEnabled(true);
@@ -409,6 +443,8 @@ public class DragAndDropExample extends JFrame {
         // ドロップ機能の設定
         targetList.setTransferHandler(new ListTransferHandler());
         // ...
+    }
+    // ...
     // リスト用のTransferHandler
     class ListTransferHandler extends TransferHandler {
         @Override
@@ -495,7 +531,7 @@ public class DragAndDropExample extends JFrame {
 以下のコードは、`mouseMoved`に対して両方を実装した例です。
 デバウンスは、入力が止まってから検索する機能や自動保存にも使えます。
 
-<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（5、10〜13、43〜44、47〜59、61〜65、80〜96、110行目）</span>
+<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（5、10〜13、15、43〜44、47〜59、61〜65、80、82〜96、110行目）</span>
 
 ```java
 public class EventOptimizationExample extends JFrame {
@@ -504,6 +540,8 @@ public class EventOptimizationExample extends JFrame {
     private long lastThrottleTime = 0;
     private static final int DEBOUNCE_DELAY = 300; // ミリ秒
     private static final int THROTTLE_DELAY = 100; // ミリ秒
+    // ...
+    public EventOptimizationExample() {
         // ...
         // マウス移動イベント（位置の表示は毎回、描画とログはデバウンスとスロットルで間引く）
         drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
@@ -529,7 +567,7 @@ public class EventOptimizationExample extends JFrame {
         debounceTimer.setRepeats(false);
         // ...
     }
-    
+    // ...
     // デバウンス: 最後のイベントから一定時間後に処理
     private void debounceMouseMove(Point point) {
         currentMousePos = point;
@@ -572,6 +610,9 @@ public class EventOptimizationExample extends JFrame {
 
 処理は`execute()`で開始します。
 `cancel(true)`で中断を頼むと、`doInBackground()`のなかの`isCancelled()`がtrueを返すようになるので、それを見て処理を打ち切ります。
+引数の`true`は、処理中のスレッドに割り込みをかけるという指定です。
+割り込まれると、`Thread.sleep()`などで待っている処理は`InterruptedException`で終わります。
+キャンセルしたあとは`get()`で結果を受け取れない（`CancellationException`が発生する）ので、`done()`では`isCancelled()`を確かめてから`get()`を呼びます。
 
 以下のコードは、SwingWorkerで100件のデータを順に処理し、`publish()`と`process()`で進捗を表示する例です<span class="footnote">進捗の割合（0〜100）だけを知らせたいときは、`publish()`の代わりに`setProgress()`を使う方法もあります。`addPropertyChangeListener()`で登録したリスナーが、`"progress"`プロパティの変化として受け取ります。</span>。
 処理中も画面は操作でき、「キャンセル」ボタンで処理を中断できます。
@@ -582,7 +623,7 @@ public class EventOptimizationExample extends JFrame {
 
 </div>
 
-<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、70〜75、79〜82、91〜97、99〜115、121〜127、145行目）</span>
+<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、70〜75、79〜83、92〜98、100〜128、146行目）</span>
 
 ```java
 public class SwingWorkerExample extends JFrame {
@@ -596,7 +637,8 @@ public class SwingWorkerExample extends JFrame {
             // ...
             for (int i = 0; i < TOTAL_ITEMS; i++) {
                 if (isCancelled()) {
-                    return "処理がキャンセルされました";
+                    // キャンセルしたあとはget()で結果を受け取れないので、戻り値は使われない
+                    return null;
                 }
                 // ...
                 // 進捗を公開
@@ -624,7 +666,11 @@ public class SwingWorkerExample extends JFrame {
             try {
                 if (!isCancelled()) {
                     String result = get();
-                    // ...
+                    resultArea.append("\n処理が完了しました。\n");
+                    resultArea.append("結果のサマリー:\n");
+                    resultArea.append("処理したアイテム数: " + result.lines().count() + "\n");
+                    progressBar.setValue(100);
+                    progressBar.setString("完了");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 resultArea.append("エラーが発生しました: " + e.getMessage() + "\n");
@@ -637,8 +683,10 @@ public class SwingWorkerExample extends JFrame {
 ```
 
 実行して「処理開始」ボタンを押すと、プログレスバーが0%から100%へ進み、下のエリアに「処理中: アイテム 1/100」のような進捗を表示します。
+`process()`は、まとめて渡された進捗のうち最新の1件だけを書くので、番号が飛ぶことがあります。
 処理は約5秒かかりますが、そのあいだもウィンドウの移動や「キャンセル」ボタンの操作ができます。
-最後まで進むと「処理が完了しました。」と結果のサマリーを表示し、途中でキャンセルすると「処理がキャンセルされました。」と表示します。
+最後まで進むと「処理が完了しました。」と結果のサマリー（処理したアイテム数）を表示します。
+途中でキャンセルすると、「キャンセル」ボタンのリスナーが「処理がキャンセルされました。」と表示します。
 
 ## よくあるエラーと対処法
 
@@ -661,7 +709,7 @@ public class SwingWorkerExample extends JFrame {
 本章では、プロフェッショナルレベルのGUIアプリケーションを実装するための高度なイベント処理技術について学習しました。
 
 ### 重要なポイント
-- マウスとキーボードイベントの完全な処理方法
+- マウスとキーボードの詳細なイベント処理
 - DocumentListenerによるリアルタイムテキスト監視
 - カスタムイベントとJavaBeansイベントモデル
 - ドラッグ&ドロップの実装
