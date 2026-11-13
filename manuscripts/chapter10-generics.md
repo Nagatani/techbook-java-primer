@@ -26,9 +26,9 @@
 <span class="listing-number">**サンプルコード10-1**</span>
 
 ```java
-List<String> students = new ArrayList<String>();
-Set<Integer> numbers = new HashSet<Integer>();
-Map<String, Integer> scores = new HashMap<String, Integer>();
+List<String> students = new ArrayList<>();
+Set<Integer> numbers = new HashSet<>();
+Map<String, Integer> scores = new HashMap<>();
 ```
 
 この`<>`で囲まれた部分がジェネリクスです。なぜこのような記法が必要なのでしょうか？実は、これはJavaの進化の過程で生まれた重要な機能なのです。
@@ -76,6 +76,7 @@ Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer
 ```
 
 このプログラムを実行すると、3番目の要素（数値の42）を文字列に変換しようとした時点で`ClassCastException`が発生します。
+実際の表示では、このあとにモジュールの情報とスタックトレース（エラーが起きた位置）が続きます。
 
 このプログラムは、コンパイルの段階では止まりません。
 コンパイルすると、次のような注意（ノート）が表示されるだけです<span class="footnote">javacのメッセージは環境の言語設定で変わり、英語の環境では英語で表示されます。付録Hは英語の表示で載せています。</span>。
@@ -170,13 +171,13 @@ public class Box<T> {
 public class BoxExample {
     public static void main(String[] args) {
         // Stringを扱うBox
-        Box<String> stringBox = new Box<>();
+        Box<String> stringBox = new Box<String>();
         stringBox.setContent("Hello Generics");
         String str = stringBox.getContent();
         IO.println(str);
 
         // Integerを扱うBox
-        Box<Integer> integerBox = new Box<>();
+        Box<Integer> integerBox = new Box<Integer>();
         integerBox.setContent(100);
         int num = integerBox.getContent();
         IO.println(num);
@@ -192,7 +193,9 @@ Hello Generics
 
 ### ダイヤモンド演算子
 
+サンプルコード10-4では、右辺の`new Box<String>()`にも型引数を書きました。
 Java 7からは、右辺の型引数を省略できるダイヤモンド演算子 (`<>`)<span class="footnote">`<>`の形がひし形（ダイヤモンド）に見えることからの呼び名です。言語仕様上は演算子ではなく、Oracleのチュートリアルでも単に「ダイヤモンド」と呼んでいます。</span>が導入され、より簡潔に記述できるようになりました。コンパイラーが左辺の宣言から型を推論してくれます。
+サンプルコード10-1のように、第9章のコードで右辺の`<>`が空だったのは、このダイヤモンド演算子を使っていたためです。
 
 <span class="listing-number">**サンプルコード10-5**</span>
 
@@ -387,20 +390,38 @@ public class VarBasicExample {
         var languagesVar = new ArrayList<String>();
         var scoresVar = new HashMap<String, Integer>();
 
-        // いずれも同じ型になる
-        IO.println("languages: " + languages.getClass());
-        IO.println("languagesVar: " + languagesVar.getClass());
+        // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
+        languagesVar.add("Java");
+        languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
+        // languages.ensureCapacity(10);  // List<String>型なのでコンパイルエラー
+        scoresVar.put("Java", 90);
+
+        IO.println("languagesVar: " + languagesVar);
+        IO.println("scoresVar: " + scoresVar);
     }
 }
 ```
 
+実行結果：
+
+```
+languagesVar: [Java]
+scoresVar: {Java=90}
+```
+
+`var`で宣言した変数の型は、右辺の式の型そのものになります。
+`languagesVar`の型は`ArrayList<String>`で、`List<String>`と宣言した`languages`とは型が異なります。
+そのため、`languagesVar`では`ArrayList`だけが持つ`ensureCapacity`メソッドも呼び出せます。
+`List`型の変数として扱いたいときは、`var`を使わずに型を書きます。
+
 ### 使用できる場面と制限事項
 
-var型推論は、以下の場面でのみ使用できます。
+var型推論は、次の場面で使用できます。
 
 1. ローカル変数の初期化（コンストラクター、メソッド内）
 2. for文・拡張for文のループ変数
-3. try-with-resources文のリソース変数
+3. try-with-resources文（第13章）のリソース変数
+4. ラムダ式（第11章）の引数（Java 11以降）
 
 一方、以下の場面では使用できません。具体的な例で確認してみましょう。
 
@@ -467,9 +488,9 @@ public class VarReadabilityExample {
         var result = process(data);     // メソッドの結果の型が不明
         var flag = checkCondition();    // boolean? String? 不明
 
-        // 数値リテラルは、どの型になるか読み手が迷いやすい
-        var count = 0;      // int? long?
-        var rate = 0.5;     // float? double?
+        // 数値リテラルでは、書き手がどの型のつもりかが伝わらない
+        var count = 0;      // intになる。longのつもりかは読み取れない
+        var rate = 0.5;     // doubleになる。floatのつもりかは読み取れない
 
         // 型を明示したほうが意図が伝わる
         int itemCount = 0;
@@ -554,13 +575,13 @@ var型推論を使うかどうかは、次の基準で判断します。
 2. 明示的な型宣言を推奨する場面
    - メソッドの戻り値型が不明確
    - プリミティブ型で精度が重要
-   - パブリックAPIの一部
+   - インターフェイスの型（`List`など）として扱いたい
    - 型が重要な意味を持つ場合
 
 `var`を使っても、変数の型はコンパイル時に決まり、型安全性は変わりません。
 省けるのは型を書く手間だけなので、読み手が型を判断しにくくなる場面では型を明示します。
 
-本章の高度な内容については、付録B.07「型消去とジェネリクス」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`</span>。
+型消去のしくみなど、ジェネリクスの高度な内容については、付録B.07「型消去とジェネリクス」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`</span>。
 
 ## よくあるエラーと対処法
 
@@ -569,7 +590,7 @@ var型推論を使うかどうかは、次の基準で判断します。
 - Raw typeの使用
     + 型引数を省略すると型安全性が失われ、未検査の警告が出る
 - 型パラメーターの使い方の誤り
-    + `new T()`や`T`の配列の生成、staticメンバーでの型パラメーターの使用はできない
+    + `new T()`や`T`の配列の生成、クラスの型パラメーター（`Box<T>`の`T`）をstaticメンバーで使うことはできない
 - ワイルドカードの誤用
     + `List<? extends Number>`には要素を追加できない。読み取りなら`extends`、書き込みなら`super`を使う
 - 型消去に関する問題

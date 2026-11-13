@@ -17,8 +17,13 @@ public class VarBasicExample {
         var languagesVar = new ArrayList<String>();
         var scoresVar = new HashMap<String, Integer>();
 
-        // いずれも同じ型になる
-        IO.println("languages: " + languages.getClass());
-        IO.println("languagesVar: " + languagesVar.getClass());
+        // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
+        languagesVar.add("Java");
+        languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
+        // languages.ensureCapacity(10);  // List<String>型なのでコンパイルエラー
+        scoresVar.put("Java", 90);
+
+        IO.println("languagesVar: " + languagesVar);
+        IO.println("scoresVar: " + scoresVar);
     }
 }

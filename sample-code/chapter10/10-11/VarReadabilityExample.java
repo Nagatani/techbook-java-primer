@@ -19,9 +19,9 @@ public class VarReadabilityExample {
         var result = process(data);     // メソッドの結果の型が不明
         var flag = checkCondition();    // boolean? String? 不明
 
-        // 数値リテラルは、どの型になるか読み手が迷いやすい
-        var count = 0;      // int? long?
-        var rate = 0.5;     // float? double?
+        // 数値リテラルでは、書き手がどの型のつもりかが伝わらない
+        var count = 0;      // intになる。longのつもりかは読み取れない
+        var rate = 0.5;     // doubleになる。floatのつもりかは読み取れない
 
         // 型を明示したほうが意図が伝わる
         int itemCount = 0;
