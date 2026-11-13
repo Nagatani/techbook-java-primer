@@ -258,7 +258,7 @@ public class SimpleTCPServer {
 
 <div class="figure">
 
-![接続ごとにスレッドで処理するサーバーの構成](images/diagrams/chapter16-multithreaded-server.svg)
+![スレッドプールで接続を処理するサーバーの構成](images/diagrams/chapter16-multithreaded-server.svg)
 
 </div>
 

@@ -499,7 +499,7 @@ public class SelectionComponents {
 実行結果：
 このプログラムを実行すると、4種類の選択コンポーネントが表示されます。チェックボックスでは「オプション2」が初期選択され、複数選択が可能です。ラジオボタンでは「選択肢B」が選択され、どちらか一方のみ選択できます。コンボボックスはドロップダウンリストから1つを選択でき、リストボックスは5つのアイテムから1つを選択できるように設定されています。
 
-`JList`の項目を入れておくモデルや、項目の表示方法を変えるレンダラーなど、`JList`の詳しい使い方は第20章「JTableとJListの基礎」で学びます。
+`JList`の項目を入れておくモデルや、項目の表示方法を変えるレンダラーなど、`JList`の詳しい使い方は第20章「JTable・JList・JTree」で学びます。
 
 ### レイアウトマネージャーの基礎
 
@@ -565,7 +565,7 @@ GridLayoutには、次の特徴があります。
 
 <div class="figure">
 
-![GridLayout（2行3列の例）](images/diagrams/chapter17-gridlayout.svg)
+![GridLayout（サンプルコード17-11の3行2列の配置）](images/diagrams/chapter17-gridlayout.svg)
 
 </div>
 

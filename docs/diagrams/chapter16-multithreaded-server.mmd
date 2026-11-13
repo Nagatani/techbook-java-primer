@@ -1,14 +1,17 @@
-flowchart LR
-    c1["クライアント1"]
-    c2["クライアント2"]
-    c3["クライアント3"]
+flowchart TB
+    subgraph clients[" "]
+        direction LR
+        c1["クライアント1"]
+        c2["クライアント2"]
+        c3["クライアント11"]
+    end
 
-    subgraph server["MultiThreadedServer"]
-        acc["メインスレッド<br/>accept()で待つ"]
-        pool["スレッドプール<br/>ExecutorService"]
+    subgraph server[" "]
+        acc["MultiThreadedServerの<br/>メインスレッド<br/>accept()で待つ"]
+        pool["スレッドプール<br/>（スレッドは10個まで）"]
         h1["ClientHandler<br/>（クライアント1）"]
         h2["ClientHandler<br/>（クライアント2）"]
-        h3["ClientHandler<br/>（クライアント3）"]
+        q["待ち行列<br/>11番目以降の接続は<br/>スレッドが空くまで待つ"]
     end
 
     c1 --> acc
@@ -17,4 +20,4 @@ flowchart LR
     acc -->|"接続ごとに渡す"| pool
     pool --> h1
     pool --> h2
-    pool --> h3
+    pool -.-> q
