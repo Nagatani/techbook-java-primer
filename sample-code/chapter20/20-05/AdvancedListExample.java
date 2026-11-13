@@ -120,9 +120,9 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
             setForeground(list.getForeground());
         }
         
-        // 中の部品の文字色も選択状態に合わせる（完了タスクの題名と説明は灰色）
+        // 中の部品の文字色も選択状態に合わせる（選択していない完了タスクの題名と説明は灰色）
         Color textColor = isSelected ? list.getSelectionForeground() : list.getForeground();
-        Color doneColor = task.isCompleted() ? Color.GRAY : textColor;
+        Color doneColor = task.isCompleted() && !isSelected ? Color.GRAY : textColor;
         titleLabel.setForeground(doneColor);
         descriptionLabel.setForeground(doneColor);
         dueDateLabel.setForeground(textColor);
