@@ -24,7 +24,7 @@
 - 第22章のドキュメントと外部ライブラリ（クラスパスとJARファイル）
 - 基本的なコマンドライン操作
 
-推奨される知識：
+次の知識があると、より理解が深まります。
 
 - 第21章のユニットテスト（テスト自動化）
 - 継続的インテグレーション（CI/CD）の基本概念
@@ -37,7 +37,9 @@
 
 ### ビルドプロセスの技術的意味
 
-開発環境を持たないユーザーでも簡単に実行できるように、必要なファイルをまとめて実行可能な形式に変換します。この一連の作業を「ビルド」と「パッケージング」と呼び、最終的にユーザーに配布できる形にすることを「配布」といいます。
+開発環境を持たないユーザーでも簡単に実行できるように、必要なファイルをまとめて実行可能な形式に変換します。
+ソースコードをコンパイルしてクラスファイルを作る作業を「ビルド」、クラスファイルや画像などのリソースを1つのファイルにまとめる作業を「パッケージング」と呼びます。
+そして、できたファイルをユーザーに届けて使える状態にすることを「配布」といいます。
 
 本章では、Javaアプリケーションを配布するためのもっとも基本的な形式である実行可能JARファイルの作成方法と、さらに一歩進んでOSネイティブのアプリケーションを作成する方法を学びます。
 
@@ -127,7 +129,7 @@ jar cvfm SimpleApp.jar manifest.txt SimpleApp.class
 - `m`
     + 指定されたマニフェストファイルを取り込む（manifest）
 
-このコマンドを実行すると、`SimpleApp.jar`という実行可能なJARファイルが作成されます。
+このコマンドを実行すると、`SimpleApp.jar`という実行可能なJARファイルが作成されます<span class="footnote">マニフェストファイルを用意せずに、`jar --create --file SimpleApp.jar --main-class SimpleApp SimpleApp.class`のように`--main-class`オプションでメインクラスを指定する書き方もあります。短い形では`jar cvfe SimpleApp.jar SimpleApp SimpleApp.class`です。</span>。
 
 ### ステップ5: 実行
 
@@ -146,13 +148,17 @@ java -jar SimpleApp.jar
 次のTodoアプリケーションは、ウィンドウを組み立てる`TodoApp`クラスと、入力欄と「追加」ボタンをまとめた`TodoInputPanel`クラスの2つのファイルからなります。
 `TodoInputPanel`は`JPanel`を継承したクラスで、「追加」ボタンが押されると、入力された文字を`TodoApp`から受け取ったリストのモデルに加えます。
 
-<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、12〜13、21〜22、27〜32行目）、TodoInputPanel.java（1、5〜21行目）</span>
+<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、8〜10、12〜13、21〜22、27〜32行目）、TodoInputPanel.java（1、5〜21行目）</span>
 
 ```java
 // TodoApp.java
 // ...
 public class TodoApp {
     private final DefaultListModel<String> listModel = new DefaultListModel<>();
+    // ...
+    public TodoApp() {
+        createAndShowGUI();
+    }
     // ...
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Todo Manager");
@@ -221,6 +227,16 @@ TodoInputPanel.class
 
 `java -jar TodoApp.jar`で実行すると、JVMはマニフェストの`Main-Class`に書いた`TodoApp`から実行を始めます。
 `TodoApp`が`TodoInputPanel`を使う時点で、同じJARのなかから`TodoInputPanel.class`を読み込みます。
+
+### 外部ライブラリを使うアプリケーションのJAR
+
+第22章のGsonのような外部ライブラリを使うプログラムは、自分のクラスだけをJARにしても動きません。
+`java -jar`で実行するときは`-cp`オプションが無視され、クラスパスはJARファイルとマニフェストの指定だけで決まるためです。
+そこで、マニフェストの`Class-Path`にライブラリのJARファイルを書いておきます。
+たとえば、マニフェストファイルに`Main-Class: Main`の行と`Class-Path: lib/gson-2.15.0.jar`の行を書いてJARを作ります。
+`Class-Path`のパスは、作ったJARファイルが置かれたディレクトリからの相対パスです。
+配布するときは、JARファイルと同じ場所に`lib`ディレクトリを作り、ライブラリのJARファイルを入れて一緒に渡します。
+ライブラリのクラスを1つのJARにまとめるFat JARという方法もあります（本章のまとめで紹介します）。
 
 ### リソースファイルを含むJARの作成
 
@@ -291,14 +307,11 @@ Java 16で正式に導入された`jpackage`ツール<span class="footnote">`jpa
 
 ```
 /MyProject/
-|
-|-- input/
-|   └── SimpleApp.jar  <-- 先ほど作成したJARファイルをここに置く
-|
-|-- output/
-|   └── (完成したアプリはここに作られる)
-|
-`-- SimpleApp.java (ソースコードなど)
+├── input/
+│   └── SimpleApp.jar  <-- 先ほど作成したJARファイルをここに置く
+├── output/
+│   └── (完成したアプリはここに作られる)
+└── SimpleApp.java (ソースコードなど)
 ```
 
 ### `jpackage`の実行例
@@ -327,6 +340,9 @@ jpackage --type app-image \
     + 完成したアプリケーションを保存するディレクトリを指定する
 
 ### 各OSに向けた基本的なパッケージング例
+
+`jpackage`は、実行しているOS向けのアプリケーションしか作れません。
+Windows向けのインストーラーはWindowsで、macOS向けはmacOSで、Linux向けはLinuxで`jpackage`を実行して作ります。
 
 #### Windows向け（.exeまたは.msi）
 
@@ -372,7 +388,7 @@ jpackage --type deb \
 実際の開発では、次のような高度な技術も使われます。
 
 1. ビルド自動化ツール
-    + 第22章で学んだMavenなどのビルドツールで、依存関係の管理に加えて、コンパイルからJARの作成までを1つのコマンドで行う
+    + 第22章で紹介したMavenなどのビルドツールで、依存関係の管理に加えて、コンパイルからJARの作成までを1つのコマンド（Mavenでは`mvn package`）で行う
 2. Fat JAR（Uber JAR）
     + 依存ライブラリを含む単一JARファイルの生成（Spring Boot、Shade Plugin）
 3. ネイティブイメージ
