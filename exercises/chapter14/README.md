@@ -22,11 +22,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `BackupSystem.java`
-- `BackupSystemTest.java`
-- `CSVHandler.java`
-- `CSVHandlerTest.java`
-- `FileProcessor.java`
-- `FileProcessorTest.java`
-- `WatchServiceExample.java`
-- `WatchServiceExampleTest.java`
+- 基礎課題の課題1〜4の解答例（実行例はこの解答例の出力）

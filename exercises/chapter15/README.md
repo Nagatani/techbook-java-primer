@@ -22,11 +22,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `CompletableFutureExample.java`
-- `CompletableFutureExampleTest.java`
-- `ProducerConsumer.java`
-- `ProducerConsumerTest.java`
-- `ThreadPoolExample.java`
-- `ThreadPoolExampleTest.java`
-- `ThreadSafeCounter.java`
-- `ThreadSafeCounterTest.java`
+- 基礎課題の課題1〜4の解答例（実行例はこの解答例の出力）

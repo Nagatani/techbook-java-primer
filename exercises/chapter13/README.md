@@ -22,11 +22,4 @@
 
 ## 解答例（[solutions/](solutions/)）
 
-- `CustomException.java`
-- `CustomExceptionTest.java`
-- `ExceptionChain.java`
-- `ExceptionChainTest.java`
-- `ResourceManager.java`
-- `ResourceManagerTest.java`
-- `ValidationHelper.java`
-- `ValidationHelperTest.java`
+- 基礎課題の課題1〜4の解答例（実行例はこの解答例の出力）
