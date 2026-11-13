@@ -4,9 +4,9 @@
 
 ## 基礎レベル課題の解答
 
-### 1. TCPエコーサーバー・クライアント（基礎課題1・4）
-- **EchoServer.java**: マルチスレッド対応のTCPエコーサーバー
-- **EchoClient.java**: 対話的なTCPエコークライアント
+### 1. TCPクライアント・サーバー（基礎課題1）
+- **SimpleServer.java**: 受け取った行を大文字にして返すTCPサーバー（ポート8080）。`bye`を受け取ると、その接続を閉じて次の接続を待つ
+- **SimpleClient.java**: 3つの文字列を送り、返事を表示するクライアント
 
 **実行方法：**
 ```bash
@@ -14,35 +14,49 @@
 javac -d out *.java
 
 # サーバーを起動（別ターミナル）
-java -cp out chapter16.solutions.EchoServer [ポート番号]
+java -cp out chapter16.solutions.SimpleServer [ポート番号]
 
 # クライアントを起動
-java -cp out chapter16.solutions.EchoClient [ホスト名] [ポート番号]
+java -cp out chapter16.solutions.SimpleClient [ホスト名] [ポート番号]
+```
+
+**実行例（クライアント）：**
+```
+送信: hello -> 返事: HELLO
+送信: java network -> 返事: JAVA NETWORK
+送信: bye -> 返事: BYE
 ```
 
 **実装のポイント：**
-- ExecutorServiceを使用した効率的なスレッド管理
-- try-with-resourcesによる確実なリソース管理
-- 適切なログ出力とエラーハンドリング
-- シャットダウンフックによるグレースフルな終了
+- `PrintWriter`の2つ目の引数に`true`を渡し、`println`のたびに送り出す（渡さないと、相手に届かないまま待ち続けることがある）
+- 1つの接続で起きた`IOException`ではサーバー全体を止めず、次の接続を待つ
+- サーバーが起動していないときの`ConnectException`は、原因がわかるメッセージにして表示する
 
-### 2. HTTP通信（基礎課題2の参考）
-- **SimpleHttpClient.java**: ソケットベースのHTTPクライアント実装
-
-基礎課題2は`HttpURLConnection`を使う課題で、その解答例はありません。
-この例は`HttpURLConnection`を使わず、ソケットでHTTPのリクエストを直接書くので、HTTPの中身を知る参考になります。
+### 2. HTTP通信（基礎課題2）
+- **HttpClientExample.java**: `HttpURLConnection`でGETリクエストを送り、ステータスが200のときだけ本文を表示する。接続と読み取りに5秒のタイムアウトを設定する
+- 引数を省くと、`com.sun.net.httpserver.HttpServer`（JDKに含まれる簡単なHTTPサーバー）を手元で立て、200を返すページと404を返すページに順にアクセスする。ネットワークにつながっていなくても試せる
+- **SimpleHttpClient.java**（参考）: `HttpURLConnection`を使わず、ソケットでHTTPのリクエストを直接書く例。HTTPの中身を知る参考になる
 
 **実行方法：**
 ```bash
 javac -d out *.java
-java -cp out chapter16.solutions.SimpleHttpClient http://example.com/
+java -cp out chapter16.solutions.HttpClientExample                      # 手元のサーバーで試す
+java -cp out chapter16.solutions.HttpClientExample https://example.com/  # 指定したURLから取得する
 ```
 
-**実装のポイント：**
-- HTTPプロトコルの手動実装
-- リダイレクト（3xx）の自動追従
-- Content-LengthとChunked転送エンコーディングの両方に対応
-- 相対URLの適切な解決
+**実行例（引数を省いた場合）：**
+```
+GET http://localhost:(ポート)/hello
+ステータス: 200
+本文: こんにちは、HTTP！
+本文: 2行目の本文です
+
+GET http://localhost:(ポート)/missing
+ステータス: 404
+200ではないので、本文は読みません
+```
+
+ポート番号は実行のたびに変わるので、表示では「(ポート)」に置き換えています。
 
 ### 3. UDPソケット通信（基礎課題3）
 - **UdpServer.java**: 受け取った文字列を大文字にして返すUDPサーバー。`bye`を受け取ると終わる
@@ -65,7 +79,14 @@ java -cp out chapter16.solutions.UdpClient [ホスト名] [ポート番号]
 - UDPは届いたかどうかを知らせないので、`setSoTimeout`で待つ時間の上限を決める
 
 ### 4. マルチスレッドサーバー（基礎課題4）
-1.の`EchoServer.java`が、接続ごとの処理をスレッドプールに任せる解答例です。
+- **EchoServer.java**: 接続ごとの処理をスレッドプール（ExecutorService）に任せるTCPエコーサーバー。シャットダウンフックで終わる
+- **EchoClient.java**: 入力した行を送り、返事を表示するクライアント。複数起動して、同時に処理されることを確かめる
+**実行方法：**
+```bash
+javac -d out *.java
+java -cp out chapter16.solutions.EchoServer [ポート番号]          # 別ターミナル
+java -cp out chapter16.solutions.EchoClient [ホスト名] [ポート番号]  # 複数のターミナルで起動する
+```
 
 ## 応用レベル課題の解答
 

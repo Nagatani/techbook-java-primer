@@ -6,8 +6,8 @@
 ## 課題構成
 
 ### 基礎課題（basic/）
-- **課題1**: TCPクライアント・サーバー通信の実装
-- **課題2**: HttpURLConnectionを使用したHTTP通信
+- **課題1**: TCPクライアント・サーバー通信の実装（解答例は`solutions/`の`SimpleServer.java`・`SimpleClient.java`）
+- **課題2**: HttpURLConnectionを使用したHTTP通信（解答例は`solutions/`の`HttpClientExample.java`）
 - **課題3**: UDPソケット通信の基礎（解答例は`solutions/`の`UdpServer.java`・`UdpClient.java`）
 - **課題4**: マルチスレッドサーバーの実装（解答例は`solutions/`の`EchoServer.java`・`EchoClient.java`）
 
