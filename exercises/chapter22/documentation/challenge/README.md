@@ -121,7 +121,7 @@ simple-json/
 ├── docs/getting-started.md
 ├── README.md
 ├── CONTRIBUTING.md        貢献ガイドライン
-├── LICENSE                MITライセンス（著作権者の名前は自分の名前に書き換える）
+├── LICENSE                MITライセンス（自分で作るときは、著作権者を自分の名前にする）
 ├── pom.xml
 └── build.gradle
 ```
