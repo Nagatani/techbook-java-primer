@@ -13,7 +13,9 @@
 | 課題3: 単語カウンター | `WordCounter.java` | `HashMap`（回数を数える）と`TreeMap`（アルファベット順） |
 | 課題4: 重複の除去と集合演算 | `SetOperations.java` | `LinkedHashSet`・`TreeSet` |
 
-テストは`StudentManagerTest.java`・`ShoppingCartTest.java`・`CollectionTasksTest.java`（課題3・4）の16件です。
+`SolutionCheck.java`は、各課題の解答例が期待どおりに動くかを確かめるプログラムです。
+期待する値と実際の値を比べて「OK」か「NG」を表示します。
+第21章で学ぶJUnitを使うと、同じ確認をテストとして書けます。
 
 各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
@@ -23,19 +25,19 @@
 
 ```bash
 cd exercises
-javac -d out $(ls chapter09/solutions/*.java | grep -v Test)
+javac -d out chapter09/solutions/*.java
 java -cp out chapter09.solutions.StudentManagerDemo
 java -cp out chapter09.solutions.ShoppingCartDemo
 java -cp out chapter09.solutions.WordCounter
 java -cp out chapter09.solutions.SetOperations
 ```
 
-テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
+動作確認のプログラムは次のように実行します。
+すべて「OK」になり、最後に「N件中N件OK」と表示されれば、解答例は期待どおりに動いています。
 
 ```bash
 cd exercises
-javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter09/solutions/*.java
-java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter09.solutions
+java -cp out chapter09.solutions.SolutionCheck
 ```
 
 ## 実装のポイント

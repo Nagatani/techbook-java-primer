@@ -13,7 +13,9 @@
 | 課題2: 独自の関数型インターフェイス | `StringProcessor.java`、`Calculator.java`、`CustomFunctionalDemo.java` | デフォルトメソッドで処理をつなげ、静的メソッドで計算のラムダ式を返す |
 | 課題3: メソッド参照と関数の合成 | `MethodRefs.java` | 3種類のメソッド参照、`Predicate`の`and`・`negate`、`Function`の`andThen` |
 
-テストは`FunctionalTest.java`の6件です。
+`SolutionCheck.java`は、各課題の解答例が期待どおりに動くかを確かめるプログラムです。
+期待する値と実際の値を比べて「OK」か「NG」を表示します。
+第21章で学ぶJUnitを使うと、同じ確認をテストとして書けます。
 
 各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
@@ -23,18 +25,18 @@
 
 ```bash
 cd exercises
-javac -d out $(ls chapter11/solutions/*.java | grep -v Test)
+javac -d out chapter11/solutions/*.java
 java -cp out chapter11.solutions.StandardFunctionalDemo
 java -cp out chapter11.solutions.CustomFunctionalDemo
 java -cp out chapter11.solutions.MethodRefs
 ```
 
-テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
+動作確認のプログラムは次のように実行します。
+すべて「OK」になり、最後に「N件中N件OK」と表示されれば、解答例は期待どおりに動いています。
 
 ```bash
 cd exercises
-javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter11/solutions/*.java
-java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter11.solutions
+java -cp out chapter11.solutions.SolutionCheck
 ```
 
 ## 実装のポイント

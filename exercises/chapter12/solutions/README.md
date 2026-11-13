@@ -12,7 +12,9 @@
 | 課題2: 商品の売上の分析 | `Product.java`、`SalesAnalyzer.java`、`StreamDemo.java` | `groupingBy`と`summingDouble`、範囲での絞り込み、売上の順の上位 |
 | 課題3: 数のリストのパイプライン | `NumberPipeline.java` | `partitioningBy`・`reduce`・`flatMap`・`anyMatch`・`allMatch`・`findFirst` |
 
-テストは`StreamTasksTest.java`の6件です。
+`SolutionCheck.java`は、各課題の解答例が期待どおりに動くかを確かめるプログラムです。
+期待する値と実際の値を比べて「OK」か「NG」を表示します。
+第21章で学ぶJUnitを使うと、同じ確認をテストとして書けます。
 
 各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
@@ -22,17 +24,17 @@
 
 ```bash
 cd exercises
-javac -d out $(ls chapter12/solutions/*.java | grep -v Test)
+javac -d out chapter12/solutions/*.java
 java -cp out chapter12.solutions.StreamDemo
 java -cp out chapter12.solutions.NumberPipeline
 ```
 
-テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
+動作確認のプログラムは次のように実行します。
+すべて「OK」になり、最後に「N件中N件OK」と表示されれば、解答例は期待どおりに動いています。
 
 ```bash
 cd exercises
-javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter12/solutions/*.java
-java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter12.solutions
+java -cp out chapter12.solutions.SolutionCheck
 ```
 
 ## 実装のポイント

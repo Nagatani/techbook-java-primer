@@ -12,7 +12,9 @@
 | 課題2: ペア・数値の箱・ジェネリックメソッド | `Pair.java`、`NumberBox.java`、`GenericUtils.java`、`PairDemo.java` | 複数の型パラメーター、境界のある型パラメーター、ジェネリックメソッド |
 | 課題3: 数値のリストとワイルドカード | `NumberLists.java` | `? extends Number`で読み、`? super Integer`で書き込む |
 
-テストは`GenericsTest.java`の8件です。
+`SolutionCheck.java`は、各課題の解答例が期待どおりに動くかを確かめるプログラムです。
+期待する値と実際の値を比べて「OK」か「NG」を表示します。
+第21章で学ぶJUnitを使うと、同じ確認をテストとして書けます。
 
 各プログラムの出力は、基礎課題のREADMEにある実行例と同じです。
 
@@ -22,18 +24,18 @@
 
 ```bash
 cd exercises
-javac -d out $(ls chapter10/solutions/*.java | grep -v Test)
+javac -d out chapter10/solutions/*.java
 java -cp out chapter10.solutions.GenericBoxDemo
 java -cp out chapter10.solutions.PairDemo
 java -cp out chapter10.solutions.NumberLists
 ```
 
-テストには、JUnit 5の`junit-platform-console-standalone`のJAR（Maven Centralから入手）を使います。
+動作確認のプログラムは次のように実行します。
+すべて「OK」になり、最後に「N件中N件OK」と表示されれば、解答例は期待どおりに動いています。
 
 ```bash
 cd exercises
-javac -d out -cp junit-platform-console-standalone-1.13.4.jar chapter10/solutions/*.java
-java -jar junit-platform-console-standalone-1.13.4.jar execute -cp out --select-package chapter10.solutions
+java -cp out chapter10.solutions.SolutionCheck
 ```
 
 ## 実装のポイント
