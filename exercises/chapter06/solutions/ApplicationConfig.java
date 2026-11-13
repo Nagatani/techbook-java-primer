@@ -1,31 +1,26 @@
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  * 不変のアプリケーション設定（課題3の解答例）
  *
- * Map<String, String>（キーと値の組を持つマップ）とLinkedHashMapは第9章で学ぶ。
- * LinkedHashMapは、入れた順に組を並べて持つ。
+ * 設定の項目をfinalのフィールドで持ち、ビルダー（第6章「ビルダーパターン」）で組み立てる。
  */
 public final class ApplicationConfig {
     private final String appName;
     private final String version;
-    private final Map<String, String> properties;
+    private final int timeout;
+    private final boolean debug;
+    private final boolean logging;
 
     // コンストラクターはprivateにし、作るときはビルダーかdefaultConfigを使ってもらう
-    private ApplicationConfig(String appName, String version, Map<String, String> properties) {
-        this.appName = appName;
-        this.version = version;
-        this.properties = new LinkedHashMap<>(properties);
+    private ApplicationConfig(Builder builder) {
+        this.appName = builder.appName;
+        this.version = builder.version;
+        this.timeout = builder.timeout;
+        this.debug = builder.debug;
+        this.logging = builder.logging;
     }
 
-    // デフォルトの設定
     public static ApplicationConfig defaultConfig() {
-        return new Builder("MyApp", "1.0.0")
-                .property("timeout", "30")
-                .property("debug", "false")
-                .build();
+        return new Builder("MyApp", "1.0.0").build();
     }
 
     public String getAppName() {
@@ -36,65 +31,76 @@ public final class ApplicationConfig {
         return version;
     }
 
-    public String getProperty(String key) {
-        return properties.get(key);
+    public int getTimeout() {
+        return timeout;
     }
 
-    public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap(properties);
+    public boolean isDebug() {
+        return debug;
     }
 
-    // 設定を1つ変えた（なければ足した）、新しいオブジェクトを返す
-    public ApplicationConfig withProperty(String key, String value) {
-        Map<String, String> newProperties = new LinkedHashMap<>(properties);
-        newProperties.put(key, value);
-        return new ApplicationConfig(appName, version, newProperties);
+    public boolean isLogging() {
+        return logging;
+    }
+
+    // 今の設定をビルダーに写す。一部だけを変えた設定を作るときに使う
+    public Builder toBuilder() {
+        return new Builder(appName, version).timeout(timeout).debug(debug).logging(logging);
+    }
+
+    public ApplicationConfig withTimeout(int newTimeout) {
+        return toBuilder().timeout(newTimeout).build();
+    }
+
+    public ApplicationConfig withLogging(boolean newLogging) {
+        return toBuilder().logging(newLogging).build();
     }
 
     public void showInfo() {
         IO.println("アプリ名: " + appName);
         IO.println("バージョン: " + version);
-        IO.println("設定値: " + properties);
+        IO.println("タイムアウト: " + timeout + "秒");
+        IO.println("デバッグ: " + debug);
+        IO.println("ログ出力: " + logging);
     }
 
-    // 設定を少しずつ組み立てるビルダー（第6章「ビルダーパターン」）
     public static class Builder {
         private final String appName;
         private final String version;
-        private final Map<String, String> properties = new LinkedHashMap<>();
+        // 指定しなかった項目は、この初期値になる
+        private int timeout = 30;
+        private boolean debug = false;
+        private boolean logging = false;
 
         public Builder(String appName, String version) {
             this.appName = appName;
             this.version = version;
         }
 
-        public Builder property(String key, String value) {
-            properties.put(key, value);
+        public Builder timeout(int timeout) {
+            this.timeout = timeout;
             return this;
         }
 
-        // 組み立てた内容を検査してから作る。timeoutは正の整数でなければならない
+        public Builder debug(boolean debug) {
+            this.debug = debug;
+            return this;
+        }
+
+        public Builder logging(boolean logging) {
+            this.logging = logging;
+            return this;
+        }
+
+        // 組み立てた内容を検査してから作る
         public ApplicationConfig build() {
             if (appName == null || appName.isBlank()) {
                 throw new IllegalStateException("アプリ名がありません");
             }
-            String timeout = properties.get("timeout");
-            if (timeout != null && !isPositiveNumber(timeout)) {
-                throw new IllegalStateException("timeoutは正の整数にします: " + timeout);
+            if (timeout <= 0) {
+                throw new IllegalStateException("タイムアウトは1秒以上にします: " + timeout);
             }
-            return new ApplicationConfig(appName, version, properties);
-        }
-
-        private static boolean isPositiveNumber(String text) {
-            if (text.isEmpty()) {
-                return false;
-            }
-            for (int i = 0; i < text.length(); i++) {
-                if (!Character.isDigit(text.charAt(i))) {
-                    return false;
-                }
-            }
-            return Integer.parseInt(text) > 0;
+            return new ApplicationConfig(this);
         }
     }
 }

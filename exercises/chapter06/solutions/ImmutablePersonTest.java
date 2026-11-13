@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * ImmutablePersonを試すプログラム（課題2の解答例）
@@ -8,9 +7,7 @@ public class ImmutablePersonTest {
     public static void main(String[] args) {
         IO.println("=== 不変人物情報クラステスト ===");
 
-        List<String> hobbies = new ArrayList<>();
-        hobbies.add("読書");
-        hobbies.add("映画鑑賞");
+        String[] hobbies = {"読書", "映画鑑賞"};
         ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
 
         IO.println("元の人物情報:");
@@ -25,16 +22,20 @@ public class ImmutablePersonTest {
 
         IO.println("趣味を追加（プログラミング）:");
         ImmutablePerson withHobby = person.withHobby("プログラミング");
-        IO.println("元の趣味: " + person.getHobbies());
-        IO.println("新しい趣味: " + withHobby.getHobbies());
+        IO.println("元の趣味: " + person.hobbiesText());
+        IO.println("新しい趣味: " + withHobby.hobbiesText());
         IO.println();
 
         IO.println("趣味を削除（読書）:");
-        IO.println("新しい趣味: " + withHobby.withoutHobby("読書").getHobbies());
+        IO.println("新しい趣味: " + withHobby.withoutHobby("読書").hobbiesText());
         IO.println();
 
         IO.println("防御的コピーの確認:");
-        hobbies.add("料理");
-        IO.println("渡したリストに「料理」を足したあと: " + person.getHobbies());
+        hobbies[0] = "料理";
+        IO.println("渡した配列の0番目を「料理」にしたあと: " + person.hobbiesText());
+        String[] got = person.getHobbies();
+        got[1] = "釣り";
+        IO.println("取り出した配列の1番目を「釣り」にしたあと: " + person.hobbiesText());
+        IO.println("取り出した配列: " + Arrays.toString(got));
     }
 }

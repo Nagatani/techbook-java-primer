@@ -4,7 +4,7 @@
 
 - `final`のフィールドだけを持ち、setterのない不変クラスを書く
 - 値を変える操作を「新しいオブジェクトを返すメソッド」として書く
-- リストやマップを持つクラスで、防御的コピーと変更できないビュー（`Collections.unmodifiableList`など）を使う
+- 配列を持つクラスで、受け取るときと返すときに防御的コピーをする
 - ビルダーで設定を組み立て、作る前に検査する
 
 ## 課題一覧
@@ -12,9 +12,6 @@
 課題1は、このフォルダーの雛形（`ImmutablePoint.java`・`ImmutablePointTest.java`）の`TODO`を埋めて完成させます。
 課題2〜4は、ファイルを新しく作ります。
 解答例は[solutions/](../solutions/)にあります。
-
-課題2と課題3では、第9章で学ぶ`List`（要素を順に並べて持つリスト）と`Map`（キーと値の組を持つマップ）を使います。
-第6章の本文の`ImmutablePerson`と同じように、`new ArrayList<>(元のリスト)`で同じ要素を持つ別のリストを作れることだけがわかれば取り組めます。
 
 ### 課題1: 不変の座標クラス
 
@@ -62,15 +59,16 @@ point1 == point3: false
 
 **ファイル**: `ImmutablePerson.java`、`ImmutablePersonTest.java`（新しく作る）
 
-趣味のリストを持つ、不変の人物情報のクラスを作ります。
+趣味の配列を持つ、不変の人物情報のクラスを作ります。
+第6章の本文の`ImmutablePerson`はリスト（第9章）で趣味を持ちますが、この課題では配列で同じことを練習します。
 
 **要求仕様**:
 
-- フィールドは`private final`の`name`（String）・`age`（int）・`hobbies`（`List<String>`）
-- コンストラクターでは、受け取ったリストを`new ArrayList<>(hobbies)`でコピーしてから持つ（防御的コピー）
-- `getHobbies`は`Collections.unmodifiableList(hobbies)`で、変更できないリストとして返す
-- `withAge`（年齢を変える）・`withHobby`（趣味を足す）・`withoutHobby`（趣味を除く）は、新しい`ImmutablePerson`を返す
-- テストでは、コンストラクターに渡したリストを後から変えても、人物の趣味が変わらないことを確かめる
+- フィールドは`private final`の`name`（String）・`age`（int）・`hobbies`（`String[]`）
+- コンストラクターでは、受け取った配列を`hobbies.clone()`でコピーしてから持つ（防御的コピー）
+- `getHobbies`も、中身の配列ではなくコピーを返す
+- `withAge`（年齢を変える）・`withHobby`（趣味を足す）・`withoutHobby`（趣味を除く）は、新しい`ImmutablePerson`を返す。趣味を足すときは、`Arrays.copyOf`で要素を1つ増やした配列を作る
+- テストでは、コンストラクターに渡した配列や、`getHobbies`で取り出した配列の要素を変えても、人物の趣味が変わらないことを確かめる
 
 **実行例**:
 
@@ -93,22 +91,24 @@ point1 == point3: false
 新しい趣味: [映画鑑賞, プログラミング]
 
 防御的コピーの確認:
-渡したリストに「料理」を足したあと: [読書, 映画鑑賞]
+渡した配列の0番目を「料理」にしたあと: [読書, 映画鑑賞]
+取り出した配列の1番目を「釣り」にしたあと: [読書, 映画鑑賞]
+取り出した配列: [読書, 釣り]
 ```
 
 ### 課題3: 設定値管理クラス
 
 **ファイル**: `ApplicationConfig.java`、`ApplicationConfigTest.java`（新しく作る）
 
-アプリの名前・版・設定値（`Map<String, String>`）を持つ、不変の設定クラスを作ります。
+アプリの名前・版・タイムアウト・デバッグ・ログ出力を持つ、不変の設定クラスを作ります。
 
 **要求仕様**:
 
-- コンストラクターは`private`にし、入れ子のクラス`Builder`で組み立てる（`new ApplicationConfig.Builder("MyApp", "1.0.0").property("timeout", "30").build()`）
-- `build`は、アプリ名が空でないことと、`timeout`が正の整数であることを確かめ、正しくなければ`IllegalStateException`を投げる
-- `defaultConfig`は、timeout=30・debug=falseのデフォルトの設定を返す
-- `withProperty`は、設定を1つ変えた（なければ足した）新しい`ApplicationConfig`を返す
-- 表示の順序が決まるよう、マップは入れた順に並ぶ`LinkedHashMap`で持つ
+- フィールドは`private final`の`appName`・`version`（String）、`timeout`（int、秒）、`debug`・`logging`（boolean）
+- コンストラクターは`private`にし、入れ子のクラス`Builder`で組み立てる（`new ApplicationConfig.Builder("MyApp", "1.0.0").timeout(10).debug(true).build()`）。指定しなかった項目は、タイムアウト30秒・デバッグとログ出力は`false`にする
+- `build`は、アプリ名が空でないことと、タイムアウトが1秒以上であることを確かめ、正しくなければ`IllegalStateException`を投げる
+- `defaultConfig`はデフォルトの設定を返す
+- `withTimeout`・`withLogging`は、1つの項目だけを変えた新しい`ApplicationConfig`を返す（今の設定をビルダーに写す`toBuilder`を作ると書きやすい）
 
 **実行例**:
 
@@ -117,18 +117,27 @@ point1 == point3: false
 デフォルト設定:
 アプリ名: MyApp
 バージョン: 1.0.0
-設定値: {timeout=30, debug=false}
+タイムアウト: 30秒
+デバッグ: false
+ログ出力: false
 
-設定を更新:
-元の設定 - タイムアウト: 30
-新しい設定 - タイムアウト: 60
+タイムアウトを更新:
+元の設定: 30秒
+新しい設定: 60秒
 
-設定を追加:
-元の設定: {timeout=30, debug=false}
-新しい設定: {timeout=30, debug=false, logging=true}
+ログ出力を有効に:
+元の設定: false
+新しい設定: true
+
+ビルダーで組み立てた設定:
+アプリ名: Report
+バージョン: 2.1.0
+タイムアウト: 10秒
+デバッグ: true
+ログ出力: false
 
 設定値の検証:
-作れませんでした: timeoutは正の整数にします: abc
+作れませんでした: タイムアウトは1秒以上にします: -5
 ```
 
 ### 課題4: 金額計算クラス
@@ -174,14 +183,14 @@ java ImmutablePointTest
 
 - `final`のフィールドは、コンストラクターの中で必ず1回だけ値を入れる。入れ忘れるとコンパイルエラーになる
 - `move`は`return new ImmutablePoint(x + deltaX, y + deltaY);`のように、計算した値で新しいオブジェクトを作って返す
-- `getHobbies`で中身のリストをそのまま返すと、受け取った側が`add`で趣味を足せてしまう。コピーを返すか、変更できないリストにして返す
+- `getHobbies`で中身の配列をそのまま返すと、受け取った側が`got[0] = "料理"`のように要素を書き換えられてしまう。`final`は変数が別の配列を指さないことを保証するだけで、配列の要素は変えられる
 - 金額を`double`で持つと、`0.1 + 0.2`が`0.30000000000000004`になるような誤差が出る。円の整数で持てば誤差は出ない。円未満を正確に扱うときは、標準ライブラリの`java.math.BigDecimal`を使う
 - 例外を投げる`throw new IllegalArgumentException(...)`と、受け取る`try`・`catch`は第13章で学ぶ。この課題では、正しくない値でオブジェクトを作らせないために使う
 
 ## 完了チェックリスト
 
 - [ ] 課題1: setterがなく、`move`・`rotate`が新しいオブジェクトを返す
-- [ ] 課題2: 渡したリストや返したリストを変えても、人物の趣味が変わらない
+- [ ] 課題2: 渡した配列や返した配列を変えても、人物の趣味が変わらない
 - [ ] 課題3: ビルダーで設定を組み立て、正しくない設定では作れない
 - [ ] 課題4: どの計算のあとも、元の金額が変わっていない
 - [ ] 不変クラスにする利点（共有しても安全、スレッドから同時に読んでも安全）を説明できる

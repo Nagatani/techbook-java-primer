@@ -10,22 +10,26 @@ public class ApplicationConfigTest {
         config.showInfo();
         IO.println();
 
-        IO.println("設定を更新:");
-        ApplicationConfig updated = config.withProperty("timeout", "60");
-        IO.println("元の設定 - タイムアウト: " + config.getProperty("timeout"));
-        IO.println("新しい設定 - タイムアウト: " + updated.getProperty("timeout"));
+        IO.println("タイムアウトを更新:");
+        ApplicationConfig updated = config.withTimeout(60);
+        IO.println("元の設定: " + config.getTimeout() + "秒");
+        IO.println("新しい設定: " + updated.getTimeout() + "秒");
         IO.println();
 
-        IO.println("設定を追加:");
-        ApplicationConfig withLogging = config.withProperty("logging", "true");
-        IO.println("元の設定: " + config.getProperties());
-        IO.println("新しい設定: " + withLogging.getProperties());
+        IO.println("ログ出力を有効に:");
+        ApplicationConfig withLogging = config.withLogging(true);
+        IO.println("元の設定: " + config.isLogging());
+        IO.println("新しい設定: " + withLogging.isLogging());
+        IO.println();
+
+        IO.println("ビルダーで組み立てた設定:");
+        new ApplicationConfig.Builder("Report", "2.1.0").debug(true).timeout(10).build().showInfo();
         IO.println();
 
         IO.println("設定値の検証:");
-        // 例外の受け取り方（try-catch）は第13章で学ぶ
+        // 例外の受け取り方（try-catch）は第13章で学ぶ（第4章の本文にも例がある）
         try {
-            new ApplicationConfig.Builder("MyApp", "1.0.0").property("timeout", "abc").build();
+            new ApplicationConfig.Builder("MyApp", "1.0.0").timeout(-5).build();
         } catch (IllegalStateException e) {
             IO.println("作れませんでした: " + e.getMessage());
         }
