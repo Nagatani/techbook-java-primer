@@ -1,0 +1,4 @@
+# ビルドの生成物は提出しない
+target/
+build/
+.gradle/

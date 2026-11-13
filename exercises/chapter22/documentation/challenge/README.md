@@ -100,3 +100,54 @@ String result = json.toString();
 
 GitHubリポジトリとして提出します。
 ソースコード、テスト、README.md、LICENSE、ビルドの設定ファイルを含め、`target/`や`build/`などの生成物は含めません。
+## 解答例
+
+[simple-json/](simple-json/)フォルダーは解答例です。上の「プロジェクト構成」のとおりに作ってあります。
+
+```
+simple-json/
+├── src/main/java/com/example/json/
+│   ├── JsonParser.java     JSONの文字列を解析する
+│   ├── JsonBuilder.java    Javaの値からJSONの文字列を作る
+│   ├── JsonObject.java     JSONのオブジェクト（型を指定して値を取り出す）
+│   ├── JsonArray.java      JSONの配列
+│   ├── JsonException.java  失敗を知らせる非検査例外（解析の失敗では場所も持つ）
+│   ├── JsonValues.java     JsonObjectとJsonArrayが共通で使う型の検査（公開しない）
+│   └── package-info.java   パッケージのJavadoc
+├── src/test/java/com/example/json/
+│   ├── JsonParserTest.java   正しいJSON・空のオブジェクトと配列・エスケープ・不正なJSON
+│   ├── JsonObjectTest.java   値の出し入れ、型の違い、ないキー、比較
+│   └── JsonBuilderTest.java  生成・エスケープ・字下げ・解析との往復
+├── docs/getting-started.md
+├── README.md
+├── CONTRIBUTING.md        貢献ガイドライン
+├── LICENSE                MITライセンス（著作権者の名前は自分の名前に書き換える）
+├── pom.xml
+└── build.gradle
+```
+
+**実行例**:
+
+```bash
+cd exercises/chapter22/documentation/challenge/simple-json
+mvn test              # Tests run: 57, Failures: 0, Errors: 0, Skipped: 0
+mvn javadoc:javadoc   # target/reports/apidocs/index.html ができる
+```
+
+Gradleでは`gradle test`と`gradle javadoc`を実行します（APIドキュメントは`build/docs/javadoc/`）。
+どちらも、Javadocに警告が1つでもあればビルドが失敗する設定にしてあります。
+`docs/getting-started.md`の例を実行したときの表示も、ガイドに載せています。
+
+### 解答例の作り方
+
+- 解析は、先頭から1文字ずつ見ていき、`{`ならオブジェクト、`[`なら配列、`"`なら文字列を読むメソッドを呼ぶ。オブジェクトや配列の中の値を読むときに、同じ`readValue`を呼び直す（再帰下降構文解析と呼ばれる方法）
+- 読んでいる位置をフィールドに持ち、誤りを見つけたら、その位置を`JsonException`に入れて投げる。利用者は「17文字目: 最後の要素のあとにカンマは書けません」のように、どこが違うかを知ることができる
+- `put`で受け取った`int`は`Long`に、`float`は`Double`にそろえて持つ。こうすると、作ったオブジェクトと、同じJSONを解析したオブジェクトを`equals`で比べられる。テストでは「作る → 文字列にする → 解析する」で元に戻ることを確かめている
+- JSONで表せない値（`NaN`、`Date`など）は、`put`の時点で`JsonException`にする。文字列にするときまで誤りを持ち越さない
+
+### 本文で扱っていない機能
+
+- `{@snippet}`（Javadoc）: 使用例のコードを書くタグ（Java 18から）。`<pre>{@code ...}</pre>`と違い、`@`や`<`をそのまま書ける
+- `failOnWarnings`（Mavenのjavadocプラグイン）と`-Werror`（Gradleの`javadoc`）: Javadocの警告を誤りとして扱い、書き漏れがあるとビルドを止める
+- テキストブロック（`"""`で囲んだ複数行の文字列）: テストと入門ガイドで、複数行のJSONを書くのに使っている
+- `assertAll`（JUnit）: 複数の確認をまとめて行い、1つ目が失敗しても残りの結果を表示する

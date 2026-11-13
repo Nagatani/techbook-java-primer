@@ -1,0 +1,40 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // テストだけで使う。ライブラリ本体は外部ライブラリに依存しない（pom.xmlと版をそろえる）
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.14.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // Gradle 9以降は明示が必要
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+// gradle javadoc でbuild/docs/javadocにAPIドキュメントを作る
+tasks.named('javadoc') {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.windowTitle = "SimpleJSON ${project.version} API"
+    // -Xdoclint:allで書き漏れを調べ、-Werrorで警告を誤りとして扱う
+    options.addBooleanOption('Xdoclint:all', true)
+    options.addBooleanOption('Werror', true)
+}
