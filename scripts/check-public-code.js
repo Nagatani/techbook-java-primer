@@ -107,7 +107,7 @@ function compile(unit, out, cp) {
   fs.writeFileSync(argsFile, unit.files.map((f) => `"${f}"`).join('\n'));
   const extra = JAVAC_OPTIONS[unit.dir];
   const release = extra ? extra : ['--release', JAVA_RELEASE];
-  const r = spawnSync('javac', [...release, '-encoding', 'UTF-8', '-Xlint:deprecation,removal', '-proc:none',
+  const r = spawnSync('javac', ['-J-Duser.language=en', ...release, '-encoding', 'UTF-8', '-Xlint:deprecation,removal', '-proc:none',
     '-cp', cp, '-d', out, `@${argsFile}`], { encoding: 'utf8' });
   const msg = (r.stdout + r.stderr).trim();
   return { ok: r.status === 0, warn: /warning:/.test(msg), msg };
