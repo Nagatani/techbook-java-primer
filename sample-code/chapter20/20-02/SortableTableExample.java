@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.regex.Pattern;
 
 public class SortableTableExample extends JFrame {
     private PersonTableModel model;
@@ -30,8 +31,9 @@ public class SortableTableExample extends JFrame {
             if (text.trim().length() == 0) {
                 sorter.setRowFilter(null);
             } else {
-                // 名前列でフィルタリング
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, 1));
+                // 名前列でフィルタリング（入力した記号も文字として探す）
+                sorter.setRowFilter(
+                    RowFilter.regexFilter("(?i)" + Pattern.quote(text), 1));
             }
         });
         
@@ -49,7 +51,7 @@ public class SortableTableExample extends JFrame {
         JButton deleteButton = new JButton("削除");
         
         addButton.addActionListener(e -> {
-            int newId = model.getRowCount() + 1;
+            int newId = model.nextId();
             model.addPerson(new Person(newId, "新規ユーザー", 20, "new@example.com"));
         });
         

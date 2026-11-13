@@ -3,18 +3,18 @@
     "dir": "20-01",
     "main": "BasicTableExample",
     "excerpt": [
-      { "file": "BasicTableExample.java", "from": 1, "to": 37 }
+      { "file": "BasicTableExample.java", "from": 1, "to": 36 }
     ]
   },
   "20-2": {
     "dir": "20-02",
     "main": "SortableTableExample",
     "excerpt": [
-      { "file": "SortableTableExample.java", "from": 5, "to": 5 },
-      { "file": "SortableTableExample.java", "from": 10, "to": 10 },
-      { "file": "SortableTableExample.java", "from": 14, "to": 36 },
-      { "file": "SortableTableExample.java", "from": 70, "to": 70 },
-      { "file": "SortableTableExample.java", "from": 77, "to": 77 }
+      { "file": "SortableTableExample.java", "from": 6, "to": 6 },
+      { "file": "SortableTableExample.java", "from": 11, "to": 11 },
+      { "file": "SortableTableExample.java", "from": 15, "to": 38 },
+      { "file": "SortableTableExample.java", "from": 72, "to": 72 },
+      { "file": "SortableTableExample.java", "from": 79, "to": 79 }
     ]
   },
   "20-3": {
@@ -35,9 +35,9 @@
       { "file": "DynamicTreeExample.java", "from": 5, "to": 6 },
       { "file": "DynamicTreeExample.java", "from": 9, "to": 9 },
       { "file": "DynamicTreeExample.java", "from": 13, "to": 15 },
-      { "file": "DynamicTreeExample.java", "from": 26, "to": 30 },
+      { "file": "DynamicTreeExample.java", "from": 26, "to": 33 },
       { "file": "DynamicTreeExample.java", "from": 86, "to": 116 },
-      { "file": "DynamicTreeExample.java", "from": 153, "to": 153 }
+      { "file": "DynamicTreeExample.java", "from": 152, "to": 152 }
     ]
   },
   "20-5": {
@@ -47,25 +47,27 @@
       { "file": "AdvancedListExample.java", "from": 29, "to": 29 },
       { "file": "AdvancedListExample.java", "from": 42, "to": 55 },
       { "file": "AdvancedListExample.java", "from": 67, "to": 70 },
-      { "file": "AdvancedListExample.java", "from": 101, "to": 117 },
-      { "file": "AdvancedListExample.java", "from": 128, "to": 130 },
-      { "file": "AdvancedListExample.java", "from": 133, "to": 133 },
-      { "file": "AdvancedListExample.java", "from": 137, "to": 137 },
-      { "file": "AdvancedListExample.java", "from": 141, "to": 145 },
-      { "file": "AdvancedListExample.java", "from": 196, "to": 196 },
-      { "file": "AdvancedListExample.java", "from": 203, "to": 203 }
+      { "file": "AdvancedListExample.java", "from": 77, "to": 77 },
+      { "file": "AdvancedListExample.java", "from": 89, "to": 90 },
+      { "file": "AdvancedListExample.java", "from": 98, "to": 99 },
+      { "file": "AdvancedListExample.java", "from": 103, "to": 133 },
+      { "file": "AdvancedListExample.java", "from": 136, "to": 136 },
+      { "file": "AdvancedListExample.java", "from": 140, "to": 140 },
+      { "file": "AdvancedListExample.java", "from": 144, "to": 148 },
+      { "file": "AdvancedListExample.java", "from": 199, "to": 199 },
+      { "file": "AdvancedListExample.java", "from": 206, "to": 206 }
     ]
   },
   "20-6": {
     "dir": "20-06",
     "main": "CustomEditorExample",
     "excerpt": [
-      { "file": "CustomEditorExample.java", "from": 7, "to": 41 },
-      { "file": "CustomEditorExample.java", "from": 74, "to": 79 },
-      { "file": "CustomEditorExample.java", "from": 82, "to": 83 },
-      { "file": "CustomEditorExample.java", "from": 109, "to": 116 },
-      { "file": "CustomEditorExample.java", "from": 128, "to": 128 },
-      { "file": "CustomEditorExample.java", "from": 135, "to": 135 }
+      { "file": "CustomEditorExample.java", "from": 5, "to": 39 },
+      { "file": "CustomEditorExample.java", "from": 72, "to": 77 },
+      { "file": "CustomEditorExample.java", "from": 80, "to": 81 },
+      { "file": "CustomEditorExample.java", "from": 107, "to": 114 },
+      { "file": "CustomEditorExample.java", "from": 126, "to": 126 },
+      { "file": "CustomEditorExample.java", "from": 133, "to": 133 }
     ]
   },
   "20-7": {
@@ -73,12 +75,13 @@
     "main": "IntegratedDataManagementApp",
     "excerpt": [
       { "file": "IntegratedDataManagementApp.java", "from": 32, "to": 32 },
-      { "file": "IntegratedDataManagementApp.java", "from": 85, "to": 85 },
-      { "file": "IntegratedDataManagementApp.java", "from": 108, "to": 125 },
-      { "file": "IntegratedDataManagementApp.java", "from": 163, "to": 177 },
-      { "file": "IntegratedDataManagementApp.java", "from": 222, "to": 231 },
-      { "file": "IntegratedDataManagementApp.java", "from": 239, "to": 239 },
-      { "file": "IntegratedDataManagementApp.java", "from": 294, "to": 294 }
+      { "file": "IntegratedDataManagementApp.java", "from": 88, "to": 88 },
+      { "file": "IntegratedDataManagementApp.java", "from": 111, "to": 129 },
+      { "file": "IntegratedDataManagementApp.java", "from": 156, "to": 170 },
+      { "file": "IntegratedDataManagementApp.java", "from": 183, "to": 183 },
+      { "file": "IntegratedDataManagementApp.java", "from": 199, "to": 208 },
+      { "file": "IntegratedDataManagementApp.java", "from": 216, "to": 216 },
+      { "file": "IntegratedDataManagementApp.java", "from": 253, "to": 253 }
     ]
   }
 }

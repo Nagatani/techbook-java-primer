@@ -86,6 +86,8 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
         descriptionLabel.setFont(descriptionLabel.getFont().deriveFont(12f));
         textPanel.add(titleLabel);
         textPanel.add(descriptionLabel);
+        // 中のパネルは透明にして、外側のパネルの背景色（選択色）を見せる
+        textPanel.setOpaque(false);
         
         // 期限とチェックボックスのパネル
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -93,6 +95,8 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
         completedCheckBox = new JCheckBox("完了");
         rightPanel.add(dueDateLabel);
         rightPanel.add(completedCheckBox);
+        rightPanel.setOpaque(false);
+        completedCheckBox.setOpaque(false);
         
         add(textPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
@@ -116,14 +120,13 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
             setForeground(list.getForeground());
         }
         
-        // 完了タスクはグレーアウト
-        if (task.isCompleted()) {
-            titleLabel.setForeground(Color.GRAY);
-            descriptionLabel.setForeground(Color.GRAY);
-        } else {
-            titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-            descriptionLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
-        }
+        // 中の部品の文字色も選択状態に合わせる（完了タスクの題名と説明は灰色）
+        Color textColor = isSelected ? list.getSelectionForeground() : list.getForeground();
+        Color doneColor = task.isCompleted() ? Color.GRAY : textColor;
+        titleLabel.setForeground(doneColor);
+        descriptionLabel.setForeground(doneColor);
+        dueDateLabel.setForeground(textColor);
+        completedCheckBox.setForeground(textColor);
         
         return this;
     }

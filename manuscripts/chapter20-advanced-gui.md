@@ -64,7 +64,6 @@ JTableは、表形式のデータを表示・編集するためのコンポー�
 
 ```java
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class BasicTableExample extends JFrame {
@@ -105,24 +104,25 @@ public class BasicTableExample extends JFrame {
 実行すると、次のように表示されます。
 
 ```
-ウィンドウが表示されます（タイトル: 基本的なJTable、サイズ: 600x300）
-- 社員データを表示するテーブルが表示されます
-- 列: ID、名前、部署、給与、入社日
-- 4人の社員データが表示されています
-- スクロールバーが利用可能です（データが多い場合）
+ウィンドウが表示されます（タイトル: 基本的なJTableの例、サイズ: 600x300）
+- 人物のデータを表示するテーブルが表示されます
+- 列: ID、名前、年齢、メールアドレス
+- 4人分のデータが表示されています
+- 行がウィンドウに収まらないときはスクロールバーが表示されます
+- セルをダブルクリックすると値を編集できます
 ```
 
 ## テーブルのソートとフィルタリング
 
-JTableは組み込みのソート機能を提供しています<span class="footnote">ソートとフィルタリングを受け持つ`TableRowSorter`は、Java 6で加わりました。サンプルコード20-2の`regexFilter`は入力を正規表現として扱い、先頭の`(?i)`は大文字と小文字を区別しない指定です。</span>。
+JTableは組み込みのソート機能を提供しています<span class="footnote">ソートとフィルタリングを受け持つ`TableRowSorter`は、Java 6で加わりました。サンプルコード20-2の`regexFilter`は文字列を正規表現として扱います。入力を`Pattern.quote`で囲むと、`(`や`.`などの記号も正規表現の記号ではなく、ただの文字として探します。先頭の`(?i)`は大文字と小文字を区別しない指定です。</span>。
 
 以下のコードは、`TableRowSorter`を使用してテーブルのソートとフィルタリングを実装する例です。
-ヘッダーをクリックすると列の値で行を並べ替え、フィルターフィールドに入力した文字列を名前に含む行だけを表示します。
+ヘッダーをクリックすると列の値で行を並べ替え、フィルターフィールドに文字列を入力して「適用」ボタンを押すと、その文字列を名前に含む行だけを表示します。
 表のデータは、`AbstractTableModel`を継承した`PersonTableModel`が持ちます。
 このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（5、10、14〜36、70、77行目）</span>
+<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜38、72、79行目）</span>
 
 ```java
 public class SortableTableExample extends JFrame {
@@ -148,8 +148,9 @@ public class SortableTableExample extends JFrame {
             if (text.trim().length() == 0) {
                 sorter.setRowFilter(null);
             } else {
-                // 名前列でフィルタリング
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, 1));
+                // 名前列でフィルタリング（入力した記号も文字として探す）
+                sorter.setRowFilter(
+                    RowFilter.regexFilter("(?i)" + Pattern.quote(text), 1));
             }
         });
         // ...
@@ -162,14 +163,15 @@ public class SortableTableExample extends JFrame {
 
 ```
 ウィンドウが表示されます（タイトル: ソート可能なテーブル、サイズ: 700x400）
-- 上部: フィルタ入力フィールド「フィルタ:」
-- 中央: 社員データテーブル（列ヘッダーをクリックでソート可能）
-- 下部: 「新しい行を追加」「選択した行を削除」ボタン
+- 上部: 「フィルター:」の入力欄と「適用」ボタン
+- 中央: 人物のデータのテーブル（列: ID、名前、年齢、メールアドレス）
+- 下部: 「追加」「削除」ボタン
 - 機能:
-  - フィルタ欄に文字を入力すると、該当行のみ表示
-  - 列ヘッダークリックで昇順/降順ソート
-  - 行を選択して削除ボタンで削除可能
-  - 追加ボタンで新しいデータ行を追加
+  - 入力欄に文字を入れて「適用」を押すと、名前にその文字を含む行だけを表示
+  - 入力欄を空にして「適用」を押すと、すべての行を表示
+  - 列ヘッダーのクリックで昇順/降順に並べ替え
+  - 行を選択して「削除」を押すと、その行を削除
+  - 「追加」を押すと、「新規ユーザー」の行を追加
 ```
 
 ## JTreeの実装
@@ -180,7 +182,8 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 
 以下のコードは、`DefaultMutableTreeNode`を使用してツリー構造を構築する基本的な例です。
 ルートノードから子ノードを階層的に追加し、ファイルシステムのような構造を表現しています。
-`setShowsRootHandles(true)`により、展開・折りたたみのハンドルが表示されます。
+子を持つノードには、展開・折りたたみのハンドルが表示されます。
+`setShowsRootHandles(true)`は、いちばん上のルートノードにもハンドルを表示する指定です。
 
 <span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜28、34〜36、44、51行目）</span>
 
@@ -224,7 +227,7 @@ public class BasicTreeExample extends JFrame {
 ポップアップメニュー、名前を編集できるノード、カスタムレンダラーを組み合わせ、ファイルエクスプローラーのような操作を実現しています。
 ノードの追加・削除は`DefaultTreeModel`を通して行い、ツリー構造の変更をビューに通知します<span class="footnote">表示したあとに`DefaultMutableTreeNode`の`add`で直接ノードを足すと、モデルが変更を知らないため、画面のツリーに反映されません。その場合は、`DefaultTreeModel`の`reload`などで変更を伝えます。</span>。
 
-<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java（5〜6、9、13〜15、26〜30、86〜116、153行目）</span>
+<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java（5〜6、9、13〜15、26〜33、86〜116、152行目）</span>
 
 ```java
 public class DynamicTreeExample extends JFrame {
@@ -241,7 +244,10 @@ public class DynamicTreeExample extends JFrame {
         tree.setEditable(true); // ノード名の編集を許可
         tree.getSelectionModel().setSelectionMode(
             TreeSelectionModel.SINGLE_TREE_SELECTION);
-            // ...
+        
+        // ポップアップメニューの作成
+        JPopupMenu popup = new JPopupMenu();
+        // ...
     }
     
     private void addNode(String name, boolean isFolder) {
@@ -288,7 +294,19 @@ public class DynamicTreeExample extends JFrame {
 各タスクは複数の情報（タイトル、説明、期限、完了状態）を持ち、レンダラーがそれらを1つのリスト項目にまとめて表示します<span class="footnote">レンダラーは項目ごとに部品を作らず、1つの部品の内容を書き換えながら、スタンプのように全項目を順に描きます。そのため、選択状態などに応じた表示を、呼ばれるたびにすべて設定し直します。</span>。
 項目をダブルクリックすると、タスクの完了状態が切り替わります。
 
-<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、101〜117、128〜130、133、137、141〜145、196、203行目）</span>
+`JList`は、表示する項目をモデル（`ListModel`）から受け取ります。
+`TaskListModel`は、項目の数を返す`getSize()`と、指定した位置の項目を返す`getElementAt()`を実装して、`AbstractListModel`を継承します。
+項目を追加・削除・変更したときは、`fireIntervalAdded()`・`fireIntervalRemoved()`・`fireContentsChanged()`を呼び、変わった範囲をリストに知らせます。
+知らせを受けたリストは、その範囲を描き直します。
+これらを呼ばずにデータだけを変えると、画面のリストは古いままです。
+文字列などを並べるだけなら、標準の`DefaultListModel`を使えます。
+`DefaultListModel`の`addElement()`や`remove()`は、内部でこの知らせを送るので、自分で`fire〜`メソッドを呼ぶ必要はありません（サンプルコード20-7で使います）。
+
+レンダラーの`TaskListCellRenderer`は、`JPanel`にラベルとチェックボックスを並べた部品です。
+`JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
+文字色も、選択状態に合わせて中の部品ごとに設定します。
+
+<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、77、89〜90、98〜99、103〜133、136、140、144〜148、199、206行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -313,6 +331,16 @@ class TaskListModel extends AbstractListModel<Task> {
 // カスタムレンダラー
 class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
     // ...
+    public TaskListCellRenderer() {
+        // ...
+        // 中のパネルは透明にして、外側のパネルの背景色（選択色）を見せる
+        textPanel.setOpaque(false);
+        // ...
+        rightPanel.setOpaque(false);
+        completedCheckBox.setOpaque(false);
+        // ...
+    }
+    
     @Override
     public Component getListCellRendererComponent(JList<? extends Task> list,
             Task task, int index, boolean isSelected, boolean cellHasFocus) {
@@ -330,7 +358,15 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
         }
-        // ...
+        
+        // 中の部品の文字色も選択状態に合わせる（完了タスクの題名と説明は灰色）
+        Color textColor = isSelected ? list.getSelectionForeground() : list.getForeground();
+        Color doneColor = task.isCompleted() ? Color.GRAY : textColor;
+        titleLabel.setForeground(doneColor);
+        descriptionLabel.setForeground(doneColor);
+        dueDateLabel.setForeground(textColor);
+        completedCheckBox.setForeground(textColor);
+        
         return this;
     }
 }
@@ -359,7 +395,7 @@ public class AdvancedListExample extends JFrame {
 以下のコードは、JTableにカスタムセルエディターとレンダラーを実装する例です。
 色の列はカラーピッカー、優先度の列はコンボボックス、完了の列はチェックボックスで編集でき、列のデータ型に合った入力部品を使います。
 
-<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（7〜41、74〜79、82〜83、109〜116、128、135行目）</span>
+<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（5〜39、72〜77、80〜81、107〜114、126、133行目）</span>
 
 ```java
 // カラーセルエディター
@@ -430,9 +466,11 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 
 以下のコードは、JTable、JTree、JListを組み合わせたプロジェクト管理システムの実装例です。
 `JSplitPane`で画面を分割し、左側のツリーでプロジェクトを選択すると、右側のテーブルとリストにタスクとメンバー情報が表示されます。
-「ファイル」「編集」「表示」のメニューを持つメニューバーも備えています。
+タスクの表は表示専用で、プロジェクトのタスクを`DefaultTableModel`に1行ずつ入れ直して表示します。
+メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
+ステータスバーには、選択中のプロジェクト名が表示されます。
 
-<span class="listing-number">**サンプルコード20-7**　IntegratedDataManagementApp.java（32、85、108〜125、163〜177、222〜231、239、294行目）</span>
+<span class="listing-number">**サンプルコード20-7**　IntegratedDataManagementApp.java（32、88、111〜129、156〜170、183、199〜208、216、253行目）</span>
 
 ```java
 public class IntegratedDataManagementApp extends JFrame {
@@ -453,6 +491,7 @@ public class IntegratedDataManagementApp extends JFrame {
                     currentProject = projects.get(projectName);
                     updateTaskTable();
                     updateMemberList();
+                    statusLabel.setText("選択中: " + projectName);
                 }
             }
         });
@@ -473,6 +512,8 @@ public class IntegratedDataManagementApp extends JFrame {
             }
         }
     }
+    // ...
+    private void setupLayout() {
         // ...
         // 分割ペインの設定
         rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,

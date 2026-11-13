@@ -133,7 +133,6 @@ public class DynamicTreeExample extends JFrame {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
             
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            String nodeName = node.getUserObject().toString();
             
             if (node.getAllowsChildren()) {
                 setIcon(folderIcon);

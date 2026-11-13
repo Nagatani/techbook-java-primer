@@ -37,6 +37,8 @@ public class IntegratedDataManagementApp extends JFrame {
     private JList<String> memberList;
     private Map<String, Project> projects;
     private Project currentProject;
+    private JPanel statusPanel;
+    private JLabel statusLabel;
     
     public IntegratedDataManagementApp() {
         setTitle("プロジェクト管理システム");
@@ -61,7 +63,8 @@ public class IntegratedDataManagementApp extends JFrame {
     }
     
     private void initializeData() {
-        projects = new HashMap<>();
+        // 登録した順にツリーへ並べるため、LinkedHashMapを使う
+        projects = new LinkedHashMap<>();
         
         // サンプルプロジェクト1
         Project webProject = new Project("Webアプリケーション開発");
@@ -119,6 +122,7 @@ public class IntegratedDataManagementApp extends JFrame {
                     currentProject = projects.get(projectName);
                     updateTaskTable();
                     updateMemberList();
+                    statusLabel.setText("選択中: " + projectName);
                 }
             }
         });
@@ -132,27 +136,16 @@ public class IntegratedDataManagementApp extends JFrame {
                 if (columnIndex == 3) return Boolean.class;
                 return String.class;
             }
+
+            // 表示専用にする（セルを編集しても元のTaskには反映しないため）
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
         
         taskTable = new JTable(model);
         taskTable.setRowHeight(25);
-        
-        // 期限列のカスタムレンダラー
-        taskTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
-                // 期限が近いタスクを赤で表示
-                if (value instanceof String) {
-                    setForeground(Color.BLACK);
-                    // ここで期限チェックロジックを実装可能
-                }
-                
-                return this;
-            }
-        });
     }
     
     private void createMemberList() {
@@ -198,26 +191,10 @@ public class IntegratedDataManagementApp extends JFrame {
         topRightPanel.setBorder(BorderFactory.createTitledBorder("タスク一覧"));
         topRightPanel.add(new JScrollPane(taskTable), BorderLayout.CENTER);
         
-        // タスク操作ボタン
-        JPanel taskButtonPanel = new JPanel();
-        JButton addTaskButton = new JButton("タスク追加");
-        JButton deleteTaskButton = new JButton("タスク削除");
-        taskButtonPanel.add(addTaskButton);
-        taskButtonPanel.add(deleteTaskButton);
-        topRightPanel.add(taskButtonPanel, BorderLayout.SOUTH);
-        
         // 右下：メンバーリスト
         JPanel bottomRightPanel = new JPanel(new BorderLayout());
         bottomRightPanel.setBorder(BorderFactory.createTitledBorder("メンバー"));
         bottomRightPanel.add(new JScrollPane(memberList), BorderLayout.CENTER);
-        
-        // メンバー操作ボタン
-        JPanel memberButtonPanel = new JPanel();
-        JButton addMemberButton = new JButton("メンバー追加");
-        JButton deleteMemberButton = new JButton("メンバー削除");
-        memberButtonPanel.add(addMemberButton);
-        memberButtonPanel.add(deleteMemberButton);
-        bottomRightPanel.add(memberButtonPanel, BorderLayout.SOUTH);
         
         // 分割ペインの設定
         rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
@@ -231,9 +208,9 @@ public class IntegratedDataManagementApp extends JFrame {
         add(mainSplitPane, BorderLayout.CENTER);
         
         // ステータスバー
-        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
-        JLabel statusLabel = new JLabel("プロジェクトを選択してください");
+        statusLabel = new JLabel("プロジェクトを選択してください");
         statusPanel.add(statusLabel);
         add(statusPanel, BorderLayout.SOUTH);
     }
@@ -243,37 +220,19 @@ public class IntegratedDataManagementApp extends JFrame {
         
         // ファイルメニュー
         JMenu fileMenu = new JMenu("ファイル");
-        JMenuItem newProjectItem = new JMenuItem("新規プロジェクト");
-        JMenuItem saveItem = new JMenuItem("保存");
         JMenuItem exitItem = new JMenuItem("終了");
-        
         exitItem.addActionListener(e -> System.exit(0));
-        
-        fileMenu.add(newProjectItem);
-        fileMenu.add(saveItem);
-        fileMenu.addSeparator();
         fileMenu.add(exitItem);
         
-        // 編集メニュー
-        JMenu editMenu = new JMenu("編集");
-        JMenuItem cutItem = new JMenuItem("切り取り");
-        JMenuItem copyItem = new JMenuItem("コピー");
-        JMenuItem pasteItem = new JMenuItem("貼り付け");
-        
-        editMenu.add(cutItem);
-        editMenu.add(copyItem);
-        editMenu.add(pasteItem);
-        
-        // 表示メニュー
+        // 表示メニュー（チェックを外すとステータスバーを隠す）
         JMenu viewMenu = new JMenu("表示");
-        JCheckBoxMenuItem showToolbarItem = new JCheckBoxMenuItem("ツールバー", true);
         JCheckBoxMenuItem showStatusItem = new JCheckBoxMenuItem("ステータスバー", true);
-        
-        viewMenu.add(showToolbarItem);
+        showStatusItem.addActionListener(e -> {
+            statusPanel.setVisible(showStatusItem.isSelected());
+        });
         viewMenu.add(showStatusItem);
         
         menuBar.add(fileMenu);
-        menuBar.add(editMenu);
         menuBar.add(viewMenu);
         
         setJMenuBar(menuBar);

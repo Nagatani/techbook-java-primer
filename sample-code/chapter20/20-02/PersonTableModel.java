@@ -38,6 +38,15 @@ public class PersonTableModel extends AbstractTableModel {
         };
     }
 
+    // いまあるIDの最大値に1を足す（行を削除したあとでもIDが重複しない）
+    public int nextId() {
+        int max = 0;
+        for (Person p : people) {
+            max = Math.max(max, p.id());
+        }
+        return max + 1;
+    }
+
     public void addPerson(Person person) {
         people.add(person);
         fireTableRowsInserted(people.size() - 1, people.size() - 1);
