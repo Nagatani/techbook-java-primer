@@ -24,15 +24,16 @@
 | 第18章 基本的なイベント処理 | [chapter18/](chapter18/) | 7 | 5 | 5 | 0 |
 | 第19章 高度なイベント処理パターン | [chapter19/](chapter19/) | 14 | 6 | 4 | 0 |
 | 第20章 JTableとJListの基礎 | [chapter20/](chapter20/) | 4 | 8 | 11 | 4 |
-| 第21章 ユニットテストと品質保証 | [chapter21/](chapter21/) | 2 | 5 | 13 | 5 |
-| 第22章 ドキュメントと外部ライブラリ | [chapter22/](chapter22/) | 2 | 9 | 6 | 10 |
+| 第21章 ユニットテストと品質保証 | [chapter21/](chapter21/) | 2 | 5 | 13 | 7 |
+| 第22章 ドキュメントと外部ライブラリ | [chapter22/](chapter22/) | 2 | 9 | 16 | 10 |
 | 第23章 ビルドとデプロイ | [chapter23/](chapter23/) | 0 | 2 | 4 | 3 |
 
 ## 注意事項
 
 - 第17章・第19章の演習は2026-11-13に用意した。第18章と同じく、`basic/`などのJavaファイルは課題ごとのフォルダーに置いた解答例。第19章の`examples/`には、第18・19章の内容をまとめて使う大きめの例が7つある（表の数には含めない）
 - 第8章は`records/`と`enums/`、第22章は`documentation/`と`api-design/`に分かれている
-- コードのコンパイルとテストは、リポジトリのルートで`npm run check:public-code -- exercises`を実行して確かめる（2026-11-13時点で111まとまりすべてコンパイルでき、テスト203件が通る。JUnitのテストは、JUnitを学ぶ第21章と第22章だけにある）
+- 第21章の基本課題1（`SimpleCalculator`のテスト）と、第22章の`documentation/challenge/`（JSONパーサーのライブラリ「SimpleJSON」）の解答例は、課題がJUnitのテストを求めるので、JUnitのテストで書いた（2026-11-13、Issue #025）。SimpleJSONはMavenとGradleのプロジェクトで、DockerのJava 25で`mvn verify javadoc:javadoc`と`gradle build javadoc`が通ることを確かめた
+- コードのコンパイルとテストは、リポジトリのルートで`npm run check:public-code -- exercises`を実行して確かめる（2026-11-13時点で112まとまりすべてコンパイルでき、テスト269件が通る。JUnitのテストは、JUnitを学ぶ第21章と第22章だけにある）
 - GUIアプリケーション（第17〜20章）は手動での動作確認が必要
 - JUnitを使用するファイルは、クラスパスの設定が必要（`check:public-code`は自動で用意する）
 - 第1〜20章の解答例はJUnitを使わない。動作は、READMEの実行例と同じ出力をするデモの`main`か、期待値と比べてOK・NGを表示する動作確認のプログラム（第9〜12章の`SolutionCheck.java`、第17・19章の`〜Check.java`）で確かめる（2026-11-13）
