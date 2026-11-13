@@ -94,18 +94,6 @@ button.addActionListener(e -> IO.println("ボタンがクリックされまし�
 ラムダ式を書けるのは、変数への代入やメソッドの引数のように、関数型インターフェイス（Functional Interface）の型が求められる場所だけです。
 ラムダ式を評価すると、そのインターフェイスを実装したオブジェクトができます。
 
-<div class="figure">
-
-![基本的な関数型インターフェイス](images/diagrams/chapter11-functional-interface-basic.svg)
-
-</div>
-
-<div class="figure">
-
-![拡張関数型インターフェイス](images/diagrams/chapter11-functional-interface-extended.svg)
-
-</div>
-
 関数型インターフェイスとは、実装すべき抽象メソッドが1つだけ定義されているインターフェイスのことです<span class="footnote">defaultメソッドとstaticメソッドは数えません。`equals`のように`Object`クラスのpublicメソッドと同じ形の抽象メソッドも数えないので、`equals`を宣言している`Comparator`も関数型インターフェイスです。</span>。`@FunctionalInterface` アノテーションを付けると、コンパイラーが抽象メソッドが1つだけかどうかをチェックしてくれるため、付けるとよいでしょう。
 
 <span class="listing-number">**サンプルコード11-4**　FunctionalInterfaceExample.java</span>
@@ -372,6 +360,27 @@ public class StandardFunctionalInterfaces {
 挨拶付き: Hello, Java
 5 × 7 = 35
 ```
+
+次の図は、表のインターフェイスの抽象メソッドと主なdefaultメソッド、インターフェイスどうしの継承の関係をまとめたものです。
+`UnaryOperator`は、引数と戻り値の型をそろえた`Function`として、`Function`を継承しています。
+`compose`・`andThen`・`and`などのdefaultメソッドは、このあとの「関数の合成」で使います。
+
+<div class="figure">
+
+![java.util.functionの基本的な関数型インターフェイス](images/diagrams/chapter11-functional-interface-basic.svg)
+
+</div>
+
+引数を2つ受け取るものには、名前の先頭に`Bi`（2つの意味）が付いた`BiFunction`・`BiConsumer`・`BiPredicate`があります。
+`BinaryOperator`は、2つの引数と戻り値の型をそろえた`BiFunction`です。
+関数型インターフェイスは`java.util.function`パッケージの外にもあります。
+これまでに使った`Runnable`（`java.lang`パッケージ）と`Comparator`（`java.util`パッケージ）、本章の後半で使う`Callable`（`java.util.concurrent`パッケージ）も関数型インターフェイスなので、ラムダ式で書けます。
+
+<div class="figure">
+
+![引数が2つの関数型インターフェイスと、ほかのパッケージの関数型インターフェイス](images/diagrams/chapter11-functional-interface-extended.svg)
+
+</div>
 
 ### 関数の合成
 
