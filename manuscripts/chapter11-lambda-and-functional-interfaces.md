@@ -1488,5 +1488,4 @@ public class OrderPipeline {
 
 次のステップ：基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
 
-※ 本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`）
+本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`</span>。

@@ -560,8 +560,7 @@ var型推論を使うかどうかは、次の基準で判断します。
 `var`を使っても、変数の型はコンパイル時に決まり、型安全性は変わりません。
 省けるのは型を書く手間だけなので、読み手が型を判断しにくくなる場面では型を明示します。
 
-※ 本章の高度な内容については、付録B.07「型消去とジェネリクス」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`）
+本章の高度な内容については、付録B.07「型消去とジェネリクス」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b07-type-erasure-patterns/`</span>。
 
 ## よくあるエラーと対処法
 

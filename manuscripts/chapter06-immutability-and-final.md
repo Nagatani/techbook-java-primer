@@ -684,4 +684,4 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 
 基礎課題が完了したら、第7章「抽象クラスとインターフェイス」に進みましょう。
 
-> ※ 本章の発展的な内容については、付録B.05「不変性の設計パターン」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/`）を参照してください。
+本章の発展的な内容については、付録B.05「不変性の設計パターン」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/`</span>。

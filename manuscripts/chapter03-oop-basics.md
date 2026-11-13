@@ -2140,4 +2140,4 @@ Java 16以降には、本章で学んだクラスを簡潔に、安全に書く�
 課題が完了したら、第4章「クラスとインスタンス」に進みましょう。
 第4章では、より高度なクラス設計と、複数クラスの連携について学びます。
 
-> ※ 本章の高度な内容については、付録B.03「ソフトウェア設計原則」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`）を参照してください。
+本章の高度な内容については、付録B.03「ソフトウェア設計原則」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b03-software-design-principles/`</span>。

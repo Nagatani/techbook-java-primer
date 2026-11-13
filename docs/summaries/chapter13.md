@@ -11,9 +11,9 @@ sections:
   - key: "検査例外と非検査例外"
     hash: 7f8deb38
   - key: "独自例外と例外の連鎖"
-    hash: 103b20bb
+    hash: ebc19344
   - key: "実践的な例外処理パターン"
-    hash: 8da97e70
+    hash: 1c34102a
   - key: "リソース管理の実践例"
     hash: 8aeee278
   - key: "例外処理とログ記録"

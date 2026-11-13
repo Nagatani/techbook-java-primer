@@ -1940,7 +1940,7 @@ class Child extends Parent {
 
 この基本的な例外処理の知識があれば、本書の残りの章でもより実践的なコードを理解できるでしょう。第13章では、例外処理の詳細な仕組みやベストプラクティスを学習します。
 
-※ 本章の高度な内容については、付録B.04「仮想メソッドテーブル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`）を参照してください。
+本章の高度な内容については、付録B.04「仮想メソッドテーブル」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`</span>。
 
 ## よくあるエラーと対処法
 

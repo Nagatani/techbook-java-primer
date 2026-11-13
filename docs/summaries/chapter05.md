@@ -19,7 +19,7 @@ sections:
   - key: "実践的な継承設計パターン"
     hash: e69bc852
   - key: "例外処理の基礎（補足）"
-    hash: adc39f75
+    hash: f9c2eed8
   - key: "よくあるエラーと対処法"
     hash: f14b3870
   - key: "まとめ"

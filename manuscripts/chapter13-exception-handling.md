@@ -311,8 +311,7 @@ public class UserService {
 }
 ```
 
-※ 本章の高度な内容については、付録B.12「例外処理のパフォーマンス」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`）
+本章の高度な内容については、付録B.12「例外処理のパフォーマンス」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`</span>。
 
 ## 実践的な例外処理パターン
 
@@ -361,15 +360,13 @@ public class RetryableOperation {
 }
 ```
 
-次は実行結果の一例です。
+次は実行結果の一例です<span class="footnote">ランダムな処理のため、実行のたびに結果が異なります。すべての試行が失敗した場合は「最終的に失敗: 最大リトライ回数に達しました」が出力されます。</span>。
 
 ```
 試行 1/3 失敗: ネットワークエラー
 試行 2/3 失敗: ネットワークエラー
 結果: 成功
 ```
-
-※ランダムな処理のため、実行のたびに結果が異なります。すべての試行が失敗した場合は「最終的に失敗: 最大リトライ回数に達しました」が出力されます。
 
 ### サーキットブレーカーパターン（連続失敗への対処）
 

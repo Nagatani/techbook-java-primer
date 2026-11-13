@@ -17,7 +17,7 @@ sections:
   - key: "まとめ"
     hash: 60f583c1
   - key: "章末演習"
-    hash: 6f6f8b7e
+    hash: 10fa3e07
 ---
 
 # 第6章 不変性とfinal 要約

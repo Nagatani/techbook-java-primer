@@ -899,8 +899,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 また、`formatted()`メソッドと組み合わせると、値を埋め込んだ内容を作れます。
 設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存する使い方も同じです。
 
-※ 本章の高度な内容については、付録B.13「NIO.2の高度な機能」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`）
+本章の高度な内容については、付録B.13「NIO.2の高度な機能」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`</span>。
 
 ## まとめ
 

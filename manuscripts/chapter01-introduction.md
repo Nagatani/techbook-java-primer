@@ -129,7 +129,7 @@ Javaを通じて身につけた知識と経験は、Python、JavaScript、Go、R
 リポジトリは本書の学習サポートとして継続的に更新します。
 
 #### 正誤表の公開
-書籍の内容に関する修正や補足情報は、リポジトリの[Issues](https://github.com/Nagatani/techbook-java-primer/issues)で随時公開されます。
+書籍の内容に関する修正や補足情報は、リポジトリのIssues<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/issues`</span>で随時公開されます。
 学習中に疑問や問題を発見された場合は、こちらで最新の情報を確認してください。
 
 #### 追加リソース
@@ -960,4 +960,4 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
 基礎課題が完了したら、第2章「Java基本文法」に進みましょう。
 第2章では、変数・演算子・制御構造・配列・メソッドといったJavaの基本文法を学びます。
 
-> ※ 本章の高度な内容については、付録B.01「JVMアーキテクチャとバイトコード」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`）を参照してください。
+本章の高度な内容については、付録B.01「JVMアーキテクチャとバイトコード」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b01-jvm-architecture/`</span>。

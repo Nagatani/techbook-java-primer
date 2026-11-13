@@ -1348,8 +1348,8 @@ public class ResiliencePatterns {
     + 学食の注文処理（BlockingQueue、Semaphore、スレッドの終わらせ方）
 
 各課題の要求仕様・実行例・実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdにあります。
-基礎課題に近い内容の解答例は`solutions/`（テストを含む）に、発展課題とチャレンジ課題の解答例は各課題のフォルダーにあります<span class="footnote">基礎課題に近い内容の解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
+基礎課題の解答例は`solutions/`に、発展課題とチャレンジ課題の解答例は各課題のフォルダーにあります<span class="footnote">基礎課題の解答例は`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter15/solutions/`にあります。</span>。
 
 基礎課題が完了したら、第16章「ネットワークプログラミング」に進みましょう。
 
-※ 本章の高度な内容については、付録B.14「Javaメモリモデル」（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`）を参照してください。
+本章の高度な内容については、付録B.14「Javaメモリモデル」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b14-java-memory-model/`</span>。

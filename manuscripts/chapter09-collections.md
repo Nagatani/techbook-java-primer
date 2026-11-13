@@ -753,8 +753,7 @@ for (String element : list) {
    - 実例
        + ログファイルのタイムスタンプ管理、価格帯での商品検索
 
-※ 本章の高度な内容については、付録B.06「コレクションの内部実装」を参照してください。
-（`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`）
+本章の高度な内容については、付録B.06「コレクションの内部実装」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`</span>。
 
 ## 今後の学習へ向けて
 

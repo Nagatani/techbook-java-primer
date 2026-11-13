@@ -17,7 +17,7 @@ sections:
   - key: "イテレーターとfor-each文"
     hash: 7f74423f
   - key: "コレクションの選択指針"
-    hash: c5eb4aa5
+    hash: 887ec1ee
   - key: "今後の学習へ向けて"
     hash: 1eb5b6d6
   - key: "よくあるエラーと対処法"
