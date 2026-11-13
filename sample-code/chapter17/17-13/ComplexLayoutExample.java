@@ -43,7 +43,7 @@ public class ComplexLayoutExample {
         textArea.setWrapStyleWord(true);
         JScrollPane textScrollPane = new JScrollPane(textArea);
         textScrollPane.setBorder(
-            BorderFactory.createTitledBorder("エディタ"));
+            BorderFactory.createTitledBorder("エディター"));
         mainPanel.add(textScrollPane, BorderLayout.CENTER);
         
         frame.add(mainPanel, BorderLayout.CENTER);

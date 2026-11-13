@@ -206,51 +206,52 @@ button.setBounds(10, 10, 200, 100);
 
 これは2つの対処法です。setPreferredSize()を使うか、レイアウトマネージャーをnullにしてsetBounds()で絶対位置とサイズを指定します。
 
-## コンポーネントの更新時に画面がちらつく
+## 独自の描画で画面がちらつく
 
 ### エラー例
 
 ```java
-// 大量のコンポーネントを動的に追加・削除する際のちらつき
-panel.removeAll();
-for (int i = 0; i < 100; i++) {
-    panel.add(new JLabel("Item " + i));
+// JFrameのpaint()をオーバーライドして直接描く
+public class FlickerFrame extends JFrame {
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.setColor(Color.BLUE);
+        g.fillRect(50, 50, 100, 100);
+    }
 }
-panel.revalidate();
-panel.repaint();
+
+// または、getGraphics()で得たGraphicsにその場で描く
+Graphics g = panel.getGraphics();
+g.fillOval(x, y, 20, 20);
 ```
 
-これは画面がちらつく問題の例です。コンポーネントの追加・削除が1つずつ画面に反映されるため、ちらつきが発生します。
+これは描画がちらつく、または描いたものが消える例です。ウィンドウの大きさを変えたり、`repaint()`で何度も描き直したりすると、画面を消す処理と描く処理が別々に見えて、ちらつきます。`getGraphics()`で描いたものは、次にSwingが再描画したときに消えてしまいます。
 
 ### 原因
 
-- 個別の更新処理が画面に反映されている
-- ダブルバッファリングが無効になっている
+- Swingのコンポーネントは、既定でダブルバッファリング（画面の外のバッファーに描いてから、一度に画面へ写すしくみ）を使って描画される
+- `JFrame`はOSのウィンドウを使うAWTのコンポーネントを継承しており、その`paint()`で描いた内容はSwingのダブルバッファリングを通らずに画面へ直接描かれる
+- `getGraphics()`で描いた内容は、Swingが`paintComponent()`を呼んで再描画したときに上書きされる
 
 ### 対処法
 
 ```java
-// 更新処理をバッチ化
-panel.setVisible(false);  // 一時的に非表示
-panel.removeAll();
-for (int i = 0; i < 100; i++) {
-    panel.add(new JLabel("Item " + i));
+// JPanelを継承し、paintComponent()に描く
+public class DrawingPanel extends JPanel {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);  // 背景を塗る
+        g.setColor(Color.BLUE);
+        g.fillRect(50, 50, 100, 100);
+    }
 }
-panel.revalidate();
-panel.repaint();
-panel.setVisible(true);  // 再表示
 
-// または、SwingUtilities.invokeLaterを使用
-SwingUtilities.invokeLater(() -> {
-    // 更新処理
-    panel.removeAll();
-    // コンポーネント追加
-    panel.revalidate();
-    panel.repaint();
-});
+// 描く内容を変えたら、描画をSwingに頼む
+panel.repaint();
 ```
 
-これはちらつきを防ぐ2つの対処法です。一時的に非表示にするか、EDT上でバッチ処理することで、スムーズな更新が可能になります。
+描画は`JPanel`などのSwingのコンポーネントの`paintComponent()`に書き、フレームにはそのパネルを追加します。描く内容を変えたときは、自分で`paint()`や`getGraphics()`を使わず、`repaint()`を呼んでSwingに再描画を頼みます。`paintComponent()`の中では時間のかかる処理をしないようにします。描画が遅れると、画面の更新が途切れて見えます。
 
 ## デバッグのヒント
 

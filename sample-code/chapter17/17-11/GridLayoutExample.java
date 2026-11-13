@@ -11,7 +11,6 @@ public class GridLayoutExample {
         frame.setSize(300, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // 3行2列のグリッドレイアウト
         // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
         frame.setLayout(new GridLayout(3, 2, 5, 5));
         

@@ -12,7 +12,8 @@ public class CombinedLayoutExample {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         
-        // 上部：メニューバーとツールバー
+        // 上部：ツールバーを置くパネル
+        // （メニューバーはパネルではなく、setJMenuBarでフレームに付ける）
         JPanel topPanel = new JPanel(new BorderLayout());
         
         // メニューバー
@@ -50,9 +51,10 @@ public class CombinedLayoutExample {
         leftPanel.setBorder(
             BorderFactory.createTitledBorder("プロジェクト"));
         
-        // ツリー構造
-        JTree tree = new JTree();
-        leftPanel.add(new JScrollPane(tree), BorderLayout.CENTER);
+        // フォルダーの一覧
+        String[] folders = {"src", "test", "resources"};
+        JList<String> folderList = new JList<>(folders);
+        leftPanel.add(new JScrollPane(folderList), BorderLayout.CENTER);
         
         // 左下のボタンパネル
         JPanel leftButtonPanel = new JPanel(new FlowLayout());
@@ -65,10 +67,10 @@ public class CombinedLayoutExample {
         // 右側パネル（タブ付き）
         JTabbedPane tabbedPane = new JTabbedPane();
         
-        // エディタタブ
+        // エディタータブ
         JTextArea editor = new JTextArea();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        tabbedPane.addTab("エディタ", new JScrollPane(editor));
+        tabbedPane.addTab("エディター", new JScrollPane(editor));
         
         // コンソールタブ
         JTextArea console = new JTextArea();

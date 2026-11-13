@@ -79,7 +79,7 @@
     "dir": "17-11",
     "main": "GridLayoutExample",
     "excerpt": [
-      { "file": "GridLayoutExample.java", "from": 1, "to": 26 }
+      { "file": "GridLayoutExample.java", "from": 1, "to": 25 }
     ]
   },
   "17-12": {
@@ -104,12 +104,13 @@
     "main": "CombinedLayoutExample",
     "excerpt": [
       { "file": "CombinedLayoutExample.java", "from": 4, "to": 4 },
-      { "file": "CombinedLayoutExample.java", "from": 9, "to": 16 },
-      { "file": "CombinedLayoutExample.java", "from": 41, "to": 46 },
-      { "file": "CombinedLayoutExample.java", "from": 63, "to": 66 },
-      { "file": "CombinedLayoutExample.java", "from": 80, "to": 88 },
-      { "file": "CombinedLayoutExample.java", "from": 97, "to": 97 },
-      { "file": "CombinedLayoutExample.java", "from": 101, "to": 102 }
+      { "file": "CombinedLayoutExample.java", "from": 9, "to": 20 },
+      { "file": "CombinedLayoutExample.java", "from": 33, "to": 33 },
+      { "file": "CombinedLayoutExample.java", "from": 42, "to": 53 },
+      { "file": "CombinedLayoutExample.java", "from": 65, "to": 68 },
+      { "file": "CombinedLayoutExample.java", "from": 82, "to": 90 },
+      { "file": "CombinedLayoutExample.java", "from": 99, "to": 99 },
+      { "file": "CombinedLayoutExample.java", "from": 103, "to": 104 }
     ]
   },
   "17-15": {

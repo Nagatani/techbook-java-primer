@@ -164,11 +164,19 @@ public class WindowSettings {
 
 ### 基本的なコンポーネントの配置
 
+ウィンドウに部品を並べる前に、Swingの部品のクラスがどのような継承関係にあるかを確かめておきます。
+次の図は、本章で使う主なクラスの継承階層です。
+
 <div class="figure">
 
 ![Swingコンポーネントの継承階層](images/diagrams/chapter17-swing-hierarchy.svg)
 
 </div>
+
+いちばん上の`Component`と、ほかの部品を中に入れられる`Container`は、AWT（`java.awt`パッケージ）のクラスです。
+Swing（`javax.swing`パッケージ）のラベルやボタン、テキスト入力などの部品は、すべて`JComponent`を継承しています。
+`JComponent`は`Container`の子クラスなので、`JPanel`のように部品を中に入れて並べられます。
+一方、ウィンドウを表す`JFrame`は、AWTの`Window`と`Frame`を継承する別の系統で、部品を置く土台になるトップレベルコンテナーです。
 
 #### JLabelで文字を表示する
 
@@ -270,7 +278,7 @@ CENTERのラベルは残りのスペースをすべて占めるので、ウィ�
 
 この配置方法により、典型的なアプリケーション構造（ツールバー・メインエリア・ステータスバー）を簡単に実現できます。
 
-#### JLabelとアイコンの活用
+#### JLabelでHTMLを表示する
 
 以下のコードは、JLabelの高度な機能を示す例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、複数行のテキストもHTMLのbrタグを使用して簡単に実現できます。これらの機能により、単純なテキスト表示を超えた豊かな表現が可能になります。
 
@@ -428,7 +436,7 @@ public class TextInputComponents {
 ```
 
 実行結果：
-このプログラムを実行すると、5行2列のグリッドレイアウトでさまざまな入力コンポーネントが表示されます。一行テキストフィールドには「初期テキスト」が表示され、パスワードフィールドは入力文字がマスクされます。複数行テキストエリアにはスクロールバーが付き、数値スピナーは0から100まで調整でき、スライダーは25刻みの目盛り付きで表示されます。
+このプログラムを実行すると、5行2列のグリッドレイアウトでさまざまな入力コンポーネントが表示されます。一行テキストフィールドには「初期テキスト」が表示され、パスワードフィールドは入力文字がマスクされます。複数行テキストエリアは行が収まらなくなるとスクロールバーが表示され、数値スピナーは0から100まで調整でき、スライダーは25刻みの目盛り付きで表示されます。
 
 #### 選択コンポーネント
 
@@ -579,7 +587,6 @@ public class GridLayoutExample {
         frame.setSize(300, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // 3行2列のグリッドレイアウト
         // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
         frame.setLayout(new GridLayout(3, 2, 5, 5));
         
@@ -655,8 +662,6 @@ JPanelは、Swingでもっとも頻繁に使われるコンテナーコンポー
 また、`paintComponent()`メソッドをオーバーライドして独自の描画をしたり、パネル単位でイベントリスナーを設定したりもできます。
 独自の描画は本章の「カスタムコンポーネントの作成」で、イベントリスナーは第18章で学びます。
 
-複雑なレイアウトを実現するには、`JPanel`を使って階層的にコンポーネントを組み合わせます。
-
 以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディター風のアプリケーションインターフェイスを構築する例です。ツールバー、サイドバー、メインエリア、ステータスバーといった一般的なアプリケーション構造を、BorderLayoutとFlowLayoutを巧みに組み合わせて実現しています。
 
 <span class="listing-number">**サンプルコード17-13**　ComplexLayoutExample.java（4、9〜13、27〜49、59〜62行目）</span>
@@ -689,7 +694,7 @@ public class ComplexLayoutExample {
         textArea.setWrapStyleWord(true);
         JScrollPane textScrollPane = new JScrollPane(textArea);
         textScrollPane.setBorder(
-            BorderFactory.createTitledBorder("エディタ"));
+            BorderFactory.createTitledBorder("エディター"));
         mainPanel.add(textScrollPane, BorderLayout.CENTER);
         
         frame.add(mainPanel, BorderLayout.CENTER);
@@ -709,7 +714,7 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-14**　CombinedLayoutExample.java（4、9〜16、41〜46、63〜66、80〜88、97、101〜102行目）</span>
+<span class="listing-number">**サンプルコード17-14**　CombinedLayoutExample.java（4、9〜20、33、42〜53、65〜68、82〜90、99、103〜104行目）</span>
 
 ```java
 public class CombinedLayoutExample {
@@ -720,8 +725,14 @@ public class CombinedLayoutExample {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         
-        // 上部：メニューバーとツールバー
+        // 上部：ツールバーを置くパネル
+        // （メニューバーはパネルではなく、setJMenuBarでフレームに付ける）
         JPanel topPanel = new JPanel(new BorderLayout());
+        
+        // メニューバー
+        JMenuBar menuBar = new JMenuBar();
+        // ...
+        frame.setJMenuBar(menuBar);
         // ...
         frame.add(topPanel, BorderLayout.NORTH);
         
@@ -729,6 +740,12 @@ public class CombinedLayoutExample {
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(200);
+        
+        // 左側パネル
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBorder(
+            BorderFactory.createTitledBorder("プロジェクト"));
+        
         // ...
         splitPane.setLeftComponent(leftPanel);
         
@@ -772,6 +789,7 @@ Swingに用意されたコンポーネントにない表示が必要なときは
 
 コンポーネントに図形や文字を描くには、`paintComponent()`メソッドをオーバーライドします。
 以下のコードは、`JPanel`を継承した`DrawingPanel`に、四角形・円・文字列を描く例です。
+前半が`DrawingPanel.java`の全体で、後半は、このパネルをウィンドウに置いて表示する`DrawingPanelExample.java`の`createAndShowGUI()`メソッドです。
 
 <span class="listing-number">**サンプルコード17-15**　DrawingPanel.java、DrawingPanelExample.java（9〜16行目）</span>
 
@@ -857,8 +875,8 @@ GUIプログラムでは、例外が発生するよりも、画面が思った�
     + Swingのコンポーネントは、`SwingUtilities.invokeLater()`を使ってEDTから操作する
 - コンポーネントのサイズが意図どおりにならない
     + `JTextArea`の行数の指定や、レイアウトマネージャーごとのサイズの扱いを確かめる
-- 画面のちらつき
-    + コンポーネントをひとつずつ追加・削除するたびに画面へ反映されることが原因になる。更新をまとめてから`revalidate()`と`repaint()`を呼ぶ
+- 独自の描画で画面がちらつく
+    + `JFrame`の`paint()`をオーバーライドして描いたり、`getGraphics()`で得た`Graphics`に直接描いたりすると、Swingのダブルバッファリングが働かない。描画は`JPanel`の`paintComponent()`に書き、描き直すときは`repaint()`を呼ぶ
 
 問題のあるコードと修正したコード、コンポーネントの境界やEDTを確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter17.md`
