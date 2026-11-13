@@ -27,16 +27,15 @@
     "dir": "16-04",
     "main": "SimpleHTTPClient",
     "excerpt": [
-      { "file": "SimpleHTTPClient.java", "from": 4, "to": 21 },
-      { "file": "SimpleHTTPClient.java", "from": 25, "to": 51 }
+      { "file": "SimpleHTTPClient.java", "from": 4, "to": 23 },
+      { "file": "SimpleHTTPClient.java", "from": 27, "to": 53 }
     ]
   },
   "16-5": {
     "dir": "16-05",
     "main": "HttpURLConnectionExample",
     "excerpt": [
-      { "file": "HttpURLConnectionExample.java", "from": 4, "to": 9 },
-      { "file": "HttpURLConnectionExample.java", "from": 17, "to": 37 },
+      { "file": "HttpURLConnectionExample.java", "from": 4, "to": 37 },
       { "file": "HttpURLConnectionExample.java", "from": 43, "to": 44 }
     ]
   },
@@ -44,8 +43,7 @@
     "dir": "16-06",
     "main": "AsyncHttpClientExample",
     "excerpt": [
-      { "file": "AsyncHttpClientExample.java", "from": 8, "to": 10 },
-      { "file": "AsyncHttpClientExample.java", "from": 17, "to": 49 }
+      { "file": "AsyncHttpClientExample.java", "from": 8, "to": 49 }
     ]
   },
   "16-7": {
@@ -66,10 +64,10 @@
     "dir": "16-09",
     "main": "ChatServer",
     "excerpt": [
-      { "file": "ChatServer.java", "from": 6, "to": 35 },
-      { "file": "ChatServer.java", "from": 42, "to": 42 },
-      { "file": "ChatServer.java", "from": 52, "to": 74 },
-      { "file": "ChatServer.java", "from": 90, "to": 96 }
+      { "file": "ChatServer.java", "from": 6, "to": 34 },
+      { "file": "ChatServer.java", "from": 41, "to": 41 },
+      { "file": "ChatServer.java", "from": 51, "to": 75 },
+      { "file": "ChatServer.java", "from": 91, "to": 97 }
     ]
   },
   "16-10": {
@@ -85,8 +83,9 @@
     "dir": "16-11",
     "main": "JsonApiClient",
     "excerpt": [
-      { "file": "JsonApiClient.java", "from": 7, "to": 34 },
-      { "file": "JsonApiClient.java", "from": 74, "to": 74 }
+      { "file": "JsonApiClient.java", "from": 7, "to": 30 },
+      { "file": "JsonApiClient.java", "from": 50, "to": 59 },
+      { "file": "JsonApiClient.java", "from": 81, "to": 81 }
     ],
     "libs": [
       "com.fasterxml.jackson.core:jackson-databind:2.15.2",
@@ -98,14 +97,14 @@
     "dir": "16-12",
     "main": "SSLClient",
     "excerpt": [
-      { "file": "SSLClient.java", "from": 1, "to": 44 }
+      { "file": "SSLClient.java", "from": 1, "to": 51 }
     ]
   },
   "16-13": {
     "dir": "16-13",
     "main": "NIOServer",
     "excerpt": [
-      { "file": "NIOServer.java", "from": 7, "to": 61 }
+      { "file": "NIOServer.java", "from": 7, "to": 69 }
     ]
   }
 }

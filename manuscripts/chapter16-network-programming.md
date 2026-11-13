@@ -18,7 +18,7 @@
 4. 実用的なネットワークアプリケーション
     - チャットアプリケーションの開発
     - JSON APIクライアントの実装
-    - エラー処理とデバッグ技術
+    - 接続や送受信で起こりやすいエラーと対処
 
 ### この章を始める前に
 
@@ -139,7 +139,7 @@ TCPの通信では、サーバーが`ServerSocket`で接続を待ち、クライ
 
 ### 基本的なTCPクライアント
 
-TCPクライアントは、Socketクラスを使用してサーバーに接続します。接続が確立されると、入力ストリームと出力ストリームを通じてデータの送受信を行います。TCPは信頼性の高い接続指向のプロトコルであり、データの順序と到達が保証されます。
+TCPクライアントは、Socketクラスを使用してサーバーに接続します。接続が確立されると、入力ストリームと出力ストリームを通じてデータの送受信を行います。
 
 以下のコードは、TCPクライアントの基本的な実装例です。Socketオブジェクトを作成してサーバーに接続し、PrintWriterで文字列を送信、BufferedReaderで応答を受信します。try-with-resources文を使用することで、通信終了時に自動的にソケットとストリームがクローズされます。
 
@@ -186,7 +186,7 @@ public class SimpleTCPClient {
 
 TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
 
-以下のコードは、基本的なTCPサーバーの実装例です。このサーバーは8080番ポート<span class="footnote">LinuxなどのUNIX系のOSでは、1023番以下のポートで待ち受けるには管理者の権限が要ります。そのため、例では8080番のような大きな番号を使っています。</span>で待機し、クライアントから受信したメッセージをエコーバックします。accept()メソッドは新しい接続があるまでブロックし、接続が確立されると各クライアントとの通信を個別に処理します。
+以下のコードは、基本的なTCPサーバーの実装例です。このサーバーは8080番ポート<span class="footnote">Linuxなどでは、1023番以下のポートで待ち受けるには管理者の権限が要ります。そのため、例では8080番のような大きな番号を使っています。</span>で待機し、クライアントから受信したメッセージをエコーバックします。accept()メソッドは新しい接続があるまでブロックし、接続が確立されると各クライアントとの通信を個別に処理します。
 
 <span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java（4〜42行目）</span>
 
@@ -244,14 +244,17 @@ public class SimpleTCPServer {
 
 単一スレッドのサーバーでは、一度に1つのクライアントしか処理できません。実用的なサーバーでは、複数のクライアントを同時に処理します。
 
-複数のクライアントを同時に処理できれば、どのクライアントも待たされずにサービスを利用できます。
+複数のクライアントを同時に処理できれば、ほかのクライアントの処理が終わるのを待たずにサービスを利用できます。
 1つのクライアントの処理に時間がかかっても、ほかのクライアントへの応答には影響しません。
 クライアントの数が増えたときにも対応しやすくなります。
 さらに、スレッドプールを使えば、使うスレッドの数に上限を設けて、メモリとCPUを無駄なく使えます。
 
 ### スレッドベースのサーバー
 
-以下のコードは、マルチスレッドに対応したTCPサーバーの実装例です。ExecutorServiceを使用してスレッドプールを管理し、各クライアントの接続を独立したスレッドで処理します。このアプローチにより、複数のクライアントからの同時接続を効率的に処理できます。サーバーは簡単なプロトコルを実装しており、ECHO、TIME、QUITなどのコマンドに応答します。
+以下のコードは、マルチスレッドに対応したTCPサーバーの実装例です。ExecutorServiceを使用してスレッドプールを管理し、各クライアントの接続をプールのスレッドで処理します。
+同時に処理できるのはスレッドプールの大きさ（この例では10）までです。
+各接続はクライアントがQUITを送るまでスレッドを使い続けるので、11番目のクライアントは、どれかの接続が終わってスレッドが空くまで応答を受け取れません。
+サーバーは簡単なプロトコルを実装しており、ECHO、TIME、QUITなどのコマンドに応答します。
 
 <div class="figure">
 
@@ -352,7 +355,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHTTPクライアントライブラリを使用することが一般的ですが、基礎となる仕組みを理解することは重要です。
 
-<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜21、25〜51行目）</span>
+<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜23、27〜53行目）</span>
 
 ```java
 public class SimpleHTTPClient {
@@ -368,10 +371,12 @@ public class SimpleHTTPClient {
                  new InputStreamReader(socket.getInputStream()))) {
             
             // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
-            out.println("GET " + path + " HTTP/1.0");
-            out.println("Host: " + host);
-            out.println("Connection: close");
-            out.println(); // 空行でヘッダー終了
+            // HTTPの行の終わりはCRLF（\r\n）なので、printlnではなくprintで書く
+            out.print("GET " + path + " HTTP/1.0\r\n");
+            out.print("Host: " + host + "\r\n");
+            out.print("Connection: close\r\n");
+            out.print("\r\n"); // 空行でヘッダー終了
+            out.flush();
             
             // ...
             String line;
@@ -423,13 +428,17 @@ Last-Modified: Sun, 08 Nov 2026 18:05:34 GMT
 リクエストをHTTP/1.1で送ると、サーバーがボディを複数のかたまり（チャンク）に分けて返すことがあります。
 そのときはボディの前後にかたまりの大きさを表す16進数の行が入るため、この例ではHTTP/1.0でリクエストを送っています。
 
+HTTPでは、リクエストの各行をCR（`\r`）とLF（`\n`）の2文字で終えると決まっています。
+`PrintWriter`の`println()`が書く改行はOSによって異なり、macOSやLinuxでは`\n`だけになります。
+そのため、この例では`print()`で行の終わりに`\r\n`を付け、最後に`flush()`で送り出しています。
+
 ### HttpURLConnectionの使用
 
 Javaは、より高レベルなHTTP通信のためのAPIも提供しています。
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています<span class="footnote">認証なしでGitHub APIを呼び出せるのは、1つのIPアドレスから1時間に60回までです。回数を超えると、レスポンスコードが403や429になります。</span>。
 
-<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜9、17〜37、43〜44行目）</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜37、43〜44行目）</span>
 
 ```java
 public class HttpURLConnectionExample {
@@ -438,7 +447,13 @@ public class HttpURLConnectionExample {
             URL url = URI.create("https://api.github.com/users/github").toURL();
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
-                // ...
+            
+            // リクエストの設定
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            
             // レスポンスコードの確認
             int responseCode = conn.getResponseCode();
             IO.println("Response Code: " + responseCode);
@@ -474,15 +489,20 @@ Response: {"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","
 
 ### 非同期HTTPクライアント（Java 11+）
 
-Java 11で導入された新しいHTTPクライアントAPI<span class="footnote">このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。</span>は、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
+Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）<span class="footnote">このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。</span>は、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜10、17〜49行目）</span>
+<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜49行目）</span>
 
 ```java
 public class AsyncHttpClientExample {
     
     public static void main(String[] args) throws Exception {
-        // ...
+        // HTTPクライアントの作成
+        HttpClient client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+        
         // HTTPリクエストの作成
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
@@ -651,15 +671,19 @@ UDPでは、送ったパケットや応答のパケットが途中で失われ�
 
 ### チャットサーバー
 
-以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。`Collections.synchronizedSet`でスレッドセーフにクライアントの集合を管理し、各クライアントとの通信は独立したスレッドで処理されます。
+以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。各クライアントとの通信は独立したスレッドで処理されます。
+クライアントの集合は、複数のスレッドが同時に追加・削除・反復しても安全な`ConcurrentHashMap.newKeySet()`で作ります<span class="footnote">`Collections.synchronizedSet`で包んだ集合も追加と削除は安全ですが、拡張for文で反復するあいだは、利用する側で`synchronized`ブロックを使って集合をロックしなければなりません。</span>。
+各クライアントは、送信に使う`PrintWriter`を用意してから集合に加えます。
+先に加えると、準備の済んでいないクライアントへほかのスレッドがメッセージを送ろうとして、`NullPointerException`が発生することがあります。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜35、42、52〜74、90〜96行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜34、41、51〜75、91〜97行目）</span>
 
 ```java
 public class ChatServer {
     private static final int PORT = 5000;
-    private static Set<ClientHandler> clients = 
-        Collections.synchronizedSet(new HashSet<>());
+    // 複数のスレッドから追加・削除・反復しても安全な集合
+    private static Set<ClientHandler> clients =
+        ConcurrentHashMap.newKeySet();
     
     public static void main(String[] args) {
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -669,9 +693,7 @@ public class ChatServer {
             
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                ClientHandler handler = new ClientHandler(clientSocket);
-                clients.add(handler);
-                executor.submit(handler);
+                executor.submit(new ClientHandler(clientSocket));
             }
         } catch (IOException e) {
             System.err.println("サーバーエラー: " + e.getMessage());
@@ -696,6 +718,8 @@ public class ChatServer {
                     new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(
                     socket.getOutputStream(), true);
+                // 送信の準備ができてから、ブロードキャストの対象に加える
+                clients.add(this);
                 
                 // ユーザー名を取得
                 out.println("ユーザー名を入力してください:");
@@ -795,7 +819,7 @@ JacksonはJavaの標準APIではなく、外部ライブラリです。
 外部ライブラリの追加方法とJacksonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、`ObjectMapper`の`readValue`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
-<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜34、74行目）</span>
+<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜30、50〜59、81行目）</span>
 
 ```java
 public class JsonApiClient {
@@ -820,10 +844,17 @@ public class JsonApiClient {
         HttpResponse<String> response = client.send(request, 
             HttpResponse.BodyHandlers.ofString());
         
-        if (response.statusCode() == 200) {
+        return readBody(response, responseType);
+    }
+    // ...
+    // ステータスコードが成功（200番台）のときだけ、JSONをオブジェクトに変換する
+    private <T> T readBody(HttpResponse<String> response, Class<T> responseType)
+            throws Exception {
+        int status = response.statusCode();
+        if (status >= 200 && status < 300) {
             return mapper.readValue(response.body(), responseType);
         } else {
-            throw new RuntimeException("HTTP error: " + response.statusCode());
+            throw new RuntimeException("HTTP error: " + status);
         }
     }
     // ...
@@ -833,7 +864,8 @@ public class JsonApiClient {
 JSONとJavaのオブジェクトとの変換（シリアライズとデシリアライズ）は自分で書かず、JacksonやGsonなどのライブラリに任せます。
 `get`メソッドでは、受け取りたい型を`Class<T>`で渡すので、JSONの内容を型の決まったオブジェクトとして受け取れます。
 リクエストには、送るデータの形式を表すContent-Typeヘッダーや、受け取りたい形式を表すAcceptヘッダーを正しく付けます。
-また、レスポンスを使う前にHTTPステータスコードを確かめ、200以外のときはエラーとして扱います。
+また、レスポンスを使う前にHTTPステータスコードを確かめ、成功を表す200番台（200〜299）以外のときはエラーとして扱います。
+POSTでデータを作ったときは、200ではなく201（Created）が返ることが多いため、`readBody`メソッドでは200番台をまとめて成功とみなしています。
 
 ## セキュリティの考慮事項
 
@@ -857,7 +889,14 @@ JSONとJavaのオブジェクトとの変換（シリアライズとデシリア
 SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです<span class="footnote">SSLは1990年代半ばにNetscape社が開発したプロトコルで、後継のTLSに置き換わりました。SSLはどの版も使うべきでないとされていますが、名前は`SSLSocket`などのクラス名に残っています。</span>。
 JavaではSSLSocketを使用してセキュアな通信を実装できます。
 
-以下のコードは、SSLSocketを使用したセキュアなクライアント接続の実装例です。SSLSocketFactoryから生成されたSSLSocketは、通常のSocketと同様に使用できますが、内部的にはすべての通信がSSL/TLSプロトコルで暗号化されます。最新のTLSプロトコルバージョンを明示的に指定することで、より安全な通信を実現します。
+以下のコードは、SSLSocketを使用したセキュアなクライアント接続の実装例です。SSLSocketFactoryから生成されたSSLSocketは、通常のSocketと同様に使用できますが、内部的にはすべての通信がSSL/TLSプロトコルで暗号化されます。
+この例では、使うプロトコルをTLS 1.2以上に限っています（JDK 25の既定も同じです）。
+
+暗号化するだけでは、通信の相手が本物のサーバーかどうかはわかりません。
+`SSLSocket`は、ハンドシェイクのときにサーバーの証明書が信頼できる認証局のものかを確かめます。
+ただし、証明書が接続先のホスト名（ここでは`www.example.com`）のものかどうかは、既定では確かめません。
+そこで、`SSLParameters`の`setEndpointIdentificationAlgorithm("HTTPS")`でホスト名の検証を有効にしています。
+`HttpClient`や`HttpURLConnection`でHTTPSを使うときは、ホスト名の検証は自動で行われます。
 
 <span class="listing-number">**サンプルコード16-12**　SSLClient.java</span>
 
@@ -875,9 +914,14 @@ public class SSLClient {
         try (SSLSocket socket =
                 (SSLSocket) factory.createSocket(host, port)) {
 
-            // サポートされているプロトコルを設定
+            // 使うプロトコルをTLS 1.2以上に限る（JDK 25の既定と同じ）
             socket.setEnabledProtocols(
                 new String[] {"TLSv1.2", "TLSv1.3"});
+
+            // 証明書が接続先のホスト名のものかを確かめる（既定では確かめない）
+            SSLParameters params = socket.getSSLParameters();
+            params.setEndpointIdentificationAlgorithm("HTTPS");
+            socket.setSSLParameters(params);
 
             // ハンドシェイクを開始
             socket.startHandshake();
@@ -893,9 +937,11 @@ public class SSLClient {
                 new InputStreamReader(socket.getInputStream()));
 
             // HTTPSのリクエストを送り、レスポンスのヘッダーを表示
-            out.println("GET / HTTP/1.0");
-            out.println("Host: " + host);
-            out.println();
+            // HTTPの行の終わりはCRLF（\r\n）
+            out.print("GET / HTTP/1.0\r\n");
+            out.print("Host: " + host + "\r\n");
+            out.print("\r\n");
+            out.flush();
             String line;
             while ((line = in.readLine()) != null && !line.isEmpty()) {
                 IO.println(line);
@@ -924,13 +970,18 @@ Connection: close
 
 ## パフォーマンスの最適化
 
-### ノンブロッキングI/O（NIO）
+### NIOによるノンブロッキングI/O
 
 Java NIOを使用すると、単一スレッドで複数の接続を管理できるスケーラブルなネットワークプログラミングが可能です<span class="footnote">NIOは、C言語から使う`select`やLinuxの`epoll`のように、OSが用意する多重化のしくみを内部で使います。</span>。
 
-以下のコードは、NIO（Non-blocking I/O）を使用したサーバーの実装例です。Selectorパターンを利用することで、単一のスレッドで複数のクライアント接続を効率的に管理できます。この方式では、接続ごとにスレッドを作るサーバーと違い、同時接続が増えてもスレッドの数は増えません。
+NIOはNew I/Oの略で、Java 1.4で加わった`java.nio`パッケージのAPIです。
+ノンブロッキングモードのチャネルと`Selector`は、その機能の1つです。
+ノンブロッキングモードのチャネルは、読み書きできるデータがなくても待たずにすぐ戻ります。
+`Selector`は、複数のチャネルのうち接続の受け付けや読み取りができるようになったものを教えてくれます。
 
-<span class="listing-number">**サンプルコード16-13**　NIOServer.java（7〜61行目）</span>
+以下のコードは、NIOのチャネルと`Selector`を使用したサーバーの実装例です。Selectorパターンを利用することで、単一のスレッドで複数のクライアント接続を効率的に管理できます。この方式では、接続ごとにスレッドを作るサーバーと違い、同時接続が増えてもスレッドの数は増えません。
+
+<span class="listing-number">**サンプルコード16-13**　NIOServer.java（7〜69行目）</span>
 
 ```java
 public class NIOServer {
@@ -979,7 +1030,15 @@ public class NIOServer {
             throws IOException {
         SocketChannel client = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(256);
-        client.read(buffer);
+        int bytesRead = client.read(buffer);
+        
+        // -1はクライアントが接続を閉じたことを表す。閉じないと、
+        // selectが同じチャネルを読み取り可能として返し続ける
+        if (bytesRead == -1) {
+            key.cancel();
+            client.close();
+            return;
+        }
         
         if (buffer.position() > 0) {
             buffer.flip();
@@ -989,6 +1048,10 @@ public class NIOServer {
     }
 }
 ```
+
+`answerWithEcho`では、`read()`の戻り値が-1のときにチャネルを閉じています。
+-1は、クライアントが接続を閉じたことを表します。
+閉じずに放っておくと、`select()`がそのチャネルを読み取り可能として返し続け、サーバーが空回りします。
 
 ## まとめ
 
@@ -1054,7 +1117,7 @@ public class NIOServer {
 - データの送受信のエラー
     + 送信側と受信側で文字エンコーディングがそろっていない、データを最後まで受信していないといった原因がある
 - HTTPのステータスコードの確認漏れ
-    + HTTPクライアントは404や500のレスポンスでも例外をスローしないため、ステータスコードを確かめる
+    + `HttpClient`は404や500のレスポンスでも例外をスローしないため、ステータスコードを確かめる。`HttpURLConnection`はエラーのレスポンスで`getInputStream()`が`IOException`をスローするので、先に`getResponseCode()`で確かめる
 - リソースの解放漏れ
     + ソケットやストリームはtry-with-resources文で確実に閉じる
 

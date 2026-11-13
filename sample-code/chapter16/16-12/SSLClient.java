@@ -11,9 +11,14 @@ public class SSLClient {
         try (SSLSocket socket =
                 (SSLSocket) factory.createSocket(host, port)) {
 
-            // サポートされているプロトコルを設定
+            // 使うプロトコルをTLS 1.2以上に限る（JDK 25の既定と同じ）
             socket.setEnabledProtocols(
                 new String[] {"TLSv1.2", "TLSv1.3"});
+
+            // 証明書が接続先のホスト名のものかを確かめる（既定では確かめない）
+            SSLParameters params = socket.getSSLParameters();
+            params.setEndpointIdentificationAlgorithm("HTTPS");
+            socket.setSSLParameters(params);
 
             // ハンドシェイクを開始
             socket.startHandshake();
@@ -29,9 +34,11 @@ public class SSLClient {
                 new InputStreamReader(socket.getInputStream()));
 
             // HTTPSのリクエストを送り、レスポンスのヘッダーを表示
-            out.println("GET / HTTP/1.0");
-            out.println("Host: " + host);
-            out.println();
+            // HTTPの行の終わりはCRLF（\r\n）
+            out.print("GET / HTTP/1.0\r\n");
+            out.print("Host: " + host + "\r\n");
+            out.print("\r\n");
+            out.flush();
             String line;
             while ((line = in.readLine()) != null && !line.isEmpty()) {
                 IO.println(line);

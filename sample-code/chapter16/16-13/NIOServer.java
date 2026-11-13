@@ -50,7 +50,15 @@ public class NIOServer {
             throws IOException {
         SocketChannel client = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(256);
-        client.read(buffer);
+        int bytesRead = client.read(buffer);
+        
+        // -1はクライアントが接続を閉じたことを表す。閉じないと、
+        // selectが同じチャネルを読み取り可能として返し続ける
+        if (bytesRead == -1) {
+            key.cancel();
+            client.close();
+            return;
+        }
         
         if (buffer.position() > 0) {
             buffer.flip();

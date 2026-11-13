@@ -14,10 +14,12 @@ public class SimpleHTTPClient {
                  new InputStreamReader(socket.getInputStream()))) {
             
             // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
-            out.println("GET " + path + " HTTP/1.0");
-            out.println("Host: " + host);
-            out.println("Connection: close");
-            out.println(); // 空行でヘッダー終了
+            // HTTPの行の終わりはCRLF（\r\n）なので、printlnではなくprintで書く
+            out.print("GET " + path + " HTTP/1.0\r\n");
+            out.print("Host: " + host + "\r\n");
+            out.print("Connection: close\r\n");
+            out.print("\r\n"); // 空行でヘッダー終了
+            out.flush();
             
             // HTTPレスポンスの取得
             // HTTPレスポンスは、ステータスライン、ヘッダー、空行、ボディの順で構成されています。

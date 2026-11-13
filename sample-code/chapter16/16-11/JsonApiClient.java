@@ -26,11 +26,7 @@ public class JsonApiClient {
         HttpResponse<String> response = client.send(request, 
             HttpResponse.BodyHandlers.ofString());
         
-        if (response.statusCode() == 200) {
-            return mapper.readValue(response.body(), responseType);
-        } else {
-            throw new RuntimeException("HTTP error: " + response.statusCode());
-        }
+        return readBody(response, responseType);
     }
     
     // POSTリクエスト
@@ -48,7 +44,18 @@ public class JsonApiClient {
         HttpResponse<String> response = client.send(request,
             HttpResponse.BodyHandlers.ofString());
         
-        return mapper.readValue(response.body(), responseType);
+        return readBody(response, responseType);
+    }
+    
+    // ステータスコードが成功（200番台）のときだけ、JSONをオブジェクトに変換する
+    private <T> T readBody(HttpResponse<String> response, Class<T> responseType)
+            throws Exception {
+        int status = response.statusCode();
+        if (status >= 200 && status < 300) {
+            return mapper.readValue(response.body(), responseType);
+        } else {
+            throw new RuntimeException("HTTP error: " + status);
+        }
     }
     
     public static void main(String[] args) throws Exception {
