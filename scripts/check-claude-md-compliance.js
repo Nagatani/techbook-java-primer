@@ -86,6 +86,22 @@ const VIOLATION_PATTERNS = [
         severity: 'warning',
         suggestion: '階層化リストを使用してください（例: - 項目\\n    + 説明）',
         customCheck: true
+    },
+    {
+        id: 'kome-note',
+        pattern: /※/g,
+        description: '「※」で始める注意書き（脚注のテーマが番号を付けるので「※」は使わない）',
+        severity: 'error',
+        suggestion: '<span class="footnote">…</span>で脚注にするか、本文の文にしてください（docs/writing-guidelines-textlint-compliance.md の11節）',
+        customCheck: true
+    },
+    {
+        id: 'external-markdown-link',
+        pattern: /\]\(https?:\/\//g,
+        description: '外部URLへのMarkdownのリンク（PDFではテーマがURLを脚注に出すが、その脚注のURLはクリックできない）',
+        severity: 'error',
+        suggestion: 'リンクの文字だけを本文に残し、URLをインラインコードで脚注に書いてください（例: Issues<span class="footnote">`https://...`</span>）',
+        customCheck: true
     }
 ];
 
@@ -229,6 +245,28 @@ class ComplianceChecker {
     }
 
     /**
+     * コードブロック（```の間）の外の行だけを、ルールの正規表現で調べる
+     * （プログラムの出力やコードの中の「※」・URLは対象にしない）
+     */
+    customCheckOutsideCode(content, rule) {
+        const violations = [];
+        let inCode = false;
+        content.split('\n').forEach((line, index) => {
+            if (/^\s*```/.test(line)) {
+                inCode = !inCode;
+                return;
+            }
+            if (inCode) return;
+            const pattern = new RegExp(rule.pattern.source);
+            const match = line.match(pattern);
+            if (match) {
+                violations.push({ line: index + 1, lineContent: line, match: match[0] });
+            }
+        });
+        return violations;
+    }
+
+    /**
      * ファイルをチェックしてルール違反を検出
      */
     checkFile(filePath) {
@@ -252,6 +290,10 @@ class ComplianceChecker {
                         break;
                     case 'list-dash-structure':
                         customViolations = this.customCheckListDashStructure(content, rule);
+                        break;
+                    case 'kome-note':
+                    case 'external-markdown-link':
+                        customViolations = this.customCheckOutsideCode(content, rule);
                         break;
                 }
                 

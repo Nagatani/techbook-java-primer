@@ -118,6 +118,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - GitHubの場所だけを書く箇所には、URLの全文を脚注で添える（インラインコードで書く）。先頭に「※」を付けない。ですます調
    - 見出し・表・コードブロック・キャプション・図・コラムの中には置かない。同じ余談は初出の章に1つだけ置く
    - 脚注の文字はtextlintで本文の文に数えられる（文の長さ・読点の数）。脚注を足したら`npm run lint`で確かめる
+   - 外部URLへのMarkdownのリンク（`[文字](https://...)`）と「※」の注意書きは使わない。テーマのCSSがリンクのURLから作る脚注は、PDFでクリックできない。リンクの文字だけを本文に残してURLを脚注に書き、「※」の注記は脚注か本文の文にする（`check:compliance`が問題にする。2026-11-13）
 
 5. **Chapter Structure**:
    - 全23章構成
