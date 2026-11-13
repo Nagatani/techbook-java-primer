@@ -31,6 +31,7 @@ public class ChangeListenerExample extends JFrame {
                 int value = slider.getValue();
                 valueLabel.setText("現在の値: " + value);
                 progressBar.setValue(value);
+                spinner.setValue(value);
                 
                 // ドラッグ終了時のみ処理
                 if (!slider.getValueIsAdjusting()) {

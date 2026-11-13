@@ -24,7 +24,7 @@ public class EventQueueExample {
                         statusLabel.setText("警告: EDT以外のスレッドで実行されています");
                     }
                     
-                    // イベントキューの状況を表示
+                    // リスナーが動いているスレッドを表示
                     IO.println("現在のスレッド: " + Thread.currentThread().getName());
                     IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
                 }

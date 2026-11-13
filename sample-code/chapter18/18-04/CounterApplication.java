@@ -9,7 +9,7 @@ public class CounterApplication {
     
     public CounterApplication() {
         // フレームの初期設定
-        JFrame frame = new JFrame("カウンタアプリケーション");
+        JFrame frame = new JFrame("カウンターアプリケーション");
         frame.setSize(300, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());

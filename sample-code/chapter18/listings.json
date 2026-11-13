@@ -90,10 +90,10 @@
     "excerpt": [
       { "file": "ChangeListenerExample.java", "from": 5, "to": 5 },
       { "file": "ChangeListenerExample.java", "from": 11, "to": 11 },
-      { "file": "ChangeListenerExample.java", "from": 28, "to": 40 },
-      { "file": "ChangeListenerExample.java", "from": 50, "to": 55 },
-      { "file": "ChangeListenerExample.java", "from": 84, "to": 84 },
-      { "file": "ChangeListenerExample.java", "from": 91, "to": 91 }
+      { "file": "ChangeListenerExample.java", "from": 28, "to": 41 },
+      { "file": "ChangeListenerExample.java", "from": 51, "to": 56 },
+      { "file": "ChangeListenerExample.java", "from": 85, "to": 85 },
+      { "file": "ChangeListenerExample.java", "from": 92, "to": 92 }
     ]
   },
   "18-11": {
@@ -120,8 +120,8 @@
     "main": "TimerExample",
     "excerpt": [
       { "file": "TimerExample.java", "from": 6, "to": 8 },
-      { "file": "TimerExample.java", "from": 14, "to": 35 },
-      { "file": "TimerExample.java", "from": 42, "to": 44 }
+      { "file": "TimerExample.java", "from": 14, "to": 37 },
+      { "file": "TimerExample.java", "from": 44, "to": 46 }
     ]
   }
 }

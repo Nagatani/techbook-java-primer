@@ -300,7 +300,6 @@ public class CounterApplication {
 }
 ```
 
-実行結果：
 このプログラムを実行すると、中央に大きく「0」と表示され、下部に「-1」「リセット」「+1」の3つのボタンが並んだウィンドウが表示されます。「+1」ボタンをクリックすると数値が増加し、「-1」ボタンで減少します。「リセット」ボタンをクリックすると0に戻ります。
 
 ## 代表的なイベントの種類
@@ -323,7 +322,7 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。WindowListenerインターフェイスには多くのメソッドがありますが、WindowAdapterクラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
-以下のコードは、WindowAdapterを使用してウィンドウ閉じる際の終了確認を実装する例です。setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)でデフォルトの閉じる動作を無効化し、windowClosing()メソッドでカスタム処理を実行します。
+以下のコードは、WindowAdapterを使用してウィンドウを閉じる際の終了確認を実装する例です。setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)でデフォルトの閉じる動作を無効化し、windowClosing()メソッドでカスタム処理を実行します。
 
 <span class="listing-number">**サンプルコード18-5**　WindowEventExample.java</span>
 
@@ -369,7 +368,7 @@ public class WindowEventExample {
 - ダイアログ: 「本当に終了しますか？」
   - 「はい」を選択 → アプリケーションが終了します
   - 「いいえ」を選択 → ダイアログが閉じ、ウィンドウは開いたままです
-  - 「キャンセル」を選択 → 同様にウィンドウは開いたままです
+  - 「取消」を選択 → 同様にウィンドウは開いたままです
 ```
 
 ### 基本的なマウスイベント
@@ -420,12 +419,12 @@ public class BasicMouseEventExample extends JFrame {
 実行すると、次のように表示されます。
 
 ```
-ウィンドウが表示されます（タイトル: マウスイベントの例）
-- 灰色のパネル（200x200）が中央に配置されています
+ウィンドウが表示されます（タイトル: 基本的なマウスイベント）
+- 灰色のパネル（400x300）と、その下にステータスラベルが配置されています
 - マウスの動作に応じて以下のような反応があります：
   - パネルにマウスを乗せる → 背景が黄色に変わります
   - パネルからマウスを離す → 背景が灰色に戻ります
-  - パネル内でクリック → ステータスバーに「左ボタンがクリックされました: java.awt.Point[x=XX,y=YY]」と表示
+  - パネル内でクリック → ステータスラベルに「左ボタンがクリックされました: java.awt.Point[x=XX,y=YY]」と表示
   - 右クリック → 「右ボタンがクリックされました」と表示
   - 中クリック → 「中央ボタンがクリックされました」と表示
 ```
@@ -434,7 +433,7 @@ public class BasicMouseEventExample extends JFrame {
 
 キーボード入力を検出する基本的な例です。
 
-以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。consume()メソッドを使用することで、デフォルトのキー動作をキャンセルできます。
+以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。`consume()`メソッドを呼ぶと、そのイベントを処理済みにして、このあとに続くキーバインディングなどの処理へ渡さないようにできます。
 複数のキーの同時押しや、`InputMap`と`ActionMap`によるキーバインディングは、第19章のサンプルコード19-2で学びます。
 
 <span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜37、44、51行目）</span>
@@ -469,7 +468,7 @@ public class BasicKeyEventExample extends JFrame {
 
 チェックボックスやラジオボタンの選択状態の変化を監視する例です。
 
-以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択がされたか解除されたかを判定し、現在の選択状態をリアルタイムで更新・表示します。
+以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択されたか解除されたかを判定し、直前の変化をラベルに、選択中の項目の一覧をコンソールに表示します。
 
 <span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5、10、22〜34、52〜61、82、97行目）</span>
 
@@ -556,9 +555,12 @@ public class FocusListenerExample extends JFrame {
 
 スライダーやスピナーなどの値の変化を監視する例です。
 
-以下のコードは、ChangeListenerを使用してスライダーとスピナーの値の変化を監視し、連動させる例です。getValueIsAdjusting()メソッドを使用することで、スライダーのドラッグ中とドラッグ終了時を区別し、パフォーマンスを最適化できます。
+以下のコードは、ChangeListenerを使用してスライダーとスピナーの値の変化を監視し、互いの値を連動させる例です。
+スライダーをドラッグしている間も、値が変わるたびにイベントが発生します。
+`getValueIsAdjusting()`メソッドはドラッグ中ならtrueを返します。
+これを使うと、表示はそのつど更新し、確定した値の処理（この例ではコンソールへの出力）はドラッグを終えたときに1回だけ行えます。
 
-<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5、11、28〜40、50〜55、84、91行目）</span>
+<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5、11、28〜41、51〜56、85、92行目）</span>
 
 ```java
 public class ChangeListenerExample extends JFrame {
@@ -571,6 +573,7 @@ public class ChangeListenerExample extends JFrame {
                 int value = slider.getValue();
                 valueLabel.setText("現在の値: " + value);
                 progressBar.setValue(value);
+                spinner.setValue(value);
                 
                 // ドラッグ終了時のみ処理
                 if (!slider.getValueIsAdjusting()) {
@@ -624,7 +627,7 @@ public class EventQueueExample {
                         statusLabel.setText("警告: EDT以外のスレッドで実行されています");
                     }
                     
-                    // イベントキューの状況を表示
+                    // リスナーが動いているスレッドを表示
                     IO.println("現在のスレッド: " + Thread.currentThread().getName());
                     IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
                 }
@@ -635,7 +638,6 @@ public class EventQueueExample {
 }
 ```
 
-実行結果：
 このプログラムを実行すると、「イベント確認」ボタンと「準備完了」ラベルが表示されます。ボタンをクリックすると、ラベルが「正しくEDT上で実行されています」に変わり、コンソールには次のような出力が表示されます<span class="footnote">SwingはAWTのイベントキューを土台にしています。EDTもAWTが用意するスレッドなので「AWT-EventQueue-0」という名前になっています。</span>。
 
 ```
@@ -656,7 +658,7 @@ EDTに処理を頼むメソッドには、`invokeLater()`のほかに`SwingUtili
 以下のコードは、イベントハンドラー内で長時間の処理を実行した場合の問題と、その解決法を示しています。
 よい例では、長時間の処理を第15章で学んだ`Thread`で別のスレッドに任せ、処理が終わったらラベルの更新を`SwingUtilities.invokeLater`でEDTに任せています。
 こうすると、処理の間もEDTはほかのイベントを処理できるので、UIは固まりません。
-「悪い例」のボタンを押すと、3秒間はウィンドウを動かすこともほかのボタンを押すこともできません。
+「悪い例」のボタンを押すと、3秒間はほかのボタンが反応せず、ウィンドウの中身も描き直されません<span class="footnote">ウィンドウの枠をドラッグして動かせるかどうかは、OSによって異なります。</span>。
 「よい例」のボタンを押すと、ラベルが「処理中...」に変わり、3秒後に「完了」になるまでの間も画面は反応します。
 進捗の表示やキャンセルにも対応できる`SwingWorker`は、第19章で学びます。
 
@@ -708,9 +710,10 @@ public class FreezeExample {
 
 以下のコードは、1秒ごとに現在時刻を表示するデジタル時計です。
 `start()`で動かし、`stop()`で止め、`isRunning()`で動いているかを調べます。
+`Timer`は最初の呼び出しも指定した間隔のあとに行うので、この例では`setInitialDelay(0)`で、開始してすぐに1回目を実行しています。
 リスナーの処理が長いとEDTを止めてしまうので、`Timer`で呼び出す処理は短く保ちます。
 
-<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜8、14〜35、42〜44行目）</span>
+<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜8、14〜37、44〜46行目）</span>
 
 ```java
 public class TimerExample {
@@ -729,6 +732,8 @@ public class TimerExample {
                 String timeText = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                 timeLabel.setText(timeText);
             });
+            // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）
+            timer.setInitialDelay(0);
             
             toggleButton.addActionListener(e -> {
                 if (timer.isRunning()) {
@@ -745,8 +750,7 @@ public class TimerExample {
 }
 ```
 
-実行結果：
-このプログラムを実行すると、現在時刻を表示するラベルと「開始」ボタンが表示されます。「開始」ボタンをクリックすると、デジタル時計が動き始め、毎秒現在時刻（HH:mm:ss形式）が更新されます。ボタンのテキストは「停止」に変わり、再度クリックすると時計が止まります。
+このプログラムを実行すると、空のラベルと「開始」ボタンが表示されます。「開始」ボタンをクリックすると、すぐに現在時刻（HH:mm:ss形式）が表示され、その後は毎秒更新されます。ボタンのテキストは「停止」に変わり、再度クリックすると時計が止まります。
 
 ## まとめ
 
@@ -761,7 +765,9 @@ public class TimerExample {
 - 定期的な画面の更新には`javax.swing.Timer`を使う
 
 ### 次のステップ
-基本的なイベント処理を理解したので、次章では、より高度なイベント処理パターンについて学習します。DocumentListenerによるテキスト監視、カスタムイベントの作成、パフォーマンスを考慮したイベント処理などを扱います。
+基本的なイベント処理を理解したので、次章では、より高度なイベント処理パターンについて学習します。
+マウスとキーボードの詳細な処理、DocumentListenerによるテキスト監視、カスタムイベントの作成、ドラッグ&ドロップを扱います。
+高頻度のイベントの間引き方と、SwingWorkerによる非同期処理も学びます。
 
 ## 章末演習
 

@@ -23,6 +23,8 @@ public class TimerExample {
                 String timeText = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                 timeLabel.setText(timeText);
             });
+            // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）
+            timer.setInitialDelay(0);
             
             toggleButton.addActionListener(e -> {
                 if (timer.isRunning()) {
