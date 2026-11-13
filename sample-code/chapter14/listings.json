@@ -3,34 +3,32 @@
     "dir": "14-01",
     "main": "ScannerExample",
     "excerpt": [
-      { "file": "ScannerExample.java", "from": 8, "to": 32 },
-      { "file": "ScannerExample.java", "from": 44, "to": 45 }
+      { "file": "ScannerExample.java", "from": 7, "to": 31 },
+      { "file": "ScannerExample.java", "from": 43, "to": 44 }
     ]
   },
   "14-2": {
     "dir": "14-02",
     "main": "TextFileReaderExample",
     "excerpt": [
-      { "file": "TextFileReaderExample.java", "from": 9, "to": 10 },
-      { "file": "TextFileReaderExample.java", "from": 15, "to": 28 },
-      { "file": "TextFileReaderExample.java", "from": 31, "to": 32 },
-      { "file": "TextFileReaderExample.java", "from": 35, "to": 43 }
+      { "file": "TextFileReaderExample.java", "from": 8, "to": 9 },
+      { "file": "TextFileReaderExample.java", "from": 14, "to": 27 },
+      { "file": "TextFileReaderExample.java", "from": 30, "to": 31 },
+      { "file": "TextFileReaderExample.java", "from": 34, "to": 42 }
     ]
   },
   "14-3": {
     "dir": "14-03",
     "main": "TextFileWriterExample",
     "excerpt": [
-      { "file": "TextFileWriterExample.java", "from": 1, "to": 29 }
+      { "file": "TextFileWriterExample.java", "from": 1, "to": 28 }
     ]
   },
   "14-4": {
     "dir": "14-04",
     "main": "CharacterEncodingExample",
     "excerpt": [
-      { "file": "CharacterEncodingExample.java", "from": 10, "to": 12 },
-      { "file": "CharacterEncodingExample.java", "from": 20, "to": 41 },
-      { "file": "CharacterEncodingExample.java", "from": 44, "to": 45 }
+      { "file": "CharacterEncodingExample.java", "from": 9, "to": 45 }
     ]
   },
   "14-5": {
@@ -99,8 +97,8 @@
     "dir": "14-13",
     "main": "TextBlockStructuredData",
     "excerpt": [
-      { "file": "TextBlockStructuredData.java", "from": 9, "to": 41 },
-      { "file": "TextBlockStructuredData.java", "from": 175, "to": 176 }
+      { "file": "TextBlockStructuredData.java", "from": 8, "to": 40 },
+      { "file": "TextBlockStructuredData.java", "from": 174, "to": 175 }
     ]
   }
 }

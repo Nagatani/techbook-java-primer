@@ -3,18 +3,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class TextFileReaderExample {
     public static void main(String[] args) {
-        Path filePath = Paths.get("sample.txt");
+        Path filePath = Path.of("sample.txt");
         // 事前にファイルを作成
-        try { Files.writeString(filePath, "Line 1\nLine 2"); } catch (IOException e) {}
+        try { Files.writeString(filePath, "Line 1\nLine 2"); } catch (IOException e) { e.printStackTrace(); }
 
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
         // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションではもっとも推奨される方法です。
+        // 大容量ファイルでもメモリを節約しながら処理できるため、大きなファイルではこの方法を使います。
         IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {

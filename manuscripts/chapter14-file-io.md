@@ -70,12 +70,12 @@
 
 次のプログラムは、実行したディレクトリにある`data.txt`を読み込みます。`data.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter14/14-01/`</span>。
 
-<span class="listing-number">**サンプルコード14-1**　ScannerExample.java（8〜32、44〜45行目）</span>
+<span class="listing-number">**サンプルコード14-1**　ScannerExample.java（7〜31、43〜44行目）</span>
 
 ```java
 public class ScannerExample {
     public static void main(String[] args) {
-        Path path = Paths.get("data.txt");
+        Path path = Path.of("data.txt");
         
         // 1. 行単位の読み込み
         try (Scanner scanner = new Scanner(
@@ -125,7 +125,7 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（9〜10、15〜28、31〜32、35〜43行目）</span>
+<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（8〜9、14〜27、30〜31、34〜42行目）</span>
 
 ```java
 public class TextFileReaderExample {
@@ -133,7 +133,7 @@ public class TextFileReaderExample {
         // ...
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
         // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、実用的なアプリケーションではもっとも推奨される方法です。
+        // 大容量ファイルでもメモリを節約しながら処理できるため、大きなファイルではこの方法を使います。
         IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -184,12 +184,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class TextFileWriterExample {
     public static void main(String[] args) {
-        Path filePath = Paths.get("output.txt");
+        Path filePath = Path.of("output.txt");
 
         // ファイルへの書き込み
         // BufferedWriterを使用してテキストデータを効率的にファイルに書き込みます。
@@ -235,30 +234,37 @@ public class TextFileWriterExample {
 - UTF-8
     + 現在もっとも広く使われる可変長のエンコーディング
 - Shift_JIS
-    + 日本語のエンコーディング。Windowsで使われるのは、これをMicrosoftが拡張したWindows-31J（Javaでの名前は`MS932`）で、丸数字などの文字が加わっている
+    + 日本語のエンコーディング。Windowsで使われるのは、これをMicrosoftが拡張したWindows-31J（Javaでの名前は`windows-31j`、別名`MS932`）で、丸数字などの文字が加わっている
 - ISO-8859-1
     + 西欧言語用の1バイトのエンコーディング
 
-<span class="listing-number">**サンプルコード14-4**　CharacterEncodingExample.java（10〜12、20〜41、44〜45行目）</span>
+<span class="listing-number">**サンプルコード14-4**　CharacterEncodingExample.java（9〜45行目）</span>
 
 ```java
 public class CharacterEncodingExample {
     public static void main(String[] args) {
-        Path path = Paths.get("japanese.txt");
-        // ...
-        
+        Path path = Path.of("japanese.txt");
+
+        // UTF-8で書き込み
+        try {
+            Files.writeString(path, "こんにちは", StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Shift_JISで読み込み（文字化けの例）
-        // Files.newBufferedReaderは、解釈できないバイト列があると文字化けではなく例外を投げる
+        // UTF-8のバイト列をShift_JISの表で解釈するため、別の文字になる
         IO.println("--- Shift_JISで読み込み（文字化け） ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("Shift_JIS"))) {
             IO.println(reader.readLine());
         } catch (MalformedInputException e) {
+            // Shift_JISとして解釈できないバイト列があると、文字化けではなく例外になる
             IO.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         // UTF-8で正しく読み込み
         IO.println("\n--- UTF-8で正しく読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
@@ -267,8 +273,9 @@ public class CharacterEncodingExample {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        // ...
+
+        // システムデフォルトのエンコーディング確認
+        IO.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
     }
 }
 ```
@@ -277,13 +284,18 @@ public class CharacterEncodingExample {
 
 ```
 --- Shift_JISで読み込み（文字化け） ---
-エラー: MalformedInputException - 文字エンコーディングの不一致
+縺薙ｓ縺ｫ縺｡縺ｯ
 
 --- UTF-8で正しく読み込み ---
-こんにちは、世界！
+こんにちは
 
 デフォルトエンコーディング: UTF-8
 ```
+
+ファイルに書かれているのは、「こんにちは」をUTF-8で表したバイト列です。
+同じバイト列をShift_JISの対応表で読むと、別の文字の並びとして解釈されます。
+これが文字化けのしくみです。
+読むバイト列のなかにShift_JISとして解釈できない並びがあると、`Files.newBufferedReader`は文字化けした文字列を返さずに`MalformedInputException`をスローします。
 
 ## バイナリファイルの高度な処理
 
@@ -303,7 +315,7 @@ public class DataStreamExample {
         
         // バイナリファイルの書き込み
         // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // この方法により、データの型情報を保持したまま効率的にファイルに保存できます。
+        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、読むときに型と順序を合わせます。
         // データの書き込み
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(filename)))) {
@@ -402,7 +414,7 @@ public class SerializationExample {
         } catch (IOException e) { e.printStackTrace(); }
 
         // ObjectInputStreamでファイルからオブジェクトを復元します。
-        // オブジェクトの状態が完全に復元され、保存時と同じ構造とデータを持つオブジェクトが復元されます。
+        // transientを付けたフィールド以外が、保存したときの値で復元されます。
         // 2. ファイルから非直列化して復元
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {
@@ -429,17 +441,19 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="fo
 
 - `Path`
     + ファイルやディレクトリのパスを表現する
-- `Paths`
-    + `Path`オブジェクトを生成するためのユーティリティクラス
+    + `Path.of("data", "config.txt")`のように、静的メソッド`Path.of`で作る
 - `Files`
     + ファイル・ディレクトリの操作（作成、削除、コピー、移動など）を行うためのユーティリティクラス
+
+古いコードでは、`Path`を`Paths.get`で作っていることがあります<span class="footnote">`Path.of`はJava 11で加わりました。`Paths`クラスのAPIドキュメントは、`Path.of`を使うよう勧めており、`Paths`は将来非推奨になる可能性があると書いています。</span>。
+本書では`Path.of`を使います。
 
 <span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（4〜37行目）</span>
 
 ```java
 public class FileSystemExample {
     public static void main(String[] args) throws IOException {
-        Path dir = Paths.get("my_temp_dir");
+        Path dir = Path.of("my_temp_dir");
         Path file = dir.resolve("my_file.txt");
 
         // ディレクトリ作成
@@ -454,15 +468,15 @@ public class FileSystemExample {
         // writeString()は、小さなテキストデータをファイルに保存する便利メソッドです。
         // ファイルを開いて書き込み、閉じるまでをメソッドのなかで済ませます。
         Files.writeString(file, "Hello, NIO.2!");
-        IO.println("ファイルを作成しました: " + file);
+        IO.println("ファイルを作成しました: " + file.getFileName());
 
         // ファイルのコピー
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
         // REPLACE_EXISTING: 同名ファイルがある場合は上書き
-        // COPY_ATTRIBUTES: ファイルの属性（作成日時、アクセス権など）もコピー
+        // COPY_ATTRIBUTES: 最終更新日時などの属性もコピー（どの属性をコピーできるかはOSによる）
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile, StandardCopyOption.REPLACE_EXISTING);
-        IO.println("ファイルをコピーしました: " + copiedFile);
+        IO.println("ファイルをコピーしました: " + copiedFile.getFileName());
 
         // ファイルの削除
         Files.delete(copiedFile);
@@ -477,10 +491,12 @@ public class FileSystemExample {
 
 ```
 ディレクトリを作成しました: my_temp_dir
-ファイルを作成しました: my_temp_dir/my_file.txt
-ファイルをコピーしました: my_temp_dir/my_file_copy.txt
+ファイルを作成しました: my_file.txt
+ファイルをコピーしました: my_file_copy.txt
 ファイルとディレクトリを削除しました。
 ```
+
+ファイルの変更の監視（`WatchService`）や非同期のファイル入出力など、NIO.2のより進んだ使い方は、付録B.13「NIO.2の高度な機能」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`</span>。
 
 ## 実践的なファイル処理例
 
@@ -513,7 +529,7 @@ public class CSVProcessingExample {
     
     // 簡単なCSV行解析（引用符などの複雑なケースは考慮していません）
     private static List<String> parseCSVLine(String line) {
-        return Arrays.asList(line.split(","));
+        return Arrays.asList(line.split(",", -1));  // -1: 末尾の空の項目も残す
     }
     
     // CSVファイルの書き込み
@@ -812,11 +828,11 @@ String text = """
 この行は改行なし'
 ```
 
-### 実践例：構造化データの処理
+### 実践例：構造化データの生成と保存
 
-Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを扱う際にとくに威力を発揮します。
+Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを文字列として作り、ファイルに保存するときにとくに役立ちます。
 
-<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（9〜41、175〜176行目）</span>
+<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（8〜40、174〜175行目）</span>
 
 ```java
 public class TextBlockStructuredData {
@@ -847,7 +863,7 @@ public class TextBlockStructuredData {
                 """.formatted(userName, userAge, timestamp, timestamp);
         
         // JSONファイルとして保存
-        Path jsonFile = Paths.get("user_data.json");
+        Path jsonFile = Path.of("user_data.json");
         Files.writeString(jsonFile, jsonData);
         IO.println("=== JSON データを保存しました ===");
         IO.println(jsonData);
@@ -899,8 +915,6 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 また、`formatted()`メソッドと組み合わせると、値を埋め込んだ内容を作れます。
 設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存する使い方も同じです。
 
-本章の高度な内容については、付録B.13「NIO.2の高度な機能」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b13-nio2-advanced/`</span>。
-
 ## まとめ
 
 - JavaのファイルI/Oはストリームベースである
@@ -918,7 +932,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 - ファイルパスの問題
     + 相対パスは実行時の作業ディレクトリが基準になるため、ファイルが見つからないことがある
 - 文字エンコーディングの問題
-    + 文字コードを指定せずに読み書きすると、環境によって文字化けする
+    + ファイルの文字コードと異なる文字コードで読むと、文字化けや`MalformedInputException`になる（Windowsのツールで作ったShift_JISのファイルなど）
 - ファイルのロックとアクセス権限
     + 他のプロセスが使用中のファイルや、権限のないファイルは操作できない
 - メモリの使いすぎ
@@ -940,8 +954,16 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+
+1. 基礎課題（`basic/`）
+    + テキストとバイナリの読み書き（BufferedReader・BufferedWriter、FileInputStream・FileOutputStream）
+    + フォルダーの操作とバックアップ（Files.createDirectory・list・copy・delete）
+    + CSVの読み込みと集計（壊れた行の読み飛ばし、書き出し）
+    + アクセスログの集計（行の分割、キーごとの件数）
+2. 発展課題（`advanced/`）
+    + ゲームのセーブデータをバイナリで保存する（DataOutputStream・DataInputStream）
+    + 名簿ファイルの文字エンコーディングを変換する（Windows-31JからUTF-8へ）
+3. チャレンジ課題（`challenge/`）
+    + ToDoリストの保存と復元（テキスト形式、バックアップ、直列化、テキストブロック）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。

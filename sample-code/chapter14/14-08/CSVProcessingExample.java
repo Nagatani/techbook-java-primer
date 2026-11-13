@@ -5,7 +5,7 @@ import java.util.*;
 
 public class CSVProcessingExample {
     public static void main(String[] args) {
-        Path csvFile = Paths.get("sample.csv");
+        Path csvFile = Path.of("sample.csv");
         
         // CSVファイルの作成（サンプルデータ）
         createSampleCSV(csvFile);
@@ -16,7 +16,7 @@ public class CSVProcessingExample {
         csvData.forEach(row -> IO.println(String.join(" | ", row)));
         
         // CSVファイルの書き込み
-        writeCSV(Paths.get("output.csv"), csvData);
+        writeCSV(Path.of("output.csv"), csvData);
     }
     
     // CSVファイルの読み込み
@@ -36,7 +36,7 @@ public class CSVProcessingExample {
     
     // 簡単なCSV行解析（引用符などの複雑なケースは考慮していません）
     private static List<String> parseCSVLine(String line) {
-        return Arrays.asList(line.split(","));
+        return Arrays.asList(line.split(",", -1));  // -1: 末尾の空の項目も残す
     }
     
     // CSVファイルの書き込み

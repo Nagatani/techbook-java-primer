@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
@@ -34,7 +33,7 @@ public class TextBlockStructuredData {
                 """.formatted(userName, userAge, timestamp, timestamp);
         
         // JSONファイルとして保存
-        Path jsonFile = Paths.get("user_data.json");
+        Path jsonFile = Path.of("user_data.json");
         Files.writeString(jsonFile, jsonData);
         IO.println("=== JSON データを保存しました ===");
         IO.println(jsonData);
@@ -65,7 +64,7 @@ public class TextBlockStructuredData {
                 LIMIT 100;
                 """.formatted(tableName, condition);
         
-        Path sqlFile = Paths.get("user_query.sql");
+        Path sqlFile = Path.of("user_query.sql");
         Files.writeString(sqlFile, sqlQuery);
         IO.println("\n=== SQL クエリを保存しました ===");
         IO.println(sqlQuery);
@@ -118,7 +117,7 @@ public class TextBlockStructuredData {
                 </html>
                 """.formatted(pageTitle, userName, userAge, timestamp);
         
-        Path htmlFile = Paths.get("user_profile.html");
+        Path htmlFile = Path.of("user_profile.html");
         Files.writeString(htmlFile, htmlTemplate);
         IO.println("\n=== HTML テンプレートを保存しました ===");
         IO.println("ファイル: " + htmlFile.toAbsolutePath());
@@ -152,13 +151,13 @@ public class TextBlockStructuredData {
                 </configuration>
                 """.formatted(appName, version);
         
-        Path xmlFile = Paths.get("app_config.xml");
+        Path xmlFile = Path.of("app_config.xml");
         Files.writeString(xmlFile, xmlConfig);
         IO.println("\n=== XML 設定ファイルを保存しました ===");
         
         // 生成されたファイルの一覧表示
         IO.println("\n=== 生成されたファイル一覧 ===");
-        Path currentDir = Paths.get(".");
+        Path currentDir = Path.of(".");
         try (Stream<Path> files = Files.list(currentDir)) {  // ストリームを閉じる
             files.sorted()  // 並び順はOSによって異なるため名前順にする
                     .filter(p -> p.toString().matches(".*\\.(json|sql|html|xml)$"))

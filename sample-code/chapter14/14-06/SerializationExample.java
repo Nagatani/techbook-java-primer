@@ -33,7 +33,7 @@ public class SerializationExample {
         } catch (IOException e) { e.printStackTrace(); }
 
         // ObjectInputStreamでファイルからオブジェクトを復元します。
-        // オブジェクトの状態が完全に復元され、保存時と同じ構造とデータを持つオブジェクトが復元されます。
+        // transientを付けたフィールド以外が、保存したときの値で復元されます。
         // 2. ファイルから非直列化して復元
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {

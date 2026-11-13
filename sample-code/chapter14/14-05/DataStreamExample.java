@@ -6,7 +6,7 @@ public class DataStreamExample {
         
         // バイナリファイルの書き込み
         // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // この方法により、データの型情報を保持したまま効率的にファイルに保存できます。
+        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、読むときに型と順序を合わせます。
         // データの書き込み
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(filename)))) {

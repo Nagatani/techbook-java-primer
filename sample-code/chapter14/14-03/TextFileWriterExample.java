@@ -3,12 +3,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class TextFileWriterExample {
     public static void main(String[] args) {
-        Path filePath = Paths.get("output.txt");
+        Path filePath = Path.of("output.txt");
 
         // ファイルへの書き込み
         // BufferedWriterを使用してテキストデータを効率的にファイルに書き込みます。
