@@ -1,43 +1,20 @@
 classDiagram
-    direction LR
+    direction BT
 
-    class Comparable~T~ {
+    class Exportable {
         <<interface>>
-        +compareTo(T other) int
+        +exportToFormat(String format) void
     }
-    class Cloneable {
+    class Archivable {
         <<interface>>
-    }
-    class List~E~ {
-        <<interface>>
-        +add(E element) boolean
-        +get(int index) E
-    }
-    class Serializable {
-        <<interface>>
-    }
-    class Map~K,V~ {
-        <<interface>>
-        +put(K key, V value) V
-        +get(Object key) V
+        +archiveToStorage(String location) void
     }
 
-    class String
-    class Student {
-        +compareTo(Student other) int
-        +clone() Object
-    }
-    class LinkedList~E~
-    class ArrayList~E~
-    class HashMap~K,V~
-    class TreeMap~K,V~
+    class TextDocument
+    class Report
+    class DataSet
 
-    Comparable <|.. String
-    Comparable <|.. Student
-    Cloneable <|.. Student
-    List <|.. LinkedList
-    List <|.. ArrayList
-    Serializable <|.. ArrayList
-    Serializable <|.. HashMap
-    Map <|.. HashMap
-    Map <|.. TreeMap
+    Exportable <|.. TextDocument
+    Archivable <|.. TextDocument
+    Exportable <|.. Report
+    Exportable <|.. DataSet
