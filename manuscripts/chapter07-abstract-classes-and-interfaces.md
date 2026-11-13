@@ -37,12 +37,11 @@
 まずもっとも基本的なルールとして、1つでも抽象メソッドを持つクラスは、抽象クラスとして`abstract`修飾子を付けて宣言しなければなりません<span class="footnote">逆に、抽象メソッドを1つも持たないクラスにも`abstract`を付けられます。共通の処理だけを持ち、それ自体のインスタンスは作らせたくない親クラスに使います。</span>。
 これはJavaの言語仕様で定められた強制的なルールであり、コンパイラーはこのルールに従わないコードをエラーとして扱います。
 
-次に、抽象クラスは`new`キーワードを使ってインスタンスを生成できないという制約があります。
-これは、抽象クラスが不完全な定義（抽象メソッド）を含んでいるからで、
-実装がないメソッドを持つオブジェクトを作成することは論理的に不可能だからです。
+次に、`abstract`を付けたクラスは、抽象メソッドの有無にかかわらず、`new`キーワードを使ってインスタンスを生成できません。
+抽象メソッドを持つクラスで考えると、インスタンスを作れてしまえば、中身のないメソッドを呼び出せることになるからです。
 
-さらに、抽象クラスを継承した子クラスには、親クラスのすべての抽象メソッドをオーバーライドして具体的に実装します。
-もし1つでも実装しない抽象メソッドが残っている場合、その子クラスもまた抽象クラスとして宣言します。
+さらに、抽象クラスを継承した子クラスでは、親クラスのすべての抽象メソッドをオーバーライドして実装しなければなりません。
+1つでも実装していない抽象メソッドが残る場合は、その子クラスも抽象クラスとして宣言します。
 このメカニズムにより、抽象メソッドの実装を強制し、設計上の契約を確実に守らせることができます。
 
 ### 実践例：`Shape`抽象クラス
@@ -77,16 +76,6 @@ public abstract class Shape {
 }
 ```
 
-実行結果：
-
-```
-これは 円 です。
-面積は 78.53981633974483 です。
-
-これは 長方形 です。
-面積は 24.0 です。
-```
-
 `Shape`クラスは`getArea()`メソッドの具体的な計算方法を知らないため、このメソッドを抽象メソッドとして宣言します。
 
 ### 抽象クラスの継承
@@ -101,7 +90,7 @@ public class Circle extends Shape {
     private double radius;
 
     public Circle(double radius) {
-        super("円"); // 親クラスのコンストラクタを呼び出す
+        super("円"); // 親クラスのコンストラクターを呼び出す
         this.radius = radius;
     }
 
@@ -152,6 +141,15 @@ public class Main {
 }
 ```
 
+実行結果：
+
+```
+これは 円 です。
+面積は 314.1592653589793 です。
+これは 長方形 です。
+面積は 40.0 です。
+```
+
 抽象クラスは、共通の性質（フィールドや実装済みのメソッド）を持ちつつ、一部の振る舞いだけを子クラスに強制したい場合に非常に有効です。
 
 ## インターフェイス：振る舞いの契約
@@ -160,12 +158,12 @@ public class Main {
 
 インターフェイスの中心は、メソッドのシグネチャ（名前、引数、戻り値の型）<span class="footnote">厳密には、Javaの言語仕様でのシグネチャはメソッド名と引数の型の組で、戻り値の型を含みません。戻り値の型だけが異なるメソッドをオーバーロードできないのは、シグネチャが同じになるためです。</span>と定数で、インスタンスフィールドを持つことはできません。
 抽象メソッドには実装を書かず、クラスが実装すべきメソッドの仕様だけを列挙します。
-Java 8以降は、あとで説明する`default`メソッドと`static`メソッドに限って、インターフェイスにも実装を書けるようになりました。
+ただし、あとで説明する`default`メソッドと`static`メソッド（Java 8以降）、`private`メソッド（Java 9以降）には、インターフェイスでも実装を書けます。
 
 ### インターフェイスのルール
 
 1.  `interface`キーワードを使って宣言する
-2.  定義できるメンバーは、抽象メソッド、定数 (`public static final`)、そしてJava 8から追加された`default`メソッドと`static`メソッドのみ
+2.  主なメンバーは、抽象メソッド、定数 (`public static final`)、Java 8から追加された`default`メソッドと`static`メソッド、Java 9から追加された`private`メソッド
 3.  インターフェイスもインスタンス化できない
 4.  クラスは`implements`キーワードを使ってインターフェイスを実装する
 5.  インターフェイスを実装したクラスは、そのインターフェイスが持つすべての抽象メソッドを実装しなければならない
@@ -230,15 +228,6 @@ public class TextDocument implements Exportable, Archivable {
 }
 ```
 
-実行結果：
-
-```
-技術仕様書をPDF形式でエクスポートします。
-技術仕様書をHTML形式でエクスポートします。
-技術仕様書をバックアップサーバーにアーカイブします。
-技術仕様書をクラウドストレージにアーカイブします。
-```
-
 インターフェイスは、共通の機能（契約）を、継承関係にない異なるクラス間で実現したい場合に非常に強力です。たとえば、「エクスポート可能(`Exportable`)」という性質は、「ドキュメント」だけでなく「レポート」や「データセット」など、まったく異なるクラスも持つことができます。
 
 ## 抽象クラス vs インターフェイス
@@ -249,12 +238,14 @@ public class TextDocument implements Exportable, Archivable {
 | :--- | :--- | :--- |
 | 目的 | is-a関係。共通の基盤・性質を共有する | can-do関係。特定の能力・振る舞いを実装する |
 | 継承/実装 | `extends` (単一継承のみ) | `implements` (複数実装が可能) |
-| メンバー | インスタンスフィールド、コンストラクター、実装済みメソッド、抽象メソッド | 定数、抽象メソッド、default/staticメソッド |
+| メンバー | インスタンスフィールド、コンストラクター、実装済みメソッド、抽象メソッド | 定数、抽象メソッド、default/static/privateメソッド |
 | 使い分け | 密接に関連するクラス階層を構築したい場合。<br>共通のコードや状態を共有させたい | 無関係なクラスに共通の機能を持たせたい場合。<br>APIの「契約」を定義したい |
 
 #### 経験則
-* 迷ったら、まずはインターフェイスで考える。インターフェイスのほうが柔軟性が高い
-* 子クラス間で共通のコードやフィールドをどうしても共有したい場合に、抽象クラスを検討する
+
+- 迷ったら、まずはインターフェイスで考える
+    + インターフェイスのほうが柔軟性が高い
+- 子クラス間で共通のコードやフィールドをどうしても共有したい場合に、抽象クラスを検討する
 
 ## Java 8以降のインターフェイス進化
 
@@ -342,7 +333,7 @@ public interface DataProcessor {
         }
     }
     
-    // 抽象メソッド（サブクラスで実装）
+    // 抽象メソッド（実装クラスで実装）
     Object loadData();
     boolean validate(Object data);
     Object transform(Object data);
@@ -393,7 +384,7 @@ interface C extends A {
 
 // ダイヤモンド問題：BとCの両方を継承
 class D implements B, C {
-    // コンパイルエラー：どちらのmethod()を使うか不明
+    // オーバーライドしないと、どちらのmethod()を使うか決まらずコンパイルエラーになる
     
     // 解決策：明示的にオーバーライド
     @Override
@@ -544,12 +535,16 @@ interface DefensiveInterface {
         return items.isEmpty() ? defaultValue : items.get(0);
     }
     
-    // バリデーション付きメソッド
+    // バリデーション付きメソッド：追加できないときはfalseを返す
     default boolean addItem(String item) {
         if (item == null || item.trim().isEmpty()) {
             return false;
         }
-        getItems().add(item);
+        List<String> items = getItems();
+        if (items == null) {
+            return false;  // リストを持たない実装には追加できない
+        }
+        items.add(item);
         return true;
     }
 }
@@ -613,13 +608,17 @@ class Memo implements Timestamped, Identifiable, Versioned {
         this.content = newContent;
         this.version++;
         
-        // デフォルトメソッドを活用
+        // defaultメソッドを活用
         if (isExpired(3600000)) {  // 1時間
             IO.println("Memo " + getFullIdentifier() + " has expired");
         }
     }
 }
 ```
+
+`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、付録Fで紹介しています。</span>。
+全文の`main`メソッド<span class="footnote">サンプルコード7-12の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-12/`にあります。</span>で各機能を使うと、次のように表示されます。
+経過時間は実行するたびに変わるので、`main`メソッドでは1秒未満かどうかだけを表示しています。
 
 実行結果：
 
@@ -629,16 +628,13 @@ memo1: Memo#M001
 memo2: Memo#M002
 
 === Timestampedの機能 ===
-memo1の経過時間: 19ms
+memo1の経過時間は1秒未満？: true
 memo1は期限切れ？: false
 
 === Versionedの機能 ===
 memo1のバージョン: 2
 memo2のバージョン: 1
 memo1はmemo2より新しい？: true
-
-=== 組み合わせた使用 ===
-Memo#M001 (version 2, age: 23ms)
 ```
 
 ### トレイトパターン
@@ -754,6 +750,11 @@ class BasicUserService implements UserRepository, UserNotificationService {
 // API進化の管理
 interface ServiceV1 {
     String process(String input);
+
+    // 最初の版で用意した、以前の処理方法のメソッド
+    default String oldProcess(String input) {
+        return process(input);
+    }
 }
 
 interface ServiceV2 extends ServiceV1 {
@@ -774,8 +775,9 @@ interface ServiceV3 extends ServiceV2 {
         return results;
     }
     
-    // 非推奨メソッドの管理
+    // 最初の版からあるメソッドを、この版で非推奨にする
     @Deprecated(since = "3.0", forRemoval = true)
+    @Override
     default String oldProcess(String input) {
         System.err.println("警告: oldProcessは非推奨です。processを使用してください。");
         return process(input);
@@ -799,7 +801,8 @@ class ServiceImpl implements ServiceV3 {
 
 `ServiceImpl`が実装しなければならないのは、最初の版からある`process()`だけです。
 `processBatch()`のように後の版で追加したメソッドは、defaultメソッドの実装がそのまま使われます。
-使ってほしくなくなったメソッドには`@Deprecated`を付けて、将来削除する予定であることを利用者に知らせます<span class="footnote">Java 9からは`@Deprecated(since = "2", forRemoval = true)`のように、非推奨になった版と、削除する予定であることを書き添えられます。</span>。
+最初の版からある`oldProcess()`のように、使ってほしくなくなったメソッドには`@Deprecated`を付けて、非推奨であることを利用者に知らせます。
+`forRemoval = true`を書き添えると、将来削除する予定であることも伝えられます<span class="footnote">`since`と`forRemoval`の指定は、Java 9から使えます。`since`には非推奨になった版を書きます。</span>。
 
 ## Factoryパターン：オブジェクト生成の抽象化
 
@@ -838,7 +841,7 @@ class CircleFigure implements Figure {
     // ...
 }
 // ...
-// ファクトリークラス
+// ファクトリクラス
 public class FigureFactory {
     public static Figure createFigure(String type, double... params) {
         switch (type.toLowerCase()) {
@@ -858,7 +861,7 @@ public class FigureFactory {
 // 使用例
 public class FactoryDemo {
     public static void main(String[] args) {
-        // ファクトリーを使って図形を生成
+        // ファクトリを使って図形を生成
         Figure circle = FigureFactory.createFigure("circle", 5.0);
         Figure rectangle = FigureFactory.createFigure("rectangle", 4.0, 6.0);
         Figure triangle = FigureFactory.createFigure("triangle", 3.0, 4.0);
@@ -877,7 +880,7 @@ public class FactoryDemo {
 
 ### Factory Method パターン
 
-より高度なFactoryパターンとして、Factory Methodパターンがあります。これは、オブジェクト生成のインターフェイスを定義し、サブクラスがどのクラスをインスタンス化するかを決定します。
+より高度なFactoryパターンとして、Factory Methodパターンがあります。このパターンでは、親クラスがオブジェクトを生成するメソッドを定め、どのクラスのインスタンスを作るかはサブクラスが決めます。
 
 <div class="figure">
 
@@ -888,7 +891,7 @@ public class FactoryDemo {
 <span class="listing-number">**サンプルコード7-17**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
 
 ```java
-// 抽象ファクトリークラス
+// 抽象ファクトリクラス
 abstract class DocumentFactory {
     // Factory Method - サブクラスで実装
     public abstract Document createDocument();
@@ -901,7 +904,7 @@ abstract class DocumentFactory {
     }
 }
 
-// 具体的なファクトリー
+// 具体的なファクトリ
 class WordDocumentFactory extends DocumentFactory {
     @Override
     public Document createDocument() {
@@ -971,7 +974,7 @@ class MySQLConnection implements DatabaseConnection {
     }
 }
 // ...
-// データベース接続ファクトリー
+// データベース接続ファクトリ
 public class DatabaseConnectionFactory {
     public static DatabaseConnection createConnection(String type, String host, int port, String database) {
         switch (type.toUpperCase()) {
@@ -1025,7 +1028,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 - 設計パターン
     + Factoryパターンでオブジェクトの生成方法を隠し、利用側を具体的なクラスから切り離す
 
-次章では、列挙型とレコードという特殊なクラス形式を学習します。
+次章では、列挙型・レコード・内部クラスという特殊なクラス形式を学習します。
 
 ## 章末演習
 
@@ -1047,4 +1050,6 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
-次のステップ：基礎課題が完了したら、第8章「Javaの特殊なクラス形式」に進みましょう。
+#### 次のステップ
+
+基礎課題が完了したら、第8章「Javaの特殊なクラス形式」に進みましょう。

@@ -1,4 +1,4 @@
-// 抽象ファクトリークラス
+// 抽象ファクトリクラス
 abstract class DocumentFactory {
     // Factory Method - サブクラスで実装
     public abstract Document createDocument();
@@ -11,7 +11,7 @@ abstract class DocumentFactory {
     }
 }
 
-// 具体的なファクトリー
+// 具体的なファクトリ
 class WordDocumentFactory extends DocumentFactory {
     @Override
     public Document createDocument() {

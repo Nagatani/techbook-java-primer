@@ -54,7 +54,7 @@ class PostgreSQLConnection implements DatabaseConnection {
     }
 }
 
-// データベース接続ファクトリー
+// データベース接続ファクトリ
 public class DatabaseConnectionFactory {
     public static DatabaseConnection createConnection(String type, String host, int port, String database) {
         switch (type.toUpperCase()) {

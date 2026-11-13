@@ -65,7 +65,7 @@ class TriangleFigure implements Figure {
     }
 }
 
-// ファクトリークラス
+// ファクトリクラス
 public class FigureFactory {
     public static Figure createFigure(String type, double... params) {
         switch (type.toLowerCase()) {

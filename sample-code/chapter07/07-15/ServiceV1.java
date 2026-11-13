@@ -1,6 +1,11 @@
 // API進化の管理
 interface ServiceV1 {
     String process(String input);
+
+    // 最初の版で用意した、以前の処理方法のメソッド
+    default String oldProcess(String input) {
+        return process(input);
+    }
 }
 
 interface ServiceV2 extends ServiceV1 {
@@ -21,8 +26,9 @@ interface ServiceV3 extends ServiceV2 {
         return results;
     }
     
-    // 非推奨メソッドの管理
+    // 最初の版からあるメソッドを、この版で非推奨にする
     @Deprecated(since = "3.0", forRemoval = true)
+    @Override
     default String oldProcess(String input) {
         System.err.println("警告: oldProcessは非推奨です。processを使用してください。");
         return process(input);

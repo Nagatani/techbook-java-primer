@@ -27,7 +27,7 @@ javac -d out *.java
 | [7-9](./07-09/) | BaseClass.java | （mainメソッドなし） |
 | [7-10](./07-10/) | JsonDemo.java<br>JsonSerializable.java<br>User.java | `java -cp out JsonDemo` |
 | [7-11](./07-11/) | DefensiveDemo.java<br>DefensiveInterface.java | `java -cp out DefensiveDemo` |
-| [7-12](./07-12/) | Timestamped.java | （mainメソッドなし） |
+| [7-12](./07-12/) | Timestamped.java | `java -cp out MixinDemo` |
 | [7-13](./07-13/) | Measurable.java | （mainメソッドなし） |
 | [7-14](./07-14/) | BadUserService.java<br>User.java | （mainメソッドなし） |
 | [7-15](./07-15/) | ServiceConfig.java<br>ServiceV1.java | （mainメソッドなし） |

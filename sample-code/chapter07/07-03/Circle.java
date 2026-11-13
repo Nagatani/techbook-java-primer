@@ -3,7 +3,7 @@ public class Circle extends Shape {
     private double radius;
 
     public Circle(double radius) {
-        super("円"); // 親クラスのコンストラクタを呼び出す
+        super("円"); // 親クラスのコンストラクターを呼び出す
         this.radius = radius;
     }
 

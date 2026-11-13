@@ -13,7 +13,7 @@ public interface DataProcessor {
         }
     }
     
-    // 抽象メソッド（サブクラスで実装）
+    // 抽象メソッド（実装クラスで実装）
     Object loadData();
     boolean validate(Object data);
     Object transform(Object data);

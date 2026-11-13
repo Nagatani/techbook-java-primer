@@ -21,7 +21,7 @@ interface C extends A {
 
 // ダイヤモンド問題：BとCの両方を継承
 class D implements B, C {
-    // コンパイルエラー：どちらのmethod()を使うか不明
+    // オーバーライドしないと、どちらのmethod()を使うか決まらずコンパイルエラーになる
     
     // 解決策：明示的にオーバーライド
     @Override

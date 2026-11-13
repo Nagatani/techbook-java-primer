@@ -86,12 +86,12 @@
     "dir": "07-11",
     "main": "DefensiveDemo",
     "excerpt": [
-      { "file": "DefensiveInterface.java", "from": 1, "to": 28 }
+      { "file": "DefensiveInterface.java", "from": 1, "to": 32 }
     ]
   },
   "7-12": {
     "dir": "07-12",
-    "main": null,
+    "main": "MixinDemo",
     "excerpt": [
       { "file": "Timestamped.java", "from": 3, "to": 22 },
       { "file": "Timestamped.java", "from": 36, "to": 37 },
@@ -120,7 +120,7 @@
     "dir": "07-15",
     "main": null,
     "excerpt": [
-      { "file": "ServiceV1.java", "from": 1, "to": 44 }
+      { "file": "ServiceV1.java", "from": 1, "to": 50 }
     ]
   },
   "7-16": {

@@ -17,12 +17,16 @@ interface DefensiveInterface {
         return items.isEmpty() ? defaultValue : items.get(0);
     }
     
-    // バリデーション付きメソッド
+    // バリデーション付きメソッド：追加できないときはfalseを返す
     default boolean addItem(String item) {
         if (item == null || item.trim().isEmpty()) {
             return false;
         }
-        getItems().add(item);
+        List<String> items = getItems();
+        if (items == null) {
+            return false;  // リストを持たない実装には追加できない
+        }
+        items.add(item);
         return true;
     }
 }
