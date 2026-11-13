@@ -615,10 +615,12 @@ OkHttpはSquare社が開発したHTTP通信ライブラリで、接続プーリ�
 ```xml
 <dependency>
     <groupId>com.squareup.okhttp3</groupId>
-    <artifactId>okhttp</artifactId>
-    <version>4.12.0</version>
+    <artifactId>okhttp-jvm</artifactId>
+    <version>5.5.1</version>
 </dependency>
 ```
+
+OkHttpの5.x系では、Mavenから使うときの成果物の名前が`okhttp-jvm`です<span class="footnote">5.x系の`okhttp`は、Gradleが読む付加情報で`okhttp-jvm`を指す中身のないJARです。Mavenはその情報を読まないので、`okhttp`と書くとクラスが見つからずコンパイルできません。Gradleでは`com.squareup.okhttp3:okhttp:5.5.1`と書けます。</span>。
 
 以下の例では、同期のGET・POSTリクエストと、非同期リクエストの実装方法を示します。
 

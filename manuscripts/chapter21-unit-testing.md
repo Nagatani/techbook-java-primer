@@ -491,7 +491,7 @@ public class StringCalculator {
 
 JUnitはJDKに含まれていない外部ライブラリなので、使う前にプロジェクトへ追加します。
 IntelliJ IDEAでは、テストクラスに`@Test`を書くと、JUnitがまだないため`@Test`が赤く表示されます。
-`@Test`にカーソルを置いて`Alt+Enter`（macOSでは`Option+Enter`）を押し、表示された一覧からJUnit 5をクラスパスに追加する項目を選びます。
+`@Test`にカーソルを置いて`Alt+Enter`（macOSでは`Option+Enter`）を押し、表示された一覧からJUnitをクラスパスに追加する項目を選びます。
 項目の文言はIntelliJ IDEAの版によって異なります。
 選ぶとJUnitがダウンロードされ、使えるようになります。
 テストを実行するには、テストクラスやテストメソッドの左に表示される実行ボタンを押します。
@@ -499,7 +499,9 @@ IntelliJ IDEAでは、テストクラスに`@Test`を書くと、JUnitがまだ�
 実際の開発では、Mavenなどのビルドツールの設定ファイルに依存関係として書くのが一般的です。
 外部ライブラリとクラスパスの関係や、Mavenでの依存関係の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 
-JUnit 5（Jupiter）<span class="footnote">JUnit 5は、テストを実行する基盤のJUnit Platform、テストを書くためのJUnit Jupiter、古いJUnitのテストを動かすJUnit Vintageからなります。Jupiter（木星）は太陽系の5番目の惑星で、JUnit 5の「5」にちなんだ名前です。</span>を使用した基本的なテストの例を示します。
+JUnitのテストの書き方（JUnit Jupiter）<span class="footnote">JUnit 5から、JUnitはテストを実行する基盤のJUnit Platform、テストを書くためのJUnit Jupiter、古いJUnitのテストを動かすJUnit Vintageに分かれました。Jupiter（木星）は太陽系の5番目の惑星で、JUnit 5の「5」にちなんだ名前です。</span>を使用した基本的なテストの例を示します。
+JUnitの最新の系列は2025年9月に公開されたJUnit 6で、Java 17以降で動きます。
+JUnit 6でもテストはJupiterの書き方のままなので、この章のコードはJUnit 5でも6でも同じように動きます。
 `@Test`アノテーションでテストメソッドを示し、`@BeforeEach`で各テストの前に実行する初期化処理を定義し、`Assertions`クラスのメソッドで検証します。
 テスト対象は、サンプルコード21-2の`Calculator`に、整数の割り算をする`divide`メソッド（`return a / b;`）を加えたものです。
 整数を0で割ると`ArithmeticException`が発生するので、`assertThrows`でその例外が投げられることを確かめます。
@@ -602,7 +604,7 @@ public class UserServiceTest {
 
 ### テストの構造化
 
-JUnit 5の@Nestedアノテーションを使用すると、テストを論理的にグループ化できます。
+JUnit Jupiterの`@Nested`アノテーションを使用すると、テストを論理的にグループ化できます。
 @DisplayNameを使用することで、テストレポートに読みやすい説明を表示できます。
 以下の例では、正常系と異常系のテストを明確に分離しています。
 
@@ -683,7 +685,7 @@ JUnitは、`<dependencies>`に`test`スコープの依存関係（`org.junit.jup
 ```xml
 <build>
     <plugins>
-        <!-- mvn test でJUnit 5のテストを実行する -->
+        <!-- mvn test でJUnitのテストを実行する -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
