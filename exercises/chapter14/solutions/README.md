@@ -11,7 +11,7 @@
 | 課題1: テキストとバイナリの読み書き | `BasicFileIO.java` | `BufferedWriter`・`BufferedReader`、`readAllLines`、バイトストリームでのコピー |
 | 課題2: フォルダーの操作とバックアップ | `FolderOperations.java` | `createDirectory`・`list`・`copy`・`delete`、名前順に並べてから表示する |
 | 課題3: CSVの読み込みと集計 | `CsvProcessor.java` | CSVの書き込みと読み込み、項目の変換と誤った行の扱い、集計 |
-| 課題4: アクセスログの集計 | `LogAnalyzer.java` | ログの行の分解、種類ごとの件数、結果のファイルへの書き出し |
+| 課題4: アクセスログの集計 | `LogAnalyzer.java` | ログの行の分解とRecord、形式の違う行を数える、ステータス・ページごとの件数 |
 
 ## 実行方法
 
