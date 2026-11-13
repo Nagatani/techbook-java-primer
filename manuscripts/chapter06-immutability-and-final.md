@@ -250,10 +250,13 @@ public class AuthenticationService {
 `class MyString extends String { }`のように継承しようとすると、コンパイルエラーになります。
 
 サンプルコード6-3の`ImmutablePoint`も、`public final class ImmutablePoint`と宣言しました。
-`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します。
+`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します<span class="footnote">javacのメッセージは環境の言語設定で変わります。英語の環境では`error: cannot inherit from final ImmutablePoint`と表示されます。付録Hは英語の表示で載せています。</span>。
 
 ```
-error: cannot inherit from final ImmutablePoint
+ColoredPoint.java:1: エラー: final ImmutablePointからは継承できません
+class ColoredPoint extends ImmutablePoint { }
+                           ^
+エラー1個
 ```
 
 不変クラスは、このように通常`final`にします。
