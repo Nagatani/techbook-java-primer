@@ -24,7 +24,7 @@
     "dir": "09-10",
     "main": "HashSetExample",
     "excerpt": [
-      { "file": "HashSetExample.java", "from": 1, "to": 20 }
+      { "file": "HashSetExample.java", "from": 1, "to": 21 }
     ]
   },
   "9-13": {

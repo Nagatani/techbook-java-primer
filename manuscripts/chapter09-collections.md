@@ -139,6 +139,10 @@ for (String student : students) {
 
 これらの問題を解決するために、Javaはコレクションフレームワークを提供しています<span class="footnote">コレクションフレームワークはJava 1.2（1998年）で加わりました。設計の中心になったのは、のちに『Effective Java』を著すジョシュア・ブロックです。</span>。同じ学生管理プログラムをArrayListで書き直してみましょう。
 
+次のコードの`List<String>`の`<String>`は、リストに入れる要素の型を表します。
+右辺の`new ArrayList<>()`の`<>`は、左辺と同じ型の指定を省いた書き方です。
+型の指定のしかたは、第10章「ジェネリクス」で詳しく学びます。
+
 <span class="listing-number">**サンプルコード9-6**　StudentManagerImproved.java</span>
 
 ```java
@@ -200,7 +204,7 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 1. Collection
     + すべてのコレクションの基底インターフェイス
-    + List（順序付きのコレクション。重複できる）、Set（重複を許さないコレクション）、Queue（FIFO、先入れ先出しのコレクション）がこれを継承する
+    + List（順序付きのコレクション。重複できる）、Set（重複を許さないコレクション）、Queue（取り出す順序が決まった待ち行列。多くはFIFO、先入れ先出し）がこれを継承する
 2. Map
     + キーと値のペアを管理する（Collectionとは独立した階層）
 
@@ -299,7 +303,7 @@ public class ArrayListExample {
 
 `List`インターフェイスの実装には、`ArrayList`のほかに`LinkedList`があります。
 以下のコードでは、2つのリストに、それぞれが得意とする操作をさせています。
-同じ`List`の操作でも、内部構造の違いによって速さが異なります。
+同じ`List`の操作でも、内部構造の違いによって速さが異なります<span class="footnote">コードのコメントや表に出てくるO(1)やO(n)は、要素の数nが増えたときに処理時間がどう増えるかを表すO記法（オーダー記法）です。O(1)は要素数によらずほぼ一定、O(n)は要素数に比例し、あとで出てくるO(log n)は要素数の対数に比例して増えることを表します。</span>。
 
 <span class="listing-number">**サンプルコード9-8**</span>
 
@@ -326,7 +330,7 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 - ArrayList
     + ランダムアクセスが多い場合（get/set操作）
 - LinkedList
-    + 先頭・末尾での追加・削除が多い場合
+    + 先頭での追加・削除が多い場合（末尾での追加だけなら`ArrayList`でも速い）
 
 <div class="figure">
 
@@ -387,6 +391,7 @@ public class HashSetExample {
         tags.add("プログラミング");
         boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
 
+        IO.println("2回目のJavaの追加: " + added);
         IO.println("タグ一覧: " + tags); // 順序は保証されない
 
         // 2. 要素の存在確認 (contains)
@@ -399,6 +404,7 @@ public class HashSetExample {
 実行結果：
 
 ```
+2回目のJavaの追加: false
 タグ一覧: [Java, プログラミング]
 「プログラミング」タグは存在します。
 ```
@@ -447,7 +453,7 @@ linkedHashSet.add(2);
 #### 使い分けの指針
 
 順序が重要でなければ、HashSetを選びます。
-追加や検索が平均O(1)<span class="footnote">O(1)やO(log n)は、要素の数nが増えたときに処理時間がどう増えるかを表すO記法（オーダー記法）です。O(1)は要素数によらずほぼ一定、O(n)は要素数に比例して増えることを表します。</span>で済むので、重複チェックや集合演算に向いています。
+追加や検索が平均O(1)で済むので、重複チェックや集合演算に向いています。
 常にソートされた状態を保ちたい場合は、TreeSetを使います。
 要素が順に並んでいるため、範囲検索のように順序が大切な処理に適しています。
 挿入した順序を保ちながら重複を取り除きたい場合は、LinkedHashSetが便利です。
@@ -490,11 +496,11 @@ Set<String> difference = new HashSet<>(set1);
 difference.removeAll(set2);  // {A}
 ```
 
-これらの集合演算は、データベースのJOIN操作や、アクセス制御、重複検出などの実用的な場面で威力を発揮します。
+これらの集合演算は、アクセス制御や重複検出などの実用的な場面で役立ちます。
 
 ## Map インターフェイス
 
-Mapはキーと値のペアを管理するデータ構造です。辞書やハッシュテーブルとも呼ばれます<span class="footnote">同じしくみを、Pythonでは辞書（dict）、Rubyではハッシュ（Hash）、C#では`Dictionary`と呼びます。C言語の標準ライブラリにはないため、C言語では自分で作るかライブラリを使います。</span>。
+Mapはキーと値のペアを管理するデータ構造です。連想配列や辞書とも呼ばれます<span class="footnote">同じしくみを、Pythonでは辞書（dict）、Rubyではハッシュ（Hash）、C#では`Dictionary`と呼びます。C言語の標準ライブラリにはないため、C言語では自分で作るかライブラリを使います。</span>。
 
 ### `HashMap`の基本的な使い方
 
@@ -542,6 +548,11 @@ Bob: 92点
 Alice: 95点
 ```
 
+`Map<String, Integer>`の値の型に`int`ではなく`Integer`と書いているのは、コレクションに入れられるのはオブジェクトだけで、`int`のような基本型は型の指定に使えないからです。
+`Integer`は`int`の値を包むクラスで、ラッパークラスと呼びます。
+`int`と`Integer`の間は自動で変換されるので、`scores.put("Alice", 85)`のように`int`の値をそのまま渡せ、`int bobScore = scores.get("Bob")`のように`int`の変数で受け取れます。
+ただし、存在しないキーを`get()`すると`null`が返り、それを`int`に変換しようとして`NullPointerException`が発生します。
+
 `HashMap`も、キーが同じかどうかを`HashSet`と同じく`hashCode()`と`equals()`で判定します。
 自作のクラスをキーに使うときは、この2つのメソッドを一貫した形でオーバーライドしておく必要があります（第5章で学んだ書き方を使います）。
 
@@ -563,12 +574,14 @@ hashMap.put("JavaScript", 27);
 // TreeMap: キーでソートされた順序を維持
 Map<String, Integer> treeMap = new TreeMap<>();
 treeMap.putAll(hashMap);
-// キーのアルファベット順で格納
+// キーの辞書順（Java, JavaScript, Python）で格納
 
 // LinkedHashMap: 挿入順序を維持
 Map<String, Integer> linkedHashMap = new LinkedHashMap<>();
-linkedHashMap.putAll(hashMap);
-// 挿入した順序で格納
+linkedHashMap.put("Java", 25);
+linkedHashMap.put("Python", 30);
+linkedHashMap.put("JavaScript", 27);
+// 挿入した順序（Java, Python, JavaScript）で格納
 ```
 
 #### パフォーマンスと用途
@@ -642,7 +655,7 @@ for-each文は内部的にイテレーターを使用しているため、理解
 // Arrays.asListのリストはサイズが固定で削除できないため、ArrayListにコピーする
 List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C"));
 
-// イテレータを使った走査：全コレクション型で統一された方法
+// イテレーターを使った走査：全コレクション型で統一された方法
 Iterator<String> iter = list.iterator();
 while (iter.hasNext()) {
     String element = iter.next();
@@ -654,7 +667,7 @@ Iterator<String> iter2 = list.iterator();
 while (iter2.hasNext()) {
     String element = iter2.next();
     if (element.equals("B")) {
-        iter2.remove();  // イテレータ経由で削除
+        iter2.remove();  // イテレーター経由で削除
     }
 }
 ```
@@ -679,10 +692,10 @@ for (String element : list) {
     IO.println(element);
 }
 
-// ただし、走査中の削除はできない
+// ただし、走査中にリストから直接削除してはいけない
 // for (String element : list) {
-//     if (element.equals("B")) {
-//         list.remove(element);  // ConcurrentModificationException!
+//     if (element.equals("A")) {
+//         list.remove(element);  // 例外が発生するか、要素が飛ばされる
 //     }
 // }
 ```
@@ -692,7 +705,7 @@ for (String element : list) {
 拡張for文は、インデックスを使う従来のループやイテレーターより短く書けます。
 インデックスを自分で扱わないので、インデックスの範囲外エラーも起きません。
 「すべての要素を順に処理する」という意図がそのまま読み取れるため、保守もしやすくなります。
-ただし、拡張for文で走査しているコレクションから、その途中で要素を削除できません<span class="footnote">削除すると、多くの場合、次の要素を取り出すときに`ConcurrentModificationException`が発生します。コレクションの変更を検出してすぐに例外を投げるこの性質を、フェイルファスト（fail-fast）と呼びます。</span>。
+ただし、拡張for文で走査しているコレクションから、その途中で要素を削除できません<span class="footnote">削除すると、多くの場合、次の要素を取り出すときに`ConcurrentModificationException`が発生します。最後から2番目の要素を削除したときのように、例外が起きずに残りの要素が飛ばされることもあります。コレクションの変更を検出してすぐに例外を投げるこの性質を、フェイルファスト（fail-fast）と呼びます。</span>。
 削除が必要なときは、イテレーターを使います。
 
 #### 使い分けの指針
@@ -709,11 +722,14 @@ for (String element : list) {
 
 | 操作 | ArrayList | LinkedList | HashSet | TreeSet | HashMap | TreeMap |
 |------|-----------|------------|---------|---------|---------|---------|
-| 追加（末尾） | O(1) | O(1) | O(1) | O(log n) | O(1) | O(log n) |
+| 追加（Listは末尾） | O(1) | O(1) | O(1) | O(log n) | O(1) | O(log n) |
 | 削除（インデックス） | O(n) | O(n) | - | - | - | - |
 | 検索（値） | O(n) | O(n) | O(1) | O(log n) | - | - |
 | 取得（インデックス） | O(1) | O(n) | - | - | - | - |
 | 取得（キー） | - | - | - | - | O(1) | O(log n) |
+
+HashSetとHashMapのO(1)は平均の値です。
+`ArrayList`の末尾への追加も、内部の配列を作り直すときだけは時間がかかるため、平均してO(1)という意味です。
 
 ### 使用場面の例
 
@@ -724,10 +740,10 @@ for (String element : list) {
        + Androidアプリの一覧画面（`RecyclerView`）に表示するデータを、アダプターに渡すために保持する
 
 2. LinkedList
-   - 待ち行列、履歴管理
-   - 先頭・末尾での操作が多い場合
+   - 待ち行列
+   - 先頭での追加・削除が多い場合
    - 実例
-       + ブラウザーの戻る/進む機能、Undo/Redo機能の実装
+       + 届いた順に処理する印刷ジョブの管理
 
 3. HashSet
    - ユニークなID管理、重複チェック
@@ -774,7 +790,7 @@ for (String s : list) {
 }
 
 // Stream API
-List<String> result = list.stream()
+List<String> result2 = list.stream()
     .filter(s -> s.length() > 5)
     .map(String::toUpperCase)
     .collect(Collectors.toList());
@@ -831,7 +847,7 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 | インターフェイス | 特徴 | 代表的な実装 | 主な用途 |
 | :--- | :--- | :--- | :--- |
 | `List` | 順序あり、重複OK | `ArrayList`, `LinkedList` | 順番にデータを並べたいとき |
-| `Set` | 順序なし(一部あり)、重複NG | `HashSet`, `LinkedHashSet` | 重複をなくしたいとき、順序が必要な場合も |
+| `Set` | 順序なし（一部あり）、重複NG | `HashSet`, `LinkedHashSet` | 重複をなくしたいとき、順序が必要な場合も |
 | `Map` | キーと値のペア | `HashMap`, `TreeMap` | IDと情報のように紐付けて管理したいとき |
 
 これらのコレクションを適切に使い分けることが、効率的で読みやすいプログラムを書くための第一歩です。次章では、これらのコレクションを安全かつ柔軟に扱うための「ジェネリクス」について詳しく学びます。
@@ -843,9 +859,6 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
 
 1. 基礎課題
     + 学生管理システム、単語カウンター、重複除去システムなど、各コレクションの基本的な活用

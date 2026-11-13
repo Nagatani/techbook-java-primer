@@ -10,6 +10,7 @@ public class HashSetExample {
         tags.add("プログラミング");
         boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
 
+        IO.println("2回目のJavaの追加: " + added);
         IO.println("タグ一覧: " + tags); // 順序は保証されない
 
         // 2. 要素の存在確認 (contains)
