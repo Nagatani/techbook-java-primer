@@ -28,7 +28,7 @@ if (!file.exists()) {
 
 ```java
 // 良い例
-Path configPath = Paths.get("data", "config.txt");
+Path configPath = Path.of("data", "config.txt");
 Path absolutePath = configPath.toAbsolutePath();
 
 IO.println("検索パス: " + absolutePath);
@@ -71,7 +71,7 @@ String line = br.readLine(); // 文字化けする可能性
 ```java
 // 良い例
 try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("japanese.txt"), StandardCharsets.UTF_8)) {
+        Path.of("japanese.txt"), StandardCharsets.UTF_8)) {
     
     String line;
     while ((line = reader.readLine()) != null) {
@@ -83,7 +83,7 @@ try (BufferedReader reader = Files.newBufferedReader(
 
 // 書き込み時も同様
 try (BufferedWriter writer = Files.newBufferedWriter(
-        Paths.get("output.txt"), StandardCharsets.UTF_8)) {
+        Path.of("output.txt"), StandardCharsets.UTF_8)) {
     writer.write("日本語のテキスト");
 } catch (IOException e) {
     System.err.println("ファイル書き込みエラー: " + e.getMessage());
@@ -99,7 +99,7 @@ try (BufferedWriter writer = Files.newBufferedWriter(
 ```java
 // 問題のあるコード
 try {
-    Files.write(Paths.get("C:/Windows/system.log"), "data".getBytes());
+    Files.write(Path.of("C:/Windows/system.log"), "data".getBytes());
 } catch (IOException e) {
     e.printStackTrace(); // 権限エラーの詳細が不明
 }
@@ -115,7 +115,7 @@ try {
 
 ```java
 // 良い例
-Path logFile = Paths.get("logs", "application.log");
+Path logFile = Path.of("logs", "application.log");
 
 try {
     // ディレクトリの存在チェックと作成
@@ -155,7 +155,7 @@ try {
 
 ```java
 // 悪い例（大きなファイルでOutOfMemoryError）
-String content = Files.readString(Paths.get("large_file.txt"));
+String content = Files.readString(Path.of("large_file.txt"));
 String[] lines = content.split("\n");
 ```
 
@@ -169,7 +169,7 @@ String[] lines = content.split("\n");
 
 ```java
 // 良い例1: ストリーミング処理
-try (Stream<String> lines = Files.lines(Paths.get("large_file.txt"))) {
+try (Stream<String> lines = Files.lines(Path.of("large_file.txt"))) {
     lines.filter(line -> line.contains("ERROR"))
          .forEach(IO::println);
 } catch (IOException e) {
@@ -178,7 +178,7 @@ try (Stream<String> lines = Files.lines(Paths.get("large_file.txt"))) {
 
 // 良い例2: バッファリングによる効率的な処理
 try (BufferedReader reader = Files.newBufferedReader(
-        Paths.get("large_file.txt"))) {
+        Path.of("large_file.txt"))) {
     
     String line;
     int lineCount = 0;
@@ -216,7 +216,7 @@ String path = "/home/user/data.txt"; // Unix固有
 
 ```java
 // 良い例
-Path dataDir = Paths.get(System.getProperty("user.home"), "myapp", "data");
+Path dataDir = Path.of(System.getProperty("user.home"), "myapp", "data");
 Path configFile = dataDir.resolve("config.properties");
 
 // ディレクトリの作成
@@ -279,7 +279,7 @@ public class ThreadSafeFileLogger {
     private final Object lock = new Object();
     
     public ThreadSafeFileLogger(String filename) {
-        this.logFile = Paths.get(filename);
+        this.logFile = Path.of(filename);
     }
     
     public void appendLog(String message) {
@@ -358,7 +358,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 1. ファイルパスの確認
 
    ```java
-   Path path = Paths.get("config.txt");
+   Path path = Path.of("config.txt");
    IO.println("現在のディレクトリ: " + System.getProperty("user.dir"));
    IO.println("絶対パス: " + path.toAbsolutePath());
    IO.println("ファイル存在: " + Files.exists(path));
