@@ -3,9 +3,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class CommonsLangExample {
@@ -21,7 +21,7 @@ public class CommonsLangExample {
         
         @Override
         public String toString() {
-            return ToStringBuilder.reflectionToString(this);
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
         
         @Override
@@ -44,7 +44,7 @@ public class CommonsLangExample {
         IO.println("Reverse: " + StringUtils.reverse("Hello"));
         IO.println("Capitalize: " + StringUtils.capitalize("java"));
         
-        // 空文字列の安全な処理
+        // nullや空文字列の安全な処理
         String nullStr = null;
         IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         

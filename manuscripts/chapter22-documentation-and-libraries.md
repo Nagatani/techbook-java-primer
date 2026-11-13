@@ -77,11 +77,18 @@ public int add(int a, int b) {
 | `@see` | 関連するクラスやメソッドへのリンクを生成します |
 | `@deprecated` | 非推奨のAPIであることを示し、代替手段を案内します |
 
+これらのタグは行の先頭に書きます。
+説明文の途中には、`{`と`}`で囲むインラインタグを書けます。
+`{@code ...}`は中身をコードの書体で表示し、`<`や`>`などの記号もそのまま表示します。
+`{@link クラス名#メソッド名}`は、説明文のなかにそのクラスやメソッドへのリンクを作ります。
+説明文にはHTMLのタグも使え、`<p>`で段落を分け、`<pre>`で書いた範囲は改行と字下げを保って表示されます。
+`@deprecated`タグは説明を書くためのもので、コンパイラーに非推奨を伝えるには`@Deprecated`アノテーションも付けます。
+
 ### 実践的なJavadocの例
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクター、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード22-2**　Task.java（1〜20、58〜66、78、135〜145、159行目）</span>
+<span class="listing-number">**サンプルコード22-2**　Task.java（1〜20、58〜66、78、144〜153、167行目）</span>
 
 ```java
 /**
@@ -118,14 +125,13 @@ public class Task {
     }
     // ...
     /**
-     * タスクを文字列表現に変換する
+     * タスクの概要を文字列で返す
      * 
-     * @return タスクの文字列表現
-     * @deprecated {@link #toDetailedString()} を使用してください
+     * @return タスクのIDとタイトルを含む文字列
+     * @deprecated 詳しい情報を含む {@link #toDetailedString()} を使用してください
      */
     @Deprecated(since = "2.0", forRemoval = true)
-    @Override
-    public String toString() {
+    public String getSummary() {
         return String.format("Task[id=%d, title='%s']", id, title);
     }
     // ...
@@ -226,6 +232,15 @@ Mavenは、推移的な依存関係（依存ライブラリがさらに依存す
 4つめはリポジトリ（Repository Pattern）です。
 ライブラリなどの成果物（アーティファクト）を中央のリポジトリで集中して管理し、各プロジェクトはそこから取得します。
 
+Mavenでは、`pom.xml`という設定ファイルに利用したいライブラリの名前とバージョンを記述するだけで、ライブラリの管理が完結します。
+Mavenが必要なJARファイルをMaven Central Repositoryなどのリポジトリから自動的にダウンロードし、クラスパスも自動で設定します。
+
+<div class="figure">
+
+![Mavenが依存ライブラリを用意する流れ](images/diagrams/chapter22-maven-dependency.svg)
+
+</div>
+
 #### 依存関係解決のアルゴリズム
 
 Mavenは、依存関係を次の順に解決します。
@@ -236,17 +251,6 @@ Mavenは、依存関係を次の順に解決します。
 3. 同じライブラリの異なるバージョンが見つかったら、1つに決める
     + 依存関係の木で自分のプロジェクトにもっとも近いものを選ぶ（nearest wins）。近さが同じなら、`pom.xml`で先に書かれたほうを選ぶ
 4. スコープ（compile、runtime、test、provided）に応じて、コンパイル・実行・テストのそれぞれで使うライブラリを決める
-
-Mavenは、`pom.xml`という設定ファイルに利用したいライブラリの名前とバージョンを記述するだけで、
-ライブラリの管理が完結します。
-必要なJARファイルはMaven Central Repositoryなどのリポジトリから自動的にダウンロードされ、
-クラスパスの設定も自動で行ってくれます。
-
-<div class="figure">
-
-![Mavenが依存ライブラリを用意する流れ](images/diagrams/chapter22-maven-dependency.svg)
-
-</div>
 
 #### `pom.xml`での依存関係の記述
 
@@ -269,7 +273,9 @@ Mavenは、`pom.xml`という設定ファイルに利用したいライブラリ
 
 ### 外部ライブラリの利用例 (Gson)
 
-`pom.xml`に上記の設定を追加すると、IntelliJ IDEAは自動的にGsonライブラリをダウンロードします。その後は、自分のコードから`import`してライブラリの機能を利用できます。
+`pom.xml`に上記の設定を追加したら、IntelliJ IDEAのエディターに表示される「Load Maven Changes」のボタンを押して、Mavenの設定を読み込み直します。
+すると、IntelliJ IDEAがGsonライブラリをダウンロードします。
+その後は、自分のコードから`import`してライブラリの機能を利用できます。
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
@@ -370,7 +376,7 @@ Loaded Task: プログラミング
 
 ### Jackson - 高性能JSONライブラリ
 
-Jacksonは、Gsonと並んで人気の高いJSONライブラリです。ストリーミングAPIによるメモリ使用量を最小限に抑えた処理とアノテーションベースの柔軟なマッピングが特徴です。
+Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタープライズアプリケーションで広く使われています。ストリーミングAPIによるメモリ使用量を最小限に抑えた処理とアノテーションベースの柔軟なマッピングが特徴です。
 
 #### Mavenの依存関係
 
@@ -386,7 +392,6 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリです。スト�
 
 #### Jacksonの使用例
 
-Jacksonはエンタープライズアプリケーションで広く使われている高性能JSONライブラリです。
 以下の例では、@JsonPropertyによるフィールド名のマッピング、@JsonIgnoreによる特定フィールドの除外、
 TypeReferenceを使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
@@ -466,7 +471,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 </dependency>
 ```
 
-Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、数値ユーティリティなど、日常的に必要になる機能を示します。
+Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、配列操作、ランダムな文字列の生成、日付の書式化、`toString`の自動生成など、日常的に必要になる機能を示します。
 
 <span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜13、22〜25、36、38〜56、75〜76行目）</span>
 
@@ -477,7 +482,7 @@ public class CommonsLangExample {
         // ...
         @Override
         public String toString() {
-            return ToStringBuilder.reflectionToString(this);
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
         // ...
     }
@@ -491,7 +496,7 @@ public class CommonsLangExample {
         IO.println("Reverse: " + StringUtils.reverse("Hello"));
         IO.println("Capitalize: " + StringUtils.capitalize("java"));
         
-        // 空文字列の安全な処理
+        // nullや空文字列の安全な処理
         String nullStr = null;
         IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         
@@ -527,7 +532,7 @@ Date formats:
 ISO: 2026-11-08T19:58:50
 Custom: 2026年11月08日 19:58:50
 
-Person: CommonsLangExample$Person@b97c004[age=30,name=田中太郎]
+Person: CommonsLangExample.Person[age=30,name=田中太郎]
 ```
 
 #### Commons I/Oの例
@@ -543,11 +548,12 @@ Person: CommonsLangExample$Person@b97c004[age=30,name=田中太郎]
 ```
 
 Apache Commons I/Oは、ファイルやストリームの操作を簡潔なメソッドで実現するライブラリです。
-Java標準APIでは何行も必要なファイル操作が、1行で実装できます。
+ファイル全体の読み書きなら、第14章「ファイルI/O」で学んだ`Files`クラスの`readAllLines`や`writeString`でも1行で書けます。
+Commons I/Oは、ディレクトリのサイズの計算、ファイル名からの拡張子の取り出し、ストリームのコピーなど、標準APIでは何行も必要な処理も1行で書ける点が便利です。
 以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、
 実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜28、43〜48、64〜65行目）</span>
+<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜28、44〜49、65〜66行目）</span>
 
 ```java
 public class CommonsIOExample {
@@ -590,7 +596,7 @@ Hello, Commons IO!
 追加のテキスト
 
 Lines count: 2
-Current directory size: 5 KB
+temp_dir size: 41 bytes
 
 File path analysis:
 Base name: report
@@ -602,7 +608,7 @@ Stream copy result: Stream processing example
 
 ### OkHttp - モダンなHTTPクライアント
 
-OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を備えたHTTP通信ライブラリです<span class="footnote">Java 11からは、第16章「ネットワークプログラミング」で学んだ標準APIの`HttpClient`もHTTP/2に対応しています。</span>。
+OkHttpはSquare社が開発したHTTP通信ライブラリで、接続プーリング、レスポンスキャッシュ、HTTP/2サポート、リトライ機能を備えています<span class="footnote">Java 11からは、第16章「ネットワークプログラミング」で学んだ標準APIの`HttpClient`もHTTP/2に対応しています。</span>。
 
 <span class="listing-number">**サンプルコード22-11**</span>
 
@@ -614,9 +620,7 @@ OkHttpは、接続プーリング、HTTP/2サポート、リトライ機能を�
 </dependency>
 ```
 
-OkHttpはSquare社が開発した高性能なHTTPクライアントライブラリで、
-コネクションプーリング、レスポンスキャッシュ、HTTP/2サポートなどの機能を提供します。
-以下の例では、同期・GET/POSTリクエスト、非同期リクエストの実装方法を示します。
+以下の例では、同期のGET・POSTリクエストと、非同期リクエストの実装方法を示します。
 
 <span class="listing-number">**サンプルコード22-12**　OkHttpExample.java（5〜28、51〜72、84〜85行目）</span>
 
@@ -692,37 +696,58 @@ Thread: OkHttp https://httpbin.org/...
 
 ### Lombok - ボイラープレートコードの削減
 
-Lombok<span class="footnote">Lombokという名前は、ジャワ島（Java）の近くにあるインドネシアのロンボク島に由来します。</span>は、アノテーションを使ってゲッター、セッター、コンストラクターなどを自動生成します。
+Lombok<span class="footnote">Lombokという名前は、ジャワ島（Java）の近くにあるインドネシアのロンボク島に由来します。</span>は、アノテーションを使ってゲッター、セッター、コンストラクターなどを自動生成するライブラリです。
+Lombokは、コンパイル時にアノテーションを処理するプログラム（アノテーションプロセッサー）として働きます。
+JDK 23からは、使うアノテーションプロセッサーを指定しない限り、javacはアノテーションを処理しません。
+そのため、依存関係に加えるだけでなく、`maven-compiler-plugin`の`<annotationProcessorPaths>`にもLombokを指定します。
 
 <span class="listing-number">**サンプルコード22-13**</span>
 
 ```xml
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <version>1.18.48</version>
-    <scope>provided</scope>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.48</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.14.1</version>
+            <configuration>
+                <!-- JDK 23以降は、アノテーションプロセッサーの指定が必要 -->
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.48</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 ```
 
-Lombokはコンパイル時にアノテーションを処理し、
-ボイラープレートコードを自動生成する革新的なライブラリです。
+`provided`スコープは、コンパイル時だけ使い、実行時のクラスパスやJARには含めないライブラリに指定します。
+`javac`コマンドで直接コンパイルするときは、`-proc:full`オプションを付けると、クラスパスにあるLombokが働きます<span class="footnote">JDK 25でLombokを使うと、コンパイル時に`sun.misc.Unsafe`の非推奨のメソッドを呼び出したという警告（WARNING）が表示されます。Lombokの内部の処理によるもので、コンパイルの結果には影響しません。</span>。
 @Dataアノテーション1つでゲッター、セッター、equals、hashCode、toStringメソッドが自動生成されます<span class="footnote">値を変えないデータのクラスなら、Java 16で正式に加わったRecord（第8章「Javaの特殊なクラス形式」で学びました）でも、equals・hashCode・toStringを自動で用意できます。</span>。
 以下の例では、主要なアノテーションの使用方法を示します。
 
-<span class="listing-number">**サンプルコード22-14**</span>
+<span class="listing-number">**サンプルコード22-14**　User.java、LombokExample.java</span>
 
 ```java
-import lombok.Data;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
 
 // @Data = @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
 @Data
@@ -741,8 +766,6 @@ public class User {
     private String password;
 }
 
-// ログ機能付きクラス
-@Slf4j
 public class LombokExample {
     public static void main(String[] args) {
         // 1. Builderパターンでインスタンス作成
@@ -758,26 +781,25 @@ public class LombokExample {
         IO.println("Username: " + user.getUsername());  // getterが自動生成
         
         user.setAge(26);  // setterが自動生成
+        IO.println("Updated age: " + user.getAge());
         
-        // 3. equalsの動作確認
-        User sameUser = User.builder()
+        // 3. equalsの動作確認（passwordもequalsの比較に含まれる）
+        User otherPassword = User.builder()
             .username("tanaka")
             .email("tanaka@example.com")
             .age(26)
             .password("different")
             .build();
+        IO.println("Equals (different password): " + user.equals(otherPassword));
         
-        IO.println("Equals: " + user.equals(sameUser));
+        otherPassword.setPassword("secret123");
+        IO.println("Equals (same password): " + user.equals(otherPassword));
         
-        // 4. ログ出力（SLF4J）
-        log.info("User created: {}", user.getUsername());
-        log.debug("Debug information: {}", user);
-        
-        // 5. @NonNullの動作確認
+        // 4. @NonNullの動作確認
         try {
-            User invalidUser = new User(null, "email@example.com", 20, "pass");
+            new User(null, "email@example.com", 20, "pass");
         } catch (NullPointerException e) {
-            log.error("Null username not allowed", e);
+            IO.println("NullPointerException: " + e.getMessage());
         }
     }
 }
@@ -786,51 +808,29 @@ public class LombokExample {
 実行結果：
 
 ```
-=== Lombok ライブラリ使用例（デモンストレーション） ===
-
-1. Builderパターンでインスタンス作成:
-
-2. 自動生成されたメソッドの使用:
 User: User(username=tanaka, email=tanaka@example.com, age=25)
 Username: tanaka
 Updated age: 26
-
-3. equalsの動作確認:
 Equals (different password): false
 Equals (same password): true
-
-4. ログ出力（SLF4J simulation）:
-[INFO] LombokExample: User created: tanaka
-[DEBUG] LombokExample: Debug information: User(username=tanaka, email=tanaka@example.com, age=26)
-
-5. @NonNullの動作確認:
-[ERROR] LombokExample: Null username not allowed
-  Exception: NullPointerException: username cannot be null
-
-6. 個別のアノテーション使用例:
-Product: Product(id=0, name=ノートPC, price=15000.0)
-
-7. Lombokの主な特徴:
-- @Dataで基本メソッド（getter/setter/toString/equals/hashCode）を自動生成
-- @BuilderでBuilderパターンを自動実装
-- @Slf4jでロガーフィールドを自動生成
-- @NonNullでnullチェックを自動挿入
-- @ToString.Excludeで特定フィールドをtoStringから除外
-- ボイラープレートコードを大幅に削減
-
-※ 実際の使用には pom.xml に Lombok の依存関係を追加する必要があります:
-<dependency>
-  <groupId>org.projectlombok</groupId>
-  <artifactId>lombok</artifactId>
-  <version>1.18.48</version>
-  <scope>provided</scope>
-</dependency>
+NullPointerException: username is marked non-null but is null
 ```
 
-<span class="listing-number">**サンプルコード22-15**</span>
+`@ToString.Exclude`を付けた`password`は`toString`の結果に出ませんが、`equals`の比較には含まれます。
+`@NonNull`を付けたフィールドには、生成されたコンストラクターやセッターが`null`をチェックする処理が加わります。
+
+`@Data`を使わず、必要なメソッドだけをアノテーションで個別に生成することもできます。
+次の例では、`@Getter`と`@Setter`をフィールドごとに付け、`@ToString.Include`で`toString`に表示する名前を変えています。
+
+<span class="listing-number">**サンプルコード22-15**　Product.java</span>
 
 ```java
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 // 個別のアノテーション使用例
+@ToString
 class Product {
     @Getter @Setter
     private String name;
@@ -847,9 +847,19 @@ class Product {
 }
 ```
 
+実行結果：
+
+```
+Product: Product(name=ノートPC, price=15000.0, id=0)
+Price: 15000.0
+```
+
+実行結果は、全文の`ProductExample`クラスで`name`に「ノートPC」を設定し、`toString`と`getPrice`を呼び出したものです。
+`productId`フィールドは、`toString`の結果に`id`という名前で表示されます。
+
 ### Guava - Google製のコアライブラリ
 
-GoogleのGuavaライブラリは、コレクション、キャッシュ、文字列処理などの高度な機能を提供します。
+GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。
 
 <span class="listing-number">**サンプルコード22-16**</span>
 
@@ -861,12 +871,13 @@ GoogleのGuavaライブラリは、コレクション、キャッシュ、文字
 </dependency>
 ```
 
-GuavaはGoogleが開発した、Javaの標準ライブラリを強化する多機能なライブラリです。
 不変コレクション、Multimap、BiMap、Table、強力な文字列処理、キャッシュ機能など、
 実用的な機能が豊富に含まれています。
 以下の例では、これらの主要機能の使用方法を示します。
+不変のリストやマップは、第9章「コレクションフレームワーク」で学んだ`List.of`や`Map.of`でも作れます。
+Guavaの`ImmutableList`などは、標準のメソッドがなかったJava 8以前から使われてきたものです。
 
-<span class="listing-number">**サンプルコード22-17**　GuavaExample.java（7〜28、48〜59、61〜71、82〜83行目）</span>
+<span class="listing-number">**サンプルコード22-17**　GuavaExample.java（7〜28、48〜59、61〜71、76〜77行目）</span>
 
 ```java
 public class GuavaExample {
@@ -943,10 +954,6 @@ Joined: A | B | C
 Cache:
 First call: Value for key1
 Second call (cached): Value for key1
-
-Optional:
-Is present: true
-Value: Hello
 ```
 
 ### 外部ライブラリ選定の指針
@@ -1023,6 +1030,10 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 
 #### セキュリティの考慮事項
 
+使っているライブラリに脆弱性が見つかることがあります。
+OWASP Dependency-Checkは、プロジェクトの依存ライブラリを、公開されている脆弱性のデータベースと照らし合わせて調べるツールです。
+次のように`pom.xml`の`<build>`の`<plugins>`に加えると、`mvn verify`を実行したときに検査が行われ、結果のレポートが`target`ディレクトリに作られます<span class="footnote">脆弱性のデータベースは初回の実行時にダウンロードするため、時間がかかります。米国のNVD（National Vulnerability Database）のAPIキーを取得して設定すると、ダウンロードが速くなります。</span>。
+
 <span class="listing-number">**サンプルコード22-20**</span>
 
 ```xml
@@ -1062,24 +1073,34 @@ pom.xmlには、それぞれを前述の`<dependency>`要素として書きま�
 Mavenを使った開発では、次のようなコマンドを使います。
 
 ```bash
-# 1. プロジェクトの初期化（Maven）
-mvn archetype:generate -DgroupId=com.example -DartifactId=myapp
+# 1. プロジェクトの初期化（ひな形からプロジェクトを作る）
+mvn archetype:generate -DgroupId=com.example -DartifactId=myapp \
+    -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.5 \
+    -DinteractiveMode=false
 
-# 2. 依存関係の追加（pom.xmlを編集後）
-mvn clean install
+# 2. コンパイル（pom.xmlに書いた依存ライブラリもダウンロードされる）
+mvn compile
 
-# 3. 依存関係ツリーの確認
+# 3. テストを実行し、JARファイルを作る（targetディレクトリに作られる）
+mvn package
+
+# 4. 依存関係ツリーの確認
 mvn dependency:tree
 
-# 4. 不要な依存関係の検出
+# 5. 不要な依存関係の検出
 mvn dependency:analyze
 
-# 5. 最新バージョンの確認
+# 6. 最新バージョンの確認
 mvn versions:display-dependency-updates
 
-# 6. ローカルリポジトリのクリア（ダウンロードしたファイルが壊れたとき）
+# 7. ローカルリポジトリのクリア（ダウンロードしたファイルが壊れたとき）
 mvn dependency:purge-local-repository
 ```
+
+`-DinteractiveMode=false`を付けないと、ひな形の種類や設定を1つずつ尋ねられます。
+`-DarchetypeVersion`でひな形の版を指定しないと、JUnit 3を使う古いひな形が使われることがあり、`mvn package`のテストの段階で失敗します。
+ひな形から作った`pom.xml`には、コンパイルの対象とするJavaのバージョンが書かれています（版1.5のひな形では17）。
+本書のコードは`IO`クラスなどJava 25の機能を使うため、`pom.xml`の`<properties>`にある`maven.compiler.release`の値を`25`に書き換えます。
 
 ### もう1つのビルドツール：Gradle
 
@@ -1193,21 +1214,19 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
     + Maven/Ivy による自動化（2002-2009）
 3. 第3世代
     + Gradle による柔軟な設定（2009-現在）
-4. 次世代
-    + モジュールシステム（JPMS）との統合
 
 ### セキュリティとコンプライアンス
 
 外部ライブラリを使う開発では、セキュリティとコンプライアンスについて次の観点が重要です。
 
 1. 脆弱性管理
-    + OWASP Dependency Checkによる自動スキャン
+    + OWASP Dependency-Checkによる自動スキャン
 2. ライセンス遵守
     + 商用利用可能なライセンスの選択
 3. サプライチェーンセキュリティ
     + 依存関係の信頼性検証
-4. コンプライアンス
-    + GDPR、SOC2などの規制への対応
+4. 利用状況の把握
+    + 使っているライブラリとそのバージョン・ライセンスを一覧にして管理する
 
 ## 章末演習
 

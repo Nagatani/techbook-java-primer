@@ -108,7 +108,16 @@ public class Task {
      * @see #setCompleted(boolean)
      */
     public void complete() {
-        this.completed = true;
+        setCompleted(true);
+    }
+    
+    /**
+     * タスクの完了状態を設定する
+     * 
+     * @param completed 完了したならtrue
+     */
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
     
     /**
@@ -133,14 +142,13 @@ public class Task {
     }
     
     /**
-     * タスクを文字列表現に変換する
+     * タスクの概要を文字列で返す
      * 
-     * @return タスクの文字列表現
-     * @deprecated {@link #toDetailedString()} を使用してください
+     * @return タスクのIDとタイトルを含む文字列
+     * @deprecated 詳しい情報を含む {@link #toDetailedString()} を使用してください
      */
     @Deprecated(since = "2.0", forRemoval = true)
-    @Override
-    public String toString() {
+    public String getSummary() {
         return String.format("Task[id=%d, title='%s']", id, title);
     }
     

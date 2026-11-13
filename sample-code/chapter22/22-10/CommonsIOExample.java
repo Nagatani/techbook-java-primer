@@ -35,9 +35,10 @@ public class CommonsIOExample {
         File dir = new File("temp_dir");
         FileUtils.forceMkdir(dir);  // 親ディレクトリも含めて作成
         
-        // ディレクトリのサイズ取得
-        long dirSize = FileUtils.sizeOfDirectory(new File("."));
-        IO.println("Current directory size: " + 
+        // ファイルをディレクトリにコピーし、ディレクトリのサイズを取得
+        FileUtils.copyFileToDirectory(file, dir);
+        long dirSize = FileUtils.sizeOfDirectory(dir);
+        IO.println("temp_dir size: " + 
             FileUtils.byteCountToDisplaySize(dirSize));
         
         // 4. FilenameUtils - パス操作

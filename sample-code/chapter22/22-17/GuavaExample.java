@@ -73,11 +73,5 @@ public class GuavaExample {
         IO.println("\nCache:");
         IO.println("First call: " + cache.get("key1"));
         IO.println("Second call (cached): " + cache.get("key1"));
-        
-        // 7. Optional（Java 8より前から利用可能）
-        Optional<String> optional = Optional.of("Hello");
-        IO.println("\nOptional:");
-        IO.println("Is present: " + optional.isPresent());
-        IO.println("Value: " + optional.or("Default"));
     }
 }
