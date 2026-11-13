@@ -41,21 +41,23 @@
 
 ## 例外処理の基本: `try-catch-finally`
 
+Javaでは、プログラム実行中に発生する「例外的状況」を例外 (Exception) オブジェクトとして表現し、これに対処するための専用の構文を提供しています<span class="footnote">C言語には例外のしくみがなく、関数の戻り値や`errno`でエラーを伝えるのが一般的です。呼び出し側が戻り値を確かめ忘れると、エラーに気づかないまま処理が進みます。</span>。例外が発生することを「例外がスローされる（投げられる）」と言います。
+
 例外処理の基本的な流れは以下のようになります。
 
 1. メソッド内で例外が発生すると、通常の処理フローが中断される
-2. プログラムは呼び出しスタックをさかのぼり、例外の型に一致する例外ハンドラーを探す
+2. プログラムは呼び出しスタックをさかのぼり、例外の型に一致する`catch`ブロックを探す
 3. 例外の型に一致する`catch`ブロックが見つかると、そこで例外が処理される
 4. `finally`ブロックがあれば、必ず実行される
-
-Javaでは、プログラム実行中に発生する「例外的状況」を例外 (Exception) オブジェクトとして表現し、これに対処するための専用の構文を提供しています<span class="footnote">C言語には例外のしくみがなく、関数の戻り値や`errno`でエラーを伝えるのが一般的です。呼び出し側が戻り値を確かめ忘れると、エラーに気づかないまま処理が進みます。</span>。例外が発生することを「例外がスローされる（投げられる）」と言います。
 
 ### `try-catch`ブロック
 
 例外が発生する可能性のある処理は、`try`ブロックで囲みます。
 `try`ブロックのなかで特定の型の例外が発生すると、その型に対応する`catch`ブロックが例外を捕捉（キャッチ）します。
 `catch`ブロックには、捕捉した例外への対応を記述します。
-`catch`ブロックは複数並べて書けるので、より具体的な例外から順に書きます。
+`catch`ブロックは複数並べて書けます。
+その場合は、より具体的な例外から順に書きます。
+親クラスの例外（`Exception`など）を先に書くと、後ろにあるサブクラスの`catch`には処理が届かないため、コンパイルエラーになります。
 
 以下のコードは、NullPointerExceptionが発生する状況とその対処方法を示しています。null参照に対してメソッドを呼び出すと例外が発生しますが、catch句でその例外を捕捉し、プログラムのクラッシュを防いで処理を継続させています。
 
@@ -311,7 +313,8 @@ public class UserService {
 }
 ```
 
-本章の高度な内容については、付録B.12「例外処理のパフォーマンス」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`</span>。
+呼び出し側は、受け取った`DataAccessException`の`getCause()`で元の`SQLException`を取り出せます。
+スタックトレースを出力すると、包んだ例外の下に`Caused by:`に続けて原因の例外も表示されます。
 
 ## 実践的な例外処理パターン
 
@@ -370,7 +373,7 @@ public class RetryableOperation {
 
 ### サーキットブレーカーパターン（連続失敗への対処）
 
-連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです<span class="footnote">名前は、電流が流れすぎると回路を切る電気のブレーカー（circuit breaker）に由来します。ソフトウェアの設計パターンとしては、マイケル・ナイガード（マイケル・ナイガード）の書籍『Release It!』（2007年）で広く知られるようになりました。</span>。マイクロサービスアーキテクチャでとくに重要です。
+連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです<span class="footnote">名前は、電流が流れすぎると回路を切る電気のブレーカー（circuit breaker）に由来します。ソフトウェアの設計パターンとしては、マイケル・ナイガード（Michael T. Nygard）の書籍『Release It!』（2007年）で広く知られるようになりました。</span>。多数のサービスがネットワーク越しに呼び合うシステムでとくに重要です。
 
 <div class="figure">
 
@@ -378,7 +381,7 @@ public class RetryableOperation {
 
 </div>
 
-<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java（3〜12、21〜55行目）</span>
+<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java（3〜55行目）</span>
 
 ```java
 public class CircuitBreaker {
@@ -391,7 +394,14 @@ public class CircuitBreaker {
     private State state = State.CLOSED;
     private int failureCount = 0;
     private long lastFailureTime = 0;
-    // ...
+    
+    private final int failureThreshold;
+    private final long timeout;
+    
+    public CircuitBreaker(int failureThreshold, long timeoutMs) {
+        this.failureThreshold = failureThreshold;
+        this.timeout = timeoutMs;
+    }
     
     public <T> T execute(Callable<T> operation) throws Exception {
         if (state == State.OPEN) {
@@ -646,11 +656,14 @@ public class ExceptionLogging {
 }
 ```
 
+最後の`catch`では、ログに記録したうえで例外を投げ直しています。
+呼び出し元でも同じ例外をログに書くと二重に記録されるので、どの層でログに書くかを決めておきます。
+
 ### 例外情報の構造化記録
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜21、62行目）</span>
+<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜44、63行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -670,9 +683,35 @@ public class StructuredExceptionLogger {
         
         logger.log(record);
     }
+    
+    private static String createStructuredMessage(String operation, 
+                                                Exception exception, 
+                                                Map<String, Object> context) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"timestamp\":\"").append(Instant.now()).append("\",");
+        sb.append("\"operation\":\"").append(operation).append("\",");
+        sb.append("\"error_type\":\"").append(exception.getClass().getName()).append("\",");
+        sb.append("\"error_message\":\"").append(escapeJson(exception.getMessage())).append("\",");
+        sb.append("\"context\":{");
+        
+        boolean first = true;
+        for (Map.Entry<String, Object> entry : context.entrySet()) {
+            if (!first) sb.append(",");
+            sb.append("\"").append(entry.getKey()).append("\":\"")
+              .append(escapeJson(String.valueOf(entry.getValue()))).append("\"");
+            first = false;
+        }
+        
+        sb.append("}}");
+        return sb.toString();
+    }
     // ...
 }
 ```
+
+`createStructuredMessage`は、操作名・例外の型・メッセージ・状況（`context`）を、JSON形式（第7章で紹介しました）の1行の文字列にまとめます。
+項目の名前が決まっているので、ログを集めて検索したり集計したりしやすくなります。
 
 ## 業務アプリケーションでの例外設計
 
@@ -682,7 +721,7 @@ public class StructuredExceptionLogger {
 次のコードでは、検査例外の基底クラス`BusinessException`と、非検査例外の基底クラス`SystemException`を抽象クラスとして用意します。
 サンプルコード13-5の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（4〜13行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -707,12 +746,12 @@ public abstract class BusinessException extends Exception {
 
 // 具体的なビジネス例外
 public class InsufficientBalanceException extends BusinessException {
-    public InsufficientBalanceException(double currentBalance, 
-                                      double requestedAmount) {
+    public InsufficientBalanceException(BigDecimal currentBalance, 
+                                      BigDecimal requestedAmount) {
         super("ACC-001", "残高が不足しています");
         addDetail("currentBalance", currentBalance);
         addDetail("requestedAmount", requestedAmount);
-        addDetail("shortage", requestedAmount - currentBalance);
+        addDetail("shortage", requestedAmount.subtract(currentBalance));
     }
 }
 
@@ -734,7 +773,7 @@ public abstract class SystemException extends RuntimeException {
 
 エラーコードとメッセージを一元管理することで、国際化<span class="footnote">国際化（internationalization）は、最初のiと最後のnのあいだに18文字あることから「i18n」とも書きます。</span>やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード13-15**　ErrorCode.java（1〜5、15〜23、37行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
+<span class="listing-number">**サンプルコード13-15**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
 
 ```java
 public enum ErrorCode {
@@ -753,6 +792,27 @@ public enum ErrorCode {
         this.defaultMessage = defaultMessage;
     }
     // ...
+}
+
+// ビジネス例外の基底クラス
+public abstract class BusinessException extends Exception {
+    // ...
+    // ErrorCodeからコードと既定のメッセージを受け取る
+    protected BusinessException(ErrorCode errorCode) {
+        this(errorCode.getCode(), errorCode.getMessage());
+    }
+    // ...
+}
+
+// ErrorCodeを使って定義し直したビジネス例外
+public class InsufficientBalanceException extends BusinessException {
+    public InsufficientBalanceException(BigDecimal currentBalance, 
+                                      BigDecimal requestedAmount) {
+        super(ErrorCode.ACC_001);
+        addDetail("currentBalance", currentBalance);
+        addDetail("requestedAmount", requestedAmount);
+        addDetail("shortage", requestedAmount.subtract(currentBalance));
+    }
 }
 
 // エラーレスポンスの統一フォーマット
@@ -775,17 +835,22 @@ public class ErrorResponse {
 }
 ```
 
+`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-14で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
+コードとメッセージがenumの1か所にまとまるので、メッセージを変えるときもenumだけを直せば済みます。
+
 ### 例外処理戦略の実装例
 
 実際のアプリケーションでの例外処理戦略の実装例として、口座間の送金処理を示します。
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
 
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（3、13〜16、20〜41、52〜63、111行目）</span>
+<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜20、24〜45、56〜67、114行目）</span>
 
 ```java
 public class TransferService {
-    // ...
+    private static final Logger logger =
+        Logger.getLogger(TransferService.class.getName());
+        // ...
     public TransferResult transfer(String fromAccountId, 
                                  String toAccountId, 
                                  BigDecimal amount) 
@@ -815,13 +880,13 @@ public class TransferService {
             transactionRepository.save(transaction);
             // ...
         } catch (BusinessException e) {
-            // ビジネス例外は呼び出し元に伝播
-            System.err.println("送金処理でビジネスエラー: " + e.getMessage());
+            // ビジネス例外は記録してから呼び出し元に伝える
+            logger.log(Level.WARNING, "送金処理でビジネスエラー: " + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "送金処理中に予期せぬエラーが発生しました", e);
             // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
         }
@@ -844,6 +909,7 @@ public class TransferService {
 ユーザーにはわかりやすいメッセージとエラーIDを示し、ログには原因究明のための詳細な情報（スタックトレースなど）を記録します。
 
 体系的な例外処理を実装することは、信頼性の高いソフトウェアを開発するための必須スキルです。
+例外を投げるコストなど、例外処理の性能面の詳細は、付録B.12「例外処理のパフォーマンス」で扱います<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`</span>。
 
 ## よくあるエラーと対処法
 
@@ -897,36 +963,4 @@ public class TransferService {
 - 応用的な実装練習
 - 実践的な総合問題
 
-1. 基礎課題
-    + 基本的な例外処理とfinallyブロックの活用
-2. 発展課題
-    + カスタム例外クラスの設計と階層化
-3. チャレンジ課題
-    + 高度な例外処理パターンとリソース管理
-
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
-
-基礎課題が完了したら、第14章「ファイルI/O」に進みましょう。
-
-各課題の説明と、解答例（テストコードを含む）は以下のディレクトリにあります。
-
-```
-exercises/chapter13/
-├── README.md       # 演習全体の説明
-├── basic/          # 基礎レベル課題
-│   └── README.md
-├── advanced/       # 応用・発展レベル課題
-│   ├── README.md
-│   ├── task1-library/  # 課題1の解答例
-│   └── task2-config/   # 課題2の解答例
-├── challenge/      # 挑戦レベル課題
-│   ├── README.md
-│   └── *.java      # 解答例
-└── solutions/      # 解答例とテスト（実装完了後に参照）
-    ├── README.md
-    ├── CustomException.java
-    ├── ExceptionChain.java
-    ├── ResourceManager.java
-    ├── ValidationHelper.java
-    └── *Test.java  # 各解答例のテスト
-```
+詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。

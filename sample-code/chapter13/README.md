@@ -29,5 +29,5 @@ javac -d out *.java
 | [13-12](./13-12/) | ExceptionLogging.java<br>Exceptions.java | （mainメソッドなし） |
 | [13-13](./13-13/) | StructuredExceptionLogger.java | （mainメソッドなし） |
 | [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
-| [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>SystemException.java | （mainメソッドなし） |
+| [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
 | [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferDemo.java<br>TransferService.java<br>TransferSupport.java | `java -cp out TransferDemo` |

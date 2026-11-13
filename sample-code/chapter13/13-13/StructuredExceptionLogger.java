@@ -45,7 +45,8 @@ public class StructuredExceptionLogger {
     
     private static String escapeJson(String text) {
         if (text == null) return "null";
-        return text.replace("\"", "\\\"")
+        return text.replace("\\", "\\\\")
+                  .replace("\"", "\\\"")
                   .replace("\n", "\\n")
                   .replace("\r", "\\r");
     }

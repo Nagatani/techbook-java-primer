@@ -1,6 +1,10 @@
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TransferService {
+    private static final Logger logger =
+        Logger.getLogger(TransferService.class.getName());
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     
@@ -50,13 +54,13 @@ public class TransferService {
             return result;
             
         } catch (BusinessException e) {
-            // ビジネス例外は呼び出し元に伝播
-            System.err.println("送金処理でビジネスエラー: " + e.getMessage());
+            // ビジネス例外は記録してから呼び出し元に伝える
+            logger.log(Level.WARNING, "送金処理でビジネスエラー: " + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "送金処理中に予期せぬエラーが発生しました", e);
             // 非検査例外に包み、原因の例外を渡して投げ直す
             throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
         }
@@ -93,8 +97,7 @@ public class TransferService {
         
         if (account.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException(
-                account.getBalance().doubleValue(), 
-                amount.doubleValue());
+                account.getBalance(), amount);
         }
         
         BigDecimal dailyLimit = account.getDailyTransferLimit();
