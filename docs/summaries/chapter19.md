@@ -1,21 +1,21 @@
 ---
 source: manuscripts/chapter19-event-advanced.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: 54a9f739
+    hash: b1a8036f
   - key: "詳細なイベント処理の実装"
-    hash: 51415a89
+    hash: 3c0815e7
   - key: "カスタムイベントとObserverパターン"
-    hash: 8463e3b0
+    hash: 2bfa1661
   - key: "ドラッグ&ドロップの実装"
-    hash: 0638daea
+    hash: f95c95c5
   - key: "パフォーマンスの最適化"
-    hash: 7894eaac
+    hash: 3fd08222
   - key: "よくあるエラーと対処法"
     hash: 03aa1999
   - key: "まとめ"
-    hash: 03e7e94a
+    hash: dc3236ce
   - key: "章末演習"
     hash: 64a8c306
 ---
@@ -42,28 +42,28 @@ sections:
 
 ## 節ごとの要約
 
-- 本章の学習目標（L3–26）
-    + 複雑なイベント処理、カスタムイベントとパターン、パフォーマンスの最適化の3本柱
-    + 前提は第18章の知識とObserverパターンの概念的理解
-- 詳細なイベント処理の実装（L27–220）
-    + マウスイベントの完全な処理: 18-6に`addMouseMotionListener()`を加え、クリック回数・ボタン種別・押下/解放・ドラッグを処理し、ドラッグ中に線を描く。JPopupMenuをsetComponentPopupMenuで付けた右クリックメニュー（19-1）
-    + キーボードイベントの高度な処理: 18-7に加えて、HashSetで押下中のキーを追跡して同時押しを検出し、InputMap/ActionMapによるキーバインディング（Ctrl+D、Ctrl+Shift+D、F5）を示す（19-2）
-    + DocumentListenerによるテキスト変更の監視: メール形式・パスワード長と強度・確認パスワード一致をリアルタイム検証し、送信ボタンの有効/無効を切り替える（19-3）
+- 本章の学習目標（L3–27）
+    + 複雑なイベント処理、カスタムイベントとパターン（本文の順にObserver→カスタムイベント→JavaBeans）、パフォーマンスの最適化の3本柱
+    + 前提は第18章の知識。Observerパターンはその節で説明すると断る
+- 詳細なイベント処理の実装（L28–250）
+    + マウスイベントの完全な処理: 18-6に`addMouseMotionListener()`を加え、クリック回数・ボタン種別・押下/解放・ドラッグを処理し、ドラッグ中に線を描く（19-1）。`MouseAdapter`が`MouseListener`と`MouseMotionListener`の両方を実装しているので1つのオブジェクトを両方に登録できること、右クリックメニューは`setComponentPopupMenu()`で付けること（開く操作のOS差を吸収する）を説明する
+    + キーボードイベントの高度な処理: 18-7に加えて、HashSetで押下中のキーを追跡して同時押し（Ctrl+Shift+D）を検出し、フォーカスを失ったら集合を空にする（ダイアログが開くとキーを離したイベントが届かないため）。InputMap/ActionMapによるキーバインディング（Ctrl+D、F5）を示し（19-2）、コードのあとでInputMap・ActionMap・KeyStroke・AbstractAction・`WHEN_FOCUSED`の役割と、ショートカットにキーバインディングが向く理由を説明する
+    + DocumentListenerによるテキスト変更の監視: リスナーは`getDocument()`の`Document`に登録すること、insertUpdate・removeUpdate・changedUpdate（書式の変化。JTextFieldやJPasswordFieldでは呼ばれない）の違いを説明する。メール形式・パスワード長と強度・確認パスワード一致を入力のたびに検証し、送信ボタンの有効/無効を切り替える（19-3）
     + 3つとも実行結果をコードに合わせた文章で説明する
-- カスタムイベントとObserverパターン（L221–371）
+- カスタムイベントとObserverパターン（L251–421）
     + カスタムイベントの作成: EventObjectを継承したTemperatureChangeEvent、EventListenerを継承したリスナーインターフェイス、リスナー一覧を持つセンサーモデル。表示更新と最高/最低記録の2つのリスナーに通知する（19-4、図chapter19-observer）
-    + JavaBeansイベントモデルの実装: PropertyChangeSupportとプロパティ名指定のリスナー登録で、株価モデルの変化を複数のパネルに通知する株価モニター（19-5）
-- ドラッグ&ドロップの実装（L372–461）
+    + JavaBeansイベントモデルの実装: PropertyChangeSupportとプロパティ名指定のリスナー登録で、株価モデルの変化を複数のパネルに通知する株価モニター（19-5、`Random`はフィールドに1つ持つ）
+- ドラッグ&ドロップの実装（L422–518）
     + TransferHandlerによるJList間のアイテム移動と、DropTarget＋DropTargetAdapterによる外部ファイルのドロップ受け付け（19-6）
     + JList・DefaultListModelは第20章で学ぶと断り、最小限の読み方を示す
-- パフォーマンスの最適化（L462–605）
+- パフォーマンスの最適化（L519–690）
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
-    + SwingWorkerによる非同期処理: 18-12のThread＋invokeLaterとの対比から入り、`SwingWorker<T, V>`の型パラメーター、doInBackground・process・done、execute、cancel/isCancelled、setProgressと`"progress"`プロパティを説明する。図（chapter19-swingworker）と、publish/processによる進捗表示とキャンセルの例（19-8）
-- よくあるエラーと対処法（L606–621）
+    + SwingWorkerによる非同期処理: 18-12のThread＋invokeLaterとの対比から入り、`SwingWorker<T, V>`の型パラメーター、doInBackground・process・done、execute、cancel/isCancelled、setProgressと`"progress"`プロパティを説明する。`cancel(true)`はスレッドへの割り込みで`sleep`中なら`InterruptedException`で終わること、キャンセル後の`get()`は`CancellationException`になるので`isCancelled()`を先に確かめることも書く。図（chapter19-swingworker）と、publish/processによる進捗表示とキャンセルの例（19-8、`done()`で`get()`の結果からアイテム数を出す）。実行結果では、processが最新の1件だけを書くので番号が飛ぶことと、キャンセルのメッセージはボタンのリスナーが出すことを断る
+- よくあるエラーと対処法（L691–706）
     + 本文に挙げる問題: SwingWorkerから直接UIを更新する、DocumentListenerのなかでのテキストの変更、リスナーの削除忘れによるメモリリーク、ドロップが受け入れられない。詳細は`appendix/h-common-errors/chapters/chapter19.md`
-- まとめ（L622–636）
+- まとめ（L707–721）
     + 重要なポイント6項目と「実践での活用」の1段落
-- 章末演習（L674–）
+- 章末演習（L722–743）
     + GitHubの`exercises/chapter19/`への案内と課題構成（基礎: お絵かきパネル・キーバインディング・投稿画面・カスタムイベント、発展: デバウンスの検索・SwingWorkerで素数を数える、チャレンジ: タスクボード）。`examples/`の大きめの例にも触れる。第20章へ誘導する（2026-11-13に演習を用意した）
 
 ## 他章との関係
@@ -72,7 +72,7 @@ sections:
 - 第17章: SwingWorkerの説明は2026-11-11に本章へ集め、重複を解消した
 - 第18章（基本的なイベント処理）
     + 「18章が各リスナーの基本、19章が組み合わせと応用」で分かれ、19-1・19-2・SwingWorkerの冒頭で18-6・18-7・18-12を参照する
-    + 18章の「次のステップ」が予告する内容（DocumentListener、カスタムイベント、パフォーマンス）は本章で回収されている
+    + 18章の「次のステップ」が予告する内容（マウス・キーボードの詳細、DocumentListener、カスタムイベント、ドラッグ&ドロップ、イベントの間引き、SwingWorker）は本章で回収されている（2026-11-14に予告を本章の内容に合わせた）
 - 第20章（JTableとJListの基礎）: 19-6でJList/DefaultListModelを先に使い、第20章へ誘導する
 - 第7章: Observerパターンを前提にするなら、インターフェイスを学ぶ第7章あたりで概念を紹介しておく必要がある（現状は用語集のみ）
 
@@ -80,4 +80,11 @@ sections:
 
 - L612–613: 付録Hへ移す前の指摘が残っている。DocumentListener内で同じDocumentを変更すると、無限ループではなく`IllegalStateException: Attempt to mutate in notification`が発生する。本来の対処法であるDocumentFilterにも触れていない。本文の要点と付録Hを`IllegalStateException`の説明に直し、DocumentFilterの対処法を加えた（2026-11-12に解消）
 - 前置き文（L35、L97、L159、L227、L307、L378、L468、L544）は「以下のコードは…」の1段落にクラスの機能を列挙するだけで、直前の1文（「…の例です。」）と内容が重なる箇所がある。重なる1文と誇張（「優れたユーザーエクスペリエンス」「網羅」など）を削り、1文ごとに改行した。19-7の前にデバウンスとスロットルの定義をリストで置いた（2026-11-12に解消）
+- 2026-11-14の校閲で次のものを直した
+    + 19-2の同時押しの検出で、Ctrl+Sのダイアログのあとに`VK_CONTROL`が集合に残り、Shift+Dで誤って行を複製していた（focusLostで集合を空にした）
+    + キーバインディングとDocumentListenerの基本の説明が足りなかった
+    + 19-8のキャンセル時の戻り値が使われない死んだコードで、`get()`の結果も使っていなかった。`cancel(true)`の割り込みの説明がなかった
+    + 19-2・19-5・19-6・19-7の抜粋で、コンストラクターの宣言行や閉じ括弧が抜けて括弧の対応が崩れていた
+    + 学習目標の並びが本文と逆、まとめの「完全な処理方法」の誇張、19-1の`MouseAdapter`の二重登録と`setComponentPopupMenu()`の説明不足、19-5でタイマーのたびに`Random`を作っていた
+- 未解決: 19-6の`new Date(file.lastModified())`は非推奨ではないため残した（`java.time`に替えるかは任意）
 - 19-1〜19-3の実行結果の不一致、19-3の絵文字、19-4のコメントの「インターフェース」、19-6の`Date`のimport漏れ、19-7の未使用のExecutorとコメントの誤り、エラー集の19-14（WeakReference）・見出し直後の空行・演習URLの太字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Hへ移動）

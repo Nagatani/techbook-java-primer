@@ -1,31 +1,31 @@
 ---
 source: manuscripts/chapter09-collections.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
     hash: 82dc17cb
   - key: "なぜコレクションフレームワークが必要か"
-    hash: 2f5dd7d6
+    hash: 41304d6b
   - key: "コレクションフレームワークの全体像"
-    hash: d19492ed
+    hash: d27e4b02
   - key: "List インターフェイス"
-    hash: 424d4f46
+    hash: 3557d210
   - key: "Set インターフェイス"
-    hash: 938c1cec
+    hash: cf5002ac
   - key: "Map インターフェイス"
-    hash: ca7419db
+    hash: c8dca8a3
   - key: "イテレーターとfor-each文"
-    hash: 7f74423f
+    hash: 06b8b6e3
   - key: "コレクションの選択指針"
-    hash: 887ec1ee
+    hash: f8a2870a
   - key: "今後の学習へ向けて"
-    hash: 1eb5b6d6
+    hash: c0df5531
   - key: "よくあるエラーと対処法"
     hash: 89ce951f
   - key: "まとめ"
-    hash: e71965b3
+    hash: 82cfb1fc
   - key: "章末演習"
-    hash: 95d23dc1
+    hash: 7d5574fa
 ---
 
 # 第9章 コレクションフレームワーク 要約
@@ -38,7 +38,7 @@ sections:
 - 主要な実装はArrayList/LinkedList、HashSet/TreeSet/LinkedHashSet、HashMap/TreeMap/LinkedHashMap
 - 走査は拡張for文とイテレーター（走査中の削除）を扱う
 - 前提は第2章の配列と第7章のインターフェイス。HashSet・HashMapの節では第5章のequals・hashCodeを参照する（2026-11-11に、equals・hashCodeの説明を第5章へ集め、本章は要点と誘導にした）
-- ジェネリクス記法（`List<String>`）は説明なしで使い、第10章冒頭で回収する。型引数を省いたコレクション（raw type）の問題は第10章に任せる（2026-11-11に重複を整理）
+- ジェネリクス記法（`List<String>`）は9-6の前で`<String>`と`<>`の読み方だけを示し、第10章冒頭で回収する。型引数を省いたコレクション（raw type）の問題は第10章に任せる（2026-11-11に重複を整理）
 
 ## 構成の経緯
 
@@ -50,36 +50,37 @@ sections:
 
 - 本章の学習目標（L3–20）
     + 4項目（基本理解、主要な実装クラス、操作、時間計算量を考慮した選択とエラー対処）。前提として第7章のインターフェイスと第5章のequals・hashCodeを挙げる
-- なぜコレクションフレームワークが必要か（L21–196）
+- なぜコレクションフレームワークが必要か（L21–198）
     + 学生名簿を配列で書き、サイズ固定・削除時の穴・検索の自作という3つの問題を示す（9-1〜9-5）
-    + 同じ処理をArrayListで書き直して解決を示し（9-6）、コレクションの利点（動的サイズ・豊富な機能・ポリモーフィズム・型安全）を文章でまとめる
-- コレクションフレームワークの全体像（L197–240）
-    + Collection（List・Set・Queue）とMapの階層図と主な実装クラスの一覧。Queueはここで名前が出るだけで以降扱わない
-- List インターフェイス（L241–368）
+    + 同じ処理をArrayListで書き直して解決を示し（9-6。直前で`<String>`と`<>`の読み方を示し、第10章へ誘導する）、コレクションの利点（動的サイズ・豊富な機能・ポリモーフィズム・型安全）を文章でまとめる
+- コレクションフレームワークの全体像（L199–241）
+    + Collection（List・Set・Queue）とMapの階層図と主な実装クラスの一覧。Queueは「取り出す順序が決まった待ち行列。多くはFIFO」と説明し、名前が出るだけで以降扱わない
+- List インターフェイス（L242–370）
     + ArrayListの完全なサンプル（9-7）
-    + ArrayListとLinkedListの比較コード（9-8）と比較表、使い分けの指針、内部構造の図
+    + ArrayListとLinkedListの比較コード（9-8。O記法の脚注はここに置く）と比較表、使い分けの指針（LinkedListは先頭での追加・削除が多い場合）、内部構造の図
     + 配列とListの相互変換と`Arrays.asList`の固定サイズの注意（9-9）
-- Set インターフェイス（L369–484）
-    + HashSetの完全なサンプル。addの戻り値で重複を検出する（9-10）。hashCodeとequalsによる重複の判定と、自作クラスでは両方のオーバーライドが要ることを説明し、第5章へ誘導する
+- Set インターフェイス（L371–500）
+    + HashSetの完全なサンプル。addの戻り値（false）を表示して重複を示す（9-10）。hashCodeとequalsによる重複の判定と、自作クラスでは両方のオーバーライドが要ることを説明し、第5章へ誘導する
     + HashSet/TreeSet/LinkedHashSetの順序の違い（9-11、図chapter09-set-order）と使い分け（文章）。TreeSetの要素に要る比べ方（Comparable・Comparator、第11章へ誘導）と`null`を入れられないこと
-    + addAll/retainAll/removeAllによる和集合・積集合・差集合（9-12）
-- Map インターフェイス（L485–620）
-    + HashMapの完全なサンプル。putの上書き、entrySetの走査（9-13）。キーの判定もhashCodeとequalsによると説明する
-    + HashMap/TreeMap/LinkedHashMapの違い（9-14）と用途（文章）、HashMap内部構造の図
+    + addAll/retainAll/removeAllによる和集合・積集合・差集合（9-12）と、アクセス制御・重複検出での用途
+- Map インターフェイス（L501–643）
+    + Mapを連想配列・辞書とも呼ぶと紹介する
+    + HashMapの完全なサンプル。putの上書き、entrySetの走査（9-13）。型の指定に`Integer`（ラッパークラス）を書く理由、`int`との自動変換、存在しないキーを`int`で受けると`NullPointerException`になることを説明する。キーの判定もhashCodeとequalsによると説明する
+    + HashMap/TreeMap/LinkedHashMapの違い（9-14。LinkedHashMapには個別にputして挿入順を示す）と用途（文章）、HashMap内部構造の図
     + getOrDefault、containsKey、keySetとentrySetの走査（9-15）と、entrySetが速い理由
-- イテレーターとfor-each文（L621–696）
+- イテレーターとfor-each文（L644–718）
     + Iteratorでの走査中の安全な削除（9-16）とイテレーターの利点
-    + 拡張for文（9-17）の特徴と、走査中に削除できない制約。拡張for文・イテレーター・従来のforループの使い分け
-- コレクションの選択指針（L697–750）
-    + 6実装の計算量表と、実装ごとの使用場面・実例。付録B.06への参照
-- 今後の学習へ向けて（L751–796）
+    + 拡張for文（9-17）の特徴と、走査中に削除できない制約（例外が発生するか、要素が飛ばされる）。拡張for文・イテレーター・従来のforループの使い分け
+- コレクションの選択指針（L719–773）
+    + 6実装の計算量表（HashSet・HashMapとArrayListの末尾への追加は平均である旨を注記）と、実装ごとの使用場面・実例。付録B.06への参照
+- 今後の学習へ向けて（L774–820）
     + 拡張for文とStream APIの書き比べ（9-18）。ラムダ式・メソッド参照の読み方を短く説明し、第11章・第12章へ誘導する
     + `List.of`などの不変コレクション（9-19）
-- よくあるエラーと対処法（L797–818）
+- よくあるエラーと対処法（L821–842）
     + 出会いやすい例外・誤り7点（NullPointerException、ClassCastException（第10章へ誘導）、UnsupportedOperationException、ConcurrentModificationException、IndexOutOfBoundsException、存在しないキー、equalsとhashCodeの不整合（第5章））の要点と、付録H（`appendix/h-common-errors/chapters/chapter09.md`）のURL
-- まとめ（L819–830）
+- まとめ（L843–854）
     + List・Set・Mapの比較表。次章のジェネリクスへの導入
-- 章末演習（L831–851）
+- 章末演習（L855–872）
     + `exercises/chapter09/`へのリンクと、基礎・発展・チャレンジ課題の概要。第10章への案内
 
 ## 他章との関係
@@ -102,3 +103,12 @@ sections:
 - L541–542: 「一般的なデータ検索ではHashMapで最高速度を実現します」は根拠のない誇張に読める（直後のL566–569で平均O(1)と説明している）（2026-11-12に解消）
 - 9-8の後の表で、`LinkedList`の中間への追加・削除を「高速」としていた（その位置までたどるのにO(n)かかる。2026-11-12に解消）
 - TreeSetに`null`を入れられないこと、要素に比べ方（`Comparable`か`Comparator`）が要ることを書いていなかった（2026-11-12に解消。Setの節に「TreeSetに入れられる要素」を足し、HashSetは`null`を1つ入れられることと対比した）
+- 2026-11-14の校閲で見つけた問題（いずれも同日に解消）
+    + 9-17のコメントが「ConcurrentModificationException!」と断定していたが、この例のデータでは例外が出ずに要素が飛ばされる。削除する要素を"A"にし、注記と脚注を「例外が発生するか、要素が飛ばされる」にした
+    + `Map<String, Integer>`のラッパークラスと自動変換をどこでも説明していなかった（9-13の後に最小限の説明を置いた。正式に説明する章は未定）
+    + 9-14のLinkedHashMapが`putAll(hashMap)`で、挿入順の例になっていなかった
+    + O記法の説明がSetの節にあり、最初に使う9-8より後だった
+    + `<String>`と`<>`の読み方が9-6より後だった
+    + Queueを「FIFO」と言い切っていた（PriorityQueueと矛盾）、Mapを「ハッシュテーブル」と呼んでいた、集合演算の例にJOINを挙げていた
+    + 9-18の`result`の二重宣言、9-10の`added`を使っていない、計算量表の「追加（末尾）」の行名と平均の注記なし、LinkedListの実例（戻る/進む・Undo/Redo）、まとめの表の半角括弧、課題構成の重複した箇条書き、9-16のコメントの長音
+- 第2章もO記法を説明なしで使っている（L1144・L1173付近）。初出の第2章に説明を置くかは未対応（他章の担当）

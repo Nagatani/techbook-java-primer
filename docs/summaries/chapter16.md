@@ -1,35 +1,35 @@
 ---
 source: manuscripts/chapter16-network-programming.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: 8dd66014
+    hash: 296eeabc
   - key: "はじめに"
     hash: c0698d24
   - key: "ネットワークプログラミングの基礎"
     hash: efa62353
   - key: "ソケットプログラミングの基礎"
-    hash: d4292c45
+    hash: 6cf973ec
   - key: "マルチスレッドサーバーの実装"
-    hash: fb284b01
+    hash: e6ff83a3
   - key: "HTTPクライアントの実装"
-    hash: b365821d
+    hash: 3ece30b4
   - key: "UDP通信の実装"
     hash: 79d9d511
   - key: "実践的な例：チャットアプリケーション"
-    hash: e1572d2e
+    hash: 77eee1b4
   - key: "JSON APIクライアントの実装"
-    hash: 230a3a26
+    hash: f0ed3726
   - key: "セキュリティの考慮事項"
-    hash: 034d3b98
+    hash: 5a3ab45e
   - key: "パフォーマンスの最適化"
-    hash: 420161c3
+    hash: 3ee115e2
   - key: "まとめ"
     hash: 5947cb2f
   - key: "章末演習"
     hash: 2bcca8ac
   - key: "よくあるエラーと対処法"
-    hash: 59e9cab0
+    hash: d566a9a5
 ---
 
 # 第16章 ネットワークプログラミング 要約
@@ -58,52 +58,58 @@ sections:
     + 非同期HttpClient、JSON API（Jackson）、SSL、NIO
 - 「REST API実装の基礎」「WebSocketクライアントの基礎」の短い節は、まとめの「次のステップ」へ統合した（2026-11-11に解消）
 - 16-11がJacksonを導入方法なしで使う問題は、外部ライブラリであることと第22章で学ぶことを本文で断るようにした（2026-11-11に解消）
+- 2026-11-14の校閲で、サンプルの実装の誤りと本文とのずれを直した（詳細は「校正で見つけた個別の問題」）
 
 ## 節ごとの要約
 
-- 本章の学習目標（L3–27）
-    + 4つの大項目（基礎、TCP、UDPとHTTP、実用アプリ）。前提は第14章のストリーム、第15章のマルチスレッド
+- 本章の学習目標（L3–26）
+    + 4つの大項目（基礎、TCP、UDPとHTTP、実用アプリ）。実用アプリの項目の1つは「接続や送受信で起こりやすいエラーと対処」。前提は第14章のストリーム、第15章のマルチスレッド
     + 「HTTPURLConnection」はクラス名の表記誤り（正しくはHttpURLConnection）（2026-11-12に解消）
-- はじめに（L28–33）
+- はじめに（L27–32）
     + ネットワーク通信の重要性と章の位置付けを述べる2段落
-- ネットワークプログラミングの基礎（L34–57）
+- ネットワークプログラミングの基礎（L33–129）
     + 通信相手はIPアドレスとポート番号の組で指定する。IPv4（32ビット）とIPv6（128ビット）、ポート番号の役割と0〜65535の範囲を文章で説明し、3区分（Well-known・登録済み・動的）をリストで示す
-- ソケットプログラミングの基礎（L58–173）
+- ソケットプログラミングの基礎（L130–242）
     + ServerSocketとSocketの役割をシーケンス図（chapter16-tcp-socket）で示す
-    + Socket、PrintWriter、BufferedReaderによるTCPクライアント（16-1）と、accept()で待ち受けるエコーサーバー（16-2）。try-with-resourcesで自動クローズする
-- マルチスレッドサーバーの実装（L174–253）
+    + Socket、PrintWriter、BufferedReaderによるTCPクライアント（16-1）と、accept()で待ち受けるエコーサーバー（16-2）。try-with-resourcesで自動クローズする。TCPの性質は「TCPとUDP」で説明済みなので、この節では繰り返さない
+- マルチスレッドサーバーの実装（L243–325）
     + 単一スレッドサーバーの限界と、複数クライアントを同時に処理する利点を文章で述べる
     + ExecutorServiceの固定スレッドプールでClientHandlerを実行するサーバー（16-3）。ECHO・TIME・QUITの簡易プロトコル
-- HTTPクライアントの実装（L254–472）
+    + 同時に処理できるのはプールの大きさ（10）までで、各接続はQUITまでスレッドを占有するため、11番目のクライアントは空きを待つと明記する
+- HTTPクライアントの実装（L326–558）
     + HTTPリクエスト・レスポンスの構造
-    + ソケットで直接HTTPを話すクライアント（16-4、HTTP/1.0で送りチャンク形式を避ける理由を説明）、HttpURLConnectionによるGitHub APIへのGET（16-5、`URI.create(...).toURL()`）、Java 11のHttpClientのsendAsyncとCompletableFutureの連鎖（16-6、`done.join()`で完了を待つ）
+    + ソケットで直接HTTPを話すクライアント（16-4、HTTP/1.0で送りチャンク形式を避ける理由を説明）。HTTPの行末はCRLFで`println`の改行はOSで変わるため、`print`で`\r\n`を付けて`flush()`する
+    + HttpURLConnectionによるGitHub APIへのGET（16-5、`URI.create(...).toURL()`、タイムアウトの設定も抜粋に含む）、Java 11で標準になったHttpClient（`java.net.http`）のsendAsyncとCompletableFutureの連鎖（16-6、HttpClientの生成も抜粋に含む。`done.join()`で完了を待つ）
     + 16-6の後に、非同期で他の処理を続けられること、HTTP/2の多重化を文章で説明する
-- UDP通信の実装（L473–586）
+- UDP通信の実装（L559–669）
     + TCPとUDPの違いを図（chapter16-tcp-vs-udp）で示す
     + DatagramSocketとDatagramPacketによるエコーサーバー（16-7）とクライアント（16-8）。節末でUDPの特徴（損失・順序非保証、低遅延、ブロードキャスト）を文章で述べる
     + H3「UDP受信側」の中身は送信して応答を受け取るクライアントで、見出しと内容が合わない（2026-11-12に「UDPクライアント」に改め、16-7の前にH3「UDPサーバー」を置いて解消）
-- 実践的な例：チャットアプリケーション（L587–723）
-    + `Collections.synchronizedSet`で管理し全クライアントへブロードキャストするチャットサーバー（16-9、ポート5000）と、受信スレッドとメインの送信ループを分けたクライアント（16-10）
+- 実践的な例：チャットアプリケーション（L670–810）
+    + `ConcurrentHashMap.newKeySet()`で管理し全クライアントへブロードキャストするチャットサーバー（16-9、ポート5000）と、受信スレッドとメインの送信ループを分けたクライアント（16-10）
+    + 各クライアントは`PrintWriter`を用意してから集合に加える（先に加えるとNullPointerExceptionの競合が起こる）。synchronizedSetは反復時に利用側のロックが要ることを脚注で述べる
     + 終了時に`shutdownInput()`と`join()`で受信スレッドを終わらせてから資源を閉じる理由（BufferedReaderのロック）を説明する
     + 実行結果はサーバー未起動時の接続エラーの例として示す
-- JSON APIクライアントの実装（L724–774）
+- JSON APIクライアントの実装（L811–869）
     + JacksonとHttpClientで汎用GET/POSTクライアントを作る（16-11）。Jacksonは外部ライブラリで、追加方法は第22章で学ぶと断る
+    + GET・POSTに共通の`readBody`で、ステータスが200番台のときだけJSONを変換する（POSTの成功は201が多いため）
     + JSON処理のポイント（ライブラリに任せる、`Class<T>`で型を渡す、Content-Type/Accept、ステータスコードの確認）を文章で述べる
-- セキュリティの考慮事項（L775–861）
+- セキュリティの考慮事項（L870–970）
     + 入力検証・暗号化・認証・タイムアウト・リソース制限の5対策
-    + SSLSocketFactoryによるTLS 1.3クライアント（16-12）
-- パフォーマンスの最適化（L862–929）
-    + SelectorとServerSocketChannelによる単一スレッドのNIOサーバー（16-13）
+    + SSLSocketFactoryによるTLSクライアント（16-12）。プロトコルをTLS 1.2以上に限り（JDK 25の既定と同じ）、`setEndpointIdentificationAlgorithm("HTTPS")`でホスト名の検証を有効にする。SSLSocketは既定ではホスト名を検証しないこと、HttpClient・HttpURLConnectionでは自動で行われることを説明する
+- パフォーマンスの最適化（L971–1055）
+    + NIOはNew I/O（Java 1.4の`java.nio`）の略で、ノンブロッキングモードのチャネルとSelectorはその機能の1つと説明する（見出しは「NIOによるノンブロッキングI/O」）
+    + SelectorとServerSocketChannelによる単一スレッドのNIOサーバー（16-13）。`read()`が-1（切断）を返したらチャネルを閉じ、selectの空回りを防ぐ
     + 第14章ではSelector/チャネルを扱っておらず、NIOの説明はこの節だけで完結している
-- まとめ（L930–962）
+- まとめ（L1056–1088）
     + 重要なポイント5点
     + 次のステップでREST（リソース、HTTPメソッド、ステートレス、Spring Boot・JAX-RS）とWebSocket（双方向通信、`HttpClient.newWebSocketBuilder()`）を説明し、gRPC、マイクロサービスを挙げる
     + 「NIOを使用した非同期I/Oによる応答時間の短縮」は不正確（NIOのSelectorはノンブロッキングI/Oで、利点は応答時間より接続数に対するスケーラビリティ）（2026-11-12に解消）
-- 章末演習（L963–986）
+- 章末演習（L1089–1110）
     + 演習リンクは`exercises/chapter16/`
     + 「詳細な課題内容と実装のヒントは…」が2回ある（L975、L983）（2026-11-12に解消）
-- よくあるエラーと対処法（L987–1001）
-    + 本文に挙げるエラー: 接続のエラー、データの送受信のエラー、HTTPのステータスコードの確認漏れ、リソースの解放漏れ。詳細は`appendix/h-common-errors/chapters/chapter16.md`
+- よくあるエラーと対処法（L1111–1125）
+    + 本文に挙げるエラー: 接続のエラー、データの送受信のエラー、HTTPのステータスコードの確認漏れ（`HttpClient`は例外を投げない、`HttpURLConnection`は`getInputStream()`が例外を投げる）、リソースの解放漏れ。詳細は`appendix/h-common-errors/chapters/chapter16.md`
 
 ## 他章との関係
 
@@ -120,3 +126,14 @@ sections:
 - L265: HTTPリクエストの例の「User-Agent: Java/17」は、本書の対象（Java 25）と合わない（2026-11-12に解消）
 - 16-5の実行結果は「Response:」の後で改行してJSONを示すが、コードは`"Response: " + response`を1行で出力する（2026-11-12に解消）
 - 16-4の実行結果の不一致、16-7の「レスポンス送信:」行、`new URL(String)`の使用、エラー集の16-15・16-23・太字・「考慧」の誤字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Hへ移動）
+- 2026-11-14の校閲で見つけ、同日に解消したもの
+    + 16-9: `Collections.synchronizedSet`をロックなしで反復していた。集合に加えてから`out`を作るため、NullPointerExceptionの競合があった
+    + 16-12: SSLSocketがホスト名を検証していなかった。「最新のTLSを明示的に指定」は事実と違っていた（指定はTLS 1.2と1.3で既定と同じ）
+    + 16-13: 切断（`read()`が-1）を扱わず、selectが空回りしていた。「NIO（Non-blocking I/O）」は「New I/O」の誤り
+    + 16-4・16-12: HTTPの行末を`println`で書いていた（CRLFにならない）
+    + 16-3: 「どのクライアントも待たされずに」が、スレッドプールの上限と矛盾していた
+    + 16-11: 本文は「200以外はエラー」だが、`post`はステータスを確かめていなかった
+    + よくあるエラー: 「HTTPクライアントは404でも例外をスローしない」は`HttpURLConnection`に当てはまらなかった
+    + 16-5・16-6: 本文で触れるタイムアウトの設定とHttpClientの生成が抜粋から漏れていた
+    + 学習目標の「エラー処理とデバッグ技術」に当たる本文がなかった。ポートの脚注の「UNIX系のOS」はmacOSに当てはまらなかった
+- 未解決: 図chapter16-multithreaded-serverの題名（本文側の「接続ごとにスレッドで処理する」）は、スレッドプールの上限を表していない（図と題名の見直しは別作業）

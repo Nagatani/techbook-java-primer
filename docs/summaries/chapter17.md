@@ -1,15 +1,15 @@
 ---
 source: manuscripts/chapter17-gui-basics.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
     hash: fb3738a5
   - key: "基本コンポーネントとレイアウト"
-    hash: 66c1d18a
+    hash: 5407af81
   - key: "カスタムコンポーネントの作成"
-    hash: bcc0c3ef
+    hash: c159ef8d
   - key: "よくあるエラーと対処法"
-    hash: e5268822
+    hash: f7c62790
   - key: "まとめ"
     hash: ecfa8925
   - key: "章末演習"
@@ -44,24 +44,25 @@ sections:
 - 本章の学習目標（L3–27）
     + GUIの基本（Swingの構成と階層、invokeLaterの定型）、基本コンポーネント、3つのレイアウトマネージャーとJPanelの入れ子、paintComponentによる独自の描画の4項目
     + イベント処理は第18章で学ぶと断る。前提に第5章・第7章・第11章を挙げる
-- 基本コンポーネントとレイアウト（L28–776）
+- 基本コンポーネントとレイアウト（L28–773）
     + JFrameで最小のウィンドウを表示し、①〜⑤の各メソッドの役割を文章で説明（17-1）
     + 「GUIの組み立てはEDTに任せる」で、`SwingUtilities.invokeLater(() -> createAndShowGUI())`の定型を示す（17-2）。理由は第18章へ誘導
     + setResizableや絶対位置などの詳細設定（17-3）
-    + Swingコンポーネント継承階層の図（chapter17-swing-hierarchy）、JLabelの表示（17-4）、レイアウトマネージャーの考え方とBorderLayoutの5領域（17-5、領域ごとの広がり方を文章で説明）
-    + JLabelのHTML表示（17-6）、JButtonの色・サイズ・無効化（17-7）
+    + Swingコンポーネント継承階層の図（chapter17-swing-hierarchy）。図の前後で、AWTの`Component`・`Container`、Swingの部品の基底`JComponent`、`Window`→`Frame`の系統の`JFrame`を文章で説明する
+    + JLabelの表示（17-4）、レイアウトマネージャーの考え方とBorderLayoutの5領域（17-5、領域ごとの広がり方を文章で説明）
+    + JLabelのHTML表示（17-6、見出しは「JLabelでHTMLを表示する」）、JButtonの色・サイズ・無効化（17-7）
     + JTextField・JPasswordField・JTextArea・JSpinner・JSliderの入力系（17-8）、JCheckBox・ButtonGroup付きJRadioButton・JComboBox・JListの選択系（17-9）。JListの詳細は第20章へ誘導
     + BorderLayout（図chapter17-borderlayout、17-10）、GridLayout（図chapter17-gridlayout、17-11）、FlowLayout（17-12）
-    + JPanelの用途を文章で述べ、エディター風画面（17-13）、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-14）
-- カスタムコンポーネントの作成（L777–863）
+    + JPanelの用途を文章で述べ、エディター風画面（17-13）、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-14）。17-14の抜粋は`setJMenuBar`でメニューバーをフレームに付ける箇所と左側パネルの生成を含み、左側はJList（src・test・resources）
+- カスタムコンポーネントの作成（L774–861）
     + 基底クラスの選択（JComponent・JPanel・既存のコンポーネント）をリストで示す
-    + JPanelを継承したDrawingPanelで四角形・円・文字列を描く（17-15）。getPreferredSize、paintComponentが呼ばれる時機、`super.paintComponent(g)`、Graphicsの座標と色、repaintで再描画を頼むことを①〜④で説明
+    + JPanelを継承したDrawingPanelで四角形・円・文字列を描く（17-15。前半がDrawingPanel.java、後半がDrawingPanelExample.javaの`createAndShowGUI()`と断る）。getPreferredSize、paintComponentが呼ばれる時機、`super.paintComponent(g)`、Graphicsの座標と色、repaintで再描画を頼むことを①〜④で説明
     + イベントと組み合わせた描画は第18章・第19章へ誘導
-- よくあるエラーと対処法（L864–885）
-    + 本文に挙げる問題: コンポーネントが表示されない、BorderLayoutでの重なり、JPanelの背景色、JTextFieldが編集できない、EDT以外からの更新、サイズが意図どおりにならない、ちらつき。詳細は`appendix/h-common-errors/chapters/chapter17.md`
-- まとめ（L886–900）
+- よくあるエラーと対処法（L862–883）
+    + 本文に挙げる問題: コンポーネントが表示されない、BorderLayoutでの重なり、JPanelの背景色、JTextFieldが編集できない、EDT以外からの更新、サイズが意図どおりにならない、独自の描画で画面がちらつく（JFrameの`paint()`や`getGraphics()`で描くとダブルバッファリングが働かない。`paintComponent()`と`repaint()`を使う）。詳細は`appendix/h-common-errors/chapters/chapter17.md`
+- まとめ（L884–898）
     + 画面の組み立て、GUIの組み立て方（invokeLater）、カスタムコンポーネントの3項目。次章のイベント処理とEDTへつなぐ
-- 章末演習（L881–）
+- 章末演習（L899–921）
     + GitHubの`exercises/chapter17/`への案内と課題構成（基礎: プロフィールカード・電卓の画面・アンケートの入力画面・棒グラフ、発展: カレンダー・アナログ時計の文字盤、チャレンジ: 家計簿の画面）。ボタンの処理は第18章で学ぶため、どの課題も画面の表示までを作ると断る（2026-11-13に演習を用意した）
 
 ## 他章との関係
@@ -82,3 +83,12 @@ sections:
 - L385–388: JFormattedTextFieldを挙げるが、17-8では使わず、代わりにJSpinner・JSliderを使う（2026-11-12にリストをJSpinner・JSliderに合わせて解消）
 - L872–873: 「JPanelの背景色が反映されない」の原因を`setOpaque(true)`とするのは不正確。JPanelは標準のLook&Feelでは不透明が既定で、setOpaque(true)が必要なのは主にJLabelなど（2026-11-12に本文と付録HをJLabelの話に改めて解消）
 - 17-30の`needsRepaint`の誤りは、断片コードを削除して解消した（2026-11-11に解消）
+- 2026-11-14の校閲で見つけ、同日に解消したもの
+    + 17-11: 同じコメントが2行続いていた
+    + 17-13・17-14: 画面の文字列「エディタ」が本文の「エディター」と合わず、長音のルールにも反していた
+    + 17-14: コメント「上部：メニューバーとツールバー」が実際（メニューバーはsetJMenuBar）と違い、抜粋に`leftPanel`の定義がなかった。左側の`JTree`が実行結果の説明（src/test/resourcesのリスト）と違っていた
+    + 継承階層の図に説明がなかった。見出し「JLabelとアイコンの活用」の例にアイコンがなかった
+    + JPanelの節で同じ内容の文が2つ続いていた。17-8の実行結果の「スクロールバーが付き」は既定の表示（AS_NEEDED）と違っていた
+    + 「画面のちらつき」の原因を「追加・削除が1つずつ画面に反映される」としていたのは誤り。本文と付録Hを、`paint()`・`getGraphics()`で描くとダブルバッファリングが働かない話に改めた
+- 未解決: 図chapter17-gridlayoutは2行3列で、直後の17-11（3行2列）と食い違う（図の見直しは別作業）
+- 未解決: 継承階層の図は「基本的なコンポーネントの配置」の冒頭にある。もっと前へ移すかどうかは著者の判断待ち
