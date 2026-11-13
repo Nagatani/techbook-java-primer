@@ -1,5 +1,5 @@
 public record BankAccount(String accountNumber, double balance) {
-    // コンパクトコンストラクタ
+    // コンパクトコンストラクター
     public BankAccount {
         // 暗黙的にフィールドへの代入が行われる前に実行される
         if (accountNumber == null || accountNumber.isBlank()) {

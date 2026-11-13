@@ -1,5 +1,5 @@
 public record Tile(double width, double height) {
-    // 正方形用のコンストラクタ
+    // 正方形用のコンストラクター
     public Tile(double side) {
         this(side, side);
     }

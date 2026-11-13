@@ -140,7 +140,7 @@ public enum Planet {
     private final double mass;   // 質量（kg）
     private final double radius; // 半径（m）
     
-    // コンストラクタ（暗黙的にprivate）
+    // コンストラクター（暗黙的にprivate）
     Planet(double mass, double radius) {
         this.mass = mass;
         this.radius = radius;
@@ -423,14 +423,13 @@ enumが向いているのは、取りうる値の集合を明確に定義でき�
 
 反対に、プログラムの実行中に値の集合が変化する場合は、enumを避けます。
 列挙子はソースコードに書いて定義するため、あとから値を増やしたり減らしたりできないからです。
-値の数が数百を超えるような場合も、enum以外の方法を検討します。
 データベースや外部のシステムから受け取る値で、相手の側で値が増えることがある場合も同じです。
 enumは定義していない値を表せないので、新しい値を受け取ったときに処理できなくなります。
 
 ### よくあるエラーと対処法
 
-列挙型では、定数名の大文字・小文字の間違いや、`switch`文の`case`に型名を付けて書いてしまう誤りがよく起きます。
-`switch`文の`case`では、Java 20以前は`Status.ACTIVE`ではなく`ACTIVE`と定数名だけを書く必要がありました。
+列挙型では、`Status.active`のように定数名の大文字・小文字を間違える誤りがよく起きます。
+なお、列挙型を対象にした`switch`文の`case`には、`ACTIVE`のように定数名だけを書くのが一般的です<span class="footnote">Java 20以前は、`case Status.ACTIVE:`のように型名を付けるとコンパイルエラーになりました。Java 21からは型名を付けても書けます。</span>。
 
 エラーの例と修正したコードは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter08.md`
@@ -511,10 +510,13 @@ public final class Person {
 
 Recordを使う最大のメリットは簡潔さです。
 フィールドやコンストラクター、アクセサーなどのボイラープレートコードを自分で書かずに済みます。
-また、フィールドはすべて`final`になるので、作成したあとで値が書き換わる心配がなく、プログラムの安全性が高まります。
+また、フィールドはすべて`final`になるので、作成したあとでフィールドの値が書き換わる心配がなく、プログラムの安全性が高まります。
+ただし、`final`が守るのはフィールドに入れた参照だけです。
+フィールドが`List`のような変更できるオブジェクトを指していれば、そのオブジェクトの中身は外から書き換えられます。
+中身まで守りたいときは、第6章で学んだ防御的コピーをコンストラクターで行います。
 `record`と宣言するだけで、このクラスが「データを保持するためのもの」だという意図も読み手に伝わります。
 
-一方で、`Record`は暗黙的に`final`なので、ほかのクラスから継承できません<span class="footnote">また、Recordは暗黙的に`java.lang.Record`クラスを継承するため、ほかのクラスを継承することもできません。インターフェイスは実装できます。</span>。
+一方で、`Record`は暗黙的に`final`なので、Recordを継承したクラスは作れません<span class="footnote">また、Recordは暗黙的に`java.lang.Record`クラスを継承するため、ほかのクラスを継承することもできません。インターフェイスは実装できます。</span>。
 また、フィールドを変更できないため、状態が変わっていくオブジェクトを表すのには使えません。
 
 ### Recordの使い方
@@ -528,7 +530,7 @@ public class RecordExample {
         Person person2 = new Person("山田太郎", 25);
         Person person3 = new Person("鈴木花子", 30);
         
-        // アクセサメソッドの使用
+        // アクセサーメソッドの使用
         IO.println("名前: " + person1.name());
         IO.println("年齢: " + person1.age());
         
@@ -559,12 +561,15 @@ true
 ### カスタムコンストラクターとバリデーション
 
 Recordでは、コンパクトコンストラクターを使用してバリデーションを追加できます。
+コンパクトコンストラクターは、`public BankAccount { ... }`のように、Recordの名前の後ろの引数リストを省いて書くコンストラクターです。
+引数はRecordの宣言に書いた成分と同じ名前で、本体でそのまま使えます。
+本体の処理が終わると、各引数の値が同じ名前のフィールドへ自動的に代入されるので、`this.balance = balance;`のような代入は書きません。
 
 <span class="listing-number">**サンプルコード8-14**　BankAccount.java</span>
 
 ```java
 public record BankAccount(String accountNumber, double balance) {
-    // コンパクトコンストラクタ
+    // コンパクトコンストラクター
     public BankAccount {
         // 暗黙的にフィールドへの代入が行われる前に実行される
         if (accountNumber == null || accountNumber.isBlank()) {
@@ -587,7 +592,7 @@ public record BankAccount(String accountNumber, double balance) {
 
 ```java
 public record Tile(double width, double height) {
-    // 正方形用のコンストラクタ
+    // 正方形用のコンストラクター
     public Tile(double side) {
         this(side, side);
     }
@@ -720,6 +725,13 @@ null値
 未知のオブジェクト
 ```
 
+このswitchは、値ではなく型でcaseを選びます。
+`case String s`は、`obj`が`String`ならそれを変数`s`に入れてcaseを選ぶ書き方で、型パターンと呼びます。
+第5章で学んだ`instanceof`のパターンマッチングを、switchで使うものと考えられます。
+`case Point(int x, int y)`はレコードパターンと呼び、`obj`が`Point`なら、その成分`x`と`y`を同じ名前の変数に取り出します。
+`case null`は、`obj`が`null`のときに選ばれます<span class="footnote">`case null`を書かないswitchに`null`を渡すと、`NullPointerException`が発生します。</span>。
+どのパターンにも当てはまらない値は`default`が受け取ります。
+
 caseのパターンの後ろに`when 条件式`を書くと、型が一致したうえで条件式が`true`のときだけ、そのcaseを選びます。
 この`when`の部分をガードと呼びます。
 ガードの条件式では、パターンで取り出した変数（ここでは`x`・`y`・`s`）を使えます。
@@ -777,14 +789,14 @@ public record Address(String street, String city, String country) {}
 public record Company(String name, Address headquarters) {}
 
 public record Employee(String name, String id, Company company) {
-    // 従業員の完全な住所を取得
+    // 従業員の勤務先と、その所在地を返す
     public String getFullAddress() {
-        return String.format("%s works at %s, located at %s, %s %s",
+        return String.format("%sの勤務先は%s（所在地: %s %s %s）",
             name,
             company.name(),
-            company.headquarters().street(),
+            company.headquarters().country(),
             company.headquarters().city(),
-            company.headquarters().country()
+            company.headquarters().street()
         );
     }
 }
@@ -797,7 +809,7 @@ public record Employee(String name, String id, Company company) {
 DTO（Data Transfer Object）は、処理の間やシステムの間でデータをまとめて受け渡すためのオブジェクトです。
 次の`ApiResponse`は、処理が成功したかどうか、結果のデータ、メッセージ、作った時刻をまとめて返します。
 
-<span class="listing-number">**サンプルコード8-21**</span>
+<span class="listing-number">**サンプルコード8-21**　ApiResponse.java</span>
 
 ```java
 // APIレスポンス用のDTO
@@ -822,6 +834,11 @@ public record ApiResponse(
 ```
 
 #### Value Objectパターン
+
+Value Objectは、金額や日付のように、値そのものを表す小さな不変オブジェクトです。
+値が等しければ同じものとみなすので、`equals()`を自動で用意するRecordと相性がよい書き方です。
+次の`Money`は、コンパクトコンストラクターで引数`amount`に丸めた値を代入し直しています。
+フィールドへの代入は本体の最後に行われるため、丸めたあとの値がフィールドに入ります。
 
 <span class="listing-number">**サンプルコード8-22**　Money.java</span>
 
@@ -867,7 +884,7 @@ sealed interfaceは、実装可能なクラスを明示的に制限する機能�
 <span class="listing-number">**サンプルコード8-23**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
 
 ```java
-// 図形を表現する代数的データ型
+// 図形を表すsealed interface（実装できる型をpermitsの3つに限る）
 public sealed interface Shape permits Circle, Rectangle, Triangle {}
 
 public record Circle(double radius) implements Shape {}
@@ -887,6 +904,15 @@ public class ShapeCalculator {
     }
 }
 ```
+
+`sealed`を付けたインターフェイスは、`permits`の後ろに並べた型だけが実装できます。
+ここでは`Shape`を実装できるのは`Circle`・`Rectangle`・`Triangle`の3つだけで、ほかのクラスが`implements Shape`と書くとコンパイルエラーになります。
+許可された型は、`final`・`sealed`・`non-sealed`のどれかを付けて、さらに継承できるかどうかを決めておく必要があります。
+Recordは暗黙的に`final`なので、何も付けずにこの条件を満たします。
+
+`calculateArea`のswitchに`default`がないことにも注目してください。
+コンパイラーは`Shape`の実装が3つしかないことを知っているので、3つのcaseですべての場合を尽くしていると判断できます。
+あとで`Shape`の実装を増やしてcaseを書き足し忘れると、このswitchがコンパイルエラーになり、直すべき場所を教えてくれます。
 
 ### データ指向プログラミング（DOP）
 
@@ -946,6 +972,7 @@ public class OrderProcessor {
 次のサンプルは、注文の状態を表すEnumの`OrderStatus`と、その状態を持つRecordの`Order`を組み合わせたものです。
 この`Order`は、サンプルコード8-24の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
 `updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
+
 <span class="listing-number">**サンプルコード8-25**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
 
 ```java
@@ -988,10 +1015,13 @@ public record Order(
 
 ### 実践的なアプリケーション例
 
+次のサンプルは、ゲームのキャラクターを、職業を表すEnumの`CharacterClass`と、能力値を表すRecordの`CharacterStats`で組み立てたものです。
+職業ごとの初期値はEnumの列挙子に持たせ、レベルアップでは能力値を書き換えずに新しいRecordを作って返します。
+
 <span class="listing-number">**サンプルコード8-26**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java</span>
 
 ```java
-// ゲームのキャラクタークラス
+// キャラクターの職業
 public enum CharacterClass {
     WARRIOR("戦士", 100, 20, 10),
     MAGE("魔法使い", 60, 10, 30),
@@ -1143,6 +1173,13 @@ public class LocalClassExample {
 }
 ```
 
+ローカル内部クラスからは、それを囲むメソッドの引数やローカル変数を参照できます。
+ただし、参照できるのは`final`を付けた変数か、一度も代入し直していない変数に限られます。
+後者を「実質的にfinal（effectively final）」と呼びます。
+サンプルの`prefix`から`final`を外しても、メソッド内で代入し直していなければ参照できます。
+代入し直す文を書くと、ローカル内部クラスから参照している箇所がコンパイルエラーになります。
+この規則は匿名内部クラスと、第11章で学ぶラムダ式にも当てはまります。
+
 #### 4. 匿名内部クラス（Anonymous Inner Class）
 
 名前を持たない内部クラスで<span class="footnote">名前がなくてもクラスファイルは作られ、コンパイラーは`AnonymousClassExample$1.class`のように、外部クラスの名前に番号を付けた名前にします。メンバー内部クラスなら`OuterClass$InnerClass.class`です。</span>、インターフェイスの実装や抽象クラスの継承に使用されます。
@@ -1262,7 +1299,8 @@ Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフ
 外部クラスのインスタンスのフィールドやメソッドを使うならメンバー内部クラス、外部クラスのインスタンスから独立して使うなら静的内部クラスにします。
 1つのメソッド内で一時的に使うだけなら、ローカル内部クラスか匿名内部クラスで十分です<span class="footnote">Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えて短く書けます。ラムダ式は第11章「ラムダ式と関数型インターフェイス」で学びます。</span>。
 
-メンバー内部クラスのオブジェクトは、外部クラスのインスタンスに関連付けられています。
+メンバー内部クラスのオブジェクトは、外部クラスのインスタンスへの参照を隠し持っています。
+そのため、内部クラスのオブジェクトを使い続けている間は、外部クラスのインスタンスも不要なのにメモリから解放されません。
 長い期間使い続ける内部クラスは静的内部クラスにし、不要になった外部クラスへの参照は切って、メモリリークを防ぎます。
 
 ## まとめ

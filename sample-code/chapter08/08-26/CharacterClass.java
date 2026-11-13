@@ -1,4 +1,4 @@
-// ゲームのキャラクタークラス
+// キャラクターの職業
 public enum CharacterClass {
     WARRIOR("戦士", 100, 20, 10),
     MAGE("魔法使い", 60, 10, 30),

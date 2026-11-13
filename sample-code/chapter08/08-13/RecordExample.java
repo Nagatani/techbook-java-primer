@@ -4,7 +4,7 @@ public class RecordExample {
         Person person2 = new Person("山田太郎", 25);
         Person person3 = new Person("鈴木花子", 30);
         
-        // アクセサメソッドの使用
+        // アクセサーメソッドの使用
         IO.println("名前: " + person1.name());
         IO.println("年齢: " + person1.age());
         

@@ -7,7 +7,7 @@ public enum Planet {
     private final double mass;   // 質量（kg）
     private final double radius; // 半径（m）
     
-    // コンストラクタ（暗黙的にprivate）
+    // コンストラクター（暗黙的にprivate）
     Planet(double mass, double radius) {
         this.mass = mass;
         this.radius = radius;
