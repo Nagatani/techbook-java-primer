@@ -673,9 +673,23 @@ public class SwingWorkerExample extends JFrame {
 
 ## 章末演習
 
-本章の演習課題は準備中です。準備ができしだい、GitHubリポジトリの次の場所で提供します。<br>
+### 演習課題へのアクセス
+
+本章の演習課題は、GitHubリポジトリで提供されています。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter19/`
 
-それまでは、本文のサンプルコードを動かし、値や部品を変えて動きの違いを確かめてください。コンパイルできる全文はGitHubリポジトリの`sample-code/chapter19/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/`にあります。サンプルコード19-1の全文は`19-01/`のように、番号ごとのディレクトリに置いています。</span>。
+### 課題構成
+
+演習は、本章で学んだイベント処理の応用を使う次の課題で構成されています。
+
+- 基礎課題
+    + お絵かきパネル（マウスのドラッグと右クリックのメニュー）、矢印キーで四角を動かす（キーバインディング）、文字数を数えながら書く投稿画面（DocumentListener）、在庫の変化を知らせる（カスタムイベント）
+- 発展課題
+    + 入力が止まってから検索する（デバウンス）、素数を数える（SwingWorkerによる進捗の表示とキャンセル）
+- チャレンジ課題
+    + タスクボード（ドラッグ&ドロップ・キーバインディング・PropertyChangeSupport）
+
+各課題には、詳細な要件と実装のヒントが含まれています。
+第18章と第19章の内容をまとめて使う大きめのプログラムも、同じ場所の`examples/`に置いています。
 
 本章の内容を理解できたら、第20章「JTableとJListの基礎」に進みましょう。

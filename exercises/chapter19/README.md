@@ -1,9 +1,30 @@
 # 第19章 高度なイベント処理パターン - 演習課題
 
-本章の演習課題は準備中です。
+書籍『Java入門』第19章「高度なイベント処理パターン」の演習課題です。
 
-それまでは、本文のサンプルコードを動かし、SwingWorkerやDocumentListenerの動きを確かめてください。
-コンパイルできる全文は[sample-code/chapter19/](../../sample-code/chapter19/)にあります。
+## 基礎課題（[basic/](basic/)）
+
+- お絵かきパネル（MouseListenerとMouseMotionListener、右クリックのメニュー）
+- 矢印キーで四角を動かす（InputMapとActionMapによるキーバインディング）
+- 文字数を数えながら書く投稿画面（DocumentListenerによる入力の監視）
+- 在庫の変化を知らせる（EventObjectとEventListenerによるカスタムイベント）
+- このフォルダーのJavaファイルは解答例です（課題ごとに`task1-paint/`などのフォルダーに分けてあります）
+
+## 発展課題（[advanced/](advanced/)）
+
+- 入力が止まってから検索する（javax.swing.Timerによるデバウンス）
+- 素数を数える（SwingWorkerによる時間のかかる処理、進捗の表示とキャンセル）
+- このフォルダーのJavaファイルは解答例です
+
+## チャレンジ課題（[challenge/](challenge/)）
+
+- タスクボード（ドラッグ&ドロップ、キーバインディング、PropertyChangeSupportによる通知）
+- このフォルダーのJavaファイルは解答例です
+
+## 動作確認のプログラム
+
+画面に依存しないクラスには、画面を開かずに動きを確かめるプログラム（`〜Check.java`）を付けています。
+期待する値と実際の値を比べて「OK」か「NG」を表示します。
 
 ## 参考の例（[examples/](examples/)）
 
