@@ -9,7 +9,7 @@ flowchart TB
     start(("開始")) --> C
     C["CLOSED（通常）<br/>呼び出しを通す<br/>成功すると失敗回数を0に戻す"]
     O["OPEN（遮断）<br/>timeoutの間は呼び出さずに<br/>すぐ例外を投げる"]
-    H["HALF_OPEN（試行）<br/>試しに1回呼び出す"]
+    H["HALF_OPEN（試行）<br/>次の1回の呼び出しを<br/>試しに通す"]
 
     C -->|"失敗回数が<br/>しきい値に達する"| O
     O -->|"timeoutを過ぎて<br/>次の呼び出しが来る"| H
