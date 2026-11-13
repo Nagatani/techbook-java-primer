@@ -9,11 +9,11 @@ sections:
   - key: "コレクションフレームワークの全体像"
     hash: d27e4b02
   - key: "List インターフェイス"
-    hash: 3557d210
+    hash: 6d25aee4
   - key: "Set インターフェイス"
     hash: cf5002ac
   - key: "Map インターフェイス"
-    hash: c8dca8a3
+    hash: 244bf186
   - key: "イテレーターとfor-each文"
     hash: 06b8b6e3
   - key: "コレクションの選択指針"
@@ -65,7 +65,7 @@ sections:
     + addAll/retainAll/removeAllによる和集合・積集合・差集合（9-12）と、アクセス制御・重複検出での用途
 - Map インターフェイス（L501–643）
     + Mapを連想配列・辞書とも呼ぶと紹介する
-    + HashMapの完全なサンプル。putの上書き、entrySetの走査（9-13）。型の指定に`Integer`（ラッパークラス）を書く理由、`int`との自動変換、存在しないキーを`int`で受けると`NullPointerException`になることを説明する。キーの判定もhashCodeとequalsによると説明する
+    + HashMapの完全なサンプル。putの上書き、entrySetの走査（9-13）。型の指定に`Integer`（ラッパークラス）を書く理由、`int`との自動変換（本章の「ラッパークラスとオートボクシング」を参照する）、存在しないキーを`int`で受けると`NullPointerException`になることを説明する。キーの判定もhashCodeとequalsによると説明する
     + HashMap/TreeMap/LinkedHashMapの違い（9-14。LinkedHashMapには個別にputして挿入順を示す）と用途（文章）、HashMap内部構造の図
     + getOrDefault、containsKey、keySetとentrySetの走査（9-15）と、entrySetが速い理由
 - イテレーターとfor-each文（L644–718）
@@ -105,10 +105,10 @@ sections:
 - TreeSetに`null`を入れられないこと、要素に比べ方（`Comparable`か`Comparator`）が要ることを書いていなかった（2026-11-12に解消。Setの節に「TreeSetに入れられる要素」を足し、HashSetは`null`を1つ入れられることと対比した）
 - 2026-11-14の校閲で見つけた問題（いずれも同日に解消）
     + 9-17のコメントが「ConcurrentModificationException!」と断定していたが、この例のデータでは例外が出ずに要素が飛ばされる。削除する要素を"A"にし、注記と脚注を「例外が発生するか、要素が飛ばされる」にした
-    + `Map<String, Integer>`のラッパークラスと自動変換をどこでも説明していなかった（9-13の後に最小限の説明を置いた。正式に説明する章は未定）
+    + `Map<String, Integer>`のラッパークラスと自動変換をどこでも説明していなかった（2026-11-14に解消。List節の末尾に小節「ラッパークラスとオートボクシング」を置き、8つの対応表、オートボクシングとアンボクシング、nullのアンボクシング・`==`の比較・`remove(int)`の3つの注意を説明する。9-13の後は参照だけにした。正式に説明する章は第9章）
     + 9-14のLinkedHashMapが`putAll(hashMap)`で、挿入順の例になっていなかった
     + O記法の説明がSetの節にあり、最初に使う9-8より後だった
     + `<String>`と`<>`の読み方が9-6より後だった
     + Queueを「FIFO」と言い切っていた（PriorityQueueと矛盾）、Mapを「ハッシュテーブル」と呼んでいた、集合演算の例にJOINを挙げていた
     + 9-18の`result`の二重宣言、9-10の`added`を使っていない、計算量表の「追加（末尾）」の行名と平均の注記なし、LinkedListの実例（戻る/進む・Undo/Redo）、まとめの表の半角括弧、課題構成の重複した箇条書き、9-16のコメントの長音
-- 第2章もO記法を説明なしで使っている（L1144・L1173付近）。初出の第2章に説明を置くかは未対応（他章の担当）
+- 第2章もO記法を説明なしで使っていた（2026-11-14に解消。第2章のコメントを言葉で書き直し、O記法の初出を第9章にした）

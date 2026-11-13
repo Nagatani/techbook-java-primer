@@ -13,9 +13,9 @@ sections:
   - key: "独自例外と例外の連鎖"
     hash: a560fb35
   - key: "実践的な例外処理パターン"
-    hash: 54fcb9e7
+    hash: 0ffd7173
   - key: "リソース管理の実践例"
-    hash: 8aeee278
+    hash: 0f542e61
   - key: "例外処理とログ記録"
     hash: caea5144
   - key: "業務アプリケーションでの例外設計"
@@ -79,10 +79,10 @@ sections:
     + 呼び出し側は`getCause()`で元の例外を取り出せ、スタックトレースには`Caused by:`で原因が出る旨
 - 実践的な例外処理パターン（L319–495）
     + Callableとジェネリクスを使ったリトライ（13-7）。`Callable`と`Class<? extends Exception>`の説明を加えた
-    + 状態を持つサーキットブレーカー（13-8、しきい値とtimeoutのフィールドも載せる）と状態の図。名前の由来とNygard『Release It!』の脚注
+    + 状態を持つサーキットブレーカー（13-8、しきい値とtimeoutのフィールドも載せる）と、3つの状態のリストと図。名前の由来とNygard『Release It!』の脚注
     + 複数の処理を順に実行して例外を集めるExceptionAggregator（13-9）
 - リソース管理の実践例（L496–602）
-    + 複数リソースのtry-with-resources（13-10）
+    + 複数リソースのtry-with-resources（13-10）。宣言と逆の順に閉じる理由と、closeの例外が抑制された例外として付け加えられ`getSuppressed`で取り出せること
     + AutoCloseableを実装したResourcePool（13-11）と実行結果。1スレッド前提で、排他制御は第15章で学ぶ旨
 - 例外処理とログ記録（L603–715）
     + java.util.loggingで例外の種類ごとにログレベルを使い分け、エラーIDを発行する（13-12）。ログと再スローを両方行うと二重に記録される注意
@@ -128,5 +128,5 @@ sections:
     + ErrorCode（13-15）が13-14で使われていなかった問題、13-14・13-16の金額がdoubleだった問題、13-16がLoggerでなくSystem.errを使っていた問題
 - 残っている問題
     + 13-16の`catch (Exception e)`が非検査例外の`SystemException`も包み直す（13-16の全文に`SystemException`がないため直していない）
-    + try-with-resourcesの抑制された例外（`getSuppressed()`／`addSuppressed`）に触れていない（要確認、著者の判断待ち）
-    + 図`docs/diagrams/chapter13-circuit-breaker.mmd`はHALF_OPENを「試しに1回呼び出す」とするが、13-8のコードは1回に制限していない
+    + try-with-resourcesの抑制された例外に触れていなかった（2026-11-14に解消。13-10の後に説明した）
+    + 図`docs/diagrams/chapter13-circuit-breaker.mmd`はHALF_OPENを「試しに1回呼び出す」とするが、13-8のコードは1回に制限していない（2026-11-14に解消。図の前に3つの状態のリストを置き、13-8の後に、1つのスレッドから使う前提では次の1回で状態が決まることと、複数のスレッドでは排他制御が要ることを書いた。図の文言も合わせた）

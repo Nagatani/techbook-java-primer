@@ -17,11 +17,11 @@ sections:
   - key: "テスト駆動開発（TDD）"
     hash: 594ec28d
   - key: "JUnitによる効率的なテスト"
-    hash: 3e47704f
+    hash: 0abd861b
   - key: "テストのベストプラクティス"
-    hash: 3e0ff7a7
+    hash: 5708669c
   - key: "継続的インテグレーション（CI）との統合"
-    hash: 018ef75d
+    hash: 605244be
   - key: "よくあるエラーと対処法"
     hash: 31cb0f51
   - key: "まとめ"
@@ -36,7 +36,7 @@ sections:
 
 ## 章の概要
 
-- 単体テストの意義、AAAパターン、密結合がテストを妨げる理由、DI（コンストラクター・セッター・フィールドインジェクション）とスタブによる差し替え、TDDのサイクル、JUnit 5とMockito、FIRST原則、CIとカバレッジを扱う
+- 単体テストの意義、AAAパターン、密結合がテストを妨げる理由、DI（コンストラクター・セッター・フィールドインジェクション）とスタブによる差し替え、TDDのサイクル、JUnit（Jupiter）とMockito、FIRST原則、CIとカバレッジを扱う
 - 中心の題材はCalculatorとUserService/UserRepository。JUnitを使わない手動テストでAAAとスタブを示してから、JUnit・Mockitoへ進む
 - 800行と短く、各トピックは概観にとどまる
 - 書籍全体でJUnit、Mockito、DI、TDDを扱うのは本章だけで、他章との重複はほぼない
@@ -78,8 +78,8 @@ sections:
     + 1回目: StringCalculatorの空文字列で0を返すテスト（21-9）と最小実装（21-10）。クラスがなくコンパイルできないこともRedに含めること、`@Test`と`assertEquals`の読み方を述べ、JUnitの導入は章の後半で説明すると誘導する
     + 2回目: "1,2"の合計を返すテスト（21-11）、2つの数を足す実装（21-12）、ループで合計する形へのリファクタリング（21-13）
 - JUnitによる効率的なテスト（L486–587）
-    + JUnitをIntelliJ IDEAで追加する手順、Mockitoの追加手順、Mavenでの依存関係は第22章で学ぶこと
-    + JUnit 5の`@Test`、`@BeforeEach`、`assertEquals`、`assertThrows`（21-14。21-2のCalculatorに`divide`を加えたもの）
+    + JUnitをIntelliJ IDEAで追加する手順、最新の系列はJUnit 6（2025年9月、Java 17以降）で、本章のコードは5でも6でも動くこと、Mockitoの追加手順、Mavenでの依存関係は第22章で学ぶこと
+    + JUnit Jupiterの`@Test`、`@BeforeEach`、`assertEquals`、`assertThrows`（21-14。21-2のCalculatorに`divide`を加えたもの）
     + モックの定義（スタブとの違い: 呼び出しを記録し、あとから検証できる）
     + Mockitoの`@Mock`、`when().thenReturn()`、`verify()`と、`@ExtendWith(MockitoExtension.class)`を付け忘れるとNullPointerExceptionになること、JDK 21以降でMockitoの動的エージェントの警告が出るがテストは成功していること（脚注で理由）（21-15）
 - テストのベストプラクティス（L588–635）
@@ -108,10 +108,10 @@ sections:
 
 - L26: 「推奨される知識：」はコロンでリストを導入している（2026-11-12に解消）
 - L195–196、L209–210、L461–464: 文の途中で改行しており、読点で行を分けている（`vfm-line-breaks.js`で和文の改行は除かれるので紙面への影響はない）（2026-11-12に解消）
-- L413–417: JUnitとMockitoの追加手順がIntelliJ IDEAに限られ、付録Aの環境構築（SDKMAN・ターミナル中心）との対応が書かれていない。なお、クイックフィックスの項目名（Add 'JUnit5…' to classpath）に頼る書き方は、版で文言が変わるため「JUnit 5をクラスパスに追加する項目」に改めた（2026-11-12に解消）
+- L413–417: JUnitとMockitoの追加手順がIntelliJ IDEAに限られ、付録Aの環境構築（SDKMAN・ターミナル中心）との対応が書かれていない。なお、クイックフィックスの項目名（Add 'JUnit5…' to classpath）に頼る書き方は、版で文言が変わるため「JUnit 5をクラスパスに追加する項目」に改めた（2026-11-12に解消）。2026-11-14に、JUnit 6が出たため「JUnitをクラスパスに追加する項目」にした
 - 21-14: `actions/setup-java@v2`は`distribution`の指定が必須で、このままでは失敗する。`checkout@v2`も古く、JDKは17（本書の対象はJava 25）。リポジトリのCIと同じ`checkout@v7`・`setup-java@v6`、`temurin`、25に直した（2026-11-12に解消）
 - 21-15: JaCoCoの`xml.enabled`/`html.enabled`はGradle 8で削除済み（`required`を使う）。CLAUDE.mdの「Gradle 9で動く設定にする」方針とも合わない。`required`に直し、javaプラグイン・JUnitの依存・`useJUnitPlatform()`を加え、Docker（gradle:jdk25、Gradle 9.8）で`gradle check`が通ることを確かめた（2026-11-12に解消）
 - L662: 「次のステップ： 基礎課題が完了したら」は項目名＋コロンの形（2026-11-12に解消）
 - 21-1のコメントだけのコードと「実行結果」、手戻りコストの「100分の1」の断定、21-12のMockitoの初期化漏れ、DIの説明での「モック」と「スタブ」の混同、TDDサイクルの絵文字は、2026-11-11に解消した。エラー集の21-19は付録Hへ移した
 - 2026-11-14の校閲で次を解消した: L196の「`new UserRepository()`でDB接続が走る」という不正確な説明、IoCの用語の説明不足、21-5の時点でスタブを注入できるとした先取り、21-5のコメントの「コンストラクタ」、Calculatorの「テストしやすい」の重複、21-1の`==`による比較と章末の「誤差を許容して比べる」との食い違い、Mockitoの警告の説明不足（JDK 25で確認）、章末の「モックにすべて設定する」という誤解を招く対処（strict stubsの`UnnecessaryStubbingException`をMockito 5.20で確認）、推奨知識の第15章・デザインパターン
-- 要確認として残すもの: JUnit 6（2025年9月公開、Jupiter APIは共通）が出たことに伴うL493の「JUnit 5」とIntelliJ IDEAのクイックフィックスの表記、21-18のmaven-surefire-plugin 3.6.1・jacoco-maven-plugin 0.8.16が実在する版か
+- JUnit 6の扱いと、21-18の版（2026-11-14に解消。Maven Centralで、junit-jupiter 6.1.3・maven-surefire-plugin 3.6.1・jacoco-maven-plugin 0.8.16が最新の版として実在することを確かめた。本文はJUnit Jupiterと書き、JUnit 6が最新の系列であることを本文で述べた。`listings.json`の版もjunit-jupiter-api 6.1.3・Mockito 5.24.0に上げた）

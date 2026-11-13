@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter02-getting-started.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
     hash: 0cb94cb6
@@ -21,7 +21,7 @@ sections:
   - key: "メソッド（staticメソッドの基本）"
     hash: 5befb8cd
   - key: "文字列処理"
-    hash: 7f54254c
+    hash: 91a0b1c9
   - key: "import文の使い方"
     hash: c97be75d
   - key: "よくあるコンパイルエラーとその対処法"
@@ -96,7 +96,7 @@ sections:
     + addとdivideを持つCalculator（2-32）、staticメソッドの構文と構成要素（2-33）
     + mainから直接呼べる理由、再利用と構造化、C言語の関数との違い。インスタンスメソッドとコンストラクターは第3章以降と案内
 - 文字列処理（L1090–1327）
-    + C言語のchar配列とnull終端に対する、Stringの安全性・O(1)のlength・Unicodeを比較表とコード対比で示す（2-34〜2-41）
+    + C言語のchar配列とnull終端に対する、Stringの安全性・長さによらず一定の時間で返るlength・Unicodeを比較表とコード対比で示す（2-34〜2-41）
     + リテラルと文字列プール、`==`とequals、equalsIgnoreCase（2-42〜2-43）
     + trim、toUpperCase、substring、replace、split、indexOf、contains（2-44）
     + 不変性（concatで元の文字列は変わらない、2-45）と、ループ内連結にはStringBuilderを使う理由（2-46）

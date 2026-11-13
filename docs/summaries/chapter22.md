@@ -7,7 +7,7 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 8c38f27d
   - key: "外部ライブラリの利用"
-    hash: 09435340
+    hash: 93bf1b24
   - key: "よくあるエラーと対処法"
     hash: cb6911e5
   - key: "まとめ"
@@ -35,7 +35,7 @@ sections:
 - Lombok（22-13〜22-15）がJava 25で動かず、実行結果もコードと別のシミュレーションの出力だった問題は、次のように解消した。JDK 23以降は指定しないと注釈処理が動かないことを本文に書き、22-13に`maven-compiler-plugin`の`<annotationProcessorPaths>`を加えた。22-14・22-15を全文化し（listings.jsonの`processor: true`）、`@Slf4j`をやめて実際の出力に差し替えた。DockerのJDK 25（Maven）で設定の有無による成否を確かめた（2026-11-14に解消）
 - 各ライブラリの冒頭の紹介が2回続いていた結合跡（Jackson、OkHttp、Lombok、Guava）は、1つにまとめて解消した（2026-11-14に解消）
 - pom.xmlの全体構成は示さない。Java 25を対象にする設定は、「実践的な開発フロー」で`archetype:generate`のひな形の`maven.compiler.release`を25に書き換える説明だけで扱う
-- ライブラリの版（OkHttp 4.12.0、Jackson 2.x）は新しい系列（OkHttp 5、Jackson 3）が出ているが、要確認として更新していない
+- OkHttpを5.5.1に上げた（2026-11-14）。5.x系はMavenでは`okhttp-jvm`を指定する（`okhttp`は中身のないJARで、Gradleの付加情報でokhttp-jvmを指す）ことを脚注に書いた。22-12は5.5.1で実行して確かめた。Jackson 2.xは保守が続いているので据え置いた
 
 ## 節ごとの要約
 
@@ -54,7 +54,7 @@ sections:
     + Gson: IntelliJ IDEAで「Load Maven Changes」を押して読み込み直す手順、@SerializedName、transientによる除外、GsonBuilderによる整形出力（22-4）
     + Jackson: 依存関係（22-5）、@JsonProperty、@JsonIgnore、TypeReferenceによるジェネリック型のデシリアライズ（22-6）
     + Apache Commons: Commons Lang（22-7、22-8。文字列、null安全、配列、ランダム文字列、日付の書式化、reflectionToString）とCommons IO（22-9、22-10。第14章の`Files`との比較、temp_dirのサイズなど実行ごとに変わらない出力）
-    + OkHttp: 依存関係（22-11）、同期のGET・POSTと非同期リクエスト（22-12）
+    + OkHttp: 依存関係（22-11、okhttp-jvm 5.5.1）、同期のGET・POSTと非同期リクエスト（22-12）
     + Lombok: アノテーションプロセッサーとしての働きとJDK 23以降の指定の必要性、依存関係と`annotationProcessorPaths`（22-13）、`provided`スコープと`javac -proc:full`、`sun.misc.Unsafe`の警告（脚注）、@Data・@Builder・@NonNull・@ToString.Exclude（22-14）、個別のアノテーションと`@ToString.Include`（22-15）
     + Guava: 依存関係（22-16）、不変コレクション（第9章の`List.of`との関係）、Multimap、BiMap、Table、Splitter/Joiner、キャッシュ（22-17）
     + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-18、Apache 2.0・MIT・GPL・LGPL）、testスコープとpropertiesによるバージョン一元管理（22-19）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-20）、よく使われる組み合わせの表
