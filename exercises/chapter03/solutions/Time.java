@@ -31,13 +31,10 @@ public class Time {
         normalize();
     }
     
-    // 分を追加するメソッド（オーバーロード）
-    public void addTime(int minutes, boolean isMinute) {
-        if (isMinute) {
-            this.minute += minutes;
-        } else {
-            this.second += minutes;
-        }
+    // 分と秒を追加するメソッド（オーバーロード）。引数の数で、秒だけのaddTimeと区別される
+    public void addTime(int minutes, int seconds) {
+        this.minute += minutes;
+        this.second += seconds;
         normalize();
     }
     

@@ -47,7 +47,7 @@ public class TimeTest {
         // IO.println();
         
         // TODO: 15分を追加してください
-        // time2.addTime(15, true);
+        // time2.addTime(15, 0);
         // IO.println("15分追加後:");
         // IO.print("時刻2: ");
         // time2.showTime();

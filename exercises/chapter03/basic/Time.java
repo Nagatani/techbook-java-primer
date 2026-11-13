@@ -6,7 +6,7 @@
  * 要求仕様:
  * - インスタンス変数: hour（int）, minute（int）, second（int）
  * - 複数のコンストラクタ（時のみ、時分、時分秒）
- * - addTime()メソッドのオーバーロード（秒追加、分追加、時分秒追加）
+ * - addTime()メソッドのオーバーロード（秒、分と秒、時と分と秒。引数の数で区別する）
  * - 時刻の正規化処理（60秒=1分、60分=1時間）
  * 
  * 評価ポイント:
@@ -44,13 +44,10 @@ public class Time {
     //     normalize();
     // }
     
-    // TODO: 分を追加するメソッドを実装してください（オーバーロード）
-    // public void addTime(int minutes, boolean isMinute) {
-    //     if (isMinute) {
-    //         this.minute += minutes;
-    //     } else {
-    //         this.second += minutes;
-    //     }
+    // TODO: 分と秒を追加するメソッドを実装してください（オーバーロード）
+    // public void addTime(int minutes, int seconds) {
+    //     this.minute += minutes;
+    //     this.second += seconds;
     //     normalize();
     // }
     

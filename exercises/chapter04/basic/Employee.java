@@ -23,8 +23,26 @@ public class Employee {
     // TODO: コンストラクタを実装してください
     // public Employee(String name, int age, double salary) {
     //     this.name = name;
-    //     setAge(age);       // 妥当性検証のためsetterを使用
-    //     setSalary(salary); // 妥当性検証のためsetterを使用
+    //     // 検査はsetterと同じprivateメソッドで行う。setterを呼ぶと「変更しました」と表示されてしまう
+    //     if (isValidAge(age)) {
+    //         this.age = age;
+    //     } else {
+    //         IO.println("エラー: 年齢は0歳以上である必要があります。0歳にします。");
+    //     }
+    //     if (isValidSalary(salary)) {
+    //         this.salary = salary;
+    //     } else {
+    //         IO.println("エラー: 給与は0円以上である必要があります。0円にします。");
+    //     }
+    // }
+    
+    // TODO: 年齢と給与の検査をprivateメソッドにまとめてください
+    // private static boolean isValidAge(int age) {
+    //     return age >= 0;
+    // }
+    
+    // private static boolean isValidSalary(double salary) {
+    //     return salary >= 0;
     // }
     
     // TODO: nameのgetterメソッドを実装してください
@@ -44,7 +62,7 @@ public class Employee {
     
     // TODO: ageのsetterメソッドを実装してください（妥当性検証付き）
     // public void setAge(int age) {
-    //     if (age < 0) {
+    //     if (!isValidAge(age)) {
     //         IO.println("エラー: 年齢は0歳以上である必要があります。");
     //         return;
     //     }
@@ -59,7 +77,7 @@ public class Employee {
     
     // TODO: salaryのsetterメソッドを実装してください（妥当性検証付き）
     // public void setSalary(double salary) {
-    //     if (salary < 0) {
+    //     if (!isValidSalary(salary)) {
     //         IO.println("エラー: 給与は0円以上である必要があります。");
     //         return;
     //     }

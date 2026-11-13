@@ -29,7 +29,7 @@ public class TimeTest {
         IO.println();
         
         // 15分を追加する
-        time2.addTime(15, true);
+        time2.addTime(15, 0);
         IO.println("15分追加後:");
         IO.print("時刻2: ");
         time2.showTime();
