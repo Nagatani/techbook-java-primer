@@ -1,241 +1,241 @@
-# 第20章 JTableとJListの基礎：よくあるエラーと対処法
+# 第20章 JTable・JList・JTree：よくあるエラーと対処法
 
-書籍『Java入門』第20章「JTableとJListの基礎」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
+書籍『Java入門』第20章「JTable・JList・JTree」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-## paintComponent()で描画した内容が表示されない
-
-### エラー例
-
-```java
-public class CustomPanel extends JPanel {
-    @Override
-    public void paintComponent(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(0, 0, 100, 100);
-        // 赤い矩形が表示されない
-    }
-}
-```
-
-### 原因
-
-- `super.paintComponent(g)`が呼び出されていない
-- コンポーネントのサイズが0になっている
-- 透明度の設定に問題がある
-
-### 対処法
-
-```java
-public class CustomPanel extends JPanel {
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);  // 必須：親クラスの描画処理を実行
-        
-        g.setColor(Color.RED);
-        g.fillRect(0, 0, 100, 100);
-    }
-    
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(200, 200);  // コンポーネントの推奨サイズを指定
-    }
-}
-```
-
-## カスタム描画が重く、ちらつく
+## 並べ替えた表で、選択したのと違う行が削除・変更される
 
 ### エラー例
 
 ```java
-@Override
-public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    
-    // 複雑な描画処理
-    for (int i = 0; i < 1000; i++) {
-        g.drawLine(i, 0, i, getHeight());
-    }
-    // 描画時にちらつきが発生
-}
+table.setAutoCreateRowSorter(true);
+// ...
+deleteButton.addActionListener(e -> {
+    int row = table.getSelectedRow();
+    model.removeRow(row);  // 並べ替えた後は、別の行が消える
+});
 ```
 
 ### 原因
 
-- 再描画のたびに重い描画処理をしている
-- `paintComponent()`ではなく`paint()`をオーバーライドしている、`setDoubleBuffered(false)`にしているなどで、Swingのダブルバッファリング（画面外で描いてから一度に表示するしくみ）が働いていない
-- 不要な再描画が発生している
-
-`JPanel`は標準でダブルバッファリングが有効なので、`paintComponent()`をオーバーライドしていれば描画の途中の状態は見えません。
-それでも動きが重いときは、描画の結果を画像に保存しておき、内容が変わったときだけ描き直します。
+- `getSelectedRow()`が返すのは、画面に表示している順での行番号（ビューの行番号）
+- 並べ替えや絞り込みをすると、画面の順とモデルの中の順が食い違う。ビューの行番号をそのままモデルに渡すと、別の行を操作してしまう
+- 並べ替えていないうちは番号が一致するため、気づきにくい
 
 ### 対処法
 
-コンパイルできる全文：[chapter20-code/SmoothPanel/](chapter20-code/SmoothPanel/)
+コンパイルできる全文：[chapter20-code/SortedRowDelete/](chapter20-code/SortedRowDelete/)
 
 ```java
-public class SmoothPanel extends JPanel {
-    private BufferedImage buffer;
-    private boolean needsRedraw = true;
-    
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (getWidth() == 0 || getHeight() == 0) {
-            return;  // 大きさが決まる前は描かない
-        }
-        
-        // バッファが未作成、大きさが変わった、または再描画が必要な場合のみ描画
-        if (buffer == null || buffer.getWidth() != getWidth()
-                || buffer.getHeight() != getHeight() || needsRedraw) {
-            createBuffer();
-            needsRedraw = false;
-        }
-        
-        // バッファの内容を描画
-        g.drawImage(buffer, 0, 0, this);
+deleteButton.addActionListener(e -> {
+    int viewRow = table.getSelectedRow();  // 画面上の行番号
+    if (viewRow < 0) {
+        return;  // 何も選択されていない
     }
-    
-    private void createBuffer() {
-        buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = buffer.createGraphics();
-        
-        // アンチエイリアシングを有効化
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        // 重い描画処理
-        for (int i = 0; i < 1000; i++) {
-            g2d.drawLine(i, 0, i, getHeight());
-        }
-        
-        g2d.dispose();
-    }
-    
-    // 描く内容が変わったときに呼ぶ
-    public void invalidateBuffer() {
-        needsRedraw = true;
-        repaint();
-    }
-}
+    // 並べ替えた後は画面の行番号とモデルの行番号が違うので、変換してから使う
+    int modelRow = table.convertRowIndexToModel(viewRow);
+    model.removeRow(modelRow);
+});
 ```
 
-## 背景スレッドからGUIを更新すると、表示が乱れたり例外が発生したりする
+逆に、モデルの行番号から画面の行を選ぶときは`convertRowIndexToView`を使います。
+列も、利用者がドラッグで並べ替えられるので、`convertColumnIndexToModel`で変換します。
 
-### 症状
+## 自作のテーブルモデルでデータを変えても、表示が変わらない
 
-EDT以外からコンポーネントを操作しても、Swingはその場で例外を投げるとは限りません。
-多くの場合は、表示が更新されない、ときどき表示が乱れるといった、再現しにくい形で現れます。
-JTableのモデルを背景スレッドから変更すると、描画中のEDTと食い違い、次のような例外がEDTのスレッドで発生することもあります。
-
-```
-Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: Index 5 out of bounds for length 5
-```
-
-### 原因
-
-- EDT（Event Dispatch Thread）以外からGUIコンポーネントやモデルを更新している
-- Swingのコンポーネントはスレッドセーフではなく、EDTからだけ操作する前提で作られている
-
-### 対処法
+### エラー例
 
 ```java
-// 間違った方法
-new Thread(() -> {
-    // 背景スレッドからGUIを直接更新（危険）
-    label.setText("更新");
-}).start();
+public class TaskTableModel extends AbstractTableModel {
+    private final List<Task> tasks = new ArrayList<>();
 
-// 正しい方法
-new Thread(() -> {
-    // 重い処理を背景スレッドで実行
-    String result = performHeavyComputation();
-    
-    // GUI更新はEDTで実行
-    SwingUtilities.invokeLater(() -> {
-        label.setText(result);
-    });
-}).start();
-
-// SwingWorkerを使用する方法（推奨）
-SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
-    @Override
-    protected String doInBackground() throws Exception {
-        return performHeavyComputation();
-    }
-    
-    @Override
-    protected void done() {
-        try {
-            label.setText(get());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-};
-worker.execute();
-```
-
-## 大量の画像を扱うとメモリ不足になる
-
-### エラーメッセージ
-
-```
-java.lang.OutOfMemoryError: Java heap space
-```
-
-### 原因
-
-- 画像リソースが適切に解放されていない
-- 大きな画像を縮小せずに使用している
-- 画像のキャッシュが適切に管理されていない
-
-### 対処法
-
-コンパイルできる全文：[chapter20-code/ImageManager/](chapter20-code/ImageManager/)
-
-```java
-public class ImageManager {
-    private final Map<String, BufferedImage> imageCache = new HashMap<>();
-    private final int MAX_CACHE_SIZE = 100;
-    
-    public BufferedImage loadImage(String path, int width, int height) {
-        String key = path + "_" + width + "_" + height;
-        
-        // キャッシュから取得
-        BufferedImage cached = imageCache.get(key);
-        if (cached != null) {
-            return cached;
-        }
-        
-        // 画像を読み込み、リサイズ
-        try {
-            BufferedImage original = ImageIO.read(new File(path));
-            BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            
-            Graphics2D g2d = resized.createGraphics();
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
-                               RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g2d.drawImage(original, 0, 0, width, height, null);
-            g2d.dispose();
-            
-            // 元画像を解放
-            original.flush();
-            
-            // キャッシュサイズを制限
-            if (imageCache.size() >= MAX_CACHE_SIZE) {
-                clearOldestCache();
-            }
-            
-            imageCache.put(key, resized);
-            return resized;
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public void addTask(Task task) {
+        tasks.add(task);  // リストには入るが、テーブルの表示は増えない
     }
     // ...
 }
+```
+
+### 原因
+
+- JTableは、モデルから変更の知らせ（`TableModelEvent`）を受け取ったときだけ表示を描き直す
+- `AbstractTableModel`を継承したモデルでは、データを変えたあとに知らせを送るのはモデルを書いた人の仕事。`DefaultTableModel`の`addRow`などは、中で知らせを送っている
+- 画面をクリックしたりウィンドウの大きさを変えたりすると表示が直ることがあるため、原因がわかりにくい
+
+### 対処法
+
+コンパイルできる全文：[chapter20-code/TaskTableModel/](chapter20-code/TaskTableModel/)
+
+```java
+public void addTask(Task task) {
+    tasks.add(task);
+    int row = tasks.size() - 1;
+    // 追加した行をテーブルに知らせる。これがないと画面が更新されない
+    fireTableRowsInserted(row, row);
+}
+
+public void removeTask(int row) {
+    tasks.remove(row);
+    fireTableRowsDeleted(row, row);
+}
+
+public void setDone(int row, boolean done) {
+    tasks.set(row, new Task(tasks.get(row).title(), done));
+    fireTableCellUpdated(row, 1);
+}
+```
+
+どの行が変わったかわからないほど大きく変えたときは、`fireTableDataChanged()`ですべての行を描き直させます。
+`AbstractListModel`を継承したJListのモデルでも同じで、`fireIntervalAdded`・`fireIntervalRemoved`・`fireContentsChanged`で知らせます。
+
+## JTreeにノードを追加しても、ツリーに表示されない
+
+### エラー例
+
+```java
+DefaultMutableTreeNode child = new DefaultMutableTreeNode("新しい分類");
+root.add(child);  // ノードはつながるが、表示されているツリーは変わらない
+```
+
+### 原因
+
+- `DefaultMutableTreeNode`の`add`は、ノードどうしをつなぐだけで、ツリーに変更を知らせない
+- JTreeが変更を知るのは、`DefaultTreeModel`から知らせを受け取ったとき
+
+### 対処法
+
+コンパイルできる全文：[chapter20-code/TreeNodeAdd/](chapter20-code/TreeNodeAdd/)
+
+```java
+DefaultTreeModel model = new DefaultTreeModel(root);
+JTree tree = new JTree(model);
+// ...
+DefaultMutableTreeNode child =
+        new DefaultMutableTreeNode("分類" + (root.getChildCount() + 1));
+// root.add(child)だけではツリーに知らせが届かず、画面が変わらない
+model.insertNodeInto(child, root, root.getChildCount());
+tree.scrollPathToVisible(new TreePath(child.getPath()));
+```
+
+削除は`removeNodeFromParent`を使います。
+ノードの`add`でまとめて組み替えたあとは、`model.reload(node)`でそのノードより下を描き直させます。
+
+## JTableの列の見出しが表示されない
+
+### エラー例
+
+```java
+JTable table = new JTable(data, columnNames);
+frame.add(table);  // 見出しの行が出ない
+```
+
+### 原因
+
+- JTableの見出し（`JTableHeader`）は、JTableを`JScrollPane`に入れたときに、スクロールペインの上端に置かれる
+- JTableを直接パネルに置くと、見出しを置く場所がないので表示されない。行が多いときにスクロールもできない
+
+### 対処法
+
+```java
+JTable table = new JTable(data, columnNames);
+frame.add(new JScrollPane(table));  // 見出しが付き、スクロールもできる
+```
+
+どうしてもスクロールペインを使わないときは、`table.getTableHeader()`で見出しを取り出し、`BorderLayout.NORTH`などに自分で置きます。
+
+## セルの編集中にボタンを押すと、入力した値が保存されない
+
+### エラー例
+
+```java
+saveButton.addActionListener(e -> {
+    // 編集中のセルに入力した値が、まだモデルに入っていない
+    for (int row = 0; row < model.getRowCount(); row++) {
+        IO.println(model.getValueAt(row, 1));
+    }
+});
+```
+
+### 原因
+
+- セルに入力した値は、Enterキーを押すか別のセルを選んで編集を終えたときに、エディターからモデルへ書き込まれる
+- 編集中のままボタンを押すと、編集は続いたままで、モデルには前の値が残っている
+
+### 対処法
+
+コンパイルできる全文：[chapter20-code/EditCommit/](chapter20-code/EditCommit/)
+
+```java
+// ほかの部品にフォーカスが移ったら、編集中の値を確定させる
+table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+
+saveButton.addActionListener(e -> {
+    // 編集中のセルがあれば、値をモデルに書き込んで編集を終える
+    if (table.isEditing()) {
+        table.getCellEditor().stopCellEditing();
+    }
+    // ...
+});
+```
+
+`stopCellEditing()`は、入力した値をエディターが受け付けないとき（数値の列に文字を入れたときなど）に`false`を返し、編集を続けます。
+
+## JTableのカスタムレンダラーで選択状態が正しく表示されない
+
+### エラー例
+
+```java
+table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        
+        JLabel label = new JLabel(value.toString());
+        label.setBackground(Color.YELLOW);  // 常に黄色になってしまう
+        return label;
+    }
+});
+```
+
+### 原因
+
+- 選択状態やフォーカス状態を適切に処理していない
+- コンポーネントの設定が不完全
+
+### 対処法
+
+```java
+table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+        
+        // 親クラスの処理を利用
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        
+        if (isSelected) {
+            setBackground(table.getSelectionBackground());
+            setForeground(table.getSelectionForeground());
+        } else {
+            setBackground(row % 2 == 0 ? Color.WHITE : Color.LIGHT_GRAY);
+            setForeground(table.getForeground());
+        }
+        
+        if (hasFocus) {
+            setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+        } else {
+            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        }
+        
+        // 値に応じたカスタム表示
+        if (value instanceof Number) {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        } else {
+            setHorizontalAlignment(SwingConstants.LEFT);
+        }
+        
+        return this;
+    }
+});
 ```
 
 ## 大量のデータを表示するJTableの動作が遅い
@@ -304,159 +304,41 @@ table.setRowHeight(20);  // 行の高さを固定にする
 // 並べ替えのために全行の値を読むので、遅延読み込みの効果がなくなる
 ```
 
-## 動的にコンポーネントを追加・削除すると配置が崩れる
-
-### エラー例
-
-```java
-JPanel panel = new JPanel(new GridBagLayout());
-GridBagConstraints gbc = new GridBagConstraints();
-
-// 動的にコンポーネントを追加
-for (int i = 0; i < 5; i++) {
-    gbc.gridx = i;
-    panel.add(new JButton("Button " + i), gbc);
-}
-
-// 中間のコンポーネントを削除すると配置が崩れる
-panel.remove(2);
-panel.revalidate();
-```
-
-### 原因
-
-- 残ったコンポーネントの`gridx`・`gridy`は追加したときのままなので、追加と削除を繰り返すと、意図した行や列に並ばなくなる
-- 削除のあとに`repaint()`を呼んでいないと、消したボタンが画面に残る
-
-### 対処法
-
-コンパイルできる全文：[chapter20-code/DynamicPanel/](chapter20-code/DynamicPanel/)
-
-```java
-public class DynamicPanel extends JPanel {
-    private final List<JComponent> components = new ArrayList<>();
-    private final GridBagConstraints gbc = new GridBagConstraints();
-    // ...
-    
-    public void addComponent(JComponent component) {
-        components.add(component);
-        refreshLayout();
-    }
-    // ...
-    
-    private void refreshLayout() {
-        // 全てのコンポーネントを一度削除
-        removeAll();
-        
-        // 制約を再計算して追加
-        for (int i = 0; i < components.size(); i++) {
-            gbc.gridx = i % 3;  // 3列のグリッド
-            gbc.gridy = i / 3;
-            add(components.get(i), (GridBagConstraints)gbc.clone());
-        }
-        
-        // レイアウトを更新
-        revalidate();
-        repaint();
-    }
-    
-    // ...
-}
-```
-
-## JTableのカスタムレンダラーで選択状態が正しく表示されない
-
-### エラー例
-
-```java
-table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        
-        JLabel label = new JLabel(value.toString());
-        label.setBackground(Color.YELLOW);  // 常に黄色になってしまう
-        return label;
-    }
-});
-```
-
-### 原因
-
-- 選択状態やフォーカス状態を適切に処理していない
-- コンポーネントの設定が不完全
-
-### 対処法
-
-```java
-table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        
-        // 親クラスの処理を利用
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        
-        if (isSelected) {
-            setBackground(table.getSelectionBackground());
-            setForeground(table.getSelectionForeground());
-        } else {
-            setBackground(row % 2 == 0 ? Color.WHITE : Color.LIGHT_GRAY);
-            setForeground(table.getForeground());
-        }
-        
-        if (hasFocus) {
-            setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
-        } else {
-            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        }
-        
-        // 値に応じたカスタム表示
-        if (value instanceof Number) {
-            setHorizontalAlignment(SwingConstants.RIGHT);
-        } else {
-            setHorizontalAlignment(SwingConstants.LEFT);
-        }
-        
-        return this;
-    }
-});
-```
-
 ## デバッグのヒント
 
-### 1. 描画領域の可視化
+### 1. 行番号の対応を確かめる
+
+並べ替えや絞り込みにかかわる不具合では、ビューとモデルの行番号を並べて出力すると、食い違いがすぐにわかります。
 
 ```java
-@Override
-public void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    
-    // デバッグ用：境界を表示
-    if (DEBUG_MODE) {
-        Graphics2D g2d = (Graphics2D) g.create();
-        g2d.setColor(Color.RED);
-        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-        g2d.dispose();
+table.getSelectionModel().addListSelectionListener(e -> {
+    if (!e.getValueIsAdjusting() && table.getSelectedRow() >= 0) {
+        int viewRow = table.getSelectedRow();
+        IO.println("ビュー: " + viewRow
+                + " → モデル: " + table.convertRowIndexToModel(viewRow));
     }
-}
+});
 ```
 
-### 2. パフォーマンスの測定
+### 2. モデルの知らせが届いているか確かめる
+
+表示が更新されないときは、モデルにリスナーを登録して、変更の知らせが送られているかを確かめます。
+
+```java
+model.addTableModelListener(e ->
+        IO.println("変更: 行" + e.getFirstRow() + "〜" + e.getLastRow()
+                + " 種類 " + e.getType()));
+```
+
+何も表示されなければ、モデルの`fireTable...`の呼び忘れです。
+
+### 3. 処理時間を測る
 
 ```java
 long startTime = System.nanoTime();
 // 処理
 long endTime = System.nanoTime();
 IO.println("処理時間: " + (endTime - startTime) / 1_000_000 + "ms");
-```
-
-### 3. メモリ使用量の監視
-
-```java
-Runtime runtime = Runtime.getRuntime();
-long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-IO.println("使用メモリ: " + usedMemory / 1024 / 1024 + "MB");
 ```
 
 これらの対処法を参考に、GUIアプリケーションの開発を進めてください。

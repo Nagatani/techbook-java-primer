@@ -22,6 +22,6 @@
 | 第16章 | [ネットワークプログラミング](chapter16.md) |
 | 第17章 | [GUIプログラミングの基礎](chapter17.md) |
 | 第19章 | [高度なイベント処理パターン](chapter19.md) |
-| 第20章 | [JTableとJListの基礎](chapter20.md) |
+| 第20章 | [JTable・JList・JTree](chapter20.md) |
 | 第21章 | [ユニットテストと品質保証](chapter21.md) |
 | 第22章 | [ドキュメントと外部ライブラリ](chapter22.md) |

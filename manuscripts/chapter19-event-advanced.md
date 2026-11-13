@@ -426,7 +426,7 @@ public class JavaBeansEventExample extends JFrame {
 以下のコードは、2つのリストの間でアイテムをドラッグして移動する処理と、外部からファイルをドロップする処理を実装した例です。
 リスト間の移動は`TransferHandler`で、ファイルのドロップは`DropTarget`で受け付け、ドロップされたファイルの情報を表示します。
 
-このサンプルで使う`JList`と`DefaultListModel`は、第20章「JTableとJListの基礎」で詳しく学びます。
+このサンプルで使う`JList`と`DefaultListModel`は、第20章「JTable・JList・JTree」で詳しく学びます。
 ここでは、`DefaultListModel`に要素を追加・削除すると`JList`の表示が更新される、という点だけを押さえてください。
 
 <span class="listing-number">**サンプルコード19-6**　DragAndDropExample.java（9、16、34〜39、67、69〜103、125〜146、151〜152、162、169行目）</span>
@@ -740,4 +740,4 @@ public class SwingWorkerExample extends JFrame {
 各課題には、詳細な要件と実装のヒントが含まれています。
 第18章と第19章の内容をまとめて使う大きめのプログラムも、同じ場所の`examples/`に置いています。
 
-本章の内容を理解できたら、第20章「JTableとJListの基礎」に進みましょう。
+本章の内容を理解できたら、第20章「JTable・JList・JTree」に進みましょう。

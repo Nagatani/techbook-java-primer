@@ -168,7 +168,7 @@ exercises/chapter01/
 - [第17章 GUIプログラミングの基礎](chapter17/): レイアウトマネージャー、入力・選択の部品、paintComponentによる描画
 - [第18章 基本的なイベント処理](chapter18/): ActionListenerなどのリスナー、Timer、入力の検査
 - [第19章 高度なイベント処理パターン](chapter19/): マウスとキーバインディング、カスタムイベント、SwingWorker、ドラッグ&ドロップ
-- [第20章 JTableとJListの基礎](chapter20/): テーブル、ツリー、データバインディング
+- [第20章 JTable・JList・JTree](chapter20/): テーブル、ツリー、データバインディング
 
 ### 5部：実践編
 - [第21章 ユニットテストと品質保証](chapter21/): JUnit、TDD、モックオブジェクト

@@ -23,7 +23,7 @@
 | 第17章 GUIプログラミングの基礎 | [chapter17/](chapter17/) | 7 | 7 | 5 | 0 |
 | 第18章 基本的なイベント処理 | [chapter18/](chapter18/) | 7 | 5 | 5 | 0 |
 | 第19章 高度なイベント処理パターン | [chapter19/](chapter19/) | 14 | 6 | 4 | 0 |
-| 第20章 JTableとJListの基礎 | [chapter20/](chapter20/) | 4 | 8 | 11 | 4 |
+| 第20章 JTable・JList・JTree | [chapter20/](chapter20/) | 4 | 8 | 11 | 4 |
 | 第21章 ユニットテストと品質保証 | [chapter21/](chapter21/) | 2 | 5 | 13 | 7 |
 | 第22章 ドキュメントと外部ライブラリ | [chapter22/](chapter22/) | 2 | 9 | 16 | 10 |
 | 第23章 ビルドとデプロイ | [chapter23/](chapter23/) | 0 | 2 | 4 | 3 |

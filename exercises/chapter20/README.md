@@ -1,6 +1,6 @@
-# 第20章 JTableとJListの基礎 - 演習課題
+# 第20章 JTable・JList・JTree - 演習課題
 
-書籍『Java入門』第20章「JTableとJListの基礎」の演習課題です。
+書籍『Java入門』第20章「JTable・JList・JTree」の演習課題です。
 
 ## 基礎課題（[basic/](basic/)）
 

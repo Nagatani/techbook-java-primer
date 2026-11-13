@@ -28,7 +28,7 @@
 - [17章　GUIプログラミングの基礎](chapter17-gui-basics.md)
 - [18章　基本的なイベント処理](chapter18-event-basics.md)
 - [19章　高度なイベント処理パターン](chapter19-event-advanced.md)
-- [20章　JTableとJListの基礎](chapter20-advanced-gui.md)
+- [20章　JTable・JList・JTree](chapter20-advanced-gui.md)
 
 ### 5部：実践編
 - [21章　ユニットテストと品質保証](chapter21-unit-testing.md)
