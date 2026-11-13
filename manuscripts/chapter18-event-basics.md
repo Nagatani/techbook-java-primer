@@ -607,10 +607,10 @@ SwingのすべてのGUI操作はイベントディスパッチスレッド上で
 `SwingUtilities.isEventDispatchThread()`は、呼び出したスレッドがEDTならtrueを返します。
 コンポーネントを操作するコードがEDT上で動いているかを確かめたいときに使えます。
 
-<span class="listing-number">**サンプルコード18-11**　EventQueueExample.java（6〜8、14〜31、37〜39行目）</span>
+<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜8、14〜31、37〜39行目）</span>
 
 ```java
-public class EventQueueExample {
+public class EdtCheckExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // ...

@@ -98,11 +98,11 @@
   },
   "18-11": {
     "dir": "18-11",
-    "main": "EventQueueExample",
+    "main": "EdtCheckExample",
     "excerpt": [
-      { "file": "EventQueueExample.java", "from": 6, "to": 8 },
-      { "file": "EventQueueExample.java", "from": 14, "to": 31 },
-      { "file": "EventQueueExample.java", "from": 37, "to": 39 }
+      { "file": "EdtCheckExample.java", "from": 6, "to": 8 },
+      { "file": "EdtCheckExample.java", "from": 14, "to": 31 },
+      { "file": "EdtCheckExample.java", "from": 37, "to": 39 }
     ]
   },
   "18-12": {

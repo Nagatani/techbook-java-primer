@@ -26,6 +26,6 @@ javac -d out *.java
 | [18-8](./18-08/) | ItemListenerExample.java | `java -cp out ItemListenerExample` |
 | [18-9](./18-09/) | FocusListenerExample.java | `java -cp out FocusListenerExample` |
 | [18-10](./18-10/) | ChangeListenerExample.java | `java -cp out ChangeListenerExample` |
-| [18-11](./18-11/) | EventQueueExample.java | `java -cp out EventQueueExample` |
+| [18-11](./18-11/) | EdtCheckExample.java | `java -cp out EdtCheckExample` |
 | [18-12](./18-12/) | FreezeExample.java | `java -cp out FreezeExample` |
 | [18-13](./18-13/) | TimerExample.java | `java -cp out TimerExample` |
