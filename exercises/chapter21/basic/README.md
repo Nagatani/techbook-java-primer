@@ -10,11 +10,11 @@
 ## 課題一覧
 
 このフォルダーのJavaファイルは、テストや実装を書き足して完成させる雛形です。
-課題2と課題3の解答例は[solutions/](../solutions/)にあります。
+課題1〜3の解答例は[solutions/](../solutions/)にあります。
 
 ### 課題1: JUnitの基本
 
-**ファイル**: `JUnitBasics.java`（テスト対象の`SimpleCalculator`が入っている）、`SimpleCalculatorTest.java`（新しく作る）
+**ファイル**: `JUnitBasics.java`（テスト対象の`SimpleCalculator`が入っている）、`SimpleCalculatorTest.java`（新しく作る。解答例は`solutions/SimpleCalculatorTest.java`）
 
 できあがっている`SimpleCalculator`のテストを書きます。
 
@@ -37,6 +37,8 @@
 [         9 tests successful      ]
 [         0 tests failed          ]
 ```
+
+解答例（`solutions/SimpleCalculatorTest.java`）は、この形の9件のテストです。`solutions/`でもコンパイルできるよう、同じ`SimpleCalculator`を`solutions/SimpleCalculator.java`に置いています。
 
 テストの表示順は、書いた順とは限りません。テストは互いに頼らず、どの順に動いても通るように書きます。
 

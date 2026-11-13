@@ -37,6 +37,7 @@ DIとテストダブルを使って、依存を持つクラスをテストする
 ### solutions/
 基礎課題の解答例と、発展的な参考の例です。
 
+- **SimpleCalculator.java**・**SimpleCalculatorTest.java** - 課題1の解答例（`SimpleCalculator`は`basic/JUnitBasics.java`と同じ）
 - **TestDrivenCalculator.java**・**TestDrivenCalculatorTest.java** - 課題2の解答例
 - **MockExample.java** - 課題3の解答例（Mockito）
 - **ParameterizedTestExamples.java** - `@ParameterizedTest`でデータを変えながら同じテストを繰り返す例（本文では扱わない機能）
