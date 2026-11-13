@@ -145,8 +145,11 @@ public final class ImmutablePoint {
 一度作ったオブジェクトの状態は変わらないので、プログラムの動きを予測しやすくなります。
 
 状態が変わらないことから、いくつかの利点が生まれます。
-まず、複数のスレッドが同じオブジェクトを同期化なしで共有しても、サンプルコード6-1のような競合状態は起きません。
+まず、複数のスレッドが同じオブジェクトを同期化なしで共有しても、そのオブジェクトの状態が途中で書き換えられて壊れることはありません。
 この性質をスレッドセーフティと呼びます。
+ただし、サンプルコード6-1のように共有している値を更新し続ける処理は、不変オブジェクトにしただけでは正しくなりません。
+新しいオブジェクトに差し替える操作が重なると、やはり更新が失われるからです。
+このような処理に必要な同期化は、第15章で学びます。
 また、作ったオブジェクトを保存しておき、あとでそのまま使い回す（キャッシュする）ことも安全にできます。
 バグを調べるときも、どこで状態が変わったのかを追いかける必要がないので、デバッグが楽になります。
 
@@ -194,6 +197,9 @@ public class Constants {
 ```
 
 #### final変数の初期化タイミング
+
+`final`のフィールドは、次のいずれかの場所で1回だけ初期化します。
+`final`のローカル変数は、宣言時に初期化するほか、宣言のあとで1回だけ代入することもできます。
 
 - 宣言時
     + `final int x = 10;`
@@ -251,10 +257,10 @@ error: cannot inherit from final ImmutablePoint
 ```
 
 不変クラスは、このように通常`final`にします。
-理由は次の節の「不変クラスの基本ルール」で説明します。
 
 クラスを`final`にすると、サブクラスを作れなくなります。
 そのため、悪意のあるサブクラスがメソッドをオーバーライドして動作を書き換えることを防げます。
+不変クラスの場合は、サブクラスに値を変えるメソッドやフィールドを足されて、不変であるという前提が崩れることも防げます。
 また、「このクラスは継承して使うことを想定していない」という設計者の意図を、コードではっきり示せます<span class="footnote">処理を速くする目的で`final`を付ける必要はありません。いまのJVMは、実行中にサブクラスが読み込まれていなければ、`final`のないクラスでも同じようにメソッド呼び出しを最適化します。</span>。
 
 ## 不変オブジェクトの設計パターン
@@ -274,7 +280,7 @@ error: cannot inherit from final ImmutablePoint
 5. 防御的コピーを行う
     + 可変オブジェクトをフィールドに持つ場合
 
-### 実践例：不変な`Person`クラス
+### 実践例：不変な`ImmutablePerson`クラス
 
 <span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、19〜28、37〜51、73行目）</span>
 
@@ -419,7 +425,7 @@ public final class DateRange {
             throw new IllegalArgumentException("日付はnullにできません");
         }
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("開始日は終了日より前である必要があります");
+            throw new IllegalArgumentException("開始日は終了日以前にしてください");
         }
         
         this.startDate = start;  // LocalDateは不変なのでコピー不要
@@ -489,7 +495,7 @@ public class ViewVsCopy {
 }
 ```
 
-#### 実行結果
+実行結果：
 
 ```
 ビュー: [読書, 登山]
@@ -507,7 +513,7 @@ public class ViewVsCopy {
 クラスの内側に宣言するクラス（静的ネストクラス）は、第8章で学びます。
 ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
-<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜31、37〜38、46〜53、81〜85、91行目）</span>
+<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜31、37〜38、45〜53、81〜85、91行目）</span>
 
 ```java
 // ビルダーパターンを使った不変オブジェクトの構築
@@ -536,6 +542,7 @@ public final class Book {
         // 必須パラメーターのコンストラクター
         public Builder(String isbn, String title) {
             // ...
+            this.isbn = isbn;
             this.title = title;
         }
         
@@ -564,7 +571,7 @@ public class BuilderExample {
         // ビルダーパターンによる不変オブジェクトの構築
         Book book1 = new Book.Builder("978-4-123456-78-9", "Javaプログラミング入門")
             .author("山田太郎")
-            .publisher("技術評論社")
+            .publisher("みなと出版")
             .publicationYear(2024)
             .pages(350)
             .genre("プログラミング")
@@ -583,7 +590,7 @@ public class BuilderExample {
         // メソッドチェーンによる可読性の高いコード
         Book textbook = new Book.Builder("978-4-222222-22-2", "オブジェクト指向設計")
             .author("佐藤一郎")
-            .publisher("オライリー・ジャパン")
+            .publisher("さくら書房")
             .publicationYear(2023)
             .pages(450)
             .genre("ソフトウェア工学")
@@ -596,6 +603,7 @@ public class BuilderExample {
     }
 }
 ```
+
 実行結果：
 
 ```

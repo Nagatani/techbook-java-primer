@@ -14,7 +14,7 @@ public final class DateRange {
             throw new IllegalArgumentException("日付はnullにできません");
         }
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("開始日は終了日より前である必要があります");
+            throw new IllegalArgumentException("開始日は終了日以前にしてください");
         }
         
         this.startDate = start;  // LocalDateは不変なのでコピー不要
