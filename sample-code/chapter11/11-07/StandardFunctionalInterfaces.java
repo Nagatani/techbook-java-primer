@@ -17,9 +17,9 @@ public class StandardFunctionalInterfaces {
         IO.print("'hello'を大文字で出力: ");
         printUpper.accept("hello"); // HELLO
 
-        // Supplier: 現在時刻を供給
-        Supplier<Long> currentTime = () -> System.currentTimeMillis();
-        IO.println("現在時刻: " + currentTime.get());
+        // Supplier: 既定の値を供給
+        Supplier<String> defaultName = () -> "名無し";
+        IO.println("既定の名前: " + defaultName.get());
         
         // UnaryOperator: 同じ型の変換
         UnaryOperator<String> addPrefix = s -> "Hello, " + s;

@@ -41,7 +41,6 @@ public class FunctionalBuilder {
     
     // 使用例
     public void demonstrateBuilders() {
-
         // 関数型ビルダーの利点：動的な構築ロジック
         Person person = new FunctionalPersonBuilder()
             .with(p -> p.setName("Alice"))
@@ -52,5 +51,10 @@ public class FunctionalBuilder {
                 }
             })
             .build();
+        IO.println(person);
+    }
+
+    public static void main(String[] args) {
+        new FunctionalBuilder().demonstrateBuilders();
     }
 }

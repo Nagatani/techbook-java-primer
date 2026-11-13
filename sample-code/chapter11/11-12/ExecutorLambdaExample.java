@@ -42,6 +42,7 @@ public class ExecutorLambdaExample {
         }
         
         long endTime = System.currentTimeMillis();
-        IO.println("実行時間: " + (endTime - startTime) + "ms");
+        // 順に実行すると合計3秒かかるタスクが、それより短い時間で終わったか
+        IO.println("3秒未満で終わったか: " + (endTime - startTime < 3000));
     }
 }

@@ -61,8 +61,7 @@
     "excerpt": [
       { "file": "RunnableLambdaExample.java", "from": 1, "to": 8 },
       { "file": "RunnableLambdaExample.java", "from": 14, "to": 21 },
-      { "file": "RunnableLambdaExample.java", "from": 27, "to": 33 },
-      { "file": "RunnableLambdaExample.java", "from": 44, "to": 46 }
+      { "file": "RunnableLambdaExample.java", "from": 27, "to": 46 }
     ]
   },
   "11-12": {
@@ -70,7 +69,7 @@
     "main": "ExecutorLambdaExample",
     "excerpt": [
       { "file": "ExecutorLambdaExample.java", "from": 4, "to": 18 },
-      { "file": "ExecutorLambdaExample.java", "from": 23, "to": 47 }
+      { "file": "ExecutorLambdaExample.java", "from": 23, "to": 48 }
     ]
   },
   "11-13": {
@@ -104,10 +103,9 @@
   },
   "11-17": {
     "dir": "11-17",
-    "main": null,
+    "main": "ResilientService",
     "excerpt": [
-      { "file": "ResilientService.java", "from": 3, "to": 18 },
-      { "file": "ResilientService.java", "from": 30, "to": 30 }
+      { "file": "ResilientService.java", "from": 3, "to": 42 }
     ]
   },
   "11-18": {
@@ -161,11 +159,10 @@
   },
   "11-24": {
     "dir": "11-24",
-    "main": null,
+    "main": "FunctionalBuilder",
     "excerpt": [
       { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
-      { "file": "FunctionalBuilder.java", "from": 26, "to": 43 },
-      { "file": "FunctionalBuilder.java", "from": 45, "to": 56 }
+      { "file": "FunctionalBuilder.java", "from": 26, "to": 60 }
     ]
   },
   "11-25": {

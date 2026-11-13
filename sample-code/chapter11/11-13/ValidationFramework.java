@@ -5,13 +5,13 @@ import java.util.function.Predicate;
 
 public class ValidationFramework {
     // 基本的なバリデーション関数
-    public static Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
-    public static Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-    public static Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
-    public static Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
+    public static final Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
+    public static final Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    public static final Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
+    public static final Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
     
     // 複合バリデーション
-    public static Predicate<User> validUser = user ->
+    public static final Predicate<User> isValidUser = user ->
         notEmpty.test(user.getName()) &&
         validEmail.test(user.getEmail()) &&
         minLength.apply(8).test(user.getPassword());
@@ -35,7 +35,7 @@ public class ValidationFramework {
         }
     }
     
-    public static Function<User, ValidationResult> validateUserWithErrors = user -> {
+    public static final Function<User, ValidationResult> validateUserWithErrors = user -> {
         List<String> errors = new ArrayList<>();
         
         if (!notEmpty.test(user.getName())) {

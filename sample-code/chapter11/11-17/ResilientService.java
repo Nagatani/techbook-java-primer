@@ -17,14 +17,26 @@ public class ResilientService {
         };
     }
     
-    // 使用例
+    // 失敗を再現するため、呼び出した回数をフィールドで数える
+    private int calls = 0;
+
+    // 使用例：2回失敗し、3回目で成功するサービスを呼び出す
     public String fetchDataWithRetry() {
         Supplier<String> unreliableService = () -> {
-            if (Math.random() < 0.7) throw new RuntimeException("Service unavailable");
+            calls++;
+            IO.println(calls + "回目の呼び出し");
+            if (calls < 3) {
+                throw new RuntimeException("Service unavailable");
+            }
             return "Success!";
         };
-        
+
         Supplier<String> resilientService = withRetry(unreliableService, 3);
         return resilientService.get();
+    }
+
+    public static void main(String[] args) {
+        ResilientService service = new ResilientService();
+        IO.println("結果: " + service.fetchDataWithRetry());
     }
 }

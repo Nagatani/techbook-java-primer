@@ -19,7 +19,7 @@
 
 ## 匿名クラスからラムダ式へ
 
-Java 8<span class="footnote">Java 8（Java SE 8）は2014年3月に公開されました。ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました。</span>でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。これは名前を持たないクラスで、とくにGUIのイベントリスナーなどで多用されていました。
+Java 8<span class="footnote">Java 8（Java SE 8）は2014年3月に公開されました。ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました。</span>でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。第8章で学んだとおり、匿名クラスは名前を持たないクラスで、とくにGUIのイベントリスナーなどで多用されていました。
 
 本章のサンプルには、ラムダ式を渡す先として、後の章で学ぶ機能も出てきます。
 主なものは、`Thread`と`ExecutorService`（第15章）と、GUIのイベントリスナー（第17章・第18章）です。
@@ -90,7 +90,9 @@ button.addActionListener(e -> IO.println("ボタンがクリックされまし�
 
 ## 関数型インターフェイス
 
-ラムダ式は、どのような場所でも書けるわけではありません。ラムダ式は、関数型インターフェイス（Functional Interface）として扱われます。
+ラムダ式は、どのような場所でも書けるわけではありません。
+ラムダ式を書けるのは、変数への代入やメソッドの引数のように、関数型インターフェイス（Functional Interface）の型が求められる場所だけです。
+ラムダ式を評価すると、そのインターフェイスを実装したオブジェクトができます。
 
 <div class="figure">
 
@@ -143,7 +145,7 @@ public class FunctionalInterfaceExample {
 - `(int a, int b) -> ...` は `(a, b) -> ...` と書ける
 - `(a) -> ...` は `a -> ...` と書ける
 - `a -> { return a * 2; }` は `a -> a * 2` と書ける
-- `() -> IO.println("Hello");` のように括弧だけを書く
+- 引数がないときは、`() -> IO.println("Hello")` のように空の括弧`()`を書く（省略できない）
 
 ### ラムダ式から参照できる変数と副作用
 
@@ -343,9 +345,9 @@ public class StandardFunctionalInterfaces {
         IO.print("'hello'を大文字で出力: ");
         printUpper.accept("hello"); // HELLO
 
-        // Supplier: 現在時刻を供給
-        Supplier<Long> currentTime = () -> System.currentTimeMillis();
-        IO.println("現在時刻: " + currentTime.get());
+        // Supplier: 既定の値を供給
+        Supplier<String> defaultName = () -> "名無し";
+        IO.println("既定の名前: " + defaultName.get());
         
         // UnaryOperator: 同じ型の変換
         UnaryOperator<String> addPrefix = s -> "Hello, " + s;
@@ -366,7 +368,7 @@ public class StandardFunctionalInterfaces {
 'Java'の長さ: 4
 'Hello World'の長さ: 11
 'hello'を大文字で出力: HELLO
-現在時刻: 1754043968876
+既定の名前: 名無し
 挨拶付き: Hello, Java
 5 × 7 = 35
 ```
@@ -436,12 +438,12 @@ compose: 11
 
 ## メソッド参照
 
-ラムダ式が既存のメソッドを呼びだすだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`インスタンス変数::メソッド名`のように記述します。
+ラムダ式が既存のメソッドを呼び出すだけの場合、メソッド参照（Method Reference）という、さらに簡潔な記法が使えます。`クラス名::メソッド名`や`変数名::メソッド名`（変数はオブジェクトを指すもの）のように記述します。
 
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
 | 静的メソッド参照 | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
-| インスタンスメソッド参照<br>(特定のインスタンス) | `インスタンス変数::メソッド名` | `s -> prefix.concat(s)` |
+| インスタンスメソッド参照<br>(特定のインスタンス) | `変数名::メソッド名` | `s -> prefix.concat(s)` |
 | インスタンスメソッド参照<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | コンストラクター参照 | `クラス名::new` | `() -> new ArrayList<>()` |
 
@@ -596,7 +598,7 @@ Person{name='Charlie'}
 スレッドの使い方は第15章で詳しく学びます。
 ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください<span class="footnote">`start()`を呼ぶと、別のスレッドで`run`の処理を始めます。</span>。
 
-<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜33、44〜46行目）</span>
+<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜46行目）</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -624,7 +626,16 @@ public class RunnableLambdaExample {
         // より簡潔なラムダ式（単一ステートメント）
         Thread t3 = new Thread(() -> IO.println("Thread t3 (Simple Lambda) executed"));
         t3.start();
-        // ...
+        
+        // すべてのスレッドの完了を待機
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         IO.println("メインスレッド終了");
     }
 }
@@ -642,13 +653,17 @@ Thread t1 (Anonymous) finished
 メインスレッド終了
 ```
 
+`join()`は、そのスレッドの処理が終わるまで待つメソッドです。
+3つのスレッドを待ってから表示するので、「メインスレッド終了」は最後に表示されます。
+ただし、3つのスレッドのどれが先に動き始めるかは決まっていないので、最初の3行の順序は実行のたびに変わることがあります。
+
 ### スレッドプールへのタスクの受け渡し
 
 並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。とくに、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
-<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜18、23〜47行目）</span>
+<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜18、23〜48行目）</span>
 
 ```java
 public class ExecutorLambdaExample {
@@ -689,7 +704,8 @@ public class ExecutorLambdaExample {
         }
         
         long endTime = System.currentTimeMillis();
-        IO.println("実行時間: " + (endTime - startTime) + "ms");
+        // 順に実行すると合計3秒かかるタスクが、それより短い時間で終わったか
+        IO.println("3秒未満で終わったか: " + (endTime - startTime < 3000));
     }
 }
 ```
@@ -702,8 +718,11 @@ public class ExecutorLambdaExample {
 Task 1 completed
 Task 2 completed
 Task 3 completed
-実行時間: 1511ms
+3秒未満で終わったか: true
 ```
+
+3つのタスクを順に実行すると、待ち時間の合計は3秒になります。
+スレッドプールの4つのスレッドで同時に実行するので、もっとも長いタスクの1.5秒ほどで終わります。
 
 ### データバリデーション処理の関数型実装
 
@@ -714,13 +733,13 @@ Task 3 completed
 ```java
 public class ValidationFramework {
     // 基本的なバリデーション関数
-    public static Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
-    public static Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-    public static Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
-    public static Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
+    public static final Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
+    public static final Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    public static final Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
+    public static final Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
     
     // 複合バリデーション
-    public static Predicate<User> validUser = user ->
+    public static final Predicate<User> isValidUser = user ->
         notEmpty.test(user.getName()) &&
         validEmail.test(user.getEmail()) &&
         minLength.apply(8).test(user.getPassword());
@@ -732,7 +751,7 @@ public class ValidationFramework {
         // ...
     }
     
-    public static Function<User, ValidationResult> validateUserWithErrors = user -> {
+    public static final Function<User, ValidationResult> validateUserWithErrors = user -> {
         List<String> errors = new ArrayList<>();
         
         if (!notEmpty.test(user.getName())) {
@@ -947,7 +966,7 @@ public class SideEffectExample {
 
 この例では、どちらも同じ結果になります。
 しかし悪い例のラムダ式は、外にある`results`に要素を追加するので、呼び出す順序や回数によって結果が変わります。
-たとえば、第12章で学ぶ並列ストリームで複数のスレッドから同時に呼び出すと、`ArrayList`への追加がぶつかって要素が欠けることがあります。
+たとえば、同じラムダ式を第12章で学ぶ並列ストリームの`forEach`に渡すと、複数のスレッドから同時に呼び出され、`ArrayList`への追加がぶつかって要素が欠けることがあります。
 よい例のラムダ式は、受け取った値から新しい値を返すだけなので、どの順序で呼び出しても同じ結果になります。
 
 ### 実世界での応用例：リアクティブストリーム処理
@@ -966,7 +985,10 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 
 #### 失敗した処理の再試行
 
-<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜18、30行目）</span>
+ネットワーク越しのサービスのように、ときどき失敗する処理は、何回か呼び出し直すと成功することがあります。
+サンプルコード11-17の`withRetry`は、処理を表す`Supplier`を受け取り、失敗したら呼び出し直す新しい`Supplier`を返す高階関数です。
+
+<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜42行目）</span>
 
 ```java
 public class ResilientService {
@@ -985,9 +1007,44 @@ public class ResilientService {
             }
         };
     }
-    // ...
+    
+    // 失敗を再現するため、呼び出した回数をフィールドで数える
+    private int calls = 0;
+
+    // 使用例：2回失敗し、3回目で成功するサービスを呼び出す
+    public String fetchDataWithRetry() {
+        Supplier<String> unreliableService = () -> {
+            calls++;
+            IO.println(calls + "回目の呼び出し");
+            if (calls < 3) {
+                throw new RuntimeException("Service unavailable");
+            }
+            return "Success!";
+        };
+
+        Supplier<String> resilientService = withRetry(unreliableService, 3);
+        return resilientService.get();
+    }
+
+    public static void main(String[] args) {
+        ResilientService service = new ResilientService();
+        IO.println("結果: " + service.fetchDataWithRetry());
+    }
 }
 ```
+
+実行結果：
+
+```
+1回目の呼び出し
+2回目の呼び出し
+3回目の呼び出し
+結果: Success!
+```
+
+`withRetry`が返す`Supplier`は、`get`を呼ばれると元の処理を呼び出し、例外が起きたら最大`maxAttempts`回まで呼び出し直します。
+この例では2回失敗したあと3回目で成功したので、その結果が返ります。
+3回とも失敗した場合は、最後の例外を原因として持つ例外をスローします。
 
 #### イベント処理システムでの関数型アプローチ
 
@@ -1058,6 +1115,11 @@ public class EventProcessor {
 
 #### 関数合成によるミドルウェア
 
+Webのサーバーは、届いたリクエスト（要求）を本来の処理に渡す前に、いくつかの検査を順に行います。
+たとえば、記録を取る処理や、短い時間に届きすぎていないかを確かめる処理、利用者を認証する処理です。
+このような、本来の処理の前に挟む処理をミドルウェアと呼びます。
+サンプルコード11-19は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
+
 <span class="listing-number">**サンプルコード11-19**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
 ```java
@@ -1099,6 +1161,7 @@ public class MiddlewareChain {
 
 `Middleware`は`Function`を継承しているため、`andThen`という名前のメソッドをすでに持っています。
 同じ名前で合成メソッドを定義すると、ラムダ式を渡したときにどちらを呼ぶのかが決まらずコンパイルエラーになるので、ここでは`then`という名前にしています。
+`then`でつないだ処理は、前の検査が成功したときだけ次の検査に進み、失敗したらその時点の応答を返します。
 
 #### テンプレートメソッドパターンの関数型実装
 
@@ -1137,6 +1200,7 @@ public class DataProcessingTemplate {
 }
 ```
 
+後処理のラムダ式は`removeIf`でリストを書き換えていますが、このリストは`parseCustomers`が新しく作ったものなので、ほかの処理に影響しません。
 `processCsvData("  Alice,30;Bob,-1;Carol,25  ")`を呼び出すと、年齢が負のBobを除いた次のリストが返ります。
 
 ```
@@ -1147,6 +1211,9 @@ public class DataProcessingTemplate {
 継承を使うテンプレートメソッドパターンとちがい、処理の組み合わせごとにサブクラスを作らずに済みます。
 
 #### イベントソーシング
+
+イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
+現在の状態が必要になったら、記録したイベントを順に適用して求めます。
 
 <span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜36行目）</span>
 
@@ -1283,7 +1350,7 @@ public class LambdaCapture {
 戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
 ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
-<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜43、45〜56行目）</span>
+<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜60行目）</span>
 
 ```java
 public class FunctionalBuilder {
@@ -1306,7 +1373,6 @@ public class FunctionalBuilder {
     
     // 使用例
     public void demonstrateBuilders() {
-        // ...
         // 関数型ビルダーの利点：動的な構築ロジック
         Person person = new FunctionalPersonBuilder()
             .with(p -> p.setName("Alice"))
@@ -1317,9 +1383,25 @@ public class FunctionalBuilder {
                 }
             })
             .build();
+        IO.println(person);
+    }
+
+    public static void main(String[] args) {
+        new FunctionalBuilder().demonstrateBuilders();
     }
 }
 ```
+
+実行結果：
+
+```
+Person{name='Alice', age=30, adult=true}
+```
+
+`with`は設定の操作（`Consumer<Person>`）をリストにためておくだけで、`build`を呼んだときに、作った`Person`へ操作を加えた順に適用します。
+3つ目の操作は、先に設定した年齢を見て処理を変えています。
+第6章のビルダーは不変オブジェクトを組み立てるためのものでした。
+この関数型のビルダーは、setterを持つ可変のオブジェクトに操作を順に加える点が異なります。
 
 #### 条件に応じた設定の組み立て
 
@@ -1443,7 +1525,7 @@ public class OrderPipeline {
 - 型推論の失敗
     + ラムダ式を代入する先の関数型インターフェイスが決まらないと、型を推論できない
 - 検査例外の扱い
-    + `Function`などの標準の関数型インターフェイスは、検査例外をスローできない
+    + `Function`などの標準の関数型インターフェイスは、検査例外（第13章）をスローできない
 - 変数のキャプチャ
     + ラムダ式のなかから参照できるローカル変数は、実質的にfinalなものに限られる
 - 関数型インターフェイスの実装の誤り
@@ -1459,12 +1541,14 @@ public class OrderPipeline {
 本章では、Java 8で導入されたラムダ式と関数型インターフェイスについて学びました。
 
 - ラムダ式は、匿名関数を簡潔に記述するための構文で、冗長な匿名クラスを置き換える
-- ラムダ式は、抽象メソッドが1つだけの関数型インターフェイスとして扱われる
+- ラムダ式は、抽象メソッドが1つだけの関数型インターフェイスの型が求められる場所に書け、そのインターフェイスを実装したオブジェクトになる
 - `Predicate`, `Function`, `Consumer`, `Supplier`など、汎用的な関数型インターフェイスが標準で用意されている
-- メソッド参照を使うと、既存のメソッドを呼びだすだけのラムダ式をさらに簡潔に書ける
+- メソッド参照を使うと、既存のメソッドを呼び出すだけのラムダ式をさらに簡潔に書ける
 
 これらの機能を使いこなすと、より宣言的で簡潔なコードを書けます。
 ただし、ラムダ式を入れ子にしすぎると読みにくくなるため、可読性を優先して使い分けることが大切です。
+
+本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`</span>。
 
 ## 章末演習
 
@@ -1487,5 +1571,3 @@ public class OrderPipeline {
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
 次のステップ：基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
-
-本章の高度な内容については、付録B.02「プログラミングパラダイム」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`</span>。
