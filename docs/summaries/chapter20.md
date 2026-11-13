@@ -11,7 +11,7 @@ sections:
   - key: "JTreeの実装"
     hash: 8bf723b1
   - key: "JListの高度な使用法"
-    hash: c319a135
+    hash: 6ee62800
   - key: "カスタムセルエディターの実装"
     hash: 844f898d
   - key: "実践的なアプリケーション例"
@@ -69,7 +69,7 @@ sections:
 - JListの高度な使用法（L286–388）
     + 第17章の17-9（文字列の配列とsetSelectionMode）から、モデルとカスタムレンダラーへ進むと述べる
     + ListModelの`getSize`・`getElementAt`、変更をリストに知らせる`fireIntervalAdded`・`fireIntervalRemoved`・`fireContentsChanged`、内部で知らせを送るDefaultListModelとの違い（20-7で使う）
-    + Taskクラス、AbstractListModelを継承したTaskListModel、JPanelベースのListCellRendererで、タイトル・説明・期限・完了状態を表示するタスクリスト（20-5）。中のパネルを`setOpaque(false)`にして選択色を見せ、文字色も部品ごとに切り替える。ダブルクリックで完了を切り替える
+    + Taskクラス、AbstractListModelを継承したTaskListModel、JPanelベースのListCellRendererで、タイトル・説明・期限・完了状態を表示するタスクリスト（20-5）。中のパネルを`setOpaque(false)`にして選択色を見せ、文字色も部品ごとに切り替える（完了タスクの灰色は選択していないときだけ。選択中に灰色だと青い選択色の上で読みにくかったため2026-11-14に直した）。ダブルクリックで完了を切り替える
 - カスタムセルエディターの実装（L389–460）
     + JColorChooserを開くColorCellEditor、ColorCellRenderer、コンボボックスのPriorityCellEditorをJTableに設定する（20-6）
 - 実践的なアプリケーション例（L461–533）
