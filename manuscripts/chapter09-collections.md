@@ -368,6 +368,40 @@ String[] fruitArray = fruitList.toArray(new String[0]);
 ```
 注意：`Arrays.asList()`が直接返す`List`はサイズが固定されており、`add`や`remove`ができないため、変更可能な`ArrayList`でラップするのが一般的です。
 
+### ラッパークラスとオートボクシング
+
+ここまでのリストには文字列を入れてきました。
+整数を入れるリストは、`List<int>`ではなく`List<Integer>`と書きます。
+コレクションに入れられるのはオブジェクトだけで、`int`のような基本型は`< >`に書く型に指定できないからです。
+
+`Integer`は、`int`の値を1つ包むクラスです。
+このように基本型の値を包むクラスをラッパークラスと呼び、8つの基本型それぞれに用意されています。
+
+| 基本型 | ラッパークラス |
+|---|---|
+| `byte` | `Byte` |
+| `short` | `Short` |
+| `int` | `Integer` |
+| `long` | `Long` |
+| `float` | `Float` |
+| `double` | `Double` |
+| `char` | `Character` |
+| `boolean` | `Boolean` |
+
+基本型とラッパークラスの間は、コンパイラーが自動で変換します。
+基本型の値をラッパークラスのオブジェクトに変換することをオートボクシング、その逆をアンボクシングと呼びます<span class="footnote">J2SE 5.0（2004年）で、ジェネリクスと同時に加わりました。それより前は、`Integer.valueOf(5)`や`number.intValue()`のように変換するメソッドを自分で呼んでいました。</span>。
+そのため、`List<Integer>`の`numbers`に`numbers.add(5)`と`int`の値をそのまま渡せ、`int first = numbers.get(0);`のように`int`の変数で受け取れます。
+第1章で使った`Integer.parseInt()`も、ラッパークラス`Integer`の静的メソッドです。
+
+自動で変換されるとはいえ、ラッパークラスはオブジェクトなので、基本型とは違う点が3つあります。
+
+- `null`を持てる
+    + 中身が`null`の`Integer`を`int`に変換しようとすると、`NullPointerException`が発生する
+- `==`はオブジェクトが同じかどうかを比べる
+    + 2つの`Integer`の値を比べるときは`equals()`を使う。-128〜127の値は同じオブジェクトが使い回されるので`==`でも`true`になることがあり、誤りに気づきにくい
+- `List<Integer>`の`remove(1)`は、値の1ではなく、添え字1の要素を削除する
+    + `remove(int index)`と`remove(Object o)`の2つがあり、`int`を渡すと前者が選ばれる。値の1を削除するときは`remove(Integer.valueOf(1))`と書く
+
 ## Set インターフェイス
 
 Setは重複要素を許さないコレクションです。数学的な集合の概念に対応します。
@@ -548,9 +582,8 @@ Bob: 92点
 Alice: 95点
 ```
 
-`Map<String, Integer>`の値の型に`int`ではなく`Integer`と書いているのは、コレクションに入れられるのはオブジェクトだけで、`int`のような基本型は型の指定に使えないからです。
-`Integer`は`int`の値を包むクラスで、ラッパークラスと呼びます。
-`int`と`Integer`の間は自動で変換されるので、`scores.put("Alice", 85)`のように`int`の値をそのまま渡せ、`int bobScore = scores.get("Bob")`のように`int`の変数で受け取れます。
+`Map<String, Integer>`の値の型に`int`ではなく`Integer`と書くのは、本章の「ラッパークラスとオートボクシング」で学んだとおり、基本型を型の指定に使えないからです。
+オートボクシングとアンボクシングにより、`scores.put("Alice", 85)`のように`int`の値をそのまま渡せ、`int bobScore = scores.get("Bob")`のように`int`の変数で受け取れます。
 ただし、存在しないキーを`get()`すると`null`が返り、それを`int`に変換しようとして`NullPointerException`が発生します。
 
 `HashMap`も、キーが同じかどうかを`HashSet`と同じく`hashCode()`と`equals()`で判定します。

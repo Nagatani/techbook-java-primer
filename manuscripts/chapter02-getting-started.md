@@ -1128,7 +1128,7 @@ Javaにおける文字列処理は、C言語のアプローチとは根本的に
 // C言語での文字列処理
 char str[100] = "Hello";
 strcat(str, " World");  // バッファオーバーフローの危険性
-int len = strlen(str);  // 毎回O(n)の計算コスト
+int len = strlen(str);  // 呼ぶたびに終端まで数える（長い文字列ほど時間がかかる）
 char *copy = malloc(len + 1);
 strcpy(copy, str);  // メモリリークの可能性
 ```
@@ -1141,7 +1141,7 @@ strcpy(copy, str);  // メモリリークの可能性
 // Javaでの文字列処理
 String str = "Hello";
 str = str + " World";  // 安全な連結
-int len = str.length();  // O(1)で取得
+int len = str.length();  // 保持している長さを返す（長さによらず一瞬）
 String copy = str;  // 参照のコピー（安全）
 ```
 
@@ -1163,14 +1163,14 @@ String copy = str;  // 参照のコピー（安全）
 ```c
 // #include <string.h> が必要
 
-// C言語 - O(n)の計算が必要
+// C言語 - 文字列の長さに比例する時間がかかる
 int len = strlen(str);  // 毎回文字列を走査
 ```
 
 <span class="listing-number">**サンプルコード2-37**</span>
 
 ```java
-// Java - O(1)で即座に取得
+// Java - 長さによらず一定の時間で取得できる
 int len = str.length();  // 内部フィールドを返すだけ
 ```
 
