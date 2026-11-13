@@ -23,7 +23,7 @@ public class ParallelStreamExample {
         
         IO.println("シーケンシャル: " + seqTime.toMillis() + "ms");
         IO.println("並列: " + parTime.toMillis() + "ms");
-        IO.println("高速化率: " + 
-            (double)seqTime.toMillis() / parTime.toMillis() + "倍");
+        IO.println("高速化率: %.1f倍".formatted(
+            (double) seqTime.toMillis() / parTime.toMillis()));
     }
 }

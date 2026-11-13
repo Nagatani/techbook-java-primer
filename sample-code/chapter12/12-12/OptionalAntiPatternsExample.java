@@ -12,7 +12,7 @@ public class OptionalAntiPatternsExample {
             // 処理...
         }
         
-        // アンチパターン3: コレクションにOptionalを使用（避けるべき）
+        // アンチパターン3: コレクションをOptionalで包んで返す（避けるべき）
         public Optional<List<String>> getNames() {  // 悪い例
             // 空のリストを返すべき
             return Optional.empty();

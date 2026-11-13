@@ -15,7 +15,7 @@ public class ToArrayExample {
         IO.println("結果配列: " + Arrays.toString(nameArray));
         // 出力: 結果配列: [ALICE, CHARLIE, DAVID]
         
-        // サイズを指定した配列生成も可能
+        // String[]::newは、配列の大きさを受け取って配列を作るラムダ式と同じ意味
         String[] sizedArray = names.stream()
             .toArray(size -> new String[size]);
         IO.println("サイズ指定配列: " + Arrays.toString(sizedArray));

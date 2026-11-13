@@ -17,7 +17,7 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [12-4](./12-04/) | AdvancedSortExample.java | `java -cp out AdvancedSortExample` |
-| [12-5](./12-05/) | AdvancedSortExample.java<br>StreamExample.java | `java -cp out StreamExample` |
+| [12-5](./12-05/) | StreamExample.java<br>Student.java | `java -cp out StreamExample` |
 | [12-6](./12-06/) | OptionalCreationExample.java | `java -cp out OptionalCreationExample` |
 | [12-7](./12-07/) | OptionalRetrievalExample.java | `java -cp out OptionalRetrievalExample` |
 | [12-8](./12-08/) | OptionalPresenceExample.java | `java -cp out OptionalPresenceExample` |
@@ -27,9 +27,9 @@ javac -d out *.java
 | [12-12](./12-12/) | OptionalAntiPatternsExample.java | `java -cp out OptionalAntiPatternsExample` |
 | [12-14](./12-14/) | ParallelStreamExample.java | `java -cp out ParallelStreamExample` |
 | [12-16](./12-16/) | FlatMapExample.java | `java -cp out FlatMapExample` |
-| [12-17](./12-17/) | AdvancedSortExample.java<br>ReduceExample.java | `java -cp out ReduceExample` |
-| [12-18](./12-18/) | AdvancedSortExample.java<br>CollectorsExample.java | `java -cp out CollectorsExample` |
+| [12-17](./12-17/) | ReduceExample.java<br>Student.java | `java -cp out ReduceExample` |
+| [12-18](./12-18/) | CollectorsExample.java<br>Student.java | `java -cp out CollectorsExample` |
 | [12-19](./12-19/) | NullSafeProcessingExample.java | `java -cp out NullSafeProcessingExample` |
 | [12-20](./12-20/) | ShortCircuitExample.java | `java -cp out ShortCircuitExample` |
 | [12-21](./12-21/) | ToArrayExample.java | `java -cp out ToArrayExample` |
-| [12-22](./12-22/) | AdvancedSortExample.java<br>ComplexProcessingExample.java | `java -cp out ComplexProcessingExample` |
+| [12-22](./12-22/) | ComplexProcessingExample.java<br>Student.java | `java -cp out ComplexProcessingExample` |

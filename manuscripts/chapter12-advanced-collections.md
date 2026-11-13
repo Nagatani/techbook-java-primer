@@ -68,8 +68,6 @@ List<Integer> result = stream.collect(Collectors.toList());
 
 </div>
 
-ラムダ式と組み合わせることで、コレクション操作を非常に宣言的（「何をするか」を記述するスタイル）で、かつ簡潔に書くことができます。
-
 ### Stream操作の基本パターン
 
 Stream操作の基本の形は`コレクション.stream().中間操作1().中間操作2()...終端操作()`です。
@@ -149,6 +147,8 @@ List<Student> highScorers = list.stream()
     .collect(Collectors.toList());
 ```
 
+結果をリストに集めるには、終端操作の`collect`に`Collectors.toList()`を渡します<span class="footnote">Java 16以降は、`collect(Collectors.toList())`の代わりに`toList()`とも書けます。`toList()`が返すリストには、要素を追加したり変更したりできません。</span>。
+
 ### `map`: 要素を別の形に変換
 
 `map`は、各要素に関数（`Function`）を適用し、別の値に変換します。学生オブジェクトから名前だけを抽出する例です。以下のコードは、map操作を使った型変換の実例を示しています。
@@ -221,7 +221,7 @@ public class AdvancedSortExample {
 
 ### 組み合わせた例
 
-実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する実用的な例です。このコードは、Stream APIの真価を発揮する複合的な処理パイプラインの例です。
+実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する例です。
 
 <span class="listing-number">**サンプルコード12-5**　StreamExample.java</span>
 
@@ -306,14 +306,25 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜7、19〜41行目）</span>
+<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜42行目）</span>
 
 ```java
 public class OptionalRetrievalExample {
     public static void main(String[] args) {
         Optional<String> present = Optional.of("Hello");
         Optional<String> empty = Optional.empty();
-        // ...
+        
+        // 1. get() - 値が存在しない場合はNoSuchElementExceptionを投げる
+        // 空のときに例外になるので避ける（同じ働きの引数なしのorElseThrow()がJava 10で加わった）
+        try {
+            String value1 = present.get();
+            IO.println("get() with value: " + value1);  // Hello
+            
+            String value2 = empty.get();  // 例外発生！
+        } catch (NoSuchElementException e) {
+            IO.println("get() on empty: " + e.getMessage());
+        }
+        
         // 2. orElse() - 値が存在しない場合のデフォルト値を指定
         String value3 = present.orElse("Default");
         String value4 = empty.orElse("Default");
@@ -321,7 +332,7 @@ public class OptionalRetrievalExample {
         IO.println("orElse() on empty: " + value4);       // Default
         
         // 3. orElseGet() - 値が存在しない場合にSupplierから値を生成
-        // orElseよりコストが低い（デフォルト値の生成コストが高い場合）
+        // orElseの引数は値があっても必ず評価されるが、Supplierは値がないときだけ呼ばれる
         String value5 = empty.orElseGet(() -> {
             IO.println("Generating default value...");
             return "Generated Default";
@@ -391,7 +402,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、14〜16、18〜38、48〜49行目）</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、13〜16、18〜49行目）</span>
 
 ```java
 public class OptionalTransformationExample {
@@ -399,6 +410,7 @@ public class OptionalTransformationExample {
         private final String name;
         private final String email;  // メールアドレスがないときはnull
         // ...
+        public String getName() { return name; }
         // フィールドはOptionalにせず、戻り値で「値がないかもしれない」ことを示す
         public Optional<String> getEmail() { return Optional.ofNullable(email); }
     }
@@ -424,7 +436,15 @@ public class OptionalTransformationExample {
         
         Optional<String> noEmail = userWithoutEmail.flatMap(u -> u.getEmail());
         IO.println("flatMap (no email): " + noEmail);  // Optional.empty
-        // ...
+        
+        // 3. filter() - 条件を満たす場合のみ値を保持
+        Optional<User> longNameUser = user
+            .filter(u -> u.getName().length() > 3);
+        IO.println("filter (passed): " + longNameUser.isPresent());  // true
+        
+        Optional<User> shortNameUser = user
+            .filter(u -> u.getName().length() > 10);
+        IO.println("filter (failed): " + shortNameUser.isPresent());  // false
     }
 }
 ```
@@ -504,29 +524,46 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5、15〜18、34〜36、53〜58、61、65〜80、89〜90行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜90行目）</span>
 
 ```java
 public class OptionalPracticalExample {
+    // データベースの代わりとなるメモリ内ストレージ
+    static class UserRepository {
+        private Map<Long, User> users = new HashMap<>();
         // ...
         // Optionalを返すことで、ユーザーが見つからない可能性を明示
         public Optional<User> findById(Long id) {
             return Optional.ofNullable(users.get(id));
         }
+    }
+    // ...
+    static class User {
         // ...
         public Optional<String> getEmail() { 
             return Optional.ofNullable(email); 
         }
+    }
+    // ...
+    static class ConfigService {
         // ...
+        // 設定値の取得（存在しない可能性を考慮）
+        public Optional<String> getConfig(String key) {
+            return Optional.ofNullable(config.get(key));
+        }
+        
         // タイムアウト値の取得（デフォルト値付き）
         public int getTimeout() {
             return getConfig("app.timeout")
                 .map(Integer::parseInt)
                 .orElse(30);  // デフォルト30秒
         }
-        // ...
+    }
+    // ...
     public static void main(String[] args) {
-        // ...
+        UserRepository repo = new UserRepository();
+        ConfigService config = new ConfigService();
+        
         // データベース検索の例
         Long userId = 1L;
         String emailDomain = repo.findById(userId)
@@ -543,7 +580,14 @@ public class OptionalPracticalExample {
                 user -> IO.println("ユーザー名: " + user.getName()),
                 () -> IO.println("ユーザーID " + nonExistentId + " は存在しません")
             );
-            // ...
+        
+        // 設定値の取得
+        String appName = config.getConfig("app.name")
+            .orElse("Unknown App");
+        IO.println("アプリケーション名: " + appName);
+        
+        int timeout = config.getTimeout();
+        IO.println("タイムアウト値: " + timeout + "秒");
     }
 }
 ```
@@ -574,7 +618,7 @@ public class OptionalAntiPatternsExample {
             // 処理...
         }
         
-        // アンチパターン3: コレクションにOptionalを使用（避けるべき）
+        // アンチパターン3: コレクションをOptionalで包んで返す（避けるべき）
         public Optional<List<String>> getNames() {  // 悪い例
             // 空のリストを返すべき
             return Optional.empty();
@@ -629,7 +673,8 @@ public class OptionalAntiPatternsExample {
 
 まず、nullを返す可能性のあるメソッドは、戻り値の型を`Optional`にして、そのことを呼び出し側に明示します。
 受け取った`Optional`は、`map`、`flatMap`、`filter`をつないで、何をするのかが読み取れる宣言的なコードで処理します。
-値がないときのデフォルト値は`orElse`か`orElseGet`で与え、デフォルト値を作るコストを考えて使い分けます。
+値がないときのデフォルト値は`orElse`か`orElseGet`で与えます。
+`orElse`の引数は値があっても必ず評価されるので、デフォルト値を作るのに時間がかかる場合は、値がないときだけ呼ばれる`orElseGet`を使います。
 値が存在しない場合の処理は、後回しにせず早い段階で済ませます。
 また、Stream APIと組み合わせると、Optionalを返す操作の結果をそのまま次の処理へつなげられます。
 
@@ -720,8 +765,8 @@ public class ParallelStreamExample {
         
         IO.println("シーケンシャル: " + seqTime.toMillis() + "ms");
         IO.println("並列: " + parTime.toMillis() + "ms");
-        IO.println("高速化率: " + 
-            (double)seqTime.toMillis() / parTime.toMillis() + "倍");
+        IO.println("高速化率: %.1f倍".formatted(
+            (double) seqTime.toMillis() / parTime.toMillis()));
     }
 }
 ```
@@ -731,15 +776,17 @@ public class ParallelStreamExample {
 ```
 シーケンシャル: 304ms
 並列: 62ms
-高速化率: 4.903225806451613倍
+高速化率: 4.9倍
 ```
+
+計測した時間と高速化率は、CPUのコア数や実行のたびに変わります<span class="footnote">先に測る直列の処理には、JITコンパイラーがコードを最適化する前の遅い時間も含まれるため、高速化率が大きめに出ることがあります。正確に比べるには、同じ処理を何度か実行してから測ります。</span>。
 
 ### 並列ストリームの注意点
 
 並列ストリームは強力な機能ですが、すべての状況で性能が向上するわけではありません。
 
 #### オーバーヘッドの問題
-スレッドの作成やコンテキストスイッチにはコストがかかります。データ量が少ない場合、このオーバーヘッドが並列化の利点を上回ることがあります。
+並列ストリームでは、データの分割や結果の統合、スレッドどうしの処理の受け渡しに手間がかかります。データ量が少ない場合、このオーバーヘッドが並列化の利点を上回ることがあります。
 
 #### スレッドセーフティ
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
@@ -759,7 +806,9 @@ List<Integer> safeResults = numbers.parallelStream()
 ```
 
 #### 順序の保証
-並列ストリームでは、処理の順序が保証されない場合があります。順序が重要な場合は、`forEachOrdered()`を使用するか、シーケンシャルストリームを使うことが重要です。
+並列ストリームでは、`forEach`で要素を処理する順序や`findAny`が返す要素は、実行のたびに変わることがあります。
+一方、`collect`や`forEachOrdered`は、並列ストリームでも元の要素の順序を保ちます。
+サンプルコード12-15の`collect(Collectors.toList())`の結果も、元のリストと同じ順に並びます。
 
 ### 並列ストリームを使うとよい場合
 
@@ -771,8 +820,8 @@ List<Integer> safeResults = numbers.parallelStream()
     + 各要素の処理に計算コストがかかる場合
 3. 状態を共有しない処理
     + 各要素が独立して処理できる場合
-4. 順序が重要でない場合
-    + 出力の順序が問題にならない場合
+4. 要素の順序に縛られない処理
+    + `findFirst`や`limit`のように順序を守る操作は、並列では順序をそろえる手間がかかり、速くなりにくい
 
 ## 高度なStream操作
 
@@ -979,6 +1028,7 @@ public class NullSafeProcessingExample {
 ### 早期終了操作の活用
 
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
+次のサンプルの`peek`は、要素をそのまま次へ渡しながら途中の値を確かめる処理をはさむ中間操作で、主にデバッグに使います。
 
 <span class="listing-number">**サンプルコード12-20**　ShortCircuitExample.java</span>
 
@@ -991,7 +1041,7 @@ public class ShortCircuitExample {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         
-        // 早期終了操作：条件を満たす要素が見つかれば処理を停止
+        // 早期終了操作：allMatchは条件を満たさない要素が見つかった時点で処理を停止
         // すべての要素が偶数かチェック（1つでも奇数があればfalse）
         boolean allEven = numbers.stream()
             .peek(n -> IO.println("チェック中: " + n)) // 処理の流れを観察
@@ -1025,7 +1075,8 @@ public class ShortCircuitExample {
 
 ### 実用的なtoArray操作
 
-ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。型安全な配列を取得するためには、正しい配列コンストラクターを指定することが重要です。
+ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。引数なしの`toArray()`は`Object[]`を返します。
+`String[]`のように要素の型に合った配列を受け取るには、`String[]::new`のような配列のコンストラクター参照を渡します。
 
 <span class="listing-number">**サンプルコード12-21**　ToArrayExample.java</span>
 
@@ -1047,7 +1098,7 @@ public class ToArrayExample {
         IO.println("結果配列: " + Arrays.toString(nameArray));
         // 出力: 結果配列: [ALICE, CHARLIE, DAVID]
         
-        // サイズを指定した配列生成も可能
+        // String[]::newは、配列の大きさを受け取って配列を作るラムダ式と同じ意味
         String[] sizedArray = names.stream()
             .toArray(size -> new String[size]);
         IO.println("サイズ指定配列: " + Arrays.toString(sizedArray));
@@ -1107,7 +1158,7 @@ public class ComplexProcessingExample {
 高身長: 86.0点
 ```
 
-`groupingBy`が返す`Map`は`HashMap`なので、グループの表示順は保証されません。
+`groupingBy`が返す`Map`の種類は仕様で決められておらず（現在の実装は`HashMap`です）、グループの表示順は保証されません。
 順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します<span class="footnote">`Map`の種類を指定できるのは3つの引数をとる`groupingBy`で、3番目の引数にはグループごとの集め方（`Collectors.toList()`など）を渡します。</span>。
 
 このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
@@ -1140,7 +1191,7 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
     + `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
     + `sorted`に第11章で学んだ`Comparator`を渡すと、元のリストを変えずに並べ替えた結果を得られる
 - Optional型
-    + null参照の問題を型レベルで解決し、NullPointerExceptionを防ぐ安全なプログラミングを実現する
+    + 値が存在しない場合があることを型で示し、その場合の扱い忘れによるNullPointerExceptionを減らす
 - 並列ストリーム
     + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
 - 高度なStream操作
