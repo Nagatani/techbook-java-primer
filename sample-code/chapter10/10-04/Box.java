@@ -1,4 +1,4 @@
-// Tという型パラメータを持つジェネリッククラス
+// Tという型パラメーターを持つジェネリッククラス
 public class Box<T> {
     private T content;
 

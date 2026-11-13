@@ -29,7 +29,7 @@ public class MethodReferenceExample {
         IO.println("\n大文字変換:");
         upper.forEach(IO::println);
 
-        // コンストラクタ参照
+        // コンストラクター参照
         Supplier<List<String>> listFactory = ArrayList::new;  // () -> new ArrayList<>()
         List<String> newList = listFactory.get();
         newList.add("Hello");

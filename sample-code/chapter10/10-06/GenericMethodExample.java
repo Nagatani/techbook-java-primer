@@ -1,5 +1,5 @@
 public class GenericMethodExample {
-    // Tという型パラメータを持つジェネリックメソッド
+    // Tという型パラメーターを持つジェネリックメソッド
     public static <T> void printArray(T[] inputArray) {
         for (T element : inputArray) {
             IO.print(element + " ");

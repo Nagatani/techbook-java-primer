@@ -155,7 +155,7 @@ PYTHON
 <span class="listing-number">**サンプルコード10-4**　Box.java、BoxExample.java</span>
 
 ```java
-// Tという型パラメータを持つジェネリッククラス
+// Tという型パラメーターを持つジェネリッククラス
 public class Box<T> {
     private T content;
 
@@ -214,7 +214,7 @@ Map<String, List<Integer>> complexMap = new HashMap<>();
 
 ```java
 public class GenericMethodExample {
-    // Tという型パラメータを持つジェネリックメソッド
+    // Tという型パラメーターを持つジェネリックメソッド
     public static <T> void printArray(T[] inputArray) {
         for (T element : inputArray) {
             IO.print(element + " ");
@@ -534,12 +534,12 @@ public class VarWithGenericsExample {
         IO.println("Second: " + second);
     }
 
-    // 2つの型パラメータT、Uを持つジェネリックメソッド
+    // 2つの型パラメーターT、Uを持つジェネリックメソッド
     public static <T, U> Pair<T, U> createPair(T first, U second) {
         return new Pair<>(first, second);
     }
 
-    // 2つの型パラメータを持つジェネリッククラス
+    // 2つの型パラメーターを持つジェネリッククラス
     static class Pair<T, U> {
         private final T first;
         private final U second;

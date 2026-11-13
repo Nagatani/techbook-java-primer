@@ -23,12 +23,12 @@ public class VarWithGenericsExample {
         IO.println("Second: " + second);
     }
 
-    // 2つの型パラメータT、Uを持つジェネリックメソッド
+    // 2つの型パラメーターT、Uを持つジェネリックメソッド
     public static <T, U> Pair<T, U> createPair(T first, U second) {
         return new Pair<>(first, second);
     }
 
-    // 2つの型パラメータを持つジェネリッククラス
+    // 2つの型パラメーターを持つジェネリッククラス
     static class Pair<T, U> {
         private final T first;
         private final U second;

@@ -20,7 +20,7 @@ public class LambdaVsMethodReference {
         upper2.replaceAll(String::toUpperCase);
         upper2.forEach(IO::println);
 
-        // 引数を受け取るコンストラクタの参照
+        // 引数を受け取るコンストラクターの参照
         Function<String, Person> toPerson = Person::new;  // name -> new Person(name) と同じ
         List<Person> people = new ArrayList<>();
         for (String name : names) {
