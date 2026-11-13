@@ -14,28 +14,28 @@ public class DeadlockExample {
      */
     public void method1() {
         synchronized (lock1) {
-            IO.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
+            IO.println("Thread " + Thread.currentThread().threadId() + " acquired lock1");
             
             try { Thread.sleep(100); } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             
             synchronized (lock2) { // 循環待機の原因
-                IO.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
+                IO.println("Thread " + Thread.currentThread().threadId() + " acquired lock2");
             }
         }
     }
     
     public void method2() {
         synchronized (lock2) {
-            IO.println("Thread " + Thread.currentThread().getId() + " acquired lock2");
+            IO.println("Thread " + Thread.currentThread().threadId() + " acquired lock2");
             
             try { Thread.sleep(100); } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
             
             synchronized (lock1) { // 循環待機の原因
-                IO.println("Thread " + Thread.currentThread().getId() + " acquired lock1");
+                IO.println("Thread " + Thread.currentThread().threadId() + " acquired lock1");
             }
         }
     }
@@ -46,7 +46,7 @@ public class DeadlockExample {
     public void safeMethod1() {
         synchronized (lock1) { // 常に lock1 を先に取得
             synchronized (lock2) {
-                IO.println("Thread " + Thread.currentThread().getId() + 
+                IO.println("Thread " + Thread.currentThread().threadId() + 
                                  " safely acquired both locks (method1)");
             }
         }
@@ -55,7 +55,7 @@ public class DeadlockExample {
     public void safeMethod2() {
         synchronized (lock1) { // 常に lock1 を先に取得
             synchronized (lock2) {
-                IO.println("Thread " + Thread.currentThread().getId() + 
+                IO.println("Thread " + Thread.currentThread().threadId() + 
                                  " safely acquired both locks (method2)");
             }
         }

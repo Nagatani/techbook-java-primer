@@ -315,7 +315,7 @@ public class ConcurrencyDebug {
     
     public void increment() {
         // デバッグ情報付き同期
-        long threadId = Thread.currentThread().getId();
+        long threadId = Thread.currentThread().threadId();
         IO.println("Thread " + threadId + " waiting for lock");
         
         synchronized (lock) {

@@ -444,7 +444,10 @@ class ParameterizedTestExample {
     
     public static class InvalidDateProvider implements ArgumentsProvider {
         @Override
+        // JUnit 5.13からは、引数の宣言（ParameterDeclarations）も受け取るこの形を実装する
+        // （ExtensionContextだけを受け取る形は非推奨になった）
         public Stream<? extends org.junit.jupiter.params.provider.Arguments> provideArguments(
+                org.junit.jupiter.params.support.ParameterDeclarations parameters,
                 org.junit.jupiter.api.extension.ExtensionContext context) {
             return Stream.of(
                 org.junit.jupiter.params.provider.Arguments.of("2023-13-01"), // 無効な月

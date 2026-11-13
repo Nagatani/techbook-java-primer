@@ -371,7 +371,7 @@ public class JVMArchitectureDemo {
         
         private static long getApproximateStackSize() {
             ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-            long threadId = Thread.currentThread().getId();
+            long threadId = Thread.currentThread().threadId();
             ThreadInfo threadInfo = threadBean.getThreadInfo(threadId);
             
             if (threadInfo != null) {
