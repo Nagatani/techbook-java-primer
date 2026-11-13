@@ -61,6 +61,7 @@ public class ResiliencePatterns {
             if (currentState == State.OPEN) {
                 if (System.currentTimeMillis() - lastFailureTime.get() > timeout) {
                     state.set(State.HALF_OPEN);
+                    currentState = State.HALF_OPEN;
                     IO.println("Circuit breaker: HALF_OPEN");
                 } else {
                     throw new RuntimeException("Circuit breaker is OPEN");
@@ -71,9 +72,9 @@ public class ResiliencePatterns {
                 T result = task.call();
                 if (currentState == State.HALF_OPEN) {
                     state.set(State.CLOSED);
-                    failureCount.set(0);
                     IO.println("Circuit breaker: CLOSED");
                 }
+                failureCount.set(0); // 成功したら、連続した失敗の回数を0に戻す
                 return result;
             } catch (Exception e) {
                 failureCount.incrementAndGet();

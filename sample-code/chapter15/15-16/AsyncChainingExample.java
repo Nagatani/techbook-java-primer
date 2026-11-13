@@ -37,7 +37,7 @@ public class AsyncChainingExample {
         // 非同期処理を連鎖させる
         CompletableFuture<Integer> totalFuture = fetchUser("USER001")
             .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
-            .thenApply(orders -> calculateTotal(orders))  // 同期的な変換
+            .thenApply(orders -> calculateTotal(orders))  // 前の処理を終えたスレッドで続けて変換
             .exceptionally(ex -> {
                 System.err.println("Error occurred: " + ex.getMessage());
                 return 0;  // デフォルト値を返す

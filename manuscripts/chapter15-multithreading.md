@@ -65,6 +65,8 @@
 #### マルチスレッド（複数のシェフ）の場合
 
 前菜・メイン・デザートを別々のシェフが受け持ち、並行して作ります。複数のシェフが並行して働くことで、短時間で多くの料理を提供できます。次の図は、お客様AとBの料理を作り終えるまでの時間を比べたものです。
+シェフが1人なら、Aの料理がそろうのは25分後、Bの料理は50分後です。
+3人なら、Aの料理は15分後、Bの料理は30分後にそろいます。
 
 <div class="figure">
 
@@ -132,7 +134,7 @@ public class SingleThreadExample {
 
 これをマルチスレッドで書き換えると、次のようになります。
 
-<span class="listing-number">**サンプルコード15-2**</span>
+<span class="listing-number">**サンプルコード15-2**　MultiThreadExample.java（1〜24、50行目）</span>
 
 ```java
 public class MultiThreadExample {
@@ -158,11 +160,11 @@ public class MultiThreadExample {
         // 合計: 約5秒（もっとも時間のかかる卵の時間）で完了
     }
     
-    // makeCoffee、makeToast、boilEgg、sleepメソッドは同じ
+    // makeCoffee、makeToast、boilEgg、sleepメソッドはサンプルコード15-1と同じ
 }
 ```
 
-実行結果：
+次は実行結果の一例です。
 
 ```
 朝食の準備を開始
@@ -192,7 +194,7 @@ public class MultiThreadExample {
 
 現代のコンピューターは、複数のコアを持つCPU（マルチコアプロセッサー）を搭載するのが一般的です。
 時間のかかる処理を複数のスレッドに分割すれば、複数のコアで同時に実行して、全体の処理時間を短縮できます。
-GUIアプリケーションでは、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスが固まるのを防げます。
+GUIアプリケーションでは、時間のかかる処理をバックグラウンドのスレッドに任せることで、ユーザーインターフェイスが固まるのを防げます（GUIでのスレッドの扱いは第18章と第19章で学びます）。
 サーバーアプリケーションでは、複数のクライアントからのリクエストを同時に処理することで、計算リソースを無駄なく使えます。
 
 ### スレッドの作成と実行
@@ -473,7 +475,7 @@ public class VolatileDemo {
 - `AtomicReference<T>`
     + 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード15-8**　AtomicCounterExample.java（6〜31、49行目）</span>
+<span class="listing-number">**サンプルコード15-8**　AtomicCounterExample.java（3〜31、49行目）</span>
 
 ```java
 public class AtomicCounterExample {
@@ -481,11 +483,11 @@ public class AtomicCounterExample {
     private final AtomicInteger counter = new AtomicInteger(0);
     
     public void performCounting() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        Thread[] threads = new Thread[10];
         
         // 10スレッドが同時に1000回ずつインクリメント
-        for (int i = 0; i < 10; i++) {
-            executor.execute(() -> {
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(() -> {
                 for (int j = 0; j < 1000; j++) {
                     // アトミックなインクリメント操作
                     int newValue = counter.incrementAndGet();
@@ -494,10 +496,13 @@ public class AtomicCounterExample {
                     }
                 }
             });
+            threads[i].start();
         }
         
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.SECONDS);
+        // すべてのスレッドが終わるのを待つ
+        for (Thread thread : threads) {
+            thread.join();
+        }
         
         IO.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる
@@ -551,11 +556,11 @@ for (int i = 0; i < 10000; i++) {
 
 ①のコードは、タスクの数だけ、つまり10,000個のスレッドを作ります。
 各スレッドは、スタック用のメモリ領域（64ビット環境の既定では1MB程度）を確保します<span class="footnote">スタックの大きさは、`java`コマンドの`-Xss`オプションで変えられます。</span>。
-10,000スレッドでは約10GBの領域を確保することになり、OSの上限に達するとスレッドを作れずに`OutOfMemoryError`が発生します。
+10,000スレッドでは最大で約10GBの領域を予約することになり、OSが許すスレッドの数やメモリの上限に達すると、スレッドを作れずに`OutOfMemoryError`が発生します。
 メモリが足りたとしても、OSはこれだけのスレッドを切り替えなければならず、CPUは実際の作業よりもスレッドの切り替えに時間を使うようになります<span class="footnote">Java 21では、OSのスレッドより軽い仮想スレッド（virtual thread）が正式な機能になりました。仮想スレッドなら、大量のタスクにそれぞれスレッドを割り当ててもメモリと切り替えの負担を抑えられます。</span>。
 
 そこで、現代のJavaプログラミングではExecutorフレームワークを使用するのが一般的です。
-これはスレッドの生成・管理を抽象化し、スレッドプールを利用してタスクを順次実行するためのしくみです。
+これはスレッドの生成・管理を抽象化し、用意しておいたスレッド（スレッドプール）にタスクを割り当てて実行するしくみです。
 
 #### ExecutorServiceとスレッドプール
 
@@ -750,7 +755,7 @@ public class ProducerConsumerExample {
 
 ##### wait()とnotify()による待ち合わせ
 
-`BlockingQueue`の内部で行っている待ち合わせは、`Object`クラスの`wait()`と`notify()`でも書けます。
+`BlockingQueue`がしているような待ち合わせは、`Object`クラスの`wait()`と`notify()`でも書けます。
 Javaの初期からある、スレッドどうしで条件を待ち合わせるための低レベルなしくみです。
 
 - `wait()`
@@ -807,7 +812,7 @@ synchronized(lock) {
 `Future`インターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
 実行中のタスクをキャンセルすることもできます。
 
-<span class="listing-number">**サンプルコード15-14**　FutureCallableExample.java（5、7〜8、15〜23、29〜60、61行目）</span>
+<span class="listing-number">**サンプルコード15-14**　FutureCallableExample.java（5、7〜8、15〜23、29〜61行目）</span>
 
 ```java
 public class FutureCallableExample {
@@ -938,9 +943,9 @@ public class CompletableFutureExample {
 主な連鎖メソッドは次のとおりです。
 
 - `thenApply()`
-    + 結果を変換（同期的）
+    + 前の処理を終えたスレッドで、続けて結果を変換
 - `thenApplyAsync()`
-    + 結果を変換（非同期的）
+    + 別のスレッド（スレッドプール）で結果を変換
 - `thenCompose()`
     + 別のCompletableFutureを返す関数を適用
 - `thenCombine()`
@@ -968,7 +973,7 @@ public class AsyncChainingExample {
         // 非同期処理を連鎖させる
         CompletableFuture<Integer> totalFuture = fetchUser("USER001")
             .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
-            .thenApply(orders -> calculateTotal(orders))  // 同期的な変換
+            .thenApply(orders -> calculateTotal(orders))  // 前の処理を終えたスレッドで続けて変換
             .exceptionally(ex -> {
                 System.err.println("Error occurred: " + ex.getMessage());
                 return 0;  // デフォルト値を返す
@@ -982,7 +987,8 @@ public class AsyncChainingExample {
 ```
 
 この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、メソッドの連鎖でつないでいます。
-各ステップは非同期に実行され、エラーハンドリングも含まれています。
+ユーザー情報と注文履歴の取得は別のスレッドで非同期に実行され、合計金額の計算は注文履歴の取得を終えたスレッドで続けて実行されます。
+途中で例外が起きたときは、`exceptionally`で0を返します。
 
 ## 実践的なパフォーマンス測定とベンチマーク
 
@@ -1067,7 +1073,8 @@ public class ParallelPerformanceExample {
 「インスタンスがまだなければ作る」という処理は、`count++`と同じく確認と更新の2段階に分かれます。
 2つのスレッドが同時に`instance == null`を確かめると、両方がインスタンスを作ってしまいます。
 全文の1つ目の方式は、`getInstance()`を`synchronized`メソッドにしてこれを防ぎます。
-ただし、インスタンスができたあとも呼び出すたびにロックを取るので、本文では省略しました。
+この方式には、インスタンスができたあとも呼び出すたびにロックを取るため遅くなるという欠点があります。
+本文ではこの方式のコードを省略したので、全文で確かめてください。
 
 <span class="listing-number">**サンプルコード15-18**　ThreadSafeSingletonExamples.java（3、18〜57、79行目）</span>
 
@@ -1203,7 +1210,7 @@ public class ParallelDataPipeline {
 第13章「例外処理」では、一時的な障害に備えるリトライと、失敗が続いたときに呼び出しを止めるサーキットブレーカーを学びました。
 サンプルコード15-20は、この2つを複数のスレッドから使える形にしたものです。
 
-<span class="listing-number">**サンプルコード15-20**　ResiliencePatterns.java（4〜7、20〜43、58〜89、127行目）</span>
+<span class="listing-number">**サンプルコード15-20**　ResiliencePatterns.java（4〜7、20〜43、58〜90、128行目）</span>
 
 ```java
 public class ResiliencePatterns {
@@ -1242,6 +1249,7 @@ public class ResiliencePatterns {
             if (currentState == State.OPEN) {
                 if (System.currentTimeMillis() - lastFailureTime.get() > timeout) {
                     state.set(State.HALF_OPEN);
+                    currentState = State.HALF_OPEN;
                     IO.println("Circuit breaker: HALF_OPEN");
                 } else {
                     throw new RuntimeException("Circuit breaker is OPEN");
@@ -1252,9 +1260,9 @@ public class ResiliencePatterns {
                 T result = task.call();
                 if (currentState == State.HALF_OPEN) {
                     state.set(State.CLOSED);
-                    failureCount.set(0);
                     IO.println("Circuit breaker: CLOSED");
                 }
+                failureCount.set(0); // 成功したら、連続した失敗の回数を0に戻す
                 return result;
             } catch (Exception e) {
                 failureCount.incrementAndGet();
@@ -1273,13 +1281,16 @@ public class ResiliencePatterns {
 ```
 
 `RetryExecutor`は、タスクを`CompletableFuture.supplyAsync`で別のスレッドに任せます。
-タスクが例外をスローすると、`retryDelay`ミリ秒だけ待ってから回数を1つ増やして自分自身を呼び出し、`maxRetries`回まで試します。
+タスクが例外をスローすると、`retryDelay`ミリ秒だけ待ってから回数を1つ増やして自分自身を呼び出し、最大で`maxRetries`回までやり直します。
 それでも失敗したら、例外を`CompletionException`に包んでスローし、呼び出した側の`get()`に失敗を伝えます。
+なお、この例では簡単にするため、やり直しを待つあいだ（`sleep`と`join`）もスレッドを占有したままにしています。
+同時に多くのタスクをやり直すとプールのスレッドが足りなくなるので、実際のシステムでは待つあいだスレッドを手放す書き方にします。
 待つ時間を試すたびに2倍にする指数バックオフにすれば、障害が続いているときに相手へ送る要求を減らせます。
 
-`CircuitBreaker`は、状態を`AtomicReference`、失敗の回数を`AtomicInteger`、最後に失敗した時刻を`AtomicLong`で持ちます。
+`CircuitBreaker`は、状態を`AtomicReference`、連続した失敗の回数を`AtomicInteger`、最後に失敗した時刻を`AtomicLong`で持ちます。
 複数のスレッドから`execute`を呼ばれても、それぞれの値の読み書きが壊れないようにするためです。
-失敗の回数が`failureThreshold`に達するとOPENになり、`timeout`ミリ秒が過ぎるまではタスクを呼ばずにすぐ例外をスローします。
+タスクが成功すると、失敗の回数を0に戻します。
+連続した失敗の回数が`failureThreshold`に達するとOPENになり、`timeout`ミリ秒が過ぎるまではタスクを呼ばずにすぐ例外をスローします。
 時間が過ぎるとHALF_OPENにして1回だけ試し、成功すればCLOSEDに戻します。
 ただし、状態の確認と変更は1つのアトミックな操作になっていないので、HALF_OPENのときに複数のスレッドが同時に試すことはあります。
 これを防ぐには、`compareAndSet`で状態を変えられたスレッドだけが試すようにします。
@@ -1337,7 +1348,7 @@ public class ResiliencePatterns {
 ### 課題構成
 
 1. 基礎課題（`basic/`）
-    + スレッドを作って待つ（Threadの継承とRunnable、開始と待機）
+    + スレッドを作って待つ（Threadを継承する書き方とRunnableの比較、開始と待機）
     + データ競合と同期（synchronized、AtomicInteger、volatile）
     + スレッドプールと非同期の処理（ExecutorService、Future、ConcurrentHashMap、CompletableFuture）
     + 生産者と消費者（BlockingQueue、`Semaphore`による同時に使える数の制限）

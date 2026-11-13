@@ -1,18 +1,15 @@
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class AtomicCounterExample {
     // スレッドセーフなカウンター
     private final AtomicInteger counter = new AtomicInteger(0);
     
     public void performCounting() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        Thread[] threads = new Thread[10];
         
         // 10スレッドが同時に1000回ずつインクリメント
-        for (int i = 0; i < 10; i++) {
-            executor.execute(() -> {
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(() -> {
                 for (int j = 0; j < 1000; j++) {
                     // アトミックなインクリメント操作
                     int newValue = counter.incrementAndGet();
@@ -21,10 +18,13 @@ public class AtomicCounterExample {
                     }
                 }
             });
+            threads[i].start();
         }
         
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.SECONDS);
+        // すべてのスレッドが終わるのを待つ
+        for (Thread thread : threads) {
+            thread.join();
+        }
         
         IO.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる

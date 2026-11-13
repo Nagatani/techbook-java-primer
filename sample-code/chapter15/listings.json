@@ -9,6 +9,14 @@
       { "file": "SingleThreadExample.java", "from": 42, "to": 43 }
     ]
   },
+  "15-2": {
+    "dir": "15-02",
+    "main": "MultiThreadExample",
+    "excerpt": [
+      { "file": "MultiThreadExample.java", "from": 1, "to": 24 },
+      { "file": "MultiThreadExample.java", "from": 50, "to": 50, "sep": "none" }
+    ]
+  },
   "15-3": {
     "dir": "15-03",
     "main": "Main",
@@ -48,7 +56,7 @@
     "dir": "15-08",
     "main": null,
     "excerpt": [
-      { "file": "AtomicCounterExample.java", "from": 6, "to": 31 },
+      { "file": "AtomicCounterExample.java", "from": 3, "to": 31 },
       { "file": "AtomicCounterExample.java", "from": 49, "to": 49 }
     ]
   },
@@ -76,8 +84,7 @@
       { "file": "FutureCallableExample.java", "from": 5, "to": 5 },
       { "file": "FutureCallableExample.java", "from": 7, "to": 8 },
       { "file": "FutureCallableExample.java", "from": 15, "to": 23 },
-      { "file": "FutureCallableExample.java", "from": 29, "to": 60 },
-      { "file": "FutureCallableExample.java", "from": 61, "to": 61 }
+      { "file": "FutureCallableExample.java", "from": 29, "to": 61 }
     ]
   },
   "15-15": {
@@ -141,8 +148,8 @@
     "excerpt": [
       { "file": "ResiliencePatterns.java", "from": 4, "to": 7 },
       { "file": "ResiliencePatterns.java", "from": 20, "to": 43 },
-      { "file": "ResiliencePatterns.java", "from": 58, "to": 89 },
-      { "file": "ResiliencePatterns.java", "from": 127, "to": 127 }
+      { "file": "ResiliencePatterns.java", "from": 58, "to": 90 },
+      { "file": "ResiliencePatterns.java", "from": 128, "to": 128 }
     ]
   }
 }
