@@ -454,7 +454,7 @@ class ParameterizedTestExample {
                 org.junit.jupiter.params.provider.Arguments.of("2023-02-30"), // 無効な日
                 org.junit.jupiter.params.provider.Arguments.of("2023-04-31"), // 4月に31日
                 org.junit.jupiter.params.provider.Arguments.of("invalid-date"), // 無効なフォーマット
-                org.junit.jupiter.params.provider.Arguments.of("2023/02/15"), // 無効なセパレータ
+                org.junit.jupiter.params.provider.Arguments.of("2023/02/15"), // 無効なセパレーター
                 org.junit.jupiter.params.provider.Arguments.of("23-02-15")    // 無効な年フォーマット
             );
         }

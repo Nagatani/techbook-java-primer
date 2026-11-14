@@ -129,6 +129,20 @@ rules:
     pattern: /マッパ(?!ー|リング|ビリティ|ブル)/
   - expected: ブローカー
     pattern: /ブローカ(?!ー)/
+  - expected: フォーマッター
+    pattern: /フォーマッタ(?!ー|リング|ビリティ|ブル)/
+  - expected: マスター
+    pattern: /マスタ(?!ー|リング|ビリティ|ブル)/
+  - expected: プロファイラー
+    pattern: /プロファイラ(?!ー|リング|ビリティ|ブル)/
+  - expected: コンビネーター
+    pattern: /コンビネータ(?!ー)/
+  - expected: セパレーター
+    pattern: /セパレータ(?!ー)/
+  - expected: コントローラー
+    pattern: /コントローラ(?!ー)/
+  - expected: アキュムレーター
+    pattern: /アキュムレータ(?!ー)/
   - expected: ファクトリ
     pattern: ファクトリー
   - expected: インターフェイス

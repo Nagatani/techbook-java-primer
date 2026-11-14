@@ -60,7 +60,7 @@ java com.example.streams.ParallelStreamOptimization
 - **推定サイズ**: 分割判断と並列度の決定
 
 ### 2. カスタムコレクターの設計
-- **Supplier**: アキュムレータの初期化
+- **Supplier**: アキュムレーターの初期化
 - **Accumulator**: 要素の蓄積処理
 - **Combiner**: 並列結果の結合
 - **Finisher**: 最終結果の変換

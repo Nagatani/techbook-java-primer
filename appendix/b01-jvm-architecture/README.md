@@ -329,9 +329,9 @@ if (Math.random() > 0.5) {
 ```
 
 #### プロファイリングツールの活用
-- **JProfiler**: 包括的なGUIプロファイラ
-- **async-profiler**: 軽量プロダクション対応プロファイラ
-- **JFR (Java Flight Recorder)**: JVM組み込み低オーバーヘッドプロファイラ
+- **JProfiler**: 包括的なGUIプロファイラー
+- **async-profiler**: 軽量プロダクション対応プロファイラー
+- **JFR (Java Flight Recorder)**: JVM組み込み低オーバーヘッドプロファイラー
 - **VisualVM**: 無料のJVM監視ツール
 
 ### 4. トラブルシューティング指針

@@ -891,9 +891,9 @@ public class LazyEvaluation {
 
 ## 8. 実践的応用例
 
-### 8.1 パーサーコンビネータ
+### 8.1 パーサーコンビネーター
 
-関数型プログラミングの応用例として、パーサーコンビネータを実装します：
+関数型プログラミングの応用例として、パーサーコンビネーターを実装します：
 
 ```java
 public class ParserCombinator {
@@ -931,7 +931,7 @@ public class ParserCombinator {
         };
     }
     
-    // パーサーコンビネータ
+    // パーサーコンビネーター
     public static <T> Parser<T> or(Parser<T> p1, Parser<T> p2) {
         return input -> {
             Optional<Pair<T, String>> result = p1.parse(input);

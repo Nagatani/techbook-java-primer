@@ -856,7 +856,7 @@ com.example.myapp/
 ├── model/          // ドメインモデル（エンティティ）
 ├── service/        // ビジネスロジック（処理の中核となる業務ルール）
 ├── repository/     // データアクセス層
-├── controller/     // UIコントローラ
+├── controller/     // UIコントローラー
 ├── util/          // ユーティリティクラス
 └── exception/     // カスタム例外
 ```

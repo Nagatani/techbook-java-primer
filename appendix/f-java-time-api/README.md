@@ -137,11 +137,11 @@ public class DateTimeFormatterExample {
     public static void main(String[] args) {
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 25, 14, 30, 45);
         
-        // 1. 定義済みフォーマッタ
+        // 1. 定義済みフォーマッター
         IO.println("ISO_LOCAL_DATE_TIME: " + 
             dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         
-        // 2. ロケール対応フォーマッタ
+        // 2. ロケール対応フォーマッター
         // 時刻のFULL形式はタイムゾーン名を含み、LocalDateTimeには使えないため、時刻はMEDIUMにする
         DateTimeFormatter japaneseFormatter = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM)
@@ -464,10 +464,10 @@ public class LegacyConversionExample {
     + タイムスタンプは`Instant`
 2. 不変性の活用
     + `LocalDate`や`ZonedDateTime`などの日付時刻のクラスは不変なので、複数スレッドから同時アクセスしても値が変更される心配がなく、防御的コピーも不要である
-    + フォーマッタを組み立てる`DateTimeFormatterBuilder`は例外で、可変であり1つのスレッドで使う
+    + フォーマッターを組み立てる`DateTimeFormatterBuilder`は例外で、可変であり1つのスレッドで使う
 3. 明示的なタイムゾーン指定
     + グローバルアプリケーションでは、`ZoneId.of("Asia/Tokyo")`のように地域名でタイムゾーンを明示し、システムデフォルトに依存しない実装を徹底する
-4. パフォーマンスを考慮したフォーマッタの再利用
+4. パフォーマンスを考慮したフォーマッターの再利用
     + `DateTimeFormatter`は不変でスレッドセーフなので、静的フィールドとして再利用することでインスタンス生成のオーバーヘッドを削減できる
 5. PeriodとDurationの使い分け
     + 日付の差分にはPeriod（年月日単位）、時刻の差分にはDuration（時分秒単位）を使う

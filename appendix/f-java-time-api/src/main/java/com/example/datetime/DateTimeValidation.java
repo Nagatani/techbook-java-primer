@@ -35,7 +35,7 @@ public class DateTimeValidation {
             "2024-12-00"   // 日が0
         };
         
-        // ISO_LOCAL_DATEなどの定義済みフォーマッタは、STRICTで日付を検証する
+        // ISO_LOCAL_DATEなどの定義済みフォーマッターは、STRICTで日付を検証する
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         for (String dateStr : testDates) {
@@ -57,11 +57,11 @@ public class DateTimeValidation {
         // ofPatternの既定（SMART）: 月末を超えた日は、その月の末日に丸められる
         DateTimeFormatter smartFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
         
-        // 厳密なフォーマッタ（日付の妥当性を厳格にチェック）
+        // 厳密なフォーマッター（日付の妥当性を厳格にチェック）
         DateTimeFormatter strictFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd")
             .withResolverStyle(ResolverStyle.STRICT);
         
-        // 寛容なフォーマッタ（ある程度の補正を許可）
+        // 寛容なフォーマッター（ある程度の補正を許可）
         DateTimeFormatter lenientFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             .withResolverStyle(ResolverStyle.LENIENT);
         

@@ -9,11 +9,11 @@ public class DateTimeFormatterExample {
     public static void main(String[] args) {
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 25, 14, 30, 45);
         
-        // 1. 定義済みフォーマッタ
+        // 1. 定義済みフォーマッター
         IO.println("ISO_LOCAL_DATE_TIME: " + 
             dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         
-        // 2. ロケール対応フォーマッタ
+        // 2. ロケール対応フォーマッター
         // 時刻のFULL形式はタイムゾーン名を含み、LocalDateTimeには使えないため、時刻はMEDIUMにする
         DateTimeFormatter japaneseFormatter = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM)

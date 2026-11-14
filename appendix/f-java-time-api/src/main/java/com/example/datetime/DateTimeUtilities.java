@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DateTimeUtilities {
-    // よく使うフォーマッタ
+    // よく使うフォーマッター
     public static final DateTimeFormatter ISO_DATE_TIME_MILLIS = 
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
     public static final DateTimeFormatter JAPANESE_DATE = 
