@@ -1169,5 +1169,15 @@ public class BatchProcessingExample {
 
 ## 演習
 
-付録Eの演習課題は準備中です。
-本付録のサンプルコードを、H2で動かして確かめてください。
+付録Eの演習課題は[exercises/](exercises/)にあります。
+どの課題もH2のメモリ上のデータベースで動かせます。
+H2のJARの入手方法とクラスパスの指定は、[演習のREADME](exercises/README.md)にまとめています。
+
+- [基礎課題](exercises/basic/)
+    - 接続とテーブルの作成、ToDoリストのCRUD、図書の検索とSQL Injection、ResultSetからオブジェクトへ、座席のまとめ予約とトランザクション
+- [発展課題](exercises/advanced/)
+    - 予定表のDAOとjava.time、1年分の歩数のバッチ処理
+- [チャレンジ課題](exercises/challenge/)
+    - 図書の貸出管理（結合、トランザクション、自分の例外クラス、延滞の計算）
+- [解答例](exercises/solutions/)
+    - 基礎課題の解答例と、動作確認用のプログラム`SolutionCheck.java`

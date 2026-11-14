@@ -41,6 +41,7 @@ const LIBS = [
   'com.google.code.gson:gson:2.11.0',
   'org.apache.commons:commons-lang3:3.18.0',
   'commons-cli:commons-cli:1.9.0',
+  'com.h2database:h2:2.5.252', // 付録Eの演習（JDBC）
 ];
 
 // 検査しないまとまり（パス → 理由）
