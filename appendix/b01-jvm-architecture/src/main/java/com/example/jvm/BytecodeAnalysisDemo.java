@@ -3,7 +3,6 @@ package com.example.jvm;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * バイトコード分析とJITコンパイレーションのデモンストレーション
@@ -55,11 +54,11 @@ public class BytecodeAnalysisDemo {
             return sum;
         }
         
-        // オブジェクト操作（new, dup, invokespecial, invokevirtual）
+        // オブジェクト操作（new, dup, invokespecial, invokeinterface）
         public List<String> objectOperations() {
             List<String> list = new ArrayList<>(); // new, dup, invokespecial
-            list.add("Hello");                     // invokevirtual
-            list.add("World");                     // invokevirtual
+            list.add("Hello");                     // invokeinterface（List型で受けているため）
+            list.add("World");                     // invokeinterface
             
             return list;
         }
@@ -185,10 +184,14 @@ public class BytecodeAnalysisDemo {
     
     /**
      * JITコンパイレーションのデモンストレーション
+     * 測定値は環境やJVMの状態で大きく変わる。正確に測るにはJMHを使う
      */
     public static class JITCompilationDemo {
         private static final int WARMUP_ITERATIONS = 20000;
         private static final int MEASUREMENT_ITERATIONS = 100000;
+        
+        // 測定結果を捨てずに使うための変数（JITが計算ごと消さないようにする）
+        private static long blackhole = 0;
         
         /**
          * JITコンパイレーションの効果を測定
@@ -197,10 +200,9 @@ public class BytecodeAnalysisDemo {
             IO.println("=== JIT Compilation Effect Demonstration ===");
             IO.println("Note: Run with -XX:+PrintCompilation to see JIT compilation events");
             
-            // ホットメソッドの準備
             SimpleCalculation calc = new SimpleCalculation();
             
-            // 1回目: インタープリター実行
+            // 1回目: まだJITコンパイルされていない状態（主にインタープリター実行）
             long coldTime = measurePerformance(() -> {
                 int sum = 0;
                 for (int i = 0; i < 1000; i++) {
@@ -209,10 +211,10 @@ public class BytecodeAnalysisDemo {
                 return sum;
             });
             
-            // ウォームアップ: JITコンパイルを促進
+            // ウォームアップ: 繰り返し呼んでJITコンパイルを促す
             IO.println("Warming up... (triggering JIT compilation)");
             for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-                calc.complexCalculation(i % 100);
+                blackhole += calc.complexCalculation(i % 100);
             }
             
             // 2回目: JITコンパイル後の実行
@@ -226,7 +228,7 @@ public class BytecodeAnalysisDemo {
             
             IO.println("Cold execution time: %d μs".formatted(coldTime / 1000));
             IO.println("Hot execution time:  %d μs".formatted(hotTime / 1000));
-            IO.println("Speedup: %.2fx".formatted((double) coldTime / hotTime));
+            IO.println("Speedup: " + ratio(coldTime, hotTime));
             IO.println();
         }
         
@@ -235,11 +237,21 @@ public class BytecodeAnalysisDemo {
             
             // 複数回実行して平均を取る
             for (int i = 0; i < 10; i++) {
-                task.get();
+                blackhole += task.get();
             }
             
             long end = System.nanoTime();
             return (end - start) / 10; // 平均時間
+        }
+        
+        /**
+         * 2つの時間の比を文字列にする（0で割らないようにする）
+         */
+        static String ratio(long slower, long faster) {
+            if (slower <= 0 || faster <= 0) {
+                return "n/a (too fast to measure)";
+            }
+            return "%.2fx".formatted((double) slower / faster);
         }
         
         @FunctionalInterface
@@ -254,7 +266,7 @@ public class BytecodeAnalysisDemo {
             public int complexCalculation(int n) {
                 int result = n;
                 
-                // 複数の計算を含む（インライン化やループ最適化の対象）
+                // ループと算術演算（ループ最適化の対象）
                 for (int i = 0; i < 10; i++) {
                     result = (result * 17 + 23) % 97;
                     result = result > 50 ? result - 25 : result + 25;
@@ -263,7 +275,7 @@ public class BytecodeAnalysisDemo {
                 return result;
             }
             
-            // 条件分岐を含むメソッド（分岐予測の対象）
+            // 条件分岐を含むメソッド
             public int branchingCalculation(int n) {
                 if (n % 2 == 0) {
                     return n * n;
@@ -278,66 +290,74 @@ public class BytecodeAnalysisDemo {
         }
         
         /**
-         * 分岐予測とプロファイルガイド最適化のデモ
+         * 分岐の予測しやすさによる違いのデモ
+         * 予測しにくい分岐では、CPUの分岐予測が外れて処理が遅くなることがある
+         * （JITは分岐の偏りのプロファイルも使ってコードを並べる）
          */
         public static void demonstrateBranchPrediction() {
             IO.println("=== Branch Prediction and Profile-Guided Optimization ===");
             
             SimpleCalculation calc = new SimpleCalculation();
             
-            // 予測可能な分岐パターン（偶数が90%）
-            IO.println("Testing predictable branching (90% even numbers)...");
-            long predictableTime = measureBranchPerformance(calc, true);
+            // 入力は先に作っておき、乱数生成の時間を測定に含めない
+            int[] predictableInputs = new int[MEASUREMENT_ITERATIONS];
+            int[] randomInputs = new int[MEASUREMENT_ITERATIONS];
+            Random random = new Random(42);
+            for (int i = 0; i < MEASUREMENT_ITERATIONS; i++) {
+                predictableInputs[i] = (i % 10 == 0) ? 1 : 2; // 90%が偶数
+                randomInputs[i] = random.nextInt(100);
+            }
             
-            // 予測不可能な分岐パターン（ランダム）
+            // 両方の入力でウォームアップする
+            for (int round = 0; round < 5; round++) {
+                runBranches(calc, predictableInputs);
+                runBranches(calc, randomInputs);
+            }
+            
+            IO.println("Testing predictable branching (90% even numbers)...");
+            long predictableTime = measureBranches(calc, predictableInputs);
+            
             IO.println("Testing unpredictable branching (random)...");
-            long unpredictableTime = measureBranchPerformance(calc, false);
+            long unpredictableTime = measureBranches(calc, randomInputs);
             
             IO.println("Predictable branching time:   %d μs".formatted(predictableTime / 1000));
             IO.println("Unpredictable branching time: %d μs".formatted(unpredictableTime / 1000));
-            IO.println("Predictable is %.2fx faster".formatted(
-                            (double) unpredictableTime / predictableTime));
+            IO.println("Unpredictable / predictable: " + ratio(unpredictableTime, predictableTime));
             IO.println();
         }
         
-        private static long measureBranchPerformance(SimpleCalculation calc, boolean predictable) {
-            // ウォームアップ
-            for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-                int input = predictable ? 
-                           (i % 10 == 0 ? 1 : 2) :  // 90% even
-                           ThreadLocalRandom.current().nextInt(100);
-                calc.branchingCalculation(input);
+        private static long runBranches(SimpleCalculation calc, int[] inputs) {
+            long sum = 0;
+            for (int input : inputs) {
+                sum += calc.branchingCalculation(input);
             }
-            
-            // 測定
+            blackhole += sum;
+            return sum;
+        }
+        
+        private static long measureBranches(SimpleCalculation calc, int[] inputs) {
             long start = System.nanoTime();
-            
-            for (int i = 0; i < MEASUREMENT_ITERATIONS; i++) {
-                int input = predictable ? 
-                           (i % 10 == 0 ? 1 : 2) :  // 90% even
-                           ThreadLocalRandom.current().nextInt(100);
-                calc.branchingCalculation(input);
+            for (int i = 0; i < 10; i++) {
+                runBranches(calc, inputs);
             }
-            
-            long end = System.nanoTime();
-            return end - start;
+            return (System.nanoTime() - start) / 10;
         }
     }
     
     /**
      * メソッドインライン化の分析
+     * 小さなメソッドの呼び出しは、JITのインライン化によって
+     * 同じ計算を直接書いた場合とほぼ同じ速さになる
      */
     public static class InliningAnalysisDemo {
-        private static final int WARMUP_ITERATIONS = 20000;
-        private static final int MEASUREMENT_ITERATIONS = 100000;
+        private static final int ITERATIONS = 1_000_000;
         
         /**
-         * インライン化されやすいメソッドの例
+         * インライン化されやすい小さなメソッドを持つクラス
          */
         static class InlineCandidate {
             private int value;
             
-            // 小さなメソッド（インライン化候補）
             public int getValue() {
                 return value;
             }
@@ -346,61 +366,7 @@ public class BytecodeAnalysisDemo {
                 this.value = value;
             }
             
-            // 単純な計算（インライン化候補）
             public int add(int x) {
-                return value + x;
-            }
-            
-            // やや複雑な計算（条件付きインライン化）
-            public int conditionalAdd(int x) {
-                if (x > 0) {
-                    return value + x;
-                } else {
-                    return value;
-                }
-            }
-        }
-        
-        /**
-         * インライン化されにくいメソッドの例
-         */
-        static class NonInlineCandidate {
-            private int value;
-            
-            // 大きなメソッド（インライン化されにくい）
-            public int largeMethod(int x) {
-                int result = value;
-                
-                // 多くの計算処理
-                for (int i = 0; i < 10; i++) {
-                    result = (result * 17 + 23) % 97;
-                    result = (result * 31 + 41) % 89;
-                    result = (result * 37 + 47) % 83;
-                    
-                    if (result > 50) {
-                        result -= 25;
-                    } else {
-                        result += 25;
-                    }
-                }
-                
-                return result + x;
-            }
-            
-            // 例外処理を含むメソッド（インライン化困難）
-            public int methodWithException(int x) {
-                try {
-                    if (x == 0) {
-                        throw new IllegalArgumentException("Zero not allowed");
-                    }
-                    return 100 / x;
-                } catch (IllegalArgumentException e) {
-                    return -1;
-                }
-            }
-            
-            // 同期メソッド（インライン化制限）
-            public synchronized int synchronizedMethod(int x) {
                 return value + x;
             }
         }
@@ -408,70 +374,57 @@ public class BytecodeAnalysisDemo {
         public static void demonstrateInlining() {
             IO.println("=== Method Inlining Analysis ===");
             
-            InlineCandidate inlinable = new InlineCandidate();
-            NonInlineCandidate nonInlinable = new NonInlineCandidate();
+            InlineCandidate candidate = new InlineCandidate();
             
-            // ウォームアップとインライン化の促進
-            for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-                inlinable.setValue(i);
-                int sum = inlinable.getValue() + inlinable.add(i) + inlinable.conditionalAdd(i);
-                
-                sum += nonInlinable.largeMethod(i % 100);
-                sum += nonInlinable.methodWithException(i % 10 + 1);
-                sum += nonInlinable.synchronizedMethod(i);
+            // 両方の書き方でウォームアップする
+            for (int round = 0; round < 10; round++) {
+                viaMethods(candidate);
+                direct();
             }
             
-            // インライン化されたメソッドのパフォーマンス測定
-            long inlineTime = measureInlinablePerformance(inlinable);
+            long methodTime = measure(() -> viaMethods(candidate));
+            long directTime = measure(InliningAnalysisDemo::direct);
             
-            // インライン化されにくいメソッドのパフォーマンス測定
-            long nonInlineTime = measureNonInlinablePerformance(nonInlinable);
-            
-            IO.println("Inlinable methods time:     %d μs".formatted(inlineTime / 1000));
-            IO.println("Non-inlinable methods time: %d μs".formatted(nonInlineTime / 1000));
-            IO.println("Inlinable is %.2fx faster".formatted(
-                            (double) nonInlineTime / inlineTime));
+            IO.println("Via small methods:  %d μs".formatted(methodTime / 1000));
+            IO.println("Direct calculation: %d μs".formatted(directTime / 1000));
+            IO.println("Methods / direct: " + JITCompilationDemo.ratio(methodTime, directTime));
+            IO.println("(After inlining, the two are usually close)");
             
             IO.println("\nTo see inlining decisions, run with:");
-            IO.println("-XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining");
+            IO.println("-XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining");
+            IO.println("To compare without inlining, run with:");
+            IO.println("-XX:CompileCommand=dontinline,*InlineCandidate.*");
             IO.println();
         }
         
-        private static long measureInlinablePerformance(InlineCandidate candidate) {
-            long start = System.nanoTime();
-            
-            int sum = 0;
-            for (int i = 0; i < MEASUREMENT_ITERATIONS; i++) {
+        // 小さなメソッドを呼んで計算する
+        private static long viaMethods(InlineCandidate candidate) {
+            long sum = 0;
+            for (int i = 0; i < ITERATIONS; i++) {
                 candidate.setValue(i);
                 sum += candidate.getValue();
                 sum += candidate.add(i);
-                sum += candidate.conditionalAdd(i % 2);
             }
-            
-            long end = System.nanoTime();
-            
-            // 結果を使用（デッドコード除去を防ぐ）
-            if (sum < 0) IO.println("Unexpected result");
-            
-            return end - start;
+            return sum;
         }
         
-        private static long measureNonInlinablePerformance(NonInlineCandidate candidate) {
-            long start = System.nanoTime();
-            
-            int sum = 0;
-            for (int i = 0; i < MEASUREMENT_ITERATIONS / 10; i++) { // 回数を減らす
-                sum += candidate.largeMethod(i);
-                sum += candidate.methodWithException(i % 10 + 1);
-                sum += candidate.synchronizedMethod(i);
+        // 同じ計算を直接書く
+        private static long direct() {
+            long sum = 0;
+            for (int i = 0; i < ITERATIONS; i++) {
+                int value = i;
+                sum += value;
+                sum += value + i;
             }
-            
-            long end = System.nanoTime();
-            
-            // 結果を使用（デッドコード除去を防ぐ）
-            if (sum < 0) IO.println("Unexpected result");
-            
-            return (end - start) * 10; // 正規化
+            return sum;
+        }
+        
+        private static long measure(java.util.function.LongSupplier task) {
+            long start = System.nanoTime();
+            for (int i = 0; i < 10; i++) {
+                JITCompilationDemo.blackhole += task.getAsLong();
+            }
+            return (System.nanoTime() - start) / 10;
         }
     }
     
@@ -549,21 +502,20 @@ public class BytecodeAnalysisDemo {
         IO.println("Key Insights:");
         IO.println("✓ Java source code compiles to platform-independent bytecode");
         IO.println("✓ JIT compiler optimizes hot methods at runtime");
-        IO.println("✓ Branch prediction significantly affects performance");
+        IO.println("✓ Unpredictable branches can cause CPU branch mispredictions");
         IO.println("✓ Method inlining eliminates call overhead");
         IO.println("✓ Understanding bytecode helps write efficient code");
         
         IO.println("\nOptimization Tips:");
         IO.println("• Keep frequently called methods small for inlining");
         IO.println("• Avoid unpredictable branching in hot paths");
-        IO.println("• Use final classes/methods when inheritance isn't needed");
         IO.println("• Profile your application to identify hot spots");
         IO.println("• Trust JIT compiler - it's very sophisticated!");
         
         IO.println("\nUseful JVM Flags for Analysis:");
         IO.println("• -XX:+PrintCompilation : Show JIT compilation events");
-        IO.println("• -XX:+PrintInlining : Show inlining decisions");
-        IO.println("• -XX:+PrintAssembly : Show generated assembly code (requires hsdis)");
-        IO.println("• -XX:CompileThreshold=1000 : Lower compilation threshold");
+        IO.println("• -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining : Show inlining decisions");
+        IO.println("• -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly : Show generated assembly code (requires hsdis)");
+        IO.println("• -XX:+PrintFlagsFinal -version : Show the default values of JIT thresholds");
     }
 }

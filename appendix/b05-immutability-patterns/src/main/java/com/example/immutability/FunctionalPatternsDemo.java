@@ -5,6 +5,9 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 関数型プログラミングでの不変性パターンのデモンストレーション
@@ -328,24 +331,15 @@ public class FunctionalPatternsDemo {
     
     /**
      * アプリケーション状態の例
+     * recordなので、equalsとhashCodeは全フィールドの値で比べる
      */
-    public static final class AppState {
-        private final List<String> todos;
-        private final boolean loading;
-        private final Optional<String> error;
-        private final Map<String, Object> metadata;
+    public record AppState(List<String> todos, boolean loading,
+                           Optional<String> error, Map<String, Object> metadata) {
         
-        public AppState(List<String> todos, boolean loading, Optional<String> error, Map<String, Object> metadata) {
-            this.todos = List.copyOf(todos);
-            this.loading = loading;
-            this.error = error;
-            this.metadata = Map.copyOf(metadata);
+        public AppState {
+            todos = List.copyOf(todos);       // 防御的コピー
+            metadata = Map.copyOf(metadata);
         }
-        
-        public List<String> getTodos() { return todos; }
-        public boolean isLoading() { return loading; }
-        public Optional<String> getError() { return error; }
-        public Map<String, Object> getMetadata() { return metadata; }
         
         public static AppState initial() {
             return new AppState(List.of(), false, Optional.empty(), Map.of());
@@ -376,75 +370,44 @@ public class FunctionalPatternsDemo {
     
     /**
      * Reduxスタイルのアクション
+     * sealedで種類を限るので、switchですべてのアクションを網羅できる
      */
-    public interface Action {}
+    public sealed interface Action
+            permits AddTodo, RemoveTodo, SetLoading, SetError, ClearError {}
     
-    public static final class AddTodo implements Action {
-        private final String text;
-        public AddTodo(String text) { this.text = text; }
-        public String getText() { return text; }
-        @Override public String toString() { return "AddTodo{" + text + "}"; }
-    }
-    
-    public static final class RemoveTodo implements Action {
-        private final int index;
-        public RemoveTodo(int index) { this.index = index; }
-        public int getIndex() { return index; }
-        @Override public String toString() { return "RemoveTodo{" + index + "}"; }
-    }
-    
-    public static final class SetLoading implements Action {
-        private final boolean loading;
-        public SetLoading(boolean loading) { this.loading = loading; }
-        public boolean isLoading() { return loading; }
-        @Override public String toString() { return "SetLoading{" + loading + "}"; }
-    }
-    
-    public static final class SetError implements Action {
-        private final String error;
-        public SetError(String error) { this.error = error; }
-        public String getError() { return error; }
-        @Override public String toString() { return "SetError{" + error + "}"; }
-    }
-    
-    public static final class ClearError implements Action {
-        @Override public String toString() { return "ClearError{}"; }
-    }
+    public record AddTodo(String text) implements Action {}
+    public record RemoveTodo(int index) implements Action {}
+    public record SetLoading(boolean loading) implements Action {}
+    public record SetError(String error) implements Action {}
+    public record ClearError() implements Action {}
     
     /**
-     * リデューサー
+     * リデューサー：今の状態とアクションから、新しい状態を作る
      */
     public static class AppReducer {
         public static AppState reduce(AppState state, Action action) {
-            if (action instanceof AddTodo) {
-                AddTodo addAction = (AddTodo) action;
-                List<String> newTodos = new ArrayList<>(state.getTodos());
-                newTodos.add(addAction.getText());
-                return state.withTodos(newTodos);
-                
-            } else if (action instanceof RemoveTodo) {
-                RemoveTodo removeAction = (RemoveTodo) action;
-                List<String> newTodos = new ArrayList<>(state.getTodos());
-                if (removeAction.getIndex() >= 0 && removeAction.getIndex() < newTodos.size()) {
-                    newTodos.remove(removeAction.getIndex());
-                }
-                return state.withTodos(newTodos);
-                
-            } else if (action instanceof SetLoading) {
-                SetLoading loadingAction = (SetLoading) action;
-                return state.withLoading(loadingAction.isLoading());
-                
-            } else if (action instanceof SetError) {
-                SetError errorAction = (SetError) action;
-                return state
-                    .withError(Optional.of(errorAction.getError()))
-                    .withLoading(false);
-                
-            } else if (action instanceof ClearError) {
-                return state.withError(Optional.empty());
+            return switch (action) {
+                case AddTodo(var text) -> state.withTodos(appendTodo(state.todos(), text));
+                case RemoveTodo(var index) -> state.withTodos(removeTodoAt(state.todos(), index));
+                case SetLoading(var loading) -> state.withLoading(loading);
+                case SetError(var error) -> state.withError(Optional.of(error)).withLoading(false);
+                case ClearError() -> state.withError(Optional.empty());
+            };
+        }
+        
+        private static List<String> appendTodo(List<String> todos, String text) {
+            List<String> newTodos = new ArrayList<>(todos);
+            newTodos.add(text);
+            return newTodos;
+        }
+        
+        private static List<String> removeTodoAt(List<String> todos, int index) {
+            if (index < 0 || index >= todos.size()) {
+                return todos;  // 範囲外なら変えない
             }
-            
-            return state;
+            List<String> newTodos = new ArrayList<>(todos);
+            newTodos.remove(index);
+            return newTodos;
         }
     }
     
@@ -487,11 +450,13 @@ public class FunctionalPatternsDemo {
      */
     public static class FunctionComposition {
         
+        @SafeVarargs
         public static <T> Function<T, T> compose(Function<T, T>... functions) {
             return Arrays.stream(functions)
                 .reduce(Function.identity(), Function::andThen);
         }
         
+        @SafeVarargs
         public static <T> Function<T, T> pipe(Function<T, T>... functions) {
             return compose(functions);
         }
@@ -553,27 +518,32 @@ public class FunctionalPatternsDemo {
      * 非同期状態管理
      */
     public static class AsyncStateManager<T> {
-        private volatile State<T> currentState;
-        private final List<Consumer<T>> subscribers = new ArrayList<>();
+        // 「読み取り→更新→書き込み」を原子的に行うためにAtomicReferenceを使う
+        // （volatileだけでは、同時に更新したときに片方の更新が失われる）
+        private final AtomicReference<State<T>> currentState;
+        // 複数のスレッドから読まれるので、スレッドセーフなリストにする
+        private final List<Consumer<T>> subscribers = new CopyOnWriteArrayList<>();
         
         public AsyncStateManager(T initialState) {
-            this.currentState = State.of(initialState);
+            this.currentState = new AtomicReference<>(State.of(initialState));
         }
         
         public T getCurrentState() {
-            return currentState.getValue();
+            return currentState.get().getValue();
         }
         
         public CompletableFuture<T> updateAsync(Function<T, T> updater) {
             return CompletableFuture.supplyAsync(() -> {
-                State<T> newState = currentState.update(updater);
-                currentState = newState;
+                // updateAndGetは、途中でほかのスレッドが更新していたらupdaterをやり直す。
+                // そのためupdaterには副作用を持たせない
+                State<T> newState = currentState.updateAndGet(
+                    state -> State.of(updater.apply(state.getValue())));
                 notifySubscribers(newState.getValue());
                 return newState.getValue();
             });
         }
         
-        public synchronized void subscribe(Consumer<T> subscriber) {
+        public void subscribe(Consumer<T> subscriber) {
             subscribers.add(subscriber);
         }
         
@@ -677,37 +647,30 @@ public class FunctionalPatternsDemo {
     private static void demonstrateAsyncStateManagement() {
         IO.println("\n=== Async State Management Demo ===");
         
-        AsyncStateManager<List<String>> asyncManager = new AsyncStateManager<>(new ArrayList<>());
+        AsyncStateManager<List<String>> asyncManager = new AsyncStateManager<>(List.of());
         
-        // 非同期状態変更の監視
-        asyncManager.subscribe(state -> 
-            IO.println("Async state updated: " + state));
+        // 非同期状態変更の監視（通知の順序は実行のたびに変わるので、回数だけ数える）
+        AtomicInteger notifications = new AtomicInteger();
+        asyncManager.subscribe(state -> notifications.incrementAndGet());
         
-        // 複数の非同期更新
-        CompletableFuture<List<String>> future1 = asyncManager.updateAsync(list -> {
-            List<String> newList = new ArrayList<>(list);
-            newList.add("Item 1");
-            return newList;
-        });
-        
-        CompletableFuture<List<String>> future2 = asyncManager.updateAsync(list -> {
-            List<String> newList = new ArrayList<>(list);
-            newList.add("Item 2");
-            return newList;
-        });
-        
-        CompletableFuture<List<String>> future3 = asyncManager.updateAsync(list -> {
-            List<String> newList = new ArrayList<>(list);
-            newList.add("Item 3");
-            return newList;
-        });
+        // 複数の非同期更新（どの順に実行されるかは決まっていない）
+        List<CompletableFuture<List<String>>> futures = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            String item = "Item " + i;
+            futures.add(asyncManager.updateAsync(list -> {
+                List<String> newList = new ArrayList<>(list);
+                newList.add(item);
+                return List.copyOf(newList);
+            }));
+        }
         
         // すべての更新の完了を待つ
-        CompletableFuture.allOf(future1, future2, future3)
-            .thenRun(() -> {
-                IO.println("All async updates completed");
-                IO.println("Final state: " + asyncManager.getCurrentState());
-            })
-            .join();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join();
+        
+        List<String> finalState = new ArrayList<>(asyncManager.getCurrentState());
+        Collections.sort(finalState); // 追加された順は実行ごとに変わるので並べ替えて表示する
+        IO.println("All async updates completed");
+        IO.println("Notifications: " + notifications.get());
+        IO.println("Final state (sorted): " + finalState);
     }
 }

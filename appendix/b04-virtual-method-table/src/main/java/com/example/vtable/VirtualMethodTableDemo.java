@@ -1,7 +1,6 @@
 package com.example.vtable;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 仮想メソッドテーブル（vtable）と動的ディスパッチのデモンストレーション
@@ -185,6 +184,16 @@ public class VirtualMethodTableDemo {
                 return entries.size();
             }
             
+            // メソッド名からインデックスを探す（見つからなければ-1）
+            public int indexOf(String methodName) {
+                for (VTableEntry entry : entries) {
+                    if (entry.methodName.equals(methodName)) {
+                        return entry.index;
+                    }
+                }
+                return -1;
+            }
+            
             public void printVTable() {
                 IO.println("=== " + ownerClass.getSimpleName() + " vtable ===");
                 for (VTableEntry entry : entries) {
@@ -250,8 +259,10 @@ public class VirtualMethodTableDemo {
             VTableSimulator.VTable vtable = VTableSimulator.buildVTable(actualType);
             IO.println("Step 2: Retrieved vtable for " + actualType.getSimpleName());
             
-            // 3. メソッドのインデックスを取得（簡略化）
-            int methodIndex = findMethodIndex(methodName);
+            // 3. メソッドのインデックスを取得
+            //    （実際のJVMでは、呼び出し箇所を初めて実行するときに一度だけ決まる。
+            //     オーバーライドしたメソッドは親クラスと同じインデックスを使う）
+            int methodIndex = vtable.indexOf(methodName);
             IO.println("Step 3: Method index = " + methodIndex);
             
             // 4. vtableからメソッドを取得
@@ -270,17 +281,6 @@ public class VirtualMethodTableDemo {
             IO.println();
         }
         
-        private static int findMethodIndex(String methodName) {
-            // 簡略化したインデックス計算
-            switch (methodName) {
-                case "area": return 5;
-                case "perimeter": return 6;
-                case "getX": return 4;
-                case "getY": return 5;
-                default: return -1;
-            }
-        }
-        
         private static double callMethod(Shape shape, String methodName) {
             switch (methodName) {
                 case "area": return shape.area();
@@ -293,217 +293,181 @@ public class VirtualMethodTableDemo {
     }
     
     /**
-     * 呼び出し頻度によるJVM最適化のデモンストレーション
+     * 時間の比を文字列にする（0で割らないようにする）
+     */
+    static String ratio(long a, long b) {
+        if (a <= 0 || b <= 0) {
+            return "n/a (too fast to measure)";
+        }
+        return "%.2fx".formatted((double) a / b);
+    }
+    
+    // 測定結果を捨てずに使うための変数（JITが計算ごと消さないようにする）
+    static double blackhole = 0;
+    
+    /**
+     * 呼び出し箇所に現れる型の数による違いのデモンストレーション
+     * 測定値は環境で大きく変わる。正確に測るにはJMHを使う
      */
     public static class OptimizationDemo {
+        private static final int SHAPES = 120;
+        private static final int REPEAT = 10_000;
         
-        /**
-         * モノモーフィック呼び出し（1つの型のみ）
-         */
-        public static void monomorphicCalls() {
-            IO.println("=== Monomorphic Calls (Single Type) ===");
-            IO.println("Only Circle objects - JVM can inline and optimize");
-            
-            List<Circle> circles = Arrays.asList(
-                new Circle(0, 0, 5),
-                new Circle(1, 1, 3),
-                new Circle(2, 2, 7)
-            );
-            
-            long startTime = System.nanoTime();
-            double totalArea = 0;
-            
-            // 同一型のみの呼び出し
-            for (int i = 0; i < 10000; i++) {
-                for (Circle circle : circles) {
-                    totalArea += circle.area(); // 直接呼び出し・インライン化可能
-                }
-            }
-            
-            long endTime = System.nanoTime();
-            
-            IO.println("Total area: " + String.format("%.2f", totalArea));
-            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            IO.println("Optimization: Direct call, likely inlined");
-            IO.println();
-        }
+        // 3つのメソッドはそれぞれ別の呼び出し箇所を持つ。
+        // JITは呼び出し箇所ごとに、現れた型を記録（プロファイル）する
         
-        /**
-         * バイモーフィック呼び出し（2つの型）
-         */
-        public static void bimorphicCalls() {
-            IO.println("=== Bimorphic Calls (Two Types) ===");
-            IO.println("Circle and Rectangle - JVM can still optimize with branch prediction");
-            
-            List<Shape> shapes = Arrays.asList(
-                new Circle(0, 0, 5),
-                new Rectangle(1, 1, 4, 6),
-                new Circle(2, 2, 3),
-                new Rectangle(3, 3, 5, 5)
-            );
-            
-            long startTime = System.nanoTime();
-            double totalArea = 0;
-            
-            // 2つの型の呼び出し
-            for (int i = 0; i < 10000; i++) {
+        // 1種類の型だけが現れる呼び出し箇所（モノモーフィック）
+        private static double sumMonomorphic(List<Shape> shapes) {
+            double total = 0;
+            for (int i = 0; i < REPEAT; i++) {
                 for (Shape shape : shapes) {
-                    totalArea += shape.area(); // vtable経由だが最適化可能
+                    total += shape.area();
                 }
             }
-            
-            long endTime = System.nanoTime();
-            
-            IO.println("Total area: " + String.format("%.2f", totalArea));
-            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            IO.println("Optimization: Conditional branch optimization");
-            IO.println();
+            return total;
         }
         
-        /**
-         * メガモーフィック呼び出し（多くの型）
-         */
-        public static void megamorphicCalls() {
-            IO.println("=== Megamorphic Calls (Many Types) ===");
-            IO.println("Circle, Rectangle, Triangle - JVM optimization is limited");
-            
-            List<Shape> shapes = createMixedShapes(100);
-            
-            long startTime = System.nanoTime();
-            double totalArea = 0;
-            
-            // 多くの型の呼び出し
-            for (int i = 0; i < 10000; i++) {
+        // 2種類の型が現れる呼び出し箇所（バイモーフィック）
+        private static double sumBimorphic(List<Shape> shapes) {
+            double total = 0;
+            for (int i = 0; i < REPEAT; i++) {
                 for (Shape shape : shapes) {
-                    totalArea += shape.area(); // vtable経由、最適化困難
+                    total += shape.area();
                 }
             }
+            return total;
+        }
+        
+        // 3種類以上の型が現れる呼び出し箇所（メガモーフィック）
+        private static double sumMegamorphic(List<Shape> shapes) {
+            double total = 0;
+            for (int i = 0; i < REPEAT; i++) {
+                for (Shape shape : shapes) {
+                    total += shape.area();
+                }
+            }
+            return total;
+        }
+        
+        public static void compareCallSites() {
+            IO.println("=== Monomorphic / Bimorphic / Megamorphic Call Sites ===");
+            IO.println("Each call site calls area() " + (SHAPES * REPEAT) + " times");
             
-            long endTime = System.nanoTime();
+            List<Shape> mono = createShapes(1);
+            List<Shape> bi = createShapes(2);
+            List<Shape> mega = createShapes(3);
             
-            IO.println("Total area: " + String.format("%.2f", totalArea));
-            IO.println("Execution time: " + (endTime - startTime) / 1_000_000 + " ms");
-            IO.println("Optimization: vtable lookup, limited optimization");
+            // ウォームアップ（各呼び出し箇所をJITコンパイルさせる）
+            for (int round = 0; round < 5; round++) {
+                blackhole += sumMonomorphic(mono);
+                blackhole += sumBimorphic(bi);
+                blackhole += sumMegamorphic(mega);
+            }
+            
+            long monoTime = measure(() -> sumMonomorphic(mono));
+            long biTime = measure(() -> sumBimorphic(bi));
+            long megaTime = measure(() -> sumMegamorphic(mega));
+            
+            IO.println("Monomorphic (Circle only):            %d μs".formatted(monoTime / 1000));
+            IO.println("Bimorphic (Circle, Rectangle):        %d μs".formatted(biTime / 1000));
+            IO.println("Megamorphic (Circle, Rectangle, Triangle): %d μs".formatted(megaTime / 1000));
+            IO.println("Megamorphic / monomorphic: " + ratio(megaTime, monoTime));
+            IO.println("Monomorphic and bimorphic call sites can be inlined with a type check;");
+            IO.println("megamorphic call sites usually go through the vtable.");
             IO.println();
         }
         
-        private static List<Shape> createMixedShapes(int count) {
+        private static long measure(java.util.function.DoubleSupplier task) {
+            long start = System.nanoTime();
+            for (int i = 0; i < 5; i++) {
+                blackhole += task.getAsDouble();
+            }
+            return (System.nanoTime() - start) / 5;
+        }
+        
+        // 指定した種類数の図形を、同じ数ずつ交互に並べる
+        private static List<Shape> createShapes(int kinds) {
             List<Shape> shapes = new ArrayList<>();
-            Random random = ThreadLocalRandom.current();
-            
-            for (int i = 0; i < count; i++) {
-                int type = random.nextInt(3);
-                double x = random.nextDouble() * 10;
-                double y = random.nextDouble() * 10;
-                
-                switch (type) {
-                    case 0:
-                        shapes.add(new Circle(x, y, 1 + random.nextDouble() * 5));
-                        break;
-                    case 1:
-                        shapes.add(new Rectangle(x, y, 
-                                                1 + random.nextDouble() * 5, 
-                                                1 + random.nextDouble() * 5));
-                        break;
-                    case 2:
-                        shapes.add(new Triangle(x, y, 
-                                               1 + random.nextDouble() * 5, 
-                                               1 + random.nextDouble() * 5));
-                        break;
+            for (int i = 0; i < SHAPES; i++) {
+                double size = 1 + i % 5;
+                switch (i % kinds) {
+                    case 0 -> shapes.add(new Circle(0, 0, size));
+                    case 1 -> shapes.add(new Rectangle(0, 0, size, size + 1));
+                    default -> shapes.add(new Triangle(0, 0, size, size + 2));
                 }
             }
-            
             return shapes;
         }
     }
     
     /**
-     * final修飾子による最適化のデモンストレーション
+     * finalの有無による違いのデモンストレーション
+     * HotSpotのJITはクラス階層解析（CHA）によって、オーバーライドされていない
+     * メソッドならfinalがなくてもインライン化する。そのため、時間はふつう同程度になる
      */
-    public static class FinalOptimizationDemo {
+    public static class FinalModifierDemo {
         
         /**
-         * オーバーライド可能なクラス
+         * finalのないクラス（ただし、オーバーライドするサブクラスはない）
          */
         public static class Calculator {
             public int add(int a, int b) {
                 return a + b;
-            }
-            
-            public int multiply(int a, int b) {
-                return a * b;
             }
         }
         
         /**
          * finalクラス（継承不可）
          */
-        public static final class FastCalculator {
+        public static final class FinalCalculator {
             public int add(int a, int b) {
                 return a + b;
             }
-            
-            public int multiply(int a, int b) {
-                return a * b;
-            }
         }
         
-        /**
-         * finalメソッドを持つクラス
-         */
-        public static class PartialFinalCalculator {
-            public final int add(int a, int b) {
-                return a + b;
+        private static int sumWithCalculator(Calculator calc, int n) {
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += calc.add(i, 1);
             }
-            
-            public int multiply(int a, int b) {
-                return a * b;
-            }
+            return sum;
         }
         
-        public static void demonstrateFinalOptimization() {
-            IO.println("=== Final Modifier Optimization Demo ===");
+        private static int sumWithFinalCalculator(FinalCalculator calc, int n) {
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += calc.add(i, 1);
+            }
+            return sum;
+        }
+        
+        public static void demonstrateFinalModifier() {
+            IO.println("=== Final Modifier and Inlining ===");
             
             Calculator calc = new Calculator();
-            FastCalculator fastCalc = new FastCalculator();
-            PartialFinalCalculator partialCalc = new PartialFinalCalculator();
+            FinalCalculator finalCalc = new FinalCalculator();
+            int n = 1_000_000;
             
-            int iterations = 1_000_000;
-            
-            // 通常のクラス（仮想メソッド呼び出し）
-            long startTime = System.nanoTime();
-            int sum1 = 0;
-            for (int i = 0; i < iterations; i++) {
-                sum1 += calc.add(i, 1);
+            // ウォームアップ
+            for (int round = 0; round < 10; round++) {
+                blackhole += sumWithCalculator(calc, n);
+                blackhole += sumWithFinalCalculator(finalCalc, n);
             }
-            long normalTime = System.nanoTime() - startTime;
             
-            // finalクラス（非仮想メソッド呼び出し）
-            startTime = System.nanoTime();
-            int sum2 = 0;
-            for (int i = 0; i < iterations; i++) {
-                sum2 += fastCalc.add(i, 1);
-            }
-            long finalTime = System.nanoTime() - startTime;
+            long start = System.nanoTime();
+            int sum1 = sumWithCalculator(calc, n);
+            long normalTime = System.nanoTime() - start;
             
-            // finalメソッド
-            startTime = System.nanoTime();
-            int sum3 = 0;
-            for (int i = 0; i < iterations; i++) {
-                sum3 += partialCalc.add(i, 1);
-            }
-            long finalMethodTime = System.nanoTime() - startTime;
+            start = System.nanoTime();
+            int sum2 = sumWithFinalCalculator(finalCalc, n);
+            long finalTime = System.nanoTime() - start;
             
-            IO.println("Results (all should be equal): " + sum1 + ", " + sum2 + ", " + sum3);
-            IO.println("Normal class:      " + normalTime / 1_000_000 + " ms");
-            IO.println("Final class:       " + finalTime / 1_000_000 + " ms");
-            IO.println("Final method:      " + finalMethodTime / 1_000_000 + " ms");
-            
-            double speedup1 = (double) normalTime / finalTime;
-            double speedup2 = (double) normalTime / finalMethodTime;
-            
-            IO.println("Final class speedup:   " + String.format("%.2fx", speedup1));
-            IO.println("Final method speedup:  " + String.format("%.2fx", speedup2));
+            IO.println("Results (should be equal): " + sum1 + ", " + sum2);
+            IO.println("Non-final class: %d μs".formatted(normalTime / 1000));
+            IO.println("Final class:     %d μs".formatted(finalTime / 1000));
+            IO.println("Non-final / final: " + ratio(normalTime, finalTime));
+            IO.println("With class hierarchy analysis (CHA), the JIT inlines");
+            IO.println("non-final methods that are not overridden.");
             IO.println();
         }
     }
@@ -536,36 +500,49 @@ public class VirtualMethodTableDemo {
             }
         }
         
+        private static double sumViaClass(DrawableCircle circle, int n) {
+            double sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += circle.getArea();      // invokevirtual
+            }
+            return sum;
+        }
+        
+        private static double sumViaInterface(Drawable drawable, int n) {
+            double sum = 0;
+            for (int i = 0; i < n; i++) {
+                sum += drawable.getArea();    // invokeinterface
+            }
+            return sum;
+        }
+        
         public static void demonstrateInterfaceOverhead() {
-            IO.println("=== Interface vs Class Call Overhead ===");
+            IO.println("=== Interface vs Class Call ===");
             
             DrawableCircle circle = new DrawableCircle(5.0);
             Drawable drawable = circle;
+            int n = 1_000_000;
             
-            int iterations = 1_000_000;
-            
-            // 直接クラス呼び出し
-            long startTime = System.nanoTime();
-            double sum1 = 0;
-            for (int i = 0; i < iterations; i++) {
-                sum1 += circle.getArea();
+            // ウォームアップ
+            for (int round = 0; round < 10; round++) {
+                blackhole += sumViaClass(circle, n);
+                blackhole += sumViaInterface(drawable, n);
             }
-            long classTime = System.nanoTime() - startTime;
             
-            // インターフェイス経由呼び出し
-            startTime = System.nanoTime();
-            double sum2 = 0;
-            for (int i = 0; i < iterations; i++) {
-                sum2 += drawable.getArea();
-            }
-            long interfaceTime = System.nanoTime() - startTime;
+            long start = System.nanoTime();
+            double sum1 = sumViaClass(circle, n);
+            long classTime = System.nanoTime() - start;
             
-            IO.println("Results (should be equal): " + sum1 + ", " + sum2);
-            IO.println("Class call:       " + classTime / 1_000_000 + " ms");
-            IO.println("Interface call:   " + interfaceTime / 1_000_000 + " ms");
+            start = System.nanoTime();
+            double sum2 = sumViaInterface(drawable, n);
+            long interfaceTime = System.nanoTime() - start;
             
-            double overhead = (double) interfaceTime / classTime;
-            IO.println("Interface overhead: " + String.format("%.2fx", overhead));
+            IO.println("Results (should be equal): " + (sum1 == sum2));
+            IO.println("Class call:     %d μs".formatted(classTime / 1000));
+            IO.println("Interface call: %d μs".formatted(interfaceTime / 1000));
+            IO.println("Interface / class: " + ratio(interfaceTime, classTime));
+            IO.println("When only one implementation appears at the call site,");
+            IO.println("interface calls are inlined just like class calls.");
             IO.println();
         }
     }
@@ -613,25 +590,18 @@ public class VirtualMethodTableDemo {
         demonstrateVTableStructure();
         demonstrateDynamicDispatch();
         
-        OptimizationDemo.monomorphicCalls();
-        OptimizationDemo.bimorphicCalls();
-        OptimizationDemo.megamorphicCalls();
-        
-        FinalOptimizationDemo.demonstrateFinalOptimization();
+        OptimizationDemo.compareCallSites();
+        FinalModifierDemo.demonstrateFinalModifier();
         InterfaceVsClassDemo.demonstrateInterfaceOverhead();
         
-        IO.println("=== Performance Optimization Guidelines ===");
-        IO.println("1. Use 'final' for classes and methods when inheritance is not needed");
-        IO.println("2. Keep method implementations small to enable inlining");
-        IO.println("3. Minimize polymorphic call sites in hot paths");
-        IO.println("4. Consider type stability in performance-critical loops");
-        IO.println("5. Profile before optimizing - JVM is very good at optimization");
+        IO.println("Note: Timings vary greatly by environment. Use JMH for accurate measurements.");
         
         IO.println("\nKey Takeaways:");
-        IO.println("✓ JVM uses vtables for dynamic method dispatch");
-        IO.println("✓ Monomorphic calls are fastest (direct/inlined)");
-        IO.println("✓ Megamorphic calls require vtable lookups");
-        IO.println("✓ 'final' enables significant optimizations");
-        IO.println("✓ Interface calls have slight overhead vs class calls");
+        IO.println("✓ JVM uses vtables (and itables for interfaces) for dynamic dispatch");
+        IO.println("✓ The JIT records the receiver types seen at each call site");
+        IO.println("✓ Monomorphic and bimorphic call sites can be inlined with a type check");
+        IO.println("✓ Megamorphic call sites usually go through the vtable or itable");
+        IO.println("✓ CHA lets the JIT inline non-final methods that are not overridden");
+        IO.println("✓ Use 'final' to express design intent, not for speed");
     }
 }

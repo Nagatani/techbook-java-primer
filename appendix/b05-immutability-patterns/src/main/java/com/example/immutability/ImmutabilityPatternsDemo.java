@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 不変性の設計パターンとビルダーパターンの実装デモンストレーション
@@ -90,8 +91,9 @@ public class ImmutabilityPatternsDemo {
         
         @Override
         public String toString() {
+            // Map.copyOfのマップは順序が決まっていないので、表示のときはキーの順に並べる
             return String.format("ImmutablePerson{name='%s', birthDate=%s, nicknames=%s, attributes=%s}",
-                               name, birthDate, nicknames, attributes);
+                               name, birthDate, nicknames, new TreeMap<>(attributes));
         }
     }
     
@@ -281,7 +283,7 @@ public class ImmutabilityPatternsDemo {
      */
     public static final class ImmutablePoint {
         private static final Map<String, ImmutablePoint> POOL = new ConcurrentHashMap<>();
-        private static final int POOL_SIZE_LIMIT = 1000;
+        private static final int POOL_SIZE_LIMIT = 1000; // プールに入れる数の上限
         
         private final int x;
         private final int y;
@@ -296,13 +298,15 @@ public class ImmutabilityPatternsDemo {
             // よく使われる値は事前にキャッシュ
             if (x >= -128 && x <= 127 && y >= -128 && y <= 127) {
                 String key = x + "," + y;
-                return POOL.computeIfAbsent(key, k -> {
-                    if (POOL.size() >= POOL_SIZE_LIMIT) {
-                        // プールサイズ制限を超えた場合は新規作成
-                        return new ImmutablePoint(x, y);
-                    }
+                ImmutablePoint pooled = POOL.get(key);
+                if (pooled != null) {
+                    return pooled;
+                }
+                if (POOL.size() >= POOL_SIZE_LIMIT) {
+                    // 上限に達したらプールには入れず、新しく作るだけにする
                     return new ImmutablePoint(x, y);
-                });
+                }
+                return POOL.computeIfAbsent(key, k -> new ImmutablePoint(x, y));
             }
             
             // 範囲外の値は新規作成
@@ -400,28 +404,29 @@ public class ImmutabilityPatternsDemo {
      * 並行安全性のデモンストレーション
      */
     public static class ConcurrencySafetyDemo {
-        private volatile ImmutableOrder currentOrder;
+        // 不変オブジェクトそのものは安全に共有できるが、「今の注文」を差し替える操作は
+        // 読み取り→新しい注文の作成→書き込みの3段階になる。
+        // volatileだけでは、2つのスレッドが同時に差し替えると片方の変更が失われる。
+        // AtomicReferenceのupdateAndGetは、途中でほかのスレッドが差し替えていたらやり直す
+        private final AtomicReference<ImmutableOrder> currentOrder = new AtomicReference<>();
         
         public void updateOrder(ImmutableOrder newOrder) {
-            this.currentOrder = newOrder;
+            currentOrder.set(newOrder);
         }
         
         public ImmutableOrder getCurrentOrder() {
-            return currentOrder;
+            return currentOrder.get();
         }
         
         public ImmutableOrder addItemToCurrentOrder(OrderItem item) {
-            ImmutableOrder current = currentOrder;
-            if (current == null) {
-                throw new IllegalStateException("No current order");
-            }
-            
-            ImmutableOrder updated = current.toBuilder()
-                .addItem(item)
-                .build();
-            
-            updateOrder(updated);
-            return updated;
+            return currentOrder.updateAndGet(current -> {
+                if (current == null) {
+                    throw new IllegalStateException("No current order");
+                }
+                return current.toBuilder()
+                    .addItem(item)
+                    .build();
+            });
         }
     }
     
@@ -432,38 +437,50 @@ public class ImmutabilityPatternsDemo {
         
         public static void compareImmutableVsMutable() {
             IO.println("=== Performance Comparison: Immutable vs Mutable ===");
+            IO.println("(Timings vary greatly by environment. Use JMH for accurate measurements.)");
             
             int iterations = 10_000;
             
-            // 不変オブジェクトのテスト
-            long immutableTime = measureTime(() -> {
+            // 不変オブジェクト：moveのたびに新しいオブジェクトを作る
+            Supplier<Object> immutableTask = () -> {
                 ImmutablePoint point = ImmutablePoint.of(0, 0);
                 for (int i = 0; i < iterations; i++) {
                     point = point.move(1, 1);
                 }
                 return point;
-            });
+            };
             
-            // 可変オブジェクトのテスト
-            long mutableTime = measureTime(() -> {
+            // 可変オブジェクト：同じオブジェクトを書き換える
+            Supplier<Object> mutableTask = () -> {
                 MutablePoint point = new MutablePoint(0, 0);
                 for (int i = 0; i < iterations; i++) {
                     point.move(1, 1);
                 }
                 return point;
-            });
+            };
             
-            IO.println("Immutable operations: %d ms".formatted(immutableTime));
-            IO.println("Mutable operations:   %d ms".formatted(mutableTime));
-            IO.println("Immutable is %.2fx %s".formatted(
-                            (double) Math.max(immutableTime, mutableTime) / Math.min(immutableTime, mutableTime),
-                            immutableTime > mutableTime ? "slower" : "faster"));
+            long immutableTime = measureTime(immutableTask);
+            long mutableTime = measureTime(mutableTask);
+            
+            IO.println("Immutable operations: %d μs".formatted(immutableTime / 1000));
+            IO.println("Mutable operations:   %d μs".formatted(mutableTime / 1000));
+            if (immutableTime <= 0 || mutableTime <= 0) {
+                IO.println("Immutable / mutable: n/a (too fast to measure)");
+            } else {
+                IO.println("Immutable / mutable: %.2fx".formatted((double) immutableTime / mutableTime));
+            }
         }
         
+        // 暖機のために何回か実行してから、10回の平均を測る
         private static long measureTime(Supplier<Object> task) {
-            long start = System.currentTimeMillis();
-            task.get();
-            return System.currentTimeMillis() - start;
+            for (int i = 0; i < 20; i++) {
+                task.get();
+            }
+            long start = System.nanoTime();
+            for (int i = 0; i < 10; i++) {
+                task.get();
+            }
+            return (System.nanoTime() - start) / 10;
         }
         
         @FunctionalInterface
@@ -556,17 +573,14 @@ public class ImmutabilityPatternsDemo {
         IO.println("Updated person:  " + updatedPerson);
         IO.println("Original unchanged: " + person.getName());
         
-        // 元のコレクションを変更しても影響なし（変更は失敗するが、不変オブジェクトに影響なし）
+        // 元のコレクションを変更しても、コンストラクターでコピーしているので影響しない
         try {
-            nicknames.add("Hack"); // 元のリストを変更しようとする
+            nicknames.add("Hack"); // Arrays.asListのリストは要素を追加できない
         } catch (UnsupportedOperationException e) {
-            IO.println("Expected: Cannot modify original list");
+            IO.println("Expected: Cannot add to the list from Arrays.asList");
         }
-        try {
-            attributes.put("city", "Kyoto"); // 元のマップを変更しようとする  
-        } catch (UnsupportedOperationException e) {
-            IO.println("Expected: Cannot modify original map");
-        }
+        attributes.put("city", "Kyoto"); // 元のHashMapは変更できる
+        IO.println("Original map was changed: " + new TreeMap<>(attributes));
         
         IO.println("After external modification: " + person);
     }
@@ -579,7 +593,7 @@ public class ImmutabilityPatternsDemo {
         
         ImmutableOrder order = ImmutableOrder.builder()
             .orderId("ORD-001")
-            .orderDate(LocalDateTime.now())
+            .orderDate(LocalDateTime.of(2026, 4, 1, 10, 30)) // 実行結果が毎回同じになるよう固定する
             .addItem(item1)
             .addItem(item2)
             .status(OrderStatus.CONFIRMED)
@@ -654,19 +668,36 @@ public class ImmutabilityPatternsDemo {
         // 初期注文の作成
         ImmutableOrder initialOrder = ImmutableOrder.builder()
             .orderId("ORD-CONCURRENT")
-            .orderDate(LocalDateTime.now())
+            .orderDate(LocalDateTime.of(2026, 4, 1, 10, 30))
             .addItem(new OrderItem("P001", "Book", 1, new BigDecimal("20.00")))
             .build();
         
         demo.updateOrder(initialOrder);
         IO.println("Initial order: " + demo.getCurrentOrder());
         
-        // 複数スレッドから安全にアクセス
+        // 4つのスレッドから、それぞれ25個の品目を同時に追加する
         OrderItem newItem = new OrderItem("P002", "Pen", 3, new BigDecimal("5.00"));
-        ImmutableOrder updatedOrder = demo.addItemToCurrentOrder(newItem);
+        List<Thread> threads = new ArrayList<>();
+        for (int t = 0; t < 4; t++) {
+            Thread thread = new Thread(() -> {
+                for (int i = 0; i < 25; i++) {
+                    demo.addItemToCurrentOrder(newItem);
+                }
+            });
+            threads.add(thread);
+            thread.start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
         
+        ImmutableOrder updatedOrder = demo.getCurrentOrder();
         IO.println("Updated order: " + updatedOrder);
         IO.println("Original order unchanged: " + initialOrder.getItems().size() + " items");
-        IO.println("Updated order has: " + updatedOrder.getItems().size() + " items");
+        IO.println("Updated order has: " + updatedOrder.getItems().size() + " items (expected 101)");
     }
 }

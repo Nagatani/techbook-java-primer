@@ -28,8 +28,6 @@
 #### 命令型プログラミング（1940年代〜）
 最初のプログラミングパラダイムは、コンピュータのハードウェアアーキテクチャを直接反映した命令型プログラミングでした。
 
-<span class="listing-number">**リストAB-1**</span>
-
 ```java
 // 命令型スタイル：状態の変更を通じて計算を表現
 int sum = 0;
@@ -40,8 +38,6 @@ for (int i = 1; i <= 10; i++) {
 
 #### 構造化プログラミング（1960年代〜）
 ダイクストラの「GOTO文有害論」をきっかけに、プログラムの制御フローを構造化する動きが生まれました。
-
-<span class="listing-number">**リストAB-2**</span>
 
 ```java
 // 構造化プログラミング：制御構造の明確化
@@ -59,8 +55,6 @@ public int calculateSum(int n) {
 
 #### オブジェクト指向プログラミング（1960年代後半〜）
 Simulaに始まり、Smalltalk、C++、Javaへと発展したオブジェクト指向は、データと処理を一体化する革新的なアプローチでした。
-
-<span class="listing-number">**リストAB-3**</span>
 
 ```java
 // オブジェクト指向：データと振る舞いのカプセル化
@@ -80,8 +74,6 @@ public class Counter {
 #### 関数型プログラミング（1950年代〜、2000年代に再評価）
 数学的な関数の概念に基づく関数型プログラミングは、LISPから始まり、ML、Haskell、そして現代のマルチパラダイム言語へと発展しました。
 
-<span class="listing-number">**リストAB-4**</span>
-
 ```java
 // 関数型スタイル：副作用のない関数の組み合わせ
 IntStream.rangeClosed(1, 10)
@@ -90,7 +82,7 @@ IntStream.rangeClosed(1, 10)
 
 ### 1.3 パラダイムの統合と進化
 
-現代のプログラミング言語は、複数のパラダイムを統合したマルチパラダイム言語が主流となっています。Javaも当初は純粋なオブジェクト指向言語でしたが、Java 8以降、関数型プログラミングの要素を積極的に取り入れています。
+現代のプログラミング言語は、複数のパラダイムを統合したマルチパラダイム言語が主流となっています。Javaは当初からオブジェクト指向を中心とした言語でした（`int`などのプリミティブ型はオブジェクトではないため、純粋なオブジェクト指向言語ではありません）。Java 8以降は、関数型プログラミングの要素を積極的に取り入れています。
 
 ### 1.4 ソフトウェアクライシスとパラダイムの発展
 
@@ -98,23 +90,16 @@ IntStream.rangeClosed(1, 10)
 
 1960年代後半、ソフトウェアの規模が急速に拡大し、「ソフトウェアクライシス」と呼ばれる問題が発生しました。プロジェクトの遅延、品質の低下、保守の困難さなど、従来の開発手法では対処できない課題が山積していました。
 
-**主要な事例：**
+「ソフトウェアクライシス（ソフトウェア危機）」という言葉は、1968年にNATOが開いたソフトウェア工学の会議で広く知られるようになりました。
+よく知られた事例を挙げます。
 
-1. **IBMのOS/360プロジェクト（1960年代）**
-   - 予算：5千万ドル → 実際：5億ドル（10倍の超過）
-   - 開発期間：大幅な遅延
-   - フレデリック・ブルックスが「人月の神話」で詳述
-   - 教訓：人員を増やしても開発速度は比例しない
+1. IBMのOS/360（1960年代）
+   - 開発の遅れと、遅れを取り戻そうと人を増やしてさらに遅れた経験を、開発を率いたフレデリック・ブルックスが『人月の神話』（1975年）に書いた
+   - 教訓：遅れているプロジェクトに人を足すと、さらに遅れる（ブルックスの法則）
 
-2. **アポロ計画のソフトウェア（1960年代）**
-   - 40万行のコードに1000人以上のプログラマ
-   - 手作業でのコード管理による混乱
-   - マーガレット・ハミルトンによる「ソフトウェア工学」の提唱
-
-3. **SABRE航空予約システム（1960年代）**
-   - 史上初の大規模リアルタイムシステム
-   - 従来の手法では複雑性を管理できず
-   - 新しい開発手法の必要性を実証
+2. アポロ計画の飛行ソフトウェア（1960年代）
+   - マーガレット・ハミルトンが、MITで宇宙船に載せるソフトウェアの開発を率いた
+   - 彼女は、ソフトウェアの開発を工学として扱う「ソフトウェアエンジニアリング」という呼び方を広めた一人とされる
 
 #### パラダイムシフトによる解決
 
@@ -149,8 +134,6 @@ f: A → B
 
 これは、集合Aの各要素を集合Bの要素に対応付ける規則を表します。
 
-<span class="listing-number">**リストAB-5**</span>
-
 ```java
 // 数学的関数の実装例
 Function<Integer, Integer> square = x -> x * x;
@@ -161,20 +144,18 @@ Function<Integer, Integer> square = x -> x * x;
 
 関数型プログラミングの強力な特性の1つは、関数の合成可能性です：
 
-<span class="listing-number">**リストAB-6**</span>
-
 ```java
 // 関数の合成：(f ∘ g)(x) = f(g(x))
 Function<Integer, Integer> addOne = x -> x + 1;
 Function<Integer, Integer> multiplyByTwo = x -> x * 2;
 
-// 合成関数の作成
+// 合成関数の作成：andThenは「自分を先に、引数を後に」適用する
 Function<Integer, Integer> addOneThenMultiply = 
     addOne.andThen(multiplyByTwo);
     
-// または
+// composeは「引数を先に、自分を後に」適用する
 Function<Integer, Integer> multiplyThenAddOne = 
-    multiplyByTwo.compose(addOne);
+    addOne.compose(multiplyByTwo);
 
 // 実行
 IO.println(addOneThenMultiply.apply(3));    // (3 + 1) * 2 = 8
@@ -197,8 +178,6 @@ IO.println(multiplyThenAddOne.apply(3));    // (3 * 2) + 1 = 7
 2. **抽象化**：λx.M（xを引数とする関数）
 3. **適用**：M N（関数Mに引数Nを適用）
 
-<span class="listing-number">**リストAB-7**</span>
-
 ```java
 // ラムダ計算の基本形式をJavaで表現
 
@@ -217,8 +196,6 @@ int result = increment.apply(5); // 6
 
 カリー化は、複数引数の関数を単一引数の関数の連鎖に変換する技法です：
 
-<span class="listing-number">**リストAB-8**</span>
-
 ```java
 // 通常の2引数関数
 BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
@@ -229,6 +206,12 @@ Function<Integer, Function<Integer, Integer>> curriedAdd = a -> b -> a + b;
 // 部分適用の例
 Function<Integer, Integer> add5 = curriedAdd.apply(5);
 IO.println(add5.apply(3)); // 8
+
+// 3引数の関数型インターフェイス（標準ライブラリにはないので自分で定義する）
+@FunctionalInterface
+interface TriFunction<A, B, C, R> {
+    R apply(A a, B b, C c);
+}
 
 // 汎用的なカリー化ユーティリティ
 public class CurryingUtils {
@@ -244,13 +227,13 @@ public class CurryingUtils {
 }
 
 // 使用例
-BiFunction<Double, Double, Double> multiply = (a, b) -> a * b;
-Function<Double, Function<Double, Double>> curriedMultiply = 
+BiFunction<Integer, Integer, Integer> multiply = (a, b) -> a * b;
+Function<Integer, Function<Integer, Integer>> curriedMultiply = 
     CurryingUtils.curry(multiply);
 
-// 税率計算の部分適用
-Function<Double, Double> withTax = curriedMultiply.apply(1.1);
-IO.println(withTax.apply(100.0)); // 110.0
+// 「3倍する関数」を部分適用で作る
+Function<Integer, Integer> triple = curriedMultiply.apply(3);
+IO.println(triple.apply(100)); // 300
 ```
 
 ### 3.3 ベータ簡約
@@ -262,8 +245,6 @@ IO.println(withTax.apply(100.0)); // 110.0
 ```
 
 これは、関数適用時に引数を代入することを表します：
-
-<span class="listing-number">**リストAB-9**</span>
 
 ```java
 // ベータ簡約の例
@@ -289,8 +270,6 @@ int result2 = twice.apply(increment).apply(5); // 7
 ### 3.4 チャーチ数
 
 ラムダ計算では、自然数も関数として表現できます（チャーチ数）：
-
-<span class="listing-number">**リストAB-10**</span>
 
 ```java
 // チャーチ数の実装
@@ -360,8 +339,6 @@ IO.println(toInt(succ(two)));   // 3
 3. **合成（Composition）**：射の合成規則
 4. **恒等射（Identity）**：各対象に対する恒等関数
 
-<span class="listing-number">**リストAB-11**</span>
-
 ```java
 // Javaにおける圏の要素
 
@@ -387,8 +364,6 @@ Function<A, A> idA = Function.identity();
 
 1. **結合法則**：`(h ∘ g) ∘ f = h ∘ (g ∘ f)`
 2. **単位法則**：`id ∘ f = f` かつ `f ∘ id = f`
-
-<span class="listing-number">**リストAB-12**</span>
 
 ```java
 // 結合法則の検証
@@ -437,9 +412,9 @@ IO.println(fWithId2.apply(5)); // 6
 
 ### 5.3 JavaにおけるOptionalモナド
 
-JavaのOptionalはモナドの性質を持っています：
-
-<span class="listing-number">**リストAB-13**</span>
+JavaのOptionalはモナドの性質を持っています。
+ただし、`map`に渡した関数が`null`を返すと結果は空のOptionalになるため、`null`を返す関数を使うと、ファンクター則（6.2節）の合成則が成り立たないことがあります。
+法則が成り立つのは、関数が`null`を返さない場合です。
 
 ```java
 // Optionalモナドの実装例
@@ -484,70 +459,40 @@ IO.println(assoc1.equals(assoc2)); // true
 
 独自のモナドを実装する例：
 
-<span class="listing-number">**リストAB-14**</span>
-
 ```java
 // Resultモナド：成功/失敗を表現
-public abstract class Result<T> {
+// sealedで実装をSuccessとFailureに限るので、switchで両方を網羅できる
+public sealed interface Result<T> permits Result.Success, Result.Failure {
+    
+    record Success<T>(T value) implements Result<T> {}
+    record Failure<T>(String error) implements Result<T> {}
     
     // return (of)
-    public static <T> Result<T> of(T value) {
+    static <T> Result<T> of(T value) {
         return new Success<>(value);
     }
     
-    public static <T> Result<T> error(String message) {
+    static <T> Result<T> error(String message) {
         return new Failure<>(message);
     }
     
     // flatMap (bind)
-    public abstract <U> Result<U> flatMap(Function<T, Result<U>> f);
-    
-    // map (ファンクタとしての機能)
-    public abstract <U> Result<U> map(Function<T, U> f);
-    
-    // 実装クラス
-    private static class Success<T> extends Result<T> {
-        private final T value;
-        
-        Success(T value) {
-            this.value = value;
-        }
-        
-        @Override
-        public <U> Result<U> flatMap(Function<T, Result<U>> f) {
-            try {
-                return f.apply(value);
-            } catch (Exception e) {
-                return new Failure<>(e.getMessage());
+    default <U> Result<U> flatMap(Function<T, Result<U>> f) {
+        return switch (this) {
+            case Success<T>(var value) -> {
+                try {
+                    yield f.apply(value);
+                } catch (RuntimeException e) {
+                    yield new Failure<>(e.getMessage());
+                }
             }
-        }
-        
-        @Override
-        public <U> Result<U> map(Function<T, U> f) {
-            try {
-                return new Success<>(f.apply(value));
-            } catch (Exception e) {
-                return new Failure<>(e.getMessage());
-            }
-        }
+            case Failure<T>(var error) -> new Failure<>(error);
+        };
     }
     
-    private static class Failure<T> extends Result<T> {
-        private final String error;
-        
-        Failure(String error) {
-            this.error = error;
-        }
-        
-        @Override
-        public <U> Result<U> flatMap(Function<T, Result<U>> f) {
-            return new Failure<>(error);
-        }
-        
-        @Override
-        public <U> Result<U> map(Function<T, U> f) {
-            return new Failure<>(error);
-        }
+    // map (ファンクタとしての機能)
+    default <U> Result<U> map(Function<T, U> f) {
+        return flatMap(value -> of(f.apply(value)));
     }
 }
 
@@ -575,10 +520,10 @@ public class ResultMonadExample {
         
         // パターンマッチングで結果を処理
         switch (result) {
-            case Result.Success<Double> s -> 
-                IO.println("Result: " + s.value);
-            case Result.Failure<Double> f -> 
-                IO.println("Error: " + f.error);
+            case Result.Success<Double>(var value) -> 
+                IO.println("Result: " + value);   // Result: 4.47213595499958
+            case Result.Failure<Double>(var error) -> 
+                IO.println("Error: " + error);
         }
     }
 }
@@ -587,8 +532,6 @@ public class ResultMonadExample {
 ### 5.5 Streamモナド
 
 JavaのStreamもモナド的な性質を持っています：
-
-<span class="listing-number">**リストAB-15**</span>
 
 ```java
 // Streamモナドの例
@@ -607,7 +550,7 @@ List<Integer> result = Stream.of(1, 2, 3, 4, 5)
     .map(x -> x * 10)                   // 10倍
     .collect(Collectors.toList());
 
-IO.println(result); // [20, 40, 160]
+IO.println(result); // [20, 40, 40, 160]（2の二乗の4と、元の要素の4の両方が残る）
 
 // モナド則の活用例
 Function<String, Stream<Character>> toChars = 
@@ -643,8 +586,6 @@ asciiCodes.forEach(IO::println); // 65, 66
 2. **合成則**：`fmap(f ∘ g) = fmap(f) ∘ fmap(g)`
 
 ### 6.3 Javaにおけるファンクタの実装
-
-<span class="listing-number">**リストAB-16**</span>
 
 ```java
 // ファンクタインターフェイス
@@ -718,8 +659,6 @@ public class FunctorLawsTest {
 
 ### 6.4 二重ファンクタとトラバース
 
-<span class="listing-number">**リストAB-17**</span>
-
 ```java
 // 二重ファンクタの扱い
 public class BiFunctor {
@@ -755,7 +694,12 @@ public class BiFunctor {
                         return newList;
                     })
                 ),
-                (a, b) -> a  // 並列処理では使用されない
+                // 並列処理で部分結果をつなぐ関数（順次処理では呼ばれない）
+                (a, b) -> a.flatMap(left -> b.map(right -> {
+                    List<T> joined = new ArrayList<>(left);
+                    joined.addAll(right);
+                    return joined;
+                }))
             );
     }
 }
@@ -795,8 +739,6 @@ Java 8は、関数型プログラミングの要素を大幅に取り入れま�
 4. **Optional**：null安全性のためのモナド
 
 ### 7.2 高階関数の実装パターン
-
-<span class="listing-number">**リストAB-18**</span>
 
 ```java
 public class HigherOrderFunctions {
@@ -849,8 +791,6 @@ public class HigherOrderFunctions {
 ```
 
 ### 7.3 遅延評価の実装
-
-<span class="listing-number">**リストAB-19**</span>
 
 ```java
 public class LazyEvaluation {
@@ -955,8 +895,6 @@ public class LazyEvaluation {
 
 関数型プログラミングの応用例として、パーサーコンビネータを実装します：
 
-<span class="listing-number">**リストAB-20**</span>
-
 ```java
 public class ParserCombinator {
     
@@ -966,14 +904,11 @@ public class ParserCombinator {
         Optional<Pair<T, String>> parse(String input);
     }
     
-    // 補助クラス
-    public static class Pair<A, B> {
-        public final A first;
-        public final B second;
-        
-        public Pair(A first, B second) {
-            this.first = first;
-            this.second = second;
+    // 補助クラス：解析した値と、残りの文字列の組
+    public record Pair<A, B>(A first, B second) {
+        @Override
+        public String toString() {
+            return "(" + first + ", " + second + ")";
         }
     }
     
@@ -1009,8 +944,8 @@ public class ParserCombinator {
     
     public static <A, B> Parser<Pair<A, B>> and(Parser<A> p1, Parser<B> p2) {
         return input -> p1.parse(input).flatMap(r1 ->
-            p2.parse(r1.second).map(r2 ->
-                new Pair<>(new Pair<>(r1.first, r2.first), r2.second)
+            p2.parse(r1.second()).map(r2 ->
+                new Pair<>(new Pair<>(r1.first(), r2.first()), r2.second())
             )
         );
     }
@@ -1025,8 +960,8 @@ public class ParserCombinator {
                 if (result.isEmpty()) {
                     break;
                 }
-                results.add(result.get().first);
-                remaining = result.get().second;
+                results.add(result.get().first());
+                remaining = result.get().second();
             }
             
             return Optional.of(new Pair<>(results, remaining));
@@ -1048,12 +983,12 @@ public class ParserCombinator {
         return input -> {
             Parser<List<Integer>> digits = many(digit());
             return digits.parse(input).flatMap(result -> {
-                if (result.first.isEmpty()) {
+                if (result.first().isEmpty()) {
                     return Optional.empty();
                 }
-                int value = result.first.stream()
+                int value = result.first().stream()
                     .reduce(0, (acc, d) -> acc * 10 + d);
-                return Optional.of(new Pair<>(value, result.second));
+                return Optional.of(new Pair<>(value, result.second()));
             });
         };
     }
@@ -1081,8 +1016,6 @@ public class ParserCombinator {
 ```
 
 ### 8.2 代数的データ型の実装
-
-<span class="listing-number">**リストAB-21**</span>
 
 ```java
 // sealed classを使った代数的データ型
@@ -1187,13 +1120,14 @@ public class AlgebraicDataTypeExample {
 
 ### 8.3 効果システムの実装
 
-<span class="listing-number">**リストAB-22**</span>
-
 ```java
 // IOモナドの簡易実装
 // このクラス名はjava.lang.IO（標準入出力）と重なる。同じパッケージのクラスが優先されるため、
 // クラスの中で標準入出力を使うときはjava.lang.IOと完全修飾名で書く
 public abstract class IO<T> {
+    
+    // 2つの結果の組（parで使う）
+    public record Pair<A, B>(A first, B second) {}
     
     // 実行
     public abstract T unsafeRun();

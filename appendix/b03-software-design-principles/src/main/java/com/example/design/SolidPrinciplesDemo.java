@@ -576,8 +576,8 @@ public class SolidPrinciplesDemo {
         
         IO.println("Total area: " + calculator.calculateTotalArea(shapes));
         
-        // 新しい図形を追加しても既存コードを変更する必要がない
-        IO.println("\nAdding new shapes without modifying existing code...");
+        // Triangleは後から追加した図形だが、GoodShapeCalculatorは変更していない
+        IO.println("Triangle was added without modifying GoodShapeCalculator");
     }
     
     /**

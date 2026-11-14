@@ -769,8 +769,8 @@ public class DesignPatternsDemo {
         agency.addObserver(bbc);
         agency.addObserver(reuters);
         
-        agency.setNews("Major earthquake hits Japan");
-        agency.setNews("New COVID variant discovered");
+        agency.setNews("New library opens downtown");
+        agency.setNews("Local team wins the championship");
         
         // ストラテジーパターン
         IO.println("\n--- Strategy Pattern ---");

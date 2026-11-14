@@ -1,7 +1,6 @@
 package com.example.vtable;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * メソッドインライン化とJIT最適化のデモンストレーション
@@ -42,7 +41,7 @@ public class MethodInliningDemo {
             }
         }
         
-        // ループを含むメソッド（インライン化されにくい）
+        // ループを含むメソッド（小さければループがあってもインライン化される）
         public int sumToN(int n) {
             int sum = 0;
             for (int i = 1; i <= n; i++) {
@@ -53,11 +52,14 @@ public class MethodInliningDemo {
     }
     
     /**
-     * インライン化を阻害する要因のデモンストレーション
+     * インライン化の判断に影響する要因の例
+     * （どれも「絶対にインライン化されない」わけではない。
+     *  -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining で実際の判断を確かめられる）
      */
     public static class InliningInhibitors {
         
-        // 大きなメソッド（バイトコードサイズが閾値を超える）
+        // 大きなメソッド（バイトコードは114バイトで、MaxInlineSize=35を超える。
+        // よく呼ばれる呼び出し箇所ではFreqInlineSize=325以下ならインライン化される）
         public int largeMethod(int x) {
             int result = x;
             result = (result * 17 + 23) % 97;
@@ -73,12 +75,12 @@ public class MethodInliningDemo {
             return result;
         }
         
-        // 同期メソッド（インライン化が制限される）
+        // 同期メソッド（小さければインライン化される。ただしロックの取得と解放のコストは残る）
         public synchronized int synchronizedMethod(int x) {
             return x * 2;
         }
         
-        // 例外処理を含むメソッド
+        // 例外処理を含むメソッド（小さければインライン化される）
         public int methodWithException(int x) {
             try {
                 if (x == 0) {
@@ -90,7 +92,7 @@ public class MethodInliningDemo {
             }
         }
         
-        // 再帰メソッド（制限的にインライン化）
+        // 再帰メソッド（自分自身の呼び出しは既定で1段まで：MaxRecursiveInlineLevel=1）
         public int recursiveMethod(int n) {
             if (n <= 1) {
                 return 1;
@@ -100,10 +102,22 @@ public class MethodInliningDemo {
     }
     
     /**
-     * ホットスポット検出とコンパイル閾値のデモンストレーション
+     * 時間の比を文字列にする（0で割らないようにする）
+     */
+    static String ratio(long a, long b) {
+        if (a <= 0 || b <= 0) {
+            return "n/a (too fast to measure)";
+        }
+        return "%.2fx".formatted((double) a / b);
+    }
+    
+    /**
+     * ホットスポット検出のデモンストレーション
+     * よく呼ばれるメソッドは、インタープリター実行のあとC1、C2の順にJITコンパイルされる。
+     * どのラウンドでコンパイルされたかは -XX:+PrintCompilation で確かめる
      */
     public static class HotSpotDemo {
-        private static final int COMPILATION_THRESHOLD = 10000;
+        private static final int CALLS_PER_ROUND = 10000;
         
         private int counter = 0;
         
@@ -113,52 +127,33 @@ public class MethodInliningDemo {
             return x * x + x + 1;
         }
         
-        // コールドメソッド（めったに呼ばれない）
-        public int coldMethod(int x) {
-            return (int) Math.sqrt(x * x * x + x * x + x + 1);
-        }
-        
-        /**
-         * ホットスポットの特定とコンパイルプロセスのシミュレーション
-         */
         public static void demonstrateHotSpotDetection() {
             IO.println("=== HotSpot Detection and Compilation Demo ===");
+            IO.println("Run with -XX:+PrintCompilation to see when hotMethod is compiled");
             
             HotSpotDemo demo = new HotSpotDemo();
-            long[] executionTimes = new long[5];
+            int rounds = 5;
+            long[] executionTimes = new long[rounds];
             
-            // 複数回実行してJIT最適化の効果を観察
-            for (int round = 0; round < 5; round++) {
+            for (int round = 0; round < rounds; round++) {
                 long startTime = System.nanoTime();
                 
-                // ホットメソッドを大量に呼び出し
                 int sum = 0;
-                for (int i = 0; i < COMPILATION_THRESHOLD; i++) {
+                for (int i = 0; i < CALLS_PER_ROUND; i++) {
                     sum += demo.hotMethod(i);
                 }
                 
-                long endTime = System.nanoTime();
-                executionTimes[round] = endTime - startTime;
+                executionTimes[round] = System.nanoTime() - startTime;
                 
-                IO.println("Round %d: %d ms (sum: %d)".formatted(
+                IO.println("Round %d: %d μs (sum: %d)".formatted(
                                 round + 1, 
-                                executionTimes[round] / 1_000_000,
+                                executionTimes[round] / 1000,
                                 sum));
-                
-                if (round == 0) {
-                    IO.println("  -> Interpreted execution");
-                } else if (round == 1) {
-                    IO.println("  -> C1 compilation (Client compiler)");
-                } else if (round == 2) {
-                    IO.println("  -> C2 compilation (Server compiler)");
-                } else {
-                    IO.println("  -> Fully optimized");
-                }
             }
             
-            // パフォーマンス改善の分析
-            double improvement = (double) executionTimes[0] / executionTimes[4];
-            IO.println("\nPerformance improvement: %.2fx faster".formatted(improvement));
+            IO.println("\nRound 1 / round %d: %s".formatted(
+                            rounds, ratio(executionTimes[0], executionTimes[rounds - 1])));
+            IO.println("Total calls: " + demo.counter);
             IO.println();
         }
     }
@@ -237,16 +232,17 @@ public class MethodInliningDemo {
         }
         
         public static void compareOptimizationLevels() {
-            IO.println("=== Inlining Optimization Comparison ===");
+            IO.println("=== Inlining Optimization Example ===");
             
-            int iterations = 100_000;
+            int iterations = 10_000;
             
             // 最適化されやすい設計
             OptimizedCalculation[] optimized = new OptimizedCalculation[1000];
+            Random random = new Random(42); // 毎回同じ値になるよう種を固定する
             for (int i = 0; i < optimized.length; i++) {
                 optimized[i] = new OptimizedCalculation(
-                    ThreadLocalRandom.current().nextDouble(-10, 10),
-                    ThreadLocalRandom.current().nextDouble(-10, 10)
+                    random.nextDouble(-10, 10),
+                    random.nextDouble(-10, 10)
                 );
             }
             
@@ -259,11 +255,11 @@ public class MethodInliningDemo {
             }
             long optimizedTime = System.nanoTime() - startTime;
             
-            IO.println("Optimized design:   " + optimizedTime / 1_000_000 + " ms");
+            IO.println("Optimized design:   " + optimizedTime / 1000 + " μs");
             
-            // 最適化されにくい設計（コンソール出力は削除）
-            IO.println("Note: Unoptimized comparison skipped due to console output overhead");
-            IO.println("In practice, the optimized version would be 5-20x faster");
+            // UnoptimizedCalculationは呼び出しのたびにコンソールへ出力するため、時間の比較はしない
+            IO.println("(sum: %.2f)".formatted(sum1));
+            IO.println("Note: UnoptimizedCalculation prints on every call, so it is not timed");
             IO.println();
         }
     }
@@ -309,49 +305,51 @@ public class MethodInliningDemo {
             }
         }
         
-        public static void demonstrateMethodChaining() {
-            IO.println("=== Method Chaining and Inlining ===");
-            
-            int iterations = 1_000_000;
-            
-            // メソッドチェーンによる計算
-            long startTime = System.nanoTime();
+        private static double withChaining(int iterations) {
             double sum = 0;
-            
             for (int i = 0; i < iterations; i++) {
-                double result = new FluentCalculator(i)
+                sum += new FluentCalculator(i)
                     .add(10)
                     .multiply(2)
                     .subtract(5)
                     .divide(3)
                     .getValue();
-                sum += result;
+            }
+            return sum;
+        }
+        
+        private static double direct(int iterations) {
+            double sum = 0;
+            for (int i = 0; i < iterations; i++) {
+                sum += ((i + 10.0) * 2 - 5) / 3;   // メソッドチェーンと同じdoubleの計算
+            }
+            return sum;
+        }
+        
+        public static void demonstrateMethodChaining() {
+            IO.println("=== Method Chaining and Inlining ===");
+            
+            int iterations = 1_000_000;
+            
+            // ウォームアップ
+            double warm = 0;
+            for (int round = 0; round < 10; round++) {
+                warm += withChaining(iterations) + direct(iterations);
             }
             
+            long startTime = System.nanoTime();
+            double sum = withChaining(iterations);
             long chainTime = System.nanoTime() - startTime;
             
-            // 同等の直接計算
             startTime = System.nanoTime();
-            double sum2 = 0;
-            
-            for (int i = 0; i < iterations; i++) {
-                double result = ((i + 10) * 2 - 5) / 3;
-                sum2 += result;
-            }
-            
+            double sum2 = direct(iterations);
             long directTime = System.nanoTime() - startTime;
             
-            IO.println("Method chaining: " + chainTime / 1_000_000 + " ms (sum: " + sum + ")");
-            IO.println("Direct calculation: " + directTime / 1_000_000 + " ms (sum: " + sum2 + ")");
-            
-            double overhead = (double) chainTime / directTime;
-            IO.println("Overhead ratio: " + String.format("%.2fx", overhead));
-            
-            if (overhead < 1.5) {
-                IO.println("✓ Good inlining - minimal overhead");
-            } else {
-                IO.println("Poor inlining - significant overhead");
-            }
+            IO.println("Method chaining:    " + chainTime / 1000 + " μs (sum: " + sum + ")");
+            IO.println("Direct calculation: " + directTime / 1000 + " μs (sum: " + sum2 + ")");
+            IO.println("Chaining / direct: " + ratio(chainTime, directTime));
+            IO.println("(After inlining and escape analysis, the two are often close)");
+            if (warm < 0) IO.println("Unexpected result");
             IO.println();
         }
     }
@@ -366,22 +364,22 @@ public class MethodInliningDemo {
          */
         public static void simulateInliningThresholds() {
             IO.println("=== Inlining Threshold Simulation ===");
-            IO.println("JVM Flags for Inlining Control:");
-            IO.println("  -XX:MaxInlineSize=35        # Default bytecode size limit");
-            IO.println("  -XX:FreqInlineSize=325      # Hot method size limit");
-            IO.println("  -XX:InlineSmallCode=1000    # Small compiled method limit");
-            IO.println("  -XX:MaxInlineLevel=9        # Maximum inlining depth");
-            IO.println("  -XX:+PrintInlining          # Print inlining decisions");
+            IO.println("JVM Flags for Inlining Control (JDK 25 defaults; check with -XX:+PrintFlagsFinal):");
+            IO.println("  -XX:MaxInlineSize=35        # Bytecode size limit for normal call sites");
+            IO.println("  -XX:FreqInlineSize=325      # Bytecode size limit for hot call sites");
+            IO.println("  -XX:InlineSmallCode=2500    # Size limit for already compiled methods");
+            IO.println("  -XX:MaxInlineLevel=15       # Maximum inlining depth");
+            IO.println("  -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining  # Print inlining decisions");
             IO.println();
             
             // 異なるサイズのメソッドによるインライン化可能性
             int[] methodSizes = {10, 35, 100, 325, 1000};
             String[] descriptions = {
-                "Very small - Always inlined",
-                "Default threshold - Usually inlined",
-                "Medium size - Conditionally inlined", 
-                "Large size - Hot methods only",
-                "Very large - Rarely inlined"
+                "Very small - inlined at normal call sites",
+                "MaxInlineSize - limit for normal call sites",
+                "Medium size - inlined only at hot call sites", 
+                "FreqInlineSize - limit for hot call sites",
+                "Larger than FreqInlineSize - not inlined"
             };
             
             for (int i = 0; i < methodSizes.length; i++) {
@@ -450,11 +448,10 @@ public class MethodInliningDemo {
         IO.println();
         
         IO.println("DO - Promote Inlining:");
-        IO.println("  • Keep methods small (< 35 bytecodes)");
-        IO.println("  • Use final for classes/methods when inheritance isn't needed");
+        IO.println("  • Keep methods small (bytecode size within MaxInlineSize/FreqInlineSize)");
+        IO.println("  • Keep call sites monomorphic in hot paths when it is natural to do so");
         IO.println("  • Minimize method call overhead in hot paths");
         IO.println("  • Prefer composition over deep inheritance");
-        IO.println("  • Use static methods for utility functions");
         IO.println();
         
         IO.println("DON'T - Inhibit Inlining:");
@@ -467,7 +464,7 @@ public class MethodInliningDemo {
         
         IO.println("Profiling and Monitoring:");
         IO.println("  • Use -XX:+PrintCompilation to see compilation");
-        IO.println("  • Use -XX:+PrintInlining to see inlining decisions");
+        IO.println("  • Use -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining to see inlining decisions");
         IO.println("  • Profile with JProfiler, async-profiler, or JFR");
         IO.println("  • Focus on hot methods (>10% of execution time)");
         IO.println();
@@ -490,7 +487,7 @@ public class MethodInliningDemo {
         IO.println("Key Insights:");
         IO.println("✓ JVM automatically detects and optimizes hot spots");
         IO.println("✓ Small methods are prime candidates for inlining");
-        IO.println("✓ Method chaining can be as fast as direct calculation");
+        IO.println("✓ Method chaining is often close to direct calculation after inlining");
         IO.println("✓ Inlining depth is limited to prevent code explosion");
         IO.println("✓ Profile before optimizing - JVM is very sophisticated");
         

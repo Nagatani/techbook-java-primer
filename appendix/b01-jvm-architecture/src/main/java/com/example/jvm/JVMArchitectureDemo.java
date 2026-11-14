@@ -246,7 +246,7 @@ public class JVMArchitectureDemo {
                 Thread.currentThread().interrupt();
             }
             
-            IO.println("Creating long-lived objects (will promote to Old generation)...");
+            IO.println("Creating long-lived objects (promoted to Old generation after surviving several GCs)...");
             createLongLivedObjects();
             
             IO.println("\nFinal memory state:");
@@ -265,7 +265,7 @@ public class JVMArchitectureDemo {
         }
         
         private static void createLongLivedObjects() {
-            // 長寿命オブジェクトを作成（Old領域に移動する）
+            // 長寿命オブジェクトを作成（参照を持ち続けるので、何回かGCを生き延びるとOld領域へ移る）
             for (int i = 0; i < 1000; i++) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("id", i);
@@ -324,7 +324,7 @@ public class JVMArchitectureDemo {
             // メインスレッドのスタック情報
             Thread mainThread = Thread.currentThread();
             IO.println("Main Thread: " + mainThread.getName());
-            IO.println("Stack Size: " + getApproximateStackSize());
+            IO.println("Stack depth (frames): " + getStackDepth());
             
             // 複数スレッドでのスタック使用
             List<Thread> threads = new ArrayList<>();
@@ -353,12 +353,12 @@ public class JVMArchitectureDemo {
         
         private static void recursiveStackConsumer(int threadId, int depth) {
             if (depth <= 0) {
-                IO.println("Thread %d reached max depth, stack size: %d".formatted(
-                                threadId, getApproximateStackSize()));
+                IO.println("Thread %d reached max depth, stack depth (frames): %d".formatted(
+                                threadId, getStackDepth()));
                 return;
             }
             
-            // スタックフレームにローカル変数を配置
+            // ローカル変数はスタックフレームに置かれる（配列の本体はヒープに置かれ、フレームには参照だけが入る）
             byte[] localArray = new byte[1024]; // 1KB
             long timestamp = System.nanoTime();
             String threadName = Thread.currentThread().getName();
@@ -369,16 +369,12 @@ public class JVMArchitectureDemo {
             }
         }
         
-        private static long getApproximateStackSize() {
-            ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-            long threadId = Thread.currentThread().threadId();
-            ThreadInfo threadInfo = threadBean.getThreadInfo(threadId);
-            
-            if (threadInfo != null) {
-                return threadInfo.getStackTrace().length;
-            }
-            return 0;
+        // スタックに積まれているフレームの数（バイト数ではない）
+        private static int getStackDepth() {
+            return Thread.currentThread().getStackTrace().length;
         }
+        
+        private static int maxRecursionDepth = 0;
         
         /**
          * スタックオーバーフローのシミュレーション
@@ -387,15 +383,17 @@ public class JVMArchitectureDemo {
             IO.println("--- Stack Overflow Simulation ---");
             IO.println("WARNING: This will cause StackOverflowError");
             
+            maxRecursionDepth = 0;
             try {
                 infiniteRecursion(0);
             } catch (StackOverflowError e) {
-                IO.println("StackOverflowError caught at depth: " + e.getMessage());
+                IO.println("StackOverflowError caught at depth: " + maxRecursionDepth);
             }
         }
         
         private static void infiniteRecursion(int depth) {
-            // スタックフレームにデータを追加
+            maxRecursionDepth = depth;
+            // 配列の本体はヒープに置かれる。フレームが増える原因は再帰呼び出しそのもの
             byte[] frameData = new byte[100];
             Arrays.fill(frameData, (byte) depth);
             

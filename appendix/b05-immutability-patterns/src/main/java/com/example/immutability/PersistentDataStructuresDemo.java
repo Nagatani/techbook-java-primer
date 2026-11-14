@@ -132,15 +132,8 @@ public class PersistentDataStructuresDemo {
         }
         
         // O(n) で要素を末尾に追加
+        // 末尾に足すと、すべてのノードを作り直す必要がある（構造を共有できない）
         public PersistentList<T> append(T value) {
-            if (isEmpty()) {
-                return prepend(value);
-            }
-            return prepend(head.value).append(value).tail().prepend(head.value);
-        }
-        
-        // より効率的なappend実装
-        public PersistentList<T> appendEfficient(T value) {
             List<T> elements = new ArrayList<>();
             Node<T> current = head;
             while (current != null) {
@@ -290,7 +283,7 @@ public class PersistentDataStructuresDemo {
         private static final int MASK = BUCKET_SIZE - 1;
         
         private interface Node<K, V> {
-            V find(int hash, K key);
+            V find(int shift, int hash, K key);
             Node<K, V> insert(int shift, int hash, K key, V value);
             Node<K, V> remove(int shift, int hash, K key);
             boolean isEmpty();
@@ -309,7 +302,7 @@ public class PersistentDataStructuresDemo {
             }
             
             @Override
-            public V find(int hash, K key) {
+            public V find(int shift, int hash, K key) {
                 return this.hash == hash && Objects.equals(this.key, key) ? value : null;
             }
             
@@ -319,7 +312,13 @@ public class PersistentDataStructuresDemo {
                     return new LeafNode<>(hash, key, value);
                 }
                 
-                // 衝突時は分岐ノードを作成
+                // ハッシュ値が完全に同じ別のキーは、ビットで振り分けられないので衝突ノードにまとめる
+                if (this.hash == hash) {
+                    return new CollisionNode<K, V>(hash, List.of(this))
+                        .insert(shift, hash, key, value);
+                }
+                
+                // ハッシュ値の一部が同じときは分岐ノードを作成
                 return BranchNode.<K, V>empty()
                     .insert(shift, this.hash, this.key, this.value)
                     .insert(shift, hash, key, value);
@@ -341,6 +340,71 @@ public class PersistentDataStructuresDemo {
             }
         }
         
+        /**
+         * ハッシュ値が完全に同じキーをまとめて持つノード
+         */
+        private static class CollisionNode<K, V> implements Node<K, V> {
+            final int hash;
+            final List<LeafNode<K, V>> leaves;
+            
+            CollisionNode(int hash, List<LeafNode<K, V>> leaves) {
+                this.hash = hash;
+                this.leaves = List.copyOf(leaves);
+            }
+            
+            @Override
+            public V find(int shift, int hash, K key) {
+                for (LeafNode<K, V> leaf : leaves) {
+                    if (Objects.equals(leaf.key, key)) {
+                        return leaf.value;
+                    }
+                }
+                return null;
+            }
+            
+            @Override
+            public Node<K, V> insert(int shift, int hash, K key, V value) {
+                if (hash != this.hash) {
+                    // 別のハッシュ値のキーとは、分岐ノードで振り分ける
+                    BranchNode<K, V> branch = BranchNode.empty();
+                    Node<K, V>[] children = branch.children.clone();
+                    children[(this.hash >>> shift) & MASK] = this;
+                    return new BranchNode<>(children).insert(shift, hash, key, value);
+                }
+                List<LeafNode<K, V>> newLeaves = new ArrayList<>();
+                for (LeafNode<K, V> leaf : leaves) {
+                    if (!Objects.equals(leaf.key, key)) {
+                        newLeaves.add(leaf);
+                    }
+                }
+                newLeaves.add(new LeafNode<>(hash, key, value));
+                return new CollisionNode<>(hash, newLeaves);
+            }
+            
+            @Override
+            public Node<K, V> remove(int shift, int hash, K key) {
+                List<LeafNode<K, V>> newLeaves = new ArrayList<>();
+                for (LeafNode<K, V> leaf : leaves) {
+                    if (!Objects.equals(leaf.key, key)) {
+                        newLeaves.add(leaf);
+                    }
+                }
+                if (newLeaves.size() == leaves.size()) return this;
+                if (newLeaves.size() == 1) return newLeaves.get(0);
+                return new CollisionNode<>(hash, newLeaves);
+            }
+            
+            @Override
+            public boolean isEmpty() {
+                return leaves.isEmpty();
+            }
+            
+            @Override
+            public int size() {
+                return leaves.size();
+            }
+        }
+        
         private static class BranchNode<K, V> implements Node<K, V> {
             final Node<K, V>[] children;
             final int population;
@@ -359,10 +423,11 @@ public class PersistentDataStructuresDemo {
             }
             
             @Override
-            public V find(int hash, K key) {
-                int index = (hash >>> 0) & MASK; // 最初のレベルは shift = 0
+            public V find(int shift, int hash, K key) {
+                // 深さごとにハッシュ値の別の5ビットを使って子を選ぶ
+                int index = (hash >>> shift) & MASK;
                 Node<K, V> child = children[index];
-                return child == null ? null : child.find(hash, key);
+                return child == null ? null : child.find(shift + SHIFT, hash, key);
             }
             
             @Override
@@ -436,9 +501,10 @@ public class PersistentDataStructuresDemo {
         
         public V get(K key) {
             if (root == null) return null;
-            return root.find(key.hashCode(), key);
+            return root.find(0, key.hashCode(), key);
         }
         
+        // 値にnullを入れない前提（nullの値は「キーなし」と区別できない）
         public boolean containsKey(K key) {
             return get(key) != null;
         }
@@ -563,6 +629,7 @@ public class PersistentDataStructuresDemo {
         
         public static void compareDataStructures() {
             IO.println("=== Data Structure Performance Comparison ===");
+            IO.println("(Timings vary greatly by environment. Use JMH for accurate measurements.)");
             
             int iterations = 10_000;
             
@@ -579,7 +646,6 @@ public class PersistentDataStructuresDemo {
         private static void compareArrayLists(int iterations) {
             IO.println("\n--- ArrayList vs ImmutableArrayList ---");
             
-            // ArrayList
             long mutableTime = measureTime(() -> {
                 List<Integer> list = new ArrayList<>();
                 for (int i = 0; i < iterations; i++) {
@@ -588,7 +654,7 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            // ImmutableArrayList
+            // appendのたびに配列全体をコピーする
             long immutableTime = measureTime(() -> {
                 ImmutableArrayList<Integer> list = new ImmutableArrayList<>();
                 for (int i = 0; i < iterations; i++) {
@@ -597,15 +663,12 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            IO.println("ArrayList:          %d ms".formatted(mutableTime));
-            IO.println("ImmutableArrayList: %d ms".formatted(immutableTime));
-            IO.println("Ratio: %.2fx".formatted((double) immutableTime / mutableTime));
+            printResult("ArrayList:         ", mutableTime, "ImmutableArrayList:", immutableTime);
         }
         
         private static void compareMaps(int iterations) {
             IO.println("\n--- HashMap vs CopyOnWriteMap ---");
             
-            // HashMap
             long hashMapTime = measureTime(() -> {
                 Map<Integer, String> map = new HashMap<>();
                 for (int i = 0; i < iterations; i++) {
@@ -614,7 +677,7 @@ public class PersistentDataStructuresDemo {
                 return map;
             });
             
-            // CopyOnWriteMap
+            // putのたびにマップ全体をコピーする
             long cowMapTime = measureTime(() -> {
                 CopyOnWriteMap<Integer, String> map = new CopyOnWriteMap<>();
                 for (int i = 0; i < iterations; i++) {
@@ -623,15 +686,12 @@ public class PersistentDataStructuresDemo {
                 return map;
             });
             
-            IO.println("HashMap:        %d ms".formatted(hashMapTime));
-            IO.println("CopyOnWriteMap: %d ms".formatted(cowMapTime));
-            IO.println("Ratio: %.2fx".formatted((double) cowMapTime / hashMapTime));
+            printResult("HashMap:       ", hashMapTime, "CopyOnWriteMap:", cowMapTime);
         }
         
         private static void compareLists(int iterations) {
             IO.println("\n--- LinkedList vs PersistentList ---");
             
-            // LinkedList
             long linkedListTime = measureTime(() -> {
                 LinkedList<Integer> list = new LinkedList<>();
                 for (int i = 0; i < iterations; i++) {
@@ -640,7 +700,7 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            // PersistentList
+            // 先頭への追加は既存のノードを共有するのでO(1)
             long persistentListTime = measureTime(() -> {
                 PersistentList<Integer> list = PersistentList.empty();
                 for (int i = 0; i < iterations; i++) {
@@ -649,15 +709,27 @@ public class PersistentDataStructuresDemo {
                 return list;
             });
             
-            IO.println("LinkedList:     %d ms".formatted(linkedListTime));
-            IO.println("PersistentList: %d ms".formatted(persistentListTime));
-            IO.println("Ratio: %.2fx".formatted((double) persistentListTime / linkedListTime));
+            printResult("LinkedList:    ", linkedListTime, "PersistentList:", persistentListTime);
         }
         
+        private static void printResult(String label1, long time1, String label2, long time2) {
+            IO.println("%s %d μs".formatted(label1, time1 / 1000));
+            IO.println("%s %d μs".formatted(label2, time2 / 1000));
+            if (time1 <= 0 || time2 <= 0) {
+                IO.println("Ratio: n/a (too fast to measure)");
+            } else {
+                IO.println("Ratio: %.2fx".formatted((double) time2 / time1));
+            }
+        }
+        
+        // 暖機のために数回実行してから、1回分の時間を測る
         private static long measureTime(Supplier<Object> task) {
-            long start = System.currentTimeMillis();
+            for (int i = 0; i < 3; i++) {
+                task.get();
+            }
+            long start = System.nanoTime();
             task.get();
-            return System.currentTimeMillis() - start;
+            return System.nanoTime() - start;
         }
         
         @FunctionalInterface
@@ -725,9 +797,11 @@ public class PersistentDataStructuresDemo {
         IO.println("Updated map: " + cowMap);
         IO.println("Snapshot remains unchanged: " + snapshot1);
         
-        // 読み込み性能（並行アクセス安全）
-        IO.println("Concurrent read access:");
-        cowMap.keySet().parallelStream()
+        // 読み込みはロックなしで、ほかのスレッドの書き込みと同時に行ってよい
+        // （ここでは表示の順序をそろえるため、キーを並べ替えて1つのスレッドで読む）
+        IO.println("Read access:");
+        cowMap.keySet().stream()
+            .sorted()
             .forEach(key -> IO.println("  " + key + " = " + cowMap.get(key)));
     }
     
@@ -803,6 +877,21 @@ public class PersistentDataStructuresDemo {
         }
         IO.println("Large map size: " + largeMap.size());
         IO.println("Random access test: " + largeMap.get(500));
+        
+        int found = 0;
+        for (int i = 0; i < 1000; i++) {
+            if (("value" + i).equals(largeMap.get(i))) {
+                found++;
+            }
+        }
+        IO.println("Keys found: " + found + " / 1000");
+        
+        // ハッシュ値が同じ別のキー（"Aa"と"BB"はhashCodeが同じ）
+        PersistentHashMap<String, Integer> collision = PersistentHashMap.<String, Integer>empty()
+            .put("Aa", 1)
+            .put("BB", 2);
+        IO.println("Same hash keys: Aa=" + collision.get("Aa") + ", BB=" + collision.get("BB")
+                   + ", size=" + collision.size());
     }
     
     private static void demonstrateImmutableArrayList() {

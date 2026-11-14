@@ -25,7 +25,7 @@ public class MutableCounter {
     }
 }
 ```
-**実際の影響**: 金融システムで残高計算エラー、ECサイトで在庫数不整合
+複数のスレッドが同時に`increment()`を呼ぶと、加算が失われて回数が合わなくなります。
 
 **問題2: 防御的コピーの欠如**
 ```java
@@ -44,18 +44,16 @@ List<OrderItem> items = order.getItems();
 items.clear();  // 注文内容が予期せず削除される
 ```
 
-### ビジネスへの深刻な影響
+### 不変性パターンで得られること
 
-**実際の障害事例:**
-- **某ECサイト**: GC停止時間の長期化によりタイムアウト多発、売上機会損失
-- **金融機関**: 残高計算バグにより不正な取引が発生、金融庁への報告事案
-- **ゲーム会社**: プレイヤー状態の同期問題によりデータ破損、ユーザー信頼失墜
-
-**不変性パターンによる改善効果:**
-- **並行安全性**: 同期化不要で100%安全な並行アクセス
-- **予測可能性**: 状態変更がないためシステム動作を予測しやすい
-- **デバッグ効率**: 副作用がないためバグ調査時間を大幅短縮
-- **パフォーマンス**: ロック不要により高いスループットを実現
+- 並行安全性
+    + 状態が変わらないオブジェクトは、同期なしで複数のスレッドから読める
+- 予測可能性
+    + 一度作ったオブジェクトの状態が変わらないので、動作を追いやすい
+- デバッグのしやすさ
+    + どこかで書き換えられたという種類のバグが起きない
+- 注意点
+    + 「今の状態を指す参照」を差し替える操作は、別に原子的にする必要がある（`AtomicReference`など）
 
 ## サンプルコード構成
 
@@ -65,7 +63,7 @@ items.clear();  // 注文内容が予期せず削除される
   - ビルダーパターンとの組み合わせ
   - オブジェクトプーリングによる最適化
   - 遅延評価パターンの実装
-  - 並行安全性の確保と検証
+  - `AtomicReference`による参照の差し替えと、複数スレッドからの更新の確認
 
 ### 2. 永続的データ構造とCopy-on-Write
 - `PersistentDataStructuresDemo.java`: 構造共有による効率的な不変データ構造
@@ -73,14 +71,14 @@ items.clear();  // 注文内容が予期せず削除される
   - 永続的リスト（構造共有）
   - Trie構造ベースの永続的ハッシュマップ
   - カスタム不変ArrayList
-  - パフォーマンス比較と最適化
+  - 可変のデータ構造との時間の比較
 
 ### 3. 関数型プログラミングでの不変性
 - `FunctionalPatternsDemo.java`: レンズパターンと関数型状態管理
   - レンズパターンによる深いネスト更新
-  - Redux風の不変状態管理
+  - Redux風の不変状態管理（sealedインターフェイスとrecordによるアクション）
   - 関数合成とメモ化
-  - 非同期状態管理パターン
+  - `AtomicReference`を使った非同期状態管理
   - アクションベースの状態変更
 
 ## 実行方法
@@ -99,15 +97,11 @@ java com.example.immutability.PersistentDataStructuresDemo
 java com.example.immutability.FunctionalPatternsDemo
 ```
 
-### JVMフラグを使用した並行性テスト
+### GCのログを見ながら実行
 ```bash
-# 並行アクセステスト
-java -Xlog:gc* -Xms256m -Xmx512m \
+# 不変オブジェクトを多く作ったときのGCの様子を表示
+java -Xlog:gc -Xms256m -Xmx512m \
      com.example.immutability.ImmutabilityPatternsDemo
-
-# 大量データでのメモリ効率テスト
-java -Xms1g -Xmx2g -XX:+UseG1GC \
-     com.example.immutability.PersistentDataStructuresDemo
 ```
 
 ## 学習ポイント
@@ -137,7 +131,7 @@ public final class ImmutablePerson {
 
 #### 重要な実装ポイント
 - **final修飾子の使用**: クラス、フィールドの変更を防止
-- **防御的コピー**: コンストラクタとゲッターでの完全な隔離
+- **防御的コピー**: コンストラクタで受け取ったコレクションをコピーし、外から変更されないようにする（`List.copyOf`の結果は変更できないので、ゲッターでそのまま返してよい）
 - **withメソッド**: 関数型スタイルでの更新パターン
 - **equals/hashCodeの実装**: 値による等価性の保証
 
@@ -216,15 +210,24 @@ Person conditionalUpdate = personAgeLens.modifyIf(
 
 #### Reduxパターン
 ```java
-// アクション定義
-public sealed interface Action permits AddTodo, RemoveTodo, SetLoading {}
+// アクション定義（sealedで種類を限り、各アクションはrecordにする）
+public sealed interface Action
+        permits AddTodo, RemoveTodo, SetLoading, SetError, ClearError {}
 
-// リデューサー
+public record AddTodo(String text) implements Action {}
+public record RemoveTodo(int index) implements Action {}
+public record SetLoading(boolean loading) implements Action {}
+public record SetError(String error) implements Action {}
+public record ClearError() implements Action {}
+
+// リデューサー（すべてのアクションを網羅しているので、defaultは要らない）
 public static AppState reduce(AppState state, Action action) {
     return switch (action) {
-        case AddTodo(var text) -> state.withTodos(appendTodo(state.getTodos(), text));
-        case RemoveTodo(var index) -> state.withTodos(removeTodoAt(state.getTodos(), index));
+        case AddTodo(var text) -> state.withTodos(appendTodo(state.todos(), text));
+        case RemoveTodo(var index) -> state.withTodos(removeTodoAt(state.todos(), index));
         case SetLoading(var loading) -> state.withLoading(loading);
+        case SetError(var error) -> state.withError(Optional.of(error)).withLoading(false);
+        case ClearError() -> state.withError(Optional.empty());
     };
 }
 ```
@@ -235,33 +238,42 @@ public static AppState reduce(AppState state, Action action) {
 
 | データ構造 | 読み取り | 更新 | メモリ効率 | 並行性 |
 |------------|----------|------|------------|--------|
-| ArrayList | O(1) | O(1) | 優秀 | 要同期 |
+| ArrayList | O(1) | O(1)（setと末尾への追加） | 優秀 | 要同期 |
 | ImmutableArrayList | O(1) | O(n) | 劣る | 完全安全 |
 | HashMap | O(1) | O(1) | 優秀 | 要同期 |
 | CopyOnWriteMap | O(1) | O(n) | 中程度 | 完全安全 |
-| LinkedList | O(n) | O(1) | 中程度 | 要同期 |
-| PersistentList | O(n) | O(1) | 優秀 | 完全安全 |
+| LinkedList | O(n) | O(1)（先頭・末尾） | 中程度 | 要同期 |
+| PersistentList | O(n) | O(1)（先頭への追加） | 優秀 | 完全安全 |
 
-### ベンチマーク結果例
+### 実行結果の形式
+
+`PersistentDataStructuresDemo`は、次のような形式で測定結果を表示します（数値は省略しています）。
+測定値はCPU・OS・JVMの状態によって大きく変わり、実行するたびにも変わります。
+このデモは傾向を体験するためのもので、正確に測るにはJMH（Java Microbenchmark Harness）を使います。
 
 ```
 === Data Structure Performance Comparison ===
+(Timings vary greatly by environment. Use JMH for accurate measurements.)
 
 --- ArrayList vs ImmutableArrayList ---
-ArrayList:          45 ms
-ImmutableArrayList: 2,340 ms
-Ratio: 52.00x
+ArrayList:          ... μs
+ImmutableArrayList: ... μs
+Ratio: ...x
 
 --- HashMap vs CopyOnWriteMap ---
-HashMap:        23 ms
-CopyOnWriteMap: 1,890 ms
-Ratio: 82.17x
+HashMap:        ... μs
+CopyOnWriteMap: ... μs
+Ratio: ...x
 
 --- LinkedList vs PersistentList ---
-LinkedList:     12 ms
-PersistentList: 28 ms
-Ratio: 2.33x
+LinkedList:     ... μs
+PersistentList: ... μs
+Ratio: ...x
 ```
+
+更新のたびに全体をコピーするImmutableArrayListとCopyOnWriteMapは、要素が増えるほど大きく遅くなります。
+先頭に追加するだけのPersistentListは、LinkedListと同じ程度の時間で済みます。
+時間が短すぎて測れなかったときは、比の代わりに`n/a (too fast to measure)`と表示します。
 
 ## 実践的な最適化ガイドライン
 
@@ -317,6 +329,9 @@ public static ImmutablePoint of(int x, int y) {
 
 #### 遅延評価
 ```java
+// ダブルチェックロッキングでは、フィールドにvolatileが必要
+private volatile String expensiveField;
+
 public String getExpensiveField() {
     if (expensiveField == null) {
         synchronized (this) {
@@ -345,20 +360,24 @@ public static class Builder {
 #### ファクトリーパターンとの統合
 ```java
 public class ImmutableCollections {
-    public static <T> ImmutableList<T> copyOf(Collection<T> collection) {
-        if (collection instanceof ImmutableList) {
-            return (ImmutableList<T>) collection; // 既に不変なら再利用
+    public static <T> ImmutableArrayList<T> copyOf(Collection<T> collection) {
+        if (collection instanceof ImmutableArrayList<T> list) {
+            return list; // 既に不変なら再利用
         }
-        return new ImmutableList<>(collection);
+        return new ImmutableArrayList<>(collection);
     }
 }
 ```
+
+標準ライブラリの`List.copyOf`も、渡されたリストが変更できないリストなら、コピーせずにそのまま返すことがあります。
 
 ## 高度なトピック
 
 ### 1. 関数型プログラミングとの統合
 
 #### モナドパターン
+`Optional`と同じ考え方の型を自分で作るなら、次のようになります（このプロジェクトのコードには含めていません）。
+
 ```java
 public class Maybe<T> {
     public <U> Maybe<U> map(Function<T, U> mapper) {
@@ -408,6 +427,8 @@ public class ImmutableCache<K, V> {
 public class ImmutableActor {
     private volatile ImmutableState state;
     
+    // アクターでは、メッセージを1つのスレッドが順に処理する。
+    // receiveを複数のスレッドから同時に呼ぶなら、AtomicReferenceのupdateAndGetを使う
     public void receive(Message message) {
         state = state.handle(message); // 常に新しい状態を生成
     }
@@ -429,12 +450,12 @@ IO.println("Heap usage: %d MB / %d MB".formatted(
 
 #### ガベージコレクションの最適化
 ```bash
-# G1GCによる大きなヒープの効率的な管理
--XX:+UseG1GC -XX:MaxGCPauseMillis=200
-
-# 不変オブジェクト向けの世代別GC最適化
--XX:NewRatio=2 -XX:SurvivorRatio=8
+# G1GC（Java 25の既定）で、停止時間の目標を指定する
+-XX:MaxGCPauseMillis=200
 ```
+
+短命な不変オブジェクトを多く作っても、世代別GCは若い世代をまとめて回収するので、ふつうは特別な設定は要りません。
+G1では若い世代の大きさを自動で調整するため、`-XX:NewRatio`などで固定しないのがふつうです。
 
 ## トラブルシューティング
 
@@ -452,17 +473,17 @@ ImmutablePoint.of(x, y); // キャッシュされた値を再利用
 
 #### 問題2: 更新性能の劣化
 ```java
-// 問題のあるコード
+// 問題のあるコード（ImmutableArrayList）
 for (int i = 0; i < 10000; i++) {
     list = list.append(i); // 毎回O(n)コピー
 }
 
-// 改善されたコード
+// 改善されたコード：可変のリストで組み立ててから、最後に1回だけ不変にする
 List<Integer> mutableList = new ArrayList<>();
 for (int i = 0; i < 10000; i++) {
     mutableList.add(i);
 }
-ImmutableList<Integer> list = ImmutableList.copyOf(mutableList);
+ImmutableArrayList<Integer> list = new ImmutableArrayList<>(mutableList);
 ```
 
 #### 問題3: 深いネスト構造の更新
@@ -478,4 +499,4 @@ Person updated = person.withAddress(
 Person updated = personCityLens.modify(person, String::toUpperCase);
 ```
 
-このプロジェクトを通じて、不変性パターンの理論と実践を深く理解し、堅牢で保守しやすいJavaアプリケーションの設計能力を身につけることができます。不変性は複雑さを管理し、並行プログラミングを安全にする強力な手法ですが、パフォーマンスとのトレードオフを理解して適切に活用することが重要です。
+このプロジェクトを通じて、不変性パターンの理論と実践を深く理解し、堅牢で保守しやすいJavaアプリケーションの設計能力を身につけることができます。不変性は複雑さを管理し、並行プログラミングを安全にする強力な手法ですが、更新のたびにオブジェクトを作るコストとのトレードオフを理解して適切に活用することが重要です。

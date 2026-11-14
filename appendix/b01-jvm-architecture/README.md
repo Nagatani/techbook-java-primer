@@ -6,68 +6,47 @@ Java Virtual Machine (JVM) の内部アーキテクチャ、ランタイムデ�
 
 JavaプログラムはJavaソースコードからバイトコードにコンパイルされ、JVM上で実行されます。JVMの内部構造、メモリ管理、クラスローディング、JITコンパイレーションなどの仕組みを理解することで、より効率的なJavaプログラムの設計と、パフォーマンス問題のトラブルシューティングが可能になります。
 
-## なぜJVMアーキテクチャ理解が重要なのか
+## なぜJVMアーキテクチャを理解するのか
 
-### 実際のパフォーマンス問題事例
+JVMの仕組みを知っていると、次のような問題の原因を考えやすくなります。
 
-**問題1: 予期しないOutOfMemoryError**
+- `OutOfMemoryError`
+    + 参照を持ち続けるコレクション（`static`なキャッシュなど）がGCで回収されず、ヒープを使い切る
+- GCによる停止
+    + ヒープの大きさやオブジェクトの寿命によって、GCの頻度や停止時間が変わる
+- 起動直後だけ遅い
+    + 起動直後はインタープリターで実行され、よく呼ばれるメソッドから順にJITコンパイルされる
+
 ```java
-// ヒープ不足の典型例
+// 参照を持ち続けるために回収されない例
 public class MemoryLeak {
     private static final List<Object> cache = new ArrayList<>();
     
     public void processData() {
         for (int i = 0; i < 1000000; i++) {
-            cache.add(new BigObject()); // ヒープ圧迫
+            cache.add(new BigObject()); // cacheから消さない限りGCで回収されない
         }
     }
 }
 ```
-**影響**: ヒープ領域の理解不足によりメモリリークが発生、本番環境でサービス停止
-
-**問題2: JITコンパイラの最適化阻害**
-```java
-// 最適化されにくいコード
-public int calculate(int n) {
-    if (Math.random() > 0.5) { // 予測不可能な分岐
-        return complexCalculation(n);
-    } else {
-        return simpleCalculation(n);
-    }
-}
-```
-**影響**: ホットスポット検出の阻害により性能が期待値の50%以下に低下
-
-### ビジネスへの実際の影響
-
-**実際のシステム障害事例:**
-- **某ECサイト**: GC停止時間の長期化によりタイムアウト多発、売上機会損失
-- **金融システム**: メタスペース不足によりシステム再起動が必要、重要な取引処理停止
-- **ゲームサーバー**: JIT最適化不足によりレスポンス遅延、ユーザー離脱
-
-**チューニングによる改善効果:**
-- **ヒープサイズ最適化**: GC時間を90%削減、レスポンス安定化
-- **JIT設定最適化**: CPU集約処理で3倍高速化
-- **クラスローディング最適化**: アプリケーション起動時間80%短縮
 
 ## サンプルコード構成
 
 ### 1. JVMアーキテクチャの全体像
-- `JVMArchitectureDemo.java`: JVM内部構造の完全実装
+- `JVMArchitectureDemo.java`: JVMの内部構造を標準APIで観察するデモ
   - クラスローダー階層の調査と可視化
   - ランタイムデータエリア（ヒープ、スタック、メタスペース）の分析
   - メモリ世代とオブジェクトライフサイクルの実証
-  - スレッドとスタック領域の動作確認
+  - スレッドとスタック領域の動作確認（スタックの深さはフレームの数で表示）
   - ガベージコレクション情報の監視
   - JVMランタイム情報の詳細表示
 
 ### 2. バイトコード分析とJIT最適化
 - `BytecodeAnalysisDemo.java`: バイトコードレベルの詳細理解
   - 基本的なバイトコード命令セット（算術、制御フロー、オブジェクト操作）
-  - JITコンパイレーション効果の実測
-  - 分岐予測とプロファイルガイド最適化
-  - メソッドインライン化の分析と最適化指針
-  - ホットスポット検出メカニズムの実証
+  - JITコンパイレーション前後の実行時間の比較
+  - 予測しやすい分岐と予測しにくい分岐の比較
+  - 小さなメソッドの呼び出しと直接の計算の比較（インライン化の効果）
 
 ## 実行方法
 
@@ -87,9 +66,12 @@ java com.example.jvm.BytecodeAnalysisDemo
 # JITコンパイレーション情報を表示
 java -XX:+PrintCompilation com.example.jvm.BytecodeAnalysisDemo
 
-# インライン化決定を表示
+# インライン化決定を表示（診断用のオプションは-XX:+UnlockDiagnosticVMOptionsを先に書く）
 java -XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining \
      com.example.jvm.BytecodeAnalysisDemo
+
+# インライン化を止めて比べる
+java '-XX:CompileCommand=dontinline,*InlineCandidate.*' com.example.jvm.BytecodeAnalysisDemo
 
 # ガベージコレクション情報を表示
 java -Xlog:gc* com.example.jvm.JVMArchitectureDemo
@@ -97,14 +79,17 @@ java -Xlog:gc* com.example.jvm.JVMArchitectureDemo
 # クラスローディング情報を表示
 java -Xlog:class+load com.example.jvm.JVMArchitectureDemo
 
-# メモリ使用量の詳細
-java -Xms256m -Xmx512m -XX:NewRatio=3 com.example.jvm.JVMArchitectureDemo
+# ヒープの初期サイズと最大サイズを指定
+java -Xms256m -Xmx512m com.example.jvm.JVMArchitectureDemo
+
+# JITの閾値やGCなどの既定値を確かめる
+java -XX:+PrintFlagsFinal -version
 ```
 
 ### バイトコード表示
 ```bash
-# コンパイル済みクラスのバイトコードを表示
-javap -c com.example.jvm.BytecodeAnalysisDemo$BasicBytecodeDemo
+# コンパイル済みクラスのバイトコードを表示（$をシェルに展開させないよう引用符で囲む）
+javap -c 'com.example.jvm.BytecodeAnalysisDemo$BasicBytecodeDemo'
 
 # より詳細な情報（定数プール、アクセス修飾子等）
 javap -v com.example.jvm.JVMArchitectureDemo
@@ -120,8 +105,8 @@ javap -v com.example.jvm.JVMArchitectureDemo
 │                         JVM                                   │
 ├─────────────────────────────────────────────────────────────┤
 │  Class Loader Subsystem                                      │
-│  ├─ Bootstrap Class Loader (java.lang.*, etc.)               │
-│  ├─ Platform Class Loader (java.*, javax.*, etc.)            │
+│  ├─ Bootstrap Class Loader (java.base etc.)                  │
+│  ├─ Platform Class Loader (java.sql etc.)                    │
 │  └─ Application Class Loader (user classes)                  │
 ├─────────────────────────────────────────────────────────────┤
 │  Runtime Data Areas                                          │
@@ -139,27 +124,43 @@ javap -v com.example.jvm.JVMArchitectureDemo
 ```
 
 #### クラスローダー階層
-- **Bootstrap ClassLoader**: コアJavaクラス（String, Object等）
-- **Platform ClassLoader**: Java SE API（java.*、javax.*等）
-- **Application ClassLoader**: アプリケーションクラスパスのクラス
-- **Custom ClassLoader**: アプリケーション固有のローディング
+- Bootstrap ClassLoader
+    + `java.base`など中核のモジュールのクラス（`String`、`Object`、`HashMap`など）を読み込む。Javaからは`null`に見える
+- Platform ClassLoader
+    + `java.sql`など、Java SEのそのほかの一部のモジュールを読み込む
+- Application ClassLoader
+    + クラスパス（モジュールパス）上のアプリケーションのクラスを読み込む
+- Custom ClassLoader
+    + アプリケーションが独自に定義するクラスローダー
+
+`JVMArchitectureDemo`を実行すると、`String`・`HashMap`・`ConcurrentHashMap`はどれもBootstrap ClassLoaderで読み込まれていることを確かめられます。
 
 ### 2. ランタイムデータエリアの詳細
 
-#### ヒープメモリ構造
+#### ヒープメモリ構造（世代別GCの概念図）
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Heap Memory                          │
 ├─────────────────────────────────────────────────────────┤
 │  Young Generation                                       │
 │  ├─ Eden Space      (新規オブジェクト)                    │
-│  ├─ Survivor 0      (1回目のGC生存)                     │
-│  └─ Survivor 1      (2回目のGC生存)                     │
+│  └─ Survivor x 2    (GCを生き延びたオブジェクト。         │
+│                      2つを交互に使う)                    │
 ├─────────────────────────────────────────────────────────┤
 │  Old Generation                                         │
-│  └─ Tenured Space   (長寿命オブジェクト)                  │
+│  └─ Tenured Space   (何回かGCを生き延びた長寿命          │
+│                      オブジェクト)                       │
 └─────────────────────────────────────────────────────────┘
 ```
+
+これは世代別GCの考え方を示す概念図です。
+Java 25の既定のGCであるG1は、ヒープを同じ大きさの多数のリージョンに分け、Eden・Survivor・Oldをリージョンの集合として扱います（図のように連続した領域ではありません）。
+低遅延のZGC（`-XX:+UseZGC`）も、JDK 24以降は世代別のモードだけになりました。
+
+#### オブジェクトヘッダー
+ヒープ上の各オブジェクトの先頭には、GCやロック、クラスの情報を持つヘッダーがあります。
+Java 25では、ヘッダーを小さくしてメモリを節約するCompact Object Headers（JEP 519）が正式な機能になりました。
+既定では無効で、`-XX:+UseCompactObjectHeaders`で有効にします。
 
 #### スタックフレーム構造
 ```
@@ -192,8 +193,11 @@ Math.sqrt(4.0)                    // invokestatic
 // インターフェイスメソッド
 list.add("item")                  // invokeinterface
 
-// コンストラクタ・private・super
-new Object()                      // invokespecial
+// コンストラクター・super.メソッド()
+new Object()                      // new + invokespecial <init>
+
+// privateメソッド（Java 11以降）とfinalメソッドもinvokevirtual
+// （オーバーライドされないので、JVMは呼び出し先を1つに決められる）
 
 // ラムダ式・メソッド参照
 () -> IO.println("hi")    // invokedynamic
@@ -215,43 +219,34 @@ Level 4: C2 (Server compiler)          (重最適化)
 2. **デッドコード除去**: 不要コードの削除
 3. **ループ最適化**: ループアンローリング、不変式移動
 4. **エスケープ解析**: スタック割り当て最適化
-5. **分岐予測**: 条件分岐の高速化
+5. **プロファイルに基づく分岐の配置**: よく通る側の分岐を速く実行できるようにコードを並べる
 
-## ベンチマーク結果例
+## 実行結果の形式
 
-### JITコンパイレーション効果
-```
-=== JIT Compilation Effect ===
-Cold execution time (interpreted): 2,847 μs
-Hot execution time (JIT compiled):   187 μs
-Speedup: 15.23x faster after JIT compilation
-```
+`BytecodeAnalysisDemo`は、次のような形式で測定結果を表示します（数値は省略しています）。
+測定値はCPU・OS・JVMの状態によって大きく変わり、実行するたびにも変わります。
+このデモはJITの効果を体験するためのもので、正確に測るにはJMH（Java Microbenchmark Harness）を使います。
 
-### 分岐予測の影響
 ```
-=== Branch Prediction Impact ===
-Predictable branching (90% pattern):   1,234 μs
-Unpredictable branching (random):      4,567 μs
-Predictable is 3.70x faster
-```
+=== JIT Compilation Effect Demonstration ===
+Cold execution time: ... μs
+Hot execution time:  ... μs
+Speedup: ...x
 
-### メソッドインライン化の効果
-```
-=== Method Inlining Performance ===
-Inlinable methods time:       892 μs
-Non-inlinable methods time: 5,634 μs
-Inlinable is 6.32x faster
+=== Branch Prediction and Profile-Guided Optimization ===
+Predictable branching time:   ... μs
+Unpredictable branching time: ... μs
+Unpredictable / predictable: ...x
+
+=== Method Inlining Analysis ===
+Via small methods:  ... μs
+Direct calculation: ... μs
+Methods / direct: ...x
 ```
 
-### メモリ使用パターン
-```
-=== Memory Usage Analysis ===
-Initial heap usage: 12.3 MB
-After array creation: 34.7 MB
-After object creation: 56.2 MB
-After string creation: 78.9 MB
-Memory delta: +66.6 MB (increased)
-```
+インライン化の比較では、小さなメソッドを呼ぶ書き方と直接計算する書き方が、ほぼ同じ時間になるのがふつうです。
+`-XX:CompileCommand=dontinline,*InlineCandidate.*`を付けてインライン化を止めると、メソッドを呼ぶ書き方だけが遅くなります。
+時間が短すぎて測れなかったときは、比の代わりに`n/a (too fast to measure)`と表示します。
 
 ## 実践的な最適化ガイドライン
 
@@ -289,11 +284,6 @@ static List<String> results = new ArrayList<>(); // 静的参照で長寿命化
 public int getValue() { return value; }
 public boolean isEmpty() { return size == 0; }
 
-// ○ final修飾子の使用
-public final class ImmutableData {
-    public final int getValue() { return value; }
-}
-
 // × 大きなメソッド（インライン化困難）
 public int complexMethod() {
     // 50行以上の処理...
@@ -301,23 +291,28 @@ public int complexMethod() {
 }
 ```
 
-#### 分岐予測フレンドリーなコード
+HotSpotは、オーバーライドされていないメソッドなら`final`がなくてもインライン化します（クラス階層解析、CHA）。
+性能のために`final`を付ける必要はなく、`final`は継承させたくないという設計の意図を表すために付けます（付録B.04）。
+
+#### 分岐の予測しやすさ
 ```java
-// ○ 予測可能な分岐
+// 予測しやすい分岐（ほとんど同じ側を通る）
 if (condition_that_is_usually_true) {
-    // 90%のケースでこちら
     commonPath();
 } else {
     rareCase();
 }
 
-// × 予測困難な分岐
-if (Math.random() > 0.5) { // ランダムな分岐
+// 予測しにくい分岐（どちらを通るかが毎回ばらばら）
+if (Math.random() > 0.5) {
     pathA();
 } else {
     pathB();
 }
 ```
+
+予測しにくい分岐では、CPUの分岐予測が外れて処理が遅くなることがあります。
+これはCPUの性質で、JVMがメソッドを「よく呼ばれる（ホット）」と判断してJITコンパイルすることとは関係ありません。
 
 ### 3. パフォーマンス監視とプロファイリング
 
@@ -329,7 +324,7 @@ if (Math.random() > 0.5) { // ランダムな分岐
 # 開発時の詳細分析
 -XX:+UnlockDiagnosticVMOptions -XX:+PrintCompilation -XX:+PrintInlining -XX:+LogCompilation
 
-# メモリダンプの取得
+# OutOfMemoryErrorのときにヒープダンプを取る
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/
 ```
 
@@ -351,8 +346,8 @@ if (Math.random() > 0.5) { // ランダムな分岐
 # メタスペースサイズの調整
 -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m
 
-# ヒープダンプ分析
-jmap -dump:format=b,file=heap.hprof <pid>
+# ヒープダンプの取得（jcmdを使うのが推奨の方法）
+jcmd <pid> GC.heap_dump heap.hprof
 ```
 
 ##### 性能問題
@@ -421,8 +416,8 @@ public class NativeDemo {
 # 低遅延GCの設定（CMSはJava 14で削除されたため、ZGCを使う）
 -XX:+UseZGC
 
-# 世代別サイズの調整
--XX:NewRatio=3 -XX:SurvivorRatio=8
 ```
 
-このプロジェクトを通じて、JVMの内部動作を深く理解し、パフォーマンスチューニングの実践的なスキルを習得できます。理論的な知識と実際のベンチマーク結果を組み合わせることで、実世界のJavaアプリケーション最適化に直接応用できる能力を身につけることが目標です。
+G1では若い世代の大きさを停止時間の目標に合わせて自動で調整するため、`-XX:NewRatio`などで固定しないのがふつうです。
+
+このプロジェクトを通じて、JVMの内部動作を理解し、性能の問題の原因を考える手がかりを得ることが目標です。性能を改善するときは、推測で直さず、プロファイラーやJMHで測ってから直します。
