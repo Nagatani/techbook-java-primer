@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * データパイプラインとストリーム処理のデモンストレーション（Java 14互換）
+ * データパイプラインとストリーム処理のデモンストレーション（パターンマッチングを使わない版）
+ * DataPipelineDemoと同じ内容を、sealedとswitchのレコードパターンの代わりに、instanceofとキャストで書いている
  * Recordsを使用したイベントソーシングとデータ変換
  */
 public class DataPipelineSimple {
@@ -227,12 +228,13 @@ public class DataPipelineSimple {
                     return Optional.empty();
                 }
                 
-                return Optional.of(userEvents.stream()
-                    .reduce(
-                        createInitialSnapshot(userEvents.get(0)),
-                        EventProcessor::updateSnapshot,
-                        (s1, s2) -> s2
-                    ));
+                // 最初のイベントでスナップショットを作り、残りのイベントを順に適用する
+                // （reduceの単位元にはできない値なので、拡張for文で書く）
+                UserSnapshot snapshot = createInitialSnapshot(userEvents.get(0));
+                for (UserEvent event : userEvents.subList(1, userEvents.size())) {
+                    snapshot = updateSnapshot(snapshot, event);
+                }
+                return Optional.of(snapshot);
             }
         }
     }
@@ -503,7 +505,7 @@ public class DataPipelineSimple {
     // ========== メインメソッド ==========
     
     public static void main(String[] args) {
-        IO.println("Data Pipeline and Stream Processing Demo (Java 14 Compatible)");
+        IO.println("Data Pipeline and Stream Processing Demo (without pattern matching)");
         IO.println("===========================================================");
         
         // イベントソーシングデモ

@@ -10,9 +10,7 @@ import java.util.List;
  */
 public class GenericArrayWorkarounds<T> {
     
-    /**
-     * 問題のあるアプローチ：コンパイルエラーとなる
-     */
+    // 問題のあるアプローチ：コンパイルエラーとなる
     // private T[] array = new T[10]; // コンパイルエラー
     
     /**
@@ -20,7 +18,15 @@ public class GenericArrayWorkarounds<T> {
      */
     @SuppressWarnings("unchecked")
     private T[] unsafeArray = (T[]) new Object[10];
-    
+
+    /**
+     * 回避策1の危険：中身は実際にはObject[]なので、
+     * T[]として外へ渡すと、受け取った側でClassCastExceptionになる
+     */
+    public T[] getUnsafeArray() {
+        return unsafeArray;
+    }
+
     /**
      * 回避策2: Class<T>を使用した型安全な配列作成
      */
@@ -124,7 +130,16 @@ public class GenericArrayWorkarounds<T> {
      */
     public static void demonstrateGenericArrayWorkarounds() {
         IO.println("=== Generic Array Workarounds Demo ===");
-        
+
+        // 回避策1: Object配列のキャスト（型安全性が失われる）
+        GenericArrayWorkarounds<String> unsafe = new GenericArrayWorkarounds<>(String.class, 1);
+        try {
+            String[] strings = unsafe.getUnsafeArray(); // ここで実際の型Object[]が問題になる
+            IO.println("Unsafe array length: " + strings.length);
+        } catch (ClassCastException e) {
+            IO.println("\nObject[] cast to T[] (unsafe): ClassCastException");
+        }
+
         // 回避策2: Class<T>を使用
         GenericArrayWorkarounds<String> stringArray = new GenericArrayWorkarounds<>(String.class, 5);
         stringArray.setElement(0, "Hello");
@@ -160,5 +175,9 @@ public class GenericArrayWorkarounds<T> {
         for (int i = 0; i < intArray.length; i++) {
             IO.println("  [" + i + "] = " + intArray[i]);
         }
+    }
+
+    public static void main(String[] args) {
+        demonstrateGenericArrayWorkarounds();
     }
 }

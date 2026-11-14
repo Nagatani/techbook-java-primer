@@ -43,11 +43,10 @@ public class InterfaceSeparationDemo {
     }
     
     /**
-     * ユーザーデータの永続化機能
+     * ユーザーデータの参照機能
+     * 読み取りだけが必要なクラスは、このインターフェイスだけを実装すればよい
      */
-    interface UserRepository {
-        void save(User user);
-        void delete(String id);
+    interface UserReader {
         User findById(String id);
         List<User> findAll();
         
@@ -65,6 +64,14 @@ public class InterfaceSeparationDemo {
         default long count() {
             return findAll().size();
         }
+    }
+    
+    /**
+     * ユーザーデータの永続化機能（参照と書き込みの両方）
+     */
+    interface UserRepository extends UserReader {
+        void save(User user);
+        void delete(String id);
     }
     
     /**
@@ -309,6 +316,7 @@ public class InterfaceSeparationDemo {
         // UserAuthenticationService implementation
         @Override
         public boolean authenticate(String userId, String password) {
+            // 簡略化のため、パスワードは検査せず、ユーザーが存在して有効かだけを見る
             User user = findById(userId);
             boolean success = user != null && user.isActive();
             if (success) {
@@ -332,26 +340,18 @@ public class InterfaceSeparationDemo {
     
     /**
      * 読み取り専用のユーザーサービス
-     * 参照機能のみを実装
+     * 参照機能（UserReader）のみを実装する。
+     * UserRepositoryを実装してsaveやdeleteで例外を投げる作りにすると、
+     * 使わないメソッドへの依存を強いることになり、インターフェイス分離原則に反する
      */
-    static class ReadOnlyUserService implements UserRepository, UserAnalyticsService {
+    static class ReadOnlyUserService implements UserReader, UserAnalyticsService {
         private final List<User> users;
         
         public ReadOnlyUserService(List<User> users) {
             this.users = new ArrayList<>(users);
         }
         
-        // UserRepository implementation (read-only)
-        @Override
-        public void save(User user) {
-            throw new UnsupportedOperationException("Read-only service");
-        }
-        
-        @Override
-        public void delete(String id) {
-            throw new UnsupportedOperationException("Read-only service");
-        }
-        
+        // UserReader implementation
         @Override
         public User findById(String id) {
             return users.stream()
@@ -424,12 +424,8 @@ public class InterfaceSeparationDemo {
         
         IO.println("Read-only user count: " + readOnlyService.count());
         readOnlyService.trackUserActivity("user001", "READ_OPERATION");
-        
-        try {
-            readOnlyService.save(new User("user003", "Charlie", "charlie@example.com"));
-        } catch (UnsupportedOperationException e) {
-            IO.println("Expected error: " + e.getMessage());
-        }
+        // readOnlyService.save(...) はコンパイルエラーになる（UserReaderにsaveはない）
+        IO.println("ReadOnlyUserService has no save/delete methods (UserReader only)");
         
         // 機能の組み合わせ
         IO.println("\n--- Service Combination ---");
@@ -440,8 +436,6 @@ public class InterfaceSeparationDemo {
      * サービス機能の組み合わせデモ
      */
     private static void demonstrateServiceCombination(FullUserService service) {
-        String userId = "user001";
-        
         // ユーザー登録からバックアップまでの一連の流れ
         User newUser = new User("user003", "Charlie", "charlie@example.com");
         
@@ -460,7 +454,8 @@ public class InterfaceSeparationDemo {
         
         // 5. レポート生成（非同期）
         service.generateReportAsync(newUser.getId())
-            .thenRun(() -> IO.println("Async report generation completed"));
+            .thenRun(() -> IO.println("Async report generation completed"))
+            .join(); // 完了を待つ（待たないと、表示される前にプログラムが終わることがある）
         
         // 6. バックアップ検証
         boolean backupValid = service.verifyBackup(newUser.getId());

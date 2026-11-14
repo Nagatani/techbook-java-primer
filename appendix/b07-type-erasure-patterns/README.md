@@ -1,4 +1,4 @@
-# 付録B.07 型消去とブリッジメソッド
+# 付録B.07 型消去とジェネリクス
 
 Javaジェネリクスの最も重要かつ複雑な側面である型消去（Type Erasure）について、実行可能なサンプルコードとともに学習できるプロジェクトです。
 
@@ -12,12 +12,12 @@ Javaジェネリクスの最も重要かつ複雑な側面である型消去（T
 
 - **実行時型情報の喪失**: `List<String>`と`List<Integer>`が実行時に区別できない
 - **配列作成の制限**: `new T[10]`のようなジェネリック配列が作成できない
-- **メソッドオーバーロードの制限**: 型消去後に同じシグネチャになるメソッドが共存できない
+- **メソッドオーバーロードの制限**: 型消去後に同じシグネチャになるメソッド（`process(List<String>)`と`process(List<Integer>)`のように、名前が同じで型引数だけが違うもの）が共存できない
 
-### ビジネスへの影響
+### 実務での影響
 
 - **フレームワーク開発での課題**: Jackson、Spring、Hibernateなどでの型解決問題
-- **実際の障害事例**: 型安全性の喪失によるClassCastException
+- **raw型を通した誤った代入**: コンパイル時には見逃され、要素を取り出すときにClassCastExceptionになる（`TypeErasureDemo`の6で確かめられる）
 - **API設計の制約**: 型パラメータの表現力不足
 
 ## サンプルコード構成
@@ -28,15 +28,17 @@ Javaジェネリクスの最も重要かつ複雑な側面である型消去（T
 
 ### 2. ブリッジメソッドの仕組み
 - `BridgeMethodExample.java`: コンパイラが生成するブリッジメソッドの実例
+  - `Comparable`の実装で生成される`compareTo(Object)`
+  - 戻り値の型が型引数で変わる場合（`StringProcessor`の`Object process(String)`）
 - リフレクションによるブリッジメソッドの確認
 
 ### 3. 型消去の回避策
 - `TypeToken.java`: 型トークンパターン（Super Type Token）
-- `TypeReference.java`: Jackson風の型参照パターン
+- `TypeReference.java`: Jackson風の型参照パターン（同じ考え方の別名のクラス）
 - `ReflectionTypeInfo.java`: リフレクションによる型情報の取得
 
 ### 4. ジェネリック配列の問題と回避策
-- `GenericArrayWorkarounds.java`: 配列作成の制限とその解決方法
+- `GenericArrayWorkarounds.java`: 配列作成の制限とその解決方法（`Object[]`をキャストする方法の危険も示す）
 
 ## 実行方法
 

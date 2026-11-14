@@ -44,7 +44,13 @@ public class PaymentProcessorEvolution {
             logTransaction(amount, "PAYMENT_START");
             if (validateAmount(amount)) {
                 processPayment(amount);
-                logTransaction(amount, "PAYMENT_SUCCESS");
+                // 処理の結果を見てからログを分ける（成功とは限らない）
+                PaymentResult result = getResult();
+                if (result != null && result.isSuccess()) {
+                    logTransaction(amount, "PAYMENT_SUCCESS");
+                } else {
+                    logTransaction(amount, "PAYMENT_DECLINED");
+                }
             } else {
                 logTransaction(amount, "PAYMENT_FAILED");
                 throw new IllegalArgumentException("Invalid amount: " + amount);

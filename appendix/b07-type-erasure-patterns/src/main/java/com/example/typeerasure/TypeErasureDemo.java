@@ -53,7 +53,7 @@ public class TypeErasureDemo {
         // 6. 型消去による制限の実例
         IO.println("6. Type Erasure Limitations");
         IO.println("---------------------------");
-        demonstrateTypErasureLimitations();
+        demonstrateTypeErasureLimitations();
         
         IO.println("\n====================================");
         IO.println("Demo completed successfully!");
@@ -63,7 +63,7 @@ public class TypeErasureDemo {
     /**
      * 型消去による制限を実例で示す
      */
-    private static void demonstrateTypErasureLimitations() {
+    private static void demonstrateTypeErasureLimitations() {
         // インスタンス生成時の型情報
         GenericService<String> stringService = new GenericService<>();
         GenericService<Integer> intService = new GenericService<>();
@@ -78,15 +78,23 @@ public class TypeErasureDemo {
         IO.println("List classes are same at runtime: " + 
             (stringList.getClass() == intList.getClass()));
         
-        // Raw型での警告（unchecked warning）を回避するための設計
+        // Raw型は古いコードとの互換性のために残されているが、使うと型安全性が失われる
         IO.println("Raw type compatibility preserved for legacy code");
         
+        java.util.List<String> names = new java.util.ArrayList<>(java.util.List.of("a", "b"));
+        
         @SuppressWarnings("rawtypes")
-        java.util.List rawList = stringList; // 後方互換性
+        java.util.List rawList = names; // 後方互換性のためにraw型へ代入できる
         
         @SuppressWarnings("unchecked")
-        java.util.List<Object> objectList = rawList; // 型安全性が失われる
+        boolean added = rawList.add(42); // コンパイラは止められない（unchecked警告のみ）
+        IO.println("Added Integer through raw type: " + added + ", size: " + names.size());
         
-        IO.println("Raw list size: " + rawList.size());
+        try {
+            String last = names.get(2); // 取り出すときに初めて失敗する
+            IO.println("Last: " + last);
+        } catch (ClassCastException e) {
+            IO.println("ClassCastException when reading the element back as String");
+        }
     }
 }

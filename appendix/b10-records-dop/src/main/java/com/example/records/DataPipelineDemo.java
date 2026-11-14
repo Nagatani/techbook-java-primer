@@ -201,12 +201,13 @@ public class DataPipelineDemo {
                     return Optional.empty();
                 }
                 
-                return Optional.of(userEvents.stream()
-                    .reduce(
-                        createInitialSnapshot(userEvents.get(0)),
-                        EventProcessor::updateSnapshot,
-                        (s1, s2) -> s2
-                    ));
+                // 最初のイベントでスナップショットを作り、残りのイベントを順に適用する
+                // （reduceの単位元にはできない値なので、拡張for文で書く）
+                UserSnapshot snapshot = createInitialSnapshot(userEvents.get(0));
+                for (UserEvent event : userEvents.subList(1, userEvents.size())) {
+                    snapshot = updateSnapshot(snapshot, event);
+                }
+                return Optional.of(snapshot);
             }
         }
     }
@@ -446,8 +447,12 @@ public class DataPipelineDemo {
                         var events = entry.getValue();
                         if (events.isEmpty()) return false;
                         
-                        var latestEvent = events.get(events.size() - 1);
-                        return now.isBefore(latestEvent.timestamp().plus(windowSize.multipliedBy(2)));
+                        // イベントは時刻順に届くとは限らないので、最も新しい時刻を探す
+                        var latest = events.stream()
+                            .map(MetricEvent::timestamp)
+                            .max(Instant::compareTo)
+                            .orElseThrow();
+                        return now.isBefore(latest.plus(windowSize.multipliedBy(2)));
                     })
                     .map(entry -> {
                         var events = entry.getValue();
@@ -470,7 +475,10 @@ public class DataPipelineDemo {
                             windowStart,
                             windowStart.plus(windowSize)
                         );
-                    });
+                    })
+                    // ConcurrentHashMapの反復順は決まらないので、メトリクス名と窓の開始時刻で並べる
+                    .sorted(Comparator.comparing(MetricAggregate::metricName)
+                        .thenComparing(MetricAggregate::windowStart));
             }
             
             private Statistics calculateStats(List<MetricEvent> events) {
@@ -795,14 +803,19 @@ public class DataPipelineDemo {
         
         var aggregator = new RealTimeMetrics.WindowAggregator(Duration.ofSeconds(5));
         
-        // メトリクスイベントを生成
-        var random = ThreadLocalRandom.current();
+        // 実行するたびに同じ結果になるよう、乱数の種を固定し、
+        // 時刻は5秒の窓の境目（baseの直前の窓とその前の窓）にそろえる
+        var random = new Random(42);
+        long nowSecond = Instant.now().getEpochSecond();
+        var base = Instant.ofEpochSecond(nowSecond - nowSecond % 5);
+        
+        // メトリクスイベントを生成（baseの1〜10秒前）
         for (int i = 0; i < 20; i++) {
             var event = new RealTimeMetrics.MetricEvent(
                 "api_latency",
-                random.nextDouble(10, 100),
+                10 + random.nextDouble() * 90,
                 Map.of("endpoint", "/api/users", "method", "GET"),
-                Instant.now().minusSeconds(random.nextInt(10))
+                base.minusSeconds(1 + random.nextInt(10))
             );
             aggregator.addEvent(event);
         }
@@ -811,9 +824,9 @@ public class DataPipelineDemo {
         for (int i = 0; i < 15; i++) {
             var event = new RealTimeMetrics.MetricEvent(
                 "cpu_usage",
-                random.nextDouble(20, 80),
-                Map.of("host", "server-01", "core", String.valueOf(i % 4)),
-                Instant.now().minusSeconds(random.nextInt(10))
+                20 + random.nextDouble() * 60,
+                Map.of("host", "server-01"),
+                base.minusSeconds(1 + random.nextInt(10))
             );
             aggregator.addEvent(event);
         }
@@ -823,8 +836,9 @@ public class DataPipelineDemo {
         
         IO.println("Window aggregates:");
         aggregates.forEach(agg ->
-            IO.println("  %s: Count=%d, Avg=%.2f, Min=%.2f, Max=%.2f, StdDev=%.2f".formatted(
+            IO.println("  %s [%ds before]: Count=%d, Avg=%.2f, Min=%.2f, Max=%.2f, StdDev=%.2f".formatted(
                 agg.metricName(),
+                Duration.between(agg.windowStart(), base).toSeconds(),
                 agg.count(),
                 agg.avg(),
                 agg.min(),

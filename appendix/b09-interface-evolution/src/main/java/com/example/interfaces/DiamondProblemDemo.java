@@ -95,12 +95,18 @@ public class DiamondProblemDemo {
     }
     
     static class ClassVsInterface extends BaseClass implements BaseInterface {
-        // BaseClassのpriorityMethod()が自動的に使われる
-        // オーバーライドも可能
+        // priorityMethod()はオーバーライドしない。
+        // スーパークラスとインターフェイスの両方に同じメソッドがあると、
+        // スーパークラス（BaseClass）のメソッドが使われる
+    }
+    
+    static class ClassVsInterfaceOverridden extends BaseClass implements BaseInterface {
+        // オーバーライドして、両方を呼び分けることもできる
         @Override
         public void priorityMethod() {
-            IO.println("ClassVsInterface.priorityMethod() - overridden");
-            super.priorityMethod(); // クラスのメソッドを呼び出し
+            IO.println("ClassVsInterfaceOverridden.priorityMethod() - overridden");
+            super.priorityMethod();                // クラスのメソッド
+            BaseInterface.super.priorityMethod();  // インターフェイスのdefaultメソッド
         }
     }
     
@@ -178,9 +184,10 @@ public class DiamondProblemDemo {
         public String read() {
             IO.println("ComplexResource.read() - resolving multiple inheritance");
             
-            // どちらのread()を使うかを選択
-            String normalRead = "Reading from ComplexResource";
-            String cachedRead = "Cached: ComplexResource";
+            // 「インターフェイス名.super.メソッド名()」で、それぞれのdefaultメソッドを呼び分ける
+            // （ReadWriteResourceは、ReadableResourceから受け継いだread()を呼ぶ）
+            String normalRead = ReadWriteResource.super.read();
+            String cachedRead = CacheableResource.super.read();
             
             IO.println("Normal read: " + normalRead);
             IO.println("Cached read: " + cachedRead);
@@ -213,9 +220,10 @@ public class DiamondProblemDemo {
         // 継承優先順位の規則1：クラス優先
         IO.println("\n--- Rule 1: Class Takes Priority ---");
         ClassVsInterface classVsInterface = new ClassVsInterface();
-        classVsInterface.priorityMethod();
+        classVsInterface.priorityMethod(); // BaseClass版が呼ばれる
         classVsInterface.classMethod();
         classVsInterface.interfaceMethod();
+        new ClassVsInterfaceOverridden().priorityMethod();
         
         // 継承優先順位の規則2：より具体的なインターフェイス優先
         IO.println("\n--- Rule 2: More Specific Interface Takes Priority ---");

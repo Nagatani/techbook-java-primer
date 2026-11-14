@@ -6,6 +6,7 @@ import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * カスタムコレクターの実装例
@@ -14,10 +15,21 @@ import java.util.stream.IntStream;
 public class CustomCollectors {
     
     /**
-     * 効率的な文字列結合コレクター
-     * StringBuilder を使用してメモリ効率を向上
+     * StringBuilderを使った文字列結合コレクター
+     * Collectors.joiningと同じ働きを自分で作り、supplier・accumulator・combiner・finisherの役割を学ぶ
+     * （標準のCollectors.joiningも内部でStringJoinerを使っており、こちらが速いわけではない）
      */
-    public static class EfficientStringJoiner implements Collector<String, StringBuilder, String> {
+    public static class EfficientStringJoiner implements Collector<String, EfficientStringJoiner.Accumulator, String> {
+        
+        /**
+         * 途中の結果。最初の要素かどうかを、文字列の長さではなくフラグで覚える
+         * （長さで判断すると、先頭の要素が空文字列のときに区切りが抜けてしまう）
+         */
+        static class Accumulator {
+            private final StringBuilder sb = new StringBuilder();
+            private boolean empty = true;
+        }
+        
         private final String delimiter;
         private final String prefix;
         private final String suffix;
@@ -33,38 +45,43 @@ public class CustomCollectors {
         }
         
         @Override
-        public Supplier<StringBuilder> supplier() {
-            return StringBuilder::new;
+        public Supplier<Accumulator> supplier() {
+            return Accumulator::new;
         }
         
         @Override
-        public BiConsumer<StringBuilder, String> accumulator() {
-            return (sb, s) -> {
-                if (sb.length() > 0) {
-                    sb.append(delimiter);
+        public BiConsumer<Accumulator, String> accumulator() {
+            return (acc, s) -> {
+                if (!acc.empty) {
+                    acc.sb.append(delimiter);
                 }
-                sb.append(s);
+                acc.sb.append(s);
+                acc.empty = false;
             };
         }
         
         @Override
-        public BinaryOperator<StringBuilder> combiner() {
-            return (sb1, sb2) -> {
-                if (sb1.length() > 0 && sb2.length() > 0) {
-                    sb1.append(delimiter);
+        public BinaryOperator<Accumulator> combiner() {
+            return (acc1, acc2) -> {
+                if (acc2.empty) {
+                    return acc1;
                 }
-                return sb1.append(sb2);
+                if (acc1.empty) {
+                    return acc2;
+                }
+                acc1.sb.append(delimiter).append(acc2.sb);
+                return acc1;
             };
         }
         
         @Override
-        public Function<StringBuilder, String> finisher() {
-            return sb -> prefix + sb.toString() + suffix;
+        public Function<Accumulator, String> finisher() {
+            return acc -> prefix + acc.sb + suffix;
         }
         
         @Override
         public Set<Characteristics> characteristics() {
-            // UNORDEREDを指定して順序を気にしない最適化を許可
+            // 要素の順序どおりに結合したいので、UNORDEREDは指定しない
             return EnumSet.noneOf(Characteristics.class);
         }
     }
@@ -237,6 +254,7 @@ public class CustomCollectors {
         String joined = words.stream()
             .collect(new EfficientStringJoiner(", ", "[", "]"));
         IO.println("Joined: " + joined);
+        IO.println("Empty first element: " + Stream.of("", "a", "b").collect(new EfficientStringJoiner(",")));
         
         // 2. ヒストグラム（文字列長の分布）
         IO.println("\n2. Word Length Histogram:");
@@ -282,20 +300,29 @@ public class CustomCollectors {
             .collect(Collectors.toList());
         
         // 標準のjoining vs カスタムコレクター
+        // 先に測ったほうがJITコンパイル前で不利にならないよう、どちらも数回空回ししてから測る
+        for (int i = 0; i < 5; i++) {
+            largeDataset.stream().collect(Collectors.joining(", "));
+            largeDataset.stream().collect(new EfficientStringJoiner(", "));
+        }
+        
         long startTime = System.nanoTime();
         String result1 = largeDataset.stream()
             .collect(Collectors.joining(", "));
         long endTime = System.nanoTime();
-        IO.println("Standard joining: " + (endTime - startTime) / 1_000_000 + "ms");
+        IO.println("Standard joining: %.3fms".formatted((endTime - startTime) / 1_000_000.0));
         
         startTime = System.nanoTime();
         String result2 = largeDataset.stream()
             .collect(new EfficientStringJoiner(", "));
         endTime = System.nanoTime();
-        IO.println("Custom joining: " + (endTime - startTime) / 1_000_000 + "ms");
+        IO.println("Custom joining: %.3fms".formatted((endTime - startTime) / 1_000_000.0));
         
-        // 結果の一致確認
+        // 結果の一致確認（並列ストリームでもcombinerで正しくつながる）
         IO.println("Results match: " + result1.equals(result2));
+        IO.println("Parallel results match: " + result1.equals(
+            largeDataset.parallelStream().collect(new EfficientStringJoiner(", "))));
+        IO.println("Timings depend on the environment; use JMH for accurate measurements.");
     }
     
     public static void main(String[] args) {

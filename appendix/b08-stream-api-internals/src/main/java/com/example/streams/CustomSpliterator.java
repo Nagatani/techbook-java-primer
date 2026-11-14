@@ -2,7 +2,7 @@ package com.example.streams;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -13,7 +13,8 @@ public class CustomSpliterator {
     
     /**
      * ArrayListのSpliterator実装（簡略版）
-     * 実際のArrayListSpliteratorの動作を理解するためのサンプル
+     * 実際のArrayListSpliteratorの考え方（範囲を半分ずつに分ける）を理解するためのサンプル。
+     * 本物は要素が1つになるまで分割できるが、ここでは16件未満で分割をやめる
      */
     static class ArrayListSpliterator<E> implements Spliterator<E> {
         private final List<E> list;
@@ -130,8 +131,8 @@ public class CustomSpliterator {
     }
     
     /**
-     * ファイル行読み込み用のSpliterator
-     * 大きなファイルを効率的に並列処理するための実装
+     * 行のリスト用のSpliterator
+     * ファイルから読み込んだ行（List<String>）を、大きめの単位で分けて並列処理する例
      */
     static class LineSpliterator implements Spliterator<String> {
         private final List<String> lines;
@@ -224,28 +225,49 @@ public class CustomSpliterator {
         
         RangeSpliterator rangeSpliterator = new RangeSpliterator(0, 100, 1);
         
-        // Streamとして使用
-        Stream<Integer> rangeStream = StreamSupport.stream(rangeSpliterator, false);
+        // IntStreamとして使用（Spliterator.OfIntはintStreamに渡せばボクシングが起きない）
+        IntStream rangeStream = StreamSupport.intStream(rangeSpliterator, false);
         
         int sum = rangeStream
             .filter(n -> n % 2 == 0)
-            .mapToInt(Integer::intValue)
             .sum();
         
         IO.println("Sum of even numbers 0-99: " + sum);
         
         // 並列処理での使用
         RangeSpliterator parallelRange = new RangeSpliterator(0, 1000000, 1);
-        Stream<Integer> parallelStream = StreamSupport.stream(parallelRange, true);
+        IntStream parallelStream = StreamSupport.intStream(parallelRange, true);
         
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         long parallelSum = parallelStream
             .mapToLong(n -> (long) n * n)
             .sum();
-        long endTime = System.currentTimeMillis();
+        long endTime = System.nanoTime();
         
         IO.println("Parallel sum of squares: " + parallelSum);
-        IO.println("Execution time: " + (endTime - startTime) + "ms");
+        IO.println("Execution time: %.3fms (depends on the environment)".formatted((endTime - startTime) / 1_000_000.0));
+    }
+    
+    /**
+     * 行のリスト用Spliteratorのデモ
+     */
+    public static void demonstrateLineSpliterator() {
+        IO.println("\n=== Line Spliterator Demo ===");
+        
+        // ファイルから読み込んだ行の代わりに、1000行のリストを作る
+        List<String> lines = new ArrayList<>();
+        for (int i = 1; i <= 1000; i++) {
+            lines.add((i % 10 == 0 ? "ERROR " : "INFO ") + "line " + i);
+        }
+        
+        LineSpliterator spliterator = new LineSpliterator(lines);
+        Spliterator<String> firstHalf = spliterator.trySplit();
+        IO.println("After split: " + firstHalf.estimateSize() + " + " + spliterator.estimateSize() + " lines");
+        
+        long errorCount = StreamSupport.stream(new LineSpliterator(lines), true)
+            .filter(line -> line.startsWith("ERROR"))
+            .count();
+        IO.println("ERROR lines (parallel): " + errorCount);
     }
     
     /**
@@ -254,5 +276,6 @@ public class CustomSpliterator {
     public static void main(String[] args) {
         demonstrateSplitBehavior();
         demonstrateRangeSpliterator();
+        demonstrateLineSpliterator();
     }
 }

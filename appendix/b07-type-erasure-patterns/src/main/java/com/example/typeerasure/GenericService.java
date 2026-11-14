@@ -31,10 +31,12 @@ public class GenericService<T> {
         strings.forEach(str -> IO.println("String: " + str.toUpperCase()));
     }
     
-    // 以下はコンパイルエラー（型消去後に同じシグネチャになる）
-    // public void processIntegers(List<Integer> integers) {
+    // 以下はコンパイルエラー（同じ名前のprocessStrings(List<String>)と、
+    // 型消去後にどちらもprocessStrings(List)という同じシグネチャになる）
+    // public void processStrings(List<Integer> integers) {
     //     integers.forEach(num -> IO.println("Integer: " + (num * 2)));
     // }
+    // 名前が違えば（たとえばprocessIntegers）、型消去後も別のメソッドなので問題ない
     
     /**
      * 型消去を回避する設計パターン：メソッド名での区別

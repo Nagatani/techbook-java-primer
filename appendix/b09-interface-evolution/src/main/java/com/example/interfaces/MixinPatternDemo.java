@@ -87,11 +87,10 @@ public class MixinPatternDemo {
      * キャッシュ機能のMixin
      */
     interface Cacheable {
-        // キャッシュストレージ（実装クラスで初期化）
-        default Map<String, Object> getCache() {
-            // 各実装クラスでオーバーライドすることを想定
-            return new ConcurrentHashMap<>();
-        }
+        // キャッシュストレージ（実装クラスがフィールドとして持ち、返す）
+        // インターフェイスはフィールド（状態）を持てないので、抽象メソッドにする。
+        // defaultメソッドで毎回新しいマップを返すと、入れた値がすぐに失われてしまう
+        Map<String, Object> getCache();
         
         default void putCache(String key, Object value) {
             getCache().put(key, value);

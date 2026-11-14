@@ -1,4 +1,4 @@
-# 付録B.08 Stream APIの内部実装とパフォーマンス最適化
+# 付録B.08 Stream APIの内部実装
 
 Java 8で導入されたStream APIの内部実装の詳細と、パフォーマンスを最大化するための最適化技術について学習できるプロジェクトです。
 
@@ -8,30 +8,23 @@ Stream APIは単なる便利なAPIではなく、高度に最適化された並�
 
 ## なぜStream APIの内部実装を理解する必要があるのか
 
-### 実際の性能問題
+### よくある性能の問題
 
-- **大量データ処理でのパフォーマンス不足**: 1000万件の顧客データ処理が数十秒かかる
-- **メモリ不足によるOutOfMemoryError**: ログファイル解析で全データをメモリに展開
+- **大量データ処理でのパフォーマンス不足**: 分割しにくいデータ構造や、ボクシングの多い処理
+- **メモリ不足によるOutOfMemoryError**: 全データをメモリに展開してから処理する
 - **不適切な並列化によるパフォーマンス劣化**: 小さなデータセットでの並列ストリーム使用
-
-### ビジネスへの影響
-
-- **Eコマースサイト**: 商品検索の高速化により売上向上
-- **金融システム**: リスク分析の処理時間短縮
-- **データ分析**: 大量ログ解析の効率化
-- **リアルタイム処理**: ストリーミングデータの低遅延処理
 
 ## サンプルコード構成
 
 ### 1. Spliterator（分割可能イテレータ）の実装
 - `CustomSpliterator.java`: カスタムSpliteratorの実装例
   - ArrayListSpliterator: 配列リストの効率的な分割
-  - RangeSpliterator: 数値範囲の並列処理
-  - LineSpliterator: ファイル行の並列読み込み
+  - RangeSpliterator: 数値範囲の並列処理（`StreamSupport.intStream`でIntStreamにする）
+  - LineSpliterator: ファイルから読み込んだ行のリスト（`List<String>`）を大きめの単位で分割する
 
 ### 2. カスタムコレクターの実装
 - `CustomCollectors.java`: 効率的なデータ収集の実装
-  - EfficientStringJoiner: メモリ効率的な文字列結合
+  - EfficientStringJoiner: StringBuilderを使った文字列結合（`Collectors.joining`と同じ働きを自作して、コレクターの4つの関数の役割を学ぶ）
   - ConcurrentHistogramCollector: 並列処理対応のヒストグラム
   - StatisticsCollector: 一度のパスで複数の統計を計算
   - TopKCollector: 大量データから上位K件を効率的に抽出
@@ -39,7 +32,7 @@ Stream APIは単なる便利なAPIではなく、高度に最適化された並�
 ### 3. 並列ストリームの最適化
 - `ParallelStreamOptimization.java`: 並列処理のベストプラクティス
   - データサイズ別の並列化効果測定
-  - カスタムForkJoinPoolの使用
+  - カスタムForkJoinPoolの使用（独自のプールの中でparallelStreamを動かす方法は、仕様で保証された動作ではない）
   - 並列化に適さないケースの例
   - Spliterator特性による性能への影響
 
@@ -88,6 +81,7 @@ java com.example.streams.ParallelStreamOptimization
 
 ### Fork/Joinフレームワークの活用
 - **Work Stealing**: 負荷バランシングの仕組み
+- **共通プール**: 並列ストリームが使うForkJoinPool.commonPool()の既定の並列度は、通常「CPUコア数 - 1」（呼び出したスレッドも処理に加わる）
 - **カスタムプール**: スレッド数の調整
 - **CPU使用率の最大化**: マルチコア活用
 
@@ -108,15 +102,17 @@ java com.example.streams.ParallelStreamOptimization
 - **並行コレクション**: ConcurrentHashMap、CopyOnWriteArrayList
 - **リアクティブストリーム**: Reactor、RxJava
 
-## ベンチマーク結果例
+## 実行結果について
+
+`ParallelStreamOptimization`は、データサイズごとに逐次と並列の時間を次の形式で表示します（数値の部分は環境で変わります）。
 
 ```
 === Parallel Stream Effectiveness by Data Size ===
-Size:     100 | Sequential:    1ms | Parallel:    5ms | Speedup: 0.20x
-Size:   1,000 | Sequential:    3ms | Parallel:    8ms | Speedup: 0.38x
-Size:  10,000 | Sequential:   25ms | Parallel:   12ms | Speedup: 2.08x
-Size: 100,000 | Sequential:  250ms | Parallel:   65ms | Speedup: 3.85x
-Size:1,000,000 | Sequential: 2500ms | Parallel:  420ms | Speedup: 5.95x
+Size:       100 | Sequential:    (時間)ms | Parallel:    (時間)ms | Speedup: (倍率)x
+...
+Size:   1000000 | Sequential:    (時間)ms | Parallel:    (時間)ms | Speedup: (倍率)x
 ```
+
+時間は数回の空回し（ウォームアップ）のあとに`System.nanoTime()`で測っていますが、結果はCPUのコア数・JVM・負荷などの環境で変わります。小さなデータでは並列のほうが遅く、大きなデータでは並列のほうが速くなる傾向を読み取ってください。正確に比べるにはJMHで測ります。
 
 このプロジェクトを通じて、Stream APIの内部動作を深く理解し、実際のアプリケーションで高性能なデータ処理を実現する技術を身につけることができます。

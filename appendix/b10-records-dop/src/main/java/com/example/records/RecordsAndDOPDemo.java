@@ -19,7 +19,7 @@ public class RecordsAndDOPDemo {
     
     /**
      * シンプルなUserレコード
-     * 従来なら100行必要なコードが1行で実装可能
+     * コンストラクター・アクセサー・equals・hashCode・toStringを書かずに済む
      */
     public record User(String id, String name, String email, LocalDateTime createdAt) {
         // コンパクトコンストラクタで検証
@@ -511,19 +511,19 @@ public class RecordsAndDOPDemo {
             int iterations = 1_000_000;
             
             // 作成パフォーマンス
-            long traditionalCreate = measureTime(() -> {
+            double traditionalCreate = measureTime(() -> {
                 for (int i = 0; i < iterations; i++) {
-                    new TraditionalPoint(i, i);
+                    sink = new TraditionalPoint(i, i); // 結果を使わないとJITに処理ごと消されることがある
                 }
             });
             
-            long recordCreate = measureTime(() -> {
+            double recordCreate = measureTime(() -> {
                 for (int i = 0; i < iterations; i++) {
-                    new RecordPoint(i, i);
+                    sink = new RecordPoint(i, i);
                 }
             });
             
-            IO.println("Creation - Traditional: %d ms, Record: %d ms".formatted(
+            IO.println("Creation - Traditional: %.2f ms, Record: %.2f ms".formatted(
                             traditionalCreate, recordCreate));
             
             // equals パフォーマンス
@@ -532,42 +532,56 @@ public class RecordsAndDOPDemo {
             var rp1 = new RecordPoint(42, 100);
             var rp2 = new RecordPoint(42, 100);
             
-            long traditionalEquals = measureTime(() -> {
+            double traditionalEquals = measureTime(() -> {
+                int count = 0;
                 for (int i = 0; i < iterations; i++) {
-                    tp1.equals(tp2);
+                    if (tp1.equals(tp2)) count++;
                 }
+                sink = count;
             });
             
-            long recordEquals = measureTime(() -> {
+            double recordEquals = measureTime(() -> {
+                int count = 0;
                 for (int i = 0; i < iterations; i++) {
-                    rp1.equals(rp2);
+                    if (rp1.equals(rp2)) count++;
                 }
+                sink = count;
             });
             
-            IO.println("Equals - Traditional: %d ms, Record: %d ms".formatted(
+            IO.println("Equals - Traditional: %.2f ms, Record: %.2f ms".formatted(
                             traditionalEquals, recordEquals));
             
             // toString パフォーマンス
-            long traditionalToString = measureTime(() -> {
+            double traditionalToString = measureTime(() -> {
                 for (int i = 0; i < iterations; i++) {
-                    tp1.toString();
+                    sink = tp1.toString();
                 }
             });
             
-            long recordToString = measureTime(() -> {
+            double recordToString = measureTime(() -> {
                 for (int i = 0; i < iterations; i++) {
-                    rp1.toString();
+                    sink = rp1.toString();
                 }
             });
             
-            IO.println("ToString - Traditional: %d ms, Record: %d ms".formatted(
+            IO.println("ToString - Traditional: %.2f ms, Record: %.2f ms".formatted(
                             traditionalToString, recordToString));
         }
         
-        private static long measureTime(Runnable task) {
-            long start = System.currentTimeMillis();
+        // 測定結果を捨てずに保持しておく場所
+        private static Object sink;
+        
+        /**
+         * 数回空回ししてから（ウォームアップ）、最後の1回の時間をミリ秒で返す。
+         * 簡易的な方法なので、結果は環境で変わる。正確な測定にはJMHを使う
+         */
+        private static double measureTime(Runnable task) {
+            for (int i = 0; i < 5; i++) {
+                task.run();
+            }
+            long start = System.nanoTime();
             task.run();
-            return System.currentTimeMillis() - start;
+            return (System.nanoTime() - start) / 1_000_000.0;
         }
     }
     
@@ -599,11 +613,11 @@ public class RecordsAndDOPDemo {
         PerformanceComparison.comparePerformance();
         
         IO.println("\nKey Insights:");
-        IO.println("✓ Records eliminate boilerplate code (70-90% reduction)");
+        IO.println("✓ Records eliminate boilerplate code (constructor, accessors, equals, hashCode, toString)");
         IO.println("✓ Data-Oriented Programming separates data from logic");
         IO.println("✓ Pattern matching enables powerful data transformations");
         IO.println("✓ Sealed hierarchies provide exhaustive type checking");
-        IO.println("✓ Records are immutable by default, promoting thread safety");
+        IO.println("✓ Record fields are final (shallowly immutable); copy mutable components such as List");
         
         IO.println("\nBest Practices:");
         IO.println("• Use compact constructors for validation");
@@ -804,6 +818,6 @@ public class RecordsAndDOPDemo {
             .withProperty("api.version", "v2");
         
         IO.println("\nConfiguration URL: " + config.getUrl());
-        IO.println("Properties: " + config.properties());
+        IO.println("Properties: " + new TreeMap<>(config.properties())); // Map.copyOfの反復順は決まらないので、キーの順に並べて表示する
     }
 }

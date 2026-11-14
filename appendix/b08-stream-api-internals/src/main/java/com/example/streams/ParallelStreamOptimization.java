@@ -44,8 +44,8 @@ public class ParallelStreamOptimization {
             });
             
             double speedup = (double) sequentialTime / parallelTime;
-            IO.println("Size: %7d | Sequential: %4dms | Parallel: %4dms | Speedup: %.2fx".formatted(
-                size, sequentialTime, parallelTime, speedup));
+            IO.println("Size: %9d | Sequential: %8.3fms | Parallel: %8.3fms | Speedup: %.2fx".formatted(
+                size, toMillis(sequentialTime), toMillis(parallelTime), speedup));
         }
     }
     
@@ -73,7 +73,7 @@ public class ParallelStreamOptimization {
             .boxed()
             .collect(Collectors.toList());
         
-        // デフォルトプール（通常はCPUコア数）
+        // 共通プール（既定の並列度は、通常「CPUコア数 - 1」。呼び出したスレッドも処理に加わる）
         int defaultPoolSize = ForkJoinPool.commonPool().getParallelism();
         IO.println("Default pool parallelism: " + defaultPoolSize);
         
@@ -82,9 +82,11 @@ public class ParallelStreamOptimization {
                 .filter(ParallelStreamOptimization::isPrime)
                 .count();
         });
-        IO.println("Default pool time: " + defaultTime + "ms");
+        IO.println("Default pool time: %.3fms".formatted(toMillis(defaultTime)));
         
         // カスタムプール（コア数の2倍）
+        // 注意: 独自のForkJoinPoolの中でparallelStreamを動かすと、そのプールで処理されるが、
+        // これはAPIの仕様で保証された動作ではなく、実装に依存する
         int customPoolSize = Math.max(2, defaultPoolSize * 2);
         ForkJoinPool customPool = new ForkJoinPool(customPoolSize);
         
@@ -96,10 +98,7 @@ public class ParallelStreamOptimization {
                         .count()
                 ).join();  // join()は検査例外を投げないのでSupplierの中で使える
             });
-            IO.println("Custom pool (" + customPoolSize + " threads) time: " + customTime + "ms");
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+            IO.println("Custom pool (%d threads) time: %.3fms".formatted(customPoolSize, toMillis(customTime)));
         } finally {
             customPool.shutdown();
         }
@@ -127,16 +126,30 @@ public class ParallelStreamOptimization {
         });
         
         IO.println("Small dataset (5 elements):");
-        IO.println("  Sequential: " + smallSeqTime + "ms");
-        IO.println("  Parallel: " + smallParTime + "ms");
+        IO.println("  Sequential: %.3fms".formatted(toMillis(smallSeqTime)));
+        IO.println("  Parallel: %.3fms".formatted(toMillis(smallParTime)));
         IO.println("  Parallel overhead: " + (smallParTime > smallSeqTime ? "Yes" : "No"));
         
         // 2. 順序依存の処理
-        List<Integer> numbers = IntStream.range(0, 1000).boxed().collect(Collectors.toList());
+        // 順序のあるストリームでは、並列でもlimitは「先頭の100件」を返す（結果は逐次と同じ）。
+        // そのために各スレッドの結果を順序どおりにそろえる必要があり、並列化の利点が小さくなる。
+        // 順序が要らなければunordered()で制約を外せる（どの100件になるかは決まらない）
+        List<Integer> numbers = IntStream.range(0, 1_000_000).boxed().collect(Collectors.toList());
         
         List<Integer> sequentialResult = numbers.stream()
             .limit(100)
             .collect(Collectors.toList());
+        
+        long orderedTime = measureTime(() -> numbers.parallelStream()
+            .filter(ParallelStreamOptimization::isPrime)
+            .limit(100)
+            .collect(Collectors.toList()));
+        
+        long unorderedTime = measureTime(() -> numbers.parallelStream()
+            .unordered()
+            .filter(ParallelStreamOptimization::isPrime)
+            .limit(100)
+            .collect(Collectors.toList()));
         
         List<Integer> parallelResult = numbers.parallelStream()
             .limit(100)
@@ -144,7 +157,9 @@ public class ParallelStreamOptimization {
         
         IO.println("\nOrder-dependent operations:");
         IO.println("  Sequential and parallel results equal: " + 
-            sequentialResult.equals(parallelResult));
+            sequentialResult.equals(parallelResult) + " (the order must be preserved, which costs time)");
+        IO.println("  parallel filter+limit (ordered): %.3fms".formatted(toMillis(orderedTime)));
+        IO.println("  parallel filter+limit (unordered): %.3fms".formatted(toMillis(unorderedTime)));
         
         // 3. I/O集約的なタスク（シミュレーション）
         demonstrateIOBoundTask();
@@ -180,8 +195,8 @@ public class ParallelStreamOptimization {
         });
         
         IO.println("I/O-bound task simulation:");
-        IO.println("  Sequential: " + ioSeqTime + "ms");
-        IO.println("  Parallel: " + ioParTime + "ms");
+        IO.println("  Sequential: %.3fms".formatted(toMillis(ioSeqTime)));
+        IO.println("  Parallel: %.3fms".formatted(toMillis(ioParTime)));
         IO.println("  Speedup: " + String.format("%.2f", (double) ioSeqTime / ioParTime) + "x");
     }
     
@@ -206,27 +221,37 @@ public class ParallelStreamOptimization {
             .boxed()
             .collect(Collectors.toSet());
         
-        measureCollectionPerformance("ArrayList", arrayList.parallelStream());
-        measureCollectionPerformance("LinkedList", linkedList.parallelStream());
-        measureCollectionPerformance("HashSet", hashSet.parallelStream());
+        // ストリームは1回しか使えないので、測るたびに作り直す
+        measureCollectionPerformance("ArrayList", arrayList::parallelStream);
+        measureCollectionPerformance("LinkedList", linkedList::parallelStream);
+        measureCollectionPerformance("HashSet", hashSet::parallelStream);
     }
     
-    private static void measureCollectionPerformance(String collectionType, Stream<Integer> stream) {
+    private static void measureCollectionPerformance(String collectionType, Supplier<Stream<Integer>> streamSupplier) {
         long time = measureTime(() -> {
-            return stream.filter(x -> x % 2 == 0)
+            return streamSupplier.get().filter(x -> x % 2 == 0)
                 .mapToLong(Integer::longValue)
                 .sum();
         });
-        IO.println(collectionType + " parallel processing: " + time + "ms");
+        IO.println(collectionType + " parallel processing: %.3fms".formatted(toMillis(time)));
     }
     
     /**
      * 実行時間測定ユーティリティ
+     * 数回空回ししてから（ウォームアップ）、最後の1回の時間をナノ秒で返す。
+     * JITコンパイルの影響を減らすための簡易的な方法で、正確な測定にはJMHを使う
      */
     private static long measureTime(Supplier<Object> task) {
-        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 5; i++) {
+            task.get();
+        }
+        long startTime = System.nanoTime();
         task.get();
-        return System.currentTimeMillis() - startTime;
+        return System.nanoTime() - startTime;
+    }
+    
+    private static double toMillis(long nanos) {
+        return nanos / 1_000_000.0;
     }
     
     /**

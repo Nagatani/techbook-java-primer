@@ -1,6 +1,6 @@
-# 付録B.10 Recordsとモダンなデータ指向プログラミング
+# 付録B.10 レコードとデータ指向プログラミング
 
-Java 14で正式導入されたRecordsと、それを活用したデータ指向プログラミング（Data-Oriented Programming, DOP）について学習できるプロジェクトです。
+Java 16で正式導入されたRecords（Java 14と15ではプレビュー機能）と、それを活用したデータ指向プログラミング（Data-Oriented Programming, DOP）について学習できるプロジェクトです。
 
 ## 概要
 
@@ -10,7 +10,7 @@ RecordsとData-Oriented Programmingは、Javaプログラミングに新しい�
 
 ### ボイラープレートコードの問題
 
-**従来のアプローチ（100行のコード）:**
+**従来のアプローチ:**
 ```java
 public class TraditionalUser {
     private final String id;
@@ -25,27 +25,20 @@ public class TraditionalUser {
         this.createdAt = Objects.requireNonNull(createdAt);
     }
     
-    // getters, equals, hashCode, toString... 
-    // 合計100行以上のボイラープレート
+    // getters, equals, hashCode, toString...
+    // これらをすべて手で書く必要がある
 }
 ```
 
-**Recordsを使用（1行で同等の機能）:**
+**Recordsを使用（コンストラクター・アクセサー・equals・hashCode・toStringが自動で用意される）:**
 ```java
 public record User(String id, String name, String email, LocalDateTime createdAt) {}
 ```
 
-### ビジネスへの実際の影響
+### 開発への影響
 
-**開発コストの削減:**
-- **開発時間**: ボイラープレートコードのために50-70%増加 → Records導入で90%削減
-- **バグ率**: equals/hashCodeの実装ミスによる不具合 → コンパイラ生成により根絶
-- **保守性**: データ構造変更時の影響範囲拡大 → 自動追従により保守コスト削減
-
-**実際の改善事例:**
-- **某SaaS企業**: API開発時間を50%短縮
-- **金融システム**: データモデルの統一により不整合バグを90%削減
-- **ECプラットフォーム**: パターンマッチングで複雑な商品分類ロジックを簡素化
+- equalsとhashCodeを手で書くときの実装ミス（片方だけ直し忘れるなど）がなくなる
+- コンポーネントを追加・変更すると、equals・hashCode・toStringも自動で追従する
 
 ## サンプルコード構成
 
@@ -71,8 +64,13 @@ public record User(String id, String name, String email, LocalDateTime createdAt
   - メモリレイアウトの最適化
   - オブジェクトプーリング
   - 高速シリアライゼーション
-  - リフレクション最適化
+  - リフレクション最適化（MethodHandleのキャッシュ）
   - 並行処理での活用
+
+### 4. パターンマッチングを使わない版
+- `RecordsAndDOPSimple.java`: `RecordsAndDOPDemo`と同じ内容を、sealedとswitchのレコードパターンを使わず、instanceofとキャストで書いた版
+- `DataPipelineSimple.java`: `DataPipelineDemo`の同じ版
+- パターンマッチングを使う版と読み比べると、レコードパターンで分岐と分解が簡潔になることがわかる
 
 ## 実行方法
 
@@ -88,6 +86,10 @@ java com.example.records.DataPipelineDemo
 
 # 最適化とパフォーマンスデモ
 java com.example.records.RecordOptimizationDemo
+
+# パターンマッチングを使わない版
+java com.example.records.RecordsAndDOPSimple
+java com.example.records.DataPipelineSimple
 ```
 
 ### JVMフラグを使用した詳細分析
@@ -111,7 +113,7 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 #### 自動生成される機能
 - **コンストラクタ**: 全フィールドを引数に取る標準コンストラクタ
 - **アクセサメソッド**: フィールド名と同じメソッド（getterではない）
-- **equals/hashCode**: 全フィールドに基づく実装
+- **equals/hashCode**: 全コンポーネントに基づく実装
 - **toString**: 読みやすい文字列表現
 
 #### コンパクトコンストラクタ
@@ -158,13 +160,17 @@ static double area(Shape shape) {
 
 #### ネストしたパターン
 ```java
-case Person(var name, var age, Address(var street, var city, "Japan", _)) ->
+// record Person(String name, int age, Address address, List<String> hobbies)
+// record Address(String street, String city, String country, String postalCode)
+// レコードパターンの中に定数（"Japan"など）は書けないので、変数で受けてwhenで比べる
+case Person(var name, var age, Address(var street, var city, var country, _), _)
+        when country.equals("Japan") ->
     name + " lives in " + city + ", Japan";
 ```
 
 #### ガード条件
 ```java
-case Person(var name, var age, _) when age >= 18 -> 
+case Person(var name, var age, _, _) when age >= 18 -> 
     name + " is an adult";
 ```
 
@@ -208,18 +214,8 @@ static UserSnapshot processEvent(UserSnapshot snapshot, UserEvent event) {
 
 ### 5. パフォーマンス最適化
 
-#### メモリレイアウト最適化
-```java
-// 効率的なフィールド配置（パディング最小化）
-public record EfficientLayout(
-    long l1,      // 8 bytes
-    long l2,      // 8 bytes  
-    int i1,       // 4 bytes
-    byte b1,      // 1 byte
-    byte b2,      // 1 byte + 2 padding
-    String s1     // 参照: 8 bytes
-) {}
-```
+#### メモリレイアウト
+HotSpot JVMはフィールドを自動で並べ替えて配置するので、レコードのコンポーネントを宣言する順序はオブジェクトの大きさに影響しません。既定で有効なcompressed oopsでは、参照（Stringなど）は4バイトで表されます。
 
 #### オブジェクトプーリング
 ```java
@@ -233,24 +229,23 @@ public static CacheKey getCacheKey(String namespace, String key, long version) {
 
 ## パフォーマンス特性
 
-### ベンチマーク結果例
+### 実行結果について
+
+`RecordsAndDOPDemo`と`RecordOptimizationDemo`は、処理時間を次のような形式で表示します（数値の部分は環境で変わります）。
 
 ```
 === Record vs Traditional Class Performance ===
-Creation - Traditional: 124 ms, Record: 118 ms
-Equals - Traditional: 89 ms, Record: 76 ms
-ToString - Traditional: 342 ms, Record: 287 ms
-
-=== Memory Layout Optimization ===
-Inefficient layout memory: 5,234,567 bytes
-Efficient layout memory: 3,456,789 bytes
-Memory saved: 1,777,778 bytes (33.97%)
+Creation - Traditional: (時間) ms, Record: (時間) ms
+Equals - Traditional: (時間) ms, Record: (時間) ms
+ToString - Traditional: (時間) ms, Record: (時間) ms
 
 === Serialization Performance ===
-Standard serialization: 456.78 ms
-Fast serialization: 123.45 ms
-Speedup: 3.70x
+Standard serialization (round trip): (時間) ms
+Fast serialization (round trip): (時間) ms
+Speedup: (倍率)x
 ```
+
+時間は数回の空回し（ウォームアップ）のあとに`System.nanoTime()`で測っていますが、結果はJVM・CPU・負荷などの環境で変わり、どちらが速いかが入れ替わることもあります。正確に比べるにはJMH（Java Microbenchmark Harness）で測ります。
 
 ## 実践的な使用ガイドライン
 
@@ -293,7 +288,9 @@ public abstract class Animal { } // Recordは使えない
 #### 網羅的なパターン
 ```java
 // sealedを使って網羅性を保証
-sealed interface Result<T> permits Success<T>, Failure<T> {}
+sealed interface Result<T> permits Success, Failure {} // permitsにはクラス名だけを書く（型引数は付けない）
+record Success<T>(T value) implements Result<T> {}
+record Failure<T>(String error) implements Result<T> {}
 
 // switchで全ケースを処理
 String message = switch (result) {
@@ -306,7 +303,7 @@ String message = switch (result) {
 #### 部分的な分解
 ```java
 // 必要なフィールドのみ抽出
-case Person(var name, _, Address(_, var city, _, _), _) ->
+case Person(var name, _, Address(_, var city, _, _), _) -> // 4つのコンポーネントのうち必要なものだけ
     name + " from " + city;
 ```
 
@@ -323,16 +320,16 @@ var processedData = rawData.stream()
     ));
 ```
 
-#### イベント駆動アーキテクチャ
+#### イベント駆動の処理
 ```java
-eventStream
-    .map(EventParser::parse)
-    .flatMap(event -> switch (event) {
+// sealed interface OrderEvent permits OrderPlaced, PaymentReceived, OrderCancelled
+List<Result> results = events.stream()
+    .map(event -> switch (event) {
         case OrderPlaced(var order) -> processOrder(order);
         case PaymentReceived(var payment) -> processPayment(payment);
         case OrderCancelled(var cancellation) -> processCancellation(cancellation);
     })
-    .subscribe(result -> updateState(result));
+    .toList();
 ```
 
 ## 高度なトピック
@@ -341,6 +338,7 @@ eventStream
 
 ```java
 // 高速なバイナリシリアライゼーション
+// （writeValueは値の型ごとに書き込む補助メソッド。型の情報も書いておかないと元の型に戻せない）
 public static byte[] serialize(Record record) {
     var components = record.getClass().getRecordComponents();
     try (var baos = new ByteArrayOutputStream();
@@ -352,7 +350,7 @@ public static byte[] serialize(Record record) {
         }
         return baos.toByteArray();
     } catch (Exception e) {
-        throw new SerializationException(e);
+        throw new RuntimeException("Serialization failed", e);
     }
 }
 ```
@@ -360,20 +358,41 @@ public static byte[] serialize(Record record) {
 ### 2. リフレクション最適化
 
 ```java
-// MethodHandlesによる高速アクセス
-private static final Map<Class<?>, MethodHandles.Lookup> LOOKUP_CACHE = 
+// MethodHandleはクラスごとに1回だけ作ってキャッシュする
+// （呼び出すたびにunreflectすると、通常のリフレクションより遅くなる）
+private static final Map<Class<?>, List<Map.Entry<String, MethodHandle>>> HANDLE_CACHE =
     new ConcurrentHashMap<>();
 
 public static Map<String, Object> recordToMap(Record record) {
-    var lookup = LOOKUP_CACHE.computeIfAbsent(
-        record.getClass(),
-        clazz -> MethodHandles.privateLookupIn(clazz, MethodHandles.lookup())
-    );
-    // MethodHandlesを使った高速フィールドアクセス
+    var handles = HANDLE_CACHE.computeIfAbsent(record.getClass(), clazz -> {
+        var lookup = MethodHandles.lookup();
+        var list = new ArrayList<Map.Entry<String, MethodHandle>>();
+        for (var component : clazz.getRecordComponents()) {
+            try {
+                list.add(Map.entry(component.getName(), lookup.unreflect(component.getAccessor())));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return list;
+    });
+    var result = new HashMap<String, Object>();
+    for (var entry : handles) {
+        try {
+            result.put(entry.getKey(), entry.getValue().invoke(record));
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+    return result;
 }
 ```
 
+`RecordOptimizationDemo`の`recordToMapFast`は、この考え方で書いています。
+
 ### 3. 将来の発展（Project Valhalla）
+
+Project ValhallaのValue Objects（JEP 401）は、Java 25には含まれていません（プレビュー機能でもなく、試験用のビルドでだけ試せます）。次のコードはJava 25ではコンパイルできない、考え方を示す例です。
 
 ```java
 // 将来のValue Records（概念的）
@@ -403,26 +422,32 @@ public record Data(List<String> items) {
 
 #### 問題2: 循環参照
 ```java
-// 問題: toString/hashCodeで無限ループ
-public record Node(String value, Node parent) {}
+// 問題: 可変のListをコンポーネントに持つと、自分自身を要素に入れて循環を作れる
+public record Node(String value, List<Node> children) {}
 
-// ○ 解決: カスタムtoString/hashCode
-public record Node(String value, Node parent) {
-    @Override
-    public String toString() {
-        return "Node[value=" + value + ", parent=" + 
-               (parent == null ? "null" : parent.value) + "]";
+var children = new ArrayList<Node>();
+var node = new Node("root", children);
+children.add(node);   // nodeの子にnode自身が入る
+node.toString();      // toString（hashCodeも）が自分を何度もたどり、StackOverflowErrorになる
+
+// ○ 解決: コンパクトコンストラクターで不変のコピーにする（作ったあとに循環を作れなくなる）
+public record Node(String value, List<Node> children) {
+    public Node {
+        children = List.copyOf(children);
     }
 }
 ```
 
+`Node(String value, Node parent)`のように、自分と同じレコードを直接持つだけなら循環は作れません。レコードは不変なので、親は子より先に作られていなければならないからです。
+
 #### 問題3: シリアライゼーション互換性
 ```java
-// ○ 明示的なserialVersionUID
+// レコードは、コンポーネントの名前と値で直列化される
 public record VersionedData(String id, int version) 
     implements Serializable {
-    private static final long serialVersionUID = 1L;
 }
 ```
+
+通常のクラスでは`serialVersionUID`を宣言して互換性を管理しますが、レコードでは`serialVersionUID`の一致は検査されません（宣言しなければ0Lになります）。互換性は、コンポーネントの名前と型で決まります。コンポーネントを追加しても、古いデータに無いものは既定値（nullや0）で正規コンストラクターに渡されます。
 
 このプロジェクトを通じて、Recordsとデータ指向プログラミングの理論と実践を深く理解し、モダンなJavaアプリケーション開発のスキルを身につけることができます。Recordsは単なる構文糖ではなく、Javaプログラミングの新しいパラダイムを可能にする重要な機能です。

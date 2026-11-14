@@ -54,13 +54,36 @@ public class BridgeMethodExample<T> implements Comparable<BridgeMethodExample<T>
         IO.println("Comparison result: " + example1.compareTo(example2));
         
         // リフレクションでブリッジメソッドの存在を確認
-        var methods = BridgeMethodExample.class.getDeclaredMethods();
-        IO.println("\nMethods in BridgeMethodExample:");
+        printDeclaredMethods(BridgeMethodExample.class);
+
+        // 戻り値の型が変わる場合のブリッジメソッド
+        new StringProcessor().execute("hello");
+        printDeclaredMethods(StringProcessor.class);
+    }
+
+    /**
+     * クラスで宣言されたメソッドを、ブリッジかどうかとともに表示する
+     * getDeclaredMethods()の順序は決まっていないので、表示用に並べ替える
+     */
+    private static void printDeclaredMethods(Class<?> clazz) {
+        var methods = clazz.getDeclaredMethods();
+        java.util.Arrays.sort(methods, java.util.Comparator
+            .comparing(java.lang.reflect.Method::getName)
+            .thenComparing(m -> m.getReturnType().getName())
+            .thenComparing(m -> java.util.Arrays.toString(m.getParameterTypes())));
+        IO.println("\nMethods in " + clazz.getSimpleName() + ":");
         for (var method : methods) {
-            IO.println("- " + method.getName() + 
-                " (parameters: " + java.util.Arrays.toString(method.getParameterTypes()) + 
+            if (method.isSynthetic() && !method.isBridge()) {
+                continue; // ラムダ式のためにコンパイラが作るメソッドは表示しない
+            }
+            IO.println("- " + method.getReturnType().getSimpleName() + " " + method.getName() +
+                " (parameters: " + java.util.Arrays.toString(method.getParameterTypes()) +
                 ", bridge: " + method.isBridge() + ")");
         }
+    }
+
+    public static void main(String[] args) {
+        demonstrateBridgeMethods();
     }
 }
 

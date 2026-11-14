@@ -1,6 +1,8 @@
 package com.example.records;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.RecordComponent;
 import java.time.Duration;
 import java.time.Instant;
@@ -20,31 +22,12 @@ public class RecordOptimizationDemo {
     // ========== メモリレイアウト最適化 ==========
     
     /**
-     * 最適化されたメモリレイアウトを持つレコード
+     * メモリレイアウトについて
+     * HotSpot JVMはフィールドを自動で並べ替えて配置するので、
+     * レコードのコンポーネントを宣言する順序はオブジェクトの大きさに影響しない。
+     * また、既定で有効なcompressed oopsでは、参照（Stringなど）は4バイトで表される
      */
     public static class MemoryOptimization {
-        // 非効率なレイアウト（パディングが発生）
-        public record InefficientLayout(
-            byte b1,      // 1 byte  + 7 padding
-            long l1,      // 8 bytes
-            byte b2,      // 1 byte  + 7 padding
-            long l2,      // 8 bytes
-            int i1,       // 4 bytes + 4 padding
-            // 合計: 40 bytes（パディング含む）
-            String s1     // 参照: 8 bytes
-        ) {}
-        
-        // 効率的なレイアウト（パディング最小化）
-        public record EfficientLayout(
-            // プリミティブ型を大きい順に配置
-            long l1,      // 8 bytes
-            long l2,      // 8 bytes
-            int i1,       // 4 bytes
-            byte b1,      // 1 byte
-            byte b2,      // 1 byte + 2 padding
-            // 合計: 24 bytes（パディング最小）
-            String s1     // 参照: 8 bytes
-        ) {}
         
         // Value-basedの候補（将来のProject Valhalla）
         // @jdk.internal.ValueBased - 将来のProject Valhallaで使用される予定
@@ -74,43 +57,10 @@ public class RecordOptimizationDemo {
         }
         
         public static void demonstrateMemoryUsage() {
-            IO.println("=== Memory Layout Optimization ===");
-            
-            // メモリ使用量の推定
-            Runtime runtime = Runtime.getRuntime();
-            
-            // 非効率なレイアウト
-            runtime.gc();
-            long memBefore = runtime.totalMemory() - runtime.freeMemory();
-            
-            var inefficientList = IntStream.range(0, 100_000)
-                .mapToObj(i -> new InefficientLayout(
-                    (byte) i, i, (byte) (i + 1), i + 2, i + 3, "str" + i
-                ))
-                .collect(Collectors.toList());
-            
-            long memAfterInefficient = runtime.totalMemory() - runtime.freeMemory();
-            long inefficientUsage = memAfterInefficient - memBefore;
-            
-            // 効率的なレイアウト
-            runtime.gc();
-            memBefore = runtime.totalMemory() - runtime.freeMemory();
-            
-            var efficientList = IntStream.range(0, 100_000)
-                .mapToObj(i -> new EfficientLayout(
-                    i, i + 2, i + 3, (byte) i, (byte) (i + 1), "str" + i
-                ))
-                .collect(Collectors.toList());
-            
-            long memAfterEfficient = runtime.totalMemory() - runtime.freeMemory();
-            long efficientUsage = memAfterEfficient - memBefore;
-            
-            IO.println("Inefficient layout memory: %,d bytes".formatted(inefficientUsage));
-            IO.println("Efficient layout memory: %,d bytes".formatted(efficientUsage));
-            IO.println("Memory saved: %,d bytes (%.2f%%)".formatted(
-                inefficientUsage - efficientUsage,
-                (inefficientUsage - efficientUsage) * 100.0 / inefficientUsage
-            ));
+            IO.println("=== Memory Layout ===");
+            IO.println("HotSpot reorders fields automatically, so the declaration order of");
+            IO.println("record components does not change the object size.");
+            IO.println("With compressed oops (the default), a reference takes 4 bytes.");
             
             // Point3Dの配列効率
             var pointArray = new Point3D[10_000];
@@ -149,13 +99,15 @@ public class RecordOptimizationDemo {
             public static CacheKey getCacheKey(String namespace, String key, long version) {
                 String poolKey = namespace + ":" + key + ":" + version;
                 
-                return KEY_POOL.computeIfAbsent(poolKey, k -> {
-                    if (KEY_POOL.size() >= MAX_POOL_SIZE) {
-                        // プールサイズ制限に達した場合は新規作成
-                        return new CacheKey(namespace, key, version);
-                    }
+                CacheKey pooled = KEY_POOL.get(poolKey);
+                if (pooled != null) {
+                    return pooled;
+                }
+                if (KEY_POOL.size() >= MAX_POOL_SIZE) {
+                    // プールサイズの上限に達した場合は、プールに入れずに新しく作る
                     return new CacheKey(namespace, key, version);
-                });
+                }
+                return KEY_POOL.computeIfAbsent(poolKey, k -> new CacheKey(namespace, key, version));
             }
             
             public static void clearPool() {
@@ -200,12 +152,18 @@ public class RecordOptimizationDemo {
             IO.println("Speedup: %.2fx".formatted((double) unpooledTime / pooledTime));
             IO.println("Pool size: " + PooledRecords.getPoolSize());
             
-            // メモリ使用量の違い
-            long uniqueUnpooled = unpooledKeys.stream().distinct().count();
-            long uniquePooled = pooledKeys.stream().distinct().count();
-            
-            IO.println("Unique objects (unpooled): " + uniqueUnpooled);
-            IO.println("Unique objects (pooled): " + uniquePooled);
+            // 作られたオブジェクトの数の違い
+            // distinct()はequalsで比べるので、内容の同じレコードを1つと数えてしまう。
+            // オブジェクトそのものの数は、同一性（==）で比べるIdentityHashMapで数える
+            IO.println("Equal values (both): " + unpooledKeys.stream().distinct().count());
+            IO.println("Distinct objects (unpooled): " + countIdentities(unpooledKeys));
+            IO.println("Distinct objects (pooled): " + countIdentities(pooledKeys));
+        }
+        
+        private static int countIdentities(List<?> objects) {
+            Set<Object> identities = Collections.newSetFromMap(new IdentityHashMap<>());
+            identities.addAll(objects);
+            return identities.size();
         }
     }
     
@@ -223,8 +181,8 @@ public class RecordOptimizationDemo {
             Instant timestamp,
             Map<String, Object> metadata
         ) implements java.io.Serializable {
-            // カスタムシリアライゼーション制御
-            private static final long serialVersionUID = 1L;
+            // レコードはコンポーネントの値で直列化され、serialVersionUIDの一致は検査されない
+            // （宣言しなければ0Lになる）。そのため互換性のためにserialVersionUIDを宣言する必要はない
             
             public SerializableData {
                 metadata = metadata == null ? Map.of() : Map.copyOf(metadata);
@@ -241,13 +199,21 @@ public class RecordOptimizationDemo {
                     dos.writeUTF(data.id());
                     dos.writeUTF(data.name());
                     dos.writeInt(data.value());
-                    dos.writeLong(data.timestamp().toEpochMilli());
+                    // Instantは秒とナノ秒に分けて書く（ミリ秒にすると精度が落ちる）
+                    dos.writeLong(data.timestamp().getEpochSecond());
+                    dos.writeInt(data.timestamp().getNano());
                     
-                    // メタデータのシリアライズ
+                    // メタデータのシリアライズ（値の型を1文字で記録して、元の型に戻せるようにする）
                     dos.writeInt(data.metadata().size());
                     for (var entry : data.metadata().entrySet()) {
                         dos.writeUTF(entry.getKey());
-                        dos.writeUTF(String.valueOf(entry.getValue()));
+                        switch (entry.getValue()) {
+                            case String str -> { dos.writeByte('S'); dos.writeUTF(str); }
+                            case Integer i -> { dos.writeByte('I'); dos.writeInt(i); }
+                            case Boolean b -> { dos.writeByte('B'); dos.writeBoolean(b); }
+                            default -> throw new IllegalArgumentException(
+                                "Unsupported metadata type: " + entry.getValue().getClass());
+                        }
                     }
                     
                     return baos.toByteArray();
@@ -263,13 +229,18 @@ public class RecordOptimizationDemo {
                     String id = dis.readUTF();
                     String name = dis.readUTF();
                     int value = dis.readInt();
-                    Instant timestamp = Instant.ofEpochMilli(dis.readLong());
+                    Instant timestamp = Instant.ofEpochSecond(dis.readLong(), dis.readInt());
                     
                     int metadataSize = dis.readInt();
                     Map<String, Object> metadata = new HashMap<>();
                     for (int i = 0; i < metadataSize; i++) {
                         String key = dis.readUTF();
-                        String val = dis.readUTF();
+                        Object val = switch (dis.readByte()) {
+                            case 'S' -> dis.readUTF();
+                            case 'I' -> dis.readInt();
+                            case 'B' -> dis.readBoolean();
+                            default -> throw new java.io.IOException("Unknown type tag");
+                        };
                         metadata.put(key, val);
                     }
                     
@@ -293,17 +264,10 @@ public class RecordOptimizationDemo {
             
             int iterations = 10_000;
             
-            // Java標準シリアライゼーション
+            // Java標準シリアライゼーション（書き込みと読み込みの往復）
             long standardTime = measureTime(() -> {
-                try (var baos = new java.io.ByteArrayOutputStream();
-                     var oos = new java.io.ObjectOutputStream(baos)) {
-                    
-                    for (int i = 0; i < iterations; i++) {
-                        oos.writeObject(testData);
-                        oos.reset();
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                for (int i = 0; i < iterations; i++) {
+                    standardRoundTrip(testData);
                 }
             });
             
@@ -315,9 +279,14 @@ public class RecordOptimizationDemo {
                 }
             });
             
-            IO.println("Standard serialization: %.2f ms".formatted(standardTime / 1_000_000.0));
-            IO.println("Fast serialization: %.2f ms".formatted(fastTime / 1_000_000.0));
+            IO.println("Standard serialization (round trip): %.2f ms".formatted(standardTime / 1_000_000.0));
+            IO.println("Fast serialization (round trip): %.2f ms".formatted(fastTime / 1_000_000.0));
             IO.println("Speedup: %.2fx".formatted((double) standardTime / fastTime));
+            
+            // 元に戻した値が一致するか（レコードのequalsで比べる）
+            IO.println("Standard round trip equals original: " + standardRoundTrip(testData).equals(testData));
+            IO.println("Fast round trip equals original: "
+                + FastSerializer.deserialize(FastSerializer.serialize(testData)).equals(testData));
             
             // サイズ比較
             try {
@@ -337,6 +306,21 @@ public class RecordOptimizationDemo {
                 e.printStackTrace();
             }
         }
+        
+        private static SerializableData standardRoundTrip(SerializableData data) {
+            try {
+                var baos = new java.io.ByteArrayOutputStream();
+                try (var oos = new java.io.ObjectOutputStream(baos)) {
+                    oos.writeObject(data);
+                }
+                try (var ois = new java.io.ObjectInputStream(
+                        new java.io.ByteArrayInputStream(baos.toByteArray()))) {
+                    return (SerializableData) ois.readObject();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     
     // ========== リフレクション最適化 ==========
@@ -351,7 +335,8 @@ public class RecordOptimizationDemo {
         private static final Map<Class<?>, RecordComponent[]> COMPONENT_CACHE = 
             new ConcurrentHashMap<>();
         
-        private static final Map<Class<?>, MethodHandles.Lookup> LOOKUP_CACHE = 
+        // クラスごとに、各コンポーネントのアクセサーのMethodHandleを1回だけ作って保存する
+        private static final Map<Class<?>, List<Map.Entry<String, MethodHandle>>> HANDLE_CACHE = 
             new ConcurrentHashMap<>();
         
         public static Map<String, Object> recordToMap(Record record) {
@@ -372,30 +357,38 @@ public class RecordOptimizationDemo {
             return result;
         }
         
-        // MethodHandlesを使った高速アクセス
+        // MethodHandlesを使ったアクセス
+        // unreflectは重い処理なので、呼び出すたびに行うと通常のリフレクションより遅くなる。
+        // MethodHandleをキャッシュしておき、2回目以降は呼び出すだけにする
         public static Map<String, Object> recordToMapFast(Record record) {
-            var clazz = record.getClass();
-            var lookup = LOOKUP_CACHE.computeIfAbsent(clazz, c -> {
-                try {
-                    return MethodHandles.privateLookupIn(c, MethodHandles.lookup());
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed to create lookup", e);
-                }
-            });
-            
-            var components = COMPONENT_CACHE.computeIfAbsent(clazz, Class::getRecordComponents);
+            var handles = HANDLE_CACHE.computeIfAbsent(record.getClass(), ReflectionOptimization::createHandles);
             var result = new HashMap<String, Object>();
             
-            for (var component : components) {
+            for (var entry : handles) {
                 try {
-                    var handle = lookup.unreflect(component.getAccessor());
-                    result.put(component.getName(), handle.invoke(record));
+                    result.put(entry.getKey(), entry.getValue().invoke(record));
                 } catch (Throwable e) {
                     throw new RuntimeException("Failed to access component", e);
                 }
             }
             
             return result;
+        }
+        
+        private static List<Map.Entry<String, MethodHandle>> createHandles(Class<?> clazz) {
+            var lookup = MethodHandles.lookup();
+            var handles = new ArrayList<Map.Entry<String, MethodHandle>>();
+            for (var component : clazz.getRecordComponents()) {
+                try {
+                    // 引数と戻り値をObjectにそろえておくと、invokeExactに近い速さで呼び出せる
+                    MethodHandle handle = lookup.unreflect(component.getAccessor())
+                        .asType(MethodType.methodType(Object.class, Object.class));
+                    handles.add(Map.entry(component.getName(), handle));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Failed to create handle", e);
+                }
+            }
+            return handles;
         }
         
         public static void demonstrateReflection() {
@@ -429,7 +422,7 @@ public class RecordOptimizationDemo {
             IO.println("Speedup: %.2fx".formatted((double) normalTime / fastTime));
             
             // 結果の確認
-            IO.println("Record as map: " + recordToMapFast(sampleRecord));
+            IO.println("Record as map: " + new TreeMap<>(recordToMapFast(sampleRecord))); // キーの順に表示
         }
     }
     
@@ -579,14 +572,14 @@ public class RecordOptimizationDemo {
         ConcurrencyOptimization.demonstrateConcurrency();
         
         IO.println("\nKey Optimization Insights:");
-        IO.println("✓ Proper field ordering reduces memory padding");
-        IO.println("✓ Object pooling works well with immutable records");
-        IO.println("✓ Custom serialization can be much faster than default");
-        IO.println("✓ MethodHandles provide faster reflection access");
-        IO.println("✓ Records are naturally thread-safe for concurrent use");
+        IO.println("✓ Field order does not affect object size on HotSpot");
+        IO.println("✓ Pooling immutable records reduces the number of objects (not always faster)");
+        IO.println("✓ Custom serialization must preserve types and precision");
+        IO.println("✓ Cache MethodHandles; creating them on every call is slow");
+        IO.println("✓ Record fields are final, which helps sharing data between threads");
+        IO.println("Timings depend on the environment; use JMH for accurate measurements.");
         
         IO.println("\nPerformance Tips:");
-        IO.println("• Order fields by size (largest to smallest)");
         IO.println("• Use string interning for frequently used values");
         IO.println("• Cache reflection metadata for repeated access");
         IO.println("• Leverage record immutability in concurrent scenarios");

@@ -1,6 +1,6 @@
-# 付録B.06 ハッシュテーブルとレッドブラックツリーの内部実装
+# 付録B.06 コレクションの内部実装
 
-Javaコレクションフレームワークの中核を成すHashMapとTreeMapの内部実装について詳細に学習できるプロジェクトです。
+Javaコレクションフレームワークの中核を成すHashMapとTreeMapの内部実装（ハッシュテーブルと赤黒木）について詳細に学習できるプロジェクトです。
 
 ## 概要
 
@@ -19,7 +19,9 @@ public class BadHashCodeExample {
         return 1; // 全オブジェクトが同じハッシュ値 → 全て同じバケットに集中
     }
 }
-// 結果：HashMap操作がO(1)からO(n)に劣化
+// 結果：1つのバケットのチェーンをたどることになり、検索がO(1)からO(n)に劣化する
+// Java 8以降のHashMapは長いチェーンを赤黒木に変えるが、O(log n)に抑えられるのは
+// キーがComparableを実装している場合だけ（このクラスのようにComparableでないキーはO(n)のままになりうる）
 ```
 
 **問題2: 不適切なデータ構造選択**
@@ -35,34 +37,22 @@ Map<String, Customer> customerMap = new HashMap<>();
 Customer target = customerMap.get(targetId); // O(1)
 ```
 
-### ビジネスインパクト
-
-**実際の障害事例:**
-- 某ECサイト: 商品検索でハッシュ衝突が多発し、応答時間が10秒以上に
-- 金融システム: 不適切なTreeMap使用でメモリ不足、システムダウン
-- ゲームサーバー: プレイヤー検索の最適化不足で同時接続数制限
-
-**最適化による効果:**
-- 検索時間: O(n) → O(1)で1000倍高速化
-- メモリ使用量: 適切な初期サイズで50%削減
-- GC負荷: 効率的なデータ構造でGC時間90%削減
-
 ## サンプルコード構成
 
 ### 1. HashMap内部実装の詳細
 - `HashMapInternals.java`: ハッシュテーブルの仕組みを詳細に学習
-  - SimpleHashMap: 簡略化されたHashMap実装
+  - SimpleHashMap: 簡略化されたHashMap実装（赤黒木への変換は省略）
   - ハッシュ関数とバケットインデックス計算
   - 衝突処理（チェーン法）
   - 負荷係数と動的リサイズ
   - hashCode実装品質の影響
-  - 性能測定と最適化
+  - 標準のHashMapとの比較
 
 ### 2. TreeMap内部実装の詳細  
 - `TreeMapInternals.java`: 赤黒木の仕組みと平衡維持を学習
   - SimpleRedBlackTree: 赤黒木の実装
   - 回転操作（左回転・右回転）
-  - 挿入後の平衡維持
+  - 挿入後の平衡維持（昇順に挿入して回転を観察する）
   - 二分探索木との性能比較
   - TreeMap vs HashMap の使い分け
   - メモリ使用量の比較
@@ -103,6 +93,12 @@ private int hash(Object key) {
 - **Java 7以前**: チェーン法（連結リスト）
 - **Java 8以降**: チェーン法 + 赤黒木（長いチェーンを木に変換）
 
+Java 8以降のHashMapは、次の値（`java.util.HashMap`の定数）で連結リストと赤黒木を切り替えます。
+
+- 1つのバケットのチェーンが8（`TREEIFY_THRESHOLD`）を超えると、赤黒木に変える
+- ただし表の大きさが64（`MIN_TREEIFY_CAPACITY`）未満のときは、木にせず表を広げる
+- 削除やリサイズで6（`UNTREEIFY_THRESHOLD`）以下になると、連結リストに戻す
+
 #### 負荷係数の影響
 ```
 負荷係数 = 要素数 / バケット数
@@ -112,6 +108,8 @@ private int hash(Object key) {
 - 高い値（1.0+）: メモリ節約、衝突増加で性能低下
 ```
 
+要素数が「バケット数 × 負荷係数」（閾値）を超えると、表を2倍に広げて要素を配置し直します。
+
 ### 2. TreeMap（赤黒木）の仕組み
 
 #### 赤黒木の性質
@@ -119,7 +117,7 @@ private int hash(Object key) {
 2. ルートは黒
 3. 葉（NIL）は黒
 4. 赤ノードの子は黒
-5. 任意のノードから葉までの黒ノード数は同じ
+5. 各ノードから、その子孫の葉までのどの経路にも、同じ数の黒ノードがある
 
 #### 平衡維持の仕組み
 ```java
@@ -149,18 +147,18 @@ private void fixAfterInsertion(Node x) {
 | 検索 | O(1) 平均 | O(log n) |
 | 削除 | O(1) 平均 | O(log n) |
 | 反復 | O(n) 順序なし | O(n) ソート済み |
-| 範囲検索 | O(n) | O(log n) |
+| 範囲検索（k件） | O(n) | O(log n + k) |
 
 #### メモリ使用量
-- **HashMap**: より少ないメモリ使用量
-- **TreeMap**: 追加のポインタとカラー情報で約30%多い
+- **HashMap**: エントリ（ハッシュ値・キー・値・次への参照）に加えて、バケットの配列を持つ
+- **TreeMap**: エントリにキー・値・左右と親への参照・色を持ち、配列は持たない
+- エントリ1件あたりの大きさは同じ程度で、どちらが小さいかは要素数や表の埋まり具合で変わる。`TreeMapInternals`のメモリ比較で目安を確かめられる
 
 ### 4. 実践的な選択指針
 
 #### HashMapを選ぶべき場合
 - 高速な挿入・検索・削除が必要
 - キーの順序が重要でない
-- メモリ使用量を最小化したい
 - 一般的なキー/値ストレージ
 
 ```java
@@ -179,43 +177,22 @@ User user = userCache.get(userId); // O(1)
 // 例：日付範囲でのデータ検索
 TreeMap<LocalDate, SalesData> salesMap = new TreeMap<>();
 NavigableMap<LocalDate, SalesData> monthData = 
-    salesMap.subMap(startDate, endDate); // O(log n)
+    salesMap.subMap(startDate, true, endDate, false); // 開始位置をO(log n)で探す
 ```
 
-## ベンチマーク結果例
+## 実行結果について
 
-### HashMap性能テスト
-```
-=== Load Factor Impact ===
-Load Factor: 0.5  - Insert: 25ms, Retrieve: 18ms, Collisions: Low
-Load Factor: 0.75 - Insert: 32ms, Retrieve: 24ms, Collisions: Medium  
-Load Factor: 1.0  - Insert: 45ms, Retrieve: 38ms, Collisions: High
-Load Factor: 1.5  - Insert: 78ms, Retrieve: 65ms, Collisions: Very High
-```
+各デモは処理時間を表示します。時間は数回の空回し（ウォームアップ）のあとに`System.nanoTime()`で測っていますが、結果はJVM・CPU・負荷などの環境で変わります。正確に比べるにはJMH（Java Microbenchmark Harness）で測ります。
 
-### hashCode実装の影響
-```
-=== HashCode Quality Impact ===
-Bad HashCode (all same):  Insert: 2847ms, Max chain: 100000
-Good HashCode (Objects.hash): Insert: 32ms, Max chain: 3
-Performance difference: 89.0x improvement
-```
-
-### TreeMap vs HashMap比較
-```
-=== Performance Comparison (100,000 items) ===
-HashMap:  Insert: 45ms, Search: 23ms, Memory: 8MB
-TreeMap:  Insert: 156ms, Search: 89ms, Memory: 12MB
-HashMap advantage: 3.5x faster insert, 3.9x faster search
-```
+時間以外の値（衝突統計、木の高さ、回転の様子など）は、実行するたびに同じ結果になります。
 
 ## 最適化のベストプラクティス
 
 ### 1. HashMap最適化
 ```java
-// 適切な初期容量の設定
+// 要素数がわかっているなら、リサイズが起きない大きさで作る（Java 19以降）
 int expectedSize = 1000;
-Map<String, Object> map = new HashMap<>(expectedSize * 4 / 3);
+Map<String, Object> map = HashMap.newHashMap(expectedSize);
 
 // 良いhashCode実装
 @Override
@@ -241,30 +218,25 @@ TreeMap<Integer, String> sortedMap = new TreeMap<>(unsortedMap);
 Map<String, User> userMap = new HashMap<>(); // O(1) lookup
 
 // ソート済みデータが必要
-Map<Date, Event> timeline = new TreeMap<>(); // 自動ソート
+Map<LocalDate, Event> timeline = new TreeMap<>(); // 自動ソート
 
 // 範囲検索が必要
+TreeMap<Integer, Product> productsByPrice = new TreeMap<>();
+// ...商品を追加したあとで
 NavigableMap<Integer, Product> priceRange = 
-    new TreeMap<Integer, Product>()
-        .subMap(minPrice, maxPrice); // 効率的な範囲検索
+    productsByPrice.subMap(minPrice, true, maxPrice, true); // 効率的な範囲検索
 ```
 
 ## 高度なトピック
 
 ### 1. Java 8以降の改善
-- **Treeification**: 長いチェーンの木化
-- **ハッシュ改善**: よりよい分散のためのハッシュ関数改良
-- **並列処理**: parallelStream()のサポート
+- **Treeification**: 長いチェーンの木化（上の「衝突処理とJava 8の改善」を参照）
+- **ハッシュ改善**: 上位ビットを下位ビットに混ぜるハッシュ関数（`h ^ (h >>> 16)`）
 
 ### 2. スレッドセーフ版
-- **ConcurrentHashMap**: セグメント分割による並行アクセス
+- **ConcurrentHashMap**: Java 8以降は、バケット単位のCAS（比較して交換する操作）とロックで並行アクセスを扱う（Java 7まではセグメント分割）
 - **Collections.synchronizedMap()**: 同期化ラッパー
 - **ConcurrentSkipListMap**: TreeMapの並行版
-
-### 3. メモリ効率化
-- **トランポリン最適化**: 小さなオブジェクトの最適化
-- **コンパクション**: 削除後の空間再利用
-- **世代別GC**: 若い世代での効率的な回収
 
 ## 関連技術とアルゴリズム
 
