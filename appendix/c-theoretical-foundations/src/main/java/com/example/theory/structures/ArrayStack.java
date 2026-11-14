@@ -4,7 +4,6 @@ import java.util.EmptyStackException;
 
 /**
  * スタックの具体実装
- * リストAC-7の一部
  */
 public class ArrayStack<T> implements Stack<T> {
     private T[] array;

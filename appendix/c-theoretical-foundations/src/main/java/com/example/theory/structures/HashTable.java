@@ -2,7 +2,7 @@ package com.example.theory.structures;
 
 /**
  * ハッシュテーブルの理論的実装
- * リストAC-25
+ * キーにnullは使えない
  */
 public class HashTable<K, V> {
     private static class Entry<K, V> {
@@ -32,7 +32,7 @@ public class HashTable<K, V> {
             resize(); // 負荷率を一定以下に保つ
         }
         
-        int index = hash(key) % capacity;
+        int index = indexFor(key, capacity);
         Entry<K, V> entry = table[index];
         
         // 既存キーの更新
@@ -52,26 +52,31 @@ public class HashTable<K, V> {
     }
     
     public V get(K key) {
-        int index = hash(key) % capacity;
-        Entry<K, V> entry = table[index];
-        
-        while (entry != null) {
-            if (entry.key.equals(key)) {
-                return entry.value;
-            }
-            entry = entry.next;
-        }
-        
-        return null;
+        Entry<K, V> entry = findEntry(key);
+        return entry == null ? null : entry.value;
     }
     
     public boolean containsKey(K key) {
-        return get(key) != null;
+        // get(key) != null では、値がnullのエントリを「ない」と誤る
+        return findEntry(key) != null;
     }
     
-    private int hash(K key) {
+    private Entry<K, V> findEntry(K key) {
+        Entry<K, V> entry = table[indexFor(key, capacity)];
+        while (entry != null) {
+            if (entry.key.equals(key)) {
+                return entry;
+            }
+            entry = entry.next;
+        }
+        return null;
+    }
+    
+    private int indexFor(K key, int tableLength) {
         // 良いハッシュ関数は重要
-        return Math.abs(key.hashCode());
+        // Math.abs(hashCode()) % n は、hashCodeがInteger.MIN_VALUEのとき負になる
+        // （Math.absの結果が負のまま）。floorModは常に0以上n未満を返す
+        return Math.floorMod(key.hashCode(), tableLength);
     }
     
     @SuppressWarnings("unchecked")
@@ -83,7 +88,7 @@ public class HashTable<K, V> {
         for (Entry<K, V> entry : table) {
             while (entry != null) {
                 Entry<K, V> next = entry.next;
-                int index = hash(entry.key) % newCapacity;
+                int index = indexFor(entry.key, newCapacity);
                 entry.next = newTable[index];
                 newTable[index] = entry;
                 entry = next;

@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * Observerパターンとイベント代数
- * リストAC-21
  */
 public class ObserverPattern {
     

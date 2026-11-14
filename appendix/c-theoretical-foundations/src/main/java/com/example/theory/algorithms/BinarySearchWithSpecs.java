@@ -2,7 +2,6 @@ package com.example.theory.algorithms;
 
 /**
  * 二分探索アルゴリズムと形式的仕様
- * リストAC-26を含む
  */
 public class BinarySearchWithSpecs {
     
@@ -16,8 +15,6 @@ public class BinarySearchWithSpecs {
      * 事後条件: 
      *   result >= 0 => arr[result] == target
      *   result == -1 => ∀i. arr[i] != target
-     * 
-     * リストAC-26
      */
     public int binarySearch(int[] arr, int target) {
         // 事前条件のチェック

@@ -22,6 +22,11 @@ public class Main {
             return;
         }
         
+        if (!assertionsEnabled()) {
+            IO.println("注意: assert文が無効です。事前条件・不変条件・LSP違反の検査を見るには");
+            IO.println("      java -ea -cp out com.example.theory.Main <demo> で実行してください\n");
+        }
+        
         String demo = args[0].toLowerCase();
         
         switch (demo) {
@@ -52,8 +57,15 @@ public class Main {
         }
     }
     
+    // assert文が有効（java -ea で起動）かどうかを調べる
+    private static boolean assertionsEnabled() {
+        boolean enabled = false;
+        assert enabled = true; // -ea のときだけ代入が実行される
+        return enabled;
+    }
+    
     private static void showUsage() {
-        IO.println("Usage: java com.example.theory.Main <demo>");
+        IO.println("Usage: java -ea -cp out com.example.theory.Main <demo>");
         IO.println("\nAvailable demos:");
         IO.println("  all           - Run all demonstrations");
         IO.println("  complexity    - Software complexity metrics");
@@ -147,8 +159,13 @@ public class Main {
         hashTable.performanceAnalysis();
         
         IO.println("\n--- Liskov Substitution Principle ---");
+        if (!assertionsEnabled()) {
+            IO.println("(assert is disabled: run with -ea to check LSP)");
+            return;
+        }
         try {
             LiskovSubstitution.testLSPViolation();
+            IO.println("No LSP violation detected");
         } catch (AssertionError e) {
             IO.println("LSP violation detected: " + e.getMessage());
         }

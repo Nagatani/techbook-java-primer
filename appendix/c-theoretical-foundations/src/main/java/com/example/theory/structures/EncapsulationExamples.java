@@ -5,13 +5,11 @@ import java.util.List;
 
 /**
  * カプセル化の理論的意義の例
- * リストAC-8, AC-9を含む
  */
 public class EncapsulationExamples {
     
     /**
      * 悪い例：実装詳細の露出
-     * リストAC-8
      */
     public static class BadBankAccount {
         public double[] transactionHistory; // 実装詳細の露出
@@ -25,7 +23,6 @@ public class EncapsulationExamples {
     
     /**
      * 良い例：データの整合性を保証するカプセル化
-     * リストAC-9
      */
     public static class GoodBankAccount {
         private List<Transaction> transactions; // 実装詳細を隠蔽
@@ -46,11 +43,11 @@ public class EncapsulationExamples {
         }
         
         public double getBalance() {
-            return balance; // 計算結果のコピーを返す
+            return balance; // 基本型の値なので、呼び出し側が変えてもフィールドは変わらない
         }
         
         public List<Transaction> getTransactionHistory() {
-            return List.copyOf(transactions); // 不変ビューを返す
+            return List.copyOf(transactions); // 変更できないコピーを返す（元のリストを変えても影響しない）
         }
     }
     

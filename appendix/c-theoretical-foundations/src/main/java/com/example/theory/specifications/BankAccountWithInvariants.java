@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * クラス不変条件（Invariant）の設計
- * リストAC-27
+ * assert文による検査は、java -ea で実行したときだけ有効になる
  */
 public class BankAccountWithInvariants {
     private double balance;

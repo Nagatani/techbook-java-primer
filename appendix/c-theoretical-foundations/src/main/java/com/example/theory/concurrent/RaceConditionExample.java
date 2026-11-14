@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 競合状態（Race Condition）の形式的分析
- * リストAC-28
  */
 public class RaceConditionExample {
     private int counter = 0; // 共有状態

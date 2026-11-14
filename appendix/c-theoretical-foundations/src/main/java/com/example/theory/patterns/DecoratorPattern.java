@@ -2,7 +2,6 @@ package com.example.theory.patterns;
 
 /**
  * Decoratorパターンの数学的モデル
- * リストAC-20
  */
 public class DecoratorPattern {
     
@@ -113,7 +112,7 @@ public class DecoratorPattern {
         coffee = new SugarDecorator(coffee);
         IO.println(coffee.getDescription() + " : $" + coffee.getCost());
         
-        // 関数合成の例: h(g(f(x)))
+        // 関数合成の例: h(f(g(x)))（内側から g=砂糖、f=ミルク、h=ホイップの順に適用）
         Coffee complexCoffee = new WhipDecorator(
             new MilkDecorator(
                 new SugarDecorator(

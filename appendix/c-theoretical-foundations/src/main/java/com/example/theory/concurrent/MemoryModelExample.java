@@ -2,7 +2,6 @@ package com.example.theory.concurrent;
 
 /**
  * Java Memory Model (JMM) とメモリ順序保証
- * リストAC-30
  */
 public class MemoryModelExample {
     private boolean ready = false;
@@ -86,6 +85,8 @@ public class MemoryModelExample {
         
         Thread writer1 = new Thread(example1::writer);
         Thread reader1 = new Thread(example1::reader);
+        // readerが値の変化を見られずに回り続けてもJVMが終われるように、デーモンスレッドにする
+        reader1.setDaemon(true);
         
         reader1.start();
         Thread.sleep(100); // readerが先に開始されるように
@@ -95,8 +96,8 @@ public class MemoryModelExample {
         reader1.join(1000);
         
         if (reader1.isAlive()) {
+            // reader()は割り込みを確かめないので、interrupt()では止まらない
             IO.println("Reader thread may be stuck due to visibility issue!");
-            reader1.interrupt();
         }
         
         // volatile を使った安全な実装のデモ

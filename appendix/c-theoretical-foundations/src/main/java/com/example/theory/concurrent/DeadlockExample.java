@@ -3,7 +3,6 @@ package com.example.theory.concurrent;
 /**
  * デッドロックの理論的分析
  * コフマンの4条件とデッドロック回避策
- * リストAC-29
  */
 public class DeadlockExample {
     private final Object lock1 = new Object();
@@ -68,6 +67,7 @@ public class DeadlockExample {
         DeadlockExample example = new DeadlockExample();
         
         // デッドロックを起こす可能性のあるスレッド
+        // デッドロックしたスレッドが残ってもJVMが終われるように、デーモンスレッドにする
         Thread thread1 = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
                 example.method1();
@@ -80,35 +80,40 @@ public class DeadlockExample {
             }
         });
         
+        thread1.setDaemon(true);
+        thread2.setDaemon(true);
+        
         IO.println("=== Demonstrating potential deadlock ===");
         IO.println("Starting threads that may deadlock...");
         thread1.start();
         thread2.start();
         
-        // タイムアウトで強制終了
+        // 最大5秒だけ待つ
+        // synchronizedのロックを待っているスレッドは、interrupt()では起こせない。
+        // デッドロックしたスレッドはロックを持ったまま止まり続ける
         try {
             thread1.join(5000);
             thread2.join(5000);
             
             if (thread1.isAlive() || thread2.isAlive()) {
                 IO.println("Threads appear to be deadlocked!");
-                thread1.interrupt();
-                thread2.interrupt();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
         
         // 安全な実装のデモ
+        // 上のスレッドがlock1・lock2を持ったまま止まっている場合があるので、別のインスタンスを使う
+        DeadlockExample safeExample = new DeadlockExample();
         Thread safeThread1 = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
-                example.safeMethod1();
+                safeExample.safeMethod1();
             }
         });
         
         Thread safeThread2 = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
-                example.safeMethod2();
+                safeExample.safeMethod2();
             }
         });
         

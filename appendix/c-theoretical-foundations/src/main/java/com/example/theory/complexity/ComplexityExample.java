@@ -2,23 +2,24 @@ package com.example.theory.complexity;
 
 /**
  * 循環的複雑度（Cyclomatic Complexity）の例
- * リストAC-1とリストAC-2を統合
+ * 循環的複雑度 = 判定（if・else if・case・三項演算子・&&・||など）の数 + 1
+ * elseは新しい判定ではないので数えない
  */
 public class ComplexityExample {
     
     /**
-     * 複雑度が高いコード例（複雑度: 6）
-     * リストAC-1
+     * 複雑度が高いコード例（判定4つで、複雑度: 5）
+     * 判定が入れ子になっていて、読むときに条件を同時に覚えておく必要がある
      */
     public String processDataComplex(int type, boolean flag, String data) {
         if (type == 1) {                    // +1
             if (flag) {                     // +1
                 if (data.length() > 10) {   // +1
                     return "Type1-Long";
-                } else {                    // +1
+                } else {
                     return "Type1-Short";
                 }
-            } else {                        // +1
+            } else {
                 return "Type1-Default";
             }
         } else if (type == 2) {             // +1
@@ -28,14 +29,14 @@ public class ComplexityExample {
     }
     
     /**
-     * 改善後のコード（複雑度: 3）
-     * リストAC-2
+     * 改善後のコード（processDataとprocessType1がそれぞれ複雑度: 3）
+     * 合計は大きく減らないが、1つのメソッドで追う判定が減り、入れ子もなくなる
      */
     public String processData(int type, boolean flag, String data) {
-        switch (type) {                     // +1
-            case 1:
+        switch (type) {
+            case 1:                         // +1
                 return processType1(flag, data);
-            case 2:
+            case 2:                         // +1
                 return "Type2";
             default:
                 return "Unknown";

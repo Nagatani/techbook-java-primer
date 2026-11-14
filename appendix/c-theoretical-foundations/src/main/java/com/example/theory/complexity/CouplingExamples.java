@@ -2,13 +2,11 @@ package com.example.theory.complexity;
 
 /**
  * 結合度（Coupling）の分類例
- * リストAC-12, AC-13, AC-14, AC-15を含む
  */
 public class CouplingExamples {
     
     /**
      * 1. データ結合（Data Coupling）- 最も弱い結合
-     * リストAC-12
      */
     public double calculateTax(double income, double rate) {
         return income * rate;
@@ -16,7 +14,6 @@ public class CouplingExamples {
     
     /**
      * 2. スタンプ結合（Stamp Coupling）
-     * リストAC-13
      */
     public static class TaxInfo {
         private double income;
@@ -42,7 +39,6 @@ public class CouplingExamples {
     
     /**
      * 3. 制御結合（Control Coupling）
-     * リストAC-14
      */
     public static class Data {
         private String content;
@@ -88,7 +84,6 @@ public class CouplingExamples {
     
     /**
      * 4. 共通結合（Common Coupling）
-     * リストAC-15
      */
     // 悪い例：グローバル変数への依存
     public static class Order {

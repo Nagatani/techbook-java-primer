@@ -2,13 +2,12 @@ package com.example.theory.structures;
 
 /**
  * リスコフの置換原則（LSP）の例
- * リストAC-10, AC-11を含む
+ * assert文による検査は、java -ea で実行したときだけ有効になる
  */
 public class LiskovSubstitution {
     
     /**
      * LSP違反の例
-     * リストAC-10
      */
     public static class Rectangle {
         protected int width, height;
@@ -37,18 +36,17 @@ public class LiskovSubstitution {
     public static class Square extends Rectangle {
         @Override
         public void setWidth(int width) {
-            this.width = this.height = width; // 前提条件を変更
+            this.width = this.height = width; // 「高さは変わらない」という事後条件を破る
         }
         
         @Override
         public void setHeight(int height) {
-            this.width = this.height = height; // 前提条件を変更
+            this.width = this.height = height; // 「幅は変わらない」という事後条件を破る
         }
     }
     
     /**
      * LSP遵守の設計
-     * リストAC-11
      */
     public interface Shape {
         int getArea();

@@ -2,14 +2,13 @@ package com.example.theory.algorithms;
 
 /**
  * 構造化プログラミングの理論的基盤
- * Dijkstraの構造化定理の実装例
- * リストAC-3, AC-4, AC-5, AC-6を含む
+ * Böhm–Jacopiniの構造化定理（順次・分岐・反復の3つでどんな手順も書ける）の実装例
+ * 構造化プログラミングはDijkstraが提唱した
  */
 public class StructuredProgramming {
     
     /**
      * 1. 順次処理（Sequence）の例
-     * リストAC-3
      */
     public void sequenceExample() {
         int statement1 = 1;  // statement1;
@@ -21,7 +20,6 @@ public class StructuredProgramming {
     
     /**
      * 2. 分岐処理（Selection）の例
-     * リストAC-4
      */
     public void selectionExample(boolean condition) {
         if (condition) {
@@ -35,7 +33,6 @@ public class StructuredProgramming {
     
     /**
      * 3. 反復処理（Iteration）の例
-     * リストAC-5
      */
     public void iterationExample(int count) {
         int i = 0;
@@ -48,7 +45,6 @@ public class StructuredProgramming {
     
     /**
      * ループ不変条件の例：配列の最大値を求めるアルゴリズム
-     * リストAC-6
      */
     public int findMax(int[] array) {
         if (array.length == 0) throw new IllegalArgumentException("Array cannot be empty");

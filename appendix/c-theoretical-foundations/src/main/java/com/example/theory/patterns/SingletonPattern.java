@@ -2,7 +2,6 @@ package com.example.theory.patterns;
 
 /**
  * Singletonパターンの理論的分析
- * リストAC-19
  */
 public class SingletonPattern {
     
@@ -52,7 +51,7 @@ public class SingletonPattern {
     }
     
     /**
-     * Bill Pugh Singleton（静的内部クラスを使用）
+     * Bill Pugh Singleton（staticな入れ子クラスを使用。staticな入れ子クラスは内部クラスではない）
      */
     public static class BillPughSingleton {
         private BillPughSingleton() {

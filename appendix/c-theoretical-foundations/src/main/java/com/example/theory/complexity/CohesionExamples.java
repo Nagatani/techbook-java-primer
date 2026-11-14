@@ -4,13 +4,11 @@ import java.util.Date;
 
 /**
  * 凝集度（Cohesion）の分類例
- * リストAC-16, AC-17, AC-18を含む
  */
 public class CohesionExamples {
     
     /**
      * 1. 機能的凝集（Functional Cohesion）- 最も強い凝集
-     * リストAC-16
      */
     public static class PrimeChecker {
         public boolean isPrime(int number) {
@@ -24,7 +22,6 @@ public class CohesionExamples {
     
     /**
      * 2. 逐次的凝集（Sequential Cohesion）
-     * リストAC-17
      */
     public static class DataProcessor {
         public static class RawData {
@@ -104,7 +101,6 @@ public class CohesionExamples {
     
     /**
      * 3. 偶発的凝集（Coincidental Cohesion）- 避けるべき
-     * リストAC-18
      */
     public static class Utilities {
         // 悪い例：関連のない機能の寄せ集め

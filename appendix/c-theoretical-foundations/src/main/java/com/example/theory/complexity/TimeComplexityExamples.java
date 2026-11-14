@@ -1,17 +1,16 @@
 package com.example.theory.complexity;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Stack;
+import java.util.Deque;
 
 /**
  * 時間複雑度と空間複雑度の分析例
- * リストAC-22, AC-23, AC-24を含む
  */
 public class TimeComplexityExamples {
     
     /**
      * O(n²) の例：バブルソート
-     * リストAC-22
      */
     public void bubbleSort(int[] arr) {
         int n = arr.length;
@@ -29,7 +28,6 @@ public class TimeComplexityExamples {
     
     /**
      * O(n log n) の例：マージソート
-     * リストAC-22
      */
     public void mergeSort(int[] arr, int left, int right) {
         if (left < right) {
@@ -44,11 +42,11 @@ public class TimeComplexityExamples {
     }
     
     /**
-     * O(1) 空間：in-place ソート
-     * リストAC-23
+     * in-place ソート（補助配列を使わず、元の配列の中で並べ替える）
+     * ただし未処理の区間を覚えるスタックを使う
      */
     public void quickSortIterative(int[] arr) {
-        Stack<Integer> stack = new Stack<>();
+        Deque<Integer> stack = new ArrayDeque<>();
         stack.push(0);
         stack.push(arr.length - 1);
         
@@ -64,12 +62,12 @@ public class TimeComplexityExamples {
                 stack.push(high);
             }
         }
-        // 空間: O(log n) (スタックの最大深度)
+        // 空間: スタックに積む区間の数。平均 O(log n)、最悪 O(n)
+        // （小さい区間を先に処理する工夫をすると、最悪でも O(log n) に抑えられる）
     }
     
     /**
      * O(n) 空間：配列をコピーするソート
-     * リストAC-23
      */
     public int[] mergeSortWithCopy(int[] arr) {
         if (arr.length <= 1) return arr.clone();
@@ -79,7 +77,8 @@ public class TimeComplexityExamples {
         int[] right = mergeSortWithCopy(Arrays.copyOfRange(arr, mid, arr.length));
         
         return merge(left, right);
-        // 空間: O(n) (各レベルでn要素の配列を作成)
+        // 空間: 同時に使う配列の合計は O(n)
+        // （作る配列の延べの大きさは、各レベルでn要素ずつなので O(n log n)）
     }
     
     // ヘルパーメソッド

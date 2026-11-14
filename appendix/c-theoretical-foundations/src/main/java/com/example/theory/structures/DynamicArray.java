@@ -2,7 +2,6 @@ package com.example.theory.structures;
 
 /**
  * 動的配列（ArrayList）の償却解析の例
- * リストAC-24
  */
 public class DynamicArray<T> {
     private Object[] array;
