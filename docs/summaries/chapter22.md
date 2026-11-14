@@ -7,7 +7,7 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 8c38f27d
   - key: "外部ライブラリの利用"
-    hash: 93bf1b24
+    hash: b38de63f
   - key: "よくあるエラーと対処法"
     hash: cb6911e5
   - key: "まとめ"
@@ -47,7 +47,7 @@ sections:
     + 主要なJavadocタグ: @param、@return、@throws、@author、@version、@since、@see、@deprecatedの表と、インラインタグ（`{@code}`・`{@link}`）、HTMLのタグ（`<p>`・`<pre>`）、`@deprecated`と`@Deprecated`の違い
     + 実践的なJavadocの例: Taskクラスに網羅的なJavadocを付けた例（22-2）。非推奨の例は独自のメソッド`getSummary()`
     + Javadocの生成方法: javadocコマンドのオプションとIntelliJ IDEAの手順
-- 外部ライブラリの利用（L168–1155）
+- 外部ライブラリの利用（L168–1158）
     + オープンソースエコシステムの歴史（年表）、ライブラリ利用の技術的利点（再利用、品質、開発速度、標準化、保守）
     + クラスパスとは: JVMがクラスを探す場所としての定義、JARファイル、`-cp`の使い方と区切り文字。JARの作り方は第23章へ誘導
     + 依存関係管理ツール: Mavenの設計原則4つ、`pom.xml`に書くだけで依存ライブラリのダウンロードとクラスパスの設定を行うことと図（chapter22-maven-dependency）、依存関係解決の手順（nearest wins、スコープ）、pom.xmlへのGsonの記述（22-3）
@@ -57,17 +57,17 @@ sections:
     + OkHttp: 依存関係（22-11、okhttp-jvm 5.5.1）、同期のGET・POSTと非同期リクエスト（22-12）
     + Lombok: アノテーションプロセッサーとしての働きとJDK 23以降の指定の必要性、依存関係と`annotationProcessorPaths`（22-13）、`provided`スコープと`javac -proc:full`、`sun.misc.Unsafe`の警告（脚注）、@Data・@Builder・@NonNull・@ToString.Exclude（22-14）、個別のアノテーションと`@ToString.Include`（22-15）
     + Guava: 依存関係（22-16）、不変コレクション（第9章の`List.of`との関係）、Multimap、BiMap、Table、Splitter/Joiner、キャッシュ（22-17）
-    + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-18、Apache 2.0・MIT・GPL・LGPL）、testスコープとpropertiesによるバージョン一元管理（22-19）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-20）、よく使われる組み合わせの表
+    + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-18、Apache 2.0・MIT・GPL・LGPL）、testスコープとpropertiesによるバージョン一元管理（22-19。JUnitは第21章と同じ6.1.3。2026-11-14に5.13.4から更新）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-20）、よく使われる組み合わせの表
     + 実践的な開発フロー: `archetype:generate`（`-DarchetypeVersion=1.5`と`-DinteractiveMode=false`の理由、`maven.compiler.release`を25にする）、`mvn compile`、`mvn package`、dependency:tree/analyze、versions、purge-local-repository
     + もう1つのビルドツール：Gradle: build.gradle/build.gradle.kts、Gsonの依存関係（22-21）、implementation/testImplementation、Gradle Wrapper、gradlewのコマンド、付録Gへの誘導
-- よくあるエラーと対処法（L1156–1179）
+- よくあるエラーと対処法（L1159–1182）
     + 本文に挙げるエラー: Javadocの生成エラー、依存関係の競合（dependency:treeとexclusions）、バージョン管理の問題（22-19・22-20を参照）、APIの非互換性、クラスパスの問題、設定ファイルの読み込みと型変換、ライブラリの組み合わせ。詳細は`appendix/h-common-errors/chapters/chapter22.md`
-- まとめ（L1180–1230）
+- まとめ（L1183–1233）
     + 本章で学んだ技術の核心: Javadoc、外部ライブラリ、依存関係管理（Gradleを含む）、エコシステム
     + ドキュメント化の技術的価値（効果を4つ挙げる）
     + 依存関係管理の進化: 手動JAR → Maven/Ivy → Gradleの3世代
     + セキュリティとコンプライアンス: 脆弱性管理（OWASP Dependency-Check）、ライセンス遵守、サプライチェーン、利用状況の把握（ライブラリ・バージョン・ライセンスの一覧管理）
-- 章末演習（L1231–1259）
+- 章末演習（L1234–1262）
     + リンクは`exercises/chapter22/`。`documentation/`と`api-design/`の2つの題材に分かれ、それぞれ基礎・発展・チャレンジと解答例がある。第23章への導線
 
 ## 他章との関係

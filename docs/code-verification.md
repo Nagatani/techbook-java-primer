@@ -117,6 +117,10 @@ Gradleは`--warning-mode all`で、Gradle 10で使えなくなる書き方の警
     - タスクの実行時に`project`を参照しない（値は設定時に取り出す）
   - Javadocでは、メソッドのコメント内の見出しは`<h4>`以下にする（`<h2>`や`<h3>`はエラーになる）
   - Mockito 4系とJaCoCo 0.8.13以前はJava 25で動かない。Mockito 5.24.0、JaCoCo 0.8.16、JUnit 5.14.4で確認済み
+  - JDK 23以降のjavacは、指定しないと注釈処理をしない。JMH（`jmh-generator-annprocess`）はクラスパスに置くだけではベンチマークが生成されず、`benchmarks.jar`が空になる。maven-compiler-pluginに`<annotationProcessorPaths>`を書くか`<proc>full</proc>`（javacなら`-proc:full`）を指定する（2026-11-14、付録B.12・B.13）
+- 説明と実行結果
+  - READMEに載せるベンチマークの数値は実測したものだけにする。測っていない数値・出典のない事例を書かない。`currentTimeMillis`での計測は0msになり、比が`Infinity`・`NaN`になる。`nanoTime`・暖機・複数回の平均を使い、厳密にはJMHで測る（2026-11-14の付録の校閲で多数見つかった）
+  - Helpful NullPointerExceptionsのメッセージの変数名は、`javac -g`なしでは`<local1>`・`<parameter1>`になる
 
 ## 既知の例外
 

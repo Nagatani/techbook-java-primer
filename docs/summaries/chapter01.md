@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter01-introduction.md
-summarized: 2026-11-12
+summarized: 2026-11-14
 sections:
   - key: "本書について"
     hash: 1daff654
@@ -23,7 +23,7 @@ sections:
   - key: "標準入出力を扱うサンプルを動かしてみよう"
     hash: 1c6f0063
   - key: "よくあるエラーと対処法"
-    hash: 0bbb0a39
+    hash: 12178749
   - key: "まとめ"
     hash: ea4a3cb2
   - key: "章末演習"
@@ -72,35 +72,35 @@ sections:
     + 正誤表はIssuesで公開、FAQなどの追加リソース
 - 本章の学習目標
     + 学ぶこと4点（Javaプログラムの書き方、付録Aの手順によるコンパイルと実行、Javaの特徴、Java 25の簡潔な書き方）と前提（C言語の基礎）
-- C言語、Java、そして現代的ソフトウェア開発のしくみ（L146–175）
+- C言語、Java、そして現代的ソフトウェア開発のしくみ（L160–194）
     + グローバル変数の価格と税率を参照するCコード（1-1）で、データと手続きの分離が大規模開発で複雑さを生むことを示す
-- Javaとオブジェクト指向：データと処理を一体化する（L176–263）
+- Javaとオブジェクト指向：データと処理を一体化する（L195–281）
     + ProductクラスとMainクラス（1-2、1-3）で、カプセル化・データと処理の一体化・再利用性の3原則を文章で示し、privateフィールド、コンストラクター、メソッド、newによるインスタンス生成を丸数字で解説
     + 1ファイル1publicクラスの注意、C言語との対比。節末で「クラスやオブジェクトの書き方は第3章から学ぶ」と案内（存在しないDeep Diveへの案内は2026-11-11に削除）
-- Javaの特徴（L264–316）
+- Javaの特徴（L282–340）
     + Write Once, Run Anywhere、JVMとバイトコード、バイトコード検証、JIT。JVMアーキテクチャの図（chapter01-jvm-architecture）
     + オブジェクト指向（前節を受ける）、GC（ダングリングポインターの説明を含む。表記についての脚注）、参照とポインターの違い、強い型付け、Maven/Gradleを含むエコシステム
     + 「なぜJavaを学ぶのか」で企業システム、Spring Boot/Jakarta EE、Android、Hadoop/Sparkを挙げる
-- 開発環境の準備（L317–330）
+- 開発環境の準備（L341–361）
     + OpenJDK 25（LTS）とIntelliJ IDEAを使う（2026-11-12に解消: 2025.3でCommunity EditionとUltimateが統合され、無料で使えることとUltimateの機能が不要なことを書いた）。IOクラスのためJava 25以降が必要。構築手順はGitHubの`appendix/a-environment-setup/`を参照
-- 最初のJavaプログラム（L331–363）
+- 最初のJavaプログラム（L362–400）
     + HelloWorld（1-4）。クラス名とファイル名の一致、mainメソッドがエントリポイント、IO.printlnを散文で説明する
-- Javaプログラムの基本構文（L364–649）
+- Javaプログラムの基本構文（L401–691）
     + クラスとmainの骨格（1-5）、ルール3点、mainシグネチャ（1-6）の各要素の表と、その書き方が必要な理由
     + 「Java 25の新しい書き方：クラス宣言を省いたプログラム」: JEP 512のコンパクトソースファイル（1-7 Hello、1-8 フィールド・メソッドとjava.baseの自動import）、`java Hello.java`での直接実行、javapで見える暗黙のクラス、制限、クラス内のインスタンスmainメソッド（1-9）、従来との比較表、`import module java.base;`の紹介
     + 「本書での書き方」: 本書はクラスを宣言し`public static void main(String[] args)`で書く。理由はOOPが主題、実務のコードがクラス単位（第21章・第23章に言及）、既存のコードを読むため。試し書きにはコンパクトソースファイルを使ってよい
     + 「画面に文字列を出力する方法」: IO.println・IO.print・IO.readlnの表、IO.println（1-10）とCのprintf（1-11）の対比、書式はString.formattedで作る（1-12 StandardOutput）
     + コラム「System.out.printlnとIOクラス」で、従来のSystem.out・Scanner(System.in)との関係、System.errとPrintStreamの受け渡しは引き続きSystemを使うこと、読み替え方を説明
-- 標準入出力を扱うサンプルを動かしてみよう（L650–757）
+- 標準入出力を扱うサンプルを動かしてみよう（L692–805）
     + IO.readlnで1行読み、Integer.parseIntで整数化して2倍を表示（1-13）。Integerもjava.langにあるのでimport不要とし、import文は第2章で学ぶと案内（2026-11-11に箇条書きを文章に）
     + コラム「Integer.parseIntのエラーから学ぶ」で、NumberFormatExceptionの例（1-14）と読み方を説明し、例外処理は第13章で学ぶと予告。try-catchの参考例（1-15）あり
-- よくあるエラーと対処法（L758–865）
+- よくあるエラーと対処法（L806–920）
     + 本文には出会いやすいエラーと原因の要点のリストとGitHubのURL（`appendix/h-common-errors/chapters/chapter01.md`）だけを残す
-    + 本文に挙げるエラー: JDKが見つからない（javacが認識されない）、クラス名とファイル名の不一致、mainメソッドのシグネチャの誤り、クラスファイルが見つからない、NumberFormatException（本章のコラムを参照）
+    + 本文に挙げるエラー: JDKが見つからない（javacが認識されない）、クラス名とファイル名の不一致、mainメソッドのシグネチャの誤り（`main`の綴り・大文字小文字・引数の型の誤り。2026-11-14に、`static`を省いた`void main()`はJava 25で実行できると補った）、クラスファイルが見つからない、NumberFormatException（本章のコラムを参照）
     + 節の末尾にコラム「生成AIと初学者のプログラミング学習」がある
-- まとめ（L866–882）
+- まとめ（L921–937）
     + Javaの特徴、Javaプログラムの基本（コンパクトソースファイルは書けるが本書はクラスを宣言して書く、を含む）、標準入出力の3項目と、第2章への導入
-- 章末演習（L883–966）
+- 章末演習（L938–964）
     + 演習リンクは`exercises/chapter01/`で正しい
     + Exercise02〜04の目的と実装のポイント、学習の進め方、トラブル表、発展課題（2026-11-12に解消）（ほかの章と同じくリンクと課題構成の短い一覧にし、実装のポイント・学習の進め方・トラブル表は`exercises/chapter01/`のREADMEへ移した）
     + 次のステップで第2章の内容（変数・演算子・制御構造・配列・メソッド）を案内（2026-11-11に「第2章でOOPに入る」という誤りを解消）。末尾で付録B.01（JVMアーキテクチャ）を案内

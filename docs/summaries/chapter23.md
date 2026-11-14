@@ -9,7 +9,7 @@ sections:
   - key: "実行可能JARファイルの作成"
     hash: c400f8f4
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: 915dbe55
+    hash: 7100fce3
   - key: "まとめ"
     hash: c406da45
   - key: "章末演習"
@@ -54,7 +54,7 @@ sections:
     + JARはJREが必要という限界と、ランタイムを同梱するjpackage（Java 16で正式導入）の利点
     + 入力ディレクトリと出力ディレクトリを分ける準備とディレクトリ図（罫線は`├──`・`│`・`└──`）
     + app-imageの作成とオプション解説
-    + jpackageは実行しているOS向けのものしか作れないこと（クロスビルド不可）を述べたうえで、Windows・macOS・Linux向けの例。インストーラーにはWiX Toolset・dpkg-deb・fakeroot・rpmbuildなどの追加ツールが要ること、app-imageはインストーラーでないことを述べる
+    + jpackageは実行しているOS向けのものしか作れないこと（クロスビルド不可）を述べたうえで、Windows・macOS・Linux向けの例。インストーラーにはWiX Toolset・dpkg-deb・fakeroot・rpmbuildなどの追加ツールが要ること（脚注。2026-11-14に、Linuxではapp-imageを作るときにもobjcopy（binutils）が要ることを追加）、app-imageはインストーラーでないことを述べる
 - まとめ（L381–409）
     + 発展技術としてビルド自動化ツール（第22章で紹介したMaven、`mvn package`）、Fat JAR、GraalVMネイティブイメージ、コンテナー化、CI/CD（第21章のGitHub Actions）を列挙し、付録Gへ誘導する
 - 章末演習（L410–426）
