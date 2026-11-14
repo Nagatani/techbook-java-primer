@@ -149,10 +149,11 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         public static void demonstrateError() {
             IO.println("\n=== 二次元配列でのエラー ===");
             
-            int[][] matrix = new int[3][4];  // 3行4列
+            int[][] matrix = new int[4][3];  // 4行3列
             
             try {
-                // エラー: 内側のループでmatrix.lengthを使っている
+                // エラー: 内側のループでmatrix.length（行数の4）を使っている
+                // 各行の長さは3なので、i=0、j=3で範囲外になる
                 for (int i = 0; i < matrix.length; i++) {
                     for (int j = 0; j < matrix.length; j++) {  // 間違い！
                         matrix[i][j] = i * 10 + j;
@@ -166,7 +167,7 @@ public class ArrayIndexOutOfBoundsExceptionExample {
         public static void demonstrateSolution() {
             IO.println("\n=== 二次元配列の正しい処理 ===");
             
-            int[][] matrix = new int[3][4];  // 3行4列
+            int[][] matrix = new int[4][3];  // 4行3列
             
             // 正しい: 各行の長さを使用
             for (int i = 0; i < matrix.length; i++) {

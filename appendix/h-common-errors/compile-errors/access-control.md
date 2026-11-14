@@ -6,10 +6,13 @@
 
 ## エラーメッセージの例
 
+javacのメッセージは、日本語の環境では日本語で表示されます（例「エラー: nameはPersonでprivateアクセスされます」）。この文書と同じ英語のメッセージで見るには、`javac -J-Duser.language=en Main.java`のように実行します。
+
 ```
 error: name has private access in Person
-error: method calculate() has protected access in Calculator
-error: class InternalHelper is not public in package com.example; cannot be accessed from outside package
+error: doSomething() has protected access in BaseClass
+error: InternalHelper is not public in com.example.internal; cannot be accessed from outside package
+error: Outer.PrivateInner has private access in Outer
 ```
 
 ## アクセス修飾子の基本
@@ -394,6 +397,8 @@ public class CalculatorTest {
 ### 2. テスト専用アクセサ
 
 ```java
+import com.google.common.annotations.VisibleForTesting;
+
 public class Service {
     private State state = State.INITIAL;
     
@@ -403,11 +408,15 @@ public class Service {
         return state;
     }
     
-    private enum State {
+    // テストからState.RUNNINGなどを参照できるよう、パッケージプライベートにする
+    enum State {
         INITIAL, RUNNING, STOPPED
     }
 }
 ```
+
+`@VisibleForTesting`はJDKの標準ではなく、Guava（Maven Centralの`com.google.guava:guava`）の注釈です。
+テストのために公開範囲を広げたことを示す目印で、アクセス制御そのものは変えません。
 
 ## ベストプラクティス
 
@@ -444,5 +453,3 @@ public class AccessDebugger {
 
 - [type-mismatch.md](type-mismatch.md)
 - [symbol-not-found.md](symbol-not-found.md)
-- カプセル化の原則
-- オブジェクト指向設計

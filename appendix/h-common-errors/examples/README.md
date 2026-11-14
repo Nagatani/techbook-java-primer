@@ -8,13 +8,9 @@
 examples/
 ├── runtime-errors/          # 実行時エラーのサンプル
 │   ├── NullPointerExceptionExample.java
-│   ├── ArrayIndexOutOfBoundsExceptionExample.java
-│   ├── ClassCastExceptionExample.java
-│   └── ConcurrentModificationExceptionExample.java
+│   └── ArrayIndexOutOfBoundsExceptionExample.java
 └── compile-errors/          # コンパイルエラーのサンプル
-    ├── TypeMismatchExample.java
-    ├── SymbolNotFoundExample.java
-    └── AccessControlExample.java
+    └── TypeMismatchExample.java
 ```
 
 ## サンプルコードの実行方法
@@ -65,18 +61,6 @@ java -cp out examples.compile.TypeMismatchExample
 - 安全なアクセスメソッドの実装
 - 二次元配列での注意点
 
-#### ClassCastExceptionExample.java
-- 不正なダウンキャストの例
-- instanceof演算子による型チェック
-- パターンマッチングの使用（Java 14以降）
-- ジェネリクスによる型安全性の確保
-
-#### ConcurrentModificationExceptionExample.java
-- 反復処理中の要素削除によるエラー
-- イテレータのremove()メソッドの使用
-- removeIf()メソッドの使用（Java 8以降）
-- ConcurrentCollectionの使用
-
 ### コンパイルエラー
 
 #### TypeMismatchExample.java
@@ -85,20 +69,6 @@ java -cp out examples.compile.TypeMismatchExample
 - ジェネリクスの型不一致
 - メソッドの戻り値型の問題
 - 実用的な型変換の例
-
-#### SymbolNotFoundExample.java
-- 変数の宣言忘れ
-- スペルミスによるエラー
-- スコープ外での変数使用
-- インポート忘れ
-- 大文字小文字の間違い
-
-#### AccessControlExample.java
-- privateフィールドへの不正アクセス
-- protectedメンバーへのアクセス制限
-- パッケージプライベートの扱い
-- ゲッター/セッターの実装
-- ビルダーパターンの実装
 
 ## 学習のポイント
 
@@ -111,11 +81,11 @@ java -cp out examples.compile.TypeMismatchExample
 
 - 一部のサンプルコードには、意図的にコンパイルエラーとなるコードが含まれています
 - そのようなコードはコメントアウトされており、エラーの内容が説明されています
-- Java 8以降の機能を使用している箇所があります
-- 実行環境に応じて、適切なJavaバージョンを使用してください
+- 標準出力にJava 25の`IO`クラスを使っているため、実行にはJava 25以降が必要です
+- ClassCastException・ConcurrentModificationException・シンボルが見つからないエラー・アクセス制御のエラーは、サンプルコードではなく、`runtime-exceptions/`と`compile-errors/`の各文書の中のコード例で解説しています
 
 ## 関連資料
 
 - 付録H本文: エラーの詳細な解説
-- 第14章: 例外処理の基礎
-- 第21章: ユニットテストでのエラー検証
+- 第13章「例外処理」
+- 第21章「ユニットテストと品質保証」

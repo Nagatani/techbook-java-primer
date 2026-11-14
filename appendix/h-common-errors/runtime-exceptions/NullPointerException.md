@@ -181,13 +181,18 @@ public class Student {
 
 ### 3. アノテーションの活用
 
+nullになりうるかどうかを注釈で示すと、IDEや静的解析ツールが警告を出せるようになります。
+JDKには標準の注釈がないため、外部ライブラリを使います。
+ここではJSpecify（Maven Centralの`org.jspecify:jspecify`）の注釈を使います。
+以前よく使われた`javax.annotation.Nonnull`（JSR-305）は更新が止まっています。
+注釈は実行時の動作を変えないので、nullを渡してもそれだけでは例外になりません。
+
 ```java
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class UserService {
-    @Nonnull
-    public User getUser(@Nonnull String id) {
+    public @NonNull User getUser(@NonNull String id) {
         User user = findUser(id);
         if (user == null) {
             throw new IllegalArgumentException("ユーザーが見つかりません: " + id);
@@ -195,8 +200,7 @@ public class UserService {
         return user;
     }
     
-    @Nullable
-    private User findUser(String id) {
+    private @Nullable User findUser(String id) {
         // nullを返す可能性がある
         return userRepository.find(id);
     }
@@ -208,13 +212,15 @@ public class UserService {
 ### 1. スタックトレースの読み方
 
 ```
-Exception in thread "main" java.lang.NullPointerException
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.length()" because "this.name" is null
     at com.example.Student.printName(Student.java:25)
     at com.example.Main.main(Main.java:10)
 ```
 
-- 最初の行（Student.java:25）がエラー発生箇所
-- その行で使用している変数のいずれかがnull
+- Java 15以降は、メッセージに何がnullだったかが表示される（Helpful NullPointerExceptions）
+- `Cannot invoke "String.length()"`は呼び出せなかったメソッド、`because "this.name" is null`はnullだった式（ここではフィールド`name`）
+- 最初の`at`の行（Student.java:25）がエラー発生箇所
+- ローカル変数や引数がnullのときは、`javac -g`でコンパイルしていないと名前の代わりに`"<local1>"`や`"<parameter1>"`と表示される（IntelliJ IDEAは既定で変数名の情報を含めてコンパイルする）
 
 ### 2. デバッガの活用
 
@@ -224,6 +230,8 @@ Exception in thread "main" java.lang.NullPointerException
 4. その変数がnullになる原因を遡って調査
 
 ### 3. ログの活用
+
+`logger`は外部ライブラリSLF4J（Maven Centralの`org.slf4j:slf4j-api`）のロガーで、`{}`の位置に後ろの引数の値が入ります（使い方は[デバッグ手法](../debugging/debugging-techniques.md)の「ログを使ったデバッグ」）。
 
 ```java
 public void processOrder(Order order) {
@@ -247,4 +255,4 @@ public void processOrder(Order order) {
 
 - [ClassCastException](ClassCastException.md)
 - [ArrayIndexOutOfBoundsException](ArrayIndexOutOfBoundsException.md)
-- デバッグ手法ガイド
+- [デバッグ手法](../debugging/debugging-techniques.md)

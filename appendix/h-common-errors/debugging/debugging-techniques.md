@@ -57,6 +57,9 @@ DebugHelper.debug("検索結果: %d件", results.size());
 ### 2. ログを使ったデバッグ
 
 プロダクション環境でも使える、より洗練された方法です。
+ここではSLF4J（Maven Centralの`org.slf4j:slf4j-api`）を使います。
+SLF4JはJDKの標準ではない外部ライブラリで、実際にログを出力するにはLogbackなどの実装ライブラリも必要です。
+`{}`の位置に後ろの引数の値が埋め込まれ、最後の引数に例外を渡すとスタックトレースも出力されます。
 
 ```java
 import org.slf4j.Logger;
@@ -127,7 +130,9 @@ public class DebugExample {
         for (String item : items) {  // ここで停止
             
             // 2. 条件付きブレークポイント
-            if (item.length() > 10) {  // item.length() > 10 の時のみ停止
+            // 次の行のブレークポイントにIDEで条件「item.length() > 10」を設定すると、
+            // 条件を満たすときだけ停止する（コードのif文とは別に、IDE側で設定する）
+            if (item.length() > 10) {
                 process(item);
             }
         }
@@ -174,17 +179,20 @@ public class ComplexObject {
 
 ### 3. ステップ実行
 
+ステップ実行のキーはIDEで異なります。
+IntelliJ IDEAではStep OverがF8、Step IntoがF7、Step OutがShift+F8です（EclipseではそれぞれF6、F5、F7）。
+
 ```java
 public class StepDebugExample {
     public void mainProcess() {
-        String input = getUserInput();      // Step Over (F8)
-        String processed = process(input);  // Step Into (F7)
-        saveResult(processed);              // Step Out (Shift+F8)
+        String input = getUserInput();      // Step Over：メソッドの中に入らず次の行へ
+        String processed = process(input);  // Step Into：processの中へ入る
+        saveResult(processed);
     }
     
     private String process(String input) {
-        validate(input);        // Step Into でこのメソッド内部へ
-        return transform(input);
+        validate(input);         // Step Into でvalidateの中へ、Step Overなら次の行へ
+        return transform(input); // Step Out：残りを実行してmainProcessへ戻る
     }
 }
 ```
@@ -277,7 +285,8 @@ public class MemoryDebug {
     }
     
     // JVMオプション: -XX:+HeapDumpOnOutOfMemoryError
-    // ツール: jmap, jhat, Eclipse MAT, VisualVM
+    // 取得: jcmd <pid> GC.heap_dump <ファイル名>、jmap
+    // 解析: Eclipse MAT、VisualVM（どちらもJDKとは別に入手する。jhatはJDK 9で削除された）
 }
 ```
 
@@ -484,6 +493,3 @@ public class DebugReport {
 ## 関連項目
 
 - [stack-trace-reading.md](stack-trace-reading.md)
-- プロファイリングツールガイド
-- ログ設計のベストプラクティス
-- テスト駆動デバッグ

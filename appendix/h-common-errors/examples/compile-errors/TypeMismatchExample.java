@@ -47,7 +47,8 @@ public class TypeMismatchExample {
             IO.println("\n=== 参照型の不一致 ===");
             
             // エラー例1: 異なるクラス間の代入
-            // String text = new Integer(42);  // コンパイルエラー
+            // Integer boxed = 42;
+            // String text = boxed;  // コンパイルエラー
             
             // 解決策1: 適切な変換メソッドを使用
             String text1 = String.valueOf(42);

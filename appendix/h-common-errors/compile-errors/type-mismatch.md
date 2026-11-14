@@ -6,6 +6,8 @@
 
 ## エラーメッセージの例
 
+javacのメッセージは、日本語の環境では日本語で表示されます（例「エラー: 不適合な型: Stringをintに変換できません:」）。この文書と同じ英語のメッセージで見るには、`javac -J-Duser.language=en Example.java`のように実行します。
+
 ```
 error: incompatible types: String cannot be converted to int
 error: incompatible types: possible lossy conversion from double to int
@@ -31,13 +33,16 @@ byte small = 1000;  // エラー: possible lossy conversion from int to byte
 
 ```java
 // エラー例1：異なるクラス間の代入
-String text = new Integer(42);  // エラー: Integer cannot be converted to String
+Integer boxed = 42;
+String text = boxed;  // エラー: Integer cannot be converted to String
 
 // エラー例2：配列型の不一致
 int[] numbers = new String[5];  // エラー: String[] cannot be converted to int[]
 
 // エラー例3：継承関係のない型への代入
-List<String> list = new HashMap<>();  // エラー: HashMap cannot be converted to List
+List<String> list = new HashMap<String, Integer>();
+// エラー: HashMap<String,Integer> cannot be converted to List<String>
+// new HashMap<>()と書くと「cannot infer type arguments for HashMap<>」になる
 ```
 
 ### パターン3：ジェネリクスの型不一致
@@ -50,8 +55,13 @@ List<String> strings = new ArrayList<Integer>();  // エラー
 List<? extends Number> numbers = new ArrayList<String>();  // エラー
 
 // エラー例3：raw typeとジェネリクスの混在
-List<String> list = new ArrayList();  // 警告（エラーではないが危険）
-list.add(123);  // 実行時にClassCastExceptionの可能性
+List raw = new ArrayList();  // raw type（型引数のない書き方）
+raw.add(123);                // raw typeなので何でも入る
+List<String> list = raw;     // 警告（unchecked）だけでコンパイルは通る
+String s = list.get(0);      // 実行時にClassCastException
+
+// 参考：List<String>の変数に直接addすればコンパイルエラーになる
+// list.add(123);  // エラー: int cannot be converted to String
 ```
 
 ### パターン4：メソッドの戻り値型
@@ -285,5 +295,4 @@ javac -XDverboseResolution=all MyClass.java
 
 - [symbol-not-found.md](symbol-not-found.md)
 - [access-control.md](access-control.md)
-- ジェネリクスガイド
-- 型システムの詳細
+- [ClassCastException](../runtime-exceptions/ClassCastException.md)

@@ -28,7 +28,8 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String
    ```
    Cannot invoke "String.length()" because "str" is null
    ```
-   - Java 14以降では、より詳細なメッセージが提供される
+   - Java 14で導入され、Java 15から既定で表示される詳細なメッセージ（Helpful NullPointerExceptions）
+   - 引数やローカル変数の名前は、`javac -g`でコンパイルしたときだけ表示される。`-g`なしでは`"<parameter1>"`（1番目の引数）や`"<local1>"`のようになる。IntelliJ IDEAは既定で名前の情報を含めてコンパイルする
 
 3. **スタックフレーム**
    ```
@@ -74,7 +75,7 @@ public class Main {
 }
 ```
 
-このコードを実行すると：
+このコードを`javac -g`でコンパイルして実行すると、次のように出力されます（`-g`なしでは`"str"`が`"<parameter1>"`になります）。
 
 ```
 Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.length()" because "str" is null
@@ -99,8 +100,9 @@ Exception in thread "main" java.lang.RuntimeException: データ処理エラー
     at com.example.Main.main(Main.java:10)
 Caused by: java.io.FileNotFoundException: config.xml (No such file or directory)
     at java.base/java.io.FileInputStream.open0(Native Method)
-    at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
-    at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+    at java.base/java.io.FileInputStream.open(FileInputStream.java:185)
+    at java.base/java.io.FileInputStream.<init>(FileInputStream.java:139)
+    at java.base/java.io.FileInputStream.<init>(FileInputStream.java:109)
     at com.example.ConfigLoader.load(ConfigLoader.java:45)
     at com.example.Service.initialize(Service.java:25)
     at com.example.Service.process(Service.java:28)
@@ -113,6 +115,8 @@ Caused by: java.io.FileNotFoundException: config.xml (No such file or directory)
 - "Caused by"セクションが実際の問題を示す
 
 ### フレームワークのスタックトレース
+
+次はSpring Frameworkのスタックトレースを抜粋したものです（フレームワークのフレームの行番号などは省いています）。
 
 ```
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userService'
@@ -230,16 +234,16 @@ IDEで特定の例外が発生したときに自動的に停止するよう設�
 ### 1. ライブラリバージョンの不一致
 
 ```
-java.lang.NoSuchMethodError: com.example.Library.newMethod()V
+java.lang.NoSuchMethodError: 'void com.example.Library.newMethod()'
     at com.example.MyClass.useLibrary(MyClass.java:30)
 ```
 
-**対処法**: 依存関係とバージョンを確認
+**対処法**: コンパイルしたときと実行するときで、ライブラリのバージョンが違っていないかを確認
 
 ### 2. クラスが見つからない
 
 ```
-java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
+java.lang.ClassNotFoundException: com.mysql.cj.jdbc.Driver
     at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
 ```
 
@@ -249,12 +253,16 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 
 ```
 java.lang.OutOfMemoryError: Java heap space
-    at java.util.Arrays.copyOf(Arrays.java:3332)
+    at java.base/java.util.Arrays.copyOf(Arrays.java:3509)
+    at java.base/java.util.Arrays.copyOf(Arrays.java:3478)
+    at java.base/java.util.ArrayList.grow(ArrayList.java:238)
 ```
 
 **対処法**: JVMのヒープサイズを増やす（-Xmx オプション）
 
 ## ログとの組み合わせ
+
+ここでは外部ライブラリSLF4J（Maven Centralの`org.slf4j:slf4j-api`）のロガーを使います。`{}`の位置に後ろの引数の値が入り、最後の引数に渡した例外はスタックトレースとして出力されます（使い方は[デバッグ手法](debugging-techniques.md)の「ログを使ったデバッグ」）。
 
 ```java
 import org.slf4j.Logger;
@@ -288,6 +296,4 @@ public class ErrorHandler {
 ## 関連項目
 
 - [debugging-techniques.md](debugging-techniques.md)
-- 例外処理のベストプラクティス
-- ログ設計ガイド
-- パフォーマンス分析
+- [NullPointerException](../runtime-exceptions/NullPointerException.md)

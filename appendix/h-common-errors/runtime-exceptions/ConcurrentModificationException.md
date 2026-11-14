@@ -195,17 +195,20 @@ public class LazyRemovalList<E> {
 }
 ```
 
-### 3. イミュータブルコレクション
+### 3. 変更できないコレクション
 
 ```java
-// Guavaライブラリの例
-ImmutableList<String> immutableList = ImmutableList.of("A", "B", "C", "D");
+// List.ofで作ったリストは変更できない
+List<String> immutableList = List.of("A", "B", "C", "D");
+// immutableList.remove("B");  // UnsupportedOperationException
 
-// 変更操作は新しいコレクションを返す
-ImmutableList<String> filtered = immutableList.stream()
+// 要素を除きたいときは、元のリストを変えずに新しいリストを作る
+List<String> filtered = immutableList.stream()
     .filter(item -> !item.equals("B"))
-    .collect(ImmutableList.toImmutableList());
+    .toList();  // 結果も変更できないリスト
 ```
+
+変更できないコレクションは反復処理中に構造が変わらないので、ConcurrentModificationExceptionは起きません。
 
 ## デバッグのコツ
 
@@ -231,6 +234,8 @@ public void demonstrateFailFast() {
 
 ### 2. デバッグログの追加
 
+`logger`は外部ライブラリSLF4J（Maven Centralの`org.slf4j:slf4j-api`）のロガーで、`{}`の位置に後ろの引数の値が入ります（使い方は[デバッグ手法](../debugging/debugging-techniques.md)の「ログを使ったデバッグ」）。
+
 ```java
 public void processWithDebug(List<String> list) {
     logger.debug("処理開始 - リストサイズ: {}", list.size());
@@ -251,7 +256,10 @@ public void processWithDebug(List<String> list) {
 }
 ```
 
-### 3. スレッドセーフティの確認
+### 3. 同期化リストの反復処理
+
+`Collections.synchronizedList`で包んだリストは、`add`や`get`などの1回ごとの操作はスレッドセーフになりますが、反復処理全体は保護されません。
+次のコードでは、`iterator`スレッドが拡張for文で回している間に`adder`スレッドが要素を追加するため、ConcurrentModificationExceptionが起きることがあります。
 
 ```java
 public class ThreadSafetyChecker {
@@ -284,6 +292,18 @@ public class ThreadSafetyChecker {
 }
 ```
 
+`Collections.synchronizedList`のJavadocにあるとおり、反復処理はリスト自身をロックして行います。
+
+```java
+synchronized (list) {
+    for (String item : list) {
+        IO.println(item);
+    }
+}
+```
+
+ロックしている間はほかのスレッドが追加できないので、反復処理が長いときは`CopyOnWriteArrayList`を使うか、コピーを作ってから回します。
+
 ## ベストプラクティス
 
 1. **適切なメソッドの選択**: removeIf()やイテレータのremove()を優先
@@ -294,41 +314,54 @@ public class ThreadSafetyChecker {
 
 ## パフォーマンスの考慮
 
+ArrayListから多くの要素を削除するとき、`Iterator`の`remove()`は削除のたびに後ろの要素を詰めるため、要素数が多いと遅くなりやすいです。
+`removeIf()`は削除する要素を先に調べてからまとめて詰めるので、この詰め直しが1回で済みます。
+新しいリストを作る方法は元のリストを変えずに済む代わりに、結果の分だけメモリを使います。
+実際の差はデータの量や環境で変わるので、気になるときは同じ条件のリストを方法ごとに作り直して測ります。
+
 ```java
-// パフォーマンス比較
 public void performanceComparison() {
-    List<Integer> list = new ArrayList<>();
-    for (int i = 0; i < 100000; i++) {
-        list.add(i);
-    }
-    
-    // 方法1: removeIf（最速）
+    // 方法1: removeIf
+    List<Integer> list1 = createList(100_000);
     long start1 = System.nanoTime();
-    list.removeIf(n -> n % 2 == 0);
+    list1.removeIf(n -> n % 2 == 0);
     long time1 = System.nanoTime() - start1;
-    
-    // 方法2: Iterator（中速）
-    Iterator<Integer> iter = list.iterator();
+
+    // 方法2: Iterator
+    List<Integer> list2 = createList(100_000);
     long start2 = System.nanoTime();
+    Iterator<Integer> iter = list2.iterator();
     while (iter.hasNext()) {
         if (iter.next() % 2 == 0) {
             iter.remove();
         }
     }
     long time2 = System.nanoTime() - start2;
-    
-    // 方法3: 新しいリスト作成（メモリ使用量大）
+
+    // 方法3: 新しいリストを作る
+    List<Integer> list3 = createList(100_000);
     long start3 = System.nanoTime();
-    List<Integer> newList = list.stream()
+    List<Integer> newList = list3.stream()
         .filter(n -> n % 2 != 0)
-        .collect(Collectors.toList());
+        .toList();
     long time3 = System.nanoTime() - start3;
+
+    IO.println("removeIf: %d ms, Iterator: %d ms, Stream: %d ms".formatted(
+        time1 / 1_000_000, time2 / 1_000_000, time3 / 1_000_000));
+}
+
+private List<Integer> createList(int size) {
+    List<Integer> list = new ArrayList<>();
+    for (int i = 0; i < size; i++) {
+        list.add(i);
+    }
+    return list;
 }
 ```
 
+1回だけの計測はJITコンパイルなどの影響を受けるので、目安として見てください。
+
 ## 関連項目
 
-- [IllegalStateException](IllegalStateException.md)
-- [UnsupportedOperationException](UnsupportedOperationException.md)
-- コレクションフレームワークガイド
-- 並行プログラミングガイド
+- [ArrayIndexOutOfBoundsException](ArrayIndexOutOfBoundsException.md)
+- [NullPointerException](NullPointerException.md)

@@ -26,7 +26,7 @@ for (int i = 0; i <= numbers.length; i++) {  // i <= lengthが問題
 
 ```java
 int[] scores = {90, 85, 78, 92, 88};
-// 1から始めてしまい、最後の要素を見逃す
+// 1から始めてしまい、先頭の要素（scores[0]）を飛ばしたうえ、最後にi=5で範囲外になる
 for (int i = 1; i <= scores.length; i++) {
     IO.println("Score " + i + ": " + scores[i]);  // i=5でエラー
 }
@@ -158,9 +158,11 @@ public int[] slice(int[] array, int start, int end) {
 ### 1. 文字列の長さとの混同
 
 ```java
-// 間違い
 String text = "Hello";
-char lastChar = text.charAt(text.length());  // StringIndexOutOfBoundsException
+
+// 間違い
+// StringIndexOutOfBoundsException: Index 5 out of bounds for length 5
+char wrong = text.charAt(text.length());
 
 // 正しい
 char lastChar = text.charAt(text.length() - 1);
@@ -169,9 +171,9 @@ char lastChar = text.charAt(text.length() - 1);
 ### 2. 二次元配列での誤り
 
 ```java
-int[][] matrix = new int[3][4];
+int[][] matrix = new int[4][3];  // 4行3列
 
-// 間違い
+// 間違い（i=0、j=3でIndex 3 out of bounds for length 3）
 for (int i = 0; i < matrix.length; i++) {
     for (int j = 0; j < matrix.length; j++) {  // matrix[i].lengthを使うべき
         matrix[i][j] = i * j;
@@ -204,12 +206,12 @@ if (index < numbers.size()) {
 ### 1. エラーメッセージの読み方
 
 ```
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: 5
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 5 out of bounds for length 5
     at com.example.ArrayDemo.main(ArrayDemo.java:10)
 ```
 
-- `5`は問題のあるインデックス値
-- 配列のサイズを確認し、なぜこのインデックスになったか調査
+- `Index 5`は使おうとしたインデックス、`length 5`は配列の長さ
+- 有効なインデックスは0から長さ−1（この例では0〜4）までなので、なぜこのインデックスになったかを調べる
 
 ### 2. デバッグ出力
 
@@ -228,6 +230,8 @@ public void debugArray(int[] array, int index) {
 ```
 
 ### 3. アサーションの活用
+
+`assert`文は、実行時に`java -ea クラス名`のように`-ea`オプションを付けたときだけ検査されます（付けなければ何もしません）。
 
 ```java
 private void processArray(int[] array, int index) {
@@ -251,5 +255,4 @@ private void processArray(int[] array, int index) {
 ## 関連項目
 
 - [NullPointerException](NullPointerException.md)
-- [IndexOutOfBoundsException](IndexOutOfBoundsException.md)
-- コレクションフレームワークガイド
+- [ConcurrentModificationException](ConcurrentModificationException.md)

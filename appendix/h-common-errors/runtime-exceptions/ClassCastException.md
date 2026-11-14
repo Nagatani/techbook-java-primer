@@ -101,7 +101,7 @@ public void processAnimal(Animal animal) {
 }
 ```
 
-### 2. パターンマッチング（Java 14以降）
+### 2. パターンマッチング（Java 16以降）
 
 ```java
 public void processAnimal(Animal animal) {
@@ -113,13 +113,13 @@ public void processAnimal(Animal animal) {
 }
 ```
 
-### 3. switch式でのパターンマッチング（Java 17以降）
+### 3. switch式でのパターンマッチング（Java 21以降）
 
 ```java
 public String describeAnimal(Animal animal) {
     return switch (animal) {
-        case Dog dog -> "犬: " + dog.getName();
-        case Cat cat -> "猫: " + cat.getName();
+        case Dog dog -> "犬";
+        case Cat cat -> "猫";
         case null -> "動物がいません";
         default -> "不明な動物";
     };
@@ -249,12 +249,12 @@ public abstract class AnimalFactory {
 ### 1. エラーメッセージの解読
 
 ```
-Exception in thread "main" java.lang.ClassCastException: 
-    class com.example.Cat cannot be cast to class com.example.Dog
+Exception in thread "main" java.lang.ClassCastException: class com.example.Cat cannot be cast to class com.example.Dog (com.example.Cat and com.example.Dog are in unnamed module of loader 'app')
     at com.example.Main.main(Main.java:15)
 ```
 
 - 実際の型（Cat）と期待した型（Dog）が明記される
+- 括弧の中はクラスを読み込んだモジュールとクラスローダーの情報で、ふだんは読み飛ばしてよい
 - 発生箇所の行番号を確認
 
 ### 2. デバッグ時の型確認
@@ -277,6 +277,8 @@ public void debugCast(Object obj) {
 
 ### 3. ロギングの活用
 
+`logger`は外部ライブラリSLF4J（Maven Centralの`org.slf4j:slf4j-api`）のロガーで、`{}`の位置に後ろの引数の値が入ります（使い方は[デバッグ手法](../debugging/debugging-techniques.md)の「ログを使ったデバッグ」）。
+
 ```java
 private static final Logger logger = LoggerFactory.getLogger(MyClass.class);
 
@@ -297,12 +299,10 @@ public void processObject(Object obj) {
 1. **ジェネリクスの活用**: 型安全性をコンパイル時に保証
 2. **instanceof使用の習慣化**: キャスト前に必ず型チェック
 3. **ポリモーフィズムの活用**: キャストを避け、共通インターフェイスを使用
-4. **適切な例外処理**: ClassCastExceptionをキャッチして適切に処理
+4. **例外に頼らない**: ClassCastExceptionをキャッチするのではなく、キャストの前に型を確かめる
 5. **コードレビューでの確認**: キャスト操作は特に注意深くレビュー
 
 ## 関連項目
 
 - [NullPointerException](NullPointerException.md)
-- [IllegalArgumentException](IllegalArgumentException.md)
-- ジェネリクスガイド
-- 型安全性のベストプラクティス
+- [型の不一致エラー](../compile-errors/type-mismatch.md)

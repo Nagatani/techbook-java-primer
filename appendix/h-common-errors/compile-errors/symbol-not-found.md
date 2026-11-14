@@ -6,18 +6,26 @@
 
 ## エラーメッセージの例
 
+javacのメッセージは、日本語の環境では日本語で表示されます（例「エラー: シンボルを見つけられません」）。この文書と同じ英語のメッセージで見るには、`javac -J-Duser.language=en Example.java`のように実行します。
+
 ```
-error: cannot find symbol
-    symbol: variable message
-    location: class Example
+Example.java:4: error: cannot find symbol
+        IO.println(message);
+                   ^
+  symbol:   variable message
+  location: class Example
 
-error: cannot find symbol
-    symbol: method prinln(String)
-    location: class IO
+Example.java:5: error: cannot find symbol
+        IO.prinln("x");
+          ^
+  symbol:   method prinln(String)
+  location: class IO
 
-error: cannot find symbol
-    symbol: class Scanner
-    location: class Main
+Main.java:3: error: cannot find symbol
+        Scanner scanner = new Scanner(System.in);
+        ^
+  symbol:   class Scanner
+  location: class Main
 ```
 
 ## 典型的な発生パターン
@@ -247,25 +255,21 @@ public class OuterClass {
 ### 1. エラーメッセージの詳細な読み方
 
 ```
-error: cannot find symbol
-    symbol:   variable count
-    location: class com.example.MyClass
-             ^
 MyClass.java:25: error: cannot find symbol
         IO.println(count);
-                          ^
+                   ^
+  symbol:   variable count
+  location: class MyClass
 ```
 
-- `symbol`: 見つからないシンボルの種類と名前
-- `location`: エラーが発生したクラスや場所
-- 行番号とカーソル位置で正確な場所を特定
+- 1行目の`MyClass.java:25`がファイル名と行番号
+- 2〜3行目がその行のソースと、問題の位置を指す`^`
+- `symbol`は見つからないシンボルの種類と名前
+- `location`はシンボルを探した場所（パッケージがあってもクラスの単純名で表示される）
 
 ### 2. コンパイルオプションの活用
 
 ```bash
-# 詳細なエラー情報
-javac -verbose MyClass.java
-
 # すべての警告を表示
 javac -Xlint:all MyClass.java
 
@@ -310,29 +314,27 @@ public class MyClass {
 ### 2. クラスパスの問題
 
 ```bash
-# クラスパスを指定してコンパイル
-javac -cp ./lib/*:. MyClass.java
+# クラスパスを指定してコンパイル（*をシェルに展開させないよう引用符で囲む）
+javac -cp "lib/*:." MyClass.java
 
 # 実行時もクラスパスが必要
-java -cp ./lib/*:. com.example.MyClass
+java -cp "lib/*:." com.example.MyClass
 ```
 
-### 3. 循環参照
+Windowsではクラスパスの区切りが`:`ではなく`;`になります（`"lib/*;."`）。
+
+### 3. 参照先のソースファイルが見つからない
 
 ```java
 // ClassA.java
 public class ClassA {
     private ClassB b;  // ClassBを参照
 }
-
-// ClassB.java
-public class ClassB {
-    private ClassA a;  // ClassAを参照
-}
-
-// 両方を同時にコンパイル
-// javac ClassA.java ClassB.java
 ```
+
+`javac ClassA.java`を実行すると、javacはクラスパス（既定ではカレントディレクトリ）から`ClassB.java`か`ClassB.class`を探し、ソースが見つかればそれも自動でコンパイルします。
+互いに参照し合うクラスでも同じです。
+`ClassB.java`が別のディレクトリにある、ファイル名とクラス名が違うといった理由で見つからないときに、`cannot find symbol`（`symbol: class ClassB`）になります。
 
 ## ベストプラクティス
 
@@ -346,5 +348,3 @@ public class ClassB {
 
 - [type-mismatch.md](type-mismatch.md)
 - [access-control.md](access-control.md)
-- スコープとライフサイクル
-- パッケージとインポート
