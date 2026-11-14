@@ -96,8 +96,7 @@ public class HelloWorld {
 }
 ```
 
-Java 25では、`static`や`public`、引数の`String[] args`を省いた`void main()`も、mainメソッドとして実行できます（第1章の節「Java 25の新しい書き方：クラス宣言を省いたプログラム」）
-。
+Java 25では、`static`や`public`、引数の`String[] args`を省いた`void main()`も、mainメソッドとして実行できます（第1章の節「Java 25の新しい書き方：クラス宣言を省いたプログラム」）。
 そのため、`static`を書き忘れただけではこのエラーになりません。
 ただし、`private`を付けたmainメソッドや、戻り値の型が`void`でないmainメソッドは実行できず、このエラーになります。
 
