@@ -1,256 +1,235 @@
 # 付録B.11 Java Enumパターン詳解
 
-Javaにおける高度なenumデザインパターンの包括的なコレクションです。単純な定数を超えて、堅牢で型安全、保守しやすいソリューションを作成する方法を実演します。
+Javaにおける高度なenumデザインパターンを集めたプロジェクトです。単純な定数を超えて、型安全で保守しやすい設計をenumで作る方法を実演します。
 
 ## 概要
 
-このプロジェクトは、エンタープライズアプリケーションにおける実際の問題を解決する高度なenumパターンを紹介します。各パターンは実行可能な例と実践的なユースケースとともに実装されています。
+このプロジェクトは、実際のアプリケーションで出会う問題をenumで解決するパターンを紹介します。各パターンは実行できる例とともに実装しています。
 
 ## なぜEnumパターンが重要なのか
 
 ### 従来のアプローチの問題点
 
-1. **文字列ベースの状態管理**
-   - タイプミスや実行時エラーが発生しやすい
-   - コンパイル時検証がない
-   - 有効な遷移の追跡が困難
+1. 文字列による状態管理
+   - タイプミスが実行時まで見つからない
+   - コンパイル時の検証がない
+   - 有効な遷移を追跡しにくい
 
-2. **マジックナンバー**
-   - 意味が不明確
-   - 検証ロジックが分散
-   - 保守の悪夢
+2. マジックナンバー
+   - 意味が分かりにくい
+   - 検証のロジックが散らばる
+   - 保守しにくい
 
-3. **分散したビジネスロジック**
-   - 状態チェックがコードベース全体で重複
-   - ルール変更時のバグリスクが高い
-   - テスト容易性が低い
+3. 分散したビジネスロジック
+   - 状態のチェックがコードのあちこちで重複する
+   - ルールを変えるときにバグが入りやすい
+   - テストしにくい
 
 ### Enumパターンの利点
 
-1. **型安全性**: コンパイル時検証により無効な状態を防止
-2. **パフォーマンス**: EnumSetはビット操作でO(1)演算を実現
-3. **保守性**: 中央集権化されたビジネスロジック
-4. **スレッドセーフティ**: Enumインスタンスは本質的にスレッドセーフ
-5. **メモリ効率**: enum値ごとに単一インスタンス
+1. 型安全性
+   - 定義した定数以外の値を渡すと、コンパイルエラーになる
+2. パフォーマンス
+   - EnumSetとEnumMapは内部でビット列や配列を使い、HashSetやHashMapより速く省メモリ
+3. 保守性
+   - 定数に関係するロジックをenumの中に集められる
+4. インスタンスの一意性
+   - 各定数のインスタンスは、JVMがスレッドセーフに一度だけ生成する。ただし、インスタンスが可変の状態を持つなら、その状態のスレッドセーフ性は別に確保する必要がある
 
 ## プロジェクト構成
 
 ```
-enum-patterns/
+b11-enum-patterns/
 ├── src/main/java/com/example/enumpatterns/
+│   ├── Main.java          # デモを選んで実行するメニュー
 │   ├── statemachine/      # ステートマシン実装
 │   ├── strategy/          # enumを使用したStrategyパターン
 │   ├── permission/        # パーミッションとセキュリティパターン
-│   ├── configuration/     # 型安全な設定
-│   ├── event/            # イベント駆動アーキテクチャ
-│   ├── factory/          # Factoryパターン
-│   ├── performance/      # パフォーマンスデモンストレーション
-│   └── examples/         # 完全なアプリケーション例
-└── docs/                 # 追加ドキュメント
+│   ├── configuration/     # 設定キーと設定の管理
+│   ├── factory/           # enumによるSingleton（コネクションプール）
+│   ├── performance/       # パフォーマンスの比較
+│   └── examples/          # デモと総合的な例
+├── build.sh               # javacでコンパイルする
+├── run.sh                 # コンパイルしてMainを実行する
+└── pom.xml
 ```
 
 ## 含まれるパターン
 
 ### 1. ステートマシンパターン
 
-コンパイル時検証を伴う複雑な状態遷移を実装:
+注文の状態遷移をenumで実装します（`statemachine/OrderState.java`）。
 
 ```java
 OrderState state = OrderState.PENDING;
-state = state.confirm();  // Returns CONFIRMED
-state = state.ship();     // Returns SHIPPED
-state = state.cancel();   // Throws IllegalStateException
+state = state.confirm();  // CONFIRMEDを返す
+state = state.ship();     // SHIPPEDを返す
+state = state.cancel();   // IllegalStateExceptionを投げる
 ```
 
-**ユースケース:**
-- 注文処理ワークフロー
-- ユーザーライフサイクル管理
-- ゲーム状態管理
-- ドキュメント承認プロセス
+各状態が、許される遷移のメソッドだけをオーバーライドします。
+不正な遷移は、コンパイル時ではなく実行時に`IllegalStateException`として検出されます。
+不正な遷移をコンパイル時に防ぐには、状態ごとに別の型を用意し、その型に許される操作だけを持たせる設計（sealedインターフェイスなど）が必要です。
+
+ユースケースは次のとおりです。
+
+- 注文処理のワークフロー
+- ユーザーのライフサイクル管理
+- ゲームの状態管理
+- 文書の承認プロセス
 
 ### 2. Strategyパターン
 
-複雑なif-elseチェーンをエレガントなenumストラテジーに置き換え:
+if-elseの連鎖を、定数ごとに異なる振る舞いを持つenumに置き換えます（`strategy/PricingStrategy.java`）。
 
 ```java
-CalculationStrategy strategy = CalculationStrategy.PROGRESSIVE;
+PricingStrategy strategy = PricingStrategy.PROGRESSIVE;
 BigDecimal tax = strategy.calculateTax(amount, context);
 ```
 
-**ユースケース:**
-- 税金計算システム
-- 価格設定アルゴリズム
-- データ処理パイプライン
-- プロトコル実装
+ユースケースは次のとおりです。
+
+- 税金の計算
+- 価格設定のアルゴリズム
+- データ処理のパイプライン
 
 ### 3. Singletonパターン
 
-enumを使用したスレッドセーフなシングルトン実装:
+enumを使うと、スレッドセーフなシングルトンを簡潔に書けます（`factory/DatabaseConnection.java`）。
 
 ```java
 public enum DatabaseConnection {
     INSTANCE;
-    
-    private final Connection connection;
-    
-    DatabaseConnection() {
-        this.connection = createConnection();
+
+    private final BlockingQueue<Connection> connectionPool;
+    // ...
+
+    public Connection getConnection() throws SQLException {
+        // 最初の呼び出しでプールを作り、プールから接続を取り出す
     }
 }
 ```
 
-**ユースケース:**
-- リソースマネージャー
-- 設定ホルダー
-- サービスロケーター
-- レジストリ実装
+enumが保証するのは`INSTANCE`の生成がスレッドセーフであることまでです。
+このクラスは可変の状態（コネクションプール）を持つため、`BlockingQueue`と`synchronized`でスレッドセーフ性を確保しています。
+実行にはH2データベースのJDBCドライバーが必要です（`pom.xml`に`runtime`の依存として入れています）。
+デモのメニューからは呼び出していません。
 
 ### 4. パーミッションシステム
 
-EnumSetを使用した型安全なパーミッション管理:
+EnumSetを使って権限を管理します（`permission/`）。
 
 ```java
 EnumSet<Permission> userPerms = EnumSet.of(READ, WRITE);
 boolean canDelete = userPerms.contains(DELETE);  // false
 ```
 
-**ユースケース:**
-- ロールベースアクセス制御
+ユースケースは次のとおりです。
+
+- ロールベースのアクセス制御
 - フィーチャーフラグ
-- リソースパーミッション
-- APIアクセス制御
+- APIのアクセス制御
 
 ### 5. 設定管理
 
-自動パーシングを伴う型安全な設定:
+設定キーをenumで定義し、既定値・型・検証の規則をキーに持たせます（`configuration/`）。
 
 ```java
-int port = config.get(ConfigKey.SERVER_PORT);  // Type-safe
-boolean featureEnabled = config.get(ConfigKey.FEATURE_NEW_UI);
+int port = config.getServerPort();
+boolean featureEnabled = config.isFeatureNewUiEnabled();
 ```
 
-**ユースケース:**
-- アプリケーション設定
-- 環境設定
+汎用の`config.get(ConfigKey.SERVER_PORT)`もありますが、戻り値の型はコンパイル時に検査されません。
+enumは型パラメーターを持てないため、`String s = config.get(ConfigKey.SERVER_PORT)`のような誤りもコンパイルでき、実行時に`ClassCastException`になります。
+型を確実にするには、`getServerPort()`のような型付きのメソッドを使います。
+
+ユースケースは次のとおりです。
+
+- アプリケーションの設定
+- 環境ごとの設定
 - フィーチャートグル
-- ランタイムパラメータ
 
-### 6. イベント駆動アーキテクチャ
+## パフォーマンスの比較
 
-enumを使用したイベントルーティングとハンドリング:
-
-```java
-EventType.USER_CREATED.createEvent(data);
-registry.register(EnumSet.of(USER_CREATED, USER_UPDATED), handler);
-```
-
-**ユースケース:**
-- メッセージ処理
-- イベントソーシング
-- 通知システム
-- 監査ログ
-
-## パフォーマンスの利点
-
-### EnumSet vs HashSetのパフォーマンス
-
-```
-操作         | EnumSet | HashSet | 改善度
--------------|---------|---------|-------------
-追加         | 2ms     | 15ms    | 7.5倍高速
-含有チェック   | 1ms     | 8ms     | 8倍高速
-削除         | 2ms     | 12ms    | 6倍高速
-和集合       | 3ms     | 25ms    | 8.3倍高速
-```
+`performance/PerformanceComparison.java`は、EnumSetとHashSet、EnumMapとHashMap、enumのswitchとif-elseなどを`System.nanoTime()`で比べます。
+EnumSetとEnumMapは、HashSetやHashMapより速い傾向があります。
+ただし、ウォームアップを少し行うだけの簡易な測定なので、結果は実行のたびに、また環境によって大きく変わります。
+正確に比べるには、JMHなどのベンチマークツールを使います（付録B.12のプロジェクトでJMHを使っています）。
 
 ### メモリ使用量
 
-- EnumSet: ビットベクター使用（enum値ごとに1ビット）
-- HashSet: オブジェクト参照を持つハッシュテーブル使用
-- メモリ節約: 大きなセットで最大95%
+- EnumSet
+  - 定数が64個以下なら、1つの`long`のビット列で要素を表す（`RegularEnumSet`）
+- HashSet
+  - 要素ごとにハッシュテーブルのエントリーを持つ
 
 ## サンプルの実行
 
 ### 前提条件
 
 - Java 25以上
-- Mavenまたは好みのビルドツール
+- Maven 3.9以上（Mavenを使う場合）
 
-### クイックスタート
+### javacで実行する
 
-1. リポジトリをクローン:
 ```bash
-git clone <repository-url>
-cd enum-patterns
-```
+cd appendix/b11-enum-patterns
 
-2. プロジェクトをコンパイル:
-```bash
-javac -d out src/main/java/com/example/enumpatterns/**/*.java
-```
+# コンパイル
+./build.sh
 
-3. サンプルを実行:
-```bash
-# ステートマシンのデモ
+# メニューから選んで実行
+java -cp out com.example.enumpatterns.Main
+
+# デモを直接実行
 java -cp out com.example.enumpatterns.examples.StateMachineDemo
-
-# パーミッションシステムのデモ
 java -cp out com.example.enumpatterns.examples.PermissionDemo
-
-# パフォーマンス比較
-java -cp out com.example.enumpatterns.examples.PerformanceDemo
+java -cp out com.example.enumpatterns.examples.StrategyPatternDemo
+java -cp out com.example.enumpatterns.examples.ConfigurationDemo
+java -cp out com.example.enumpatterns.examples.ComprehensiveExample
+java -cp out com.example.enumpatterns.performance.PerformanceComparison
 ```
 
-## 実世界での成功事例
+`Main`には、`state`、`strategy`、`permission`、`config`、`comprehensive`、`performance`、`all`のいずれかを引数として渡せます。
 
-### Eコマースプラットフォーム
-- **問題**: 注文状態の不整合による配送エラー
-- **解決策**: 検証済み遷移を持つEnumステートマシン
-- **結果**: 状態関連バグの95%削減
+### Mavenで実行する
 
-### ワークフロー管理システム
-- **問題**: 分散したロジックを持つ複雑な承認ワークフロー
-- **解決策**: Enumベースのワークフローエンジン
-- **結果**: 開発効率が3倍向上
-
-### ゲーミングプラットフォーム
-- **問題**: ゲームクラッシュを引き起こすプレイヤー状態バグ
-- **解決策**: enumを使用した型安全な状態管理
-- **結果**: 状態関連クラッシュの90%削減
+```bash
+mvn clean package
+mvn exec:java -Dexec.args=all
+```
 
 ## ベストプラクティス
 
-1. **コレクションにはEnumSetを使用**
-   - enumコレクションでHashSetより64倍高速
-   - 型安全でメモリ効率的
+1. 列挙型のコレクションにはEnumSetとEnumMapを使う
+   - 型安全で、速くメモリ効率がよい
 
-2. **Enumにビジネスロジックを実装**
-   - 関連するロジックを集約
-   - ポリモーフィズムを活用
+2. Enumにビジネスロジックを実装する
+   - 関連するロジックを集約する
+   - 定数ごとのメソッドのオーバーライドでポリモーフィズムを活用する
 
-3. **固定セットにはEnumを優先**
+3. 固定された集合にはEnumを優先する
    - 設定キー
    - ステートマシン
-   - パーミッションシステム
+   - パーミッション
 
-4. **モダンJava機能と組み合わせる**
-   - スイッチ式
+4. モダンなJavaの機能と組み合わせる
+   - switch式
    - パターンマッチング
-   - データ転送用のRecords
+   - データの受け渡しにはRecord
 
 ## 避けるべき一般的な落とし穴
 
-1. **序数値を使わない**
-   - 代わりに明示的なフィールドを使用
-   - 序数は順序変更で変わる可能性がある
+1. 序数（`ordinal()`）に意味を持たせない
+   - 代わりに明示的なフィールドを使う
+   - 序数は定数の並べ替えで変わる
 
-2. **Enumに可変状態を持たせない**
-   - Enumは不変であるべき
-   - 可変データには外部ストレージを使用
+2. Enumに可変の状態をむやみに持たせない
+   - 全体で共有される1つのインスタンスなので、状態を持つとスレッドセーフ性を考える必要がある
+   - 持たせる場合は、`DatabaseConnection`のようにスレッドセーフな仕組みで守る
 
-3. **Enumを過度に使用しない**
-   - 動的なセットには不適切
-   - 大きなデータセットには代替案を検討
+3. Enumを使いすぎない
+   - 実行時に増減する集合には向かない
 
 ## ライセンス
 

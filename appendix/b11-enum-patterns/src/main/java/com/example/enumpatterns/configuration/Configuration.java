@@ -22,7 +22,11 @@ public class Configuration {
     }
     
     /**
-     * Get a configuration value with type safety
+     * Get a configuration value.
+     * enumは型パラメーターを持てないため、戻り値の型Tはコンパイル時に検査されない。
+     * 例えば String s = get(ConfigKey.SERVER_PORT) もコンパイルでき、実行時に
+     * ClassCastExceptionになる。型を確実にするには、getServerPort()のような
+     * 型付きのメソッドを使う。
      */
     public <T> T get(ConfigKey key) {
         String value = values.get(key);

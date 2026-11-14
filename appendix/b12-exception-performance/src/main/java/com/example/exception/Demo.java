@@ -82,18 +82,31 @@ public class Demo {
             ValidationException::create, 10
         );
         
-        final int iterations = 1000;
+        final int iterations = 100_000;
         
-        // Without pooling
+        // Without pooling: スタックトレースを作る通常の例外を毎回生成する
         long start = System.nanoTime();
         for (int i = 0; i < iterations; i++) {
             try {
-                throw new ValidationException();
-            } catch (ValidationException e) {
+                throw new IllegalArgumentException("Validation error " + i);
+            } catch (IllegalArgumentException e) {
                 // Handle
             }
         }
         long withoutPooling = System.nanoTime() - start;
+        
+        // Without pooling: スタックトレースを作らない例外を毎回生成する
+        start = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            ValidationException e = ValidationException.create();
+            e.setMessage("Validation error " + i);
+            try {
+                throw e;
+            } catch (ValidationException ve) {
+                // Handle
+            }
+        }
+        long noStackTrace = System.nanoTime() - start;
         
         // With pooling
         start = System.nanoTime();
@@ -109,10 +122,17 @@ public class Demo {
         }
         long withPooling = System.nanoTime() - start;
         
-        IO.println("Without pooling: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(withoutPooling)));
-        IO.println("With pooling: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(withPooling)));
-        IO.println("Improvement: %.2fx faster".formatted(
+        IO.println("Without pooling (new exception with stack trace): %d us".formatted(
+            TimeUnit.NANOSECONDS.toMicros(withoutPooling)));
+        IO.println("Without pooling (new exception, no stack trace): %d us".formatted(
+            TimeUnit.NANOSECONDS.toMicros(noStackTrace)));
+        IO.println("With pooling (reused exception, no stack trace): %d us".formatted(
+            TimeUnit.NANOSECONDS.toMicros(withPooling)));
+        IO.println("Pooling vs. stack trace: %.2fx faster".formatted(
             (double) withoutPooling / withPooling));
+        IO.println("Note: most of the gain comes from skipping the stack trace, not from reuse.");
+        IO.println("Reusing exception objects can mix messages and state between threads,");
+        IO.println("so an exception created with writableStackTrace=false is usually enough.");
         
         IO.println("Pool statistics: " + pool.getStatistics());
     }

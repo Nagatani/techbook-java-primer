@@ -22,13 +22,17 @@ public class BasicExceptionBenchmark {
 
     private static final int COMPUTATION_VALUE = 42;
 
+    // 定数を直接渡すとJITが計算を畳み込み、何も測れなくなる。
+    // @Stateのフィールドから読むことで、毎回の計算を測る
+    private int input = COMPUTATION_VALUE;
+
     /**
      * Benchmark normal control flow without exceptions.
      * This serves as our baseline for comparison.
      */
     @Benchmark
     public int normalFlow() {
-        return computeValue(COMPUTATION_VALUE);
+        return computeValue(input);
     }
 
     /**
@@ -38,7 +42,7 @@ public class BasicExceptionBenchmark {
     @Benchmark
     public int exceptionFlow() {
         try {
-            return computeValueWithException(COMPUTATION_VALUE);
+            return computeValueWithException(input);
         } catch (Exception e) {
             return -1;
         }
@@ -51,7 +55,7 @@ public class BasicExceptionBenchmark {
     @Benchmark
     public int exceptionFlowNoStackTrace() {
         try {
-            return computeValueWithCustomException(COMPUTATION_VALUE);
+            return computeValueWithCustomException(input);
         } catch (CustomException e) {
             return -1;
         }
@@ -64,7 +68,7 @@ public class BasicExceptionBenchmark {
     @Benchmark
     public int tryCatchOverheadNoException() {
         try {
-            return computeValue(COMPUTATION_VALUE);
+            return computeValue(input);
         } catch (Exception e) {
             return -1;
         }

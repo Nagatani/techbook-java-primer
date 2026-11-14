@@ -5,8 +5,13 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Testcontainersを模擬したデータベース統合テストのデモンストレーション
+ * データベースを使った統合テストのデモンストレーション
  * 実際のデータベースを使用した統合テストの重要性を学習
+ *
+ * <p>Testcontainersは、Dockerのコンテナで本番と同じデータベース（PostgreSQLなど）を
+ * テストのたびに起動するライブラリ。このデモはDockerなしで動かせるよう、
+ * Testcontainersは使わず、インメモリのH2データベースで代用している。
+ * 実行にはH2のJDBCドライバー（com.h2database:h2）をクラスパスに加える必要がある。
  */
 public class TestContainersDemo {
     
@@ -304,6 +309,11 @@ public class TestContainersDemo {
                 ""
             );
             
+            // テストどうしが影響し合わないよう、前のテストで作ったテーブルとデータを消す
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("DROP ALL OBJECTS");
+            }
+            
             userRepository = new UserRepository(connection);
             IO.println("✓ Test database initialized");
         }
@@ -569,6 +579,13 @@ public class TestContainersDemo {
         }
     }
     
+    // 数値はlongとして比べる（Objectとして比べると、IntegerとLongが等しくならない）
+    private static void assertEquals(long expected, long actual, String message) {
+        if (expected != actual) {
+            throw new AssertionError(message + " - Expected: " + expected + ", Actual: " + actual);
+        }
+    }
+    
     private static void assertEquals(Object expected, Object actual, String message) {
         if (!Objects.equals(expected, actual)) {
             throw new AssertionError(message + " - Expected: " + expected + ", Actual: " + actual);
@@ -589,23 +606,35 @@ public class TestContainersDemo {
      * メインメソッド
      */
     public static void main(String[] args) {
-        IO.println("Testcontainers Integration Testing Demonstration");
-        IO.println("================================================");
+        IO.println("Database Integration Testing Demonstration");
+        IO.println("(H2 in-memory database in place of Testcontainers)");
+        IO.println("==================================================");
         
         DatabaseIntegrationTest test = new DatabaseIntegrationTest();
+        // 各テストの前に setUp() でデータベースを空にし、後で tearDown() する
+        List<Runnable> tests = List.of(
+            test::testBasicCrudOperations,
+            test::testUniqueConstraints,
+            test::testComplexQueries,
+            test::testTransactionBehavior,
+            test::testPerformance
+        );
         
         try {
-            test.setUp();
-            
-            test.testBasicCrudOperations();
-            test.testUniqueConstraints();
-            test.testComplexQueries();
-            test.testTransactionBehavior();
-            test.testPerformance();
+            for (Runnable each : tests) {
+                test.setUp();
+                try {
+                    each.run();
+                } finally {
+                    test.tearDown();
+                }
+            }
             
             IO.println("\n" + "=".repeat(50));
             IO.println("All integration tests passed!");
             
+            IO.println("\nWith Testcontainers (Docker), you can run the same tests");
+            IO.println("against the database engine used in production.");
             IO.println("\nTestcontainers Benefits:");
             IO.println("✓ Real database behavior - no mocking limitations");
             IO.println("✓ Isolated test environment - no shared state issues");
@@ -620,15 +649,14 @@ public class TestContainersDemo {
             IO.println("- Integration testing with message queues");
             IO.println("- End-to-end testing with external services");
             
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.err.println("× Could not open the test database: " + e.getMessage());
+            System.err.println("  Add the H2 JDBC driver (com.h2database:h2) to the classpath.");
+            System.exit(1);
+        } catch (RuntimeException | AssertionError e) {
             System.err.println("× Integration test failed: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            try {
-                test.tearDown();
-            } catch (SQLException e) {
-                System.err.println("Warning: Failed to cleanup test resources: " + e.getMessage());
-            }
+            System.exit(1);
         }
     }
 }

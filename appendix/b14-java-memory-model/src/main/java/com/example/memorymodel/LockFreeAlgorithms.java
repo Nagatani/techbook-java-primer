@@ -142,6 +142,34 @@ public class LockFreeAlgorithms {
         }
         
         /**
+         * 先頭のノードを取り出す（ノードの再利用をシミュレートするため、ノードごと返す）
+         */
+        private Node<T> popNode() {
+            while (true) {
+                Node<T> currentHead = top.get();
+                if (currentHead == null) {
+                    return null;
+                }
+                if (top.compareAndSet(currentHead, currentHead.next)) {
+                    return currentHead;
+                }
+            }
+        }
+        
+        /**
+         * 既存のノードを先頭に戻す
+         */
+        private void pushNode(Node<T> node) {
+            while (true) {
+                Node<T> currentHead = top.get();
+                node.next = currentHead;
+                if (top.compareAndSet(currentHead, node)) {
+                    return;
+                }
+            }
+        }
+        
+        /**
          * ABA問題をシミュレートするメソッド
          */
         public void simulateABAProblem() {
@@ -157,20 +185,24 @@ public class LockFreeAlgorithms {
             Node<T> thread1Head = top.get();
             IO.println("Thread1 sees head: " + thread1Head.item);
             
-            // スレッド2がA, BをpopしてからAをpush（A -> C）
-            pop(); // A を pop
-            pop(); // B を pop
-            push((T) "A"); // A を push
+            // スレッド1は、次の先頭になるはずのBを読んだところで中断されたとする
+            Node<T> newHead = thread1Head.next; // B
+            
+            // スレッド2がA, Bをpopしてから、取り出したAのノードを再利用してpush（A -> C）
+            // Javaでは新しいノードを作ればGCのおかげで参照が一致せずABAは起きない。
+            // ノードをプールして再利用すると、同じ参照が戻ってきてABAが起きる
+            Node<T> nodeA = popNode(); // A を pop（ノードを保持して再利用する）
+            popNode();                 // B を pop（スタックから取り除かれた）
+            pushNode(nodeA);           // 同じAのノードを push
             
             IO.println("After thread2 operations:");
             printStack();
             
-            // スレッド1がCASを実行（成功してしまう問題）
-            Node<T> newHead = thread1Head.next; // これはBを指している（解放済み）
+            // スレッド1がCASを実行する。先頭は同じAのノードなので成功してしまう
             boolean casResult = top.compareAndSet(thread1Head, newHead);
             
             IO.println("Thread1 CAS result: " + casResult);
-            IO.println("Final state (problematic):");
+            IO.println("Final state (problematic: removed B is back on the stack):");
             printStack();
         }
         
@@ -378,8 +410,8 @@ public class LockFreeAlgorithms {
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
         
         IO.println("Threads: " + threadCount);
-        IO.println("Operations per thread: " + operationsPerThread);
-        IO.println("Total operations: " + stack.getOperationCount());
+        IO.println("Pushes per thread: " + operationsPerThread + " (and a pop after every other push)");
+        IO.println("Total operations (push + pop): " + stack.getOperationCount());
         IO.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
         IO.println("Operations per second: " + 
                          String.format("%.0f", stack.getOperationCount() / elapsedMs * 1000));
@@ -468,7 +500,8 @@ public class LockFreeAlgorithms {
         double elapsedMs = (endTime - startTime) / 1_000_000.0;
         
         IO.println("Threads: " + threadCount);
-        IO.println("Increments per thread: " + incrementsPerThread);
+        IO.println("Operations per thread: " + incrementsPerThread + " (half increments, half decrements)");
+        IO.println("Expected final value: 0");
         IO.println("Final counter value: " + counter.get());
         IO.println("CAS failures: " + counter.getCasFailures());
         IO.println("Elapsed time: " + String.format("%.2f", elapsedMs) + "ms");
@@ -477,8 +510,8 @@ public class LockFreeAlgorithms {
         IO.println("Total operations: " + totalOperations);
         IO.println("Operations per second: " + 
                          String.format("%.0f", totalOperations / elapsedMs * 1000));
-        IO.println("CAS failure rate: " + 
-                         String.format("%.2f", counter.getCasFailures() / (double) totalOperations * 100) + "%");
+        IO.println("CAS failures per operation: " + 
+                         String.format("%.2f", counter.getCasFailures() / (double) totalOperations));
     }
     
     /**

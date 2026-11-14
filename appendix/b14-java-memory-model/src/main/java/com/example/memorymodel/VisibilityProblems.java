@@ -13,16 +13,14 @@ public class VisibilityProblems {
      */
     static class BrokenStopFlag {
         private boolean stopRequested = false; // volatileがない
-        private int counter = 0;
+        private long counter = 0;
         
         public void backgroundWork() {
-            IO.println("Background work started...");
+            // ループの中でメソッドを呼ぶと、JITがフラグの読み込みをループの外へ
+            // 出さないことが多く、問題が見えにくくなる。そのため、ループの中は
+            // カウンターを増やすだけにしている
             while (!stopRequested) {
                 counter++;
-                // 軽い処理をシミュレート
-                if (counter % 100_000_000 == 0) {
-                    IO.println("Working... counter: " + counter);
-                }
             }
             IO.println("Background work stopped. Final counter: " + counter);
         }
@@ -36,7 +34,7 @@ public class VisibilityProblems {
             return stopRequested;
         }
         
-        public int getCounter() {
+        public long getCounter() {
             return counter;
         }
     }
@@ -46,16 +44,11 @@ public class VisibilityProblems {
      */
     static class CorrectStopFlag {
         private volatile boolean stopRequested = false; // volatileを追加
-        private volatile int counter = 0; // counterもvolatileに
+        private long counter = 0; // 書き込むのはワーカーのスレッドだけ
         
         public void backgroundWork() {
-            IO.println("Background work started (with volatile)...");
             while (!stopRequested) {
                 counter++;
-                // 軽い処理をシミュレート
-                if (counter % 100_000_000 == 0) {
-                    IO.println("Working... counter: " + counter);
-                }
             }
             IO.println("Background work stopped. Final counter: " + counter);
         }
@@ -69,7 +62,7 @@ public class VisibilityProblems {
             return stopRequested;
         }
         
-        public int getCounter() {
+        public long getCounter() {
             return counter;
         }
     }
@@ -82,7 +75,9 @@ public class VisibilityProblems {
         
         public ExpensiveObject getInstance() {
             if (instance == null) {
-                // 危険：複数スレッドが同時に初期化する可能性
+                // 危険1：確認と代入のあいだに別のスレッドが入り、複数回初期化される（デモで見える）
+                // 危険2：同期もvolatileもないため、別のスレッドからは代入の順序が入れ替わって見え、
+                //        初期化の終わっていないオブジェクトを参照する可能性がある（再現はまれ）
                 instance = new ExpensiveObject();
             }
             return instance;
@@ -153,6 +148,10 @@ public class VisibilityProblems {
         BrokenStopFlag broken = new BrokenStopFlag();
         
         Thread workerThread = new Thread(broken::backgroundWork);
+        // 止まらなかった場合にもプログラムを終了できるよう、デーモンスレッドにする
+        // （ビジーループはinterrupt()では止まらない）
+        workerThread.setDaemon(true);
+        IO.println("Background work started...");
         workerThread.start();
         
         try {
@@ -165,7 +164,7 @@ public class VisibilityProblems {
             
             if (workerThread.isAlive()) {
                 IO.println("Worker thread did not stop - visibility problem occurred!");
-                workerThread.interrupt();
+                IO.println("(e.g. the JIT compiler may hoist the read of stopRequested out of the loop)");
             } else {
                 IO.println("Worker thread stopped properly");
             }
@@ -178,6 +177,8 @@ public class VisibilityProblems {
         CorrectStopFlag correct = new CorrectStopFlag();
         
         Thread correctWorkerThread = new Thread(correct::backgroundWork);
+        correctWorkerThread.setDaemon(true);
+        IO.println("Background work started (with volatile)...");
         correctWorkerThread.start();
         
         try {
@@ -210,37 +211,37 @@ public class VisibilityProblems {
         UnsafeInitialization unsafe = new UnsafeInitialization();
         
         // 複数スレッドが同時にアクセス
-        for (int i = 0; i < 5; i++) {
-            final int threadId = i;
-            new Thread(() -> {
-                ExpensiveObject obj = unsafe.getInstance();
-                IO.println("Thread " + threadId + " got: " + obj.getName());
-            }).start();
-        }
-        
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        IO.println("(check-then-act race: the object may be created more than once)");
+        runAndJoin(5, unsafe::getInstance);
         
         // 安全な初期化
         IO.println("\n--- Safe Initialization ---");
         SafeInitialization safe = new SafeInitialization();
         
         // 複数スレッドが同時にアクセス
-        for (int i = 0; i < 5; i++) {
+        runAndJoin(5, safe::getInstance);
+    }
+    
+    /**
+     * 複数のスレッドで同時にインスタンスを取得し、すべてのスレッドの終了を待つ
+     */
+    private static void runAndJoin(int threadCount, java.util.function.Supplier<ExpensiveObject> getter) {
+        Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threadCount; i++) {
             final int threadId = i;
-            new Thread(() -> {
-                ExpensiveObject obj = safe.getInstance();
+            threads[i] = new Thread(() -> {
+                ExpensiveObject obj = getter.get();
                 IO.println("Thread " + threadId + " got: " + obj.getName());
-            }).start();
+            });
+            threads[i].start();
         }
-        
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
         }
     }
     

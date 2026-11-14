@@ -29,7 +29,7 @@ public class ReactiveFileDemo {
             IO.println("=== Reactive File Processing Demo ===");
             IO.println("File: %s".formatted(filePath.toAbsolutePath()));
             IO.println("Size: %s".formatted(formatSize(Files.size(filePath))));
-            IO.println("Buffer size: %d bytes%n".formatted(bufferSize));
+            IO.println("Buffer size: %d bytes\n".formatted(bufferSize));
             
             // Demo 1: Simple reactive reading
             demonstrateSimpleReading(filePath, bufferSize);

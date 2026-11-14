@@ -2,7 +2,6 @@ package com.example.nio2.memory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -55,7 +54,7 @@ public class MemoryMappedDemo {
         }
         
         long fileSize = Files.size(filePath);
-        IO.println("File size: %s%n".formatted(formatSize(fileSize)));
+        IO.println("File size: %s\n".formatted(formatSize(fileSize)));
         
         // Demonstrate various operations
         demonstrateRead(filePath);
@@ -68,7 +67,7 @@ public class MemoryMappedDemo {
         IO.println("--- Reading with Memory-Mapped File ---");
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(filePath, FileChannel.MapMode.READ_ONLY)) {
-            MappedByteBuffer buffer = mmf.mapEntireFile();
+            ByteBuffer buffer = mmf.mapEntireFile();
             
             // Read first 100 bytes
             int readLength = Math.min(100, buffer.remaining());
@@ -99,7 +98,7 @@ public class MemoryMappedDemo {
         Files.copy(filePath, writePath, StandardCopyOption.REPLACE_EXISTING);
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(writePath, FileChannel.MapMode.READ_WRITE)) {
-            MappedByteBuffer buffer = mmf.mapEntireFile();
+            ByteBuffer buffer = mmf.mapEntireFile();
             
             // Modify content at specific position
             String newContent = "[MODIFIED BY MEMORY MAPPING]";
@@ -119,7 +118,7 @@ public class MemoryMappedDemo {
     private static void demonstrateSearch(Path filePath) throws IOException {
         IO.println("--- Pattern Search with Memory-Mapped File ---");
         
-        String searchPattern = "the";
+        String searchPattern = "mapped";
         byte[] pattern = searchPattern.getBytes(StandardCharsets.UTF_8);
         
         long startTime = System.currentTimeMillis();
@@ -133,7 +132,7 @@ public class MemoryMappedDemo {
             try (MemoryMappedFile mmf = new MemoryMappedFile(filePath, FileChannel.MapMode.READ_ONLY)) {
                 long contextStart = Math.max(0, position - 20);
                 long contextSize = Math.min(60, Files.size(filePath) - contextStart);
-                MappedByteBuffer buffer = mmf.mapRegion(contextStart, contextSize);
+                ByteBuffer buffer = mmf.mapRegion(contextStart, contextSize);
                 
                 byte[] context = new byte[(int) contextSize];
                 buffer.get(context);
@@ -143,7 +142,7 @@ public class MemoryMappedDemo {
             IO.println("Pattern '%s' not found".formatted(searchPattern));
         }
         
-        IO.println("Search completed in %dms%n".formatted(duration));
+        IO.println("Search completed in %dms\n".formatted(duration));
     }
     
     private static void demonstrateLineCount(Path filePath) throws IOException {
@@ -157,8 +156,8 @@ public class MemoryMappedDemo {
         IO.println("Counting completed in %dms".formatted(duration));
         
         long fileSize = Files.size(filePath);
-        double throughput = (double) fileSize / duration * 1000 / (1024 * 1024);
-        IO.println("Throughput: %.2f MB/s%n".formatted(throughput));
+        double throughput = (double) fileSize / Math.max(duration, 1) * 1000 / (1024 * 1024);
+        IO.println("Throughput: %.2f MB/s\n".formatted(throughput));
     }
     
     private static void demonstrateModification(Path filePath) throws IOException {
@@ -169,7 +168,7 @@ public class MemoryMappedDemo {
         Files.copy(filePath, modPath, StandardCopyOption.REPLACE_EXISTING);
         
         try (MemoryMappedFile mmf = new MemoryMappedFile(modPath, FileChannel.MapMode.READ_WRITE)) {
-            MappedByteBuffer buffer = mmf.mapEntireFile();
+            ByteBuffer buffer = mmf.mapEntireFile();
             
             // Example: Convert all lowercase 'a' to uppercase 'A'
             int modifications = 0;
@@ -182,7 +181,7 @@ public class MemoryMappedDemo {
             }
             
             mmf.force();
-            IO.println("Modified %d characters in file: %s%n".formatted(modifications, modPath));
+            IO.println("Modified %d characters in file: %s\n".formatted(modifications, modPath));
         }
     }
     

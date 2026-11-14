@@ -7,6 +7,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Object pool for exception instances to reduce allocation overhead.
  * Useful for high-frequency exception scenarios where stack traces aren't needed.
+ *
+ * 注意: 例外オブジェクトの使い回しは、スレッド間でメッセージや状態が混ざる危険があり、
+ * 通常は勧めない。スタックトレースを作らない例外（writableStackTrace=false）で
+ * 足りることが多い。
  */
 public class ExceptionPool<T extends PoolableException> {
     private final Queue<T> pool = new ConcurrentLinkedQueue<>();
@@ -34,6 +38,9 @@ public class ExceptionPool<T extends PoolableException> {
         if (exception == null) {
             createCount.incrementAndGet();
             exception = factory.create();
+        } else {
+            // プールから取り出したので、プール内の数を減らす
+            currentSize.decrementAndGet();
         }
         
         exception.setMessage(message);

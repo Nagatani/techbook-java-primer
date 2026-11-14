@@ -118,14 +118,14 @@ public class Main {
      */
     static {
         IO.println("This project demonstrates advanced enum patterns in Java.\n");
-        IO.println("Quick Start:");
-        IO.println("  java Main              - Interactive menu");
-        IO.println("  java Main state        - Run state machine demo");
-        IO.println("  java Main strategy     - Run strategy pattern demo");
-        IO.println("  java Main permission   - Run permission system demo");
-        IO.println("  java Main config       - Run configuration demo");
-        IO.println("  java Main comprehensive- Run comprehensive example");
-        IO.println("  java Main performance  - Run performance benchmarks");
-        IO.println("  java Main all          - Run all demos\n");
+        IO.println("Quick Start (after ./build.sh):");
+        IO.println("  java -cp out com.example.enumpatterns.Main               - Interactive menu");
+        IO.println("  java -cp out com.example.enumpatterns.Main state         - Run state machine demo");
+        IO.println("  java -cp out com.example.enumpatterns.Main strategy      - Run strategy pattern demo");
+        IO.println("  java -cp out com.example.enumpatterns.Main permission    - Run permission system demo");
+        IO.println("  java -cp out com.example.enumpatterns.Main config        - Run configuration demo");
+        IO.println("  java -cp out com.example.enumpatterns.Main comprehensive - Run comprehensive example");
+        IO.println("  java -cp out com.example.enumpatterns.Main performance   - Run performance benchmarks");
+        IO.println("  java -cp out com.example.enumpatterns.Main all           - Run all demos\n");
     }
 }

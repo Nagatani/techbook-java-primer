@@ -10,6 +10,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * Enum-based singleton pattern for database connection management.
  * Demonstrates thread-safe singleton implementation using enum.
+ *
+ * enumが保証するのは、INSTANCEがスレッドセーフに一度だけ生成されることまでで、
+ * インスタンスが持つ可変の状態（このクラスではコネクションプール）の
+ * スレッドセーフ性は、BlockingQueueやsynchronizedで別に確保している。
+ *
+ * 実行するには、H2データベースのJDBCドライバー（com.h2database:h2）が
+ * クラスパスに必要（pom.xmlではruntimeの依存に入れている）。
+ * デモ（Main）からは呼び出していない。
  */
 public enum DatabaseConnection {
     INSTANCE;

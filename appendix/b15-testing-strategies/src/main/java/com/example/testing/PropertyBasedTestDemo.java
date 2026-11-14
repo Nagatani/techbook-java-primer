@@ -1,7 +1,6 @@
 package com.example.testing;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,7 +15,10 @@ public class PropertyBasedTestDemo {
      * 簡易Property-based testingフレームワーク
      */
     public static class PropertyTester {
-        private final Random random = ThreadLocalRandom.current();
+        // シードを固定すると、毎回同じ入力が生成され、失敗を再現できる。
+        // -Dseed=数値 で別のシードを試せる
+        private static final long SEED = Long.getLong("seed", 42L);
+        private final Random random = new Random(SEED);
         private int iterations = 100;
         
         public PropertyTester withIterations(int iterations) {
@@ -34,11 +36,13 @@ public class PropertyBasedTestDemo {
                     if (!property.test(data)) {
                         throw new PropertyViolationException(
                             "Property violated with input: " + data + " at iteration " + (i + 1)
+                                + " (seed=" + SEED + ")"
                         );
                     }
                 } catch (Exception e) {
                     throw new PropertyViolationException(
-                        "Property test failed with input: " + data + " at iteration " + (i + 1), e
+                        "Property test failed with input: " + data + " at iteration " + (i + 1)
+                            + " (seed=" + SEED + ")", e
                     );
                 }
             }
@@ -289,17 +293,22 @@ public class PropertyBasedTestDemo {
             ),
             entries -> {
                 Map<String, Integer> map = new HashMap<>();
+                // 生成したキーは重複することがある。同じキーをputすると後の値で上書きされるので、
+                // 期待する値は「そのキーで最後にputした値」になる
+                Map<String, Integer> lastValues = new LinkedHashMap<>();
                 for (Map.Entry<String, Integer> entry : entries) {
                     map.put(entry.getKey(), entry.getValue());
+                    lastValues.put(entry.getKey(), entry.getValue());
                 }
                 
-                // すべてのエントリが正しく格納されていることを確認
-                for (Map.Entry<String, Integer> entry : entries) {
-                    if (!Objects.equals(map.get(entry.getKey()), entry.getValue())) {
+                // すべてのキーについて、最後にputした値が格納されていることを確認
+                for (Map.Entry<String, Integer> expected : lastValues.entrySet()) {
+                    if (!Objects.equals(map.get(expected.getKey()), expected.getValue())) {
                         return false;
                     }
                 }
-                return true;
+                // キーの数は、重複を除いた数と同じになる
+                return map.size() == lastValues.size();
             }
         );
     }
@@ -501,6 +510,7 @@ public class PropertyBasedTestDemo {
     public static void main(String[] args) {
         IO.println("Property-based Testing Demonstration");
         IO.println("====================================");
+        IO.println("Seed: " + PropertyTester.SEED + " (change with -Dseed=...)");
         
         try {
             testSortingProperties();

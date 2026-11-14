@@ -30,6 +30,8 @@ public class FalseSharingDemo {
      */
     static class PaddedCounters {
         // CPUキャッシュライン（通常64バイト）を考慮したパディング
+        // 隣のカウンターとは120バイト離れるので、128バイトのキャッシュラインでもほぼ分かれる。
+        // ただし、JVMがフィールドを宣言の順に並べる保証はない（@Contendedなら保証される）
         volatile long p1, p2, p3, p4, p5, p6, p7;     // 前パディング（56バイト）
         volatile long counter1 = 0;                    // 実際のカウンター（8バイト）
         volatile long q1, q2, q3, q4, q5, q6, q7;     // 後パディング（56バイト）
@@ -48,8 +50,12 @@ public class FalseSharingDemo {
     }
     
     /**
-     * @Contendedアノテーションを使用したクラス（Java 8以降）
-     * JVMが自動的にパディングを追加する
+     * @Contendedアノテーションを使用したクラス
+     * JVMが自動的にパディングを追加する。
+     * Java 8ではsun.misc.Contended、Java 9以降はjdk.internal.vm.annotation.Contended。
+     * JDKの内部APIなので、コンパイルには --add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED、
+     * アプリケーションのクラスで効かせるには実行時に -XX:-RestrictContended が必要
+     * （指定しないとアノテーションは無視され、パディングされない）
      */
     static class ContendedCounters {
         @jdk.internal.vm.annotation.Contended
@@ -69,21 +75,26 @@ public class FalseSharingDemo {
      * 配列を使ったFalse Sharingのデモ
      */
     static class ArrayFalseSharingDemo {
-        private final long[] counters = new long[8];
+        // 普通のlong[]だと、JITが要素をレジスターに置いたままループし、メモリに書かないことがあり、
+        // False Sharingが起きない。パディング版（volatileのフィールド）と条件をそろえるため、
+        // 要素をvolatileとして読み書きできるAtomicLongArrayを使う
+        private final java.util.concurrent.atomic.AtomicLongArray counters =
+            new java.util.concurrent.atomic.AtomicLongArray(8);
         
         public void incrementCounter(int index) {
-            counters[index]++;
+            // パディング版のvalue++と同じく、volatileの読み込みと書き込み（原子的ではない）
+            counters.set(index, counters.get(index) + 1);
         }
         
         public long getCounter(int index) {
-            return counters[index];
+            return counters.get(index);
         }
         
         public void printCounters() {
             IO.print("Counters: [");
-            for (int i = 0; i < counters.length; i++) {
-                IO.print(counters[i]);
-                if (i < counters.length - 1) {
+            for (int i = 0; i < counters.length(); i++) {
+                IO.print(counters.get(i));
+                if (i < counters.length() - 1) {
                     IO.print(", ");
                 }
             }
@@ -287,6 +298,53 @@ public class FalseSharingDemo {
         
         double improvement = (double) falseSharingTime / paddedTime;
         IO.println("\nPerformance improvement: " + String.format("%.2fx", improvement));
+        
+        // @Contendedを使うケース（-XX:-RestrictContended を付けたときだけパディングされる）
+        IO.println("\n--- Test 3: @Contended ---");
+        ContendedCounters contendedCounters = new ContendedCounters();
+        long contendedTime = runCounterThreads(threadCount, iterations, threadId -> {
+            switch (threadId) {
+                case 0 -> contendedCounters.counter1++;
+                case 1 -> contendedCounters.counter2++;
+                case 2 -> contendedCounters.counter3++;
+                default -> contendedCounters.counter4++;
+            }
+        });
+        IO.println("Results: " + 
+                         contendedCounters.counter1 + ", " +
+                         contendedCounters.counter2 + ", " +
+                         contendedCounters.counter3 + ", " +
+                         contendedCounters.counter4);
+        IO.println("Time: " + TimeUnit.NANOSECONDS.toMillis(contendedTime) + "ms");
+        IO.println("(Without -XX:-RestrictContended the annotation is ignored,");
+        IO.println(" so this behaves like Test 1.)");
+    }
+    
+    /**
+     * スレッドごとに、threadIdを渡して increment を iterations 回呼び、経過時間（ナノ秒）を返す
+     */
+    private static long runCounterThreads(int threadCount, int iterations,
+                                          java.util.function.IntConsumer increment) {
+        long startTime = System.nanoTime();
+        Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threadCount; i++) {
+            final int threadId = i;
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < iterations; j++) {
+                    increment.accept(threadId);
+                }
+            });
+            threads[i].start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+        return System.nanoTime() - startTime;
     }
     
     /**
@@ -424,7 +482,7 @@ public class FalseSharingDemo {
         IO.println("\n=== Cache Line Information ===");
         
         // Javaオブジェクトのメモリレイアウト情報
-        IO.println("Typical cache line size: 64 bytes");
+        IO.println("Typical cache line size: 64 bytes (128 bytes on Apple Silicon)");
         IO.println("long size: 8 bytes");
         IO.println("Object header size: ~12-16 bytes (platform dependent)");
         IO.println("Array header size: ~12-16 bytes + 4 bytes (length)");
@@ -438,9 +496,8 @@ public class FalseSharingDemo {
         
         // パフォーマンスの考慮事項
         IO.println("\nPerformance considerations:");
-        IO.println("- Cache miss penalty: 100-300 cycles");
-        IO.println("- Cache hit: 1-4 cycles");
-        IO.println("- False sharing can reduce performance by 10-100x");
+        IO.println("- A miss to main memory costs far more cycles than a hit in the L1 cache");
+        IO.println("- False sharing can make updates several times slower (depends on the CPU)");
         IO.println("- Padding increases memory usage but improves performance");
     }
     

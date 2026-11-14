@@ -2,13 +2,14 @@ package com.example.nio2.memory;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,10 @@ public class SharedMemoryFile implements AutoCloseable {
     private final int size;
     private final RandomAccessFile file;
     private final FileChannel channel;
-    private final MappedByteBuffer buffer;
+    // マップした領域はArenaで管理し、close()で確実にアンマップする
+    private final Arena arena = Arena.ofShared();
+    private final MemorySegment segment;
+    private final ByteBuffer buffer;
     
     // FileLockはJVM単位で管理されるため、同じJVMの別スレッドが重なる範囲をロックすると
     // 待たずにOverlappingFileLockExceptionになる。そこで、ファイルごとのモニターで
@@ -44,22 +48,28 @@ public class SharedMemoryFile implements AutoCloseable {
             filePath.toAbsolutePath().normalize(), p -> new Object());
         
         // Create or open the file
-        boolean exists = Files.exists(filePath);
         this.file = new RandomAccessFile(filePath.toFile(), "rw");
         this.channel = file.getChannel();
         
-        // Set file size if new
-        if (!exists || file.length() < this.size) {
-            file.setLength(this.size);
-            logger.info("Created shared memory file: {} (size: {} bytes)", filePath, this.size);
-        }
-        
-        // Map the file
-        this.buffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, this.size);
-        
-        // Initialize header if new file
-        if (!exists) {
-            initializeHeader();
+        // 大きさの確認・拡張・ヘッダーの初期化を、ほかのスレッドやプロセスに
+        // 割り込まれないようにロックの中で行う。Files.createTempFileで作った空のファイルのように、
+        // ファイルが既にあっても必要な大きさに満たなければ新しい共有メモリとして初期化する
+        synchronized (jvmLock) {
+            try (FileLock lock = channel.lock(0, this.size, false)) {
+                boolean created = channel.size() < this.size;
+                if (created) {
+                    file.setLength(this.size);
+                    logger.info("Created shared memory file: {} (size: {} bytes)", filePath, this.size);
+                }
+                
+                // Map the file
+                this.segment = channel.map(FileChannel.MapMode.READ_WRITE, 0, this.size, arena);
+                this.buffer = segment.asByteBuffer();
+                
+                if (created) {
+                    initializeHeader();
+                }
+            }
         }
         
         logger.info("Opened shared memory: {} (version: {})", filePath, getVersion());
@@ -69,7 +79,7 @@ public class SharedMemoryFile implements AutoCloseable {
         buffer.putInt(VERSION_OFFSET, 1); // Version
         buffer.putInt(WRITE_COUNT_OFFSET, 0); // Write count
         buffer.putLong(LAST_WRITE_OFFSET, System.currentTimeMillis()); // Last write time
-        buffer.force();
+        segment.force();
     }
     
     public int getVersion() {
@@ -133,7 +143,7 @@ public class SharedMemoryFile implements AutoCloseable {
         
         // 位置（position）を共有しないよう、絶対位置を指定して書き込む
         buffer.put(HEADER_SIZE + offset, data);
-        buffer.force();
+        segment.force();
         
         logger.debug("Wrote {} bytes at offset {}", data.length, offset);
     }
@@ -162,7 +172,7 @@ public class SharedMemoryFile implements AutoCloseable {
             int current = buffer.getInt(HEADER_SIZE + offset);
             if (current == expected) {
                 buffer.putInt(HEADER_SIZE + offset, update);
-                buffer.force();
+                segment.force();
                 return true;
             }
             return false;
@@ -173,7 +183,7 @@ public class SharedMemoryFile implements AutoCloseable {
      * Wait for data to change at specified offset.
      */
     public void waitForChange(int offset, byte[] currentValue, long timeoutMs) 
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException, TimeoutException {
         long startTime = System.currentTimeMillis();
         byte[] readValue = new byte[currentValue.length];
         
@@ -195,15 +205,14 @@ public class SharedMemoryFile implements AutoCloseable {
             Thread.sleep(10); // Small delay to prevent busy waiting
         }
         
-        throw new InterruptedException("Timeout waiting for change");
+        throw new TimeoutException("Timeout waiting for change");
     }
     
     @Override
     public void close() throws IOException {
-        // Force any pending changes
-        if (buffer != null) {
-            buffer.force();
-        }
+        // Force any pending changes, then unmap
+        segment.force();
+        arena.close();
         
         if (channel != null) {
             channel.close();

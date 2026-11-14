@@ -4,8 +4,9 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Order processing state machine with compile-time validated transitions.
+ * Order processing state machine.
  * Demonstrates how enum can enforce business rules and prevent invalid states.
+ * 不正な遷移はコンパイル時ではなく、実行時にIllegalStateExceptionとして検出される。
  */
 public enum OrderState {
     /**
@@ -214,10 +215,7 @@ public enum OrderState {
      * Get valid actions from this state
      */
     public Set<String> getValidActions() {
-        Set<String> actions = EnumSet.noneOf(OrderAction.class)
-            .stream()
-            .map(Enum::name)
-            .collect(java.util.stream.Collectors.toSet());
+        Set<String> actions = new java.util.LinkedHashSet<>();
         
         try { confirm(); actions.add("CONFIRM"); } catch (IllegalStateException ignored) {}
         try { ship(); actions.add("SHIP"); } catch (IllegalStateException ignored) {}

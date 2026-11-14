@@ -3,8 +3,8 @@ package com.example.nio2.watcher;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,10 @@ public class FileWatcher implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(FileWatcher.class);
     
     private final WatchService watchService;
-    private final Map<WatchKey, Path> keyMap = new HashMap<>();
+    // 登録はmainスレッド、参照は監視スレッドから行うため、スレッドセーフなMapを使う
+    private final Map<WatchKey, Path> keyMap = new ConcurrentHashMap<>();
+    // 再帰的に監視するディレクトリ（この下に作られたディレクトリも登録する）
+    private final Map<Path, Boolean> recursiveRoots = new ConcurrentHashMap<>();
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Thread watchThread;
     
@@ -49,6 +52,7 @@ public class FileWatcher implements AutoCloseable {
         }
         
         if (recursive) {
+            recursiveRoots.put(directory.toAbsolutePath().normalize(), Boolean.TRUE);
             // Register all subdirectories
             Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
                 @Override
@@ -142,7 +146,7 @@ public class FileWatcher implements AutoCloseable {
                 handleEvent(kind, child);
                 
                 // If a new directory is created, and we're in recursive mode, register it
-                if (kind == ENTRY_CREATE) {
+                if (kind == ENTRY_CREATE && isUnderRecursiveRoot(child)) {
                     try {
                         if (Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS)) {
                             registerDirectory(child);
@@ -163,6 +167,16 @@ public class FileWatcher implements AutoCloseable {
                 }
             }
         }
+    }
+    
+    private boolean isUnderRecursiveRoot(Path path) {
+        Path normalized = path.toAbsolutePath().normalize();
+        for (Path root : recursiveRoots.keySet()) {
+            if (normalized.startsWith(root)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

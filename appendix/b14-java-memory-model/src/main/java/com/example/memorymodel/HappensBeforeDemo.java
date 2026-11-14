@@ -25,9 +25,11 @@ public class HappensBeforeDemo {
         }
         
         public void reader() {
-            int r = result;     // result が設定されていれば
+            // writer()と同じスレッドで呼ぶので、プログラム順序によりa、b、resultの書き込みが見える。
+            // 別のスレッドから呼ぶ場合、プログラム順序だけでは何も保証されない
+            // （同期やvolatileでhappens-beforeを作る必要がある）
+            int r = result;
             IO.println("Result: " + r + ", a: " + a + ", b: " + b);
-            // プログラム順序により、aとbも設定済みのはず
         }
     }
     
@@ -48,12 +50,17 @@ public class HappensBeforeDemo {
         }
         
         public void reader() {
-            synchronized (lock) {     // 前のunlock HB このlock
-                if (dataReady) {      // 3
-                    int data = sharedData; // 4
-                    IO.println("Data read: " + data);
-                    // 1,2 HB 3,4 が保証される
+            while (true) {
+                synchronized (lock) {     // 前のunlock HB このlock
+                    if (dataReady) {      // 3
+                        int data = sharedData; // 4
+                        IO.println("Data read: " + data);
+                        // 1,2 HB 3,4 が保証される
+                        return;
+                    }
                 }
+                // まだ書かれていなければ、ロックを放してから読み直す
+                Thread.onSpinWait();
             }
         }
     }
@@ -69,19 +76,21 @@ public class HappensBeforeDemo {
         public void publish() {
             message = "Hello World";      // 1
             counter = 100;                // 2
+            // 表示の順序がそろうよう、volatileの書き込みの前に表示する
+            IO.println("Published: " + message + ", counter: " + counter);
             timestamp = System.nanoTime(); // 3: volatile write
             // 1,2 HB 3
-            IO.println("Published: " + message + ", counter: " + counter);
         }
         
         public void consume() {
-            long t = timestamp;           // 4: volatile read
-            if (t != 0) {
-                String m = message;       // 5
-                int c = counter;          // 6
-                // 3 HB 4, therefore 1,2 HB 5,6
-                IO.println("Consumed: " + m + ", counter: " + c + ", time: " + t);
+            long t;
+            while ((t = timestamp) == 0) { // 4: volatile read（書かれるまで待つ）
+                Thread.onSpinWait();
             }
+            String m = message;       // 5
+            int c = counter;          // 6
+            // 3 HB 4, therefore 1,2 HB 5,6
+            IO.println("Consumed: " + m + ", counter: " + c);
         }
     }
     
@@ -105,6 +114,12 @@ public class HappensBeforeDemo {
             
             worker.start();               // 3
             // 1,2 HB 3
+            
+            try {
+                worker.join();            // 表示が終わるまで待つ
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
     
@@ -309,14 +324,8 @@ public class HappensBeforeDemo {
         MonitorLockRule demo = new MonitorLockRule();
         
         Thread writer = new Thread(demo::writer);
-        Thread reader = new Thread(() -> {
-            try {
-                Thread.sleep(100); // writerが先に実行されるように少し待つ
-                demo.reader();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+        // readerは、writerが書き込むまでロックを取り直して待つ
+        Thread reader = new Thread(demo::reader);
         
         writer.start();
         reader.start();
@@ -334,14 +343,8 @@ public class HappensBeforeDemo {
         VolatileRule demo = new VolatileRule();
         
         Thread publisher = new Thread(demo::publish);
-        Thread consumer = new Thread(() -> {
-            try {
-                Thread.sleep(100); // publisherが先に実行されるように
-                demo.consume();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+        // consumerは、volatileのtimestampが書かれるまで待つ
+        Thread consumer = new Thread(demo::consume);
         
         publisher.start();
         consumer.start();
@@ -358,8 +361,6 @@ public class HappensBeforeDemo {
         
         ThreadStartRule demo = new ThreadStartRule();
         demo.demonstrate();
-        
-        Thread.sleep(100); // ワーカースレッドの完了を待つ
     }
     
     /**
@@ -438,13 +439,15 @@ public class HappensBeforeDemo {
             demonstrateComplexHappensBefore();
             demonstrateCountDownLatch();
             
-            IO.println("\n=== Happens-Before Rules Summary ===");
+            IO.println("\n=== Happens-Before Rules Summary (main rules) ===");
             IO.println("1. Program Order: Actions in a thread happen-before later actions in the same thread");
             IO.println("2. Monitor Lock: Unlock of a monitor happens-before every subsequent lock of that monitor");
             IO.println("3. Volatile: Write to a volatile field happens-before every subsequent read of that field");
             IO.println("4. Thread Start: Call to Thread.start() happens-before any action in the started thread");
             IO.println("5. Thread Join: Any action in a thread happens-before any other thread returns from join()");
             IO.println("6. Transitivity: If A happens-before B and B happens-before C, then A happens-before C");
+            IO.println("Others in JLS 17.4.5: Thread.interrupt() happens-before the interrupted thread detects it,");
+            IO.println("  and the default-value writes of every field happen-before every other action.");
             
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

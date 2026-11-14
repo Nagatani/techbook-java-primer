@@ -1,6 +1,8 @@
 # NIO.2 高度な機能 - 実践的な例
 
-このドキュメントでは、NIO.2の高度な機能の実践的な例と使用例を提供します。
+このドキュメントでは、NIO.2の高度な機能を実際の場面でどう組み合わせるかを示します。
+ここに載せたコードは構成の例です。
+`AdvancedFileWatcher`、`ParallelFileProcessor`、`ReactiveFileReader`、`SharedMemoryFile`はこのプロジェクトのクラスですが、`AlertService`、`DatabaseService`、`MulticastProcessor`などはプロジェクトに含まれていないため、そのままではコンパイルできません。
 
 ## 1. リアルタイムログ監視システム
 
@@ -121,23 +123,27 @@ public class LargeFileSearchEngine {
             long position = 0;
             
             while (position < fileSize) {
-                long mapSize = Math.min(CHUNK_SIZE, fileSize - position);
+                // 境界をまたぐ一致を見つけるため、パターンの長さ-1だけ余分にマップする
+                long mapSize = Math.min(CHUNK_SIZE + patternBytes.length - 1, fileSize - position);
                 
-                MappedByteBuffer buffer = channel.map(
-                    FileChannel.MapMode.READ_ONLY, position, mapSize
-                );
-                
-                // このチャンク内を検索
-                List<Long> matches = searchInBuffer(buffer, patternBytes);
-                for (Long offset : matches) {
-                    results.add(new SearchResult(
-                        file, 
-                        position + offset, 
-                        extractContext(buffer, offset.intValue())
-                    ));
+                // チャンクごとにArenaを作り、検索が終わったらすぐにアンマップする
+                try (Arena arena = Arena.ofConfined()) {
+                    ByteBuffer buffer = channel.map(
+                        FileChannel.MapMode.READ_ONLY, position, mapSize, arena
+                    ).asByteBuffer();
+                    
+                    // このチャンク内で、開始位置が CHUNK_SIZE 未満の一致を探す
+                    List<Long> matches = searchInBuffer(buffer, patternBytes, CHUNK_SIZE);
+                    for (Long offset : matches) {
+                        results.add(new SearchResult(
+                            file, 
+                            position + offset, 
+                            extractContext(buffer, offset.intValue())
+                        ));
+                    }
                 }
                 
-                position += mapSize - patternBytes.length; // 境界のためにオーバーラップ
+                position += CHUNK_SIZE;
             }
         }
         
@@ -233,7 +239,7 @@ public class DataStreamingPlatform {
 ## 5. 分散ファイル同期
 
 ### 問題
-最小限のネットワークオーバーヘッドと即座の変更検出で、複数のサーバー間でファイルを同期する。
+最小限のネットワークオーバーヘッドで、変更を検出して複数のサーバー間でファイルを同期する（WatchServiceの検出の遅れはOSによって異なり、macOSではポーリングのため数秒かかる）。
 
 ### WatchServiceと非同期I/Oを組み合わせた解決策
 ```java
@@ -296,7 +302,7 @@ public class DatabaseExporter {
     
     public void exportToFile(String query, Path outputFile) throws Exception {
         // ファイルスペースを事前に割り当て
-        long estimatedSize = database.estimateResultSize(query);
+        int estimatedSize = database.estimateResultSize(query); // SharedMemoryFileは2GBまで
         
         try (SharedMemoryFile sharedFile = new SharedMemoryFile(outputFile, estimatedSize)) {
             AtomicLong position = new AtomicLong(0);
@@ -331,29 +337,17 @@ public class DatabaseExporter {
 }
 ```
 
-## パフォーマンス比較結果
-
-実際のベンチマークに基づく結果：
-
-| 操作 | 従来のI/O | NIO.2ソリューション | 改善 |
-|------|----------|-------------------|------|
-| 1000ファイルの監視 | CPU 30%、5秒遅延 | CPU 2%、50ms遅延 | CPU 15倍削減、100倍高速 |
-| 100個のCSVファイル処理（各100MB） | 45分 | 8分 | 5.6倍高速 |
-| 1TBログ検索 | メモリ不足 | 12分 | 実行可能に |
-| 10GBファイルストリーム | 8GBヒープ使用 | 200MBヒープ使用 | メモリ40倍削減 |
-| 10,000ファイル同期 | 2時間 | 15分 | 8倍高速 |
-
 ## ベストプラクティス
 
 1. **適切なツールの選択**
-   - WatchService: リアルタイムファイルシステム監視
+   - WatchService: ファイルシステムの変更の監視（検出の速さはOSによって異なる）
    - 非同期I/O: 並行ファイル操作
    - メモリマップド: 大規模ファイルのランダムアクセス
    - リアクティブ: バックプレッシャー付きストリーミング
 
 2. **リソース管理**
    - 常にtry-with-resourcesを使用
-   - メモリマップドバッファを明示的にクリーンアップ
+   - メモリマップの領域はArena（FFM API）でマップし、使い終わったらArenaを閉じて解放する
    - 並行操作を制限
 
 3. **エラー処理**

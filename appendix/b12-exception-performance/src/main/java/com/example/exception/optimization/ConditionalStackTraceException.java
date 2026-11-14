@@ -8,16 +8,15 @@ import java.util.function.BooleanSupplier;
  * Useful for production environments where stack traces are only needed occasionally.
  */
 public class ConditionalStackTraceException extends RuntimeException {
-    private final BooleanSupplier stackTraceCondition;
 
+    /**
+     * 条件を評価し、その結果をwritableStackTraceとしてスーパークラスに渡す。
+     * fillInStackTrace()をオーバーライドしてフィールドの条件を見る書き方は、
+     * Throwableのコンストラクターがフィールドの代入より前にfillInStackTrace()を
+     * 呼ぶため、条件がnullのままになり動かない。
+     */
     public ConditionalStackTraceException(String message, BooleanSupplier stackTraceCondition) {
-        super(message);
-        this.stackTraceCondition = stackTraceCondition;
-    }
-
-    @Override
-    public Throwable fillInStackTrace() {
-        return stackTraceCondition.getAsBoolean() ? super.fillInStackTrace() : this;
+        super(message, null, true, stackTraceCondition.getAsBoolean());
     }
 
     /**

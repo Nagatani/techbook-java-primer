@@ -1,18 +1,22 @@
 package com.example.testing;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ミューテーションテストのデモンストレーション
  * テストの品質を評価し、見逃されるバグを発見するための手法
+ *
+ * <p>実際のミューテーションテストツール（PITなど）は、バイトコードを書き換えて
+ * ミュータント（わざと小さなバグを入れたコード）を自動で作る。
+ * このデモでは、仕組みが分かるように、ミュータントをサブクラスとして手で用意し、
+ * 同じテストを元のコードと各ミュータントに対して実行する。
+ * テストが失敗すればミュータントを「殺した（killed）」、成功すれば「生き残った（survived）」と数える。
  */
 public class MutationTestDemo {
     
-    /**
-     * テスト対象のビジネスロジッククラス群
-     */
+    // テスト対象のビジネスロジッククラス群
+    // ミュータントをサブクラスで作れるよう、インスタンスメソッドにしている
     
     /**
      * 温度変換ユーティリティ（ミューテーション対象）
@@ -22,39 +26,44 @@ public class MutationTestDemo {
         /**
          * 摂氏から華氏への変換
          */
-        public static double celsiusToFahrenheit(double celsius) {
-            // ミューテーション候補: 9を8に、5を4に、32を31に変更
+        public double celsiusToFahrenheit(double celsius) {
             return (celsius * 9.0 / 5.0) + 32.0;
         }
         
         /**
          * 華氏から摂氏への変換
          */
-        public static double fahrenheitToCelsius(double fahrenheit) {
-            // ミューテーション候補: 32を31に、5を4に、9を8に変更
+        public double fahrenheitToCelsius(double fahrenheit) {
             return (fahrenheit - 32.0) * 5.0 / 9.0;
         }
         
         /**
          * 温度が氷点下かどうかの判定
          */
-        public static boolean isFreezing(double celsius) {
-            // ミューテーション候補: <= を < に、>= に、!= に変更
+        public boolean isFreezing(double celsius) {
             return celsius <= 0.0;
         }
         
         /**
          * 温度カテゴリの判定
          */
-        public static String getTemperatureCategory(double celsius) {
-            // ミューテーション候補: 境界値の変更、条件の否定
-            if (celsius < 0) {
+        public String getTemperatureCategory(double celsius) {
+            return category(celsius, 0, 10, 25, 35, false);
+        }
+        
+        /**
+         * カテゴリの判定の本体。境界値と、境界を含めるか（inclusive）を引数で受け取り、
+         * ミュータントが境界の条件だけを変えられるようにしている
+         */
+        protected String category(double celsius, double freezing, double cold,
+                                  double mild, double warm, boolean inclusive) {
+            if (inclusive ? celsius <= freezing : celsius < freezing) {
                 return "Freezing";
-            } else if (celsius < 10) {
+            } else if (celsius < cold) {
                 return "Cold";
-            } else if (celsius < 25) {
+            } else if (celsius < mild) {
                 return "Mild";
-            } else if (celsius < 35) {
+            } else if (celsius < warm) {
                 return "Warm";
             } else {
                 return "Hot";
@@ -68,53 +77,38 @@ public class MutationTestDemo {
     public static class Calculator {
         
         public int add(int a, int b) {
-            // ミューテーション候補: + を - に変更
             return a + b;
         }
         
         public int subtract(int a, int b) {
-            // ミューテーション候補: - を + に変更
             return a - b;
         }
         
         public int multiply(int a, int b) {
-            // ミューテーション候補: * を / に、+ に変更
             return a * b;
         }
         
         public double divide(int a, int b) {
-            // ミューテーション候補: == を != に、0を1に変更
             if (b == 0) {
                 throw new ArithmeticException("Division by zero");
             }
-            // ミューテーション候補: / を * に変更
             return (double) a / b;
         }
         
         public int max(int a, int b) {
-            // ミューテーション候補: > を < に、>= に、== に変更
             return (a > b) ? a : b;
         }
         
         public boolean isEven(int number) {
-            // ミューテーション候補: % を / に、== を != に、0を1に変更
             return number % 2 == 0;
         }
         
         public long factorial(int n) {
-            // ミューテーション候補: < を <= に、<= を < に変更
             if (n < 0) {
                 throw new IllegalArgumentException("Negative number");
             }
-            // ミューテーション候補: <= を < に変更
-            if (n <= 1) {
-                return 1;
-            }
-            
             long result = 1;
-            // ミューテーション候補: <= を < に、i++ を i-- に変更
             for (int i = 2; i <= n; i++) {
-                // ミューテーション候補: * を + に変更
                 result *= i;
             }
             return result;
@@ -127,43 +121,59 @@ public class MutationTestDemo {
     public static class UserValidator {
         
         public boolean isValidEmail(String email) {
-            // ミューテーション候補: == を != に変更
             if (email == null) {
                 return false;
             }
-            
-            // ミューテーション候補: && を || に変更
             return email.contains("@") && email.contains(".");
         }
         
+        /**
+         * 8文字以上で、数字と英字の両方を含むパスワードを有効とする
+         */
         public boolean isValidPassword(String password) {
-            // ミューテーション候補: == を != に変更
             if (password == null) {
                 return false;
             }
-            
-            // ミューテーション候補: >= を > に、8を7に変更
             if (password.length() >= 8) {
-                // ミューテーション候補: && を || に変更
                 return containsDigit(password) && containsLetter(password);
             }
-            
             return false;
         }
         
-        private boolean containsDigit(String str) {
-            // ミューテーション候補: anyMatch を noneMatch に変更
+        protected boolean containsDigit(String str) {
             return str.chars().anyMatch(Character::isDigit);
         }
         
-        private boolean containsLetter(String str) {
-            // ミューテーション候補: anyMatch を noneMatch に変更
+        protected boolean containsLetter(String str) {
             return str.chars().anyMatch(Character::isLetter);
         }
         
         public boolean isValidAge(int age) {
-            // ミューテーション候補: >= を > に、&& を || に、<= を < に変更
             return age >= 0 && age <= 150;
+        }
+    }
+    
+    /**
+     * ミュータント（説明と、バグを入れた実装の組）
+     */
+    record Mutant<T>(String description, T implementation) {
+    }
+    
+    /**
+     * テストスイート（実装を受け取り、期待と違えばAssertionErrorを投げる）
+     */
+    @FunctionalInterface
+    interface TestSuite<T> {
+        void run(T target);
+    }
+    
+    /**
+     * 条件が偽ならAssertionErrorを投げる。
+     * Javaのassert文は、java -eaを付けないと評価されないため使わない
+     */
+    static void check(boolean condition, String message) {
+        if (!condition) {
+            throw new AssertionError(message);
         }
     }
     
@@ -201,83 +211,148 @@ public class MutationTestDemo {
             private final String testClass;
             private final int totalMutations;
             private final int killedMutations;
-            private final int survivedMutations;
             private final List<String> survivedMutationDetails;
             
-            public MutationResult(String testClass, int totalMutations, int killedMutations) {
+            public MutationResult(String testClass, int totalMutations, int killedMutations,
+                                  List<String> survivedMutationDetails) {
                 this.testClass = testClass;
                 this.totalMutations = totalMutations;
                 this.killedMutations = killedMutations;
-                this.survivedMutations = totalMutations - killedMutations;
-                this.survivedMutationDetails = new ArrayList<>();
+                this.survivedMutationDetails = List.copyOf(survivedMutationDetails);
             }
             
             public double getMutationScore() {
                 return totalMutations > 0 ? (double) killedMutations / totalMutations : 0.0;
             }
             
-            public void addSurvivedMutation(String detail) {
-                survivedMutationDetails.add(detail);
+            public List<String> getSurvivedMutationDetails() {
+                return survivedMutationDetails;
             }
             
             @Override
             public String toString() {
-                return String.format(
-                    "MutationResult{class='%s', total=%d, killed=%d, survived=%d, score=%.1f%%}",
-                    testClass, totalMutations, killedMutations, survivedMutations, 
-                    getMutationScore() * 100
-                );
+                return "MutationResult{class='%s', total=%d, killed=%d, survived=%d, score=%.1f%%}".formatted(
+                    testClass, totalMutations, killedMutations,
+                    totalMutations - killedMutations, getMutationScore() * 100);
             }
         }
         
         /**
-         * 模擬的なミューテーションテスト実行
+         * テストが成功すればtrue、失敗（AssertionErrorや予期しない例外）すればfalseを返す
          */
-        public static MutationResult simulateMutationTest(String className, Function<String, Boolean> testRunner) {
-            IO.println("Running mutation test for: " + className);
-            
-            // 実際のミューテーションテストツールでは、バイトコードレベルで変更を加える
-            // ここでは教育目的で結果をシミュレート
-            
-            List<String> potentialMutations = Arrays.asList(
-                "Changed conditional boundary (< to <=)",
-                "Negated conditional (== to !=)",
-                "Changed arithmetic operator (+ to -)",
-                "Modified constant value (0 to 1)",
-                "Replaced return value (true to false)",
-                "Removed method call",
-                "Changed loop boundary (< to <=)",
-                "Modified array access",
-                "Changed logical operator (&& to ||)",
-                "Altered comparison operator (> to >=)"
-            );
-            
-            int totalMutations = potentialMutations.size();
-            int killedMutations = 0;
-            MutationResult result = new MutationResult(className, totalMutations, 0);
-            
-            Random random = ThreadLocalRandom.current();
-            
-            for (String mutation : potentialMutations) {
-                IO.println("  Testing mutation: " + mutation);
-                
-                // テストがミューテーションを検出できるかシミュレート
-                // 実際のツールではミューテーションを適用したコードでテストを実行
-                boolean testPassed = testRunner.apply(mutation);
-                
-                if (!testPassed) {
-                    // テストが失敗 = ミューテーションが検出された（killed）
-                    killedMutations++;
-                    IO.println("    ✓ Mutation killed by tests");
-                } else {
-                    // テストが成功 = ミューテーションが検出されなかった（survived）
-                    IO.println("    ✗ Mutation survived - test gap detected!");
-                    result.addSurvivedMutation(mutation);
-                }
+        static <T> boolean passes(TestSuite<T> tests, T target) {
+            try {
+                tests.run(target);
+                return true;
+            } catch (AssertionError | RuntimeException e) {
+                return false;
+            }
+        }
+        
+        /**
+         * 元のコードでテストが通ることを確かめてから、各ミュータントに対してテストを実行する
+         */
+        public static <T> MutationResult run(String name, T original,
+                                             List<Mutant<T>> mutants, TestSuite<T> tests) {
+            IO.println("Running mutation test for: " + name);
+            if (!passes(tests, original)) {
+                throw new IllegalStateException("Tests must pass on the original code: " + name);
             }
             
-            return new MutationResult(className, totalMutations, killedMutations);
+            int killed = 0;
+            List<String> survived = new ArrayList<>();
+            for (Mutant<T> mutant : mutants) {
+                IO.println("  Testing mutation: " + mutant.description());
+                if (passes(tests, mutant.implementation())) {
+                    // テストが成功 = ミューテーションを検出できなかった（survived）
+                    IO.println("    ✗ Mutation survived - test gap or equivalent mutant");
+                    survived.add(mutant.description());
+                } else {
+                    // テストが失敗 = ミューテーションを検出した（killed）
+                    killed++;
+                    IO.println("    ✓ Mutation killed by tests");
+                }
+            }
+            return new MutationResult(name, mutants.size(), killed, survived);
         }
+    }
+    
+    /**
+     * 温度変換器のミュータント
+     */
+    static List<Mutant<TemperatureConverter>> temperatureMutants() {
+        return List.of(
+            new Mutant<>("celsiusToFahrenheit: + 32.0 to - 32.0 (arithmetic operator)",
+                new TemperatureConverter() {
+                    @Override
+                    public double celsiusToFahrenheit(double celsius) {
+                        return (celsius * 9.0 / 5.0) - 32.0;
+                    }
+                }),
+            new Mutant<>("celsiusToFahrenheit: 32.0 to 31.0 (constant)",
+                new TemperatureConverter() {
+                    @Override
+                    public double celsiusToFahrenheit(double celsius) {
+                        return (celsius * 9.0 / 5.0) + 31.0;
+                    }
+                }),
+            new Mutant<>("fahrenheitToCelsius: - 32.0 to + 32.0 (arithmetic operator)",
+                new TemperatureConverter() {
+                    @Override
+                    public double fahrenheitToCelsius(double fahrenheit) {
+                        return (fahrenheit + 32.0) * 5.0 / 9.0;
+                    }
+                }),
+            new Mutant<>("isFreezing: <= to < (conditional boundary)",
+                new TemperatureConverter() {
+                    @Override
+                    public boolean isFreezing(double celsius) {
+                        return celsius < 0.0;
+                    }
+                }),
+            new Mutant<>("isFreezing: <= to > (negated conditional)",
+                new TemperatureConverter() {
+                    @Override
+                    public boolean isFreezing(double celsius) {
+                        return celsius > 0.0;
+                    }
+                }),
+            new Mutant<>("isFreezing: return false (return value)",
+                new TemperatureConverter() {
+                    @Override
+                    public boolean isFreezing(double celsius) {
+                        return false;
+                    }
+                }),
+            new Mutant<>("isFreezing: 0.0 to -0.0 (equivalent: 0.0 == -0.0)",
+                new TemperatureConverter() {
+                    @Override
+                    public boolean isFreezing(double celsius) {
+                        return celsius <= -0.0;
+                    }
+                }),
+            new Mutant<>("getTemperatureCategory: < 0 to <= 0 (conditional boundary)",
+                new TemperatureConverter() {
+                    @Override
+                    public String getTemperatureCategory(double celsius) {
+                        return category(celsius, 0, 10, 25, 35, true);
+                    }
+                }),
+            new Mutant<>("getTemperatureCategory: < 10 to < 11 (constant)",
+                new TemperatureConverter() {
+                    @Override
+                    public String getTemperatureCategory(double celsius) {
+                        return category(celsius, 0, 11, 25, 35, false);
+                    }
+                }),
+            new Mutant<>("getTemperatureCategory: < 35 to < 36 (constant)",
+                new TemperatureConverter() {
+                    @Override
+                    public String getTemperatureCategory(double celsius) {
+                        return category(celsius, 0, 10, 25, 36, false);
+                    }
+                })
+        );
     }
     
     /**
@@ -288,64 +363,128 @@ public class MutationTestDemo {
         /**
          * 基本的なテスト（ミューテーションスコアが低い例）
          */
-        public static class WeakTests {
-            public static boolean runTests(String mutation) {
-                try {
-                    // 基本的なテストケースのみ
-                    assert TemperatureConverter.celsiusToFahrenheit(0) == 32.0;
-                    assert TemperatureConverter.fahrenheitToCelsius(32) == 0.0;
-                    assert TemperatureConverter.isFreezing(-1);
-                    
-                    return true; // 多くのミューテーションを見逃す
-                } catch (AssertionError e) {
-                    return false;
-                }
-            }
+        public static void weakTests(TemperatureConverter converter) {
+            // 基本的なテストケースのみ
+            check(converter.celsiusToFahrenheit(0) == 32.0, "0C = 32F");
+            check(converter.fahrenheitToCelsius(32) == 0.0, "32F = 0C");
+            check(converter.isFreezing(-1), "-1C is freezing");
         }
         
         /**
          * 改善されたテスト（ミューテーションスコアが高い例）
          */
-        public static class StrongTests {
-            public static boolean runTests(String mutation) {
-                try {
-                    // 境界値テスト
-                    assert TemperatureConverter.celsiusToFahrenheit(0) == 32.0;
-                    assert TemperatureConverter.celsiusToFahrenheit(100) == 212.0;
-                    assert TemperatureConverter.celsiusToFahrenheit(-40) == -40.0;
-                    
-                    assert TemperatureConverter.fahrenheitToCelsius(32) == 0.0;
-                    assert TemperatureConverter.fahrenheitToCelsius(212) == 100.0;
-                    assert TemperatureConverter.fahrenheitToCelsius(-40) == -40.0;
-                    
-                    // 境界値での氷点下判定
-                    assert TemperatureConverter.isFreezing(0); // 境界値
-                    assert TemperatureConverter.isFreezing(-0.1);
-                    assert !TemperatureConverter.isFreezing(0.1);
-                    
-                    // カテゴリ判定の境界値テスト
-                    assert "Freezing".equals(TemperatureConverter.getTemperatureCategory(-1));
-                    assert "Cold".equals(TemperatureConverter.getTemperatureCategory(0));
-                    assert "Cold".equals(TemperatureConverter.getTemperatureCategory(9));
-                    assert "Mild".equals(TemperatureConverter.getTemperatureCategory(10));
-                    assert "Mild".equals(TemperatureConverter.getTemperatureCategory(24));
-                    assert "Warm".equals(TemperatureConverter.getTemperatureCategory(25));
-                    assert "Warm".equals(TemperatureConverter.getTemperatureCategory(34));
-                    assert "Hot".equals(TemperatureConverter.getTemperatureCategory(35));
-                    
-                    // ミューテーションによっては特定のケースで失敗する
-                    if (mutation.contains("conditional boundary") && 
-                        mutation.contains("<=")) {
-                        // 0度境界での判定をより厳密にテスト
-                        assert TemperatureConverter.isFreezing(0.0);
-                    }
-                    
-                    return true;
-                } catch (AssertionError e) {
-                    return false; // ミューテーションを検出
-                }
-            }
+        public static void strongTests(TemperatureConverter converter) {
+            check(converter.celsiusToFahrenheit(0) == 32.0, "0C = 32F");
+            check(converter.celsiusToFahrenheit(100) == 212.0, "100C = 212F");
+            check(converter.celsiusToFahrenheit(-40) == -40.0, "-40C = -40F");
+            
+            check(converter.fahrenheitToCelsius(32) == 0.0, "32F = 0C");
+            check(converter.fahrenheitToCelsius(212) == 100.0, "212F = 100C");
+            check(converter.fahrenheitToCelsius(-40) == -40.0, "-40F = -40C");
+            
+            // 境界値での氷点下判定
+            check(converter.isFreezing(0), "0C is freezing (boundary)");
+            check(converter.isFreezing(-0.1), "-0.1C is freezing");
+            check(!converter.isFreezing(0.1), "0.1C is not freezing");
+            
+            // カテゴリ判定の境界値テスト
+            check("Freezing".equals(converter.getTemperatureCategory(-1)), "-1C");
+            check("Cold".equals(converter.getTemperatureCategory(0)), "0C");
+            check("Cold".equals(converter.getTemperatureCategory(9)), "9C");
+            check("Mild".equals(converter.getTemperatureCategory(10)), "10C");
+            check("Mild".equals(converter.getTemperatureCategory(24)), "24C");
+            check("Warm".equals(converter.getTemperatureCategory(25)), "25C");
+            check("Warm".equals(converter.getTemperatureCategory(34)), "34C");
+            check("Hot".equals(converter.getTemperatureCategory(35)), "35C");
         }
+    }
+    
+    /**
+     * 計算機のミュータント
+     */
+    static List<Mutant<Calculator>> calculatorMutants() {
+        return List.of(
+            new Mutant<>("add: + to - (arithmetic operator)", new Calculator() {
+                @Override
+                public int add(int a, int b) {
+                    return a - b;
+                }
+            }),
+            new Mutant<>("subtract: - to + (arithmetic operator)", new Calculator() {
+                @Override
+                public int subtract(int a, int b) {
+                    return a + b;
+                }
+            }),
+            new Mutant<>("multiply: * to + (arithmetic operator)", new Calculator() {
+                @Override
+                public int multiply(int a, int b) {
+                    return a + b;
+                }
+            }),
+            new Mutant<>("divide: b == 0 to b == 1 (constant)", new Calculator() {
+                @Override
+                public double divide(int a, int b) {
+                    if (b == 1) {
+                        throw new ArithmeticException("Division by zero");
+                    }
+                    return (double) a / b;
+                }
+            }),
+            new Mutant<>("divide: / to * (arithmetic operator)", new Calculator() {
+                @Override
+                public double divide(int a, int b) {
+                    if (b == 0) {
+                        throw new ArithmeticException("Division by zero");
+                    }
+                    return (double) a * b;
+                }
+            }),
+            new Mutant<>("max: > to < (negated conditional)", new Calculator() {
+                @Override
+                public int max(int a, int b) {
+                    return (a < b) ? a : b;
+                }
+            }),
+            new Mutant<>("max: > to >= (equivalent: same result when a == b)", new Calculator() {
+                @Override
+                public int max(int a, int b) {
+                    return (a >= b) ? a : b;
+                }
+            }),
+            new Mutant<>("isEven: == 0 to != 0 (negated conditional)", new Calculator() {
+                @Override
+                public boolean isEven(int number) {
+                    return number % 2 != 0;
+                }
+            }),
+            new Mutant<>("factorial: i <= n to i < n (conditional boundary)", new Calculator() {
+                @Override
+                public long factorial(int n) {
+                    if (n < 0) {
+                        throw new IllegalArgumentException("Negative number");
+                    }
+                    long result = 1;
+                    for (int i = 2; i < n; i++) {
+                        result *= i;
+                    }
+                    return result;
+                }
+            }),
+            new Mutant<>("factorial: n < 0 to n <= 0 (conditional boundary)", new Calculator() {
+                @Override
+                public long factorial(int n) {
+                    if (n <= 0) {
+                        throw new IllegalArgumentException("Negative number");
+                    }
+                    long result = 1;
+                    for (int i = 2; i <= n; i++) {
+                        result *= i;
+                    }
+                    return result;
+                }
+            })
+        );
     }
     
     /**
@@ -353,60 +492,113 @@ public class MutationTestDemo {
      */
     public static class CalculatorTests {
         
-        public static boolean runTests(String mutation) {
+        public static void tests(Calculator calc) {
+            // 基本演算テスト
+            check(calc.add(2, 3) == 5, "add");
+            check(calc.subtract(5, 3) == 2, "subtract");
+            check(calc.multiply(4, 3) == 12, "multiply");
+            check(calc.divide(10, 2) == 5.0, "divide");
+            check(calc.divide(7, 1) == 7.0, "divide by 1");
+            
+            // ゼロ除算テスト
+            boolean thrown = false;
             try {
-                Calculator calc = new Calculator();
-                
-                // 基本演算テスト
-                assert calc.add(2, 3) == 5;
-                assert calc.subtract(5, 3) == 2;
-                assert calc.multiply(4, 3) == 12;
-                assert calc.divide(10, 2) == 5.0;
-                
-                // ゼロ除算テスト
-                try {
-                    calc.divide(10, 0);
-                    assert false; // 例外が発生するべき
-                } catch (ArithmeticException e) {
-                    // 正常
-                }
-                
-                // max関数テスト
-                assert calc.max(5, 3) == 5;
-                assert calc.max(3, 5) == 5;
-                assert calc.max(5, 5) == 5;
-                
-                // 偶数判定テスト
-                assert calc.isEven(2);
-                assert calc.isEven(0);
-                assert !calc.isEven(1);
-                assert !calc.isEven(-1);
-                assert calc.isEven(-2);
-                
-                // 階乗テスト
-                assert calc.factorial(0) == 1;
-                assert calc.factorial(1) == 1;
-                assert calc.factorial(5) == 120;
-                
-                try {
-                    calc.factorial(-1);
-                    assert false; // 例外が発生するべき
-                } catch (IllegalArgumentException e) {
-                    // 正常
-                }
-                
-                // ミューテーション特化テスト
-                if (mutation.contains("arithmetic operator")) {
-                    // 算術演算子の変更を検出するための追加テスト
-                    assert calc.add(0, 0) == 0;
-                    assert calc.multiply(1, 100) == 100;
-                }
-                
-                return true;
-            } catch (AssertionError e) {
-                return false;
+                calc.divide(10, 0);
+            } catch (ArithmeticException e) {
+                thrown = true;
             }
+            check(thrown, "divide by zero must throw");
+            
+            // max関数テスト
+            check(calc.max(5, 3) == 5, "max(5, 3)");
+            check(calc.max(3, 5) == 5, "max(3, 5)");
+            check(calc.max(5, 5) == 5, "max(5, 5)");
+            
+            // 偶数判定テスト
+            check(calc.isEven(2), "2 is even");
+            check(calc.isEven(0), "0 is even");
+            check(!calc.isEven(1), "1 is odd");
+            check(!calc.isEven(-1), "-1 is odd");
+            check(calc.isEven(-2), "-2 is even");
+            
+            // 階乗テスト
+            check(calc.factorial(0) == 1, "0!");
+            check(calc.factorial(1) == 1, "1!");
+            check(calc.factorial(5) == 120, "5!");
+            
+            thrown = false;
+            try {
+                calc.factorial(-1);
+            } catch (IllegalArgumentException e) {
+                thrown = true;
+            }
+            check(thrown, "factorial(-1) must throw");
         }
+    }
+    
+    /**
+     * バリデータのミュータント
+     */
+    static List<Mutant<UserValidator>> validatorMutants() {
+        return List.of(
+            new Mutant<>("isValidEmail: && to || (logical operator)", new UserValidator() {
+                @Override
+                public boolean isValidEmail(String email) {
+                    if (email == null) {
+                        return false;
+                    }
+                    return email.contains("@") || email.contains(".");
+                }
+            }),
+            new Mutant<>("isValidEmail: null check removed (remove call)", new UserValidator() {
+                @Override
+                public boolean isValidEmail(String email) {
+                    return email.contains("@") && email.contains(".");
+                }
+            }),
+            new Mutant<>("isValidPassword: >= 8 to > 8 (conditional boundary)", new UserValidator() {
+                @Override
+                public boolean isValidPassword(String password) {
+                    if (password == null) {
+                        return false;
+                    }
+                    if (password.length() > 8) {
+                        return containsDigit(password) && containsLetter(password);
+                    }
+                    return false;
+                }
+            }),
+            new Mutant<>("isValidPassword: && to || (logical operator)", new UserValidator() {
+                @Override
+                public boolean isValidPassword(String password) {
+                    if (password == null) {
+                        return false;
+                    }
+                    if (password.length() >= 8) {
+                        return containsDigit(password) || containsLetter(password);
+                    }
+                    return false;
+                }
+            }),
+            new Mutant<>("isValidAge: >= 0 to > 0 (conditional boundary)", new UserValidator() {
+                @Override
+                public boolean isValidAge(int age) {
+                    return age > 0 && age <= 150;
+                }
+            }),
+            new Mutant<>("isValidAge: <= 150 to < 150 (conditional boundary)", new UserValidator() {
+                @Override
+                public boolean isValidAge(int age) {
+                    return age >= 0 && age < 150;
+                }
+            }),
+            new Mutant<>("isValidAge: && to || (logical operator)", new UserValidator() {
+                @Override
+                public boolean isValidAge(int age) {
+                    return age >= 0 || age <= 150;
+                }
+            })
+        );
     }
     
     /**
@@ -414,47 +606,29 @@ public class MutationTestDemo {
      */
     public static class UserValidatorTests {
         
-        public static boolean runTests(String mutation) {
-            try {
-                UserValidator validator = new UserValidator();
-                
-                // メールバリデーションテスト
-                assert validator.isValidEmail("user@example.com");
-                assert validator.isValidEmail("test.email@domain.co.jp");
-                assert !validator.isValidEmail(null);
-                assert !validator.isValidEmail("");
-                assert !validator.isValidEmail("invalid-email");
-                assert !validator.isValidEmail("@domain.com");
-                assert !validator.isValidEmail("user@");
-                
-                // パスワードバリデーションテスト
-                assert validator.isValidPassword("password123");
-                assert validator.isValidPassword("mypass1");
-                assert !validator.isValidPassword(null);
-                assert !validator.isValidPassword("short");
-                assert !validator.isValidPassword("nouppercase");
-                assert !validator.isValidPassword("12345678"); // 数字のみ
-                assert !validator.isValidPassword("abcdefgh"); // 文字のみ
-                
-                // 年齢バリデーションテスト
-                assert validator.isValidAge(0);
-                assert validator.isValidAge(25);
-                assert validator.isValidAge(150);
-                assert !validator.isValidAge(-1);
-                assert !validator.isValidAge(151);
-                
-                // ミューテーション特化テスト
-                if (mutation.contains("conditional boundary")) {
-                    // 境界値での詳細テスト
-                    assert validator.isValidPassword("abcdefg1"); // 8文字ちょうど
-                    assert validator.isValidAge(0); // 下限境界
-                    assert validator.isValidAge(150); // 上限境界
-                }
-                
-                return true;
-            } catch (AssertionError e) {
-                return false;
-            }
+        public static void tests(UserValidator validator) {
+            // メールバリデーションテスト
+            check(validator.isValidEmail("user@example.com"), "valid email");
+            check(validator.isValidEmail("test.email@domain.co.jp"), "valid email with dot");
+            check(!validator.isValidEmail(null), "null email");
+            check(!validator.isValidEmail(""), "empty email");
+            check(!validator.isValidEmail("invalid-email"), "no @");
+            check(!validator.isValidEmail("user@localhost"), "no dot");
+            
+            // パスワードバリデーションテスト
+            check(validator.isValidPassword("password123"), "valid password");
+            check(validator.isValidPassword("abcdefg1"), "exactly 8 characters (boundary)");
+            check(!validator.isValidPassword("abcdef1"), "7 characters (boundary)");
+            check(!validator.isValidPassword(null), "null password");
+            check(!validator.isValidPassword("12345678"), "digits only");
+            check(!validator.isValidPassword("abcdefgh"), "letters only");
+            
+            // 年齢バリデーションテスト
+            check(validator.isValidAge(0), "age 0 (boundary)");
+            check(validator.isValidAge(25), "age 25");
+            check(validator.isValidAge(150), "age 150 (boundary)");
+            check(!validator.isValidAge(-1), "age -1");
+            check(!validator.isValidAge(151), "age 151");
         }
     }
     
@@ -466,57 +640,46 @@ public class MutationTestDemo {
         
         // 1. 弱いテストスイートの例
         IO.println("\n--- Weak Test Suite Example ---");
-        SimpleMutationTester.MutationResult weakResult = 
-            SimpleMutationTester.simulateMutationTest(
-                "TemperatureConverter (Weak Tests)", 
-                TemperatureConverterTests.WeakTests::runTests
-            );
-        
-        IO.println("Result: " + weakResult);
-        IO.println("Mutation Score: " + String.format("%.1f%%", weakResult.getMutationScore() * 100));
-        
-        if (!weakResult.survivedMutationDetails.isEmpty()) {
-            IO.println("Survived mutations indicate test gaps:");
-            for (String detail : weakResult.survivedMutationDetails) {
-                IO.println("  - " + detail);
-            }
-        }
+        SimpleMutationTester.MutationResult weakResult = SimpleMutationTester.run(
+            "TemperatureConverter (Weak Tests)", new TemperatureConverter(),
+            temperatureMutants(), TemperatureConverterTests::weakTests);
+        printResult(weakResult);
         
         // 2. 強いテストスイートの例
         IO.println("\n--- Strong Test Suite Example ---");
-        SimpleMutationTester.MutationResult strongResult = 
-            SimpleMutationTester.simulateMutationTest(
-                "TemperatureConverter (Strong Tests)", 
-                TemperatureConverterTests.StrongTests::runTests
-            );
-        
-        IO.println("Result: " + strongResult);
-        IO.println("Mutation Score: " + String.format("%.1f%%", strongResult.getMutationScore() * 100));
+        SimpleMutationTester.MutationResult strongResult = SimpleMutationTester.run(
+            "TemperatureConverter (Strong Tests)", new TemperatureConverter(),
+            temperatureMutants(), TemperatureConverterTests::strongTests);
+        printResult(strongResult);
         
         // 3. その他のクラスのテスト
         IO.println("\n--- Calculator Tests ---");
-        SimpleMutationTester.MutationResult calcResult = 
-            SimpleMutationTester.simulateMutationTest(
-                "Calculator", 
-                CalculatorTests::runTests
-            );
-        IO.println("Result: " + calcResult);
+        printResult(SimpleMutationTester.run(
+            "Calculator", new Calculator(), calculatorMutants(), CalculatorTests::tests));
         
         IO.println("\n--- UserValidator Tests ---");
-        SimpleMutationTester.MutationResult validatorResult = 
-            SimpleMutationTester.simulateMutationTest(
-                "UserValidator", 
-                UserValidatorTests::runTests
-            );
-        IO.println("Result: " + validatorResult);
+        printResult(SimpleMutationTester.run(
+            "UserValidator", new UserValidator(), validatorMutants(), UserValidatorTests::tests));
         
         // 4. 結果の分析
         IO.println("\n--- Mutation Testing Analysis ---");
         IO.println("Test Suite Quality Comparison:");
-        IO.println("  Weak Tests:   " + String.format("%.1f%%", weakResult.getMutationScore() * 100) + " mutation score");
-        IO.println("  Strong Tests: " + String.format("%.1f%%", strongResult.getMutationScore() * 100) + " mutation score");
-        IO.println("  Improvement:  " + String.format("%.1f", 
+        IO.println("  Weak Tests:   " + "%.1f%%".formatted(weakResult.getMutationScore() * 100) + " mutation score");
+        IO.println("  Strong Tests: " + "%.1f%%".formatted(strongResult.getMutationScore() * 100) + " mutation score");
+        IO.println("  Improvement:  " + "%.1f".formatted(
             (strongResult.getMutationScore() - weakResult.getMutationScore()) * 100) + " percentage points");
+        IO.println("Equivalent mutants (same behavior as the original) can never be killed,");
+        IO.println("so a score below 100% does not always mean a missing test.");
+    }
+    
+    private static void printResult(SimpleMutationTester.MutationResult result) {
+        IO.println("Result: " + result);
+        if (!result.getSurvivedMutationDetails().isEmpty()) {
+            IO.println("Survived mutations:");
+            for (String detail : result.getSurvivedMutationDetails()) {
+                IO.println("  - " + detail);
+            }
+        }
     }
     
     /**

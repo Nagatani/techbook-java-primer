@@ -1,254 +1,219 @@
 # 付録B.13 NIO.2高度機能の詳細解説
 
-Javaの高度なNIO.2機能を実演するプロジェクトで、高性能I/O操作、ファイルシステム監視、非同期処理機能を紹介します。
+JavaのNIO.2の高度な機能を実演するプロジェクトです。ファイルシステムの監視、非同期のファイル入出力、メモリマップドファイル、リアクティブなストリーム処理を紹介します。
 
 ## なぜNIO.2が必要なのか
 
-### 実世界のパフォーマンス問題と解決策
+### 従来のI/Oで起こりやすい問題
 
-#### 問題1: 遅いバッチファイル処理
-従来のI/Oはファイルを逐次処理するため、以下の問題が発生：
-- **1000ファイルの処理に1時間**かかる
-- I/O待機中にCPUがアイドル状態
-- ファイルサイズに比例したメモリ使用
+1. 多数のファイルの処理に時間がかかる
+   - ファイルを1つずつ順に処理すると、I/Oの待ち時間のあいだCPUが何もしない
+   - NIO.2の非同期I/Oや並列処理を使うと、待ち時間に別のファイルを処理できる
 
-**NIO.2を使用**: 非同期I/Oと並列処理により、同じファイルを**12分**で処理（5倍高速）。
+2. ファイルの変更を自前のポーリングで検出する
+   - 一定間隔でディレクトリを調べるコードを自分で書くと、間隔とCPU使用率のバランスを取りにくい
+   - WatchServiceを使うと、OSの通知機能を使った監視をJavaの標準APIで書ける。ただし、通知の仕組みはOSによって異なる（後述）
 
-#### 問題2: ファイル変更検出の遅延
-ポーリングベースの監視による問題：
-- 高いCPU使用率（継続的なチェック）
-- 検出遅延（1-5秒）
-- ファイル数に対するスケーラビリティの低さ
+3. 大きなファイルを丸ごと読み込むとメモリが足りなくなる
+   - `Files.readAllBytes`はファイル全体をヒープに読み込む
+   - メモリマップドファイルを使うと、ファイルをOSの仮想メモリに対応づけ、必要な部分だけを読み書きできる
 
-**NIO.2を使用**: WatchServiceにより最小限のCPU使用で即座に通知（< 50ms）。
-
-#### 問題3: 大きなファイルでのメモリ不足
-従来のファイル読み込みは全体をメモリにロード：
-- 2GBファイル = 2GB以上のメモリ使用
-- 大きなファイルでアプリケーションがクラッシュ
-- ヒープより大きなファイルを処理できない
-
-**NIO.2を使用**: メモリマップファイルを使用して、わずか200MBのメモリで100GBのファイルを処理。
-
-### ビジネスへの影響
-
-- **金融システム**: 夜間バッチ処理を10時間から2時間に短縮
-- **監視システム**: 5分の遅延から即時アラートへ
-- **データ分析**: メモリ制約なしでテラバイト規模のデータを処理
-- **コスト削減**: 効率的なリソース使用により必要サーバー数を70%削減
+どれだけ速くなるか、どれだけメモリが減るかは、ファイルの大きさや数、ディスク、OSで大きく変わります。
+自分の環境では、`benchmark`パッケージのJMHベンチマークで確かめてください。
 
 ## 実演機能
 
 ### 1. ファイルシステム監視（WatchService）
-- リアルタイムディレクトリ監視
-- 高速変更のためのイベントデバウンシング
-- 再帰的ディレクトリ監視
-- ファイルタイプ固有の処理
+- ディレクトリの監視
+- 短時間に続く変更をまとめるデバウンス（`AdvancedFileWatcher`）
+- サブディレクトリを含めた再帰的な監視
+- ファイルの種類ごとの処理
 
 ### 2. 非同期ファイルI/O
-- ノンブロッキングファイル操作
-- 並列ファイル処理
-- CompletableFuture統合
-- 進捗追跡とキャンセル
+- `AsynchronousFileChannel`によるノンブロッキングなファイル操作
+- 並列のファイル処理
+- `CompletableFuture`との組み合わせ
+- 進捗の通知とキャンセル
 
-### 3. メモリマップファイル
-- ヒープにロードせずに大きなファイルを処理
-- プロセス間での共有メモリ
-- パフォーマンスのための直接メモリアクセス
-- 効率的なランダムアクセスパターン
+### 3. メモリマップドファイル
+- ヒープに読み込まずに大きなファイルを処理する
+- プロセス間でファイルを共有メモリとして使う
+- FFM API（Java 22で正式）の`Arena`でマップし、閉じたときに確実にアンマップする
 
 ### 4. リアクティブI/Oストリーム
-- バックプレッシャー処理
-- Flow API統合
-- 制御されたメモリ使用でのストリーム処理
-- イベント駆動ファイル処理
+- Flow APIによるバックプレッシャー
+- 使うメモリを抑えたストリーム処理
 
 ### 5. パフォーマンスベンチマーク
-- I/Oアプローチの比較
-- 正確な測定のためのJMHベンチマーク
-- メモリ使用量プロファイリング
-- スループット分析
+- JMHによるI/O方式の比較（`IOBenchmark`、`ConcurrentIOBenchmark`）
 
 ## クイックスタート
 
 ### 前提条件
 - Java 25以上
-- Maven 3.6+
+- Maven 3.9以上
 
 ### プロジェクトのビルド
 ```bash
-mvn clean install
+mvn clean package
 ```
+
+`target/benchmarks.jar`には、このプロジェクトのクラスと依存ライブラリ（SLF4JとJMH）がすべて入っています。
+デモもこのJARから実行します。
+`target/nio2-advanced-1.0.jar`には依存ライブラリが入っていないため、`java -cp`に指定すると`NoClassDefFoundError: org/slf4j/LoggerFactory`になります。
 
 ### サンプルの実行
 
 #### 1. ファイルウォッチャーデモ
 ```bash
-# ディレクトリの変更を監視
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.watcher.FileWatcherDemo /path/to/watch
+# ディレクトリの変更を監視（recursiveを付けるとサブディレクトリも監視）
+java -cp target/benchmarks.jar com.example.nio2.watcher.FileWatcherDemo /path/to/watch recursive
 
-# デバウンシング付き高度なウォッチャー
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.watcher.AdvancedWatcherDemo /path/to/watch
+# デバウンス付きの高度なウォッチャー
+java -cp target/benchmarks.jar com.example.nio2.watcher.AdvancedWatcherDemo /path/to/watch
 ```
 
 #### 2. 非同期ファイル処理
 ```bash
 # 複数ファイルを並列処理
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.async.AsyncFileProcessorDemo file1.txt file2.txt file3.txt
+java -cp target/benchmarks.jar com.example.nio2.async.AsyncFileProcessorDemo file1.txt file2.txt file3.txt
 
 # 大きなファイルの非同期コピー
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.async.AsyncFileCopyDemo source.dat destination.dat
+java -cp target/benchmarks.jar com.example.nio2.async.AsyncFileCopyDemo source.dat destination.dat
 ```
 
-#### 3. メモリマップファイルの例
+#### 3. メモリマップドファイルの例
 ```bash
-# メモリにロードせずに大きなファイルを処理
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.memory.MemoryMappedDemo large-file.dat
+# ファイルがなければテスト用のファイルを作ってから、読み込み・検索・行数の計算・書き換えを行う
+java -cp target/benchmarks.jar com.example.nio2.memory.MemoryMappedDemo large-file.dat
 
-# 共有メモリの例
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.memory.SharedMemoryDemo
+# 共有メモリの例（同じプロセスの中でproducerとconsumerを動かす）
+java -cp target/benchmarks.jar com.example.nio2.memory.SharedMemoryDemo demo
 ```
 
 #### 4. リアクティブI/Oデモ
 ```bash
 # バックプレッシャー付きで大きなファイルをストリーム
-java -cp target/nio2-advanced-1.0.jar com.example.nio2.reactive.ReactiveFileDemo large-file.log
+java -cp target/benchmarks.jar com.example.nio2.reactive.ReactiveFileDemo large-file.log
 ```
 
 #### 5. パフォーマンスベンチマーク
 ```bash
+# ベンチマークの一覧
+java -jar target/benchmarks.jar -l
+
 # JMHベンチマークを実行
 java -jar target/benchmarks.jar
 ```
 
+JDK 23以降のjavacは、指定しないと注釈処理を行いません。
+JMHはベンチマークの一覧（`META-INF/BenchmarkList`）を注釈処理で作るため、`pom.xml`では`maven-compiler-plugin`の`annotationProcessorPaths`に`jmh-generator-annprocess`を指定しています。
+
+## WatchServiceのOSによる違い
+
+WatchServiceが変更をどう検出するかは、OSとJDKの実装によって異なります。
+
+- Linux
+  - inotifyを使い、変更をほぼすぐに通知する
+- Windows
+  - OSの変更通知を使い、変更をほぼすぐに通知する
+- macOS
+  - JDKの実装はポーリング（`sun.nio.fs.PollingWatchService`）で、約2秒ごとにディレクトリを調べる。変更から通知まで数秒かかることがあり、短時間に作って消したファイルは通知されないことがある
+
+即座の通知が必要な処理や、OSをまたいで同じ動きを期待するテストでは、この違いに注意してください。
+
 ## 各機能を使用すべき場面
 
-### WatchServiceを使用すべき場面：
-- リアルタイムファイルシステム通知が必要
+### WatchServiceを使用すべき場面
+- ファイルシステムの変更を知りたい
 - ファイル同期ツールの構築
-- ホットリロード機能の実装
-- バックアップまたは監視システムの作成
+- 設定ファイルのホットリロード
+- バックアップや監視のシステム
 
-### 非同期I/Oを使用すべき場面：
-- 多くのファイルを同時に処理
-- I/O操作がメインスレッドをブロックすべきでない
-- レスポンシブアプリケーションの構築
-- 予測不可能な遅延を持つネットワークファイル操作
+### 非同期I/Oを使用すべき場面
+- 多くのファイルを同時に処理する
+- I/O操作でメインスレッドを止めたくない
+- 応答性の高いアプリケーションの構築
 
-### メモリマップファイルを使用すべき場面：
-- 利用可能なヒープより大きなファイルでの作業
-- ファイル内容へのランダムアクセスが必要
-- プロセス間でのデータ共有
-- データベースまたはキャッシュの実装
+### メモリマップドファイルを使用すべき場面
+- ヒープより大きなファイルを扱う
+- ファイルの内容にランダムにアクセスする
+- プロセス間でデータを共有する
 
-### リアクティブストリームを使用すべき場面：
-- 無限または非常に大きなストリームの処理
-- バックプレッシャー処理が必要
-- イベント駆動システムの構築
-- リアクティブフレームワークとの統合
-
-## パフォーマンス比較
-
-| 操作 | 従来のI/O | NIO.2 | 改善度 |
-|-----------|----------------|--------|-------------|
-| 1GBファイル読み込み | 2.5秒 | 0.8秒 | 3.1倍高速 |
-| 1000ファイル監視 | CPU 30% | CPU 2% | 15倍効率的 |
-| 100ファイル処理 | 逐次: 100秒 | 並列: 15秒 | 6.7倍高速 |
-| 10GBファイルメモリ | 10GB以上 | 200MB | 50倍少ない |
+### リアクティブストリームを使用すべき場面
+- 非常に大きなストリームの処理
+- 処理の速さに合わせて読み込みを抑える（バックプレッシャー）必要がある
+- イベント駆動のシステムの構築
 
 ## アーキテクチャ
 
 ### パッケージ構造
-- `com.example.nio2.watcher` - ファイルシステム監視実装
-- `com.example.nio2.async` - 非同期I/Oの例
-- `com.example.nio2.memory` - メモリマップファイルユーティリティ
-- `com.example.nio2.reactive` - リアクティブストリームプロセッサ
-- `com.example.nio2.benchmark` - パフォーマンスベンチマーク
-- `com.example.nio2.utils` - 共通ユーティリティとヘルパー
+- `com.example.nio2.watcher`
+  - ファイルシステムの監視
+- `com.example.nio2.async`
+  - 非同期I/Oの例
+- `com.example.nio2.memory`
+  - メモリマップドファイルと共有メモリ
+- `com.example.nio2.reactive`
+  - リアクティブストリームのプロセッサー
+- `com.example.nio2.benchmark`
+  - JMHベンチマーク
+- `com.example.nio2.utils`
+  - 共通のユーティリティ
 
 ### 使用されるデザインパターン
-- **Observerパターン**: ファイルシステムイベントのWatchService
-- **Futureパターン**: CompletableFutureによる非同期操作
-- **Producer-Consumer**: バックプレッシャー付きリアクティブストリーム
-- **Strategyパターン**: プラガブルファイルプロセッサ
+- Observerパターン
+  - WatchServiceによるファイルシステムのイベントの通知
+- Futureパターン
+  - `CompletableFuture`による非同期操作
+- Producer-Consumer
+  - バックプレッシャー付きのリアクティブストリーム
+- Strategyパターン
+  - 差し替えられるファイルプロセッサー
 
-## 一般的な使用例
-
-### 1. ログファイル処理システム
-```java
-// 作成されたログファイルを処理
-LogProcessor processor = new LogProcessor();
-processor.watchDirectory("/var/log/app")
-    .filterByExtension(".log")
-    .processInParallel(8)
-    .aggregateResults()
-    .exportReport();
-```
-
-### 2. リアルタイムデータパイプライン
-```java
-// 制御されたメモリで大きなデータファイルをストリーム
-DataPipeline pipeline = new DataPipeline();
-pipeline.streamFile("input.csv")
-    .transform(row -> parseAndValidate(row))
-    .buffer(1000)
-    .writeToDatabase();
-```
-
-### 3. ファイル同期サービス
-```java
-// ディレクトリ間で変更を同期
-FileSynchronizer sync = new FileSynchronizer();
-sync.watchSource("/source")
-    .debounce(Duration.ofSeconds(1))
-    .syncTo("/backup")
-    .withConflictResolution(ConflictStrategy.NEWER_WINS);
-```
+これらを組み合わせた構成の例は`examples/EXAMPLES.md`にあります。
 
 ## ベストプラクティス
 
 ### WatchService
-- イベント処理後は必ずWatchKeyをリセット
-- OVERFLOWイベントを適切に処理
-- 監視と処理に別々のスレッドを使用
-- 高速に変更されるファイルにはデバウンシングを実装
+- イベントを処理したら、必ず`WatchKey`を`reset()`する
+- `OVERFLOW`イベントを処理する（イベントが失われた可能性を示す）
+- 監視と処理を別々のスレッドで行う
+- 短時間に続けて変わるファイルには、デバウンスを入れる
 
 ### 非同期I/O
-- よりよいパフォーマンスのため直接ByteBufferを使用
-- 完了ハンドラで適切なエラー処理を実装
-- リソース枯渇を避けるため同時操作を制限
-- すべてのコードパスでチャンネルを適切にクリーンアップ
+- 完了ハンドラーでエラーを処理する
+- 同時に行う操作の数を制限して、リソースを使い切らないようにする
+- すべての経路でチャネルを閉じる
 
-### メモリマップファイル
-- 大きなファイルの必要な部分のみをマップ
-- 重要なデータの永続性のために書き込みを強制
-- メモリリークを避けるためマップされたバッファをクリーンアップ
-- OS固有の制限に注意
+### メモリマップドファイル
+- 大きなファイルは、必要な部分だけをマップする
+- 重要なデータは`force()`でディスクに書き出す
+- `FileChannel.map(mode, offset, size)`が返す`MappedByteBuffer`は、標準のAPIではアンマップできず、GCに回収されるまでマッピングが残る。すぐに解放したいときは、`FileChannel.map(mode, offset, size, arena)`で`MemorySegment`としてマップし、`Arena`を閉じる（`MemoryMappedFile`と`SharedMemoryFile`はこの方法を使っている）
+- マップできる大きさやファイルのロックの動きはOSによって異なる
 
 ### 一般
-- 最適化前にプロファイル
-- 仕事に適したツールを選択
-- エラーを適切に処理
-- 現実的なデータサイズでテスト
+- 最適化の前にプロファイルする
+- 現実的な大きさのデータでテストする
 
 ## トラブルシューティング
 
 ### よくある問題
 
-1. **WatchServiceが変更を検出しない**
-   - ファイルシステムのサポートを確認（一部のネットワークドライブは監視をサポートしない）
-   - 監視対象ディレクトリの権限を確認
-   - WatchKeyが適切にリセットされていることを確認
+1. WatchServiceが変更を検出しない、または遅れる
+   - macOSではポーリングのため、通知まで数秒かかる
+   - ネットワークドライブなど、監視に対応していないファイルシステムがある
+   - 監視するディレクトリの権限を確認する
+   - `WatchKey`を`reset()`しているか確認する
 
-2. **メモリマップファイルエラー**
-   - 利用可能なシステムメモリを確認
-   - ファイル権限を確認
-   - ファイルが他のプロセスによって変更されていないことを確認
+2. メモリマップドファイルのエラー
+   - ファイルの権限を確認する
+   - マップしている間に、別のプロセスがファイルを切り詰めていないか確認する
 
-3. **非同期操作がハング**
-   - 完了ハンドラでのデッドロックを確認
-   - Executorサービスの設定を確認
-   - キャッチされていない例外を探す
+3. 非同期操作が終わらない
+   - 完了ハンドラーの中でのデッドロックを確認する
+   - Executorの設定を確認する
+   - 捕まえていない例外がないか確認する
 
 ## ライセンス
 
