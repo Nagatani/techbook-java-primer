@@ -77,7 +77,7 @@ public class CartTest {
     @Test
     void testAddItem() {
         cart.add("りんご");
-        assertEquals(1, cart.size());  // 先にtestAddTwoItemsが動くと失敗する
+        assertEquals(1, cart.size());  // 後に実行されたほうのテストが失敗する
     }
 
     @Test
@@ -88,6 +88,10 @@ public class CartTest {
     }
 }
 ```
+
+`testAddItem`が先に動くと、`testAddTwoItems`では要素が3個になって失敗します。
+逆の順序なら、`testAddItem`で要素が3個になって失敗します。
+どちらの順序でも、後に実行されたほうのテストが失敗します。
 
 ### 対処法
 

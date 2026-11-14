@@ -180,9 +180,9 @@ List<Integer> numbers = IntStream.range(1, 1000000)
     .collect(Collectors.toList());
 
 // 毎回新しいStreamを作成
-int sum = numbers.stream()
+long sum = numbers.stream()
     .filter(n -> n % 2 == 0)
-    .mapToInt(Integer::intValue)
+    .mapToLong(Integer::longValue)
     .sum();
 
 long count = numbers.stream()
@@ -194,6 +194,10 @@ long count = numbers.stream()
 
 - 同じフィルタリング処理を複数回実行
 - プリミティブ型の不要なボクシング/アンボクシング
+
+合計を`int`で受けると、もう1つ誤りが加わります。
+偶数の合計は249999500000で`int`の範囲を超えるため、`mapToInt(Integer::intValue).sum()`はあふれて891396832という誤った値を返します。
+例外にはならないので、合計が大きくなりうるときは`long`で計算します。
 
 ### 対処法
 
@@ -212,6 +216,14 @@ IntSummaryStatistics stats = numbers
 IO.println("Sum: " + stats.getSum());
 IO.println("Count: " + stats.getCount());
 ```
+
+実行結果：
+```
+Sum: 249999500000
+Count: 499999
+```
+
+`IntSummaryStatistics`の`getSum()`は`long`を返すので、合計があふれません。
 
 ## 例外処理の問題
 

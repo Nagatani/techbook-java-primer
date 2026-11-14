@@ -18,9 +18,11 @@ if (!file.exists()) {
 }
 ```
 
-### エラーメッセージ
+### 症状
 
-`FileNotFoundException`または`NoSuchFileException`が発生します。
+`File.exists()`は例外をスローしないので、このコードは「ファイルが見つかりません」と表示するだけです。
+同じパスのファイルを`new FileReader("data/config.txt")`で開くと`FileNotFoundException`、`Files.readString(Path.of("data/config.txt"))`で読むと`NoSuchFileException`が発生します。
+相対パスは、プログラムを実行したときの作業ディレクトリ（`System.getProperty("user.dir")`）が基準になります。IDEから実行したときとコマンドラインから実行したときで、作業ディレクトリが変わることがあります。
 
 ### 対処法
 
@@ -49,30 +51,47 @@ if (Files.exists(configPath)) {
 
 ## エンコーディングの問題
 
-ファイルの読み書きで、文字化けや不正な文字のエラーが起こります。
+ファイルの文字コードと、読むときに使う文字コードが食い違い、文字化けや不正な文字のエラーが起こります。
+
+Java 18からは、文字コードを指定しないときの既定がOSによらずUTF-8になりました（JEP 400）。
+そのため、Windowsのツール（古いメモ帳やExcelのCSV出力など）で作ったShift_JISのファイルを、文字コードを指定せずに読むと問題になります。
 
 ### エラー例
 
 ```java
-// 悪い例
-FileReader reader = new FileReader("japanese.txt");
-BufferedReader br = new BufferedReader(reader);
-String line = br.readLine(); // 文字化けする可能性
+// 悪い例：Shift_JISのファイルを既定（UTF-8）で読む
+try (BufferedReader br = new BufferedReader(new FileReader("japanese.txt"))) {
+    IO.println(br.readLine());
+}
 ```
 
-### エラーメッセージ
+### 症状
 
-`MalformedInputException`が発生するか、出力が文字化けします。
+「こんにちは」をShift_JISで保存したファイルで試すと、例外にはならず、文字化けした文字列が表示されます。
+
+```
+����ɂ���
+```
+
+`FileReader`は、解釈できないバイト列を置換文字（U+FFFD）に置き換えて読み進めます。
+一方、`Files.newBufferedReader`や`Files.readString`は、解釈できないバイト列があると`MalformedInputException`をスローします。
+
+```
+java.nio.charset.MalformedInputException: Input length = 1
+```
+
+`StandardCharsets.UTF_8`を指定しても、Java 18以降では既定と同じなので解決しません。
 
 ### 対処法
 
-明示的にエンコーディングを指定します。
+ファイルが実際に使っている文字コードを指定して読みます。
 
 ```java
-// 良い例
+// 良い例：ファイルの文字コード（Shift_JIS）を指定して読む
+Charset sjis = Charset.forName("Shift_JIS");  // Windowsの拡張文字を含むなら"windows-31j"
 try (BufferedReader reader = Files.newBufferedReader(
-        Path.of("japanese.txt"), StandardCharsets.UTF_8)) {
-    
+        Path.of("japanese.txt"), sjis)) {
+
     String line;
     while ((line = reader.readLine()) != null) {
         IO.println(line);
@@ -81,7 +100,7 @@ try (BufferedReader reader = Files.newBufferedReader(
     System.err.println("ファイル読み込みエラー: " + e.getMessage());
 }
 
-// 書き込み時も同様
+// 書き込むときは、読む側と同じ文字コードを明示する
 try (BufferedWriter writer = Files.newBufferedWriter(
         Path.of("output.txt"), StandardCharsets.UTF_8)) {
     writer.write("日本語のテキスト");
@@ -89,6 +108,9 @@ try (BufferedWriter writer = Files.newBufferedWriter(
     System.err.println("ファイル書き込みエラー: " + e.getMessage());
 }
 ```
+
+ファイルの文字コードがわからないときは、エディターの表示（VS Codeなら右下のステータスバー）で確かめます。
+自分のプログラムで新しく作るファイルは、UTF-8にそろえるのが安全です。
 
 ## ファイルロックとアクセス権限の問題
 
@@ -146,6 +168,10 @@ try {
     System.err.println("ファイル操作エラー: " + e.getMessage());
 }
 ```
+
+`tryLock()`は、ほかのプロセスがロックしているときに`null`を返します。
+同じJVMの中ですでにロックしている範囲を重ねてロックしようとすると、`null`ではなく`OverlappingFileLockException`がスローされます。
+同じプログラムの複数のスレッドから書き込むときは、後の「並行ファイルアクセスの問題」のように`synchronized`で守ります。
 
 ## メモリ効率の問題
 
@@ -307,8 +333,11 @@ public class ThreadSafeFileLogger {
 
 ```java
 // 悪い例
-File tempFile = new File("temp_" + System.currentTimeMillis() + ".tmp");
-// 処理後にファイルが残る
+Path tempFile = Path.of("temp_" + System.currentTimeMillis() + ".tmp");
+Files.writeString(tempFile, "一時的なデータ");
+processTemporaryFile(tempFile);
+// 削除していないので、処理後もファイルが残る
+// processTemporaryFileで例外が発生した場合も残る
 ```
 
 ### 対処法
@@ -341,17 +370,16 @@ try {
         }
     }
 }
-
-// JVMシャットダウン時の自動削除
-Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-    try {
-        Files.deleteIfExists(tempFile);
-    } catch (IOException e) {
-        // シャットダウン時なので、エラーログのみ
-        System.err.println("シャットダウン時のファイル削除エラー: " + e.getMessage());
-    }
-}));
 ```
+
+プログラムが終了するまで一時ファイルを使い続ける場合は、作った直後に`deleteOnExit()`で、JVMが正常に終了したときに削除するよう登録する方法もあります。
+
+```java
+Path workFile = Files.createTempFile("myapp_", ".tmp");
+workFile.toFile().deleteOnExit();  // JVMの正常終了時に削除される
+```
+
+`deleteOnExit()`は、JVMが強制終了されたときには削除しません。登録した情報はJVMが終了するまでメモリに残るので、一時ファイルを大量に作る処理では、使い終わるたびに`finally`で削除します。
 
 ## デバッグのヒント
 

@@ -15,20 +15,32 @@ Javadocコメントの構文が正しくありません。
 ```java
 /**
  * ユーザー情報を処理するクラス
- * @param name ユーザー名  // クラスレベルでは@paramは使用不可
- * @return なし          // クラスレベルでは@returnは使用不可
+ * @param name ユーザー名
+ * @return なし
  */
 public class UserService {
     // ...
 }
 ```
 
+クラスのドキュメントでは、メソッドの引数を表す`@param name`（型パラメーターを表す`@param <T>`は除く）と、戻り値を表す`@return`は使えません。
+なお、`/** */`の中に`//`でコメントを書いても、Javadocの文章として出力されるだけです。
+
 ### エラーメッセージ
 
+Java 25の`javadoc`では、警告ではなくエラーになり、ドキュメントは生成されません。
+次は英語の環境での表示です。日本語の環境では「エラー: 無効な@paramの使用」のように日本語で表示されます。
+
 ```
-warning: @param has no meaning in class documentation
-warning: @return has no meaning in class documentation
+UserService.java:3: error: invalid use of @param
+UserService.java:4: error: invalid use of @return
+UserService.java:4: warning: Tag @return cannot be used in class documentation.  It can only be used in the following types of documentation: method.
+UserService.java:6: warning: use of default constructor, which does not provide a comment
+2 errors
+2 warnings
 ```
+
+最後の警告は、コメントのない既定のコンストラクターについてのもので、この誤りとは別のものです。
 
 ### 対処法
 
@@ -64,22 +76,33 @@ public class UserService {
 
 日本語のJavadocが文字化けします。
 
+Java 18からは、`javadoc`がソースファイルを読むときの既定の文字コードもUTF-8です。
+そのため、文字化けは主に、ソースファイルをShift_JISなどUTF-8以外で保存している場合や、Java 17以前のJDKを使っている場合に起こります。
+
 ### エラー例
 
 ```bash
 javadoc -d docs src/*.java
-# 日本語が文字化けして表示される
+# ソースファイルの文字コードと読むときの文字コードが違うと、日本語が文字化けする
 ```
 
 ### 対処法
 
 ```bash
-# 文字エンコーディングを明示的に指定
+# ソースの文字コード（-encoding）と、生成するHTMLの文字コード（-docencoding、-charset）を指定する
 javadoc -d docs -encoding UTF-8 -charset UTF-8 -docencoding UTF-8 src/*.java
-
-# Mavenを使用する場合
-mvn javadoc:javadoc -Dfile.encoding=UTF-8
 ```
+
+Mavenの`maven-javadoc-plugin`は、ソースの文字コードに`project.build.sourceEncoding`の値を使います。
+`pom.xml`に次の設定を書いておくと、コンパイルとJavadocの生成の両方でUTF-8が使われます。
+
+```xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>
+```
+
+`mvn javadoc:javadoc -Dfile.encoding=UTF-8`のように`-D`で`file.encoding`を指定しても、Mavenのプロパティが1つ増えるだけで、Javadocの文字コードは変わりません。
 
 ## JavadocでのHTMLタグの誤用
 
@@ -95,7 +118,7 @@ JavadocでHTMLタグを間違って使っています。
  * <p>主な機能
  * <ul>
  * <li>ユーザー作成
- * <li>ユーザー更新  // 閉じタグなし
+ * <li>ユーザー更新
  * </ul>
  */
 public class UserService {
@@ -103,14 +126,26 @@ public class UserService {
 }
 ```
 
+`<strong>`を閉じていないため、その後ろの`<p>`や`<ul>`まで`<strong>`の中にあることになります。
+`<strong>`のような文字の装飾（インライン要素）の中には、段落やリスト（ブロック要素）を置けません。
+`<li>`や`<p>`の閉じタグはHTMLでは省略できるので、それだけではエラーになりません。
+
 ### エラーメッセージ
 
+Java 25の`javadoc`では、次のエラーになり、ドキュメントは生成されません。
+
 ```
-warning: unclosed tag: <strong>
-warning: unclosed tag: <li>
+UserService.java:3: error: block element not allowed within inline element <strong>: p
+UserService.java:4: error: tag not allowed here: <ul>
+UserService.java:2: error: element not closed: strong
+UserService.java:9: warning: use of default constructor, which does not provide a comment
+3 errors
+1 warning
 ```
 
 ### 対処法
+
+`<strong>`を閉じます。`<li>`と`<p>`も閉じておくと、範囲がはっきりします。
 
 コンパイルできる全文：[chapter22-code/UserService3/](chapter22-code/UserService3/)
 
@@ -167,7 +202,7 @@ java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadConstraints
 
 ```xml
 <properties>
-    <jackson.version>2.15.0</jackson.version>
+    <jackson.version>2.23.0</jackson.version>
 </properties>
 
 <dependencies>
@@ -186,27 +221,71 @@ java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadConstraints
 
 ## 推移的な依存関係の問題
 
-間接的に依存するライブラリが競合します。
+間接的に依存するライブラリの版が食い違い、意図しない古い版が選ばれます。
 
 ### エラー例
 
+次の`pom.xml`は、commons-configuration 1.10とhttpclient 4.5.14に直接依存しています。
+commons-configurationはcommons-logging 1.1.1に、httpclientはcommons-logging 1.2に依存しています。
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>1.10</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.14</version>
+    </dependency>
+</dependencies>
+```
+
+`mvn dependency:tree`の出力は次のとおりです（Maven 3.10.0、maven-dependency-plugin 3.11.0で実行。行頭の`[INFO]`は省略）。
+
+```
+com.example:myapp:jar:1.0.0
++- commons-configuration:commons-configuration:jar:1.10:compile
+|  +- commons-lang:commons-lang:jar:2.6:compile
+|  \- commons-logging:commons-logging:jar:1.1.1:compile
+\- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
+   +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+   \- commons-codec:commons-codec:jar:1.11:compile
+```
+
+Mavenは、同じライブラリの版が複数あるとき、依存の木で直接の依存に近いほうを選びます。
+近さが同じなら、`pom.xml`で先に書いたほうが選ばれます。
+この例ではcommons-logging 1.1.1が選ばれ、httpclientが前提にしている1.2は使われません。
+通常の表示では、選ばれなかった1.2は木に現れません。
+
+`-Dverbose`を付けると、選ばれなかった版も`omitted for conflict`として表示されます。
+
 ```bash
-mvn dependency:tree
-# 出力例
-[INFO] com.example:myapp:jar:1.0.0
-[INFO] +- org.springframework:spring-core:jar:5.3.0:compile
-[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
-[INFO] \- org.slf4j:slf4j-api:jar:1.7.30:compile
-[INFO]    \- commons-logging:commons-logging:jar:1.1.3:compile
+mvn dependency:tree -Dverbose
+```
+
+```
+com.example:myapp:jar:1.0.0
++- commons-configuration:commons-configuration:jar:1.10:compile
+|  +- commons-lang:commons-lang:jar:2.6:compile
+|  \- commons-logging:commons-logging:jar:1.1.1:compile
+\- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
+   +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+   +- (commons-logging:commons-logging:jar:1.2:compile - omitted for conflict with 1.1.1)
+   \- commons-codec:commons-codec:jar:1.11:compile
 ```
 
 ### 対処法
 
+古い版を持ち込む依存に`<exclusions>`を付けて、その推移的な依存を除きます。
+
 ```xml
 <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-core</artifactId>
-    <version>5.3.0</version>
+    <groupId>commons-configuration</groupId>
+    <artifactId>commons-configuration</artifactId>
+    <version>1.10</version>
     <exclusions>
         <exclusion>
             <groupId>commons-logging</groupId>
@@ -214,14 +293,22 @@ mvn dependency:tree
         </exclusion>
     </exclusions>
 </dependency>
-
-<!-- 明示的に使用するバージョンを指定 -->
-<dependency>
-    <groupId>commons-logging</groupId>
-    <artifactId>commons-logging</artifactId>
-    <version>1.2</version>
-</dependency>
 ```
+
+もう一度`mvn dependency:tree -Dverbose`を実行すると、httpclientが持ち込む1.2が選ばれたことを確かめられます。
+
+```
+com.example:myapp:jar:1.0.0
++- commons-configuration:commons-configuration:jar:1.10:compile
+|  \- commons-lang:commons-lang:jar:2.6:compile
+\- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
+   +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+   +- commons-logging:commons-logging:jar:1.2:compile
+   \- commons-codec:commons-codec:jar:1.11:compile
+```
+
+使う版を確実に決めたいときは、`<exclusions>`の代わりに、そのライブラリ（ここではcommons-logging 1.2）を`<dependencies>`に直接書く方法もあります。
+直接書いた依存は、推移的な依存より優先されます。
 
 ## 古いバージョンのライブラリの使用
 
@@ -244,19 +331,30 @@ mvn dependency:tree
 <plugin>
     <groupId>org.owasp</groupId>
     <artifactId>dependency-check-maven</artifactId>
-    <version>8.3.1</version>
+    <version>13.0.0</version>
     <configuration>
+        <!-- CVSSの値が7以上の脆弱性があればビルドを失敗させる -->
         <failBuildOnCVSS>7</failBuildOnCVSS>
     </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>check</goal>
+            </goals>
+        </execution>
+    </executions>
 </plugin>
 
-<!-- 最新の安全なバージョンを使用 -->
+<!-- 脆弱性が修正された新しい版を使う（2026年11月時点の最新版） -->
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.15.2</version>
+    <version>2.23.0</version>
 </dependency>
 ```
+
+ここで示した版は、書籍の第22章のサンプルコード22-19・22-20に合わせた2026年11月時点のものです。
+使うときは、Maven Centralで最新の安定版を確かめます。
 
 ## バージョン範囲の誤用
 
@@ -278,7 +376,7 @@ mvn dependency:tree
 <dependency>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-lang3</artifactId>
-    <version>3.12.0</version>  <!-- 具体的なバージョンを指定 -->
+    <version>3.22.0</version>  <!-- 具体的なバージョンを指定 -->
 </dependency>
 ```
 
@@ -319,7 +417,7 @@ Jacksonのように複数のモジュールからなるライブラリは、BOM�
         <dependency>
             <groupId>com.fasterxml.jackson</groupId>
             <artifactId>jackson-bom</artifactId>
-            <version>2.15.2</version>
+            <version>2.23.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -336,6 +434,7 @@ Jacksonのように複数のモジュールからなるライブラリは、BOM�
 ```
 
 古いバージョンでも動かす必要がある場合は、古いバージョンにもあるメソッドで書きます（`properties()`の代わりに`fields()`を使うなど）。
+ただし、`fields()`は2.23では非推奨になっているので、古い版に合わせるのは移行するまでの一時的な対処にとどめます。
 
 ## 廃止予定APIの使用
 
@@ -345,15 +444,33 @@ Jacksonのように複数のモジュールからなるライブラリは、BOM�
 
 ```java
 @SuppressWarnings("deprecation")
-Date date = new Date(2023, 1, 1);  // 廃止予定のコンストラクタ
+Date date = new Date(2023, 1, 1);  // 非推奨のコンストラクター
+IO.println(date);
 ```
+
+実行結果（タイムゾーンが日本の場合）：
+```
+Thu Feb 01 00:00:00 JST 3923
+```
+
+`Date(int, int, int)`は非推奨（deprecated）です。
+年には1900を足した値、月には0から数えた値を渡すため、この例は2023年1月1日ではなく3923年2月1日になります。
+`@SuppressWarnings("deprecation")`で警告を消すと、このような誤りにも気付けなくなります。
 
 ### 対処法
 
 ```java
 // 新しいAPIを使用
-LocalDate date = LocalDate.of(2023, 1, 1);
+LocalDate date = LocalDate.of(2023, 1, 1);  // 月は1から数える
+IO.println(date);
+
+// 古いAPIにDateを渡す必要があるときだけ変換する
 Date legacyDate = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+```
+
+実行結果：
+```
+2023-01-01
 ```
 
 ## クラスが見つからない
@@ -372,39 +489,23 @@ public class Example {
 }
 ```
 
-実行結果：
-```
-=== NoClassDefFoundError デモンストレーション ===
-
-実際にはApache Commons Langライブラリが必要ですが、
-クラスパスに存在しないため、以下のようなエラーが発生します：
-
-エラーの再現:
-Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
-    at Example.main(Example.java:4)
-Caused by: java.lang.ClassNotFoundException: org.apache.commons.lang3.StringUtils
-    at java.net.URLClassLoader.findClass(URLClassLoader.java:382)
-    at java.lang.ClassLoader.loadClass(ClassLoader.java:418)
-    at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:352)
-    at java.lang.ClassLoader.loadClass(ClassLoader.java:351)
-    ... 1 more
-
-解決方法:
-1. pom.xmlに依存関係を追加
-2. Mavenでライブラリをダウンロード（mvn compile）
-3. クラスパスが正しく設定されていることを確認
-
-依存関係管理の重要性:
-- 手動でJARファイルを管理すると、このようなエラーが発生しやすい
-- MavenやGradleを使用することで、依存関係が自動解決される
-- 推移的依存関係も自動的に含まれる
-```
+コンパイルするときはクラスパスにcommons-lang3のJARがあったのに、実行するときにはない、という場合に起こります。
+JARがなければ、そもそもコンパイルの時点で`package org.apache.commons.lang3 does not exist`というエラーになります。
 
 ### エラーメッセージ
 
+Java 25では次のように表示されます。
+
 ```
-java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
+Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
+	at Example.main(Example.java:5)
+Caused by: java.lang.ClassNotFoundException: org.apache.commons.lang3.StringUtils
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	... 1 more
 ```
+
+`NoClassDefFoundError`の原因（`Caused by`）に、クラスを探して見つからなかったことを表す`ClassNotFoundException`が示されます。
 
 ### 対処法
 
@@ -413,9 +514,12 @@ java.lang.NoClassDefFoundError: org/apache/commons/lang3/StringUtils
 <dependency>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-lang3</artifactId>
-    <version>3.12.0</version>
+    <version>3.22.0</version>
 </dependency>
 ```
+
+`pom.xml`に依存を書くと、Mavenはコンパイル時にもテストの実行時にも同じJARをクラスパスに入れます。
+JARを手で`javac`と`java`に指定している場合は、次の節のように実行時にも同じクラスパスを指定します。
 
 ## 実行時とコンパイル時のクラスパスの違い
 
@@ -434,13 +538,14 @@ java Example  # ClassNotFoundException
 ### 対処法
 
 ```bash
-# 実行時にも必要なクラスパスを指定
+# 実行時にも必要なクラスパスを指定（Windowsでは区切りを;にする）
 java -cp "lib/*:src" Example
-
-# または実行可能JARを作成
-mvn clean package
-java -jar target/myapp.jar
 ```
+
+Mavenのプロジェクトでは、`mvn clean package`で作られる通常のJARに、依存ライブラリも、実行するクラス（`Main-Class`）の情報も入りません。
+そのため、`java -jar target/myapp.jar`とするだけでは実行できません。
+依存ライブラリを含めた実行可能JARを作るには、maven-shade-pluginなどの設定が必要です。
+設定の例は、付録G「高度なビルドとデプロイメント技術」で扱います。
 
 ## 設定ファイルの読み込みエラー
 
@@ -482,7 +587,8 @@ try (InputStream input = getClass().getClassLoader()
 
 ```properties
 # application.properties
-server.port=8080abc  # 数値でない
+# 数値でない値が書かれている
+server.port=8080abc
 ```
 
 ```java
@@ -518,28 +624,40 @@ int port = getIntProperty(props, "server.port", 8080);
 
 ## ログフレームワークの競合
 
-複数のログフレームワークが競合します。
+SLF4Jは、ログを書くためのAPI（slf4j-api）と、実際にログを出力する実装（プロバイダー）を分けたライブラリです。
+クラスパスにプロバイダーが2つ以上あると、どちらが使われるかを選べず、意図しない設定でログが出力されます。
 
 ### エラー例
 
+logback-classicを使うつもりで依存に加えたのに、別のライブラリがslf4j-reload4j（reload4jへ出力するプロバイダー）を推移的に持ち込んでいる場合です。
+プログラムを実行すると、最初に`LoggerFactory.getLogger`でロガーを取得したときに次の警告が表示されます（SLF4J 2.0.20、logback 1.5.38で実行）。
+
 ```
-SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in [jar:file:.../slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J(W): Class path contains multiple SLF4J providers.
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@341b80b2]
+SLF4J(W): Found provider [org.slf4j.reload4j.Reload4jServiceProvider@55a1c291]
+SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J(I): Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceProvider@341b80b2]
 ```
+
+`@`の後ろの値は実行のたびに変わります。
+SLF4J 1.7系では、同じ状況で`SLF4J: Class path contains multiple SLF4J bindings.`と表示されました。
 
 ### 対処法
 
+`mvn dependency:tree`で、slf4j-reload4jを持ち込んでいる依存を探し、その依存に`<exclusions>`を付けて除きます。
+次の`com.example:legacy-lib`は、slf4j-reload4jを持ち込んでいるライブラリの例です。
+
 ```xml
-<!-- 不要なログ実装を除外 -->
+<!-- 不要なプロバイダーを除外 -->
 <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-core</artifactId>
-    <version>5.3.0</version>
+    <groupId>com.example</groupId>
+    <artifactId>legacy-lib</artifactId>
+    <version>1.0.0</version>
     <exclusions>
         <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
     </exclusions>
 </dependency>
@@ -548,13 +666,34 @@ SLF4J: Found binding in [jar:file:.../logback-classic-1.2.3.jar!/org/slf4j/impl/
 <dependency>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-classic</artifactId>
-    <version>1.2.12</version>
+    <version>1.5.38</version>
 </dependency>
 ```
+
+プロバイダーがlogback-classicだけになると、警告は表示されなくなります。
+古いライブラリが持ち込むのがSLF4J 1.7系のslf4j-log4j12の場合も、同じように`<exclusion>`で除きます。
 
 ## 異なるJSONライブラリの混在
 
 JacksonとGsonが混在してAPIが混乱します。
+
+### エラー例
+
+```java
+// ある箇所ではJackson
+ObjectMapper mapper = new ObjectMapper();
+String json1 = mapper.writeValueAsString(user);
+
+// 別の箇所ではGson
+Gson gson = new Gson();
+String json2 = gson.toJson(user);
+```
+
+### 症状
+
+- 2つのライブラリで、`null`のフィールドの扱いや日付の書き方などの既定が異なるため、同じオブジェクトでも出力されるJSONが変わる
+- アノテーション（Jacksonの`@JsonProperty`とGsonの`@SerializedName`）が片方にしか効かず、項目名がそろわない
+- 依存するJARが増え、版の管理の手間も増える
 
 ### 対処法
 

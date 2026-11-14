@@ -50,9 +50,24 @@ count.incrementAndGet();
 
 ```java
 // エラー例：ロック順序の不一致
-method1: synchronized(lock1) → synchronized(lock2)
-method2: synchronized(lock2) → synchronized(lock1)
+public void method1() {
+    synchronized (lock1) {
+        synchronized (lock2) {  // method2がlock2を持っていると、ここで待ち続ける
+            // 処理
+        }
+    }
+}
+
+public void method2() {
+    synchronized (lock2) {  // method1と逆の順序
+        synchronized (lock1) {  // method1がlock1を持っていると、ここで待ち続ける
+            // 処理
+        }
+    }
+}
 ```
+
+method1を実行するスレッドがlock1を、method2を実行するスレッドがlock2を取ったところで、互いに相手のロックを待ち続けます。
 
 ### 対処法
 
@@ -90,7 +105,9 @@ public void method2() {
 ```java
 // エラー例
 List<String> list = new ArrayList<>();
-// 複数スレッドから同時にadd/remove → ConcurrentModificationException
+// 複数スレッドから同時にadd → 要素が失われる、nullが入る、
+// 内部の配列を広げる途中でArrayIndexOutOfBoundsExceptionが発生するなど、結果が実行のたびに変わる
+// あるスレッドが拡張for文で反復している最中に別のスレッドが変更すると、ConcurrentModificationExceptionになる
 ```
 
 ### 対処法
@@ -135,6 +152,7 @@ try {
         }
     } catch (InterruptedException e) {
         executor.shutdownNow();
+        Thread.currentThread().interrupt();  // 割り込まれた状態を戻す
     }
 }
 ```
@@ -151,9 +169,9 @@ try {
 
 - **メモリ可視性の問題**（→ 付録B.14）
   - volatileキーワードの正しい使用法
-- **InterruptedException**（→ 第13章）
+- **InterruptedException**（→ 第15章）
   - スレッドの割り込み処理
-- **ConcurrentModificationException**（→ 付録H）
+- **ConcurrentModificationException**（→ [付録H ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)）
   - 反復処理中のコレクション変更
 
 ## デバッグのヒント
@@ -178,5 +196,5 @@ try {
 
 ## さらに学ぶには
 
-- 付録H: Java共通エラーガイド（並行処理の基本）
+- [付録H: ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)
 - 付録B.14: Javaメモリモデル（高度な内容）

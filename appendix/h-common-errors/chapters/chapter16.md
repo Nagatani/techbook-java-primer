@@ -29,7 +29,7 @@ for (int i = 0; i < MAX_RETRIES; i++) {
         // 接続試行
     } catch (IOException e) {
         if (i == MAX_RETRIES - 1) throw e;
-        Thread.sleep(RETRY_DELAY * (i + 1)); // 指数バックオフ
+        Thread.sleep(RETRY_DELAY * (1L << i)); // 指数バックオフ（1倍、2倍、4倍…）
     }
 }
 ```
@@ -48,9 +48,13 @@ for (int i = 0; i < MAX_RETRIES; i++) {
 
 ```java
 // エラー例
-out.write(data.getBytes()); // エンコーディング不明
+out.write(data.getBytes()); // 文字コードを指定していない
 // データが分割されて到着する可能性
 ```
+
+Java 18以降は`getBytes()`の既定がUTF-8なので、Javaどうしの通信なら文字化けしにくくなりました。
+しかし、通信相手がJava 17以前で動いている場合や、別の言語で書かれていて別の文字コードを使う場合は、文字化けします。
+また、TCPは送ったまとまりの区切りを保たないので、1回の`read()`で全体が届くとは限りません。
 
 ### 対処法
 
@@ -98,7 +102,18 @@ if (status >= 200 && status < 300) {
     throw new IOException("リソースが見つかりません");
 } else if (status >= 500) {
     throw new IOException("サーバーエラー: " + status);
+} else {
+    throw new IOException("予期しないステータス: " + status);
 }
+```
+
+古い`HttpURLConnection`を使う場合は、エラーのレスポンス（4xx・5xx）で`getInputStream()`が`IOException`をスローします。
+先に`getResponseCode()`でステータスコードを確かめ、エラーのときのボディは`getErrorStream()`で読みます。
+
+```java
+HttpURLConnection conn = (HttpURLConnection) URI.create(url).toURL().openConnection();
+int status = conn.getResponseCode();
+InputStream in = (status < 400) ? conn.getInputStream() : conn.getErrorStream();
 ```
 
 ### 重要なポイント
@@ -140,8 +155,8 @@ try (ServerSocket server = new ServerSocket(8080)) {
 ### 重要なポイント
 
 - try-with-resourcesで自動クローズ
-- 各クライアントを別スレッドで処理
-- シャットダウンフックを実装
+- 複数のクライアントを同時に処理するときは、`accept()`で受け取ったソケットをスレッドプールのタスクに渡し、タスクのなかのtry-with-resourcesで閉じる（上のコードのように`accept()`したスレッドで閉じると、別スレッドが使う前に閉じてしまう）
+- サーバーを止めるときに`ServerSocket`を閉じると、`accept()`で待っているスレッドに`SocketException`が発生して待ちが終わる
 
 ## 関連する共通エラー
 
@@ -155,15 +170,27 @@ try (ServerSocket server = new ServerSocket(8080)) {
 1. 接続診断
 
    ```java
-   InetAddress.getByName(host).isReachable(5000);
-   // ping相当の確認
+   InetAddress address = InetAddress.getByName(host);  // 名前解決の確認（失敗するとUnknownHostException）
+   IO.println(address.getHostAddress());
+
+   // ポートに接続できるかの確認
+   try (Socket socket = new Socket()) {
+       socket.connect(new InetSocketAddress(host, port), 5000);
+       IO.println("接続できました");
+   }
    ```
+
+   `InetAddress.isReachable()`はpingの代わりにはなりません。ICMPを送る権限がないと、ポート7（echo）へのTCP接続で確かめるため、ホストが動いていても`false`になることがよくあります。
 
 2. HTTPデバッグ
 
-   ```java
-   System.setProperty("java.net.debug", "all");
-   // 詳細なネットワークログ
+   `java.net.http.HttpClient`の送受信の内容は、JVMの起動オプションで標準エラー出力にログを出せます。
+
+   ```bash
+   # 要求と応答の行、ヘッダーを表示する
+   java -Djdk.httpclient.HttpClient.log=requests,headers Main
+   # HTTPSのTLSの通信を調べる
+   java -Djavax.net.debug=ssl:handshake Main
    ```
 
 3. ポートスキャン
@@ -172,6 +199,5 @@ try (ServerSocket server = new ServerSocket(8080)) {
 
 ## さらに学ぶには
 
-- 付録H: Java共通エラーガイド（I/Oエラー）
-- 付録B.15: ネットワークプログラミング詳細
+- 第14章: ファイルI/O（ストリームの扱いと文字コード）
 - 第22章: HTTPクライアントライブラリの活用

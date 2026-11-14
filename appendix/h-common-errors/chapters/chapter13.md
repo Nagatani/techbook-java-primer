@@ -87,7 +87,7 @@ try {
 
 ## 誤った例外型の使用
 
-RuntimeExceptionを誤って使っています。
+汎用の`RuntimeException`をそのままスローしています。
 
 ### エラー例
 
@@ -102,14 +102,30 @@ public void validateAge(int age) {
 
 ### 症状
 
-呼び出し元で正しく処理できません。
+呼び出し元は、どのような失敗なのかを例外の型で見分けられません。
+`catch (RuntimeException e)`と書くと、`NullPointerException`のような無関係なバグまで一緒に捕まえてしまいます。
 
 ### 対処法
 
-目的に合った例外型を定義・使用します。
+目的に合う型の例外を選びます。
+
+引数の値がメソッドの前提を満たさないのは、呼び出し側のプログラムの誤りです。
+このような場合は、標準の非検査例外`IllegalArgumentException`を使うのがJavaの慣習です。
 
 ```java
-// 良い例
+// 良い例1：プログラムの誤りとして扱う
+public void validateAge(int age) {
+    if (age < 0 || age > 150) {
+        throw new IllegalArgumentException("年齢は0以上150以下である必要があります: " + age);
+    }
+}
+```
+
+ユーザーが入力した値を確かめる場合のように、呼び出し元に対処（入力のやり直しなど）を求めたいときは、検査例外を定義します。
+検査例外にすると、呼び出し元は`try-catch`か`throws`を書かないとコンパイルできないので、対処を忘れません。
+
+```java
+// 良い例2：呼び出し元に回復させたい場合は検査例外にする
 public class ValidationException extends Exception {
     public ValidationException(String message) {
         super(message);
@@ -149,7 +165,7 @@ try {
 
 ### エラーメッセージ
 
-`Error: unreported exception IOException; must be caught or declared to be thrown`というコンパイルエラーになります。
+`error: unreported exception IOException; must be caught or declared to be thrown`というコンパイルエラーになります。
 
 ### 対処法
 
@@ -243,43 +259,53 @@ try {
 この項のサンプルは、第15章「マルチスレッドプログラミング」で学ぶスレッドや`CompletableFuture`を使います。
 第15章を学んだあとに読み返すと理解しやすくなります。
 
-スレッドでの例外が正しく処理されません。
+別のスレッドで発生した例外を、スレッドを起動した側の`catch`で捕まえようとしています。
 
 ### エラー例
 
 ```java
 // 悪い例
-Thread thread = new Thread(() -> {
-    try {
-        riskyOperation();
-    } catch (Exception e) {
-        // このエラーはメインスレッドで捕捉できない
-        e.printStackTrace();
-    }
-});
-thread.start();
+try {
+    Thread thread = new Thread(() -> {
+        String result = riskyOperation();  // ここで例外が発生する
+        IO.println(result);
+    });
+    thread.start();
+} catch (RuntimeException e) {
+    // 別スレッドの例外はここには届かない
+    IO.println("エラーを処理しました");
+}
 ```
+
+### 症状
+
+`thread.start()`はスレッドを起動するとすぐに戻るので、`try`ブロックはその時点で終わります。
+例外は起動したスレッドのなかで発生し、そのスレッドのスタックトレースが標準エラー出力に表示されるだけで、`catch`ブロックは実行されません。
 
 ### 対処法
 
-包括的な例外処理戦略を採用します。
+`ExecutorService`や`CompletableFuture`を使い、別スレッドの結果と例外を、起動した側で受け取ります。
 
 ```java
 // 良い例
 ExecutorService executor = Executors.newFixedThreadPool(2);
-CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-    try {
-        return riskyOperation();
-    } catch (Exception e) {
-        throw new CompletionException("並行処理でエラーが発生しました", e);
-    }
-}, executor);
+try {
+    CompletableFuture<String> future = CompletableFuture.supplyAsync(
+        () -> riskyOperation(), executor);
 
-future.exceptionally(ex -> {
-    logger.error("並行処理エラー", ex);
-    return "デフォルト値";
-});
+    // 失敗したときは、exceptionallyで代わりの値にする
+    String result = future.exceptionally(ex -> {
+        logger.error("並行処理エラー", ex);
+        return "デフォルト値";
+    }).join();
+    IO.println(result);
+} finally {
+    executor.shutdown();  // shutdownしないとプログラムが終了しない
+}
 ```
+
+`exceptionally`は新しい`CompletableFuture`を返すので、その戻り値に対して`join()`などで結果を受け取ります。
+`exceptionally`に渡される例外は、元の例外を包んだ`CompletionException`です。元の例外は`getCause()`で取り出せます。
 
 ## デバッグのヒント
 

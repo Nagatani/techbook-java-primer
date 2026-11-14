@@ -235,6 +235,9 @@ new DropTarget(component, new DropTargetListener() {
 });
 ```
 
+`DropTargetListener`はインターフェイスなので、使わない`dragOver`・`dropActionChanged`・`dragExit`も実装する必要があります。
+空の実装を持つ`DropTargetAdapter`クラスを継承すると、`drop`と必要なメソッドだけを書けます。
+
 ## デバッグのヒント
 
 ### 1. EDT違反の検出
@@ -257,12 +260,12 @@ RepaintManager.setCurrentManager(new RepaintManager() {
 
 ```java
 button.addActionListener(e -> {
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     try {
         // 処理
         performAction();
     } finally {
-        long elapsed = System.currentTimeMillis() - start;
+        long elapsed = (System.nanoTime() - start) / 1_000_000;  // ミリ秒に直す
         if (elapsed > 100) {  // 100ms以上かかった場合
             System.err.println("警告: イベント処理に" + elapsed + "msかかりました");
         }

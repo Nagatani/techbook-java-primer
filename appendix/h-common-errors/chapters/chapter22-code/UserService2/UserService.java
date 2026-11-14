@@ -3,7 +3,7 @@
  * <p>主な機能
  * <ul>
  * <li>ユーザー作成
- * <li>ユーザー更新  // 閉じタグなし
+ * <li>ユーザー更新
  * </ul>
  */
 public class UserService {

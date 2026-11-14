@@ -24,15 +24,42 @@ frame.setVisible(true);
 
 ```java
 JFrame frame = new JFrame("タイトル");
-frame.setSize(300, 200);  // サイズを明示的に設定
 frame.add(new JButton("ボタン"));
-frame.setVisible(true);
-
-// または
-frame.pack();  // 推奨サイズに自動調整
+frame.setSize(300, 200);  // サイズを明示的に設定
+// または frame.pack();   // 部品の推奨サイズに合わせる
+frame.setVisible(true);   // サイズを決めてから表示する
 ```
 
-これはコンポーネントが表示されない問題の対処法です。setSize()またはpack()を使用してウィンドウサイズを設定することで、正しくコンポーネントが表示されます。
+これはコンポーネントが表示されない問題の対処法です。`setSize()`または`pack()`でウィンドウのサイズを決めてから`setVisible(true)`を呼ぶと、コンポーネントが表示されます。`pack()`は追加した部品の推奨サイズから大きさを計算するので、部品をすべて追加したあとに呼びます。
+
+### エラー例2：表示したあとにコンポーネントを追加する
+
+```java
+JFrame frame = new JFrame("タイトル");
+frame.setSize(300, 200);
+frame.setVisible(true);
+
+JPanel panel = new JPanel();
+frame.add(panel, BorderLayout.CENTER);
+panel.add(new JButton("あとから追加したボタン"));
+// ボタンが表示されない（ウィンドウの大きさを変えると表示される）
+```
+
+### 原因2
+
+- 表示したあとに部品を追加・削除しても、レイアウトの計算はやり直されない
+- ウィンドウの大きさを変えたときなど、次にレイアウトが計算されるまで画面に反映されない
+
+### 対処法2
+
+```java
+panel.add(new JButton("あとから追加したボタン"));
+panel.revalidate();  // レイアウトの計算をやり直す
+panel.repaint();     // 描き直す
+```
+
+部品を追加・削除したコンテナーに対して`revalidate()`と`repaint()`を呼びます。
+`revalidate()`はレイアウトを計算し直し、`repaint()`は古い表示が残らないように描き直します。
 
 ## BorderLayoutで複数のコンポーネントが重なる
 
@@ -103,32 +130,62 @@ JTextField textField = new JTextField("初期値");
 
 ### 原因
 
-- `setEditable(false)`が設定されている
-- フォーカスが取得できない状態
+- どこかで`setEditable(false)`が設定されている（文字は普通の色で表示されるが、入力できない）
+- どこかで`setEnabled(false)`が設定されている（文字が灰色になり、クリックもできない）
+- `setFocusable(false)`が設定されていて、キーボードの入力を受け取れない
 
 ### 対処法
 
 ```java
 JTextField textField = new JTextField("初期値");
-textField.setEditable(true);   // 編集可能に設定
-textField.setFocusable(true);  // フォーカス取得可能に設定
+textField.setEditable(true);  // 編集できるようにする
+textField.setEnabled(true);   // 操作できるようにする
 ```
 
-これは編集可能にする対処法です。setEditable(true)とsetFocusable(true)により、テキストフィールドが正常に編集できるようになります。
+これは編集可能にする対処法です。`setEditable`と`setEnabled`の呼び出しをコードから探し、意図せず`false`にしている箇所を直します。表示するだけで書き換えさせたくない欄には`setEditable(false)`、いまは操作させたくない欄には`setEnabled(false)`と使い分けます。
 
-## GUI更新でException in thread "AWT-EventQueue-0"が発生する
+## Exception in thread "AWT-EventQueue-0"が表示される
+
+`AWT-EventQueue-0`は、イベントディスパッチスレッド（EDT）の名前です。
+このメッセージは、ボタンのリスナーなど、EDTの上で実行した処理で例外が発生したことを示します。
+EDT以外のスレッドから部品を操作したことを示すものではありません。
 
 ### エラーメッセージ
 
 ```
-Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
-	at SwingApplication.updateUI(SwingApplication.java:45)
+Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "javax.swing.JLabel.setText(String)" because "this.label" is null
+	at SwingApplication.lambda$new$0(SwingApplication.java:45)
 ```
 
 ### 原因
 
-- EDT（Event Dispatch Thread）以外からGUIコンポーネントにアクセスしている
-- コンポーネントがnullのまま使用されている
+- フィールドの`label`に部品を代入する前に、リスナーから使っている
+- コンストラクターのなかで`JLabel label = new JLabel(...)`と書き、フィールドではなく同じ名前のローカル変数に代入している
+
+Java 15からは、NullPointerExceptionのメッセージに、どの式が`null`だったか（ここでは`this.label`）が表示されます。
+
+### 対処法
+
+```java
+public class SwingApplication extends JFrame {
+    private final JLabel label;  // finalにすると、代入し忘れがコンパイルエラーになる
+
+    public SwingApplication() {
+        label = new JLabel("初期値");  // フィールドに代入する（型名を書かない）
+        JButton button = new JButton("更新");
+        button.addActionListener(e -> label.setText("更新されたテキスト"));
+        add(label, BorderLayout.CENTER);
+        add(button, BorderLayout.SOUTH);
+    }
+}
+```
+
+これはNullPointerExceptionの対処法です。メッセージに表示された式（`this.label`）がどこで代入されるかを確かめ、使う前にフィールドへ代入します。
+
+## EDT以外のスレッドからGUIを更新している
+
+EDT以外のスレッドから部品を操作しても、多くの場合は例外になりません。
+表示が更新されない、まれに表示が乱れる、といった再現しにくい問題になります。
 
 ### 対処法
 
@@ -137,14 +194,9 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
 SwingUtilities.invokeLater(() -> {
     label.setText("更新されたテキスト");
 });
-
-// コンポーネントのnullチェック
-if (label != null) {
-    label.setText("安全な更新");
-}
 ```
 
-これはEDT関連エラーの対処法です。SwingUtilities.invokeLater()を使用してEDT上で実行し、nullチェックでNullPointerExceptionを防ぎます。
+`SwingUtilities.invokeLater()`に渡した処理は、EDTの上で実行されます。
 
 ## JTextAreaが1行しか表示されない
 
