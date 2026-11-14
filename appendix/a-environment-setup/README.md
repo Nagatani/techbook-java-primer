@@ -18,7 +18,7 @@
 
 ### JDKとは
 
-プログラミング言語Javaの開発環境をJava Software Development Kitと呼び、JavaSDKやJDKなどと略されます。  
+プログラミング言語Javaの開発に使うコンパイラーや実行環境などの一式をJava Development Kitと呼び、JDKと略します。  
 Javaでの開発は、複数あるJDKのどれかをインストールすることから始まります。
 
 Javaでの開発にお勧めのIDEである、IntelliJ IDEAからもJDKをインストールできるようになっています。  
@@ -26,8 +26,8 @@ Javaでの開発にお勧めのIDEである、IntelliJ IDEAからもJDKをイン
 
 ### JDKの種類
 
-JDKに挟まざまな提供元があり、インストールするJDKの種類が異なることによって講義を円滑に進められない場合もあります。
-そのため、講義で使用するJDKはこの資料で指定しているものを必ずインストールするようにしてください。
+JDKにはさまざまな提供元があり、インストールしたJDKの種類によっては、本書の説明どおりに進められない場合もあります。
+そのため、本書で指定しているJDKをインストールするようにしてください。
 
 #### JDKの種類が混乱するほど増えている理由
 
@@ -51,7 +51,7 @@ Javaでの開発を始める前に、開発を行う企業やコミュニティ�
 ※本書執筆時点のLTS版（長期サポート対応バージョン）のなかで最も新しいものを使用しています。
 
 本書のサンプルコードは、Java 25で正式に加わった標準入出力の`IO`クラス（`IO.println`、`IO.readln`など）を使います。
-Java 21以前のJDKではコンパイルできないため、必ずJava 25以降のJDKをインストールしてください。
+Java 24以前のJDKではコンパイルできないため、必ずJava 25以降のJDKをインストールしてください（Java 23と24の`IO`クラスは`java.io`パッケージのプレビュー機能で、本書のコードはそのままではコンパイルできません）。
 
 
 ## A.2 SDKMANを使用したバージョン管理
@@ -60,10 +60,14 @@ Java 21以前のJDKではコンパイルできないため、必ずJava 25以降
 
 ソフトウェア開発において、バージョン管理ツールは開発環境の管理を劇的に改善する重要なツールです。特にJavaのような、頻繁にバージョンアップされるプログラミング言語では、次のような課題が発生します。
 
-- 複数プロジェクトでの異なるバージョン要求： プロジェクトAではJava 8、プロジェクトBではJava 17が必要である
-- 新バージョンの検証： 新しいJavaバージョンをテストしつつ、安定版も維持する必要がある
-- チーム開発での環境統一： 開発メンバー全員が同じバージョンを使用する必要がある
-- OS標準のJavaとの競合： システムにプリインストールされたJavaと開発用Javaの混在がある
+- 複数プロジェクトでの異なるバージョン要求
+    + プロジェクトAではJava 8、プロジェクトBではJava 17が必要である
+- 新バージョンの検証
+    + 新しいJavaバージョンをテストしつつ、安定版も維持する必要がある
+- チーム開発での環境統一
+    + 開発メンバー全員が同じバージョンを使用する必要がある
+- OS標準のJavaとの競合
+    + システムにプリインストールされたJavaと開発用Javaが混在する
 
 ### 従来の方法の問題点
 
@@ -102,9 +106,9 @@ sdk use java 21.0.13.0+9-tem
 # インストール済みバージョンの確認
 sdk list java
 
-# プロジェクトごとの自動切り替え
-cd project-a  # .sdkmanrcファイルがあれば自動的にJava 8に
-cd project-b  # 自動的にJava 17に切り替わる
+# プロジェクトごとの自動切り替え（sdkman_auto_env=trueを設定した場合。後述）
+cd project-a  # .sdkmanrcにJava 8を書いておけば、Java 8に切り替わる
+cd project-b  # .sdkmanrcにJava 17を書いておけば、Java 17に切り替わる
 ```
 
 #### 3. ベンダー中立なJDK管理
@@ -126,10 +130,14 @@ sdk install kotlin      # JVM言語
 
 #### 本書でSDKMANを採用する理由
 
-1. クロスプラットフォーム対応： macOS、Linux、Windowsで同じコマンドが使える
-2. 初心者にも優しい： 複雑な環境設定を自動化
-3. プロフェッショナルも愛用： 実際の開発現場で広く使われている
-4. 無料・オープンソース： 誰でも自由に使用可能
+1. クロスプラットフォーム対応
+    + macOSとLinuxで同じコマンドが使える。WindowsではWSL2の中で同じように使える
+2. 初心者にも優しい
+    + 複雑な環境設定を自動化する
+3. プロフェッショナルも愛用
+    + 実際の開発現場で広く使われている
+4. 無料・オープンソース
+    + 誰でも自由に使用できる
 
 ### SDKMANの内部動作
 
@@ -201,8 +209,8 @@ Available Java Versions for macOS ARM 64bit
 ================================================================================
  Vendor         | Use | Version            | Identifier
 --------------------------------------------------------------------------------
- Corretto       |     | 27.0.1.0+10        | 27.0.1.0+10-amzn
-                |     | 25.0.5.0+9         | 25.0.5.0+9-amzn
+ Corretto       |     | 27.0.1.0+11        | 27.0.1.0+11-amzn
+                |     | 25.0.5.0+10        | 25.0.5.0+10-amzn
                 |     | 21.0.13.0+10       | 21.0.13.0+10-amzn
  Microsoft      |     | 25.0.5.0+2         | 25.0.5.0+2-ms
                 |     | 21.0.13.0+2        | 21.0.13.0+2-ms
@@ -224,11 +232,14 @@ Available Java Versions for macOS ARM 64bit
 
 #### 一覧の見方
 
-- Vendor: JDKの提供元（Microsoft、Oracle、Amazon等）。同じ提供元の2行目以降は空欄になる
-- Use: 使用状況を表す記号
-    + `>`は現在使用中、`*`はインストール済み、`+`はSDKMANの外から登録したもの
-- Version: JDKのバージョン番号
-- Identifier: インストール時に使用する識別子
+- Vendor
+    + JDKの提供元（Microsoft、Oracle、Amazon等）。同じ提供元の2行目以降は空欄になる
+- Use
+    + 使用状況を表す記号。`>`は現在使用中、`*`はインストール済み、`+`はSDKMANの外から登録したもの
+- Version
+    + JDKのバージョン番号
+- Identifier
+    + インストール時に使用する識別子
 
 #### JDKのインストール
 
@@ -271,7 +282,8 @@ Setting java 25.0.5.0+2-ms as default.
 $ java -version
 ```
 
-次のようなバージョン情報が出力されていればOKです。
+次のようなバージョン情報が出力されていればOKです（`25.0.5.0+2-ms`をインストールした場合の表示）。
+バージョン番号・日付・ビルド番号は、インストールした時期の更新版によって変わります。
 
 ```
 openjdk version "25.0.5.0.2" 2026-10-22 LTS
@@ -279,7 +291,7 @@ OpenJDK Runtime Environment Microsoft-15804666 (build 25.0.5.0.2+1-LTS)
 OpenJDK 64-Bit Server VM Microsoft-15804666 (build 25.0.5.0.2+1-LTS, mixed mode, sharing)
 ```
 
-1行目の`"25.`で始まるバージョン番号が表示されていることを確認します。
+1行目の`"25.`で始まるバージョン番号と、2行目の`Microsoft`が表示されていることを確認します。
 `21`などほかのバージョンが表示される場合は、「バージョンの切り替え」の`sdk default`でJava 25をデフォルトにしてください。
 
 ### SDKMANの実践的な使い方
@@ -340,8 +352,8 @@ $ sdk selfupdate
 # オフラインモードの切り替え（インターネット接続なしで使用）
 $ sdk offline enable
 
-# 環境変数の確認
-$ sdk env
+# インストールしたJDKの場所を確認
+$ sdk home java 25.0.5.0+2-ms
 ```
 
 ### トラブルシューティング
@@ -366,9 +378,12 @@ sdkman_proxy_port=8080
 
 ## A.3 統合開発環境（IDE）のセットアップ
 
-本書では以下のIDEを推奨します。
-- IntelliJ IDEA: 無料で使える機能で十分（有料のUltimateの機能は不要）
-- Visual Studio Code: Java開発の拡張機能が必須
+本書では次のIDEを推奨します。
+
+- IntelliJ IDEA
+    + 無料で使える機能で十分（有料のUltimateの機能は不要）
+- Visual Studio Code
+    + Java開発の拡張機能が必須
 
 IDEの利用に関しては、IntelliJ IDEAがお勧めです。
 本書で取り上げる操作説明などは、IntelliJ IDEAの無料で使える機能を基本とします。
@@ -394,9 +409,8 @@ Java 25の文法と`IO`クラスを扱うには、Java 25に対応した版（20
 
 Visual Studio Codeを使用する場合は、次の拡張機能のインストールが必要です。
 
-1. Extension Pack for Java - Microsoft提供のJava開発パック
-2. Debugger for Java - デバッグ機能
-3. Java Test Runner - テスト実行支援
+- Extension Pack for Java（Microsoft提供）
+    + Javaの言語サポート、デバッガー（Debugger for Java）、テスト実行（Test Runner for Java）、Maven・Gradleの支援などをまとめた拡張機能のパック。これ1つをインストールすれば、含まれる拡張機能も入る
 
 ### IDE設定ファイルのサンプル
 
@@ -430,9 +444,19 @@ Visual Studio Codeを使用する場合は、次の拡張機能のインスト�
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "files.encoding": "utf8",
-    "java.home": "${env:JAVA_HOME}"
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-25",
+            "path": "/Users/ユーザー名/.sdkman/candidates/java/current",
+            "default": true
+        }
+    ]
 }
 ```
+
+`java.configuration.runtimes`は、プロジェクトのコンパイルと実行に使うJDKを指定する設定です。
+`path`には、SDKMANでインストールしたJDKの場所を絶対パスで書きます（`ユーザー名`は自分のものに置き換えます。`sdk home java 識別子`で表示される場所でも構いません）。
+以前使われていた`java.home`という設定は非推奨になりました。
 
 ## A.4 コマンドラインでの開発
 
@@ -451,7 +475,7 @@ $ cd java-practice         # java-practiceに移動する。
 ### プログラムの作成
 
 テキストエディタは何でもよいのですが、ファイル名「```HelloWorld.java```」として、ファイルを新規作成しましょう。
-この資料では、標準搭載されているテキストエディタnanoを使用する方法を書きます。
+本書では、macOSやLinuxに標準搭載されているテキストエディタnanoを使用する方法を書きます。
 
 作業スペースを作成した続きで以下のコマンドを使用します。
 
@@ -460,8 +484,6 @@ $ nano HelloWorld.java
 ```
 
 以下のコードを書きます。
-
-<span class="listing-number">**リストAA-1**</span>
 
 ```java
 public class HelloWorld {
@@ -514,7 +536,8 @@ $ java -version
 command not found: java
 ```
 
-#### このエラーが出る場合は、PATHが正しく設定されていません。SDKMANを使用している場合は
+このエラーが出る場合は、PATHが正しく設定されていません。
+SDKMANを使用している場合は、次のコマンドで初期化スクリプトを読み込み直します。
 
 ```bash
 $ source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -525,7 +548,7 @@ $ source "$HOME/.sdkman/bin/sdkman-init.sh"
 ```
 HelloWorld.java:3: error: ';' expected
         IO.println("Hello, World!!")
-                                            ^
+                                    ^
 1 error
 ```
 
@@ -537,8 +560,13 @@ HelloWorld.java:3: error: ';' expected
 
 #### 日本語を含むソースファイルでエラーが出る場合
 
+Java 18以降の`javac`は、ソースファイルをUTF-8として読みます。
+`error: unmappable character (0x82) for encoding UTF-8`のようなエラーが出る場合は、ソースファイルがShift_JISなどUTF-8以外の文字コードで保存されています。
+エディターでUTF-8として保存し直すのが基本の対処です。
+保存し直せないファイルは、`-encoding`でそのファイルの文字コードを指定してコンパイルします。
+
 ```bash
-$ javac -encoding UTF-8 HelloWorld.java
+$ javac -encoding Shift_JIS HelloWorld.java
 ```
 
 ### よくあるインストールエラーと対処法
@@ -566,7 +594,7 @@ The JAVA_HOME environment variable is not defined
 
 # 対処法
 $ export JAVA_HOME=$HOME/.sdkman/candidates/java/current
-$ echo "export JAVA_HOME=$HOME/.sdkman/candidates/java/current" >> ~/.zshrc
+$ echo 'export JAVA_HOME=$HOME/.sdkman/candidates/java/current' >> ~/.zprofile
 ```
 
 #### 3. IntelliJ IDEAでJDKが認識されない
@@ -574,7 +602,7 @@ $ echo "export JAVA_HOME=$HOME/.sdkman/candidates/java/current" >> ~/.zshrc
 IntelliJ IDEAを起動後、以下の手順でJDKを設定：
 
 1. File → Project Structure → Project
-2. Project SDKで「Add SDK」→「JDK」を選択
+2. SDKの一覧で「Add SDK」→「Add JDK from disk...」を選択
 3. `~/.sdkman/candidates/java/25.0.5.0+2-ms`を選択
 
 ## A.6 環境構築チェックリスト
@@ -606,8 +634,6 @@ Javaプログラムでのプログラムへのデータの受け渡し方法は�
 
 ファイル名「```StandardInput.java```」
 
-<span class="listing-number">**リストAA-2**</span>
-
 ```java
 public class StandardInput {
     public static void main(String[] args) {
@@ -627,8 +653,6 @@ public class StandardInput {
 画面から文字列を入力し、数値に変換して計算するプログラム
 
 ファイル名「```ParseInt.java```」
-
-<span class="listing-number">**リストAA-3**</span>
 
 ```java
 public class ParseInt {
@@ -682,12 +706,15 @@ Windows環境では、WSL2を使用することで、Linux環境と同様の開�
    wsl --install
    ```
 
-2. **Ubuntu等のLinuxディストリビューションのインストール**
-   - Microsoft StoreからUbuntuをインストール
+2. **Linuxディストリビューションの準備**
+   - `wsl --install`は既定でUbuntuもインストールする。再起動後にUbuntuを起動し、ユーザー名とパスワードを設定する
+   - ほかのディストリビューションを使う場合は、`wsl --list --online`で一覧を表示し、`wsl --install -d 名前`でインストールする
 
 3. **WSL2内でSDKMANをインストール**
    ```bash
-   # WSL2のターミナル内で実行
+   # WSL2のターミナル内で実行（SDKMANはzipとunzipを使う）
+   sudo apt update
+   sudo apt install curl zip unzip
    curl -s "https://get.sdkman.io" | bash
    source "$HOME/.sdkman/bin/sdkman-init.sh"
    ```
@@ -706,9 +733,8 @@ WSL2を使用しない場合は、以下の手順で環境を構築します。
    - Pathに追加: `%JAVA_HOME%\bin`
    - 新しく開いたコマンドプロンプトで`java -version`を実行し、25で始まるバージョンが表示されることを確かめる
 
-3. **Git Bashの使用（オプション）**
-   - [Git for Windows](https://gitforwindows.org/)をインストール
-   - Git Bash内でSDKMANを使用可能
+SDKMANはWindowsのコマンドプロンプトやPowerShellでは動きません。
+Windows Native環境では、上の手順でJDKを直接インストールし、バージョンの切り替えも環境変数で行います。
 
 ### Linux環境でのセットアップ
 
@@ -727,11 +753,11 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install java 25.0.5.0+2-ms
 ```
 
-#### Red Hat/CentOS/Fedora系
+#### Fedora/Red Hat Enterprise Linux系
 
 ```bash
 # 必要なパッケージのインストール
-sudo yum install curl zip unzip
+sudo dnf install curl zip unzip
 
 # SDKMANのインストール
 curl -s "https://get.sdkman.io" | bash
@@ -787,31 +813,30 @@ sdk use java 25.0.5.0+2-ms
 
 **A:** IDEの設定でSDKMANのJDKを指定してください。
 
-IntelliJ IDEAの場合：
-1. File → Project Structure → Project
-2. Project SDKで`~/.sdkman/candidates/java/current`を選択
+IntelliJ IDEAの場合は、次の手順で設定します。
 
-VS Codeの場合：
-`.vscode/settings.json`に以下を追加：
-```json
-{
-    "java.home": "${env:JAVA_HOME}"
-}
-```
+1. File → Project Structure → Project
+2. SDKの一覧で「Add SDK」→「Add JDK from disk...」を選び、`~/.sdkman/candidates/java/current`を選択
+
+VS Codeの場合は、「IDE設定ファイルのサンプル」の`java.configuration.runtimes`を`.vscode/settings.json`に書き、`path`にSDKMANのJDKの場所を指定します。
 
 ### Q3: Javaプログラムの文字化けが発生する
 
-**A:** 文字エンコーディングをUTF-8に統一してください。
+**A:** 文字化けがどこで起きているかによって、対処が変わります。
+
+- コンパイルでエラーになる、または文字列そのものが化ける
+    + ソースファイルがUTF-8以外で保存されている。Java 18以降の`javac`はソースをUTF-8として読むため、ファイルをUTF-8で保存し直す（A.5「文字エンコーディングの問題」を参照）
+- 画面への出力だけが化ける
+    + `IO.println`や`System.out`の出力は、コンソールの文字コード（`stdout.encoding`）で書き出される。Windowsのコンソールで化ける場合は、コンソールの文字コードとJavaの出力の文字コードをそろえる
 
 ```bash
-# コンパイル時
-javac -encoding UTF-8 MyProgram.java
-
-# 実行時
-java -Dfile.encoding=UTF-8 MyProgram
+# 出力の文字コードをUTF-8にして実行する（コンソールもUTF-8のとき）
+java -Dstdout.encoding=UTF-8 MyProgram
 ```
 
-IDEでは、プロジェクト設定でエンコーディングをUTF-8に設定します。
+Windowsのコマンドプロンプトでは、`chcp 65001`でコンソールの文字コードをUTF-8にできます。
+Java 18以降はファイルの読み書きの既定の文字コードがUTF-8になりました。`-Dfile.encoding=UTF-8`を指定しても、画面への出力の文字コードは変わりません。
+IDEでは、プロジェクト設定でファイルのエンコーディングをUTF-8にします。
 
 ### Q4: OutOfMemoryErrorが発生する
 
@@ -841,13 +866,14 @@ sdkman_proxy_password=mypass  # 認証が必要な場合
 
 コンテナ技術を使用した開発環境の構築方法を説明します。
 
+ここでは、作業ディレクトリ（`HelloWorld.java`などを置くディレクトリ）をコンテナにマウントし、コンテナの中のJDK 25でコンパイル・実行します。
+作業ディレクトリに次の2つのファイルを置きます。
+イメージにはEclipse TemurinのJDK 25を使います（本書が指定するMicrosoft版と同じOpenJDK 25で、本書のコードはどちらでも動きます）。
+
 ### Dockerfileの例
 
 ```dockerfile
 FROM eclipse-temurin:25-jdk
-
-# 作業ディレクトリの設定
-WORKDIR /app
 
 # 必要なツールのインストール
 RUN apt-get update && apt-get install -y \
@@ -856,27 +882,22 @@ RUN apt-get update && apt-get install -y \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
-# アプリケーションのコピー
-COPY . /app
+# 作業ディレクトリの設定（docker-compose.ymlでカレントディレクトリをここにマウントする）
+WORKDIR /app
 
-# コンパイル（src以下のすべての.javaファイル）
-RUN javac -d bin $(find src -name "*.java")
-
-# 実行
-CMD ["java", "-cp", "bin", "com.example.Main"]
+# コンテナを起動したときにbashを開く
+CMD ["bash"]
 ```
 
 ### docker-compose.ymlの例
 
 ```yaml
-version: '3.8'
 services:
   java-app:
     build: .
     volumes:
       - .:/app
     working_dir: /app
-    command: /bin/bash
     stdin_open: true
     tty: true
 ```
@@ -884,16 +905,23 @@ services:
 ### 使用方法
 
 ```bash
-# コンテナの起動
-docker-compose up -d
+# イメージを作ってコンテナを起動
+docker compose up -d --build
 
 # コンテナ内でbashを実行
-docker-compose exec java-app bash
+docker compose exec java-app bash
 
-# コンテナ内でJavaプログラムを実行
+# コンテナ内でJavaプログラムを実行（作業ディレクトリのファイルが/appに見える）
 javac HelloWorld.java
 java HelloWorld
+
+# コンテナのbashを抜けた後、コンテナを止めて削除
+exit
+docker compose down
 ```
+
+コンパイルでできた`.class`ファイルは、マウントした作業ディレクトリに残ります。
+古いDocker Composeでは、`docker compose`の代わりに`docker-compose`と入力します。
 
 ## 自動化スクリプト
 
@@ -910,14 +938,16 @@ echo "Java開発環境のセットアップを開始します..."
 if [ ! -d "$HOME/.sdkman" ]; then
     echo "SDKMANをインストールしています..."
     curl -s "https://get.sdkman.io" | bash
-    source "$HOME/.sdkman/bin/sdkman-init.sh"
 else
     echo "SDKMANは既にインストールされています"
 fi
 
-# JDKのインストール
+# sdkコマンドを使えるようにする（スクリプトの中では毎回読み込む）
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# JDKのインストール（ほかのJDKがあるときの「デフォルトにするか」の質問にはYで答える）
 echo "JDK 25 (Microsoft)をインストールしています..."
-sdk install java 25.0.5.0+2-ms
+echo "Y" | sdk install java 25.0.5.0+2-ms
 
 # 環境変数の設定
 if [ -f "$HOME/.zshrc" ]; then
