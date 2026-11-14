@@ -51,9 +51,8 @@ h-common-errors/
 
 このガイドの内容は、以下の章で特に関連があります：
 
-- **第3章**：NullPointerExceptionの基礎
-- **第4章**：オブジェクトの初期化とnullチェック
-- **第9章**：コレクションとConcurrentModificationException
+- **第4章**：オブジェクトの初期化とNullPointerException
+- **第9章**：コレクションのNullPointerExceptionとConcurrentModificationException
 - **第10章**：ジェネリクスとClassCastException
 - **第13章**：例外処理の詳細
 
@@ -68,3 +67,4 @@ h-common-errors/
 ## 更新履歴
 
 - 2025-07: 初版作成
+- 2026-11: 各章の「よくあるエラーと対処法」の詳細（`chapters/`）を追加し、Java 25の出力に合わせてエラーメッセージを見直した

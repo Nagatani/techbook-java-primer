@@ -10,7 +10,7 @@ public class Product {
     }
     
     public int getNameLength() {
-        // 防御的プログラミング
-        return (name != null) ? name.length() : 0;
+        // コンストラクターでnullを弾いているので、nameはnullにならない
+        return name.length();
     }
 }

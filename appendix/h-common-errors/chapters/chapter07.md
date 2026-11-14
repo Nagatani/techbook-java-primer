@@ -42,7 +42,8 @@ DataProcessor processor = new CsvDataProcessor();  // OK
 
 ## 抽象メソッドの実装忘れ
 
-抽象メソッドを実装しないと、継承先のクラスも抽象クラスになってしまいます。
+抽象クラスを継承したクラスで抽象メソッドを実装しないと、コンパイルエラーになります。
+実装しないままにするには、そのクラスにも`abstract`を付けて抽象クラスにする必要があります。
 
 ### エラー例
 
@@ -159,7 +160,7 @@ class Circle implements Drawable {
 
 ## 多重継承とダイヤモンド問題
 
-Javaでは複数の抽象クラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
+Javaでは複数のクラスを継承できませんが、インターフェイスの場合は実装時に名前衝突が発生する可能性があります。
 
 ### エラー例
 
@@ -201,10 +202,17 @@ class ReportDocument implements Exportable, Printable {
         IO.println("および");
         Printable.super.export();  // 印刷エクスポートを選択
     }
-    
-    // または独自の実装を提供
-    public void exportToPdf() {
-        IO.println("PDFファイルにエクスポート");
+}
+```
+
+どちらのdefaultメソッドも使わず、`export()`を独自の処理でオーバーライドしても衝突は解消します。
+別の名前のメソッドを足すだけでは解消しません。
+
+```java
+class ReportDocument implements Exportable, Printable {
+    @Override
+    public void export() {
+        IO.println("レポートをPDFファイルにエクスポート");  // 独自の実装
     }
 }
 ```
@@ -218,7 +226,7 @@ class ReportDocument implements Exportable, Printable {
 
 ```java
 interface MathUtils {
-    static double PI = 3.14159;
+    double PI = 3.14159;  // インターフェイスのフィールドは自動的にpublic static finalになる
     
     static double calculateCircleArea(double radius) {
         return PI * radius * radius;
@@ -252,7 +260,7 @@ error: cannot find symbol
 
 ```java
 interface MathUtils {
-    static double PI = 3.14159;
+    double PI = 3.14159;  // インターフェイスのフィールドは自動的にpublic static finalになる
     
     static double calculateCircleArea(double radius) {
         return PI * radius * radius;

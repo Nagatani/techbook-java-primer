@@ -9,22 +9,37 @@
 ### エラーメッセージ
 
 ```
-Exception in thread "main" java.lang.NullPointerException
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.util.List.add(Object)" because "this.items" is null
 ```
+
+Java 14以降は、どの参照が`null`だったかがメッセージに表示されます。
 
 ### 原因と対処法
 
-以下のコードは、コレクションを初期化せずに使用しようとした例です。
+以下のコードは、フィールドのコレクションを初期化せずに使用しようとした例です。
+初期化していないフィールドには`null`が入っているため、メソッドを呼び出すと`NullPointerException`になります。
 
 ```java
 // エラー例
-List<String> list;  // 宣言のみ、初期化していない
-list.add("Hello");  // NullPointerException
+public class ShoppingCart {
+    private List<String> items;  // 宣言のみ、初期化していない（nullが入る）
+
+    public void add(String item) {
+        items.add(item);  // NullPointerException
+    }
+}
 
 // 修正版
-List<String> list = new ArrayList<>();  // 初期化を忘れずに
-list.add("Hello");  // OK
+public class ShoppingCart {
+    private List<String> items = new ArrayList<>();  // 初期化を忘れずに
+
+    public void add(String item) {
+        items.add(item);  // OK
+    }
+}
 ```
+
+なお、メソッドの中で宣言したローカル変数は、初期化せずに使うと実行前にコンパイルエラー（`variable list might not have been initialized`）になります。
 
 ## null要素の扱い
 
@@ -58,7 +73,7 @@ for (String s : set) {
 ### エラーメッセージ
 
 ```
-Exception in thread "main" java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.String
+Exception in thread "main" java.lang.ClassCastException: class java.lang.Integer cannot be cast to class java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader 'bootstrap')
 ```
 
 ### 原因と対処法
@@ -126,10 +141,11 @@ List<String> list = new ArrayList<>();
 list.add("A");
 list.add("B");
 list.add("C");
+list.add("D");
 
 for (String s : list) {
     if (s.equals("B")) {
-        list.remove(s);  // ConcurrentModificationException
+        list.remove(s);  // 次の反復でConcurrentModificationException
     }
 }
 
@@ -153,7 +169,11 @@ for (int i = list.size() - 1; i >= 0; i--) {
 }
 ```
 
-## 配列の範囲外アクセスによるIndexOutOfBoundsException
+最後から2番目の要素を削除したときは、残りの要素数と反復の位置が一致して`hasNext()`が`false`を返すため、例外が出ずにループが終わります。
+このとき最後の要素は調べられないので、例外が出なくても正しく動いているわけではありません。
+反復中にリストから直接削除する書き方は、どの要素を消す場合でも避けます。
+
+## リストの範囲外アクセスによるIndexOutOfBoundsException
 
 ### エラーメッセージ
 
@@ -163,7 +183,7 @@ Exception in thread "main" java.lang.IndexOutOfBoundsException: Index 5 out of b
 
 ### 原因と対処法
 
-次のコードは、配列の範囲外にアクセスしようとした例です。
+次のコードは、リストの範囲外にアクセスしようとした例です。
 
 ```java
 // エラー例
@@ -172,9 +192,10 @@ list.add("A");
 list.add("B");
 list.add("C");
 
-String item = list.get(5);  // IndexOutOfBoundsException
+int index = 5;
+String item = list.get(index);  // IndexOutOfBoundsException
 
-// 修正版：サイズをチェック
+// 修正版1：サイズをチェック
 if (index >= 0 && index < list.size()) {
     String item = list.get(index);  // 安全なアクセス
 } else {
@@ -274,26 +295,8 @@ class Person {
 
 ## Raw typeの使用
 
-### 原因と対処法
-
-型安全性を損なうRaw typeの使用例を示しています。
-
-```java
-// 非推奨な例
-List list = new ArrayList();  // Raw type
-list.add("String");
-list.add(123);  // 異なる型も追加可能
-
-// 型安全性が保証されない
-String s = (String) list.get(1);  // 実行時エラーの可能性
-
-// 推奨な例
-List<String> stringList = new ArrayList<>();  // ジェネリクス使用
-stringList.add("String");
-// stringList.add(123);  // コンパイルエラー
-
-String s = stringList.get(0);  // キャスト不要、型安全
-```
+型引数を省略したRaw typeの問題と対処法は、第10章で扱います。
+[第10章の項目「Raw typeの使用エラー」](chapter10.md#raw-typeの使用エラー)を参照してください。
 
 ## デバッグのヒント
 
@@ -311,7 +314,7 @@ String s = stringList.get(0);  // キャスト不要、型安全
 
 4. equals()とhashCode()の実装
    - カスタムオブジェクトをコレクションで使用する場合は必須
-   - IDEの自動生成機能やLombokの活用
+   - IDEの自動生成機能の活用や、値を保持するだけのクラスならRecord（第8章）の利用
 
 5. 例外処理の実装
    - IndexOutOfBoundsExceptionやNullPointerExceptionの適時捕捉と処理

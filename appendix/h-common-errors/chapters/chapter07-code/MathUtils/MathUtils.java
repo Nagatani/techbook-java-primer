@@ -1,5 +1,5 @@
 interface MathUtils {
-    static double PI = 3.14159;
+    double PI = 3.14159;  // インターフェイスのフィールドは自動的にpublic static finalになる
     
     static double calculateCircleArea(double radius) {
         return PI * radius * radius;

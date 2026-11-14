@@ -16,7 +16,7 @@ names.forEach(name -> {
 });
 ```
 
-※ このコードはコンパイルエラーになります。実際に実行することはできません。
+このコードはコンパイルエラーになるため、実行できません。
 
 ### エラーメッセージ
 
@@ -95,14 +95,18 @@ Comparator<String> byLength = Comparator.comparing(String::length);
 
 ## 例外処理での問題
 
+ここでは、ファイルの中身を文字列として読む`Files.readString`（第14章で学びます）を例にします。
+このメソッドは、読み込みに失敗すると検査例外`IOException`（第13章で学びます）をスローします。
+
 ### エラー例
 
 ```java
-// × 検査例外のハンドリング
-List<String> files = Arrays.asList("file1.txt", "file2.txt");
-files.stream()
-    .map(file -> Files.readString(Path.of(file)))  // IOException発生
-    .collect(Collectors.toList());
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.function.Function;
+
+// × Functionのapplyは検査例外をスローできない
+Function<String, String> reader = file -> Files.readString(Path.of(file));  // コンパイルエラー
 ```
 
 ### エラーメッセージ
@@ -111,32 +115,48 @@ files.stream()
 error: unreported exception IOException; must be caught or declared to be thrown
 ```
 
+### 原因
+
+`Function`の抽象メソッド`apply`には`throws`の宣言がありません。
+そのため、`Function`として書いたラムダ式の中では、検査例外をスローする処理をそのまま呼び出せません。
+
 ### 対処法
 
-```java
-// ○ 例外をランタイム例外でラップ
-List<String> contents = files.stream()
-    .map(file -> {
-        try {
-            return Files.readString(Path.of(file));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    })
-    .collect(Collectors.toList());
+1つめの方法は、ラムダ式の中で例外をキャッチし、検査されない例外（`UncheckedIOException`）に包み直すことです。
 
-// またはOptionalを使用した安全な処理（読めなかったファイルは除く）
-List<String> readableContents = files.stream()
-    .map(file -> {
-        try {
-            return Optional.of(Files.readString(Path.of(file)));
-        } catch (IOException e) {
-            return Optional.<String>empty();
-        }
-    })
-    .filter(Optional::isPresent)
-    .map(Optional::get)
-    .collect(Collectors.toList());
+```java
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.function.Function;
+
+// ○ 例外をラムダ式の中でキャッチし、検査されない例外でラップする
+Function<String, String> reader = file -> {
+    try {
+        return Files.readString(Path.of(file));
+    } catch (IOException e) {
+        throw new UncheckedIOException(e);
+    }
+};
+```
+
+2つめの方法は、`throws`を宣言した関数型インターフェイスを自分で定義することです。
+呼び出す側で`IOException`を処理します。
+
+```java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+// ○ 検査例外を宣言した関数型インターフェイスを定義する
+@FunctionalInterface
+interface FileReaderFunction {
+    String read(String file) throws IOException;
+}
+
+FileReaderFunction reader = file -> Files.readString(Path.of(file));
+// reader.read("file1.txt")を呼び出す側で、IOExceptionをキャッチするか宣言する
 ```
 
 ## 変数スコープとキャプチャの問題
@@ -230,39 +250,41 @@ Calculator multiplier = (a, b) -> a * b;
 ### エラー例
 
 ```java
-// × プリミティブ型のストリーム（IntStream）をListに集めようとしている
-List<String> strings = Arrays.asList("1", "2", "3");
-List<Integer> numbers = strings.stream()
-    .mapToInt(Integer::parseInt)  // IntStreamになる
-    .collect(Collectors.toList());
+import java.util.function.Supplier;
+
+// × 引数を取らないSupplierに、引数が必要なInteger.parseIntを参照させている
+Supplier<Integer> parser = Integer::parseInt;
 ```
 
 ### エラーメッセージ
 
 ```
-error: method collect in interface IntStream cannot be applied to given types;
-  required: Supplier<R>,ObjIntConsumer<R>,BiConsumer<R,R>
-  found:    Collector<Object,CAP#1,List<Object>>
+error: incompatible types: invalid method reference
+    no suitable method found for parseInt(no arguments)
+        method Integer.parseInt(String,int) is not applicable
+          (actual and formal argument lists differ in length)
+        method Integer.parseInt(CharSequence,int,int,int) is not applicable
+          (actual and formal argument lists differ in length)
+        method Integer.parseInt(String) is not applicable
+          (actual and formal argument lists differ in length)
 ```
 
 ### 原因
 
-`mapToInt`が返す`IntStream`は`int`をそのまま扱うストリームで、`Collector`を受け取る`collect`メソッドを持ちません。
+メソッド参照は、関数型インターフェイスの抽象メソッドと同じ引数で呼び出せるメソッドを指す必要があります。
+`Supplier<Integer>`の`get()`は引数を取りませんが、`Integer.parseInt`には変換する文字列を渡す必要があるため、引数の数が合いません。
 
 ### 対処法
 
 ```java
-// ○ mapを使えば、parseIntが返すintはIntegerへ自動変換（オートボクシング）される
-List<Integer> numbers = strings.stream()
-    .map(Integer::parseInt)
-    .collect(Collectors.toList());
+import java.util.function.Function;
 
-// またはIntStreamのboxed()でStream<Integer>に戻す
-List<Integer> boxedNumbers = strings.stream()
-    .mapToInt(Integer::parseInt)
-    .boxed()
-    .collect(Collectors.toList());
+// ○ Stringを受け取ってIntegerを返すFunctionにする
+Function<String, Integer> parser = Integer::parseInt;
+IO.println(parser.apply("123") + 1);  // 124
 ```
+
+`parseInt`が返す`int`は、`Function<String, Integer>`の戻り値`Integer`へ自動で変換（オートボクシング）されます。
 
 ## 共通の対処戦略
 

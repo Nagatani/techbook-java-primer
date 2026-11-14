@@ -53,13 +53,15 @@ public class FinalCorrectExample {
 
 ```java
 public class UninitializedFinalExample {
-    private final String name; // コンパイルエラー
+    private final String name;
     
     public UninitializedFinalExample() {
         // nameが初期化されていない
-    }
+    } // コンパイルエラー（この閉じ括弧の行で報告される）
 }
 ```
+
+コンパイラーは、`final`フィールドに値を入れないままコンストラクターが終わることを検出し、コンストラクターの閉じ括弧の行でエラーを報告します。
 
 ### エラーメッセージ
 
@@ -359,7 +361,7 @@ public class ImmutablePerson {
     public int getAge() { return age; }
 }
 
-// 問題: 継承によって不変性が破綻
+// 問題: 継承によって可変な状態を足せる
 public class MutableEmployee extends ImmutablePerson {
     private String department;
     
@@ -375,6 +377,13 @@ public class MutableEmployee extends ImmutablePerson {
     public String getDepartment() { return department; }
 }
 ```
+
+### 原因
+
+`MutableEmployee`のインスタンスは`ImmutablePerson`型の変数に代入できます。
+受け取った側は`ImmutablePerson`型なので不変だと考えますが、実際の中身は値を変えられるオブジェクトです。
+さらに、サブクラスが`getName()`などをオーバーライドすれば、`ImmutablePerson`型として受け取った値が呼び出すたびに変わるようにもできます。
+クラスを`final`にしない限り、このような継承を防げません。
 
 ### 対処法
 

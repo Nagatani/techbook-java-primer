@@ -1,4 +1,4 @@
-// 問題: 継承によって不変性が破綻
+// 問題: 継承によって可変な状態を足せる
 public class MutableEmployee extends ImmutablePerson {
     private String department;
     

@@ -21,7 +21,7 @@ String str = (String) list.get(0); // キャストが必要
 
 ```
 Note: GenericsExample.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for more details.
+Note: Recompile with -Xlint:unchecked for details.
 ```
 
 ### 対処法
@@ -37,7 +37,7 @@ String str = list.get(0); // キャスト不要
 
 ## 型パラメーターの不適切な使用
 
-### エラー例
+### エラー例1：型パラメーターのインスタンスを作る
 
 型パラメーターを直接インスタンス化しようとした例です。
 
@@ -52,7 +52,7 @@ public class Container<T> {
 }
 ```
 
-### エラーメッセージ
+#### エラーメッセージ
 
 ```
 error: unexpected type
@@ -60,9 +60,9 @@ error: unexpected type
   found:    type parameter T
 ```
 
-### 対処法
+#### 対処法
 
-ファクトリメソッドを使用した正しい実装方法です。
+値を作る処理を外から受け取る実装方法です。
 `Supplier<T>`は「`T`型の値を1つ作って返す」処理を表すインターフェイスで、第11章で学ぶラムダ式と組み合わせて`new Container<>(() -> new StringBuilder())`のように使います。
 
 ```java
@@ -79,6 +79,87 @@ public class Container<T> {
     
     public void setNewValue() {
         this.value = factory.get();
+    }
+}
+```
+
+### エラー例2：型パラメーターの配列を作る
+
+型パラメーターを要素の型にした配列は、`new`で作れません。
+
+```java
+// × 型パラメーターの配列の生成
+public class GenericArray<T> {
+    private T[] array;
+    
+    public GenericArray(int size) {
+        array = new T[size]; // コンパイルエラー
+    }
+}
+```
+
+#### エラーメッセージ
+
+```
+error: generic array creation
+```
+
+#### 対処法
+
+実行時には`T`が何の型かわからないため、要素の型を表す`Class`オブジェクトを受け取って配列を作ります。
+多くの場合は、配列の代わりに`List<T>`を使うほうが簡単です。
+
+```java
+import java.lang.reflect.Array;
+
+// ○ 要素の型をClassオブジェクトで受け取って配列を作る
+public class GenericArray<T> {
+    private T[] array;
+    
+    @SuppressWarnings("unchecked")
+    public GenericArray(Class<T> clazz, int size) {
+        array = (T[]) Array.newInstance(clazz, size);
+    }
+}
+```
+
+### エラー例3：staticメンバーでクラスの型パラメーターを使う
+
+クラスの型パラメーター`T`は、インスタンスごとに決まります（`Container<String>`と`Container<Integer>`）。
+インスタンスに属さないstaticメンバーでは、`T`を使えません。
+
+```java
+// × staticメンバーでクラスの型パラメーターを使う
+public class Container<T> {
+    private static T defaultValue;  // コンパイルエラー
+
+    public static T getDefault() {  // コンパイルエラー
+        return defaultValue;
+    }
+}
+```
+
+#### エラーメッセージ
+
+```
+error: non-static type variable T cannot be referenced from a static context
+```
+
+#### 対処法
+
+インスタンスのメンバーにするか、staticメソッド自身に型パラメーターを宣言します。
+
+```java
+// ○ インスタンスのメンバーにする／staticメソッドに型パラメーターを宣言する
+public class Container<T> {
+    private T defaultValue;
+
+    public T getDefault() {
+        return defaultValue;
+    }
+
+    public static <U> Container<U> empty() {
+        return new Container<>();
     }
 }
 ```
@@ -116,42 +197,79 @@ List<? extends Number> numbers = integers; // 読み取り専用として使用
 
 ## 型消去に関する問題
 
-### エラー例
+ジェネリクスの型引数は、コンパイル時の検査にだけ使われ、実行時には消えます（型消去）。
+`List<String>`も`List<Integer>`も、実行時にはただの`List`です。
+そのため、実行時に型引数を区別する必要がある書き方はコンパイルエラーになります。
 
-ジェネリクスで配列を作成しようとした際の問題です。
+### エラー例1：instanceofで型引数まで判定する
 
 ```java
-// × 型消去による問題
-public class GenericArray<T> {
-    private T[] array;
-    
-    public GenericArray(int size) {
-        array = new T[size]; // コンパイルエラー
+import java.util.List;
+
+public class TypeCheck {
+    public static void printIfStringList(Object obj) {
+        if (obj instanceof List<String>) {  // コンパイルエラー
+            IO.println("List<String>です");
+        }
     }
 }
 ```
 
-### エラーメッセージ
+#### エラーメッセージ
 
 ```
-error: generic array creation
+error: Object cannot be safely cast to List<String>
 ```
 
-### 対処法
+#### 対処法
 
-型消去を考慮した正しい実装方法です。
+型引数はワイルドカード`<?>`にして`List`であることだけを判定し、要素の型は1つずつ確かめます。
 
 ```java
-import java.lang.reflect.Array;
+import java.util.List;
 
-// ○ 型消去を考慮した実装
-public class GenericArray<T> {
-    private T[] array;
-    
-    @SuppressWarnings("unchecked")
-    public GenericArray(Class<T> clazz, int size) {
-        array = (T[]) Array.newInstance(clazz, size);
+public class TypeCheck {
+    public static void printIfList(Object obj) {
+        if (obj instanceof List<?> list) {  // 型引数はワイルドカードで判定する
+            for (Object element : list) {
+                if (element instanceof String s) {  // 要素の型は1つずつ確かめる
+                    IO.println("文字列: " + s);
+                }
+            }
+        }
     }
+}
+```
+
+### エラー例2：型引数だけが異なるオーバーロード
+
+```java
+import java.util.List;
+
+public class Printer {
+    public void print(List<String> list) { }
+    public void print(List<Integer> list) { }  // コンパイルエラー
+}
+```
+
+#### エラーメッセージ
+
+```
+error: name clash: print(List<Integer>) and print(List<String>) have the same erasure
+```
+
+型消去のあとは、どちらも`print(List)`という同じシグネチャになるため、区別できません。
+
+#### 対処法
+
+メソッドの名前を分けます。
+
+```java
+import java.util.List;
+
+public class Printer {
+    public void printStrings(List<String> list) { }
+    public void printIntegers(List<Integer> list) { }
 }
 ```
 

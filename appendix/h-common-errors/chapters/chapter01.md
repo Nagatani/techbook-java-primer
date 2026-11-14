@@ -2,14 +2,23 @@
 
 書籍『Java入門』第1章「Java入門と開発環境構築」で扱う内容に関連して、よく遭遇するエラーとその対処法をまとめています。
 
-Java開発環境を構築し、はじめてのプログラムを作成する際によく遭遇するエラーとその対処法をまとめます。
-
 ## JDKが見つからない
 
 ### エラーメッセージ
 
+表示されるメッセージは、OSと言語の設定によって変わります。
+
 ```
-'java' is not recognized as an internal or external command
+# Windows（日本語）
+'javac' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+
+# Windows（英語）
+'javac' is not recognized as an internal or external command,
+operable program or batch file.
+
+# macOS・Linux（zsh）
+zsh: command not found: javac
 ```
 
 ### 原因
@@ -20,7 +29,7 @@ Java開発環境を構築し、はじめてのプログラムを作成する際�
 
 1. JDKをインストール（本書はOpenJDK 25を使用）
 2. 環境変数PATHにJDKのbinディレクトリを追加
-3. コマンドプロンプトで`java -version`を実行して確認
+3. コマンドプロンプトやターミナルを開き直し、`javac -version`と`java -version`を実行して確認
 
 ## クラス名とファイル名の不一致
 
@@ -56,25 +65,41 @@ public class Sample {
 ### エラーメッセージ
 
 ```
-Error: Main method not found in class HelloWorld
+Error: Main method not found in class HelloWorld, please define the main method as:
+   public static void main(String[] args)
+or a JavaFX application class must extend javafx.application.Application
 ```
 
 ### 原因と対処法
 
+`java`コマンドは、`main`という名前のメソッドを探して実行を始めます。
+メソッド名の綴りや大文字・小文字、引数の型を誤ると、mainメソッドとして認められません。
+
 ```java
-// エラー例：mainメソッドのシグネチャが間違っている
+// エラー例1：メソッド名の先頭が大文字になっている
 public class HelloWorld {
-    public void main(String[] args) {  // staticが抜けている
+    public static void Main(String[] args) {  // Mainではなくmainにする
+        IO.println("Hello");
+    }
+}
+// エラー例2：引数の型の[]が抜けている
+public class HelloWorld {
+    public static void main(String args) {  // String[]にする
         IO.println("Hello");
     }
 }
 // 修正版：正しいmainメソッドのシグネチャ
 public class HelloWorld {
-    public static void main(String[] args) {  // staticを追加
+    public static void main(String[] args) {
         IO.println("Hello");
     }
 }
 ```
+
+Java 25では、`static`や`public`、引数の`String[] args`を省いた`void main()`も、mainメソッドとして実行できます（第1章の節「Java 25の新しい書き方：クラス宣言を省いたプログラム」）
+。
+そのため、`static`を書き忘れただけではこのエラーになりません。
+ただし、`private`を付けたmainメソッドや、戻り値の型が`void`でないmainメソッドは実行できず、このエラーになります。
 
 ## クラスファイルが見つからない
 
@@ -96,8 +121,8 @@ java HelloWorld        # 実行（.classは不要）
 ```
 
 `java HelloWorld.class`のように拡張子を付けて実行した場合も、クラスが見つからないというエラーになります。
-なお、Java 11以降では、`java HelloWorld.java`のようにソースファイルを指定して、コンパイルせずに直接実行することもできます。
-ただし、この方法が使えるのは1つのファイルで完結するプログラムに限られるため、本書では`javac`でコンパイルしてから`java`で実行する手順を基本とします。
+なお、Java 11以降では、`java HelloWorld.java`のようにソースファイルを指定して、コンパイルせずに直接実行することもできます（Java 22からは、同じディレクトリにあるほかのソースファイルも読み込まれます）。
+本書では、コンパイルと実行の段階を分けて理解するために、`javac`でコンパイルしてから`java`で実行する手順を基本とします。
 
 ## NumberFormatExceptionと入力処理
 
