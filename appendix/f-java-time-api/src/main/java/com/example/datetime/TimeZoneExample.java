@@ -2,6 +2,7 @@ package com.example.datetime;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Set;
 
 public class TimeZoneExample {
@@ -22,8 +23,9 @@ public class TimeZoneExample {
         ZonedDateTime newYorkTime = tokyoTime.withZoneSameInstant(
             ZoneId.of("America/New_York"));
         
+        // zはタイムゾーンの略称。日本語ロケールでは夏時間でもESTと出るため、英語で表示する
         DateTimeFormatter formatter = 
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z", Locale.US);
         
         IO.println("\n同一時刻の各地表示:");
         IO.println("東京: " + tokyoTime.format(formatter));
@@ -44,8 +46,8 @@ public class TimeZoneExample {
         IO.println("\n夏時間の影響:");
         IO.println("冬時間: " + winterTime);
         IO.println("夏時間: " + summerTime);
-        IO.println("オフセット差: " + 
-            (winterTime.getOffset().getTotalSeconds() - 
-             summerTime.getOffset().getTotalSeconds()) / 3600 + "時間");
+        IO.println("夏時間で進む時間: " + 
+            (summerTime.getOffset().getTotalSeconds() - 
+             winterTime.getOffset().getTotalSeconds()) / 3600 + "時間");
     }
 }

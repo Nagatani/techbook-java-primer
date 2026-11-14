@@ -30,6 +30,7 @@ public class LegacyConversionExample {
         
         // 4. Calendar ←→ ZonedDateTime
         Calendar calendar = Calendar.getInstance();
+        calendar.clear();  // 現在時刻のミリ秒などが残らないように、先に全項目を消す
         calendar.set(2024, Calendar.DECEMBER, 25, 14, 30, 0);
         
         ZonedDateTime fromCalendar = ((GregorianCalendar) calendar)

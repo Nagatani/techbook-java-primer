@@ -28,7 +28,7 @@ public class PeriodDurationExample {
         IO.println("詳細: " + duration.toHours() + "時間 " + 
                           duration.toMinutesPart() + "分");
         
-        // 日時間の日数計算
+        // 日付間の日数計算
         LocalDate birth = LocalDate.of(2000, 1, 1);
         long daysAlive = ChronoUnit.DAYS.between(birth, LocalDate.now());
         IO.println("\n生まれてから " + daysAlive + " 日経過");
@@ -36,7 +36,11 @@ public class PeriodDurationExample {
         // インスタント間の経過時間
         Instant start = Instant.now();
         // 何か処理
-        try { Thread.sleep(1000); } catch (InterruptedException e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();  // 割り込まれたことを記録し直す
+        }
         Instant end = Instant.now();
         
         Duration elapsed = Duration.between(start, end);

@@ -35,8 +35,9 @@ public class DateTimeValidation {
             "2024-12-00"   // 日が0
         };
         
+        // ISO_LOCAL_DATEなどの定義済みフォーマッタは、STRICTで日付を検証する
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
-        
+
         for (String dateStr : testDates) {
             try {
                 LocalDate date = LocalDate.parse(dateStr, formatter);
@@ -50,8 +51,11 @@ public class DateTimeValidation {
     }
     
     private static void demonstrateStrictValidation() {
-        IO.println("2. 厳密な日付検証（ResolverStyle.STRICT使用）");
+        IO.println("2. 解決方法（ResolverStyle）による違い");
         IO.println("-".repeat(40));
+        
+        // ofPatternの既定（SMART）: 月末を超えた日は、その月の末日に丸められる
+        DateTimeFormatter smartFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
         
         // 厳密なフォーマッタ（日付の妥当性を厳格にチェック）
         DateTimeFormatter strictFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd")
@@ -69,6 +73,14 @@ public class DateTimeValidation {
         
         for (String dateStr : testCases) {
             IO.println("\n入力: " + dateStr);
+            
+            // 既定（SMART）の検証
+            try {
+                LocalDate smartDate = LocalDate.parse(dateStr, smartFormatter);
+                IO.println("  SMART（既定）: エラーにならず丸められる (" + smartDate + ")");
+            } catch (DateTimeParseException e) {
+                IO.println("  SMART（既定）: 無効");
+            }
             
             // 厳密な検証
             try {
@@ -93,12 +105,17 @@ public class DateTimeValidation {
         IO.println("3. カスタム検証ロジック");
         IO.println("-".repeat(40));
         
+        // 実行した日で結果が変わらないように、今日の代わりの基準日を決める
+        LocalDate baseDate = LocalDate.of(2024, 1, 1);
+        IO.println("基準日（今日の代わり）: " + baseDate);
+        
         // テストケース
         LocalDate[] dates = {
-            LocalDate.of(2024, 1, 1),    // 月曜日
+            LocalDate.of(2024, 1, 1),    // 月曜日（元日）
+            LocalDate.of(2024, 1, 5),    // 金曜日
             LocalDate.of(2024, 1, 6),    // 土曜日
-            LocalDate.of(2024, 1, 7),    // 日曜日
-            LocalDate.of(2024, 12, 25),  // クリスマス
+            LocalDate.of(2024, 3, 15),   // 金曜日（3か月以内）
+            LocalDate.of(2024, 6, 3),    // 月曜日（3か月より先）
             LocalDate.of(2100, 1, 1),    // 遠い未来
             LocalDate.of(1900, 1, 1)     // 遠い過去
         };
@@ -107,7 +124,7 @@ public class DateTimeValidation {
             IO.println("\n日付: " + date + " (" + 
                 date.getDayOfWeek() + ")");
             IO.println("  営業日？ " + isBusinessDay(date));
-            IO.println("  予約可能？ " + isReservationAvailable(date));
+            IO.println("  予約可能？ " + isReservationAvailable(date, baseDate));
             IO.println("  有効範囲内？ " + isWithinValidRange(date));
         }
         IO.println();
@@ -159,13 +176,13 @@ public class DateTimeValidation {
     }
     
     private static boolean isJapaneseHoliday(LocalDate date) {
-        // 簡易的な祝日判定（実際にはより複雑な実装が必要）
-        return (date.getMonthValue() == 1 && date.getDayOfMonth() == 1) ||  // 元日
-               (date.getMonthValue() == 12 && date.getDayOfMonth() == 25);  // クリスマス
+        // 簡易的な祝日判定（例として元日だけを祝日にする）
+        // 実際には祝日の一覧を年ごとに持つ必要がある（BusinessDateCalculator.javaを参照）
+        return date.getMonthValue() == 1 && date.getDayOfMonth() == 1;  // 元日
     }
     
-    private static boolean isReservationAvailable(LocalDate date) {
-        LocalDate today = LocalDate.now();
+    // 予約できるのは、基準日（ふつうは今日）の翌日から3か月以内
+    private static boolean isReservationAvailable(LocalDate date, LocalDate today) {
         LocalDate maxReservationDate = today.plusMonths(3);
         
         return date.isAfter(today) && date.isBefore(maxReservationDate);

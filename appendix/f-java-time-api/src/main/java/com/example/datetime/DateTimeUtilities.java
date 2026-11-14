@@ -114,20 +114,25 @@ public class DateTimeUtilities {
         IO.println("4. タイムゾーン変換");
         IO.println("-".repeat(40));
         
+        // 東京の2024年6月15日14時30分として扱う
+        // （システムの既定のタイムゾーンを使うと、動かす環境で結果が変わる）
         LocalDateTime localTime = LocalDateTime.of(2024, 6, 15, 14, 30);
+        ZoneId tokyo = ZoneId.of("Asia/Tokyo");
         
         // 各地の時刻に変換
-        Map<String, ZonedDateTime> worldTimes = getWorldTimes(localTime);
+        // zはタイムゾーンの略称。日本語ロケールでは夏時間でもESTと出るため、英語で表示する
+        DateTimeFormatter formatter = 
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z", Locale.US);
+        Map<String, ZonedDateTime> worldTimes = getWorldTimes(localTime, tokyo);
         worldTimes.forEach((city, time) -> 
-            IO.println(city + ": " + 
-                time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z"))));
+            IO.println(city + ": " + time.format(formatter)));
         
         // UTC変換
-        Instant utcTime = toUTC(localTime, ZoneId.of("Asia/Tokyo"));
+        Instant utcTime = toUTC(localTime, tokyo);
         IO.println("\nUTC時刻: " + utcTime);
         
         // エポック秒
-        long epochSeconds = toEpochSeconds(localTime, ZoneId.systemDefault());
+        long epochSeconds = toEpochSeconds(localTime, tokyo);
         IO.println("エポック秒: " + epochSeconds);
         IO.println();
     }
@@ -261,9 +266,10 @@ public class DateTimeUtilities {
     }
     
     // タイムゾーン変換
-    public static Map<String, ZonedDateTime> getWorldTimes(LocalDateTime localTime) {
+    public static Map<String, ZonedDateTime> getWorldTimes(LocalDateTime localTime,
+                                                           ZoneId baseZone) {
         Map<String, ZonedDateTime> times = new LinkedHashMap<>();
-        ZonedDateTime baseTime = localTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime baseTime = localTime.atZone(baseZone);
         
         times.put("東京", baseTime.withZoneSameInstant(ZoneId.of("Asia/Tokyo")));
         times.put("ロンドン", baseTime.withZoneSameInstant(ZoneId.of("Europe/London")));

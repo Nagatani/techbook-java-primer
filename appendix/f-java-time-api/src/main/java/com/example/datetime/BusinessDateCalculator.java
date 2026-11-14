@@ -80,7 +80,7 @@ public class BusinessDateCalculator {
             LocalDate.of(2024, 1, 6),   // 土曜日
             LocalDate.of(2024, 1, 7),   // 日曜日
             LocalDate.of(2024, 5, 3),   // 祝日（憲法記念日）
-            LocalDate.of(2024, 12, 31)  // 大晦日
+            LocalDate.of(2024, 11, 22)  // 金曜日（翌日の土曜日が勤労感謝の日）
         };
         
         for (LocalDate date : testDates) {
@@ -231,33 +231,34 @@ public class BusinessDateCalculator {
     }
     
     private static void printBusinessCalendar(YearMonth yearMonth) {
-        IO.println("\n日 月 火 水 木 金 土");
+        // 1日を4文字分の幅（数字3文字＋印1文字）で出す。曜日の漢字は全角で2文字分
+        IO.println("\n 日  月  火  水  木  金  土");
         
         LocalDate firstDay = yearMonth.atDay(1);
         int dayOfWeekValue = firstDay.getDayOfWeek().getValue();
         
-        // 月初までの空白
+        // 月初までの空白（日曜日始まりにするため、日曜日の7を0とみなす）
         for (int i = 0; i < dayOfWeekValue % 7; i++) {
-            IO.print("   ");
+            IO.print("    ");
         }
         
-        // 各日を出力
+        // 各日を出力（印は数字の後ろに付ける）
         for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
             LocalDate date = yearMonth.atDay(day);
             
             if (isHoliday(date)) {
-                IO.print("*%2d".formatted(day));  // 祝日
+                IO.print("%3d*".formatted(day));  // 祝日
             } else if (isWeekend(date)) {
-                IO.print("-%2d".formatted(day));  // 週末
+                IO.print("%3d-".formatted(day));  // 週末
             } else {
-                IO.print("%3d".formatted(day));   // 営業日
+                IO.print("%3d ".formatted(day));  // 営業日
             }
             
             if (date.getDayOfWeek() == DayOfWeek.SATURDAY) {
                 IO.println();
             }
         }
-        IO.println("\n\n凡例: * 祝日, - 週末");
+        IO.println("\n\n凡例: 数字の後ろの * は祝日、- は週末");
     }
     
     private static ProjectSchedule calculateProjectSchedule(LocalDate start, 

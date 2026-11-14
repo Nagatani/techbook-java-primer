@@ -8,17 +8,22 @@
 
 ## レガシーDate/Calendarの問題点
 
-### Java 8以前は、日付時刻の処理に`java.util.Date`と`java.util.Calendar`を使用していましたが、これらのAPIには多くの問題がありました
+Java 8より前は、日付時刻の処理に`java.util.Date`と`java.util.Calendar`を使用していましたが、これらのAPIには多くの問題がありました。
 
-1. 可変性（ミュータブル）: Dateオブジェクトは変更可能であるため、マルチスレッド環境での競合状態や、意図しない値の変更によるバグが発生しやすい
-2. 設計の不整合： 月が0から始まる（1月が0）、年が1900年からの相対値で表現される、曜日の定数が一貫性を欠くなど、人間の直感に反する仕様
-3. スレッドセーフではない： SimpleDateFormatなどがスレッドセーフでないため、複数スレッドから同時アクセスすると日付の解析結果が混在したり、NumberFormatExceptionが発生する
-4. タイムゾーン処理の複雑さ： タイムゾーンの概念が不明確で、夏時間の自動調整やUTCとの変換で予期しない時刻のずれが発生しやすい
-5. APIの使いにくさ： 日付の加算にはCalendarインスタンスが必要、比較にはgetTime()でミリ秒に変換が必要など、単純な操作に複雑な手順を要求
+1. 可変性（ミュータブル）
+    + Dateオブジェクトは変更可能であるため、マルチスレッド環境での競合状態や、意図しない値の変更によるバグが発生しやすい
+2. 設計の不整合
+    + 月が0から始まる（1月が0）、年が1900年からの相対値で表現される、曜日の定数が一貫性を欠くなど、人間の直感に反する仕様である
+3. スレッドセーフではない
+    + SimpleDateFormatなどがスレッドセーフでないため、複数スレッドから同時アクセスすると日付の解析結果が混在したり、NumberFormatExceptionが発生したりする
+4. タイムゾーン処理の複雑さ
+    + タイムゾーンの概念が不明確で、夏時間の自動調整やUTCとの変換で予期しない時刻のずれが発生しやすい
+5. APIの使いにくさ
+    + 日付の加算にはCalendarインスタンスが必要、比較にはgetTime()でミリ秒に変換が必要など、単純な操作に複雑な手順を要求する
 
 ## java.time APIの主要クラス
 
-### Java 8で導入された`java.time`パッケージは、これらの問題を解決する新しい日付時刻APIです
+Java 8で導入された`java.time`パッケージは、これらの問題を解決する新しい日付時刻APIです。
 
 <span class="listing-number">**サンプルコードF-1**</span>
 
@@ -61,7 +66,7 @@ public class JavaTimeBasicExample {
 
 ## 日付時刻の作成と操作
 
-### java.time APIは不変（イミュータブル）であり、操作は常に新しいインスタンスを返します
+java.time APIの日付時刻のクラスは不変（イミュータブル）であり、操作は常に新しいインスタンスを返します。
 
 <span class="listing-number">**サンプルコードF-2**</span>
 
@@ -118,7 +123,7 @@ public class DateTimeManipulationExample {
 
 ## フォーマットとパース（DateTimeFormatter）
 
-### 日付時刻の文字列表現との相互変換には`DateTimeFormatter`を使用します
+日付時刻の文字列表現との相互変換には`DateTimeFormatter`を使用します。
 
 <span class="listing-number">**サンプルコードF-3**</span>
 
@@ -137,8 +142,9 @@ public class DateTimeFormatterExample {
             dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         
         // 2. ロケール対応フォーマッタ
+        // 時刻のFULL形式はタイムゾーン名を含み、LocalDateTimeには使えないため、時刻はMEDIUMにする
         DateTimeFormatter japaneseFormatter = DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.FULL)
+            .ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM)
             .withLocale(Locale.JAPANESE);
         IO.println("日本語形式: " + dateTime.format(japaneseFormatter));
         
@@ -172,7 +178,7 @@ public class DateTimeFormatterExample {
 
 ## 期間と期限の計算（Period、Duration）
 
-### 日付や時刻の差を扱うために、`Period`（日付ベース）と`Duration`（時間ベース）を使用します
+日付や時刻の差を扱うために、`Period`（日付ベース）と`Duration`（時間ベース）を使用します。
 
 <span class="listing-number">**サンプルコードF-4**</span>
 
@@ -205,7 +211,7 @@ public class PeriodDurationExample {
         IO.println("詳細: " + duration.toHours() + "時間 " + 
                           duration.toMinutesPart() + "分");
         
-        // 日時間の日数計算
+        // 日付間の日数計算
         LocalDate birth = LocalDate.of(2000, 1, 1);
         long daysAlive = ChronoUnit.DAYS.between(birth, LocalDate.now());
         IO.println("\n生まれてから " + daysAlive + " 日経過");
@@ -213,7 +219,11 @@ public class PeriodDurationExample {
         // インスタント間の経過時間
         Instant start = Instant.now();
         // 何か処理
-        try { Thread.sleep(1000); } catch (InterruptedException e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();  // 割り込まれたことを記録し直す
+        }
         Instant end = Instant.now();
         
         Duration elapsed = Duration.between(start, end);
@@ -224,13 +234,15 @@ public class PeriodDurationExample {
 
 ## タイムゾーンの扱い
 
-### グローバルなアプリケーションでは、タイムゾーンの適切な処理が重要です
+グローバルなアプリケーションでは、タイムゾーンの適切な処理が重要です。
+パターンの`z`はタイムゾーンの略称（JST、ESTなど）を出します。日本語ロケールではニューヨークの夏時間も`EST`と表示されるため、この例では`Locale.US`を指定しています。
 
 <span class="listing-number">**サンプルコードF-5**</span>
 
 ```java
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Set;
 
 public class TimeZoneExample {
@@ -251,8 +263,9 @@ public class TimeZoneExample {
         ZonedDateTime newYorkTime = tokyoTime.withZoneSameInstant(
             ZoneId.of("America/New_York"));
         
+        // zはタイムゾーンの略称。日本語ロケールでは夏時間でもESTと出るため、英語で表示する
         DateTimeFormatter formatter = 
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z", Locale.US);
         
         IO.println("\n同一時刻の各地表示:");
         IO.println("東京: " + tokyoTime.format(formatter));
@@ -273,16 +286,17 @@ public class TimeZoneExample {
         IO.println("\n夏時間の影響:");
         IO.println("冬時間: " + winterTime);
         IO.println("夏時間: " + summerTime);
-        IO.println("オフセット差: " + 
-            (winterTime.getOffset().getTotalSeconds() - 
-             summerTime.getOffset().getTotalSeconds()) / 3600 + "時間");
+        IO.println("夏時間で進む時間: " + 
+            (summerTime.getOffset().getTotalSeconds() - 
+             winterTime.getOffset().getTotalSeconds()) / 3600 + "時間");
     }
 }
 ```
 
 ## ファイル操作での実践例
 
-### java.time APIをファイル操作と組み合わせた実践的な例
+java.time APIをファイル操作と組み合わせた実践的な例を示します。
+実行すると、今いるディレクトリに`logs`ディレクトリを作り、その中にログファイルを書き出します。
 
 <span class="listing-number">**サンプルコードF-6**</span>
 
@@ -370,7 +384,7 @@ public class FileTimeExample {
 
 ## レガシーAPIとの相互変換
 
-### 既存のコードとの互換性のため、java.time APIとレガシーAPIの間で変換が必要な場合があります
+既存のコードとの互換性のため、java.time APIとレガシーAPIの間で変換が必要な場合があります。
 
 <span class="listing-number">**サンプルコードF-7**</span>
 
@@ -405,6 +419,7 @@ public class LegacyConversionExample {
         
         // 4. Calendar ←→ ZonedDateTime
         Calendar calendar = Calendar.getInstance();
+        calendar.clear();  // 現在時刻のミリ秒などが残らないように、先に全項目を消す
         calendar.set(2024, Calendar.DECEMBER, 25, 14, 30, 0);
         
         ZonedDateTime fromCalendar = ((GregorianCalendar) calendar)
@@ -441,22 +456,24 @@ public class LegacyConversionExample {
 
 ## java.time APIのベストプラクティス
 
-1. 用途に応じたクラスの選択：
-   - 日付のみ `LocalDate`
-   - 時刻のみ `LocalTime`
-   - 日付と時刻 `LocalDateTime`
-   - タイムゾーン付き `ZonedDateTime`
-   - タイムスタンプ `Instant`
-
-2. 不変性の活用： java.timeのクラスはすべて不変なので、複数スレッドから同時アクセスしても値が変更される心配がなく、防御的コピーも不要
-
-3. 明示的なタイムゾーン指定： グローバルアプリケーションでは、ZoneId.of("Asia/Tokyo")のように地域名でタイムゾーンを明示し、システムデフォルトに依存しない実装を徹底
-
-4. パフォーマンスを考慮したフォーマッタの再利用： `DateTimeFormatter`はスレッドセーフなので、静的フィールドとして再利用することでインスタンス生成のオーバーヘッドを削減可能
-
-5. 型安全な計算： 日付の差分にはPeriod（年月日単位）、時刻の差分にはDuration（時分秒単位）を使い分け、コンパイル時に誤用を防止
-
-6. レガシーAPIとの混在を避ける： プロジェクト全体でjava.time APIに統一し、外部ライブラリとの連携時のみ変換メソッドを使用する設計を採用
+1. 用途に応じたクラスの選択
+    + 日付のみは`LocalDate`
+    + 時刻のみは`LocalTime`
+    + 日付と時刻は`LocalDateTime`
+    + タイムゾーン付きは`ZonedDateTime`
+    + タイムスタンプは`Instant`
+2. 不変性の活用
+    + `LocalDate`や`ZonedDateTime`などの日付時刻のクラスは不変なので、複数スレッドから同時アクセスしても値が変更される心配がなく、防御的コピーも不要である
+    + フォーマッタを組み立てる`DateTimeFormatterBuilder`は例外で、可変であり1つのスレッドで使う
+3. 明示的なタイムゾーン指定
+    + グローバルアプリケーションでは、`ZoneId.of("Asia/Tokyo")`のように地域名でタイムゾーンを明示し、システムデフォルトに依存しない実装を徹底する
+4. パフォーマンスを考慮したフォーマッタの再利用
+    + `DateTimeFormatter`は不変でスレッドセーフなので、静的フィールドとして再利用することでインスタンス生成のオーバーヘッドを削減できる
+5. PeriodとDurationの使い分け
+    + 日付の差分にはPeriod（年月日単位）、時刻の差分にはDuration（時分秒単位）を使う
+    + どちらも`TemporalAmount`なので、`LocalDate.plus(Duration.ofHours(24))`のような誤用もコンパイルは通るが、実行時に`UnsupportedTemporalTypeException`になる
+6. レガシーAPIとの混在を避ける
+    + プロジェクト全体でjava.time APIに統一し、外部ライブラリとの連携時のみ変換メソッドを使用する設計を採用する
 
 ## さらなる学習リソース
 
@@ -480,7 +497,13 @@ java -cp out com.example.datetime.JavaTimeBasicExample
 
 # パフォーマンス比較の実行
 java -cp out com.example.datetime.DateTimePerformanceComparison
+
+# 妥当性検証の実行（最後に日付の入力を待つ。quitで終わる）
+java -cp out com.example.datetime.DateTimeValidation
 ```
+
+`FileTimeExample`は、今いるディレクトリに`logs`ディレクトリを作ってログファイルを書き出します。
+`DateTimePerformanceComparison`の時間は、動かす環境や回ごとに変わります。
 
 ### 演習問題
 
