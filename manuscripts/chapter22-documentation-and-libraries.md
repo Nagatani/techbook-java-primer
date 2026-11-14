@@ -1010,7 +1010,8 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
     <!-- バージョンを一元管理 -->
     <jackson.version>2.23.0</jackson.version>
     <commons.lang.version>3.22.0</commons.lang.version>
-    <junit.version>5.13.4</junit.version>
+    <junit.version>6.1.3</junit.version>
+
 </properties>
 
 <dependencies>
