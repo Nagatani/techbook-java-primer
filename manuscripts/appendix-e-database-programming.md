@@ -51,7 +51,8 @@
 2. 組み込みデータベースのH2で動かせるサンプルコード
 3. 動かす準備（H2と、ほかのデータベースのJDBCドライバー）
 
-付録Eの演習課題は準備中です。
+付録Eの演習課題は、リポジトリの`exercises/`フォルダーにあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-database-programming/exercises/`</span>。
+基礎課題（接続、CRUD、PreparedStatement、ResultSetからオブジェクトへ、トランザクション）、発展課題（DAOとjava.time、バッチ処理）、チャレンジ課題（図書の貸出管理）と、基礎課題の解答例を用意しています。
 
 ### 関連する付録
 
