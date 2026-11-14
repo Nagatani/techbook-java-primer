@@ -22,4 +22,4 @@ java StudentTest
 ## ファイル構成
 
 - `Student.java`: 基本的な学生クラス
-- `StudentTest.java`: 動作確認用のテストプログラム
+- `StudentTest.java`: 動作確認用のプログラム（JUnitは使わない）

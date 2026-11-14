@@ -3,11 +3,21 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:student_management.db";
+    // 既定の接続先（実行したディレクトリにstudent_management.dbを作る）
+    public static final String DEFAULT_DB_URL = "jdbc:sqlite:student_management.db";
     private Connection connection;
     
     public DatabaseManager() throws SQLException {
-        connection = DriverManager.getConnection(DB_URL);
+        this(DEFAULT_DB_URL);
+    }
+    
+    // 接続先のURLを指定する（テストでは別のファイルやメモリ上のDBを使う）
+    public DatabaseManager(String dbUrl) throws SQLException {
+        connection = DriverManager.getConnection(dbUrl);
+        // SQLiteは既定では外部キー制約を検査しないので、接続ごとに有効にする
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON");
+        }
         createTables();
     }
     
@@ -18,8 +28,7 @@ public class DatabaseManager {
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL,
                 department TEXT NOT NULL,
-                gpa REAL DEFAULT 0.0,
-                student_type TEXT NOT NULL
+                gpa REAL DEFAULT 0.0
             )
         """;
         
@@ -34,61 +43,43 @@ public class DatabaseManager {
             )
         """;
         
-        String createGraduateStudentTable = """
-            CREATE TABLE IF NOT EXISTS graduate_students (
-                student_id TEXT PRIMARY KEY,
-                research_field TEXT NOT NULL,
-                advisor_name TEXT,
-                FOREIGN KEY (student_id) REFERENCES students(student_id)
-            )
-        """;
-        
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createStudentTable);
             stmt.execute(createGradeTable);
-            stmt.execute(createGraduateStudentTable);
         }
     }
     
-    public void saveStudent(Student student) throws SQLException {
+    // 学生と成績を保存する。途中で失敗したら全体を取り消す（トランザクション）
+    public void saveStudent(GradeableStudent student) throws SQLException {
+        // 同じIDの学生がいれば、行を消さずに列の値を更新する（UPSERT）
         String sql = """
-            INSERT OR REPLACE INTO students (student_id, name, age, department, gpa, student_type)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO students (student_id, name, age, department, gpa)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(student_id) DO UPDATE SET
+                name = excluded.name,
+                age = excluded.age,
+                department = excluded.department,
+                gpa = excluded.gpa
         """;
         
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, student.getId());
-            pstmt.setString(2, student.getName());
-            pstmt.setInt(3, student.getAge());
-            pstmt.setString(4, student.getDepartment());
-            pstmt.setDouble(5, student.getGpa());
-            pstmt.setString(6, student.getClass().getSimpleName());
-            
-            pstmt.executeUpdate();
-            
-            // 大学院生の場合は追加情報を保存
-            if (student instanceof GraduateStudent) {
-                saveGraduateStudentInfo((GraduateStudent) student);
+        connection.setAutoCommit(false);
+        try {
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, student.getId());
+                pstmt.setString(2, student.getName());
+                pstmt.setInt(3, student.getAge());
+                pstmt.setString(4, student.getDepartment());
+                pstmt.setDouble(5, student.getGpa());
+                pstmt.executeUpdate();
             }
             
-            // 成績情報を保存
-            if (student instanceof GradeableStudent) {
-                saveGrades((GradeableStudent) student);
-            }
-        }
-    }
-    
-    private void saveGraduateStudentInfo(GraduateStudent student) throws SQLException {
-        String sql = """
-            INSERT OR REPLACE INTO graduate_students (student_id, research_field, advisor_name)
-            VALUES (?, ?, ?)
-        """;
-        
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, student.getId());
-            pstmt.setString(2, student.getResearchField());
-            pstmt.setString(3, student.getAdvisorName());
-            pstmt.executeUpdate();
+            saveGrades(student);
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
     }
     
@@ -120,11 +111,12 @@ public class DatabaseManager {
     public List<GradeableStudent> loadAllStudents() throws SQLException {
         List<GradeableStudent> students = new ArrayList<>();
         
+        // g.idの順に並べると、成績を登録した順になる
         String sql = """
-            SELECT s.*, g.course_name, g.grade
+            SELECT s.student_id, s.name, s.age, s.department, g.course_name, g.grade
             FROM students s
             LEFT JOIN grades g ON s.student_id = g.student_id
-            ORDER BY s.student_id, g.course_name
+            ORDER BY s.student_id, g.id
         """;
         
         try (Statement stmt = connection.createStatement();
@@ -173,16 +165,9 @@ public class DatabaseManager {
         connection.setAutoCommit(false);
         
         try {
-            // 成績情報を削除
+            // 成績情報を先に削除（外部キー制約があるため、学生より先に消す）
             String deleteGrades = "DELETE FROM grades WHERE student_id = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(deleteGrades)) {
-                pstmt.setString(1, studentId);
-                pstmt.executeUpdate();
-            }
-            
-            // 大学院生情報を削除
-            String deleteGradInfo = "DELETE FROM graduate_students WHERE student_id = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(deleteGradInfo)) {
                 pstmt.setString(1, studentId);
                 pstmt.executeUpdate();
             }

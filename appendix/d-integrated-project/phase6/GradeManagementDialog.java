@@ -11,6 +11,7 @@ public class GradeManagementDialog extends JDialog {
     private JLabel gpaLabel;
     private JTable gradeTable;
     
+    // 呼び出し側で、studentIdの学生がいることを確かめてから作る
     public GradeManagementDialog(Frame parent, StudentService service, String studentId) {
         super(parent, "成績管理", true);
         this.service = service;
@@ -22,16 +23,18 @@ public class GradeManagementDialog extends JDialog {
     private void initializeUI() {
         setLayout(new BorderLayout());
         
-        // 学生情報パネル
+        // 学生情報パネル（学生が見つからなくても、ラベルは必ず作る）
         JPanel infoPanel = new JPanel();
+        JLabel nameLabel = new JLabel("学生: (" + studentId + ")");
+        gpaLabel = new JLabel();
         try {
             GradeableStudent student = service.getStudent(studentId);
-            infoPanel.add(new JLabel("学生: " + student.getName() + " (" + studentId + ")"));
-            gpaLabel = new JLabel("GPA: " + String.format("%.2f", student.getGpa()));
-            infoPanel.add(gpaLabel);
+            nameLabel.setText("学生: " + student.getName() + " (" + studentId + ")");
         } catch (StudentNotFoundException e) {
-            // エラー処理
+            nameLabel.setText(e.getMessage());
         }
+        infoPanel.add(nameLabel);
+        infoPanel.add(gpaLabel);
         add(infoPanel, BorderLayout.NORTH);
         
         // 成績テーブル
@@ -81,22 +84,20 @@ public class GradeManagementDialog extends JDialog {
         if (result == JOptionPane.OK_OPTION) {
             try {
                 String course = courseField.getText().trim();
-                double grade = Double.parseDouble(gradeField.getText().trim());
-                
                 if (course.isEmpty()) {
                     JOptionPane.showMessageDialog(this, 
                         "科目名を入力してください", "エラー", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                double grade = Double.parseDouble(gradeField.getText().trim());
                 
                 service.updateGrade(studentId, course, grade);
                 loadGrades();
-                updateGPA();
                 
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, 
                     "成績は数値で入力してください", "エラー", JOptionPane.ERROR_MESSAGE);
-            } catch (StudentNotFoundException | InvalidGradeException e) {
+            } catch (StudentNotFoundException | InvalidGradeException | IllegalStateException e) {
                 JOptionPane.showMessageDialog(this, 
                     e.getMessage(), "エラー", JOptionPane.ERROR_MESSAGE);
             }
@@ -118,12 +119,17 @@ public class GradeManagementDialog extends JDialog {
             "確認", JOptionPane.YES_NO_OPTION);
         
         if (result == JOptionPane.YES_OPTION) {
-            // Note: 実際の削除機能は実装が必要
-            JOptionPane.showMessageDialog(this, 
-                "成績削除機能は未実装です", "情報", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                service.removeGrade(studentId, courseName);
+                loadGrades();
+            } catch (StudentNotFoundException | IllegalStateException e) {
+                JOptionPane.showMessageDialog(this, 
+                    e.getMessage(), "エラー", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     
+    // 成績の一覧とGPAを表示し直す
     private void loadGrades() {
         gradeTableModel.setRowCount(0);
         try {
@@ -134,17 +140,9 @@ public class GradeManagementDialog extends JDialog {
                 Object[] row = {entry.getKey(), String.format("%.1f", entry.getValue())};
                 gradeTableModel.addRow(row);
             }
-        } catch (StudentNotFoundException e) {
-            // エラー処理
-        }
-    }
-    
-    private void updateGPA() {
-        try {
-            GradeableStudent student = service.getStudent(studentId);
             gpaLabel.setText("GPA: " + String.format("%.2f", student.getGpa()));
         } catch (StudentNotFoundException e) {
-            // エラー処理
+            gpaLabel.setText("GPA: -");
         }
     }
 }

@@ -24,4 +24,4 @@ java Phase3Test
 - `StudentRepository.java`: ジェネリックなリポジトリクラス
 - `StudentService.java`: ビジネスロジック層
 - `Phase3Test.java`: 動作確認用のテストプログラム
-- （フェーズ2のクラスファイルも必要）
+- フェーズ2のファイル（Person、Student、GradeableStudentなど）も複製して含めている

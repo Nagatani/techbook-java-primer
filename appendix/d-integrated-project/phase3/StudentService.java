@@ -45,7 +45,7 @@ public class StudentService {
         report.append("\n--- 履修科目 ---\n");
         
         student.getGrades().forEach((course, grade) -> 
-            report.append(String.format("%-20s: %.1f\n", course, grade))
+            report.append(String.format("  %s: %.1f\n", course, grade))
         );
         
         report.append("\nGPA: ").append(String.format("%.2f", student.getGpa()));

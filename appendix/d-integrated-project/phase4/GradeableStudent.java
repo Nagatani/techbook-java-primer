@@ -1,13 +1,13 @@
 // GradeableStudent.java - Gradeableを実装
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GradeableStudent extends Student implements Gradeable {
     private Map<String, Double> grades;
     
     public GradeableStudent(String studentId, String name, int age, String department) {
         super(studentId, name, age, department);
-        this.grades = new HashMap<>();
+        this.grades = new LinkedHashMap<>(); // 登録した順に科目を並べる
     }
     
     @Override
@@ -27,6 +27,6 @@ public class GradeableStudent extends Student implements Gradeable {
     
     @Override
     public Map<String, Double> getGrades() {
-        return new HashMap<>(grades);
+        return new LinkedHashMap<>(grades);
     }
 }

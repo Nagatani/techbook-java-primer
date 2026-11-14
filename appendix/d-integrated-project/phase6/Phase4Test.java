@@ -1,11 +1,13 @@
 // Phase4Test.java - フェーズ4のテスト
+// フェーズ6では、student_management.dbを書き換えないようにメモリ上のデータベースを使う
 import java.io.*;
+import java.sql.SQLException;
 
 public class Phase4Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         IO.println("=== フェーズ4: 例外処理のテスト ===\n");
         
-        StudentService service = new StudentService();
+        StudentService service = new StudentService("jdbc:sqlite::memory:");
         
         // 正常な学生登録
         try {
@@ -69,7 +71,13 @@ public class Phase4Test {
             IO.println("テストファイル作成エラー: " + e.getMessage());
         }
         
-        service.importStudentsFromCSV("test_students.csv");
+        try {
+            StudentService.ImportResult result = service.importStudentsFromCSV("test_students.csv");
+            IO.println("インポート結果: 成功=" + result.successCount()
+                + "件, エラー=" + result.errorCount() + "件");
+        } catch (IOException e) {
+            IO.println("✗ インポートエラー: " + e.getMessage());
+        }
         
         // 成績レポートの生成
         IO.println("\n--- 成績レポートの生成 ---");

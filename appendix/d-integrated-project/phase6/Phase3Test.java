@@ -1,9 +1,12 @@
 // Phase3Test.java - フェーズ3のテスト
+// フェーズ6では、student_management.dbを書き換えないようにメモリ上のデータベースを使う
+import java.sql.SQLException;
+
 public class Phase3Test {
-    public static void main(String[] args) throws DuplicateStudentException {
+    public static void main(String[] args) throws DuplicateStudentException, SQLException {
         IO.println("=== フェーズ3: コレクションとジェネリクスのテスト ===\n");
         
-        StudentService service = new StudentService();
+        StudentService service = new StudentService("jdbc:sqlite::memory:");
         
         // 学生の登録
         GradeableStudent student1 = new GradeableStudent("S001", "田中太郎", 20, "工学部");

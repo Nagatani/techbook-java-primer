@@ -18,7 +18,7 @@ public class StudentService {
             logger.info("学生を登録しました: " + student.getId());
         } catch (IllegalArgumentException e) {
             logger.warning("学生登録エラー: " + e.getMessage());
-            throw new DuplicateStudentException(student.getId());
+            throw new DuplicateStudentException(student.getId(), e); // 元の例外を原因として渡す
         }
     }
     
@@ -76,7 +76,7 @@ public class StudentService {
             report.append("\n--- 履修科目 ---\n");
             
             student.getGrades().forEach((course, grade) -> 
-                report.append(String.format("%-20s: %.1f\n", course, grade))
+                report.append(String.format("  %s: %.1f\n", course, grade))
             );
             
             report.append("\nGPA: ").append(String.format("%.2f", student.getGpa()));
@@ -87,10 +87,16 @@ public class StudentService {
         }
     }
     
-    public void importStudentsFromCSV(String filePath) {
+    // CSVインポートの結果（成功した件数と、エラーになった件数）
+    public record ImportResult(int successCount, int errorCount) {}
+    
+    // CSVファイル（UTF-8）から学生を読み込む。
+    // 1行ごとのエラーはログに記録して次の行へ進み、件数を結果として返す。
+    // ファイル自体を読めないときは、IOExceptionを呼び出し元に知らせる
+    public ImportResult importStudentsFromCSV(String filePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            int lineNumber = 0;
+            int lineNumber = 1; // ファイルの行番号（1行目はヘッダー）
             int successCount = 0;
             int errorCount = 0;
             
@@ -128,9 +134,10 @@ public class StudentService {
             
             logger.info(String.format("CSVインポート完了: 成功=%d, エラー=%d", 
                 successCount, errorCount));
-                
+            return new ImportResult(successCount, errorCount);
         } catch (IOException e) {
             logger.severe("CSVファイル読み込みエラー: " + e.getMessage());
+            throw e;
         }
     }
     

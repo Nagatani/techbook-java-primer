@@ -1,4 +1,6 @@
 // StudentService.java - データベース対応版
+// データベースへの保存に失敗したときは、メモリ上の変更を元に戻してから
+// IllegalStateExceptionを投げる（メモリとデータベースの内容を食い違わせない）
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.logging.Logger;
@@ -10,43 +12,42 @@ public class StudentService {
     private DatabaseManager dbManager;
     private static final Logger logger = Logger.getLogger(StudentService.class.getName());
     
-    public StudentService() {
-        this.repository = new StudentRepository<>();
-        try {
-            this.dbManager = new DatabaseManager();
-            loadStudentsFromDatabase();
-        } catch (SQLException e) {
-            logger.severe("データベース接続エラー: " + e.getMessage());
-        }
+    // 既定のデータベース（student_management.db）を使う
+    public StudentService() throws SQLException {
+        this(DatabaseManager.DEFAULT_DB_URL);
     }
     
-    private void loadStudentsFromDatabase() {
-        try {
-            List<GradeableStudent> students = dbManager.loadAllStudents();
-            for (GradeableStudent student : students) {
-                repository.addStudent(student);
-            }
-            logger.info("データベースから " + students.size() + " 件の学生情報を読み込みました");
-        } catch (SQLException e) {
-            logger.severe("データベース読み込みエラー: " + e.getMessage());
+    // 接続先のURLを指定する。接続できなければSQLExceptionを投げる
+    public StudentService(String dbUrl) throws SQLException {
+        this.repository = new StudentRepository<>();
+        this.dbManager = new DatabaseManager(dbUrl);
+        loadStudentsFromDatabase();
+    }
+    
+    private void loadStudentsFromDatabase() throws SQLException {
+        List<GradeableStudent> students = dbManager.loadAllStudents();
+        for (GradeableStudent student : students) {
+            repository.addStudent(student);
         }
+        logger.info("データベースから " + students.size() + " 件の学生情報を読み込みました");
     }
     
     public void registerStudent(GradeableStudent student) throws DuplicateStudentException {
         try {
             repository.addStudent(student);
-            logger.info("学生を登録しました: " + student.getId());
-            
-            // データベースに保存
-            try {
-                dbManager.saveStudent(student);
-                logger.info("学生をデータベースに保存しました: " + student.getId());
-            } catch (SQLException e) {
-                logger.severe("データベース保存エラー: " + e.getMessage());
-            }
         } catch (IllegalArgumentException e) {
             logger.warning("学生登録エラー: " + e.getMessage());
-            throw new DuplicateStudentException(student.getId());
+            throw new DuplicateStudentException(student.getId(), e); // 元の例外を原因として渡す
+        }
+        
+        // データベースに保存
+        try {
+            dbManager.saveStudent(student);
+            logger.info("学生を登録しました: " + student.getId());
+        } catch (SQLException e) {
+            repository.removeStudent(student.getId()); // メモリ上の登録を取り消す
+            logger.severe("データベース保存エラー: " + e.getMessage());
+            throw new IllegalStateException("データベースへの保存に失敗しました", e);
         }
     }
     
@@ -70,16 +71,65 @@ public class StudentService {
             throw new StudentNotFoundException(studentId);
         }
         
+        Double oldGrade = student.getGrades().get(courseName);
         student.addGrade(courseName, grade);
-        logger.info(String.format("成績を更新: %s - %s: %.1f", 
-            studentId, courseName, grade));
         
         // データベースを更新
         try {
             dbManager.saveStudent(student);
-            logger.info("成績をデータベースに保存しました: " + studentId);
+            logger.info(String.format("成績を更新: %s - %s: %.1f", 
+                studentId, courseName, grade));
         } catch (SQLException e) {
+            // メモリ上の成績を元に戻す
+            if (oldGrade == null) {
+                student.removeGrade(courseName);
+            } else {
+                student.addGrade(courseName, oldGrade);
+            }
             logger.severe("データベース更新エラー: " + e.getMessage());
+            throw new IllegalStateException("データベースの更新に失敗しました", e);
+        }
+    }
+    
+    // 学生の削除
+    public void deleteStudent(String studentId) throws StudentNotFoundException {
+        GradeableStudent student = getStudent(studentId);
+        repository.removeStudent(studentId);
+        try {
+            dbManager.deleteStudent(studentId);
+            logger.info("学生を削除しました: " + studentId);
+        } catch (SQLException e) {
+            repository.addStudent(student); // メモリ上に戻す
+            logger.severe("データベース削除エラー: " + e.getMessage());
+            throw new IllegalStateException("データベースからの削除に失敗しました", e);
+        }
+    }
+    
+    // 成績の削除
+    public void removeGrade(String studentId, String courseName) throws StudentNotFoundException {
+        GradeableStudent student = getStudent(studentId);
+        Double oldGrade = student.getGrades().get(courseName);
+        if (oldGrade == null) {
+            return; // その科目の成績はない
+        }
+        student.removeGrade(courseName);
+        try {
+            dbManager.saveStudent(student);
+            logger.info("成績を削除: " + studentId + " - " + courseName);
+        } catch (SQLException e) {
+            student.addGrade(courseName, oldGrade); // メモリ上に戻す
+            logger.severe("データベース更新エラー: " + e.getMessage());
+            throw new IllegalStateException("データベースの更新に失敗しました", e);
+        }
+    }
+    
+    // データベースの接続を閉じる（アプリケーションの終了時に呼ぶ）
+    public void shutdown() {
+        try {
+            dbManager.close();
+            logger.info("データベース接続を閉じました");
+        } catch (SQLException e) {
+            logger.severe("データベースクローズエラー: " + e.getMessage());
         }
     }
     
@@ -112,7 +162,7 @@ public class StudentService {
             report.append("\n--- 履修科目 ---\n");
             
             student.getGrades().forEach((course, grade) -> 
-                report.append(String.format("%-20s: %.1f\n", course, grade))
+                report.append(String.format("  %s: %.1f\n", course, grade))
             );
             
             report.append("\nGPA: ").append(String.format("%.2f", student.getGpa()));
@@ -123,10 +173,16 @@ public class StudentService {
         }
     }
     
-    public void importStudentsFromCSV(String filePath) {
+    // CSVインポートの結果（成功した件数と、エラーになった件数）
+    public record ImportResult(int successCount, int errorCount) {}
+    
+    // CSVファイル（UTF-8）から学生を読み込む。
+    // 1行ごとのエラーはログに記録して次の行へ進み、件数を結果として返す。
+    // ファイル自体を読めないときは、IOExceptionを呼び出し元に知らせる
+    public ImportResult importStudentsFromCSV(String filePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            int lineNumber = 0;
+            int lineNumber = 1; // ファイルの行番号（1行目はヘッダー）
             int successCount = 0;
             int errorCount = 0;
             
@@ -164,9 +220,10 @@ public class StudentService {
             
             logger.info(String.format("CSVインポート完了: 成功=%d, エラー=%d", 
                 successCount, errorCount));
-                
+            return new ImportResult(successCount, errorCount);
         } catch (IOException e) {
             logger.severe("CSVファイル読み込みエラー: " + e.getMessage());
+            throw e;
         }
     }
     
@@ -201,36 +258,5 @@ public class StudentService {
         );
         
         return report.toString();
-    }
-    
-    public void deleteStudent(String studentId) throws StudentNotFoundException {
-        GradeableStudent student = repository.findById(studentId);
-        if (student == null) {
-            throw new StudentNotFoundException(studentId);
-        }
-        
-        boolean removed = repository.removeStudent(studentId);
-        if (removed) {
-            try {
-                dbManager.deleteStudent(studentId);
-                logger.info("学生を削除しました: " + studentId);
-            } catch (SQLException e) {
-                logger.severe("データベース削除エラー: " + e.getMessage());
-                // ロールバックのため、メモリ上に再追加
-                repository.addStudent(student);
-                throw new RuntimeException("データベース削除に失敗しました", e);
-            }
-        }
-    }
-    
-    public void shutdown() {
-        try {
-            if (dbManager != null) {
-                dbManager.close();
-                logger.info("データベース接続を閉じました");
-            }
-        } catch (SQLException e) {
-            logger.severe("データベースクローズエラー: " + e.getMessage());
-        }
     }
 }
