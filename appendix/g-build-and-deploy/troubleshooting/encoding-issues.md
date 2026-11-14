@@ -2,11 +2,19 @@
 
 ## プラットフォーム間での文字化け対策
 
+Java 18以降（JEP 400）は、ファイルの読み書きなどで使う既定の文字コード（`file.encoding`）が、OSにかかわらずUTF-8です。
+Java 25では、ファイルの中身の文字化けは「UTF-8以外で保存されたファイルを読む」場合に起きます。
+一方、コンソールへの出力や入力の文字コード（`stdout.encoding`、`stdin.encoding`）は、OSやターミナルの設定（Windowsのコードページなど）に従います。
+そのため、コンソールでの文字化けはJava 25でも起こり得ます。
+
 ### 1. 問題の診断
 
 ```bash
-# システムのデフォルトエンコーディングを確認
-java -XshowSettings:properties -version 2>&1 | grep file.encoding
+# 文字コードにかかわる設定を確認
+# file.encoding: ファイルなどの既定（Java 18以降はUTF-8）
+# native.encoding: OSの設定から決まる文字コード
+# stdout.encoding: コンソール出力の文字コード
+java -XshowSettings:properties -version 2>&1 | grep encoding
 
 # ファイルのエンコーディングを確認（Linux/macOS）
 file -i myfile.txt
@@ -18,12 +26,18 @@ file -i myfile.txt
 
 ```java
 // 推奨: エンコーディングを明示的に指定
-Files.readAllLines(Paths.get("data.txt"), StandardCharsets.UTF_8);
-Files.write(Paths.get("output.txt"), lines, StandardCharsets.UTF_8);
+Files.readAllLines(Path.of("data.txt"), StandardCharsets.UTF_8);
+Files.write(Path.of("output.txt"), lines, StandardCharsets.UTF_8);
 
-// 避けるべき: プラットフォームのデフォルトに依存
-Files.readAllLines(Paths.get("data.txt")); // デフォルトエンコーディング
+// Shift_JISで保存されたファイルは、その文字コードを指定して読む
+Files.readAllLines(Path.of("sjis.txt"), Charset.forName("Shift_JIS"));
+
+// 注意: 文字コードを指定しないFileReaderやnew String(bytes)は既定の文字コードを使う。
+// Java 17以前ではOSによって結果が変わった（Windowsの日本語環境ではMS932）
+new FileReader("data.txt");
 ```
+
+`Files.readAllLines(path)`のように文字コードを指定しない`Files`のメソッドは、Java 7で登場したときから常にUTF-8を使います。
 
 #### Properties ファイルの扱い
 
@@ -58,28 +72,36 @@ try (InputStreamReader reader = new InputStreamReader(
 #### Gradle
 
 ```groovy
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-tasks.withType(Javadoc) {
+tasks.withType(Javadoc).configureEach {
     options.encoding = 'UTF-8'
-}
-
-test {
-    systemProperty "file.encoding", "UTF-8"
 }
 ```
+
+javacも、Java 18以降はソースファイルを既定でUTF-8として読みます。それでも、古いJDKでビルドしたときにも同じ結果になるよう、ソースファイルの文字コード（`encoding`）は明示しておきます。
+テストを実行するJVMの`file.encoding`は、Java 18以降は既定でUTF-8なので指定する必要はありません。
 
 ### 4. 実行時の設定
 
-```bash
-# JVMオプションでエンコーディングを指定
-java -Dfile.encoding=UTF-8 -jar myapp.jar
+Java 18以降は`-Dfile.encoding=UTF-8`を付けなくてもUTF-8です。
+コンソールでの文字化けは、ターミナル側の文字コードをUTF-8にして直します。
 
-# 環境変数での設定
-export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
+```bash
+# macOS/Linux: ロケールをUTF-8にする
+export LANG=ja_JP.UTF-8
+java -jar myapp.jar
 ```
+
+```powershell
+# Windows: コンソールのコードページをUTF-8（65001）にする
+chcp 65001
+java -jar myapp.jar
+```
+
+Java 17以前のJVMで動かす必要がある場合だけ、`java -Dfile.encoding=UTF-8 -jar myapp.jar`のように指定します。
 
 ### 5. IDEでの設定
 

@@ -32,7 +32,7 @@ set MAVEN_OPTS=-Xmx2g -XX:MaxMetaspaceSize=256m
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.22.2</version>
+    <version>3.6.1</version>
     <configuration>
         <argLine>-Xmx1024m -XX:MaxMetaspaceSize=256m</argLine>
         <forkCount>1</forkCount>
@@ -47,7 +47,7 @@ set MAVEN_OPTS=-Xmx2g -XX:MaxMetaspaceSize=256m
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.11.0</version>
+    <version>3.16.0</version>
     <configuration>
         <fork>true</fork>
         <meminitial>512m</meminitial>
@@ -66,11 +66,19 @@ jconsole
 jmap -dump:format=b,file=heap.bin <pid>
 ```
 
-### 5. メモリ効率の改善
+### 5. 並列ビルドとメモリ
 
-```xml
-<!-- 並列ビルドの無効化 -->
-<properties>
-    <maven.build.threads>1</maven.build.threads>
-</properties>
+Mavenの並列ビルドは、既定では無効です。
+`-T`オプションで並列ビルドを有効にすると、同時にビルドするモジュールの分だけメモリを多く使います。
+メモリが足りなくなる場合は、`-T`を外すか、スレッド数を減らします。
+
+```bash
+# 4スレッドで並列ビルド
+mvn -T 4 clean package
+
+# CPUコア1つあたり1スレッドで並列ビルド
+mvn -T 1C clean package
+
+# 並列にしない（-Tを付けない）
+mvn clean package
 ```

@@ -3,24 +3,31 @@ import com.google.gson.GsonBuilder;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class JsonProcessorApp {
     
+    private static final DateTimeFormatter CREATED_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     static class Person {
         private String name;
         private int age;
-        private LocalDateTime created;
+        // LocalDateTimeのままだと、Gsonの版によっては例外になり（2.10系）、
+        // 例外にならなくても年・月・日などの入れ子のJSONになる。
+        // そこで作成日時は書式を決めた文字列で持つ
+        private String created;
         
         public Person(String name, int age) {
             this.name = name;
             this.age = age;
-            this.created = LocalDateTime.now();
+            this.created = LocalDateTime.now().format(CREATED_FORMAT);
         }
         
-        // Getters and Setters
+        // ゲッター
         public String getName() { return name; }
         public int getAge() { return age; }
-        public LocalDateTime getCreated() { return created; }
+        public String getCreated() { return created; }
     }
     
     public static void main(String[] args) {
@@ -54,7 +61,6 @@ public class JsonProcessorApp {
             // ボタンのアクション
             Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
                 
             convertButton.addActionListener(e -> {

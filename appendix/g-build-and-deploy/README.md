@@ -22,13 +22,18 @@
 
 #### 基本的なpom.xml設定
 
-完全な設定例は [pom.xml](./maven/pom.xml) を参照してください。
+設定例は [pom.xml](./maven/pom.xml) を参照してください。
+`maven/`には設定の抜粋だけを置いています（ソースコードは含みません）。
+ソースコードを含み、そのままビルドして動かせるプロジェクトは[sample-projects/maven-project](./sample-projects/maven-project/)にあります。
 
 主な設定ポイント：
 - `maven-jar-plugin`：通常の実行可能JARの作成
 - `maven-shade-plugin`：依存ライブラリを含むFat JARの作成
 
 #### ビルドコマンド
+
+`src/main/java/com/example/TodoApp.java`を置いたプロジェクトで、次のように実行します。
+maven-shade-pluginは`package`のときに、通常のJARを依存ライブラリを含むFat JARで置き換えます（元のJARは`original-todo-app-1.0.0.jar`として残ります）。
 
 ```bash
 # クリーンビルド
@@ -42,13 +47,17 @@ java -jar target/todo-app-1.0.0.jar
 
 #### build.gradleの設定
 
-完全な設定例は [build.gradle](./gradle/build.gradle) を参照してください。
+設定例は [build.gradle](./gradle/build.gradle) と [settings.gradle](./gradle/settings.gradle) を参照してください。
+`gradle/`も設定の抜粋だけで、動かせるプロジェクトは[sample-projects/gradle-project](./sample-projects/gradle-project/)にあります。
 
 主な設定ポイント：
 - `application`プラグイン：アプリケーションの実行と配布
-- カスタムFat JARタスク：依存関係を含むJARの作成
+- カスタムFat JARタスク：依存関係を含むJARの作成（重複するファイルの扱い`duplicatesStrategy`の指定が必要）
 
 #### ビルドコマンド
+
+`src/main/java/com/example/TodoApp.java`を置いたプロジェクトで、次のように実行します（Gradle 9）。
+JARの名前は`settings.gradle`の`rootProject.name`から決まります。
 
 ```bash
 # 通常のビルド
@@ -68,6 +77,15 @@ java -jar build/libs/todo-app-1.0.0-all.jar
 
 Fat JARを手動で作成する場合のスクリプト：
 - [create-fat-jar.sh](./scripts/create-fat-jar.sh)
+
+スクリプトは、`lib/gson-2.15.0.jar`（Maven Centralから取得）とコンパイル済みのクラスがあるディレクトリで実行します。
+
+```bash
+cp examples/JsonProcessorApp.java .
+javac -cp lib/gson-2.15.0.jar JsonProcessorApp.java
+bash scripts/create-fat-jar.sh
+java -jar JsonProcessorApp-all.jar
+```
 
 ## jpackageの高度な活用
 
@@ -90,8 +108,9 @@ Fat JARを手動で作成する場合のスクリプト：
 主な設定オプション：
 - アプリケーションアイコン（.icns形式）
 - バンドル識別子
-- コード署名（Gatekeeper対応）
-- 開発者証明書
+- コード署名（開発者証明書を使う）
+
+インターネットで配布するアプリケーションをGatekeeperに通すには、署名に加えてAppleの公証（`xcrun notarytool`で申請する）が必要です。
 
 #### Linux向けの設定
 
@@ -112,13 +131,29 @@ jpackage --type app-image \
          --input ./input \
          --main-jar TodoApp.jar \
          --java-options "-Xmx512m" \
-         --java-options "-Dfile.encoding=UTF-8" \
+         --java-options "-Dapp.mode=production" \
          --dest ./output
 ```
+
+`--java-options`は、起動するJVMに渡すオプションを指定します（複数回書けます）。
+`-D名前=値`で渡した値は、プログラムから`System.getProperty("app.mode")`のように読み出せます。
+Java 18以降は`file.encoding`の既定がUTF-8なので、`-Dfile.encoding=UTF-8`を付ける必要はありません。
 
 #### ファイル関連付け
 
 設定例：[file-associations.properties](./config/file-associations.properties)
+
+このファイルを`--file-associations`オプションで渡すと、拡張子`.todo`のファイルをアプリケーションで開けるようになります。
+設定例のアイコンは`.ico`形式なので、Windows向けです（macOSでは`.icns`、Linuxでは`.png`を指定します）。
+
+```bash
+jpackage --type msi \
+         --name "TodoManager" \
+         --input ./input \
+         --main-jar TodoApp.jar \
+         --file-associations ./config/file-associations.properties \
+         --dest ./output
+```
 
 ## トラブルシューティング
 
@@ -153,23 +188,23 @@ jpackage --type app-image \
 #### 環境依存の問題
 
 - [文字エンコーディングの問題](./troubleshooting/encoding-issues.md)
-- [パスセパレータの問題](./troubleshooting/path-separator.md)
-- [JVMバージョンの違い](./troubleshooting/jvm-version.md)
+- [Javaバージョンの違い](./troubleshooting/java-version.md)
 
 #### jpackageの問題
 
 - [必要なツールのインストール](./troubleshooting/jpackage-tools.md)
-- [アイコン設定の問題](./troubleshooting/icon-issues.md)
 
 ## サンプルプロジェクト
 
-完全なサンプルプロジェクトは以下を参照してください：
+ソースコード・テスト・設定ファイルをそろえた、そのままビルドして動かせるプロジェクトです。
+依存ライブラリの版はMaven版とGradle版でそろえています。
+
 - [Mavenプロジェクト](./sample-projects/maven-project/)
-- [Gradleプロジェクト](./sample-projects/gradle-project/)
+- [Gradleプロジェクト](./sample-projects/gradle-project/)（Gradle Wrapper付き）
 
 ## 参考資料
 
-- [Oracle公式 jarツールドキュメント](https://docs.oracle.com/javase/jp/21/docs/specs/man/jar.html)
-- [Oracle公式 jpackageドキュメント](https://docs.oracle.com/javase/jp/21/docs/specs/man/jpackage.html)
+- [Oracle公式 jarツールドキュメント](https://docs.oracle.com/en/java/javase/25/docs/specs/man/jar.html)
+- [Oracle公式 jpackageドキュメント](https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html)
 - [Maven公式ドキュメント](https://maven.apache.org/guides/)
 - [Gradle公式ドキュメント](https://docs.gradle.org/)

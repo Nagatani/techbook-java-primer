@@ -4,23 +4,27 @@
 
 ### Windows
 
-#### WiX Toolset（.msiインストーラ作成に必要）
+#### WiX Toolset（.msi・.exeインストーラー作成に必要）
 
-1. [WiX Toolset](https://wixtoolset.org/releases/)から最新版をダウンロード
-2. インストーラを実行
-3. 環境変数PATHにWiXのbinディレクトリが追加されていることを確認
+JDK 24以降のjpackageは、WiX Toolsetのv3に加えてv4とv5に対応しています。
+JDK 25のjpackageが対応していない新しい版を入れるとインストーラーを作れないため、v5（またはv3）を使います。
+
+WiX v5は、.NET SDKの`dotnet tool`でインストールします。
 
 ```powershell
+# WiX v5のインストール（.NET SDKが必要）
+dotnet tool install --global wix --version 5.*
+
 # インストール確認
-candle -?
-light -?
+wix --version
 ```
 
-#### Visual Studio再頒布可能パッケージ
+WiX v3を使う場合は、[WiX Toolset v3](https://github.com/wixtoolset/wix3/releases)のインストーラーを実行し、環境変数PATHにWiXの`bin`ディレクトリが追加されていることを確認します。
 
 ```powershell
-# 必要に応じてインストール
-# https://aka.ms/vs/17/release/vc_redist.x64.exe
+# WiX v3のインストール確認
+candle -?
+light -?
 ```
 
 ### macOS
@@ -54,9 +58,9 @@ security find-identity -v -p codesigning
 #### Debian/Ubuntu系
 
 ```bash
-# .debパッケージ作成用
+# .debパッケージ作成用（binutilsはjpackageが使うobjcopyを含む）
 sudo apt-get update
-sudo apt-get install -y fakeroot dpkg-dev
+sudo apt-get install -y fakeroot dpkg-dev binutils
 
 # .rpmパッケージ作成用（オプション）
 sudo apt-get install -y rpm
@@ -66,11 +70,10 @@ sudo apt-get install -y rpm
 
 ```bash
 # .rpmパッケージ作成用
-sudo yum install -y rpm-build
-
-# .debパッケージ作成用（オプション）
-sudo yum install -y dpkg-dev fakeroot
+sudo dnf install -y rpm-build
 ```
+
+Red Hat系のディストリビューションでは、.debパッケージは作らず.rpmパッケージを作るのが普通です。
 
 ### 共通の確認事項
 
@@ -80,7 +83,7 @@ sudo yum install -y dpkg-dev fakeroot
 # jpackageコマンドの確認
 jpackage --version
 
-# JDKバージョンの確認（14以上が必要）
+# JDKバージョンの確認（jpackageはJDK 16以降の正式な機能。本書はJDK 25を使う）
 java -version
 ```
 

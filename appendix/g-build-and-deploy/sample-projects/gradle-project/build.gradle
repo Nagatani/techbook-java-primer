@@ -9,26 +9,28 @@ group = 'com.example'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
     mavenCentral()
 }
 
+// Maven版（maven-project/pom.xml）と同じ版にそろえる
 dependencies {
     // JSON処理
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.15.0'
     
     // ユーティリティ
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
+    implementation 'org.apache.commons:commons-lang3:3.22.0'
     
     // ロギング
-    implementation 'ch.qos.logback:logback-classic:1.5.18'
+    implementation 'ch.qos.logback:logback-classic:1.6.6'
     
     // テスト
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -37,12 +39,8 @@ application {
 }
 
 // エンコーディング設定
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-}
-
-tasks.withType(Test) {
-    systemProperty 'file.encoding', 'UTF-8'
 }
 
 // テスト設定
@@ -53,29 +51,39 @@ test {
     }
 }
 
-// 通常のJAR設定
+// 通常のJARから使う依存ライブラリを build/libs/lib にコピーする
+def copyLibs = tasks.register('copyLibs', Sync) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('libs/lib')
+}
+
+// 通常のJAR設定（依存ライブラリはlib/から読み込む）
 jar {
+    def runtimeClasspath = configurations.runtimeClasspath
     manifest {
         attributes(
             'Main-Class': 'com.example.TodoApp',
             'Implementation-Title': 'Sample Todo Application',
             'Implementation-Version': version,
-            'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' ')
+            'Class-Path': provider { runtimeClasspath.files.collect { "lib/$it.name" }.join(' ') }
         )
     }
+    finalizedBy copyLibs
 }
 
 // Fat JAR設定（shadowプラグイン使用）
 shadowJar {
-    archiveClassifier.set('all')
+    archiveClassifier = 'all'
     manifest {
         attributes 'Main-Class': 'com.example.TodoApp'
     }
 }
 
-// カスタムFat JARタスク
-task customFatJar(type: Jar) {
+// カスタムFat JARタスク（プラグインを使わずに作る場合）
+tasks.register('customFatJar', Jar) {
     archiveClassifier = 'custom-all'
+    // 複数のライブラリに同じ名前のファイル（module-info.classやLICENSEなど）があるため、
+    // 重複は最初の1つだけを入れる（指定しないとGradle 9ではビルドが失敗する）
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': 'com.example.TodoApp'
@@ -86,42 +94,46 @@ task customFatJar(type: Jar) {
     with jar
 }
 
-// 配布用タスク
-task createDistribution(type: Copy) {
-    dependsOn shadowJar
+// 配布用タスク（Fat JARとREADMEを build/distribution にまとめる）
+tasks.register('createDistribution', Sync) {
     from shadowJar
-    from 'src/main/resources/scripts'
-    into layout.buildDirectory.dir("distribution")
+    from 'README.md'
+    into layout.buildDirectory.dir('distribution')
 }
 
-// jpackageタスク
-task jpackage(type: Exec) {
-    dependsOn shadowJar
-    
-    def inputDir = layout.buildDirectory.dir("jpackage-input").get().asFile
-    def outputDir = layout.buildDirectory.dir("jpackage-output").get().asFile
-    
+// jpackageの入力（Fat JARだけを置き、出力先と分ける）
+def jpackageInput = tasks.register('jpackageInput', Sync) {
+    from shadowJar
+    into layout.buildDirectory.dir('jpackage-input')
+}
+
+// jpackageタスク（build/jpackage-output/TodoApp を作る）
+tasks.register('jpackage', Exec) {
+    dependsOn jpackageInput
+
+    def inputDir = layout.buildDirectory.dir('jpackage-input').get().asFile
+    def outputDir = layout.buildDirectory.dir('jpackage-output').get().asFile
+    def mainJar = tasks.named('shadowJar', Jar).flatMap { it.archiveFileName }.get()
+
     doFirst {
-        file(inputDir).mkdirs()
-        copy {
-            from shadowJar
-            into inputDir
-        }
+        // jpackageは出力先に同じ名前のアプリがあると失敗するため、前回の結果を消す
+        new File(outputDir, 'TodoApp').deleteDir()
     }
-    
+
     commandLine 'jpackage',
         '--type', 'app-image',
         '--name', 'TodoApp',
         '--input', inputDir,
-        '--main-jar', shadowJar.archiveFileName.get(),
+        '--main-jar', mainJar,
         '--dest', outputDir
 }
 
-// 依存関係レポート
-task dependencyReport {
+// 依存関係レポート（build.gradleに直接書いた依存の一覧）
+tasks.register('dependencyReport') {
+    def rootComponent = configurations.runtimeClasspath.incoming.resolutionResult.rootComponent
     doLast {
-        configurations.runtimeClasspath.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
-            println "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}"
+        rootComponent.get().dependencies.each { dep ->
+            println dep.requested.displayName
         }
     }
 }

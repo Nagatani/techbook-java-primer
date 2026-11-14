@@ -14,7 +14,7 @@ mvn dependency:tree -Dincludes=com.google.code.gson:*
 
 ### 2. Maven Central Repositoryでの検索
 
-正しいgroupId、artifactId、versionを確認するには、[Maven Central Repository](https://search.maven.org/)で検索します。
+正しいgroupId、artifactId、versionを確認するには、[Maven Central Repository](https://central.sonatype.com/)で検索します。
 
 ### 3. ローカルリポジトリのクリア
 
@@ -28,15 +28,15 @@ mvn clean install
 
 ### 4. 代替リポジトリの追加
 
+Maven Centralにないライブラリは、そのライブラリが案内するリポジトリを`<repositories>`に追加します（URLは例です）。
+Maven Centralは最初から使われるので、書く必要はありません。
+以前よく使われたJCenter（`jcenter.bintray.com`）はサービスを終了しているため、指定しないでください。
+
 ```xml
 <repositories>
     <repository>
-        <id>central</id>
-        <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
-    <repository>
-        <id>jcenter</id>
-        <url>https://jcenter.bintray.com</url>
+        <id>example-repo</id>
+        <url>https://repo.example.com/maven2</url>
     </repository>
 </repositories>
 ```

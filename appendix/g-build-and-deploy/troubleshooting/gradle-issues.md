@@ -17,11 +17,11 @@ gradlew.bat build
 #### Wrapperの再生成
 
 ```bash
-# Gradle Wrapperの再生成
-gradle wrapper --gradle-version=8.0
+# Gradle Wrapperの再生成（版は2026-11時点の例）
+./gradlew wrapper --gradle-version=9.9.1
 
 # 特定のディストリビューションタイプを指定
-gradle wrapper --gradle-version=8.0 --distribution-type=all
+./gradlew wrapper --gradle-version=9.9.1 --distribution-type=all
 ```
 
 ### 2. 依存関係の競合解決
@@ -45,14 +45,14 @@ gradle wrapper --gradle-version=8.0 --distribution-type=all
 configurations.all {
     resolutionStrategy {
         // 特定バージョンを強制
-        force 'com.google.code.gson:gson:2.10.1'
+        force 'com.google.code.gson:gson:2.15.0'
         
-        // 競合時は最新バージョンを選択
+        // 版の競合があったらビルドを失敗させる
+        // （指定しない場合、Gradleは競合した版のうち最も新しいものを選ぶ）
         failOnVersionConflict()
-        
-        // 除外設定
-        exclude group: 'commons-logging', module: 'commons-logging'
     }
+    // 除外設定（推移的な依存から取り除く）
+    exclude group: 'commons-logging', module: 'commons-logging'
 }
 ```
 
@@ -70,11 +70,26 @@ org.gradle.caching=true
 
 #### ビルドキャッシュの活用
 
+ビルドキャッシュの設定は、`build.gradle`ではなく`settings.gradle`に書きます。
+`gradle.properties`の`org.gradle.caching=true`でも有効にできます。
+
 ```groovy
+// settings.gradle
 buildCache {
     local {
         enabled = true
-        removeUnusedEntriesAfterDays = 30
+    }
+}
+```
+
+古いキャッシュを消すまでの日数は、Gradle 9では`buildCache`では指定できません（以前の`removeUnusedEntriesAfterDays`はありません）。
+Gradleのユーザーホーム（`~/.gradle`）の初期化スクリプト`init.d/cache-settings.gradle`で指定します。
+
+```groovy
+// ~/.gradle/init.d/cache-settings.gradle
+beforeSettings { settings ->
+    settings.caches {
+        buildCache.setRemoveUnusedEntriesAfterDays(30)
     }
 }
 ```

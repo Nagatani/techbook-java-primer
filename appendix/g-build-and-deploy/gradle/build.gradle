@@ -1,3 +1,5 @@
+// 設定の抜粋です（ソースコードは含みません）。
+// そのままビルドして動かせるプロジェクトは sample-projects/gradle-project/ にあります。
 plugins {
     id 'java'
     id 'application'
@@ -6,13 +8,19 @@ plugins {
 group = 'com.example'
 version = '1.0.0'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'org.apache.commons:commons-lang3:3.18.0'
+    implementation 'com.google.code.gson:gson:2.15.0'
+    implementation 'org.apache.commons:commons-lang3:3.22.0'
 }
 
 application {
@@ -30,11 +38,14 @@ jar {
 }
 
 // Fat JARタスク
-task fatJar(type: Jar) {
+tasks.register('fatJar', Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.TodoApp'
     }
     archiveClassifier = 'all'
+    // 複数のライブラリに同じ名前のファイル（module-info.classやLICENSEなど）があるため、
+    // 重複は最初の1つだけを入れる（指定しないとGradle 9ではビルドが失敗する）
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }

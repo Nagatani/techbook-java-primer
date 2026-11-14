@@ -1,5 +1,11 @@
 #!/bin/bash
-# Linux向けjpackageスクリプト
+# Linux向けjpackageスクリプト（.deb）
+#
+# 必要なパッケージ（Debian/Ubuntu）: fakeroot dpkg-dev binutils
+# --linux-app-category は、debではcontrolファイルのSection になる。
+# Debianのセクション名（utils、misc、editors など）から選ぶ
+
+set -eu
 
 jpackage --type deb \
          --name "todomanager" \
@@ -12,5 +18,5 @@ jpackage --type deb \
          --linux-menu-group "Office" \
          --linux-shortcut \
          --linux-deb-maintainer "dev@mycompany.com" \
-         --linux-app-category "office" \
+         --linux-app-category "utils" \
          --dest ./output

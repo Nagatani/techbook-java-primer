@@ -14,7 +14,7 @@
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-shade-plugin</artifactId>
-    <version>3.5.1</version>
+    <version>3.6.2</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -50,7 +50,7 @@
 ```xml
 <plugin>
     <artifactId>maven-assembly-plugin</artifactId>
-    <version>3.6.0</version>
+    <version>3.8.0</version>
     <configuration>
         <archive>
             <manifest>
@@ -75,34 +75,54 @@
 
 ### 3. Gradleでの作成方法
 
+#### Jarタスクで作る
+
 ```groovy
-task fatJar(type: Jar) {
+tasks.register('fatJar', Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.Main'
     }
     archiveClassifier = 'all'
+    // ライブラリどうしで重なるファイル（module-info.classなど）は最初の1つだけを入れる
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
 }
+```
 
-// または shadowプラグインを使用
+#### Shadowプラグインで作る
+
+Shadowプラグインを使う場合は、`build.gradle`の先頭の`plugins`ブロックに書きます（`plugins`ブロックはほかの記述より前に置く必要があります）。
+Gradle 9では、旧来の`com.github.johnrengelman.shadow`は動きません。後継の`com.gradleup.shadow`を使います。
+`./gradlew shadowJar`で`build/libs/プロジェクト名-版-all.jar`ができます。
+
+```groovy
 plugins {
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+    id 'application'
+    id 'com.gradleup.shadow' version '9.6.1'
 }
 
-shadowJar {
-    manifest {
-        attributes 'Main-Class': 'com.example.Main'
-    }
+application {
+    mainClass = 'com.example.Main'
 }
 ```
 
+`application`プラグインの`mainClass`が、Fat JARのマニフェストの`Main-Class`になります。
+動かせる例は[sample-projects/gradle-project](../sample-projects/gradle-project/)にあります。
+
 ### 4. 手動での作成
 
+`lib/`に依存JAR、`target/classes/`にアプリケーションのクラス、`manifest.txt`にマニフェストがあるディレクトリで実行します。
+複数のJARに同じ名前のファイルがあると、後から展開したもので上書きされます。
+`META-INF/services/`の下のファイル（ServiceLoaderの登録）が重なる場合は、上書きされると動かなくなるため、ビルドツール（maven-shade-pluginの`ServicesResourceTransformer`など）で結合してください。
+
 ```bash
+# 途中で失敗したら止める
+set -eu
+
 # 作業ディレクトリを作成
 mkdir temp
 cd temp
@@ -148,9 +168,10 @@ rm -rf temp
 #### リソースファイルの重複
 
 ```groovy
-task fatJar(type: Jar) {
+tasks.named('fatJar', Jar) {
+    // 重複したファイルは最初の1つだけを入れる
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // または
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    // または、警告を出したうえで最初の1つだけを入れる
+    // duplicatesStrategy = DuplicatesStrategy.WARN
 }
 ```

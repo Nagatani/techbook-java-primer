@@ -20,14 +20,14 @@ jar tf myapp.jar | grep Main
 ```
 Manifest-Version: 1.0
 Main-Class: com.example.Main
-Class-Path: lib/gson-2.10.1.jar lib/commons-lang3-3.12.0.jar
+Class-Path: lib/gson-2.15.0.jar lib/commons-lang3-3.22.0.jar
 
 ```
 
 **重要**: 
-- 各行の末尾にスペースがないことを確認
-- ファイルの最後に空行が必要
-- Main-Classの後にはスペースが1つ必要
+- 各行の末尾にスペースがないことを確認する
+- ファイルの最後の行も改行で終える（改行のない最後の行は読み飛ばされる）
+- `Main-Class:`のコロンの後にはスペースが1つ必要
 
 ### 3. jarコマンドでの作成
 
@@ -47,7 +47,7 @@ jar uvfm myapp.jar manifest.txt
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-jar-plugin</artifactId>
-    <version>3.3.0</version>
+    <version>3.5.1</version>
     <configuration>
         <archive>
             <manifest>
@@ -66,15 +66,21 @@ jar uvfm myapp.jar manifest.txt
 
 #### Gradle
 
+`Class-Path`は`provider`で包み、JARを作るときに初めて依存ライブラリの一覧を求めるようにします（設定の段階で毎回依存を解決しないため）。
+`Class-Path`に書いた`lib/`の下には、依存ライブラリを別にコピーしておく必要があります。
+
 ```groovy
 jar {
+    def runtimeClasspath = configurations.runtimeClasspath
     manifest {
         attributes(
             'Main-Class': 'com.example.Main',
-            'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' '),
+            'Class-Path': provider { runtimeClasspath.files.collect { "lib/$it.name" }.join(' ') },
             'Implementation-Title': 'My Application',
             'Implementation-Version': version
         )
     }
 }
 ```
+
+依存ライブラリを`build/libs/lib`にコピーする例は[sample-projects/gradle-project/build.gradle](../sample-projects/gradle-project/build.gradle)の`copyLibs`タスクにあります。
