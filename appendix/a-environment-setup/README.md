@@ -474,8 +474,8 @@ $ cd java-practice         # java-practiceに移動する。
 
 ### プログラムの作成
 
-テキストエディタは何でもよいのですが、ファイル名「```HelloWorld.java```」として、ファイルを新規作成しましょう。
-本書では、macOSやLinuxに標準搭載されているテキストエディタnanoを使用する方法を書きます。
+テキストエディターは何でもよいのですが、ファイル名「```HelloWorld.java```」として、ファイルを新規作成しましょう。
+本書では、macOSやLinuxに標準搭載されているテキストエディターnanoを使用する方法を書きます。
 
 作業スペースを作成した続きで以下のコマンドを使用します。
 
@@ -724,12 +724,12 @@ Windows環境では、WSL2を使用することで、Linux環境と同様の開�
 WSL2を使用しない場合は、以下の手順で環境を構築します。
 
 1. **JDKの直接インストール**
-   - [Microsoft Build of OpenJDK](https://www.microsoft.com/openjdk)から、OpenJDK 25のWindows用インストーラ（.msi）をダウンロード
-   - インストーラを実行し、機能の選択で「Set JAVA_HOME variable」と「Add to PATH」を有効にする
+   - [Microsoft Build of OpenJDK](https://www.microsoft.com/openjdk)から、OpenJDK 25のWindows用インストーラー（.msi）をダウンロード
+   - インストーラーを実行し、機能の選択で「Set JAVA_HOME variable」と「Add to PATH」を有効にする
 
 2. **環境変数の確認**
-   - インストーラで環境変数を設定しなかった場合は、システムの詳細設定 → 環境変数で設定する
-   - JAVA_HOMEを設定: `C:\Program Files\Microsoft\`の下にある`jdk-25`で始まるフォルダ
+   - インストーラーで環境変数を設定しなかった場合は、システムの詳細設定 → 環境変数で設定する
+   - JAVA_HOMEを設定: `C:\Program Files\Microsoft\`の下にある`jdk-25`で始まるフォルダー
    - Pathに追加: `%JAVA_HOME%\bin`
    - 新しく開いたコマンドプロンプトで`java -version`を実行し、25で始まるバージョンが表示されることを確かめる
 
@@ -864,9 +864,9 @@ sdkman_proxy_password=mypass  # 認証が必要な場合
 
 ## Docker環境でのJava開発（オプション）
 
-コンテナ技術を使用した開発環境の構築方法を説明します。
+コンテナー技術を使用した開発環境の構築方法を説明します。
 
-ここでは、作業ディレクトリ（`HelloWorld.java`などを置くディレクトリ）をコンテナにマウントし、コンテナの中のJDK 25でコンパイル・実行します。
+ここでは、作業ディレクトリ（`HelloWorld.java`などを置くディレクトリ）をコンテナーにマウントし、コンテナーの中のJDK 25でコンパイル・実行します。
 作業ディレクトリに次の2つのファイルを置きます。
 イメージにはEclipse TemurinのJDK 25を使います（本書が指定するMicrosoft版と同じOpenJDK 25で、本書のコードはどちらでも動きます）。
 
@@ -885,7 +885,7 @@ RUN apt-get update && apt-get install -y \
 # 作業ディレクトリの設定（docker-compose.ymlでカレントディレクトリをここにマウントする）
 WORKDIR /app
 
-# コンテナを起動したときにbashを開く
+# コンテナーを起動したときにbashを開く
 CMD ["bash"]
 ```
 
@@ -905,17 +905,17 @@ services:
 ### 使用方法
 
 ```bash
-# イメージを作ってコンテナを起動
+# イメージを作ってコンテナーを起動
 docker compose up -d --build
 
-# コンテナ内でbashを実行
+# コンテナー内でbashを実行
 docker compose exec java-app bash
 
-# コンテナ内でJavaプログラムを実行（作業ディレクトリのファイルが/appに見える）
+# コンテナー内でJavaプログラムを実行（作業ディレクトリのファイルが/appに見える）
 javac HelloWorld.java
 java HelloWorld
 
-# コンテナのbashを抜けた後、コンテナを止めて削除
+# コンテナーのbashを抜けた後、コンテナーを止めて削除
 exit
 docker compose down
 ```

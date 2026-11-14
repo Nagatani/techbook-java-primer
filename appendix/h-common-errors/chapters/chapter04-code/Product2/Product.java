@@ -2,7 +2,7 @@ public class Product {
     private String name;
     
     public Product(String name) {
-        // コンストラクタでの検証
+        // コンストラクターでの検証
         if (name == null) {
             throw new IllegalArgumentException("商品名はnullにできません");
         }

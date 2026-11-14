@@ -116,7 +116,7 @@ public class MutationTestDemo {
     }
     
     /**
-     * バリデータクラス（ミューテーション対象）
+     * バリデータークラス（ミューテーション対象）
      */
     public static class UserValidator {
         
@@ -537,7 +537,7 @@ public class MutationTestDemo {
     }
     
     /**
-     * バリデータのミュータント
+     * バリデーターのミュータント
      */
     static List<Mutant<UserValidator>> validatorMutants() {
         return List.of(
@@ -602,7 +602,7 @@ public class MutationTestDemo {
     }
     
     /**
-     * バリデータのテストスイート
+     * バリデーターのテストスイート
      */
     public static class UserValidatorTests {
         

@@ -3,7 +3,7 @@ package chapter10.basic;
 /**
  * ジェネリックなBoxクラス
  * 
- * 任意の型のオブジェクトを格納できる汎用的なコンテナクラスです。
+ * 任意の型のオブジェクトを格納できる汎用的なコンテナークラスです。
  * 
  * @param <T> 格納するオブジェクトの型
  */
@@ -12,7 +12,7 @@ public class GenericBox<T> {
     private T content;
     
     /**
-     * デフォルトコンストラクタ
+     * デフォルトコンストラクター
      */
     public GenericBox() {
         // TODO: contentをnullで初期化
@@ -20,7 +20,7 @@ public class GenericBox<T> {
     }
     
     /**
-     * 初期値を指定するコンストラクタ
+     * 初期値を指定するコンストラクター
      * @param content 格納するオブジェクト
      */
     public GenericBox(T content) {

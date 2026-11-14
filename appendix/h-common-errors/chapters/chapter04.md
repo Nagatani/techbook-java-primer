@@ -11,16 +11,16 @@
 ### エラー例
 
 ```java
-// エラー例1：デフォルトコンストラクタが見つからない
+// エラー例1：デフォルトコンストラクターが見つからない
 public class User {
-    public User(String name) { }  // カスタムコンストラクタのみ
+    public User(String name) { }  // カスタムコンストラクターのみ
 }
-User user = new User();  // エラー：引数なしコンストラクタがない
+User user = new User();  // エラー：引数なしコンストラクターがない
 
 // エラー例2：戻り値型を指定
 public class User {
     private String name;
-    public void User() {  // コンストラクタではなく、Userという名前の普通のメソッドになる
+    public void User() {  // コンストラクターではなく、Userという名前の普通のメソッドになる
         this.name = "Unknown";
     }
 }
@@ -86,7 +86,7 @@ public class Product {
     private String name;
     
     public Product(String name) {
-        // コンストラクタでの検証
+        // コンストラクターでの検証
         if (name == null) {
             throw new IllegalArgumentException("商品名はnullにできません");
         }

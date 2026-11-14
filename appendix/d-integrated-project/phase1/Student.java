@@ -6,7 +6,7 @@ public class Student {
     private String department;
     private double gpa;
     
-    // コンストラクタ
+    // コンストラクター
     public Student(String studentId, String name, int age, String department) {
         this.studentId = studentId;
         this.name = name;

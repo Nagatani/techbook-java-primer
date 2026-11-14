@@ -16,7 +16,7 @@ public class GenericBox<T> {
     }
     
     /**
-     * 型消去により、実行時には型パラメータ情報が失われることを示すメソッド
+     * 型消去により、実行時には型パラメーター情報が失われることを示すメソッド
      */
     public void printTypeInfo() {
         IO.println("Runtime class: " + this.getClass().getName());
@@ -49,7 +49,7 @@ public class GenericBox<T> {
 }
 
 /**
- * 境界付き型パラメータの型消去を示すクラス
+ * 境界付き型パラメーターの型消去を示すクラス
  */
 class NumberBox<T extends Number> {
     private T value;

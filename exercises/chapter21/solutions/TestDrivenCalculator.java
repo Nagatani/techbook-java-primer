@@ -28,7 +28,7 @@ public class TestDrivenCalculator {
     private static final double EPSILON = 1e-10;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      */
     public TestDrivenCalculator() {
         this.currentValue = 0.0;

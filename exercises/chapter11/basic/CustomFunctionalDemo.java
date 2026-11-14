@@ -12,13 +12,13 @@ public class CustomFunctionalDemo {
     public static void demonstrateStringProcessor() {
         // TODO: ラムダ式を使用して各処理を実装
         
-        // 1. 大文字に変換するプロセッサ
+        // 1. 大文字に変換するプロセッサー
         StringProcessor toUpper = null;
         
-        // 2. 文字列を逆順にするプロセッサ
+        // 2. 文字列を逆順にするプロセッサー
         StringProcessor reverse = null;
         
-        // 3. プレフィックスを追加するプロセッサ
+        // 3. プレフィックスを追加するプロセッサー
         StringProcessor addPrefix = s -> "[PROCESSED] " + s;
         
         // テスト

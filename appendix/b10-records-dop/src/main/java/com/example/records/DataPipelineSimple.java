@@ -116,7 +116,7 @@ public class DataPipelineSimple {
             }
         }
         
-        // イベントプロセッサ
+        // イベントプロセッサー
         public static class EventProcessor {
             /**
              * イベントストリームからユーザースナップショットを構築

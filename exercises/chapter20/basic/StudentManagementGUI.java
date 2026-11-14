@@ -68,7 +68,7 @@ public class StudentManagementGUI extends JFrame {
     }
     
     public StudentManagementGUI() {
-        // ここにコンストラクタを実装してください
+        // ここにコンストラクターを実装してください
         // GUI初期化、イベントリスナー設定、初期データ読込
     }
     
@@ -135,7 +135,7 @@ public class StudentManagementGUI extends JFrame {
  * 1. MVCパターンの実装
  *    - Model: Student クラス、StudentTableModel
  *    - View: JTable、各種JButton、JTextField
- *    - Controller: イベントハンドラメソッド
+ *    - Controller: イベントハンドラーメソッド
  * 
  * 2. JTableの活用
  *    - AbstractTableModelを継承したカスタムモデル

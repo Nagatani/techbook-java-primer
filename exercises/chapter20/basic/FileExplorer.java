@@ -6,7 +6,7 @@
  * 要求仕様:
  * - ディレクトリ構造をJTreeで表示
  * - ファイル一覧をJTableで表示
- * - ファイル・フォルダの操作機能（コピー、移動、削除）
+ * - ファイル・フォルダーの操作機能（コピー、移動、削除）
  * - ファイルの検索機能
  * - ファイルプレビュー機能
  * 
@@ -130,7 +130,7 @@ public class FileExplorer extends JFrame {
             switch (columnIndex) {
                 case 0: return file.getName();
                 case 1: return file.getFormattedSize();
-                case 2: return file.isDirectory() ? "フォルダ" : getFileType(file.getName());
+                case 2: return file.isDirectory() ? "フォルダー" : getFileType(file.getName());
                 case 3: return file.getFormattedDate();
                 default: return "";
             }
@@ -208,7 +208,7 @@ public class FileExplorer extends JFrame {
     }
     
     public FileExplorer() {
-        // ここにコンストラクタを実装してください
+        // ここにコンストラクターを実装してください
         initializeComponents();
         setupLayout();
         setupEventListeners();

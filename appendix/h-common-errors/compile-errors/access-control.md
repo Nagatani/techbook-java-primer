@@ -195,20 +195,20 @@ public class Employee {
 }
 ```
 
-### 3. ファクトリーメソッドパターン
+### 3. ファクトリメソッドパターン
 
 ```java
 public class Product {
     private String name;
     private double price;
     
-    // コンストラクタをprivateに
+    // コンストラクターをprivateに
     private Product(String name, double price) {
         this.name = name;
         this.price = price;
     }
     
-    // ファクトリーメソッド
+    // ファクトリメソッド
     public static Product create(String name, double price) {
         if (price < 0) {
             throw new IllegalArgumentException("価格は0以上である必要があります");
@@ -252,7 +252,7 @@ class ServiceImpl implements Service {
     }
 }
 
-// ファクトリークラス
+// ファクトリクラス
 public class ServiceFactory {
     public static Service createService() {
         return new ServiceImpl();
@@ -394,7 +394,7 @@ public class CalculatorTest {
 }
 ```
 
-### 2. テスト専用アクセサ
+### 2. テスト専用アクセサー
 
 ```java
 import com.google.common.annotations.VisibleForTesting;

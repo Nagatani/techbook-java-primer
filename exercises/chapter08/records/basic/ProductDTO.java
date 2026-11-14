@@ -6,7 +6,7 @@
 // フィールド: Long id, String name, double price, String category
 public record ProductDTO(/* TODO: フィールドを定義 */) {
     
-    // TODO: コンパクトコンストラクタで入力検証を追加
+    // TODO: コンパクトコンストラクターで入力検証を追加
     // - priceは0以上
     // - nameとcategoryはnullまたは空文字列でない
     
@@ -37,7 +37,7 @@ public record ProductDTO(/* TODO: フィールドを定義 */) {
     }
     
     /**
-     * スタティックファクトリーメソッド: エンティティからDTOを作成
+     * スタティックファクトリメソッド: エンティティからDTOを作成
      */
     public static ProductDTO fromEntity(ProductEntity entity) {
         // TODO: ProductEntityからProductDTOを作成

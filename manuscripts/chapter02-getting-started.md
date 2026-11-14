@@ -581,7 +581,7 @@ Javaの入力処理は型安全性を重視しています。
 
 // C言語の入出力
 printf("Hello, %s!\n", name);
-scanf("%d", &age);  // バッファオーバーフローの危険性
+scanf("%d", &age);  // バッファーオーバーフローの危険性
 ```
 
 <span class="listing-number">**サンプルコード2-18**　IOExample.java</span>
@@ -1127,7 +1127,7 @@ Javaにおける文字列処理は、C言語のアプローチとは根本的に
 
 // C言語での文字列処理
 char str[100] = "Hello";
-strcat(str, " World");  // バッファオーバーフローの危険性
+strcat(str, " World");  // バッファーオーバーフローの危険性
 int len = strlen(str);  // 呼ぶたびに終端まで数える（長い文字列ほど時間がかかる）
 char *copy = malloc(len + 1);
 strcpy(copy, str);  // メモリリークの可能性

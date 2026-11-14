@@ -5,13 +5,13 @@
  * 
  * 要求仕様:
  * - インスタンス変数: width（double）, height（double）
- * - コンストラクタ: 正方形用、長方形用
+ * - コンストラクター: 正方形用、長方形用
  * - setSize()メソッドのオーバーロード（1つの値、2つの値）
  * - 面積・周囲計算メソッド
  * 
  * 評価ポイント:
  * - メソッドオーバーロードの実装
- * - 適切なコンストラクタの使い分け
+ * - 適切なコンストラクターの使い分け
  * - 計算メソッドの正確性
  */
 public class Rectangle {
@@ -19,12 +19,12 @@ public class Rectangle {
     // double width;
     // double height;
     
-    // TODO: 正方形用のコンストラクタを実装してください（一辺の長さのみ）
+    // TODO: 正方形用のコンストラクターを実装してください（一辺の長さのみ）
     // public Rectangle(double size) {
     //     this(size, size);
     // }
     
-    // TODO: 長方形用のコンストラクタを実装してください（幅と高さ）
+    // TODO: 長方形用のコンストラクターを実装してください（幅と高さ）
     // public Rectangle(double width, double height) {
     //     this.width = width;
     //     this.height = height;

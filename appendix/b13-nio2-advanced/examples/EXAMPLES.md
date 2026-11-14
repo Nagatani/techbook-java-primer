@@ -22,7 +22,7 @@ public class LogMonitoringSystem {
         // 部分的な書き込みの処理を避けるためにデバウンスを設定
         watcher.setDebounceDelay(Duration.ofMillis(500));
         
-        // ログファイル用のプロセッサを登録
+        // ログファイル用のプロセッサーを登録
         watcher.registerProcessor("*.log", new LogProcessor());
     }
     
@@ -184,7 +184,7 @@ public class DataStreamingPlatform {
     public void streamDataFile(Path dataFile, List<DataConsumer> consumers) {
         ReactiveFileReader reader = new ReactiveFileReader(dataFile, 64 * 1024);
         
-        // マルチキャストプロセッサを作成
+        // マルチキャストプロセッサーを作成
         MulticastProcessor processor = new MulticastProcessor();
         
         // 異なる速度のコンシューマーを購読

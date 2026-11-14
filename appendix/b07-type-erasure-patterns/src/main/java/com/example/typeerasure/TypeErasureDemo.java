@@ -87,7 +87,7 @@ public class TypeErasureDemo {
         java.util.List rawList = names; // 後方互換性のためにraw型へ代入できる
         
         @SuppressWarnings("unchecked")
-        boolean added = rawList.add(42); // コンパイラは止められない（unchecked警告のみ）
+        boolean added = rawList.add(42); // コンパイラーは止められない（unchecked警告のみ）
         IO.println("Added Integer through raw type: " + added + ", size: " + names.size());
         
         try {

@@ -1,8 +1,8 @@
 /**
  * 第18章 基本課題1: キーボードショートカット - 解答例
  * 
- * キーボードショートカット機能を持つシンプルなテキストエディタの完全実装。
- * プロフェッショナルなテキストエディタの基本機能を提供します。
+ * キーボードショートカット機能を持つシンプルなテキストエディターの完全実装。
+ * プロフェッショナルなテキストエディターの基本機能を提供します。
  */
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class KeyboardShortcuts extends JFrame {
     private static final int MAX_RECENT_FILES = 5;
     
     public KeyboardShortcuts() {
-        setTitle("テキストエディタ - 新規文書");
+        setTitle("テキストエディター - 新規文書");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
@@ -530,7 +530,7 @@ public class KeyboardShortcuts extends JFrame {
      * タイトルを更新します
      */
     private void updateTitle() {
-        String title = "テキストエディタ - ";
+        String title = "テキストエディター - ";
         if (currentFile != null) {
             title += currentFile.getName();
         } else {

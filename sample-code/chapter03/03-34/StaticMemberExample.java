@@ -6,10 +6,10 @@ class Tool {
     // クラスメンバー（Toolクラス全体で共有される）
     static int toolCount = 0;
 
-    // コンストラクタ
+    // コンストラクター
     public Tool(String name) {
         this.name = name;
-        toolCount++; // インスタンスが作られるたびに、共有カウンタを増やす
+        toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす
         IO.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
     }
 

@@ -442,7 +442,7 @@ import java.util.ArrayList;
 public class VarLimitations {
     // var field = new ArrayList<String>(); // フィールドでは使用不可
     
-    // public void method(var param) { } // パラメータでは使用不可
+    // public void method(var param) { } // パラメーターでは使用不可
     
     // public var method() { return ""; } // 戻り値型では使用不可
     

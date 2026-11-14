@@ -48,7 +48,7 @@ List<String> list = new HashMap<String, Integer>();
 ### パターン3：ジェネリクスの型不一致
 
 ```java
-// エラー例1：ジェネリック型パラメータの不一致
+// エラー例1：ジェネリック型パラメーターの不一致
 List<String> strings = new ArrayList<Integer>();  // エラー
 
 // エラー例2：ワイルドカードの誤用
@@ -112,7 +112,7 @@ Set<String> uniqueValues = new HashSet<>();  // 重複を許さない場合
 ### 3. ジェネリクスの正しい使用
 
 ```java
-// 型パラメータを一致させる
+// 型パラメーターを一致させる
 List<String> strings = new ArrayList<String>();
 // または型推論を使用（Java 7以降）
 List<String> strings2 = new ArrayList<>();

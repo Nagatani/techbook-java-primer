@@ -23,7 +23,7 @@ public class EchoServer {
     private volatile boolean running;
     
     /**
-     * EchoServerのコンストラクタ
+     * EchoServerのコンストラクター
      * 
      * @param port サーバーがリッスンするポート番号
      */

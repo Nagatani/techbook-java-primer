@@ -109,7 +109,7 @@ public class ReflectionTypeInfo {
                     analyzeParameterizedType((ParameterizedType) returnType, 1);
                 }
                 
-                // パラメータの型
+                // パラメーターの型
                 Type[] paramTypes = method.getGenericParameterTypes();
                 IO.println("  Parameter types (" + paramTypes.length + "):");
                 for (int i = 0; i < paramTypes.length; i++) {
@@ -119,7 +119,7 @@ public class ReflectionTypeInfo {
                     }
                 }
                 
-                // 型パラメータ
+                // 型パラメーター
                 TypeVariable<Method>[] typeParams = method.getTypeParameters();
                 if (typeParams.length > 0) {
                     IO.println("  Type parameters:");

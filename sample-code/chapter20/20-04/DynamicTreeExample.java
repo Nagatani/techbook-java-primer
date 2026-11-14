@@ -14,7 +14,7 @@ public class DynamicTreeExample extends JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("ファイルシステム");
         treeModel = new DefaultTreeModel(root);
         
-        // 初期フォルダの追加
+        // 初期フォルダーの追加
         DefaultMutableTreeNode documents = new DefaultMutableTreeNode("Documents");
         DefaultMutableTreeNode downloads = new DefaultMutableTreeNode("Downloads");
         DefaultMutableTreeNode desktop = new DefaultMutableTreeNode("Desktop");
@@ -31,7 +31,7 @@ public class DynamicTreeExample extends JFrame {
         
         // ポップアップメニューの作成
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem addFolder = new JMenuItem("フォルダを追加");
+        JMenuItem addFolder = new JMenuItem("フォルダーを追加");
         JMenuItem addFile = new JMenuItem("ファイルを追加");
         JMenuItem delete = new JMenuItem("削除");
         JMenuItem rename = new JMenuItem("名前変更");
@@ -43,7 +43,7 @@ public class DynamicTreeExample extends JFrame {
         popup.add(delete);
         
         // ポップアップメニューのアクション
-        addFolder.addActionListener(e -> addNode("新しいフォルダ", true));
+        addFolder.addActionListener(e -> addNode("新しいフォルダー", true));
         addFile.addActionListener(e -> addNode("新しいファイル.txt", false));
         delete.addActionListener(e -> deleteNode());
         rename.addActionListener(e -> renameNode());

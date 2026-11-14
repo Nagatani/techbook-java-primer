@@ -14,7 +14,7 @@ public class Animal {
     // protected String name;
     // protected int age;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public Animal(String name, int age) {
     //     this.name = name;
     //     this.age = age;

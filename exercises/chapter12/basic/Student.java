@@ -8,9 +8,9 @@ public class Student {
     private double gpa;
     private String department;
     
-    // TODO: コンストラクタを実装
+    // TODO: コンストラクターを実装
     public Student(String name, int age, double gpa, String department) {
-        // コンストラクタの実装
+        // コンストラクターの実装
     }
     
     // TODO: ゲッターメソッドを実装

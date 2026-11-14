@@ -221,7 +221,7 @@ String str = container.get(String.class);  // キャスト不要
 Integer num = container.get(Integer.class);  // キャスト不要
 ```
 
-### 3. ファクトリーメソッドパターン
+### 3. ファクトリメソッドパターン
 
 ```java
 public abstract class AnimalFactory {

@@ -14,7 +14,7 @@ public class StudentManager {
     private Map<String, Student> studentMap;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      */
     public StudentManager() {
         // TODO: studentListとstudentMapを初期化してください

@@ -21,7 +21,7 @@ public class Game {
     // private int score;
     // private boolean isGameOver;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public Game(String playerName) {
     //     this.playerName = playerName;
     //     this.level = 1;

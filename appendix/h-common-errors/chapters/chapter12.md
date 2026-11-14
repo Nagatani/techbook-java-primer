@@ -34,7 +34,7 @@ words.stream()
 List<String> words = Arrays.asList("apple", "banana", "avocado", "cherry");
 words.stream()
     .filter(word -> word.length() > 5)
-    .filter(word -> word.startsWith("a"))  // 大文字変換前にフィルタ
+    .filter(word -> word.startsWith("a"))  // 大文字変換前にフィルター
     .map(String::toUpperCase)
     .forEach(IO::println);
 ```
@@ -258,7 +258,7 @@ error: unreported exception IOException; must be caught or declared to be thrown
 // ○ Stream内での確実な例外処理
 List<String> files = Arrays.asList("file1.txt", "file2.txt", "nonexistent.txt");
 
-// 方法1: 例外を無視してフィルタ
+// 方法1: 例外を無視してフィルター
 List<String> contents = files.stream()
     .map(file -> {
         try {

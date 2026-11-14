@@ -7,7 +7,7 @@
 ## 発生原因
 
 1. **拡張for文中の構造変更**: 反復処理中の要素削除・追加
-2. **複数イテレータの同時使用**: 同じコレクションに対する複数のイテレータ
+2. **複数イテレーターの同時使用**: 同じコレクションに対する複数のイテレーター
 3. **マルチスレッド環境**: 同期化されていないコレクションへの並行アクセス
 4. **ネストした反復処理**: 内側のループで外側のコレクションを変更
 
@@ -57,7 +57,7 @@ for (List<String> group : groups) {
 }
 ```
 
-### パターン4：複数イテレータ
+### パターン4：複数イテレーター
 
 ```java
 List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
@@ -71,7 +71,7 @@ iter2.next();    // ConcurrentModificationException（iter2は変更を検知）
 
 ## 解決策
 
-### 1. イテレータのremove()メソッド
+### 1. イテレーターのremove()メソッド
 
 ```java
 List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
@@ -80,7 +80,7 @@ Iterator<String> iter = list.iterator();
 while (iter.hasNext()) {
     String item = iter.next();
     if (item.equals("B")) {
-        iter.remove();  // イテレータ経由で安全に削除
+        iter.remove();  // イテレーター経由で安全に削除
     }
 }
 ```
@@ -212,7 +212,7 @@ List<String> filtered = immutableList.stream()
 
 ## デバッグのコツ
 
-### 1. fail-fastイテレータの理解
+### 1. fail-fastイテレーターの理解
 
 ```java
 public void demonstrateFailFast() {
@@ -306,7 +306,7 @@ synchronized (list) {
 
 ## ベストプラクティス
 
-1. **適切なメソッドの選択**: removeIf()やイテレータのremove()を優先
+1. **適切なメソッドの選択**: removeIf()やイテレーターのremove()を優先
 2. **イミュータブルの活用**: 可能な限り不変コレクションを使用
 3. **並行コレクションの使用**: マルチスレッド環境では専用クラスを使用
 4. **防御的コピー**: 反復処理前にコレクションのコピーを作成

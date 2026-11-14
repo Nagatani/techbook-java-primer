@@ -19,7 +19,7 @@ public class RecordsAndDOPSimple {
      * シンプルなUserレコード
      */
     public record User(String id, String name, String email, LocalDateTime createdAt) {
-        // コンパクトコンストラクタで検証
+        // コンパクトコンストラクターで検証
         public User {
             Objects.requireNonNull(id, "id cannot be null");
             Objects.requireNonNull(name, "name cannot be null");
@@ -243,7 +243,7 @@ public class RecordsAndDOPSimple {
     public record ValidatedEmail(String value) {
         private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$";
         
-        // コンパクトコンストラクタで検証と正規化
+        // コンパクトコンストラクターで検証と正規化
         public ValidatedEmail {
             if (value == null || !value.matches(EMAIL_REGEX)) {
                 throw new IllegalArgumentException("Invalid email: " + value);
@@ -482,7 +482,7 @@ public class RecordsAndDOPSimple {
         IO.println("Display name: " + user.displayName());
         IO.println("Is new user: " + user.isNewUser());
         
-        // アクセサメソッド
+        // アクセサーメソッド
         IO.println("ID: " + user.id());
         IO.println("Name: " + user.name());
         

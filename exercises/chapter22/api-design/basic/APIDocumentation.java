@@ -6,7 +6,7 @@
  * 
  * 要求仕様:
  * - すべてのpublicメソッドにJavadocコメントを記述
- * - パラメータ、戻り値、例外の詳細説明
+ * - パラメーター、戻り値、例外の詳細説明
  * - 使用例（@code タグ）の提供
  * - バージョン情報とライセンス情報
  * - パッケージレベルのドキュメント
@@ -69,8 +69,8 @@ public class APIDocumentation {
      * 
      * 指数計算を行います。
      * 
-     * @param base TODO: パラメータの説明
-     * @param exponent TODO: パラメータの説明  
+     * @param base TODO: パラメーターの説明
+     * @param exponent TODO: パラメーターの説明  
      * @return TODO: 戻り値の説明
      * @throws TODO: 例外の説明
      */
@@ -157,7 +157,7 @@ public class APIDocumentation {
  * 
  * 1. 必須要素
  *    - メソッドの目的と動作の説明
- *    - @param 各パラメータの説明
+ *    - @param 各パラメーターの説明
  *    - @return 戻り値の説明（voidメソッド以外）
  *    - @throws 発生する可能性のある例外
  * 

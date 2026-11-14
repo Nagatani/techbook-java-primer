@@ -15,7 +15,7 @@ java StudentTest
 ## 学習ポイント
 
 - カプセル化（privateフィールドとpublicメソッド）
-- コンストラクタによる初期化
+- コンストラクターによる初期化
 - getter/setterメソッドでのデータ検証
 - toString()メソッドのオーバーライド
 

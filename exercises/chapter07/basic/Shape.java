@@ -11,7 +11,7 @@ public abstract class Shape {
     protected String name;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param name 図形の名前
      */
     public Shape(String name) {

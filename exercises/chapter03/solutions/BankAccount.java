@@ -7,17 +7,17 @@ public class BankAccount {
     double balance;
     String ownerName;
     
-    // 口座番号のみを設定するコンストラクタ
+    // 口座番号のみを設定するコンストラクター
     public BankAccount(String accountNumber) {
         this(accountNumber, 0.0, "未設定");
     }
     
-    // 口座番号と名前を設定するコンストラクタ
+    // 口座番号と名前を設定するコンストラクター
     public BankAccount(String accountNumber, String ownerName) {
         this(accountNumber, 0.0, ownerName);
     }
     
-    // 全ての項目を設定するコンストラクタ
+    // 全ての項目を設定するコンストラクター
     public BankAccount(String accountNumber, double balance, String ownerName) {
         this.accountNumber = accountNumber;
         this.balance = balance;

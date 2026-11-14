@@ -117,7 +117,7 @@ public class BankAccount {
 }
 ```
 
-## IDEデバッガの活用
+## IDEデバッガーの活用
 
 ### 1. ブレークポイントの種類
 
@@ -163,7 +163,7 @@ public class ComplexObject {
     private Map<String, List<Integer>> data = new HashMap<>();
     
     public void analyze() {
-        // デバッガで以下の式を評価
+        // デバッガーで以下の式を評価
         // data.size()
         // data.keySet()
         // data.values().stream().mapToInt(List::size).sum()

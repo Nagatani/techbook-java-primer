@@ -19,7 +19,7 @@ public class Course {
     private double grade;
     
     /**
-     * デフォルトコンストラクタ（Gsonでのデシリアライゼーション用）
+     * デフォルトコンストラクター（Gsonでのデシリアライゼーション用）
      */
     public Course() {
     }

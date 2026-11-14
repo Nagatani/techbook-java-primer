@@ -773,7 +773,7 @@ public class Rectangle {
     private double width;
     private double height;
     
-    // コンストラクタ（特別なメソッド）
+    // コンストラクター（特別なメソッド）
     public Rectangle(double width, double height) {
         this.width = width;
         this.height = height;
@@ -1009,13 +1009,13 @@ public class Book {
 // BookTest.java
 public class BookTest {
     public static void main(String[] args) {
-        // 引数ありコンストラクタで作成
+        // 引数ありコンストラクターで作成
         Book book1 = new Book("Java入門", "田中太郎", 300);
         book1.displayInfo();
         
         IO.println("---");
         
-        // デフォルトコンストラクタで作成
+        // デフォルトコンストラクターで作成
         Book book2 = new Book();
         book2.displayInfo();
     }
@@ -1348,7 +1348,7 @@ public class Student {
     private int age;
     private double gpa;
     
-    // publicコンストラクタ - 外部からオブジェクト作成可能
+    // publicコンストラクター - 外部からオブジェクト作成可能
     public Student(String name, int age, double gpa) {
         this.name = name;
         this.age = age;
@@ -1513,10 +1513,10 @@ class Tool {
     // クラスメンバー（Toolクラス全体で共有される）
     static int toolCount = 0;
 
-    // コンストラクタ
+    // コンストラクター
     public Tool(String name) {
         this.name = name;
-        toolCount++; // インスタンスが作られるたびに、共有カウンタを増やす
+        toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす
         IO.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
     }
 

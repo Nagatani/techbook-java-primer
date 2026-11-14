@@ -209,7 +209,7 @@ new Object()                      // new + invokespecial <init>
 ```
 Level 0: Interpreter                    (解釈実行)
 Level 1: C1 with full optimization     (軽量最適化)
-Level 2: C1 with invocation counters   (カウンタ付き)
+Level 2: C1 with invocation counters   (カウンター付き)
 Level 3: C1 with full profiling        (完全プロファイリング)
 Level 4: C2 (Server compiler)          (重最適化)
 ```

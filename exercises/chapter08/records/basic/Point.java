@@ -6,7 +6,7 @@
 // フィールド: double x, double y
 public record Point(/* TODO: フィールドを定義 */) {
     
-    // TODO: コンパクトコンストラクタで入力検証を追加
+    // TODO: コンパクトコンストラクターで入力検証を追加
     // ヒント: xとyは有限の値であることを確認
     
     /**
@@ -34,7 +34,7 @@ public record Point(/* TODO: フィールドを定義 */) {
     }
     
     /**
-     * スタティックファクトリーメソッド: 原点を返す
+     * スタティックファクトリメソッド: 原点を返す
      */
     public static Point origin() {
         // TODO: (0, 0)のPointを返す

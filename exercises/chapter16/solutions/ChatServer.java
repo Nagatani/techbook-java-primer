@@ -26,7 +26,7 @@ public class ChatServer {
     private volatile boolean running;
     
     /**
-     * ChatServerのコンストラクタ
+     * ChatServerのコンストラクター
      * 
      * @param port サーバーがリッスンするポート番号
      */

@@ -16,7 +16,7 @@ public class Employee implements Payable {
     private double bonusRate;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param name 従業員の名前
      * @param employeeId 従業員ID
      * @param baseSalary 基本給

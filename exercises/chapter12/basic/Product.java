@@ -8,9 +8,9 @@ public class Product {
     private double price;
     private int quantity;
     
-    // TODO: コンストラクタを実装
+    // TODO: コンストラクターを実装
     public Product(String name, String category, double price, int quantity) {
-        // コンストラクタの実装
+        // コンストラクターの実装
     }
     
     // TODO: ゲッターメソッドを実装

@@ -1,16 +1,16 @@
 /**
  * 第3章 基本課題6: BankAccountクラスの設計
  * 
- * 課題: 銀行口座を表すBankAccountクラスを作成し、コンストラクタとthisキーワードを活用してください。
+ * 課題: 銀行口座を表すBankAccountクラスを作成し、コンストラクターとthisキーワードを活用してください。
  * 
  * 要求仕様:
  * - インスタンス変数: accountNumber（String）, balance（double）, ownerName（String）
- * - 複数のコンストラクタ（口座番号のみ、口座番号+名前、全項目）
+ * - 複数のコンストラクター（口座番号のみ、口座番号+名前、全項目）
  * - 入金・出金メソッドのオーバーロード
  * - thisキーワードを使った適切な実装
  * 
  * 評価ポイント:
- * - コンストラクタチェーンの実装
+ * - コンストラクターチェーンの実装
  * - thisキーワードの適切な使用
  * - 状態変更メソッドの設計
  */
@@ -20,17 +20,17 @@ public class BankAccount {
     // double balance;
     // String ownerName;
     
-    // TODO: 口座番号のみを設定するコンストラクタを実装してください
+    // TODO: 口座番号のみを設定するコンストラクターを実装してください
     // public BankAccount(String accountNumber) {
     //     this(accountNumber, 0.0, "未設定");
     // }
     
-    // TODO: 口座番号と名前を設定するコンストラクタを実装してください
+    // TODO: 口座番号と名前を設定するコンストラクターを実装してください
     // public BankAccount(String accountNumber, String ownerName) {
     //     this(accountNumber, 0.0, ownerName);
     // }
     
-    // TODO: 全ての項目を設定するコンストラクタを実装してください
+    // TODO: 全ての項目を設定するコンストラクターを実装してください
     // public BankAccount(String accountNumber, double balance, String ownerName) {
     //     this.accountNumber = accountNumber;
     //     this.balance = balance;

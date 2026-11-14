@@ -95,7 +95,7 @@ public class Transaction {
     private String description;
     private boolean isIncome;
     
-    // コンストラクタ、getter、setter
+    // コンストラクター、getter、setter
     // equals、hashCode、toString
 }
 ```

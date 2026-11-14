@@ -201,7 +201,7 @@ public class PersistentDataStructuresDemo {
             return false;
         }
         
-        // イテレータ実装
+        // イテレーター実装
         public Stream<T> stream() {
             return StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(

@@ -19,7 +19,7 @@ public class JacksonExample {
         
         private Map<String, String> attributes;
         
-        // コンストラクタ、ゲッター、セッター
+        // コンストラクター、ゲッター、セッター
         public Product() {}
         
         public Product(int id, String name, double price) {

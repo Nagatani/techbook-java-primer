@@ -13,7 +13,7 @@
 1. **コア機能**
    - JSONの解析（文字列→Javaオブジェクト）
    - JSONの生成（Javaオブジェクト→文字列）
-   - 型安全なアクセサ（`getString`、`getInt`など。型が違うときは`JsonException`を投げる）
+   - 型安全なアクセサー（`getString`、`getInt`など。型が違うときは`JsonException`を投げる）
    - 外部ライブラリには頼らず、Javaの標準APIだけで作る（第22章のGsonやJacksonが何をしているかを、自分で作って確かめる課題です）
 
 2. **プロジェクト構成**

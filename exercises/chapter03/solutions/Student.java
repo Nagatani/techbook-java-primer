@@ -7,17 +7,17 @@ public class Student {
     int age;
     String studentId;
     
-    // デフォルトコンストラクタ
+    // デフォルトコンストラクター
     public Student() {
         this("未設定", 0, "未設定");
     }
     
-    // 名前のみを設定するコンストラクタ
+    // 名前のみを設定するコンストラクター
     public Student(String name) {
         this(name, 0, "未設定");
     }
     
-    // 全ての項目を設定するコンストラクタ
+    // 全ての項目を設定するコンストラクター
     public Student(String name, int age, String studentId) {
         this.name = name;
         this.age = age;

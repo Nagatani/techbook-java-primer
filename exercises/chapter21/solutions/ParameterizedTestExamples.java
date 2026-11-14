@@ -1,7 +1,7 @@
 /**
- * 第21章 課題3: パラメータ化テスト - 解答例
+ * 第21章 課題3: パラメーター化テスト - 解答例
  * 
- * JUnit 5のパラメータ化テスト機能を使用した効率的なテスト実装
+ * JUnit 5のパラメーター化テスト機能を使用した効率的なテスト実装
  * 
  * 学習ポイント:
  * - @ParameterizedTest の基本的な使用法
@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 /**
- * パラメータ化テストのデモンストレーション用クラス群
+ * パラメーター化テストのデモンストレーション用クラス群
  */
 public class ParameterizedTestExamples {
     
@@ -227,12 +227,12 @@ public class ParameterizedTestExamples {
 }
 
 /**
- * パラメータ化テストクラス
+ * パラメーター化テストクラス
  */
-@DisplayName("パラメータ化テストの実践")
+@DisplayName("パラメーター化テストの実践")
 class ParameterizedTestExample {
     
-    // === @ValueSource を使用した基本的なパラメータ化テスト ===
+    // === @ValueSource を使用した基本的なパラメーター化テスト ===
     
     @ParameterizedTest
     @ValueSource(strings = {"racecar", "A man a plan a canal Panama", "race a car", "hello"})
@@ -561,7 +561,7 @@ class ParameterizedTestExample {
 }
 
 /*
- * パラメータ化テストの実装ポイント:
+ * パラメーター化テストの実装ポイント:
  * 
  * 1. データソースの種類と使い分け
  *    - @ValueSource: 単一値の配列

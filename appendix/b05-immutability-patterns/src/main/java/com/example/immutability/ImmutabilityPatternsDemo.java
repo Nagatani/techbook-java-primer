@@ -22,7 +22,7 @@ public class ImmutabilityPatternsDemo {
         private final List<String> nicknames;
         private final Map<String, String> attributes;
         
-        // コンストラクタでのディープコピー
+        // コンストラクターでのディープコピー
         public ImmutablePerson(String name, LocalDate birthDate, 
                               List<String> nicknames, Map<String, String> attributes) {
             this.name = Objects.requireNonNull(name, "name cannot be null");

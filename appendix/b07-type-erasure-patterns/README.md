@@ -18,16 +18,16 @@ Javaジェネリクスの最も重要かつ複雑な側面である型消去（T
 
 - **フレームワーク開発での課題**: Jackson、Spring、Hibernateなどでの型解決問題
 - **raw型を通した誤った代入**: コンパイル時には見逃され、要素を取り出すときにClassCastExceptionになる（`TypeErasureDemo`の6で確かめられる）
-- **API設計の制約**: 型パラメータの表現力不足
+- **API設計の制約**: 型パラメーターの表現力不足
 
 ## サンプルコード構成
 
 ### 1. 基本的な型消去の動作
-- `GenericBox.java`: 型消去のプロセスと境界付き型パラメータ
+- `GenericBox.java`: 型消去のプロセスと境界付き型パラメーター
 - `GenericService.java`: 実行時型情報の喪失による制限
 
 ### 2. ブリッジメソッドの仕組み
-- `BridgeMethodExample.java`: コンパイラが生成するブリッジメソッドの実例
+- `BridgeMethodExample.java`: コンパイラーが生成するブリッジメソッドの実例
   - `Comparable`の実装で生成される`compareTo(Object)`
   - 戻り値の型が型引数で変わる場合（`StringProcessor`の`Object process(String)`）
 - リフレクションによるブリッジメソッドの確認
@@ -64,12 +64,12 @@ java com.example.typeerasure.BridgeMethodExample
 
 ### 1. 型消去の基本メカニズム
 - コンパイル時とランタイムでの型情報の違い
-- 境界付き型パラメータの消去ルール
+- 境界付き型パラメーターの消去ルール
 - Raw型との互換性
 
 ### 2. ブリッジメソッドの理解
 - なぜブリッジメソッドが必要なのか
-- コンパイラが自動生成するメソッド
+- コンパイラーが自動生成するメソッド
 - リフレクションでの確認方法
 
 ### 3. 実践的な回避策

@@ -8,7 +8,7 @@ import java.util.List;
 // フィールド: String name, String email, Address address, List<String> phoneNumbers
 public record Customer(/* TODO: フィールドを定義 */) {
     
-    // TODO: コンパクトコンストラクタで入力検証を追加
+    // TODO: コンパクトコンストラクターで入力検証を追加
     // - phoneNumbersは不変のリストに変換
     // - 電話番号は少なくとも1つ必要
     
@@ -29,7 +29,7 @@ public record Customer(/* TODO: フィールドを定義 */) {
     }
     
     /**
-     * スタティックファクトリーメソッド: ビルダーパターン
+     * スタティックファクトリメソッド: ビルダーパターン
      */
     public static CustomerBuilder builder() {
         return new CustomerBuilder();

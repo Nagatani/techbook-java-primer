@@ -4,7 +4,7 @@ package chapter10.basic;
  * 数値型に制限されたジェネリックなBoxクラス
  * 
  * Number型とそのサブクラスのみを格納できるBoxです。
- * 境界付き型パラメータの使用例です。
+ * 境界付き型パラメーターの使用例です。
  * 
  * @param <T> Number型またはそのサブクラス
  */
@@ -13,7 +13,7 @@ public class NumberBox<T extends Number> {
     private T number;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param number 格納する数値
      */
     public NumberBox(T number) {

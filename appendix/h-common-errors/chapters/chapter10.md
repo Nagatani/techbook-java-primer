@@ -68,7 +68,7 @@ error: unexpected type
 ```java
 import java.util.function.Supplier;
 
-// ○ ファクトリーメソッドを使用
+// ○ ファクトリメソッドを使用
 public class Container<T> {
     private T value;
     private Supplier<T> factory;
@@ -280,7 +280,7 @@ public class Printer {
 境界型パラメーターで算術演算を直接実行しようとした例です。
 
 ```java
-// × 境界型パラメータの誤用
+// × 境界型パラメーターの誤用
 public class NumberContainer<T extends Number> {
     private T value;
     
@@ -307,7 +307,7 @@ error: bad operand types for binary operator '*'
 コンパイルできる全文：[chapter10-code/NumberContainer/](chapter10-code/NumberContainer/)
 
 ```java
-// ○ 適切な境界型パラメータ
+// ○ 適切な境界型パラメーター
 public class NumberContainer<T extends Number> {
     private final T value;
     
@@ -347,7 +347,7 @@ var型推論の正しい使用方法です。
 
 ```java
 // ○ 適切なvar使用例
-var list = new ArrayList<String>(); // 型パラメータを明示
+var list = new ArrayList<String>(); // 型パラメーターを明示
 String value = null; // 明示的な型宣言
 ```
 

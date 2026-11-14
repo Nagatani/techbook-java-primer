@@ -16,7 +16,7 @@ public class Invoice implements Payable {
     private double pricePerItem;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param invoiceNumber 請求書番号
      * @param productDescription 商品説明
      * @param quantity 数量

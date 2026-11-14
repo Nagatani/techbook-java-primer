@@ -39,7 +39,7 @@ public class MessageApp extends JFrame {
     }
     
     /**
-     * コンストラクタ
+     * コンストラクター
      */
     public MessageApp() {
         super();

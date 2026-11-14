@@ -21,7 +21,7 @@ public class Student {
     private List<Course> courses;
     
     /**
-     * デフォルトコンストラクタ（Gsonでのデシリアライゼーション用）
+     * デフォルトコンストラクター（Gsonでのデシリアライゼーション用）
      */
     public Student() {
         this.courses = new ArrayList<>();

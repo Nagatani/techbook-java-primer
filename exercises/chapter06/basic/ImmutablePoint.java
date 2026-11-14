@@ -7,7 +7,7 @@ import java.util.Objects;
  * 
  * 要求仕様:
  * - finalフィールド: x（double）, y（double）
- * - コンストラクタでの初期化のみ
+ * - コンストラクターでの初期化のみ
  * - getterメソッドのみ提供（setterなし）
  * - 座標間の距離計算メソッド
  * - 新しい座標を返すメソッド（移動、回転など）
@@ -22,7 +22,7 @@ public final class ImmutablePoint {
     // private final double x;
     // private final double y;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public ImmutablePoint(double x, double y) {
     //     this.x = x;
     //     this.y = y;

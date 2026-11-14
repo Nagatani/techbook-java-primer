@@ -21,7 +21,7 @@ javac -d out *.java
 | [22-6](./22-06/) | JacksonExample.java | `java -cp out JacksonExample`<br>外部ライブラリ: com.fasterxml.jackson.core:jackson-databind:2.23.0, com.fasterxml.jackson.core:jackson-core:2.23.0, com.fasterxml.jackson.core:jackson-annotations:2.23 |
 | [22-8](./22-08/) | CommonsLangExample.java | `java -cp out CommonsLangExample`<br>外部ライブラリ: org.apache.commons:commons-lang3:3.22.0 |
 | [22-10](./22-10/) | CommonsIOExample.java | `java -cp out CommonsIOExample`<br>外部ライブラリ: commons-io:commons-io:2.22.0 |
-| [22-12](./22-12/) | OkHttpExample.java | `java -cp out OkHttpExample`<br>外部ライブラリ: com.squareup.okhttp3:okhttp:4.12.0, com.squareup.okio:okio-jvm:3.6.0, org.jetbrains.kotlin:kotlin-stdlib:1.8.21 |
+| [22-12](./22-12/) | OkHttpExample.java | `java -cp out OkHttpExample`<br>外部ライブラリ: com.squareup.okhttp3:okhttp-jvm:5.5.1, com.squareup.okio:okio-jvm:3.18.1, org.jetbrains.kotlin:kotlin-stdlib:2.1.21 |
 | [22-14](./22-14/) | LombokExample.java<br>User.java | `java -cp out LombokExample`<br>外部ライブラリ: org.projectlombok:lombok:1.18.48 |
 | [22-15](./22-15/) | Product.java<br>ProductExample.java | `java -cp out ProductExample`<br>外部ライブラリ: org.projectlombok:lombok:1.18.48 |
 | [22-17](./22-17/) | GuavaExample.java | `java -cp out GuavaExample`<br>外部ライブラリ: com.google.guava:guava:33.8.0-jre, com.google.guava:failureaccess:1.0.3 |

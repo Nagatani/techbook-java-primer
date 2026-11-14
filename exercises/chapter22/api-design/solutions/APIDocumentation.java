@@ -644,7 +644,7 @@ public final class APIDocumentation {
  * 
  * 2. メソッドレベルのドキュメント
  *    - 機能の詳細な説明
- *    - すべてのパラメータの説明
+ *    - すべてのパラメーターの説明
  *    - 戻り値の説明
  *    - 発生する可能性のある例外
  *    - 使用例の提供
@@ -662,7 +662,7 @@ public final class APIDocumentation {
  *    - <ul><li>タグでリスト
  * 
  * 5. 標準タグの活用
- *    - @param: パラメータ説明
+ *    - @param: パラメーター説明
  *    - @return: 戻り値説明
  *    - @throws: 例外説明
  *    - @since: 開始バージョン

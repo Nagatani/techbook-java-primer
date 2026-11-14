@@ -20,7 +20,7 @@ public class SecureBankAccount {
     // private double balance;
     // private String pin;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public SecureBankAccount(String accountNumber, double initialBalance, String pin) {
     //     this.accountNumber = accountNumber;
     //     this.balance = initialBalance;

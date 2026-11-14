@@ -86,7 +86,7 @@ public class Student {
     private String name = "";  // 空文字列で初期化
     
     public Student() {
-        // コンストラクタでも初期化可能
+        // コンストラクターでも初期化可能
         this.name = "未設定";
     }
 }
@@ -222,7 +222,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String
 - 最初の`at`の行（Student.java:25）がエラー発生箇所
 - ローカル変数や引数がnullのときは、`javac -g`でコンパイルしていないと名前の代わりに`"<local1>"`や`"<parameter1>"`と表示される（IntelliJ IDEAは既定で変数名の情報を含めてコンパイルする）
 
-### 2. デバッガの活用
+### 2. デバッガーの活用
 
 1. エラーが発生する行にブレークポイントを設定
 2. 各変数の値を確認
@@ -245,8 +245,8 @@ public void processOrder(Order order) {
 
 ## ベストプラクティス
 
-1. **早期のnullチェック**: メソッドの開始時点でパラメータをチェック
-2. **適切な初期化**: フィールドは宣言時またはコンストラクタで初期化
+1. **早期のnullチェック**: メソッドの開始時点でパラメーターをチェック
+2. **適切な初期化**: フィールドは宣言時またはコンストラクターで初期化
 3. **Optionalの活用**: nullを返す可能性があるメソッドではOptionalを使用
 4. **ドキュメント化**: nullを返す可能性がある場合は、Javadocに明記
 5. **単体テストの作成**: null値に対するテストケースを必ず含める

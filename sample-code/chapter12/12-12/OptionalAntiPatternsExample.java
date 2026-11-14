@@ -60,7 +60,7 @@ public class OptionalAntiPatternsExample {
         // アンチパターン5: Optional<Optional<T>>の作成
         // これは避けて、flatMapを使用すべき
         
-        // 注意点：Optionalは値の一時的なコンテナ
+        // 注意点：Optionalは値の一時的なコンテナー
         // - Serializableではない
         // - 長期保存には適さない
         // - APIの戻り値として使用し、フィールドには使わない

@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * データベースを使った統合テストのデモンストレーション
  * 実際のデータベースを使用した統合テストの重要性を学習
  *
- * <p>Testcontainersは、Dockerのコンテナで本番と同じデータベース（PostgreSQLなど）を
+ * <p>Testcontainersは、Dockerのコンテナーで本番と同じデータベース（PostgreSQLなど）を
  * テストのたびに起動するライブラリ。このデモはDockerなしで動かせるよう、
  * Testcontainersは使わず、インメモリのH2データベースで代用している。
  * 実行にはH2のJDBCドライバー（com.h2database:h2）をクラスパスに加える必要がある。

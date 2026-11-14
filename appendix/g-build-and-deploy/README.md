@@ -123,7 +123,7 @@ java -jar JsonProcessorApp-all.jar
 
 ### カスタマイズオプション
 
-#### JVMパラメータの設定
+#### JVMパラメーターの設定
 
 ```bash
 jpackage --type app-image \

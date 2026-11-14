@@ -4,7 +4,7 @@ public class Student {
     private int age;
     private double gpa;
     
-    // publicコンストラクタ - 外部からオブジェクト作成可能
+    // publicコンストラクター - 外部からオブジェクト作成可能
     public Student(String name, int age, double gpa) {
         this.name = name;
         this.age = age;

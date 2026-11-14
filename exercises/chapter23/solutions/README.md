@@ -225,7 +225,7 @@ id,name,age,email
 2. **配布形式の選択**
    - ネイティブインストーラー（jpackage）
    - Web Start/JNLP
-   - Docker コンテナ
+   - Docker コンテナー
 
 3. **継続的インテグレーション**
    - 自動ビルド

@@ -6,7 +6,7 @@
 // フィールド: String street, String city, String postalCode, String country
 public record Address(/* TODO: フィールドを定義 */) {
     
-    // TODO: コンパクトコンストラクタで入力検証を追加
+    // TODO: コンパクトコンストラクターで入力検証を追加
     // - すべてのフィールドはnullまたは空文字列でない
     // - postalCodeは数字とハイフンのみを含む
     

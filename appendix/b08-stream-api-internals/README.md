@@ -16,7 +16,7 @@ Stream APIは単なる便利なAPIではなく、高度に最適化された並�
 
 ## サンプルコード構成
 
-### 1. Spliterator（分割可能イテレータ）の実装
+### 1. Spliterator（分割可能イテレーター）の実装
 - `CustomSpliterator.java`: カスタムSpliteratorの実装例
   - ArrayListSpliterator: 配列リストの効率的な分割
   - RangeSpliterator: 数値範囲の並列処理（`StreamSupport.intStream`でIntStreamにする）

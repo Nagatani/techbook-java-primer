@@ -204,7 +204,7 @@ public class BasicTreeExample extends JFrame {
         root.add(lib);
         root.add(doc);
         
-        // srcフォルダの中身
+        // srcフォルダーの中身
         DefaultMutableTreeNode main = new DefaultMutableTreeNode("main");
         DefaultMutableTreeNode test = new DefaultMutableTreeNode("test");
         src.add(main);

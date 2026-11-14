@@ -8,7 +8,7 @@ public final class ImmutablePoint {
     private final double x;
     private final double y;
     
-    // コンストラクタ
+    // コンストラクター
     public ImmutablePoint(double x, double y) {
         this.x = x;
         this.y = y;

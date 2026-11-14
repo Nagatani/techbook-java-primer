@@ -16,7 +16,7 @@ public class Student {
     private double score;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param studentId 学生ID
      * @param name 名前
      * @param grade 学年

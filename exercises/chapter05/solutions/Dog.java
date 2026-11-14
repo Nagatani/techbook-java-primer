@@ -2,7 +2,7 @@
  * 犬のクラス（課題1の解答例）
  */
 public class Dog extends Animal {
-    // コンストラクタ（superキーワードを使用）
+    // コンストラクター（superキーワードを使用）
     public Dog(String name, int age) {
         super(name, age);
     }

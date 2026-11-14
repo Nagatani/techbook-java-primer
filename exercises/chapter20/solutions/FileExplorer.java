@@ -136,7 +136,7 @@ public class FileExplorer extends JFrame {
             return switch (columnIndex) {
                 case 0 -> file.getName();
                 case 1 -> file.getFormattedSize();
-                case 2 -> file.isDirectory() ? "フォルダ" : getFileType(file.getName());
+                case 2 -> file.isDirectory() ? "フォルダー" : getFileType(file.getName());
                 case 3 -> file.getFormattedDate();
                 default -> "";
             };

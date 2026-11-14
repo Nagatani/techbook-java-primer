@@ -111,15 +111,15 @@ public record User(String id, String name, String email, LocalDateTime createdAt
 ```
 
 #### 自動生成される機能
-- **コンストラクタ**: 全フィールドを引数に取る標準コンストラクタ
-- **アクセサメソッド**: フィールド名と同じメソッド（getterではない）
+- **コンストラクター**: 全フィールドを引数に取る標準コンストラクター
+- **アクセサーメソッド**: フィールド名と同じメソッド（getterではない）
 - **equals/hashCode**: 全コンポーネントに基づく実装
 - **toString**: 読みやすい文字列表現
 
-#### コンパクトコンストラクタ
+#### コンパクトコンストラクター
 ```java
 public record ValidatedEmail(String value) {
-    public ValidatedEmail {  // コンパクトコンストラクタ
+    public ValidatedEmail {  // コンパクトコンストラクター
         if (!value.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new IllegalArgumentException("Invalid email: " + value);
         }
@@ -262,7 +262,7 @@ public record UserDTO(String id, String name, String email) {}
 public record Money(BigDecimal amount, Currency currency) {}
 ```
 
-○ **設定値やパラメータ群**
+○ **設定値やパラメーター群**
 ```java
 public record DatabaseConfig(String url, String username, int poolSize) {}
 ```
@@ -412,7 +412,7 @@ public value record ComplexNumber(double real, double imaginary) {
 // 問題: nullを含むコレクション
 public record Data(List<String> items) {}
 
-// ○ 解決: コンパクトコンストラクタで防御的コピー
+// ○ 解決: コンパクトコンストラクターで防御的コピー
 public record Data(List<String> items) {
     public Data {
         items = items == null ? List.of() : List.copyOf(items);

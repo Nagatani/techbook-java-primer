@@ -11,7 +11,7 @@
  * - superキーワードの使用
  */
 public class Cat extends Animal {
-    // TODO: コンストラクタを実装してください（superキーワードを使用）
+    // TODO: コンストラクターを実装してください（superキーワードを使用）
     // public Cat(String name, int age) {
     //     super(name, age);
     // }

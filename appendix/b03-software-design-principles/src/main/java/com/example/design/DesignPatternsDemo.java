@@ -73,7 +73,7 @@ public class DesignPatternsDemo {
     }
     
     /**
-     * ファクトリーパターン
+     * ファクトリパターン
      */
     
     // 製品の抽象クラス
@@ -114,7 +114,7 @@ public class DesignPatternsDemo {
         }
     }
     
-    // ファクトリー
+    // ファクトリ
     static class DocumentFactory {
         public static Document createDocument(String type) {
             switch (type.toLowerCase()) {
@@ -129,7 +129,7 @@ public class DesignPatternsDemo {
     }
     
     /**
-     * 抽象ファクトリーパターン
+     * 抽象ファクトリパターン
      */
     
     // 抽象製品
@@ -197,13 +197,13 @@ public class DesignPatternsDemo {
         }
     }
     
-    // 抽象ファクトリー
+    // 抽象ファクトリ
     interface UIFactory {
         Button createButton();
         TextField createTextField();
     }
     
-    // 具体的なファクトリー
+    // 具体的なファクトリ
     static class WindowsUIFactory implements UIFactory {
         @Override
         public Button createButton() {
@@ -700,7 +700,7 @@ public class DesignPatternsDemo {
         IO.println("App name: " + config.getProperty("app.name"));
         config.setProperty("debug.enabled", "false");
         
-        // ファクトリーパターン
+        // ファクトリパターン
         IO.println("\n--- Factory Pattern ---");
         Document wordDoc = DocumentFactory.createDocument("word");
         Document pdfDoc = DocumentFactory.createDocument("pdf");
@@ -710,7 +710,7 @@ public class DesignPatternsDemo {
         pdfDoc.create();
         pdfDoc.save();
         
-        // 抽象ファクトリーパターン
+        // 抽象ファクトリパターン
         IO.println("\n--- Abstract Factory Pattern ---");
         UIFactory windowsFactory = new WindowsUIFactory();
         Application winApp = new Application(windowsFactory);

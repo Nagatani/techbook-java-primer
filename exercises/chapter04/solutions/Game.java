@@ -8,7 +8,7 @@ public class Game {
     private int score;
     private boolean isGameOver;
     
-    // コンストラクタ
+    // コンストラクター
     public Game(String playerName) {
         this.playerName = playerName;
         this.level = 1;

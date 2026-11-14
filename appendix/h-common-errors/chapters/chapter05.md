@@ -13,7 +13,7 @@
 ```java
 // エラー例
 class Parent {
-    public Parent(String name) { }  // デフォルトコンストラクタなし
+    public Parent(String name) { }  // デフォルトコンストラクターなし
 }
 
 class Child extends Parent {
@@ -30,22 +30,22 @@ class Child extends Parent {
 ```java
 class Parent {
     public Parent(String name) {
-        IO.println("Parent コンストラクタ: " + name);
+        IO.println("Parent コンストラクター: " + name);
     }
 }
 
 class Child extends Parent {
     public Child() {
-        super("default");  // 明示的に親のコンストラクタを呼び出す
-        IO.println("Child コンストラクタ");
+        super("default");  // 明示的に親のコンストラクターを呼び出す
+        IO.println("Child コンストラクター");
     }
 }
 ```
 
 `new Child()`を実行した結果：
 ```
-Parent コンストラクタ: default
-Child コンストラクタ
+Parent コンストラクター: default
+Child コンストラクター
 ```
 
 ### 重要なポイント

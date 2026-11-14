@@ -158,7 +158,7 @@ public class DataVisualization extends JFrame {
     }
     
     public DataVisualization() {
-        // ここにコンストラクタを実装してください
+        // ここにコンストラクターを実装してください
         initializeComponents();
         setupLayout();
         setupEventListeners();

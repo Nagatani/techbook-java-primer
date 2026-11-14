@@ -21,7 +21,7 @@ public class Product {
     // private double price;
     // private int stock;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public Product(int id, String name, double price, int stock) {
     //     this.id = id;
     //     this.name = name;

@@ -157,7 +157,7 @@ public class AsyncFileIO {
             CompletionHandler<Integer, Void> handler = new CompletionHandler<Integer, Void>() {
                 @Override
                 public void completed(Integer bytesRead, Void attachment) {
-                    // 書き込み完了後に次の読み込みを始めるため、このハンドラ自身を参照できるようにする
+                    // 書き込み完了後に次の読み込みを始めるため、このハンドラー自身を参照できるようにする
                     CompletionHandler<Integer, Void> readHandler = this;
                     if (bytesRead == -1) {
                         // Copy complete
@@ -245,7 +245,7 @@ public class AsyncFileIO {
                 @Override
                 public void completed(Integer result, ByteBuffer attachment) {
                     if (attachment.hasRemaining()) {
-                        // 書き込めたバイト数だけバッファの位置が進んでいるので、そこから続ける
+                        // 書き込めたバイト数だけバッファーの位置が進んでいるので、そこから続ける
                         channel.write(attachment, position + attachment.position(), attachment, this);
                     } else {
                         future.complete(null);

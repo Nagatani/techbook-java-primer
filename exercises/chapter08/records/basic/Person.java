@@ -9,7 +9,7 @@ import java.time.Period;
 // フィールド: String name, LocalDate birthDate, String email
 public record Person(/* TODO: フィールドを定義 */) {
     
-    // TODO: コンパクトコンストラクタで入力検証を追加
+    // TODO: コンパクトコンストラクターで入力検証を追加
     // - nameはnullまたは空文字列でない
     // - birthDateはnullでなく、未来の日付でない
     // - emailは「@」を含む
@@ -41,7 +41,7 @@ public record Person(/* TODO: フィールドを定義 */) {
     }
     
     /**
-     * スタティックファクトリーメソッド: 名前とメールからPersonを作成
+     * スタティックファクトリメソッド: 名前とメールからPersonを作成
      * 誕生日はデフォルトで今日から20年前
      */
     public static Person of(String name, String email) {

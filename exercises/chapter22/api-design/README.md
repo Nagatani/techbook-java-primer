@@ -216,10 +216,10 @@ public class LibraryException extends Exception {
  * <li>パフォーマンス監視</li>
  * </ul>
  * 
- * <h2>設定パラメータ</h2>
+ * <h2>設定パラメーター</h2>
  * <table border="1">
  * <caption>接続プール設定</caption>
- * <tr><th>パラメータ</th><th>デフォルト値</th><th>説明</th></tr>
+ * <tr><th>パラメーター</th><th>デフォルト値</th><th>説明</th></tr>
  * <tr><td>minPoolSize</td><td>5</td><td>最小接続数</td></tr>
  * <tr><td>maxPoolSize</td><td>20</td><td>最大接続数</td></tr>
  * <tr><td>timeout</td><td>30秒</td><td>接続タイムアウト</td></tr>
@@ -420,7 +420,7 @@ public String processString(String input) {
 ### 基本レベル (60-70点)
 - [ ] 基本的なJavadocコメントが書ける
 - [ ] クラスとメソッドの目的が明確に説明されている
-- [ ] パラメータと戻り値が適切に文書化されている
+- [ ] パラメーターと戻り値が適切に文書化されている
 
 ### 応用レベル (70-85点)
 - [ ] HTMLタグを使用した構造化された文書が作成できる

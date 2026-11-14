@@ -27,7 +27,7 @@ public class ChatClient {
     private ExecutorService executor;
     
     /**
-     * ChatClientのコンストラクタ
+     * ChatClientのコンストラクター
      * 
      * @param host 接続先サーバーのホスト名
      * @param port 接続先サーバーのポート番号

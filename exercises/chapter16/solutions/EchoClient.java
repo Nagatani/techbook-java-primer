@@ -24,7 +24,7 @@ public class EchoClient {
     private BufferedReader in;
     
     /**
-     * EchoClientのコンストラクタ
+     * EchoClientのコンストラクター
      * 
      * @param host 接続先サーバーのホスト名またはIPアドレス
      * @param port 接続先サーバーのポート番号

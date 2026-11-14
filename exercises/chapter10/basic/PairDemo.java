@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Pairクラスとジェネリックメソッドのデモプログラム
  * 
- * 複数の型パラメータとジェネリックメソッドの使い方を学習します。
+ * 複数の型パラメーターとジェネリックメソッドの使い方を学習します。
  */
 public class PairDemo {
     public static void main(String[] args) {

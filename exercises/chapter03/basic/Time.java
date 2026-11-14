@@ -1,11 +1,11 @@
 /**
  * 第3章 基本課題7: Timeクラスの総合実装
  * 
- * 課題: 時刻を表すTimeクラスを作成し、コンストラクタとオーバーロードを総合的に実装してください。
+ * 課題: 時刻を表すTimeクラスを作成し、コンストラクターとオーバーロードを総合的に実装してください。
  * 
  * 要求仕様:
  * - インスタンス変数: hour（int）, minute（int）, second（int）
- * - 複数のコンストラクタ（時のみ、時分、時分秒）
+ * - 複数のコンストラクター（時のみ、時分、時分秒）
  * - addTime()メソッドのオーバーロード（秒、分と秒、時と分と秒。引数の数で区別する）
  * - 時刻の正規化処理（60秒=1分、60分=1時間）
  * 
@@ -20,17 +20,17 @@ public class Time {
     // int minute;
     // int second;
     
-    // TODO: 時のみを設定するコンストラクタを実装してください
+    // TODO: 時のみを設定するコンストラクターを実装してください
     // public Time(int hour) {
     //     this(hour, 0, 0);
     // }
     
-    // TODO: 時分を設定するコンストラクタを実装してください
+    // TODO: 時分を設定するコンストラクターを実装してください
     // public Time(int hour, int minute) {
     //     this(hour, minute, 0);
     // }
     
-    // TODO: 時分秒を設定するコンストラクタを実装してください
+    // TODO: 時分秒を設定するコンストラクターを実装してください
     // public Time(int hour, int minute, int second) {
     //     this.hour = hour;
     //     this.minute = minute;

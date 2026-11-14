@@ -71,7 +71,7 @@ public class PropertyBasedTestDemo {
     }
     
     /**
-     * データジェネレータ
+     * データジェネレーター
      */
     public static class Generators {
         public static DataGenerator<Integer> integers(int min, int max) {

@@ -32,7 +32,7 @@ public class SimpleLibraryDoc {
     // TODO: 定数のJavadocコメントを追加してください
     public static final String VERSION = "1.0.0";
     
-    // TODO: デフォルトコンストラクタのJavadocコメントを追加してください
+    // TODO: デフォルトコンストラクターのJavadocコメントを追加してください
     public SimpleLibraryDoc() {
         // 初期化処理
     }
@@ -40,7 +40,7 @@ public class SimpleLibraryDoc {
     // TODO: このメソッドに詳細なJavadocコメントを追加してください
     // 以下を含めてください：
     // - メソッドの機能説明
-    // - @param タグ（各パラメータの説明）
+    // - @param タグ（各パラメーターの説明）
     // - @return タグ（戻り値の説明）
     // - @throws タグ（例外の説明）
     // - 使用例
@@ -106,7 +106,7 @@ public class SimpleLibraryDoc {
         // TODO: フィールドのJavadocコメントを追加してください
         private final String message;
         
-        // TODO: コンストラクタのJavadocコメントを追加してください
+        // TODO: コンストラクターのJavadocコメントを追加してください
         public Result(boolean success, String message) {
             this.success = success;
             this.message = message;
@@ -236,7 +236,7 @@ public class SimpleLibraryDoc {
  * 
  * 確認ポイント:
  * - すべてのpublicメソッドにドキュメントがあるか
- * - パラメータの制約が明記されているか
+ * - パラメーターの制約が明記されているか
  * - 例外条件が説明されているか
  * - 使用例が含まれているか
  * - HTMLタグが適切に使用されているか

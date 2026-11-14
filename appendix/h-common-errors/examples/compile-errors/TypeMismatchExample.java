@@ -77,10 +77,10 @@ public class TypeMismatchExample {
         public static void demonstrateErrors() {
             IO.println("\n=== ジェネリクスの型不一致 ===");
             
-            // エラー例1: ジェネリック型パラメータの不一致
+            // エラー例1: ジェネリック型パラメーターの不一致
             // List<String> strings = new ArrayList<Integer>();  // コンパイルエラー
             
-            // 解決策1: 型パラメータを一致させる
+            // 解決策1: 型パラメーターを一致させる
             List<String> strings = new ArrayList<String>();
             // または型推論を使用（Java 7以降）
             List<String> strings2 = new ArrayList<>();

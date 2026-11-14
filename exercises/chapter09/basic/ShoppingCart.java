@@ -14,7 +14,7 @@ public class ShoppingCart {
     private String customerName;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param customerName カートの所有者名
      */
     public ShoppingCart(String customerName) {

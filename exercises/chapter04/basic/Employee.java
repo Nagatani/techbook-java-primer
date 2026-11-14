@@ -20,7 +20,7 @@ public class Employee {
     // private int age;
     // private double salary;
     
-    // TODO: コンストラクタを実装してください
+    // TODO: コンストラクターを実装してください
     // public Employee(String name, int age, double salary) {
     //     this.name = name;
     //     // 検査はsetterと同じprivateメソッドで行う。setterを呼ぶと「変更しました」と表示されてしまう

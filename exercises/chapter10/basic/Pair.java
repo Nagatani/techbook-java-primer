@@ -15,7 +15,7 @@ public class Pair<F, S> {
     private S second;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param first 最初の値
      * @param second 2番目の値
      */
@@ -71,7 +71,7 @@ public class Pair<F, S> {
      */
     public Pair<S, F> swap() {
         // TODO: 実装してください
-        // 注意: 型パラメータの順序も入れ替わります
+        // 注意: 型パラメーターの順序も入れ替わります
         return null;
     }
     

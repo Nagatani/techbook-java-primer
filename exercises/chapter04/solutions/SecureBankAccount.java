@@ -7,7 +7,7 @@ public class SecureBankAccount {
     private double balance;
     private String pin;
     
-    // コンストラクタ
+    // コンストラクター
     public SecureBankAccount(String accountNumber, double initialBalance, String pin) {
         this.accountNumber = accountNumber;
         this.balance = initialBalance;

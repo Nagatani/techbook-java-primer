@@ -19,7 +19,7 @@ public final class ImmutablePerson {
     }
     
     public List<String> getHobbies() {
-        // コンストラクタで変更できないリストにしてあるので、そのまま返せる
+        // コンストラクターで変更できないリストにしてあるので、そのまま返せる
         return hobbies;
     }
 }

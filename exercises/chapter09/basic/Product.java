@@ -16,7 +16,7 @@ public class Product {
     private int stock;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param productId 商品ID
      * @param name 商品名
      * @param price 価格

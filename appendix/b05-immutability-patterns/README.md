@@ -115,7 +115,7 @@ public final class ImmutablePerson {
     private final LocalDate birthDate;
     private final List<String> nicknames;
     
-    // コンストラクタでの防御的コピー
+    // コンストラクターでの防御的コピー
     public ImmutablePerson(String name, LocalDate birthDate, List<String> nicknames) {
         this.name = Objects.requireNonNull(name);
         this.birthDate = Objects.requireNonNull(birthDate);
@@ -131,7 +131,7 @@ public final class ImmutablePerson {
 
 #### 重要な実装ポイント
 - **final修飾子の使用**: クラス、フィールドの変更を防止
-- **防御的コピー**: コンストラクタで受け取ったコレクションをコピーし、外から変更されないようにする（`List.copyOf`の結果は変更できないので、ゲッターでそのまま返してよい）
+- **防御的コピー**: コンストラクターで受け取ったコレクションをコピーし、外から変更されないようにする（`List.copyOf`の結果は変更できないので、ゲッターでそのまま返してよい）
 - **withメソッド**: 関数型スタイルでの更新パターン
 - **equals/hashCodeの実装**: 値による等価性の保証
 
@@ -357,7 +357,7 @@ public static class Builder {
 }
 ```
 
-#### ファクトリーパターンとの統合
+#### ファクトリパターンとの統合
 ```java
 public class ImmutableCollections {
     public static <T> ImmutableArrayList<T> copyOf(Collection<T> collection) {

@@ -12,7 +12,7 @@ public class CartItem {
     private int quantity;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param product 商品
      * @param quantity 数量
      */

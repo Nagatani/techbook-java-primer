@@ -150,7 +150,7 @@ public final class AdvancedAPIDocumentation {
         /**
          * 記述統計量オブジェクトを構築します。
          * 
-         * <p>このコンストラクタは{@link StatisticsCalculator}からのみ
+         * <p>このコンストラクターは{@link StatisticsCalculator}からのみ
          * 呼び出されることを想定しています。直接呼び出しは推奨されません。</p>
          * 
          * @param count サンプル数（1以上）
@@ -162,7 +162,7 @@ public final class AdvancedAPIDocumentation {
          * @param skewness 歪度
          * @param kurtosis 尖度
          * 
-         * @throws IllegalArgumentException パラメータが無効な場合
+         * @throws IllegalArgumentException パラメーターが無効な場合
          * @since 2.0
          */
         DescriptiveStatistics(int count, double mean, double variance, double standardDeviation,
@@ -697,7 +697,7 @@ public final class AdvancedAPIDocumentation {
  * 2. メソッドレベルの詳細ドキュメント
  *    - 機能の詳細な説明と使用場面
  *    - 数学的公式やアルゴリズムの説明
- *    - パラメータの詳細な制約条件
+ *    - パラメーターの詳細な制約条件
  *    - 戻り値の解釈方法
  *    - 例外条件の網羅的な説明
  *    - 実用的なコード例（@example）

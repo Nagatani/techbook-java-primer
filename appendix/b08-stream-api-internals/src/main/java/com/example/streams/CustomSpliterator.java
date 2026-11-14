@@ -7,7 +7,7 @@ import java.util.stream.StreamSupport;
 
 /**
  * カスタムSpliteratorの実装例
- * 分割可能イテレータの仕組みと最適化を学習するためのサンプル
+ * 分割可能イテレーターの仕組みと最適化を学習するためのサンプル
  */
 public class CustomSpliterator {
     

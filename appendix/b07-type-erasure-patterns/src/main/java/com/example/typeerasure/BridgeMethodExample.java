@@ -2,7 +2,7 @@ package com.example.typeerasure;
 
 /**
  * ブリッジメソッドの仕組みを示すサンプルクラス
- * ジェネリックインターフェイスの実装でコンパイラが自動生成するブリッジメソッドを学習
+ * ジェネリックインターフェイスの実装でコンパイラーが自動生成するブリッジメソッドを学習
  */
 public class BridgeMethodExample<T> implements Comparable<BridgeMethodExample<T>> {
     private T value;
@@ -15,17 +15,17 @@ public class BridgeMethodExample<T> implements Comparable<BridgeMethodExample<T>
     
     /**
      * ジェネリック型での比較メソッド
-     * コンパイラはこのメソッドに加えて、compareTo(Object)のブリッジメソッドを生成する
+     * コンパイラーはこのメソッドに加えて、compareTo(Object)のブリッジメソッドを生成する
      */
     @Override
     public int compareTo(BridgeMethodExample<T> other) {
         return this.identifier.compareTo(other.identifier);
     }
     
-    // 注意: 以下のブリッジメソッドは実際にはコンパイラが自動生成する
+    // 注意: 以下のブリッジメソッドは実際にはコンパイラーが自動生成する
     // 手動で書く必要はないが、理解のために示している
     /*
-    // ブリッジメソッド（コンパイラが自動生成）
+    // ブリッジメソッド（コンパイラーが自動生成）
     public int compareTo(Object o) {
         return compareTo((BridgeMethodExample<T>) o);
     }
@@ -74,7 +74,7 @@ public class BridgeMethodExample<T> implements Comparable<BridgeMethodExample<T>
         IO.println("\nMethods in " + clazz.getSimpleName() + ":");
         for (var method : methods) {
             if (method.isSynthetic() && !method.isBridge()) {
-                continue; // ラムダ式のためにコンパイラが作るメソッドは表示しない
+                continue; // ラムダ式のためにコンパイラーが作るメソッドは表示しない
             }
             IO.println("- " + method.getReturnType().getSimpleName() + " " + method.getName() +
                 " (parameters: " + java.util.Arrays.toString(method.getParameterTypes()) +
@@ -105,7 +105,7 @@ class StringProcessor extends AbstractProcessor<String> {
         return input.toUpperCase();
     }
     
-    // コンパイラが生成するブリッジメソッド:
+    // コンパイラーが生成するブリッジメソッド:
     // public Object process(String input) {
     //     return process(input); // String版を呼び出し
     // }
@@ -117,7 +117,7 @@ class IntegerProcessor extends AbstractProcessor<Integer> {
         return input.length();
     }
     
-    // コンパイラが生成するブリッジメソッド:
+    // コンパイラーが生成するブリッジメソッド:
     // public Object process(String input) {
     //     return process(input); // Integer版を呼び出し
     // }

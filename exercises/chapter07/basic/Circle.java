@@ -10,7 +10,7 @@ public class Circle extends Shape {
     private double radius;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param radius 円の半径
      */
     public Circle(double radius) {

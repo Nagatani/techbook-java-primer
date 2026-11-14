@@ -12,7 +12,7 @@ public class Rectangle extends Shape {
     private double height;
     
     /**
-     * コンストラクタ
+     * コンストラクター
      * @param width 長方形の幅
      * @param height 長方形の高さ
      */

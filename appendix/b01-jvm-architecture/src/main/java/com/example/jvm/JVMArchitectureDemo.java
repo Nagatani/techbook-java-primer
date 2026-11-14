@@ -363,7 +363,7 @@ public class JVMArchitectureDemo {
             long timestamp = System.nanoTime();
             String threadName = Thread.currentThread().getName();
             
-            // ローカル変数を使用（コンパイラ最適化を防ぐ）
+            // ローカル変数を使用（コンパイラー最適化を防ぐ）
             if (localArray.length > 0 && timestamp > 0 && threadName.length() > 0) {
                 recursiveStackConsumer(threadId, depth - 1);
             }

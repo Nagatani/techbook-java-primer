@@ -116,7 +116,7 @@ public class DataPipelineDemo {
             }
         }
         
-        // イベントプロセッサ
+        // イベントプロセッサー
         public static class EventProcessor {
             /**
              * イベントストリームからユーザースナップショットを構築
@@ -417,7 +417,7 @@ public class DataPipelineDemo {
             Instant windowEnd
         ) {}
         
-        // ウィンドウ集計プロセッサ
+        // ウィンドウ集計プロセッサー
         public static class WindowAggregator {
             private final Duration windowSize;
             private final Map<String, List<MetricEvent>> windows = new ConcurrentHashMap<>();

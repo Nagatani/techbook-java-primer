@@ -6,12 +6,12 @@ public class Rectangle {
     double width;
     double height;
     
-    // 正方形用のコンストラクタ（一辺の長さのみ）
+    // 正方形用のコンストラクター（一辺の長さのみ）
     public Rectangle(double size) {
         this(size, size);
     }
     
-    // 長方形用のコンストラクタ（幅と高さ）
+    // 長方形用のコンストラクター（幅と高さ）
     public Rectangle(double width, double height) {
         this.width = width;
         this.height = height;
