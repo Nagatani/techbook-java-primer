@@ -375,7 +375,7 @@ jpackage --type deb \
          --dest ./output
 ```
 
-コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます<span class="footnote">インストーラーを作るには、OSごとに追加のツールが要ります。Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`を使います。</span>。
+コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます<span class="footnote">インストーラーを作るには、OSごとに追加のツールが要ります。Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`を使います。Linuxでは、`app-image`を作るときにも`objcopy`（binutilsパッケージ）が必要です。</span>。
 先ほどの`--type app-image`はインストーラーではなく、インストールせずにそのまま実行できるアプリケーションのフォルダーを作ります。
 
 ## まとめ
