@@ -251,13 +251,13 @@ When performing any modifications to the book content, you must:
 1. **Read current analysis status**: Always consult the latest analysis files before starting work:
    - `docs/analysis/comprehensive-project-analysis.md`: Overall project state
    - `docs/analysis/issues-tracking.md`: Current prioritized issues
-   - `docs/analysis/improvement-roadmap.md`: Planned improvements
+   - `docs/analysis/improvement-roadmap.md`: 2025-07の旧計画の記録（2026-11-16に閉じた。今後の作業はTODO.mdで管理する）
    - **`docs/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
 
 2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
    - Resolved issues (mark as completed in issues-tracking.md)
    - New issues discovered (add to issues-tracking.md with appropriate priority)
-   - Progress on roadmap items (update improvement-roadmap.md)
+   - Progress on planned work (update TODO.md)
 
 3. **Maintain consistency**: Ensure analysis files remain consistent with actual project state:
    - Chapter counts, file existence, and structural changes
