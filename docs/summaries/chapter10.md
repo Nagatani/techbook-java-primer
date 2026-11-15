@@ -15,7 +15,7 @@ sections:
   - key: "ワイルドカード"
     hash: af0f3447
   - key: "var型推論とジェネリクス"
-    hash: 31baeaf5
+    hash: a80059f8
   - key: "よくあるエラーと対処法"
     hash: 48be6490
   - key: "まとめ"
