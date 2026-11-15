@@ -6,6 +6,9 @@ import java.util.List;
 /**
  * クラス不変条件（Invariant）の設計
  * assert文による検査は、java -ea で実行したときだけ有効になる
+ * 金額をdoubleで表しているのは例を短くするため。
+ * doubleは0.1のような10進の小数を正確に表せないので、実務ではBigDecimalか、
+ * 最小単位（円・セント）の整数で金額を表す
  */
 public class BankAccountWithInvariants {
     private double balance;
@@ -13,7 +16,10 @@ public class BankAccountWithInvariants {
     
     /**
      * クラス不変条件:
-     * balance == transactions.stream().mapToDouble(Transaction::getAmount).sum()
+     *   1. balance >= 0
+     *   2. balance == transactions.stream().mapToDouble(Transaction::getAmount).sum()
+     * 不変条件は、コンストラクターの終わりと、各publicメソッドの始めと終わりで成り立つ。
+     * メソッドの途中（transactionsに追加した直後でbalanceを更新する前）では一時的に崩れてよい
      */
     
     public BankAccountWithInvariants(double initialBalance) {
@@ -35,11 +41,15 @@ public class BankAccountWithInvariants {
             throw new IllegalArgumentException("Amount must be positive");
         }
         
+        double oldBalance = balance; // 事後条件で「呼び出し前の値」を参照するために覚えておく
+        
         // 操作
         transactions.add(new Transaction("DEPOSIT", amount));
         balance += amount;
         
-        // 事後条件と不変条件の維持
+        // 事後条件: 残高がamountだけ増えている
+        assert Math.abs(balance - (oldBalance + amount)) < 0.001 : "Postcondition violated after deposit";
+        // 不変条件の維持
         assert checkInvariant() : "Invariant violated after deposit";
     }
     
@@ -52,11 +62,15 @@ public class BankAccountWithInvariants {
             throw new InsufficientFundsException("Insufficient balance");
         }
         
+        double oldBalance = balance;
+        
         // 操作
         transactions.add(new Transaction("WITHDRAW", -amount));
         balance -= amount;
         
-        // 事後条件と不変条件の維持
+        // 事後条件: 残高がamountだけ減っている
+        assert Math.abs(balance - (oldBalance - amount)) < 0.001 : "Postcondition violated after withdrawal";
+        // 不変条件の維持
         assert checkInvariant() : "Invariant violated after withdrawal";
     }
     
@@ -69,6 +83,9 @@ public class BankAccountWithInvariants {
     }
     
     private boolean checkInvariant() {
+        if (balance < 0) {
+            return false;
+        }
         double calculatedBalance = transactions.stream()
             .mapToDouble(Transaction::getAmount)
             .sum();
@@ -105,6 +122,8 @@ public class BankAccountWithInvariants {
      * カスタム例外クラス
      */
     public static class InsufficientFundsException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+        
         public InsufficientFundsException(String message) {
             super(message);
         }

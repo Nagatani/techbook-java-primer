@@ -2,6 +2,8 @@ package com.example.theory.complexity;
 
 /**
  * 結合度（Coupling）の分類例
+ * 弱い順に、データ結合、スタンプ結合、制御結合、外部結合、共通結合、内容結合となる
+ * このファイルでは、データ結合・スタンプ結合・制御結合・共通結合を示す
  */
 public class CouplingExamples {
     
@@ -142,5 +144,39 @@ public class CouplingExamples {
         public void processOrder(Order order) {
             database.save(order);
         }
+    }
+    /**
+     * 結合度の違いを確かめるデモ
+     */
+    public static void demonstrateCoupling() {
+        CouplingExamples c = new CouplingExamples();
+
+        IO.println("--- Data coupling / Stamp coupling ---");
+        IO.println("calculateTax(50000, 0.2) = " + c.calculateTax(50000, 0.2));
+        IO.println("calculateTax(TaxInfo) = " + c.calculateTax(new TaxInfo(50000, 0.2)));
+
+        IO.println("--- Control coupling ---");
+        Data data = new Data("report");
+        c.processDataBad(data, 1);
+        c.processDataBad(data, 3); // 想定外のモードは何もしない（誤りに気づけない）
+        DataProcessor[] processors = { new ProcessorA(), new ProcessorB() };
+        for (DataProcessor p : processors) {
+            p.process(data);
+        }
+
+        IO.println("--- Common coupling ---");
+        try {
+            new BadOrderProcessor().processOrder(new Order("A-001"));
+        } catch (NullPointerException e) {
+            IO.println("BadOrderProcessor failed: GlobalConfig has no database");
+        }
+        // 依存を引数で受け取るので、テスト用の偽物を渡せる
+        GoodOrderProcessor good = new GoodOrderProcessor(
+            order -> IO.println("Saved by test double: " + order.getOrderId()));
+        good.processOrder(new Order("A-002"));
+    }
+
+    public static void main(String[] args) {
+        demonstrateCoupling();
     }
 }

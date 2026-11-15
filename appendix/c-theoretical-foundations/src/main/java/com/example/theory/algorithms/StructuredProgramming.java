@@ -90,14 +90,22 @@ public class StructuredProgramming {
     }
     
     /**
-     * 配列の指定範囲での最大値かどうかを検証
+     * valueが配列の指定範囲（start..end）の最大値かどうかを検証
+     * 「最大値である」は次の2つを合わせた条件:
+     *   1. 範囲のどの要素もvalue以下である
+     *   2. valueが範囲の中に実際にある
+     * 1だけを調べると、範囲より大きいだけの値（たとえばInteger.MAX_VALUE）でも通ってしまう
      */
     private boolean isMaxOfRange(int[] array, int start, int end, int value) {
+        boolean found = false;
         for (int i = start; i <= end; i++) {
             if (array[i] > value) {
                 return false;
             }
+            if (array[i] == value) {
+                found = true;
+            }
         }
-        return true;
+        return found;
     }
 }

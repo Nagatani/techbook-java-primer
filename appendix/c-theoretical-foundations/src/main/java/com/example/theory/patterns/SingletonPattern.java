@@ -89,4 +89,30 @@ public class SingletonPattern {
             return instance;
         }
     }
+    /**
+     * 各実装がいつインスタンスを作るかを確かめるデモ
+     * Bill Pughの実装は、getInstance()を初めて呼んだときにSingletonHelperクラスが初期化される
+     */
+    public static void demonstrateInitialization() {
+        IO.println("--- Double-checked locking ---");
+        DatabaseConnection db1 = DatabaseConnection.getInstance();
+        DatabaseConnection db2 = DatabaseConnection.getInstance();
+        IO.println("Same instance? " + (db1 == db2));
+
+        IO.println("--- Bill Pugh (holder class) ---");
+        IO.println("Before first getInstance()");
+        BillPughSingleton b1 = BillPughSingleton.getInstance();
+        BillPughSingleton b2 = BillPughSingleton.getInstance();
+        IO.println("Same instance? " + (b1 == b2));
+
+        IO.println("--- Enum ---");
+        IO.println("Before first use of INSTANCE");
+        DatabaseConnectionEnum.INSTANCE.executeQuery("SELECT 1");
+        IO.println("Same instance? "
+            + (DatabaseConnectionEnum.INSTANCE == DatabaseConnectionEnum.valueOf("INSTANCE")));
+    }
+
+    public static void main(String[] args) {
+        demonstrateInitialization();
+    }
 }

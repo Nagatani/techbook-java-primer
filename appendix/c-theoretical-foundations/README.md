@@ -1,10 +1,26 @@
 # 付録C: ソフトウェア工学の理論的基盤 - 実装例
 
-このディレクトリには、付録C「ソフトウェア工学の理論的基盤」で扱う理論的な概念の実装例が含まれています。
+このディレクトリには、付録C「ソフトウェア工学の理論的基盤」で扱う理論の解説と、その実装例が含まれています。
+
+## 理論の解説
+
+`docs/`に、付録Cの学習内容の項目ごとの解説があります。
+各解説は、理論の背景と定義を説明し、このディレクトリの実装例の実行方法と出力の読み方を示しています。
+
+| 項目 | 解説 |
+|------|------|
+| 1. ソフトウェアクライシスとその解決策 | [docs/01-software-crisis.md](docs/01-software-crisis.md) |
+| 2. オブジェクト指向の理論的基盤（ADT、カプセル化、継承） | [docs/02-oop-foundations.md](docs/02-oop-foundations.md) |
+| 3. ソフトウェア品質メトリクス（結合度、凝集度） | [docs/03-quality-metrics.md](docs/03-quality-metrics.md) |
+| 4. デザインパターンの理論的分析 | [docs/04-design-patterns.md](docs/04-design-patterns.md) |
+| 5. アルゴリズム解析と計算複雑度 | [docs/05-algorithm-analysis.md](docs/05-algorithm-analysis.md) |
+| 6. 形式手法と仕様記述 | [docs/06-formal-specification.md](docs/06-formal-specification.md) |
+| 7. 並行プログラミングの理論 | [docs/07-concurrency-theory.md](docs/07-concurrency-theory.md) |
 
 ## ディレクトリ構造
 
 ```
+docs/                # 学習内容の項目ごとの理論の解説（01〜07）
 src/main/java/com/example/theory/
 ├── Main.java        # すべてのデモを呼び出すメインクラス
 ├── complexity/      # 複雑度とソフトウェアメトリクス
@@ -34,18 +50,29 @@ Windowsのコマンドプロンプトでは、`$(find ...)`の代わりに`dir /
 
 | 名前 | 内容 |
 |------|------|
-| `complexity` | 循環的複雑度、計算量、結合度、凝集度 |
-| `algorithms` | 構造化プログラミング、ループ不変条件、二分探索 |
-| `structures` | スタック、動的配列、ハッシュテーブル、リスコフの置換原則 |
-| `patterns` | Singleton、Decorator、Observer |
+| `complexity` | 循環的複雑度、バブルソート、結合度、凝集度 |
+| `algorithms` | 構造化プログラミング、ループ不変条件、二分探索、比較回数の増え方 |
+| `structures` | スタックとその公理、カプセル化、動的配列、ハッシュテーブル、リスコフの置換原則 |
+| `patterns` | Singleton（各実装がインスタンスを作る時点）、Decorator、Observer |
 | `concurrent` | 競合状態、デッドロック、メモリモデル |
-| `specifications` | クラス不変条件、事前条件 |
+| `specifications` | クラス不変条件、事前条件、assert文の効果と限界 |
+
+いくつかのクラスは、`Main`を通さずに単独でも実行できます。
+実行コマンドは、下の「パッケージごとの内容」に書いています。
 
 ### assert文と-eaオプション
 
-事前条件・事後条件・不変条件の検査（`BinarySearchWithSpecs`、`StructuredProgramming.findMaxWithInvariantCheck`、`BankAccountWithInvariants`）と、リスコフの置換原則の検査（`LiskovSubstitution`）は`assert`文で書いています。
+事前条件・事後条件・不変条件の検査（`BinarySearchWithSpecs`、`StructuredProgramming.findMaxWithInvariantCheck`、`BankAccountWithInvariants`）、スタックの公理の検査（`ArrayStack.checkAxioms`）、リスコフの置換原則の検査（`LiskovSubstitution`）は`assert`文で書いています。
 `assert`文は、`java`コマンドに`-ea`を付けたときだけ実行されます。
-`-ea`を付けないと検査が行われないので、`Main`は注意を表示し、LSPの検査を省きます。
+`-ea`を付けないと検査が行われないので、`Main`は注意を表示し、スタックの公理とLSPの検査を省きます（省いたことをその場に表示します）。
+
+`-ea`を付けた場合と付けない場合の違いは、次のコマンドで確かめられます。
+`AssertionDemo`は、事前条件を破った呼び出しが`-ea`ありでは`AssertionError`で止まり、`-ea`なしでは誤った答えを返すことと、`assert`文の中に必要な処理を書くと`-ea`なしでは実行されないことを示します。
+
+```bash
+java -ea -cp out com.example.theory.specifications.AssertionDemo
+java -cp out com.example.theory.specifications.AssertionDemo
+```
 
 ### 並行プログラミングのデモについて
 
@@ -65,8 +92,10 @@ Windowsのコマンドプロンプトでは、`$(find ...)`の代わりに`dir /
   - 空間計算量の比較（in-placeのソートと配列をコピーするソート）
 - `CouplingExamples.java`
   - 結合度の段階（データ結合、スタンプ結合、制御結合、共通結合）
+  - 単独で実行: `java -cp out com.example.theory.complexity.CouplingExamples`
 - `CohesionExamples.java`
-  - 凝集度の段階（機能的凝集、逐次的凝集、偶発的凝集）
+  - 凝集度の段階（機能的凝集、逐次的凝集、論理的凝集、偶発的凝集）
+  - 単独で実行: `java -cp out com.example.theory.complexity.CohesionExamples`
 
 ### algorithms パッケージ
 アルゴリズムの解析と構造化プログラミングの実装例です。
@@ -77,14 +106,19 @@ Windowsのコマンドプロンプトでは、`$(find ...)`の代わりに`dir /
 - `BinarySearchWithSpecs.java`
   - 形式的な仕様を添えた二分探索
   - 事前条件・事後条件の検証
+- `OperationCounting.java`
+  - 比較回数を数えて、O(n)・O(log n)・O(n²)・O(n log n)の増え方を確かめる
+  - 単独で実行: `java -cp out com.example.theory.algorithms.OperationCounting`
 
 ### structures パッケージ
 抽象データ型（ADT）とデータ構造の実装例です。
 
 - `Stack.java` / `ArrayStack.java`
-  - スタックADTの抽象仕様と具体的な実装
+  - スタックADTの抽象仕様（代数的仕様の公理）と、容量に上限のある配列による実装
+  - 単独で実行（公理の検査）: `java -ea -cp out com.example.theory.structures.ArrayStack`
 - `EncapsulationExamples.java`
-  - カプセル化の悪い例とよい例
+  - カプセル化の悪い例とよい例（不変条件、防御的コピー）
+  - 単独で実行: `java -cp out com.example.theory.structures.EncapsulationExamples`
 - `LiskovSubstitution.java`
   - リスコフの置換原則（LSP）に違反する例と守る例
 - `DynamicArray.java`
@@ -98,6 +132,8 @@ GoFのデザインパターンを理論の面から分析する実装例です�
 - `SingletonPattern.java`
   - Double-checked lockingによるスレッドセーフなSingleton
   - enumによる実装、Bill Pugh Singleton
+  - 各実装がインスタンスを作る時点の確認
+  - 単独で実行: `java -cp out com.example.theory.patterns.SingletonPattern`
 - `DecoratorPattern.java`
   - Decoratorパターンを関数の合成として見るモデル
 - `ObserverPattern.java`
@@ -122,20 +158,23 @@ GoFのデザインパターンを理論の面から分析する実装例です�
 - `BankAccountWithInvariants.java`
   - クラス不変条件の設計と維持
   - 事前条件・事後条件の検証
+- `AssertionDemo.java`
+  - assert文の効果と限界（`-ea`あり・なしで出力が変わる）
+  - 単独で実行: `java -ea -cp out com.example.theory.specifications.AssertionDemo`（`-ea`を外して比べる）
 
 ## 付録Cの学習内容と実装の対応
 
 付録Cの「学習内容」の各項目と、このディレクトリの実装は次のように対応します。
 
-| 学習内容 | 実装 |
-|----------|------|
-| 1. ソフトウェアクライシスとその解決策 | `complexity/ComplexityExample.java` |
-| 2. オブジェクト指向の理論的基盤（ADT、カプセル化、継承） | `structures`パッケージ |
-| 3. ソフトウェア品質メトリクス（結合度、凝集度） | `complexity/CouplingExamples.java`、`complexity/CohesionExamples.java` |
-| 4. デザインパターンの理論的分析 | `patterns`パッケージ |
-| 5. アルゴリズム解析と計算複雑度 | `algorithms`パッケージ、`complexity/TimeComplexityExamples.java`、`structures/DynamicArray.java`、`structures/HashTable.java` |
-| 6. 形式手法と仕様記述 | `specifications`パッケージ、`algorithms/BinarySearchWithSpecs.java` |
-| 7. 並行プログラミングの理論 | `concurrent`パッケージ |
+| 学習内容 | 解説 | 実装 |
+|----------|------|------|
+| 1. ソフトウェアクライシスとその解決策 | `docs/01-software-crisis.md` | `complexity/ComplexityExample.java`、`algorithms/StructuredProgramming.java` |
+| 2. オブジェクト指向の理論的基盤（ADT、カプセル化、継承） | `docs/02-oop-foundations.md` | `structures`パッケージ（`Stack`、`ArrayStack`、`EncapsulationExamples`、`LiskovSubstitution`） |
+| 3. ソフトウェア品質メトリクス（結合度、凝集度） | `docs/03-quality-metrics.md` | `complexity/CouplingExamples.java`、`complexity/CohesionExamples.java`、`complexity/ComplexityExample.java` |
+| 4. デザインパターンの理論的分析 | `docs/04-design-patterns.md` | `patterns`パッケージ |
+| 5. アルゴリズム解析と計算複雑度 | `docs/05-algorithm-analysis.md` | `algorithms`パッケージ（`OperationCounting`を含む）、`complexity/TimeComplexityExamples.java`、`structures/DynamicArray.java`、`structures/HashTable.java` |
+| 6. 形式手法と仕様記述 | `docs/06-formal-specification.md` | `specifications`パッケージ（`AssertionDemo`を含む）、`algorithms/BinarySearchWithSpecs.java` |
+| 7. 並行プログラミングの理論 | `docs/07-concurrency-theory.md` | `concurrent`パッケージ |
 
 ## 学習のポイント
 

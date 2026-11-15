@@ -32,7 +32,7 @@ public class RaceConditionExample {
     private AtomicInteger atomicCounter = new AtomicInteger(0);
     
     public void atomicIncrement() {
-        atomicCounter.incrementAndGet(); // ハードウェアレベルでの原子性
+        atomicCounter.incrementAndGet(); // CPUのCAS（compare-and-swap）命令などで、読み・足し・書きを1つの操作として行う
     }
     
     // ゲッターメソッド

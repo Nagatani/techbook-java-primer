@@ -23,7 +23,7 @@ public class Main {
         }
         
         if (!assertionsEnabled()) {
-            IO.println("注意: assert文が無効です。事前条件・不変条件・LSP違反の検査を見るには");
+            IO.println("注意: assert文が無効です。事前条件・不変条件・スタックの公理・LSP違反の検査を見るには");
             IO.println("      java -ea -cp out com.example.theory.Main <demo> で実行してください\n");
         }
         
@@ -105,13 +105,10 @@ public class Main {
         IO.println("After bubble sort: " + java.util.Arrays.toString(bubbleArray));
         
         IO.println("\n--- Coupling Examples ---");
-        CouplingExamples coupling = new CouplingExamples();
-        IO.println("Data coupling result: " + coupling.calculateTax(50000, 0.2));
+        CouplingExamples.demonstrateCoupling();
         
         IO.println("\n--- Cohesion Examples ---");
-        CohesionExamples.PrimeChecker primeChecker = new CohesionExamples.PrimeChecker();
-        IO.println("Is 17 prime? " + primeChecker.isPrime(17));
-        IO.println("Is 20 prime? " + primeChecker.isPrime(20));
+        CohesionExamples.demonstrateCohesion();
     }
     
     private static void runAlgorithmDemos() {
@@ -134,6 +131,9 @@ public class Main {
         IO.println("Searching in: " + java.util.Arrays.toString(sortedArray));
         IO.println("Index of 7: " + binarySearch.binarySearch(sortedArray, 7));
         IO.println("Index of 8: " + binarySearch.binarySearch(sortedArray, 8));
+        
+        IO.println("\n--- Operation Counting ---");
+        OperationCounting.main(new String[0]);
     }
     
     private static void runStructureDemos() {
@@ -148,6 +148,16 @@ public class Main {
         IO.println("Stack pop: " + stack.pop());
         IO.println("Stack peek after pop: " + stack.peek());
         
+        IO.println("\n--- Stack Axioms ---");
+        if (assertionsEnabled()) {
+            ArrayStack.checkAxioms();
+        } else {
+            IO.println("(assert is disabled: run with -ea to check the axioms)");
+        }
+        
+        IO.println("\n--- Encapsulation ---");
+        EncapsulationExamples.demonstrateEncapsulation();
+        
         IO.println("\n--- Dynamic Array Amortized Analysis ---");
         DynamicArray.amortizedAnalysisDemo(100);
         
@@ -159,31 +169,25 @@ public class Main {
         hashTable.performanceAnalysis();
         
         IO.println("\n--- Liskov Substitution Principle ---");
-        if (!assertionsEnabled()) {
+        if (assertionsEnabled()) {
+            try {
+                LiskovSubstitution.testLSPViolation();
+                IO.println("No LSP violation detected");
+            } catch (AssertionError e) {
+                IO.println("LSP violation detected: " + e.getMessage());
+            }
+            LiskovSubstitution.testLSPCompliance();
+            IO.println("LSP compliance test passed!");
+        } else {
             IO.println("(assert is disabled: run with -ea to check LSP)");
-            return;
         }
-        try {
-            LiskovSubstitution.testLSPViolation();
-            IO.println("No LSP violation detected");
-        } catch (AssertionError e) {
-            IO.println("LSP violation detected: " + e.getMessage());
-        }
-        LiskovSubstitution.testLSPCompliance();
-        IO.println("LSP compliance test passed!");
     }
     
     private static void runPatternDemos() {
         IO.println("\n================== PATTERN DEMOS ==================");
         
         IO.println("\n--- Singleton Pattern ---");
-        SingletonPattern.DatabaseConnection db1 = 
-            SingletonPattern.DatabaseConnection.getInstance();
-        SingletonPattern.DatabaseConnection db2 = 
-            SingletonPattern.DatabaseConnection.getInstance();
-        IO.println("Same instance? " + (db1 == db2));
-        
-        SingletonPattern.DatabaseConnectionEnum.INSTANCE.executeQuery("SELECT * FROM users");
+        SingletonPattern.demonstrateInitialization();
         
         IO.println("\n--- Decorator Pattern ---");
         DecoratorPattern.demonstrateDecoratorPattern();
@@ -216,5 +220,8 @@ public class Main {
         
         IO.println("\n--- Class Invariants Demo ---");
         BankAccountWithInvariants.demonstrateInvariants();
+        
+        IO.println("\n--- Assertion Demo ---");
+        AssertionDemo.main(new String[0]);
     }
 }

@@ -3,6 +3,12 @@ package com.example.theory.concurrent;
 /**
  * デッドロックの理論的分析
  * コフマンの4条件とデッドロック回避策
+ * method1とmethod2を別々のスレッドで呼ぶと、4条件がすべてそろう:
+ *   1. 相互排除: synchronizedのロックは一度に1つのスレッドしか持てない
+ *   2. 保持と待機: lock1（lock2）を持ったまま、もう一方のロックを待つ
+ *   3. 横取り不可: ほかのスレッドが持つロックを取り上げる手段がない
+ *   4. 循環待機: スレッドAはlock2を、スレッドBはlock1を待ち、待ちが輪になる
+ * safeMethod1・safeMethod2は、ロックを取る順序をそろえて4の循環待機をなくす
  */
 public class DeadlockExample {
     private final Object lock1 = new Object();

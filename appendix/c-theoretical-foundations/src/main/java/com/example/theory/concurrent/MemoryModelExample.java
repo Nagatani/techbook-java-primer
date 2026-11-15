@@ -13,17 +13,18 @@ public class MemoryModelExample {
     public void writer() {
         value = 42;      // 1
         ready = true;    // 2
-        // リオーダリングにより 2 が 1 より先に実行される可能性
+        // 1と2の間にhappens-before関係を作るものがないので、別のスレッドからは
+        // 2の結果だけが先に見える場合がある（コンパイラーやCPUによる並べ替え）
     }
     
     /**
      * Reader スレッド
      */
     public void reader() {
-        while (!ready) { // 3
+        while (!ready) { // 3: readyの変化がいつまでも見えない可能性もある
             Thread.yield();
         }
-        IO.println(value); // 4: 0 が出力される可能性
+        IO.println(value); // 4: 0 が出力されることをJMMは禁止しない（実際に起きるかは環境による）
     }
     
     /**
@@ -35,7 +36,7 @@ public class MemoryModelExample {
     public void writerVolatile() {
         valueVolatile = 42;      // 1
         readyVolatile = true;    // 2: volatile write
-        // happens-before 関係により 1 は 2 より先に実行
+        // 同じスレッドの中では、1は2より前に起きる（プログラム順序によるhappens-before）
     }
     
     public void readerVolatile() {
@@ -43,7 +44,8 @@ public class MemoryModelExample {
             Thread.yield();
         }
         IO.println(valueVolatile); // 4: 必ず 42 が出力
-        // happens-before 関係により 2 は 3 より先、3 は 4 より先
+        // 3がtrueを読んだなら、2の書き込みは3の読み取りより前に起きている（volatileの規則）。
+        // 1→2→3→4がhappens-beforeでつながるので、1の書き込みは4から見える
     }
     
     /**
@@ -95,6 +97,7 @@ public class MemoryModelExample {
         writer1.join(1000);
         reader1.join(1000);
         
+        // 多くの環境では42と表示されて終わる。問題は「必ずそうなる」という保証がないこと
         if (reader1.isAlive()) {
             // reader()は割り込みを確かめないので、interrupt()では止まらない
             IO.println("Reader thread may be stuck due to visibility issue!");

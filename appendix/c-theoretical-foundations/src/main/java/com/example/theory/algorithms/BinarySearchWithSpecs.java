@@ -21,6 +21,8 @@ public class BinarySearchWithSpecs {
         if (arr == null) {
             throw new IllegalArgumentException("Array cannot be null");
         }
+        // ソート済みかどうかの検査はO(n)かかる。-eaで実行すると、探索全体もO(n)になる
+        // （assertは開発中の検査に使い、本番では-eaを付けない前提で書いている）
         assert isSorted(arr) : "Array must be sorted";
         
         int left = 0;
@@ -29,6 +31,7 @@ public class BinarySearchWithSpecs {
         // ループ不変条件:
         // target が存在するなら arr[left..right] の範囲内にある
         while (left <= right) {
+            // (left + right) / 2 は、left + right がintの最大値を超えると負になる
             int mid = left + (right - left) / 2;
             
             if (arr[mid] == target) {
