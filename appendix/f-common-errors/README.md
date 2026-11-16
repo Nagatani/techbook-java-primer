@@ -1,4 +1,4 @@
-# 付録H: Java共通エラーガイド
+# 付録F: Javaのよくあるエラーと対処法
 
 ## 概要
 
@@ -7,7 +7,7 @@
 ## ディレクトリ構造
 
 ```
-h-common-errors/
+f-common-errors/
 ├── README.md                    # この文書
 ├── runtime-exceptions/          # 実行時例外の詳細
 │   ├── NullPointerException.md

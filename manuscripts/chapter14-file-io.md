@@ -568,7 +568,7 @@ CSVファイルを書き込みました: output.csv
 従来の`java.util.Date`や`Calendar`クラスは、値を変更できてしまう、月が0から始まるといった問題があるため、新しいプログラムでは使いません。
 
 本章で日付時刻を使うのは、サンプルコード14-6と14-13で現在の日時を取得する箇所だけです。
-java.time APIの使い方は、付録F「java.time API完全ガイド」で詳しく解説しています。
+java.time APIの使い方は、付録D「java.time APIによる日付と時刻の処理」で詳しく解説しています。
 主な内容は次のとおりです。
 
 - レガシーDate/Calendarの問題点
@@ -945,7 +945,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
     + 作成した一時ファイルを削除しないと、ディスクを圧迫する
 
 問題のあるコードと修正したコード、デバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter14.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter14.md`
 
 ## 章末演習
 

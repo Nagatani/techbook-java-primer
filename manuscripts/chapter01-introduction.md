@@ -106,11 +106,9 @@ Javaを通じて身につけた知識と経験は、Python、JavaScript、Go、R
     + B.14: Javaメモリモデル
     + B.15: テスト戦略
 - 付録C: ソフトウェア工学の理論的基盤
-- 付録D: 統合プロジェクト（第24・25章）のソースコード
-- 付録E: データベースプログラミング（JDBC）
-- 付録F: java.time API完全ガイド
-- 付録G: 高度なビルドとデプロイメント技術
-- 付録H: Java共通エラーガイド
+- 付録D: java.time APIによる日付と時刻の処理
+- 付録E: 高度なビルドとデプロイメント技術
+- 付録F: Javaのよくあるエラーと対処法
 
 ### サンプルコードの全文について
 
@@ -822,7 +820,7 @@ Javaを始めたばかりの段階でつまずくのは、プログラムの中�
 
 エラーメッセージの例と対処の手順に加えて、IntelliJ IDEAでのプロジェクト設定、コマンドラインでのコンパイル・実行の手順、`println()`を使ったデバッグの基本は、GitHubリポジトリにまとめています。
 <br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter01.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter01.md`
 
 > **コラム：生成AIと初学者のプログラミング学習**{.column-section}
 > 

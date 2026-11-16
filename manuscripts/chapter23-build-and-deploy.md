@@ -404,10 +404,11 @@ jpackage --type deb \
 
 実務では、プロジェクトの規模や要件に合わせて、ビルドと配布の方法を選びます。小規模なツールであれば実行可能JARで十分ですが、エンタープライズアプリケーションではより高度な配布戦略が必要になります。本章で学んだビルドと配布の知識は、あなたの作品を世界に公開するための第一歩です。
 
-Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録G「高度なビルドとデプロイメント技術」で扱います。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`
+Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録E「高度なビルドとデプロイメント技術」で扱います。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-build-and-deploy/`
 
-第24章からの2つの章では、本書で学んだ技術を組み合わせて1つのアプリケーションを作る、統合プロジェクトに取り組みます。
+第24章では、外部のシステムとしてデータベースを使う方法を学びます。
+第25章からの2つの章では、本書で学んだ技術を組み合わせて1つのアプリケーションを作る、統合プロジェクトに取り組みます。
 
 ## 章末演習
 

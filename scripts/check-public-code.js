@@ -23,7 +23,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const TARGETS = ['appendix', 'exercises'];
+const TARGETS = ['appendix', 'exercises', 'sample-code/integrated-project'];
 const LIB_CACHE = path.join(ROOT, '.cache', 'sample-code-libs');
 const JAVA_RELEASE = '25';
 const TEST_TIMEOUT_MS = 180_000;
@@ -41,8 +41,8 @@ const LIBS = [
   'com.google.code.gson:gson:2.11.0',
   'org.apache.commons:commons-lang3:3.18.0',
   'commons-cli:commons-cli:1.9.0',
-  'com.h2database:h2:2.5.252', // 付録Eの演習（JDBC）
-  'org.apache.commons:commons-csv:1.14.1', // 第25章の演習（CSVの読み込み）
+  'com.h2database:h2:2.5.252', // 第24章の演習（JDBC）
+  'org.apache.commons:commons-csv:1.14.1', // 第26章の演習（CSVの読み込み）
   'commons-io:commons-io:2.20.0', // commons-csvの依存
   'commons-codec:commons-codec:1.19.0', // commons-csvの依存
 ];

@@ -52,7 +52,7 @@ public class FixError {
 **ヒント**:
 - 一度に全部直そうとせず、エラーメッセージの最初の1件から順に直す
 - コンパイルが通っても、実行したときに出るエラーもある
-- 第1章の節「よくあるエラーと対処法」と、付録H（`appendix/h-common-errors/chapters/chapter01.md`）を参照する
+- 第1章の節「よくあるエラーと対処法」と、付録F（`appendix/f-common-errors/chapters/chapter01.md`）を参照する
 
 ## 完了チェックリスト
 

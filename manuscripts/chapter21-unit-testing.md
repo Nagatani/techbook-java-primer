@@ -758,7 +758,7 @@ JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前
     + テストの実行順序に依存しないよう、各テストの前に状態を初期化する
 
 問題のあるテストと修正したテストは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter21.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter21.md`
 
 ## まとめ
 

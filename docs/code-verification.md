@@ -7,7 +7,8 @@
 
 - 対象
   - `sample-code/`：本文のサンプルの全文（各章の`listings.json`に登録したもの。2026-11-16時点で328件）
-  - `appendix/`：付録のコード（付録Eの演習`appendix/e-database-programming/exercises/`を含む）
+  - `appendix/`：付録のコード
+  - `sample-code/integrated-project/`：統合プロジェクト（第25・26章）の初版のコード（フェーズ1〜6）
   - `exercises/`：第1〜23章の演習の解答例とテスト、総合演習（`comprehensive/`）
 - 基準
   - `javac --release 25` でコンパイルでき、非推奨・削除予定のAPIを使わない（`-Xlint:deprecation,removal`で警告ゼロ）

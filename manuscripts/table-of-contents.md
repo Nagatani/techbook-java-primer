@@ -34,21 +34,20 @@
 - [21章　ユニットテストと品質保証](chapter21-unit-testing.md)
 - [22章　ドキュメントと外部ライブラリ](chapter22-documentation-and-libraries.md)
 - [23章　ビルドとデプロイ](chapter23-build-and-deploy.md)
+- [24章　データベースプログラミング](chapter24-database-programming.md)
 
 ### 6部：統合プロジェクト編
-- [24章　統合プロジェクトの設計](chapter24-integrated-project-design.md)
-- [25章　統合プロジェクトの技術選定と実装](chapter25-integrated-project-technology.md)
+- [25章　統合プロジェクトの設計](chapter25-integrated-project-design.md)
+- [26章　統合プロジェクトの技術選定と実装](chapter26-integrated-project-technology.md)
 
 ## 付録
 - [付録一覧](appendix-index.md)
 - [付録A　開発環境の構築](appendix-a-environment-setup.md)
-- [付録B　技術的詳細解説（Deep Dive）](appendix-b-index-revised.md)
+- [付録B　技術的な詳細解説（Deep Dive）](appendix-b-index-revised.md)
 - [付録C　ソフトウェア工学の理論的基盤](appendix-c-theoretical-foundations.md)
-- [付録D　統合プロジェクト - 学生管理システム](appendix-d-integrated-project.md)
-- [付録E　データベースプログラミング](appendix-e-database-programming.md)
-- [付録F　java.time API完全ガイド](appendix-f-java-time-api.md)
-- [付録G　高度なビルドとデプロイメント技術](appendix-g-build-and-deploy.md)
-- [付録H　Javaプログラミングでよくあるエラーとその対処法](appendix-h-common-errors.md)
+- [付録D　java.time APIによる日付と時刻の処理](appendix-d-java-time-api.md)
+- [付録E　高度なビルドとデプロイメント技術](appendix-e-build-and-deploy.md)
+- [付録F　Javaのよくあるエラーと対処法](appendix-f-common-errors.md)
 
 ## 索引・資料
 - [相互参照ガイド](cross-reference-guide.md)

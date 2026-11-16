@@ -1121,4 +1121,4 @@ public class NIOServer {
     + ソケットやストリームはtry-with-resources文で確実に閉じる
 
 エラーの例と修正したコード、接続を診断するデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter16.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter16.md`

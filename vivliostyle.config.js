@@ -23,18 +23,17 @@ const markdownFiles = [
   'chapter21-unit-testing.md',
   'chapter22-documentation-and-libraries.md',
   'chapter23-build-and-deploy.md',
-  'chapter24-integrated-project-design.md',
-  'chapter25-integrated-project-technology.md',
+  'chapter24-database-programming.md',
+  'chapter25-integrated-project-design.md',
+  'chapter26-integrated-project-technology.md',
   // 付録
   'appendix-index.md', // 付録一覧
   'appendix-a-environment-setup.md', // 付録A: 開発環境の構築
-  'appendix-b-index-revised.md', // 付録B: 技術的詳細解説（Deep Dive）インデックス
+  'appendix-b-index-revised.md', // 付録B: 技術的な詳細解説（Deep Dive）
   'appendix-c-theoretical-foundations.md', // 付録C: ソフトウェア工学の理論的基盤
-  'appendix-d-integrated-project.md', // 付録D: 統合プロジェクトのソースコード
-  'appendix-e-database-programming.md', // 付録E: データベースプログラミング
-  'appendix-f-java-time-api.md', // 付録F: java.time API完全ガイド
-  'appendix-g-build-and-deploy.md', // 付録G: ビルドとデプロイ
-  'appendix-h-common-errors.md', // 付録H: Java共通エラーガイド
+  'appendix-d-java-time-api.md', // 付録D: java.time APIによる日付と時刻の処理
+  'appendix-e-build-and-deploy.md', // 付録E: 高度なビルドとデプロイメント技術
+  'appendix-f-common-errors.md', // 付録F: Javaのよくあるエラーと対処法
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',

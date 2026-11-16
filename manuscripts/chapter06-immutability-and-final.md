@@ -250,7 +250,7 @@ public class AuthenticationService {
 `class MyString extends String { }`のように継承しようとすると、コンパイルエラーになります。
 
 サンプルコード6-3の`ImmutablePoint`も、`public final class ImmutablePoint`と宣言しました。
-`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します<span class="footnote">javacのメッセージは環境の言語設定で変わります。英語の環境では`error: cannot inherit from final ImmutablePoint`と表示されます。付録Hは英語の表示で載せています。</span>。
+`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します<span class="footnote">javacのメッセージは環境の言語設定で変わります。英語の環境では`error: cannot inherit from final ImmutablePoint`と表示されます。付録Fは英語の表示で載せています。</span>。
 
 ```
 ColoredPoint.java:1: エラー: final ImmutablePointからは継承できません
@@ -647,7 +647,7 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
     + 変更されない値までコピーすると、性能が落ちる
 
 誤ったコードと修正したコード（コンパイルできる全文を含む）、不変性を確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter06.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter06.md`
 
 ## まとめ
 

@@ -879,7 +879,7 @@ GUIプログラムでは、例外が発生するよりも、画面が思った�
     + `JFrame`の`paint()`をオーバーライドして描いたり、`getGraphics()`で得た`Graphics`に直接描いたりすると、Swingのダブルバッファリングが働かない。描画は`JPanel`の`paintComponent()`に書き、描き直すときは`repaint()`を呼ぶ
 
 問題のあるコードと修正したコード、コンポーネントの境界やEDTを確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter17.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter17.md`
 
 ## まとめ
 

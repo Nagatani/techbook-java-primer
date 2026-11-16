@@ -377,25 +377,31 @@
     "overflows": [],
     "collisions": []
   },
-  "chapter24-composition": {
+  "chapter24-jdbc-architecture": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],
     "collisions": []
   },
-  "chapter24-initial-hierarchy": {
+  "chapter25-composition": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],
     "collisions": []
   },
-  "chapter24-layers": {
+  "chapter25-initial-hierarchy": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],
     "collisions": []
   },
-  "chapter25-library-selection": {
+  "chapter25-layers": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter26-library-selection": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],

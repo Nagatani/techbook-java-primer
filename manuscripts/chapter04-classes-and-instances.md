@@ -1485,7 +1485,7 @@ getterでも、内部のリストではなくコピーを返します。
     + 配列やリストなどの参照をそのまま受け渡すと、外部から内部の状態を書き換えられてしまう。防御的コピーで防ぐ
 
 エラーの例と修正したコード、`NullPointerException`の調べ方などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter04.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter04.md`
 
 ## まとめ
 

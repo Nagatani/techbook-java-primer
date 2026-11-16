@@ -62,8 +62,9 @@
   "chapter21-tdd-cycle": "fd219f9ab290992f",
   "chapter22-maven-dependency": "966b099e0a8693a4",
   "chapter23-build-flow": "e59e6ef11ebff0e5",
-  "chapter24-composition": "ebac344fdd838634",
-  "chapter24-initial-hierarchy": "2cd4ba0c671b1df7",
-  "chapter24-layers": "91cd945d581bcf22",
-  "chapter25-library-selection": "33232289c5ebc8f9"
+  "chapter24-jdbc-architecture": "3dc932dc86df82b7",
+  "chapter25-composition": "ebac344fdd838634",
+  "chapter25-initial-hierarchy": "2cd4ba0c671b1df7",
+  "chapter25-layers": "91cd945d581bcf22",
+  "chapter26-library-selection": "33232289c5ebc8f9"
 }

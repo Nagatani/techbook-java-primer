@@ -552,7 +552,7 @@ public class IntegratedDataManagementApp extends JFrame {
     + データをそろえてからモデルに1回で設定するか、表示に必要な行だけを読み込むモデルにする
 
 問題のあるコードと修正したコード（コンパイルできる全文を含む）、行番号やモデルの変更の知らせを確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter20.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter20.md`
 
 ## まとめ
 

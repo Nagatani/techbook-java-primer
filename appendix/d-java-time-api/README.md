@@ -1,4 +1,4 @@
-# 付録F: java.time API完全ガイド<small>日付時刻処理の最新手法</small>
+# 付録D: java.time APIによる日付と時刻の処理<small>日付・時刻・期間・タイムゾーン</small>
 
 この付録では、Java 8で導入されたjava.time APIについて、基本的な使い方から実践的な応用まで詳しく解説します。
 

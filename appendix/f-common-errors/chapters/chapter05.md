@@ -168,7 +168,7 @@ Child 固有メソッド
 
 以下のエラーも本章の内容に関連します。
 
-- **NullPointerException**（→ 付録H）
+- **NullPointerException**（→ 付録F）
   - 継承階層でのnull参照に注意
 - **抽象メソッドの実装忘れ**（→ 第7章）
   - 抽象クラス継承時の必須実装

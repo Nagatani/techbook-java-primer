@@ -1181,7 +1181,7 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
     + `Files.readString()`のような例外をスローするメソッドは、そのままではStreamのなかで使えない
 
 エラーの例と問題点、修正したコード、共通の対処戦略は、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter12.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter12.md`
 
 ## まとめ
 

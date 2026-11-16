@@ -702,7 +702,7 @@ public class SwingWorkerExample extends JFrame {
     + `drop()`のなかで`acceptDrop()`を呼び出していない、ドロップされたデータの形式（`DataFlavor`）に対応していないといった原因がある
 
 問題のあるコードと修正したコード、EDT違反の検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapter19.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter19.md`
 
 ## まとめ
 
