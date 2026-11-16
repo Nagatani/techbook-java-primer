@@ -26,7 +26,7 @@
 
 ## ファイルI/Oの基礎とストリーム
 
-プログラムが外部のファイルとデータをやりとりすることをファイル入出力（I/O）と呼びます。Javaでは、このデータの流れをストリーム (Stream) という統一された概念で扱います<span class="footnote">ここでのストリームは`java.io`パッケージの入出力のしくみで、第12章で学んだStream APIの`Stream`とは別のものです。どちらも「データの流れ」を表すことから同じ名前で呼ばれます。</span>。
+プログラムが外部のファイルとデータをやりとりすることをファイル入出力（I/O）と呼びます。Javaでは、このデータの流れをストリーム（Stream）という統一された概念で扱います<span class="footnote">ここでのストリームは`java.io`パッケージの入出力のしくみで、第12章で学んだStream APIの`Stream`とは別のものです。どちらも「データの流れ」を表すことから同じ名前で呼ばれます。</span>。
 ファイルなどからプログラムへデータを読み込む流れを入力ストリーム、プログラムからファイルなどへデータを書き出す流れを出力ストリームと呼びます。
 
 ストリームには、データをバイト単位で扱うバイトストリームと、文字単位で扱う文字ストリーム（キャラクタストリーム）があります。
@@ -174,7 +174,7 @@ Line 2
 
 ### テキストファイルの書き込み
 
-同様に`Files`クラスと`BufferedWriter`を使います。
+書き込みにも、読み込みと同様に`Files`クラスを使い、`BufferedWriter`で書き出します。
 
 <span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java</span>
 
@@ -295,7 +295,7 @@ public class CharacterEncodingExample {
 ファイルに書かれているのは、「こんにちは」をUTF-8で表したバイト列です。
 同じバイト列をShift_JISの対応表で読むと、別の文字の並びとして解釈されます。
 これが文字化けのしくみです。
-読むバイト列のなかにShift_JISとして解釈できない並びがあると、`Files.newBufferedReader`は文字化けした文字列を返さずに`MalformedInputException`をスローします。
+読むバイト列のなかにShift_JISとして解釈できない並びがあると、`Files.newBufferedReader`で開いたReaderは文字化けした文字列を返さずに`MalformedInputException`をスローします。
 
 ## バイナリファイルの高度な処理
 
@@ -361,7 +361,7 @@ public class DataStreamExample {
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
-これらのクラスは、内部バッファーを持つことで、`FileInputStream` や `FileOutputStream` のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
+これらのクラスは、内部バッファーを持つことで、`FileInputStream`や`FileOutputStream`のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
 
 サンプルコード14-5では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
 
@@ -913,7 +913,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 コードの見た目がそのまま実際の出力に対応するため、エスケープシーケンスを多用した従来の文字列より読みやすくなります。
 使うときは、もっとも左にある行がインデントの基準になることを意識してください。
 また、`formatted()`メソッドと組み合わせると、値を埋め込んだ内容を作れます。
-設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存する使い方も同じです。
+同じ方法で設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存することもできます。
 
 ## まとめ
 
@@ -921,7 +921,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 - ストリームは第13章で学んだ`try-with-resources`で確実に閉じる
 - テキストファイルは文字ストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱う
 - オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段である
-- NIO.2 (`java.nio.file`) の`Path`と`Files`を使うと、ファイルやディレクトリの作成・コピー・削除を簡潔に書ける
+- NIO.2（`java.nio.file`）の`Path`と`Files`を使うと、ファイルやディレクトリの作成・コピー・削除を簡潔に書ける
 - GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させる（Swingは第17章から学ぶ）
 - Text Blocksを使うと、JSONやSQLのような複数行のテキストを読みやすく書け、そのままファイルに保存できる
 
@@ -934,7 +934,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 - 文字エンコーディングの問題
     + ファイルの文字コードと異なる文字コードで読むと、文字化けや`MalformedInputException`になる（Windowsのツールで作ったShift_JISのファイルなど）
 - ファイルのロックとアクセス権限
-    + 他のプロセスが使用中のファイルや、権限のないファイルは操作できない
+    + ほかのプロセスが使用中のファイルや、権限のないファイルは操作できない
 - メモリの使いすぎ
     + 大きなファイルを一度に読み込むと`OutOfMemoryError`になる。1行ずつ処理する
 - OSによる違い
@@ -964,6 +964,6 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
     + ゲームのセーブデータをバイナリで保存する（DataOutputStream・DataInputStream）
     + 名簿ファイルの文字エンコーディングを変換する（Windows-31JからUTF-8へ）
 3. チャレンジ課題（`challenge/`）
-    + ToDoリストの保存と復元（テキスト形式、バックアップ、直列化、テキストブロック）
+    + ToDoリストの保存と復元（テキスト形式、バックアップ、直列化、Text Blocks）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
