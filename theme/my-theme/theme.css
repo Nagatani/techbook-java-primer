@@ -1998,3 +1998,22 @@ a.code-url[href^='http'] {
   word-break: break-all !important;
   overflow-wrap: anywhere !important;
 }
+
+/* 目次（table-of-contents.md の .book-toc）: 項目の右端に参照先のページ番号を出す */
+.book-toc ul {
+  padding-inline-start: 0;
+}
+.book-toc li {
+  list-style: none;
+}
+.book-toc li a {
+  display: flex;
+  align-items: baseline;
+}
+.book-toc li a::after {
+  content: target-counter(attr(href url), page);
+  flex: 1 0 auto;
+  margin-inline-start: 0.5em;
+  text-align: end;
+  border-block-end: 1px dotted #999;
+}

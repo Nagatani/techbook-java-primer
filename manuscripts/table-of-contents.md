@@ -1,5 +1,7 @@
 # 目次
 
+<div class="book-toc">
+
 ## 本編
 
 ### 1部：基礎編
@@ -55,3 +57,5 @@
 - [相互参照ガイド](cross-reference-guide.md)
 - [用語集](glossary.md)
 - [奥付](colophon.md)
+
+</div>
