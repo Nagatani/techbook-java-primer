@@ -1,11 +1,11 @@
 # Java入門書プロジェクト包括的分析レポート
 
 > **2026-11-16の状態**: 2節以降は2025-07時点の旧24章構成で書いた分析で、章番号・章タイトル・件数・課題はいまの構成と合わない（記録として残す）。いまの構成と状態は次のとおり。
-> - 本文は全23章。章タイトルの正は`manuscripts/chapterXX-*.md`の1行目、順序の正は`vivliostyle.config.js`。章ごとの節構成は`docs/summaries/`、全体の見取り図は`docs/summaries/overview.md`
-> - 付録はA〜Hの8つ（A 開発環境の構築、B 技術的な詳細解説（Deep Dive）インデックス、C ソフトウェア工学の理論的基盤、D 統合プロジェクト、E データベースプログラミング、F java.time API完全ガイド、G 高度なビルドとデプロイメント技術、H Java共通エラーガイド）。中身は`appendix/`にあり、付録Bの節は`appendix/b01`〜`b15`のディレクトリ番号を正とする
-> - 演習は`exercises/chapter01`〜`chapter23`（章番号と一致）と、付録Eの`appendix/e-database-programming/exercises/`。本文の章末には演習へのリンクだけを置く
+> - 本文は全25章（第24・25章は2026-11-16に付録Dから移した統合プロジェクト）。章タイトルの正は`manuscripts/chapterXX-*.md`の1行目、順序の正は`vivliostyle.config.js`。章ごとの節構成は`docs/summaries/`、全体の見取り図は`docs/summaries/overview.md`
+> - 付録はA〜Hの8つ（A 開発環境の構築、B 技術的な詳細解説（Deep Dive）インデックス、C ソフトウェア工学の理論的基盤、D 統合プロジェクトのソースコード、E データベースプログラミング、F java.time API完全ガイド、G 高度なビルドとデプロイメント技術、H Java共通エラーガイド）。中身は`appendix/`にあり、付録Bの節は`appendix/b01`〜`b15`のディレクトリ番号を正とする
+> - 演習は`exercises/chapter01`〜`chapter25`（章番号と一致）と、付録Eの`appendix/e-database-programming/exercises/`。本文の章末には演習へのリンクだけを置く
 > - サンプルコードは「サンプルコードX-Y」の番号で、本文には抜粋を載せ、全文を`sample-code/`に置く。対象はJava 25で、標準入出力は`IO`クラス。各章の「よくあるエラーと対処法」の詳細は付録H（`appendix/h-common-errors/`）
-> - 図はMermaidの元データ`docs/diagrams/*.mmd`（63枚）から作るSVG
+> - 図はMermaidの元データ`docs/diagrams/*.mmd`（67枚）から作るSVG
 > - 7節・9節に挙げた課題（付録B、第15章の演習の形式、章順序、サンプルコードの番号、GitHubのプレースホルダー）はすべて片付いている（`docs/analysis/issues-tracking.md`のIssue #001〜#005）
 > - 検査は`npm run check:structure`・`check:compliance`（pre-commitフック）、`check:samples`・`check:java`・`check:public-code`・`check:diagrams`・`index:check`・`lint`。作業の状態は`TODO.md`、課題は`docs/analysis/issues-tracking.md`で管理する
 
