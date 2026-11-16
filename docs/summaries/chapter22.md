@@ -7,9 +7,9 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: c156b559
   - key: "外部ライブラリの利用"
-    hash: b88bddf5
+    hash: fb6aad9c
   - key: "よくあるエラーと対処法"
-    hash: 43522835
+    hash: 57d950a6
   - key: "まとめ"
     hash: c0e02b73
   - key: "章末演習"
@@ -89,3 +89,4 @@ sections:
 - 2026-11-12以前の個別の問題（小見出しのjavac、22-1の不適切な例、TaskManagerの参照、空行、言語指定、bashへの番号、重複した導入、古い版の表、項目名＋コロン、Gsonの実行結果、Mavenの探索の記述、ライセンスのリスト、エラー集）はすべて解消済み
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-16: OkHttp・Lombok・Guavaの節（旧22-11〜22-17、約350行。演習でも後の章でも使わない）を付録G（`appendix/g-library-examples/`）へ移し、本文は役割と標準APIとの関係の表にした。サンプル番号は22-11〜22-14に詰めた（第26章と付録Eの参照も直した）。Gson・Jackson・Apache Commonsは演習で使うので本文に残した

@@ -22,7 +22,7 @@
 - **BufferedOutputStream** - 第14章
 - **BufferedReader** - 第14章
 - **BufferedWriter** - 第14章
-- **Builder パターン** - 第6章、第22章
+- **Builder パターン** - 第6章
 - **byte** - 第2章
 
 ### C
@@ -41,7 +41,7 @@
 ### D
 - **DataInputStream** - 第14章
 - **DataOutputStream** - 第14章
-- **DefaultListModel** - 第19章
+- **DefaultListModel** - 第20章
 - **@Deprecated** - 第22章
 - **DI (Dependency Injection)** - 第21章、第25章
 - **DAO (Data Access Object)** - 第24章

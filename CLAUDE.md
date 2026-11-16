@@ -51,7 +51,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 2. **Appendix Structure**: 付録はGitHubリポジトリへの参照として実装
    - 付録B: GitHubリンク形式のインデックスとして完成
-   - 付録A〜E（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D 高度なビルドとデプロイメント技術、E Javaのよくあるエラーと対処法。GitHubのディレクトリは`appendix/a-environment-setup`・`bXX-*`・`c-theoretical-foundations`・`d-build-and-deploy`・`e-common-errors`
+   - 付録A〜G（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D 高度なビルドとデプロイメント技術、E Javaのよくあるエラーと対処法、F Swingの発展的な機能、G 外部ライブラリの使用例。GitHubのディレクトリは`appendix/a-environment-setup`・`bXX-*`・`c-theoretical-foundations`・`d-build-and-deploy`・`e-common-errors`・`f-swing-advanced`・`g-library-examples`
    - 紙面の付録のページは「付録Xについて／内容／関連する章／オンライン資料」の形にそろえ、問い合わせ先は付録一覧（`appendix-index.md`）の1か所だけに置く。中身のない一般論の節（「学習のポイント」「実践への応用」）は置かない
    - 本文に入れた旧付録: 統合プロジェクト（旧D）は第25・26章、データベース（旧E）は第24章、java.time（旧F）は第6章の最後の節「日付と時刻（java.time）」（本書に必要な範囲に絞った。詳しい資料は文字のない`appendix/java-time-api/`に残し、第6章の脚注から案内する）
    - 本文内に詳細な付録内容は記載しない
@@ -115,6 +115,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 継承・オーバーライド・ポリモーフィズム・instanceof・`Object`クラスのメソッド（toString・equals・hashCode）は第5章。不変オブジェクト・final・防御的コピー・ビルダーと日付と時刻（`java.time`）は第6章。enum・Record・sealed・内部クラス・匿名クラスは第8章
    - コレクションとその選び方・ラッパークラスとオートボクシングは第9章、ジェネリクスとvarは第10章、ラムダ式・メソッド参照・Comparatorは第11章、Stream・Optional・並列ストリームは第12章、例外処理・try-with-resourcesは第13章
    - GUIの部品とレイアウト（invokeLaterの定型を含む）は第17章、イベント処理の基本・EDT・javax.swing.Timerは第18章、マウス・キーボードの詳細とSwingWorkerは第19章
+   - 本文から付録へ移したもの（2026-11-16）: 基礎課題で使わないSwingの発展的な機能（PropertyChangeSupport・ドラッグ&ドロップ・デバウンス・JTreeの動的な操作・カスタムセルエディター）は付録F、演習で使わない外部ライブラリ（OkHttp・Lombok・Guava）は付録G。本文にはAPIの要点を数文残し、演習のREADMEから付録へ案内する。演習の基礎課題で使う部品とイベントは本文から移さない
    - 後の章で学ぶ機能は、コードを動かせばわかる程度なら先に使ってよい。説明なしでは難しいもの・読み解きの邪魔になるものは別の書き方にする（例: ラムダ式の代わりに拡張for文、ジェネリクスの代わりに配列）。使い続ける場合は初出に最小限の読み方と誘導を置く
 
 13. **脚注（2026-11-12〜）**: 本文を補う内容は`<span class="footnote">…</span>`で脚注にする（PDFではページの下端に出る）。書き方と何を脚注にするかは`docs/writing-guidelines-textlint-compliance.md`の11節

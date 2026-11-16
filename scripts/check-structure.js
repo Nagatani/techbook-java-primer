@@ -61,6 +61,8 @@ const OTHER_APPENDICES = [
   { id: 'A', file: 'appendix-a-environment-setup.md', chapters: [1, 2] },
   { id: 'C', file: 'appendix-c-theoretical-foundations.md', chapters: [3, 4, 5, 7, 13, 15, 25] },
   { id: 'D', file: 'appendix-d-build-and-deploy.md', chapters: [22, 23] },
+  { id: 'F', file: 'appendix-f-swing-advanced.md', chapters: [19, 20] },
+  { id: 'G', file: 'appendix-g-library-examples.md', chapters: [22, 26] },
 ];
 const appendixTitle = (file) => stripTags(read(`manuscripts/${file}`).split('\n')[0]).replace(/^付録[A-Z]\s*/, '');
 

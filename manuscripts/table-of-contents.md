@@ -47,6 +47,8 @@
 - [付録C　ソフトウェア工学の理論的基盤](appendix-c-theoretical-foundations.md)
 - [付録D　高度なビルドとデプロイメント技術](appendix-d-build-and-deploy.md)
 - [付録E　Javaのよくあるエラーと対処法](appendix-e-common-errors.md)
+- [付録F　Swingの発展的な機能](appendix-f-swing-advanced.md)
+- [付録G　外部ライブラリの使用例](appendix-g-library-examples.md)
 
 ## 索引・資料
 - [相互参照ガイド](cross-reference-guide.md)

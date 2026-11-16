@@ -3,23 +3,23 @@ source: manuscripts/chapter20-advanced-gui.md
 summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: e1e2da5a
+    hash: 09ea6465
   - key: "JTableの詳細な実装"
     hash: 323a16d3
   - key: "テーブルのソートとフィルタリング"
     hash: da82dad9
   - key: "JTreeの実装"
-    hash: 5f2da939
+    hash: ba4b4b68
   - key: "JListの高度な使用法"
-    hash: 6ee62800
-  - key: "カスタムセルエディターの実装"
-    hash: 844f898d
+    hash: 709e52ea
+  - key: "セルの編集に使う部品を変える"
+    hash: d9b19aa4
   - key: "実践的なアプリケーション例"
-    hash: ff1737ac
+    hash: 0cdbdb8b
   - key: "よくあるエラーと対処法"
     hash: d2a7f7f8
   - key: "まとめ"
-    hash: ab64f600
+    hash: 199c5cb0
   - key: "章末演習"
     hash: feb99734
 ---
@@ -100,3 +100,4 @@ sections:
 - 2026-11-14の校閲で次を解消した: 20-5のレンダラーで中のパネルが不透明なため選択色が見えなかった不具合、20-7の抜粋で`setupLayout()`の宣言行が抜けていたこと、20-4の抜粋の`// ...`の字下げのずれ、20-2で`(`などを入力すると`PatternSyntaxException`になることと削除後に追加するとIDが重複すること、20-1・20-6の使っていないimport、20-4の使っていない変数、`setShowsRootHandles`の不正確な説明、20-7の`HashMap`による並び順
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-16: 動的なツリー操作（旧20-4）とカスタムセルエディター（旧20-6）のコード例を付録Fへ移した。本文には`insertNodeInto`・`removeNodeFromParent`・`nodeChanged`と、`DefaultCellEditor`・`getColumnClass`・`AbstractCellEditor`の要点を残し、節「セルの編集に使う部品を変える」にした。JListのレンダラー（20-4）と統合アプリ（20-5）は本文に残した

@@ -3,19 +3,19 @@ source: manuscripts/chapter19-event-advanced.md
 summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: b1a8036f
+    hash: 3c27ae30
   - key: "詳細なイベント処理の実装"
     hash: 3c0815e7
   - key: "カスタムイベントとObserverパターン"
-    hash: 2bfa1661
-  - key: "ドラッグ&ドロップの実装"
-    hash: 8104eeba
+    hash: 24b2b4c9
+  - key: "ドラッグ&ドロップ"
+    hash: c5ae2398
   - key: "パフォーマンスの最適化"
-    hash: 3fd08222
+    hash: 4e06d380
   - key: "よくあるエラーと対処法"
     hash: 45ba72cb
   - key: "まとめ"
-    hash: dc3236ce
+    hash: b7da6e7b
   - key: "章末演習"
     hash: 5f164c29
 ---
@@ -90,3 +90,4 @@ sections:
 - 19-1〜19-3の実行結果の不一致、19-3の絵文字、19-4のコメントの「インターフェース」、19-6の`Date`のimport漏れ、19-7の未使用のExecutorとコメントの誤り、エラー集の19-14（WeakReference）・見出し直後の空行・演習URLの太字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Fへ移動）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-16: 著者の指示（特定のSwingの部品やAPIの解説は簡素に）で、JavaBeansイベントモデル（旧19-5）・ドラッグ&ドロップ（旧19-6）・イベント処理の最適化（旧19-7）のコード例を付録F（`appendix/f-swing-advanced/`）へ移した。本文には`PropertyChangeSupport`の使い方、`TransferHandler`の考え方、デバウンスとスロットルの定義と`javax.swing.Timer`での実現方法を数文ずつ残した（発展課題・チャレンジ課題で使うため）。SwingWorkerは19-5になった。演習のREADMEに付録Fへの案内を加えた
