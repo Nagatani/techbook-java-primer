@@ -9,11 +9,11 @@ sections:
   - key: "抽象クラスと抽象メソッド"
     hash: 46efcc94
   - key: "インターフェイス：振る舞いの契約"
-    hash: 267a82f7
+    hash: 5596940f
   - key: "抽象クラス vs インターフェイス"
     hash: f520f16f
   - key: "Java 8以降のインターフェイス進化"
-    hash: f2c6347d
+    hash: a7a80cc5
   - key: "高度な設計パターン"
     hash: 5d230d6e
   - key: "Factoryパターン：オブジェクト生成の抽象化"
@@ -23,7 +23,7 @@ sections:
   - key: "まとめ"
     hash: f91565d3
   - key: "章末演習"
-    hash: 9321a936
+    hash: aad3675a
 ---
 
 # 第7章 抽象クラスとインターフェイス 要約

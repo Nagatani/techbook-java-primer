@@ -5,17 +5,17 @@ sections:
   - key: "本章の学習目標"
     hash: 82dc17cb
   - key: "なぜコレクションフレームワークが必要か"
-    hash: 41304d6b
+    hash: 6f7c6786
   - key: "コレクションフレームワークの全体像"
     hash: d27e4b02
   - key: "List インターフェイス"
     hash: 6d25aee4
   - key: "Set インターフェイス"
-    hash: cf5002ac
+    hash: 8f7fbd4b
   - key: "Map インターフェイス"
-    hash: 244bf186
+    hash: 6db2cb13
   - key: "イテレーターとfor-each文"
-    hash: 06b8b6e3
+    hash: e7009d23
   - key: "コレクションの選択指針"
     hash: f8a2870a
   - key: "今後の学習へ向けて"

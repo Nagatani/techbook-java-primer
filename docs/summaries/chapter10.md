@@ -11,7 +11,7 @@ sections:
   - key: "ジェネリックメソッド"
     hash: 8574b7d8
   - key: "型制約（境界のある型パラメーター）"
-    hash: 40a0e685
+    hash: 502ce6da
   - key: "ワイルドカード"
     hash: af0f3447
   - key: "var型推論とジェネリクス"
@@ -21,7 +21,7 @@ sections:
   - key: "まとめ"
     hash: 60905ffd
   - key: "章末演習"
-    hash: a4935c87
+    hash: 34423bf0
 ---
 
 # 第10章 ジェネリクス 要約

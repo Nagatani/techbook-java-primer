@@ -21,7 +21,7 @@ sections:
   - key: "まとめ"
     hash: 8c082a9c
   - key: "章末演習"
-    hash: 69df001b
+    hash: f7594b25
 ---
 
 # 第4章 クラスとインスタンス 要約

@@ -9,9 +9,9 @@ sections:
   - key: "ネットワークプログラミングの基礎"
     hash: efa62353
   - key: "ソケットプログラミングの基礎"
-    hash: 6cf973ec
+    hash: 895c5c8c
   - key: "マルチスレッドサーバーの実装"
-    hash: e7169cbf
+    hash: 7a8d599f
   - key: "HTTPクライアントの実装"
     hash: 3ece30b4
   - key: "UDP通信の実装"
@@ -23,11 +23,11 @@ sections:
   - key: "セキュリティの考慮事項"
     hash: 5a3ab45e
   - key: "パフォーマンスの最適化"
-    hash: 3ee115e2
+    hash: 8ce9cb25
   - key: "まとめ"
     hash: 5947cb2f
   - key: "章末演習"
-    hash: 2bcca8ac
+    hash: 41c2c697
   - key: "よくあるエラーと対処法"
     hash: d566a9a5
 ---

@@ -3,7 +3,7 @@ source: manuscripts/chapter20-advanced-gui.md
 summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: 58e0149c
+    hash: e1e2da5a
   - key: "JTableの詳細な実装"
     hash: 323a16d3
   - key: "テーブルのソートとフィルタリング"
@@ -21,7 +21,7 @@ sections:
   - key: "まとめ"
     hash: ab64f600
   - key: "章末演習"
-    hash: db499cdf
+    hash: feb99734
 ---
 
 # 第20章 JTable・JList・JTree 要約

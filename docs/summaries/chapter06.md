@@ -5,19 +5,19 @@ sections:
   - key: "本章の学習目標"
     hash: eb4f6c1a
   - key: "不変性の概念と重要性"
-    hash: f82fd8cb
+    hash: 9ff0b384
   - key: "finalキーワードの3つの用途"
     hash: 1fb7dbab
   - key: "不変オブジェクトの設計パターン"
     hash: 46350da9
   - key: "防御的コピーとビルダーパターン"
-    hash: c33316dc
+    hash: aba10c61
   - key: "よくあるエラーと対処法"
     hash: f9a0ab48
   - key: "まとめ"
     hash: 60f583c1
   - key: "章末演習"
-    hash: 10fa3e07
+    hash: 4cbe425c
 ---
 
 # 第6章 不変性とfinal 要約

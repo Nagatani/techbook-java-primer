@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 79f3d043
   - key: "単体テストの基礎"
-    hash: 74b71f91
+    hash: bdc3e3dc
   - key: "テストの基本形（AAAパターン）"
     hash: 90c3069e
   - key: "テストを妨げる「依存関係」"
@@ -19,7 +19,7 @@ sections:
   - key: "JUnitによる効率的なテスト"
     hash: 0abd861b
   - key: "テストのベストプラクティス"
-    hash: c8cc29d3
+    hash: 433d0d2c
   - key: "継続的インテグレーション（CI）との統合"
     hash: 605244be
   - key: "よくあるエラーと対処法"
@@ -27,7 +27,7 @@ sections:
   - key: "まとめ"
     hash: 1cc54646
   - key: "章末演習"
-    hash: a16be2ac
+    hash: 4a00c03a
 ---
 
 # 第21章 ユニットテストと品質保証 要約

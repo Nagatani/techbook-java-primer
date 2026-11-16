@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 7c65c633
   - key: "匿名クラスからラムダ式へ"
-    hash: 5424c101
+    hash: b4d44f02
   - key: "関数型インターフェイス"
     hash: ea8ce8d4
   - key: "メソッド参照"
     hash: 5674ff2c
   - key: "ラムダ式の応用例"
-    hash: 6c658899
+    hash: d34d8e2c
   - key: "関数型プログラミングの実践例"
     hash: 8168e2d8
   - key: "よくあるエラーと対処法"
@@ -19,7 +19,7 @@ sections:
   - key: "まとめ"
     hash: 5541a646
   - key: "章末演習"
-    hash: 6b83afd7
+    hash: 0527ea18
 ---
 
 # 第11章 ラムダ式と関数型インターフェイス 要約
