@@ -1,0 +1,41 @@
+{
+  "24-1": {
+    "dir": "24-01",
+    "main": "DesignDemo",
+    "excerpt": [
+      { "file": "Enrollment.java", "from": 1, "to": 4 },
+      { "file": "Undergraduate.java", "from": 1, "to": 3 },
+      { "file": "Graduate.java", "from": 1, "to": 3 },
+      { "file": "Student.java", "from": 5, "to": 10 },
+      { "file": "Student.java", "from": 31, "to": 44 }
+    ]
+  },
+  "24-2": {
+    "dir": "24-02",
+    "main": "DesignDemo",
+    "excerpt": [
+      { "file": "Grade.java", "from": 1, "to": 14 },
+      { "file": "Transcript.java", "from": 6, "to": 8 },
+      { "file": "Transcript.java", "from": 23, "to": 33 },
+      { "file": "DesignDemo.java", "from": 10, "to": 17 }
+    ]
+  },
+  "24-3": {
+    "dir": "24-03",
+    "main": "RepositoryDemo",
+    "excerpt": [
+      { "file": "StudentRepository.java", "from": 5, "to": 16 },
+      { "file": "InMemoryStudentRepository.java", "from": 7, "to": 9 },
+      { "file": "StudentService.java", "from": 6, "to": 19 }
+    ]
+  },
+  "24-4": {
+    "dir": "24-04",
+    "main": "ImportDemo",
+    "excerpt": [
+      { "file": "ImportReport.java", "from": 4, "to": 7 },
+      { "file": "StudentCsvImporter.java", "from": 14, "to": 31 },
+      { "file": "ImportDemo.java", "from": 9, "to": 21 }
+    ]
+  }
+}
