@@ -12,6 +12,8 @@
     - 設計ルール、防御的コピー、ビルダーパターンの活用
 4. 実践的な実装技術
     - 可変オブジェクトの安全な扱い、Recordによる不変クラスの簡潔な書き方
+5. 日付と時刻の扱い
+    - 標準ライブラリの不変クラス`java.time`による日付・時刻の作成、計算、差、表示と読み取り
 
 ### この章を始める前に
 
@@ -250,7 +252,7 @@ public class AuthenticationService {
 `class MyString extends String { }`のように継承しようとすると、コンパイルエラーになります。
 
 サンプルコード6-3の`ImmutablePoint`も、`public final class ImmutablePoint`と宣言しました。
-`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します<span class="footnote">javacのメッセージは環境の言語設定で変わります。英語の環境では`error: cannot inherit from final ImmutablePoint`と表示されます。付録Fは英語の表示で載せています。</span>。
+`class ColoredPoint extends ImmutablePoint { }`のように継承しようとすると、コンパイラーは次のエラーを報告します<span class="footnote">javacのメッセージは環境の言語設定で変わります。英語の環境では`error: cannot inherit from final ImmutablePoint`と表示されます。付録Eは英語の表示で載せています。</span>。
 
 ```
 ColoredPoint.java:1: エラー: final ImmutablePointからは継承できません
@@ -629,6 +631,182 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
 さらに、オブジェクトを作る段階で値が正しいかを検証できます。
 サンプルコード6-11の全文<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter06/06-11/`にあります。</span>では、`Builder`のコンストラクターがISBNとタイトルが空でないかを確かめています。
 
+## 日付と時刻（java.time）
+
+本章で学んだ不変オブジェクトの考え方は、Javaの標準ライブラリでも使われています。
+その代表が、Java 8で加わった、日付と時刻を扱う`java.time`パッケージのクラスです。
+サンプルコード6-9の`DateRange`で使った`LocalDate`もその1つで、以降の章でも日時の記録や期間の計算に使います。
+ここでは、本書を読むのに必要な範囲に絞って使い方を説明します<span class="footnote">タイムゾーンや古いAPIとの相互変換などの詳しい解説とサンプルコードは、`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/java-time-api/`にあります。</span>。
+
+### 古いDateとCalendarの問題
+
+Java 8より前は、日付と時刻を`java.util.Date`と`java.util.Calendar`で扱っていました。
+これらは可変なので、フィールドに持つと防御的コピーが欠かせず、コピーを忘れると外部から日付を書き換えられてしまいます。
+月を0〜11で数えるなど、誤りを招きやすい設計もありました。
+新しく書くプログラムでは、不変な`java.time`のクラスを使います。
+
+### 主なクラス
+
+`java.time`には、表したいものごとにクラスが分かれています。
+
+| クラス | 表すもの | 例 |
+|---|---|---|
+| `LocalDate` | 日付（年月日） | 2026-04-01 |
+| `LocalTime` | 時刻（時分秒） | 09:00 |
+| `LocalDateTime` | 日付と時刻 | 2026-04-08T09:00 |
+| `Instant` | 時間の流れのなかの1点（タイムゾーンによらない） | ログの記録時刻、処理時間の計測 |
+| `Duration` | 時・分・秒で表す時間の長さ | 90分 |
+| `Period` | 年・月・日で表す期間 | 19年8か月 |
+
+`Local`の付くクラスは、タイムゾーンの情報を持ちません。
+1つの地域のなかで使う予定や締め切りは、`LocalDate`や`LocalDateTime`で表せば足ります<span class="footnote">複数のタイムゾーンにまたがる時刻は、`ZonedDateTime`（タイムゾーン付きの日時）や`Instant`で扱います。本書のプログラムでは使いません。</span>。
+
+### 作成と計算
+
+日付と時刻のオブジェクトは、`of`（値を指定する）、`parse`（`2026-04-14`の形の文字列から読む）、`now`（今の日時）で作ります。
+`plusDays`や`minusMonths`などの計算メソッドは、本章の`ImmutablePoint`の`withX`と同じく、元のオブジェクトを変えずに新しいオブジェクトを返します。
+
+<span class="listing-number">**サンプルコード6-13**　DateBasics.java（6〜25行目）</span>
+
+```java
+public class DateBasics {
+    public static void main(String[] args) {
+        // 作り方: of（値を指定）、parse（ISO 8601の文字列から）、now（今の日時）
+        LocalDate entrance = LocalDate.of(2026, 4, 1);         // 月は1〜12で指定する
+        LocalDate deadline = LocalDate.parse("2026-04-14");
+        LocalDateTime lecture = LocalDateTime.of(2026, 4, 8, 9, 0);
+        LocalTime start = lecture.toLocalTime();
+
+        // 計算は新しいオブジェクトを返す（entranceは変わらない）
+        LocalDate oneWeekLater = entrance.plusWeeks(1);
+        IO.println("入学日: " + entrance + "、1週間後: " + oneWeekLater);
+        IO.println("入学日の曜日: " + entrance.getDayOfWeek());
+        IO.println("前期の終わり: " + entrance.plusMonths(4).minusDays(1));
+        IO.println("初回の講義: " + lecture + "（開始 " + start + "）");
+
+        // 比べる
+        IO.println("締め切りは1週間後より後か: " + deadline.isAfter(oneWeekLater));
+        IO.println("うるう年か: " + LocalDate.of(2028, 1, 1).isLeapYear());
+    }
+}
+```
+
+実行結果：
+
+```
+入学日: 2026-04-01、1週間後: 2026-04-08
+入学日の曜日: WEDNESDAY
+前期の終わり: 2026-07-31
+初回の講義: 2026-04-08T09:00（開始 09:00）
+締め切りは1週間後より後か: true
+うるう年か: true
+```
+
+月は、1〜12の数で指定します。
+`plusMonths(4)`のように月をまたぐ計算では、月末の日数やうるう年をクラスが考えてくれます。
+計算結果を使うときは、`LocalDate later = entrance.plusWeeks(1);`のように戻り値を受け取ります。
+戻り値を受け取らずに`entrance.plusWeeks(1);`とだけ書いても、`entrance`は変わりません。
+
+### 日付と時刻の差
+
+2つの日付や時刻の差は、目的に応じて3つの方法で求めます。
+
+- 日数などの1つの単位で求める
+    + `ChronoUnit.DAYS.between(開始, 終了)`
+- 年・月・日に分けて求める（日付どうし）
+    + `Period.between(開始, 終了)`
+- 時・分・秒の長さで求める（時刻どうし）
+    + `Duration.between(開始, 終了)`
+
+<span class="listing-number">**サンプルコード6-14**　DateDifference.java（8〜27行目）</span>
+
+```java
+public class DateDifference {
+    public static void main(String[] args) {
+        LocalDate borrowed = LocalDate.of(2026, 4, 20);
+        LocalDate due = borrowed.plusDays(14);              // 返却期限は14日後
+        LocalDate returned = LocalDate.of(2026, 5, 9);
+
+        // 日数の差はChronoUnit.DAYS.betweenで求める
+        long overdue = ChronoUnit.DAYS.between(due, returned);
+        IO.println("返却期限: " + due + "、延滞: " + Math.max(overdue, 0) + "日");
+
+        // 年・月・日に分けた期間はPeriod（日付どうし）
+        Period age = Period.between(LocalDate.of(2006, 7, 15), LocalDate.of(2026, 4, 1));
+        IO.println("年齢: " + age.getYears() + "歳" + age.getMonths() + "か月");
+
+        // 時・分・秒の長さはDuration（時刻どうし）
+        Duration exam = Duration.between(
+            LocalDateTime.of(2026, 7, 27, 9, 0), LocalDateTime.of(2026, 7, 27, 10, 30));
+        IO.println("試験時間: " + exam.toMinutes() + "分（" + exam + "）");
+    }
+}
+```
+
+実行結果：
+
+```
+返却期限: 2026-05-04、延滞: 5日
+年齢: 19歳8か月
+試験時間: 90分（PT1H30M）
+```
+
+`between`は「終了 − 開始」を求めるので、終了のほうが早いと負の値になります。
+`Duration`をそのまま表示すると、`PT1H30M`（1時間30分）のようなISO 8601の形になります。
+
+### 表示と読み取り
+
+日付を決まった形で表示したり、文字列から読み取ったりするには、`DateTimeFormatter`を使います。
+`ofPattern`に書式を渡して作り、`format`で表示し、`parse`で読み取ります。
+`DateTimeFormatter`も不変なので、定数にして何度も使えます。
+
+<span class="listing-number">**サンプルコード6-15**　DateFormatting.java（8〜31行目）</span>
+
+```java
+public class DateFormatting {
+    // DateTimeFormatterも不変なので、定数にして使い回せる
+    private static final DateTimeFormatter JAPANESE =
+        DateTimeFormatter.ofPattern("yyyy年M月d日(E)", Locale.JAPANESE);
+    // 既定の読み取り方（SMART）は、2月30日のような日を月末に丸めてしまう
+    private static final DateTimeFormatter SMART = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    // 入力の検査には、存在しない日を拒むSTRICTを使う（年はuuuuで書く）
+    private static final DateTimeFormatter STRICT =
+        DateTimeFormatter.ofPattern("uuuu/MM/dd").withResolverStyle(ResolverStyle.STRICT);
+
+    public static void main(String[] args) {
+        IO.println(LocalDate.of(2026, 4, 1).format(JAPANESE));                // 表示
+        IO.println("SMARTで2026/02/30 → " + LocalDate.parse("2026/02/30", SMART));
+
+        // 読み取れない文字列はDateTimeParseException（第13章で学ぶ例外）
+        for (String input : new String[] {"2026/02/28", "2026/02/30", "2026-02-28"}) {
+            try {
+                IO.println(input + " → " + LocalDate.parse(input, STRICT).format(JAPANESE));
+            } catch (DateTimeParseException e) {
+                IO.println(input + " → 日付として読み取れません");
+            }
+        }
+    }
+}
+```
+
+実行結果：
+
+```
+2026年4月1日(水)
+SMARTで2026/02/30 → 2026-02-28
+2026/02/28 → 2026年2月28日(土)
+2026/02/30 → 日付として読み取れません
+2026-02-28 → 日付として読み取れません
+```
+
+書式の`yyyy`は年、`MM`は2桁の月、`M`は桁をそろえない月、`dd`は日、`E`は曜日を表します。
+曜日を日本語で表示するには、`Locale.JAPANESE`を指定します。
+
+読み取りの既定の方法（SMART）は、2月30日のような存在しない日を月末に丸めてしまいます。
+利用者の入力を検査するときは`withResolverStyle(ResolverStyle.STRICT)`を指定し、年を`uuuu`で書きます<span class="footnote">STRICTでは`yyyy`が「紀元のなかの年」を表すので、紀元を表す`G`がない書式では読み取れません。紀元によらない年を表す`uuuu`を使います。</span>。
+書式に合わない文字列は`DateTimeParseException`になります。
+例外の受け止め方（`try`〜`catch`）は、第13章で学びます。
+
 ## よくあるエラーと対処法
 
 不変性を意識したコードでは、コンパイラーが検出するエラーよりも、コンパイルは通るのに不変性が崩れている誤りのほうが問題になります。本章の内容に関連して出会いやすい誤りは次のとおりです。
@@ -647,7 +825,7 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
     + 変更されない値までコピーすると、性能が落ちる
 
 誤ったコードと修正したコード（コンパイルできる全文を含む）、不変性を確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter06.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter06.md`
 
 ## まとめ
 
@@ -665,6 +843,8 @@ Textbook: オブジェクト指向設計 by 佐藤一郎
     + 可変オブジェクトを安全に扱う技術
 4. ビルダーパターン
     + 複雑な不変オブジェクトを構築する設計パターン
+5. 日付と時刻（`java.time`）
+    + `LocalDate`などは不変で、計算すると新しいオブジェクトを返す。差は`ChronoUnit`・`Period`・`Duration`、表示と読み取りは`DateTimeFormatter`
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。
 とくに並行プログラミングや大規模システムの開発において、その価値が発揮されます。

@@ -564,20 +564,9 @@ CSVファイルを書き込みました: output.csv
 ## 日付時刻処理について
 
 ファイル操作では、ファイルの更新日時を調べたり、ファイル名に日付を入れたりと、日付や時刻を扱う場面がよくあります。
-日付時刻は、Java 8で導入されたjava.time APIで扱います。
-従来の`java.util.Date`や`Calendar`クラスは、値を変更できてしまう、月が0から始まるといった問題があるため、新しいプログラムでは使いません。
-
+日付と時刻は、第6章で学んだ`java.time`パッケージのクラスで扱います。
 本章で日付時刻を使うのは、サンプルコード14-6と14-13で現在の日時を取得する箇所だけです。
-java.time APIの使い方は、付録D「java.time APIによる日付と時刻の処理」で詳しく解説しています。
-主な内容は次のとおりです。
-
-- レガシーDate/Calendarの問題点
-- LocalDate、LocalTime、LocalDateTime、ZonedDateTimeの使い分け
-- 日付時刻のフォーマットとパース
-- 期間計算（PeriodとDuration）
-- タイムゾーンの扱い
-- ファイル操作での実践例
-- レガシーAPIとの相互変換
+ファイルの更新日時は、`Files.getLastModifiedTime(パス)`が返す`FileTime`の`toInstant()`で`Instant`として取り出せます。
 
 ## GUIでのファイル選択: `JFileChooser`
 
@@ -945,7 +934,7 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
     + 作成した一時ファイルを削除しないと、ディスクを圧迫する
 
 問題のあるコードと修正したコード、デバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter14.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter14.md`
 
 ## 章末演習
 

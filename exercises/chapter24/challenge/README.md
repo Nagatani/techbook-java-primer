@@ -138,7 +138,7 @@ public Loan lend(int memberId, String bookId, LocalDate today) throws SQLExcepti
 - 「本が貸出中でないか調べる」と「貸出中にする」を別々のSQLにすると、その間にほかの人が同じ本を借りるおそれがある。`UPDATE ... WHERE id = ? AND on_loan = FALSE`の変更した行数で判定すれば、確かめることと書き換えることを1つのSQLで行える
 - 変更した行が0のときは、本がないのか貸出中なのかがわからない。`SELECT`で本を探し直して、理由を分ける
 - `LoanException`は`Exception`を継承した検査例外にする。呼び出す側は、利用者に理由を伝える`LoanException`と、プログラムやデータベースの障害を表す`SQLException`を分けて`catch`できる
-- 延滞日数は`ChronoUnit.DAYS.between(返却期限, 返した日)`で求め、0未満なら0にする（java.time APIは付録Dで紹介している）
+- 延滞日数は`ChronoUnit.DAYS.between(返却期限, 返した日)`で求め、0未満なら0にする（java.timeは第6章で学んだ）
 - `SUM(l.fee)`は、対象の行がすべてNULLならNULLを返す。`getInt`はNULLを0として返すので、この集計ではそのまま使える
 - 列の名前`day`・`month`などはSQLの予約語なので使わない。解答例では`loaned_on`・`due_on`・`returned_on`とした
 

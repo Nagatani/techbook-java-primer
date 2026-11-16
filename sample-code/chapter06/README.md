@@ -26,3 +26,6 @@ javac -d out *.java
 | [6-10](./06-10/) | ViewVsCopy.java | `java -cp out ViewVsCopy` |
 | [6-11](./06-11/) | Book.java | （mainメソッドなし） |
 | [6-12](./06-12/) | Book.java<br>BuilderExample.java | `java -cp out BuilderExample` |
+| [6-13](./06-13/) | DateBasics.java | `java -cp out DateBasics` |
+| [6-14](./06-14/) | DateDifference.java | `java -cp out DateDifference` |
+| [6-15](./06-15/) | DateFormatting.java | `java -cp out DateFormatting` |

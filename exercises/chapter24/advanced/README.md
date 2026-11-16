@@ -172,7 +172,7 @@ LocalDateTime start = rs.getObject("start_at", LocalDateTime.class);
 - DAOのインターフェイスには`SQLException`が出てくるが、呼び出す側（`ScheduleApp`）は`Connection`やSQLの文を知らずに済む
 - `executeBatch`は、ためたSQLごとの変更した行数を`int`の配列で返す
 - バッチの途中で失敗すると、`SQLException`の子クラスの`BatchUpdateException`が投げられる。どこまで実行されたかはドライバーによって違うので、トランザクションでまとめて取り消すのが確実である
-- 日付から曜日の文字を出すには、`DateTimeFormatter.ofPattern("M/d(E)", Locale.JAPANESE)`のようにロケールを指定する（java.time APIは付録Dで紹介している）
+- 日付から曜日の文字を出すには、`DateTimeFormatter.ofPattern("M/d(E)", Locale.JAPANESE)`のようにロケールを指定する（java.timeは第6章で学んだ）
 
 ## 応用のポイント
 

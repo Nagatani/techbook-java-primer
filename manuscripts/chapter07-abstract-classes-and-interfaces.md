@@ -622,7 +622,7 @@ class Memo implements Timestamped, Identifiable, Versioned {
 }
 ```
 
-`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、付録Dで紹介しています。</span>。
+`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、第6章の最後の節で学びました。</span>。
 全文の`main`メソッド<span class="footnote">サンプルコード7-12の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-12/`にあります。</span>で各機能を使うと、次のように表示されます。
 経過時間は実行するたびに変わるので、`main`メソッドでは1秒未満かどうかだけを表示しています。
 
@@ -1016,7 +1016,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
     + メソッド名や引数の誤りに気づけなくなる。オーバーライドするメソッドには必ず付ける
 
 誤ったコードと修正したコード（コンパイルできる全文を含む）、トラブルシューティングの進め方は、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter07.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter07.md`
 
 ## まとめ
 

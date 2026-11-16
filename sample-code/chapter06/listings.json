@@ -86,5 +86,26 @@
     "uses": [
       "6-11"
     ]
+  },
+  "6-13": {
+    "dir": "06-13",
+    "main": "DateBasics",
+    "excerpt": [
+      { "file": "DateBasics.java", "from": 6, "to": 25 }
+    ]
+  },
+  "6-14": {
+    "dir": "06-14",
+    "main": "DateDifference",
+    "excerpt": [
+      { "file": "DateDifference.java", "from": 8, "to": 27 }
+    ]
+  },
+  "6-15": {
+    "dir": "06-15",
+    "main": "DateFormatting",
+    "excerpt": [
+      { "file": "DateFormatting.java", "from": 8, "to": 31 }
+    ]
   }
 }
