@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*
+ * 前付け（目次）のテーマ。本文のテーマに重ねて使い、ノンブルだけをローマ数字（ii, iii…）にする。
+ * 表紙は cover-theme.css で、ノンブルを出さない（数えるのは i）。
+ * 本文は body-start-theme.css で第1章の最初のページを1に数え直す。
+ */
+
+@page:left {
+  @bottom-left {
+    content: counter(page, lower-roman);
+  }
+}
+
+@page:right {
+  @bottom-right {
+    content: counter(page, lower-roman);
+  }
+}

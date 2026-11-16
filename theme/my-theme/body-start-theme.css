@@ -1,0 +1,9 @@
+@charset "UTF-8";
+/*
+ * 本文の最初の文書（第1章）のテーマ。本文のテーマに重ねて使い、最初のページでノンブルを1に戻す。
+ * 前付け（表紙・目次）はローマ数字で数える（frontmatter-theme.css）。
+ */
+
+@page:nth(1) {
+  counter-reset: page 0;
+}
