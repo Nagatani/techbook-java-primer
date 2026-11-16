@@ -843,11 +843,9 @@ public class UserAccessControl {
 
 ```
 ユーザー U001 が READ をリクエストしました
-
 管理者権限での処理: READ
 セキュリティチェックを実行中...
 管理者タスクを実行: SuperAdmin レベルの権限で処理
-
 ユーザー guest_session123 が READ をリクエストしました
 ゲストユーザーのため、一部機能が制限されています
 ```
