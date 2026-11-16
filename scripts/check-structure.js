@@ -59,9 +59,9 @@ function appendixB() {
 /** B以外の付録と、関連する章（各付録の「前提知識」「関連する章」の記載に合わせて保守する） */
 const OTHER_APPENDICES = [
   { id: 'A', file: 'appendix-a-environment-setup.md', chapters: [1, 2] },
-  { id: 'C', file: 'appendix-c-theoretical-foundations.md', chapters: [3, 4, 7, 13, 15] },
-  { id: 'D', file: 'appendix-d-integrated-project.md', chapters: [3, 4, 5, 6, 7, 9, 10, 11, 13, 17, 18, 19] },
-  { id: 'E', file: 'appendix-e-database-programming.md', chapters: [4, 9, 13, 14] },
+  { id: 'C', file: 'appendix-c-theoretical-foundations.md', chapters: [3, 4, 7, 13, 15, 24] },
+  { id: 'D', file: 'appendix-d-integrated-project.md', chapters: [24, 25] },
+  { id: 'E', file: 'appendix-e-database-programming.md', chapters: [4, 9, 13, 14, 25] },
   { id: 'F', file: 'appendix-f-java-time-api.md', chapters: [4, 12, 13, 14] },
   { id: 'G', file: 'appendix-g-build-and-deploy.md', chapters: [22, 23] },
 ];
