@@ -45,6 +45,12 @@ const LIBS = [
   'org.apache.commons:commons-csv:1.14.1', // 第26章の演習（CSVの読み込み）
   'commons-io:commons-io:2.20.0', // commons-csvの依存
   'commons-codec:commons-codec:1.19.0', // commons-csvの依存
+  'com.squareup.okhttp3:okhttp-jvm:5.5.1', // 付録Gの使用例
+  'com.squareup.okio:okio-jvm:3.18.1',
+  'org.jetbrains.kotlin:kotlin-stdlib:2.1.21',
+  'org.projectlombok:lombok:1.18.48',
+  'com.google.guava:guava:33.8.0-jre',
+  'com.google.guava:failureaccess:1.0.3',
 ];
 
 // 検査しないまとまり（パス → 理由）
@@ -55,6 +61,9 @@ const EXCLUDE = {};
 const JAVAC_OPTIONS = {
   // FalseSharingDemoがJDK内部の@Contendedを使う（READMEの手順も同じオプションを付ける）
   'appendix/b14-java-memory-model': ['--add-exports', 'java.base/jdk.internal.vm.annotation=ALL-UNNAMED'],
+  // JDK 23からは、指定しない限り注釈処理をしないので、Lombokを使う例では明示する
+  'appendix/g-library-examples/code/LombokExample': ['--release', '25', '-proc:full'],
+  'appendix/g-library-examples/code/ProductExample': ['--release', '25', '-proc:full'],
 };
 
 function libJars() {
@@ -111,7 +120,9 @@ function compile(unit, out, cp) {
   fs.writeFileSync(argsFile, unit.files.map((f) => `"${f}"`).join('\n'));
   const extra = JAVAC_OPTIONS[unit.dir];
   const release = extra ? extra : ['--release', JAVA_RELEASE];
-  const r = spawnSync('javac', ['-J-Duser.language=en', ...release, '-encoding', 'UTF-8', '-Xlint:deprecation,removal', '-proc:none',
+  // 注釈処理は、JAVAC_OPTIONSで-proc:を指定したまとまり（Lombokなど）でだけ行う
+  const proc = release.some((o) => o.startsWith('-proc:')) ? [] : ['-proc:none'];
+  const r = spawnSync('javac', ['-J-Duser.language=en', ...release, '-encoding', 'UTF-8', '-Xlint:deprecation,removal', ...proc,
     '-cp', cp, '-d', out, `@${argsFile}`], { encoding: 'utf8' });
   const msg = (r.stdout + r.stderr).trim();
   return { ok: r.status === 0, warn: /warning:/.test(msg), msg };
