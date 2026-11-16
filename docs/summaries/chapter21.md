@@ -11,15 +11,15 @@ sections:
   - key: "テストを妨げる「依存関係」"
     hash: 2251daef
   - key: "疎結合設計（Dependency Injection）"
-    hash: a9b580d8
+    hash: ed90d310
   - key: "DIによるテスト容易性の向上"
     hash: 7ff715d2
   - key: "テスト駆動開発（TDD）"
-    hash: 594ec28d
+    hash: 6c376f1a
   - key: "JUnitによる効率的なテスト"
     hash: 0abd861b
   - key: "テストのベストプラクティス"
-    hash: 5708669c
+    hash: c8cc29d3
   - key: "継続的インテグレーション（CI）との統合"
     hash: 605244be
   - key: "よくあるエラーと対処法"

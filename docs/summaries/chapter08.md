@@ -7,7 +7,7 @@ sections:
   - key: "列挙型（Enum）"
     hash: 696a12ce
   - key: "レコード（Record）"
-    hash: fce99eed
+    hash: 4e045e55
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 98062c89
   - key: "内部クラス（Inner Classes）"
