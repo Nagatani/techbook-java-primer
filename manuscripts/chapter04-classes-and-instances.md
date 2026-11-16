@@ -1528,8 +1528,14 @@ getterでも、内部のリストではなくコピーを返します。
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+
+演習は、次の課題で構成されています。
+
+- 基礎課題（`basic/`）
+    + Employee・BankAccount・Product・Gameの各クラスで、カプセル化とデータの検証を練習する
+- 発展課題（`advanced/`）
+    + ログインの管理、アプリの設定の管理、口座のあいだの振込（パッケージプライベート、`this(...)`、オーバーロード）
+- チャレンジ課題（`challenge/`）
+    + ホテルの客室予約システム（パッケージ・アクセス修飾子・`this(...)`・オーバーロードを組み合わせる）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter04/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。

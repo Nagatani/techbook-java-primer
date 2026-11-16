@@ -982,8 +982,14 @@ public class TransferService {
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+
+演習は、次の課題で構成されています。
+
+- 基礎課題（`basic/`）
+    + try-catch-finally、独自例外と例外の連鎖、try-with-resources、失敗の知らせ方の使い分け
+- 発展課題（`advanced/`）
+    + 図書館の貸出と例外の階層、ゲームの設定の読み込みと例外の連鎖
+- チャレンジ課題（`challenge/`）
+    + 注文データの一括処理（例外の階層と連鎖、try-with-resources、リトライ、抑制された例外）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter13/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。

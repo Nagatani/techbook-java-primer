@@ -786,9 +786,8 @@ JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter21/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+
+演習は、次の課題で構成されています。
 
 1. 基礎課題
     + JUnitの基本的な使い方とテストケース作成

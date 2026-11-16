@@ -1206,8 +1206,14 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
+
+演習は、次の課題で構成されています。
+
+- 基礎課題（`basic/`）
+    + 学生データ・商品の売上・数のリストを、`filter`・`map`・`groupingBy`・`partitioningBy`・`reduce`などで分析する
+- 発展課題（`advanced/`）
+    + 図書館の貸出記録の集計と、`Optional`を使った会員情報の検索
+- チャレンジ課題（`challenge/`）
+    + 成績の集計レポート（`flatMap`、Collectorsの組み合わせ、`Optional`、並列ストリーム）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter12/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
