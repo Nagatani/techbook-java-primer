@@ -3,7 +3,7 @@ source: manuscripts/chapter13-exception-handling.md
 summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: f4d82246
+    hash: e7d2214b
   - key: "エラーの種類と対処法"
     hash: b35b8e8c
   - key: "例外処理の基本: `try-catch-finally`"
@@ -13,13 +13,13 @@ sections:
   - key: "独自例外と例外の連鎖"
     hash: a560fb35
   - key: "実践的な例外処理パターン"
-    hash: 0ffd7173
+    hash: 161a8288
   - key: "リソース管理の実践例"
-    hash: 0f542e61
+    hash: ca7b08b8
   - key: "例外処理とログ記録"
-    hash: caea5144
+    hash: a52c0275
   - key: "業務アプリケーションでの例外設計"
-    hash: abefcc4e
+    hash: 89bbf32c
   - key: "例外処理のベストプラクティス"
     hash: 9c812abf
   - key: "よくあるエラーと対処法"
@@ -132,3 +132,4 @@ sections:
     + 図`docs/diagrams/chapter13-circuit-breaker.mmd`はHALF_OPENを「試しに1回呼び出す」とするが、13-8のコードは1回に制限していない（2026-11-14に解消。図の前に3つの状態のリストを置き、13-8の後に、1つのスレッドから使う前提では次の1回で状態が決まることと、複数のスレッドでは排他制御が要ることを書いた。図の文言も合わせた）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-16: サーキットブレーカー（旧13-8と状態遷移図）を付録H（`appendix/h-advanced-patterns/`）へ移した（演習で使わないため）。本文には考え方を数文残し、節「失敗が続いたら呼び出しを止める」にした。リトライは演習で使うので残した。以降のサンプルは13-8〜13-15に詰めた（付録Eの第13章の参照も直した）。図の元データは`docs/diagrams/unused/`へ

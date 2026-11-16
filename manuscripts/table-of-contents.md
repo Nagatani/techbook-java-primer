@@ -49,6 +49,7 @@
 - [付録E　Javaのよくあるエラーと対処法](appendix-e-common-errors.md)
 - [付録F　Swingの発展的な機能](appendix-f-swing-advanced.md)
 - [付録G　外部ライブラリの使用例](appendix-g-library-examples.md)
+- [付録H　並行処理とネットワークの発展的なパターン](appendix-h-advanced-patterns.md)
 
 ## 索引・資料
 - [相互参照ガイド](cross-reference-guide.md)

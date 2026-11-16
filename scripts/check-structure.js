@@ -63,6 +63,7 @@ const OTHER_APPENDICES = [
   { id: 'D', file: 'appendix-d-build-and-deploy.md', chapters: [22, 23] },
   { id: 'F', file: 'appendix-f-swing-advanced.md', chapters: [19, 20] },
   { id: 'G', file: 'appendix-g-library-examples.md', chapters: [22, 26] },
+  { id: 'H', file: 'appendix-h-advanced-patterns.md', chapters: [13, 15, 16] },
 ];
 const appendixTitle = (file) => stripTags(read(`manuscripts/${file}`).split('\n')[0]).replace(/^付録[A-Z]\s*/, '');
 
@@ -218,6 +219,7 @@ const GLOSSARY_ALIASES = {
   'テキストブロック': ['"""'],
   'オブジェクト直列化': ['直列化', 'シリアライ'],
   'DI (Dependency Injection)': ['依存性の注入', '依存性注入'],
+  'Singleton パターン': ['シングルトン'],
 };
 function glossaryKeys(term) {
   const keys = new Set([term, term.replace(/\s+/g, ''), ...(GLOSSARY_ALIASES[term] || [])]);

@@ -35,6 +35,7 @@ const markdownFiles = [
   'appendix-e-common-errors.md', // 付録E: Javaのよくあるエラーと対処法
   'appendix-f-swing-advanced.md', // 付録F: Swingの発展的な機能
   'appendix-g-library-examples.md', // 付録G: 外部ライブラリの使用例
+  'appendix-h-advanced-patterns.md', // 付録H: 並行処理とネットワークの発展的なパターン
   'cross-reference-guide.md',
   'glossary.md',
   'colophon.md',
