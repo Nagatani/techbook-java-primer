@@ -32,6 +32,16 @@
       { "file": "Book.java", "from": 1, "to": 9 }
     ]
   },
+  "3-7": {
+    "dir": "03-07",
+    "main": "InheritanceTest",
+    "excerpt": [
+      { "file": "InheritanceTest.java", "from": 1, "to": 13 }
+    ],
+    "uses": [
+      "3-6"
+    ]
+  },
   "3-8": {
     "dir": "03-08",
     "main": null,
@@ -194,6 +204,16 @@
       { "file": "Constants.java", "from": 1, "to": 4 }
     ]
   },
+  "3-39": {
+    "dir": "03-39",
+    "main": "StudentArrayExample",
+    "excerpt": [
+      { "file": "StudentArrayExample.java", "from": 1, "to": 25 }
+    ],
+    "uses": [
+      "3-40"
+    ]
+  },
   "3-40": {
     "dir": "03-40",
     "main": null,
@@ -235,6 +255,16 @@
     "excerpt": [
       { "file": "ShoppingCart.java", "from": 1, "to": 37 },
       { "file": "CartItem.java", "from": 1, "to": 14 }
+    ]
+  },
+  "3-46": {
+    "dir": "03-46",
+    "main": "ShoppingCartTest",
+    "excerpt": [
+      { "file": "ShoppingCartTest.java", "from": 1, "to": 12 }
+    ],
+    "uses": [
+      "3-45"
     ]
   },
   "3-47": {

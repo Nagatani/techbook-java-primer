@@ -21,6 +21,24 @@
       { "file": "DataProcessor.java", "from": 1, "to": 17 }
     ]
   },
+  "4-4": {
+    "dir": "04-04",
+    "main": null,
+    "excerpt": [
+      { "file": "Vehicle.java", "from": 1, "to": 10 },
+      { "file": "Car.java", "from": 1, "to": 11 }
+    ]
+  },
+  "4-5": {
+    "dir": "04-05",
+    "main": "VehicleTest",
+    "excerpt": [
+      { "file": "VehicleTest.java", "from": 1, "to": 12 }
+    ],
+    "uses": [
+      "4-4"
+    ]
+  },
   "4-6": {
     "dir": "04-06",
     "main": "MathUtilsTest",
@@ -85,6 +103,16 @@
       { "file": "BankAccountV3.java", "from": 52, "to": 56 }
     ]
   },
+  "4-14": {
+    "dir": "04-14",
+    "main": "BankAccountV3Test",
+    "excerpt": [
+      { "file": "BankAccountV3Test.java", "from": 1, "to": 29 }
+    ],
+    "uses": [
+      "4-13"
+    ]
+  },
   "4-20": {
     "dir": "04-20",
     "main": null,
@@ -145,6 +173,23 @@
     "main": null,
     "excerpt": [
       { "file": "Logger.java", "from": 1, "to": 29 }
+    ]
+  },
+  "4-29": {
+    "dir": "04-29",
+    "main": null,
+    "excerpt": [
+      { "file": "UserManager.java", "from": 1, "to": 22 }
+    ]
+  },
+  "4-30": {
+    "dir": "04-30",
+    "main": null,
+    "excerpt": [
+      { "file": "User.java", "from": 1, "to": 18 },
+      { "file": "UserRepository.java", "from": 1, "to": 4 },
+      { "file": "EmailService.java", "from": 1, "to": 4 },
+      { "file": "AuthenticationService.java", "from": 1, "to": 4 }
     ]
   },
   "4-32": {

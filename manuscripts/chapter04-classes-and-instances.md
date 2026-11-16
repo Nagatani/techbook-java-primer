@@ -196,7 +196,7 @@ class ProcessorHelper {
 継承は第5章「継承とポリモーフィズム」で学びます。
 ここでは、サブクラスの`Car`から親の`Vehicle`の`protected`メンバーを使える点だけを読み取ってください。
 
-<span class="listing-number">**サンプルコード4-4**</span>
+<span class="listing-number">**サンプルコード4-4**　Vehicle.java、Car.java</span>
 
 ```java
 package com.example.base;
@@ -225,7 +225,7 @@ public class Car extends Vehicle {
 
 使用例と実行結果：
 
-<span class="listing-number">**サンプルコード4-5**</span>
+<span class="listing-number">**サンプルコード4-5**　VehicleTest.java</span>
 
 ```java
 // VehicleTest.java
@@ -627,7 +627,7 @@ public class BankAccountV3 {
 
 使用例と実行結果：
 
-<span class="listing-number">**サンプルコード4-14**</span>
+<span class="listing-number">**サンプルコード4-14**　BankAccountV3Test.java</span>
 
 ```java
 // BankAccountV3Test.java
@@ -1224,7 +1224,7 @@ public class Logger {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-29**</span>
+<span class="listing-number">**サンプルコード4-29**　UserManager.java</span>
 
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
@@ -1242,7 +1242,7 @@ public class UserManager {
     public void sendPasswordResetEmail() { /* ... */ }
     
     // ログイン処理
-    public boolean authenticate(String password) { /* ... */ }
+    public boolean authenticate(String password) { /* ... */ return false; }
     public void generateSession() { /* ... */ }
     
     // レポート生成
@@ -1260,7 +1260,7 @@ public class UserManager {
 さらに、複数の開発者が同じクラスを修正することになり、変更が競合しやすくなります。
 
 #### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-30**</span>
+<span class="listing-number">**サンプルコード4-30**　User.java、UserRepository.java、EmailService.java、AuthenticationService.java</span>
 
 ```java
 // 責任を分離したクラス設計
@@ -1293,8 +1293,8 @@ public class EmailService {
 }
 
 public class AuthenticationService {
-    public boolean authenticate(User user, String password) { /* 認証処理 */ }
-    public String generateSession(User user) { /* セッション生成 */ }
+    public boolean authenticate(User user, String password) { /* 認証処理 */ return false; }
+    public String generateSession(User user) { /* セッション生成 */ return null; }
 }
 ```
 

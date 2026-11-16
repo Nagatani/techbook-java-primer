@@ -465,7 +465,7 @@ public record Person(String name, int age) {}
 
 これだけで、コンパイラーが次のクラスを定義したのとほぼ同じ意味になります（メソッドの中身は省略しています）。
 
-<span class="listing-number">**サンプルコード8-12**</span>
+<span class="listing-number">**サンプルコード8-12**　Person.java（3〜17、21〜25、27〜31、33〜34行目）</span>
 
 ```java
 public final class Person {
@@ -481,13 +481,22 @@ public final class Person {
     public int age() { return this.age; }       // ③
     
     @Override
-    public boolean equals(Object o) { /* 全フィールドを比較する実装 */ }  // ④
+    public boolean equals(Object o) {  // ④
+        // 全フィールドを比較する実装
+        // ...
+    }
     
     @Override
-    public int hashCode() { /* 全フィールドから計算する実装 */ }  // ⑤
+    public int hashCode() {  // ⑤
+        // 全フィールドから計算する実装
+        // ...
+    }
     
     @Override
-    public String toString() { /* 全フィールドを表示する実装 */ }  // ⑥
+    public String toString() {  // ⑥
+        // 全フィールドを表示する実装
+        // ...
+    }
 }
 ```
 

@@ -41,6 +41,16 @@
       { "file": "CharacterOverrideTest.java", "from": 24, "to": 28 }
     ]
   },
+  "5-7": {
+    "dir": "05-07",
+    "main": "UserManagementSystem",
+    "excerpt": [
+      { "file": "UserManagementSystem.java", "from": 1, "to": 16 }
+    ],
+    "uses": [
+      "5-9"
+    ]
+  },
   "5-8": {
     "dir": "05-08",
     "main": "UserSystemBefore",
@@ -77,6 +87,16 @@
       { "file": "DrawingAppAfter.java", "from": 1, "to": 31 },
       { "file": "DrawingAppAfter.java", "from": 75, "to": 89 },
       { "file": "DrawingAppAfter.java", "from": 98, "to": 118 }
+    ]
+  },
+  "5-13": {
+    "dir": "05-13",
+    "main": "UserAccessControl",
+    "excerpt": [
+      { "file": "UserAccessControl.java", "from": 1, "to": 20 }
+    ],
+    "uses": [
+      "5-9"
     ]
   },
   "5-15": {

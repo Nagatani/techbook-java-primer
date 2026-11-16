@@ -19,6 +19,8 @@ javac -d out *.java
 | [4-1](./04-01/) | BankAccountV0.java<br>ProblemDemo.java | `java -cp out ProblemDemo` |
 | [4-2](./04-02/) | BankAccount.java | `java -cp out BankAccountTest` |
 | [4-3](./04-03/) | DataProcessor.java | （mainメソッドなし） |
+| [4-4](./04-04/) | Car.java<br>Vehicle.java | （mainメソッドなし） |
+| [4-5](./04-05/) | Car.java<br>Vehicle.java<br>VehicleTest.java | `java -cp out VehicleTest` |
 | [4-6](./04-06/) | MathUtils.java | `java -cp out MathUtilsTest` |
 | [4-7](./04-07/) | Product.java | `java -cp out ProductTest` |
 | [4-8](./04-08/) | Employee.java | （mainメソッドなし） |
@@ -27,6 +29,7 @@ javac -d out *.java
 | [4-11](./04-11/) | BankAccountV2.java | （mainメソッドなし） |
 | [4-12](./04-12/) | BankAccountV2.java<br>BankAccountV2Test.java | `java -cp out BankAccountV2Test` |
 | [4-13](./04-13/) | BankAccountV3.java | （mainメソッドなし） |
+| [4-14](./04-14/) | BankAccountV3.java<br>BankAccountV3Test.java | `java -cp out BankAccountV3Test` |
 | [4-20](./04-20/) | Example.java | （mainメソッドなし） |
 | [4-21](./04-21/) | User.java | （mainメソッドなし） |
 | [4-22](./04-22/) | User.java<br>UserTest.java | `java -cp out UserTest` |
@@ -35,4 +38,6 @@ javac -d out *.java
 | [4-26](./04-26/) | EventProcessor.java | （mainメソッドなし） |
 | [4-27](./04-27/) | HttpClient.java | （mainメソッドなし） |
 | [4-28](./04-28/) | Logger.java | （mainメソッドなし） |
+| [4-29](./04-29/) | UserManager.java | （mainメソッドなし） |
+| [4-30](./04-30/) | AuthenticationService.java<br>EmailService.java<br>User.java<br>UserRepository.java | （mainメソッドなし） |
 | [4-32](./04-32/) | BankAccount.java | （mainメソッドなし） |

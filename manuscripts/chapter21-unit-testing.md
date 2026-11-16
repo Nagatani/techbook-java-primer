@@ -228,7 +228,7 @@ Dependency Injection (DI)は、疎結合を実現するための具体的な設�
 以下の例では、UserServiceがUserRepositoryを外部から受け取るように変更しています。
 次の節で`UserRepository`をインターフェイスにすると、テスト時にはテスト用の代わりの実装（スタブやモック）を、本番時には実際の実装を注入できるようになります。
 
-<span class="listing-number">**サンプルコード21-5**</span>
+<span class="listing-number">**サンプルコード21-5**　UserService.java</span>
 
 ```java
 public class UserService {
@@ -248,7 +248,7 @@ public class UserService {
 
 セッターメソッドを通じて依存性を注入します。
 
-<span class="listing-number">**サンプルコード21-6**</span>
+<span class="listing-number">**サンプルコード21-6**　UserService.java</span>
 
 ```java
 public class UserService {
@@ -381,7 +381,7 @@ TDDでは、コンパイルできないこともRed（失敗）に含めます�
 `@Test`はテストメソッドに付ける印で、`assertEquals(期待値, 実際の値)`は2つの値が等しいことを確かめるメソッドです。
 JUnitの導入方法と使い方は、この章の後半で説明します。
 
-<span class="listing-number">**サンプルコード21-9**</span>
+<span class="listing-number">**サンプルコード21-9**　StringCalculatorTest.java（4〜11行目）</span>
 
 ```java
 public class StringCalculatorTest {
@@ -608,7 +608,7 @@ JUnit Jupiterの`@Nested`アノテーションを使用すると、テストを�
 @DisplayNameを使用することで、テストレポートに読みやすい説明を表示できます。
 以下の例では、正常系と異常系のテストを明確に分離しています。
 
-<span class="listing-number">**サンプルコード21-16**</span>
+<span class="listing-number">**サンプルコード21-16**　PaymentServiceTest.java（5〜26行目）</span>
 
 ```java
 public class PaymentServiceTest {

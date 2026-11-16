@@ -20,6 +20,7 @@ javac -d out *.java
 | [3-4](./03-04/) | BankAccount.java | （mainメソッドなし） |
 | [3-5](./03-05/) | BankAccount.java<br>BankAccountTest.java | `java -cp out BankAccountTest` |
 | [3-6](./03-06/) | Book.java<br>Product.java | （mainメソッドなし） |
+| [3-7](./03-07/) | Book.java<br>InheritanceTest.java<br>Product.java | `java -cp out InheritanceTest` |
 | [3-8](./03-08/) | BankTransferPayment.java<br>CreditCardPayment.java<br>PaymentMethod.java | （mainメソッドなし） |
 | [3-9](./03-09/) | BankTransferPayment.java<br>CreditCardPayment.java<br>PaymentMethod.java<br>PolymorphismTest.java | `java -cp out PolymorphismTest` |
 | [3-11](./03-11/) | Student.java | （mainメソッドなし） |
@@ -40,9 +41,11 @@ javac -d out *.java
 | [3-35](./03-35/) | MathUtils.java | （mainメソッドなし） |
 | [3-36](./03-36/) | Student.java | （mainメソッドなし） |
 | [3-37](./03-37/) | Constants.java | （mainメソッドなし） |
+| [3-39](./03-39/) | Student.java<br>StudentArrayExample.java | `java -cp out StudentArrayExample` |
 | [3-40](./03-40/) | Student.java | （mainメソッドなし） |
 | [3-41](./03-41/) | NullCheckExample.java<br>Student.java | `java -cp out NullCheckExample` |
 | [3-43](./03-43/) | Book.java | （mainメソッドなし） |
 | [3-44](./03-44/) | Book.java<br>BookLibraryTest.java | `java -cp out BookLibraryTest` |
 | [3-45](./03-45/) | CartItem.java<br>ShoppingCart.java | （mainメソッドなし） |
+| [3-46](./03-46/) | CartItem.java<br>ShoppingCart.java<br>ShoppingCartTest.java | `java -cp out ShoppingCartTest` |
 | [3-47](./03-47/) | StringComparison.java | `java -cp out StringComparison` |

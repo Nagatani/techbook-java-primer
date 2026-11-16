@@ -20,11 +20,15 @@ javac -d out *.java
 | [21-2](./21-02/) | Calculator.java | （mainメソッドなし） |
 | [21-3](./21-03/) | Calculator.java<br>CalculatorManualTest.java | `java -cp out CalculatorManualTest` |
 | [21-4](./21-04/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
+| [21-5](./21-05/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
+| [21-6](./21-06/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
 | [21-7](./21-07/) | UserRepository.java<br>UserService.java | （mainメソッドなし） |
 | [21-8](./21-08/) | UserRepository.java<br>UserRepositoryStub.java<br>UserService.java<br>UserServiceManualTest.java | `java -cp out UserServiceManualTest` |
+| [21-9](./21-09/) | StringCalculator.java<br>StringCalculatorTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0 |
 | [21-10](./21-10/) | StringCalculator.java | （mainメソッドなし） |
-| [21-14](./21-14/) | Calculator.java<br>CalculatorTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0 |
-| [21-15](./21-15/) | UserRepository.java<br>UserService.java<br>UserServiceTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0, org.mockito:mockito-core:5.24.0, org.mockito:mockito-junit-jupiter:5.24.0 |
 | [21-11](./21-11/) | StringCalculator.java<br>StringCalculatorTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0 |
 | [21-12](./21-12/) | StringCalculator.java | （mainメソッドなし） |
 | [21-13](./21-13/) | StringCalculator.java | （mainメソッドなし） |
+| [21-14](./21-14/) | Calculator.java<br>CalculatorTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0 |
+| [21-15](./21-15/) | UserRepository.java<br>UserService.java<br>UserServiceTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0, org.mockito:mockito-core:5.24.0, org.mockito:mockito-junit-jupiter:5.24.0 |
+| [21-16](./21-16/) | PaymentServiceTest.java | （mainメソッドなし）<br>外部ライブラリ: org.junit.jupiter:junit-jupiter-api:6.1.3, org.junit.platform:junit-platform-commons:6.1.3, org.jspecify:jspecify:1.0.0, org.apiguardian:apiguardian-api:1.1.2, org.opentest4j:opentest4j:1.3.0 |

@@ -393,7 +393,7 @@ user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 �
 
 この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
 
-<span class="listing-number">**サンプルコード5-7**</span>
+<span class="listing-number">**サンプルコード5-7**　UserManagementSystem.java</span>
 
 ```java
 public class UserManagementSystem {
@@ -814,7 +814,7 @@ User user = new AdminUser("A001", "admin@example.com", "SuperAdmin");
 
 `(変換したい型)変数` のように記述します。
 
-<span class="listing-number">**サンプルコード5-13**</span>
+<span class="listing-number">**サンプルコード5-13**　UserAccessControl.java</span>
 
 ```java
 public class UserAccessControl {

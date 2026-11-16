@@ -27,6 +27,7 @@ javac -d out *.java
 | [8-9](./08-09/) | DocumentType.java<br>Printable.java | （mainメソッドなし） |
 | [8-10](./08-10/) | EnumCollectionExample.java | `java -cp out EnumCollectionExample` |
 | [8-11](./08-11/) | Person.java | （mainメソッドなし） |
+| [8-12](./08-12/) | Person.java | （mainメソッドなし） |
 | [8-13](./08-13/) | Person.java<br>RecordExample.java | `java -cp out RecordExample` |
 | [8-14](./08-14/) | BankAccount.java | （mainメソッドなし） |
 | [8-15](./08-15/) | Tile.java | （mainメソッドなし） |

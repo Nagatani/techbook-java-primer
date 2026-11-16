@@ -531,7 +531,7 @@ public class Book extends Product {  // ③
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-7**</span>
+<span class="listing-number">**サンプルコード3-7**　InheritanceTest.java</span>
 
 ```java
 // InheritanceTest.java
@@ -1699,7 +1699,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-39**</span>
+<span class="listing-number">**サンプルコード3-39**　StudentArrayExample.java</span>
 
 ```java
 public class StudentArrayExample {
@@ -1985,7 +1985,7 @@ public class CartItem {
 
 #### 使用例
 
-<span class="listing-number">**サンプルコード3-46**</span>
+<span class="listing-number">**サンプルコード3-46**　ShoppingCartTest.java</span>
 
 ```java
 // ShoppingCartTest.java
