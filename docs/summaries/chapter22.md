@@ -7,9 +7,9 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: c156b559
   - key: "外部ライブラリの利用"
-    hash: e5591998
+    hash: 37a6ffec
   - key: "よくあるエラーと対処法"
-    hash: cb6911e5
+    hash: 93ce1fa7
   - key: "まとめ"
     hash: c0e02b73
   - key: "章末演習"
@@ -26,7 +26,7 @@ sections:
 - 紹介するライブラリはGson、Jackson、Apache Commons Lang/IO、OkHttp、Lombok、Guavaの6種で、それぞれpom.xmlの依存関係と使用例・実行結果を示す。Lombokを含め、使用例はすべて`sample-code/chapter22/`の全文を実行した出力
 - 外部ライブラリとクラスパス、Mavenでの依存関係の書き方を正式に説明する章で、第16章（Jackson）と第21章（JUnit・Mockito）から誘導される
 - 前提は第4章（クラス）、第13章（例外処理）、第14章（ファイルI/O）。第21章（ユニットテスト）は推奨扱い
-- ビルドツールは主にMavenを扱い、「もう1つのビルドツール：Gradle」でbuild.gradle、Gsonの依存関係の例（22-21）、Gradle Wrapper、付録Gへの誘導を示す
+- ビルドツールは主にMavenを扱い、「もう1つのビルドツール：Gradle」でbuild.gradle、Gsonの依存関係の例（22-21）、Gradle Wrapper、付録Eへの誘導を示す
 
 ## 構成上の問題
 
@@ -59,9 +59,9 @@ sections:
     + Guava: 依存関係（22-16）、不変コレクション（第9章の`List.of`との関係）、Multimap、BiMap、Table、Splitter/Joiner、キャッシュ（22-17）
     + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-18、Apache 2.0・MIT・GPL・LGPL）、testスコープとpropertiesによるバージョン一元管理（22-19。JUnitは第21章と同じ6.1.3。2026-11-14に5.13.4から更新）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-20）、よく使われる組み合わせの表
     + 実践的な開発フロー: `archetype:generate`（`-DarchetypeVersion=1.5`と`-DinteractiveMode=false`の理由、`maven.compiler.release`を25にする）、`mvn compile`、`mvn package`、dependency:tree/analyze、versions、purge-local-repository
-    + もう1つのビルドツール：Gradle: build.gradle/build.gradle.kts、Gsonの依存関係（22-21）、implementation/testImplementation、Gradle Wrapper、gradlewのコマンド、付録Gへの誘導
+    + もう1つのビルドツール：Gradle: build.gradle/build.gradle.kts、Gsonの依存関係（22-21）、implementation/testImplementation、Gradle Wrapper、gradlewのコマンド、付録Eへの誘導
 - よくあるエラーと対処法（L1159–1182）
-    + 本文に挙げるエラー: Javadocの生成エラー、依存関係の競合（dependency:treeとexclusions）、バージョン管理の問題（22-19・22-20を参照）、APIの非互換性、クラスパスの問題、設定ファイルの読み込みと型変換、ライブラリの組み合わせ。詳細は`appendix/h-common-errors/chapters/chapter22.md`
+    + 本文に挙げるエラー: Javadocの生成エラー、依存関係の競合（dependency:treeとexclusions）、バージョン管理の問題（22-19・22-20を参照）、APIの非互換性、クラスパスの問題、設定ファイルの読み込みと型変換、ライブラリの組み合わせ。詳細は`appendix/f-common-errors/chapters/chapter22.md`
 - まとめ（L1183–1233）
     + 本章で学んだ技術の核心: Javadoc、外部ライブラリ、依存関係管理（Gradleを含む）、エコシステム
     + ドキュメント化の技術的価値（効果を4つ挙げる）
@@ -75,7 +75,7 @@ sections:
 - 第16章（ネットワーク）: 16-11がJacksonを使い、本章へ誘導する。本章のOkHttpの脚注から第16章の`HttpClient`へ参照する
 - 第21章（ユニットテスト）: JUnit・Mockitoの導入を本章へ誘導する。22-19の前でJUnit・Mockitoをtestスコープで加えると述べる
 - 第23章（ビルドとデプロイ）: クラスパスの節からJARの作り方へ誘導する。第23章の「外部ライブラリを使うアプリケーションのJAR」が本章のGsonを例に`Class-Path`を説明し、まとめが`mvn package`に触れる
-- 付録G（高度なビルドとデプロイ）: Maven/Gradleによる自動化を扱う。Gradleの節から誘導する
+- 付録E（高度なビルドとデプロイ）: Maven/Gradleによる自動化を扱う。Gradleの節から誘導する
 - 第8章（レコード）: Lombokの@Dataの脚注でRecordに触れる
 - 第9章（コレクション）: Guavaの不変コレクションの説明で`List.of`・`Map.of`に触れる
 - 第14章（ファイルI/O）: Gsonのtransientの脚注と、Commons IOの説明（`Files.readAllLines`・`writeString`との比較）で参照する
@@ -87,3 +87,4 @@ sections:
 - 22-2の`toString`に`@Deprecated(forRemoval = true)`を付けていた例、22-8・22-10の実行ごとに変わる出力（ハッシュ値、カレントディレクトリのサイズ）、22-17の実行結果のGuava版Optional、Commons IOの「標準APIでは何行も必要」という記述、22-8の説明の「数値ユーティリティ」、Mavenの基本の段落がアルゴリズムの後にある順序、`mvn clean install`の説明、まとめのJPMS・GDPR・SOC2、「同期・GET/POST」の表記は、2026-11-14に解消した
 - L34–35、L200–201ほか: 文の途中で改行して読点で行を分けている（紙面への影響はない）（2026-11-16の校正で解消）
 - 2026-11-12以前の個別の問題（小見出しのjavac、22-1の不適切な例、TaskManagerの参照、空行、言語指定、bashへの番号、重複した導入、古い版の表、項目名＋コロン、Gsonの実行結果、Mavenの探索の記述、ライセンスのリスト、エラー集）はすべて解消済み
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）

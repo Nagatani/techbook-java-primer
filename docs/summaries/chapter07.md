@@ -15,11 +15,11 @@ sections:
   - key: "Java 8以降のインターフェイス進化"
     hash: a7a80cc5
   - key: "高度な設計パターン"
-    hash: 5d230d6e
+    hash: 0a38d864
   - key: "Factoryパターン：オブジェクト生成の抽象化"
     hash: 806aa247
   - key: "よくあるエラーと対処法"
-    hash: d79631ad
+    hash: 39923c84
   - key: "まとめ"
     hash: f91565d3
   - key: "章末演習"
@@ -49,7 +49,7 @@ sections:
     + `Function`を拡張する旧7-15は外し、第11章で扱う旨の誘導にした。バージョニング（7-15）から`CompletableFuture`を外した
     + 7-11の`Optional`は呼び出し側が指定した既定値を返す形にし、`Optional`は第12章へ誘導する
     + `List`と`Map`は「Java 8以降のインターフェイス進化」の冒頭で第9章へ誘導している
-- 章内の重複（ダイヤモンド問題、使い分け）がエラー集と重なっていた（2026-11-09に解消。エラー集の詳細は付録Hへ移した）
+- 章内の重複（ダイヤモンド問題、使い分け）がエラー集と重なっていた（2026-11-09に解消。エラー集の詳細は付録Fへ移した）
 - 同名の型の定義が節ごとに食い違う（2026-11-12に解消。7-5を`TextDocument`、7-12を`Memo`に改名し、7-16の`Shape`は7-1とは別に定義し直したものだと本文に書いた。7-17の`Document`は図があるので名前を残した）（2026-11-12に再度解消。7-16を`Figure`・`CircleFigure`・`RectangleFigure`・`TriangleFigure`・`FigureFactory`に改名し、図も直した。7-17の`Document`は7-5・7-12の改名で章内に1つだけになったので残した）
     + `Shape`は7-1で抽象クラス、7-16でインターフェイス
     + `Document`は7-5で`Exportable`と`Archivable`を実装するクラス、7-12で`Timestamped`などを実装する別のクラス、7-17でインターフェイス
@@ -79,7 +79,7 @@ sections:
     + defaultメソッドでnullや変更可能なリストから呼び出し側を守るラッパー（7-11。`addItem`もnullを返す実装ではfalseを返す）。`Optional`は第12章へ誘導する
 - 高度な設計パターン（L569–806）
     + 冒頭で、関数型インターフェイスへのdefaultメソッドの応用は第11章で扱うと予告する
-    + Mixin: `Timestamped`・`Identifiable`・`Versioned`を組み合わせる`Memo`（7-12）。`Duration`は脚注で付録Fへ誘導する。全文の`MixinDemo`の実行結果は、経過時間を「1秒未満か」だけで示す
+    + Mixin: `Timestamped`・`Identifiable`・`Versioned`を組み合わせる`Memo`（7-12）。`Duration`は脚注で付録Dへ誘導する。全文の`MixinDemo`の実行結果は、経過時間を「1秒未満か」だけで示す
     + トレイト: `measure()`だけを求め比較メソッドをdefaultで提供する`Measurable`（7-13）。`Comparable`版は第10章の知識が要ると断る
     + インターフェイス分離原則: 肥大化した`BadUserService`を役割ごとに分割する（7-14）
     + `ServiceV1`〜`ServiceV3`の継承とdefaultメソッドによるAPIのバージョニング（7-15）。V1からある`oldProcess`をV3で`@Deprecated(since, forRemoval = true)`にし、非推奨と削除予定の伝え方を分けて説明する
@@ -89,7 +89,7 @@ sections:
     + 利点（結合度の低減、拡張性、生成ロジックの隠蔽、一貫性）を文章で説明する
     + MySQL/PostgreSQLの接続を切り替える`DatabaseConnectionFactory`（7-18）
 - よくあるエラーと対処法（L995–1014）
-    + 出会いやすい誤り6点（抽象クラスのインスタンス化、実装忘れ、ダイヤモンド問題、defaultとstaticの混同、使い分けの誤り、@Overrideの省略）の要点と、付録H（`appendix/h-common-errors/chapters/chapter07.md`）のURL
+    + 出会いやすい誤り6点（抽象クラスのインスタンス化、実装忘れ、ダイヤモンド問題、defaultとstaticの混同、使い分けの誤り、@Overrideの省略）の要点と、付録F（`appendix/f-common-errors/chapters/chapter07.md`）のURL
 - まとめ（L1015–1032）
     + 抽象クラス、インターフェイス、Java 8以降のインターフェイス、設計パターンの4項目と、第8章（列挙型・レコード・内部クラス）への導入
 - 章末演習（L1033–1055）
@@ -128,3 +128,4 @@ sections:
 - 図chapter07-interface-implementationに本文の説明がなく、未習のジェネリクスの表記、`Cloneable`、本文に出ない`Student`が載っていた（2026-11-14に解消。本章の`Exportable`・`Archivable`・`TextDocument`の図に描き直し、7-5の後で説明する）
 - 副題「柔軟なシステム設計の契約的なプログラミングの基礎」は「の」が続いていた（2026-11-14に解消。「契約による柔軟なシステム設計」にした）
 - 章末演習のヒントが基礎課題2だけで、第6章の「課題の概要」と形が違っていた（2026-11-14に解消。第6章と同じ「課題の概要」にし、基礎・発展・チャレンジの課題を演習のREADMEに合わせて挙げた）
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）

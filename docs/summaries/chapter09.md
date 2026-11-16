@@ -21,7 +21,7 @@ sections:
   - key: "今後の学習へ向けて"
     hash: c0df5531
   - key: "よくあるエラーと対処法"
-    hash: 89ce951f
+    hash: 28149a6a
   - key: "まとめ"
     hash: 82cfb1fc
   - key: "章末演習"
@@ -77,7 +77,7 @@ sections:
     + 拡張for文とStream APIの書き比べ（9-18）。ラムダ式・メソッド参照の読み方を短く説明し、第11章・第12章へ誘導する
     + `List.of`などの不変コレクション（9-19）
 - よくあるエラーと対処法（L821–842）
-    + 出会いやすい例外・誤り7点（NullPointerException、ClassCastException（第10章へ誘導）、UnsupportedOperationException、ConcurrentModificationException、IndexOutOfBoundsException、存在しないキー、equalsとhashCodeの不整合（第5章））の要点と、付録H（`appendix/h-common-errors/chapters/chapter09.md`）のURL
+    + 出会いやすい例外・誤り7点（NullPointerException、ClassCastException（第10章へ誘導）、UnsupportedOperationException、ConcurrentModificationException、IndexOutOfBoundsException、存在しないキー、equalsとhashCodeの不整合（第5章））の要点と、付録F（`appendix/f-common-errors/chapters/chapter09.md`）のURL
 - まとめ（L843–854）
     + List・Set・Mapの比較表。次章のジェネリクスへの導入
 - 章末演習（L855–872）
@@ -112,3 +112,4 @@ sections:
     + Queueを「FIFO」と言い切っていた（PriorityQueueと矛盾）、Mapを「ハッシュテーブル」と呼んでいた、集合演算の例にJOINを挙げていた
     + 9-18の`result`の二重宣言、9-10の`added`を使っていない、計算量表の「追加（末尾）」の行名と平均の注記なし、LinkedListの実例（戻る/進む・Undo/Redo）、まとめの表の半角括弧、課題構成の重複した箇条書き、9-16のコメントの長音
 - 第2章もO記法を説明なしで使っていた（2026-11-14に解消。第2章のコメントを言葉で書き直し、O記法の初出を第9章にした）
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）

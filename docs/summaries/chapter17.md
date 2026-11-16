@@ -9,7 +9,7 @@ sections:
   - key: "カスタムコンポーネントの作成"
     hash: c159ef8d
   - key: "よくあるエラーと対処法"
-    hash: f7c62790
+    hash: e901bdf6
   - key: "まとめ"
     hash: ecfa8925
   - key: "章末演習"
@@ -59,7 +59,7 @@ sections:
     + JPanelを継承したDrawingPanelで四角形・円・文字列を描く（17-15。前半がDrawingPanel.java、後半がDrawingPanelExample.javaの`createAndShowGUI()`と断る）。getPreferredSize、paintComponentが呼ばれる時機、`super.paintComponent(g)`、Graphicsの座標と色、repaintで再描画を頼むことを①〜④で説明
     + イベントと組み合わせた描画は第18章・第19章へ誘導
 - よくあるエラーと対処法（L862–883）
-    + 本文に挙げる問題: コンポーネントが表示されない、BorderLayoutでの重なり、JPanelの背景色、JTextFieldが編集できない、EDT以外からの更新、サイズが意図どおりにならない、独自の描画で画面がちらつく（JFrameの`paint()`や`getGraphics()`で描くとダブルバッファリングが働かない。`paintComponent()`と`repaint()`を使う）。詳細は`appendix/h-common-errors/chapters/chapter17.md`
+    + 本文に挙げる問題: コンポーネントが表示されない、BorderLayoutでの重なり、JPanelの背景色、JTextFieldが編集できない、EDT以外からの更新、サイズが意図どおりにならない、独自の描画で画面がちらつく（JFrameの`paint()`や`getGraphics()`で描くとダブルバッファリングが働かない。`paintComponent()`と`repaint()`を使う）。詳細は`appendix/f-common-errors/chapters/chapter17.md`
 - まとめ（L884–898）
     + 画面の組み立て、GUIの組み立て方（invokeLater）、カスタムコンポーネントの3項目。次章のイベント処理とEDTへつなぐ
 - 章末演習（L899–921）
@@ -81,7 +81,7 @@ sections:
 - L282: H4「基本コンポーネントの詳細な使用例」が本文なしで次のH4に続く（2026-11-12に見出しを削除して解消）
 - L162–167、L385–388: 「① タイトルバー文字 - 説明」「JTextField: 説明」形式のリスト項目（階層化リストのルール違反）（2026-11-12に解消）
 - L385–388: JFormattedTextFieldを挙げるが、17-8では使わず、代わりにJSpinner・JSliderを使う（2026-11-12にリストをJSpinner・JSliderに合わせて解消）
-- L872–873: 「JPanelの背景色が反映されない」の原因を`setOpaque(true)`とするのは不正確。JPanelは標準のLook&Feelでは不透明が既定で、setOpaque(true)が必要なのは主にJLabelなど（2026-11-12に本文と付録HをJLabelの話に改めて解消）
+- L872–873: 「JPanelの背景色が反映されない」の原因を`setOpaque(true)`とするのは不正確。JPanelは標準のLook&Feelでは不透明が既定で、setOpaque(true)が必要なのは主にJLabelなど（2026-11-12に本文と付録FをJLabelの話に改めて解消）
 - 17-30の`needsRepaint`の誤りは、断片コードを削除して解消した（2026-11-11に解消）
 - 2026-11-14の校閲で見つけ、同日に解消したもの
     + 17-11: 同じコメントが2行続いていた
@@ -89,6 +89,7 @@ sections:
     + 17-14: コメント「上部：メニューバーとツールバー」が実際（メニューバーはsetJMenuBar）と違い、抜粋に`leftPanel`の定義がなかった。左側の`JTree`が実行結果の説明（src/test/resourcesのリスト）と違っていた
     + 継承階層の図に説明がなかった。見出し「JLabelとアイコンの活用」の例にアイコンがなかった
     + JPanelの節で同じ内容の文が2つ続いていた。17-8の実行結果の「スクロールバーが付き」は既定の表示（AS_NEEDED）と違っていた
-    + 「画面のちらつき」の原因を「追加・削除が1つずつ画面に反映される」としていたのは誤り。本文と付録Hを、`paint()`・`getGraphics()`で描くとダブルバッファリングが働かない話に改めた
+    + 「画面のちらつき」の原因を「追加・削除が1つずつ画面に反映される」としていたのは誤り。本文と付録Fを、`paint()`・`getGraphics()`で描くとダブルバッファリングが働かない話に改めた
 - 図chapter17-gridlayoutは2行3列で、直後の17-11（3行2列）と食い違っていた（2026-11-14に解消。図を17-11と同じ3行2列のボタンにした）
 - 未解決: 継承階層の図は「基本的なコンポーネントの配置」の冒頭にある。もっと前へ移すかどうかは著者の判断待ち
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）

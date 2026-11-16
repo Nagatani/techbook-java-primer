@@ -47,11 +47,13 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 1. **Exercise Sections**: 各章の演習はGitHubリポジトリへのリンクのみで提供
    - 章内に演習セクションは意図的に設けない方針
    - リンク形式: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapterXX/`
-   - 全25章でこの形式を採用済み
+   - 全26章でこの形式を採用済み
 
 2. **Appendix Structure**: 付録はGitHubリポジトリへの参照として実装
    - 付録B: GitHubリンク形式のインデックスとして完成
-   - 付録C〜G: 最小限の構成で、詳細はGitHubリポジトリで提供する方針
+   - 付録A〜F（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D java.time APIによる日付と時刻の処理、E 高度なビルドとデプロイメント技術、F Javaのよくあるエラーと対処法。GitHubのディレクトリは`appendix/a-*`・`bXX-*`・`c-*`・`d-java-time-api`・`e-build-and-deploy`・`f-common-errors`
+   - 紙面の付録のページは「付録Xについて／内容／関連する章／オンライン資料」の形にそろえ、問い合わせ先は付録一覧（`appendix-index.md`）の1か所だけに置く。中身のない一般論の節（「学習のポイント」「実践への応用」）は置かない
+   - 本文に入れた付録: 旧付録D（統合プロジェクト）は第25・26章、旧付録E（データベース）は第24章。旧付録Fのjava.timeは、本文の途中に章を入れると以降の章番号がすべてずれるため付録Dとして残した
    - 本文内に詳細な付録内容は記載しない
 
 3. **Writing Style Decisions**:
@@ -61,7 +63,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 外来語の長音（2026-11-11〜）: JIS Z 8301:2019（旧規定の「3音以上の語は語末の長音を省く」は削除され、内閣告示「外来語の表記」による）に従い、英語の語末の-er・-or・-arに当たる語は長音符号を付ける（コンストラクター、パラメーター、コンパイラー、サーバー、リスナー）。語末が-yの語は付けない（メモリ、ディレクトリ、ライブラリ、ファクトリ）。`prh-rules.yml`に語を登録し、`npm run lint`（textlintのprhルール）で検査する。新しい語が出てきたら`prh-rules.yml`に足す。コードの識別子・コメントと図の元データ（`docs/diagrams/*.mmd`）はtextlintの対象外なので、図の文字は手で合わせる
 
 4. **Code Listing Numbers**: 
-   - 全25章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
+   - 全26章で付与済み。各章で出現順に1から連番（2026-11-07に欠番・重複・旧章番号を解消）
    - 形式: **サンプルコードX-Y** で統一（Xはファイル名の章番号と一致させる）
    - 言語指定のあるコードブロック（bash・mermaidなどを除く）はすべて番号を付ける。コードブロックを足したら`node scripts/sample-code.js number`で番号を振り直す（2026-11-08に番号のない78件を解消）
 
@@ -75,8 +77,8 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
    - 付録・演習のコードは`npm run check:public-code`でコンパイルとテストを確かめる（2026-11-11〜、CIはコンパイルを失敗扱い）。Maven・Gradleのビルド、GUIの起動、READMEの手順どおりの実行は、DockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
 
-7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/h-common-errors/chapters/chapterXX.md`で提供する
-   - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/h-common-errors/chapters/chapterXX.md`）を置く
+7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/f-common-errors/chapters/chapterXX.md`で提供する
+   - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapterXX.md`）を置く
    - GitHub側のコードには番号を付けない。コンパイルできる全文は`chapters/chapterXX-code/`に置く
 
 9. **標準入出力はIOクラス（2026-11-10〜）**: Javaのコードの標準入出力は、Java 25の`java.lang.IO`（`IO.println`・`IO.print`・`IO.readln`）で書く
@@ -120,14 +122,15 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 脚注の文字はtextlintで本文の文に数えられる（文の長さ・読点の数）。脚注を足したら`npm run lint`で確かめる
    - 外部URLへのMarkdownのリンク（`[文字](https://...)`）と「※」の注意書きは使わない。テーマのCSSがリンクのURLから作る脚注は、PDFでクリックできない。リンクの文字だけを本文に残してURLを脚注に書き、「※」の注記は脚注か本文の文にする（`check:compliance`が問題にする。2026-11-13）
 
-14. **統合プロジェクトの章（2026-11-16〜）**: 付録Dの「統合プロジェクト（学生管理システム）」を本文の第24・25章に移した
-   - 第24章は設計（要求の整理、設計判断記録、継承と合成、計算で求められる値、層と依存の向き、例外の設計、段階的な計画）、第25章は技術選定（標準API・自作・ライブラリの比べ方、保存先・CSV・GUI・ログ・テストの事例）と、初版から改善版へ移す手順・振り返り
-   - 付録Dの6フェーズのコード（`appendix/d-integrated-project/`）は、各章の知識だけで書いた「初版」として残し、第24章がその設計の問題を事例にする。付録Dの原稿はコードの場所と動かし方だけ（題名「統合プロジェクトのソースコード」、付録の文字は変えない）
-   - 改善版のコードは見本として`sample-code/chapter24/`・`chapter25/`に置く（アプリケーション全体の書き換えは演習の課題）。チャレンジ課題はコードの解答例を作らず、方針（`solutions/challenge-guide.md`）だけを置く（著者の指示「完全な回答例はほどほどでよい」）
-   - ライブラリの版・公開日・ライセンス・依存・大きさを本文に書くときは、Maven Centralのpom.xmlとJARで確かめ、確かめた日を要約に残す。技術の選定の観点の正式な説明は第22章で、第24・25章はそれを適用する（方針12）
+14. **データベースと統合プロジェクトの章（2026-11-16〜）**: 旧付録Eの「データベースプログラミング」を第24章、旧付録Dの「統合プロジェクト（学生管理システム）」を第25・26章に移した
+   - 第25章は設計（要求の整理、設計判断記録、継承と合成、計算で求められる値、層と依存の向き、例外の設計、段階的な計画）、第26章は技術選定（標準API・自作・ライブラリの比べ方、保存先・CSV・GUI・ログ・テストの事例）と、初版から改善版へ移す手順・振り返り
+   - 第24章はH2（2.5.252）で、SQLの基本・JDBC・PreparedStatement・DAO・java.time・トランザクション・HikariCP・バッチを扱う。演習は`exercises/chapter24/`（旧`appendix/e-database-programming/exercises/`）
+   - 統合プロジェクトの6フェーズのコード（`sample-code/integrated-project/`、旧`appendix/d-integrated-project/`）は、各章の知識だけで書いた「初版」として残し、第25章がその設計の問題を事例にする。`check:public-code`の対象に加えてある
+   - 改善版のコードは見本として`sample-code/chapter25/`・`chapter26/`に置く（アプリケーション全体の書き換えは演習の課題）。チャレンジ課題はコードの解答例を作らず、方針（`solutions/challenge-guide.md`）だけを置く（著者の指示「完全な回答例はほどほどでよい」）
+   - ライブラリの版・公開日・ライセンス・依存・大きさを本文に書くときは、Maven Centralのpom.xmlとJARで確かめ、確かめた日を要約に残す。技術の選定の観点の正式な説明は第22章で、第25・26章はそれを適用する（方針12）
 
 5. **Chapter Structure**:
-   - 全25章構成（2026-11-16に第24章「統合プロジェクトの設計」・第25章「統合プロジェクトの技術選定と実装」を加えた。目次では「6部：統合プロジェクト編」）
+   - 全26章構成（2026-11-16に第24章「データベースプログラミング」を5部：実践編の最後に、第25章「統合プロジェクトの設計」・第26章「統合プロジェクトの技術選定と実装」を「6部：統合プロジェクト編」として加えた）
    - 第21章（ユニットテスト）の配置は現状維持
    - 各章末にGitHubリポジトリへの演習リンクを配置
 
@@ -177,7 +180,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run check:java`: Compile the numbered Java samples with javac and report real compile errors
 - `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
 - `npm run check:samples`: For samples whose full source is in `sample-code/`, check that the manuscript code equals the recorded line ranges, the caption matches, the full source compiles, and its output matches 実行結果
-- `npm run check:public-code`: Compile the code in `appendix/` and `exercises/` with Java 25 and run their JUnit tests (`-- --no-test` for compile only, `-- exercises/chapter06` to narrow by path). CI fails on compile errors; test results are informational
+- `npm run check:public-code`: Compile the code in `appendix/`, `exercises/`, and `sample-code/integrated-project/` with Java 25 and run their JUnit tests (`-- --no-test` for compile only, `-- exercises/chapter06` to narrow by path). CI fails on compile errors; test results are informational
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
 - `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source

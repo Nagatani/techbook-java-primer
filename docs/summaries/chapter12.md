@@ -13,7 +13,7 @@ sections:
   - key: "高度なStream操作"
     hash: c16c8a23
   - key: "よくあるエラーと対処法"
-    hash: c636565d
+    hash: 417f7880
   - key: "まとめ"
     hash: a44ec8da
   - key: "章末演習"
@@ -73,7 +73,7 @@ sections:
     + 早期終了操作allMatch・anyMatch・limit（12-20、`peek`の説明あり）、toArray（12-21、引数なしは`Object[]`を返す旨と`String[]::new`）
     + groupingBy＋collectingAndThen・averagingIntの複合パイプライン（12-22）。返すMapの種類は仕様で決まっておらず（現在の実装はHashMap）表示順が保証されない注意と`TreeMap::new`
 - よくあるエラーと対処法（L1166–1185）
-    + 中間操作の順序の誤り、終端操作の書き忘れ、並列ストリームでの共有データの変更、Optionalの誤用、同じ処理の繰り返しによる性能の低下、ラムダ式のなかでの検査例外の要点と、`appendix/h-common-errors/chapters/chapter12.md`のURL
+    + 中間操作の順序の誤り、終端操作の書き忘れ、並列ストリームでの共有データの変更、Optionalの誤用、同じ処理の繰り返しによる性能の低下、ラムダ式のなかでの検査例外の要点と、`appendix/f-common-errors/chapters/chapter12.md`のURL
 - まとめ（L1186–1201）
     + Stream API（第11章のComparatorを`sorted`に渡す点を含む）、Optional（値がない場合があることを型で示し、扱い忘れによるNPEを減らす）、並列ストリーム、高度なStream操作の4項目
 - 章末演習（L1202–1213）
@@ -83,7 +83,7 @@ sections:
 
 - 第9章（コレクション）: 実装クラスの選び方は第9章「コレクションの選択指針」へ誘導（2026-11-11に重複を解消）
 - 第11章（ラムダ式）: Comparatorは第11章が正式に説明し、本章は`sorted`に渡すだけ（2026-11-11に重複を解消）。第11章の実践例の節がStreamを先取りする（案内あり）
-- 第13章（例外処理）・第14章（ファイルI/O）: エラー一覧で`Files.readString`の検査例外に触れる（詳細は付録H）
+- 第13章（例外処理）・第14章（ファイルI/O）: エラー一覧で`Files.readString`の検査例外に触れる（詳細は付録F）
 - 第15章（マルチスレッド）: 並列ストリームのスレッドセーフティを先取り（案内あり）。第15章の並列ストリームの説明は本章へ寄せた
 - 付録B.08（Stream APIの内部実装）: 本章からは参照していない
 
@@ -96,7 +96,7 @@ sections:
 - L342、L558: 「…する方法。」「…ベストプラクティス。」の体言止めの断片文（2026-11-12に解消）
 - 12-9: Userのフィールドを`Optional<String>`にしており、12-12の「フィールドにOptionalを使うのはアンチパターン」とする説明と矛盾する。L415のコメント「getUserは…」はコードに存在しないメソッドを指している（2026-11-12に解消。フィールドは`String`にして`getEmail`で`Optional`を返し、コメントも直した）
 - 12-17、12-32、12-38の変数の二重宣言（2026-11-11に解消。番号は旧番号）
-- 付録H（`appendix/h-common-errors/chapters/chapter12.md`）に、コメント「非同期安全でない」（L88）、ArrayListへの並列追加でConcurrentModificationExceptionが出るという不正確な説明（L97）、合計を変数`count`に代入する例（L184）が残る。エラーメッセージはjavac形式に直っている（2026-11-12に解消）
+- 付録F（`appendix/f-common-errors/chapters/chapter12.md`）に、コメント「非同期安全でない」（L88）、ArrayListへの並列追加でConcurrentModificationExceptionが出るという不正確な説明（L97）、合計を変数`count`に代入する例（L184）が残る。エラーメッセージはjavac形式に直っている（2026-11-12に解消）
 - 2026-11-14の校閲で直したもの
     + 並列化のオーバーヘッドを「スレッドの作成」としていた説明、並列では順序が保てないように読める説明と条件4
     + 12-14の実行結果が環境で変わる断りがない問題（倍率を小数1桁にし、脚注を付けた）
@@ -104,3 +104,4 @@ sections:
     + まとめのOptionalの過大な表現、12-20のallMatchのコメントの誤り、12-21の「サイズを指定した配列生成」のコメント、groupingByのMapをHashMapと断定する表現、12-12の「コレクションにOptionalを使用」の名前
     + 12-05・12-17・12-18・12-22にあった旧版の`AdvancedSortExample.java`を、`Student.java`に置き換えた
     + 図の直後に浮いていた文（旧L71）と、12-5の前の重複した文を削除した
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）

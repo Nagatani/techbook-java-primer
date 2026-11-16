@@ -13,7 +13,7 @@ sections:
   - key: "パフォーマンスの最適化"
     hash: 3fd08222
   - key: "よくあるエラーと対処法"
-    hash: 03aa1999
+    hash: 21d48ee1
   - key: "まとめ"
     hash: dc3236ce
   - key: "章末演習"
@@ -30,7 +30,7 @@ sections:
 - SwingWorkerを正式に説明する章（2026-11-11に第17章の説明をここへ集め、型パラメーターと各メソッドの役割を文章とリストで説明した）
 - 19-1・19-2の冒頭で第18章の18-6・18-7から何を加えるかを示し、基本と応用の境界を明示する（2026-11-11）
 - 本文はサンプルプログラム（19-1〜19-8）とその前置きの段落が中心で、Observerパターンやデバウンス・スロットルの概念の説明は短い
-- 「よくあるエラーと対処法」は要点のリストだけで、エラーのコードは付録Hにある
+- 「よくあるエラーと対処法」は要点のリストだけで、エラーのコードは付録Fにある
 
 ## 構成上の問題
 
@@ -60,7 +60,7 @@ sections:
     + イベント処理の最適化技術: mouseMovedに対するデバウンス（setRepeats(false)のTimerをrestart）とスロットル（前回処理時刻との差で間引く）（19-7）
     + SwingWorkerによる非同期処理: 18-12のThread＋invokeLaterとの対比から入り、`SwingWorker<T, V>`の型パラメーター、doInBackground・process・done、execute、cancel/isCancelled、setProgressと`"progress"`プロパティを説明する。`cancel(true)`はスレッドへの割り込みで`sleep`中なら`InterruptedException`で終わること、キャンセル後の`get()`は`CancellationException`になるので`isCancelled()`を先に確かめることも書く。図（chapter19-swingworker）と、publish/processによる進捗表示とキャンセルの例（19-8、`done()`で`get()`の結果からアイテム数を出す）。実行結果では、processが最新の1件だけを書くので番号が飛ぶことと、キャンセルのメッセージはボタンのリスナーが出すことを断る
 - よくあるエラーと対処法（L691–706）
-    + 本文に挙げる問題: SwingWorkerから直接UIを更新する、DocumentListenerのなかでのテキストの変更、リスナーの削除忘れによるメモリリーク、ドロップが受け入れられない。詳細は`appendix/h-common-errors/chapters/chapter19.md`
+    + 本文に挙げる問題: SwingWorkerから直接UIを更新する、DocumentListenerのなかでのテキストの変更、リスナーの削除忘れによるメモリリーク、ドロップが受け入れられない。詳細は`appendix/f-common-errors/chapters/chapter19.md`
 - まとめ（L707–721）
     + 重要なポイント6項目と「実践での活用」の1段落
 - 章末演習（L722–743）
@@ -78,7 +78,7 @@ sections:
 
 ## 校正で見つけた個別の問題
 
-- L612–613: 付録Hへ移す前の指摘が残っている。DocumentListener内で同じDocumentを変更すると、無限ループではなく`IllegalStateException: Attempt to mutate in notification`が発生する。本来の対処法であるDocumentFilterにも触れていない。本文の要点と付録Hを`IllegalStateException`の説明に直し、DocumentFilterの対処法を加えた（2026-11-12に解消）
+- L612–613: 付録Fへ移す前の指摘が残っている。DocumentListener内で同じDocumentを変更すると、無限ループではなく`IllegalStateException: Attempt to mutate in notification`が発生する。本来の対処法であるDocumentFilterにも触れていない。本文の要点と付録Fを`IllegalStateException`の説明に直し、DocumentFilterの対処法を加えた（2026-11-12に解消）
 - 前置き文（L35、L97、L159、L227、L307、L378、L468、L544）は「以下のコードは…」の1段落にクラスの機能を列挙するだけで、直前の1文（「…の例です。」）と内容が重なる箇所がある。重なる1文と誇張（「優れたユーザーエクスペリエンス」「網羅」など）を削り、1文ごとに改行した。19-7の前にデバウンスとスロットルの定義をリストで置いた（2026-11-12に解消）
 - 2026-11-14の校閲で次のものを直した
     + 19-2の同時押しの検出で、Ctrl+Sのダイアログのあとに`VK_CONTROL`が集合に残り、Shift+Dで誤って行を複製していた（focusLostで集合を空にした）
@@ -87,4 +87,5 @@ sections:
     + 19-2・19-5・19-6・19-7の抜粋で、コンストラクターの宣言行や閉じ括弧が抜けて括弧の対応が崩れていた
     + 学習目標の並びが本文と逆、まとめの「完全な処理方法」の誇張、19-1の`MouseAdapter`の二重登録と`setComponentPopupMenu()`の説明不足、19-5でタイマーのたびに`Random`を作っていた
 - 未解決: 19-6の`new Date(file.lastModified())`は非推奨ではないため残した（`java.time`に替えるかは任意）
-- 19-1〜19-3の実行結果の不一致、19-3の絵文字、19-4のコメントの「インターフェース」、19-6の`Date`のimport漏れ、19-7の未使用のExecutorとコメントの誤り、エラー集の19-14（WeakReference）・見出し直後の空行・演習URLの太字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Hへ移動）
+- 19-1〜19-3の実行結果の不一致、19-3の絵文字、19-4のコメントの「インターフェース」、19-6の`Date`のimport漏れ、19-7の未使用のExecutorとコメントの誤り、エラー集の19-14（WeakReference）・見出し直後の空行・演習URLの太字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Fへ移動）
+- 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
