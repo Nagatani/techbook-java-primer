@@ -1952,7 +1952,7 @@ class Child extends Parent {
     + 実際の型と互換性のない型へキャストすると実行時に発生する。`instanceof`で型を確かめてからキャストする
 
 エラーの例と修正したコード、継承階層を確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter05.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter05.md`
 
 ## まとめ
 

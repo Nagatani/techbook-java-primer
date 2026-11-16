@@ -462,7 +462,7 @@ id=2を検索: false
 
 ## 日付と時刻の列とjava.time
 
-日付と時刻の列は、`java.time`パッケージのクラスで直接読み書きできます<span class="footnote">JDBC 4.2（Java 8）から使えます。古い`java.sql.Date`と`java.sql.Timestamp`は、可変の`java.util.Date`を継承したクラスなので、新しく書くコードでは使いません。`java.time`の使い方は付録Dで扱います。</span>。
+日付と時刻の列は、`java.time`パッケージのクラスで直接読み書きできます<span class="footnote">JDBC 4.2（Java 8）から使えます。古い`java.sql.Date`と`java.sql.Timestamp`は、可変の`java.util.Date`を継承したクラスなので、新しく書くコードでは使いません。`java.time`の使い方は第6章で学びました。</span>。
 
 | SQLの型 | Javaのクラス |
 |---|---|
@@ -670,6 +670,9 @@ SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
     + `setAutoCommit(false)`のあとで`commit`を呼び忘れている
 - 接続を閉じ忘れる
     + try-with-resourcesを使わずに`Connection`や`ResultSet`を作り、資源が残り続ける
+
+エラーメッセージの例と修正したコード（コンパイルできる全文を含む）は、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter24.md`
 
 ## まとめ
 

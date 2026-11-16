@@ -608,7 +608,7 @@ var型推論を使うかどうかは、次の基準で判断します。
     + 初期化子のない宣言や`null`での初期化では型を推論できない
 
 エラーの例とエラーメッセージ、修正したコード（コンパイルできる全文を含む）、共通の対処戦略は、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter10.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter10.md`
 
 ## まとめ
 

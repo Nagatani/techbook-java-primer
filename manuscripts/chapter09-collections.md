@@ -871,7 +871,7 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
     + 独自クラスを`HashSet`の要素や`HashMap`のキーに使うときは、両方を一貫した形でオーバーライドする（第5章）
 
 エラーの例と修正したコード、デバッグのコツは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter09.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter09.md`
 
 ## まとめ
 

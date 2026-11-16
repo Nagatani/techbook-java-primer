@@ -77,7 +77,7 @@ chapter23/solutions/CalculatorApp.class
 - ライブラリのJARを展開してクラスファイルと一緒にまとめるか、マニフェストの`Class-Path`でライブラリのJARを指定する
 - できたJARを、ライブラリのない別のフォルダーにコピーしても動くか（Fat JARの場合）を確かめる
 
-Fat JARは本文ではまとめで名前を挙げるだけなので、詳しくは付録Eを読んでから取り組みます。
+Fat JARは本文ではまとめで名前を挙げるだけなので、詳しくは付録Dを読んでから取り組みます。
 実際の開発では、MavenやGradle（第22章）のプラグインでFat JARを作ります。
 
 解答例: `JsonTool.java`と、ライブラリの取得からFat JARの作成までを行う`build-fatjar.sh`（ライブラリをMaven Centralからダウンロードするため、ネットワークへの接続が要ります）。

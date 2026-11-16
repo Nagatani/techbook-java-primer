@@ -432,7 +432,7 @@ enumは定義していない値を表せないので、新しい値を受け取�
 なお、列挙型を対象にした`switch`文の`case`には、`ACTIVE`のように定数名だけを書くのが一般的です<span class="footnote">Java 20以前は、`case Status.ACTIVE:`のように型名を付けるとコンパイルエラーになりました。Java 21からは型名を付けても書けます。</span>。
 
 エラーの例と修正したコードは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter08.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter08.md`
 
 ## レコード（Record）
 

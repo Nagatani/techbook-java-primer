@@ -41,7 +41,7 @@ Javaの標準APIは、JDKを入れればどこでも使え、版を上げても�
 標準APIで足りる例として、次のようなものがあります。
 
 - 日付と時刻の計算
-    + `java.time`パッケージ（付録D）。かつて広く使われたJoda-Timeの考え方を取り入れて、Java 8で標準になった
+    + `java.time`パッケージ（第6章）。かつて広く使われたJoda-Timeの考え方を取り入れて、Java 8で標準になった
 - HTTPの通信
     + `java.net.http.HttpClient`（Java 11から）。単純なリクエストならライブラリは要らない
 - ログの出力
@@ -621,6 +621,9 @@ Gitを使っているなら、各手順の終わりにコミットしておく�
     + テストを先に書き、小さな手順で移す
 - データベースの表の構造を、古いデータのことを考えずに変える
     + データの移し方を決め、設計判断記録に残してから変える
+
+SQLiteのドライバーやネイティブアクセスの警告、BOMによる見出しの不一致など、ライブラリを組み込むときのエラーメッセージの例と対処法は、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter26.md`
 
 ## まとめ
 

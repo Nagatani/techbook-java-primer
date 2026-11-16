@@ -1147,8 +1147,8 @@ Wrapperのファイルは、Gradleをインストールした環境で`gradle wr
 ```
 
 本書では、ビルドツールの例としてMavenを使います。
-Gradleでビルドを自動化する設定やプロジェクトの例は、付録E「高度なビルドとデプロイメント技術」のGitHubリポジトリで提供しています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-build-and-deploy/`
+Gradleでビルドを自動化する設定やプロジェクトの例は、付録D「高度なビルドとデプロイメント技術」のGitHubリポジトリで提供しています。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-build-and-deploy/`
 
 ## よくあるエラーと対処法
 
@@ -1172,7 +1172,7 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
     + 複数のログフレームワークやJSONライブラリが混在すると、動作が不安定になる
 
 エラーの例とエラーメッセージ、修正したコードや設定（コンパイルできる全文を含む）は、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter22.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter22.md`
 
 ## まとめ
 

@@ -1310,7 +1310,7 @@ public class ResiliencePatterns {
     + `shutdown()`を呼ばないと、スレッドプールが残ってプログラムが終了しない
 
 エラーの例と修正したコード（コンパイルできる全文を含む）、デッドロックの検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter15.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter15.md`
 
 ## 本章のまとめ
 

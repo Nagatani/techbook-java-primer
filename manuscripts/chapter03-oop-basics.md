@@ -2081,7 +2081,7 @@ Java 16以降には、本章で学んだクラスを簡潔に、安全に書く�
 
 誤ったコードと修正したコード、エラーに出会ったときの基本的な対処の手順は、GitHubリポジトリにまとめています。
 <br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter03.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter03.md`
 
 ## まとめ
 

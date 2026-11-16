@@ -1442,7 +1442,7 @@ public class ImportExample {
 
 エラーメッセージの例と修正の手順は、GitHubリポジトリにまとめています。
 <br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapter02.md`
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter02.md`
 
 ## まとめ
 

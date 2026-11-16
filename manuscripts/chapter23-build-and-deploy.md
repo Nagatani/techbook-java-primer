@@ -378,6 +378,25 @@ jpackage --type deb \
 コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます<span class="footnote">インストーラーを作るには、OSごとに追加のツールが要ります。Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`を使います。Linuxでは、`app-image`を作るときにも`objcopy`（binutilsパッケージ）が必要です。</span>。
 先ほどの`--type app-image`はインストーラーではなく、インストールせずにそのまま実行できるアプリケーションのフォルダーを作ります。
 
+## よくあるエラーと対処法
+
+ビルドと配布のエラーは、コードではなく、JARの中身やマニフェスト、実行する環境の違いが原因で起こります。
+本章の内容に関連して出会いやすいエラーと、その原因は次のとおりです。
+
+- 「メイン・マニフェスト属性がありません」
+    + マニフェストに`Main-Class`がない。最後の行のあとに改行がないと、その行は読み飛ばされる
+- `NoClassDefFoundError`
+    + 外部ライブラリが実行のときのクラスパスにない。`java -jar`では`-cp`の指定は無視される
+- `getResourceAsStream`が`null`を返す
+    + リソースファイルをJARに入れ忘れているか、JARのなかのパスが違う
+- `UnsupportedClassVersionError`
+    + 新しい版のJavaでコンパイルしたクラスを、古い版のJavaで実行している
+- jpackageでインストーラーを作れない
+    + 別のOS向けのパッケージを作ろうとしているか、OSごとに必要なツールが入っていない
+
+エラーメッセージの例と対処法は、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter23.md`
+
 ## まとめ
 
 本章では、開発したJavaアプリケーションをほかのユーザーに届けるための基本的な手法を学びました。
@@ -404,8 +423,8 @@ jpackage --type deb \
 
 実務では、プロジェクトの規模や要件に合わせて、ビルドと配布の方法を選びます。小規模なツールであれば実行可能JARで十分ですが、エンタープライズアプリケーションではより高度な配布戦略が必要になります。本章で学んだビルドと配布の知識は、あなたの作品を世界に公開するための第一歩です。
 
-Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録E「高度なビルドとデプロイメント技術」で扱います。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/e-build-and-deploy/`
+Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録D「高度なビルドとデプロイメント技術」で扱います。<br>
+`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-build-and-deploy/`
 
 第24章では、外部のシステムとしてデータベースを使う方法を学びます。
 第25章からの2つの章では、本書で学んだ技術を組み合わせて1つのアプリケーションを作る、統合プロジェクトに取り組みます。
