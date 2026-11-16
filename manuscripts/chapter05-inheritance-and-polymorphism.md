@@ -1244,11 +1244,12 @@ public class PaymentExample {
 
 実際の開発では、最初から理想的な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
 
-#### ステップ1：重複コードの発見
+#### ステップ1：重複コードを見つける
 
-実際の開発現場でよく見られる、独立して作成されたクラス間でのコード重複を示します。WordDocumentクラスとPDFDocumentクラスで、同じようなフィールドとメソッドが重複して実装されています。このような重複は保守性を低下させ、バグの温床となるため、継承を使ってリファクタリングします。
+次の`WordDocument`と`PDFDocument`は、別々に作られたクラスです。
+`PDFDocument`は、ページ数（`pageCount`）と`generatePDF()`を除くと、`WordDocument`とまったく同じフィールドとメソッドを持っています（`// ...`で省いた`open()`・`save()`・`close()`も1行も違いません）。
 
-<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java</span>
+<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java（1〜5、26〜30行目）</span>
 
 ```java
 public class WordDocument {
@@ -1281,26 +1282,7 @@ public class PDFDocument {
     private String content;      // ①と重複
     private long fileSize;       // ①と重複
     private int pageCount;       // ⑤
-    
-    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
-        this.filename = filename;
-        this.content = content;
-        this.pageCount = pageCount;
-    }
-    
-    public void open() {         // ②と完全重複
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {         // ③と完全重複
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {        // ④と完全重複
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
+    // ...
     
     public void generatePDF() {  // ⑥
         IO.println("PDF形式で " + pageCount + " ページを生成");
@@ -1308,94 +1290,16 @@ public class PDFDocument {
 }
 ```
 
-これらのクラスを使用した例：
+ここにExcelのドキュメントを表すクラスを加えると、同じ3つのメソッドを3回書くことになります。
+このような重複は、修正するときに直し漏れを生みます。
+保存の処理を変えたくなったら、すべてのクラスを同じように直さなければなりません。
 
-<span class="listing-number">**サンプルコード5-21**　DocumentTest.java</span>
+#### ステップ2：共通部分を親クラスに移す
 
-```java
-public class DocumentTest {
-    public static void main(String[] args) {
-        // WordDocumentの操作
-        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
-        word.open();
-        word.save();
-        word.close();
-        
-        IO.println();
-        
-        // PDFDocumentの操作  
-        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
-        pdf.open();
-        pdf.save();
-        pdf.generatePDF();
-        pdf.close();
-    }
-}
-```
+共通のフィールドとメソッドを、親クラス`Document`に移します。
+子クラスからも使えるよう、フィールドは`protected`にします。
 
-実行結果：
-
-```
-report.docx を開いています
-report.docx を保存しました: 18バイト
-report.docx を閉じました
-
-manual.pdf を開いています
-manual.pdf を保存しました: 17バイト
-PDF形式で 10 ページを生成
-manual.pdf を閉じました
-```
-
-#### 重複コードの分析
-
-- ①　共通フィールド
-    + filename、content、fileSizeというドキュメントの基本属性がWordDocumentとPDFDocumentで重複して定義されている
-- ②　ファイルオープン処理
-    + open()メソッドの実装が両クラスで同一
-- ③　保存処理
-    + save()メソッドでfileSizeを計算し、メッセージ出力する処理が重複
-- ④　クローズ処理
-    + close()メソッドでcontentをnullにし、メッセージを出力するロジックが重複
-- ⑤　固有フィールド
-    + pageCount（ページ数）はPDF特有の属性として追加
-- ⑥　固有メソッド
-    + generatePDF()はPDF特有の機能として実装
-
-<span class="listing-number">**サンプルコード5-22**　ExcelDocument.java</span>
-
-```java
-public class ExcelDocument {
-    private String filename;
-    private String content;
-    private long fileSize;
-    
-    public ExcelDocument(String filename, String content) {
-        this.filename = filename;
-        this.content = content;
-    }
-    
-    // また同じメソッドの重複！
-    public void open() {
-        IO.println(filename + " を開いています");
-    }
-    
-    public void save() {
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-}
-```
-
-これは重複コードの問題を示す例です。3つのドキュメントクラスで同じメソッドが繰り返し実装されています。
-
-#### ステップ2：共通部分の抽出
-
-<span class="listing-number">**サンプルコード5-23**　Document.java</span>
+<span class="listing-number">**サンプルコード5-21**　Document.java</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -1431,9 +1335,12 @@ public class Document {
 }
 ```
 
-#### ステップ3：子クラスの再実装
+#### ステップ3：子クラスは違う部分だけを書く
 
-<span class="listing-number">**サンプルコード5-24**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
+子クラスは`Document`を継承し、自分に固有の部分だけを書きます。
+コンストラクターでは`super(...)`で親クラスの初期化を呼び、保存の方法が違う`PDFDocument`と`ExcelDocument`は`save()`をオーバーライドします。
+
+<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -1491,7 +1398,7 @@ public class ExcelDocument extends Document {
 
 リファクタリング後の使用例：
 
-<span class="listing-number">**サンプルコード5-25**　RefactoredDocumentTest.java</span>
+<span class="listing-number">**サンプルコード5-23**　RefactoredDocumentTest.java</span>
 
 ```java
 public class RefactoredDocumentTest {
@@ -1541,16 +1448,8 @@ data.xlsx にグラフを作成
 data.xlsx を閉じました
 ```
 
-#### オーバーライドと特化機能の実装
-
-- ①　親クラスのコンストラクター呼び出し
-    + super()により、親クラスの初期化処理を適切に実行
-- ②　オーバーライドアノテーション
-    + @Overrideによりコンパイラーが親クラスのメソッドを正しくオーバーライドしていることを検証
-- ③　特化した振る舞い
-    + Excelファイルはメタデータを含むため、ファイルサイズが大きくなるよう設定
-- ④　固有メソッドの追加
-    + createChart()はExcel特有の機能として、親クラスには存在しないメソッドを追加
+`word.save()`は親クラスの`save()`を、`pdf.save()`と`excel.save()`はそれぞれオーバーライドした`save()`を呼んでいます。
+`applyTemplate()`・`generatePDF()`・`createChart()`のように、親クラスにないメソッドを子クラスに加えることもできます。
 
 #### リファクタリングの効果
 
@@ -1575,7 +1474,7 @@ data.xlsx を閉じました
 `ArrayList<String>`は、第4章でも使った、文字列を必要なだけ追加できる入れ物です（第9章「コレクションフレームワーク」で学びます）。
 `pop`と`peek`の`throw new EmptyStackException()`は、スタックが空のときに処理を中断してエラーを知らせる書き方です（第13章「例外処理」で学びます）。
 
-<span class="listing-number">**サンプルコード5-26**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
+<span class="listing-number">**サンプルコード5-24**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -1615,7 +1514,7 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-27**　MyStack.java</span>
+<span class="listing-number">**サンプルコード5-25**　MyStack.java</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -1663,35 +1562,20 @@ public class MyStack {
 この設計はリスコフ置換原則<span class="footnote">計算機科学者のバーバラ・リスコフが1987年の講演で示した考え方にちなむ名前で、英語ではLiskov Substitution Principle（LSP）といいます。リスコフは2008年にチューリング賞を受賞しています。</span>に違反します。
 リスコフ置換原則とは、親クラスの型で扱っている箇所に子クラスのインスタンスを渡しても、プログラムが正しく動き続けなければならないという原則です。
 
-<span class="listing-number">**サンプルコード5-28**　Employee.java、SystemAdministrator.java、RegularEmployee.java、EmployeeManagementSystem.java</span>
+<span class="listing-number">**サンプルコード5-26**　Employee.java（1〜2、10〜14行目）、RegularEmployee.java（1、5〜11行目）、EmployeeManagementSystem.java</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
 public class Employee {
-    protected String employeeId;
-    protected String name;
-    
-    public Employee(String employeeId, String name) {
-        this.employeeId = employeeId;
-        this.name = name;
-    }
+    // ...
     
     public void modifySystemSettings() {
         IO.println(name + " がシステム設定を変更しました");
     }
 }
 
-public class SystemAdministrator extends Employee {
-    public SystemAdministrator(String employeeId, String name) {
-        super(employeeId, name);
-    }
-    // modifySystemSettingsメソッドを適切に継承
-}
-
 public class RegularEmployee extends Employee {
-    public RegularEmployee(String employeeId, String name) {
-        super(employeeId, name);
-    }
+    // ...
     
     @Override
     public void modifySystemSettings() {
@@ -1710,22 +1594,15 @@ public class EmployeeManagementSystem {
 }
 ```
 
-`RegularEmployee`の`modifySystemSettings()`にある`throw new UnsupportedOperationException(...)`は、「この操作には対応していない」ことを表す例外を発生させ、処理をその場で中断させる文です。
-例外の発生と扱い方は、第13章「例外処理」で詳しく学びます。
-
-この問題は、すべての従業員がシステム管理権限を持つという誤った仮定に基づいた継承設計の典型的な例です。
-一般従業員は従業員ですがシステム管理権限を持たないため、`modifySystemSettings()`メソッドで例外を投げることになります。
-`Employee`型として扱っている`performSystemMaintenance`に`RegularEmployee`を渡すと処理が止まるので、リスコフ置換原則に違反しています。
-
-この問題を適切に解決するためには、継承階層を見直し、共通の振る舞いのみを親クラスに定義してください。よりよい解決策として、インターフェイスを使用した設計がありますが、これについては第7章「抽象クラスとインターフェイス」で詳しく説明します。
-
-> 注意：継承を使用する際は、「is-a」の関係だけでなく、すべての子クラスが親クラスの振る舞いを適切に実装できるかを慎重に検討してください。
+`throw new UnsupportedOperationException(...)`は、「この操作には対応していない」ことを表す例外を発生させて処理を中断する文です（例外は第13章で学びます）。
+`Employee`型として扱う`performSystemMaintenance`に`RegularEmployee`を渡すと処理が止まるので、リスコフ置換原則に違反しています。
+すべての子クラスに当てはまる振る舞いだけを親クラスに置き、権限のような一部の子クラスだけの能力は、第7章で学ぶインターフェイスで表します。
 
 #### 誤用例3：正方形と長方形の問題
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-29**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
+<span class="listing-number">**サンプルコード5-27**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -1819,7 +1696,7 @@ public class RectangleSquareTest {
 `interface Shape`は「`getArea()`メソッドを持つ」という約束だけを決めた型で、`implements Shape`と書いたクラスはその約束どおりに`getArea()`を実装します。
 ここでは、`Rectangle`と`Square`が継承の関係を持たず、それぞれが独立に`getArea()`を実装している点だけを読み取ってください。
 
-<span class="listing-number">**サンプルコード5-30**　Shape.java</span>
+<span class="listing-number">**サンプルコード5-28**　Shape.java</span>
 
 ```java
 // 解決策の例：インターフェイスを使用
@@ -1867,78 +1744,14 @@ class Square implements Shape {
 
 > 重要：継承を使用する際は、親クラスの契約（期待される振る舞い）を子クラスが満たせるかを確認してください。
 
-#### 誤用例4：多重継承の代替として無理な継承
+#### 誤用例4：複数の能力を継承で表そうとする
 
-Javaはクラスの多重継承をサポートしない<span class="footnote">C++はクラスの多重継承を認めていますが、2つの親が同じ祖先を持つと、どの実装を受け継ぐかがあいまいになる問題（菱形継承問題）が起きます。Javaはクラスの継承を1つに限り、複数の型を持たせる手段として第7章で学ぶインターフェイスを用意しました。</span>ため、複数の能力を持つオブジェクトを表現するために無理な継承階層を作ることがあります。これは設計の柔軟性を損ないます。
+「レポートを作れる従業員」と「申請を承認できる従業員」を、それぞれ`Employee`の子クラスにしたとします。
+レポートも承認もできるマネージャーを表そうとすると、Javaはクラスの多重継承を認めない<span class="footnote">C++はクラスの多重継承を認めていますが、2つの親が同じ祖先を持つと、どの実装を受け継ぐかがあいまいになる問題（菱形継承問題）が起きます。Javaはクラスの継承を1つに限り、複数の型を持たせる手段として第7章で学ぶインターフェイスを用意しました。</span>ので、どちらか一方しか継承できません。
+能力の組み合わせごとに子クラスを作ると、能力が増えるたびにクラスの数が倍に増えます。
+複数の能力は、第7章で学ぶインターフェイスで表し、必要な能力だけを実装します（能力の組み合わせの問題は、第25章「統合プロジェクトの設計」の「継承か合成か」でも取り上げます）。
 
-<span class="listing-number">**サンプルコード5-31**　Employee.java、ReportingEmployee.java、ApprovingEmployee.java</span>
-
-```java
-// 悪い例：「レポート作成可能」と「承認権限」を無理に継承で表現
-public class Employee {
-    public void work() { /* ... */ }
-    public void attendMeeting() { /* ... */ }
-}
-
-public class ReportingEmployee extends Employee {
-    public void generateReport() { /* ... */ }
-}
-
-public class ApprovingEmployee extends Employee {
-    public void approveRequest() { /* ... */ }
-}
-
-// 問題：マネージャーはレポート作成も承認もできる、アナリストはレポート作成のみ
-// どちらを継承すればよい？
-```
-
-この問題は、Javaが単一継承しかサポートしないことによる制約を示しています。複数の能力を持つオブジェクトを表現しようとすると、継承階層が複雑になり、設計の柔軟性が失われます。
-
-たとえば、マネージャー（Manager）はレポートを作成することもできるし承認権限も持っていますが、`ReportingEmployee`と`ApprovingEmployee`のどちらか一方しか継承できません。結果として、どちらかの能力を諦めるか、複雑な継承階層を作ることになってしまいます。
-
-この問題を解決するもっとも効果的な方法は、インターフェイスを使用して能力を表現することです。インターフェイスを使えば、クラスは必要な能力を選択的に実装でき、継承階層をシンプルに保つことができます。この設計手法については、第7章「抽象クラスとインターフェイス」で詳しく説明します。
-
-> ポイント：継承は強力な機能ですが、すべての問題を解決できるわけではありません。とくに複数の異なる能力を持つオブジェクトを表現する場合は、継承以外の設計手法を検討してください。
-
-## 例外処理の基礎（補足）
-
-本章では継承とポリモーフィズムに焦点を当てましたが、継承を使う際には例外処理に関する重要なルールがあります。
-
-> 例外処理の基本概念（try-catch構文、例外の種類など）については、第13章「例外処理」で詳しく説明しています。ここでは継承に関連する例外処理のルールのみを取り上げます。
-
-### 継承における例外処理の注意点
-
-メソッドをオーバーライドする際、親クラスのメソッドが投げる例外より広い例外を投げることはできません。
-
-<span class="listing-number">**サンプルコード5-32**</span>
-
-```java
-import java.io.IOException;
-
-class Parent {
-    void doSomething() throws IOException {
-        // 処理
-    }
-}
-
-class Child extends Parent {
-    @Override
-    void doSomething() throws IOException {  // OK
-        // IOException以下の例外のみ宣言可能
-    }
-    
-    // @Override
-    // void doSomething() throws Exception {  // コンパイルエラー
-    //     // より広い例外は宣言できない
-    // }
-}
-```
-
-これは例外処理におけるオーバーライドの制約を示す例です。子クラスは親クラスよりも広い例外（Exception > IOException）を投げることはできません。
-
-この基本的な例外処理の知識があれば、本書の残りの章でもより実践的なコードを理解できるでしょう。第13章では、例外処理の詳細な仕組みやベストプラクティスを学習します。
-
-本章の高度な内容については、付録B.04「仮想メソッドテーブル」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`</span>。
+本章で学んだオーバーライドとポリモーフィズムの内部のしくみは、付録B.04「仮想メソッドテーブル」で解説しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b04-virtual-method-table/`</span>。
 
 ## よくあるエラーと対処法
 
@@ -1973,8 +1786,6 @@ class Child extends Parent {
 - `Object`クラスのメソッド
     + すべてのクラスは`Object`を継承し、`toString`・`equals`・`hashCode`をオーバーライドして使う
     + `equals`をオーバーライドしたら、同じフィールドから計算する`hashCode`もオーバーライドする
-- 継承と例外
-    + オーバーライドしたメソッドは、親クラスのメソッドより広い検査例外を投げられない
 
 次章では、オブジェクトの状態を変更できないようにする不変性と`final`キーワードを学習します。
 

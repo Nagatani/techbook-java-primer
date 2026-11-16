@@ -32,14 +32,11 @@ javac -d out *.java
 | [5-18](./05-18/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
 | [5-19](./05-19/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentExample.java<br>PaymentProcessor.java<br>PaymentResult.java | `java -cp out PaymentExample` |
 | [5-20](./05-20/) | PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
-| [5-21](./05-21/) | DocumentTest.java<br>PDFDocument.java<br>WordDocument.java | `java -cp out DocumentTest` |
-| [5-22](./05-22/) | ExcelDocument.java | （mainメソッドなし） |
-| [5-23](./05-23/) | Document.java | （mainメソッドなし） |
-| [5-24](./05-24/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
-| [5-25](./05-25/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>RefactoredDocumentTest.java<br>WordDocument.java | `java -cp out RefactoredDocumentTest` |
-| [5-26](./05-26/) | MyStack.java<br>StackProblem.java | `java -cp out StackProblem` |
-| [5-27](./05-27/) | MyStack.java | （mainメソッドなし） |
-| [5-28](./05-28/) | Employee.java<br>EmployeeManagementSystem.java<br>RegularEmployee.java<br>SystemAdministrator.java | （mainメソッドなし） |
-| [5-29](./05-29/) | Rectangle.java<br>RectangleSquareTest.java<br>Square.java | `java -cp out RectangleSquareTest` |
-| [5-30](./05-30/) | Shape.java | （mainメソッドなし） |
-| [5-31](./05-31/) | ApprovingEmployee.java<br>Employee.java<br>ReportingEmployee.java | （mainメソッドなし） |
+| [5-21](./05-21/) | Document.java | （mainメソッドなし） |
+| [5-22](./05-22/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
+| [5-23](./05-23/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>RefactoredDocumentTest.java<br>WordDocument.java | `java -cp out RefactoredDocumentTest` |
+| [5-24](./05-24/) | MyStack.java<br>StackProblem.java | `java -cp out StackProblem` |
+| [5-25](./05-25/) | MyStack.java | （mainメソッドなし） |
+| [5-26](./05-26/) | Employee.java<br>EmployeeManagementSystem.java<br>RegularEmployee.java<br>SystemAdministrator.java | （mainメソッドなし） |
+| [5-27](./05-27/) | Rectangle.java<br>RectangleSquareTest.java<br>Square.java | `java -cp out RectangleSquareTest` |
+| [5-28](./05-28/) | Shape.java | （mainメソッドなし） |

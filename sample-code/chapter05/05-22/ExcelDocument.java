@@ -1,25 +1,15 @@
-public class ExcelDocument {
-    private String filename;
-    private String content;
-    private long fileSize;
-    
+public class ExcelDocument extends Document {
     public ExcelDocument(String filename, String content) {
-        this.filename = filename;
-        this.content = content;
+        super(filename, content);  // ①
     }
     
-    // また同じメソッドの重複！
-    public void open() {
-        IO.println(filename + " を開いています");
-    }
-    
+    @Override  // ②
     public void save() {
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
+        fileSize = content != null ? content.length() * 2 : 0;  // ③
+        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
     }
     
-    public void close() {
-        content = null;
-        IO.println(filename + " を閉じました");
+    public void createChart() {  // ④
+        IO.println(filename + " にグラフを作成");
     }
 }
