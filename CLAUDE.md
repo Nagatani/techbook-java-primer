@@ -97,7 +97,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 11. **図（2026-11-11〜）**: 図はMermaidで書き、元データを`docs/diagrams/chapterXX-内容.mmd`（XXは載せる章の番号）に置く。`npm run mermaid:convert`（`build`から呼ばれる）が`manuscripts/images/diagrams/同じ名前.svg`を作り、原稿からはそのSVGを`<div class="figure">`の中で参照する
    - 原稿に```mermaidのブロックを直接書かない（変換スクリプトがエラーにする）。以前は原稿の中のブロックを画像に置き換えて原稿を書き換えていたため、元データが残らなかった。本で使わない図の元データは`docs/diagrams/unused/`に置く
    - Mermaidの設定は`docs/diagrams/mermaid-config.json`。`useMaxWidth: false`で図を描く幅に合わせて縮めないようにし、図形どうしの間隔を詰めている
-   - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。図の中でいちばん小さい文字が本文と同じ10Qになる倍率で載せ、本文の幅（130mm）とページに収まる高さ（150mm）を超える図だけを縮める（2026-11-11に9Qから10Qへ）。いちばん小さい文字の大きさは`scripts/diagram-metrics.js`がブラウザで測り、`docs/diagrams/.diagram-metrics.json`に書く（`mermaid:convert`が変換のあとに呼ぶ）。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
+   - 図は横幅いっぱいに広げない。ビルド時に`scripts/vfm-figure-size.js`が図の元の大きさから幅と高さを決めて`<img>`に書き込む（計算は`scripts/diagram-size.js`）。図の中でいちばん小さい文字が本文と同じ10Qになる倍率で載せ、図の幅の上限（130mm。本文の幅132mmより少し狭い）とページに収まる高さ（150mm）を超える図だけを縮める（2026-11-11に9Qから10Qへ）。いちばん小さい文字の大きさは`scripts/diagram-metrics.js`がブラウザで測り、`docs/diagrams/.diagram-metrics.json`に書く（`mermaid:convert`が変換のあとに呼ぶ）。テーマが図の画像の左右に付ける余白は`--vs--figure-item-padding-inline: 0`で消している
    - `npm run check:diagrams`（CI）が元データ・画像・原稿の対応を検査し、次のものを「注意」として示す。注意が出たら図を直す: 縮めた結果、文字が9Q未満になる図、線が文字の上を通る箇所、文字が箱からはみ出す箇所、ラベルどうしが重なる・接する箇所（8px未満）。検査で拾えない読みにくさ（線どうしの交差など）は、PDFで目で確かめる
    - シーケンス図のメッセージなど、複数の要素をまたぐ文字には白い縁取り（`mermaid-config.json`の`themeCSS`、`paint-order: stroke`）を付けて、下を通る線を隠している。注釈（note）は背景があるので縁取りしない。2人の参加者にまたがる注釈は箱がその間の幅にしか広がらないので、長い注釈は全員にまたがらせるか短くする
    - 同じ2つのノードの間に行きと帰りの線を引くとラベルがぶつかる。帰りの線はラベルなしにして、条件をノードの中に書く（chapter15-thread-lifecycle）。状態遷移図（stateDiagram）はラベルが重なりやすいので、フローチャートで描く
@@ -177,7 +177,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
 - `npm run check:structure`: Check that chapters, exercises, appendix B, glossary, and cross references agree (exercise directories and links, `付録B.NN「題名」`, `第N章「題名」`, glossary chapter refs, generated cross-reference guide). Runs in the shared pre-commit hook and CI
 - Git hooks: the shared pre-commit hook is `scripts/git-hooks/pre-commit` (enable once per clone with `git config core.hooksPath scripts/git-hooks`). It runs `check:structure` and `check:compliance` (about 1 second) and blocks the commit on failure. Do not bypass it with `--no-verify`; fix the content or the check script instead. Changes to `scripts/git-hooks/` and `scripts/` run on every contributor's machine, so review them before merging
-- CI: `.github/workflows/check.yml` runs `check:structure`, `index:check`, and `check:samples -- --no-run` on push and pull requests (failing the job), plus the run-mode sample check and textlint as informational steps
+- CI: `.github/workflows/check.yml` runs `check:structure`, `index:check`, `check:samples -- --no-run`, `check:public-code -- --no-test`, and `check:diagrams` on push and pull requests (failing the job), plus the run-mode sample check (under xvfb), the public-code tests, and textlint as informational steps. `check:compliance` runs only in the pre-commit hook
 - `npm run crossref`: Regenerate `manuscripts/cross-reference-guide.md` from chapter titles and the appendix B index (do not edit that file by hand)
 - `npm run lint:fix`: Automatically fix linting errors in the manuscript files
 
@@ -191,17 +191,18 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 The project follows Vivliostyle's standard structure:
 - `manuscripts/`: Contains Markdown source files for book content (main working directory)
-- `source/`: Contains original materials (currently empty after lecture materials were moved to docs/lecture-materials/)
-- `docs/lecture-materials/`: Contains original lecture materials moved from `source/` (read-only)
+- `sample-code/`: Full sources of the book's numbered samples (see Sample Code Excerpts above)
+- `appendix/`, `exercises/`: Appendix materials and exercises published on GitHub
+- `docs/lecture-materials/`: Contains original lecture materials (read-only)
 - `vivliostyle.config.js`: Main configuration defining title, author, entry files, theme, and output settings
 - `output/`: Generated PDF files
-- Uses `@vivliostyle/theme-techbook` theme for technical book styling
+- Uses the project theme in `theme/my-theme/` (`theme.css`; the cover and glossary use their own CSS)
 
-The build process converts Markdown files listed in the `entry` array (currently just `index.md`) into a single PDF using the techbook theme.
+The build process converts the Markdown files listed in the `entry` array (chapters and appendices in book order, with `entryContext: './manuscripts'`) into a single PDF. Build-time processing is done by the `scripts/vfm-*.js` document processors.
 
 **Important:** The `docs/lecture-materials/` directory contains original lecture materials and must be treated as read-only. All new content and modifications should be done within the `manuscripts/` directory.
 
-**Note:** Sample code extracted from the book is stored in the `sample-code/` directory, not in `source/`.
+**Note:** Sample code extracted from the book is stored in the `sample-code/` directory (the old `source/` directory no longer exists).
 
 ## Workflow
 
@@ -235,23 +236,23 @@ The build process converts Markdown files listed in the `entry` array (currently
 
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
-- `docs/`: Project documentation and analysis files (maintained continuously)
-- `docs/lecture-materials/`: Original lecture materials moved from `source/` (read-only)
-- `source/`: Sample code and examples for the book (being organized)
+- `docs/`: Project documentation (index in `docs/README.md`; finished 2024–2025 plans and analyses are kept in `docs/archive/`)
+- `docs/lecture-materials/`: Original lecture materials (read-only)
+- `sample-code/`, `appendix/`, `exercises/`: Code and materials published on GitHub
 - `output/`: Generated PDF files
 
 ## Analysis Documentation Management
 
-**Critical**: The `docs/analysis/` directory contains comprehensive project analysis files that must be maintained continuously during all work sessions. These files track the current state of the book project and identify ongoing issues.
+**Critical**: The `docs/analysis/` directory holds the issue tracker (`issues-tracking.md`), the current-state summary at the top of `comprehensive-project-analysis.md` (the rest of that file is a 2025-07 record), and the generated `java-sample-check.md`. Keep the issue tracker and the current-state summary up to date during work sessions.
 
 ### Required Analysis Files Maintenance
 
 When performing any modifications to the book content, you must:
 
 1. **Read current analysis status**: Always consult the latest analysis files before starting work:
-   - `docs/analysis/comprehensive-project-analysis.md`: Overall project state
+   - `docs/analysis/comprehensive-project-analysis.md`: Overall project state（冒頭の「2026-11-16の状態」が現状。本文は2025-07の記録）
    - `docs/analysis/issues-tracking.md`: Current prioritized issues
-   - `docs/analysis/improvement-roadmap.md`: 2025-07の旧計画の記録（2026-11-16に閉じた。今後の作業はTODO.mdで管理する）
+   - `docs/archive/analysis/improvement-roadmap.md`: 2025-07の旧計画の記録（2026-11-16に閉じて`docs/archive/`へ移した。今後の作業はTODO.mdで管理する）
    - **`docs/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
 
 2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
@@ -269,7 +270,7 @@ When performing any modifications to the book content, you must:
    - Never create analysis files in `manuscripts/` directory
    - Always use absolute paths when referencing files in analysis
 
-### Critical Project Issues (as of 2026-11-07)
+### Critical Project Issues (as of 2026-11-16)
 
 The following issues require ongoing attention and should be referenced during any work:
 
@@ -278,7 +279,7 @@ The following issues require ongoing attention and should be referenced during a
 3. ~~**High Priority**: Code listing numbering inconsistency~~ ✅ **Resolved** - 1,221個を「サンプルコードX-Y」形式に統一 (2025-07-23)
 4. ~~**Medium Priority**: Chapter 15 exercise format inconsistency~~ ✅ **Resolved** - 全章GitHubリンク形式で統一
 5. ~~**Medium Priority**: Chapter ordering optimization (Chapter 21 placement)~~ ✅ **Resolved** - 現状配置を維持する方針決定
-6. ~~**Medium Priority**: textlint errors remaining~~ ✅ **ほぼ解消** - 2026-11-08時点で6件（うち4件はリスト内の脚注をですます調で書く規約上の例外）
+6. ~~**Medium Priority**: textlint errors remaining~~ ✅ **解消** - 2026-11-16時点で`npm run lint`のエラーは0件
 7. ~~**High Priority**: 演習ディレクトリ（`exercises/chapterXX`）の番号と内容が章構成とずれている（Issue #010）~~ ✅ **Resolved** - 演習ディレクトリを現行の章番号に組み替え (2026-11-09)
 8. ~~**High Priority**: 付録Bの節番号が原稿（appendix-b-index-revised.md）と`appendix/bXX-*`で不一致、相互参照ガイドは旧構成のまま（Issue #011）~~ ✅ **Resolved** - ディレクトリ番号に統一し、相互参照ガイドを生成方式にした (2026-11-09)
 9. ~~**Medium Priority**: 用語集に本文に存在しない用語が約30件残存（Issue #012）~~ ✅ **Resolved** - 不在語を削除し、章番号を現行構成に修正 (2026-11-09)
@@ -297,7 +298,8 @@ The following issues require ongoing attention and should be referenced during a
 
 This repository contains:
 - Book manuscript files (`manuscripts/` directory)
-- Sample code and examples (`source/` directory)
+- Full sources of the book's sample code (`sample-code/` directory)
+- Appendix materials (`appendix/` directory)
 - Exercise files (`exercises/` directory)
 - Original lecture materials (`docs/lecture-materials/` directory)
 - Project documentation and analysis (`docs/` directory)
@@ -307,7 +309,7 @@ This repository contains:
 All chapter exercise sections reference this repository URL. The structure is:
 - Exercise files: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 - Appendix resources: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix`
-- Sample code examples: `/source/` directory
+- Sample code examples: `https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code`
 - Original lecture materials: `/docs/lecture-materials/` directory
 
 ## Content Guidelines
@@ -338,9 +340,9 @@ All chapter exercise sections reference this repository URL. The structure is:
   - 文字強調（**太字**）を必要以上に使用しない
   - 文末に句読点（。）を付けない
   - リストに限ってはである調を使用する
-  - **重要**: リストを導入する文章の末尾には、文法的に必要な場合コロン（：）を使用する
-    - 例：「以下のような利点があります：」「主な機能：」「メリット：」
-    - コロンの削除は機械的に行わず、文法的に必要な箇所は残す
+  - **重要**: リストを導入する文は、句点で終える（「主な利点は次のとおりです。」）。「以下〜：」「次〜：」「下記〜：」で終わる導入文は`check:compliance`の`colon-continuation`がエラーにする（下の「コロン使用パターンとtextlint対応」）
+    - 「主な機能：」「メリット：」のような短い見出し語のコロンは検査の対象外だが、新しく書くときは句点の文にする
+    - コロンの削除は機械的に行わず、文脈を見て文に書き換える
   - **階層化リスト形式ルール（新規）**:
     - **禁止**: 「項目タイトル： 説明文」形式のリスト項目
     - **推奨**: 階層化リストを使用して可読性を向上させる
@@ -373,7 +375,7 @@ All chapter exercise sections reference this repository URL. The structure is:
 - **脚注（ページ内注釈）の文体ルール**:
   - `<span class="footnote">`で囲われたページ内注釈は**必ずですます調**で記述する
   - リストの中に含まれる脚注であっても、この例外ルールが優先される
-  - 例：`<span class="footnote">※ この機能はJava 8以降で使用できます。</span>`
+  - 例：`<span class="footnote">この機能はJava 8以降で使用できます。</span>`（先頭に「※」を付けない。方針13）
 - **演習セクション**: 章末にGitHubリンクのみを配置（章内に演習問題は記載しない）
 - **付録の扱い**: 基本的にGitHubリポジトリへの参照として実装し、詳細な内容はリポジトリで管理
 - Do not add emojis unless explicitly requested by the user
@@ -438,4 +440,4 @@ All chapter exercise sections reference this repository URL. The structure is:
         具体的には以下のトピックを扱います。
    ```
 
-これらのパターンは、textlintの`no-ai-colon-continuation`エラーを回避しながら、読みやすく自然な日本語文章を維持するために採用されました。
+これらのパターンは、`check:compliance`の`colon-continuation`エラーを回避しながら、読みやすく自然な日本語文章を維持するために採用されました。
