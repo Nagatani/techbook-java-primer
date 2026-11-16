@@ -9,7 +9,8 @@ https://vivliostyle.org/viewer/#src=https://nagatani.github.io/techbook-java-pri
 
 ## 開発環境
 
-Node.js 20以上
+- Node.js 22.12以上（`@vivliostyle/cli` 11の要件。CIとGitHub Pagesへのデプロイは24を使う）
+- JDK 25（サンプルコード・付録・演習のコードの検査に使う）
 
 ### セットアップ
 
@@ -22,7 +23,9 @@ git config core.hooksPath scripts/git-hooks
 コミットのたびに、章・演習・付録B・用語集・相互参照ガイドの食い違い（`npm run check:structure`）と、CLAUDE.mdのルール違反を1秒ほどで検査し、問題があればコミットを止めます。
 誤検出でコミットが止まった場合は、`--no-verify`で省かずに検査スクリプトを直してください。
 
-pushとプルリクエストでは、GitHub Actions（`.github/workflows/check.yml`）が同じ検査に加えて、索引とサンプルコードを検査します。
+pushとプルリクエストでは、GitHub Actions（`.github/workflows/check.yml`）が、構成の食い違い（`check:structure`）に加えて、索引と要約、サンプルコードの抜粋とコンパイル、付録・演習のコードのコンパイル、図の元データと画像の対応を検査します。
+サンプルコードの実行結果の照合、付録・演習のテスト、textlintは参考として実行します。
+検査のコマンドの一覧は`CLAUDE.md`の「Commands」にあります。
 
 ## ビルドコマンド
 

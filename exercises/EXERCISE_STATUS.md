@@ -34,6 +34,7 @@
 - 第8章は`records/`と`enums/`、第22章は`documentation/`と`api-design/`に分かれている
 - 第21章の基本課題1（`SimpleCalculator`のテスト）と、第22章の`documentation/challenge/`（JSONパーサーのライブラリ「SimpleJSON」）の解答例は、課題がJUnitのテストを求めるので、JUnitのテストで書いた（2026-11-13、Issue #025）。SimpleJSONはMavenとGradleのプロジェクトで、DockerのJava 25で`mvn verify javadoc:javadoc`と`gradle build javadoc`が通ることを確かめた
 - コードのコンパイルとテストは、リポジトリのルートで`npm run check:public-code -- exercises`を実行して確かめる（2026-11-13時点で112まとまりすべてコンパイルでき、テスト269件が通る。JUnitのテストは、JUnitを学ぶ第21章と第22章だけにある）
+- 付録Eの演習課題（基礎5題・発展2題・チャレンジ1題と基礎課題の解答例、2026-11-14）は`appendix/e-database-programming/exercises/`にあり、この表には含めない。`comprehensive/`の総合課題はREADMEだけで、Javaファイルはない
 - GUIアプリケーション（第17〜20章）は手動での動作確認が必要
 - JUnitを使用するファイルは、クラスパスの設定が必要（`check:public-code`は自動で用意する）
 - 第1〜20章の解答例はJUnitを使わない。動作は、READMEの実行例と同じ出力をするデモの`main`か、期待値と比べてOK・NGを表示する動作確認のプログラム（第9〜12章の`SolutionCheck.java`、第17・19章の`〜Check.java`）で確かめる（2026-11-13）

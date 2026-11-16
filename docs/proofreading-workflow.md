@@ -12,6 +12,7 @@
 4. 検査する
     + `npm run lint`（textlint）
     + `npm run check:structure`（章名・付録・演習・用語集の食い違い）
+    + `npm run check:compliance`（CLAUDE.mdの表記ルール。pre-commitフックでも実行される）
     + `npm run check:samples -- chapterXX`（サンプルコードを変えた場合）
 5. `npm run index`と`npm run index:check`で、内容が変わった節の要約とハッシュを更新する
 6. `git diff --word-diff`で全変更箇所を読み直してからコミットする

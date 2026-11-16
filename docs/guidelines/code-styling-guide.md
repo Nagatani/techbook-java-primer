@@ -1,91 +1,58 @@
 # コードスタイリングガイド
 
-このガイドでは、本書でコードブロックをスタイリングする方法について説明します。
+このガイドでは、本書の原稿でコードブロックを書く方法と、ビルドで付く見た目について説明します（2026-11-16更新）。
+番号とキャプションの規則は`CLAUDE.md`の「Code Listing Numbers」「Sample Code Excerpts」が正です。
 
-## デフォルトの動作
+## 原稿での書き方
 
-すべてのコードブロックには以下のスタイルが自動的に適用されます：
-- 薄い灰色の背景
-- 角丸のボーダー
-- **ゼブラストライプ（行ごとに薄い背景色）**
-- 等幅フォント（Consolas, Monaco等）
+- コードブロックは```に言語名を付けて書く（`java`、`xml`、`bash`など）
+- コードブロックの前には空行を入れる。VFMでは、空行なしで段落に続く```がコードブロックにならず、段落に吸収される
+- 言語指定のあるコードブロック（bash・mermaidなどを除く）には「サンプルコードX-Y」のキャプションを付ける。番号は`node scripts/sample-code.js number`で振る
+- 全文を`sample-code/`で公開したサンプルは、本文のコードブロックとキャプションを直接編集しない。全文を編集してから`npm run samples:sync`する（`sample-code/README.md`）
+- 標準入出力は`IO.println`・`IO.print`・`IO.readln`で書く（`CLAUDE.md`の方針9）
+- 図は```mermaidで原稿に書かない。元データを`docs/diagrams/`に置き、SVGを参照する（`CLAUDE.md`の方針11）
 
-## 基本的なコードブロック
+キャプションは次の形です（第5章の実例）。全文を公開したサンプルのキャプションは、`samples:sync`が全文とファイル名・行番号から作ります。
 
-通常のMarkdownコードブロック：
+~~~markdown
+<span class="listing-number">**サンプルコード5-3**　Character.java、Hero.java、Wizard.java、Main.java</span>
 
 ```java
-public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
+// 親クラス
+public class Character {
+    String name;
+    int hp;
+
+    public void attack() {
+        IO.println(name + "の攻撃！（HP: " + hp + "）");
     }
 }
+
+// 子クラス：勇者
+public class Hero extends Character {
+（以下、Hero.java・Wizard.java・Main.javaが空行で区切られて続く）
 ```
 
-上記のコードブロックには自動的にゼブラストライプが適用され、行を識別しやすくなります。
+<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java（1〜18、26〜47行目）</span>
+~~~
 
-## 行番号付きコードブロック
+## ビルドで付く見た目
 
-行番号を表示したい場合は、HTMLを使用して以下のように記述します：
+テーマは`theme/my-theme/theme.css`です。
 
-```html
-<pre class="line-numbers language-java"><code><span>public class HelloWorld {</span>
-<span>    public static void main(String[] args) {</span>
-<span>        System.out.println("Hello, World!");</span>
-<span>    }</span>
-<span>}</span></code></pre>
-```
-
-## シンタックスハイライト
-
-以下の言語がサポートされています：
-
-- `language-java` - Javaコード（オレンジの左ボーダー）
-- `language-javascript` または `language-js` - JavaScript（黄色の左ボーダー）
-- `language-python` - Python（青の左ボーダー）
-- `language-bash` または `language-shell` - シェルスクリプト（緑の左ボーダー、暗い背景）
-
-## コードブロックの例
-
-### Java
-```java
-// Javaの例
-import java.util.ArrayList;
-import java.util.List;
-
-public class Example {
-    private String name;
-    
-    public Example(String name) {
-        this.name = name;
-    }
-    
-    @Override
-    public String toString() {
-        return "Example: " + name;
-    }
-}
-```
-
-### Bash
-```bash
-# ディレクトリの作成
-mkdir -p src/main/java
-
-# Javaファイルのコンパイル
-javac HelloWorld.java
-
-# プログラムの実行
-java HelloWorld
-```
+- 地は明るい灰色（`#f8f8f8`）、細い枠と角丸。印刷用の設定（`@media print`）でも地は明るい色に固定される
+- 色分けは、VFMがビルド時にPrism（refractor）で付ける。色分けには背景や余白を付けない（等幅のそろいが崩れる）
+- `scripts/vfm-code-lines.js`がコードを1行ずつの`span.code-line`に分け、縞模様を行ごとに付ける。紙面の幅で折り返した続きの行は、その行の字下げ＋4文字の位置から始まる
+- 言語ごとに左の線の色が変わる。Javaは橙、JavaScriptは黄、Pythonは青、bash・shellは緑（bashは縞模様なし）
+- コードの文字色は、明るい地でコントラスト比4.5以上にする。暗い地を前提にした淡い色は使わない
 
 ## インラインコード
 
-文章中でコードを参照する場合は、バッククォートを使用します：
-`System.out.println()` や `public static void main()` のように表示されます。
+文章中でコードを参照する場合は、バッククォートを使います。
+`IO.println()`や`public static void main(String[] args)`のように表示されます。
+URLを本文に書くときもインラインコードで囲みます（ビルド時にリンクになる。`CLAUDE.md`の方針8）。
 
-## 注意事項
+## 使わない書き方
 
-1. VivliostyleはPrism.jsのような外部ライブラリを標準では含まないため、完全なシンタックスハイライトには追加の設定が必要です
-2. 行番号付きコードブロックを使用する場合は、各行を`<span>`タグで囲む必要があります
-3. コードブロック内でHTMLエンティティ（`<`, `>`, `&`）を使用する場合は適切にエスケープしてください
+- `<pre class="line-numbers">`による行番号付きのコードブロック（テーマに定義は残っているが、原稿では使っていない）
+- コードブロックの中のHTMLタグや手作業の色付け

@@ -21,6 +21,10 @@
 | `convert-mermaid-to-images.js` | `mermaid:convert`（`build`から呼ばれる） | `docs/diagrams/*.mmd`を`manuscripts/images/diagrams/`のSVGに変換する。元ファイルか設定が変わったときだけ変換する |
 | `diagram-size.js` | `check:diagrams`（CI） | 図を紙面に載せる大きさ（いちばん小さい文字が10Qになる倍率、本文の幅と高さ150mmが上限）を決める。直接実行すると、元データ・画像・原稿の対応、図ごとの文字の大きさ（9Q未満は注意）、線と文字の重なりなどを検査する |
 | `diagram-metrics.js` | `mermaid:convert`から呼ばれる | 図をブラウザで開き、いちばん小さい文字の大きさ、線が文字の上を通る箇所、文字が箱からはみ出す箇所、ラベルどうしの重なりを測って`docs/diagrams/.diagram-metrics.json`に書く |
+| `vfm-section-label.js` | `build`（`vivliostyle.config.js`の`documentProcessor`） | 章タイトルの`<b>5章</b>`を読み、章の中のh2に`data-chapter`属性を付ける（テーマが「5章 - 3」の形で番号を出す）。下の`vfm-*.js`をまとめて組み込む |
+| `vfm-code-lines.js` | `build`（`documentProcessor`） | コードブロックを1行ずつの`span.code-line`に分け、折り返した続きの行を字下げ＋4文字の位置から始め、縞模様を行ごとに付ける |
+| `vfm-index-entries.js` | `build`（`documentProcessor`） | 索引・用語集（`manuscripts/glossary.md`）の「- **用語** - 第N章」を用語と参照先に分ける |
+| `vfm-links.js` | `build`（`documentProcessor`） | 本の中へのリンク`xxx.md#...`を`.html`に直し、本文にインラインコードで書いたURLをリンク（`a.code-url`）にする |
 | `vfm-figure-size.js` | `build`（`documentProcessor`） | 図の`<img>`に`diagram-size.js`で決めた幅と高さを書き込む |
 | `vfm-line-breaks.js` | `build`（`documentProcessor`） | 両端揃えで字間が大きく開かないようにする。和文に接する原稿の改行（HTMLではスペースになる）を取り除き、インラインコード・URL・本文に書いた長い名前に折り返し位置（`<wbr>`）を入れる |
 
@@ -30,7 +34,7 @@
 
 | スクリプト | npmスクリプト | 役割 |
 |---|---|---|
-| `fix-claude-md-violations.js` | `fix:compliance` | `check:compliance`の違反のうち、機械的に直せるもの（リスト導入文のコロンなど）を直す |
+| `fix-claude-md-violations.js` | `fix:compliance` | `check:compliance`の違反のうち、機械的に直せるもの（リスト導入文のコロンなど）を直す。対象ファイルの横に`backup/`を作る。正規表現による書き換えなので、原稿の校正には使わない（`docs/proofreading-workflow.md`） |
 | `fix-title-colon-lists.js` | なし | 「- 項目： 説明」形式のリストを階層化リストに変換する（`fix:compliance`の対象外のもの） |
 
 ## 削除したスクリプト（2026-11-09）

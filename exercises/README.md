@@ -25,10 +25,14 @@
 - **評価**: 独創性、技術的深さを評価
 - **推奨時間**: 2時間以上
 
-### ○ solutions/ - 解答例
-- **内容**: 模範解答、複数のアプローチ、よくあるミスの解説
+### solutions/ - 解答例
+- **内容**: 基本課題の解答例（advanced/とchallenge/のJavaファイルは、それ自体が解答例）
 - **活用法**: 自分の解答と比較、別解法の学習
 - **注意**: まずは自力で取り組んでから参照すること
+
+基本課題のJavaファイルは、章によって`TODO`を埋める雛形か、解答例です。
+各章のREADMEに、どちらかを書いています。
+整備状況とファイルの数は[EXERCISE_STATUS.md](EXERCISE_STATUS.md)にまとめています。
 
 ## 学習の進め方
 
@@ -72,28 +76,33 @@
 ## 開発環境の設定
 
 ### 必要なツール
-- **Java Development Kit (JDK)**: バージョン17以上推奨
+- **Java Development Kit (JDK)**: Java 25（本書はOpenJDK 25を使う。インストール手順は付録A）
 - **統合開発環境**: IntelliJ IDEA、Eclipse、Visual Studio Codeなど
-- **ビルドツール**: Maven または Gradle（後の章で使用）
+- **ビルドツール**: Maven または Gradle（第23章で使用）
 
 ### ディレクトリ構成の活用
 ```
 exercises/chapter01/
+├── README.md                          # 章の課題の一覧
 ├── basic/
-│   ├── Exercise01_HelloWorld.java    # 課題ファイル
-│   ├── Exercise02_Variables.java     # 課題ファイル
-│   └── README.md                     # 課題の説明
+│   ├── Exercise01_HelloWorld.java     # 課題の雛形
+│   ├── Exercise02_BusinessCard.java   # 課題の雛形
+│   ├── ...
+│   └── README.md                      # 課題の説明
 ├── advanced/
-│   ├── Calculator.java               # 発展課題
+│   ├── ProfileCard.java               # 発展課題の解答例
 │   └── README.md
 ├── challenge/
-│   ├── EnvironmentInfo.java          # チャレンジ課題
+│   ├── ClassHello.java                # チャレンジ課題の解答例
 │   └── README.md
 └── solutions/
-    ├── basic/                        # 基本課題の解答
-    ├── advanced/                     # 発展課題の解答
-    └── challenge/                    # チャレンジ課題の解答
+    ├── Exercise01_HelloWorld.java     # 基本課題の解答例
+    ├── ...
+    └── README.md
 ```
+
+第8章は`records/`と`enums/`、第22章は`documentation/`と`api-design/`に分かれ、それぞれのフォルダーに`basic/`などがあります。
+1つのフォルダーに課題が複数あるときは、課題ごとのサブフォルダー（`task1-xxx/`など）に分けています。
 
 ## 学習のコツ
 
@@ -143,8 +152,8 @@ exercises/chapter01/
 ディレクトリ名の番号は、書籍の章番号と一致しています。
 
 ### 1部：基礎編
-- [第1章 Java入門と開発環境構築](chapter01/): Hello World、基本的な出力、データ型
-- [第2章 Java基本文法](chapter02/): クラスとオブジェクト、制御構造、配列
+- [第1章 Java入門と開発環境構築](chapter01/): Hello World、IOクラスによる出力と入力、コンパイルエラーの修正
+- [第2章 Java基本文法](chapter02/): データ型と演算、制御構造、配列、staticメソッド、String
 - [第3章 オブジェクト指向の考え方](chapter03/): クラスの設計、カプセル化
 - [第4章 クラスとインスタンス](chapter04/): コンストラクター、アクセス制御
 
@@ -168,7 +177,7 @@ exercises/chapter01/
 - [第17章 GUIプログラミングの基礎](chapter17/): レイアウトマネージャー、入力・選択の部品、paintComponentによる描画
 - [第18章 基本的なイベント処理](chapter18/): ActionListenerなどのリスナー、Timer、入力の検査
 - [第19章 高度なイベント処理パターン](chapter19/): マウスとキーバインディング、カスタムイベント、SwingWorker、ドラッグ&ドロップ
-- [第20章 JTable・JList・JTree](chapter20/): テーブル、ツリー、データバインディング
+- [第20章 JTable・JList・JTree](chapter20/): テーブル、リスト、ツリー、MVCによる役割の分担
 
 ### 5部：実践編
 - [第21章 ユニットテストと品質保証](chapter21/): JUnit、TDD、モックオブジェクト
@@ -176,6 +185,9 @@ exercises/chapter01/
 - [第23章 ビルドとデプロイ](chapter23/): Maven/Gradle、JAR作成
 
 ### 総合演習
-- **comprehensive/**: 複数章の知識を統合した総合的なプロジェクト課題
+- **comprehensive/**: 複数章の知識を統合した総合的なプロジェクト課題（READMEだけで、解答例のコードはない）
+
+### 付録の演習
+- 付録E「データベースプログラミング」の演習課題は、`appendix/e-database-programming/exercises/`にある
 
 *良いJavaプログラマーになるための第一歩を、この練習課題とともに踏み出しましょう！*

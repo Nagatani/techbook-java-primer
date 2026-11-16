@@ -1,206 +1,109 @@
 # CLAUDE.mdルール準拠性チェックガイド
 
-このドキュメントでは、CLAUDE.mdルール違反を防止し、品質を維持するためのツールとワークフローについて説明します。
+このドキュメントでは、CLAUDE.mdの表記ルールへの違反を検出する`npm run check:compliance`と、その使い方を説明します（2026-11-16更新）。
 
 ## 概要
 
-技術書「Java入門」では、一貫した文章品質を保つためにCLAUDE.mdで定義されたルールに従って執筆しています。これらのルールは、textlintでは検出できない書式的な違反を防止し、読みやすく自然な日本語文章を維持するために設計されています。
+技術書「Java入門」では、一貫した文章品質を保つためにCLAUDE.mdで定義されたルールに従って執筆しています。
+`check:compliance`（`scripts/check-claude-md-compliance.js`）は、textlintでは検出できない書式の違反を検出します。
+共有のpre-commitフック（`scripts/git-hooks/pre-commit`）が`check:structure`とあわせて実行し、エラーがあるとコミットを止めます。
+GitHub ActionsのCI（`.github/workflows/check.yml`）では実行していません。
 
-## 主要なルール
+## 検査する内容
 
-### 1. 強調表記（太字）の制限
-- ❌ `**重要**`のような太字を見出しとして使用
-- ❌ `- **保守性の低下**：` のようなリスト項目での強調とコロンの組み合わせ
-- ✅ 適切なMarkdown見出し記法（`### 重要なポイント`）
-- ✅ コードリスト番号（`**サンプルコード5-1**`）は例外として許可
+検査の定義は、スクリプトの`VIOLATION_PATTERNS`にあります。
 
-### 2. コロン（：）使用の制限
-- ❌ `以下のような問題があります：`
-- ❌ `次の技術を学習します：`
-- ✅ `以下のような問題があります。主な問題は次の通りです。`
-- ✅ `次の技術を学習します。具体的な内容は以下の通りです。`
+### エラー（コミットが止まる）
 
-### 3. 文体統一
-- 本文：ですます調で統一
-- リスト項目：である調を使用（意図的な使い分け）
-- 脚注（`<span class="footnote">`）：ですます調（例外なし）
+- `bold-colon-list`
+    + リスト項目での強調とコロンの組み合わせ（`- **保守性の低下**：…`）
+- `colon-continuation`
+    + 「以下〜：」「次〜：」「下記〜：」で終わるリスト導入文
+- `bold-as-heading`
+    + 強調表記（`**…**`だけの行）を見出しとして使う
+- `incorrect-code-listing`
+    + 「リスト5-1」形式のコード番号（「サンプルコード5-1」にする）
+- `title-colon-list`
+    + 「項目タイトル： 説明文」形式のリスト項目（括弧内のコロンは除く）
+- `trailing-colon-structure-break`
+    + リスト項目の末尾のコロン
+- `kome-note`
+    + 「※」の注意書き（脚注か本文の文にする）
+- `external-markdown-link`
+    + 外部URLへのMarkdownのリンク（PDFでクリックできない脚注になる。URLは脚注にインラインコードで書く）
+
+### 警告（コミットは止まらない）
+
+- `bold-info-prefix`
+    + 太字の情報プレフィックス（**注意**、**重要**など）
+- `list-colon-ending`
+    + リスト項目の末尾のコロン
+- `excessive-bold-in-lists`
+    + リスト項目の先頭の強調
+- `list-dash-structure`
+    + 「項目 - 説明」形式のリスト項目
+
+コードブロック、HTMLコメント、引用（`>`）内の強調、用語集の「- **用語** - 第N章」の行は除外します。
+用語集（`manuscripts/glossary.md`）は形式上、警告が多数出ますが、問題にしていません。
 
 ## ツールの使用方法
 
-### 自動チェック
+### 検査
 
 ```bash
-# 全ファイルのルール準拠性をチェック
+# manuscripts/の全ファイルを検査する
 npm run check:compliance
 
-# 特定のディレクトリをチェック
-node scripts/check-claude-md-compliance.js manuscripts
+# ディレクトリや1つのファイルを指定して検査する（1つ目の引数が対象）
+node scripts/check-claude-md-compliance.js manuscripts/chapter05-inheritance-and-polymorphism.md
 
-# JSON形式でレポート出力
-node scripts/check-claude-md-compliance.js --json --output report.json
+# JSON形式でレポートを出力する（対象を先に書く。出力先はスクラッチ用のディレクトリにする）
+node scripts/check-claude-md-compliance.js manuscripts --json --output /path/to/scratch/report.json
 ```
 
-### 自動修正
+対象を省略して`--json`から書くと、`--json`が対象として扱われ、1つのファイルも検査されません。
 
-```bash
-# 自動修正可能な違反を修正
-npm run fix:compliance
+### 自動修正（`fix:compliance`）
 
-# 修正後の検証をスキップ
-node scripts/fix-claude-md-violations.js --skip-verify
+`npm run fix:compliance`（`scripts/fix-claude-md-violations.js`）は、リスト導入文のコロンなどを正規表現で書き換えます。
+過去に正規表現による一括置換が文言の欠落や不自然な文を生んだため（Issue #013）、原稿の修正には使わず、違反は1か所ずつ文脈を読んで手で直します（`docs/proofreading-workflow.md`）。
+実行する場合は、対象ファイルと同じ場所に`backup/`ディレクトリができるので、`git diff`で全変更箇所を確かめ、`backup/`を消してから`git status`で確認します。
 
-# 古いバックアップファイルをクリーンアップ
-node scripts/fix-claude-md-violations.js --cleanup
-```
+## 手で直すときのパターン
 
-### 統合チェック
+1. リスト項目の強調とコロン、「項目タイトル： 説明文」形式
+    ```markdown
+    # 修正前
+    - **保守性の低下**：同じロジックが複数箇所に散在する
 
-```bash
-# CLAUDE.mdルール + textlint の組み合わせチェック
-npm run pre-commit
-```
+    # 修正後
+    - 保守性の低下
+        + 同じロジックが複数箇所に散在する
+    ```
 
-## ワークフロー
+2. コロンで終わるリスト導入文
+    ```markdown
+    # 修正前
+    以下のような問題があります：
 
-### 日常的な作業
+    # 修正後
+    主な問題は次のとおりです。
+    ```
 
-1. **執筆前の確認**
-   ```bash
-   npm run check:compliance
-   ```
+3. 見出しとしての強調表記
+    ```markdown
+    # 修正前
+    **重要なポイント**
 
-2. **執筆後の検証**
-   ```bash
-   npm run pre-commit
-   ```
+    # 修正後
+    ### 重要なポイント
+    ```
 
-3. **修正が必要な場合**
-   ```bash
-   npm run fix:compliance
-   git diff  # 変更内容を確認
-   npm run lint  # textlintで最終確認
-   ```
+## ルールの追加・修正
 
-### コミット前の必須チェック
-
-```bash
-# 1. CLAUDE.mdルール準拠性チェック
-npm run check:compliance
-
-# 2. textlintによる文章校正
-npm run lint
-
-# 3. 問題がなければコミット
-git add .
-git commit -m "..."
-```
-
-## チェック内容の詳細
-
-### エラーレベル（修正必須）
-
-1. **bold-colon-list**: リスト項目での強調とコロンの組み合わせ
-2. **colon-continuation**: コロンで終わるリスト導入文
-3. **bold-as-heading**: 強調表記を見出しとして使用
-4. **incorrect-code-listing**: 「リスト」形式のコードリスト番号
-
-### 警告レベル（推奨修正）
-
-1. **bold-info-prefix**: 太字の情報プレフィックス（**注意**、**重要**など）
-2. **list-colon-ending**: リスト項目の末尾コロン使用
-
-## 自動修正の対象
-
-以下のパターンは自動修正されます：
-
-```markdown
-# 修正前 → 修正後
-以下のような問題があります： → 以下のような問題があります。
-**リスト5-1** → **サンプルコード5-1**
-- **保守性の低下**：同じロジック... → （手動修正推奨）
-```
-
-## 手動修正が必要なパターン
-
-複雑な構文や文脈に依存する違反は手動修正が必要です：
-
-1. **リスト項目の強調表記**
-   ```markdown
-   # 修正前
-   - **保守性の低下**：同じロジックが複数箇所に散在する
-   
-   # 修正後
-   - 保守性の低下により、同じロジックが複数箇所に散在する
-   ```
-
-2. **見出しとしての強調表記**
-   ```markdown
-   # 修正前
-   **重要なポイント**
-   
-   # 修正後
-   ### 重要なポイント
-   ```
-
-## トラブルシューティング
-
-### よくある問題
-
-1. **誤検出される場合**
-   - 用語集（glossary.md）の項目は除外対象
-   - コードブロック内は除外対象
-   - 引用（`>`）内の**注意**などは許可
-
-2. **修正が反映されない場合**
-   ```bash
-   # キャッシュクリア
-   rm -rf node_modules/.cache
-   
-   # 再チェック
-   npm run check:compliance
-   ```
-
-3. **バックアップファイルが蓄積する場合**
-   ```bash
-   # 7日以上古いバックアップを削除
-   node scripts/fix-claude-md-violations.js --cleanup
-   ```
-
-## CI/CD統合
-
-### GitHub Actions例
-
-```yaml
-name: Quality Check
-on: [push, pull_request]
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm install
-      - name: CLAUDE.md Compliance Check
-        run: npm run check:compliance
-      - name: Textlint Check
-        run: npm run lint
-```
-
-### pre-commitフック
-
-```bash
-# .git/hooks/pre-commit
-#!/bin/sh
-npm run pre-commit
-```
-
-## 開発・メンテナンス
-
-### ルールの追加・修正
-
-新しいルールを追加する場合は、`scripts/check-claude-md-compliance.js`の`VIOLATION_PATTERNS`配列に追加してください：
+新しいルールを追加する場合は、`scripts/check-claude-md-compliance.js`の`VIOLATION_PATTERNS`配列に追加します。
+このスクリプトはpre-commitフックで全員の手元で動くため、誤検出がないかを`npm run check:compliance`で確かめてから変更します。
+誤検出でコミットが止まった場合も、`--no-verify`で省かずにスクリプトを直します。
 
 ```javascript
 {
@@ -212,21 +115,9 @@ npm run pre-commit
 }
 ```
 
-### テスト
-
-```bash
-# テスト用のMarkdownファイルでチェック
-echo "以下の問題があります：" > test.md
-node scripts/check-claude-md-compliance.js test.md
-rm test.md
-```
-
 ## 関連ドキュメント
 
-- [CLAUDE.md](../CLAUDE.md) - プロジェクト全体のルール
-- [writing-guidelines-textlint-compliance.md](./writing-guidelines-textlint-compliance.md) - textlint対応ガイドライン
-- [manuscript-modification-protocol.md](./manuscript-modification-protocol.md) - 原稿修正プロトコル
-
----
-
-このガイドにより、CLAUDE.mdルールに準拠した高品質な技術書の執筆・保守が可能になります。
+- `CLAUDE.md`：プロジェクト全体のルール
+- `docs/writing-guidelines-textlint-compliance.md`：textlintに対応した文章の書き方
+- `docs/proofreading-workflow.md`：校正の手順と注意点
+- `scripts/README.md`：スクリプトの一覧
