@@ -76,7 +76,7 @@ button.addActionListener(new ActionListener() {
 });
 ```
 
-このコード<span class="footnote">GUIアプリケーションで使う例で、`button`はあらかじめ`JButton`として作ってあるものとします。ボタンなどのGUIの部品は第17章で学びます。</span>は、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述が多く、冗長でした。
+このコード<span class="footnote">GUIアプリケーションで使う例で、`button`はあらかじめ`JButton`として作ってあるものとします。ボタンなどのGUIの部品は第17章で学びます。</span>では、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述を書かなければならず、冗長でした。
 
 ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
 サンプルコード11-2をラムダ式で書くと、次のように1行になります<span class="footnote">サンプルコード11-2と同じく、`button`はあらかじめ`JButton`として作ってあるものとします。</span>。
@@ -668,7 +668,7 @@ Thread t1 (Anonymous) finished
 
 ### スレッドプールへのタスクの受け渡し
 
-並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。とくに、ExecutorServiceと組み合わせることで、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
+並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。ExecutorServiceと組み合わせれば、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
@@ -1566,9 +1566,6 @@ public class OrderPipeline {
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`
 
 ### 課題構成
-- 本章の基本概念の理解確認
-- 応用的な実装練習
-- 実践的な総合問題
 
 1. 基礎課題
     + 標準関数型インターフェイスの活用とラムダ式の基本構文
