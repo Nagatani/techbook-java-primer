@@ -108,48 +108,5 @@
       { "file": "AsyncChainingExample.java", "from": 35, "to": 48 },
       { "file": "AsyncChainingExample.java", "from": 56, "to": 56 }
     ]
-  },
-  "15-17": {
-    "dir": "15-17",
-    "main": "ParallelPerformanceExample",
-    "excerpt": [
-      { "file": "ParallelPerformanceExample.java", "from": 5, "to": 5 },
-      { "file": "ParallelPerformanceExample.java", "from": 20, "to": 30 },
-      { "file": "ParallelPerformanceExample.java", "from": 38, "to": 44 },
-      { "file": "ParallelPerformanceExample.java", "from": 51, "to": 73 },
-      { "file": "ParallelPerformanceExample.java", "from": 75, "to": 84 },
-      { "file": "ParallelPerformanceExample.java", "from": 101, "to": 101 }
-    ]
-  },
-  "15-18": {
-    "dir": "15-18",
-    "main": "ThreadSafeSingletonExamples",
-    "excerpt": [
-      { "file": "ThreadSafeSingletonExamples.java", "from": 3, "to": 3 },
-      { "file": "ThreadSafeSingletonExamples.java", "from": 18, "to": 57 },
-      { "file": "ThreadSafeSingletonExamples.java", "from": 79, "to": 79 }
-    ]
-  },
-  "15-19": {
-    "dir": "15-19",
-    "main": "ParallelDataPipeline",
-    "excerpt": [
-      { "file": "ParallelDataPipeline.java", "from": 5, "to": 15 },
-      { "file": "ParallelDataPipeline.java", "from": 21, "to": 37 },
-      { "file": "ParallelDataPipeline.java", "from": 41, "to": 41 },
-      { "file": "ParallelDataPipeline.java", "from": 43, "to": 43 },
-      { "file": "ParallelDataPipeline.java", "from": 70, "to": 79 },
-      { "file": "ParallelDataPipeline.java", "from": 82, "to": 83 }
-    ]
-  },
-  "15-20": {
-    "dir": "15-20",
-    "main": "ResiliencePatterns",
-    "excerpt": [
-      { "file": "ResiliencePatterns.java", "from": 4, "to": 7 },
-      { "file": "ResiliencePatterns.java", "from": 20, "to": 43 },
-      { "file": "ResiliencePatterns.java", "from": 58, "to": 90 },
-      { "file": "ResiliencePatterns.java", "from": 128, "to": 128 }
-    ]
   }
 }

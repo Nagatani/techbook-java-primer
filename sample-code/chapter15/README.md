@@ -29,7 +29,3 @@ javac -d out *.java
 | [15-14](./15-14/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
 | [15-15](./15-15/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
 | [15-16](./15-16/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
-| [15-17](./15-17/) | ParallelPerformanceExample.java | `java -cp out ParallelPerformanceExample` |
-| [15-18](./15-18/) | ThreadSafeSingletonExamples.java | `java -cp out ThreadSafeSingletonExamples` |
-| [15-19](./15-19/) | ParallelDataPipeline.java | `java -cp out ParallelDataPipeline` |
-| [15-20](./15-20/) | ResiliencePatterns.java | `java -cp out ResiliencePatterns` |

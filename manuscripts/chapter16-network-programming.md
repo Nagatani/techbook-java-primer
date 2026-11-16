@@ -968,90 +968,13 @@ Connection: close
 ...（以下省略）
 ```
 
-## パフォーマンスの最適化
+## 多数の接続を1つのスレッドで扱う
 
-### NIOによるノンブロッキングI/O
-
-Java NIOを使用すると、単一スレッドで複数の接続を管理できるスケーラブルなネットワークプログラミングが可能です<span class="footnote">NIOは、C言語から使う`select`やLinuxの`epoll`のように、OSが用意する多重化のしくみを内部で使います。</span>。
-
-NIOはNew I/Oの略で、Java 1.4で加わった`java.nio`パッケージのAPIです。
-ノンブロッキングモードのチャネルと`Selector`は、その機能の一部です。
-ノンブロッキングモードのチャネルは、読み書きできるデータがなくても待たずにすぐ戻ります。
-`Selector`は、複数のチャネルのうち接続の受け付けや読み取りができるようになったものを教えてくれます。
-
-以下のコードは、NIOのチャネルと`Selector`を使用したサーバーの実装例です。Selectorパターンを利用することで、単一のスレッドで複数のクライアント接続を効率的に管理できます。この方式では、接続ごとにスレッドを作るサーバーと違い、同時接続が増えてもスレッドの数は増えません。
-
-<span class="listing-number">**サンプルコード16-13**　NIOServer.java（7〜69行目）</span>
-
-```java
-public class NIOServer {
-    private static final int PORT = 8080;
-    
-    public static void main(String[] args) throws IOException {
-        Selector selector = Selector.open();
-        ServerSocketChannel serverChannel = 
-            ServerSocketChannel.open();
-        serverChannel.bind(new InetSocketAddress(PORT));
-        serverChannel.configureBlocking(false);
-        serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-        
-        IO.println("NIOサーバーが起動しました");
-        
-        while (true) {
-            selector.select();
-            Set<SelectionKey> selectedKeys = selector.selectedKeys();
-            Iterator<SelectionKey> iter = selectedKeys.iterator();
-            
-            while (iter.hasNext()) {
-                SelectionKey key = iter.next();
-                
-                if (key.isAcceptable()) {
-                    register(selector, serverChannel);
-                }
-                
-                if (key.isReadable()) {
-                    answerWithEcho(key);
-                }
-                
-                iter.remove();
-            }
-        }
-    }
-    
-    private static void register(Selector selector, 
-                                ServerSocketChannel serverChannel) 
-            throws IOException {
-        SocketChannel client = serverChannel.accept();
-        client.configureBlocking(false);
-        client.register(selector, SelectionKey.OP_READ);
-    }
-    
-    private static void answerWithEcho(SelectionKey key) 
-            throws IOException {
-        SocketChannel client = (SocketChannel) key.channel();
-        ByteBuffer buffer = ByteBuffer.allocate(256);
-        int bytesRead = client.read(buffer);
-        
-        // -1はクライアントが接続を閉じたことを表す。閉じないと、
-        // selectが同じチャネルを読み取り可能として返し続ける
-        if (bytesRead == -1) {
-            key.cancel();
-            client.close();
-            return;
-        }
-        
-        if (buffer.position() > 0) {
-            buffer.flip();
-            client.write(buffer);
-            buffer.clear();
-        }
-    }
-}
-```
-
-`answerWithEcho`では、`read()`の戻り値が-1のときにチャネルを閉じています。
--1は、クライアントが接続を閉じたことを表します。
-閉じずに放っておくと、`select()`がそのチャネルを読み取り可能として返し続け、サーバーが空回りします。
+本章のマルチスレッドサーバーは、接続ごとにスレッドプールのスレッドを1つ使います。
+同時に接続するクライアントが数千に増えると、スレッドの数とメモリが足りなくなります。
+`java.nio`パッケージの、待たずにすぐ戻る（ノンブロッキング）チャネルと`Selector`を使うと、1つのスレッドで多数の接続を扱えます。
+`Selector`が、接続の受け付けや読み取りができるようになったチャネルを教えてくれるので、準備のできた接続だけを順に処理します。
+`Selector`を使ったエコーサーバーの例は、付録Hで紹介しています。
 
 ## まとめ
 
@@ -1068,7 +991,7 @@ public class NIOServer {
 4. セキュリティ
     + 暗号化、認証、入力検証の重要性
 5. パフォーマンス
-    + NIOのSelectorを使い、1つのスレッドで多数の接続を扱う
+    + NIOのSelectorを使うと、1つのスレッドで多数の接続を扱える（コード例は付録H）
 
 ### 次のステップ
 

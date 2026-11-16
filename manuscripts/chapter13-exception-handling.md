@@ -11,7 +11,7 @@
 3. カスタム例外
     - 独自の例外クラス設計、ビジネスロジックへの対応、例外の伝搬
 4. 堅牢なシステム設計
-    - リトライとサーキットブレーカー、ビジネス例外とシステム例外の分離、ログ記録
+    - リトライと、失敗が続いたときに呼び出しを止める考え方（サーキットブレーカー）、ビジネス例外とシステム例外の分離、ログ記録
 
 ### この章を始める前に
 
@@ -371,93 +371,19 @@ public class RetryableOperation {
 結果: 成功
 ```
 
-### サーキットブレーカーパターン（連続失敗への対処）
+### 失敗が続いたら呼び出しを止める
 
-連続して失敗が発生した場合、一定時間処理をブロックすることで、障害の拡大を防ぐパターンです<span class="footnote">名前は、電流が流れすぎると回路を切る電気のブレーカー（circuit breaker）に由来します。ソフトウェアの設計パターンとしては、マイケル・ナイガード（Michael T. Nygard）の書籍『Release It!』（2007年）で広く知られるようになりました。</span>。多数のサービスがネットワーク越しに呼び合うシステムでとくに重要です。
-
-サーキットブレーカーは、次の3つの状態を切り替えながら動きます。
-
-- CLOSED（通常）
-    + 呼び出しをそのまま通す。失敗が続いて回数がしきい値に達すると、OPENに移る
-- OPEN（遮断）
-    + 決めた時間（timeout）が過ぎるまでは、相手を呼び出さずにすぐ例外を投げる。相手が回復するまで負荷をかけずに済む
-- HALF_OPEN（試行）
-    + timeoutを過ぎたあとの呼び出しを、試しに通す。成功すればCLOSEDに戻り、失敗すればまたOPENになる
-
-<div class="figure">
-
-![サーキットブレーカーの3つの状態](images/diagrams/chapter13-circuit-breaker.svg)
-
-</div>
-
-<span class="listing-number">**サンプルコード13-8**　CircuitBreaker.java（3〜55行目）</span>
-
-```java
-public class CircuitBreaker {
-    private enum State {
-        CLOSED,    // 通常状態
-        OPEN,      // 遮断状態
-        HALF_OPEN  // 半開状態（テスト中）
-    }
-    
-    private State state = State.CLOSED;
-    private int failureCount = 0;
-    private long lastFailureTime = 0;
-    
-    private final int failureThreshold;
-    private final long timeout;
-    
-    public CircuitBreaker(int failureThreshold, long timeoutMs) {
-        this.failureThreshold = failureThreshold;
-        this.timeout = timeoutMs;
-    }
-    
-    public <T> T execute(Callable<T> operation) throws Exception {
-        if (state == State.OPEN) {
-            if (System.currentTimeMillis() - lastFailureTime > timeout) {
-                state = State.HALF_OPEN;
-            } else {
-                throw new RuntimeException("サーキットブレーカーが開いています");
-            }
-        }
-        
-        try {
-            T result = operation.call();
-            onSuccess();
-            return result;
-        } catch (Exception e) {
-            onFailure();
-            throw e;
-        }
-    }
-    
-    private void onSuccess() {
-        failureCount = 0;
-        state = State.CLOSED;
-    }
-    
-    private void onFailure() {
-        failureCount++;
-        lastFailureTime = System.currentTimeMillis();
-        
-        if (failureCount >= failureThreshold) {
-            state = State.OPEN;
-            System.err.println("サーキットブレーカーを開きました");
-        }
-    }
-}
-```
-
-`onFailure`では、HALF_OPENで失敗したときも失敗回数がしきい値以上のままなので、すぐにOPENへ戻ります。
-このクラスは1つのスレッドから使うことを前提にしているので、HALF_OPENでは次の1回の呼び出しの結果で状態が決まります。
-複数のスレッドから同時に呼び出すと、HALF_OPENの間に複数の呼び出しが通ったり、状態の書き換えが食い違ったりするため、排他制御が必要です。
-排他制御は第15章「マルチスレッドプログラミング」で学びます。
+リトライは一時的な障害には効きますが、相手が長く止まっているときに何度も呼び出すと、かえって相手と自分の負荷を増やします。
+失敗が一定の回数続いたら、しばらくは相手を呼ばずにすぐ例外を投げます。
+時間をおいてから試しに呼び直すこの設計を、サーキットブレーカーと呼びます<span class="footnote">名前は、電流が流れすぎると回路を切る電気のブレーカー（circuit breaker）に由来します。</span>。
+多数のサービスがネットワーク越しに呼び合うシステムで使われます。
+3つの状態（通常・遮断・試行）を切り替える実装の例は、付録Hで紹介しています。
 
 ### 例外の集約と報告
 
 複数の処理を順に実行し、途中で失敗しても残りの処理を続けたい場合は、発生した例外を集めておき、最後にまとめて報告します。
 
-<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜28、38〜55行目）</span>
+<span class="listing-number">**サンプルコード13-8**　ExceptionAggregator.java（3〜28、38〜55行目）</span>
 
 ```java
 public class ExceptionAggregator {
@@ -513,7 +439,7 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
 
-<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜22、51行目）</span>
+<span class="listing-number">**サンプルコード13-9**　MultiResourceExample.java（4〜22、51行目）</span>
 
 ```java
 public class MultiResourceExample {
@@ -552,7 +478,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜6、14〜44、58行目）、ResourcePoolDemo.java</span>
+<span class="listing-number">**サンプルコード13-10**　ResourcePool.java（3〜6、14〜44、58行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
@@ -627,9 +553,9 @@ tryブロックを抜けました
 
 ### 効果的なログレベルの選択
 
-ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-12の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選択することで、問題の深刻度を正確に伝えることができます。
+ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-11の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選択することで、問題の深刻度を正確に伝えることができます。
 
-<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜47、68行目）</span>
+<span class="listing-number">**サンプルコード13-11**　ExceptionLogging.java（5〜47、68行目）</span>
 
 ```java
 public class ExceptionLogging {
@@ -686,7 +612,7 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜44、63行目）</span>
+<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜44、63行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -744,7 +670,7 @@ public class StructuredExceptionLogger {
 次のコードでは、検査例外の基底クラス`BusinessException`と、非検査例外の基底クラス`SystemException`を抽象クラスとして用意します。
 サンプルコード13-5の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-13**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -796,7 +722,7 @@ public abstract class SystemException extends RuntimeException {
 
 エラーコードとメッセージを一元管理することで、国際化<span class="footnote">国際化（internationalization）は、最初のiと最後のnのあいだに18文字あることから「i18n」とも書きます。</span>やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード13-15**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
+<span class="listing-number">**サンプルコード13-14**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
 
 ```java
 public enum ErrorCode {
@@ -858,7 +784,7 @@ public class ErrorResponse {
 }
 ```
 
-`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-14で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
+`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-13で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
 コードとメッセージがenumの1か所にまとまるので、メッセージを変えるときもenumだけを直せば済みます。
 
 ### 例外処理戦略の実装例
@@ -867,7 +793,7 @@ public class ErrorResponse {
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
 
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜20、24〜45、56〜67、114行目）</span>
+<span class="listing-number">**サンプルコード13-15**　TransferService.java（5〜7、17〜20、24〜45、56〜67、114行目）</span>
 
 ```java
 public class TransferService {

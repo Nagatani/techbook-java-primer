@@ -99,12 +99,5 @@
     "excerpt": [
       { "file": "SSLClient.java", "from": 1, "to": 51 }
     ]
-  },
-  "16-13": {
-    "dir": "16-13",
-    "main": "NIOServer",
-    "excerpt": [
-      { "file": "NIOServer.java", "from": 7, "to": 69 }
-    ]
   }
 }

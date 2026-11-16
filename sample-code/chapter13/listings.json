@@ -49,27 +49,20 @@
     "dir": "13-08",
     "main": null,
     "excerpt": [
-      { "file": "CircuitBreaker.java", "from": 3, "to": 55 }
+      { "file": "ExceptionAggregator.java", "from": 3, "to": 28 },
+      { "file": "ExceptionAggregator.java", "from": 38, "to": 55 }
     ]
   },
   "13-9": {
     "dir": "13-09",
     "main": null,
     "excerpt": [
-      { "file": "ExceptionAggregator.java", "from": 3, "to": 28 },
-      { "file": "ExceptionAggregator.java", "from": 38, "to": 55 }
-    ]
-  },
-  "13-10": {
-    "dir": "13-10",
-    "main": null,
-    "excerpt": [
       { "file": "MultiResourceExample.java", "from": 4, "to": 22 },
       { "file": "MultiResourceExample.java", "from": 51, "to": 51 }
     ]
   },
-  "13-11": {
-    "dir": "13-11",
+  "13-10": {
+    "dir": "13-10",
     "main": "ResourcePoolDemo",
     "excerpt": [
       { "file": "ResourcePool.java", "from": 3, "to": 6 },
@@ -78,24 +71,24 @@
       { "file": "ResourcePoolDemo.java", "from": 1, "to": 12 }
     ]
   },
-  "13-12": {
-    "dir": "13-12",
+  "13-11": {
+    "dir": "13-11",
     "main": null,
     "excerpt": [
       { "file": "ExceptionLogging.java", "from": 5, "to": 47 },
       { "file": "ExceptionLogging.java", "from": 68, "to": 68 }
     ]
   },
-  "13-13": {
-    "dir": "13-13",
+  "13-12": {
+    "dir": "13-12",
     "main": null,
     "excerpt": [
       { "file": "StructuredExceptionLogger.java", "from": 5, "to": 44 },
       { "file": "StructuredExceptionLogger.java", "from": 63, "to": 63 }
     ]
   },
-  "13-14": {
-    "dir": "13-14",
+  "13-13": {
+    "dir": "13-13",
     "main": null,
     "excerpt": [
       { "file": "BusinessException.java", "from": 4, "to": 13 },
@@ -106,8 +99,8 @@
       { "file": "SystemException.java", "from": 28, "to": 28 }
     ]
   },
-  "13-15": {
-    "dir": "13-15",
+  "13-14": {
+    "dir": "13-14",
     "main": null,
     "excerpt": [
       { "file": "ErrorCode.java", "from": 1, "to": 5 },
@@ -121,8 +114,8 @@
       { "file": "ErrorResponse.java", "from": 28, "to": 29 }
     ]
   },
-  "13-16": {
-    "dir": "13-16",
+  "13-15": {
+    "dir": "13-15",
     "main": "TransferDemo",
     "excerpt": [
       { "file": "TransferService.java", "from": 5, "to": 7 },
