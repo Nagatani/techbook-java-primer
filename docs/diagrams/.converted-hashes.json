@@ -61,5 +61,9 @@
   "chapter21-dependency-injection": "2794c75eb2b71397",
   "chapter21-tdd-cycle": "fd219f9ab290992f",
   "chapter22-maven-dependency": "966b099e0a8693a4",
-  "chapter23-build-flow": "e59e6ef11ebff0e5"
+  "chapter23-build-flow": "e59e6ef11ebff0e5",
+  "chapter24-composition": "ebac344fdd838634",
+  "chapter24-initial-hierarchy": "2cd4ba0c671b1df7",
+  "chapter24-layers": "91cd945d581bcf22",
+  "chapter25-library-selection": "33232289c5ebc8f9"
 }

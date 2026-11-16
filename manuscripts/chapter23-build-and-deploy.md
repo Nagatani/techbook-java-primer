@@ -407,6 +407,8 @@ jpackage --type deb \
 Maven/Gradleによる自動化、Fat JARの作成、jpackageの高度な活用などは、付録G「高度なビルドとデプロイメント技術」で扱います。<br>
 `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-build-and-deploy/`
 
+第24章からの2つの章では、本書で学んだ技術を組み合わせて1つのアプリケーションを作る、統合プロジェクトに取り組みます。
+
 ## 章末演習
 
 ### 演習課題へのアクセス

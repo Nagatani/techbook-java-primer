@@ -376,5 +376,29 @@
     "overlaps": [],
     "overflows": [],
     "collisions": []
+  },
+  "chapter24-composition": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter24-initial-hierarchy": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter24-layers": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
+  },
+  "chapter25-library-selection": {
+    "minFont": 16,
+    "overlaps": [],
+    "overflows": [],
+    "collisions": []
   }
 }

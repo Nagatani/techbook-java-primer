@@ -1,0 +1,29 @@
+classDiagram
+    direction LR
+    class Person {
+        <<abstract>>
+        #String id
+        #String name
+        #int age
+    }
+    class Student {
+        #String department
+        #double gpa
+    }
+    class GraduateStudent {
+        -String researchField
+        -String advisorName
+    }
+    class GradeableStudent {
+        -Map grades
+        +addGrade(String, double)
+        +calculateGPA() double
+    }
+    class Gradeable {
+        <<interface>>
+    }
+    Person <|-- Student
+    Student <|-- GraduateStudent
+    Student <|-- GradeableStudent
+    Gradeable <|.. GradeableStudent
+    note for GraduateStudent "成績を持てない<br/>（フェーズ6では保存しない）"

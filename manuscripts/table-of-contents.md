@@ -35,6 +35,10 @@
 - [22章　ドキュメントと外部ライブラリ](chapter22-documentation-and-libraries.md)
 - [23章　ビルドとデプロイ](chapter23-build-and-deploy.md)
 
+### 6部：統合プロジェクト編
+- [24章　統合プロジェクトの設計](chapter24-integrated-project-design.md)
+- [25章　統合プロジェクトの技術選定と実装](chapter25-integrated-project-technology.md)
+
 ## 付録
 - [付録一覧](appendix-index.md)
 - [付録A　開発環境の構築](appendix-a-environment-setup.md)

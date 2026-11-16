@@ -1,0 +1,36 @@
+classDiagram
+    direction LR
+    class Student {
+        -String id
+        -String name
+        -String department
+        +recordGrade(Grade)
+        +gpa() double
+    }
+    class Enrollment {
+        <<sealed interface>>
+    }
+    class Undergraduate {
+        <<record>>
+        int admissionYear
+    }
+    class Graduate {
+        <<record>>
+        String researchField
+        String advisor
+    }
+    class Transcript {
+        +record(Grade)
+        +gpa() double
+    }
+    class Grade {
+        <<record>>
+        String course
+        int credits
+        double point
+    }
+    Student --> Enrollment : 在籍区分
+    Student *-- Transcript : 成績
+    Transcript o-- Grade
+    Enrollment <|.. Undergraduate
+    Enrollment <|.. Graduate

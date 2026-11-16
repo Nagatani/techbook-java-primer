@@ -1,0 +1,19 @@
+---
+config:
+  flowchart:
+    rankSpacing: 30
+---
+flowchart TB
+    GUI["画面<br/>StudentManagementGUI"]
+    CSV["CSVの取り込み<br/>StudentCsvImporter"]
+    SVC["サービス<br/>StudentService"]
+    REPO["リポジトリ<br/>StudentRepository<br/>（インターフェイス）"]
+    MEM["InMemoryStudentRepository<br/>メモリ上に保存"]
+    JDBC["JdbcStudentRepository<br/>SQLiteに保存"]
+    DB[("SQLiteのファイル")]
+    GUI --> SVC
+    CSV --> SVC
+    SVC --> REPO
+    MEM -. 実装する .-> REPO
+    JDBC -. 実装する .-> REPO
+    JDBC --> DB
