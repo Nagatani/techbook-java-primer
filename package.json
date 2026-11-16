@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run mermaid:convert && npx vivliostyle build",
+    "build:release": "npm run mermaid:convert && BOOK_EDITION=release npx vivliostyle build",
+    "build:press": "npm run mermaid:convert && BOOK_EDITION=release npx vivliostyle build --crop-marks --bleed 3mm --preflight press-ready -o output/techbook-java-primer-press.pdf",
     "build4web": "npm run mermaid:convert && npx vivliostyle build -o dist",
     "preview": "npm run mermaid:convert && npx vivliostyle preview",
+    "preview:release": "npm run mermaid:convert && BOOK_EDITION=release npx vivliostyle preview",
     "mermaid:convert": "node scripts/convert-mermaid-to-images.js",
     "index": "node scripts/build-book-index.js",
     "index:check": "node scripts/build-book-index.js --check",

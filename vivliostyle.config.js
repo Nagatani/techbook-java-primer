@@ -44,6 +44,15 @@ const markdownFiles = [
 // 章の中のセクション見出し（h2）に章番号を付ける（表示はテーマのh2::before）
 const { documentProcessor } = require('./scripts/vfm-section-label.js');
 
+// 版（BOOK_EDITION）: alpha はWeb配布のALPHA版（既定）、release は出版する正規版。
+// 表紙・奥付の出し分けは scripts/vfm-edition.js、PDFの名前は下の output
+const { currentEdition } = require('./scripts/vfm-edition.js');
+const edition = currentEdition();
+
+// 前付け（表紙・目次）のノンブルはローマ数字にし、本文は第1章を1ページとして数え直す
+const frontMatter = ['table-of-contents.md'];
+const bodyStart = 'chapter01-introduction.md';
+
 module.exports = {
   title: '大学2年生のための実践的プログラミング入門 オブジェクト指向言語 Java',
   author: 'Hidehiro Nagatani',
@@ -64,6 +73,12 @@ module.exports = {
           theme: './theme/my-theme/glossary-theme.css'
         };
       }
+      if (frontMatter.includes(file)) {
+        return { path: file, theme: ['./theme/my-theme', './theme/my-theme/frontmatter-theme.css'] };
+      }
+      if (file === bodyStart) {
+        return { path: file, theme: ['./theme/my-theme', './theme/my-theme/body-start-theme.css'] };
+      }
       // その他は通常のテーマを使用
       return {
         path: file
@@ -73,5 +88,5 @@ module.exports = {
   
   documentProcessor,
   entryContext: './manuscripts',
-  output: './output/techbook-java-primer.pdf'
+  output: edition === 'alpha' ? './output/techbook-java-primer.pdf' : `./output/techbook-java-primer-${edition}.pdf`
 };

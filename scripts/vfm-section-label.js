@@ -18,6 +18,7 @@ const { rehypeIndexEntries } = require('./vfm-index-entries.js');
 const { rehypeLinks } = require('./vfm-links.js');
 const { rehypeFigureSize } = require('./vfm-figure-size.js');
 const { rehypeLineBreaks } = require('./vfm-line-breaks.js');
+const { rehypeEdition } = require('./vfm-edition.js');
 
 const LABEL_PATTERN = /^(\d+章|付録[A-Z])$/;
 
@@ -50,7 +51,7 @@ function rehypeSectionLabel() {
 /** vivliostyle.config.js の documentProcessor に渡す */
 function documentProcessor(options, metadata) {
   // VFMの処理系は凍結されているため、呼び出して複製してからプラグインを足す
-  return VFM(options, metadata)().use(rehypeSectionLabel).use(rehypeCodeLines).use(rehypeIndexEntries).use(rehypeLinks).use(rehypeLineBreaks).use(rehypeFigureSize);
+  return VFM(options, metadata)().use(rehypeEdition).use(rehypeSectionLabel).use(rehypeCodeLines).use(rehypeIndexEntries).use(rehypeLinks).use(rehypeLineBreaks).use(rehypeFigureSize);
 }
 
 module.exports = { documentProcessor, rehypeSectionLabel };

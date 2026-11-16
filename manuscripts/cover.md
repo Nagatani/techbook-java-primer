@@ -2,7 +2,7 @@
 
   <div class="cover-header">
     <div class="cover-series">大学実習教材</div>
-    <div class="cover-status">ALPHA VERSION<span>執筆途中</span></div>
+    <div class="cover-status edition-alpha">ALPHA VERSION<span>Web配布版</span></div>
   </div>
 
   <div class="cover-titles">
