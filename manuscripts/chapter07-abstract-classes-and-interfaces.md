@@ -1056,6 +1056,6 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter07/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
-#### 次のステップ
+### 次のステップ
 
 基礎課題が完了したら、第8章「Javaの特殊なクラス形式」に進みましょう。
