@@ -2124,19 +2124,12 @@ Java 16以降には、本章で学んだクラスを簡潔に、安全に書く�
     + 人（Person）、本（Book）、円（Circle）、学生（Student）、長方形（Rectangle）、銀行口座（BankAccount）、時刻（Time）を表す7つのクラスの実装
 - 発展課題（`advanced/`）
     + 図書管理システム（BookとLibraryの連携）と成績管理プログラム（StudentとGradeBookの連携）。オブジェクトの配列で複数のオブジェクトを管理する
+- チャレンジ課題（`challenge/`）
+    + 自動販売機シミュレーター。本章で学んだクラス・`private`・オブジェクトの配列・`static final`の定数を組み合わせる
 - 解答例（`solutions/`）
-    + 基礎課題の解答例（発展課題は`advanced/`のプログラムが解答例を兼ねる）
+    + 基礎課題の解答例（発展課題とチャレンジ課題は、各フォルダーのプログラムが解答例を兼ねる）
 
 詳細な課題内容と実装のヒントは、各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter03/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
-
-### よくある実装ミスと対策
-
-| ミスの種類 | 症状 | 対策 |
-|------------|------|------|
-| フィールドの初期化忘れ | NullPointerException | コンストラクターで確実に初期化 |
-| thisの使い忘れ | 引数とフィールドの混同 | 同名の場合は必ずthisを使用 |
-| staticの誤用 | "non-static variable" エラー | インスタンスメソッドではstaticを外す |
-| アクセス修飾子の誤り | privateフィールドに直接アクセス | ゲッターメソッドを使用 |
 
 ### 次のステップ
 
