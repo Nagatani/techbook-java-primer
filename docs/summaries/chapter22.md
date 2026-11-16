@@ -7,9 +7,9 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: c156b559
   - key: "外部ライブラリの利用"
-    hash: 37a6ffec
+    hash: b88bddf5
   - key: "よくあるエラーと対処法"
-    hash: 93ce1fa7
+    hash: 43522835
   - key: "まとめ"
     hash: c0e02b73
   - key: "章末演習"
@@ -88,3 +88,4 @@ sections:
 - L34–35、L200–201ほか: 文の途中で改行して読点で行を分けている（紙面への影響はない）（2026-11-16の校正で解消）
 - 2026-11-12以前の個別の問題（小見出しのjavac、22-1の不適切な例、TaskManagerの参照、空行、言語指定、bashへの番号、重複した導入、古い版の表、項目名＋コロン、Gsonの実行結果、Mavenの探索の記述、ライセンスのリスト、エラー集）はすべて解消済み
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

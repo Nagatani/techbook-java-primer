@@ -13,7 +13,7 @@ sections:
   - key: "パフォーマンスの最適化"
     hash: 3fd08222
   - key: "よくあるエラーと対処法"
-    hash: 21d48ee1
+    hash: 45ba72cb
   - key: "まとめ"
     hash: dc3236ce
   - key: "章末演習"
@@ -89,3 +89,4 @@ sections:
 - 未解決: 19-6の`new Date(file.lastModified())`は非推奨ではないため残した（`java.time`に替えるかは任意）
 - 19-1〜19-3の実行結果の不一致、19-3の絵文字、19-4のコメントの「インターフェース」、19-6の`Date`のimport漏れ、19-7の未使用のExecutorとコメントの誤り、エラー集の19-14（WeakReference）・見出し直後の空行・演習URLの太字は、2026-11-09〜11-11の修正で解消した（エラー集は付録Fへ移動）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

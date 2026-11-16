@@ -3,19 +3,21 @@ source: manuscripts/chapter06-immutability-and-final.md
 summarized: 2026-11-14
 sections:
   - key: "本章の学習目標"
-    hash: eb4f6c1a
+    hash: d2f49379
   - key: "不変性の概念と重要性"
     hash: 9ff0b384
   - key: "finalキーワードの3つの用途"
-    hash: dd6389ba
+    hash: dcede2c0
   - key: "不変オブジェクトの設計パターン"
     hash: 46350da9
   - key: "防御的コピーとビルダーパターン"
     hash: aba10c61
+  - key: "日付と時刻（java.time）"
+    hash: 1fa84e55
   - key: "よくあるエラーと対処法"
-    hash: 5f3c6387
+    hash: 6c0502af
   - key: "まとめ"
-    hash: 60f583c1
+    hash: f4a537d7
   - key: "章末演習"
     hash: e5081f50
 ---
@@ -99,3 +101,4 @@ sections:
 - 6-1のコメント「実際の値: 予測不可能（1000～2000の間）」は、更新が失われると1000未満にもなりうるので根拠がなかった（2026-11-12に解消。「2000より小さくなることがある」にした）
 - 章末演習の「課題の概要」の「不変なPointクラス - 基本的な…」の形、サンプルの全文のコメントの「コンストラクタ」「パラメータ」（2026-11-12に解消。第4・5章の全文も同様に直した）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: 節「日付と時刻（java.time）」を「よくあるエラーと対処法」の前に加えた（著者の指示で付録Dのjava.timeを本書に必要な範囲に絞って編入）。DateとCalendarの問題、主なクラスの表、作成と計算（6-13）、差（ChronoUnit・Period・Duration、6-14）、表示と読み取り（DateTimeFormatter、SMARTとSTRICTの違い、6-15）。詳しい資料は`appendix/java-time-api/`（脚注）。学習目標とまとめに5項目めを加えた

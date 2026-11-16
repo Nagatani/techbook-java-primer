@@ -51,9 +51,9 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 2. **Appendix Structure**: 付録はGitHubリポジトリへの参照として実装
    - 付録B: GitHubリンク形式のインデックスとして完成
-   - 付録A〜F（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D java.time APIによる日付と時刻の処理、E 高度なビルドとデプロイメント技術、F Javaのよくあるエラーと対処法。GitHubのディレクトリは`appendix/a-*`・`bXX-*`・`c-*`・`d-java-time-api`・`e-build-and-deploy`・`f-common-errors`
+   - 付録A〜E（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D 高度なビルドとデプロイメント技術、E Javaのよくあるエラーと対処法。GitHubのディレクトリは`appendix/a-environment-setup`・`bXX-*`・`c-theoretical-foundations`・`d-build-and-deploy`・`e-common-errors`
    - 紙面の付録のページは「付録Xについて／内容／関連する章／オンライン資料」の形にそろえ、問い合わせ先は付録一覧（`appendix-index.md`）の1か所だけに置く。中身のない一般論の節（「学習のポイント」「実践への応用」）は置かない
-   - 本文に入れた付録: 旧付録D（統合プロジェクト）は第25・26章、旧付録E（データベース）は第24章。旧付録Fのjava.timeは、本文の途中に章を入れると以降の章番号がすべてずれるため付録Dとして残した
+   - 本文に入れた旧付録: 統合プロジェクト（旧D）は第25・26章、データベース（旧E）は第24章、java.time（旧F）は第6章の最後の節「日付と時刻（java.time）」（本書に必要な範囲に絞った。詳しい資料は文字のない`appendix/java-time-api/`に残し、第6章の脚注から案内する）
    - 本文内に詳細な付録内容は記載しない
 
 3. **Writing Style Decisions**:
@@ -77,9 +77,10 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
    - 付録・演習のコードは`npm run check:public-code`でコンパイルとテストを確かめる（2026-11-11〜、CIはコンパイルを失敗扱い）。Maven・Gradleのビルド、GUIの起動、READMEの手順どおりの実行は、DockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
 
-7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/f-common-errors/chapters/chapterXX.md`で提供する
-   - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/f-common-errors/chapters/chapterXX.md`）を置く
+7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/e-common-errors/chapters/chapterXX.md`で提供する
+   - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapterXX.md`）を置く
    - GitHub側のコードには番号を付けない。コンパイルできる全文は`chapters/chapterXX-code/`に置く
+   - 第25章（統合プロジェクトの設計）だけは章ごとのファイルを作らず、本文の「設計でよくある失敗」で扱う。エラーメッセージは実際に再現して写す（GUIのないLinuxの表示などはDockerのeclipse-temurin:25-jdkで確かめる）
 
 9. **標準入出力はIOクラス（2026-11-10〜）**: Javaのコードの標準入出力は、Java 25の`java.lang.IO`（`IO.println`・`IO.print`・`IO.readln`）で書く
    - 本書で使う旨は第1章「画面に文字列を出力する方法」とコラム「System.out.printlnとIOクラス」に書いた。本書が使うJDKはOpenJDK 25
@@ -111,7 +112,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 12. **技術を正式に説明する章（2026-11-11〜）**: 同じ技術を複数の章で説明しない。その技術を説明するのにふさわしい章に解説をまとめ、ほかの章で先に使う・後で使うときは「第N章で学びます」「第N章で学んだ〜」と誘導する
    - クラス・フィールド・メソッド・コンストラクターとgetter/setterの基本・public/private・static・オブジェクトの配列は第3章。アクセス修飾子の全体・パッケージ・this・オーバーロードの設計は第4章
-   - 継承・オーバーライド・ポリモーフィズム・instanceof・`Object`クラスのメソッド（toString・equals・hashCode）は第5章。不変オブジェクト・final・防御的コピー・ビルダーは第6章。enum・Record・sealed・内部クラス・匿名クラスは第8章
+   - 継承・オーバーライド・ポリモーフィズム・instanceof・`Object`クラスのメソッド（toString・equals・hashCode）は第5章。不変オブジェクト・final・防御的コピー・ビルダーと日付と時刻（`java.time`）は第6章。enum・Record・sealed・内部クラス・匿名クラスは第8章
    - コレクションとその選び方・ラッパークラスとオートボクシングは第9章、ジェネリクスとvarは第10章、ラムダ式・メソッド参照・Comparatorは第11章、Stream・Optional・並列ストリームは第12章、例外処理・try-with-resourcesは第13章
    - GUIの部品とレイアウト（invokeLaterの定型を含む）は第17章、イベント処理の基本・EDT・javax.swing.Timerは第18章、マウス・キーボードの詳細とSwingWorkerは第19章
    - 後の章で学ぶ機能は、コードを動かせばわかる程度なら先に使ってよい。説明なしでは難しいもの・読み解きの邪魔になるものは別の書き方にする（例: ラムダ式の代わりに拡張for文、ジェネリクスの代わりに配列）。使い続ける場合は初出に最小限の読み方と誘導を置く

@@ -23,7 +23,7 @@ sections:
   - key: "例外処理のベストプラクティス"
     hash: 9c812abf
   - key: "よくあるエラーと対処法"
-    hash: 722bcec5
+    hash: 6f573847
   - key: "まとめ"
     hash: 07c5d3b8
   - key: "章末演習"
@@ -131,3 +131,4 @@ sections:
     + try-with-resourcesの抑制された例外に触れていなかった（2026-11-14に解消。13-10の後に説明した）
     + 図`docs/diagrams/chapter13-circuit-breaker.mmd`はHALF_OPENを「試しに1回呼び出す」とするが、13-8のコードは1回に制限していない（2026-11-14に解消。図の前に3つの状態のリストを置き、13-8の後に、1つのスレッドから使う前提では次の1回で状態が決まることと、複数のスレッドでは排他制御が要ることを書いた。図の文言も合わせた）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

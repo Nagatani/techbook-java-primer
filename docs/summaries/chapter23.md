@@ -10,8 +10,10 @@ sections:
     hash: c400f8f4
   - key: "jpackageによるネイティブアプリケーション化"
     hash: 7100fce3
+  - key: "よくあるエラーと対処法"
+    hash: 03ecc005
   - key: "まとめ"
-    hash: d3e53609
+    hash: 2ea69622
   - key: "章末演習"
     hash: 54adf871
 ---
@@ -78,3 +80,4 @@ sections:
 - 2026-11-14の校閲で、ビルド・パッケージング・配布の定義の混同、23-3の抜粋がコンストラクターを省いて`TodoApp::new`の動きが読めない点、jpackageのクロスビルド不可の記述漏れ、まとめの「第22章で学んだMaven」（第22章はJARの作成を扱っていなかった）、「推奨される知識：」の形、ディレクトリ図の罫線の混在を直した
 - 2026-11-16: 「今後の学習に向けて」の末尾に、第25章からの統合プロジェクトへの案内を1文加えた
 - 2026-11-16: 「今後の学習に向けて」の案内を、第24章（データベース）と第25・26章（統合プロジェクト）の2文にした
+- 2026-11-16: 節「よくあるエラーと対処法」を加えた（メイン・マニフェスト属性、NoClassDefFoundError、getResourceAsStreamのnull、UnsupportedClassVersionError、jpackage）。詳しい内容は`appendix/e-common-errors/chapters/chapter23.md`

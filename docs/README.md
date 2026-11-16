@@ -9,7 +9,7 @@
 - 書籍名：Java入門（大学2年生のための実践的プログラミング入門 オブジェクト指向言語 Java）
 - 著者：Hidehiro Nagatani
 - 対象読者：C言語で手続き型プログラミングを学んだ学生
-- 構成：全26章と付録A〜F（付録BはB.01〜B.15）。章タイトルの正は各章ファイル（`manuscripts/chapterXX-*.md`）の1行目
+- 構成：全26章と付録A〜E（付録BはB.01〜B.15）。章タイトルの正は各章ファイル（`manuscripts/chapterXX-*.md`）の1行目
 - 対象のJava：Java 25（公開するコードはJava 25でコンパイル・実行できる状態を保つ）
 - 組版：Vivliostyle（設定は`vivliostyle.config.js`、テーマは`theme/my-theme/theme.css`、出力は`output/techbook-java-primer.pdf`）
 

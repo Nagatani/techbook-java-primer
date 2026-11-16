@@ -23,7 +23,7 @@ sections:
   - key: "継続的インテグレーション（CI）との統合"
     hash: 605244be
   - key: "よくあるエラーと対処法"
-    hash: e5672ab3
+    hash: c66d9ef5
   - key: "まとめ"
     hash: 1cc54646
   - key: "章末演習"
@@ -116,3 +116,4 @@ sections:
 - 2026-11-14の校閲で次を解消した: L196の「`new UserRepository()`でDB接続が走る」という不正確な説明、IoCの用語の説明不足、21-5の時点でスタブを注入できるとした先取り、21-5のコメントの「コンストラクタ」、Calculatorの「テストしやすい」の重複、21-1の`==`による比較と章末の「誤差を許容して比べる」との食い違い、Mockitoの警告の説明不足（JDK 25で確認）、章末の「モックにすべて設定する」という誤解を招く対処（strict stubsの`UnnecessaryStubbingException`をMockito 5.20で確認）、推奨知識の第15章・デザインパターン
 - JUnit 6の扱いと、21-18の版（2026-11-14に解消。Maven Centralで、junit-jupiter 6.1.3・maven-surefire-plugin 3.6.1・jacoco-maven-plugin 0.8.16が最新の版として実在することを確かめた。本文はJUnit Jupiterと書き、JUnit 6が最新の系列であることを本文で述べた。`listings.json`の版もjunit-jupiter-api 6.1.3・Mockito 5.24.0に上げた）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

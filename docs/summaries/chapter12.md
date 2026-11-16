@@ -13,7 +13,7 @@ sections:
   - key: "高度なStream操作"
     hash: c16c8a23
   - key: "よくあるエラーと対処法"
-    hash: 417f7880
+    hash: 92c24189
   - key: "まとめ"
     hash: a44ec8da
   - key: "章末演習"
@@ -105,3 +105,4 @@ sections:
     + 12-05・12-17・12-18・12-22にあった旧版の`AdvancedSortExample.java`を、`Student.java`に置き換えた
     + 図の直後に浮いていた文（旧L71）と、12-5の前の重複した文を削除した
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

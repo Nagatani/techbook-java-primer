@@ -15,7 +15,7 @@ sections:
   - key: "実践的な並行処理パターン"
     hash: 177c39ff
   - key: "よくあるエラーと対処法"
-    hash: 985f941a
+    hash: f20876cc
   - key: "本章のまとめ"
     hash: e9b3b72f
   - key: "章末演習"
@@ -99,3 +99,4 @@ sections:
     + 厨房の図の結論がない、GUIのスレッドへの誘導がない、演習の「Threadの継承」と本文の方針の食い違い
 - それ以前に解消したもの: コロンを句点に置換した導入句、全角括弧、項目名と説明をコロンでつないだリスト、15-15のimportの欠落、ConcurrentHashMapのセグメントによる古い説明、Atomicクラスの速さの言い過ぎ、主観的な形容
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）

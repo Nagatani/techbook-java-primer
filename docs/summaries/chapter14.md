@@ -17,7 +17,7 @@ sections:
   - key: "実践的なファイル処理例"
     hash: e6fe4b29
   - key: "日付時刻処理について"
-    hash: c7cb1a1c
+    hash: eb13deee
   - key: "GUIでのファイル選択: `JFileChooser`"
     hash: eac319ea
   - key: "Text Blocks - 複数行文字列の効率的な処理"
@@ -25,7 +25,7 @@ sections:
   - key: "まとめ"
     hash: 325b494a
   - key: "よくあるエラーと対処法"
-    hash: 45986ae1
+    hash: 9238a0ba
   - key: "章末演習"
     hash: b7f08ec4
 ---
@@ -113,3 +113,4 @@ sections:
     + 付録B.13への誘導の位置、14-13の見出し（「処理」→「生成と保存」）、章末の課題構成が汎用の3行だけだった
 - それ以前に解消したもの: 14-1の実行結果の見出し、14-2の空catch、用語の揺れ（文字ストリーム）、「モダンで高機能な」の重複、14-7のコメントの順序など
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
+- 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）。節「日付時刻処理について」を、第6章への誘導と`FileTime.toInstant()`の1文に縮めた

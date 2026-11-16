@@ -2,9 +2,9 @@
 
 > **2026-11-16の状態**: 2節以降は2025-07時点の旧24章構成で書いた分析で、章番号・章タイトル・件数・課題はいまの構成と合わない（記録として残す）。いまの構成と状態は次のとおり。
 > - 本文は全26章（2026-11-16に旧付録Eを第24章「データベースプログラミング」、旧付録Dを第25・26章「統合プロジェクト」として本文に移した）。章タイトルの正は`manuscripts/chapterXX-*.md`の1行目、順序の正は`vivliostyle.config.js`。章ごとの節構成は`docs/summaries/`、全体の見取り図は`docs/summaries/overview.md`
-> - 付録はA〜Fの6つ（A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D java.time APIによる日付と時刻の処理、E 高度なビルドとデプロイメント技術、F Javaのよくあるエラーと対処法）。2026-11-16に再編した。中身は`appendix/`にあり、付録Bの節は`appendix/b01`〜`b15`のディレクトリ番号を正とする
+> - 付録はA〜Eの5つ（A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D 高度なビルドとデプロイメント技術、E Javaのよくあるエラーと対処法）。2026-11-16に再編し、java.timeは第6章に編入した。中身は`appendix/`にあり、付録Bの節は`appendix/b01`〜`b15`のディレクトリ番号を正とする
 > - 演習は`exercises/chapter01`〜`chapter26`（章番号と一致）。統合プロジェクトの初版のコードは`sample-code/integrated-project/`。本文の章末には演習へのリンクだけを置く
-> - サンプルコードは「サンプルコードX-Y」の番号で、本文には抜粋を載せ、全文を`sample-code/`に置く。対象はJava 25で、標準入出力は`IO`クラス。各章の「よくあるエラーと対処法」の詳細は付録F（`appendix/f-common-errors/`）
+> - サンプルコードは「サンプルコードX-Y」の番号で、本文には抜粋を載せ、全文を`sample-code/`に置く。対象はJava 25で、標準入出力は`IO`クラス。各章の「よくあるエラーと対処法」の詳細は付録E（`appendix/e-common-errors/`）
 > - 図はMermaidの元データ`docs/diagrams/*.mmd`（68枚）から作るSVG
 > - 7節・9節に挙げた課題（付録B、第15章の演習の形式、章順序、サンプルコードの番号、GitHubのプレースホルダー）はすべて片付いている（`docs/analysis/issues-tracking.md`のIssue #001〜#005）
 > - 検査は`npm run check:structure`・`check:compliance`（pre-commitフック）、`check:samples`・`check:java`・`check:public-code`・`check:diagrams`・`index:check`・`lint`。作業の状態は`TODO.md`、課題は`docs/analysis/issues-tracking.md`で管理する

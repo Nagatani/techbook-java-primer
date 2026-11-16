@@ -15,13 +15,13 @@ sections:
   - key: "DAOパターン"
     hash: c486598f
   - key: "日付と時刻の列とjava.time"
-    hash: d49b4f8e
+    hash: 9d524b74
   - key: "トランザクション"
     hash: 45db8a3c
   - key: "コネクションプールとバッチ処理"
     hash: 610516fd
   - key: "よくあるエラーと対処法"
-    hash: 1b670f8b
+    hash: e91fd7f1
   - key: "まとめ"
     hash: d30bcd1a
   - key: "章末演習"
@@ -60,7 +60,7 @@ sections:
 - コネクションプールとバッチ処理（L562–656）
     + HikariCP 7.1.0（24-11、SLF4Jの警告を実行結果に含めた）、バッチ（24-12、MySQLのrewriteBatchedStatementsは脚注）
 - よくあるエラーと対処法（L657–673）
-    + 6項目。付録Fの章ごとのファイルはまだない
+    + 6項目。詳しい内容は付録Eの`chapters/chapter24.md`（2026-11-16に作成）
 - まとめ（L674–699）・章末演習（L700–717）
 
 ## 他章との関係
@@ -69,3 +69,4 @@ sections:
 - 第22章: ドライバーのJARとMaven
 - 第25・26章: DAO（本章）とリポジトリ（第25章）、SQLiteとH2の比較（第26章）
 - 付録D: java.timeのクラスの使い方
+- 2026-11-16: java.timeの脚注を第6章への誘導にし、「よくあるエラーと対処法」に付録Eの章ごとのファイル（chapter24.md、H2の実際のメッセージ）への案内を加えた
