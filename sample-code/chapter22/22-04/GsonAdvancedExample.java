@@ -13,15 +13,15 @@ public class GsonAdvancedExample {
             .create();
         
         // 2. オブジェクトのシリアライズ
-        Task task = new Task("買い物", false);
+        TodoItem task = new TodoItem("買い物", false);
         String json = gson.toJson(task);
         IO.println("Pretty JSON:\n" + json);
         
         // 3. コレクションの処理
-        List<Task> tasks = Arrays.asList(
-            new Task("買い物", false),
-            new Task("勉強", true),
-            new Task("運動", false)
+        List<TodoItem> tasks = Arrays.asList(
+            new TodoItem("買い物", false),
+            new TodoItem("勉強", true),
+            new TodoItem("運動", false)
         );
         
         String tasksJson = gson.toJson(tasks);
@@ -37,7 +37,7 @@ public class GsonAdvancedExample {
             }
             """;
         
-        Task loadedTask = gson.fromJson(complexJson, Task.class);
+        TodoItem loadedTask = gson.fromJson(complexJson, TodoItem.class);
         IO.println("\nLoaded Task: " + loadedTask.getTitle());
     }
 }

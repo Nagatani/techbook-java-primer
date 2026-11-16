@@ -14,8 +14,8 @@
     "dir": "22-04",
     "main": "GsonAdvancedExample",
     "excerpt": [
-      { "file": "Task.java", "from": 9, "to": 19 },
-      { "file": "Task.java", "from": 32, "to": 32 },
+      { "file": "TodoItem.java", "from": 9, "to": 19 },
+      { "file": "TodoItem.java", "from": 32, "to": 32 },
       { "file": "GsonAdvancedExample.java", "from": 8, "to": 18 },
       { "file": "GsonAdvancedExample.java", "from": 30, "to": 43 }
     ],

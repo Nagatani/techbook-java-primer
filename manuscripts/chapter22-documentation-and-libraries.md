@@ -277,11 +277,11 @@ Mavenは、依存関係を次の順に解決します。
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-4**　Task.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
+<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
 // Gsonの高度な使用例
-public class Task {
+public class TodoItem {
     @SerializedName("task_title")  // JSONのフィールド名を指定
     private String title;
     
@@ -302,7 +302,7 @@ public class GsonAdvancedExample {
             .create();
         
         // 2. オブジェクトのシリアライズ
-        Task task = new Task("買い物", false);
+        TodoItem task = new TodoItem("買い物", false);
         String json = gson.toJson(task);
         IO.println("Pretty JSON:\n" + json);
         // ...
@@ -316,7 +316,7 @@ public class GsonAdvancedExample {
             }
             """;
         
-        Task loadedTask = gson.fromJson(complexJson, Task.class);
+        TodoItem loadedTask = gson.fromJson(complexJson, TodoItem.class);
         IO.println("\nLoaded Task: " + loadedTask.getTitle());
     }
 }
