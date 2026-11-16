@@ -27,15 +27,16 @@
 | `analysis/issues-tracking.md` | 課題の一覧と状況 |
 | `guidelines/` | 箇条書き・コードブロック・コラムの書き方 |
 
-この表にない`docs/`直下の文書（2025年の計画・分析・手順書）は、旧24章構成の章番号や、いまは使わない手順を含む記録です。作業の手順としては使いません。
+2025年の計画・分析・手順書（旧24章構成の章番号や、いまは使わない手順を含むもの）は、2026-11-16に`archive/`へ移しました。作業の手順としては使いません。
 
 ## ディレクトリ構成
 
-- `analysis/`：プロジェクトの分析資料と課題の管理（作業のたびに更新する）
+- `analysis/`：課題の管理（`issues-tracking.md`）、プロジェクトの現状の要約（`comprehensive-project-analysis.md`の冒頭）、`check:java`のレポート（`java-sample-check.md`、生成物）
 - `book-index/`：原稿の節ごとの行範囲（`npm run index`で生成）
 - `summaries/`：章・付録ごとの要約（索引のハッシュで古くなったことを検出する）
 - `guidelines/`：コードのスタイル、コラム、箇条書きの書き方
-- `planning/`、`reference/`：初期の計画・分析資料（2024〜2025年時点の内容で、章番号などは古いことがある）。ただし`planning/exercise-review-brief.md`は2026-11-12の演習の見直しの手順
+- `planning/`：演習の作り直しの手順（`exercise-review-brief.md`、2026-11-12）
+- `archive/`：役目を終えた2024〜2025年の計画・分析・手順書と、図の検討メモ（元の場所と同じ構成で置いている。章番号などは古い）
 - `diagrams/`：図の元データ（Mermaidの`chapterXX-内容.mmd`）と設定。`npm run mermaid:convert`が`manuscripts/images/diagrams/`のSVGを作る。本で使わない図は`diagrams/unused/`
 - `lecture-materials/`：元の講義資料（読み取り専用。変更しない）
 

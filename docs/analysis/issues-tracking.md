@@ -351,7 +351,7 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 1. **フェーズ2の実装状況確認**
    - 第8章と第9章の統合：既に「Javaの特殊なクラス形式」として統合済みを確認
    - 付録Gと第23章の重複解消：付録Gは「高度なビルドとデプロイメント技術」として整理済みを確認
-   - GitHub連携の強化：コード配置基準が策定済みを確認（docs/github-code-organization-standards.md）
+   - GitHub連携の強化：コード配置基準が策定済みを確認（docs/archive/github-code-organization-standards.md）
 
 2. **TODO.mdの更新**
    - フェーズ1の完了状況を確認（全項目完了済み）
