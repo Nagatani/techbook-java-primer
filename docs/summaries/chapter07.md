@@ -23,7 +23,7 @@ sections:
   - key: "まとめ"
     hash: f91565d3
   - key: "章末演習"
-    hash: aad3675a
+    hash: e475fb30
 ---
 
 # 第7章 抽象クラスとインターフェイス 要約
