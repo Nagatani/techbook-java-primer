@@ -11,7 +11,7 @@
  *   - .javaファイルの package 宣言からソースのルートを求め、同じルートのファイルを1つのまとまりにする
  *   - ルートが src/main/java か src/test/java のときは、その親（プロジェクト）を1つのまとまりにし、mainとtestをまとめてコンパイルする
  *
- * 外部ライブラリ（JUnit、Mockito、JMH、SLF4J、Gson、Commons）は、下の LIBS をMaven Centralから
+ * 外部ライブラリ（JUnit、Mockito、JMH、SLF4J、Gson、Commons、H2）は、下の LIBS をMaven Centralから
  * .cache/sample-code-libs/ に取得し、すべてのまとまりのクラスパスに加える。
  * テストは JUnit Platform Console Standalone で、まとまりごとに一時ディレクトリをカレントにして実行する。
  *
@@ -42,6 +42,9 @@ const LIBS = [
   'org.apache.commons:commons-lang3:3.18.0',
   'commons-cli:commons-cli:1.9.0',
   'com.h2database:h2:2.5.252', // 付録Eの演習（JDBC）
+  'org.apache.commons:commons-csv:1.14.1', // 第25章の演習（CSVの読み込み）
+  'commons-io:commons-io:2.20.0', // commons-csvの依存
+  'commons-codec:commons-codec:1.19.0', // commons-csvの依存
 ];
 
 // 検査しないまとまり（パス → 理由）
