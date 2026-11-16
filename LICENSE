@@ -1,0 +1,24 @@
+本リポジトリのライセンス
+
+Copyright (c) 2025-2026 Hidehiro Nagatani
+
+1. 書籍の文章・図（All Rights Reserved）
+
+   書籍『大学2年生のための実践的プログラミング入門 オブジェクト指向言語 Java』の
+   原稿（manuscripts/）、図の元データと画像（docs/diagrams/、manuscripts/images/）、
+   表紙、および sample-code/・appendix/・exercises/ にある解説文書（README.md など
+   Markdownの文書）は、著作権法により保護されています。
+   著者の許諾なく、複製・転載・再配布・改変して公開することを禁じます。
+   個人の学習のために閲覧・印刷することは自由です。
+
+2. サンプルコード（MIT License）
+
+   sample-code/・appendix/・exercises/ にあるソースコード（.java などのプログラム）と、
+   そのビルドの設定ファイル（pom.xml、build.gradle など）は、MITライセンスで公開します。
+   条文は LICENSE-CODE を参照してください。商用・非商用を問わず、自由に利用・改変・
+   再配布できます。
+
+3. 上記以外
+
+   ビルドの仕組み（scripts/、theme/、設定ファイル）など、上記に当たらないファイルの
+   扱いは、個別に著者へお問い合わせください（GitHubのIssue）。

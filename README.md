@@ -7,6 +7,10 @@
 https://vivliostyle.org/viewer/#src=https://nagatani.github.io/techbook-java-primer/publication.json
 
 
+## ライセンス
+
+書籍の文章・図は著作権で保護されています（All Rights Reserved）。`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定ファイルはMITライセンスです。詳しくは`LICENSE`と`LICENSE-CODE`を参照してください。
+
 ## 開発環境
 
 - Node.js 22.12以上（`@vivliostyle/cli` 11の要件。CIとGitHub Pagesへのデプロイは24を使う）
@@ -30,11 +34,29 @@ pushとプルリクエストでは、GitHub Actions（`.github/workflows/check.y
 ## ビルドコマンド
 
 ### build
-PDF形式で書籍を生成します。出力先: `output/techbook-java-primer.pdf`
+PDF形式で書籍を生成します。Webで配布するALPHA版（表紙に「ALPHA VERSION」、奥付にビルドした日付）になります。出力先: `output/techbook-java-primer.pdf`
 
 ```
 npm run build
 ```
+
+### build:release
+出版する正規版（電子版・オンデマンド印刷）のPDFを生成します。表紙のALPHA版の表示を外し、奥付を発行日の形にします。出力先: `output/techbook-java-primer-release.pdf`
+
+```
+npm run build:release
+```
+
+版は環境変数`BOOK_EDITION`（`alpha`か`release`）で選びます。原稿の中で片方の版だけに出す要素には`class="edition-alpha"`か`class="edition-release"`を付けます（`scripts/vfm-edition.js`）。
+
+### build:press
+入稿用に、正規版をトンボと塗り足し（3mm）付きのPDF/X-1aで生成します（Dockerが必要）。出力先: `output/techbook-java-primer-press.pdf`
+
+```
+npm run build:press
+```
+
+トンボだけを付けたい場合などは、`npm run build -- --crop-marks --bleed 3mm`のように、`--`の後ろにVivliostyleのオプションを渡せます。
 
 ### build4web
 Web公開用にHTML形式で生成します。出力先: `dist/`
