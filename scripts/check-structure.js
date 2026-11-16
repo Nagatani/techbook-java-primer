@@ -60,8 +60,7 @@ function appendixB() {
 const OTHER_APPENDICES = [
   { id: 'A', file: 'appendix-a-environment-setup.md', chapters: [1, 2] },
   { id: 'C', file: 'appendix-c-theoretical-foundations.md', chapters: [3, 4, 5, 7, 13, 15, 25] },
-  { id: 'D', file: 'appendix-d-java-time-api.md', chapters: [6, 12, 13, 14, 24] },
-  { id: 'E', file: 'appendix-e-build-and-deploy.md', chapters: [22, 23] },
+  { id: 'D', file: 'appendix-d-build-and-deploy.md', chapters: [22, 23] },
 ];
 const appendixTitle = (file) => stripTags(read(`manuscripts/${file}`).split('\n')[0]).replace(/^付録[A-Z]\s*/, '');
 
@@ -76,7 +75,7 @@ function crossrefGuide() {
     '各章を読み終えたあとに、より深く学ぶための付録をまとめました。',
     'このページは`scripts/check-structure.js crossref`で、各章の見出しと付録の一覧から生成しています。', '',
     '付録Bの各節は、GitHubリポジトリの`appendix/`のディレクトリ（b01〜b15）で提供しています。',
-    '各章の「よくあるエラーと対処法」の詳しい内容は、付録F（`appendix/f-common-errors/chapters/`）にあります。', '',
+    '各章の「よくあるエラーと対処法」の詳しい内容は、付録E（`appendix/e-common-errors/chapters/`）にあります。', '',
     '## 章ごとの関連付録', '',
   ];
   for (const c of chs) {

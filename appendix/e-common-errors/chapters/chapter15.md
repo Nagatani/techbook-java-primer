@@ -171,7 +171,7 @@ try {
   - volatileキーワードの正しい使用法
 - **InterruptedException**（→ 第15章）
   - スレッドの割り込み処理
-- **ConcurrentModificationException**（→ [付録F ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)）
+- **ConcurrentModificationException**（→ [付録E ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)）
   - 反復処理中のコレクション変更
 
 ## デバッグのヒント
@@ -196,5 +196,5 @@ try {
 
 ## さらに学ぶには
 
-- [付録F: ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)
+- [付録E: ConcurrentModificationException](../runtime-exceptions/ConcurrentModificationException.md)
 - 付録B.14: Javaメモリモデル（高度な内容）
