@@ -20,7 +20,4 @@ javac -d out *.java
 | [19-2](./19-02/) | KeyboardEventAdvancedExample.java | `java -cp out KeyboardEventAdvancedExample` |
 | [19-3](./19-03/) | DocumentListenerExample.java | `java -cp out DocumentListenerExample` |
 | [19-4](./19-04/) | CustomEventExample.java | `java -cp out CustomEventExample` |
-| [19-5](./19-05/) | JavaBeansEventExample.java | `java -cp out JavaBeansEventExample` |
-| [19-6](./19-06/) | DragAndDropExample.java | `java -cp out DragAndDropExample` |
-| [19-7](./19-07/) | EventOptimizationExample.java | `java -cp out EventOptimizationExample` |
-| [19-8](./19-08/) | SwingWorkerExample.java | `java -cp out SwingWorkerExample` |
+| [19-5](./19-05/) | SwingWorkerExample.java | `java -cp out SwingWorkerExample` |

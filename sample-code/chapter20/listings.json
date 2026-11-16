@@ -30,18 +30,6 @@
   },
   "20-4": {
     "dir": "20-04",
-    "main": "DynamicTreeExample",
-    "excerpt": [
-      { "file": "DynamicTreeExample.java", "from": 5, "to": 6 },
-      { "file": "DynamicTreeExample.java", "from": 9, "to": 9 },
-      { "file": "DynamicTreeExample.java", "from": 13, "to": 15 },
-      { "file": "DynamicTreeExample.java", "from": 26, "to": 33 },
-      { "file": "DynamicTreeExample.java", "from": 86, "to": 116 },
-      { "file": "DynamicTreeExample.java", "from": 152, "to": 152 }
-    ]
-  },
-  "20-5": {
-    "dir": "20-05",
     "main": "AdvancedListExample",
     "excerpt": [
       { "file": "AdvancedListExample.java", "from": 29, "to": 29 },
@@ -58,20 +46,8 @@
       { "file": "AdvancedListExample.java", "from": 206, "to": 206 }
     ]
   },
-  "20-6": {
-    "dir": "20-06",
-    "main": "CustomEditorExample",
-    "excerpt": [
-      { "file": "CustomEditorExample.java", "from": 5, "to": 39 },
-      { "file": "CustomEditorExample.java", "from": 72, "to": 77 },
-      { "file": "CustomEditorExample.java", "from": 80, "to": 81 },
-      { "file": "CustomEditorExample.java", "from": 107, "to": 114 },
-      { "file": "CustomEditorExample.java", "from": 126, "to": 126 },
-      { "file": "CustomEditorExample.java", "from": 133, "to": 133 }
-    ]
-  },
-  "20-7": {
-    "dir": "20-07",
+  "20-5": {
+    "dir": "20-05",
     "main": "IntegratedDataManagementApp",
     "excerpt": [
       { "file": "IntegratedDataManagementApp.java", "from": 32, "to": 32 },

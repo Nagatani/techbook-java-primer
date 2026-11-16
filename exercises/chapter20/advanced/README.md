@@ -1,5 +1,7 @@
 # 第20章 発展課題
 
+参考：この課題で使う`DefaultTreeModel`による動的なノードの操作とセルエディターは、本文では要点だけを説明しています。まとまったコード例は付録F「Swingの発展的な機能」（`appendix/f-swing-advanced/`）にあります。
+
 ## 学習目標
 - `AbstractTableModel`を継承して、自分のデータを表にするテーブルモデルを作る
 - `getColumnClass`で列の型を決め、数の列を数として並べ替える

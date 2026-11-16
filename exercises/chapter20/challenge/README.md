@@ -1,5 +1,7 @@
 # 第20章 チャレンジ課題
 
+参考：この課題で使うセルエディターは、本文では要点だけを説明しています。まとまったコード例は付録F「Swingの発展的な機能」（`appendix/f-swing-advanced/`）にあります。
+
 ## 学習目標
 - JList・JTableを`JSplitPane`で組み合わせ、選んだ項目に応じて表の中身を切り替える
 - `AbstractListModel`と`ListCellRenderer`で、リストの中身と見た目を自分で決める

@@ -19,7 +19,5 @@ javac -d out *.java
 | [20-1](./20-01/) | BasicTableExample.java | `java -cp out BasicTableExample` |
 | [20-2](./20-02/) | Person.java<br>PersonTableModel.java<br>SortableTableExample.java | `java -cp out SortableTableExample` |
 | [20-3](./20-03/) | BasicTreeExample.java | `java -cp out BasicTreeExample` |
-| [20-4](./20-04/) | DynamicTreeExample.java | `java -cp out DynamicTreeExample` |
-| [20-5](./20-05/) | AdvancedListExample.java | `java -cp out AdvancedListExample` |
-| [20-6](./20-06/) | CustomEditorExample.java | `java -cp out CustomEditorExample` |
-| [20-7](./20-07/) | IntegratedDataManagementApp.java<br>Task.java | `java -cp out IntegratedDataManagementApp` |
+| [20-4](./20-04/) | AdvancedListExample.java | `java -cp out AdvancedListExample` |
+| [20-5](./20-05/) | IntegratedDataManagementApp.java<br>Task.java | `java -cp out IntegratedDataManagementApp` |

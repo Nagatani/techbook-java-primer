@@ -52,51 +52,6 @@
   },
   "19-5": {
     "dir": "19-05",
-    "main": "JavaBeansEventExample",
-    "excerpt": [
-      { "file": "JavaBeansEventExample.java", "from": 7, "to": 11 },
-      { "file": "JavaBeansEventExample.java", "from": 18, "to": 20 },
-      { "file": "JavaBeansEventExample.java", "from": 34, "to": 42 },
-      { "file": "JavaBeansEventExample.java", "from": 48, "to": 48 },
-      { "file": "JavaBeansEventExample.java", "from": 64, "to": 79 },
-      { "file": "JavaBeansEventExample.java", "from": 95, "to": 100 },
-      { "file": "JavaBeansEventExample.java", "from": 104, "to": 104 },
-      { "file": "JavaBeansEventExample.java", "from": 152, "to": 162 },
-      { "file": "JavaBeansEventExample.java", "from": 175, "to": 175 }
-    ]
-  },
-  "19-6": {
-    "dir": "19-06",
-    "main": "DragAndDropExample",
-    "excerpt": [
-      { "file": "DragAndDropExample.java", "from": 9, "to": 9 },
-      { "file": "DragAndDropExample.java", "from": 16, "to": 16 },
-      { "file": "DragAndDropExample.java", "from": 34, "to": 39 },
-      { "file": "DragAndDropExample.java", "from": 67, "to": 67 },
-      { "file": "DragAndDropExample.java", "from": 69, "to": 103 },
-      { "file": "DragAndDropExample.java", "from": 125, "to": 146 },
-      { "file": "DragAndDropExample.java", "from": 151, "to": 152 },
-      { "file": "DragAndDropExample.java", "from": 162, "to": 162 },
-      { "file": "DragAndDropExample.java", "from": 169, "to": 169 }
-    ]
-  },
-  "19-7": {
-    "dir": "19-07",
-    "main": "EventOptimizationExample",
-    "excerpt": [
-      { "file": "EventOptimizationExample.java", "from": 5, "to": 5 },
-      { "file": "EventOptimizationExample.java", "from": 10, "to": 13 },
-      { "file": "EventOptimizationExample.java", "from": 15, "to": 15 },
-      { "file": "EventOptimizationExample.java", "from": 43, "to": 44 },
-      { "file": "EventOptimizationExample.java", "from": 47, "to": 59 },
-      { "file": "EventOptimizationExample.java", "from": 61, "to": 65 },
-      { "file": "EventOptimizationExample.java", "from": 80, "to": 80 },
-      { "file": "EventOptimizationExample.java", "from": 82, "to": 96 },
-      { "file": "EventOptimizationExample.java", "from": 110, "to": 110 }
-    ]
-  },
-  "19-8": {
-    "dir": "19-08",
     "main": "SwingWorkerExample",
     "excerpt": [
       { "file": "SwingWorkerExample.java", "from": 7, "to": 7 },

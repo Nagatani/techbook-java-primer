@@ -11,13 +11,13 @@
     - マウスイベントの完全な処理
     - キーボードイベントの高度な処理とショートカット
     - DocumentListenerによるテキスト変更の監視
-    - ドラッグ&ドロップ
+    - ドラッグ&ドロップの考え方（コード例は付録F）
 2. カスタムイベントとパターン
     - Observerパターンによるイベント通知
     - カスタムイベントの作成と活用
-    - JavaBeansイベントモデルの実装
+    - `PropertyChangeSupport`によるリスナーの管理（コード例は付録F）
 3. パフォーマンスの最適化
-    - イベント処理の最適化技術
+    - デバウンスとスロットル（コード例は付録F）
     - 非同期処理とSwingWorker
 
 ### この章を始める前に
@@ -342,255 +342,34 @@ public class CustomEventExample extends JFrame {
 40°Cを超えるか-10°Cを下回ると、警告のダイアログを表示します。
 2つのリスナーは互いを知らず、センサーからの通知をそれぞれ受け取っています。
 
-### JavaBeansイベントモデルの実装
+### 標準のしくみを使う：PropertyChangeSupport
 
 サンプルコード19-4では、イベントクラス、リスナーインターフェイス、リスナーの一覧をすべて自分で書きました。
-JavaBeans<span class="footnote">JavaBeansは、Javaで再利用できる部品を作るための仕様で、JDK 1.1から使えます。名前は、Javaという言葉がコーヒーを連想させることにちなんだ「コーヒー豆」のしゃれです。</span>の`PropertyChangeSupport`を使うと、リスナーの一覧の管理と通知をこのクラスに任せられます。
-以下のコードは、株価の変化を複数の表示パネルに通知する株価モニターの例です。
-`PropertyChangeSupport`では、プロパティの名前を指定して、そのプロパティの変化だけを受け取るリスナーを登録できます。
+JavaBeansの`java.beans.PropertyChangeSupport`を使うと、リスナーの一覧の管理と通知をこのクラスに任せられます。
+値を変えるメソッドで`firePropertyChange("プロパティ名", 古い値, 新しい値)`を呼ぶと、登録した`PropertyChangeListener`の`propertyChange`が呼ばれ、`PropertyChangeEvent`から名前と新旧の値を取り出せます。
+株価の変化を複数の表示パネルに通知する例は、付録Fで紹介しています。
 
-<span class="listing-number">**サンプルコード19-5**　JavaBeansEventExample.java（7〜11、18〜20、34〜42、48、64〜79、95〜100、104、152〜162、175行目）</span>
+## ドラッグ&ドロップ
 
-```java
-// モデルクラス（PropertyChangeSupport を使用）
-class StockPrice {
-    private String symbol;
-    private double price;
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    // ...
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-    // ...
-    public void setPrice(double newPrice) {
-        double oldPrice = this.price;
-        this.price = newPrice;
-        pcs.firePropertyChange("price", oldPrice, newPrice);
-    }
-}
-
-// 株価表示コンポーネント
-class StockPricePanel extends JPanel implements PropertyChangeListener {
-    // ...
-    public StockPricePanel(StockPrice stock) {
-        // ...
-        previousPrice = stock.getPrice();
-        stock.addPropertyChangeListener("price", this);
-    }
-    
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if ("price".equals(evt.getPropertyName())) {
-            double newPrice = (Double) evt.getNewValue();
-            double oldPrice = (Double) evt.getOldValue();
-            
-            priceLabel.setText(String.format("$%.2f", newPrice));
-            
-            double change = newPrice - oldPrice;
-            double changePercent = (change / oldPrice) * 100;
-            
-            changeLabel.setText(String.format("%+.2f (%+.2f%%)", change, changePercent));
-            // ...
-        }
-    }
-}
-
-// メインアプリケーション
-public class JavaBeansEventExample extends JFrame {
-    // ...
-    private final Random random = new Random();
-    // ...
-    private void startPriceUpdates() {
-        updateTimer = new Timer(1000, e -> {
-            for (StockPrice stock : stocks.values()) {
-                // ランダムな価格変動（-2%～+2%）
-                double change = (random.nextDouble() - 0.5) * 0.04;
-                double newPrice = stock.getPrice() * (1 + change);
-                stock.setPrice(newPrice);
-            }
-        });
-        updateTimer.start();
-    }
-    // ...
-}
-```
-
-実行すると、4つの銘柄の株価を並べたウィンドウが開きます。
-「更新開始」ボタンを押すと、1秒ごとに株価がランダムに変わり、各パネルが価格と変化量を表示します。
-値上がりした銘柄は緑、値下がりした銘柄は赤で表示し、「更新停止」ボタンで更新を止めます。
-
-## ドラッグ&ドロップの実装
-
-### 基本的なドラッグ&ドロップ
-
-以下のコードは、2つのリストの間でアイテムをドラッグして移動する処理と、外部からファイルをドロップする処理を実装した例です。
-リスト間の移動は`TransferHandler`で、ファイルのドロップは`DropTarget`で受け付け、ドロップされたファイルの情報を表示します。
-
-このサンプルで使う`JList`と`DefaultListModel`は、第20章「JTable・JList・JTree」で詳しく学びます。
-ここでは、`DefaultListModel`に要素を追加・削除すると`JList`の表示が更新される、という点だけを押さえてください。
-
-<span class="listing-number">**サンプルコード19-6**　DragAndDropExample.java（9、16、34〜39、67、69〜103、125〜146、151〜152、162、169行目）</span>
-
-```java
-public class DragAndDropExample extends JFrame {
-    // ...
-    public DragAndDropExample() {
-        // ...
-        // ドラッグ機能の設定
-        sourceList.setDragEnabled(true);
-        sourceList.setTransferHandler(new ListTransferHandler());
-        
-        // ドロップ機能の設定
-        targetList.setTransferHandler(new ListTransferHandler());
-        // ...
-    }
-    // ...
-    // リスト用のTransferHandler
-    class ListTransferHandler extends TransferHandler {
-        @Override
-        public boolean canImport(TransferSupport support) {
-            return support.isDataFlavorSupported(DataFlavor.stringFlavor);
-        }
-        
-        @Override
-        public boolean importData(TransferSupport support) {
-            if (!canImport(support)) {
-                return false;
-            }
-            
-            JList<String> list = (JList<String>) support.getComponent();
-            DefaultListModel<String> model = (DefaultListModel<String>) list.getModel();
-            
-            try {
-                String data = (String) support.getTransferable()
-                    .getTransferData(DataFlavor.stringFlavor);
-                
-                JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
-                int index = dl.getIndex();
-                
-                if (index == -1) {
-                    model.addElement(data);
-                } else {
-                    model.add(index, data);
-                }
-                
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        // ...
-    }
-    
-    // ファイルドロップ用のリスナー
-    class FileDropTargetListener extends DropTargetAdapter {
-        @Override
-        public void drop(DropTargetDropEvent dtde) {
-            try {
-                dtde.acceptDrop(DnDConstants.ACTION_COPY);
-                Transferable transferable = dtde.getTransferable();
-                
-                if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                    List<File> files = (List<File>) transferable
-                        .getTransferData(DataFlavor.javaFileListFlavor);
-                    
-                    for (File file : files) {
-                        dropArea.append("ドロップされたファイル: " + file.getAbsolutePath() + "\n");
-                        dropArea.append("  サイズ: " + file.length() + " bytes\n");
-                        dropArea.append("  更新日時: " + new Date(file.lastModified()) + "\n\n");
-                    }
-                }
-                
-                dtde.dropComplete(true);
-                // ...
-        }
-        
-        // ...
-    }
-    // ...
-}
-```
-
-実行すると、「ソース」と「ターゲット」の2つのリストと、ファイルをドロップする欄が並んだウィンドウが開きます。
-「ソース」のアイテムを「ターゲット」へドラッグすると、アイテムが移動します。
-デスクトップなどからファイルを下の欄へドロップすると、ファイルのパス、サイズ、更新日時を表示します。
+Swingの部品どうしのドラッグ&ドロップは、`TransferHandler`で実装します。
+`JList`や`JTextArea`などの部品は`setDragEnabled(true)`でドラッグを始められ、受け取る側の`TransferHandler`が、ドロップされたデータを受け入れるか（`canImport`）と、どう取り込むか（`importData`）を決めます。
+デスクトップからのファイルのドロップは、`DropTarget`で受け付けます。
+2つのリストの間でアイテムを移動し、ファイルのドロップを受け付ける例は、付録Fで紹介しています。
 
 ## パフォーマンスの最適化
 
-### イベント処理の最適化技術
+### イベントの処理回数を減らす
 
-マウスの移動のように短い間隔で大量に発生するイベントでは、イベントごとに重い処理をすると画面の反応が遅くなります。
-処理の回数を減らす方法として、デバウンスとスロットルがあります<span class="footnote">デバウンス（debounce）は電子回路の用語に由来します。スイッチを押した瞬間に接点が細かく跳ねて（bounce）信号が何度も切り替わる現象を、1回の入力にまとめる処理をこう呼びます。</span>。
+マウスの移動やキー入力のように短い間隔で大量に発生するイベントでは、イベントごとに重い処理をすると画面の反応が遅くなります。
+処理の回数を減らす方法として、デバウンスとスロットルがあります。
 
 - デバウンス
-    + イベントが一定時間発生しなくなってから、1回だけ処理する
+    + イベントが一定時間発生しなくなってから、1回だけ処理する。入力が止まってから検索する機能や自動保存に使う
 - スロットル
     + 前回の処理から一定時間がたつまでのイベントは処理せず、一定の間隔でだけ処理する
 
-以下のコードは、`mouseMoved`に対して両方を実装した例です。
-デバウンスは、入力が止まってから検索する機能や自動保存にも使えます。
-
-<span class="listing-number">**サンプルコード19-7**　EventOptimizationExample.java（5、10〜13、15、43〜44、47〜59、61〜65、80、82〜96、110行目）</span>
-
-```java
-public class EventOptimizationExample extends JFrame {
-    // ...
-    private Timer debounceTimer;
-    private long lastThrottleTime = 0;
-    private static final int DEBOUNCE_DELAY = 300; // ミリ秒
-    private static final int THROTTLE_DELAY = 100; // ミリ秒
-    // ...
-    public EventOptimizationExample() {
-        // ...
-        // マウス移動イベント（位置の表示は毎回、描画とログはデバウンスとスロットルで間引く）
-        drawPanel.addMouseMotionListener(new MouseMotionAdapter() {
-            // ...
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                eventCount++;
-                statusLabel.setText(String.format("マウス位置: (%d, %d) - イベント数: %d", 
-                    e.getX(), e.getY(), eventCount));
-                
-                // デバウンス処理
-                debounceMouseMove(e.getPoint());
-                
-                // スロットル処理
-                throttleMouseMove(e.getPoint());
-            }
-        });
-        // ...
-        // デバウンスタイマーの初期化
-        debounceTimer = new Timer(DEBOUNCE_DELAY, e -> {
-            log("デバウンス: マウス移動が停止しました - " + currentMousePos);
-        });
-        debounceTimer.setRepeats(false);
-        // ...
-    }
-    // ...
-    // デバウンス: 最後のイベントから一定時間後に処理
-    private void debounceMouseMove(Point point) {
-        currentMousePos = point;
-        debounceTimer.restart();
-    }
-    
-    // スロットル: 一定間隔で処理
-    private void throttleMouseMove(Point point) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastThrottleTime >= THROTTLE_DELAY) {
-            lastThrottleTime = currentTime;
-            drawPanel.repaint();
-            log("スロットル: 描画更新 - " + point);
-        }
-    }
-    // ...
-}
-```
-
-実行すると、マウスの位置とイベントの数を表示するラベルと、白い描画パネルを並べたウィンドウが開きます。
-パネルでマウスを動かすと、イベントの数は動かしているあいだ増え続けます。
-一方で、スロットルによる描画の更新は100ミリ秒に1回までになり、右のログに記録します。
-マウスを止めて300ミリ秒たつと、デバウンスによる「マウス移動が停止しました」をログに1回だけ記録します。
+デバウンスは、第18章で学んだ`javax.swing.Timer`を`setRepeats(false)`にし、イベントのたびに`restart()`すれば実現できます。
+マウスの移動に両方を実装した例は、付録Fで紹介しています。
 
 ### SwingWorkerによる非同期処理
 
@@ -619,11 +398,11 @@ public class EventOptimizationExample extends JFrame {
 
 <div class="figure">
 
-![SwingWorkerによる処理の流れ（サンプルコード19-8）](images/diagrams/chapter19-swingworker.svg)
+![SwingWorkerによる処理の流れ（サンプルコード19-5）](images/diagrams/chapter19-swingworker.svg)
 
 </div>
 
-<span class="listing-number">**サンプルコード19-8**　SwingWorkerExample.java（7、70〜75、79〜83、92〜98、100〜128、146行目）</span>
+<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7、70〜75、79〜83、92〜98、100〜128、146行目）</span>
 
 ```java
 public class SwingWorkerExample extends JFrame {
@@ -711,13 +490,14 @@ public class SwingWorkerExample extends JFrame {
 ### 重要なポイント
 - マウスとキーボードの詳細なイベント処理
 - DocumentListenerによるリアルタイムテキスト監視
-- カスタムイベントとJavaBeansイベントモデル
-- ドラッグ&ドロップの実装
-- パフォーマンス最適化（デバウンス、スロットル）
+- カスタムイベントによるObserverパターンと、`PropertyChangeSupport`
+- ドラッグ&ドロップの考え方（`TransferHandler`）
+- デバウンスとスロットルによるイベントの間引き
 - SwingWorkerによる非同期処理
 
 ### 実践での活用
 これらの技術を組み合わせることで、応答性が高く、ユーザーフレンドリーなGUIアプリケーションを開発できます。とくに、長時間処理とUI更新の分離、イベント処理の最適化は、実務での開発において重要な技術です。
+`PropertyChangeSupport`・ドラッグ&ドロップ・デバウンスのまとまったコード例は、付録F「Swingの発展的な機能」で紹介しています。
 
 ## 章末演習
 

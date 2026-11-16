@@ -11,7 +11,7 @@
 2. TableRowSorterによるテーブルのソートとフィルタリング
 3. JTreeによる階層データの表示と、ノードの追加・削除
 4. JListのモデルとカスタムレンダラー
-5. カスタムセルエディターによるテーブルの編集
+5. セルの編集に使う部品の変え方（ツリーの動的な操作とセルエディターのコード例は付録F）
 6. 表・リスト・ツリーを組み合わせたデータ管理アプリケーションの作成
 
 本章では、表やリストの形でデータを表示するSwingのコンポーネントであるJTableとJListについて学習します。
@@ -220,69 +220,12 @@ public class BasicTreeExample extends JFrame {
 }
 ```
 
-### 動的なツリー操作
+### 表示したあとにノードを追加・削除する
 
-ユーザーの操作に応じてツリーノードを動的に追加・削除する実装例です。
-
-以下のコードは、右クリックメニューからノードを追加・削除できるツリーの例です。
-ポップアップメニュー、名前を編集できるノード、カスタムレンダラーを組み合わせ、ファイルエクスプローラーのような操作を実現しています。
-ノードの追加・削除は`DefaultTreeModel`を通して行い、ツリー構造の変更をビューに通知します<span class="footnote">表示したあとに`DefaultMutableTreeNode`の`add`で直接ノードを足すと、モデルが変更を知らないため、画面のツリーに反映されません。その場合は、`DefaultTreeModel`の`reload`などで変更を伝えます。</span>。
-
-<span class="listing-number">**サンプルコード20-4**　DynamicTreeExample.java（5〜6、9、13〜15、26〜33、86〜116、152行目）</span>
-
-```java
-public class DynamicTreeExample extends JFrame {
-    private DefaultTreeModel treeModel;
-    // ...
-    public DynamicTreeExample() {
-        // ...
-        // ルートノードとモデルの作成
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("ファイルシステム");
-        treeModel = new DefaultTreeModel(root);
-        // ...
-        // JTreeの作成
-        tree = new JTree(treeModel);
-        tree.setEditable(true); // ノード名の編集を許可
-        tree.getSelectionModel().setSelectionMode(
-            TreeSelectionModel.SINGLE_TREE_SELECTION);
-        
-        // ポップアップメニューの作成
-        JPopupMenu popup = new JPopupMenu();
-        // ...
-    }
-    
-    private void addNode(String name, boolean isFolder) {
-        DefaultMutableTreeNode parentNode = null;
-        TreePath parentPath = tree.getSelectionPath();
-        
-        if (parentPath == null) {
-            parentNode = (DefaultMutableTreeNode) treeModel.getRoot();
-        } else {
-            parentNode = (DefaultMutableTreeNode) parentPath.getLastPathComponent();
-        }
-        
-        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(name);
-        newNode.setAllowsChildren(isFolder);
-        treeModel.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
-        
-        // 新しいノードを表示
-        tree.scrollPathToVisible(new TreePath(newNode.getPath()));
-    }
-    
-    private void deleteNode() {
-        TreePath currentSelection = tree.getSelectionPath();
-        if (currentSelection != null) {
-            DefaultMutableTreeNode currentNode = 
-                (DefaultMutableTreeNode) currentSelection.getLastPathComponent();
-            MutableTreeNode parent = (MutableTreeNode) currentNode.getParent();
-            if (parent != null) {
-                treeModel.removeNodeFromParent(currentNode);
-            }
-        }
-    }
-    // ...
-}
-```
+表示したあとのツリーにノードを追加・削除するときは、`DefaultMutableTreeNode`を直接変えずに、`DefaultTreeModel`のメソッドを通します。
+`insertNodeInto(新しいノード, 親, 位置)`と`removeNodeFromParent(ノード)`は、ノードを変えたうえで、変更をツリーの表示に知らせます<span class="footnote">`DefaultMutableTreeNode`の`add`で直接ノードを足すと、モデルが変更を知らないため、画面のツリーに反映されません。その場合は、`DefaultTreeModel`の`reload`などで変更を伝えます。</span>。
+ノードの名前を変えたときは`nodeChanged(ノード)`で知らせます。
+右クリックのメニューからノードを追加・削除できるツリーの例は、付録Fで紹介しています。
 
 ## JListの高度な使用法
 
@@ -301,13 +244,13 @@ public class DynamicTreeExample extends JFrame {
 知らせを受けたリストは、その範囲を描き直します。
 これらを呼ばずにデータだけを変えると、画面のリストは古いままです。
 文字列などを並べるだけなら、標準の`DefaultListModel`を使えます。
-`DefaultListModel`の`addElement()`や`remove()`は、内部でこの知らせを送るので、自分で`fire〜`メソッドを呼ぶ必要はありません（サンプルコード20-7で使います）。
+`DefaultListModel`の`addElement()`や`remove()`は、内部でこの知らせを送るので、自分で`fire〜`メソッドを呼ぶ必要はありません（サンプルコード20-5で使います）。
 
 レンダラーの`TaskListCellRenderer`は、`JPanel`にラベルとチェックボックスを並べた部品です。
 `JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
 文字色も、選択状態に合わせて中の部品ごとに設定します。
 
-<span class="listing-number">**サンプルコード20-5**　AdvancedListExample.java（29、42〜55、67〜70、77、89〜90、98〜99、103〜133、136、140、144〜148、199、206行目）</span>
+<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜70、77、89〜90、98〜99、103〜133、136、140、144〜148、199、206行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -387,77 +330,13 @@ public class AdvancedListExample extends JFrame {
 }
 ```
 
-## カスタムセルエディターの実装
+## セルの編集に使う部品を変える
 
-### JTableのカスタムエディター
-
-テーブルセルに特殊な入力コンポーネントを使用する例です。
-
-以下のコードは、JTableにカスタムセルエディターとレンダラーを実装する例です。
-色の列はカラーピッカー、優先度の列はコンボボックス、完了の列はチェックボックスで編集でき、列のデータ型に合った入力部品を使います。
-
-<span class="listing-number">**サンプルコード20-6**　CustomEditorExample.java（5〜39、72〜77、80〜81、107〜114、126、133行目）</span>
-
-```java
-// カラーセルエディター
-class ColorCellEditor extends AbstractCellEditor implements TableCellEditor {
-    private JButton button;
-    private Color currentColor;
-    
-    public ColorCellEditor() {
-        button = new JButton();
-        button.setActionCommand("edit");
-        button.addActionListener(e -> {
-            if ("edit".equals(e.getActionCommand())) {
-                // カラーチューザーを表示
-                Color newColor = JColorChooser.showDialog(
-                    button, "色を選択", currentColor);
-                if (newColor != null) {
-                    currentColor = newColor;
-                }
-                fireEditingStopped();
-            }
-        });
-        button.setBorderPainted(false);
-    }
-    
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value,
-            boolean isSelected, int row, int column) {
-        currentColor = (Color) value;
-        button.setBackground(currentColor);
-        return button;
-    }
-    
-    @Override
-    public Object getCellEditorValue() {
-        return currentColor;
-    }
-}
-// ...
-// コンボボックスエディター
-class PriorityCellEditor extends DefaultCellEditor {
-    public PriorityCellEditor() {
-        super(new JComboBox<>(new String[]{"低", "中", "高", "緊急"}));
-    }
-}
-// ...
-public class CustomEditorExample extends JFrame {
-    public CustomEditorExample() {
-        // ...
-        // テーブルの作成
-        JTable table = new JTable(model);
-        table.setRowHeight(30);
-        
-        // カスタムエディターとレンダラーの設定
-        table.getColumnModel().getColumn(1).setCellEditor(new PriorityCellEditor());
-        table.getColumnModel().getColumn(2).setCellRenderer(new ColorCellRenderer());
-        table.getColumnModel().getColumn(2).setCellEditor(new ColorCellEditor());
-        // ...
-    }
-    // ...
-}
-```
+`JTable`のセルを編集するときの入力部品は、列ごとに変えられます。
+選択肢から選ばせる列には`new DefaultCellEditor(new JComboBox<>(選択肢))`を、`TableColumn`の`setCellEditor`で設定します。
+列の型が`Boolean`なら、`getColumnClass`で`Boolean.class`を返すだけで、チェックボックスで編集できます。
+色を選ぶダイアログのように、標準にない部品で編集する場合は、`AbstractCellEditor`を継承し`TableCellEditor`を実装したクラスを作ります。
+3種類のエディターを組み合わせた例は、付録Fで紹介しています。
 
 ## 実践的なアプリケーション例
 
@@ -471,7 +350,7 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
 ステータスバーには、選択中のプロジェクト名が表示されます。
 
-<span class="listing-number">**サンプルコード20-7**　IntegratedDataManagementApp.java（32、88、111〜129、156〜170、183、199〜208、216、253行目）</span>
+<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（32、88、111〜129、156〜170、183、199〜208、216、253行目）</span>
 
 ```java
 public class IntegratedDataManagementApp extends JFrame {
@@ -563,10 +442,10 @@ public class IntegratedDataManagementApp extends JFrame {
 1. JTableの活用
     + モデル・レンダラー・エディター・ソーターの役割分担
     + TableRowSorterによるソートとフィルタリング
-    + カスタムセルレンダラーとエディターの作成
+    + カスタムセルレンダラーの作成と、セルの編集に使う部品の変え方
 2. JTreeの実装
     + DefaultMutableTreeNodeとDefaultTreeModelによる階層データの表現
-    + 動的なノードの追加・削除
+    + `DefaultTreeModel`を通したノードの追加・削除（コード例は付録F）
     + カスタムツリーセルレンダラーの作成
 3. JListの高度な使用法
     + AbstractListModelを継承したモデルの実装
