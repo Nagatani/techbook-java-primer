@@ -1,4 +1,4 @@
-// H2StudentRepository.java - H2に保存する実装（第25章のJdbcStudentRepositoryをH2に合わせて直した）
+// H2StudentRepository.java - H2に保存する実装（第26章のJdbcStudentRepositoryをH2に合わせて直した）
 // SQLiteとの違い: UPSERTはMERGE、登録した順はrowidではなく自動採番の列、外部キーは既定で検査する
 import java.sql.Connection;
 import java.sql.DriverManager;

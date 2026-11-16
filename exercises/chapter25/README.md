@@ -1,37 +1,33 @@
-# 第25章 統合プロジェクトの技術選定と実装 - 演習課題
+# 第25章 統合プロジェクトの設計 - 演習課題
 
 ## 概要
-本章では、ライブラリやデータベースを選ぶ基準と、選んだ技術を1つのクラスに閉じ込める設計、初版から改善版へ小さな手順で移す進め方を学びました。
-演習では、ライブラリを実際に調べて比べる課題と、選んだ技術で`StudentRepository`やCSVの読み込みを実装する課題に取り組みます。
+本章では、学生管理システムを題材に、要求の整理、設計判断の記録、継承と合成の選び方、層の分け方、例外の設計を学びました。
+演習では、文章で設計を書く課題と、改善版や初版（`sample-code/integrated-project/`）のコードを実際に直す課題に取り組みます。
+
+設計の課題には、ただ1つの正解はありません。
+解答例は考え方の一例です。自分の答えと違っていても、選択肢と理由を説明できれば十分です。
 
 ## 課題構成
 
 ### 基礎課題（basic/）
-- **課題1**: JSONを読み書きするライブラリの候補を、本章の観点で調べて比べる（解答例は`solutions/json-library-comparison.md`）
-- **課題2**: Apache Commons CSVを使って、成績のCSVファイルを読み込むクラスを作る（解答例は`solutions/grade-csv/`）
+- **課題1**: 図書の貸し出しを管理するシステムの要求を整理し、設計判断記録を1つ書く（解答例は`solutions/library-design.md`）
+- **課題2**: 改善版の学生管理システム（サンプルコード25-2）に、成績の訂正の履歴を残す機能を加える（解答例は`solutions/grade-history/`）
 
 ### 発展課題（advanced/）
-- **課題1**: `StudentRepository`を実装し、H2データベースに保存するクラスを作る（解答例は`solutions/h2-repository/`）
+- **課題1**: 初版のフェーズ3のコードで、`StudentRepository`をインターフェイスにし、実装を差し替えられるようにする（解答例は`solutions/repository-interface/`）
 
 ### チャレンジ課題（challenge/）
-- **課題1**: 付録Dのフェーズ6のアプリケーションに、学生の情報を変更する機能を加える（解答の方針は`solutions/challenge-guide.md`。コードの解答例はありません）
+- **課題1**: 初版のフェーズ6のアプリケーションで、大学院生も成績を持ち、データベースに保存できるようにする（解答の方針は`solutions/challenge-guide.md`。コードの解答例はありません）
 
 ## 実行方法
-外部ライブラリのJARファイルをMaven Centralから入手し、クラスパスに加えてコンパイル・実行します（Java 25）。
-macOS・Linuxではクラスパスの区切りが`:`、Windowsでは`;`です。
+コードの課題は、各ディレクトリで次のようにコンパイルし、確認のプログラムを実行します（Java 25）。
 
 ```bash
-# 基礎課題2（commons-csv 1.14.1、commons-io 2.20.0、commons-codec 1.19.0）
-javac -cp "commons-csv-1.14.1.jar:commons-io-2.20.0.jar:commons-codec-1.19.0.jar" -d out *.java
-java -cp "out:commons-csv-1.14.1.jar:commons-io-2.20.0.jar:commons-codec-1.19.0.jar" GradeCsvCheck
-
-# 発展課題1（h2 2.5.252）
-javac -cp h2-2.5.252.jar -d out *.java
-java -cp "out:h2-2.5.252.jar" H2RepositoryCheck
+javac -d out *.java
+java -cp out GradeHistoryCheck
 ```
 
 ## 評価基準
-- ライブラリの比較に、確かめた場所（Maven Central、pom.xmlなど）と日付が書かれていること
-- 外部ライブラリのクラスを使う場所が、1つのクラスに閉じ込められていること
-- 1行の誤りで全体を止めず、誤りのある行と理由を報告すること
-- `StudentService`を変えずに、保存先を差し替えられること
+- 要求と設計判断に、選んだ理由と、選ばなかった案が書かれていること
+- 変更したあとも、元の確認のプログラム（`Phase3Test`など）が同じ結果を出すこと
+- 計算で求められる値と、記録すべき事実を区別していること

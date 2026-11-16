@@ -1,4 +1,4 @@
-# <b>24章</b> <span>統合プロジェクトの設計</span> <small>学生管理システムで考える設計の進め方</small>
+# <b>25章</b> <span>統合プロジェクトの設計</span> <small>学生管理システムで考える設計の進め方</small>
 
 ## 本章の学習目標
 
@@ -32,7 +32,7 @@
 - 第13章の例外処理
 - 第21章のユニットテスト
 
-GUI（第17〜20章）とデータベース（付録E）の知識は、第25章で使います。
+GUI（第17〜20章）とデータベース（第24章）の知識は、第26章で使います。
 
 ## 統合プロジェクトの全体像
 
@@ -62,24 +62,24 @@ GUI（第17〜20章）とデータベース（付録E）の知識は、第25章�
 | 3 | 学生の一覧を管理するリポジトリと、検索・集計 | 第9〜12章 |
 | 4 | 独自の例外と、CSVファイルの読み書き | 第13・14章 |
 | 5 | Swingの画面（一覧表・ダイアログ） | 第17〜20章 |
-| 6 | SQLiteデータベースへの保存 | 付録E |
+| 6 | SQLiteデータベースへの保存 | 第24章 |
 
-各フェーズのソースコードは、付録Dで紹介するGitHubリポジトリの`appendix/d-integrated-project/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-integrated-project/`です。各フェーズのディレクトリだけでコンパイル・実行できます。</span>。
+各フェーズのソースコードは、GitHubリポジトリの`sample-code/integrated-project/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/integrated-project/`です。各フェーズのディレクトリだけでコンパイル・実行できます。</span>。
 フェーズごとのコードは、その時点までに学んだ機能だけで書いた「初版」です。
 初版には、あとのフェーズで困ることになる設計がいくつか残っています。
 本章では、その箇所を事例として取り上げ、どう考えれば避けられたか、どう直すかを検討します。
 
-### 本章と第25章の分担
+### 本章と第26章の分担
 
 統合プロジェクトの解説は2つの章に分けました。
 
-- 第24章（本章）
+- 第25章（本章）
     + 要求の整理、クラスの責務、継承と合成、層の分け方、例外の設計、段階的な計画
-- 第25章
+- 第26章
     + ライブラリやデータベースの選び方、作ったものを動かしながら直す進め方、振り返り
 
 本章で示す改善版のコードは、設計の考え方を示すための見本です。
-全文はサンプルコードとしてGitHubで公開しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter24/`です。各ディレクトリは単独でコンパイル・実行できます。</span>。
+全文はサンプルコードとしてGitHubで公開しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter25/`です。各ディレクトリは単独でコンパイル・実行できます。</span>。
 初版のアプリケーション全体を改善版に書き換えることは、章末演習の課題にしています。
 
 ## 要求を整理する
@@ -122,7 +122,7 @@ GUI（第17〜20章）とデータベース（付録E）の知識は、第25章�
 
 「学生は数千人」と決めると、データをすべてメモリに読み込んでも問題ないとわかります。
 「同時に複数人で使わない」と決めると、同時に更新したときの競合を考えなくて済みます。
-これらの数字は、第25章でデータの保存先を選ぶときの根拠になります。
+これらの数字は、第26章でデータの保存先を選ぶときの根拠になります。
 
 ### 作らないものを決める
 
@@ -247,7 +247,7 @@ GUI（第17〜20章）とデータベース（付録E）の知識は、第25章�
 
 <div class="figure">
 
-![初版（フェーズ2〜6）のクラス階層。大学院生と成績を持つ学生が、別々の子クラスになっている](images/diagrams/chapter24-initial-hierarchy.svg)
+![初版（フェーズ2〜6）のクラス階層。大学院生と成績を持つ学生が、別々の子クラスになっている](images/diagrams/chapter25-initial-hierarchy.svg)
 
 </div>
 
@@ -302,11 +302,11 @@ GUI（第17〜20章）とデータベース（付録E）の知識は、第25章�
 
 <div class="figure">
 
-![改善版のクラス構成。学生が在籍区分と成績表を持つ（合成）](images/diagrams/chapter24-composition.svg)
+![改善版のクラス構成。学生が在籍区分と成績表を持つ（合成）](images/diagrams/chapter25-composition.svg)
 
 </div>
 
-<span class="listing-number">**サンプルコード24-1**　Enrollment.java、Undergraduate.java、Graduate.java、Student.java（5〜10、31〜44行目）</span>
+<span class="listing-number">**サンプルコード25-1**　Enrollment.java、Undergraduate.java、Graduate.java、Student.java（5〜10、31〜44行目）</span>
 
 ```java
 // Enrollment.java
@@ -384,7 +384,7 @@ public final class Student {
 
 改善版では、GPAを保存せず、求められるたびに成績から計算します。
 
-<span class="listing-number">**サンプルコード24-2**　Grade.java、Transcript.java（6〜8、23〜33行目）、DesignDemo.java（10〜17行目）</span>
+<span class="listing-number">**サンプルコード25-2**　Grade.java、Transcript.java（6〜8、23〜33行目）、DesignDemo.java（10〜17行目）</span>
 
 ```java
 // Grade.java - 1科目の成績（科目名・単位数・評価点）
@@ -441,7 +441,7 @@ GPAの値は`gpa`メソッドを呼んだときに成績から計算するので
 
 なお、改善版の`Student`は年齢も持っていません。
 年齢は生年月日と今日の日付から計算で求められる値で、保存すると毎年食い違いが生じるからです。
-年齢が必要になったら、生年月日を保存し、年齢を計算するメソッドを加えます<span class="footnote">日付の計算には`java.time`パッケージの`LocalDate`と`Period`を使います。付録Fで扱います。</span>。
+年齢が必要になったら、生年月日を保存し、年齢を計算するメソッドを加えます<span class="footnote">日付の計算には`java.time`パッケージの`LocalDate`と`Period`を使います。付録Dで扱います。</span>。
 
 ### 保存したほうがよい場合
 
@@ -500,11 +500,11 @@ GPAの値は`gpa`メソッドを呼んだときに成績から計算するので
 
 <div class="figure">
 
-![改善版の層構造。サービスはインターフェイスだけに依存し、保存の実装を差し替えられる](images/diagrams/chapter24-layers.svg)
+![改善版の層構造。サービスはインターフェイスだけに依存し、保存の実装を差し替えられる](images/diagrams/chapter25-layers.svg)
 
 </div>
 
-<span class="listing-number">**サンプルコード24-3**　StudentRepository.java（5〜16行目）、InMemoryStudentRepository.java（7〜9行目）、StudentService.java（6〜19行目）</span>
+<span class="listing-number">**サンプルコード25-3**　StudentRepository.java（5〜16行目）、InMemoryStudentRepository.java（7〜9行目）、StudentService.java（6〜19行目）</span>
 
 ```java
 public interface StudentRepository {
@@ -542,12 +542,12 @@ public class StudentService {
 
 `StudentService`は、どの実装を使うかをコンストラクターの引数で受け取ります。
 メモリ上に保存する`InMemoryStudentRepository`を渡せば、データベースがなくても動きます。
-第25章で作る`JdbcStudentRepository`を渡せば、同じ`StudentService`のままデータベースに保存できます。
+第26章で作る`JdbcStudentRepository`を渡せば、同じ`StudentService`のままデータベースに保存できます。
 使う実装を外から渡すこの方法を依存性の注入と呼び、第21章でテストのために学びました。
 
 インターフェイスに分けると、テストも書きやすくなります。
 `StudentService`の規則（重複したIDは登録できない、など）は、データベースを用意しなくても、メモリ上の実装と組み合わせて確かめられます。
-この例は第25章のサンプルコード25-4で示します。
+この例は第26章のサンプルコード26-4で示します。
 
 ### データ構造の選択：MapとListの二重管理
 
@@ -582,7 +582,7 @@ public class StudentService {
 |---|---|---|
 | 利用者が直せる誤り | 検査例外（呼び出し側に対処を強制する） | `DuplicateStudentException` |
 | プログラムの誤り | 非検査例外（`IllegalArgumentException`など） | `Grade`の範囲外の評価点、存在しない学生ID |
-| 環境の異常 | 非検査例外で包み、画面の近くでまとめて受け止める | 第25章の`RepositoryException` |
+| 環境の異常 | 非検査例外で包み、画面の近くでまとめて受け止める | 第26章の`RepositoryException` |
 
 改善版の`StudentService`では、学生IDの重複を検査例外`DuplicateStudentException`にしました。
 重複は利用者の入力で起こり、画面では「別のIDを入力してください」と伝える必要があるからです。
@@ -600,7 +600,7 @@ CSVファイルから学生を取り込むときは、1行の誤りで処理全�
 これでは、画面には「エラー3件」としか表示できず、どの行が悪いのかはログを見なければわかりません。
 改善版では、失敗した行の行番号と理由を集めて、結果として返します。
 
-<span class="listing-number">**サンプルコード24-4**　ImportReport.java（4〜7行目）、StudentCsvImporter.java（14〜31行目）、ImportDemo.java（9〜21行目）</span>
+<span class="listing-number">**サンプルコード25-4**　ImportReport.java（4〜7行目）、StudentCsvImporter.java（14〜31行目）、ImportDemo.java（9〜21行目）</span>
 
 ```java
 public record ImportReport(int successCount, List<ImportError> errors) {
@@ -656,7 +656,7 @@ public record ImportReport(int successCount, List<ImportError> errors) {
 
 この例のCSVの読み方は、`split(",")`で列に分けるだけの簡単なものです。
 氏名にカンマを含む行は正しく読めません。
-この問題と、CSVを読むライブラリを使うかどうかの判断は、第25章で検討します。
+この問題と、CSVを読むライブラリを使うかどうかの判断は、第26章で検討します。
 
 ### 受け止める場所
 
@@ -697,7 +697,7 @@ public record ImportReport(int successCount, List<ImportError> errors) {
 
 この確認を手で行うのは、フェーズが増えると負担になります。
 第21章で学んだJUnitのテストにしておけば、すべての確認を1回のコマンドで実行できます。
-第25章では、改善版の`StudentService`のテストをJUnitで書きます。
+第26章では、改善版の`StudentService`のテストをJUnitで書きます。
 
 ## 設計でよくある失敗
 
@@ -737,18 +737,18 @@ public record ImportReport(int successCount, List<ImportError> errors) {
 7. 段階的な開発
     + 各段階の終わりに動くものを保ち、確認をテストとして残す
 
-### 第25章へ
+### 第26章へ
 
 本章では、保存の方法を差し替えられる設計にしました。
 しかし、実際に何に保存するのか、CSVを読むのにライブラリを使うのか、といった技術の選択はまだ決めていません。
-第25章では、これらの技術を選ぶ基準と、作ったものを動かしながら直していく進め方を学びます。
+第26章では、これらの技術を選ぶ基準と、作ったものを動かしながら直していく進め方を学びます。
 
 ## 章末演習
 
 ### 演習課題へのアクセス
 
 本章の演習課題は、GitHubリポジトリで提供されています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter24/`
+`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter25/`
 
 ### 課題構成
 
@@ -756,8 +756,8 @@ public record ImportReport(int successCount, List<ImportError> errors) {
     + 図書の貸し出しを管理するシステムの要求を整理し、設計判断記録を1つ書く
     + 改善版の学生管理システムに、成績の訂正の履歴を残す機能を加える
 2. 発展課題
-    + 付録Dのフェーズ3のコードに、リポジトリのインターフェイスを導入する
+    + 初版のフェーズ3のコードに、リポジトリのインターフェイスを導入する
 3. チャレンジ課題
-    + 付録Dのフェーズ6のアプリケーションで、大学院生も成績を持ち、保存できるようにする
+    + 初版のフェーズ6のアプリケーションで、大学院生も成績を持ち、保存できるようにする
 
-詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter24/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
+詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter25/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
