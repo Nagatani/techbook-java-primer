@@ -1,50 +1,59 @@
-# 第24章 統合プロジェクトの設計 - 解答例
+# 第24章 データベースプログラミング - 解答例
 
-設計の課題の解答例は、考え方の一例です。
-要求の前提が違えば、別の答えになります。
+[基礎課題](../basic/)の解答例です。
+基礎課題のREADMEの実行例は、この解答例を動かした出力です。
+データベースはメモリ上のH2を使うので、実行してもファイルは作られません。
 
-## 構成
+## 解答例一覧
 
-```
-solutions/
-├── library-design.md          基礎課題1: 図書の貸し出しシステムの要求と設計判断記録
-├── grade-history/             基礎課題2: 成績の訂正の履歴
-│   ├── GradeChange.java         訂正の記録（Record）
-│   ├── Transcript.java          履歴を残すように変えた成績表
-│   ├── Student.java             getGradeHistory()を加えた
-│   ├── GradeHistoryCheck.java   動作を確かめるプログラム
-│   └── （Grade・Enrollmentなどはサンプルコード24-2と同じ）
-├── repository-interface/      発展課題1: フェーズ3のリポジトリのインターフェイス化
-│   ├── StudentRepository.java          インターフェイスにした
-│   ├── InMemoryStudentRepository.java  LinkedHashMap 1つで保存する実装
-│   ├── StudentService.java             実装をコンストラクターで受け取り、集計を引き受けた
-│   ├── RepositorySwapCheck.java        別の実装を渡せることを確かめるプログラム
-│   └── （Person・Phase3Testなどはフェーズ3と同じ）
-└── challenge-guide.md         チャレンジ課題1: 解答の方針（コードはなし）
-```
+| 課題 | ファイル | 主な内容 |
+|------|----------|----------|
+| 課題1: 接続と時間割のテーブル | `ConnectAndCreate.java` | `DriverManager`・`DatabaseMetaData`、`CREATE TABLE`、`executeUpdate`の戻り値、`getSQLState` |
+| 課題2: ToDoリストのCRUD | `TodoCrud.java` | `PreparedStatement`、`getGeneratedKeys`、変更した行数による判定 |
+| 課題3: 図書の検索とSQL Injection | `BookSearch.java` | `LIKE ?`、複数の`?`、文字列をつなぐ書き方との比較 |
+| 課題4: 成績をオブジェクトにする | `ScoreReport.java` | `ResultSet`からRecordへ、`getObject`とNULL、`GROUP BY`での集計 |
+| 課題5: 座席のまとめ予約 | `SeatReservation.java` | `setAutoCommit(false)`・`commit`・`rollback`、トランザクションを使わない場合との比較 |
+
+`SolutionCheck.java`は、各課題の解答例が期待どおりに動くかを確かめるプログラムです。
+確認ごとに別の名前のメモリ上のデータベースを使い、期待する値と実際の値を比べて「OK」か「NG」を表示します。
+第21章で学ぶJUnitを使うと、同じ確認をテストとして書けます。
 
 ## 実行方法
 
-```bash
-cd grade-history
-javac -d out *.java
-java -cp out GradeHistoryCheck
+H2のJAR（`h2-2.5.252.jar`）を親のフォルダー（`exercises/`）に置いた場合の例です。
+入手方法は[演習全体のREADME](../README.md)にあります。
 
-cd ../repository-interface
-javac -d out *.java
-java -cp out RepositorySwapCheck
-java -cp out Phase3Test
+macOS・Linuxでは次のようにします。
+
+```bash
+cd exercises/chapter24/solutions
+javac -cp ../h2-2.5.252.jar *.java
+java -cp .:../h2-2.5.252.jar ConnectAndCreate
+java -cp .:../h2-2.5.252.jar TodoCrud
+java -cp .:../h2-2.5.252.jar BookSearch
+java -cp .:../h2-2.5.252.jar ScoreReport
+java -cp .:../h2-2.5.252.jar SeatReservation
 ```
 
-## 基礎課題2のポイント
+Windowsでは、クラスパスの区切りを`;`にします。
 
-- `Map.put`は、置き換えた前の値を返す。前の値があり、新しい値と異なるときだけ履歴に加える
-- `Grade`はRecordなので、`equals`で科目名・単位数・評価点がすべて等しいかを比べられる
-- GPAは成績からいつでも計算できるので保存しない。訂正前の成績は、あとから計算で求められない事実なので保存する
+```bash
+cd exercises\chapter24\solutions
+javac -cp ..\h2-2.5.252.jar *.java
+java -cp .;..\h2-2.5.252.jar TodoCrud
+```
 
-## 発展課題1のポイント
+動作確認のプログラムは次のように実行します。
+すべて「OK」になり、最後に「39件中39件OK」と表示されれば、解答例は期待どおりに動いています。
 
-- インターフェイスには保存に必要な4つのメソッドだけを置き、検索と集計は`StudentService`で`findAll`から計算する。こうすると、データベースの実装を作るときに書くメソッドが少なくて済む
-- 引数なしのコンストラクターを残したので、`Phase3Test`は1行も変えずに動く
-- 学部別の人数は`TreeMap`に集めて学部名の順にした。フェーズ3は`HashMap`だったので、表示の順だけが変わる（人数は同じ）
-- `RepositorySwapCheck`は、呼ばれた回数を数える実装を渡し、`StudentService`を変えずに実装を差し替えられることを示す
+```bash
+java -cp .:../h2-2.5.252.jar SolutionCheck
+```
+
+## 実装のポイント
+
+- 接続・`PreparedStatement`・`ResultSet`はtry-with-resourcesで閉じる。`ResultSet`は、それを作った`PreparedStatement`を閉じると一緒に閉じられるが、明示して閉じておくと読みやすい
+- 解答例は、データベースを使う処理を`Connection`を受け取るメソッドに分けている。mainはそのメソッドを順に呼んで表示するだけにしたので、`SolutionCheck`から同じメソッドを確かめられる
+- `SQLException`の`getMessage()`は、H2の版や実行する環境の言語で文章が変わる。プログラムで判定するときは`getSQLState()`か`getErrorCode()`を使う
+- `searchByTitleUnsafe`と`reserveWithoutTransaction`は、比べるための悪い例である。実際のプログラムでは書かない
+- 座席の予約の`reserve`は、決まりに合わないとき（予約済みの席）にも`SQLException`を投げている。理由をデータベースの障害と分けて扱いたいときは、チャレンジ課題の`LoanException`のように自分の例外クラスを作る

@@ -1,33 +1,74 @@
-# 第24章 統合プロジェクトの設計 - 演習課題
+# 第24章 データベースプログラミング - 演習課題
 
-## 概要
-本章では、学生管理システムを題材に、要求の整理、設計判断の記録、継承と合成の選び方、層の分け方、例外の設計を学びました。
-演習では、文章で設計を書く課題と、改善版や付録Dのコードを実際に直す課題に取り組みます。
+書籍『Java入門』第24章「データベースプログラミング」の演習課題です。
+第24章で学んだJDBCの使い方（接続、CRUD、PreparedStatement、DAOパターン、java.time、トランザクション、バッチ処理）を、身近な題材で確かめます。
+コネクションプール（HikariCP）は使いません。
 
-設計の課題には、ただ1つの正解はありません。
-解答例は考え方の一例です。自分の答えと違っていても、選択肢と理由を説明できれば十分です。
+## 準備
 
-## 課題構成
+どの課題も、組み込みデータベースのH2（2.5.252）を、メモリ上のデータベース（`jdbc:h2:mem:名前`）として使います。
+データベースサーバーを用意する必要はなく、プログラムを終えるとデータは消えます。
 
-### 基礎課題（basic/）
-- **課題1**: 図書の貸し出しを管理するシステムの要求を整理し、設計判断記録を1つ書く（解答例は`solutions/library-design.md`）
-- **課題2**: 改善版の学生管理システム（サンプルコード24-2）に、成績の訂正の履歴を残す機能を加える（解答例は`solutions/grade-history/`）
+### H2のJARを入手する
 
-### 発展課題（advanced/）
-- **課題1**: 付録Dのフェーズ3のコードで、`StudentRepository`をインターフェイスにし、実装を差し替えられるようにする（解答例は`solutions/repository-interface/`）
-
-### チャレンジ課題（challenge/）
-- **課題1**: 付録Dのフェーズ6のアプリケーションで、大学院生も成績を持ち、データベースに保存できるようにする（解答の方針は`solutions/challenge-guide.md`。コードの解答例はありません）
-
-## 実行方法
-コードの課題は、各ディレクトリで次のようにコンパイルし、確認のプログラムを実行します（Java 25）。
+Maven Centralから`h2-2.5.252.jar`を取得し、このフォルダー（`exercises/chapter24/`）に置きます。
+各課題のREADMEのコマンドは、JARをここに置いた場合の例です。
+ブラウザーで次のURLを開いてもダウンロードできます。
 
 ```bash
-javac -d out *.java
-java -cp out GradeHistoryCheck
+cd exercises/chapter24
+curl -O https://repo1.maven.org/maven2/com/h2database/h2/2.5.252/h2-2.5.252.jar
 ```
 
-## 評価基準
-- 要求と設計判断に、選んだ理由と、選ばなかった案が書かれていること
-- 変更したあとも、元の確認のプログラム（`Phase3Test`など）が同じ結果を出すこと
-- 計算で求められる値と、記録すべき事実を区別していること
+Windows 10以降のPowerShellでは、`curl`の代わりに`curl.exe`と書きます（`curl`だけでは別のコマンドが動きます）。
+JARはリポジトリに含めていないので、`git add`しないようにしてください。
+
+### クラスパスを指定してコンパイル・実行する
+
+H2のJARを`-cp`（クラスパス）に加えてコンパイルし、実行するときは今いるフォルダー（`.`）とJARの両方を指定します。
+たとえば、解答例のフォルダーでは次のようにします。
+
+macOS・Linux（区切りは`:`）:
+
+```bash
+cd solutions
+javac -cp ../h2-2.5.252.jar *.java
+java -cp .:../h2-2.5.252.jar SolutionCheck
+```
+
+Windows（区切りは`;`）:
+
+```bash
+cd solutions
+javac -cp ..\h2-2.5.252.jar *.java
+java -cp .;..\h2-2.5.252.jar SolutionCheck
+```
+
+実行時にJARを指定し忘れると、`No suitable driver found for jdbc:h2:mem:...`という`SQLException`になります。
+これは、接続URLに合うJDBCドライバーがクラスパスにないことを表します。
+
+Mavenを使う場合は、第24章のサンプルコード24-1の依存を`pom.xml`に加えます。
+
+## 基礎課題（[basic/](basic/)）
+
+- 接続と時間割のテーブル（`DriverManager`、`CREATE TABLE`、メモリ上のデータベースが接続を閉じると消えること）
+- ToDoリストのCRUD（`PreparedStatement`、`getGeneratedKeys`、変更した行数による判定）
+- 図書の検索とSQL Injection（`LIKE ?`、入力をSQLの文字列につなぐ書き方との比較）
+- 成績をオブジェクトにする（`ResultSet`からRecordへ、NULLの列と`getObject`、`GROUP BY`での集計）
+- 座席のまとめ予約（`setAutoCommit(false)`・`commit`・`rollback`）
+
+## 発展課題（[advanced/](advanced/)）
+
+- 予定表のDAO（DAOのインターフェイスと実装クラス、`LocalDateTime`の読み書き、日付の範囲と時間帯の重なりの検索）
+- 1年分の歩数をバッチ処理で登録する（`addBatch`・`executeBatch`、トランザクションとの組み合わせ、`BatchUpdateException`）
+- このフォルダーのJavaファイルは解答例です（課題ごとに`task1-schedule-dao/`・`task2-batch-steps/`）
+
+## チャレンジ課題（[challenge/](challenge/)）
+
+- 図書の貸出管理（外部キーと`INNER JOIN`、貸出・返却のトランザクション、自分の例外クラス、`LocalDate`での延滞の計算、一括登録と集計）
+- このフォルダーのJavaファイルは解答例です
+
+## 解答例（[solutions/](solutions/)）
+
+- 基礎課題の課題1〜5の解答例（実行例はこの解答例の出力）
+- 解答例が期待どおりに動くかを確かめる`SolutionCheck.java`

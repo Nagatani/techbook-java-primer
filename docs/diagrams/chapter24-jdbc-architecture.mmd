@@ -1,0 +1,19 @@
+---
+config:
+  flowchart:
+    rankSpacing: 30
+---
+flowchart TB
+    APP["Javaのプログラム<br/>（DaoExampleなど）"]
+    API["JDBC API（java.sql）<br/>Connection・PreparedStatement・ResultSet"]
+    DM["DriverManager<br/>接続URLで<br/>ドライバーを選ぶ"]
+    H2D["H2のドライバー"]
+    PGD["PostgreSQLのドライバー"]
+    H2[("H2")]
+    PG[("PostgreSQL")]
+    APP --> API
+    API --> DM
+    DM --> H2D
+    DM --> PGD
+    H2D --> H2
+    PGD --> PG
