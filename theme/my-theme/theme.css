@@ -1074,6 +1074,12 @@ pre[class*="language-python"] {
   border-left: 4px solid #3776ab;
 }
 
+/* C言語のコードは青の線でJavaのコードと区別する（pre.language-c。language-cssなどに当たらないようクラスで指定する） */
+pre.language-c,
+pre.language-c.code-excerpt .code-segment {
+  border-left: 4px solid #00599c;
+}
+
 /*
  * コマンドの例（bash）は左の緑の線で区別し、地はほかのコードと同じ明るい色にする。
  * 印刷用の設定（@media print の pre）が背景を明るい色に固定するため、

@@ -11,7 +11,9 @@
  * - 範囲のあいだに入れた「// ...」の行と空行は取り除く（枠の切れ目が省略を表す）
  *
  * 同じファイルの続いた範囲は1つの枠にまとめる。範囲が1つだけのサンプルは枠を分けず、
- * 行番号だけを付ける（pre.code-numbered）。1つのファイルの全体を載せたサンプルは何もしない。本文のコードが listings.json と食い違うとき（samples:sync の前など）も
+ * 行番号だけを付ける（pre.code-numbered）。全文と対応づけられないコードブロック（ファイル全体を載せたもの、
+ * listings.json にないもの）は1から順に行番号を付ける。言語を指定していないブロック（実行結果など）と
+ * コマンドの例（bash）には付けない。本文のコードが listings.json と食い違うとき（samples:sync の前など）も
  * 何もしない。行を span.code-line に分ける処理（vfm-code-lines.js）のあとに実行する。
  */
 const path = require('path');
@@ -110,13 +112,24 @@ function segmentCode(code, id) {
   return 'code-excerpt';
 }
 
+/** 行番号を付けないブロック（言語を指定していない実行結果など、コマンドの例） */
+const UNNUMBERED = ['code-plain', 'language-bash', 'language-shell', 'language-sh', 'language-console'];
+
+/** 全文と対応づけられないコードブロックは、1から順に行番号を付ける */
+function numberLines(code) {
+  const lines = (code.children || []).filter((c) => isElement(c, 'span') && hasClass(c, 'code-line'));
+  if (!lines.length) return false;
+  lines.forEach((line, i) => { line.properties = { ...line.properties, dataLine: String(i + 1) }; });
+  return true;
+}
+
 function walk(node) {
   let id = null;
   for (const child of node.children || []) {
     if (child.type === 'text' && !child.value.trim()) continue;
-    if (isElement(child, 'pre') && id) {
+    if (isElement(child, 'pre') && !UNNUMBERED.some((c) => hasClass(child, c))) {
       const code = (child.children || []).find((c) => isElement(c, 'code'));
-      const added = code && segmentCode(code, id);
+      const added = code && ((id && segmentCode(code, id)) || (numberLines(code) && 'code-numbered'));
       if (added) child.properties.className = [...[].concat(child.properties.className || []), added];
     }
     id = captionId(child);
