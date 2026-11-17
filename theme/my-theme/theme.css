@@ -751,12 +751,21 @@ pre.code-excerpt .code-segment + .code-segment {
   margin-top: 0.6em;
 }
 
-/* 全文での行番号。行の左の余白に右寄せで置く（折り返した続きの行には付けない） */
-pre.code-excerpt .code-line[data-line] {
+/*
+ * 全文での行番号。行の左の余白に右寄せで置く（折り返した続きの行には付けない）
+ * 範囲が1つのサンプル（pre.code-numbered）は枠を分けず、行番号だけを付ける
+ */
+pre.code-numbered code {
+  padding-left: 5.5ch;
+}
+
+pre.code-excerpt .code-line[data-line],
+pre.code-numbered .code-line[data-line] {
   position: relative;
 }
 
-pre.code-excerpt .code-line[data-line]::before {
+pre.code-excerpt .code-line[data-line]::before,
+pre.code-numbered .code-line[data-line]::before {
   content: attr(data-line);
   position: absolute;
   top: 0;
