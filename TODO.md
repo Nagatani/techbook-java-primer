@@ -75,7 +75,7 @@
 - [x] 出版の形に合わせてビルドを分けた（2026-11-16、著者の方針: WebでALPHA版を無料配布し、正規版を電子版かオンデマンド印刷で出版する）。`npm run build`はALPHA版、`npm run build:release`は正規版、`npm run build:press`は正規版をトンボ・塗り足し3mm・PDF/X-1aで出す。表紙の「ALPHA VERSION」と奥付の版の表示は版ごとに出し分ける（`scripts/vfm-edition.js`）。トンボ付きのPDFは表紙の地が塗り足しまで広がることを確かめた。`build:press`（DockerでのPDF/X-1aへの変換）はまだ実行していない
 - [x] ノンブルを、前付けはローマ数字（表紙i・目次ii〜iv）、本文は第1章を1ページとする形にした（2026-11-16。第1章は右ページから始まり、奥付は732ページ）
 - [x] LICENSEを置いた（2026-11-16、著者の指示）。文章・図はAll Rights Reserved、`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定はMIT（`LICENSE-CODE`）。奥付の注意書きを合わせた
-- [x] docsディレクトリを整理した（2026-11-17、著者の指示）。校閲で読む規約・手順を`docs/guides/`にまとめ、役目を終えた資料を`docs/deletion-candidates/`（旧`docs/archive/`）に集めた。現状の要約は`docs/analysis/project-status.md`に移した。削除の候補の一覧と判断の目安は`docs/deletion-candidates/README.md`。著者が確認して不要なものを削除する
+- [x] docsディレクトリを整理した（2026-11-17、著者の指示）。校閲で読む規約・手順を`docs/guides/`にまとめ、役目を終えた資料を`docs/deletion-candidates/`（旧`docs/archive/`）に集めた。現状の要約は`docs/analysis/project-status.md`に移した。削除の候補の一覧と判断の目安は`docs/deletion-candidates/README.md`。著者が確認して不要なものを削除する。課題管理は、開いている課題だけを`docs/analysis/issues-tracking.md`に残し、解決済みの課題と2026-11の作業記録を`issues-resolved.md`に、2025年の作業サマリーと計画を`docs/deletion-candidates/analysis/issues-tracking-2025.md`に分けた
 - [ ] 出版時に決めること
     + 正規版の奥付の発行日（`manuscripts/colophon.md`の`edition-release`、いま「2026年○月○日」）と、印刷所・発行者などを載せるか（オンデマンド印刷のサービスの指定に合わせる）
     + 入稿先の仕様（PDF/X-1aか、塗り足しの幅、表紙を本文と別のファイルにするか、総ページの条件）。表紙を別にするなら、本文のPDFから表紙を外す設定を加える

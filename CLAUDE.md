@@ -262,7 +262,7 @@ Directory structure:
 
 ## Analysis Documentation Management
 
-**Critical**: The `docs/analysis/` directory holds the issue tracker (`issues-tracking.md`), the current-state summary (`project-status.md`), and the generated `java-sample-check.md`. Keep the issue tracker and the current-state summary up to date during work sessions.
+**Critical**: The `docs/analysis/` directory holds the issue tracker (`issues-tracking.md`, open issues only), the record of resolved issues (`issues-resolved.md`), the current-state summary (`project-status.md`), and the generated `java-sample-check.md`. Keep the issue tracker and the current-state summary up to date during work sessions.
 
 ### Required Analysis Files Maintenance
 
@@ -270,12 +270,12 @@ When performing any modifications to the book content, you must:
 
 1. **Read current analysis status**: Always consult the latest analysis files before starting work:
    - `docs/analysis/project-status.md`: Overall project state
-   - `docs/analysis/issues-tracking.md`: Current prioritized issues
+   - `docs/analysis/issues-tracking.md`: Open issues and points to revisit (resolved issues are in `issues-resolved.md`)
    - **`docs/guides/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
 
 2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
-   - Resolved issues (mark as completed in issues-tracking.md)
-   - New issues discovered (add to issues-tracking.md with appropriate priority)
+   - Resolved issues (move them from issues-tracking.md to the end of issues-resolved.md)
+   - New issues discovered (add to issues-tracking.md with appropriate priority; the numbering rule is at the top of that file)
    - Progress on planned work (update TODO.md)
 
 3. **Maintain consistency**: Ensure analysis files remain consistent with actual project state:

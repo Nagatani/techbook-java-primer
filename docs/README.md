@@ -19,7 +19,7 @@
 |---|---|---|
 | 校閲で読む | `guides/` | 文章の規約・校正の手順・コードの確かめ方・表記の検査・箇条書き／コードブロック／コラムの書き方 |
 | 校閲で読む | `summaries/` | 章・付録ごとの要約（索引のハッシュで古くなったことを検出する） |
-| 校閲で読む | `analysis/` | 課題の管理（`issues-tracking.md`）、現状の要約（`project-status.md`）、`check:java`のレポート（`java-sample-check.md`、生成物） |
+| 校閲で読む | `analysis/` | 開いている課題（`issues-tracking.md`）、解決済みの課題と作業の記録（`issues-resolved.md`）、現状の要約（`project-status.md`）、`check:java`のレポート（`java-sample-check.md`、生成物） |
 | 生成物 | `book-index/` | 原稿の節ごとの行範囲（`npm run index`で生成。手で編集しない） |
 | ビルドの入力 | `diagrams/` | 図の元データ（Mermaidの`chapterXX-内容.mmd`）と設定。`npm run mermaid:convert`が`manuscripts/images/diagrams/`のSVGを作る。本で使わない図は`diagrams/unused/` |
 | 原資料 | `lecture-materials/` | 元の講義資料（読み取り専用。変更しない） |
@@ -41,7 +41,7 @@
 | `guides/code-styling-guide.md` | コードブロックの書き方とビルドで付く見た目 |
 | `guides/column-guidelines.md` | コラムの書き方 |
 | `summaries/README.md` | 章ごとの要約と、章全体を読まずに作業する方法 |
-| `analysis/issues-tracking.md` | 課題の一覧と状況 |
+| `analysis/issues-tracking.md` | 開いている課題と、継続して見直す点 |
 
 ## 主なコマンド
 

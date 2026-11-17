@@ -5,7 +5,7 @@
 
 元の場所と同じ構成で置いています（`analysis/`・`planning/`・`reference/`・`diagrams/`）。
 ここにある資料は、スクリプトやビルドから参照されていません。
-`TODO.md`と`docs/analysis/issues-tracking.md`の完了済みの記録に、ここの資料へのリンクが残っています（削除するとリンクが切れますが、作業には影響しません）。
+`TODO.md`と`docs/analysis/issues-resolved.md`の完了済みの記録に、ここの資料へのリンクが残っています（削除するとリンクが切れますが、作業には影響しません）。
 
 ## そのまま削除してよいもの
 
@@ -23,6 +23,7 @@
 | `analysis/content-reduction-candidates.md`、`content-reduction-implementation-plan.md`、`detailed-reduction-rationale.md` | 内容削減の候補と計画（2025-07） |
 | `analysis/exercise-system-assessment.md` | 演習の評価（2026-11に演習を作り直したため古い） |
 | `analysis/improvement-roadmap.md`、`next-phase-plan.md` | 2025年の作業計画（2026-11-16に閉じた。今後の作業は`TODO.md`） |
+| `analysis/issues-tracking-2025.md` | 課題管理の文書から分けた2025年の作業サマリーと計画（アクションプラン・品質指標など）。Issue #001・#002の詳細も含む |
 | `analysis/proofreading-summary.md`、`textlint-sentence-ending-analysis.md` | 2025年の校正・textlintの記録 |
 | `appendix-g-chapter23-consolidation-plan.md`、`duplicate-content-consolidation-plan.md` | 重複の整理計画（2025-07） |
 | `directory-structure-clarification.md`、`github-repository-improvement-plan.md` | 2025年のディレクトリ・リポジトリの計画 |
