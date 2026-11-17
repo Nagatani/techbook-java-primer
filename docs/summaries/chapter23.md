@@ -1,19 +1,19 @@
 ---
 source: manuscripts/chapter23-build-and-deploy.md
-summarized: 2026-11-14
+summarized: 2026-11-18
 sections:
   - key: "本章の学習目標"
-    hash: 19a47375
+    hash: 7bf69306
   - key: "なぜビルドと配布が必要か"
     hash: 4ce89c11
   - key: "実行可能JARファイルの作成"
-    hash: 41580086
+    hash: 593b0a32
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: 7100fce3
+    hash: 0937d100
   - key: "よくあるエラーと対処法"
-    hash: 03ecc005
+    hash: fde5e426
   - key: "まとめ"
-    hash: 2ea69622
+    hash: 86879cc4
   - key: "章末演習"
     hash: 54adf871
 ---
@@ -26,8 +26,8 @@ sections:
 
 - 開発したJavaアプリケーションを、開発環境を持たない人に配布する方法を扱う最終章
 - 内容は2本立てで、`javac`→マニフェスト→`jar cvfm`→`java -jar`による実行可能JARの作成と、`jpackage`によるランタイム同梱のネイティブアプリ化
-- 外部ライブラリを使うアプリのJARは、マニフェストの`Class-Path`だけを文章で説明する。Maven、Fat JAR、GraalVM、コンテナー、CI/CDはまとめで名前を挙げるだけで、詳細は付録E（GitHubリポジトリ）に委ねる
-- 426行と短く、コードはほぼコマンド例。サンプルアプリはSwing（第17章の内容）
+- 外部ライブラリを使うアプリのJARは、マニフェストの`Class-Path`だけを文章で説明する。Maven、Fat JAR、GraalVM、コンテナー、CI/CDはまとめで名前を挙げるだけで、詳細は付録D「高度なビルドとデプロイメント技術」（`appendix/d-build-and-deploy/`）に委ねる
+- 450行と短く、コードはほぼコマンド例。サンプルアプリはSwing（第17章の内容）
 
 ## 構成上の問題
 
@@ -41,25 +41,27 @@ sections:
 ## 節ごとの要約
 
 - 本章の学習目標（L3–33）
-    + JARの仕組み、マニフェスト、実行可能JAR、jpackage、ビルドとパッケージングの流れの5項目
-    + 前提知識は第1章、第14章（基本的なI/O操作）、第17章（Swing）、第22章（クラスパスとJAR）、コマンドライン操作。「次の知識があると、より理解が深まります。」として第21章、CI/CD、デプロイ、OS差異
+    + JARのしくみ、マニフェスト、実行可能JAR、jpackage、ビルドとパッケージングの流れの5項目
+    + 前提知識は第1章、第14章（基本的なI/O操作）、第17章（Swing）、第22章（クラスパスとJAR）、コマンドライン操作。「次の知識があると、より理解が深まります。」として第21章、CI/CD（継続的インテグレーションと継続的デリバリー）、デプロイ、OS差異
 - なぜビルドと配布が必要か（L34–51）
     + ソースコードをそのまま渡せないこと、「ビルド」（コンパイルしてクラスファイルを作る）「パッケージング」（クラスファイルとリソースを1つにまとめる）「配布」（ユーザーに届ける）を分けて定義し、ソースから配布形式までの図（chapter23-build-flow）を示す
-- 実行可能JARファイルの作成（L52–297）
+- 実行可能JARファイルの作成（L52–299）
     + JARはZIP形式のアーカイブで、第22章のライブラリのJARと同じ形式に自分のプログラムをまとめ、Main-Classを加えると`java -jar`で実行できる
     + ステップ1〜5: Swingの最小アプリ（23-1）、`javac`、マニフェストのMain-Classと半角スペース・末尾改行の注意（23-2）、`jar cvfm`とオプション（脚注で`jar --create --main-class`と`jar cvfe`の書き方も紹介）、`java -jar`での実行
     + 応用: TodoAppとTodoInputPanel（23-3、抜粋にコンストラクターを含む）と複数クラスのJAR作成・`jar tf`での確認
     + 外部ライブラリを使うアプリケーションのJAR: `java -jar`では`-cp`が無視されるため、マニフェストの`Class-Path`（JARからの相対パス）にライブラリを書き、`lib`ディレクトリと一緒に配布する。Fat JARはまとめへ誘導（コードブロックなし）
     + `getResource`で画像を読むResourceApp（23-4、nullでNullPointerExceptionになる注意と、icon.pngとmanifest.txtを全文と同じ場所に用意したこと）とリソース込みのJAR作成
     + IntelliJ IDEAのArtifacts機能でのJAR作成手順
-- jpackageによるネイティブアプリケーション化（L298–380）
+- jpackageによるネイティブアプリケーション化（L300–382）
     + JARはJREが必要という限界と、ランタイムを同梱するjpackage（Java 16で正式導入）の利点
     + 入力ディレクトリと出力ディレクトリを分ける準備とディレクトリ図（罫線は`├──`・`│`・`└──`）
     + app-imageの作成とオプション解説
     + jpackageは実行しているOS向けのものしか作れないこと（クロスビルド不可）を述べたうえで、Windows・macOS・Linux向けの例。インストーラーにはWiX Toolset・dpkg-deb・fakeroot・rpmbuildなどの追加ツールが要ること（脚注。2026-11-14に、Linuxではapp-imageを作るときにもobjcopy（binutils）が要ることを追加）、app-imageはインストーラーでないことを述べる
-- まとめ（L381–409）
-    + 発展技術としてビルド自動化ツール（第22章で紹介したMaven、`mvn package`）、Fat JAR、GraalVMネイティブイメージ、コンテナー化、CI/CD（第21章のGitHub Actions）を列挙し、付録Eへ誘導する
-- 章末演習（L410–426）
+- よくあるエラーと対処法（L383–401）
+    + メイン・マニフェスト属性がない（Main-Classの欠落、最終行の改行）、`NoClassDefFoundError`（`java -jar`では`-cp`が無視される）、`getResource`や`getResourceAsStream`が`null`を返す、`UnsupportedClassVersionError`、jpackageのエラー。詳細は`appendix/e-common-errors/chapters/chapter23.md`
+- まとめ（L402–433）
+    + 発展技術としてビルド自動化ツール（第22章で紹介したMaven、`mvn package`）、Fat JAR（Maven Shade Plugin、Spring Bootのプラグインなど）、GraalVMネイティブイメージ、コンテナー化、CI/CD（第21章のGitHub Actions）を列挙し、付録Dへ誘導する。「今後の学習に向けて」で第24章と第25・26章へ案内する
+- 章末演習（L434–450）
     + `exercises/chapter23/`へのリンク。基礎（実行可能JAR）・発展（リソース込みJAR）・チャレンジ（各OS向けインストーラー）の3課題
 
 ## 他章との関係
@@ -67,8 +69,8 @@ sections:
 - 第1章: javac/javaコマンドとIntelliJ IDEAの導入。本章のIntelliJ手順はその延長
 - 第17章: サンプルアプリ（JFrame、JList、DefaultListModel、SwingUtilities.invokeLater）の前提
 - 第21章: まとめのCI/CDでGitHub Actionsに触れる
-- 第22章: クラスパスとJAR、Mavenを扱い、本章の冒頭・外部ライブラリのJARの節・まとめから参照する。Fat JARの作り方はどちらの章も扱わず、付録Eに委ねる
-- 付録E: 原稿はGitHubへの誘導だけの最小構成。学習内容（Maven/Gradle自動化、Fat JAR、jpackageの高度な活用）はまとめの列挙とほぼ同じ
+- 第22章: クラスパスとJAR、Mavenを扱い、本章の冒頭・外部ライブラリのJARの節・まとめから参照する。Fat JARの作り方はどちらの章も扱わず、付録Dに委ねる
+- 付録D（高度なビルドとデプロイメント技術）: 原稿はGitHubへの誘導だけの最小構成。学習内容（Maven/Gradle自動化、Fat JAR、jpackageの高度な活用）はまとめの列挙とほぼ同じ
 
 ## 校正で見つけた個別の問題
 
@@ -81,3 +83,4 @@ sections:
 - 2026-11-16: 「今後の学習に向けて」の末尾に、第25章からの統合プロジェクトへの案内を1文加えた
 - 2026-11-16: 「今後の学習に向けて」の案内を、第24章（データベース）と第25・26章（統合プロジェクト）の2文にした
 - 2026-11-16: 節「よくあるエラーと対処法」を加えた（メイン・マニフェスト属性、NoClassDefFoundError、getResourceAsStreamのnull、UnsupportedClassVersionError、jpackage）。詳しい内容は`appendix/e-common-errors/chapters/chapter23.md`
+- 2026-11-18の校閲: 「仕組み」を「しくみ」に、半角括弧を全角に、CI/CDの説明を「継続的インテグレーションと継続的デリバリー」に、jpackageのコマンドの続きの行の字下げをそろえ、エラーの項目を「`getResource`や`getResourceAsStream`」に、Fat JARの例を「Maven Shade Plugin、Spring Bootのプラグインなど」に直した

@@ -1,9 +1,9 @@
 ---
 source: manuscripts/appendix-b-index-revised.md
-summarized: 2026-11-16
+summarized: 2026-11-18
 sections:
   - key: "付録リソース一覧"
-    hash: 146b119e
+    hash: a5886351
   - key: "付録の活用方法"
     hash: 4df70354
   - key: "注意事項"

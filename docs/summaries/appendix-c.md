@@ -1,9 +1,9 @@
 ---
 source: manuscripts/appendix-c-theoretical-foundations.md
-summarized: 2026-11-16
+summarized: 2026-11-18
 sections:
   - key: "付録Cについて"
-    hash: 0f1450ba
+    hash: e6c185ef
 ---
 
 # 付録C ソフトウェア工学の理論的基盤 要約

@@ -1,21 +1,21 @@
 ---
 source: manuscripts/chapter12-advanced-collections.md
-summarized: 2026-11-14
+summarized: 2026-11-18
 sections:
   - key: "本章の学習目標"
     hash: a46ea38e
   - key: "Stream APIによる現代的なコレクション操作"
-    hash: 1055b325
+    hash: 10343d64
   - key: "Optional型による安全なnull処理"
     hash: 05039ab8
   - key: "並列ストリームによるパフォーマンス向上"
-    hash: c5086268
+    hash: d489fe8e
   - key: "高度なStream操作"
-    hash: 41fad5ee
+    hash: 63f11e2a
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"
-    hash: a44ec8da
+    hash: 9ab4e674
   - key: "章末演習"
     hash: 3756a825
 ---
@@ -30,7 +30,7 @@ sections:
 - 主な内容は、Stream API（遅延評価、filter・map・sorted・flatMap・reduce・Collectors）、Optional、並列ストリーム
 - Optionalを正式に説明する章（2026-11-11に、本章内の二重の説明を「Optional型による安全なnull処理」の1か所にまとめた）。Comparatorは第11章を参照し、本章では`sorted`に渡す使い方だけを示す
 - 共通の題材は`Student`（name・score・height）で、サンプルコード12-4で定義し以降のサンプルで使い回す
-- 前提は第9章・第10章・第11章（L20）。並列ストリームのスレッドセーフティは第15章で学ぶ旨を案内している（L689–690）
+- 前提は第9章・第10章・第11章（L20）。並列ストリームのスレッドセーフティは第15章で学ぶ旨を案内している（L716）
 
 ## 構成上の問題
 
@@ -43,47 +43,47 @@ sections:
 - 学習目標と本文の不一致が残る
     + 学習目標の「カスタムCollectorの作成」（L12）は本文で扱っていない（2026-11-12に解消。学習目標から外した）
     + 本文の大きな部分を占めるOptionalは学習目標に挙がっていない（2026-11-12に解消。学習目標に「Optional型」を加えた）
-- 12-2と12-3は`Student`を使うが、`Student`クラスを定義するのはその後の12-4（「本章で使う`Student`クラスを定義し」L168）。12-2は`List<Student> list = ...;`の断片（2026-11-12に解消。12-2・12-3の前に、`Student`の定義は12-4で示す旨と`list`の説明を加えた）
+- 12-2と12-3は`Student`を使うが、`Student`クラスを定義するのはその後の12-4（「本章で使う`Student`クラスを定義し」L172）。12-2は`List<Student> list = ...;`の断片（2026-11-12に解消。12-2・12-3の前に、`Student`の定義は12-4で示す旨と`list`の説明を加えた）
 
 ## 節ごとの要約
 
 - 本章の学習目標（L3–24）
     + Stream APIの基本、高度なコレクション操作、Collectors、並列ストリームの4項目
     + 実装クラスの特徴と選び方は第9章で学んだ旨と、「コレクションの選択指針」への誘導
-- Stream APIによる現代的なコレクション操作（L25–255）
+- Stream APIによる現代的なコレクション操作（L25–262）
     + Stream APIが必要な理由（文章で説明。null安全はStreamではなくOptionalが扱う旨）
     + 遅延評価のしくみ（12-1）と、要素が1つずつ全操作を通る図
-    + 基本パターンとパイプラインの図、生成・中間操作・終端操作の3フェーズと主なメソッド一覧
+    + 基本パターンとパイプラインの図、生成・中間操作・終端操作の3フェーズと主なメソッド一覧。Java 24からの`gather`と`Gatherers`を脚注で紹介し、終端操作を呼んだストリームをもう一度操作すると`IllegalStateException`になる旨を書く
     + filter（12-2）と、`collect(Collectors.toList())`の説明（Java 16以降の`toList()`は脚注）、map（12-3）
     + `sorted`による並べ替え（12-4、2026-11-11に新設）。`Student`クラスの定義、Comparatorは第11章で学んだ旨、`List.sort`との違い
     + 組み合わせた例（12-5）
-- Optional型による安全なnull処理（L256–682）
+- Optional型による安全なnull処理（L263–708）
     + null参照の問題とTony Hoareの「10億ドルの過ち」、Optionalの概念（型で示せる、扱いを意識させる、チェインできる）
     + 作成（12-6）、値の取得（12-7、`get`を避ける理由とorElse・orElseGetの評価の違いを含む）、存在確認と条件付き処理（12-8、`isPresent`＋`get`を避ける注意）、map・flatMap・filter（12-9）、Stream連携（12-10）、リポジトリ・設定値の実例（12-11、クラスの外側とmain全体を載せる）、アンチパターン（12-12）
     + ベストプラクティスを文章でまとめる（2026-11-11に箇条書きを文章にした）。orElseの引数は常に評価されるのでコストが高い既定値はorElseGetを使う、と理由を書いた
-- 並列ストリームによるパフォーマンス向上（L683–825）
+- 並列ストリームによるパフォーマンス向上（L709–853）
     + マルチコアと、スレッドセーフティは第15章で学ぶ旨
-    + parallelStreamの使い方（12-13）、Fork/Joinによる分割・処理・統合と図、計測例（12-14、高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）
-    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-15）、順序（forEach・findAnyは変わりうるが、collect・forEachOrderedは並列でも順序を保つ）
+    + parallelStreamの使い方（12-13）と、作成済みのストリームに`parallel()`を呼ぶ方法。Fork/Joinによる分割・処理・統合と図（共通プールのスレッド数はコア数より1少なく、呼び出したスレッドも加わる旨を脚注で説明）、計測例（12-14、`System.nanoTime`でミリ秒を求める。高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）
+    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-15）、順序（forEach・findAnyは変わりうるが、forEachOrderedとリストに集める`collect(Collectors.toList())`は並列でも順序を保つ）
     + 使うとよい4条件（4つ目は、findFirst・limitのような順序を守る操作は並列で速くなりにくい点）
     + 第15章の並列ストリームの説明は本章へ寄せた（2026-11-11）
-- 高度なStream操作（L826–1165）
+- 高度なStream操作（L854–1202）
     + flatMap（12-16、図あり）、reduce（12-17）、CollectorsのtoList・groupingBy・partitioningBy（12-18）
-    + nullを含むデータの処理（12-19、`Objects::nonNull`）
+    + nullを含むデータの処理（12-19、`Objects::nonNull`と`isBlank`）
     + 早期終了操作allMatch・anyMatch・limit（12-20、`peek`の説明あり）、toArray（12-21、引数なしは`Object[]`を返す旨と`String[]::new`）
     + groupingBy＋collectingAndThen・averagingIntの複合パイプライン（12-22）。返すMapの種類は仕様で決まっておらず（現在の実装はHashMap）表示順が保証されない注意と`TreeMap::new`
-- よくあるエラーと対処法（L1166–1185）
-    + 中間操作の順序の誤り、終端操作の書き忘れ、並列ストリームでの共有データの変更、Optionalの誤用、同じ処理の繰り返しによる性能の低下、ラムダ式のなかでの検査例外の要点と、`appendix/f-common-errors/chapters/chapter12.md`のURL
-- まとめ（L1186–1201）
-    + Stream API（第11章のComparatorを`sorted`に渡す点を含む）、Optional（値がない場合があることを型で示し、扱い忘れによるNPEを減らす）、並列ストリーム、高度なStream操作の4項目
-- 章末演習（L1202–1213）
+- よくあるエラーと対処法（L1203–1222）
+    + 中間操作の順序の誤り、終端操作の書き忘れ、並列ストリームでの共有データの変更、Optionalの誤用、同じ処理の繰り返しによる性能の低下、ラムダ式のなかでの検査例外の要点と、`appendix/e-common-errors/chapters/chapter12.md`のURL
+- まとめ（L1223–1238）
+    + Stream API（第11章のComparatorを`sorted`に渡す点を含む）、Optional（値がない場合があることを型で示し、扱い忘れによるNPEを減らす）、並列ストリーム（データが多く時間のかかる処理を複数のコアで分担し、効果は時間を測って確かめる）、高度なStream操作の4項目
+- 章末演習（L1239–1256）
     + 演習リンクは`exercises/chapter12/`
 
 ## 他章との関係
 
 - 第9章（コレクション）: 実装クラスの選び方は第9章「コレクションの選択指針」へ誘導（2026-11-11に重複を解消）
 - 第11章（ラムダ式）: Comparatorは第11章が正式に説明し、本章は`sorted`に渡すだけ（2026-11-11に重複を解消）。第11章の実践例の節がStreamを先取りする（案内あり）
-- 第13章（例外処理）・第14章（ファイルI/O）: エラー一覧で`Files.readString`の検査例外に触れる（詳細は付録F）
+- 第13章（例外処理）・第14章（ファイルI/O）: エラー一覧で`Files.readString`の検査例外に触れる（詳細は付録E）
 - 第15章（マルチスレッド）: 並列ストリームのスレッドセーフティを先取り（案内あり）。第15章の並列ストリームの説明は本章へ寄せた
 - 付録B.08（Stream APIの内部実装）: 本章からは参照していない
 
@@ -96,7 +96,7 @@ sections:
 - L342、L558: 「…する方法。」「…ベストプラクティス。」の体言止めの断片文（2026-11-12に解消）
 - 12-9: Userのフィールドを`Optional<String>`にしており、12-12の「フィールドにOptionalを使うのはアンチパターン」とする説明と矛盾する。L415のコメント「getUserは…」はコードに存在しないメソッドを指している（2026-11-12に解消。フィールドは`String`にして`getEmail`で`Optional`を返し、コメントも直した）
 - 12-17、12-32、12-38の変数の二重宣言（2026-11-11に解消。番号は旧番号）
-- 付録F（`appendix/f-common-errors/chapters/chapter12.md`）に、コメント「非同期安全でない」（L88）、ArrayListへの並列追加でConcurrentModificationExceptionが出るという不正確な説明（L97）、合計を変数`count`に代入する例（L184）が残る。エラーメッセージはjavac形式に直っている（2026-11-12に解消）
+- 当時の付録F（現在の付録E、`appendix/e-common-errors/chapters/chapter12.md`）に、コメント「非同期安全でない」（L88）、ArrayListへの並列追加でConcurrentModificationExceptionが出るという不正確な説明（L97）、合計を変数`count`に代入する例（L184）が残る。エラーメッセージはjavac形式に直っている（2026-11-12に解消）
 - 2026-11-14の校閲で直したもの
     + 並列化のオーバーヘッドを「スレッドの作成」としていた説明、並列では順序が保てないように読める説明と条件4
     + 12-14の実行結果が環境で変わる断りがない問題（倍率を小数1桁にし、脚注を付けた）
@@ -106,3 +106,4 @@ sections:
     + 図の直後に浮いていた文（旧L71）と、12-5の前の重複した文を削除した
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-18: 校閲で、Gatherer（脚注）・使い終わったストリームの`IllegalStateException`・`parallel()`を足し、12-14の計測を`Instant`から`System.nanoTime`に、12-19の`trim().isEmpty()`を`isBlank()`にした。並列での順序の説明を「リストに集める`collect`」に絞り、小見出しの後とコードブロックの後の空行、読点区切りを直した
