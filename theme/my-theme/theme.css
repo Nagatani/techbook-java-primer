@@ -711,6 +711,8 @@ pre code .code-line:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.035);
 }
 
+/* 言語を指定していないブロック（実行結果など）は縞模様を付けない（vfm-code-lines.js が pre.code-plain にする） */
+pre.code-plain code .code-line:nth-of-type(even),
 pre[class*="language-bash"] code .code-line:nth-of-type(even),
 pre[class*="language-shell"] code .code-line:nth-of-type(even) {
   background-color: transparent;

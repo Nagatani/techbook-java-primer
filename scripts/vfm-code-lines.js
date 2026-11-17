@@ -5,6 +5,9 @@
  *   （行ごとの padding-left と負の text-indent で、ぶら下げインデントにする）
  * - 縞模様を行ごとに付けられる（折り返した行も1行として同じ色になる）
  *
+ * - 言語を指定していないブロック（実行結果など）は pre に code-plain のクラスを付け、テーマで縞模様を外す。
+ *   VFMは言語のないブロックにも language-text を付けるため、原稿のフェンスの行（```の後ろが空か）で見分ける
+ *
  * シンタックスハイライト（Prism）のあとに実行する。複数行にまたがるトークン（ブロックコメントなど）は、
  * 行の境目でいったん閉じ、次の行で同じ要素を開き直す。
  */
@@ -72,10 +75,22 @@ function walk(node, visit) {
   for (const child of node.children || []) walk(child, visit);
 }
 
+/** 原稿でフェンスの後ろに言語を書いていないコードブロックか */
+function isPlainFence(node, source) {
+  const offset = node.position && node.position.start && node.position.start.offset;
+  if (source === undefined || offset === undefined) return false;
+  const line = source.slice(offset, source.indexOf('\n', offset) === -1 ? undefined : source.indexOf('\n', offset));
+  return /^(`{3,}|~{3,})\s*$/.test(line);
+}
+
 function rehypeCodeLines() {
-  return (tree) => {
+  return (tree, file) => {
+    const source = file.value !== undefined ? String(file.value) : file.contents !== undefined ? String(file.contents) : undefined;
     walk(tree, (node) => {
       if (!isElement(node, 'pre')) return;
+      if (isPlainFence(node, source)) {
+        node.properties = { ...node.properties, className: [...[].concat(node.properties.className || []), 'code-plain'] };
+      }
       for (const code of node.children || []) {
         if (isElement(code, 'code')) code.children = splitLines(code);
       }
