@@ -7,13 +7,13 @@ sections:
   - key: "イベント駆動プログラミングの理解"
     hash: 1f01f4c0
   - key: "ボタンクリックの実装"
-    hash: b98d7665
+    hash: ec6b31c1
   - key: "ラムダ式による簡潔な記述"
-    hash: b1990bdd
+    hash: bc6a9e32
   - key: "代表的なイベントの種類"
-    hash: a84971b9
+    hash: 67dfabbc
   - key: "イベント処理のベストプラクティス"
-    hash: c7b23d99
+    hash: 20cb5156
   - key: "よくあるエラーと対処法"
     hash: 1b49ac87
   - key: "まとめ"

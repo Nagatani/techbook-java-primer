@@ -7,17 +7,17 @@ sections:
   - key: "抽象化の必要性"
     hash: 793fdc53
   - key: "抽象クラスと抽象メソッド"
-    hash: 46efcc94
+    hash: 0609fa4a
   - key: "インターフェイス：振る舞いの契約"
     hash: 5596940f
   - key: "抽象クラス vs インターフェイス"
     hash: f520f16f
   - key: "Java 8以降のインターフェイス進化"
-    hash: a7a80cc5
+    hash: 77ccc6b6
   - key: "高度な設計パターン"
-    hash: 3c62edb6
+    hash: 3ffc012c
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 806aa247
+    hash: 718b10c6
   - key: "よくあるエラーと対処法"
     hash: f70a0467
   - key: "まとめ"

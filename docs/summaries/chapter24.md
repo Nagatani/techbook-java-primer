@@ -7,19 +7,19 @@ sections:
   - key: "データベースを使う準備"
     hash: fc04011b
   - key: "SQLの基本"
-    hash: d010d919
+    hash: 141ebdc8
   - key: "JDBCのしくみ"
-    hash: 44c69c6a
+    hash: 89e80a0a
   - key: "行を操作する"
-    hash: 745eb40d
+    hash: 0736c0ef
   - key: "DAOパターン"
-    hash: c486598f
+    hash: 0e2ac7d4
   - key: "日付と時刻の列とjava.time"
-    hash: 9d524b74
+    hash: 4adcf547
   - key: "トランザクション"
-    hash: 45db8a3c
+    hash: afedee5a
   - key: "コネクションプールとバッチ処理"
-    hash: 610516fd
+    hash: 58fa0a18
   - key: "よくあるエラーと対処法"
     hash: e91fd7f1
   - key: "まとめ"

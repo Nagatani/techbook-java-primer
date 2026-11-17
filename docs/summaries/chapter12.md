@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: a46ea38e
   - key: "Stream APIによる現代的なコレクション操作"
-    hash: c366750b
+    hash: 1055b325
   - key: "Optional型による安全なnull処理"
-    hash: d2740a83
+    hash: 05039ab8
   - key: "並列ストリームによるパフォーマンス向上"
     hash: c5086268
   - key: "高度なStream操作"
-    hash: c16c8a23
+    hash: 41fad5ee
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"

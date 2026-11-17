@@ -19,7 +19,7 @@ sections:
   - key: "最初のJavaプログラム"
     hash: 51928b9f
   - key: "Javaプログラムの基本構文"
-    hash: b1855d5f
+    hash: 1c4cf8c0
   - key: "標準入出力を扱うサンプルを動かしてみよう"
     hash: 1c6f0063
   - key: "よくあるエラーと対処法"
