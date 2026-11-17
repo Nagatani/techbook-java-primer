@@ -82,7 +82,7 @@
     "dir": "12-14",
     "main": "ParallelStreamExample",
     "excerpt": [
-      { "file": "ParallelStreamExample.java", "from": 1, "to": 29 }
+      { "file": "ParallelStreamExample.java", "from": 1, "to": 27 }
     ]
   },
   "12-16": {

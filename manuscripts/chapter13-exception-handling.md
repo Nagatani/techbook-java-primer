@@ -39,7 +39,7 @@
 
 本章では、とくに「実行時エラー」に焦点を当て、Javaの例外処理のしくみを学びます。
 
-## 例外処理の基本: `try-catch-finally`
+## 例外処理の基本：`try-catch-finally`
 
 Javaでは、プログラム実行中に発生する「例外的状況」を例外（Exception）オブジェクトとして表現し、これに対処するための専用の構文を提供しています<span class="footnote">C言語には例外のしくみがなく、関数の戻り値や`errno`でエラーを伝えるのが一般的です。呼び出し側が戻り値を確かめ忘れると、エラーに気づかないまま処理が進みます。</span>。例外が発生することを「例外がスローされる（投げられる）」と言います。
 
@@ -59,7 +59,7 @@ Javaでは、プログラム実行中に発生する「例外的状況」を例�
 その場合は、より具体的な例外から順に書きます。
 親クラスの例外（`Exception`など）を先に書くと、後ろにあるサブクラスの`catch`には処理が届かないため、コンパイルエラーになります。
 
-以下のコードは、NullPointerExceptionが発生する状況とその対処方法を示しています。null参照に対してメソッドを呼び出すと例外が発生しますが、catch句でその例外を捕捉し、プログラムのクラッシュを防いで処理を継続させています。
+次のコードは、`NullPointerException`が発生する状況とその対処方法を示しています。null参照に対してメソッドを呼び出すと例外が発生しますが、`catch`ブロックでその例外を捕捉し、プログラムが異常終了しないようにして処理を続けています。
 
 <span class="listing-number">**サンプルコード13-1**　TryCatchSample.java</span>
 
@@ -118,7 +118,7 @@ try {
 }
 ```
 
-### `try-with-resources`文 (推奨)
+### `try-with-resources`文（推奨）
 
 ファイルやネットワーク接続などのリソースは、使い終わったら必ず閉じます（closeします）。
 閉じ忘れると、OSが管理するファイルの数などの資源を使い続けるリソースリークが起きます。
@@ -184,10 +184,10 @@ Javaの例外クラスは、`Throwable`クラスをルートとした階層構�
 
 Javaの例外は、コンパイラーがその処理を強制するかどうかによって2種類に大別されます。
 
-### 検査例外 (Checked Exception)
+### 検査例外（Checked Exception）
 
 検査例外は、`IOException`や`SQLException`のように、`Exception`のサブクラスのうち`RuntimeException`の系統を除いたものです。
-コンパイラーは、検査例外に対する処理（`try-catch`または`throws`）を強制します<span class="footnote">検査例外は、主要なプログラミング言語のなかではJavaに特有のしくみです。C#やKotlinには検査例外がなく、どの例外も処理を強制されません。</span>。
+コンパイラーは、検査例外に対する処理（`try-catch`または`throws`）を強制します<span class="footnote">検査例外はJavaの特徴的なしくみです。たとえばC#やKotlinには検査例外がなく、どの例外も処理を強制されません。</span>。
 どちらも書かずに検査例外を発生させうるメソッドを呼ぶと、コンパイルエラーになります。
 検査例外は主に、ファイル操作やネットワーク関連のエラーのように、呼び出し側が対処すれば回復できる可能性のある状況で使います。
 
@@ -229,7 +229,7 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 </div>
 
-### 非検査例外 (Unchecked Exception)
+### 非検査例外（Unchecked Exception）
 
 非検査例外は、`RuntimeException`とそのサブクラス（`NullPointerException`、`ArrayIndexOutOfBoundsException`など）、および`Error`とそのサブクラスです<span class="footnote">`Error`の例には`OutOfMemoryError`（メモリ不足）や`StackOverflowError`（メソッドの呼び出しが深すぎる）があります。プログラムからは回復できないことが多いため、通常は`catch`しません。</span>。
 コンパイラーは、非検査例外に対する処理を強制しません。
@@ -240,7 +240,7 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 第5章で学んだオーバーライドには、検査例外についての制約があります。
 子クラスでメソッドをオーバーライドするとき、`throws`に書けるのは、親クラスのメソッドが宣言した検査例外か、その子クラスの例外だけです。
-親が`void load() throws IOException`なら、子は`throws IOException`や`throws FileNotFoundException`と書くか、`throws`を書かないことができます。
+親が`void load() throws IOException`なら、子は`throws IOException`や`throws FileNotFoundException`と書けるほか、`throws`を書かないこともできます。
 `throws Exception`のように、より広い検査例外を書くとコンパイルエラーになります。
 
 親クラスの型で`load()`を呼ぶ側は、`IOException`だけを受け止める準備をしています。
@@ -293,9 +293,9 @@ public class BankAccount {
 この実行結果は、1,000円を預けた口座から500円と600円を順に引き出したときのものです。
 入金と残高の取得のメソッド、引き出しを試す`main`メソッド（`BankAccountDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-05/`</span>。
 
-### 例外の連鎖 (Exception Chaining)
+### 例外の連鎖（Exception Chaining）
 
-ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
+例外の連鎖は、ある例外が別の例外を引き起こした際に、元の例外（原因）の情報を失わずに、新しい例外でラップしてスローするテクニックです。これにより、デバッグ時に根本原因を追跡しやすくなります。
 
 次の例の`SQLException`は、データベースの操作で起きる検査例外です<span class="footnote">`SQLException`は、Javaからデータベースを操作するJDBC（Java Database Connectivity）の`java.sql`パッケージにあるクラスです。</span>。
 ここではデータベースには接続せず、例外が起きたと仮定して投げています。
@@ -340,7 +340,7 @@ public class UserService {
 
 ### リトライパターン（一時的な障害への対処）
 
-ネットワーク接続の一時的な問題やリソースの一時的な不足など、時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
+リトライパターンは、ネットワーク接続の一時的な問題やリソースの一時的な不足など、時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
 `Callable<T>`は、`T`型の値を返す処理を表す関数型インターフェイスで、`Runnable`と違って検査例外を投げられます。
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-07/`</span>）。
@@ -456,7 +456,7 @@ public class ExceptionAggregator {
 
 ### 複数リソースのtry-with-resources
 
-実際の開発では、複数のリソースを同時に扱うことが多くあります。try-with-resourcesは複数のリソースを効率的に管理できます。
+実際の開発では、複数のリソースを同時に扱うことが多くあります。`try-with-resources`では、複数のリソースを1つの`try`の括弧内にまとめて宣言できます。
 
 <span class="listing-number">**サンプルコード13-9**　MultiResourceExample.java（4〜22、51行目）</span>
 
@@ -495,7 +495,7 @@ public class MultiResourceExample {
 
 ### カスタムAutoCloseableの実装
 
-独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
+独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装すると、`try-with-resources`で使えるようになります。
 
 <span class="listing-number">**サンプルコード13-10**　ResourcePool.java（3〜7、15〜45、59行目）、ResourcePoolDemo.java</span>
 
@@ -573,7 +573,7 @@ tryブロックを抜けました
 
 ### 効果的なログレベルの選択
 
-ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-11の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選択することで、問題の深刻度を正確に伝えることができます。
+ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-11の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
 
 <span class="listing-number">**サンプルコード13-11**　ExceptionLogging.java（5〜47、68行目）</span>
 
@@ -632,16 +632,15 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜49、68行目）</span>
+<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜46、65行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
     private static final Logger logger = 
         Logger.getLogger(StructuredExceptionLogger.class.getName());
     
-    public static void logException(String operation, 
-                                  Exception exception, 
-                                  Map<String, Object> context) {
+    public static void logException(String operation,
+            Exception exception, Map<String, Object> context) {
         // 構造化されたログエントリを作成
         LogRecord record = new LogRecord(Level.SEVERE, 
             createStructuredMessage(operation, exception, context));
@@ -653,10 +652,8 @@ public class StructuredExceptionLogger {
         logger.log(record);
     }
     
-    private static String createStructuredMessage(String operation, 
-                                                Exception exception, 
-                                                Map<String,
-                                                Object> context) {
+    private static String createStructuredMessage(String operation,
+            Exception exception, Map<String, Object> context) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append("\"timestamp\":\"").append(Instant.now())
@@ -672,8 +669,8 @@ public class StructuredExceptionLogger {
         for (Map.Entry<String, Object> entry : context.entrySet()) {
             if (!first) sb.append(",");
             sb.append("\"").append(entry.getKey()).append("\":\"")
-              .append(escapeJson(String.valueOf(entry.getValue())))
-                      .append("\"");
+                    .append(escapeJson(String.valueOf(entry.getValue())))
+                    .append("\"");
             first = false;
         }
         
@@ -816,7 +813,7 @@ public class ErrorResponse {
 
 実際のアプリケーションでの例外処理戦略の実装例として、口座間の送金処理を示します。
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
-`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
+`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-15/`</span>。
 
 <span class="listing-number">**サンプルコード13-15**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
 

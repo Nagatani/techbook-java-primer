@@ -10,7 +10,7 @@ flowchart TB
     NEW["NEW<br/>作成されたが、まだ開始していない"]
     R["RUNNABLE<br/>実行できる・実行中"]
     B["BLOCKED<br/>ロックを待っている<br/>―――――――<br/>ロックを取得すると戻る"]
-    W["WAITING<br/>通知を待っている<br/>―――――――<br/>notify()、notifyAll()、<br/>unpark()で戻る"]
+    W["WAITING<br/>通知を待っている<br/>―――――――<br/>notify()、unpark()、<br/>join()の相手の終了<br/>などで戻る"]
     TW["TIMED_WAITING<br/>指定した時間だけ待つ<br/>―――――――<br/>時間の経過、<br/>割り込みで戻る"]
     T["TERMINATED<br/>実行が終わった"]
 

@@ -12,7 +12,7 @@ public class NullSafeProcessingExample {
         // nullや空文字列を取り除いてから変換する
         List<String> validNames = namesWithNull.stream()
             .filter(Objects::nonNull)           // nullを除外
-            .filter(name -> !name.trim().isEmpty()) // 空文字列を除外
+            .filter(name -> !name.isBlank())    // 空文字列を除外
             .map(String::toUpperCase)           // 大文字に変換
             .collect(Collectors.toList());
         

@@ -15,7 +15,7 @@ sequenceDiagram
     
     T1->>Lock: synchronizedブロック進入要求
     Lock->>T1: ロック取得成功
-    Note over T1: Critical Section実行中
+    Note over T1: ブロックの中を実行中
     
     T2->>Lock: synchronizedブロック進入要求
     Lock-->>T2: ロック取得失敗（待機）
@@ -30,7 +30,7 @@ sequenceDiagram
     Lock->>T1: ロック解放
     
     Lock->>T2: ロック取得成功
-    Note over T2: Critical Section実行開始
+    Note over T2: ブロックの中を実行開始
     
     T2->>Obj: データ読み取り
     Obj-->>T2: 更新された値を返す

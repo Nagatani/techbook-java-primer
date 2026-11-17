@@ -16,13 +16,15 @@ public class FunctionComposition {
 
         // (5 + 1) * 2
         IO.println("andThen: " + plusOneThenTwice.apply(5));
-        IO.println("compose: " + twiceThenPlusOne.apply(5)); // 5 * 2 + 1
+        // 5 * 2 + 1
+        IO.println("compose: " + twiceThenPlusOne.apply(5));
 
         Predicate<String> isEmpty = s -> s.isEmpty();
         Predicate<String> isShort = s -> s.length() < 5;
         Predicate<String> startsWithJ = s -> s.startsWith("J");
 
-        Predicate<String> notEmpty = isEmpty.negate();          // 空でない
+        // 空でない
+        Predicate<String> notEmpty = isEmpty.negate();
         // 短く、かつJで始まる
         Predicate<String> shortAndJ = isShort.and(startsWithJ);
         // 空、またはJで始まる

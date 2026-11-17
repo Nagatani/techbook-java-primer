@@ -8,7 +8,7 @@ class SynchronizedCounter {
         count++;
     }
 
-    // 読み取りメソッドも一貫性のため、synchronizedにすることが推奨される
+    // 読み取りもsynchronizedにして、ほかのスレッドが書いた最新の値を読む
     public synchronized int getCount() {
         return count;
     }

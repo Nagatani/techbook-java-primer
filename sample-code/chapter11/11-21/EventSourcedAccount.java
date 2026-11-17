@@ -2,9 +2,8 @@ import java.util.List;
 
 public class EventSourcedAccount {
     // イベントの定義
-    sealed interface AccountEvent permits 
-        AccountCreated, MoneyDeposited, MoneyWithdrawn {}
-    
+    sealed interface AccountEvent
+            permits AccountCreated, MoneyDeposited, MoneyWithdrawn {}
 
     record AccountCreated(String accountId, String owner)
             implements AccountEvent {}

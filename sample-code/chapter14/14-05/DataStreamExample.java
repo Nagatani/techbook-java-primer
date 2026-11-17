@@ -4,11 +4,9 @@ public class DataStreamExample {
     public static void main(String[] args) throws IOException {
         String filename = "data.bin";
         
-        // バイナリファイルの書き込み
-        // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、
-        // 読むときに型と順序を合わせます。
         // データの書き込み
+        // DataOutputStreamは、プリミティブ型の値をバイナリ形式のまま保存する。
+        // 型の情報は保存しないので、読むときに型と順序を合わせる
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(
                 new FileOutputStream(filename)))) {

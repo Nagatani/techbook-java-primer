@@ -29,7 +29,7 @@
 プログラムが外部のファイルとデータをやりとりすることをファイル入出力（I/O）と呼びます。Javaでは、このデータの流れをストリーム（Stream）という統一された概念で扱います<span class="footnote">ここでのストリームは`java.io`パッケージの入出力のしくみで、第12章で学んだStream APIの`Stream`とは別のものです。どちらも「データの流れ」を表すことから同じ名前で呼ばれます。</span>。
 ファイルなどからプログラムへデータを読み込む流れを入力ストリーム、プログラムからファイルなどへデータを書き出す流れを出力ストリームと呼びます。
 
-ストリームには、データをバイト単位で扱うバイトストリームと、文字単位で扱う文字ストリーム（キャラクタストリーム）があります。
+ストリームには、データをバイト単位で扱うバイトストリームと、文字単位で扱う文字ストリーム（キャラクターストリーム）があります。
 テキストファイルを扱う際は、文字コードを正しく解釈できる文字ストリームを使うのが基本です。
 
 <div class="figure">
@@ -317,11 +317,9 @@ public class DataStreamExample {
     public static void main(String[] args) throws IOException {
         String filename = "data.bin";
         
-        // バイナリファイルの書き込み
-        // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、
-        // 読むときに型と順序を合わせます。
         // データの書き込み
+        // DataOutputStreamは、プリミティブ型の値をバイナリ形式のまま保存する。
+        // 型の情報は保存しないので、読むときに型と順序を合わせる
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(
                 new FileOutputStream(filename)))) {
@@ -368,7 +366,7 @@ public class DataStreamExample {
 
 ### BufferedInputStream/BufferedOutputStreamの活用
 
-これらのクラスは、内部バッファーを持つことで、`FileInputStream`や`FileOutputStream`のパフォーマンスを向上させます。ディスクアクセスの回数を減らせるため、とくに大量のデータを扱う場合に有効です。
+これらのクラスは、内部バッファーを持つことで、`FileInputStream`や`FileOutputStream`のパフォーマンスを向上させます。データをバッファーにまとめてから読み書きするため、OSへの読み書きの要求の回数を減らせます。とくに大量のデータを少しずつ読み書きする場合に有効です。
 
 サンプルコード14-5では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
 
@@ -447,7 +445,7 @@ public class SerializationExample {
 
 `date`の値は、プログラムを実行した日時になります。
 
-## ファイルシステムの操作 (NIO.2)
+## ファイルシステムの操作（NIO.2）
 
 Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="footnote">NIOはNew I/Oの略で、Java 1.4で加わった`java.nio`パッケージを指します。NIO.2は、それをJava 7で拡張したものです。</span>を使うと、ファイルやディレクトリを`Path`で表し、`Files`クラスのメソッドで簡潔に操作できます。
 
@@ -515,11 +513,11 @@ public class FileSystemExample {
 
 ## 実践的なファイル処理例
 
-### CSV ファイルの処理
+### CSVファイルの処理
 
 CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
-以下は、基本的なCSV読み込み・書き込みの実装例です。
+次は、基本的なCSVの読み込みと書き込みの実装例です。
 
 <span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6、21〜57、68行目）</span>
 
@@ -586,7 +584,7 @@ CSVファイルを書き込みました: output.csv
 本章で日付時刻を使うのは、サンプルコード14-6と14-13で現在の日時を取得する箇所だけです。
 ファイルの更新日時は、`Files.getLastModifiedTime(パス)`が返す`FileTime`の`toInstant()`で`Instant`として取り出せます。
 
-## GUIでのファイル選択: `JFileChooser`
+## GUIでのファイル選択：`JFileChooser`
 
 GUIのアプリケーションでユーザーにファイルを選択させるには、Swingの`JFileChooser`を使います。
 Swingを使ったGUIプログラミングは第17章「GUIプログラミングの基礎」から学びます。
@@ -633,7 +631,7 @@ public class FileChooserExample {
 保存するファイル: /Users/username/desktop/output.txt
 ```
 
-## Text Blocks - 複数行文字列の効率的な処理
+## Text Blocks：複数行の文字列を読みやすく書く
 
 Java 15で正式に導入されたText Blocks<span class="footnote">Text Blocksは、Java 13とJava 14でプレビュー機能として試されたあと、Java 15で正式な機能になりました（JEP 378）。三重引用符で囲む書き方は、Pythonの複数行の文字列と同じです。</span>は、複数行にわたる文字列リテラルを簡潔で読みやすく記述するための機能です。
 ファイルに限らず使える言語機能ですが、JSON、SQL、HTMLのような構造を持つテキストをファイルに書き出すときにとくに役立つため、本章で取り上げます。
@@ -962,6 +960,8 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter14/`
 
 ### 課題構成
+
+演習は、次の課題で構成されています。
 
 1. 基礎課題（`basic/`）
     + テキストとバイナリの読み書き（BufferedReader・BufferedWriter、FileInputStream・FileOutputStream）

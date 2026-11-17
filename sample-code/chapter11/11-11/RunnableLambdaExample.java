@@ -4,6 +4,7 @@ public class RunnableLambdaExample {
         
         // 匿名クラスでのRunnable
         Thread t1 = new Thread(new Runnable() {
+            @Override
             public void run() {
                 IO.println("Thread t1 (Anonymous) is running...");
                 try {

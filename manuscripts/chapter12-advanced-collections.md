@@ -96,7 +96,7 @@ Stream操作の基本の形は`コレクション.stream().中間操作1().中�
 
 2つ目のフェーズは中間操作（Intermediate Operations）です。
 中間操作は新しいストリームを返すため、メソッドチェインで連結できます。
-主な中間操作は次のとおりです。
+主な中間操作は次のとおりです<span class="footnote">Java 24からは、`gather`メソッドに`Gatherer`を渡して、標準にない中間操作（決まった数ずつ要素を区切るなど）を組み立てることもできます。よく使うものは`java.util.stream.Gatherers`クラスに用意されています。</span>。
 
 - `filter(Predicate)`
     + 条件に合う要素のみを通過させる
@@ -115,6 +115,7 @@ Stream操作の基本の形は`コレクション.stream().中間操作1().中�
 
 3つ目のフェーズは終端操作（Terminal Operations）です。
 終端操作はストリームを「消費」し、結果を生成します。終端操作が呼ばれてはじめて、すべての処理が実行されます。
+終端操作を呼んだストリームは使い終わったものになり、もう一度操作しようとすると`IllegalStateException`が発生します。
 主な終端操作は次のとおりです。
 
 - `collect(Collector)`
@@ -256,6 +257,7 @@ public class StreamExample {
     }
 }
 ```
+
 従来の`for`ループと`if`文を組み合わせるよりも、処理の流れが明確で読みやすいコードになるのがStream APIの大きな利点です。
 
 ## Optional型による安全なnull処理
@@ -716,6 +718,7 @@ Optionalをメソッドの戻り値やチェイン操作で使うと、NullPoint
 ### 並列ストリームの使い方
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
+作成済みのストリームに`parallel()`を呼んでも、並列ストリームにできます（サンプルコード12-14）。
 
 <span class="listing-number">**サンプルコード12-13**</span>
 
@@ -746,7 +749,7 @@ IO.println("並列処理の結果: " + sumParallel);
 
 ### 並列ストリームの内部動作
 
-並列ストリームは、JavaのFork/Joinフレームワーク<span class="footnote">Fork/JoinフレームワークはJava 7で加わったしくみで、第15章で学びます。並列ストリームは共通のスレッドプール（`ForkJoinPool.commonPool()`）を使い、そのスレッド数は既定でCPUのコア数より1少ない数です。</span>を使用して実装されています。処理の流れは以下のようになります。
+並列ストリームは、JavaのFork/Joinフレームワーク<span class="footnote">Fork/JoinフレームワークはJava 7で加わったしくみで、第15章で学びます。並列ストリームは共通のスレッドプール（`ForkJoinPool.commonPool()`）を使います。そのスレッド数は既定でCPUのコア数より1少なく、並列ストリームを呼び出したスレッドも処理に加わります。</span>を使用して実装されています。処理の流れは以下のようになります。
 
 1. 分割（Split）
     + データを複数の小さなチャンクに分割
@@ -765,32 +768,30 @@ IO.println("並列処理の結果: " + sumParallel);
 
 ```java
 import java.util.stream.IntStream;
-import java.time.Duration;
-import java.time.Instant;
 
 public class ParallelStreamExample {
     public static void main(String[] args) {
         int size = 100_000_000;
-        
-        // シーケンシャル処理の計測
-        Instant start = Instant.now();
+
+        // シーケンシャル処理の計測（経過時間はナノ秒で測る）
+        long start = System.nanoTime();
         double sumSeq = IntStream.range(0, size)
             .mapToDouble(Math::sqrt)
             .sum();
-        Duration seqTime = Duration.between(start, Instant.now());
-        
+        long seqTime = (System.nanoTime() - start) / 1_000_000;
+
         // 並列処理の計測
-        start = Instant.now();
+        start = System.nanoTime();
         double sumPar = IntStream.range(0, size)
             .parallel()
             .mapToDouble(Math::sqrt)
             .sum();
-        Duration parTime = Duration.between(start, Instant.now());
-        
-        IO.println("シーケンシャル: " + seqTime.toMillis() + "ms");
-        IO.println("並列: " + parTime.toMillis() + "ms");
+        long parTime = (System.nanoTime() - start) / 1_000_000;
+
+        IO.println("シーケンシャル: " + seqTime + "ms");
+        IO.println("並列: " + parTime + "ms");
         IO.println("高速化率: %.1f倍".formatted(
-            (double) seqTime.toMillis() / parTime.toMillis()));
+            (double) seqTime / parTime));
     }
 }
 ```
@@ -810,9 +811,11 @@ public class ParallelStreamExample {
 並列ストリームは強力な機能ですが、すべての状況で性能が向上するわけではありません。
 
 #### オーバーヘッドの問題
+
 並列ストリームでは、データの分割や結果の統合、スレッドどうしの処理の受け渡しに手間がかかります。データ量が少ない場合、このオーバーヘッドが並列化の利点を上回ることがあります。
 
 #### スレッドセーフティ
+
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
 <span class="listing-number">**サンプルコード12-15**</span>
@@ -830,9 +833,10 @@ List<Integer> safeResults = numbers.parallelStream()
 ```
 
 #### 順序の保証
+
 並列ストリームでは、`forEach`で要素を処理する順序や`findAny`が返す要素は、実行のたびに変わることがあります。
-一方、`collect`や`forEachOrdered`は、並列ストリームでも元の要素の順序を保ちます。
-サンプルコード12-15の`collect(Collectors.toList())`の結果も、元のリストと同じ順に並びます。
+一方、`forEachOrdered`や、リストに集める`collect(Collectors.toList())`は、並列ストリームでも元の要素の順序を保ちます。
+サンプルコード12-15の`safeResults`も、元のリストと同じ順に並びます。
 
 ### 並列ストリームを使うとよい場合
 
@@ -954,7 +958,7 @@ Java is awesome
 平均点: 85.0
 ```
 
-`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`, `max()`, `min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
+`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`、`max()`、`min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
 
 ### Collectorsによる高度なデータ収集
 
@@ -1036,7 +1040,7 @@ public class NullSafeProcessingExample {
         // nullや空文字列を取り除いてから変換する
         List<String> validNames = namesWithNull.stream()
             .filter(Objects::nonNull)           // nullを除外
-            .filter(name -> !name.trim().isEmpty()) // 空文字列を除外
+            .filter(name -> !name.isBlank())    // 空文字列を除外
             .map(String::toUpperCase)           // 大文字に変換
             .collect(Collectors.toList());
         
@@ -1165,8 +1169,8 @@ public class ComplexProcessingExample {
                 s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
                 // グループ内での最高得点者を取得
                 Collectors.collectingAndThen(
-                    Collectors.maxBy((s1, s2) ->
-                    Integer.compare(s1.getScore(), s2.getScore())),
+                    Collectors.maxBy((s1, s2) -> Integer.compare(
+                            s1.getScore(), s2.getScore())),
                     opt -> opt.map(Student::getName).orElse("該当者なし")
                 )
             ));
@@ -1221,12 +1225,12 @@ Stream APIのエラーは、コンパイルエラーよりも、実行はでき�
 本章では、コレクションフレームワークの応用的な側面と、それを操るための現代的な手法を学びました。
 
 - Stream API
-    + `filter`, `map`, `sorted`, `collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
+    + `filter`、`map`、`sorted`、`collect`などの操作を連結することで、複雑なコレクション操作を直感的に記述できる
     + `sorted`に第11章で学んだ`Comparator`を渡すと、元のリストを変えずに並べ替えた結果を得られる
 - Optional型
     + 値が存在しない場合があることを型で示し、その場合の扱い忘れによるNullPointerExceptionを減らす
 - 並列ストリーム
-    + マルチコアCPUを活用した並列処理により、大量データの高速処理が可能になる
+    + データが多く計算に時間のかかる処理を、マルチコアCPUの複数のコアで分担して速くできる。効果は時間を測って確かめる
 - 高度なStream操作
     + `flatMap`によるデータ平坦化、`reduce`による集約処理、早期終了操作など、実用的な高度技術を習得できる
 

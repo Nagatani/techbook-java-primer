@@ -14,8 +14,8 @@ public class MultiConditionSortExample {
             new Student("Alice", 1, "S004")
         );
         
-        // 学年で並び替え、同じ学年の場合は名前で並び替え、
-        // さらに同名の場合は学生番号で並び替え
+        // 学年で並べ替え、同じ学年の場合は名前で並べ替え、
+        // さらに同名の場合は学生番号で並べ替える
         List<Student> sortedStudents = new ArrayList<>(students);
         sortedStudents.sort(
             Comparator.comparing(Student::getGrade)

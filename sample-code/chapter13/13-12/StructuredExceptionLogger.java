@@ -6,9 +6,8 @@ public class StructuredExceptionLogger {
     private static final Logger logger = 
         Logger.getLogger(StructuredExceptionLogger.class.getName());
     
-    public static void logException(String operation, 
-                                  Exception exception, 
-                                  Map<String, Object> context) {
+    public static void logException(String operation,
+            Exception exception, Map<String, Object> context) {
         // 構造化されたログエントリを作成
         LogRecord record = new LogRecord(Level.SEVERE, 
             createStructuredMessage(operation, exception, context));
@@ -20,10 +19,8 @@ public class StructuredExceptionLogger {
         logger.log(record);
     }
     
-    private static String createStructuredMessage(String operation, 
-                                                Exception exception, 
-                                                Map<String,
-                                                Object> context) {
+    private static String createStructuredMessage(String operation,
+            Exception exception, Map<String, Object> context) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         sb.append("\"timestamp\":\"").append(Instant.now())
@@ -39,8 +36,8 @@ public class StructuredExceptionLogger {
         for (Map.Entry<String, Object> entry : context.entrySet()) {
             if (!first) sb.append(",");
             sb.append("\"").append(entry.getKey()).append("\":\"")
-              .append(escapeJson(String.valueOf(entry.getValue())))
-                      .append("\"");
+                    .append(escapeJson(String.valueOf(entry.getValue())))
+                    .append("\"");
             first = false;
         }
         

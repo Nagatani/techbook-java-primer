@@ -25,8 +25,8 @@ public class ComplexProcessingExample {
                 s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
                 // グループ内での最高得点者を取得
                 Collectors.collectingAndThen(
-                    Collectors.maxBy((s1, s2) ->
-                    Integer.compare(s1.getScore(), s2.getScore())),
+                    Collectors.maxBy((s1, s2) -> Integer.compare(
+                            s1.getScore(), s2.getScore())),
                     opt -> opt.map(Student::getName).orElse("該当者なし")
                 )
             ));

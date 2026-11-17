@@ -61,8 +61,13 @@ public class ValidationFramework {
         User validUser =
                 new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
-        
-        IO.println("有効なユーザーのバリデーション:");
+
+        // 結果だけがわかればよいときは、isValidUserで判定する
+        IO.println("isValidUser: " + isValidUser.test(validUser)
+                + ", " + isValidUser.test(invalidUser));
+
+        // 理由も知りたいときは、validateUserWithErrorsで検証する
+        IO.println("\n有効なユーザーのバリデーション:");
         ValidationResult result1 =
                 validateUserWithErrors.apply(validUser);
         IO.println(result1);

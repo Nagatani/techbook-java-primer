@@ -216,7 +216,7 @@ Javaのコレクションフレームワークは、以下の主要なインタ�
 
 ### 主な実装クラスの一覧
 
-図に描いていないものも含めて、主な実装クラスを一覧にすると次のようになります。`Vector`と`Hashtable`は古いクラスで<span class="footnote">2つのクラスはJava 1.0からあり、すべてのメソッドが同期（synchronized）されているため、1つのスレッドで使うと`ArrayList`や`HashMap`より遅くなります。スレッドと同期は第15章「マルチスレッドプログラミング」で学びます。</span>、新しく書くコードでは`ArrayList`と`HashMap`を使います。
+図に描いていないものも含めて、主な実装クラスを一覧にすると次のようになります。`Vector`と`Hashtable`は古いクラスで<span class="footnote">2つのクラスはJava 1.0からあり、すべてのメソッドが同期（synchronized）されているため、1つのスレッドで使うと`ArrayList`や`HashMap`より遅くなることがあります。スレッドと同期は第15章「マルチスレッドプログラミング」で学びます。</span>、新しく書くコードでは`ArrayList`と`HashMap`を使います。
 
 ```
 Collection
@@ -229,7 +229,7 @@ Collection
 │   ├── TreeSet
 │   └── LinkedHashSet
 └── Queue
-    ├── LinkedList（Listとの二重実装）
+    ├── LinkedList（Listと両方を実装）
     └── PriorityQueue
 
 Map
@@ -502,7 +502,7 @@ TreeSetは、要素どうしを比べて大小の順に並べます<span class="
 それ以外のクラスを入れるときは、`Comparable`を実装するか、TreeSetを作るときに比べ方を表す`Comparator`を渡します（`Comparator`は第11章で学びます）。
 どちらもないクラスのオブジェクトを追加すると、`ClassCastException`が発生します。
 
-また、TreeSetには`null`を入れられません。
+また、`Comparator`を渡さずに作ったTreeSetには`null`を入れられません。
 `null`はほかの要素と比べられないため、`add(null)`は`NullPointerException`になります。
 HashSetは`null`を要素として扱えるので、`null`を1つだけ入れられます。
 
@@ -530,8 +530,6 @@ intersection.retainAll(set2);  // {B, C}
 Set<String> difference = new HashSet<>(set1);
 difference.removeAll(set2);  // {A}
 ```
-
-これらの集合演算は、アクセス制御や重複検出などの実用的な場面で役立ちます。
 
 ## Map インターフェイス
 
@@ -623,7 +621,11 @@ linkedHashMap.put("JavaScript", 27);
 HashMapはキーによる検索が平均O(1)で済むため、設定ファイルの値の検索など、一般的なデータ検索に向いています。
 TreeMapはキーをソートした順に保持し、検索や追加にO(log n)かかります。
 その代わりにキーの順序をたどれるので、辞書やランキング、範囲検索が必要な場面で使います。
-LinkedHashMapは要素の順序を保持し、LRUの実装にも使えるため、キャッシュや履歴管理に適しています。
+LinkedHashMapは追加した順序（設定によってはアクセスした順序）を保持し、LRUの実装にも使えるため、キャッシュや履歴管理に適しています。
+
+HashMapの内部の配列は、キーの`hashCode()`から求めた値（図のhash）で、組を入れる位置（バケット）を決めます。
+図のように配列の長さが16なら、hashを16で割った余り（下位4ビット）が位置になります。
+同じ位置に入った組はつないでおき、`equals()`で比べながらたどります。
 
 <div class="figure">
 
@@ -852,6 +854,25 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 ただし、変更できないのはコレクションの構成だけです。
 要素が変更可能なオブジェクトなら、その要素の中身は書き換えられます。
 
+### 順序を持つコレクションの共通メソッド
+
+Java 21では、要素の並び順が決まっているコレクションに共通するインターフェイスとして、`SequencedCollection`・`SequencedSet`・`SequencedMap`が加わりました<span class="footnote">提案文書はJEP 431です。</span>。
+`List`の実装クラスのほか、`LinkedHashSet`・`TreeSet`・`LinkedHashMap`・`TreeMap`などがこれらを実装しています。
+並び順の決まっていない`HashSet`と`HashMap`は実装していません。
+
+これらのインターフェイスにより、先頭と末尾の要素を同じ書き方で扱えます。
+主なメソッドは次のとおりです。
+
+- `getFirst()`・`getLast()`
+    + 先頭・末尾の要素を返す。リストの末尾の要素を、要素数から1を引いた添え字で`get()`せずに取り出せる
+- `removeFirst()`・`removeLast()`
+    + 先頭・末尾の要素を取り除いて返す
+- `reversed()`
+    + 逆順に並べた見え方（ビュー）を返す。拡張for文と組み合わせると、逆順に走査できる
+
+`getFirst()`などは、コレクションが空のときに`NoSuchElementException`を投げます。
+`Map`では、`SequencedMap`の`firstEntry()`・`lastEntry()`で先頭・末尾のキーと値の組を取り出せます。
+
 ## よくあるエラーと対処法
 
 コレクションを使い始めると、コンパイルは通るのに実行時に例外が発生する場面が増えます。例外の名前から原因の見当をつけられるようにしておくと、修正が早くなります。本章の内容に関連して出会いやすいエラーは次のとおりです。
@@ -881,7 +902,7 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 | インターフェイス | 特徴 | 代表的な実装 | 主な用途 |
 | :--- | :--- | :--- | :--- |
 | `List` | 順序あり、重複OK | `ArrayList`, `LinkedList` | 順番にデータを並べたいとき |
-| `Set` | 順序なし（一部あり）、重複NG | `HashSet`, `LinkedHashSet` | 重複をなくしたいとき、順序が必要な場合も |
+| `Set` | 重複NG、順序は実装による | `HashSet`, `TreeSet`, `LinkedHashSet` | 重複をなくしたいとき |
 | `Map` | キーと値のペア | `HashMap`, `TreeMap` | IDと情報のように紐付けて管理したいとき |
 
 これらのコレクションを適切に使い分けることが、効率的で読みやすいプログラムを書くための第一歩です。次章では、これらのコレクションを安全かつ柔軟に扱うための「ジェネリクス」について詳しく学びます。
@@ -903,4 +924,4 @@ Map<String, Integer> map = Map.of("key1", 1, "key2", 2);  // 変更不可
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter09/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
-次のステップ：基礎課題が完了したら、第10章「ジェネリクス」に進みましょう。
+基礎課題が完了したら、第10章「ジェネリクス」に進みましょう。

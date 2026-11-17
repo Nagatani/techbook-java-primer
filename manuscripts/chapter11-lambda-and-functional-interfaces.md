@@ -215,7 +215,8 @@ public class ComparatorLambdaExample {
 `Comparator.comparing`は、比較に使うキー（ここでは名前）を取り出す関数を受け取り、そのキーで比べる`Comparator`を作ります。
 `Student::getName`は`s -> s.getName()`と同じ意味のメソッド参照で、本章の「メソッド参照」で詳しく学びます。
 
-実際の業務では、単一の条件だけでなく、複数の条件を組み合わせた並び替えが必要になることが多くあります。Comparatorインターフェイスでは、`thenComparing`メソッドを使って複数の条件を論理的に組み合わせることができ、これにより複雑な並び替えロジックも直感的に表現できます。
+実際の業務では、1つの条件だけでなく、複数の条件を組み合わせて並べ替えることがよくあります。
+`thenComparing`メソッドを使うと、前の条件で順序が決まらなかった要素どうしを次の条件で比べる`Comparator`を作れます。
 
 <span class="listing-number">**サンプルコード11-6**　MultiConditionSortExample.java（7〜53行目）</span>
 
@@ -230,8 +231,8 @@ public class MultiConditionSortExample {
             new Student("Alice", 1, "S004")
         );
         
-        // 学年で並び替え、同じ学年の場合は名前で並び替え、
-        // さらに同名の場合は学生番号で並び替え
+        // 学年で並べ替え、同じ学年の場合は名前で並べ替え、
+        // さらに同名の場合は学生番号で並べ替える
         List<Student> sortedStudents = new ArrayList<>(students);
         sortedStudents.sort(
             Comparator.comparing(Student::getGrade)
@@ -363,7 +364,7 @@ public class StandardFunctionalInterfaces {
 5 × 7 = 35
 ```
 
-次の図は、表のインターフェイスの抽象メソッドと主なdefaultメソッド、インターフェイスどうしの継承の関係をまとめたものです。
+次の図は、表のうち`BinaryOperator`を除く5つのインターフェイスについて、抽象メソッドと主なdefaultメソッド、インターフェイスどうしの継承の関係をまとめたものです。
 `UnaryOperator`は、引数と戻り値の型をそろえた`Function`として、`Function`を継承しています。
 `compose`・`andThen`・`and`などのdefaultメソッドは、このあとの「関数の合成」で使います。
 
@@ -373,7 +374,7 @@ public class StandardFunctionalInterfaces {
 
 </div>
 
-引数を2つ受け取るものには、名前の先頭に`Bi`（2つの意味）が付いた`BiFunction`・`BiConsumer`・`BiPredicate`があります。
+引数を2つ受け取るものには、名前の先頭に「2つの」を表す`Bi`が付いた`BiFunction`・`BiConsumer`・`BiPredicate`があります。
 `BinaryOperator`は、2つの引数と戻り値の型をそろえた`BiFunction`です。
 関数型インターフェイスは`java.util.function`パッケージの外にもあります。
 これまでに使った`Runnable`（`java.lang`パッケージ）と`Comparator`（`java.util`パッケージ）、本章の後半で使う`Callable`（`java.util.concurrent`パッケージ）も関数型インターフェイスなので、ラムダ式で書けます。
@@ -417,13 +418,15 @@ public class FunctionComposition {
 
         // (5 + 1) * 2
         IO.println("andThen: " + plusOneThenTwice.apply(5));
-        IO.println("compose: " + twiceThenPlusOne.apply(5)); // 5 * 2 + 1
+        // 5 * 2 + 1
+        IO.println("compose: " + twiceThenPlusOne.apply(5));
 
         Predicate<String> isEmpty = s -> s.isEmpty();
         Predicate<String> isShort = s -> s.length() < 5;
         Predicate<String> startsWithJ = s -> s.startsWith("J");
 
-        Predicate<String> notEmpty = isEmpty.negate();          // 空でない
+        // 空でない
+        Predicate<String> notEmpty = isEmpty.negate();
         // 短く、かつJで始まる
         Predicate<String> shortAndJ = isShort.and(startsWithJ);
         // 空、またはJで始まる
@@ -460,8 +463,8 @@ compose: 11
 | 種類 | 構文 | ラムダ式の例 |
 | :--- | :--- | :--- |
 | 静的メソッド参照 | `クラス名::静的メソッド名` | `s -> Integer.parseInt(s)` |
-| インスタンスメソッド参照<br>(特定のインスタンス) | `変数名::メソッド名` | `s -> prefix.concat(s)` |
-| インスタンスメソッド参照<br>(不特定のインスタンス) | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
+| インスタンスメソッド参照<br>（特定のインスタンス） | `変数名::メソッド名` | `s -> prefix.concat(s)` |
+| インスタンスメソッド参照<br>（不特定のインスタンス） | `クラス名::メソッド名` | `s -> s.toUpperCase()` |
 | コンストラクター参照 | `クラス名::new` | `() -> new ArrayList<>()` |
 
 本書でよく使う`IO::println`は、`IO`クラスの静的メソッドへの参照なので、静的メソッド参照にあたります。ほかの資料でよく見かける`System.out::println`は、`System.out`というオブジェクト（特定のインスタンス）のメソッドへの参照です。
@@ -619,7 +622,7 @@ Person{name='Charlie'}
 スレッドの使い方は第15章で詳しく学びます。
 ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください<span class="footnote">`start()`を呼ぶと、別のスレッドで`run`の処理を始めます。</span>。
 
-<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜47行目）</span>
+<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜9、15〜22、28〜48行目）</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -628,6 +631,7 @@ public class RunnableLambdaExample {
         
         // 匿名クラスでのRunnable
         Thread t1 = new Thread(new Runnable() {
+            @Override
             public void run() {
                 IO.println("Thread t1 (Anonymous) is running...");
                 // ...
@@ -681,7 +685,7 @@ Thread t1 (Anonymous) finished
 
 ### スレッドプールへのタスクの受け渡し
 
-並行処理において、ラムダ式はとくに威力を発揮します。従来の匿名クラスによる冗長な記述を避け、処理の本質的な内容に集中できるようになります。ExecutorServiceと組み合わせれば、スレッドプールを効率的に活用した並行処理を簡潔に記述できます。
+並行処理でも、ラムダ式を使うと匿名クラスの定型的な記述を避け、タスクの処理内容だけを書けます。
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
@@ -750,7 +754,7 @@ Task 3 completed
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜26、40〜75行目）</span>
+<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜26、40〜80行目）</span>
 
 ```java
 public class ValidationFramework {
@@ -799,8 +803,13 @@ public class ValidationFramework {
         User validUser =
                 new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
-        
-        IO.println("有効なユーザーのバリデーション:");
+
+        // 結果だけがわかればよいときは、isValidUserで判定する
+        IO.println("isValidUser: " + isValidUser.test(validUser)
+                + ", " + isValidUser.test(invalidUser));
+
+        // 理由も知りたいときは、validateUserWithErrorsで検証する
+        IO.println("\n有効なユーザーのバリデーション:");
         ValidationResult result1 =
                 validateUserWithErrors.apply(validUser);
         IO.println(result1);
@@ -816,12 +825,18 @@ public class ValidationFramework {
 実行結果：
 
 ```
+isValidUser: true, false
+
 有効なユーザーのバリデーション:
 有効
 
 無効なユーザーのバリデーション:
 無効: 名前は必須です, 有効なメールアドレスを入力してください, パスワードは8文字以上である必要があります
 ```
+
+`minLength`は、最小の文字数を受け取り、その文字数以上かを判定する`Predicate`を返す関数です。
+`minLength.apply(8)`のように数を変えるだけで、別の条件の検証関数を作れます。
+`isValidUser`は3つの検証を`&&`でつないで結果だけを返し、`validateUserWithErrors`は満たさなかった条件をすべてエラーメッセージとして集めます。
 
 ## 関数型プログラミングの実践例
 
@@ -891,6 +906,9 @@ public class HigherOrderFunctionExample {
 安全な取引決定: TradingDecision{BUY}
 高リスク時の決定: TradingDecision{HOLD}
 ```
+
+`withRiskManagement`は、取引の戦略を表す関数とリスクを判定する条件を受け取り、条件を満たすときだけ戦略を適用する新しい関数を返します。
+変動率が0.8の2つ目のデータは条件を満たさないので、戦略を適用せずに既定の値の`HOLD`を返します。
 
 ### 関数型プログラミングのベストプラクティス
 
@@ -1254,14 +1272,13 @@ public class DataProcessingTemplate {
 イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
 現在の状態が必要になったら、記録したイベントを順に適用して求めます。
 
-<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜40行目）</span>
+<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜39行目）</span>
 
 ```java
 public class EventSourcedAccount {
     // イベントの定義
-    sealed interface AccountEvent permits 
-        AccountCreated, MoneyDeposited, MoneyWithdrawn {}
-    
+    sealed interface AccountEvent
+            permits AccountCreated, MoneyDeposited, MoneyWithdrawn {}
 
     record AccountCreated(String accountId, String owner)
             implements AccountEvent {}
@@ -1382,7 +1399,7 @@ public class LambdaCapture {
 キャプチャあり: 同じインスタンスか = false
 ```
 
-外側の変数をキャプチャしないラムダ式は、OpenJDKのHotSpotなどのJVMでは同じインスタンスを使い回します。
+外側の変数をキャプチャしないラムダ式は、OpenJDKの実装では同じインスタンスを使い回します。
 キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
 ただし、インスタンスを使い回すかどうかは言語仕様で決められておらず、JVMの実装によって変わることがあります。
 ラムダ式のオブジェクトを`==`で比べる処理を、プログラムの動作に使ってはいけません。
@@ -1574,7 +1591,7 @@ public class OrderPipeline {
 - 検査例外の扱い
     + `Function`などの標準の関数型インターフェイスは、検査例外（第13章）をスローできない
 - 変数のキャプチャ
-    + ラムダ式のなかから参照できるローカル変数は、実質的にfinalなものに限られる
+    + ラムダ式のなかから参照できるローカル変数は、finalか実質的にfinalなものに限られる
 - 関数型インターフェイスの実装の誤り
     + 抽象メソッドが2つ以上あるインターフェイスには、ラムダ式を代入できない
 - メソッド参照の型の不一致
@@ -1589,7 +1606,7 @@ public class OrderPipeline {
 
 - ラムダ式は、匿名関数を簡潔に記述するための構文で、冗長な匿名クラスを置き換える
 - ラムダ式は、抽象メソッドが1つだけの関数型インターフェイスの型が求められる場所に書け、そのインターフェイスを実装したオブジェクトになる
-- `Predicate`, `Function`, `Consumer`, `Supplier`など、汎用的な関数型インターフェイスが標準で用意されている
+- `Predicate`・`Function`・`Consumer`・`Supplier`など、汎用的な関数型インターフェイスが標準で用意されている
 - メソッド参照を使うと、既存のメソッドを呼び出すだけのラムダ式をさらに簡潔に書ける
 
 これらの機能を使いこなすと、より宣言的で簡潔なコードを書けます。
@@ -1614,4 +1631,4 @@ public class OrderPipeline {
 
 詳細な課題内容と実装のヒントは、GitHubリポジトリの各課題フォルダー内のREADME.mdを参照してください<span class="footnote">各課題フォルダーは`https://github.com/Nagatani/techbook-java-primer/tree/main/exercises/chapter11/`の下の`basic/`・`advanced/`・`challenge/`です。</span>。
 
-次のステップ：基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。
+基礎課題が完了したら、第12章「Stream APIと高度なコレクション操作」に進みましょう。

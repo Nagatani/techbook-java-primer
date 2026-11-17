@@ -7,14 +7,12 @@ classDiagram
         +close() void
     }
     
-    class FileInputStream {
-        +FileInputStream(String)
-        +FileInputStream(File)
-    }
+    class FileInputStream
+    
+    class FilterInputStream
     
     class BufferedInputStream {
         -byte[] buffer
-        +BufferedInputStream(InputStream)
     }
     
     class DataInputStream {
@@ -35,14 +33,12 @@ classDiagram
         +close() void
     }
     
-    class FileOutputStream {
-        +FileOutputStream(String)
-        +FileOutputStream(File)
-    }
+    class FileOutputStream
+    
+    class FilterOutputStream
     
     class BufferedOutputStream {
         -byte[] buffer
-        +BufferedOutputStream(OutputStream)
     }
     
     class DataOutputStream {
@@ -56,14 +52,14 @@ classDiagram
     }
     
     InputStream <|-- FileInputStream
-    InputStream <|-- BufferedInputStream
-    InputStream <|-- DataInputStream
+    InputStream <|-- FilterInputStream
+    FilterInputStream <|-- BufferedInputStream
+    FilterInputStream <|-- DataInputStream
     InputStream <|-- ObjectInputStream
     
     OutputStream <|-- FileOutputStream
-    OutputStream <|-- BufferedOutputStream
-    OutputStream <|-- DataOutputStream
+    OutputStream <|-- FilterOutputStream
+    FilterOutputStream <|-- BufferedOutputStream
+    FilterOutputStream <|-- DataOutputStream
     OutputStream <|-- ObjectOutputStream
     
-    note for InputStream "バイトストリームの<br/>読み込み基底クラス"
-    note for OutputStream "バイトストリームの<br/>書き込み基底クラス"

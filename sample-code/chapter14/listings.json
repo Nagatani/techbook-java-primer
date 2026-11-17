@@ -35,7 +35,7 @@
     "dir": "14-05",
     "main": "DataStreamExample",
     "excerpt": [
-      { "file": "DataStreamExample.java", "from": 1, "to": 40 }
+      { "file": "DataStreamExample.java", "from": 1, "to": 38 }
     ]
   },
   "14-6": {

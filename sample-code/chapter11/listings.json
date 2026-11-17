@@ -38,7 +38,7 @@
     "dir": "11-08",
     "main": "FunctionComposition",
     "excerpt": [
-      { "file": "FunctionComposition.java", "from": 1, "to": 37 }
+      { "file": "FunctionComposition.java", "from": 1, "to": 39 }
     ]
   },
   "11-9": {
@@ -59,9 +59,9 @@
     "dir": "11-11",
     "main": "RunnableLambdaExample",
     "excerpt": [
-      { "file": "RunnableLambdaExample.java", "from": 1, "to": 8 },
-      { "file": "RunnableLambdaExample.java", "from": 14, "to": 21 },
-      { "file": "RunnableLambdaExample.java", "from": 27, "to": 47 }
+      { "file": "RunnableLambdaExample.java", "from": 1, "to": 9 },
+      { "file": "RunnableLambdaExample.java", "from": 15, "to": 22 },
+      { "file": "RunnableLambdaExample.java", "from": 28, "to": 48 }
     ]
   },
   "11-12": {
@@ -77,7 +77,7 @@
     "main": "ValidationFramework",
     "excerpt": [
       { "file": "ValidationFramework.java", "from": 6, "to": 26 },
-      { "file": "ValidationFramework.java", "from": 40, "to": 75 }
+      { "file": "ValidationFramework.java", "from": 40, "to": 80 }
     ]
   },
   "11-14": {
@@ -138,7 +138,7 @@
     "dir": "11-21",
     "main": null,
     "excerpt": [
-      { "file": "EventSourcedAccount.java", "from": 3, "to": 40 }
+      { "file": "EventSourcedAccount.java", "from": 3, "to": 39 }
     ]
   },
   "11-22": {
