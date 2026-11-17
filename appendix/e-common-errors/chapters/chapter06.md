@@ -492,6 +492,105 @@ public final class OptimizedImmutableClass {
 }
 ```
 
+## BigDecimalの扱いの誤り
+
+`BigDecimal`は不変クラスなので、計算のメソッドは元のオブジェクトを変えずに新しいオブジェクトを返します。
+コンパイルは通るのに結果が誤っている、という形で現れる誤りが多いので注意します。
+
+### エラー例
+
+コンパイルできる全文：[chapter06-code/BigDecimalMistakes/](chapter06-code/BigDecimalMistakes/)
+
+```java
+import java.math.BigDecimal;
+
+public class BigDecimalMistakes {
+    public static void main(String[] args) {
+        // 誤り1: addの戻り値を受け取っていない
+        BigDecimal total = BigDecimal.ZERO;
+        total.add(new BigDecimal("100"));
+        IO.println("合計: " + total);
+
+        // 誤り2: doubleの値から作っている
+        BigDecimal price = new BigDecimal(0.1);
+        IO.println("価格: " + price);
+
+        // 誤り3: equalsで値を比べている
+        BigDecimal a = new BigDecimal("2.0");
+        BigDecimal b = new BigDecimal("2.00");
+        IO.println("等しいか: " + a.equals(b));
+
+        // 誤り4: 割り切れない割り算で桁数を指定していない
+        BigDecimal perPerson = new BigDecimal("10000")
+                .divide(new BigDecimal("3"));
+        IO.println("1人あたり: " + perPerson);
+    }
+}
+```
+
+### 実行結果
+
+```
+合計: 0
+価格: 0.1000000000000000055511151231257827021181583404541015625
+等しいか: false
+Exception in thread "main" java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result.
+	at java.base/java.math.BigDecimal.divide(BigDecimal.java:1810)
+	at BigDecimalMistakes.main(BigDecimalMistakes.java:21)
+```
+
+### 原因
+
+1. 戻り値の受け取り忘れ
+    + `add`は`total`を書き換えず、合計を新しいオブジェクトとして返す。戻り値を捨てているので`total`は0のまま
+2. `double`の値からの作成
+    + `double`の0.1は0.1にごく近い別の値で、`new BigDecimal(double)`はその値を正確に写し取る
+3. `equals`による比較
+    + `BigDecimal`の`equals`は値と小数点以下の桁数（スケール）の両方を比べるので、`2.0`と`2.00`は等しくない
+4. 桁数を指定しない割り算
+    + 10000÷3は小数が終わらないので、桁数を指定しない`divide`は`ArithmeticException`を発生させる
+
+### 対処法
+
+コンパイルできる全文：[chapter06-code/BigDecimalCorrect/](chapter06-code/BigDecimalCorrect/)
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class BigDecimalCorrect {
+    public static void main(String[] args) {
+        // 修正1: 計算の結果は新しいオブジェクトなので、戻り値を受け取る
+        BigDecimal total = BigDecimal.ZERO;
+        total = total.add(new BigDecimal("100"));
+        IO.println("合計: " + total);
+
+        // 修正2: 文字列から作る（doubleの値からはBigDecimal.valueOf）
+        BigDecimal price = new BigDecimal("0.1");
+        IO.println("価格: " + price + "、" + BigDecimal.valueOf(0.1));
+
+        // 修正3: 値が等しいかはcompareToで調べる
+        BigDecimal a = new BigDecimal("2.0");
+        BigDecimal b = new BigDecimal("2.00");
+        IO.println("等しいか: " + (a.compareTo(b) == 0));
+
+        // 修正4: 割り算には桁数と丸め方を指定する
+        BigDecimal perPerson = new BigDecimal("10000")
+                .divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);
+        IO.println("1人あたり: " + perPerson);
+    }
+}
+```
+
+実行結果は次のとおりです。
+
+```
+合計: 100
+価格: 0.1、0.1
+等しいか: true
+1人あたり: 3333.33
+```
+
 ## デバッグのヒント
 
 1. 不変性の検証
