@@ -3,7 +3,7 @@
 最終更新：2026-11-17
 
 旧`comprehensive-project-analysis.md`の冒頭にあった現状の要約を、この文書に移しました（2026-11-17）。
-旧文書の本文（2025-07時点の旧24章構成の分析）は`docs/deletion-candidates/analysis/`にあります。
+旧文書の本文（2025-07時点の旧24章構成の分析）は2026-11-18に削除しました（gitの履歴に残っています）。
 作業の状態は`TODO.md`、課題は`docs/analysis/issues-tracking.md`で管理します。
 
 ## 構成

@@ -255,7 +255,7 @@ The build process converts the Markdown files listed in the `entry` array (chapt
 
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
-- `docs/`: Project documentation (index in `docs/README.md`). Rules and procedures for writing and proofreading are in `docs/guides/`; finished plans and analyses that the author will review for deletion are in `docs/deletion-candidates/` (do not use them as instructions)
+- `docs/`: Project documentation (index in `docs/README.md`). Rules and procedures for writing and proofreading are in `docs/guides/`. Finished plans and analyses are deleted rather than archived (they remain in the git history)
 - `docs/lecture-materials/`: Original lecture materials (read-only)
 - `sample-code/`, `appendix/`, `exercises/`: Code and materials published on GitHub
 - `output/`: Generated PDF files

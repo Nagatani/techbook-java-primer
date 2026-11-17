@@ -23,7 +23,6 @@
 | 生成物 | `book-index/` | 原稿の節ごとの行範囲（`npm run index`で生成。手で編集しない） |
 | ビルドの入力 | `diagrams/` | 図の元データ（Mermaidの`chapterXX-内容.mmd`）と設定。`npm run mermaid:convert`が`manuscripts/images/diagrams/`のSVGを作る。本で使わない図は`diagrams/unused/` |
 | 原資料 | `lecture-materials/` | 元の講義資料（読み取り専用。変更しない） |
-| 削除の候補 | `deletion-candidates/` | 役目を終えた計画・分析・手順書。作業の手順としては使わない。一覧は`deletion-candidates/README.md` |
 
 `summaries/`・`book-index/`・`diagrams/`の場所はスクリプトが前提にしているので、移さないでください。
 
