@@ -1132,6 +1132,10 @@ public class PaymentProcessor {
 
 #### 具体的な決済処理の実装例
 
+金額は、`double`ではなく`java.math.BigDecimal`型で表しています。
+`BigDecimal`は10進数の小数を誤差なく扱うクラスで、使い方は第6章で学びます。
+ここでは、`new BigDecimal("5000")`のように数を文字列で渡して作ることだけ押さえておけば読めます。
+
 <span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜44行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
 
 ```java

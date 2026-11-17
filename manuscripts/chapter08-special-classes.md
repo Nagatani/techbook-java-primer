@@ -853,7 +853,7 @@ public record ApiResponse(
 
 Value Objectは、金額や日付のように、値そのものを表す小さな不変オブジェクトです。
 値が等しければ同じものとみなすので、`equals()`を自動で用意するRecordと相性がよい書き方です。
-次の`Money`は、コンパクトコンストラクターで引数`amount`に丸めた値を代入し直しています。
+次の`Money`は、金額を第6章で学んだ`BigDecimal`で持ち、コンパクトコンストラクターで引数`amount`に丸めた値を代入し直しています。
 フィールドへの代入は本体の最後に行われるため、丸めたあとの値がフィールドに入ります。
 
 <span class="listing-number">**サンプルコード8-22**　Money.java</span>
