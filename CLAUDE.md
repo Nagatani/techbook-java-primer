@@ -70,7 +70,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 6. **Sample Code Excerpts（2026-11-08〜）**: ページ数削減のため、サンプルコードは要点だけを本文に載せ、コンパイル・実行できる全文はGitHubの`sample-code/`へ誘導する
    - 全文は`sample-code/chapterXX/XX-YY/`（サンプルコードX-Yに対応）。本文に載せる範囲は`sample-code/chapterXX/listings.json`にファイル名と行番号で記録する
    - **本文のコードブロックとキャプション（「サンプルコード5-3　Shape.java（12〜30行目）」）は全文から生成する。本文のコードを直接編集せず、全文を編集してから`npm run samples:sync`する**
-   - 範囲のあいだを省いた箇所は`// ...`の行になる（詳細は`sample-code/README.md`）。PDFでは範囲が2つ以上のサンプルを範囲ごとの枠に分け、枠の頭に「ファイル名　N〜M行目」の見出しを、各行の左に全文での行番号を付ける。範囲が1つのサンプルは枠を分けず行番号だけを付け、1つのファイルの全体を載せたサンプルには付けない（2026-11-17〜、ビルド時に`scripts/vfm-code-segments.js`が`listings.json`を読んで行い、`// ...`の行と空行は取り除く。本文と`listings.json`が食い違うサンプルは分けない）
+   - 範囲のあいだを省いた箇所は`// ...`の行になる（詳細は`sample-code/README.md`）。PDFでは範囲が2つ以上のサンプルを範囲ごとの枠に分け、枠の頭に「ファイル名　N〜M行目」の見出しを、各行の左に全文での行番号を付ける。範囲が1つのサンプルは枠を分けず行番号だけを付ける。全文と対応づけられないブロック（ファイル全体を載せたもの、`listings.json`にないもの）も1から行番号を付け、言語を指定したコードブロックはすべて行番号付きにそろえる（言語を指定していない実行結果とbashには付けない）（2026-11-17〜、ビルド時に`scripts/vfm-code-segments.js`が`listings.json`を読んで行い、`// ...`の行と空行は取り除く。本文と`listings.json`が食い違うサンプルは分けない）
    - 本文で省いたimportや補助クラスは全文側に足してよい（本文に載らない範囲に置く）
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
    - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
