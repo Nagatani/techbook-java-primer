@@ -43,9 +43,9 @@ java -jar app.jar
 ### エラー例
 
 ```bash
-javac -cp gson-2.11.0.jar JsonApp.java
+javac -cp gson-2.15.0.jar JsonApp.java
 jar cfm json.jar manifest.txt JsonApp.class
-java -cp gson-2.11.0.jar -jar json.jar
+java -cp gson-2.15.0.jar -jar json.jar
 ```
 
 ### エラーメッセージ
@@ -63,8 +63,8 @@ Caused by: java.lang.ClassNotFoundException: com.google.gson.Gson
 
 ### 対処法
 
-- マニフェストに`Class-Path: lib/gson-2.11.0.jar`のように書き、JARの横の`lib`ディレクトリにライブラリを置いて配る（第23章の「外部ライブラリを使うアプリケーションのJAR」）
-- `-jar`を使わず、`java -cp json.jar:gson-2.11.0.jar JsonApp`のように実行する（Windowsでは`;`で区切る）
+- マニフェストに`Class-Path: lib/gson-2.15.0.jar`のように書き、JARの横の`lib`ディレクトリにライブラリを置いて配る（第23章の「外部ライブラリを使うアプリケーションのJAR」）
+- `-jar`を使わず、`java -cp json.jar:gson-2.15.0.jar JsonApp`のように実行する（Windowsでは`;`で区切る）
 - ライブラリをまとめて1つのJARにする（Fat JAR。付録D）
 
 ## リソースファイルが読めない（getResourceAsStreamがnullを返す）
