@@ -22,7 +22,6 @@
 | 校閲で読む | `analysis/` | 開いている課題（`issues-tracking.md`）、解決済みの課題と作業の記録（`issues-resolved.md`）、現状の要約（`project-status.md`）、`check:java`のレポート（`java-sample-check.md`、生成物） |
 | 生成物 | `book-index/` | 原稿の節ごとの行範囲（`npm run index`で生成。手で編集しない） |
 | ビルドの入力 | `diagrams/` | 図の元データ（Mermaidの`chapterXX-内容.mmd`）と設定。`npm run mermaid:convert`が`manuscripts/images/diagrams/`のSVGを作る。本で使わない図は`diagrams/unused/` |
-| 原資料 | `lecture-materials/` | 元の講義資料（読み取り専用。変更しない） |
 
 `summaries/`・`book-index/`・`diagrams/`の場所はスクリプトが前提にしているので、移さないでください。
 

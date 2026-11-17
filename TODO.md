@@ -76,6 +76,7 @@
 - [x] ノンブルを、前付けはローマ数字（表紙i・目次ii〜iv）、本文は第1章を1ページとする形にした（2026-11-16。第1章は右ページから始まり、奥付は732ページ）
 - [x] LICENSEを置いた（2026-11-16、著者の指示）。文章・図はAll Rights Reserved、`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定はMIT（`LICENSE-CODE`）。奥付の注意書きを合わせた
 - [x] docsディレクトリを整理した（2026-11-17、著者の指示）。校閲で読む規約・手順を`docs/guides/`にまとめ、役目を終えた資料を`docs/deletion-candidates/`（旧`docs/archive/`）に集めた。現状の要約は`docs/analysis/project-status.md`に移した。削除の候補の一覧と判断の目安は`docs/deletion-candidates/README.md`。著者が確認して不要なものを削除する。課題管理は、開いている課題だけを`docs/analysis/issues-tracking.md`に残し、解決済みの課題と2026-11の作業記録を`issues-resolved.md`に、2025年の作業サマリーと計画を`docs/deletion-candidates/analysis/issues-tracking-2025.md`に分けた。2026-11-18に、削除の候補のうち「そのまま削除してよいもの」44ファイルを削除した（残りは確認してから判断する7ファイル）。残りの7ファイルも著者の確認を経て同じ日に削除し、`docs/deletion-candidates/`をなくした
+- [x] 元の講義資料（`docs/lecture-materials/`、74ファイル）を削除した（2026-11-18、著者の指示）。見出しを本文・付録・演習と照らし、講義の内容は第1〜23章と付録で扱っていることを確かめた。本文にない話題は、IntelliJのSwing UI Designer、複数のウィンドウ（JFrame）間のデータ連携、ファイル操作の逆引き集のXML（DOM）・ZIP・一時ファイル・画像の読み書き、授業の運営（ガイダンス・課題の配布）。必要になったらコミット`0c02e70`から取り出す
 - [ ] 出版時に決めること
     + 正規版の奥付の発行日（`manuscripts/colophon.md`の`edition-release`、いま「2026年○月○日」）と、印刷所・発行者などを載せるか（オンデマンド印刷のサービスの指定に合わせる）
     + 入稿先の仕様（PDF/X-1aか、塗り足しの幅、表紙を本文と別のファイルにするか、総ページの条件）。表紙を別にするなら、本文のPDFから表紙を外す設定を加える

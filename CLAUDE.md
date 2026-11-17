@@ -212,14 +212,13 @@ The project follows Vivliostyle's standard structure:
 - `manuscripts/`: Contains Markdown source files for book content (main working directory)
 - `sample-code/`: Full sources of the book's numbered samples (see Sample Code Excerpts above)
 - `appendix/`, `exercises/`: Appendix materials and exercises published on GitHub
-- `docs/lecture-materials/`: Contains original lecture materials (read-only)
 - `vivliostyle.config.js`: Main configuration defining title, author, entry files, theme, and output settings
 - `output/`: Generated PDF files
 - Uses the project theme in `theme/my-theme/` (`theme.css`; the cover and glossary use their own CSS)
 
 The build process converts the Markdown files listed in the `entry` array (chapters and appendices in book order, with `entryContext: './manuscripts'`) into a single PDF. Build-time processing is done by the `scripts/vfm-*.js` document processors.
 
-**Important:** The `docs/lecture-materials/` directory contains original lecture materials and must be treated as read-only. All new content and modifications should be done within the `manuscripts/` directory.
+**Note:** The original lecture materials (`docs/lecture-materials/`) were deleted on 2026-11-18 because the book covers their content; they remain in the git history (commit `0c02e70`). All new content and modifications should be done within the `manuscripts/` directory.
 
 **Note:** Sample code extracted from the book is stored in the `sample-code/` directory (the old `source/` directory no longer exists).
 
@@ -256,7 +255,6 @@ The build process converts the Markdown files listed in the `entry` array (chapt
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
 - `docs/`: Project documentation (index in `docs/README.md`). Rules and procedures for writing and proofreading are in `docs/guides/`. Finished plans and analyses are deleted rather than archived (they remain in the git history)
-- `docs/lecture-materials/`: Original lecture materials (read-only)
 - `sample-code/`, `appendix/`, `exercises/`: Code and materials published on GitHub
 - `output/`: Generated PDF files
 
@@ -319,7 +317,6 @@ This repository contains:
 - Full sources of the book's sample code (`sample-code/` directory)
 - Appendix materials (`appendix/` directory)
 - Exercise files (`exercises/` directory)
-- Original lecture materials (`docs/lecture-materials/` directory)
 - Project documentation and analysis (`docs/` directory)
 - Build configuration and theme settings
 
@@ -328,7 +325,6 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Exercise files: `https://github.com/Nagatani/techbook-java-primer/tree/main/exercises`
 - Appendix resources: `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix`
 - Sample code examples: `https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code`
-- Original lecture materials: `/docs/lecture-materials/` directory
 
 ## Content Guidelines
 
