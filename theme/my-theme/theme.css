@@ -333,8 +333,19 @@ h1 b {
   padding: 0 2em;
 }
 
+/*
+ * 題名と副題は、ビルド時に scripts/vfm-title-breaks.js が文節の切れ目に入れた<wbr>（と空白）でだけ折り返し、
+ * 行の長さをそろえる（「Java入門と開発環境構 / 築」のように1文字だけを次の行に送らない）
+ */
+h1 > span,
+h1 > small {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
 /* メインタイトル */
-h1 span {
+h1 > span {
   display: block;
   font-size: 40Q;
   font-weight: 700;
@@ -345,7 +356,7 @@ h1 span {
 }
 
 /* サブタイトル */
-h1 small {
+h1 > small {
   display: block;
   font-size: 16Q;
   font-weight: 400;
