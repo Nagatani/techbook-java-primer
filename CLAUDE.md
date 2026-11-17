@@ -72,6 +72,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - **本文のコードブロックとキャプション（「サンプルコード5-3　Shape.java（12〜30行目）」）は全文から生成する。本文のコードを直接編集せず、全文を編集してから`npm run samples:sync`する**
    - 範囲のあいだを省いた箇所は`// ...`の行になる（詳細は`sample-code/README.md`）。PDFでは範囲が2つ以上のサンプルを範囲ごとの枠に分け、枠の頭に「ファイル名　N〜M行目」の見出しを、各行の左に全文での行番号を付ける。範囲が1つのサンプルは枠を分けず行番号だけを付ける。全文と対応づけられないブロック（ファイル全体を載せたもの、`listings.json`にないもの）も1から行番号を付け、言語を指定したコードブロックはすべて行番号付きにそろえる（言語を指定していない実行結果とbashには付けない）（2026-11-17〜、ビルド時に`scripts/vfm-code-segments.js`が`listings.json`を読んで行い、`// ...`の行と空行は取り除く。本文と`listings.json`が食い違うサンプルは分けない）
    - 本文で省いたimportや補助クラスは全文側に足してよい（本文に載らない範囲に置く）
+   - コードの1行は紙面の幅（行番号を付けた状態でASCII 73桁）に収める（2026-11-17に385行を改行）。行末のコメントは上の行に移し、コードは括弧の浅いところの「,」の後ろや「+」「.」の前で切って続きを8文字下げる。`npm run check:code-wrap`で折り返す行がないことを確かめる
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
    - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
@@ -189,6 +190,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 - `npm run check:java:run`: Also run the compiled samples and compare their output with the manuscript's 実行結果 blocks (takes a few minutes)
 - `npm run check:samples`: For samples whose full source is in `sample-code/`, check that the manuscript code equals the recorded line ranges, the caption matches, the full source compiles, and its output matches 実行結果
 - `npm run check:public-code`: Compile the code in `appendix/`, `exercises/`, and `sample-code/integrated-project/` with Java 25 and run their JUnit tests (`-- --no-test` for compile only, `-- exercises/chapter06` to narrow by path). CI fails on compile errors; test results are informational
+- `npm run check:code-wrap`: Render the manuscripts with the theme in a browser and list numbered code lines that wrap on the page (width calibrated to the PDF: ASCII lines fit up to 73 columns). Break such lines in the full source and run `samples:sync`
 - `npm run samples:sync`: Regenerate manuscript code blocks, captions, and per-chapter READMEs from `sample-code/` and `listings.json`
 - `node scripts/sample-code.js number`: Add captions to code blocks that lack a number and renumber each chapter in order of appearance (also renames `sample-code/` directories, `listings.json` keys, and 「サンプルコードX-Y」 references). `check:samples` reports unnumbered blocks and out-of-order numbers
 - `node scripts/sample-code.js show 5-3` / `set 5-3 File.java:12-30,41` / `add 5-3` / `relocate 5-3`: Inspect a full source with line numbers, change the excerpt range, register a new sample, or re-find ranges after editing the full source
