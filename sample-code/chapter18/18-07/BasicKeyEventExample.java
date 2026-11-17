@@ -31,9 +31,10 @@ public class BasicKeyEventExample extends JFrame {
                 if (e.isControlDown()
                         && e.getKeyCode() == KeyEvent.VK_S) {
                     JOptionPane.showMessageDialog(
-                            BasicKeyEventExample.this, 
-                        "保存ショートカットが押されました");
-                    e.consume(); // デフォルトの動作をキャンセル
+                            BasicKeyEventExample.this,
+                            "保存ショートカットが押されました");
+                    // 処理済みにして、このあとのキーバインディングに渡さない
+                    e.consume();
                 }
             }
         });

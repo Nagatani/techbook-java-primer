@@ -6,7 +6,7 @@ sequenceDiagram
     EDT->>W: execute()（ボタンのリスナーから）
     W->>BG: doInBackground() を別のスレッドで実行
     Note over EDT: EDTはすぐ戻り、画面の操作を受け付け続ける
-    Note over EDT,BG: アイテムを1つ処理するたびに、次の2つを繰り返す
+    Note over EDT,BG: アイテムを1つ処理するたびに、次の2つを繰り返す<br/>（進捗はまとめてprocess()に渡ることがある）
     BG->>W: publish(進捗)
     W->>EDT: process(進捗のリスト)<br/>プログレスバーを更新
     BG->>W: 処理が終わる（結果を返す）

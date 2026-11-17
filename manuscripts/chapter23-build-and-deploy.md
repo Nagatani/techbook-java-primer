@@ -7,7 +7,7 @@
 この章では、開発したJavaアプリケーションを配布するための技術について学習します。
 具体的には以下のトピックを扱います。
 
-1. JARファイルの仕組みとその役割
+1. JARファイルのしくみとその役割
 2. マニフェストファイルの基本的な設定方法
 3. 実行可能JARファイルの作成手順
 4. jpackageツールによるネイティブアプリケーション化
@@ -27,7 +27,7 @@
 次の知識があると、より理解が深まります。
 
 - 第21章のユニットテスト（テスト自動化）
-- 継続的インテグレーション（CI/CD）の基本概念
+- 継続的インテグレーションと継続的デリバリー（CI/CD）の基本概念
 - ソフトウェアデプロイメントの基礎知識
 - OS間の違いに関する基本理解（Windows、macOS、Linux）
 
@@ -86,7 +86,7 @@ public class SimpleApp {
 
 ### ステップ2: コンパイル
 
-まず、ソースコードをコンパイルしてクラスファイル (`.class`) を作成します。
+まず、ソースコードをコンパイルしてクラスファイル（`.class`）を作成します。
 
 ```bash
 javac SimpleApp.java
@@ -318,14 +318,14 @@ Java 16で正式に導入された`jpackage`ツール<span class="footnote">`jpa
 
 ### `jpackage`の実行例
 
-プロジェクトのルートディレクトリ (`/MyProject/`) で、以下のコマンドを実行します。
+プロジェクトのルートディレクトリ（`/MyProject/`）で、以下のコマンドを実行します。
 
 ```bash
 jpackage --type app-image \
-          --name "SimpleApp" \
-          --input ./input \
-          --main-jar SimpleApp.jar \
-          --dest ./output
+         --name "SimpleApp" \
+         --input ./input \
+         --main-jar SimpleApp.jar \
+         --dest ./output
 ```
 
 主なオプションの意味は次のとおりです。
@@ -389,7 +389,7 @@ jpackage --type deb \
     + マニフェストに`Main-Class`がない。最後の行のあとに改行がないと、その行は読み飛ばされる
 - `NoClassDefFoundError`
     + 外部ライブラリが実行のときのクラスパスにない。`java -jar`では`-cp`の指定は無視される
-- `getResourceAsStream`が`null`を返す
+- `getResource`や`getResourceAsStream`が`null`を返す
     + リソースファイルをJARに入れ忘れているか、JARのなかのパスが違う
 - `UnsupportedClassVersionError`
     + 新しい版のJavaでコンパイルしたクラスを、古い版のJavaで実行している
@@ -411,7 +411,7 @@ jpackage --type deb \
 1. ビルド自動化ツール
     + 第22章で紹介したMavenなどのビルドツールで、依存関係の管理に加えて、コンパイルからJARの作成までを1つのコマンド（Mavenでは`mvn package`）で行う
 2. Fat JAR（Uber JAR）
-    + 依存ライブラリを含む単一JARファイルの生成（Spring Boot、Shade Plugin）
+    + 依存ライブラリを含む単一JARファイルの生成（Maven Shade Plugin、Spring Bootのプラグインなど）
 3. ネイティブイメージ
     + GraalVMによるAOT（Ahead-of-Time）コンパイルで起動時間とメモリ使用量を削減する
 4. コンテナー化

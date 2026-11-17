@@ -40,7 +40,7 @@
 右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
 メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜66、80〜85、100〜103、120、132行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜65、79〜84、99〜102、119、131行目）</span>
 
 ```java
 public class MouseEventCompleteExample extends JFrame {
@@ -54,8 +54,7 @@ public class MouseEventCompleteExample extends JFrame {
                 String button = getButtonName(e.getButton());
                 int clickCount = e.getClickCount();
                 log("クリック: " + button + " (回数: " + clickCount
-                        + ") at " + 
-                    e.getPoint());
+                        + ") at " + e.getPoint());
                 
                 // ダブルクリックの検出
                 if (clickCount == 2) {
@@ -96,7 +95,7 @@ public class MouseEventCompleteExample extends JFrame {
 }
 ```
 
-実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルでクリック、ボタンの押下と解放、ドラッグをすると、下のログエリアにイベントの種類と座標が記録されます。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します<span class="footnote">右クリックメニューを作る部分と描画の部分は、本文では省いています。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/19-01/`にあります。</span>。
+実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルにカーソルを入れると十字の形に変わり、パネルへの出入り、クリック、ボタンの押下と解放、ドラッグのたびに、下のログエリアにイベントの種類（出入り以外は座標も）を記録します。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します<span class="footnote">右クリックメニューを作る部分と描画の部分は、本文では省いています。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/19-01/`にあります。</span>。
 
 ### キーボードイベントの高度な処理
 
@@ -183,7 +182,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 `InputMap`は、キーの組み合わせ（`KeyStroke`）と、処理に付けた名前を対応づけます。
 `ActionMap`は、その名前と、実行する処理（`Action`。ここでは`AbstractAction`を継承した匿名クラス）を対応づけます。
 `getInputMap()`の引数の`JComponent.WHEN_FOCUSED`は、その部品がフォーカスを持っているときだけキーを受け付けるという指定です<span class="footnote">ほかに、部品を含むウィンドウがフォーカスを持っていれば受け付ける`WHEN_IN_FOCUSED_WINDOW`などがあります。</span>。
-テキストのコピーや貼り付けなど、Swingの部品が既定で持つキー操作も、この仕組みで登録されています。
+テキストのコピーや貼り付けなど、Swingの部品が既定で持つキー操作も、このしくみで登録されています。
 ショートカットキーは、`KeyListener`で`if`文を並べるより、キーバインディングで登録するほうが、キーと処理の対応を管理しやすくなります。
 
 ### DocumentListenerによるテキスト変更の監視
@@ -269,9 +268,9 @@ Observerパターンは、あるオブジェクトの状態が変わったこと
 状態を持ち、変化を知らせる側をSubject（観察される側）、知らせを受け取る側をObserver（観察する側）と呼びます。
 Subjectは、Observerを登録する一覧と、変化があったときに一覧の全員を呼び出す処理を持ちます。
 SubjectはObserverをインターフェイスとしてだけ知っているので、受け取る側の種類が増えてもSubjectのコードは変わりません。
-これまで使ってきた`addActionListener()`などのリスナーの仕組みも、ボタンをSubject、リスナーをObserverとするObserverパターンです。
+これまで使ってきた`addActionListener()`などのリスナーのしくみも、ボタンをSubject、リスナーをObserverとするObserverパターンです。
 
-Swingの部品が用意するイベントだけでなく、独自のイベントを作ってこの仕組みを自分のクラスに組み込むこともできます。
+Swingの部品が用意するイベントだけでなく、独自のイベントを作ってこのしくみを自分のクラスに組み込むこともできます。
 以下のコードは、`EventObject`を継承したカスタムイベントの例です<span class="footnote">標準ライブラリには`java.util.Observer`と`java.util.Observable`もありますが、Java 9で非推奨になりました。独自のイベントは、このように`java.util`の`EventObject`と`EventListener`を使って作ります。</span>。
 温度センサーの値が変化したときにイベントを発生させ、登録された複数のリスナーに通知します。
 センサーがSubject、リスナーがObserverに当たり、センサー（モデル）は表示部分（ビュー）のクラスを直接参照しません。
@@ -282,7 +281,7 @@ Swingの部品が用意するイベントだけでなく、独自のイベント
 
 </div>
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜110、136〜137、164、171行目）</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜109、135〜136、163、170行目）</span>
 
 ```java
 // カスタムイベントクラス
@@ -347,9 +346,8 @@ public class CustomEventExample extends JFrame {
                 double oldTemp = e.getOldTemperature();
                 
                 // 表示を更新
-                temperatureLabel.setText(String.format("%.1f°C",
-                        newTemp));
-                        // ...
+                temperatureLabel.setText("%.1f°C".formatted(newTemp));
+                // ...
             }
         });
         // ...
@@ -504,7 +502,7 @@ public class SwingWorkerExample extends JFrame {
 - リスナーの削除忘れによるメモリリーク
     + 不要になったリスナーを削除しないと、オブジェクトがガベージコレクションで回収されない
 - ドロップが受け入れられない
-    + `drop()`のなかで`acceptDrop()`を呼び出していない、ドロップされたデータの形式（`DataFlavor`）に対応していないといった原因がある
+    + `DropTarget`で受け付ける場合に`drop()`のなかで`acceptDrop()`を呼び出していない、ドロップされたデータの形式（`DataFlavor`）に対応していないといった原因がある
 
 問題のあるコードと修正したコード、EDT違反の検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter19.md`

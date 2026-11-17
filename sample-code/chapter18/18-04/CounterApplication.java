@@ -58,7 +58,7 @@ public class CounterApplication {
     }
     
     public static void main(String[] args) {
-        // Event Dispatch Thread上でGUIを作成
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
         SwingUtilities.invokeLater(() -> new CounterApplication());
     }
 }

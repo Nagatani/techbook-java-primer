@@ -7,7 +7,7 @@
 この章では、チーム開発を支える重要な技術について学習します。
 具体的には以下のトピックを扱います。
 
-1. Javadocによるドキュメント生成の仕組みと重要性
+1. Javadocによるドキュメント生成のしくみと重要性
 2. クラス、メソッド、フィールドを説明するJavadocコメントの記述
 3. 外部ライブラリの選択基準とライセンスの考慮事項
 4. Mavenを例にしたビルドツールの役割と概念（Gradleの概要を含む）
@@ -20,7 +20,7 @@
 
 - 第4章のクラスとインスタンス（基本的なOOPの概念）
 - 第13章の例外処理（try-catch、例外の種類）
-- 第14章のファイル入出力（基本的なI/O操作）
+- 第14章のファイルI/O（基本的なI/O操作）
 - HTMLの基礎知識
 
 次の知識があると、より理解が深まります。
@@ -157,7 +157,7 @@ javadoc -d doc -windowtitle "タスク管理API" -doctitle "タスク管理シ�
 
 #### IntelliJ IDEA
 
-メニューの `Tools` -> `Generate JavaDoc...` から生成できます。
+メニューの`Tools` → `Generate JavaDoc...`から生成できます。
 主な設定は次の通りです。
 
 - 「Output directory」に出力先（`doc`など）を指定する
@@ -267,9 +267,10 @@ Mavenは、依存関係を次の順に解決します。
     </dependency>
 </dependencies>
 ```
-`groupId`, `artifactId`, `version`は、ライブラリを一意に識別するための座標（coordinates）です。これらの情報は、Maven Centralなどのリポジトリサイトで検索できます<span class="footnote">Maven Centralに登録されたライブラリは、`https://central.sonatype.com/`で検索できます。</span>。
 
-### 外部ライブラリの利用例 (Gson)
+`groupId`、`artifactId`、`version`は、ライブラリを一意に識別するための座標（coordinates）です。これらの情報は、Maven Centralなどのリポジトリサイトで検索できます<span class="footnote">Maven Centralに登録されたライブラリは、`https://central.sonatype.com/`で検索できます。</span>。
+
+### 外部ライブラリの利用例（Gson）
 
 `pom.xml`に上記の設定を追加したら、IntelliJ IDEAのエディターに表示される「Load Maven Changes」のボタンを押して、Mavenの設定を読み込み直します。
 すると、IntelliJ IDEAがGsonライブラリをダウンロードします。
@@ -373,9 +374,9 @@ Loaded Task: プログラミング
 
 `createdAt`には実行した日時が入るため、実行するたびに値が変わります。
 
-### Jackson - 高性能JSONライブラリ
+### Jackson - 多機能なJSONライブラリ
 
-Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタープライズアプリケーションで広く使われています。ストリーミングAPIによるメモリ使用量を最小限に抑えた処理とアノテーションベースの柔軟なマッピングが特徴です。
+Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタープライズアプリケーションで広く使われています。ストリーミングAPIによるメモリ使用量を最小限に抑えた処理とアノテーションベースの柔軟なマッピングが特徴です<span class="footnote">2025年10月に公開されたJackson 3では、groupIdが`tools.jackson.core`に、パッケージ名が`tools.jackson`に変わりました。本書のコードは、いまも更新が続いているJackson 2の系列（`com.fasterxml.jackson.core`）で書いています。</span>。
 
 #### Mavenの依存関係
 
@@ -654,7 +655,7 @@ Gson・Jackson・Apache Commonsのほかにも、Javaでよく使われるライ
 
 ライセンスによって、ライブラリを使うときの条件が変わります。
 Apache License 2.0は商用で利用でき、特許の扱いを定めた条項を含みます。
-MIT Licenseは、主要なライセンスのなかでもっとも制限が少ないライセンスです。
+MIT Licenseは、著作権表示とライセンスの文を残せば改変や商用での利用もできる、制限の少ないライセンスです。
 
 注意が要るのはGPL<span class="footnote">GPLはGNU General Public Licenseの略で、フリーソフトウェア財団（FSF）が定めたライセンスです。LGPLのLはLesser（以前はLibrary）を表します。</span>です。
 GPLのライブラリを組み込んだプログラムを配布するときは、そのプログラムのソースコードも公開する義務があるため、商用の製品に使うときは慎重に判断します。
@@ -725,13 +726,16 @@ pom.xmlには、それぞれを前述の`<dependency>`要素として書きま�
 
 | 用途 | ライブラリ（groupId:artifactId） |
 |------|------|
-| Webフレームワーク | org.springframework.boot:spring-boot-starter-web |
-| JSON処理 | com.fasterxml.jackson.core:jackson-databind |
+| Webフレームワーク | org.springframework.boot:spring-boot-starter-webmvc |
+| JSON処理 | tools.jackson.core:jackson-databind |
 | データベースアクセス | org.springframework.boot:spring-boot-starter-data-jpa |
 | ユーティリティ | org.apache.commons:commons-lang3 |
 | ログ | ch.qos.logback:logback-classic |
 | テスト（scopeはtest） | org.junit.jupiter:junit-jupiter |
 | テスト（scopeはtest） | org.mockito:mockito-core |
+
+Spring Boot 4では、Webアプリケーション用のスターターの名前が`spring-boot-starter-web`から`spring-boot-starter-webmvc`に変わりました。
+また、Spring Boot 4はJSONの処理にJackson 3を使うため、表のJacksonはJackson 3の座標にしています。
 
 ### 実践的な開発フロー
 
@@ -763,9 +767,10 @@ mvn dependency:purge-local-repository
 ```
 
 `-DinteractiveMode=false`を付けないと、ひな形の種類や設定を1つずつ尋ねられます。
-`-DarchetypeVersion`でひな形の版を指定しないと、JUnit 3を使う古いひな形が使われることがあり、`mvn package`のテストの段階で失敗します。
+`-DarchetypeVersion`でひな形の版を指定しないと、環境によっては古い版のひな形が使われ、できる`pom.xml`の中身が本書の説明と変わります。
 ひな形から作った`pom.xml`には、コンパイルの対象とするJavaのバージョンが書かれています（版1.5のひな形では17）。
 本書のコードは`IO`クラスなどJava 25の機能を使うため、`pom.xml`の`<properties>`にある`maven.compiler.release`の値を`25`に書き換えます。
+ひな形から作るときに`-DjavaCompilerVersion=25`を付けると、はじめから`25`になります。
 
 ### もう1つのビルドツール：Gradle
 
@@ -873,12 +878,14 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
 
 依存関係管理ツールは、次のように進化してきました。
 
-1. 第1世代
-    + 手動でのJAR管理（1995-2002）
-2. 第2世代
-    + Maven/Ivy による自動化（2002-2009）
-3. 第3世代
-    + Gradle による柔軟な設定（2009-現在）
+1. 手動での管理
+    + JARファイルを自分でダウンロードし、クラスパスに加える
+2. MavenやApache Ivyによる自動化
+    + 依存関係を宣言すると、リポジトリから推移的な依存関係まで取得する
+3. Gradleによる柔軟な設定
+    + プログラムを書くようにビルドの手順を設定でき、Mavenと同じリポジトリを使う
+
+いまはMavenとGradleがともに広く使われています。
 
 ### セキュリティとコンプライアンス
 

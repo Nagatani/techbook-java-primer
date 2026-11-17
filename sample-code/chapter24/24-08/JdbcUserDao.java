@@ -80,6 +80,6 @@ public class JdbcUserDao implements UserDao {
     private User toUser(ResultSet rs) throws SQLException {
         return new User(rs.getInt("id"), rs.getString("username"),
                 rs.getString("email"),
-            rs.getObject("created_at", LocalDateTime.class));
+                rs.getObject("created_at", LocalDateTime.class));
     }
 }

@@ -31,7 +31,7 @@
     "dir": "17-05",
     "main": "MultipleComponents",
     "excerpt": [
-      { "file": "MultipleComponents.java", "from": 1, "to": 31 }
+      { "file": "MultipleComponents.java", "from": 1, "to": 27 }
     ]
   },
   "17-6": {
@@ -54,7 +54,7 @@
     "excerpt": [
       { "file": "TextInputComponents.java", "from": 4, "to": 4 },
       { "file": "TextInputComponents.java", "from": 9, "to": 9 },
-      { "file": "TextInputComponents.java", "from": 15, "to": 45 },
+      { "file": "TextInputComponents.java", "from": 13, "to": 45 },
       { "file": "TextInputComponents.java", "from": 49, "to": 50 }
     ]
   },
@@ -64,7 +64,7 @@
     "excerpt": [
       { "file": "SelectionComponents.java", "from": 4, "to": 4 },
       { "file": "SelectionComponents.java", "from": 9, "to": 9 },
-      { "file": "SelectionComponents.java", "from": 15, "to": 48 },
+      { "file": "SelectionComponents.java", "from": 13, "to": 48 },
       { "file": "SelectionComponents.java", "from": 52, "to": 53 }
     ]
   },

@@ -40,8 +40,7 @@ public class MouseEventCompleteExample extends JFrame {
                 String button = getButtonName(e.getButton());
                 int clickCount = e.getClickCount();
                 log("クリック: " + button + " (回数: " + clickCount
-                        + ") at " + 
-                    e.getPoint());
+                        + ") at " + e.getPoint());
                 
                 // ダブルクリックの検出
                 if (clickCount == 2) {

@@ -1,20 +1,16 @@
 ---
 config:
   sequence:
-    actorMargin: 10
+    actorMargin: 30
 ---
 sequenceDiagram
     participant User as ユーザー
-    participant Source as コンポーネント<br/>（イベントソース）
-    participant Swing as Swingシステム
+    participant Source as イベントソース<br/>（JButtonなど）
     participant Event as イベント<br/>オブジェクト
-    participant Listener as イベント<br/>リスナー
-    participant Handler as イベント<br/>ハンドラー
+    participant Listener as イベントリスナー<br/>（登録済み）
 
     User->>Source: 操作（クリックなど）
-    Source->>Swing: イベント発生を通知
-    Swing->>Event: 生成
-    Swing->>Listener: イベント通知
-    Listener->>Handler: 呼び出し
-    Handler->>Handler: 処理を実行
-    Handler-->>Source: 必要に応じて更新
+    Source->>Event: 生成（ActionEventなど）
+    Source->>Listener: イベントを渡して呼び出す
+    Listener->>Listener: 処理を実行
+    Listener-->>Source: 必要に応じて部品を更新

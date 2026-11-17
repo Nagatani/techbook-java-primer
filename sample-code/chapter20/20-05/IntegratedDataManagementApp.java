@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 // プロジェクトデータクラス
 class Project {
@@ -164,9 +165,8 @@ public class IntegratedDataManagementApp extends JFrame {
                 model.addRow(new Object[]{
                     task.getTitle(),
                     task.getDescription(),
-                    task.getDueDate().format(
-                    java.time.format.DateTimeFormatter.ofPattern(
-                    "yyyy/MM/dd")),
+                    task.getDueDate().format(DateTimeFormatter
+                            .ofPattern("yyyy/MM/dd")),
                     task.isCompleted()
                 });
             }

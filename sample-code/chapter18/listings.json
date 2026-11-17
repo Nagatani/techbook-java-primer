@@ -56,9 +56,9 @@
     "excerpt": [
       { "file": "BasicKeyEventExample.java", "from": 5, "to": 5 },
       { "file": "BasicKeyEventExample.java", "from": 9, "to": 9 },
-      { "file": "BasicKeyEventExample.java", "from": 23, "to": 39 },
-      { "file": "BasicKeyEventExample.java", "from": 46, "to": 46 },
-      { "file": "BasicKeyEventExample.java", "from": 53, "to": 53 }
+      { "file": "BasicKeyEventExample.java", "from": 23, "to": 40 },
+      { "file": "BasicKeyEventExample.java", "from": 47, "to": 47 },
+      { "file": "BasicKeyEventExample.java", "from": 54, "to": 54 }
     ]
   },
   "18-8": {

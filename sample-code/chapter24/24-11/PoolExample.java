@@ -24,7 +24,7 @@ public class PoolExample {
             try (Connection conn = pool.getConnection();
                  Statement stmt = conn.createStatement()) {
                 stmt.execute("CREATE TABLE visits (page VARCHAR(50))");
-            // closeは切断ではなく、プールへ返す
+                // ブロックを出るときのcloseは、切断ではなくプールへ返す
             }
             for (String page : new String[] {"top", "news", "top"}) {
                 try (Connection conn = pool.getConnection();

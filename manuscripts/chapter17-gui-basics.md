@@ -227,7 +227,7 @@ public class HelloLabel {
 
 複数のコンポーネントを配置するには、レイアウトマネージャーを使います。
 
-レイアウトマネージャーは、コンテナー内のコンポーネントの配置を自動的に管理する仕組みです。
+レイアウトマネージャーは、コンテナー内のコンポーネントの配置を自動的に管理するしくみです。
 ウィンドウサイズの変更や異なる画面解像度に対応するため、絶対位置ではなく相対的な配置ルールを使います。
 
 レイアウトマネージャーは、各コンポーネントの推奨サイズを考慮して配置を決めます。
@@ -254,15 +254,11 @@ public class MultipleComponents {
         
         frame.setLayout(new BorderLayout());  // ①
         
-        // ②
+        // ② 5つの領域にラベルを1つずつ置く
         frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);
-        // ②
         frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);
-        // ②
         frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);
-        // ②
         frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);
-        // ②
         frame.add(new JLabel("中央", JLabel.CENTER),
                 BorderLayout.CENTER);
         
@@ -287,7 +283,7 @@ CENTERのラベルは残りのスペースをすべて占めるので、ウィ�
 
 #### JLabelでHTMLを表示する
 
-以下のコードは、JLabelの高度な機能を示す例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、複数行のテキストもHTMLのbrタグを使用して簡単に実現できます。これらの機能により、単純なテキスト表示を超えた豊かな表現が可能になります。
+以下のコードは、JLabelでHTMLを表示する例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、HTMLの`<br>`タグを使えば、複数行のテキストも表示できます。
 
 <span class="listing-number">**サンプルコード17-6**　AdvancedLabel.java</span>
 
@@ -334,7 +330,7 @@ public class AdvancedLabel {
 #### JButtonの高度な使用
 
 JButtonは、ユーザーのクリック操作を受け付けるコンポーネントです。
-以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と前景色の変更、サイズの調整、無効化状態の設定など、ユーザーインターフェイスの要求に応じた外観と動作のカスタマイズが可能です。これらの技術を組み合わせることで、アプリケーションの統一感のあるデザインを実現できます。
+以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と文字色（前景色）の変更、推奨サイズの指定、無効化の設定を順に試しています。
 
 <span class="listing-number">**サンプルコード17-7**　AdvancedButton.java</span>
 
@@ -401,13 +397,15 @@ Swingには、入力する内容に合わせて使い分ける、次のような
 
 以下のコードは、これらの入力コンポーネントを1つのウィンドウに並べる例です。
 
-<span class="listing-number">**サンプルコード17-8**　TextInputComponents.java（4、9、15〜45、49〜50行目）</span>
+<span class="listing-number">**サンプルコード17-8**　TextInputComponents.java（4、9、13〜45、49〜50行目）</span>
 
 ```java
 public class TextInputComponents {
     // ...
     private static void createAndShowGUI() {
         // ...
+        frame.setLayout(new GridLayout(5, 2, 5, 5));
+        
         // 一行テキストフィールド
         frame.add(new JLabel("一行テキスト:"));
         JTextField textField = new JTextField("初期テキスト");
@@ -457,15 +455,17 @@ public class TextInputComponents {
 
 JListは、複数の項目を一度に表示し、単一または複数選択を可能にするコンポーネントです。スクロール機能を追加することで、大量のデータも扱えます。
 
-以下のコードは、チェックボックス、ラジオボタン、コンボボックス、リストなどの選択系コンポーネントの実装例です。これらのコンポーネントは、ユーザーが選択肢から項目を選ぶための重要なインターフェイス要素です。とくにButtonGroupを使ったラジオボタンのグループ化は、相互排他的な選択を実現する標準的な手法です。
+以下のコードは、チェックボックス、ラジオボタン、コンボボックス、リストの4種類の選択系コンポーネントを、4行2列のGridLayoutに並べる例です。ButtonGroupを使ったラジオボタンのグループ化は、どれか1つだけを選ばせる（相互排他的な選択）ための標準的な方法です。
 
-<span class="listing-number">**サンプルコード17-9**　SelectionComponents.java（4、9、15〜48、52〜53行目）</span>
+<span class="listing-number">**サンプルコード17-9**　SelectionComponents.java（4、9、13〜48、52〜53行目）</span>
 
 ```java
 public class SelectionComponents {
     // ...
     private static void createAndShowGUI() {
         // ...
+        frame.setLayout(new GridLayout(4, 2, 5, 5));
+        
         // チェックボックス
         frame.add(new JLabel("チェックボックス:"));
         JPanel checkBoxPanel = new JPanel(new FlowLayout());
@@ -506,7 +506,7 @@ public class SelectionComponents {
 ```
 
 実行結果：
-このプログラムを実行すると、4種類の選択コンポーネントが表示されます。チェックボックスでは「オプション2」が初期選択され、複数選択が可能です。ラジオボタンでは「選択肢B」が選択され、どちらか一方のみ選択できます。コンボボックスはドロップダウンリストから1つを選択でき、リストボックスは5つのアイテムから1つを選択できるように設定されています。
+このプログラムを実行すると、4種類の選択コンポーネントが表示されます。チェックボックスでは「オプション2」が初期選択され、複数選択が可能です。ラジオボタンでは「選択肢B」が選択され、どちらか一方のみ選択できます。コンボボックスはドロップダウンリストから1つを選択でき、リストは5つのアイテムから1つを選択できるように設定されています。
 
 `JList`の項目を入れておくモデルや、項目の表示方法を変えるレンダラーなど、`JList`の詳しい使い方は第20章「JTable・JList・JTree」で学びます。
 
@@ -671,7 +671,8 @@ JPanelは、Swingでもっとも頻繁に使われるコンテナーコンポー
 また、`paintComponent()`メソッドをオーバーライドして独自の描画をしたり、パネル単位でイベントリスナーを設定したりもできます。
 独自の描画は本章の「カスタムコンポーネントの作成」で、イベントリスナーは第18章で学びます。
 
-以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディター風のアプリケーションインターフェイスを構築する例です。ツールバー、サイドバー、メインエリア、ステータスバーといった一般的なアプリケーション構造を、BorderLayoutとFlowLayoutを巧みに組み合わせて実現しています。
+以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディター風の画面を組み立てる例です。フレームのBorderLayoutの北にツールバー（FlowLayoutのパネル）、中央にメインエリア、南にステータスバーを置いています。
+サンプルコード17-13には、メインエリアを組み立てる部分を載せています。メインエリアもBorderLayoutのパネルで、西にサイドバー、中央にテキストエリアを置いています。
 
 <span class="listing-number">**サンプルコード17-13**　ComplexLayoutExample.java（4、9〜13、27〜49、59〜62行目）</span>
 

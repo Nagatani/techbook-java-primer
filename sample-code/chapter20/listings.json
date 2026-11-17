@@ -12,9 +12,10 @@
     "excerpt": [
       { "file": "SortableTableExample.java", "from": 6, "to": 6 },
       { "file": "SortableTableExample.java", "from": 11, "to": 11 },
-      { "file": "SortableTableExample.java", "from": 15, "to": 39 },
-      { "file": "SortableTableExample.java", "from": 73, "to": 73 },
-      { "file": "SortableTableExample.java", "from": 80, "to": 80 }
+      { "file": "SortableTableExample.java", "from": 15, "to": 38 },
+      { "file": "SortableTableExample.java", "from": 58, "to": 64 },
+      { "file": "SortableTableExample.java", "from": 72, "to": 72 },
+      { "file": "SortableTableExample.java", "from": 79, "to": 79 }
     ]
   },
   "20-3": {
@@ -50,10 +51,10 @@
     "dir": "20-05",
     "main": "IntegratedDataManagementApp",
     "excerpt": [
-      { "file": "IntegratedDataManagementApp.java", "from": 32, "to": 32 },
-      { "file": "IntegratedDataManagementApp.java", "from": 88, "to": 88 },
-      { "file": "IntegratedDataManagementApp.java", "from": 111, "to": 130 },
-      { "file": "IntegratedDataManagementApp.java", "from": 157, "to": 174 },
+      { "file": "IntegratedDataManagementApp.java", "from": 33, "to": 33 },
+      { "file": "IntegratedDataManagementApp.java", "from": 89, "to": 89 },
+      { "file": "IntegratedDataManagementApp.java", "from": 112, "to": 131 },
+      { "file": "IntegratedDataManagementApp.java", "from": 158, "to": 174 },
       { "file": "IntegratedDataManagementApp.java", "from": 187, "to": 187 },
       { "file": "IntegratedDataManagementApp.java", "from": 203, "to": 212 },
       { "file": "IntegratedDataManagementApp.java", "from": 220, "to": 220 },

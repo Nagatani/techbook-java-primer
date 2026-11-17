@@ -88,7 +88,7 @@
     "dir": "24-12",
     "main": "BatchExample",
     "excerpt": [
-      { "file": "BatchExample.java", "from": 19, "to": 39 }
+      { "file": "BatchExample.java", "from": 18, "to": 39 }
     ],
     "libs": [
       "com.h2database:h2:2.5.252"

@@ -106,8 +106,7 @@ public class CustomEventExample extends JFrame {
                 double oldTemp = e.getOldTemperature();
                 
                 // 表示を更新
-                temperatureLabel.setText(String.format("%.1f°C",
-                        newTemp));
+                temperatureLabel.setText("%.1f°C".formatted(newTemp));
                 
                 // 温度に応じて背景色を変更
                 if (newTemp < 0) {

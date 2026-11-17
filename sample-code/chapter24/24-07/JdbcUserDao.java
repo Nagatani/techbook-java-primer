@@ -78,6 +78,6 @@ public class JdbcUserDao implements UserDao {
     // ResultSetの今の行をUserにする（列とフィールドの対応をここに集める）
     private User toUser(ResultSet rs) throws SQLException {
         return new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"),
-            rs.getObject("created_at", LocalDateTime.class));
+                rs.getObject("created_at", LocalDateTime.class));
     }
 }

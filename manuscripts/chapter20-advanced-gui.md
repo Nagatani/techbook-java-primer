@@ -4,7 +4,7 @@
 
 ### この章で学ぶこと
 
-この章では、データを効率的に表示するためのSwingコンポーネントについて学習します。
+この章では、多くのデータを表・リスト・ツリーの形で表示するSwingのコンポーネントについて学習します。
 具体的には以下のトピックを扱います。
 
 1. JTableによる表形式データの表示（テーブルモデル、行の選択）
@@ -43,11 +43,13 @@ JListは項目のリストを表示するコンポーネントで、選択可能
 - 第19章で学んだObserverパターン
 - 第18章で学んだEDT（`SwingUtilities.invokeLater`）と、第19章で学んだSwingWorker
 
-## JTableの詳細な実装
+## JTableのしくみと基本
 
 ### 基本的なJTableの作成
 
-JTableは、表形式のデータを表示・編集するためのコンポーネントです。
+JTableは、表形式のデータを表示・編集するためのコンポーネントで、仕事を複数の部品に分けています。
+セルの値は`TableModel`が持ち、セルの描画は`TableCellRenderer`、セルの編集は`TableCellEditor`、並べ替えと絞り込みは`TableRowSorter`が受け持ちます。
+JTableはこれらを組み合わせて表を表示します。
 まず、基本的な使い方から見ていきましょう。
 
 <div class="figure">
@@ -115,7 +117,7 @@ public class BasicTableExample extends JFrame {
 
 ## テーブルのソートとフィルタリング
 
-JTableは組み込みのソート機能を提供しています<span class="footnote">ソートとフィルタリングを受け持つ`TableRowSorter`は、Java 6で加わりました。サンプルコード20-2の`regexFilter`は文字列を正規表現として扱います。入力を`Pattern.quote`で囲むと、`(`や`.`などの記号も正規表現の記号ではなく、ただの文字として探します。先頭の`(?i)`は大文字と小文字を区別しない指定です。</span>。
+JTableは組み込みのソート機能を提供しています<span class="footnote">ソートとフィルタリングを受け持つ`TableRowSorter`は、Java 6で加わりました。</span>。
 
 以下のコードは、`TableRowSorter`を使用してテーブルのソートとフィルタリングを実装する例です。
 ヘッダーをクリックすると列の値で行を並べ替え、フィルターフィールドに文字列を入力して「適用」ボタンを押すと、その文字列を名前に含む行だけを表示します。
@@ -123,7 +125,7 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜39、73、80行目）</span>
+<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜38、58〜64、72、79行目）</span>
 
 ```java
 public class SortableTableExample extends JFrame {
@@ -150,9 +152,16 @@ public class SortableTableExample extends JFrame {
                 sorter.setRowFilter(null);
             } else {
                 // 名前列でフィルタリング（入力した記号も文字として探す）
-                sorter.setRowFilter(
-                    RowFilter.regexFilter("(?i)" + Pattern.quote(text),
-                    1));
+                sorter.setRowFilter(RowFilter.regexFilter(
+                        "(?i)" + Pattern.quote(text), 1));
+            }
+        });
+        // ...
+        deleteButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                int modelRow = table.convertRowIndexToModel(selectedRow);
+                model.removePerson(modelRow);
             }
         });
         // ...
@@ -160,6 +169,13 @@ public class SortableTableExample extends JFrame {
     // ...
 }
 ```
+
+`RowFilter.regexFilter(正規表現, 列の番号)`は、指定した列の値が正規表現に当てはまる行だけを残すフィルターを作ります。
+入力を`Pattern.quote`で囲むと、`(`や`.`などの記号も正規表現の記号ではなく、ただの文字として探します。
+先頭の`(?i)`は、大文字と小文字を区別しない指定です。
+
+並べ替えや絞り込みをした表では、画面での行の順番とモデルでの行の順番が一致しません。
+`getSelectedRow()`が返すのは画面での行番号なので、「削除」ボタンのリスナーでは`convertRowIndexToModel()`でモデルの行番号に変換してから削除しています。
 
 実行すると、次のように表示されます。
 
@@ -241,7 +257,7 @@ public class BasicTreeExample extends JFrame {
 項目をダブルクリックすると、タスクの完了状態が切り替わります。
 
 `JList`は、表示する項目をモデル（`ListModel`）から受け取ります。
-`TaskListModel`は、項目の数を返す`getSize()`と、指定した位置の項目を返す`getElementAt()`を実装して、`AbstractListModel`を継承します。
+`TaskListModel`は`AbstractListModel`を継承し、項目の数を返す`getSize()`と、指定した位置の項目を返す`getElementAt()`を実装します。
 項目を追加・削除・変更したときは、`fireIntervalAdded()`・`fireIntervalRemoved()`・`fireContentsChanged()`を呼び、変わった範囲をリストに知らせます。
 知らせを受けたリストは、その範囲を描き直します。
 これらを呼ばずにデータだけを変えると、画面のリストは古いままです。
@@ -251,6 +267,7 @@ public class BasicTreeExample extends JFrame {
 レンダラーの`TaskListCellRenderer`は、`JPanel`にラベルとチェックボックスを並べた部品です。
 `JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
 文字色も、選択状態に合わせて中の部品ごとに設定します。
+表のセルやツリーのノードの表示も、同じ考え方のレンダラー（`TableCellRenderer`・`TreeCellRenderer`）で変えられます。
 
 <span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜71、78、90〜91、99〜100、104〜140、143、147、151〜155、206、213行目）</span>
 
@@ -359,7 +376,7 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
 ステータスバーには、選択中のプロジェクト名が表示されます。
 
-<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（32、88、111〜130、157〜174、187、203〜212、220、257行目）</span>
+<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（33、89、112〜131、158〜174、187、203〜212、220、257行目）</span>
 
 ```java
 public class IntegratedDataManagementApp extends JFrame {
@@ -397,9 +414,8 @@ public class IntegratedDataManagementApp extends JFrame {
                 model.addRow(new Object[]{
                     task.getTitle(),
                     task.getDescription(),
-                    task.getDueDate().format(
-                    java.time.format.DateTimeFormatter.ofPattern(
-                    "yyyy/MM/dd")),
+                    task.getDueDate().format(DateTimeFormatter
+                            .ofPattern("yyyy/MM/dd")),
                     task.isCompleted()
                 });
             }
@@ -455,11 +471,10 @@ public class IntegratedDataManagementApp extends JFrame {
 1. JTableの活用
     + モデル・レンダラー・エディター・ソーターの役割分担
     + TableRowSorterによるソートとフィルタリング
-    + カスタムセルレンダラーの作成と、セルの編集に使う部品の変え方
+    + セルの編集に使う部品の変え方
 2. JTreeの実装
     + DefaultMutableTreeNodeとDefaultTreeModelによる階層データの表現
     + `DefaultTreeModel`を通したノードの追加・削除（コード例は付録F）
-    + カスタムツリーセルレンダラーの作成
 3. JListの高度な使用法
     + AbstractListModelを継承したモデルの実装
     + 複数の情報を1項目にまとめるセルレンダラー

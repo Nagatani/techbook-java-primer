@@ -5,11 +5,11 @@
     "excerpt": [
       { "file": "MouseEventCompleteExample.java", "from": 5, "to": 5 },
       { "file": "MouseEventCompleteExample.java", "from": 11, "to": 11 },
-      { "file": "MouseEventCompleteExample.java", "from": 36, "to": 66 },
-      { "file": "MouseEventCompleteExample.java", "from": 80, "to": 85 },
-      { "file": "MouseEventCompleteExample.java", "from": 100, "to": 103 },
-      { "file": "MouseEventCompleteExample.java", "from": 120, "to": 120 },
-      { "file": "MouseEventCompleteExample.java", "from": 132, "to": 132 }
+      { "file": "MouseEventCompleteExample.java", "from": 36, "to": 65 },
+      { "file": "MouseEventCompleteExample.java", "from": 79, "to": 84 },
+      { "file": "MouseEventCompleteExample.java", "from": 99, "to": 102 },
+      { "file": "MouseEventCompleteExample.java", "from": 119, "to": 119 },
+      { "file": "MouseEventCompleteExample.java", "from": 131, "to": 131 }
     ]
   },
   "19-2": {
@@ -44,10 +44,10 @@
       { "file": "CustomEventExample.java", "from": 46, "to": 61 },
       { "file": "CustomEventExample.java", "from": 64, "to": 64 },
       { "file": "CustomEventExample.java", "from": 70, "to": 70 },
-      { "file": "CustomEventExample.java", "from": 100, "to": 110 },
-      { "file": "CustomEventExample.java", "from": 136, "to": 137 },
-      { "file": "CustomEventExample.java", "from": 164, "to": 164 },
-      { "file": "CustomEventExample.java", "from": 171, "to": 171 }
+      { "file": "CustomEventExample.java", "from": 100, "to": 109 },
+      { "file": "CustomEventExample.java", "from": 135, "to": 136 },
+      { "file": "CustomEventExample.java", "from": 163, "to": 163 },
+      { "file": "CustomEventExample.java", "from": 170, "to": 170 }
     ]
   },
   "19-5": {

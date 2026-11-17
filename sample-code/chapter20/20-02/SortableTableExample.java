@@ -32,9 +32,8 @@ public class SortableTableExample extends JFrame {
                 sorter.setRowFilter(null);
             } else {
                 // 名前列でフィルタリング（入力した記号も文字として探す）
-                sorter.setRowFilter(
-                    RowFilter.regexFilter("(?i)" + Pattern.quote(text),
-                    1));
+                sorter.setRowFilter(RowFilter.regexFilter(
+                        "(?i)" + Pattern.quote(text), 1));
             }
         });
         

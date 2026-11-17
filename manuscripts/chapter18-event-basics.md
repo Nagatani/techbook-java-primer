@@ -41,7 +41,7 @@ Swingのイベント処理は、イベントソース、イベントオブジェ
 イベントソース（Event Source）は、イベントを発生させる部品です。
 JButtonやJTextFieldのように、ユーザーが操作するGUIコンポーネントがこれにあたります。
 イベントオブジェクト（Event Object）は、発生したイベントの詳細情報を持つオブジェクトで、ActionEvent、MouseEvent、KeyEventなどがあります。
-イベントリスナー（Event Listener）は、イベントの発生を監視し、通知を受け取って処理を実行します。
+イベントリスナー（Event Listener）は、イベントソースに登録しておき、イベントが起きたときに通知を受け取って処理を実行するオブジェクトです。
 ActionListener、MouseListener、KeyListenerなどがあります。
 
 3つの要素は次の順に働きます。
@@ -83,9 +83,9 @@ GUIコンポーネントを安全に更新できるのは、EDT上で操作し�
 
 ### ActionListenerの基本
 
-もっとも基本的な、ボタンクリックイベントを処理してみましょう。ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
+まず、もっとも基本的なボタンのクリックを処理してみましょう。ActionListenerは、ボタンのクリック、メニュー項目の選択、Enterキーの押下など、「アクション」として定義されるイベントを処理するためのリスナーです。
 
-以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを作成し、actionPerformed()メソッドでクリック時の処理を定義します。addActionListener()メソッドでリスナーをボタンに登録することで、クリックイベントとの関連付けが完了します。
+以下のコードは、ボタンクリックイベントを処理する基本的な実装例です。ActionListenerインターフェイスを実装した匿名クラスを作成し、`actionPerformed()`メソッドでクリック時の処理を定義します。`addActionListener()`メソッドでリスナーをボタンに登録することで、クリックイベントとの関連付けが完了します。
 mainメソッドでは、第17章で学んだとおり`SwingUtilities.invokeLater()`を使い、GUIの組み立てをEDT上で行っています。
 
 <span class="listing-number">**サンプルコード18-1**　ButtonEventExample.java</span>
@@ -152,7 +152,7 @@ public class ButtonEventExample {
 
 ### 匿名クラスの使用
 
-上記の例では、ActionListenerインターフェイスを、第8章で学んだ匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェイスを実装してインスタンスを作成できます。イベントリスナーのように、一度しか使わないクラスを定義する場合に便利です<span class="footnote">匿名クラスを含む内部クラスは、リスナーを使ういまのイベント処理の仕組みと同じJDK 1.1で、Javaに加わりました。リスナーを手軽に書けるようにすることが、内部クラスを加えた理由の1つでした。</span>。
+上記の例では、ActionListenerインターフェイスを、第8章で学んだ匿名クラスで実装しています。匿名クラスは、クラス名を持たないクラスで、その場でインターフェイスを実装してインスタンスを作成できます。イベントリスナーのように、一度しか使わないクラスを定義する場合に便利です<span class="footnote">匿名クラスを含む内部クラスは、リスナーを使ういまのイベント処理のしくみと同じJDK 1.1で、Javaに加わりました。リスナーを手軽に書けるようにすることが、内部クラスを加えた理由の1つでした。</span>。
 
 ## ラムダ式による簡潔な記述
 
@@ -298,7 +298,7 @@ public class CounterApplication {
     }
     
     public static void main(String[] args) {
-        // Event Dispatch Thread上でGUIを作成
+        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
         SwingUtilities.invokeLater(() -> new CounterApplication());
     }
 }
@@ -326,7 +326,7 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 ウィンドウを閉じる際に確認ダイアログを表示する例です。WindowListenerインターフェイスには多くのメソッドがありますが、WindowAdapterクラスを継承することで、必要なメソッドだけをオーバーライドして実装できます。
 
-以下のコードは、WindowAdapterを使用してウィンドウを閉じる際の終了確認を実装する例です。setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)でデフォルトの閉じる動作を無効化し、windowClosing()メソッドでカスタム処理を実行します。
+以下のコードは、WindowAdapterを使用してウィンドウを閉じる際の終了確認を実装する例です。`setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)`でデフォルトの閉じる動作を無効化し、`windowClosing()`メソッドでカスタム処理を実行します。
 
 <span class="listing-number">**サンプルコード18-5**　WindowEventExample.java</span>
 
@@ -442,7 +442,7 @@ public class BasicMouseEventExample extends JFrame {
 以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。`consume()`メソッドを呼ぶと、そのイベントを処理済みにして、このあとに続くキーバインディングなどの処理へ渡さないようにできます。
 複数のキーの同時押しや、`InputMap`と`ActionMap`によるキーバインディングは、第19章のサンプルコード19-2で学びます。
 
-<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜39、46、53行目）</span>
+<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜40、47、54行目）</span>
 
 ```java
 public class BasicKeyEventExample extends JFrame {
@@ -460,9 +460,10 @@ public class BasicKeyEventExample extends JFrame {
                 if (e.isControlDown()
                         && e.getKeyCode() == KeyEvent.VK_S) {
                     JOptionPane.showMessageDialog(
-                            BasicKeyEventExample.this, 
-                        "保存ショートカットが押されました");
-                    e.consume(); // デフォルトの動作をキャンセル
+                            BasicKeyEventExample.this,
+                            "保存ショートカットが押されました");
+                    // 処理済みにして、このあとのキーバインディングに渡さない
+                    e.consume();
                 }
             }
         });
@@ -522,7 +523,7 @@ public class ItemListenerExample extends JFrame {
 
 コンポーネントがフォーカスを得る・失うタイミングを検出する例です。
 
-以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容の検証を行います。この仕組みを使用することで、ユーザーフレンドリーなフォーム入力インターフェイスを実装できます。
+以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容を検証します。この例では、名前のフィールドが空のままフォーカスを失うと、背景をピンクにしてメッセージを表示します。
 
 <span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜46、72、86行目）</span>
 
@@ -798,7 +799,7 @@ public class TimerExample {
 本章では、GUIプログラミングの基本となるイベント処理について学習しました。
 
 ### 重要なポイント
-- イベント駆動プログラミングの3要素（ソース、オブジェクト、リスナー）
+- イベント処理の3要素（ソース、オブジェクト、リスナー）
 - ActionListenerによる基本的なボタンクリック処理
 - ラムダ式を使った簡潔なイベントハンドラーの記述
 - 各種イベントリスナーの基本的な使い方
@@ -807,8 +808,8 @@ public class TimerExample {
 
 ### 次のステップ
 基本的なイベント処理を理解したので、次章では、より高度なイベント処理パターンについて学習します。
-マウスとキーボードの詳細な処理、DocumentListenerによるテキスト監視、カスタムイベントの作成、ドラッグ&ドロップを扱います。
-高頻度のイベントの間引き方と、SwingWorkerによる非同期処理も学びます。
+マウスとキーボードの詳細な処理、DocumentListenerによるテキスト監視、カスタムイベントの作成、SwingWorkerによる非同期処理を扱います。
+ドラッグ&ドロップと、高頻度のイベントの間引き方の要点も紹介します。
 
 ## 章末演習
 

@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 
-// サンプルコード20-5のTaskクラスと同じもの
+// サンプルコード20-4のTaskクラスと同じもの
 class Task {
     private String title;
     private String description;
