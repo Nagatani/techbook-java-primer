@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 8c9321fa
   - key: "なぜカプセル化が重要なのか"
-    hash: ec0e1316
+    hash: e50c022b
   - key: "カプセル化とアクセス制御"
     hash: 18a357ff
   - key: "実践的なクラス設計例"
@@ -106,3 +106,4 @@ sections:
 - 解消済み: 「第3章のBankAccountV3」の誤り、4-15の未使用引数（EnhancedBankAccountごと削除）、エラー例のコンストラクター（GitHubへ移動）、4-30のLoggerの曖昧なオーバーロード（`logf`に分離）、V2の残る問題の理由づけ（以上2026-11-11）、「柔軍性」、「〜である必要です」、L944の重複文、「この設計の要点。」「（統合版）」「完全ガイド」「解決策:」「防御的コピー: 」の形式
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-17: BankAccountの脚注のBigDecimalに「第6章で学びます」を添えた

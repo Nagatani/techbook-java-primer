@@ -17,7 +17,7 @@ sections:
   - key: "日付と時刻の列とjava.time"
     hash: 4adcf547
   - key: "トランザクション"
-    hash: afedee5a
+    hash: e0fbc3c2
   - key: "コネクションプールとバッチ処理"
     hash: 58fa0a18
   - key: "よくあるエラーと対処法"
@@ -70,3 +70,4 @@ sections:
 - 第25・26章: DAO（本章）とリポジトリ（第25章）、SQLiteとH2の比較（第26章）
 - 付録D: java.timeのクラスの使い方
 - 2026-11-16: java.timeの脚注を第6章への誘導にし、「よくあるエラーと対処法」に付録Eの章ごとのファイル（chapter24.md、H2の実際のメッセージ）への案内を加えた
+- 2026-11-17: 金額をBigDecimalで扱う脚注に、第6章で学んだ旨を添えた

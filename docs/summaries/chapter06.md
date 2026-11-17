@@ -1,9 +1,9 @@
 ---
 source: manuscripts/chapter06-immutability-and-final.md
-summarized: 2026-11-14
+summarized: 2026-11-17
 sections:
   - key: "本章の学習目標"
-    hash: d2f49379
+    hash: 014f7480
   - key: "不変性の概念と重要性"
     hash: 9ff0b384
   - key: "finalキーワードの3つの用途"
@@ -14,10 +14,12 @@ sections:
     hash: 5cbde577
   - key: "日付と時刻（java.time）"
     hash: 5d5264ac
+  - key: "数値の正確な計算（BigDecimal）"
+    hash: 3f2f93e0
   - key: "よくあるエラーと対処法"
-    hash: 6c0502af
+    hash: efda4df4
   - key: "まとめ"
-    hash: f4a537d7
+    hash: 983a8414
   - key: "章末演習"
     hash: e5081f50
 ---
@@ -46,8 +48,8 @@ sections:
 
 ## 節ごとの要約
 
-- 本章の学習目標（L3–19）
-    + 不変性の概念、finalの使い分け、不変オブジェクトの設計（防御的コピー・ビルダー）、実践的な実装技術の4目標
+- 本章の学習目標（L3–23）
+    + 不変性の概念、finalの使い分け、不変オブジェクトの設計（防御的コピー・ビルダー）、実践的な実装技術、日付と時刻、数値の正確な計算の6目標
 - 不変性の概念と重要性（L20–155）
     + 可変な`MutablePoint`を2スレッドで更新する競合状態（6-1。実行結果は一例と明記）と、getterが内部の可変オブジェクトを返す副作用（6-2）を問題として示す
     + finalフィールドと`withX`/`withY`を持つ`ImmutablePoint`で解決を示し（6-3）、スレッドセーフティ・キャッシュ・デバッグの利点を文章で述べる
@@ -64,10 +66,18 @@ sections:
     + `DateRange`で入力時・出力時の防御的コピーを示し（6-9）、図（chapter06-defensive-copy）で有無の違いを示す
     + 小見出し「防御的コピーのコストと注意点」で、コピーのコスト、浅いコピーと深いコピー、`Collections.unmodifiableList`のビューと`List.copyOf`の違いを説明し、ViewVsCopy（6-10）で示す
     + 必須とオプションのパラメーターを分けた`Book.Builder`（6-11）と、メソッドチェーンでの使用例（6-12）。ビルダーの利点（読みやすさ、必要な値だけの設定、完成後の不変性、構築時の検証）を文章で述べる
-- よくあるエラーと対処法（L629–648）
-    + 出会いやすい誤り6点（final変数の再代入と未初期化、可変なフィールドの露出、防御的コピーの実装忘れ、final配列・コレクションの誤解、継承による不変性の破綻、不必要な防御的コピー）の要点と、付録F（`appendix/f-common-errors/chapters/chapter06.md`）のURL
-- まとめ（L649–668）
-    + 学習内容4点を列挙する（不変性の利点は1項目にまとめた）
+- 日付と時刻（java.time）（L650–838）
+    + DateとCalendarの問題、主なクラスの表、作成と計算（6-13）、差（ChronoUnit・Period・Duration、6-14）、表示と読み取り（DateTimeFormatter、SMARTとSTRICT、6-15）
+- 数値の正確な計算（BigDecimal）（L839–1072）
+    + 第2章の基本データ型からの誘導を受け、`java.math`の不変クラス`BigDecimal`・`BigInteger`を扱う
+    + `double`で0.1を10回足すと1.0にならない誤差と、文字列から作る`BigDecimal`での正確な計算。`new BigDecimal(0.1)`と`valueOf`の違い、計算は新しいオブジェクトを返すので戻り値を受け取ること、スケール（6-16）
+    + 掛け算のスケール、`setScale`、割り切れない割り算の`ArithmeticException`と`divide(割る数, 桁数, 丸め方)`（6-17）。`RoundingMode`の主な6つと2.5・-2.5の丸めの表（列挙型は第8章へ誘導）
+    + `compareTo`による比較と、`equals`がスケールまで比べる注意（`HashSet`のことは脚注）。`long`のオーバーフローと`BigInteger`、30の階乗（6-18）。`Math.addExact`
+    + 使い分け（BigDecimal・最小単位のlong・BigInteger・double）と、第24章のDECIMAL型への案内
+- よくあるエラーと対処法（L1073–1094）
+    + 出会いやすい誤り7点（final変数の再代入と未初期化、可変なフィールドの露出、防御的コピーの実装忘れ、final配列・コレクションの誤解、継承による不変性の破綻、不必要な防御的コピー、BigDecimalの扱いの誤り）の要点と、付録E（`appendix/e-common-errors/chapters/chapter06.md`）のURL
+- まとめ（L1095–1118）
+    + 学習内容6点を列挙する（不変性の利点は1項目にまとめた）
 - 章末演習（L669–695）
     + `exercises/chapter06/`へのリンクと、基礎・発展・チャレンジ課題の概要。第7章への案内と付録B.05への参照
 
@@ -76,7 +86,8 @@ sections:
 - 第4章（クラスとインスタンス）: 防御的コピーとビルダーパターンを本章へ誘導している（2026-11-11に重複を解消）
 - 第5章（継承とポリモーフィズム）: equals・hashCode・toStringの書き方を参照する
 - 第3章（オブジェクト指向の考え方）: Recordは名前を挙げて第8章へ誘導するだけになった（2026-11-11に三重の説明を解消）
-- 第8章（Javaの特殊なクラス形式）: Recordの本格的な説明と静的ネストクラス。本章の6-8と6-10から誘導する
+- 第8章（Javaの特殊なクラス形式）: Recordの本格的な説明と静的ネストクラス。本章の6-8と6-10から誘導する。8-22のMoneyは本章のBigDecimalを使う
+- 第2章（基本データ型）・第4章・第5章: BigDecimalへの言及から本章の「数値の正確な計算（BigDecimal）」へ誘導する。第24章はDECIMAL型の列をBigDecimalで扱う
 - 第9章（コレクション）、第11章（ラムダ式）、第15章（マルチスレッド）: 本章のサンプルで先取りして使い、初出で読み方を案内している
 - 付録B.05「不変性の設計パターン」: `appendix/b05-immutability-patterns/`と一致
 - 付録F（第6章）: エラー集の詳細
@@ -102,3 +113,4 @@ sections:
 - 章末演習の「課題の概要」の「不変なPointクラス - 基本的な…」の形、サンプルの全文のコメントの「コンストラクタ」「パラメータ」（2026-11-12に解消。第4・5章の全文も同様に直した）
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: 節「日付と時刻（java.time）」を「よくあるエラーと対処法」の前に加えた（著者の指示で付録Dのjava.timeを本書に必要な範囲に絞って編入）。DateとCalendarの問題、主なクラスの表、作成と計算（6-13）、差（ChronoUnit・Period・Duration、6-14）、表示と読み取り（DateTimeFormatter、SMARTとSTRICTの違い、6-15）。詳しい資料は`appendix/java-time-api/`（脚注）。学習目標とまとめに5項目めを加えた
+- 2026-11-17: 節「数値の正確な計算（BigDecimal）」を「日付と時刻（java.time）」の後に加えた（著者の指示）。サンプル6-16〜6-18、丸め方の表。学習目標・まとめに6項目め、よくあるエラーにBigDecimalの扱いの誤りを加え、付録Eの`chapters/chapter06.md`に節と全文2つ（BigDecimalMistakes・BigDecimalCorrect）を足した。用語集のBigDecimalを第6章・第8章・第24章にし、BigInteger・RoundingModeを加えた

@@ -7,7 +7,7 @@ sections:
   - key: "列挙型（Enum）"
     hash: d3e998c6
   - key: "レコード（Record）"
-    hash: 88f2a7f1
+    hash: d118b202
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 3f8d2413
   - key: "内部クラス（Inner Classes）"
@@ -109,3 +109,4 @@ sections:
     + 「値の数が数百を超える場合」という根拠のない基準、継承の向きがあいまいな文、メモリリークの理由の欠落、8-26の導入文なし、8-21のキャプションのファイル名なし、8-20の英文の出力、コードのコメントの長音
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
+- 2026-11-17: 8-22 Moneyの導入文に、金額を第6章で学んだBigDecimalで持つことを書いた
