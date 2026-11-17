@@ -737,7 +737,8 @@ pre.code-excerpt .code-segment {
   background-color: #f9f9f9;
   border: 1px solid #666;
   border-radius: 4px;
-  padding: 0 1em 0.75em;
+  /* 左の余白に行番号（4桁まで）を置く */
+  padding: 0 1em 0.75em 5.5ch;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -750,6 +751,22 @@ pre.code-excerpt .code-segment + .code-segment {
   margin-top: 0.6em;
 }
 
+/* 全文での行番号。行の左の余白に右寄せで置く（折り返した続きの行には付けない） */
+pre.code-excerpt .code-line[data-line] {
+  position: relative;
+}
+
+pre.code-excerpt .code-line[data-line]::before {
+  content: attr(data-line);
+  position: absolute;
+  top: 0;
+  left: -5.5ch;
+  width: 4ch;
+  text-align: right;
+  text-indent: 0;
+  color: #888;
+}
+
 /* キャプションに続く最初の枠は、キャプションとつなげる */
 p:has(span.listing-number) + pre.code-excerpt .code-segment:first-child {
   border-radius: 0 0 4px 4px;
@@ -757,7 +774,7 @@ p:has(span.listing-number) + pre.code-excerpt .code-segment:first-child {
 
 pre.code-excerpt .code-segment-label {
   display: block;
-  margin: 0 -1em 0.4em;
+  margin: 0 -1em 0.4em -5.5ch;
   padding: 0.15em 1em;
   background-color: #ececec;
   border-bottom: 1px solid #ccc;

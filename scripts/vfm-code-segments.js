@@ -7,6 +7,7 @@
  *
  * - 範囲ごとに <span class="code-segment"> で囲み、テーマで別々の枠にする
  * - 枠の頭に「Shape.java　30〜41行目」のような見出し（b.code-segment-label）を付ける
+ * - 各行に全文での行番号（data-line 属性）を付け、テーマで行の左に出す
  * - 範囲のあいだに入れた「// ...」の行と空行は取り除く（枠の切れ目が省略を表す）
  *
  * 同じファイルの続いた範囲は1つの枠にまとめる。範囲が1つだけのサンプルは何もしない
@@ -87,8 +88,13 @@ function segmentCode(code, id) {
     properties: { className: ['code-segment'] },
     children: [{ type: 'element', tagName: 'b', properties: { className: ['code-segment-label'] }, children: [{ type: 'text', value: g.label }] }],
   }));
+  // 各行に全文での行番号を付ける（表示はテーマの .code-line[data-line]::before）
+  const next = entry.excerpt.map((seg) => seg.from);
   lines.forEach((line, i) => {
-    if (layout[i].seg !== null) boxes[groupOf.get(layout[i].seg)].children.push(line);
+    const { seg } = layout[i];
+    if (seg === null) return;
+    line.properties = { ...line.properties, dataLine: String(next[seg]++) };
+    boxes[groupOf.get(seg)].children.push(line);
   });
   code.children = boxes;
   return true;
