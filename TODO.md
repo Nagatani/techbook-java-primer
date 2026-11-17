@@ -20,7 +20,7 @@
 - [x] 文字が7Q未満になる図12枚を書き直した（Issue #016、2026-11-11）。すべて7.3Q以上になった。あわせて、本文やJavaの実際と食い違っていた図（5章の継承階層、8章の匿名クラス、14章のFileReader、17章のSwingの階層など）を直した
 - [x] 図を加えた（2026-11-11。候補は`docs/deletion-candidates/analysis/diagram-candidates.md`、図は21枚から63枚に）。本文・付録・演習・サンプルコードの絵文字約1,500か所を消し、`check:structure`で絵文字を検査するようにした
 - [x] 本文に脚注を加え、GitHubのURL全文・用語の補足・余談を示した。本文の流れを止めていた補足も脚注へ移した（2026-11-12。7個から278個。書き方は`docs/guides/writing-guidelines-textlint-compliance.md`の11節、見つけた未修正の点はIssue #019）
-- [x] 演習の発展課題・チャレンジ課題を作り直した（2026-11-12）。第4〜16・18・20〜23章の架空の題材（量子・意識・時空間など）や別の章の内容を、各章の範囲で解ける身近な課題に置き換え、全課題に動く解答例を付けた（READMEの実行例は実際の出力）。手順は`docs/deletion-candidates/planning/exercise-review-brief.md`。コンパイルできない解答例と第2章の内容の不一致は、それ以前に解消済み
+- [x] 演習の発展課題・チャレンジ課題を作り直した（2026-11-12）。第4〜16・18・20〜23章の架空の題材（量子・意識・時空間など）や別の章の内容を、各章の範囲で解ける身近な課題に置き換え、全課題に動く解答例を付けた（READMEの実行例は実際の出力）。手順の文書は作業後に削除した（2026-11-18）。コンパイルできない解答例と第2章の内容の不一致は、それ以前に解消済み
 - [x] 演習の基礎課題（basic/）と章ごとのREADMEを見直した（2026-11-13、Issue #020）。READMEを雛形に合わせ、範囲外の要求と作り物の実行例をなくし、第16章のUDP・REST APIクライアントと第18章の基礎課題の解答例を加えた
 - [x] switchのガード（`when`）を第8章のサンプルコード8-18で説明し、第2章のswitch式から脚注で誘導した（2026-11-13）
 - [x] 第9〜11・20章の基礎課題の解答例（solutions/）を、雛形と章の範囲に合わせて作り直した。後の章の機能を使った書き方はコメントと各solutions/README.mdの表で示した（2026-11-13、Issue #021）
@@ -75,7 +75,7 @@
 - [x] 出版の形に合わせてビルドを分けた（2026-11-16、著者の方針: WebでALPHA版を無料配布し、正規版を電子版かオンデマンド印刷で出版する）。`npm run build`はALPHA版、`npm run build:release`は正規版、`npm run build:press`は正規版をトンボ・塗り足し3mm・PDF/X-1aで出す。表紙の「ALPHA VERSION」と奥付の版の表示は版ごとに出し分ける（`scripts/vfm-edition.js`）。トンボ付きのPDFは表紙の地が塗り足しまで広がることを確かめた。`build:press`（DockerでのPDF/X-1aへの変換）はまだ実行していない
 - [x] ノンブルを、前付けはローマ数字（表紙i・目次ii〜iv）、本文は第1章を1ページとする形にした（2026-11-16。第1章は右ページから始まり、奥付は732ページ）
 - [x] LICENSEを置いた（2026-11-16、著者の指示）。文章・図はAll Rights Reserved、`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定はMIT（`LICENSE-CODE`）。奥付の注意書きを合わせた
-- [x] docsディレクトリを整理した（2026-11-17、著者の指示）。校閲で読む規約・手順を`docs/guides/`にまとめ、役目を終えた資料を`docs/deletion-candidates/`（旧`docs/archive/`）に集めた。現状の要約は`docs/analysis/project-status.md`に移した。削除の候補の一覧と判断の目安は`docs/deletion-candidates/README.md`。著者が確認して不要なものを削除する。課題管理は、開いている課題だけを`docs/analysis/issues-tracking.md`に残し、解決済みの課題と2026-11の作業記録を`issues-resolved.md`に、2025年の作業サマリーと計画を`docs/deletion-candidates/analysis/issues-tracking-2025.md`に分けた
+- [x] docsディレクトリを整理した（2026-11-17、著者の指示）。校閲で読む規約・手順を`docs/guides/`にまとめ、役目を終えた資料を`docs/deletion-candidates/`（旧`docs/archive/`）に集めた。現状の要約は`docs/analysis/project-status.md`に移した。削除の候補の一覧と判断の目安は`docs/deletion-candidates/README.md`。著者が確認して不要なものを削除する。課題管理は、開いている課題だけを`docs/analysis/issues-tracking.md`に残し、解決済みの課題と2026-11の作業記録を`issues-resolved.md`に、2025年の作業サマリーと計画を`docs/deletion-candidates/analysis/issues-tracking-2025.md`に分けた。2026-11-18に、削除の候補のうち「そのまま削除してよいもの」44ファイルを削除した（残りは確認してから判断する7ファイル）
 - [ ] 出版時に決めること
     + 正規版の奥付の発行日（`manuscripts/colophon.md`の`edition-release`、いま「2026年○月○日」）と、印刷所・発行者などを載せるか（オンデマンド印刷のサービスの指定に合わせる）
     + 入稿先の仕様（PDF/X-1aか、塗り足しの幅、表紙を本文と別のファイルにするか、総ページの条件）。表紙を別にするなら、本文のPDFから表紙を外す設定を加える
