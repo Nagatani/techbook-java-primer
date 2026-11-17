@@ -73,7 +73,7 @@
     "dir": "08-10",
     "main": "EnumCollectionExample",
     "excerpt": [
-      { "file": "EnumCollectionExample.java", "from": 1, "to": 28 }
+      { "file": "EnumCollectionExample.java", "from": 1, "to": 31 }
     ]
   },
   "8-11": {
@@ -104,7 +104,7 @@
     "dir": "08-14",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 13 }
+      { "file": "BankAccount.java", "from": 1, "to": 14 }
     ]
   },
   "8-15": {
@@ -118,7 +118,7 @@
     "dir": "08-16",
     "main": null,
     "excerpt": [
-      { "file": "Temperature.java", "from": 1, "to": 24 }
+      { "file": "Temperature.java", "from": 1, "to": 25 }
     ]
   },
   "8-17": {
@@ -133,14 +133,14 @@
     "main": "PatternMatchingExample",
     "excerpt": [
       { "file": "Point.java", "from": 1, "to": 1 },
-      { "file": "PatternMatchingExample.java", "from": 1, "to": 27 }
+      { "file": "PatternMatchingExample.java", "from": 1, "to": 28 }
     ]
   },
   "8-19": {
     "dir": "08-19",
     "main": null,
     "excerpt": [
-      { "file": "LocalRecordExample.java", "from": 1, "to": 28 }
+      { "file": "LocalRecordExample.java", "from": 1, "to": 29 }
     ]
   },
   "8-20": {
@@ -156,7 +156,7 @@
     "dir": "08-22",
     "main": null,
     "excerpt": [
-      { "file": "Money.java", "from": 1, "to": 26 }
+      { "file": "Money.java", "from": 1, "to": 27 }
     ]
   },
   "8-23": {
@@ -167,17 +167,17 @@
       { "file": "Circle.java", "from": 1, "to": 1 },
       { "file": "Rectangle.java", "from": 1, "to": 1 },
       { "file": "Triangle.java", "from": 1, "to": 1 },
-      { "file": "ShapeCalculator.java", "from": 1, "to": 10 }
+      { "file": "ShapeCalculator.java", "from": 1, "to": 12 }
     ]
   },
   "8-24": {
     "dir": "08-24",
     "main": null,
     "excerpt": [
-      { "file": "Order.java", "from": 4, "to": 5 },
+      { "file": "Order.java", "from": 4, "to": 6 },
       { "file": "Customer.java", "from": 1, "to": 1, "sep": "none" },
-      { "file": "OrderItem.java", "from": 3, "to": 3, "sep": "none" },
-      { "file": "OrderProcessor.java", "from": 3, "to": 21 }
+      { "file": "OrderItem.java", "from": 3, "to": 4, "sep": "none" },
+      { "file": "OrderProcessor.java", "from": 3, "to": 22 }
     ]
   },
   "8-25": {
@@ -186,7 +186,7 @@
     "excerpt": [
       { "file": "OrderStatus.java", "from": 1, "to": 6 },
       { "file": "OrderStatus.java", "from": 20, "to": 23 },
-      { "file": "Order.java", "from": 4, "to": 26 }
+      { "file": "Order.java", "from": 4, "to": 28 }
     ]
   },
   "8-26": {
@@ -195,8 +195,8 @@
     "excerpt": [
       { "file": "CharacterClass.java", "from": 1, "to": 5 },
       { "file": "CharacterClass.java", "from": 24, "to": 24 },
-      { "file": "CharacterStats.java", "from": 1, "to": 10 },
-      { "file": "GameCharacter.java", "from": 1, "to": 22 }
+      { "file": "CharacterStats.java", "from": 1, "to": 11 },
+      { "file": "GameCharacter.java", "from": 1, "to": 24 }
     ]
   },
   "8-27": {
@@ -217,7 +217,7 @@
     "dir": "08-29",
     "main": null,
     "excerpt": [
-      { "file": "LocalClassExample.java", "from": 1, "to": 14 }
+      { "file": "LocalClassExample.java", "from": 1, "to": 15 }
     ]
   },
   "8-30": {

@@ -252,7 +252,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜20、24〜28行目）</span>
+<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、17〜21、25〜30行目）</span>
 
 ```java
 // 親クラス
@@ -309,11 +309,13 @@ public class CharacterOverrideTest {
         // ポリモーフィズムの例
         Character polymorphicWizard = new Wizard("賢者", 80, 20);
         polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
-        // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
+        // コンパイルエラー：Character型にはcastSpellメソッドがない
+        // polymorphicWizard.castSpell();
         // ...
         // superで親クラスのメソッドを呼び出す例
         Knight knight = new Knight("騎士", 120);
-        knight.attack();  // 親クラスのattack()に続けて、Knight独自の処理が実行される
+        // 親クラスのattack()に続けて、Knight独自の処理が実行される
+        knight.attack();
     }
 }
 ```
@@ -380,11 +382,14 @@ User user3 = new GuestUser("session123");
 <span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
-user1.processRequest("READ"); // 実行結果: ユーザー U001 が READ をリクエストしました
-user2.processRequest("DELETE"); // 実行結果: 管理者権限での処理: DELETE
-                               //         セキュリティチェックを実行中...
-user3.processRequest("WRITE"); // 実行結果: ユーザー guest_session123 が WRITE をリクエストしました
-                              //         ゲストユーザーのため、一部機能が制限されています
+user1.processRequest("READ");
+// 実行結果: ユーザー U001 が READ をリクエストしました
+user2.processRequest("DELETE");
+// 実行結果: 管理者権限での処理: DELETE
+//           セキュリティチェックを実行中...
+user3.processRequest("WRITE");
+// 実行結果: ユーザー guest_session123 が WRITE をリクエストしました
+//           ゲストユーザーのため、一部機能が制限されています
 ```
 
 `user2.processRequest()`という同じ呼び出し方にもかかわらず、Javaの実行環境は`user2`が実際に`AdminUser`オブジェクトを指していることを認識します。そして、`AdminUser`クラスでオーバーライドされた`processRequest()`メソッドを自動的に呼び出します<span class="footnote">C言語で同じことをするには、構造体に関数ポインターを持たせ、オブジェクトごとに呼び出す関数を差し替えます。多くのJava仮想マシンは、クラスごとのメソッドの表（仮想メソッドテーブル）を使って、呼び出すメソッドを決めています（付録B.04）。</span>。これがポリモーフィズムです。
@@ -401,7 +406,8 @@ public class UserManagementSystem {
         // 親クラスの配列に、さまざまな子クラスのインスタンスを格納できる
         User[] users = new User[3];
         users[0] = new RegularUser("U001", "user1@example.com");
-        users[1] = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+        users[1] = new AdminUser("A001", "admin@example.com",
+                "SuperAdmin");
         users[2] = new GuestUser("session123");
 
         // 全ユーザーのリクエストを処理
@@ -434,14 +440,16 @@ public class UserManagementSystem {
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java（1〜18、26〜47行目）</span>
+<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java（1〜20、28〜51行目）</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
 public class UserSystemBefore {
     public static void main(String[] args) {
-        RegularUser regular = new RegularUser("U001", "user1@example.com");
-        AdminUser admin = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+        RegularUser regular =
+                new RegularUser("U001", "user1@example.com");
+        AdminUser admin = new AdminUser("A001", "admin@example.com",
+                "SuperAdmin");
         GuestUser guest = new GuestUser("session123");
         
         // それぞれの型に応じたリクエスト処理
@@ -457,12 +465,14 @@ public class UserSystemBefore {
         guest.processRequest("WRITE");
         // ...
         // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
-        // PremiumUser premium = new PremiumUser("P001", "premium@example.com");
+        // PremiumUser premium =
+        //         new PremiumUser("P001", "premium@example.com");
         // premium.processRequest("CREATE");
     }
     
     // アクセス権限を確認する場合も型別処理が必要
-    public static boolean checkAccessPermission(RegularUser regular, AdminUser admin, GuestUser guest, String resource) {
+    public static boolean checkAccessPermission(RegularUser regular,
+            AdminUser admin, GuestUser guest, String resource) {
         // 各型ごとに個別に処理
         if (regular != null) {
             return resource.equals("READ") || resource.equals("WRITE");
@@ -498,7 +508,7 @@ Guest user WRITE権限: false
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-9**　User.java（1〜4、11〜13、15〜31行目）、UserSystemAfter.java（1〜18、27〜42、53行目）</span>
+<span class="listing-number">**サンプルコード5-9**　User.java（1〜4、11〜14、16〜32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
 
 ```java
 // 親クラスに共通インターフェイスを定義
@@ -507,7 +517,8 @@ public class User {
     protected String email;
     // ...
     public void processRequest(String action) {
-        IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+        IO.println("ユーザー " + userId + " が " + action
+                + " をリクエストしました");
     }
     // ...
     public boolean hasPermission(String resource) {
@@ -544,20 +555,23 @@ public class UserSystemAfter {
         
         // 統一的な処理で全員を扱える
         for (User user : users) {
-            user.processRequest("READ"); // 実際の型に応じた処理が自動的に呼ばれる
+            // 実際の型に応じた処理が自動的に呼ばれる
+            user.processRequest("READ");
         }
         // ...
     }
     
     // アクセス権限チェックも拡張性が高い
-    public static boolean checkAccessPermission(User[] users, String resource) {
+    public static boolean checkAccessPermission(User[] users,
+            String resource) {
         boolean hasPermission = true;
         
         // 型を意識せずに処理できる
         for (User user : users) {
             if (!user.hasPermission(resource)) {
                 hasPermission = false;
-                IO.println(user.getUserId() + " には " + resource + " 権限がありません");
+                IO.println(user.getUserId() + " には " + resource
+                        + " 権限がありません");
             }
         }
         
@@ -685,7 +699,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-11**　DrawingAppAfter.java（1〜31、75〜89、98〜118行目）</span>
+<span class="listing-number">**サンプルコード5-11**　DrawingAppAfter.java（1〜31、75〜89、98〜119行目）</span>
 
 ```java
 // 基底クラス
@@ -749,7 +763,8 @@ class Pentagon extends Shape {
     
     @Override
     double calculateArea() {
-        return 0.25 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5))) * side * side;
+        return 0.25 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5))) * side
+                * side;
     }
     
     @Override
@@ -1043,7 +1058,7 @@ s1.equals(s3): false
 
 </div>
 
-<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
+<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜75、85行目）</span>
 
 ```java
 // 決済処理の基底クラス：テンプレートメソッドパターンの実装
@@ -1092,7 +1107,8 @@ public class PaymentProcessor {
     
     // フックメソッド：子クラスでオーバーライド可能
     protected void logTransaction(String authCode) {
-        IO.println("取引ID: " + transactionId + " 承認コード: " + authCode);
+        IO.println("取引ID: " + transactionId + " 承認コード: "
+                + authCode);
     }
     // ...
 }
@@ -1116,7 +1132,7 @@ public class PaymentProcessor {
 
 #### 具体的な決済処理の実装例
 
-<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜43行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
+<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜44行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
 
 ```java
 // クレジットカード決済の実装
@@ -1125,7 +1141,8 @@ public class CreditCardPayment extends PaymentProcessor {
     private String cvv;
     
     public CreditCardPayment(String transactionId, BigDecimal amount, 
-                           String currency, String cardNumber, String cvv) {
+                           String currency, String cardNumber,
+                           String cvv) {
         super(transactionId, amount, currency);
         this.cardNumber = cardNumber;
         this.cvv = cvv;
@@ -1351,7 +1368,8 @@ public class WordDocument extends Document {
     
     // WordDocument固有の機能があれば追加
     public void applyTemplate(String templateName) {
-        IO.println(filename + " にテンプレート " + templateName + " を適用");
+        IO.println(filename + " にテンプレート " + templateName
+                + " を適用");
     }
 }
 
@@ -1366,7 +1384,8 @@ public class PDFDocument extends Document {
     // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
     @Override
     public void save() {
-        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
+        // PDFは圧縮される
+        fileSize = (content != null ? content.length() : 0) / 2;
         IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
@@ -1387,7 +1406,8 @@ public class ExcelDocument extends Document {
     @Override  // ②
     public void save() {
         fileSize = content != null ? content.length() * 2 : 0;  // ③
-        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
+        IO.println(filename + " をExcel形式で保存: " + fileSize
+                + "バイト（メタデータ含む）");
     }
     
     public void createChart() {  // ④
@@ -1404,7 +1424,8 @@ public class ExcelDocument extends Document {
 public class RefactoredDocumentTest {
     public static void main(String[] args) {
         // リファクタリング後の使用例
-        WordDocument word = new WordDocument("report.docx", "これはWordドキュメントの内容です");
+        WordDocument word = new WordDocument("report.docx",
+                "これはWordドキュメントの内容です");
         word.open();
         word.save();
         word.applyTemplate("ビジネスレポート");
@@ -1412,7 +1433,8 @@ public class RefactoredDocumentTest {
         
         IO.println();
         
-        PDFDocument pdf = new PDFDocument("manual.pdf", "これはPDFドキュメントの内容です", 10);
+        PDFDocument pdf = new PDFDocument("manual.pdf",
+                "これはPDFドキュメントの内容です", 10);
         pdf.open();
         pdf.save();  // オーバーライドされたメソッド
         pdf.generatePDF();
@@ -1420,7 +1442,8 @@ public class RefactoredDocumentTest {
         
         IO.println();
         
-        ExcelDocument excel = new ExcelDocument("data.xlsx", "これはExcelドキュメントの内容です");
+        ExcelDocument excel = new ExcelDocument("data.xlsx",
+                "これはExcelドキュメントの内容です");
         excel.open();
         excel.save();  // オーバーライドされたメソッド
         excel.createChart();
@@ -1522,7 +1545,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 public class MyStack {
-    private final ArrayList<String> elements = new ArrayList<>(); // privateで隠蔽
+    // privateで隠蔽
+    private final ArrayList<String> elements = new ArrayList<>();
     
     public void push(String item) {
         elements.add(item);

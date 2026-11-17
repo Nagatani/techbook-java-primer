@@ -10,7 +10,8 @@ interface ServiceV1 {
 
 interface ServiceV2 extends ServiceV1 {
     // 新機能をdefaultメソッドで追加（後方互換性維持）
-    default String processWithConfig(String input, ServiceConfig config) {
+    default String processWithConfig(String input,
+            ServiceConfig config) {
         // デフォルトでは設定を無視して従来の処理
         return process(input);
     }
@@ -30,7 +31,8 @@ interface ServiceV3 extends ServiceV2 {
     @Deprecated(since = "3.0", forRemoval = true)
     @Override
     default String oldProcess(String input) {
-        System.err.println("警告: oldProcessは非推奨です。processを使用してください。");
+        System.err.println("警告: "
+                + "oldProcessは非推奨です。processを使用してください。");
         return process(input);
     }
 }
@@ -45,6 +47,7 @@ class ServiceImpl implements ServiceV3 {
     // オプションで新機能をオーバーライド
     @Override
     public String processWithConfig(String input, ServiceConfig config) {
-        return "Processed with timeout " + config.getTimeout() + ": " + input.toUpperCase();
+        return "Processed with timeout " + config.getTimeout() + ": "
+                + input.toUpperCase();
     }
 }

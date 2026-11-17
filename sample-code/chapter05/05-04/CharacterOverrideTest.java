@@ -17,12 +17,14 @@ public class CharacterOverrideTest {
         // ポリモーフィズムの例
         Character polymorphicWizard = new Wizard("賢者", 80, 20);
         polymorphicWizard.attack();  // Wizardのattackメソッドが呼ばれる
-        // polymorphicWizard.castSpell();  // コンパイルエラー：Character型にはcastSpellメソッドがない
+        // コンパイルエラー：Character型にはcastSpellメソッドがない
+        // polymorphicWizard.castSpell();
 
         IO.println();
 
         // superで親クラスのメソッドを呼び出す例
         Knight knight = new Knight("騎士", 120);
-        knight.attack();  // 親クラスのattack()に続けて、Knight独自の処理が実行される
+        // 親クラスのattack()に続けて、Knight独自の処理が実行される
+        knight.attack();
     }
 }

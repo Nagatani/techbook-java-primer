@@ -20,11 +20,13 @@ public class CommonsIOExample {
             StandardCharsets.UTF_8, true);
         
         // ファイルの読み込み（1行で完了）
-        String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        String content = FileUtils.readFileToString(file,
+                StandardCharsets.UTF_8);
         IO.println("File content:\n" + content);
         
         // 行単位での読み込み
-        List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
+        List<String> lines =
+                FileUtils.readLines(file, StandardCharsets.UTF_8);
         IO.println("Lines count: " + lines.size());
         
         // 2. ファイルのコピー

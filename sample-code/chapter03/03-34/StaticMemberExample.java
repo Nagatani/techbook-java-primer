@@ -10,7 +10,8 @@ class Tool {
     public Tool(String name) {
         this.name = name;
         toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす
-        IO.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
+        IO.println(this.name + " が作成されました。現在のツール総数: "
+                + toolCount);
     }
 
     // インスタンスメソッド
@@ -20,7 +21,8 @@ class Tool {
 
     // クラスメソッド
     public static void showToolCount() {
-        // IO.println(this.name); // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        // IO.println(this.name);
         IO.println("作成されたツールの総数は " + toolCount + " です。");
     }
 }

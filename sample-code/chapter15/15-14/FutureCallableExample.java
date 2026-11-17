@@ -18,7 +18,8 @@ public class FutureCallableExample {
             long start = System.currentTimeMillis();
             long result = fibonacci(n);
             long time = System.currentTimeMillis() - start;
-            IO.println("計算完了: F(%d) = %d (所要時間: %dms)".formatted(n, result, time));
+            IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
+                    .formatted(n, result, time));
             return result;
         }
         
@@ -35,7 +36,8 @@ public class FutureCallableExample {
         // 複数の計算タスクを非同期で実行
         int[] numbers = {35, 38, 40, 42};
         for (int n : numbers) {
-            Future<Long> future = executor.submit(new CalculationTask(n));
+            Future<Long> future =
+                    executor.submit(new CalculationTask(n));
             futures.add(future);
         }
         

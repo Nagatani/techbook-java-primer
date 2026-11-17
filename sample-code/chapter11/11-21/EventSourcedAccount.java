@@ -6,9 +6,12 @@ public class EventSourcedAccount {
         AccountCreated, MoneyDeposited, MoneyWithdrawn {}
     
 
-    record AccountCreated(String accountId, String owner) implements AccountEvent {}
-    record MoneyDeposited(String accountId, Money amount) implements AccountEvent {}
-    record MoneyWithdrawn(String accountId, Money amount) implements AccountEvent {}
+    record AccountCreated(String accountId, String owner)
+            implements AccountEvent {}
+    record MoneyDeposited(String accountId, Money amount)
+            implements AccountEvent {}
+    record MoneyWithdrawn(String accountId, Money amount)
+            implements AccountEvent {}
     
     // イベントを順に適用して、現在の状態を求める
     public class AccountProjection {
@@ -20,7 +23,8 @@ public class EventSourcedAccount {
             return state;
         }
         
-        private AccountState applyEvent(AccountState state, AccountEvent event) {
+        private AccountState applyEvent(AccountState state,
+                AccountEvent event) {
             return switch (event) {
                 case AccountCreated(var id, var owner) -> 
                     new AccountState(id, owner, Money.ZERO);

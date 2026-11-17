@@ -282,7 +282,8 @@ public class BoundedTypeExample {
         doubleBox.setNumber(3.14);
         IO.println(doubleBox.getDoubleValue()); // 3.14
 
-        // NumericBox<String> stringBox = new NumericBox<>(); // コンパイルエラー！
+        // コンパイルエラー！
+        // NumericBox<String> stringBox = new NumericBox<>();
     }
 }
 ```
@@ -331,8 +332,10 @@ public class WildcardExample {
         return total;
     }
 
-    // 下限境界ワイルドカード：Integerとそのスーパークラスのリストを受け取り、1からcountまでを追加する
-    public static void addNumbers(List<? super Integer> list, int count) {
+    // 下限境界ワイルドカード：Integerとそのスーパークラスのリストを受け取り、
+    // 1からcountまでを追加する
+    public static void addNumbers(List<? super Integer> list,
+            int count) {
         for (int i = 1; i <= count; i++) {
             list.add(i);
         }
@@ -401,7 +404,8 @@ public class VarBasicExample {
         // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
         languagesVar.add("Java");
         languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
-        // languages.ensureCapacity(10);  // List<String>型なのでコンパイルエラー
+        // List<String>型なのでコンパイルエラー
+        // languages.ensureCapacity(10);
         scoresVar.put("Java", 90);
 
         IO.println("languagesVar: " + languagesVar);
@@ -462,7 +466,8 @@ public class VarLimitations {
         // OK: 明示的な配列作成
         var validArray = new int[]{1, 2, 3};
         
-        // 注意: ダイヤモンド演算子単体はコンパイルできるが、ArrayList<Object>と推論される
+        // 注意: ダイヤモンド演算子単体はコンパイルできるが、
+        // ArrayList<Object>と推論される
         var diamond = new ArrayList<>(); // ArrayList<Object>
         
         // OK: 型が推論可能
@@ -476,7 +481,7 @@ public class VarLimitations {
 var型推論は、使いどころを選べば読みやすさを高めますが、使いすぎると逆に読みにくくなります。
 次の例で、よい使い方と悪い使い方を比べてみましょう。
 
-<span class="listing-number">**サンプルコード10-11**　VarReadabilityExample.java（5〜34行目）</span>
+<span class="listing-number">**サンプルコード10-11**　VarReadabilityExample.java（5〜35行目）</span>
 
 ```java
 public class VarReadabilityExample {
@@ -487,7 +492,8 @@ public class VarReadabilityExample {
         var builder = new StringBuilder();
 
         // 長いジェネリック型でとくに有効
-        var complexMap = new HashMap<String, List<Map<String, Object>>>();
+        var complexMap = new HashMap<String, List<Map<String,
+                Object>>>();
     }
 
     public static void demonstratePoorUsage() {
@@ -519,7 +525,7 @@ var型推論は、ジェネリクスと組み合わせると効果が大きく�
 
 サンプルの`Pair<T, U>`は、本章の「複数の型パラメーター」で学んだ、2つの型パラメーターを持つジェネリッククラスです。
 
-<span class="listing-number">**サンプルコード10-12**　VarWithGenericsExample.java（7〜44行目）</span>
+<span class="listing-number">**サンプルコード10-12**　VarWithGenericsExample.java（7〜45行目）</span>
 
 ```java
 public class VarWithGenericsExample {
@@ -528,7 +534,8 @@ public class VarWithGenericsExample {
         var userPreferences = new HashMap<String, List<String>>();
         var nestedData = new ArrayList<Map<String, Set<Integer>>>();
 
-        // HashMap<String, List<String>>と推論されるので、getの戻り値はList<String>になる
+        // HashMap<String, List<String>>と推論されるので、getの
+        // 戻り値はList<String>になる
         userPreferences.put("Alice", List.of("Java", "Python"));
         List<String> languages = userPreferences.get("Alice");
         IO.println("Alice: " + languages);

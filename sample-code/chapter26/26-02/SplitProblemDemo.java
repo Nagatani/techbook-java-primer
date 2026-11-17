@@ -14,7 +14,8 @@ public class SplitProblemDemo {
         // Excelで「CSV UTF-8」形式を選んで保存すると、ファイルの先頭にBOM（U+FEFF）が付く
         String withBom = "\uFEFFS004,鈴木一郎,工学部,2025";
         String id = withBom.split(",")[0];
-        IO.println("S004と等しいか: " + id.equals("S004") + "（長さ" + id.length()
+        IO.println("S004と等しいか: " + id.equals("S004") + "（長さ"
+                + id.length()
             + "、1文字目はU+%04X）".formatted((int) id.charAt(0)));
     }
 }

@@ -13,7 +13,9 @@ public class UserManager {
     public void sendPasswordResetEmail() { /* ... */ }
     
     // ログイン処理
-    public boolean authenticate(String password) { /* ... */ return false; }
+    public boolean authenticate(String password) {
+        /* ... */ return false;
+    }
     public void generateSession() { /* ... */ }
     
     // レポート生成

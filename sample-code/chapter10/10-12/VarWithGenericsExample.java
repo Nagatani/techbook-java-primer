@@ -10,7 +10,8 @@ public class VarWithGenericsExample {
         var userPreferences = new HashMap<String, List<String>>();
         var nestedData = new ArrayList<Map<String, Set<Integer>>>();
 
-        // HashMap<String, List<String>>と推論されるので、getの戻り値はList<String>になる
+        // HashMap<String, List<String>>と推論されるので、getの
+        // 戻り値はList<String>になる
         userPreferences.put("Alice", List.of("Java", "Python"));
         List<String> languages = userPreferences.get("Alice");
         IO.println("Alice: " + languages);

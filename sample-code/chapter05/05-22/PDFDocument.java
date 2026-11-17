@@ -9,7 +9,8 @@ public class PDFDocument extends Document {
     // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
     @Override
     public void save() {
-        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
+        // PDFは圧縮される
+        fileSize = (content != null ? content.length() : 0) / 2;
         IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     

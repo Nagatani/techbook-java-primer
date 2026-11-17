@@ -5,7 +5,8 @@ class BankAccount {
     public void deposit(double amount) {
         // 検証処理は同期化の外で実行（パフォーマンス向上）
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の数である必要があります");
+            throw new IllegalArgumentException(
+                    "入金額は正の数である必要があります");
         }
         
         // 残高の更新部分だけを同期化

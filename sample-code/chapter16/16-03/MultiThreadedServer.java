@@ -53,7 +53,8 @@ class ClientHandler implements Runnable {
                 } else if (inputLine.startsWith("ECHO ")) {
                     out.println(inputLine.substring(5));
                 } else if (inputLine.equals("TIME")) {
-                    out.println(java.time.LocalDateTime.now().toString());
+                    out.println(java.time.LocalDateTime.now()
+                            .toString());
                 } else {
                     out.println("Unknown command: " + inputLine);
                 }

@@ -20,14 +20,19 @@ public class DateRangeExample {
 
             // 4月の予定（4月1日0時以上、5月1日0時未満）
             LocalDateTime from = LocalDate.of(2026, 4, 1).atStartOfDay();
-            String sql = "SELECT * FROM events WHERE starts_at >= ? AND starts_at < ? ORDER BY starts_at";
+            String sql = "SELECT * FROM events WHERE starts_at >= ? "
+                    + "AND starts_at < ? ORDER BY starts_at";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setObject(1, from);               // LocalDateTimeをTIMESTAMPとして渡す
+                // LocalDateTimeをTIMESTAMPとして渡す
+                ps.setObject(1, from);
                 ps.setObject(2, from.plusMonths(1));
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        LocalDateTime at = rs.getObject("starts_at", LocalDateTime.class);
-                        IO.println(at.toLocalDate() + " " + at.toLocalTime() + " " + rs.getString("title"));
+                        LocalDateTime at = rs.getObject("starts_at",
+                                LocalDateTime.class);
+                        IO.println(at.toLocalDate()
+                                + " " + at.toLocalTime() + " "
+                                + rs.getString("title"));
                     }
                 }
             }

@@ -24,7 +24,8 @@ public class VarLimitations {
         // OK: 明示的な配列作成
         var validArray = new int[]{1, 2, 3};
         
-        // 注意: ダイヤモンド演算子単体はコンパイルできるが、ArrayList<Object>と推論される
+        // 注意: ダイヤモンド演算子単体はコンパイルできるが、
+        // ArrayList<Object>と推論される
         var diamond = new ArrayList<>(); // ArrayList<Object>
         
         // OK: 型が推論可能

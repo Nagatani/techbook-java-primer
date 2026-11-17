@@ -9,7 +9,8 @@ public class User {
     }
     
     public void processRequest(String action) {
-        IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
+        IO.println("ユーザー " + userId + " が " + action
+                + " をリクエストしました");
     }
     
     public boolean hasPermission(String resource) {

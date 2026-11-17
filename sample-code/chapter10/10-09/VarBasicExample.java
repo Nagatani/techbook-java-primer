@@ -20,7 +20,8 @@ public class VarBasicExample {
         // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
         languagesVar.add("Java");
         languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
-        // languages.ensureCapacity(10);  // List<String>型なのでコンパイルエラー
+        // List<String>型なのでコンパイルエラー
+        // languages.ensureCapacity(10);
         scoresVar.put("Java", 90);
 
         IO.println("languagesVar: " + languagesVar);

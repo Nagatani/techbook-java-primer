@@ -1,5 +1,6 @@
 public class Product {
-    protected String productId;  // ① protectedにより同一パッケージまたはサブクラスからアクセス可能
+    // ① protectedにより同一パッケージまたはサブクラスからアクセス可能
+    protected String productId;
     protected String name;       // ①
     protected int price;         // ①
     

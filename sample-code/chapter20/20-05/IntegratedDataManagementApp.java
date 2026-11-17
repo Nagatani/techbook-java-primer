@@ -109,7 +109,8 @@ public class IntegratedDataManagementApp extends JFrame {
         }
         
         projectTree = new JTree(root);
-        projectTree.addTreeSelectionListener(new TreeSelectionListener() {
+        projectTree.addTreeSelectionListener(
+                new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -154,7 +155,8 @@ public class IntegratedDataManagementApp extends JFrame {
     }
     
     private void updateTaskTable() {
-        DefaultTableModel model = (DefaultTableModel) taskTable.getModel();
+        DefaultTableModel model =
+                (DefaultTableModel) taskTable.getModel();
         model.setRowCount(0);
         
         if (currentProject != null) {
@@ -162,7 +164,9 @@ public class IntegratedDataManagementApp extends JFrame {
                 model.addRow(new Object[]{
                     task.getTitle(),
                     task.getDescription(),
-                    task.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                    task.getDueDate().format(
+                    java.time.format.DateTimeFormatter.ofPattern(
+                    "yyyy/MM/dd")),
                     task.isCompleted()
                 });
             }

@@ -21,7 +21,8 @@ public class LambdaVsMethodReference {
         upper2.forEach(IO::println);
 
         // 引数を受け取るコンストラクターの参照
-        Function<String, Person> toPerson = Person::new;  // name -> new Person(name) と同じ
+        // name -> new Person(name) と同じ
+        Function<String, Person> toPerson = Person::new;
         List<Person> people = new ArrayList<>();
         for (String name : names) {
             people.add(toPerson.apply(name));

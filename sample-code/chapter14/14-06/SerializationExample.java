@@ -3,7 +3,8 @@ import java.time.LocalDateTime;
 
 // Serializableを実装したクラス
 class UserProfile implements Serializable {
-    private static final long serialVersionUID = 1L; // クラスのバージョン管理用
+    // クラスのバージョン管理用
+    private static final long serialVersionUID = 1L;
     String name;
     transient String password; // 直列化されない
     LocalDateTime registrationDate;
@@ -23,8 +24,10 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式でファイルに保存します。
-        // オブジェクトの構造や状態をそのまま保持できるため、データの永続化やキャッシュ機能に便利です。
+        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式で
+        // ファイルに保存します。
+        // オブジェクトの構造や状態をそのまま保持できるため、データの
+        // 永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
@@ -40,6 +43,8 @@ public class SerializationExample {
             UserProfile loadedUser = (UserProfile) ois.readObject();
             IO.println("復元されたオブジェクト: " + loadedUser); 
             // passwordはnullになる
-        } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

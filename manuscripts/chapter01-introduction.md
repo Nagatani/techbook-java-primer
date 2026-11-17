@@ -505,7 +505,8 @@ Hello, World!!
 String name = "Java 25";
 
 void main() {
-    List<String> words = new ArrayList<>(List.of("compact", "source", "file"));
+    List<String> words =
+            new ArrayList<>(List.of("compact", "source", "file"));
     IO.println(greet(name));
     IO.println(words);
 }
@@ -650,7 +651,8 @@ public class StandardOutput {
         IO.print("「IO.print」を使うと、末尾に改行は出力されません。");
         IO.print("改行は\\nで出力できます。\n");
         IO.print("\n");
-        String message = "C言語のprintf関数のように書式を指定したい場合は、「formatted」を使います。";
+        String message = "C言語のprintf関数のように書式を指定したい場合は、"
+                + "「formatted」を使います。";
         IO.println(message);
         IO.println("整数値: %d, 実数値: %f".formatted(10, 3.142592654d));
     }

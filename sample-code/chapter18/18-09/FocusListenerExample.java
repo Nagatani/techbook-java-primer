@@ -24,7 +24,8 @@ public class FocusListenerExample extends JFrame {
             public void focusGained(FocusEvent e) {
                 JTextField source = (JTextField) e.getSource();
                 source.setBackground(Color.YELLOW);
-                statusLabel.setText("フォーカスを取得: " + getFieldName(source));
+                statusLabel.setText("フォーカスを取得: "
+                        + getFieldName(source));
             }
             
             @Override

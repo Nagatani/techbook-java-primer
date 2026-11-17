@@ -68,7 +68,8 @@ public class SwingWorkerExample extends JFrame {
     }
     
     // SwingWorkerの実装
-    class DataProcessingWorker extends SwingWorker<String, ProgressInfo> {
+    class DataProcessingWorker extends SwingWorker<String,
+            ProgressInfo> {
         private static final int TOTAL_ITEMS = 100;
         
         @Override
@@ -78,7 +79,8 @@ public class SwingWorkerExample extends JFrame {
             
             for (int i = 0; i < TOTAL_ITEMS; i++) {
                 if (isCancelled()) {
-                    // キャンセルしたあとはget()で結果を受け取れないので、戻り値は使われない
+                    // キャンセルしたあとはget()で結果を受け取れないので、
+                    // 戻り値は使われない
                     return null;
                 }
                 
@@ -91,7 +93,8 @@ public class SwingWorkerExample extends JFrame {
                 
                 // 進捗を公開
                 int progress = (i + 1) * 100 / TOTAL_ITEMS;
-                publish(new ProgressInfo(progress, "処理中: アイテム " + (i + 1) + "/" + TOTAL_ITEMS));
+                publish(new ProgressInfo(progress, "処理中: アイテム "
+                        + (i + 1) + "/" + TOTAL_ITEMS));
             }
             
             return result.toString();
@@ -116,12 +119,14 @@ public class SwingWorkerExample extends JFrame {
                     String result = get();
                     resultArea.append("\n処理が完了しました。\n");
                     resultArea.append("結果のサマリー:\n");
-                    resultArea.append("処理したアイテム数: " + result.lines().count() + "\n");
+                    resultArea.append("処理したアイテム数: "
+                            + result.lines().count() + "\n");
                     progressBar.setValue(100);
                     progressBar.setString("完了");
                 }
             } catch (InterruptedException | ExecutionException e) {
-                resultArea.append("エラーが発生しました: " + e.getMessage() + "\n");
+                resultArea.append("エラーが発生しました: "
+                        + e.getMessage() + "\n");
                 e.printStackTrace();
             }
         }

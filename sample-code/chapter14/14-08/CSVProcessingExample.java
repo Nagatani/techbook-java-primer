@@ -22,7 +22,8 @@ public class CSVProcessingExample {
     // CSVファイルの読み込み
     public static List<List<String>> readCSV(Path filePath) {
         List<List<String>> result = new ArrayList<>();
-        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = Files.newBufferedReader(filePath,
+                StandardCharsets.UTF_8)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 List<String> row = parseCSVLine(line);
@@ -36,12 +37,14 @@ public class CSVProcessingExample {
     
     // 簡単なCSV行解析（引用符などの複雑なケースは考慮していません）
     private static List<String> parseCSVLine(String line) {
-        return Arrays.asList(line.split(",", -1));  // -1: 末尾の空の項目も残す
+        // -1: 末尾の空の項目も残す
+        return Arrays.asList(line.split(",", -1));
     }
     
     // CSVファイルの書き込み
     public static void writeCSV(Path filePath, List<List<String>> data) {
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath,
+                StandardCharsets.UTF_8)) {
             for (List<String> row : data) {
                 writer.write(String.join(",", row));
                 writer.newLine();

@@ -71,7 +71,8 @@ public class FigureFactory {
         switch (type.toLowerCase()) {
             case "circle":
                 if (params.length != 1) {
-                    throw new IllegalArgumentException("円には半径が必要です");
+                    throw new IllegalArgumentException(
+                            "円には半径が必要です");
                 }
                 return new CircleFigure(params[0]);
                 
@@ -88,7 +89,8 @@ public class FigureFactory {
                 return new TriangleFigure(params[0], params[1]);
                 
             default:
-                throw new IllegalArgumentException("不明な図形タイプ: " + type);
+                throw new IllegalArgumentException("不明な図形タイプ: "
+                        + type);
         }
     }
 }

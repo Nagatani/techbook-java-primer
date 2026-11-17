@@ -19,7 +19,8 @@ public class HigherOrderFunctionExample {
     // 使用例：取引戦略にリスク管理を適用
     public void demonstrateHigherOrderFunction() {
         Function<MarketData, TradingDecision> baseStrategy = 
-            data -> new TradingDecision(data.getPrice() > 100 ? TradeType.BUY : TradeType.SELL);
+            data -> new TradingDecision(data.getPrice() > 100
+            ? TradeType.BUY : TradeType.SELL);
             
         Function<MarketData, TradingDecision> safeStrategy = 
             withRiskManagement(
@@ -35,12 +36,14 @@ public class HigherOrderFunctionExample {
         
         // 高リスクの場合
         MarketData highRiskData = new MarketData(90.0, 0.8);
-        TradingDecision highRiskDecision = safeStrategy.apply(highRiskData);
+        TradingDecision highRiskDecision =
+                safeStrategy.apply(highRiskData);
         IO.println("高リスク時の決定: " + highRiskDecision);
     }
     
     public static void main(String[] args) {
-        HigherOrderFunctionExample example = new HigherOrderFunctionExample();
+        HigherOrderFunctionExample example =
+                new HigherOrderFunctionExample();
         example.demonstrateHigherOrderFunction();
     }
 }

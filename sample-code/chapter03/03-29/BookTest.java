@@ -11,6 +11,7 @@ public class BookTest {
         
         // 価格の変更
         book1.setPrice(2500.0);
-        IO.println("変更後の価格: " + book1.getTitle() + " - " + book1.getPrice() + "円");
+        IO.println("変更後の価格: " + book1.getTitle() + " - "
+                + book1.getPrice() + "円");
     }
 }

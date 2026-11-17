@@ -5,7 +5,8 @@ public class OrderProcessor {
     public static BigDecimal calculateTotal(Order order) {
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : order.items()) {
-            total = total.add(item.price().multiply(BigDecimal.valueOf(item.quantity())));
+            total = total.add(item.price()
+                    .multiply(BigDecimal.valueOf(item.quantity())));
         }
         return total;
     }

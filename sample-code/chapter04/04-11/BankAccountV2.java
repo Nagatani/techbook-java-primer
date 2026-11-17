@@ -4,7 +4,8 @@ public class BankAccountV2 {
     
     public BankAccountV2(String accountNumber, double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上にしてください");
+            throw new IllegalArgumentException(
+                    "初期残高は0以上にしてください");
         }
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
@@ -12,7 +13,8 @@ public class BankAccountV2 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値にしてください");
+            throw new IllegalArgumentException(
+                    "入金額は正の値にしてください");
         }
         balance += amount;
     }

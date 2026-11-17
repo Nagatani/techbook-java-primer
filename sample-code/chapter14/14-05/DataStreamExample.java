@@ -6,10 +6,12 @@ public class DataStreamExample {
         
         // バイナリファイルの書き込み
         // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、読むときに型と順序を合わせます。
+        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、
+        // 読むときに型と順序を合わせます。
         // データの書き込み
         try (DataOutputStream dos = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(filename)))) {
+                new BufferedOutputStream(
+                new FileOutputStream(filename)))) {
             // プリミティブ型の書き込み
             dos.writeInt(12345);
             dos.writeLong(9876543210L);
@@ -22,7 +24,8 @@ public class DataStreamExample {
         
         // データの読み込み（書き込んだ順序と同じ順序で読む）
         try (DataInputStream dis = new DataInputStream(
-                new BufferedInputStream(new FileInputStream(filename)))) {
+                new BufferedInputStream(
+                new FileInputStream(filename)))) {
             int intValue = dis.readInt();
             long longValue = dis.readLong();
             double doubleValue = dis.readDouble();

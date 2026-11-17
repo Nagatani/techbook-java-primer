@@ -6,7 +6,8 @@ public class TryCatchSample {
             IO.println("この行は実行されません。");
         } catch (NullPointerException e) {
             System.err.println("NullPointerExceptionをキャッチしました！");
-            e.printStackTrace(); // 開発中はスタックトレースを出力するとデバッグに役立つ
+            // 開発中はスタックトレースを出力するとデバッグに役立つ
+            e.printStackTrace();
         } catch (Exception e) {
             System.err.println("その他の予期せぬ例外をキャッチしました。");
         }

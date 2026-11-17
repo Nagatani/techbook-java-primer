@@ -7,11 +7,15 @@ class Student {
     String name;
     int score;
     int height;
-    public Student(String name, int score, int height) { this.name = name; this.score = score; this.height = height; }
+    public Student(String name, int score, int height) {
+        this.name = name; this.score = score; this.height = height;
+    }
     public String getName() { return name; }
     public int getScore() { return score; }
     public int getHeight() { return height; }
-    @Override public String toString() { return name + "(score:" + score + ", height:" + height + ")"; }
+    @Override public String toString() {
+        return name + "(score:" + score + ", height:" + height + ")";
+    }
 }
 
 public class AdvancedSortExample {
@@ -24,7 +28,8 @@ public class AdvancedSortExample {
         // 点数が高い順、同じ点数の場合は身長が高い順に並べる
         List<Student> sorted = students.stream()
             .sorted(Comparator.comparingInt(Student::getScore).reversed()
-                .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()))
+                .thenComparing(Comparator.comparingInt(
+                        Student::getHeight).reversed()))
             .collect(Collectors.toList());
 
         IO.println(sorted);

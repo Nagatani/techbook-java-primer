@@ -326,7 +326,9 @@ public class StandardFunctionalInterfaces {
         // Function: 文字列を長さに変換
         Function<String, Integer> getLength = s -> s.length();
         IO.println("'Java'の長さ: " + getLength.apply("Java")); // 4
-        IO.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
+        // 11
+        IO.println("'Hello World'の長さ: "
+                + getLength.apply("Hello World"));
 
         // Consumer: 文字列を大文字で出力
         Consumer<String> printUpper = s -> IO.println(s.toUpperCase());
@@ -407,11 +409,14 @@ public class FunctionComposition {
         Function<Integer, Integer> twice = x -> x * 2;
 
         // andThen: plusOneを先に、twiceをあとに適用する
-        Function<Integer, Integer> plusOneThenTwice = plusOne.andThen(twice);
+        Function<Integer, Integer> plusOneThenTwice =
+                plusOne.andThen(twice);
         // compose: twiceを先に、plusOneをあとに適用する
-        Function<Integer, Integer> twiceThenPlusOne = plusOne.compose(twice);
+        Function<Integer, Integer> twiceThenPlusOne =
+                plusOne.compose(twice);
 
-        IO.println("andThen: " + plusOneThenTwice.apply(5)); // (5 + 1) * 2
+        // (5 + 1) * 2
+        IO.println("andThen: " + plusOneThenTwice.apply(5));
         IO.println("compose: " + twiceThenPlusOne.apply(5)); // 5 * 2 + 1
 
         Predicate<String> isEmpty = s -> s.isEmpty();
@@ -419,12 +424,15 @@ public class FunctionComposition {
         Predicate<String> startsWithJ = s -> s.startsWith("J");
 
         Predicate<String> notEmpty = isEmpty.negate();          // 空でない
-        Predicate<String> shortAndJ = isShort.and(startsWithJ); // 短く、かつJで始まる
-        Predicate<String> emptyOrJ = isEmpty.or(startsWithJ);   // 空、またはJで始まる
+        // 短く、かつJで始まる
+        Predicate<String> shortAndJ = isShort.and(startsWithJ);
+        // 空、またはJで始まる
+        Predicate<String> emptyOrJ = isEmpty.or(startsWithJ);
 
         for (String word : List.of("Java", "", "JavaScript", "Go")) {
             IO.println("'%s': negate=%b, and=%b, or=%b".formatted(
-                word, notEmpty.test(word), shortAndJ.test(word), emptyOrJ.test(word)));
+                word, notEmpty.test(word), shortAndJ.test(word),
+                emptyOrJ.test(word)));
         }
     }
 }
@@ -474,9 +482,11 @@ public class MethodReferenceExample {
         IO.println("元のリスト: " + words);
 
         // 静的メソッド参照の例
-        Function<String, Integer> parser = Integer::parseInt;  // s -> Integer.parseInt(s)
+        // s -> Integer.parseInt(s)
+        Function<String, Integer> parser = Integer::parseInt;
         int number = parser.apply("123");
-        IO.println("文字列から整数への変換: " + number + " + 1 = " + (number + 1));
+        IO.println("文字列から整数への変換: " + number + " + 1 = "
+                + (number + 1));
 
         // 静的メソッド参照（IO.printlnは静的メソッド）
         IO.println("\n各単語を出力:");
@@ -496,7 +506,8 @@ public class MethodReferenceExample {
         upper.forEach(IO::println);
 
         // コンストラクター参照
-        Supplier<List<String>> listFactory = ArrayList::new;  // () -> new ArrayList<>()
+        // () -> new ArrayList<>()
+        Supplier<List<String>> listFactory = ArrayList::new;
         List<String> newList = listFactory.get();
         newList.add("Hello");
         newList.add("World");
@@ -561,7 +572,8 @@ public class LambdaVsMethodReference {
         upper2.forEach(IO::println);
 
         // 引数を受け取るコンストラクターの参照
-        Function<String, Person> toPerson = Person::new;  // name -> new Person(name) と同じ
+        // name -> new Person(name) と同じ
+        Function<String, Person> toPerson = Person::new;
         List<Person> people = new ArrayList<>();
         for (String name : names) {
             people.add(toPerson.apply(name));
@@ -607,7 +619,7 @@ Person{name='Charlie'}
 スレッドの使い方は第15章で詳しく学びます。
 ここでは、`new Thread(…)`に渡す`Runnable`をラムダ式で書けることに注目してください<span class="footnote">`start()`を呼ぶと、別のスレッドで`run`の処理を始めます。</span>。
 
-<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜46行目）</span>
+<span class="listing-number">**サンプルコード11-11**　RunnableLambdaExample.java（1〜8、14〜21、27〜47行目）</span>
 
 ```java
 public class RunnableLambdaExample {
@@ -633,7 +645,8 @@ public class RunnableLambdaExample {
         t2.start();
         
         // より簡潔なラムダ式（単一ステートメント）
-        Thread t3 = new Thread(() -> IO.println("Thread t3 (Simple Lambda) executed"));
+        Thread t3 = new Thread(() ->
+                IO.println("Thread t3 (Simple Lambda) executed"));
         t3.start();
         
         // すべてのスレッドの完了を待機
@@ -737,15 +750,19 @@ Task 3 completed
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜22、36〜67行目）</span>
+<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜26、40〜75行目）</span>
 
 ```java
 public class ValidationFramework {
     // 基本的なバリデーション関数
-    public static final Predicate<String> notEmpty = s -> s != null && !s.trim().isEmpty();
-    public static final Predicate<String> validEmail = s -> s.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
-    public static final Function<Integer, Predicate<String>> minLength = min -> s -> s.length() >= min;
-    public static final Function<Integer, Predicate<String>> maxLength = max -> s -> s.length() <= max;
+    public static final Predicate<String> notEmpty = s -> s != null
+            && !s.trim().isEmpty();
+    public static final Predicate<String> validEmail = s -> s.matches(
+            "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    public static final Function<Integer, Predicate<String>> minLength =
+            min -> s -> s.length() >= min;
+    public static final Function<Integer, Predicate<String>> maxLength =
+            max -> s -> s.length() <= max;
     
     // 複合バリデーション
     public static final Predicate<User> isValidUser = user ->
@@ -760,7 +777,8 @@ public class ValidationFramework {
         // ...
     }
     
-    public static final Function<User, ValidationResult> validateUserWithErrors = user -> {
+    public static final Function<User,
+            ValidationResult> validateUserWithErrors = user -> {
         List<String> errors = new ArrayList<>();
         
         if (!notEmpty.test(user.getName())) {
@@ -778,15 +796,18 @@ public class ValidationFramework {
     
     public static void main(String[] args) {
         // テストユーザー
-        User validUser = new User("太郎", "taro@example.com", "password123");
+        User validUser =
+                new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
         
         IO.println("有効なユーザーのバリデーション:");
-        ValidationResult result1 = validateUserWithErrors.apply(validUser);
+        ValidationResult result1 =
+                validateUserWithErrors.apply(validUser);
         IO.println(result1);
         
         IO.println("\n無効なユーザーのバリデーション:");
-        ValidationResult result2 = validateUserWithErrors.apply(invalidUser);
+        ValidationResult result2 =
+                validateUserWithErrors.apply(invalidUser);
         IO.println(result2);
     }
 }
@@ -813,7 +834,7 @@ Stream API（第12章）を使う例もあるので、最初はラムダ式を�
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜46行目）</span>
+<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜49行目）</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -834,7 +855,8 @@ public class HigherOrderFunctionExample {
     // 使用例：取引戦略にリスク管理を適用
     public void demonstrateHigherOrderFunction() {
         Function<MarketData, TradingDecision> baseStrategy = 
-            data -> new TradingDecision(data.getPrice() > 100 ? TradeType.BUY : TradeType.SELL);
+            data -> new TradingDecision(data.getPrice() > 100
+            ? TradeType.BUY : TradeType.SELL);
             
         Function<MarketData, TradingDecision> safeStrategy = 
             withRiskManagement(
@@ -850,12 +872,14 @@ public class HigherOrderFunctionExample {
         
         // 高リスクの場合
         MarketData highRiskData = new MarketData(90.0, 0.8);
-        TradingDecision highRiskDecision = safeStrategy.apply(highRiskData);
+        TradingDecision highRiskDecision =
+                safeStrategy.apply(highRiskData);
         IO.println("高リスク時の決定: " + highRiskDecision);
     }
     
     public static void main(String[] args) {
-        HigherOrderFunctionExample example = new HigherOrderFunctionExample();
+        HigherOrderFunctionExample example =
+                new HigherOrderFunctionExample();
         example.demonstrateHigherOrderFunction();
     }
 }
@@ -875,13 +899,14 @@ public class HigherOrderFunctionExample {
 ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
 サンプルコード11-15は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
 
-<span class="listing-number">**サンプルコード11-15**　NestedLambdaExample.java（5〜46行目）</span>
+<span class="listing-number">**サンプルコード11-15**　NestedLambdaExample.java（5〜47行目）</span>
 
 ```java
 public class NestedLambdaExample {
     public static void main(String[] args) {
         // 1行に「名前:点数」を並べたデータから、行ごとの合計点を求める
-        List<String> lines = List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
+        List<String> lines =
+                List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
 
         // 悪い例：ラムダ式の中にラムダ式を重ねていて、何をしているか読み取りにくい
         List<Integer> bad = lines.stream()
@@ -997,19 +1022,21 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 ネットワーク越しのサービスのように、ときどき失敗する処理は、何回か呼び出し直すと成功することがあります。
 サンプルコード11-17の`withRetry`は、処理を表す`Supplier`を受け取り、失敗したら呼び出し直す新しい`Supplier`を返す高階関数です。
 
-<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜42行目）</span>
+<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜45行目）</span>
 
 ```java
 public class ResilientService {
     // 関数型リトライメカニズム
-    public <T> Supplier<T> withRetry(Supplier<T> supplier, int maxAttempts) {
+    public <T> Supplier<T> withRetry(Supplier<T> supplier,
+            int maxAttempts) {
         return () -> {
             for (int attempt = 1; ; attempt++) {
                 try {
                     return supplier.get();  // 成功したら結果を返す
                 } catch (RuntimeException e) {
                     if (attempt >= maxAttempts) {
-                        throw new RuntimeException("Max attempts reached", e);
+                        throw new RuntimeException(
+                                "Max attempts reached", e);
                     }
                     // 失敗したら、もう一度呼び出す
                 }
@@ -1031,7 +1058,8 @@ public class ResilientService {
             return "Success!";
         };
 
-        Supplier<String> resilientService = withRetry(unreliableService, 3);
+        Supplier<String> resilientService =
+                withRetry(unreliableService, 3);
         return resilientService.get();
     }
 
@@ -1059,12 +1087,13 @@ public class ResilientService {
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラーをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
-<span class="listing-number">**サンプルコード11-18**　EventProcessor.java（8〜53行目）</span>
+<span class="listing-number">**サンプルコード11-18**　EventProcessor.java（8〜55行目）</span>
 
 ```java
 public class EventProcessor {
     // イベントの種類ごとに、登録されたハンドラーの一覧を持つ
-    private final Map<Class<?>, List<Consumer<Object>>> handlers = new HashMap<>();
+    private final Map<Class<?>, List<Consumer<Object>>> handlers =
+            new HashMap<>();
 
     // イベントハンドラーの登録
     public <T> void on(Class<T> eventType, Consumer<T> handler) {
@@ -1085,7 +1114,8 @@ public class EventProcessor {
 
     // イベントの発行：登録されたハンドラーを順に呼び出す
     public void publish(Object event) {
-        for (Consumer<Object> handler : handlers.getOrDefault(event.getClass(), List.of())) {
+        for (Consumer<Object> handler
+                : handlers.getOrDefault(event.getClass(), List.of())) {
             handler.accept(event);
         }
     }
@@ -1224,7 +1254,7 @@ public class DataProcessingTemplate {
 イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
 現在の状態が必要になったら、記録したイベントを順に適用して求めます。
 
-<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜36行目）</span>
+<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜40行目）</span>
 
 ```java
 public class EventSourcedAccount {
@@ -1233,9 +1263,12 @@ public class EventSourcedAccount {
         AccountCreated, MoneyDeposited, MoneyWithdrawn {}
     
 
-    record AccountCreated(String accountId, String owner) implements AccountEvent {}
-    record MoneyDeposited(String accountId, Money amount) implements AccountEvent {}
-    record MoneyWithdrawn(String accountId, Money amount) implements AccountEvent {}
+    record AccountCreated(String accountId, String owner)
+            implements AccountEvent {}
+    record MoneyDeposited(String accountId, Money amount)
+            implements AccountEvent {}
+    record MoneyWithdrawn(String accountId, Money amount)
+            implements AccountEvent {}
     
     // イベントを順に適用して、現在の状態を求める
     public class AccountProjection {
@@ -1247,7 +1280,8 @@ public class EventSourcedAccount {
             return state;
         }
         
-        private AccountState applyEvent(AccountState state, AccountEvent event) {
+        private AccountState applyEvent(AccountState state,
+                AccountEvent event) {
             return switch (event) {
                 case AccountCreated(var id, var owner) -> 
                     new AccountState(id, owner, Money.ZERO);
@@ -1271,7 +1305,7 @@ public class EventSourcedAccount {
 ファクトリパターンは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
 `Supplier`にコンストラクター参照を入れておくと、形式の名前から生成する処理を選ぶファクトリを、`Map`1つで書けます。
 
-<span class="listing-number">**サンプルコード11-22**　ProcessorFactory.java（4〜7、27〜40、52行目）</span>
+<span class="listing-number">**サンプルコード11-22**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
 
 ```java
 public class ProcessorFactory {
@@ -1280,7 +1314,8 @@ public class ProcessorFactory {
     }
     // ...
     // 形式の名前と、オブジェクトを作る処理（コンストラクター参照）の対応
-    private final Map<String, Supplier<DataProcessor>> processors = Map.of(
+    private final Map<String, Supplier<DataProcessor>> processors =
+            Map.of(
         "csv", CsvProcessor::new,
         "xml", XmlProcessor::new,
         "json", JsonProcessor::new
@@ -1359,14 +1394,15 @@ public class LambdaCapture {
 戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
 ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
-<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜60行目）</span>
+<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜61行目）</span>
 
 ```java
 public class FunctionalBuilder {
     // ...
     // 関数型ビルダーパターン
     public static class FunctionalPersonBuilder {
-        private final List<Consumer<Person>> operations = new ArrayList<>();
+        private final List<Consumer<Person>> operations =
+                new ArrayList<>();
         
         public FunctionalPersonBuilder with(Consumer<Person> operation) {
             operations.add(operation);
@@ -1417,7 +1453,7 @@ Person{name='Alice', age=30, adult=true}
 関数型のビルダーは、実行する環境によって設定を変えるような、条件のある組み立てにも向いています。
 サンプルコード11-25の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
 
-<span class="listing-number">**サンプルコード11-25**　ConfigurationBuilder.java（6〜31、50〜62、70行目）</span>
+<span class="listing-number">**サンプルコード11-25**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
 
 ```java
 public class ConfigurationBuilder {
@@ -1431,7 +1467,8 @@ public class ConfigurationBuilder {
         }
 
         // 条件が成り立つときだけ、操作を加える
-        public FunctionalConfigBuilder<T> whenCondition(boolean condition, Consumer<T> operation) {
+        public FunctionalConfigBuilder<T> whenCondition(
+                boolean condition, Consumer<T> operation) {
             if (condition) {
                 operations.add(operation);
             }
@@ -1481,7 +1518,7 @@ production: db.example.com:5432/app_db (SSL: true)
 業務の処理を、入力から結果を返すだけの小さな関数に分けておくと、関数ごとに確かめやすく、組み替えもしやすくなります。
 サンプルコード11-26は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
 
-<span class="listing-number">**サンプルコード11-26**　OrderPipeline.java（3〜13、40〜47、56〜57行目）</span>
+<span class="listing-number">**サンプルコード11-26**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
 
 ```java
 public class OrderPipeline {
@@ -1491,7 +1528,8 @@ public class OrderPipeline {
     // 不正な注文なら例外をスローする
     static Order validate(Order order) {
         if (order.quantity() <= 0) {
-            throw new IllegalArgumentException("数量が不正です: " + order.quantity());
+            throw new IllegalArgumentException("数量が不正です: "
+                    + order.quantity());
         }
         return order;
     }

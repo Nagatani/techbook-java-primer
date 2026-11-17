@@ -2,14 +2,16 @@ import java.util.function.Supplier;
 
 public class ResilientService {
     // 関数型リトライメカニズム
-    public <T> Supplier<T> withRetry(Supplier<T> supplier, int maxAttempts) {
+    public <T> Supplier<T> withRetry(Supplier<T> supplier,
+            int maxAttempts) {
         return () -> {
             for (int attempt = 1; ; attempt++) {
                 try {
                     return supplier.get();  // 成功したら結果を返す
                 } catch (RuntimeException e) {
                     if (attempt >= maxAttempts) {
-                        throw new RuntimeException("Max attempts reached", e);
+                        throw new RuntimeException(
+                                "Max attempts reached", e);
                     }
                     // 失敗したら、もう一度呼び出す
                 }
@@ -31,7 +33,8 @@ public class ResilientService {
             return "Success!";
         };
 
-        Supplier<String> resilientService = withRetry(unreliableService, 3);
+        Supplier<String> resilientService =
+                withRetry(unreliableService, 3);
         return resilientService.get();
     }
 

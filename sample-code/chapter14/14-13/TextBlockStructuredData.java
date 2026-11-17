@@ -11,7 +11,8 @@ public class TextBlockStructuredData {
         String userName = "田中太郎";
         int userAge = 30;
         String timestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+                .format(DateTimeFormatter.ofPattern(
+                        "yyyy-MM-dd'T'HH:mm:ss"));
         
         String jsonData = """
                 {

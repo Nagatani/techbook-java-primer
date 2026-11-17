@@ -164,10 +164,11 @@ CSV・JSON・直列化は、要求の4を満たすには、一時ファイルに
 SQLiteに保存する実装は、このインターフェイスを実装するクラスとして書きます。
 JDBCを使うのはこのクラスだけにし、`StudentService`は変えません。
 
-<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜14、52〜58、72〜86、172〜189行目）</span>
+<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜15、53〜59、73〜87、173〜191行目）</span>
 
 ```java
-public class JdbcStudentRepository implements StudentRepository, AutoCloseable {
+public class JdbcStudentRepository implements StudentRepository,
+        AutoCloseable {
     private final Connection connection;
     // ...
     @Override
@@ -209,7 +210,8 @@ public class JdbcStudentRepository implements StudentRepository, AutoCloseable {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RepositoryException("データベースの更新に失敗しました", e);
+            throw new RepositoryException(
+                    "データベースの更新に失敗しました", e);
         }
     }
 ```
@@ -244,7 +246,7 @@ S001を削除: true
 初版のフェーズ4と第25章のサンプルコード25-4は、CSVの行を`split(",")`で列に分けています。
 この方法は、簡単なデータなら動きますが、次のような行で崩れます。
 
-<span class="listing-number">**サンプルコード26-2**　SplitProblemDemo.java（4〜18行目）</span>
+<span class="listing-number">**サンプルコード26-2**　SplitProblemDemo.java（4〜19行目）</span>
 
 ```java
         String[] lines = {
@@ -260,7 +262,8 @@ S001を削除: true
         // Excelで「CSV UTF-8」形式を選んで保存すると、ファイルの先頭にBOM（U+FEFF）が付く
         String withBom = "\uFEFFS004,鈴木一郎,工学部,2025";
         String id = withBom.split(",")[0];
-        IO.println("S004と等しいか: " + id.equals("S004") + "（長さ" + id.length()
+        IO.println("S004と等しいか: " + id.equals("S004") + "（長さ"
+                + id.length()
             + "、1文字目はU+%04X）".formatted((int) id.charAt(0)));
 ```
 
@@ -323,7 +326,7 @@ OpenCSVは、CSVの列をクラスのフィールドに対応づける機能が�
 選んだライブラリは、本番のコードに組み込む前に、自分の入力データで試します。
 試作では、崩れる例に挙げた行をすべて含むCSVを読ませます。
 
-<span class="listing-number">**サンプルコード26-3**　StudentCsvReader.java（15〜36行目）、CsvReaderDemo.java（8〜19行目）</span>
+<span class="listing-number">**サンプルコード26-3**　StudentCsvReader.java（15〜40行目）、CsvReaderDemo.java（8〜20行目）</span>
 
 ```java
 public class StudentCsvReader {
@@ -336,13 +339,17 @@ public class StudentCsvReader {
 
     // UTF-8のCSVを読む。先頭にBOMがあれば取り除く
     public List<CsvRow> read(InputStream in) throws IOException {
-        InputStream withoutBom = BOMInputStream.builder().setInputStream(in).get();
-        try (Reader reader = new InputStreamReader(withoutBom, StandardCharsets.UTF_8);
+        InputStream withoutBom = BOMInputStream.builder()
+                .setInputStream(in).get();
+        try (Reader reader = new InputStreamReader(withoutBom,
+                StandardCharsets.UTF_8);
              CSVParser parser = FORMAT.parse(reader)) {
             List<CsvRow> rows = new ArrayList<>();
             for (CSVRecord record : parser) {
-                // 見出しを1行目とした行の番号（改行を含む項目がなければファイルの行番号と同じ）
-                rows.add(new CsvRow(record.getRecordNumber() + 1, record.toMap()));
+                // 見出しを1行目とした行の番号（改行を
+                // 含む項目がなければファイルの行番号と同じ）
+                rows.add(new CsvRow(record.getRecordNumber() + 1,
+                        record.toMap()));
             }
             return rows;
         }
@@ -355,7 +362,8 @@ public class StudentCsvReader {
             S002,"Smith, John",理学部,2025
             S003,"佐藤 ""ハナ"" 花子",文学部,2024
             """;
-        var in = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
+        var in = new ByteArrayInputStream(
+                csv.getBytes(StandardCharsets.UTF_8));
 
         for (CsvRow row : new StudentCsvReader().read(in)) {
             IO.println("行%d: %s / %s".formatted(
@@ -459,7 +467,7 @@ CSVの取り込みに1秒以上かかるようになったら、第19章で学�
 `StudentService`のテストに、データベースは要りません。
 第25章で作った`InMemoryStudentRepository`を渡せば、サービスの規則だけを確かめられます。
 
-<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜42行目）</span>
+<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜49行目）</span>
 
 ```java
 class StudentServiceTest {
@@ -469,30 +477,37 @@ class StudentServiceTest {
     void setUp() throws DuplicateStudentException {
         // データベースを用意しなくても、サービスの規則を検査できる
         service = new StudentService(new InMemoryStudentRepository());
-        service.register(new Student("S001", "山田太郎", "工学部", new Undergraduate(2025)));
+        service.register(new Student("S001", "山田太郎", "工学部",
+                new Undergraduate(2025)));
     }
 
     // 同じ学生IDでは登録できない
     @Test
     void rejectsDuplicateId() {
-        Student same = new Student("S001", "田中次郎", "文学部", new Undergraduate(2024));
-        assertThrows(DuplicateStudentException.class, () -> service.register(same));
+        Student same = new Student("S001", "田中次郎", "文学部",
+                new Undergraduate(2024));
+        assertThrows(DuplicateStudentException.class,
+                () -> service.register(same));
     }
 
     // GPAは単位数で重み付けした平均になる
     @Test
     void gpaIsWeightedByCredits() {
-        service.recordGrade("S001", new Grade("プログラミング演習", 2, 4.0));
+        service.recordGrade("S001",
+                new Grade("プログラミング演習", 2, 4.0));
         service.recordGrade("S001", new Grade("線形代数", 4, 3.0));
-        assertEquals(20.0 / 6, service.find("S001").orElseThrow().gpa(), 1e-9);
+        assertEquals(20.0 / 6, service.find("S001").orElseThrow().gpa(),
+                1e-9);
     }
 
     // 学部で絞り込める
     @Test
     void filtersByDepartment() throws DuplicateStudentException {
-        service.register(new Student("S002", "佐藤花子", "理学部", new Undergraduate(2024)));
+        service.register(new Student("S002", "佐藤花子", "理学部",
+                new Undergraduate(2024)));
         List<Student> result = service.findByDepartment("工学部");
-        assertEquals(List.of("S001"), result.stream().map(Student::getId).toList());
+        assertEquals(List.of("S001"), result.stream()
+                .map(Student::getId).toList());
     }
 }
 ```

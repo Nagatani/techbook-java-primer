@@ -8,7 +8,8 @@ class TemperatureChangeEvent extends EventObject {
     private final double oldTemperature;
     private final double newTemperature;
     
-    public TemperatureChangeEvent(Object source, double oldTemp, double newTemp) {
+    public TemperatureChangeEvent(Object source, double oldTemp,
+            double newTemp) {
         super(source);
         this.oldTemperature = oldTemp;
         this.newTemperature = newTemp;
@@ -26,9 +27,11 @@ interface TemperatureChangeListener extends EventListener {
 // 温度センサーモデル
 class TemperatureSensor {
     private double temperature = 20.0;
-    private List<TemperatureChangeListener> listeners = new ArrayList<>();
+    private List<TemperatureChangeListener> listeners =
+            new ArrayList<>();
     
-    public void addTemperatureChangeListener(TemperatureChangeListener listener) {
+    public void addTemperatureChangeListener(
+            TemperatureChangeListener listener) {
         listeners.add(listener);
     }
     
@@ -46,9 +49,12 @@ class TemperatureSensor {
         fireTemperatureChanged(oldTemperature, newTemperature);
     }
     
-    protected void fireTemperatureChanged(double oldTemp, double newTemp) {
-        TemperatureChangeEvent event = new TemperatureChangeEvent(this, oldTemp, newTemp);
-        for (TemperatureChangeListener listener : new ArrayList<>(listeners)) {
+    protected void fireTemperatureChanged(double oldTemp,
+            double newTemp) {
+        TemperatureChangeEvent event =
+                new TemperatureChangeEvent(this, oldTemp, newTemp);
+        for (TemperatureChangeListener listener
+                : new ArrayList<>(listeners)) {
             listener.temperatureChanged(event);
         }
     }
@@ -92,14 +98,16 @@ public class CustomEventExample extends JFrame {
         JScrollPane scrollPane = new JScrollPane(logArea);
         
         // 温度変化リスナーを登録
-        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+        sensor.addTemperatureChangeListener(
+                new TemperatureChangeListener() {
             @Override
             public void temperatureChanged(TemperatureChangeEvent e) {
                 double newTemp = e.getNewTemperature();
                 double oldTemp = e.getOldTemperature();
                 
                 // 表示を更新
-                temperatureLabel.setText(String.format("%.1f°C", newTemp));
+                temperatureLabel.setText(String.format("%.1f°C",
+                        newTemp));
                 
                 // 温度に応じて背景色を変更
                 if (newTemp < 0) {

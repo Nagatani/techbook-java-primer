@@ -118,7 +118,8 @@ public class ButtonEventExample {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 3. 簡単なダイアログを表示
-                JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
+                JOptionPane.showMessageDialog(frame,
+                        "ボタンがクリックされました！");
             }
         };
 
@@ -163,7 +164,7 @@ ActionListenerのように、実装すべきメソッドが1つだけのイン�
 以下のコードは、先ほどの匿名クラスをラムダ式で書き換えた例です。ラムダ式を使用することで、コードがより簡潔になり、イベント処理の本質に集中できます。ActionEventのパラメーターeはラムダ式内で参照できますが、この例では使用していません<span class="footnote">Java 22からは、使わない引数を`_`（アンダースコア）と書いて、使わないことを示せます（`_ -> ...`）。</span>。
 2つ目のボタン`shortButton`には、処理が1行のときの短い書き方でリスナーを登録しています。
 
-<span class="listing-number">**サンプルコード18-2**　LambdaButtonExample.java（7、12、17〜26、33〜34行目）</span>
+<span class="listing-number">**サンプルコード18-2**　LambdaButtonExample.java（7、12、17〜29、36〜37行目）</span>
 
 ```java
 public class LambdaButtonExample {
@@ -175,12 +176,15 @@ public class LambdaButtonExample {
 
         // サンプルコード18-1の匿名クラスの部分をラムダ式で書き換える
         button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
+            JOptionPane.showMessageDialog(frame,
+                    "ボタンがクリックされました！");
         });
 
         // 処理が1行なら波括弧も省略可能
-        shortButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！"));
-        // ...
+        shortButton.addActionListener(e ->
+                JOptionPane.showMessageDialog(frame,
+                "ボタンがクリックされました！"));
+                // ...
     }
 }
 ```
@@ -346,7 +350,8 @@ public class WindowEventExample {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int option = JOptionPane.showConfirmDialog(frame, "本当に終了しますか？");
+                int option = JOptionPane.showConfirmDialog(frame,
+                        "本当に終了しますか？");
                 if (option == JOptionPane.YES_OPTION) {
                     System.exit(0); // 「はい」ならプログラムを終了
                 }
@@ -380,7 +385,7 @@ public class WindowEventExample {
 マウスのクリックとパネルへの出入りを検出し、ステータスラベルに現在の状態を表示します。
 マウスの移動やドラッグ（`MouseMotionListener`）、ダブルクリックの判定、右クリックメニューは、第19章「高度なイベント処理パターン」のサンプルコード19-1で学びます。
 
-<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜46、53、60行目）</span>
+<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜47、54、61行目）</span>
 
 ```java
 public class BasicMouseEventExample extends JFrame {
@@ -397,7 +402,8 @@ public class BasicMouseEventExample extends JFrame {
                     case MouseEvent.BUTTON3 -> "右";
                     default -> "不明な";
                 };
-                statusLabel.setText(button + "ボタンがクリックされました: " + e.getPoint());
+                statusLabel.setText(button + "ボタンがクリックされました: "
+                        + e.getPoint());
             }
             
             @Override
@@ -436,7 +442,7 @@ public class BasicMouseEventExample extends JFrame {
 以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。`consume()`メソッドを呼ぶと、そのイベントを処理済みにして、このあとに続くキーバインディングなどの処理へ渡さないようにできます。
 複数のキーの同時押しや、`InputMap`と`ActionMap`によるキーバインディングは、第19章のサンプルコード19-2で学びます。
 
-<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜37、44、51行目）</span>
+<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜39、46、53行目）</span>
 
 ```java
 public class BasicKeyEventExample extends JFrame {
@@ -451,8 +457,10 @@ public class BasicKeyEventExample extends JFrame {
                 statusLabel.setText("押されたキー: " + keyText);
                 
                 // Ctrl+Sのショートカット検出
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
-                    JOptionPane.showMessageDialog(BasicKeyEventExample.this, 
+                if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_S) {
+                    JOptionPane.showMessageDialog(
+                            BasicKeyEventExample.this, 
                         "保存ショートカットが押されました");
                     e.consume(); // デフォルトの動作をキャンセル
                 }
@@ -470,7 +478,7 @@ public class BasicKeyEventExample extends JFrame {
 
 以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択されたか解除されたかを判定し、直前の変化をラベルに、選択中の項目の一覧をコンソールに表示します。
 
-<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5、10、22〜34、52〜61、82、97行目）</span>
+<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5、10、22〜36、54〜64、85、100行目）</span>
 
 ```java
 public class ItemListenerExample extends JFrame {
@@ -481,8 +489,10 @@ public class ItemListenerExample extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 JCheckBox source = (JCheckBox) e.getSource();
-                String status = e.getStateChange() == ItemEvent.SELECTED ? "選択" : "解除";
-                statusLabel.setText(source.getText() + " が" + status + "されました");
+                String status = e.getStateChange() == ItemEvent.SELECTED
+                        ? "選択" : "解除";
+                statusLabel.setText(source.getText() + " が" + status
+                        + "されました");
                 updateSelection();
             }
         };
@@ -494,7 +504,8 @@ public class ItemListenerExample extends JFrame {
         ItemListener radioListener = e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 JRadioButton source = (JRadioButton) e.getSource();
-                statusLabel.setText("サイズ: " + source.getText() + " が選択されました");
+                statusLabel.setText("サイズ: " + source.getText()
+                        + " が選択されました");
             }
         };
         
@@ -513,7 +524,7 @@ public class ItemListenerExample extends JFrame {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容の検証を行います。この仕組みを使用することで、ユーザーフレンドリーなフォーム入力インターフェイスを実装できます。
 
-<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜45、71、85行目）</span>
+<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜46、72、86行目）</span>
 
 ```java
 public class FocusListenerExample extends JFrame {
@@ -526,7 +537,8 @@ public class FocusListenerExample extends JFrame {
             public void focusGained(FocusEvent e) {
                 JTextField source = (JTextField) e.getSource();
                 source.setBackground(Color.YELLOW);
-                statusLabel.setText("フォーカスを取得: " + getFieldName(source));
+                statusLabel.setText("フォーカスを取得: "
+                        + getFieldName(source));
             }
             
             @Override
@@ -612,7 +624,7 @@ SwingのすべてのGUI操作はイベントディスパッチスレッド上で
 `SwingUtilities.isEventDispatchThread()`は、呼び出したスレッドがEDTならtrueを返します。
 コンポーネントを操作するコードがEDT上で動いているかを確かめたいときに使えます。
 
-<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜8、14〜31、37〜39行目）</span>
+<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜8、14〜34、40〜42行目）</span>
 
 ```java
 public class EdtCheckExample {
@@ -629,12 +641,15 @@ public class EdtCheckExample {
                     if (SwingUtilities.isEventDispatchThread()) {
                         statusLabel.setText("正しくEDT上で実行されています");
                     } else {
-                        statusLabel.setText("警告: EDT以外のスレッドで実行されています");
+                        statusLabel.setText("警告: "
+                                + "EDT以外のスレッドで実行されています");
                     }
                     
                     // リスナーが動いているスレッドを表示
-                    IO.println("現在のスレッド: " + Thread.currentThread().getName());
-                    IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
+                    IO.println("現在のスレッド: "
+                            + Thread.currentThread().getName());
+                    IO.println("EDT上での実行: "
+                            + SwingUtilities.isEventDispatchThread());
                 }
             });
             // ...
@@ -667,7 +682,7 @@ EDTに処理を頼むメソッドには、`invokeLater()`のほかに`SwingUtili
 「よい例」のボタンを押すと、ラベルが「処理中...」に変わり、3秒後に「完了」になるまでの間も画面は反応します。
 進捗の表示やキャンセルにも対応できる`SwingWorker`は、第19章で学びます。
 
-<span class="listing-number">**サンプルコード18-12**　FreezeExample.java（7、12、17〜44、52〜53行目）</span>
+<span class="listing-number">**サンプルコード18-12**　FreezeExample.java（7、12、17〜45、53〜54行目）</span>
 
 ```java
 public class FreezeExample {
@@ -696,7 +711,8 @@ public class FreezeExample {
                 try {
                     Thread.sleep(3000);
                     // UI更新はEDT上で行う
-                    SwingUtilities.invokeLater(() -> label.setText("完了"));
+                    SwingUtilities.invokeLater(() ->
+                            label.setText("完了"));
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -718,7 +734,7 @@ public class FreezeExample {
 `Timer`は最初の呼び出しも指定した間隔のあとに行うので、この例では`setInitialDelay(0)`で、開始してすぐに1回目を実行しています。
 リスナーの処理が長いとEDTを止めてしまうので、`Timer`で呼び出す処理は短く保ちます。
 
-<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜8、14〜37、44〜46行目）</span>
+<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜8、14〜38、45〜47行目）</span>
 
 ```java
 public class TimerExample {
@@ -734,7 +750,8 @@ public class TimerExample {
             Timer timer = new Timer(1000, e -> {
                 // 定期的にEDT上で実行される処理
                 LocalTime now = LocalTime.now();
-                String timeText = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String timeText = now.format(
+                        DateTimeFormatter.ofPattern("HH:mm:ss"));
                 timeLabel.setText(timeText);
             });
             // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）

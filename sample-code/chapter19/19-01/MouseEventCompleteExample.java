@@ -39,7 +39,8 @@ public class MouseEventCompleteExample extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 String button = getButtonName(e.getButton());
                 int clickCount = e.getClickCount();
-                log("クリック: " + button + " (回数: " + clickCount + ") at " + 
+                log("クリック: " + button + " (回数: " + clickCount
+                        + ") at " + 
                     e.getPoint());
                 
                 // ダブルクリックの検出
@@ -51,12 +52,14 @@ public class MouseEventCompleteExample extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 startPoint = e.getPoint();
-                log("マウス押下: " + getButtonName(e.getButton()) + " at " + startPoint);
+                log("マウス押下: " + getButtonName(e.getButton())
+                        + " at " + startPoint);
             }
             
             @Override
             public void mouseReleased(MouseEvent e) {
-                log("マウス解放: " + getButtonName(e.getButton()) + " at " + e.getPoint());
+                log("マウス解放: " + getButtonName(e.getButton())
+                        + " at " + e.getPoint());
                 startPoint = null;
                 currentPoint = null;
                 drawPanel.repaint();

@@ -182,11 +182,15 @@ class Student {
     String name;
     int score;
     int height;
-    public Student(String name, int score, int height) { this.name = name; this.score = score; this.height = height; }
+    public Student(String name, int score, int height) {
+        this.name = name; this.score = score; this.height = height;
+    }
     public String getName() { return name; }
     public int getScore() { return score; }
     public int getHeight() { return height; }
-    @Override public String toString() { return name + "(score:" + score + ", height:" + height + ")"; }
+    @Override public String toString() {
+        return name + "(score:" + score + ", height:" + height + ")";
+    }
 }
 
 public class AdvancedSortExample {
@@ -199,7 +203,8 @@ public class AdvancedSortExample {
         // 点数が高い順、同じ点数の場合は身長が高い順に並べる
         List<Student> sorted = students.stream()
             .sorted(Comparator.comparingInt(Student::getScore).reversed()
-                .thenComparing(Comparator.comparingInt(Student::getHeight).reversed()))
+                .thenComparing(Comparator.comparingInt(
+                        Student::getHeight).reversed()))
             .collect(Collectors.toList());
 
         IO.println(sorted);
@@ -288,12 +293,16 @@ public class OptionalCreationExample {
         // 2. ofNullable() - nullの可能性がある値をラップ
         // nullの場合は空のOptionalを返す
         String nullableString = null;
-        Optional<String> nullableValue = Optional.ofNullable(nullableString);
-        IO.println("ofNullable(null): " + nullableValue);  // Optional.empty
+        Optional<String> nullableValue =
+                Optional.ofNullable(nullableString);
+        // Optional.empty
+        IO.println("ofNullable(null): " + nullableValue);
         
         String nonNullString = "World";
-        Optional<String> nonNullValue = Optional.ofNullable(nonNullString);
-        IO.println("ofNullable(\"World\"): " + nonNullValue);  // Optional[World]
+        Optional<String> nonNullValue =
+                Optional.ofNullable(nonNullString);
+        // Optional[World]
+        IO.println("ofNullable(\"World\"): " + nonNullValue);
         
         // 3. empty() - 空のOptionalを作成
         Optional<String> emptyValue = Optional.empty();
@@ -306,7 +315,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜42行目）</span>
+<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜44行目）</span>
 
 ```java
 public class OptionalRetrievalExample {
@@ -315,7 +324,8 @@ public class OptionalRetrievalExample {
         Optional<String> empty = Optional.empty();
         
         // 1. get() - 値が存在しない場合はNoSuchElementExceptionを投げる
-        // 空のときに例外になるので避ける（同じ働きの引数なしのorElseThrow()がJava 10で加わった）
+        // 空のときに例外になるので避ける（同じ働きの
+        // 引数なしのorElseThrow()がJava 10で加わった）
         try {
             String value1 = present.get();
             IO.println("get() with value: " + value1);  // Hello
@@ -332,7 +342,8 @@ public class OptionalRetrievalExample {
         IO.println("orElse() on empty: " + value4);       // Default
         
         // 3. orElseGet() - 値が存在しない場合にSupplierから値を生成
-        // orElseの引数は値があっても必ず評価されるが、Supplierは値がないときだけ呼ばれる
+        // orElseの引数は値があっても必ず評価されるが、Supplierは
+        // 値がないときだけ呼ばれる
         String value5 = empty.orElseGet(() -> {
             IO.println("Generating default value...");
             return "Generated Default";
@@ -402,7 +413,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、13〜16、18〜49行目）</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、13〜18、20〜57行目）</span>
 
 ```java
 public class OptionalTransformationExample {
@@ -412,12 +423,16 @@ public class OptionalTransformationExample {
         // ...
         public String getName() { return name; }
         // フィールドはOptionalにせず、戻り値で「値がないかもしれない」ことを示す
-        public Optional<String> getEmail() { return Optional.ofNullable(email); }
+        public Optional<String> getEmail() {
+            return Optional.ofNullable(email);
+        }
     }
     // ...
     public static void main(String[] args) {
-        Optional<User> user = Optional.of(new User("Alice", "alice@example.com"));
-        Optional<User> userWithoutEmail = Optional.of(new User("Bob", null));
+        Optional<User> user =
+                Optional.of(new User("Alice", "alice@example.com"));
+        Optional<User> userWithoutEmail =
+                Optional.of(new User("Bob", null));
         
         // 1. map() - 値が存在する場合に変換を適用
         Optional<String> userName = user.map(User::getName);
@@ -430,21 +445,25 @@ public class OptionalTransformationExample {
         IO.println("Nested map: " + nameLength);  // Optional[5]
         
         // 2. flatMap() - Optional<Optional<T>>を平坦化
-        // getEmailはOptional<String>を返すので、mapではOptional<Optional<String>>になる
+        // getEmailはOptional<String>を返すので、
+        // mapではOptional<Optional<String>>になる
         Optional<String> email = user.flatMap(u -> u.getEmail());
         IO.println("flatMap: " + email);  // Optional[alice@example.com]
         
-        Optional<String> noEmail = userWithoutEmail.flatMap(u -> u.getEmail());
+        Optional<String> noEmail =
+                userWithoutEmail.flatMap(u -> u.getEmail());
         IO.println("flatMap (no email): " + noEmail);  // Optional.empty
         
         // 3. filter() - 条件を満たす場合のみ値を保持
         Optional<User> longNameUser = user
             .filter(u -> u.getName().length() > 3);
-        IO.println("filter (passed): " + longNameUser.isPresent());  // true
+        // true
+        IO.println("filter (passed): " + longNameUser.isPresent());
         
         Optional<User> shortNameUser = user
             .filter(u -> u.getName().length() > 10);
-        IO.println("filter (failed): " + shortNameUser.isPresent());  // false
+        // false
+        IO.println("filter (failed): " + shortNameUser.isPresent());
     }
 }
 ```
@@ -464,7 +483,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-10**　OptionalStreamExample.java（7〜8、19、21〜22、27〜59、60行目）</span>
+<span class="listing-number">**サンプルコード12-10**　OptionalStreamExample.java（7〜8、19、21〜22、27〜62、63行目）</span>
 
 ```java
 public class OptionalStreamExample {
@@ -495,14 +514,17 @@ public class OptionalStreamExample {
         
         // max/min - 最大値・最小値をOptionalで返す
         Optional<Product> mostExpensive = products.stream()
-            .max((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+            .max((p1, p2) ->
+                    Double.compare(p1.getPrice(), p2.getPrice()));
         
         mostExpensive.ifPresent(p -> 
-            IO.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
+            IO.println("最高額商品: " + p.getName() + " ($"
+                    + p.getPrice() + ")"));
         
         // OptionalをStreamに変換（Java 9以降）
         List<String> expensiveProductNames = products.stream()
-            .map(p -> p.getPrice() > 500 ? Optional.of(p.getName()) : Optional.<String>empty())
+            .map(p -> p.getPrice() > 500 ? Optional.of(p.getName())
+                    : Optional.<String>empty())
             .flatMap(Optional::stream)  // Optional -> Stream変換
             .collect(Collectors.toList());
         
@@ -524,7 +546,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜90行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜92行目）</span>
 
 ```java
 public class OptionalPracticalExample {
@@ -571,14 +593,16 @@ public class OptionalPracticalExample {
             .map(email -> email.substring(email.indexOf("@") + 1))
             .orElse("ドメインなし");
         
-        IO.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
+        IO.println("ユーザー " + userId + " のメールドメイン: "
+                + emailDomain);
         
         // 存在しないユーザーの処理
         Long nonExistentId = 999L;
         repo.findById(nonExistentId)
             .ifPresentOrElse(
                 user -> IO.println("ユーザー名: " + user.getName()),
-                () -> IO.println("ユーザーID " + nonExistentId + " は存在しません")
+                () -> IO.println("ユーザーID " + nonExistentId
+                + " は存在しません")
             );
         
         // 設定値の取得
@@ -890,7 +914,7 @@ public class FlatMapExample {
 
 `reduce`操作<span class="footnote">mapとreduceは、Lispなどの関数型言語で古くから使われてきた名前です。Googleが2004年に発表した大規模データ処理のしくみMapReduceも、この2つの関数から名前を取っています。</span>は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜25、39〜40行目）</span>
+<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜27、41〜42行目）</span>
 
 ```java
 public class ReduceExample {
@@ -907,12 +931,14 @@ public class ReduceExample {
         // この場合、空のストリームの可能性があるためOptionalが返される
         Optional<Integer> max = numbers.stream()
             .reduce((a, b) -> a > b ? a : b);
-        max.ifPresent(value -> IO.println("最大値: " + value)); // 出力: 最大値: 5
+        // 出力: 最大値: 5
+        max.ifPresent(value -> IO.println("最大値: " + value));
         
         // 文字列の結合例
         List<String> words = Arrays.asList("Java", "is", "awesome");
         String sentence = words.stream()
-            .reduce("", (result, word) -> result.isEmpty() ? word : result + " " + word);
+            .reduce("", (result, word) -> result.isEmpty() ? word
+                    : result + " " + word);
         IO.println(sentence); // 出力: Java is awesome
         // ...
     }
@@ -1004,7 +1030,8 @@ import java.util.stream.Collectors;
 public class NullSafeProcessingExample {
     public static void main(String[] args) {
         // nullが混入する可能性があるデータ
-        List<String> namesWithNull = Arrays.asList("Alice", null, "Bob", "", "Charlie");
+        List<String> namesWithNull =
+                Arrays.asList("Alice", null, "Bob", "", "Charlie");
         
         // nullや空文字列を取り除いてから変換する
         List<String> validNames = namesWithNull.stream()
@@ -1039,7 +1066,8 @@ import java.util.stream.Collectors;
 
 public class ShortCircuitExample {
     public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Integer> numbers =
+                Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         
         // 早期終了操作：allMatchは条件を満たさない要素が見つかった時点で処理を停止
         // すべての要素が偶数かチェック（1つでも奇数があればfalse）
@@ -1086,7 +1114,8 @@ import java.util.List;
 
 public class ToArrayExample {
     public static void main(String[] args) {
-        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+        List<String> names =
+                Arrays.asList("Alice", "Bob", "Charlie", "David");
         
         // toArrayの正しい使い方：型安全な配列を取得
         // String[]::newを指定することで、正しい型の配列が生成される
@@ -1117,7 +1146,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-22**　ComplexProcessingExample.java（6〜8、16〜32、44〜45行目）</span>
+<span class="listing-number">**サンプルコード12-22**　ComplexProcessingExample.java（6〜8、16〜36、48〜49行目）</span>
 
 ```java
 public class ComplexProcessingExample {
@@ -1129,11 +1158,15 @@ public class ComplexProcessingExample {
         // 複雑な処理：高得点者（85点以上）を身長でグループ化し、
         // 各グループで最高得点者の名前を取得
         Map<String, String> heightGroupTopScorers = students.stream()
-            .filter(s -> s.getScore() >= 85)                    // 高得点者のみ
-            .collect(Collectors.groupingBy(                     // 身長でグループ化
+            // 高得点者のみ
+            .filter(s -> s.getScore() >= 85)
+            // 身長でグループ化
+            .collect(Collectors.groupingBy(
                 s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
-                Collectors.collectingAndThen(                   // グループ内での最高得点者を取得
-                    Collectors.maxBy((s1, s2) -> Integer.compare(s1.getScore(), s2.getScore())),
+                // グループ内での最高得点者を取得
+                Collectors.collectingAndThen(
+                    Collectors.maxBy((s1, s2) ->
+                    Integer.compare(s1.getScore(), s2.getScore())),
                     opt -> opt.map(Student::getName).orElse("該当者なし")
                 )
             ));

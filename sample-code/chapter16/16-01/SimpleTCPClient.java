@@ -22,7 +22,8 @@ public class SimpleTCPClient {
         } catch (UnknownHostException e) {
             System.err.println("ホストが見つかりません: " + serverAddress);
         } catch (IOException e) {
-            System.err.println("I/Oエラーが発生しました: " + e.getMessage());
+            System.err.println("I/Oエラーが発生しました: "
+                    + e.getMessage());
         }
     }
 }

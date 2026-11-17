@@ -16,12 +16,14 @@ public class ReduceExample {
         // この場合、空のストリームの可能性があるためOptionalが返される
         Optional<Integer> max = numbers.stream()
             .reduce((a, b) -> a > b ? a : b);
-        max.ifPresent(value -> IO.println("最大値: " + value)); // 出力: 最大値: 5
+        // 出力: 最大値: 5
+        max.ifPresent(value -> IO.println("最大値: " + value));
         
         // 文字列の結合例
         List<String> words = Arrays.asList("Java", "is", "awesome");
         String sentence = words.stream()
-            .reduce("", (result, word) -> result.isEmpty() ? word : result + " " + word);
+            .reduce("", (result, word) -> result.isEmpty() ? word
+                    : result + " " + word);
         IO.println(sentence); // 出力: Java is awesome
         
         // 複雑な集約：学生の点数から統計情報を計算

@@ -7,7 +7,8 @@ import java.util.function.Predicate;
 
 public class EventProcessor {
     // イベントの種類ごとに、登録されたハンドラーの一覧を持つ
-    private final Map<Class<?>, List<Consumer<Object>>> handlers = new HashMap<>();
+    private final Map<Class<?>, List<Consumer<Object>>> handlers =
+            new HashMap<>();
 
     // イベントハンドラーの登録
     public <T> void on(Class<T> eventType, Consumer<T> handler) {
@@ -28,7 +29,8 @@ public class EventProcessor {
 
     // イベントの発行：登録されたハンドラーを順に呼び出す
     public void publish(Object event) {
-        for (Consumer<Object> handler : handlers.getOrDefault(event.getClass(), List.of())) {
+        for (Consumer<Object> handler
+                : handlers.getOrDefault(event.getClass(), List.of())) {
             handler.accept(event);
         }
     }

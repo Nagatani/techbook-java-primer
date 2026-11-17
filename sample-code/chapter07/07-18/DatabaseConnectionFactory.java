@@ -12,7 +12,8 @@ class MySQLConnection implements DatabaseConnection {
     private String connectionString;
     
     public MySQLConnection(String host, int port, String database) {
-        this.connectionString = String.format("mysql://%s:%d/%s", host, port, database);
+        this.connectionString =
+                String.format("mysql://%s:%d/%s", host, port, database);
     }
     
     @Override
@@ -56,14 +57,16 @@ class PostgreSQLConnection implements DatabaseConnection {
 
 // データベース接続ファクトリ
 public class DatabaseConnectionFactory {
-    public static DatabaseConnection createConnection(String type, String host, int port, String database) {
+    public static DatabaseConnection createConnection(String type,
+            String host, int port, String database) {
         switch (type.toUpperCase()) {
             case "MYSQL":
                 return new MySQLConnection(host, port, database);
             case "POSTGRESQL":
                 return new PostgreSQLConnection(host, port, database);
             default:
-                throw new IllegalArgumentException("サポートされていないデータベース: " + type);
+                throw new IllegalArgumentException(
+                        "サポートされていないデータベース: " + type);
         }
     }
     

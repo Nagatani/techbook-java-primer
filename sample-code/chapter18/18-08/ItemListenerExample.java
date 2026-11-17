@@ -23,8 +23,10 @@ public class ItemListenerExample extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 JCheckBox source = (JCheckBox) e.getSource();
-                String status = e.getStateChange() == ItemEvent.SELECTED ? "選択" : "解除";
-                statusLabel.setText(source.getText() + " が" + status + "されました");
+                String status = e.getStateChange() == ItemEvent.SELECTED
+                        ? "選択" : "解除";
+                statusLabel.setText(source.getText() + " が" + status
+                        + "されました");
                 updateSelection();
             }
         };
@@ -52,7 +54,8 @@ public class ItemListenerExample extends JFrame {
         ItemListener radioListener = e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 JRadioButton source = (JRadioButton) e.getSource();
-                statusLabel.setText("サイズ: " + source.getText() + " が選択されました");
+                statusLabel.setText("サイズ: " + source.getText()
+                        + " が選択されました");
             }
         };
         

@@ -6,7 +6,8 @@ public class CreditCardPayment extends PaymentProcessor {
     private String cvv;
     
     public CreditCardPayment(String transactionId, BigDecimal amount, 
-                           String currency, String cardNumber, String cvv) {
+                           String currency, String cardNumber,
+                           String cvv) {
         super(transactionId, amount, currency);
         this.cardNumber = cardNumber;
         this.cvv = cvv;

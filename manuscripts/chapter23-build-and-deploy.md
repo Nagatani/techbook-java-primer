@@ -148,14 +148,15 @@ java -jar SimpleApp.jar
 次のTodoアプリケーションは、ウィンドウを組み立てる`TodoApp`クラスと、入力欄と「追加」ボタンをまとめた`TodoInputPanel`クラスの2つのファイルからなります。
 `TodoInputPanel`は`JPanel`を継承したクラスで、「追加」ボタンが押されると、入力された文字を`TodoApp`から受け取ったリストのモデルに加えます。
 
-<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜6、8〜10、12〜13、21〜22、27〜32行目）、TodoInputPanel.java（1、5〜21行目）</span>
+<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜7、9〜11、13〜14、22〜23、28〜33行目）、TodoInputPanel.java（1、5〜21行目）</span>
 
 ```java
 // TodoApp.java
 // ...
 public class TodoApp {
-    private final DefaultListModel<String> listModel = new DefaultListModel<>();
-    // ...
+    private final DefaultListModel<String> listModel =
+            new DefaultListModel<>();
+            // ...
     public TodoApp() {
         createAndShowGUI();
     }
@@ -259,7 +260,8 @@ public class ResourceApp {
             ImageIcon icon = new ImageIcon(
                 ResourceApp.class.getResource("/icon.png")
             );
-            JLabel label = new JLabel("画像リソースの例", icon, JLabel.CENTER);
+            JLabel label =
+                    new JLabel("画像リソースの例", icon, JLabel.CENTER);
             
             frame.add(label);
             frame.setSize(300, 200);

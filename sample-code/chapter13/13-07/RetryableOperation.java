@@ -5,9 +5,9 @@ public class RetryableOperation {
     private static final int MAX_RETRY_COUNT = 3;
     private static final long RETRY_DELAY_MS = 1000;
     
-    public static <T> T executeWithRetry(Callable<T> operation, 
-                                       Class<? extends Exception> retryableException) 
-                                       throws Exception {
+    public static <T> T executeWithRetry(Callable<T> operation,
+            Class<? extends Exception> retryableException)
+            throws Exception {
         Exception lastException = null;
         
         for (int attempt = 1; attempt <= MAX_RETRY_COUNT; attempt++) {
@@ -33,7 +33,8 @@ public class RetryableOperation {
             }
         }
         
-        throw new RuntimeException("最大リトライ回数に達しました", lastException);
+        throw new RuntimeException("最大リトライ回数に達しました",
+                lastException);
     }
     
     // 使用例

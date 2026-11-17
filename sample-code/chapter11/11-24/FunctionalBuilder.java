@@ -25,7 +25,8 @@ public class FunctionalBuilder {
     
     // 関数型ビルダーパターン
     public static class FunctionalPersonBuilder {
-        private final List<Consumer<Person>> operations = new ArrayList<>();
+        private final List<Consumer<Person>> operations =
+                new ArrayList<>();
         
         public FunctionalPersonBuilder with(Consumer<Person> operation) {
             operations.add(operation);

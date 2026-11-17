@@ -10,12 +10,16 @@ public class OptionalCreationExample {
         // 2. ofNullable() - nullの可能性がある値をラップ
         // nullの場合は空のOptionalを返す
         String nullableString = null;
-        Optional<String> nullableValue = Optional.ofNullable(nullableString);
-        IO.println("ofNullable(null): " + nullableValue);  // Optional.empty
+        Optional<String> nullableValue =
+                Optional.ofNullable(nullableString);
+        // Optional.empty
+        IO.println("ofNullable(null): " + nullableValue);
         
         String nonNullString = "World";
-        Optional<String> nonNullValue = Optional.ofNullable(nonNullString);
-        IO.println("ofNullable(\"World\"): " + nonNullValue);  // Optional[World]
+        Optional<String> nonNullValue =
+                Optional.ofNullable(nonNullString);
+        // Optional[World]
+        IO.println("ofNullable(\"World\"): " + nonNullValue);
         
         // 3. empty() - 空のOptionalを作成
         Optional<String> emptyValue = Optional.empty();

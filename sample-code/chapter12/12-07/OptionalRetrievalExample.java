@@ -7,7 +7,8 @@ public class OptionalRetrievalExample {
         Optional<String> empty = Optional.empty();
         
         // 1. get() - 値が存在しない場合はNoSuchElementExceptionを投げる
-        // 空のときに例外になるので避ける（同じ働きの引数なしのorElseThrow()がJava 10で加わった）
+        // 空のときに例外になるので避ける（同じ働きの
+        // 引数なしのorElseThrow()がJava 10で加わった）
         try {
             String value1 = present.get();
             IO.println("get() with value: " + value1);  // Hello
@@ -24,7 +25,8 @@ public class OptionalRetrievalExample {
         IO.println("orElse() on empty: " + value4);       // Default
         
         // 3. orElseGet() - 値が存在しない場合にSupplierから値を生成
-        // orElseの引数は値があっても必ず評価されるが、Supplierは値がないときだけ呼ばれる
+        // orElseの引数は値があっても必ず評価されるが、Supplierは
+        // 値がないときだけ呼ばれる
         String value5 = empty.orElseGet(() -> {
             IO.println("Generating default value...");
             return "Generated Default";

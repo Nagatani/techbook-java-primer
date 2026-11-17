@@ -123,7 +123,7 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜38、72、79行目）</span>
+<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜39、73、80行目）</span>
 
 ```java
 public class SortableTableExample extends JFrame {
@@ -151,7 +151,8 @@ public class SortableTableExample extends JFrame {
             } else {
                 // 名前列でフィルタリング（入力した記号も文字として探す）
                 sorter.setRowFilter(
-                    RowFilter.regexFilter("(?i)" + Pattern.quote(text), 1));
+                    RowFilter.regexFilter("(?i)" + Pattern.quote(text),
+                    1));
             }
         });
         // ...
@@ -186,14 +187,15 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 子を持つノードには、展開・折りたたみのハンドルが表示されます。
 `setShowsRootHandles(true)`は、いちばん上のルートノードにもハンドルを表示する指定です。
 
-<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜28、34〜36、44、51行目）</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜29、35〜37、45、52行目）</span>
 
 ```java
 public class BasicTreeExample extends JFrame {
     public BasicTreeExample() {
         // ...
         // ルートノードの作成
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("プロジェクト");
+        DefaultMutableTreeNode root =
+                new DefaultMutableTreeNode("プロジェクト");
         
         // 子ノードの追加
         DefaultMutableTreeNode src = new DefaultMutableTreeNode("src");
@@ -250,7 +252,7 @@ public class BasicTreeExample extends JFrame {
 `JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
 文字色も、選択状態に合わせて中の部品ごとに設定します。
 
-<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜70、77、89〜90、98〜99、103〜133、136、140、144〜148、199、206行目）</span>
+<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜71、78、90〜91、99〜100、104〜140、143、147、151〜155、206、213行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -273,8 +275,9 @@ class TaskListModel extends AbstractListModel<Task> {
 }
 
 // カスタムレンダラー
-class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
-    // ...
+class TaskListCellRenderer extends JPanel
+        implements ListCellRenderer<Task> {
+        // ...
     public TaskListCellRenderer() {
         // ...
         // 中のパネルは透明にして、外側のパネルの背景色（選択色）を見せる
@@ -286,12 +289,15 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
     }
     
     @Override
-    public Component getListCellRendererComponent(JList<? extends Task> list,
-            Task task, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(
+            JList<? extends Task> list,
+            Task task, int index, boolean isSelected,
+            boolean cellHasFocus) {
         
         titleLabel.setText(task.getTitle());
         descriptionLabel.setText(task.getDescription());
-        dueDateLabel.setText("期限: " + task.getDueDate().format(formatter));
+        dueDateLabel.setText("期限: " + task.getDueDate()
+                .format(formatter));
         completedCheckBox.setSelected(task.isCompleted());
         
         // 選択状態の表示
@@ -303,9 +309,12 @@ class TaskListCellRenderer extends JPanel implements ListCellRenderer<Task> {
             setForeground(list.getForeground());
         }
         
-        // 中の部品の文字色も選択状態に合わせる（選択していない完了タスクの題名と説明は灰色）
-        Color textColor = isSelected ? list.getSelectionForeground() : list.getForeground();
-        Color doneColor = task.isCompleted() && !isSelected ? Color.GRAY : textColor;
+        // 中の部品の文字色も選択状態に合わせる（選択していない完了タスクの
+        // 題名と説明は灰色）
+        Color textColor = isSelected ? list.getSelectionForeground()
+                : list.getForeground();
+        Color doneColor = task.isCompleted() && !isSelected ? Color.GRAY
+                : textColor;
         titleLabel.setForeground(doneColor);
         descriptionLabel.setForeground(doneColor);
         dueDateLabel.setForeground(textColor);
@@ -350,7 +359,7 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
 ステータスバーには、選択中のプロジェクト名が表示されます。
 
-<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（32、88、111〜129、156〜170、183、199〜208、216、253行目）</span>
+<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（32、88、111〜130、157〜174、187、203〜212、220、257行目）</span>
 
 ```java
 public class IntegratedDataManagementApp extends JFrame {
@@ -358,7 +367,8 @@ public class IntegratedDataManagementApp extends JFrame {
     private void createProjectTree() {
         // ...
         projectTree = new JTree(root);
-        projectTree.addTreeSelectionListener(new TreeSelectionListener() {
+        projectTree.addTreeSelectionListener(
+                new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -378,7 +388,8 @@ public class IntegratedDataManagementApp extends JFrame {
     }
     // ...
     private void updateTaskTable() {
-        DefaultTableModel model = (DefaultTableModel) taskTable.getModel();
+        DefaultTableModel model =
+                (DefaultTableModel) taskTable.getModel();
         model.setRowCount(0);
         
         if (currentProject != null) {
@@ -386,7 +397,9 @@ public class IntegratedDataManagementApp extends JFrame {
                 model.addRow(new Object[]{
                     task.getTitle(),
                     task.getDescription(),
-                    task.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                    task.getDueDate().format(
+                    java.time.format.DateTimeFormatter.ofPattern(
+                    "yyyy/MM/dd")),
                     task.isCompleted()
                 });
             }

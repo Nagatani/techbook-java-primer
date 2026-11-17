@@ -29,7 +29,8 @@ public class RunnableLambdaExample {
         t2.start();
         
         // より簡潔なラムダ式（単一ステートメント）
-        Thread t3 = new Thread(() -> IO.println("Thread t3 (Simple Lambda) executed"));
+        Thread t3 = new Thread(() ->
+                IO.println("Thread t3 (Simple Lambda) executed"));
         t3.start();
         
         // すべてのスレッドの完了を待機

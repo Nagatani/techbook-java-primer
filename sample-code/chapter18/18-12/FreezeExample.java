@@ -36,7 +36,8 @@ public class FreezeExample {
                 try {
                     Thread.sleep(3000);
                     // UI更新はEDT上で行う
-                    SwingUtilities.invokeLater(() -> label.setText("完了"));
+                    SwingUtilities.invokeLater(() ->
+                            label.setText("完了"));
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }

@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 public class NullSafeProcessingExample {
     public static void main(String[] args) {
         // nullが混入する可能性があるデータ
-        List<String> namesWithNull = Arrays.asList("Alice", null, "Bob", "", "Charlie");
+        List<String> namesWithNull =
+                Arrays.asList("Alice", null, "Bob", "", "Charlie");
         
         // nullや空文字列を取り除いてから変換する
         List<String> validNames = namesWithNull.stream()

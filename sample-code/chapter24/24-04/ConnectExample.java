@@ -6,12 +6,14 @@ import java.sql.SQLException;
 
 public class ConnectExample {
     public static void main(String[] args) {
-        String url = "jdbc:h2:mem:testdb"; // メモリ上のデータベース（接続を閉じると消える）
+        // メモリ上のデータベース（接続を閉じると消える）
+        String url = "jdbc:h2:mem:testdb";
         String user = "sa";
         String password = "";
 
         // ConnectionはAutoCloseableなので、try-with-resourcesで閉じる
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+        try (Connection conn =
+                DriverManager.getConnection(url, user, password)) {
             DatabaseMetaData meta = conn.getMetaData();
             IO.println("接続しました: " + meta.getDatabaseProductName()
                 + " " + meta.getDatabaseProductVersion());

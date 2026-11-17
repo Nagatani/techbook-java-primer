@@ -234,7 +234,8 @@ public class Main {
 
         // ラムダ式を使えばさらに簡潔
         new Thread(() -> {
-            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread().getName());
+            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread()
+                    .getName());
         }).start();
     }
 }
@@ -369,7 +370,8 @@ class BankAccount {
     public void deposit(double amount) {
         // 検証処理は同期化の外で実行（パフォーマンス向上）
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の数である必要があります");
+            throw new IllegalArgumentException(
+                    "入金額は正の数である必要があります");
         }
         
         // 残高の更新部分だけを同期化
@@ -667,7 +669,7 @@ Javaでは、このバッファーに`java.util.concurrent`パッケージの`Bl
 `put()`はキューが満杯なら空きができるまで待ち、`take()`はキューが空なら要素が入るまで待ちます。
 次の例では、2つのプロデューサーと3つのコンシューマーが、容量10のキューを介して整数を受け渡します。
 
-<span class="listing-number">**サンプルコード15-12**　ProducerConsumerExample.java（8〜18、27〜44、53〜80、87行目）</span>
+<span class="listing-number">**サンプルコード15-12**　ProducerConsumerExample.java（8〜21、30〜48、57〜85、92行目）</span>
 
 ```java
 public class ProducerConsumerExample {
@@ -675,9 +677,12 @@ public class ProducerConsumerExample {
     // BlockingQueueは、スレッド間でデータを安全に受け渡すための
     // 特殊なキューです。キューが満杯の時は生産者が自動的にブロックされ、
     // キューが空の時は消費者が自動的にブロックされます。
-    private static final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(10);
-    private static final AtomicInteger producedCount = new AtomicInteger(0);
-    private static final AtomicInteger consumedCount = new AtomicInteger(0);
+    private static final BlockingQueue<Integer> queue =
+            new LinkedBlockingQueue<>(10);
+    private static final AtomicInteger producedCount =
+            new AtomicInteger(0);
+    private static final AtomicInteger consumedCount =
+            new AtomicInteger(0);
     
     // プロデューサー（生産者）
     static class Producer implements Runnable {
@@ -688,7 +693,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToProduce; i++) {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
-                    IO.println("%s produced: %d (queue size: %d)".formatted(
+                    IO.println("%s produced: %d (queue size: %d)"
+                            .formatted(
                         name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
@@ -707,7 +713,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToConsume; i++) {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
-                    IO.println("%s consumed: %d (queue size: %d)".formatted(
+                    IO.println("%s consumed: %d (queue size: %d)"
+                            .formatted(
                         name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }
@@ -811,7 +818,7 @@ synchronized(lock) {
 `Future`インターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
 実行中のタスクをキャンセルすることもできます。
 
-<span class="listing-number">**サンプルコード15-14**　FutureCallableExample.java（5、7〜8、15〜23、29〜61行目）</span>
+<span class="listing-number">**サンプルコード15-14**　FutureCallableExample.java（5、7〜8、15〜24、30〜63行目）</span>
 
 ```java
 public class FutureCallableExample {
@@ -825,7 +832,8 @@ public class FutureCallableExample {
             long start = System.currentTimeMillis();
             long result = fibonacci(n);
             long time = System.currentTimeMillis() - start;
-            IO.println("計算完了: F(%d) = %d (所要時間: %dms)".formatted(n, result, time));
+            IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
+                    .formatted(n, result, time));
             return result;
         }
         // ...
@@ -838,7 +846,8 @@ public class FutureCallableExample {
         // 複数の計算タスクを非同期で実行
         int[] numbers = {35, 38, 40, 42};
         for (int n : numbers) {
-            Future<Long> future = executor.submit(new CalculationTask(n));
+            Future<Long> future =
+                    executor.submit(new CalculationTask(n));
             futures.add(future);
         }
         
@@ -880,14 +889,15 @@ CompletableFutureの主な特徴は次のとおりです。
 - タイムアウト処理
     + `orTimeout`メソッドで、決めた時間内に終わらない処理を例外にする
 
-<span class="listing-number">**サンプルコード15-15**　CompletableFutureExample.java（6、9、12〜24、38、40、52〜75、91〜92行目）</span>
+<span class="listing-number">**サンプルコード15-15**　CompletableFutureExample.java（6、9、12〜25、39、41、53〜78、94〜95行目）</span>
 
 ```java
 public class CompletableFutureExample {
     // ...
     static class WeatherService {
         // ...
-        public static CompletableFuture<String> getTemperature(String city) {
+        public static CompletableFuture<String> getTemperature(
+                String city) {
             return CompletableFuture.supplyAsync(() -> {
                 IO.println("気温取得中: " + city);
                 // APIコールをシミュレート
@@ -918,8 +928,10 @@ public class CompletableFutureExample {
         // 各都市の気温と湿度を並行して取得
         CompletableFuture<?>[] allWeatherData = Arrays.stream(cities)
         .map(city -> {
-            CompletableFuture<String> temp = WeatherService.getTemperature(city);
-            CompletableFuture<String> humidity = WeatherService.getHumidity(city);
+            CompletableFuture<String> temp =
+                    WeatherService.getTemperature(city);
+            CompletableFuture<String> humidity =
+                    WeatherService.getHumidity(city);
             
             // 気温と湿度を組み合わせる
             return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
@@ -952,7 +964,7 @@ public class CompletableFutureExample {
 - `thenAccept()`
     + 結果を消費（戻り値なし）
 
-<span class="listing-number">**サンプルコード15-16**　AsyncChainingExample.java（4〜14、35〜48、56行目）</span>
+<span class="listing-number">**サンプルコード15-16**　AsyncChainingExample.java（4〜14、35〜49、57行目）</span>
 
 ```java
 public class AsyncChainingExample {
@@ -972,7 +984,8 @@ public class AsyncChainingExample {
         // 非同期処理を連鎖させる
         CompletableFuture<Integer> totalFuture = fetchUser("USER001")
             .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
-            .thenApply(orders -> calculateTotal(orders))  // 前の処理を終えたスレッドで続けて変換
+            // 前の処理を終えたスレッドで続けて変換
+            .thenApply(orders -> calculateTotal(orders))
             .exceptionally(ex -> {
                 System.err.println("Error occurred: " + ex.getMessage());
                 return 0;  // デフォルト値を返す

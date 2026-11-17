@@ -170,7 +170,8 @@ public class SimpleTCPClient {
         } catch (UnknownHostException e) {
             System.err.println("ホストが見つかりません: " + serverAddress);
         } catch (IOException e) {
-            System.err.println("I/Oエラーが発生しました: " + e.getMessage());
+            System.err.println("I/Oエラーが発生しました: "
+                    + e.getMessage());
         }
     }
 }
@@ -262,7 +263,7 @@ public class SimpleTCPServer {
 
 </div>
 
-<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜61、70〜72行目）</span>
+<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜62、71〜73行目）</span>
 
 ```java
 public class MultiThreadedServer {
@@ -311,7 +312,8 @@ class ClientHandler implements Runnable {
                 } else if (inputLine.startsWith("ECHO ")) {
                     out.println(inputLine.substring(5));
                 } else if (inputLine.equals("TIME")) {
-                    out.println(java.time.LocalDateTime.now().toString());
+                    out.println(java.time.LocalDateTime.now()
+                            .toString());
                 } else {
                     out.println("Unknown command: " + inputLine);
                 }
@@ -438,13 +440,14 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています<span class="footnote">認証なしでGitHub APIを呼び出せるのは、1つのIPアドレスから1時間に60回までです。回数を超えると、レスポンスコードが403や429になります。</span>。
 
-<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜37、43〜44行目）</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜38、44〜45行目）</span>
 
 ```java
 public class HttpURLConnectionExample {
     public static void main(String[] args) {
         try {
-            URL url = URI.create("https://api.github.com/users/github").toURL();
+            URL url = URI.create("https://api.github.com/users/github")
+                    .toURL();
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
             
@@ -491,7 +494,7 @@ Response: {"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","
 
 Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）<span class="footnote">このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。</span>は、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜49行目）</span>
+<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜52行目）</span>
 
 ```java
 public class AsyncHttpClientExample {
@@ -505,7 +508,8 @@ public class AsyncHttpClientExample {
         
         // HTTPリクエストの作成
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
+            .uri(URI.create(
+                    "https://jsonplaceholder.typicode.com/posts/1"))
             .timeout(Duration.ofMinutes(1))
             .header("Accept", "application/json")
             .GET()
@@ -513,7 +517,8 @@ public class AsyncHttpClientExample {
         
         // 非同期でリクエストを送信
         CompletableFuture<HttpResponse<String>> future = 
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            client.sendAsync(request,
+            HttpResponse.BodyHandlers.ofString());
         
         // 非同期処理の連鎖
         CompletableFuture<Void> done = future
@@ -532,7 +537,8 @@ public class AsyncHttpClientExample {
         // 他の処理を並行して実行可能
         IO.println("他の処理を継続中...");
         
-        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが終了するため）
+        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが
+        // 終了するため）
         done.join();
     }
 }
@@ -579,7 +585,8 @@ public class UDPServer {
             IO.println("UDPサーバーがポート " + PORT + " で起動しました");
             
             byte[] buffer = new byte[1024];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            DatagramPacket packet =
+                    new DatagramPacket(buffer, buffer.length);
             
             while (true) {
                 // データを受信
@@ -592,7 +599,8 @@ public class UDPServer {
                 
                 // エコーレスポンスを送信
                 String response = "Echo: " + received;
-                byte[] responseData = response.getBytes(StandardCharsets.UTF_8);
+                byte[] responseData =
+                        response.getBytes(StandardCharsets.UTF_8);
                 DatagramPacket responsePacket = new DatagramPacket(
                     responseData, responseData.length,
                     packet.getAddress(), packet.getPort());
@@ -626,7 +634,8 @@ import java.nio.charset.StandardCharsets;
 public class UDPClient {
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getByName("localhost");
+            InetAddress serverAddress =
+                    InetAddress.getByName("localhost");
             int serverPort = 9999;
             
             // データを送信
@@ -819,7 +828,7 @@ JacksonはJavaの標準APIではなく、外部ライブラリです。
 外部ライブラリの追加方法とJacksonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、`ObjectMapper`の`readValue`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
-<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜30、50〜59、81行目）</span>
+<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜31、51〜61、83行目）</span>
 
 ```java
 public class JsonApiClient {
@@ -834,7 +843,8 @@ public class JsonApiClient {
     }
     
     // GETリクエスト
-    public <T> T get(String url, Class<T> responseType) throws Exception {
+    public <T> T get(String url, Class<T> responseType)
+            throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .header("Accept", "application/json")
@@ -848,7 +858,8 @@ public class JsonApiClient {
     }
     // ...
     // ステータスコードが成功（200番台）のときだけ、JSONをオブジェクトに変換する
-    private <T> T readBody(HttpResponse<String> response, Class<T> responseType)
+    private <T> T readBody(HttpResponse<String> response,
+            Class<T> responseType)
             throws Exception {
         int status = response.statusCode();
         if (status >= 200 && status < 300) {

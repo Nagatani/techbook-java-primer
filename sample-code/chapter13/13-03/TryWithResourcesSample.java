@@ -5,7 +5,8 @@ import java.io.IOException;
 public class TryWithResourcesSample {
     public static void readFile(String path) {
         // try()の括弧内でリソースを初期化する
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br =
+                new BufferedReader(new FileReader(path))) {
             IO.println(br.readLine());
         } catch (IOException e) {
             System.err.println("ファイル読み込みエラー: " + e.getMessage());

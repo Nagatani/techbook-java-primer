@@ -3,7 +3,8 @@ public class UserManagementSystem {
         // 親クラスの配列に、さまざまな子クラスのインスタンスを格納できる
         User[] users = new User[3];
         users[0] = new RegularUser("U001", "user1@example.com");
-        users[1] = new AdminUser("A001", "admin@example.com", "SuperAdmin");
+        users[1] = new AdminUser("A001", "admin@example.com",
+                "SuperAdmin");
         users[2] = new GuestUser("session123");
 
         // 全ユーザーのリクエストを処理

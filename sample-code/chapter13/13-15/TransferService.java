@@ -26,11 +26,14 @@ public class TransferService {
             validateTransferRequest(fromAccountId, toAccountId, amount);
             
             // アカウント取得
-            Account fromAccount = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new AccountNotFoundException(fromAccountId));
+            Account fromAccount =
+                    accountRepository.findById(fromAccountId)
+                .orElseThrow(() ->
+                        new AccountNotFoundException(fromAccountId));
             
             Account toAccount = accountRepository.findById(toAccountId)
-                .orElseThrow(() -> new AccountNotFoundException(toAccountId));
+                .orElseThrow(() ->
+                        new AccountNotFoundException(toAccountId));
             
             // ビジネスルールチェック
             checkBusinessRules(fromAccount, amount);
@@ -41,7 +44,8 @@ public class TransferService {
             
             // トランザクション記録
             Transaction transaction = new Transaction(
-                fromAccountId, toAccountId, amount, TransactionType.TRANSFER);
+                fromAccountId, toAccountId, amount,
+                TransactionType.TRANSFER);
             transactionRepository.save(transaction);
             
             // 結果返却
@@ -55,14 +59,17 @@ public class TransferService {
             
         } catch (BusinessException e) {
             // ビジネス例外は記録してから呼び出し元に伝える
-            logger.log(Level.WARNING, "送金処理でビジネスエラー: " + e.getMessage());
+            logger.log(Level.WARNING, "送金処理でビジネスエラー: "
+                    + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            logger.log(Level.SEVERE, "送金処理中に予期せぬエラーが発生しました", e);
+            logger.log(Level.SEVERE,
+                    "送金処理中に予期せぬエラーが発生しました", e);
             // 非検査例外に包み、原因の例外を渡して投げ直す
-            throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
+            throw new RuntimeException(
+                    "送金処理中に予期せぬエラーが発生しました", e);
         }
     }
     

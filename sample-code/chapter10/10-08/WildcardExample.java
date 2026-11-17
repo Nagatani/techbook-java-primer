@@ -11,8 +11,10 @@ public class WildcardExample {
         return total;
     }
 
-    // 下限境界ワイルドカード：Integerとそのスーパークラスのリストを受け取り、1からcountまでを追加する
-    public static void addNumbers(List<? super Integer> list, int count) {
+    // 下限境界ワイルドカード：Integerとそのスーパークラスのリストを受け取り、
+    // 1からcountまでを追加する
+    public static void addNumbers(List<? super Integer> list,
+            int count) {
         for (int i = 1; i <= count; i++) {
             list.add(i);
         }

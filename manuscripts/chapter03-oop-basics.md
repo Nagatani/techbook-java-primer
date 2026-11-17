@@ -105,7 +105,8 @@ struct BankAccount {
 };
 
 // グローバル変数や外部からの直接アクセスによる問題
-void transfer_money(struct BankAccount* from, struct BankAccount* to, double amount) {
+void transfer_money(struct BankAccount* from, struct BankAccount* to,
+                    double amount) {
     // 残高チェックを忘れやすい
     from->balance -= amount;  // 残高がマイナスになる可能性
     to->balance += amount;
@@ -419,7 +420,8 @@ public class BankAccountTest {
 
 ```java
 public class Product {
-    protected String productId;  // ① protectedにより同一パッケージまたはサブクラスからアクセス可能
+    // ① protectedにより同一パッケージまたはサブクラスからアクセス可能
+    protected String productId;
     protected String name;       // ①
     protected int price;         // ①
     
@@ -1087,7 +1089,8 @@ Integer: 10
 >
 > ```java
 > public int calculate() { return 1; }
-> public double calculate() { return 1.0; }  // エラー：戻り値の型だけでは区別できない
+> // エラー：戻り値の型だけでは区別できない
+> public double calculate() { return 1.0; }
 > ```
 
 ##### コンストラクターのオーバーロード
@@ -1184,7 +1187,8 @@ public class BookTest {
         
         // 価格の変更
         book1.setPrice(2500.0);
-        IO.println("変更後の価格: " + book1.getTitle() + " - " + book1.getPrice() + "円");
+        IO.println("変更後の価格: " + book1.getTitle() + " - "
+                + book1.getPrice() + "円");
     }
 }
 ```
@@ -1421,7 +1425,8 @@ class Tool {
     public Tool(String name) {
         this.name = name;
         toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす
-        IO.println(this.name + " が作成されました。現在のツール総数: " + toolCount);
+        IO.println(this.name + " が作成されました。現在のツール総数: "
+                + toolCount);
     }
 
     // インスタンスメソッド
@@ -1431,7 +1436,8 @@ class Tool {
 
     // クラスメソッド
     public static void showToolCount() {
-        // IO.println(this.name); // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        // エラー！ staticメソッド内ではインスタンスメンバー(name)は使えない
+        // IO.println(this.name);
         IO.println("作成されたツールの総数は " + toolCount + " です。");
     }
 }
@@ -1503,7 +1509,8 @@ public class StaticMemberExample {
 
 ```java
 public class MathUtils {
-    public static double calculateDistance(double x1, double y1, double x2, double y2) {
+    public static double calculateDistance(double x1, double y1,
+            double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 }
@@ -1827,7 +1834,8 @@ ECサイトのショッピングカート機能を実装したクラスです。
 
 ```java
 public class ShoppingCart {
-    private static final int MAX_ITEMS = 10;  // カートに入れられる商品の種類の上限
+    // カートに入れられる商品の種類の上限
+    private static final int MAX_ITEMS = 10;
     private CartItem[] items;
     private int itemCount;  // カートに入っている商品の種類の数
     private double taxRate;

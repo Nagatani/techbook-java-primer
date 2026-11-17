@@ -69,14 +69,16 @@ public class OptionalPracticalExample {
             .map(email -> email.substring(email.indexOf("@") + 1))
             .orElse("ドメインなし");
         
-        IO.println("ユーザー " + userId + " のメールドメイン: " + emailDomain);
+        IO.println("ユーザー " + userId + " のメールドメイン: "
+                + emailDomain);
         
         // 存在しないユーザーの処理
         Long nonExistentId = 999L;
         repo.findById(nonExistentId)
             .ifPresentOrElse(
                 user -> IO.println("ユーザー名: " + user.getName()),
-                () -> IO.println("ユーザーID " + nonExistentId + " は存在しません")
+                () -> IO.println("ユーザーID " + nonExistentId
+                + " は存在しません")
             );
         
         // 設定値の取得

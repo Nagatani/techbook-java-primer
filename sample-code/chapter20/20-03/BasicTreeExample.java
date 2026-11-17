@@ -9,7 +9,8 @@ public class BasicTreeExample extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // ルートノードの作成
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("プロジェクト");
+        DefaultMutableTreeNode root =
+                new DefaultMutableTreeNode("プロジェクト");
         
         // 子ノードの追加
         DefaultMutableTreeNode src = new DefaultMutableTreeNode("src");

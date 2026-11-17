@@ -28,8 +28,10 @@ public class BasicKeyEventExample extends JFrame {
                 statusLabel.setText("押されたキー: " + keyText);
                 
                 // Ctrl+Sのショートカット検出
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
-                    JOptionPane.showMessageDialog(BasicKeyEventExample.this, 
+                if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_S) {
+                    JOptionPane.showMessageDialog(
+                            BasicKeyEventExample.this, 
                         "保存ショートカットが押されました");
                     e.consume(); // デフォルトの動作をキャンセル
                 }

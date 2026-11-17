@@ -7,7 +7,8 @@ public class OrderPipeline {
     // 不正な注文なら例外をスローする
     static Order validate(Order order) {
         if (order.quantity() <= 0) {
-            throw new IllegalArgumentException("数量が不正です: " + order.quantity());
+            throw new IllegalArgumentException("数量が不正です: "
+                    + order.quantity());
         }
         return order;
     }

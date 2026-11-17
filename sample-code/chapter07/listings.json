@@ -21,7 +21,7 @@
     "dir": "07-03",
     "main": "Main",
     "excerpt": [
-      { "file": "Main.java", "from": 1, "to": 12 }
+      { "file": "Main.java", "from": 1, "to": 13 }
     ],
     "uses": [
       "7-1",
@@ -79,23 +79,23 @@
     "main": "JsonDemo",
     "excerpt": [
       { "file": "JsonSerializable.java", "from": 1, "to": 24 },
-      { "file": "JsonDemo.java", "from": 1, "to": 10 }
+      { "file": "JsonDemo.java", "from": 1, "to": 11 }
     ]
   },
   "7-11": {
     "dir": "07-11",
     "main": "DefensiveDemo",
     "excerpt": [
-      { "file": "DefensiveInterface.java", "from": 1, "to": 32 }
+      { "file": "DefensiveInterface.java", "from": 1, "to": 33 }
     ]
   },
   "7-12": {
     "dir": "07-12",
     "main": "MixinDemo",
     "excerpt": [
-      { "file": "Timestamped.java", "from": 3, "to": 22 },
-      { "file": "Timestamped.java", "from": 36, "to": 37 },
-      { "file": "Timestamped.java", "from": 59, "to": 68 }
+      { "file": "Timestamped.java", "from": 3, "to": 24 },
+      { "file": "Timestamped.java", "from": 38, "to": 39 },
+      { "file": "Timestamped.java", "from": 61, "to": 70 }
     ]
   },
   "7-13": {
@@ -112,15 +112,15 @@
     "excerpt": [
       { "file": "BadUserService.java", "from": 3, "to": 28 },
       { "file": "BadUserService.java", "from": 33, "to": 33 },
-      { "file": "BadUserService.java", "from": 49, "to": 57 },
-      { "file": "BadUserService.java", "from": 78, "to": 78 }
+      { "file": "BadUserService.java", "from": 49, "to": 58 },
+      { "file": "BadUserService.java", "from": 79, "to": 79 }
     ]
   },
   "7-15": {
     "dir": "07-15",
     "main": null,
     "excerpt": [
-      { "file": "ServiceV1.java", "from": 1, "to": 50 }
+      { "file": "ServiceV1.java", "from": 1, "to": 53 }
     ]
   },
   "7-16": {
@@ -130,9 +130,9 @@
       { "file": "FigureFactory.java", "from": 3, "to": 10 },
       { "file": "FigureFactory.java", "from": 17, "to": 20 },
       { "file": "FigureFactory.java", "from": 26, "to": 26 },
-      { "file": "FigureFactory.java", "from": 68, "to": 77 },
-      { "file": "FigureFactory.java", "from": 90, "to": 94 },
-      { "file": "FactoryDemo.java", "from": 1, "to": 18 }
+      { "file": "FigureFactory.java", "from": 68, "to": 78 },
+      { "file": "FigureFactory.java", "from": 91, "to": 96 },
+      { "file": "FactoryDemo.java", "from": 1, "to": 20 }
     ]
   },
   "7-17": {
@@ -148,9 +148,9 @@
     "dir": "07-18",
     "main": null,
     "excerpt": [
-      { "file": "DatabaseConnectionFactory.java", "from": 3, "to": 32 },
-      { "file": "DatabaseConnectionFactory.java", "from": 57, "to": 68 },
-      { "file": "DatabaseConnectionFactory.java", "from": 79, "to": 79 }
+      { "file": "DatabaseConnectionFactory.java", "from": 3, "to": 33 },
+      { "file": "DatabaseConnectionFactory.java", "from": 58, "to": 71 },
+      { "file": "DatabaseConnectionFactory.java", "from": 82, "to": 82 }
     ]
   }
 }

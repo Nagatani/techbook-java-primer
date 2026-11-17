@@ -9,6 +9,7 @@ public class LocalClassExample {
         }
         
         DataProcessor processor = new DataProcessor();
-        IO.println(processor.process("hello")); // 例: prefixが"Log"なら「Log: HELLO」
+        // 例: prefixが"Log"なら「Log: HELLO」
+        IO.println(processor.process("hello"));
     }
 }

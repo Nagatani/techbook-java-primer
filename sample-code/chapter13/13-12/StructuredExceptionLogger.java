@@ -22,20 +22,25 @@ public class StructuredExceptionLogger {
     
     private static String createStructuredMessage(String operation, 
                                                 Exception exception, 
-                                                Map<String, Object> context) {
+                                                Map<String,
+                                                Object> context) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("\"timestamp\":\"").append(Instant.now()).append("\",");
+        sb.append("\"timestamp\":\"").append(Instant.now())
+                .append("\",");
         sb.append("\"operation\":\"").append(operation).append("\",");
-        sb.append("\"error_type\":\"").append(exception.getClass().getName()).append("\",");
-        sb.append("\"error_message\":\"").append(escapeJson(exception.getMessage())).append("\",");
+        sb.append("\"error_type\":\"")
+                .append(exception.getClass().getName()).append("\",");
+        sb.append("\"error_message\":\"").append(
+                escapeJson(exception.getMessage())).append("\",");
         sb.append("\"context\":{");
         
         boolean first = true;
         for (Map.Entry<String, Object> entry : context.entrySet()) {
             if (!first) sb.append(",");
             sb.append("\"").append(entry.getKey()).append("\":\"")
-              .append(escapeJson(String.valueOf(entry.getValue()))).append("\"");
+              .append(escapeJson(String.valueOf(entry.getValue())))
+                      .append("\"");
             first = false;
         }
         

@@ -18,7 +18,8 @@ public class ExceptionAggregator {
         private final List<Exception> exceptions;
         
         public AggregateException(List<Exception> exceptions) {
-            super(String.format("%d個の例外が発生しました", exceptions.size()));
+            super(String.format("%d個の例外が発生しました",
+                    exceptions.size()));
             this.exceptions = new ArrayList<>(exceptions);
         }
         

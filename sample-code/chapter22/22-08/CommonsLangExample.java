@@ -21,7 +21,8 @@ public class CommonsLangExample {
         
         @Override
         public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+            return ToStringBuilder.reflectionToString(this,
+                    ToStringStyle.SHORT_PREFIX_STYLE);
         }
         
         @Override
@@ -46,11 +47,13 @@ public class CommonsLangExample {
         
         // nullや空文字列の安全な処理
         String nullStr = null;
-        IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
+        IO.println("Default: "
+                + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
-        IO.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
+        IO.println("\nArray contains 3?: "
+                + ArrayUtils.contains(numbers, 3));
         int[] reversed = ArrayUtils.clone(numbers);
         ArrayUtils.reverse(reversed);
         IO.println("Reversed: " + ArrayUtils.toString(reversed));

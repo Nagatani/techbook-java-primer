@@ -8,13 +8,15 @@ public final class DateRange {
     private final LocalDate endDate;
     private final List<LocalDate> holidays;
     
-    public DateRange(LocalDate start, LocalDate end, List<LocalDate> holidays) {
+    public DateRange(LocalDate start, LocalDate end,
+            List<LocalDate> holidays) {
         // パラメーターの検証
         if (start == null || end == null) {
             throw new IllegalArgumentException("日付はnullにできません");
         }
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("開始日は終了日以前にしてください");
+            throw new IllegalArgumentException(
+                    "開始日は終了日以前にしてください");
         }
         
         this.startDate = start;  // LocalDateは不変なのでコピー不要

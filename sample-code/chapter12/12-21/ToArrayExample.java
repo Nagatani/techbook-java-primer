@@ -3,7 +3,8 @@ import java.util.List;
 
 public class ToArrayExample {
     public static void main(String[] args) {
-        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
+        List<String> names =
+                Arrays.asList("Alice", "Bob", "Charlie", "David");
         
         // toArrayの正しい使い方：型安全な配列を取得
         // String[]::newを指定することで、正しい型の配列が生成される

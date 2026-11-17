@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets;
 public class UDPClient {
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getByName("localhost");
+            InetAddress serverAddress =
+                    InetAddress.getByName("localhost");
             int serverPort = 9999;
             
             // データを送信

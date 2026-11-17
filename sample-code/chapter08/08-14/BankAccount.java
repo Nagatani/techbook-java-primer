@@ -6,7 +6,8 @@ public record BankAccount(String accountNumber, double balance) {
             throw new IllegalArgumentException("口座番号は必須です");
         }
         if (balance < 0) {
-            throw new IllegalArgumentException("残高は0以上でなければなりません");
+            throw new IllegalArgumentException(
+                    "残高は0以上でなければなりません");
         }
         // フィールドへの代入は自動的に行われる
     }

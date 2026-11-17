@@ -383,7 +383,8 @@ public class Employee {
     
     public void setAge(int age) {
         if (age < 18 || age > 100) {
-            throw new IllegalArgumentException("年齢は18歳以上100歳以下で入力してください");
+            throw new IllegalArgumentException(
+                    "年齢は18歳以上100歳以下で入力してください");
         }
         this.age = age;
     }
@@ -489,7 +490,8 @@ public class BankAccountV2 {
     
     public BankAccountV2(String accountNumber, double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上にしてください");
+            throw new IllegalArgumentException(
+                    "初期残高は0以上にしてください");
         }
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
@@ -497,7 +499,8 @@ public class BankAccountV2 {
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値にしてください");
+            throw new IllegalArgumentException(
+                    "入金額は正の値にしてください");
         }
         balance += amount;
     }
@@ -580,7 +583,7 @@ public class BankAccountV2Test {
 取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード4-13**　BankAccountV3.java（3〜8、16〜42、52〜56行目）</span>
+<span class="listing-number">**サンプルコード4-13**　BankAccountV3.java（3〜8、16〜44、54〜58行目）</span>
 
 ```java
 public class BankAccountV3 {
@@ -594,12 +597,14 @@ public class BankAccountV3 {
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
         this.transactionHistory = new ArrayList<>();
-        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance + "円");
+        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance
+                + "円");
     }
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値にしてください");
+            throw new IllegalArgumentException(
+                    "入金額は正の値にしてください");
         }
         balance += amount;
         transactionHistory.add("入金: " + amount + "円");
@@ -890,17 +895,20 @@ public class User {
     public User(String email, String username, int age) {
         // メールアドレスの検証
         if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("有効なメールアドレスが必要です");
+            throw new IllegalArgumentException(
+                    "有効なメールアドレスが必要です");
         }
         
         // ユーザー名の検証
         if (username == null || username.trim().length() < 3) {
-            throw new IllegalArgumentException("ユーザー名は3文字以上である必要があります");
+            throw new IllegalArgumentException(
+                    "ユーザー名は3文字以上である必要があります");
         }
         
         // 年齢の検証
         if (age < 0 || age > 150) {
-            throw new IllegalArgumentException("年齢は0歳以上150歳以下である必要があります");
+            throw new IllegalArgumentException(
+                    "年齢は0歳以上150歳以下である必要があります");
         }
         
         this.email = email;
@@ -1146,7 +1154,8 @@ import java.util.HashMap;
 
 public class HttpClient {
     // フルスペックのメソッド
-    public String get(String url, Map<String, String> headers, int timeoutMs) {
+    public String get(String url, Map<String, String> headers,
+            int timeoutMs) {
         // HTTP GET実装
         return "Response from " + url;
     }
@@ -1242,7 +1251,9 @@ public class UserManager {
     public void sendPasswordResetEmail() { /* ... */ }
     
     // ログイン処理
-    public boolean authenticate(String password) { /* ... */ return false; }
+    public boolean authenticate(String password) {
+        /* ... */ return false;
+    }
     public void generateSession() { /* ... */ }
     
     // レポート生成
@@ -1293,8 +1304,12 @@ public class EmailService {
 }
 
 public class AuthenticationService {
-    public boolean authenticate(User user, String password) { /* 認証処理 */ return false; }
-    public String generateSession(User user) { /* セッション生成 */ return null; }
+    public boolean authenticate(User user, String password) {
+        /* 認証処理 */ return false;
+    }
+    public String generateSession(User user) {
+        /* セッション生成 */ return null;
+    }
 }
 ```
 
@@ -1359,7 +1374,8 @@ public class BankAccount {
     
     public BankAccount(double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上にしてください");
+            throw new IllegalArgumentException(
+                    "初期残高は0以上にしてください");
         }
         this.balance = initialBalance;
     }
@@ -1370,14 +1386,16 @@ public class BankAccount {
     // 直接設定は不可、代わりにビジネスロジックメソッドを提供
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は0より大きい必要があります");
+            throw new IllegalArgumentException(
+                    "入金額は0より大きい必要があります");
         }
         this.balance += amount;
     }
     
     public boolean withdraw(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("出金額は0より大きい必要があります");
+            throw new IllegalArgumentException(
+                    "出金額は0より大きい必要があります");
         }
         if (this.balance < amount) {
             return false;  // 残高不足

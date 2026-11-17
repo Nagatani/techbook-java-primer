@@ -5,11 +5,13 @@ interface Timestamped {
     long getTimestamp();
     
     default boolean isExpired(long expirationTime) {
-        return System.currentTimeMillis() - getTimestamp() > expirationTime;
+        return System.currentTimeMillis()
+                - getTimestamp() > expirationTime;
     }
     
     default Duration getAge() {
-        return Duration.ofMillis(System.currentTimeMillis() - getTimestamp());
+        return Duration.ofMillis(System.currentTimeMillis()
+                - getTimestamp());
     }
 }
 

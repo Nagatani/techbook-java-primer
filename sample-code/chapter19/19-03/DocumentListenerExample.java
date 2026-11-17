@@ -66,13 +66,16 @@ public class DocumentListenerExample extends JFrame {
     
     private void setupDocumentListeners() {
         // Emailフィールドのリスナー
-        emailField.getDocument().addDocumentListener(new DocumentListener() {
+        emailField.getDocument()
+                .addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { validateForm(); }
             @Override
             public void removeUpdate(DocumentEvent e) { validateForm(); }
             @Override
-            public void changedUpdate(DocumentEvent e) { validateForm(); }
+            public void changedUpdate(DocumentEvent e) {
+                validateForm();
+            }
         });
         
         // パスワードフィールドのリスナー
@@ -82,10 +85,13 @@ public class DocumentListenerExample extends JFrame {
             @Override
             public void removeUpdate(DocumentEvent e) { validateForm(); }
             @Override
-            public void changedUpdate(DocumentEvent e) { validateForm(); }
+            public void changedUpdate(DocumentEvent e) {
+                validateForm();
+            }
         };
         
-        passwordField.getDocument().addDocumentListener(passwordListener);
+        passwordField.getDocument()
+                .addDocumentListener(passwordListener);
         confirmField.getDocument().addDocumentListener(passwordListener);
     }
     

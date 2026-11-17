@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 public class MyStack {
-    private final ArrayList<String> elements = new ArrayList<>(); // privateで隠蔽
+    // privateで隠蔽
+    private final ArrayList<String> elements = new ArrayList<>();
     
     public void push(String item) {
         elements.add(item);

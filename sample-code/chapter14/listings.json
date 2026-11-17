@@ -12,9 +12,9 @@
     "main": "TextFileReaderExample",
     "excerpt": [
       { "file": "TextFileReaderExample.java", "from": 8, "to": 9 },
-      { "file": "TextFileReaderExample.java", "from": 14, "to": 27 },
-      { "file": "TextFileReaderExample.java", "from": 30, "to": 31 },
-      { "file": "TextFileReaderExample.java", "from": 34, "to": 42 }
+      { "file": "TextFileReaderExample.java", "from": 14, "to": 29 },
+      { "file": "TextFileReaderExample.java", "from": 32, "to": 33 },
+      { "file": "TextFileReaderExample.java", "from": 36, "to": 44 }
     ]
   },
   "14-3": {
@@ -28,28 +28,28 @@
     "dir": "14-04",
     "main": "CharacterEncodingExample",
     "excerpt": [
-      { "file": "CharacterEncodingExample.java", "from": 9, "to": 45 }
+      { "file": "CharacterEncodingExample.java", "from": 9, "to": 47 }
     ]
   },
   "14-5": {
     "dir": "14-05",
     "main": "DataStreamExample",
     "excerpt": [
-      { "file": "DataStreamExample.java", "from": 1, "to": 37 }
+      { "file": "DataStreamExample.java", "from": 1, "to": 40 }
     ]
   },
   "14-6": {
     "dir": "14-06",
     "main": "SerializationExample",
     "excerpt": [
-      { "file": "SerializationExample.java", "from": 4, "to": 45 }
+      { "file": "SerializationExample.java", "from": 4, "to": 50 }
     ]
   },
   "14-7": {
     "dir": "14-07",
     "main": "FileSystemExample",
     "excerpt": [
-      { "file": "FileSystemExample.java", "from": 4, "to": 37 }
+      { "file": "FileSystemExample.java", "from": 4, "to": 40 }
     ]
   },
   "14-8": {
@@ -57,8 +57,8 @@
     "main": "CSVProcessingExample",
     "excerpt": [
       { "file": "CSVProcessingExample.java", "from": 6, "to": 6 },
-      { "file": "CSVProcessingExample.java", "from": 21, "to": 54 },
-      { "file": "CSVProcessingExample.java", "from": 65, "to": 65 }
+      { "file": "CSVProcessingExample.java", "from": 21, "to": 57 },
+      { "file": "CSVProcessingExample.java", "from": 68, "to": 68 }
     ]
   },
   "14-9": {
@@ -97,8 +97,8 @@
     "dir": "14-13",
     "main": "TextBlockStructuredData",
     "excerpt": [
-      { "file": "TextBlockStructuredData.java", "from": 8, "to": 40 },
-      { "file": "TextBlockStructuredData.java", "from": 174, "to": 175 }
+      { "file": "TextBlockStructuredData.java", "from": 8, "to": 41 },
+      { "file": "TextBlockStructuredData.java", "from": 175, "to": 176 }
     ]
   }
 }

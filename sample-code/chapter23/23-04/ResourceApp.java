@@ -12,7 +12,8 @@ public class ResourceApp {
             ImageIcon icon = new ImageIcon(
                 ResourceApp.class.getResource("/icon.png")
             );
-            JLabel label = new JLabel("画像リソースの例", icon, JLabel.CENTER);
+            JLabel label =
+                    new JLabel("画像リソースの例", icon, JLabel.CENTER);
             
             frame.add(label);
             frame.setSize(300, 200);

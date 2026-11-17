@@ -44,14 +44,17 @@ public class OptionalStreamExample {
         
         // max/min - 最大値・最小値をOptionalで返す
         Optional<Product> mostExpensive = products.stream()
-            .max((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+            .max((p1, p2) ->
+                    Double.compare(p1.getPrice(), p2.getPrice()));
         
         mostExpensive.ifPresent(p -> 
-            IO.println("最高額商品: " + p.getName() + " ($" + p.getPrice() + ")"));
+            IO.println("最高額商品: " + p.getName() + " ($"
+                    + p.getPrice() + ")"));
         
         // OptionalをStreamに変換（Java 9以降）
         List<String> expensiveProductNames = products.stream()
-            .map(p -> p.getPrice() > 500 ? Optional.of(p.getName()) : Optional.<String>empty())
+            .map(p -> p.getPrice() > 500 ? Optional.of(p.getName())
+                    : Optional.<String>empty())
             .flatMap(Optional::stream)  // Optional -> Stream変換
             .collect(Collectors.toList());
         

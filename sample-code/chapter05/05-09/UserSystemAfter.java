@@ -14,7 +14,8 @@ public class UserSystemAfter {
         
         // 統一的な処理で全員を扱える
         for (User user : users) {
-            user.processRequest("READ"); // 実際の型に応じた処理が自動的に呼ばれる
+            // 実際の型に応じた処理が自動的に呼ばれる
+            user.processRequest("READ");
         }
         
         IO.println();
@@ -27,14 +28,16 @@ public class UserSystemAfter {
     }
     
     // アクセス権限チェックも拡張性が高い
-    public static boolean checkAccessPermission(User[] users, String resource) {
+    public static boolean checkAccessPermission(User[] users,
+            String resource) {
         boolean hasPermission = true;
         
         // 型を意識せずに処理できる
         for (User user : users) {
             if (!user.hasPermission(resource)) {
                 hasPermission = false;
-                IO.println(user.getUserId() + " には " + resource + " 権限がありません");
+                IO.println(user.getUserId() + " には " + resource
+                        + " 権限がありません");
             }
         }
         

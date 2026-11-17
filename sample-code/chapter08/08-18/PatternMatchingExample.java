@@ -18,7 +18,8 @@ public class PatternMatchingExample {
     
     public static void main(String[] args) {
         IO.println(describe(new Point(10, 20)));  // 座標(10, 20)の点
-        IO.println(describe(new Point(5, 5)));    // 座標(5, 5)の点（直線y = xの上）
+        // 座標(5, 5)の点（直線y = xの上）
+        IO.println(describe(new Point(5, 5)));
         IO.println(describe("Hello"));            // 文字列: Hello
         IO.println(describe(""));                 // 空の文字列
         IO.println(describe(null));               // null値

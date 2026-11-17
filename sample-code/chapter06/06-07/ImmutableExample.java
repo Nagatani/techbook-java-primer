@@ -5,8 +5,10 @@ import java.util.List;
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
-        List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
-        ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
+        List<String> hobbies =
+                new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
+        ImmutablePerson person =
+                new ImmutablePerson("田中太郎", 25, hobbies);
         
         // コンストラクターに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
@@ -18,7 +20,8 @@ public class ImmutableExample {
         IO.println("新しい人: " + olderPerson); // age=26
         
         // 趣味を追加
-        ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
+        ImmutablePerson personWithNewHobby =
+                person.addHobby("プログラミング");
         IO.println("元の趣味: " + person.getHobbies());
         IO.println("新しい趣味: " + personWithNewHobby.getHobbies());
     }

@@ -4,7 +4,8 @@ import java.net.*;
 public class HttpURLConnectionExample {
     public static void main(String[] args) {
         try {
-            URL url = URI.create("https://api.github.com/users/github").toURL();
+            URL url = URI.create("https://api.github.com/users/github")
+                    .toURL();
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
             

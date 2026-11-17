@@ -18,14 +18,17 @@ public class DaoExample {
             }
             UserDao dao = new JdbcUserDao(conn);
 
-            User tanaka = dao.create(User.newUser("tanaka", "tanaka@example.com"));
+            User tanaka = dao.create(User.newUser("tanaka",
+                    "tanaka@example.com"));
             dao.create(User.newUser("sato", "sato@example.com"));
-            IO.println("作成: id=" + tanaka.id() + "、登録日時あり=" + (tanaka.createdAt() != null));
+            IO.println("作成: id=" + tanaka.id() + "、登録日時あり="
+                    + (tanaka.createdAt() != null));
 
             dao.update(tanaka.withEmail("tanaka@example.org"));
             dao.delete(2);
             for (User u : dao.findAll()) {
-                IO.println("%d %s %s".formatted(u.id(), u.username(), u.email()));
+                IO.println("%d %s %s"
+                        .formatted(u.id(), u.username(), u.email()));
             }
             IO.println("id=2を検索: " + dao.findById(2).isPresent());
         }

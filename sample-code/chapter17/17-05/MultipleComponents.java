@@ -13,11 +13,17 @@ public class MultipleComponents {
         
         frame.setLayout(new BorderLayout());  // ①
         
-        frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);   // ②
-        frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);   // ②
-        frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);    // ②
-        frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);    // ②
-        frame.add(new JLabel("中央", JLabel.CENTER), BorderLayout.CENTER); // ②
+        // ②
+        frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);
+        // ②
+        frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);
+        // ②
+        frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);
+        // ②
+        frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);
+        // ②
+        frame.add(new JLabel("中央", JLabel.CENTER),
+                BorderLayout.CENTER);
         
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

@@ -6,7 +6,8 @@ public class ExcelDocument extends Document {
     @Override  // ②
     public void save() {
         fileSize = content != null ? content.length() * 2 : 0;  // ③
-        IO.println(filename + " をExcel形式で保存: " + fileSize + "バイト（メタデータ含む）");
+        IO.println(filename + " をExcel形式で保存: " + fileSize
+                + "バイト（メタデータ含む）");
     }
     
     public void createChart() {  // ④

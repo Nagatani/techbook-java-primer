@@ -12,7 +12,8 @@ public class EDTBasicExample {
         frame.setSize(300, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel label = new JLabel("このGUIはEDT上で作成されました", JLabel.CENTER);
+        JLabel label = new JLabel("このGUIはEDT上で作成されました",
+                JLabel.CENTER);
         frame.add(label);
 
         frame.setLocationRelativeTo(null);

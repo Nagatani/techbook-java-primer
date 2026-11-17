@@ -3,7 +3,8 @@ import java.util.HashMap;
 
 public class HttpClient {
     // フルスペックのメソッド
-    public String get(String url, Map<String, String> headers, int timeoutMs) {
+    public String get(String url, Map<String, String> headers,
+            int timeoutMs) {
         // HTTP GET実装
         return "Response from " + url;
     }

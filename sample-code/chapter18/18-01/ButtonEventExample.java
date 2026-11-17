@@ -25,7 +25,8 @@ public class ButtonEventExample {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 3. 簡単なダイアログを表示
-                JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
+                JOptionPane.showMessageDialog(frame,
+                        "ボタンがクリックされました！");
             }
         };
 

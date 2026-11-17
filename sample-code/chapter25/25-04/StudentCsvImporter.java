@@ -22,9 +22,11 @@ public class StudentCsvImporter {
                 successCount++;
             } catch (IllegalArgumentException e) {
                 // 列の数・数値の形式・空の項目など、行の内容の誤り
-                errors.add(new ImportError(lineNumber, line, e.getMessage()));
+                errors.add(new ImportError(lineNumber, line,
+                        e.getMessage()));
             } catch (DuplicateStudentException e) {
-                errors.add(new ImportError(lineNumber, line, e.getMessage()));
+                errors.add(new ImportError(lineNumber, line,
+                        e.getMessage()));
             }
         }
         return new ImportReport(successCount, errors);

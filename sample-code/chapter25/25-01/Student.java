@@ -30,15 +30,19 @@ public final class Student {
 
     // 成績の操作はTranscriptに任せる（呼び出し側はTranscriptを知らなくてよい）
     public void recordGrade(Grade grade) { transcript.record(grade); }
-    public boolean removeGrade(String course) { return transcript.remove(course); }
+    public boolean removeGrade(String course) {
+        return transcript.remove(course);
+    }
     public List<Grade> getGrades() { return transcript.grades(); }
     public double gpa() { return transcript.gpa(); }
 
     // 在籍区分ごとの説明。区分を足すと、ここがコンパイルエラーになって気づける
     public String describeEnrollment() {
         return switch (enrollment) {
-            case Undergraduate u -> "学部生（" + u.admissionYear() + "年度入学）";
-            case Graduate g -> "大学院生（研究分野: " + g.researchField() + "）";
+            case Undergraduate u -> "学部生（" + u.admissionYear()
+                    + "年度入学）";
+            case Graduate g -> "大学院生（研究分野: " + g.researchField()
+                    + "）";
         };
     }
 }

@@ -423,7 +423,8 @@ public class HashSetExample {
         // 1. 要素の追加 (add)
         tags.add("Java");
         tags.add("プログラミング");
-        boolean added = tags.add("Java"); // すでに存在するため追加されない (falseが返る)
+        // すでに存在するため追加されない (falseが返る)
+        boolean added = tags.add("Java");
 
         IO.println("2回目のJavaの追加: " + added);
         IO.println("タグ一覧: " + tags); // 順序は保証されない

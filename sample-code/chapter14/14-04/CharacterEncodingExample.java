@@ -25,7 +25,8 @@ public class CharacterEncodingExample {
             IO.println(reader.readLine());
         } catch (MalformedInputException e) {
             // Shift_JISとして解釈できないバイト列があると、文字化けではなく例外になる
-            IO.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
+            IO.println("エラー: MalformedInputException - "
+                    + "文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,6 +41,7 @@ public class CharacterEncodingExample {
         }
 
         // システムデフォルトのエンコーディング確認
-        IO.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
+        IO.println("\nデフォルトエンコーディング: "
+                + Charset.defaultCharset());
     }
 }

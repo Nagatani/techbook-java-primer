@@ -30,11 +30,14 @@ public class TransferExample {
         }
     }
 
-    static void transfer(Connection conn, int from, int to, BigDecimal amount) throws SQLException {
+    static void transfer(Connection conn, int from, int to,
+            BigDecimal amount) throws SQLException {
         conn.setAutoCommit(false); // commitを呼ぶまで変更を確定しない
         try {
-            update(conn, "UPDATE accounts SET balance = balance - ? WHERE id = ?", amount, from);
-            update(conn, "UPDATE accounts SET balance = balance + ? WHERE id = ?", amount, to);
+            update(conn, "UPDATE accounts SET balance = balance - ? "
+                    + "WHERE id = ?", amount, from);
+            update(conn, "UPDATE accounts SET balance = balance + ? "
+                    + "WHERE id = ?", amount, to);
             conn.commit();         // 2つの更新をまとめて確定する
         } catch (SQLException e) {
             conn.rollback();       // どちらかが失敗したら、両方を取り消す
@@ -44,7 +47,8 @@ public class TransferExample {
         }
     }
 
-    static void update(Connection conn, String sql, BigDecimal amount, int id) throws SQLException {
+    static void update(Connection conn, String sql, BigDecimal amount,
+            int id) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBigDecimal(1, amount);
             ps.setInt(2, id);

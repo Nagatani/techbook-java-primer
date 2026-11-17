@@ -13,7 +13,8 @@ public class TodoItem {
     
     private boolean completed;
     
-    private transient String internalId;  // transientを付けたフィールドはJSONに含めない
+    // transientを付けたフィールドはJSONに含めない
+    private transient String internalId;
     
     private String createdAt;
     private List<String> tags;

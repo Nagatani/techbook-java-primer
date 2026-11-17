@@ -11,7 +11,8 @@ public class CsvReaderDemo {
             S002,"Smith, John",理学部,2025
             S003,"佐藤 ""ハナ"" 花子",文学部,2024
             """;
-        var in = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
+        var in = new ByteArrayInputStream(
+                csv.getBytes(StandardCharsets.UTF_8));
 
         for (CsvRow row : new StudentCsvReader().read(in)) {
             IO.println("行%d: %s / %s".formatted(

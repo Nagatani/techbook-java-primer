@@ -17,7 +17,8 @@ public class WindowEventExample {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int option = JOptionPane.showConfirmDialog(frame, "本当に終了しますか？");
+                int option = JOptionPane.showConfirmDialog(frame,
+                        "本当に終了しますか？");
                 if (option == JOptionPane.YES_OPTION) {
                     System.exit(0); // 「はい」ならプログラムを終了
                 }

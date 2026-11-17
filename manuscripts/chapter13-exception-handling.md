@@ -72,7 +72,8 @@ public class TryCatchSample {
             IO.println("この行は実行されません。");
         } catch (NullPointerException e) {
             System.err.println("NullPointerExceptionをキャッチしました！");
-            e.printStackTrace(); // 開発中はスタックトレースを出力するとデバッグに役立つ
+            // 開発中はスタックトレースを出力するとデバッグに役立つ
+            e.printStackTrace();
         } catch (Exception e) {
             System.err.println("その他の予期せぬ例外をキャッチしました。");
         }
@@ -139,7 +140,8 @@ import java.io.IOException;
 public class TryWithResourcesSample {
     public static void readFile(String path) {
         // try()の括弧内でリソースを初期化する
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br =
+                new BufferedReader(new FileReader(path))) {
             IO.println(br.readLine());
         } catch (IOException e) {
             System.err.println("ファイル読み込みエラー: " + e.getMessage());
@@ -208,7 +210,8 @@ public class ThrowsExample {
         try {
             riskyMethod();
         } catch (IOException e) {
-            System.err.println("mainメソッドで例外をキャッチ: " + e.getMessage());
+            System.err.println("mainメソッドで例外をキャッチ: "
+                    + e.getMessage());
         }
     }
 }
@@ -251,7 +254,7 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-5**　BankAccount.java（1〜17、26行目）</span>
+<span class="listing-number">**サンプルコード13-5**　BankAccount.java（1〜18、27行目）</span>
 
 ```java
 // 独自の検査例外クラス
@@ -264,7 +267,8 @@ class InsufficientBalanceException extends Exception {
 // 使用例
 public class BankAccount {
     private int balance;
-    public void withdraw(int amount) throws InsufficientBalanceException {
+    public void withdraw(int amount)
+            throws InsufficientBalanceException {
         if (amount > balance) {
             // 意図的に例外をスローする
             throw new InsufficientBalanceException("残高が不足しています。");
@@ -319,7 +323,8 @@ public class UserService {
             throw new java.sql.SQLException("DB接続エラー");
         } catch (java.sql.SQLException e) {
             // SQLExceptionをラップして、より抽象的なDataAccessExceptionをスロー
-            throw new DataAccessException("ユーザー情報の取得に失敗しました", e);
+            throw new DataAccessException(
+                    "ユーザー情報の取得に失敗しました", e);
         }
     }
 }
@@ -341,16 +346,16 @@ public class UserService {
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-07/`</span>）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
-<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java（4〜6、8〜24、33〜37、55行目）</span>
+<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
 
 ```java
 public class RetryableOperation {
     private static final int MAX_RETRY_COUNT = 3;
     private static final long RETRY_DELAY_MS = 1000;
     // ...
-    public static <T> T executeWithRetry(Callable<T> operation, 
-                                       Class<? extends Exception> retryableException) 
-                                       throws Exception {
+    public static <T> T executeWithRetry(Callable<T> operation,
+            Class<? extends Exception> retryableException)
+            throws Exception {
         Exception lastException = null;
         
         for (int attempt = 1; attempt <= MAX_RETRY_COUNT; attempt++) {
@@ -369,7 +374,8 @@ public class RetryableOperation {
             }
         }
         
-        throw new RuntimeException("最大リトライ回数に達しました", lastException);
+        throw new RuntimeException("最大リトライ回数に達しました",
+                lastException);
     }
     // ...
 }
@@ -395,7 +401,7 @@ public class RetryableOperation {
 
 複数の処理を順に実行し、途中で失敗しても残りの処理を続けたい場合は、発生した例外を集めておき、最後にまとめて報告します。
 
-<span class="listing-number">**サンプルコード13-8**　ExceptionAggregator.java（3〜28、38〜55行目）</span>
+<span class="listing-number">**サンプルコード13-8**　ExceptionAggregator.java（3〜29、39〜56行目）</span>
 
 ```java
 public class ExceptionAggregator {
@@ -416,7 +422,8 @@ public class ExceptionAggregator {
         private final List<Exception> exceptions;
         
         public AggregateException(List<Exception> exceptions) {
-            super(String.format("%d個の例外が発生しました", exceptions.size()));
+            super(String.format("%d個の例外が発生しました",
+                    exceptions.size()));
             this.exceptions = new ArrayList<>(exceptions);
         }
         
@@ -490,11 +497,12 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装することで、try-with-resourcesで使用できるようになります。
 
-<span class="listing-number">**サンプルコード13-10**　ResourcePool.java（3〜6、14〜44、58行目）、ResourcePoolDemo.java</span>
+<span class="listing-number">**サンプルコード13-10**　ResourcePool.java（3〜7、15〜45、59行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
-    private final Queue<Resource> availableResources = new LinkedList<>();
+    private final Queue<Resource> availableResources =
+            new LinkedList<>();
     private final Set<Resource> usedResources = new HashSet<>();
     private boolean closed = false;
     // ...
@@ -624,7 +632,7 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜44、63行目）</span>
+<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜49、68行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -647,20 +655,25 @@ public class StructuredExceptionLogger {
     
     private static String createStructuredMessage(String operation, 
                                                 Exception exception, 
-                                                Map<String, Object> context) {
+                                                Map<String,
+                                                Object> context) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("\"timestamp\":\"").append(Instant.now()).append("\",");
+        sb.append("\"timestamp\":\"").append(Instant.now())
+                .append("\",");
         sb.append("\"operation\":\"").append(operation).append("\",");
-        sb.append("\"error_type\":\"").append(exception.getClass().getName()).append("\",");
-        sb.append("\"error_message\":\"").append(escapeJson(exception.getMessage())).append("\",");
+        sb.append("\"error_type\":\"")
+                .append(exception.getClass().getName()).append("\",");
+        sb.append("\"error_message\":\"").append(
+                escapeJson(exception.getMessage())).append("\",");
         sb.append("\"context\":{");
         
         boolean first = true;
         for (Map.Entry<String, Object> entry : context.entrySet()) {
             if (!first) sb.append(",");
             sb.append("\"").append(entry.getKey()).append("\":\"")
-              .append(escapeJson(String.valueOf(entry.getValue()))).append("\"");
+              .append(escapeJson(String.valueOf(entry.getValue())))
+                      .append("\"");
             first = false;
         }
         
@@ -805,7 +818,7 @@ public class ErrorResponse {
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
 
-<span class="listing-number">**サンプルコード13-15**　TransferService.java（5〜7、17〜20、24〜45、56〜67、114行目）</span>
+<span class="listing-number">**サンプルコード13-15**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
 
 ```java
 public class TransferService {
@@ -822,11 +835,14 @@ public class TransferService {
             validateTransferRequest(fromAccountId, toAccountId, amount);
             
             // アカウント取得
-            Account fromAccount = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new AccountNotFoundException(fromAccountId));
+            Account fromAccount =
+                    accountRepository.findById(fromAccountId)
+                .orElseThrow(() ->
+                        new AccountNotFoundException(fromAccountId));
             
             Account toAccount = accountRepository.findById(toAccountId)
-                .orElseThrow(() -> new AccountNotFoundException(toAccountId));
+                .orElseThrow(() ->
+                        new AccountNotFoundException(toAccountId));
             
             // ビジネスルールチェック
             checkBusinessRules(fromAccount, amount);
@@ -837,19 +853,23 @@ public class TransferService {
             
             // トランザクション記録
             Transaction transaction = new Transaction(
-                fromAccountId, toAccountId, amount, TransactionType.TRANSFER);
+                fromAccountId, toAccountId, amount,
+                TransactionType.TRANSFER);
             transactionRepository.save(transaction);
             // ...
         } catch (BusinessException e) {
             // ビジネス例外は記録してから呼び出し元に伝える
-            logger.log(Level.WARNING, "送金処理でビジネスエラー: " + e.getMessage());
+            logger.log(Level.WARNING, "送金処理でビジネスエラー: "
+                    + e.getMessage());
             throw e;
             
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
-            logger.log(Level.SEVERE, "送金処理中に予期せぬエラーが発生しました", e);
+            logger.log(Level.SEVERE,
+                    "送金処理中に予期せぬエラーが発生しました", e);
             // 非検査例外に包み、原因の例外を渡して投げ直す
-            throw new RuntimeException("送金処理中に予期せぬエラーが発生しました", e);
+            throw new RuntimeException(
+                    "送金処理中に予期せぬエラーが発生しました", e);
         }
     }
     // ...

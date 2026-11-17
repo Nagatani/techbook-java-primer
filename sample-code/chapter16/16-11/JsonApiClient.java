@@ -16,7 +16,8 @@ public class JsonApiClient {
     }
     
     // GETリクエスト
-    public <T> T get(String url, Class<T> responseType) throws Exception {
+    public <T> T get(String url, Class<T> responseType)
+            throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .header("Accept", "application/json")
@@ -48,7 +49,8 @@ public class JsonApiClient {
     }
     
     // ステータスコードが成功（200番台）のときだけ、JSONをオブジェクトに変換する
-    private <T> T readBody(HttpResponse<String> response, Class<T> responseType)
+    private <T> T readBody(HttpResponse<String> response,
+            Class<T> responseType)
             throws Exception {
         int status = response.statusCode();
         if (status >= 200 && status < 300) {

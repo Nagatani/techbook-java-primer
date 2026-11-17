@@ -10,7 +10,8 @@ public class ThrowsExample {
         try {
             riskyMethod();
         } catch (IOException e) {
-            System.err.println("mainメソッドで例外をキャッチ: " + e.getMessage());
+            System.err.println("mainメソッドで例外をキャッチ: "
+                    + e.getMessage());
         }
     }
 }

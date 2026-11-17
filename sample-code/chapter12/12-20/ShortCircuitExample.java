@@ -4,7 +4,8 @@ import java.util.stream.Collectors;
 
 public class ShortCircuitExample {
     public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Integer> numbers =
+                Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         
         // 早期終了操作：allMatchは条件を満たさない要素が見つかった時点で処理を停止
         // すべての要素が偶数かチェック（1つでも奇数があればfalse）

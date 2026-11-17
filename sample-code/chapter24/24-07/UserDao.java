@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    User create(User user) throws SQLException;          // 追加して、IDと登録日時の付いたUserを返す
+    // 追加して、IDと登録日時の付いたUserを返す
+    User create(User user) throws SQLException;
     Optional<User> findById(int id) throws SQLException;
     List<User> findAll() throws SQLException;
     boolean update(User user) throws SQLException;       // 更新したらtrue

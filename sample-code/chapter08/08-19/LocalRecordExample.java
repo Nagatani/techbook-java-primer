@@ -22,7 +22,8 @@ public class LocalRecordExample {
         }
         double average = (double) sum / numbers.length;
         
-        Statistics stats = new Statistics(numbers.length, average, max, min);
+        Statistics stats =
+                new Statistics(numbers.length, average, max, min);
         IO.println("統計情報: " + stats);
     }
 }

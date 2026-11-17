@@ -9,7 +9,8 @@ public class CompletableFutureExample {
     static class WeatherService {
         private static final Random random = new Random();
         
-        public static CompletableFuture<String> getTemperature(String city) {
+        public static CompletableFuture<String> getTemperature(
+                String city) {
             return CompletableFuture.supplyAsync(() -> {
                 IO.println("気温取得中: " + city);
                 // APIコールをシミュレート
@@ -62,8 +63,10 @@ public class CompletableFutureExample {
         // 各都市の気温と湿度を並行して取得
         CompletableFuture<?>[] allWeatherData = Arrays.stream(cities)
         .map(city -> {
-            CompletableFuture<String> temp = WeatherService.getTemperature(city);
-            CompletableFuture<String> humidity = WeatherService.getHumidity(city);
+            CompletableFuture<String> temp =
+                    WeatherService.getTemperature(city);
+            CompletableFuture<String> humidity =
+                    WeatherService.getHumidity(city);
             
             // 気温と湿度を組み合わせる
             return temp.thenCombine(humidity, (t, h) -> t + ", " + h);

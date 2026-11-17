@@ -1,5 +1,6 @@
 public class ShoppingCart {
-    private static final int MAX_ITEMS = 10;  // カートに入れられる商品の種類の上限
+    // カートに入れられる商品の種類の上限
+    private static final int MAX_ITEMS = 10;
     private CartItem[] items;
     private int itemCount;  // カートに入っている商品の種類の数
     private double taxRate;

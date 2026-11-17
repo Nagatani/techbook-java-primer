@@ -47,7 +47,8 @@ interface UserReportService {
 }
 
 // 必要な機能だけを実装
-class BasicUserService implements UserRepository, UserNotificationService {
+class BasicUserService implements UserRepository,
+        UserNotificationService {
     private Map<String, User> users = new HashMap<>();
     
     @Override

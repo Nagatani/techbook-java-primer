@@ -9,7 +9,8 @@ public class UDPServer {
             IO.println("UDPサーバーがポート " + PORT + " で起動しました");
             
             byte[] buffer = new byte[1024];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            DatagramPacket packet =
+                    new DatagramPacket(buffer, buffer.length);
             
             while (true) {
                 // データを受信
@@ -22,7 +23,8 @@ public class UDPServer {
                 
                 // エコーレスポンスを送信
                 String response = "Echo: " + received;
-                byte[] responseData = response.getBytes(StandardCharsets.UTF_8);
+                byte[] responseData =
+                        response.getBytes(StandardCharsets.UTF_8);
                 DatagramPacket responsePacket = new DatagramPacket(
                     responseData, responseData.length,
                     packet.getAddress(), packet.getPort());

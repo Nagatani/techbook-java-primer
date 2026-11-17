@@ -19,11 +19,14 @@ public class LambdaButtonExample {
 
         // サンプルコード18-1の匿名クラスの部分をラムダ式で書き換える
         button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！");
+            JOptionPane.showMessageDialog(frame,
+                    "ボタンがクリックされました！");
         });
 
         // 処理が1行なら波括弧も省略可能
-        shortButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "ボタンがクリックされました！"));
+        shortButton.addActionListener(e ->
+                JOptionPane.showMessageDialog(frame,
+                "ボタンがクリックされました！"));
 
         frame.add(button);
         frame.add(shortButton);

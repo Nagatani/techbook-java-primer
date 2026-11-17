@@ -7,7 +7,8 @@ public class ViewVsCopy {
         List<String> original = new ArrayList<>();
         original.add("読書");
         
-        List<String> view = Collections.unmodifiableList(original);  // 読み取り専用のビュー
+        // 読み取り専用のビュー
+        List<String> view = Collections.unmodifiableList(original);
         List<String> copy = List.copyOf(original);  // 変更できないコピー
         
         original.add("登山");  // 元のリストに要素を追加する

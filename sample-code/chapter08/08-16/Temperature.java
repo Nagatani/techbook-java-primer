@@ -18,7 +18,8 @@ public record Temperature(double value, String unit) {
             case "C" -> value;
             case "F" -> (value - 32) * 5 / 9;
             case "K" -> value - 273.15;
-            default -> throw new IllegalStateException("未知の単位: " + unit);
+            default -> throw new IllegalStateException("未知の単位: "
+                    + unit);
         };
     }
 }

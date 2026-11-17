@@ -3,7 +3,8 @@ public class BankAccount {
     
     public BankAccount(double initialBalance) {
         if (initialBalance < 0) {
-            throw new IllegalArgumentException("初期残高は0以上にしてください");
+            throw new IllegalArgumentException(
+                    "初期残高は0以上にしてください");
         }
         this.balance = initialBalance;
     }
@@ -14,14 +15,16 @@ public class BankAccount {
     // 直接設定は不可、代わりにビジネスロジックメソッドを提供
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は0より大きい必要があります");
+            throw new IllegalArgumentException(
+                    "入金額は0より大きい必要があります");
         }
         this.balance += amount;
     }
     
     public boolean withdraw(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("出金額は0より大きい必要があります");
+            throw new IllegalArgumentException(
+                    "出金額は0より大きい必要があります");
         }
         if (this.balance < amount) {
             return false;  // 残高不足

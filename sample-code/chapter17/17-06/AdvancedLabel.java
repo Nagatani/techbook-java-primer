@@ -17,10 +17,12 @@ public class AdvancedLabel {
         
         // HTMLを使用したリッチテキスト
         JLabel htmlLabel = new JLabel(
-            "<html><b>太字</b>と<i>斜体</i>と<font color='red'>赤色</font></html>");
+            "<html><b>太字</b>と<i>斜体</i>と<font "
+            + "color='red'>赤色</font></html>");
         
         // 複数行テキスト
-        JLabel multiLineLabel = new JLabel("<html>複数行の<br>テキストを<br>表示</html>");
+        JLabel multiLineLabel =
+                new JLabel("<html>複数行の<br>テキストを<br>表示</html>");
         
         frame.add(textLabel);
         frame.add(htmlLabel);

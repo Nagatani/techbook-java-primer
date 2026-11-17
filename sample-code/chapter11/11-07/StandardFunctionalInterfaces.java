@@ -10,7 +10,9 @@ public class StandardFunctionalInterfaces {
         // Function: 文字列を長さに変換
         Function<String, Integer> getLength = s -> s.length();
         IO.println("'Java'の長さ: " + getLength.apply("Java")); // 4
-        IO.println("'Hello World'の長さ: " + getLength.apply("Hello World")); // 11
+        // 11
+        IO.println("'Hello World'の長さ: "
+                + getLength.apply("Hello World"));
 
         // Consumer: 文字列を大文字で出力
         Consumer<String> printUpper = s -> IO.println(s.toUpperCase());

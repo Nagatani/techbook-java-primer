@@ -306,7 +306,7 @@ GUI（第17〜20章）とデータベース（第24章）の知識は、第26章
 
 </div>
 
-<span class="listing-number">**サンプルコード25-1**　Enrollment.java、Undergraduate.java、Graduate.java、Student.java（5〜10、31〜44行目）</span>
+<span class="listing-number">**サンプルコード25-1**　Enrollment.java、Undergraduate.java、Graduate.java、Student.java（5〜10、31〜48行目）</span>
 
 ```java
 // Enrollment.java
@@ -319,7 +319,8 @@ public record Undergraduate(int admissionYear) implements Enrollment {
 }
 
 // Graduate.java - 大学院生（研究分野と指導教員を持つ）
-public record Graduate(String researchField, String advisor) implements Enrollment {
+public record Graduate(String researchField, String advisor)
+        implements Enrollment {
 }
 
 public final class Student {
@@ -331,15 +332,19 @@ public final class Student {
     // ...
     // 成績の操作はTranscriptに任せる（呼び出し側はTranscriptを知らなくてよい）
     public void recordGrade(Grade grade) { transcript.record(grade); }
-    public boolean removeGrade(String course) { return transcript.remove(course); }
+    public boolean removeGrade(String course) {
+        return transcript.remove(course);
+    }
     public List<Grade> getGrades() { return transcript.grades(); }
     public double gpa() { return transcript.gpa(); }
 
     // 在籍区分ごとの説明。区分を足すと、ここがコンパイルエラーになって気づける
     public String describeEnrollment() {
         return switch (enrollment) {
-            case Undergraduate u -> "学部生（" + u.admissionYear() + "年度入学）";
-            case Graduate g -> "大学院生（研究分野: " + g.researchField() + "）";
+            case Undergraduate u -> "学部生（" + u.admissionYear()
+                    + "年度入学）";
+            case Graduate g -> "大学院生（研究分野: " + g.researchField()
+                    + "）";
         };
     }
 }
@@ -384,7 +389,7 @@ public final class Student {
 
 改善版では、GPAを保存せず、求められるたびに成績から計算します。
 
-<span class="listing-number">**サンプルコード25-2**　Grade.java、Transcript.java（6〜8、23〜33行目）、DesignDemo.java（10〜17行目）</span>
+<span class="listing-number">**サンプルコード25-2**　Grade.java、Transcript.java（6〜8、23〜33行目）、DesignDemo.java（10〜19行目）</span>
 
 ```java
 // Grade.java - 1科目の成績（科目名・単位数・評価点）
@@ -394,10 +399,12 @@ public record Grade(String course, int credits, double point) {
             throw new IllegalArgumentException("科目名が空です");
         }
         if (credits <= 0) {
-            throw new IllegalArgumentException("単位数は1以上にします: " + credits);
+            throw new IllegalArgumentException("単位数は1以上にします: "
+                    + credits);
         }
         if (point < 0.0 || point > 4.0) {
-            throw new IllegalArgumentException("評価点は0.0〜4.0にします: " + point);
+            throw new IllegalArgumentException(
+                    "評価点は0.0〜4.0にします: " + point);
         }
     }
 }
@@ -420,11 +427,13 @@ public class Transcript {
 
         taro.recordGrade(new Grade("プログラミング演習", 2, 4.0));
         taro.recordGrade(new Grade("線形代数", 4, 3.0));
-        hanako.recordGrade(new Grade("情報理論特論", 2, 3.5)); // 大学院生も成績を持てる
+        // 大学院生も成績を持てる
+        hanako.recordGrade(new Grade("情報理論特論", 2, 3.5));
 
         for (Student s : List.of(taro, hanako)) {
             IO.println("%s %s %s GPA=%.2f".formatted(
-                s.getId(), s.getName(), s.describeEnrollment(), s.gpa()));
+                s.getId(), s.getName(), s.describeEnrollment(),
+                s.gpa()));
         }
 ```
 
@@ -504,7 +513,7 @@ GPAの値は`gpa`メソッドを呼んだときに成績から計算するので
 
 </div>
 
-<span class="listing-number">**サンプルコード25-3**　StudentRepository.java（5〜16行目）、InMemoryStudentRepository.java（7〜9行目）、StudentService.java（6〜19行目）</span>
+<span class="listing-number">**サンプルコード25-3**　StudentRepository.java（5〜16行目）、InMemoryStudentRepository.java（7〜9行目）、StudentService.java（6〜20行目）</span>
 
 ```java
 public interface StudentRepository {
@@ -532,7 +541,8 @@ public class StudentService {
         this.repository = repository;
     }
 
-    public void register(Student student) throws DuplicateStudentException {
+    public void register(Student student)
+            throws DuplicateStudentException {
         if (repository.findById(student.getId()).isPresent()) {
             throw new DuplicateStudentException(student.getId());
         }
@@ -600,7 +610,7 @@ CSVファイルから学生を取り込むときは、1行の誤りで処理全�
 これでは、画面には「エラー3件」としか表示できず、どの行が悪いのかはログを見なければわかりません。
 改善版では、失敗した行の行番号と理由を集めて、結果として返します。
 
-<span class="listing-number">**サンプルコード25-4**　ImportReport.java（4〜7行目）、StudentCsvImporter.java（14〜31行目）、ImportDemo.java（9〜21行目）</span>
+<span class="listing-number">**サンプルコード25-4**　ImportReport.java（4〜7行目）、StudentCsvImporter.java（14〜33行目）、ImportDemo.java（9〜22行目）</span>
 
 ```java
 public record ImportReport(int successCount, List<ImportError> errors) {
@@ -619,9 +629,11 @@ public record ImportReport(int successCount, List<ImportError> errors) {
                 successCount++;
             } catch (IllegalArgumentException e) {
                 // 列の数・数値の形式・空の項目など、行の内容の誤り
-                errors.add(new ImportError(lineNumber, line, e.getMessage()));
+                errors.add(new ImportError(lineNumber, line,
+                        e.getMessage()));
             } catch (DuplicateStudentException e) {
-                errors.add(new ImportError(lineNumber, line, e.getMessage()));
+                errors.add(new ImportError(lineNumber, line,
+                        e.getMessage()));
             }
         }
         return new ImportReport(successCount, errors);
@@ -638,7 +650,8 @@ public record ImportReport(int successCount, List<ImportError> errors) {
         ImportReport report = importer.importLines(lines);
         IO.println("成功: " + report.successCount() + "件");
         for (ImportError error : report.errors()) {
-            IO.println("行%d: %s".formatted(error.lineNumber(), error.reason()));
+            IO.println("行%d: %s"
+                    .formatted(error.lineNumber(), error.reason()));
         }
 ```
 

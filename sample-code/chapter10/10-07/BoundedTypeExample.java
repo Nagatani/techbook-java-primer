@@ -8,6 +8,7 @@ public class BoundedTypeExample {
         doubleBox.setNumber(3.14);
         IO.println(doubleBox.getDoubleValue()); // 3.14
 
-        // NumericBox<String> stringBox = new NumericBox<>(); // コンパイルエラー！
+        // コンパイルエラー！
+        // NumericBox<String> stringBox = new NumericBox<>();
     }
 }

@@ -3,7 +3,8 @@ public record GameCharacter(
     CharacterClass characterClass,
     CharacterStats stats
 ) {
-    public static GameCharacter create(String playerName, CharacterClass characterClass) {
+    public static GameCharacter create(String playerName,
+            CharacterClass characterClass) {
         return new GameCharacter(
             playerName,
             characterClass,
@@ -17,6 +18,7 @@ public record GameCharacter(
     }
     
     public GameCharacter levelUp() {
-        return new GameCharacter(playerName, characterClass, stats.levelUp());
+        return new GameCharacter(playerName, characterClass,
+                stats.levelUp());
     }
 }

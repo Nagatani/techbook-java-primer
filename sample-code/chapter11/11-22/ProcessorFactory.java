@@ -25,7 +25,8 @@ public class ProcessorFactory {
     }
 
     // 形式の名前と、オブジェクトを作る処理（コンストラクター参照）の対応
-    private final Map<String, Supplier<DataProcessor>> processors = Map.of(
+    private final Map<String, Supplier<DataProcessor>> processors =
+            Map.of(
         "csv", CsvProcessor::new,
         "xml", XmlProcessor::new,
         "json", JsonProcessor::new

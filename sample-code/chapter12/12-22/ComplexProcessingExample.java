@@ -18,11 +18,15 @@ public class ComplexProcessingExample {
         // 複雑な処理：高得点者（85点以上）を身長でグループ化し、
         // 各グループで最高得点者の名前を取得
         Map<String, String> heightGroupTopScorers = students.stream()
-            .filter(s -> s.getScore() >= 85)                    // 高得点者のみ
-            .collect(Collectors.groupingBy(                     // 身長でグループ化
+            // 高得点者のみ
+            .filter(s -> s.getScore() >= 85)
+            // 身長でグループ化
+            .collect(Collectors.groupingBy(
                 s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
-                Collectors.collectingAndThen(                   // グループ内での最高得点者を取得
-                    Collectors.maxBy((s1, s2) -> Integer.compare(s1.getScore(), s2.getScore())),
+                // グループ内での最高得点者を取得
+                Collectors.collectingAndThen(
+                    Collectors.maxBy((s1, s2) ->
+                    Integer.compare(s1.getScore(), s2.getScore())),
                     opt -> opt.map(Student::getName).orElse("該当者なし")
                 )
             ));

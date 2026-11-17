@@ -8,7 +8,8 @@ class InsufficientBalanceException extends Exception {
 // 使用例
 public class BankAccount {
     private int balance;
-    public void withdraw(int amount) throws InsufficientBalanceException {
+    public void withdraw(int amount)
+            throws InsufficientBalanceException {
         if (amount > balance) {
             // 意図的に例外をスローする
             throw new InsufficientBalanceException("残高が不足しています。");

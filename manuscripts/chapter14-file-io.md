@@ -125,15 +125,17 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（8〜9、14〜27、30〜31、34〜42行目）</span>
+<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（8〜9、14〜29、32〜33、36〜44行目）</span>
 
 ```java
 public class TextFileReaderExample {
     public static void main(String[] args) {
         // ...
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
-        // BufferedReaderを使用することで、ファイルから効率的に行単位でデータを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、大きなファイルではこの方法を使います。
+        // BufferedReaderを使用することで、ファイルから効率的に行単位で
+        // データを読み込めます。
+        // 大容量ファイルでもメモリを節約しながら処理できるため、
+        // 大きなファイルではこの方法を使います。
         IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -238,7 +240,7 @@ public class TextFileWriterExample {
 - ISO-8859-1
     + 西欧言語用の1バイトのエンコーディング
 
-<span class="listing-number">**サンプルコード14-4**　CharacterEncodingExample.java（9〜45行目）</span>
+<span class="listing-number">**サンプルコード14-4**　CharacterEncodingExample.java（9〜47行目）</span>
 
 ```java
 public class CharacterEncodingExample {
@@ -260,7 +262,8 @@ public class CharacterEncodingExample {
             IO.println(reader.readLine());
         } catch (MalformedInputException e) {
             // Shift_JISとして解釈できないバイト列があると、文字化けではなく例外になる
-            IO.println("エラー: MalformedInputException - 文字エンコーディングの不一致");
+            IO.println("エラー: MalformedInputException - "
+                    + "文字エンコーディングの不一致");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -275,7 +278,8 @@ public class CharacterEncodingExample {
         }
 
         // システムデフォルトのエンコーディング確認
-        IO.println("\nデフォルトエンコーディング: " + Charset.defaultCharset());
+        IO.println("\nデフォルトエンコーディング: "
+                + Charset.defaultCharset());
     }
 }
 ```
@@ -315,10 +319,12 @@ public class DataStreamExample {
         
         // バイナリファイルの書き込み
         // DataOutputStreamを使用してプリミティブ型のデータをバイナリ形式で保存します。
-        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、読むときに型と順序を合わせます。
+        // 値をバイナリ形式のまま保存します。型の情報は保存しないので、
+        // 読むときに型と順序を合わせます。
         // データの書き込み
         try (DataOutputStream dos = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(filename)))) {
+                new BufferedOutputStream(
+                new FileOutputStream(filename)))) {
             // プリミティブ型の書き込み
             dos.writeInt(12345);
             dos.writeLong(9876543210L);
@@ -331,7 +337,8 @@ public class DataStreamExample {
         
         // データの読み込み（書き込んだ順序と同じ順序で読む）
         try (DataInputStream dis = new DataInputStream(
-                new BufferedInputStream(new FileInputStream(filename)))) {
+                new BufferedInputStream(
+                new FileInputStream(filename)))) {
             int intValue = dis.readInt();
             long longValue = dis.readLong();
             double doubleValue = dis.readDouble();
@@ -379,12 +386,13 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 そのクラスのオブジェクトを`ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
 パスワードのように保存したくないフィールドには`transient`修飾子を付けると、そのフィールドを直列化の対象から外せます。
 
-<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜45行目）</span>
+<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜50行目）</span>
 
 ```java
 // Serializableを実装したクラス
 class UserProfile implements Serializable {
-    private static final long serialVersionUID = 1L; // クラスのバージョン管理用
+    // クラスのバージョン管理用
+    private static final long serialVersionUID = 1L;
     String name;
     transient String password; // 直列化されない
     LocalDateTime registrationDate;
@@ -404,8 +412,10 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式でファイルに保存します。
-        // オブジェクトの構造や状態をそのまま保持できるため、データの永続化やキャッシュ機能に便利です。
+        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式で
+        // ファイルに保存します。
+        // オブジェクトの構造や状態をそのまま保持できるため、データの
+        // 永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
@@ -421,7 +431,9 @@ public class SerializationExample {
             UserProfile loadedUser = (UserProfile) ois.readObject();
             IO.println("復元されたオブジェクト: " + loadedUser); 
             // passwordはnullになる
-        } catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
 ```
@@ -448,7 +460,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="fo
 古いコードでは、`Path`を`Paths.get`で作っていることがあります<span class="footnote">`Path.of`はJava 11で加わりました。`Paths`クラスのAPIドキュメントは、`Path.of`を使うよう勧めており、`Paths`は将来非推奨になる可能性があると書いています。</span>。
 本書では`Path.of`を使います。
 
-<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（4〜37行目）</span>
+<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（4〜40行目）</span>
 
 ```java
 public class FileSystemExample {
@@ -471,11 +483,14 @@ public class FileSystemExample {
         IO.println("ファイルを作成しました: " + file.getFileName());
 
         // ファイルのコピー
-        // Files.copy()はファイルのコピーを行います。StandardCopyOptionで動作を制御できます。
+        // Files.copy()はファイルのコピーを行います。StandardCopyOptionで
+        // 動作を制御できます。
         // REPLACE_EXISTING: 同名ファイルがある場合は上書き
-        // COPY_ATTRIBUTES: 最終更新日時などの属性もコピー（どの属性をコピーできるかはOSによる）
+        // COPY_ATTRIBUTES: 最終更新日時などの属性もコピー（どの属性を
+        // コピーできるかはOSによる）
         Path copiedFile = dir.resolve("my_file_copy.txt");
-        Files.copy(file, copiedFile, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file, copiedFile,
+                StandardCopyOption.REPLACE_EXISTING);
         IO.println("ファイルをコピーしました: " + copiedFile.getFileName());
 
         // ファイルの削除
@@ -506,7 +521,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 以下は、基本的なCSV読み込み・書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6、21〜54、65行目）</span>
+<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6、21〜57、68行目）</span>
 
 ```java
 public class CSVProcessingExample {
@@ -515,7 +530,8 @@ public class CSVProcessingExample {
     // CSVファイルの読み込み
     public static List<List<String>> readCSV(Path filePath) {
         List<List<String>> result = new ArrayList<>();
-        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = Files.newBufferedReader(filePath,
+                StandardCharsets.UTF_8)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 List<String> row = parseCSVLine(line);
@@ -529,12 +545,14 @@ public class CSVProcessingExample {
     
     // 簡単なCSV行解析（引用符などの複雑なケースは考慮していません）
     private static List<String> parseCSVLine(String line) {
-        return Arrays.asList(line.split(",", -1));  // -1: 末尾の空の項目も残す
+        // -1: 末尾の空の項目も残す
+        return Arrays.asList(line.split(",", -1));
     }
     
     // CSVファイルの書き込み
     public static void writeCSV(Path filePath, List<List<String>> data) {
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath,
+                StandardCharsets.UTF_8)) {
             for (List<String> row : data) {
                 writer.write(String.join(",", row));
                 writer.newLine();
@@ -821,7 +839,7 @@ String text = """
 
 Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを文字列として作り、ファイルに保存するときにとくに役立ちます。
 
-<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（8〜40、174〜175行目）</span>
+<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（8〜41、175〜176行目）</span>
 
 ```java
 public class TextBlockStructuredData {
@@ -830,7 +848,8 @@ public class TextBlockStructuredData {
         String userName = "田中太郎";
         int userAge = 30;
         String timestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+                .format(DateTimeFormatter.ofPattern(
+                        "yyyy-MM-dd'T'HH:mm:ss"));
         
         String jsonData = """
                 {

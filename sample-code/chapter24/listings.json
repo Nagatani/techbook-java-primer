@@ -3,75 +3,95 @@
     "dir": "24-04",
     "main": "ConnectExample",
     "excerpt": [
-      { "file": "ConnectExample.java", "from": 1, "to": 22 }
+      { "file": "ConnectExample.java", "from": 1, "to": 24 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-5": {
     "dir": "24-05",
     "main": "CrudExample",
     "excerpt": [
-      { "file": "CrudExample.java", "from": 36, "to": 75 }
+      { "file": "CrudExample.java", "from": 36, "to": 80 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-6": {
     "dir": "24-06",
     "main": "LoginExample",
     "excerpt": [
-      { "file": "LoginExample.java", "from": 22, "to": 44 }
+      { "file": "LoginExample.java", "from": 22, "to": 47 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-7": {
     "dir": "24-07",
     "main": "DaoExample",
     "excerpt": [
-      { "file": "User.java", "from": 1, "to": 13 },
-      { "file": "UserDao.java", "from": 6, "to": 12 }
+      { "file": "User.java", "from": 1, "to": 14 },
+      { "file": "UserDao.java", "from": 6, "to": 13 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-8": {
     "dir": "24-08",
     "main": "DaoExample",
     "excerpt": [
-      { "file": "JdbcUserDao.java", "from": 12, "to": 35 },
-      { "file": "JdbcUserDao.java", "from": 78, "to": 83 },
-      { "file": "DaoExample.java", "from": 21, "to": 30 }
+      { "file": "JdbcUserDao.java", "from": 12, "to": 36 },
+      { "file": "JdbcUserDao.java", "from": 79, "to": 85 },
+      { "file": "DaoExample.java", "from": 21, "to": 33 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-9": {
     "dir": "24-09",
     "main": "DateRangeExample",
     "excerpt": [
-      { "file": "DateRangeExample.java", "from": 21, "to": 33 }
+      { "file": "DateRangeExample.java", "from": 21, "to": 38 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-10": {
     "dir": "24-10",
     "main": "TransferExample",
     "excerpt": [
-      { "file": "TransferExample.java", "from": 33, "to": 55 }
+      { "file": "TransferExample.java", "from": 33, "to": 59 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   },
   "24-11": {
     "dir": "24-11",
     "main": "PoolExample",
     "excerpt": [
-      { "file": "PoolExample.java", "from": 13, "to": 39 }
+      { "file": "PoolExample.java", "from": 13, "to": 44 }
     ],
-    "libs": ["com.h2database:h2:2.5.252", "com.zaxxer:HikariCP:7.1.0", "org.slf4j:slf4j-api:2.0.17"]
+    "libs": [
+      "com.h2database:h2:2.5.252",
+      "com.zaxxer:HikariCP:7.1.0",
+      "org.slf4j:slf4j-api:2.0.17"
+    ]
   },
   "24-12": {
     "dir": "24-12",
     "main": "BatchExample",
     "excerpt": [
-      { "file": "BatchExample.java", "from": 19, "to": 36 }
+      { "file": "BatchExample.java", "from": 19, "to": 39 }
     ],
-    "libs": ["com.h2database:h2:2.5.252"]
+    "libs": [
+      "com.h2database:h2:2.5.252"
+    ]
   }
 }

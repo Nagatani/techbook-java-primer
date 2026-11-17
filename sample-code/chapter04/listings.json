@@ -57,7 +57,7 @@
     "dir": "04-08",
     "main": null,
     "excerpt": [
-      { "file": "Employee.java", "from": 1, "to": 19 }
+      { "file": "Employee.java", "from": 1, "to": 20 }
     ]
   },
   "4-9": {
@@ -81,7 +81,7 @@
     "dir": "04-11",
     "main": null,
     "excerpt": [
-      { "file": "BankAccountV2.java", "from": 1, "to": 34 }
+      { "file": "BankAccountV2.java", "from": 1, "to": 36 }
     ]
   },
   "4-12": {
@@ -99,8 +99,8 @@
     "main": null,
     "excerpt": [
       { "file": "BankAccountV3.java", "from": 3, "to": 8 },
-      { "file": "BankAccountV3.java", "from": 16, "to": 42 },
-      { "file": "BankAccountV3.java", "from": 52, "to": 56 }
+      { "file": "BankAccountV3.java", "from": 16, "to": 44 },
+      { "file": "BankAccountV3.java", "from": 54, "to": 58 }
     ]
   },
   "4-14": {
@@ -124,7 +124,7 @@
     "dir": "04-21",
     "main": null,
     "excerpt": [
-      { "file": "User.java", "from": 1, "to": 26 }
+      { "file": "User.java", "from": 1, "to": 29 }
     ]
   },
   "4-22": {
@@ -165,7 +165,7 @@
     "dir": "04-27",
     "main": null,
     "excerpt": [
-      { "file": "HttpClient.java", "from": 1, "to": 20 }
+      { "file": "HttpClient.java", "from": 1, "to": 21 }
     ]
   },
   "4-28": {
@@ -179,7 +179,7 @@
     "dir": "04-29",
     "main": null,
     "excerpt": [
-      { "file": "UserManager.java", "from": 1, "to": 22 }
+      { "file": "UserManager.java", "from": 1, "to": 24 }
     ]
   },
   "4-30": {
@@ -189,14 +189,14 @@
       { "file": "User.java", "from": 1, "to": 18 },
       { "file": "UserRepository.java", "from": 1, "to": 4 },
       { "file": "EmailService.java", "from": 1, "to": 4 },
-      { "file": "AuthenticationService.java", "from": 1, "to": 4 }
+      { "file": "AuthenticationService.java", "from": 1, "to": 8 }
     ]
   },
   "4-32": {
     "dir": "04-32",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 32 }
+      { "file": "BankAccount.java", "from": 1, "to": 35 }
     ]
   }
 }

@@ -11,7 +11,8 @@ public class StudentService {
         this.repository = repository;
     }
 
-    public void register(Student student) throws DuplicateStudentException {
+    public void register(Student student)
+            throws DuplicateStudentException {
         if (repository.findById(student.getId()).isPresent()) {
             throw new DuplicateStudentException(student.getId());
         }

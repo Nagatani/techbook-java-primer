@@ -34,7 +34,8 @@ public class CrudExample {
     }
 
     // 追加（Create）。値は?の位置にsetXxxで渡す
-    static void insert(Connection conn, String username, String email) throws SQLException {
+    static void insert(Connection conn, String username, String email)
+            throws SQLException {
         String sql = "INSERT INTO users (username, email) VALUES (?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -50,13 +51,15 @@ public class CrudExample {
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 IO.println("%d %s %s".formatted(
-                    rs.getInt("id"), rs.getString("username"), rs.getString("email")));
+                    rs.getInt("id"), rs.getString("username"),
+                    rs.getString("email")));
             }
         }
     }
 
     // 更新（Update）。戻り値は変わった行の数
-    static int updateEmail(Connection conn, String username, String email) throws SQLException {
+    static int updateEmail(Connection conn, String username,
+            String email) throws SQLException {
         String sql = "UPDATE users SET email = ? WHERE username = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -66,8 +69,10 @@ public class CrudExample {
     }
 
     // 削除（Delete）
-    static int delete(Connection conn, String username) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM users WHERE username = ?")) {
+    static int delete(Connection conn, String username)
+            throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "DELETE FROM users WHERE username = ?")) {
             ps.setString(1, username);
             return ps.executeUpdate();
         }

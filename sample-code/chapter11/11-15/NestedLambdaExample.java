@@ -5,7 +5,8 @@ import java.util.stream.Collectors;
 public class NestedLambdaExample {
     public static void main(String[] args) {
         // 1行に「名前:点数」を並べたデータから、行ごとの合計点を求める
-        List<String> lines = List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
+        List<String> lines =
+                List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
 
         // 悪い例：ラムダ式の中にラムダ式を重ねていて、何をしているか読み取りにくい
         List<Integer> bad = lines.stream()

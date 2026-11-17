@@ -1,7 +1,8 @@
 // Main.java
 public class Main {
     public static void main(String[] args) {
-        // Shape shape = new Shape("図形"); // コンパイルエラー！ 抽象クラスはインスタンス化できない
+        // コンパイルエラー！ 抽象クラスはインスタンス化できない
+        // Shape shape = new Shape("図形");
 
         Shape circle = new Circle(10.0);
         Shape rectangle = new Rectangle(5.0, 8.0);

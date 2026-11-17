@@ -8,9 +8,11 @@ public class MethodReferenceExample {
         IO.println("元のリスト: " + words);
 
         // 静的メソッド参照の例
-        Function<String, Integer> parser = Integer::parseInt;  // s -> Integer.parseInt(s)
+        // s -> Integer.parseInt(s)
+        Function<String, Integer> parser = Integer::parseInt;
         int number = parser.apply("123");
-        IO.println("文字列から整数への変換: " + number + " + 1 = " + (number + 1));
+        IO.println("文字列から整数への変換: " + number + " + 1 = "
+                + (number + 1));
 
         // 静的メソッド参照（IO.printlnは静的メソッド）
         IO.println("\n各単語を出力:");
@@ -30,7 +32,8 @@ public class MethodReferenceExample {
         upper.forEach(IO::println);
 
         // コンストラクター参照
-        Supplier<List<String>> listFactory = ArrayList::new;  // () -> new ArrayList<>()
+        // () -> new ArrayList<>()
+        Supplier<List<String>> listFactory = ArrayList::new;
         List<String> newList = listFactory.get();
         newList.add("Hello");
         newList.add("World");

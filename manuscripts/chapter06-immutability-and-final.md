@@ -349,8 +349,10 @@ import java.util.List;
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
-        List<String> hobbies = new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
-        ImmutablePerson person = new ImmutablePerson("田中太郎", 25, hobbies);
+        List<String> hobbies =
+                new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
+        ImmutablePerson person =
+                new ImmutablePerson("田中太郎", 25, hobbies);
         
         // コンストラクターに渡したリストを変更しても、オブジェクトには影響しない
         hobbies.add("スポーツ");
@@ -362,7 +364,8 @@ public class ImmutableExample {
         IO.println("新しい人: " + olderPerson); // age=26
         
         // 趣味を追加
-        ImmutablePerson personWithNewHobby = person.addHobby("プログラミング");
+        ImmutablePerson personWithNewHobby =
+                person.addHobby("プログラミング");
         IO.println("元の趣味: " + person.getHobbies());
         IO.println("新しい趣味: " + personWithNewHobby.getHobbies());
     }
@@ -424,13 +427,15 @@ public final class DateRange {
     private final LocalDate endDate;
     private final List<LocalDate> holidays;
     
-    public DateRange(LocalDate start, LocalDate end, List<LocalDate> holidays) {
+    public DateRange(LocalDate start, LocalDate end,
+            List<LocalDate> holidays) {
         // パラメーターの検証
         if (start == null || end == null) {
             throw new IllegalArgumentException("日付はnullにできません");
         }
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("開始日は終了日以前にしてください");
+            throw new IllegalArgumentException(
+                    "開始日は終了日以前にしてください");
         }
         
         this.startDate = start;  // LocalDateは不変なのでコピー不要
@@ -489,7 +494,8 @@ public class ViewVsCopy {
         List<String> original = new ArrayList<>();
         original.add("読書");
         
-        List<String> view = Collections.unmodifiableList(original);  // 読み取り専用のビュー
+        // 読み取り専用のビュー
+        List<String> view = Collections.unmodifiableList(original);
         List<String> copy = List.copyOf(original);  // 変更できないコピー
         
         original.add("登山");  // 元のリストに要素を追加する
@@ -574,7 +580,8 @@ public final class Book {
 public class BuilderExample {
     public static void main(String[] args) {
         // ビルダーパターンによる不変オブジェクトの構築
-        Book book1 = new Book.Builder("978-4-123456-78-9", "Javaプログラミング入門")
+        Book book1 = new Book.Builder("978-4-123456-78-9",
+                "Javaプログラミング入門")
             .author("山田太郎")
             .publisher("みなと出版")
             .publicationYear(2024)
@@ -583,17 +590,20 @@ public class BuilderExample {
             .build();
         
         // 必須パラメーターのみで構築
-        Book book2 = new Book.Builder("978-4-987654-32-1", "データベース設計")
+        Book book2 =
+                new Book.Builder("978-4-987654-32-1", "データベース設計")
             .build();
         
         // 一部のオプションパラメーターを設定
-        Book book3 = new Book.Builder("978-4-111111-11-1", "アルゴリズム入門")
+        Book book3 =
+                new Book.Builder("978-4-111111-11-1", "アルゴリズム入門")
             .author("鈴木花子")
             .pages(280)
             .build();
         
         // メソッドチェーンによる可読性の高いコード
-        Book textbook = new Book.Builder("978-4-222222-22-2", "オブジェクト指向設計")
+        Book textbook = new Book.Builder("978-4-222222-22-2",
+                "オブジェクト指向設計")
             .author("佐藤一郎")
             .publisher("さくら書房")
             .publicationYear(2023)
@@ -601,10 +611,14 @@ public class BuilderExample {
             .genre("ソフトウェア工学")
             .build();
 
-        IO.println("Book 1: " + book1.getTitle() + " by " + book1.getAuthor());
-        IO.println("Book 2: " + book2.getTitle() + " by " + book2.getAuthor());
-        IO.println("Book 3: " + book3.getTitle() + " by " + book3.getAuthor());
-        IO.println("Textbook: " + textbook.getTitle() + " by " + textbook.getAuthor());
+        IO.println("Book 1: " + book1.getTitle() + " by "
+                + book1.getAuthor());
+        IO.println("Book 2: " + book2.getTitle() + " by "
+                + book2.getAuthor());
+        IO.println("Book 3: " + book3.getTitle() + " by "
+                + book3.getAuthor());
+        IO.println("Textbook: " + textbook.getTitle() + " by "
+                + textbook.getAuthor());
     }
 }
 ```
@@ -666,13 +680,14 @@ Java 8より前は、日付と時刻を`java.util.Date`と`java.util.Calendar`�
 日付と時刻のオブジェクトは、`of`（値を指定する）、`parse`（`2026-04-14`の形の文字列から読む）、`now`（今の日時）で作ります。
 `plusDays`や`minusMonths`などの計算メソッドは、本章の`ImmutablePoint`の`withX`と同じく、元のオブジェクトを変えずに新しいオブジェクトを返します。
 
-<span class="listing-number">**サンプルコード6-13**　DateBasics.java（6〜25行目）</span>
+<span class="listing-number">**サンプルコード6-13**　DateBasics.java（6〜27行目）</span>
 
 ```java
 public class DateBasics {
     public static void main(String[] args) {
         // 作り方: of（値を指定）、parse（ISO 8601の文字列から）、now（今の日時）
-        LocalDate entrance = LocalDate.of(2026, 4, 1);         // 月は1〜12で指定する
+        // 月は1〜12で指定する
+        LocalDate entrance = LocalDate.of(2026, 4, 1);
         LocalDate deadline = LocalDate.parse("2026-04-14");
         LocalDateTime lecture = LocalDateTime.of(2026, 4, 8, 9, 0);
         LocalTime start = lecture.toLocalTime();
@@ -685,7 +700,8 @@ public class DateBasics {
         IO.println("初回の講義: " + lecture + "（開始 " + start + "）");
 
         // 比べる
-        IO.println("締め切りは1週間後より後か: " + deadline.isAfter(oneWeekLater));
+        IO.println("締め切りは1週間後より後か: "
+                + deadline.isAfter(oneWeekLater));
         IO.println("うるう年か: " + LocalDate.of(2028, 1, 1).isLeapYear());
     }
 }
@@ -718,26 +734,31 @@ public class DateBasics {
 - 時・分・秒の長さで求める（時刻どうし）
     + `Duration.between(開始, 終了)`
 
-<span class="listing-number">**サンプルコード6-14**　DateDifference.java（8〜27行目）</span>
+<span class="listing-number">**サンプルコード6-14**　DateDifference.java（8〜32行目）</span>
 
 ```java
 public class DateDifference {
     public static void main(String[] args) {
         LocalDate borrowed = LocalDate.of(2026, 4, 20);
-        LocalDate due = borrowed.plusDays(14);              // 返却期限は14日後
+        // 返却期限は14日後
+        LocalDate due = borrowed.plusDays(14);
         LocalDate returned = LocalDate.of(2026, 5, 9);
 
         // 日数の差はChronoUnit.DAYS.betweenで求める
         long overdue = ChronoUnit.DAYS.between(due, returned);
-        IO.println("返却期限: " + due + "、延滞: " + Math.max(overdue, 0) + "日");
+        IO.println("返却期限: " + due + "、延滞: " + Math.max(overdue, 0)
+                + "日");
 
         // 年・月・日に分けた期間はPeriod（日付どうし）
-        Period age = Period.between(LocalDate.of(2006, 7, 15), LocalDate.of(2026, 4, 1));
-        IO.println("年齢: " + age.getYears() + "歳" + age.getMonths() + "か月");
+        Period age = Period.between(LocalDate.of(2006, 7, 15),
+                LocalDate.of(2026, 4, 1));
+        IO.println("年齢: " + age.getYears() + "歳" + age.getMonths()
+                + "か月");
 
         // 時・分・秒の長さはDuration（時刻どうし）
         Duration exam = Duration.between(
-            LocalDateTime.of(2026, 7, 27, 9, 0), LocalDateTime.of(2026, 7, 27, 10, 30));
+            LocalDateTime.of(2026, 7, 27, 9, 0),
+            LocalDateTime.of(2026, 7, 27, 10, 30));
         IO.println("試験時間: " + exam.toMinutes() + "分（" + exam + "）");
     }
 }
@@ -760,7 +781,7 @@ public class DateDifference {
 `ofPattern`に書式を渡して作り、`format`で表示し、`parse`で読み取ります。
 `DateTimeFormatter`も不変なので、定数にして何度も使えます。
 
-<span class="listing-number">**サンプルコード6-15**　DateFormatting.java（8〜31行目）</span>
+<span class="listing-number">**サンプルコード6-15**　DateFormatting.java（8〜37行目）</span>
 
 ```java
 public class DateFormatting {
@@ -768,19 +789,25 @@ public class DateFormatting {
     private static final DateTimeFormatter JAPANESE =
         DateTimeFormatter.ofPattern("yyyy年M月d日(E)", Locale.JAPANESE);
     // 既定の読み取り方（SMART）は、2月30日のような日を月末に丸めてしまう
-    private static final DateTimeFormatter SMART = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    private static final DateTimeFormatter SMART =
+            DateTimeFormatter.ofPattern("yyyy/MM/dd");
     // 入力の検査には、存在しない日を拒むSTRICTを使う（年はuuuuで書く）
     private static final DateTimeFormatter STRICT =
-        DateTimeFormatter.ofPattern("uuuu/MM/dd").withResolverStyle(ResolverStyle.STRICT);
+        DateTimeFormatter.ofPattern("uuuu/MM/dd")
+        .withResolverStyle(ResolverStyle.STRICT);
 
     public static void main(String[] args) {
-        IO.println(LocalDate.of(2026, 4, 1).format(JAPANESE));                // 表示
-        IO.println("SMARTで2026/02/30 → " + LocalDate.parse("2026/02/30", SMART));
+        // 表示
+        IO.println(LocalDate.of(2026, 4, 1).format(JAPANESE));
+        IO.println("SMARTで2026/02/30 → "
+                + LocalDate.parse("2026/02/30", SMART));
 
         // 読み取れない文字列はDateTimeParseException（第13章で学ぶ例外）
-        for (String input : new String[] {"2026/02/28", "2026/02/30", "2026-02-28"}) {
+        for (String input : new String[] {"2026/02/28", "2026/02/30",
+                "2026-02-28"}) {
             try {
-                IO.println(input + " → " + LocalDate.parse(input, STRICT).format(JAPANESE));
+                IO.println(input + " → " + LocalDate.parse(input,
+                        STRICT).format(JAPANESE));
             } catch (DateTimeParseException e) {
                 IO.println(input + " → 日付として読み取れません");
             }

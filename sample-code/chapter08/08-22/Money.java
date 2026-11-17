@@ -21,6 +21,7 @@ public record Money(BigDecimal amount, String currency) {
     }
     
     public Money multiply(int quantity) {
-        return new Money(this.amount.multiply(BigDecimal.valueOf(quantity)), this.currency);
+        return new Money(this.amount.multiply(
+                BigDecimal.valueOf(quantity)), this.currency);
     }
 }

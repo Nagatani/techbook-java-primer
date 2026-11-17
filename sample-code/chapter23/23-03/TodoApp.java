@@ -3,7 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TodoApp {
-    private final DefaultListModel<String> listModel = new DefaultListModel<>();
+    private final DefaultListModel<String> listModel =
+            new DefaultListModel<>();
 
     public TodoApp() {
         createAndShowGUI();

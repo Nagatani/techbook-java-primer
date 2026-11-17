@@ -16,7 +16,8 @@ public class AsyncHttpClientExample {
         
         // HTTPリクエストの作成
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
+            .uri(URI.create(
+                    "https://jsonplaceholder.typicode.com/posts/1"))
             .timeout(Duration.ofMinutes(1))
             .header("Accept", "application/json")
             .GET()
@@ -24,7 +25,8 @@ public class AsyncHttpClientExample {
         
         // 非同期でリクエストを送信
         CompletableFuture<HttpResponse<String>> future = 
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            client.sendAsync(request,
+            HttpResponse.BodyHandlers.ofString());
         
         // 非同期処理の連鎖
         CompletableFuture<Void> done = future
@@ -43,7 +45,8 @@ public class AsyncHttpClientExample {
         // 他の処理を並行して実行可能
         IO.println("他の処理を継続中...");
         
-        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが終了するため）
+        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが
+        // 終了するため）
         done.join();
     }
 }

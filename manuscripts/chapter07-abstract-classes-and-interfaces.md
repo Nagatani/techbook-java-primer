@@ -130,7 +130,8 @@ public class Rectangle extends Shape {
 // Main.java
 public class Main {
     public static void main(String[] args) {
-        // Shape shape = new Shape("図形"); // コンパイルエラー！ 抽象クラスはインスタンス化できない
+        // コンパイルエラー！ 抽象クラスはインスタンス化できない
+        // Shape shape = new Shape("図形");
 
         Shape circle = new Circle(10.0);
         Shape rectangle = new Rectangle(5.0, 8.0);
@@ -493,7 +494,8 @@ public class JsonDemo {
     public static void main(String[] args) {
         // 使用例
         User[] users = { new User("Alice"), new User("Bob") };
-        IO.println("Serialized users: " + JsonSerializable.serializeAll(users));
+        IO.println("Serialized users: "
+                + JsonSerializable.serializeAll(users));
 
         User special = new User("Charlie \"The Boss\" Smith\nNew line");
         IO.println("Special user JSON: " + special.toJson());
@@ -530,7 +532,8 @@ interface DefensiveInterface {
     // 内部のリストではなくコピーを渡す
     default List<String> getSafeItems() {
         List<String> items = getItems();
-        return items != null ? new ArrayList<>(items) : new ArrayList<>();
+        return items != null ? new ArrayList<>(items)
+                : new ArrayList<>();
     }
     
     // 要素がないときは、nullではなく引数の既定値を返す
@@ -583,7 +586,7 @@ defaultメソッドは、ラムダ式で使う関数型インターフェイス�
 
 Mixinは、クラスに機能を「混ぜ込む」設計パターンです<span class="footnote">名前は、アイスクリームにナッツやチョコレートなどを混ぜ込む「ミックスイン」に由来するといわれます。1980年代に、Lispのオブジェクト指向拡張であるFlavorsで使われた用語です。</span>。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
 
-<span class="listing-number">**サンプルコード7-12**　Timestamped.java（3〜22、36〜37、59〜68行目）</span>
+<span class="listing-number">**サンプルコード7-12**　Timestamped.java（3〜24、38〜39、61〜70行目）</span>
 
 ```java
 // 複数の機能を提供するMixin
@@ -591,11 +594,13 @@ interface Timestamped {
     long getTimestamp();
     
     default boolean isExpired(long expirationTime) {
-        return System.currentTimeMillis() - getTimestamp() > expirationTime;
+        return System.currentTimeMillis()
+                - getTimestamp() > expirationTime;
     }
     
     default Duration getAge() {
-        return Duration.ofMillis(System.currentTimeMillis() - getTimestamp());
+        return Duration.ofMillis(System.currentTimeMillis()
+                - getTimestamp());
     }
 }
 
@@ -700,7 +705,7 @@ class Temperature implements Measurable {
 
 インターフェイス分離原則<span class="footnote">英語ではInterface Segregation Principleで、ISPはその頭文字です。第4章で触れたSOLID原則の「I」にあたります。</span>は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
-<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、49〜57、78行目）</span>
+<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、49〜58、79行目）</span>
 
 ```java
 // 悪い例：肥大化したインターフェイス
@@ -733,7 +738,8 @@ interface UserNotificationService {
 }
 // ...
 // 必要な機能だけを実装
-class BasicUserService implements UserRepository, UserNotificationService {
+class BasicUserService implements UserRepository,
+        UserNotificationService {
     private Map<String, User> users = new HashMap<>();
     
     @Override
@@ -765,7 +771,8 @@ interface ServiceV1 {
 
 interface ServiceV2 extends ServiceV1 {
     // 新機能をdefaultメソッドで追加（後方互換性維持）
-    default String processWithConfig(String input, ServiceConfig config) {
+    default String processWithConfig(String input,
+            ServiceConfig config) {
         // デフォルトでは設定を無視して従来の処理
         return process(input);
     }
@@ -785,7 +792,8 @@ interface ServiceV3 extends ServiceV2 {
     @Deprecated(since = "3.0", forRemoval = true)
     @Override
     default String oldProcess(String input) {
-        System.err.println("警告: oldProcessは非推奨です。processを使用してください。");
+        System.err.println("警告: "
+                + "oldProcessは非推奨です。processを使用してください。");
         return process(input);
     }
 }
@@ -800,7 +808,8 @@ class ServiceImpl implements ServiceV3 {
     // オプションで新機能をオーバーライド
     @Override
     public String processWithConfig(String input, ServiceConfig config) {
-        return "Processed with timeout " + config.getTimeout() + ": " + input.toUpperCase();
+        return "Processed with timeout " + config.getTimeout() + ": "
+                + input.toUpperCase();
     }
 }
 ```
@@ -828,7 +837,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜77、90〜94行目）、FactoryDemo.java</span>
+<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜78、91〜96行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
@@ -853,13 +862,15 @@ public class FigureFactory {
         switch (type.toLowerCase()) {
             case "circle":
                 if (params.length != 1) {
-                    throw new IllegalArgumentException("円には半径が必要です");
+                    throw new IllegalArgumentException(
+                            "円には半径が必要です");
                 }
                 return new CircleFigure(params[0]);
                 
                 // ...
             default:
-                throw new IllegalArgumentException("不明な図形タイプ: " + type);
+                throw new IllegalArgumentException("不明な図形タイプ: "
+                        + type);
         }
     }
 }
@@ -869,8 +880,10 @@ public class FactoryDemo {
     public static void main(String[] args) {
         // ファクトリを使って図形を生成
         Figure circle = FigureFactory.createFigure("circle", 5.0);
-        Figure rectangle = FigureFactory.createFigure("rectangle", 4.0, 6.0);
-        Figure triangle = FigureFactory.createFigure("triangle", 3.0, 4.0);
+        Figure rectangle =
+                FigureFactory.createFigure("rectangle", 4.0, 6.0);
+        Figure triangle =
+                FigureFactory.createFigure("triangle", 3.0, 4.0);
         
         // 具体的なクラスを知らなくても使える
         Figure[] figures = { circle, rectangle, triangle };
@@ -946,7 +959,7 @@ Factoryパターンを使うと、クライアントコード（オブジェク�
 
 ### 実践的な使用例：データベース接続
 
-<span class="listing-number">**サンプルコード7-18**　DatabaseConnectionFactory.java（3〜32、57〜68、79行目）</span>
+<span class="listing-number">**サンプルコード7-18**　DatabaseConnectionFactory.java（3〜33、58〜71、82行目）</span>
 
 ```java
 // データベース接続インターフェイス
@@ -961,7 +974,8 @@ class MySQLConnection implements DatabaseConnection {
     private String connectionString;
     
     public MySQLConnection(String host, int port, String database) {
-        this.connectionString = String.format("mysql://%s:%d/%s", host, port, database);
+        this.connectionString =
+                String.format("mysql://%s:%d/%s", host, port, database);
     }
     
     @Override
@@ -982,14 +996,16 @@ class MySQLConnection implements DatabaseConnection {
 // ...
 // データベース接続ファクトリ
 public class DatabaseConnectionFactory {
-    public static DatabaseConnection createConnection(String type, String host, int port, String database) {
+    public static DatabaseConnection createConnection(String type,
+            String host, int port, String database) {
         switch (type.toUpperCase()) {
             case "MYSQL":
                 return new MySQLConnection(host, port, database);
             case "POSTGRESQL":
                 return new PostgreSQLConnection(host, port, database);
             default:
-                throw new IllegalArgumentException("サポートされていないデータベース: " + type);
+                throw new IllegalArgumentException(
+                        "サポートされていないデータベース: " + type);
         }
     }
     // ...

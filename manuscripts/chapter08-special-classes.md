@@ -378,14 +378,17 @@ public class EnumCollectionExample {
     
     public static void main(String[] args) {
         // EnumSet: enum専用の高速なSet実装
-        EnumSet<Permission> adminPermissions = EnumSet.allOf(Permission.class);
-        EnumSet<Permission> userPermissions = EnumSet.of(Permission.READ, Permission.WRITE);
+        EnumSet<Permission> adminPermissions =
+                EnumSet.allOf(Permission.class);
+        EnumSet<Permission> userPermissions =
+                EnumSet.of(Permission.READ, Permission.WRITE);
         
         IO.println("管理者権限: " + adminPermissions);
         IO.println("ユーザー権限: " + userPermissions);
         
         // EnumMap: enumをキーとする高速なMap実装
-        EnumMap<Permission, String> permissionDescriptions = new EnumMap<>(Permission.class);
+        EnumMap<Permission, String> permissionDescriptions =
+                new EnumMap<>(Permission.class);
         permissionDescriptions.put(Permission.READ, "読み取り権限");
         permissionDescriptions.put(Permission.WRITE, "書き込み権限");
         permissionDescriptions.put(Permission.EXECUTE, "実行権限");
@@ -585,7 +588,8 @@ public record BankAccount(String accountNumber, double balance) {
             throw new IllegalArgumentException("口座番号は必須です");
         }
         if (balance < 0) {
-            throw new IllegalArgumentException("残高は0以上でなければなりません");
+            throw new IllegalArgumentException(
+                    "残高は0以上でなければなりません");
         }
         // フィールドへの代入は自動的に行われる
     }
@@ -645,7 +649,8 @@ public record Temperature(double value, String unit) {
             case "C" -> value;
             case "F" -> (value - 32) * 5 / 9;
             case "K" -> value - 273.15;
-            default -> throw new IllegalStateException("未知の単位: " + unit);
+            default -> throw new IllegalStateException("未知の単位: "
+                    + unit);
         };
     }
 }
@@ -714,7 +719,8 @@ public class PatternMatchingExample {
     
     public static void main(String[] args) {
         IO.println(describe(new Point(10, 20)));  // 座標(10, 20)の点
-        IO.println(describe(new Point(5, 5)));    // 座標(5, 5)の点（直線y = xの上）
+        // 座標(5, 5)の点（直線y = xの上）
+        IO.println(describe(new Point(5, 5)));
         IO.println(describe("Hello"));            // 文字列: Hello
         IO.println(describe(""));                 // 空の文字列
         IO.println(describe(null));               // null値
@@ -780,7 +786,8 @@ public class LocalRecordExample {
         }
         double average = (double) sum / numbers.length;
         
-        Statistics stats = new Statistics(numbers.length, average, max, min);
+        Statistics stats =
+                new Statistics(numbers.length, average, max, min);
         IO.println("統計情報: " + stats);
     }
 }
@@ -875,7 +882,8 @@ public record Money(BigDecimal amount, String currency) {
     }
     
     public Money multiply(int quantity) {
-        return new Money(this.amount.multiply(BigDecimal.valueOf(quantity)), this.currency);
+        return new Money(this.amount.multiply(
+                BigDecimal.valueOf(quantity)), this.currency);
     }
 }
 ```
@@ -907,8 +915,10 @@ public class ShapeCalculator {
     public static double calculateArea(Shape shape) {
         return switch (shape) {
             case Circle(double radius) -> Math.PI * radius * radius;
-            case Rectangle(double width, double height) -> width * height;
-            case Triangle(double base, double height) -> 0.5 * base * height;
+            case Rectangle(double width, double height) -> width
+                    * height;
+            case Triangle(double base, double height) -> 0.5 * base
+                    * height;
         };
     }
 }
@@ -931,20 +941,23 @@ Recordは暗黙的に`final`なので、何も付けずにこの条件を満た�
 `OrderProcessor`では、拡張for文でリストの要素を1つずつ取り出して計算や判定を行います。
 本文では、各ファイルの先頭にあるimport文を省いています<span class="footnote">省いたimport文は`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`です。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-24/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード8-24**　Order.java（4〜5行目）、Customer.java、OrderItem.java（3行目）、OrderProcessor.java（3〜21行目）</span>
+<span class="listing-number">**サンプルコード8-24**　Order.java（4〜6行目）、Customer.java、OrderItem.java（3〜4行目）、OrderProcessor.java（3〜22行目）</span>
 
 ```java
 // データの定義（Records）
-public record Order(String orderId, Customer customer, List<OrderItem> items, LocalDateTime orderDate) {}
+public record Order(String orderId, Customer customer,
+        List<OrderItem> items, LocalDateTime orderDate) {}
 public record Customer(String id, String name, String email) {}
-public record OrderItem(String productName, int quantity, BigDecimal price) {}
+public record OrderItem(String productName, int quantity,
+        BigDecimal price) {}
 
 // ロジックの分離（純粋関数）
 public class OrderProcessor {
     public static BigDecimal calculateTotal(Order order) {
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : order.items()) {
-            total = total.add(item.price().multiply(BigDecimal.valueOf(item.quantity())));
+            total = total.add(item.price()
+                    .multiply(BigDecimal.valueOf(item.quantity())));
         }
         return total;
     }
@@ -982,7 +995,7 @@ public class OrderProcessor {
 この`Order`は、サンプルコード8-24の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
 `updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
 
-<span class="listing-number">**サンプルコード8-25**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜26行目）</span>
+<span class="listing-number">**サンプルコード8-25**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜28行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -1009,7 +1022,8 @@ public record Order(
             throw new IllegalArgumentException("注文IDは必須です");
         }
         if (totalAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("合計金額は0以上でなければなりません");
+            throw new IllegalArgumentException(
+                    "合計金額は0以上でなければなりません");
         }
     }
     
@@ -1017,7 +1031,8 @@ public record Order(
         if (this.status.isFinal()) {
             throw new IllegalStateException("最終状態の注文は更新できません");
         }
-        return new Order(orderId, customerId, orderDate, newStatus, totalAmount);
+        return new Order(orderId, customerId, orderDate, newStatus,
+                totalAmount);
     }
 }
 ```
@@ -1038,7 +1053,8 @@ public enum CharacterClass {
     // ...
 }
 
-public record CharacterStats(int level, int health, int attack, int magic) {
+public record CharacterStats(int level, int health, int attack,
+        int magic) {
     public CharacterStats levelUp() {
         return new CharacterStats(
             level + 1,
@@ -1054,7 +1070,8 @@ public record GameCharacter(
     CharacterClass characterClass,
     CharacterStats stats
 ) {
-    public static GameCharacter create(String playerName, CharacterClass characterClass) {
+    public static GameCharacter create(String playerName,
+            CharacterClass characterClass) {
         return new GameCharacter(
             playerName,
             characterClass,
@@ -1068,7 +1085,8 @@ public record GameCharacter(
     }
     
     public GameCharacter levelUp() {
-        return new GameCharacter(playerName, characterClass, stats.levelUp());
+        return new GameCharacter(playerName, characterClass,
+                stats.levelUp());
     }
 }
 ```
@@ -1177,7 +1195,8 @@ public class LocalClassExample {
         }
         
         DataProcessor processor = new DataProcessor();
-        IO.println(processor.process("hello")); // 例: prefixが"Log"なら「Log: HELLO」
+        // 例: prefixが"Log"なら「Log: HELLO」
+        IO.println(processor.process("hello"));
     }
 }
 ```

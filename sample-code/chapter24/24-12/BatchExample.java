@@ -17,13 +17,16 @@ public class BatchExample {
             }
             LocalDate first = LocalDate.of(2025, 1, 1);
             conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO daily_steps VALUES (?, ?)")) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO daily_steps VALUES (?, ?)")) {
                 for (int i = 0; i < 3650; i++) {      // 10年分の歩数
                     ps.setObject(1, first.plusDays(i));
                     ps.setInt(2, 5000 + (i * 37) % 6000);
-                    ps.addBatch();                    // すぐには送らず、ためておく
+                    // すぐには送らず、ためておく
+                    ps.addBatch();
                     if ((i + 1) % BATCH_SIZE == 0) {
-                        ps.executeBatch();            // 1000件ずつまとめて送る
+                        // 1000件ずつまとめて送る
+                        ps.executeBatch();
                     }
                 }
                 ps.executeBatch();                    // 残りを送る

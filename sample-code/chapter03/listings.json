@@ -28,7 +28,7 @@
     "dir": "03-06",
     "main": null,
     "excerpt": [
-      { "file": "Product.java", "from": 1, "to": 9 },
+      { "file": "Product.java", "from": 1, "to": 10 },
       { "file": "Book.java", "from": 1, "to": 9 }
     ]
   },
@@ -137,7 +137,7 @@
     "dir": "03-29",
     "main": "BookTest",
     "excerpt": [
-      { "file": "BookTest.java", "from": 1, "to": 16 }
+      { "file": "BookTest.java", "from": 1, "to": 17 }
     ],
     "uses": [
       "3-28"
@@ -180,14 +180,14 @@
     "dir": "03-34",
     "main": "StaticMemberExample",
     "excerpt": [
-      { "file": "StaticMemberExample.java", "from": 1, "to": 46 }
+      { "file": "StaticMemberExample.java", "from": 1, "to": 48 }
     ]
   },
   "3-35": {
     "dir": "03-35",
     "main": null,
     "excerpt": [
-      { "file": "MathUtils.java", "from": 1, "to": 5 }
+      { "file": "MathUtils.java", "from": 1, "to": 6 }
     ]
   },
   "3-36": {
@@ -253,7 +253,7 @@
     "dir": "03-45",
     "main": null,
     "excerpt": [
-      { "file": "ShoppingCart.java", "from": 1, "to": 37 },
+      { "file": "ShoppingCart.java", "from": 1, "to": 38 },
       { "file": "CartItem.java", "from": 1, "to": 14 }
     ]
   },

@@ -17,7 +17,8 @@ public class ImportDemo {
         ImportReport report = importer.importLines(lines);
         IO.println("成功: " + report.successCount() + "件");
         for (ImportError error : report.errors()) {
-            IO.println("行%d: %s".formatted(error.lineNumber(), error.reason()));
+            IO.println("行%d: %s"
+                    .formatted(error.lineNumber(), error.reason()));
         }
     }
 }

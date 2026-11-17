@@ -31,7 +31,8 @@ public class BasicMouseEventExample extends JFrame {
                     case MouseEvent.BUTTON3 -> "右";
                     default -> "不明な";
                 };
-                statusLabel.setText(button + "ボタンがクリックされました: " + e.getPoint());
+                statusLabel.setText(button + "ボタンがクリックされました: "
+                        + e.getPoint());
             }
             
             @Override

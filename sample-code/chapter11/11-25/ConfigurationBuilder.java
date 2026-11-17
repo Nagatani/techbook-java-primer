@@ -14,7 +14,8 @@ public class ConfigurationBuilder {
         }
 
         // 条件が成り立つときだけ、操作を加える
-        public FunctionalConfigBuilder<T> whenCondition(boolean condition, Consumer<T> operation) {
+        public FunctionalConfigBuilder<T> whenCondition(
+                boolean condition, Consumer<T> operation) {
             if (condition) {
                 operations.add(operation);
             }

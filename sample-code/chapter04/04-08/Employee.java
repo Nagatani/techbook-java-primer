@@ -5,7 +5,8 @@ public class Employee {
     
     public void setAge(int age) {
         if (age < 18 || age > 100) {
-            throw new IllegalArgumentException("年齢は18歳以上100歳以下で入力してください");
+            throw new IllegalArgumentException(
+                    "年齢は18歳以上100歳以下で入力してください");
         }
         this.age = age;
     }

@@ -9,11 +9,13 @@ public class DesignDemo {
 
         taro.recordGrade(new Grade("プログラミング演習", 2, 4.0));
         taro.recordGrade(new Grade("線形代数", 4, 3.0));
-        hanako.recordGrade(new Grade("情報理論特論", 2, 3.5)); // 大学院生も成績を持てる
+        // 大学院生も成績を持てる
+        hanako.recordGrade(new Grade("情報理論特論", 2, 3.5));
 
         for (Student s : List.of(taro, hanako)) {
             IO.println("%s %s %s GPA=%.2f".formatted(
-                s.getId(), s.getName(), s.describeEnrollment(), s.gpa()));
+                s.getId(), s.getName(), s.describeEnrollment(),
+                s.gpa()));
         }
     }
 }

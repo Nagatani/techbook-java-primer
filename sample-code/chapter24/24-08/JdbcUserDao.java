@@ -20,7 +20,8 @@ public class JdbcUserDao implements UserDao {
     public User create(User user) throws SQLException {
         String sql = "INSERT INTO users (username, email) VALUES (?, ?)";
         // RETURN_GENERATED_KEYSで、データベースが振ったIDを受け取れるようにする
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql,
+                Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.username());
             ps.setString(2, user.email());
             ps.executeUpdate();
@@ -77,7 +78,8 @@ public class JdbcUserDao implements UserDao {
 
     // ResultSetの今の行をUserにする（列とフィールドの対応をここに集める）
     private User toUser(ResultSet rs) throws SQLException {
-        return new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"),
+        return new User(rs.getInt("id"), rs.getString("username"),
+                rs.getString("email"),
             rs.getObject("created_at", LocalDateTime.class));
     }
 }

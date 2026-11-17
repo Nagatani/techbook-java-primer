@@ -31,10 +31,12 @@ public class KeyboardEventAdvancedExample extends JFrame {
                 updateStatus(e, "押下");
                 
                 // ショートカットキーの検出
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+                if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_S) {
                     saveDocument();
                     e.consume(); // デフォルトの動作をキャンセル
-                } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
+                } else if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_A) {
                     textArea.selectAll();
                     e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_F1) {
@@ -85,11 +87,13 @@ public class KeyboardEventAdvancedExample extends JFrame {
     }
     
     private void setupKeyBindings() {
-        InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
+        InputMap inputMap =
+                textArea.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap actionMap = textArea.getActionMap();
         
         // Ctrl+Dで行削除
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), 
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,
+                InputEvent.CTRL_DOWN_MASK), 
             "delete-line");
         actionMap.put("delete-line", new AbstractAction() {
             @Override

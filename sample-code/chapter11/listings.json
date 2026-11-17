@@ -31,28 +31,28 @@
     "dir": "11-07",
     "main": "StandardFunctionalInterfaces",
     "excerpt": [
-      { "file": "StandardFunctionalInterfaces.java", "from": 1, "to": 32 }
+      { "file": "StandardFunctionalInterfaces.java", "from": 1, "to": 34 }
     ]
   },
   "11-8": {
     "dir": "11-08",
     "main": "FunctionComposition",
     "excerpt": [
-      { "file": "FunctionComposition.java", "from": 1, "to": 31 }
+      { "file": "FunctionComposition.java", "from": 1, "to": 37 }
     ]
   },
   "11-9": {
     "dir": "11-09",
     "main": "MethodReferenceExample",
     "excerpt": [
-      { "file": "MethodReferenceExample.java", "from": 1, "to": 39 }
+      { "file": "MethodReferenceExample.java", "from": 1, "to": 42 }
     ]
   },
   "11-10": {
     "dir": "11-10",
     "main": "LambdaVsMethodReference",
     "excerpt": [
-      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 33 }
+      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 34 }
     ]
   },
   "11-11": {
@@ -61,7 +61,7 @@
     "excerpt": [
       { "file": "RunnableLambdaExample.java", "from": 1, "to": 8 },
       { "file": "RunnableLambdaExample.java", "from": 14, "to": 21 },
-      { "file": "RunnableLambdaExample.java", "from": 27, "to": 46 }
+      { "file": "RunnableLambdaExample.java", "from": 27, "to": 47 }
     ]
   },
   "11-12": {
@@ -76,22 +76,22 @@
     "dir": "11-13",
     "main": "ValidationFramework",
     "excerpt": [
-      { "file": "ValidationFramework.java", "from": 6, "to": 22 },
-      { "file": "ValidationFramework.java", "from": 36, "to": 67 }
+      { "file": "ValidationFramework.java", "from": 6, "to": 26 },
+      { "file": "ValidationFramework.java", "from": 40, "to": 75 }
     ]
   },
   "11-14": {
     "dir": "11-14",
     "main": "HigherOrderFunctionExample",
     "excerpt": [
-      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 46 }
+      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 49 }
     ]
   },
   "11-15": {
     "dir": "11-15",
     "main": "NestedLambdaExample",
     "excerpt": [
-      { "file": "NestedLambdaExample.java", "from": 5, "to": 46 }
+      { "file": "NestedLambdaExample.java", "from": 5, "to": 47 }
     ]
   },
   "11-16": {
@@ -105,14 +105,14 @@
     "dir": "11-17",
     "main": "ResilientService",
     "excerpt": [
-      { "file": "ResilientService.java", "from": 3, "to": 42 }
+      { "file": "ResilientService.java", "from": 3, "to": 45 }
     ]
   },
   "11-18": {
     "dir": "11-18",
     "main": "EventProcessor",
     "excerpt": [
-      { "file": "EventProcessor.java", "from": 8, "to": 53 }
+      { "file": "EventProcessor.java", "from": 8, "to": 55 }
     ]
   },
   "11-19": {
@@ -138,7 +138,7 @@
     "dir": "11-21",
     "main": null,
     "excerpt": [
-      { "file": "EventSourcedAccount.java", "from": 3, "to": 36 }
+      { "file": "EventSourcedAccount.java", "from": 3, "to": 40 }
     ]
   },
   "11-22": {
@@ -146,8 +146,8 @@
     "main": "ProcessorFactory",
     "excerpt": [
       { "file": "ProcessorFactory.java", "from": 4, "to": 7 },
-      { "file": "ProcessorFactory.java", "from": 27, "to": 40 },
-      { "file": "ProcessorFactory.java", "from": 52, "to": 52 }
+      { "file": "ProcessorFactory.java", "from": 27, "to": 41 },
+      { "file": "ProcessorFactory.java", "from": 53, "to": 53 }
     ]
   },
   "11-23": {
@@ -162,25 +162,25 @@
     "main": "FunctionalBuilder",
     "excerpt": [
       { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
-      { "file": "FunctionalBuilder.java", "from": 26, "to": 60 }
+      { "file": "FunctionalBuilder.java", "from": 26, "to": 61 }
     ]
   },
   "11-25": {
     "dir": "11-25",
     "main": "ConfigurationBuilder",
     "excerpt": [
-      { "file": "ConfigurationBuilder.java", "from": 6, "to": 31 },
-      { "file": "ConfigurationBuilder.java", "from": 50, "to": 62 },
-      { "file": "ConfigurationBuilder.java", "from": 70, "to": 70 }
+      { "file": "ConfigurationBuilder.java", "from": 6, "to": 32 },
+      { "file": "ConfigurationBuilder.java", "from": 51, "to": 63 },
+      { "file": "ConfigurationBuilder.java", "from": 71, "to": 71 }
     ]
   },
   "11-26": {
     "dir": "11-26",
     "main": "OrderPipeline",
     "excerpt": [
-      { "file": "OrderPipeline.java", "from": 3, "to": 13 },
-      { "file": "OrderPipeline.java", "from": 40, "to": 47 },
-      { "file": "OrderPipeline.java", "from": 56, "to": 57 }
+      { "file": "OrderPipeline.java", "from": 3, "to": 14 },
+      { "file": "OrderPipeline.java", "from": 41, "to": 48 },
+      { "file": "OrderPipeline.java", "from": 57, "to": 58 }
     ]
   }
 }

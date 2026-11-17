@@ -10,9 +10,12 @@ public class ProducerConsumerExample {
     // BlockingQueueは、スレッド間でデータを安全に受け渡すための
     // 特殊なキューです。キューが満杯の時は生産者が自動的にブロックされ、
     // キューが空の時は消費者が自動的にブロックされます。
-    private static final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(10);
-    private static final AtomicInteger producedCount = new AtomicInteger(0);
-    private static final AtomicInteger consumedCount = new AtomicInteger(0);
+    private static final BlockingQueue<Integer> queue =
+            new LinkedBlockingQueue<>(10);
+    private static final AtomicInteger producedCount =
+            new AtomicInteger(0);
+    private static final AtomicInteger consumedCount =
+            new AtomicInteger(0);
     
     // プロデューサー（生産者）
     static class Producer implements Runnable {
@@ -30,7 +33,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToProduce; i++) {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
-                    IO.println("%s produced: %d (queue size: %d)".formatted(
+                    IO.println("%s produced: %d (queue size: %d)"
+                            .formatted(
                         name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
@@ -56,7 +60,8 @@ public class ProducerConsumerExample {
                 for (int i = 0; i < itemsToConsume; i++) {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
-                    IO.println("%s consumed: %d (queue size: %d)".formatted(
+                    IO.println("%s consumed: %d (queue size: %d)"
+                            .formatted(
                         name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }

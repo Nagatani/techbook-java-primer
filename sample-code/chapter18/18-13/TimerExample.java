@@ -20,7 +20,8 @@ public class TimerExample {
             Timer timer = new Timer(1000, e -> {
                 // 定期的にEDT上で実行される処理
                 LocalTime now = LocalTime.now();
-                String timeText = now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String timeText = now.format(
+                        DateTimeFormatter.ofPattern("HH:mm:ss"));
                 timeLabel.setText(timeText);
             });
             // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）

@@ -17,12 +17,14 @@ public class BankAccountV3 {
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
         this.transactionHistory = new ArrayList<>();
-        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance + "円");
+        this.transactionHistory.add("口座開設: 初期残高 " + initialBalance
+                + "円");
     }
     
     public void deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("入金額は正の値にしてください");
+            throw new IllegalArgumentException(
+                    "入金額は正の値にしてください");
         }
         balance += amount;
         transactionHistory.add("入金: " + amount + "円");

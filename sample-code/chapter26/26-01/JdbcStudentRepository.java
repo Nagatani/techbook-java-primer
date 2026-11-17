@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JdbcStudentRepository implements StudentRepository, AutoCloseable {
+public class JdbcStudentRepository implements StudentRepository,
+        AutoCloseable {
     private final Connection connection;
 
     // SQLExceptionを投げてよい処理（トランザクションの中身）
@@ -184,7 +185,8 @@ public class JdbcStudentRepository implements StudentRepository, AutoCloseable {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RepositoryException("データベースの更新に失敗しました", e);
+            throw new RepositoryException(
+                    "データベースの更新に失敗しました", e);
         }
     }
 

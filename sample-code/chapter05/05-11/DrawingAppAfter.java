@@ -108,7 +108,8 @@ class Pentagon extends Shape {
     
     @Override
     double calculateArea() {
-        return 0.25 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5))) * side * side;
+        return 0.25 * Math.sqrt(5 * (5 + 2 * Math.sqrt(5))) * side
+                * side;
     }
     
     @Override

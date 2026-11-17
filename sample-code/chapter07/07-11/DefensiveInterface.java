@@ -8,7 +8,8 @@ interface DefensiveInterface {
     // 内部のリストではなくコピーを渡す
     default List<String> getSafeItems() {
         List<String> items = getItems();
-        return items != null ? new ArrayList<>(items) : new ArrayList<>();
+        return items != null ? new ArrayList<>(items)
+                : new ArrayList<>();
     }
     
     // 要素がないときは、nullではなく引数の既定値を返す

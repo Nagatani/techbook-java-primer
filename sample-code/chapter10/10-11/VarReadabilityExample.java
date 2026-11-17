@@ -10,7 +10,8 @@ public class VarReadabilityExample {
         var builder = new StringBuilder();
 
         // 長いジェネリック型でとくに有効
-        var complexMap = new HashMap<String, List<Map<String, Object>>>();
+        var complexMap = new HashMap<String, List<Map<String,
+                Object>>>();
     }
 
     public static void demonstratePoorUsage() {

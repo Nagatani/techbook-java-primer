@@ -21,12 +21,15 @@ public class EdtCheckExample {
                     if (SwingUtilities.isEventDispatchThread()) {
                         statusLabel.setText("正しくEDT上で実行されています");
                     } else {
-                        statusLabel.setText("警告: EDT以外のスレッドで実行されています");
+                        statusLabel.setText("警告: "
+                                + "EDT以外のスレッドで実行されています");
                     }
                     
                     // リスナーが動いているスレッドを表示
-                    IO.println("現在のスレッド: " + Thread.currentThread().getName());
-                    IO.println("EDT上での実行: " + SwingUtilities.isEventDispatchThread());
+                    IO.println("現在のスレッド: "
+                            + Thread.currentThread().getName());
+                    IO.println("EDT上での実行: "
+                            + SwingUtilities.isEventDispatchThread());
                 }
             });
             

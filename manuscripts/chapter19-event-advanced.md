@@ -40,7 +40,7 @@
 右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
 メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜63、77〜82、97〜100、117、129行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜66、80〜85、100〜103、120、132行目）</span>
 
 ```java
 public class MouseEventCompleteExample extends JFrame {
@@ -53,7 +53,8 @@ public class MouseEventCompleteExample extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 String button = getButtonName(e.getButton());
                 int clickCount = e.getClickCount();
-                log("クリック: " + button + " (回数: " + clickCount + ") at " + 
+                log("クリック: " + button + " (回数: " + clickCount
+                        + ") at " + 
                     e.getPoint());
                 
                 // ダブルクリックの検出
@@ -65,12 +66,14 @@ public class MouseEventCompleteExample extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 startPoint = e.getPoint();
-                log("マウス押下: " + getButtonName(e.getButton()) + " at " + startPoint);
+                log("マウス押下: " + getButtonName(e.getButton())
+                        + " at " + startPoint);
             }
             
             @Override
             public void mouseReleased(MouseEvent e) {
-                log("マウス解放: " + getButtonName(e.getButton()) + " at " + e.getPoint());
+                log("マウス解放: " + getButtonName(e.getButton())
+                        + " at " + e.getPoint());
                 startPoint = null;
                 currentPoint = null;
                 drawPanel.repaint();
@@ -105,7 +108,7 @@ public class MouseEventCompleteExample extends JFrame {
 ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
 そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜50、66〜75、85、87〜99、109、164行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜52、68〜77、87、89〜103、113、168行目）</span>
 
 ```java
 public class KeyboardEventAdvancedExample extends JFrame {
@@ -120,10 +123,12 @@ public class KeyboardEventAdvancedExample extends JFrame {
                 updateStatus(e, "押下");
                 
                 // ショートカットキーの検出
-                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+                if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_S) {
                     saveDocument();
                     e.consume(); // デフォルトの動作をキャンセル
-                } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
+                } else if (e.isControlDown()
+                        && e.getKeyCode() == KeyEvent.VK_A) {
                     textArea.selectAll();
                     e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_F1) {
@@ -152,11 +157,13 @@ public class KeyboardEventAdvancedExample extends JFrame {
     }
     // ...
     private void setupKeyBindings() {
-        InputMap inputMap = textArea.getInputMap(JComponent.WHEN_FOCUSED);
+        InputMap inputMap =
+                textArea.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap actionMap = textArea.getActionMap();
         
         // Ctrl+Dで行削除
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK), 
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,
+                InputEvent.CTRL_DOWN_MASK), 
             "delete-line");
         actionMap.put("delete-line", new AbstractAction() {
             @Override
@@ -188,7 +195,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
 この例では、どの変更でも同じ検証を行うので、3つのメソッドから同じ`validateForm()`を呼んでいます。
 以下のコードは、入力のたびにメールアドレスの形式、パスワードの長さと強度、確認用パスワードの一致を検証する例です。
 
-<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、66〜110、147〜149、178行目）</span>
+<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、66〜116、153〜155、184行目）</span>
 
 ```java
 public class DocumentListenerExample extends JFrame {
@@ -196,13 +203,16 @@ public class DocumentListenerExample extends JFrame {
     
     private void setupDocumentListeners() {
         // Emailフィールドのリスナー
-        emailField.getDocument().addDocumentListener(new DocumentListener() {
+        emailField.getDocument()
+                .addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { validateForm(); }
             @Override
             public void removeUpdate(DocumentEvent e) { validateForm(); }
             @Override
-            public void changedUpdate(DocumentEvent e) { validateForm(); }
+            public void changedUpdate(DocumentEvent e) {
+                validateForm();
+            }
         });
         
         // パスワードフィールドのリスナー
@@ -212,10 +222,13 @@ public class DocumentListenerExample extends JFrame {
             @Override
             public void removeUpdate(DocumentEvent e) { validateForm(); }
             @Override
-            public void changedUpdate(DocumentEvent e) { validateForm(); }
+            public void changedUpdate(DocumentEvent e) {
+                validateForm();
+            }
         };
         
-        passwordField.getDocument().addDocumentListener(passwordListener);
+        passwordField.getDocument()
+                .addDocumentListener(passwordListener);
         confirmField.getDocument().addDocumentListener(passwordListener);
     }
     
@@ -269,7 +282,7 @@ Swingの部品が用意するイベントだけでなく、独自のイベント
 
 </div>
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜33、43〜55、58、64、94〜102、128〜129、156、163行目）</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜110、136〜137、164、171行目）</span>
 
 ```java
 // カスタムイベントクラス
@@ -277,7 +290,8 @@ class TemperatureChangeEvent extends EventObject {
     private final double oldTemperature;
     private final double newTemperature;
     
-    public TemperatureChangeEvent(Object source, double oldTemp, double newTemp) {
+    public TemperatureChangeEvent(Object source, double oldTemp,
+            double newTemp) {
         super(source);
         this.oldTemperature = oldTemp;
         this.newTemperature = newTemp;
@@ -295,9 +309,11 @@ interface TemperatureChangeListener extends EventListener {
 // 温度センサーモデル
 class TemperatureSensor {
     private double temperature = 20.0;
-    private List<TemperatureChangeListener> listeners = new ArrayList<>();
+    private List<TemperatureChangeListener> listeners =
+            new ArrayList<>();
     
-    public void addTemperatureChangeListener(TemperatureChangeListener listener) {
+    public void addTemperatureChangeListener(
+            TemperatureChangeListener listener) {
         listeners.add(listener);
     }
     // ...
@@ -307,9 +323,12 @@ class TemperatureSensor {
         fireTemperatureChanged(oldTemperature, newTemperature);
     }
     
-    protected void fireTemperatureChanged(double oldTemp, double newTemp) {
-        TemperatureChangeEvent event = new TemperatureChangeEvent(this, oldTemp, newTemp);
-        for (TemperatureChangeListener listener : new ArrayList<>(listeners)) {
+    protected void fireTemperatureChanged(double oldTemp,
+            double newTemp) {
+        TemperatureChangeEvent event =
+                new TemperatureChangeEvent(this, oldTemp, newTemp);
+        for (TemperatureChangeListener listener
+                : new ArrayList<>(listeners)) {
             listener.temperatureChanged(event);
         }
     }
@@ -320,15 +339,17 @@ public class CustomEventExample extends JFrame {
     public CustomEventExample() {
         // ...
         // 温度変化リスナーを登録
-        sensor.addTemperatureChangeListener(new TemperatureChangeListener() {
+        sensor.addTemperatureChangeListener(
+                new TemperatureChangeListener() {
             @Override
             public void temperatureChanged(TemperatureChangeEvent e) {
                 double newTemp = e.getNewTemperature();
                 double oldTemp = e.getOldTemperature();
                 
                 // 表示を更新
-                temperatureLabel.setText(String.format("%.1f°C", newTemp));
-                // ...
+                temperatureLabel.setText(String.format("%.1f°C",
+                        newTemp));
+                        // ...
             }
         });
         // ...
@@ -402,13 +423,14 @@ Swingの部品どうしのドラッグ&ドロップは、`TransferHandler`で実
 
 </div>
 
-<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7、70〜75、79〜83、92〜98、100〜128、146行目）</span>
+<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7、70〜76、80〜85、94〜101、103〜133、151行目）</span>
 
 ```java
 public class SwingWorkerExample extends JFrame {
     // ...
     // SwingWorkerの実装
-    class DataProcessingWorker extends SwingWorker<String, ProgressInfo> {
+    class DataProcessingWorker extends SwingWorker<String,
+            ProgressInfo> {
         private static final int TOTAL_ITEMS = 100;
         
         @Override
@@ -416,13 +438,15 @@ public class SwingWorkerExample extends JFrame {
             // ...
             for (int i = 0; i < TOTAL_ITEMS; i++) {
                 if (isCancelled()) {
-                    // キャンセルしたあとはget()で結果を受け取れないので、戻り値は使われない
+                    // キャンセルしたあとはget()で結果を受け取れないので、
+                    // 戻り値は使われない
                     return null;
                 }
                 // ...
                 // 進捗を公開
                 int progress = (i + 1) * 100 / TOTAL_ITEMS;
-                publish(new ProgressInfo(progress, "処理中: アイテム " + (i + 1) + "/" + TOTAL_ITEMS));
+                publish(new ProgressInfo(progress, "処理中: アイテム "
+                        + (i + 1) + "/" + TOTAL_ITEMS));
             }
             
             return result.toString();
@@ -447,12 +471,14 @@ public class SwingWorkerExample extends JFrame {
                     String result = get();
                     resultArea.append("\n処理が完了しました。\n");
                     resultArea.append("結果のサマリー:\n");
-                    resultArea.append("処理したアイテム数: " + result.lines().count() + "\n");
+                    resultArea.append("処理したアイテム数: "
+                            + result.lines().count() + "\n");
                     progressBar.setValue(100);
                     progressBar.setString("完了");
                 }
             } catch (InterruptedException | ExecutionException e) {
-                resultArea.append("エラーが発生しました: " + e.getMessage() + "\n");
+                resultArea.append("エラーが発生しました: "
+                        + e.getMessage() + "\n");
                 e.printStackTrace();
             }
         }

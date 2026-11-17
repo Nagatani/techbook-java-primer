@@ -277,7 +277,7 @@ Mavenは、依存関係を次の順に解決します。
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
+<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜20、33行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
 // Gsonの高度な使用例
@@ -287,7 +287,8 @@ public class TodoItem {
     
     private boolean completed;
     
-    private transient String internalId;  // transientを付けたフィールドはJSONに含めない
+    // transientを付けたフィールドはJSONに含めない
+    private transient String internalId;
     
     private String createdAt;
     private List<String> tags;
@@ -470,7 +471,7 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、配列操作、ランダムな文字列の生成、日付の書式化、`toString`の自動生成など、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜13、22〜25、36、38〜56、75〜76行目）</span>
+<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜13、22〜26、37、39〜59、78〜79行目）</span>
 
 ```java
 public class CommonsLangExample {
@@ -479,7 +480,8 @@ public class CommonsLangExample {
         // ...
         @Override
         public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+            return ToStringBuilder.reflectionToString(this,
+                    ToStringStyle.SHORT_PREFIX_STYLE);
         }
         // ...
     }
@@ -495,11 +497,13 @@ public class CommonsLangExample {
         
         // nullや空文字列の安全な処理
         String nullStr = null;
-        IO.println("Default: " + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
+        IO.println("Default: "
+                + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
         
         // 2. ArrayUtils - 配列操作
         int[] numbers = {1, 2, 3, 4, 5};
-        IO.println("\nArray contains 3?: " + ArrayUtils.contains(numbers, 3));
+        IO.println("\nArray contains 3?: "
+                + ArrayUtils.contains(numbers, 3));
         int[] reversed = ArrayUtils.clone(numbers);
         ArrayUtils.reverse(reversed);
         IO.println("Reversed: " + ArrayUtils.toString(reversed));
@@ -549,7 +553,7 @@ Apache Commons I/Oは、ファイルやストリームの操作を簡潔なメ�
 Commons I/Oは、ディレクトリのサイズの計算、ファイル名からの拡張子の取り出し、ストリームのコピーなど、標準APIでは何行も必要な処理も1行で書ける点が便利です。
 以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、実務で頻繁に使用される機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜28、44〜49、65〜66行目）</span>
+<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜30、46〜51、67〜68行目）</span>
 
 ```java
 public class CommonsIOExample {
@@ -566,11 +570,13 @@ public class CommonsIOExample {
             StandardCharsets.UTF_8, true);
         
         // ファイルの読み込み（1行で完了）
-        String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        String content = FileUtils.readFileToString(file,
+                StandardCharsets.UTF_8);
         IO.println("File content:\n" + content);
         
         // 行単位での読み込み
-        List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
+        List<String> lines =
+                FileUtils.readLines(file, StandardCharsets.UTF_8);
         IO.println("Lines count: " + lines.size());
         // ...
         // 4. FilenameUtils - パス操作
