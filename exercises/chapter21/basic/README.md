@@ -73,7 +73,7 @@
 
 ## コンパイルと実行
 
-JUnitとMockitoのJARが要ります。JARの入手と、MavenやGradleでの設定は、第21章の本文と[docs/code-verification.md](../../../docs/code-verification.md)を参照してください。
+JUnitとMockitoのJARが要ります。JARの入手と、MavenやGradleでの設定は、第21章の本文と[docs/code-verification.md](../../../docs/guides/code-verification.md)を参照してください。
 
 ```bash
 # junit-platform-console-standalone-1.14.4.jar を同じフォルダーに置いた場合

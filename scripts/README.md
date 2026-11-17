@@ -34,7 +34,7 @@
 
 | スクリプト | npmスクリプト | 役割 |
 |---|---|---|
-| `fix-claude-md-violations.js` | `fix:compliance` | `check:compliance`の違反のうち、機械的に直せるもの（リスト導入文のコロンなど）を直す。対象ファイルの横に`backup/`を作る。正規表現による書き換えなので、原稿の校正には使わない（`docs/proofreading-workflow.md`） |
+| `fix-claude-md-violations.js` | `fix:compliance` | `check:compliance`の違反のうち、機械的に直せるもの（リスト導入文のコロンなど）を直す。対象ファイルの横に`backup/`を作る。正規表現による書き換えなので、原稿の校正には使わない（`docs/guides/proofreading-workflow.md`） |
 | `fix-title-colon-lists.js` | なし | 「- 項目： 説明」形式のリストを階層化リストに変換する（`fix:compliance`の対象外のもの） |
 
 ## 削除したスクリプト（2026-11-09）
@@ -44,4 +44,4 @@
 
 - 番号付け・番号の重複修正（`add_code_listing_numbers.py`ほか）は`sample-code.js number`と`check:samples`に置き換えた
 - 構造の分析（`analyze_*.py`）は`build-book-index.js`と`check-structure.js`に置き換えた
-- 文体・長文・コロンの一括変換（`fix_dearu_style.py`、`fix_long_sentences.py`、`tools/convert_colon_patterns*.py`ほか）は、文言の欠落（Issue #013）の原因になったため再利用しない。校正は`docs/proofreading-workflow.md`の手順で行う
+- 文体・長文・コロンの一括変換（`fix_dearu_style.py`、`fix_long_sentences.py`、`tools/convert_colon_patterns*.py`ほか）は、文言の欠落（Issue #013）の原因になったため再利用しない。校正は`docs/guides/proofreading-workflow.md`の手順で行う

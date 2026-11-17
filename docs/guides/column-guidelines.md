@@ -12,7 +12,7 @@
 4. よくある誤解の解説（初学者が陥りやすい誤解の説明）
 
 後の章で学ぶ内容は、コラムで先に説明せず「第N章で学びます」と誘導します（`CLAUDE.md`の方針12）。
-1〜3文で済む余談は、コラムではなく脚注にします（`docs/writing-guidelines-textlint-compliance.md`の11節）。
+1〜3文で済む余談は、コラムではなく脚注にします（`docs/guides/writing-guidelines-textlint-compliance.md`の11節）。
 
 ## コラムの記述方法
 

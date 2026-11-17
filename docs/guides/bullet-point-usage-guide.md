@@ -1,7 +1,7 @@
 # 箇条書き使用ガイドライン
 
 どんな内容を箇条書きにし、どんな内容を文章で書くかの目安です。
-リストの書き方そのもの（階層化リスト、である調、末尾に句点を付けない、「項目名： 説明」の形を使わない）は`CLAUDE.md`の「リスト表記ルール」と`docs/writing-guidelines-textlint-compliance.md`の5節に従います。
+リストの書き方そのもの（階層化リスト、である調、末尾に句点を付けない、「項目名： 説明」の形を使わない）は`CLAUDE.md`の「リスト表記ルール」と`docs/guides/writing-guidelines-textlint-compliance.md`の5節に従います。
 
 ## 適切な箇条書きの使用場面
 

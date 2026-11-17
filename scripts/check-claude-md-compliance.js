@@ -92,7 +92,7 @@ const VIOLATION_PATTERNS = [
         pattern: /※/g,
         description: '「※」で始める注意書き（脚注のテーマが番号を付けるので「※」は使わない）',
         severity: 'error',
-        suggestion: '<span class="footnote">…</span>で脚注にするか、本文の文にしてください（docs/writing-guidelines-textlint-compliance.md の11節）',
+        suggestion: '<span class="footnote">…</span>で脚注にするか、本文の文にしてください（docs/guides/writing-guidelines-textlint-compliance.md の11節）',
         customCheck: true
     },
     {

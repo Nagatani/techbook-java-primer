@@ -352,7 +352,7 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 1. **フェーズ2の実装状況確認**
    - 第8章と第9章の統合：既に「Javaの特殊なクラス形式」として統合済みを確認
    - 付録Gと第23章の重複解消：付録Gは「高度なビルドとデプロイメント技術」として整理済みを確認
-   - GitHub連携の強化：コード配置基準が策定済みを確認（docs/archive/github-code-organization-standards.md）
+   - GitHub連携の強化：コード配置基準が策定済みを確認（docs/deletion-candidates/github-code-organization-standards.md）
 
 2. **TODO.mdの更新**
    - フェーズ1の完了状況を確認（全項目完了済み）
@@ -427,7 +427,7 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 - ✅ 2026-11-09: 解答例のコンパイルエラーとテストの誤りはすべて直した（演習42ディレクトリが全件コンパイルでき、テストのある解答例は全件通過）。ファイルの後半がエスケープされた1行として付け足される壊れ方（第10・18・20章の6ファイル）も元に戻した
 - ✅ 残りの点も片付いた（2026-11-16に確認して記録）。第2章の演習の内容は2026-11-12より前に解消、架空の題材の発展・チャレンジ課題は2026-11-12に作り直し、第18章の基礎課題はIssue #020で作り直し、第17・19章の演習はIssue #024（2026-11-13）、付録Eの演習は2026-11-14に用意した
 - pre-commitフックを`scripts/git-hooks/pre-commit`として共有した。速い検査（check:structure、check:compliance。約0.7秒）だけでコミットを止め、textlintはフックから外した。GitHub Actionsの`check.yml`で、構成・索引・サンプルの抜粋とコンパイルを検査する（実行結果の照合とtextlintは参考扱い）
-- 役割を終えたツールを削除した: `tools/`の分割校正ツール一式（22ファイル）、`scripts/`の単発の変換・分析スクリプト（21ファイル）、ルートの古い構造分析JSON（2件）。校正の心得は`docs/proofreading-workflow.md`に移した。残したスクリプトは`scripts/README.md`に一覧がある
+- 役割を終えたツールを削除した: `tools/`の分割校正ツール一式（22ファイル）、`scripts/`の単発の変換・分析スクリプト（21ファイル）、ルートの古い構造分析JSON（2件）。校正の心得は`docs/guides/proofreading-workflow.md`に移した。残したスクリプトは`scripts/README.md`に一覧がある
 - `prh-rules.yml`は2025-07に削除されており、CLAUDE.mdの記載と食い違っていた（記載を直した）。「インターフェース」が第19章のサンプルのコメントに1か所残っていたため直した
 - 公開するコードをJava 25で再検査した。本文のサンプル320件・付録60のまとまり・演習42ディレクトリがすべてコンパイルでき、mainの実行とテストでも問題がない状態にした。検査スクリプトは--release 25でコンパイルし、非推奨・削除予定のAPIの使用を問題として報告する
 
@@ -585,7 +585,7 @@ grep -r "\[your-repo\]" manuscripts/chapter*.md | wc -l
 
 ## 2026年11月12日実施作業のサマリー（脚注の追加）
 
-本文に脚注（`<span class="footnote">`）を加えた（章ごとにコミット）。脚注は7個から278個になった。書き方は`docs/writing-guidelines-textlint-compliance.md`の「11. 脚注」。
+本文に脚注（`<span class="footnote">`）を加えた（章ごとにコミット）。脚注は7個から278個になった。書き方は`docs/guides/writing-guidelines-textlint-compliance.md`の「11. 脚注」。
 
 - GitHubの場所だけを書いていた箇所（「GitHubの全文」「各課題フォルダー内のREADME.md」など）に、URLの全文を脚注で添えた。URLはすべてリポジトリに実在するパスであることを確かめた
 - 略語の正式名称、機能が加わった版、本文で省いていた条件を脚注で補った

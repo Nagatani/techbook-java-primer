@@ -76,7 +76,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 外部ライブラリを使うサンプルは`listings.json`の`libs`にMaven Centralの座標を書く（検査時に`.cache/sample-code-libs/`へ取得）
    - 対象はJava 25。`check:samples`は`--release 25`でコンパイルし、非推奨・削除予定のAPIの使用も問題として報告する
    - 公開するコード（`sample-code/`、`appendix/`、`exercises/`の解答例）は、Java 25でコンパイル・実行できる状態を保つ。実行結果がOSで変わる書き方（`Files.list()`の順序、現在時刻のナノ秒など）は避ける。pom.xmlやbuild.gradleはJava 25・Gradle 9で動く設定にする
-   - 付録・演習のコードは`npm run check:public-code`でコンパイルとテストを確かめる（2026-11-11〜、CIはコンパイルを失敗扱い）。Maven・Gradleのビルド、GUIの起動、READMEの手順どおりの実行は、DockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/code-verification.md`）
+   - 付録・演習のコードは`npm run check:public-code`でコンパイルとテストを確かめる（2026-11-11〜、CIはコンパイルを失敗扱い）。Maven・Gradleのビルド、GUIの起動、READMEの手順どおりの実行は、DockerのJava 25で手動確認する（手順と、これまでに見つかった誤りのパターンは`docs/guides/code-verification.md`）
 
 7. **よくあるエラーと対処法（2026-11-09〜）**: 各章末の「よくあるエラーと対処法」は、本文には出会いやすいエラーと原因の要点だけをリストで残し、エラーメッセージの例・修正コード・デバッグのヒントは`appendix/e-common-errors/chapters/chapterXX.md`で提供する
    - 本文の節の末尾にGitHubのURL（`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapterXX.md`）を置く
@@ -119,7 +119,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 本文から付録へ移したもの（2026-11-16）: 基礎課題で使わないSwingの発展的な機能（PropertyChangeSupport・ドラッグ&ドロップ・デバウンス・JTreeの動的な操作・カスタムセルエディター）は付録F、演習で使わない外部ライブラリ（OkHttp・Lombok・Guava）は付録G、演習で使わない並行処理とネットワークのパターン（第13章のサーキットブレーカー、第15章のFork/Joinの比較・シングルトン・パイプライン、第16章のNIO）は付録H。本文にはAPIの要点を数文残し、演習のREADMEから付録へ案内する。演習の基礎課題で使う部品とイベントは本文から移さない
    - 後の章で学ぶ機能は、コードを動かせばわかる程度なら先に使ってよい。説明なしでは難しいもの・読み解きの邪魔になるものは別の書き方にする（例: ラムダ式の代わりに拡張for文、ジェネリクスの代わりに配列）。使い続ける場合は初出に最小限の読み方と誘導を置く
 
-13. **脚注（2026-11-12〜）**: 本文を補う内容は`<span class="footnote">…</span>`で脚注にする（PDFではページの下端に出る）。書き方と何を脚注にするかは`docs/writing-guidelines-textlint-compliance.md`の11節
+13. **脚注（2026-11-12〜）**: 本文を補う内容は`<span class="footnote">…</span>`で脚注にする（PDFではページの下端に出る）。書き方と何を脚注にするかは`docs/guides/writing-guidelines-textlint-compliance.md`の11節
    - GitHubの場所だけを書く箇所には、URLの全文を脚注で添える（インラインコードで書く）。先頭に「※」を付けない。ですます調
    - 見出し・表・コードブロック・キャプション・図・コラムの中には置かない。同じ余談は初出の章に1つだけ置く
    - 脚注の文字はtextlintで本文の文に数えられる（文の長さ・読点の数）。脚注を足したら`npm run lint`で確かめる
@@ -226,12 +226,12 @@ The build process converts the Markdown files listed in the `entry` array (chapt
 ## Workflow
 
 1. Check `TODO.md` before starting any task to understand current priorities
-2. **MANDATORY**: Read `docs/writing-guidelines-textlint-compliance.md` before writing or editing any manuscript content
+2. **MANDATORY**: Read `docs/guides/writing-guidelines-textlint-compliance.md` before writing or editing any manuscript content
 3. Use the book index and summaries to avoid loading whole chapters (see `docs/summaries/README.md`)
    - 全体を見渡す作業: `docs/summaries/overview.md` → 各章の要約 → 必要な節だけ本文を読む
    - 章の修正: `docs/summaries/chapterXX.md` で節構成をつかみ、`docs/book-index/` の行範囲で節ごとに読む
    - 章をまたぐ校閲: 章ごとにサブエージェントへ任せ、指摘事項だけを受け取る
-   - 校正の手順と注意点（正規表現による一括置換をしない等）は`docs/proofreading-workflow.md`
+   - 校正の手順と注意点（正規表現による一括置換をしない等）は`docs/guides/proofreading-workflow.md`
 4. Write or edit manuscript files in `manuscripts/*.md`
 5. Sample code is maintained in `sample-code/` (full sources). Edit the full source there and run `npm run samples:sync` instead of editing the manuscript code block
 6. Run `npm run lint` to check for writing style issues
@@ -241,7 +241,7 @@ The build process converts the Markdown files listed in the `entry` array (chapt
    - Javaサンプルを変更したら `npm run check:java` でコンパイルを確認する（結果の一覧は `--report` で `docs/analysis/java-sample-check.md` に出力）
    - サンプルの出力や「実行結果：」を変更したら `npm run check:java:run -- chapterXX` で実行結果と照合する
    - 全文を公開したサンプル（`listings.json`にあるもの）は `npm run check:samples -- chapterXX` で検査する（check:javaの対象外）
-   - 付録・演習のコードを変更したら、`docs/code-verification.md`の手順でJava 25でのコンパイル・実行・テストを確かめる
+   - 付録・演習のコードを変更したら、`docs/guides/code-verification.md`の手順でJava 25でのコンパイル・実行・テストを確かめる
 10. Update `TODO.md` after completing tasks
 
 ## Important Directory Structure Rules
@@ -255,24 +255,23 @@ The build process converts the Markdown files listed in the `entry` array (chapt
 
 Directory structure:
 - `manuscripts/`: Book content only (chapters, appendices, glossary, index - files included in vivliostyle.config.js)
-- `docs/`: Project documentation (index in `docs/README.md`; finished 2024–2025 plans and analyses are kept in `docs/archive/`)
+- `docs/`: Project documentation (index in `docs/README.md`). Rules and procedures for writing and proofreading are in `docs/guides/`; finished plans and analyses that the author will review for deletion are in `docs/deletion-candidates/` (do not use them as instructions)
 - `docs/lecture-materials/`: Original lecture materials (read-only)
 - `sample-code/`, `appendix/`, `exercises/`: Code and materials published on GitHub
 - `output/`: Generated PDF files
 
 ## Analysis Documentation Management
 
-**Critical**: The `docs/analysis/` directory holds the issue tracker (`issues-tracking.md`), the current-state summary at the top of `comprehensive-project-analysis.md` (the rest of that file is a 2025-07 record), and the generated `java-sample-check.md`. Keep the issue tracker and the current-state summary up to date during work sessions.
+**Critical**: The `docs/analysis/` directory holds the issue tracker (`issues-tracking.md`), the current-state summary (`project-status.md`), and the generated `java-sample-check.md`. Keep the issue tracker and the current-state summary up to date during work sessions.
 
 ### Required Analysis Files Maintenance
 
 When performing any modifications to the book content, you must:
 
 1. **Read current analysis status**: Always consult the latest analysis files before starting work:
-   - `docs/analysis/comprehensive-project-analysis.md`: Overall project state（冒頭の「2026-11-16の状態」が現状。本文は2025-07の記録）
+   - `docs/analysis/project-status.md`: Overall project state
    - `docs/analysis/issues-tracking.md`: Current prioritized issues
-   - `docs/archive/analysis/improvement-roadmap.md`: 2025-07の旧計画の記録（2026-11-16に閉じて`docs/archive/`へ移した。今後の作業はTODO.mdで管理する）
-   - **`docs/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
+   - **`docs/guides/writing-guidelines-textlint-compliance.md`**: MANDATORY reading for all text generation and editing tasks
 
 2. **Update analysis during work**: As you make changes, immediately update relevant sections in the analysis files to reflect:
    - Resolved issues (mark as completed in issues-tracking.md)
@@ -336,7 +335,7 @@ All chapter exercise sections reference this repository URL. The structure is:
 - Only use the official Oracle Java website as a reference
 - Maintain consistent tone and style suitable for a published book
 - Use textlint for Japanese manuscript linting and formatting
-- **CRITICAL**: Always refer to `docs/writing-guidelines-textlint-compliance.md` when generating or modifying text to prevent textlint errors
+- **CRITICAL**: Always refer to `docs/guides/writing-guidelines-textlint-compliance.md` when generating or modifying text to prevent textlint errors
 - **文体統一**: 本文はですます調で統一する（である調は使用しない）
 - **コードリスト番号の統一ルール**:
   - **Javaコードおよびプログラミング言語のコードブロック**（```java, ```xml, ```python等）には`<span class="listing-number">**サンプルコードX-Y**</span>`形式で番号を付与
@@ -404,7 +403,7 @@ All chapter exercise sections reference this repository URL. The structure is:
 ### Writing Guidelines Compliance
 
 **MANDATORY**: Before any text generation or modification:
-1. Read `docs/writing-guidelines-textlint-compliance.md` thoroughly
+1. Read `docs/guides/writing-guidelines-textlint-compliance.md` thoroughly
 2. Apply the guidelines proactively during writing to minimize errors
 3. Use the checklist in the guidelines to verify text before running `npm run lint`
 

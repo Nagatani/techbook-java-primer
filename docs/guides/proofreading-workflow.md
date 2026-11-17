@@ -42,5 +42,5 @@
 
 ## textlintの指摘への対応
 
-- 文章のルールは`docs/writing-guidelines-textlint-compliance.md`を参照する
+- 文章のルールは`docs/guides/writing-guidelines-textlint-compliance.md`を参照する
 - 技術文書として適切な表現が指摘されることもある。無理に直さない（規約上の例外は`TODO.md`に記録している）

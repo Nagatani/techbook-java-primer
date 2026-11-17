@@ -66,7 +66,7 @@ node scripts/check-claude-md-compliance.js manuscripts --json --output /path/to/
 ### 自動修正（`fix:compliance`）
 
 `npm run fix:compliance`（`scripts/fix-claude-md-violations.js`）は、リスト導入文のコロンなどを正規表現で書き換えます。
-過去に正規表現による一括置換が文言の欠落や不自然な文を生んだため（Issue #013）、原稿の修正には使わず、違反は1か所ずつ文脈を読んで手で直します（`docs/proofreading-workflow.md`）。
+過去に正規表現による一括置換が文言の欠落や不自然な文を生んだため（Issue #013）、原稿の修正には使わず、違反は1か所ずつ文脈を読んで手で直します（`docs/guides/proofreading-workflow.md`）。
 実行する場合は、対象ファイルと同じ場所に`backup/`ディレクトリができるので、`git diff`で全変更箇所を確かめ、`backup/`を消してから`git status`で確認します。
 
 ## 手で直すときのパターン
@@ -118,6 +118,6 @@ node scripts/check-claude-md-compliance.js manuscripts --json --output /path/to/
 ## 関連ドキュメント
 
 - `CLAUDE.md`：プロジェクト全体のルール
-- `docs/writing-guidelines-textlint-compliance.md`：textlintに対応した文章の書き方
-- `docs/proofreading-workflow.md`：校正の手順と注意点
+- `docs/guides/writing-guidelines-textlint-compliance.md`：textlintに対応した文章の書き方
+- `docs/guides/proofreading-workflow.md`：校正の手順と注意点
 - `scripts/README.md`：スクリプトの一覧
