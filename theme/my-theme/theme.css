@@ -707,13 +707,68 @@ pre code .code-line {
   min-height: 1lh;
 }
 
-pre code .code-line:nth-child(even) {
+pre code .code-line:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.035);
 }
 
-pre[class*="language-bash"] code .code-line:nth-child(even),
-pre[class*="language-shell"] code .code-line:nth-child(even) {
+pre[class*="language-bash"] code .code-line:nth-of-type(even),
+pre[class*="language-shell"] code .code-line:nth-of-type(even) {
   background-color: transparent;
+}
+
+/*
+ * 全文から複数の範囲を抜き出したサンプルコード（scripts/vfm-code-segments.js がビルド時に分ける）
+ * - 範囲ごとに枠を分け、枠の頭に「ファイル名　N〜M行目」の見出しを付ける
+ * - 枠と枠のすき間が、あいだを省いたことを表す（本文の「// ...」の行はビルド時に取り除く）
+ * - pre自体は枠を描かず、枠は .code-segment が描く（印刷用の設定の pre より優先させる）
+ */
+pre.code-excerpt,
+pre.code-excerpt[class*="language-"] {
+  background: none !important;
+  border: none !important;
+}
+
+pre.code-excerpt code {
+  padding: 0;
+}
+
+pre.code-excerpt .code-segment {
+  display: block;
+  background-color: #f9f9f9;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0 1em 0.75em;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+pre.code-excerpt[class*="language-java"] .code-segment {
+  border-left: 4px solid #f89820;
+}
+
+pre.code-excerpt .code-segment + .code-segment {
+  margin-top: 0.6em;
+}
+
+/* キャプションに続く最初の枠は、キャプションとつなげる */
+p:has(span.listing-number) + pre.code-excerpt .code-segment:first-child {
+  border-radius: 0 0 4px 4px;
+}
+
+pre.code-excerpt .code-segment-label {
+  display: block;
+  margin: 0 -1em 0.4em;
+  padding: 0.15em 1em;
+  background-color: #ececec;
+  border-bottom: 1px solid #ccc;
+  color: #444;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 7pt;
+  font-weight: bold;
+  line-height: 1.5;
+  break-after: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 /* 既存のprismクラスがある場合のスタイル */

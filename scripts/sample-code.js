@@ -79,28 +79,36 @@ function saveManifest(ch, manifest) {
 
 const readLines = (file) => fs.readFileSync(file, 'utf8').replace(/\n$/, '').split('\n');
 
-/** listings.json の excerpt から、本文に載るはずのコードを組み立てる */
-function renderExcerpt(dir, excerpt) {
+/**
+ * listings.json の excerpt から、本文に載るはずのコードを1行ずつ組み立てる。
+ * 返り値の各行は { text, seg }（seg は excerpt の添字。範囲のあいだに入れた行は seg が null）
+ */
+function excerptLayout(dir, excerpt) {
   const out = [];
   excerpt.forEach((seg, i) => {
     const lines = readLines(path.join(dir, seg.file));
     if (seg.from < 1 || seg.to > lines.length || seg.from > seg.to) throw new Error(`${seg.file} に ${seg.from}〜${seg.to}行目はない（${lines.length}行）`);
     const part = lines.slice(seg.from - 1, seg.to);
     if (i > 0) {
-      const prev = excerpt[i - 1];
-      const sep = seg.sep || (prev.file !== seg.file ? 'blank' : prev.to + 1 === seg.from ? 'none' : 'elision');
-      if (sep === 'blank') out.push('');
+      const sep = separatorOf(excerpt[i - 1], seg);
+      if (sep === 'blank') out.push({ text: '', seg: null });
       else if (sep === 'elision') {
         // 字下げは、省いた箇所の前後の行のうち深いほうに合わせる
-        const before = out[out.length - 1].match(/^\s*/)[0];
+        const before = out[out.length - 1].text.match(/^\s*/)[0];
         const after = part[0].match(/^\s*/)[0];
-        out.push((before.length > after.length ? before : after) + ELISION);
+        out.push({ text: (before.length > after.length ? before : after) + ELISION, seg: null });
       }
     }
-    out.push(...part);
+    out.push(...part.map((text) => ({ text, seg: i })));
   });
-  return out.join('\n');
+  return out;
 }
+
+/** 範囲と範囲のあいだに入れるもの（"blank" | "elision" | "none"） */
+const separatorOf = (prev, seg) => seg.sep || (prev.file !== seg.file ? 'blank' : prev.to + 1 === seg.from ? 'none' : 'elision');
+
+/** listings.json の excerpt から、本文に載るはずのコードを組み立てる */
+const renderExcerpt = (dir, excerpt) => excerptLayout(dir, excerpt).map((l) => l.text).join('\n');
 
 /** キャプション（サンプル番号のあとに続く部分） */
 function captionOf(dir, excerpt) {
@@ -634,4 +642,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { renderExcerpt, captionOf, loadManifest, chapterDir, REPO };
+module.exports = { renderExcerpt, excerptLayout, separatorOf, readLines, captionOf, loadManifest, chapterDir, REPO };
