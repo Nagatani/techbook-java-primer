@@ -29,3 +29,6 @@ javac -d out *.java
 | [6-13](./06-13/) | DateBasics.java | `java -cp out DateBasics` |
 | [6-14](./06-14/) | DateDifference.java | `java -cp out DateDifference` |
 | [6-15](./06-15/) | DateFormatting.java | `java -cp out DateFormatting` |
+| [6-16](./06-16/) | DecimalBasics.java | `java -cp out DecimalBasics` |
+| [6-17](./06-17/) | DecimalRounding.java | `java -cp out DecimalRounding` |
+| [6-18](./06-18/) | DecimalComparison.java | `java -cp out DecimalComparison` |

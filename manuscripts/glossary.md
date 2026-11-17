@@ -15,7 +15,8 @@
 - **@author** - 第22章
 
 ### B
-- **BigDecimal** - 第8章
+- **BigDecimal** - 第6章、第8章、第24章
+- **BigInteger** - 第6章
 - **BOM (Byte Order Mark)** - 第26章
 - **boolean** - 第2章、第9章
 - **BufferedInputStream** - 第14章
@@ -152,6 +153,7 @@
 - **Reader** - 第14章
 - **Record (レコード)** - 第8章、付録B.10
 - **@return** - 第22章
+- **RoundingMode** - 第6章
 - **RuntimeException** - 第13章
 
 ### S

@@ -14,6 +14,8 @@
     - 可変オブジェクトの安全な扱い、Recordによる不変クラスの簡潔な書き方
 5. 日付と時刻の扱い
     - 標準ライブラリの不変クラス`java.time`による日付・時刻の作成、計算、差、表示と読み取り
+6. 数値の正確な計算
+    - 標準ライブラリの不変クラス`BigDecimal`・`BigInteger`による誤差のない計算、丸め、比較
 
 ### この章を始める前に
 
@@ -834,6 +836,240 @@ SMARTで2026/02/30 → 2026-02-28
 書式に合わない文字列は`DateTimeParseException`になります。
 例外の受け止め方（`try`〜`catch`）は、第13章で学びます。
 
+## 数値の正確な計算（BigDecimal）
+
+標準ライブラリには、`java.time`のほかにも、計算に使う不変クラスがあります。
+第2章で基本データ型を学んだとき、`double`の計算には丸め誤差が出ること、誤差を出さずに計算するには`BigDecimal`クラスを使うことに触れました。
+ここでは、`java.math`パッケージの`BigDecimal`と`BigInteger`の使い方を説明します。
+どちらも不変クラスで、計算のメソッドは元のオブジェクトを変えずに新しいオブジェクトを返します。
+
+### doubleで計算すると何が起こるか
+
+`double`は、数を2進数の小数で表します。
+10進数の0.1は2進数では無限に続く小数になるため、`double`の0.1は、0.1にごく近い別の値です。
+このわずかなずれが計算のたびに積み重なり、0.1を10回足しても1.0になりません。
+金額のように1円の差も許されない計算に`double`を使うと、合計が合わない、等しいはずの値が等しくならないといった誤りが起こります。
+
+`BigDecimal`は、数を10進数の桁の並びと、小数点以下の桁数（スケール）の組で表すクラスです。
+0.1をそのまま0.1として持てるので、足し算・引き算・掛け算を誤差なく計算できます。
+
+<span class="listing-number">**サンプルコード6-16**　DecimalBasics.java（4〜32行目）</span>
+
+```java
+public class DecimalBasics {
+    public static void main(String[] args) {
+        // doubleで0.1を10回足す
+        double sum = 0.0;
+        for (int i = 0; i < 10; i++) {
+            sum += 0.1;
+        }
+        IO.println("double: 0.1を10回足す → " + sum);
+        IO.println("double: 1.0と等しいか → " + (sum == 1.0));
+        IO.println("double: 1.10 - 1.00 → " + (1.10 - 1.00));
+
+        // BigDecimalは文字列から作る
+        BigDecimal tenth = new BigDecimal("0.1");
+        BigDecimal total = BigDecimal.ZERO;
+        for (int i = 0; i < 10; i++) {
+            // addは新しいオブジェクトを返すので、戻り値を受け取る
+            total = total.add(tenth);
+        }
+        IO.println("BigDecimal: 0.1を10回足す → " + total);
+        BigDecimal price = new BigDecimal("1.10");
+        IO.println("BigDecimal: 1.10 - 1.00 → "
+                + price.subtract(new BigDecimal("1.00")));
+
+        // doubleの値から作ると、doubleの誤差まで受け継ぐ
+        IO.println("new BigDecimal(0.1) → " + new BigDecimal(0.1));
+        IO.println("BigDecimal.valueOf(0.1) → "
+                + BigDecimal.valueOf(0.1));
+    }
+}
+```
+
+実行結果：
+
+```
+double: 0.1を10回足す → 0.9999999999999999
+double: 1.0と等しいか → false
+double: 1.10 - 1.00 → 0.10000000000000009
+BigDecimal: 0.1を10回足す → 1.0
+BigDecimal: 1.10 - 1.00 → 0.10
+new BigDecimal(0.1) → 0.1000000000000000055511151231257827021181583404541015625
+BigDecimal.valueOf(0.1) → 0.1
+```
+
+`BigDecimal`のオブジェクトは、`new BigDecimal("0.1")`のように、数を表す文字列から作ります。
+`new BigDecimal(0.1)`のように`double`の値を渡すと、`double`の0.1が持つ誤差まで正確に写し取ってしまいます。
+`double`の値から作るときは、`BigDecimal.valueOf(0.1)`を使います<span class="footnote">`valueOf`は、`double`の値を`Double.toString`で文字列にしてから`BigDecimal`を作ります。そのため、プログラムに`0.1`と書いた値は0.1になります。</span>。
+整数からは`BigDecimal.valueOf(100)`で作れます。
+0・1・10は、定数`BigDecimal.ZERO`・`BigDecimal.ONE`・`BigDecimal.TEN`として用意されています。
+
+計算には演算子（`+`や`*`）ではなく、`add`（足し算）、`subtract`（引き算）、`multiply`（掛け算）、`divide`（割り算）のメソッドを使います。
+これらのメソッドは`java.time`の`plusDays`と同じく、元のオブジェクトを変えずに、結果を新しいオブジェクトとして返します。
+`total.add(tenth);`とだけ書いても`total`は変わらないので、`total = total.add(tenth);`のように戻り値を受け取ります。
+
+`1.10 - 1.00`の結果が`0.10`と表示されるのは、`BigDecimal`がスケールも値の一部として持っているからです。
+足し算と引き算の結果のスケールは、2つの数のスケールのうち大きいほうになります。
+
+### 丸めと割り算
+
+掛け算の結果のスケールは、2つの数のスケールの和になります。
+1234円に税率`0.10`を掛けると、小数点以下2桁の`123.40`になります。
+金額を円単位にそろえるときは、`setScale(桁数, 丸め方)`で小数点以下の桁数を指定します。
+
+割り算では、結果が割り切れないことがあります。
+10000を3で割ると3333.333…と無限に続くので、`BigDecimal`はそのままでは結果を表せません。
+`divide(割る数, 桁数, 丸め方)`のように、結果の小数点以下の桁数と丸め方を指定します。
+
+<span class="listing-number">**サンプルコード6-17**　DecimalRounding.java（5〜33行目）</span>
+
+```java
+public class DecimalRounding {
+    public static void main(String[] args) {
+        BigDecimal price = new BigDecimal("1234");
+        BigDecimal taxRate = new BigDecimal("0.10");
+
+        // 掛け算の結果は、小数点以下の桁数が2つの数の桁数の和になる
+        BigDecimal tax = price.multiply(taxRate);
+        IO.println("消費税（計算どおり）: " + tax);
+        // setScaleで小数点以下の桁数をそろえる（ここでは円未満を切り捨て）
+        BigDecimal roundedTax = tax.setScale(0, RoundingMode.DOWN);
+        IO.println("消費税（円未満切り捨て）: " + roundedTax);
+        IO.println("税込み価格: " + price.add(roundedTax));
+
+        // 割り切れない割り算は、桁数と丸め方を指定する
+        BigDecimal bill = new BigDecimal("10000");
+        BigDecimal people = new BigDecimal("3");
+        IO.println("1人あたり（小数点以下2桁）: "
+                + bill.divide(people, 2, RoundingMode.HALF_UP));
+        IO.println("1人あたり（円未満切り上げ）: "
+                + bill.divide(people, 0, RoundingMode.UP));
+
+        // 桁数を指定しないと、ArithmeticException（第13章で学ぶ例外）になる
+        try {
+            IO.println(bill.divide(people));
+        } catch (ArithmeticException e) {
+            IO.println("桁数を指定しない割り算 → " + e.getMessage());
+        }
+    }
+}
+```
+
+実行結果：
+
+```
+消費税（計算どおり）: 123.40
+消費税（円未満切り捨て）: 123
+税込み価格: 1357
+1人あたり（小数点以下2桁）: 3333.33
+1人あたり（円未満切り上げ）: 3334
+桁数を指定しない割り算 → Non-terminating decimal expansion; no exact representable decimal result.
+```
+
+桁数を指定せずに`divide(people)`と書くと、割り切れないときに`ArithmeticException`が発生します。
+メッセージの「Non-terminating decimal expansion」は、小数が終わらないという意味です。
+割り切れる割り算は桁数を指定しなくても計算できますが、割る数によっては例外になります。
+割り算には、桁数と丸め方を指定する習慣をつけましょう。
+
+丸め方は、`java.math.RoundingMode`の定数で指定します<span class="footnote">`RoundingMode`は列挙型（enum）です。列挙型は第8章で学びます。ここでは、決まった選択肢から1つを選ぶための定数と考えてください。</span>。
+主な丸め方と、2.5と-2.5を整数に丸めた結果を示します。
+
+| 丸め方 | 意味 | 2.5 | -2.5 |
+|---|---|---|---|
+| `HALF_UP` | 四捨五入 | 3 | -3 |
+| `HALF_EVEN` | ちょうど半分のときは偶数の側へ丸める | 2 | -2 |
+| `DOWN` | 切り捨て（0に近づける） | 2 | -2 |
+| `UP` | 切り上げ（0から遠ざける） | 3 | -3 |
+| `FLOOR` | 小さいほう（負の無限大の方向）へ丸める | 2 | -3 |
+| `CEILING` | 大きいほう（正の無限大の方向）へ丸める | 3 | -2 |
+
+負の数では、`DOWN`と`FLOOR`、`UP`と`CEILING`の結果が変わります。
+返金のように負の金額を扱うときは、0の方向と数の大小のどちらを基準に丸めるのかを確かめて選びます。
+`HALF_EVEN`は、四捨五入をくり返したときに結果が大きいほうへ偏るのを防ぐ丸め方で、銀行家の丸めとも呼ばれます。
+
+### 値の比較
+
+`BigDecimal`の値の大小は、`compareTo`で比べます。
+`a.compareTo(b)`は、`a`が`b`より小さければ負の数、等しければ0、大きければ正の数を返します。
+`<`や`>`はオブジェクトには使えず、`==`は値ではなく参照を比べるので、`BigDecimal`の比較には使いません。
+
+注意したいのは`equals`です。
+第5章で学んだ`equals`は、`BigDecimal`では値とスケールの両方が同じときだけ`true`を返します。
+そのため、数として等しい`2.0`と`2.00`も、`equals`では等しくないと判定します。
+数として等しいかを調べるときは、`a.compareTo(b) == 0`と書きます<span class="footnote">`HashSet`や`HashMap`（第9章で学びます）も`equals`で要素を比べるので、`2.0`と`2.00`は別の要素になります。スケールをそろえてから入れるには、末尾の0を取り除く`stripTrailingZeros()`を使います。</span>。
+
+<span class="listing-number">**サンプルコード6-18**　DecimalComparison.java（5〜31行目）</span>
+
+```java
+public class DecimalComparison {
+    public static void main(String[] args) {
+        BigDecimal a = new BigDecimal("2.0");
+        BigDecimal b = new BigDecimal("2.00");
+
+        // equalsは値と小数点以下の桁数（スケール）の両方を比べる
+        IO.println("2.0.equals(2.00) → " + a.equals(b));
+        // compareToは値だけを比べ、小さければ負、等しければ0、大きければ正
+        IO.println("2.0.compareTo(2.00) → " + a.compareTo(b));
+        boolean isLess = a.compareTo(new BigDecimal("2.01")) < 0;
+        IO.println("2.0は2.01より小さいか → " + isLess);
+
+        // longの最大値に1を足すと、longはあふれて負の値になる
+        long max = Long.MAX_VALUE;
+        IO.println("long: " + max + " + 1 → " + (max + 1));
+        // BigIntegerはあふれない
+        BigInteger big = BigInteger.valueOf(max).add(BigInteger.ONE);
+        IO.println("BigInteger: " + max + " + 1 → " + big);
+
+        // 30の階乗はlongに収まらない
+        BigInteger factorial = BigInteger.ONE;
+        for (int i = 2; i <= 30; i++) {
+            factorial = factorial.multiply(BigInteger.valueOf(i));
+        }
+        IO.println("30の階乗 → " + factorial);
+    }
+}
+```
+
+実行結果：
+
+```
+2.0.equals(2.00) → false
+2.0.compareTo(2.00) → 0
+2.0は2.01より小さいか → true
+long: 9223372036854775807 + 1 → -9223372036854775808
+BigInteger: 9223372036854775807 + 1 → 9223372036854775808
+30の階乗 → 265252859812191058636308480000000
+```
+
+### 大きな整数（BigInteger）
+
+`int`や`long`には扱える範囲があり、範囲を超えた計算結果はあふれて（オーバーフローして）、まったく違う値になります。
+サンプルコード6-18の後半のように、`long`の最大値に1を足すと負の数になりますが、Javaはあふれたことを知らせません。
+`long`の範囲（約±922京）を超える整数は、`java.math.BigInteger`で扱います。
+`BigInteger`には実用上、桁数の上限がありません<span class="footnote">仕様では、およそ±2の21億乗の範囲の値を扱えることになっています。実際には、使えるメモリの量が先に上限になります。</span>。
+`BigDecimal`と同じく`add`や`multiply`で計算し、結果は新しいオブジェクトとして返ります。
+
+範囲を超えないかを確かめたいだけなら、`Math.addExact`や`Math.multiplyExact`を使う方法もあります。
+これらのメソッドは、結果があふれるときに`ArithmeticException`を発生させます。
+
+### どの型を使うか
+
+`BigDecimal`と`BigInteger`は、基本型の計算よりも時間がかかり、メモリも多く使います。
+誤差やあふれが許されない計算でだけ使い、それ以外は`int`・`long`・`double`で計算します。
+目的ごとの使い分けは次のとおりです。
+
+- 金額など、10進数の小数を誤差なく扱う計算
+    + `BigDecimal`
+- 円単位など、最小の単位が決まっている金額
+    + 最小の単位を1とした`long`（`BigDecimal`より書き方が簡単で、計算も速い）
+- `long`の範囲を超える整数
+    + `BigInteger`
+- 測定値や平均値など、わずかな誤差を許せる計算
+    + `double`
+
+データベースの`DECIMAL`型の列は、第24章で`BigDecimal`として読み書きします。
+
 ## よくあるエラーと対処法
 
 不変性を意識したコードでは、コンパイラーが検出するエラーよりも、コンパイルは通るのに不変性が崩れている誤りのほうが問題になります。本章の内容に関連して出会いやすい誤りは次のとおりです。
@@ -850,6 +1086,8 @@ SMARTで2026/02/30 → 2026-02-28
     + クラスを`final`にしないと、サブクラスで可変な振る舞いを追加されるおそれがある
 - 不必要な防御的コピー
     + 変更されない値までコピーすると、性能が落ちる
+- `BigDecimal`の扱いの誤り
+    + `add`の戻り値を受け取らないと値は変わらない。`double`の値から`new BigDecimal(0.1)`で作ると誤差を受け継ぎ、`equals`は`2.0`と`2.00`を等しくないと判定する
 
 誤ったコードと修正したコード（コンパイルできる全文を含む）、不変性を確かめるデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter06.md`
@@ -872,6 +1110,8 @@ SMARTで2026/02/30 → 2026-02-28
     + 複雑な不変オブジェクトを構築する設計パターン
 5. 日付と時刻（`java.time`）
     + `LocalDate`などは不変で、計算すると新しいオブジェクトを返す。差は`ChronoUnit`・`Period`・`Duration`、表示と読み取りは`DateTimeFormatter`
+6. 数値の正確な計算（`BigDecimal`・`BigInteger`）
+    + `BigDecimal`は文字列から作り、割り算には桁数と丸め方を指定する。値の比較には`compareTo`を使う。`long`を超える整数は`BigInteger`で扱う
 
 不変性は、堅牢で保守性の高いJavaプログラムを作成するための重要な設計原則です。
 とくに並行プログラミングや大規模システムの開発において、その価値が発揮されます。
