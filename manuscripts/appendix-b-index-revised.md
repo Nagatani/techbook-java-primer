@@ -1,6 +1,6 @@
 # <b>付録B</b> <span>技術的な詳細解説（Deep Dive）</span> <small>本文の技術を内部から理解する</small>
 
-本付録では、本文で扱った技術の内部の仕組みや設計の背景を、15の節に分けて解説します。
+本付録では、本文で扱った技術の内部のしくみや設計の背景を、15の節に分けて解説します。
 各節はGitHubリポジトリの`appendix/`の下に、解説（README.md）と実行できるサンプルコードとともに置いています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/`です。</span>。
 本文の各章からは「付録B.06」のように節の番号で案内しています。関連する章を読み終えてから開いてください。
 
@@ -22,7 +22,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`
 - 内容
-    + 手続き型、オブジェクト指向、関数型プログラミングのパラダイム比較
+    + パラダイムの歴史的な発展と、関数型プログラミングの数学的基礎（ラムダ計算、圏論、モナド、ファンクター）
 - 関連章
     + 第3章、第11章
 
@@ -48,7 +48,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b05-immutability-patterns/`
 - 内容
-    + 不変オブジェクトの高度な実装テクニック
+    + 不変オブジェクトの実装パターン、Copy-on-Write、永続的データ構造（構造共有）
 - 関連章
     + 第6章
 
@@ -84,7 +84,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b09-interface-evolution/`
 - 内容
-    + Java 8以降のインターフェイス機能、defaultメソッド、privateメソッド
+    + Java 8以降のインターフェイス機能、defaultメソッド、staticメソッド、privateメソッド
 - 関連章
     + 第7章
 
@@ -92,7 +92,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b10-records-dop/`
 - 内容
-    + レコードの最適化、データ指向設計パターン
+    + レコードとsealedによるデータ指向設計、データ変換のパイプライン、レコードの最適化
 - 関連章
     + 第8章
 
@@ -108,7 +108,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b12-exception-performance/`
 - 内容
-    + 例外処理のコスト、最適化テクニック
+    + 例外処理のコスト、スタックトレースを作らない例外、例外に代わるエラー処理（Result型など）
 - 関連章
     + 第13章
 
@@ -136,7 +136,7 @@
 - 場所
     + `https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b15-testing-strategies/`
 - 内容
-    + テストピラミッド、統合テスト、モックの活用
+    + テストピラミッド、Property-based Testing、ミューテーションテスト、データベースを使う統合テスト
 - 関連章
     + 第21章、第26章
 

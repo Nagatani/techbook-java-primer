@@ -54,8 +54,8 @@
 - [付録H　並行処理とネットワークの発展的なパターン](appendix-h-advanced-patterns.md)
 
 ## 索引・資料
-- [相互参照ガイド](cross-reference-guide.md)
-- [用語集](glossary.md)
+- [章と付録の相互参照ガイド](cross-reference-guide.md)
+- [索引・用語集](glossary.md)
 - [奥付](colophon.md)
 
 </div>
