@@ -39,12 +39,13 @@
 スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数型インターフェイス」で詳しく学びます。
 ここでは、「2つの処理が同時に動き、同じオブジェクトを書き換えている」ことだけを読み取ってください。
 
-<span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜3、11〜15行目）、ThreadSafetyProblem.java（1〜21、30〜34行目）</span>
+<span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜4、11〜15行目）、ThreadSafetyProblem.java（1〜21、30〜34行目）</span>
 
 ```java
 // 可変オブジェクトの問題例
 public class MutablePoint {
     private int x;
+    private int y;
     // ...
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
@@ -167,6 +168,7 @@ public final class ImmutablePoint {
 
 次のサンプルの`List<String>`（文字列を順に並べて持つリスト）は、第9章「コレクションフレームワーク」で学びます。
 ここでは、拡張for文で配列と同じように要素を1つずつ取り出せる、と読んでください。
+今の日時を表す`LocalDateTime`は、本章の節「日付と時刻（java.time）」で学びます。
 
 <span class="listing-number">**サンプルコード6-4**　Constants.java</span>
 
@@ -203,7 +205,6 @@ public class Constants {
 #### final変数の初期化タイミング
 
 `final`のフィールドは、次のいずれかの場所で1回だけ初期化します。
-`final`のローカル変数は、宣言時に初期化するほか、宣言のあとで1回だけ代入することもできます。
 
 - 宣言時
     + `final int x = 10;`
@@ -213,6 +214,8 @@ public class Constants {
     + インスタンスフィールドの場合
 - static初期化子
     + static finalフィールドの場合
+
+`final`のローカル変数は、宣言時に初期化するほか、宣言のあとで1回だけ代入することもできます。
 
 ### finalメソッド（オーバーライドの禁止）
 
@@ -828,7 +831,7 @@ SMARTで2026/02/30 → 2026-02-28
 2026-02-28 → 日付として読み取れません
 ```
 
-書式の`yyyy`は年、`MM`は2桁の月、`M`は桁をそろえない月、`dd`は日、`E`は曜日を表します。
+書式の`yyyy`は年、`MM`は2桁の月、`M`は桁をそろえない月、`dd`は2桁の日、`d`は桁をそろえない日、`E`は曜日を表します。
 曜日を日本語で表示するには、`Locale.JAPANESE`を指定します。
 
 読み取りの既定の方法（SMART）は、2月30日のような存在しない日を月末に丸めてしまいます。

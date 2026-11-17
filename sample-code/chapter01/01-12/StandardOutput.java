@@ -9,6 +9,6 @@ public class StandardOutput {
         String message = "C言語のprintf関数のように書式を指定したい場合は、"
                 + "「formatted」を使います。";
         IO.println(message);
-        IO.println("整数値: %d, 実数値: %f".formatted(10, 3.142592654d));
+        IO.println("整数値: %d, 実数値: %f".formatted(10, 3.141592654d));
     }
 }

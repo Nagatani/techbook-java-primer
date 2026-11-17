@@ -7,7 +7,7 @@ public class BookTest {
         
         IO.println("---");
         
-        // デフォルトコンストラクターで作成
+        // 引数のないコンストラクターで作成
         Book book2 = new Book();
         book2.displayInfo();
     }

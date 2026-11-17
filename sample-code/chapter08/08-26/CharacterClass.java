@@ -16,7 +16,7 @@ public enum CharacterClass {
         this.baseMagic = baseMagic;
     }
     
-    // ゲッターメソッド省略
+    // ゲッターメソッド
     public String getName() { return name; }
     public int getBaseHealth() { return baseHealth; }
     public int getBaseAttack() { return baseAttack; }

@@ -1,17 +1,14 @@
 sequenceDiagram
-    participant Client as クライアントコード
-    participant CC as CreditCardPayment<br/>オブジェクト
-    participant PY as PayPalPayment<br/>オブジェクト
+    participant F as for文<br/>（変数userの型はUser）
+    participant R as RegularUser<br/>オブジェクト
+    participant A as AdminUser<br/>オブジェクト
+    participant G as GuestUser<br/>オブジェクト
 
-    Note over Client: 変数paymentの型は<br/>PaymentProcessor
-    Client->>CC: payment = new CreditCardPayment(...)
-    Client->>CC: payment.processPayment()
-    Note over CC: オーバーライドした<br/>validatePaymentSpecific()<br/>などが呼ばれる
-    CC-->>Client: カード決済の結果
+    F->>R: user.processRequest("READ")
+    Note over R: オーバーライドしていない<br/>Userのメソッドが動く
+    F->>A: user.processRequest("READ")
+    Note over A: AdminUserで<br/>オーバーライドした<br/>メソッドが動く
+    F->>G: user.processRequest("READ")
+    Note over G: GuestUserで<br/>オーバーライドした<br/>メソッドが動く
 
-    Client->>PY: payment = new PayPalPayment(...)
-    Client->>PY: payment.processPayment()
-    Note over PY: オーバーライドした<br/>validatePaymentSpecific()<br/>などが呼ばれる
-    PY-->>Client: PayPal決済の結果
-
-    Note over Client: 呼び出すコードは同じでも<br/>実体に応じた処理が選ばれる
+    Note over F,G: 呼び出すコードは同じでも、実体のクラスに応じたメソッドが選ばれる

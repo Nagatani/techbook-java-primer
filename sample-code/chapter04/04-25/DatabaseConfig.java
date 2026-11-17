@@ -16,10 +16,12 @@ public class DatabaseConfig {
             throw new IllegalArgumentException("ホスト名は必須です");
         }
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("ポート番号は1-65535の範囲で指定してください");
+            throw new IllegalArgumentException(
+                    "ポート番号は1-65535の範囲で指定してください");
         }
         if (maxConnections < 1) {
-            throw new IllegalArgumentException("最大接続数は1以上である必要があります");
+            throw new IllegalArgumentException(
+                    "最大接続数は1以上にしてください");
         }
         
         this.host = host.trim();

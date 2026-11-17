@@ -151,3 +151,5 @@ rules:
     pattern: 関数インターフェイス
   - expected: 検査例外
     pattern: チェック例外
+  - expected: しくみ
+    pattern: 仕組み

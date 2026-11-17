@@ -1,4 +1,4 @@
-// 親クラスに共通インターフェイスを定義
+// 親クラスに共通のメソッドを定義
 public class User {
     protected String userId;
     protected String email;

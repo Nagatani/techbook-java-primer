@@ -1,4 +1,4 @@
-// 抽象ファクトリクラス
+// ファクトリの抽象クラス
 abstract class DocumentFactory {
     // Factory Method - サブクラスで実装
     public abstract Document createDocument();

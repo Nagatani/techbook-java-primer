@@ -203,12 +203,6 @@
     "overflows": [],
     "collisions": []
   },
-  "chapter13-circuit-breaker": {
-    "minFont": 16,
-    "overlaps": [],
-    "overflows": [],
-    "collisions": []
-  },
   "chapter13-exception-chaining": {
     "minFont": 16,
     "overlaps": [],
