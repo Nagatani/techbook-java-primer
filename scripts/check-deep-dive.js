@@ -407,6 +407,11 @@ function main() {
       for (const c of ledger.claims) {
         if (!markersAt.has(c.id) && !c.unreferenced) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: '解説のどこにも印がない（解説から消した主張なら台帳からも消す）' });
       }
+      // 手で確かめてから1年を過ぎた主張は、版や公開の状況が変わっていないかを確かめ直す（注意）
+      for (const c of ledger.claims) {
+        const d = c.verify && c.verify.kind === 'manual' && Date.parse(c.verify.checked);
+        if (d && Date.now() - d > 365 * 24 * 3600 * 1000) row.stale = (row.stale || []).concat(c.id);
+      }
       row.claims = ledger.claims.length;
       row.manual = ledger.claims.filter((c) => c.verify && c.verify.kind === 'manual').length;
       if (opt.online) checkSources(sec, ledger, problems);
@@ -451,6 +456,8 @@ function main() {
   } else if (uncovered) {
     console.log(`\n注意: 検証していない主張の候補が${uncovered}件（節を指定するか--verboseで一覧を表示）`);
   }
+  const stale = summary.flatMap((r) => (r.stale || []).map((id) => `${r.sec.id}: ${id}`));
+  if (stale.length) console.log(`\n注意: 手で確かめてから1年を過ぎた主張が${stale.length}件（出典を読み直し、checkedを更新する）\n  ${stale.join('\n  ')}`);
   if (opt.report) writeReport(summary);
 
   const errors = problems.filter((p) => p.level === 'error');

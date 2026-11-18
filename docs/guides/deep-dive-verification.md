@@ -51,6 +51,7 @@
 | 解説・コード・pom.xmlなどに書いた`-XX:`のフラグがJDK 25に実在するか（削除されたフラグを説明するときは、台帳の先頭の`removedFlags`に名前を書く） | エラー |
 | 各主張の検証（`javap`・`run`・`flag`） | エラー |
 | 印のないまとまりで、数値・Javaの版・性能の言い回しを含むもの | 注意（検証していない主張の候補） |
+| `manual`の主張で、`checked`から1年を過ぎたもの | 注意（JEPの状態やライブラリの版が変わっていないかを読み直し、`checked`を更新する） |
 
 `--static`はJavaを動かさない検査（上の3つ）だけを行います（約1秒。pre-commitフックで実行）。
 `--report`は節ごとの集計と注意の一覧を`docs/analysis/deep-dive-claims.md`に書きます。
@@ -73,11 +74,29 @@
 4. よくある誤解（本文の節を参照する）
 5. 参考資料（仕様の節と、そのURL）
 
-## 気づいたこと
+## 気づいたこと（2026-11-19の15節の書き直しから）
 
-- JDK 25の`-XX:+PrintInlining`は、行の途中に「callee changed to」という別の判断の文字が混じる。行の先頭の「メソッド名（バイト数）判断」を照合する
-- C1が35バイトを超えるメソッドをインライン化しないときの表示は「callee is too large」（「too big」ではない）。C2では、よく呼ばれるメソッドが325バイトを超えると「hot method too big」
-- javaコマンドのリファレンス（Java SE 25）には`-XX:CompileThreshold`の説明がない。段階的コンパイルで効かないことは、実行して確かめた（B.04）
+15節を書き直し、主張610件（機械で確認506件、手で確認104件）を台帳にした。どの節でも、確かめると誤りが見つかった。
+
+- 見つかった誤りのパターン
+  - JVMの実装を仕様のように書く（vtable、エスケープ解析を「スタック割り当て」と断定、共通プールの並列度がコア数-1）
+  - 条件の一部だけを書く（HashMapの木が連結リストに戻る条件、Optionalがモナドの法則を満たす、volatileが「即座に」見える）
+  - 版と状況が古い（JEP 401、GCの既定の選び方、AtomicIntegerの内部、`-XX:CompileThreshold`）
+  - 根拠のない数値・順位・目安（分割効率の順位、「単体70%・統合20%・E2E10%」、ミューテーションスコアの評価、メモリの見積もり）
+  - デモの不具合（Permissionの判定、再帰でスタックがあふれるPersistentList、非原子的なStripedCounter、文字化けするReactiveFileReader）。解説の主張を確かめる過程で、コードの誤りも見つかる
+  - 本文の誤り（第15章のvolatile）も、付録の観察から見つかった
+- 観察のこつ
+  - JITの判断は`-XX:+PrintInlining`・`-XX:+PrintCompilation`で見えるが、実行ごとに順序と数値が変わる。`attempts`と`sort: true`を使う
+  - 環境で変わる観察（GCの既定、コア数）は`-XX:ActiveProcessorCount`などで条件をそろえ、どの環境で確かめたかを解説に書く。OSで変わるもの（WatchService、属性のビュー）は、どちらでも合格する正規表現にし、Linuxの結果はDockerで確かめる
+  - 「起こりうる」だけの結果（データ競合、並べ替え）は、必ず起こる観察と分けて書く。jcstressはこの環境では使えないので、確率的な観察は`attempts`を多めにする
+  - 2段階のコンパイル（バイナリ互換）や2段の実行（AOTキャッシュ）は、プローブの中で`javax.tools`や子プロセスを使う
+  - 出典の照合は、HTMLの文字参照とタグをまたぐ文に注意する。PDFとACMのページは機械で中身を照合できないので、読んだ内容を`note`に書く
+- JDK 25の細部
+  - JDK 25の`-XX:+PrintInlining`は、行の途中に「callee changed to」という別の判断の文字が混じる。行の先頭の「メソッド名（バイト数）判断」を照合する
+  - C1が35バイトを超えるメソッドをインライン化しないときの表示は「callee is too large」（「too big」ではない）。C2では、よく呼ばれるメソッドが325バイトを超えると「hot method too big」
+  - javaコマンドのリファレンス（Java SE 25）には`-XX:CompileThreshold`の説明がない。段階的コンパイルで効かないことは、実行して確かめた（B.04）
+  - `MemorySegment.asByteBuffer()`は、2GBを超えるときAPIドキュメントでは`UnsupportedOperationException`だが、JDK 25.0.2では`IllegalStateException`になる（B.13）
+- 残した課題は`docs/analysis/issues-tracking.md`のIssue #033
 
 ## コンパイルできないプローブ
 
