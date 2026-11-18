@@ -21,6 +21,7 @@
 
 | kind | 内容 | 主な項目 |
 |---|---|---|
+| `javac` | プローブをコンパイルし、コンパイラーの出力（エラー・警告）を照合する | `probe`、`fails`（`true`ならコンパイルが失敗すること）、`javac`（追加のオプション）、`release`、`expect`、`absent` |
 | `javap` | プローブをコンパイルし、`javap`の出力を正規表現で照合する | `probe`、`class`、`options`（既定は`-c -p`）、`release`（`--release`の版）、`expect`、`absent` |
 | `run` | プローブ（または節の`src/main/java`）を実行し、標準出力と標準エラー出力を照合する | `probe`か`main`、`class`、`jvm`（JVMのオプション）、`args`、`expect`、`absent`、`attempts`、`timeout`（秒）、`libs` |
 | `flag` | JVMのフラグが実在し、既定値が一致するか | `flag`、`value` |
@@ -29,7 +30,8 @@
 - `expect`・`absent`はJavaScriptの正規表現（複数行モード）。`[\s\S]*`で行をまたげる
 - JITの判断のように実行ごとにぶれるものは`attempts`（試す回数）を指定し、1回でも当てはまれば合格にする
 - 出力の欄に載せる行は`show`（正規表現の配列。省くと`expect`）で選ぶ。`normalize`（正規表現 → 置き換える文字）で番地や番号を消し、`sort: true`で並べて重複を除く
-- `libs`にはMaven Centralの座標を書く（`.cache/sample-code-libs/`に取得する）
+- `libs`にはMaven Centralの座標を書く（`.cache/sample-code-libs/`に取得する）。オブジェクトの配置はJOL（`org.openjdk.jol:jol-core:0.17`）で観察できる
+- コンパイルが失敗するはずのプローブ（`javac`の`fails: true`）は、`verify/`の下の`compile-errors/`に置き、`check:public-code`の対象から外す（下の「コンパイルできないプローブ」）
 - 解説から参照しない補助の検証（同じ主張の別の条件など）は`unreferenced: true`を付ける
 
 ## 出典の扱い
@@ -75,3 +77,9 @@
 - JDK 25の`-XX:+PrintInlining`は、行の途中に「callee changed to」という別の判断の文字が混じる。行の先頭の「メソッド名（バイト数）判断」を照合する
 - C1が35バイトを超えるメソッドをインライン化しないときの表示は「callee is too large」（「too big」ではない）。C2では、よく呼ばれるメソッドが325バイトを超えると「hot method too big」
 - javaコマンドのリファレンス（Java SE 25）には`-XX:CompileThreshold`の説明がない。段階的コンパイルで効かないことは、実行して確かめた（B.04）
+
+## コンパイルできないプローブ
+
+「この書き方はコンパイルエラーになる」という主張は、`verify/compile-errors/`にプローブを置き、`kind: javac`と`fails: true`で確かめます。
+`check:public-code`はこのディレクトリを対象にしません（公開するコードはコンパイルできる状態を保つ方針の例外）。
+1つのファイルに1つの誤りだけを書き、`expect`にはjavacの英語のメッセージ（`-J-Duser.language=en`で実行する）を書きます。

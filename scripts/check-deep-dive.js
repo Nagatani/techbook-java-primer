@@ -14,6 +14,7 @@
  *   - 各節の appendix/bXX-（題名）/claims.yml に、解説の主張（claim）とその確かめ方（verify）を書く
  *   - README.md などの解説では、主張を述べた段落・リスト項目・表の直後に <!-- claim: id --> を置く
  *   - 確かめ方の種類
+ *       javac   プローブをコンパイルし、コンパイラーの出力（エラー・警告）に expect があるか。fails: true ならコンパイルが失敗すること
  *       javap   プローブ（verify/のjavaファイル）をコンパイルし（releaseで--releaseを変えられる）、javap の出力に expect の正規表現があるか（absent はないか）
  *       run     プローブか節のコードを実行し、出力（標準出力と標準エラー出力）に expect があるか
  *       flag    JVMのフラグが実在し、既定値が value と一致するか
@@ -31,7 +32,7 @@ const ROOT = path.resolve(__dirname, '..');
 const APPENDIX = path.join(ROOT, 'appendix');
 const LIB_CACHE = path.join(ROOT, '.cache', 'sample-code-libs');
 const REPORT = path.join(ROOT, 'docs', 'analysis', 'deep-dive-claims.md');
-const KINDS = ['javap', 'run', 'flag', 'manual'];
+const KINDS = ['javac', 'javap', 'run', 'flag', 'manual'];
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 const args = process.argv.slice(2);
@@ -162,10 +163,11 @@ function validateLedger(sec, ledger, problems) {
       if (!c.sources || !c.sources.length) problems.push({ level: 'error', where, msg: 'manualの主張にはsources（出典）が要る' });
       if (!v.checked || !/^\d{4}-\d{2}-\d{2}$/.test(String(v.checked))) problems.push({ level: 'error', where, msg: 'manualの主張にはverify.checked（確かめた日、YYYY-MM-DD）が要る' });
     }
+    if (v.kind === 'javac' && !v.probe) problems.push({ level: 'error', where, msg: 'javacにはprobeが要る' });
     if (v.kind === 'javap' && (!v.probe || !v.class)) problems.push({ level: 'error', where, msg: 'javapにはprobeとclassが要る' });
     if (v.kind === 'run' && !v.probe && !v.main) problems.push({ level: 'error', where, msg: 'runにはprobeかmainが要る' });
     if (v.kind === 'flag' && !v.flag) problems.push({ level: 'error', where, msg: 'flagにはflagが要る' });
-    if (['javap', 'run'].includes(v.kind) && !(v.expect || v.absent)) problems.push({ level: 'error', where, msg: 'expectかabsentが要る' });
+    if (['javac', 'javap', 'run'].includes(v.kind) && !(v.expect || v.absent)) problems.push({ level: 'error', where, msg: 'expectかabsentが要る' });
     for (const p of [].concat(v.probe || [])) {
       if (!fs.existsSync(path.join(sec.dir, p))) problems.push({ level: 'error', where, msg: `プローブ ${p} がない` });
     }
@@ -262,6 +264,13 @@ function verifyClaim(sec, c, tmp) {
     return { status: 'pass', output: `${v.flag} = ${f.value} {${f.kind}}` };
   }
   const c1 = compileFor(sec, v, tmp);
+  if (v.kind === 'javac') {
+    if (v.fails && c1.ok) return { status: 'fail', msg: 'コンパイルが通った（失敗するはず）' };
+    if (!v.fails && !c1.ok) return { status: 'fail', msg: `コンパイルできない\n${c1.msg}` };
+    const m = matchAll(c1.msg, v);
+    if (!m.ok) return { status: 'fail', msg: [...m.missing.map((re) => `出力に /${re}/ がない`), ...m.present.map((re) => `出力に /${re}/ がある（ないはず）`)].join('\n'), output: c1.msg };
+    return { status: 'pass', output: c1.msg };
+  }
   if (!c1.ok) return { status: 'fail', msg: `コンパイルできない\n${c1.msg}` };
   let text;
   const attempts = v.attempts || 1;

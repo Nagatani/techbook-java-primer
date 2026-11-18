@@ -51,6 +51,7 @@ const LIBS = [
   'org.projectlombok:lombok:1.18.48',
   'com.google.guava:guava:33.8.0-jre',
   'com.google.guava:failureaccess:1.0.3',
+  'org.openjdk.jol:jol-core:0.17', // 付録Bの観察用プログラム（オブジェクトの配置）
 ];
 
 // 検査しないまとまり（パス → 理由）
@@ -82,7 +83,8 @@ function libJars() {
 
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name.startsWith('.') || ['node_modules', 'target', 'build', 'out'].includes(e.name)) continue;
+    // compile-errors/ は、付録Bの検査（check:deep-dive）でコンパイルが失敗することを確かめるプローブ
+    if (e.name.startsWith('.') || ['node_modules', 'target', 'build', 'out', 'compile-errors'].includes(e.name)) continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, out);
     else if (e.name.endsWith('.java')) out.push(p);
