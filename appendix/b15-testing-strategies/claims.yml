@@ -1,0 +1,457 @@
+# 付録B.15の主張と、その確かめ方
+# npm run check:deep-dive -- b15 で検証する（書き方は docs/guides/deep-dive-verification.md）
+# JUnitのふるまいは、check:public-codeと同じJUnit 5.13.4（junit-platform-console-standalone 1.13.4）で観察する
+jdk: 25
+
+claims:
+  # ---- JUnitのしくみ
+  - id: junit-platform-launcher
+    claim: JUnit 5はJUnit Platform・JUnit Jupiter・JUnit Vintageからなり、テストを見つけて実行する入り口（Launcher）をPlatformが持つ。IDEやビルドツールはこのLauncherを使う
+    sources:
+      - title: JUnit User Guide 5.13.4 1.1 What is JUnit 5?
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage
+      - title: JUnit User Guide 5.13.4 6.4 JUnit Platform Launcher API
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: JUnit 5 introduces the concept of a Launcher that can be used to discover, filter, and execute tests
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: User Guide 5.13.4の1.1と6.4を読み、Platform・Jupiter・Vintageの構成と、ビルドツールやIDEのためにLauncherを用意した旨を確かめた。verify/ProbeRunner.javaはこのLauncherの公開APIだけでテストを実行している
+
+  - id: console-scan-pattern
+    claim: Console Launcherはクラスパスを探すとき、既定では名前がTestで始まるか、Test・Testsで終わるクラスだけを対象にする。そのため、OutcomeProbe$Casesは探しても見つからず、クラスを指定すれば実行される
+    sources:
+      - title: JUnit User Guide 5.13.4 4.3.1 Subcommands and Options（--include-classname）
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: the default pattern only includes class names that begin with "Test" or end with "Test" or "Tests"
+    verify:
+      kind: run
+      probe: [verify/OutcomeProbe.java, verify/ProbeRunner.java]
+      main: org.junit.platform.console.ConsoleLauncher
+      args: [execute, --scan-class-path, --disable-banner, --details=summary, --details-theme=ascii]
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '\[ +0 tests found +\]'
+      show: ['tests found']
+
+  - id: console-select-class
+    claim: 同上（--select-classでクラスを指定すると、6つのテストが見つかる）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: [verify/OutcomeProbe.java, verify/ProbeRunner.java]
+      main: org.junit.platform.console.ConsoleLauncher
+      args: [execute, --select-class, OutcomeProbe$Cases, --disable-banner, --details=summary, --details-theme=ascii]
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '\[ +6 tests found +\]'
+        - '\[ +2 tests failed +\]'
+
+  - id: outcome-by-exception
+    claim: テストメソッドが例外を投げずに終われば成功、例外を投げれば失敗になる。アサーションの失敗はorg.opentest4j.AssertionFailedErrorという例外で、それ以外の例外（NullPointerExceptionなど）も失敗になる。何も確かめないテストは成功になる
+    verify:
+      kind: run
+      probe: [verify/OutcomeProbe.java, verify/ProbeRunner.java]
+      class: OutcomeProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^SUCCESSFUL passes\(\)$'
+        - '^FAILED +assertionFails\(\) +<- org\.opentest4j\.AssertionFailedError: expected: <5> but was: <4>'
+        - '^FAILED +throwsUnexpectedException\(\) +<- java\.lang\.NullPointerException'
+        - '^SUCCESSFUL checksNothing\(\)$'
+        - 'summary: found=6 succeeded=2 failed=2 aborted=1 skipped=1'
+      show: ['^(SUCCESSFUL|FAILED|ABORTED|SKIPPED|summary)']
+      normalize:
+        'because .*$': '...'
+      keepIndent: true
+
+  - id: outcome-aborted-skipped
+    claim: 前提（assumeTrue）が成り立たないときはTestAbortedExceptionが投げられ、テストは失敗ではなく中断（ABORTED）になる。@Disabledのテストは実行されず、スキップ（SKIPPED）になる
+    sources:
+      - title: JUnit User Guide 5.13.4 2.6 Assumptions
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: TestAbortedException to signal that the test should be aborted instead of marked as a failure
+    verify:
+      kind: run
+      probe: [verify/OutcomeProbe.java, verify/ProbeRunner.java]
+      class: OutcomeProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^ABORTED +assumptionNotMet\(\) +<- org\.opentest4j\.TestAbortedException: Assumption failed'
+        - '^SKIPPED +disabled\(\) +<- 一時的に止めている'
+
+  # ---- 実行順とインスタンス
+  - id: order-default
+    claim: 実行順を指定しないとき、テストメソッドは書いた順ではない順に実行される。その順は実行のたびに同じ（決定的）である
+    sources:
+      - title: JUnit User Guide 5.13.4 2.11 Test Execution Order
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: deterministic but intentionally nonobvious
+    verify:
+      kind: run
+      probe: [verify/OrderProbe.java, verify/ProbeRunner.java]
+      class: OrderProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^default order \(1st run\): fourth second fifth first third$'
+        - '^default order \(2nd run\): fourth second fifth first third$'
+      show: ['^(default order|@Order)']
+
+  - id: order-annotation
+    claim: '@TestMethodOrder(MethodOrderer.OrderAnnotation.class)を付けると、@Orderの値の小さい順に実行される'
+    verify:
+      kind: run
+      probe: [verify/OrderProbe.java, verify/ProbeRunner.java]
+      class: OrderProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^@Order\(3,1,2\): +step2 step3 step1$'
+
+  - id: lifecycle-per-method
+    claim: 既定では、テストメソッドごとにテストクラスの新しいインスタンスが作られるので、インスタンスのフィールドは次のテストに引き継がれない。@TestInstance(PER_CLASS)では1つのインスタンスを共有する
+    sources:
+      - title: JUnit User Guide 5.13.4 2.12 Test Instance Lifecycle
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: JUnit creates a new instance of each test class before executing each test method
+    verify:
+      kind: run
+      probe: [verify/OrderProbe.java, verify/ProbeRunner.java]
+      class: OrderProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^PER_METHOD: +count=1 count=1 count=1$'
+        - '^PER_CLASS: +count=1 count=2 count=3$'
+      show: ['^PER_']
+
+  - id: static-state-dependency
+    claim: 静的フィールドはインスタンスを作り直しても残るので、前のテストが残した状態に頼るテストは、同じクラスを2回実行すると失敗する
+    verify:
+      kind: run
+      probe: [verify/OrderProbe.java, verify/ProbeRunner.java]
+      class: OrderProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - 'dependent tests \(1st run\):\nSUCCESSFUL addItem\(\)\nSUCCESSFUL hasOneItem\(\)'
+        - 'dependent tests \(2nd run, static field kept\):\nSUCCESSFUL addItem\(\)\nFAILED +hasOneItem\(\) +<- org\.opentest4j\.AssertionFailedError: expected: <1> but was: <2>'
+      show: ['^dependent', 'addItem', 'hasOneItem']
+      keepIndent: true
+
+  # ---- アサーション
+  - id: assertall-collects
+    claim: assertAllは中のアサーションをすべて実行し、失敗をまとめてMultipleFailuresErrorとして報告する。assertEqualsを順に並べると、最初の失敗で止まる
+    sources:
+      - title: JUnit User Guide 5.13.4 2.5 Assertions
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: In a grouped assertion all assertions are executed
+    verify:
+      kind: run
+      probe: [verify/AssertionProbe.java, verify/ProbeRunner.java]
+      class: AssertionProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^FAILED +sequential\(\) +<- org\.opentest4j\.AssertionFailedError: expected: <Taro> but was: <Hanako>$'
+        - '^FAILED +grouped\(\) +<- org\.opentest4j\.MultipleFailuresError: person \(3 failures\)$'
+        - 'failures in MultipleFailuresError: 3\n  expected: <Taro> but was: <Hanako>\n  expected: <Suzuki> but was: <Sato>\n  expected: <21> but was: <20>'
+      show: ['sequential', 'grouped', 'failures in', '^  expected']
+      keepIndent: true
+
+  - id: assertthrows-behavior
+    claim: assertThrowsは、指定した型かそのサブクラスの例外が投げられれば成功し、投げられた例外を返す。例外が投げられないときや別の型のときは失敗する。assertThrowsExactlyはサブクラスを認めない
+    verify:
+      kind: run
+      probe: [verify/AssertionProbe.java, verify/ProbeRunner.java]
+      class: AssertionProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^SUCCESSFUL exactType\(\)$'
+        - '^SUCCESSFUL superType\(\)$'
+        - '^FAILED +superTypeExactly\(\) +<- .*Unexpected exception type thrown, expected: <java\.lang\.IllegalArgumentException> but was: <java\.lang\.NumberFormatException>'
+        - '^FAILED +nothingThrown\(\) +<- .*Expected java\.lang\.NumberFormatException to be thrown, but nothing was thrown\.'
+        - '^FAILED +otherType\(\) +<- .*Unexpected exception type thrown, expected: <java\.lang\.ArithmeticException>'
+        - '^SUCCESSFUL checkMessage\(\)$'
+      show: ['(exactType|superType|superTypeExactly|nothingThrown|otherType|checkMessage)\(\)']
+      normalize:
+        'org\.opentest4j\.AssertionFailedError: ': ''
+      keepIndent: true
+
+  # ---- パラメーター化・入れ子・時間
+  - id: parameterized-invocations
+    claim: '@ParameterizedTestは引数の組ごとに別のテストとして実行され、1つの組が失敗してもほかの組は実行される。表示名は既定で[番号] 引数になり、nameで変えられる'
+    verify:
+      kind: run
+      probe: [verify/ParameterizedProbe.java, verify/ProbeRunner.java]
+      class: ParameterizedProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^SUCCESSFUL \[1\] 2023$'
+        - '^FAILED +\[2\] 1900 +<- org\.opentest4j\.AssertionFailedError: expected: <false> but was: <true>'
+        - '^FAILED +\[3\] 2100 '
+        - '^FAILED +2147483647 \+ 1 = 2147483648 +<- .*expected: <2147483648> but was: <-2147483648>'
+        - 'summary: found=8 succeeded=5 failed=3'
+      show: ['^(SUCCESSFUL|FAILED|summary)']
+      keepIndent: true
+
+  - id: nested-callbacks
+    claim: '@Nestedの内側のクラスのテストでは、外側の@BeforeEachのあとに内側の@BeforeEachが呼ばれ、後始末は内側の@AfterEach、外側の@AfterEachの順になる。@Nestedにできるのはstaticでない内部クラスだけである'
+    sources:
+      - title: JUnit User Guide 5.13.4 2.13 Nested Tests
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: Only non-static nested classes (i.e. inner classes) can serve as @Nested test classes.
+    verify:
+      kind: run
+      probe: [verify/NestedProbe.java, verify/ProbeRunner.java]
+      class: NestedProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - 'outer @BeforeEach\n  inner @BeforeEach\n  test: popEmpties\n  inner @AfterEach\n  outer @AfterEach'
+        - '^SUCCESSFUL 取り出すと空になる$'
+      show: ['@BeforeEach', '@AfterEach', 'test:', '^SUCCESSFUL']
+      keepIndent: true
+
+  - id: timeout-interrupts
+    claim: '@Timeoutの時間を超えたテストは失敗になる。既定の動き方（SAME_THREAD）では、テストを実行しているスレッドに割り込み（interrupt）がかかるので、Thread.sleepで待っているテストは時間を超えた時点で止まる。割り込みを確かめない計算のループは最後まで動いてから失敗になる'
+    sources:
+      - title: JUnit User Guide 5.13.4 2.21.1 Thread mode
+        url: https://docs.junit.org/5.13.4/user-guide/index.html
+        anchor: If the timeout is exceeded, the main thread is interrupted from another thread.
+    verify:
+      kind: run
+      probe: [verify/TimeoutProbe.java, verify/ProbeRunner.java]
+      class: TimeoutProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '^FAILED +tooSlow\(\) +<- java\.util\.concurrent\.TimeoutException: tooSlow\(\) timed out after 200 milliseconds$'
+        - '^SUCCESSFUL fastEnough\(\)$'
+        - '^finished in less than 5 seconds \(interrupted\)$'
+        - '^FAILED +busyLoop\(\) +<- java\.util\.concurrent\.TimeoutException: busyLoop\(\) timed out after 200 milliseconds$'
+        - '^busy loop ran to the end \(at least 1 second\)$'
+      show: ['^(SUCCESSFUL|FAILED|finished|busy)']
+      keepIndent: true
+
+  # ---- ミューテーションテスト
+  - id: mutation-weak-strong
+    claim: 両方の分岐を通る弱いテストは境界の変異（>=を>に）を見逃し、境界の値を確かめる強いテストはそれを殺す
+    verify:
+      kind: run
+      probe: [verify/MutationProbe.java, verify/ProbeRunner.java]
+      class: MutationProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - '--- WeakSuite\noriginal: all tests pass\n  SURVIVED >= を > に'
+        - '--- StrongSuite\noriginal: all tests pass\n  KILLED   >= を > に'
+        - 'mutation score: 4/6\n--- StrongSuite'
+        - 'mutation score: 5/6$'
+      show: ['^---', 'original', 'KILLED', 'SURVIVED', 'mutation score']
+      keepIndent: true
+
+  - id: mutation-equivalent
+    claim: 整数の比較で>= 1000を> 999に変えたミュータントは元のコードと同じ動きをする（等価ミュータント）ので、どんなテストでも殺せない
+    verify:
+      kind: run
+      probe: [verify/MutationProbe.java, verify/ProbeRunner.java]
+      class: MutationProbe
+      libs: ['org.junit.platform:junit-platform-console-standalone:1.13.4']
+      expect:
+        - 'KILLED   割引きの式を消す\n  SURVIVED >= 1000 を > 999 に\nmutation score: 5/6$'
+
+  - id: pit-basics
+    claim: PITは、コンパイラーが生成したバイトコードに変異を入れ、テストを実行する。ソースファイルは書き換えない。条件の境界の変異（CONDITIONALS_BOUNDARY）は既定で有効な変異の1つで、<と<=、>と>=を入れ替える
+    sources:
+      - title: PIT Mutation Operators
+        url: https://pitest.org/quickstart/mutators/
+        anchor: Mutations are performed on the byte code generated by the compiler rather than on the source files.
+      - title: PIT Mutation Operators（Conditionals Boundary Mutator）
+        url: https://pitest.org/quickstart/mutators/
+        anchor: Conditionals Boundary Mutator (CONDITIONALS_BOUNDARY)
+      - title: PIT（トップページ）
+        url: https://pitest.org/
+        anchor: PIT runs your unit tests against automatically modified versions of your application code.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: pitest.orgのトップページとMutation Operatorsのページを読み、バイトコードへの変異、CONDITIONALS_BOUNDARYの置き換えの表と「Active by default」を確かめた
+
+  - id: pit-maven
+    claim: PITのMavenプラグイン（org.pitest:pitest-maven）は、mvn test-compile org.pitest:pitest-maven:mutationCoverageで実行でき、HTMLのレポートをtarget/pit-reportsに出す。Maven Centralの最新版は1.30.2（2026-11-19時点）
+    sources:
+      - title: PIT Maven Quick Start
+        url: https://pitest.org/quickstart/maven/
+        anchor: mvn test-compile org.pitest:pitest-maven:mutationCoverage
+      - title: Maven Central org.pitest:pitest-maven（maven-metadata.xml）
+        url: https://repo1.maven.org/maven2/org/pitest/pitest-maven/maven-metadata.xml
+        anchor: 1.30.2
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Maven Quick Startのページでゴールの名前とレポートの出力先（target/pit-reports/YYYYMMDDHHMI）を、Maven Centralのmaven-metadata.xmlで<release>が1.30.2であることを確かめた
+
+  # ---- Property-based Testing
+  - id: pbt-examples-pass
+    claim: (a + b) / 2で中間の値を求めるメソッドは、手で選んだ小さな例ではどれも性質を満たす
+    verify:
+      kind: run
+      probe: verify/PropertyProbe.java
+      expect:
+        - 'mid\(1, 3\) = 2  property: true'
+        - 'mid\(-4, 4\) = 0  property: true'
+        - 'mid\(10, 10\) = 10  property: true'
+        - 'mid\(0, 100\) = 50  property: true'
+      show: ['property: ']
+      keepIndent: true
+
+  - id: pbt-counterexample
+    claim: シード42の乱数で入力を作ると7件目で反例が見つかり、縮めると和がちょうどInteger.MAX_VALUE + 1になる反例が得られる（intの加算があふれて負の値になる）
+    sources:
+      - title: JLS 25 15.18.2 Additive Operators (+ and -) for Numeric Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: If an integer addition overflows, then the result is the low-order bits of the mathematical sum
+    verify:
+      kind: run
+      probe: verify/PropertyProbe.java
+      expect:
+        - 'counterexample found at try 7: \(1583910553, 1639144584\) -> -535956079'
+        - 'shrunk counterexample: \(736429957, 1411053691\) -> -1073741824'
+        - 'a \+ b = 2147483648 \(Integer\.MAX_VALUE \+ 1 = 2147483648\)'
+      show: ['^--- random inputs, seed 42 \(buggy', 'counterexample', 'shrink steps', 'a \+ b']
+      range: { from: '^--- random inputs, seed 42 \(buggy', to: 'a \+ b' }
+      keepIndent: true
+
+  - id: pbt-seed-reproducible
+    claim: java.util.Randomは、同じシードで作れば同じ値の並びを返す（算法がAPI仕様で決まっている）ので、同じシードで探すと同じ反例が再現する
+    sources:
+      - title: java.util.Random（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Random.html
+        anchor: If two instances of Random are created with the same seed
+    verify:
+      kind: run
+      probe: verify/PropertyProbe.java
+      expect:
+        - '--- same seed again \(buggy version\)\n  counterexample found at try 7: \(1583910553, 1639144584\)'
+        - 'same counterexample: true'
+
+  - id: pbt-fixed
+    claim: longで計算してから戻す版は、同じ1000件の入力で性質を満たす
+    verify:
+      kind: run
+      probe: verify/PropertyProbe.java
+      expect:
+        - '--- random inputs, seed 42 \(fixed version\)\n  property held for 1000 inputs'
+      show: ['fixed version', 'property held']
+      keepIndent: true
+
+  - id: jqwik-version
+    claim: Property-based TestingのライブラリjqwikはJUnit Platformのテストエンジンとして動く。Maven Centralの最新版は1.10.2（2026-11-19時点）で、JUnit Platform 1.14.4以降を必要とする
+    sources:
+      - title: jqwik User Guide（How to Use）
+        url: https://jqwik.net/docs/current/user-guide.html
+        anchor: alternative test engine for the JUnit 5
+      - title: jqwik User Guide（Required Version of JUnit Platform）
+        url: https://jqwik.net/docs/current/user-guide.html
+        anchor: minimum required version of the JUnit platform
+      - title: Maven Central net.jqwik:jqwik（maven-metadata.xml）
+        url: https://repo1.maven.org/maven2/net/jqwik/jqwik/maven-metadata.xml
+        anchor: 1.10.2
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: jqwikのUser Guideで、JUnit 5のPlatformの別のテストエンジンであること、必要なJUnit Platformの版が1.14.4であること、縮小（Shrinking）とシードの設定の節があることを、Maven Centralのmaven-metadata.xmlで<release>が1.10.2であることを確かめた。この節の検査で使うJUnit Platform 1.13.4より新しい版が要るため、観察には使っていない
+
+  # ---- データベースを使う統合テスト
+  - id: h2-mem-lifecycle
+    claim: H2の名前付きのインメモリデータベース（jdbc:h2:mem:名前）は、同じJVMの中なら別の接続からも見えるが、最後の接続を閉じると中身ごと消える
+    sources:
+      - title: H2 Features（In-Memory Databases）
+        url: https://www.h2database.com/html/features.html
+        anchor: By default, closing the last connection to a database closes the database. For an in-memory database, this means the content is lost.
+    verify:
+      kind: run
+      probe: verify/H2Lifecycle.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect:
+        - 'named in-memory database \(jdbc:h2:mem:shop\)\nsecond connection while the first is open: rows=1\nnew connection after all connections closed: Table "ITEMS" not found'
+      show: ['^--- (named|DB_CLOSE|unnamed)', 'rows=|not found']
+      normalize:
+        '; SQL statement:$': ''
+      keepIndent: true
+
+  - id: h2-close-delay
+    claim: URLに;DB_CLOSE_DELAY=-1を付けると、接続をすべて閉じてもJVMが終わるまで中身が残る
+    verify:
+      kind: run
+      probe: verify/H2Lifecycle.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect:
+        - 'DB_CLOSE_DELAY=-1 \(kept until the JVM exits\)\nnew connection after all connections closed: rows=1'
+
+  - id: h2-unnamed
+    claim: 名前のないインメモリデータベース（jdbc:h2:mem:）は、接続ごとに別のデータベースになる
+    verify:
+      kind: run
+      probe: verify/H2Lifecycle.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect:
+        - 'unnamed in-memory database \(jdbc:h2:mem:\)\nsecond connection while the first is open: Table "ITEMS" not found'
+
+  - id: h2-rollback
+    claim: 自動コミットを止めてテストの終わりにロールバックすると、テストで加えた行は残らず、次のテストは同じ状態から始まる
+    verify:
+      kind: run
+      probe: verify/H2Lifecycle.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect:
+        - 'test 1: rows during the test=2\ntest 1: rows after rollback=1\ntest 2: rows during the test=2\ntest 2: rows after rollback=1'
+      show: ['^test ']
+      keepIndent: true
+
+  - id: h2-compatibility
+    claim: H2はほかのデータベースとの互換を目指しているが、ふるまいの違いが残っている（例えばMySQLの文字列の列は既定で大文字と小文字を区別しないが、H2は区別する）
+    sources:
+      - title: H2 Features（Compatibility）
+        url: https://www.h2database.com/html/features.html
+        anchor: All database engines behave a little bit different.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: H2のFeaturesのCompatibilityの節で、ANSI SQLとほかのデータベースとの互換を目指していること、MySQLとの大文字・小文字の扱いの違いなどが挙げられていることを確かめた
+
+  - id: testcontainers
+    claim: Testcontainersは、データベースなどをDockerのコンテナーとして起動し、テストのあいだだけ使えるようにするJavaのライブラリである。2.0からモジュールの名前がtestcontainers-postgresqlのようにtestcontainers-で始まる形になり、Maven Centralの最新版は2.0.5（2026-11-19時点）
+    sources:
+      - title: Testcontainers for Java
+        url: https://java.testcontainers.org/
+        anchor: providing lightweight, throwaway instances of common databases
+      - title: Maven Central org.testcontainers:testcontainers-postgresql（maven-metadata.xml）
+        url: https://repo1.maven.org/maven2/org/testcontainers/testcontainers-postgresql/maven-metadata.xml
+        anchor: 2.0.5
+      - title: Maven Central org.testcontainers:postgresql（maven-metadata.xml。1.x系の名前）
+        url: https://repo1.maven.org/maven2/org/testcontainers/postgresql/maven-metadata.xml
+        anchor: 1.21.4
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Testcontainers for Javaのトップページで説明を読み、Maven Centralで、testcontainers-postgresqlの<release>が2.0.5、古い名前のpostgresqlの<release>が1.21.4で2.x系がないことを確かめた。Dockerが要るため、検査では動かしていない
+
+  # ---- テストピラミッド
+  - id: pyramid-origin
+    claim: テストピラミッドは、Mike Cohnが2009年の著書『Succeeding with Agile』で「Test Automation Pyramid」として述べたことで広く知られた
+    sources:
+      - title: Martin Fowler「TestPyramid」（2012年5月1日）
+        url: https://martinfowler.com/bliki/TestPyramid.html
+        anchor: Succeeding with Agile
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Martin FowlerのblikiのTestPyramid（2012-05-01）のEtymologyの節で、Mike Cohnが2009年の著書Succeeding with Agileで「Test Automation Pyramid」として述べたと書かれていることを確かめた。割合の数値はこの記事にない
+
+  # ---- JUnitの版
+  - id: junit6
+    claim: JUnitの最新の系列はJUnit 6で、6.0.0は2025年9月30日に公開された
+    sources:
+      - title: JUnit 6.0.0 Release Notes
+        url: https://docs.junit.org/6.0.0/release-notes.html
+        anchor: 'Date of Release: September 30, 2025'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JUnit 6.0.0のリリースノートで公開日を、Maven Centralでjunit-jupiter-apiの最新の安定版が6.1.3であることを確かめた

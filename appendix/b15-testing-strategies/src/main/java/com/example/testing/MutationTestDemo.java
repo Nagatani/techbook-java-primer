@@ -704,10 +704,9 @@ public class MutationTestDemo {
             IO.println("   - " + type);
         }
         
-        IO.println("\n4. ミューテーションスコアの目安:");
-        IO.println("   - 80%以上: 非常に良いテストスイート");
-        IO.println("   - 60-79%: 改善の余地あり");
-        IO.println("   - 60%未満: テストスイートの大幅改善が必要");
+        IO.println("\n4. スコアの読み方:");
+        IO.println("   - 生き残ったミュータントを1つずつ見て、テストの不足か等価ミュータントかを判断する");
+        IO.println("   - 等価ミュータントは検出できないので、100%を目標の数値にしない");
         
         IO.println("\n5. 実践での活用:");
         IO.println("   - CI/CDパイプラインに組み込み");
@@ -731,13 +730,11 @@ public class MutationTestDemo {
         IO.println("✓ Tests the tests - validates test suite quality");
         IO.println("✓ Reveals hidden test gaps that coverage metrics miss");
         IO.println("✓ Drives creation of more robust test cases");
-        IO.println("✓ Higher mutation scores = better bug detection");
-        IO.println("✓ Essential for critical software where bugs are costly");
+        IO.println("✓ Survived mutants point to inputs the tests do not check");
         
-        IO.println("\nRecommended Tools:");
-        IO.println("- PIT (Java): Most popular Java mutation testing tool");
-        IO.println("- Stryker (JavaScript/TypeScript): Modern mutation testing");
-        IO.println("- mutmut (Python): Simple Python mutation testing");
-        IO.println("- Cosmic Ray (Python): Advanced mutation testing features");
+        IO.println("\nTools:");
+        IO.println("- PIT (Java): mutates bytecode and reruns the tests");
+        IO.println("- Stryker (JavaScript/TypeScript)");
+        IO.println("- mutmut, Cosmic Ray (Python)");
     }
 }
