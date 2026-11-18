@@ -1,1265 +1,888 @@
 # 付録B.02 プログラミングパラダイムの進化と関数型プログラミングの数学的基礎<small>ラムダ計算からモナドまで</small>
 
-## 概要
+第3章で学んだオブジェクト指向と、第11章で学んだラムダ式・関数型インターフェイスを、プログラミングの考え方（パラダイム）の流れと、関数型プログラミングの土台にある数学（ラムダ計算・圏論・ファンクター・モナド）から見直す節です。
+数学の概念は、Javaのコードで確かめられる範囲に絞って説明します。
+法則が成り立つ場合だけでなく、Javaでは成り立たない場合も実際に動かして確かめます。
 
-本付録では、プログラミングパラダイムの歴史的発展を俯瞰し、特に関数型プログラミングの数学的基礎とJavaにおける実装について詳細に解説します。ラムダ計算、圏論、モナド、ファンクターなどの理論的概念が、実際のプログラミングにどのように応用されているかを理解することで、より深いレベルでJavaの関数型機能を活用できるようになります。
+## この節の読み方
 
-## 目次
+この節の解説のうち、事実を述べた段落には`<!-- claim: … -->`という印を付けています（GitHubの画面では見えません）。
+印の名前は同じディレクトリの`claims.yml`に対応し、そこにその主張の確かめ方（プログラムの実行、`javap`・`javac`の出力の照合、出典）を書いています。
+リポジトリのルートで`npm run check:deep-dive -- b02`を実行すると、すべての主張をJDK 25で確かめ直せます。
+「観察する」の欄に載せた出力は、この検査が実際に出したものです。
 
-1. プログラミングパラダイムの歴史的発展
-2. 関数型プログラミングの数学的基礎
-3. ラムダ計算とその実装
-4. 圏論の基礎概念
-5. モナドの理論と実践
-6. ファンクターとその応用
-7. Javaにおける関数型プログラミングの実装
-8. 実践的応用例
+歴史の記述は、題名・著者・年を確かめられる資料（論文、言語の仕様、大学の公式のページ）があるものに限っています。
 
----
+## ファイル構成
 
-## 1. プログラミングパラダイムの歴史的発展
+この節には体験用のデモ（`src/`）はなく、コードはすべて観察用のプログラム（`verify/`）です。
 
-### 1.1 パラダイムの定義と重要性
+| ファイル | 観察すること |
+|---|---|
+| `Paradigms.java` | 同じ計算を命令型・構造化・オブジェクト指向・関数型で書く |
+| `Composition.java` | `andThen`と`compose`の順序、圏の法則を値ごとに確かめる |
+| `LambdaCalculus.java` | ラムダ計算の式、カリー化、チャーチ数 |
+| `LambdaBytecode.java` | ラムダ式・メソッド参照・匿名クラスのコンパイル結果と実行時のクラス（`javap`で見る） |
+| `FunctorLaws.java` | `Optional`・`Stream`の`map`とファンクターの法則 |
+| `MonadLaws.java` | `Optional`・`Stream`の`flatMap`とモナドの法則 |
+| `ResultMonad.java` | sealedインターフェイスとレコードで作る`Result`型 |
+| `Sequence.java` | `List<Optional<T>>`を`Optional<List<T>>`に裏返す |
+| `TailCall.java` | 末尾再帰の呼び出しが最適化されないこと |
+| `Laziness.java` | 引数を先に評価すること、`Supplier`と`Stream`による遅延評価 |
+| `Memoize.java` | 高階関数によるメモ化と、`computeIfAbsent`を再帰で使う落とし穴 |
+| `ParserCombinator.java` | パーサーを関数として組み合わせる |
+| `ExpressionAdt.java` | 代数的データ型（式の木）とパターンマッチング |
+| `IOMonad.java` | 副作用を「実行する手順の値」として組み立てる |
+| `SinceRecord.java`ほか`Since`で始まる4つ | 言語機能が使えるようになった版（`javac --release`で見る） |
+| `compile-errors/` | コンパイルエラーになる書き方（実質的にfinalでない変数の参照など） |
 
-プログラミングパラダイムとは、プログラムの構造と実行に関する基本的な考え方の枠組みです。各パラダイムは、特定の問題領域に対する解決アプローチを提供し、プログラマーの思考方法を形作ります。
+`verify/`のプログラムはパッケージを持たないので、`verify/`ディレクトリでそのままコンパイル・実行できます。
 
-### 1.2 主要なパラダイムの系譜
-
-#### 命令型プログラミング（1940年代〜）
-最初のプログラミングパラダイムは、コンピューターのハードウェアアーキテクチャを直接反映した命令型プログラミングでした。
-
-```java
-// 命令型スタイル：状態の変更を通じて計算を表現
-int sum = 0;
-for (int i = 1; i <= 10; i++) {
-    sum += i;  // 状態を変更
-}
+```bash
+cd verify
+javac FunctorLaws.java && java FunctorLaws
+javac LambdaBytecode.java && javap -c -p LambdaBytecode
+javac --release 15 SinceRecord.java
 ```
 
-#### 構造化プログラミング（1960年代〜）
-ダイクストラの「GOTO文有害論」をきっかけに、プログラムの制御フローを構造化する動きが生まれました。
+## 1. パラダイムの流れ
 
-```java
-// 構造化プログラミング：制御構造の明確化
-public int calculateSum(int n) {
-    if (n <= 0) {
-        return 0;
-    }
-    int sum = 0;
-    for (int i = 1; i <= n; i++) {
-        sum += i;
-    }
-    return sum;
-}
+プログラミングパラダイムは、プログラムをどのような単位で組み立て、計算をどう表すかという考え方の枠組みです。
+`verify/Paradigms.java`は、1から10までの和を4つの書き方で求めます。
+どれも結果は同じ55で、違うのは「何を単位に考えるか」です。
+
+<!-- output: paradigms-sum -->
 ```
-
-#### オブジェクト指向プログラミング（1960年代後半〜）
-Simulaに始まり、Smalltalk、C++、Javaへと発展したオブジェクト指向は、データと処理を一体化する革新的なアプローチでした。
-
-```java
-// オブジェクト指向：データと振る舞いのカプセル化
-public class Counter {
-    private int value = 0;
-    
-    public void increment() {
-        value++;
-    }
-    
-    public int getValue() {
-        return value;
-    }
-}
+命令型: 55
+構造化: 55
+オブジェクト指向: 55
+関数型: 55
 ```
+<!-- /output -->
+<!-- claim: paradigms-sum -->
 
-#### 関数型プログラミング（1950年代〜、2000年代に再評価）
-数学的な関数の概念に基づく関数型プログラミングは、LISPから始まり、ML、Haskell、そして現代のマルチパラダイム言語へと発展しました。
+- 命令型
+  - 変数の状態を、命令を並べて1つずつ書き換える。コンピューターの動き（メモリの読み書き）に近い
+- 構造化
+  - 制御の流れを、順次・分岐・繰り返しと、入口と出口が1つずつの手続きに限る
+- オブジェクト指向
+  - 状態（フィールド）と、状態を変える操作（メソッド）をクラスにまとめ、外から状態を直接触らせない
+- 関数型
+  - 値を受け取って値を返す関数を組み合わせ、変数の書き換えを避ける
 
-```java
-// 関数型スタイル：副作用のない関数の組み合わせ
-IntStream.rangeClosed(1, 10)
-    .reduce(0, Integer::sum);
+### ソフトウェア危機と構造化プログラミング
+
+1968年10月7日〜11日に、NATOの科学委員会の後援で、ドイツのガルミッシュでソフトウェア工学の会議が開かれました。
+翌年1月にまとめられた報告書（編者はPeter NaurとBrian Randell）には、参加者の一部が「software crisis（ソフトウェア危機）」と呼んだ問題をめぐる議論が収められています。
+大きなシステムの開発で、目標と実際にできたものとの差が広がっているという問題です。
+「crisis（危機）」は感情的な言葉で好まないという参加者の発言も載っています。
+<!-- claim: nato-1968 -->
+
+同じ1968年、Edsger W. DijkstraはCommunications of the ACM（11巻、1968年3月、147〜148ページ）に、`go to`文をなくすべきだと論じる投稿を発表しました。
+掲載時の題名は「Go To Statement Considered Harmful」で、Dijkstraの原稿の題名は「A Case against the GO TO Statement」（EWD215）です。
+投稿は、`go to`文が論理的には不要であることを示したBöhmとJacopiniの論文（1966年）にも触れています。
+<!-- claim: dijkstra-goto -->
+
+Javaには`goto`文がありません。
+`goto`は予約語ですが、いまは使われておらず、変数名にもできません（JLSの3.9）。
+`break`・`continue`（ラベル付きを含む）、`return`、例外が、構造化された範囲での脱出を受け持ちます。
+<!-- claim: java-goto-reserved -->
+
+### オブジェクト指向
+
+クラス、サブクラス（継承）、オブジェクトを動的に作るといったオブジェクト指向の考え方は、ノルウェー計算センターのOle-Johan DahlとKristen NygaardがSimula I（1961〜1965年）とSimula 67（1965〜1968年）で形にしました。
+Dahlが教授を務めたオスロ大学の公式のページに、この経緯がまとめられています。
+<!-- claim: simula -->
+
+Java言語仕様（JLS）の第1章は、Javaを「クラスに基づくオブジェクト指向の言語」と呼び、CとC++に関係するが組み立て方はかなり違うと述べています。
+参考文献には、Smalltalk-80、C++、Common Lisp Object Systemなど、ほかのオブジェクト指向の言語の文書が挙がっています。
+<!-- claim: jls-oo-lineage -->
+
+Javaの値のうち、オブジェクトはクラスのインスタンスと配列だけです。
+`int`や`double`などのプリミティブ型の値はオブジェクトではありません。
+そのためJavaは、すべての値がオブジェクトである言語（Smalltalkなど）とは違います。
+<!-- claim: jls-primitive-not-object -->
+
+### 関数型
+
+LISPは、John McCarthyが1960年4月のCommunications of the ACMに発表した論文で示した言語です。
+この論文は、関数を表す記法として、Alonzo Churchのλ記法（Churchの著書『The Calculi of Lambda-Conversion』、1941年）をほぼそのまま使っています。
+<!-- claim: lisp-church -->
+
+Javaは、Java 8（JEP 126）でラムダ式とメソッド参照を、インターフェイスのdefaultメソッドとともに取り入れました。
+その後、レコード（Java 16、JEP 395）、sealedクラス（Java 17、JEP 409）、switchのパターンマッチングとレコードパターン（Java 21、JEP 441・JEP 440）が加わり、関数型の言語でよく使う「代数的データ型をパターンで分解する」書き方ができるようになりました。
+<!-- claim: jep126-java8 -->
+
+JDK 25の`javac`は、`--release 8`より古い版を受け付けないので、ラムダ式の版は`javac`では確かめられません。
+後の3つは、`--release`で1つ前の版を指定すると、コンパイルエラーになることで確かめられます。
+`--release 20`では、switchのパターンとレコードパターン（エラーの文ではdeconstruction patterns）の両方がエラーになります。
+
+<!-- output: since-record -->
 ```
-
-### 1.3 パラダイムの統合と進化
-
-現代のプログラミング言語は、複数のパラダイムを統合したマルチパラダイム言語が主流となっています。Javaは当初からオブジェクト指向を中心とした言語でした（`int`などのプリミティブ型はオブジェクトではないため、純粋なオブジェクト指向言語ではありません）。Java 8以降は、関数型プログラミングの要素を積極的に取り入れています。
-
-### 1.4 ソフトウェアクライシスとパラダイムの発展
-
-#### ソフトウェアクライシスの背景
-
-1960年代後半、ソフトウェアの規模が急速に拡大し、「ソフトウェアクライシス」と呼ばれる問題が発生しました。プロジェクトの遅延、品質の低下、保守の困難さなど、従来の開発手法では対処できない課題が山積していました。
-
-「ソフトウェアクライシス（ソフトウェア危機）」という言葉は、1968年にNATOが開いたソフトウェア工学の会議で広く知られるようになりました。
-よく知られた事例を挙げます。
-
-1. IBMのOS/360（1960年代）
-   - 開発の遅れと、遅れを取り戻そうと人を増やしてさらに遅れた経験を、開発を率いたフレデリック・ブルックスが『人月の神話』（1975年）に書いた
-   - 教訓：遅れているプロジェクトに人を足すと、さらに遅れる（ブルックスの法則）
-
-2. アポロ計画の飛行ソフトウェア（1960年代）
-   - マーガレット・ハミルトンが、MITで宇宙船に載せるソフトウェアの開発を率いた
-   - 彼女は、ソフトウェアの開発を工学として扱う「ソフトウェアエンジニアリング」という呼び方を広めた一人とされる
-
-#### パラダイムシフトによる解決
-
-これらの課題に対して、各時代で異なるパラダイムが解決策を提供してきました：
-
-- **構造化プログラミング**: 制御フローの整理による複雑性の管理
-- **オブジェクト指向**: データと処理の一体化による変更影響の局所化
-- **関数型プログラミング**: 副作用の排除による予測可能性の向上
-
-各パラダイムは特定の問題領域に対して有効なアプローチを提供し、現代のソフトウェア開発では、これらを適材適所で組み合わせることが重要となっています。
-
----
-
-## 2. 関数型プログラミングの数学的基礎
-
-### 2.1 関数型プログラミングの哲学
-
-関数型プログラミングは、以下の原則に基づいています：
-
-1. **参照透過性**：同じ入力に対して常に同じ出力を返す
-2. **不変性**：データは一度作成されたら変更されない
-3. **副作用の排除**：関数は外部の状態を変更しない
-4. **高階関数**：関数を値として扱い、引数や戻り値にできる
-
-### 2.2 数学的関数とプログラミング関数
-
-数学における関数は、定義域から値域への写像として定義されます：
-
+error: records are not supported in -source 15
 ```
-f: A → B
+<!-- /output -->
+<!-- claim: since-record -->
+
+<!-- output: since-sealed -->
 ```
-
-これは、集合Aの各要素を集合Bの要素に対応付ける規則を表します。
-
-```java
-// 数学的関数の実装例
-Function<Integer, Integer> square = x -> x * x;
-// f: Integer → Integer where f(x) = x²
+error: sealed classes are not supported in -source 16
 ```
+<!-- /output -->
+<!-- claim: since-sealed -->
 
-### 2.3 合成可能性
-
-関数型プログラミングの強力な特性の1つは、関数の合成可能性です：
-
-```java
-// 関数の合成：(f ∘ g)(x) = f(g(x))
-Function<Integer, Integer> addOne = x -> x + 1;
-Function<Integer, Integer> multiplyByTwo = x -> x * 2;
-
-// 合成関数の作成：andThenは「自分を先に、引数を後に」適用する
-Function<Integer, Integer> addOneThenMultiply = 
-    addOne.andThen(multiplyByTwo);
-    
-// composeは「引数を先に、自分を後に」適用する
-Function<Integer, Integer> multiplyThenAddOne = 
-    addOne.compose(multiplyByTwo);
-
-// 実行
-IO.println(addOneThenMultiply.apply(3));    // (3 + 1) * 2 = 8
-IO.println(multiplyThenAddOne.apply(3));    // (3 * 2) + 1 = 7
+<!-- output: since-record-pattern -->
 ```
-
----
-
-## 3. ラムダ計算とその実装
-
-### 3.1 ラムダ計算の基礎
-
-ラムダ計算（λ-calculus）は、1930年代にアロンゾ・チャーチによって開発された形式体系で、計算可能性の数学的モデルを提供します。
-
-#### 基本構文
-
-ラムダ計算の式は以下の3つの要素から構成されます：
-
-1. **変数**：x, y, z, ...
-2. **抽象化**：λx.M（xを引数とする関数）
-3. **適用**：M N（関数Mに引数Nを適用）
-
-```java
-// ラムダ計算の基本形式をJavaで表現
-
-// 恒等関数：λx.x
-Function<Object, Object> identity = x -> x;
-
-// 定数関数：λx.λy.x
-Function<Object, Function<Object, Object>> constant = x -> y -> x;
-
-// 関数適用：(λx.x + 1) 5
-Function<Integer, Integer> increment = x -> x + 1;
-int result = increment.apply(5); // 6
+error: patterns in switch statements are not supported in -source 20
+error: deconstruction patterns are not supported in -source 20
 ```
+<!-- /output -->
+<!-- claim: since-record-pattern -->
 
-### 3.2 カリー化と部分適用
+この節のコードで使う名前のない変数`_`は、Java 22（JEP 456）からです。
+<!-- claim: since-unnamed -->
 
-カリー化は、複数引数の関数を単一引数の関数の連鎖に変換する技法です：
+いまのJavaは、オブジェクト指向を中心に、関数型の書き方を取り入れたマルチパラダイムの言語です。
+どの書き方がよいかではなく、問題に合わせて組み合わせることが大切です。
 
-```java
-// 通常の2引数関数
-BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+## 2. 関数型プログラミングの考え方
 
-// カリー化された関数
-Function<Integer, Function<Integer, Integer>> curriedAdd = a -> b -> a + b;
+関数型プログラミングでは、次のような性質を大切にします。
 
-// 部分適用の例
-Function<Integer, Integer> add5 = curriedAdd.apply(5);
-IO.println(add5.apply(3)); // 8
+- 参照透過性
+  - 式を、その式の値に置き換えてもプログラムの意味が変わらない。同じ引数の関数呼び出しは、いつも同じ値になる
+- 不変性
+  - 一度作ったデータを書き換えず、変えたいときは新しいデータを作る（第6章）
+- 副作用を限る
+  - 関数の外の状態を変える処理（出力、変数の書き換え）を、決まった場所に集める
+- 高階関数
+  - 関数を値として扱い、引数に渡したり、戻り値として返したりする
 
-// 3引数の関数型インターフェイス（標準ライブラリにはないので自分で定義する）
-@FunctionalInterface
-interface TriFunction<A, B, C, R> {
-    R apply(A a, B b, C c);
-}
+Javaのラムダ式は、外のローカル変数に代入し直せません（第11章）。
+ラムダ式から参照するローカル変数は、`final`か実質的にfinalでなければならないと、JLSの15.27.2が決めています。
+JLSは、値が変わり続けるローカル変数を取り込むと並行処理の問題を招きやすいことを、この制限の理由に挙げています。
+`verify/compile-errors/CaptureMutation.java`をコンパイルすると、次のエラーになります。
 
-// 汎用的なカリー化ユーティリティ
-public class CurryingUtils {
-    public static <A, B, C> Function<A, Function<B, C>> curry(
-            BiFunction<A, B, C> biFunction) {
-        return a -> b -> biFunction.apply(a, b);
-    }
-    
-    public static <A, B, C, D> Function<A, Function<B, Function<C, D>>> curry(
-            TriFunction<A, B, C, D> triFunction) {
-        return a -> b -> c -> triFunction.apply(a, b, c);
-    }
-}
-
-// 使用例
-BiFunction<Integer, Integer, Integer> multiply = (a, b) -> a * b;
-Function<Integer, Function<Integer, Integer>> curriedMultiply = 
-    CurryingUtils.curry(multiply);
-
-// 「3倍する関数」を部分適用で作る
-Function<Integer, Integer> triple = curriedMultiply.apply(3);
-IO.println(triple.apply(100)); // 300
+<!-- output: capture-effectively-final -->
 ```
+error: local variables referenced from a lambda expression must be final or effectively final
+```
+<!-- /output -->
+<!-- claim: capture-effectively-final -->
 
-### 3.3 ベータ簡約
+同じ規則は匿名クラスなどの内部クラスにもあります（`verify/compile-errors/AnonymousCapture.java`）。
 
-ラムダ計算における計算は、ベータ簡約によって行われます：
+<!-- output: anonymous-effectively-final -->
+```
+error: local variables referenced from an inner class must be final or effectively final
+```
+<!-- /output -->
+<!-- claim: anonymous-effectively-final -->
+
+この制限は変数への代入を禁じるだけで、変数が指すオブジェクトの中身（リストの要素など）を変えることは禁じていません。
+参照透過性を保つかどうかは、書く人に任されています。
+
+### 関数の合成
+
+数学では、関数`g`を当てはめてから`f`を当てはめる関数を`f ∘ g`と書きます（`(f ∘ g)(x) = f(g(x))`）。
+`java.util.function.Function`には、合成のメソッドが2つあります。
+
+- `f.andThen(g)`
+  - `f`を先に、`g`を後に当てはめる（`g ∘ f`）
+- `f.compose(g)`
+  - `g`を先に、`f`を後に当てはめる（`f ∘ g`。数学の書き方と同じ順）
+
+<!-- output: compose-order -->
+```
+addOne.andThen(multiplyByTwo).apply(3) = 8
+addOne.compose(multiplyByTwo).apply(3) = 7
+```
+<!-- /output -->
+
+`addOne.andThen(multiplyByTwo)`は`(3 + 1) * 2 = 8`、`addOne.compose(multiplyByTwo)`は`(3 * 2) + 1 = 7`です。
+<!-- claim: compose-order -->
+
+## 3. ラムダ計算
+
+ラムダ計算は、関数を作ることと関数を当てはめることだけで計算を表す形式体系です。
+式は次の3種類だけからできています。
+
+1. 変数
+    + `x`、`y`、`z`など
+2. 抽象（関数を作る）
+    + `λx.M`（`x`を受け取って`M`を返す関数）
+3. 適用（関数を当てはめる）
+    + `M N`（関数`M`に`N`を当てはめる）
+
+計算は、適用の式`(λx.M) N`を、`M`のなかの`x`を`N`に置き換えた式`M[x := N]`に書き換えること（ベータ簡約）で進みます。
+たとえば`(λf.λx.f (f x)) (λy.y + 1) 5`は、次のように簡約されます（`+`と数はラムダ計算に足した記号です）。
 
 ```
-(λx.M) N → M[x := N]
+(λf.λx.f (f x)) (λy.y + 1) 5
+→ (λx.(λy.y + 1) ((λy.y + 1) x)) 5
+→ (λy.y + 1) ((λy.y + 1) 5)
+→ (λy.y + 1) 6
+→ 7
 ```
 
-これは、関数適用時に引数を代入することを表します：
+### Javaで書いてみる
 
-```java
-// ベータ簡約の例
-// (λx.x * x) 5 → 5 * 5 → 25
+`verify/LambdaCalculus.java`は、ラムダ計算の式をJavaのラムダ式で書きます。
+ラムダ計算の関数は1つの引数しか取らないので、複数の引数は「関数を返す関数」で表します（カリー化）。
+カリー化した関数に一部の引数だけを渡して、残りの引数を待つ関数を作ることを部分適用といいます。
 
-Function<Integer, Integer> square = x -> x * x;
-int result = square.apply(5); // 25
-
-// より複雑な例
-// (λf.λx.f (f x)) (λy.y + 1) 5
-// → (λx.(λy.y + 1) ((λy.y + 1) x)) 5
-// → (λy.y + 1) ((λy.y + 1) 5)
-// → (λy.y + 1) 6
-// → 7
-
-Function<Function<Integer, Integer>, Function<Integer, Integer>> twice = 
-    f -> x -> f.apply(f.apply(x));
-
-Function<Integer, Integer> increment = y -> y + 1;
-int result2 = twice.apply(increment).apply(5); // 7
+<!-- output: lambda-calculus-run -->
 ```
-
-### 3.4 チャーチ数
-
-ラムダ計算では、自然数も関数として表現できます（チャーチ数）：
-
-```java
-// チャーチ数の実装
-interface ChurchNumeral {
-    <T> Function<T, T> apply(Function<T, T> f);
-}
-
-// 0 = λf.λx.x
-ChurchNumeral zero = new ChurchNumeral() {
-    @Override
-    public <T> Function<T, T> apply(Function<T, T> f) {
-        return x -> x;
-    }
-};
-
-// 1 = λf.λx.f x
-ChurchNumeral one = new ChurchNumeral() {
-    @Override
-    public <T> Function<T, T> apply(Function<T, T> f) {
-        return x -> f.apply(x);
-    }
-};
-
-// 2 = λf.λx.f (f x)
-ChurchNumeral two = new ChurchNumeral() {
-    @Override
-    public <T> Function<T, T> apply(Function<T, T> f) {
-        return x -> f.apply(f.apply(x));
-    }
-};
-
-// 後者関数：succ = λn.λf.λx.f (n f x)
-ChurchNumeral succ(ChurchNumeral n) {
-    return new ChurchNumeral() {
-        @Override
-        public <T> Function<T, T> apply(Function<T, T> f) {
-            return x -> f.apply(n.apply(f).apply(x));
-        }
-    };
-}
-
-// チャーチ数を通常の整数に変換
-int toInt(ChurchNumeral n) {
-    return n.<Integer>apply(x -> x + 1).apply(0);
-}
-
-// 使用例
-IO.println(toInt(zero));        // 0
-IO.println(toInt(one));         // 1
-IO.println(toInt(succ(two)));   // 3
+(λx.x) 5 = 5
+(λx.λy.x) 1 2 = 1
+twice(increment)(5) = 7
+add5(3) = 8
+triple(100) = 300
+curry(volume)(2)(3)(4) = 24
+toInt(zero) = 0
+toInt(succ(two)) = 3
+toInt(plus(two, three)) = 5
+toInt(times(two, three)) = 6
+three(s -> s + "*")("") = ***
 ```
+<!-- /output -->
+<!-- claim: lambda-calculus-run -->
 
----
+標準ライブラリには引数が3つの関数型インターフェイスがないので、`TriFunction`を自分で定義しています（標準にあるのは`Function`と`BiFunction`まで）。
 
-## 4. 圏論の基礎概念
+### チャーチ数
 
-### 4.1 圏論とは
+ラムダ計算には数がありませんが、自然数nを「関数`f`をn回当てはめる関数」で表せます（チャーチ数）。
+`0 = λf.λx.x`、`1 = λf.λx.f x`、`2 = λf.λx.f (f x)`です。
+1を足す関数は`succ = λn.λf.λx.f (n f x)`、足し算は`plus = λm.λn.λf.λx.m f (n f x)`、掛け算は`times = λm.λn.λf.m (n f)`と書けます。
+上の出力の`toInt`は、チャーチ数に「1を足す関数」と0を渡して、`int`の値に直しています。
+同じチャーチ数`three`に、文字列に`*`を足す関数を渡すと`***`になります。
 
-圏論（Category Theory）は、数学的構造とその間の関係を研究する抽象的な理論です。プログラミングにおいては、型と関数の関係を理解するための強力なフレームワークを提供します。
+チャーチ数は、どんな型`T`の関数`T → T`にも使えなければなりません。
+そこで`ChurchNumeral`は、型パラメーターを持つメソッド`<T> Function<T, T> apply(Function<T, T> f)`のインターフェイスにしています。
+このような抽象メソッドは、ラムダ式では実装できません。
+JLSの15.27.3は、ラムダ式が当てはまる関数の型に型パラメーターがないことを条件にしています。
+`verify/compile-errors/GenericLambda.java`のように`ChurchNumeral ZERO = f -> x -> x;`と書くと、次のエラーになります。
 
-### 4.2 圏の定義
-
-圏は以下の要素から構成されます：
-
-1. **対象（Objects）**：型やデータ構造
-2. **射（Morphisms/Arrows）**：対象間の関数
-3. **合成（Composition）**：射の合成規則
-4. **恒等射（Identity）**：各対象に対する恒等関数
-
-```java
-// Javaにおける圏の要素
-
-// 対象：型
-class A {}
-class B {}
-class C {}
-
-// 射：関数
-Function<A, B> f = a -> new B();
-Function<B, C> g = b -> new C();
-
-// 合成
-Function<A, C> h = f.andThen(g);  // g ∘ f
-
-// 恒等射
-Function<A, A> idA = Function.identity();
+<!-- output: church-generic-lambda -->
 ```
-
-### 4.3 圏論の法則
-
-圏は以下の法則を満たす必要があります：
-
-1. **結合法則**：`(h ∘ g) ∘ f = h ∘ (g ∘ f)`
-2. **単位法則**：`id ∘ f = f` かつ `f ∘ id = f`
-
-```java
-// 結合法則の検証
-Function<Integer, Integer> f = x -> x + 1;
-Function<Integer, Integer> g = x -> x * 2;
-Function<Integer, Integer> h = x -> x * x;
-
-Function<Integer, Integer> composition1 = f.andThen(g).andThen(h);
-Function<Integer, Integer> composition2 = f.andThen(g.andThen(h));
-
-// 両者は同じ結果を生成
-IO.println(composition1.apply(3)); // ((3 + 1) * 2)² = 64
-IO.println(composition2.apply(3)); // ((3 + 1) * 2)² = 64
-
-// 単位法則の検証
-Function<Integer, Integer> identity = Function.identity();
-Function<Integer, Integer> fWithId1 = f.andThen(identity);
-Function<Integer, Integer> fWithId2 = identity.andThen(f);
-
-IO.println(f.apply(5));        // 6
-IO.println(fWithId1.apply(5)); // 6
-IO.println(fWithId2.apply(5)); // 6
+error: incompatible types: invalid functional descriptor for lambda expression
+method (Function<T,T>)Function<T,T> in interface ChurchNumeral is generic
 ```
+<!-- /output -->
+<!-- claim: church-generic-lambda -->
 
----
+そのため`LambdaCalculus.java`では、チャーチ数を匿名クラスで書いています。
 
-## 5. モナドの理論と実践
+## 4. Javaのラムダ式の実体
 
-### 5.1 モナドの定義
+Javaのラムダ式は、ラムダ計算の`λ`をそのまま実行するしくみではありません。
+ラムダ式は、関数型インターフェイス（抽象メソッドが1つだけのインターフェイス）を実装したオブジェクトになります。
+`verify/LambdaBytecode.java`を`javap -c -p`で見ると、その作り方がわかります。
 
-モナド（Monad）は、計算の文脈を扱うための数学的構造です。プログラミングにおいては、副作用を含む計算を純粋な関数として扱うための抽象化を提供します。
-
-モナドは以下の3つの要素から構成されます：
-
-1. **型コンストラクター** `M<T>`
-2. **return（unit）関数**：`T → M<T>`
-3. **bind（flatMap）関数**：`M<T> → (T → M<U>) → M<U>`
-
-### 5.2 モナド則
-
-モナドは以下の3つの法則を満たす必要があります：
-
-1. **左単位元則**：`return(a).flatMap(f) = f(a)`
-2. **右単位元則**：`m.flatMap(return) = m`
-3. **結合則**：`m.flatMap(f).flatMap(g) = m.flatMap(x -> f(x).flatMap(g))`
-
-### 5.3 JavaにおけるOptionalモナド
-
-JavaのOptionalはモナドの性質を持っています。
-ただし、`map`に渡した関数が`null`を返すと結果は空のOptionalになるため、`null`を返す関数を使うと、ファンクター則（6.2節）の合成則が成り立たないことがあります。
-法則が成り立つのは、関数が`null`を返さない場合です。
-
-```java
-// Optionalモナドの実装例
-
-// return (of): T → Optional<T>
-Optional<Integer> returnExample = Optional.of(42);
-
-// flatMap: Optional<T> → (T → Optional<U>) → Optional<U>
-Optional<String> result = Optional.of(5)
-    .flatMap(x -> Optional.of(x * 2))
-    .flatMap(x -> Optional.of("Result: " + x));
-
-// モナド則の検証
-
-// 1. 左単位元則
-Function<Integer, Optional<String>> f = x -> Optional.of("Value: " + x);
-Optional<String> left1 = Optional.of(10).flatMap(f);
-Optional<String> left2 = f.apply(10);
-IO.println(left1.equals(left2)); // true
-
-// 2. 右単位元則
-Optional<Integer> m = Optional.of(20);
-Optional<Integer> right1 = m.flatMap(Optional::of);
-Optional<Integer> right2 = m;
-IO.println(right1.equals(right2)); // true
-
-// 3. 結合則
-Function<Integer, Optional<Integer>> addOne = x -> Optional.of(x + 1);
-Function<Integer, Optional<Integer>> multiplyTwo = x -> Optional.of(x * 2);
-
-Optional<Integer> assoc1 = Optional.of(5)
-    .flatMap(addOne)
-    .flatMap(multiplyTwo);
-
-Optional<Integer> assoc2 = Optional.of(5)
-    .flatMap(x -> addOne.apply(x).flatMap(multiplyTwo));
-
-IO.println(assoc1.equals(assoc2)); // true
+<!-- output: lambda-indy -->
 ```
-
-### 5.4 カスタムモナドの実装
-
-独自のモナドを実装する例：
-
-```java
-// Resultモナド：成功/失敗を表現
-// sealedで実装をSuccessとFailureに限るので、switchで両方を網羅できる
-public sealed interface Result<T> permits Result.Success, Result.Failure {
-    
-    record Success<T>(T value) implements Result<T> {}
-    record Failure<T>(String error) implements Result<T> {}
-    
-    // return (of)
-    static <T> Result<T> of(T value) {
-        return new Success<>(value);
-    }
-    
-    static <T> Result<T> error(String message) {
-        return new Failure<>(message);
-    }
-    
-    // flatMap (bind)
-    default <U> Result<U> flatMap(Function<T, Result<U>> f) {
-        return switch (this) {
-            case Success<T>(var value) -> {
-                try {
-                    yield f.apply(value);
-                } catch (RuntimeException e) {
-                    yield new Failure<>(e.getMessage());
-                }
-            }
-            case Failure<T>(var error) -> new Failure<>(error);
-        };
-    }
-    
-    // map (ファンクターとしての機能)
-    default <U> Result<U> map(Function<T, U> f) {
-        return flatMap(value -> of(f.apply(value)));
-    }
-}
-
-// 使用例
-public class ResultMonadExample {
-    public static Result<Integer> divide(int a, int b) {
-        if (b == 0) {
-            return Result.error("Division by zero");
-        }
-        return Result.of(a / b);
-    }
-    
-    public static Result<Double> sqrt(int x) {
-        if (x < 0) {
-            return Result.error("Cannot take square root of negative number");
-        }
-        return Result.of(Math.sqrt(x));
-    }
-    
-    public static void main(String[] args) {
-        // モナディックな計算チェーン
-        Result<Double> result = divide(20, 4)
-            .flatMap(ResultMonadExample::sqrt)
-            .map(x -> x * 2);
-        
-        // パターンマッチングで結果を処理
-        switch (result) {
-            case Result.Success<Double>(var value) -> 
-                IO.println("Result: " + value);   // Result: 4.47213595499958
-            case Result.Failure<Double>(var error) -> 
-                IO.println("Error: " + error);
-        }
-    }
-}
+static java.util.function.IntUnaryOperator noCapture();
+0: invokedynamic // InvokeDynamic #0:applyAsInt:()Ljava/util/function/IntUnaryOperator;
+static java.util.function.IntUnaryOperator capture(int);
+1: invokedynamic // InvokeDynamic #1:applyAsInt:(I)Ljava/util/function/IntUnaryOperator;
+static java.util.function.BinaryOperator<java.lang.Integer> methodRef();
+0: invokedynamic // InvokeDynamic #2:apply:()Ljava/util/function/BinaryOperator;
+static java.util.function.Supplier<java.lang.String> anonymous();
+0: new // class LambdaBytecode$1
+private static int lambda$capture$0(int, int);
+private static int lambda$noCapture$0(int);
 ```
+<!-- /output -->
 
-### 5.5 Streamモナド
+- ラムダ式`x -> x * 2`の本体は、同じクラスの`private static`メソッド`lambda$noCapture$0`になる
+- 外の変数`factor`を取り込むラムダ式`x -> x * factor`の本体は、取り込んだ値を最初の引数として受け取るメソッド`lambda$capture$0(int, int)`になる
+- ラムダ式とメソッド参照を評価する箇所は`invokedynamic`命令になる。取り込む値は、その命令の引数として渡す
+- 匿名クラスは、`LambdaBytecode$1`という別のクラスファイルになり、`new`で作る
+<!-- claim: lambda-indy -->
 
-JavaのStreamもモナド的な性質を持っています：
+`invokedynamic`命令が最初に実行されるとき、JVMはブートストラップメソッドを呼んで、呼び出し先を決めます。
+`javap -v -p`で見ると、ブートストラップメソッドは`LambdaMetafactory.metafactory`で、その引数に本体のメソッドを指す`MethodHandle`が渡されています。
+メソッド参照`Integer::sum`には本体のメソッドを作らず、`Integer.sum`を直接指します。
+本体のメソッドには、ソースコードにないことを表す`ACC_SYNTHETIC`の印が付いています。
 
-```java
-// Streamモナドの例
-
-// return: T → Stream<T>
-Stream<Integer> single = Stream.of(42);
-
-// flatMap: Stream<T> → (T → Stream<U>) → Stream<U>
-Stream<String> words = Stream.of("Hello World", "Java Programming")
-    .flatMap(line -> Arrays.stream(line.split(" ")));
-
-// モナディックな計算の連鎖
-List<Integer> result = Stream.of(1, 2, 3, 4, 5)
-    .flatMap(x -> Stream.of(x, x * x))  // 各要素とその二乗
-    .filter(x -> x % 2 == 0)            // 偶数のみ
-    .map(x -> x * 10)                   // 10倍
-    .collect(Collectors.toList());
-
-IO.println(result); // [20, 40, 40, 160]（2の二乗の4と、元の要素の4の両方が残る）
-
-// モナド則の活用例
-Function<String, Stream<Character>> toChars = 
-    s -> s.chars().mapToObj(c -> (char) c);
-
-Function<Character, Stream<String>> toAscii = 
-    c -> Stream.of(String.valueOf((int) c));
-
-// 関数の合成
-Stream<String> asciiCodes = Stream.of("AB")
-    .flatMap(toChars)
-    .flatMap(toAscii);
-
-asciiCodes.forEach(IO::println); // 65, 66
+<!-- output: lambda-metafactory -->
 ```
-
----
-
-## 6. ファンクターとその応用
-
-### 6.1 ファンクターの定義
-
-ファンクター（Functor）は、ある圏から別の圏への構造を保つ写像です。プログラミングにおいては、コンテナー型の値を変換する抽象化として理解できます。
-
-ファンクターは以下の要素を持ちます：
-- **map関数**：`F<A> → (A → B) → F<B>`
-
-### 6.2 ファンクター則
-
-ファンクターは以下の法則を満たす必要があります：
-
-1. **恒等則**：`fmap(id) = id`
-2. **合成則**：`fmap(f ∘ g) = fmap(f) ∘ fmap(g)`
-
-### 6.3 Javaにおけるファンクターの実装
-
-```java
-// ファンクターインターフェイス
-public interface Functor<T> {
-    <R> Functor<R> map(Function<T, R> f);
-}
-
-// Optionalファンクター
-public class OptionalFunctor<T> implements Functor<T> {
-    private final Optional<T> value;
-    
-    public OptionalFunctor(Optional<T> value) {
-        this.value = value;
-    }
-    
-    @Override
-    public <R> OptionalFunctor<R> map(Function<T, R> f) {
-        return new OptionalFunctor<>(value.map(f));
-    }
-    
-    public Optional<T> get() {
-        return value;
-    }
-}
-
-// リストファンクター
-public class ListFunctor<T> implements Functor<T> {
-    private final List<T> values;
-    
-    public ListFunctor(List<T> values) {
-        this.values = new ArrayList<>(values);
-    }
-    
-    @Override
-    public <R> ListFunctor<R> map(Function<T, R> f) {
-        return new ListFunctor<>(
-            values.stream()
-                .map(f)
-                .collect(Collectors.toList())
-        );
-    }
-    
-    public List<T> get() {
-        return new ArrayList<>(values);
-    }
-}
-
-// ファンクター則の検証
-public class FunctorLawsTest {
-    public static void main(String[] args) {
-        // 恒等則のテスト
-        ListFunctor<Integer> numbers = new ListFunctor<>(List.of(1, 2, 3));
-        ListFunctor<Integer> identity = numbers.map(Function.identity());
-        IO.println(numbers.get().equals(identity.get())); // true
-        
-        // 合成則のテスト
-        Function<Integer, Integer> addOne = x -> x + 1;
-        Function<Integer, Integer> multiplyTwo = x -> x * 2;
-        
-        ListFunctor<Integer> composed1 = numbers
-            .map(addOne)
-            .map(multiplyTwo);
-            
-        ListFunctor<Integer> composed2 = numbers
-            .map(addOne.andThen(multiplyTwo));
-            
-        IO.println(composed1.get().equals(composed2.get())); // true
-    }
-}
+REF_invokeStatic LambdaBytecode.lambda$capture$0:(II)I
+REF_invokeStatic LambdaBytecode.lambda$noCapture$0:(I)I
+REF_invokeStatic java/lang/Integer.sum:(II)I
+REF_invokeStatic java/lang/invoke/LambdaMetafactory.metafactory
+flags: (0x100a) ACC_PRIVATE, ACC_STATIC, ACC_SYNTHETIC
 ```
+<!-- /output -->
+<!-- claim: lambda-metafactory -->
 
-### 6.4 二重ファンクターとトラバース
+実行すると、ラムダ式とメソッド参照のオブジェクトのクラスは、実行時に作られた隠しクラス（hidden class）で、名前に`$$Lambda`を含みます。
+匿名クラスは、ふつうのクラスです。
 
-```java
-// 二重ファンクターの扱い
-public class BiFunctor {
-    // Optional<List<T>>の変換
-    public static <T, R> Optional<List<R>> mapOptionalList(
-            Optional<List<T>> optList, 
-            Function<T, R> f) {
-        return optList.map(list -> 
-            list.stream()
-                .map(f)
-                .collect(Collectors.toList())
-        );
-    }
-    
-    // List<Optional<T>>の変換
-    public static <T, R> List<Optional<R>> mapListOptional(
-            List<Optional<T>> listOpt, 
-            Function<T, R> f) {
-        return listOpt.stream()
-            .map(opt -> opt.map(f))
-            .collect(Collectors.toList());
-    }
-    
-    // トラバース：List<Optional<T>> → Optional<List<T>>
-    public static <T> Optional<List<T>> sequence(List<Optional<T>> listOpt) {
-        return listOpt.stream()
-            .reduce(
-                Optional.of(new ArrayList<>()),
-                (acc, opt) -> acc.flatMap(list -> 
-                    opt.map(value -> {
-                        List<T> newList = new ArrayList<>(list);
-                        newList.add(value);
-                        return newList;
-                    })
-                ),
-                // 並列処理で部分結果をつなぐ関数（順次処理では呼ばれない）
-                (a, b) -> a.flatMap(left -> b.map(right -> {
-                    List<T> joined = new ArrayList<>(left);
-                    joined.addAll(right);
-                    return joined;
-                }))
-            );
-    }
-}
-
-// 使用例
-List<Optional<Integer>> maybeNumbers = List.of(
-    Optional.of(1),
-    Optional.of(2),
-    Optional.of(3)
-);
-
-Optional<List<Integer>> allNumbers = BiFunctor.sequence(maybeNumbers);
-IO.println(allNumbers); // Optional[[1, 2, 3]]
-
-// 一つでもemptyがあれば全体がempty
-List<Optional<Integer>> withEmpty = List.of(
-    Optional.of(1),
-    Optional.empty(),
-    Optional.of(3)
-);
-
-Optional<List<Integer>> result = BiFunctor.sequence(withEmpty);
-IO.println(result); // Optional.empty
+<!-- output: lambda-hidden-class -->
 ```
-
----
-
-## 7. Javaにおける関数型プログラミングの実装
-
-### 7.1 Java 8での関数型機能の導入
-
-Java 8は、関数型プログラミングの要素を大幅に取り入れました：
-
-1. **ラムダ式**：匿名関数の簡潔な記法
-2. **関数型インターフェイス**：`@FunctionalInterface`
-3. **Stream API**：関数型のデータ処理パイプライン
-4. **Optional**：null安全性のためのモナド
-
-### 7.2 高階関数の実装パターン
-
-```java
-public class HigherOrderFunctions {
-    
-    // 関数を返す関数
-    public static Function<Integer, Integer> multiplier(int factor) {
-        return x -> x * factor;
-    }
-    
-    // 関数を引数に取る関数
-    public static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
-        return list.stream()
-            .filter(predicate)
-            .collect(Collectors.toList());
-    }
-    
-    // 関数の合成を行う関数
-    public static <A, B, C> Function<A, C> compose(
-            Function<B, C> f, 
-            Function<A, B> g) {
-        return x -> f.apply(g.apply(x));
-    }
-    
-    // メモ化（記憶化）
-    public static <T, R> Function<T, R> memoize(Function<T, R> f) {
-        Map<T, R> cache = new ConcurrentHashMap<>();
-        return x -> cache.computeIfAbsent(x, f);
-    }
-    
-    public static void main(String[] args) {
-        // 使用例
-        Function<Integer, Integer> times3 = multiplier(3);
-        IO.println(times3.apply(5)); // 15
-        
-        List<Integer> evens = filter(List.of(1, 2, 3, 4, 5), x -> x % 2 == 0);
-        IO.println(evens); // [2, 4]
-        
-        // 高価な計算のメモ化
-        Function<Integer, Integer> expensiveFunction = x -> {
-            IO.println("Computing for " + x);
-            return x * x * x;
-        };
-        
-        Function<Integer, Integer> memoized = memoize(expensiveFunction);
-        
-        IO.println(memoized.apply(5)); // Computing for 5 → 125
-        IO.println(memoized.apply(5)); // 125 (キャッシュから)
-    }
-}
+ラムダ式: hidden=true synthetic=true anonymous=false name=LambdaBytecode$$Lambda/0x…
+メソッド参照: hidden=true synthetic=true anonymous=false name=LambdaBytecode$$Lambda/0x…
+匿名クラス: hidden=false synthetic=false anonymous=true name=LambdaBytecode$1
 ```
+<!-- /output -->
+<!-- claim: lambda-hidden-class -->
 
-### 7.3 遅延評価の実装
+ここまでのクラスの作り方は、JDKの実装（`LambdaMetafactory`）が決めていることです。
+JLSの15.27.4は、ラムダ式を評価すると、新しいインスタンスを作るか既存のインスタンスを使うかのどちらかになると述べるだけで、クラスの作り方やインスタンスを使い回すかどうかは実装に任せています。
+第11章のサンプルコード11-23で、取り込みのないラムダ式が同じインスタンスになるのは、OpenJDKの実装の動作です。
+<!-- claim: jls-lambda-evaluation -->
 
-```java
-public class LazyEvaluation {
-    
-    // 遅延評価を実現するSupplier
-    public static class Lazy<T> {
-        private Supplier<T> supplier;
-        private T value;
-        private boolean evaluated = false;
-        
-        public Lazy(Supplier<T> supplier) {
-            this.supplier = supplier;
-        }
-        
-        public T get() {
-            if (!evaluated) {
-                value = supplier.get();
-                evaluated = true;
-                supplier = null; // メモリリークを防ぐ
-            }
-            return value;
-        }
-        
-        public <R> Lazy<R> map(Function<T, R> f) {
-            return new Lazy<>(() -> f.apply(get()));
-        }
-        
-        public <R> Lazy<R> flatMap(Function<T, Lazy<R>> f) {
-            return new Lazy<>(() -> f.apply(get()).get());
-        }
-    }
-    
-    // 無限リストの実装
-    public static class LazyList<T> {
-        private final T head;
-        private final Lazy<LazyList<T>> tail;
-        
-        public LazyList(T head, Supplier<LazyList<T>> tail) {
-            this.head = head;
-            this.tail = new Lazy<>(tail);
-        }
-        
-        public T head() {
-            return head;
-        }
-        
-        public LazyList<T> tail() {
-            return tail.get();
-        }
-        
-        public Stream<T> stream() {
-            return Stream.iterate(this, LazyList::tail)
-                .map(LazyList::head);
-        }
-        
-        // 無限の自然数列
-        public static LazyList<Integer> naturals(int start) {
-            return new LazyList<>(start, () -> naturals(start + 1));
-        }
-        
-        // フィボナッチ数列
-        public static LazyList<Integer> fibonacci() {
-            return fibonacciHelper(0, 1);
-        }
-        
-        private static LazyList<Integer> fibonacciHelper(int a, int b) {
-            return new LazyList<>(a, () -> fibonacciHelper(b, a + b));
-        }
-    }
-    
-    public static void main(String[] args) {
-        // 遅延評価の例
-        Lazy<Integer> lazyValue = new Lazy<>(() -> {
-            IO.println("Computing expensive value...");
-            return 42;
-        });
-        
-        IO.println("Lazy value created");
-        IO.println("Value: " + lazyValue.get()); // ここで初めて計算
-        IO.println("Value: " + lazyValue.get()); // 2回目はキャッシュ
-        
-        // 無限リストの使用
-        LazyList.naturals(1)
-            .stream()
-            .limit(10)
-            .forEach(IO::println); // 1, 2, 3, ..., 10
-            
-        // フィボナッチ数列
-        LazyList.fibonacci()
-            .stream()
-            .limit(10)
-            .forEach(IO::println); // 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
-    }
-}
+## 5. 圏論の基礎
+
+圏論は、数学のさまざまな構造を、対象と、対象の間の矢印（射）で捉える理論です。
+Samuel EilenbergとSaunders Mac Laneが1945年の論文で、関手（ファンクター）と自然変換を定義する準備として圏を導入しました。
+<!-- claim: category-def -->
+
+### 圏の定義
+
+圏は、次のものからなります。
+
+1. 対象の集まり
+2. 対象`A`から対象`B`への射`f: A → B`の集まり
+3. 射の合成
+    + `f: A → B`と`g: B → C`から、射`g ∘ f: A → C`を作る
+4. 恒等射
+    + 対象`A`ごとに、射`id_A: A → A`がある
+
+そのうえで、次の2つの法則が成り立つ必要があります。
+
+- 結合法則
+  - `h ∘ (g ∘ f) = (h ∘ g) ∘ f`
+- 単位法則
+  - `f: A → B`について、`id_B ∘ f = f`かつ`f ∘ id_A = f`
+<!-- claim: category-def -->
+
+### Javaの型と関数は、圏に近いが圏ではない
+
+Javaの型を対象、`Function<A, B>`を射、`andThen`・`compose`を合成、`Function.identity()`を恒等射と見ると、圏に似た構造になります。
+`verify/Composition.java`は、2つの法則を、いくつかの入力で確かめます。
+
+<!-- output: category-laws-sampled -->
 ```
-
----
-
-## 8. 実践的応用例
-
-### 8.1 パーサーコンビネーター
-
-関数型プログラミングの応用例として、パーサーコンビネーターを実装します：
-
-```java
-public class ParserCombinator {
-    
-    // パーサーの基本型
-    @FunctionalInterface
-    public interface Parser<T> {
-        Optional<Pair<T, String>> parse(String input);
-    }
-    
-    // 補助クラス：解析した値と、残りの文字列の組
-    public record Pair<A, B>(A first, B second) {
-        @Override
-        public String toString() {
-            return "(" + first + ", " + second + ")";
-        }
-    }
-    
-    // 基本的なパーサー
-    public static Parser<Character> charParser(char c) {
-        return input -> {
-            if (input.isEmpty() || input.charAt(0) != c) {
-                return Optional.empty();
-            }
-            return Optional.of(new Pair<>(c, input.substring(1)));
-        };
-    }
-    
-    public static Parser<String> stringParser(String s) {
-        return input -> {
-            if (input.startsWith(s)) {
-                return Optional.of(new Pair<>(s, input.substring(s.length())));
-            }
-            return Optional.empty();
-        };
-    }
-    
-    // パーサーコンビネーター
-    public static <T> Parser<T> or(Parser<T> p1, Parser<T> p2) {
-        return input -> {
-            Optional<Pair<T, String>> result = p1.parse(input);
-            if (result.isPresent()) {
-                return result;
-            }
-            return p2.parse(input);
-        };
-    }
-    
-    public static <A, B> Parser<Pair<A, B>> and(Parser<A> p1, Parser<B> p2) {
-        return input -> p1.parse(input).flatMap(r1 ->
-            p2.parse(r1.second()).map(r2 ->
-                new Pair<>(new Pair<>(r1.first(), r2.first()), r2.second())
-            )
-        );
-    }
-    
-    public static <T> Parser<List<T>> many(Parser<T> parser) {
-        return input -> {
-            List<T> results = new ArrayList<>();
-            String remaining = input;
-            
-            while (true) {
-                Optional<Pair<T, String>> result = parser.parse(remaining);
-                if (result.isEmpty()) {
-                    break;
-                }
-                results.add(result.get().first());
-                remaining = result.get().second();
-            }
-            
-            return Optional.of(new Pair<>(results, remaining));
-        };
-    }
-    
-    // 数値パーサーの例
-    public static Parser<Integer> digit() {
-        return input -> {
-            if (input.isEmpty() || !Character.isDigit(input.charAt(0))) {
-                return Optional.empty();
-            }
-            int digit = Character.getNumericValue(input.charAt(0));
-            return Optional.of(new Pair<>(digit, input.substring(1)));
-        };
-    }
-    
-    public static Parser<Integer> number() {
-        return input -> {
-            Parser<List<Integer>> digits = many(digit());
-            return digits.parse(input).flatMap(result -> {
-                if (result.first().isEmpty()) {
-                    return Optional.empty();
-                }
-                int value = result.first().stream()
-                    .reduce(0, (acc, d) -> acc * 10 + d);
-                return Optional.of(new Pair<>(value, result.second()));
-            });
-        };
-    }
-    
-    public static void main(String[] args) {
-        // 使用例
-        Parser<Character> aParser = charParser('a');
-        Parser<Character> bParser = charParser('b');
-        Parser<Character> aOrB = or(aParser, bParser);
-        
-        IO.println(aOrB.parse("abc")); // Optional[(a, bc)]
-        IO.println(aOrB.parse("bcd")); // Optional[(b, cd)]
-        IO.println(aOrB.parse("xyz")); // Optional.empty
-        
-        // 数値のパース
-        Parser<Integer> num = number();
-        IO.println(num.parse("123abc")); // Optional[(123, abc)]
-        
-        // 複雑なパーサーの組み合わせ
-        Parser<Pair<String, Integer>> assignment = 
-            and(stringParser("x="), number());
-        IO.println(assignment.parse("x=42")); // Optional[((x=, 42), )]
-    }
-}
+結合法則（入力 [-3, 0, 3, 100]）: true
+単位法則（入力 [-3, 0, 3, 100]）: true
+((3 + 1) * 2)^2 = 64
+f.equals(f.andThen(id)) = false
+f.equals(f) = true
 ```
+<!-- /output -->
+<!-- claim: category-laws-sampled -->
 
-### 8.2 代数的データ型の実装
+ただし、この対応は厳密ではありません。
 
-```java
-// sealed classを使った代数的データ型
-public sealed interface Expression {
-    
-    record Constant(double value) implements Expression {}
-    record Variable(String name) implements Expression {}
-    record Add(Expression left, Expression right) implements Expression {}
-    record Multiply(Expression left, Expression right) implements Expression {}
-    
-    // パターンマッチングによる評価
-    default double evaluate(Map<String, Double> environment) {
-        return switch (this) {
-            case Constant(var value) -> value;
-            case Variable(var name) -> environment.getOrDefault(name, 0.0);
-            case Add(var left, var right) -> 
-                left.evaluate(environment) + right.evaluate(environment);
-            case Multiply(var left, var right) -> 
-                left.evaluate(environment) * right.evaluate(environment);
-        };
-    }
-    
-    // 式の簡約
-    default Expression simplify() {
-        return switch (this) {
-            case Constant c -> c;
-            case Variable v -> v;
-            case Add(var left, var right) -> {
-                Expression l = left.simplify();
-                Expression r = right.simplify();
-                
-                if (l instanceof Constant(var lv) && r instanceof Constant(var rv)) {
-                    yield new Constant(lv + rv);
-                }
-                if (l instanceof Constant(var v) && v == 0) yield r;
-                if (r instanceof Constant(var v) && v == 0) yield l;
-                yield new Add(l, r);
-            }
-            case Multiply(var left, var right) -> {
-                Expression l = left.simplify();
-                Expression r = right.simplify();
-                
-                if (l instanceof Constant(var lv) && r instanceof Constant(var rv)) {
-                    yield new Constant(lv * rv);
-                }
-                if (l instanceof Constant(var v) && v == 0) yield new Constant(0);
-                if (r instanceof Constant(var v) && v == 0) yield new Constant(0);
-                if (l instanceof Constant(var v) && v == 1) yield r;
-                if (r instanceof Constant(var v) && v == 1) yield l;
-                yield new Multiply(l, r);
-            }
-        };
-    }
-    
-    // 式の表示
-    default String show() {
-        return switch (this) {
-            case Constant(var value) -> String.valueOf(value);
-            case Variable(var name) -> name;
-            case Add(var left, var right) -> 
-                "(" + left.show() + " + " + right.show() + ")";
-            case Multiply(var left, var right) -> 
-                "(" + left.show() + " * " + right.show() + ")";
-        };
-    }
-}
+- 2つの関数が等しいとは「すべての入力で同じ値を返す」ことだが、Javaでそれを確かめる方法はない。上の観察は、選んだ入力で値が一致することを示すだけである
+- `Function`のオブジェクトの`equals`は、同じオブジェクトかどうかしか比べない。`f`と`f.andThen(id)`は、どの入力でも同じ値を返すのに`equals`では等しくない
+- Javaの関数には、例外を投げるもの・終わらないもの・`null`を返すもの・外の状態を変えるものがある。数学の関数（どの入力にも値を1つ決める対応）とは違う
+- 副作用を持つ関数では、返す値が同じでも、出力などの振る舞いまで同じとは限らない。値だけを比べる観察では、この違いを見逃す
 
-// 使用例
-public class AlgebraicDataTypeExample {
-    public static void main(String[] args) {
-        // (x + 2) * (y + 3)
-        Expression expr = new Expression.Multiply(
-            new Expression.Add(
-                new Expression.Variable("x"),
-                new Expression.Constant(2)
-            ),
-            new Expression.Add(
-                new Expression.Variable("y"),
-                new Expression.Constant(3)
-            )
-        );
-        
-        IO.println("Expression: " + expr.show());
-        
-        Map<String, Double> env = Map.of("x", 5.0, "y", 7.0);
-        IO.println("Evaluation: " + expr.evaluate(env)); // 70.0
-        
-        // 簡約の例
-        Expression toSimplify = new Expression.Add(
-            new Expression.Constant(0),
-            new Expression.Multiply(
-                new Expression.Variable("x"),
-                new Expression.Constant(1)
-            )
-        );
-        
-        IO.println("Before: " + toSimplify.show());
-        IO.println("After: " + toSimplify.simplify().show());
-    }
-}
+このため、以下で「ファンクター」「モナド」と呼ぶものは近似です。
+副作用がなく、`null`を返さず、例外を投げない関数だけを使うときに、法則が成り立ちます。
+どこで法則が崩れるかを知っておくと、`Optional`や`Stream`の振る舞いを正しく予想できます。
+
+## 6. ファンクター
+
+数学のファンクター（関手）`F`は、圏から圏への対応です。
+対象`A`を対象`F(A)`に、射`f: A → B`を射`F(f): F(A) → F(B)`に移し、恒等射と合成を保ちます。
+<!-- claim: category-def -->
+
+プログラミングでは、型を包む型（`Optional<T>`、`List<T>`など）と、中の値に関数を当てはめる操作`map`の組をファンクターと呼びます。
+`map`は次の2つの法則を満たす必要があります（Haskellの言語仕様の書き方では`fmap id = id`、`fmap (f . g) = fmap f . fmap g`）。
+
+- 恒等則
+  - `m.map(x -> x)`は`m`と等しい
+- 合成則
+  - `m.map(g).map(f)`は`m.map(g.andThen(f))`と等しい
+<!-- claim: haskell-laws -->
+
+### 観察する
+
+`verify/FunctorLaws.java`は、`Optional`と`Stream`の`map`で法則を確かめます。
+
+<!-- output: optional-functor-laws -->
 ```
-
-### 8.3 効果システムの実装
-
-```java
-// IOモナドの簡易実装
-// このクラス名はjava.lang.IO（標準入出力）と重なる。同じパッケージのクラスが優先されるため、
-// クラスの中で標準入出力を使うときはjava.lang.IOと完全修飾名で書く
-public abstract class IO<T> {
-    
-    // 2つの結果の組（parで使う）
-    public record Pair<A, B>(A first, B second) {}
-    
-    // 実行
-    public abstract T unsafeRun();
-    
-    // pure (return)
-    public static <T> IO<T> pure(T value) {
-        return new IO<T>() {
-            @Override
-            public T unsafeRun() {
-                return value;
-            }
-        };
-    }
-    
-    // flatMap (bind)
-    public <U> IO<U> flatMap(Function<T, IO<U>> f) {
-        return new IO<U>() {
-            @Override
-            public U unsafeRun() {
-                T result = IO.this.unsafeRun();
-                return f.apply(result).unsafeRun();
-            }
-        };
-    }
-    
-    // map
-    public <U> IO<U> map(Function<T, U> f) {
-        return flatMap(t -> pure(f.apply(t)));
-    }
-    
-    // 基本的なIO操作
-    public static IO<String> readLine() {
-        return new IO<String>() {
-            @Override
-            public String unsafeRun() {
-                return java.lang.IO.readln();
-            }
-        };
-    }
-    
-    public static IO<Void> println(String s) {
-        return new IO<Void>() {
-            @Override
-            public Void unsafeRun() {
-                java.lang.IO.println(s);
-                return null;
-            }
-        };
-    }
-    
-    // 合成されたIO操作
-    public static IO<Void> echo() {
-        return readLine()
-            .flatMap(line -> println("You entered: " + line));
-    }
-    
-    // より複雑な例
-    public static IO<Integer> getNumber() {
-        return println("Enter a number:")
-            .flatMap(_ -> readLine())
-            .map(Integer::parseInt);
-    }
-    
-    public static IO<Void> calculator() {
-        return getNumber()
-            .flatMap(a -> getNumber()
-                .flatMap(b -> {
-                    int sum = a + b;
-                    return println("Sum: " + sum);
-                })
-            );
-    }
-    
-    // 並列実行
-    public <U> IO<Pair<T, U>> par(IO<U> other) {
-        return new IO<Pair<T, U>>() {
-            @Override
-            public Pair<T, U> unsafeRun() {
-                CompletableFuture<T> f1 = CompletableFuture.supplyAsync(
-                    () -> IO.this.unsafeRun()
-                );
-                CompletableFuture<U> f2 = CompletableFuture.supplyAsync(
-                    () -> other.unsafeRun()
-                );
-                
-                try {
-                    return new Pair<>(f1.get(), f2.get());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-    }
-    
-    // エラーハンドリング
-    public IO<T> handleError(Function<Exception, T> handler) {
-        return new IO<T>() {
-            @Override
-            public T unsafeRun() {
-                try {
-                    return IO.this.unsafeRun();
-                } catch (Exception e) {
-                    return handler.apply(e);
-                }
-            }
-        };
-    }
-}
-
-// 使用例
-public class IOExample {
-    public static void main(String[] args) {
-        // 純粋な関数型プログラム
-        IO<Void> program = IO.println("Welcome to FP Calculator!")
-            .flatMap(_ -> IO.calculator())
-            .flatMap(_ -> IO.println("Goodbye!"));
-        
-        // 副作用はmainの最後でのみ実行
-        program.unsafeRun();
-    }
-}
+Optional[3]: 恒等則 true、合成則 true
+Optional.empty: 恒等則 true、合成則 true
+List: 恒等則 true、合成則 true
 ```
+<!-- /output -->
+<!-- claim: optional-functor-laws -->
 
-## まとめ
+`null`を返さない関数なら、`Optional.map`は両方の法則を満たします。
+ところが、`null`を返す関数`g`（`x -> null`）と、`null`を受け取って文字列を返す関数`f`を使うと、合成則が崩れます。
 
-関数型プログラミングの数学的基礎を理解することで、以下のような利点が得られます：
+<!-- output: optional-null-composition -->
+```
+Optional.map: m.map(g).map(f) = Optional.empty
+Optional.map: m.map(g.andThen(f)) = Optional[nullでした]
+Optional.map: 合成則 false
+```
+<!-- /output -->
 
-1. **抽象化の力**：モナドやファンクターなどの抽象概念により、複雑な計算パターンを簡潔に表現できる
-2. **合成可能性**：小さな関数を組み合わせて複雑な処理を構築できる
-3. **推論可能性**：数学的法則に基づいたコードは、その振る舞いを推論しやすい
-4. **再利用性**：高度に抽象化されたコードは、さまざまな文脈で再利用可能
+`Optional.map`は、関数が`null`を返すと空の`Optional`を返します（APIドキュメントに書かれた仕様）。
+そのため`m.map(g)`の時点で空になり、`f`は呼ばれません。
+一方、`g.andThen(f)`は`f`に`null`を渡すので、`"nullでした"`が返ります。
+<!-- claim: optional-null-composition -->
 
-Javaは純粋な関数型言語ではありませんが、Java 8以降の機能により、関数型プログラミングの多くの利点を享受できるようになりました。ラムダ計算、圏論、モナド、ファンクターなどの理論的基礎を理解することで、より洗練された、保守性の高いコードを書くことができます。
+`Stream`は要素に`null`を持てるので、同じ関数でも合成則が成り立ちます。
 
-これらの概念ははじめは難しく感じるかもしれませんが、実践を通じて徐々に理解を深めることで、プログラミングに対する新たな視点を得ることができるでしょう。関数型プログラミングは、単なるプログラミングスタイルではなく、計算とは何かという根本的な問いに対する1つの答えなのです。
+<!-- output: stream-null-composition -->
+```
+Stream.map: [nullでした] / [nullでした] 合成則 true
+```
+<!-- /output -->
+<!-- claim: stream-null-composition -->
+
+`Stream`のオブジェクトどうしは比べられないので、上の観察は`toList()`で集めたリストを比べています。
+また、1つの`Stream`には中間操作か終端操作を一度しか行えません。
+`s.map(...)`を呼んだあとで、同じ`s`にもう一度操作すると例外になります。
+
+<!-- output: stream-single-use -->
+```
+Stream.equals: false
+2回目の操作: IllegalStateException: stream has already been operated upon or closed
+```
+<!-- /output -->
+<!-- claim: stream-single-use -->
+
+### Javaでは「ファンクター」という型を書けない
+
+Haskellでは、「`map`を持つ型を包む型」をまとめて`Functor`という1つの型クラスで表せます。
+Javaでこれを書こうとすると、型パラメーター`F`に型引数を付けて`F<A>`と書く必要があります。
+しかしJavaの型パラメーターは型引数を取れないので（高カインド型がない）、`verify/compile-errors/HigherKinded.java`はコンパイルエラーになります。
+
+<!-- output: no-hkt -->
+```
+error: unexpected type
+required: class
+found: type parameter F
+```
+<!-- /output -->
+<!-- claim: no-hkt -->
+
+そのため`Optional`・`Stream`・`CompletableFuture`は、それぞれが同じ形の`map`（`CompletableFuture`では`thenApply`）を別々に持っています。
+「`map`を持つ型ならどれでも使える」メソッドは、Javaでは書けません。
+
+### List<Optional<T>>を裏返す
+
+包む型が2重になったとき、内と外を入れ替えたいことがあります。
+`verify/Sequence.java`の`sequence`は、`List<Optional<T>>`を`Optional<List<T>>`に変えます。
+1つでも空があれば全体が空になるので、「入力をすべて数に直せたときだけ、数のリストを得る」処理に使えます。
+
+<!-- output: sequence-run -->
+```
+Optional[[1, 2, 3]]
+Optional.empty
+Optional[[10, 20, 30]]
+Optional.empty
+```
+<!-- /output -->
+<!-- claim: sequence-run -->
+
+関数型の言語ではこの操作を`sequence`（関数を当てはめながら行うものを`traverse`）と呼びます。
+Javaの標準ライブラリにはないので、自分で書きます。
+
+## 7. モナド
+
+モナドは、ファンクターに次の2つの操作を加えたものです。
+
+1. unit（`return`、`pure`とも呼ぶ）
+    + 値`a`を包む。`Optional`では`Optional.of`、`Stream`では`Stream.of`
+2. bind（`>>=`）
+    + 包まれた値に「値を受け取って包まれた値を返す関数」を当てはめ、結果を平らにする。Javaでは`flatMap`
+
+unitとbindは、次の3つの法則を満たす必要があります（Haskellの言語仕様にある法則を、Javaの書き方にしたもの）。
+
+1. 左単位元則
+    + `unit(a).flatMap(f)`は`f(a)`と等しい
+2. 右単位元則
+    + `m.flatMap(x -> unit(x))`は`m`と等しい
+3. 結合則
+    + `m.flatMap(f).flatMap(g)`は`m.flatMap(x -> f(x).flatMap(g))`と等しい
+<!-- claim: haskell-laws -->
+
+関数型プログラミングでモナドが使われるようになったのは、Eugenio Moggiがプログラミング言語の意味論の構成にモナドを使い、Philip Wadlerがその方法を関数型プログラムの構成に応用してからです。
+Wadlerの講義録「Monads for functional programming」（1995年、Lecture Notes in Computer Science 925）は、状態・例外・出力などの効果をモナドで表す例と、モナドで作るパーサーを示しています。
+<!-- claim: wadler-moggi -->
+
+### Optionalで確かめる
+
+`verify/MonadLaws.java`は、`Optional`で3つの法則を確かめます。
+結合則は、途中で空になる関数（偶数なら半分にし、奇数なら空を返す`half`）でも確かめています。
+
+<!-- output: optional-monad-laws -->
+```
+左単位元則: true
+右単位元則 Optional[20]: true
+右単位元則 Optional.empty: true
+結合則 a=5: Optional[3] / Optional[3] true
+結合則 a=6: Optional.empty / Optional.empty true
+```
+<!-- /output -->
+<!-- claim: optional-monad-laws -->
+
+これらは`null`を使わない場合の結果です。
+`null`が絡むと、次のようになります。
+
+<!-- output: optional-null-monad -->
+```
+ofNullable(null).flatMap(describe) = Optional.empty
+describe.apply(null) = Optional[nullを受け取った]
+Optional.of(null): NullPointerException
+Optional.flatMap(x -> null): NullPointerException
+```
+<!-- /output -->
+
+- unitを`Optional.ofNullable`にすると、`a`が`null`のとき左単位元則が崩れる。`ofNullable(null)`は空になり、`describe`は呼ばれない
+- unitを`Optional.of`にすると、`null`はそもそも包めない（`NullPointerException`）
+- `flatMap`に渡した関数が`null`を返すと、`NullPointerException`になる（APIドキュメントに書かれた仕様）
+<!-- claim: optional-null-monad -->
+
+つまり`Optional`は、「値は`null`でなく、関数も`null`を返さない」という前提のもとでモナドとして振る舞います。
+
+### Streamで確かめる
+
+`Stream`では、`Stream.of`がunit、`flatMap`がbindです。
+
+<!-- output: stream-monad-laws -->
+```
+Stream 左単位元則: true
+Stream 右単位元則: true
+Stream 結合則: [2, 4] / [2, 4] true
+Stream.flatMap(x -> null): []
+```
+<!-- /output -->
+
+`Stream.flatMap`は、関数が`null`を返すと、`Optional.flatMap`のように例外を投げず、空のストリームとして扱います（APIドキュメントに書かれた仕様）。
+<!-- claim: stream-monad-laws -->
+
+`flatMap`・`filter`・`map`をつなぐと、次のようになります。
+1〜5の各要素とその2乗を並べた列（`1, 1, 2, 4, 3, 9, 4, 16, 5, 25`）から偶数を選び、10倍します。
+2の2乗の4と、元の要素の4の両方が残ります。
+<!-- claim: stream-chain -->
+
+<!-- output: stream-chain -->
+```
+連鎖: [20, 40, 40, 160]
+```
+<!-- /output -->
+<!-- claim: stream-chain -->
+
+### 自分で作るResult型
+
+`verify/ResultMonad.java`は、成功（`Success`）か失敗（`Failure`）かを表す`Result`型を、sealedインターフェイスとレコードで作ります。
+sealedで実装を2つに限っているので、`switch`で両方を網羅しているかをコンパイラーが確かめます（第8章）。
+`flatMap`は、成功なら関数を当てはめ、失敗ならそのまま失敗を伝えます。
+
+<!-- output: result-run -->
+```
+20 / 4 → sqrt → *2: Success: 4.47213595499958
+20 / 0 → sqrt → *2: Failure: Division by zero
+-20 / 4 → sqrt → *2: Failure: Cannot take square root of negative number
+```
+<!-- /output -->
+<!-- claim: result-run -->
+
+`20 / 4 = 5`、`√5 × 2 = 4.47213595499958`です。
+途中で失敗すると、残りの関数は呼ばれず、最初の失敗の理由が最後まで伝わります。
+
+この`flatMap`は、関数が投げた実行時例外も失敗に変えています。
+便利ですが、そのせいで左単位元則が崩れます。
+
+<!-- output: result-left-identity-exception -->
+```
+of("12").flatMap(parse) = Success: 12
+parse.apply("12") = Success: 12
+of("x").flatMap(parse) = Failure: NumberFormatException
+parse.apply("x") は例外を投げる: NumberFormatException
+```
+<!-- /output -->
+
+`of("x").flatMap(parse)`は失敗の値を返しますが、`parse.apply("x")`は例外を投げるので、両者は等しくありません。
+法則を守るなら、例外を失敗に変える処理は`flatMap`の外（`parse`のなか）に置きます。
+<!-- claim: result-left-identity-exception -->
+
+## 8. 末尾呼び出しと再帰
+
+関数型の言語では、繰り返しを再帰で書くことがよくあります。
+再帰呼び出しの結果をそのまま返す（呼び出しのあとに計算が残らない）形を末尾再帰といいます。
+言語によっては、末尾再帰をループと同じように、スタックを積まずに実行します（末尾呼び出しの最適化）。
+
+Javaでは、末尾再帰で書いてもスタックを使い切ります。
+`verify/TailCall.java`の`sumTo`は末尾再帰で1からnまでの和を求めます。
+
+<!-- output: tail-call-overflow -->
+```
+末尾再帰 n=1000: 500500
+末尾再帰 n=10000000: StackOverflowError
+ループ n=10000000: 50000005000000
+Stream n=10000000: 50000005000000
+```
+<!-- /output -->
+<!-- claim: tail-call-overflow -->
+
+`javac`は末尾再帰をループに書き換えません。
+`javap -c -p`で見ると、`sumTo`の最後は自分自身の呼び出し（`invokestatic`）と、その結果を返す`lreturn`のままです。
+
+<!-- output: tail-call-bytecode -->
+```
+14: invokestatic // Method sumTo:(JJ)J
+17: lreturn
+```
+<!-- /output -->
+<!-- claim: tail-call-bytecode -->
+
+Javaで深い繰り返しを書くときは、ループか`Stream`を使います。
+スタックの深さは`-Xss`（スレッドのスタックの大きさ）や実行環境で変わるので、再帰がどの深さで失敗するかに頼る書き方は避けます。
+
+## 9. 評価の順序と遅延評価
+
+Javaは、メソッドを呼ぶ前に引数をすべて評価します（JLSの15.12.4.2）。
+そのため、`Optional.orElse(式)`の式は、値があって使われないときでも評価されます。
+評価を必要になるまで遅らせるには、値の代わりに「値を作る関数」（`Supplier`）を渡します。
+`orElseGet`は、値がないときだけ`Supplier`を呼びます。
+`verify/Laziness.java`で確かめます。
+
+<!-- output: eager-orelse -->
+```
+orElse（引数を先に評価する）:
+代わりの値A を計算した
+orElseGet（必要になったときだけSupplierを呼ぶ）:
+```
+<!-- /output -->
+<!-- claim: eager-orelse -->
+
+### 1回だけ計算する遅延値
+
+`Lazy`クラスは、`Supplier`を持っておき、最初に`get`したときだけ計算して結果を覚えます。
+`map`で作った`Lazy`も、`get`するまで元の計算を始めません。
+
+<!-- output: lazy-value -->
+```
+Lazy:
+Lazyを作った
+重い値 を計算した
+length = 3
+lazy = 重い値（2回目は計算しない）
+```
+<!-- /output -->
+<!-- claim: lazy-value -->
+
+この`Lazy`は1つのスレッドから使う前提です。
+複数のスレッドから使うなら、`get`を`synchronized`にするなどの対策が要ります（第15章）。
+
+### Streamの中間操作は遅延する
+
+`Stream`の中間操作（`filter`・`map`・`peek`など）は、終端操作（`toList`など）を呼ぶまで何もしません。
+終端操作を呼ぶと、要素を1つずつパイプラインに通し、`limit`などで結果が決まった時点で残りの要素を処理しません。
+
+<!-- output: stream-lazy -->
+```
+Stream（終端操作がないと何もしない）:
+パイプラインを作った
+peek 1
+peek 2
+結果 [2]
+```
+<!-- /output -->
+
+パイプラインを作った時点では`peek`は何も表示せず、最初の偶数2が見つかった時点で3と4は処理されていません。
+<!-- claim: stream-lazy -->
+
+遅延するので、無限に続く列も、必要な分だけ取り出せます。
+`LazyList`は、先頭の要素と「残りを作る方法」（`Lazy`）の組で無限のリストを表し、フィボナッチ数列を作ります。
+
+<!-- output: infinite-stream -->
+```
+無限のストリーム:
+[1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+```
+<!-- /output -->
+<!-- claim: infinite-stream -->
+
+## 10. 高階関数とメモ化
+
+関数を返す関数や、関数を受け取る関数を高階関数といいます。
+`verify/Memoize.java`の`memoize`は、関数を受け取り、結果を覚える関数を返します。
+同じ引数で2回呼ぶと、2回目は元の関数を呼びません。
+
+<!-- output: memoize-run -->
+```
+multiplier(3).apply(5) = 15
+Computing for 5
+125
+125
+[2, 4]
+```
+<!-- /output -->
+<!-- claim: memoize-run -->
+
+メモ化は、副作用がなく同じ引数に同じ値を返す関数でなければ、意味が変わります。
+上の`cube`は「Computing for 5」と表示する副作用を持つので、メモ化すると表示が1回に減ります。
+
+### computeIfAbsentを再帰で使わない
+
+メモ化した関数のなかから、同じ表に対して再帰的に`computeIfAbsent`を呼ぶ書き方（フィボナッチ数など）は動きません。
+`ConcurrentHashMap`は`IllegalStateException`（Recursive update）を、`HashMap`は`ConcurrentModificationException`を投げます。
+
+<!-- output: compute-recursive -->
+```
+ConcurrentHashMap: java.lang.IllegalStateException: Recursive update
+HashMap: java.util.ConcurrentModificationException
+表を埋める: fib(30) = 832040
+```
+<!-- /output -->
+
+どちらのクラスのAPIドキュメントも、`computeIfAbsent`に渡す関数のなかでそのマップを変更してはいけないと書いています。
+再帰の計算をメモ化するときは、小さいほうから順に表を埋めるか、`computeIfAbsent`を使わずに`get`と`put`で書きます。
+<!-- claim: compute-recursive -->
+
+## 11. 関数型の技法の応用
+
+### パーサーコンビネーター
+
+`verify/ParserCombinator.java`は、パーサーを「文字列を受け取り、成功なら（解析した値, 残りの文字列）を、失敗なら空を返す関数」として表します。
+小さなパーサー（1文字、決まった文字列、1桁の数字）を、`or`・`and`・`many`で組み合わせて大きなパーサーを作ります。
+`Parser`の`map`と`flatMap`は、パーサーをファンクター・モナドとして扱うためのもので、Wadlerの講義録の第5節と同じ考え方です。
+
+<!-- output: parser-run -->
+```
+Optional[(a, bc)]
+Optional[(b, cd)]
+Optional.empty
+Optional[(123, abc)]
+Optional[((x=, 42), )]
+Optional[(42,  rest)]
+Optional.empty
+```
+<!-- /output -->
+<!-- claim: parser-run -->
+
+最後の2行は、`flatMap`で「数、`+`、数」の順に解析して足し算するパーサーの結果です。
+`12+30 rest`は`42`と残り` rest`に、`+`のない`12-30`は失敗になります。
+
+### 代数的データ型とパターンマッチング
+
+`verify/ExpressionAdt.java`は、式の木を「定数・変数・足し算・掛け算のどれか」という型（代数的データ型）として、sealedインターフェイスとレコードで表します。
+評価・簡約・表示は、レコードパターンを使った`switch`で書きます。
+
+<!-- output: adt-run -->
+```
+Expression: ((x + 2.0) * (y + 3.0))
+Evaluation: 70.0
+Before: (0.0 + (x * 1.0))
+After: x
+equals: true
+x * 0.0 (x = Infinity): NaN
+```
+<!-- /output -->
+<!-- claim: adt-run -->
+
+`x = 5`、`y = 7`のとき`(5 + 2) * (7 + 3) = 70`です。
+レコードの`equals`は成分を比べるので、簡約した結果を`new Variable("x")`と比べられます。
+
+簡約では「0を足す」「1を掛ける」を取り除いています。
+「0を掛けると0」という簡約は入れていません。
+`double`では、`x`が無限大のとき`x * 0.0`は`NaN`になるので、この簡約は式の意味を変えてしまいます。
+
+sealedインターフェイスの実装をすべて網羅しない`switch`式は、コンパイルエラーになります（`verify/compile-errors/NonExhaustive.java`）。
+型を1つ足したときに、処理を書き忘れた`switch`をコンパイラーが教えてくれます。
+
+<!-- output: non-exhaustive -->
+```
+error: the switch expression does not cover all possible input values
+```
+<!-- /output -->
+<!-- claim: non-exhaustive -->
+
+### 副作用を値として扱う（IOモナド）
+
+`verify/IOMonad.java`の`IO<T>`は、「実行すると`T`の値を返す手順」を表す値です。
+`flatMap`で手順をつないでも、何も実行しません。
+`unsafeRun()`を呼んだときに、つないだ順に実行します。
+
+<!-- output: io-monad-run -->
+```
+--- 手順を組み立てた（まだ何も表示していない）
+Welcome!
+Enter a number:
+Enter a number:
+Sum: 7
+--- getNumberは2回実行された（残りの入力 []）
+IOが指すクラス: IOMonad$IO
+```
+<!-- /output -->
+<!-- claim: io-monad-run -->
+
+1つの`getNumber`を2回つなぐと、その手順は2回実行され、入力も2行読まれます。
+`getNumber`は「読んだ値」ではなく「読む手順」だからです。
+観察の結果が毎回同じになるように、入力の代わりに決まった行（3と4）を返す`readLine`を使っています。
+
+入れ子のクラス`IO`は、`IOMonad`のなかでは`java.lang.IO`より優先されます（最後の行のとおり、`IO`は`IOMonad$IO`を指します）。
+そのため、標準出力には`java.lang.IO.println`と完全修飾名で書いています。
+
+Haskellでは、入出力をこのような値として組み立て、`main`だけがそれを実行します。
+Javaの`IO<T>`は、その考え方をまねた簡易版です。
+Javaでは、どのメソッドのなかでも副作用を起こせるので、言語が副作用の場所を限ってくれるわけではありません。
+
+## よくある誤解
+
+- `Optional`は、どんな関数でもファンクター・モナドの法則を満たす
+  - `null`を返す関数を`map`に渡すと合成則が崩れ、`flatMap`に渡すと例外になる（6・7）
+  <!-- claim: optional-null-composition, optional-null-monad -->
+- 法則を確かめるには、`Function`や`Stream`を`equals`で比べればよい
+  - `Function`の`equals`は同じオブジェクトかしか比べず、`Stream`は比べられないうえ一度しか使えない。関数の値やリストに直して比べる（5・6）
+  <!-- claim: category-laws-sampled, stream-single-use -->
+- ラムダ式は匿名クラスの短い書き方である
+  - 匿名クラスは別のクラスファイルになるが、ラムダ式は同じクラスの`private`メソッドと`invokedynamic`になり、実行時に隠しクラスが作られる（4）
+  <!-- claim: lambda-indy, lambda-hidden-class -->
+- ラムダ式から外の変数を変えられないのは、Javaが関数型だからである
+  - 実質的にfinalの規則は匿名クラスにもあり、JLSは並行処理の問題を避けることを理由に挙げている（2）
+  <!-- claim: capture-effectively-final, anonymous-effectively-final -->
+- 末尾再帰で書けば、深い再帰でもスタックがあふれない
+  - `javac`もJVMも末尾呼び出しを最適化しない。深い繰り返しはループか`Stream`で書く（8）
+  <!-- claim: tail-call-overflow, tail-call-bytecode -->
+- `orElse`に渡した式は、値がないときだけ評価される
+  - 引数は呼び出しの前に評価される。遅らせたいときは`orElseGet`に`Supplier`を渡す（9）
+  <!-- claim: eager-orelse -->
+- メモ化は`computeIfAbsent`のなかで再帰すれば書ける
+  - `ConcurrentHashMap`も`HashMap`も例外を投げる（10）
+  <!-- claim: compute-recursive -->
+
+## 参考資料
+
+- Java言語仕様（Java SE 25）
+  - Chapter 1 Introduction（1.7 References）
+  - 4.3.1「Objects」
+  - 14.11.1.1「Exhaustive Switch Blocks」
+  - 15.12.4.2「Evaluate Arguments」
+  - 15.27.2「Lambda Body」、15.27.3「Type of a Lambda Expression」、15.27.4「Run-Time Evaluation of Lambda Expressions」
+  - `https://docs.oracle.com/javase/specs/jls/se25/html/`
+- Java SE 25のAPI
+  - `Function`、`Optional`、`Stream`（パッケージ`java.util.stream`の説明を含む）、`ConcurrentHashMap.computeIfAbsent`、`HashMap.computeIfAbsent`、`LambdaMetafactory`、`Class.isHidden`
+  - `https://docs.oracle.com/en/java/javase/25/docs/api/java.base/module-summary.html`
+- JEP 126: Lambda Expressions & Virtual Extension Methods（Java 8）
+  - `https://openjdk.org/jeps/126`
+- JEP 395: Records（Java 16）、JEP 409: Sealed Classes（Java 17）、JEP 440: Record Patterns・JEP 441: Pattern Matching for switch（Java 21）、JEP 456: Unnamed Variables & Patterns（Java 22）
+  - `https://openjdk.org/jeps/395`ほか
+- Haskell 2010 Language Report、6.3「Standard Haskell Classes」（ファンクターとモナドの法則）
+  - `https://www.haskell.org/onlinereport/haskell2010/haskellch6.html`
+- Peter Naur, Brian Randell（編）「Software Engineering: Report on a conference sponsored by the NATO Science Committee」（1969年）
+  - `http://homepages.cs.ncl.ac.uk/brian.randell/NATO/nato1968.PDF`
+- Edsger W. Dijkstra「Go To Statement Considered Harmful」、Communications of the ACM 11(3)、1968年（原稿EWD215の翻刻）
+  - `https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD215.html`
+- John McCarthy「Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I」、Communications of the ACM、1960年
+  - `http://www-formal.stanford.edu/jmc/recursive.html`
+- Philip Wadler「Monads for functional programming」、Advanced Functional Programming（LNCS 925）、1995年
+  - `https://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf`
+- オスロ大学「Ole-Johan Dahl」（Simulaの開発の経緯）
+  - `https://www.mn.uio.no/ifi/english/about/ole-johan-dahl/`
+- Stanford Encyclopedia of Philosophy「Category Theory」（圏・関手の定義と歴史）
+  - `https://plato.stanford.edu/entries/category-theory/`

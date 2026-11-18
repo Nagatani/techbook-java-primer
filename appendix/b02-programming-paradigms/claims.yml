@@ -1,0 +1,715 @@
+# 付録B.02の主張と、その確かめ方
+# npm run check:deep-dive -- b02 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 1. パラダイムの流れ
+  - id: paradigms-sum
+    claim: 1から10までの和を命令型・構造化・オブジェクト指向・関数型の4つの書き方で求めると、どれも55になる
+    verify:
+      kind: run
+      probe: verify/Paradigms.java
+      expect:
+        - '^命令型: 55$'
+        - '^構造化: 55$'
+        - '^オブジェクト指向: 55$'
+        - '^関数型: 55$'
+
+  - id: nato-1968
+    claim: 1968年10月7日〜11日にNATOの科学委員会の後援でガルミッシュでソフトウェア工学の会議が開かれ、1969年1月の報告書（編者NaurとRandell）に、一部の参加者がsoftware crisisと呼んだ問題の議論と、crisisという言葉を好まない参加者の発言が載っている
+    sources:
+      - title: 'Software Engineering: Report on a conference sponsored by the NATO Science Committee（Naur, Randell編, 1969）'
+        url: http://homepages.cs.ncl.ac.uk/brian.randell/NATO/nato1968.PDF
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: PDFの表紙（Garmisch, Germany, 7th to 11th October 1968、Editors Peter Naur and Brian Randell、January 1969）と、7.1.2 PROBLEM AREASの「what some members chose to call the 'software crisis' or the 'software gap'」、David and Fraserの「a widening gap between ambitions and achievements」、Kolenceの「I do not like the use of the word 'crisis'. It's a very emotional word.」を読んで確かめた
+
+  - id: dijkstra-goto
+    claim: DijkstraのGo To Statement Considered HarmfulはCommunications of the ACM 11（1968年3月）147〜148ページに載り、原稿の題名はA Case against the GO TO Statement（EWD215）で、BöhmとJacopiniの論文（1966年）に触れている
+    sources:
+      - title: E.W. Dijkstra Archive EWD215 A Case against the GO TO Statement（翻刻）
+        url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD215.html
+        anchor: Go To Statement Considered Harmful
+      - title: 同上（参考文献のBöhmとJacopiniの論文）
+        url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD215.html
+        anchor: Flow diagrams, Turing machines and languages with only two formation rules
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 翻刻の末尾の注記（the version published in Comm. ACM 11 (March 1968), 147–148 under the title "Go To Statement Considered Harmful"）と、本文の「Jacopini seems to have proved the (logical) superfluousness of the go to statement」、参考文献（Comm. ACM 9 (May 1966)）を読んで確かめた
+
+  - id: java-goto-reserved
+    claim: Javaのgotoは予約語だが使われておらず、変数名にもできない
+    sources:
+      - title: JLS 25 3.9 Keywords
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+        anchor: The keywords const and goto are reserved, even though they are not currently used.
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GotoKeyword.java
+      fails: true
+      expect:
+        - 'GotoKeyword.java:4: error: not a statement'
+
+  - id: simula
+    claim: クラス・サブクラス（継承）・オブジェクトの動的な生成といったオブジェクト指向の考え方は、ノルウェー計算センターでDahlとNygaardがSimula I（1961〜1965年）とSimula 67（1965〜1968年）で形にした
+    sources:
+      - title: University of Oslo, Ole-Johan Dahl
+        url: https://www.mn.uio.no/ifi/english/about/ole-johan-dahl/
+        anchor: Simula I (1961-1965) and Simula 67 (1965-1968)
+      - title: 同上（クラス・サブクラス・継承・動的なオブジェクトの生成）
+        url: https://www.mn.uio.no/ifi/english/about/ole-johan-dahl/
+        anchor: the concepts of class, subclass
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: オスロ大学のDahlのページの「at the Norwegian Computing Center (NR - Norsk Regnesentral) as part of the Simula I (1961-1965) and Simula 67 (1965-1968)」「the concepts of class, subclass (allowing information hiding), inheritance, dynamic object creation」「Dahl became a full professor in 1968 at the University of Oslo」を読んで確かめた
+
+  - id: jls-oo-lineage
+    claim: JLSの第1章はJavaをクラスに基づくオブジェクト指向の言語と呼び、CとC++に関係するが組み立て方は違うと述べ、参考文献にSmalltalk-80・C++・Common Lisp Object Systemの文書を挙げている
+    sources:
+      - title: JLS 25 Chapter 1 Introduction
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-1.html
+        anchor: class-based, object-oriented language
+      - title: JLS 25 1.7 References
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-1.html
+        anchor: 'Smalltalk-80: The Language'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 第1章の冒頭（related to C and C++ but is organized rather differently）と、1.7の参考文献（Smalltalk-80、The C++ Programming Language、Common Lisp Object System Specification）を読んで確かめた
+
+  - id: jls-primitive-not-object
+    claim: Javaのオブジェクトはクラスのインスタンスと配列だけで、プリミティブ型の値はオブジェクトではない
+    sources:
+      - title: JLS 25 4.3.1 Objects
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: An object is a class instance or an array.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 4.3.1の「An object is a class instance or an array.」と、4.1が型をプリミティブ型と参照型に分けていることを読んで確かめた
+
+  - id: lisp-church
+    claim: LISPはMcCarthyが1960年4月のCommunications of the ACMの論文で示し、その論文は関数の記法としてChurchのλ記法（The Calculi of Lambda-Conversion, 1941）をほぼそのまま使っている
+    sources:
+      - title: 'J. McCarthy, Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I（1960）'
+        url: http://www-formal.stanford.edu/jmc/recursive.html
+        anchor: This paper appeared in Communications of the ACM in April 1960.
+      - title: 同上（PDF）
+        url: http://www-formal.stanford.edu/jmc/recursive.pdf
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: PDFの1節（A programming system called LISP）、2e節の「This distinction and a notation for describing it, from which we deviate trivially, is given by Church [3]」「Church's λ-notation」、参考文献3（A. CHURCH, The Calculi of Lambda-Conversion, Princeton University Press, 1941）を読んで確かめた
+
+  - id: jep126-java8
+    claim: ラムダ式・メソッド参照・defaultメソッドはJava 8（JEP 126）で入り、レコード（Java 16、JEP 395）、sealedクラス（Java 17、JEP 409）、switchのパターンマッチングとレコードパターン（Java 21、JEP 441・440）が続いた
+    sources:
+      - title: 'JEP 126: Lambda Expressions & Virtual Extension Methods'
+        url: https://openjdk.org/jeps/126
+        anchor: Lambda Expressions & Virtual Extension Methods
+      - title: 'JEP 395: Records'
+        url: https://openjdk.org/jeps/395
+        anchor: 'JEP 395: Records'
+      - title: 'JEP 409: Sealed Classes'
+        url: https://openjdk.org/jeps/409
+        anchor: 'JEP 409: Sealed Classes'
+      - title: 'JEP 440: Record Patterns'
+        url: https://openjdk.org/jeps/440
+        anchor: 'JEP 440: Record Patterns'
+      - title: 'JEP 441: Pattern Matching for switch'
+        url: https://openjdk.org/jeps/441
+        anchor: 'JEP 441: Pattern Matching for switch'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 各JEPの見出しの表のRelease（126は8、395は16、409は17、440と441は21）を読んで確かめた。JDK 25のjavacは--release 7を受け付けない（release version 7 not supported）ため、ラムダ式の版はjavacでは確かめられない。16・17・21は下のsince-*でjavacでも確かめる
+
+  - id: since-record
+    claim: レコードは--release 15ではコンパイルエラーになる（Java 16から）
+    verify:
+      kind: javac
+      probe: verify/SinceRecord.java
+      release: 15
+      fails: true
+      expect:
+        - 'error: records are not supported in -source 15'
+      show: ['error:']
+      normalize:
+        '^.*?error:': 'error:'
+  - id: since-record-16
+    claim: 同上（--release 16ではコンパイルできる）
+    unreferenced: true
+    verify: { kind: javac, probe: verify/SinceRecord.java, release: 16, absent: ['error'] }
+
+  - id: since-sealed
+    claim: sealedクラスは--release 16ではコンパイルエラーになる（Java 17から）
+    verify:
+      kind: javac
+      probe: verify/SinceSealed.java
+      release: 16
+      fails: true
+      expect:
+        - 'error: sealed classes are not supported in -source 16'
+      show: ['not supported in -source']
+      normalize:
+        '^.*?error:': 'error:'
+  - id: since-sealed-17
+    claim: 同上（--release 17ではコンパイルできる）
+    unreferenced: true
+    verify: { kind: javac, probe: verify/SinceSealed.java, release: 17, absent: ['error'] }
+
+  - id: since-record-pattern
+    claim: switchのパターン（レコードパターンを含む）は--release 20ではコンパイルエラーになる（Java 21から）
+    verify:
+      kind: javac
+      probe: verify/SinceRecordPattern.java
+      release: 20
+      fails: true
+      expect:
+        - 'error: patterns in switch statements are not supported in -source 20'
+      show: ['error:']
+      normalize:
+        '^.*?error:': 'error:'
+  - id: since-record-pattern-21
+    claim: 同上（--release 21ではコンパイルできる）
+    unreferenced: true
+    verify: { kind: javac, probe: verify/SinceRecordPattern.java, release: 21, absent: ['error'] }
+
+  - id: since-unnamed
+    claim: 名前のない変数_はJava 22（JEP 456）からで、--release 21ではコンパイルエラーになる
+    sources:
+      - title: 'JEP 456: Unnamed Variables & Patterns'
+        url: https://openjdk.org/jeps/456
+        anchor: 'JEP 456: Unnamed Variables & Patterns'
+    verify:
+      kind: javac
+      probe: verify/SinceUnnamed.java
+      release: 21
+      fails: true
+      expect:
+        - 'error: unnamed variables are not supported in -source 21'
+  - id: since-unnamed-22
+    claim: 同上（--release 22ではコンパイルできる）
+    unreferenced: true
+    verify: { kind: javac, probe: verify/SinceUnnamed.java, release: 22, absent: ['error'] }
+
+  # ---- 2. 関数型の考え方
+  - id: capture-effectively-final
+    claim: ラムダ式から参照するローカル変数はfinalか実質的にfinalでなければならず、ラムダ式の中で外の変数に代入し直すとコンパイルエラーになる。JLSは、値が変わり続けるローカル変数の取り込みが並行処理の問題を招きやすいことを理由に挙げている
+    sources:
+      - title: JLS 25 15.27.2 Lambda Body
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: must either be final or effectively final
+      - title: 同上（制限の理由）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The restriction to effectively final variables prohibits access to dynamically-changing local variables, whose capture would likely introduce concurrency problems.
+    verify:
+      kind: javac
+      probe: verify/compile-errors/CaptureMutation.java
+      fails: true
+      expect:
+        - 'error: local variables referenced from a lambda expression must be final or effectively final'
+      show: ['error:']
+      normalize:
+        '^.*?error:': 'error:'
+
+  - id: anonymous-effectively-final
+    claim: 匿名クラスなどの内部クラスから参照するローカル変数も、finalか実質的にfinalでなければならない
+    sources:
+      - title: JLS 25 15.27.2 Lambda Body（内部クラスにも同じ規則）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: Similar rules on variable use apply in the body of an inner class
+    verify:
+      kind: javac
+      probe: verify/compile-errors/AnonymousCapture.java
+      fails: true
+      expect:
+        - 'error: local variables referenced from an inner class must be final or effectively final'
+      show: ['error:']
+      normalize:
+        '^.*?error:': 'error:'
+
+  - id: compose-order
+    claim: f.andThen(g)はfを先に、f.compose(g)はgを先に当てはめる。addOne.andThen(multiplyByTwo).apply(3)は8、addOne.compose(multiplyByTwo).apply(3)は7
+    sources:
+      - title: java.util.function.Function（Java SE 25 API）compose
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html
+        anchor: Returns a composed function that first applies the before function to its input, and then applies this function to the result.
+      - title: java.util.function.Function（Java SE 25 API）andThen
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/Function.html
+        anchor: Returns a composed function that first applies this function to its input, and then applies the after function to the result.
+    verify:
+      kind: run
+      probe: verify/Composition.java
+      expect:
+        - '^addOne\.andThen\(multiplyByTwo\)\.apply\(3\) = 8$'
+        - '^addOne\.compose\(multiplyByTwo\)\.apply\(3\) = 7$'
+
+  # ---- 3. ラムダ計算
+  - id: lambda-calculus-run
+    claim: ラムダ計算の式（恒等関数、定数関数、twice、カリー化、チャーチ数のsucc・plus・times）をJavaで書くと、期待どおりの値になる
+    verify:
+      kind: run
+      probe: verify/LambdaCalculus.java
+      expect:
+        - '^twice\(increment\)\(5\) = 7$'
+        - '^add5\(3\) = 8$'
+        - '^triple\(100\) = 300$'
+        - '^toInt\(zero\) = 0$'
+        - '^toInt\(succ\(two\)\) = 3$'
+        - '^toInt\(plus\(two, three\)\) = 5$'
+        - '^toInt\(times\(two, three\)\) = 6$'
+        - '= \*\*\*$'
+      show: ['=']
+
+  - id: church-generic-lambda
+    claim: 型パラメーターを持つ抽象メソッドの関数型インターフェイスは、ラムダ式で実装できない（関数の型に型パラメーターがないことが条件）
+    sources:
+      - title: JLS 25 15.27.3 Type of a Lambda Expression
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The function type has no type parameters.
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GenericLambda.java
+      fails: true
+      expect:
+        - 'error: incompatible types: invalid functional descriptor for lambda expression'
+        - 'in interface ChurchNumeral is generic'
+      show: ['error:', 'is generic']
+      normalize:
+        '^.*?error:': 'error:'
+
+  # ---- 4. ラムダ式の実体
+  - id: lambda-indy
+    claim: ラムダ式の本体は同じクラスのprivate staticメソッド（取り込んだ値は先頭の引数）になり、ラムダ式とメソッド参照を評価する箇所はinvokedynamicになる。匿名クラスは別のクラス（Outer$1）になりnewで作る
+    verify:
+      kind: javap
+      probe: verify/LambdaBytecode.java
+      class: LambdaBytecode
+      expect:
+        - 'noCapture\(\);\s+Code:\s+0: invokedynamic'
+        - 'capture\(int\);\s+Code:\s+0: iload_0\s+1: invokedynamic'
+        - 'methodRef\(\);\s+Code:\s+0: invokedynamic'
+        - 'new\s+#\d+\s+// class LambdaBytecode\$1'
+        - 'private static int lambda\$noCapture\$0\(int\);'
+        - 'private static int lambda\$capture\$0\(int, int\);'
+      absent:
+        - 'lambda\$methodRef'
+      show:
+        - '^\s+static .*(noCapture|capture|methodRef|anonymous)\(.*\);$'
+        - 'invokedynamic .*IntUnaryOperator|invokedynamic .*BinaryOperator'
+        - '// class LambdaBytecode\$1$'
+        - 'private static int lambda'
+      normalize:
+        '#\d+,?\s*(\d+\s*)?//': '//'
+
+  - id: lambda-metafactory
+    claim: ラムダ式のinvokedynamicのブートストラップメソッドはLambdaMetafactory.metafactoryで、引数に本体のメソッドを指すMethodHandleが渡る。メソッド参照Integer::sumは本体のメソッドを作らずInteger.sumを直接指す。本体のメソッドにはACC_SYNTHETICが付く
+    sources:
+      - title: java.lang.invoke.LambdaMetafactory（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/LambdaMetafactory.html
+        anchor: Methods to facilitate the creation of simple "function objects"
+    verify:
+      kind: javap
+      probe: verify/LambdaBytecode.java
+      class: LambdaBytecode
+      options: ['-v', '-p']
+      expect:
+        - 'REF_invokeStatic java/lang/invoke/LambdaMetafactory\.metafactory'
+        - '^\s+#\d+ REF_invokeStatic LambdaBytecode\.lambda\$noCapture\$0:\(I\)I'
+        - '^\s+#\d+ REF_invokeStatic java/lang/Integer\.sum:\(II\)I'
+        - 'flags: \(0x100a\) ACC_PRIVATE, ACC_STATIC, ACC_SYNTHETIC'
+      show:
+        - '^\s+\d+: #\d+ REF_invokeStatic java/lang/invoke/LambdaMetafactory'
+        - '^\s+#\d+ REF_invokeStatic'
+        - 'ACC_SYNTHETIC$'
+      normalize:
+        ':\(Ljava/lang/invoke/MethodHandles\$Lookup.*$': ''
+        '^\d+: #\d+ ': ''
+        '^#\d+ ': ''
+      sort: true
+
+  - id: lambda-hidden-class
+    claim: ラムダ式とメソッド参照のオブジェクトのクラスは実行時に作られる隠しクラスで、名前に$$Lambdaを含む。匿名クラスはふつうのクラス（Outer$1）である
+    sources:
+      - title: Class.isHidden（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html
+        anchor: Returns true if and only if the underlying class is a hidden class.
+    verify:
+      kind: run
+      probe: verify/LambdaBytecode.java
+      expect:
+        - '^ラムダ式: hidden=true .*name=LambdaBytecode\$\$Lambda'
+        - '^メソッド参照: hidden=true .*name=LambdaBytecode\$\$Lambda'
+        - '^匿名クラス: hidden=false synthetic=false anonymous=true name=LambdaBytecode\$1$'
+      show: ['hidden=']
+
+  - id: jls-lambda-evaluation
+    claim: JLSはラムダ式の評価で新しいインスタンスを作るか既存のインスタンスを使うかを決めておらず、クラスの作り方やインスタンスの使い回しは実装に任されている
+    sources:
+      - title: JLS 25 15.27.4 Run-Time Evaluation of Lambda Expressions
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: Either a new instance of a class with the properties below is allocated and initialized, or an existing instance of a class with the properties below is referenced.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 15.27.4の本文（Either a new instance ... or an existing instance ... is referenced）と、その後の注（These rules are meant to offer flexibility to implementations）を読んで確かめた
+
+  # ---- 5〜7. 圏論・ファンクター・モナド
+  - id: category-def
+    claim: 圏は対象・射・合成・恒等射からなり、結合法則と単位法則を満たす。関手は対象と射を移し、恒等射と合成を保つ。EilenbergとMac Laneが1945年に関手と自然変換の準備として圏を導入した
+    sources:
+      - title: Stanford Encyclopedia of Philosophy, Category Theory（Jean-Pierre Marquis）
+        url: https://plato.stanford.edu/entries/category-theory/
+        anchor: introduced categories in a purely auxiliary fashion, as preparation for what they called functors and natural transformations
+      - title: 同上（関手は合成と恒等射を保つ）
+        url: https://plato.stanford.edu/entries/category-theory/
+        anchor: identity morphisms are preserved
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 1.1 Definitionsの圏の公理（結合法則と恒等射）と関手の定義（F(g ∘ f) = F(g) ∘ F(f)、F(id_X) = id_FX）、2 Brief Historical Sketchの「Eilenberg & Mac Lane (1945) introduced categories in a purely auxiliary fashion, as preparation for what they called functors and natural transformations」を読んで確かめた
+
+  - id: category-laws-sampled
+    claim: Functionのandthenとidentityは、選んだ入力では結合法則と単位法則を満たす。ただしFunctionのequalsは同じオブジェクトかしか比べず、fとf.andThen(identity())は等しくない
+    verify:
+      kind: run
+      probe: verify/Composition.java
+      expect:
+        - '^結合法則（入力 .*）: true$'
+        - '^単位法則（入力 .*）: true$'
+        - '^\(\(3 \+ 1\) \* 2\)\^2 = 64$'
+        - '^f\.equals\(f\.andThen\(id\)\) = false$'
+      show: ['法則', '\^2', 'equals']
+
+  - id: haskell-laws
+    claim: ファンクターの法則はfmap id = idとfmap (f . g) = fmap f . fmap g、モナドの法則は左単位元則・右単位元則・結合則の3つである
+    sources:
+      - title: Haskell 2010 Language Report 6.3 Standard Haskell Classes（Functor）
+        url: https://www.haskell.org/onlinereport/haskell2010/haskellch6.html
+        anchor: 'Functor should satisfy the following laws:'
+      - title: 同上（Monad）
+        url: https://www.haskell.org/onlinereport/haskell2010/haskellch6.html
+        anchor: 'Monad should satisfy the following laws:'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 6.3.5のFunctorの法則（fmap id = id、fmap (f . g) = fmap f . fmap g）と、6.3.6のMonadの法則（return a >>= k = k a、m >>= return = m、m >>= (\x -> k x >>= h) = (m >>= k) >>= h）を読んで確かめた
+
+  - id: optional-functor-laws
+    claim: nullを返さない関数なら、Optional.mapとList（Stream経由）のmapは恒等則と合成則を満たす
+    verify:
+      kind: run
+      probe: verify/FunctorLaws.java
+      expect:
+        - '^Optional\[3\]: 恒等則 true、合成則 true$'
+        - '^Optional\.empty: 恒等則 true、合成則 true$'
+        - '^List: 恒等則 true、合成則 true$'
+
+  - id: optional-null-composition
+    claim: Optional.mapは関数がnullを返すと空のOptionalを返すので、nullを返す関数gとnullを受け取る関数fでは合成則が崩れる
+    sources:
+      - title: java.util.Optional.map（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+        anchor: If the mapping function returns a null result then this method returns an empty Optional.
+    verify:
+      kind: run
+      probe: verify/FunctorLaws.java
+      expect:
+        - '^Optional\.map: m\.map\(g\)\.map\(f\) = Optional\.empty$'
+        - '^Optional\.map: m\.map\(g\.andThen\(f\)\) = Optional\[nullでした\]$'
+        - '^Optional\.map: 合成則 false$'
+
+  - id: stream-null-composition
+    claim: Streamは要素にnullを持てるので、同じ関数でもmapの合成則が成り立つ
+    verify:
+      kind: run
+      probe: verify/FunctorLaws.java
+      expect:
+        - '^Stream\.map: \[nullでした\] / \[nullでした\] 合成則 true$'
+
+  - id: stream-single-use
+    claim: Streamのオブジェクトはequalsで比べられず、1つのStreamには一度しか操作できない（2回目はIllegalStateException）
+    sources:
+      - title: java.util.stream.Stream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: A stream should be operated on (invoking an intermediate or terminal stream operation) only once.
+    verify:
+      kind: run
+      probe: verify/FunctorLaws.java
+      expect:
+        - '^Stream\.equals: false$'
+        - '^2回目の操作: IllegalStateException: stream has already been operated upon or closed$'
+
+  - id: no-hkt
+    claim: Javaの型パラメーターは型引数を取れない（高カインド型がない）ので、F<A>のように書くとコンパイルエラーになる
+    verify:
+      kind: javac
+      probe: verify/compile-errors/HigherKinded.java
+      fails: true
+      expect:
+        - 'error: unexpected type\n.*\n.*\n\s+required: class\n\s+found:\s+type parameter F'
+      range: { from: 'error: unexpected type', to: 'found:' }
+      show: ['error:', 'required:', 'found:']
+      normalize:
+        '^.*?error:': 'error:'
+
+  - id: sequence-run
+    claim: List<Optional<T>>をOptional<List<T>>に裏返すと、1つでも空があれば全体が空になる
+    verify:
+      kind: run
+      probe: verify/Sequence.java
+      expect:
+        - '^Optional\[\[1, 2, 3\]\]\nOptional\.empty\nOptional\[\[10, 20, 30\]\]\nOptional\.empty$'
+      show: ['Optional']
+
+  - id: wadler-moggi
+    claim: Moggiがプログラミング言語の意味論の構成にモナドを使い、Wadlerがそれを関数型プログラムの構成に応用した。Wadlerの講義録Monads for functional programming（1995年、LNCS 925）は状態・例外・出力などの効果とパーサーをモナドで扱う
+    sources:
+      - title: 'P. Wadler, Monads for functional programming（Advanced Functional Programming, LNCS 925, 1995）'
+        url: https://homepages.inf.ed.ac.uk/wadler/papers/marktoberdorf/baastad.pdf
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: PDFの要約（global state, exception handling, output, or non-determinism、how monads can be used to build parsers）、1節の「has been applied by Moggi to structure the denotational semantics of programming languages」、脚注（Advanced Functional Programming, Proceedings of the Båstad Spring School, May 1995, LNCS 925）、5節 Parsersを読んで確かめた
+
+  - id: optional-monad-laws
+    claim: nullを使わなければ、Optional.ofとflatMapは左単位元則・右単位元則・結合則を満たす（途中で空になる関数でも）
+    verify:
+      kind: run
+      probe: verify/MonadLaws.java
+      expect:
+        - '^左単位元則: true$'
+        - '^右単位元則 Optional\[20\]: true$'
+        - '^右単位元則 Optional\.empty: true$'
+        - '^結合則 a=5: Optional\[3\] / Optional\[3\] true$'
+        - '^結合則 a=6: Optional\.empty / Optional\.empty true$'
+      show: ['^(左単位元則|右単位元則 Optional|結合則 a=)']
+
+  - id: optional-null-monad
+    claim: unitをofNullableにするとa = nullで左単位元則が崩れ、Optional.of(null)はNullPointerExceptionになり、flatMapに渡した関数がnullを返すとNullPointerExceptionになる
+    sources:
+      - title: java.util.Optional.flatMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+        anchor: if the mapping function is null or returns a null result
+    verify:
+      kind: run
+      probe: verify/MonadLaws.java
+      expect:
+        - '^ofNullable\(null\)\.flatMap\(describe\) = Optional\.empty$'
+        - '^describe\.apply\(null\) = Optional\[nullを受け取った\]$'
+        - '^Optional\.of\(null\): NullPointerException$'
+        - '^Optional\.flatMap\(x -> null\): NullPointerException$'
+
+  - id: stream-monad-laws
+    claim: Stream.ofとflatMapは3つの法則を満たし、Stream.flatMapは関数がnullを返すと空のストリームとして扱う
+    sources:
+      - title: java.util.stream.Stream.flatMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: If a mapped stream is null an empty stream is used, instead.
+    verify:
+      kind: run
+      probe: verify/MonadLaws.java
+      expect:
+        - '^Stream 左単位元則: true$'
+        - '^Stream 右単位元則: true$'
+        - '^Stream 結合則: \[2, 4\] / \[2, 4\] true$'
+        - '^Stream\.flatMap\(x -> null\): \[\]$'
+
+  - id: stream-chain
+    claim: Stream.of(1, 2, 3, 4, 5).flatMap(x -> Stream.of(x, x * x)).filter(偶数).map(x * 10)は[20, 40, 40, 160]になる
+    verify:
+      kind: run
+      probe: verify/MonadLaws.java
+      expect:
+        - '^連鎖: \[20, 40, 40, 160\]$'
+
+  - id: result-run
+    claim: sealedインターフェイスとレコードで作ったResult型のflatMapの連鎖は、成功なら計算を続け（20 / 4 → sqrt → *2 = 4.47213595499958）、途中で失敗すると最初の失敗の理由を最後まで伝える
+    verify:
+      kind: run
+      probe: verify/ResultMonad.java
+      expect:
+        - '^20 / 4 → sqrt → \*2: Success: 4\.47213595499958$'
+        - '^20 / 0 → sqrt → \*2: Failure: Division by zero$'
+        - '^-20 / 4 → sqrt → \*2: Failure: Cannot take square root of negative number$'
+      show: ['→']
+
+  - id: result-left-identity-exception
+    claim: flatMapの中で関数の例外を失敗に変えると、関数が例外を投げる入力で左単位元則が崩れる
+    verify:
+      kind: run
+      probe: verify/ResultMonad.java
+      expect:
+        - '^of\("x"\)\.flatMap\(parse\) = Failure: NumberFormatException$'
+        - '^parse\.apply\("x"\) は例外を投げる: NumberFormatException$'
+      show: ['parse']
+
+  # ---- 8. 末尾呼び出し
+  - id: tail-call-overflow
+    claim: 末尾再帰で書いても、深さ10000000の再帰はStackOverflowErrorになる。同じ計算はループやStreamなら求められる
+    verify:
+      kind: run
+      probe: verify/TailCall.java
+      expect:
+        - '^末尾再帰 n=1000: 500500$'
+        - '^末尾再帰 n=10000000: StackOverflowError$'
+        - '^ループ n=10000000: 50000005000000$'
+        - '^Stream n=10000000: 50000005000000$'
+
+  - id: tail-call-bytecode
+    claim: javacは末尾再帰をループに書き換えず、最後は自分自身のinvokestaticとlreturnのままである
+    verify:
+      kind: javap
+      probe: verify/TailCall.java
+      class: TailCall
+      expect:
+        - 'invokestatic\s+#\d+\s+// Method sumTo:\(JJ\)J\s*\n\s*\d+: lreturn'
+      absent:
+        - 'static long sumTo\(long, long\);\s+Code:[\s\S]*?goto[\s\S]*?static long sumToLoop'
+      range: { from: 'static long sumTo\(long, long\);' }
+      show: ['invokestatic', '1\d: lreturn']
+      normalize:
+        '#\d+\s*//': '//'
+
+  # ---- 9. 評価の順序と遅延評価
+  - id: eager-orelse
+    claim: Javaは引数をメソッドの呼び出しの前に評価するので、orElse(式)の式は値があっても評価される。orElseGetは値がないときだけSupplierを呼ぶ
+    sources:
+      - title: JLS 25 15.12.4.2 Evaluate Arguments
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The argument expressions, if any, are evaluated in order, from left to right.
+    verify:
+      kind: run
+      probe: verify/Laziness.java
+      expect:
+        - '^orElse（引数を先に評価する）:\n  代わりの値A を計算した\norElseGet（必要になったときだけSupplierを呼ぶ）:\nLazy:$'
+      absent:
+        - '代わりの値B を計算した'
+      range: { from: '^orElse', to: '^orElseGet' }
+      show: ['.']
+
+  - id: lazy-value
+    claim: Supplierを持つLazyは、最初にgetしたときだけ計算し、mapで作ったLazyもgetするまで計算しない
+    verify:
+      kind: run
+      probe: verify/Laziness.java
+      expect:
+        - '^Lazy:\n  Lazyを作った\n  重い値 を計算した\n  length = 3\n  lazy = 重い値（2回目は計算しない）$'
+      range: { from: '^Lazy:', to: '^  lazy' }
+      show: ['.']
+
+  - id: stream-lazy
+    claim: Streamの中間操作は終端操作まで何もせず、終端操作では要素を1つずつ通し、limitで結果が決まると残りの要素を処理しない
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: Intermediate operations return a new stream. They are always lazy
+    verify:
+      kind: run
+      probe: verify/Laziness.java
+      expect:
+        - '^  パイプラインを作った\n  peek 1\n  peek 2\n  結果 \[2\]$'
+      absent:
+        - 'peek 3'
+      range: { from: '^Stream（', to: '結果' }
+      show: ['.']
+
+  - id: infinite-stream
+    claim: Stream.iterateとlimit、遅延するリスト（LazyList）で、無限の列から必要な分だけ取り出せる
+    verify:
+      kind: run
+      probe: verify/Laziness.java
+      expect:
+        - '^  \[1, 2, 4, 8, 16, 32, 64, 128, 256, 512\]$'
+        - '^  \[0, 1, 1, 2, 3, 5, 8, 13, 21, 34\]$'
+      range: { from: '^無限' }
+      show: ['.']
+
+  # ---- 10. メモ化
+  - id: memoize-run
+    claim: 高階関数memoizeで作った関数は、同じ引数で2回呼ぶと2回目は元の関数を呼ばない
+    verify:
+      kind: run
+      probe: verify/Memoize.java
+      expect:
+        - '^multiplier\(3\)\.apply\(5\) = 15\nComputing for 5\n125\n125\n\[2, 4\]$'
+      absent:
+        - 'Computing for 5\n125\nComputing for 5'
+      range: { from: '^multiplier', to: '^\[2, 4\]' }
+      show: ['.']
+
+  - id: compute-recursive
+    claim: computeIfAbsentに渡した関数の中から同じマップに再帰的にcomputeIfAbsentすると、ConcurrentHashMapはIllegalStateException（Recursive update）、HashMapはConcurrentModificationExceptionを投げる
+    sources:
+      - title: ConcurrentHashMap.computeIfAbsent（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html
+        anchor: if the computation detectably attempts a recursive update to this map that would otherwise never complete
+      - title: HashMap.computeIfAbsent（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: if it is detected that the mapping function modified this map
+    verify:
+      kind: run
+      probe: verify/Memoize.java
+      expect:
+        - '^ConcurrentHashMap: java\.lang\.IllegalStateException: Recursive update$'
+        - '^HashMap: java\.util\.ConcurrentModificationException$'
+        - '^表を埋める: fib\(30\) = 832040$'
+
+  # ---- 11. 応用
+  - id: parser-run
+    claim: パーサーを関数として組み合わせると、or・and・many・number・flatMapで期待どおりに解析できる
+    verify:
+      kind: run
+      probe: verify/ParserCombinator.java
+      expect:
+        - '^Optional\[\(a, bc\)\]$'
+        - '^Optional\[\(b, cd\)\]$'
+        - '^Optional\[\(123, abc\)\]$'
+        - '^Optional\[\(\(x=, 42\), \)\]$'
+        - '^Optional\[\(42,  rest\)\]$'
+      show: ['Optional']
+      keepIndent: true
+
+  - id: adt-run
+    claim: sealedインターフェイスとレコードで作った式の木を、レコードパターンのswitchで評価・簡約・表示できる。doubleでは無限大×0はNaNになる
+    verify:
+      kind: run
+      probe: verify/ExpressionAdt.java
+      expect:
+        - '^Expression: \(\(x \+ 2\.0\) \* \(y \+ 3\.0\)\)$'
+        - '^Evaluation: 70\.0$'
+        - '^After: x$'
+        - '^equals: true$'
+        - '^x \* 0\.0 \(x = Infinity\): NaN$'
+      show: ['.']
+
+  - id: non-exhaustive
+    claim: sealedインターフェイスの実装を網羅しないswitch式はコンパイルエラーになる
+    sources:
+      - title: JLS 25 15.28.1 The Switch Block of a switch Expression
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: It is a compile-time error if a switch expression is not exhaustive
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NonExhaustive.java
+      fails: true
+      expect:
+        - 'error: the switch expression does not cover all possible input values'
+      show: ['error:']
+      normalize:
+        '^.*?error:': 'error:'
+
+  - id: io-monad-run
+    claim: IO<T>をflatMapでつないでも何も実行せず、unsafeRunで順に実行する。同じ手順を2回つなぐと2回実行される。入れ子のクラスIOは外側のクラスの中でjava.lang.IOより優先される
+    verify:
+      kind: run
+      probe: verify/IOMonad.java
+      expect:
+        - '^--- 手順を組み立てた（まだ何も表示していない）\nWelcome!\nEnter a number:\nEnter a number:\nSum: 7$'
+        - '^--- getNumberは2回実行された（残りの入力 \[\]）$'
+        - '^IOが指すクラス: IOMonad\$IO$'
+      show: ['.']
