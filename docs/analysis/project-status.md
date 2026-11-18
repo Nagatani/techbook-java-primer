@@ -1,6 +1,6 @@
 # プロジェクトの現状
 
-最終更新：2026-11-17
+最終更新：2026-11-19
 
 旧`comprehensive-project-analysis.md`の冒頭にあった現状の要約を、この文書に移しました（2026-11-17）。
 旧文書の本文（2025-07時点の旧24章構成の分析）は2026-11-18に削除しました（gitの履歴に残っています）。
@@ -16,5 +16,6 @@
 
 ## 検査
 
-- `npm run check:structure`・`check:compliance`（pre-commitフック）
+- `npm run check:structure`・`check:compliance`・`check:deep-dive -- --static`（pre-commitフック）
+- `check:deep-dive`：付録Bの15節の主張610件（機械で確認506件、手で確認104件）をJDK 25で検証する（2026-11-19〜。節ごとの集計は`docs/analysis/deep-dive-claims.md`、しくみは`docs/guides/deep-dive-verification.md`）
 - `check:samples`・`check:java`・`check:public-code`・`check:diagrams`・`index:check`・`lint`
