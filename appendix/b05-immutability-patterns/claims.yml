@@ -1,0 +1,504 @@
+# 付録B.05の主張と、その確かめ方
+# npm run check:deep-dive -- b05 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 仕様が決めていること
+  - id: string-constant
+    claim: Stringのオブジェクトは、作ったあとで値を変えられないことがAPIの仕様に書かれている
+    sources:
+      - title: java.lang.String（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html
+        anchor: Strings are constant; their values cannot be changed after they are created.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のStringのAPIの冒頭に「Strings are constant; their values cannot be changed after they are created.」とあることを確かめた
+
+  # ---- Stringの内部
+  - id: string-fields
+    claim: JDK 25のStringはfinalクラスで、インスタンスのフィールドはfinalのbyte[] valueとbyte coder、finalでないint hashとboolean hashIsZeroである
+    verify:
+      kind: run
+      probe: verify/StringAnatomy.java
+      expect:
+        - 'Stringはfinalクラス: true'
+        - 'フィールド: private final byte\[\] value$'
+        - 'フィールド: private final byte coder$'
+        - 'フィールド: private int hash$'
+        - 'フィールド: private boolean hashIsZero$'
+      show: ['finalクラス|フィールド:']
+
+  - id: compact-strings
+    claim: Latin-1の範囲の文字だけの文字列は1文字1バイト（coder=0）、それ以外の文字を含む文字列は1文字2バイトのUTF-16（coder=1）で持つ。このコンパクト文字列はJava 9で入り（JEP 254のRelease 9）、それまではchar配列に1文字2バイトで持っていた
+    sources:
+      - title: 'JEP 254: Compact Strings'
+        url: https://openjdk.org/jeps/254
+        anchor: either as ISO-8859-1/Latin-1 (one byte per character), or as UTF-16 (two bytes per character)
+    verify:
+      kind: run
+      probe: verify/StringAnatomy.java
+      jvm: ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+      expect:
+        - '"hello" 文字数=5 配列の長さ=5 coder=0'
+        - '"héllo" 文字数=5 配列の長さ=5 coder=0'
+        - '"こんにちは" 文字数=5 配列の長さ=10 coder=1'
+      show: ['文字数=']
+
+  - id: compact-strings-off
+    claim: -XX:-CompactStringsを付けると、Latin-1の文字だけの文字列もUTF-16（1文字2バイト）で持つ
+    verify:
+      kind: run
+      probe: verify/StringAnatomy.java
+      jvm: ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-XX:-CompactStrings']
+      expect:
+        - '"hello" 文字数=5 配列の長さ=10 coder=1'
+      show: ['文字数=']
+
+  - id: compact-strings-default
+    claim: コンパクト文字列（CompactStrings）は既定で有効である
+    verify: { kind: flag, flag: CompactStrings, value: 'true' }
+
+  - id: string-hash-cache
+    claim: StringのhashCode()は最初に呼ばれたときに計算し、結果をフィールドhashに覚える
+    verify:
+      kind: run
+      probe: verify/StringAnatomy.java
+      jvm: ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+      expect:
+        - 'hashCode\(\)の前のhash=0$'
+        - 'hashCode\(\)の後のhash=(-?\d+)（hashCode\(\)=\1）'
+      show: ['hashCode\(\)の']
+
+  - id: string-literal-identity
+    claim: 同じ内容の文字列リテラルと、定数式の結合の結果は同じインスタンスを指す。実行時の結合とnew Stringは新しいインスタンスを作り、intern()はリテラルと同じインスタンスを返す
+    sources:
+      - title: JLS 25 3.10.5 String Literals
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+        anchor: a string literal always refers to the same instance of class String
+      - title: JLS 25 15.29 Constant Expressions
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: Constant expressions of type String are always "interned"
+      - title: JLS 25 15.18.1 String Concatenation Operator +
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: unless the expression is a constant expression
+    verify:
+      kind: run
+      probe: verify/StringIdentity.java
+      expect:
+        - 'リテラルどうし: true'
+        - '定数式の結合: true'
+        - '実行時の結合: false'
+        - 'new String: false'
+        - 'intern\(\)の結果: true'
+        - 'equals: true'
+        - 'toUpperCase\(\)の後の元の文字列: Java、戻り値: JAVA'
+      show: [':']
+
+  - id: string-concat-indy
+    claim: Java 9以降のjavacは、文字列の結合（+）をinvokedynamicにし、ブートストラップメソッドはStringConcatFactory.makeConcatWithConstantsである
+    sources:
+      - title: 'JEP 280: Indify String Concatenation'
+        url: https://openjdk.org/jeps/280
+        anchor: to use invokedynamic calls to JDK library functions
+      - title: java.lang.invoke.StringConcatFactory（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/StringConcatFactory.html
+        anchor: Facilitates the creation of optimized String concatenation methods
+    verify:
+      kind: javap
+      probe: verify/StringConcat.java
+      class: StringConcat
+      options: ['-c', '-p', '-v']
+      expect:
+        - 'invokedynamic .*makeConcatWithConstants:\(Ljava/lang/String;I\)Ljava/lang/String;'
+        - 'REF_invokeStatic java/lang/invoke/StringConcatFactory\.makeConcatWithConstants'
+        - '^\s+#\d+ Hello, \\u0001! #\\u0001$'
+      absent:
+        - 'StringBuilder'
+      show:
+        - 'invokedynamic'
+        - '^\s+0: #\d+ REF_invokeStatic'
+        - '^\s+#\d+ Hello, \\u0001'
+      normalize:
+        '#\d+,?\s*(0\s*)?//': '//'
+        '^\d+: #\d+ ': ''
+        '\(Ljava/lang/invoke/MethodHandles\$Lookup;.*CallSite;': '(...)'
+        '^#\d+ ': '引数: '
+
+  - id: string-concat-java8
+    claim: Java 8までの書き方（--release 8）では、同じ結合がStringBuilderのappendの連鎖になる
+    sources:
+      - title: JLS 25 15.18.1 String Concatenation Operator +
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: An implementation may choose to perform conversion and concatenation in one step to avoid creating and then discarding an intermediate String object.
+    verify:
+      kind: javap
+      probe: verify/StringConcat.java
+      class: StringConcat
+      release: 8
+      expect:
+        - 'new .*class java/lang/StringBuilder'
+        - 'invokevirtual .*StringBuilder\.append:\(I\)'
+        - 'invokevirtual .*StringBuilder\.toString'
+      absent:
+        - 'invokedynamic'
+      range: { from: 'static java.lang.String greet' }
+      show: ['^\s+\d+: ']
+      normalize:
+        '#\d+\s+//': '//'
+
+  # ---- final
+  - id: constant-inlining
+    claim: static finalのフィールドのうち、プリミティブ型かStringで定数式で初期化したもの（定数変数）は、使う側のコードで値に置き換わり、getstaticで読まれない。Integer型や定数式でない初期化のフィールドはgetstaticで読まれる
+    sources:
+      - title: JLS 25 4.12.4 final Variables
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: A constant variable is a final variable of primitive type or type String that is initialized with a constant expression
+      - title: JLS 25 13.1 The Form of a Binary
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html
+        anchor: must be resolved at compile time to the value V denoted by the constant variable's initializer
+    verify:
+      kind: javap
+      probe: verify/ConstantInlining.java
+      class: ConstantInlining
+      options: ['-c', '-p', '-v']
+      expect:
+        - 'ConstantValue: int 100'
+        - 'ConstantValue: String limit'
+        - 'getstatic .*Field BOXED'
+        - 'getstatic .*Field COMPUTED'
+        - 'getstatic .*Field NAMES'
+        - '^\s+#\d+ limit100\\u0001\\u0001\\u0001$'
+      absent:
+        - 'getstatic .*Field (MAX|NAME):'
+      range: { from: 'static java.lang.String readAll', to: 'areturn' }
+      show: ['getstatic']
+      normalize:
+        '^\d+: getstatic #\d+\s*//': 'getstatic //'
+
+  - id: constant-recompile
+    claim: static finalの定数変数の値を変えても、それを使うクラスを再コンパイルしないかぎり、古い値のまま動く
+    sources:
+      - title: JLS 25 13.4.9 final Fields and static Constant Variables
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html
+        anchor: they will not see any new value for a usage of the field unless they are recompiled
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の13.4.9に、staticの定数変数の値を変えても、既存のバイナリーは再コンパイルしないかぎり新しい値を見ない旨があることを確かめた
+
+  - id: final-field-semantics
+    claim: コンストラクターが終わった後にだけ参照を見たスレッドは、finalフィールドの正しく初期化された値を見ることが保証される（同期がなくても）
+    sources:
+      - title: JLS 25 17.5 final Field Semantics
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: is guaranteed to see the correctly initialized values for that object's final fields
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.5に、コンストラクターが終わった時点でオブジェクトは完全に初期化されたとみなされ、その後にだけ参照を見たスレッドはfinalフィールドの正しい値を見ることが保証される旨があることを確かめた。データ競合の観察にはjcstressが要るため、機械では確かめていない
+
+  - id: this-escape-run
+    claim: コンストラクターの中でオーバーライドできるメソッドを呼ぶと、サブクラスのメソッドが、finalフィールドに代入される前の既定値（nullや0）を見る
+    verify:
+      kind: run
+      probe: verify/ThisEscape.java
+      expect:
+        - '^describe\(\): name=null stock=0$'
+        - '^完成後: name=pen stock=3$'
+      show: ['describe|完成後|---']
+
+  - id: this-escape-lint
+    claim: javacに-Xlint:this-escapeを付けると、サブクラスの初期化の前にthisが漏れるおそれのある箇所を警告する
+    sources:
+      - title: javacコマンドのリファレンス（Java SE 25）
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html
+        anchor: Warns about constructors leaking this prior to subclass initialization.
+    verify:
+      kind: javac
+      probe: verify/ThisEscape.java
+      javac: ['-Xlint:this-escape']
+      expect:
+        - "warning: \\[this-escape\\] possible 'this' escape before subclass is fully initialized"
+      show: ['warning:']
+
+  - id: flexible-constructor
+    claim: Java 25の柔軟なコンストラクター本体では、super(...)の前にサブクラスのフィールドへ代入でき、スーパークラスのコンストラクターから呼ばれたメソッドもその値を見る
+    sources:
+      - title: 'JEP 513: Flexible Constructor Bodies'
+        url: https://openjdk.org/jeps/513
+        anchor: they can initialize its fields and perform other safe computations
+    verify:
+      kind: run
+      probe: verify/ThisEscape.java
+      expect:
+        - '^describe\(\): name=null stock=5$'
+
+  - id: final-reflection
+    claim: JDK 25では、setAccessible(true)にしたFieldで、ふつうのクラスのfinalのインスタンスフィールドを書き換えられる。レコードのフィールドとstatic finalのフィールドは書き換えられない（IllegalAccessException）
+    sources:
+      - title: java.lang.reflect.Field.set（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Field.html
+        anchor: declaring class is not a record class
+    verify:
+      kind: run
+      probe: verify/FinalReflection.java
+      expect:
+        - 'ふつうのクラスのfinalフィールド: 999'
+        - 'レコード: IllegalAccessException'
+        - 'static final: IllegalAccessException'
+      show: [':']
+
+  - id: final-mean-final
+    claim: リフレクションでfinalフィールドを書き換えることに警告を出すJEP 500は、JDK 26に入った（JDK 25では警告は出ない）
+    sources:
+      - title: 'JEP 500: Prepare to Make Final Mean Final'
+        url: https://openjdk.org/jeps/500
+        anchor: Issue warnings about uses of deep reflection to mutate final fields
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 500のページで、要約（深いリフレクションによるfinalフィールドの変更に警告を出す）と、Releaseが26であることを確かめた。JDK 25で警告が出ないことはFinalReflectionの実行で確かめた
+
+  # ---- 変更できないコレクション
+  - id: view-vs-copy
+    claim: Collections.unmodifiableListは元のリストのビューで、元のリストの変更が見える。List.copyOfはコピーで、元のリストの変更が見えない
+    sources:
+      - title: Collections.unmodifiableList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: Returns an unmodifiable view of the specified list.
+    verify:
+      kind: run
+      probe: verify/CollectionCopies.java
+      expect:
+        - 'unmodifiableList: \[a, b, c\]'
+        - 'List\.copyOf: +\[a, b\]'
+      show: ['元のリスト|unmodifiableList: |List\.copyOf: ']
+
+  - id: copyof-no-copy
+    claim: List.copyOfは、渡されたのがList.ofなどの変更できないリストならコピーせず同じオブジェクトを返す。unmodifiableListのビューを渡すとコピーする
+    sources:
+      - title: List.copyOf（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: calling copyOf will generally not create a copy
+    verify:
+      kind: run
+      probe: verify/CollectionCopies.java
+      expect:
+        - 'List\.copyOf\(List\.of\(\.\.\.\)\)は同じオブジェクト: true'
+        - 'List\.copyOf\(unmodifiableList\)は同じオブジェクト: false'
+        - 'unmodifiableList\(unmodifiableList\)は同じオブジェクト: true'
+      show: ['同じオブジェクト']
+
+  - id: list-nulls
+    claim: List.of・List.copyOfはnullの要素を受け付けない（NullPointerException）。unmodifiableListはnullを含むリストも包める
+    sources:
+      - title: List（Java SE 25 API）Unmodifiable Lists
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: They disallow null elements.
+    verify:
+      kind: run
+      probe: verify/CollectionCopies.java
+      expect:
+        - 'unmodifiableListはnullを持てる: \[p, null\]'
+        - 'List\.copyOfにnullを含むリスト: NullPointerException'
+        - 'List\.ofにnull: NullPointerException'
+      show: ['null']
+
+  - id: aslist-stream-tolist
+    claim: Arrays.asListはsetできるがaddできない。Stream.toList()の結果は変更できない。Collectors.toList()の結果は、JDK 25では要素を足せる（ただし仕様は変更できるかを保証しない）
+    sources:
+      - title: Stream.toList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: The returned List is unmodifiable
+      - title: Collectors.toList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Collectors.html
+        anchor: There are no guarantees on the type, mutability, serializability, or thread-safety of the List returned
+    verify:
+      kind: run
+      probe: verify/CollectionCopies.java
+      expect:
+        - 'Arrays\.asListはsetできる: \[S, t\]'
+        - 'Arrays\.asListにadd: UnsupportedOperationException'
+        - 'Stream\.toList\(\)の結果にadd: UnsupportedOperationException'
+        - 'Collectors\.toList\(\)の結果にadd: \[m, n, o\]'
+      show: ['asList|toList']
+
+  - id: immutable-collection-classes
+    claim: JDK 25のList.ofは、要素が2つまでならImmutableCollections$List12（要素をフィールドe0・e1に持つ）、3つ以上ならImmutableCollections$ListN（配列elementsとallowNullsを持つ）のインスタンスを返す（実装の詳細）
+    verify:
+      kind: run
+      probe: verify/CollectionCopies.java
+      expect:
+        - 'List\.of\(2要素\)のクラス: java\.util\.ImmutableCollections\$List12'
+        - 'List\.of\(3要素\)のクラス: java\.util\.ImmutableCollections\$ListN'
+        - 'List12のフィールド: Object e0 Object e1$'
+        - 'ListNのフィールド: Object\[\] elements boolean allowNulls$'
+      show: ['のクラス:|のフィールド:']
+
+  - id: set-order-unspecified
+    claim: Set.ofなどで作った変更できないセットの要素の順序は決まっておらず、変わりうる。JDK 25の実装では、JVMを起動するたびに順序が変わる
+    sources:
+      - title: Set（Java SE 25 API）Unmodifiable Sets
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html
+        anchor: The iteration order of set elements is unspecified and is subject to change.
+    verify:
+      kind: run
+      probe: verify/SetOrder.java
+      expect:
+        - '5回の起動で現れた順序の種類: [2-5]$'
+      show: [':']
+      normalize:
+        '種類: [2-5]': '種類: 2以上'
+      attempts: 3
+
+  # ---- 防御的コピー
+  - id: defensive-copy
+    claim: Dateを受け取って持つクラスは、受け取るときと返すときにコピーしないと、呼び出し側から中身を変えられる。不変なLocalDateならコピーは要らない
+    verify:
+      kind: run
+      probe: verify/DefensiveCopy.java
+      expect:
+        - 'LeakyPeriodのstart（ミリ秒）: 172800000'
+        - 'SafePeriodのstart（ミリ秒）: 0'
+        - 'LocalDateのplusDays後: 元=2026-04-01 戻り値=2026-04-02 レコード=2026-04-01'
+      show: ['Period|LocalDate']
+
+  - id: array-clone-shallow
+    claim: finalの配列でも要素は書き換えられる。配列のclone()は浅いコピーで、2次元配列の内側の配列は共有される
+    sources:
+      - title: JLS 25 10.7 Array Members
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html
+        anchor: A clone of a multidimensional array is shallow
+    verify:
+      kind: run
+      probe: verify/DefensiveCopy.java
+      expect:
+        - 'final配列の要素を変更: \[99, 20\]'
+        - 'clone\(\)後に内側を変更: grid\[0\]\[0\]=100 外側は別の配列: true 内側は同じ配列: true'
+      show: ['配列']
+
+  # ---- Integerのキャッシュ
+  - id: integer-cache
+    claim: Integer.valueOf（オートボクシング）は-128〜127の値で同じオブジェクトを返し、128以上では既定で新しいオブジェクトを返す。Longも-128〜127を共有する
+    sources:
+      - title: Integer.valueOf(int)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html
+        anchor: This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.
+    verify:
+      kind: run
+      probe: verify/BoxCache.java
+      expect:
+        - 'Integer +-129: 同じオブジェクト=false'
+        - 'Integer +-128: 同じオブジェクト=true'
+        - 'Integer +127: 同じオブジェクト=true'
+        - 'Integer +128: 同じオブジェクト=false equals=true'
+        - 'Long 128: 同じオブジェクト=false'
+        - 'Long 127: 同じオブジェクト=true'
+      show: ['同じオブジェクト']
+
+  - id: boxing-constant-rule
+    claim: 言語仕様（JLS）が同じオブジェクトになることを求めるのは、-128〜127の整数などを定数式からボクシングした場合である
+    sources:
+      - title: JLS 25 5.1.7 Boxing Conversion
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html
+        anchor: If the value p being boxed is the result of evaluating a constant expression
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の5.1.7で、同一性の保証の条件が「定数式を評価した結果」をボクシングする場合に限られていることを確かめた。変数の値のボクシングの共有はInteger.valueOfのAPIが保証する
+
+  - id: autobox-cache-max
+    claim: -XX:AutoBoxCacheMax=1000を付けると、Integerは1000まで同じオブジェクトになる。Longの共有の範囲は変わらない
+    verify:
+      kind: run
+      probe: verify/BoxCache.java
+      jvm: ['-XX:AutoBoxCacheMax=1000']
+      expect:
+        - 'Integer +128: 同じオブジェクト=true'
+        - 'Integer +1000: 同じオブジェクト=true'
+        - 'Long 128: 同じオブジェクト=false'
+      show: ['Integer +(127|128|1000)|Long 128']
+
+  - id: autobox-cache-default
+    claim: AutoBoxCacheMaxの既定値は128である（127未満にはできず、既定では-128〜127を共有する）
+    verify: { kind: flag, flag: AutoBoxCacheMax, value: 128 }
+
+  - id: autobox-cache-min
+    claim: AutoBoxCacheMaxを127より小さくしても、-128〜127の共有はなくならない
+    verify:
+      kind: run
+      probe: verify/BoxCache.java
+      jvm: ['-XX:AutoBoxCacheMax=10']
+      expect:
+        - 'Integer +127: 同じオブジェクト=true'
+        - 'Integer +128: 同じオブジェクト=false'
+
+  - id: integer-cache-property
+    claim: システムプロパティjava.lang.Integer.IntegerCache.highでも、Integerの共有の上限を広げられる
+    verify:
+      kind: run
+      probe: verify/BoxCache.java
+      jvm: ['-Djava.lang.Integer.IntegerCache.high=1000']
+      expect:
+        - 'Integer +1000: 同じオブジェクト=true'
+
+  # ---- スレッド
+  - id: lost-update
+    claim: 不変なオブジェクトを指す参照を、volatileの読み取りと書き込みに分けて複数のスレッドで差し替えると更新が失われる。AtomicReference.updateAndGetなら失われない
+    sources:
+      - title: AtomicReference.updateAndGet（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/AtomicReference.html
+        anchor: updateAndGet
+    verify:
+      kind: run
+      probe: verify/LostUpdate.java
+      expect:
+        - 'volatileで差し替え: 更新が失われた'
+        - 'AtomicReference\.updateAndGet: 400000$'
+      show: [':']
+      normalize:
+        '更新が失われた（\d+）': '更新が失われた（…）'
+      attempts: 3
+
+  - id: cow-snapshot
+    claim: CopyOnWriteArrayListのイテレーターは作った時点の配列をたどるので、たどる途中で要素を足しても例外にならず、足した要素は見えない。イテレーターのremoveは使えない。ArrayListでは途中の変更がConcurrentModificationExceptionになる
+    sources:
+      - title: CopyOnWriteArrayList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html
+        anchor: uses a reference to the state of the array at the point that the iterator was created
+    verify:
+      kind: run
+      probe: verify/CowIteration.java
+      expect:
+        - 'ArrayList: ConcurrentModificationException'
+        - 'CopyOnWriteArrayList: たどった要素=abc 終了後のリスト=\[a, b, c, d\]'
+        - 'イテレーターのremove: UnsupportedOperationException'
+      show: [':']
+
+  - id: cow-cost
+    claim: CopyOnWriteArrayListは変更のたびに配列全体をコピーするので、たどる操作が変更よりずっと多い場面に向く
+    sources:
+      - title: CopyOnWriteArrayList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html
+        anchor: may be more efficient than alternatives when traversal operations vastly outnumber mutations
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のCopyOnWriteArrayListのAPIの冒頭に、すべての変更操作が配列の新しいコピーを作ること、ふつうはコストが高すぎるが、たどる操作が変更よりずっと多いときには他の方法より効率がよいことがある旨があるのを確かめた
+
+  # ---- 永続的データ構造
+  - id: persistent-check
+    claim: src/の自作の永続的リストはprepend・tail・filterで元のノードを共有し、元のリストを変えない。永続的ハッシュマップは、ハッシュ値の衝突を含む2万回の操作の後も、途中の各版がHashMapの写しと一致する
+    verify:
+      kind: run
+      main: com.example.immutability.PersistentStructuresCheck
+      expect:
+        - '合格: prependした2つのリストが元のノードを共有する'
+        - '合格: filterは最後に除いた要素より後ろを共有する'
+        - '合格: 10万要素のmap'
+        - '合格: PersistentHashMapの全20版がHashMapの写しと一致する'
+        - 'すべての確認に合格'
+      absent:
+        - '不合格'
+      show: ['合格']

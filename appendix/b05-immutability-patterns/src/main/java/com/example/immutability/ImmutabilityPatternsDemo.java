@@ -22,7 +22,7 @@ public class ImmutabilityPatternsDemo {
         private final List<String> nicknames;
         private final Map<String, String> attributes;
         
-        // コンストラクターでのディープコピー
+        // コンストラクターでの防御的コピー（コレクションだけをコピーする浅いコピー。要素のStringは不変なので共有してよい）
         public ImmutablePerson(String name, LocalDate birthDate, 
                               List<String> nicknames, Map<String, String> attributes) {
             this.name = Objects.requireNonNull(name, "name cannot be null");
@@ -46,13 +46,13 @@ public class ImmutabilityPatternsDemo {
             return birthDate;
         }
         
-        // ゲッターでも防御的コピー（必要な場合）
+        // 中身が変更できるコレクションを持つなら、ゲッターでもコピーを返す
         public List<String> getNicknames() {
-            return nicknames; // Java 9+ のList.copyOf()は既に不変
+            return nicknames; // List.copyOfの結果は変更できないので、そのまま返してよい
         }
         
         public Map<String, String> getAttributes() {
-            return attributes; // Java 9+ のMap.copyOf()は既に不変
+            return attributes; // Map.copyOfの結果も変更できない
         }
         
         // withメソッドパターン
@@ -540,7 +540,7 @@ public class ImmutabilityPatternsDemo {
         IO.println("✓ 'with' methods enable functional-style updates");
         
         IO.println("\nBest Practices:");
-        IO.println("• Use defensive copying in constructors and getters");
+        IO.println("• Copy mutable inputs in constructors (and in getters if the field itself is mutable)");
         IO.println("• Implement proper equals(), hashCode(), and toString()");
         IO.println("• Consider object pooling for frequently used values");
         IO.println("• Use builder pattern for complex object construction");

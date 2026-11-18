@@ -163,23 +163,53 @@ public class PersistentDataStructuresDemo {
         }
         
         // リストの変換
+        // 再帰で書くと長いリストでStackOverflowErrorになるので、値をリストに集めてから後ろから作る
         public <U> PersistentList<U> map(Function<T, U> mapper) {
-            if (isEmpty()) {
-                return empty();
+            List<U> mapped = new ArrayList<>(size);
+            for (Node<T> n = head; n != null; n = n.next) {
+                mapped.add(mapper.apply(n.value));
             }
-            return tail().map(mapper).prepend(mapper.apply(head.value));
+            PersistentList<U> result = empty();
+            for (int i = mapped.size() - 1; i >= 0; i--) {
+                result = result.prepend(mapped.get(i));
+            }
+            return result;
         }
         
         // リストのフィルタリング
+        // 最後に条件を満たさなかった要素より後ろは、元のノードをそのまま共有する
         public PersistentList<T> filter(Function<T, Boolean> predicate) {
-            if (isEmpty()) {
-                return this;
+            // 1回目: 条件を満たした値を集め、最後に満たさなかった位置を覚える
+            List<T> kept = new ArrayList<>();
+            int keptBeforeLastReject = 0;
+            Node<T> sharedFrom = head;
+            int sharedSize = size;
+            int index = 0;
+            for (Node<T> n = head; n != null; n = n.next, index++) {
+                if (predicate.apply(n.value)) {
+                    kept.add(n.value);
+                } else {
+                    keptBeforeLastReject = kept.size();
+                    sharedFrom = n.next;
+                    sharedSize = size - index - 1;
+                }
             }
-            
-            PersistentList<T> filteredTail = tail().filter(predicate);
-            return predicate.apply(head.value) 
-                ? filteredTail.prepend(head.value)
-                : filteredTail;
+            // 2回目: 共有する部分の前に、それより前で残した値を後ろから付け足す
+            PersistentList<T> result = new PersistentList<>(sharedFrom, sharedSize);
+            for (int i = keptBeforeLastReject - 1; i >= 0; i--) {
+                result = result.prepend(kept.get(i));
+            }
+            return result;
+        }
+        
+        // 構造共有の確認用: このリストの先頭のノードが、otherの2番目のノードと同じオブジェクトか
+        boolean isTailOf(PersistentList<T> other) {
+            return other.head != null && other.head.next == head;
+        }
+        
+        // 構造共有の確認用: 2つのリストの先頭のノードが同じオブジェクトか
+        boolean sharesHeadWith(PersistentList<T> other) {
+            return head == other.head;
         }
         
         public boolean isEmpty() {
@@ -557,7 +587,14 @@ public class PersistentDataStructuresDemo {
         }
         
         public ImmutableArrayList(Collection<? extends E> c) {
-            this.elements = c.toArray();
+            // toArray()の配列を相手が持ち続けているかもしれないので、自分用にコピーする
+            Object[] array = c.toArray();
+            this.elements = Arrays.copyOf(array, array.length, Object[].class);
+        }
+        
+        // 自分で作った新しい配列を、コピーせずにそのまま持つ（with・appendなどから使う）
+        private ImmutableArrayList(Object[] owned, boolean unused) {
+            this.elements = owned;
         }
         
         @Override
@@ -583,17 +620,13 @@ public class PersistentDataStructuresDemo {
             Objects.checkIndex(index, elements.length);
             Object[] newElements = Arrays.copyOf(elements, elements.length);
             newElements[index] = element;
-            @SuppressWarnings("unchecked")
-            E[] typedArray = (E[]) newElements;
-            return new ImmutableArrayList<>(typedArray);
+            return new ImmutableArrayList<>(newElements, true);
         }
         
         public ImmutableArrayList<E> append(E element) {
             Object[] newElements = Arrays.copyOf(elements, elements.length + 1);
             newElements[elements.length] = element;
-            @SuppressWarnings("unchecked")
-            E[] typedArray = (E[]) newElements;
-            return new ImmutableArrayList<>(typedArray);
+            return new ImmutableArrayList<>(newElements, true);
         }
         
         @Override
@@ -607,18 +640,14 @@ public class PersistentDataStructuresDemo {
             Object[] newElements = new Object[elements.length - 1];
             System.arraycopy(elements, 0, newElements, 0, index);
             System.arraycopy(elements, index + 1, newElements, index, elements.length - index - 1);
-            @SuppressWarnings("unchecked")
-            E[] typedArray = (E[]) newElements;
-            return new ImmutableArrayList<>(typedArray);
+            return new ImmutableArrayList<>(newElements, true);
         }
         
         public ImmutableArrayList<E> subList(int fromIndex, int toIndex) {
             Objects.checkFromToIndex(fromIndex, toIndex, elements.length);
             
             Object[] newElements = Arrays.copyOfRange(elements, fromIndex, toIndex);
-            @SuppressWarnings("unchecked")
-            E[] typedArray = (E[]) newElements;
-            return new ImmutableArrayList<>(typedArray);
+            return new ImmutableArrayList<>(newElements, true);
         }
     }
     
