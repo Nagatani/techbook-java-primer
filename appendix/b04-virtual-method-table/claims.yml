@@ -1,0 +1,240 @@
+# 付録B.04の主張と、その確かめ方
+# npm run check:deep-dive -- b04 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- バイトコード
+  - id: invoke-instructions
+    claim: staticメソッドはinvokestatic、privateとfinalとふつうのインスタンスメソッドはinvokevirtual、インターフェイスのメソッドはinvokeinterfaceで呼ばれる
+    sources:
+      - title: JVMS 25 6.5 Instructions（invokestatic・invokevirtual・invokeinterface）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: invokeinterface
+    verify:
+      kind: javap
+      probe: verify/InvokeKinds.java
+      class: InvokeKinds$Child
+      expect:
+        - 'invokestatic .*Method staticMethod'
+        - 'invokevirtual .*Method privateMethod'
+        - 'invokevirtual .*Method finalMethod'
+        - 'invokevirtual .*Method virtualMethod'
+        - 'invokeinterface .*InterfaceMethod InvokeKinds\$Drawable\.draw'
+      show:
+        - 'invoke(static|virtual|interface) .*(Method|InterfaceMethod) '
+      normalize:
+        '#\d+,?\s*(1\s*)?//': '//'
+
+  - id: invokespecial-uses
+    claim: invokespecialはコンストラクター（<init>）とsuper.メソッド()の呼び出しに使われる
+    sources:
+      - title: JVMS 25 6.5 invokespecial
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: invokespecial
+    verify:
+      kind: javap
+      probe: verify/InvokeKinds.java
+      class: InvokeKinds$Child
+      expect:
+        - 'invokespecial .*Method InvokeKinds\$Base\."<init>"'
+        - 'invokespecial .*Method InvokeKinds\$Base\.greet'
+      show:
+        - 'invokespecial'
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: private-nestmates
+    claim: privateメソッドの呼び出しは、Java 10まではinvokespecial、Java 11（ネストメイト、JEP 181）からはinvokevirtualになる
+    sources:
+      - title: JEP 181 Nest-Based Access Control
+        url: https://openjdk.org/jeps/181
+        anchor: Nest-Based Access Control
+    verify:
+      kind: javap
+      probe: verify/PrivateCall.java
+      class: PrivateCall
+      release: 10
+      expect:
+        - 'invokespecial .*Method helper'
+
+  - id: private-nestmates-11
+    claim: 同上（--release 11でコンパイルするとinvokevirtualになる）
+    unreferenced: true
+    verify:
+      kind: javap
+      probe: verify/PrivateCall.java
+      class: PrivateCall
+      release: 11
+      expect:
+        - 'invokevirtual .*Method helper'
+
+  # ---- 仕様と実装
+  - id: jvms-no-vtable
+    claim: JVMSはinvokevirtualで呼ぶメソッドの選び方（メソッドの選択）を決めているが、vtableという仕組みは決めていない。vtableはHotSpotなどの実装の工夫である
+    sources:
+      - title: JVMS 25 5.4.6 Method Selection
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: Method Selection
+      - title: JVMS 25 第2章の冒頭（仕様に含まれない実装の詳細は実装者に任せる）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: unnecessarily constrain the creativity of implementors
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の5.4.6と6.5にvtable・itableの語がないこと、第2章の冒頭に、仕様に含まれない実装の詳細（内部の最適化を含む）は実装者に任せる旨の記述があることを確かめた
+
+  - id: object-overridable
+    claim: Objectのメソッドのうちオーバーライドできるのはclone・equals・finalize・hashCode・toStringの5つで、getClass・notify・waitなどはfinalである
+    sources:
+      - title: java.lang.Object（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: getClass
+    verify:
+      kind: run
+      probe: verify/InvokeKinds.java
+      class: InvokeKinds
+      expect:
+        - 'オーバーライドできるメソッド: clone equals finalize hashCode toString$'
+
+  # ---- 段階的コンパイル
+  - id: tier3-threshold
+    claim: 段階的コンパイルでは、呼び出し回数がおよそ200回（Tier3InvocationThreshold）でC1のコンパイルの対象になる
+    verify: { kind: flag, flag: Tier3InvocationThreshold, value: 200 }
+  - id: tier4-threshold
+    claim: 呼び出し回数がおよそ5000回（Tier4InvocationThreshold）でC2のコンパイルの対象になる
+    verify: { kind: flag, flag: Tier4InvocationThreshold, value: 5000 }
+  - id: tiered-default
+    claim: 段階的コンパイルは既定で有効である
+    verify: { kind: flag, flag: TieredCompilation, value: 'true' }
+
+  # ---- 呼び出し箇所
+  - id: callsite-mono
+    claim: 呼び出し箇所に1種類の型しか現れないとき、C2は型の記録（TypeProfile）をもとにその型のメソッドをインライン化する
+    verify:
+      kind: run
+      probe: verify/CallSiteProfile.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      args: [mono]
+      expect:
+        - 'Circle::area \(4 bytes\)\s+inline \(hot\).*TypeProfile \((\d+)/\1 counts\) = CallSiteProfile\$Circle'
+      show: ['::area']
+      sort: true
+      attempts: 3
+
+  - id: callsite-bi
+    claim: 2種類の型が現れるとき、C2は両方の型のメソッドを、型の確認を付けてインライン化する
+    verify:
+      kind: run
+      probe: verify/CallSiteProfile.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      args: [bi]
+      expect:
+        - 'Circle::area \(4 bytes\)\s+inline \(hot\).*Square::area \(4 bytes\)\s+inline \(hot\)|Square::area \(4 bytes\)\s+inline \(hot\).*Circle::area \(4 bytes\)\s+inline \(hot\)'
+      show: ['::area']
+      sort: true
+      attempts: 3
+
+  - id: callsite-mega
+    claim: 3種類以上の型がほぼ同じ割合で現れるとき、C2はインライン化せず、仮想呼び出しのままにする
+    verify:
+      kind: run
+      probe: verify/CallSiteProfile.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      args: [mega]
+      expect:
+        - 'Shape::area \(0 bytes\)\s+failed to inline: virtual call'
+      absent:
+        - 'Circle::area .*inline \(hot\)'
+      show: ['::area']
+      sort: true
+      attempts: 3
+
+  - id: c1-cha
+    claim: 実装クラスが1つしか読み込まれていなければ、C1もクラス階層解析によってインライン化する。2つ以上読み込まれていると、C1は「no static binding」としてインライン化しない
+    verify:
+      kind: run
+      probe: verify/CallSiteProfile.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      args: [bi]
+      expect:
+        - 'Shape::area \(0 bytes\)\s+failed to inline: no static binding'
+
+  - id: major-receiver
+    claim: 1つの型が呼び出しの90%以上を占めれば（TypeProfileMajorReceiverPercent）、ほかの型が混じっていても、その型のメソッドをインライン化する
+    verify: { kind: flag, flag: TypeProfileMajorReceiverPercent, value: 90 }
+
+  # ---- CHA
+  - id: cha-deopt
+    claim: finalでないメソッドも、オーバーライドするクラスが読み込まれていなければインライン化され、オーバーライドするサブクラスが読み込まれると、そのコードは脱最適化される
+    verify:
+      kind: run
+      probe: verify/ClassHierarchy.java
+      jvm: ['-XX:+PrintCompilation']
+      expect:
+        - '--- サブクラスを読み込む ---[\s\S]*ClassHierarchy::sum .*made not entrant: marked for deoptimization'
+      show: ['ClassHierarchy::sum|---']
+      normalize:
+        '^\s*\d+\s+\d+\s+': ''
+      attempts: 3
+
+  # ---- インライン化の条件
+  - id: max-inline-size
+    claim: よく実行されない呼び出し箇所では、バイトコードが35バイト（MaxInlineSize）以下のメソッドだけをインライン化する
+    verify: { kind: flag, flag: MaxInlineSize, value: 35 }
+  - id: freq-inline-size
+    claim: よく実行される呼び出し箇所では、325バイト（FreqInlineSize）以下のメソッドをインライン化する
+    verify: { kind: flag, flag: FreqInlineSize, value: 325 }
+  - id: max-inline-level
+    claim: インライン化の深さは15段（MaxInlineLevel）まで
+    verify: { kind: flag, flag: MaxInlineLevel, value: 15 }
+  - id: max-recursive-inline-level
+    claim: 自分自身の再帰呼び出しは1段（MaxRecursiveInlineLevel）までインライン化する
+    verify: { kind: flag, flag: MaxRecursiveInlineLevel, value: 1 }
+
+  - id: inlining-messages
+    claim: PrintInliningは、35バイトを超えるメソッドをC1では「callee is too large」、325バイトを超えるよく呼ばれるメソッドをC2では「hot method too big」、深い再帰を「recursive inlining is too deep」と表示する。36バイトのメソッドもC2ではよく呼ばれればインライン化される
+    verify:
+      kind: run
+      probe: verify/InliningLimits.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      expect:
+        - 'InliningLimits::small \(6 bytes\)\s+inline'
+        - 'InliningLimits::medium \(36 bytes\)\s+failed to inline: callee is too large'
+        - 'InliningLimits::medium \(36 bytes\)\s+inline \(hot\)'
+        - 'InliningLimits::large \(379 bytes\)\s+failed to inline: hot method too big'
+        - 'InliningLimits::depth \(17 bytes\)\s+failed to inline: recursive inlining (is )?too deep'
+      show: ['InliningLimits::(small|medium|large|depth)']
+      sort: true
+      attempts: 3
+
+  - id: compile-threshold-unused
+    claim: 段階的コンパイルが有効なとき（既定）は、-XX:CompileThresholdを大きくしてもコンパイルの時期は変わらない。段階的コンパイルを止めたときだけ効く
+    verify:
+      kind: run
+      probe: verify/InliningLimits.java
+      jvm: ['-XX:CompileThreshold=1000000', '-XX:+PrintCompilation']
+      expect:
+        - '\s3\s+InliningLimits::small'
+
+  - id: compile-threshold-nontiered
+    claim: 同上（段階的コンパイルを止めると、CompileThresholdに届かないメソッドはコンパイルされない）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: verify/InliningLimits.java
+      jvm: ['-XX:-TieredCompilation', '-XX:CompileThreshold=1000000', '-XX:+PrintCompilation']
+      expect:
+        - 'result='
+      absent:
+        - 'InliningLimits::small'
+
+  - id: stop-at-level-1
+    claim: -XX:TieredStopAtLevel=1にするとC1だけでコンパイルし、C2のコンパイルをしない
+    verify:
+      kind: run
+      probe: verify/InliningLimits.java
+      jvm: ['-XX:TieredStopAtLevel=1', '-XX:+PrintCompilation']
+      expect:
+        - 'InliningLimits::large'
+      absent:
+        - '^\s*\d+\s+\d+\s+[%sbn! ]*\s4\s+InliningLimits::'
