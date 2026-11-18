@@ -18,7 +18,7 @@ class ThreadStopExample {
     }
     
     public void stopWorker() {
-        // volatileにより、この変更は即座に他のスレッドから見える
+        // volatileにより、このあとでflagを読むほかのスレッドは、この変更を必ず見る
         stopRequested = true;
         IO.println("Stop requested");
     }
