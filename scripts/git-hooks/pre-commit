@@ -27,8 +27,16 @@ fi
 echo "CLAUDE.mdのルール: エラーなし"
 
 # 3. 付録Bの台帳（claims.yml）と解説の印の対応、フラグ名（Javaの検証はしない。約1秒）
-out=$(node scripts/check-deep-dive.js --static 2>&1)
-if [ $? -ne 0 ]; then
+#    コミットに含まれる節だけを検査する（ほかの節の書きかけの作業でコミットが止まらないように）
+secs=$(git diff --cached --name-only | sed -n 's#^appendix/\(b[0-9][0-9]\)-.*#\1#p' | sort -u | tr '\n' ' ')
+out=""
+status=0
+if [ -n "$secs" ]; then
+    # shellcheck disable=SC2086
+    out=$(node scripts/check-deep-dive.js --static $secs 2>&1)
+    status=$?
+fi
+if [ $status -ne 0 ]; then
     echo "$out" | tail -30
     echo ""
     echo "pre-commit: 付録Bの台帳と解説が食い違っているためコミットを中止しました（npm run check:deep-dive -- --static）"

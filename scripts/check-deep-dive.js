@@ -233,7 +233,9 @@ function compileFor(sec, v, tmp) {
   const proc = (v.javac || []).some((o) => o.startsWith('-proc:')) ? [] : ['-proc:none'];
   const r = spawnSync('javac', ['-J-Duser.language=en', '--release', release, '-Xlint:-options', '-encoding', 'UTF-8', ...proc, ...(v.javac || []),
     ...(libs.length ? ['-cp', libs.join(path.delimiter)] : []), '-d', out, ...sources], { encoding: 'utf8' });
-  const res = { ok: r.status === 0, out, cp: [out, ...libs].join(path.delimiter), msg: (r.stdout + r.stderr).trim() };
+  // javacのメッセージのファイル名は、節のディレクトリからの相対パスにする（READMEに載せても環境によらないように）
+  const msg = (r.stdout + r.stderr).trim().split(sec.dir + path.sep).join('');
+  const res = { ok: r.status === 0, out, cp: [out, ...libs].join(path.delimiter), msg };
   compiled.set(key, res);
   return res;
 }
@@ -305,7 +307,8 @@ function shownOutput(c, output) {
   const pats = asList(v.show || v.expect).map((re) => new RegExp(re));
   let lines = output.split('\n').filter((l) => pats.some((p) => p.test(l)));
   // 字下げと連続する空白を詰める（PrintInliningなどは呼び出しの深さで字下げが変わる）
-  lines = lines.map((l) => l.trim().replace(/\s{2,}/g, ' '));
+  // keepIndent: true なら字下げと桁を残す（木の表示やJOLの表など）
+  lines = v.keepIndent ? lines.map((l) => l.replace(/\s+$/, '')) : lines.map((l) => l.trim().replace(/\s{2,}/g, ' '));
   for (const [from, to] of Object.entries(v.normalize || {})) lines = lines.map((l) => l.replace(new RegExp(from, 'g'), to));
   // JITのログは実行のたびに順序が変わるので、sort: trueで並べ、同じ行をまとめる
   if (v.sort) lines = [...new Set(lines)].sort();
