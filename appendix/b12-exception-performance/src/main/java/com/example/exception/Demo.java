@@ -46,29 +46,46 @@ public class Demo {
         IO.println("-----------------------------------------");
         
         final int iterations = 100_000;
-        
-        // Normal flow
-        long start = System.nanoTime();
-        for (int i = 0; i < iterations; i++) {
-            int result = divide(10, 2);
+        // 結果を足し合わせて表示し、JITがループごと消さないようにする
+        long checksum = 0;
+
+        // 暖機（JITコンパイルが済んでから測る）
+        for (int round = 0; round < 5; round++) {
+            checksum += normalLoop(iterations) + exceptionLoop(iterations);
         }
+
+        long start = System.nanoTime();
+        checksum += normalLoop(iterations);
         long normalTime = System.nanoTime() - start;
-        
-        // Exception flow
+
         start = System.nanoTime();
+        checksum += exceptionLoop(iterations);
+        long exceptionTime = System.nanoTime() - start;
+
+        IO.println("Normal flow:    %.1f ns/op".formatted((double) normalTime / iterations));
+        IO.println("Exception flow: %.1f ns/op".formatted((double) exceptionTime / iterations));
+        IO.println("(checksum %d) The numbers change with the CPU, JVM, and each run;".formatted(checksum));
+        IO.println("use JMH (target/benchmarks.jar) for real measurements.");
+    }
+
+    private static long normalLoop(int iterations) {
+        long sum = 0;
+        for (int i = 0; i < iterations; i++) {
+            sum += divide(i, 2);
+        }
+        return sum;
+    }
+
+    private static long exceptionLoop(int iterations) {
+        long sum = 0;
         for (int i = 0; i < iterations; i++) {
             try {
-                int result = divideWithException(10, 0);
+                sum += divideWithException(i, 0);
             } catch (ArithmeticException e) {
-                // Handle exception
+                sum--;
             }
         }
-        long exceptionTime = System.nanoTime() - start;
-        
-        IO.println("Normal flow: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(normalTime)));
-        IO.println("Exception flow: %d ms".formatted(TimeUnit.NANOSECONDS.toMillis(exceptionTime)));
-        IO.println("Exception overhead: %.2fx slower".formatted(
-            (double) exceptionTime / normalTime));
+        return sum;
     }
     
     /**
@@ -258,7 +275,8 @@ public class Demo {
             e -> {}, // Suppress error output for demo
             false);  // Don't rethrow
         
-        Random random = new Random();
+        // 種を固定して、実行のたびに同じ順で例外が起こるようにする
+        Random random = new Random(42);
         
         // Simulate various exception scenarios
         for (int i = 0; i < 1000; i++) {

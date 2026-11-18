@@ -1,0 +1,420 @@
+# 付録B.12の主張と、その確かめ方
+# npm run check:deep-dive -- b12 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 例外のバイトコード
+  - id: exception-table
+    claim: try-catchは、メソッドの例外表（Exception table）の行になる。例外が起きないときに通る命令は、tryのないメソッドと同じで、増えない
+    sources:
+      - title: JVMS 25 4.7.3 The Code Attribute（exception_table）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: exception_table
+      - title: JVMS 25 3.12 Throwing and Handling Exceptions
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-3.html
+        anchor: Throwing and Handling Exceptions
+    verify:
+      kind: javap
+      probe: verify/ExceptionTable.java
+      class: ExceptionTable
+      expect:
+        - 'static int plain\(int\);\s+Code:\s+0: iload_0\s+1: invokestatic .*compute:\(I\)I\s+4: ireturn'
+        - 'static int guarded\(int\);\s+Code:\s+0: iload_0\s+1: invokestatic .*compute:\(I\)I\s+4: ireturn\s+5: astore_1'
+        - '^\s+0\s+4\s+5\s+Class java/lang/IllegalArgumentException'
+      range: { from: 'static int plain', to: 'Class java/lang/IllegalArgumentException' }
+      show: ['\S']
+      keepIndent: true
+      normalize:
+        '#\d+\s+//': '//'
+
+  - id: finally-copies
+    claim: javacはfinallyの中身を、tryを抜ける道（正常に抜ける、catchから抜ける、それ以外の例外で抜ける）ごとにコピーする。jsr命令は使わない
+    sources:
+      - title: JVMS 25 4.9.1 Static Constraints（バージョン51.0以上ではjsr・retを使えない）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: then instances of instructions using the jsr , jsr_w , or ret opcodes must not appear in the code array
+    verify:
+      kind: javap
+      probe: verify/FinallyCopies.java
+      class: FinallyCopies
+      expect:
+        - 'static void run\(int\);(\s+.*invokestatic.*\n)?[\s\S]*?(invokestatic .*Method cleanup[\s\S]*?){3}Exception table'
+        - '^\s+0\s+4\s+22\s+any'
+        - '^\s+10\s+16\s+22\s+any'
+      absent:
+        - '\bjsr\b'
+      range: { from: 'static void run', to: '^\s+10\s+16\s+22\s+any' }
+      show: ['\S']
+      keepIndent: true
+      normalize:
+        '#\d+\s+//': '//'
+
+  - id: jvms-jsr-history
+    claim: JVMSの3.13は、finallyをjsr命令のサブルーチンとして呼ぶ古い（クラスファイルのバージョン50.0以下の）コンパイルの例を載せている
+    sources:
+      - title: JVMS 25 3.13 Compiling finally
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-3.html
+        anchor: the finally block is compiled as an embedded subroutine
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の3.13の例がjsrを使っていること（「0 or below, so that the jsr instruction may be used」の記述）と、4.9.1でバージョン51.0以上ではjsr・jsr_w・retを禁じていることを読んで確かめた
+
+  - id: twr-bytecode
+    claim: try-with-resourcesは、javacがcloseの呼び出しと、closeで起きた例外をaddSuppressedで本体の例外に付ける処理に展開する
+    sources:
+      - title: JLS 25 14.20.3.1 Basic try-with-resources
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: Basic try-with-resources
+    verify:
+      kind: javap
+      probe: verify/TryWithResources.java
+      class: TryWithResources
+      expect:
+        - 'invokevirtual .*TryWithResources\$Res\.close:\(\)V'
+        - 'invokevirtual .*java/lang/Throwable\.addSuppressed'
+      range: { from: 'static void use', to: '^\s*$' }
+      show: ['invokevirtual', 'athrow', 'Class java/lang/Throwable']
+      normalize:
+        '#\d+\s+//': '//'
+
+  - id: twr-run
+    claim: 資源は宣言と逆の順に閉じられ、本体の例外にcloseの例外が抑制された例外として付く
+    sources:
+      - title: JLS 25 14.20.3 try-with-resources
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: Resources are closed in the reverse order from that in which they were initialized.
+    verify:
+      kind: run
+      probe: verify/TryWithResources.java
+      expect:
+        - '^close b\nclose a\ncaught: body failed\n  suppressed: close b failed\n  suppressed: close a failed'
+      show: ['^(open|body|close|caught|  suppressed|---)']
+      keepIndent: true
+
+  - id: javac-proc
+    claim: JDK 25のjavacは、注釈処理を設定するオプション（--processor-path、-proc:fullなど）を指定しないと、クラスパスにある注釈処理器を動かさない
+    sources:
+      - title: javacコマンドのリファレンス（Java SE 25）-proc
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html
+        anchor: annotation processing and compilation are done if at least one other option is used to explicitly configure annotation processing
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: javacのリファレンスの-procの説明を読み、src/main/javaを-proc:fullなしでコンパイルするとMETA-INF/BenchmarkListが作られず、-proc:fullを付けると作られることを確かめた
+
+  # ---- 例外のコストの内訳
+  - id: constructor-fills
+    claim: Throwableのコンストラクターは、fillInStackTrace()を呼んでスタックトレースを記録する
+    sources:
+      - title: java.lang.Throwable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+        anchor: The fillInStackTrace() method is called to initialize the stack trace data in the newly created throwable.
+    verify:
+      kind: run
+      probe: verify/NoStackTrace.java
+      expect:
+        - 'コンストラクターがfillInStackTraceを呼んだ回数: 1$'
+
+  - id: stack-length
+    claim: スタックトレースの要素数は呼び出しの深さとともに増えるが、既定では1024個（MaxJavaStackTraceDepth）で打ち切られる
+    verify:
+      kind: run
+      probe: verify/StackTraceCost.java
+      expect:
+        - '深さ10で作った例外のスタックトレースの要素数: 12$'
+        - '深さ1000で作った例外のスタックトレースの要素数: 1002$'
+        - '深さ2000で作った例外のスタックトレースの要素数: 1024$'
+      show: ['要素数']
+      attempts: 2
+
+  - id: max-depth-flag
+    claim: MaxJavaStackTraceDepthの既定値は1024
+    verify: { kind: flag, flag: MaxJavaStackTraceDepth, value: 1024 }
+
+  - id: max-depth-limit
+    claim: 同上（-XX:MaxJavaStackTraceDepth=50にすると、深い呼び出しでも要素数は50になる）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: verify/StackTraceCost.java
+      jvm: ['-XX:MaxJavaStackTraceDepth=50']
+      expect:
+        - '深さ1000で作った例外のスタックトレースの要素数: 50$'
+
+  - id: cost-direction
+    claim: スタックトレースを作る例外は深いところで作るほど時間がかかり、作らない例外は深さによらず短い。getStackTrace()でStackTraceElementの配列を作ると、さらに時間がかかる
+    verify:
+      kind: run
+      probe: verify/StackTraceCost.java
+      expect:
+        - '深さ500で作る例外は深さ10より時間がかかる: true'
+        - 'スタックトレースを作らない例外は作る例外より短い（深さ500）: true'
+        - 'スタックトレースを作らない例外は深さで大きく変わらない: true'
+        - 'getStackTrace\(\)を呼ぶとさらに時間がかかる（深さ500）: true'
+      show: ['時間がかかる|短い|変わらない']
+      attempts: 3
+
+  - id: unwind-cost
+    claim: スタックトレースを作らない例外でも、深いところから投げて多くのフレームを抜けるほど時間がかかる
+    sources:
+      - title: JVMS 25 3.12 Throwing and Handling Exceptions
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-3.html
+        anchor: Throwing and Handling Exceptions
+    verify:
+      kind: run
+      probe: verify/StackTraceCost.java
+      expect:
+        - '作っておいた例外を深さ500から投げると深さ10より時間がかかる: true'
+      attempts: 3
+
+  - id: lazy-elements
+    claim: OpenJDKの実装では、fillInStackTrace()は内部の形（backtrace）だけを記録し、StackTraceElementの配列はgetStackTrace()で初めて作る
+    verify:
+      kind: run
+      probe: verify/LazyStackTrace.java
+      jvm: ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+      expect:
+        - '作った直後のstackTrace: StackTraceElement\[0\]$'
+        - '作った直後のbacktrace: Object\[\]$'
+        - 'getStackTrace\(\)のあとのstackTrace: StackTraceElement\[1\]$'
+      show: ['.']
+
+  - id: jmh-results
+    claim: 著者の環境（Apple M3、JDK 25.0.2、JMH 1.37）で、スタックトレースを作る例外は作らない例外や戻り値より桁違いに遅く、その時間は呼び出しの深さとともに増えた。例外が起きないtry-catchは、tryのない処理と差がなかった
+    sources:
+      - title: OpenJDK Code Tools JMH
+        url: https://openjdk.org/projects/code-tools/jmh/
+        anchor: JMH is a Java harness
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src/main/javaのベンチマークを-proc:fullでコンパイルし、org.openjdk.jmh.Mainで注釈のとおりの設定（暖機5回・測定5回、各1秒、フォーク1、平均時間）で実行した。数値は環境で変わるので検査では照合しない
+
+  # ---- スタックトレースを作らない例外
+  - id: writable-false
+    claim: writableStackTrace=falseで作った例外は、fillInStackTrace()を呼ばず、getStackTrace()は空の配列を返し、setStackTraceも効かない。enableSuppression=falseなら、addSuppressedは無視される
+    sources:
+      - title: Throwable(String, Throwable, boolean, boolean)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+        anchor: a null will be written to the stackTrace field
+    verify:
+      kind: run
+      probe: verify/NoStackTrace.java
+      expect:
+        - 'writableStackTrace=falseの要素数: 0$'
+        - 'setStackTraceのあとの要素数: 0$'
+        - 'enableSuppression=falseでaddSuppressedしたあとの数: 0$'
+      show: ['writable|setStackTrace|enableSuppression']
+
+  - id: override-fill
+    claim: fillInStackTrace()をオーバーライドして何もしなければ、スタックトレースは空になる
+    verify:
+      kind: run
+      probe: verify/NoStackTrace.java
+      expect:
+        - 'fillInStackTraceを上書きした例外の要素数: 0$'
+
+  - id: field-condition-npe
+    claim: fillInStackTrace()の中でサブクラスのフィールドを見ると、スーパークラスのコンストラクターから呼ばれた時点ではフィールドが未設定のため、NullPointerExceptionになる
+    verify:
+      kind: run
+      probe: verify/NoStackTrace.java
+      expect:
+        - 'FieldCondition: NullPointerException$'
+
+  - id: stack-trace-in-throwable
+    claim: -XX:-StackTraceInThrowableにすると、すべての例外がスタックトレースを持たなくなる（既定は有効）
+    verify:
+      kind: run
+      probe: verify/NoStackTrace.java
+      jvm: ['-XX:-StackTraceInThrowable']
+      expect:
+        - 'ふつうの例外の要素数: 0$'
+
+  - id: stack-trace-in-throwable-flag
+    claim: 同上（StackTraceInThrowableの既定値はtrue）
+    unreferenced: true
+    verify: { kind: flag, flag: StackTraceInThrowable, value: 'true' }
+
+  # ---- OmitStackTraceInFastThrow
+  - id: fast-throw
+    claim: 同じ箇所でJVMが暗黙に投げるNullPointerExceptionやArithmeticExceptionを繰り返すと、C2はスタックトレースもメッセージもない、使い回しの例外オブジェクトを投げるようになる
+    sources:
+      - title: Throwable.getStackTrace()（Java SE 25 API。スタックトレースの情報がなければ長さ0の配列を返してよい）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+        anchor: permitted to return a zero-length array from this method.
+    verify:
+      kind: run
+      probe: verify/FastThrow.java
+      expect:
+        - 'スタックトレースのないNullPointerException: あり'
+        - 'スタックトレースのないNullPointerExceptionのオブジェクトの数: 1$'
+        - 'スタックトレースのないArithmeticException: あり'
+        - '最後のNullPointerExceptionのメッセージ: null$'
+        - '最後のNullPointerExceptionの要素数: 0$'
+      show: ['.']
+      attempts: 3
+
+  - id: fast-throw-flag
+    claim: OmitStackTraceInFastThrowは既定で有効
+    verify: { kind: flag, flag: OmitStackTraceInFastThrow, value: 'true' }
+
+  - id: fast-throw-off
+    claim: -XX:-OmitStackTraceInFastThrowを付けると、何度起きてもスタックトレースとメッセージのある例外になる
+    verify:
+      kind: run
+      probe: verify/FastThrow.java
+      jvm: ['-XX:-OmitStackTraceInFastThrow']
+      expect:
+        - 'スタックトレースのないNullPointerException: なし'
+        - 'スタックトレースのないArithmeticException: なし'
+        - '最後のNullPointerExceptionのメッセージ: Cannot invoke "String.length\(\)" because "FastThrow.text" is null'
+      show: ['.']
+
+  - id: fast-throw-c2
+    claim: この置き換えはC2がコンパイルしたコードで起こる。C1だけ（-XX:TieredStopAtLevel=1）やインタープリターだけ（-Xint）では起こらない
+    verify:
+      kind: run
+      probe: verify/FastThrow.java
+      jvm: ['-XX:TieredStopAtLevel=1']
+      expect:
+        - 'スタックトレースのないNullPointerException: なし'
+
+  - id: fast-throw-int
+    claim: 同上（-Xintでは起こらない）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: verify/FastThrow.java
+      jvm: ['-Xint']
+      expect:
+        - 'スタックトレースのないNullPointerException: なし'
+
+  # ---- Helpful NullPointerExceptions
+  - id: helpful-npe
+    claim: JVMが投げるNullPointerExceptionのメッセージには、何がnullだったかが書かれる（JEP 358）。-gなしでコンパイルしたクラスでは、ローカル変数と引数は<local0>・<parameter1>のように番号で表示される。プログラムが明示的に作った例外にはメッセージが付かない
+    sources:
+      - title: JEP 358 Helpful NullPointerExceptions（Release 14）
+        url: https://openjdk.org/jeps/358
+        anchor: Release 14
+      - title: JEP 358 Helpful NullPointerExceptions
+        url: https://openjdk.org/jeps/358
+        anchor: NPEs that are explicitly created and/or explicitly thrown by programs running on the JVM are not subject to the bytecode analysis
+    verify:
+      kind: run
+      probe: verify/HelpfulNpe.java
+      expect:
+        - 'ローカル変数: Cannot invoke "String.length\(\)" because "<local0>" is null'
+        - '静的フィールド: Cannot invoke "String.length\(\)" because "HelpfulNpe.name" is null'
+        - '配列: Cannot load from int array because "<parameter1>.values" is null'
+        - '引数: Cannot read field "values" because "<parameter1>" is null'
+        - '明示的なthrow: null$'
+      show: ['.']
+
+  - id: helpful-npe-g
+    claim: javac -gでコンパイルすると、ローカル変数と引数の名前が表示される
+    sources:
+      - title: JEP 358 Helpful NullPointerExceptions
+        url: https://openjdk.org/jeps/358
+        anchor: then local variable names are printed
+    verify:
+      kind: run
+      probe: verify/HelpfulNpe.java
+      javac: ['-g']
+      expect:
+        - 'ローカル変数: Cannot invoke "String.length\(\)" because "s" is null'
+        - '配列: Cannot load from int array because "h.values" is null'
+      show: ['ローカル変数|配列|引数']
+
+  - id: helpful-npe-off
+    claim: -XX:-ShowCodeDetailsInExceptionMessagesを付けると、詳しいメッセージは付かない（JDK 25の既定は有効）
+    sources:
+      - title: javaコマンドのリファレンス（Java SE 25）ShowCodeDetailsInExceptionMessages
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: By default, this option is enabled.
+      - title: javaコマンドのリファレンス（Java SE 25）メッセージはgetMessage()で計算される
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: The null-detail message is calculated and returned by NullPointerException.getMessage()
+    verify:
+      kind: run
+      probe: verify/HelpfulNpe.java
+      jvm: ['-XX:-ShowCodeDetailsInExceptionMessages']
+      expect:
+        - 'ローカル変数: null$'
+        - '静的フィールド: null$'
+      absent:
+        - 'Cannot '
+
+  - id: helpful-npe-flag
+    claim: 同上（ShowCodeDetailsInExceptionMessagesの既定値はtrue）
+    unreferenced: true
+    verify: { kind: flag, flag: ShowCodeDetailsInExceptionMessages, value: 'true' }
+
+  # ---- StackWalker
+  - id: stack-walker
+    claim: StackWalker（Java 9、JEP 259）は、例外を作らずにスタックをたどれ、必要なフレームだけをストリームで遅延して取り出せる
+    sources:
+      - title: JEP 259 Stack-Walking API（Release 9）
+        url: https://openjdk.org/jeps/259
+        anchor: Release 9
+      - title: JEP 259 Stack-Walking API
+        url: https://openjdk.org/jeps/259
+        anchor: allows easy filtering of, and lazy access to, the information in stack traces
+      - title: java.lang.StackWalker（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StackWalker.html
+        anchor: The walk method opens a sequential stream of StackFrame s for the current thread
+    verify:
+      kind: run
+      probe: verify/WalkStack.java
+      expect:
+        - '近い順の呼び出し元: \[level:26, level:23, level:23\]'
+        - '例外で数えた深さ: 102$'
+        - 'StackWalkerで数えた深さ: 102$'
+      show: ['.']
+
+  # ---- JFR
+  - id: jfr-settings
+    claim: JDK 25のJFRの設定defaultとprofileでは、jdk.JavaExceptionThrowが有効で、記録する数が毎秒100件（profileは300件）に間引かれる
+    verify:
+      kind: run
+      probe: verify/JfrExceptions.java
+      expect:
+        - '設定defaultのjdk.JavaExceptionThrow: enabled=true throttle=100/s'
+        - '設定profileのjdk.JavaExceptionThrow: enabled=true throttle=300/s'
+      show: ['設定']
+
+  - id: jfr-construction
+    claim: jdk.JavaExceptionThrowは、投げたときではなく例外を作ったときに記録される。投げずに作っただけの例外や、スタックトレースを作らない例外も記録される
+    verify:
+      kind: run
+      probe: verify/JfrExceptions.java
+      expect:
+        - 'jdk.JavaExceptionThrow JfrExceptions\$Quiet: 1$'
+        - 'jdk.JavaExceptionThrow java.lang.IllegalArgumentException: 1$'
+        - 'jdk.JavaExceptionThrow java.lang.IllegalStateException: 3$'
+        - 'jdk.ExceptionStatisticsのthrowablesの増加が5以上: true'
+      show: ['jdk\.(JavaExceptionThrow|ExceptionStatistics)']
+
+  # ---- 結果を値で返す
+  - id: result-switch
+    claim: 成功と失敗をsealedインターフェイスとレコードで表すと、switchでdefaultなしに両方の場合を書ける
+    sources:
+      - title: JLS 25 14.11.1.1 Exhaustive Switch Blocks
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: Exhaustive Switch Blocks
+    verify:
+      kind: run
+      probe: verify/ResultSwitch.java
+      expect:
+        - '^成功 42$'
+        - '^失敗 数ではありません: abc$'
+
+  - id: result-missing-case
+    claim: 場合を書き忘れると、コンパイルエラーになる
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ResultMissingCase.java
+      fails: true
+      expect:
+        - 'the switch expression does not cover all possible input values'
