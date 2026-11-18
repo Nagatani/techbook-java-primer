@@ -1,8 +1,22 @@
 package com.example.jvm;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.classfile.Attributes;
+import java.lang.classfile.ClassFile;
+import java.lang.classfile.ClassModel;
+import java.lang.classfile.Instruction;
+import java.lang.classfile.MethodModel;
+import java.lang.classfile.attribute.CodeAttribute;
+import java.lang.classfile.instruction.LoadInstruction;
+import java.lang.classfile.instruction.StoreInstruction;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * バイトコード分析とJITコンパイレーションのデモンストレーション
@@ -25,30 +39,30 @@ public class BytecodeAnalysisDemo {
             return sum + diff + product + quotient;
         }
         
-        // ロード/ストア命令（iload, istore, aload, astore）
+        // ロード/ストア命令（aload, astore, istore）
         public String loadStoreOperations(String input) {
-            String local = input;        // astore
-            String result = local;       // aload
-            int length = result.length(); // invokevirtual
+            String local = input;        // aload_1, astore_2
+            String result = local;       // aload_2, astore_3
+            int length = result.length(); // invokevirtual, istore
             
-            return result + " (length: " + length + ")";
+            return result + " (length: " + length + ")"; // 文字列の連結はinvokedynamic
         }
         
-        // 制御フロー命令（if_icmpge, goto, ifeq）
+        // 制御フロー命令（ifle, ifge）
         public String controlFlow(int value) {
-            if (value > 0) {        // ifle (条件が反転される)
+            if (value > 0) {        // ifle（条件を反転し、0以下ならelseへ飛ぶ）
                 return "positive";
-            } else if (value < 0) { // ifge 
+            } else if (value < 0) { // ifge（0以上なら次のelseへ飛ぶ）
                 return "negative";
             } else {                // else部分
                 return "zero";
             }
         }
         
-        // ループ構造（goto, if_icmpge）
+        // ループ構造（if_icmpge, iinc, goto）
         public int loopConstruct(int n) {
-            int sum = 0;           // iconst_0, istore
-            for (int i = 0; i < n; i++) { // ループ制御のバイトコード
+            int sum = 0;           // iconst_0, istore_2
+            for (int i = 0; i < n; i++) { // if_icmpgeで抜け、iincで1増やし、gotoで戻る
                 sum += i;          // iadd
             }
             return sum;
@@ -63,7 +77,7 @@ public class BytecodeAnalysisDemo {
             return list;
         }
         
-        // 配列操作（newarray, iaload, iastore）
+        // 配列操作（newarray, iastore）
         public int[] arrayOperations(int size) {
             int[] array = new int[size];  // newarray
             
@@ -105,30 +119,39 @@ public class BytecodeAnalysisDemo {
     public static class BytecodeAnalyzer {
         
         /**
-         * メソッドのバイトコード情報を表示（簡略版）
+         * メソッドのバイトコードを、Class-File API（java.lang.classfile）でクラスファイルから読んで表示する
+         * （javap -c で見るものと同じ命令の並び）
          */
         public static void analyzeMethod(Class<?> clazz, String methodName) {
-            IO.println("=== Bytecode Analysis for " + clazz.getSimpleName() + "." + methodName + " ===");
-            
-            try {
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    if (method.getName().equals(methodName)) {
-                        IO.println("Method: " + method);
-                        IO.println("Return Type: " + method.getReturnType());
-                        IO.println("Parameter Types: " + Arrays.toString(method.getParameterTypes()));
-                        IO.println("Modifiers: " + Modifier.toString(method.getModifiers()));
-                        
-                        // 実際のバイトコード表示は javap -c コマンドを推奨
-                        IO.println("\nTo see actual bytecode, run:");
-                        IO.println("javap -c " + clazz.getName());
-                        IO.println();
-                        return;
+            IO.println("=== Bytecode of " + clazz.getSimpleName() + "." + methodName + " ===");
+            String file = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1) + ".class";
+            try (InputStream in = clazz.getResourceAsStream(file)) {
+                ClassModel model = ClassFile.of().parse(in.readAllBytes());
+                for (MethodModel method : model.methods()) {
+                    if (!method.methodName().equalsString(methodName)) {
+                        continue;
                     }
+                    IO.println("Descriptor: " + method.methodType().stringValue());
+                    CodeAttribute code = method.findAttribute(Attributes.code()).orElseThrow();
+                    IO.println("max_stack=" + code.maxStack() + ", max_locals=" + code.maxLocals());
+                    for (var element : code) {
+                        // 番号の付かないiloadなどには、ローカル変数の番号を添える
+                        switch (element) {
+                            case LoadInstruction load when load.sizeInBytes() > 1 ->
+                                    IO.println("  " + load.opcode().name().toLowerCase() + " " + load.slot());
+                            case StoreInstruction store when store.sizeInBytes() > 1 ->
+                                    IO.println("  " + store.opcode().name().toLowerCase() + " " + store.slot());
+                            case Instruction instruction ->
+                                    IO.println("  " + instruction.opcode().name().toLowerCase());
+                            default -> { }
+                        }
+                    }
+                    IO.println();
+                    return;
                 }
                 IO.println("Method not found: " + methodName);
-            } catch (Exception e) {
-                System.err.println("Error analyzing method: " + e.getMessage());
+            } catch (IOException e) {
+                System.err.println("Error reading class file: " + e.getMessage());
             }
         }
         
@@ -136,7 +159,7 @@ public class BytecodeAnalysisDemo {
          * クラスファイルの基本情報を表示
          */
         public static void analyzeClassFile(Class<?> clazz) {
-            IO.println("=== Class File Analysis for " + clazz.getName() + " ===");
+            IO.println("=== Class Structure (reflection) for " + clazz.getName() + " ===");
             
             // クラス基本情報
             IO.println("Class Name: " + clazz.getName());

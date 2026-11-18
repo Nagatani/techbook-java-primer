@@ -42,6 +42,7 @@ public class JVMArchitectureDemo {
             investigateClassLoader("java.util.HashMap", HashMap.class);
             investigateClassLoader("java.util.concurrent.ConcurrentHashMap", 
                                  java.util.concurrent.ConcurrentHashMap.class);
+            investigateClassLoader("java.sql.Driver", java.sql.Driver.class);
             investigateClassLoader("com.example.jvm.JVMArchitectureDemo", 
                                  JVMArchitectureDemo.class);
             
@@ -59,8 +60,7 @@ public class JVMArchitectureDemo {
          * カスタムクラスローダーのデモンストレーション
          */
         public static class CustomClassLoaderDemo extends ClassLoader {
-            private final Map<String, Class<?>> loadedClasses = new HashMap<>();
-            private int classLoadCount = 0;
+            private int findClassCount = 0;
             
             public CustomClassLoaderDemo(ClassLoader parent) {
                 super(parent);
@@ -68,10 +68,11 @@ public class JVMArchitectureDemo {
             
             @Override
             protected Class<?> findClass(String name) throws ClassNotFoundException {
-                IO.println("Custom ClassLoader: Attempting to load " + name);
-                classLoadCount++;
+                // 親が見つけられなかったときだけ呼ばれる
+                IO.println("Custom ClassLoader: findClass called for " + name);
+                findClassCount++;
                 
-                // 実際のクラスロードはスキップし、統計のみ収集
+                // このデモでは自分ではクラスを探さず、見つからなかったことにする
                 throw new ClassNotFoundException("Demo ClassLoader - class not found: " + name);
             }
             
@@ -81,14 +82,13 @@ public class JVMArchitectureDemo {
                 
                 IO.println("Custom ClassLoader: loadClass called for " + name);
                 
-                // 親委譲モデルに従う
+                // 親への委譲（まず親に頼み、見つからなければfindClassを呼ぶ）
                 return super.loadClass(name, resolve);
             }
             
             public void printStatistics() {
                 IO.println("Custom ClassLoader Statistics:");
-                IO.println("  Classes attempted to load: " + classLoadCount);
-                IO.println("  Actually loaded classes: " + loadedClasses.size());
+                IO.println("  findClass calls (parent could not find the class): " + findClassCount);
             }
             
             public static void demonstrateCustomClassLoader() {
@@ -234,7 +234,7 @@ public class JVMArchitectureDemo {
             // ガベージコレクション前の状態
             RuntimeDataAreasDemo.analyzeHeapMemory();
             
-            IO.println("Creating short-lived objects (Eden space)...");
+            IO.println("Creating short-lived objects...");
             createShortLivedObjects();
             
             IO.println("\nForcing garbage collection...");
@@ -246,7 +246,7 @@ public class JVMArchitectureDemo {
                 Thread.currentThread().interrupt();
             }
             
-            IO.println("Creating long-lived objects (promoted to Old generation after surviving several GCs)...");
+            IO.println("Creating long-lived objects (kept referenced from a static list)...");
             createLongLivedObjects();
             
             IO.println("\nFinal memory state:");
@@ -255,7 +255,8 @@ public class JVMArchitectureDemo {
         }
         
         private static void createShortLivedObjects() {
-            // 大量の短命オブジェクトを作成（Eden領域に配置）
+            // 大量の短命オブジェクトを作成（若い世代に割り当てられ、すぐに不要になる。
+            // JITコンパイル後は、エスケープ解析で割り当てそのものが消えることもある）
             for (int i = 0; i < 10000; i++) {
                 String temp = "Temporary string " + i;
                 StringBuilder sb = new StringBuilder(temp);
@@ -265,7 +266,8 @@ public class JVMArchitectureDemo {
         }
         
         private static void createLongLivedObjects() {
-            // 長寿命オブジェクトを作成（参照を持ち続けるので、何回かGCを生き延びるとOld領域へ移る）
+            // 長寿命オブジェクトを作成（参照を持ち続けるのでGCで回収されない。
+            // 何回かGCを生き延びると古い世代へ移る）
             for (int i = 0; i < 1000; i++) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("id", i);
@@ -277,13 +279,13 @@ public class JVMArchitectureDemo {
         }
         
         /**
-         * メモリリークのシミュレーション
+         * 参照を持ち続けてヒープを使い切る例（実際にメモリを消費する）
          */
         public static class MemoryLeakDemo {
             private static final Map<Integer, byte[]> memoryHog = new HashMap<>();
             
-            public static void simulateMemoryLeak() {
-                IO.println("\n--- Memory Leak Simulation ---");
+            public static void demonstrateMemoryLeak() {
+                IO.println("\n--- Memory Leak Demonstration ---");
                 IO.println("WARNING: This will consume memory - use small heap for demo");
                 
                 try {
@@ -377,10 +379,10 @@ public class JVMArchitectureDemo {
         private static int maxRecursionDepth = 0;
         
         /**
-         * スタックオーバーフローのシミュレーション
+         * 実際にStackOverflowErrorを起こす
          */
-        public static void simulateStackOverflow() {
-            IO.println("--- Stack Overflow Simulation ---");
+        public static void demonstrateStackOverflow() {
+            IO.println("--- Stack Overflow Demonstration ---");
             IO.println("WARNING: This will cause StackOverflowError");
             
             maxRecursionDepth = 0;
@@ -594,12 +596,12 @@ public class JVMArchitectureDemo {
         analyzeMemoryPatterns();
         
         // 危険な操作はコメントアウト（必要に応じて有効化）
-        // MemoryGenerationDemo.MemoryLeakDemo.simulateMemoryLeak();
-        // ThreadStackDemo.simulateStackOverflow();
+        // MemoryGenerationDemo.MemoryLeakDemo.demonstrateMemoryLeak();
+        // ThreadStackDemo.demonstrateStackOverflow();
         
         IO.println("Key Insights:");
         IO.println("✓ JVM manages multiple memory areas with different purposes");
-        IO.println("✓ ClassLoader hierarchy provides security and modularity");
+        IO.println("✓ Class loaders ask their parent first (parent delegation)");
         IO.println("✓ Stack memory is thread-local, heap memory is shared");
         IO.println("✓ Garbage collection automatically manages heap memory");
         IO.println("✓ Understanding memory layout helps optimize applications");
@@ -608,7 +610,7 @@ public class JVMArchitectureDemo {
         IO.println("• Monitor heap usage to prevent OutOfMemoryError");
         IO.println("• Avoid creating unnecessary objects in loops");
         IO.println("• Use appropriate data structures for your use case");
-        IO.println("• Consider object pooling for expensive objects");
+        IO.println("• Measure with JFR or JMH before optimizing");
         IO.println("• Profile memory usage in production-like environments");
     }
 }

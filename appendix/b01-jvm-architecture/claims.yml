@@ -1,0 +1,710 @@
+# 付録B.01の主張と、その確かめ方
+# npm run check:deep-dive -- b01 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- クラスファイル
+  - id: classfile-magic
+    claim: クラスファイルは0xCAFEBABE（マジックナンバー）で始まり、続く2バイトずつがマイナーバージョンとメジャーバージョンである。Java 25のjavacが作るクラスファイルのメジャーバージョンは69
+    sources:
+      - title: JVMS 25 4.1 The ClassFile Structure
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: it has the value 0xCAFEBABE
+    verify:
+      kind: run
+      probe: verify/ClassFileHeader.java
+      expect:
+        - '^先頭の8バイト: CAFEBABE00000045$'
+        - '^マジックナンバー: CAFEBABE$'
+        - '^マイナーバージョン: 0$'
+        - '^メジャーバージョン: 69$'
+      show: ['^(先頭|マジック|マイナー|メジャー)']
+
+  - id: classfile-versions
+    claim: Javaの版とクラスファイルのメジャーバージョンは、Java 8が52、11が55、17が61、21が65、25が69と対応する。Java SE 25のJVMは45から69までを受け付ける
+    sources:
+      - title: JVMS 25 4.1 The ClassFile Structure（major_versionの範囲）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: Java SE 25 supports precisely these major version numbers
+      - title: java.lang.reflect.ClassFileFormatVersion（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/ClassFileFormatVersion.html
+        anchor: RELEASE_25
+    verify:
+      kind: run
+      probe: verify/ClassFileHeader.java
+      expect:
+        - '^RELEASE_8 -> 52$'
+        - '^RELEASE_11 -> 55$'
+        - '^RELEASE_17 -> 61$'
+        - '^RELEASE_21 -> 65$'
+        - '^RELEASE_25 -> 69$'
+      show: ['^RELEASE_']
+
+  - id: unsupported-version
+    claim: JVMが対応していない版のクラスファイルを読み込むと、UnsupportedClassVersionErrorになる。JDK 25のJVMは版70のクラスファイルを拒む
+    sources:
+      - title: JVMS 25 5.3.5 Deriving a Class from a class File Representation
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: derivation throws an UnsupportedClassVersionError
+    verify:
+      kind: run
+      probe: verify/ClassFileHeader.java
+      expect:
+        - '^UnsupportedClassVersionError: Future has been compiled by a more recent version of the Java Runtime \(class file version 70\.0\), this version of the Java Runtime only recognizes class file versions up to 69\.0$'
+      show: ['^UnsupportedClassVersionError']
+
+  - id: classfile-release-8
+    claim: javac --release 8でコンパイルすると、メジャーバージョンが52のクラスファイルになる
+    unreferenced: true
+    verify:
+      kind: javap
+      probe: verify/Concat.java
+      class: Concat
+      release: 8
+      options: ['-v']
+      expect:
+        - 'major version: 52'
+
+  - id: javap-constant-pool
+    claim: javap -vで、クラスファイルの版と定数プールを表示できる。ほかのクラスのメソッドの呼び出しは、定数プールの項目（Methodref）への番号で表される
+    sources:
+      - title: JVMS 25 4.4 The Constant Pool
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: CONSTANT_Methodref
+      - title: JVMS 25 5.4.3 Resolution
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: Resolution
+    verify:
+      kind: javap
+      probe: verify/ClassFileHeader.java
+      class: ClassFileHeader
+      options: ['-v']
+      expect:
+        - 'minor version: 0'
+        - 'major version: 69'
+        - 'Constant pool:'
+        - '#\d+ = Methodref\s+#\d+\.#\d+\s+// java/lang/IO\.println:\(Ljava/lang/Object;\)V'
+        - 'invokestatic\s+#\d+\s+// Method java/lang/IO\.println'
+      show:
+        - '(minor|major) version:'
+        - '= Methodref .*java/lang/IO\.println'
+        - '= Class .*java/lang/IO$'
+        - '= NameAndType .*println:\(Ljava/lang/Object;\)V'
+
+  - id: classfile-api
+    claim: クラスファイルを読み書きするClass-File API（java.lang.classfile）は、Java 24で正式な機能になった（JEP 484）
+    sources:
+      - title: JEP 484 Class-File API
+        url: https://openjdk.org/jeps/484
+        anchor: We here propose to finalize the API
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 484のページで、Release が 24 であること、JDK 22・23のプレビュー（JEP 457・466）を経てJDK 24で正式にする旨を確かめた。verify/ClassFileHeader.javaとVerification.javaが、JDK 25でプレビューを有効にせずにこのAPIを使ってコンパイル・実行できる
+
+  # ---- スタックマシン
+  - id: stack-add
+    claim: バイトコードは、ローカル変数の値をオペランドスタックに積み（iload）、スタックの上の値で計算し（iadd）、結果をローカル変数に戻す（istore）。メソッドごとにオペランドスタックの最大の深さ（stack=）とローカル変数の数（locals=）がクラスファイルに記録される
+    sources:
+      - title: JVMS 25 2.6.2 Operand Stacks
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: The maximum depth of the operand stack of a frame is determined at compile-time
+      - title: JVMS 25 4.7.3 The Code Attribute（max_stack・max_locals）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: gives the maximum depth of the operand stack of this method
+    verify:
+      kind: javap
+      probe: verify/StackMachine.java
+      class: StackMachine$Calc
+      options: ['-c', '-v']
+      expect:
+        - 'static int add\(int, int\);[\s\S]*?stack=2, locals=3, args_size=2\s+0: iload_0\s+1: iload_1\s+2: iadd\s+3: istore_2\s+4: iload_2\s+5: ireturn'
+        - 'static int expression\(int, int, int, int\);[\s\S]*?stack=3, locals=4'
+      show: ['^\s*public static', 'stack=', '^\s*\d+: [a-z]']
+
+  - id: stack-long-two-slots
+    claim: long型とdouble型の値は、ローカル変数を2つ使う
+    sources:
+      - title: JVMS 25 2.6.1 Local Variables
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: A value of type long or type double occupies two consecutive local variables
+    verify:
+      kind: javap
+      probe: verify/StackMachine.java
+      class: StackMachine$Calc
+      options: ['-c', '-v']
+      expect:
+        - 'static long widen\(long, int\);[\s\S]*?stack=4, locals=5, args_size=2\s+0: lload_0\s+1: iload_2\s+2: i2l\s+3: lmul\s+4: lstore_3'
+
+  - id: stack-this-slot0
+    claim: インスタンスメソッドでは、ローカル変数の0番にthis（メソッドを呼ばれたオブジェクト）が入る
+    sources:
+      - title: JVMS 25 2.6.1 Local Variables
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: local variable 0 is always used to pass a reference to the object on which the instance method is being invoked
+    verify:
+      kind: javap
+      probe: verify/StackMachine.java
+      class: StackMachine$Counter
+      options: ['-c', '-v']
+      expect:
+        - 'int addBase\(int\);[\s\S]*?stack=2, locals=2, args_size=2\s+0: aload_0\s+1: getfield\s+#\d+\s+// Field base:I\s+4: iload_1\s+5: iadd'
+
+  # ---- invokedynamic
+  - id: indy-lambda-concat
+    claim: ラムダ式と文字列の連結は、invokedynamic命令になる。呼び出し先は実行時にブートストラップメソッド（LambdaMetafactory.metafactory、StringConcatFactory.makeConcatWithConstants）が決める。ラムダ式の本体はprivate staticなメソッド（lambda$…）になる
+    sources:
+      - title: JVMS 25 6.5 invokedynamic
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: invokedynamic
+    verify:
+      kind: javap
+      probe: verify/Dynamic.java
+      class: Dynamic
+      options: ['-c', '-p', '-v']
+      expect:
+        - 'invokedynamic\s+#\d+,\s+0\s+// InvokeDynamic #\d+:makeConcatWithConstants'
+        - 'invokedynamic\s+#\d+,\s+0\s+// InvokeDynamic #\d+:get:\(\)Ljava/util/function/Supplier;'
+        - 'private static java\.lang\.String lambda\$lazy\$0\(\);'
+        - 'REF_invokeStatic java/lang/invoke/LambdaMetafactory\.metafactory'
+        - 'REF_invokeStatic java/lang/invoke/StringConcatFactory\.makeConcatWithConstants'
+      show: ['\d+: invokedynamic', 'private static .*lambda\$', '^\s*\d+: #\d+ REF_invokeStatic']
+      normalize:
+        '#\d+,\s+0\s+//': '//'
+        '^(\d+): #\d+ REF_invokeStatic (java/lang/invoke/\w+\.\w+):.*$': '$1: $2'
+
+  - id: concat-java9
+    claim: 文字列の連結は、Java 8まではStringBuilderのappendの連続にコンパイルされていた。Java 9でinvokedynamicの1命令に変わった（JEP 280）
+    sources:
+      - title: JEP 280 Indify String Concatenation
+        url: https://openjdk.org/jeps/280
+        anchor: concatenation bytecode sequence generated by javac to use invokedynamic
+    verify:
+      kind: javap
+      probe: verify/Concat.java
+      class: Concat
+      release: 8
+      expect:
+        - 'new\s+#\d+\s+// class java/lang/StringBuilder'
+        - 'invokevirtual\s+#\d+\s+// Method java/lang/StringBuilder\.append:\(I\)'
+      absent:
+        - 'invokedynamic'
+      show: ['^\s*\d+: ']
+      normalize:
+        '#\d+\s+//': '//'
+
+  - id: concat-java9-25
+    claim: 同上（--release 25ではinvokedynamicになる）
+    unreferenced: true
+    verify:
+      kind: javap
+      probe: verify/Concat.java
+      class: Concat
+      expect:
+        - 'invokedynamic .*makeConcatWithConstants'
+      absent:
+        - 'StringBuilder'
+
+  # ---- クラスローダー
+  - id: loader-hierarchy
+    claim: Stringなどjava.baseのクラスはブートストラップクラスローダー（Javaからはnullに見える）、java.sqlのクラスはプラットフォームクラスローダー、クラスパス上のクラスはアプリケーション（システム）クラスローダーが読み込む。アプリケーションクラスローダーの親はプラットフォームクラスローダー、その親はブートストラップクラスローダーである
+    sources:
+      - title: java.lang.ClassLoader（Java SE 25 API、Run-time Built-in Class Loaders）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ClassLoader.html
+        anchor: typically represented as null
+    verify:
+      kind: run
+      probe: verify/ClassLoaders.java
+      expect:
+        - '^java\.lang\.String -> null（ブートストラップクラスローダー） / java\.base$'
+        - '^java\.sql\.Driver -> platform（.*PlatformClassLoader） / java\.sql$'
+        - '^ClassLoaders -> app（.*AppClassLoader） / 名前のないモジュール$'
+        - '^その親: platform'
+        - '^さらにその親: null'
+        - '^getPlatformClassLoader\(\)と同じ: true$'
+      show: ['^[\w.$]+ -> ', '^システム', '^その親', '^さらに', '^getPlatform']
+      normalize:
+        '（jdk\.internal\.loader\.ClassLoaders\$\w+）': ''
+
+  - id: loader-delegation
+    claim: クラスローダーは、まず親にクラスを探させ（親への委譲）、親が見つけられなかったときだけ自分で探す（findClass）。クラスを定義するとき、そのスーパークラスも同じクラスローダーを通して読み込む
+    sources:
+      - title: java.lang.ClassLoader（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ClassLoader.html
+        anchor: uses a delegation model to search for classes and resources
+    verify:
+      kind: run
+      probe: verify/ClassLoaders.java
+      expect:
+        - 'java\.lang\.Stringを頼む\n  loadClass\(java\.lang\.String\)\n  -> null'
+        - 'ClassLoaders\$Greeterを頼む\n  loadClass\(ClassLoaders\$Greeter\)\n  findClass\(ClassLoaders\$Greeter\)[^\n]*\n  loadClass\(java\.lang\.Object\)\n  -> tracing'
+      absent:
+        - 'findClass\(java\.lang\.String\)'
+      show: ['を頼む$', '^\s+(loadClass|findClass|->)']
+      normalize:
+        '（ClassLoaders\$TracingLoader）': ''
+
+  - id: loader-identity
+    claim: 実行時のクラスは、名前と、それを定義したクラスローダーの組で決まる。同じクラスファイルを別のクラスローダーで読み込むと、別のクラスになる
+    sources:
+      - title: JVMS 25 5.3 Creation and Loading
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: a class or interface is determined not by its name alone, but by a pair
+    verify:
+      kind: run
+      probe: verify/ClassLoaders.java
+      expect:
+        - '^名前が同じ: true$'
+        - '^同じクラス: false$'
+        - '代入できる: false$'
+      show: ['^名前が同じ', '^同じクラス', '代入できる']
+
+  # ---- 読み込みと初期化
+  - id: init-timing
+    claim: クラスの初期化（static初期化子の実行）は、インスタンスの生成、staticメソッドの呼び出し、定数変数でないstaticフィールドの使用などの直前に行う。コンパイル時定数の参照、クラスリテラル、配列の生成、Class.forName(名前, false, ローダー)では初期化しない。サブクラスを初期化する前にスーパークラスを初期化し、スーパークラスで宣言したstaticフィールドをサブクラス経由で読んでも、初期化するのはスーパークラスだけである
+    sources:
+      - title: JLS 25 12.4.1 When Initialization Occurs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: will be initialized immediately before the first occurrence of any one of the following
+    verify:
+      kind: run
+      probe: verify/InitOrder.java
+      expect:
+        - '1\. Child\.CONSTANTを読む\n  値: 42\n2\. Child\.classを使う\n  Child\n3\. Childの配列を作る\n  長さ: 3\n4\. [^\n]*\n5\. [^\n]*\n  Parentを初期化した\n  値: 10\n6\. Child\.counterを読む\n  Childを初期化した\n  値: 0'
+      show: ['.']
+
+  - id: init-superinterface
+    claim: クラスを初期化するとき、デフォルトメソッドを持つスーパーインターフェイスは初期化するが、持たないものは初期化しない
+    sources:
+      - title: JLS 25 12.4.1 When Initialization Occurs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: that declare any default methods
+    verify:
+      kind: run
+      probe: verify/InitOrder.java
+      expect:
+        - '7\. new Circle\(\)\n  Shapeを初期化した\n  Circleを初期化した\n8\. Named\.PREFIXを読む\n  Namedを初期化した'
+
+  - id: load-timing
+    claim: HotSpotはクラスを使う時点まで読み込まない（遅延読み込み）。コンパイル時定数はクラスファイルに値が埋め込まれるので、参照してもクラスを読み込まない。サブクラスを読み込むときはスーパークラスも読み込み、クラスを読み込むときは、初期化しないスーパーインターフェイスも読み込む
+    sources:
+      - title: JVMS 25 5.4 Linking（読み込みとリンクの時期は実装に任せる）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: This specification allows an implementation flexibility as to when linking activities
+    verify:
+      kind: run
+      probe: verify/InitOrder.java
+      jvm: ['-Xlog:class+load']
+      expect:
+        - '1\. Child\.CONSTANTを読む\n  値: 42\n2\. Child\.classを使う\n[^\n]*InitOrder\$Parent source: [^\n]*\n[^\n]*InitOrder\$Child source: '
+        - '7\. new Circle\(\)\n(?:[^\n]*\n)*?[^\n]*InitOrder\$Named source: [\s\S]*?  Shapeを初期化した'
+      show: ['^\d\. ', 'InitOrder\$\w+ source', '初期化した$']
+      normalize:
+        '^\[[\d.]+s\]\[info\]\[class,load\] ': ''
+        'source: file:.*$': 'source: file:...'
+
+  # ---- 検証
+  - id: verify-reject
+    claim: JVMはクラスファイルを信用せず、リンクの段階でバイトコードを検証する。オペランドスタックの型が合わないコード（参照をintとして返すなど）はVerifyErrorになり、実行されない。HotSpotでは、クラスを読み込んだ時点ではなく、使うとき（リンクするとき）に検証する
+    sources:
+      - title: JVMS 25 4.10 Verification of class Files
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: has no guarantee that any file it is asked to load was generated by that compiler
+    verify:
+      kind: run
+      probe: verify/Verification.java
+      expect:
+        - '^読み込めた（まだ検証していない）: Broken$'
+        - '^VerifyError: Bad type on operand stack$'
+        - 'Type null \(current frame, stack\[0\]\) is not assignable to integer'
+      absent:
+        - '^answer\(\) = '
+      show: ['.']
+
+  # ---- アンロード
+  - id: class-unload
+    claim: クラスを読み込んだクラスローダーが参照されなくなると、そのクラスはGCでアンロードされ、Metaspaceの領域が空く
+    sources:
+      - title: JLS 25 12.7 Unloading of Classes and Interfaces
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: if and only if its defining class loader may be reclaimed by the garbage collector
+    verify:
+      kind: run
+      probe: verify/Unloading.java
+      jvm: ['-Xlog:class+unload']
+      expect:
+        - '---[\s\S]*unloading class Unloading\$Plugin'
+      show: ['.']
+      normalize:
+        '^\[[\d.]+s\]\[info\]\[class,unload\] ': ''
+        '0x[0-9a-f]+': '0x...'
+      attempts: 3
+
+  # ---- 実行時データ領域
+  - id: jvms-runtime-areas
+    claim: JVMSは実行時データ領域として、スレッドごとのpcレジスターとJVMスタックとネイティブメソッドスタック、全スレッドで共有するヒープとメソッド領域（実行時定数プールを含む）を定める。メソッド領域は論理的にはヒープの一部だが、場所や管理の方法は実装に任せている
+    sources:
+      - title: JVMS 25 2.5 Run-Time Data Areas
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: Although the method area is logically part of the heap
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の2.5.1〜2.5.6で、pcレジスター・JVMスタック・ネイティブメソッドスタックがスレッドごと、ヒープとメソッド領域が全スレッドで共有であること、2.5.4の「logically part of the heap」「does not mandate the location of the method area」を確かめた
+
+  - id: memory-pools
+    claim: HotSpot（既定のG1）のメモリプールは、ヒープのG1 Eden Space・G1 Survivor Space・G1 Old Genと、ヒープ以外のMetaspace・Compressed Class Space・CodeHeap（JITコンパイルしたコードの置き場）である。クラスのメタデータはヒープ以外のMetaspaceに置く
+    verify:
+      kind: run
+      probe: verify/MemoryAreas.java
+      expect:
+        - '^メモリプール: G1 Eden Space（ヒープ）$'
+        - '^メモリプール: G1 Survivor Space（ヒープ）$'
+        - '^メモリプール: G1 Old Gen（ヒープ）$'
+        - '^メモリプール: Metaspace（ヒープ以外）$'
+        - '^メモリプール: Compressed Class Space（ヒープ以外）$'
+        - "^メモリプール: CodeHeap 'non-profiled nmethods'（ヒープ以外）$"
+        - '^GC: G1 Young Generation$'
+      show: ['^メモリプール', '^GC']
+      sort: true
+
+  - id: memory-pools-serial
+    claim: GCを変えるとヒープの領域の名前も変わる（シリアルGCではEden Space・Survivor Space・Tenured Gen）
+    verify:
+      kind: run
+      probe: verify/MemoryAreas.java
+      jvm: ['-XX:+UseSerialGC']
+      expect:
+        - '^メモリプール: Eden Space（ヒープ）$'
+        - '^メモリプール: Tenured Gen（ヒープ）$'
+        - '^GC: Copy$'
+        - '^GC: MarkSweepCompact$'
+
+  - id: no-permgen
+    claim: Java 8でPermanent Generation（PermGen）がなくなり、クラスのメタデータはネイティブメモリ（Metaspace）に置くようになった。PermGenの大きさを決めるMaxPermSizeは、JDK 25では認識されないオプションである
+    sources:
+      - title: JEP 122 Remove the Permanent Generation
+        url: https://openjdk.org/jeps/122
+        anchor: Remove the permanent generation from the Hotspot JVM
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-XX:MaxPermSize=64m']
+      expect:
+        - "Unrecognized VM option 'MaxPermSize=64m'"
+
+  - id: metaspace-unbounded
+    claim: Metaspaceの上限（MaxMetaspaceSize）は、既定では設けていない（64ビットの符号なし整数の最大値）
+    verify: { kind: flag, flag: MaxMetaspaceSize, value: '18446744073709551615' }
+
+  - id: heap-oom
+    claim: 参照を持ち続けるオブジェクトはGCで回収できず、ヒープの上限（-Xmx）に達するとOutOfMemoryError（Java heap space）になる
+    verify:
+      kind: run
+      probe: verify/HeapExhaustion.java
+      jvm: ['-Xmx32m']
+      expect:
+        - '^OutOfMemoryError: Java heap space$'
+      show: ['.']
+
+  - id: stack-depth
+    claim: スレッドごとにJVMスタックがあり、スタックが小さいほど浅い再帰でStackOverflowErrorになる。スレッドのスタックの大きさはThreadのコンストラクターや-Xssで指定できる
+    sources:
+      - title: JVMS 25 2.5.2 Java Virtual Machine Stacks
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html
+        anchor: the Java Virtual Machine throws a StackOverflowError
+    verify:
+      kind: run
+      probe: verify/StackDepth.java
+      expect:
+        - '^4MBのほうが深く呼べる: true$'
+      show: ['.']
+      attempts: 3
+
+  - id: xss-default-platform
+    claim: -Xss（スレッドのスタックの大きさ）の既定値はプラットフォームによって異なる
+    sources:
+      - title: javaコマンドのリファレンス（Java SE 25）-Xss
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: The default value depends on the platform
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: javaコマンドのリファレンス（Java SE 25）の-Xssの説明に「The default value depends on the platform」とあることを確かめた。PrintFlagsFinalのThreadStackSizeは{pd product}（プラットフォームごとの既定値）で、macOS（AArch64）では2048（KB）だった
+
+  # ---- GC
+  - id: default-gc-g1
+    claim: JDK 25のHotSpotは、サーバー級の機械（プロセッサーが2つ以上、物理メモリが1792MB以上）では既定でG1を選ぶ
+    sources:
+      - title: HotSpot Virtual Machine Garbage Collection Tuning Guide（Java SE 25）Ergonomics
+        url: https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html
+        anchor: Garbage-First (G1) Collector on server-class machines, Serial Collector otherwise
+      - title: JEP 248 Make G1 the Default Garbage Collector
+        url: https://openjdk.org/jeps/248
+        anchor: Make G1 the default garbage collector on 32- and 64-bit server configurations
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-Xlog:gc']
+      expect:
+        - 'Using G1'
+      show: ['Using']
+      normalize:
+        '^\[[\d.]+s\]': ''
+
+  - id: gc-serial-small
+    claim: プロセッサーが1つの環境（-XX:ActiveProcessorCount=1で模擬できる）では、JDK 25はシリアルGCを選ぶ
+    sources:
+      - title: HotSpot Virtual Machine Garbage Collection Tuning Guide（Java SE 25）Ergonomics
+        url: https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html
+        anchor: two or more processors and physical memory larger than or equal to 1792 MB
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-XX:ActiveProcessorCount=1', '-Xlog:gc']
+      expect:
+        - 'Using Serial'
+      show: ['Using']
+      normalize:
+        '^\[[\d.]+s\]': ''
+
+  - id: g1-all-environments
+    claim: JDK 27で、どの環境でもG1を選ぶように変わった（JEP 523）
+    sources:
+      - title: JEP 523 Make G1 the Default Garbage Collector in All Environments
+        url: https://openjdk.org/jeps/523
+        anchor: Make the Garbage-First (G1) garbage collector the default collector in all environments
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 523のページで、Status が Closed / Delivered、Release が 27 であること、要約の文言を確かめた
+
+  - id: weak-generational
+    claim: 世代別GCは、ほとんどのオブジェクトは短い間しか生きないという性質（弱い世代別仮説）を利用する
+    sources:
+      - title: HotSpot Virtual Machine Garbage Collection Tuning Guide（Java SE 25）Garbage Collector Implementation
+        url: https://docs.oracle.com/en/java/javase/25/gctuning/garbage-collector-implementation.html
+        anchor: which states that most objects survive for only a short period of time
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: GCチューニングガイド（Java SE 25）の「Generational Garbage Collection」の節で、weak generational hypothesisの説明を確かめた
+
+  - id: g1-regions
+    claim: G1はヒープを同じ大きさのリージョンに分けて管理する。リージョンの大きさはヒープの大きさなどから決まり、-Xlog:gc+initで確かめられる
+    sources:
+      - title: HotSpot Virtual Machine Garbage Collection Tuning Guide（Java SE 25）Garbage-First (G1) Garbage Collector
+        url: https://docs.oracle.com/en/java/javase/25/gctuning/garbage-first-g1-garbage-collector1.html
+        anchor: G1 partitions the heap into a set of equally sized heap regions
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-Xlog:gc+init']
+      expect:
+        - 'Heap Region Size: \d+M'
+      show: ['Heap Region Size']
+      normalize:
+        '^\[[\d.]+s\]\[info\]\[gc,init\] ': ''
+
+  - id: max-heap-quarter
+    claim: ヒープの上限を指定しないと、物理メモリの4分の1（MaxRAMPercentage=25）になる。-XX:MaxRAM=1gで1GBの機械とみなすと、上限は256MBになる
+    sources:
+      - title: HotSpot Virtual Machine Garbage Collection Tuning Guide（Java SE 25）Ergonomics
+        url: https://docs.oracle.com/en/java/javase/25/gctuning/ergonomics.html
+        anchor: Maximum heap size of 1/4 of physical memory
+    verify:
+      kind: run
+      probe: verify/MemoryAreas.java
+      jvm: ['-XX:MaxRAM=1g']
+      expect:
+        - '^ヒープの上限: 256MB$'
+      show: ['^ヒープの上限']
+
+  - id: max-ram-percentage
+    claim: MaxRAMPercentageの既定値は25
+    unreferenced: true
+    verify: { kind: flag, flag: MaxRAMPercentage, value: '25.000000' }
+
+  - id: zgc-generational-only
+    claim: ZGCは、JDK 24で世代別でないモードがなくなり、世代別のモードだけになった（JEP 490）。JDK 25でZGenerationalを指定すると、無視したという警告が出る
+    sources:
+      - title: 'JEP 490 ZGC: Remove the Non-Generational Mode'
+        url: https://openjdk.org/jeps/490
+        anchor: Remove the non-generational mode of the Z Garbage Collector
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-XX:+UseZGC', '-XX:-ZGenerational']
+      expect:
+        - 'Ignoring option ZGenerational; support was removed in 24\.0'
+      show: ['ZGenerational']
+
+  - id: cms-removed
+    claim: CMS（Concurrent Mark Sweep）GCはJava 14で削除された（JEP 363）。JDK 25ではUseConcMarkSweepGCは認識されないオプションである
+    sources:
+      - title: JEP 363 Remove the Concurrent Mark Sweep (CMS) Garbage Collector
+        url: https://openjdk.org/jeps/363
+        anchor: Remove the Concurrent Mark Sweep (CMS) Garbage Collector
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-XX:+UseConcMarkSweepGC']
+      expect:
+        - "Unrecognized VM option 'UseConcMarkSweepGC'"
+
+  - id: compact-headers
+    claim: Compact Object HeadersはJava 25で正式な機能になった（JEP 519）が、既定では無効である
+    sources:
+      - title: JEP 519 Compact Object Headers
+        url: https://openjdk.org/jeps/519
+        anchor: Change compact object headers from an experimental feature to a product feature
+    verify: { kind: flag, flag: UseCompactObjectHeaders, value: 'false' }
+
+  - id: compact-headers-size
+    claim: intのフィールドを2つ持つレコードは、既定では1個24バイト、-XX:+UseCompactObjectHeadersでは16バイトを使う
+    verify:
+      kind: run
+      probe: verify/EscapeAnalysis.java
+      jvm: ['-XX:-DoEscapeAnalysis', '-XX:+UseCompactObjectHeaders']
+      expect:
+        - '^Point 1個あたり: 16バイト$'
+      show: ['1個あたり']
+
+  # ---- 実行エンジン
+  - id: mixed-mode
+    claim: HotSpotは既定でインタープリターとJITコンパイラーを併用する（mixed mode）。-Xintではインタープリターだけで実行する。java -versionの「sharing」はCDSを使っていることを表す
+    sources:
+      - title: javaコマンドのリファレンス（Java SE 25）-Xint
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: Runs the application in interpreted-only mode
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-version']
+      expect:
+        - 'Server VM .*\(build [^,]+, mixed mode, sharing\)'
+      show: ['mode']
+      normalize:
+        'Server VM .*\(build [^,]+, ': 'Server VM (build ..., '
+
+  - id: interpreted-mode
+    claim: 同上（-Xintではinterpreted modeと表示する）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-Xint', '-version']
+      expect:
+        - 'interpreted mode'
+
+  - id: jit-compiles-sum
+    claim: よく実行されるメソッドは、C1（レベル3）を経てC2（レベル4）でコンパイルされる
+    verify:
+      kind: run
+      probe: verify/EscapeAnalysis.java
+      jvm: ['-XX:+PrintCompilation']
+      expect:
+        - '\s3\s+EscapeAnalysis::sum \('
+        - '\s4\s+EscapeAnalysis::sum \('
+      attempts: 3
+
+  - id: escape-analysis
+    claim: メソッドの外へ出ないオブジェクトは、C2のエスケープ解析によってヒープへの割り当てが取り除かれる。-XX:-DoEscapeAnalysisで解析を止めると、割り当てが戻る
+    verify:
+      kind: run
+      probe: verify/EscapeAnalysis.java
+      expect:
+        - 'バイト数: \d{0,5}$'
+      show: ['バイト数']
+      attempts: 3
+
+  - id: escape-analysis-off
+    claim: 同上（-XX:-DoEscapeAnalysisでは1000万個分の240000000バイトを割り当てる）
+    verify:
+      kind: run
+      probe: verify/EscapeAnalysis.java
+      jvm: ['-XX:-DoEscapeAnalysis']
+      expect:
+        - 'バイト数: 240000000$'
+      show: ['バイト数', '1個あたり']
+
+  - id: escape-analysis-default
+    claim: エスケープ解析（DoEscapeAnalysis）は既定で有効である
+    unreferenced: true
+    verify: { kind: flag, flag: DoEscapeAnalysis, value: 'true' }
+
+  # ---- CDS・AOTキャッシュ
+  - id: cds-default
+    claim: 'JDKには既定のCDSアーカイブが入っていて（JDK 12、JEP 341）、java.lang.ObjectなどJDKのクラスは起動時にそこから読み込まれる（source: shared objects file）。アプリケーションのクラスは、クラスファイルから読み込まれる'
+    sources:
+      - title: JEP 341 Default CDS Archives
+        url: https://openjdk.org/jeps/341
+        anchor: Eliminate the need for users to run -Xshare:dump to benefit from CDS
+      - title: javaコマンドのリファレンス（Java SE 25）-Xshare
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: Use shared class data if possible (default)
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-Xlog:class+load']
+      expect:
+        - '\] java\.lang\.Object source: shared objects file$'
+        - '\] Hello source: file:'
+      show: ['\] java\.lang\.Object source', '\] java\.lang\.String source', '\] Hello source']
+      normalize:
+        '^\[[\d.]+s\]\[info\]\[class,load\] ': ''
+        'source: file:.*$': 'source: file:...'
+
+  - id: cds-off
+    claim: -Xshare:offでCDSを使わないと、JDKのクラスもjrt:/java.baseから読み込む
+    verify:
+      kind: run
+      probe: verify/Hello.java
+      jvm: ['-Xshare:off', '-Xlog:class+load']
+      expect:
+        - '\] java\.lang\.Object source: jrt:/java\.base$'
+      show: ['\] java\.lang\.Object source', '\] java\.lang\.String source']
+      normalize:
+        '^\[[\d.]+s\]\[info\]\[class,load\] ': ''
+
+  - id: aot-cache
+    claim: Java 25では-XX:AOTCacheOutputの1回の実行で、訓練の実行とAOTキャッシュの作成ができる（JEP 514）。-XX:AOTCacheで起動すると、アプリケーションのクラスも読み込み・リンク済みの状態でキャッシュから読み込まれる（JEP 483）
+    sources:
+      - title: JEP 483 Ahead-of-Time Class Loading & Linking
+        url: https://openjdk.org/jeps/483
+        anchor: in a loaded and linked state
+      - title: JEP 514 Ahead-of-Time Command-Line Ergonomics
+        url: https://openjdk.org/jeps/514
+        anchor: The first does a training run
+    verify:
+      kind: run
+      probe: verify/AotCache.java
+      expect:
+        - '^訓練の実行: AOTCache creation is complete'
+        - '^キャッシュなし: AotCache\$App source: file:'
+        - '^キャッシュあり: AotCache\$App source: shared objects file$'
+        - 'キャッシュありで、CDSのアーカイブ以外から読み込んだクラスの数: 0$'
+      show: ['.']
+      timeout: 180
+
+  - id: aot-jar-only
+    claim: AOTキャッシュを使うとき、クラスパスにはJARファイルだけを書く（ディレクトリは使えない）。訓練の実行と本番の実行のクラスパスはそろえる
+    sources:
+      - title: JEP 483 Ahead-of-Time Class Loading & Linking
+        url: https://openjdk.org/jeps/483
+        anchor: Class paths must contain only JAR files
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 'JEP 483の「Class paths must contain only JAR files; directories in class paths are not supported」を確かめた。JDK 25で、クラスパスにディレクトリを指定して作ったキャッシュでは、アプリケーションのクラスがsource: file:から読み込まれることを実行して確かめた'
+
+  - id: aot-profiles
+    claim: Java 25では、訓練の実行で集めたメソッドの実行プロファイルもAOTキャッシュに入り、本番の実行のJITコンパイルを早める（JEP 515）
+    sources:
+      - title: JEP 515 Ahead-of-Time Method Profiling
+        url: https://openjdk.org/jeps/515
+        anchor: making method-execution profiles from a previous run of an application instantly available
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 515のページで、Release が 25 であること、要約の文言を確かめた
