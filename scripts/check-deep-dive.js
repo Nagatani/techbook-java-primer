@@ -286,7 +286,9 @@ function verifyClaim(sec, c, tmp) {
       r = spawnSync('javap', [...(v.options || ['-c', '-p']), '-cp', c1.cp, v.class], { encoding: 'utf8' });
     } else {
       const main = v.main || v.class || path.basename([].concat(v.probe)[0], '.java');
-      r = spawnSync('java', ['-Duser.language=en', ...(v.jvm || []), '-cp', c1.cp, main, ...(v.args || []).map(String)],
+      // resources: 節からの相対パスのディレクトリをクラスパスに加える（META-INF/services など）
+      const cp = [c1.cp, ...asList(v.resources).map((d) => path.join(sec.dir, d))].join(path.delimiter);
+      r = spawnSync('java', ['-Duser.language=en', ...(v.jvm || []), '-cp', cp, main, ...(v.args || []).map(String)],
         { encoding: 'utf8', timeout: v.timeout ? v.timeout * 1000 : DEFAULT_TIMEOUT_MS, maxBuffer: 256 * 1024 * 1024, cwd: tmp });
       if (r.error && r.error.code === 'ETIMEDOUT') return { status: 'fail', msg: '時間内に終わらない' };
     }
