@@ -1,0 +1,588 @@
+# 付録B.06の主張と、その確かめ方
+# npm run check:deep-dive -- b06 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- HashMap：表の大きさ
+  - id: hashmap-lazy-table
+    claim: 既定のコンストラクターで作ったHashMapは、最初に要素を入れるまで内部の表を作らない。最初のputで長さ16の表を作り、閾値は16×0.75=12になる
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: default initial capacity (16) and the default load factor (0.75)
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^作った直後: 表=null'
+        - '^1件目を入れたあと: 表の長さ=16 閾値=12$'
+
+  - id: hashmap-resize
+    claim: 要素数が閾値（表の長さ×負荷係数）を超えると、表の長さを2倍にして要素を配置し直す。既定では13件目・25件目・49件目・97件目…で広がり、1000件を入れると769件目で長さ2048になる
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: approximately twice the number of buckets
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^13件目: 表の長さ 16 -> 32（閾値 24）$'
+        - '^25件目: 表の長さ 32 -> 64（閾値 48）$'
+        - '^49件目: 表の長さ 64 -> 128（閾値 96）$'
+        - '^97件目: 表の長さ 128 -> 256（閾値 192）$'
+        - '^769件目: 表の長さ 1024 -> 2048（閾値 1536）$'
+      show: ['件目: 表の長さ']
+
+  - id: hashmap-presize
+    claim: new HashMap<>(100)は表の長さを2のべき乗の128に切り上げるが、閾値が96なので100件入れる途中で1回作り直す。HashMap.newHashMap(100)は100件を入れても作り直さない長さ（256）で作る
+    sources:
+      - title: java.util.HashMap.newHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: suitable for the expected number of mappings
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^new HashMap<>\(100\): 1件目のあと 表の長さ=128 閾値=96$'
+        - '^new HashMap<>\(100\): 100件入れたあと 表の長さ=256 作り直した回数=1$'
+        - '^HashMap\.newHashMap\(100\): 1件目のあと 表の長さ=256 閾値=192$'
+        - '^HashMap\.newHashMap\(100\): 100件入れたあと 表の長さ=256 作り直した回数=0$'
+      show: ['^(new HashMap|HashMap\.newHashMap)']
+
+  - id: newhashmap-since-19
+    claim: HashMap.newHashMapはJava 19で加わったメソッドで、--release 18ではコンパイルできない
+    sources:
+      - title: java.util.HashMap.newHashMap（Java SE 25 API、Since 19）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: 'Since: 19'
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NewHashMapBefore19.java
+      release: 18
+      fails: true
+      expect:
+        - 'error: cannot find symbol'
+        - 'symbol:\s+method newHashMap\(int\)'
+
+  - id: newhashmap-since-19-ok
+    claim: 同上（--release 19ではコンパイルできる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NewHashMapBefore19.java
+      release: 19
+      absent:
+        - 'error'
+
+  # ---- HashMap：バケットの決め方
+  - id: hashmap-spread
+    claim: HashMapはhashCodeの上位16ビットを下位16ビットに排他的論理和で混ぜてからバケットを決めるので、上位ビットだけが違うキーも別々のバケットに入る
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^キー 65536 \(0x10000\): バケット 1（hashCode & 15 は 0）$'
+        - '^キー 131072 \(0x20000\): バケット 2（hashCode & 15 は 0）$'
+        - '^キー 524288 \(0x80000\): バケット 8（hashCode & 15 は 0）$'
+      show: ['^キー \d+ \(0x']
+
+  - id: hashmap-iteration-order
+    claim: HashMapの反復は表のバケットの順に進むので、入れた順にもキーの大小の順にもならない。APIは順序を保証しない
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: makes no guarantees as to the order of the map
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^入れた順: 100 3 17 50$'
+        - '^取り出した順: 17\(バケット1\) 50\(バケット2\) 3\(バケット3\) 100\(バケット4\)$'
+
+  - id: string-hash-collision
+    claim: '"Aa"と"BB"はhashCodeがどちらも2112で同じバケットに入り、HashMapはequalsで区別して正しい値を返す'
+    sources:
+      - title: java.lang.String.hashCode（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html
+        anchor: s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^"Aa"\.hashCode\(\)=2112 "BB"\.hashCode\(\)=2112$'
+        - '^Aa: バケット 0 / BB: バケット 0 / バケット0のノード数 2$'
+        - '^get\("BB"\)=2$'
+
+  - id: integer-hashcode
+    claim: IntegerのhashCode()は、その値のintそのものである
+    sources:
+      - title: java.lang.Integer.hashCode（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html
+        anchor: equal to the primitive int value represented by this Integer object
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のIntegerのAPIで、hashCode()の戻り値がそのIntegerが表すintの値に等しいと書かれていることを確かめた
+
+  - id: hashmap-load-factor
+    claim: APIドキュメントは、既定の負荷係数0.75を時間と空間の釣り合いのよい値とし、大きくするとメモリは減るが探す手間が増えると説明している
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: offers a good tradeoff between time and space costs
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のHashMapのAPIの冒頭に、既定の負荷係数（.75）は時間と空間の釣り合いがよいこと、大きくすると空間の無駄は減るがgetやputを含む探す手間が増えることが書かれているのを確かめた
+
+  - id: hashmap-null-key
+    claim: HashMapはnullのキーを1つ持てる。nullのキーのハッシュ値は0として扱われ、バケット0に入る
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: permits null values and the null key
+    verify:
+      kind: run
+      probe: verify/HashMapTable.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^nullのキー: バケット 0 get\(null\)=0$'
+
+  - id: hashmap-constant-time
+    claim: HashMapのgetとputは、ハッシュ関数が要素をバケットに散らばらせる限り、要素数によらない時間で済む（APIの記述）
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: assuming the hash function disperses the elements properly among the buckets
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のHashMapのAPIの冒頭に、getとputは定数時間（ハッシュ関数が要素をバケットに散らばらせることが前提）とあること、Comparableなキーでは比較の順序を使って衝突をさばくことがあると書かれていることを確かめた
+
+  # ---- HashMap：木への変換
+  - id: treeify-small-table
+    claim: 同じバケットのノードが9個目になっても、表の長さが64未満のうちは木にせず表を広げる。既定の長さ16からでは、9個目で32、10個目で64に広がり、11個目で木（TreeNode）になる
+    verify:
+      kind: run
+      probe: verify/Treeify.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^8個目: 表の長さ16 バケット10=HashMap\$Node×8$'
+        - '^9個目: 表の長さ32 バケット10=HashMap\$Node×9$'
+        - '^10個目: 表の長さ64 バケット42=HashMap\$Node×10$'
+        - '^11個目: 表の長さ64 バケット42=HashMap\$TreeNode×11$'
+      show: ['^(8個目: 表の長さ16|9個目: 表の長さ32|10個目: 表の長さ64 バケット42=HashMap\$Node|11個目)']
+
+  - id: treeify-large-table
+    claim: 表の長さが64以上なら、同じバケットのノードが9個目（8個を超えたとき）で赤黒木（TreeNode）に変わる
+    verify:
+      kind: run
+      probe: verify/Treeify.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^8個目: 表の長さ64 バケット42=HashMap\$Node×8$'
+        - '^9個目: 表の長さ64 バケット42=HashMap\$TreeNode×9$'
+
+  - id: untreeify-remove-shape
+    claim: 削除で連結リストに戻る時点は、個数（6）ではなく木の形で決まる。同じ12個の木でも、小さいキーから消すと残り6個で、大きいキーから消すと残り3個で連結リストに戻る
+    verify:
+      kind: run
+      probe: verify/Treeify.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^小さいキーから削除（残りの個数:形） .*7:木 6:リスト'
+        - '^大きいキーから削除（残りの個数:形） .*6:木 5:木 4:木 3:リスト'
+      show: ['キーから削除']
+
+  - id: untreeify-split
+    claim: 表を広げると木のバケットは2つに分かれ、分かれた側のノードが6個（UNTREEIFY_THRESHOLD）以下なら連結リストに戻り、7個以上なら木のままになる
+    verify:
+      kind: run
+      probe: verify/Treeify.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^hashCode 0が5個・64が6個: 表の長さ64 バケット0=HashMap\$TreeNode×11$'
+        - '表を広げたあと: 表の長さ128 バケット0=HashMap\$Node×5 バケット64=HashMap\$Node×6$'
+        - '表を広げたあと: 表の長さ128 バケット0=HashMap\$Node×4 バケット64=HashMap\$TreeNode×7$'
+      show: ['^hashCode 0が|表を広げたあと']
+
+  - id: treebin-comparable
+    claim: 木になったバケットでも、キーがComparableでなければ探す範囲を絞れず、1000個のうち1つを探すのに平均で約500回equalsを呼ぶ。Comparableなキーなら約10回で済む
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: when keys are Comparable , this class may use comparison order among keys to help break ties
+    verify:
+      kind: run
+      probe: verify/Treeify.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^Comparableでないキー: getあたりのequalsの回数 平均 [3-6]\d\d\.\d$'
+        - '^Comparableなキー: getあたりのequalsの回数 平均 ([5-9]|1\d)\.\d$'
+
+  - id: jep180-java8
+    claim: 衝突の多いバケットを連結リストではなく平衡木で持つ改良は、JEP 180としてJava 8で入った
+    sources:
+      - title: 'JEP 180: Handle Frequent HashMap Collisions with Balanced Trees'
+        url: https://openjdk.org/jeps/180
+        anchor: using balanced trees rather than linked lists to store map entries
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 180の題名と要約（balanced trees rather than linked lists）、Releaseが8であること、改良の対象がComparableを実装したキーであることを確かめた
+
+  # ---- ArrayList
+  - id: arraylist-growth
+    claim: new ArrayList<>()は最初の要素を入れるまで長さ0の配列を持ち、最初のaddで長さ10にする。その後は約1.5倍ずつ（10・15・22・33…）広げる。new ArrayList<>(0)は1・2・3・4・6・9と広がる。trimToSizeで要素数に縮め、clearは配列を縮めない
+    sources:
+      - title: java.util.ArrayList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html
+        anchor: Constructs an empty list with an initial capacity of ten.
+    verify:
+      kind: run
+      probe: verify/ArrayListGrowth.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^new ArrayList<>\(\) の直後: 配列の長さ=0$'
+        - '^new ArrayList<>\(\) に100件足したときの配列の長さ: 10 15 22 33 49 73 109$'
+        - '^new ArrayList<>\(0\) に10件足したときの配列の長さ: 1 2 3 4 6 9 13$'
+        - '^new ArrayList<>\(100\) の直後: 配列の長さ=100$'
+        - '^11件入れたあと: 配列の長さ=15$'
+        - '^trimToSize\(\)のあと: 配列の長さ=11$'
+        - '^clear\(\)のあと: size=0 配列の長さ=11$'
+      show: ['配列の長さ']
+
+  - id: arraylist-policy
+    claim: ArrayListのAPIは、末尾への追加が「ならして定数時間」であることだけを決めており、配列の伸ばし方（1.5倍など）は決めていない
+    sources:
+      - title: java.util.ArrayList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html
+        anchor: The details of the growth policy are not specified beyond the fact that adding an element has constant amortized time cost.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のArrayListのAPIの冒頭に、伸ばし方の詳細は「要素の追加がならして定数時間」であること以外は決めないとあること、getとsetは定数時間、そのほかの操作はおおむね線形時間とあることを確かめた
+
+  # ---- LinkedHashMap
+  - id: linkedhashmap-orders
+    claim: LinkedHashMapは既定では入れた順を保ち、すでにあるキーに入れ直しても順は変わらない。3つめの引数にtrueを渡すと使った順になり、removeEldestEntryと組み合わせてLRUキャッシュを作れる
+    sources:
+      - title: java.util.LinkedHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html
+        anchor: This kind of map is well-suited to building LRU caches.
+    verify:
+      kind: run
+      probe: verify/LinkedOrder.java
+      expect:
+        - '^入れた順（既定）: \[A, B, C\]$'
+        - '^使った順（get\("A"\)のあと）: \[B, C, A\]$'
+        - '^LRUキャッシュ（上限3、Aを使ってからDを入れる）: \[C, A, D\]$'
+
+  # ---- TreeMap
+  - id: treemap-rbt
+    claim: TreeMapは赤黒木によるNavigableMapの実装で、containsKey・get・put・removeが要素数の対数に比例する時間で済むことを保証している。アルゴリズムはCormen・Leiserson・Rivestの「Introduction to Algorithms」による
+    sources:
+      - title: java.util.TreeMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeMap.html
+        anchor: A Red-Black tree based NavigableMap implementation.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のTreeMapのAPIの冒頭に、赤黒木による実装であること、containsKey・get・put・removeはlog(n)の時間を保証すること、アルゴリズムはCormen・Leiserson・Rivestの教科書によることが書かれているのを確かめた
+
+  - id: treemap-shape-small
+    claim: 1〜10を昇順にTreeMapへ入れると、木は右に一直線に伸びず、4を根とする高さ5の木になる
+    verify:
+      kind: run
+      probe: verify/TreeMapShape.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^4\(黒\)\n├─L:2\(黒\)\n│ ├─L:1\(黒\)\n│ └─R:3\(黒\)\n└─R:6\(黒\)\n· ├─L:5\(黒\)\n· └─R:8\(赤\)\n· · ├─L:7\(黒\)\n· · └─R:9\(黒\)\n· · · └─R:10\(赤\)$'
+      show: ['^[·│├└─ ]*(L:|R:)?\d+\((黒|赤)\)$']
+
+  - id: treemap-height
+    claim: 昇順に入れても、TreeMapの木の高さは1000件で17、100万件で37にとどまり、2×log2(n+1)を超えない。根は黒、赤が2つ続く箇所はなく、どの経路でも黒の数がそろう
+    verify:
+      kind: run
+      probe: verify/TreeMapShape.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^n=1000: 高さ=17（log2\(n\+1\)=10\.0、2×log2\(n\+1\)=19\.9） 根は黒=true 赤が2つ続く箇所=0 黒の高さがそろう=true$'
+        - '^n=1000000: 高さ=37（log2\(n\+1\)=19\.9、2×log2\(n\+1\)=39\.9） 根は黒=true 赤が2つ続く箇所=0 黒の高さがそろう=true$'
+
+  - id: simple-rbt-same-shape
+    claim: src/のSimpleRedBlackTreeはTreeMapと同じ手順で平衡を保つので、1〜10を昇順に入れるとTreeMapと同じ形・同じ色の木になる
+    verify:
+      kind: run
+      main: com.example.collections.TreeMapInternals
+      expect:
+        - '--- Inserting 10 ---[\s\S]*?└── 4=Value4\(B\)\n    ├── 2=Value2\(B\)\n    │   ├── 1=Value1\(B\)\n    │   └── 3=Value3\(B\)\n    └── 6=Value6\(B\)\n        ├── 5=Value5\(B\)\n        └── 8=Value8\(R\)\n            ├── 7=Value7\(B\)\n            └── 9=Value9\(B\)\n                └── 10=Value10\(R\)'
+
+  - id: treemap-compareto
+    claim: TreeMap・TreeSetは、同じキーかどうかをequalsではなくcompareTo（またはComparator）で決める。1.0と1.00のBigDecimalはHashSetでは2つ、TreeSetでは1つになる
+    sources:
+      - title: java.util.TreeMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TreeMap.html
+        anchor: must be consistent with equals if this sorted map is to correctly implement the Map interface
+    verify:
+      kind: run
+      probe: verify/TreeMapShape.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^1\.0と1\.00: equals=false compareTo=0 HashSetの要素数=2 TreeSetの要素数=1$'
+        - '^CASE_INSENSITIVE_ORDERのTreeSet: \[java\]$'
+
+  - id: treemap-submap-view
+    claim: subMapは元のTreeMapの一部を見せるビューで、元の変更はsubMapに、subMapの変更は元に表れる。範囲外のキーはsubMapに入れられない
+    verify:
+      kind: run
+      probe: verify/TreeMapShape.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^subMap\(20〜40\): \[20, 30, 40\]$'
+        - '^元に25を足し、subMapから30を消したあと: 元=\[10, 20, 25, 40, 50\] subMap=\[20, 25, 40\]$'
+        - '^subMapの範囲外のput\(45\): IllegalArgumentException$'
+
+  # ---- 変更できないコレクション
+  - id: immutable-classes
+    claim: List.ofは要素が1つか2つならImmutableCollections$List12、0個か3つ以上ならListNを返す。Set.of・Map.ofも要素の数で実装クラスが変わる。Stream.toListもListNを返す
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^List\.of\(\) -> java\.util\.ImmutableCollections\$ListN$'
+        - '^List\.of\(1\) -> java\.util\.ImmutableCollections\$List12$'
+        - '^List\.of\(1, 2\) -> java\.util\.ImmutableCollections\$List12$'
+        - '^List\.of\(1, 2, 3\) -> java\.util\.ImmutableCollections\$ListN$'
+        - '^Set\.of\(1, 2\) -> java\.util\.ImmutableCollections\$Set12$'
+        - '^Set\.of\(1, 2, 3\) -> java\.util\.ImmutableCollections\$SetN$'
+        - '^Map\.of\(1, 2\) -> java\.util\.ImmutableCollections\$Map1$'
+        - '^Map\.of\(1, 2, 3, 4\) -> java\.util\.ImmutableCollections\$MapN$'
+        - '^Stream\.toList\(\) -> java\.util\.ImmutableCollections\$ListN$'
+      show: [' -> java\.util\.']
+
+  - id: immutable-fields
+    claim: List12は要素を2つのフィールド（e0・e1）で持ち、ListNは配列（elements）で持つ。ListNはnullを許すかどうかのフラグ（allowNulls）も持つ
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^List12のフィールド: Object e0; Object e1;$'
+        - '^ListNのフィールド: Object\[\] elements; boolean allowNulls;$'
+
+  - id: immutable-null
+    claim: List.ofなどで作ったリストはnullを要素にできず、contains(null)もNullPointerExceptionになる。Stream.toListが返すリストはnullを含められる
+    sources:
+      - title: java.util.List（Java SE 25 API、Unmodifiable Lists）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: They disallow null elements.
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^List\.of\(1, null\) -> NullPointerException$'
+        - '^List\.of\(1, 2\)\.contains\(null\) -> NullPointerException$'
+        - '^Stream\.of\(1, null\)\.toList\(\) -> \[1, null\]$'
+        - '^new ArrayList<>\(List\.of\(1\)\)\.contains\(null\) -> false$'
+      show: ['null.* -> ']
+
+  - id: set-of-duplicates
+    claim: Set.ofは重複した要素を渡すとIllegalArgumentExceptionになる。Set.copyOfは重複を1つにまとめる
+    sources:
+      - title: java.util.Set（Java SE 25 API、Unmodifiable Sets）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html
+        anchor: Duplicate elements passed to a static factory method result in IllegalArgumentException
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^Set\.of\(1, 1\) -> IllegalArgumentException$'
+        - '^Set\.copyOf\(List\.of\(1, 1\)\) -> \[1\]$'
+
+  - id: set-of-order
+    claim: Set.of・Map.ofの反復の順序は決まっておらず、変わることがある（APIの記述）
+    sources:
+      - title: java.util.Set（Java SE 25 API、Unmodifiable Sets）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html
+        anchor: The iteration order of set elements is unspecified and is subject to change.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のSetのAPIの「Unmodifiable Sets」の節に、反復の順序は決まっておらず変わりうるとあることを確かめた
+
+  - id: view-vs-copy
+    claim: Collections.unmodifiableListは元のリストのビューなので、元を変更すると見える中身も変わる。List.copyOfはコピーを作り、変更できないリストを渡したときは同じオブジェクトを返す
+    sources:
+      - title: java.util.Collections.unmodifiableList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: Returns an unmodifiable view of the specified list.
+      - title: java.util.List.copyOf（Java SE 25 API、Implementation Note）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: calling copyOf will generally not create a copy
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^元にBを足したあと: unmodifiableList=\[A, B\] List\.copyOf=\[A\]$'
+        - '^変更できないリストのList\.copyOfは同じオブジェクト: true$'
+
+  - id: arrays-aslist
+    claim: Arrays.asListが返すリストは元の配列と中身を共有し、setは配列に書き込まれるが、addなど大きさを変える操作はUnsupportedOperationExceptionになる
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^Arrays\.asList\(1, 2, 3\) -> java\.util\.Arrays\$ArrayList$'
+        - '^asList\(配列\)\.set\(0, "Z"\)のあとの配列: \[Z, B\]$'
+        - '^asList\(配列\)\.add\("C"\) -> UnsupportedOperationException$'
+        - '^List\.of\("A"\)\.set\(0, "Z"\) -> UnsupportedOperationException$'
+      show: ['asList|set\(0']
+
+  - id: chm-null
+    claim: ConcurrentHashMapはHashMapと違い、nullをキーにも値にもできない
+    sources:
+      - title: java.util.concurrent.ConcurrentHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html
+        anchor: this class does not allow null to be used as a key or value
+    verify:
+      kind: run
+      probe: verify/Unmodifiable.java
+      expect:
+        - '^ConcurrentHashMapにnullの値をput -> NullPointerException$'
+
+  # ---- fail-fast
+  - id: failfast
+    claim: 拡張for文の中でリストからremoveするとConcurrentModificationExceptionになる（スレッドが1つでも起きる）。ただし最後から2番目の要素を消したときは例外にならず、最後の要素を調べないまま終わる。Iterator.removeとremoveIfは安全に消せる
+    sources:
+      - title: java.util.ConcurrentModificationException（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ConcurrentModificationException.html
+        anchor: this exception does not always indicate that an object has been concurrently modified by a different thread
+      - title: java.util.HashMap（Java SE 25 API、fail-fastは最善の努力）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: Fail-fast iterators throw ConcurrentModificationException on a best-effort basis.
+    verify:
+      kind: run
+      probe: verify/FailFast.java
+      expect:
+        - '^拡張for文でBをremove: ConcurrentModificationException$'
+        - '^拡張for文でCをremove: 例外なし 結果=\[A, B, D\]$'
+        - '^Iterator\.removeでBを消す: 結果=\[A, C, D\]$'
+        - '^removeIfでBを消す: 結果=\[A, C, D\]$'
+      show: ['remove']
+
+  - id: modcount
+    claim: AbstractListを継承するリストは、構造を変更した回数をmodCountフィールドに数えている
+    sources:
+      - title: java.util.AbstractList.modCount（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/AbstractList.html
+        anchor: The number of times this list has been structurally modified
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のAbstractListのAPIで、protectedのフィールドmodCountが「構造を変更した回数」と説明され、イテレーターがこの値を使ってfail-fastな振る舞いをすると書かれているのを確かめた
+
+  - id: failfast-map
+    claim: HashMapのキーをたどりながら新しいキーを入れると例外になるが、すでにあるキーの値を置き換えるだけなら構造が変わらないので例外にならない
+    verify:
+      kind: run
+      probe: verify/FailFast.java
+      expect:
+        - '^HashMapのkeySetをたどりながらput: ConcurrentModificationException$'
+        - '^すでにあるキーの値だけを置き換える: 例外なし 結果=\{A=10, B=10\}$'
+
+  # ---- メモリ
+  - id: node-layout
+    claim: 既定の設定のJDK 25では、HashMap$Nodeはヘッダー12バイト（マーク8バイト＋クラス4バイト）、hashのint、key・value・nextの参照（各4バイト）で28バイトになり、8バイト境界にそろえて32バイトになる
+    verify:
+      kind: run
+      probe: verify/EntrySizes.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^\s*0\s+8\s+\(object header: mark\)'
+        - '^\s*8\s+4\s+\(object header: class\)'
+        - '^\s*12\s+4\s+int Node\.hash'
+        - '^\s*24\s+4\s+java\.util\.HashMap\.Node Node\.next'
+        - '^Instance size: 32 bytes'
+      show: ['^\s*\d+\s+\d+\s+\S', '^OFF', '^Instance size']
+
+  - id: entry-sizes
+    claim: 1要素ごとのオブジェクトは、HashMap$Nodeが32バイト、木になったバケットのTreeNodeが56バイト、LinkedHashMap$EntryとTreeMap$Entryが40バイト、LinkedList$Nodeが24バイトである
+    verify:
+      kind: run
+      probe: verify/EntrySizes.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^HashMap\$Node: 32バイト（ヘッダー12バイト）$'
+        - '^HashMap\$TreeNode: 56バイト（ヘッダー12バイト）$'
+        - '^LinkedHashMap\$Entry: 40バイト（ヘッダー12バイト）$'
+        - '^TreeMap\$Entry: 40バイト（ヘッダー12バイト）$'
+        - '^LinkedList\$Node: 24バイト（ヘッダー12バイト）$'
+      show: ['バイト（ヘッダー']
+
+  - id: entry-fields
+    claim: LinkedHashMap$EntryはHashMap$Nodeのフィールドに前後のノードへの参照（before・after）を足したもので、すべてのノードを双方向の連結リストでつなぐ。TreeMap$Entryはkey・value・left・right・parent・colorを持つ。TreeNodeはLinkedHashMap$Entryを継承し、さらに木の参照を持つ
+    sources:
+      - title: java.util.LinkedHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html
+        anchor: maintains a doubly-linked list running through all of its entries
+    verify:
+      kind: run
+      probe: verify/EntrySizes.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^HashMap\$Node: hash key value next$'
+        - '^HashMap\$TreeNode: hash key value next before after parent left right prev red$'
+        - '^LinkedHashMap\$Entry: hash key value next before after$'
+        - '^TreeMap\$Entry: key value left right parent color$'
+        - '^LinkedList\$Node: item next prev$'
+
+  - id: collection-totals
+    claim: Integerを1000件入れたとき、キーと値のオブジェクトを除いたコレクション自体の大きさは、1件あたりHashMapとTreeMapが約40バイト、LinkedHashMapが約48バイト、LinkedListが約24バイト、ArrayListが約5バイトである
+    verify:
+      kind: run
+      probe: verify/EntrySizes.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^HashMap: \d+バイト（1件あたり約40バイト）$'
+        - '^LinkedHashMap: \d+バイト（1件あたり約48バイト）$'
+        - '^TreeMap: \d+バイト（1件あたり約40バイト）$'
+        - '^ArrayList: \d+バイト（1件あたり約5バイト）$'
+        - '^LinkedList: \d+バイト（1件あたり約24バイト）$'
+      show: ['1件あたり']
+
+  - id: compact-headers-default
+    claim: JDK 25のコンパクトなオブジェクトヘッダー（-XX:+UseCompactObjectHeaders）は製品の機能になったが、既定では無効である
+    sources:
+      - title: 'JEP 519: Compact Object Headers'
+        url: https://openjdk.org/jeps/519
+        anchor: It is not a goal to make compact object headers be the default object-header layout.
+    verify: { kind: flag, flag: UseCompactObjectHeaders, value: 'false' }
+
+  - id: compact-headers
+    claim: -XX:+UseCompactObjectHeadersを付けると、ヘッダーが8バイトになり、HashMap$Nodeは24バイト、LinkedHashMap$EntryとTreeMap$Entryは32バイト、1000件のHashMapは1件あたり約32バイトになる
+    sources:
+      - title: 'JEP 519: Compact Object Headers'
+        url: https://openjdk.org/jeps/519
+        anchor: 'JEP 519: Compact Object Headers'
+    verify:
+      kind: run
+      probe: verify/EntrySizes.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-XX:+UseCompactObjectHeaders', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^HashMap\$Node: 24バイト（ヘッダー8バイト）$'
+        - '^LinkedHashMap\$Entry: 32バイト（ヘッダー8バイト）$'
+        - '^TreeMap\$Entry: 32バイト（ヘッダー8バイト）$'
+        - '^HashMap: \d+バイト（1件あたり約32バイト）$'
+      show: ['バイト（ヘッダー', '1件あたり']
