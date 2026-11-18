@@ -145,7 +145,10 @@ function loadLedger(sec) {
   const file = path.join(sec.dir, 'claims.yml');
   if (!fs.existsSync(file)) return null;
   const data = yaml.load(fs.readFileSync(file, 'utf8'), { schema: yaml.JSON_SCHEMA }) || {};
-  return { file, jdk: data.jdk, claims: data.claims || [], removedFlags: data.removedFlags || [] };
+  // defaults: 各主張のverifyに既定で加える項目（libsなど。主張の側に書いたものが優先）
+  const claims = (data.claims || []).map((c) => (c.verify && data.defaults && ['javac', 'javap', 'run'].includes(c.verify.kind)
+    ? { ...c, verify: { ...data.defaults, ...c.verify } } : c));
+  return { file, jdk: data.jdk, claims, removedFlags: data.removedFlags || [] };
 }
 
 function validateLedger(sec, ledger, problems) {
