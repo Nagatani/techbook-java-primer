@@ -11,7 +11,8 @@
  * サンプルコードを範囲ごとの枠に分ける処理（vfm-code-segments.js）、
  * 索引の項目を用語と参照先に分ける処理（vfm-index-entries.js）、PDFでリンクを
  * クリックできるようにする処理（vfm-links.js）、両端揃えで字間が開かないように改行と折り返し位置を
- * 整える処理（vfm-line-breaks.js）、章の題名を文節の切れ目だけで折り返す処理（vfm-title-breaks.js）、図の幅を決める処理（vfm-figure-size.js）も組み込む。
+ * 整える処理（vfm-line-breaks.js）、章の題名を文節の切れ目だけで折り返す処理（vfm-title-breaks.js）、図の幅を決める処理（vfm-figure-size.js）、
+ * 電子書籍（EPUB）向けに節番号・脚注・行番号・図を組み替える処理（vfm-epub.js、BOOK_TARGET=epub のときだけ）も組み込む。
  */
 const { VFM } = require('@vivliostyle/vfm');
 const { rehypeCodeLines } = require('./vfm-code-lines.js');
@@ -22,6 +23,7 @@ const { rehypeFigureSize } = require('./vfm-figure-size.js');
 const { rehypeLineBreaks } = require('./vfm-line-breaks.js');
 const { rehypeTitleBreaks } = require('./vfm-title-breaks.js');
 const { rehypeEdition } = require('./vfm-edition.js');
+const { rehypeEpub } = require('./vfm-epub.js');
 
 const LABEL_PATTERN = /^(\d+章|付録[A-Z])$/;
 
@@ -54,7 +56,7 @@ function rehypeSectionLabel() {
 /** vivliostyle.config.js の documentProcessor に渡す */
 function documentProcessor(options, metadata) {
   // VFMの処理系は凍結されているため、呼び出して複製してからプラグインを足す
-  return VFM(options, metadata)().use(rehypeEdition).use(rehypeSectionLabel).use(rehypeTitleBreaks).use(rehypeCodeLines).use(rehypeCodeSegments).use(rehypeIndexEntries).use(rehypeLinks).use(rehypeLineBreaks).use(rehypeFigureSize);
+  return VFM(options, metadata)().use(rehypeEdition).use(rehypeSectionLabel).use(rehypeTitleBreaks).use(rehypeCodeLines).use(rehypeCodeSegments).use(rehypeIndexEntries).use(rehypeLinks).use(rehypeLineBreaks).use(rehypeFigureSize).use(rehypeEpub);
 }
 
 module.exports = { documentProcessor, rehypeSectionLabel };

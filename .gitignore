@@ -161,3 +161,7 @@ exercises/chapter14/**/log-work/
 exercises/chapter14/**/savedata/
 exercises/chapter14/**/encoding-work/
 exercises/chapter14/**/todo-data/
+
+# 電子書籍（EPUB）用に scripts/epub-assets.js が作る表紙と図のPNG
+manuscripts/images/epub/
+.vivliostyle-epub

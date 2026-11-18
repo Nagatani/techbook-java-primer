@@ -1,0 +1,353 @@
+@charset "UTF-8";
+/*
+ * 電子書籍（EPUB）のテーマ。BOOK_TARGET=epub のとき、すべての文書にこのファイルだけを当てる
+ * （vivliostyle.config.js）。紙面のテーマ（theme.css）は使わない。
+ * my-theme のディレクトリの外に置く（中に置くと、パッケージのCSSがすべてEPUBに入る）。
+ *
+ * Kindleなどのリーダーは、文字の大きさ・行間・余白・地の色を読者が変えられ、CSSの対応も限られる。
+ * そのため次の方針で書く。
+ * - CSSの変数（var()）、Q・mmの単位、@page、生成内容（::before の attr() やカウンター）を使わない。
+ *   節番号・コードの行番号・脚注は scripts/vfm-epub.js がHTMLに書き込む
+ * - 文字の大きさはemと%で指定し、本文の大きさと行間はリーダーの設定に任せる
+ * - フォントは指定しない（リーダーの明朝・ゴシックを使う）。コードだけ等幅にする
+ * - 地の色は付けない（リーダーの夜間モードで文字が読めなくなる）。コードと表の地は薄い灰色にとどめる
+ */
+
+/* ---- 本文 ---- */
+p {
+  margin: 0;
+  text-indent: 1em;
+}
+
+li p,
+td p,
+th p,
+blockquote p,
+.footnote-body p,
+.figure p {
+  text-indent: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.code-url {
+  word-break: break-all;
+}
+
+/* ---- 見出し ---- */
+h1 {
+  margin: 0 0 2em;
+  padding: 0.6em 0 0.5em;
+  border-bottom: 2px solid #3478b8;
+  font-size: 1.5em;
+  line-height: 1.4;
+  page-break-before: always;
+}
+
+h1 b {
+  display: block;
+  font-size: 0.6em;
+  color: #3478b8;
+}
+
+h1 span {
+  display: block;
+}
+
+h1 small {
+  display: block;
+  margin-top: 0.4em;
+  font-size: 0.6em;
+  font-weight: normal;
+}
+
+h2 {
+  margin: 2em 0 0.8em;
+  padding: 0.2em 0 0.2em 0.5em;
+  border-left: 4px solid #3478b8;
+  font-size: 1.25em;
+  line-height: 1.4;
+  page-break-after: avoid;
+}
+
+h2 .section-label {
+  display: block;
+  font-size: 0.65em;
+  color: #3478b8;
+}
+
+h3 {
+  margin: 1.6em 0 0.6em;
+  padding-left: 0.4em;
+  border-left: 3px solid #3478b8;
+  font-size: 1.1em;
+  page-break-after: avoid;
+}
+
+h4 {
+  margin: 1.4em 0 0.4em;
+  font-size: 1em;
+  color: #1f5f99;
+  page-break-after: avoid;
+}
+
+h5 {
+  margin: 1.2em 0 0.4em;
+  font-size: 1em;
+  page-break-after: avoid;
+}
+
+/* ---- リスト ---- */
+ul,
+ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+li {
+  margin: 0.15em 0;
+}
+
+/* ---- インラインコード ---- */
+/* 「monospace, monospace」と2つ書くと、ブラウザーが等幅の文字を小さくする既定の動きを止められる */
+code {
+  font-family: monospace, monospace;
+  font-size: 0.9em;
+}
+
+p code,
+li code,
+td code,
+th code {
+  padding: 0 0.15em;
+  background-color: #f0f0f0;
+}
+
+/* ---- コードブロック ---- */
+pre {
+  margin: 0.6em 0 1em;
+  padding: 0.5em 0.6em;
+  border: 1px solid #d8d8d8;
+  background-color: #f7f7f7;
+  font-family: monospace, monospace;
+  font-size: 0.8em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-indent: 0;
+}
+
+pre code {
+  padding: 0;
+  background: none;
+  font-size: 1em;
+}
+
+pre .code-line {
+  display: block;
+}
+
+pre .code-line-number {
+  color: #888;
+}
+
+pre .code-segment {
+  display: block;
+}
+
+pre .code-segment + .code-segment {
+  margin-top: 0.6em;
+  padding-top: 0.4em;
+  border-top: 1px dashed #bbb;
+}
+
+pre .code-segment-label {
+  display: block;
+  margin-bottom: 0.2em;
+  color: #555;
+  font-weight: bold;
+}
+
+/* 実行結果（言語を指定していないブロック）は白地にする */
+pre.code-plain {
+  background-color: transparent;
+}
+
+/* bashのブロックは左の緑の線で区別する（紙面と同じ） */
+pre.language-bash {
+  border-left: 4px solid #3c9a5f;
+}
+
+/* サンプルコードの番号（コードブロックの直前の段落） */
+.listing-number {
+  display: block;
+  margin-top: 1em;
+  font-size: 0.85em;
+  color: #444;
+}
+
+/* 構文の色分け（明るい地で読める濃い色にする） */
+.token.comment,
+.token.doc-comment {
+  color: #5c6b5c;
+  font-style: italic;
+}
+
+.token.keyword,
+.token.boolean {
+  color: #0033b3;
+}
+
+.token.string,
+.token.char,
+.token.triple-quoted-string {
+  color: #067d17;
+}
+
+.token.number {
+  color: #1750eb;
+}
+
+.token.annotation,
+.token.function {
+  color: #00627a;
+}
+
+.token.class-name {
+  color: #000000;
+}
+
+/* ---- 表 ---- */
+table {
+  margin: 0.8em 0;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+th,
+td {
+  padding: 0.25em 0.5em;
+  border: 1px solid #c8c8c8;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+/* ---- 図 ---- */
+.figure {
+  margin: 1em 0;
+  text-align: center;
+  text-indent: 0;
+}
+
+.figure img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- 引用とコラム ---- */
+blockquote {
+  margin: 1em 0;
+  padding: 0.5em 0.8em;
+  border-left: 4px solid #c8c8c8;
+}
+
+/* ---- 脚注（scripts/vfm-epub.js が文書の末尾に集める） ---- */
+.footnote-ref {
+  font-size: 0.7em;
+  line-height: 1;
+}
+
+.footnotes {
+  margin-top: 3em;
+  border-top: 1px solid #c8c8c8;
+  font-size: 0.85em;
+}
+
+.footnotes-title {
+  margin-top: 1em;
+  font-weight: bold;
+  text-indent: 0;
+}
+
+.footnote-body {
+  margin: 0.4em 0;
+}
+
+/* ---- 目次（Vivliostyleが作る） ---- */
+nav small {
+  font-size: 0.8em;
+}
+
+nav ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+nav ol ol {
+  padding-left: 1.5em;
+}
+
+nav li {
+  margin: 0.3em 0;
+}
+
+/* ---- 表紙 ---- */
+body.cover,
+section.cover {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+img[role="doc-cover"],
+.cover img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ---- 索引 ---- */
+.index-refs {
+  margin-left: 1em;
+  color: #555;
+}
+
+/* ---- 奥付 ---- */
+.colophon-page h2 {
+  display: none;
+}
+
+.colophon-title {
+  margin-top: 2em;
+  font-weight: bold;
+  text-indent: 0;
+}
+
+.colophon-page dl {
+  margin: 1em 0;
+}
+
+.colophon-page dt {
+  font-weight: bold;
+}
+
+.colophon-page dd {
+  margin: 0 0 0.4em 1em;
+}
+
+.colophon-date,
+.colophon-footer,
+.colophon-note {
+  margin-top: 0.6em;
+  text-indent: 0;
+}
+
+.colophon-note {
+  font-size: 0.85em;
+}

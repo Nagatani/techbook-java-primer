@@ -66,6 +66,22 @@ KDPの入稿条件に合わせて、通常のPDFと次の点を変えていま�
 カラーの紙面ですが、KDPのカラー印刷はページ数の上限が白黒より小さいため、白黒印刷での入稿を想定しています（色はグレーで刷られます）。
 ページ数がKDPの区切り（700ページなど）をまたいで変わったら、のどの幅を見直してください。
 
+### build:epub
+電子書籍（Kindleなど）のEPUBを、正規版で生成します。出力先: `output/techbook-java-primer.epub`
+
+```
+npm run build:epub
+```
+
+KDPの電子書籍にはこのEPUBをそのまま入稿できます。リーダーで文字の大きさを変えると行の長さが変わる形式（リフロー型）なので、紙面とは次の点が違います。
+
+- 紙面のテーマは使わず、`theme/epub-theme.css`だけを当てる。Kindleが対応しないCSS（変数、Q・mmの単位、`::before`の生成内容）は使わない
+- 節番号（「5章 - 3」）とコードの行番号は、ビルド時に`scripts/vfm-epub.js`がHTMLに書き込む。脚注は章の末尾に集め、本文の番号から飛べる（Kindleではポップアップで出る）
+- 目次は原稿（`table-of-contents.md`）ではなく、Vivliostyleが章と節から作る。リーダーの目次にもこれが使われる
+- 表紙は原稿の表紙を描いた画像（高さ2560px）、図はMermaidのSVGを2倍の解像度で描いたPNGにする。どちらもビルドの前に`scripts/epub-assets.js`が`manuscripts/images/epub/`に作る（リポジトリには入れない）。MermaidのSVGは文字をforeignObjectで描いており、Kindleでは文字が出ないため
+
+入稿の前に、AmazonのKindle Previewerで開いて見え方を確かめてください。
+
 ### build:press
 入稿用に、正規版をトンボと塗り足し（3mm）付きのPDF/X-1aで生成します（Dockerが必要）。出力先: `output/techbook-java-primer-press.pdf`
 

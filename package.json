@@ -7,6 +7,7 @@
     "build": "npm run mermaid:convert && npx vivliostyle build",
     "build:release": "npm run mermaid:convert && BOOK_EDITION=release npx vivliostyle build",
     "build:kdp": "npm run mermaid:convert && BOOK_EDITION=release BOOK_TARGET=kdp npx vivliostyle build",
+    "build:epub": "npm run mermaid:convert && BOOK_EDITION=release BOOK_TARGET=epub node scripts/epub-assets.js && BOOK_EDITION=release BOOK_TARGET=epub npx vivliostyle build",
     "build:press": "npm run mermaid:convert && BOOK_EDITION=release npx vivliostyle build --crop-marks --bleed 3mm --preflight press-ready -o output/techbook-java-primer-press.pdf",
     "build4web": "npm run mermaid:convert && npx vivliostyle build -o dist",
     "preview": "npm run mermaid:convert && npx vivliostyle preview",
