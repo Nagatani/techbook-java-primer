@@ -612,7 +612,17 @@ public class SolidPrinciplesDemo {
     public static void demonstrateInterfaceSegregation() {
         IO.println("\n=== Interface Segregation Principle Demo ===");
         
-        IO.println("--- Good Design (Segregated Interfaces) ---");
+        IO.println("--- Bad Design (Fat Interface) ---");
+        BadWorker badRobot = new Robot();
+        badRobot.work();
+        try {
+            // BadWorker型としては呼べるが、Robotは対応していない
+            badRobot.eat();
+        } catch (UnsupportedOperationException e) {
+            IO.println("UnsupportedOperationException: " + e.getMessage());
+        }
+        
+        IO.println("\n--- Good Design (Segregated Interfaces) ---");
         Human human = new Human("Alice");
         GoodRobot robot = new GoodRobot("R2D2");
         
@@ -664,7 +674,7 @@ public class SolidPrinciplesDemo {
      */
     public static void summarizeSOLIDBenefits() {
         IO.println("\n=== SOLID Principles Benefits ===");
-        IO.println("1. Single Responsibility: Changes affect only one class");
+        IO.println("1. Single Responsibility: Each class has one reason to change");
         IO.println("2. Open/Closed: Add new features without modifying existing code");
         IO.println("3. Liskov Substitution: Subtypes can replace base types safely");
         IO.println("4. Interface Segregation: Classes depend only on methods they use");

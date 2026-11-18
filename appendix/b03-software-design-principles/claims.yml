@@ -1,0 +1,574 @@
+# 付録B.03の主張と、その確かめ方
+# npm run check:deep-dive -- b03 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 原則とパターンの出どころ
+  - id: solid-martin-wording
+    claim: マーチンは2020年の記事で、SOLIDの各原則を短く言い直し、LSPは継承ではなくサブタイプ（インターフェイスの実装を含む）の話だと述べている
+    sources:
+      - title: Robert C. Martin, Solid Relevance（The Clean Code Blog, 2020-10-18）
+        url: https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html
+        anchor: It is about sub-typing
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事にSRP「Gather together the things that change for the same reasons」、OCP「A Module should be open for extension but closed for modification」、LSP「A program that uses an interface must not be confused by an implementation of that interface」「It is not. It is about sub-typing」、ISP「Keep interfaces small so that users don't end up depending on things they don't need」、DIP「Depend in the direction of abstraction. High level modules should not depend upon low level details」とあることを確かめた
+
+  - id: srp-reason-to-change
+    claim: マーチンは2014年の記事で、SRPを「同じ理由で変わるものを集め、違う理由で変わるものを分ける」と言い直し、変更の理由は人（変更を求める人）だと述べた。記事はパルナスの1972年の論文から説き起こしている
+    sources:
+      - title: Robert C. Martin, The Single Responsibility Principle（The Clean Code Blog, 2014-05-08）
+        url: https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html
+        anchor: Gather together the things that change for the same reasons
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事の冒頭にParnasの「On the Criteria To Be Used in Decomposing Systems into Modules」（Communications of the ACM, 1972年12月, Volume 15, Number 12）の紹介があり、「each software module should have one and only one reason to change」「the reasons for change are people」とあることを確かめた
+
+  - id: ocp-meyer
+    claim: 開放閉鎖の原則は、バートランド・メイヤーが1988年の著書『Object-Oriented Software Construction』で示した
+    sources:
+      - title: Robert C. Martin, The Open Closed Principle（The Clean Code Blog, 2014-05-12）
+        url: https://blog.cleancoder.com/uncle-bob/2014/05/12/TheOpenClosedPrinciple.html
+        anchor: In 1988 Bertrand Meyer defined
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事が「In 1988 Bertrand Meyer defined ... The Open Closed Principle」と書き、出典に「Object Oriented Software Construction, 1st. ed. Bertrand Meyer, Prentice Hall, 1988」を挙げていることを確かめた（本文の第5章の脚注と同じ）
+
+  - id: gof-book
+    claim: GoFの本は、ガンマ・ヘルム・ジョンソン・ブリシディースの4人による『Design Patterns』（Addison-Wesley、1994年）で、23のパターンを生成・構造・振る舞いの3つの章に分けて載せている
+    sources:
+      - title: Design Patterns, Elements of Reusable Object-Oriented Software（InformIT）
+        url: https://www.informit.com/store/design-patterns-elements-of-reusable-object-oriented-9780201633610
+        anchor: these 23 patterns
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 出版社のページで、著者4人（Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides）、「Published Oct 31, 1994 by Addison-Wesley Professional」、「these 23 patterns」、目次の「3. Creational Patterns. 4. Structural Pattern. 5. Behavioral Patterns.」を確かめた
+
+  # ---- 単一責任の原則
+  - id: date-split
+    claim: java.util.Dateが宣言するpublicメソッドのうち18個が非推奨で、日付と時刻の欄の計算（getYear・setMonthなど）と、文字列との変換（parse・toLocaleStringなど）である。JDK 1.1で、欄の計算はCalendarへ、文字列との変換はDateFormatへ移された
+    sources:
+      - title: java.util.Date（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Date.html
+        anchor: the Calendar class should be used to convert between dates and time fields
+    verify:
+      kind: run
+      probe: verify/DateResponsibilities.java
+      expect:
+        - 'そのうち非推奨: 18$'
+        - '欄の計算（Calendarへ移った）:.* getYear .*setMonth'
+        - '文字列との変換（DateFormatへ移った）: parse toGMTString toLocaleString$'
+      show: ['publicメソッド', '非推奨', '移った']
+
+  # ---- 開放閉鎖の原則
+  - id: ocp-typecheck-bytecode
+    claim: 種類を調べて分岐する計算クラスのバイトコードには、具体的なクラス（RectangleとCircle）へのinstanceofが入る
+    verify:
+      kind: javap
+      probe: verify/OcpDependencies.java
+      class: OcpDependencies$TypeCheckCalculator
+      expect:
+        - 'instanceof .*// class OcpDependencies\$Rectangle'
+        - 'instanceof .*// class OcpDependencies\$Circle'
+      show: ['instanceof']
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: ocp-interface-bytecode
+    claim: インターフェイスだけを使う計算クラスのバイトコードには、Shape.areaのinvokeinterfaceだけがあり、具体的な図形のクラスは現れない
+    verify:
+      kind: javap
+      probe: verify/OcpDependencies.java
+      class: OcpDependencies$ShapeCalculator
+      expect:
+        - 'invokeinterface .*InterfaceMethod OcpDependencies\$Shape\.area'
+      absent:
+        - 'OcpDependencies\$(Rectangle|Circle|Triangle)'
+      show: ['(checkcast|invokeinterface) .*OcpDependencies']
+      normalize:
+        '#\d+,?\s*(1\s*)?//': '//'
+
+  - id: ocp-run
+    claim: あとから足したTriangleを、ShapeCalculatorは変えずに計算できる。種類を調べるクラスは、知らない図形で例外を投げる
+    verify:
+      kind: run
+      probe: verify/OcpDependencies.java
+      expect:
+        - '^ShapeCalculator: 42\.1416$'
+        - '^TypeCheckCalculator: 知らない図形: Triangle'
+
+  - id: sealed-switch-missing
+    claim: sealedインターフェイスの許可する種類を足すと、その種類を扱わないswitch式はコンパイルエラーになる
+    sources:
+      - title: JLS 25 15.28.1 The Switch Block of a switch Expression
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: It is a compile-time error if a switch expression is not exhaustive
+      - title: JEP 409 Sealed Classes
+        url: https://openjdk.org/jeps/409
+        anchor: Sealed Classes
+    verify:
+      kind: javac
+      probe: verify/compile-errors/SealedSwitchMissing.java
+      fails: true
+      expect:
+        - 'error: the switch expression does not cover all possible input values'
+      show: ['error:']
+      normalize:
+        '^\S*/': ''
+
+  # ---- リスコフの置換原則
+  - id: square-rectangle
+    claim: 正方形を長方形のサブクラスにすると、幅5・高さ3を設定しても面積は15にならず9になる
+    verify:
+      kind: run
+      main: com.example.design.SolidPrinciplesDemo
+      expect:
+        - '^Expected area: 15, Actual area: 9\.0$'
+
+  - id: optional-operations
+    claim: List.of・Collections.unmodifiableList・Arrays.asListが返すListは、addでUnsupportedOperationExceptionを投げる。Arrays.asListはsetはできる。Collectionの変更メソッドは、対応しない実装がこの例外を投げてよいと決められている
+    sources:
+      - title: java.util.Collection（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html
+        anchor: They can be specified to throw UnsupportedOperationException if this collection implementation does not support the operation
+      - title: java.util.List（Java SE 25 API、Unmodifiable Lists）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: Calling any mutator method on the List will always cause UnsupportedOperationException to be thrown
+    verify:
+      kind: run
+      probe: verify/LspCollections.java
+      expect:
+        - '^ArrayList\.add: できた \[a, b, default\]$'
+        - '^List\.of\(\.\.\.\)\.add: UnsupportedOperationException$'
+        - '^Collections\.unmodifiableList\(\.\.\.\)\.add: UnsupportedOperationException$'
+        - '^Arrays\.asList\(\.\.\.\)\.add: UnsupportedOperationException$'
+        - '^Arrays\.asList\(\.\.\.\)\.set: できた \[z, b\]$'
+      show: ['^\S+: ']
+
+  - id: collections-faq
+    claim: 変更できるかどうかで型を分けなかったのは、コレクションのフレームワークの設計で最も議論になった判断で、型で区別しようとするとインターフェイスの数が膨らむうえ、実行時の例外もなくせないからだと設計者が説明している
+    sources:
+      - title: Java Collections API Design FAQ（Java SE 25）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/doc-files/coll-designfaq.html
+        anchor: most controversial design decision in the whole API
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: FAQの「Why don't you support immutability directly in the core collection interfaces」への答えに、「most controversial design decision in the whole API」「attempts to achieve this goal cause an explosion in the size of the interface hierarchy, and do not succeed in eliminating the need for runtime exceptions」とあり、配列のような大きさを変えられないリスト、追記だけのログと、必要なインターフェイスが増えていく例が続くことを確かめた
+
+  - id: timestamp-asymmetric
+    claim: java.sql.Timestampはjava.util.Dateのサブクラスだが、date.equals(ts)はtrue、ts.equals(date)はfalseになる。そのため、集合にどちらを入れ、どちらで探すかでcontainsの結果が変わる。APIドキュメントも、この継承は実装の継承で型の継承ではないと注意している
+    sources:
+      - title: java.sql.Timestamp（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Timestamp.html
+        anchor: really denotes implementation inheritance, and not type inheritance
+      - title: java.lang.Object.equals（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: It is symmetric
+    verify:
+      kind: run
+      probe: verify/LspTimestamp.java
+      expect:
+        - '^date\.equals\(ts\) = true$'
+        - '^ts\.equals\(date\) = false$'
+        - '^\{ts\}\.contains\(date\) = true$'
+        - '^\{date\}\.contains\(ts\) = false$'
+      show: ['=']
+
+  - id: stack-vector
+    claim: java.util.StackはVectorを継承し、自分で宣言するpublicメソッドはempty・peek・pop・push・searchの5つだが、呼べるpublicメソッドは71個ある。位置を指定するaddやremoveで途中の要素を操作できる。APIドキュメントはDequeを使うよう勧めている
+    sources:
+      - title: java.util.Stack（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Stack.html
+        anchor: A more complete and consistent set of LIFO stack operations is provided by the
+    verify:
+      kind: run
+      probe: verify/StackInheritance.java
+      expect:
+        - '^Stackのスーパークラス: java\.util\.Vector$'
+        - '^Stackが宣言するpublicメソッド: \[empty, peek, pop, push, search\]$'
+        - '^Stackで呼べるpublicメソッドの数: 71$'
+        - '^Stackの中身: \[割り込み, 1, 3\]$'
+        - '^Dequeに位置を指定する操作があるか: false$'
+      show: [': ']
+
+  - id: override-weaker-access
+    claim: オーバーライドするメソッドの公開範囲を狭めるとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: Requirements in Overriding and Hiding
+    verify:
+      kind: javac
+      probe: verify/compile-errors/WeakerAccess.java
+      fails: true
+      expect:
+        - 'error: run\(\) in Child cannot override run\(\) in Base'
+        - 'attempting to assign weaker access privileges; was public'
+      show: ['error:', 'attempting']
+      normalize:
+        '^\S*/': ''
+
+  - id: override-broader-throws
+    claim: オーバーライドするメソッドで、親のメソッドが宣言していない検査例外を投げるとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: Requirements in Overriding and Hiding
+    verify:
+      kind: javac
+      probe: verify/compile-errors/BroaderThrows.java
+      fails: true
+      expect:
+        - 'error: load\(\) in Child cannot override load\(\) in Base'
+        - 'overridden method does not throw Exception'
+      show: ['error:', 'overridden']
+      normalize:
+        '^\S*/': ''
+
+  # ---- インターフェイス分離の原則
+  - id: function-package
+    claim: java.util.functionの43個のインターフェイスは、どれも抽象メソッドが1つだけで、@FunctionalInterfaceが付いている。Listの抽象メソッドは25個ある
+    sources:
+      - title: java.util.function（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/function/package-summary.html
+        anchor: Functional interfaces provide target types for lambda expressions and method references
+    verify:
+      kind: run
+      probe: verify/IspFunctional.java
+      expect:
+        - 'java\.util\.functionのインターフェイス: 43$'
+        - '抽象メソッドが1つだけのもの: 43$'
+        - '@FunctionalInterfaceが付いたもの: 43$'
+        - 'Listの抽象メソッド: 25$'
+
+  - id: language-small-interfaces
+    claim: 拡張for文はIterableだけを、try-with-resources文はAutoCloseableだけを実装したクラスで使える
+    sources:
+      - title: JLS 25 14.14.2 The enhanced for statement
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: The type of the Expression must be an array type
+      - title: JLS 25 14.20.3 try-with-resources
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: must be a subtype of AutoCloseable
+    verify:
+      kind: run
+      probe: verify/IspLanguage.java
+      expect:
+        - '^3 2 1\s*$'
+        - '^開く\n使う\n閉じる$'
+      show: ['^3 2 1', '^開く', '^使う', '^閉じる']
+
+  - id: foreach-bytecode
+    claim: 拡張for文は、iterator()・hasNext()・next()の呼び出しにコンパイルされる
+    verify:
+      kind: javap
+      probe: verify/IspLanguage.java
+      class: IspLanguage
+      expect:
+        - 'invokevirtual .*Method IspLanguage\$Countdown\.iterator'
+        - 'invokeinterface .*InterfaceMethod java/util/Iterator\.hasNext'
+        - 'invokeinterface .*InterfaceMethod java/util/Iterator\.next'
+      range: { from: 'static void loop', to: 'return' }
+      show: ['Method (IspLanguage\$Countdown\.iterator|java/util/Iterator)']
+      normalize:
+        '#\d+,?\s*(1\s*)?//': '//'
+
+  - id: isp-demo-robot
+    claim: 大きなインターフェイスを実装させられたRobotは、使わないメソッドでUnsupportedOperationExceptionを投げる
+    verify:
+      kind: run
+      main: com.example.design.SolidPrinciplesDemo
+      expect:
+        - "^UnsupportedOperationException: Robots don't eat$"
+
+  # ---- 依存関係逆転の原則
+  - id: serviceloader-run
+    claim: ServiceLoaderは、META-INF/services/（インターフェイスの名前）というファイルに書かれた実装クラスを、書かれた順に見つけて作る
+    sources:
+      - title: java.util.ServiceLoader（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html
+        anchor: META-INF/services
+    verify:
+      kind: run
+      probe: verify/DipServiceLoader.java
+      expect:
+        - '^設定ファイル: META-INF/services/DipServiceLoader\$Greeter$'
+        - '^こんにちは、Java\nHello, Java$'
+      show: ['設定ファイル', 'こんにちは', 'Hello']
+
+  - id: serviceloader-javap
+    claim: ServiceLoaderで実装を探すメソッドのバイトコードには、インターフェイスだけが現れ、実装クラスの名前は現れない
+    verify:
+      kind: javap
+      probe: verify/DipServiceLoader.java
+      class: DipServiceLoader
+      expect:
+        - 'invokestatic .*Method java/util/ServiceLoader\.load'
+        - 'invokeinterface .*InterfaceMethod DipServiceLoader\$Greeter\.greet'
+      absent:
+        - '// class DipServiceLoader\$(Japanese|English)Greeter'
+        - 'Method DipServiceLoader\$(Japanese|English)Greeter'
+      range: { from: 'static void greetAll', to: 'return' }
+      show: ['ServiceLoader\.load', 'Greeter']
+      normalize:
+        '#\d+,?\s*(\d\s*)?//': '//'
+
+  - id: fs-providers
+    claim: JDK自身も、ファイルシステムの実装（file・jar・jrt）をプロバイダーとして見つけて使っている
+    sources:
+      - title: java.nio.file.spi.FileSystemProvider（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/spi/FileSystemProvider.html
+        anchor: installedProviders
+    verify:
+      kind: run
+      probe: verify/DipServiceLoader.java
+      expect:
+        - '^インストールされたファイルシステムの実装: \[file, jar, jrt\]$'
+
+  # ---- 標準ライブラリの中のパターン（生成）
+  - id: integer-cache
+    claim: Integer.valueOfは-128〜127の値で同じオブジェクトを返す（仕様が保証する）。128では、この実行では別のオブジェクトが返った
+    sources:
+      - title: java.lang.Integer.valueOf(int)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html
+        anchor: This method will always cache values in the range -128 to 127, inclusive
+      - title: JLS 25 5.1.7 Boxing Conversion
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html
+        anchor: Boxing Conversion
+    verify:
+      kind: run
+      probe: verify/CreationalInJdk.java
+      expect:
+        - '^Integer\.valueOf\(127\) == Integer\.valueOf\(127\): true$'
+        - '^Integer\.valueOf\(128\) == Integer\.valueOf\(128\): false$'
+      show: ['Integer']
+
+  - id: list-of-classes
+    claim: List.ofは、要素の数に応じて公開されていない別々のクラス（ImmutableCollections$List12・ListN）のオブジェクトを返す。クラスの名前は実装の詳細である
+    verify:
+      kind: run
+      probe: verify/CreationalInJdk.java
+      expect:
+        - 'List\.of\(1, 2\)のクラス: java\.util\.ImmutableCollections\$List12$'
+        - 'List\.of\(1, 2, 3\)のクラス: java\.util\.ImmutableCollections\$ListN$'
+      show: ['List\.of']
+
+  - id: runtime-singleton
+    claim: Runtimeにはpublicなコンストラクターがなく、getRuntime()はいつも同じオブジェクトを返す
+    sources:
+      - title: java.lang.Runtime（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runtime.html
+        anchor: Every Java application has a single instance of class
+    verify:
+      kind: run
+      probe: verify/CreationalInJdk.java
+      expect:
+        - '^Runtimeのpublicなコンストラクター: 0$'
+        - '^Runtime\.getRuntime\(\) == Runtime\.getRuntime\(\): true$'
+      show: ['Runtime']
+
+  - id: builders
+    claim: Locale.Builderは値を1つずつ設定してからLocaleを作る。StringBuilderのappendは自分自身を返す
+    sources:
+      - title: java.util.Locale.Builder（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.Builder.html
+        anchor: Builder is used to build instances of
+    verify:
+      kind: run
+      probe: verify/CreationalInJdk.java
+      expect:
+        - '^Locale\.Builderで作ったLocale: ja_JP$'
+        - '^sb\.append\("a"\) == sb: true$'
+      show: ['Builder', 'append']
+
+  # ---- 標準ライブラリの中のパターン（構造）
+  - id: unmodifiable-view
+    claim: Collections.unmodifiableListは元のリストを包むビューを返し、元への変更がビューに見える。List.copyOfはコピーなので見えない
+    sources:
+      - title: java.util.Collections.unmodifiableList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: Returns an unmodifiable view of the specified list
+    verify:
+      kind: run
+      probe: verify/StructuralInJdk.java
+      expect:
+        - '^unmodifiableListのクラス: java\.util\.Collections\$UnmodifiableRandomAccessList$'
+        - '^元に足したあとのビュー: \[a, b\]$'
+        - '^元に足したあとのコピー: \[a\]$'
+      show: ['unmodifiableList', '元に足した']
+
+  - id: arrays-aslist-adapter
+    claim: Arrays.asListは配列をListとして見せ、Listへの書き込みは配列に届く
+    sources:
+      - title: java.util.Arrays.asList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html
+        anchor: Returns a fixed-size list backed by the specified array
+    verify:
+      kind: run
+      probe: verify/StructuralInJdk.java
+      expect:
+        - '^Arrays\.asListのsetのあとの配列: \[z, y\]$'
+
+  - id: filter-stream-decorator
+    claim: FilterInputStreamはInputStreamを継承し、コンストラクターでInputStreamを1つ受け取って包む。BufferedInputStreamとDataInputStreamはそのサブクラスで、重ねて包むと機能を足せる
+    sources:
+      - title: java.io.FilterInputStream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/FilterInputStream.html
+        anchor: wraps some other input stream, which it uses as its basic source of data
+    verify:
+      kind: run
+      probe: verify/StructuralInJdk.java
+      expect:
+        - '^FilterInputStreamのスーパークラス: java\.io\.InputStream$'
+        - '^FilterInputStreamのコンストラクターの引数: \[class java\.io\.InputStream\]$'
+        - '^BufferedInputStreamのスーパークラス: java\.io\.FilterInputStream$'
+        - '^DataInputStreamのスーパークラス: java\.io\.FilterInputStream$'
+        - '^3段に包んだストリームからreadInt: 256$'
+      show: ['Stream', 'readInt: ']
+
+  # ---- 標準ライブラリの中のパターン（振る舞い）
+  - id: comparator-strategy
+    claim: List.sortに渡すComparatorを替えると、sortのコードを変えずに並べ方が変わる
+    verify:
+      kind: run
+      probe: verify/BehavioralInJdk.java
+      expect:
+        - '^辞書順: \[banana, fig, kiwi, pear\]$'
+        - '^長さ順（同じ長さは逆の辞書順）: \[fig, pear, kiwi, banana\]$'
+      show: ['順']
+
+  - id: iterator-class
+    claim: ArrayListのiterator()は、ArrayListの内部クラス（ArrayList$Itr）のオブジェクトを返す
+    verify:
+      kind: run
+      probe: verify/BehavioralInJdk.java
+      expect:
+        - '^ArrayListのイテレーターのクラス: java\.util\.ArrayList\$Itr$'
+
+  - id: abstractlist-template
+    claim: AbstractListを継承してgetとsizeだけを書くと、toString・indexOf・containsなどはAbstractListのメソッドがgetとsizeを呼んで動く
+    sources:
+      - title: java.util.AbstractList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/AbstractList.html
+        anchor: needs only to extend this class and provide implementations for the
+    verify:
+      kind: run
+      probe: verify/BehavioralInJdk.java
+      expect:
+        - 'toString: \[0, 1, 4, 9, 16\]$'
+        - 'indexOf\(9\): 3$'
+        - 'contains\(16\): true$'
+      show: ['AbstractList']
+
+  - id: observable-deprecated
+    claim: java.util.ObservableはJava 9で非推奨になった（削除予定ではない）。APIドキュメントは、イベントのモデルが限られていること（通知の順序が決まっていないなど）を理由に挙げ、java.beans・java.util.concurrent・Flow APIを案内している
+    sources:
+      - title: java.util.Observable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Observable.html
+        anchor: This class and the Observer interface have been deprecated
+    verify:
+      kind: run
+      probe: verify/BehavioralInJdk.java
+      expect:
+        - '^Observableの@Deprecated: since=9 forRemoval=false$'
+
+  # ---- シングルトンの書き方
+  - id: singleton-lazy-holder
+    claim: 入れ子のHolderクラスにインスタンスを持たせると、外側のクラスのほかのメソッドを呼んでも作られず、getInstanceで初めてHolderを使うときに作られる
+    sources:
+      - title: JLS 25 12.4.1 When Initialization Occurs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: When Initialization Occurs
+      - title: JLS 25 12.4.2 Detailed Initialization Procedure（初期化は排他制御のもとで1回だけ行う）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: Detailed Initialization Procedure
+    verify:
+      kind: run
+      probe: verify/SingletonVariants.java
+      expect:
+        - 'Lazy\.hello\(\)（まだ作らない）\n\s*getInstanceを呼ぶ\n\s*Lazyを作る\n\s*同じオブジェクト: true'
+      range: { from: '^1\.', to: '同じオブジェクト' }
+      show: ['.']
+      keepIndent: true
+
+  - id: singleton-serialization
+    claim: クラスで書いたシングルトンは直列化して読み戻すと別のオブジェクトになる（readResolveを書かない場合）。enumの定数は同じオブジェクトに戻る
+    sources:
+      - title: Java Object Serialization Specification 1.12 Serialization of Enum Constants
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/serialization/serial-arch.html
+        anchor: Serialization of Enum Constants
+    verify:
+      kind: run
+      probe: verify/SingletonVariants.java
+      expect:
+        - 'クラス: 同じオブジェクト = false$'
+        - 'enum: 同じオブジェクト = true$'
+      range: { from: '^2\.', to: 'enum: 同じ' }
+      show: ['.']
+      keepIndent: true
+
+  - id: singleton-reflection
+    claim: privateなコンストラクターもリフレクションで呼べば2つ目のオブジェクトができる。enumはリフレクションでも作れない（IllegalArgumentException）
+    sources:
+      - title: JLS 25 8.9 Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: An enum class has no instances other than those defined by its enum constants
+      - title: java.lang.reflect.Constructor.newInstance（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Constructor.html
+        anchor: if this constructor pertains to an enum class
+    verify:
+      kind: run
+      probe: verify/SingletonVariants.java
+      expect:
+        - 'クラス: 2つ目ができた = true$'
+        - 'enum: IllegalArgumentException: Cannot reflectively create enum objects$'
+      range: { from: '^3\.', to: 'enum: Illegal' }
+      show: ['.']
+      keepIndent: true
+
+  # ---- アーキテクチャ
+  - id: module-boundary
+    claim: モジュールがexportしていないパッケージ（java.baseのjdk.internal.misc）は、ほかのモジュールのコードから使えずコンパイルエラーになる。--releaseを付けたコンパイルではパッケージが存在しないと報告される
+    sources:
+      - title: JEP 403 Strongly Encapsulate JDK Internals
+        url: https://openjdk.org/jeps/403
+        anchor: Strongly Encapsulate JDK Internals
+      - title: javacコマンドのリファレンス（Java SE 25、--release）
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html
+        anchor: packages that are exported by the JDK modules in the release
+    verify:
+      kind: javac
+      probe: verify/compile-errors/InternalPackage.java
+      fails: true
+      expect:
+        - 'error: package jdk\.internal\.misc does not exist'
+      show: ['error: package']
+      normalize:
+        '^\S*/': ''
+
+  - id: hexagonal
+    claim: ヘキサゴナルアーキテクチャ（ポートとアダプター）は、アリスター・コーバーンが2005年の文書で示した。UIやデータベースがなくても動かせるようにアプリケーションを作ることを目標にしている
+    sources:
+      - title: Alistair Cockburn, The Hexagonal (Ports & Adapters) Architecture（HaT Technical Report 2005.02）
+        url: https://alistair.cockburn.us/hexagonal-architecture/
+        anchor: HaT Technical Report 2005.02
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 著者のサイトの文書に「HaT Technical Report 2005.02 Date 2005-09-04」と、冒頭の目標「Create your application to work without either a UI or a database so you can run automated regression-tests against the application」があることを確かめた
+
+  - id: clean-architecture
+    claim: マーチンは2012年の記事「The Clean Architecture」で、ヘキサゴナルアーキテクチャなどを1つの図にまとめ、ソースコードの依存は内側（方針）にだけ向けるという依存関係の規則を示した
+    sources:
+      - title: Robert C. Martin, The Clean Architecture（The Clean Code Blog, 2012-08-13）
+        url: https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
+        anchor: source code dependencies can only point inwards
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事の冒頭にHexagonal Architecture（Alistair Cockburn）などの列挙があり、「The Dependency Rule」の節に「source code dependencies can only point inwards」とあることを確かめた
