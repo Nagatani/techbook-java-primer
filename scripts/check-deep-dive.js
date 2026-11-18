@@ -145,7 +145,7 @@ function loadLedger(sec) {
   const file = path.join(sec.dir, 'claims.yml');
   if (!fs.existsSync(file)) return null;
   const data = yaml.load(fs.readFileSync(file, 'utf8'), { schema: yaml.JSON_SCHEMA }) || {};
-  return { file, jdk: data.jdk, claims: data.claims || [] };
+  return { file, jdk: data.jdk, claims: data.claims || [], removedFlags: data.removedFlags || [] };
 }
 
 function validateLedger(sec, ledger, problems) {
@@ -205,7 +205,7 @@ function flags() {
 }
 
 /** 解説・プローブ・コードに出てくる -XX: のフラグが実在するかを確かめる */
-function checkFlagNames(sec, problems) {
+function checkFlagNames(sec, problems, removed = []) {
   const table = flags();
   if (!table) { problems.push({ level: 'warn', where: sec.name, msg: 'javaが見つからないため、フラグ名の検査を省いた' }); return; }
   const files = [...docsOf(sec), ...javaFilesOf(sec)];
@@ -213,7 +213,8 @@ function checkFlagNames(sec, problems) {
     const text = fs.readFileSync(f, 'utf8');
     for (const m of text.matchAll(/-XX:[+-]?([A-Za-z]\w+)(=)?/g)) {
       const name = m[1];
-      if (table.has(name)) continue;
+      // 台帳のremovedFlagsに書いたフラグは、削除されたことを説明するために書いてよい
+      if (table.has(name) || removed.includes(name)) continue;
       const line = text.slice(0, m.index).split('\n').length;
       problems.push({ level: 'error', where: `${path.relative(ROOT, f)}:${line}`, msg: `JVMのフラグ -XX:${name} はJDK 25にない（PrintFlagsFinalに出ない）` });
     }
@@ -346,7 +347,10 @@ function checkSources(sec, ledger, problems) {
       const r = spawnSync('curl', ['-sfL', '--max-time', '30', '-A', 'Mozilla/5.0 (book-verification)', s.url], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
       if (r.status !== 0) { problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} を開けない` }); continue; }
       if (s.anchor) {
-        const plain = r.stdout.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+        const plain = r.stdout.replace(/<[^>]+>/g, ' ')
+          .replace(/&nbsp;/g, ' ').replace(/&#(\d+);/g, (m, n) => String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCodePoint(parseInt(n, 16)))
+          .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+          .replace(/[\s\u00a0\u2009]+/g, ' ');
         if (!plain.includes(s.anchor)) problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} に「${s.anchor}」がない` });
       }
     }
@@ -380,7 +384,7 @@ function main() {
         }
       }
       row.markers = markersAt.size;
-      checkFlagNames(sec, problems);
+      checkFlagNames(sec, problems, ledger ? ledger.removedFlags : []);
       if (!ledger) {
         if (markersAt.size) problems.push({ level: 'error', where: sec.name, msg: '印（<!-- claim: -->）があるのにclaims.ymlがない' });
         continue;
