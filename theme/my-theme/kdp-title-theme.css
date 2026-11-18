@@ -1,0 +1,21 @@
+@charset "UTF-8";
+/*
+ * Amazon KDPのペーパーバック用の本扉。表紙のテーマ（cover-theme.css）に重ねて使う。
+ *
+ * KDPでは表紙を本文とは別のファイルで入稿するため、本文PDFの1ページ目は紺の表紙ではなく
+ * 白地の本扉にする。紺の地をページの端まで塗ると裁ち落としが要り、本文PDF全体の大きさを
+ * 変えなければならない（KDPの裁ち落としは小口・天・地に3.2mmずつ）。
+ */
+
+:root {
+  --cover-bg: #ffffff;
+  --cover-bg-deep: #ffffff;
+  --cover-text: #0e2a4a;
+  --cover-muted: #4a5d73;
+  --cover-line: rgba(14, 42, 74, 0.3);
+}
+
+/* 模様は紺の地に合わせて描いてあるので、白地では出さない */
+.cover-main img {
+  display: none;
+}

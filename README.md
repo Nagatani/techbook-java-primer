@@ -49,6 +49,23 @@ npm run build:release
 
 版は環境変数`BOOK_EDITION`（`alpha`か`release`）で選びます。原稿の中で片方の版だけに出す要素には`class="edition-alpha"`か`class="edition-release"`を付けます（`scripts/vfm-edition.js`）。
 
+### build:kdp
+Amazon KDPのペーパーバック（オンデマンド印刷）に入稿する本文のPDFを、正規版で生成します。出力先: `output/techbook-java-primer-kdp.pdf`
+
+```
+npm run build:kdp
+```
+
+KDPの入稿条件に合わせて、通常のPDFと次の点を変えています（`theme/my-theme/kdp-theme.css`・`kdp-title-theme.css`）。
+
+- 1ページ目を紺の表紙から白地の本扉にする。表紙はKDPに別のファイルで入稿する
+- 裁ち落としなし、トンボなしで、判型はB5（176×250mm）のまま。KDPでは判型を「カスタム」で176×250mmと指定する
+- のどを24mm、小口を18mmにする。KDPはのどの最小値をページ数で決めており、701〜828ページでは22.3mm。本文の幅は通常のPDFと同じ
+- 上端の柱を紙の端から8mmまで下げる（KDPは文字を端から6.4mm以上離すことを求める）
+
+カラーの紙面ですが、KDPのカラー印刷はページ数の上限が白黒より小さいため、白黒印刷での入稿を想定しています（色はグレーで刷られます）。
+ページ数がKDPの区切り（700ページなど）をまたいで変わったら、のどの幅を見直してください。
+
 ### build:press
 入稿用に、正規版をトンボと塗り足し（3mm）付きのPDF/X-1aで生成します（Dockerが必要）。出力先: `output/techbook-java-primer-press.pdf`
 

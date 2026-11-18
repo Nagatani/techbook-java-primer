@@ -49,6 +49,25 @@ const { documentProcessor } = require('./scripts/vfm-section-label.js');
 const { currentEdition } = require('./scripts/vfm-edition.js');
 const edition = currentEdition();
 
+// 出力先（BOOK_TARGET）: pdf は通常のPDF（既定）、kdp はAmazon KDPのペーパーバックの本文PDF。
+// kdp では1ページ目を白地の本扉にし（kdp-title-theme.css）、のどを広げる（kdp-theme.css）。
+const TARGETS = ['pdf', 'kdp'];
+const target = process.env.BOOK_TARGET || 'pdf';
+if (!TARGETS.includes(target)) {
+  throw new Error(`BOOK_TARGET は ${TARGETS.join(' か ')} を指定してください（指定: ${target}）`);
+}
+if (target === 'kdp' && edition !== 'release') {
+  throw new Error('BOOK_TARGET=kdp は BOOK_EDITION=release と組み合わせてください（npm run build:kdp）');
+}
+// KDP向けのテーマを各文書のテーマの後ろに重ねる
+const withTarget = (theme) => {
+  if (target !== 'kdp') return theme;
+  return [...(Array.isArray(theme) ? theme : [theme]), './theme/my-theme/kdp-theme.css'];
+};
+const outputPath = target === 'kdp'
+  ? './output/techbook-java-primer-kdp.pdf'
+  : edition === 'alpha' ? './output/techbook-java-primer.pdf' : `./output/techbook-java-primer-${edition}.pdf`;
+
 // 前付け（表紙・目次）のノンブルはローマ数字にし、本文は第1章を1ページとして数え直す
 const frontMatter = ['table-of-contents.md'];
 const bodyStart = 'chapter01-introduction.md';
@@ -62,31 +81,33 @@ module.exports = {
   entry: [
     { 
       path: 'cover.md', 
-      title: '表紙',
-      theme: './theme/my-theme/cover-theme.css'
+      title: target === 'kdp' ? '扉' : '表紙',
+      theme: target === 'kdp'
+        ? ['./theme/my-theme/cover-theme.css', './theme/my-theme/kdp-title-theme.css']
+        : './theme/my-theme/cover-theme.css'
     },
     ...markdownFiles.map(file => {
       // 用語集に専用CSSを適用
       if (file === 'glossary.md') {
         return {
           path: file,
-          theme: './theme/my-theme/glossary-theme.css'
+          theme: withTarget('./theme/my-theme/glossary-theme.css')
         };
       }
       if (frontMatter.includes(file)) {
-        return { path: file, theme: ['./theme/my-theme', './theme/my-theme/frontmatter-theme.css'] };
+        return { path: file, theme: withTarget(['./theme/my-theme', './theme/my-theme/frontmatter-theme.css']) };
       }
       if (file === bodyStart) {
-        return { path: file, theme: ['./theme/my-theme', './theme/my-theme/body-start-theme.css'] };
+        return { path: file, theme: withTarget(['./theme/my-theme', './theme/my-theme/body-start-theme.css']) };
       }
       // その他は通常のテーマを使用
-      return {
-        path: file
-      };
+      return target === 'kdp'
+        ? { path: file, theme: withTarget('./theme/my-theme') }
+        : { path: file };
     })
   ],
   
   documentProcessor,
   entryContext: './manuscripts',
-  output: edition === 'alpha' ? './output/techbook-java-primer.pdf' : `./output/techbook-java-primer-${edition}.pdf`
+  output: outputPath
 };
