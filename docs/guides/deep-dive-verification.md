@@ -22,7 +22,7 @@
 | kind | 内容 | 主な項目 |
 |---|---|---|
 | `javac` | プローブをコンパイルし、コンパイラーの出力（エラー・警告）を照合する | `probe`、`fails`（`true`ならコンパイルが失敗すること）、`javac`（追加のオプション）、`release`、`expect`、`absent` |
-| `javap` | プローブをコンパイルし、`javap`の出力を正規表現で照合する | `probe`、`class`、`options`（既定は`-c -p`）、`release`（`--release`の版）、`expect`、`absent` |
+| `javap` | プローブをコンパイルし、`javap`の出力を正規表現で照合する | `probe`、`class`、`options`（既定は`-c -p`）、`release`（`--release`の版。`none`なら付けずに実行中のJDKでコンパイルする。`--add-exports`と併用するとき）、`expect`、`absent` |
 | `run` | プローブ（または節の`src/main/java`）を実行し、標準出力と標準エラー出力を照合する | `probe`か`main`、`class`、`jvm`（JVMのオプション）、`args`、`expect`、`absent`、`attempts`、`timeout`（秒）、`libs` |
 | `flag` | JVMのフラグが実在し、既定値が一致するか | `flag`、`value` |
 | `manual` | 機械では確かめられない主張（仕様の文言、歴史、設計論） | `checked`（確かめた日）、`note`（何を読んで確かめたか）。`sources`が必須 |

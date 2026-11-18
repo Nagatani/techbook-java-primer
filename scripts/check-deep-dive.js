@@ -232,7 +232,9 @@ function compileFor(sec, v, tmp) {
   const out = path.join(tmp, `c${compiled.size}`);
   fs.mkdirSync(out, { recursive: true });
   const proc = (v.javac || []).some((o) => o.startsWith('-proc:')) ? [] : ['-proc:none'];
-  const r = spawnSync('javac', ['-J-Duser.language=en', '--release', release, '-Xlint:-options', '-encoding', 'UTF-8', ...proc, ...(v.javac || []),
+  // release: none は --release を付けず実行中のJDKでコンパイルする（--add-exports と併用するとき）
+  const rel = release === 'none' ? [] : ['--release', release];
+  const r = spawnSync('javac', ['-J-Duser.language=en', ...rel, '-Xlint:-options', '-encoding', 'UTF-8', ...proc, ...(v.javac || []),
     ...(libs.length ? ['-cp', libs.join(path.delimiter)] : []), '-d', out, ...sources], { encoding: 'utf8' });
   // javacのメッセージのファイル名は、節のディレクトリからの相対パスにする（READMEに載せても環境によらないように）
   const msg = (r.stdout + r.stderr).trim().split(sec.dir + path.sep).join('');
