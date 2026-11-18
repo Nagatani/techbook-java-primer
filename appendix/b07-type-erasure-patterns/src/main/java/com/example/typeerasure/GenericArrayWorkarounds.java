@@ -117,14 +117,10 @@ public class GenericArrayWorkarounds<T> {
         return array;
     }
     
-    /**
-     * 可変長引数を使用した配列作成
-     */
-    @SafeVarargs
-    public static <T> T[] createArrayFromElements(T... elements) {
-        return elements;
-    }
-    
+    // 注意: 型パラメーターの可変長引数をそのまま返すメソッド（static <T> T[] of(T... a) { return a; }）は、
+    // ジェネリックなメソッドから呼ぶとObject[]が返り、ClassCastExceptionになる。
+    // @SafeVarargsを付けてよいメソッドではない（verify/HeapPollution.javaで確かめられる）
+
     /**
      * デモンストレーション
      */
@@ -167,13 +163,6 @@ public class GenericArrayWorkarounds<T> {
         IO.println("\nFactory created array:");
         for (int i = 0; i < stringArrayFromFactory.length; i++) {
             IO.println("  [" + i + "] = " + stringArrayFromFactory[i]);
-        }
-        
-        // 可変長引数を使用
-        Integer[] intArray = createArrayFromElements(1, 2, 3, 4, 5);
-        IO.println("\nVarargs created array:");
-        for (int i = 0; i < intArray.length; i++) {
-            IO.println("  [" + i + "] = " + intArray[i]);
         }
     }
 

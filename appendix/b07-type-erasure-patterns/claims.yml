@@ -1,0 +1,725 @@
+# 付録B.07の主張と、その確かめ方
+# npm run check:deep-dive -- b07 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 型消去の規則
+  - id: erasure-rules
+    claim: 境界のない型パラメーターはObjectに、型パラメーターの配列はObject[]に、パラメーター化型はraw型（List<String>はList）に消去される
+    sources:
+      - title: JLS 25 4.6 Type Erasure
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: Type erasure is a mapping from types
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures$Box
+      options: ['-s', '-p']
+      expect:
+        - 'void set\(T\);\n\s+descriptor: \(Ljava/lang/Object;\)V'
+        - 'T get\(\);\n\s+descriptor: \(\)Ljava/lang/Object;'
+        - 'T\[\] toArray\(T\[\]\);\n\s+descriptor: \(\[Ljava/lang/Object;\)\[Ljava/lang/Object;'
+        - 'void names\(java.util.List<java.lang.String>\);\n\s+descriptor: \(Ljava/util/List;\)V'
+      show:
+        - '^\s*(void|T|T\[\]) \w+\('
+        - 'descriptor: \((?!\)V)'
+
+  - id: erasure-bounds
+    claim: 境界のある型パラメーターは、いちばん左の境界に消去される（T extends NumberはNumber、T extends CharSequence & Comparable<T> & SerializableはCharSequence）
+    sources:
+      - title: JLS 25 4.6 Type Erasure
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: is the erasure of its leftmost bound
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures$Multi
+      options: ['-s', '-p']
+      expect:
+        - 'T first\(T, T\);\n\s+descriptor: \(Ljava/lang/CharSequence;Ljava/lang/CharSequence;\)Ljava/lang/CharSequence;'
+      show:
+        - '^class|T first|descriptor: \(L'
+
+  - id: erasure-bounds-number
+    claim: 同上（T extends NumberはNumberに消去される）
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures$NumberBox
+      options: ['-s', '-p']
+      expect:
+        - 'T get\(\);\n\s+descriptor: \(\)Ljava/lang/Number;'
+      show:
+        - '^class|T get|descriptor: \(\)L'
+
+  - id: checkcast-caller
+    claim: 消去されたメソッドの戻り値を型引数の型で受けるとき、javacは呼び出し側にcheckcastを入れる。Objectで受けるとき、引数として渡すときは入れない
+    sources:
+      - title: JLS 25 15.5 Expressions and Run-Time Checks（automatically generated cast）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: In an automatically generated cast introduced to ensure the validity of an operation on a non-reifiable type
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures
+      expect:
+        - 'Box\.set:\(Ljava/lang/Object;\)V\n\s+\d+: aload_0'
+        - 'Box\.get:\(\)Ljava/lang/Object;\n\s+\d+: astore_1'
+        - 'Box\.get:\(\)Ljava/lang/Object;\n\s+\d+: checkcast\s+#\d+\s+// class java/lang/String'
+      show:
+        - 'Box\.(get|set):|checkcast|^\s*(10|18): astore_[12]$'
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: checkcast-bound
+    claim: いちばん左以外の境界のメソッドを呼ぶときは、ジェネリックなコードの中にもcheckcastが入る（CharSequenceに消去された値をComparableにキャストしてからcompareToを呼ぶ）
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures$Multi
+      expect:
+        - 'checkcast\s+#\d+\s+// class java/lang/Comparable\n[\s\S]*?InterfaceMethod java/lang/Comparable\.compareTo:\(Ljava/lang/Object;\)I'
+      show:
+        - 'checkcast|compareTo'
+      normalize:
+        '#\d+,?\s*(2\s*)?//': '//'
+
+  - id: erasure-motivation
+    claim: すべてのジェネリック型を具象化しないという決定のいちばんの動機は既存のコードとの互換性で、ジェネリクスを使っていないコードと段階的に混ぜられること（移行の互換性）を目指した。その代償として、型引数を実行時に完全に残すことはできない
+    sources:
+      - title: JLS 25 4.7 Reifiable Types（後半の解説）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: the most important motivation for this decision is compatibility with existing code
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の4.7の後半に、具象化しない決定の動機が既存のコードとの互換性であること、移行の互換性（migration compatibility）の代償として完全な具象化ができないことが書かれているのを確かめた
+
+  - id: raw-type-concession
+    claim: raw型は、ジェネリクスを使っていない古いコードとの互換性のために残されているもので、新しいコードで使うことは強く勧められない
+    sources:
+      - title: JLS 25 4.8 Raw Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: The use of raw types is allowed only as a concession to compatibility of legacy code
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の4.8に、raw型の使用は古いコードとの互換性のための譲歩であり、ジェネリクスの導入後に書くコードでは強く勧められない旨があることを確かめた
+
+  - id: reifiable-types
+    claim: 実行時に型の情報がすべて残る型（具象化可能な型）は、ジェネリックでないクラス、すべての型引数が?のパラメーター化型、raw型、プリミティブ型、要素が具象化可能な配列などに限られる
+    sources:
+      - title: JLS 25 4.7 Reifiable Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: A type is reifiable if and only if one of the following holds
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の4.7の具象化可能な型の一覧を確かめた
+
+  # ---- 宣言に残る型引数
+  - id: signature-attribute
+    claim: 消去前の型（型パラメーター・型引数）は、クラスファイルのSignature属性に残る。メソッドのディスクリプターは消去後の型になる
+    sources:
+      - title: JVMS 25 4.7.9 The Signature Attribute
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: The Signature Attribute
+    verify:
+      kind: javap
+      probe: verify/ErasedSignatures.java
+      class: ErasedSignatures$Box
+      options: ['-v', '-p']
+      expect:
+        - 'descriptor: \(Ljava/util/List;\)V[\s\S]*?Signature: #\d+\s+// \(Ljava/util/List<Ljava/lang/String;>;\)V'
+        - 'descriptor: \(\)Ljava/lang/Object;[\s\S]*?Signature: #\d+\s+// \(\)TT;'
+        - '^Signature: #\d+\s+// <T:Ljava/lang/Object;>Ljava/lang/Object;'
+      show:
+        - 'descriptor: (L|\((?!\)V))'
+        - 'Signature: #'
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: signature-for-libraries
+    claim: OracleのJVMは、クラスの読み込みやリンクのときにSignature属性を検査しない。Signature属性を読むのは、getGenericSuperclassなどの、消去前の型を返すクラスライブラリのメソッドである
+    sources:
+      - title: JVMS 25 4.7.9 The Signature Attribute
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: does not check the well-formedness of Signature attributes during class loading or linking
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の4.7.9に、OracleのJVMは読み込み・リンクのときにSignature属性を検査せず、getGenericSuperclassなどのクラスライブラリのメソッドが検査する旨があることを確かめた
+
+  - id: reflection-declarations
+    claim: フィールドの型、メソッドの戻り値の型、スーパークラスに書いた型引数は、リフレクション（getGenericType・getGenericReturnType・getGenericSuperclass）で読める。getReturnTypeは消去後のクラスを返す
+    sources:
+      - title: java.lang.reflect.Field#getGenericType（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Field.html
+        anchor: getGenericType
+    verify:
+      kind: run
+      probe: verify/GenericInfo.java
+      expect:
+        - '^フィールドnamesの型: java\.util\.List<java\.lang\.String>$'
+        - '^  2つ目の型引数: java\.util\.List<java\.lang\.Integer>$'
+        - '^getNamesの戻り値の型: java\.util\.List<java\.lang\.String>$'
+        - '^getNamesの戻り値のクラス: java\.util\.List$'
+        - '^StringListのスーパークラス: java\.util\.ArrayList<java\.lang\.String>$'
+      show:
+        - '^(フィールド|  2つ目|getNames|StringList)'
+
+  - id: instance-no-type-argument
+    claim: オブジェクトそのものからは型引数がわからない。ArrayList<String>とArrayList<Integer>のオブジェクトは同じクラスで、クラスからわかるのは型パラメーターの名前（E）だけである
+    verify:
+      kind: run
+      probe: verify/GenericInfo.java
+      expect:
+        - '^同じクラスか: true$'
+        - '^オブジェクトのクラス: java\.util\.ArrayList$'
+        - '^クラスの型パラメーター: \[E\]$'
+      show:
+        - '^(同じクラスか|オブジェクトのクラス|クラスの型パラメーター)'
+
+  # ---- ブリッジメソッド
+  - id: bridge-flags
+    claim: ジェネリックなインターフェイスを型引数を決めて実装すると、javacは消去後のシグネチャのメソッド（compareTo(Object)）を足す。このメソッドにはACC_BRIDGEとACC_SYNTHETICのフラグが付く
+    sources:
+      - title: JVMS 25 4.6 Methods（ACC_BRIDGE）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: The ACC_BRIDGE flag is used to indicate a bridge method generated by a compiler
+    verify:
+      kind: javap
+      probe: verify/Bridges.java
+      class: Bridges$Version
+      options: ['-p', '-v']
+      expect:
+        - 'public int compareTo\(java\.lang\.Object\);\n\s+descriptor: \(Ljava/lang/Object;\)I\n\s+flags: \(0x1041\) ACC_PUBLIC, ACC_BRIDGE, ACC_SYNTHETIC'
+        - 'public int compareTo\(Bridges\$Version\);\n\s+descriptor: \(LBridges\$Version;\)I\n\s+flags: \(0x0001\) ACC_PUBLIC$'
+      show:
+        - 'public int compareTo\('
+        - 'flags: \(0x(1041|0001)\)'
+
+  - id: bridge-body
+    claim: ブリッジメソッドは、引数をキャストしてから、ソースに書いたメソッドを呼ぶだけのメソッドである
+    verify:
+      kind: javap
+      probe: verify/Bridges.java
+      class: Bridges$Version
+      expect:
+        - 'public int compareTo\(java\.lang\.Object\);\n\s+Code:\n\s+0: aload_0\n\s+1: aload_1\n\s+2: checkcast\s+#\d+\s+// class Bridges\$Version\n\s+5: invokevirtual\s+#\d+\s+// Method compareTo:\(LBridges\$Version;\)I\n\s+8: ireturn'
+      show:
+        - 'compareTo\(java\.lang\.Object\)|checkcast|invokevirtual .*compareTo:\(LBridges|^\s*8: ireturn'
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: bridge-reflection
+    claim: ブリッジメソッドは、戻り値の型を型引数で決めたとき（Processor<String>のprocess）や、ジェネリクスと関係のない共変戻り値型のオーバーライドでも作られる。リフレクションではMethod.isBridge()がtrueになる
+    sources:
+      - title: java.lang.reflect.Method#isBridge（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Method.html
+        anchor: isBridge
+    verify:
+      kind: run
+      probe: verify/Bridges.java
+      expect:
+        - '^  int compareTo\[java\.lang\.Object\] bridge=true synthetic=true$'
+        - '^  int compareTo\[Bridges\$Version\] bridge=false synthetic=false$'
+        - '^  Object process\[java\.lang\.String\] bridge=true synthetic=true$'
+        - '^  Animal self\[\] bridge=true synthetic=true$'
+      show:
+        - 'のメソッド:$|bridge='
+
+  - id: bridge-cce
+    claim: raw型を通して別の型の値を渡すと、ブリッジメソッドの中のキャストでClassCastExceptionになる（ソースに書いたメソッドの本体は実行されない）
+    sources:
+      - title: JLS 25 15.12.4.5 Create Frame, Synchronize, Transfer Control（Example 15.12.4.5-1）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The invocation fails with a ClassCastException before the body of the method is executed
+    verify:
+      kind: run
+      probe: verify/Bridges.java
+      expect:
+        - '^ClassCastException: Bridges\$Version\.compareTo$'
+
+  - id: bridge-implementation
+    claim: JLSが決めているのは「消去後のシグネチャで呼ばれても、オーバーライドしたメソッドが実行される」という結果で、ブリッジメソッドはそれを実現するための実装の方法として書かれている
+    sources:
+      - title: JLS 25 15.12.4.5 Create Frame, Synchronize, Transfer Control
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: Implementations can enforce these semantics by creating bridge methods
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の15.12.4.5の例15.12.4.5-1のあとに「実装はブリッジメソッドを作ることでこの意味を守れる」とあることを確かめた。JVMS 25の4.6はACC_BRIDGEを「Javaのコンパイラーが作ったブリッジメソッドを示す」と説明している
+
+  - id: manual-bridge-clash
+    claim: ブリッジメソッドと同じシグネチャのメソッド（Comparable<X>を実装したクラスのcompareTo(Object)）を自分で書くと、名前の衝突（name clash）でコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: Requirements in Overriding and Hiding
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ManualBridge.java
+      fails: true
+      expect:
+        - 'error: name clash: compareTo\(Object\) in ManualBridge and compareTo\(ManualBridge\) in Comparable have the same erasure, yet neither overrides the other'
+      show:
+        - 'error:'
+      normalize:
+        '^\S*/': ''
+
+  # ---- 消去による制限（コンパイルエラー）
+  - id: no-new-type-variable
+    claim: new T()とは書けない（実行時にTが何のクラスかわからない）
+    sources:
+      - title: JLS 25 15.9.1 Determining the Class being Instantiated
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: Determining the Class being Instantiated
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NewTypeVariable.java
+      fails: true
+      expect:
+        - 'error: unexpected type'
+        - 'required: class\n\s+found:\s+type parameter T'
+      show:
+        - 'error:|required:|found:'
+
+  - id: no-generic-array
+    claim: 型パラメーターの配列（new T[n]）も、パラメーター化型の配列（new List<String>[n]）も作れない。配列を作る式の要素の型は具象化可能でなければならない
+    sources:
+      - title: JLS 25 15.10.1 Array Creation Expressions
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: It is a compile-time error if the ClassOrInterfaceType does not denote a reifiable type
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GenericArrayCreation.java
+      fails: true
+      expect:
+        - 'error: generic array creation'
+      show:
+        - 'error:'
+
+  - id: no-parameterized-array
+    claim: 同上（パラメーター化型の配列）
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ParameterizedArray.java
+      fails: true
+      expect:
+        - 'error: generic array creation'
+      show:
+        - 'error:'
+
+  - id: no-class-literal
+    claim: T.classとは書けない
+    sources:
+      - title: JLS 25 15.8.2 Class Literals
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: denotes a class or interface that is not accessible, or denotes a type variable
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ClassLiteral.java
+      fails: true
+      expect:
+        - 'error: cannot select from a type variable'
+      show:
+        - 'error:'
+
+  - id: instanceof-unsafe
+    claim: Object型の値に対してinstanceof List<String>とは書けない（実行時にはListかどうかしか調べられない）
+    sources:
+      - title: JLS 25 15.20.2 The instanceof Operator
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The requirement was lifted in Java SE 16
+    verify:
+      kind: javac
+      probe: verify/compile-errors/InstanceofUnsafe.java
+      fails: true
+      expect:
+        - 'error: Object cannot be safely cast to List<String>'
+      show:
+        - 'error:'
+
+  - id: instanceof-refine
+    claim: 静的な型がCollection<String>なら、instanceof List<String>と書ける（Listかどうかを調べるだけでList<String>であることまで保証できる）。Java 15まではinstanceofに具象化可能な型しか書けなかった
+    sources:
+      - title: JLS 25 15.20.2 The instanceof Operator
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: The requirement was lifted in Java SE 16 to allow more parameterized types to be used
+    verify:
+      kind: run
+      probe: verify/InstanceofRefine.java
+      expect:
+        - '^List<String>: 先頭はa$'
+
+  - id: instanceof-refine-15
+    claim: 同上（--release 15でコンパイルするとエラーになる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/InstanceofRefine.java
+      release: 15
+      fails: true
+      expect:
+        - 'error: reifiable types in instanceof are not supported in -source 15'
+
+  - id: no-static-type-variable
+    claim: クラスの型パラメーターは、staticなフィールドやメソッドでは使えない（クラスは1つしかないので、型引数ごとに別のstaticフィールドを持てない）
+    sources:
+      - title: JLS 25 6.5.5.1 Simple Type Names
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-6.html
+        anchor: The type name does not occur in a static context
+    verify:
+      kind: javac
+      probe: verify/compile-errors/StaticTypeVariable.java
+      fails: true
+      expect:
+        - 'error: non-static type variable T cannot be referenced from a static context'
+      show:
+        - 'error:'
+
+  - id: name-clash
+    claim: process(List<String>)とprocess(List<Integer>)は、消去後にどちらもprocess(List)になるので、同じクラスに宣言できない
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: Two different methods of a class may not override methods with the same erasure
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NameClash.java
+      fails: true
+      expect:
+        - 'error: name clash: process\(List<Integer>\) and process\(List<String>\) have the same erasure'
+      show:
+        - 'error:'
+      normalize:
+        '^\S*/': ''
+
+  - id: name-clash-type-parameters
+    claim: 型パラメーターだけが違うオーバーロード（put(T)とput(U)）も、消去後にどちらもput(Object)になるので宣言できない
+    verify:
+      kind: javac
+      probe: verify/compile-errors/OverloadAfterErasure.java
+      fails: true
+      expect:
+        - 'error: name clash: put\(U\) and put\(T\) have the same erasure'
+      show:
+        - 'error:'
+
+  - id: no-generic-throwable
+    claim: ジェネリックなクラスはThrowableを継承できない。JVMのcatchの仕組みが、ジェネリックでないクラスでしか働かないためである
+    sources:
+      - title: JLS 25 8.1.2 Generic Classes and Type Parameters
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: the catch mechanism of the Java Virtual Machine works only with non-generic classes
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GenericThrowable.java
+      fails: true
+      expect:
+        - 'error: a generic class may not extend java.lang.Throwable'
+      show:
+        - 'error:'
+
+  - id: no-primitive-type-argument
+    claim: 型引数にはプリミティブ型を書けず、参照型（またはワイルドカード）だけを書ける
+    sources:
+      - title: JLS 25 4.5.1 Type Arguments of Parameterized Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: Type arguments may be either reference types or wildcards
+    verify:
+      kind: javac
+      probe: verify/compile-errors/PrimitiveTypeArgument.java
+      fails: true
+      expect:
+        - 'error: unexpected type'
+        - 'required: reference\n\s+found:\s+int'
+      show:
+        - 'error:|required:|found:'
+
+  # ---- 配列との違い
+  - id: arrays-reified
+    claim: 配列は共変で（String[]をObject[]の変数に代入できる）、実行時に要素の型を持ち、要素を代入するたびに検査してArrayStoreExceptionを投げる。ジェネリクスのリストは型引数が違っても同じクラスになる
+    sources:
+      - title: JLS 25 10.5 Array Store Exception
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-10.html
+        anchor: Array Store Exception
+    verify:
+      kind: run
+      probe: verify/ArraysAndGenerics.java
+      expect:
+        - '^ArrayStoreException: java\.lang\.Integer$'
+        - '^配列のクラス: \[Ljava\.lang\.String; / \[Ljava\.lang\.Integer;$'
+        - '^リストのクラス: java\.util\.ArrayList / java\.util\.ArrayList$'
+
+  - id: generics-invariant
+    claim: List<String>はList<Object>のサブタイプではなく、代入するとコンパイルエラーになる
+    verify:
+      kind: javac
+      probe: verify/compile-errors/Invariance.java
+      fails: true
+      expect:
+        - 'error: incompatible types: ArrayList<String> cannot be converted to List<Object>'
+      show:
+        - 'error:'
+
+  # ---- ヒープ汚染
+  - id: heap-pollution-definition
+    claim: パラメーター化型の変数が、その型でないオブジェクトを指している状態をヒープ汚染と呼ぶ。ヒープ汚染は、未検査の警告が出る操作をしたとき（または具象化できない要素型の配列を別名で扱ったとき）にだけ起こる
+    sources:
+      - title: JLS 25 4.12.2 Variables of Reference Type
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: This situation is known as heap pollution
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の4.12.2で、ヒープ汚染の定義と、未検査の警告が出る操作か、具象化できない要素型の配列の別名からだけ起こることを確かめた
+
+  - id: unchecked-note
+    claim: 未検査の操作があると、javacは既定では「Note」の2行だけを表示する。-Xlint:uncheckedを付けると、箇所ごとの警告になる
+    verify:
+      kind: javac
+      probe: verify/HeapPollution.java
+      expect:
+        - '^Note: \S*HeapPollution\.java uses unchecked or unsafe operations\.$'
+        - '^Note: Recompile with -Xlint:unchecked for details\.$'
+      absent:
+        - 'warning:'
+      show:
+        - '^Note:'
+      normalize:
+        '^Note: \S*/': 'Note: '
+
+  - id: unchecked-warnings
+    claim: raw型を通した呼び出し、型パラメーターの可変長引数の宣言、その呼び出しで作られる配列に、未検査の警告が出る
+    verify:
+      kind: javac
+      probe: verify/HeapPollution.java
+      javac: ['-Xlint:unchecked']
+      expect:
+        - 'warning: \[unchecked\] unchecked call to add\(E\) as a member of the raw type List'
+        - 'warning: \[unchecked\] Possible heap pollution from parameterized vararg type T'
+        - 'warning: \[unchecked\] unchecked generic array creation for varargs parameter of type T\[\]'
+      show:
+        - 'warning:'
+      normalize:
+        '^\S*/': ''
+
+  - id: heap-pollution-run
+    claim: raw型を通して入れた値は、入れるときではなく、取り出して型引数の型で受けるとき（checkcast）にClassCastExceptionになる。可変長引数の配列をそのまま返すメソッドをジェネリックなメソッドから呼ぶと、Object[]が返り、String[]で受けるときにClassCastExceptionになる
+    verify:
+      kind: run
+      probe: verify/HeapPollution.java
+      expect:
+        - '^追加できた。要素数: 2$'
+        - '^1\. 取り出すときにClassCastException$'
+        - '^2\. class \[Ljava\.lang\.Object; cannot be cast to class \[Ljava\.lang\.String;$'
+
+  - id: safevarargs-meaning
+    claim: '@SafeVarargsは、可変長引数の扱いが安全だというプログラマーの表明で、宣言と呼び出し側の両方の未検査の警告を出さなくする。コンパイラーが安全を確かめるわけではない'
+    sources:
+      - title: JLS 25 9.6.4.7 @SafeVarargs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: makes a programmer assertion that prevents a Java compiler from reporting unchecked warnings
+    verify:
+      kind: javac
+      probe: verify/SafeVarargsUse.java
+      javac: ['-Xlint:unchecked']
+      absent:
+        - 'warning:'
+
+  - id: varargs-warning-without
+    claim: 同じメソッドから@SafeVarargsを外すと、宣言と呼び出し側に未検査の警告が出る
+    verify:
+      kind: javac
+      probe: verify/VarargsWarning.java
+      javac: ['-Xlint:unchecked']
+      expect:
+        - 'warning: \[unchecked\] Possible heap pollution from parameterized vararg type List<\? extends T>'
+        - 'warning: \[unchecked\] unchecked generic array creation for varargs parameter of type List<\? extends String>\[\]'
+      show:
+        - 'warning:'
+      normalize:
+        '^\S*/': ''
+
+  - id: safevarargs-jdk
+    claim: 標準ライブラリのCollections.addAllには@SafeVarargsが付いている
+    sources:
+      - title: java.util.Collections#addAll（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: addAll
+    verify:
+      kind: run
+      probe: verify/SafeVarargsUse.java
+      expect:
+        - '^Collections\.addAllに@SafeVarargs: true$'
+
+  - id: safevarargs-overridable
+    claim: '@SafeVarargsは、static・final・privateのメソッドとコンストラクターにだけ付けられる。オーバーライドできるメソッドに付けるとコンパイルエラーになる'
+    sources:
+      - title: JLS 25 9.6.4.7 @SafeVarargs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: is only applicable to static methods, final and/or private instance methods, and constructors
+    verify:
+      kind: javac
+      probe: verify/compile-errors/SafeVarargsOverridable.java
+      fails: true
+      expect:
+        - 'error: Invalid SafeVarargs annotation\. Instance method addAll\(List<String>\.\.\.\) is neither final nor private\.'
+      show:
+        - 'error:'
+
+  # ---- 型トークン
+  - id: class-token
+    claim: Class<T>を引数で受け取れば（型トークン）、Array.newInstanceで本当のString[]を作ったり、Class.castで実行時に検査するキャストをしたりできる
+    sources:
+      - title: java.lang.reflect.Array#newInstance（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Array.html
+        anchor: newInstance
+    verify:
+      kind: run
+      probe: verify/TypeTokens.java
+      expect:
+        - '^配列のクラス: String\[\]$'
+        - '^最初のInteger: 7$'
+
+  - id: class-literal-raw
+    claim: List<String>.classとは書けない（クラスリテラルの文法に型引数がない）。List.classの型はClass<List>で、Class<List<String>>の変数には代入できない
+    sources:
+      - title: JLS 25 15.8.2 Class Literals
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: A class literal is an expression consisting of the name of a class
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ParameterizedClassLiteral.java
+      fails: true
+      expect:
+        - 'ParameterizedClassLiteral\.java:5: error: <identifier> expected'
+      show:
+        - 'error:'
+      normalize:
+        '^\S*/': ''
+
+  - id: class-literal-raw-type
+    claim: 同上（List.classの型はClass<List>）
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ClassOfList.java
+      fails: true
+      expect:
+        - 'error: incompatible types: Class<List> cannot be converted to Class<List<String>>'
+      show:
+        - 'error:'
+
+  - id: super-type-token
+    claim: 匿名クラスのスーパークラスに型引数を書くと（new TypeRef<List<String>>() {}）、getGenericSuperclassでList<String>のような入れ子の型引数まで読める
+    sources:
+      - title: java.lang.Class#getGenericSuperclass（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html
+        anchor: getGenericSuperclass
+    verify:
+      kind: run
+      probe: verify/TypeTokens.java
+      expect:
+        - '^TypeRef<List<String>>: java\.util\.List<java\.lang\.String>$'
+        - '^TypeRef<Map<String, List<Integer>>>: java\.util\.Map<java\.lang\.String, java\.util\.List<java\.lang\.Integer>>$'
+      show:
+        - '^TypeRef<'
+
+  - id: token-abstract
+    claim: スーパータイプトークンのクラスを抽象クラスにしておくと、匿名クラスの{ }を書き忘れたときにコンパイルエラーになる
+    verify:
+      kind: javac
+      probe: verify/compile-errors/TokenWithoutBody.java
+      fails: true
+      expect:
+        - 'error: TypeRef is abstract; cannot be instantiated'
+      show:
+        - 'error:'
+
+  - id: token-type-variable
+    claim: ジェネリックメソッドの中でnew TypeRef<T>() {}と書くと、記録されるのは型変数Tで、呼び出し側の型引数（String）はわからない
+    verify:
+      kind: run
+      probe: verify/TypeTokens.java
+      expect:
+        - '^ジェネリックメソッドの中で作ると: T（型変数か: true）$'
+
+  - id: jackson-type-reference
+    claim: JSONライブラリJacksonのTypeReferenceは、型パラメーターを1つ持つ抽象クラスで、protectedのコンストラクターとgetType()を持つ（スーパータイプトークンと同じ形）
+    verify:
+      kind: run
+      probe: verify/JacksonTypeReference.java
+      libs: ['com.fasterxml.jackson.core:jackson-core:2.23.0']
+      expect:
+        - '^抽象クラスか: true$'
+        - '^型パラメーター: \[T\]$'
+        - '^コンストラクター: protected \[\]$'
+        - '^getTypeの戻り値: java\.lang\.reflect\.Type$'
+      show:
+        - '^(クラス|抽象|型パラメーター|コンストラクター|getType)'
+
+  # ---- ワイルドカード
+  - id: wildcards
+    claim: 値を取り出すだけの引数を? extends Tにすると、List<Integer>もList<Double>も渡せる。値を入れるだけの引数を? super Tにすると、List<Number>もList<Object>も渡せる
+    sources:
+      - title: JLS 25 4.5.1 Type Arguments of Parameterized Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: Wildcards are useful in situations where only partial knowledge about the type parameter is required
+    verify:
+      kind: run
+      probe: verify/Wildcards.java
+      expect:
+        - '^sum\(List<Integer>\) = 6\.0$'
+        - '^sum\(List<Double>\) = 4\.0$'
+        - '^List<Number>: \[1, 4, 9\] / List<Object>: \[1, 4\]$'
+        - '^Collections\.copy: \[10, 20, -\]$'
+
+  - id: extends-no-add
+    claim: '? extends Numberのリストには、要素を追加できない（実際の型引数がIntegerかDoubleかわからないため）'
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ExtendsAdd.java
+      fails: true
+      expect:
+        - 'error: incompatible types: Integer cannot be converted to CAP#1'
+        - 'CAP#1 extends Number from capture of \? extends Number'
+      show:
+        - 'error:|CAP#1 extends'
+      normalize:
+        '^\S*/': ''
+
+  - id: collections-copy
+    claim: 標準ライブラリのCollections.copyは、copy(List<? super T> dest, List<? extends T> src)と宣言されている
+    sources:
+      - title: java.util.Collections#copy（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: copy
+    verify:
+      kind: javap
+      probe: verify/Wildcards.java
+      class: java.util.Collections
+      options: ['-public']
+      expect:
+        - 'public static <T> void copy\(java\.util\.List<\? super T>, java\.util\.List<\? extends T>\);'
+      show:
+        - ' copy\('
+
+  - id: collections-max
+    claim: Collections.maxの型パラメーターは<T extends Object & Comparable<? super T>>と宣言されている。いちばん左の境界がObjectなので、消去後の戻り値はComparableではなくObjectになる
+    sources:
+      - title: java.util.Collections#max（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html
+        anchor: max
+    verify:
+      kind: javap
+      probe: verify/Wildcards.java
+      class: java.util.Collections
+      options: ['-v']
+      expect:
+        - 'public static <T extends java\.lang\.Object & java\.lang\.Comparable<\? super T>> T max\(java\.util\.Collection<\? extends T>\);\n\s+descriptor: \(Ljava/util/Collection;\)Ljava/lang/Object;'
+      show:
+        - 'T (max|min)\(java\.util\.Collection<\? extends T>\);$'
+        - 'descriptor: \(Ljava/util/Collection;\)Ljava/lang/Object;$'

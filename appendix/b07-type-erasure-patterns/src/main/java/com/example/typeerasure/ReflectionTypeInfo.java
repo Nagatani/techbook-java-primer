@@ -21,6 +21,8 @@ public class ReflectionTypeInfo {
         IO.println("=== Field Type Analysis ===");
         
         Field[] fields = ReflectionTypeInfo.class.getDeclaredFields();
+        // getDeclaredFields()の順序は決まっていないので、名前で並べる
+        Arrays.sort(fields, Comparator.comparing(Field::getName));
         for (Field field : fields) {
             IO.println("\nField: " + field.getName());
             IO.println("  Declared type: " + field.getType());
@@ -98,6 +100,8 @@ public class ReflectionTypeInfo {
         IO.println("\n=== Method Type Analysis ===");
         
         Method[] methods = ReflectionTypeInfo.class.getDeclaredMethods();
+        // getDeclaredMethods()の順序は決まっていないので、名前で並べる
+        Arrays.sort(methods, Comparator.comparing(Method::getName));
         for (Method method : methods) {
             if (method.getName().startsWith("get") || method.getName().startsWith("process")) {
                 IO.println("\nMethod: " + method.getName());

@@ -4,8 +4,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * 型トークンパターン：型消去を回避して実行時に型情報を取得
- * Neal GafterのSuper Type Tokenパターンの実装
+ * スーパータイプトークン：匿名クラスのスーパークラスに書いた型引数を、
+ * リフレクション（getGenericSuperclass）で読み出して実行時に使う
+ * ジェネリックメソッドの中で new TypeToken<T>() {} と書くと、記録されるのは型変数Tになる
  */
 public abstract class TypeToken<T> {
     private final Type type;

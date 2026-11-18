@@ -4,7 +4,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * TypeReferenceパターン：Jacksonライブラリで使用される類似のパターン
+ * TypeReferenceパターン：TypeTokenと同じ考え方のクラス
+ * JSONライブラリJacksonのcom.fasterxml.jackson.core.type.TypeReferenceも同じ形をしている
+ * （verify/JacksonTypeReference.javaで確かめられる）
  */
 public abstract class TypeReference<T> {
     private final Type type;
