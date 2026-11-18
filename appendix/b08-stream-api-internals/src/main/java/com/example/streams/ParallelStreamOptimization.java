@@ -172,6 +172,7 @@ public class ParallelStreamOptimization {
         List<Integer> data = IntStream.range(0, 100).boxed().collect(Collectors.toList());
         
         // I/Oシミュレーション（スリープ）
+        // 注意: 実際のI/O待ちを並列ストリームで行うと、プログラム全体で共有する共通プールのスレッドをふさぐ
         Function<Integer, Integer> ioSimulation = x -> {
             try {
                 Thread.sleep(1); // 1ms のI/O待機をシミュレート
@@ -206,17 +207,17 @@ public class ParallelStreamOptimization {
     public static void demonstrateSpliteratorCharacteristics() {
         IO.println("\n=== Spliterator Characteristics Impact ===");
         
-        // ArrayList（良い分割特性）
+        // ArrayList（範囲の真ん中で分けるので、ほぼ均等に分割できる）
         List<Integer> arrayList = IntStream.range(0, 100000)
             .boxed()
             .collect(Collectors.toList());
         
-        // LinkedList（悪い分割特性）
+        // LinkedList（先頭から1024個、2048個…と配列に写して切り出すので、均等に分けにくい）
         LinkedList<Integer> linkedList = IntStream.range(0, 100000)
             .boxed()
             .collect(Collectors.toCollection(LinkedList::new));
         
-        // HashSet（中程度の分割特性）
+        // HashSet（バケットの範囲で分けるので、分割の大きさはハッシュ値の散らばりで決まる）
         Set<Integer> hashSet = IntStream.range(0, 100000)
             .boxed()
             .collect(Collectors.toSet());

@@ -1,0 +1,596 @@
+# 付録B.08の主張と、その確かめ方
+# npm run check:deep-dive -- b08 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- パイプラインの構造
+  - id: stream-api-since-8
+    claim: Stream API（java.util.stream）はJava 8で加わった（JEP 107、JSR 335）
+    sources:
+      - title: 'JEP 107: Bulk Data Operations for Collections'
+        url: https://openjdk.org/jeps/107
+        anchor: Bulk Data Operations for Collections
+      - title: java.util.stream.Stream（Java SE 25 API、Since 1.8）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: 'Since: 1.8'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 107の表でReleaseが8、ComponentにJSR 335とあること、StreamのAPIドキュメントにSince 1.8とあることを確かめた
+
+  - id: pipeline-stages
+    claim: ストリームのパイプラインは段（ステージ）のオブジェクトをつないだもので、中間操作を呼ぶたびに新しい段のオブジェクトができる。OpenJDKの実装では、コレクションのstream()はReferencePipeline$Head、filterはReferencePipeline$2、mapはReferencePipeline$3、sortedはSortedOps$OfRefになる
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: A stream pipeline consists of a source
+    verify:
+      kind: run
+      probe: verify/PipelineStages.java
+      expect:
+        - '^段1 stream\(\): java\.util\.stream\.ReferencePipeline\$Head$'
+        - '^段2 filter\(\): java\.util\.stream\.ReferencePipeline\$2$'
+        - '^段3 map\(\): +java\.util\.stream\.ReferencePipeline\$3$'
+        - '^段4 sorted\(\): java\.util\.stream\.SortedOps\$OfRef$'
+        - '^filterは同じオブジェクトを返すか: false$'
+      show: ['^段\d', '^filterは']
+
+  - id: lazy-intermediate
+    claim: 中間操作を呼んだだけでは、渡したラムダ式は呼ばれない。終端操作を呼んだときに、はじめてパイプライン全体が実行される
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: Traversal of the pipeline source does not begin until the terminal operation of the pipeline is executed
+    verify:
+      kind: run
+      probe: verify/PipelineStages.java
+      expect:
+        - '^--- 中間操作だけをつなぐ ---\n（ここまでfilterのラムダ式は呼ばれていない）\n--- 終端操作toList\(\)を呼ぶ ---\n  filter: stream'
+      show: ['^---', '^（ここまで', '^  filter:', '^結果:']
+      range: { from: '中間操作だけをつなぐ', to: '^結果:' }
+      keepIndent: true
+
+  - id: stream-consumed
+    claim: 終端操作を実行したストリームは使い終わったものになり、もう一度操作するとIllegalStateExceptionになる。中間操作を呼んだあとの元の段も、もう使えない
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: the stream pipeline is considered consumed, and can no longer be used
+      - title: java.util.stream.Stream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: A stream should be operated on (invoking an intermediate or terminal stream operation) only once
+    verify:
+      kind: run
+      probe: verify/PipelineStages.java
+      expect:
+        - '^IllegalStateException: stream has already been operated upon or closed$'
+        - '^古い段に中間操作: IllegalStateException: stream has already been operated upon or closed$'
+      show: ['IllegalStateException']
+
+  # ---- 遅延評価と縦の処理
+  - id: vertical-order
+    claim: 要素は1つずつパイプラインの最後まで流れる（filter・map・forEachを全要素について段ごとに処理するのではない）。filterで落とされた要素は、その先の段に届かない
+    sources:
+      - title: java.util.stream（Java SE 25 API）Laziness
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: filtering, mapping, and summing can be fused into a single pass on the data
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^  filter前: b\n  map前: +b\n  forEach: +B\n  filter前: c\n  filter前: a\n  map前: +a\n  forEach: +A$'
+      range: { from: '^\[1\]', to: '^\[2\]' }
+      show: ['^\[1\]', '^  ']
+      keepIndent: true
+
+  - id: sink-chain
+    claim: OpenJDKの実装では、終端操作がソースのSpliteratorのforEachRemainingを呼び、各段のSink（ReferencePipeline$2$1・$3$1など）のacceptを順に呼んで要素を渡す
+    verify:
+      kind: run
+      probe: verify/SinkChain.java
+      expect:
+        - '^  java\.util\.stream\.ReferencePipeline\$3\$1\.accept\n  java\.util\.stream\.ReferencePipeline\$2\$1\.accept\n  java\.util\.ArrayList\$ArrayListSpliterator\.forEachRemaining\n  java\.util\.stream\.AbstractPipeline\.copyInto\n  java\.util\.stream\.AbstractPipeline\.wrapAndCopyInto'
+      show: ['^  java\.util', '^count']
+      keepIndent: true
+
+  # ---- 短絡
+  - id: short-circuit
+    claim: findFirst・anyMatch・allMatchは答えが決まった時点で残りの要素を読まない。limitを付ければ無限のストリームからも有限の結果が得られる（短絡操作）
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: An intermediate operation is short-circuiting if, when presented with infinite input, it may produce a finite stream as a result
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^  読んだ: x1\n  読んだ: y2\n  結果: y2$'
+        - '^  生成: 1\n  生成: 2\n  生成: 3\n  結果: \[1, 4, 9\]$'
+        - '^  anyMatchが見た: 1\n  anyMatchが見た: 3\n  anyMatchが見た: 4\n  allMatchが見た: 1'
+        - '^  anyMatch=true allMatch=false$'
+      range: { from: '^\[2\]', to: '^\[5\]' }
+      show: ['^\[[234]\]', '^  ']
+      keepIndent: true
+
+  # ---- ステートフルな中間操作
+  - id: sorted-barrier
+    claim: sortedはすべての要素を受け取るまで次の段へ流さない（ステートフルな中間操作）
+    sources:
+      - title: java.util.stream（Java SE 25 API）Stream operations and pipelines
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: one cannot produce any results from sorting a stream until one has seen all elements of the stream
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^  sorted前: b\n  sorted前: c\n  sorted前: a\n  sorted後: a\n  sorted後: b\n  sorted後: c$'
+      range: { from: '^\[5\]', to: '^\[6\]' }
+      show: ['^  ']
+      keepIndent: true
+
+  - id: sorted-noop-on-sorted
+    claim: OpenJDKの実装では、ソースがすでに自然順に並んでいる（SORTEDの特性がある）とき、自然順のsortedは何もしないので、要素は待たされずに流れる
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^  sorted前: a\n  sorted後: a\n  sorted前: b\n  sorted後: b\n  sorted前: c\n  sorted後: c$'
+      range: { from: '^\[6\]', to: '^\[7\]' }
+      show: ['^  ']
+      keepIndent: true
+
+  - id: distinct-stable
+    claim: 順序のあるストリームのdistinctは、重複のうち最初に現れた要素を残す。逐次のストリームでは、初めての要素はすぐ次の段へ流れる
+    sources:
+      - title: java.util.stream.Stream.distinct（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: For ordered streams, the selection of distinct elements is stable
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^  distinct前: a\n  distinct後: a\n  distinct前: b\n  distinct後: b\n  distinct前: a\n  distinct前: c\n  distinct後: c\n  distinct前: b$'
+      range: { from: '^\[7\]', to: '^\[8\]' }
+      show: ['^  ']
+      keepIndent: true
+
+  - id: count-may-skip
+    claim: 要素の数をソースから直接求められるとき、count()はパイプラインを実行しないことがある（APIが認めている）。JDK 25ではmapのあとのcount()でpeekが呼ばれず、filterのあとでは呼ばれる
+    sources:
+      - title: java.util.stream.Stream.count（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: An implementation may choose to not execute the stream pipeline
+    verify:
+      kind: run
+      probe: verify/EvaluationOrder.java
+      expect:
+        - '^\[8\][^\n]*\n  map後のcount = 3（peekは呼ばれない）\n  peek: 1\n  peek: 2\n  peek: 3\n  filter後のcount = 2'
+      range: { from: '^\[8\]' }
+      show: ['^  ']
+      keepIndent: true
+
+  - id: peek-for-debugging
+    claim: peekは、パイプラインのある地点を流れる要素を見るための、主にデバッグ用のメソッドである
+    sources:
+      - title: java.util.stream.Stream.peek（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: This method exists mainly to support debugging
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Stream.peekのAPI NoteにThis method exists mainly to support debuggingとあることを確かめた
+
+  # ---- Spliterator
+  - id: spliterator-characteristics
+    claim: ソースのSpliteratorは構造に応じた特性を報告する。ArrayList・LinkedListはORDERED SIZED SUBSIZED、HashSetはDISTINCT SIZED、TreeSetはORDERED DISTINCT SORTED SIZED、IntStream.rangeはこれらにNONNULL IMMUTABLE SUBSIZEDを加えたもの、Stream.iterateは大きさのわからないORDERED IMMUTABLE、Stream.generateは順序のないIMMUTABLEだけ
+    sources:
+      - title: java.util.Spliterator（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Spliterator.html
+        anchor: These may be employed by Spliterator clients to control, specialize or simplify computation
+    verify:
+      kind: run
+      probe: verify/SpliteratorTraits.java
+      expect:
+        - '^ArrayList +ORDERED SIZED SUBSIZED$'
+        - '^LinkedList +ORDERED SIZED SUBSIZED$'
+        - '^HashSet +DISTINCT SIZED$'
+        - '^TreeSet +ORDERED DISTINCT SORTED SIZED$'
+        - '^IntStream\.range +ORDERED DISTINCT SORTED SIZED NONNULL IMMUTABLE SUBSIZED$'
+        - '^Stream\.iterate +ORDERED IMMUTABLE$'
+        - '^Stream\.generate +IMMUTABLE$'
+      range: { from: 'ソースごとの特性', to: '中間操作のあと' }
+      show: ['^\S+ +[A-Z]']
+      keepIndent: true
+
+  - id: ops-change-characteristics
+    claim: 中間操作は特性を変える。mapは要素の値を変えうるのでDISTINCTとSORTEDを外し、filterは数を変えうるのでSIZEDを外す。unorderedはORDEREDを外し、sortedはSORTEDを、distinctはDISTINCTを付ける
+    verify:
+      kind: run
+      probe: verify/SpliteratorTraits.java
+      expect:
+        - 'ソースはTreeSet[^\n]*\nstream\(\) +ORDERED DISTINCT SORTED SIZED\nmap\(\) +ORDERED SIZED\nfilter\(\) +ORDERED DISTINCT SORTED\nunordered\(\) +DISTINCT SIZED$'
+        - '^sorted\(\) +ORDERED SORTED SIZED SUBSIZED$'
+        - '^distinct\(\) +ORDERED DISTINCT$'
+      range: { from: '中間操作のあとの特性', to: 'estimateSize' }
+      show: ['^--- (中間|ソース)', '^\S+\(\) ']
+      keepIndent: true
+
+  - id: estimate-size
+    claim: estimateSizeは残りの要素数の見積もりで、filterのあとでは実際より大きいことがある。大きさのわからない無限のソースはLong.MAX_VALUEを返す
+    sources:
+      - title: java.util.Spliterator.estimateSize（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Spliterator.html
+        anchor: if infinite, unknown, or too expensive to compute
+    verify:
+      kind: run
+      probe: verify/SpliteratorTraits.java
+      expect:
+        - '^ArrayList\(3件\): 3$'
+        - '^filter後: 3$'
+        - '^Stream\.iterate: 9223372036854775807（Long\.MAX_VALUE = 9223372036854775807）$'
+      range: { from: '--- estimateSize' }
+      show: ['^(ArrayList|filter|Stream)']
+
+  - id: split-array
+    claim: ArrayListとIntStream.rangeのtrySplitは、範囲をほぼ半分に分ける。要素が1つになると分けない（nullを返す）
+    sources:
+      - title: java.util.Spliterator.trySplit（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Spliterator.html
+        anchor: If this spliterator can be partitioned, returns a Spliterator covering elements
+    verify:
+      kind: run
+      probe: verify/SplitShape.java
+      expect:
+        - '^ArrayList\(10000\): +\(\(\(1250 \| 1250\) \| \(1250 \| 1250\)\) \| \(\(1250 \| 1250\) \| \(1250 \| 1250\)\)\)$'
+        - '^IntStream\.range\(10000\): \(\(\(1250 \| 1250\)'
+        - '^ArrayList\(10000\): +5000, 2500, 1250, 625, 312（残りの見積もり 313）$'
+        - '^ArrayList\(1\): +null'
+        - '^ArrayList\(2\): +1, null'
+      show: ['^(ArrayList|IntStream)']
+
+  - id: split-linked
+    claim: LinkedListとStream.iterateのような、先頭から順にしかたどれないソースのtrySplitは、先頭から1024個、2048個、3072個…と要素を配列に写して切り出す。半分には分けられない
+    verify:
+      kind: run
+      probe: verify/SplitShape.java
+      expect:
+        - '^LinkedList\(10000\): +\(\(\(256 \| 256\) \| \(256 \| 256\)\) \| \(\(1024 \| 1024\) \| \(3072 \| 3856\)\)\)$'
+        - '^LinkedList\(10000\): +1024, 2048, 3072, 3856, null'
+        - '^Stream\.iterate: +1024, 2048, 3072, 4096, 5120'
+      show: ['^(LinkedList|Stream)']
+
+  - id: split-hash
+    claim: HashSetのtrySplitはハッシュ表のバケットの範囲を半分に分けるので、切り出される要素数はハッシュ値の散らばりで決まり、見積もり（estimateSize）とずれる。0から9999の整数では8192個と1808個に分かれ、その先は空になる
+    verify:
+      kind: run
+      probe: verify/SplitShape.java
+      expect:
+        - '^HashSet\(10000\): +8192, 1808, 0, 0, 0（残りの見積もり 312）$'
+      show: ['^HashSet']
+
+  # ---- 並列ストリームとForkJoinPool
+  - id: common-pool-threads
+    claim: 並列ストリームの処理は、共通のForkJoinPool（commonPool）のワーカースレッドと、終端操作を呼んだスレッド（main）が分担する。ワーカーの数は共通プールの並列度を超えない
+    verify:
+      kind: run
+      probe: verify/CommonPool.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      attempts: 3
+      expect:
+        - '^呼び出したスレッド: main$'
+        - '並列ストリームを動かしたスレッド ---\n呼び出したスレッド: main\n使ったスレッドの種類: \[ForkJoinPool\.commonPool-worker-N, main\]$'
+        - '^commonPoolのワーカーの数は並列度以下か: true$'
+      show: ['^(availableProcessors|getCommonPool|呼び出した|commonPoolの)', '^--- 並列', '^使ったスレッドの種類: .*main']
+
+  - id: common-pool-parallelism
+    claim: OpenJDKの実装では、共通プールの並列度の既定値は使えるプロセッサーの数より1小さい（4なら3）
+    verify:
+      kind: run
+      probe: verify/CommonPool.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      expect:
+        - '^availableProcessors = 4\ngetCommonPoolParallelism = 3$'
+      show: ['^(availableProcessors|getCommonPool)']
+
+  - id: common-pool-property
+    claim: システムプロパティjava.util.concurrent.ForkJoinPool.common.parallelismで共通プールの並列度を変えられる。ただしJava SE 25のAPIドキュメントは、このプロパティの使用を勧めず、ForkJoinPool.setParallelism（Java 19〜）を使うよう書いている
+    sources:
+      - title: java.util.concurrent.ForkJoinPool（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ForkJoinPool.html
+        anchor: Usage is discouraged. Use setParallelism(int) instead.
+    verify:
+      kind: run
+      probe: verify/CommonPool.java
+      jvm: ['-XX:ActiveProcessorCount=4', '-Djava.util.concurrent.ForkJoinPool.common.parallelism=2']
+      expect:
+        - '^availableProcessors = 4\ngetCommonPoolParallelism = 2$'
+      show: ['^(availableProcessors|getCommonPool)']
+
+  - id: completablefuture-common-pool
+    claim: Executorを指定しないCompletableFutureの非同期メソッドも、ForkJoinPool.commonPool()で実行される
+    sources:
+      - title: java.util.concurrent.CompletableFuture（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: All async methods without an explicit Executor argument
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: CompletableFutureのAPIドキュメントの冒頭に、Executorを明示しない非同期メソッドはForkJoinPool.commonPool()で実行されるとあることを確かめた
+
+  - id: custom-pool
+    claim: 自分で作ったForkJoinPoolのタスクの中で並列ストリームを動かすと、OpenJDKの実装ではそのプールのスレッドで処理される。これはAPIが約束している動作ではない
+    verify:
+      kind: run
+      probe: verify/CommonPool.java
+      expect:
+        - '自分で作ったForkJoinPoolの中から呼ぶ ---\n使ったスレッドの種類: \[ForkJoinPool-1-worker-N\]$'
+      show: ['^--- 自分で', '^使ったスレッドの種類: \[ForkJoinPool-1']
+
+  - id: work-stealing
+    claim: ForkJoinPoolはワークスティーリングを使う。プールのすべてのスレッドが、投入されたタスクやほかのタスクが作ったタスクを探して実行する
+    sources:
+      - title: java.util.concurrent.ForkJoinPool（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ForkJoinPool.html
+        anchor: mainly by virtue of employing work-stealing
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: ForkJoinPoolのAPIドキュメントの冒頭に、ほかのExecutorServiceとの違いはwork-stealingを使うことで、すべてのスレッドが投入されたタスクやほかのタスクが作ったタスクを探して実行する、とあることを確かめた
+
+  # ---- 順序
+  - id: foreach-order
+    claim: 並列ストリームのforEachは要素の順序（出現順）を守らない。forEachOrderedは守る
+    sources:
+      - title: java.util.stream.Stream.forEach（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: this operation does not guarantee to respect the encounter order of the stream
+    verify:
+      kind: run
+      probe: verify/ParallelPitfalls.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      attempts: 3
+      expect:
+        - '^forEachの順序は元の順序と同じか: false$'
+        - '^forEachOrderedの順序は元の順序と同じか: true$'
+      show: ['^forEach']
+
+  - id: ordered-results
+    claim: 順序のあるソースなら、並列でもmap→limit→toListやfindFirstの結果は逐次と同じになる
+    sources:
+      - title: java.util.stream（Java SE 25 API）Parallelism
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: whether a stream executes sequentially or in parallel should not change the result of the computation
+    verify:
+      kind: run
+      probe: verify/ParallelPitfalls.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      expect:
+        - '^並列のmap→toListの結果: \[10, 20, 30, 40, 50\]$'
+        - '^並列のfindFirst: 11$'
+      show: ['^並列の']
+
+  - id: findany-nondeterministic
+    claim: findAnyは、どの要素を返してもよいと決められている（明示的に非決定的な操作）
+    sources:
+      - title: java.util.stream.Stream.findAny（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: it is free to select any element in the stream
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Stream.findAnyのAPIドキュメントに、明示的に非決定的で、ストリームのどの要素を選んでもよい、とあることを確かめた
+
+  # ---- reduceとcollect
+  - id: reduce-identity
+    claim: reduceの第1引数は単位元（足し算なら0）でなければならない。単位元でない値（100）を渡すと、並列では分割した部分ごとに足されて、逐次と結果が変わる
+    sources:
+      - title: java.util.stream.Stream.reduce（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: The identity value must be an identity for the accumulator function
+    verify:
+      kind: run
+      probe: verify/ParallelPitfalls.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      expect:
+        - '^reduce\(100, sum\) 逐次: 310 並列: \d+ 一致: false$'
+        - '^reduce\(0, sum\) +逐次: 210 並列: 210$'
+      show: ['^reduce']
+
+  - id: reduce-associativity
+    claim: reduceの関数は結合的でなければならない。引き算のような結合的でない関数では、並列で結果が変わる
+    sources:
+      - title: java.util.stream.Stream.reduce（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: The accumulator function must be an associative function
+    verify:
+      kind: run
+      probe: verify/ParallelPitfalls.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      expect:
+        - '^引き算 逐次: -210 並列: -?\d+ 一致: false$'
+      show: ['^引き算']
+
+  - id: collector-characteristics
+    claim: 標準のコレクターの特性は、toList()がIDENTITY_FINISH、toSet()がUNORDEREDとIDENTITY_FINISH、joining()とtoUnmodifiableList()はなし、groupingByConcurrent()がCONCURRENT・UNORDERED・IDENTITY_FINISH
+    sources:
+      - title: java.util.stream.Collector（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Collector.html
+        anchor: that provide hints that can be used by a reduction implementation to provide better performance
+    verify:
+      kind: run
+      probe: verify/CollectorTraits.java
+      expect:
+        - '^toList\(\): +\[IDENTITY_FINISH\]$'
+        - '^toSet\(\): +\[UNORDERED, IDENTITY_FINISH\]$'
+        - '^joining\(\): +\[\]$'
+        - '^toUnmodifiableList\(\): +\[\]$'
+        - '^groupingBy\(\): +\[IDENTITY_FINISH\]$'
+        - '^groupingByConcurrent\(\): \[CONCURRENT, UNORDERED, IDENTITY_FINISH\]$'
+      show: ['^\w+\(\): ']
+
+  - id: concurrent-collector
+    claim: 並列のcollectでは、ふつうのコレクターは分割した部分ごとにsupplierで入れ物を作ってcombinerでまとめる。CONCURRENTかつUNORDEREDのコレクターでは、入れ物を1つだけ作り、すべてのスレッドがそこへ入れる
+    sources:
+      - title: java.util.stream（Java SE 25 API）Reduction, concurrency, and ordering
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: We call this a concurrent reduction.
+    verify:
+      kind: run
+      probe: verify/CollectorTraits.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      expect:
+        - '^ふつうのコレクター: 要素数=1000 supplierは2回以上呼ばれたか: true$'
+        - '^CONCURRENTかつUNORDEREDのコレクター: 要素数=1000 supplierが呼ばれた回数=1$'
+      show: ['コレクター: 要素数']
+
+  - id: joining-uses-stringjoiner
+    claim: Collectors.joining(区切り, 前, 後)は、内部でjava.util.StringJoinerを入れ物にしている（引数のないjoining()はStringBuilder）
+    verify:
+      kind: javap
+      probe: verify/CollectorTraits.java
+      class: java.util.stream.Collectors
+      expect:
+        - 'java\.util\.StringJoiner lambda\$joining\$\d+\(java\.lang\.CharSequence, java\.lang\.CharSequence, java\.lang\.CharSequence\)'
+        - 'java\.lang\.StringBuilder lambda\$joining\$\d+\(java\.lang\.StringBuilder, java\.lang\.StringBuilder\)'
+      show: ['lambda\$joining\$\d+\(']
+
+  # ---- 副作用
+  - id: side-effect-unsafe
+    claim: 並列ストリームのforEachからスレッドセーフでないArrayListに追加すると、要素が失われたり例外になったりする。collectで集めれば正しい
+    sources:
+      - title: java.util.stream（Java SE 25 API）Side-effects
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: Side-effects in behavioral parameters to stream operations are, in general, discouraged
+    verify:
+      kind: run
+      probe: verify/ParallelPitfalls.java
+      jvm: ['-XX:ActiveProcessorCount=4']
+      attempts: 3
+      expect:
+        - '^ArrayListに100000件追加: 要素数が100000件か: false'
+        - '^collectで集めた要素数: 100000$'
+      show: ['^ArrayListに', '^collectで']
+      normalize:
+        '（[^）]+）$': ''
+
+  # ---- Java 16以降の操作
+  - id: tolist-unmodifiable
+    claim: Stream.toList()は変更できないリストを返し、addするとUnsupportedOperationExceptionになる。Collectors.toList()はJDK 25ではArrayListを返す（型は約束されていない）。toList()はnullを含められる
+    sources:
+      - title: java.util.stream.Stream.toList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: The returned List is unmodifiable
+    verify:
+      kind: run
+      probe: verify/NewOperations.java
+      expect:
+        - '^toList\(\)の結果にadd: UnsupportedOperationException$'
+        - '^Collectors\.toList\(\): java\.util\.ArrayList$'
+        - '^Collectors\.toList\(\)の結果にadd: \[1, 2, 3, 4\]$'
+        - '^toList\(\)はnullを含められる: \[x, null\]$'
+      range: { from: 'toList\(\)とCollectors', to: '^--- mapMulti' }
+      show: ['^(toList|Collectors|List\.of)']
+
+  - id: tolist-since-16
+    claim: Stream.toList()はJava 16で加わったので、--release 15ではコンパイルできない
+    sources:
+      - title: java.util.stream.Stream.toList（Java SE 25 API、Since 16）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: 'Since: 16'
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ToListRelease15.java
+      release: 15
+      fails: true
+      expect:
+        - 'error: cannot find symbol'
+        - 'symbol: +method toList\(\)'
+      show: ['error:|symbol:']
+      normalize:
+        '^\S*/': ''
+
+  - id: mapmulti
+    claim: mapMultiは、1つの要素から0個以上の要素を、渡されたConsumerに入れて出す（flatMapのように新しいストリームを作らない）
+    sources:
+      - title: java.util.stream.Stream.mapMulti（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: Returns a stream consisting of the results of replacing each element of this stream with multiple elements
+    verify:
+      kind: run
+      probe: verify/NewOperations.java
+      expect:
+        - '^mapMulti: \[1, 2, 3, 4\]$'
+      show: ['^mapMulti:']
+
+  - id: mapmulti-since-16
+    claim: mapMultiはJava 16で加わったので、--release 15ではコンパイルできない
+    sources:
+      - title: java.util.stream.Stream.mapMulti（Java SE 25 API、Since 16）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: 'Since: 16'
+    verify:
+      kind: javac
+      probe: verify/compile-errors/MapMultiRelease15.java
+      release: 15
+      fails: true
+      expect:
+        - 'error: cannot find symbol'
+        - 'symbol: +method <Integer>mapMulti'
+      show: ['error:|symbol:']
+      normalize:
+        '^\S*/': ''
+
+  - id: gatherers
+    claim: Stream.gatherで、自作や標準（Gatherers）の中間操作をはさめる。windowFixedは決まった数ずつの組、windowSlidingはずらしながらの組、scanは途中経過、foldは1つの結果を出す。Gatherer.ofSequentialで状態を持つ中間操作を作れ、無限のストリームにも使える
+    sources:
+      - title: java.util.stream.Gatherers（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Gatherers.html
+        anchor: Returns a Gatherer that gathers elements into windows
+    verify:
+      kind: run
+      probe: verify/NewOperations.java
+      expect:
+        - '^windowFixed\(3\): +\[\[1, 2, 3\], \[4, 5, 6\], \[7\]\]$'
+        - '^windowSliding\(3\): \[\[1, 2, 3\], \[2, 3, 4\], \[3, 4, 5\], \[4, 5, 6\], \[5, 6, 7\]\]$'
+        - '^scan\(累計\): +\[1, 3, 6, 10, 15, 21, 28\]$'
+        - '^fold\(合計\): +\[28\]$'
+        - '^自作\(連続する重複を除く\): \[1, 2, 3, 1\]$'
+        - '^無限のストリーム\+windowFixed\+limit: \[\[1, 2\], \[3, 4\], \[5, 6\]\]$'
+      range: { from: 'Gatherers（Java 24' }
+      show: ['^\S+[:：]? ']
+
+  - id: gatherers-history
+    claim: Stream Gatherersは、Java 22（JEP 461）と23（JEP 473）のプレビューを経て、Java 24（JEP 485）で正式な機能になった
+    sources:
+      - title: 'JEP 485: Stream Gatherers'
+        url: https://openjdk.org/jeps/485
+        anchor: Stream Gatherers
+      - title: 'JEP 461: Stream Gatherers (Preview)'
+        url: https://openjdk.org/jeps/461
+        anchor: Stream Gatherers (Preview)
+      - title: 'JEP 473: Stream Gatherers (Second Preview)'
+        url: https://openjdk.org/jeps/473
+        anchor: Stream Gatherers (Second Preview)
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 461・473・485の表のReleaseがそれぞれ22・23・24で、485の状態がClosed / Deliveredであることを確かめた
+
+  - id: gatherers-preview-23
+    claim: --release 23では、Gatherersはプレビューの機能なので、--enable-previewなしではコンパイルできない
+    sources:
+      - title: java.util.stream.Stream.gather（Java SE 25 API、Since 24）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: 'Since: 24'
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GatherersRelease23.java
+      release: 23
+      fails: true
+      expect:
+        - 'error: Gatherers is a preview API and is disabled by default\.'
+      show: ['error:']
+      sort: true
+      normalize:
+        '^\S*/': ''
+        ':\d+: ': ': '
