@@ -51,6 +51,10 @@ jobs:
       - name: 図の元データと画像の対応
         run: npm run check:diagrams
 
+      # 付録Bの台帳（claims.yml）と解説の印の対応、解説に書いたJVMフラグの実在
+      - name: 付録Bの台帳と解説の対応
+        run: npm run check:deep-dive -- --static
+
       # 実行結果の照合は、言語設定・タイムゾーン・画面の有無で出力が変わりうるため参考として流す
       - name: サンプルコードの実行結果の照合（参考）
         continue-on-error: true
@@ -65,6 +69,11 @@ jobs:
         env:
           TZ: Asia/Tokyo
         run: npm run check:public-code
+
+      # 付録Bの主張をJDKで確かめる。JITの判断は実行環境（コア数など）で変わりうるため参考として流す
+      - name: 付録Bの主張の検証（参考）
+        continue-on-error: true
+        run: npm run check:deep-dive
 
       # textlintは規約上の例外が残っているため参考として流す
       - name: textlint（参考）

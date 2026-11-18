@@ -194,6 +194,7 @@ function flags() {
   if (flagTable) return flagTable;
   const r = spawnSync('java', ['-XX:+UnlockDiagnosticVMOptions', '-XX:+UnlockExperimentalVMOptions', '-XX:+PrintFlagsFinal', '-version'], { encoding: 'utf8' });
   flagTable = new Map();
+  if (r.status !== 0 || !r.stdout) return null;
   for (const l of r.stdout.split('\n')) {
     const m = l.match(/^\s*\S+\s+(\w+)\s+:?=\s+(\S*)\s+\{([^}]*)\}/);
     if (m) flagTable.set(m[1], { value: m[2], kind: m[3].trim() });
@@ -204,6 +205,7 @@ function flags() {
 /** 解説・プローブ・コードに出てくる -XX: のフラグが実在するかを確かめる */
 function checkFlagNames(sec, problems) {
   const table = flags();
+  if (!table) { problems.push({ level: 'warn', where: sec.name, msg: 'javaが見つからないため、フラグ名の検査を省いた' }); return; }
   const files = [...docsOf(sec), ...javaFilesOf(sec)];
   for (const f of files) {
     const text = fs.readFileSync(f, 'utf8');
@@ -254,7 +256,7 @@ function verifyClaim(sec, c, tmp) {
   const v = c.verify;
   if (v.kind === 'manual') return { status: 'manual' };
   if (v.kind === 'flag') {
-    const f = flags().get(v.flag);
+    const f = (flags() || new Map()).get(v.flag);
     if (!f) return { status: 'fail', msg: `フラグ ${v.flag} がない` };
     if (v.value != null && String(v.value) !== f.value) return { status: 'fail', msg: `${v.flag} の既定値は ${f.value}（台帳は ${v.value}）`, output: `${v.flag} = ${f.value} {${f.kind}}` };
     return { status: 'pass', output: `${v.flag} = ${f.value} {${f.kind}}` };

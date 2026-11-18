@@ -26,4 +26,14 @@ if [ $? -ne 0 ]; then
 fi
 echo "CLAUDE.mdのルール: エラーなし"
 
+# 3. 付録Bの台帳（claims.yml）と解説の印の対応、フラグ名（Javaの検証はしない。約1秒）
+out=$(node scripts/check-deep-dive.js --static 2>&1)
+if [ $? -ne 0 ]; then
+    echo "$out" | tail -30
+    echo ""
+    echo "pre-commit: 付録Bの台帳と解説が食い違っているためコミットを中止しました（npm run check:deep-dive -- --static）"
+    exit 1
+fi
+echo "付録Bの台帳: 問題なし"
+
 exit 0
