@@ -88,7 +88,8 @@ public class MixinPatternDemo {
      */
     interface Cacheable {
         // キャッシュストレージ（実装クラスがフィールドとして持ち、返す）
-        // インターフェイスはフィールド（状態）を持てないので、抽象メソッドにする。
+        // インターフェイスはインスタンスフィールド（オブジェクトごとの状態）を持てない
+        // （フィールドは暗黙にpublic static finalの定数になる）ので、抽象メソッドにする。
         // defaultメソッドで毎回新しいマップを返すと、入れた値がすぐに失われてしまう
         Map<String, Object> getCache();
         

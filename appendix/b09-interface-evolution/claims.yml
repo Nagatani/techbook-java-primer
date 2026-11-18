@@ -1,0 +1,566 @@
+# 付録B.09の主張と、その確かめ方
+# npm run check:deep-dive -- b09 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 版ごとの変化
+  - id: default-static-java8
+    claim: defaultメソッドとstaticメソッドはJava 8（JEP 126、JSR 335）で入った。--release 8でコンパイルでき、クラスファイルの版は52になる
+    sources:
+      - title: JEP 126 Lambda Expressions & Virtual Extension Methods
+        url: https://openjdk.org/jeps/126
+        anchor: Release 8
+    verify:
+      kind: javap
+      probe: verify/VersionDefault.java
+      class: VersionDefault
+      release: 8
+      options: ['-v', '-p']
+      expect:
+        - 'major version: 52'
+        - 'public default java\.lang\.String greet\(\);\n\s+descriptor: .*\n\s+flags: \(0x0001\) ACC_PUBLIC$'
+        - 'public static VersionDefault of\(java\.lang\.String\);\n\s+descriptor: .*\n\s+flags: \(0x0009\) ACC_PUBLIC, ACC_STATIC$'
+      show:
+        - 'major version'
+
+  - id: jvms-interface-flags
+    claim: JVMS 4.6は、版が52.0未満のクラスファイルではインターフェイスのメソッドがすべてACC_PUBLICとACC_ABSTRACTを持つこと、52.0以上ではACC_PUBLICかACC_PRIVATEのどちらか1つを持つことを求めている
+    sources:
+      - title: JVMS 25 4.6 Methods
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: 52.0 or above, each method of an interface must have exactly one of its ACC_PUBLIC and ACC_PRIVATE flags set
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の4.6で、版52.0未満と52.0以上のインターフェイスのメソッドのフラグの規則を読んだ。版52がJava 8に当たることはjavac --release 8の出力（default-static-java8）で確かめた
+
+  - id: default-purpose
+    claim: JEP 126は、defaultメソッド（仮想拡張メソッド）の目的を、インターフェイスをソースとバイナリの互換性を保ったまま拡張できるようにすることとしている
+    sources:
+      - title: JEP 126 Lambda Expressions & Virtual Extension Methods
+        url: https://openjdk.org/jeps/126
+        anchor: which will allow interfaces to be evolved in a source and binary compatible fashion
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 126のGoalsの節を読んだ
+
+  - id: private-java9
+    claim: インターフェイスのprivateメソッドはJava 9（JEP 213）からで、--release 8ではコンパイルできない
+    sources:
+      - title: JEP 213 Milling Project Coin
+        url: https://openjdk.org/jeps/213
+        anchor: support for private interface methods
+    verify:
+      kind: javac
+      probe: verify/VersionPrivate.java
+      release: 8
+      fails: true
+      expect:
+        - 'error: private interface methods are not supported in -source 8'
+      show:
+        - 'error:'
+
+  - id: sealed-java17
+    claim: sealedインターフェイスはJava 17（JEP 409）からで、--release 16ではコンパイルできない
+    sources:
+      - title: JEP 409 Sealed Classes
+        url: https://openjdk.org/jeps/409
+        anchor: Release 17
+    verify:
+      kind: javac
+      probe: verify/VersionSealed.java
+      release: 16
+      fails: true
+      expect:
+        - 'error: sealed classes are not supported in -source 16'
+      show:
+        - 'error: sealed'
+
+  - id: sealed-permitted
+    claim: sealedインターフェイスのクラスファイルには、実装を許すクラスの一覧がPermittedSubclasses属性として入る
+    sources:
+      - title: JVMS 25 4.7.31 The PermittedSubclasses Attribute
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: The PermittedSubclasses Attribute
+      - title: JVMS 25 5.3.5 Deriving a Class from a class File Representation
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: if the superinterface has a PermittedSubclasses attribute
+    verify:
+      kind: javap
+      probe: verify/VersionSealed.java
+      class: VersionSealed
+      options: ['-v']
+      expect:
+        - '^PermittedSubclasses:\n\s+VersionSealed\$Circle\n\s+VersionSealed\$Square'
+      range: { from: '^PermittedSubclasses:', to: 'VersionSealed\$Square' }
+      show: ['.']
+
+  - id: not-permitted
+    claim: permitsに挙げていないクラスはsealedインターフェイスを実装できない
+    sources:
+      - title: JLS 25 8.1.5 Superinterfaces
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: the class being declared is not a permitted direct subclass of the named interface
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NotPermitted.java
+      fails: true
+      expect:
+        - "error: class is not allowed to extend sealed class: Shape \\(as it is not listed in its 'permits' clause\\)"
+      show:
+        - 'error:'
+
+  # ---- 暗黙の修飾子
+  - id: implicit-modifiers
+    claim: 修飾子を書かないインターフェイスのフィールドはpublic static final、メソッドはpublic abstractになる。defaultメソッドはpublic、staticメソッドはpublic static
+    sources:
+      - title: JLS 25 9.3 Field (Constant) Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: Every field declaration in the body of an interface declaration is implicitly public , static , and final
+      - title: JLS 25 9.4 Method Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: If no access modifier is given, the method is implicitly public
+      - title: JLS 25 9.4 Method Declarations（abstract）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: An interface method lacking a private , default , or static modifier is implicitly abstract
+    verify:
+      kind: run
+      probe: verify/InterfaceMembers.java
+      expect:
+        - '^field  PREFIX: public static final$'
+        - '^method decorate: private$'
+        - '^method greet: public \(default\)$'
+        - '^method name: public abstract$'
+        - '^method of: public static$'
+      show:
+        - '^(field|method|\[)'
+
+  - id: assign-constant
+    claim: インターフェイスのフィールドは暗黙にfinalなので代入できない
+    sources:
+      - title: JLS 25 9.3 Field (Constant) Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: Every field declaration in the body of an interface declaration is implicitly public , static , and final
+    verify:
+      kind: javac
+      probe: verify/compile-errors/AssignConstant.java
+      fails: true
+      expect:
+        - 'error: cannot assign a value to static final variable LIMIT'
+      show:
+        - 'error:'
+
+  - id: weaker-access
+    claim: インターフェイスのメソッドは暗黙にpublicなので、実装するメソッドにpublicを付けないとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: Requirements in Overriding and Hiding
+    verify:
+      kind: javac
+      probe: verify/compile-errors/WeakerAccess.java
+      fails: true
+      expect:
+        - 'error: area\(\) in Square cannot implement area\(\) in Shape'
+        - 'attempting to assign weaker access privileges; was public'
+      show:
+        - 'error:|weaker'
+
+  # ---- クラスファイル
+  - id: member-flags
+    claim: クラスファイルでは、抽象メソッドだけがACC_ABSTRACTを持ち、defaultメソッドはACC_PUBLICだけ、staticメソッドはACC_PUBLIC・ACC_STATIC、privateメソッドはACC_PRIVATE、フィールドはACC_PUBLIC・ACC_STATIC・ACC_FINALになる。defaultという名前のフラグはない
+    sources:
+      - title: JVMS 25 4.6 Methods
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: 52.0 or above, each method of an interface must have exactly one of its ACC_PUBLIC and ACC_PRIVATE flags set
+    verify:
+      kind: javap
+      probe: verify/InterfaceMembers.java
+      class: InterfaceMembers$Greeter
+      options: ['-v', '-p']
+      expect:
+        - 'java\.lang\.String PREFIX;\n\s+descriptor: .*\n\s+flags: \(0x0019\) ACC_PUBLIC, ACC_STATIC, ACC_FINAL'
+        - 'public abstract java\.lang\.String name\(\);\n\s+descriptor: .*\n\s+flags: \(0x0401\) ACC_PUBLIC, ACC_ABSTRACT'
+        - 'public default java\.lang\.String greet\(\);\n\s+descriptor: .*\n\s+flags: \(0x0001\) ACC_PUBLIC$'
+        - 'public static InterfaceMembers\$Greeter of\(java\.lang\.String\);\n\s+descriptor: .*\n\s+flags: \(0x0009\) ACC_PUBLIC, ACC_STATIC$'
+        - 'private java\.lang\.String decorate\(java\.lang\.String\);\n\s+descriptor: .*\n\s+flags: \(0x0002\) ACC_PRIVATE$'
+      absent:
+        - 'ACC_DEFAULT'
+      show:
+        - '^  (public|private) [^(#]*\b(PREFIX;|name\(|greet\(|of\(|decorate\()'
+        - 'flags: \(0x0(019|401|001|009|002)\)'
+      keepIndent: true
+
+  - id: call-instructions
+    claim: インターフェイスのstaticメソッドはinvokestaticで呼ばれ、参照はInterfaceMethod（インターフェイスのメソッドへの参照）になる。defaultメソッドと抽象メソッドはinvokeinterfaceで呼ばれる
+    sources:
+      - title: JVMS 25 6.5 invokestatic
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: symbolic reference to a method or an interface method
+    verify:
+      kind: javap
+      probe: verify/InterfaceMembers.java
+      class: InterfaceMembers
+      expect:
+        - 'invokestatic .*// InterfaceMethod InterfaceMembers\$Greeter\.of:'
+        - 'invokeinterface .*// InterfaceMethod InterfaceMembers\$Greeter\.greet:'
+      show:
+        - 'InterfaceMembers\$Greeter\.(of|greet)'
+      normalize:
+        '#\d+,?\s*(\d+\s*)?//': '//'
+
+  - id: private-call-10
+    claim: インターフェイスのprivateメソッドの呼び出しは、--release 10ではinvokespecial、--release 11（ネストメイト、JEP 181）からはinvokeinterfaceになる
+    sources:
+      - title: JEP 181 Nest-Based Access Control
+        url: https://openjdk.org/jeps/181
+        anchor: Nest-Based Access Control
+    verify:
+      kind: javap
+      probe: verify/VersionPrivate.java
+      class: VersionPrivate
+      release: 10
+      expect:
+        - 'invokespecial .*// InterfaceMethod decorate:'
+      show:
+        - 'InterfaceMethod decorate'
+      normalize:
+        '^\d+: ': ''
+        '#\d+,?\s*(\d+\s*)?//': '//'
+
+  - id: private-call-11
+    claim: 同上（--release 11ではinvokeinterface）
+    sources:
+      - title: JEP 181 Nest-Based Access Control
+        url: https://openjdk.org/jeps/181
+        anchor: Nest-Based Access Control
+    verify:
+      kind: javap
+      probe: verify/VersionPrivate.java
+      class: VersionPrivate
+      release: 11
+      expect:
+        - 'invokeinterface .*// InterfaceMethod decorate:'
+      show:
+        - 'InterfaceMethod decorate'
+      normalize:
+        '^\d+: ': ''
+        '#\d+,?\s*(\d+\s*)?//': '//'
+
+  # ---- staticメソッドは継承されない
+  - id: static-not-inherited-class
+    claim: インターフェイスのstaticメソッドは実装クラスに継承されないので、実装クラスの名前では呼べない
+    sources:
+      - title: JLS 25 8.4.8 Inheritance, Overriding, and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: A class does not inherit private or static methods from its superinterface types
+    verify:
+      kind: javac
+      probe: verify/compile-errors/StaticViaImplClass.java
+      fails: true
+      expect:
+        - 'error: cannot find symbol\n.*\n.*\n\s+symbol:\s+method hello\(\)\n\s+location: class Impl'
+      show:
+        - 'error:|symbol:|location:'
+
+  - id: static-not-inherited-interface
+    claim: サブインターフェイスにも継承されないので、サブインターフェイスの名前でも呼べない
+    sources:
+      - title: JLS 25 9.2 Interface Members
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: (iii) private methods, and (iv) static methods
+    verify:
+      kind: javac
+      probe: verify/compile-errors/StaticViaSubinterface.java
+      fails: true
+      expect:
+        - 'error: cannot find symbol\n.*\n.*\n\s+symbol:\s+method hello\(\)\n\s+location: interface Polite'
+      show:
+        - 'error:|symbol:|location:'
+
+  - id: static-via-instance
+    claim: インターフェイスの型の変数を通しても呼べない（クラスのstaticメソッドは変数を通しても呼べるのと違う）
+    sources:
+      - title: JLS 25 15.12.3 Compile-Time Step 3（staticなインターフェイスのメソッドの呼び出し）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: then the compile-time declaration must not be a static method declared in an interface, or a compile-time error occurs
+    verify:
+      kind: javac
+      probe: verify/compile-errors/StaticViaInstance.java
+      fails: true
+      expect:
+        - 'error: illegal static interface method call'
+        - "the receiver expression should be replaced with the type qualifier 'Greeter'"
+      show:
+        - 'error:|receiver'
+
+  # ---- どのメソッドが選ばれるか
+  - id: resolution-rules
+    claim: スーパークラスのメソッドはインターフェイスのdefaultメソッドより優先され（規則1）、サブインターフェイスのdefaultメソッドはスーパーインターフェイスのものより優先される（規則2）。決まらないときはクラスでオーバーライドし、インターフェイス名.super.メソッド名()で呼び分けられる
+    sources:
+      - title: JLS 25 8.4.8 Inheritance, Overriding, and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: No concrete method inherited by C from its direct superclass type has a signature that is a subsignature of the signature of m as a member of D
+      - title: JLS 25 8.4.8 Inheritance, Overriding, and Hiding（より具体的なインターフェイス）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: There exists no method m' that is a member of the direct superclass type or a direct superinterface type of C
+    verify:
+      kind: run
+      probe: verify/ResolutionRules.java
+      expect:
+        - '^規則1: Base\.who（クラス）$'
+        - '^規則2: Child\.who$'
+        - '^規則3: Resolver\.who → Left\.who \+ Right\.who$'
+        - '^Named型の変数から: Base\.who（クラス）$'
+      show: ['.']
+
+  - id: no-copy
+    claim: defaultメソッドは実装クラスのクラスファイルにコピーされない
+    verify:
+      kind: javap
+      probe: verify/ResolutionRules.java
+      class: ResolutionRules$SpecificWins
+      options: ['-p']
+      expect:
+        - 'class ResolutionRules\$SpecificWins implements ResolutionRules\$Parent,ResolutionRules\$Child \{\n\s+ResolutionRules\$SpecificWins\(\);\n\}'
+      absent:
+        - 'who'
+      show: ['^(class|\s|\})']
+
+  - id: jvms-selection
+    claim: 呼び出すメソッドは実行時にJVMが選ぶ。JVMS 5.4.6は、まずクラス自身、次にスーパークラスを順にさかのぼり、見つからなければ「最も具体的なスーパーインターフェイスのメソッド」のうち抽象でないものがちょうど1つならそれを選ぶ、と決めている
+    sources:
+      - title: JVMS 25 5.4.6 Method Selection
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: the maximally-specific superinterface methods of C are determined
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の5.4.6の手順（クラス自身→スーパークラス→maximally-specific superinterface methods）を読んだ。JLSの規則1・規則2と同じ順序になっている
+
+  - id: abstract-superclass-wins
+    claim: スーパークラスの抽象メソッドも規則1の対象で、インターフェイスのdefaultメソッドはそれを実装しない
+    sources:
+      - title: JLS 25 8.4.8 Inheritance, Overriding, and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: No concrete method inherited by C from its direct superclass type has a signature that is a subsignature of the signature of m as a member of D
+    verify:
+      kind: javac
+      probe: verify/compile-errors/AbstractSuperclassWins.java
+      fails: true
+      expect:
+        - 'error: Sub is not abstract and does not override abstract method who\(\) in Base'
+      show:
+        - 'error:'
+
+  - id: diamond-conflict
+    claim: 無関係な2つのインターフェイスから同じシグネチャのdefaultメソッドを受け継ぐと、オーバーライドしない限りコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.4.8.4 Inheriting Methods with Override-Equivalent Signatures
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error if a class C inherits a default method whose signature is override-equivalent with another method inherited by C
+    verify:
+      kind: javac
+      probe: verify/compile-errors/DiamondConflict.java
+      fails: true
+      expect:
+        - 'error: types Left and Right are incompatible;'
+        - 'class Both inherits unrelated defaults for who\(\) from types Left and Right'
+      show:
+        - 'error:|inherits'
+
+  - id: abstract-and-default
+    claim: 一方が抽象メソッドでもう一方がdefaultメソッドのときも、defaultメソッドが抽象メソッドを実装したことにはならず、クラスでオーバーライドする必要がある
+    sources:
+      - title: JLS 25 8.4.8.4 Inheriting Methods with Override-Equivalent Signatures
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error if a class C inherits a default method whose signature is override-equivalent with another method inherited by C
+    verify:
+      kind: javac
+      probe: verify/compile-errors/AbstractAndDefault.java
+      fails: true
+      expect:
+        - 'error: Both is not abstract and does not override abstract method who\(\) in WithAbstract'
+      show:
+        - 'error:'
+
+  - id: super-call-invokespecial
+    claim: インターフェイス名.super.メソッド名()はinvokespecialで、参照はInterfaceMethodになる（動的ディスパッチをしない）
+    sources:
+      - title: JVMS 25 6.5 invokespecial
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: invokespecial
+    verify:
+      kind: javap
+      probe: verify/ResolutionRules.java
+      class: ResolutionRules$Resolver
+      expect:
+        - 'invokespecial .*// InterfaceMethod ResolutionRules\$Left\.who:'
+        - 'invokespecial .*// InterfaceMethod ResolutionRules\$Right\.who:'
+      show:
+        - 'InterfaceMethod'
+      normalize:
+        '#\d+,?\s*(\d+\s*)?//': '//'
+
+  - id: super-call-direct-only
+    claim: インターフェイス名.super.メソッド名()で指定できるのは直接のスーパーインターフェイスだけで、ほかの直接のスーパーインターフェイスがそのサブインターフェイスであるときも書けない
+    sources:
+      - title: JLS 25 15.12.1 Compile-Time Step 1
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: It is a compile-time error if I is not a direct superinterface of E , or if there exists some other direct superclass or direct superinterface of E , J , such that J is a subclass or subinterface of I
+    verify:
+      kind: javac
+      probe: verify/compile-errors/IndirectSuperCall.java
+      fails: true
+      expect:
+        - 'error: not an enclosing class: Parent'
+      show:
+        - 'error:'
+
+  - id: super-call-redundant
+    claim: 同上（直接書き並べていても、ほかのスーパーインターフェイスがそのサブインターフェイスなら書けない）
+    verify:
+      kind: javac
+      probe: verify/compile-errors/RedundantSuperCall.java
+      fails: true
+      expect:
+        - 'error: bad type qualifier Parent in default super call'
+        - 'redundant interface Parent is extended by Child'
+      show:
+        - 'error:|redundant'
+
+  # ---- Objectのメソッド
+  - id: default-object-method
+    claim: defaultメソッドでObjectのpublicメソッド（toString・equals・hashCode）をオーバーライドすることはできない。実装クラスは必ずObjectから実装を受け継ぎ、規則1でそちらが優先されるため
+    sources:
+      - title: JLS 25 9.4.1.2 Requirements in Overriding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: It is a compile-time error if a default method is override-equivalent ( &sect;8.4.2 ) with a non- private method of the class Object
+    verify:
+      kind: javac
+      probe: verify/compile-errors/DefaultObjectMethod.java
+      fails: true
+      expect:
+        - 'error: default method toString in interface DefaultObjectMethod overrides a member of java\.lang\.Object'
+      show:
+        - 'error:'
+
+  # ---- 関数型インターフェイス
+  - id: functional-count
+    claim: 関数型インターフェイスの「抽象メソッドが1つ」は、Objectのpublicメソッドと同じシグネチャの抽象メソッドとdefaultメソッドを数えない。Comparatorはcompareとequalsの2つの抽象メソッドを宣言しているが、関数型インターフェイスである
+    sources:
+      - title: JLS 25 9.8 Functional Interfaces
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html
+        anchor: A functional interface is an interface that is not declared sealed and has just one abstract method (aside from the methods of Object )
+      - title: java.lang.FunctionalInterface（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/FunctionalInterface.html
+        anchor: Since default methods have an implementation, they are not abstract
+    verify:
+      kind: run
+      probe: verify/FunctionalInterfaces.java
+      expect:
+        - '^Comparator: 抽象メソッド \[compare, equals\]、Objectのメソッドを除くと 1 個'
+        - '^Function: 抽象メソッド \[apply\]、Objectのメソッドを除くと 1 個'
+        - '^\[a, bb, ccc\]$'
+      show: ['.']
+
+  - id: functional-annotation
+    claim: '@FunctionalInterfaceを付けたインターフェイスが関数型インターフェイスの条件を満たさないと、コンパイラーはエラーにする'
+    sources:
+      - title: java.lang.FunctionalInterface（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/FunctionalInterface.html
+        anchor: If a type is annotated with this annotation type, compilers are required to generate an error message
+    verify:
+      kind: javac
+      probe: verify/compile-errors/TwoAbstractMethods.java
+      fails: true
+      expect:
+        - 'error: Unexpected @FunctionalInterface annotation'
+        - 'multiple non-overriding abstract methods found in interface TwoAbstractMethods'
+      show:
+        - 'error:|is not a functional|multiple'
+
+  # ---- 既存のインターフェイスにメソッドを足す
+  - id: source-incompatible
+    claim: インターフェイスに抽象メソッドを足すと、それを実装していない既存のクラスはコンパイルできなくなる
+    sources:
+      - title: JLS 25 8.1.1.1 abstract Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error if a normal class that is not abstract has an abstract method
+    verify:
+      kind: javac
+      probe: verify/compile-errors/MissingAbstract.java
+      fails: true
+      expect:
+        - 'error: Square is not abstract and does not override abstract method perimeter\(\) in Shape'
+      show:
+        - 'error:'
+
+  - id: binary-compat
+    claim: 抽象メソッドを足す前にコンパイルしたクラスは読み込めるが、足したメソッドを呼ぶとAbstractMethodErrorになる。defaultメソッドとして足せば、そのdefaultメソッドが動く。2つのインターフェイスに同じdefaultメソッドを足すと、呼んだときにIncompatibleClassChangeErrorになる
+    sources:
+      - title: JLS 25 13.5.7 Interface Method Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html
+        anchor: Adding a default method, or changing a method from abstract to default , does not break compatibility with pre-existing binaries
+      - title: JVMS 25 6.5 invokeinterface
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-6.html
+        anchor: multiple maximally-specific superinterface methods of C that match the resolved method's name and descriptor and are not abstract , invokeinterface throws an IncompatibleClassChangeError
+    verify:
+      kind: run
+      probe: verify/BinaryCompatibility.java
+      expect:
+        - "^抽象メソッドを足した: java\\.lang\\.AbstractMethodError: Receiver class Square does not define or inherit an implementation of the resolved method 'abstract double perimeter\\(\\)' of interface Shape\\.$"
+        - '^defaultメソッドを足した: perimeter = -1\.0$'
+        - '^2つのインターフェイスに同じdefaultメソッドを足した: java\.lang\.IncompatibleClassChangeError: Conflicting default methods: Left\.who Right\.who$'
+      show: ['.']
+
+  - id: jdk-defaults
+    claim: 標準ライブラリのIterable.forEach、Collection.stream・removeIf・toArray(IntFunction)、List.sort・reversed、Map.getOrDefaultはdefaultメソッド、List.of・Comparator.comparingはstaticメソッドである
+    verify:
+      kind: run
+      probe: verify/DefaultMethodsInJdk.java
+      expect:
+        - '^Iterable\.forEach: default$'
+        - '^Collection\.stream: default$'
+        - '^Collection\.removeIf: default$'
+        - '^Collection\.toArray: default$'
+        - '^List\.sort: default$'
+        - '^List\.reversed: default$'
+        - '^Map\.getOrDefault: default$'
+        - '^List\.of: static$'
+        - '^Comparator\.comparing: static$'
+        - '^Collection\.size: abstract$'
+      show: ['.']
+
+  - id: jdk-since
+    claim: 'APIドキュメントの「Since」は、forEach・stream・removeIf・sort・getOrDefault・comparingが1.8、List.ofが9、toArray(IntFunction)が11、List.reversedが21'
+    sources:
+      - title: java.util.List（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: reversed
+      - title: java.util.Collection（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html
+        anchor: removeIf
+      - title: java.lang.Iterable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Iterable.html
+        anchor: forEach
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java SE 25のAPIドキュメントと、JDKのソース（src.zip）の各メソッドの@sinceを読んで確かめた（Iterable.forEach 1.8、Collection.stream 1.8、removeIf 1.8、toArray(IntFunction) 11、List.sort 1.8、List.reversed 21、List.of 9、Map.getOrDefault 1.8、Comparator.comparing 1.8）
+
+  # ---- JIT
+  - id: default-inlining
+    claim: よく呼ばれるdefaultメソッドも、C2が型の記録をもとにインライン化する
+    verify:
+      kind: run
+      probe: verify/DefaultInlining.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintInlining']
+      expect:
+        - 'DefaultInlining\$Shape::area \(14 bytes\)\s+inline \(hot\)'
+      show: ['^\s*@ \d+\s+DefaultInlining\$Shape::area']
+      normalize:
+        ' callee changed to.*': ''
+      sort: true
+      attempts: 3
