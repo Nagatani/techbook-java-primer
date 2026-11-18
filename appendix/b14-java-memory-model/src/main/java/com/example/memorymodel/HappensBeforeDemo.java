@@ -446,7 +446,7 @@ public class HappensBeforeDemo {
             IO.println("4. Thread Start: Call to Thread.start() happens-before any action in the started thread");
             IO.println("5. Thread Join: Any action in a thread happens-before any other thread returns from join()");
             IO.println("6. Transitivity: If A happens-before B and B happens-before C, then A happens-before C");
-            IO.println("Others in JLS 17.4.5: Thread.interrupt() happens-before the interrupted thread detects it,");
+            IO.println("Others (JLS 17.4.4, 17.4.5): Thread.interrupt() happens-before the interrupted thread detects it,");
             IO.println("  and the default-value writes of every field happen-before every other action.");
             
         } catch (InterruptedException e) {

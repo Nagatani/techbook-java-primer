@@ -1,6 +1,7 @@
 package com.example.memorymodel;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * メモリ可視性問題のデモンストレーション
@@ -108,6 +109,7 @@ public class VisibilityProblems {
      * 高コストなオブジェクトのシミュレーション
      */
     static class ExpensiveObject {
+        private static final AtomicInteger CREATED = new AtomicInteger();
         private final int[] data;
         private final String name;
         
@@ -124,7 +126,7 @@ public class VisibilityProblems {
             for (int i = 0; i < data.length; i++) {
                 data[i] = i * i;
             }
-            this.name = "ExpensiveObject-" + System.nanoTime();
+            this.name = "ExpensiveObject-" + CREATED.incrementAndGet();
             IO.println("Expensive object created: " + name);
         }
         
@@ -283,83 +285,61 @@ public class VisibilityProblems {
         IO.println("\n=== Volatile vs Synchronized Demonstration ===");
         
         VolatileVsSynchronized demo = new VolatileVsSynchronized();
-        final int threadCount = 10;
-        final int incrementsPerThread = 1000;
-        
-        // volatileカウンターのテスト
-        Thread[] volatileThreads = new Thread[threadCount];
-        for (int i = 0; i < threadCount; i++) {
-            volatileThreads[i] = new Thread(() -> {
-                for (int j = 0; j < incrementsPerThread; j++) {
-                    demo.incrementVolatile();
-                }
-            });
-        }
-        
-        long startTime = System.nanoTime();
-        for (Thread thread : volatileThreads) {
-            thread.start();
-        }
-        
-        for (Thread thread : volatileThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        long volatileTime = System.nanoTime() - startTime;
+        final int threadCount = 4;
+        final int incrementsPerThread = 100_000;
         
         int expectedCount = threadCount * incrementsPerThread;
+
+        // volatileカウンターのテスト
+        runAll(threadCount, incrementsPerThread, demo::incrementVolatile);
         int actualVolatileCount = demo.getVolatileCounter();
-        
         IO.println("Volatile counter:");
         IO.println("  Expected: " + expectedCount);
-        IO.println("  Actual: " + actualVolatileCount);
-        IO.println("  Lost updates: " + (expectedCount - actualVolatileCount));
-        IO.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(volatileTime) + "ms");
-        
-        // カウンターをリセット
-        demo.reset();
-        
+        IO.println("  Actual: " + actualVolatileCount
+                + (actualVolatileCount < expectedCount ? " (updates were lost)" : ""));
+
         // synchronizedカウンターのテスト
-        Thread[] syncThreads = new Thread[threadCount];
-        for (int i = 0; i < threadCount; i++) {
-            syncThreads[i] = new Thread(() -> {
-                for (int j = 0; j < incrementsPerThread; j++) {
-                    demo.incrementSynchronized();
-                }
-            });
-        }
-        
-        startTime = System.nanoTime();
-        for (Thread thread : syncThreads) {
-            thread.start();
-        }
-        
-        for (Thread thread : syncThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        long syncTime = System.nanoTime() - startTime;
-        
+        runAll(threadCount, incrementsPerThread, demo::incrementSynchronized);
         int actualSyncCount = demo.getSynchronizedCounter();
-        
         IO.println("\nSynchronized counter:");
         IO.println("  Expected: " + expectedCount);
         IO.println("  Actual: " + actualSyncCount);
-        IO.println("  Lost updates: " + (expectedCount - actualSyncCount));
-        IO.println("  Time: " + TimeUnit.NANOSECONDS.toMillis(syncTime) + "ms");
-        
+
         IO.println("\nConclusion:");
         IO.println("  Volatile provides visibility but not atomicity");
         IO.println("  Synchronized provides both visibility and atomicity");
-        IO.println("  Performance cost: " + (syncTime / (double) volatileTime) + "x slower");
     }
     
+    /**
+     * threadCount個のスレッドを同時に走らせ、それぞれincrementをcount回呼んで、終わるまで待つ
+     */
+    private static void runAll(int threadCount, int count, Runnable increment) {
+        CountDownLatch start = new CountDownLatch(1);
+        Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threadCount; i++) {
+            threads[i] = new Thread(() -> {
+                try {
+                    start.await();
+                } catch (InterruptedException e) {
+                    return;
+                }
+                for (int j = 0; j < count; j++) {
+                    increment.run();
+                }
+            });
+            threads[i].start();
+        }
+        start.countDown();
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
     /**
      * メインメソッド
      */

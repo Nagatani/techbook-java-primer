@@ -13,8 +13,8 @@ public class FalseSharingDemo {
      * False Sharingが発生する問題のあるクラス
      */
     static class FalseSharingCounters {
-        // これらの変数は連続したメモリ領域に配置される可能性が高い
-        // 同じキャッシュライン（通常64バイト）に収まってしまう
+        // HotSpotはこの4つを8バイトおきに並べる（付録B.14のverify/ContendedLayout.javaで観察できる）。
+        // 64バイトのキャッシュラインなら、同じ行に載る
         volatile long counter1 = 0;
         volatile long counter2 = 0;
         volatile long counter3 = 0;
@@ -29,9 +29,10 @@ public class FalseSharingDemo {
      * パディングによってFalse Sharingを回避するクラス
      */
     static class PaddedCounters {
-        // CPUキャッシュライン（通常64バイト）を考慮したパディング
-        // 隣のカウンターとは120バイト離れるので、128バイトのキャッシュラインでもほぼ分かれる。
-        // ただし、JVMがフィールドを宣言の順に並べる保証はない（@Contendedなら保証される）
+        // 64バイトのキャッシュラインを考慮したパディング。
+        // 隣のカウンターとは120バイト離れるので、64バイトの行なら必ず別の行になるが、
+        // 128バイトの行を持つCPUでは、置かれる位置によっては同じ行に載る。
+        // また、JVMがフィールドを宣言の順に並べるという仕様はない（JDK 25のHotSpotでは宣言の順だった）
         volatile long p1, p2, p3, p4, p5, p6, p7;     // 前パディング（56バイト）
         volatile long counter1 = 0;                    // 実際のカウンター（8バイト）
         volatile long q1, q2, q3, q4, q5, q6, q7;     // 後パディング（56バイト）
@@ -144,7 +145,8 @@ public class FalseSharingDemo {
     }
     
     /**
-     * スケーラブルなカウンター実装（LongAdderの簡易版）
+     * スケーラブルなカウンター実装（LongAdderの簡易版）。
+     * 2つのスレッドが同じセルに当たることがあるので、セルの更新は原子的な加算（getAndAdd）にする
      */
     static class StripedCounter {
         private static final int STRIPE_COUNT = 
@@ -152,10 +154,25 @@ public class FalseSharingDemo {
         
         @jdk.internal.vm.annotation.Contended
         static class Cell {
+            private static final java.lang.invoke.VarHandle VALUE;
+
+            static {
+                try {
+                    VALUE = java.lang.invoke.MethodHandles.lookup()
+                            .findVarHandle(Cell.class, "value", long.class);
+                } catch (ReflectiveOperationException e) {
+                    throw new ExceptionInInitializerError(e);
+                }
+            }
+
             volatile long value;
             
             Cell(long value) {
                 this.value = value;
+            }
+
+            void add(long delta) {
+                VALUE.getAndAdd(this, delta);
             }
         }
         
@@ -168,13 +185,11 @@ public class FalseSharingDemo {
         }
         
         public void increment() {
-            int index = getStripeIndex();
-            cells[index].value++;
+            cells[getStripeIndex()].add(1);
         }
         
         public void add(long delta) {
-            int index = getStripeIndex();
-            cells[index].value += delta;
+            cells[getStripeIndex()].add(delta);
         }
         
         public long sum() {
@@ -482,10 +497,10 @@ public class FalseSharingDemo {
         IO.println("\n=== Cache Line Information ===");
         
         // Javaオブジェクトのメモリレイアウト情報
-        IO.println("Typical cache line size: 64 bytes (128 bytes on Apple Silicon)");
+        IO.println("Cache line size: depends on the CPU (64 bytes is common, some CPUs use 128 bytes)");
+        IO.println("HotSpot pads @Contended fields by ContendedPaddingWidth (128 bytes by default)");
         IO.println("long size: 8 bytes");
-        IO.println("Object header size: ~12-16 bytes (platform dependent)");
-        IO.println("Array header size: ~12-16 bytes + 4 bytes (length)");
+        IO.println("Object header size: 12 bytes with compressed class pointers (8 with compact headers)");
         
         // メモリアクセスパターンの説明
         IO.println("\nMemory access patterns:");
@@ -497,8 +512,8 @@ public class FalseSharingDemo {
         // パフォーマンスの考慮事項
         IO.println("\nPerformance considerations:");
         IO.println("- A miss to main memory costs far more cycles than a hit in the L1 cache");
-        IO.println("- False sharing can make updates several times slower (depends on the CPU)");
-        IO.println("- Padding increases memory usage but improves performance");
+        IO.println("- How much false sharing slows updates depends on the CPU (measure it below)");
+        IO.println("- Padding increases memory usage");
     }
     
     /**
@@ -516,13 +531,15 @@ public class FalseSharingDemo {
             array[i] = i;
         }
         
-        // 順次アクセス
+        // 順次アクセス（合計を使わないとJITが計算ごと省くことがあるので、合計を表示する）
+        long total = 0;
         long startTime = System.nanoTime();
         for (int iter = 0; iter < iterations; iter++) {
             long sum = 0;
             for (int i = 0; i < arraySize; i++) {
                 sum += array[i];
             }
+            total += sum;
         }
         long sequentialTime = System.nanoTime() - startTime;
         
@@ -538,6 +555,7 @@ public class FalseSharingDemo {
             for (int i = 0; i < arraySize; i++) {
                 sum += array[randomIndices[i]];
             }
+            total += sum;
         }
         long randomTime = System.nanoTime() - startTime;
         
@@ -546,6 +564,7 @@ public class FalseSharingDemo {
         IO.println("Sequential access time: " + TimeUnit.NANOSECONDS.toMillis(sequentialTime) + "ms");
         IO.println("Random access time: " + TimeUnit.NANOSECONDS.toMillis(randomTime) + "ms");
         IO.println("Random/Sequential ratio: " + String.format("%.2fx", (double) randomTime / sequentialTime));
+        IO.println("(checksum: " + (total != 0) + ")");
     }
     
     /**

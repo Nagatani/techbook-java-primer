@@ -31,10 +31,10 @@ public class LockFreeAlgorithms {
          * スタックに要素を追加
          */
         public void push(T item) {
-            Node<T> newHead = new Node<>(item, null);
             while (true) {
                 Node<T> currentHead = top.get();
-                newHead = new Node<>(item, currentHead);
+                // nextがfinalなので、CASに失敗したら新しいノードを作り直す
+                Node<T> newHead = new Node<>(item, currentHead);
                 
                 // CAS操作で原子的に更新
                 if (top.compareAndSet(currentHead, newHead)) {
@@ -282,6 +282,28 @@ public class LockFreeAlgorithms {
         public boolean isEmpty() {
             return top.getReference() == null;
         }
+
+        /** デモ用: 先頭のノードを取り出して返す */
+        private Node<T> popNodeForDemo() {
+            int[] stampHolder = new int[1];
+            Node<T> head = top.get(stampHolder);
+            top.compareAndSet(head, head.next, stampHolder[0], stampHolder[0] + 1);
+            return head;
+        }
+
+        /** デモ用: 取り出したノードをそのまま先頭に戻す（nextは元のまま） */
+        private void pushBack(Node<T> node) {
+            int[] stampHolder = new int[1];
+            Node<T> head = top.get(stampHolder);
+            top.compareAndSet(head, node, stampHolder[0], stampHolder[0] + 1);
+        }
+
+        /** デモ用: 古い先頭とスタンプを前提に、先頭を次のノードへ進めるCASを試す */
+        private boolean casForDemo(Object expectedHead, int expectedStamp) {
+            @SuppressWarnings("unchecked")
+            Node<T> head = (Node<T>) expectedHead;
+            return top.compareAndSet(head, head.next, expectedStamp, expectedStamp + 1);
+        }
         
         public void printStack() {
             int[] stampHolder = new int[1];
@@ -445,6 +467,20 @@ public class LockFreeAlgorithms {
         IO.println("Initial state:");
         safeStack.printStack();
         
+        // スレッド1が先頭と一緒にスタンプを読んだところで中断されたとする
+        int[] stampSeen = new int[1];
+        Object headSeen = safeStack.top.get(stampSeen);
+        IO.println("Thread1 sees stamp: " + stampSeen[0]);
+
+        // スレッド2がpopとpushを行い、先頭が元と同じ参照に戻ったとしても、スタンプは進む
+        safeStack.pushBack(safeStack.popNodeForDemo());
+        IO.println("After thread2 pop and push of the same node:");
+        safeStack.printStack();
+
+        // スレッド1のCASは、参照が同じでもスタンプが違うので失敗する
+        boolean stale = safeStack.casForDemo(headSeen, stampSeen[0]);
+        IO.println("Thread1 CAS with the old stamp: " + stale);
+
         // 通常の操作
         String item = safeStack.pop();
         IO.println("Popped: " + item);
@@ -559,8 +595,8 @@ public class LockFreeAlgorithms {
         IO.println("1. CAS (Compare-And-Swap) enables lock-free atomic operations");
         IO.println("2. ABA problem can occur when memory is reused");
         IO.println("3. Stamped references or hazard pointers can solve ABA problem");
-        IO.println("4. Lock-free algorithms provide better scalability and avoid deadlocks");
+        IO.println("4. Lock-free algorithms cannot deadlock, because no thread holds a lock");
         IO.println("5. Implementation complexity is higher than lock-based approaches");
-        IO.println("6. Performance benefits are most apparent under high contention");
+        IO.println("6. Under heavy contention, CAS failures and retries increase (measure before choosing)");
     }
 }

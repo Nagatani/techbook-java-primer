@@ -1,0 +1,499 @@
+# 付録B.14の主張と、その確かめ方
+# npm run check:deep-dive -- b14 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 仕様: メモリモデルの考え方
+  - id: jmm-reordering-sources
+    claim: JLSは、正しく同期していないプログラムで直感に反する結果が出る原因として、JITコンパイラーによるコードの並べ替え、プロセッサー、メモリ階層を挙げ、これらをまとめて「コンパイラー」と呼ぶ
+    sources:
+      - title: JLS 25 17.4 Memory Model（Example 17.4-1）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: we shall refer to anything that can reorder code as a compiler
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4のExample 17.4-1に、Table 17.4-Aの並べ替えを起こすしくみとしてJITコンパイラー・プロセッサー・メモリ階層が挙げられ、それらをcompilerと呼ぶとあることを確かめた
+
+  - id: sleep-no-sync
+    claim: Thread.sleepとThread.yieldには同期の意味がなく、volatileでないフィールドを待つループでは、コンパイラーはフィールドを一度だけ読んで使い回してよい（ループが終わらなくてよい）
+    sources:
+      - title: JLS 25 17.3 Sleep and Yield
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: The compiler is free to read the field this.done just once
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.3に、Thread.sleepとThread.yieldは同期の意味を持たないこと、非volatileのthis.doneを待つループでコンパイラーがフィールドを一度だけ読んでよく、ループが終わらないことがありうると書かれていることを確かめた
+
+  - id: hb-rules
+    claim: happens-beforeの規則は、同じスレッドのプログラム順、モニターのアンロックとその後のロック、volatileへの書き込みとその後の読み込み、start()の呼び出しと開始したスレッドの操作、スレッドの操作とjoin()からの戻り、既定値での初期化、推移性である
+    sources:
+      - title: JLS 25 17.4.5 Happens-before Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: An unlock on a monitor happens-before every subsequent lock on that monitor.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4.5に、プログラム順・synchronizes-with・推移性によるhbの定義と、そこから導かれる5つの規則（アンロックとロック、volatileの書き込みと読み込み、start、join、既定値の初期化）が並んでいることを確かめた
+
+  - id: sync-with
+    claim: synchronizes-withの関係は、アンロックとその後のロック、volatileの書き込みとその後の読み込み、スレッドの開始、スレッドの終了とそれを検出する操作（isAliveやjoin）、interruptと割り込みの検出のあいだにある
+    sources:
+      - title: JLS 25 17.4.4 Synchronization Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: synchronizes-with any point where any other thread
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4.4に、synchronizes-withの組として、アンロックとロック、volatileの書き込みと読み込み、スレッドの開始、既定値の書き込み、スレッドの最後の操作と終了の検出（T1.isAlive()・T1.join()）、interruptと割り込みの判定が挙がっていることを確かめた
+
+  - id: hb-not-time-order
+    claim: happens-beforeは、実装がその順に実行することまでは求めない。hbの関係にない別のスレッドからは、順序が入れ替わって見えることがある
+    sources:
+      - title: JLS 25 17.4.5 Happens-before Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: does not necessarily imply that they have to take place in that order in an implementation
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4.5に、hbの関係があっても実装がその順に行う必要はなく、hbを共有しないコードからは順序が違って見えてよいこと、データ競合のある読み込みには書き込みが順不同に見えることを確かめた
+
+  - id: data-race
+    claim: hbで順序づけられていない、同じ変数への競合するアクセス（少なくとも一方が書き込み）をデータ競合という。データ競合のないプログラム（正しく同期したプログラム）は、すべての実行が逐次一貫に見える
+    sources:
+      - title: JLS 25 17.4.5 Happens-before Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: then all executions of the program will appear to be sequentially consistent
+      - title: JLS 25 17.4.1 Shared Variables（conflicting）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: at least one of the accesses is a write
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4.1で競合するアクセス（同じ変数へのアクセスで、少なくとも一方が書き込み）、17.4.5でデータ競合と「正しく同期したプログラムの実行は逐次一貫に見える」ことが定義されていることを確かめた
+
+  - id: final-fields
+    claim: コンストラクターでfinalフィールドを設定し、構築中にthisを他のスレッドへ漏らさなければ、オブジェクトへの参照を見たスレッドは、同期がなくてもfinalフィールドの正しい値（と、それが指すオブジェクトの少なくともその時点の内容）を見る
+    sources:
+      - title: JLS 25 17.5 final Field Semantics
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: is guaranteed to see the correctly initialized values for that object's final fields
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.5の冒頭に、finalフィールドの使い方の約束（コンストラクターで設定し、構築が終わる前に参照を他のスレッドから見える場所に書かない）と、その場合の保証が書かれていることを確かめた
+
+  - id: long-double
+    claim: volatileでないlongとdoubleへの1回の書き込みは、32ビットずつ2回の書き込みとして扱われてよい。volatileのlongとdouble、および参照の読み書きは常に原子的である
+    sources:
+      - title: JLS 25 17.7 Non-Atomic Treatment of double and long
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Writes and reads of volatile long and double values are always atomic.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.7を読んで確かめた（実装はどちらでもよく、分けないことが推奨されている）
+
+  - id: threads-are-thread
+    claim: JLSの第17章のスレッドはThreadクラスで表され、仮想スレッドもThreadのインスタンスなので、同じメモリモデルの規則が当てはまる
+    sources:
+      - title: JLS 25 17.1 Synchronization（第17章の冒頭）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Threads are represented by the Thread class.
+      - title: java.lang.Thread（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
+        anchor: Virtual threads
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の第17章の冒頭にスレッドはThreadクラスで表されるとあり、ThreadのAPIドキュメントが仮想スレッドをThreadの一種として説明していることを確かめた
+
+  - id: countdownlatch-hb
+    claim: CountDownLatchでは、countDown()を呼ぶ前の操作は、対応するawait()から戻った後の操作よりhappens-beforeである
+    sources:
+      - title: java.util.concurrent.CountDownLatch（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CountDownLatch.html
+        anchor: actions in a thread prior to calling countDown() happen-before actions following a successful return from a corresponding await()
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: CountDownLatchのAPIドキュメント（Java SE 25）の「Memory consistency effects」を読んで確かめた
+
+  # ---- 観察: 可視性（ループの持ち上げ）
+  - id: stop-plain-hangs
+    claim: volatileでないフラグを待つループは、JITコンパイルされると、別のスレッドがフラグを立てても終わらないことがある
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [plain]
+      expect:
+        - '^plainのフラグ: ワーカーは2秒待っても止まらない$'
+      attempts: 3
+
+  - id: stop-osr
+    claim: このループはOSR（実行中のループの途中から切り替えるコンパイル）でC2（レベル4）にコンパイルされる
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [plain]
+      jvm: ['-XX:+PrintCompilation']
+      expect:
+        - '%\s+4\s+StopFlag::spinPlain @ \d+'
+      show: ['StopFlag::spinPlain', 'のフラグ']
+      normalize:
+        '^\s*\d+\s+\d+\s+': ''
+        '\s+made not entrant.*': ' made not entrant'
+      attempts: 3
+
+  - id: stop-xint
+    claim: インタープリターだけで動かす（-Xint）と、同じループは止まる
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [plain]
+      jvm: ['-Xint']
+      expect:
+        - '^plainのフラグ: ワーカーは止まった$'
+
+  - id: stop-c1
+    claim: C1だけでコンパイルする（-XX:TieredStopAtLevel=1）と、この観察では止まった
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [plain]
+      jvm: ['-XX:TieredStopAtLevel=1']
+      expect:
+        - '^plainのフラグ: ワーカーは止まった$'
+
+  - id: stop-volatile
+    claim: フラグをvolatileにすると、ループは止まる
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [volatile]
+      expect:
+        - '^volatileのフラグ: ワーカーは止まった$'
+
+  - id: stop-opaque
+    claim: VarHandleのgetOpaque・setOpaqueで読み書きすると、ループは止まる
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [opaque]
+      expect:
+        - '^opaqueのフラグ: ワーカーは止まった$'
+
+  - id: stop-acquire
+    claim: VarHandleのgetAcquire・setReleaseで読み書きすると、ループは止まる
+    verify:
+      kind: run
+      probe: verify/StopFlag.java
+      args: [acquire]
+      expect:
+        - '^acquireのフラグ: ワーカーは止まった$'
+
+  # ---- 観察: 並べ替え（ストアバッファーのリトマス試験）
+  - id: store-buffer-plain
+    claim: 自分の変数に書いてから相手の変数を読む2つのスレッドで、両方が0を読む結果は、volatileでない変数では実際に起こる
+    sources:
+      - title: JLS 25 17.4 Memory Model（Table 17.4-A）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Surprising results caused by statement reordering
+    verify:
+      kind: run
+      probe: verify/StoreBuffer.java
+      expect:
+        - '^plain: 200000回のうち、両方が0を読んだ回数は1回以上$'
+      show: ['^plain: ']
+      attempts: 5
+
+  - id: store-buffer-volatile
+    claim: 4つの変数をすべてvolatileにすると、両方が0を読む結果は起こらない（volatileのアクセスには全体の順序があり、正しく同期したプログラムになる）
+    sources:
+      - title: JLS 25 17.4.4 Synchronization Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Every execution has a synchronization order
+    verify:
+      kind: run
+      probe: verify/StoreBuffer.java
+      args: [volatile]
+      expect:
+        - '^volatile: 200000回のうち、両方が0を読んだ回数は0回$'
+      show: ['^volatile: ']
+
+  # ---- 観察: 原子性
+  - id: increment-bytecode
+    claim: count++は、volatileでもそうでなくても、getstatic（読む）・iadd（足す）・putstatic（書く）の別々の命令になる
+    verify:
+      kind: javap
+      probe: verify/Bytecode.java
+      class: Bytecode
+      expect:
+        - 'getstatic\s+#\d+\s+// Field count:I\n\s*\d+: iconst_1\n\s*\d+: iadd\n\s*\d+: putstatic\s+#\d+\s+// Field count:I'
+        - 'getstatic\s+#\d+\s+// Field plainCount:I\n\s*\d+: iconst_1\n\s*\d+: iadd\n\s*\d+: putstatic\s+#\d+\s+// Field plainCount:I'
+      range: { from: 'static void incrementVolatile', to: 'return' }
+      show: ['^\s*\d+: ']
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: volatile-flag
+    claim: volatileはフィールドのアクセスフラグ（ACC_VOLATILE）としてクラスファイルに記録され、読み書きの命令はvolatileでないフィールドと同じである
+    sources:
+      - title: JVMS 25 4.5 Fields（ACC_VOLATILE）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: ACC_VOLATILE
+    verify:
+      kind: javap
+      probe: verify/Bytecode.java
+      class: Bytecode
+      options: ['-p', '-v']
+      expect:
+        - 'static volatile int count;\n\s*descriptor: I\n\s*flags: \(0x0048\) ACC_STATIC, ACC_VOLATILE'
+        - 'static int plainCount;\n\s*descriptor: I\n\s*flags: \(0x0008\) ACC_STATIC$'
+      show: ['static (volatile )?int (count|plainCount);', 'flags: \(0x00(48|08)\) ACC_STATIC(, ACC_VOLATILE)?$']
+      range: { from: 'static volatile int count;', to: 'static Bytecode instance;' }
+
+  - id: lost-updates
+    claim: 4つのスレッドが100万回ずつcount++すると、intでもvolatile intでも更新が失われる。synchronized・AtomicInteger・LongAdderでは400万になる
+    verify:
+      kind: run
+      probe: verify/LostUpdates.java
+      expect:
+        - '^int（plain）のcount\+\+: 400万より少ない（更新が失われた）$'
+        - '^volatile intのcount\+\+: 400万より少ない（更新が失われた）$'
+        - '^synchronizedの中のcount\+\+: 400万（正しい）$'
+        - '^AtomicInteger.incrementAndGet: 400万（正しい）$'
+        - '^LongAdder.increment: 400万（正しい）$'
+      show: [': 400万']
+      attempts: 3
+
+  - id: atomic-internals
+    claim: JDK 25のAtomicIntegerとAtomicLongは内部でjdk.internal.misc.Unsafeを使い、AtomicReference・AtomicBoolean・AtomicIntegerArrayはVarHandleを使う
+    verify:
+      kind: run
+      probe: verify/AtomicInternals.java
+      expect:
+        - '^AtomicInteger: jdk.internal.misc.Unsafe U$'
+        - '^AtomicLong: jdk.internal.misc.Unsafe U$'
+        - '^AtomicReference: java.lang.invoke.VarHandle VALUE$'
+        - '^AtomicBoolean: java.lang.invoke.VarHandle VALUE$'
+        - '^AtomicIntegerArray: java.lang.invoke.VarHandle AA$'
+      show: ['^Atomic']
+
+  # ---- ダブルチェックロッキングと遅延初期化
+  - id: publish-bytecode
+    claim: instance = new Bytecode(42)は、new（領域を確保）・invokespecial（コンストラクターを実行）・putstatic（フィールドに参照を書く）の別々の命令になる
+    verify:
+      kind: javap
+      probe: verify/Bytecode.java
+      class: Bytecode
+      expect:
+        - 'new\s+#\d+\s+// class Bytecode\n\s*\d+: dup\n\s*\d+: bipush\s+42\n\s*\d+: invokespecial\s+#\d+\s+// Method "<init>":\(I\)V\n\s*\d+: putstatic\s+#\d+\s+// Field instance:LBytecode;'
+      range: { from: 'static void publish', to: 'return' }
+      show: ['^\s*\d+: ']
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: class-init
+    claim: クラスは、そのstaticメソッドの呼び出しや、定数でないstaticフィールドの使用の直前に初期化される。初期化はクラスごとの初期化ロックを取って1回だけ行われる
+    sources:
+      - title: JLS 25 12.4.1 When Initialization Occurs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: will be initialized immediately before the first occurrence of any one of the following
+      - title: JLS 25 12.4.2 Detailed Initialization Procedure
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: there is a unique initialization lock
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の12.4.1に初期化の契機（インスタンスの生成、staticメソッドの呼び出し、staticフィールドへの代入、定数変数でないstaticフィールドの使用）、12.4.2にクラスごとの初期化ロックLCを取って初期化する手順があることを確かめた
+
+  - id: lazy-holder
+    claim: ホルダークラスのイディオムでは、インスタンスは最初にgetInstance()が呼ばれたときに1回だけ作られ、すべてのスレッドが同じインスタンスを得る
+    verify:
+      kind: run
+      probe: verify/LazyHolder.java
+      expect:
+        - '^mainの開始（まだConfigは作られていない）\nConfigを作った（worker-\d）\n8つのスレッドが同じインスタンスを得た: true$'
+      show: ['^mainの開始', '^Configを作った', '^8つのスレッド']
+      normalize:
+        'worker-\d': 'worker-N'
+
+  # ---- VarHandle
+  - id: varhandle-modes
+    claim: VarHandleのアクセスモードは、plain（get・set）、opaque、acquire/release、volatileの順に強くなる。opaqueは同じ変数へのアクセスの順序だけ、acquire/releaseはreleaseの書き込みより前のアクセスがacquireの読み込みより後に順序づけられ、volatileはさらにすべてのvolatileの操作に全体の順序がある
+    sources:
+      - title: java.lang.invoke.VarHandle（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/VarHandle.html
+        anchor: Opaque operations are bitwise atomic and coherently ordered with respect to accesses to the same variable.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: VarHandleのAPIドキュメント（Java SE 25）の「Access modes control atomicity and consistency properties」の段落を読んで確かめた
+
+  - id: varhandle-plain-atomic
+    claim: plainの読み書きが原子的なのは参照と32ビット以下の基本型だけで、ほかのスレッドに対する順序の制約はない
+    sources:
+      - title: java.lang.invoke.VarHandle（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/VarHandle.html
+        anchor: guaranteed to be bitwise atomic only for references and for primitive values of at most 32 bits
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: VarHandleのAPIドキュメント（Java SE 25）で確かめた（JLS 17.7のlong・doubleの扱いと一致する）
+
+  - id: varhandle-fences
+    claim: VarHandleには、fullFence・acquireFence・releaseFence・loadLoadFence・storeStoreFenceの5つのフェンスがある
+    sources:
+      - title: java.lang.invoke.VarHandle（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/VarHandle.html
+        anchor: storeStoreFence
+    verify:
+      kind: run
+      probe: verify/AtomicInternals.java
+      expect:
+        - '^VarHandleのフェンス: acquireFence fullFence loadLoadFence releaseFence storeStoreFence$'
+
+  # ---- false sharing と @Contended
+  - id: plain-layout
+    claim: volatile longのカウンターを4つ並べたクラスでは、HotSpotはカウンターを8バイトおきに置く。7つのlongで前後を埋めると、隣のカウンターとは120バイト離れる
+    verify:
+      kind: run
+      probe: verify/ContendedLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['--add-exports', 'java.base/jdk.internal.vm.annotation=ALL-UNNAMED', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '== PlainCounters ==\ncounter1: オフセット16\ncounter2: オフセット24（前のカウンターから8バイト）\ncounter3: オフセット32（前のカウンターから8バイト）\ncounter4: オフセット40（前のカウンターから8バイト）'
+        - '== ManualPadding ==\ncounter1: オフセット72\ncounter2: オフセット192（前のカウンターから120バイト）'
+      range: { from: '== PlainCounters ==', to: '== ContendedCounters' }
+      show: ['^== (PlainCounters|ManualPadding)', '^counter', '^インスタンス']
+
+  - id: contended-flags
+    claim: '@Contendedは既定で有効（EnableContended）だが、アプリケーションのクラスでは無視される（RestrictContended）。詰め物の幅（ContendedPaddingWidth）は既定で128バイトである'
+    sources:
+      - title: 'JEP 142: Reduce Cache Contention on Specified Fields'
+        url: https://openjdk.org/jeps/142
+        anchor: add padding before and after each field which might experience contention
+    verify: { kind: flag, flag: RestrictContended, value: 'true' }
+  - id: contended-enabled
+    claim: 同上（EnableContendedは既定でtrue）
+    unreferenced: true
+    verify: { kind: flag, flag: EnableContended, value: 'true' }
+  - id: contended-width
+    claim: 同上（ContendedPaddingWidthは既定で128）
+    unreferenced: true
+    verify: { kind: flag, flag: ContendedPaddingWidth, value: 128 }
+
+  - id: contended-jep142
+    claim: '@Contendedは、JDK 8（JEP 142）で入ったHotSpotの機能で、競合するフィールドの前後に詰め物を入れてキャッシュラインを分ける'
+    sources:
+      - title: 'JEP 142: Reduce Cache Contention on Specified Fields'
+        url: https://openjdk.org/jeps/142
+        anchor: Reduce Cache Contention on Specified Fields
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 142（Release 8、Component hotspot / gc、Closed / Delivered）を読み、競合しやすいフィールドの前後に詰め物を入れて、ほかのフィールドやオブジェクトと同じキャッシュラインに載らないようにする考え方を確かめた
+
+  - id: contended-restricted
+    claim: アプリケーションのクラスの@Contendedは、-XX:-RestrictContendedを付けないと無視され、フィールドは詰め物なしで並ぶ
+    verify:
+      kind: run
+      probe: verify/ContendedLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['--add-exports', 'java.base/jdk.internal.vm.annotation=ALL-UNNAMED', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '== ContendedCounters（アプリケーションのクラス） ==\ncounter1: オフセット16\ncounter2: オフセット24（前のカウンターから8バイト）\nインスタンスの大きさ: 32バイト'
+      range: { from: '== ContendedCounters', to: 'インスタンスの大きさ' }
+      show: ['^==', '^counter', '^インスタンス']
+
+  - id: contended-padded
+    claim: -XX:-RestrictContendedを付けると、@Contendedのフィールドの前に128バイトの詰め物が入り、2つのカウンターは136バイト離れる
+    verify:
+      kind: run
+      probe: verify/ContendedLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-XX:-RestrictContended', '--add-exports', 'java.base/jdk.internal.vm.annotation=ALL-UNNAMED', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '== ContendedCounters（アプリケーションのクラス） ==\ncounter1: オフセット144\ncounter2: オフセット280（前のカウンターから136バイト）\nインスタンスの大きさ: 288バイト'
+      range: { from: '== ContendedCounters', to: 'インスタンスの大きさ' }
+      show: ['^==', '^counter', '^インスタンス']
+
+  - id: striped64-cell
+    claim: LongAdderが内部で使うStriped64$Cellには@Contendedが付いていて、JDKのクラスなので-XX:-RestrictContendedがなくても、valueの前に詰め物が入る
+    verify:
+      kind: run
+      probe: verify/ContendedLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['--add-exports', 'java.base/jdk.internal.vm.annotation=ALL-UNNAMED', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^\s*12\s+132\s+\(alignment/padding gap\)'
+        - '^144\s+8\s+long Cell\.value'
+        - '^Striped64\$Cellの大きさ: 152バイト$'
+      range: { from: 'Striped64\$Cell object internals', to: '^Instance size' }
+      show: ['^\s*\d+\s+\d+\s+', '^OFF', '^Instance size']
+      keepIndent: true
+
+  - id: striped64-annotation
+    claim: Striped64$Cellのクラスファイルには、実行時に見えるアノテーションとしてjdk.internal.vm.annotation.Contendedが記録されている
+    verify:
+      kind: javap
+      probe: verify/Bytecode.java
+      class: java.util.concurrent.atomic.Striped64$Cell
+      options: ['-v']
+      expect:
+        - 'RuntimeVisibleAnnotations:\n\s*0: #\d+\(\)\n\s*jdk\.internal\.vm\.annotation\.Contended'
+      range: { from: '^RuntimeVisibleAnnotations:', to: 'jdk\.internal\.vm\.annotation\.Contended' }
+      show: ['RuntimeVisibleAnnotations', 'jdk\.internal\.vm\.annotation\.Contended']
+
+  # ---- 仮想スレッドと synchronized
+  - id: jep491
+    claim: JDK 24（JEP 491）から、synchronizedの中でブロックした仮想スレッドはキャリアを手放す。ピン留めを避けるためにsynchronizedをReentrantLockへ書き換える必要はなくなった
+    sources:
+      - title: 'JEP 491: Synchronize Virtual Threads without Pinning'
+        url: https://openjdk.org/jeps/491
+        anchor: such migration will no longer be necessary
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 491（Release 24、Closed / Delivered）を読み、synchronizedの中や、モニターの取得を待つ間、Object.wait()の間に仮想スレッドがキャリアを手放すようになったこと、ReentrantLockへの書き換えが不要になったことを確かめた
+
+  - id: vthread-sync-unpinned
+    claim: キャリアを1つに制限しても、synchronizedの中でsleepする4つの仮想スレッドは同時に眠れる（キャリアを手放している）
+    verify:
+      kind: run
+      probe: verify/VirtualPinning.java
+      args: [synchronized]
+      expect:
+        - '^synchronizedの中で同時に眠れた仮想スレッドの数（キャリアは1つ）: 4$'
+
+  - id: vthread-clinit-pinned
+    claim: クラスの初期化（static初期化子）の中でsleepする仮想スレッドはキャリアを手放さず、キャリアが1つなら同時に眠れるのは1つだけである
+    sources:
+      - title: 'JEP 491: Synchronize Virtual Threads without Pinning（Future Work）'
+        url: https://openjdk.org/jeps/491
+        anchor: When blocking inside a class initializer.
+    verify:
+      kind: run
+      probe: verify/VirtualPinning.java
+      args: [clinit]
+      expect:
+        - '^clinitの中で同時に眠れた仮想スレッドの数（キャリアは1つ）: 1$'
+
+  - id: trace-pinned-removed
+    claim: JEP 491でシステムプロパティjdk.tracePinnedThreadsは削除され、指定しても何も起こらない。ピン留めはJFRのjdk.VirtualThreadPinnedイベントで調べる
+    sources:
+      - title: 'JEP 491: Synchronize Virtual Threads without Pinning'
+        url: https://openjdk.org/jeps/491
+        anchor: setting it on the command line will have no effect
+    verify:
+      kind: run
+      probe: verify/VirtualPinning.java
+      args: [clinit]
+      jvm: ['-Djdk.tracePinnedThreads=full']
+      expect:
+        - '^clinitの中で同時に眠れた仮想スレッドの数（キャリアは1つ）: 1$'
+      absent:
+        - '^\s+at '
+        - 'monitors:'
