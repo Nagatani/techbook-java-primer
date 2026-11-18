@@ -347,11 +347,13 @@ function checkSources(sec, ledger, problems) {
       const r = spawnSync('curl', ['-sfL', '--max-time', '30', '-A', 'Mozilla/5.0 (book-verification)', s.url], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
       if (r.status !== 0) { problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} を開けない` }); continue; }
       if (s.anchor) {
-        const plain = r.stdout.replace(/<[^>]+>/g, ' ')
+        // タグを空白にした文字列と、タグを取り除いただけの文字列の両方で探す（リンクやコードをまたぐ文のため）
+        const decode = (t) => t
           .replace(/&nbsp;/g, ' ').replace(/&#(\d+);/g, (m, n) => String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCodePoint(parseInt(n, 16)))
           .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
           .replace(/[\s\u00a0\u2009]+/g, ' ');
-        if (!plain.includes(s.anchor)) problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} に「${s.anchor}」がない` });
+        const found = [r.stdout.replace(/<[^>]+>/g, ' '), r.stdout.replace(/<[^>]+>/g, '')].some((t) => decode(t).includes(s.anchor));
+        if (!found) problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} に「${s.anchor}」がない` });
       }
     }
   }
