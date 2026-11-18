@@ -305,7 +305,18 @@ function verifyClaim(sec, c, tmp) {
 function shownOutput(c, output) {
   const v = c.verify;
   const pats = asList(v.show || v.expect).map((re) => new RegExp(re));
-  let lines = output.split('\n').filter((l) => pats.some((p) => p.test(l)));
+  let all = output.split('\n');
+  // range: { from, to } で、fromに当たる行からtoに当たる行（または空行）までに絞る（javapの1メソッドだけなど）
+  if (v.range) {
+    const start = all.findIndex((l) => new RegExp(v.range.from).test(l));
+    if (start >= 0) {
+      const endRe = v.range.to ? new RegExp(v.range.to) : /^\s*$/;
+      let end = all.findIndex((l, i) => i > start && endRe.test(l));
+      if (end < 0) end = all.length;
+      all = all.slice(start, v.range.to ? end + 1 : end);
+    }
+  }
+  let lines = all.filter((l) => pats.some((p) => p.test(l)));
   // 字下げと連続する空白を詰める（PrintInliningなどは呼び出しの深さで字下げが変わる）
   // keepIndent: true なら字下げと桁を残す（木の表示やJOLの表など）
   lines = v.keepIndent ? lines.map((l) => l.replace(/\s+$/, '')) : lines.map((l) => l.trim().replace(/\s{2,}/g, ' '));

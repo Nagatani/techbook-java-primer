@@ -29,7 +29,7 @@
 
 - `expect`・`absent`はJavaScriptの正規表現（複数行モード）。`[\s\S]*`で行をまたげる
 - JITの判断のように実行ごとにぶれるものは`attempts`（試す回数）を指定し、1回でも当てはまれば合格にする
-- 出力の欄に載せる行は`show`（正規表現の配列。省くと`expect`）で選ぶ。`normalize`（正規表現 → 置き換える文字）で番地や番号を消し、`sort: true`で並べて重複を除く。字下げと連続する空白は詰めるが、`keepIndent: true`なら残す（木の表示や表）
+- 出力の欄に載せる行は`show`（正規表現の配列。省くと`expect`）で選ぶ。`normalize`（正規表現 → 置き換える文字）で番地や番号を消し、`sort: true`で並べて重複を除く。字下げと連続する空白は詰めるが、`keepIndent: true`なら残す（木の表示や表）。`range: { from: 正規表現, to: 正規表現 }`で、ある行から次の行（`to`を省くと空行）までに絞れる（`javap`の1つのメソッドだけを載せるときなど）
 - `libs`にはMaven Centralの座標を書く（`.cache/sample-code-libs/`に取得する）。オブジェクトの配置はJOL（`org.openjdk.jol:jol-core:0.17`）で観察できる
 - コンパイルが失敗するはずのプローブ（`javac`の`fails: true`）は、`verify/`の下の`compile-errors/`に置き、`check:public-code`の対象から外す（下の「コンパイルできないプローブ」）
 - 解説から参照しない補助の検証（同じ主張の別の条件など）は`unreferenced: true`を付ける
