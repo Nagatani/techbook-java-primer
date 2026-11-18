@@ -25,14 +25,12 @@ public class RecordOptimizationDemo {
      * メモリレイアウトについて
      * HotSpot JVMはフィールドを自動で並べ替えて配置するので、
      * レコードのコンポーネントを宣言する順序はオブジェクトの大きさに影響しない。
-     * また、既定で有効なcompressed oopsでは、参照（Stringなど）は4バイトで表される
+     * また、compressed oops（有効にするかはJVMが自動で決める。PrintFlagsFinalではergonomicと表示される）では、参照（Stringなど）は4バイトで表される
      */
     public static class MemoryOptimization {
         
-        // Value-basedの候補（将来のProject Valhalla）
-        // @jdk.internal.ValueBased - 将来のProject Valhallaで使用される予定
+        // Project Valhallaの値オブジェクト（JEP 401、Java 25にはない）になりうる形のレコード
         public record Point3D(double x, double y, double z) {
-            // 将来的にはValue Typeとして最適化される可能性
             
             public double magnitude() {
                 return Math.sqrt(x * x + y * y + z * z);
@@ -60,7 +58,12 @@ public class RecordOptimizationDemo {
             IO.println("=== Memory Layout ===");
             IO.println("HotSpot reorders fields automatically, so the declaration order of");
             IO.println("record components does not change the object size.");
-            IO.println("With compressed oops (the default), a reference takes 4 bytes.");
+            // compressed oopsが有効なら、参照（Stringなど）は4バイトで表される。有効かどうかはJVMに問い合わせる
+            var hotspot = java.lang.management.ManagementFactory
+                    .getPlatformMXBean(com.sun.management.HotSpotDiagnosticMXBean.class);
+            IO.println("UseCompressedOops in this JVM: "
+                    + hotspot.getVMOption("UseCompressedOops").getValue()
+                    + " (if true, a reference takes 4 bytes)");
             
             // Point3Dの配列効率
             var pointArray = new Point3D[10_000];
@@ -380,7 +383,7 @@ public class RecordOptimizationDemo {
             var handles = new ArrayList<Map.Entry<String, MethodHandle>>();
             for (var component : clazz.getRecordComponents()) {
                 try {
-                    // 引数と戻り値をObjectにそろえておくと、invokeExactに近い速さで呼び出せる
+                    // 引数と戻り値の型をObjectにそろえておく（どのレコードのアクセサーも同じ型で呼び出せる）
                     MethodHandle handle = lookup.unreflect(component.getAccessor())
                         .asType(MethodType.methodType(Object.class, Object.class));
                     handles.add(Map.entry(component.getName(), handle));

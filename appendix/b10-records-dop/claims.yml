@@ -1,0 +1,704 @@
+# 付録B.10の主張と、その確かめ方
+# npm run check:deep-dive -- b10 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 機能が入った版
+  - id: version-record
+    claim: レコードはJava 16で正式な機能になった（--release 15ではコンパイルできない）
+    sources:
+      - title: JEP 395 Records
+        url: https://openjdk.org/jeps/395
+        anchor: Records
+    verify:
+      kind: javac
+      probe: verify/FeatureRecord.java
+      release: 15
+      fails: true
+      expect:
+        - 'records are not supported in -source 15'
+        - 'use -source 16 or higher to enable records'
+      show:
+        - 'error:'
+        - 'use -source'
+      normalize:
+        '^\S*/': ''
+
+  - id: version-record-16
+    claim: 同上（--release 16ではコンパイルできる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/FeatureRecord.java
+      release: 16
+      absent:
+        - 'error'
+
+  - id: version-preview
+    claim: レコードはJava 14と15（JEP 359・384）、sealedはJava 15と16（JEP 360・397）でプレビュー機能として提供された
+    sources:
+      - title: JEP 395 Records（History）
+        url: https://openjdk.org/jeps/395
+        anchor: Records were proposed by JEP 359 and delivered in JDK 14 as a preview feature
+      - title: JEP 409 Sealed Classes（History）
+        url: https://openjdk.org/jeps/409
+        anchor: Sealed Classes were proposed by JEP 360 and delivered in JDK 15 as a preview feature
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 395とJEP 409のHistoryの節で、プレビューとして提供された版とJEPの番号を確かめた
+
+  - id: version-sealed
+    claim: sealedクラス・インターフェイスはJava 17で正式な機能になった
+    sources:
+      - title: JEP 409 Sealed Classes
+        url: https://openjdk.org/jeps/409
+        anchor: Sealed Classes
+    verify:
+      kind: javac
+      probe: verify/FeatureSealed.java
+      release: 16
+      fails: true
+      expect:
+        - 'sealed classes are not supported in -source 16'
+        - 'use -source 17 or higher to enable sealed classes'
+
+  - id: version-sealed-17
+    claim: 同上（--release 17ではコンパイルできる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/FeatureSealed.java
+      release: 17
+      absent:
+        - 'error'
+
+  - id: version-patterns
+    claim: switchのパターンマッチングとレコードパターンはJava 21で正式な機能になった
+    sources:
+      - title: JEP 440 Record Patterns
+        url: https://openjdk.org/jeps/440
+        anchor: Record Patterns
+      - title: JEP 441 Pattern Matching for switch
+        url: https://openjdk.org/jeps/441
+        anchor: Pattern Matching for switch
+    verify:
+      kind: javac
+      probe: verify/FeatureRecordPattern.java
+      release: 20
+      fails: true
+      expect:
+        - 'patterns in switch statements are not supported in -source 20'
+        - 'deconstruction patterns are not supported in -source 20'
+
+  - id: version-patterns-21
+    claim: 同上（--release 21ではコンパイルできる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/FeatureRecordPattern.java
+      release: 21
+      absent:
+        - 'error'
+
+  - id: version-unnamed
+    claim: 名前のないパターン変数（_）はJava 22で正式な機能になった
+    sources:
+      - title: JEP 456 Unnamed Variables & Patterns
+        url: https://openjdk.org/jeps/456
+        anchor: Unnamed Variables
+    verify:
+      kind: javac
+      probe: verify/FeatureUnnamed.java
+      release: 21
+      fails: true
+      expect:
+        - 'unnamed variables are not supported in -source 21'
+      show:
+        - 'error:'
+        - 'use -source'
+      normalize:
+        '^\S*/': ''
+
+  - id: version-unnamed-22
+    claim: 同上（--release 22ではコンパイルできる）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/FeatureUnnamed.java
+      release: 22
+      absent:
+        - 'error'
+
+  # ---- レコードの正体
+  - id: record-class-shape
+    claim: レコードはjava.lang.Recordを継承するfinalなクラスにコンパイルされ、コンポーネントごとにprivate finalのフィールドとpublicのアクセサーを持つ。暗黙の正準コンストラクターはレコードと同じアクセス修飾子を持つ
+    sources:
+      - title: JLS 25 8.10 Record Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: A record class is implicitly
+      - title: java.lang.Record（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: The implicit declaration of the canonical constructor has the same accessibility as the record class
+    verify:
+      kind: javap
+      probe: verify/RecordAnatomy.java
+      class: RecordAnatomy$Point
+      options: ['-p']
+      expect:
+        - '^final class RecordAnatomy\$Point extends java\.lang\.Record'
+        - '^\s*private final int x;'
+        - '^\s*private final int y;'
+        - '^\s*RecordAnatomy\$Point\(int, int\);'
+        - '^\s*public int x\(\);'
+        - '^\s*public int y\(\);'
+      show:
+        - '.'
+
+  - id: record-generated-methods
+    claim: equals・hashCode・toStringはpublic finalのメソッドとして暗黙に宣言される
+    sources:
+      - title: JLS 25 8.10.3 Record Members
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: public final boolean equals(Object)
+    verify:
+      kind: javap
+      probe: verify/RecordAnatomy.java
+      class: RecordAnatomy$Point
+      options: ['-p']
+      expect:
+        - '^\s*public final java\.lang\.String toString\(\);'
+        - '^\s*public final int hashCode\(\);'
+        - '^\s*public final boolean equals\(java\.lang\.Object\);'
+
+  - id: record-indy
+    claim: javacは、equals・hashCode・toStringの本体をinvokedynamicの1命令にし、ブートストラップメソッドにjava.lang.runtime.ObjectMethods.bootstrapを、引数にフィールドを読むメソッドハンドル（REF_getField）を渡す。比較や文字列を組み立てる処理は、実行時にJDKが作る
+    sources:
+      - title: java.lang.runtime.ObjectMethods（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/runtime/ObjectMethods.html
+        anchor: Bootstrap methods for state-driven implementations of core methods
+    verify:
+      kind: javap
+      probe: verify/RecordAnatomy.java
+      class: RecordAnatomy$Point
+      options: ['-c', '-p', '-v']
+      expect:
+        - 'invokedynamic .*InvokeDynamic #0:equals:\(LRecordAnatomy\$Point;Ljava/lang/Object;\)Z'
+        - 'REF_invokeStatic java/lang/runtime/ObjectMethods\.bootstrap'
+        - 'REF_getField RecordAnatomy\$Point\.x:I'
+      show:
+        - 'invokedynamic .*InvokeDynamic'
+        - '^\s*0: #\d+ REF_invokeStatic'
+        - '^\s*#\d+ (x;y|REF_getField)'
+      normalize:
+        '#\d+,\s*0\s*//': '//'
+        '\(Ljava/lang/invoke/MethodHandles\$Lookup;.*$': '(...)'
+
+  - id: record-attribute
+    claim: クラスファイルにはRecord属性があり、コンポーネントの名前と型が記録される。Class.isRecordやgetRecordComponentsはこれを読む
+    sources:
+      - title: JVMS 25 4.7.30 The Record Attribute
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: The Record Attribute
+    verify:
+      kind: javap
+      probe: verify/RecordAnatomy.java
+      class: RecordAnatomy$Point
+      options: ['-v']
+      expect:
+        - '^Record:\n\s+int x;\n\s+descriptor: I\n\n\s+int y;'
+
+  - id: record-reflection
+    claim: リフレクションで見ると、レコードはisRecordがtrueで、スーパークラスはjava.lang.Record、入れ子のレコードはstatic finalになる
+    sources:
+      - title: JLS 25 8.10 Record Classes（A nested record class is implicitly static）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: A nested record class is implicitly
+    verify:
+      kind: run
+      probe: verify/RecordAnatomy.java
+      expect:
+        - '^isRecord: true$'
+        - '^スーパークラス: java\.lang\.Record$'
+        - '^クラスの修飾子: static final$'
+        - '^フィールド: private final int x$'
+        - '^コンポーネント: x アクセサー: x\(\)$'
+      show:
+        - '^(isRecord|スーパークラス|クラスの修飾子|フィールド|コンポーネント|toString)'
+
+  - id: record-final-reflection
+    claim: ふつうのクラスのfinalフィールドはsetAccessible(true)のあとにField.setで書き換えられるが、レコードのフィールドは書き換えられない（IllegalAccessException）
+    sources:
+      - title: java.lang.reflect.Field#set（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Field.html
+        anchor: record class
+    verify:
+      kind: run
+      probe: verify/RecordAnatomy.java
+      expect:
+        - '^ふつうのクラスのfinalフィールド: 書き換えられた（x=99）$'
+        - '^レコードのフィールド: IllegalAccessException$'
+      show:
+        - 'フィールド: (書き換え|Illegal)'
+
+  # ---- 宣言の制約（コンパイルエラー）
+  - id: error-record-extends
+    claim: レコードにはextends節を書けない
+    sources:
+      - title: JLS 25 8.10 Record Classes（RecordDeclarationの構文にextendsがない）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: RecordDeclaration
+    verify:
+      kind: javac
+      probe: verify/compile-errors/RecordExtends.java
+      fails: true
+      expect:
+        - "RecordExtends\\.java:5: error: '\\{' expected"
+
+  - id: error-extend-record
+    claim: ふつうのクラスはjava.lang.Recordを直接継承できない
+    sources:
+      - title: JLS 25 8.1.4 Superclasses and Subclasses
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: which can only be extended by a record class
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ExtendRecordClass.java
+      fails: true
+      expect:
+        - 'classes cannot directly extend Record'
+
+  - id: error-instance-field
+    claim: レコードはコンポーネント以外のインスタンスフィールドを宣言できない（staticフィールドは宣言できる）
+    sources:
+      - title: JLS 25 8.10.3 Record Members（instance variables）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: may not explicitly declare instance variables
+    verify:
+      kind: javac
+      probe: verify/compile-errors/RecordInstanceField.java
+      fails: true
+      expect:
+        - 'field declaration must be static'
+
+  - id: error-setter
+    claim: レコードのフィールドはfinalなので、メソッドの中で代入できない
+    verify:
+      kind: javac
+      probe: verify/compile-errors/RecordSetter.java
+      fails: true
+      expect:
+        - 'cannot assign a value to final variable x'
+
+  - id: error-accessor-public
+    claim: 明示的に宣言するアクセサーはpublicでなければならない
+    sources:
+      - title: JLS 25 8.10.3 Record Members
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The accessor method must be a public instance method
+    verify:
+      kind: javac
+      probe: verify/compile-errors/AccessorNotPublic.java
+      fails: true
+      expect:
+        - 'invalid accessor method in record Point'
+        - 'accessor method must be public'
+
+  - id: error-local-capture
+    claim: ローカルレコードは暗黙にstaticなので、囲むメソッドのローカル変数を使えない
+    sources:
+      - title: JLS 25 8.1.1.4 static Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: local record classes
+    verify:
+      kind: javac
+      probe: verify/compile-errors/LocalRecordCapture.java
+      fails: true
+      expect:
+        - 'non-static variable base cannot be referenced from a static context'
+
+  # ---- コンパクトコンストラクター
+  - id: compact-assign-at-end
+    claim: コンパクトコンストラクターでは、本体の最後の文のあとに、仮引数の値がフィールドに代入される。本体の中で仮引数を書き換えれば、その値がフィールドに入る
+    sources:
+      - title: JLS 25 8.10.4.2 Compact Canonical Constructors
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: all component fields of the record class are implicitly initialized
+    verify:
+      kind: javap
+      probe: verify/CompactConstructor.java
+      class: CompactConstructor$Range
+      expect:
+        - 'athrow\n\s+38: aload_0\n\s+39: iload_1\n\s+40: putfield .*Field low:I\n\s+43: aload_0\n\s+44: iload_2\n\s+45: putfield .*Field high:I\n\s+48: return'
+      show:
+        - '^\s*\d+: (if_icmple|istore|athrow|putfield|return|bipush)'
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: compact-run
+    claim: 同上（実行すると、入れ替えた値が入り、検査に通らない値では例外になる）
+    verify:
+      kind: run
+      probe: verify/CompactConstructor.java
+      expect:
+        - '^Range\[low=1, high=5\]$'
+        - '^Range\[low=3, high=9\]$'
+        - '^例外: 範囲が広すぎる: 0\.\.1000$'
+
+  - id: error-compact-assign
+    claim: コンパクトコンストラクターの中でフィールド（this.x）に代入するとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.10.4.2 Compact Canonical Constructors
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The body must not contain an assignment to a component field
+    verify:
+      kind: javac
+      probe: verify/compile-errors/CompactAssignField.java
+      fails: true
+      expect:
+        - 'CompactAssignField\.java:5: error: cannot assign a value to final variable x'
+
+  # ---- equals・hashCode・toString
+      show:
+        - 'error:'
+      normalize:
+        '^\S*/': ''
+
+  - id: equals-floating
+    claim: 暗黙のequalsは、基本型のコンポーネントをラッパークラスのcompareで比べる。そのため0.0と-0.0は等しくなく、NaNどうしは等しい（==とは逆）
+    sources:
+      - title: java.lang.Record#equals（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: would return 0
+    verify:
+      kind: run
+      probe: verify/RecordEquality.java
+      expect:
+        - '^0\.0 == -0\.0: true$'
+        - '^Measure\(0\.0\)\.equals\(Measure\(-0\.0\)\): false$'
+        - '^NaN == NaN: false$'
+        - '^Measure\(NaN\)\.equals\(Measure\(NaN\)\): true$'
+      show:
+        - '^(0\.0|NaN|Measure|Double)'
+
+  - id: equals-array
+    claim: 参照型のコンポーネントはObjects.equalsで比べるので、配列のコンポーネントは中身ではなく参照で比べられる
+    sources:
+      - title: java.lang.Record#equals（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: Objects.equals(this.c, r.c)
+    verify:
+      kind: run
+      probe: verify/RecordEquality.java
+      expect:
+        - '^配列の中身が同じ: true$'
+        - '^Tags\.equals: false$'
+      show:
+        - '^(配列|Tags)'
+
+  - id: equals-uses-fields
+    claim: 暗黙のequals・hashCode・toStringは、アクセサーを呼ばずにフィールドの値を直接使う。アクセサーをフィールドと違う値を返すように書くと、new R(r.c())とrが等しくならず、Record.equalsの約束を破る
+    sources:
+      - title: JLS 25 8.10.3 Record Members
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: rather than by invoking accessor methods
+      - title: java.lang.Record#equals（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: then it must be the case that
+    verify:
+      kind: run
+      probe: verify/RecordEquality.java
+      expect:
+        - '^アクセサーの値が同じ: true$'
+        - '^Name\.equals: false$'
+        - '^toString: Name\[value=duke\]$'
+      show:
+        - '^(アクセサー|Name|toString)'
+
+  - id: hash-tostring-unspecified
+    claim: 暗黙のhashCodeの計算方法とtoStringの書式は仕様で決まっておらず、変わることがある。hashCodeは実行のたびに同じ値になるとも限らない
+    sources:
+      - title: java.lang.Record#hashCode・toString（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: need not remain consistent from one execution of an application to another
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Record.hashCodeのImplementation Requirementsに「計算方法は決まっておらず変わることがある。実行ごとに同じである必要はない」、toStringに「書式は変わることがあるので、解析して値を取り出してはならない」とあることを確かめた
+
+  # ---- 浅い不変性
+  - id: shallow-immutable
+    claim: レコードのフィールドはfinalだが、参照先のListや配列は変えられる（浅い不変性）。Listのコンポーネントが変わればhashCodeも変わる。コンパクトコンストラクターでList.copyOfすれば、外から変えられなくなる
+    sources:
+      - title: java.lang.Record（Java SE 25 API。perform defensive copies on mutable components）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html
+        anchor: perform defensive copies on mutable components
+    verify:
+      kind: run
+      probe: verify/ShallowImmutability.java
+      expect:
+        - '^Team: Team\[name=A, members=\[Alice, Bob\]\]$'
+        - '^hashCodeが変わった: true$'
+        - '^HashSetのcontains: false$'
+        - '^Team: Team\[name=A, members=\[Alice, Bob, Carol\]\]$'
+        - '^SafeTeam: SafeTeam\[name=B, members=\[Alice\]\]$'
+        - '^SafeTeamのリストは変更できない: java\.lang\.UnsupportedOperationException$'
+        - '^Scores\.values\(\)\[0\]: 99$'
+      show:
+        - '.'
+
+  - id: circular
+    claim: 変更できるListのコンポーネントに自分自身を入れると、暗黙のhashCodeとtoStringはStackOverflowErrorになる。List.copyOfで変更できないコピーにすれば、作ったあとに循環を作れない
+    verify:
+      kind: run
+      probe: verify/CircularRecord.java
+      expect:
+        - '^hashCode: StackOverflowError$'
+        - '^toString: StackOverflowError$'
+        - '^SafeNode: SafeNode\[value=root, children=\[\]\]$'
+
+  # ---- sealedとパターンマッチング
+  - id: sealed-permitted
+    claim: sealedなインターフェイスのクラスファイルには、許可したサブクラスを並べたPermittedSubclasses属性が書かれる。レコードは暗黙にfinalなので、そのままsealedな型を実装できる
+    sources:
+      - title: JVMS 25 4.7.31 The PermittedSubclasses Attribute
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: The PermittedSubclasses Attribute
+      - title: JLS 25 8.1.1.2 sealed, non-sealed, and final Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: a record class is implicitly
+    verify:
+      kind: javap
+      probe: verify/SealedShapes.java
+      class: SealedShapes$Shape
+      options: ['-v']
+      expect:
+        - '^PermittedSubclasses:\n\s+SealedShapes\$Circle\n\s+SealedShapes\$Square\n\s+SealedShapes\$Rect'
+      show:
+        - '^PermittedSubclasses:'
+        - '^\s+SealedShapes\$(Circle|Square|Rect)$'
+
+  - id: sealed-jvm-check
+    claim: PermittedSubclassesにないクラスがsealedな型を継承・実装しようとすると、JVMはクラスを読み込むときにIncompatibleClassChangeErrorを投げる
+    sources:
+      - title: JVMS 25 5.3.5 Deriving a Class from a class File Representation
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+        anchor: PermittedSubclasses attribute refers to a class or interface with the name
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JVMS 25の5.3.5で、スーパークラス・スーパーインターフェイスのPermittedSubclassesに名前がないとき、導出がIncompatibleClassChangeErrorを投げると書かれていることを確かめた
+
+  - id: dop-jep441
+    claim: JEP 441は、switchのパターンマッチングで複雑なデータ指向の問い合わせを簡潔かつ安全に書けるようになると述べている
+    sources:
+      - title: JEP 441 Pattern Matching for switch（Summary）
+        url: https://openjdk.org/jeps/441
+        anchor: complex data-oriented queries can be expressed concisely and safely
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 441のSummaryに該当の文があることを確かめた
+
+  - id: error-sealed-modifier
+    claim: sealedな型を直接継承・実装するクラスは、final・sealed・non-sealedのどれかでなければならない
+    sources:
+      - title: JLS 25 8.1.1.2 sealed, non-sealed, and final Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: non-sealed
+    verify:
+      kind: javac
+      probe: verify/compile-errors/SealedSubclassModifier.java
+      fails: true
+      expect:
+        - 'sealed, non-sealed or final modifiers expected'
+
+  - id: error-not-exhaustive
+    claim: sealedな型のswitch式で、許可したサブクラスを1つでも扱い忘れるとコンパイルエラーになる
+    sources:
+      - title: JLS 25 14.11.1.1 Exhaustive Switch Blocks
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: Exhaustive Switch Blocks
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NonExhaustiveSwitch.java
+      fails: true
+      expect:
+        - 'the switch expression does not cover all possible input values'
+      show:
+        - 'error:'
+      normalize:
+        '^\S*/': ''
+
+  - id: switch-bytecode
+    claim: パターンのswitchは、java.lang.runtime.SwitchBootstraps.typeSwitchを使うinvokedynamicで分岐先の番号を求め、tableswitchで分岐する。どのcaseにも当たらないときのために、MatchExceptionを投げるコードが入る。セレクターがnullならNullPointerExceptionになる
+    sources:
+      - title: java.lang.runtime.SwitchBootstraps（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/runtime/SwitchBootstraps.html
+        anchor: typeSwitch
+      - title: JLS 25 14.11.3 Execution of a switch Statement（MatchException）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: MatchException
+    verify:
+      kind: javap
+      probe: verify/SealedShapes.java
+      class: SealedShapes
+      expect:
+        - 'invokestatic .*Objects\.requireNonNull[\s\S]*invokedynamic .*InvokeDynamic #0:typeSwitch:\(LSealedShapes\$Shape;I\)I\n\s+\d+: tableswitch'
+        - 'default: (\d+)[\s\S]*\n\s+\1: new .*class java/lang/MatchException'
+      show:
+        - '(requireNonNull|typeSwitch|tableswitch|MatchException\n?$|class java/lang/MatchException)'
+      normalize:
+        '#\d+,?\s*(0\s*)?//': '//'
+
+  - id: accessor-exception-wrap
+    claim: レコードパターンでアクセサーの呼び出しが例外で終わると、その例外を原因（cause）にしたMatchExceptionが投げられる。バイトコードでは、アクセサーの呼び出しを例外表で囲み、受け取った例外でMatchExceptionを作って投げる
+    sources:
+      - title: JLS 25 14.30.2 Pattern Matching
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: then pattern matching completes abruptly by throwing a MatchException with cause
+    verify:
+      kind: javap
+      probe: verify/SealedShapes.java
+      class: SealedShapes
+      expect:
+        - '^\s*(\d+): astore_1\n\s+\d+: new .*class java/lang/MatchException[\s\S]*Exception table:\n.*\n\s+\d+\s+\d+\s+\1\s+Class java/lang/Throwable'
+      show:
+        - '^\s*\d+\s+\d+\s+\d+\s+Class java/lang/Throwable'
+
+  - id: record-pattern-accessor
+    claim: レコードパターンは、コンポーネントの値をアクセサーメソッドを呼んで取り出す（equalsとは違い、明示的に宣言したアクセサーが使われる）
+    sources:
+      - title: JLS 25 14.30.2 Pattern Matching
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: is determined by invoking the accessor method
+    verify:
+      kind: javap
+      probe: verify/SealedShapes.java
+      class: SealedShapes
+      expect:
+        - 'invokevirtual .*Method SealedShapes\$Circle\.radius:\(\)D'
+        - 'invokevirtual .*Method SealedShapes\$Rect\.width:\(\)D'
+        - 'invokevirtual .*Method SealedShapes\$Rect\.height:\(\)D'
+      show:
+        - 'invokevirtual .*Method SealedShapes\$(Circle|Square|Rect)\.'
+      normalize:
+        '#\d+\s*//': '//'
+
+  - id: sealed-run
+    claim: 同上（実行すると、Circleのときにアクセサーradius()が呼ばれ、nullを渡すとNullPointerExceptionになる）
+    verify:
+      kind: run
+      probe: verify/SealedShapes.java
+      expect:
+        - '^permitted: \[Circle, Square, Rect\]$'
+        - '^  radius\(\)が呼ばれた\nCircle: 3\.14159'
+        - '^null: NullPointerException$'
+      show:
+        - '.'
+
+  - id: match-exception-separate
+    claim: switchをコンパイルしたあとで、sealedな型に許可するサブクラスを足して別にコンパイルすると、新しいサブクラスのインスタンスはどのcaseにも当たらず、実行時にMatchExceptionになる
+    sources:
+      - title: JLS 25 14.11.3 Execution of a switch Statement
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: then a MatchException is thrown
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 14.11.3と15.28.2に、網羅的なはずのswitchでどのラベルにも当たらないときMatchExceptionが投げられるとあることを確かめた。分岐の最後にMatchExceptionを投げるコードがあることは switch-bytecode で観察している
+
+  # ---- シリアライズ
+  - id: serialization-ctor
+    claim: シリアライズしたレコードを読み戻すときは正準コンストラクターが呼ばれ、検査に通らないデータはInvalidObjectExceptionで拒まれる。ふつうのSerializableなクラスでは、コンストラクターは呼ばれない
+    sources:
+      - title: Java Object Serialization Specification 1.13 Serialization of Records
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/serialization/serial-arch.html
+        anchor: a record object is created by invoking the record's canonical constructor
+    verify:
+      kind: run
+      probe: verify/RecordSerialization.java
+      expect:
+        - '^読み込み: Range\n  Rangeの正準コンストラクター\(1, 5\)\n  結果: Range\[low=1, high=5\]$'
+        - '^読み込み: 書き換えたRange\n  Rangeの正準コンストラクター\(9, 5\)\n  InvalidObjectException: low > high$'
+        - '^読み込み: OldRange\n  結果: 1\.\.5$'
+        - '^読み込み: 書き換えたOldRange\n  結果: 9\.\.5'
+      show:
+        - '.'
+      absent:
+        - '^serialVersionUID'
+
+  - id: serial-version-uid
+    claim: serialVersionUIDを宣言しないレコードのserialVersionUIDは0Lで、レコードではserialVersionUIDの一致は検査されない
+    sources:
+      - title: Java Object Serialization Specification 1.13 Serialization of Records
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/serialization/serial-arch.html
+        anchor: The requirement for matching serialVersionUID values is waived for record classes
+    verify:
+      kind: run
+      probe: verify/RecordSerialization.java
+      expect:
+        - '^RangeのserialVersionUID: 0$'
+
+  - id: serialization-rules
+    claim: ストリームにないコンポーネントには型の既定値（nullや0）が渡される。レコードのwriteObject・readObjectなどは無視される。コンポーネントからレコード自身への循環は、読み戻すと保たれない
+    sources:
+      - title: Java Object Serialization Specification 1.13 Serialization of Records
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/serialization/serial-arch.html
+        anchor: or the default value for component's type if a component value is absent from the stream
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Java Object Serialization Specification（Java SE 25）の1.13に、ストリームにない値は型の既定値で正準コンストラクターに渡すこと、writeObject・readObject・readObjectNoData・writeExternal・readExternalは無視されること、レコードへの循環は保たれないことが書かれているのを確かめた
+
+  # ---- メモリ上の配置
+  - id: layout-reorder
+    claim: HotSpotはフィールドを並べ替えて配置するので、コンポーネントの宣言順を変えてもオブジェクトの大きさは変わらない。同じフィールドを持つふつうのクラスとも大きさは同じで、この実行では参照（String）は4バイトだった
+    verify:
+      kind: run
+      probe: verify/RecordLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djol.magicFieldOffset=true', '-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - '^大きさ: Mixed1 = (\d+) bytes\n大きさ: Mixed2 = \1 bytes\n大きさ: MixedClass = \1 bytes$'
+        - '^\s*\d+\s+4\s+java\.lang\.String Mixed1\.d'
+      show:
+        - '(object internals|^\s*\d+\s+\d+\s+|^Instance size|^大きさ)'
+
+  - id: unsafe-record-offset
+    claim: sun.misc.Unsafe.objectFieldOffsetはレコードのフィールドを受け付けないので、JOLでレコードを調べるときは-Djol.magicFieldOffset=trueを付ける
+    verify:
+      kind: run
+      probe: verify/RecordLayout.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true']
+      expect:
+        - "can't get field offset on a record class"
+
+  # ---- 今後
+  - id: value-record-not-in-25
+    claim: Project Valhallaの値レコード（value record、JEP 401）はJava 25ではコンパイルできない
+    sources:
+      - title: JEP 401 Value Objects (Preview)
+        url: https://openjdk.org/jeps/401
+        anchor: value record
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ValueRecord.java
+      fails: true
+      expect:
+        - "ValueRecord\\.java:3: error: ';' expected"
+
+  - id: value-objects-jep
+    claim: JEP 401は値オブジェクト（オブジェクトの同一性を持たず、==がフィールドの値で比べる）をプレビュー機能として導入するもので、2026年11月の時点でJDK 28に統合されている。JVMはその表現を工夫してよいが、平坦化などの具体的な方法は約束されていない
+    sources:
+      - title: JEP 401 Value Objects (Preview)
+        url: https://openjdk.org/jeps/401
+        anchor: Value Objects
+      - title: JDK 25（取り込まれたJEPの一覧）
+        url: https://openjdk.org/projects/jdk/25/
+        anchor: Compact Object Headers
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 401のページでRelease 28・Status Integrated・preview language and VM featureであること、value recordの例と==の説明があることを確かめた。JDK 25の機能の一覧にJEP 401がないことも確かめた
