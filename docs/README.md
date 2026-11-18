@@ -17,6 +17,7 @@
 
 | 分類 | ディレクトリ | 内容 |
 |---|---|---|
+| 出版で読む | `publishing/` | 著者向けの出版作業マニュアル（検査、PDF、Web版、KDPのペーパーバック、EPUBとKindle、入稿用PDF、出版の日の書き換え） |
 | 校閲で読む | `guides/` | 文章の規約・校正の手順・コードの確かめ方・表記の検査・箇条書き／コードブロック／コラムの書き方 |
 | 校閲で読む | `summaries/` | 章・付録ごとの要約（索引のハッシュで古くなったことを検出する） |
 | 校閲で読む | `analysis/` | 開いている課題（`issues-tracking.md`）、解決済みの課題と作業の記録（`issues-resolved.md`）、現状の要約（`project-status.md`）、`check:java`のレポート（`java-sample-check.md`、生成物） |
@@ -31,6 +32,7 @@
 |---|---|
 | `../CLAUDE.md` | 執筆・コード・Git・依存関係のルール、コマンド一覧 |
 | `../TODO.md` | 現在の作業項目 |
+| `publishing/README.md` | 出版作業マニュアルの目次（出力ごとのコマンドと確かめ方） |
 | `guides/writing-guidelines-textlint-compliance.md` | 原稿を書く・直すときの文章の規約（必読） |
 | `guides/proofreading-workflow.md` | 校正の手順と注意点 |
 | `guides/code-verification.md` | 公開コードをJava 25で確かめる手順と、見つかった誤りのパターン |
@@ -60,4 +62,4 @@ npm run index && npm run index:check  # 索引を作り直し、要約が古く�
 
 ---
 
-最終更新：2026-11-17
+最終更新：2026-11-19
