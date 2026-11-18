@@ -1,0 +1,640 @@
+# 付録B.11の主張と、その確かめ方
+# npm run check:deep-dive -- b11 で検証する（書き方は docs/guides/deep-dive-verification.md）
+jdk: 25
+
+claims:
+  # ---- 1. enumの正体
+  - id: enum-class-shape
+    claim: enumはjava.lang.Enum<E>を継承するfinalのクラスにコンパイルされ、定数はpublic static finalのフィールド、ほかにprivateの$VALUES、values()、valueOf(String)、privateのコンストラクター、static初期化子を持つ
+    sources:
+      - title: JLS 25 8.9 Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: An enum class is implicitly final if its declaration contains no enum constants that have a class body
+      - title: JLS 25 8.9 Enum Classes（直接のスーパークラス）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The direct superclass type of an enum class E is
+    verify:
+      kind: javap
+      probe: verify/EnumAnatomy.java
+      class: EnumAnatomy$Color
+      options: ['-p']
+      expect:
+        - '^final class EnumAnatomy\$Color extends java\.lang\.Enum<EnumAnatomy\$Color> \{'
+        - '^\s+public static final EnumAnatomy\$Color RED;'
+        - '^\s+private static final EnumAnatomy\$Color\[\] \$VALUES;'
+        - '^\s+public static EnumAnatomy\$Color\[\] values\(\);'
+        - '^\s+public static EnumAnatomy\$Color valueOf\(java\.lang\.String\);'
+        - '^\s+private EnumAnatomy\$Color\(\);'
+        - '^\s+static \{\};'
+      show:
+        - '.'
+      range: { from: '^final class', to: '^\}' }
+      keepIndent: true
+
+  - id: enum-flags
+    claim: enumのクラスと定数のフィールドにはACC_ENUMのフラグが付く。$VALUESとコンストラクターはソースにないもので、$VALUESにはACC_SYNTHETICが付き、コンストラクターには名前（String）と番号（int）の引数が足される
+    sources:
+      - title: JVMS 25 4.1 The ClassFile Structure（ACC_ENUM）
+        url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html
+        anchor: Declared as an enum class
+      - title: JLS 25 8.9.2 Enum Body Declarations（既定のコンストラクターの引数）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: a compiler is likely to mirror the Enum class by declaring String and int parameters in the default constructor
+    verify:
+      kind: javap
+      probe: verify/EnumAnatomy.java
+      class: EnumAnatomy$Color
+      options: ['-v', '-p']
+      expect:
+        - '^\s+flags: \(0x4030\) ACC_FINAL, ACC_SUPER, ACC_ENUM'
+        - 'public static final EnumAnatomy\$Color RED;\n\s+descriptor: LEnumAnatomy\$Color;\n\s+flags: \(0x4019\) ACC_PUBLIC, ACC_STATIC, ACC_FINAL, ACC_ENUM'
+        - '\$VALUES;\n\s+descriptor: \[LEnumAnatomy\$Color;\n\s+flags: \(0x101a\) ACC_PRIVATE, ACC_STATIC, ACC_FINAL, ACC_SYNTHETIC'
+        - 'private EnumAnatomy\$Color\(\);\n\s+descriptor: \(Ljava/lang/String;I\)V'
+      show:
+        - '^\s+(public static final EnumAnatomy\$Color (RED|GREEN|BLUE)|private static final EnumAnatomy\$Color\[\] \$VALUES|private EnumAnatomy\$Color\(\));'
+        - '^\s+descriptor: (LEnum|\[LEnum|\(Ljava/lang/String;I\)V)'
+        - '^\s+flags: \(0x(4030|4019|101a|0002)\)'
+
+  - id: values-clone
+    claim: values()は$VALUESの配列をclone()して返す。valueOf(String)はEnum.valueOf(Class, String)を呼ぶ
+    sources:
+      - title: JLS 25 8.9.3 Enum Members（values・valueOf）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: in the same order as they appear in the body of the declaration of E
+    verify:
+      kind: javap
+      probe: verify/EnumAnatomy.java
+      class: EnumAnatomy$Color
+      expect:
+        - 'Field \$VALUES:\[LEnumAnatomy\$Color;\n\s+\d+: invokevirtual\s+#\d+\s+// Method "\[LEnumAnatomy\$Color;"\.clone'
+        - 'invokestatic\s+#\d+\s+// Method java/lang/Enum\.valueOf:\(Ljava/lang/Class;Ljava/lang/String;\)Ljava/lang/Enum;'
+      show:
+        - '^\s+public static EnumAnatomy\$Color(\[\])? value'
+        - '^\s+\d+: (getstatic|invokevirtual|invokestatic|checkcast|areturn|ldc|aload_0)'
+      range: { from: 'public static EnumAnatomy\$Color\[\] values\(\);', to: 'private EnumAnatomy\$Color\(\);' }
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: static-init
+    claim: 定数のオブジェクトはstatic初期化子の中で、宣言の順にnewで作られ、コンストラクターに名前と番号（0から）が渡される。最後に$VALUESに配列が入る
+    sources:
+      - title: JLS 25 8.9.1 Enum Constants
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: which are passed to the constructor of the enum when the constant is created during class initialization
+    verify:
+      kind: javap
+      probe: verify/EnumAnatomy.java
+      class: EnumAnatomy$Color
+      expect:
+        - 'new\s+#\d+\s+// class EnumAnatomy\$Color\n\s+\d+: dup\n\s+\d+: ldc\s+#\d+\s+// String RED\n\s+\d+: iconst_0\n\s+\d+: invokespecial'
+        - 'String BLUE\n\s+\d+: iconst_2\n\s+\d+: invokespecial\s+#\d+\s+// Method "<init>":\(Ljava/lang/String;I\)V\n\s+\d+: putstatic\s+#\d+\s+// Field BLUE'
+        - 'invokestatic\s+#\d+\s+// Method \$values:\(\)\[LEnumAnatomy\$Color;\n\s+\d+: putstatic\s+#\d+\s+// Field \$VALUES'
+      show:
+        - '^\s+\d+: '
+        - 'static \{\};'
+      range: { from: 'static \{\};', to: '^\}' }
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: values-new-array
+    claim: values()は呼ぶたびに別の配列を返すので、返された配列を書き換えてもenumには影響しない
+    verify:
+      kind: run
+      probe: verify/EnumAnatomy.java
+      expect:
+        - '^values\(\)は同じ配列か: false$'
+        - '^書き換えたあとのvalues\(\): \[RED, GREEN, BLUE\]$'
+      show:
+        - '^(スーパークラス|isEnum|(RED|GREEN|BLUE) ordinal|values|書き換え)'
+
+  - id: valueof-errors
+    claim: valueOfは名前の一致で定数を探し、ない名前ではIllegalArgumentException、nullではNullPointerExceptionを投げる
+    sources:
+      - title: java.lang.Enum.valueOf（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html
+        anchor: Returns the enum constant of the specified enum class with the specified name
+    verify:
+      kind: run
+      probe: verify/EnumAnatomy.java
+      expect:
+        - '^valueOf\("GREEN"\) == GREEN: true$'
+        - '^valueOf\("PURPLE"\): IllegalArgumentException: No enum constant EnumAnatomy\.Color\.PURPLE$'
+        - '^valueOf\(null\): NullPointerException: Name is null$'
+      show:
+        - '^valueOf'
+
+  # ---- 2. 定数ごとの本体
+  - id: constant-body-class
+    claim: 本体を持つ定数は、enumを直接継承するfinalの匿名クラス（Op$1など）のインスタンスになる。そのときenumのクラスはfinalでなくなり、sealedとして本体を持つ定数のクラスだけを許可する（PermittedSubclasses）
+    sources:
+      - title: JLS 25 8.9 Enum Classes（implicitly sealed）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: is implicitly sealed if its declaration contains at least one enum constant that has a class body
+      - title: JLS 25 8.9.1 Enum Constants（匿名クラス）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The optional class body of an enum constant implicitly declares an anonymous class
+    verify:
+      kind: javap
+      probe: verify/ConstantBodies.java
+      class: ConstantBodies$Op
+      options: ['-v', '-p']
+      expect:
+        - '^\s+flags: \(0x4020\) ACC_SUPER, ACC_ENUM'
+        - '^PermittedSubclasses:\n\s+ConstantBodies\$Op\$1\n\s+ConstantBodies\$Op\$2\n'
+        - 'new\s+#\d+\s+// class ConstantBodies\$Op\$1'
+      show:
+        - '^\s+flags: \(0x4020\)'
+        - '^PermittedSubclasses:'
+        - '^\s+ConstantBodies\$Op\$\d$'
+        - 'new\s+#\d+\s+// class ConstantBodies\$Op'
+      normalize:
+        '^\d+: new\s+#\d+\s+//': 'new //'
+
+  - id: constant-body-final
+    claim: 同上（定数の本体の匿名クラスはfinalで、enumのクラスを継承する）
+    verify:
+      kind: javap
+      probe: verify/ConstantBodies.java
+      class: ConstantBodies$Op$1
+      options: ['-p']
+      expect:
+        - '^final class ConstantBodies\$Op\$1 extends ConstantBodies\$Op \{'
+      show:
+        - '^final class'
+
+  - id: getclass-vs-declaring
+    claim: 本体を持つ定数のgetClass()は匿名クラスを返し、そのクラスのisEnum()はfalseになる。enumの型はgetDeclaringClass()で得る。本体を持たない定数では両者は同じ
+    sources:
+      - title: java.lang.Enum.getDeclaringClass（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html
+        anchor: Returns the Class object corresponding to this enum constant's enum type
+    verify:
+      kind: run
+      probe: verify/ConstantBodies.java
+      expect:
+        - '^PLUS getClass=ConstantBodies\$Op\$1 getDeclaringClass=ConstantBodies\$Op getClass\(\)\.isEnum\(\)=false$'
+        - '^TIMES getClass=ConstantBodies\$Op getDeclaringClass=ConstantBodies\$Op getClass\(\)\.isEnum\(\)=true$'
+        - '^EnumSet\.allOf: \[PLUS, MINUS, TIMES\]$'
+      show:
+        - '^(PLUS|MINUS|TIMES|EnumSet)'
+
+  # ---- 3. インスタンスが増えないしくみ
+  - id: no-new
+    claim: enumのインスタンスをnewで作ろうとするとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.9 Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error to attempt to explicitly instantiate an enum class
+    verify:
+      kind: javac
+      probe: verify/compile-errors/NewEnum.java
+      fails: true
+      expect:
+        - 'error: enum classes may not be instantiated'
+      show:
+        - 'error:'
+
+  - id: no-public-constructor
+    claim: enumのコンストラクターにpublicやprotectedは付けられない。修飾子のないコンストラクターはprivateになる
+    sources:
+      - title: JLS 25 8.9.2 Enum Body Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: In an enum declaration, a constructor declaration with no access modifiers is private
+    verify:
+      kind: javac
+      probe: verify/compile-errors/PublicConstructor.java
+      fails: true
+      expect:
+        - 'error: modifier public not allowed here'
+      show:
+        - 'error:'
+
+  - id: no-extend-enum
+    claim: クラスがjava.lang.Enumを直接継承することはできない
+    sources:
+      - title: JLS 25 8.1.4 Superclasses and Subclasses
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error if the ClassType names the class Enum
+    verify:
+      kind: javac
+      probe: verify/compile-errors/ExtendEnum.java
+      fails: true
+      expect:
+        - 'error: classes cannot directly extend java\.lang\.Enum'
+      show:
+        - 'error:'
+
+  - id: no-subclass-enum
+    claim: enumを継承するクラスは書けない
+    sources:
+      - title: JLS 25 8.9 Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: An enum declaration does not have an extends clause
+    verify:
+      kind: javac
+      probe: verify/compile-errors/SubclassEnum.java
+      fails: true
+      expect:
+        - 'error: cannot inherit from final Color'
+        - 'error: enum classes are not extensible'
+      show:
+        - 'error:'
+
+  - id: final-equals
+    claim: Enumのequalsはfinalで、同一性（==）で比べる。enumでequalsをオーバーライドするとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.9.1 Enum Constants（equals）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The equals method in Enum is a final method that merely invokes super.equals on its argument
+    verify:
+      kind: javac
+      probe: verify/compile-errors/OverrideEquals.java
+      fails: true
+      expect:
+        - 'error: equals\(Object\) in Color cannot override equals\(Object\) in Enum\n[\s\S]*overridden method is final'
+      show:
+        - 'error:|overridden method'
+
+  - id: three-mechanisms
+    claim: コンパイルエラーのほかに、Enumのfinalのclone、リフレクションによる生成の禁止、シリアライズの特別な扱いの3つが、定数以外のインスタンスができないことを保証する
+    sources:
+      - title: JLS 25 8.9 Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: three further mechanisms ensure that no instances of an enum class exist beyond those defined by its enum constants
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の8.9に、cloneがfinalであること、リフレクションによる生成の禁止、シリアライズの特別な扱いの3つが挙げられていることを確かめた。Enum.cloneがprotected finalでCloneNotSupportedExceptionを投げることはjava.lang.EnumのAPIで確かめた
+
+  - id: reflection-blocked
+    claim: リフレクションでenumのコンストラクターを呼ぶと、setAccessible(true)にしてもIllegalArgumentException（Cannot reflectively create enum objects）になる。privateのコンストラクターを持つふつうのクラスは、リフレクションで2つ目を作れる
+    sources:
+      - title: java.lang.reflect.Constructor.newInstance（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Constructor.html
+        anchor: if this constructor pertains to an enum class
+    verify:
+      kind: run
+      probe: verify/ReflectAndSerialize.java
+      expect:
+        - '^Registryのコンストラクター: private ReflectAndSerialize\$Registry\(java\.lang\.String,int\)$'
+        - '^newInstance: IllegalArgumentException: Cannot reflectively create enum objects$'
+        - '^ClassSingleton: リフレクションで作ったものは別のオブジェクトか: true$'
+      show:
+        - '^(Registryのコンストラクター|newInstance|ClassSingleton: リフレクション)'
+
+  - id: serialization-by-name
+    claim: enumの定数をシリアライズすると名前だけが書かれ（フィールドは書かれない）、読み戻すときはEnum.valueOfで同じ定数が返る。readResolveのないクラスのシングルトンは、読み戻すと別のオブジェクトになる
+    sources:
+      - title: Java Object Serialization Specification 1.12 Serialization of Enum Constants
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/serialization/serial-arch.html
+        anchor: The serialized form of an enum constant consists solely of its name
+    verify:
+      kind: run
+      probe: verify/ReflectAndSerialize.java
+      expect:
+        - '^Registry: 読み戻したものは同じ定数か: true$'
+        - '^Registry: 読み戻したあとのnext\(\): 3$'
+        - '^ストリームに名前INSTANCEがあるか: true$'
+        - '^ストリームにフィールド名countがあるか: false$'
+        - '^ClassSingleton: 読み戻したものは同じオブジェクトか: false$'
+      show:
+        - '^(Registry: 読み戻|ストリーム|ClassSingleton: 読み戻)'
+
+  # ---- 4. 初期化の順序
+  - id: init-order
+    claim: enumの定数は、そのenumのクラスを初めて使うときのクラスの初期化で作られる。定数のコンストラクターがすべて動いてから、後に書いたstaticフィールドとstatic初期化子が動く
+    sources:
+      - title: JLS 25 12.4.1 When Initialization Occurs
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: will be initialized immediately before the first occurrence of any one of the following
+    verify:
+      kind: run
+      probe: verify/InitOrder.java
+      expect:
+        - '^Level\.HIGHを使う\n  コンストラクター: LOW\n  コンストラクター: HIGH\n  static初期化子: BY_CODEを作る\n'
+        - '^fromCode\("L"\) = LOW, h = HIGH$'
+      show:
+        - '.'
+      keepIndent: true
+
+  - id: no-static-in-constructor
+    claim: enumのコンストラクターから、定数でないstaticフィールドを参照するとコンパイルエラーになる
+    sources:
+      - title: JLS 25 8.9.2 Enum Body Declarations
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: It is a compile-time error to refer to a static field of an enum class from a constructor
+    verify:
+      kind: javac
+      probe: verify/compile-errors/StaticInConstructor.java
+      fails: true
+      expect:
+        - 'error: illegal reference to static field from initializer'
+      show:
+        - 'error:'
+
+  - id: init-thread-safe
+    claim: クラスの初期化は、JVMが同期をとって1回だけ行う（同時に初期化しようとしたほかのスレッドは待つ）。enumの定数の生成はこれに含まれるので、スレッドセーフに1回だけ行われる
+    sources:
+      - title: JLS 25 12.4.2 Detailed Initialization Procedure
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+        anchor: initialization of a class or interface requires careful synchronization
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の12.4.2に、ほかのスレッドが同時に初期化しようとする場合を含め、JVMが同期をとって初期化する手順が書かれていることを確かめた
+
+  # ---- 5. switchとenum
+  - id: switch-same-nest
+    claim: 同じクラスファイルの入れ子にあるenumのswitchは、ordinal()の値でtableswitch・lookupswitchを引く。定数をすべて書いたswitch式には、どれにも当たらないときにMatchExceptionを投げる枝が入る
+    sources:
+      - title: JLS 25 15.6 Normal and Abrupt Completion of Evaluation（MatchException）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: throws a MatchException if no switch label applies to the value of the selector expression
+    verify:
+      kind: javap
+      probe: verify/EnumSwitch.java
+      class: EnumSwitch
+      expect:
+        - 'Method EnumSwitch\$Color\.ordinal:\(\)I\n\s+\d+: tableswitch'
+        - 'default: 32\n\s+\}\n\s+32: new\s+#\d+\s+// class java/lang/MatchException'
+        - 'Method EnumSwitch\$Color\.ordinal:\(\)I\n\s+\d+: lookupswitch'
+      show:
+        - '^\s+\d+: (aload_0|invokevirtual|tableswitch|new|dup|aconst_null|invokespecial|athrow)'
+        - '^\s+(\d|default): \d+$'
+        - '^\s+\}$'
+        - 'static java\.lang\.String japanese'
+      range: { from: 'static java\.lang\.String japanese', to: 'areturn' }
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: switch-map
+    claim: 別のクラスファイルのenum（ここではjava.time.DayOfWeek）のswitchでは、javacが合成のクラス（EnumSwitch$1）に$SwitchMap$…という配列を作り、実行時に各定数のordinal()を添字にしてcaseの番号を入れる。定数が見つからないときのNoSuchFieldErrorは無視する
+    verify:
+      kind: javap
+      probe: verify/EnumSwitch.java
+      class: EnumSwitch$1
+      expect:
+        - 'static final int\[\] \$SwitchMap\$java\$time\$DayOfWeek;'
+        - 'Field java/time/DayOfWeek\.SATURDAY:Ljava/time/DayOfWeek;\n\s+\d+: invokevirtual\s+#\d+\s+// Method java/time/DayOfWeek\.ordinal:\(\)I\n\s+\d+: iconst_1\n\s+\d+: iastore'
+        - 'Class java/lang/NoSuchFieldError'
+      show:
+        - 'static final int'
+        - '^\s+(0|3|4|6|9|12|15|18|19|20|23): '
+        - 'Exception table|from\s+to|NoSuchFieldError'
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: switch-map-use
+    claim: 同上（switchの側では、$SwitchMapの配列をordinal()で引いた値でtableswitchする）
+    verify:
+      kind: javap
+      probe: verify/EnumSwitch.java
+      class: EnumSwitch
+      expect:
+        - 'getstatic\s+#\d+\s+// Field EnumSwitch\$1\.\$SwitchMap\$java\$time\$DayOfWeek:\[I\n\s+\d+: aload_0\n\s+\d+: invokevirtual\s+#\d+\s+// Method java/time/DayOfWeek\.ordinal:\(\)I\n\s+\d+: iaload\n\s+\d+: tableswitch'
+      show:
+        - '^\s+[0-8]: '
+        - 'static boolean weekend'
+      range: { from: 'static boolean weekend', to: 'tableswitch' }
+      normalize:
+        '#\d+,?\s*//': '//'
+
+  - id: switch-not-exhaustive
+    claim: switch式でenumの定数をすべて書かず、defaultもないとコンパイルエラーになる。定数をすべて書けばdefaultは要らない
+    sources:
+      - title: JLS 25 15.28.1 The Switch Block of a switch Expression
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: It is a compile-time error if a switch expression is not exhaustive
+      - title: JLS 25 14.11.1.1 Exhaustive Switch Blocks
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: A default label is permitted, but not required, in the case where the names of all the enum constants appear as case constants
+    verify:
+      kind: javac
+      probe: verify/compile-errors/SwitchNotExhaustive.java
+      fails: true
+      expect:
+        - 'error: the switch expression does not cover all possible input values'
+      show:
+        - 'error:'
+
+  - id: separate-compilation
+    claim: enumを使うクラスをそのままにしてenumだけを変えると、並べ替えはswitchの結果を変えない（名前で対応づけ直す）。定数を足すと、網羅したswitch式はMatchExceptionを投げ、従来のswitch文はどのcaseにも当たらずに素通りする。--release 17でコンパイルしたswitch式はIncompatibleClassChangeErrorを投げる
+    sources:
+      - title: JLS 25 13.4.26 Evolution of Enum Classes
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-13.html
+        anchor: Adding or reordering enum constants in an enum class will not break compatibility with pre-existing binaries
+      - title: JEP 441 Pattern Matching for switch
+        url: https://openjdk.org/jeps/441
+        anchor: switch expressions over enum classes now throw MatchException rather than IncompatibleClassChangeError
+    verify:
+      kind: run
+      probe: verify/SeparateCompilation.java
+      expect:
+        - '^  RED（ordinal=2） expr → 赤$'
+        - '^  BLUE（ordinal=0） stmt → 青$'
+        - '^  PURPLE（ordinal=3） expr → java\.lang\.MatchException$'
+        - '^  PURPLE（ordinal=3） stmt → （どのcaseにも当たらない）$'
+        - '^== PURPLEを足したColor（Clientは--release 17でコンパイル）\n  PURPLE（ordinal=3） expr → java\.lang\.IncompatibleClassChangeError$'
+      show:
+        - '.'
+      keepIndent: true
+
+  - id: sealed-qualified
+    claim: Java 21からは、sealedインターフェイスを実装するenumの定数を、修飾した名前（Basic.CIRCLE）でcaseに書け、ほかの実装のパターンと合わせて網羅できる
+    sources:
+      - title: JEP 441 Pattern Matching for switch
+        url: https://openjdk.org/jeps/441
+        anchor: we allow case constants to use qualified names of enum constants
+    verify:
+      kind: run
+      probe: verify/SealedWithEnum.java
+      expect:
+        - '^円\n正方形\n5角形$'
+      show:
+        - '.'
+
+  - id: sealed-qualified-20
+    claim: 同上（--release 20ではswitchのパターンが使えない）
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: verify/SealedWithEnum.java
+      release: 20
+      fails: true
+      expect:
+        - 'error: patterns in switch statements are not supported in -source 20'
+
+  # ---- 6. EnumSetとEnumMap
+  - id: enumset-api
+    claim: EnumSetは内部でビットベクトルとして表され、反復は定数の宣言の順になる。nullの要素は入れられない
+    sources:
+      - title: java.util.EnumSet（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/EnumSet.html
+        anchor: Enum sets are represented internally as bit vectors
+      - title: java.util.EnumSet（Java SE 25 API、nullの扱い）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/EnumSet.html
+        anchor: Null elements are not permitted
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: EnumSetのAPIの説明に、ビットベクトルで表すこと、反復が自然な順序（宣言の順）であること、null要素を許さないことが書かれているのを確かめた
+
+  - id: regular-jumbo
+    claim: OpenJDKのEnumSetは、定数が64個以下のenumではRegularEnumSet、65個以上ではJumboEnumSetになる
+    verify:
+      kind: run
+      probe: verify/EnumCollections.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^Day（7個）: java\.util\.RegularEnumSet$'
+        - '^Small64（64個）: java\.util\.RegularEnumSet$'
+        - '^Large65（65個）: java\.util\.JumboEnumSet$'
+      show:
+        - '^(Day|Small64|Large65)（'
+
+  - id: enumset-bits
+    claim: RegularEnumSetは1つのlong（elements）のビットで要素を表し、ordinalの番目のビットが立つ。JumboEnumSetはlongの配列を使う
+    verify:
+      kind: run
+      probe: verify/EnumCollections.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^EnumSet\.of\(SUN, SAT\) = \[SAT, SUN\], elements = 1100000（2進数）$'
+        - '^complementOf = \[MON, TUE, WED, THU, FRI\], elements = 11111（2進数）$'
+        - '^Large65: elementsはlong\[2\]、\[0\]=1、\[1\]=1$'
+      show:
+        - '^(EnumSet\.of|complementOf|Large65:)'
+
+  - id: enummap-array
+    claim: EnumMapは内部で配列として表され、ordinalを添字にした値の配列（vals）を持つ。反復はキーの宣言の順になる
+    sources:
+      - title: java.util.EnumMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/EnumMap.html
+        anchor: Enum maps are represented internally as arrays
+    verify:
+      kind: run
+      probe: verify/EnumCollections.java
+      jvm: ['--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^EnumMap = \{MON=会議, FRI=飲み会\}$'
+        - '^vals（長さ7）= \[会議, null, null, null, 飲み会, null, null\]$'
+      show:
+        - '^(EnumMap =|vals)'
+
+  - id: enum-memory
+    claim: 7個の定数をすべて入れたとき、EnumSetは32バイト、EnumMapは本体と値の配列で88バイトで、HashSet・HashMap（それぞれ300バイト台）より小さい（JOLで測定。圧縮参照を使う64ビットのJDK 25）
+    verify:
+      kind: run
+      probe: verify/EnumMemory.java
+      libs: ['org.openjdk.jol:jol-core:0.17']
+      jvm: ['-Djdk.attach.allowAttachSelf=true', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+      expect:
+        - '^Instance size: 32 bytes'
+        - '^EnumSet: 32バイト$'
+        - '^HashSet: 3\d\dバイト$'
+        - '^EnumMap: 88バイト（本体40＋値の配列48）$'
+        - '^HashMap: 3\d\dバイト$'
+        - '^EnumSetのほうが小さい: true$'
+        - '^EnumMapのほうが小さい: true$'
+      show:
+        - '^\s*\d+\s+\d+\s+\S'
+        - '^OFF'
+        - '^Instance size'
+        - '^(EnumSet|HashSet|EnumMap|HashMap): '
+      keepIndent: true
+      normalize:
+        '0x[0-9a-f]+': '0x…'
+
+  - id: enum-speed-api
+    claim: EnumMapの基本の操作は定数時間で、HashMapより速い可能性が高い（保証はしない）。EnumSetの性能はintのビットフラグの代わりに使えるほどよく、引数もEnumSetならcontainsAllやretainAllのような一括の操作も速い
+    sources:
+      - title: java.util.EnumMap（Java SE 25 API、Implementation note）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/EnumMap.html
+        anchor: They are likely (though not guaranteed) to be faster than their HashMap counterparts
+      - title: java.util.EnumSet（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/EnumSet.html
+        anchor: Even bulk operations (such as containsAll and retainAll) should run very quickly if their argument is also an enum set
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: EnumMapのAPIのImplementation noteと、EnumSetのAPIの説明の文言を確かめた。速さの程度はAPIも保証していないので、解説では数値を書かない
+
+  # ---- 7. ordinalとcompareTo
+  - id: ordinal-api
+    claim: ordinal()は宣言の位置（最初の定数が0）を返す。APIは、ほとんどのプログラマーには使い道がなく、EnumSetやEnumMapのようなデータ構造のためのものだと述べている
+    sources:
+      - title: java.lang.Enum.ordinal（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html
+        anchor: Most programmers will have no use for this method
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: java.lang.Enum.ordinalのAPIの説明を確かめた
+
+  - id: compareto-order
+    claim: compareToの自然な順序は定数の宣言の順である。仕様が決めているのは符号だけで、OpenJDKの実装はordinalの差を返す
+    sources:
+      - title: java.lang.Enum.compareTo（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html
+        anchor: The natural order implemented by this method is the order in which the constants are declared
+    verify:
+      kind: run
+      probe: verify/EnumAnatomy.java
+      expect:
+        - '^RED\.compareTo\(BLUE\): -2$'
+        - '^BLUE\.compareTo\(RED\): 2$'
+      show:
+        - 'compareTo'
+
+  - id: ordinal-pitfall
+    claim: ordinalを保存しておくと、定数を足したり並べ替えたりした版で読み戻したときに別の定数になる。名前や明示的なフィールドで保存すれば変わらない
+    verify:
+      kind: run
+      probe: verify/OrdinalPitfall.java
+      expect:
+        - '^保存した値: MEDIUM（ordinal=1）$'
+        - '^ordinalで読み戻す: SMALL$'
+        - '^名前で読み戻す: MEDIUM$'
+        - '^コードで読み戻す: MEDIUM$'
+      show:
+        - '.'
+
+  # ---- 8. 設計の例
+  - id: no-generic-enum
+    claim: enumは型パラメーターを持てない
+    sources:
+      - title: JLS 25 8.9 Enum Classes（EnumDeclarationの構文に型パラメーターがない）
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: enum TypeIdentifier [ClassImplements] EnumBody
+    verify:
+      kind: javac
+      probe: verify/compile-errors/GenericEnum.java
+      fails: true
+      expect:
+        - 'error: enums cannot be generic'
+      show:
+        - 'error:'
+
+  - id: generic-getter-cce
+    claim: enumのキーから値を取り出す<T> T get(Key)の形のメソッドは、誤った型の変数で受けてもコンパイルでき、実行時にClassCastExceptionになる
+    verify:
+      kind: run
+      probe: verify/GenericGetter.java
+      expect:
+        - '^port = 8080$'
+        - '^String wrong = get\(Key\.PORT\): ClassCastException$'
+      show:
+        - '.'
+
+  - id: permission-included
+    claim: src/のPermission.getIncludedPermissions()は、複合の権限（FULL_CRUD・ADMIN）に含まれる単独の権限を返す（以前の版はREADしか返さない誤りがあった）
+    verify:
+      kind: run
+      main: com.example.enumpatterns.Main
+      args: ['permission']
+      expect:
+        - '^Permissions included in FULL_CRUD:\n  - READ: .*\n  - WRITE: .*\n  - EXECUTE: .*\n  - DELETE: .*$'
+        - '^Permissions included in ADMIN:\n  - USER_MANAGE: .*\n  - ROLE_MANAGE: .*\n  - SYSTEM_CONFIG: .*\n  - AUDIT_VIEW: .*$'
+      show:
+        - '^Permissions included|^  - '
+      keepIndent: true

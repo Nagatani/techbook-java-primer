@@ -142,15 +142,14 @@ public class PermissionDemo {
         IO.println("Performance for " + iterations + " operations:");
         IO.println("EnumSet: " + enumSetTime / 1_000_000 + " ms");
         IO.println("HashSet: " + hashSetTime / 1_000_000 + " ms");
-        IO.println("EnumSet is " + (hashSetTime / enumSetTime) + "x faster");
+        // 簡易な測定なので、値は実行のたびに、また環境によって変わる
+        IO.println("HashSet / EnumSet: %.1f".formatted((double) hashSetTime / Math.max(enumSetTime, 1)));
         
         // Memory comparison
         IO.println("\nMemory efficiency:");
-        IO.println("EnumSet uses bit vector (1 bit per enum value)");
+        IO.println("EnumSet uses bit vector (1 bit per enum value, in one long for 64 or fewer constants)");
         IO.println("HashSet uses hash table with object references");
-        IO.println("For " + Permission.values().length + " permissions:");
-        IO.println("  EnumSet: ~8 bytes (64-bit long)");
-        IO.println("  HashSet: ~" + (Permission.values().length * 32) + " bytes (estimate)");
+        IO.println("(See verify/EnumMemory.java for sizes measured with JOL)");
     }
     
     private static void demoRealWorldScenario() {

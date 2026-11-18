@@ -54,7 +54,8 @@ public enum Permission {
         EnumSet<Permission> included = EnumSet.noneOf(Permission.class);
         
         for (Permission perm : values()) {
-            if ((this.mask & perm.mask) == perm.mask && perm.mask == Integer.bitCount(perm.mask)) {
+            // 単独の権限（ビットが1つだけ立っているもの）のうち、このマスクに含まれるもの
+            if ((this.mask & perm.mask) == perm.mask && Integer.bitCount(perm.mask) == 1) {
                 included.add(perm);
             }
         }

@@ -421,9 +421,8 @@ public class PerformanceComparison {
         IO.println("EnumSet: Uses bit vector (1 bit per enum constant)");
         IO.println("  %d enums = %d bits, stored in one long (64 enums or fewer)".formatted(
             Operation.values().length, Operation.values().length));
-        IO.println("  plus the object header and a few references (tens of bytes per set)");
-        IO.println("HashSet: Uses hash table with object references");
-        IO.println("  ~%d bytes per entry × %d entries = ~%d bytes".formatted(
-            32, Operation.values().length, 32 * Operation.values().length));
+        IO.println("  plus the object header and a few references");
+        IO.println("HashSet: Uses hash table with one node object per element");
+        IO.println("(Runtime-based figures above are rough; see verify/EnumMemory.java for JOL measurements)");
     }
 }
