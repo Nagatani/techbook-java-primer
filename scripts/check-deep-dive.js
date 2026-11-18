@@ -350,9 +350,10 @@ function checkSources(sec, ledger, problems) {
         // タグを空白にした文字列と、タグを取り除いただけの文字列の両方で探す（リンクやコードをまたぐ文のため）
         const decode = (t) => t
           .replace(/&nbsp;/g, ' ').replace(/&#(\d+);/g, (m, n) => String.fromCodePoint(+n)).replace(/&#x([0-9a-f]+);/gi, (m, n) => String.fromCodePoint(parseInt(n, 16)))
-          .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+          .replace(/&sect;/g, '§').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
           .replace(/[\s\u00a0\u2009]+/g, ' ');
-        const found = [r.stdout.replace(/<[^>]+>/g, ' '), r.stdout.replace(/<[^>]+>/g, '')].some((t) => decode(t).includes(s.anchor));
+        const texts = [r.stdout.replace(/<[^>]+>/g, ' '), r.stdout.replace(/<[^>]+>/g, '')];
+        const found = texts.some((t) => decode(t).includes(s.anchor) || t.replace(/\s+/g, ' ').includes(s.anchor));
         if (!found) problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} に「${s.anchor}」がない` });
       }
     }
