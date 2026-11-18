@@ -10,7 +10,6 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -105,40 +104,11 @@ public class FileUtils {
     }
     
     /**
-     * Compare two files efficiently using memory-mapped files.
+     * Compare two files.
+     * Files.mismatchは最初に異なるバイトの位置を返し、同じ内容なら-1を返す。
      */
     public static boolean compareFiles(Path file1, Path file2) throws IOException {
-        if (Files.size(file1) != Files.size(file2)) {
-            return false;
-        }
-        
-        try (RandomAccessFile raf1 = new RandomAccessFile(file1.toFile(), "r");
-             RandomAccessFile raf2 = new RandomAccessFile(file2.toFile(), "r");
-             FileChannel channel1 = raf1.getChannel();
-             FileChannel channel2 = raf2.getChannel()) {
-            
-            long size = channel1.size();
-            long position = 0;
-            long chunkSize = 1024 * 1024; // 1MB chunks
-            
-            while (position < size) {
-                long remaining = size - position;
-                long mapSize = Math.min(chunkSize, remaining);
-                
-                MappedByteBuffer buffer1 = channel1.map(
-                    FileChannel.MapMode.READ_ONLY, position, mapSize);
-                MappedByteBuffer buffer2 = channel2.map(
-                    FileChannel.MapMode.READ_ONLY, position, mapSize);
-                
-                if (!buffer1.equals(buffer2)) {
-                    return false;
-                }
-                
-                position += mapSize;
-            }
-            
-            return true;
-        }
+        return Files.mismatch(file1, file2) == -1L;
     }
     
     /**
@@ -159,8 +129,10 @@ public class FileUtils {
                 Path chunkFile = sourceFile.resolveSibling(
                     sourceFile.getFileName() + ".chunk" + chunkNumber);
                 
+                // 同じ名前のファイルが残っていると後ろに古い内容が残るため、TRUNCATE_EXISTINGで切り詰める
                 try (FileChannel chunkChannel = FileChannel.open(chunkFile,
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+                        StandardOpenOption.TRUNCATE_EXISTING)) {
                     
                     long transferred = sourceChannel.transferTo(
                         position, currentChunkSize, chunkChannel);
@@ -180,14 +152,17 @@ public class FileUtils {
      */
     public static void mergeFiles(List<Path> sourceFiles, Path targetFile) throws IOException {
         try (FileChannel targetChannel = FileChannel.open(targetFile,
-                StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
-            
-            long position = 0;
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+                StandardOpenOption.TRUNCATE_EXISTING)) {
             
             for (Path sourceFile : sourceFiles) {
                 try (FileChannel sourceChannel = FileChannel.open(sourceFile, StandardOpenOption.READ)) {
-                    long transferred = sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
-                    position += transferred;
+                    // transferToは1回で全部を転送するとは限らないので、終わるまで繰り返す
+                    long size = sourceChannel.size();
+                    long position = 0;
+                    while (position < size) {
+                        position += sourceChannel.transferTo(position, size - position, targetChannel);
+                    }
                 }
             }
         }

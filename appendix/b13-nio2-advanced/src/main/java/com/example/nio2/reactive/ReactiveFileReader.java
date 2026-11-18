@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -57,11 +60,19 @@ public class ReactiveFileReader implements Publisher<String> {
         private final AtomicBoolean cancelled = new AtomicBoolean(false);
         private final AtomicLong position = new AtomicLong(0);
         private final AtomicBoolean reading = new AtomicBoolean(false);
+        // 読み込みは1つずつ順に行うので、バッファーとデコーダーを使い回せる。
+        // UTF-8の1文字（最大4バイト）が読み込みの境目で切れることがあるため、
+        // デコードしきれなかったバイトはバッファーに残して次の読み込みにつなげる
+        private final ByteBuffer buffer;
+        private final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder()
+            .onMalformedInput(CodingErrorAction.REPLACE)
+            .onUnmappableCharacter(CodingErrorAction.REPLACE);
         
         FileSubscription(Subscriber<? super String> subscriber, Path path, int bufferSize) 
                 throws IOException {
             this.subscriber = subscriber;
-            this.bufferSize = bufferSize;
+            this.bufferSize = Math.max(bufferSize, 4);
+            this.buffer = ByteBuffer.allocate(this.bufferSize);
             this.channel = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
             logger.debug("Subscription created for: {}", path);
         }
@@ -101,7 +112,6 @@ public class ReactiveFileReader implements Publisher<String> {
                 return;
             }
             
-            ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
             long currentPosition = position.get();
             
             channel.read(buffer, currentPosition, buffer, new CompletionHandler<Integer, ByteBuffer>() {
@@ -109,7 +119,15 @@ public class ReactiveFileReader implements Publisher<String> {
                 public void completed(Integer bytesRead, ByteBuffer attachment) {
                     try {
                         if (bytesRead == -1) {
-                            // End of file
+                            // End of file: 残ったバイトをデコードしてから完了を知らせる
+                            attachment.flip();
+                            CharBuffer rest = CharBuffer.allocate(attachment.remaining() + 1);
+                            decoder.decode(attachment, rest, true);
+                            decoder.flush(rest);
+                            rest.flip();
+                            if (rest.hasRemaining() && !cancelled.get()) {
+                                subscriber.onNext(rest.toString());
+                            }
                             subscriber.onComplete();
                             closeChannel();
                             return;
@@ -118,24 +136,23 @@ public class ReactiveFileReader implements Publisher<String> {
                         // Update position
                         position.addAndGet(bytesRead);
                         
-                        // Convert to string and emit
+                        // 文字列にできるところまでデコードし、切れた文字のバイトは残す
                         attachment.flip();
-                        String chunk = StandardCharsets.UTF_8.decode(attachment).toString();
+                        CharBuffer chars = CharBuffer.allocate(attachment.remaining());
+                        decoder.decode(attachment, chars, false);
+                        attachment.compact();
+                        chars.flip();
                         
-                        if (!cancelled.get()) {
-                            subscriber.onNext(chunk);
-                            
-                            // Decrement requested count
-                            long remaining = requested.decrementAndGet();
-                            
-                            // Continue reading if more requested
-                            if (remaining > 0 && !cancelled.get()) {
-                                reading.set(false);
-                                readNext();
-                            } else {
-                                reading.set(false);
-                            }
+                        if (cancelled.get()) {
+                            return;
                         }
+                        if (chars.hasRemaining()) {
+                            subscriber.onNext(chars.toString());
+                            requested.decrementAndGet();
+                        }
+                        reading.set(false);
+                        // 読み込み中に届いたrequestも取りこぼさないよう、ここで要求の残りを確かめる
+                        readNext();
                     } catch (Exception e) {
                         subscriber.onError(e);
                         closeChannel();

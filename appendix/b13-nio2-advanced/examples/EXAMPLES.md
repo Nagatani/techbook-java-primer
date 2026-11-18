@@ -2,7 +2,8 @@
 
 このドキュメントでは、NIO.2の高度な機能を実際の場面でどう組み合わせるかを示します。
 ここに載せたコードは構成の例です。
-`AdvancedFileWatcher`、`ParallelFileProcessor`、`ReactiveFileReader`、`SharedMemoryFile`はこのプロジェクトのクラスですが、`AlertService`、`DatabaseService`、`MulticastProcessor`などはプロジェクトに含まれていないため、そのままではコンパイルできません。
+`AdvancedFileWatcher`、`ParallelFileProcessor`、`ReactiveFileReader`、`AsyncFileIO`はこのプロジェクトのクラスですが、`AlertService`、`DatabaseService`、`MulticastProcessor`などはプロジェクトに含まれていないため、そのままではコンパイルできません。
+各機能の動きの詳細（OSによる違いを含む）は、`README.md`の対応する節で観察しています。
 
 ## 1. リアルタイムログ監視システム
 
@@ -50,6 +51,11 @@ public class LogMonitoringSystem {
 }
 ```
 
+`WatchService`が知らせるのは「変わった」ことだけで、どこが変わったかは知らせません。
+新しく書かれた部分だけを読むには、ファイルごとに前回読んだ位置を覚えておき、`FileChannel`のその位置から読みます。
+macOSでは変更の通知まで約2秒かかるので、「リアルタイム」の度合いはOSによって変わります（`README.md`の6）。
+<!-- claim: watch-impl -->
+
 ## 2. 高性能ファイル処理パイプライン
 
 ### 問題
@@ -62,7 +68,8 @@ public class CSVProcessingPipeline {
     private final DatabaseService database;
     
     public CSVProcessingPipeline() {
-        // システムに基づいて最適な並列性を使用
+        // 読み書きの待ち時間があるため、CPUの数より多めのスレッドにする例。
+        // 適切な数はディスクと処理の内容で変わるので、測って決める
         this.processor = new ParallelFileProcessor(
             Runtime.getRuntime().availableProcessors() * 2
         );
@@ -86,8 +93,8 @@ public class CSVProcessingPipeline {
             // 大きなCSVにはメモリマップドファイルを使用
             List<Record> records = readCsvWithMemoryMapping(csvFile);
             
-            // データを変換
-            List<TransformedRecord> transformed = records.parallelStream()
+            // データを変換（ファイルの単位ですでに並列なので、ここでは並列ストリームを使わない）
+            List<TransformedRecord> transformed = records.stream()
                 .map(this::transformRecord)
                 .collect(Collectors.toList());
             
@@ -172,6 +179,10 @@ public class LargeFileSearchEngine {
 }
 ```
 
+`MappedByteBuffer`（`asByteBuffer()`で得るバッファーも同じ）は1つで2GBまでしか扱えないので、大きなファイルはチャンクに分けてマップします。
+チャンクごとに`Arena`を作って閉じると、読み終えたチャンクのマッピングがその場で解放され、使う仮想メモリがチャンク1つ分に収まります（`README.md`の7と8）。
+<!-- claim: map-limit, arena-closed -->
+
 ## 4. リアルタイムデータストリーミングプラットフォーム
 
 ### 問題
@@ -215,12 +226,10 @@ public class DataStreamingPlatform {
         
         @Override
         public void onNext(String data) {
-            // コンシューマーのペースで処理
-            CompletableFuture.runAsync(() -> {
-                consumer.process(data);
-                // 準備ができたらさらにリクエスト
-                subscription.request(1);
-            });
+            // コンシューマーのペースで処理し、終わったら次の1件を要求する。
+            // 要求した分しか届かないので、遅いコンシューマーにデータがたまり続けることはない
+            consumer.process(data);
+            subscription.request(1);
         }
         
         @Override
@@ -239,12 +248,14 @@ public class DataStreamingPlatform {
 ## 5. 分散ファイル同期
 
 ### 問題
-最小限のネットワークオーバーヘッドで、変更を検出して複数のサーバー間でファイルを同期する（WatchServiceの検出の遅れはOSによって異なり、macOSではポーリングのため数秒かかる）。
+ローカルのディレクトリの変更を検出し、変わったファイルだけを複数のサーバーへ送る。
+`WatchService`の通知の速さはOSによって違い、macOSではポーリングのため約2秒かかる。
+<!-- claim: watch-impl -->
 
 ### WatchServiceと非同期I/Oを組み合わせた解決策
 ```java
 public class DistributedFileSync {
-    private final FileWatcher watcher;
+    private final AdvancedFileWatcher watcher;
     private final AsyncFileIO asyncIO;
     private final NetworkService network;
     
@@ -254,16 +265,15 @@ public class DistributedFileSync {
         // ローカルディレクトリを監視
         watcher.watchDirectory(localDir, true);
         
-        // 変更を処理
+        // 変更を処理（WatchEvent.Kindはenumではないので、switchではなくifで分ける）
         watcher.registerProcessor("*", (file, eventType) -> {
-            switch (eventType) {
-                case ENTRY_CREATE:
-                case ENTRY_MODIFY:
+            if (eventType == StandardWatchEventKinds.ENTRY_DELETE) {
+                deleteFromServers(file, servers);
+            } else {
+                // イベントの種類よりも、今のファイルの状態で決める
+                if (Files.exists(file)) {
                     syncFileToServers(file, servers);
-                    break;
-                case ENTRY_DELETE:
-                    deleteFromServers(file, servers);
-                    break;
+                }
             }
         });
     }
@@ -290,72 +300,88 @@ public class DistributedFileSync {
 }
 ```
 
-## 6. メモリ効率的なデータベースエクスポート
+イベントがたまりすぎると、`WatchService`はたまっていたイベントを捨てて`OVERFLOW`だけを知らせます（`README.md`の6）。
+同期のように取りこぼしが許されない処理では、`OVERFLOW`を受け取ったときや起動したときに、ディレクトリ全体とサーバーの内容を比べ直す処理も用意します。
+<!-- claim: watch-overflow -->
+
+## 6. 設定ファイルの安全な書き換えと再読み込み
 
 ### 問題
-過度なヒープメモリを消費せずに、ギガバイト規模のデータをデータベースからファイルにエクスポートする。
+動いているアプリケーションの設定ファイルを書き換え、アプリケーションに再起動なしで読み直させる。
+書き換えの途中の、半分だけ書かれた設定を読ませてはならない。
 
-### メモリマップドファイルを使用した解決策
+### ATOMIC_MOVEとWatchServiceを組み合わせた解決策
 ```java
-public class DatabaseExporter {
-    private static final int BATCH_SIZE = 10000;
-    
-    public void exportToFile(String query, Path outputFile) throws Exception {
-        // ファイルスペースを事前に割り当て
-        int estimatedSize = database.estimateResultSize(query); // SharedMemoryFileは2GBまで
-        
-        try (SharedMemoryFile sharedFile = new SharedMemoryFile(outputFile, estimatedSize)) {
-            AtomicLong position = new AtomicLong(0);
-            
-            // データベースから結果をストリーム
-            database.streamQuery(query, BATCH_SIZE, resultSet -> {
-                // メモリ内でCSVに変換
-                String csvBatch = convertToCsv(resultSet);
-                byte[] data = csvBatch.getBytes(StandardCharsets.UTF_8);
-                
-                // メモリマップドファイルに直接書き込み
-                long writePosition = position.getAndAdd(data.length);
-                sharedFile.writeData((int) writePosition, data);
-            });
+public class ConfigReloader implements AutoCloseable {
+    private final Path configFile;
+    private final AdvancedFileWatcher watcher;
+    private volatile Properties current = new Properties();
+
+    public ConfigReloader(Path configFile) throws IOException {
+        this.configFile = configFile.toAbsolutePath();
+        this.watcher = new AdvancedFileWatcher(1);
+        reload();
+        // 一時ファイル（app.properties.tmp）のイベントは名前で除く
+        watcher.registerConsumer(this.configFile.getFileName().toString(), file -> reload());
+        watcher.watchDirectory(this.configFile.getParent());
+        watcher.startWatching();
+    }
+
+    /** 書く側：同じディレクトリの一時ファイルに書いてから、不可分な移動で置き換える */
+    public static void write(Path configFile, Properties props) throws IOException {
+        Path tmp = configFile.resolveSibling(configFile.getFileName() + ".tmp");
+        try (Writer w = Files.newBufferedWriter(tmp)) {
+            props.store(w, null);
+        }
+        Files.move(tmp, configFile, StandardCopyOption.ATOMIC_MOVE);
+    }
+
+    /** 読む側：イベントの種類によらず、今のファイルを読み直す */
+    private void reload() {
+        Properties next = new Properties();
+        try (Reader r = Files.newBufferedReader(configFile)) {
+            next.load(r);
+            current = next;
+        } catch (IOException e) {
+            // 読めなかったときは古い設定のまま動き続ける
         }
     }
-    
-    public void parallelExport(Map<String, Path> exports) {
-        List<CompletableFuture<Void>> futures = exports.entrySet().stream()
-            .map(entry -> CompletableFuture.runAsync(() -> {
-                try {
-                    exportToFile(entry.getKey(), entry.getValue());
-                } catch (Exception e) {
-                    throw new CompletionException(e);
-                }
-            }))
-            .collect(Collectors.toList());
-        
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-            .join();
+
+    public String get(String key) {
+        return current.getProperty(key);
+    }
+
+    @Override
+    public void close() {
+        watcher.close();
     }
 }
 ```
 
+`ATOMIC_MOVE`で置き換えると、読む側には古い内容か新しい内容のどちらかだけが見えます。
+一時ファイルを同じディレクトリに作るのは、別のファイルシステムへは不可分な移動ができないためです（`README.md`の5）。
+<!-- claim: atomic-move-replace, atomic-move-unsupported -->
+
+置き換えたときにどの種類のイベントが届くかは、`WatchService`の実装によって違うことがあります。
+そのため、読む側はイベントの種類で分けずに、イベントが届いたらファイルを読み直します（`README.md`の6）。
+<!-- claim: watch-impl -->
+
 ## ベストプラクティス
 
-1. **適切なツールの選択**
-   - WatchService: ファイルシステムの変更の監視（検出の速さはOSによって異なる）
-   - 非同期I/O: 並行ファイル操作
-   - メモリマップド: 大規模ファイルのランダムアクセス
-   - リアクティブ: バックプレッシャー付きストリーミング
+ここまでの例に共通する考え方は、次のとおりです。
 
-2. **リソース管理**
-   - 常にtry-with-resourcesを使用
-   - メモリマップの領域はArena（FFM API）でマップし、使い終わったらArenaを閉じて解放する
-   - 並行操作を制限
-
-3. **エラー処理**
-   - リトライメカニズムを実装
-   - 部分的な失敗を適切に処理
-   - 詳細なエラー情報をログに記録
-
-4. **パフォーマンス最適化**
-   - 最適化前にプロファイリング
-   - パフォーマンス向上のためダイレクトByteBufferを使用
-   - 可能な場合はバッチ操作を使用
+1. 目的に合う機能を選ぶ
+   - ファイルの変更を知りたいなら`WatchService`。ただし通知の速さと取りこぼしはOSによって違う
+   - 呼び出したスレッドを待たせずに読み書きしたいなら`AsynchronousFileChannel`
+   - 大きなファイルの一部を何度も読み書きするならメモリマップドファイル
+   - 処理の速さに合わせて読み込みを抑えたいならFlow API（バックプレッシャー）
+2. 資源を確実に閉じる
+   - チャネル、`Files.list`・`Files.walk`のストリーム、`WatchService`はtry-with-resourcesで閉じる
+   - メモリマップの領域は`Arena`でマップし、使い終わったら`Arena`を閉じて解放する
+   - 同時に行う処理の数を制限する
+3. 失敗に備える
+   - 一部のファイルだけが失敗する場合を考え、失敗したファイルと理由を記録する
+   - 通知を取りこぼしたとき（`OVERFLOW`）に、全体を調べ直す処理を用意する
+4. 速さは測って確かめる
+   - どの方法が速いかは、ファイルの大きさ、OSのキャッシュ、ディスクで変わる。`benchmark`パッケージのJMHベンチマークで、自分の環境で比べる
+<!-- claim: watch-impl, watch-overflow, list-must-close -->

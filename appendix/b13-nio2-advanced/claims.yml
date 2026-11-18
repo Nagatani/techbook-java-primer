@@ -1,0 +1,651 @@
+# 付録B.13の主張と、その確かめ方
+# npm run check:deep-dive -- b13 で検証する（書き方は docs/guides/deep-dive-verification.md）
+# OSによって結果が変わる観察（WatchServiceの実装など）は、macOSとLinuxのどちらの結果でも合格するように書いている。
+# Linuxの結果は、DockerのLinux（eclipse-temurin:25-jdk）でverify/のプログラムを実行して確かめた（2026-11-19）
+jdk: 25
+
+claims:
+  # ---- 1. PathとFileSystem
+  - id: fs-providers
+    claim: インストールされているファイルシステムのプロバイダーには、既定のfileのほかに、ZIP（jar）とjrtがある
+    sources:
+      - title: FileSystemProvider.installedProviders（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/spi/FileSystemProvider.html
+        anchor: installedProviders
+    verify:
+      kind: run
+      probe: verify/FileSystemsTour.java
+      expect:
+        - 'プロバイダーのスキーム: \[file, jar, jrt\]'
+
+  - id: path-default-fs
+    claim: Path.ofで作ったPathは既定のファイルシステムに属し、Pathを作るだけではファイルの有無を確かめない
+    sources:
+      - title: Path.of（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html
+        anchor: FileSystems.getDefault().getPath
+    verify:
+      kind: run
+      probe: verify/FileSystemsTour.java
+      expect:
+        - 'Path.ofのファイルシステムは既定のもの: true'
+        - '既定のスキーム: file'
+        - '存在しないファイルのPathも作れる: data.txt exists=false'
+        - '既定のプロバイダーのクラス: sun\.nio\.fs\.(MacOSX|Linux)FileSystemProvider'
+      show:
+        - 'Path.ofの'
+        - '既定の'
+        - '存在しない'
+
+  - id: zipfs
+    claim: ZIPファイルはjdk.zipfsモジュールのプロバイダーでファイルシステムとして開け、Filesのメソッドでその中のファイルを読み書きできる
+    sources:
+      - title: jdk.zipfs モジュール（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/jdk.zipfs/module-summary.html
+        anchor: enablePosixFileAttributes
+    verify:
+      kind: run
+      probe: verify/FileSystemsTour.java
+      expect:
+        - 'ZIPのスキーム: jar'
+        - 'ZIPのプロバイダーのモジュール: jdk.zipfs'
+        - 'ZIPから読んだ内容: ZIPの中のファイル'
+      show: ['ZIP']
+
+  - id: provider-mismatch
+    claim: 別のファイルシステムのPathどうしはresolveできず（ProviderMismatchException）、Files.copyならファイルシステムをまたいでコピーできる
+    sources:
+      - title: ProviderMismatchException（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/ProviderMismatchException.html
+        anchor: ProviderMismatchException
+    verify:
+      kind: run
+      probe: verify/FileSystemsTour.java
+      expect:
+        - '別のファイルシステムのPathをresolve: java\.nio\.file\.ProviderMismatchException'
+        - 'ZIPから既定のファイルシステムへコピー: ZIPの中のファイル'
+
+  - id: jrt-fs
+    claim: jrt:/ファイルシステムで、JDKのモジュールに入っているクラスファイルを読める（JEP 220）
+    sources:
+      - title: JEP 220 Modular Run-Time Images
+        url: https://openjdk.org/jeps/220
+        anchor: A built-in NIO FileSystem provider for the jrt URL scheme
+    verify:
+      kind: run
+      probe: verify/FileSystemsTour.java
+      expect:
+        - 'jrtのスキーム: jrt'
+        - 'Object.classの先頭4バイト: CAFEBABE'
+        - 'java.baseモジュールがある: true'
+      show: ['jrt', 'Object\.class', 'java\.base']
+
+  - id: path-elements
+    claim: Pathは名前の要素の並びで、normalizeは「..」を取り除き、startsWithは要素ごとに比べる（文字列の前方一致ではない）
+    sources:
+      - title: Path.startsWith（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html
+        anchor: It does not start with "f" or "fo".
+    verify:
+      kind: run
+      probe: verify/PathBasics.java
+      expect:
+        - '要素の数: 4'
+        - 'normalize後の要素の数: 2'
+        - 'Path\.startsWith\("rep"\): false'
+        - 'Path\.startsWith\("reports"\): true'
+        - 'String\.startsWith\("rep"\): true'
+      show: ['要素の数', 'normalize', 'startsWith']
+
+  - id: path-relativize
+    claim: relativizeとresolveは逆の操作になる
+    sources:
+      - title: Path.relativize（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html
+        anchor: relativize
+    verify:
+      kind: run
+      probe: verify/PathBasics.java
+      expect:
+        - 'relativizeの要素: \[\.\.\]\[c\]\[d\.txt\]'
+        - 'resolveで戻すと等しい: true'
+      show: ['relativize', 'resolve']
+
+  - id: path-realpath
+    claim: toAbsolutePathはファイルの有無を確かめないが、toRealPathは確かめ、ないとNoSuchFileExceptionになる
+    sources:
+      - title: Path.toRealPath（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html
+        anchor: toRealPath
+    verify:
+      kind: run
+      probe: verify/PathBasics.java
+      expect:
+        - 'toAbsolutePathは成功: true'
+        - 'toRealPath: java\.nio\.file\.NoSuchFileException'
+      show: ['toAbsolutePath', 'toRealPath']
+
+  # ---- 2. Filesと例外
+  - id: file-boolean
+    claim: java.io.Fileのdelete・createNewFile・mkdirは、失敗してもfalseを返すだけで理由を知らせない
+    sources:
+      - title: java.io.File.delete（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html
+        anchor: Note that the Files class defines the delete method to throw an IOException when a file cannot be deleted.
+    verify:
+      kind: run
+      probe: verify/FilesExceptions.java
+      expect:
+        - 'File\.delete（ない）: false'
+        - 'File\.delete（空でないディレクトリ）: false'
+        - 'File\.createNewFile（ある）: false'
+        - 'File\.mkdir（ある）: false'
+      show: ['^File\.']
+
+  - id: files-exceptions
+    claim: Filesのメソッドは失敗の理由ごとに例外を分ける（ない→NoSuchFileException、ある→FileAlreadyExistsException、空でない→DirectoryNotEmptyException）
+    sources:
+      - title: Files.delete（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: DirectoryNotEmptyException
+    verify:
+      kind: run
+      probe: verify/FilesExceptions.java
+      expect:
+        - 'Files\.delete（ない）: NoSuchFileException'
+        - 'Files\.delete（空でないディレクトリ）: DirectoryNotEmptyException'
+        - 'Files\.createFile（ある）: FileAlreadyExistsException'
+        - 'Files\.createDirectory（ある）: FileAlreadyExistsException'
+        - 'Files\.copy（コピー先がある）: FileAlreadyExistsException'
+        - 'Files\.readString（ない）: NoSuchFileException'
+        - 'Files\.copy（REPLACE_EXISTING）: 成功'
+      show: ['^Files\.', 'FileSystemException']
+
+  - id: fs-exception-file
+    claim: NoSuchFileExceptionなどはFileSystemExceptionのサブクラスで、getFile()で対象のファイルを取り出せる
+    sources:
+      - title: FileSystemException（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/FileSystemException.html
+        anchor: getFile
+    verify:
+      kind: run
+      probe: verify/FilesExceptions.java
+      expect:
+        - 'FileSystemExceptionとして捕まえた: NoSuchFileException getFile\(\)のファイル名=missing\.txt'
+
+  - id: delete-if-exists
+    claim: deleteIfExistsはファイルがなければfalseを返し、createDirectoriesはディレクトリがすでにあっても例外にしない
+    sources:
+      - title: Files.createDirectories（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: createDirectories
+    verify:
+      kind: run
+      probe: verify/FilesExceptions.java
+      expect:
+        - 'Files\.deleteIfExists（ない）: false'
+        - 'Files\.createDirectories（ある）: sub'
+
+  # ---- 3. 属性とビュー
+  - id: attr-views
+    claim: 使える属性のビューはファイルシステムによって違い、basicはどれでも使える。ZIPはbasicとzip、jrtはbasicとjrt
+    sources:
+      - title: java.nio.file.attribute パッケージ（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/attribute/package-summary.html
+        anchor: BasicFileAttributeView
+    verify:
+      kind: run
+      probe: verify/AttributeViews.java
+      expect:
+        - '既定のファイルシステムのビュー: \[basic, '
+        - 'ZIPのビュー: \[basic, zip\]'
+        - 'jrtのビュー: \[basic, jrt\]'
+      show: ['^OS:', 'のビュー:']
+
+  - id: attr-views-linux
+    claim: Linuxの既定のファイルシステムでは、macOSのビューに加えてdosビューも使える
+    sources:
+      - title: FileSystem.supportedFileAttributeViews（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/FileSystem.html
+        anchor: supportedFileAttributeViews
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 'verify/AttributeViews.javaをDockerのeclipse-temurin:25-jdk（Linux）で実行し、「既定のファイルシステムのビュー: [basic, dos, owner, posix, unix, user]」と「dosビュー: あり」を確かめた。macOSでは[basic, owner, posix, unix, user]'
+
+  - id: attr-null-view
+    claim: 使えないビューをクラスで求めるとnullが返り、名前で存在しないビューを指定するとUnsupportedOperationExceptionになる
+    sources:
+      - title: Files.getFileAttributeView（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: getFileAttributeView
+    verify:
+      kind: run
+      probe: verify/AttributeViews.java
+      expect:
+        - 'ZIPの中のファイルのposixビュー: null'
+        - '存在しないビュー名: UnsupportedOperationException'
+
+  - id: attr-by-name
+    claim: 属性は「ビュー名:属性名」の文字列でも読め、ビュー名を省くとbasicになる
+    sources:
+      - title: Files.getAttribute（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: getAttribute
+    verify:
+      kind: run
+      probe: verify/AttributeViews.java
+      expect:
+        - 'basic: size=5 regularFile=true directory=false'
+        - 'Files\.getAttribute\("size"\): 5'
+        - 'Files\.readAttributes\("basic:size,isDirectory"\): \[isDirectory, size\]'
+      show: ['^basic:', '^Files\.', 'posix']
+
+  # ---- 4. ディレクトリのストリーム
+  - id: read-closes
+    claim: Files.readAllLinesやFiles.readStringは、メソッドの中でファイルを閉じる
+    sources:
+      - title: Files.readAllLines（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: This method ensures that the file is closed when all bytes have been read or an I/O error, or other runtime exception, is thrown.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Files.readAllBytes・readAllLines・readStringのAPIに、ファイルを閉じることを保証する記述があることを確かめた
+
+  - id: list-must-close
+    claim: Files.listのストリームは開いたディレクトリを持ち、終端操作を呼んでも閉じるまでファイル記述子が残る
+    sources:
+      - title: Files.list（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: closed promptly after the stream's operations have completed
+    verify:
+      kind: run
+      probe: verify/StreamsMustClose.java
+      expect:
+        - '閉じずに100回Files\.listしたあとの増分: [1-9]\d{2,}$'
+        - 'closeしたあとの増分: 0$'
+      show: ['増分']
+
+  - id: list-order
+    claim: ディレクトリの要素を返す順序は決まっていない
+    sources:
+      - title: DirectoryStream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/DirectoryStream.html
+        anchor: no specific order
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: DirectoryStreamのAPIに「The elements returned by the iterator are in no specific order.」とあり、Files.listはDirectoryStreamで要素を得ることを確かめた
+
+  - id: walk-loop
+    claim: FOLLOW_LINKSを付けたFiles.walkは、循環するシンボリックリンクでUncheckedIOException（原因はFileSystemLoopException）になる
+    sources:
+      - title: Files.walk（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: FileSystemLoopException
+    verify:
+      kind: run
+      probe: verify/StreamsMustClose.java
+      expect:
+        - 'FOLLOW_LINKSで循環: UncheckedIOException（原因 FileSystemLoopException）'
+        - 'FOLLOW_LINKSなしの要素数: 6'
+      show: ['FOLLOW_LINKS', '名前順']
+
+  # ---- 5. 移動
+  - id: move-options
+    claim: Files.moveは、オプションなしで移動先があるとFileAlreadyExistsException、REPLACE_EXISTINGなら置き換える
+    sources:
+      - title: Files.move（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: REPLACE_EXISTING
+    verify:
+      kind: run
+      probe: verify/AtomicMove.java
+      expect:
+        - 'オプションなし: FileAlreadyExistsException'
+        - 'REPLACE_EXISTING: version=2'
+      show: ['.']
+
+  - id: atomic-move-replace
+    claim: ATOMIC_MOVEで移動先があるときの扱いは実装によって決まり、macOSとLinuxでは置き換わる
+    sources:
+      - title: Files.move（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: If the target file exists then it is implementation specific if the existing file is replaced or this method fails by throwing an IOException.
+    verify:
+      kind: run
+      probe: verify/AtomicMove.java
+      expect:
+        - 'ATOMIC_MOVE（移動先あり）: 置き換わった version=3'
+        - '一時ファイルは残っていない: true'
+
+  - id: atomic-move-unsupported
+    claim: 不可分な操作として移動できないとき（別のファイルシステムへの移動など）、ATOMIC_MOVEはAtomicMoveNotSupportedExceptionになる
+    sources:
+      - title: Files.move（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: but the file cannot be moved as an atomic file system operation
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Files.moveのAPIの例外の説明を確かめた。別のファイルシステムをまたぐ移動はOSと環境に依存するため、観察はしていない
+
+  # ---- 6. WatchService
+  - id: watch-impl
+    claim: WatchServiceの実装はOSによって違い、macOSではポーリング（PollingWatchService）、Linuxではinotify（LinuxWatchService）を使う。macOSでは変更から通知まで約2秒かかり、作ってすぐ消したファイルは通知されない
+    sources:
+      - title: WatchService（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/WatchService.html
+        anchor: or to use a primitive mechanism, such as polling, when a native facility is not available
+    verify:
+      kind: run
+      probe: verify/WatchServiceImpl.java
+      args: [1000]
+      attempts: 3
+      expect:
+        - 'WatchServiceの実装: sun\.nio\.fs\.(PollingWatchService|LinuxWatchService)'
+        - '(PollingWatchService[\s\S]*最初のイベント: \[ENTRY_CREATE first\.txt\]（100ミリ秒以上、約2秒）[\s\S]*作ってすぐ消したファイルのイベント: なし|LinuxWatchService[\s\S]*最初のイベント: \[ENTRY_CREATE first\.txt\]（100ミリ秒未満）[\s\S]*作ってすぐ消したファイルのイベント: \[ENTRY_CREATE flash\.txt, ENTRY_DELETE flash\.txt\])'
+        - 'WatchKeyは同じもの: true'
+      show: ['実装', '最初のイベント', '作ってすぐ']
+
+  - id: watch-overflow
+    claim: イベントを取り出さないうちに多数の変更が起きると、たまっていたイベントは捨てられ、OVERFLOWだけが残る（この実装では500件では起きず、520件で起きる）
+    sources:
+      - title: StandardWatchEventKinds.OVERFLOW（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/StandardWatchEventKinds.html
+        anchor: OVERFLOW
+    verify:
+      kind: run
+      probe: verify/WatchServiceImpl.java
+      args: [520]
+      expect:
+        - '520個作ったときのイベント: 0件、OVERFLOW=true'
+      show: ['個作った']
+
+  - id: watch-overflow-500
+    claim: 同上（500件ならすべてのイベントが届く）
+    unreferenced: true
+    verify:
+      kind: run
+      probe: verify/WatchServiceImpl.java
+      args: [500]
+      expect:
+        - '500個作ったときのイベント: 500件、OVERFLOW=false'
+
+  - id: watch-dir-only
+    claim: WatchServiceに登録したディレクトリでは、その直下の項目だけが監視され、サブディレクトリの中は監視されない
+    sources:
+      - title: Path.register（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html
+        anchor: so that entries in the directory can be watched
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Path.registerとWatchServiceのAPIで、監視の対象がディレクトリの項目（entries in the directory）であることを確かめた
+
+  - id: watch-remote
+    claim: ローカルの記憶装置にないファイル（ネットワークドライブなど）の変更を検出できるかは実装によって決まる
+    sources:
+      - title: WatchService（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/WatchService.html
+        anchor: not located on a local storage device then it is implementation specific if changes to the file can be detected
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: WatchServiceのAPIの「Platform dependencies」の記述を確かめた
+
+  # ---- 7. FileChannelとメモリマップドファイル
+  - id: map-modes
+    claim: READ_WRITEで書いた内容はファイルに反映され、PRIVATE（コピーオンライト）で書いた内容は反映されない。読み取り専用で開いたチャネルはREAD_WRITEでマップできない
+    sources:
+      - title: FileChannel.map（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: copy-on-write
+    verify:
+      kind: run
+      probe: verify/MapModes.java
+      expect:
+        - 'READ_WRITEで書いたあとのファイルの先頭: A'
+        - 'PRIVATEのバッファーの先頭: B / ファイルの先頭: A'
+        - 'READ_ONLYのisReadOnly: true'
+        - 'READで開いてREAD_WRITEでマップ: NonWritableChannelException'
+      show: ['READ_WRITEで書いた', 'PRIVATE', 'READ_ONLY', 'READで開いて']
+
+  - id: map-extend
+    claim: ファイルより大きな範囲をマップしたときの動きは仕様では決まっていないが、この実装ではREAD_WRITEでマップするとファイルが伸びる
+    sources:
+      - title: FileChannel.map（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: not completely contained within this channel's file is unspecified
+    verify:
+      kind: run
+      probe: verify/MapModes.java
+      expect:
+        - 'マップ前の大きさ: 0'
+        - '16バイトをREAD_WRITEでマップしたあとの大きさ: 16'
+      show: ['大きさ']
+
+  - id: map-limit
+    claim: FileChannel.mapが返すMappedByteBufferの大きさはInteger.MAX_VALUEバイトまでで、それを超えるとIllegalArgumentExceptionになる
+    sources:
+      - title: FileChannel.map（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: no greater than Integer.MAX_VALUE
+    verify:
+      kind: run
+      probe: verify/MappedLimits.java
+      expect:
+        - 'map\(Integer\.MAX_VALUE \+ 1\): IllegalArgumentException: Size exceeds Integer\.MAX_VALUE'
+        - 'map\(Integer\.MAX_VALUE\)のcapacity: 2147483647'
+      show: ['ファイルの大きさ', '^map']
+
+  - id: mapped-gc
+    claim: MappedByteBufferのマッピングは、チャネルを閉じても残り、バッファーがGCに回収されるまで有効である。標準のAPIでアンマップする方法はない
+    sources:
+      - title: MappedByteBuffer（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/MappedByteBuffer.html
+        anchor: remain valid until the buffer itself is garbage-collected
+      - title: FileChannel.map（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: Closing the channel, in particular, has no effect upon the validity of the mapping.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: MappedByteBufferのクラスの説明と、FileChannel.mapの説明を確かめた。MappedByteBufferにアンマップするpublicメソッドがないこともAPIの一覧で確かめた
+
+  - id: readallbytes-limit
+    claim: Files.readAllBytesはファイル全体を1つの配列に読むため、2GBを超えるファイルはOutOfMemoryErrorになる
+    sources:
+      - title: Files.readAllBytes（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: OutOfMemoryError
+    verify:
+      kind: run
+      probe: verify/MappedLimits.java
+      expect:
+        - 'Files\.readAllBytes\(3GB\): OutOfMemoryError: Required array size too large'
+
+  # ---- 8. MemorySegment
+  - id: ffm-final
+    claim: FFM API（MemorySegment・Arena）はJava 22で正式な機能になり（JEP 454）、FileChannel.mapにArenaを渡す版もJava 22で加わった
+    sources:
+      - title: JEP 454 Foreign Function & Memory API
+        url: https://openjdk.org/jeps/454
+        anchor: Foreign Function & Memory API
+      - title: FileChannel.map(MapMode, long, long, Arena)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: Arena arena
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 454のReleaseが22であること、FileChannelのAPIでmap(MapMode, long, long, Arena)の「Since:」が22であることを確かめた
+
+  - id: segment-large
+    claim: Arenaを渡してマップしたMemorySegmentは、2GBを超える範囲を1つにマップでき、longの位置で読める
+    sources:
+      - title: FileChannel.map(MapMode, long, long, Arena)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: Arena arena
+    verify:
+      kind: run
+      probe: verify/MappedLimits.java
+      expect:
+        - 'MemorySegmentの大きさ: 3221225472バイト'
+        - '最後のバイト: 42'
+        - '途中のバイト（書いていない部分）: 0'
+      show: ['MemorySegment', 'バイト:', 'バイト（']
+
+  - id: segment-asbytebuffer
+    claim: 2GBを超えるMemorySegmentはByteBufferにできない。APIドキュメントはUnsupportedOperationExceptionと書いているが、JDK 25.0.2ではIllegalStateExceptionになる
+    sources:
+      - title: MemorySegment.asByteBuffer（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/foreign/MemorySegment.html
+        anchor: or if its size is greater than Integer.MAX_VALUE
+    verify:
+      kind: run
+      probe: verify/MappedLimits.java
+      expect:
+        - '3GBのsegment\.asByteBuffer\(\): (IllegalStateException|UnsupportedOperationException)'
+      show: ['asByteBuffer']
+
+  - id: arena-closed
+    claim: Arenaを閉じるとマッピングは解放され、そのセグメントにアクセスするとIllegalStateExceptionになる
+    sources:
+      - title: Arena（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/foreign/Arena.html
+        anchor: close
+    verify:
+      kind: run
+      probe: verify/MappedLimits.java
+      expect:
+        - 'Arenaを閉じたあとのアクセス: IllegalStateException: Already closed'
+
+  # ---- 9. AsynchronousFileChannel
+  - id: async-append
+    claim: AsynchronousFileChannelはAPPENDを指定できず、UnsupportedOperationExceptionになる
+    sources:
+      - title: AsynchronousFileChannel.open（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html
+        anchor: an unsupported open option is specified
+    verify:
+      kind: run
+      probe: verify/AsyncChannelFacts.java
+      expect:
+        - 'APPENDを指定: UnsupportedOperationException: APPEND not allowed'
+
+  - id: async-position
+    claim: AsynchronousFileChannelは現在位置を持たず、読み書きのたびに位置を渡す
+    sources:
+      - title: AsynchronousFileChannel（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html
+        anchor: does not have a current position within the file.
+    verify:
+      kind: run
+      probe: verify/AsyncChannelFacts.java
+      expect:
+        - 'Futureで書いたバイト数: 5'
+
+  - id: async-impl
+    claim: macOSとLinuxのAsynchronousFileChannelの実装はSimpleAsynchronousFileChannelImplで、完了ハンドラーはスレッドプールのデーモンスレッドで、読み込みを行ったタスクの中から呼ばれる
+    sources:
+      - title: AsynchronousFileChannel（Java SE 25 API、Threads）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html
+        anchor: system-dependent default thread pool that may be shared with other channels.
+    verify:
+      kind: run
+      probe: verify/AsyncChannelFacts.java
+      expect:
+        - '実装クラス: sun\.nio\.ch\.SimpleAsynchronousFileChannelImpl'
+        - '既定のスレッドプールでの完了ハンドラー: 読んだバイト数=5 mainスレッドか=false デーモンか=true スレッドプールのタスクの中か=true'
+      show: ['実装クラス', '完了ハンドラー']
+
+  - id: async-executor
+    claim: openにExecutorServiceを渡すと、完了ハンドラーはそのスレッドで動く
+    sources:
+      - title: AsynchronousFileChannel.open（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/AsynchronousFileChannel.html
+        anchor: ExecutorService
+    verify:
+      kind: run
+      probe: verify/AsyncChannelFacts.java
+      expect:
+        - '自分のExecutorServiceを渡したときのスレッド: my-io-thread'
+
+  # ---- 10. ファイルのロック
+  - id: lock-jvm
+    claim: FileLockはJVM全体のものとして持たれ、同じJVMで重なる範囲をロックすると、別のチャネルからでも待たずにOverlappingFileLockExceptionになる
+    sources:
+      - title: FileLock（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileLock.html
+        anchor: They are not suitable for controlling access to a file by multiple threads within the same virtual machine.
+    verify:
+      kind: run
+      probe: verify/FileLocks.java
+      expect:
+        - '排他ロック: isShared=false isValid=true'
+        - '同じJVMの別のチャネルで重なる範囲: OverlappingFileLockException'
+        - '重ならない範囲: ロックできた'
+      show: ['排他ロック', '同じJVM', '重ならない']
+
+  - id: lock-process
+    claim: ロックしている間、別のプロセス（JVM）からのtryLockはnullを返し、解放するとロックできる
+    sources:
+      - title: FileChannel.tryLock（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: tryLock
+    verify:
+      kind: run
+      probe: verify/FileLocks.java
+      expect:
+        - '子のプロセス（ロック中）: tryLockはnull'
+        - '解放後: isValid=false'
+        - '子のプロセス（解放後）: ロックできた'
+      show: ['子のプロセス', '解放後']
+
+  - id: lock-advisory
+    claim: ロックがほかのプログラムの読み書きを止めるかはOSによって決まり、macOSとLinuxではロックを取らずに書き込む処理を止めない
+    sources:
+      - title: FileLock（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileLock.html
+        anchor: Whether or not a lock actually prevents another program from accessing the content of the locked region is system-dependent and therefore unspecified.
+    verify:
+      kind: run
+      probe: verify/FileLocks.java
+      expect:
+        - 'ロック中の範囲へ、ロックを取らずに書き込み: 3バイト書けた'
+
+  - id: lock-shared-readable
+    claim: 共有ロックには読み取りのできるチャネルが要り、書き込み専用のチャネルではNonReadableChannelExceptionになる
+    sources:
+      - title: FileChannel.lock（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileChannel.html
+        anchor: NonReadableChannelException
+    verify:
+      kind: run
+      probe: verify/FileLocks.java
+      expect:
+        - '書き込み専用のチャネルで共有ロック: NonReadableChannelException'
+
+  - id: lock-close-releases
+    claim: OSによっては、同じファイルのどれか1つのチャネルを閉じると、そのJVMが持つそのファイルのロックがすべて解放される
+    sources:
+      - title: FileLock（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/channels/FileLock.html
+        anchor: On some systems, closing a channel releases all locks held by the Java virtual machine on the underlying file
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: FileLockのAPIの「Platform dependencies」の記述を確かめた
+
+  # ---- 11. デモのビルド
+  - id: javac-proc-default
+    claim: JDK 25のjavacは、注釈処理を設定するオプション（--processor-pathなど）か-proc:fullを指定しないと、注釈処理を行わない
+    sources:
+      - title: javacコマンド（Java SE 25）
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html
+        anchor: annotation processing and compilation are done if at least one other option is used to explicitly configure annotation processing
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: javacのリファレンスの-procの説明と「How Annotation Processing Works」を確かめた。Mavenのビルド（DockerのJava 25）で、annotationProcessorPathsを指定した状態でjava -jar target/benchmarks.jar -lがベンチマークの一覧を表示することを確かめた

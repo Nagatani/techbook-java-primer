@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +18,8 @@ public class AdvancedFileWatcher extends FileWatcher {
     private final ExecutorService executor;
     private final Map<String, FileProcessor> processors = new ConcurrentHashMap<>();
     private final Map<Path, ScheduledFuture<?>> pendingEvents = new ConcurrentHashMap<>();
+    // デバウンスの間にまとめたイベントの種類。作成の直後の変更は「作成」として扱う
+    private final Map<Path, WatchEvent.Kind<?>> pendingKinds = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler;
     private Duration debounceDelay = Duration.ofMillis(500);
     
@@ -74,16 +75,24 @@ public class AdvancedFileWatcher extends FileWatcher {
             existing.cancel(false);
             logger.debug("Cancelled pending event for: {}", path);
         }
-        
+
+        // ファイルを作って書き込むと、ENTRY_CREATEのあとにENTRY_MODIFYが続くことが多い。
+        // 最後の種類だけを残すとENTRY_CREATEに反応する処理が呼ばれなくなるため、
+        // 作成のあとの変更は作成のままにする
+        WatchEvent.Kind<?> merged = pendingKinds.merge(path, kind, (before, now) ->
+            before == StandardWatchEventKinds.ENTRY_CREATE
+                && now == StandardWatchEventKinds.ENTRY_MODIFY ? before : now);
+
         // Schedule new event with debounce
         ScheduledFuture<?> future = scheduler.schedule(() -> {
-            processFileEvent(kind, path);
+            pendingKinds.remove(path);
             pendingEvents.remove(path);
+            processFileEvent(merged, path);
         }, debounceDelay.toMillis(), TimeUnit.MILLISECONDS);
-        
+
         pendingEvents.put(path, future);
     }
-    
+
     private void processFileEvent(WatchEvent.Kind<?> kind, Path path) {
         String filename = path.getFileName().toString();
         
@@ -108,13 +117,11 @@ public class AdvancedFileWatcher extends FileWatcher {
     }
     
     private boolean matchesPattern(String filename, String pattern) {
-        // Convert simple glob pattern to regex
-        String regex = pattern.replace(".", "\\.")
-                             .replace("*", ".*")
-                             .replace("?", ".");
-        return Pattern.matches(regex, filename);
+        // globの書き方（*.log、data-??.csv など）はPathMatcherに任せる
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+        return matcher.matches(Path.of(filename));
     }
-    
+
     @Override
     public void close() {
         super.close();
@@ -122,6 +129,7 @@ public class AdvancedFileWatcher extends FileWatcher {
         // Cancel pending events
         pendingEvents.values().forEach(future -> future.cancel(false));
         pendingEvents.clear();
+        pendingKinds.clear();
         
         // Shutdown executors
         scheduler.shutdown();
