@@ -214,6 +214,7 @@ function validateLedger(sec, ledger, problems) {
     if (v.kind === 'javap' && (!v.probe || !v.class)) problems.push({ level: 'error', where, msg: 'javapにはprobeとclassが要る' });
     if (v.kind === 'run' && !v.probe && !v.main) problems.push({ level: 'error', where, msg: 'runにはprobeかmainが要る' });
     if (v.kind === 'since' && (!v.probe || !v.version)) problems.push({ level: 'error', where, msg: 'sinceにはprobeとversionが要る' });
+    if (v.kind === 'since' && Number(v.version) < MIN_RELEASE && !(c.sources && c.sources.length)) problems.push({ level: 'error', where, msg: `Java ${MIN_RELEASE}より前の版のsinceは、N-1でコンパイルできないことを確かめられないのでsources（出典）が要る` });
     if (sec.kind === 'chapter' && !c.text && !c.unreferenced) problems.push({ level: 'error', where, msg: '本文の主張にはtext（本文の文の一部の引用）が要る' });
     if (v.kind === 'flag' && !v.flag) problems.push({ level: 'error', where, msg: 'flagにはflagが要る' });
     if (['javac', 'javap', 'run'].includes(v.kind) && !(v.expect || v.absent)) problems.push({ level: 'error', where, msg: 'expectかabsentが要る' });
@@ -319,9 +320,11 @@ function verifyClaim(sec, c, tmp) {
   }
   if (v.kind === 'since') {
     const n = Number(v.version);
-    const ok = compileFor(sec, { ...v, release: n }, tmp);
-    if (!ok.ok) return { status: 'fail', msg: `--release ${n} でコンパイルできない\n${ok.msg}` };
-    if (n - 1 < MIN_RELEASE) return { status: 'pass', output: `--release ${n} でコンパイルできた（${n - 1}は--releaseに指定できないので確かめていない）` };
+    // Java 8より前の版（7以下）は--releaseに指定できないので、8で通ることだけを確かめる（出典を必須にする）
+    const rel = Math.max(n, MIN_RELEASE);
+    const ok = compileFor(sec, { ...v, release: rel }, tmp);
+    if (!ok.ok) return { status: 'fail', msg: `--release ${rel} でコンパイルできない\n${ok.msg}` };
+    if (n - 1 < MIN_RELEASE) return { status: 'pass', output: `--release ${rel} でコンパイルできた（${n - 1}は--releaseに指定できないので、版は出典で確かめる）` };
     const ng = compileFor(sec, { ...v, release: n - 1 }, tmp);
     if (ng.ok) return { status: 'fail', msg: `--release ${n - 1} でもコンパイルできた（Java ${n}より前からある）` };
     const m = matchAll(ng.msg, v);
@@ -430,7 +433,8 @@ function checkSources(sec, ledger, problems) {
 function normalizeProse(text) {
   return text
     .replace(/^(```|~~~)[\s\S]*?^\1\s*$/gm, '')
-    .replace(/<[^>]+>/g, '')
+    // 原稿に使うHTMLのタグだけを外す（<local1> や List<String> の山括弧は残す）
+    .replace(/<\/?(span|div|img|br|b|i|small|sup|sub|a|wbr|em|strong|code|p|figure|figcaption)\b[^>]*>/g, '')
     .replace(/[`*]/g, '')
     .replace(/\n/g, '')
     .replace(/\s+/g, ' ');
