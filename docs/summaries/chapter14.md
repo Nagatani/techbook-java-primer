@@ -7,7 +7,7 @@ sections:
   - key: "ファイルI/Oの基礎とストリーム"
     hash: faf5ad01
   - key: "テキストファイルの読み書き"
-    hash: 46b420a0
+    hash: 7538419f
   - key: "バイナリファイルの高度な処理"
     hash: e6181051
   - key: "オブジェクトの直列化（シリアライズ）"
@@ -57,13 +57,14 @@ sections:
 - ファイルI/Oの基礎とストリーム（L27–59）
     + ストリームの概念、バイトストリームと文字ストリーム（キャラクターストリーム）、クラス階層図2点
     + try-with-resourcesでストリームを閉じる（第13章を参照）。重ねたストリームは外側だけ宣言すればよいこと、`Files.newBufferedReader`の戻り値は閉じ、`Files.readAllLines`などは閉じなくてよいこと
-- テキストファイルの読み書き（L60–303）
+- テキストファイルの読み書き（L60–323）
     + この後に紹介する3つの方法の案内
     + Scannerによる行単位・デリミター・型指定の読み込み（14-1）。キーボード入力は`IO.readln`を使う旨と、`data.txt`は全文と同じディレクトリにある旨
     + BufferedReaderの1行ずつ読み込みとreadAllLinesの使い分け（14-2）
     + BufferedWriterとStandardOpenOption、APPENDによる追記（14-3）と作成されたファイルの内容
     + UTF-8・Shift_JIS（Windows-31J、Javaでの名前は`windows-31j`、別名`MS932`）・ISO-8859-1。既定がUTF-8になったJEP 400の脚注
     + 14-4は「こんにちは」をUTF-8で書き、Shift_JISで読むと「縺薙ｓ縺ｫ縺｡縺ｯ」と文字化けする例（2026-11-14に、例外になる例から実際に化ける例へ作り直した）。文字化けのしくみと、解釈できないバイト列があると`MalformedInputException`になることを本文で説明する
+    + コラム「文字化けとの長い戦い」（2026-11-19）。BOM付きのUTF-8（JavaのUTF-8は取り除かない）と、0x8160の「〜」がShift_JISとwindows-31jで別の文字になる問題、文字コードを推測せず受け渡しで取り決めること
 - バイナリファイルの高度な処理（L304–378）
     + DataOutputStream/DataInputStreamでプリミティブ型と文字列を読み書き（14-5）。型の情報は保存しないので順序を一致させる、ビッグエンディアン、writeUTFの65535バイト制限を文章で注意
     + BufferedInputStream/BufferedOutputStreamの役割（データをバッファーにまとめ、OSへの読み書きの要求の回数を減らす）と、14-5でストリームを重ねる構造の図

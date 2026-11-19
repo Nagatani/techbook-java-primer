@@ -116,3 +116,24 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: JDK 25のjavacは--enable-previewを--release 25でしか受け付けない（invalid source release 13 with --enable-preview）ので、プレビューだったことは機械では確かめられない。--release 14のエラーも「text blocks are not supported in -source 14」でpreviewを含まない
+
+  # ---- コラム「文字化けとの長い戦い」（2026-11-19）
+  - id: column-bom-not-stripped
+    claim: JavaのUTF-8のデコーダーはBOM（EF BB BF）を取り除かないので、Files.readAllLinesで読むと1行目の先頭にU+FEFFが残り、startsWith("id")がfalseになる
+    text:
+      - Javaの`UTF-8`の読み込みはこの目印を取り除かないので、`Files.readAllLines`で読むと、1行目の先頭に目に見えない文字（U+FEFF）が残ります
+      - CSVの1行目がid,nameに見えるのにstartsWith("id")がfalseになり
+    verify:
+      kind: run
+      probe: EncodingPitfalls.java
+      expect: ['^先頭の文字: U\+FEFF$', '^idで始まるか: false$', '^1行目の長さ: 8$']
+
+  - id: column-wave-dash
+    claim: Shift_JISの0x8160は、Javaの「Shift_JIS」ではU+301C（WAVE DASH）、「windows-31j」ではU+FF5E（FULLWIDTH TILDE）に変換され、別の文字になる
+    text:
+      - Javaの`Shift_JIS`で読むとU+301C（波ダッシュ）に、`windows-31j`で読むとU+FF5E（全角チルダ）になります
+      - 別の文字なのでequalsはfalseです
+    verify:
+      kind: run
+      probe: EncodingPitfalls.java
+      expect: ['^Shift_JIS: U\+301C$', '^windows-31j: U\+FF5E$', '^同じ文字か: false$']
