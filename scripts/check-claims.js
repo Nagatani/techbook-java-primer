@@ -461,13 +461,15 @@ const VERSION_RE = /(Java|JDK)\s?\d+(\.\d+)?\s*(以降|から|で(導入|追加|
  */
 function chapterAnchors(sec, ledger, row, problems) {
   const md = fs.readFileSync(sec.manuscript, 'utf8');
+  // 脚注の中身を含めた本文と、脚注を除いた本文の両方から探す（脚注を足しても、地の文の引用が切れないように）
   const prose = normalizeProse(md);
+  const proseNoNotes = normalizeProse(md.replace(/<span class="footnote">[\s\S]*?<\/span>/g, ''));
   const quotes = [];
   for (const c of (ledger ? ledger.claims : [])) {
     for (const t of asList(c.text)) {
       const q = normalizeQuote(t);
       quotes.push(q);
-      if (!prose.includes(q)) {
+      if (!prose.includes(q) && !proseNoNotes.includes(q)) {
         problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`,
           msg: `本文（${path.relative(ROOT, sec.manuscript)}）に「${q.slice(0, 60)}」が見つからない（本文を書き換えたなら、主張を見直してtextを直す）` });
       }
