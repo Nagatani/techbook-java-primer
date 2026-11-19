@@ -333,6 +333,38 @@ public class UserService {
 呼び出し側は、受け取った`DataAccessException`の`getCause()`で元の`SQLException`を取り出せます。
 スタックトレースを出力すると、包んだ例外の下に`Caused by:`に続けて原因の例外も表示されます。
 
+> **コラム：スタックトレースを読める人は強い**{.column-section}
+>
+> 初めてスタックトレースを見ると、英語と記号の並んだ長い文字列に圧倒されます。
+> しかし現場のエンジニアは、エラーの報告を受けたら、まずスタックトレースを手に入れようとします。
+> 読み方さえ知っていれば、どこで何が起きたかの大半がそこに書いてあるからです。
+> 次は、設定のポート番号に`80a`と書かれていたときに出る例です。
+>
+> ```
+> Exception in thread "main" java.lang.IllegalStateException: 設定のポート番号が数字ではありません
+> 	at ConfigLoader.readPort(ConfigLoader.java:7)
+> 	at ConfigLoader.start(ConfigLoader.java:12)
+> 	at ConfigLoader.main(ConfigLoader.java:17)
+> Caused by: java.lang.NumberFormatException: For input string: "80a"
+> 	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+> 	at java.base/java.lang.Integer.parseInt(Integer.java:565)
+> 	at java.base/java.lang.Integer.parseInt(Integer.java:662)
+> 	at ConfigLoader.readPort(ConfigLoader.java:5)
+> 	... 2 more
+> ```
+>
+> 読むときの手順は、おおむね次のとおりです。
+>
+> 1. 1行目で、例外のクラスとメッセージを見る
+> 2. `Caused by:`があれば、最後の`Caused by:`まで下りる。根本の原因はいちばん下の例外にある
+> 3. その例外の`at`の行を上から見て、自分が書いたクラスの最初の行を探す。標準ライブラリの行（`java.base/`で始まる行）は、多くの場合、原因ではなく通り道である
+> 4. 見つけた行（ここでは`ConfigLoader.java`の5行目）を開き、そこへ渡ってきた値を考える
+>
+> 最後の`... 2 more`は、残りの呼び出しの履歴が、包んだほうの例外の履歴の下の2行と同じなので省いた、という意味です（APIドキュメントの`Throwable.printStackTrace`の説明）。
+>
+> 例外を包むときに原因を渡し忘れると、この`Caused by:`が消え、手がかりが途中で切れます。
+> 「スタックトレースを最後まで残す」ことは、未来の自分や、障害を調べる誰かへの手紙でもあります。
+
 ## 実践的な例外処理パターン
 
 実際のシステム開発では、単純な`try-catch`を超えた高度な例外処理パターンが必要になります。

@@ -81,3 +81,33 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: src.zipの@since（Loggerは1.4）で確かめた
+
+  # ---- コラム「スタックトレースを読める人は強い」（2026-11-19）
+  - id: column-stacktrace-output
+    claim: 原因を渡して包んだ例外のスタックトレースは、包んだ例外の行のあとに「Caused by:」と原因の例外を表示し、共通する下の部分を「... 2 more」と省く（コラムに載せた出力は、このプローブの実際の出力。JDKの行番号は版で変わる）
+    text:
+      - '設定のポート番号に80aと書かれていたときに出る例です'
+    verify:
+      kind: run
+      probe: ConfigLoader.java
+      expect:
+        - '^Exception in thread "main" java.lang.IllegalStateException: 設定のポート番号が数字ではありません$'
+        - '^\tat ConfigLoader.readPort\(ConfigLoader.java:7\)$'
+        - '^\tat ConfigLoader.start\(ConfigLoader.java:12\)$'
+        - '^\tat ConfigLoader.main\(ConfigLoader.java:17\)$'
+        - '^Caused by: java.lang.NumberFormatException: For input string: "80a"$'
+        - '^\tat java.base/java.lang.Integer.parseInt\(Integer.java:\d+\)$'
+        - '^\tat ConfigLoader.readPort\(ConfigLoader.java:5\)$'
+        - '^\t\.\.\. 2 more$'
+
+  - id: column-stacktrace-more
+    claim: スタックトレースの「... n more」は、その例外の残りの履歴が、包んだ側（enclosing）の例外の履歴の下のn行と同じであることを表す
+    text: '最後の... 2 moreは、残りの呼び出しの履歴が、包んだほうの例外の履歴の下の2行と同じなので省いた、という意味です'
+    sources:
+      - title: java.lang.Throwable#printStackTrace（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+        anchor: matches the indicated number of frames from the bottom of the stack trace of the exception that was caused by this exception
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: printStackTraceの説明の「Note the presence of lines containing the characters "..."」の段落を読んだ
