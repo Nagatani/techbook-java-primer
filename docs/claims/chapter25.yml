@@ -1,0 +1,18 @@
+# 第25章の主張と、その確かめ方（node scripts/check-claims.js ch25）
+jdk: 25
+claims:
+  # ---- コラム「半年後の自分は他人である」（2026-11-19）
+  - id: column-nygard-two-choices
+    claim: Michael Nygardの記事「Documenting Architecture Decisions」（2011年）は、理由や影響がわからない過去の判断に出会った人には、盲目的に受け入れるか、盲目的に変えるかの2つしかないと書いている。前者は誰も変えられなくなり、後者はまだテストしていない非機能要求を支えていた判断を壊すおそれがある
+    text:
+      - 理由のわからない過去の判断に出会った人には2つの道しかない、と書いています
+      - 状況が変わって見直すべき判断まで受け入れ続けると、やがて誰も何も変えられなくなります
+      - その判断がまだ確かめていない要求を支えていた場合、気づかないうちにシステムの価値を損ないます
+    sources:
+      - title: Michael Nygard, Documenting Architecture Decisions（Cognitect, 2011-11-15）
+        url: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+        anchor: this person has only two choices
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事の「Blindly accept the decision」（受け入れ続けると the development team becomes afraid to change anything）と「Blindly change it」（the decision supported a non-functional requirement that hasn't been tested yet の例）を読んだ
