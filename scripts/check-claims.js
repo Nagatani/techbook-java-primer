@@ -188,7 +188,15 @@ function riskyReasons(text) {
 function loadLedger(sec) {
   const file = sec.ledgerFile;
   if (!fs.existsSync(file)) return null;
-  const data = yaml.load(fs.readFileSync(file, 'utf8'), { schema: yaml.JSON_SCHEMA }) || {};
+  let data;
+  try {
+    data = yaml.load(fs.readFileSync(file, 'utf8'), { schema: yaml.JSON_SCHEMA }) || {};
+  } catch (e) {
+    // YAMLの書き間違い（値の中の「: 」など）は、台帳と行だけを示して止める
+    const line = e.mark ? e.mark.line + 1 : '?';
+    console.log(`台帳 ${path.relative(ROOT, file)} の${line}行目をYAMLとして読めない: ${e.reason || e.message}\n（値に「: 」や「#」を含むときは引用符で囲む）`);
+    process.exit(1);
+  }
   // defaults: 各主張のverifyに既定で加える項目（libsなど。主張の側に書いたものが優先）
   const claims = (data.claims || []).map((c) => (c.verify && data.defaults && ['javac', 'javap', 'run', 'since'].includes(c.verify.kind)
     ? { ...c, verify: { ...data.defaults, ...c.verify } } : c));
@@ -411,7 +419,7 @@ function checkSources(sec, ledger, problems) {
   for (const c of ledger.claims) {
     for (const s of c.sources || []) {
       if (typeof s !== 'object' || !s.url) continue;
-      const r = spawnSync('curl', ['-sfL', '--max-time', '30', '-A', 'Mozilla/5.0 (book-verification)', s.url], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      const r = spawnSync('curl', ['-sfL', '--max-time', '60', '--retry', '2', '--retry-all-errors', '-A', 'Mozilla/5.0 (book-verification)', s.url], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
       if (r.status !== 0) { problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `出典 ${s.url} を開けない` }); continue; }
       if (s.anchor) {
         // タグを空白にした文字列と、タグを取り除いただけの文字列の両方で探す（リンクやコードをまたぐ文のため）
