@@ -134,6 +134,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
 
 15. **本文と付録B（Deep Dive）の主張の検証（2026-11-19〜）**: 本文の事実の主張は`docs/claims/chapterXX.yml`に本文の文を`text`で引用して確かめ方を書く（原稿に印を置かない。`check:claims`）。 付録Bの解説の事実を述べた段落には`<!-- claim: id -->`の印を付け、節の`claims.yml`に確かめ方を書く。JVMの内部の主張は出典より観察（`verify/`のプログラムを`javap`・`-XX:+PrintInlining`・`-Xlog`などで動かした実際の出力）で確かめ、解説に載せる出力は`check:deep-dive -- --update`で書き込む（手で書かない）
    - 出典は仕様・API・javaコマンドのリファレンス（docs.oracle.com、Java SE 25の版）とJEP（openjdk.org）。HotSpotの実装は仕様に書かれていないので観察で確かめる
+   - 本文で意図して簡略化した説明（台帳の`simplified: true`）と、性能や設計の一般論（「volatileはsynchronizedより軽い」など）には、脚注で正確な事実か一般論である旨を書き、詳しい内容は付録へ案内してよい（2026-11-19、著者の指示）
    - JVMの中を見ずにそれらしい表や数値を出す「シミュレーション」のデモは、観察に置き換えるか、シミュレーションであることを明記する
    - 手順と、検証で見つかった誤りのパターンは`docs/guides/claim-verification.md`
 
