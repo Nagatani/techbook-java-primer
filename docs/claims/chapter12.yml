@@ -1,0 +1,70 @@
+# 第12章の主張と、その確かめ方（node scripts/check-claims.js ch12）
+jdk: 25
+claims:
+  - id: stream-8
+    claim: Stream APIはJava 8で導入された
+    text: Java 8で導入されたStream APIは
+    verify:
+      kind: since
+      probe: StreamApi.java
+      version: 8
+      note: src.zipの@since（Streamは1.8）。Java 7は--releaseに指定できないので、8で通ることだけを確かめる
+
+  - id: gatherer-24
+    claim: Stream.gatherとGatherer・GatherersはJava 24から正式に使える（Java 22・23ではプレビュー）
+    text: Java 24からは、gatherメソッドにGathererを渡して
+    sources:
+      - title: JEP 485 Stream Gatherers
+        url: https://openjdk.org/jeps/485
+        anchor: Release 24
+    verify:
+      kind: since
+      probe: Gather.java
+      version: 24
+      expect: ['preview API']
+
+  - id: stream-tolist-16
+    claim: Stream.toListはJava 16以降で使える
+    text: Java 16以降は、collect(Collectors.toList())の代わりにtoList()とも書けます
+    verify:
+      kind: since
+      probe: StreamToList.java
+      version: 16
+      expect: ['cannot find symbol[\s\S]*toList']
+
+  - id: optional-8
+    claim: OptionalクラスはJava 8で導入された
+    text: Java 8で導入されたOptionalクラス
+    verify:
+      kind: since
+      probe: OptionalApi.java
+      version: 8
+      note: src.zipの@since（Optionalは1.8）。Java 7は--releaseに指定できないので、8で通ることだけを確かめる
+
+  - id: forkjoin-7
+    claim: Fork/JoinフレームワークはJava 7で加わった
+    text: Fork/JoinフレームワークはJava 7で加わったしくみで
+    sources:
+      - title: java.util.concurrent.ForkJoinPool（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ForkJoinPool.html
+        anchor: "1.7"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src.zipの@since（ForkJoinPoolは1.7）で確かめた。--release 8で通ることはforkjoin-compile-8で確かめる
+
+  - id: forkjoin-compile-8
+    claim: ForkJoinPoolはJava 8より前からある（--release 8で通る）
+    text: Fork/JoinフレームワークはJava 7で加わったしくみで
+    verify:
+      kind: since
+      probe: ForkJoin.java
+      version: 8
+
+  - id: common-pool-parallelism
+    claim: 共通のスレッドプールのスレッド数は既定でCPUのコア数より1少ない
+    text: そのスレッド数は既定でCPUのコア数より1少なく
+    verify:
+      kind: run
+      probe: CommonPoolSize.java
+      expect: ['same=true']

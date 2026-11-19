@@ -1,0 +1,118 @@
+# 第14章の主張と、その確かめ方（node scripts/check-claims.js ch14）
+jdk: 25
+claims:
+  - id: utf8-default-18
+    claim: Java 18からは、文字コードを指定しないときの既定がOSによらずUTF-8になった（JEP 400）
+    text: Java 18からは、文字コードを指定しないときの既定がOSによらずUTF-8になりました
+    sources:
+      - title: JEP 400 UTF-8 by Default
+        url: https://openjdk.org/jeps/400
+        anchor: Release 18
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: default-charset-windows-ja
+    claim: Java 18より前は、日本語のWindowsでは既定の文字コードがMS932（windows-31j）のようにOSの設定に従っていた
+    text: それより前は、日本語のWindowsではMS932のようにOSの設定に従っていました
+    sources:
+      - title: JEP 400 UTF-8 by Default
+        url: https://openjdk.org/jeps/400
+        anchor: windows-31j
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 400に、Windowsでは既定の文字コードがwindows-1252やwindows-31jのようなコードページによる文字コードになるとあることを確かめた。MS932はwindows-31jの別名（JDK 25でCharset.forName("MS932").name()はwindows-31j）
+
+  - id: object-input-filter-9
+    claim: 直列化フィルターObjectInputFilterはJava 9で加わった
+    text: Java 9では、読み込むクラスを制限する直列化フィルター（ObjectInputFilter）が加わりました
+    verify:
+      kind: since
+      probe: InputFilter.java
+      version: 9
+      expect: ['cannot find symbol']
+
+  - id: nio2-7
+    claim: java.nio.fileパッケージ（NIO.2）はJava 7で導入された
+    text:
+      - Java 7で導入されたjava.nio.fileパッケージ（NIO.2）
+      - NIO.2は、それをJava 7で拡張したものです
+    sources:
+      - title: Enhancements in Java I/O（Java SE 7、Oracle）
+        url: https://docs.oracle.com/javase/7/docs/technotes/guides/io/enhancements.html
+        anchor: The java.nio.file package and its related package
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 「Enhancements in Java SE 7」にjava.nio.fileパッケージがあること、src.zipの@since（Path・Pathsは1.7）で確かめた。--release 8で通ることはnio-compile-8で確かめる
+
+  - id: nio-1-4
+    claim: java.nioパッケージはJava 1.4で加わった
+    text: Java 1.4で加わったjava.nioパッケージを指します
+    sources:
+      - title: java.nio.Buffer（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/Buffer.html
+        anchor: "1.4"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src.zipの@since（java.nio.Bufferは1.4）で確かめた
+
+  - id: nio-compile-8
+    claim: java.nioとjava.nio.fileはJava 8より前からある（--release 8で通る）
+    text: Java 7で導入されたjava.nio.fileパッケージ（NIO.2）
+    verify:
+      kind: since
+      probe: Nio2.java
+      version: 8
+
+  - id: path-of-11
+    claim: Path.ofはJava 11で加わった
+    text: Path.ofはJava 11で加わりました
+    verify:
+      kind: since
+      probe: PathOf.java
+      version: 11
+      expect: ['cannot find symbol[\s\S]*method of']
+
+  - id: paths-may-be-deprecated
+    claim: PathsクラスのAPIドキュメントはPath.ofを使うよう勧め、Pathsは将来非推奨になる可能性があると書いている
+    text: Pathsは将来非推奨になる可能性があると書いています
+    sources:
+      - title: java.nio.file.Paths（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Paths.html
+        anchor: this class may be deprecated in a future release
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: text-blocks-15
+    claim: Text BlocksはJava 15で正式な機能になった（JEP 378）
+    text:
+      - Java 15で正式に導入されたText Blocks
+      - Java 15で正式な機能になりました（JEP 378）
+    sources:
+      - title: JEP 378 Text Blocks
+        url: https://openjdk.org/jeps/378
+        anchor: Release 15
+    verify:
+      kind: since
+      probe: TextBlock.java
+      version: 15
+      expect: ['text blocks are not supported in -source 14']
+
+  - id: text-blocks-preview-13-14
+    claim: Text BlocksはJava 13とJava 14でプレビュー機能として試された（JEP 355・JEP 368）
+    text: Text Blocksは、Java 13とJava 14でプレビュー機能として試された
+    sources:
+      - title: JEP 378 Text Blocks
+        url: https://openjdk.org/jeps/378
+        anchor: JEP 355 was targeted to JDK 13 in June 2019 as a preview feature
+      - title: JEP 378 Text Blocks
+        url: https://openjdk.org/jeps/378
+        anchor: JEP 368 was targeted to JDK 14 in November 2019 as a preview feature
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JDK 25のjavacは--enable-previewを--release 25でしか受け付けない（invalid source release 13 with --enable-preview）ので、プレビューだったことは機械では確かめられない。--release 14のエラーも「text blocks are not supported in -source 14」でpreviewを含まない

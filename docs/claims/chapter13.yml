@@ -1,0 +1,83 @@
+# 第13章の主張と、その確かめ方（node scripts/check-claims.js ch13）
+jdk: 25
+claims:
+  - id: helpful-npe-14
+    claim: nullだった式を示すNullPointerExceptionの詳しいメッセージはJava 14で加わった（JEP 358。当初は既定で無効）
+    text: nullだった式を示す詳しいメッセージはJava 14で加わり
+    sources:
+      - title: JEP 358 Helpful NullPointerExceptions
+        url: https://openjdk.org/jeps/358
+        anchor: Release 14
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 358がRelease 14で、オプション-XX:ShowCodeDetailsInExceptionMessagesは最初は既定でfalseとあることを確かめた
+
+  - id: helpful-npe-default-15
+    claim: 詳しいメッセージはJava 15から既定で表示される
+    text: Java 15から既定で表示されます
+    sources:
+      - title: JDK 15 Release Notes（Oracle）
+        url: https://www.oracle.com/java/technologies/javase/15-relnote-issues.html
+        anchor: Enable ShowCodeDetailsInExceptionMessages by default
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JDK 15のリリースノートに、ShowCodeDetailsInExceptionMessagesの既定がtrueに変わった旨（JDK-8233014）があることを確かめた。JDK 25の既定値はhelpful-npe-flagで確かめる
+
+  - id: helpful-npe-flag
+    claim: JDK 25ではShowCodeDetailsInExceptionMessagesの既定値がtrue
+    text: Java 15から既定で表示されます
+    verify:
+      kind: flag
+      flag: ShowCodeDetailsInExceptionMessages
+      value: true
+
+  - id: helpful-npe-local1
+    claim: ローカル変数の名前がクラスファイルにないとき、メッセージの変数名は<local1>のようになる
+    text: となるのは、クラスファイルにローカル変数の名前が残っていないためで
+    verify:
+      kind: run
+      probe: HelpfulNpe.java
+      expect: ['because "<local1>" is null']
+
+  - id: helpful-npe-g
+    claim: javac -gでコンパイルすると、メッセージに変数名strが出る
+    text: javac -gでコンパイルするとstrと表示されます
+    verify:
+      kind: run
+      probe: HelpfulNpe.java
+      javac: ['-g']
+      expect: ['because "str" is null']
+
+  - id: try-with-resources-7
+    claim: try-with-resources文はJava 7で導入された
+    text: そこでJava 7で導入されたのがtry-with-resources文です
+    sources:
+      - title: Java Programming Language Enhancements（Java SE 7、Oracle）
+        url: https://docs.oracle.com/javase/7/docs/technotes/guides/language/enhancements.html
+        anchor: The try-with-resources Statement
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 「Enhancements in Java SE 7」にtry-with-resources文があること、src.zipの@since（AutoCloseableは1.7）で確かめた。--release 8で通ることはtry-compile-8で確かめる
+
+  - id: try-compile-8
+    claim: try-with-resources文とjava.util.loggingはJava 8より前からある（--release 8で通る）
+    text: そこでJava 7で導入されたのがtry-with-resources文です
+    verify:
+      kind: since
+      probe: TryWithResources.java
+      version: 8
+
+  - id: logging-1-4
+    claim: java.util.loggingパッケージはJava 1.4で標準ライブラリに加わった
+    text: Java 1.4で標準ライブラリに加わったjava.util.loggingパッケージのクラスです
+    sources:
+      - title: java.util.logging.Logger（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.logging/java/util/logging/Logger.html
+        anchor: "1.4"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src.zipの@since（Loggerは1.4）で確かめた

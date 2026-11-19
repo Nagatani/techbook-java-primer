@@ -1,0 +1,70 @@
+# 第10章の主張と、その確かめ方（node scripts/check-claims.js ch10）
+jdk: 25
+claims:
+  - id: generics-5
+    claim: ジェネリクスはJava 5（J2SE 5.0、2004年）で導入され、それより前のコレクションはObject型の入れ物だった
+    text:
+      - Java 5より前は、コレクションは「あらゆるオブジェクト」を格納できるObject型の入れ物で
+      - Java 5で導入されたのがジェネリクス（Generics）です
+      - J2SE 5.0（2004年）で加わりました
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Generics
+      - title: Generics（J2SE 5.0 の解説、Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/guide/language/generics.html
+        anchor: pre-5.0 virtual machine
+      - title: JSR 176 J2SE 5.0 (Tiger) Release Contents（JCP）
+        url: https://jcp.org/en/jsr/detail?id=176
+        anchor: 30 Sep, 2004
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: J2SE 5.0の新機能の一覧にGenerics（JSR 14）があり、解説はジェネリクス以前のコードとしてObjectからキャストする例を示していること、JSR 176のFinal Releaseが2004年9月30日であることを確かめた
+
+  - id: generics-compile-8
+    claim: ジェネリクスとダイヤモンドはJava 8より前からある（--release 8で通る）
+    text: Java 7からは、右辺の型引数を省略できるダイヤモンド演算子
+    verify:
+      kind: since
+      probe: Generics.java
+      version: 8
+      note: Java 7以前は--releaseに指定できないので、8で通ることだけを確かめる
+
+  - id: diamond-7
+    claim: ダイヤモンド（右辺の型引数の省略）はJava 7で導入された
+    text: Java 7からは、右辺の型引数を省略できるダイヤモンド演算子
+    sources:
+      - title: Java Programming Language Enhancements（Java SE 7、Oracle）
+        url: https://docs.oracle.com/javase/7/docs/technotes/guides/language/enhancements.html
+        anchor: Type Inference for Generic Instance Creation
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 「Enhancements in Java SE 7」に、ジェネリクスのインスタンス生成の型推論（the diamond）があることを確かめた
+
+  - id: var-10
+    claim: ローカル変数の型推論varはJava 10で導入された（JEP 286）
+    text: Java 10で導入されたvar型推論
+    sources:
+      - title: JEP 286 Local-Variable Type Inference
+        url: https://openjdk.org/jeps/286
+        anchor: Release 10
+    verify:
+      kind: since
+      probe: VarLocal.java
+      version: 10
+      expect: ['cannot find symbol[\s\S]*class var']
+
+  - id: var-lambda-11
+    claim: ラムダ式の引数にvarを使えるのはJava 11以降（JEP 323）
+    text: ラムダ式（第11章）の引数（Java 11以降）
+    sources:
+      - title: JEP 323 Local-Variable Syntax for Lambda Parameters
+        url: https://openjdk.org/jeps/323
+        anchor: Release 11
+    verify:
+      kind: since
+      probe: VarLambda.java
+      version: 11
+      expect: ["var syntax in implicit lambdas are not supported"]

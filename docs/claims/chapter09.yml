@@ -1,0 +1,121 @@
+# 第9章の主張と、その確かめ方（node scripts/check-claims.js ch09）
+jdk: 25
+claims:
+  - id: collections-framework-1-2
+    claim: コレクションフレームワークはJava 1.2で加わり、設計の中心はジョシュア・ブロックだった
+    text: コレクションフレームワークはJava 1.2（1998年）で加わりました
+    sources:
+      - title: java.util.Collection（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html
+        anchor: Collections Framework
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src.zipの@since（Collection・List・ArrayListは1.2）と、Collection.javaの@author Josh Blochで確かめた。--release 8で通ることはLegacyCollectionsで確かめる
+
+  - id: collections-framework-1998
+    claim: Java 1.2（J2SE 1.2）は1998年に公開された
+    text: コレクションフレームワークはJava 1.2（1998年）で加わりました
+    sources:
+      - title: Vladimir Ivanov, Java 20 years（Oracle, 2015。OpenJDKのサーバーにある講演資料）
+        url: https://cr.openjdk.org/~vlivanov/talks/2015_Java_20_years_Minsk.pdf
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 資料の15ページに「1998 J2SE 1.2 December 8」とある（PDFの文字をPDFKitで取り出して確かめた）。Oracle・OpenJDKのHTMLの文書でJ2SE 1.2の公開年を示すものは見つからなかった
+
+  - id: collections-author-bloch
+    claim: java.util.Collectionのソースコードの@authorにJosh Blochの名前がある。Blochはのちに『Effective Java』（Addison-Wesley、2001年）を著した
+    text: java.util.Collectionなどのソースコードには、作者として、のちに『Effective Java』を著すジョシュア・ブロックの名前があります
+    sources:
+      - title: JDK 25のソースコード java.base/java/util/Collection.java（JDKのlib/src.zip）
+      - title: "Joshua Bloch, Effective Java Programming Language Guide, Addison-Wesley, 2001"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JDK 25.0.2のlib/src.zipのjava/util/Collection.javaに「@author Josh Bloch」「@author Neal Gafter」「@since 1.2」があることを確かめた
+
+  - id: vector-hashtable-1-0
+    claim: VectorとHashtableはJava 1.0からある
+    text: 2つのクラスはJava 1.0からあり
+    sources:
+      - title: java.util.Vector（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Vector.html
+        anchor: "1.0"
+      - title: java.util.Hashtable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Hashtable.html
+        anchor: "1.0"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: src.zipの@since（Vector・Hashtableとも1.0）で確かめた
+
+  - id: legacy-compiles-8
+    claim: Vector・Hashtable・コレクションフレームワーク・オートボクシング・拡張for文はJava 8より前からある（--release 8で通る）
+    text: 2つのクラスはJava 1.0からあり
+    verify:
+      kind: since
+      probe: LegacyCollections.java
+      version: 8
+
+  - id: autoboxing-5
+    claim: オートボクシングはJ2SE 5.0（2004年）で、ジェネリクスと同時に加わった
+    text: J2SE 5.0（2004年）で、ジェネリクスと同時に加わりました
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Autoboxing/Unboxing
+      - title: JSR 176 J2SE 5.0 (Tiger) Release Contents（JCP）
+        url: https://jcp.org/en/jsr/detail?id=176
+        anchor: 30 Sep, 2004
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: J2SE 5.0の新機能の一覧にGenerics・Enhanced for Loop・Autoboxing/Unboxingが並んでいること、JSR 176のFinal Releaseが2004年9月30日であることを確かめた
+
+  - id: foreach-5
+    claim: 拡張for文はJava 5で導入された
+    text: 拡張for文（for-each文）は、Java 5で導入された
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Enhanced for Loop
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: J2SE 5.0の新機能の一覧にEnhanced for Loop（JSR 201）があることを確かめた。--release 8で通ることはLegacyCollectionsで確かめる
+
+  - id: stream-8
+    claim: Stream APIはJava 8で導入された
+    text: Java 8で導入されたStream APIは
+    verify:
+      kind: since
+      probe: StreamApi.java
+      version: 8
+      note: src.zipの@since（Streamは1.8）。Java 7は--releaseに指定できないので、8で通ることだけを確かめる
+
+  - id: immutable-factory-9
+    claim: List.of・Set.of・Map.ofで不変コレクションを作れるのはJava 9以降
+    text: Java 9以降、不変（Immutable）コレクションの作成が簡単になりました
+    sources:
+      - title: JEP 269 Convenience Factory Methods for Collections
+        url: https://openjdk.org/jeps/269
+        anchor: Release 9
+    verify:
+      kind: since
+      probe: ImmutableFactory.java
+      version: 9
+      expect: ['cannot find symbol']
+
+  - id: sequenced-21
+    claim: SequencedCollection・SequencedSet・SequencedMapはJava 21で加わった（JEP 431）
+    text: Java 21では、要素の並び順が決まっているコレクションに共通するインターフェイスとして
+    sources:
+      - title: JEP 431 Sequenced Collections
+        url: https://openjdk.org/jeps/431
+        anchor: Release 21
+    verify:
+      kind: since
+      probe: Sequenced.java
+      version: 21
+      expect: ['cannot find symbol']

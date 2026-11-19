@@ -1,0 +1,100 @@
+# 第11章の主張と、その確かめ方（node scripts/check-claims.js ch11）
+jdk: 25
+claims:
+  - id: java8-ga-2014-03
+    claim: Java 8（Java SE 8）は2014年3月に公開された
+    text: Java 8（Java SE 8）は2014年3月に公開されました
+    sources:
+      - title: JDK 8（OpenJDK）
+        url: https://openjdk.org/projects/jdk8/
+        anchor: JDK 8 reached General Availability on 18 March 2014
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: lambda-jsr335
+    claim: ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発された
+    text: ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました
+    sources:
+      - title: Project Lambda（OpenJDK）
+        url: https://openjdk.org/projects/lambda/
+        anchor: JSR 335
+      - title: JSR 335 Lambda Expressions for the Java Programming Language（JCP）
+        url: https://jcp.org/en/jsr/detail?id=335
+        anchor: Lambda Expressions
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: lambda-8
+    claim: ラムダ式はJava 8で導入された
+    text:
+      - でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス
+      - 本章では、Java 8で導入されたラムダ式と関数型インターフェイスについて学びました
+    verify:
+      kind: since
+      probe: Lambda.java
+      version: 8
+      note: Java 7は--releaseに指定できないので、8で通ることだけを確かめる（出典はjava8-ga-2014-03とlambda-jsr335）
+
+  - id: effectively-final-8
+    claim: Java 7までは匿名クラスから参照するローカル変数にfinalが必須で、実質的にfinalな変数を参照できるのはJava 8から
+    text: Java 7までは匿名クラスから参照するローカル変数にfinalが必須でした
+    sources:
+      - title: JLS Java SE 7 Edition 8.1.3 Inner Classes and Enclosing Instances
+        url: https://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html
+        anchor: used but not declared in an inner class must be declared final
+      - title: JLS Java SE 8 Edition 8.1.3 Inner Classes and Enclosing Instances
+        url: https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html
+        anchor: must either be declared final or be effectively final
+    verify:
+      kind: since
+      probe: EffectivelyFinal.java
+      version: 8
+      note: Java 7は--releaseに指定できないので、8で通ることだけを機械で確かめ、7で必須だったことはJLS 7の8.1.3で確かめた
+
+  - id: java-util-function-8
+    claim: java.util.functionパッケージはJava 8で追加された
+    text: このパッケージはJava 8で追加されました
+    verify:
+      kind: since
+      probe: FunctionPackage.java
+      version: 8
+      note: src.zipの@since（Functionは1.8）。Java 7は--releaseに指定できないので、8で通ることだけを確かめる
+
+  - id: java-util-function-43
+    claim: java.util.functionパッケージには43個のインターフェイスがある
+    text: 43個のインターフェイスがあります
+    verify:
+      kind: run
+      probe: CountFunctional.java
+      expect: ['^interfaces=43$']
+
+  - id: flow-9
+    claim: リアクティブストリームの共通のインターフェイスjava.util.concurrent.FlowはJava 9で標準ライブラリに入った
+    text: Java 9で、リアクティブストリームの共通のインターフェイスがjava.util.concurrent.Flowとして標準ライブラリに入りました
+    verify:
+      kind: since
+      probe: FlowApi.java
+      version: 9
+      expect: ['cannot find symbol']
+
+  - id: invokedynamic-7
+    claim: invokedynamic命令はJava 7で追加された
+    text: invokedynamic命令（Java 7で追加）
+    sources:
+      - title: Java Virtual Machine Support for Non-Java Languages（Java SE 7、Oracle）
+        url: https://docs.oracle.com/javase/7/docs/technotes/guides/vm/multiple-language-support.html
+        anchor: Java SE 7 introduces the invokedynamic instruction
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: lambda-private-method
+    claim: ラムダ式の本体は同じクラスのprivateメソッドになり、invokedynamicでオブジェクトを作る
+    text: ラムダ式の本体は同じクラスのprivateメソッドになり
+    verify:
+      kind: javap
+      probe: LambdaBody.java
+      class: LambdaBody
+      expect: ['invokedynamic', 'private static void lambda\$make\$0\(\)']

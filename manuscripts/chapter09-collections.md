@@ -137,7 +137,7 @@ for (String student : students) {
 
 ### コレクションフレームワークの登場
 
-これらの問題を解決するために、Javaはコレクションフレームワークを提供しています<span class="footnote">コレクションフレームワークはJava 1.2（1998年）で加わりました。設計の中心になったのは、のちに『Effective Java』を著すジョシュア・ブロックです。</span>。同じ学生管理プログラムをArrayListで書き直してみましょう。
+これらの問題を解決するために、Javaはコレクションフレームワークを提供しています<span class="footnote">コレクションフレームワークはJava 1.2（1998年）で加わりました。`java.util.Collection`などのソースコードには、作者として、のちに『Effective Java』を著すジョシュア・ブロックの名前があります。</span>。同じ学生管理プログラムをArrayListで書き直してみましょう。
 
 次のコードの`List<String>`の`<String>`は、リストに入れる要素の型を表します。
 右辺の`new ArrayList<>()`の`<>`は、左辺と同じ型の指定を省いた書き方です。
