@@ -1,0 +1,57 @@
+# 第15章の主張と、その確かめ方（node scripts/check-claims.js ch15）
+# いまは「Javaの版」の主張だけ。章全体の主張はあとで加える
+jdk: 25
+claims:
+  - id: concurrent-package-5
+    claim: java.util.concurrentパッケージはJava 5で加わった
+    text: このパッケージはJava 5で加わりました
+    sources:
+      - title: java.util.concurrent（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/package-summary.html
+        anchor: "Since: 1.5"
+    verify:
+      kind: since
+      probe: ConcurrentPackage.java
+      version: 5
+      note: src.zipの@since（package-info.javaとConcurrentHashMapは1.5）
+
+  - id: hashmap-java7-loop
+    claim: Java 7以前のHashMapは、配列を広げる処理（transfer）でつなぎ直すときにリストの順序が逆になるため、同時に走ると連結リストが循環することがあった。Java 8のHashMapは順序を保ってつなぎ直す
+    text: Java 7以前のHashMapでは、内部の配列を広げる処理が同時に走ると連結リストが循環してgetが永久に終わらなくなることもありました
+    sources:
+      - title: OpenJDK jdk7u java/util/HashMap.java
+        url: https://raw.githubusercontent.com/openjdk/jdk7u/master/jdk/src/share/classes/java/util/HashMap.java
+        anchor: void transfer(Entry
+      - title: OpenJDK jdk8u java/util/HashMap.java
+        url: https://raw.githubusercontent.com/openjdk/jdk8u/master/jdk/src/share/classes/java/util/HashMap.java
+        anchor: "// preserve order"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: jdk7uのtransferは各要素を新しい配列のリストの先頭に入れ直す（e.next = newTable[i]; newTable[i] = e）ので順序が逆になり、2つのスレッドが同時にtransferすると、互いに逆の順で次を指して循環しうる。jdk8uのresizeはloHead/loTailで順序を保ってつなぎ直す（「preserve order」）。循環そのものを報告した公式の文書（bugs.openjdk.orgのJDK-6423457など）はスクリプトから開けなかった
+
+  - id: virtual-threads-21
+    claim: 仮想スレッドはJava 21で正式な機能になった（Java 19・20ではプレビュー）
+    text: Java 21では、OSのスレッドより軽い仮想スレッド（virtual thread）が正式な機能になりました
+    sources:
+      - title: "JEP 444: Virtual Threads"
+        url: https://openjdk.org/jeps/444
+        anchor: This JEP proposes to finalize virtual threads in JDK 21
+    verify:
+      kind: since
+      probe: VirtualThreads.java
+      version: 21
+      expect: ['ofVirtual\(\) is a preview API']
+
+  - id: completable-future-8
+    claim: CompletableFutureはJava 8で導入された
+    text: CompletableFutureは、Java 8で導入された非同期処理のためのクラスです
+    sources:
+      - title: CompletableFuture（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: "Since: 1.8"
+    verify:
+      kind: since
+      probe: CompletableFutureProbe.java
+      version: 8
+      note: src.zipの@since（CompletableFutureは1.8）

@@ -1,0 +1,64 @@
+# 第17章の主張と、その確かめ方（node scripts/check-claims.js ch17）
+jdk: 25
+claims:
+  - id: jframe-add-content-pane-5
+    claim: J2SE 5.0から、JFrameのadd・remove・setLayoutはコンテンツペインへ転送されるようになった（それまではaddを呼ぶと例外になった）
+    text: Java 5から、JFrameのadd()とsetLayout()はコンテンツペインへの操作として扱われるので
+    sources:
+      - title: Swing Changes and New Features for Java 2 SDK, Standard Edition 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/guide/swing/1.5/index.html
+        anchor: "Swing's top level component should redirect add/remove methods to ContentPane"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 5.0のSwingの変更点の文書に、バグ4753342「Swing's top level component should redirect add/remove methods to ContentPane」として、5.0より前はaddやremoveを呼ぶと例外になったこと、JFrameなどがadd・remove・setLayoutをcontentPaneへ転送するようになったことが書かれている。JDK 25のJFrameにも転送の説明（rootPaneCheckingEnabled）がある
+
+  - id: borderlayout-page-start-1-4
+    claim: BorderLayoutのPAGE_START・LINE_STARTなどの定数はJava 1.4から
+    text: Java 1.4からは、方位の代わりにPAGE_START（上）や
+    sources:
+      - title: BorderLayout（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/java/awt/BorderLayout.html
+        anchor: "The component comes before the first line of the layout's content. For Western, left-to-right and top-to-bottom orientations, this is equivalent to NORTH. Since: 1.4"
+    verify:
+      kind: since
+      probe: BorderLayoutRelative.java
+      version: 1.4
+      note: src.zipの@since（PAGE_START・PAGE_END・LINE_START・LINE_ENDは1.4）
+
+  - id: awt-jdk-1-0
+    claim: AWTはJDK 1.0からある
+    text: Javaの最初のGUIライブラリであるAWT（Abstract Window Toolkit、JDK 1.0）は
+    sources:
+      - title: java.awt.Frame（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/java/awt/Frame.html
+        anchor: "Since: 1.0"
+    verify:
+      kind: since
+      probe: AwtFrame.java
+      version: 1.0
+      note: src.zipの@since（Frame・BorderLayoutは1.0）
+
+  - id: swing-j2se-1-2
+    claim: SwingはJ2SE 1.2から標準のライブラリになった
+    text: 後継のSwingはJ2SE 1.2（1998年）から標準になり
+    sources:
+      - title: javax.swing（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/javax/swing/package-summary.html
+        anchor: "Since: 1.2"
+    verify:
+      kind: since
+      probe: SwingFrame.java
+      version: 1.2
+      note: src.zipの@since（javax.swingのpackage-info.javaとJFrameは1.2）
+
+  - id: j2se-1-2-1998
+    claim: J2SE 1.2（Java 2）は1998年12月に公開された
+    text: 後継のSwingはJ2SE 1.2（1998年）から標準になり
+    sources:
+      - title: Vladimir Ivanov, Java 20 years（Oracle, 2015。OpenJDKのサーバーにある講演資料）
+        url: https://cr.openjdk.org/~vlivanov/talks/2015_Java_20_years_Minsk.pdf
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 第9章の台帳と同じOpenJDKのサーバーの資料の15ページに「1998 J2SE 1.2 December 8」とある（2026-11-19にPDFの文字をPDFKitで取り出して確かめた）。Sunの1998年12月8日の発表の転載（https://www.mactech.com/1998/12/10/npl-java-2/）にも「The Java Foundation Classes are now core to the Java 2 platform」「The Project Swing set of GUI components」とあることを確かめたが、検査のcurlで時間切れになることがあるため出典から外した

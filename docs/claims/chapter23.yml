@@ -1,0 +1,31 @@
+# 第23章の主張と、その確かめ方（node scripts/check-claims.js ch23）
+jdk: 25
+claims:
+  - id: no-standalone-jre-11
+    claim: OracleはJDK 11からJRE（とServer JRE）を単独では提供せず、jlinkで小さなランタイムを作る方法を示した
+    text: OracleはJava 11からJREを単独では配布しておらず、アプリケーションに必要なモジュールだけを含むランタイムをjlinkで作る方法を勧めています
+    sources:
+      - title: JDK 11 Release Notes（Oracle）
+        url: https://www.oracle.com/java/technologies/javase/11-relnote-issues.html
+        anchor: In this release, the JRE or Server JRE is no longer offered. Only the JDK is offered. Users can use jlink to create smaller custom runtimes.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: OracleのJDK 11のリリースノートの記述を確かめた
+
+  - id: jpackage-14-16
+    claim: jpackageはJava 14でincubatorとして加わり（JEP 343）、Java 15でもincubatorのままで、Java 16（JEP 392）で正式な機能になった
+    text:
+      - Java 16で正式に導入されたjpackageツール
+      - jpackageはJava 14で試験的な機能（インキュベーター）として加わり、Java 16（JEP 392）で正式な機能になりました
+    sources:
+      - title: "JEP 343: Packaging Tool (Incubator)"
+        url: https://openjdk.org/jeps/343
+        anchor: Release 14
+      - title: "JEP 392: Packaging Tool"
+        url: https://openjdk.org/jeps/392
+        anchor: The jpackage tool was introduced as an incubating tool in JDK 14 by JEP 343 . It remained an incubating tool in JDK 15
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 343（Release 14、jdk.incubator.jpackageモジュール）とJEP 392（Release 16）の記述を確かめた。JEP 392は、jpackageがjlinkでランタイムを作ることも述べている

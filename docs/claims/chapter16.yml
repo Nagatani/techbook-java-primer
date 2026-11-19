@@ -1,0 +1,42 @@
+# 第16章の主張と、その確かめ方（node scripts/check-claims.js ch16）
+jdk: 25
+claims:
+  - id: http-client-11
+    claim: java.net.httpパッケージのHttpClientはJava 11で標準のAPIになった
+    text:
+      - Java 11で標準になったHTTPクライアントAPI（java.net.httpパッケージ）
+      - 非同期HTTPクライアント（Java 11+）
+      - Java 11のHttpClientでHTTPリクエストを送信します
+    sources:
+      - title: "JEP 321: HTTP Client"
+        url: https://openjdk.org/jeps/321
+        anchor: Release 11
+    verify:
+      kind: since
+      probe: HttpClientProbe.java
+      version: 11
+      expect: ['package java.net.http does not exist']
+
+  - id: http-client-incubator-9-10
+    claim: HTTPクライアントAPIはJava 9とJava 10では試験的なモジュール（incubator）だった
+    text: このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました
+    sources:
+      - title: "JEP 110: HTTP/2 Client (Incubator)"
+        url: https://openjdk.org/jeps/110
+        anchor: The API will be delivered as an incubator module
+      - title: "JEP 321: HTTP Client"
+        url: https://openjdk.org/jeps/321
+        anchor: Standardize the incubated HTTP Client API introduced in JDK 9, via JEP 110 , and updated in JDK 10
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 110（Release 9）がjdk.incubatorの名前空間のincubatorモジュールとして提供し、JEP 321（Release 11）が「JDK 9で導入され、JDK 10で更新された」APIを標準にしたことを確かめた
+
+  - id: tls-default-jdk25
+    claim: JDK 25の既定で有効なTLSのプロトコルはTLS 1.3とTLS 1.2だけ（TLS 1.1以前は無効）
+    text: 使うプロトコルをTLS 1.2以上に限っています（JDK 25の既定も同じです）
+    verify:
+      kind: run
+      probe: TlsDefaults.java
+      expect: ['default: \[TLSv1\.3, TLSv1\.2\]']
+      note: 対応しているプロトコル（supported）にはTLSv1.1・TLSv1も残るが、既定（jdk.tls.disabledAlgorithmsで無効）では使われない

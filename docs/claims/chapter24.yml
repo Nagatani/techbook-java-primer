@@ -1,0 +1,34 @@
+# 第24章の主張と、その確かめ方（node scripts/check-claims.js ch24）
+jdk: 25
+claims:
+  - id: jdbc40-driver-discovery
+    claim: JDBC 4.0（Java 6）から、ドライバーはServiceLoaderの仕組み（META-INF/services/java.sql.Driver）で自動で読み込まれ、Class.forNameは要らなくなった
+    text: JDBC 4.0（Java 6）から、ドライバーのJARのMETA-INF/services/java.sql.Driverに書かれたクラスが自動で読み込まれるようになりました
+    sources:
+      - title: java.sql（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/package-summary.html
+        anchor: auto java.sql.Driver discovery -- no longer need to load a java.sql.Driver class via Class.forName
+      - title: java.sql（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/package-summary.html
+        anchor: Since 1.6 -- new in the JDBC 4.0 API and part of the Java SE platform, version 6
+      - title: DriverManager（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/DriverManager.html
+        anchor: loaded via the service-provider loading mechanism
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: java.sqlのパッケージの説明の「Features Introduced in the JDBC 4.0 API」と、JDBC 4.0がJava SE 6の一部である旨、DriverManagerの説明を確かめた
+
+  - id: jdbc42-java-time
+    claim: JDBC 4.2（Java 8）で、java.timeの型（LocalDate・LocalTime・LocalDateTimeなど）がsetObjectやgetObjectで扱える型に加わった
+    text: JDBC 4.2（Java 8）から使えます
+    sources:
+      - title: java.sql（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/package-summary.html
+        anchor: Since 1.8 -- new in the JDBC 4.2 API and part of the Java SE platform, version 8
+      - title: JDBC 4.2 Maintenance Release（JSR 221, January 2014, PDF）
+        url: https://www.jcp.org/aboutJava/communityprocess/maintenance/jsr221/JDBC4.2MR-January2014.pdf
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JDBC 4.2のMRの21〜22項に「Map the Java Object Type java.time.LocalDate to the JDBC Type DATE」などの表B-4への追加と、表B-5（setObjectの変換）への追加がある（PDFのストリームを展開して文字を確かめた）。JDBC 4.2がJava SE 8の一部であることはjava.sqlのパッケージの説明で確かめた

@@ -1,0 +1,87 @@
+# 第26章の主張と、その確かめ方（node scripts/check-claims.js ch26）
+jdk: 25
+claims:
+  - id: java-time-8
+    claim: java.timeパッケージはJava 8で標準になった。Joda-Timeを踏まえて設計された
+    text: かつて広く使われたJoda-Timeの考え方を取り入れて、Java 8で標準になった
+    sources:
+      - title: "JEP 150: Date & Time API"
+        url: https://openjdk.org/jeps/150
+        anchor: a better date and time API based on the Joda-Time project
+    verify:
+      kind: since
+      probe: JavaTimeProbe.java
+      version: 8
+      note: JEP 150はRelease 8。src.zipの@since（LocalDateは1.8）
+
+  - id: http-client-11
+    claim: java.net.http.HttpClientはJava 11から
+    text: java.net.http.HttpClient（Java 11から）
+    sources:
+      - title: "JEP 321: HTTP Client"
+        url: https://openjdk.org/jeps/321
+        anchor: Release 11
+    verify:
+      kind: since
+      probe: HttpClientProbe.java
+      version: 11
+      expect: ['package java.net.http does not exist']
+
+  - id: io-class-25
+    claim: java.lang.IOクラスはJava 25から
+    text: 本書で使ってきたIOクラス（Java 25から）
+    sources:
+      - title: "JEP 512: Compact Source Files and Instance Main Methods"
+        url: https://openjdk.org/jeps/512
+        anchor: we add a new class, java.lang.IO
+    verify:
+      kind: since
+      probe: IoClass.java
+      version: 25
+      expect: ['cannot find symbol']
+
+  - id: system-logger-9
+    claim: System.LoggerはJava 9から
+    text: System.Logger（Java 9から）
+    verify:
+      kind: since
+      probe: SystemLoggerProbe.java
+      version: 9
+      expect: ['cannot find symbol']
+
+  - id: sqlite-native-access-warning
+    claim: Java 25でsqlite-jdbc（3.54.1.0）を使うと、ネイティブライブラリを読み込むSystem.loadが制限付きのメソッドとして警告され、--enable-native-access=ALL-UNNAMEDを付けるよう促される
+    text: ネイティブライブラリを読み込むので、--enable-native-access=ALL-UNNAMEDを付けないと警告が出る
+    sources:
+      - title: "JEP 472: Prepare to Restrict the Use of JNI"
+        url: https://openjdk.org/jeps/472
+        anchor: Release 24
+    verify:
+      kind: run
+      probe: SqliteNativeAccess.java
+      libs: ['org.xerial:sqlite-jdbc:3.54.1.0']
+      expect: ['^WARNING: A restricted method in java.lang.System has been called', 'Use --enable-native-access=ALL-UNNAMED to avoid a warning', 'connected: SQLite']
+      normalize: { '\(file:[^)]*\)': '(file:…)' }
+
+  - id: sqlite-native-access-enabled
+    claim: --enable-native-access=ALL-UNNAMEDを付ければ警告は出ない
+    text: ネイティブライブラリを読み込むので、--enable-native-access=ALL-UNNAMEDを付けないと警告が出る
+    verify:
+      kind: run
+      probe: SqliteNativeAccess.java
+      libs: ['org.xerial:sqlite-jdbc:3.54.1.0']
+      jvm: ['--enable-native-access=ALL-UNNAMED']
+      expect: ['connected: SQLite']
+      absent: ['WARNING']
+
+  - id: javafx-oracle-jdk-11
+    claim: Oracle JDKはJDK 11でJavaFXの同梱をやめた（OpenJDKにはもともと含まれていない）
+    text: JDKに含まれず（Oracle JDKもJava 11で同梱をやめた）
+    sources:
+      - title: JDK 11 Release Notes（Oracle）
+        url: https://www.oracle.com/java/technologies/javase/11-relnote-issues.html
+        anchor: The JavaFX modules have been removed from the JDK 11 release. These modules were included in earlier releases of the Oracle JDK, but not in the OpenJDK releases.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: OracleのJDK 11のリリースノートの「Removal of JavaFX from the Oracle JDK」を確かめた

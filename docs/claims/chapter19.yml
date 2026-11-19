@@ -1,0 +1,41 @@
+# 第19章の主張と、その確かめ方（node scripts/check-claims.js ch19）
+jdk: 25
+claims:
+  - id: observer-deprecated-9
+    claim: java.util.ObserverとObservableはJava 9で非推奨になった
+    text: 標準ライブラリにはjava.util.Observerとjava.util.Observableもありますが、Java 9で非推奨になりました
+    sources:
+      - title: Observer（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Observer.html
+        anchor: This interface has been deprecated
+    verify:
+      kind: javac
+      probe: ObserverDeprecated.java
+      release: 9
+      javac: ['-Xlint:deprecation']
+      expect: ['Observable in java.util has been deprecated', 'Observer in java.util has been deprecated']
+      note: src.zipでは@Deprecated(since="9")
+
+  - id: observer-not-deprecated-8
+    claim: Java 8までは、ObserverとObservableは非推奨ではなかった
+    text: 標準ライブラリにはjava.util.Observerとjava.util.Observableもありますが、Java 9で非推奨になりました
+    unreferenced: true
+    verify:
+      kind: javac
+      probe: ObserverDeprecated.java
+      release: 8
+      javac: ['-Xlint:deprecation']
+      absent: ['has been deprecated']
+
+  - id: swingworker-6
+    claim: SwingWorkerはJava 6で標準ライブラリに入った
+    text: SwingWorkerがJavaの標準ライブラリに入ったのはJava 6からです
+    sources:
+      - title: SwingWorker（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/javax/swing/SwingWorker.html
+        anchor: "Since: 1.6"
+    verify:
+      kind: since
+      probe: SwingWorkerProbe.java
+      version: 6
+      note: src.zipの@since（SwingWorkerは1.6）

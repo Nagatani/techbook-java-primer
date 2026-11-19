@@ -1,0 +1,42 @@
+# 第22章の主張と、その確かめ方（node scripts/check-claims.js ch22）
+jdk: 25
+claims:
+  - id: javadoc-jdk-1-0
+    claim: javadocはJDK 1.0から付属している
+    text: JavadocはJDK 1.0から付属しているツールです
+    sources:
+      - title: The JDK 1.0 Tools Reference Pages（Sun、Internet Archive）
+        url: https://web.archive.org/web/20010429173154/http://java.sun.com/products/jdk/1.0.2/tools/
+        anchor: The JDK 1.0 Tools Reference Pages
+      - title: "javadoc - The Java API Documentation Generator（JDK 1.0.2の文書、Internet Archive）"
+        url: https://web.archive.org/web/19990508124949/http://java.sun.com/products/jdk/1.0.2/tools/solaris/javadoc.html
+        anchor: javadoc - The Java API Documentation Generator
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: SunのJDK 1.0.2のツールの文書にjavadocのページがある（「Generates HTML pages of API documentation from source files」）。OracleのJavadoc FAQは「Javadoc 1.1 is included in JDK 1.1」からしか挙げていない
+
+  - id: markdown-doc-comments-23
+    claim: ///で始まるMarkdownのドキュメントコメントはJava 23から（JEP 467）
+    text: Java 23からは、///で始まる行コメントにMarkdownで書くドキュメントコメントも使えます（JEP 467）
+    sources:
+      - title: "JEP 467: Markdown Documentation Comments"
+        url: https://openjdk.org/jeps/467
+        anchor: Release 23
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 467のRelease欄が23であることを確かめた。///はjavacにとってはただの行コメントなので、--releaseでは確かめられない
+
+  - id: io-class-25
+    claim: java.lang.IOクラスはJava 25の機能
+    text: 本書のコードはIOクラスなどJava 25の機能を使うため
+    sources:
+      - title: "JEP 512: Compact Source Files and Instance Main Methods"
+        url: https://openjdk.org/jeps/512
+        anchor: we add a new class, java.lang.IO
+    verify:
+      kind: since
+      probe: IoClass.java
+      version: 25
+      expect: ['cannot find symbol']

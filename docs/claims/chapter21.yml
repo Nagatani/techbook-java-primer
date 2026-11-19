@@ -1,0 +1,99 @@
+# 第21章の主張と、その確かめ方（node scripts/check-claims.js ch21）
+jdk: 25
+claims:
+  - id: assert-1-4
+    claim: assert文はJava 1.4から使える
+    text: Javaにも、C言語のassertマクロに似たassert文（Java 1.4から）があります
+    sources:
+      - title: AssertionError（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AssertionError.html
+        anchor: "Since: 1.4"
+      - title: Programming With Assertions（Java SE 8の文書）
+        url: https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html
+        anchor: javac -source 1.4 MyClass.java
+    verify:
+      kind: since
+      probe: AssertStatement.java
+      version: 1.4
+      note: src.zipの@since（AssertionErrorは1.4）。Oracleの文書は、assertを含むコードのコンパイルに-source 1.4を指定するよう述べている
+
+  - id: junit5-modules
+    claim: JUnit 5から、JUnitはJUnit Platform・JUnit Jupiter・JUnit Vintageの3つに分かれた
+    text: JUnit 5から、JUnitはテストを実行する基盤のJUnit Platform、テストを書くためのJUnit Jupiter、古いJUnitのテストを動かすJUnit Vintageに分かれました
+    sources:
+      - title: JUnit 5 User Guide（5.13.4）
+        url: https://docs.junit.org/5.13.4/user-guide/
+        anchor: JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JUnit 5のユーザーガイドの「What is JUnit 5?」に「JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage」とある。JUnit 6のガイドでも同じ3つ（「JUnit 6.1.3 = JUnit Platform + JUnit Jupiter + JUnit Vintage」）
+
+  - id: junit6-release
+    claim: JUnit 6.0.0は2025年9月30日に公開され、Java 17以降を前提にする
+    text: JUnitの最新の系列は2025年9月に公開されたJUnit 6で、Java 17以降で動きます
+    sources:
+      - title: JUnit 6.0.0 Release Notes
+        url: https://docs.junit.org/6.0.0/release-notes.html
+        anchor: "6.0.0 Date of Release: September 30, 2025 Scope: Java 17 and Kotlin 2.2 baseline"
+      - title: Maven Central junit-jupiter-api 6.0.0
+        url: https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/6.0.0/
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 'リリースノートの「6.0.0 Date of Release: September 30, 2025」「Java 17 and Kotlin 2.2 baseline」と、Maven Centralのpomの更新日（2025-09-30）を確かめた。2026-11-19時点の最新は6.1.3（ユーザーガイドの「JUnit requires Java 17 (or higher) at runtime」）'
+
+  - id: junit6-class-file-17
+    claim: JUnit 6のJARのクラスファイルはJava 17の形式（major version 61）
+    text: JUnitの最新の系列は2025年9月に公開されたJUnit 6で、Java 17以降で動きます
+    verify:
+      kind: javap
+      probe: JupiterBasics.java
+      class: org.junit.jupiter.api.Test
+      options: ['-v']
+      libs: ['org.junit.jupiter:junit-jupiter-api:6.1.3', 'org.apiguardian:apiguardian-api:1.1.2', 'org.opentest4j:opentest4j:1.3.0']
+      expect: ['major version: 61']
+
+  - id: jupiter-code-junit5
+    claim: この章のテストの書き方（@Test・@BeforeEach・@DisplayName・@Nested・Assertions）はJUnit 5でもコンパイルできる
+    text: JUnit 6でもテストはJupiterの書き方のままなので、この章のコードはJUnit 5でも6でも同じように動きます
+    verify:
+      kind: javac
+      probe: JupiterBasics.java
+      libs: ['org.junit.jupiter:junit-jupiter-api:5.13.4', 'org.apiguardian:apiguardian-api:1.1.2', 'org.opentest4j:opentest4j:1.3.0']
+      absent: ['error']
+      note: 動かすのではなくコンパイルで確かめる。本書の全文（sample-code/chapter21）はJUnit 6.1.3でコンパイル・実行している
+
+  - id: jupiter-code-junit6
+    claim: この章のテストの書き方はJUnit 6でもコンパイルできる
+    text: JUnit 6でもテストはJupiterの書き方のままなので、この章のコードはJUnit 5でも6でも同じように動きます
+    verify:
+      kind: javac
+      probe: JupiterBasics.java
+      libs: ['org.junit.jupiter:junit-jupiter-api:6.1.3', 'org.apiguardian:apiguardian-api:1.1.2', 'org.opentest4j:opentest4j:1.3.0']
+      absent: ['error']
+
+  - id: dynamic-agent-warning-21
+    claim: JDK 21から、実行中のJVMにエージェントを後から組み込むと警告が出る
+    text: JDK 21以降でMockitoを使うテストを実行すると、警告が表示されます
+    sources:
+      - title: '"JEP 451: Prepare to Disallow the Dynamic Loading of Agents"'
+        url: https://openjdk.org/jeps/451
+        anchor: In JDK 21, the dynamic loading of agents is allowed but the JVM issues a warning when it occurs
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 451（Release 21）の記述を確かめた。JDK 25での実際の警告はmockito-self-attach-warningで確かめる
+
+  - id: mockito-self-attach-warning
+    claim: 'JDK 25でMockito（5.24.0）でモックを作ると、「Mockito is currently self-attaching」と「WARNING: A Java agent has been loaded dynamically」の警告が出る'
+    text:
+      - JDK 21以降でMockitoを使うテストを実行すると、警告が表示されます
+      - '警告は「Mockito is currently self-attaching」や「WARNING: A Java agent has been loaded dynamically」で始まります'
+    verify:
+      kind: run
+      probe: MockitoSelfAttach.java
+      libs: ['org.mockito:mockito-core:5.24.0', 'net.bytebuddy:byte-buddy:1.17.7', 'net.bytebuddy:byte-buddy-agent:1.17.7', 'org.objenesis:objenesis:3.3']
+      expect: ['^Mockito is currently self-attaching', '^WARNING: A Java agent has been loaded dynamically', 'size = 3']
+      normalize: { '\(/[^)]*/': '(…/' }
+

@@ -1,0 +1,34 @@
+# 第18章の主張と、その確かめ方（node scripts/check-claims.js ch18）
+jdk: 25
+claims:
+  - id: inner-classes-listeners-1-1
+    claim: 内部クラス（匿名クラスを含む）と、リスナーを使うイベント処理（委譲イベントモデル）は、どちらもJDK 1.1で加わった。内部クラスの仕様は、AWTのイベントを受け取るアダプタークラスを例に説明している
+    text: 匿名クラスを含む内部クラスは、リスナーを使ういまのイベント処理のしくみと同じJDK 1.1で、Javaに加わりました
+    sources:
+      - title: Inner Classes Specification（JDK 1.1の文書、Internet Archive）
+        url: https://web.archive.org/web/20010329222522/http://java.sun.com/products/jdk/1.1/docs/guide/innerclasses/spec/innerclasses.doc1.html
+        anchor: In the 1.1 release, the Java 1.1 programmer can now define inner classes
+      - title: "Java AWT: Delegation Event Model（JDK 1.1の文書、Internet Archive）"
+        url: https://web.archive.org/web/19991104052318/http://java.sun.com/products/jdk/1.1/docs/guide/awt/designspec/events.html
+        anchor: The JDK1.1 will introduce a new delegation-based event model in AWT
+      - title: ActionListener（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/java/awt/event/ActionListener.html
+        anchor: "Since: 1.1"
+    verify:
+      kind: since
+      probe: AnonymousListener.java
+      version: 1.1
+      note: src.zipの@since（ActionListener・java.util.EventListenerは1.1）。内部クラスの仕様の例「A simple adapter class」に「Adapter classes are generally required in order to receive events from AWT」とある
+
+  - id: unnamed-lambda-parameter-22
+    claim: 使わない引数を_と書く無名変数はJava 22で正式な機能になった（Java 21ではプレビュー）
+    text: Java 22からは、使わない引数を_（アンダースコア）と書いて、使わないことを示せます
+    sources:
+      - title: "JEP 456: Unnamed Variables & Patterns"
+        url: https://openjdk.org/jeps/456
+        anchor: Release 22
+    verify:
+      kind: since
+      probe: UnnamedLambdaParameter.java
+      version: 22
+      expect: ['unnamed variables are not supported in -source 21']

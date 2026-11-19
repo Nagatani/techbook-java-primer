@@ -1,0 +1,15 @@
+# 第20章の主張と、その確かめ方（node scripts/check-claims.js ch20）
+jdk: 25
+claims:
+  - id: table-row-sorter-6
+    claim: TableRowSorterはJava 6で加わった
+    text: ソートとフィルタリングを受け持つTableRowSorterは、Java 6で加わりました
+    sources:
+      - title: TableRowSorter（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/javax/swing/table/TableRowSorter.html
+        anchor: "Since: 1.6"
+    verify:
+      kind: since
+      probe: TableRowSorterProbe.java
+      version: 6
+      note: src.zipの@since（TableRowSorterは1.6）
