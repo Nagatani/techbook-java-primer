@@ -1,9 +1,22 @@
-# 付録B（Deep Dive）の主張の検証
+# 本文と付録Bの主張の検証
 
 付録Bは、JVMの内部やライブラリの実装など、読者が自分では確かめにくい内容を扱います。
 誤りがあっても気づかれにくいため、解説の主張ごとに「どうすれば確かめられるか」を台帳に書き、JDKで実際に確かめ直せるようにしています（2026-11-19〜）。
+同じしくみを本文の章にも使います（2026-11-19〜。下の「本文の章」）。検査は`scripts/check-claims.js`で、`npm run check:deep-dive`は付録Bだけ、`npm run check:claims`は本文だけを検査します。
 
-## しくみ
+## 本文の章
+
+- 台帳は`docs/claims/chapterXX.yml`、観察用のプログラムは`docs/claims/chapterXX/`（`probe`はこのディレクトリからの相対パス）
+  - 本文の読者が動かすものではないので、`sample-code/`ではなく`docs/`に置く。`check:public-code`の対象外で、`check:claims`がコンパイルする
+- 原稿には印を置かない。主張ごとに、本文の文の一部を`text`に引用する（文字列か、その配列）
+  - 検査は、コードブロックを除き、タグ（脚注の`<span>`など）・`` ` ``・`*`を外して行をつないだ本文から`text`を探す。`text`にも`` ` ``を書いてよい（外して照合する）
+  - 本文を書き換えて`text`が見つからなくなると、エラーになる。その主張がまだ正しいかを見直し、`text`を直す
+- 「Java Nから」の主張は`kind: since`で確かめる。プローブが`--release N`ではコンパイルでき、`N-1`ではできないことを照合する（`expect`は`N-1`のエラーの正規表現）。`N-1`が8より前のとき（Java 8以前の機能）は`N`で通ることだけを確かめ、JEPなどの出典を`sources`に書く
+  - `--release`を古くするプローブでは、Java 25の`IO`クラスを使えない。コンパイルだけを確かめるプローブは出力を持たなくてよい
+- 検証していない主張の候補（注意）は、本文でJavaの版を述べた行（`Java 16以降`・`Java 7で導入`など）のうち、台帳のどの`text`も含まない行
+- 入門書として意図して簡略化した説明は、台帳に`simplified: true`と、正確な事実を`note`に書いて区別する
+
+## しくみ（付録B）
 
 - 節ごとの台帳 `appendix/bXX-*/claims.yml`
   - 解説の主張（`claim`）と、その確かめ方（`verify`）、出典（`sources`）を書く
@@ -15,7 +28,7 @@
   - `check:public-code`のコンパイルの対象にもなる
 - 出力の欄 `<!-- output: id -->` 〜 `<!-- /output -->`
   - `npm run check:deep-dive -- --update`が、その主張の検証で得た実際の出力を書き込む。手で書かない
-- 検査 `npm run check:deep-dive`（`scripts/check-deep-dive.js`）
+- 検査 `npm run check:deep-dive`（`scripts/check-claims.js`）
 
 ## 確かめ方の種類
 

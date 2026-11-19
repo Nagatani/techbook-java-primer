@@ -1,0 +1,11 @@
+# 第2章の主張と、その確かめ方（node scripts/check-claims.js ch02）
+jdk: 25
+claims:
+  - id: switch-expression-14
+    claim: switch式はJava 14で正式な機能になった
+    text: Java 14からは、switchを値を返す「式」として書けるようになりました
+    verify:
+      kind: since
+      probe: SwitchExpression.java
+      version: 14
+      expect: ['switch expressions|preview']

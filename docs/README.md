@@ -36,7 +36,7 @@
 | `guides/writing-guidelines-textlint-compliance.md` | 原稿を書く・直すときの文章の規約（必読） |
 | `guides/proofreading-workflow.md` | 校正の手順と注意点 |
 | `guides/code-verification.md` | 公開コードをJava 25で確かめる手順と、見つかった誤りのパターン |
-| `guides/deep-dive-verification.md` | 付録B（Deep Dive）の主張を台帳（claims.yml）と観察用のプログラムで確かめるしくみと手順 |
+| `guides/claim-verification.md` | 本文と付録B（Deep Dive）の主張を台帳（claims.yml）と観察用のプログラムで確かめるしくみと手順 |
 | `guides/claude-md-compliance-guide.md` | `npm run check:compliance`（pre-commitフックで実行する表記ルールの検査）の内容と使い方 |
 | `guides/bullet-point-usage-guide.md` | 箇条書きにする内容と文章で書く内容の目安 |
 | `guides/code-styling-guide.md` | コードブロックの書き方とビルドで付く見た目 |

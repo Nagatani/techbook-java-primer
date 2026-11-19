@@ -1,5 +1,5 @@
 # 付録B.10の主張と、その確かめ方
-# npm run check:deep-dive -- b10 で検証する（書き方は docs/guides/deep-dive-verification.md）
+# npm run check:deep-dive -- b10 で検証する（書き方は docs/guides/claim-verification.md）
 jdk: 25
 
 claims:

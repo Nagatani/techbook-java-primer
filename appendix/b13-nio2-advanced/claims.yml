@@ -1,5 +1,5 @@
 # 付録B.13の主張と、その確かめ方
-# npm run check:deep-dive -- b13 で検証する（書き方は docs/guides/deep-dive-verification.md）
+# npm run check:deep-dive -- b13 で検証する（書き方は docs/guides/claim-verification.md）
 # OSによって結果が変わる観察（WatchServiceの実装など）は、macOSとLinuxのどちらの結果でも合格するように書いている。
 # Linuxの結果は、DockerのLinux（eclipse-temurin:25-jdk）でverify/のプログラムを実行して確かめた（2026-11-19）
 jdk: 25

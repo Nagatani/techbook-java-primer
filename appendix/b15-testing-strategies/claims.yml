@@ -1,5 +1,5 @@
 # 付録B.15の主張と、その確かめ方
-# npm run check:deep-dive -- b15 で検証する（書き方は docs/guides/deep-dive-verification.md）
+# npm run check:deep-dive -- b15 で検証する（書き方は docs/guides/claim-verification.md）
 # JUnitのふるまいは、check:public-codeと同じJUnit 5.13.4（junit-platform-console-standalone 1.13.4）で観察する
 jdk: 25
 

@@ -1,25 +1,31 @@
 #!/usr/bin/env node
 /**
- * 付録B（Deep Dive）の解説の主張を、JDKで実際に確かめる。
+ * 本文の各章と付録B（Deep Dive）の主張を、JDKで実際に確かめる。
  *
- *   node scripts/check-deep-dive.js               すべての節の台帳（claims.yml）を検証する
- *   node scripts/check-deep-dive.js b04 b07       指定した節だけ
- *   node scripts/check-deep-dive.js --static      Javaを動かさず、台帳と印の対応・書式・フラグ名だけを検査する（pre-commit）
- *   node scripts/check-deep-dive.js --update      検証の出力をREADMEの<!-- output: id -->の欄に書き込む
- *   node scripts/check-deep-dive.js --online      出典のURLが開けるか、anchorの文字がページにあるかも確かめる
- *   node scripts/check-deep-dive.js --report      節ごとの集計を docs/analysis/deep-dive-claims.md に書く
- *   node scripts/check-deep-dive.js --verbose     検証の出力をすべて表示する
+ *   node scripts/check-claims.js                 本文の章と付録Bの節の台帳をすべて検証する
+ *   node scripts/check-claims.js --appendix      付録Bの節だけ（npm run check:deep-dive）
+ *   node scripts/check-claims.js --chapters      本文の章だけ（npm run check:claims）
+ *   node scripts/check-claims.js b04 ch09        指定した節・章だけ（ch09 は chapter09 の意味）
+ *   node scripts/check-claims.js --static        Javaを動かさず、台帳と本文の対応・書式・フラグ名だけを検査する（pre-commit）
+ *   node scripts/check-claims.js --update        検証の出力を付録BのREADMEの<!-- output: id -->の欄に書き込む
+ *   node scripts/check-claims.js --online        出典のURLが開けるか、anchorの文字がページにあるかも確かめる
+ *   node scripts/check-claims.js --report        集計を docs/analysis/deep-dive-claims.md（付録B）と manuscript-claims.md（本文）に書く
+ *   node scripts/check-claims.js --verbose       検証の出力と、検証していない主張の候補をすべて表示する
  *
- * しくみ（詳しくは docs/guides/deep-dive-verification.md）
- *   - 各節の appendix/bXX-（題名）/claims.yml に、解説の主張（claim）とその確かめ方（verify）を書く
- *   - README.md などの解説では、主張を述べた段落・リスト項目・表の直後に <!-- claim: id --> を置く
+ * しくみ（詳しくは docs/guides/claim-verification.md）
+ *   - 付録Bの節: appendix/bXX-（題名）/claims.yml に主張（claim）と確かめ方（verify）を書き、
+ *     README.md などの主張を述べた段落の直後に <!-- claim: id --> を置く。観察用のプログラムは節の verify/
+ *   - 本文の章: docs/claims/chapterXX.yml に主張を書き、本文の文の一部を text に引用して対応づける（原稿には印を置かない）。
+ *     観察用のプログラムは docs/claims/chapterXX/（probe はこのディレクトリからの相対パス）。本文の文を書き換えて text が見つからなくなるとエラーになる
  *   - 確かめ方の種類
  *       javac   プローブをコンパイルし、コンパイラーの出力（エラー・警告）に expect があるか。fails: true ならコンパイルが失敗すること
- *       javap   プローブ（verify/のjavaファイル）をコンパイルし（releaseで--releaseを変えられる）、javap の出力に expect の正規表現があるか（absent はないか）
+ *       javap   プローブをコンパイルし（releaseで--releaseを変えられる）、javap の出力に expect の正規表現があるか（absent はないか）
  *       run     プローブか節のコードを実行し、出力（標準出力と標準エラー出力）に expect があるか
+ *       since   プローブが --release N ではコンパイルでき、N-1 ではできないこと（「Java Nから」の主張）
  *       flag    JVMのフラグが実在し、既定値が value と一致するか
  *       manual  機械では確かめられない主張。sources（出典）と checked（確かめた日）を必須にする
- *   - 印のない段落で、数値・Javaの版・性能の言い回しを含むものを「検証していない主張の候補」として示す（注意）
+ *   - 検証していない主張の候補（注意）: 付録Bは、印のない段落で数値・Javaの版・性能の言い回しを含むもの。
+ *     本文は、Javaの版を述べた行で、台帳のどの text も含まないもの
  *   - 解説とプローブに出てくる -XX: のフラグは、台帳に書かなくても実在を確かめる
  */
 const fs = require('fs');
@@ -30,9 +36,16 @@ const yaml = require('js-yaml');
 
 const ROOT = path.resolve(__dirname, '..');
 const APPENDIX = path.join(ROOT, 'appendix');
+const MANUSCRIPTS = path.join(ROOT, 'manuscripts');
+const CLAIMS_DIR = path.join(ROOT, 'docs', 'claims');
 const LIB_CACHE = path.join(ROOT, '.cache', 'sample-code-libs');
-const REPORT = path.join(ROOT, 'docs', 'analysis', 'deep-dive-claims.md');
-const KINDS = ['javac', 'javap', 'run', 'flag', 'manual'];
+const REPORTS = {
+  appendix: { file: path.join(ROOT, 'docs', 'analysis', 'deep-dive-claims.md'), title: '付録Bの主張の検証状況', cmd: 'npm run check:deep-dive -- --report' },
+  chapter: { file: path.join(ROOT, 'docs', 'analysis', 'manuscript-claims.md'), title: '本文の主張の検証状況', cmd: 'npm run check:claims -- --report' },
+};
+const KINDS = ['javac', 'javap', 'run', 'since', 'flag', 'manual'];
+// --release に指定できるもっとも古い版（JDK 25のjavac）
+const MIN_RELEASE = 8;
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 const args = process.argv.slice(2);
@@ -42,21 +55,50 @@ const opt = {
   online: args.includes('--online'),
   report: args.includes('--report'),
   verbose: args.includes('--verbose'),
-  filters: args.filter((a) => !a.startsWith('--')),
+  filters: args.filter((a) => !a.startsWith('--')).map((f) => f.replace(/^chapter(\d\d)$/, 'ch$1')),
+  appendix: args.includes('--appendix'),
+  chapters: args.includes('--chapters'),
 };
+// どちらも指定しなければ両方。節・章を指定したときは、その種類だけ
+if (!opt.appendix && !opt.chapters) {
+  const hasB = opt.filters.some((f) => /^b\d/.test(f));
+  const hasCh = opt.filters.some((f) => /^ch\d/.test(f));
+  opt.appendix = hasB || !hasCh;
+  opt.chapters = hasCh || !hasB;
+}
 
 // ---------------------------------------------------------------- 節と文書
 
+/**
+ * 検査の単位（付録Bの節と本文の章）。
+ *   kind: 'appendix' | 'chapter'、dir: プローブのパスの基準、ledgerFile: 台帳、docs: 主張を書いた文書
+ */
 function sections() {
-  return fs.readdirSync(APPENDIX)
-    .filter((d) => /^b\d\d-/.test(d))
-    .filter((d) => !opt.filters.length || opt.filters.some((f) => d.startsWith(f)))
-    .sort()
-    .map((d) => ({ name: d, id: d.slice(0, 3), dir: path.join(APPENDIX, d) }));
+  const out = [];
+  const pick = (id) => !opt.filters.length || opt.filters.some((f) => id.startsWith(f) || f.startsWith(id));
+  if (opt.appendix) {
+    for (const d of fs.readdirSync(APPENDIX).filter((x) => /^b\d\d-/.test(x)).sort()) {
+      const id = d.slice(0, 3);
+      if (!pick(id) && !opt.filters.some((f) => d.startsWith(f))) continue;
+      const dir = path.join(APPENDIX, d);
+      out.push({ kind: 'appendix', name: d, id, dir, ledgerFile: path.join(dir, 'claims.yml') });
+    }
+  }
+  if (opt.chapters) {
+    for (const f of fs.readdirSync(MANUSCRIPTS).filter((x) => /^chapter\d\d-.*\.md$/.test(x)).sort()) {
+      const nn = f.slice(7, 9);
+      const id = `ch${nn}`;
+      if (!pick(id)) continue;
+      out.push({ kind: 'chapter', name: `chapter${nn}`, id, dir: path.join(CLAIMS_DIR, `chapter${nn}`),
+        ledgerFile: path.join(CLAIMS_DIR, `chapter${nn}.yml`), manuscript: path.join(MANUSCRIPTS, f) });
+    }
+  }
+  return out;
 }
 
 /** 節の解説の文書（README.mdと、docs/・examples/の.md）。target/・out/は除く */
 function docsOf(sec) {
+  if (sec.kind === 'chapter') return [sec.manuscript];
   const out = [];
   const walk = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -72,6 +114,8 @@ function docsOf(sec) {
 
 function javaFilesOf(sec) {
   const out = [];
+  const base = sec.dir;
+  if (!fs.existsSync(base)) return out;
   const walk = (dir) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (e.name.startsWith('.') || ['target', 'build', 'out'].includes(e.name)) continue;
@@ -80,7 +124,7 @@ function javaFilesOf(sec) {
       else if (/\.(java|xml|gradle|properties)$/.test(e.name)) out.push(p);
     }
   };
-  walk(sec.dir);
+  walk(base);
   return out;
 }
 
@@ -142,11 +186,11 @@ function riskyReasons(text) {
 // ---------------------------------------------------------------- 台帳
 
 function loadLedger(sec) {
-  const file = path.join(sec.dir, 'claims.yml');
+  const file = sec.ledgerFile;
   if (!fs.existsSync(file)) return null;
   const data = yaml.load(fs.readFileSync(file, 'utf8'), { schema: yaml.JSON_SCHEMA }) || {};
   // defaults: 各主張のverifyに既定で加える項目（libsなど。主張の側に書いたものが優先）
-  const claims = (data.claims || []).map((c) => (c.verify && data.defaults && ['javac', 'javap', 'run'].includes(c.verify.kind)
+  const claims = (data.claims || []).map((c) => (c.verify && data.defaults && ['javac', 'javap', 'run', 'since'].includes(c.verify.kind)
     ? { ...c, verify: { ...data.defaults, ...c.verify } } : c));
   return { file, jdk: data.jdk, claims, removedFlags: data.removedFlags || [] };
 }
@@ -169,6 +213,8 @@ function validateLedger(sec, ledger, problems) {
     if (v.kind === 'javac' && !v.probe) problems.push({ level: 'error', where, msg: 'javacにはprobeが要る' });
     if (v.kind === 'javap' && (!v.probe || !v.class)) problems.push({ level: 'error', where, msg: 'javapにはprobeとclassが要る' });
     if (v.kind === 'run' && !v.probe && !v.main) problems.push({ level: 'error', where, msg: 'runにはprobeかmainが要る' });
+    if (v.kind === 'since' && (!v.probe || !v.version)) problems.push({ level: 'error', where, msg: 'sinceにはprobeとversionが要る' });
+    if (sec.kind === 'chapter' && !c.text && !c.unreferenced) problems.push({ level: 'error', where, msg: '本文の主張にはtext（本文の文の一部の引用）が要る' });
     if (v.kind === 'flag' && !v.flag) problems.push({ level: 'error', where, msg: 'flagにはflagが要る' });
     if (['javac', 'javap', 'run'].includes(v.kind) && !(v.expect || v.absent)) problems.push({ level: 'error', where, msg: 'expectかabsentが要る' });
     for (const p of [].concat(v.probe || [])) {
@@ -271,6 +317,17 @@ function verifyClaim(sec, c, tmp) {
     if (v.value != null && String(v.value) !== f.value) return { status: 'fail', msg: `${v.flag} の既定値は ${f.value}（台帳は ${v.value}）`, output: `${v.flag} = ${f.value} {${f.kind}}` };
     return { status: 'pass', output: `${v.flag} = ${f.value} {${f.kind}}` };
   }
+  if (v.kind === 'since') {
+    const n = Number(v.version);
+    const ok = compileFor(sec, { ...v, release: n }, tmp);
+    if (!ok.ok) return { status: 'fail', msg: `--release ${n} でコンパイルできない\n${ok.msg}` };
+    if (n - 1 < MIN_RELEASE) return { status: 'pass', output: `--release ${n} でコンパイルできた（${n - 1}は--releaseに指定できないので確かめていない）` };
+    const ng = compileFor(sec, { ...v, release: n - 1 }, tmp);
+    if (ng.ok) return { status: 'fail', msg: `--release ${n - 1} でもコンパイルできた（Java ${n}より前からある）` };
+    const m = matchAll(ng.msg, v);
+    if (!m.ok) return { status: 'fail', msg: `--release ${n - 1} のエラーが想定と違う\n${m.missing.map((re) => `/${re}/ がない`).join('\n')}`, output: ng.msg };
+    return { status: 'pass', output: `--release ${n} でコンパイルでき、${n - 1} ではできない\n${ng.msg}` };
+  }
   const c1 = compileFor(sec, v, tmp);
   if (v.kind === 'javac') {
     if (v.fails && c1.ok) return { status: 'fail', msg: 'コンパイルが通った（失敗するはず）' };
@@ -367,6 +424,51 @@ function checkSources(sec, ledger, problems) {
   }
 }
 
+// ---------------------------------------------------------------- 本文の章
+
+/** 本文の文を照合しやすくする（コードブロックを除き、タグ・インラインコードの記号・強調を外し、行をつなぐ） */
+function normalizeProse(text) {
+  return text
+    .replace(/^(```|~~~)[\s\S]*?^\1\s*$/gm, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/[`*]/g, '')
+    .replace(/\n/g, '')
+    .replace(/\s+/g, ' ');
+}
+const normalizeQuote = (t) => String(t).replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
+
+// 本文で「Javaの版」を述べた行（検証していない主張の候補を探す）
+const VERSION_RE = /(Java|JDK)\s?\d+(\.\d+)?\s*(以降|から|で(導入|追加|正式|加わ|プレビュー|非推奨|削除)|より前|まで|では)/;
+
+/**
+ * 本文の章: 台帳の text が本文にあるかを確かめ、版を述べた行のうち台帳のどの text も含まないものを候補にする。
+ * ledger が null（台帳がまだない章）でも候補だけは数える
+ */
+function chapterAnchors(sec, ledger, row, problems) {
+  const md = fs.readFileSync(sec.manuscript, 'utf8');
+  const prose = normalizeProse(md);
+  const quotes = [];
+  for (const c of (ledger ? ledger.claims : [])) {
+    for (const t of asList(c.text)) {
+      const q = normalizeQuote(t);
+      quotes.push(q);
+      if (!prose.includes(q)) {
+        problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`,
+          msg: `本文（${path.relative(ROOT, sec.manuscript)}）に「${q.slice(0, 60)}」が見つからない（本文を書き換えたなら、主張を見直してtextを直す）` });
+      }
+    }
+  }
+  let fence = false;
+  md.split('\n').forEach((line, i) => {
+    if (/^\s*(```|~~~)/.test(line)) { fence = !fence; return; }
+    if (fence || /^#/.test(line)) return;
+    const plain = normalizeProse(line);
+    if (!VERSION_RE.test(plain)) return;
+    if (quotes.some((q) => plain.includes(q) || q.includes(plain.trim()))) return;
+    row.uncovered.push({ where: `${path.relative(ROOT, sec.manuscript)}:${i + 1}`, why: ['Javaの版'], text: plain.trim().slice(0, 70) });
+  });
+}
+
 // ---------------------------------------------------------------- 本体
 
 function main() {
@@ -380,7 +482,9 @@ function main() {
       const row = { sec, claims: 0, pass: 0, fail: 0, manual: 0, markers: 0, uncovered: [] };
       summary.push(row);
       const markersAt = new Map();
-      for (const f of docs) {
+      if (sec.kind === 'chapter') {
+        chapterAnchors(sec, ledger, row, problems);
+      } else for (const f of docs) {
         const md = fs.readFileSync(f, 'utf8');
         for (const b of blocks(md)) {
           const ids = markerIds(b.text);
@@ -396,7 +500,7 @@ function main() {
       row.markers = markersAt.size;
       checkFlagNames(sec, problems, ledger ? ledger.removedFlags : []);
       if (!ledger) {
-        if (markersAt.size) problems.push({ level: 'error', where: sec.name, msg: '印（<!-- claim: -->）があるのにclaims.ymlがない' });
+        if (sec.kind === 'appendix' && markersAt.size) problems.push({ level: 'error', where: sec.name, msg: '印（<!-- claim: -->）があるのにclaims.ymlがない' });
         continue;
       }
       validateLedger(sec, ledger, problems);
@@ -405,7 +509,7 @@ function main() {
         if (!ids.has(id)) problems.push({ level: 'error', where: wheres[0], msg: `印のid「${id}」がclaims.ymlにない` });
       }
       for (const c of ledger.claims) {
-        if (!markersAt.has(c.id) && !c.unreferenced) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: '解説のどこにも印がない（解説から消した主張なら台帳からも消す）' });
+        if (sec.kind === 'appendix' && !markersAt.has(c.id) && !c.unreferenced) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: '解説のどこにも印がない（解説から消した主張なら台帳からも消す）' });
       }
       // 手で確かめてから1年を過ぎた主張は、版や公開の状況が変わっていないかを確かめ直す（注意）
       for (const c of ledger.claims) {
@@ -434,7 +538,7 @@ function main() {
           problems.push({ level: 'error', where: `${sec.id}: ${c.id}`, msg: `${c.claim}\n${r.msg}${r.output ? '\n--- 出力の先頭 ---\n' + r.output.split('\n').slice(0, 15).join('\n') : ''}` });
         }
       }
-      if (opt.update) {
+      if (opt.update && sec.kind === 'appendix') {
         for (const f of docs) if (updateOutputs(f, outputs)) console.log(`  → ${path.relative(ROOT, f)} の出力を更新した`);
       }
     }
@@ -443,7 +547,7 @@ function main() {
   }
 
   // 集計
-  console.log('\n| 節 | 主張 | 機械で確認 | 手で確認 | 失敗 | 印のない候補 |');
+  console.log('\n| 節・章 | 主張 | 機械で確認 | 手で確認 | 失敗 | 検証していない候補 |');
   console.log('|---|---|---|---|---|---|');
   for (const r of summary) {
     const auto = opt.static ? '-' : r.pass;
@@ -470,29 +574,36 @@ function main() {
 }
 
 function writeReport(summary) {
-  const today = new Date().toISOString().slice(0, 10);
-  const lines = [
-    '# 付録Bの主張の検証状況',
-    '',
-    `\`npm run check:deep-dive -- --report\`が生成する（${today}）。手で書き換えない。しくみは\`docs/guides/deep-dive-verification.md\`。`,
-    '',
-    '| 節 | 主張 | 機械で確認 | 手で確認 | 失敗 | 印のない候補 |',
-    '|---|---|---|---|---|---|',
-    ...summary.map((r) => `| ${r.sec.name} | ${r.claims} | ${opt.static ? '-' : r.pass} | ${r.manual} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`),
-    '',
-    '## 印のない候補',
-    '',
-    '数値・Javaの版・性能の言い回しを含み、主張の印がないまとまり。主張なら台帳に足し、主張でなければ（例・手順の説明など）そのままでよい。',
-    '',
-  ];
-  for (const r of summary) {
-    if (!r.uncovered.length) continue;
-    lines.push(`### ${r.sec.name}`, '');
-    for (const u of r.uncovered) lines.push(`- \`${u.where}\` [${u.why.join('・')}] ${u.text.replace(/\|/g, '\\|')}`);
-    lines.push('');
+  for (const kind of ['appendix', 'chapter']) {
+    const rows = summary.filter((r) => r.sec.kind === kind);
+    if (!rows.length) continue;
+    const rp = REPORTS[kind];
+    const today = new Date().toISOString().slice(0, 10);
+    const lines = [
+      `# ${rp.title}`,
+      '',
+      `\`${rp.cmd}\`が生成する（${today}）。手で書き換えない。しくみは\`docs/guides/claim-verification.md\`。`,
+      '',
+      `| ${kind === 'chapter' ? '章' : '節'} | 主張 | 機械で確認 | 手で確認 | 失敗 | 検証していない候補 |`,
+      '|---|---|---|---|---|---|',
+      ...rows.map((r) => `| ${r.sec.name} | ${r.claims} | ${opt.static ? '-' : r.pass} | ${r.manual} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`),
+      '',
+      '## 検証していない主張の候補',
+      '',
+      kind === 'chapter'
+        ? 'Javaの版を述べた行で、台帳のどのtextも含まないもの。主張なら台帳に足す。'
+        : '数値・Javaの版・性能の言い回しを含み、主張の印がないまとまり。主張なら台帳に足し、主張でなければ（例・手順の説明など）そのままでよい。',
+      '',
+    ];
+    for (const r of rows) {
+      if (!r.uncovered.length) continue;
+      lines.push(`### ${r.sec.name}`, '');
+      for (const u of r.uncovered) lines.push(`- \`${u.where}\` [${u.why.join('・')}] ${u.text.replace(/\|/g, '\\|')}`);
+      lines.push('');
+    }
+    fs.writeFileSync(rp.file, lines.join('\n'));
+    console.log(`\n${path.relative(ROOT, rp.file)} に書いた`);
   }
-  fs.writeFileSync(REPORT, lines.join('\n'));
-  console.log(`\n${path.relative(ROOT, REPORT)} に書いた`);
 }
 
 main();
