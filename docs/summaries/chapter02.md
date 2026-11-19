@@ -7,7 +7,7 @@ sections:
   - key: "基本データ型"
     hash: 5f1e975b
   - key: "変数の宣言と初期化"
-    hash: da844ecb
+    hash: c7323d6a
   - key: "演算子"
     hash: 09b8735f
   - key: "型変換"

@@ -9,3 +9,115 @@ claims:
       probe: SwitchExpression.java
       version: 14
       expect: ['switch expressions|preview']
+
+  - id: switch-expression-preview-12-13
+    claim: switch式はJava 12と13でプレビュー機能として提供され、Java 14で正式になった（JEP 361）
+    text: switch式はJava 12と13でプレビュー機能（試験的に使える機能）として提供され、Java 14で正式な機能になりました（JEP 361）
+    sources:
+      - title: "JEP 361: Switch Expressions"
+        url: https://openjdk.org/jeps/361
+        anchor: JEP 325 was targeted to JDK 12 in August 2018 as a preview feature
+      - title: "JEP 354: Switch Expressions (Second Preview)"
+        url: https://openjdk.org/jeps/354
+        anchor: Release 13
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 361のHistory（JEP 325がJDK 12、JEP 354がJDK 13のプレビュー）で確かめた。JDK 25のjavacは--release 13で「not supported in -source 13」と報告し、プレビューだったことは示さない
+
+  - id: var-10
+    claim: varはJava 10から使える
+    text: Java 10からは型の代わりにvarと書いて、初期値から型をコンパイラーに推論させることもできます
+    verify:
+      kind: since
+      probe: Var.java
+      version: 10
+      expect: ['cannot find symbol']
+
+  - id: underscore-keyword-9
+    claim: Java 9から、単独の_は予約語で名前に使えない
+    text: 単独の_（アンダースコア）は名前に使えない（Java 9から予約語。
+    verify:
+      kind: javac
+      probe: Underscore.java
+      release: 9
+      fails: true
+      expect: ["as of release 9, '_' is a keyword, and may not be used as an identifier"]
+
+  - id: underscore-identifier-8
+    claim: Java 8までは、単独の_を名前に使えた（警告だけ）
+    text: 単独の_（アンダースコア）は名前に使えない（Java 9から予約語。
+    verify:
+      kind: javac
+      probe: Underscore.java
+      release: 8
+      expect: ["warning: as of release 9, '_' is a keyword"]
+
+  - id: io-class-25
+    claim: java.langのIOクラスはJava 25で加わった
+    text: 本書では標準入出力にJava 25のIOクラス
+    verify:
+      kind: since
+      probe: IoClass.java
+      version: 25
+      expect: ['cannot find symbol']
+
+  - id: strip-11
+    claim: String.stripはJava 11で加わった
+    text: strip()はJava 11で加わったメソッドで
+    verify:
+      kind: since
+      probe: Strip.java
+      version: 11
+      expect: ['cannot find symbol']
+
+  - id: java5-features
+    claim: 拡張for文・ジェネリクス・enumはJava 5で導入された
+    text: 拡張for文は、2004年のJava 5で導入されました。ジェネリクスやenumも同じ版で加わっています。
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Generics Enhanced for Loop Autoboxing/Unboxing Typesafe Enums
+    note: J2SE 5.0の新機能の一覧で確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: Java5Features.java
+      version: 5
+
+  - id: java5-2004
+    claim: Java 5（J2SE 5.0）は2004年に公開された
+    text: 拡張for文は、2004年のJava 5で導入されました
+    sources:
+      - title: "JSR 176: J2SE 5.0 (Tiger) Release Contents"
+        url: https://jcp.org/en/jsr/detail?id=176
+        anchor: Final Release Download page 30 Sep, 2004
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JSR 176のFinal Releaseが2004年9月30日であることを確かめた
+
+  - id: stringbuilder-5
+    claim: StringBuilderはJava 5で加わった
+    text: StringBuilderはJava 5で加わりました
+    sources:
+      - title: java.lang.StringBuilder（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html
+        anchor: "Since: 1.5 See Also: StringBuffer"
+    note: src.zipの@since（StringBuilderは1.5）とAPIドキュメントで確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: StringBuilderProbe.java
+      version: 5
+
+  - id: unnamed-variable-22
+    claim: Java 22から、使わない変数を単独の_で宣言できる（JEP 456）
+    text: Java 22からは、使わない変数を表す記号として書ける
+    sources:
+      - title: JEP 456 Unnamed Variables & Patterns
+        url: https://openjdk.org/jeps/456
+        anchor: Unnamed Variables
+    verify:
+      kind: since
+      probe: UnnamedVariable.java
+      version: 22
+      expect: ['unnamed variables|underscore|_']

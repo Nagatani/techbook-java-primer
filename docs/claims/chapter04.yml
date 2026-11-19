@@ -1,0 +1,40 @@
+# 第4章の主張と、その確かめ方（node scripts/check-claims.js ch04）
+jdk: 25
+claims:
+  - id: import-module-25
+    claim: モジュールのimport宣言はJava 25で加わった
+    text: モジュールのimport宣言（import module java.base;）がJava 25で加わりました
+    sources:
+      - title: "JEP 511: Module Import Declarations"
+        url: https://openjdk.org/jeps/511
+        anchor: Release 25
+    verify:
+      kind: since
+      probe: ImportModule.java
+      version: 25
+      expect: ['module imports are not supported in -source 24']
+
+  - id: static-import-5
+    claim: 静的インポートはJava 5（J2SE 5.0）で加わった
+    text: 静的インポートは、2004年に公開されたJava 5（J2SE 5.0）で加わりました
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Static Import
+    note: J2SE 5.0の新機能の一覧で確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: StaticImport.java
+      version: 5
+
+  - id: java5-2004
+    claim: Java 5（J2SE 5.0）は2004年に公開された
+    text: 静的インポートは、2004年に公開されたJava 5（J2SE 5.0）で加わりました
+    sources:
+      - title: "JSR 176: J2SE 5.0 (Tiger) Release Contents"
+        url: https://jcp.org/en/jsr/detail?id=176
+        anchor: Final Release Download page 30 Sep, 2004
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JSR 176のFinal Releaseが2004年9月30日であることを確かめた

@@ -1,0 +1,192 @@
+# 第1章の主張と、その確かめ方（node scripts/check-claims.js ch01）
+jdk: 25
+claims:
+  - id: lambda-stream-8
+    claim: ラムダ式とStream APIはJava 8で導入された
+    text: Java 8以降で導入されたモダンな機能、とくにラムダ式とStream API
+    sources:
+      - title: "JEP 126: Lambda Expressions & Virtual Extension Methods"
+        url: https://openjdk.org/jeps/126
+        anchor: Release 8
+      - title: "JEP 107: Bulk Data Operations for Collections"
+        url: https://openjdk.org/jeps/107
+        anchor: Release 8
+    verify:
+      kind: since
+      probe: LambdaStream.java
+      version: 8
+
+  - id: security-manager-disabled-24
+    claim: セキュリティマネージャーはJava 24で無効になった（JDK 25では設定しようとすると例外になる）
+    text: サンドボックスを支えたセキュリティマネージャーもJava 24で無効になりました
+    sources:
+      - title: "JEP 486: Permanently Disable the Security Manager"
+        url: https://openjdk.org/jeps/486
+        anchor: Release 24
+    verify:
+      kind: run
+      probe: SecurityManagerDisabled.java
+      expect: ['UnsupportedOperationException: Setting a Security Manager is not supported']
+
+  - id: lts-25-21
+    claim: Java 25はLTSで、1つ前のLTSはJava 21。LTSは2年ごと
+    text:
+      - OpenJDK 25（LTS版）
+      - そのうち2年ごとの版がLTSになります。Java 25の1つ前のLTSはJava 21です。
+    sources:
+      - title: Oracle Java SE Support Roadmap
+        url: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
+        anchor: Java SE 8, 11, 17, 21, and 25 are LTS releases
+      - title: Oracle Java SE Support Roadmap
+        url: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
+        anchor: Oracle intends to make future LTS releases every two years
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Oracleのサポートロードマップで、LTSが8・11・17・21・25であることと、今後のLTSを2年ごとに出す予定であることを確かめた。LTSの指定はOracleなどJDKの提供元が行うもので、OpenJDKのプロジェクトそのものが定めるものではない
+    simplified: true
+
+  - id: six-month-release
+    claim: Javaは半年ごとに新しい版（フィーチャーリリース）が出る
+    text: Javaは半年ごとに新しい版が出て
+    sources:
+      - title: "JEP 322: Time-Based Release Versioning"
+        url: https://openjdk.org/jeps/322
+        anchor: $FEATURE is incremented every six months
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 322で、フィーチャーリリースの番号が6か月ごとに上がる（2018年3月がJDK 10、9月がJDK 11）ことを確かめた
+
+  - id: io-class-25
+    claim: java.langのIOクラスはJava 25で加わった（Java 24ではimportなしのIOは見つからない）
+    text:
+      - Java 25で加わった標準入出力のIOクラス
+      - Java 25で標準ライブラリに加わったIOクラス
+      - Java 25で加わったIOクラスは、こうした入出力を短く書くためのクラスです
+    verify:
+      kind: since
+      probe: IoClass.java
+      version: 25
+      expect: ['cannot find symbol']
+
+  - id: io-class-jep512
+    claim: IOクラスはJEP 512で正式に加わり、プレビューのjava.ioからjava.langに移った
+    text: IOクラスも、JEP 512で正式に加わりました
+    sources:
+      - title: "JEP 512: Compact Source Files and Instance Main Methods"
+        url: https://openjdk.org/jeps/512
+        anchor: The new IO class for basic console I/O is now in the java.lang package rather than the java.io package
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 512のHistoryで確かめた
+
+  - id: io-java-io-preview-24
+    claim: Java 24では、IOクラスはjava.ioパッケージのプレビューAPIだった
+    text: プレビュー機能だったJava 23と24ではjava.ioパッケージにありましたが
+    verify:
+      kind: javac
+      probe: IoInJavaIo.java
+      release: 24
+      fails: true
+      expect: ['IO is a preview API and is disabled by default']
+
+  - id: io-java-io-preview-23
+    claim: Java 23でも、IOクラスはjava.ioパッケージのプレビューAPIだった
+    text: プレビュー機能だったJava 23と24ではjava.ioパッケージにありましたが
+    verify:
+      kind: javac
+      probe: IoInJavaIo.java
+      release: 23
+      fails: true
+      expect: ['IO is a preview API and is disabled by default']
+
+  - id: io-java-io-absent-22
+    claim: Java 22にはjava.io.IOがない（Java 23で加わった）
+    text: プレビュー機能だったJava 23と24ではjava.ioパッケージにありましたが
+    sources:
+      - title: "JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)"
+        url: https://openjdk.org/jeps/477
+        anchor: These methods are declared in the new top-level class java.io.IO
+    verify:
+      kind: javac
+      probe: IoInJavaIo.java
+      release: 22
+      fails: true
+      expect: ['symbol:\s+class IO\s+location: package java.io']
+
+  - id: compact-source-25
+    claim: クラス宣言を省いたコンパクトソースファイルはJava 25で正式な機能になった
+    text:
+      - なお、Java 25からは、publicやstatic、String[] argsを省いた書き方や、クラスの宣言そのものを省いた書き方もできるようになりました
+      - そこでJava 25では、小さなプログラムを短く書くための機能が正式に加わりました（JEP 512「Compact Source Files and Instance Main Methods」）
+      - 従来の書き方とJava 25で加わった書き方を比べると
+      - 項目 | 従来の書き方 | Java 25で加わった書き方
+      - Java 25では、クラスの宣言を省いたコンパクトソースファイルやvoid main()も書けるが
+    sources:
+      - title: "JEP 512: Compact Source Files and Instance Main Methods"
+        url: https://openjdk.org/jeps/512
+        anchor: We here propose to finalize the feature in JDK 25
+    verify:
+      kind: since
+      probe: CompactSource.java
+      version: 25
+      expect: ['implicitly declared classes are not supported in -source 24']
+
+  - id: compact-source-preview-21
+    claim: この機能はJava 21からプレビュー機能として改良が重ねられ、Java 25で正式になった
+    text: この機能はJava 21からプレビュー機能（試験的に使える機能）として改良が重ねられ、Java 25で正式な機能になりました
+    sources:
+      - title: "JEP 512: Compact Source Files and Instance Main Methods"
+        url: https://openjdk.org/jeps/512
+        anchor: This feature was first proposed for preview by JEP 445 (JDK 21)
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 512のHistoryで、JEP 445（JDK 21）・463（22）・477（23）・495（24）のプレビューを経たことを確かめた。JDK 25のjavacは--release 24でこの機能を「not supported in -source 24」と報告し、プレビューだったことは示さないので、機械では確かめられない
+
+  - id: instance-main-25
+    claim: Java 25では、staticを省いたvoid main()を持つクラスをjavaコマンドで実行できる
+    text:
+      - staticを省いたvoid main()は、本章で紹介したとおりJava 25では実行できる
+      - なお、Java 25からは、publicやstatic、String[] argsを省いた書き方
+    verify:
+      kind: run
+      probe: InstanceMain.java
+      expect: ['^instance main$']
+
+  - id: source-launcher-11
+    claim: javaコマンドにソースファイルを直接渡す方法はJava 11から使える
+    text: ソースファイルを直接渡す方法はJava 11から使えるもので
+    sources:
+      - title: "JEP 330: Launch Single-File Source-Code Programs"
+        url: https://openjdk.org/jeps/330
+        anchor: Release 11
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 330（Release 11）で確かめた。ランチャーの機能なので、javacの--releaseでは確かめられない
+
+  - id: import-module-25
+    claim: モジュールのimport宣言はJava 25で加わった
+    text: Java 25で加わったimport module java.base;という書き方
+    sources:
+      - title: "JEP 511: Module Import Declarations"
+        url: https://openjdk.org/jeps/511
+        anchor: Release 25
+    verify:
+      kind: since
+      probe: ImportModule.java
+      version: 25
+      expect: ['module imports are not supported in -source 24']
+
+  - id: formatted-15
+    claim: String.formattedはJava 15で加わった
+    text: formattedメソッドはJava 15で加わりました
+    verify:
+      kind: since
+      probe: Formatted.java
+      version: 15
+      expect: ['formatted\(Object\.\.\.\) is a preview API']
+    note: Java 14では、テキストブロック（プレビュー）と同時にプレビューAPIとして加わっていた（--release 14のエラーで確かめる）。正式なAPIになったのはJava 15（src.zipの@since 15）

@@ -1,0 +1,29 @@
+# 第3章の主張と、その確かめ方（node scripts/check-claims.js ch03）
+jdk: 25
+claims:
+  - id: record-16
+    claim: レコードはJava 16で正式な機能になった
+    text: レコードとinstanceofのパターンマッチングはJava 16で
+    verify:
+      kind: since
+      probe: RecordProbe.java
+      version: 16
+      expect: ['records are not supported in -source 15']
+
+  - id: instanceof-pattern-16
+    claim: instanceofのパターンマッチングはJava 16で正式な機能になった
+    text: レコードとinstanceofのパターンマッチングはJava 16で
+    verify:
+      kind: since
+      probe: InstanceofPattern.java
+      version: 16
+      expect: ['pattern matching in instanceof is not supported in -source 15']
+
+  - id: sealed-17
+    claim: シールクラスはJava 17で正式な機能になった
+    text: シールクラスはJava 17で正式な機能になりました
+    verify:
+      kind: since
+      probe: SealedProbe.java
+      version: 17
+      expect: ['sealed classes are not supported in -source 16']

@@ -34,4 +34,4 @@ sections:
 
 ## 2026-11-19の書き直し
 
-- 15節すべてを、主張の台帳（`appendix/bXX-*/claims.yml`）と観察用のプログラム（`verify/`）で確かめられる解説に書き直した。`npm run check:deep-dive`で検証する（しくみは`docs/guides/deep-dive-verification.md`）
+- 15節すべてを、主張の台帳（`appendix/bXX-*/claims.yml`）と観察用のプログラム（`verify/`）で確かめられる解説に書き直した。`npm run check:deep-dive`で検証する（しくみは`docs/guides/claim-verification.md`）

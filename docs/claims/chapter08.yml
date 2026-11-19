@@ -1,0 +1,170 @@
+# 第8章の主張と、その確かめ方（node scripts/check-claims.js ch08）
+jdk: 25
+claims:
+  - id: enum-5
+    claim: enumはJava 5（2004年）で導入された
+    text: enumはJava 5（2004年）で導入されました
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Typesafe Enums
+      - title: "JSR 176: J2SE 5.0 (Tiger) Release Contents"
+        url: https://jcp.org/en/jsr/detail?id=176
+        anchor: Final Release Download page 30 Sep, 2004
+    note: J2SE 5.0の新機能の一覧と、JSR 176のFinal Releaseが2004年9月30日であることで確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: EnumProbe.java
+      version: 5
+
+  - id: qualified-enum-case-21
+    claim: enumのswitchのcaseに型名を付けた定数（case Status.ACTIVE:）は、Java 20以前はコンパイルエラーで、Java 21から書ける
+    text: Java 20以前は、case Status.ACTIVE:のように型名を付けるとコンパイルエラーになりました。Java 21からは型名を付けても書けます。
+    sources:
+      - title: "JEP 441: Pattern Matching for switch"
+        url: https://openjdk.org/jeps/441
+        anchor: we allow qualified names of enum constants to appear as case constants
+    verify:
+      kind: since
+      probe: QualifiedEnumCase.java
+      version: 21
+      expect: ['an enum switch case label must be the unqualified name of an enumeration constant']
+
+  - id: record-16
+    claim: レコードはJava 16で正式に導入された
+    text: Recordは、Java 16で正式に導入された
+    verify:
+      kind: since
+      probe: RecordProbe.java
+      version: 16
+      expect: ['records are not supported in -source 15']
+
+  - id: record-preview-14-15
+    claim: レコードはJava 14と15でプレビュー機能だった
+    text: Java 14と15では、プレビュー機能（試験的に提供する機能）として先に公開されていました
+    sources:
+      - title: "JEP 395: Records"
+        url: https://openjdk.org/jeps/395
+        anchor: Records were proposed by JEP 359 and delivered in JDK 14 as a preview feature
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 395のHistory（JEP 359がJDK 14、384がJDK 15のプレビュー）で確かめた
+
+  - id: record-pattern-21
+    claim: レコードパターンはJava 21で正式な機能になった
+    text:
+      - Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます
+      - Recordを分解するパターン（レコードパターン）と、switchで型を判定するパターンは、プレビュー機能の期間を経てJava 21で正式な機能になりました
+    verify:
+      kind: since
+      probe: RecordPattern.java
+      version: 21
+      expect: ['deconstruction patterns are not supported in -source 20']
+
+  - id: switch-pattern-21
+    claim: switchで型を判定するパターンはJava 21で正式な機能になった
+    text: switchで型を判定するパターンは、プレビュー機能の期間を経てJava 21で正式な機能になりました
+    verify:
+      kind: since
+      probe: SwitchPattern.java
+      version: 21
+      expect: ['patterns in switch statements are not supported in -source 20']
+
+  - id: patterns-preview
+    claim: レコードパターンとswitchのパターンは、Java 21より前にプレビュー機能の期間があった
+    text: プレビュー機能の期間を経てJava 21で正式な機能になりました
+    sources:
+      - title: "JEP 440: Record Patterns"
+        url: https://openjdk.org/jeps/440
+        anchor: Record patterns were proposed as a preview feature by JEP 405 and delivered in JDK 19
+      - title: "JEP 441: Pattern Matching for switch"
+        url: https://openjdk.org/jeps/441
+        anchor: This feature was originally proposed by JEP 406 (JDK 17)
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 440（レコードパターンはJDK 19・20のプレビュー）とJEP 441（switchのパターンはJDK 17〜20のプレビュー）のHistoryで確かめた
+
+  - id: sealed-17
+    claim: sealedはJava 17で正式な機能になった
+    text: sealedは、Java 15と16のプレビュー機能を経て、Java 17で正式な機能になりました
+    verify:
+      kind: since
+      probe: SealedProbe.java
+      version: 17
+      expect: ['sealed classes are not supported in -source 16']
+
+  - id: sealed-preview-15-16
+    claim: sealedはJava 15と16でプレビュー機能だった
+    text: sealedは、Java 15と16のプレビュー機能を経て
+    sources:
+      - title: "JEP 409: Sealed Classes"
+        url: https://openjdk.org/jeps/409
+        anchor: Sealed Classes were proposed by JEP 360 and delivered in JDK 15 as a preview feature
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 409のHistory（JEP 360がJDK 15、397がJDK 16のプレビュー）で確かめた
+
+  - id: lambda-8
+    claim: ラムダ式はJava 8から使える
+    text:
+      - Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えて短く書けます
+      - Java 8以降のラムダ式による代替
+    sources:
+      - title: "JEP 126: Lambda Expressions & Virtual Extension Methods"
+        url: https://openjdk.org/jeps/126
+        anchor: Release 8
+    verify:
+      kind: since
+      probe: LambdaStream.java
+      version: 8
+
+  - id: outer-reference-omitted-18
+    claim: Java 18以降のjavacは、外部クラスのインスタンスを使わない内部クラスから外部クラスへの参照（this$0）を省く
+    text: Java 18以降のコンパイラーは、外部クラスのインスタンスを使わない内部クラスからこの参照を省きます
+    note: java.io.Serializableを実装する内部クラスは対象外で、参照を持ち続ける（JDK 18のリリースノート、JDK-8271623）。本文の脚注にもこの例外を書いた（2026-11-19）
+    sources:
+      - title: JDK 18 Release Notes（Oracle）
+        url: https://www.oracle.com/java/technologies/javase/18-relnote-issues.html
+        anchor: Starting in JDK 18, the unused this$0 field is omitted
+    verify:
+      kind: javap
+      probe: OuterReference.java
+      class: OuterReference$NoOuter
+      release: 18
+      options: ['-p']
+      absent: ['this\$0']
+
+  - id: outer-reference-kept-17
+    claim: Java 17を対象にしたjavacは、外部クラスのインスタンスを使わない内部クラスにも参照（this$0）を持たせる
+    text: Java 18以降のコンパイラーは、外部クラスのインスタンスを使わない内部クラスからこの参照を省きます
+    verify:
+      kind: javap
+      probe: OuterReference.java
+      class: OuterReference$NoOuter
+      release: 17
+      options: ['-p']
+      expect: ['final OuterReference this\$0;']
+
+  - id: outer-instance-still-required
+    claim: 参照を省いても、内部クラスのコンストラクターは外部クラスのインスタンスを受け取る（作るときに外部クラスのインスタンスが要る）
+    text: メンバー内部クラスのオブジェクトを作るときに外部クラスのインスタンスが要ることは変わりません
+    verify:
+      kind: javap
+      probe: OuterReference.java
+      class: OuterReference$NoOuter
+      options: ['-p']
+      expect: ['OuterReference\$NoOuter\(OuterReference\);']
+      absent: ['this\$0']
+
+  - id: outer-reference-used
+    claim: 外部クラスのフィールドを使う内部クラスは、外部クラスへの参照（this$0）を持つ
+    text: 外部クラスのフィールドやメソッドを使うメンバー内部クラスのオブジェクトは、外部クラスのインスタンスへの参照を隠し持っています
+    verify:
+      kind: javap
+      probe: OuterReference.java
+      class: OuterReference$UsesOuter
+      options: ['-p']
+      expect: ['final OuterReference this\$0;']

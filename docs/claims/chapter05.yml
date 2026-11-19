@@ -1,0 +1,102 @@
+# 第5章の主張と、その確かめ方（node scripts/check-claims.js ch05）
+jdk: 25
+claims:
+  - id: covariant-return-5
+    claim: 共変戻り値型はJava 5から使える
+    text: Java 5以降では共変戻り値型（covariant return type）がサポートされ
+    sources:
+      - title: The Java Language Specification, Third Edition（J2SE 5.0の仕様）8.4.5
+        url: https://docs.oracle.com/javase/specs/jls/se6/html/classes.html
+        anchor: Note that this definition supports covariant returns
+    note: J2SE 5.0に合わせて改訂されたJLS第3版の8.4.5（return-type-substitutable）が共変戻り値型を認めていることを確かめた。それより前の版では、オーバーライドするメソッドの戻り値の型は同じでなければならなかった。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: CovariantReturn.java
+      version: 5
+
+  - id: annotation-5
+    claim: アノテーションはJava 5で加わった
+    text: アノテーションは、コードに付加情報を添えるしくみで、Java 5で加わりました
+    sources:
+      - title: New Features and Enhancements J2SE 5.0（Oracle）
+        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
+        anchor: Metadata (Annotations)
+      - title: java.lang.Override（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Override.html
+        anchor: "@Override Since: 1.5"
+    note: J2SE 5.0の新機能の一覧と、src.zipの@since（Overrideは1.5）で確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: CovariantReturn.java
+      version: 5
+
+  - id: flexible-constructor-25
+    claim: super(...)の前に文を書ける機能（JEP 513）はJava 25で正式な機能になった
+    text: Java 25からは、引数の検査のように作成中のオブジェクト（this）を使わない処理であれば、super(...)の前に書けます（JEP 513）
+    verify:
+      kind: since
+      probe: FlexibleConstructor.java
+      version: 25
+      expect: ['flexible constructors is not supported in -source 24']
+
+  - id: flexible-constructor-preview
+    claim: JEP 513はJava 22〜24のプレビュー機能を経てJava 25で正式になった
+    text: JEP 513「Flexible Constructor Bodies」は、Java 22〜24のプレビュー機能を経てJava 25で正式な機能になりました
+    sources:
+      - title: "JEP 513: Flexible Constructor Bodies"
+        url: https://openjdk.org/jeps/513
+        anchor: Flexible constructor bodies were first proposed as a preview feature by JEP 447 (JDK 22)
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 513のHistory（JEP 447がJDK 22、482がJDK 23、492がJDK 24のプレビュー）で確かめた
+
+  - id: instanceof-pattern-16
+    claim: instanceofのパターンマッチングはJava 16で導入された
+    text: Java 16から、instanceofとキャストをより簡潔に書ける「instanceofのパターンマッチング」が導入されました
+    verify:
+      kind: since
+      probe: InstanceofPattern.java
+      version: 16
+      expect: ['pattern matching in instanceof is not supported in -source 15']
+
+  - id: instanceof-pattern-preview
+    claim: instanceofのパターンマッチングはJava 14と15でプレビュー機能だった（JEP 394で正式）
+    text: Java 14と15でプレビュー機能として試されたあと、Java 16（JEP 394）で正式な機能になりました
+    sources:
+      - title: "JEP 394: Pattern Matching for instanceof"
+        url: https://openjdk.org/jeps/394
+        anchor: Pattern matching for instanceof was proposed by JEP 305 and delivered in JDK 14 as a preview feature
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JEP 394のHistory（JEP 305がJDK 14、375がJDK 15のプレビュー）で確かめた
+
+  - id: objects-7
+    claim: java.util.ObjectsはJava 7で加わった
+    text: Objectsクラスはjava.utilパッケージにあり、Java 7で加わりました
+    sources:
+      - title: java.util.Objects（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html
+        anchor: "Since: 1.7"
+    note: src.zipの@since（Objectsは1.7）とAPIドキュメントで確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: ObjectsProbe.java
+      version: 7
+
+  - id: stack-vector-1-0
+    claim: java.util.StackはJava 1.0からあり、Vectorを継承している
+    text: java.util.Stackも、Java 1.0からVectorクラスを継承しているため
+    sources:
+      - title: java.util.Stack（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Stack.html
+        anchor: It extends class Vector with five operations
+      - title: java.util.Stack（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Stack.html
+        anchor: "Since: 1.0 See Also: Serialized Form"
+    note: src.zipの@since（Stackは1.0）とAPIドキュメントで確かめた。APIドキュメントは、LIFOのスタックにはDequeの実装を使うよう勧めている。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: StackVector.java
+      version: 1

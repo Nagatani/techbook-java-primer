@@ -1,0 +1,48 @@
+# 第6章の主張と、その確かめ方（node scripts/check-claims.js ch06）
+jdk: 25
+claims:
+  - id: record-16
+    claim: レコードはJava 16から使える
+    text: Java 16以降では、Record（レコード）という書き方で、不変なクラスを短く書けます
+    verify:
+      kind: since
+      probe: RecordProbe.java
+      version: 16
+      expect: ['records are not supported in -source 15']
+
+  - id: list-copyof-10
+    claim: List.copyOfはJava 10で加わった
+    text: List.copyOfはJava 10で加わったメソッドです
+    verify:
+      kind: since
+      probe: ListCopyOf.java
+      version: 10
+      expect: ['cannot find symbol']
+
+  - id: java-time-8
+    claim: java.timeパッケージはJava 8で加わった
+    text: その代表が、Java 8で加わった、日付と時刻を扱うjava.timeパッケージのクラスです
+    sources:
+      - title: "JEP 150: Date & Time API"
+        url: https://openjdk.org/jeps/150
+        anchor: Release 8
+    verify:
+      kind: since
+      probe: JavaTime.java
+      version: 8
+
+  - id: date-calendar-before-8
+    claim: Java 8より前は、日付と時刻をjava.util.Dateとjava.util.Calendarで扱っていた
+    text: Java 8より前は、日付と時刻をjava.util.Dateとjava.util.Calendarで扱っていました
+    sources:
+      - title: java.util.Date（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Date.html
+        anchor: "Since: 1.0"
+      - title: java.util.Calendar（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Calendar.html
+        anchor: "Since: 1.1"
+    note: src.zipの@since（Dateは1.0、Calendarは1.1）で確かめた。--releaseに7以前は指定できないので、機械では--release 8で通ることだけを確かめる
+    verify:
+      kind: since
+      probe: DateCalendar.java
+      version: 1

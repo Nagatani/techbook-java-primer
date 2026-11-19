@@ -11,7 +11,7 @@ sections:
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 3f8d2413
   - key: "内部クラス（Inner Classes）"
-    hash: dedd85f6
+    hash: b99396b7
   - key: "まとめ"
     hash: b77460be
   - key: "章末演習"

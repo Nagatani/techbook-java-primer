@@ -1,0 +1,80 @@
+# 第7章の主張と、その確かめ方（node scripts/check-claims.js ch07）
+jdk: 25
+claims:
+  - id: default-static-8
+    claim: インターフェイスのdefaultメソッドとstaticメソッドはJava 8から書ける
+    text:
+      - Java 8以降の機能
+      - defaultメソッドとstaticメソッド（Java 8以降）
+      - Java 8から追加されたdefaultメソッドとstaticメソッド
+      - Java 8以降、インターフェイスは大きく進化し
+      - Java 8のdefaultメソッドにより
+      - Java 8以降のインターフェイス
+    sources:
+      - title: "JEP 126: Lambda Expressions & Virtual Extension Methods"
+        url: https://openjdk.org/jeps/126
+        anchor: Release 8
+    verify:
+      kind: since
+      probe: DefaultStaticMethods.java
+      version: 8
+    note: JEP 126の「virtual extension methods」がdefaultメソッドのこと。--release 7は指定できないので、Java 8で通ることだけを確かめる
+
+  - id: private-interface-method-9
+    claim: インターフェイスのprivateメソッドはJava 9から書ける
+    text:
+      - privateメソッド（Java 9以降）
+      - Java 9から追加されたprivateメソッド
+      - 続くJava 9では、defaultメソッドどうしの共通の処理をまとめるためのprivateメソッドも、インターフェイスに書けるようになりました
+    verify:
+      kind: since
+      probe: PrivateInterfaceMethod.java
+      version: 9
+      expect: ['private interface methods are not supported in -source 8']
+
+  - id: java8-2014-03
+    claim: Java 8は2014年3月に公開された
+    text: Java 8は2014年3月に公開されました
+    sources:
+      - title: JDK 8（OpenJDK）
+        url: https://openjdk.org/projects/jdk8/
+        anchor: JDK 8 reached General Availability on 18 March 2014
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: OpenJDKのJDK 8のプロジェクトのページで、一般提供が2014年3月18日であることを確かめた
+
+  - id: lambda-stream-8
+    claim: ラムダ式とStream APIはJava 8で加わった
+    text: defaultメソッドは、同じJava 8で加わったラムダ式（第11章）やStream API（第12章）を
+    sources:
+      - title: "JEP 126: Lambda Expressions & Virtual Extension Methods"
+        url: https://openjdk.org/jeps/126
+        anchor: Release 8
+      - title: "JEP 107: Bulk Data Operations for Collections"
+        url: https://openjdk.org/jeps/107
+        anchor: Release 8
+    verify:
+      kind: since
+      probe: LambdaStream.java
+      version: 8
+
+  - id: collection-defaults-8
+    claim: Collection.removeIf・Iterable.forEach・List.sort・Collection.streamは、Java 8でdefaultメソッドとして加わった
+    text:
+      - Java 8のリリース時点で、コレクション
+      - IterableのforEach、Listのsort、第12章で学ぶCollectionのstreamも、Java 8でdefaultメソッドとして加わったものです
+    verify:
+      kind: since
+      probe: CollectionDefaults.java
+      version: 8
+    note: src.zipで、4つのメソッドがdefaultで宣言され@since 1.8であることを確かめた。--release 7は指定できないので、機械ではJava 8で通ることだけを確かめる
+
+  - id: deprecated-since-forremoval-9
+    claim: "@Deprecatedのsinceとforremovalの指定はJava 9から使える"
+    text: sinceとforRemovalの指定は、Java 9から使えます
+    verify:
+      kind: since
+      probe: DeprecatedSince.java
+      version: 9
+      expect: ['symbol:\s+method since\(\)']
