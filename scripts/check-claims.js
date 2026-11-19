@@ -535,7 +535,7 @@ function main() {
       row.manual = ledger.claims.filter((c) => c.verify && c.verify.kind === 'manual').length;
       row.simplified = ledger.claims.filter((c) => c.simplified).length;
       for (const c of ledger.claims) {
-        if (c.simplified && !c.note) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: 'simplified: true の主張には、正確な事実をnoteに書く' });
+        if (c.simplified && !c.note && !(c.verify && c.verify.note)) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: 'simplified: true の主張には、正確な事実をnoteに書く' });
       }
       if (opt.online) checkSources(sec, ledger, problems);
       if (opt.static) continue;
