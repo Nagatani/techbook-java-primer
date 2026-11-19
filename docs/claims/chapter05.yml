@@ -100,3 +100,34 @@ claims:
       kind: since
       probe: StackVector.java
       version: 1
+
+  # ---- コラム「equalsとhashCodeのバグはなぜ見つけにくいか」（2026-11-19）
+  - id: column-equals-only-hashset
+    claim: equalsだけをオーバーライドしたクラスは、HashSetのcontainsが同じ値のオブジェクトでもfalseを返し、同じ値を2回addすると要素が2つになる。コンパイルも実行時の例外もない
+    text:
+      - 同じ学籍番号のオブジェクトでcontainsを呼んでもfalseが返り、同じ学生を2回addすると要素が2つになります
+      - equalsだけをオーバーライドしてhashCodeを忘れても、コンパイルは通り、実行しても例外は出ません
+    verify:
+      kind: run
+      probe: EqualsOnly.java
+      expect: ['^equals: true$', '^contains: false$', '^size: 2$']
+      absent: ['Exception']
+
+  - id: column-xlint-overrides
+    claim: javacに-Xlint:overridesを付けると、equalsだけをオーバーライドしてhashCodeをオーバーライドしないクラスを警告する（既定では警告しない）
+    text: コンパイラーに-Xlint:overridesを付けて、hashCodeの書き忘れを警告させる
+    verify:
+      kind: javac
+      probe: EqualsOnly.java
+      javac: ['-Xlint:overrides']
+      expect: ['\[overrides\] Class Student overrides equals, but neither it nor any superclass overrides hashCode method']
+
+  - id: column-effective-java-hashcode
+    claim: 『Effective Java』（Joshua Bloch）に「equalsをオーバーライドするときは、必ずhashCodeもオーバーライドする」という項目がある（第3版の項目11）
+    text: Javaの定番の解説書『Effective Java』（ジョシュア・ブロック著）でも項目の1つとして取り上げられている規則です
+    sources:
+      - title: "Joshua Bloch, Effective Java, Third Edition, Addison-Wesley, 2018, Item 11: Always override hashCode when you override equals"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 第3版の目次の第3章（Methods Common to All Objects）にItem 11「Always override hashCode when you override equals」がある。版によって項目の番号が違う（第2版は項目9）ので、本文では番号を書かない

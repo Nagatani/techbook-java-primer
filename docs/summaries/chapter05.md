@@ -15,7 +15,7 @@ sections:
   - key: "`instanceof`演算子とキャスト"
     hash: 287b383f
   - key: "`Object`クラスのメソッド（toString・equals・hashCode）"
-    hash: aed59bec
+    hash: beabbf61
   - key: "実践的な継承設計パターン"
     hash: ce6d0343
   - key: "よくあるエラーと対処法"
@@ -80,11 +80,12 @@ sections:
     + 親クラス型では子クラス固有メソッドを呼べないこと（5-12）
     + instanceofによる型調査とダウンキャスト、ClassCastExceptionの注意（5-13）、アップキャスト・ダウンキャストの図（chapter05-up-down-cast）
     + Java 16のinstanceofパターンマッチング（5-14）。型の確認とキャストを1か所で書くのでキャストの誤りが起きず、変数は結果がtrueの場合だけ使える、と利点を具体的に説明
-- `Object`クラスのメソッド（toString・equals・hashCode）（L903–1033）
+- `Object`クラスのメソッド（toString・equals・hashCode）（L903–1052）
     + extendsを書かないクラスはObjectを継承すること（コンストラクターの図の最後とつなげる）と、主な3メソッド
     + StudentクラスでtoString・equals（getClassとObjects.equals、引数をObject型にする理由）・hashCode（Objects.hashCode）をオーバーライドする（5-15）
     + 第3章の`==`とequalsを受け、Objectのequalsは参照比較であること、hashCodeの契約3点とHashSet・HashMap（第9章）との関係
     + ObjectMethodsDemo（5-16）で3つの動きを確かめ、レコード（第8章）では自動で用意されると予告
+    + コラム「equalsとhashCodeのバグはなぜ見つけにくいか」（2026-11-19）。HashSetで見つからない・重複する症状、レビューの観点・-Xlint:overrides・レコードで防ぐ工夫
 - 実践的な継承設計パターン（L1034–1812）
     + 冒頭で、ここまでの基本を組み合わせる節と位置づけ、テンプレートメソッド、段階的リファクタリング、LSPを予告する
     + 決済システム: 具象クラスPaymentProcessorのfinalなprocessPaymentでテンプレートメソッドパターンを実装する（5-17、図chapter05-inheritance-hierarchy）。金額はBigDecimal（第6章へ誘導し、文字列から作る読み方だけを示す）。CreditCardPaymentはカード番号・CVVの検証とAPI呼び出しを、PayPalPaymentの抜粋は`super.logTransaction()`を呼ぶlogTransactionをオーバーライドする（5-18）。例外を使わずPaymentResultとerrorMessageで失敗を伝えるPaymentExample（5-19。全体を載せる。実行結果の「決済エラー」は5-17で省いたlogErrorがSystem.errに出したものと2026-11-18に説明を足した）
