@@ -32,3 +32,32 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: JDBC 4.2のMRの21〜22項に「Map the Java Object Type java.time.LocalDate to the JDBC Type DATE」などの表B-4への追加と、表B-5（setObjectの変換）への追加がある（PDFのストリームを展開して文字を確かめた）。JDBC 4.2がJava SE 8の一部であることはjava.sqlのパッケージの説明で確かめた
+
+  # ---- コラム「SQLインジェクションはなぜなくならないのか」（2026-11-19）
+  - id: column-owasp-injection-2025
+    claim: OWASP Top 10:2025で、インジェクションは5位（A05:2025）で、2021年版の3位から2つ下がった。OWASPは、アプリケーションの100%が何らかのインジェクションについて検査されたとしている
+    text:
+      - インジェクションは5位に入っています（2021年版の3位から2つ下がりました）
+      - 調べたアプリケーションのすべてが、何らかのインジェクションについて検査されていました
+    sources:
+      - title: OWASP Top 10:2025 A05 Injection
+        url: https://owasp.org/Top10/2025/A05_2025-Injection/
+        anchor: Injection falls two spots from #3 to #5 in the ranking
+      - title: OWASP Top 10:2025 A05 Injection
+        url: https://owasp.org/Top10/2025/A05_2025-Injection/
+        anchor: 100% of applications tested for some
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 一覧（https://owasp.org/Top10/2025/）でA05:2025がInjectionであることと、A05のBackgroundの文を読んだ
+
+  - id: column-placeholder-values-only
+    claim: PreparedStatementの?には値しか渡せない。H2 2.5.252では「SELECT * FROM ?」は準備の段階でSQLExceptionになり、「ORDER BY ?」に列の名前を渡してもSQLExceptionになる。許した列名の一覧から選んだ名前をSQL文に入れれば並べ替えられる
+    text:
+      - SELECT * FROM ?は準備の段階でSQLExceptionになり、ORDER BY ?に列の名前を渡しても、列の名前としては扱われません
+      - 表の名前や列の名前は?にできません
+    verify:
+      kind: run
+      probe: PlaceholderLimits.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect: ['^表の名前を\?にする: SQLException$', '^ORDER BY \?に列の名前を渡す: SQLException$', '^許した列名で並べる（price）: \[A, B, C\]$']
