@@ -7,7 +7,7 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 424b7704
   - key: "外部ライブラリの利用"
-    hash: 55862cbb
+    hash: c7853e22
   - key: "よくあるエラーと対処法"
     hash: 57d950a6
   - key: "まとめ"
@@ -48,7 +48,7 @@ sections:
     + 主要なJavadocタグ: @param、@return、@throws、@author、@version、@since、@see、@deprecatedの表と、インラインタグ（`{@code}`・`{@link}`）、HTMLのタグ（`<p>`・`<pre>`）、`@deprecated`と`@Deprecated`の違い
     + 実践的なJavadocの例: Taskクラスに網羅的なJavadocを付けた例（22-2）。非推奨の例は独自のメソッド`getSummary()`
     + Javadocの生成方法: javadocコマンドのオプションとIntelliJ IDEAの手順（`Tools` → `Generate JavaDoc...`）
-- 外部ライブラリの利用（L167–825）
+- 外部ライブラリの利用（L167–842）
     + オープンソースエコシステムの歴史（年表）、ライブラリ利用の技術的利点（再利用、品質、開発速度、標準化、保守）
     + クラスパスとは: JVMがクラスを探す場所としての定義、JARファイル、`-cp`の使い方と区切り文字。JARの作り方は第23章へ誘導
     + 依存関係管理ツール: Mavenの設計原則4つ、`pom.xml`に書くだけで依存ライブラリのダウンロードとクラスパスの設定を行うことと図（chapter22-maven-dependency）、依存関係解決の手順（nearest wins、スコープ）、pom.xmlへのGsonの記述（22-3）
@@ -59,6 +59,7 @@ sections:
     + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-11、Apache 2.0・MIT・GPL・LGPL。MITは著作権表示とライセンスの文を残せば改変・商用利用ができると説明）、testスコープとpropertiesによるバージョン一元管理（22-12。JUnitは第21章と同じ6.1.3）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-13）、よく使われる組み合わせの表（Spring Boot 4に合わせ`spring-boot-starter-webmvc`とJackson 3の`tools.jackson.core:jackson-databind`。その理由を表の後に書く）
     + 実践的な開発フロー: `archetype:generate`（`-DarchetypeVersion=1.5`と`-DinteractiveMode=false`の理由、`maven.compiler.release`を25にする、または`-DjavaCompilerVersion=25`を付ける）、`mvn compile`、`mvn package`、dependency:tree/analyze、versions、purge-local-repository
     + もう1つのビルドツール：Gradle: build.gradle/build.gradle.kts、Gsonの依存関係（22-14）、implementation/testImplementation、Gradle Wrapper、gradlewのコマンド、付録D「高度なビルドとデプロイメント技術」への誘導
+    + コラム「Log4Shell――ライブラリ1つで世界中が慌てた日」（2026-11-19）。CVE-2021-44228（NVD登録2021-12-10、CVSS 10.0）、ログに書かせるだけで攻撃できたこと、推移的な依存で使っているかがわからなかったこと、dependency:treeとDependency-Checkの役割
 - よくあるエラーと対処法（L826–849）
     + 本文に挙げるエラー: Javadocの生成エラー、依存関係の競合（dependency:treeとexclusions）、バージョン管理の問題（22-12・22-13を参照）、APIの非互換性、クラスパスの問題、設定ファイルの読み込みと型変換、ライブラリの組み合わせ。詳細は`appendix/e-common-errors/chapters/chapter22.md`
 - まとめ（L850–902）

@@ -40,3 +40,31 @@ claims:
       probe: IoClass.java
       version: 25
       expect: ['cannot find symbol']
+
+  # ---- コラム「Log4Shell――ライブラリ1つで世界中が慌てた日」（2026-11-19）
+  - id: column-log4shell-nvd
+    claim: CVE-2021-44228（Log4Shell）は2021年12月10日にNVDに登録され、CVSS v3.1の基本値は10.0である
+    text:
+      - 2021年12月10日、Javaのログ出力ライブラリApache Log4j 2の脆弱性（CVE-2021-44228、通称Log4Shell）が、米国の脆弱性データベースNVDに登録されました
+      - 深刻度の指標CVSSの点数は、最大の10.0でした
+    sources:
+      - title: NVD CVE-2021-44228（NVDのAPI）
+        url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-44228
+        anchor: '"published":"2021-12-10'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: NVDのAPIの応答で、published が 2021-12-10T10:15:09、cvssMetricV31 の baseScore が 10.0（nvd@nist.gov と Apache の両方）であることを確かめた。CVSS v3.1の点数の範囲は0.0〜10.0
+  - id: column-log4shell-mechanism
+    claim: Log4j2 2.0-beta9〜2.15.0（一部の版を除く）では、攻撃者がログのメッセージを操作できると、メッセージのlookupの置き換えによってLDAPなどのサーバーから読み込んだ任意のコードを実行できた。2.15.0でこの動作が既定で無効になり、2.16.0で機能が取り除かれた
+    text:
+      - Log4jがそれを解釈して外部のサーバーにつなぎ、そこから読み込んだコードを実行してしまう
+      - 修正は、まず2.15.0でこの機能が既定で無効になり、2.16.0で機能そのものが取り除かれました
+    sources:
+      - title: NVD CVE-2021-44228（NVDのAPI）の説明
+        url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-44228
+        anchor: From log4j 2.15.0, this behavior has been disabled by default
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: NVDの説明の「An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default. From version 2.16.0 ... this functionality has been completely removed.」を読んだ
