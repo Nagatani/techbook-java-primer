@@ -13,9 +13,9 @@ sections:
   - key: "防御的コピーとビルダーパターン"
     hash: 5cbde577
   - key: "日付と時刻（java.time）"
-    hash: a59e805f
+    hash: 7c33546c
   - key: "数値の正確な計算（BigDecimal）"
-    hash: 3f2f93e0
+    hash: 53fa6ada
   - key: "よくあるエラーと対処法"
     hash: efda4df4
   - key: "まとめ"
@@ -66,14 +66,16 @@ sections:
     + `DateRange`で入力時・出力時の防御的コピーを示し（6-9）、図（chapter06-defensive-copy）で有無の違いを示す
     + 小見出し「防御的コピーのコストと注意点」で、コピーのコスト、浅いコピーと深いコピー、`Collections.unmodifiableList`のビューと`List.copyOf`の違いを説明し、ViewVsCopy（6-10）で示す
     + 必須とオプションのパラメーターを分けた`Book.Builder`（6-11）と、メソッドチェーンでの使用例（6-12）。ビルダーの利点（読みやすさ、必要な値だけの設定、完成後の不変性、構築時の検証）を文章で述べる
-- 日付と時刻（java.time）（L653–841）
+- 日付と時刻（java.time）（L653–860）
     + DateとCalendarの問題、主なクラスの表、作成と計算（6-13）、差（ChronoUnit・Period・Duration、6-14）、表示と読み取り（DateTimeFormatter、SMARTとSTRICT、6-15）。書式の記号（`yyyy`・`MM`・`M`・`dd`・`d`・`E`）を説明する
-- 数値の正確な計算（BigDecimal）（L842–1075）
+    + コラム「タイムゾーンと「2038年問題」」（2026-11-19）。32ビットの秒数が2038-01-19T03:14:07Zであふれること、Instantは64ビット、タイムゾーンと夏時間の存在しない時刻、UTCで保存し表示で変換する定石
+- 数値の正確な計算（BigDecimal）（L861–1112）
     + 第2章の基本データ型からの誘導を受け、`java.math`の不変クラス`BigDecimal`・`BigInteger`を扱う
     + `double`で0.1を10回足すと1.0にならない誤差と、文字列から作る`BigDecimal`での正確な計算。`new BigDecimal(0.1)`と`valueOf`の違い、計算は新しいオブジェクトを返すので戻り値を受け取ること、スケール（6-16）
     + 掛け算のスケール、`setScale`、割り切れない割り算の`ArithmeticException`と`divide(割る数, 桁数, 丸め方)`（6-17）。`RoundingMode`の主な6つと2.5・-2.5の丸めの表（列挙型は第8章へ誘導）
     + `compareTo`による比較と、`equals`がスケールまで比べる注意（`HashSet`のことは脚注）。`long`のオーバーフローと`BigInteger`、30の階乗（6-18）。`Math.addExact`
     + 使い分け（BigDecimal・最小単位のlong・BigInteger・double）と、第24章のDECIMAL型への案内
+    + コラム「お金の計算は「型」より「決まりごと」が難しい」（2026-11-19）。品目ごとか合計かで税額が変わる例（27円と29円）、丸め方と丸める場所は業務の決まりで、担当者に確かめて仕様書に書くこと
 - よくあるエラーと対処法（L1076–1097）
     + 出会いやすい誤り7点（final変数の再代入と未初期化、可変なフィールドの露出、防御的コピーの実装忘れ、final配列・コレクションの誤解、継承による不変性の破綻、不必要な防御的コピー、BigDecimalの扱いの誤り）の要点と、付録E（`appendix/e-common-errors/chapters/chapter06.md`）のURL
 - まとめ（L1098–1121）

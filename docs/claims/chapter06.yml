@@ -46,3 +46,57 @@ claims:
       kind: since
       probe: DateCalendar.java
       version: 1
+
+  # ---- コラム「お金の計算は「型」より「決まりごと」が難しい」（2026-11-19）
+  - id: column-tax-rounding-where
+    claim: 98円を3つ、税率10%・1円未満切り捨てで計算すると、品目ごとに切り捨てて足せば27円、合計294円に掛けてから切り捨てれば29円になる
+    text:
+      - 品目ごとに税を計算して切り捨ててから足すと、9円が3つで27円です
+      - 3つを合計した294円に税を掛けてから切り捨てると、29円になります
+    verify:
+      kind: run
+      probe: TaxRounding.java
+      expect: ['^品目ごとに切り捨て: 27円$', '^合計してから切り捨て: 29円$']
+
+  # ---- コラム「タイムゾーンと「2038年問題」」（2026-11-19）
+  - id: column-2038-overflow
+    claim: 1970-01-01T00:00:00Zからの秒数を符号付き32ビットで表せる最後の時刻は2038-01-19T03:14:07Zで、1秒後をintに入れると1901-12-13T20:45:52Zになる
+    text:
+      - 表せる最後の時刻は2038年1月19日3時14分7秒（UTC）です
+      - 時刻は1901年12月13日に戻ってしまいます
+    verify:
+      kind: run
+      probe: Year2038.java
+      expect: ['^intの最大の秒数: 2038-01-19T03:14:07Z$', '^1秒後をintに入れると: 1901-12-13T20:45:52Z$']
+
+  - id: column-instant-range
+    claim: Instantは秒数を64ビット（long）で持ち、最大はおよそ10億年（+1000000000-12-31T23:59:59.999999999Z）である
+    text: Javaの`Instant`は秒数を64ビットで持つので、10億年先まで表せます
+    sources:
+      - title: java.time.Instant（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html
+        anchor: The range of an instant requires the storage of a number larger than a long
+    verify:
+      kind: run
+      probe: Year2038.java
+      expect: ['^Instantの最大: \+1000000000-12-31T23:59:59.999999999Z$']
+
+  - id: column-timezone-display
+    claim: 2026-01-01T00:00Z は、東京（Asia/Tokyo）では2026-01-01T09:00、ニューヨーク（America/New_York）では2025-12-31T19:00である
+    text: 2026年1月1日0時（UTC）は、東京では1月1日9時、ニューヨークでは前の年の12月31日19時です
+    verify:
+      kind: run
+      probe: Year2038.java
+      expect: ['^東京: 2026-01-01T09:00$', '^ニューヨーク: 2025-12-31T19:00$']
+
+  - id: column-dst-gap
+    claim: ニューヨークでは2026-03-08の2時台が夏時間の始まりで飛ばされ、2:30を指定するとZonedDateTimeは3:30に読み替える
+    text: ニューヨークでは2026年3月8日の2時台が飛ばされるので、2時30分を指定すると3時30分に読み替えられます
+    sources:
+      - title: java.time.ZonedDateTime（Java SE 25 API）の Gap の説明
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/ZonedDateTime.html
+        anchor: the local date-time is adjusted to be later by the length of the gap
+    verify:
+      kind: run
+      probe: Year2038.java
+      expect: ['^2026-03-08T02:30 をニューヨークの時刻にすると: 2026-03-08T03:30$']
