@@ -85,3 +85,18 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: OracleのJDK 11のリリースノートの「Removal of JavaFX from the Oracle JDK」を確かめた
+
+  # ---- コラム「エンジニアは「作らない」ことも考える」（2026-11-19）
+  - id: column-yagni
+    claim: YAGNIは「You Aren't Gonna Need It」の頭字語で、エクストリーム・プログラミング（XP）から広まり、アジャイルなチームで使われる。将来必要だと想定した機能をいま作るべきではない、という考え方
+    text:
+      - YAGNI（You Aren't Gonna Need It、「それはきっと必要にならない」）という合言葉があります
+      - エクストリーム・プログラミング（XP）という開発手法から広まった言葉で、将来必要になりそうだと想像した機能を、いま作るべきではない、という考え方です
+    sources:
+      - title: Martin Fowler, Yagni（bliki, 2015-05-26）
+        url: https://martinfowler.com/bliki/Yagni.html
+        anchor: It is a mantra from ExtremeProgramming
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: 記事の冒頭「Yagni originally is an acronym that stands for You Aren't Gonna Need It. It is a mantra from ExtremeProgramming that's often used generally in agile software teams. It's a statement that some capability we presume our software needs in the future should not be built now」を読んだ
