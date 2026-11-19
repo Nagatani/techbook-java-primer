@@ -11,6 +11,7 @@
  *   node scripts/check-claims.js --online        出典のURLが開けるか、anchorの文字がページにあるかも確かめる
  *   node scripts/check-claims.js --report        集計を docs/analysis/deep-dive-claims.md（付録B）と manuscript-claims.md（本文）に書く
  *   node scripts/check-claims.js --verbose       検証の出力と、検証していない主張の候補をすべて表示する
+ *   node scripts/check-claims.js ch15 --only=id1,id2   指定した主張だけを検証する（各主張の所要時間も表示する）
  *
  * しくみ（詳しくは docs/guides/claim-verification.md）
  *   - 付録Bの節: appendix/bXX-（題名）/claims.yml に主張（claim）と確かめ方（verify）を書き、
@@ -55,6 +56,8 @@ const opt = {
   online: args.includes('--online'),
   report: args.includes('--report'),
   verbose: args.includes('--verbose'),
+  // --only id[,id...] で指定した主張だけを検証する
+  only: (args.find((a) => a.startsWith('--only=')) || '').slice('--only='.length).split(',').filter(Boolean),
   filters: args.filter((a) => !a.startsWith('--')).map((f) => f.replace(/^chapter(\d\d)$/, 'ch$1')),
   appendix: args.includes('--appendix'),
   chapters: args.includes('--chapters'),
@@ -361,7 +364,7 @@ function verifyClaim(sec, c, tmp) {
       const cp = [c1.cp, ...asList(v.resources).map((d) => path.join(sec.dir, d))].join(path.delimiter);
       r = spawnSync('java', ['-Duser.language=en', ...(v.jvm || []), '-cp', cp, main, ...(v.args || []).map(String)],
         { encoding: 'utf8', timeout: v.timeout ? v.timeout * 1000 : DEFAULT_TIMEOUT_MS, maxBuffer: 256 * 1024 * 1024, cwd: tmp });
-      if (r.error && r.error.code === 'ETIMEDOUT') return { status: 'fail', msg: '時間内に終わらない' };
+      if (r.error && r.error.code === 'ETIMEDOUT') return { status: 'fail', msg: '時間内に終わらない（それまでの出力を下に示す）', output: (r.stdout || '') + (r.stderr || '') };
     }
     text = (r.stdout || '') + (r.stderr || '');
     last = matchAll(text, v);
@@ -491,7 +494,7 @@ function main() {
     for (const sec of sections()) {
       const ledger = loadLedger(sec);
       const docs = docsOf(sec);
-      const row = { sec, claims: 0, pass: 0, fail: 0, manual: 0, markers: 0, uncovered: [] };
+      const row = { sec, claims: 0, pass: 0, fail: 0, manual: 0, simplified: 0, markers: 0, uncovered: [] };
       summary.push(row);
       const markersAt = new Map();
       if (sec.kind === 'chapter') {
@@ -530,6 +533,10 @@ function main() {
       }
       row.claims = ledger.claims.length;
       row.manual = ledger.claims.filter((c) => c.verify && c.verify.kind === 'manual').length;
+      row.simplified = ledger.claims.filter((c) => c.simplified).length;
+      for (const c of ledger.claims) {
+        if (c.simplified && !c.note) problems.push({ level: 'error', where: `${path.relative(ROOT, ledger.file)}: ${c.id}`, msg: 'simplified: true の主張には、正確な事実をnoteに書く' });
+      }
       if (opt.online) checkSources(sec, ledger, problems);
       if (opt.static) continue;
 
@@ -537,11 +544,14 @@ function main() {
       console.log(`\n## ${sec.name}（主張 ${ledger.claims.length}件）`);
       for (const c of ledger.claims) {
         if (!c.verify || !KINDS.includes(c.verify.kind)) continue;
+        if (opt.only.length && !opt.only.includes(c.id)) continue;
+        const t0 = Date.now();
         const r = verifyClaim(sec, c, tmp);
+        const sec_ = ((Date.now() - t0) / 1000).toFixed(1);
         if (r.status === 'manual') { console.log(`  - ${c.id}: 手で確認（${c.verify.checked}）`); continue; }
         if (r.status === 'pass') {
           row.pass++;
-          console.log(`  ✓ ${c.id}`);
+          console.log(`  ✓ ${c.id}${Number(sec_) >= 5 || opt.only.length ? `（${sec_}秒）` : ''}`);
           if (opt.verbose && r.output) console.log(r.output.split('\n').map((l) => '      ' + l).join('\n'));
           if (r.output) outputs.set(c.id, shownOutput(c, r.output));
         } else {
@@ -559,11 +569,11 @@ function main() {
   }
 
   // 集計
-  console.log('\n| 節・章 | 主張 | 機械で確認 | 手で確認 | 失敗 | 検証していない候補 |');
-  console.log('|---|---|---|---|---|---|');
+  console.log('\n| 節・章 | 主張 | 機械で確認 | 手で確認 | 簡略化 | 失敗 | 検証していない候補 |');
+  console.log('|---|---|---|---|---|---|---|');
   for (const r of summary) {
     const auto = opt.static ? '-' : r.pass;
-    console.log(`| ${r.sec.id} | ${r.claims} | ${auto} | ${r.manual} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`);
+    console.log(`| ${r.sec.id} | ${r.claims} | ${auto} | ${r.manual} | ${r.simplified} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`);
   }
   const uncovered = summary.reduce((n, r) => n + r.uncovered.length, 0);
   if (uncovered && (opt.verbose || opt.filters.length)) {
@@ -596,9 +606,9 @@ function writeReport(summary) {
       '',
       `\`${rp.cmd}\`が生成する（${today}）。手で書き換えない。しくみは\`docs/guides/claim-verification.md\`。`,
       '',
-      `| ${kind === 'chapter' ? '章' : '節'} | 主張 | 機械で確認 | 手で確認 | 失敗 | 検証していない候補 |`,
-      '|---|---|---|---|---|---|',
-      ...rows.map((r) => `| ${r.sec.name} | ${r.claims} | ${opt.static ? '-' : r.pass} | ${r.manual} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`),
+      `| ${kind === 'chapter' ? '章' : '節'} | 主張 | 機械で確認 | 手で確認 | 簡略化 | 失敗 | 検証していない候補 |`,
+      '|---|---|---|---|---|---|---|',
+      ...rows.map((r) => `| ${r.sec.name} | ${r.claims} | ${opt.static ? '-' : r.pass} | ${r.manual} | ${r.simplified} | ${opt.static ? '-' : r.fail} | ${r.uncovered.length} |`),
       '',
       '## 検証していない主張の候補',
       '',
