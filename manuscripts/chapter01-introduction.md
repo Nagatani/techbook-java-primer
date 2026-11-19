@@ -333,7 +333,7 @@ Apache HadoopはJavaで、Apache SparkはJVMで動くScalaで実装されてお�
 Javaプログラミングを始めるには、まず開発環境を整える必要があります。
 C言語では主にコンパイラーとテキストエディターがあれば開発を始められましたが、現代のJava開発では、より統合された開発環境を使用することが一般的です。
 
-本書では、JDK（Java Development Kit）として、OpenJDK 25（LTS版）<span class="footnote">LTSはLong-Term Supportの略で、長い期間にわたって更新が提供される版です。Javaは半年ごとに新しい版が出て、そのうち2年ごとの版がLTSになります。Java 25の1つ前のLTSはJava 21です。</span>を使用します。
+本書では、JDK（Java Development Kit）として、OpenJDK 25（LTS版）<span class="footnote">LTSはLong-Term Supportの略で、長い期間にわたって更新が提供される版です。Javaは半年ごとに新しい版が出て、そのうち2年ごとの版がLTSになります。Java 25の1つ前のLTSはJava 21です。どの版をLTSにするかは、OracleなどJDKを提供する各社が決めています。</span>を使用します。
 本書のサンプルコードは、Java 25で加わった標準入出力の`IO`クラスを使うため、Java 25以降のJDKで動かしてください。
 OpenJDKはオープンソース版のJava開発キットで、Oracle、Microsoft、Amazon、Red Hatなど複数のベンダーから提供されます。
 JDKにはJavaコンパイラー（javac）、Java仮想マシン（JVM）、標準ライブラリ、開発に必要な各種ツールが含まれており、Javaプログラムの開発と実行に必要なすべてがそろっています。

@@ -772,7 +772,7 @@ claims:
 
   - id: fixed-pool-unbounded
     claim: Executors.newFixedThreadPoolのキューはLinkedBlockingQueueで、容量はInteger.MAX_VALUE（事実上の上限なし）
-    text: Executors.newFixedThreadPoolが使うキューには上限がないため、タスクが届く速さに処理が追いつかないと、キューがメモリを使い続けます。
+    text: Executors.newFixedThreadPoolが使うキューには上限がないため、タスクが届く速さに処理が追いつかないと、キューがメモリを使い続けます
     simplified: true
     note: 容量はInteger.MAX_VALUE（約21億）で、厳密には上限がある。メモリが先に尽きるので、本文は「上限がない」と書いている。APIドキュメントもunbounded queueと呼ぶ
     sources:
