@@ -13,7 +13,7 @@ sections:
   - key: "マルチスレッドサーバーの実装"
     hash: 36359649
   - key: "HTTPクライアントの実装"
-    hash: aced6c61
+    hash: 04d43b5e
   - key: "UDP通信の実装"
     hash: 31d03b03
   - key: "実践的な例：チャットアプリケーション"
@@ -70,11 +70,12 @@ sections:
     + 単一スレッドサーバーの限界と、複数クライアントを同時に処理する利点（各クライアントがほかのクライアントの処理を待たずに済む）を文章で述べる
     + ExecutorServiceの固定スレッドプールでClientHandlerを実行するサーバー（16-3）。ECHO・TIME・QUITの簡易プロトコル
     + 同時に処理できるのはプールの大きさ（10）までで、各接続はQUITまでスレッドを占有するため、11番目のクライアントは空きを待つと明記する
-- HTTPクライアントの実装（L328–564）
+- HTTPクライアントの実装（L328–583）
     + HTTPリクエスト・レスポンスの構造
     + ソケットで直接HTTPを話すクライアント（16-4）。実際の開発ではHttpURLConnectionやHttpClientを使うと断る。HTTP/1.1ではチャンク形式（各かたまりの前に大きさの16進数の行、最後に大きさ0の行）で返ることがあるため、HTTP/1.0で送る。HTTPの行末はCRLFで`println`の改行はOSで変わるため、`print`で`\r\n`を付けて`flush()`する
     + HttpURLConnectionによるGitHub APIへのGET（16-5、`URI.create(...).toURL()`、タイムアウトの設定も抜粋に含む）、Java 11で標準になったHttpClient（`java.net.http`）のsendAsyncとCompletableFutureの連鎖（16-6、HttpClientの生成も抜粋に含む。`done.join()`で完了を待つ）。16-6の出力は「実行結果の一例」として示す
     + 16-6の後に、非同期で他の処理を続けられること、サーバーも対応していればHTTP/2で1つの接続に複数のリクエストを多重化できることを文章で説明する
+    + コラム「タイムアウトを設定しない通信は、いつか障害になる」（2026-11-19）。HttpClient・HttpURLConnectionの既定は無限に待つこと、待つスレッドが埋まって障害が広がること、業務の要件からタイムアウトを決めること
 - UDP通信の実装（L565–678）
     + 冒頭で小節「TCPとUDP」を参照する
     + DatagramSocketとDatagramPacketによるエコーサーバー（16-7、H3「UDPサーバー」）とクライアント（16-8、H3「UDPクライアント」）

@@ -40,3 +40,41 @@ claims:
       probe: TlsDefaults.java
       expect: ['default: \[TLSv1\.3, TLSv1\.2\]']
       note: 対応しているプロトコル（supported）にはTLSv1.1・TLSv1も残るが、既定（jdk.tls.disabledAlgorithmsで無効）では使われない
+
+  # ---- コラム「タイムアウトを設定しない通信は、いつか障害になる」（2026-11-19）
+  - id: column-httpclient-no-default-timeout
+    claim: HttpClientは接続のタイムアウトを指定しなければ持たず（connectTimeout()が空）、HttpRequestのタイムアウトを指定しないことは無限の時間を指定したのと同じである
+    text: HttpClientは、接続のタイムアウトを指定しなければ既定の値を持たず、HttpRequestのタイムアウトを指定しないことは、APIドキュメントによれば無限の時間を指定したのと同じです
+    sources:
+      - title: java.net.http.HttpRequest.Builder#timeout（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html
+        anchor: The effect of not setting a timeout is the same as setting an infinite Duration
+      - title: java.net.http.HttpClient#connectTimeout（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpClient.html
+        anchor: If the connect timeout duration was not set in the client's builder, then the Optional is empty
+    verify:
+      kind: run
+      probe: SilentServer.java
+      expect: ['^connectTimeoutの既定: Optional.empty$', '^timeoutの既定: Optional.empty$']
+
+  - id: column-urlconnection-zero
+    claim: HttpURLConnectionの接続と読み取りのタイムアウトの既定は0で、0は無限を意味する
+    text: HttpURLConnectionのタイムアウトも、既定は0（無限）です
+    sources:
+      - title: java.net.URLConnection#setConnectTimeout（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URLConnection.html
+        anchor: A timeout of zero is interpreted as an infinite timeout
+    verify:
+      kind: run
+      probe: SilentServer.java
+      expect: ['^HttpURLConnectionの既定: connect=0 read=0$']
+
+  - id: column-silent-server
+    claim: 接続だけ受け付けて何も返さないサーバーに、タイムアウトのない要求は3秒たっても終わらず、timeout(1秒)を付けた要求は約1秒でHttpTimeoutExceptionになる
+    text:
+      - タイムアウトのない要求は3秒たっても終わりません
+      - 約1秒でHttpTimeoutExceptionになります
+    verify:
+      kind: run
+      probe: SilentServer.java
+      expect: ['^タイムアウトなし: 3秒後も終わっていない = true$', '^タイムアウト1秒: HttpTimeoutException（約1秒）$']
