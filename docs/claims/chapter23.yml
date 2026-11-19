@@ -29,3 +29,28 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: JEP 343（Release 14、jdk.incubator.jpackageモジュール）とJEP 392（Release 16）の記述を確かめた。JEP 392は、jpackageがjlinkでランタイムを作ることも述べている
+
+  # ---- コラム「「自分のPCでは動くのに」をなくす工夫」（2026-11-19）
+  - id: column-class-file-versions
+    claim: Java 25のクラスファイルの版は69、Java 21は65。JVMは自分の版より新しいクラスファイルを読むとUnsupportedClassVersionError（has been compiled by a more recent version of the Java Runtime (class file version N), this version of the Java Runtime only recognizes class file versions up to M）を投げる
+    text:
+      - Java 25でコンパイルしたクラスファイルの版は69で、Java 21のJVMが読めるのは版65までです
+      - 古いJVMで動かすと、UnsupportedClassVersionErrorになり
+    verify:
+      kind: run
+      probe: NewerClassFile.java
+      expect:
+        - '^Java 21のクラスファイルの版: 65$'
+        - '^Java 25のクラスファイルの版: 69$'
+        - 'UnsupportedClassVersionError: Hello has been compiled by a more recent version of the Java Runtime \(class file version 70\.0\), this version of the Java Runtime only recognizes class file versions up to 69\.0'
+  - id: column-line-separator
+    claim: System.lineSeparator()は、UNIXでは"\n"、Windowsでは"\r\n"を返す
+    text: 'System.lineSeparator()はUNIXでは\n、Windowsでは\r\n'
+    sources:
+      - title: java.lang.System#lineSeparator（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html
+        anchor: 'On UNIX systems, it returns "\n"; on Microsoft Windows systems it returns "\r\n".'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: lineSeparatorの説明を読んだ。メッセージの文面は日本語に意訳して本文に載せた（Java 21の実物ではなく、版を70に書き換えたクラスファイルをJava 25で動かして形を確かめた）

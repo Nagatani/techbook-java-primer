@@ -9,7 +9,7 @@ sections:
   - key: "実行可能JARファイルの作成"
     hash: 593b0a32
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: 0937d100
+    hash: 45cc6134
   - key: "よくあるエラーと対処法"
     hash: fde5e426
   - key: "まとめ"
@@ -52,11 +52,12 @@ sections:
     + 外部ライブラリを使うアプリケーションのJAR: `java -jar`では`-cp`が無視されるため、マニフェストの`Class-Path`（JARからの相対パス）にライブラリを書き、`lib`ディレクトリと一緒に配布する。Fat JARはまとめへ誘導（コードブロックなし）
     + `getResource`で画像を読むResourceApp（23-4、nullでNullPointerExceptionになる注意と、icon.pngとmanifest.txtを全文と同じ場所に用意したこと）とリソース込みのJAR作成
     + IntelliJ IDEAのArtifacts機能でのJAR作成手順
-- jpackageによるネイティブアプリケーション化（L300–382）
+- jpackageによるネイティブアプリケーション化（L300–402）
     + JARはJREが必要という限界と、ランタイムを同梱するjpackage（Java 16で正式導入）の利点
     + 入力ディレクトリと出力ディレクトリを分ける準備とディレクトリ図（罫線は`├──`・`│`・`└──`）
     + app-imageの作成とオプション解説
     + jpackageは実行しているOS向けのものしか作れないこと（クロスビルド不可）を述べたうえで、Windows・macOS・Linux向けの例。インストーラーにはWiX Toolset・dpkg-deb・fakeroot・rpmbuildなどの追加ツールが要ること（脚注。2026-11-14に、Linuxではapp-imageを作るときにもobjcopy（binutils）が要ることを追加）、app-imageはインストーラーでないことを述べる
+    + コラム「「自分のPCでは動くのに」をなくす工夫」（2026-11-19）。クラスファイルの版の違い（69と65）とUnsupportedClassVersionError、改行・パス・文字コードの差、maven.compiler.release・CI・jpackage・コンテナで差を減らすこと
 - よくあるエラーと対処法（L383–401）
     + メイン・マニフェスト属性がない（Main-Classの欠落、最終行の改行）、`NoClassDefFoundError`（`java -jar`では`-cp`が無視される）、`getResource`や`getResourceAsStream`が`null`を返す、`UnsupportedClassVersionError`、jpackageのエラー。詳細は`appendix/e-common-errors/chapters/chapter23.md`
 - まとめ（L402–433）
