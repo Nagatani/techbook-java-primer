@@ -7,7 +7,7 @@ sections:
   - key: "Stream APIによる現代的なコレクション操作"
     hash: 10343d64
   - key: "Optional型による安全なnull処理"
-    hash: 05039ab8
+    hash: 54ed6c8e
   - key: "並列ストリームによるパフォーマンス向上"
     hash: d489fe8e
   - key: "高度なStream操作"
@@ -57,10 +57,11 @@ sections:
     + filter（12-2）と、`collect(Collectors.toList())`の説明（Java 16以降の`toList()`は脚注）、map（12-3）
     + `sorted`による並べ替え（12-4、2026-11-11に新設）。`Student`クラスの定義、Comparatorは第11章で学んだ旨、`List.sort`との違い
     + 組み合わせた例（12-5）
-- Optional型による安全なnull処理（L263–708）
+- Optional型による安全なnull処理（L263–728）
     + null参照の問題とTony Hoareの「10億ドルの過ち」、Optionalの概念（型で示せる、扱いを意識させる、チェインできる）
     + 作成（12-6）、値の取得（12-7、`get`を避ける理由とorElse・orElseGetの評価の違いを含む）、存在確認と条件付き処理（12-8、`isPresent`＋`get`を避ける注意）、map・flatMap・filter（12-9）、Stream連携（12-10）、リポジトリ・設定値の実例（12-11、クラスの外側とmain全体を載せる）、アンチパターン（12-12）
     + ベストプラクティスを文章でまとめる（2026-11-11に箇条書きを文章にした）。orElseの引数は常に評価されるのでコストが高い既定値はorElseGetを使う、と理由を書いた
+    + コラム「Optionalはどこまで使うか――現場の線引き」（2026-11-19）。APIドキュメントの注記（主に戻り値、Optional型の変数をnullにしない）、フィールド・引数に使わない理由（Serializableでない、呼び出す側の手間）
 - 並列ストリームによるパフォーマンス向上（L709–853）
     + マルチコアと、スレッドセーフティは第15章で学ぶ旨
     + parallelStreamの使い方（12-13）と、作成済みのストリームに`parallel()`を呼ぶ方法。Fork/Joinによる分割・処理・統合と図（共通プールのスレッド数はコア数より1少なく、呼び出したスレッドも加わる旨を脚注で説明）、計測例（12-14、`System.nanoTime`でミリ秒を求める。高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）

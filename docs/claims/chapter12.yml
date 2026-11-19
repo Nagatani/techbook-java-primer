@@ -68,3 +68,38 @@ claims:
       kind: run
       probe: CommonPoolSize.java
       expect: ['same=true']
+
+  # ---- コラム「Optionalはどこまで使うか――現場の線引き」（2026-11-19）
+  - id: column-optional-return-type
+    claim: OptionalのAPIドキュメントの注記は、Optionalを主にメソッドの戻り値として、「結果がない」ことを表す必要がありnullが誤りを招きやすい場面のためのものだとしている
+    text: Optionalは主にメソッドの戻り値として、「結果がない」ことを表す必要があり、nullを使うと誤りを招きやすい場面のためのものだ、と書かれています
+    sources:
+      - title: java.util.Optional（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+        anchor: Optional is primarily intended for use as a method return type
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: API Noteの文「Optional is primarily intended for use as a method return type where there is a clear need to represent "no result," and where using null is likely to cause errors.」を読んだ
+
+  - id: column-optional-never-null
+    claim: OptionalのAPIドキュメントは、Optional型の変数はnullであってはならず、常にOptionalのインスタンスを指すべきだとしている。nullのOptionalのメソッドを呼ぶとNullPointerExceptionになる
+    text:
+      - Optional型の変数は常にOptionalのインスタンスを指すべきだと書いている
+      - nullのOptionalを渡されると結局NullPointerExceptionになるからです
+    sources:
+      - title: java.util.Optional（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+        anchor: A variable whose type is Optional should never itself be null
+    verify:
+      kind: run
+      probe: OptionalFacts.java
+      expect: ['^nullのOptional: NullPointerException$']
+
+  - id: column-optional-not-serializable
+    claim: OptionalはSerializableを実装していない
+    text: OptionalがSerializableを実装していないことです
+    verify:
+      kind: run
+      probe: OptionalFacts.java
+      expect: ['^Serializable: false$']
