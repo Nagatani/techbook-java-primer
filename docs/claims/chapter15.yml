@@ -1,5 +1,7 @@
 # 第15章の主張と、その確かめ方（node scripts/check-claims.js ch15）
-# いまは「Javaの版」の主張だけ。章全体の主張はあとで加える
+# 章全体の事実の主張を台帳にした（2026-11-19）。観察用のプログラムは docs/claims/chapter15/
+# 付録B.14の観察（StopFlag・LostUpdates）は、相対パスでそのまま使う
+# simplified: true は、入門書として意図して簡略化した説明。正確な事実を note に書く
 jdk: 25
 claims:
   - id: concurrent-package-5
@@ -55,3 +57,1060 @@ claims:
       probe: CompletableFutureProbe.java
       version: 8
       note: src.zipの@since（CompletableFutureは1.8）
+
+  # ---- 並行処理の世界への招待
+  - id: breakfast-parallel
+    claim: 3秒・2秒・5秒の処理を順番に行うと約10秒、3つのスレッドで並行して行いjoinで待つと、もっとも長い処理の時間（約5秒）で終わる。終わる順は処理時間の短い順（トースト・コーヒー・卵）になる
+    text:
+      - コーヒー（3秒）、トースト（2秒）、卵（5秒）を順番に処理するため、合計10秒かかります
+      - 「〜ができました」は、処理時間の短い順に、トースト（2秒）、コーヒー（3秒）、卵（5秒）の順で表示されます。
+      - 10秒かかっていた処理を約5秒に短縮できました
+    note: 時間を節約するため、プローブでは10分の1（300・200・500ミリ秒）にして、100ミリ秒を1単位として数える
+    verify:
+      kind: run
+      probe: Breakfast.java
+      expect:
+        - '^順番に実行: 約10単位$'
+        - '^3つのスレッド: 約5単位$'
+        - '^終わった順: トースト、コーヒー、卵$'
+      attempts: 3
+
+  - id: start-order-varies
+    claim: 決まった順にstart()しても、スレッドが動き出す順序は実行のたびに変わることがある（起こりうる結果。必ず起こるわけではない）
+    text: 3つのスレッドは同時に動くため、「〜しています」の3行の順序は実行のたびに変わることがあります。
+    verify:
+      kind: run
+      probe: StartOrder.java
+      expect: ['^start\(\)した順と違う順に動いた回がある$']
+      attempts: 5
+
+  # ---- マルチスレッドプログラミングの基礎
+  - id: main-thread
+    claim: プログラムのコードはmainスレッドから実行される。ただしJVMは、起動した時点でmainのほかにもデーモンスレッド（Reference Handler・Finalizer・Signal Dispatcherなど）を動かしている
+    text: 通常、1つのプログラムは1つのスレッド（メインスレッド）で実行されます。
+    simplified: true
+    note: 本文はアプリケーションのコードの流れを指している。JDK 25の起動直後には、Javaのスレッドとしてmainのほかに5つのデーモンスレッド（Common-Cleaner・Finalizer・Notification Thread・Reference Handler・Signal Dispatcher）があり、GCやJITコンパイラーのスレッドはThread.getAllStackTracesに出ないVMの内部のスレッドとして別にある
+    sources:
+      - title: java.lang.Thread（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
+        anchor: When the Java virtual machine starts up, there is usually one non-daemon thread
+    verify:
+      kind: run
+      probe: Threads.java
+      args: [live]
+      expect:
+        - '^  main$'
+        - '^  Reference Handler（デーモン）$'
+        - '^  Signal Dispatcher（デーモン）$'
+
+  - id: c11-threads
+    claim: C言語の標準規格にスレッドのライブラリ（<threads.h>）が入ったのはC11から
+    text: C言語の標準規格にスレッドの機能が入ったのはC11からで、それまではPOSIXスレッド（pthread）などOSが用意するライブラリを使っていました。
+    sources:
+      - title: Concurrency support library（cppreference.com）
+        url: https://en.cppreference.com/w/c/thread.html
+        anchor: thrd_create (C11) creates a thread
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: cppreferenceの並行処理のページで、<threads.h>の関数（thrd_createなど）がC11の印付きであることを確かめた。規格の原典（ISO/IEC 9899:2011、委員会の最終案N1570）はスクリプトから開けなかった（open-std.orgへの接続が切れ、iso.orgは403）
+
+  - id: java-threads-from-1-0
+    claim: Javaは最初の版（JDK 1.0）から、スレッド（Threadクラス、synchronized、wait/notify）を言語とライブラリに持っている
+    text:
+      - Javaは最初の版から、スレッドを言語とライブラリに組み込んでいます。
+      - Javaの初期からある、スレッドどうしで条件を待ち合わせるための低レベルなしくみです。
+    sources:
+      - title: java.lang.Thread（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
+        anchor: "It defaults to 256. Since: 1.0"
+      - title: java.lang.Object（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: "implement the methods of this class. Since: 1.0"
+    verify:
+      kind: since
+      probe: ThreadSince.java
+      version: 1
+      note: ThreadとObject（wait・notify）のAPIドキュメントの「Since 1.0」で版を確かめた
+
+  - id: thread-states
+    claim: new Thread()の直後はNEW、start()の後はRUNNABLE、ほかのスレッドが持つロックを待つあいだはBLOCKED、wait()やjoin()で待つあいだはWAITING、sleep()で待つあいだはTIMED_WAITING、run()が終わるか例外で抜けるとTERMINATED。状態はgetState()で調べられる
+    text:
+      - new Thread()で作ったばかりのスレッドはNEWで、start()を呼ぶとRUNNABLEになって実行されます。
+      - ロックを待つあいだはBLOCKED、wait()やjoin()で待つあいだはWAITING、sleep()のように時間を決めて待つあいだはTIMED_WAITINGになり
+      - run()が終わるか例外で抜けると、TERMINATEDになります。
+      - スレッドの今の状態は、getState()メソッドで調べられます。
+      - ほかのスレッドがロックを持っているあいだは、ロックが解放されるまでBLOCKEDの状態で待ちます。
+    sources:
+      - title: java.lang.Thread.State（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.State.html
+        anchor: A thread that is blocked waiting for a monitor lock is in this state.
+    verify:
+      kind: run
+      probe: Threads.java
+      args: [states]
+      expect:
+        - '^new Thread\(\)の直後: NEW$'
+        - '^start\(\)の後、実行中: RUNNABLE$'
+        - '^run\(\)が終わった後: TERMINATED$'
+        - '^ほかのスレッドが持つロックを待つ: BLOCKED$'
+        - '^wait\(\)で待つ: WAITING$'
+        - '^sleep\(\)で待つ: TIMED_WAITING$'
+        - '^join\(\)で待つ: WAITING$'
+        - '^例外でrun\(\)を抜けた後: TERMINATED$'
+
+  - id: thread-states-back
+    claim: wait()から通知で戻るスレッドは、すぐRUNNABLEに戻るのではなく、ロックを取り直すまでBLOCKEDで待つ
+    text: 待つ理由がなくなるとRUNNABLEに戻ります。
+    simplified: true
+    note: sleep()やjoin()の待ちは終わるとRUNNABLEに戻るが、wait()はnotify()を受けたあと、ロックを取り直すまでBLOCKEDになる（Objectのnotifyの説明の「The awakened thread will not be able to proceed until the current thread relinquishes the lock」）。図（chapter15-thread-lifecycle）も同じ簡略化をしている
+    sources:
+      - title: java.lang.Object（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: the current thread relinquishes the lock on this object
+    verify:
+      kind: run
+      probe: Threads.java
+      args: [states]
+      expect: ['^notify\(\)の後、ロックが返されるまで: BLOCKED$']
+
+  - id: runnable-functional
+    claim: Runnableは関数型インターフェイスで、抽象メソッドはrun()の1つだけ
+    text: Runnableは、スレッドが実行するタスク（処理内容）を定義するための関数型インターフェイスです。run()メソッドを1つだけ持ちます。
+    sources:
+      - title: java.lang.Runnable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runnable.html
+        anchor: This is a functional interface
+    verify:
+      kind: run
+      probe: Threads.java
+      args: [runnable]
+      expect:
+        - '^@FunctionalInterface: true$'
+        - '^抽象メソッド: void run\(0個の引数\)$'
+        - '^抽象メソッドの数: 1$'
+
+  - id: single-inheritance
+    claim: Javaのクラスは1つのクラスしか継承できない（extendsに2つのクラスを書くとコンパイルエラー）。Threadを継承したクラスは、ほかのクラスを継承できない
+    text:
+      - Javaがクラスの多重継承をサポートしないという制約を受けず
+      - ただし、その場合はほかのクラスを継承できなくなり
+    sources:
+      - title: JLS 25 8.1.4 Superclasses and Subclasses
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: The optional extends clause in a normal class declaration specifies the direct superclass type
+    verify:
+      kind: javac
+      probe: compile-errors/MultipleInheritance.java
+      fails: true
+      expect: ["'\\{' expected"]
+
+  - id: run-vs-start
+    claim: run()を直接呼ぶと新しいスレッドは作られず、呼び出したスレッドで実行される。start()を呼ぶと新しいスレッドで実行される
+    text:
+      - どちらの方法でも、スレッドを開始するのはstart()メソッドです。
+      - run()を直接呼び出すと、新しいスレッドは作られず、呼び出したスレッドのなかでふつうのメソッドとして実行されます。
+    verify:
+      kind: run
+      probe: Threads.java
+      args: [run]
+      expect:
+        - 'run\(\)を直接呼ぶ\nタスクを実行したスレッド: main$'
+        - 'start\(\)を呼ぶ\nタスクを実行したスレッド: worker$'
+
+  # ---- 競合状態
+  - id: atm-race
+    claim: 2つのスレッドが残高を読んでから書き戻すまでのあいだに互いに割り込むと、残高10,000円の口座から8,000円の引き出しが2回とも成功し、残高は2,000円になる
+    text:
+      - 同期制御がないと両方の引き出しが成功してしまい、引き出した金額と残高が合わなくなる可能性があります。
+      - その結果、残高10,000円の口座から合計16,000円が引き出されてしまいます。
+    note: 割り込む位置は、読み込みと書き戻しのあいだのsleepで固定している（本文の手順1〜4を再現する）
+    verify:
+      kind: run
+      probe: Race.java
+      args: [atm]
+      expect: ['^引き出した合計: 16000円、残高: 2000円$']
+
+  - id: increment-three-ops
+    claim: count++は、フィールドを読む（getfield）・1を足す（iadd）・書き戻す（putfield）の別々の命令になる
+    text:
+      - ①のcount++は1行で書けますが、CPUが実行するときには次の3つの操作に分かれます。
+      - count++も3つの操作に分かれる
+    simplified: true
+    note: 3つに分かれるのはバイトコードの段階。JITコンパイラーはx64でadd命令1つにまとめることもあるが、lockの接頭辞のない読み・足し・書きはほかのコアから割り込まれうるので、原子的でないことは変わらない（JLS 25 17.4の並べ替えの規則と、B.14の観察を参照）
+    verify:
+      kind: javap
+      probe: UnsafeCounter.java
+      class: UnsafeCounter
+      expect:
+        - 'getfield\s+#\d+\s+// Field count:I\n\s*\d+: iconst_1\n\s*\d+: iadd\n\s*\d+: putfield\s+#\d+\s+// Field count:I'
+
+  - id: lost-update-10x1000
+    claim: 10個のスレッドがそれぞれ1,000回、同期なしでcount++すると、結果が10,000より小さくなることがある（起こりうる結果。200回繰り返して1回でも起これば合格）
+    text: たとえば10個のスレッドがそれぞれ1,000回incrementを呼ぶと、結果は10,000になるはずですが、それより小さい値になることがあります。
+    verify:
+      kind: run
+      probe: Race.java
+      args: [counter]
+      expect: ['^200回のうち、10,000より小さくなった回がある$']
+      attempts: 5
+
+  # ---- synchronized
+  - id: synchronized-per-object
+    claim: synchronizedメソッドは、メソッドを呼んだオブジェクト（this）のモニターを取得する。同じオブジェクトに対しては同時に1つのスレッドしか実行できないが、別々のオブジェクトなら2つのスレッドが同時に実行できる
+    text:
+      - 同じオブジェクトのロックで保護されたsynchronizedのコードは、一度に1つのスレッドしか実行できないことが保証されます。
+      - 同じオブジェクトに対しては同時に1つのスレッドしかそのメソッドを実行できなくなり
+      - synchronizedメソッドを実行するスレッドは、まずそのオブジェクトのロック（モニター）を取得します。
+      - ロックはオブジェクトごとにあるので、別々のオブジェクトのsynchronizedメソッドは、2つのスレッドが同時に実行できます。
+    note: 2026-11-19に本文を直した。以前は「synchronizedで保護されたコードブロックは、一度に1つのスレッドしか実行できない」「同時に1つのスレッドしかそのメソッドを実行できなくなり」と、ロックがオブジェクトごとであることを書いていなかった
+    sources:
+      - title: JLS 25 8.4.3.6 synchronized Methods
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+        anchor: For an instance method, the monitor associated with this (the object for which the method was invoked) is used.
+      - title: JLS 25 17.1 Synchronization
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Only one thread at a time may hold a lock on a monitor.
+    verify:
+      kind: run
+      probe: SyncScope.java
+      expect:
+        - '^同じインスタンス: 同時に中にいたスレッドは最大1個$'
+        - '^別のインスタンス: 同時に中にいたスレッドは最大2個$'
+
+  - id: deadlock-coffman
+    claim: デッドロックの4つの条件（相互排他・保持と待機・横取り不可・循環待機）は、1971年にCoffman・Elphick・ShoshaniがACM Computing Surveysの論文「System Deadlocks」で示した
+    text:
+      - デッドロックは、次の4つの条件（Coffman条件）
+      - がすべてそろったときに起こります。
+      - 1971年にE. G. Coffmanらが論文で示したことから、この名前で呼ばれます。
+      - 裏返せば、どれか1つの条件を崩せばデッドロックは起こりません。
+    simplified: true
+    note: 論文は4つを「デッドロックに必要な条件」として挙げている（4つがそろうことが必要で、1つを崩せば起こらない）。本文の「すべてそろったときに起こります」は、循環待機が実際に生じた状態を含めて言っている。論文の書誌（題名・著者・1971年6月）はCrossrefで確かめた。ACMのページはスクリプトから開けない（403）ので、本文の4つの条件は論文の要約（Stanfordの資格試験用のメモ、carlstrom.comのミラー）で照らし合わせた
+    sources:
+      - title: "Coffman, Elphick, Shoshani: System Deadlocks（ACM Computing Surveys 3(2), 1971）のCrossrefの書誌"
+        url: https://api.crossref.org/works/10.1145/356586.356588
+        anchor: '"published-print":{"date-parts":[[1971,6]]}'
+      - title: 同（題名）
+        url: https://api.crossref.org/works/10.1145/356586.356588
+        anchor: '"family":"Coffman"'
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: deadlock-lock-order
+    claim: 2つのスレッドがロックを逆の順に取るとデッドロックになり（ThreadMXBeanが2つのスレッドを検出する）、同じ順に取ると2つとも終わる
+    text:
+      - いちばん手軽なのは循環待機を崩す方法で、どのスレッドもロックを同じ順序で取得するように決めておきます。
+      - こうすると、lock1を取れなかったスレッドはlock2も持っていないので、待ちが輪になりません。
+      - ロックを取得する順序をそろえて循環待機を防ぐ
+    verify:
+      kind: run
+      probe: Deadlock.java
+      expect:
+        - '^同じ順（lock1→lock2）: 2つとも終わった（デッドロックになったスレッド: 0個）$'
+        - '^逆の順: 終わらない（デッドロックになったスレッド: 2個）$'
+
+  - id: context-switch-us
+    claim: 待っているスレッドを起こして交代させる時間は、1回あたりマイクロ秒の単位（この環境では約2〜3マイクロ秒）
+    text: 待たされたスレッドを切り替えるコンテキストスイッチにも、1回あたり数マイクロ秒程度の時間がかかります。
+    note: 2つのスレッドがSynchronousQueueで値を渡し合い、交代1回あたりの時間を測った（macOS・Apple M系・JDK 25.0.2で約2.5マイクロ秒）。OSとCPUで変わるので、0.5〜100マイクロ秒に入ることだけを照合する。OSのコンテキストスイッチそのものだけでなく、起こす処理（unpark）の時間も含む
+    verify:
+      kind: run
+      probe: ContextSwitch.java
+      expect: ['^1回あたりの時間はマイクロ秒の単位$']
+      attempts: 3
+
+  - id: lock-contention-scaling
+    claim: 1つのロックを4つのスレッドで奪い合うと、4倍の仕事にかかる時間は1スレッドの時間よりずっと長くなり、処理量はスレッドの数に比例して伸びない
+    text:
+      - いちばん大きな要因はロックの競合で、ロックを待つスレッドが増えるほど、単位時間に処理できる量（スループット）が下がります。
+      - こうした理由から、コア数を増やしても性能が比例して伸びるわけではありません。
+      - ロックの競合は性能を下げるので、ロックの範囲は必要な部分だけにする
+    note: この環境（8コア）では、4スレッドで4倍の仕事にかかる時間が1スレッドの約20倍だった。比例して伸びるなら1倍に近くなる。1.5倍以上であることを照合する
+    verify:
+      kind: run
+      probe: LockScaling.java
+      expect: ['^比例して伸びない（4スレッドでも時間が縮まない）$']
+      attempts: 3
+
+  # ---- volatile
+  - id: volatile-visibility
+    claim: volatileのフィールドへの書き込みは、その後のそのフィールドの読み込みよりhappens-beforeであり、volatileのフラグを待つループは、別のスレッドがフラグを立てると終わる
+    text:
+      - volatileキーワードは、あるスレッドが変数に書き込んだ値を、そのあとでその変数を読むほかのスレッドが必ず見られることを保証します（メモリの可視性）
+      - 主な用途は、スレッド間でのフラグの共有です。
+      - volatileでメモリ可視性を保証する
+    sources:
+      - title: JLS 25 17.4.5 Happens-before Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: A write to a volatile field (§8.3.1.4) happens-before every subsequent read of that field.
+    verify:
+      kind: run
+      probe: ../../../appendix/b14-java-memory-model/verify/StopFlag.java
+      args: [volatile]
+      expect: ['^volatileのフラグ: ワーカーは止まった$']
+
+  - id: plain-flag-may-hang
+    claim: volatileでないフラグを待つループは、JITコンパイルされると、別のスレッドがフラグを立てても終わらないことがある（JLSはフィールドを一度だけ読んで使い回すことを許している）
+    text: volatileでない変数では、ほかのスレッドが書き込んだ値がいつまでも見えないことがあります。
+    sources:
+      - title: JLS 25 17.3 Sleep and Yield
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: The compiler is free to read the field this.done just once
+    verify:
+      kind: run
+      probe: ../../../appendix/b14-java-memory-model/verify/StopFlag.java
+      args: [plain]
+      expect: ['^plainのフラグ: ワーカーは2秒待っても止まらない$']
+      attempts: 3
+
+  - id: jmm-order-not-time
+    claim: Javaのメモリモデルが決めるのは、書き込みと読み込みのあいだの順序（happens-before）で、何ナノ秒で見えるかという時間は決めていない
+    text: 仕様が決めているのは書き込みと読み取りの順序で、何ナノ秒で見えるかという時間ではありません
+    sources:
+      - title: JLS 25 17.4.5 Happens-before Order
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: does not necessarily imply that they have to take place in that order in an implementation
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: JLS 25の17.4（17.4.4・17.4.5）は、同期の順序とhappens-beforeの関係だけで読み込みが見てよい書き込みを決め、時間の上限を定めていないことを確かめた（付録B.14のhb-not-time-orderと同じ）
+
+  - id: volatile-not-compound
+    claim: volatileで原子的になるのは1回の読み書きだけで、count++のような読み取り→計算→書き込みは原子的にならない。4つのスレッドが100万回ずつvolatile intのcount++をすると更新が失われる
+    text:
+      - アトミックになるのは単純な読み書きだけで、読み取り→計算→書き込みのような複合操作は保証しません。
+      - カウンターのインクリメント（count++）のような複合操作にはvolatileを使えません。
+      - volatileは複合操作をアトミックにしない
+    sources:
+      - title: JLS 25 17.7 Non-Atomic Treatment of double and long
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: Writes and reads of volatile long and double values are always atomic.
+    verify:
+      kind: run
+      probe: ../../../appendix/b14-java-memory-model/verify/LostUpdates.java
+      expect:
+        - '^volatile intのcount\+\+: 400万より少ない（更新が失われた）$'
+        - '^synchronizedの中のcount\+\+: 400万（正しい）$'
+        - '^AtomicInteger.incrementAndGet: 400万（正しい）$'
+      attempts: 3
+
+  - id: c-volatile
+    claim: Cのvolatileは、コンパイラーがアクセスを省いたり並べ替えたりする最適化を止めるもので、スレッド間の通信に必要な原子性・同期・メモリの順序は保証しない
+    text: Cのvolatileはコンパイラーが読み書きを省く最適化を止めるもので、スレッド間で値が見えることまでは保証しません。
+    sources:
+      - title: volatile type qualifier（cppreference.com）
+        url: https://en.cppreference.com/w/c/language/volatile.html
+        anchor: volatile variables are not suitable for communication between threads
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: cppreferenceのvolatileのページで、volatileのアクセスは省いたり並べ替えたりできないこと、スレッド間の通信には原子性・同期・メモリの順序がないので使えないことを確かめた。C11の規格の原典（N1570）はスクリプトから開けなかった
+
+  # ---- Atomic
+  - id: atomic-lock-free
+    claim: java.util.concurrent.atomicパッケージは、1つの変数をロックなしでスレッドセーフに更新するクラスを提供する（AtomicIntegerは、ロックを取るためにスレッドが止まることがない）
+    text:
+      - java.util.concurrent.atomicパッケージは、ロックを使わずにアトミックな操作を実現するクラス群を提供します。
+      - Atomicクラスはロックを使わないため、ロックが空くのを待ってスレッドが止まることがありません。
+      - 単純なカウンターなどはAtomicクラスでロックを使わずに更新できる
+    sources:
+      - title: java.util.concurrent.atomic（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html
+        anchor: A small toolkit of classes that support lock-free thread-safe programming on single variables.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: パッケージの説明を読んで確かめた
+
+  - id: atomic-cas
+    claim: AtomicInteger.incrementAndGetが使うUnsafe.getAndAddIntは、Javaのコードでは「読んでweakCompareAndSetIntで書く」のループ（CAS）だが、JITコンパイラーはこれを組み込みの命令（intrinsic）に置き換える
+    text: これらは内部でCAS（Compare-And-Swap）操作を使い、ロックを取得するために待つことなく値を更新します。
+    simplified: true
+    note: incrementAndGetのようなgetAndAdd系は、JITコンパイルされるとCASのループではなく、CPUの不可分な加算の命令（x64のlock xadd、ARMv8.1のldaddなど）になる（PrintIntrinsicsでgetAndAddIntが「(intrinsic)」になることを別の主張atomic-intrinsicで確かめた）。compareAndSetやupdateAndGetはCASを使う
+    verify:
+      kind: javap
+      probe: AtomicHot.java
+      class: jdk.internal.misc.Unsafe
+      expect:
+        - 'public final int getAndAddInt\(java.lang.Object, long, int\);\n\s*Code:[\s\S]*?Method getIntVolatile[\s\S]*?Method weakCompareAndSetInt:\(Ljava/lang/Object;JII\)Z\n\s*\d+: ifeq\s+0'
+      range: { from: 'public final int getAndAddInt\(', to: 'ireturn' }
+
+  - id: atomic-intrinsic
+    claim: JDK 25のJITコンパイラーは、AtomicInteger.incrementAndGetの中のUnsafe.getAndAddIntを組み込みの命令（intrinsic）に置き換える
+    unreferenced: true
+    verify:
+      kind: run
+      probe: AtomicHot.java
+      jvm: ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintIntrinsics']
+      expect: ['jdk\.internal\.misc\.Unsafe::getAndAddInt \(\d+ bytes\)\s+\(intrinsic\)']
+      attempts: 3
+
+  - id: atomic-contention
+    claim: 8つのスレッドが同じAtomicIntegerを更新すると、8倍の仕事にかかる時間は1スレッドの時間よりずっと長くなり、スレッドの数に比例して速くならない。synchronizedとどちらが速いかは条件で変わる
+    text:
+      - ただし、多数のスレッドが同じ変数を頻繁に更新すると、Atomicクラスでもコアのあいだで変数の奪い合いが起こり、スレッドを増やしても処理は速くなりません。
+      - synchronizedとどちらが速いかは、スレッドの数や更新の頻度、JITコンパイラーの最適化によって変わるので、実際に時間を測って確かめます。
+    note: 2026-11-19に本文を直した。以前は「競合が少ない場合にはsynchronizedより速く動くことが多い」「多数のスレッドが同じ変数を頻繁に更新すると、CASの失敗と再試行が増えて速さの差は小さくなります」だったが、この環境（macOS・Apple M系・8コア・JDK 25.0.2）で測ると、1スレッドでも8スレッドでもsynchronizedのほうが短い時間で終わった（1スレッドはJITのロックの粗粒度化、8スレッドはロックを取ったスレッドが続けて実行することが効く）。incrementAndGetはCASのループではなく不可分な加算の命令になるので、「CASの失敗と再試行」も当たらない。AtomicIntegerは8スレッドで8倍の仕事に1スレッドの約90倍の時間がかかった
+    verify:
+      kind: run
+      probe: AtomicVsSync.java
+      expect: ['^AtomicIntegerも、同じ変数を奪い合うと比例して伸びない$']
+      show: ['スレッド', 'AtomicInteger']
+      attempts: 3
+
+  # ---- 並行処理用のコレクション
+  - id: collections-not-synchronized
+    claim: ArrayListとHashMapは同期化されておらず、複数のスレッドが同時に構造を変更するときは、外側で同期する必要がある
+    text: 第9章「コレクションフレームワーク」で学んだArrayListやHashMapは、複数のスレッドから同時に更新されることを想定していません。
+    sources:
+      - title: java.util.HashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html
+        anchor: Note that this implementation is not synchronized. If multiple threads access a hash map concurrently
+      - title: java.util.ArrayList（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html
+        anchor: Note that this implementation is not synchronized. If multiple threads access an ArrayList instance concurrently
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: HashMapとArrayListのAPIドキュメントの同期についての注意を読んで確かめた
+
+  - id: doug-lea
+    claim: java.util.concurrentの設計の中心はダグ・リー（Doug Lea）。ConcurrentHashMapのソースの作者はDoug Leaで、パッケージを定めたJSR 166の仕様策定のリーダーもDoug Leaである
+    text: 設計の中心になったのは、並行処理の研究者ダグ・リー（Doug Lea）です。
+    sources:
+      - title: "JSR 166: Concurrency Utilities"
+        url: https://jcp.org/en/jsr/detail?id=166
+        anchor: Specification Leads Doug Lea
+    verify:
+      kind: run
+      probe: SrcZip.java
+      expect:
+        - '^\* @author Doug Lea$'
+        - '^package-info: \* @since 1\.5$'
+
+  - id: hashmap-concurrent-lost
+    claim: 4つのスレッドが別々のキーをHashMapに同時にputすると、要素が失われることがある。ArrayListに同時にaddすると、要素が失われたり、ArrayIndexOutOfBoundsExceptionが発生したりする（起こりうる結果）
+    text:
+      - ①のHashMapに複数のスレッドが同時に書き込むと、内部のデータ構造が同時に変更されて不正な状態になり、データが失われたり壊れたりすることがあります
+      - ArrayListやHashMapを複数のスレッドから更新すると、内容が壊れたり例外が発生したりする。
+    note: 2026-11-19に本文の「データが失われたり壊れたりします」を「〜することがあります」に直した（必ず起こるわけではない）
+    verify:
+      kind: run
+      probe: SharedCollections.java
+      args: [hashmap]
+      expect: ['^HashMap: 要素が失われた回がある$']
+      attempts: 3
+      timeout: 600
+
+  - id: hashmap-hang-today
+    claim: JDK 25のHashMapでも、複数のスレッドが同時にputすると内部の構造が壊れ、putが終わらなくなることがある（HashMap$TreeNodeのtreeifyやsplitで回り続ける。起こりうる結果）
+    text: いまのHashMapでも、同時に書き込むと内部の木構造が壊れ、putが終わらなくなることがあります。
+    note: 2026-11-19に脚注へ加えた。以前の脚注はJava 7以前の循環だけを書いており、いまは起こらないように読めた。4スレッドが1万個ずつputする試行を50回まで繰り返すと、6回の実行のうち3回で、5秒たってもputが終わらないスレッドがあった（スタックの先頭はHashMap$TreeNode.treeifyかsplit）
+    verify:
+      kind: run
+      probe: SharedCollections.java
+      args: [hashmap]
+      expect: ['^HashMap: putが終わらなくなった回がある（java\.util\.HashMap\$TreeNode\.\w+）$']
+      attempts: 5
+      timeout: 600
+
+  - id: arraylist-concurrent
+    claim: 4つのスレッドがArrayListに同時にaddすると、要素が失われたり、ArrayIndexOutOfBoundsExceptionが発生したりすることがある
+    unreferenced: true
+    verify:
+      kind: run
+      probe: SharedCollections.java
+      args: [arraylist]
+      expect: ['^ArrayList: 要素が失われた回がある|、例外: ArrayIndexOutOfBoundsException$']
+      attempts: 3
+
+  - id: concurrent-modification
+    claim: あるスレッドがHashMapの要素を順に取り出している最中に、別のスレッドがputすると、ConcurrentModificationExceptionが発生することがある（検出は最善努力で、保証はされない）
+    text: また、あるスレッドが要素を順に取り出している最中にほかのスレッドが更新すると、ConcurrentModificationExceptionが発生することがあります。
+    sources:
+      - title: java.util.ConcurrentModificationException（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ConcurrentModificationException.html
+        anchor: it is not generally permissible for one thread to modify a Collection while another thread is iterating over it
+    verify:
+      kind: run
+      probe: SharedCollections.java
+      args: [cme]
+      expect: ['^取り出している最中の更新: java\.util\.ConcurrentModificationException$']
+      attempts: 3
+
+  - id: chm-locking
+    claim: ConcurrentHashMapは表全体を1つのロックで守らない。putは空のビン（バケット）にはCASで入れ、そうでなければビンの先頭のノードをロックにする。getなどの取り出しはロックを取らず、更新と重なって進む
+    text:
+      - ②のConcurrentHashMapは、マップ全体を1つのロックで守るのではなく、書き込む位置（バケット）ごとに排他制御をします。
+      - そのため、異なる位置への書き込みは並行して進みます。
+      - 読み取り操作はロックを取得しないので、読み取りが書き込みを待たされることもありません。
+    note: ビンごとのロックはJDKの実装（ConcurrentHashMap.putVal）で、APIドキュメントが約束するのは「取り出しはロックを伴わず、一般にブロックしない」こと
+    sources:
+      - title: java.util.concurrent.ConcurrentHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html
+        anchor: retrieval operations do not entail locking, and there is not any support for locking the entire table
+      - title: 同（取り出しはブロックしない）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html
+        anchor: Retrieval operations (including get) generally do not block, so may overlap with update operations
+    verify:
+      kind: run
+      probe: SrcZip.java
+      expect:
+        - '^putValで空のビンにCASで入れる: true$'
+        - '^putValでビンの先頭のノードをロックにする: true$'
+        - '^getはロックを取らない: true$'
+
+  - id: chm-atomic-ops
+    claim: ConcurrentHashMapのputIfAbsent・replace・computeIfAbsentは原子的に実行される。containsKeyとputに分けた「なければ作る」は、複数のスレッドが同時に作ってしまうことがあり、computeIfAbsentでは関数は1回しか呼ばれない
+    text:
+      - さらに、putIfAbsent、replace、computeIfAbsentのように、確認と更新を組み合わせた操作を1つのアトミックな操作として実行できます。
+      - 「キーがなければ追加する」という処理をcontainsKeyとputに分けて書くと、そのあいだにほかのスレッドが割り込むので、こうしたメソッドを使います。
+    sources:
+      - title: java.util.concurrent.ConcurrentHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html
+        anchor: The entire method invocation is performed atomically. The supplied function is invoked exactly once per invocation of this method if the key is absent
+      - title: java.util.concurrent.ConcurrentMap（Java SE 25 API。putIfAbsent・replace）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentMap.html
+        anchor: except that the action is performed atomically
+    verify:
+      kind: run
+      probe: SharedCollections.java
+      args: [compute]
+      expect:
+        - '^containsKeyとput: 2回以上作った回がある$'
+        - '^computeIfAbsent: 作った回数は最大1回$'
+      attempts: 3
+
+  # ---- Executorフレームワーク
+  - id: thread-stack-size
+    claim: スレッドのスタックの既定の大きさはOSとCPUで異なり、x64のLinuxとmacOSでは1024KB、AArch64のLinuxとmacOSでは2048KB。-Xssで変えられる
+    text:
+      - 既定の大きさはOSとCPUで異なり、x64のLinuxとmacOSでは1MB、AArch64のLinuxとmacOSでは2MBです
+      - スタックの大きさは、javaコマンドの-Xssオプションで変えられます。
+      - 1MBでも、10,000スレッドでは約10GBの領域を予約することになり
+    note: 2026-11-19に本文を直した。以前は「64ビット環境の既定では1MB程度」「10,000スレッドでは最大で約10GB」だったが、AArch64（Appleシリコンのmacなど）の既定は2MB。この環境（macOS aarch64）では2048、DockerのLinux（eclipse-temurin:25-jdk）ではamd64で1024、aarch64で2040（ガード領域の分が引かれる）だった。プローブはx64なら1024、aarch64なら2040か2048であることを照合する
+    sources:
+      - title: The java Command（Java SE 25）-Xss
+        url: https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html
+        anchor: "Linux/x64: 1024 KB Linux/Aarch64: 2048 KB macOS/x64: 1024 KB macOS/Aarch64: 2048 KB"
+    verify:
+      kind: run
+      probe: StackSize.java
+      expect: ['(x86_64|amd64): ThreadStackSize=1024$|aarch64: ThreadStackSize=(2040|2048)$']
+
+  - id: thread-oom
+    claim: OSが許すスレッドの数やメモリの上限に達すると、新しいスレッドを作れずにOutOfMemoryError（unable to create native thread）が発生する
+    text: OSが許すスレッドの数やメモリの上限に達すると、スレッドを作れずにOutOfMemoryErrorが発生します。
+    sources:
+      - title: OpenJDK jdk-25-ga src/hotspot/share/prims/jvm.cpp（JVM_StartThread）
+        url: https://raw.githubusercontent.com/openjdk/jdk/jdk-25-ga/src/hotspot/share/prims/jvm.cpp
+        anchor: os::native_thread_creation_failed_msg());
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: "手元のmacOSではOS全体の上限に触れるので試さず、DockerのLinux（eclipse-temurin:25-jdk、--pids-limit 300）で確かめた。スレッドを作り続けると278個目で「java.lang.OutOfMemoryError: unable to create native thread: possibly out of memory or process/resource limits reached」になった。HotSpotのJVM_StartThreadは、ネイティブのスレッドを作れないときこのOutOfMemoryErrorを投げる（APIドキュメントには記載がない）"
+
+  - id: virtual-threads-cheap
+    claim: 仮想スレッドはOSのスレッドに縛られない軽いスレッドで、10,000個の仮想スレッドがそれぞれ1秒sleepしても全体は数秒で終わる。Thread.ofVirtual()やExecutors.newVirtualThreadPerTaskExecutor()で作れる
+    text:
+      - 仮想スレッドなら、大量のタスクにそれぞれスレッドを割り当ててもメモリと切り替えの負担を抑えられます。
+      - 仮想スレッドはThread.ofVirtual()やExecutors.newVirtualThreadPerTaskExecutor()で作れます。
+    sources:
+      - title: "JEP 444: Virtual Threads"
+        url: https://openjdk.org/jeps/444
+        anchor: virtual threads are simply threads that are cheap to create and almost infinitely plentiful
+    verify:
+      kind: run
+      probe: VirtualMany.java
+      expect:
+        - '^終わったタスク: 10000、すべて仮想スレッド: true$'
+        - '^5秒未満で終わった$'
+        - '^Thread.ofVirtual\(\)で作ったスレッドのisVirtual: true$'
+
+  - id: pool-reuse
+    claim: スレッドプールはスレッドを使い回し、スレッドの数に上限を設ける。3スレッドのプールに10個のタスクを投入すると、使われるスレッドは3つで、同時に動くタスクは3つまで、残りはキューで待つ
+    text:
+      - スレッドプールはスレッドを使い回すので、タスクごとにスレッドを生成・破棄するコストがかかりません。
+      - 作るスレッドの数に上限を設けられるため、スレッドが増えすぎてシステムが不安定になることも防げます。
+      - スレッドが空いていないときに届いたタスクは、キューで実行を待ちます。
+      - 3つのスレッドで10個のタスクを処理するので、タスクは3つずつ実行され、残りはキューで順番を待ちます。
+    sources:
+      - title: java.util.concurrent.Executors（Java SE 25 API）newFixedThreadPool
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: Creates a thread pool that reuses a fixed number of threads operating off a shared unbounded queue.
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [reuse]
+      expect:
+        - '^10個のタスクを実行したスレッドの数: 3$'
+        - '^同時に動いたタスクの最大数: 3$'
+
+  - id: pool-exception
+    claim: executeで投入したタスクが例外を投げても、スレッドプールは次のタスクを実行する。ただし例外を投げたワーカーのスレッドは終わり、プールが新しいスレッドに置き換える
+    text: また、タスクの実行時に例外が発生しても、スレッドプールはそのまま動作を続けます。
+    simplified: true
+    note: プールとしては動き続けるが、executeで投入したタスクの例外はワーカーのスレッドを終わらせ（捕まえられなかった例外として表示される）、プールが新しいスレッドを作る（pool-1-thread-1の次がpool-1-thread-2）。submitで投入したタスクの例外はFutureに入り、get()でExecutionExceptionとして受け取る
+    sources:
+      - title: java.util.concurrent.ThreadPoolExecutor（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html
+        anchor: internal worker threads may in turn fail, abruptly terminate, and possibly be replaced
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [exception]
+      expect:
+        - '^例外の後のタスクを実行した: true$'
+        - '^例外を投げたタスクのスレッド: pool-1-thread-1、次のタスクのスレッド: pool-1-thread-2$'
+
+  - id: pool-kinds
+    claim: newFixedThreadPoolは決まった数のスレッドを使い回すプール、newCachedThreadPoolは空いたスレッドがあれば再利用し、なければ新しく作るプールで短いタスクを多く実行するときに向く、newSingleThreadExecutorは1つのスレッドで順に実行する、newScheduledThreadPoolは一定時間後や一定間隔でタスクを実行できる
+    text:
+      - 空いたスレッドがあれば再利用し、なければ新しく作るプール
+      - I/O待機が多い短いタスクに向く
+      - 単一スレッドで順次実行するプール
+      - 一定時間後や一定間隔でタスクを実行できるプール
+    simplified: true
+    note: APIドキュメントは、newCachedThreadPoolが向くのを「短い非同期のタスクを多く実行するプログラム」と書いている（I/O待ちには触れていない）。「CPUで計算し続けるタスクでは、スレッド数をCPUのコア数程度にする」は設計の目安で、APIドキュメントの記述ではない
+    sources:
+      - title: java.util.concurrent.Executors（Java SE 25 API）newCachedThreadPool
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: Creates a thread pool that creates new threads as needed, but will reuse previously constructed threads when they are available.
+      - title: 同（短いタスク）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: improve the performance of programs that execute many short-lived asynchronous tasks
+      - title: 同 newSingleThreadExecutor
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: Creates an Executor that uses a single worker thread operating off an unbounded queue.
+      - title: 同 newScheduledThreadPool
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: Creates a thread pool that can schedule commands to run after a given delay, or to execute periodically.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: ExecutorsのAPIドキュメントの各メソッドの説明を読んで確かめた
+
+  - id: shutdown
+    claim: shutdown()を呼ぶと新しいタスクは受け付けず（RejectedExecutionException）、投入済みのタスクは終えてから停止する。awaitTerminationは停止を指定した時間だけ待ち、時間内に終わらなければfalseを返す
+    text:
+      - shutdown()を呼ぶと、新しいタスクを受け付けなくなり、投入済みのタスクを終えてからスレッドプールが停止します。
+      - awaitTerminationは停止を指定した時間だけ待ち
+    sources:
+      - title: java.util.concurrent.ExecutorService（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ExecutorService.html
+        anchor: Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted.
+      - title: 同 awaitTermination
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ExecutorService.html
+        anchor: Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [shutdown]
+      expect:
+        - '^shutdown\(\)の後のexecute: RejectedExecutionException$'
+        - '^awaitTerminationの戻り値: true、終えたタスク: 5/5$'
+        - '^時間内に終わらないときのawaitTerminationの戻り値: false$'
+
+  - id: shutdown-now
+    claim: shutdownNow()は実行中のタスクに割り込み（Thread.interrupt）、まだ始まっていないタスクを実行せずにリストで返す
+    text: 時間内に終わらなければshutdownNow()で実行中のタスクに割り込みます。
+    note: 割り込みは実装の典型（APIドキュメントは「typical implementations will cancel via Thread.interrupt()」）。ThreadPoolExecutorは割り込みで止める
+    sources:
+      - title: java.util.concurrent.ExecutorService（Java SE 25 API）shutdownNow
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ExecutorService.html
+        anchor: Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were awaiting execution.
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [shutdownNow]
+      expect:
+        - '^実行中のタスク: InterruptedExceptionで中断した$'
+        - '^shutdownNow\(\)が返した、待っていたタスクの数: 3$'
+
+  - id: shutdown-forgotten
+    claim: Executorsが作るプールのスレッドはデーモンでなく、タスクが終わっても生き残る。JVMはデーモンでないスレッドがすべて終わるまで終了しないので、shutdown()を呼ばないとプログラムが終わらない
+    text:
+      - shutdown()を呼ばないと、スレッドプールのスレッドが残り、プログラムが終了しません。
+      - shutdown()を呼ばないと、スレッドプールが残ってプログラムが終了しない
+    note: newFixedThreadPoolで確かめた。newCachedThreadPoolのスレッドは60秒使われないと終わるので、その後はプログラムが終わる
+    sources:
+      - title: java.util.concurrent.Executors（Java SE 25 API）defaultThreadFactory
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: Each new thread is created as a non-daemon thread
+      - title: java.lang.Thread（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
+        anchor: The shutdown sequence begins when all started non-daemon threads have terminated.
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [nondaemon]
+      expect:
+        - '^タスクが終わって1秒後: スレッドは生きている、デーモン: false$'
+        - '^shutdown\(\)の後: スレッドは終わった$'
+
+  - id: littles-law
+    claim: リトルの法則L = λWは、1961年にJohn D. C. LittleがOperations Researchの論文で証明した。1秒に20個届き1つに0.5秒かかるタスクは、同時に約10個が処理中になる
+    text:
+      - 1961年にジョン・リトル（John D. C. Little）が証明したことから、この名前で呼ばれます。
+      - たとえば1秒に20個のタスクが届き、1つに0.5秒かかるなら、同時に10個のタスクを処理できるスレッドが要ります。
+    note: 論文の書誌（題名「A Proof for the Queuing Formula L = λW」、1961年6月）はCrossrefで確かめた。INFORMSのページはスクリプトから開けない（403）。プローブは50ミリ秒ごとに0.5秒かかるタスクを3秒間投入し、同時に処理中のタスクの数のもっとも多かった値が10であることを照合する
+    sources:
+      - title: "Little: A Proof for the Queuing Formula（Operations Research 9(3), 1961）のCrossrefの書誌"
+        url: https://api.crossref.org/works/10.1287/opre.9.3.383
+        anchor: '"published-print":{"date-parts":[[1961,6]]}'
+      - title: 同（要約）
+        url: https://api.crossref.org/works/10.1287/opre.9.3.383
+        anchor: It is shown that, if the three means are finite
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [little]
+      expect: ['^同時に処理していたタスクの数（もっとも多かった値）: 10$']
+      attempts: 3
+
+  - id: fixed-pool-unbounded
+    claim: Executors.newFixedThreadPoolのキューはLinkedBlockingQueueで、容量はInteger.MAX_VALUE（事実上の上限なし）
+    text: Executors.newFixedThreadPoolが使うキューには上限がないため、タスクが届く速さに処理が追いつかないと、キューがメモリを使い続けます。
+    simplified: true
+    note: 容量はInteger.MAX_VALUE（約21億）で、厳密には上限がある。メモリが先に尽きるので、本文は「上限がない」と書いている。APIドキュメントもunbounded queueと呼ぶ
+    sources:
+      - title: java.util.concurrent.Executors（Java SE 25 API）newFixedThreadPool
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Executors.html
+        anchor: operating off a shared unbounded queue
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [queue]
+      expect: ['^newFixedThreadPoolのキュー: LinkedBlockingQueue、残りの容量: 2147483647（Integer.MAX_VALUE）$']
+
+  - id: rejection-policy
+    claim: ThreadPoolExecutorの拒否ポリシーの既定はAbortPolicyで、キューがあふれたタスクにはRejectedExecutionExceptionをスローする。CallerRunsPolicyでは、タスクを投入したスレッド自身がそのタスクを実行し、投入の速さが落ちる
+    text:
+      - AbortPolicy（既定）はRejectedExecutionExceptionをスローし、CallerRunsPolicyはタスクを投入したスレッド自身にそのタスクを実行させます。
+      - CallerRunsPolicyでは投入する側が実行で手いっぱいになるので、タスクを投入する速さが自然に落ちます。
+    sources:
+      - title: java.util.concurrent.ThreadPoolExecutor（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html
+        anchor: In the default ThreadPoolExecutor.AbortPolicy, the handler throws a runtime RejectedExecutionException upon rejection.
+      - title: 同（CallerRunsPolicy）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html
+        anchor: This provides a simple feedback control mechanism that will slow down the rate that new tasks are submitted.
+    verify:
+      kind: run
+      probe: Pools.java
+      args: [reject]
+      expect:
+        - '^コンストラクターで指定しないときの拒否ポリシー: AbortPolicy$'
+        - '^AbortPolicy: RejectedExecutionException$'
+        - '^CallerRunsPolicy: あふれたタスクを実行したスレッド: main$'
+
+  # ---- プロデューサー・コンシューマー
+  - id: blocking-queue-wait
+    claim: BlockingQueueのput()はキューが満杯なら空きができるまで待ち、take()はキューが空なら要素が入るまで待つ（待つあいだスレッドはWAITING）
+    text:
+      - put()はキューが満杯なら空きができるまで待ち、take()はキューが空なら要素が入るまで待ちます。
+      - サンプルコード15-12のようにキューの容量を決めておけば、キューが満杯のときにput()で生産者が待つので、生産の速さが消費の速さに合わせて抑えられます。
+    sources:
+      - title: java.util.concurrent.BlockingQueue（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/BlockingQueue.html
+        anchor: Inserts the specified element into this queue, waiting if necessary for space to become available.
+      - title: 同 take
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/BlockingQueue.html
+        anchor: Retrieves and removes the head of this queue, waiting if necessary until an element becomes available.
+    verify:
+      kind: run
+      probe: Queues.java
+      args: [blocking]
+      expect:
+        - '^満杯のキューにputしたスレッド: WAITING$'
+        - '^1つ取り出した後: TERMINATED（キューの要素: \[2\]）$'
+        - '^空のキューからtakeしたスレッド: WAITING$'
+        - '^1つ入れた後: TERMINATED（受け取った値: 42）$'
+
+  - id: blocking-queue-kinds
+    claim: ArrayBlockingQueueは配列を使う固定容量のキュー、LinkedBlockingQueueは連結リストを使い容量を指定しなければInteger.MAX_VALUE、PriorityBlockingQueueは容量の上限がなく順序の小さい要素から取り出す、SynchronousQueueは容量0で、putは相手のtakeが来るまで待つ
+    text:
+      - 配列を使う固定容量のキュー
+      - 連結リストを使うキューで、容量を指定しなければ上限がない
+      - 優先度の高い要素から取り出すキュー（容量の上限はない）
+      - 容量0のキューで、put()は相手のtake()が来るまで待ち、要素を直接受け渡す
+    simplified: true
+    note: LinkedBlockingQueueの既定の容量はInteger.MAX_VALUEで、厳密には上限がある。PriorityBlockingQueueはPriorityQueueと同じ順序（自然順序かComparator）で先頭の要素（最小）から取り出す。「優先度の高い」は、その順序で先に来る要素のこと（整数なら小さいほうが先）
+    sources:
+      - title: java.util.concurrent.ArrayBlockingQueue（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ArrayBlockingQueue.html
+        anchor: A bounded blocking queue backed by an array.
+      - title: java.util.concurrent.LinkedBlockingQueue（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/LinkedBlockingQueue.html
+        anchor: The capacity, if unspecified, is equal to Integer.MAX_VALUE.
+      - title: java.util.concurrent.PriorityBlockingQueue（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/PriorityBlockingQueue.html
+        anchor: An unbounded blocking queue that uses the same ordering rules as class PriorityQueue
+      - title: java.util.concurrent.SynchronousQueue（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/SynchronousQueue.html
+        anchor: A synchronous queue does not have any internal capacity, not even a capacity of one.
+    verify:
+      kind: run
+      probe: Queues.java
+      args: [kinds]
+      expect:
+        - '^ArrayBlockingQueue\(5\)の残りの容量: 5$'
+        - '^LinkedBlockingQueue\(\)の残りの容量: 2147483647（Integer.MAX_VALUE）$'
+        - '^PriorityBlockingQueue\(\)の残りの容量: 2147483647（Integer.MAX_VALUE）$'
+        - '^SynchronousQueueの残りの容量: 0、offerの結果（相手がいないとき）: false$'
+        - '^PriorityBlockingQueueに30・10・20を入れて取り出す順: 10・20・30$'
+
+  - id: synchronous-queue-handoff
+    claim: SynchronousQueueのput()は、相手のtake()が来るまで待ち（WAITING）、takeした相手に要素を直接渡す
+    unreferenced: true
+    verify:
+      kind: run
+      probe: Queues.java
+      args: [blocking]
+      expect:
+        - '^SynchronousQueueにputしたスレッド（相手のtakeが来るまで）: WAITING$'
+        - '^SynchronousQueueのtakeで受け取った値: 7$'
+
+  # ---- wait・notify
+  - id: wait-notify
+    claim: wait()は現在のスレッドを待機させ、そのオブジェクトのロックを解放する。notify()は待機中のスレッドを1つ、notifyAll()はすべてを起こす。ロック（モニター）を持たずに呼ぶとIllegalMonitorStateException
+    text:
+      - 現在のスレッドを待機状態にし、ロックを解放する
+      - 同じオブジェクトで待機中のスレッドを1つ起こす
+      - 同じオブジェクトで待機中のスレッドをすべて起こす
+      - これらのメソッドは、そのオブジェクトのsynchronizedブロックの内側で呼び出します。
+    note: 正確には「そのオブジェクトのモニターを持っているスレッドが呼ぶ」で、synchronizedメソッドの中から呼んでもよい
+    sources:
+      - title: java.lang.Object（Java SE 25 API）wait
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: to place itself in the wait set for this object and then to relinquish any and all synchronization claims on this object
+      - title: 同 notify・notifyAll
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: Wakes up a single thread that is waiting on this object's monitor.
+      - title: 同 IllegalMonitorStateException
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: IllegalMonitorStateException - if the current thread is not the owner of this object's monitor.
+    verify:
+      kind: run
+      probe: WaitNotify.java
+      expect:
+        - '^wait\(\)中のスレッドがいても、ほかのスレッドがロックを取れた$'
+        - '^notify\(\): 2つ待っているうち、起きたのは1つ$'
+        - '^notifyAll\(\)の後: 起きたのは合わせて2つ$'
+        - '^ロックを持たずにwait\(\): IllegalMonitorStateException$'
+        - '^ロックを持たずにnotify\(\): IllegalMonitorStateException$'
+
+  - id: spurious-wakeup
+    claim: スレッドは通知・割り込み・時間切れがなくてもwait()から戻ることがある（偽の起床）。そのため、条件を確かめて待ち直すループで囲んで呼ぶ
+    text:
+      - ところが、スレッドは通知を受けていないのにwait()から復帰することがあります。
+      - これを偽の起床（Spurious Wakeup）と呼びます
+      - wait()は必ずこの形のループで囲んで呼び出します。
+      - wait()はwhileのループで囲んで呼ぶ
+    note: 偽の起床は仕様が許していることで、意図して起こす方法はないので観察しない
+    sources:
+      - title: java.lang.Object（Java SE 25 API）wait
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
+        anchor: A thread can wake up without being notified, interrupted, or timing out, a so-called spurious wakeup.
+      - title: JLS 25 17.2.1 Wait
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
+        anchor: perform "spurious wake-ups"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: Objectのwaitの説明（偽の起床と、条件をwhileで確かめるコード例）と、JLS 25の17.2.1を読んで確かめた
+
+  - id: pthread-spurious
+    claim: POSIXのpthread_cond_waitも偽の起床を起こしうるので、条件を確かめるループで呼ぶ
+    text: C言語でPOSIXスレッドの条件変数を待つpthread_cond_waitも偽の起床を起こしうるので、同じようにループで囲んで呼び出します。
+    sources:
+      - title: pthread_cond_wait（The Open Group Base Specifications Issue 8）
+        url: https://pubs.opengroup.org/onlinepubs/9799919799/functions/pthread_cond_wait.html
+        anchor: Spurious wakeups from the pthread_cond_clockwait (), pthread_cond_timedwait (), or pthread_cond_wait () functions may occur.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: POSIXの仕様（Issue 8）の説明で、偽の起床が起こりうることと、述語を確かめ直すべきことを確かめた
+
+  # ---- Semaphore
+  - id: semaphore
+    claim: Semaphoreは許可証（permit）の数を管理する。new Semaphore(3)の許可証は3枚で、acquire()で1枚受け取り、release()で1枚返す。許可証がないときのacquire()は、release()されるまで待つ
+    text:
+      - java.util.concurrent.Semaphoreは、同時に使える資源の数を「許可証」の数で管理するクラスです
+      - new Semaphore(3)で作ると許可証は3枚になり、acquire()で1枚受け取り、release()で1枚返します。
+      - 許可証が残っていないときにacquire()を呼んだスレッドは、ほかのスレッドがrelease()するまで待ちます。
+    sources:
+      - title: java.util.concurrent.Semaphore（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Semaphore.html
+        anchor: Conceptually, a semaphore maintains a set of permits. Each acquire() blocks if necessary until a permit is available
+    verify:
+      kind: run
+      probe: SemaphoreProbe.java
+      expect:
+        - '^new Semaphore\(3\)の許可証: 3$'
+        - '^acquire\(\)を1回呼んだ後: 2$'
+        - '^許可証がないときにacquire\(\)したスレッド: WAITING$'
+        - '^release\(\)で1枚返した後: TERMINATED、許可証: 1$'
+
+  - id: semaphore-dijkstra
+    claim: セマフォはダイクストラが1960年代に考案した同期のしくみで、名前は鉄道の信号機に由来する
+    text: セマフォは、オランダの計算機科学者エドガー・ダイクストラが1960年代に考案した同期のしくみです。名前は鉄道の腕木式信号機（semaphore）に由来します。
+    note: ダイクストラはEWD 74「Over seinpalen」（1962〜63年ごろ、オランダ語。seinpaalは鉄道の信号柱）でこのしくみを書き、EWD 123「Cooperating sequential processes」（1965年）で英語のsemaphoreと呼んだ。腕木式信号機が由来だと本人が明言した文書は見つけていない（英語のsemaphoreが腕木式の鉄道信号を指すことと、EWD 74の題名からの推定）
+    sources:
+      - title: "E.W. Dijkstra Archive: Over seinpalen（EWD 74）"
+        url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD00xx/EWD74.html
+        anchor: Over seinpalen
+      - title: "E.W. Dijkstra Archive: Cooperating sequential processes（EWD 123）"
+        url: https://www.cs.utexas.edu/~EWD/transcriptions/EWD01xx/EWD123.html
+        anchor: which we shall call "semaphores"
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  # ---- Future・Callable
+  - id: callable-future
+    claim: Callableは値を返し、検査例外をスローできるタスク（Runnableは値を返さず、検査例外をスローできない）。Futureは非同期の計算の結果を表し、完了を待って結果を受け取れ、cancelでキャンセルできる
+    text:
+      - Callableは検査例外をスローできます。
+      - Futureインターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
+      - 実行中のタスクをキャンセルすることもできます。
+    sources:
+      - title: java.util.concurrent.Callable（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Callable.html
+        anchor: A Runnable, however, does not return a result and cannot throw a checked exception.
+      - title: java.util.concurrent.Future（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html
+        anchor: A Future represents the result of an asynchronous computation. Methods are provided to check if the computation is complete, to wait for its completion
+      - title: 同（キャンセル）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html
+        anchor: Cancellation is performed by the cancel method.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: CallableとFutureのAPIドキュメントを読んで確かめた
+
+  # ---- CompletableFuture
+  - id: future-wait-only
+    claim: Futureで結果を使うには、get()で待つか、isDone()で完了を調べてから受け取る。結果を受け取ったあとの処理を登録するメソッドはない
+    text: 従来のFutureでは結果を受け取るまで待つしかありませんでしたが
+    simplified: true
+    note: FutureにはisDone()もあるので、待たずに完了を調べることはできる（ポーリング）。続けて行う処理を登録できないことが、CompletableFutureとの違い
+    sources:
+      - title: java.util.concurrent.Future（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html
+        anchor: Methods are provided to check if the computation is complete
+    verify:
+      kind: manual
+      checked: 2026-11-19
+      note: FutureのメソッドがisDone・get・cancel・isCancelledなど（JDK 19からstate・resultNowなども）で、完了時の処理を登録するものがないことを確かめた
+
+  - id: cf-thread
+    claim: thenApplyは、前の処理がまだ終わっていなければ前の処理を終えたスレッドで、すでに終わっていればthenApplyを呼んだスレッドで実行される。thenApplyAsyncは既定ではForkJoinPoolの共通プールのスレッドで実行される
+    text:
+      - 前の処理を終えたスレッドで、続けて結果を変換
+      - 別のスレッド（スレッドプール）で結果を変換
+      - 合計金額の計算は注文履歴の取得を終えたスレッドで続けて実行されます
+      - thenApplyを呼んだ時点で前の処理がすでに終わっていれば、thenApplyを呼んだスレッドで変換します。
+    sources:
+      - title: java.util.concurrent.CompletableFuture（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: may be performed by the thread that completes the current CompletableFuture, or by any other caller of a completion method
+      - title: 同（非同期のメソッドの既定）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: as well as those involving delays are performed using the ForkJoinPool.commonPool()
+    verify:
+      kind: run
+      probe: Futures.java
+      args: [threads]
+      expect:
+        - '^supplyAsyncのタスク: ForkJoinPool.commonPool-worker$'
+        - '^終わる前に呼んだthenApply: ForkJoinPool.commonPool-worker$'
+        - '^終わった後に呼んだthenApply: main$'
+        - '^thenApplyAsync: ForkJoinPool.commonPool-worker$'
+
+  - id: cf-exception
+    claim: 連鎖の途中で例外が起きると、後のthenApplyは実行されずに飛ばされ、exceptionallyやhandleが例外（CompletionExceptionで包まれ、原因が元の例外）を受け取って値を返せる。get()はExecutionExceptionを投げる
+    text:
+      - exceptionally、handleで例外が起きたときの処理を書く
+      - 途中で例外が起きたときは、exceptionallyで0を返します。
+    note: exceptionallyが受け取る例外は、supplyAsyncの中で投げた例外そのものではなくCompletionExceptionで包まれている。getMessage()は「java.lang.IllegalStateException 取得に失敗」の形になる（サンプルコード15-16のexceptionallyのgetMessage()もこの形で表示される）
+    sources:
+      - title: java.util.concurrent.CompletableFuture（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: CompletionException with the underlying exception as its cause
+    verify:
+      kind: run
+      probe: Futures.java
+      args: [exception]
+      expect:
+        - '^exceptionallyが受け取った例外: java\.util\.concurrent\.CompletionException$'
+        - '^その原因: java\.lang\.IllegalStateException$'
+        - '^exceptionallyの結果: 0$'
+        - '^途中のthenApplyを実行した: false$'
+        - '^get\(\)が投げた例外: ExecutionException（原因: IllegalStateException）$'
+        - '^handleの結果: 失敗を処理した$'
+
+  - id: cf-or-timeout
+    claim: orTimeoutは、決めた時間内に終わらないCompletableFutureをTimeoutExceptionで例外として完了させる（orTimeoutはJava 9で加わった）
+    text: orTimeoutメソッドで、決めた時間内に終わらない処理を例外にする
+    note: CompletableFuture自体はJava 8だが、orTimeoutはJava 9から（APIドキュメントの「Since 9」）。本文は版を書いていない
+    sources:
+      - title: java.util.concurrent.CompletableFuture（Java SE 25 API）orTimeout
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
+        anchor: Exceptionally completes this CompletableFuture with a TimeoutException if not otherwise completed
+    verify:
+      kind: run
+      probe: Futures.java
+      args: [timeout]
+      expect: ['^orTimeoutで時間内に終わらなかったとき: java\.util\.concurrent\.TimeoutException$']
+
+  # ---- 並列化の効果
+  - id: nano-time
+    claim: System.nanoTime()は経過時間を測るためのもので、時刻とは関係しない
+    text: 効果は、System.nanoTime()で処理の前後の時刻を取り、実際に時間を測って確かめます
+    simplified: true
+    note: nanoTimeの値は任意の起点からのナノ秒で、壁時計の時刻ではない。本文の「時刻を取り」は、前後の値の差を取る意味
+    sources:
+      - title: java.lang.System（Java SE 25 API）nanoTime
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html
+        anchor: This method can only be used to measure elapsed time and is not related to any other notion of system or wall-clock time.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: fork-join
+    claim: Fork/JoinフレームワークはForkJoinPoolとRecursiveTaskなどで構成され、fork()はタスクを非同期に実行するように手配し、join()は計算が終わったときの結果を返す
+    text:
+      - 大きな処理を小さく分けて並列に計算するしくみとして、Fork/Joinフレームワーク（ForkJoinPoolとRecursiveTask）があります。
+      - 範囲が大きければ2つに分け、片方を別のスレッドに任せ（fork）、もう片方を自分で計算してから結果を待って合わせます（join）。
+    sources:
+      - title: java.util.concurrent.ForkJoinTask（Java SE 25 API）fork
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ForkJoinTask.html
+        anchor: Arranges to asynchronously execute this task in the pool the current task is running in
+      - title: 同 join
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ForkJoinTask.html
+        anchor: Returns the result of the computation when it is done.
+      - title: java.util.concurrent.RecursiveTask（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/RecursiveTask.html
+        anchor: A recursive result-bearing ForkJoinTask.
+    verify:
+      kind: manual
+      checked: 2026-11-19
+
+  - id: fork-join-users
+    claim: 並列ストリームとArrays.parallelSortは、ForkJoinPoolの共通プールのスレッド（と呼び出したスレッド）で処理を分けて実行する
+    text: 第12章の並列ストリームやArrays.parallelSortも、内部ではこのしくみを使っています。
+    note: 共通プールの並列度が1以下（コアが1つなど）のときは並列に実行しない。呼び出したスレッド（main）も処理に加わる
+    sources:
+      - title: java.util.Arrays（Java SE 25 API）parallelSort
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html
+        anchor: The ForkJoin common pool is used to execute any parallel tasks.
+    verify:
+      kind: run
+      probe: ForkJoinUse.java
+      expect:
+        - '^共通プールの並列度が2以上: true$'
+        - '^並列ストリーム: \[ForkJoinPool.commonPool-worker, main\]$'
+        - '^Arrays.parallelSort: \[ForkJoinPool.commonPool-worker, main\]$'

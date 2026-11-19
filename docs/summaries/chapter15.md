@@ -7,7 +7,7 @@ sections:
   - key: "並行処理の世界への招待"
     hash: a1970679
   - key: "マルチスレッドプログラミングの基礎"
-    hash: 7a324db7
+    hash: ae21c81d
   - key: "並列化の効果を確かめる"
     hash: 07cb8992
   - key: "よくあるエラーと対処法"
@@ -47,10 +47,10 @@ sections:
 - マルチスレッドプログラミングの基礎（L182–1010）
     + スレッドの定義。マルチスレッドが役立つ場面（マルチコア、GUI、サーバー）。GUIでのスレッドは第18章・第19章へ誘導する
     + スレッドの状態遷移の説明と図。Runnableの実装とラムダ式（15-3）、Threadの継承を本書で使わない理由、start()とrun()の違い
-    + ATMの二重引き出しによる競合状態と図、count++の非原子性（15-4）、synchronizedメソッド（15-5）と図、デッドロックの図とCoffman条件・ロック順序による防止、synchronizedブロック（15-6。残高を`double`で持つのは説明のためで、お金は第6章の`BigDecimal`で扱う旨）、同期化が性能に与える影響。15-5の`getCount`もsynchronizedにする理由は、ほかのスレッドが書いた最新の値を読むため
-    + volatileによるフラグ停止（15-7）と複合操作には使えない注意、Atomicクラス（15-8。2026-11-14にExecutorServiceを使わずThreadの配列とjoinで書き直した）、Atomicとsynchronizedの速さの比較
+    + ATMの二重引き出しによる競合状態と図、count++の非原子性（15-4）、synchronizedメソッド（15-5）と図、デッドロックの図とCoffman条件・ロック順序による防止、synchronizedのロックはオブジェクトごとで、別々のオブジェクトなら同時に実行できる旨（2026-11-19）、synchronizedブロック（15-6。残高を`double`で持つのは説明のためで、お金は第6章の`BigDecimal`で扱う旨）、同期化が性能に与える影響。15-5の`getCount`もsynchronizedにする理由は、ほかのスレッドが書いた最新の値を読むため
+    + volatileによるフラグ停止（15-7）と複合操作には使えない注意、Atomicクラス（15-8。2026-11-14にExecutorServiceを使わずThreadの配列とjoinで書き直した）、Atomicとsynchronizedの比較（ロックを待って止まらないこと。速さは条件で変わるので測る。2026-11-19に実測と合わない記述を直した）
     + HashMapとConcurrentHashMap（15-9）、バケットごとの排他制御とアトミックな複合操作
-    + スレッドの無制限生成の問題（15-10）。スタックは最大で約10GBを予約、仮想スレッドの脚注（`Thread.ofVirtual()`と`Executors.newVirtualThreadPerTaskExecutor()`）
+    + スレッドの無制限生成の問題（15-10）。スタックの既定はx64で1MB・AArch64で2MBで、1MBでも1万スレッドで約10GBを予約（2026-11-19）、仮想スレッドの脚注（`Thread.ofVirtual()`と`Executors.newVirtualThreadPerTaskExecutor()`）
     + ExecutorServiceとスレッドプールの利点と図、種類、固定スレッドプールとシャットダウン（15-11）、リトルの法則によるスレッド数の見積もり、キューの大きさと拒否ポリシー（`AbortPolicy`は`RejectedExecutionException`をスローする）
     + BlockingQueueによるプロデューサー・コンシューマー（15-12）と実装クラス、容量に上限を設ける理由
     + wait()とnotify()、ifとwhileの違い（15-13）と偽の起床、Semaphoreによる同時実行数の制限
