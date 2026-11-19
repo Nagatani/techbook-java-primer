@@ -11,6 +11,7 @@
 | `check-java-samples.js` | `check:java`、`check:java:run` | 全文を公開していない番号付きサンプルをjavacでコンパイルし、実行結果を照合する |
 | `check-public-code.js` | `check:public-code` | `appendix/`と`exercises/`のコードをJava 25でコンパイルし、テストをJUnitで実行する |
 | `check-claims.js` | `check:deep-dive`、`check:claims` | 付録B（Deep Dive）と本文の主張を、台帳（付録Bは節の`claims.yml`、本文は`docs/claims/chapterXX.yml`）に書いた方法（`javap`、JVMの実行とログ、フラグの既定値）でJDK 25で確かめる。`--static`は台帳と印の対応とフラグ名だけ（pre-commit）。手順は`docs/guides/claim-verification.md` |
+| `check-api-names.js` | `check:api-names` | 本文のインラインコードに書いたJDKのAPI名が、JDK 25に実在し、削除予定・非推奨でないかを確かめる（`java/ApiNames.java`で引く）。例外は`docs/claims/api-names.yml` |
 | `sample-code.js` | `check:samples`、`samples:sync`、`samples:extract` | `sample-code/`の全文と本文の抜粋を対応づける（検査、本文への反映、番号の振り直し） |
 | `build-book-index.js` | `index`、`index:check` | 節単位の索引（`docs/book-index/`）を作り、要約（`docs/summaries/`）の鮮度を検査する |
 | `git-hooks/pre-commit` | なし | 共有のpre-commitフック。`git config core.hooksPath scripts/git-hooks`で有効にする |

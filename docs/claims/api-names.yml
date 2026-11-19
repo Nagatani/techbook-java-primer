@@ -1,0 +1,6 @@
+# scripts/check-api-names.js の例外（本文で意図して書いた、JDK 25にない名前や非推奨のAPI）
+# 参照: 理由
+allow:
+  java.myapp: 第4章の脚注。javaで始まるパッケージ名を自作すると実行時にSecurityExceptionになる例として書いている
+  java.util.Observer: 第19章の脚注。Java 9で非推奨になったことを説明している
+  java.util.Observable: 第19章の脚注。Java 9で非推奨になったことを説明している

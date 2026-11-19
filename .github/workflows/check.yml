@@ -51,6 +51,10 @@ jobs:
       - name: 図の元データと画像の対応
         run: npm run check:diagrams
 
+      # 本文のインラインコードに書いたJDKのAPI名が、JDK 25に実在し、削除予定でないか
+      - name: 本文のAPI名
+        run: npm run check:api-names
+
       # 主張の台帳（付録Bのclaims.yml、本文のdocs/claims/）と解説・本文の対応、解説に書いたJVMフラグの実在
       - name: 主張の台帳と解説・本文の対応
         run: node scripts/check-claims.js --static

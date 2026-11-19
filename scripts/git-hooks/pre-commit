@@ -44,4 +44,18 @@ if [ $status -ne 0 ]; then
 fi
 echo "主張の台帳: 問題なし"
 
+# 4. 本文のインラインコードに書いたJDKのAPI名（コミットする原稿だけ。javaがなければ省く）
+mss=$(git diff --cached --name-only --diff-filter=ACM | sed -n 's#^manuscripts/\(.*\.md\)$#\1#p' | tr '\n' ' ')
+if [ -n "$mss" ] && command -v java >/dev/null 2>&1; then
+    # shellcheck disable=SC2086
+    out=$(node scripts/check-api-names.js $mss 2>&1)
+    if [ $? -ne 0 ]; then
+        echo "$out" | tail -20
+        echo ""
+        echo "pre-commit: 本文にJDK 25にないAPI名か削除予定のAPIがあるためコミットを中止しました（npm run check:api-names）"
+        exit 1
+    fi
+    echo "APIの名前: 問題なし"
+fi
+
 exit 0
