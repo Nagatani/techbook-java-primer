@@ -16,6 +16,8 @@
 
 ## 検査
 
-- `npm run check:structure`・`check:compliance`・`check:deep-dive -- --static`（pre-commitフック）
-- `check:deep-dive`：付録Bの15節の主張610件（機械で確認506件、手で確認104件）をJDK 25で検証する（2026-11-19〜。節ごとの集計は`docs/analysis/deep-dive-claims.md`、しくみは`docs/guides/deep-dive-verification.md`）
+- `npm run check:structure`・`check:compliance`・`check-claims.js --static`・`check:api-names`（pre-commitフック。主張とAPI名はコミットする節・章・原稿だけ）
+- `check:deep-dive`：付録Bの15節の主張610件（機械で確認506件、手で確認104件）をJDK 25で検証する（2026-11-19〜。節ごとの集計は`docs/analysis/deep-dive-claims.md`、しくみは`docs/guides/claim-verification.md`）
+- `check:claims`：本文の主張を同じしくみで検証する。全章の版の主張と第15章の全体の計約220件（`docs/claims/`、集計は`docs/analysis/manuscript-claims.md`）。ほかの章への広げ方はIssue #034
+- `check:api-names`：本文のインラインコードに書いたJDKのAPI名（約1,100件）がJDK 25に実在し、削除予定でないか
 - `check:samples`・`check:java`・`check:public-code`・`check:diagrams`・`index:check`・`lint`
