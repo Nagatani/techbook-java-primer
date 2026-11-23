@@ -18,7 +18,19 @@ Copyright (c) 2025-2026 Hidehiro Nagatani
    条文は LICENSE-CODE を参照してください。商用・非商用を問わず、自由に利用・改変・
    再配布できます。
 
-3. 上記以外
+3. 本を作る仕組み（MIT License）
 
-   ビルドの仕組み（scripts/、theme/、設定ファイル）など、上記に当たらないファイルの
-   扱いは、個別に著者へお問い合わせください（GitHubのIssue）。
+   本をビルド・検査する仕組み、すなわち scripts/、theme/（下の表紙のデザインを
+   除く）と、vivliostyle.config.js・package.json・.textlintrc.json・prh-rules.yml・
+   .github/ などの設定ファイルも、MITライセンスで公開します。条文は LICENSE-CODE を
+   参照してください。
+
+   ただし、表紙のデザイン（theme/my-theme/cover-theme.css と
+   manuscripts/images/cover-motif.svg）は1の「表紙」に含め、MITライセンスの対象と
+   しません。
+
+4. 上記以外
+
+   docs/ にある文書（執筆の手順書・分析・要約など）は、1と同じく著作権法により
+   保護されています。上記のどれに当たるかわからないファイルは、著者へお問い合わせ
+   ください（GitHubのIssue）。

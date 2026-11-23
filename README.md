@@ -9,7 +9,7 @@ https://vivliostyle.org/viewer/#src=https://nagatani.github.io/techbook-java-pri
 
 ## ライセンス
 
-書籍の文章・図は著作権で保護されています（All Rights Reserved）。`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定ファイルはMITライセンスです。詳しくは`LICENSE`と`LICENSE-CODE`を参照してください。
+書籍の文章・図・表紙と`docs/`の文書は著作権で保護されています（All Rights Reserved）。`sample-code/`・`appendix/`・`exercises/`のソースコードとビルドの設定ファイル、本を作る仕組み（`scripts/`、表紙のデザインを除く`theme/`、設定ファイル）はMITライセンスです。詳しくは`LICENSE`と`LICENSE-CODE`を参照してください。
 
 ## 開発環境
 

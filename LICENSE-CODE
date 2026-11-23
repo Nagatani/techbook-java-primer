@@ -2,9 +2,15 @@ MIT License
 
 Copyright (c) 2025-2026 Hidehiro Nagatani
 
-This license applies to the source code and build configuration files in
-sample-code/, appendix/, and exercises/ of this repository. The book text,
-figures, and documentation are not covered by this license (see LICENSE).
+This license applies to:
+- the source code and build configuration files in sample-code/, appendix/,
+  and exercises/ of this repository, and
+- the tooling that builds and checks the book: scripts/, theme/ (except the
+  cover design, theme/my-theme/cover-theme.css), and the configuration files
+  (vivliostyle.config.js, package.json, .textlintrc.json, prh-rules.yml,
+  .github/, and the like).
+The book text, figures, cover, and documentation are not covered by this
+license (see LICENSE).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
