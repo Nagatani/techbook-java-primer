@@ -172,7 +172,8 @@
     "dir": "04-28",
     "main": null,
     "excerpt": [
-      { "file": "Logger.java", "from": 1, "to": 29 }
+      { "file": "Logger.java", "from": 1, "to": 22 },
+      { "file": "Logger.java", "from": 29, "to": 29 }
     ]
   },
   "4-29": {
@@ -196,7 +197,8 @@
     "dir": "04-32",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 35 }
+      { "file": "BankAccount.java", "from": 1, "to": 2 },
+      { "file": "BankAccount.java", "from": 12, "to": 35 }
     ]
   }
 }

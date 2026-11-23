@@ -1198,7 +1198,7 @@ public class HttpClient {
 受け取る値の型ごとにメソッドを分けると、呼び出す側は型に合ったメソッドを意識せずに使えます。
 ただし、引数の型が重なると、意図しないメソッドが選ばれることがあります。
 
-<span class="listing-number">**サンプルコード4-28**　Logger.java</span>
+<span class="listing-number">**サンプルコード4-28**　Logger.java（1〜22、29行目）</span>
 
 ```java
 public class Logger {
@@ -1223,12 +1223,7 @@ public class Logger {
     public void logf(String format, Object... args) {
         IO.println("[INFO] " + String.format(format, args));
     }
-    
-    // ログレベルを表す定数
-    public static final String LOG_DEBUG = "DEBUG";
-    public static final String LOG_INFO = "INFO";
-    public static final String LOG_WARN = "WARN";
-    public static final String LOG_ERROR = "ERROR";
+    // ...
 }
 ```
 
@@ -1389,20 +1384,12 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
 さらに、複数のスレッド<span class="footnote">スレッドは、1つのプログラムで並行して進む処理の流れです。第15章「マルチスレッドプログラミング」で学びます。</span>から同時に使うと、`getBalance`で読んでから`setBalance`で書き戻すまでの間に別のスレッドが残高を変え、その変更が失われることがあります。
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-32**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード4-32**　BankAccount.java（1〜2、12〜35行目）</span>
 
 ```java
 public class BankAccount {
     private double balance;
-    
-    public BankAccount(double initialBalance) {
-        if (initialBalance < 0) {
-            throw new IllegalArgumentException(
-                    "初期残高は0以上にしてください");
-        }
-        this.balance = initialBalance;
-    }
-    
+    // ...
     // 残高の取得は許可
     public double getBalance() { return balance; }
     
