@@ -23,7 +23,7 @@ sections:
   - key: "標準入出力を扱うサンプルを動かしてみよう"
     hash: 2e0d1c6f
   - key: "よくあるエラーと対処法"
-    hash: 667d96ed
+    hash: d6f3d038
   - key: "まとめ"
     hash: ea4a3cb2
   - key: "章末演習"

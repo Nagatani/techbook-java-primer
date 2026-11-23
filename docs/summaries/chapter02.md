@@ -25,7 +25,7 @@ sections:
   - key: "import文の使い方"
     hash: f32e918a
   - key: "よくあるコンパイルエラーとその対処法"
-    hash: 8f4ebea2
+    hash: 3a0b7d7e
   - key: "まとめ"
     hash: e4eaaa37
   - key: "章末演習"
