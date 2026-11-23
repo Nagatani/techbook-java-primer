@@ -535,7 +535,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（7〜8、19、21〜22、27〜62、63行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（7〜8、19、21〜22、27〜63、64行目）</span>
 
 ```java
 public class OptionalStreamExample {
@@ -556,8 +556,9 @@ public class OptionalStreamExample {
         firstExpensive.ifPresent(p -> 
             IO.println("最初の高額商品: " + p.getName()));
         
-        // findAny() - 任意の要素をOptionalで返す（並列処理に最適）
-        Optional<Product> anyProduct = products.parallelStream()
+        // findAny() - 条件に合う要素のどれか1つをOptionalで返す
+        // （並列ストリームでの性質は、本章の「並列ストリーム」で学ぶ）
+        Optional<Product> anyProduct = products.stream()
             .filter(p -> p.getPrice() < 50)
             .findAny();
         
@@ -751,7 +752,7 @@ public class OptionalAntiPatternsExample {
 受け取った`Optional`は、`map`、`flatMap`、`filter`をつないで、何をするのかが読み取れる宣言的なコードで処理します。
 値がないときのデフォルト値は`orElse`か`orElseGet`で与えます。
 `orElse`の引数は値があっても必ず評価されるので、デフォルト値を作るのに時間がかかる場合は、値がないときだけ呼ばれる`orElseGet`を使います。
-値が存在しない場合の処理は、後回しにせず早い段階で済ませます。
+受け取った`Optional`は、その場で`orElse`や`orElseThrow`などで値を決め、`Optional`のまま別のメソッドへ持ち回らないようにします。
 また、Stream APIと組み合わせると、Optionalを返す操作の結果をそのまま次の処理へつなげられます。
 
 Optionalをメソッドの戻り値やチェイン操作で使うと、NullPointerExceptionを防ぎ、安全で読みやすいコードを書けます。
@@ -768,6 +769,8 @@ Optionalをメソッドの戻り値やチェイン操作で使うと、NullPoint
 > - `Optional`は戻り値に使い、フィールドや引数には使わない
 > - `Optional`型の変数に`null`を入れない（APIドキュメントも、`Optional`型の変数は常に`Optional`のインスタンスを指すべきだと書いている）
 > - 「空のリスト」で表せるものは、`Optional<List<…>>`ではなく空のリストを返す
+>
+> サンプルコード12-13のアンチパターン1〜3も、この約束事に沿ったものです。
 >
 > フィールドに使わない理由の1つは、`Optional`が`Serializable`を実装していないことです。
 > 第14章で学ぶ直列化を使うクラスのフィールドに`Optional`を置くと、そのオブジェクトを保存できなくなります。
@@ -1086,6 +1089,8 @@ public class CollectorsExample {
 ```
 
 `Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句<span class="footnote">SQL（Structured Query Language）は、データベースを操作するための言語です。`GROUP BY`句は、同じ値を持つ行をまとめて集計します。</span>に相当する処理をJavaのコード内で簡潔に実現できます。
+`groupingBy`が返す`Map`の種類は仕様で決められておらず（現在の実装は`HashMap`です）、グループの表示順は保証されません。
+順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します<span class="footnote">`Map`の種類を指定できるのは3つの引数をとる`groupingBy`で、3番目の引数にはグループごとの集め方（`Collectors.toList()`など）を渡します。</span>。
 
 ### nullを含むデータの処理
 
@@ -1265,8 +1270,7 @@ public class ComplexProcessingExample {
 高身長: 86.0点
 ```
 
-`groupingBy`が返す`Map`の種類は仕様で決められておらず（現在の実装は`HashMap`です）、グループの表示順は保証されません。
-順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します<span class="footnote">`Map`の種類を指定できるのは3つの引数をとる`groupingBy`で、3番目の引数にはグループごとの集め方（`Collectors.toList()`など）を渡します。</span>。
+このサンプルでも、グループの表示順は保証されません（サンプルコード12-19の後の説明を参照）。
 
 このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
 

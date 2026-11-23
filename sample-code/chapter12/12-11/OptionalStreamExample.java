@@ -34,8 +34,9 @@ public class OptionalStreamExample {
         firstExpensive.ifPresent(p -> 
             IO.println("最初の高額商品: " + p.getName()));
         
-        // findAny() - 任意の要素をOptionalで返す（並列処理に最適）
-        Optional<Product> anyProduct = products.parallelStream()
+        // findAny() - 条件に合う要素のどれか1つをOptionalで返す
+        // （並列ストリームでの性質は、本章の「並列ストリーム」で学ぶ）
+        Optional<Product> anyProduct = products.stream()
             .filter(p -> p.getPrice() < 50)
             .findAny();
         

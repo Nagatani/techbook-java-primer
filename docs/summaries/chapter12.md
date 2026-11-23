@@ -7,11 +7,11 @@ sections:
   - key: "Stream APIによる現代的なコレクション操作"
     hash: 19bf1cfd
   - key: "Optional型による安全なnull処理"
-    hash: 9dfdcae3
+    hash: 25a265f8
   - key: "並列ストリームによるパフォーマンス向上"
     hash: 6d2916b0
   - key: "高度なStream操作"
-    hash: 4480c7f0
+    hash: 940d9736
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"
@@ -109,3 +109,4 @@ sections:
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
 - 2026-11-18: 校閲で、Gatherer（脚注）・使い終わったストリームの`IllegalStateException`・`parallel()`を足し、12-14の計測を`Instant`から`System.nanoTime`に、12-19の`trim().isEmpty()`を`isBlank()`にした。並列での順序の説明を「リストに集める`collect`」に絞り、小見出しの後とコードブロックの後の空行、読点区切りを直した
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 低の指摘: 第12章は、12-11のfindAnyを並列ストリームの節より前ではstream()で示し、Optionalの心得の分かりにくい文を「その場でorElseなどで値を決め、Optionalのまま持ち回らない」に改め、コラムに12-13のアンチパターンとの関係を添え、groupingByの表示順の説明を初出の12-19の後へ移した。第15章は、並列化の手間を「処理を分けて受け渡す手間」と第12章に合う言い方にした
