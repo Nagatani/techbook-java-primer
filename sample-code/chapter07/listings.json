@@ -145,14 +145,5 @@
       { "file": "DocumentFactory.java", "from": 29, "to": 42 },
       { "file": "DocumentFactory.java", "from": 52, "to": 52 }
     ]
-  },
-  "7-18": {
-    "dir": "07-18",
-    "main": null,
-    "excerpt": [
-      { "file": "DatabaseConnectionFactory.java", "from": 3, "to": 33 },
-      { "file": "DatabaseConnectionFactory.java", "from": 58, "to": 71 },
-      { "file": "DatabaseConnectionFactory.java", "from": 82, "to": 82 }
-    ]
   }
 }

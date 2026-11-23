@@ -33,4 +33,3 @@ javac -d out *.java
 | [7-15](./07-15/) | ServiceConfig.java<br>ServiceV1.java | （mainメソッドなし） |
 | [7-16](./07-16/) | FactoryDemo.java<br>FigureFactory.java | `java -cp out FactoryDemo` |
 | [7-17](./07-17/) | DocumentFactory.java | （mainメソッドなし） |
-| [7-18](./07-18/) | DatabaseConnectionFactory.java | （mainメソッドなし） |

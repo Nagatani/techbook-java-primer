@@ -155,11 +155,13 @@ public class Main {
 
 ## インターフェイス：振る舞いの契約
 
+第5章では、レポートも承認もできるマネージャーのように、複数の能力をクラスの継承では表せないことを見ました。
 インターフェイス（Interface）は、クラスがどのような振る舞い（メソッド）を持つべきかを定めた「契約」<span class="footnote">ソフトウェアの部品どうしの約束を「契約」と見る考え方は、バートランド・メイヤーが提唱し、自ら設計したEiffel言語に取り入れた「契約による設計」（Design by Contract）で広まりました。</span>です。
 
 インターフェイスの中心は、メソッドのシグネチャ（名前、引数、戻り値の型）<span class="footnote">厳密には、Javaの言語仕様でのシグネチャはメソッド名と引数の型の組で、戻り値の型を含みません。戻り値の型だけが異なるメソッドをオーバーロードできないのは、シグネチャが同じになるためです。</span>と定数です。インスタンスフィールドは持てません。
 抽象メソッドには実装を書かず、クラスが実装すべきメソッドの仕様だけを列挙します。
 ただし、あとで説明する`default`メソッドと`static`メソッド（Java 8以降）、`private`メソッド（Java 9以降）には、インターフェイスでも実装を書けます。
+`private`メソッドは、いくつかの`default`メソッドで共通する処理をまとめるためのもので、実装クラスからは呼び出せません。
 
 ### インターフェイスのルール
 
@@ -365,7 +367,7 @@ public interface DataProcessor {
 
 #### ダイヤモンド問題
 
-複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します<span class="footnote">継承の関係を図に描くとひし形（diamond）になることから、この名前があります。クラスの多重継承を認めるC++でもこの問題が起き、仮想継承（virtual継承）というしくみで対処します。</span>。
+複数のインターフェイスが同じdefaultメソッドを持つ場合、どちらを使うかの問題が発生します<span class="footnote">継承の関係を図に描くとひし形（diamond）になることから、この名前があります。第5章の脚注で触れたC++の「菱形継承問題」と同じものです。C++は仮想継承（virtual継承）というしくみで対処します。</span>。
 
 <span class="listing-number">**サンプルコード7-8**　A.java</span>
 
@@ -516,6 +518,7 @@ Special user JSON: {"name":"Charlie \"The Boss\" Smith\nNew line"}
 
 `User`クラス（全文に含めています）<span class="footnote">サンプルコード7-10の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-10/`にあります。</span>は、`toJson()`で`JsonSerializable.escapeJson()`を使って名前をエスケープしています。
 インターフェイスのstaticメソッドは、このように`インターフェイス名.メソッド名()`の形で呼び出します。
+インターフェイスのstaticメソッドは実装クラスに継承されないので、`User.escapeJson()`のように実装クラスの名前や、その変数からは呼び出せません。
 
 この設計により、JSON<span class="footnote">JavaScript Object Notationの略で、`{"name": "田中"}`のように、データを名前と値の組で書き表す文字列の形式です。JavaScriptの書き方をもとにしていますが、言語を問わずデータのやり取りに使われます。</span>シリアライゼーション機能を実装するクラスは`toJson()`メソッドを実装するだけで、複数のオブジェクトをまとめる処理や文字列エスケープなどの便利な機能を利用できるようになります。
 
@@ -717,6 +720,8 @@ class Temperature implements Measurable {
 ### インターフェイス分離原則（ISP）の実践
 
 インターフェイス分離原則<span class="footnote">英語ではInterface Segregation Principleで、ISPはその頭文字です。第4章で触れたSOLID原則の「I」にあたります。</span>は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
+
+この例の`User`は、サンプルコード7-10の`User`とは別に、IDを持つクラスとして全文に定義しています。
 
 <span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、35〜36、47、49〜58、79行目）</span>
 
@@ -983,62 +988,8 @@ Factoryパターンを使うと、クライアントコード（オブジェク�
 また、オブジェクト生成の詳細をファクトリ内に隠せるので、生成の手順が複雑でも、利用する側はそれを意識しなくてよくなります。
 さらに、オブジェクトを生成する方法がファクトリに集まるため、プログラム全体で生成のしかたを統一できます。
 
-### 実践的な使用例：データベース接続
-
-<span class="listing-number">**サンプルコード7-18**　DatabaseConnectionFactory.java（3〜33、58〜71、82行目）</span>
-
-```java
-// データベース接続インターフェイス
-interface DatabaseConnection {
-    void connect();
-    void executeQuery(String sql);
-    void close();
-}
-
-// 具体的な実装
-class MySQLConnection implements DatabaseConnection {
-    private String connectionString;
-    
-    public MySQLConnection(String host, int port, String database) {
-        this.connectionString =
-                String.format("mysql://%s:%d/%s", host, port, database);
-    }
-    
-    @Override
-    public void connect() {
-        IO.println("MySQLに接続: " + connectionString);
-    }
-    
-    @Override
-    public void executeQuery(String sql) {
-        IO.println("MySQLでクエリ実行: " + sql);
-    }
-    
-    @Override
-    public void close() {
-        IO.println("MySQL接続を閉じる");
-    }
-}
-// ...
-// データベース接続ファクトリ
-public class DatabaseConnectionFactory {
-    public static DatabaseConnection createConnection(String type,
-            String host, int port, String database) {
-        switch (type.toUpperCase()) {
-            case "MYSQL":
-                return new MySQLConnection(host, port, database);
-            case "POSTGRESQL":
-                return new PostgreSQLConnection(host, port, database);
-            default:
-                throw new IllegalArgumentException(
-                        "サポートされていないデータベース: " + type);
-        }
-    }
-    // ...
-}
-```
-
-Factoryパターンは、オブジェクト指向設計において非常に重要なパターンの1つです<span class="footnote">Javaで実際にデータベースへ接続するときは、標準ライブラリのJDBC（Java Database Connectivity）を使います。JDBCの`DriverManager.getConnection()`も、接続先のURLに合った接続オブジェクトを返すファクトリの一種です。JDBCは第24章「データベースプログラミング」で学びます。</span>。適切に使用することで、保守性と拡張性の高いシステムを構築できます。
+Javaで実際にデータベースへ接続するときに使う標準ライブラリのJDBC（Java Database Connectivity）でも、`DriverManager.getConnection()`が、接続先のURLに合った接続のオブジェクトを返すファクトリとして働きます。
+JDBCは第24章「データベースプログラミング」で学びます。
 
 ## よくあるエラーと対処法
 
@@ -1074,6 +1025,7 @@ Factoryパターンは、オブジェクト指向設計において非常に重�
     + `default`メソッドで既存の実装クラスを壊さずに機能を追加でき、`static`メソッドで関連するユーティリティをまとめられる
     + 複数のインターフェイスが同じ`default`メソッドを持つ場合は、実装クラスで明示的にオーバーライドする
 - 設計パターン
+    + Mixinでは、抽象メソッドで最小限の値を求め、`default`メソッドで機能を足すインターフェイスを組み合わせる
     + Factoryパターンでオブジェクトの生成方法を隠し、利用側を具体的なクラスから切り離す
 
 次章では、列挙型・レコード・内部クラスという特殊なクラス形式を学習します。
