@@ -32,7 +32,8 @@ claims:
     claim: Java 25はLTSで、1つ前のLTSはJava 21。LTSは2年ごと
     text:
       - OpenJDK 25（LTS版）
-      - そのうち2年ごとの版がLTSになります。Java 25の1つ前のLTSはJava 21です。
+      - Oracleは2年ごとの版をLTSにしており
+      - Java 25の1つ前のLTSはJava 21です。
     sources:
       - title: Oracle Java SE Support Roadmap
         url: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
@@ -48,7 +49,7 @@ claims:
 
   - id: six-month-release
     claim: Javaは半年ごとに新しい版（フィーチャーリリース）が出る
-    text: Javaは半年ごとに新しい版が出て
+    text: Javaは半年ごとに新しい版が出ます
     sources:
       - title: "JEP 322: Time-Based Release Versioning"
         url: https://openjdk.org/jeps/322
