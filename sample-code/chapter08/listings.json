@@ -56,35 +56,28 @@
   },
   "8-8": {
     "dir": "08-08",
-    "main": "PaymentStrategyDemo",
-    "excerpt": [
-      { "file": "PaymentStrategy.java", "from": 1, "to": 22 }
-    ]
-  },
-  "8-9": {
-    "dir": "08-09",
     "main": null,
     "excerpt": [
       { "file": "Printable.java", "from": 1, "to": 3 },
       { "file": "DocumentType.java", "from": 1, "to": 20 }
     ]
   },
-  "8-10": {
-    "dir": "08-10",
+  "8-9": {
+    "dir": "08-09",
     "main": "EnumCollectionExample",
     "excerpt": [
       { "file": "EnumCollectionExample.java", "from": 1, "to": 31 }
     ]
   },
-  "8-11": {
-    "dir": "08-11",
+  "8-10": {
+    "dir": "08-10",
     "main": null,
     "excerpt": [
       { "file": "Person.java", "from": 1, "to": 1 }
     ]
   },
-  "8-12": {
-    "dir": "08-12",
+  "8-11": {
+    "dir": "08-11",
     "main": null,
     "excerpt": [
       { "file": "Person.java", "from": 3, "to": 17 },
@@ -93,58 +86,58 @@
       { "file": "Person.java", "from": 33, "to": 34 }
     ]
   },
-  "8-13": {
-    "dir": "08-13",
+  "8-12": {
+    "dir": "08-12",
     "main": "RecordExample",
     "excerpt": [
       { "file": "RecordExample.java", "from": 1, "to": 21 }
+    ]
+  },
+  "8-13": {
+    "dir": "08-13",
+    "main": null,
+    "excerpt": [
+      { "file": "BankAccount.java", "from": 1, "to": 14 }
     ]
   },
   "8-14": {
     "dir": "08-14",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 14 }
+      { "file": "Tile.java", "from": 1, "to": 16 }
     ]
   },
   "8-15": {
     "dir": "08-15",
     "main": null,
     "excerpt": [
-      { "file": "Tile.java", "from": 1, "to": 16 }
+      { "file": "Temperature.java", "from": 1, "to": 25 }
     ]
   },
   "8-16": {
     "dir": "08-16",
     "main": null,
     "excerpt": [
-      { "file": "Temperature.java", "from": 1, "to": 25 }
+      { "file": "Configuration.java", "from": 1, "to": 25 }
     ]
   },
   "8-17": {
     "dir": "08-17",
-    "main": null,
-    "excerpt": [
-      { "file": "Configuration.java", "from": 1, "to": 25 }
-    ]
-  },
-  "8-18": {
-    "dir": "08-18",
     "main": "PatternMatchingExample",
     "excerpt": [
       { "file": "Point.java", "from": 1, "to": 1 },
       { "file": "PatternMatchingExample.java", "from": 1, "to": 28 }
     ]
   },
-  "8-19": {
-    "dir": "08-19",
+  "8-18": {
+    "dir": "08-18",
     "main": null,
     "excerpt": [
       { "file": "LocalRecordExample.java", "from": 1, "to": 29 }
     ]
   },
-  "8-20": {
-    "dir": "08-20",
+  "8-19": {
+    "dir": "08-19",
     "main": null,
     "excerpt": [
       { "file": "Address.java", "from": 1, "to": 1 },
@@ -152,15 +145,15 @@
       { "file": "Employee.java", "from": 1, "to": 12 }
     ]
   },
-  "8-22": {
-    "dir": "08-22",
+  "8-21": {
+    "dir": "08-21",
     "main": null,
     "excerpt": [
       { "file": "Money.java", "from": 1, "to": 27 }
     ]
   },
-  "8-23": {
-    "dir": "08-23",
+  "8-22": {
+    "dir": "08-22",
     "main": null,
     "excerpt": [
       { "file": "Shape.java", "from": 1, "to": 2 },
@@ -170,8 +163,8 @@
       { "file": "ShapeCalculator.java", "from": 1, "to": 12 }
     ]
   },
-  "8-24": {
-    "dir": "08-24",
+  "8-23": {
+    "dir": "08-23",
     "main": null,
     "excerpt": [
       { "file": "Order.java", "from": 4, "to": 6 },
@@ -180,8 +173,8 @@
       { "file": "OrderProcessor.java", "from": 3, "to": 22 }
     ]
   },
-  "8-25": {
-    "dir": "08-25",
+  "8-24": {
+    "dir": "08-24",
     "main": "OrderDemo",
     "excerpt": [
       { "file": "OrderStatus.java", "from": 1, "to": 6 },
@@ -189,8 +182,8 @@
       { "file": "Order.java", "from": 4, "to": 28 }
     ]
   },
-  "8-26": {
-    "dir": "08-26",
+  "8-25": {
+    "dir": "08-25",
     "main": "GameDemo",
     "excerpt": [
       { "file": "CharacterClass.java", "from": 1, "to": 5 },
@@ -199,36 +192,36 @@
       { "file": "GameCharacter.java", "from": 1, "to": 24 }
     ]
   },
-  "8-27": {
-    "dir": "08-27",
+  "8-26": {
+    "dir": "08-26",
     "main": "OuterClass",
     "excerpt": [
       { "file": "OuterClass.java", "from": 1, "to": 18 }
     ]
   },
-  "8-28": {
-    "dir": "08-28",
+  "8-27": {
+    "dir": "08-27",
     "main": "MathOperations",
     "excerpt": [
       { "file": "MathOperations.java", "from": 1, "to": 21 }
     ]
   },
-  "8-29": {
-    "dir": "08-29",
+  "8-28": {
+    "dir": "08-28",
     "main": null,
     "excerpt": [
       { "file": "LocalClassExample.java", "from": 1, "to": 15 }
     ]
   },
-  "8-30": {
-    "dir": "08-30",
+  "8-29": {
+    "dir": "08-29",
     "main": "AnonymousClassExample",
     "excerpt": [
       { "file": "AnonymousClassExample.java", "from": 1, "to": 18 }
     ]
   },
-  "8-31": {
-    "dir": "08-31",
+  "8-30": {
+    "dir": "08-30",
     "main": "StringList",
     "excerpt": [
       { "file": "StringList.java", "from": 1, "to": 49 }
