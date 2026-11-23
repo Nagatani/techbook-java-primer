@@ -404,10 +404,6 @@ public class WildcardExample {
 }
 ```
 
-`sum`は`? extends Number`なので、`List<Integer>`も`List<Double>`も渡せます。
-`addNumbers`は`? super Integer`なので、`List<Number>`に`Integer`の値を追加できます。
-`List<Double>`は`Integer`を入れられないため、`addNumbers`には渡せません。
-
 実行結果：
 
 ```
@@ -416,6 +412,10 @@ Doubleの合計: 6.6
 Numberのリスト: [1, 2, 3, 0.5]
 Numberの合計: 6.5
 ```
+
+`sum`は`? extends Number`なので、`List<Integer>`も`List<Double>`も渡せます。
+`addNumbers`は`? super Integer`なので、`List<Number>`に`Integer`の値を追加できます。
+`List<Double>`は`Integer`を入れられないため、`addNumbers`には渡せません。
 
 ## var型推論とジェネリクス
 

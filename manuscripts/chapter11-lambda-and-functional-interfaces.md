@@ -19,7 +19,7 @@
 
 ## 匿名クラスからラムダ式へ
 
-Java 8<span class="footnote">Java 8（Java SE 8）は2014年3月に公開されました。ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました。</span>でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。第8章で学んだとおり、匿名クラスは名前を持たないクラスで、とくにGUIのイベントリスナーなどで多用されていました。
+Java 8<span class="footnote">Java 8（Java SE 8）は2014年3月に公開されました。ラムダ式はJSR 335として仕様がまとめられ、OpenJDKのProject Lambdaで開発されました。</span>でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス（Anonymous Class）が使われていました。第8章で`Comparator`の実装に使ったとおり、匿名クラスは名前を持たないクラスです。匿名クラスは、GUIのイベントリスナー（第18章）などでも多用されていました。
 
 本章のサンプルには、ラムダ式を渡す先として、後の章で学ぶ機能も出てきます。
 主なものは、`Thread`と`ExecutorService`（第15章）と、GUIのイベントリスナー（第17章・第18章）です。
@@ -134,12 +134,12 @@ public class FunctionalInterfaceExample {
 - `(a) -> ...` は `a -> ...` と書ける
 - `a -> { return a * 2; }` は `a -> a * 2` と書ける
 - 引数がないときは、`() -> IO.println("Hello")` のように空の括弧`()`を書く（省略できない）
+- 引数の型を`(var a, var b) -> ...`のように`var`（第10章）で書くこともできる。引数にアノテーションを付けたいときに使う
 
 ### ラムダ式から参照できる変数と副作用
 
 ラムダ式の本体からは、ラムダ式の外で宣言したローカル変数を参照できます。
-ただし、参照できるのは、`final`を付けた変数か、実質的にfinalな変数に限られます<span class="footnote">Java 7までは匿名クラスから参照するローカル変数に`final`が必須でした。`final`のない実質的にfinalな変数を参照できるようになったのは、Java 8からです。</span>。
-実質的にfinalな変数とは、`final`を付けていなくても、初期化したあとで一度も代入し直さない変数のことです。
+ただし、第8章で学んだローカル内部クラスや匿名クラスと同じく、参照できるのは`final`を付けた変数か、実質的にfinal（初期化したあとで一度も代入し直さない）な変数に限られます<span class="footnote">Java 7までは匿名クラスから参照するローカル変数に`final`が必須でした。`final`のない実質的にfinalな変数を参照できるようになったのは、Java 8からです。</span>。
 
 たとえば、`int count = 0;`と宣言した変数を、ラムダ式のなかで`count++`と書いて増やそうとすると、コンパイルエラーになります。
 ラムダ式の外で、あとから`count = 1;`のように代入し直した場合も、ラムダ式で`count`を参照した箇所がエラーになります。
@@ -290,6 +290,9 @@ Task{priority=3, title='Task A'}
 Task{priority=1, title='Task C'}
 Task{priority=1, title='Task B'}
 ```
+
+`forEach(IO::println)`は、リストの各要素を順に表示する書き方です。
+`IO::println`はメソッド参照で、本章の「メソッド参照」で学びます。
 
 `reversed()`は、それまでに組み立てた比較条件の全体を逆にします。
 たとえば、サンプルコード11-6の2つ目の並べ替えを学年の降順・名前の降順にしようとして、`thenComparing(Student::getName)`の後ろにも`reversed()`を付けたとします。
@@ -689,7 +692,7 @@ Thread t1 (Anonymous) finished
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
-<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜18、23〜48行目）</span>
+<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜48行目）</span>
 
 ```java
 public class ExecutorLambdaExample {
@@ -707,7 +710,10 @@ public class ExecutorLambdaExample {
                 Thread.sleep(500);   // 0.5秒待機
                 return "Task 2 completed";
             }, 
-            // ...
+            () -> {
+                Thread.sleep(1500);  // 1.5秒待機
+                return "Task 3 completed";
+            }
         );
         
         IO.println("タスク実行開始...");
@@ -821,6 +827,8 @@ public class ValidationFramework {
     }
 }
 ```
+
+`validEmail`の`matches`は、文字列が正規表現（文字の並び方の規則を表す文字列）に合うかを調べるメソッドで、ここでは「文字の並び、`@`、ドメイン名」の形かどうかを判定しています。
 
 実行結果：
 
@@ -1166,6 +1174,9 @@ public class LambdaCapture {
 - ラムダ式は、抽象メソッドが1つだけの関数型インターフェイスの型が求められる場所に書け、そのインターフェイスを実装したオブジェクトになる
 - `Predicate`・`Function`・`Consumer`・`Supplier`など、汎用的な関数型インターフェイスが標準で用意されている
 - メソッド参照を使うと、既存のメソッドを呼び出すだけのラムダ式をさらに簡潔に書ける
+- `Comparator.comparing`と`thenComparing`で、並べ替えの条件を組み立てられる
+- `andThen`・`compose`・`and`・`or`などで、関数や条件を合成できる
+- ラムダ式のなかでは外の状態を書き換えず、結果を戻り値で返すように書く
 
 これらの機能を使いこなすと、より宣言的で簡潔なコードを書けます。
 ただし、ラムダ式を入れ子にしすぎると読みにくくなるため、可読性を優先して使い分けることが大切です。

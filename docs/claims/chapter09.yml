@@ -73,18 +73,6 @@ claims:
       checked: 2026-11-19
       note: J2SE 5.0の新機能の一覧にGenerics・Enhanced for Loop・Autoboxing/Unboxingが並んでいること、JSR 176のFinal Releaseが2004年9月30日であることを確かめた
 
-  - id: foreach-5
-    claim: 拡張for文はJava 5で導入された
-    text: 拡張for文（for-each文）は、Java 5で導入された
-    sources:
-      - title: New Features and Enhancements J2SE 5.0（Oracle）
-        url: https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html
-        anchor: Enhanced for Loop
-    verify:
-      kind: manual
-      checked: 2026-11-19
-      note: J2SE 5.0の新機能の一覧にEnhanced for Loop（JSR 201）があることを確かめた。--release 8で通ることはLegacyCollectionsで確かめる
-
   - id: stream-8
     claim: Stream APIはJava 8で導入された
     text: Java 8で導入されたStream APIは

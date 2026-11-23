@@ -68,8 +68,7 @@
     "dir": "11-12",
     "main": "ExecutorLambdaExample",
     "excerpt": [
-      { "file": "ExecutorLambdaExample.java", "from": 4, "to": 18 },
-      { "file": "ExecutorLambdaExample.java", "from": 23, "to": 48 }
+      { "file": "ExecutorLambdaExample.java", "from": 4, "to": 48 }
     ]
   },
   "11-13": {
