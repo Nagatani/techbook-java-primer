@@ -3,7 +3,7 @@ source: manuscripts/chapter22-documentation-and-libraries.md
 summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
-    hash: a464781d
+    hash: 348fd239
   - key: "Javadocによるドキュメント"
     hash: 424b7704
   - key: "外部ライブラリの利用"

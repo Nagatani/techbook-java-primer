@@ -8,7 +8,7 @@
 - [1章　Java入門と開発環境構築](chapter01-introduction.md)
 - [2章　Java基本文法](chapter02-getting-started.md)
 - [3章　オブジェクト指向の考え方](chapter03-oop-basics.md)
-- [4章　クラスとインスタンス](chapter04-classes-and-instances.md)
+- [4章　カプセル化とクラス設計](chapter04-classes-and-instances.md)
 
 ### 2部：オブジェクト指向編
 - [5章　継承とポリモーフィズム](chapter05-inheritance-and-polymorphism.md)

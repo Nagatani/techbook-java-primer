@@ -23,7 +23,7 @@ sections:
   - key: "文字列処理"
     hash: 142f896c
   - key: "import文の使い方"
-    hash: 0dfef769
+    hash: 89f84eb9
   - key: "よくあるエラーと対処法"
     hash: baf738d1
   - key: "まとめ"
