@@ -18,4 +18,4 @@ javac -d out *.java
 |---|---|---|
 | [23-1](./23-01/) | SimpleApp.java | `java -cp out SimpleApp` |
 | [23-3](./23-03/) | TodoApp.java<br>TodoInputPanel.java | `java -cp out TodoApp` |
-| [23-4](./23-04/) | ResourceApp.java | `java -cp out ResourceApp` |
+| [23-5](./23-05/) | ResourceApp.java | `java -cp out ResourceApp` |

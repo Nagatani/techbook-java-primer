@@ -247,6 +247,32 @@ jar cvfm TodoApp.jar manifest.txt -C out .
 ```
 
 第22章のMavenで作ったプロジェクトでは、`mvn package`がこの手順を行い、`target`ディレクトリにJARを作ります。
+ただし、そのままでは`Main-Class`が書かれないので、`java -jar`で実行できません。
+`pom.xml`の`<build>`に次のように`maven-jar-plugin`の設定を加え、`<mainClass>`に`main`メソッドを持つクラスの完全修飾名を書くと、マニフェストに`Main-Class`が入ります。
+
+<span class="listing-number">**サンプルコード23-4**</span>
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.5.1</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <mainClass>com.example.todo.TodoApp</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Gradleでは、`build.gradle`の`jar`ブロックで、`manifest`の`attributes`に`'Main-Class'`を指定します。
+外部ライブラリを1つのJARにまとめる方法などは、付録Dで扱います。
 
 ### 外部ライブラリを使うアプリケーションのJAR
 
@@ -262,7 +288,7 @@ jar cvfm TodoApp.jar manifest.txt -C out .
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-4**　ResourceApp.java</span>
+<span class="listing-number">**サンプルコード23-5**　ResourceApp.java</span>
 
 ```java
 // ResourceApp.java
@@ -295,7 +321,7 @@ public class ResourceApp {
 
 `getResource("/icon.png")`は、クラスパスの直下から`icon.png`を探し、見つからないと`null`を返します。
 `null`をそのまま`ImageIcon`に渡すと`NullPointerException`になるため、`icon.png`はクラスファイルと同じ場所（JARにする場合はJARのなか）に置いてください。
-`icon.png`と、次のJARの作成で使う`manifest.txt`（中身は`Main-Class: ResourceApp`）は、全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter23/23-04/`です。</span>。
+`icon.png`と、次のJARの作成で使う`manifest.txt`（中身は`Main-Class: ResourceApp`）は、全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter23/23-05/`です。</span>。
 
 リソースを含むJARは、次のように作成します。
 

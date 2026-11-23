@@ -20,8 +20,8 @@
       { "file": "TodoInputPanel.java", "from": 5, "to": 21 }
     ]
   },
-  "23-4": {
-    "dir": "23-04",
+  "23-5": {
+    "dir": "23-05",
     "main": "ResourceApp",
     "excerpt": [
       { "file": "ResourceApp.java", "from": 1, "to": 24 }
