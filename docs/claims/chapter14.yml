@@ -137,3 +137,69 @@ claims:
       kind: run
       probe: EncodingPitfalls.java
       expect: ['^Shift_JIS: U\+301C$', '^windows-31j: U\+FF5E$', '^同じ文字か: false$']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: mojibake-and-malformed
+    claim: UTF-8の「こんにちは」をShift_JISで読むと別の文字になる。Shift_JISとして解釈できない並びがあると、Files.newBufferedReaderのReaderはMalformedInputExceptionを投げる
+    text:
+      - 同じバイト列をShift_JISの対応表で読むと、別の文字の並びとして解釈されます
+      - 読むバイト列のなかにShift_JISとして解釈できない並びがあると、Files.newBufferedReaderで開いたReaderは文字化けした文字列を返さずにMalformedInputExceptionをスローします
+    sources:
+      - title: Files.newBufferedReader（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
+        anchor: newBufferedReader
+    verify:
+      kind: run
+      probe: IoFacts.java
+      expect:
+        - '^read as Shift_JIS: 縺薙ｓ縺ｫ縺｡縺ｯ$'
+        - '^newBufferedReader Shift_JIS -> MalformedInputException$'
+
+  - id: append-option
+    claim: StandardOpenOption.APPENDを指定すると、既存の内容を残して末尾に追記する
+    text: StandardOpenOption.APPENDを指定すると、既存ファイルの内容を保持したまま末尾にデータを追記できます
+    verify:
+      kind: run
+      probe: IoFacts.java
+      expect: ['^append: \[a, b\]$']
+
+  - id: data-stream-big-endian
+    claim: DataOutputStreamとDataInputStreamは数値をビッグエンディアンで読み書きし、writeUTFは65535バイトまで
+    text:
+      - DataOutputStreamとDataInputStreamは、常にビッグエンディアン（ネットワークバイトオーダー）で数値を読み書きします
+      - さらに、writeUTF()で書き込める文字列は、最大65535バイトまでです
+    sources:
+      - title: DataOutputStream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/DataOutputStream.html
+        anchor: high byte first
+    verify:
+      kind: run
+      probe: IoFacts.java
+      expect:
+        - '^writeInt\(1\): 00000001$'
+        - '^writeUTF 65535 bytes: ok$'
+        - '^writeUTF 65536 bytes -> UTFDataFormatException$'
+
+  - id: buffered-faster
+    claim: 1バイトずつ書くとき、BufferedOutputStreamを通すとFileOutputStreamだけより大幅に速い
+    text: データをバッファーにまとめてから読み書きするため、OSへの読み書きの要求の回数を減らせます
+    verify:
+      kind: run
+      probe: BufferedSpeed.java
+      expect: ['^buffered is more than 10x faster: true$']
+      attempts: 3
+
+  - id: text-block-closing-delimiter
+    claim: Text Blocksの共通インデントには閉じる"""の行も数に入り、それを左に置くとその差の分だけ各行に空白が残る。行末の\は改行を入れずに次の行とつなぐ
+    text:
+      - 基準となるインデントを決めるときは、閉じる"""だけの行も数に入ります
+      - 閉じる"""を本文の行より左に置くと、その差の分だけ各行の先頭に空白が残ります
+    sources:
+      - title: JLS 25 3.10.6 Text Blocks
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+    verify:
+      kind: run
+      probe: IoFacts.java
+      expect:
+        - '^text block with closing delimiter left: \[    A\|      B\|\]$'
+        - '^backslash joins lines: \[line1 line2\]$'
