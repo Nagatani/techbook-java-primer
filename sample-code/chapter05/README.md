@@ -20,7 +20,7 @@ javac -d out *.java
 | [5-2](./05-02/) | Developer.java<br>Employee.java<br>EmployeeTest.java<br>Manager.java | `java -cp out EmployeeTest` |
 | [5-3](./05-03/) | Character.java<br>Hero.java<br>Main.java<br>Wizard.java | `java -cp out Main` |
 | [5-4](./05-04/) | Character.java<br>CharacterOverrideTest.java<br>Knight.java<br>Wizard.java | `java -cp out CharacterOverrideTest` |
-| [5-7](./05-07/) | User.java<br>UserManagementSystem.java<br>Users.java | `java -cp out UserManagementSystem` |
+| [5-5](./05-05/) | User.java<br>UserManagementSystem.java<br>Users.java | `java -cp out UserManagementSystem` |
 | [5-8](./05-08/) | UserSystemBefore.java<br>Users.java | `java -cp out UserSystemBefore` |
 | [5-9](./05-09/) | User.java<br>UserSystemAfter.java<br>Users.java | `java -cp out UserSystemAfter` |
 | [5-10](./05-10/) | DrawingAppBefore.java | `java -cp out DrawingAppBefore` |

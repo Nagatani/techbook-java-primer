@@ -11,6 +11,8 @@ class RegularUser {
     void processRequest(String action) {
         IO.println("ユーザー " + userId + " が " + action + " をリクエストしました");
     }
+
+    String getUserId() { return userId; }
 }
 
 class AdminUser {
@@ -28,6 +30,8 @@ class AdminUser {
         IO.println("管理者権限での処理: " + action);
         IO.println("セキュリティチェックを実行中...");
     }
+
+    String getUserId() { return userId; }
 }
 
 class GuestUser {
@@ -41,4 +45,6 @@ class GuestUser {
         IO.println("ユーザー guest_" + sessionId + " が " + action + " をリクエストしました");
         IO.println("ゲストユーザーのため、一部機能が制限されています");
     }
+
+    String getUserId() { return "guest_" + sessionId; }
 }

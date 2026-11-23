@@ -9,43 +9,41 @@ public class UserSystemBefore {
         
         // それぞれの型に応じたリクエスト処理
         IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
-        
-        // RegularUserの処理
         regular.processRequest("READ");
-        
-        // AdminUserの処理
-        admin.processRequest("DELETE");
-        
-        // GuestUserの処理
-        guest.processRequest("WRITE");
-        
-        IO.println();
-        IO.println("=== アクセス権限チェック ===");
-        IO.println("Regular user READ権限: " + checkAccessPermission(regular, null, null, "READ"));
-        IO.println("Admin user DELETE権限: " + checkAccessPermission(null, admin, null, "DELETE"));
-        IO.println("Guest user WRITE権限: " + checkAccessPermission(null, null, guest, "WRITE"));
-        
-        // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
+        admin.processRequest("READ");
+        guest.processRequest("READ");
+        // 新しいユーザータイプを追加するたびに、ここにコードを追加する
         // PremiumUser premium =
         //         new PremiumUser("P001", "premium@example.com");
-        // premium.processRequest("CREATE");
+        // premium.processRequest("READ");
+        
+        IO.println();
+        IO.println("=== DELETE権限のチェック ===");
+        checkAccessPermission(regular, "DELETE");
+        checkAccessPermission(admin, "DELETE");
+        checkAccessPermission(guest, "DELETE");
     }
     
-    // アクセス権限を確認する場合も型別処理が必要
-    public static boolean checkAccessPermission(RegularUser regular,
-            AdminUser admin, GuestUser guest, String resource) {
-        // 各型ごとに個別に処理
-        if (regular != null) {
-            return resource.equals("READ") || resource.equals("WRITE");
+    // アクセス権限の確認も、型ごとに別のメソッドを用意する
+    public static void checkAccessPermission(RegularUser user,
+            String resource) {
+        if (!(resource.equals("READ") || resource.equals("WRITE"))) {
+            IO.println(user.getUserId() + " には " + resource
+                    + " 権限がありません");
         }
-        if (admin != null) {
-            return true; // 管理者はすべてのリソースにアクセス可能
-        }
-        if (guest != null) {
-            return resource.equals("READ"); // ゲストは読み取りのみ
-        }
-        
-        // 新しい型が増えるたびに、このメソッドも修正が必要
-        return false;
     }
+    
+    public static void checkAccessPermission(AdminUser user,
+            String resource) {
+        // 管理者はすべてのリソースにアクセス可能
+    }
+    
+    public static void checkAccessPermission(GuestUser user,
+            String resource) {
+        if (!resource.equals("READ")) {
+            IO.println(user.getUserId() + " には " + resource
+                    + " 権限がありません");
+        }
+    }
+    // 新しい型が増えるたびに、このメソッドも1つ増える
 }

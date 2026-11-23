@@ -1,4 +1,4 @@
-// 本文では省略している子クラス
+// Userを継承した3つの子クラス
 class RegularUser extends User {
     RegularUser(String userId, String email) {
         super(userId, email);

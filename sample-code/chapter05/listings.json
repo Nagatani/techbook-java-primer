@@ -41,11 +41,19 @@
       { "file": "CharacterOverrideTest.java", "from": 25, "to": 30 }
     ]
   },
-  "5-7": {
-    "dir": "05-07",
+  "5-5": {
+    "dir": "05-05",
     "main": "UserManagementSystem",
     "excerpt": [
-      { "file": "UserManagementSystem.java", "from": 1, "to": 17 }
+      { "file": "User.java", "from": 2, "to": 4 },
+      { "file": "User.java", "from": 11, "to": 14 },
+      { "file": "User.java", "from": 32, "to": 32 },
+      { "file": "Users.java", "from": 2, "to": 5 },
+      { "file": "Users.java", "from": 11, "to": 11 },
+      { "file": "Users.java", "from": 13, "to": 13 },
+      { "file": "Users.java", "from": 21, "to": 25 },
+      { "file": "Users.java", "from": 31, "to": 31 },
+      { "file": "Users.java", "from": 33, "to": 43 }
     ],
     "uses": [
       "5-9"
@@ -55,16 +63,14 @@
     "dir": "05-08",
     "main": "UserSystemBefore",
     "excerpt": [
-      { "file": "UserSystemBefore.java", "from": 1, "to": 20 },
-      { "file": "UserSystemBefore.java", "from": 28, "to": 51 }
+      { "file": "UserSystemBefore.java", "from": 1, "to": 49 }
     ]
   },
   "5-9": {
     "dir": "05-09",
     "main": "UserSystemAfter",
     "excerpt": [
-      { "file": "User.java", "from": 1, "to": 4 },
-      { "file": "User.java", "from": 11, "to": 14 },
+      { "file": "User.java", "from": 2, "to": 2 },
       { "file": "User.java", "from": 16, "to": 32 },
       { "file": "UserSystemAfter.java", "from": 1, "to": 19 },
       { "file": "UserSystemAfter.java", "from": 28, "to": 45 },

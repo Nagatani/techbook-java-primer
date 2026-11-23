@@ -364,7 +364,57 @@ Java 25からは、引数の検査のように作成中のオブジェクト（`
 
 Javaでは、親クラス型の変数に、その子クラスのインスタンスを代入できます。これをアップキャストと呼びます。
 
-<span class="listing-number">**サンプルコード5-5**</span>
+ここでは、利用者を表す`User`クラスと、それを継承した`RegularUser`・`AdminUser`・`GuestUser`の3つの子クラスを使います。
+`AdminUser`と`GuestUser`は`processRequest()`をオーバーライドし、`RegularUser`は`User`の`processRequest()`をそのまま使います。
+`GuestUser`のコンストラクターは、受け取ったセッションIDの前に`guest_`を付けて利用者のIDにします。
+
+<span class="listing-number">**サンプルコード5-5**　User.java（2〜4、11〜14、32行目）、Users.java（2〜5、11、13、21〜25、31、33〜43行目）</span>
+
+```java
+public class User {
+    protected String userId;
+    protected String email;
+    // ...
+    public void processRequest(String action) {
+        IO.println("ユーザー " + userId + " が " + action
+                + " をリクエストしました");
+    }
+    // ...
+}
+
+class RegularUser extends User {
+    RegularUser(String userId, String email) {
+        super(userId, email);
+    }
+    // ...
+}
+// ...
+class AdminUser extends User {
+    // ...
+    @Override
+    public void processRequest(String action) {
+        IO.println("管理者権限での処理: " + action);
+        IO.println("セキュリティチェックを実行中...");
+    }
+    // ...
+}
+// ...
+class GuestUser extends User {
+    GuestUser(String sessionId) {
+        super("guest_" + sessionId, null);
+    }
+
+    @Override
+    public void processRequest(String action) {
+        super.processRequest(action);
+        IO.println("ゲストユーザーのため、一部機能が制限されています");
+    }
+}
+```
+
+これらのクラスを使って、親クラス型の変数に子クラスのインスタンスを代入してみます。
+
+<span class="listing-number">**サンプルコード5-6**</span>
 
 ```java
 // 親クラス型の変数に、子クラスのインスタンスを代入
@@ -379,7 +429,7 @@ User user3 = new GuestUser("session123");
 
 ここからがポリモーフィズムの真骨頂です。これらの`User`型の変数に対して`processRequest()`メソッドを呼び出すと、何が起こるでしょうか。
 
-<span class="listing-number">**サンプルコード5-6**</span>
+<span class="listing-number">**サンプルコード5-7**</span>
 
 ```java
 user1.processRequest("READ");
@@ -396,51 +446,15 @@ user3.processRequest("WRITE");
 
 ### ポリモーフィズムの利点
 
-この性質を利用すると、非常に柔軟で拡張性の高いプログラムを書くことができます。たとえば、さまざまなユーザーをまとめて管理する配列を考えてみましょう。
-
-<span class="listing-number">**サンプルコード5-7**　UserManagementSystem.java</span>
-
-```java
-public class UserManagementSystem {
-    public static void main(String[] args) {
-        // 親クラスの配列に、さまざまな子クラスのインスタンスを格納できる
-        User[] users = new User[3];
-        users[0] = new RegularUser("U001", "user1@example.com");
-        users[1] = new AdminUser("A001", "admin@example.com",
-                "SuperAdmin");
-        users[2] = new GuestUser("session123");
-
-        // 全ユーザーのリクエストを処理
-        for (User user : users) {
-            // user変数の型はUserだが、実行時には
-            // 実際のインスタンスのprocessRequest()が呼び出される
-            user.processRequest("READ"); 
-        }
-    }
-}
-```
-
-実行結果：
-
-```
-ユーザー U001 が READ をリクエストしました
-管理者権限での処理: READ
-セキュリティチェックを実行中...
-ユーザー guest_session123 が READ をリクエストしました
-ゲストユーザーのため、一部機能が制限されています
-```
-
-この`for`ループのなかでは、`user`が`RegularUser`なのか`AdminUser`なのかを一切気にしません。ただ`processRequest()`を呼び出すだけで、各ユーザータイプに応じた処理が自動的に実行されます。
-
-もし将来、「プレミアムユーザー `PremiumUser`」という新しいユーザータイプを追加したくなっても、配列を処理する`for`ループは一切変更しません。`PremiumUser`クラスを作成し、`User`を継承して`processRequest()`をオーバーライドし、`users`配列に追加するだけで、新しいユーザータイプも問題なく動作します。これがポリモーフィズムがもたらす拡張性です。
-
-### ポリモーフィズムのBefore/After比較
-
-ポリモーフィズムを使わない場合と使った場合の違いを、実際のコードで比較してみましょう。
+この性質を利用すると、種類の違う利用者をまとめて扱えます。
+ポリモーフィズムを使わない場合と使った場合を、実際のコードで比べてみましょう。
 
 #### Before：ポリモーフィズムを使わない場合
 
-<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java（1〜20、28〜51行目）</span>
+Beforeでは、3つのクラスに共通の親クラスがないとします。
+同じ名前のメソッドを持っていても、共通の型がないので、1つの配列にまとめることも、1つのメソッドで受け取ることもできません。
+
+<span class="listing-number">**サンプルコード5-8**　UserSystemBefore.java</span>
 
 ```java
 // 型ごとに別々の処理を書く必要がある
@@ -454,39 +468,43 @@ public class UserSystemBefore {
         
         // それぞれの型に応じたリクエスト処理
         IO.println("=== 全ユーザーのリクエスト処理（ポリモーフィズムなし）===");
-        
-        // RegularUserの処理
         regular.processRequest("READ");
-        
-        // AdminUserの処理
-        admin.processRequest("DELETE");
-        
-        // GuestUserの処理
-        guest.processRequest("WRITE");
-        // ...
-        // 新しいユーザータイプを追加するたびに、ここにコードを追加する必要がある
+        admin.processRequest("READ");
+        guest.processRequest("READ");
+        // 新しいユーザータイプを追加するたびに、ここにコードを追加する
         // PremiumUser premium =
         //         new PremiumUser("P001", "premium@example.com");
-        // premium.processRequest("CREATE");
+        // premium.processRequest("READ");
+        
+        IO.println();
+        IO.println("=== DELETE権限のチェック ===");
+        checkAccessPermission(regular, "DELETE");
+        checkAccessPermission(admin, "DELETE");
+        checkAccessPermission(guest, "DELETE");
     }
     
-    // アクセス権限を確認する場合も型別処理が必要
-    public static boolean checkAccessPermission(RegularUser regular,
-            AdminUser admin, GuestUser guest, String resource) {
-        // 各型ごとに個別に処理
-        if (regular != null) {
-            return resource.equals("READ") || resource.equals("WRITE");
+    // アクセス権限の確認も、型ごとに別のメソッドを用意する
+    public static void checkAccessPermission(RegularUser user,
+            String resource) {
+        if (!(resource.equals("READ") || resource.equals("WRITE"))) {
+            IO.println(user.getUserId() + " には " + resource
+                    + " 権限がありません");
         }
-        if (admin != null) {
-            return true; // 管理者はすべてのリソースにアクセス可能
-        }
-        if (guest != null) {
-            return resource.equals("READ"); // ゲストは読み取りのみ
-        }
-        
-        // 新しい型が増えるたびに、このメソッドも修正が必要
-        return false;
     }
+    
+    public static void checkAccessPermission(AdminUser user,
+            String resource) {
+        // 管理者はすべてのリソースにアクセス可能
+    }
+    
+    public static void checkAccessPermission(GuestUser user,
+            String resource) {
+        if (!resource.equals("READ")) {
+            IO.println(user.getUserId() + " には " + resource
+                    + " 権限がありません");
+        }
+    }
+    // 新しい型が増えるたびに、このメソッドも1つ増える
 }
 ```
 
@@ -495,31 +513,22 @@ public class UserSystemBefore {
 ```
 === 全ユーザーのリクエスト処理（ポリモーフィズムなし）===
 ユーザー U001 が READ をリクエストしました
-管理者権限での処理: DELETE
+管理者権限での処理: READ
 セキュリティチェックを実行中...
-ユーザー guest_session123 が WRITE をリクエストしました
+ユーザー guest_session123 が READ をリクエストしました
 ゲストユーザーのため、一部機能が制限されています
 
-=== アクセス権限チェック ===
-Regular user READ権限: true
-Admin user DELETE権限: true
-Guest user WRITE権限: false
+=== DELETE権限のチェック ===
+U001 には DELETE 権限がありません
+guest_session123 には DELETE 権限がありません
 ```
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-9**　User.java（1〜4、11〜14、16〜32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
+<span class="listing-number">**サンプルコード5-9**　User.java（2、16〜32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
 
 ```java
-// 親クラスに共通のメソッドを定義
 public class User {
-    protected String userId;
-    protected String email;
-    // ...
-    public void processRequest(String action) {
-        IO.println("ユーザー " + userId + " が " + action
-                + " をリクエストしました");
-    }
     // ...
     public boolean hasPermission(String resource) {
         // デフォルトでは読み取り権限のみ
@@ -607,8 +616,9 @@ guest_session123 に通知を送信しました
 #### ポリモーフィズムの利点まとめ
 
 2つのコードを比べると、ポリモーフィズムの利点がわかります。
-Beforeでは、ユーザーの型ごとに変数を用意し、`checkAccessPermission()`も型ごとの条件分岐で書いていました。
-Afterでは、型ごとの条件分岐がなくなり、`User`型の配列を1つのループで処理するだけのシンプルなコードになっています。
+Beforeでは、ユーザーの型ごとに変数を用意し、`checkAccessPermission()`も型ごとに別のメソッドとして書いていました。
+リクエストの処理と権限のチェックの結果は2つとも同じですが、Beforeは利用者の種類が増えるたびに、`main`の呼び出しと`checkAccessPermission()`の両方を書き足すことになります。
+Afterでは、型ごとのメソッドがなくなり、`User`型の配列を1つのループで処理するだけのシンプルなコードになっています。
 
 この違いは、新しい型を追加するときに効いてきます。
 `PremiumUser`を追加しても、`User`型を使って書いた呼び出し側のコード（クライアントコード）は変更しなくて済みます。
