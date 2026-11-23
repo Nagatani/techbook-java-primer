@@ -68,3 +68,115 @@ claims:
       probe: VarLambda.java
       version: 11
       expect: ["var syntax in implicit lambdas are not supported"]
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: generics-invariance
+    claim: IntegerはNumberのサブクラスだが、List<Number>の引数にList<Integer>を渡すとコンパイルエラーになる
+    text: ところが、List<Number>型の引数にList<Integer>を渡すと、コンパイルエラーになります
+    sources:
+      - title: JLS 25 4.10.2 Subtyping among Class and Interface Types
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+    verify:
+      kind: javac
+      probe: compile-errors/ListInvariance.java
+      fails: true
+      expect: ['List<Integer> cannot be converted to List<Number>']
+
+  - id: unbounded-wildcard-add
+    claim: List<?>にはnull以外の要素を追加できない（nullは追加できる）
+    text: ただし、要素の型がわからないため、安全のためにnull以外の要素は追加できません
+    verify:
+      kind: javac
+      probe: compile-errors/UnknownAdd.java
+      fails: true
+      expect: ['String cannot be converted to CAP#1']
+
+  - id: unbounded-wildcard-add-null
+    claim: List<?>にnullは追加できる
+    text: ただし、要素の型がわからないため、安全のためにnull以外の要素は追加できません
+    verify:
+      kind: run
+      probe: WildcardFacts.java
+      expect: ['^List<\?>.add\(null\): 1$']
+
+  - id: bounded-wildcards
+    claim: List<? extends Number>はNumberのサブクラスの要素のリストを受け取りNumberとして読める。List<? super Integer>はList<Number>やList<Object>を受け取り、Integerを追加できる
+    text:
+      - たとえばList<? extends Number>は、要素の型がNumber・Integer・Doubleのリストを受け取れます
+      - List<? super Integer>は、要素の型がInteger・Number・Objectのリストを受け取れます
+    verify:
+      kind: run
+      probe: WildcardFacts.java
+      expect:
+        - '^extends: 3\.0 1\.5$'
+        - '^super: \[1\] \[1\]$'
+
+  - id: pecs-effective-java-2
+    claim: PECSはジョシュア・ブロックが『Effective Java』第2版（2008年）で紹介した覚え方
+    text: ジョシュア・ブロックが著書『Effective Java』の第2版（2008年）で紹介した覚え方です
+    sources:
+      - title: Effective Java, 2nd Edition（Addison-Wesley、2008年）
+        url: https://www.oracle.com/java/technologies/effectivejava.html
+    verify:
+      kind: manual
+      checked: 2026-11-24
+      note: 第2版（2008年5月）の項目28「Use bounded wildcards to increase API flexibility」でPECS（producer-extends, consumer-super）を示している。第3版（2018年）では項目31
+
+  - id: var-allowed-places
+    claim: varはローカル変数、for文・拡張for文の変数、try-with-resourcesのリソース変数、ラムダ式の引数（Java 11以降）に使える。varという名前の変数も使える
+    text:
+      - for文・拡張for文のループ変数
+      - try-with-resources文（第13章）のリソース変数
+      - varは通常のキーワードではなく、型を書く位置でだけ特別な意味を持つ語なので、varという名前の変数を使った古いコードもそのまま動きます
+    sources:
+      - title: JLS 25 3.9 Keywords
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+        anchor: var
+    verify:
+      kind: run
+      probe: WildcardFacts.java
+      expect: ['^var as a variable name: 3$']
+
+  - id: var-not-field
+    claim: varはフィールドの型に使えない
+    text: 一方、以下の場面では使用できません
+    verify:
+      kind: javac
+      probe: compile-errors/VarField.java
+      fails: true
+      expect: ["'var' is not allowed here"]
+
+  - id: var-no-initializer
+    claim: 初期値のないvarはコンパイルエラーになる
+    text: 一方、以下の場面では使用できません
+    verify:
+      kind: javac
+      probe: compile-errors/VarNoInit.java
+      fails: true
+      expect: ['cannot infer type for local variable x']
+
+  - id: var-null
+    claim: nullで初期化するvarはコンパイルエラーになる
+    text: 一方、以下の場面では使用できません
+    verify:
+      kind: javac
+      probe: compile-errors/VarNull.java
+      fails: true
+      expect: ['cannot infer type for local variable x']
+
+  - id: var-array-initializer
+    claim: 配列初期化子だけのvarはコンパイルエラーになる
+    text: 一方、以下の場面では使用できません
+    verify:
+      kind: javac
+      probe: compile-errors/VarArrayInit.java
+      fails: true
+      expect: ['cannot infer type for local variable x']
+
+  - id: var-diamond-object
+    claim: var list = new ArrayList<>()はArrayList<Object>と推論され、どんな型の要素も入る
+    text: 一方、以下の場面では使用できません
+    verify:
+      kind: run
+      probe: WildcardFacts.java
+      expect: ['^var with <>: \[1, s\]$']
