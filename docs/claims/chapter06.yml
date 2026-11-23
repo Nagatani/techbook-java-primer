@@ -100,3 +100,92 @@ claims:
       kind: run
       probe: Year2038.java
       expect: ['^2026-03-08T02:30 をニューヨークの時刻にすると: 2026-03-08T03:30$']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: string-final
+    claim: Stringクラスはfinalと宣言されている
+    text: public final class Stringと宣言されている
+    sources:
+      - title: String（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html
+        anchor: public final class String
+    verify:
+      kind: run
+      probe: ImmutabilityFacts.java
+      expect: ['^String is final: true$']
+
+  - id: final-not-for-speed
+    claim: いまのJVMは、オーバーライドするサブクラスが読み込まれていなければ、finalのないメソッドの呼び出しもインライン化する（クラス階層解析）。サブクラスが読み込まれると脱最適化する
+    text: いまのJVMは、実行中にサブクラスが読み込まれていなければ、finalのないクラスでも同じようにメソッド呼び出しを最適化します
+    verify:
+      kind: run
+      probe: ../../../appendix/b04-virtual-method-table/verify/ClassHierarchy.java
+      jvm: ['-XX:+PrintCompilation']
+      expect:
+        - '--- サブクラスを読み込む ---[\s\S]*ClassHierarchy::sum .*made not entrant: marked for deoptimization'
+      attempts: 3
+      note: 付録B.04のcha-deoptと同じ観察
+
+  - id: smart-resolver-month-end
+    claim: DateTimeFormatter.ofPatternの既定の読み取り（SMART）は、2月30日を月末（2月28日）に丸める。STRICTでは例外になる
+    text:
+      - 読み取りの既定の方法（SMART）は、2月30日のような存在しない日を月末に丸めてしまいます
+      - 書式に合わない文字列はDateTimeParseExceptionになります
+    sources:
+      - title: ResolverStyle.SMART（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/format/ResolverStyle.html
+    verify:
+      kind: run
+      probe: ImmutabilityFacts.java
+      expect:
+        - '^SMART 2026-02-30 -> 2026-02-28$'
+        - '^STRICT 2026-02-30 -> DateTimeParseException$'
+
+  - id: strict-yyyy-needs-era
+    claim: STRICTではyyyyが紀元のなかの年を表すので、Gのない書式では読み取れない
+    text: STRICTではyyyyが「紀元のなかの年」を表すので、紀元を表すGがない書式では読み取れません
+    sources:
+      - title: DateTimeFormatter（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/format/DateTimeFormatter.html
+        anchor: year-of-era
+    verify:
+      kind: run
+      probe: ImmutabilityFacts.java
+      expect: ['^STRICT yyyy 2026-02-28 -> DateTimeParseException$']
+
+  - id: unmodifiable-view-vs-copy
+    claim: Collections.unmodifiableListは元のリストのビューで元の変更が見える。List.copyOfはコピーで影響を受けず、nullを含むとNullPointerExceptionになる
+    text:
+      - Collections.unmodifiableList(リスト)は、元のリストを包んだ読み取り専用のビューを返します
+      - 要素にnullを含むリストを渡すと、例外（NullPointerException）が発生します
+    sources:
+      - title: List.copyOf（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
+        anchor: NullPointerException - if coll is null, or if it contains any nulls
+    verify:
+      kind: run
+      probe: ImmutabilityFacts.java
+      expect:
+        - '^view: \[a, b\] copy: \[a\]$'
+        - '^List.copyOf with null -> NullPointerException$'
+
+  - id: bigdecimal-slower
+    claim: BigDecimalの計算はlongの計算より時間がかかる（一般的な傾向。観察では足し算で3倍を超えた）
+    text: BigDecimalとBigIntegerは、基本型の計算よりも時間がかかり、メモリも多く使います
+    verify:
+      kind: run
+      probe: ImmutabilityFacts.java
+      expect: ['^BigDecimal slower than long in 5 rounds: [1-5]$']
+      attempts: 3
+
+  - id: biginteger-range
+    claim: BigIntegerの仕様が求める範囲は-2^Integer.MAX_VALUEから+2^Integer.MAX_VALUE（どちらも含まない）
+    text: 仕様では、およそ±2の21億乗の範囲の値を扱えることになっています
+    sources:
+      - title: BigInteger（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigInteger.html
+        anchor: BigInteger must support values in the range
+    verify:
+      kind: manual
+      checked: 2026-11-24
+      note: APIドキュメントの冒頭の「BigInteger must support values in the range -2^Integer.MAX_VALUE (exclusive) to +2^Integer.MAX_VALUE (exclusive)」で確かめた
