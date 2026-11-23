@@ -195,6 +195,10 @@ Javaの例外は、コンパイラーがその処理を強制するかどうか�
 #### `throws`による例外処理の委譲
 
 メソッド内で発生した検査例外を自身で処理せず、そのメソッドの呼び出し元に処理を任せたい場合、メソッドシグネチャに`throws`を記述します。
+`main`メソッドに`throws`を付けると、例外は`main`を呼んだJVMに渡り、スタックトレースを表示してプログラムが終了します。
+本書でも、ファイルを扱う短いサンプルでは`main`に`throws IOException`を付けることがありますが、実際のプログラムでは`main`の手前で受け止めて利用者にわかる形で知らせます。
+
+次の`riskyMethod`は、第4章でも使った`throw`で例外を発生させています（`throw`は次の節で詳しく扱います）。
 
 <span class="listing-number">**サンプルコード13-4**　ThrowsExample.java</span>
 
@@ -434,6 +438,8 @@ public class UserService {
 `Runnable`や`Supplier`と違って検査例外を投げられるので、ファイルやネットワークを扱う処理もそのまま渡せます。
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-08/`</span>）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
+`retryableException.isInstance(e)`は、例外`e`がその型（またはその子クラス）のオブジェクトかどうかを調べます。
+`instanceof`と同じ判定を、型を変数で受け取って行う書き方です。
 
 <span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
 
@@ -540,6 +546,10 @@ public class ExceptionAggregator {
     }
 }
 ```
+
+`processMultipleTasks`は、タスクが例外を投げても次のタスクへ進み、例外を`addException`でためておきます。
+すべてのタスクを終えたあと、`throwIfAny`が、ためた例外をまとめた`AggregateException`を1つ投げます。
+呼び出し側は、`AggregateException`を`catch`して`getExceptions()`で個々の例外を取り出し、どのタスクがなぜ失敗したかを報告します。
 
 ## リソース管理の実践例
 
@@ -976,11 +986,9 @@ public class TransferService {
 
 ここまでの内容から、例外処理で守りたい心がけをまとめます。
 
-まず、`catch`ブロックを空にしないでください。
-例外を捕捉したら、少なくともログには記録しましょう。
-また、`catch (Exception e)`で安易にすべての例外を捕捉せず、その場で対処できる具体的な例外だけを`catch`します。
-ファイルなどのリソースを扱うときは、閉じ忘れを防ぐために`try-with-resources`を積極的に使いましょう。
-最後に、エラーの伝え方は相手によって分けます。
+空の`catch`ブロック、範囲の広すぎる`try`、リソースの解放漏れといった誤りは、次の「よくあるエラーと対処法」にまとめました。
+そこに挙げていない心がけとして、`catch (Exception e)`で安易にすべての例外を捕捉せず、その場で対処できる具体的な例外だけを`catch`します。
+また、エラーの伝え方は相手によって分けます。
 ユーザーにはわかりやすいメッセージとエラーIDを示し、ログには原因究明のための詳細な情報（スタックトレースなど）を記録します。
 
 体系的な例外処理を実装することは、信頼性の高いソフトウェアを開発するための必須スキルです。
