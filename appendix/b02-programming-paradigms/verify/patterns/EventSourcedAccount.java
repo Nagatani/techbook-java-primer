@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.List;
 
 public class EventSourcedAccount {
@@ -13,7 +14,7 @@ public class EventSourcedAccount {
             implements AccountEvent {}
     
     // イベントを順に適用して、現在の状態を求める
-    public class AccountProjection {
+    public static class AccountProjection {
         public AccountState project(List<AccountEvent> events) {
             AccountState state = AccountState.empty();
             for (AccountEvent event : events) {
@@ -35,5 +36,17 @@ public class EventSourcedAccount {
                     state.withBalance(state.balance().subtract(amount));
             };
         }
+    }
+
+    public static void main(String[] args) {
+        List<AccountEvent> events = List.of(
+                new AccountCreated("AC001", "田中"),
+                new MoneyDeposited("AC001", new Money(new BigDecimal("10000"))),
+                new MoneyWithdrawn("AC001", new Money(new BigDecimal("3000"))),
+                new MoneyDeposited("AC001", new Money(new BigDecimal("500"))));
+        AccountProjection projection = new AccountProjection();
+        // 途中までのイベントを適用すれば、その時点の状態もわかる
+        IO.println("2件目まで: " + projection.project(events.subList(0, 2)));
+        IO.println("すべて: " + projection.project(events));
     }
 }

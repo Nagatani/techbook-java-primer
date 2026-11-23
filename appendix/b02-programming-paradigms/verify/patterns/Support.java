@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-// サンプルコード11-10を動かすための最小限のクラス
+// MiddlewareChainを動かすための最小限のクラス
 
 class Request {
     private final String method;

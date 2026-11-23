@@ -28,14 +28,7 @@ javac -d out *.java
 | [11-12](./11-12/) | ExecutorLambdaExample.java | `java -cp out ExecutorLambdaExample` |
 | [11-13](./11-13/) | User.java<br>ValidationFramework.java | `java -cp out ValidationFramework` |
 | [11-14](./11-14/) | HigherOrderFunctionExample.java<br>TradingTypes.java | `java -cp out HigherOrderFunctionExample` |
-| [11-15](./11-15/) | EventProcessor.java | `java -cp out EventProcessor` |
-| [11-16](./11-16/) | MiddlewareChain.java<br>Support.java | `java -cp out MiddlewareChain` |
-| [11-17](./11-17/) | DataProcessingTemplate.java | `java -cp out DataProcessingTemplate` |
-| [11-18](./11-18/) | AccountState.java<br>EventSourcedAccount.java | （mainメソッドなし） |
-| [11-19](./11-19/) | ProcessorFactory.java | `java -cp out ProcessorFactory` |
-| [11-20](./11-20/) | FunctionalBuilder.java<br>Person.java | `java -cp out FunctionalBuilder` |
-| [11-21](./11-21/) | ConfigurationBuilder.java | `java -cp out ConfigurationBuilder` |
-| [11-22](./11-22/) | OrderPipeline.java | `java -cp out OrderPipeline` |
-| [11-23](./11-23/) | NestedLambdaExample.java | `java -cp out NestedLambdaExample` |
-| [11-24](./11-24/) | SideEffectExample.java | `java -cp out SideEffectExample` |
-| [11-25](./11-25/) | LambdaCapture.java | `java -cp out LambdaCapture` |
+| [11-15](./11-15/) | OrderPipeline.java | `java -cp out OrderPipeline` |
+| [11-16](./11-16/) | NestedLambdaExample.java | `java -cp out NestedLambdaExample` |
+| [11-17](./11-17/) | SideEffectExample.java | `java -cp out SideEffectExample` |
+| [11-18](./11-18/) | LambdaCapture.java | `java -cp out LambdaCapture` |

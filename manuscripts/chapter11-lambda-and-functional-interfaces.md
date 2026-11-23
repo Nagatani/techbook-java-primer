@@ -155,7 +155,7 @@ javacは「ラムダ式から参照されるローカル変数は、finalまた�
 - 複数のスレッドから同時に呼び出しても、共有している状態を壊さない（第15章）
 
 ラムダ式で計算した結果は、外の変数に書き込まず、戻り値として返すようにしましょう。
-書き換えの例は、章の後半の「ラムダ式から外部の状態を変えない」（サンプルコード11-24）で示します。
+書き換えの例は、章の後半の「ラムダ式から外部の状態を変えない」（サンプルコード11-17）で示します。
 
 ### `Comparator`による並べ替え
 
@@ -910,402 +910,21 @@ public class HigherOrderFunctionExample {
 `withRiskManagement`は、取引の戦略を表す関数とリスクを判定する条件を受け取り、条件を満たすときだけ戦略を適用する新しい関数を返します。
 変動率が0.8の2つ目のデータは条件を満たさないので、戦略を適用せずに既定の値の`HOLD`を返します。
 
-### 関数型プログラミングの実装パターン集
+### 設計パターンを関数で書く
 
 処理を受け取って別の処理を返す高階関数は、失敗した処理を呼び出し直す「再試行（リトライ）」にも使えます。
 試したい処理をラムダ式で渡し、失敗したら何回か呼び出し直すメソッドは、例外の扱いとあわせて第13章「例外処理」の「リトライパターン」で書きます。
 
-#### イベント処理システムでの関数型アプローチ
-
-イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラーをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
-
-<span class="listing-number">**サンプルコード11-15**　EventProcessor.java（8〜55行目）</span>
-
-```java
-public class EventProcessor {
-    // イベントの種類ごとに、登録されたハンドラーの一覧を持つ
-    private final Map<Class<?>, List<Consumer<Object>>> handlers =
-            new HashMap<>();
-
-    // イベントハンドラーの登録
-    public <T> void on(Class<T> eventType, Consumer<T> handler) {
-        handlers.computeIfAbsent(eventType, k -> new ArrayList<>())
-                .add(event -> handler.accept(eventType.cast(event)));
-    }
-
-    // 条件を満たすイベントだけを処理するハンドラーの登録
-    public <T> void onFiltered(Class<T> eventType,
-                               Predicate<T> filter,
-                               Consumer<T> handler) {
-        on(eventType, event -> {
-            if (filter.test(event)) {
-                handler.accept(event);
-            }
-        });
-    }
-
-    // イベントの発行：登録されたハンドラーを順に呼び出す
-    public void publish(Object event) {
-        for (Consumer<Object> handler
-                : handlers.getOrDefault(event.getClass(), List.of())) {
-            handler.accept(event);
-        }
-    }
-
-    record OrderCreated(String id, int amount) {}
-
-    public static void main(String[] args) {
-        EventProcessor processor = new EventProcessor();
-
-        // すべての注文で呼ばれるハンドラー
-        processor.on(OrderCreated.class,
-            order -> IO.println("注文を受け付けました: " + order.id()));
-
-        // 金額が10000円を超える注文だけで呼ばれるハンドラー
-        processor.onFiltered(OrderCreated.class,
-            order -> order.amount() > 10000,
-            order -> IO.println("高額の注文です: " + order.id()));
-
-        processor.publish(new OrderCreated("A001", 3000));
-        processor.publish(new OrderCreated("A002", 25000));
-    }
-}
-```
-
-実行結果：
-
-```
-注文を受け付けました: A001
-注文を受け付けました: A002
-高額の注文です: A002
-```
-
-`on`はイベントの型ごとにハンドラーを登録し、`publish`はそのイベントの型に登録されたハンドラーを順に呼び出します。
-`onFiltered`は、条件を表す`Predicate`とハンドラーを組み合わせた新しいラムダ式を作り、`on`で登録しています。
-そのため、金額が10000円を超えるA002のときだけ、2つ目のハンドラーが処理をします。
-
-#### 関数合成によるミドルウェア
-
-Webのサーバーは、届いたリクエスト（要求）を本来の処理に渡す前に、いくつかの検査を順に行います。
-たとえば、記録を取る処理や、短い時間に届きすぎていないかを確かめる処理、利用者を認証する処理です。
-このような、本来の処理の前に挟む処理をミドルウェアと呼びます。
-サンプルコード11-16は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
-
-<span class="listing-number">**サンプルコード11-16**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
-
-```java
-public class MiddlewareChain {
-    // ...
-    // HTTPリクエスト処理のミドルウェア
-    @FunctionalInterface
-    interface Middleware extends Function<Request, Response> {
-        default Middleware then(Middleware next) {
-            return request -> {
-                Response response = this.apply(request);
-                if (response.isSuccess()) {
-                    return next.apply(request);
-                }
-                return response;
-            };
-        }
-    }
-    
-    // 認証ミドルウェア
-    Middleware authenticate = request -> {
-        String token = request.getHeader("Authorization");
-        if (tokenService.isValid(token)) {
-            request.setAttribute("user", tokenService.getUser(token));
-            return Response.success();
-        }
-        return Response.unauthorized();
-    };
-    
-    // ...
-    // ミドルウェアチェーンの構築
-    Middleware pipeline = logging
-        .then(rateLimiting)
-        .then(authenticate)
-        .then(request -> businessLogic.handle(request));
-        // ...
-}
-```
-
-`Middleware`は`Function`を継承しているため、`andThen`という名前のメソッドをすでに持っています。
-同じ名前で合成メソッドを定義すると、ラムダ式を渡したときにどちらを呼ぶのかが決まらずコンパイルエラーになるので、ここでは`then`という名前にしています。
-`then`でつないだ処理は、前の検査が成功したときだけ次の検査に進み、失敗したらその時点の応答を返します。
-
-#### テンプレートメソッドパターンの関数型実装
-
-テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
-
-<span class="listing-number">**サンプルコード11-17**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
-
-```java
-public class DataProcessingTemplate {
-    // ...
-    // データ処理の骨格：前処理 → メイン処理 → 後処理の順に適用する
-    public <T, R> R processData(
-        T input,
-        Function<T, T> preprocessor,
-        Function<T, R> processor,
-        Function<R, R> postprocessor) {
-
-        T preprocessed = preprocessor.apply(input);
-        R processed = processor.apply(preprocessed);
-        return postprocessor.apply(processed);
-    }
-
-    // 使用例：CSV形式の文字列から顧客の一覧を作る
-    public List<Customer> processCsvData(String csvData) {
-        return processData(
-            csvData,
-            data -> data.trim(),               // 前処理：前後の空白を除く
-            this::parseCustomers,              // メイン処理
-            customers -> {                     // 後処理：無効なデータを除く
-                customers.removeIf(c -> !c.isValid());
-                return customers;
-            }
-        );
-    }
-    // ...
-}
-```
-
-後処理のラムダ式は`removeIf`でリストを書き換えていますが、このリストは`parseCustomers`が新しく作ったものなので、ほかの処理に影響しません。
-`processCsvData("  Alice,30;Bob,-1;Carol,25  ")`を呼び出すと、年齢が負のBobを除いた次のリストが返ります。
-
-```
-[Customer[name=Alice, age=30], Customer[name=Carol, age=25]]
-```
-
-`processData`は処理の順序だけを決め、各段階で何をするかは呼び出す側がラムダ式やメソッド参照で渡します。
-継承を使うテンプレートメソッドパターンとちがい、処理の組み合わせごとにサブクラスを作らずに済みます。
-
-#### イベントソーシング
-
-イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
-現在の状態が必要になったら、記録したイベントを順に適用して求めます。
-
-<span class="listing-number">**サンプルコード11-18**　EventSourcedAccount.java（3〜39行目）</span>
-
-```java
-public class EventSourcedAccount {
-    // イベントの定義
-    sealed interface AccountEvent
-            permits AccountCreated, MoneyDeposited, MoneyWithdrawn {}
-
-    record AccountCreated(String accountId, String owner)
-            implements AccountEvent {}
-    record MoneyDeposited(String accountId, Money amount)
-            implements AccountEvent {}
-    record MoneyWithdrawn(String accountId, Money amount)
-            implements AccountEvent {}
-    
-    // イベントを順に適用して、現在の状態を求める
-    public class AccountProjection {
-        public AccountState project(List<AccountEvent> events) {
-            AccountState state = AccountState.empty();
-            for (AccountEvent event : events) {
-                state = applyEvent(state, event);
-            }
-            return state;
-        }
-        
-        private AccountState applyEvent(AccountState state,
-                AccountEvent event) {
-            return switch (event) {
-                case AccountCreated(var id, var owner) -> 
-                    new AccountState(id, owner, Money.ZERO);
-                    
-                case MoneyDeposited(var id, var amount) -> 
-                    state.withBalance(state.balance().add(amount));
-                    
-                case MoneyWithdrawn(var id, var amount) -> 
-                    state.withBalance(state.balance().subtract(amount));
-            };
-        }
-    }
-}
-```
-
-`project`メソッドは、空の状態から始めてイベントを古い順に1つずつ適用し、現在の状態を求めます<span class="footnote">このサンプルは、sealedインターフェイス、record、switchのレコードパターン（第8章）を使っています。口座の状態を表す`AccountState`と金額を表す`Money`は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-21/`）にあります。</span>。
-第12章で学ぶStreamの`reduce`を使うと、この繰り返しを1つの式で書けます。
-
-#### ファクトリパターンの関数型実装
-
-ファクトリパターンは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
-`Supplier`にコンストラクター参照を入れておくと、形式の名前から生成する処理を選ぶファクトリを、`Map`1つで書けます。
-
-<span class="listing-number">**サンプルコード11-19**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
-
-```java
-public class ProcessorFactory {
-    interface DataProcessor {
-        String process(String data);
-    }
-    // ...
-    // 形式の名前と、オブジェクトを作る処理（コンストラクター参照）の対応
-    private final Map<String, Supplier<DataProcessor>> processors =
-            Map.of(
-        "csv", CsvProcessor::new,
-        "xml", XmlProcessor::new,
-        "json", JsonProcessor::new
-    );
-
-    public DataProcessor createProcessor(String type) {
-        Supplier<DataProcessor> supplier = processors.get(type);
-        if (supplier == null) {
-            throw new IllegalArgumentException("未対応の形式: " + type);
-        }
-        return supplier.get();  // ここではじめてオブジェクトを生成する
-    }
-    // ...
-}
-```
-
-`CsvProcessor`などの3つのクラスは、`DataProcessor`を実装し、受け取った文字列に形式の名前を付けて返すだけのクラスです<span class="footnote">3つのクラスの定義は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-22/`）にあります。</span>。
-`createProcessor("csv")`、`createProcessor("json")`、`createProcessor("yaml")`の順に呼び出して処理させると、次のように表示されます。
-
-```
-CSVとして読み込み: a,b,c
-JSONとして読み込み: {"a": 1}
-エラー: 未対応の形式: yaml
-```
-
-`Map`に入れた時点ではオブジェクトは作られず、`supplier.get()`を呼び出したときにはじめてコンストラクターが実行されます。
-新しい形式に対応するときは、`Map`に1行を足すだけで済みます。
-
-### 実践的なデザインパターン：関数型ビルダー
-
-関数型プログラミングでは、デザインパターンの一部をクラスを増やさずに書けます。
-戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
-ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
-
-<span class="listing-number">**サンプルコード11-20**　FunctionalBuilder.java（5、26〜61行目）</span>
-
-```java
-public class FunctionalBuilder {
-    // ...
-    // 関数型ビルダーパターン
-    public static class FunctionalPersonBuilder {
-        private final List<Consumer<Person>> operations =
-                new ArrayList<>();
-        
-        public FunctionalPersonBuilder with(Consumer<Person> operation) {
-            operations.add(operation);
-            return this;
-        }
-        
-        public Person build() {
-            Person person = new Person();
-            operations.forEach(op -> op.accept(person));
-            return person;
-        }
-    }
-    
-    // 使用例
-    public void demonstrateBuilders() {
-        // 関数型ビルダーの利点：動的な構築ロジック
-        Person person = new FunctionalPersonBuilder()
-            .with(p -> p.setName("Alice"))
-            .with(p -> p.setAge(30))
-            .with(p -> {
-                if (p.getAge() >= 18) {
-                    p.grantAdultPrivileges();
-                }
-            })
-            .build();
-        IO.println(person);
-    }
-
-    public static void main(String[] args) {
-        new FunctionalBuilder().demonstrateBuilders();
-    }
-}
-```
-
-実行結果：
-
-```
-Person{name='Alice', age=30, adult=true}
-```
-
-`with`は設定の操作（`Consumer<Person>`）をリストにためておくだけで、`build`を呼んだときに、作った`Person`へ操作を加えた順に適用します。
-3つ目の操作は、先に設定した年齢を見て処理を変えています。
-第6章のビルダーは不変オブジェクトを組み立てるためのものでした。
-この関数型のビルダーは、setterを持つ可変のオブジェクトに操作を順に加える点が異なります。
-
-#### 条件に応じた設定の組み立て
-
-関数型のビルダーは、実行する環境によって設定を変えるような、条件のある組み立てにも向いています。
-サンプルコード11-21の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
-
-<span class="listing-number">**サンプルコード11-21**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
-
-```java
-public class ConfigurationBuilder {
-    // 設定の操作をためておき、buildで順に適用するビルダー
-    public static class FunctionalConfigBuilder<T> {
-        private final List<Consumer<T>> operations = new ArrayList<>();
-
-        public FunctionalConfigBuilder<T> with(Consumer<T> operation) {
-            operations.add(operation);
-            return this;
-        }
-
-        // 条件が成り立つときだけ、操作を加える
-        public FunctionalConfigBuilder<T> whenCondition(
-                boolean condition, Consumer<T> operation) {
-            if (condition) {
-                operations.add(operation);
-            }
-            return this;
-        }
-
-        public T build(Supplier<T> factory) {
-            T config = factory.get();
-            for (Consumer<T> operation : operations) {
-                operation.accept(config);
-            }
-            return config;
-        }
-    }
-    // ...
-    public DatabaseConfig buildDatabaseConfig(String environment) {
-        return new FunctionalConfigBuilder<DatabaseConfig>()
-            .with(config -> config.setHost("localhost"))  // 既定の設定
-            .with(config -> config.setPort(5432))
-            .whenCondition("production".equals(environment),
-                config -> {
-                    config.setHost("db.example.com");
-                    config.setSslEnabled(true);
-                })
-            .whenCondition("test".equals(environment),
-                config -> config.setDatabase("test_db"))
-            .build(DatabaseConfig::new);
-    }
-    // ...
-}
-```
-
-`DatabaseConfig`は、ホスト名・ポート番号・データベース名・SSLを使うかどうかを持ち、setterと`toString`を定義したクラスです<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-25/`にあります。</span>。
-環境の名前を変えて`buildDatabaseConfig`を呼び出すと、次の設定ができます。
-
-```
-development: localhost:5432/app_db (SSL: false)
-test: localhost:5432/test_db (SSL: false)
-production: db.example.com:5432/app_db (SSL: true)
-```
-
-`build`は、`DatabaseConfig::new`で作ったオブジェクトに、ためておいた操作を加えた順に適用します。
-そのため、productionでは既定の`localhost`のあとに`db.example.com`が設定され、後から加えた操作が優先されます。
+オブジェクト指向の設計パターンの一部も、振る舞いをラムダ式で渡すと、振る舞いごとのクラスを作らずに書けます。
+イベントの型ごとのハンドラー、Webのミドルウェア、テンプレートメソッド、イベントソーシング、ファクトリ、ビルダーを関数で書いた例を用意しました。
+それらの例は、付録B.02「プログラミングパラダイム」で紹介しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b02-programming-paradigms/`</span>。
 
 ### 関数合成によるビジネスロジックの設計
 
 業務の処理を、入力から結果を返すだけの小さな関数に分けておくと、関数ごとに確かめやすく、組み替えもしやすくなります。
-サンプルコード11-22は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
+サンプルコード11-15は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
 
-<span class="listing-number">**サンプルコード11-22**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
+<span class="listing-number">**サンプルコード11-15**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
 
 ```java
 public class OrderPipeline {
@@ -1369,9 +988,9 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 #### ラムダ式を深く入れ子にしない
 
 ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
-サンプルコード11-23は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
+サンプルコード11-16は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
 
-<span class="listing-number">**サンプルコード11-23**　NestedLambdaExample.java（5〜47行目）</span>
+<span class="listing-number">**サンプルコード11-16**　NestedLambdaExample.java（5〜47行目）</span>
 
 ```java
 public class NestedLambdaExample {
@@ -1433,9 +1052,9 @@ public class NestedLambdaExample {
 
 #### ラムダ式から外部の状態を変えない
 
-サンプルコード11-24は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
+サンプルコード11-17は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
 
-<span class="listing-number">**サンプルコード11-24**　SideEffectExample.java（5〜27行目）</span>
+<span class="listing-number">**サンプルコード11-17**　SideEffectExample.java（5〜27行目）</span>
 
 ```java
 public class SideEffectExample {
@@ -1478,9 +1097,9 @@ public class SideEffectExample {
 ### ラムダ式の内部実装とメモリ使用
 
 ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます<span class="footnote">匿名クラスはコンパイルすると`Outer$1.class`のような別のクラスファイルになりますが、ラムダ式はなりません。ラムダ式の本体は同じクラスのprivateメソッドになり、実行時に`invokedynamic`命令（Java 7で追加）を使ってオブジェクトを作ります。</span>。
-サンプルコード11-25は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
+サンプルコード11-18は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
 
-<span class="listing-number">**サンプルコード11-25**　LambdaCapture.java（5〜25行目）</span>
+<span class="listing-number">**サンプルコード11-18**　LambdaCapture.java（5〜25行目）</span>
 
 ```java
 public class LambdaCapture {

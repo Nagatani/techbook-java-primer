@@ -33,6 +33,7 @@
 | `ParserCombinator.java` | パーサーを関数として組み合わせる |
 | `ExpressionAdt.java` | 代数的データ型（式の木）とパターンマッチング |
 | `IOMonad.java` | 副作用を「実行する手順の値」として組み立てる |
+| `patterns/` | 設計パターンを関数で書く（イベントのハンドラー、ミドルウェア、テンプレートメソッド、イベントソーシング、ファクトリ、ビルダー） |
 | `SinceRecord.java`ほか`Since`で始まる4つ | 言語機能が使えるようになった版（`javac --release`で見る） |
 | `compile-errors/` | コンパイルエラーになる書き方（実質的にfinalでない変数の参照など） |
 
@@ -831,6 +832,142 @@ IOが指すクラス: IOMonad$IO
 Haskellでは、入出力をこのような値として組み立て、`main`だけがそれを実行します。
 Javaの`IO<T>`は、その考え方をまねた簡易版です。
 Javaでは、どのメソッドのなかでも副作用を起こせるので、言語が副作用の場所を限ってくれるわけではありません。
+
+## 12. 設計パターンを関数で書く
+
+オブジェクト指向の設計パターン（デザインパターン）の一部は、振る舞いをラムダ式やメソッド参照で渡すことで、振る舞いごとのクラスを作らずに書けます。
+ここでは、第11章で学んだ関数型インターフェイス（`Consumer`・`Predicate`・`Function`・`Supplier`）を使って、よく知られた設計を書いた例を見ます。
+どれも`verify/patterns/`にあり、補助のクラスを別のファイルに置いているものがあるので、まとめてコンパイルしてから実行します。
+
+```bash
+cd verify/patterns
+javac -d out *.java
+java -cp out EventProcessor
+```
+
+### イベントの型ごとにハンドラーを登録する
+
+`verify/patterns/EventProcessor.java`は、イベントの型（`Class`）をキーにして、そのイベントを処理する`Consumer`の一覧を`Map`に持ちます。
+`on`はイベントの型ごとにハンドラーを登録し、`publish`はそのイベントの型に登録されたハンドラーを順に呼び出します。
+`onFiltered`は、条件を表す`Predicate`とハンドラーを組み合わせた新しいラムダ式を作り、`on`で登録します。
+
+<!-- output: pattern-event -->
+```
+注文を受け付けました: A001
+注文を受け付けました: A002
+高額の注文です: A002
+```
+<!-- /output -->
+<!-- claim: pattern-event -->
+
+金額が10000円を超えるA002のときだけ、条件付きの2つ目のハンドラーが処理をします。
+`OrderCreated.class`は、クラスを表すオブジェクトです。
+`computeIfAbsent`は、キーに対応する一覧がまだなければ新しく作って入れ、その一覧を返します。
+
+### ミドルウェアを関数の合成でつなぐ
+
+Webのサーバーは、届いたリクエストを本来の処理に渡す前に、いくつかの検査を順に行います。
+たとえば、記録を取る処理や、短い時間に届きすぎていないかを確かめる処理、利用者を認証する処理です。
+このような、本来の処理の前に挟む処理をミドルウェアと呼びます。
+`verify/patterns/MiddlewareChain.java`は、検査をラムダ式で書き、`then`でつなぎます（`Request`などの補助の型は`Support.java`にあります）。
+
+<!-- output: pattern-middleware -->
+```
+[INFO] Request: GET /orders
+200 注文一覧（ユーザー: alice）
+[INFO] Request: GET /orders
+401 Unauthorized
+[INFO] Request: GET /orders
+200 注文一覧（ユーザー: alice）
+[INFO] Request: GET /orders
+429 Too Many Requests
+```
+<!-- /output -->
+<!-- claim: pattern-middleware -->
+
+`then`でつないだ処理は、前の検査が成功したときだけ次の検査に進み、失敗したらその時点の応答を返します。
+2回目は認証に失敗した応答（401）、4回目は回数の上限を超えた応答（429）で止まっています。
+`Middleware`は`Function`を継承しているので、`andThen`という名前のメソッドをすでに持っています。
+同じ名前で合成のメソッドを定義すると、ラムダ式を渡したときにどちらを呼ぶのかが決まらずコンパイルエラーになるので、`then`という名前にしています。
+
+### テンプレートメソッドを関数で渡す
+
+テンプレートメソッドパターンは、処理の骨格を親クラスで決め、各段階の処理をサブクラスに任せる設計です（第5章・第7章）。
+`verify/patterns/DataProcessingTemplate.java`の`processData`は、読み込み・変換・後処理の順序だけを決め、各段階で何をするかは呼び出す側がラムダ式やメソッド参照で渡します。
+`processCsvData("  Alice,30;Bob,-1;Carol,25  ")`を呼び出すと、年齢が負のBobを除いたリストが返ります。
+
+<!-- output: pattern-template -->
+```
+[Customer[name=Alice, age=30], Customer[name=Carol, age=25]]
+```
+<!-- /output -->
+<!-- claim: pattern-template -->
+
+継承を使う書き方と違い、処理の組み合わせごとにサブクラスを作らずに済みます。
+後処理のラムダ式は`removeIf`でリストを書き換えていますが、このリストは`parseCustomers`が新しく作ったものなので、ほかの処理に影響しません。
+
+### イベントソーシング
+
+イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
+現在の状態が必要になったら、記録したイベントを順に適用して求めます。
+`verify/patterns/EventSourcedAccount.java`は、イベントをsealedインターフェイスとレコードで表し、`project`で空の状態から古い順に適用します（第8章のレコードパターンを使ったswitch）。
+
+<!-- output: pattern-event-sourcing -->
+```
+2件目まで: AccountState[id=AC001, owner=田中, balance=Money[amount=10000]]
+すべて: AccountState[id=AC001, owner=田中, balance=Money[amount=7500]]
+```
+<!-- /output -->
+<!-- claim: pattern-event-sourcing -->
+
+途中までのイベントだけを適用すれば、その時点の状態も求められます。
+適用の繰り返しは、第12章で学ぶStreamの`reduce`を使うと1つの式で書けます。
+
+### コンストラクター参照で作るファクトリ
+
+ファクトリは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
+`verify/patterns/ProcessorFactory.java`は、形式の名前と、生成する処理（`Supplier`に入れたコンストラクター参照）を`Map`に対応づけます。
+
+<!-- output: pattern-factory -->
+```
+CSVとして読み込み: a,b,c
+JSONとして読み込み: {"a": 1}
+エラー: 未対応の形式: yaml
+```
+<!-- /output -->
+<!-- claim: pattern-factory -->
+
+`Map`に入れた時点ではオブジェクトは作られず、`supplier.get()`を呼び出したときにはじめてコンストラクターが実行されます。
+新しい形式に対応するときは、`Map`に1行を足すだけで済みます。
+
+### 操作をためておくビルダー
+
+`verify/patterns/FunctionalBuilder.java`の`with`は、設定の操作（`Consumer<Person>`）をリストにためておくだけで、`build`を呼んだときに、作った`Person`へ操作を加えた順に適用します。
+
+<!-- output: pattern-builder -->
+```
+Person{name='Alice', age=30, adult=true}
+```
+<!-- /output -->
+<!-- claim: pattern-builder -->
+
+3つ目の操作は、先に設定した年齢を見て`adult`を決めています。
+第6章のビルダーは不変オブジェクトを組み立てるためのものでした。
+この関数型のビルダーは、setterを持つ可変のオブジェクトに操作を順に加える点が異なります。
+
+`verify/patterns/ConfigurationBuilder.java`の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
+実行する環境の名前によって、データベースの設定を変えます。
+
+<!-- output: pattern-config -->
+```
+development: localhost:5432/app_db (SSL: false)
+test: localhost:5432/test_db (SSL: false)
+production: db.example.com:5432/app_db (SSL: true)
+```
+<!-- /output -->
+<!-- claim: pattern-config -->
+
+productionでは、既定の`localhost`のあとに`db.example.com`を設定する操作が加わるので、あとから加えた操作が優先されます。
 
 ## よくある誤解
 

@@ -713,3 +713,76 @@ claims:
         - '^--- getNumberは2回実行された（残りの入力 \[\]）$'
         - '^IOが指すクラス: IOMonad\$IO$'
       show: ['.']
+
+  # ---- 12. 設計パターンを関数で書く（2026-11-23に第11章から移した）
+  - id: pattern-event
+    claim: イベントの型ごとにConsumerを登録し、Predicateと組み合わせたハンドラーは条件に合うイベントだけを処理する
+    verify:
+      kind: run
+      probe: verify/patterns/EventProcessor.java
+      expect:
+        - '^注文を受け付けました: A001$'
+        - '^注文を受け付けました: A002$'
+        - '^高額の注文です: A002$'
+      show: ['.']
+
+  - id: pattern-middleware
+    claim: Functionを継承したミドルウェアをthenでつなぐと、前の検査が成功したときだけ次へ進み、失敗した時点の応答を返す
+    verify:
+      kind: run
+      probe: [verify/patterns/MiddlewareChain.java, verify/patterns/Support.java]
+      expect:
+        - '^200 注文一覧（ユーザー: alice）$'
+        - '^401 Unauthorized$'
+        - '^429 Too Many Requests$'
+      show: ['.']
+
+  - id: pattern-template
+    claim: 処理の順序だけを決めるメソッドに各段階の処理を関数で渡すと、サブクラスを作らずにテンプレートメソッドと同じことができる
+    verify:
+      kind: run
+      probe: verify/patterns/DataProcessingTemplate.java
+      expect:
+        - '^\[Customer\[name=Alice, age=30\], Customer\[name=Carol, age=25\]\]$'
+      show: ['.']
+
+  - id: pattern-event-sourcing
+    claim: イベントの列を空の状態から順に適用すると現在の状態が求まり、途中までのイベントを適用するとその時点の状態が求まる
+    verify:
+      kind: run
+      probe: [verify/patterns/EventSourcedAccount.java, verify/patterns/AccountState.java]
+      expect:
+        - '^2件目まで: AccountState\[id=AC001, owner=田中, balance=Money\[amount=10000\]\]$'
+        - '^すべて: AccountState\[id=AC001, owner=田中, balance=Money\[amount=7500\]\]$'
+      show: ['.']
+
+  - id: pattern-factory
+    claim: Supplierにコンストラクター参照を入れたMapで、形式の名前から生成する処理を選ぶファクトリを書ける。オブジェクトはget()を呼んだときに作られる
+    verify:
+      kind: run
+      probe: verify/patterns/ProcessorFactory.java
+      expect:
+        - '^CSVとして読み込み: a,b,c$'
+        - '^JSONとして読み込み: \{"a": 1\}$'
+        - '^エラー: 未対応の形式: yaml$'
+      show: ['.']
+
+  - id: pattern-builder
+    claim: 設定の操作（Consumer）をリストにためておき、buildで加えた順に適用するビルダーでは、あとの操作が先に設定した値を参照できる
+    verify:
+      kind: run
+      probe: [verify/patterns/FunctionalBuilder.java, verify/patterns/Person.java]
+      expect:
+        - "^Person\\{name='Alice', age=30, adult=true\\}$"
+      show: ['.']
+
+  - id: pattern-config
+    claim: 条件が成り立つときだけ操作を加えるビルダーでは、あとから加えた操作が先の設定を上書きする
+    verify:
+      kind: run
+      probe: verify/patterns/ConfigurationBuilder.java
+      expect:
+        - '^development: localhost:5432/app_db \(SSL: false\)$'
+        - '^test: localhost:5432/test_db \(SSL: false\)$'
+        - '^production: db\.example\.com:5432/app_db \(SSL: true\)$'
+      show: ['.']

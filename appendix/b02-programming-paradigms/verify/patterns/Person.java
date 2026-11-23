@@ -1,4 +1,4 @@
-// 本文では省略している補助クラス
+// FunctionalBuilderが組み立てるクラス
 public class Person {
     private String name;
     private int age;

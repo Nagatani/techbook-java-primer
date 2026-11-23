@@ -89,65 +89,6 @@
   },
   "11-15": {
     "dir": "11-15",
-    "main": "EventProcessor",
-    "excerpt": [
-      { "file": "EventProcessor.java", "from": 8, "to": 55 }
-    ]
-  },
-  "11-16": {
-    "dir": "11-16",
-    "main": "MiddlewareChain",
-    "excerpt": [
-      { "file": "MiddlewareChain.java", "from": 3, "to": 3 },
-      { "file": "MiddlewareChain.java", "from": 9, "to": 32 },
-      { "file": "MiddlewareChain.java", "from": 48, "to": 52 },
-      { "file": "MiddlewareChain.java", "from": 61, "to": 61 }
-    ]
-  },
-  "11-17": {
-    "dir": "11-17",
-    "main": "DataProcessingTemplate",
-    "excerpt": [
-      { "file": "DataProcessingTemplate.java", "from": 5, "to": 5 },
-      { "file": "DataProcessingTemplate.java", "from": 12, "to": 35 },
-      { "file": "DataProcessingTemplate.java", "from": 52, "to": 52 }
-    ]
-  },
-  "11-18": {
-    "dir": "11-18",
-    "main": null,
-    "excerpt": [
-      { "file": "EventSourcedAccount.java", "from": 3, "to": 39 }
-    ]
-  },
-  "11-19": {
-    "dir": "11-19",
-    "main": "ProcessorFactory",
-    "excerpt": [
-      { "file": "ProcessorFactory.java", "from": 4, "to": 7 },
-      { "file": "ProcessorFactory.java", "from": 27, "to": 41 },
-      { "file": "ProcessorFactory.java", "from": 53, "to": 53 }
-    ]
-  },
-  "11-20": {
-    "dir": "11-20",
-    "main": "FunctionalBuilder",
-    "excerpt": [
-      { "file": "FunctionalBuilder.java", "from": 5, "to": 5 },
-      { "file": "FunctionalBuilder.java", "from": 26, "to": 61 }
-    ]
-  },
-  "11-21": {
-    "dir": "11-21",
-    "main": "ConfigurationBuilder",
-    "excerpt": [
-      { "file": "ConfigurationBuilder.java", "from": 6, "to": 32 },
-      { "file": "ConfigurationBuilder.java", "from": 51, "to": 63 },
-      { "file": "ConfigurationBuilder.java", "from": 71, "to": 71 }
-    ]
-  },
-  "11-22": {
-    "dir": "11-22",
     "main": "OrderPipeline",
     "excerpt": [
       { "file": "OrderPipeline.java", "from": 3, "to": 14 },
@@ -155,22 +96,22 @@
       { "file": "OrderPipeline.java", "from": 57, "to": 58 }
     ]
   },
-  "11-23": {
-    "dir": "11-23",
+  "11-16": {
+    "dir": "11-16",
     "main": "NestedLambdaExample",
     "excerpt": [
       { "file": "NestedLambdaExample.java", "from": 5, "to": 47 }
     ]
   },
-  "11-24": {
-    "dir": "11-24",
+  "11-17": {
+    "dir": "11-17",
     "main": "SideEffectExample",
     "excerpt": [
       { "file": "SideEffectExample.java", "from": 5, "to": 27 }
     ]
   },
-  "11-25": {
-    "dir": "11-25",
+  "11-18": {
+    "dir": "11-18",
     "main": "LambdaCapture",
     "excerpt": [
       { "file": "LambdaCapture.java", "from": 5, "to": 25 }

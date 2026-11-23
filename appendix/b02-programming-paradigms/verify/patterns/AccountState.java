@@ -1,6 +1,6 @@
 import java.math.BigDecimal;
 
-// 本文では省略している補助の型
+// EventSourcedAccountが使う補助の型
 record Money(BigDecimal amount) {
     static final Money ZERO = new Money(BigDecimal.ZERO);
     Money add(Money other) { return new Money(amount.add(other.amount)); }
