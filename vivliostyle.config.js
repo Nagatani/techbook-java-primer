@@ -102,10 +102,12 @@ module.exports = {
     ...frontEntries,
     ...bodyFiles.map(file => {
       // 用語集に専用CSSを適用
+      // ファイルで指定すると（'./theme/my-theme/glossary-theme.css'）そのCSSだけが作業用ディレクトリに写され、
+      // fonts/ がないため @font-face の書体が404になる。パッケージの中のCSSとして読み込む
       if (file === 'glossary.md') {
         return {
           path: file,
-          theme: withTarget('./theme/my-theme/glossary-theme.css')
+          theme: withTarget({ specifier: './theme/my-theme', import: 'glossary-theme.css' })
         };
       }
       if (frontMatter.includes(file)) {
