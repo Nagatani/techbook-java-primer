@@ -34,7 +34,7 @@ claims:
 
   - id: tls-default-jdk25
     claim: JDK 25の既定で有効なTLSのプロトコルはTLS 1.3とTLS 1.2だけ（TLS 1.1以前は無効）
-    text: 使うプロトコルをTLS 1.2以上に限っています（JDK 25の既定も同じです）
+    text: JDK 25の既定も同じですが
     verify:
       kind: run
       probe: TlsDefaults.java
