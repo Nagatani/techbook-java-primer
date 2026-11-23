@@ -5,12 +5,17 @@ import java.util.concurrent.*;
 
 public class ChatServer {
     private static final int PORT = 5000;
+    // 同時に接続できるクライアントの上限
+    private static final int MAX_CLIENTS = 20;
     // 複数のスレッドから追加・削除・反復しても安全な集合
     private static Set<ClientHandler> clients =
         ConcurrentHashMap.newKeySet();
     
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newCachedThreadPool();
+        // 1人のクライアントが接続しているあいだ、スレッドを1つ使い続ける。
+        // 上限のあるプールにして、接続が増えてもスレッドが増え続けないようにする
+        ExecutorService executor =
+                Executors.newFixedThreadPool(MAX_CLIENTS);
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             IO.println("チャットサーバーが起動しました");

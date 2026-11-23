@@ -980,16 +980,6 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 また、`formatted()`メソッドと組み合わせると、値を埋め込んだ内容を作れます。
 同じ方法で設定ファイルやレポートのひな形を作り、`Files.writeString`でファイルに保存することもできます。
 
-## まとめ
-
-- JavaのファイルI/Oはストリームベースである
-- ストリームは第13章で学んだ`try-with-resources`で確実に閉じる
-- テキストファイルは文字ストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱う
-- オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段である
-- NIO.2（`java.nio.file`）の`Path`と`Files`を使うと、ファイルやディレクトリの作成・コピー・削除を簡潔に書ける
-- GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させる（Swingは第17章から学ぶ）
-- Text Blocksを使うと、JSONやSQLのような複数行のテキストを読みやすく書け、そのままファイルに保存できる
-
 ## よくあるエラーと対処法
 
 ファイルI/Oのエラーの多くは、プログラムの外にあるファイルシステムやOSの状態が原因で起こります。そのため、開発した環境では動いたのに、別の環境では動かないという形で現れることがあります。本章の内容に関連して出会いやすい問題は次のとおりです。
@@ -1011,6 +1001,16 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 
 問題のあるコードと修正したコード、デバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter14.md`
+
+## まとめ
+
+- JavaのファイルI/Oはストリームベースである
+- ストリームは第13章で学んだ`try-with-resources`で確実に閉じる
+- テキストファイルは文字ストリーム（`Reader`/`Writer`）、バイナリファイルはバイトストリーム（`InputStream`/`OutputStream`）で扱う
+- オブジェクト直列化は、オブジェクトの状態を簡単に保存・復元する強力な手段である
+- NIO.2（`java.nio.file`）の`Path`と`Files`を使うと、ファイルやディレクトリの作成・コピー・削除を簡潔に書ける
+- GUIでは`JFileChooser`を使って、ユーザーにファイルを選択させる（Swingは第17章から学ぶ）
+- Text Blocksを使うと、JSONやSQLのような複数行のテキストを読みやすく書け、そのままファイルに保存できる
 
 ## 章末演習
 

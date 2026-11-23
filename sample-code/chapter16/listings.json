@@ -64,10 +64,10 @@
     "dir": "16-09",
     "main": "ChatServer",
     "excerpt": [
-      { "file": "ChatServer.java", "from": 6, "to": 34 },
-      { "file": "ChatServer.java", "from": 41, "to": 41 },
-      { "file": "ChatServer.java", "from": 51, "to": 75 },
-      { "file": "ChatServer.java", "from": 91, "to": 97 }
+      { "file": "ChatServer.java", "from": 6, "to": 39 },
+      { "file": "ChatServer.java", "from": 46, "to": 46 },
+      { "file": "ChatServer.java", "from": 56, "to": 80 },
+      { "file": "ChatServer.java", "from": 96, "to": 102 }
     ]
   },
   "16-10": {

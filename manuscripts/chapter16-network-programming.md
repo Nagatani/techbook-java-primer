@@ -183,6 +183,12 @@ public class SimpleTCPClient {
 サーバーからの応答: Echo: Hello, Server!
 ```
 
+ソケットの`getInputStream()`と`getOutputStream()`が返すのは、第14章で学んだバイトストリームです。
+受信側は、`InputStreamReader`でバイトを文字に変える文字ストリームにし、さらに`BufferedReader`で包んで`readLine()`で1行ずつ読めるようにしています<span class="footnote">`InputStreamReader`も`PrintWriter`も、文字コードを指定しないと実行環境の既定の文字コードを使います。Java 18以降の既定はUTF-8です。日本語を送り合うプログラムでは、`new InputStreamReader(in, StandardCharsets.UTF_8)`のように指定しておくと確実です。</span>。
+送信側の`PrintWriter`は、文字列を`println`で書けるようにするクラスです。
+第2引数の`true`は自動フラッシュの指定で、`println`を呼ぶたびにたまった文字をすぐ送り出します。
+`true`を付けないと、文字は送り出されずにたまったままになり、相手が応答を待ち続けることがあります。
+
 ### 基本的なTCPサーバー
 
 TCPサーバーは、ServerSocketを使用してクライアントからの接続を待ち受けます。ServerSocketは指定されたポートで待機し、クライアントが接続すると新しいSocketインスタンスを生成します。このSocketを使用して、個々のクライアントと通信を行います。
@@ -351,6 +357,17 @@ Content-Length: 1234
 [空行]
 [レスポンスボディ]
 ```
+
+リクエストの1行目は、メソッド・パス・HTTPの版を並べたものです。
+メソッドは、サーバーに何をしてほしいかを表します。
+`GET`はデータを取得する要求、`POST`はデータを送って登録などをしてもらう要求です。
+レスポンスの1行目は、HTTPの版・ステータスコード・その説明を並べたもので、ステータスコードの3桁の数字が結果を表します。
+
+| ステータスコード | 意味 | 例 |
+|---|---|---|
+| 200番台 | 成功 | 200（OK）、201（Created：新しく作った） |
+| 400番台 | クライアント側の誤り | 400（Bad Request：要求の形が誤り）、404（Not Found：見つからない） |
+| 500番台 | サーバー側の誤り | 500（Internal Server Error） |
 
 ### 簡単なHTTPクライアント
 
@@ -700,21 +717,27 @@ UDPでは、送ったパケットや応答のパケットが途中で失われ�
 ### チャットサーバー
 
 以下のコードは、マルチクライアント対応のチャットサーバーの実装例です。このサーバーは、接続されたすべてのクライアントからメッセージを受信し、他のすべてのクライアントに転送します。各クライアントとの通信は独立したスレッドで処理されます。
+接続が続くあいだスレッドを使い続けるので、第15章で学んだとおり上限のあるスレッドプール（`newFixedThreadPool`）を使い、上限を超えた接続はスレッドが空くまで待たせます。
 クライアントの集合は、複数のスレッドが同時に追加・削除・反復しても安全な`ConcurrentHashMap.newKeySet()`で作ります<span class="footnote">`Collections.synchronizedSet`で包んだ集合も追加と削除は安全ですが、拡張for文で反復するあいだは、利用する側で`synchronized`ブロックを使って集合をロックしなければなりません。</span>。
 各クライアントは、送信に使う`PrintWriter`を用意してから集合に加えます。
 先に加えると、準備の済んでいないクライアントへほかのスレッドがメッセージを送ろうとして、`NullPointerException`が発生することがあります。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜34、41、51〜75、91〜97行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜39、46、56〜80、96〜102行目）</span>
 
 ```java
 public class ChatServer {
     private static final int PORT = 5000;
+    // 同時に接続できるクライアントの上限
+    private static final int MAX_CLIENTS = 20;
     // 複数のスレッドから追加・削除・反復しても安全な集合
     private static Set<ClientHandler> clients =
         ConcurrentHashMap.newKeySet();
     
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newCachedThreadPool();
+        // 1人のクライアントが接続しているあいだ、スレッドを1つ使い続ける。
+        // 上限のあるプールにして、接続が増えてもスレッドが増え続けないようにする
+        ExecutorService executor =
+                Executors.newFixedThreadPool(MAX_CLIENTS);
         
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             IO.println("チャットサーバーが起動しました");
@@ -1007,6 +1030,22 @@ Connection: close
 `Selector`が、接続の受け付けや読み取りができるようになったチャネルを教えてくれるので、準備のできた接続だけを順に処理します。
 `Selector`を使ったエコーサーバーの例は、付録Hで紹介しています。
 
+## よくあるエラーと対処法
+
+ネットワークプログラムでは、相手のサーバーや通信経路といった、プログラムの外の要因によってエラーが起こります。本章の内容に関連して出会いやすいエラーは次のとおりです。
+
+- 接続のエラー
+    + 接続先のサーバーが起動していない、ポート番号が違う、ファイアウォールで遮断されているといった原因で`ConnectException`などが発生する。タイムアウトも設定する
+- データの送受信のエラー
+    + 送信側と受信側で文字エンコーディングがそろっていない、データを最後まで受信していないといった原因がある
+- HTTPのステータスコードの確認漏れ
+    + `HttpClient`は404や500のレスポンスでも例外をスローしないため、ステータスコードを確かめる。`HttpURLConnection`はエラーのレスポンスで`getInputStream()`が`IOException`をスローするので、先に`getResponseCode()`で確かめる
+- リソースの解放漏れ
+    + ソケットやストリームはtry-with-resources文で確実に閉じる
+
+エラーの例と修正したコード、接続を診断するデバッグのヒントは、GitHubリポジトリにまとめています。<br>
+`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter16.md`
+
 ## まとめ
 
 本章では、Javaにおけるネットワークプログラミングの基礎から実践的な応用まで学習しました。
@@ -1061,18 +1100,3 @@ Connection: close
 
 基礎課題が完了したら、第17章「GUIプログラミングの基礎」に進みましょう。
 
-## よくあるエラーと対処法
-
-ネットワークプログラムでは、相手のサーバーや通信経路といった、プログラムの外の要因によってエラーが起こります。本章の内容に関連して出会いやすいエラーは次のとおりです。
-
-- 接続のエラー
-    + 接続先のサーバーが起動していない、ポート番号が違う、ファイアウォールで遮断されているといった原因で`ConnectException`などが発生する。タイムアウトも設定する
-- データの送受信のエラー
-    + 送信側と受信側で文字エンコーディングがそろっていない、データを最後まで受信していないといった原因がある
-- HTTPのステータスコードの確認漏れ
-    + `HttpClient`は404や500のレスポンスでも例外をスローしないため、ステータスコードを確かめる。`HttpURLConnection`はエラーのレスポンスで`getInputStream()`が`IOException`をスローするので、先に`getResponseCode()`で確かめる
-- リソースの解放漏れ
-    + ソケットやストリームはtry-with-resources文で確実に閉じる
-
-エラーの例と修正したコード、接続を診断するデバッグのヒントは、GitHubリポジトリにまとめています。<br>
-`https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter16.md`
