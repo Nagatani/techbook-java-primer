@@ -121,3 +121,107 @@ claims:
       probe: UnnamedVariable.java
       version: 22
       expect: ['unnamed variables|underscore|_']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: primitive-sizes
+    claim: Javaのint・long・charなどの大きさは環境によらず決まっている（intは32ビット、範囲は約-21億〜21億、charは16ビット）
+    text:
+      - Javaのintは、どの環境でもつねに32ビットです
+      - 扱える範囲はおよそ-21億〜21億で
+      - 16ビットでUnicodeの文字を表す
+    sources:
+      - title: JLS 25 4.2.1 Integral Types and Values
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: For int, from -2147483648 to 2147483647, inclusive
+    verify:
+      kind: run
+      probe: PrimitiveFacts.java
+      expect:
+        - '^int: 32 -2147483648 2147483647$'
+        - '^long: 64 -9223372036854775808 9223372036854775807$'
+        - '^char: 16$'
+
+  - id: double-precision
+    claim: doubleはIEEE 754の倍精度（64ビット）で、10進で約15桁の精度がある（往復を保証できるのは15桁、区別に要るのは17桁）
+    text:
+      - 精度は約15桁あり
+      - IEEE 754の単精度（32ビット）と倍精度（64ビット）の形式です
+    sources:
+      - title: JLS 25 4.2.3 Floating-Point Types and Values
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: binary64
+    verify:
+      kind: run
+      probe: PrimitiveFacts.java
+      expect:
+        - '^double: 64 1\.7976931348623157E308$'
+        - '^float: 32 3\.4028235E38$'
+      note: 「約15桁」は、10進の15桁の値をdoubleにして戻すと元に戻るという意味での精度（C言語のDBL_DIG=15と同じ）
+
+  - id: default-values
+    claim: フィールドと配列の要素は型ごとのデフォルト値（0、0.0、false、'\u0000'、null）で初期化される
+    text: フィールドと配列の要素は、型ごとのデフォルト値で自動的に初期化される
+    sources:
+      - title: JLS 25 4.12.5 Initial Values of Variables
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+        anchor: Each class variable, instance variable, or array component is initialized with a default value
+    verify:
+      kind: run
+      probe: PrimitiveFacts.java
+      expect:
+        - '^fields: 0 0\.0 false 0$'
+        - '^arrays: 0 null$'
+
+  - id: string-literal-identity
+    claim: 同じ内容の文字列リテラルは1つのオブジェクトを共有するので==がtrueになるが、new Stringや実行中に組み立てた文字列ではfalseになる
+    text: これは同じ内容のリテラルが1つのオブジェクトを共有するためで、入力から読み取った文字列や実行中に組み立てた文字列では成り立ちません
+    sources:
+      - title: JLS 25 3.10.5 String Literals
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html
+        anchor: a string literal always refers to the same instance of class String
+    verify:
+      kind: run
+      probe: PrimitiveFacts.java
+      expect:
+        - '^literal==literal: true$'
+        - '^literal==new: false$'
+        - '^literal==built: false$'
+
+  - id: concat-single-expression
+    claim: 1つの式のなかで+をつないだ連結は、コンパイラーが1回の処理（invokedynamicのmakeConcatWithConstants）に変換する
+    text: 1つの式のなかで+をつないだ連結は、コンパイラーがまとめて1回の処理に変換します
+    sources:
+      - title: "JEP 280: Indify String Concatenation"
+        url: https://openjdk.org/jeps/280
+    verify:
+      kind: javap
+      probe: ConcatInExpression.java
+      class: ConcatInExpression
+      expect: ['invokedynamic.*makeConcatWithConstants']
+
+  - id: byte-arithmetic-int
+    claim: byteどうしの計算の結果はintになり、byteの変数に代入するとコンパイルエラーになる
+    text: そのため、byte b = 10;のあとにb = b + 1;と書くと、intの結果をbyteへ代入する縮小変換になり、コンパイルエラーになります
+    sources:
+      - title: JLS 25 5.6 Numeric Contexts
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-5.html
+        anchor: widening primitive conversion
+    verify:
+      kind: javac
+      probe: compile-errors/ByteArithmetic.java
+      fails: true
+      expect: ['possible lossy conversion from int to byte']
+
+  - id: byte-compound-assignment
+    claim: +=などの複合代入演算子は、結果を左辺の型へ自動で縮小変換する
+    text: +=のような代入の演算子は、結果を左辺の型へ自動で変換します
+    sources:
+      - title: JLS 25 15.26.2 Compound Assignment Operators
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html
+        anchor: is equivalent to E1 = (T) ((E1) op (E2))
+    verify:
+      kind: run
+      probe: ByteCompound.java
+      expect:
+        - '^b \+= 1: -128$'
+        - '^cast: 11$'
