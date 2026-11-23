@@ -3,6 +3,8 @@
   "description": "my-theme",
   "version": "0.1.0",
   "author": "Nagatani",
+  "license": "MIT",
+  "private": true,
   "main": "theme.css",
   "files": [
     "css/*.css",

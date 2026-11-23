@@ -1,5 +1,6 @@
 {
   "name": "techbook-java-primer",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -42,7 +43,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/Nagatani/techbook-java-primer/issues"
   },
