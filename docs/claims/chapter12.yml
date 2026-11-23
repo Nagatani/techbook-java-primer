@@ -103,3 +103,88 @@ claims:
       kind: run
       probe: OptionalFacts.java
       expect: ['^Serializable: false$']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: lazy-evaluation
+    claim: 中間操作は終端操作が呼ばれるまで実行されず、呼ばれると要素が1つずつすべての操作を通る
+    text:
+      - 中間操作（filter、mapなど）は、終端操作（collect、forEachなど）が呼ばれるまで実際には実行されません
+      - 終端操作のcollectを呼ぶまで何も実行されず、呼んだあとは要素が1つずつ、すべての操作を通っていきます
+    sources:
+      - title: java.util.stream（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html
+        anchor: Intermediate operations return a new stream. They are always lazy
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect:
+        - '^before terminal: \[\]$'
+        - '^after terminal: \[filter 5, filter 15, map 15, filter 20, map 20\] -> \[30, 40\]$'
+
+  - id: stream-reuse
+    claim: 終端操作を呼んだストリームをもう一度操作するとIllegalStateExceptionになる
+    text: 終端操作を呼んだストリームは使い終わったものになり、もう一度操作しようとするとIllegalStateExceptionが発生します
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect: ['^reuse -> IllegalStateException$']
+
+  - id: tolist-unmodifiable
+    claim: Stream.toList()が返すリストは変更できない
+    text: toList()が返すリストには、要素を追加したり変更したりできません
+    sources:
+      - title: Stream.toList()（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Stream.html
+        anchor: The returned List is unmodifiable
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect: ['^toList\(\).add -> UnsupportedOperationException$']
+
+  - id: sorted-utf16
+    claim: 文字列のsorted()はUTF-16の値の順で、大文字が小文字より前に並び、漢字は読みの順にならない
+    text: 正確には、文字列は文字コード（UTF-16）の値の順に並びます
+    sources:
+      - title: String.compareTo（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html
+        anchor: lexicographically
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect: ['^sorted: \[Apple, banana, cherry, あ, 漢\]$']
+
+  - id: parallel-order
+    claim: 並列ストリームのforEachの処理順は実行ごとに変わりうるが、forEachOrderedとcollect(Collectors.toList())は元の順序を保つ
+    text:
+      - 並列ストリームでは、forEachで要素を処理する順序やfindAnyが返す要素は、実行のたびに変わることがあります
+      - 一方、forEachOrderedや、リストに集めるcollect(Collectors.toList())は、並列ストリームでも元の要素の順序を保ちます
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect:
+        - '^parallel forEachOrdered keeps order: true$'
+        - '^parallel collect keeps order: true$'
+        - '^parallel forEach order differed: true$'
+      attempts: 3
+
+  - id: parallel-small-light
+    claim: 要素ごとの処理が軽いとき、数千個では並列ストリームのほうが遅く、数百万個では速い（境目は数万個）
+    text:
+      - 数千以上の要素を処理する場合
+      - 要素ごとの処理が軽い（掛け算と足し算だけなど）と、数万個までは直列と変わらないか、直列のほうが速いことがあります
+    verify:
+      kind: run
+      probe: ParallelSmall.java
+      expect:
+        - '^5000 elements: sequential faster'
+        - '^5000000 elements: parallel faster'
+      attempts: 3
+      note: 2026-11-24、JDK 25、macOS/AArch64で5万個がほぼ同じ速さだった。脚注を足して、「数千以上」だけでは速くならないことを書いた
+
+  - id: optional-of-null
+    claim: Optional.ofにnullを渡すとNullPointerExceptionになる
+    text: 引数に使わない理由は、呼び出す側がOptional.of(...)で包む手間が増えるうえ
+    verify:
+      kind: run
+      probe: StreamFacts.java
+      expect: ['^Optional.of\(null\) -> NullPointerException$']
