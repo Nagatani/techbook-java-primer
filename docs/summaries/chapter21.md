@@ -3,7 +3,7 @@ source: manuscripts/chapter21-unit-testing.md
 summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
-    hash: 79f3d043
+    hash: 5f5cbe6e
   - key: "単体テストの基礎"
     hash: bdc3e3dc
   - key: "テストの基本形（AAAパターン）"
@@ -15,9 +15,9 @@ sections:
   - key: "DIによるテスト容易性の向上"
     hash: 7ff715d2
   - key: "テスト駆動開発（TDD）"
-    hash: 6cfa69ad
+    hash: 79bee057
   - key: "JUnitによる効率的なテスト"
-    hash: 0abd861b
+    hash: 79e3b3e5
   - key: "テストのベストプラクティス"
     hash: 2ba0c6c7
   - key: "継続的インテグレーション（CI）との統合"
@@ -122,3 +122,4 @@ sections:
     + 「Dependency Injection (DI)」「制御の反転 (Inversion of Control - IoC)」の半角括弧を全角括弧に、「他の」を「ほかの」にそろえた
     + よくあるエラーのモックの既定の戻り値に、空のコレクションを加えた
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 第22章: 最初のpom.xmlの例の前に「Mavenのプロジェクトを作る」（IntelliJ IDEAでMavenを選ぶ、IDE内蔵のMaven、コマンドラインは付録Aでインストール）を置き、依存関係解決のアルゴリズムをpom.xmlの例の後ろへ移した。「実践的な開発フロー」にフェーズ（compile→test→package→verify）とプラグイン・ゴールの関係を足した。リポジトリの「Repository Pattern」をやめ、データの保存を隠すリポジトリとは別の意味だと脚注で区別した。第21章: 第22章への誘導にプラグインとゴールを含め、JaCoCoの箇所でゴールの読み方を添え、章末の浮動小数点数の比べ方に許容誤差の指定のしかたを書いた
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 第21〜23章の低の指摘: 第21章はJUnitの節をTDDの節より前へ移して先取りの断りをなくし、テストメソッドのpublicの有無を説明し、前提を第3・4章のクラスにした。第22章はクラスパスの定義（JARをクラスファイルの一種のように書いていた）、スコープのruntime・provided、Mockitoの座標（第21章と同じmockito-junit-jupiter）、22-6の抜粋にTypeReferenceの行を含め、まとめから本文にない話題（Ivy・サプライチェーンなど）を外した。第23章はapp-imageの補足を一覧に統合し、第26章が使う--java-optionsを足し、前提から第14章を外した。第2章の「JavaDoc」を第22章の「Javadoc」にそろえた

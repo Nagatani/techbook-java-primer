@@ -3,13 +3,13 @@ source: manuscripts/chapter23-build-and-deploy.md
 summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
-    hash: 7bf69306
+    hash: 9b000bd8
   - key: "なぜビルドと配布が必要か"
     hash: 44eb1d05
   - key: "実行可能JARファイルの作成"
     hash: d5beb992
   - key: "jpackageによるネイティブアプリケーション化"
-    hash: 45cc6134
+    hash: b0c274ee
   - key: "よくあるエラーと対処法"
     hash: fde5e426
   - key: "まとめ"
@@ -86,3 +86,4 @@ sections:
 - 2026-11-16: 節「よくあるエラーと対処法」を加えた（メイン・マニフェスト属性、NoClassDefFoundError、getResourceAsStreamのnull、UnsupportedClassVersionError、jpackage）。詳しい内容は`appendix/e-common-errors/chapters/chapter23.md`
 - 2026-11-18の校閲: 「仕組み」を「しくみ」に、半角括弧を全角に、CI/CDの説明を「継続的インテグレーションと継続的デリバリー」に、jpackageのコマンドの続きの行の字下げをそろえ、エラーの項目を「`getResource`や`getResourceAsStream`」に、Fat JARの例を「Maven Shade Plugin、Spring Bootのプラグインなど」に直した
 - 2026-11-23（流れ・矛盾・過不足の校閲）: ビルドの定義に、ビルドツールではコンパイルからテスト・パッケージングまでをまとめてビルドと呼ぶことが多く本書もその意味で使うことを足した（第21・22章の使い方と合わせた）。複数クラスのJARの後ろに、パッケージに属するクラスの場合（Main-Classに完全修飾名、javac -dとjar -Cでディレクトリごと入れる。Java 25で確かめた）と、mvn packageがこれを行うことを足した
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 第21〜23章の低の指摘: 第21章はJUnitの節をTDDの節より前へ移して先取りの断りをなくし、テストメソッドのpublicの有無を説明し、前提を第3・4章のクラスにした。第22章はクラスパスの定義（JARをクラスファイルの一種のように書いていた）、スコープのruntime・provided、Mockitoの座標（第21章と同じmockito-junit-jupiter）、22-6の抜粋にTypeReferenceの行を含め、まとめから本文にない話題（Ivy・サプライチェーンなど）を外した。第23章はapp-imageの補足を一覧に統合し、第26章が使う--java-optionsを足し、前提から第14章を外した。第2章の「JavaDoc」を第22章の「Javadoc」にそろえた

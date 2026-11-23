@@ -196,7 +196,7 @@ Javaのオープンソースエコシステムは、オープンソースの開�
 
 ### クラスパスとは
 
-Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイルや`.jar`ファイル）を探すための場所（ディレクトリやファイルのパス）をクラスパスと呼びます。
+Java仮想マシン（JVM）がプログラムの実行時に必要なクラスファイル（`.class`ファイル）や、それをまとめたJARファイルを探す場所（ディレクトリやファイルのパス）をクラスパスと呼びます。
 外部ライブラリを利用するには、そのライブラリのJARファイルをクラスパスに含める必要があります。
 JARファイルは、多数のクラスファイルを1つにまとめたファイルで、ライブラリはふつうこの形で配布されます。
 
@@ -276,7 +276,8 @@ Mavenは、依存関係を次の順に解決します。
     + 除外の設定（`exclusions`）で指定したライブラリはたどらない
 3. 同じライブラリの異なるバージョンが見つかったら、1つに決める
     + 依存関係の木で自分のプロジェクトにもっとも近いものを選ぶ（nearest wins）。近さが同じなら、`pom.xml`で先に書かれたほうを選ぶ
-4. スコープ（compile、runtime、test、provided）に応じて、コンパイル・実行・テストのそれぞれで使うライブラリを決める
+4. スコープに応じて、コンパイル・実行・テストのそれぞれで使うライブラリを決める
+    + 既定の`compile`はコンパイルにも実行にも使い、`test`はテストのときだけ使う。ほかに、実行のときだけ使う`runtime`と、実行環境が用意するので配布物に含めない`provided`がある
 
 ### 外部ライブラリの利用例（Gson）
 
@@ -402,7 +403,7 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタ�
 
 以下の例では、`@JsonProperty`によるフィールド名のマッピング、`@JsonIgnore`による特定フィールドの除外、`TypeReference`を使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜21、36、38〜50、64〜65、80〜81行目）</span>
+<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜21、36、38〜50、64〜65、73〜81行目）</span>
 
 ```java
 public class JacksonExample {
@@ -440,6 +441,13 @@ public class JacksonExample {
         Product loaded = mapper.readValue(jsonInput, Product.class);
         IO.println("\nLoaded: " + loaded.getName());
         // ...
+        String productsJson = mapper.writeValueAsString(products);
+        
+        // TypeReferenceを使った複雑な型のデシリアライズ
+        List<Product> loadedProducts = mapper.readValue(productsJson, 
+            new TypeReference<List<Product>>() {});
+        
+        IO.println("\nLoaded products count: " + loadedProducts.size());
     }
 }
 ```
@@ -759,7 +767,7 @@ pom.xmlには、それぞれを前述の`<dependency>`要素として書きま�
 | ユーティリティ | org.apache.commons:commons-lang3 |
 | ログ | ch.qos.logback:logback-classic |
 | テスト（scopeはtest） | org.junit.jupiter:junit-jupiter |
-| テスト（scopeはtest） | org.mockito:mockito-core |
+| テスト（scopeはtest） | org.mockito:mockito-junit-jupiter（JUnitと組み合わせるとき。第21章） |
 
 Spring Boot 4では、Webアプリケーション用のスターターの名前が`spring-boot-starter-web`から`spring-boot-starter-webmvc`に変わりました。
 また、Spring Boot 4はJSONの処理にJackson 3を使うため、表のJacksonはJackson 3の座標にしています。
@@ -913,44 +921,10 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
 - エコシステム
     + Maven Central Repositoryを中心としたJavaエコシステムが、膨大な数のライブラリを提供している
 
-### ドキュメント化の技術的価値
+### 外部ライブラリを使うときの注意
 
-ドキュメントを整えたコードには、次のような効果があります。
-
-1. 保守コストの削減
-    + 新しく参加した開発者が、短い時間でコードを理解できる
-2. バグの低減
-    + APIの誤用による欠陥を防げる
-3. 開発速度の向上
-    + 既存のコードを再利用しやすくなる
-4. 技術的負債の抑制
-    + 設計の意図が記録として残る
-
-### 依存関係管理の進化
-
-依存関係管理ツールは、次のように進化してきました。
-
-1. 手動での管理
-    + JARファイルを自分でダウンロードし、クラスパスに加える
-2. MavenやApache Ivyによる自動化
-    + 依存関係を宣言すると、リポジトリから推移的な依存関係まで取得する
-3. Gradleによる柔軟な設定
-    + プログラムを書くようにビルドの手順を設定でき、Mavenと同じリポジトリを使う
-
-いまはMavenとGradleがともに広く使われています。
-
-### セキュリティとコンプライアンス
-
-外部ライブラリを使う開発では、セキュリティとコンプライアンスについて次の観点が重要です。
-
-1. 脆弱性管理
-    + OWASP Dependency-Checkによる自動スキャン
-2. ライセンス遵守
-    + 商用利用可能なライセンスの選択
-3. サプライチェーンセキュリティ
-    + 依存関係の信頼性検証
-4. 利用状況の把握
-    + 使っているライブラリとそのバージョン・ライセンスを一覧にして管理する
+- 選ぶときは、目的に合うか・保守が続いているか・ライセンス・推移的な依存・脆弱性・大きさ・Javaの版・取り替えやすさを確かめる
+- 使い始めたあとも、OWASP Dependency-Checkなどで脆弱性を確かめ、`mvn dependency:tree`で実際に使われている版を把握する
 
 ## 章末演習
 

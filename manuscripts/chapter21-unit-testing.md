@@ -18,7 +18,7 @@
 この章を学習する前に、事前に習得しておくべき知識があります。
 とくに重要なのは以下の内容です。
 
-- 第4章のクラスとインスタンス（メソッド、コンストラクター）
+- 第3章・第4章のクラス（メソッド、コンストラクター）
 - 第7章の抽象クラスとインターフェイス（依存関係の理解）
 - 第13章の例外処理（try-catch、例外の種類）
 - 基本的なJavaプログラミング経験
@@ -347,142 +347,6 @@ public class UserServiceManualTest {
 
 `UserService`のコードを一切変更することなく、その振る舞いをDBから切り離してテストできました。
 
-## テスト駆動開発（TDD）
-
-### TDDの基本サイクル
-
-テスト駆動開発（TDD）とは、プロダクトコードを実装する前に、まずテストコードを書く開発手法です<span class="footnote">TDDはTest-Driven Developmentの略です。ケント・ベックが1990年代にエクストリーム・プログラミング（XP）の実践の1つとして広め、2002年に書籍『Test-Driven Development: By Example』にまとめました。</span>。
-
-TDDでは、以下の短いサイクルを繰り返します。
-
-1. Red
-    + これから実装する機能に対する、失敗するテストコードを書く
-2. Green
-    + そのテストを成功させるための最小限のコードを実装する
-3. Refactor
-    + テストが成功する状態を保ったまま、重複を取り除くなどしてコードを読みやすく書き直す
-
-<div class="figure">
-
-![TDDのサイクル](images/diagrams/chapter21-tdd-cycle.svg)
-
-</div>
-
-### TDDの実践例
-
-#### ステップ1: Red - 失敗するテストを書く
-
-TDDの最初のステップでは、まだ存在しないクラスやメソッドに対してテストを書きます。
-`StringCalculator`クラスがまだないので、このテストはコンパイルできません。
-TDDでは、コンパイルできないこともRed（失敗）に含めます。
-この失敗するテストが、「何を実装すべきか」を明確にする仕様となります。
-
-テストは、JUnitというテストフレームワークを使って書きます。
-`@Test`はテストメソッドに付ける印で、`assertEquals(期待値, 実際の値)`は2つの値が等しいことを確かめるメソッドです。
-JUnitの導入方法と使い方は、この章の後半で説明します。
-
-<span class="listing-number">**サンプルコード21-9**　StringCalculatorTest.java（4〜11行目）</span>
-
-```java
-public class StringCalculatorTest {
-    @Test
-    public void testAdd_EmptyString_ReturnsZero() {
-        // まだ存在しないクラスとメソッドのテストを書く
-        StringCalculator calc = new StringCalculator();
-        assertEquals(0, calc.add(""));
-    }
-}
-```
-
-#### ステップ2: Green - テストを通す最小限のコード
-
-次に、テストが通る最小限の実装を行います。この段階では、ハードコーディングでも構いません。重要なのは、テストを緑（成功）にすることです。
-
-<span class="listing-number">**サンプルコード21-10**　StringCalculator.java</span>
-
-```java
-public class StringCalculator {
-    public int add(String numbers) {
-        return 0; // 最小限の実装
-    }
-}
-```
-
-#### ステップ3: Refactor - 必要に応じてコードを改善
-
-この段階ではとくにリファクタリングは不要です。次のテストに進みます。
-
-#### ステップ4: Red - 次の要求をテストで表す
-
-1回目のサイクルで、空文字列を渡すと0を返す`add`メソッドができました。
-2回目のサイクルでは、「カンマで区切った2つの数を渡すと、その合計を返す」という要求を加えます。
-まず、この要求をテストで表します。
-`StringCalculatorTest`に、`"1,2"`を渡すと3が返ることを確かめるテストを加えます。
-
-<span class="listing-number">**サンプルコード21-11**　StringCalculatorTest.java（4、11〜16行目）</span>
-
-```java
-public class StringCalculatorTest {
-    // ...
-    @Test
-    public void testAdd_TwoNumbers_ReturnsSum() {
-        StringCalculator calc = new StringCalculator();
-        assertEquals(3, calc.add("1,2"));
-    }
-}
-```
-
-いまの`add`メソッドは常に0を返すので、このテストは`expected: <3> but was: <0>`というメッセージで失敗します。
-1回目のサイクルで書いたテストは、成功したままです。
-
-#### ステップ5: Green - 2つのテストを通す
-
-次に、2つのテストがどちらも成功する最小限のコードを書きます。
-空文字列なら0を返し、それ以外はカンマで分けた2つの数を足します。
-
-<span class="listing-number">**サンプルコード21-12**　StringCalculator.java</span>
-
-```java
-public class StringCalculator {
-    public int add(String numbers) {
-        if (numbers.isEmpty()) {
-            return 0;
-        }
-        String[] parts = numbers.split(",");
-        return Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]);
-    }
-}
-```
-
-テストを実行し、2つのテストがどちらも成功することを確かめます。
-
-#### ステップ6: Refactor - テストを保ったまま書き直す
-
-`parts[0]`と`parts[1]`を足す書き方は、数がちょうど2つのときにしか使えません。
-テストが成功する状態を保ったまま、カンマで分けた数をループで合計する形に書き直します。
-
-<span class="listing-number">**サンプルコード21-13**　StringCalculator.java</span>
-
-```java
-public class StringCalculator {
-    public int add(String numbers) {
-        if (numbers.isEmpty()) {
-            return 0;
-        }
-        int sum = 0;
-        for (String part : numbers.split(",")) {
-            sum += Integer.parseInt(part);
-        }
-        return sum;
-    }
-}
-```
-
-書き直したら、もう一度テストを実行し、2つのテストがどちらも成功することを確かめます。
-テストがあるので、書き直しで振る舞いを壊していないことをすぐに確かめられます。
-この書き方は1つの数や3つ以上の数も合計できますが、その振る舞いはまだテストで確かめていません。
-次のサイクルでは、たとえば`add("5")`が5を返すテストを書くところから始めます。
-
 ## JUnitによる効率的なテスト
 
 ### JUnitの基本的な使い方
@@ -505,8 +369,10 @@ JUnit 6でもテストはJupiterの書き方のままなので、この章のコ
 `@Test`アノテーションでテストメソッドを示し、`@BeforeEach`で各テストの前に実行する初期化処理を定義し、`Assertions`クラスのメソッドで検証します。
 テスト対象は、サンプルコード21-2の`Calculator`に、整数の割り算をする`divide`メソッド（`return a / b;`）を加えたものです。
 整数を0で割ると`ArithmeticException`が発生するので、`assertThrows`でその例外が投げられることを確かめます。
+JUnit Jupiterでは、テストクラスやテストメソッドを`public`にしなくても構いません。
+本章の例には`public`を付けたものと付けていないものがありますが、どちらでも同じように動きます。
 
-<span class="listing-number">**サンプルコード21-14**　CalculatorTest.java</span>
+<span class="listing-number">**サンプルコード21-9**　CalculatorTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -557,7 +423,7 @@ JDK 21以降でMockitoを使うテストを実行すると、警告が表示さ�
 警告は「Mockito is currently self-attaching」や「WARNING: A Java agent has been loaded dynamically」で始まります<span class="footnote">Mockitoがモックを作るために、実行中のJVMへエージェント（クラスの読み込みに手を加えるしくみ）を後から組み込むためです。JDKは、この組み込み方を将来の版で既定では禁止する予定で、そのことを警告しています。MavenやGradleの設定でMockitoをエージェントとして指定すると、警告は出なくなります。</span>。
 これは警告で、テストの結果が「成功」と表示されていれば、テストは成功しています。
 
-<span class="listing-number">**サンプルコード21-15**　UserServiceTest.java</span>
+<span class="listing-number">**サンプルコード21-10**　UserServiceTest.java</span>
 
 ```java
 import org.junit.jupiter.api.Test;
@@ -586,6 +452,140 @@ public class UserServiceTest {
     }
 }
 ```
+
+## テスト駆動開発（TDD）
+
+### TDDの基本サイクル
+
+テスト駆動開発（TDD）とは、プロダクトコードを実装する前に、まずテストコードを書く開発手法です<span class="footnote">TDDはTest-Driven Developmentの略です。ケント・ベックが1990年代にエクストリーム・プログラミング（XP）の実践の1つとして広め、2002年に書籍『Test-Driven Development: By Example』にまとめました。</span>。
+
+TDDでは、以下の短いサイクルを繰り返します。
+
+1. Red
+    + これから実装する機能に対する、失敗するテストコードを書く
+2. Green
+    + そのテストを成功させるための最小限のコードを実装する
+3. Refactor
+    + テストが成功する状態を保ったまま、重複を取り除くなどしてコードを読みやすく書き直す
+
+<div class="figure">
+
+![TDDのサイクル](images/diagrams/chapter21-tdd-cycle.svg)
+
+</div>
+
+### TDDの実践例
+
+#### ステップ1: Red - 失敗するテストを書く
+
+TDDの最初のステップでは、まだ存在しないクラスやメソッドに対してテストを書きます。
+`StringCalculator`クラスがまだないので、このテストはコンパイルできません。
+TDDでは、コンパイルできないこともRed（失敗）に含めます。
+この失敗するテストが、「何を実装すべきか」を明確にする仕様となります。
+
+テストは、前の節で学んだJUnitで書きます。
+
+<span class="listing-number">**サンプルコード21-11**　StringCalculatorTest.java（4〜11行目）</span>
+
+```java
+public class StringCalculatorTest {
+    @Test
+    public void testAdd_EmptyString_ReturnsZero() {
+        // まだ存在しないクラスとメソッドのテストを書く
+        StringCalculator calc = new StringCalculator();
+        assertEquals(0, calc.add(""));
+    }
+}
+```
+
+#### ステップ2: Green - テストを通す最小限のコード
+
+次に、テストが通る最小限の実装を行います。この段階では、ハードコーディングでも構いません。重要なのは、テストを緑（成功）にすることです。
+
+<span class="listing-number">**サンプルコード21-12**　StringCalculator.java</span>
+
+```java
+public class StringCalculator {
+    public int add(String numbers) {
+        return 0; // 最小限の実装
+    }
+}
+```
+
+#### ステップ3: Refactor - 必要に応じてコードを改善
+
+この段階ではとくにリファクタリングは不要です。次のテストに進みます。
+
+#### ステップ4: Red - 次の要求をテストで表す
+
+1回目のサイクルで、空文字列を渡すと0を返す`add`メソッドができました。
+2回目のサイクルでは、「カンマで区切った2つの数を渡すと、その合計を返す」という要求を加えます。
+まず、この要求をテストで表します。
+`StringCalculatorTest`に、`"1,2"`を渡すと3が返ることを確かめるテストを加えます。
+
+<span class="listing-number">**サンプルコード21-13**　StringCalculatorTest.java（4、11〜16行目）</span>
+
+```java
+public class StringCalculatorTest {
+    // ...
+    @Test
+    public void testAdd_TwoNumbers_ReturnsSum() {
+        StringCalculator calc = new StringCalculator();
+        assertEquals(3, calc.add("1,2"));
+    }
+}
+```
+
+いまの`add`メソッドは常に0を返すので、このテストは`expected: <3> but was: <0>`というメッセージで失敗します。
+1回目のサイクルで書いたテストは、成功したままです。
+
+#### ステップ5: Green - 2つのテストを通す
+
+次に、2つのテストがどちらも成功する最小限のコードを書きます。
+空文字列なら0を返し、それ以外はカンマで分けた2つの数を足します。
+
+<span class="listing-number">**サンプルコード21-14**　StringCalculator.java</span>
+
+```java
+public class StringCalculator {
+    public int add(String numbers) {
+        if (numbers.isEmpty()) {
+            return 0;
+        }
+        String[] parts = numbers.split(",");
+        return Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]);
+    }
+}
+```
+
+テストを実行し、2つのテストがどちらも成功することを確かめます。
+
+#### ステップ6: Refactor - テストを保ったまま書き直す
+
+`parts[0]`と`parts[1]`を足す書き方は、数がちょうど2つのときにしか使えません。
+テストが成功する状態を保ったまま、カンマで分けた数をループで合計する形に書き直します。
+
+<span class="listing-number">**サンプルコード21-15**　StringCalculator.java</span>
+
+```java
+public class StringCalculator {
+    public int add(String numbers) {
+        if (numbers.isEmpty()) {
+            return 0;
+        }
+        int sum = 0;
+        for (String part : numbers.split(",")) {
+            sum += Integer.parseInt(part);
+        }
+        return sum;
+    }
+}
+```
+
+書き直したら、もう一度テストを実行し、2つのテストがどちらも成功することを確かめます。
+テストがあるので、書き直しで振る舞いを壊していないことをすぐに確かめられます。
+この書き方は1つの数や3つ以上の数も合計できますが、その振る舞いはまだテストで確かめていません。
+次のサイクルでは、たとえば`add("5")`が5を返すテストを書くところから始めます。
 
 ## テストのベストプラクティス
 
