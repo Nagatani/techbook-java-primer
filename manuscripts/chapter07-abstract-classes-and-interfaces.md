@@ -575,7 +575,11 @@ getSafeItems(): [Item 1, Item 2]
 getFirstItemOrDefault(): Item 1
 ```
 
-このパターンにより、実装クラスが`null`を返したり、変更可能なリストを直接公開したりしても、呼び出し側は常に安全で一貫したAPIを使用できます。
+このパターンにより、実装クラスが`null`を返しても、`getSafeItems()`を通して受け取る呼び出し側は、空のリストかコピーを受け取るので安全に使えます。
+ただし、`getItems()`もインターフェイスのメソッドなので`public`で、呼び出し側はそれを直接呼べます。
+`addItem()`も、`getItems()`が内部の変更できるリストを返すことを前提にしています。
+インターフェイスはフィールドを持てないので、defaultメソッドだけでは内部のリストを守り切れません。
+データそのものを守るには、第6章で学んだように、クラスのなかでリストを`private`に持ち、防御的コピーをします。
 `getFirstItemOrDefault()`は、要素がないときに`null`ではなく呼び出し側が指定した値を返すので、呼び出し側で`null`を確かめる処理が要りません。
 値がないことをより明確に表す`Optional`というクラスもあり、第12章で学びます。
 
@@ -656,9 +660,14 @@ memo1はmemo2より新しい？: true
 
 トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
 
+Javaのインターフェイスはフィールドを持てないので、MixinもトレイトもJavaでは同じ形、つまり抽象メソッドで最小限の値を求め、defaultメソッドで機能を足す形で書きます。
+違いは重点の置き方です。
+Mixinは、サンプルコード7-12の`Memo`のように、小さな機能をいくつも組み合わせてクラスに足すことに重点を置きます。
+トレイトは、「大小を比べられる」のような1つの能力を、最小限のメソッドから組み立てることに重点を置きます。
+
 次の`Measurable`は、比べる基準の値を返す`measure()`だけを実装クラスに求め、大小を比べるメソッドをdefaultメソッドとして提供します。
 Javaの標準ライブラリにも、大小を比べる`compareTo()`を実装クラスに求める`Comparable`インターフェイスがあります。
-`Comparable`をもとに同じようなトレイトを作るには第10章「ジェネリクス」の知識が要るため、ここでは`double`の値で比べる形にしました。
+`Comparable`は、第10章「ジェネリクス」で学ぶ型パラメーターを使って比べる相手の型を決めるため、ここでは`double`の値で比べる形にしました。
 
 <span class="listing-number">**サンプルコード7-13**　Measurable.java（1〜12、18〜44行目）</span>
 
@@ -709,7 +718,7 @@ class Temperature implements Measurable {
 
 インターフェイス分離原則<span class="footnote">英語ではInterface Segregation Principleで、ISPはその頭文字です。第4章で触れたSOLID原則の「I」にあたります。</span>は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
 
-<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、49〜58、79行目）</span>
+<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、35〜36、47、49〜58、79行目）</span>
 
 ```java
 // 悪い例：肥大化したインターフェイス
@@ -741,6 +750,11 @@ interface UserNotificationService {
     // ...
 }
 // ...
+interface UserReportService {
+    void generateReport(String userId);
+    // ...
+}
+// ...
 // 必要な機能だけを実装
 class BasicUserService implements UserRepository,
         UserNotificationService {
@@ -754,6 +768,13 @@ class BasicUserService implements UserRepository,
     // ...
 }
 ```
+
+`BadUserService`を実装するクラスは、メールを送らないものでも`sendEmail()`を、レポートを作らないものでも`generateReport()`を、空の中身で書くことになります。
+使う側も、利用者を探したいだけなのに8つのメソッドを持つ型に依存するので、レポートのメソッドが変わっただけで影響を受けることがあります。
+
+役割ごとに`UserRepository`・`UserNotificationService`・`UserReportService`へ分けると、実装するクラスは必要な役割だけを選んで`implements`に並べられます。
+`BasicUserService`は保存と通知だけを実装し、レポートの役割は持ちません。
+使う側も、利用者を探すだけなら`UserRepository`型だけに依存すれば済みます。
 
 ### バージョニング戦略
 

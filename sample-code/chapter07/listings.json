@@ -112,6 +112,8 @@
     "excerpt": [
       { "file": "BadUserService.java", "from": 3, "to": 28 },
       { "file": "BadUserService.java", "from": 33, "to": 33 },
+      { "file": "BadUserService.java", "from": 35, "to": 36 },
+      { "file": "BadUserService.java", "from": 47, "to": 47 },
       { "file": "BadUserService.java", "from": 49, "to": 58 },
       { "file": "BadUserService.java", "from": 79, "to": 79 }
     ]
