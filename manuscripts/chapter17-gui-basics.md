@@ -246,24 +246,16 @@ JFrameのデフォルトのレイアウトもBorderLayoutです。
 
 </div>
 
+ここからのサンプルコードは、import文と`main`メソッド、ウィンドウを作って表示する行（サンプルコード17-4と同じ形）を省き、例ごとに変わる部分だけを載せます。
 以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
 
-<span class="listing-number">**サンプルコード17-5**　BorderLayoutExample.java</span>
+<span class="listing-number">**サンプルコード17-5**　BorderLayoutExample.java（4、9、14〜22、26〜27行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class BorderLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("BorderLayoutの例");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // BorderLayoutはJFrameのデフォルトレイアウトマネージャー
         frame.setLayout(new BorderLayout());
         
@@ -273,9 +265,7 @@ public class BorderLayoutExample {
         frame.add(new JButton("東 (EAST)"), BorderLayout.EAST);
         frame.add(new JButton("西 (WEST)"), BorderLayout.WEST);
         frame.add(new JButton("中央 (CENTER)"), BorderLayout.CENTER);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -310,22 +300,13 @@ GridLayoutには、次の特徴があります。
 
 以下のコードは、GridLayoutを使用してボタンを格子状に配置する例です。3行2列のグリッドを作成し、コンポーネント間の間隔を指定しています。
 
-<span class="listing-number">**サンプルコード17-6**　GridLayoutExample.java</span>
+<span class="listing-number">**サンプルコード17-6**　GridLayoutExample.java（4、9、14〜20、24〜25行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class GridLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("GridLayoutの例");
-        frame.setSize(300, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
         frame.setLayout(new GridLayout(3, 2, 5, 5));
         
@@ -333,9 +314,7 @@ public class GridLayoutExample {
         for (int i = 1; i <= 6; i++) {
             frame.add(new JButton("ボタン " + i));
         }
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -352,22 +331,13 @@ public class GridLayoutExample {
 
 以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。ウィンドウサイズの変更に柔軟に対応できるため、FlowLayoutはツールバーなどの実装に適しています。
 
-<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java</span>
+<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java（4、9、14〜24、28〜29行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class FlowLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("FlowLayoutの例");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        // ...
         // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
         frame.setLayout(new FlowLayout(
             FlowLayout.CENTER, 10, 5));
@@ -379,9 +349,7 @@ public class FlowLayoutExample {
         frame.add(new JButton("キャンセル"));
         frame.add(new JButton("ヘルプ"));
         frame.add(new JButton("設定"));
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -397,21 +365,13 @@ public class FlowLayoutExample {
 
 以下のコードは、JLabelでHTMLを表示する例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、HTMLの`<br>`タグを使えば、複数行のテキストも表示できます。
 
-<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java</span>
+<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java（4、9、13〜29、33〜34行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class AdvancedLabel {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("高度なJLabel");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // ...
         frame.setLayout(new FlowLayout());
         
         // テキストのみのラベル
@@ -429,9 +389,7 @@ public class AdvancedLabel {
         frame.add(textLabel);
         frame.add(htmlLabel);
         frame.add(multiLineLabel);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -444,21 +402,13 @@ public class AdvancedLabel {
 JButtonは、ユーザーのクリック操作を受け付けるコンポーネントです。
 以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と文字色（前景色）の変更、推奨サイズの指定、無効化の設定を順に試しています。
 
-<span class="listing-number">**サンプルコード17-9**　AdvancedButton.java</span>
+<span class="listing-number">**サンプルコード17-9**　AdvancedButton.java（4、9、13〜34、38〜39行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class AdvancedButton {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("高度なJButton");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // ...
         frame.setLayout(new FlowLayout());
         
         // 通常のボタン
@@ -481,9 +431,7 @@ public class AdvancedButton {
         frame.add(coloredButton);
         frame.add(largeButton);
         frame.add(disabledButton);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -787,17 +735,11 @@ Swingに用意されたコンポーネントにない表示が必要なときは
 
 コンポーネントに図形や文字を描くには、`paintComponent()`メソッドをオーバーライドします。
 以下のコードは、`JPanel`を継承した`DrawingPanel`に、四角形・円・文字列を描く例です。
-前半が`DrawingPanel.java`の全体で、後半は、このパネルをウィンドウに置いて表示する`DrawingPanelExample.java`の`createAndShowGUI()`メソッドです。
+前半がimport文を除いた`DrawingPanel.java`で、後半は、このパネルをウィンドウに置いて表示する`DrawingPanelExample.java`の`createAndShowGUI()`メソッドです。
 
-<span class="listing-number">**サンプルコード17-14**　DrawingPanel.java、DrawingPanelExample.java（9〜16行目）</span>
+<span class="listing-number">**サンプルコード17-14**　DrawingPanel.java（7〜31行目）、DrawingPanelExample.java（9〜16行目）</span>
 
 ```java
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import javax.swing.JPanel;
-
 public class DrawingPanel extends JPanel {
     public DrawingPanel() {
         setBackground(Color.WHITE);

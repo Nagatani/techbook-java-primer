@@ -478,7 +478,7 @@ SwingとJavaFXはどちらも要求を満たしますが、追加の部品が要
 `StudentService`のテストに、データベースは要りません。
 第25章で作った`InMemoryStudentRepository`を渡せば、サービスの規則だけを確かめられます。
 
-<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜49行目）</span>
+<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜38、49行目）</span>
 
 ```java
 class StudentServiceTest {
@@ -510,16 +510,7 @@ class StudentServiceTest {
         assertEquals(20.0 / 6, service.find("S001").orElseThrow().gpa(),
                 1e-9);
     }
-
-    // 学部で絞り込める
-    @Test
-    void filtersByDepartment() throws DuplicateStudentException {
-        service.register(new Student("S002", "佐藤花子", "理学部",
-                new Undergraduate(2024)));
-        List<Student> result = service.findByDepartment("工学部");
-        assertEquals(List.of("S001"), result.stream()
-                .map(Student::getId).toList());
-    }
+    // ...
 }
 ```
 

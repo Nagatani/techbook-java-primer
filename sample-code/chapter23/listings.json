@@ -24,7 +24,7 @@
     "dir": "23-05",
     "main": "ResourceApp",
     "excerpt": [
-      { "file": "ResourceApp.java", "from": 1, "to": 24 }
+      { "file": "ResourceApp.java", "from": 5, "to": 24 }
     ]
   }
 }

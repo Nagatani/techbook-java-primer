@@ -3,7 +3,8 @@
     "dir": "20-01",
     "main": "BasicTableExample",
     "excerpt": [
-      { "file": "BasicTableExample.java", "from": 1, "to": 36 }
+      { "file": "BasicTableExample.java", "from": 4, "to": 29 },
+      { "file": "BasicTableExample.java", "from": 36, "to": 36 }
     ]
   },
   "20-2": {

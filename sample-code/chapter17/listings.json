@@ -31,35 +31,50 @@
     "dir": "17-05",
     "main": "BorderLayoutExample",
     "excerpt": [
-      { "file": "BorderLayoutExample.java", "from": 1, "to": 27 }
+      { "file": "BorderLayoutExample.java", "from": 4, "to": 4 },
+      { "file": "BorderLayoutExample.java", "from": 9, "to": 9 },
+      { "file": "BorderLayoutExample.java", "from": 14, "to": 22 },
+      { "file": "BorderLayoutExample.java", "from": 26, "to": 27 }
     ]
   },
   "17-6": {
     "dir": "17-06",
     "main": "GridLayoutExample",
     "excerpt": [
-      { "file": "GridLayoutExample.java", "from": 1, "to": 25 }
+      { "file": "GridLayoutExample.java", "from": 4, "to": 4 },
+      { "file": "GridLayoutExample.java", "from": 9, "to": 9 },
+      { "file": "GridLayoutExample.java", "from": 14, "to": 20 },
+      { "file": "GridLayoutExample.java", "from": 24, "to": 25 }
     ]
   },
   "17-7": {
     "dir": "17-07",
     "main": "FlowLayoutExample",
     "excerpt": [
-      { "file": "FlowLayoutExample.java", "from": 1, "to": 29 }
+      { "file": "FlowLayoutExample.java", "from": 4, "to": 4 },
+      { "file": "FlowLayoutExample.java", "from": 9, "to": 9 },
+      { "file": "FlowLayoutExample.java", "from": 14, "to": 24 },
+      { "file": "FlowLayoutExample.java", "from": 28, "to": 29 }
     ]
   },
   "17-8": {
     "dir": "17-08",
     "main": "AdvancedLabel",
     "excerpt": [
-      { "file": "AdvancedLabel.java", "from": 1, "to": 34 }
+      { "file": "AdvancedLabel.java", "from": 4, "to": 4 },
+      { "file": "AdvancedLabel.java", "from": 9, "to": 9 },
+      { "file": "AdvancedLabel.java", "from": 13, "to": 29 },
+      { "file": "AdvancedLabel.java", "from": 33, "to": 34 }
     ]
   },
   "17-9": {
     "dir": "17-09",
     "main": "AdvancedButton",
     "excerpt": [
-      { "file": "AdvancedButton.java", "from": 1, "to": 39 }
+      { "file": "AdvancedButton.java", "from": 4, "to": 4 },
+      { "file": "AdvancedButton.java", "from": 9, "to": 9 },
+      { "file": "AdvancedButton.java", "from": 13, "to": 34 },
+      { "file": "AdvancedButton.java", "from": 38, "to": 39 }
     ]
   },
   "17-10": {
@@ -110,7 +125,7 @@
     "dir": "17-14",
     "main": "DrawingPanelExample",
     "excerpt": [
-      { "file": "DrawingPanel.java", "from": 1, "to": 31 },
+      { "file": "DrawingPanel.java", "from": 7, "to": 31 },
       { "file": "DrawingPanelExample.java", "from": 9, "to": 16 }
     ]
   }

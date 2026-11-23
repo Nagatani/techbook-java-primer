@@ -288,13 +288,9 @@ Gradleでは、`build.gradle`の`jar`ブロックで、`manifest`の`attributes`
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-5**　ResourceApp.java</span>
+<span class="listing-number">**サンプルコード23-5**　ResourceApp.java（5〜24行目）</span>
 
 ```java
-// ResourceApp.java
-import javax.swing.*;
-import java.awt.*;
-
 public class ResourceApp {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

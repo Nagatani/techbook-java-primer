@@ -197,22 +197,11 @@ public class LambdaButtonExample {
 
 以下のコードは、テキストフィールドとボタン、ラベルを組み合わせたインタラクティブな挨拶アプリケーションの例です。ラムダ式を使用して、ボタンクリック時にテキストフィールドから入力を取得し、ラベルに動的にメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-3**　GreetingApp.java</span>
+<span class="listing-number">**サンプルコード18-3**　GreetingApp.java（8、14〜34、39〜40行目）</span>
 
 ```java
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
 public class GreetingApp {
-    public static void main(String[] args) {
-        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("挨拶プログラム");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -234,10 +223,7 @@ public class GreetingApp {
         frame.add(nameField);
         frame.add(greetButton);
         frame.add(messageLabel);
-        
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // ...
     }
 }
 ```
@@ -328,19 +314,11 @@ Swingにはさまざまなイベントがあります。目的に応じて必要
 
 以下のコードは、WindowAdapterを使用してウィンドウを閉じる際の終了確認を実装する例です。`setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE)`でデフォルトの閉じる動作を無効化し、`windowClosing()`メソッドでカスタム処理を実行します。
 
-<span class="listing-number">**サンプルコード18-5**　WindowEventExample.java</span>
+<span class="listing-number">**サンプルコード18-5**　WindowEventExample.java（5、11〜32行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 public class WindowEventExample {
-    public static void main(String[] args) {
-        // GUIの組み立てはEDT（イベントディスパッチスレッド）上で行う
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
+    // ...
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("終了確認");
         // デフォルトの閉じる操作を無効化

@@ -20,7 +20,9 @@
     "dir": "18-03",
     "main": "GreetingApp",
     "excerpt": [
-      { "file": "GreetingApp.java", "from": 1, "to": 40 }
+      { "file": "GreetingApp.java", "from": 8, "to": 8 },
+      { "file": "GreetingApp.java", "from": 14, "to": 34 },
+      { "file": "GreetingApp.java", "from": 39, "to": 40 }
     ]
   },
   "18-4": {
@@ -36,7 +38,8 @@
     "dir": "18-05",
     "main": "WindowEventExample",
     "excerpt": [
-      { "file": "WindowEventExample.java", "from": 1, "to": 32 }
+      { "file": "WindowEventExample.java", "from": 5, "to": 5 },
+      { "file": "WindowEventExample.java", "from": 11, "to": 32 }
     ]
   },
   "18-6": {

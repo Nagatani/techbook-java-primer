@@ -54,12 +54,9 @@ JTableはこれらを組み合わせて表を表示します。
 `JScrollPane`に入れることで、データが多い場合にスクロールできるようになります。
 この方法は簡単ですが、表示したあとに行を追加・削除する用途には向いていません。
 
-<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java</span>
+<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜29、36行目）</span>
 
 ```java
-import javax.swing.*;
-import java.awt.*;
-
 public class BasicTableExample extends JFrame {
     public BasicTableExample() {
         setTitle("基本的なJTableの例");
@@ -86,12 +83,7 @@ public class BasicTableExample extends JFrame {
         setSize(600, 300);
         setLocationRelativeTo(null);
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new BasicTableExample().setVisible(true);
-        });
-    }
+    // ...
 }
 ```
 
