@@ -56,9 +56,8 @@
     "dir": "14-08",
     "main": "CSVProcessingExample",
     "excerpt": [
-      { "file": "CSVProcessingExample.java", "from": 6, "to": 6 },
-      { "file": "CSVProcessingExample.java", "from": 21, "to": 57 },
-      { "file": "CSVProcessingExample.java", "from": 68, "to": 68 }
+      { "file": "CSVProcessingExample.java", "from": 6, "to": 59 },
+      { "file": "CSVProcessingExample.java", "from": 72, "to": 72 }
     ]
   },
   "14-9": {

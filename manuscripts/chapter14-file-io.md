@@ -504,9 +504,9 @@ public class FileSystemExample {
         // ファイルのコピー
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで
         // 動作を制御できます。
-        // REPLACE_EXISTING: 同名ファイルがある場合は上書き
-        // COPY_ATTRIBUTES: 最終更新日時などの属性もコピー（どの属性を
-        // コピーできるかはOSによる）
+        // ここではREPLACE_EXISTING（同名ファイルがある場合は上書き）を指定する。
+        // ほかに、COPY_ATTRIBUTES（最終更新日時などの属性もコピー。
+        // どの属性をコピーできるかはOSによる）も指定できる
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile,
                 StandardCopyOption.REPLACE_EXISTING);
@@ -553,14 +553,33 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 次は、基本的なCSVの読み込みと書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6、21〜57、68行目）</span>
+<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6〜59、72行目）</span>
 
 ```java
 public class CSVProcessingExample {
-    // ...
+    public static void main(String[] args) {
+        Path csvFile = Path.of("sample.csv");
+        // 読み書きの失敗は、呼び出し側のmainでまとめて受け止める
+        try {
+            // CSVファイルの作成（サンプルデータ）
+            createSampleCSV(csvFile);
+            
+            // CSVファイルの読み込み
+            List<List<String>> csvData = readCSV(csvFile);
+            IO.println("読み込んだCSVデータ:");
+            csvData.forEach(row -> IO.println(String.join(" | ", row)));
+            
+            // CSVファイルの書き込み
+            writeCSV(Path.of("output.csv"), csvData);
+        } catch (IOException e) {
+            System.err.println("CSVファイルを読み書きできません: "
+                    + e.getMessage());
+        }
+    }
     
     // CSVファイルの読み込み
-    public static List<List<String>> readCSV(Path filePath) {
+    public static List<List<String>> readCSV(Path filePath)
+            throws IOException {
         List<List<String>> result = new ArrayList<>();
         try (BufferedReader reader = Files.newBufferedReader(filePath,
                 StandardCharsets.UTF_8)) {
@@ -569,8 +588,6 @@ public class CSVProcessingExample {
                 List<String> row = parseCSVLine(line);
                 result.add(row);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return result;
     }
@@ -582,7 +599,8 @@ public class CSVProcessingExample {
     }
     
     // CSVファイルの書き込み
-    public static void writeCSV(Path filePath, List<List<String>> data) {
+    public static void writeCSV(Path filePath, List<List<String>> data)
+            throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath,
                 StandardCharsets.UTF_8)) {
             for (List<String> row : data) {
@@ -590,11 +608,8 @@ public class CSVProcessingExample {
                 writer.newLine();
             }
             IO.println("CSVファイルを書き込みました: " + filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-    
     // ...
 }
 ```
@@ -611,16 +626,14 @@ CSVファイルを書き込みました: sample.csv
 CSVファイルを書き込みました: output.csv
 ```
 
-## 日付時刻処理について
-
-ファイル操作では、ファイルの更新日時を調べたり、ファイル名に日付を入れたりと、日付や時刻を扱う場面がよくあります。
-日付と時刻は、第6章で学んだ`java.time`パッケージのクラスで扱います。
-本章で日付時刻を使うのは、サンプルコード14-6と14-13で現在の日時を取得する箇所だけです。
-ファイルの更新日時は、`Files.getLastModifiedTime(パス)`が返す`FileTime`の`toInstant()`で`Instant`として取り出せます。
+`readCSV`と`writeCSV`は、`IOException`を自分で受け止めずに`throws`で呼び出し側へ伝え、`main`でまとめて受け止めています。
+読み込みに失敗したときに空のリストや途中までのリストを返すと、呼び出し側は失敗に気づけないからです（第13章）。
 
 ## GUIでのファイル選択：`JFileChooser`
 
 GUIのアプリケーションでユーザーにファイルを選択させるには、Swingの`JFileChooser`を使います。
+`JFileChooser`が返すのは、NIO.2より前からある`java.io.File`クラスのオブジェクトです。
+本章の`Files`のメソッドで使うときは、`toPath()`で`Path`に変換します。
 Swingを使ったGUIプログラミングは第17章「GUIプログラミングの基礎」から学びます。
 ここでは、選んだファイルの場所を`File`オブジェクトとして受け取れることだけを確かめてください。
 次のプログラムを実行するとダイアログが開き、選んだファイルのパスが表示されます。
@@ -805,6 +818,9 @@ public class Example {
     さらに深いインデント
 元のレベル
 ```
+
+実行結果の「カスタムインデント」と「手動stripIndent()」は、本文で省いた部分の出力です。
+`stripIndent()`は、Text Blocksと同じ規則で共通のインデントを取り除く`String`のメソッドで、Text Blocks以外の文字列にも使えます。
 
 ### エスケープシーケンスの簡略化
 

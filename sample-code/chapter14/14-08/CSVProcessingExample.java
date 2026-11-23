@@ -6,21 +6,27 @@ import java.util.*;
 public class CSVProcessingExample {
     public static void main(String[] args) {
         Path csvFile = Path.of("sample.csv");
-        
-        // CSVファイルの作成（サンプルデータ）
-        createSampleCSV(csvFile);
-        
-        // CSVファイルの読み込み
-        List<List<String>> csvData = readCSV(csvFile);
-        IO.println("読み込んだCSVデータ:");
-        csvData.forEach(row -> IO.println(String.join(" | ", row)));
-        
-        // CSVファイルの書き込み
-        writeCSV(Path.of("output.csv"), csvData);
+        // 読み書きの失敗は、呼び出し側のmainでまとめて受け止める
+        try {
+            // CSVファイルの作成（サンプルデータ）
+            createSampleCSV(csvFile);
+            
+            // CSVファイルの読み込み
+            List<List<String>> csvData = readCSV(csvFile);
+            IO.println("読み込んだCSVデータ:");
+            csvData.forEach(row -> IO.println(String.join(" | ", row)));
+            
+            // CSVファイルの書き込み
+            writeCSV(Path.of("output.csv"), csvData);
+        } catch (IOException e) {
+            System.err.println("CSVファイルを読み書きできません: "
+                    + e.getMessage());
+        }
     }
     
     // CSVファイルの読み込み
-    public static List<List<String>> readCSV(Path filePath) {
+    public static List<List<String>> readCSV(Path filePath)
+            throws IOException {
         List<List<String>> result = new ArrayList<>();
         try (BufferedReader reader = Files.newBufferedReader(filePath,
                 StandardCharsets.UTF_8)) {
@@ -29,8 +35,6 @@ public class CSVProcessingExample {
                 List<String> row = parseCSVLine(line);
                 result.add(row);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return result;
     }
@@ -42,7 +46,8 @@ public class CSVProcessingExample {
     }
     
     // CSVファイルの書き込み
-    public static void writeCSV(Path filePath, List<List<String>> data) {
+    public static void writeCSV(Path filePath, List<List<String>> data)
+            throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath,
                 StandardCharsets.UTF_8)) {
             for (List<String> row : data) {
@@ -50,13 +55,12 @@ public class CSVProcessingExample {
                 writer.newLine();
             }
             IO.println("CSVファイルを書き込みました: " + filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     
     // サンプルCSVファイルの作成
-    private static void createSampleCSV(Path filePath) {
+    private static void createSampleCSV(Path filePath)
+            throws IOException {
         List<List<String>> sampleData = Arrays.asList(
             Arrays.asList("名前", "年齢", "職業"),
             Arrays.asList("田中太郎", "30", "エンジニア"),

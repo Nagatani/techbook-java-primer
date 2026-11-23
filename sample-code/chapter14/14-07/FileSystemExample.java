@@ -24,9 +24,9 @@ public class FileSystemExample {
         // ファイルのコピー
         // Files.copy()はファイルのコピーを行います。StandardCopyOptionで
         // 動作を制御できます。
-        // REPLACE_EXISTING: 同名ファイルがある場合は上書き
-        // COPY_ATTRIBUTES: 最終更新日時などの属性もコピー（どの属性を
-        // コピーできるかはOSによる）
+        // ここではREPLACE_EXISTING（同名ファイルがある場合は上書き）を指定する。
+        // ほかに、COPY_ATTRIBUTES（最終更新日時などの属性もコピー。
+        // どの属性をコピーできるかはOSによる）も指定できる
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile,
                 StandardCopyOption.REPLACE_EXISTING);
