@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter22-documentation-and-libraries.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: a464781d
   - key: "Javadocによるドキュメント"
     hash: 424b7704
   - key: "外部ライブラリの利用"
-    hash: c7853e22
+    hash: b137e79a
   - key: "よくあるエラーと対処法"
     hash: 57d950a6
   - key: "まとめ"
@@ -56,7 +56,8 @@ sections:
     + Jackson - 多機能なJSONライブラリ: Jackson 3（`tools.jackson`）と本書が使うJackson 2の系列の違い（脚注）、依存関係（22-5）、@JsonProperty、@JsonIgnore、TypeReferenceによるジェネリック型のデシリアライズ（22-6）
     + Apache Commons: Commons Lang（22-7、22-8。文字列、null安全、配列、ランダム文字列、日付の書式化、reflectionToString）とCommons IO（22-9、22-10。第14章の`Files`との比較、temp_dirのサイズなど実行ごとに変わらない出力）
     + そのほかのよく使われるライブラリ: OkHttp・Lombok・Guavaの役割と標準APIとの関係（第16章の`HttpClient`、第8章のRecord、`List.of`・`String.join`）の表。演習では使わない。使用例は付録G
-    + 外部ライブラリ選定の指針: 成熟度と信頼性、ライセンス（22-11、Apache 2.0・MIT・GPL・LGPL。MITは著作権表示とライセンスの文を残せば改変・商用利用ができると説明）、testスコープとpropertiesによるバージョン一元管理（22-12。JUnitは第21章と同じ6.1.3）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-13）、よく使われる組み合わせの表（Spring Boot 4に合わせ`spring-boot-starter-webmvc`とJackson 3の`tools.jackson.core:jackson-databind`。その理由を表の後に書く）
+    + 外部ライブラリ選定の指針: 目的に合うか（機能と試作）、成熟度と信頼性、ライセンス（22-11、Apache 2.0・MIT・GPL・LGPL。MITは著作権表示とライセンスの文を残せば改変・商用利用ができると説明）、testスコープとpropertiesによるバージョン一元管理（22-12。JUnitは第21章と同じ6.1.3）、OWASP Dependency-Checkの説明と`mvn verify`での実行、NVDのAPIキー（脚注）（22-13）、よく使われる組み合わせの表（Spring Boot 4に合わせ`spring-boot-starter-webmvc`とJackson 3の`tools.jackson.core:jackson-databind`。その理由を表の後に書く）
+    + 指針の最後に「大きさ・Javaの版・取り替えやすさ」を置く。第26章の観点の表（8つ）がすべて第22章にそろうように、2026-11-23に「目的に合うか」とあわせて加えた
     + 実践的な開発フロー: `archetype:generate`（`-DarchetypeVersion=1.5`と`-DinteractiveMode=false`の理由、`maven.compiler.release`を25にする、または`-DjavaCompilerVersion=25`を付ける）、`mvn compile`、`mvn package`、dependency:tree/analyze、versions、purge-local-repository
     + もう1つのビルドツール：Gradle: build.gradle/build.gradle.kts、Gsonの依存関係（22-14）、implementation/testImplementation、Gradle Wrapper、gradlewのコマンド、付録D「高度なビルドとデプロイメント技術」への誘導
     + コラム「Log4Shell――ライブラリ1つで世界中が慌てた日」（2026-11-19）。CVE-2021-44228（NVD登録2021-12-10、CVSS 10.0）、ログに書かせるだけで攻撃できたこと、推移的な依存で使っているかがわからなかったこと、dependency:treeとDependency-Checkの役割
