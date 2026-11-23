@@ -625,45 +625,45 @@ public class ChangeListenerExample extends JFrame {
 
 ### EDT上での実行
 
-SwingのすべてのGUI操作はイベントディスパッチスレッド上で実行します。
-`main`メソッドは、EDTではなくmainスレッドで動きます。
-そのため、本書のサンプルは第17章で学んだとおり、GUIの組み立てを`SwingUtilities.invokeLater()`でEDTに任せています。
+第17章と本章の前半で見たとおり、GUIの組み立ては`SwingUtilities.invokeLater()`でEDTに任せます。
 一方、リスナーの処理はSwingがEDT上で呼び出すので、リスナーのなかではそのままコンポーネントを操作できます。
 
 以下のコードは、リスナーがどのスレッドで動いているかを確かめる例です。
 `SwingUtilities.isEventDispatchThread()`は、呼び出したスレッドがEDTならtrueを返します。
 コンポーネントを操作するコードがEDT上で動いているかを確かめたいときに使えます。
 
-<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜8、14〜34、40〜42行目）</span>
+<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜11、17〜37、43〜44行目）</span>
 
 ```java
 public class EdtCheckExample {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // ...
-            JButton button = new JButton("イベント確認");
-            JLabel statusLabel = new JLabel("準備完了");
-            
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // EDTの確認
-                    if (SwingUtilities.isEventDispatchThread()) {
-                        statusLabel.setText("正しくEDT上で実行されています");
-                    } else {
-                        statusLabel.setText("警告: "
-                                + "EDT以外のスレッドで実行されています");
-                    }
-                    
-                    // リスナーが動いているスレッドを表示
-                    IO.println("現在のスレッド: "
-                            + Thread.currentThread().getName());
-                    IO.println("EDT上での実行: "
-                            + SwingUtilities.isEventDispatchThread());
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
+        // ...
+        JButton button = new JButton("イベント確認");
+        JLabel statusLabel = new JLabel("準備完了");
+        
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // EDTの確認
+                if (SwingUtilities.isEventDispatchThread()) {
+                    statusLabel.setText("正しくEDT上で実行されています");
+                } else {
+                    statusLabel.setText("警告: "
+                            + "EDT以外のスレッドで実行されています");
                 }
-            });
-            // ...
+                
+                // リスナーが動いているスレッドを表示
+                IO.println("現在のスレッド: "
+                        + Thread.currentThread().getName());
+                IO.println("EDT上での実行: "
+                        + SwingUtilities.isEventDispatchThread());
+            }
         });
+        // ...
     }
 }
 ```
@@ -744,40 +744,42 @@ public class FreezeExample {
 `Timer`は最初の呼び出しも指定した間隔のあとに行うので、この例では`setInitialDelay(0)`で、開始してすぐに1回目を実行しています。
 リスナーの処理が長いとEDTを止めてしまうので、`Timer`で呼び出す処理は短く保ちます。
 
-<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜8、14〜38、45〜47行目）</span>
+<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜11、17〜41、48〜49行目）</span>
 
 ```java
 public class TimerExample {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // ...
-            JLabel timeLabel = new JLabel("", JLabel.CENTER);
-            timeLabel.setFont(new Font("Monospaced", Font.BOLD, 18));
-            
-            JButton toggleButton = new JButton("開始");
-            
-            // javax.swing.Timerを使用（EDT上で実行される）
-            Timer timer = new Timer(1000, e -> {
-                // 定期的にEDT上で実行される処理
-                LocalTime now = LocalTime.now();
-                String timeText = now.format(
-                        DateTimeFormatter.ofPattern("HH:mm:ss"));
-                timeLabel.setText(timeText);
-            });
-            // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）
-            timer.setInitialDelay(0);
-            
-            toggleButton.addActionListener(e -> {
-                if (timer.isRunning()) {
-                    timer.stop();
-                    toggleButton.setText("開始");
-                } else {
-                    timer.start();
-                    toggleButton.setText("停止");
-                }
-            });
-            // ...
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
+        // ...
+        JLabel timeLabel = new JLabel("", JLabel.CENTER);
+        timeLabel.setFont(new Font("Monospaced", Font.BOLD, 18));
+        
+        JButton toggleButton = new JButton("開始");
+        
+        // javax.swing.Timerを使用（EDT上で実行される）
+        Timer timer = new Timer(1000, e -> {
+            // 定期的にEDT上で実行される処理
+            LocalTime now = LocalTime.now();
+            String timeText = now.format(
+                    DateTimeFormatter.ofPattern("HH:mm:ss"));
+            timeLabel.setText(timeText);
         });
+        // 開始したらすぐに1回目を実行する（既定では最初の実行も1秒後）
+        timer.setInitialDelay(0);
+        
+        toggleButton.addActionListener(e -> {
+            if (timer.isRunning()) {
+                timer.stop();
+                toggleButton.setText("開始");
+            } else {
+                timer.start();
+                toggleButton.setText("停止");
+            }
+        });
+        // ...
     }
 }
 ```

@@ -3,7 +3,7 @@ source: manuscripts/chapter20-advanced-gui.md
 summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
-    hash: f30b2d60
+    hash: 58e62db8
   - key: "JTableのしくみと基本"
     hash: 41d25014
   - key: "テーブルのソートとフィルタリング"
@@ -19,7 +19,7 @@ sections:
   - key: "よくあるエラーと対処法"
     hash: d2a7f7f8
   - key: "まとめ"
-    hash: 6acf341a
+    hash: 11fd3c57
   - key: "章末演習"
     hash: feb99734
 ---
@@ -97,3 +97,4 @@ sections:
     + 20-2の正規表現の説明を脚注から本文へ移し、`convertRowIndexToModel()`の説明と削除ボタンの抜粋を加えた
     + 20-2・20-5の抜粋の折り返しを直した（20-5は`DateTimeFormatter`をimportして短くした）
     + まとめから本文にない「カスタムセルレンダラー」「カスタムツリーセルレンダラー」の作成を除いた
+- 2026-11-23（流れ・矛盾・過不足の校閲）: GUI（第17〜20章）の低の指摘: 第11章のイベントリスナーの参照を第18章だけにした。第18章は「EDT上での実行」の重複を第17章と前半を受ける1文にし、18-11・18-13をcreateAndShowGUIの形にそろえた。第19章は副題と学習目標の「プロフェッショナル」「完全な処理」をやめて扱う内容をそのまま書き、19-4の2つ目のリスナー、19-5のProgressInfoとExecutionExceptionを説明した。第20章は学習目標と重なる導入を削り、セルの編集の節をJTableのソートの後へ移し、まとめのMVCを本文の脚注と合う言い方にして、本文にないマウスイベントの項目を削った

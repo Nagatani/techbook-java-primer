@@ -100,9 +100,9 @@
     "dir": "18-11",
     "main": "EdtCheckExample",
     "excerpt": [
-      { "file": "EdtCheckExample.java", "from": 6, "to": 8 },
-      { "file": "EdtCheckExample.java", "from": 14, "to": 34 },
-      { "file": "EdtCheckExample.java", "from": 40, "to": 42 }
+      { "file": "EdtCheckExample.java", "from": 6, "to": 11 },
+      { "file": "EdtCheckExample.java", "from": 17, "to": 37 },
+      { "file": "EdtCheckExample.java", "from": 43, "to": 44 }
     ]
   },
   "18-12": {
@@ -119,9 +119,9 @@
     "dir": "18-13",
     "main": "TimerExample",
     "excerpt": [
-      { "file": "TimerExample.java", "from": 6, "to": 8 },
-      { "file": "TimerExample.java", "from": 14, "to": 38 },
-      { "file": "TimerExample.java", "from": 45, "to": 47 }
+      { "file": "TimerExample.java", "from": 6, "to": 11 },
+      { "file": "TimerExample.java", "from": 17, "to": 41 },
+      { "file": "TimerExample.java", "from": 48, "to": 49 }
     ]
   }
 }
