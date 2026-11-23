@@ -400,13 +400,9 @@ public class StandardFunctionalInterfaces {
 `Predicate`には、条件を組み合わせる`and`（かつ）、`or`（または）、`negate`（否定）があります。
 `and`と`or`は、`&&`や`||`と同じく、1つ目の条件で結果が決まれば2つ目の条件を調べません。
 
-<span class="listing-number">**サンプルコード11-8**　FunctionComposition.java</span>
+<span class="listing-number">**サンプルコード11-8**　FunctionComposition.java（5〜39行目）</span>
 
 ```java
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 public class FunctionComposition {
     public static void main(String[] args) {
         Function<Integer, Integer> plusOne = x -> x + 1;
@@ -857,7 +853,7 @@ Stream API（第12章）を使う例もあるので、最初はラムダ式を�
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜49行目）</span>
+<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜42、49行目）</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -899,12 +895,7 @@ public class HigherOrderFunctionExample {
                 safeStrategy.apply(highRiskData);
         IO.println("高リスク時の決定: " + highRiskDecision);
     }
-    
-    public static void main(String[] args) {
-        HigherOrderFunctionExample example =
-                new HigherOrderFunctionExample();
-        example.demonstrateHigherOrderFunction();
-    }
+    // ...
 }
 ```
 

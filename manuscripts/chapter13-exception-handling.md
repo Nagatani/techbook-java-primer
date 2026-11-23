@@ -731,7 +731,7 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜46、65行目）</span>
+<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜33、44〜46、65行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -763,16 +763,7 @@ public class StructuredExceptionLogger {
         sb.append("\"error_message\":\"").append(
                 escapeJson(exception.getMessage())).append("\",");
         sb.append("\"context\":{");
-        
-        boolean first = true;
-        for (Map.Entry<String, Object> entry : context.entrySet()) {
-            if (!first) sb.append(",");
-            sb.append("\"").append(entry.getKey()).append("\":\"")
-                    .append(escapeJson(String.valueOf(entry.getValue())))
-                    .append("\"");
-            first = false;
-        }
-        
+        // ...
         sb.append("}}");
         return sb.toString();
     }

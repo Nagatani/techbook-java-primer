@@ -279,13 +279,9 @@ public class AdvancedSortExample {
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する例です。
 
-<span class="listing-number">**サンプルコード12-6**　StreamExample.java</span>
+<span class="listing-number">**サンプルコード12-6**　StreamExample.java（5〜24行目）</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class StreamExample {
     public static void main(String[] args) {
         List<Student> students = new ArrayList<>();
@@ -936,13 +932,9 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java</span>
+<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（5〜37行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class FlatMapExample {
     public static void main(String[] args) {
         List<List<String>> nestedList = Arrays.asList(
@@ -1037,14 +1029,9 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java</span>
+<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java（6〜37行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class CollectorsExample {
     public static void main(String[] args) {
         List<Student> students = Arrays.asList(
@@ -1098,14 +1085,9 @@ public class CollectorsExample {
 `Objects::nonNull`は、`name -> name != null`と同じ判定をするメソッド参照です。
 値が1つだけで、それが存在しない場合もあるときは、本章の「Optional型による安全なnull処理」で学んだ`Optional`を使います。
 
-<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java</span>
+<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java（6〜22行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 public class NullSafeProcessingExample {
     public static void main(String[] args) {
         // nullが混入する可能性があるデータ
@@ -1136,13 +1118,9 @@ public class NullSafeProcessingExample {
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 次のサンプルの`peek`は、要素をそのまま次へ渡しながら途中の値を確かめる処理をはさむ中間操作で、主にデバッグに使います。
 
-<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java</span>
+<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java（5〜28行目）</span>
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ShortCircuitExample {
     public static void main(String[] args) {
         List<Integer> numbers =

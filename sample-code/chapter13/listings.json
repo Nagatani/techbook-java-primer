@@ -83,7 +83,8 @@
     "dir": "13-13",
     "main": null,
     "excerpt": [
-      { "file": "StructuredExceptionLogger.java", "from": 5, "to": 46 },
+      { "file": "StructuredExceptionLogger.java", "from": 5, "to": 33 },
+      { "file": "StructuredExceptionLogger.java", "from": 44, "to": 46 },
       { "file": "StructuredExceptionLogger.java", "from": 65, "to": 65 }
     ]
   },

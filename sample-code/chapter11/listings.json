@@ -38,7 +38,7 @@
     "dir": "11-08",
     "main": "FunctionComposition",
     "excerpt": [
-      { "file": "FunctionComposition.java", "from": 1, "to": 39 }
+      { "file": "FunctionComposition.java", "from": 5, "to": 39 }
     ]
   },
   "11-9": {
@@ -83,7 +83,8 @@
     "dir": "11-14",
     "main": "HigherOrderFunctionExample",
     "excerpt": [
-      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 49 }
+      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 42 },
+      { "file": "HigherOrderFunctionExample.java", "from": 49, "to": 49 }
     ]
   },
   "11-15": {

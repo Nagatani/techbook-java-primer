@@ -10,7 +10,7 @@
     "dir": "12-06",
     "main": "StreamExample",
     "excerpt": [
-      { "file": "StreamExample.java", "from": 1, "to": 24 }
+      { "file": "StreamExample.java", "from": 5, "to": 24 }
     ],
     "uses": [
       "12-5"
@@ -89,7 +89,7 @@
     "dir": "12-17",
     "main": "FlatMapExample",
     "excerpt": [
-      { "file": "FlatMapExample.java", "from": 1, "to": 37 }
+      { "file": "FlatMapExample.java", "from": 5, "to": 37 }
     ]
   },
   "12-18": {
@@ -107,7 +107,7 @@
     "dir": "12-19",
     "main": "CollectorsExample",
     "excerpt": [
-      { "file": "CollectorsExample.java", "from": 1, "to": 37 }
+      { "file": "CollectorsExample.java", "from": 6, "to": 37 }
     ],
     "uses": [
       "12-5"
@@ -117,14 +117,14 @@
     "dir": "12-20",
     "main": "NullSafeProcessingExample",
     "excerpt": [
-      { "file": "NullSafeProcessingExample.java", "from": 1, "to": 22 }
+      { "file": "NullSafeProcessingExample.java", "from": 6, "to": 22 }
     ]
   },
   "12-21": {
     "dir": "12-21",
     "main": "ShortCircuitExample",
     "excerpt": [
-      { "file": "ShortCircuitExample.java", "from": 1, "to": 28 }
+      { "file": "ShortCircuitExample.java", "from": 5, "to": 28 }
     ]
   },
   "12-22": {
