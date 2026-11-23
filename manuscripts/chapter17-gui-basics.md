@@ -223,7 +223,7 @@ public class HelloLabel {
 実行結果：
 このプログラムを実行すると、「ラベルの表示」というタイトルの400×300ピクセルのウィンドウが画面中央に表示され、そのなかに「Hello, Swing!」というテキストが中央揃えで表示されます。
 
-#### 複数のコンポーネントを配置する
+### レイアウトマネージャーの基礎
 
 複数のコンポーネントを配置するには、レイアウトマネージャーを使います。
 
@@ -234,33 +234,45 @@ public class HelloLabel {
 そのため、異なるOSでも同じようにレイアウトでき、画面の文字サイズやDPI<span class="footnote">DPIはdots per inchの略で、1インチあたりに並ぶ点（画素）の数です。数字が大きいほどきめの細かい画面になります。</span>が変わってもそれに合わせて配置できます。
 また、ユーザーがウィンドウの大きさを変えると、コンポーネントを自動的に配置し直します。
 
-BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャーです<span class="footnote">Java 1.4からは、方位の代わりに`PAGE_START`（上）や`LINE_START`（行の始まりの側）などの定数も使えます。アラビア語のように右から左へ書く言語の画面では、`LINE_START`が右側になります。</span>。多くのアプリケーションで使用される基本的なレイアウトパターンです。
+#### BorderLayout - 5つの領域に配置
 
-<span class="listing-number">**サンプルコード17-5**　MultipleComponents.java</span>
+BorderLayoutは、画面を5つの領域（北、南、東、西、中央）に分割してコンポーネントを配置するレイアウトマネージャーです<span class="footnote">Java 1.4からは、方位の代わりに`PAGE_START`（上）や`LINE_START`（行の始まりの側）などの定数も使えます。アラビア語のように右から左へ書く言語の画面では、`LINE_START`が右側になります。</span>。多くのアプリケーションで使用される基本的なレイアウトパターンです。
+JFrameのデフォルトのレイアウトもBorderLayoutです。
+5つの領域の位置関係は、次の図のとおりです。
+
+<div class="figure">
+
+![BorderLayoutの5つの領域](images/diagrams/chapter17-borderlayout.svg)
+
+</div>
+
+以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
+
+<span class="listing-number">**サンプルコード17-5**　BorderLayoutExample.java</span>
 
 ```java
 import javax.swing.*;
 import java.awt.*;
 
-public class MultipleComponents {
+public class BorderLayoutExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
 
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("複数のコンポーネント");
+        JFrame frame = new JFrame("BorderLayoutの例");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        frame.setLayout(new BorderLayout());  // ①
+        // BorderLayoutはJFrameのデフォルトレイアウトマネージャー
+        frame.setLayout(new BorderLayout());
         
-        // ② 5つの領域にラベルを1つずつ置く
-        frame.add(new JLabel("北", JLabel.CENTER), BorderLayout.NORTH);
-        frame.add(new JLabel("南", JLabel.CENTER), BorderLayout.SOUTH);
-        frame.add(new JLabel("東", JLabel.CENTER), BorderLayout.EAST);
-        frame.add(new JLabel("西", JLabel.CENTER), BorderLayout.WEST);
-        frame.add(new JLabel("中央", JLabel.CENTER),
-                BorderLayout.CENTER);
+        // 各領域にボタンを配置
+        frame.add(new JButton("北 (NORTH)"), BorderLayout.NORTH);
+        frame.add(new JButton("南 (SOUTH)"), BorderLayout.SOUTH);
+        frame.add(new JButton("東 (EAST)"), BorderLayout.EAST);
+        frame.add(new JButton("西 (WEST)"), BorderLayout.WEST);
+        frame.add(new JButton("中央 (CENTER)"), BorderLayout.CENTER);
         
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -269,23 +281,123 @@ public class MultipleComponents {
 ```
 
 実行結果：
-このプログラムを実行すると、400×300ピクセルのウィンドウが画面中央に表示され、「北」「南」「東」「西」「中央」の各ラベルがそれぞれの領域に配置されます。中央の領域がもっとも大きなスペースを占め、各境界の領域はラベルのサイズに応じて調整されます。
+このプログラムを実行すると、5つのボタンがウィンドウの各領域に配置されます。
 
-①では、フレームのレイアウトマネージャーにBorderLayoutを設定しています。
-JFrameのデフォルトのレイアウトもBorderLayoutですが、明示的に設定するとコードの意図がはっきりします。
+`setLayout(new BorderLayout())`は、フレームのレイアウトマネージャーにBorderLayoutを設定します。
+デフォルトもBorderLayoutですが、明示的に設定するとコードの意図がはっきりします。
+`add()`の第2引数で、部品を置く領域を指定します。
+NORTHとSOUTHのボタンは横方向にいっぱいまで広がり、高さはボタンの推奨サイズのままです。
+EASTとWESTのボタンは縦方向にいっぱいまで広がり、幅は推奨サイズのままです。
+CENTERのボタンは残りのスペースをすべて占めるので、ウィンドウの大きさを変えたときにもっとも大きく伸び縮みします。
+この配置で、典型的なアプリケーションの構造（ツールバー・メインエリア・ステータスバー）を作れます。
 
-②では、`add()`の第2引数で領域を指定して、5つのラベルを配置しています。
-NORTHとSOUTHのラベルは横方向にいっぱいまで広がり、高さはラベルの推奨サイズのままです。
-EASTとWESTのラベルは縦方向にいっぱいまで広がり、幅は推奨サイズのままです。
-CENTERのラベルは残りのスペースをすべて占めるので、ウィンドウの大きさを変えたときにもっとも大きく伸び縮みします。
+#### GridLayout - 格子状に配置
 
-この配置方法により、典型的なアプリケーション構造（ツールバー・メインエリア・ステータスバー）を簡単に実現できます。
+GridLayoutは、コンポーネントを同じサイズのセルに均等に配置するレイアウトマネージャーです。電卓のボタン配置や、カレンダーの日付表示など、規則的な配置が必要な場合に最適です。
+
+GridLayoutには、次の特徴があります。
+
+- すべてのセルが同じサイズに統一される
+- コンポーネントは左から右、上から下へ順番に配置される
+- ウィンドウサイズに応じてセルサイズが自動調整される
+- セル間の間隔をピクセル単位で指定できる
+
+<div class="figure">
+
+![GridLayout（サンプルコード17-6の3行2列の配置）](images/diagrams/chapter17-gridlayout.svg)
+
+</div>
+
+以下のコードは、GridLayoutを使用してボタンを格子状に配置する例です。3行2列のグリッドを作成し、コンポーネント間の間隔を指定しています。
+
+<span class="listing-number">**サンプルコード17-6**　GridLayoutExample.java</span>
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class GridLayoutExample {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("GridLayoutの例");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
+        frame.setLayout(new GridLayout(3, 2, 5, 5));
+        
+        // ボタンを順番に配置
+        for (int i = 1; i <= 6; i++) {
+            frame.add(new JButton("ボタン " + i));
+        }
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+実行結果：
+このプログラムを実行すると、6つのボタンが3行2列の格子状に配置されます。すべてのボタンは同じサイズになり、ボタン間には5ピクセルの間隔が設定されます。ウィンドウのサイズを変更すると、各セルのサイズも均等に調整されます。
+
+#### FlowLayout - 流れるような配置
+
+`FlowLayout`は、コンポーネントを左から右へ並べ、行がいっぱいになったら次の行へ送ります。
+各行はデフォルトでは中央揃えですが、左揃えや右揃えも指定できます。
+コンポーネントどうしの間隔は、ピクセル単位で設定できます。
+コンポーネントを推奨サイズのまま並べるので、ボタンやラベルなどの小さなコンポーネントの配置に向いています。
+
+以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。ウィンドウサイズの変更に柔軟に対応できるため、FlowLayoutはツールバーなどの実装に適しています。
+
+<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java</span>
+
+```java
+import javax.swing.*;
+import java.awt.*;
+
+public class FlowLayoutExample {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("FlowLayoutの例");
+        frame.setSize(400, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
+        frame.setLayout(new FlowLayout(
+            FlowLayout.CENTER, 10, 5));
+        
+        // さまざまなサイズのボタンを追加
+        frame.add(new JButton("短い"));
+        frame.add(new JButton("もう少し長いボタン"));
+        frame.add(new JButton("OK"));
+        frame.add(new JButton("キャンセル"));
+        frame.add(new JButton("ヘルプ"));
+        frame.add(new JButton("設定"));
+        
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
+```
+
+実行結果：
+このプログラムを実行すると、6つのボタンが中央揃えで左から右へ流れるように配置されます。ウィンドウの幅を狭めると、収まらないボタンは自動的に次の行に折り返されます。各ボタン間には水平方向に10ピクセル、垂直方向に5ピクセルの間隔が設定されています。
+
+### さまざまなコンポーネント
+
+レイアウトマネージャーで部品を並べられるようになったので、よく使う部品を順に見ていきます。
 
 #### JLabelでHTMLを表示する
 
 以下のコードは、JLabelでHTMLを表示する例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、HTMLの`<br>`タグを使えば、複数行のテキストも表示できます。
 
-<span class="listing-number">**サンプルコード17-6**　AdvancedLabel.java</span>
+<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java</span>
 
 ```java
 import javax.swing.*;
@@ -332,7 +444,7 @@ public class AdvancedLabel {
 JButtonは、ユーザーのクリック操作を受け付けるコンポーネントです。
 以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と文字色（前景色）の変更、推奨サイズの指定、無効化の設定を順に試しています。
 
-<span class="listing-number">**サンプルコード17-7**　AdvancedButton.java</span>
+<span class="listing-number">**サンプルコード17-9**　AdvancedButton.java</span>
 
 ```java
 import javax.swing.*;
@@ -397,7 +509,7 @@ Swingには、入力する内容に合わせて使い分ける、次のような
 
 以下のコードは、これらの入力コンポーネントを1つのウィンドウに並べる例です。
 
-<span class="listing-number">**サンプルコード17-8**　TextInputComponents.java（4、9、13〜45、49〜50行目）</span>
+<span class="listing-number">**サンプルコード17-10**　TextInputComponents.java（4、9、13〜45、49〜50行目）</span>
 
 ```java
 public class TextInputComponents {
@@ -456,8 +568,10 @@ public class TextInputComponents {
 JListは、複数の項目を一度に表示し、単一または複数選択を可能にするコンポーネントです。スクロール機能を追加することで、大量のデータも扱えます。
 
 以下のコードは、チェックボックス、ラジオボタン、コンボボックス、リストの4種類の選択系コンポーネントを、4行2列のGridLayoutに並べる例です。ButtonGroupを使ったラジオボタンのグループ化は、どれか1つだけを選ばせる（相互排他的な選択）ための標準的な方法です。
+複数のチェックボックスやラジオボタンは、`JPanel`（部品を入れる入れ物）にまとめてから1つのセルに置いています。
+`JPanel`で部品をまとめる方法は、本章の「パネルを使った複雑なレイアウト」で詳しく学びます。
 
-<span class="listing-number">**サンプルコード17-9**　SelectionComponents.java（4、9、13〜48、52〜53行目）</span>
+<span class="listing-number">**サンプルコード17-11**　SelectionComponents.java（4、9、13〜48、52〜53行目）</span>
 
 ```java
 public class SelectionComponents {
@@ -510,155 +624,6 @@ public class SelectionComponents {
 
 `JList`の項目を入れておくモデルや、項目の表示方法を変えるレンダラーなど、`JList`の詳しい使い方は第20章「JTable・JList・JTree」で学びます。
 
-### レイアウトマネージャーの基礎
-
-#### BorderLayout - 5つの領域に配置
-
-BorderLayoutは、サンプルコード17-5で使ったレイアウトマネージャーで、JFrameのデフォルトのレイアウトでもあります。
-ウィンドウを方位に基づいた5つの領域に分け、各領域はサンプルコード17-5の解説で述べたとおりに広がります。
-5つの領域の位置関係は、次の図のとおりです。
-
-<div class="figure">
-
-![BorderLayoutの5つの領域](images/diagrams/chapter17-borderlayout.svg)
-
-</div>
-
-以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
-
-<span class="listing-number">**サンプルコード17-10**　BorderLayoutExample.java</span>
-
-```java
-import javax.swing.*;
-import java.awt.*;
-
-public class BorderLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("BorderLayoutの例");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // BorderLayoutはJFrameのデフォルトレイアウトマネージャー
-        frame.setLayout(new BorderLayout());
-        
-        // 各領域にボタンを配置
-        frame.add(new JButton("北 (NORTH)"), BorderLayout.NORTH);
-        frame.add(new JButton("南 (SOUTH)"), BorderLayout.SOUTH);
-        frame.add(new JButton("東 (EAST)"), BorderLayout.EAST);
-        frame.add(new JButton("西 (WEST)"), BorderLayout.WEST);
-        frame.add(new JButton("中央 (CENTER)"), BorderLayout.CENTER);
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-}
-```
-
-実行結果：
-このプログラムを実行すると、5つのボタンがウィンドウの各領域に配置されます。北と南のボタンは水平方向に伸び、東と西のボタンは垂直方向に伸び、中央のボタンは残りのすべての領域を占めます。ウィンドウのサイズを変更すると、中央の領域が伸縮します。
-
-#### GridLayout - 格子状に配置
-
-GridLayoutは、コンポーネントを同じサイズのセルに均等に配置するレイアウトマネージャーです。電卓のボタン配置や、カレンダーの日付表示など、規則的な配置が必要な場合に最適です。
-
-GridLayoutには、次の特徴があります。
-
-- すべてのセルが同じサイズに統一される
-- コンポーネントは左から右、上から下へ順番に配置される
-- ウィンドウサイズに応じてセルサイズが自動調整される
-- セル間の間隔をピクセル単位で指定できる
-
-<div class="figure">
-
-![GridLayout（サンプルコード17-11の3行2列の配置）](images/diagrams/chapter17-gridlayout.svg)
-
-</div>
-
-以下のコードは、GridLayoutを使用してボタンを格子状に配置する例です。3行2列のグリッドを作成し、コンポーネント間の間隔を指定しています。
-
-<span class="listing-number">**サンプルコード17-11**　GridLayoutExample.java</span>
-
-```java
-import javax.swing.*;
-import java.awt.*;
-
-public class GridLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("GridLayoutの例");
-        frame.setSize(300, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // 3行2列のグリッドレイアウト（行、列、水平間隔、垂直間隔）
-        frame.setLayout(new GridLayout(3, 2, 5, 5));
-        
-        // ボタンを順番に配置
-        for (int i = 1; i <= 6; i++) {
-            frame.add(new JButton("ボタン " + i));
-        }
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-}
-```
-
-実行結果：
-このプログラムを実行すると、6つのボタンが3行2列の格子状に配置されます。すべてのボタンは同じサイズになり、ボタン間には5ピクセルの間隔が設定されます。ウィンドウのサイズを変更すると、各セルのサイズも均等に調整されます。
-
-#### FlowLayout - 流れるような配置
-
-`FlowLayout`は、コンポーネントを左から右へ並べ、行がいっぱいになったら次の行へ送ります。
-各行はデフォルトでは中央揃えですが、左揃えや右揃えも指定できます。
-コンポーネントどうしの間隔は、ピクセル単位で設定できます。
-コンポーネントを推奨サイズのまま並べるので、ボタンやラベルなどの小さなコンポーネントの配置に向いています。
-
-以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。ウィンドウサイズの変更に柔軟に対応できるため、FlowLayoutはツールバーなどの実装に適しています。
-
-<span class="listing-number">**サンプルコード17-12**　FlowLayoutExample.java</span>
-
-```java
-import javax.swing.*;
-import java.awt.*;
-
-public class FlowLayoutExample {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
-    }
-
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("FlowLayoutの例");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
-        frame.setLayout(new FlowLayout(
-            FlowLayout.CENTER, 10, 5));
-        
-        // さまざまなサイズのボタンを追加
-        frame.add(new JButton("短い"));
-        frame.add(new JButton("もう少し長いボタン"));
-        frame.add(new JButton("OK"));
-        frame.add(new JButton("キャンセル"));
-        frame.add(new JButton("ヘルプ"));
-        frame.add(new JButton("設定"));
-        
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-}
-```
-
-実行結果：
-このプログラムを実行すると、6つのボタンが中央揃えで左から右へ流れるように配置されます。ウィンドウの幅を狭めると、収まらないボタンは自動的に次の行に折り返されます。各ボタン間には水平方向に10ピクセル、垂直方向に5ピクセルの間隔が設定されています。
-
 ### パネルを使った複雑なレイアウト
 
 #### JPanelで階層的なレイアウトを構築
@@ -672,9 +637,9 @@ JPanelは、Swingでもっとも頻繁に使われるコンテナーコンポー
 独自の描画は本章の「カスタムコンポーネントの作成」で、イベントリスナーは第18章で学びます。
 
 以下のコードは、複数のJPanelと異なるレイアウトマネージャーを組み合わせて、テキストエディター風の画面を組み立てる例です。フレームのBorderLayoutの北にツールバー（FlowLayoutのパネル）、中央にメインエリア、南にステータスバーを置いています。
-サンプルコード17-13には、メインエリアを組み立てる部分を載せています。メインエリアもBorderLayoutのパネルで、西にサイドバー、中央にテキストエリアを置いています。
+サンプルコード17-12には、メインエリアを組み立てる部分を載せています。メインエリアもBorderLayoutのパネルで、西にサイドバー、中央にテキストエリアを置いています。
 
-<span class="listing-number">**サンプルコード17-13**　ComplexLayoutExample.java（4、9〜13、27〜49、59〜62行目）</span>
+<span class="listing-number">**サンプルコード17-12**　ComplexLayoutExample.java（4、9〜13、27〜49、59〜62行目）</span>
 
 ```java
 public class ComplexLayoutExample {
@@ -724,7 +689,7 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-14**　CombinedLayoutExample.java（4、9〜20、33、42〜53、65〜68、82〜90、99、103〜104行目）</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜20、33、42〜53、65〜68、82〜90、99、103〜104行目）</span>
 
 ```java
 public class CombinedLayoutExample {
@@ -801,7 +766,7 @@ Swingに用意されたコンポーネントにない表示が必要なときは
 以下のコードは、`JPanel`を継承した`DrawingPanel`に、四角形・円・文字列を描く例です。
 前半が`DrawingPanel.java`の全体で、後半は、このパネルをウィンドウに置いて表示する`DrawingPanelExample.java`の`createAndShowGUI()`メソッドです。
 
-<span class="listing-number">**サンプルコード17-15**　DrawingPanel.java、DrawingPanelExample.java（9〜16行目）</span>
+<span class="listing-number">**サンプルコード17-14**　DrawingPanel.java、DrawingPanelExample.java（9〜16行目）</span>
 
 ```java
 import java.awt.Color;

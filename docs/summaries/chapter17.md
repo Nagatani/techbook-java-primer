@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter17-gui-basics.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: fb3738a5
   - key: "基本コンポーネントとレイアウト"
-    hash: d1d0b909
+    hash: 99a1b629
   - key: "カスタムコンポーネントの作成"
-    hash: c159ef8d
+    hash: 3675efb4
   - key: "よくあるエラーと対処法"
     hash: 222db6a6
   - key: "まとめ"
@@ -49,14 +49,13 @@ sections:
     + 「GUIの組み立てはEDTに任せる」で、`SwingUtilities.invokeLater(() -> createAndShowGUI())`の定型を示す（17-2）。理由は第18章へ誘導
     + setResizableや絶対位置などの詳細設定（17-3）
     + Swingコンポーネント継承階層の図（chapter17-swing-hierarchy）。図の前後で、AWTの`Component`・`Container`、Swingの部品の基底`JComponent`、`Window`→`Frame`の系統の`JFrame`を文章で説明する
-    + JLabelの表示（17-4）、レイアウトマネージャーの考え方とBorderLayoutの5領域（17-5、領域ごとの広がり方を文章で説明。5つの`add`に1つのコメント②を付ける）
-    + JLabelのHTML表示（17-6、見出しは「JLabelでHTMLを表示する」）、JButtonの色・サイズ・無効化（17-7）
-    + JTextField・JPasswordField・JTextArea・JSpinner・JSliderの入力系（17-8、5行2列のGridLayout）、JCheckBox・ButtonGroup付きJRadioButton・JComboBox・JListの選択系（17-9、4行2列のGridLayout）。17-8・17-9の抜粋は`setLayout`の行を含む。JListの詳細は第20章へ誘導
-    + BorderLayout（図chapter17-borderlayout、17-10）、GridLayout（図chapter17-gridlayout、17-11）、FlowLayout（17-12）
-    + JPanelの用途を文章で述べ、エディター風画面（17-13）。フレームのBorderLayoutの北にツールバー、中央にメインエリア、南にステータスバーを置き、抜粋はメインエリア（BorderLayoutのパネルの西にサイドバー、中央にテキストエリア）を組み立てる部分だと断る、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-14）。17-14の抜粋は`setJMenuBar`でメニューバーをフレームに付ける箇所と左側パネルの生成を含み、左側はJList（src・test・resources）
+    + JLabelの表示（17-4）
+    + 「レイアウトマネージャーの基礎」を部品の各論より前に置く（2026-11-23に移した。以前は各論のサンプルがFlowLayout・GridLayout・JPanelを説明より先に使っていた）。レイアウトマネージャーの考え方、BorderLayout（図chapter17-borderlayout、17-5のボタンの例。領域ごとの広がり方を説明。ラベルで同じことをしていた旧17-5は削った）、GridLayout（図chapter17-gridlayout、17-6）、FlowLayout（17-7）
+    + 「さまざまなコンポーネント」: JLabelのHTML表示（17-8）、JButtonの色・サイズ・無効化（17-9）、JTextField・JPasswordField・JTextArea・JSpinner・JSliderの入力系（17-10、5行2列のGridLayout）、JCheckBox・ButtonGroup付きJRadioButton・JComboBox・JList（17-11。JPanelでまとめることと、パネルの節への誘導）
+    + JPanelの用途を文章で述べ、エディター風画面（17-12）。フレームのBorderLayoutの北にツールバー、中央にメインエリア、南にステータスバーを置き、抜粋はメインエリア（BorderLayoutのパネルの西にサイドバー、中央にテキストエリア）を組み立てる部分だと断る、メニューバー・JSplitPane・JTabbedPaneを含むIDE風画面（17-13）。17-13の抜粋は`setJMenuBar`でメニューバーをフレームに付ける箇所と左側パネルの生成を含み、左側はJList（src・test・resources）
 - カスタムコンポーネントの作成（L784–871）
     + 基底クラスの選択（JComponent・JPanel・既存のコンポーネント）をリストで示す
-    + JPanelを継承したDrawingPanelで四角形・円・文字列を描く（17-15。前半がDrawingPanel.java、後半がDrawingPanelExample.javaの`createAndShowGUI()`と断る）。getPreferredSize、paintComponentが呼ばれる時機、`super.paintComponent(g)`、Graphicsの座標と色、repaintで再描画を頼むことを①〜④で説明
+    + JPanelを継承したDrawingPanelで四角形・円・文字列を描く（17-14。前半がDrawingPanel.java、後半がDrawingPanelExample.javaの`createAndShowGUI()`と断る）。getPreferredSize、paintComponentが呼ばれる時機、`super.paintComponent(g)`、Graphicsの座標と色、repaintで再描画を頼むことを①〜④で説明
     + イベントと組み合わせた描画は第18章・第19章へ誘導
 - よくあるエラーと対処法（L872–893）
     + 本文に挙げる問題: コンポーネントが表示されない、BorderLayoutでの重なり、JPanelの背景色、JTextFieldが編集できない、EDT以外からの更新、サイズが意図どおりにならない、独自の描画で画面がちらつく（JFrameの`paint()`や`getGraphics()`で描くとダブルバッファリングが働かない。`paintComponent()`と`repaint()`を使う）。詳細は`appendix/e-common-errors/chapters/chapter17.md`
@@ -71,7 +70,7 @@ sections:
 - 第11章（ラムダ式）: invokeLaterに渡すラムダ式の前提
 - 第18章（基本的なイベント処理）: イベント処理とEDTの役割・理由を扱う。本章から複数箇所で誘導する
 - 第19章: イベントと組み合わせた描画、SwingWorkerを扱う
-- 第20章（JTable・JList・JTree）: 17-9でJListを先に簡単に使い、詳細は第20章へ誘導する
+- 第20章（JTable・JList・JTree）: 17-11でJListを先に簡単に使い、詳細は第20章へ誘導する
 
 ## 校正で見つけた個別の問題
 

@@ -29,27 +29,41 @@
   },
   "17-5": {
     "dir": "17-05",
-    "main": "MultipleComponents",
+    "main": "BorderLayoutExample",
     "excerpt": [
-      { "file": "MultipleComponents.java", "from": 1, "to": 27 }
+      { "file": "BorderLayoutExample.java", "from": 1, "to": 27 }
     ]
   },
   "17-6": {
     "dir": "17-06",
+    "main": "GridLayoutExample",
+    "excerpt": [
+      { "file": "GridLayoutExample.java", "from": 1, "to": 25 }
+    ]
+  },
+  "17-7": {
+    "dir": "17-07",
+    "main": "FlowLayoutExample",
+    "excerpt": [
+      { "file": "FlowLayoutExample.java", "from": 1, "to": 29 }
+    ]
+  },
+  "17-8": {
+    "dir": "17-08",
     "main": "AdvancedLabel",
     "excerpt": [
       { "file": "AdvancedLabel.java", "from": 1, "to": 34 }
     ]
   },
-  "17-7": {
-    "dir": "17-07",
+  "17-9": {
+    "dir": "17-09",
     "main": "AdvancedButton",
     "excerpt": [
       { "file": "AdvancedButton.java", "from": 1, "to": 39 }
     ]
   },
-  "17-8": {
-    "dir": "17-08",
+  "17-10": {
+    "dir": "17-10",
     "main": "TextInputComponents",
     "excerpt": [
       { "file": "TextInputComponents.java", "from": 4, "to": 4 },
@@ -58,8 +72,8 @@
       { "file": "TextInputComponents.java", "from": 49, "to": 50 }
     ]
   },
-  "17-9": {
-    "dir": "17-09",
+  "17-11": {
+    "dir": "17-11",
     "main": "SelectionComponents",
     "excerpt": [
       { "file": "SelectionComponents.java", "from": 4, "to": 4 },
@@ -68,29 +82,8 @@
       { "file": "SelectionComponents.java", "from": 52, "to": 53 }
     ]
   },
-  "17-10": {
-    "dir": "17-10",
-    "main": "BorderLayoutExample",
-    "excerpt": [
-      { "file": "BorderLayoutExample.java", "from": 1, "to": 27 }
-    ]
-  },
-  "17-11": {
-    "dir": "17-11",
-    "main": "GridLayoutExample",
-    "excerpt": [
-      { "file": "GridLayoutExample.java", "from": 1, "to": 25 }
-    ]
-  },
   "17-12": {
     "dir": "17-12",
-    "main": "FlowLayoutExample",
-    "excerpt": [
-      { "file": "FlowLayoutExample.java", "from": 1, "to": 29 }
-    ]
-  },
-  "17-13": {
-    "dir": "17-13",
     "main": "ComplexLayoutExample",
     "excerpt": [
       { "file": "ComplexLayoutExample.java", "from": 4, "to": 4 },
@@ -99,8 +92,8 @@
       { "file": "ComplexLayoutExample.java", "from": 59, "to": 62 }
     ]
   },
-  "17-14": {
-    "dir": "17-14",
+  "17-13": {
+    "dir": "17-13",
     "main": "CombinedLayoutExample",
     "excerpt": [
       { "file": "CombinedLayoutExample.java", "from": 4, "to": 4 },
@@ -113,8 +106,8 @@
       { "file": "CombinedLayoutExample.java", "from": 103, "to": 104 }
     ]
   },
-  "17-15": {
-    "dir": "17-15",
+  "17-14": {
+    "dir": "17-14",
     "main": "DrawingPanelExample",
     "excerpt": [
       { "file": "DrawingPanel.java", "from": 1, "to": 31 },

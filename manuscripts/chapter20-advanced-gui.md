@@ -289,7 +289,7 @@ public class BasicTreeExample extends JFrame {
 
 ### カスタムレンダラーを使ったJList
 
-第17章のサンプルコード17-9では、文字列の配列から`JList`を作り、`setSelectionMode()`で選択のしかたを決めました。
+第17章のサンプルコード17-11では、文字列の配列から`JList`を作り、`setSelectionMode()`で選択のしかたを決めました。
 本節では、`JList`の項目をモデルで管理し、カスタムレンダラーで項目の表示を作り込みます。
 
 以下のコードは、JListにカスタムレンダラーを実装してタスク管理リストを作成する例です。
