@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter05-inheritance-and-polymorphism.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: ed4c0ab7
@@ -17,7 +17,7 @@ sections:
   - key: "`Object`クラスのメソッド（toString・equals・hashCode）"
     hash: beabbf61
   - key: "実践的な継承設計パターン"
-    hash: ce6d0343
+    hash: d775c1ee
   - key: "よくあるエラーと対処法"
     hash: fb101c28
   - key: "まとめ"
@@ -88,7 +88,7 @@ sections:
     + コラム「equalsとhashCodeのバグはなぜ見つけにくいか」（2026-11-19）。HashSetで見つからない・重複する症状、レビューの観点・-Xlint:overrides・レコードで防ぐ工夫
 - 実践的な継承設計パターン（L1034–1812）
     + 冒頭で、ここまでの基本を組み合わせる節と位置づけ、テンプレートメソッド、段階的リファクタリング、LSPを予告する
-    + 決済システム: 具象クラスPaymentProcessorのfinalなprocessPaymentでテンプレートメソッドパターンを実装する（5-17、図chapter05-inheritance-hierarchy）。金額はBigDecimal（第6章へ誘導し、文字列から作る読み方だけを示す）。CreditCardPaymentはカード番号・CVVの検証とAPI呼び出しを、PayPalPaymentの抜粋は`super.logTransaction()`を呼ぶlogTransactionをオーバーライドする（5-18）。例外を使わずPaymentResultとerrorMessageで失敗を伝えるPaymentExample（5-19。全体を載せる。実行結果の「決済エラー」は5-17で省いたlogErrorがSystem.errに出したものと2026-11-18に説明を足した）
+    + 決済システム: 具象クラスPaymentProcessorのfinalなprocessPaymentでテンプレートメソッドパターンを実装する（5-17、図chapter05-inheritance-hierarchy）。金額はBigDecimal（第6章へ誘導し、文字列から作る読み方だけを示す）。CreditCardPaymentはカード番号・CVVの検証とAPI呼び出しを、PayPalPaymentの抜粋は`super.logTransaction()`を呼ぶlogTransactionをオーバーライドする（5-18）。例外を使わずPaymentResultとerrorMessageで失敗を伝えるPaymentExample（5-19。全体を載せる。実行結果の「決済エラー」は5-17で省いたlogErrorがSystem.errに出したものと2026-11-18に説明を足した）。「例外処理を学ぶ前でも」という理由は第4章で`throw`を使ってきたことと食い違うため、2026-11-23に、失敗も業務の結果として承認コードやメッセージと一緒に返したい処理では結果をオブジェクトで返す設計も使える、という説明に改めた。MyStackの`throw`も「第4章でも使った`throw`」と受ける
     + 段階的リファクタリング: WordDocumentと変更前のPDFDocumentの重複（5-20。①〜⑥で同じ部分と違う部分を示す）から親クラスDocumentを抽出し（5-21）、子クラスは違う部分だけを書く（5-22 WordDocument・PDFDocument・ExcelDocument。ExcelDocumentの①〜④の説明を2026-11-18に追加）、動作確認（5-23。文字数をサイズとみなす簡略化を断る）
     + 継承の誤用例: 1 ArrayList継承のスタック（5-24）とコンポジションによる解決（5-25）、2 全従業員にシステム管理権限を持たせる権限階層（5-26。リスコフ置換原則の定義を置く）、3 正方形と長方形（5-27）とインターフェイスによる解決（5-28 Shape。第7章で学ぶ旨と読み方を添える）、4 複数の能力を継承で表す問題（コードなし。第7章のインターフェイスと第25章「継承か合成か」へ誘導）
     + 節末で付録B.04「仮想メソッドテーブル」をURLの脚注で案内
