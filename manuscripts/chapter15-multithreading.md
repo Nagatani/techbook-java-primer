@@ -1069,7 +1069,7 @@ synchronized(lock) {
 エラーの例と修正したコード（コンパイルできる全文を含む）、デッドロックの検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter15.md`
 
-## 本章のまとめ
+## まとめ
 
 本章では、マルチスレッドプログラミングの基礎から実践的な並行処理までを学習しました。
 

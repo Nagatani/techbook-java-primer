@@ -1522,7 +1522,7 @@ public class Student {
 }
 ```
 
-このようなstaticメソッドをファクトリメソッドと呼びます<span class="footnote">ジョシュア・ブロックの『Effective Java』は、これを「staticファクトリメソッド」と呼び、デザインパターンのFactory Methodパターンとは別のものだと断っています。</span>。
+このようなstaticメソッドをファクトリメソッドと呼びます<span class="footnote">ジョシュア・ブロックの『Effective Java』は、これを「staticファクトリメソッド」と呼び、デザインパターン（よく使われる設計の型に名前を付けたもの）のFactory Methodパターンとは別のものだと断っています。</span>。
 この例では、コンストラクターを`private`にして、オブジェクトは`createStudent`を通してだけ作れるようにしています。
 年齢が範囲外のときの`throw new IllegalArgumentException(...)`は、不正な引数を受け取ったことを呼び出し元に知らせて処理を中断する書き方です。
 詳しくは第13章「例外処理」で学びます。

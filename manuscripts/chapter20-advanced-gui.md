@@ -32,7 +32,7 @@
 - 第8章のRecord（データ表現）
 - MVCアーキテクチャパターンの基本概念
 - 第19章で学んだObserverパターン
-- 第18章で学んだEDT（`SwingUtilities.invokeLater`）と、第19章で学んだSwingWorker
+- 第17章の`SwingUtilities.invokeLater`、第18章で学んだEDT、第19章で学んだSwingWorker
 
 ## JTableのしくみと基本
 
